@@ -9,9 +9,7 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   Page::set_security(SA_SALESANALYTIC);
-
   print_inventory_sales();
   /**
    * @param $category
@@ -22,35 +20,36 @@
    *
    * @return null|PDOStatement
    */
-  function get_transactions($category, $location, $fromcust, $from, $to) {
+  function get_transactions($category, $location, $fromcust, $from, $to)
+  {
     $from = Dates::date2sql($from);
     $to   = Dates::date2sql($to);
     $sql
           = "SELECT stock_master.category_id,
-			stock_category.description AS cat_name,
-			stock_master.stock_id,
-			stock_master.description, stock_master.inactive,
-			stock_moves.loc_code,
-			debtor_trans.debtor_id,
-			debtors.name AS debtor_name,
-			stock_moves.tran_date,
-			SUM(-stock_moves.qty) AS qty,
-			SUM(-stock_moves.qty*stock_moves.price*(1-stock_moves.discount_percent)) AS amt,
-			SUM(-stock_moves.qty *(stock_master.material_cost + stock_master.labour_cost + stock_master.overhead_cost)) AS cost
-		FROM stock_master,
-			stock_category,
-			debtor_trans,
-			debtors,
-			stock_moves
-		WHERE stock_master.stock_id=stock_moves.stock_id
-		AND stock_master.category_id=stock_category.category_id
-		AND debtor_trans.debtor_id=debtors.debtor_id
-		AND stock_moves.type=debtor_trans.type
-		AND stock_moves.trans_no=debtor_trans.trans_no
-		AND stock_moves.tran_date>='$from'
-		AND stock_moves.tran_date<='$to'
-		AND ((debtor_trans.type=" . ST_CUSTDELIVERY . " AND debtor_trans.version=1) OR stock_moves.type=" . ST_CUSTCREDIT . ")
-		AND (stock_master.mb_flag='" . STOCK_PURCHASED . "' OR stock_master.mb_flag='" . STOCK_MANUFACTURE . "')";
+            stock_category.description AS cat_name,
+            stock_master.stock_id,
+            stock_master.description, stock_master.inactive,
+            stock_moves.loc_code,
+            debtor_trans.debtor_id,
+            debtors.name AS debtor_name,
+            stock_moves.tran_date,
+            SUM(-stock_moves.qty) AS qty,
+            SUM(-stock_moves.qty*stock_moves.price*(1-stock_moves.discount_percent)) AS amt,
+            SUM(-stock_moves.qty *(stock_master.material_cost + stock_master.labour_cost + stock_master.overhead_cost)) AS cost
+        FROM stock_master,
+            stock_category,
+            debtor_trans,
+            debtors,
+            stock_moves
+        WHERE stock_master.stock_id=stock_moves.stock_id
+        AND stock_master.category_id=stock_category.category_id
+        AND debtor_trans.debtor_id=debtors.debtor_id
+        AND stock_moves.type=debtor_trans.type
+        AND stock_moves.trans_no=debtor_trans.trans_no
+        AND stock_moves.tran_date>='$from'
+        AND stock_moves.tran_date<='$to'
+        AND ((debtor_trans.type=" . ST_CUSTDELIVERY . " AND debtor_trans.version=1) OR stock_moves.type=" . ST_CUSTCREDIT . ")
+        AND (stock_master.mb_flag='" . STOCK_PURCHASED . "' OR stock_master.mb_flag='" . STOCK_MANUFACTURE . "')";
     if ($category != 0) {
       $sql .= " AND stock_master.category_id = " . DB::escape($category);
     }
@@ -62,11 +61,13 @@
     }
     $sql
       .= " GROUP BY stock_master.stock_id, debtors.name ORDER BY stock_master.category_id,
-			stock_master.stock_id, debtors.name";
+            stock_master.stock_id, debtors.name";
+
     return DB::query($sql, "No transactions were returned");
   }
 
-  function print_inventory_sales() {
+  function print_inventory_sales()
+  {
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
     $category    = $_POST['PARAM_2'];
@@ -76,8 +77,7 @@
     $destination = $_POST['PARAM_6'];
     if ($destination) {
       include_once(APPPATH . "reports/excel.php");
-    }
-    else {
+    } else {
       include_once(APPPATH . "reports/pdf.php");
     }
     $dec = User::price_dec();
@@ -86,8 +86,7 @@
     }
     if ($category == 0) {
       $cat = _('All');
-    }
-    else {
+    } else {
       $cat = Item_Category::get_name($category);
     }
     if ($location == ALL_TEXT) {
@@ -95,14 +94,12 @@
     }
     if ($location == 'all') {
       $loc = _('All');
-    }
-    else {
+    } else {
       $loc = Inv_Location::get_name($location);
     }
     if ($fromcust == ALL_NUMERIC) {
       $fromc = _('All');
-    }
-    else {
+    } else {
       $fromc = Debtor::get_name($fromcust);
     }
     $cols = array(0, 75, 175, 250, 300, 375, 450, 515);
@@ -113,26 +110,14 @@
     }
     $aligns = array('left', 'left', 'left', 'right', 'right', 'right', 'right');
     $params = array(
-      0 => $comments,
-      1 => array(
-        'text' => _('Period'),
-        'from' => $from,
-        'to'   => $to
-      ),
-      2 => array(
-        'text' => _('Category'),
-        'from' => $cat,
-        'to'   => ''
-      ),
-      3 => array(
-        'text' => _('Location'),
-        'from' => $loc,
-        'to'   => ''
-      ),
-      4 => array(
-        'text' => _('Customer'),
-        'from' => $fromc,
-        'to'   => ''
+      0    => $comments, 1 => array(
+        'text' => _('Period'), 'from' => $from, 'to'   => $to
+      ), 2 => array(
+        'text' => _('Category'), 'from' => $cat, 'to'   => ''
+      ), 3 => array(
+        'text' => _('Location'), 'from' => $loc, 'to'   => ''
+      ), 4 => array(
+        'text' => _('Customer'), 'from' => $fromc, 'to'   => ''
       )
     );
     $rep    = new ADVReport(_('Inventory Sales Report'), "InventorySalesReport", User::page_size());
@@ -170,13 +155,10 @@
       $rep->fontsize -= 2;
       $rep->TextCol(0, 1, $trans['stock_id']);
       if ($fromcust == ALL_NUMERIC) {
-        $rep->TextCol(1, 2,
-          $trans['description'] . ($trans['inactive'] == 1 ? " (" . _("Inactive") . ")" : ""), -1);
+        $rep->TextCol(1, 2, $trans['description'] . ($trans['inactive'] == 1 ? " (" . _("Inactive") . ")" : ""), -1);
         $rep->TextCol(2, 3, $trans['debtor_name']);
-      }
-      else {
-        $rep->TextCol(1, 3,
-          $trans['description'] . ($trans['inactive'] == 1 ? " (" . _("Inactive") . ")" : ""), -1);
+      } else {
+        $rep->TextCol(1, 3, $trans['description'] . ($trans['inactive'] == 1 ? " (" . _("Inactive") . ")" : ""), -1);
       }
       $rep->AmountCol(3, 4, $trans['qty'], Item::qty_dec($trans['stock_id']));
       $rep->AmountCol(4, 5, $trans['amt'], $dec);
@@ -206,5 +188,4 @@
     $rep->NewLine();
     $rep->End();
   }
-
 

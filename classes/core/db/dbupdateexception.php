@@ -11,6 +11,6 @@
   /**
 
    */
-  class DBUpdateException extends DBException {
-
+  class DBUpdateException extends DBException
+  {
   }

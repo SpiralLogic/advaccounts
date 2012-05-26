@@ -12,7 +12,8 @@
    * @param string $action
    * @param string $name
    */
-  function start_form($multi = FALSE, $action = "", $name = "") {
+  function start_form($multi = false, $action = "", $name = "")
+  {
     if ($name != "") {
       $name = "name='$name' id='$name'";
     }
@@ -21,8 +22,7 @@
     }
     if ($multi) {
       echo "<form enctype='multipart/form-data' method='post' action='$action' $name>\n";
-    }
-    else {
+    } else {
       echo "<form method='post' action='$action' $name>\n";
     }
   }
@@ -30,7 +30,8 @@
   /**
    * @param int $breaks
    */
-  function end_form($breaks = 0) {
+  function end_form($breaks = 0)
+  {
     if ($breaks) {
       Display::br($breaks);
     }
@@ -48,14 +49,17 @@
    *
    * @return int|null|string
    */
-  function find_submit($prefix, $numeric = TRUE) {
+  function find_submit($prefix, $numeric = true)
+  {
     foreach ($_POST as $postkey => $postval) {
       if (strpos($postkey, $prefix) === 0) {
         $id = substr($postkey, strlen($prefix));
+
         return $numeric ? (int) $id : $id;
       }
     }
-    return $numeric ? -1 : NULL;
+
+    return $numeric ? -1 : null;
   }
 
   /**
@@ -64,7 +68,8 @@
    *
    * @return string|int
    */
-  function get_post($name, $dflt = '') {
+  function get_post($name, $dflt = '')
+  {
     return ((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
   }
 
@@ -76,7 +81,8 @@
    *
    * @return bool
    */
-  function list_updated($name) {
+  function list_updated($name)
+  {
     return isset($_POST['_' . $name . '_update']) || isset($_POST['_' . $name . '_button']);
   }
 
@@ -87,16 +93,16 @@
    *
    * @return string
    */
-  function hidden($name, $value = NULL, $echo = TRUE) {
-    if ($value === NULL) {
+  function hidden($name, $value = null, $echo = true)
+  {
+    if ($value === null) {
       $value = get_post($name);
     }
     $ret = "<input type=\"hidden\" id=\"$name\" name=\"$name\" value=\"$value\">";
     Ajax::i()->addUpdate($name, $name, $value);
     if ($echo) {
       echo $ret . "\n";
-    }
-    else {
+    } else {
       return $ret;
     }
   }
@@ -115,8 +121,10 @@
    *
    * @return string
    */
-  function select_box($name, $selected_id = NULL, $sql, $valfield, $namefield, $options = NULL) {
+  function select_box($name, $selected_id = null, $sql, $valfield, $namefield, $options = null)
+  {
     $box = new SelectBox($name, $selected_id, $sql, $valfield, $namefield, $options);
+
     return $box->create();
   }
 
@@ -132,20 +140,21 @@
    *
    * @return string
    */
-  function array_selector($name, $selected_id, $items, $options = NULL) {
+  function array_selector($name, $selected_id, $items, $options = null)
+  {
     $opts = array( // default options
-      'spec_option'   => FALSE, // option text or false
+      'spec_option'   => false, // option text or false
       'spec_id'       => 0, // option id
-      'select_submit' => FALSE, //submit on select: true/false
-      'async'         => TRUE, // select update via ajax (true) vs _page_body reload
+      'select_submit' => false, //submit on select: true/false
+      'async'         => true, // select update via ajax (true) vs _page_body reload
       'default'       => '', // default value when $_POST is not set
-      'multi'         => FALSE, // multiple select
+      'multi'         => false, // multiple select
       // search box parameters
-      'height'        => FALSE, // number of lines in select box
-      'sel_hint'      => NULL, 'disabled' => FALSE
+      'height'        => false, // number of lines in select box
+      'sel_hint'      => null, 'disabled' => false
     );
     // ------ merge options with defaults ----------
-    if ($options != NULL) {
+    if ($options != null) {
       $opts = array_merge($opts, $options);
     }
     $select_submit = $opts['select_submit'];
@@ -153,7 +162,7 @@
     $spec_option   = $opts['spec_option'];
     $disabled      = $opts['disabled'] ? "disabled" : '';
     $multi         = $opts['multi'];
-    if ($selected_id == NULL) {
+    if ($selected_id == null) {
       $selected_id = get_post($name, $opts['default']);
     }
     if (!is_array($selected_id)) {
@@ -162,15 +171,14 @@
     if (isset($_POST['_' . $name . '_update'])) {
       if (!$opts['async']) {
         Ajax::i()->activate('_page_body');
-      }
-      else {
+      } else {
         Ajax::i()->activate($name);
       }
     }
     // ------ make selector ----------
     $selector = $first_opt = '';
-    $first_id = FALSE;
-    $found    = FALSE;
+    $first_id = false;
+    $found    = false;
     //if($name=='SelectStockFromList') Event::error($sql);
     foreach ($items as $value => $descr) {
       $sel = '';
@@ -178,36 +186,37 @@
         $sel   = 'selected';
         $found = $value;
       }
-      if ($first_id === FALSE) {
+      if ($first_id === false) {
         $first_id  = $value;
         $first_opt = $descr;
       }
       $selector .= "<option $sel value='$value'>$descr</option>\n";
     }
     // Prepend special option.
-    if ($spec_option !== FALSE) { // if special option used - add it
+    if ($spec_option !== false) { // if special option used - add it
       $first_id  = $spec_id;
       $first_opt = $spec_option;
-      $sel       = $found === FALSE ? 'selected' : '';
+      $sel       = $found === false ? 'selected' : '';
       $selector  = "<option $sel value='$spec_id'>$spec_option</option>\n" . $selector;
     }
-    if ($found === FALSE) {
+    if ($found === false) {
       $selected_id = array($first_id);
     }
     $_POST[$name] = $multi ? $selected_id : $selected_id[0];
-    $selector     = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== FALSE ? ' size="' . $opts['height'] . '"' :
+    $selector     = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' :
       '') . "$disabled id='$name' name='$name" . ($multi ?
       '[]' : '') . "' class='combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
     Ajax::i()->addUpdate($name, "_{$name}_sel", $selector);
     $selector = "<span id='_{$name}_sel'>" . $selector . "</span>\n";
-    if ($select_submit != FALSE) { // if submit on change is used - add select button
+    if ($select_submit != false) { // if submit on change is used - add select button
       $_select_button
         = "<input %s type='submit' class='combo_select' style='border:0;background:url
-			(/themes/%s/images/button_ok.png) no-repeat;%s' data-aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
+            (/themes/%s/images/button_ok.png) no-repeat;%s' data-aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
       $selector .= sprintf($_select_button, $disabled, User::theme(), (User::fallback() ? '' :
         'display:none;'), '_' . $name . '_update') . "\n";
     }
     JS::default_focus($name);
+
     return $selector;
   }
 
@@ -235,12 +244,12 @@
    *
    * @return string
    */
-  function submit($name, $value, $echo = TRUE, $title = FALSE, $atype = FALSE, $icon = FALSE) {
+  function submit($name, $value, $echo = true, $title = false, $atype = false, $icon = false)
+  {
     $aspect = '';
-    if ($atype === NULL) {
+    if ($atype === null) {
       $aspect = User::fallback() ? " data-aspect='fallback'" : " style='display:none;'";
-    }
-    elseif (!is_bool($atype)) { // necessary: switch uses '=='
+    } elseif (!is_bool($atype)) { // necessary: switch uses '=='
       $aspect = " data-aspect='$atype' ";
       $types  = explode(' ', $atype);
       foreach ($types as $type) {
@@ -248,32 +257,31 @@
           case 'selector':
             $aspect = " data-aspect='selector' rel='$value'";
             $value  = _("Select");
-            if ($icon === FALSE) {
+            if ($icon === false) {
               $icon = ICON_SUBMIT;
             }
             break;
           case 'default':
-            if ($icon === FALSE) {
+            if ($icon === false) {
               $icon = ICON_SUBMIT;
             }
             break;
           case 'cancel':
-            if ($icon === FALSE) {
+            if ($icon === false) {
               $icon = ICON_ESCAPE;
             }
             break;
         }
       }
     }
-    $submit_str = "<button class=\"" . (($atype === TRUE || $atype === FALSE) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') :
+    $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') :
       $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\" id=\"$name\" value=\"$value\"" . ($title ? " title='$title'"
       : '') . ">" . ($icon ?
       "<img alt='$value' src='/themes/" . User::theme() . "/images/$icon' height='12'>" : '') . "<span>$value</span>" .
       "</button>\n";
     if ($echo) {
       echo $submit_str;
-    }
-    else {
+    } else {
       return $submit_str;
     }
   }
@@ -286,7 +294,8 @@
    * @param bool $async
    * @param bool $icon
    */
-  function submit_center($name, $value, $echo = TRUE, $title = FALSE, $async = FALSE, $icon = FALSE) {
+  function submit_center($name, $value, $echo = true, $title = false, $async = false, $icon = false)
+  {
     if ($echo) {
       echo "<div class='center'>";
     }
@@ -303,9 +312,10 @@
    * @param bool $async
    * @param bool $icon
    */
-  function submit_center_first($name, $value, $title = FALSE, $async = FALSE, $icon = FALSE) {
+  function submit_center_first($name, $value, $title = false, $async = false, $icon = false)
+  {
     echo "<div class='center'>";
-    submit($name, $value, TRUE, $title, $async, $icon);
+    submit($name, $value, true, $title, $async, $icon);
     echo "&nbsp;";
   }
 
@@ -316,8 +326,9 @@
    * @param bool $async
    * @param bool $icon
    */
-  function submit_center_middle($name, $value, $title = FALSE, $async = FALSE, $icon = FALSE) {
-    submit($name, $value, TRUE, $title, $async, $icon);
+  function submit_center_middle($name, $value, $title = false, $async = false, $icon = false)
+  {
+    submit($name, $value, true, $title, $async, $icon);
     echo "&nbsp;";
   }
 
@@ -328,9 +339,10 @@
    * @param bool $async
    * @param bool $icon
    */
-  function submit_center_last($name, $value, $title = FALSE, $async = FALSE, $icon = FALSE) {
+  function submit_center_last($name, $value, $title = false, $async = false, $icon = false)
+  {
     echo "&nbsp;";
-    submit($name, $value, TRUE, $title, $async, $icon);
+    submit($name, $value, true, $title, $async, $icon);
     echo "</div>";
   }
 
@@ -344,31 +356,29 @@
    * @param bool $async
    * @param bool $clone
    */
-  function submit_add_or_update($add = TRUE, $title = FALSE, $async = FALSE, $clone = FALSE) {
+  function submit_add_or_update($add = true, $title = false, $async = false, $clone = false)
+  {
     $cancel = $async;
     if ($async === 'both') {
       $async  = 'default';
       $cancel = 'cancel';
-    }
-    else {
+    } else {
       if ($async === 'default') {
-        $cancel = TRUE;
-      }
-      else {
+        $cancel = true;
+      } else {
         if ($async === 'cancel') {
-          $async = TRUE;
+          $async = true;
         }
       }
     }
     if ($add) {
-      submit(ADD_ITEM, _("Add new"), TRUE, $title, $async);
-    }
-    else {
-      submit(UPDATE_ITEM, _("Update"), TRUE, _('Submit changes'), $async);
+      submit(ADD_ITEM, _("Add new"), true, $title, $async);
+    } else {
+      submit(UPDATE_ITEM, _("Update"), true, _('Submit changes'), $async);
       if ($clone) {
-        submit(MODE_CLONE, _("Clone"), TRUE, _('Edit new record with current data'), $async);
+        submit(MODE_CLONE, _("Clone"), true, _('Edit new record with current data'), $async);
       }
-      submit(MODE_RESET, _("Cancel"), TRUE, _('Cancel edition'), $cancel);
+      submit(MODE_RESET, _("Cancel"), true, _('Cancel edition'), $cancel);
     }
   }
 
@@ -378,7 +388,8 @@
    * @param bool $async
    * @param bool $clone
    */
-  function submit_add_or_update_center($add = TRUE, $title = FALSE, $async = FALSE, $clone = FALSE) {
+  function submit_add_or_update_center($add = true, $title = false, $async = false, $clone = false)
+  {
     echo "<div class='center'>";
     submit_add_or_update($add, $title, $async, $clone);
     echo "</div>";
@@ -392,7 +403,8 @@
    * @param bool   $async
    * @param bool   $clone
    */
-  function submit_add_or_update_row($add = TRUE, $right = TRUE, $extra = "", $title = FALSE, $async = FALSE, $clone = FALSE) {
+  function submit_add_or_update_row($add = true, $right = true, $extra = "", $title = false, $async = false, $clone = false)
+  {
     echo "<tr>";
     if ($right) {
       echo "<td>&nbsp;</td>\n";
@@ -409,9 +421,10 @@
    * @param bool   $title
    * @param bool   $async
    */
-  function submit_cells($name, $value, $extra = "", $title = FALSE, $async = FALSE) {
+  function submit_cells($name, $value, $extra = "", $title = false, $async = false)
+  {
     echo "<td $extra>";
-    submit($name, $value, TRUE, $title, $async);
+    submit($name, $value, true, $title, $async);
     echo "</td>\n";
   }
 
@@ -423,7 +436,8 @@
    * @param bool   $title
    * @param bool   $async
    */
-  function submit_row($name, $value, $right = TRUE, $extra = "", $title = FALSE, $async = FALSE) {
+  function submit_row($name, $value, $right = true, $extra = "", $title = false, $async = false)
+  {
     echo "<tr>";
     if ($right) {
       echo "<td>&nbsp;</td>\n";
@@ -437,9 +451,10 @@
    * @param      $value
    * @param bool $title
    */
-  function submit_return($name, $value, $title = FALSE) {
+  function submit_return($name, $value, $title = false)
+  {
     if (Input::request('frame')) {
-      submit($name, $value, TRUE, $title, 'selector');
+      submit($name, $value, true, $title, 'selector');
     }
   }
 
@@ -447,7 +462,8 @@
    * @param $name
    * @param $msg
    */
-  function submit_js_confirm($name, $msg) {
+  function submit_js_confirm($name, $msg)
+  {
     JS::beforeload("_validate.$name=function(){ return confirm('" . strtr($msg, array("\n" => '\\n')) . "');};");
   }
 
@@ -457,7 +473,8 @@
    *
    * @return string
    */
-  function set_icon($icon, $title = FALSE) {
+  function set_icon($icon, $title = false)
+  {
     return "<img src='/themes/" . User::theme() . "/images/$icon' style='width:12' height='12' " . ($title ? " title='$title'" :
       "") . " />\n";
   }
@@ -471,7 +488,8 @@
    *
    * @return string
    */
-  function button($name, $value, $title = FALSE, $icon = FALSE, $aspect = '') {
+  function button($name, $value, $title = false, $icon = false, $aspect = '')
+  {
     // php silently changes dots,spaces,'[' and characters 128-159
     // to underscore in POST names, to maintain compatibility with register_globals
     $rel = '';
@@ -485,11 +503,11 @@
       {
         $icon = ICON_DELETE;
       }
+
       return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='1'" . ($title ?
         " title='$title'" :
         " title='$value'") . ($aspect ? " data-aspect='$aspect'" : '') . $rel . " />" . set_icon($icon) . "</button>\n";
-    }
-    else {
+    } else {
       return "<input type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='$value'" . ($title ?
         " title='$title'" : '') . ($aspect ?
         " data-aspect='$aspect'" : '') . $rel . " />\n";
@@ -503,7 +521,8 @@
    * @param bool   $icon
    * @param string $aspect
    */
-  function button_cell($name, $value, $title = FALSE, $icon = FALSE, $aspect = '') {
+  function button_cell($name, $value, $title = false, $icon = false, $aspect = '')
+  {
     echo "<td class='center'>";
     echo button($name, $value, $title, $icon, $aspect);
     echo "</td>";
@@ -514,7 +533,8 @@
    * @param      $value
    * @param bool $title
    */
-  function delete_button_cell($name, $value, $title = FALSE) {
+  function delete_button_cell($name, $value, $title = false)
+  {
     button_cell($name, $value, $title, ICON_DELETE);
   }
 
@@ -523,7 +543,8 @@
    * @param      $value
    * @param bool $title
    */
-  function edit_button_cell($name, $value, $title = FALSE) {
+  function edit_button_cell($name, $value, $title = false)
+  {
     button_cell($name, $value, $title, ICON_EDIT);
   }
 
@@ -532,7 +553,8 @@
    * @param      $value
    * @param bool $title
    */
-  function select_button_cell($name, $value, $title = FALSE) {
+  function select_button_cell($name, $value, $title = false)
+  {
     button_cell($name, $value, $title, ICON_ADD, 'selector');
   }
 
@@ -541,10 +563,12 @@
    *
    * @return int
    */
-  function check_value($name) {
+  function check_value($name)
+  {
     if (!isset($_POST[$name])) {
       return 0;
     }
+
     return 1;
   }
 
@@ -557,23 +581,25 @@
    *
    * @return string
    */
-  function checkbox($label, $name, $value = NULL, $submit_on_change = FALSE, $title = FALSE) {
+  function checkbox($label, $name, $value = null, $submit_on_change = false, $title = false)
+  {
     $str = '';
     if ($label) {
       $str .= $label . " ";
     }
-    if ($submit_on_change !== FALSE) {
-      if ($submit_on_change === TRUE) {
+    if ($submit_on_change !== false) {
+      if ($submit_on_change === true) {
         $submit_on_change = "JsHttpRequest.request(\"_{$name}_update\", this.form);";
       }
     }
-    if ($value === NULL) {
+    if ($value === null) {
       $value = get_post($name, 0);
     }
     $str .= "<input" . ($value == 1 ? ' checked' :
       '') . " type='checkbox' name='$name' id='$name' value='1'" . ($submit_on_change ? " onclick='$submit_on_change'" :
       '') . ($title ? " title='$title'" : '') . " >\n";
     Ajax::i()->addUpdate($name, $name, $value);
+
     return $str;
   }
 
@@ -584,7 +610,8 @@
    * @param bool $submit_on_change
    * @param bool $title
    */
-  function check($label, $name, $value = NULL, $submit_on_change = FALSE, $title = FALSE) {
+  function check($label, $name, $value = null, $submit_on_change = false, $title = false)
+  {
     echo checkbox($label, $name, $value, $submit_on_change, $title);
   }
 
@@ -596,12 +623,13 @@
    * @param bool   $title
    * @param string $params
    */
-  function check_cells($label, $name, $value = NULL, $submit_on_change = FALSE, $title = FALSE, $params = '') {
+  function check_cells($label, $name, $value = null, $submit_on_change = false, $title = false, $params = '')
+  {
     echo "<td $params>";
-    if ($label != NULL) {
+    if ($label != null) {
       echo "<label for=\"$name\"> $label</label>";
     }
-    echo check(NULL, $name, $value, $submit_on_change, $title);
+    echo check(null, $name, $value, $submit_on_change, $title);
     echo "</td>";
   }
 
@@ -612,9 +640,10 @@
    * @param bool $submit_on_change
    * @param bool $title
    */
-  function check_row($label, $name, $value = NULL, $submit_on_change = FALSE, $title = FALSE) {
+  function check_row($label, $name, $value = null, $submit_on_change = false, $title = false)
+  {
     echo "<tr><td class='label'>$label</td>";
-    echo check_cells(NULL, $name, $value, $submit_on_change, $title);
+    echo check_cells(null, $name, $value, $submit_on_change, $title);
     echo "</tr>\n";
   }
 
@@ -629,12 +658,13 @@
    * @param string $post_label
    * @param string $inparams
    */
-  function text_cells($label, $name, $value = NULL, $size = "", $max = "", $title = FALSE, $labparams = "", $post_label = "", $inparams = "") {
-    if ($label != NULL) {
+  function text_cells($label, $name, $value = null, $size = "", $max = "", $title = false, $labparams = "", $post_label = "", $inparams = "")
+  {
+    if ($label != null) {
       Cell::label($label, $labparams);
     }
     echo "<td>";
-    if ($value === NULL) {
+    if ($value === null) {
       $value = get_post($name);
     }
     echo "<input $inparams type=\"text\" name=\"$name\" id=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\"" .
@@ -657,20 +687,19 @@
    * @param null $post_label
    * @param bool $submit_on_change
    */
-  function text_cells_ex($label, $name, $size, $max = NULL, $init = NULL, $title = NULL, $params = NULL, $post_label = NULL, $submit_on_change = FALSE) {
+  function text_cells_ex($label, $name, $size, $max = null, $init = null, $title = null, $params = null, $post_label = null, $submit_on_change = false)
+  {
     JS::default_focus($name);
     if (!isset($_POST[$name]) || $_POST[$name] == "") {
-      if ($init !== NULL) {
+      if ($init !== null) {
         $_POST[$name] = $init;
-      }
-      else {
+      } else {
         $_POST[$name] = "";
       }
     }
-    if ($label != NULL) {
+    if ($label != null) {
       echo "<td class='label' $params> <label for=\"$name\"> $label</label>";
-    }
-    else {
+    } else {
       echo "<td >";
     }
     if (!isset($max)) {
@@ -696,9 +725,10 @@
    * @param string $params
    * @param string $post_label
    */
-  function text_row($label, $name, $value, $size = FALSE, $max, $title = NULL, $params = "", $post_label = "") {
+  function text_row($label, $name, $value, $size = false, $max, $title = null, $params = "", $post_label = "")
+  {
     echo "<tr><td class='label'><label for='$name'>$label</label></td>";
-    text_cells(NULL, $name, $value, $size, $max, $title, $params, $post_label);
+    text_cells(null, $name, $value, $size, $max, $title, $params, $post_label);
     echo "</tr>\n";
   }
 
@@ -714,9 +744,10 @@
    * @param string $params2
    * @param bool   $submit_on_change
    */
-  function text_row_ex($label, $name, $size, $max = NULL, $title = NULL, $value = NULL, $params = NULL, $post_label = NULL, $params2 = '', $submit_on_change = FALSE) {
+  function text_row_ex($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null, $params2 = '', $submit_on_change = false)
+  {
     echo "<tr {$params}><td class='label' {$params2}>$label</td>";
-    text_cells_ex(NULL, $name, $size, $max, $value, $title, $params, $post_label, $submit_on_change);
+    text_cells_ex(null, $name, $size, $max, $value, $title, $params, $post_label, $submit_on_change);
     echo "</tr>\n";
   }
 
@@ -730,7 +761,8 @@
    * @param string $params
    * @param string $post_label
    */
-  function email_row($label, $name, $value, $size, $max, $title = NULL, $params = "", $post_label = "") {
+  function email_row($label, $name, $value, $size, $max, $title = null, $params = "", $post_label = "")
+  {
     if (get_post($name)) {
       $label = "<a href='Mailto:" . $_POST[$name] . "'>$label</a>";
     }
@@ -747,7 +779,8 @@
    * @param null $params
    * @param null $post_label
    */
-  function email_row_ex($label, $name, $size, $max = NULL, $title = NULL, $value = NULL, $params = NULL, $post_label = NULL) {
+  function email_row_ex($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null)
+  {
     if (get_post($name)) {
       $label = "<a href='Mailto:" . $_POST[$name] . "'>$label</a>";
     }
@@ -764,10 +797,11 @@
    * @param string $params
    * @param string $post_label
    */
-  function link_row($label, $name, $value, $size, $max, $title = NULL, $params = "", $post_label = "") {
+  function link_row($label, $name, $value, $size, $max, $title = null, $params = "", $post_label = "")
+  {
     $val = get_post($name);
     if ($val) {
-      if (strpos($val, 'http://') === FALSE) {
+      if (strpos($val, 'http://') === false) {
         $val = 'http://' . $val;
       }
       $label = "<a href='$val' target='_blank'>$label</a>";
@@ -785,10 +819,11 @@
    * @param null $params
    * @param null $post_label
    */
-  function link_row_ex($label, $name, $size, $max = NULL, $title = NULL, $value = NULL, $params = NULL, $post_label = NULL) {
+  function link_row_ex($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null)
+  {
     $val = get_post($name);
     if ($val) {
-      if (strpos($val, 'http://') === FALSE) {
+      if (strpos($val, 'http://') === false) {
         $val = 'http://' . $val;
       }
       $label = "<a href='$val' target='_blank'>$label</a>";
@@ -812,12 +847,12 @@
    * @param bool  $submit_on_change
    * @param array $options
    */
-  function date_cells($label, $name, $title = NULL, $check = NULL, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = NULL, $submit_on_change = FALSE, $options = array()) {
+  function date_cells($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false, $options = array())
+  {
     if (!isset($_POST[$name]) || $_POST[$name] == "") {
       if ($inc_years == 1001) {
-        $_POST[$name] = NULL;
-      }
-      else {
+        $_POST[$name] = null;
+      } else {
         $dd = Dates::today();
         if ($inc_days != 0) {
           $dd = Dates::add_days($dd, $inc_days);
@@ -832,10 +867,9 @@
       }
     }
     $post_label = "";
-    if ($label != NULL) {
+    if ($label != null) {
       echo "<td class='label'><label for=\"$name\"> $label</label>";
-    }
-    else {
+    } else {
       echo "<td >";
     }
     $class  = $submit_on_change ? 'searchbox datepicker' : 'datepicker';
@@ -861,9 +895,10 @@
    * @param null $params
    * @param bool $submit_on_change
    */
-  function date_row($label, $name, $title = NULL, $check = NULL, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = NULL, $submit_on_change = FALSE) {
+  function date_row($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false)
+  {
     echo "<tr><td class='label'><label for='$name'> $label</label></td>";
-    date_cells(NULL, $name, $title, $check, $inc_days, $inc_months, $inc_years, $params, $submit_on_change);
+    date_cells(null, $name, $title, $check, $inc_days, $inc_months, $inc_years, $params, $submit_on_change);
     echo "</tr>\n";
   }
 
@@ -872,7 +907,8 @@
    * @param $name
    * @param $value
    */
-  function password_row($label, $name, $value) {
+  function password_row($label, $name, $value)
+  {
     echo "<tr><td class='label'><label for='$name'>$label</label></td>";
     Cell::label("<input type='password' name='$name' id='$name' value='$value' />");
     echo "</tr>\n";
@@ -883,7 +919,8 @@
    * @param        $name
    * @param string $id
    */
-  function file_cells($label, $name, $id = "") {
+  function file_cells($label, $name, $id = "")
+  {
     if ($id != "") {
       $id = "id='$id'";
     }
@@ -895,9 +932,10 @@
    * @param        $name
    * @param string $id
    */
-  function file_row($label, $name, $id = "") {
+  function file_row($label, $name, $id = "")
+  {
     echo "<tr><td class='label'>$label</td>";
-    file_cells(NULL, $name, $id);
+    file_cells(null, $name, $id);
     echo "</tr>\n";
   }
 
@@ -909,8 +947,9 @@
    * @param null $params
    * @param bool $submit_on_change
    */
-  function ref_cells($label, $name, $title = NULL, $init = NULL, $params = NULL, $submit_on_change = FALSE) {
-    text_cells_ex($label, $name, 9, 18, $init, $title, $params, NULL, $submit_on_change);
+  function ref_cells($label, $name, $title = null, $init = null, $params = null, $submit_on_change = false)
+  {
+    text_cells_ex($label, $name, 9, 18, $init, $title, $params, null, $submit_on_change);
   }
 
   /**
@@ -920,9 +959,10 @@
    * @param null $init
    * @param bool $submit_on_change
    */
-  function ref_row($label, $name, $title = NULL, $init = NULL, $submit_on_change = FALSE) {
+  function ref_row($label, $name, $title = null, $init = null, $submit_on_change = false)
+  {
     echo "<tr><td class='label'><label for='$name'> $label</label></td>";
-    ref_cells(NULL, $name, $title, $init, NULL, $submit_on_change);
+    ref_cells(null, $name, $title, $init, null, $submit_on_change);
     echo "</tr>\n";
   }
 
@@ -933,11 +973,12 @@
    * @param string $cellparams
    * @param string $inputparams
    */
-  function percent_row($label, $name, $init = NULL, $cellparams = '', $inputparams = '') {
+  function percent_row($label, $name, $init = null, $cellparams = '', $inputparams = '')
+  {
     if (!isset($_POST[$name]) || $_POST[$name] == "") {
-      $_POST[$name] = ($init === NULL) ? '' : $init;
+      $_POST[$name] = ($init === null) ? '' : $init;
     }
-    small_amount_row($label, $name, $_POST[$name], NULL, "%", User::percent_dec(), 0, $inputparams);
+    small_amount_row($label, $name, $_POST[$name], null, "%", User::percent_dec(), 0, $inputparams);
   }
 
   /**
@@ -946,11 +987,12 @@
    * @param null   $init
    * @param string $inputparams
    */
-  function percent_cells($label, $name, $init = NULL, $inputparams = '') {
+  function percent_cells($label, $name, $init = null, $inputparams = '')
+  {
     if (!isset($_POST[$name]) || $_POST[$name] == "") {
-      $_POST[$name] = ($init === NULL) ? '' : $init;
+      $_POST[$name] = ($init === null) ? '' : $init;
     }
-    small_amount_cells($label, $name, NULL, NULL, "%", User::percent_dec(), $inputparams);
+    small_amount_cells($label, $name, null, null, "%", User::percent_dec(), $inputparams);
   }
 
   /**
@@ -966,21 +1008,20 @@
    * @param string $inputparams
    * @param bool   $negatives
    */
-  function amount_cells_ex($label, $name, $size, $max = NULL, $init = NULL, $params = NULL, $post_label = NULL, $dec = NULL,
-                           $id = NULL, $inputparams = '', $negatives = FALSE) {
+  function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null,
+                           $id = null, $inputparams = '', $negatives = false) {
     if (is_null($dec)) {
       $dec = User::price_dec();
     }
     if (!isset($_POST[$name]) || $_POST[$name] == "") {
-      if ($init !== NULL) {
+      if ($init !== null) {
         $_POST[$name] = $init;
-      }
-      else {
+      } else {
         $_POST[$name] = 0;
       }
     }
-    if ($label != NULL) {
-      if ($params == NULL) {
+    if ($label != null) {
+      if ($params == null) {
         $params = " class='label'";
       }
       Cell::label($label, $params);
@@ -988,20 +1029,18 @@
     if (!isset($max)) {
       $max = $size;
     }
-    if ($label != NULL) {
+    if ($label != null) {
       echo "<td>";
-    }
-    else {
+    } else {
       echo "<td class='right'>";
     }
     echo "<input ";
-    if ($id != NULL) {
+    if ($id != null) {
       echo "id='$id'";
     }
     if ($name == 'freight') {
       echo "class='freight' ";
-    }
-    else {
+    } else {
       echo "class='amount' ";
     }
     if (!Input::post($name)) {
@@ -1027,7 +1066,8 @@
    * @param null   $id
    * @param string $inputparams
    */
-  function amount_cells($label, $name, $init = NULL, $params = NULL, $post_label = NULL, $dec = NULL, $id = NULL, $inputparams = '') {
+  function amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $id = null, $inputparams = '')
+  {
     amount_cells_ex($label, $name, 10, 15, $init, $params, $post_label, $dec, $id, $inputparams);
   }
 
@@ -1041,7 +1081,8 @@
    * @param null $post_label
    * @param null $dec
    */
-  function unit_amount_cells($label, $name, $init = NULL, $params = NULL, $post_label = NULL, $dec = NULL) {
+  function unit_amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
+  {
     if (!isset($dec)) {
       $dec = User::price_dec() + 2;
     }
@@ -1057,7 +1098,8 @@
    * @param null   $dec
    * @param string $inputparams
    */
-  function amount_row($label, $name, $init = NULL, $params = NULL, $post_label = NULL, $dec = NULL, $inputparams = '') {
+  function amount_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '')
+  {
     echo "<tr>";
     amount_cells($label, $name, $init, $params, $post_label, $dec, $inputparams);
     echo "</tr>\n";
@@ -1073,7 +1115,8 @@
    * @param int    $leftfill
    * @param string $inputparams
    */
-  function small_amount_row($label, $name, $init = NULL, $params = NULL, $post_label = NULL, $dec = NULL, $leftfill = 0, $inputparams = '') {
+  function small_amount_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $leftfill = 0, $inputparams = '')
+  {
     echo "<tr>";
     small_amount_cells($label, $name, $init, $params, $post_label, $dec, $inputparams);
     if ($leftfill != 0) {
@@ -1090,11 +1133,12 @@
    * @param null $post_label
    * @param null $dec
    */
-  function qty_cells($label, $name, $init = NULL, $params = NULL, $post_label = NULL, $dec = NULL) {
+  function qty_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
+  {
     if (!isset($dec)) {
       $dec = User::qty_dec();
     }
-    amount_cells_ex($label, $name, 6, 15, $init, $params, $post_label, $dec, NULL, NULL, TRUE);
+    amount_cells_ex($label, $name, 6, 15, $init, $params, $post_label, $dec, null, null, true);
   }
 
   /**
@@ -1105,7 +1149,8 @@
    * @param null $post_label
    * @param null $dec
    */
-  function qty_row($label, $name, $init = NULL, $params = NULL, $post_label = NULL, $dec = NULL) {
+  function qty_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
+  {
     if (!isset($dec)) {
       $dec = User::qty_dec();
     }
@@ -1122,12 +1167,13 @@
    * @param null $post_label
    * @param null $dec
    */
-  function small_qty_row($label, $name, $init = NULL, $params = NULL, $post_label = NULL, $dec = NULL) {
+  function small_qty_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
+  {
     if (!isset($dec)) {
       $dec = User::qty_dec();
     }
     echo "<tr>";
-    small_amount_cells($label, $name, $init, $params, $post_label, $dec, NULL, TRUE);
+    small_amount_cells($label, $name, $init, $params, $post_label, $dec, null, true);
     echo "</tr>\n";
   }
 
@@ -1141,9 +1187,9 @@
    * @param string $inputparams
    * @param bool   $negatives
    */
-  function small_amount_cells($label, $name, $init = NULL, $params = NULL, $post_label = NULL, $dec = NULL,
-                              $inputparams = '', $negatives = FALSE) {
-    amount_cells_ex($label, $name, 4, 12, $init, $params, $post_label, $dec, NULL, $inputparams, $negatives);
+  function small_amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null,
+                              $inputparams = '', $negatives = false) {
+    amount_cells_ex($label, $name, 4, 12, $init, $params, $post_label, $dec, null, $inputparams, $negatives);
   }
 
   /**
@@ -1154,11 +1200,12 @@
    * @param null $post_label
    * @param null $dec
    */
-  function small_qty_cells($label, $name, $init = NULL, $params = NULL, $post_label = NULL, $dec = NULL) {
+  function small_qty_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
+  {
     if (!isset($dec)) {
       $dec = User::qty_dec();
     }
-    amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label, $dec, NULL, NULL, TRUE);
+    amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label, $dec, null, null, true);
   }
 
   /**
@@ -1170,11 +1217,12 @@
    * @param null   $title
    * @param string $params
    */
-  function textarea_cells($label, $name, $value, $cols, $rows, $title = NULL, $params = "") {
-    if ($label != NULL) {
+  function textarea_cells($label, $name, $value, $cols, $rows, $title = null, $params = "")
+  {
+    if ($label != null) {
       echo "<td $params>$label</td>\n";
     }
-    if ($value === NULL) {
+    if ($value === null) {
       $value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
     }
     echo "<td><textarea id='$name' name='$name' cols='" . ($cols + 2) . "' rows='$rows'" . ($title ? " title='$title'" :
@@ -1192,9 +1240,10 @@
    * @param string $params
    * @param string $labelparams
    */
-  function textarea_row($label, $name, $value, $cols, $rows, $title = NULL, $params = "", $labelparams = "") {
+  function textarea_row($label, $name, $value, $cols, $rows, $title = null, $params = "", $labelparams = "")
+  {
     echo "<tr><td class='label' $labelparams><label for='$name'>$label</label></td>";
-    textarea_cells(NULL, $name, $value, $cols, $rows, $title, $params);
+    textarea_cells(null, $name, $value, $cols, $rows, $title, $params);
     echo "</tr>\n";
   }
 
@@ -1208,7 +1257,8 @@
    * @param $table
    * @param $key
    */
-  function inactive_control_cell($id, $value, $table, $key) {
+  function inactive_control_cell($id, $value, $table, $key)
+  {
     $name  = "Inactive" . $id;
     $value = $value ? 1 : 0;
     if (check_value('show_inactive')) {
@@ -1216,7 +1266,7 @@
       ) {
         DB::update_record_status($id, !$value, $table, $key);
       }
-      echo '<td class="center">' . checkbox(NULL, $name, $value, TRUE, '', "class='center'") . hidden("LInact[$id]", $value, FALSE) . '</td>';
+      echo '<td class="center">' . checkbox(null, $name, $value, true, '', "class='center'") . hidden("LInact[$id]", $value, false) . '</td>';
     }
   }
 
@@ -1225,8 +1275,9 @@
    *
    * @param $th
    */
-  function inactive_control_row($th) {
-    echo  "<tr><td colspan=" . (count($th)) . ">" . "<div style='float:left;'>" . checkbox(NULL, 'show_inactive', NULL, TRUE) . _("Show also Inactive") . "</div><div style='float:right;'>" . submit('Update', _('Update'), FALSE, '', NULL) . "</div></td></tr>";
+  function inactive_control_row($th)
+  {
+    echo  "<tr><td colspan=" . (count($th)) . ">" . "<div style='float:left;'>" . checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") . "</div><div style='float:right;'>" . submit('Update', _('Update'), false, '', null) . "</div></td></tr>";
   }
 
   /**
@@ -1234,7 +1285,8 @@
    *
    * @param $th
    */
-  function inactive_control_column(&$th) {
+  function inactive_control_column(&$th)
+  {
     if (check_value('show_inactive')) {
       Arr::insert($th, count($th) - 2, _("Inactive"));
     }
@@ -1252,12 +1304,14 @@
    *
    * @return string
    */
-  function yesno_list($name, $selected_id = NULL, $name_yes = "", $name_no = "", $submit_on_change = FALSE) {
+  function yesno_list($name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false)
+  {
     $items      = array();
     $items['0'] = strlen($name_no) ? $name_no : _("No");
     $items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
+
     return array_selector($name, $selected_id, $items, array(
-      'select_submit' => $submit_on_change, 'async' => FALSE
+      'select_submit' => $submit_on_change, 'async' => false
     )); // FIX?
   }
 
@@ -1269,8 +1323,9 @@
    * @param string $name_no
    * @param bool   $submit_on_change
    */
-  function yesno_list_cells($label, $name, $selected_id = NULL, $name_yes = "", $name_no = "", $submit_on_change = FALSE) {
-    if ($label != NULL) {
+  function yesno_list_cells($label, $name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false)
+  {
+    if ($label != null) {
       echo "<td>$label</td>\n";
     }
     echo "<td>";
@@ -1286,9 +1341,10 @@
    * @param string $name_no
    * @param bool   $submit_on_change
    */
-  function yesno_list_row($label, $name, $selected_id = NULL, $name_yes = "", $name_no = "", $submit_on_change = FALSE) {
+  function yesno_list_row($label, $name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false)
+  {
     echo "<tr><td class='label'>$label</td>";
-    yesno_list_cells(NULL, $name, $selected_id, $name_yes, $name_no, $submit_on_change);
+    yesno_list_cells(null, $name, $selected_id, $name_yes, $name_no, $submit_on_change);
     echo "</tr>\n";
   }
 
@@ -1296,8 +1352,9 @@
    * @param $label
    * @param $name
    */
-  function record_status_list_row($label, $name) {
-    return yesno_list_row($label, $name, NULL, _('Inactive'), _('Active'));
+  function record_status_list_row($label, $name)
+  {
+    return yesno_list_row($label, $name, null, _('Inactive'), _('Active'));
   }
 
   /**
@@ -1309,11 +1366,13 @@
    *
    * @return string
    */
-  function number_list($name, $selected, $from, $to, $no_option = FALSE) {
+  function number_list($name, $selected, $from, $to, $no_option = false)
+  {
     $items = array();
     for ($i = $from; $i <= $to; $i++) {
       $items[$i] = "$i";
     }
+
     return array_selector($name, $selected, $items, array(
       'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
     ));
@@ -1327,8 +1386,9 @@
    * @param      $to
    * @param bool $no_option
    */
-  function number_list_cells($label, $name, $selected, $from, $to, $no_option = FALSE) {
-    if ($label != NULL) {
+  function number_list_cells($label, $name, $selected, $from, $to, $no_option = false)
+  {
+    if ($label != null) {
       Cell::label($label);
     }
     echo "<td>\n";
@@ -1344,9 +1404,10 @@
    * @param      $to
    * @param bool $no_option
    */
-  function number_list_row($label, $name, $selected, $from, $to, $no_option = FALSE) {
+  function number_list_row($label, $name, $selected, $from, $to, $no_option = false)
+  {
     echo "<tr><td class='label'>$label</td>";
-    echo number_list_cells(NULL, $name, $selected, $from, $to, $no_option);
+    echo number_list_cells(null, $name, $selected, $from, $to, $no_option);
     echo "</tr>\n";
   }
 
@@ -1355,7 +1416,8 @@
    * @param      $name
    * @param null $value
    */
-  function dateformats_list_row($label, $name, $value = NULL) {
+  function dateformats_list_row($label, $name, $value = null)
+  {
     echo "<tr><td class='label'>$label</td>\n<td>";
     echo array_selector($name, $value, Config::get('date.formats'));
     echo "</td></tr>\n";
@@ -1366,7 +1428,8 @@
    * @param      $name
    * @param null $value
    */
-  function dateseps_list_row($label, $name, $value = NULL) {
+  function dateseps_list_row($label, $name, $value = null)
+  {
     echo "<tr><td class='label'>$label</td>\n<td>";
     echo array_selector($name, $value, Config::get('date.separators'));
     echo "</td></tr>\n";
@@ -1377,7 +1440,8 @@
    * @param      $name
    * @param null $value
    */
-  function thoseps_list_row($label, $name, $value = NULL) {
+  function thoseps_list_row($label, $name, $value = null)
+  {
     echo "<tr><td class='label'>$label</td>\n<td>";
     echo array_selector($name, $value, Config::get('separators_thousands'));
     echo "</td></tr>\n";
@@ -1388,7 +1452,8 @@
    * @param      $name
    * @param null $value
    */
-  function decseps_list_row($label, $name, $value = NULL) {
+  function decseps_list_row($label, $name, $value = null)
+  {
     echo "<tr><td class='label'>$label</td>\n<td>";
     echo array_selector($name, $value, Config::get('separators_decimal'));
     echo "</td></tr>\n";
@@ -1399,7 +1464,8 @@
    *
    * @return string
    */
-  function _format_date($row) {
+  function _format_date($row)
+  {
     return Dates::sql2date($row['reconciled']);
   }
 
@@ -1408,11 +1474,13 @@
    *
    * @return string
    */
-  function _format_add_curr($row) {
-    static $company_currency;
-    if ($company_currency == NULL) {
+  function _format_add_curr($row)
+  {
+    public static $company_currency;
+    if ($company_currency == null) {
       $company_currency = Bank_Currency::for_company();
     }
+
     return $row[1] . ($row[2] == $company_currency ? '' : ("&nbsp;-&nbsp;" . $row[2]));
   }
 
@@ -1421,7 +1489,8 @@
    *
    * @return string
    */
-  function _format_stock_items($row) {
+  function _format_stock_items($row)
+  {
     return (User::show_codes() ? ($row[0] . "&nbsp;-&nbsp;") : "") . $row[1];
   }
 
@@ -1430,7 +1499,8 @@
    *
    * @return string
    */
-  function _format_template_items($row) {
+  function _format_template_items($row)
+  {
     return ($row[0] . "&nbsp;- &nbsp;" . _("Amount") . "&nbsp;" . $row[1]);
   }
 
@@ -1439,7 +1509,8 @@
    *
    * @return string
    */
-  function _format_fiscalyears($row) {
+  function _format_fiscalyears($row)
+  {
     return Dates::sql2date($row[1]) . "&nbsp;-&nbsp;" . Dates::sql2date($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') :
       _('Active')) . "</option>\n";
   }
@@ -1449,6 +1520,7 @@
    *
    * @return string
    */
-  function _format_account($row) {
+  function _format_account($row)
+  {
     return $row[0] . "&nbsp;&nbsp;&nbsp;&nbsp;" . $row[1];
   }

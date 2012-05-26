@@ -18,13 +18,11 @@
   if (isset($_POST['name'])) {
     $data['company'] = $customer = new Debtor();
     $data['company']->save($_POST);
-  }
-  elseif (Input::request('id', Input::NUMERIC) > 0) {
+  } elseif (Input::request('id', Input::NUMERIC) > 0) {
     $data['company']     = $customer = new Debtor(Input::request('id', Input::NUMERIC));
     $data['contact_log'] = Contact_Log::read($customer->id, CT_CUSTOMER);
     Session::i()->setGlobal('debtor', $customer->id);
-  }
-  else {
+  } else {
     $data['company'] = $customer = new Debtor();
   }
   if (AJAX_REFERRER) {
@@ -50,24 +48,24 @@
     /** @noinspection PhpUndefinedMethodInspection */
     HTML::div('companysearch');
     HTML::table(array('class' => 'marginauto bold'));
-    HTML::tr(TRUE)->td(TRUE);
-    UI::search('customer', array('label' => 'Search Customer:', 'size' => 80, 'callback' => 'Company.fetch', 'focus' => TRUE));
+    HTML::tr(true)->td(true);
+    UI::search('customer', array('label' => 'Search Customer:', 'size' => 80, 'callback' => 'Company.fetch', 'focus' => true));
     HTML::td()->tr->table->div;
   }
   start_form();
   $menu = new MenuUI();
   $menu->startTab('Details', 'Customer Details', '#', 'text-align:center');
   HTML::div('companyIDs');
-  HTML::table(array("class" => "marginauto bold"))->tr(TRUE)->td(TRUE);
+  HTML::table(array("class" => "marginauto bold"))->tr(true)->td(true);
   HTML::label(array(
     'for' => 'name', 'content' => 'Customer name:'
-  ), FALSE);
+  ), false);
   HTML::input('name', array(
     'value' => $customer->name, 'name' => 'name', 'size' => 50
   ));
   HTML::td()->td(array(
     'content' => _("Customer ID: "), "style" => "width:90px"
-  ), FALSE)->td(TRUE);
+  ), false)->td(true);
   HTML::input('id', array(
     'value' => $customer->id, 'name' => 'id', 'size' => 10, 'maxlength' => '7'
   ));
@@ -76,7 +74,7 @@
   Table::section(1);
   Table::sectionTitle(_("Shipping Details"), 2);
   /** @noinspection PhpUndefinedMethodInspection */
-  HTML::tr(TRUE)->td('branchSelect', array(
+  HTML::tr(true)->td('branchSelect', array(
     'colspan' => 2, 'class' => "center"
   ));
   UI::select('branchList', array_map(function($v) {
@@ -103,11 +101,11 @@
   Table::section(2);
   Table::sectionTitle(_("Accounts Details"), 2);
   /** @noinspection PhpUndefinedMethodInspection */
-  HTML::tr(TRUE)->td(array(
+  HTML::tr(true)->td(array(
     'class' => "center", 'colspan' => 2
   ));
   UI::button('useShipAddress', _("Use shipping details"), array('name' => 'useShipAddress'));
-  HTML::td(FALSE)->_tr();
+  HTML::td(false)->_tr();
   text_row(_("Accounts Contact:"), 'accounts[contact_name]', $customer->accounts->contact_name, 35, 40);
   text_row(_("Phone Number:"), 'accounts[phone]', $customer->accounts->phone, 35, 30);
   text_row(_("Secondary Phone Number:"), 'accounts[phone2]', $customer->accounts->phone2, 35, 30);
@@ -130,15 +128,14 @@
   percent_row(_("Discount Percent:"), 'discount', $customer->discount, (User::i()->can_access(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
   percent_row(_("Prompt Payment Discount Percent:"), 'payment_discount', $customer->payment_discount, (User::i()->can_access(SA_CUSTOMER_CREDIT)) ? "" :
     " disabled");
-  amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit, NULL, NULL, 0, (User::i()->can_access(SA_CUSTOMER_CREDIT)) ? "" :
+  amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit, null, null, 0, (User::i()->can_access(SA_CUSTOMER_CREDIT)) ? "" :
     " disabled");
   Sales_Type::row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
   record_status_list_row(_("Customer status:"), 'inactive');
   text_row(_("GSTNo:"), 'tax_id', $customer->tax_id, 35, 40);
   if (!$customer->id) {
     GL_Currency::row(_("Customer's Currency:"), 'curr_code', $customer->curr_code);
-  }
-  else {
+  } else {
     Row::label(_("Customer's Currency:"), $customer->curr_code);
     hidden('curr_code', $customer->curr_code);
   }
@@ -150,7 +147,7 @@
   HTML::td(array(
     'class' => 'ui-widget-content center'
   ));
-  UI::button('addLog', "Add log entry")->td->tr->tr(TRUE)->td(NULL)->textarea('messageLog', array('cols' => 50, 'rows' => 20));
+  UI::button('addLog', "Add log entry")->td->tr->tr(true)->td(null)->textarea('messageLog', array('cols' => 50, 'rows' => 20));
   Contact_Log::read($customer->id, CT_CUSTOMER);
   /** @noinspection PhpUndefinedMethodInspection */
   HTML::textarea()->td->tr;
@@ -159,7 +156,7 @@
   HTML::div(array('style' => 'text-align:center'))->div('Contacts', array('style' => 'min-height:200px;'));
   HTML::script('contact_tmpl', array('type' => 'text/x-jquery-tmpl'))->table('contact-${id}', array(
     'class' => '', 'style' => 'display:inline-block'
-  ))->tr(TRUE)->td(array(
+  ))->tr(true)->td(array(
     'content' => '${name}',
     'class'   => 'tablehead',
     'colspan' => 2
@@ -182,16 +179,16 @@
   Sales_UI::shippers_row(_("Default Shipping Company:"), 'branch[default_ship_via]', $currentBranch->default_ship_via);
   Tax_Groups::row(_("Tax Group:"), 'branch[tax_group_id]', $currentBranch->tax_group_id);
   yesno_list_row(_("Disable this Branch:"), 'branch[disable_trans]', $currentBranch->disable_trans);
-  HTML::tr(TRUE)->td(array(
+  HTML::tr(true)->td(array(
     'content' => _("Website ID: "), "class" => "label"
-  ), FALSE)->td(TRUE);
+  ), false)->td(true);
   HTML::input('webid', array(
-    'value' => $customer->webid, 'disabled' => TRUE, 'name' => 'webid', 'size' => 10, 'maxlength' => '7'
+    'value' => $customer->webid, 'disabled' => true, 'name' => 'webid', 'size' => 10, 'maxlength' => '7'
   ));
   HTML::td()->tr;
   Table::section(2);
   Table::sectionTitle(_("GL Accounts"));
-  GL_UI::all_row(_("Sales Account:"), 'branch[sales_account]', $currentBranch->sales_account, FALSE, FALSE, TRUE);
+  GL_UI::all_row(_("Sales Account:"), 'branch[sales_account]', $currentBranch->sales_account, false, false, true);
   GL_UI::all_row(_("Sales Discount Account:"), 'branch[sales_discount_account]', $currentBranch->sales_discount_account);
   GL_UI::all_row(_("Accounts Receivable Account:"), 'branch[receivables_account]', $currentBranch->receivables_account);
   GL_UI::all_row(_("Prompt Payment Discount Account:"), 'branch[payment_discount_account]', $currentBranch->payment_discount_account);
@@ -226,12 +223,12 @@
   HTML::_div();
   if (!Input::get('frame')) {
     HTML::div('shortcuts', array('class' => 'width50 center'));
-    $shortcuts = new MenuUI(array('noajax' => TRUE));
+    $shortcuts = new MenuUI(array('noajax' => true));
     $shortcuts->addLink('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?type=32&add=' . ST_SALESQUOTE . '&customer_id=', 'id');
     $shortcuts->addLink('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?type=30&add=' . ST_SALESORDER . '&customer_id=', 'id');
-    $shortcuts->addLink('Print Statement', 'Print Statement for this Customer!', '/reporting/prn_redirect.php?REP_ID=108&PARAM_2=0&PARAM_4=0&PARAM_5=0&PARAM_6=0&PARAM_0=', 'id', TRUE);
+    $shortcuts->addLink('Print Statement', 'Print Statement for this Customer!', '/reporting/prn_redirect.php?REP_ID=108&PARAM_2=0&PARAM_4=0&PARAM_5=0&PARAM_6=0&PARAM_0=', 'id', true);
     $shortcuts->addJSLink('Email Statement', 'Email Statement for this Customer!', 'emailTab', <<<JS
-			Adv.o.tabs.tabs1.bind('tabsselect',function(e,o) {if (o.index!=3)return; return false;});
+            Adv.o.tabs.tabs1.bind('tabsselect',function(e,o) {if (o.index!=3)return; return false;});
 JS
     );
     $shortcuts->addLink('Customer Payment', 'Make customer payment!', '/sales/customer_payments.php?customer_id=', 'id');
@@ -242,4 +239,4 @@ JS
   }
   HTML::_div();
 
-  Page::end(TRUE);
+  Page::end(true);

@@ -9,7 +9,7 @@
    **/
 
   Page::start(_($help_context = "Sales Areas"), SA_SALESAREA);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     $input_error = 0;
     if (strlen($_POST['description']) == 0) {
@@ -21,8 +21,7 @@
       if ($selected_id != -1) {
         $sql  = "UPDATE areas SET description=" . DB::escape($_POST['description']) . " WHERE area_code = " . DB::escape($selected_id);
         $note = _('Selected sales area has been updated');
-      }
-      else {
+      } else {
         $sql  = "INSERT INTO areas (description) VALUES (" . DB::escape($_POST['description']) . ")";
         $note = _('New sales area has been added');
       }

@@ -7,9 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Work Centres"), SA_WORKCENTRES);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     //initialise no input errors assumed initially before we test
     $input_error = 0;
@@ -22,8 +21,7 @@
       if ($selected_id != -1) {
         WO_WorkCentre::update($selected_id, $_POST['name'], $_POST['description']);
         Event::success(_('Selected work center has been updated'));
-      }
-      else {
+      } else {
         WO_WorkCentre::add($_POST['name'], $_POST['description']);
         Event::success(_('New work center has been added'));
       }
@@ -35,22 +33,26 @@
    *
    * @return bool
    */
-  function can_delete($selected_id) {
+  function can_delete($selected_id)
+  {
     $sql    = "SELECT COUNT(*) FROM bom WHERE workcentre_added=" . DB::escape($selected_id);
     $result = DB::query($sql, "check can delete work centre");
     $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this work centre because BOMs have been created referring to it."));
-      return FALSE;
+
+      return false;
     }
     $sql    = "SELECT COUNT(*) FROM wo_requirements WHERE workcentre=" . DB::escape($selected_id);
     $result = DB::query($sql, "check can delete work centre");
     $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this work centre because work order requirements have been created referring to it."));
-      return FALSE;
+
+      return false;
     }
-    return TRUE;
+
+    return true;
   }
 
   if ($Mode == MODE_DELETE) {
@@ -74,7 +76,6 @@
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-
     Cell::label($myrow["name"]);
     Cell::label($myrow["description"]);
     inactive_control_cell($myrow["id"], $myrow["inactive"], 'workcentres', 'id');
@@ -100,5 +101,4 @@
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();
-
 

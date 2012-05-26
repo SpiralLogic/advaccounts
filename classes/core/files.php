@@ -11,8 +11,8 @@
   /**
 
    */
-  class Files {
-
+  class Files
+  {
     /**
      * @static
      *
@@ -22,22 +22,22 @@
      *
      * @return bool
      * saves the string in $fileData to the file $backupfile as gz file or not ($zip)
-     * returns backup file name if name has changed (zip), else TRUE. If saving failed, return value is FALSE
+     * returns backup file name if name has changed (zip), else true. If saving failed, return value is false
      */
-    public static function save_to_file($backupfile, $fileData, $zip = FALSE) {
+    public static function save_to_file($backupfile, $fileData, $zip = false)
+    {
       if ($zip == "gzip") {
         $zp = gzopen(BACKUP_PATH . $backupfile, "a9");
         if ($zp) {
           gzwrite($zp, $fileData);
           gzclose($zp);
-          return TRUE;
-        }
-        else {
-          return FALSE;
+
+          return true;
+        } else {
+          return false;
         }
         // $zip contains the timestamp
-      }
-      elseif ($zip == "zip") {
+      } elseif ($zip == "zip") {
         // based on zip.lib.php 2.2 from phpMyBackupAdmin
         // offical zip format: http://www.pkware.com/appnote.txt
         // End of central directory record
@@ -59,11 +59,9 @@
         $c_len = strlen($zdata);
         // dos time
         $timearray = getdate($zip);
-        $dostime   = (($timearray['year'] - 1980) << 25) | ($timearray['mon'] << 21) | ($timearray['mday'] << 16) |
-          ($timearray['hours'] << 11) | ($timearray['minutes'] << 5) | ($timearray['seconds'] >> 1);
+        $dostime   = (($timearray['year'] - 1980) << 25) | ($timearray['mon'] << 21) | ($timearray['mday'] << 16) | ($timearray['hours'] << 11) | ($timearray['minutes'] << 5) | ($timearray['seconds'] >> 1);
         $dtime     = dechex($dostime);
-        $hexdtime  = "\x" . $dtime[6] . $dtime[7] . "\x" . $dtime[4] . $dtime[5] . "\x" . $dtime[2] . $dtime[3] . "\x" .
-          $dtime[0] . $dtime[1];
+        $hexdtime  = "\x" . $dtime[6] . $dtime[7] . "\x" . $dtime[4] . $dtime[5] . "\x" . $dtime[2] . $dtime[3] . "\x" . $dtime[0] . $dtime[1];
         // ver needed to extract, gen purpose bit flag, compression method, last mod time and date
         $sub1 = "\x14\x00\x00\x00\x08\x00" . $hexdtime;
         // crc32, compressed filesize, uncompressed filesize
@@ -79,8 +77,7 @@
         $cdrec .= "\x00\x00"; // version made by
         $cdrec .= $sub1 . $sub2;
         // length of filename, extra field length, file comment length, disk number start, internal file attributes, external file attributes - 'archive' bit set, offset
-        $cdrec .= pack('v', strlen($name)) . pack('v', 0) . pack('v', 0) . pack('v', 0) . pack('v', 0) . pack('V', 32) . pack('V',
-          0);
+        $cdrec .= pack('v', strlen($name)) . pack('v', 0) . pack('v', 0) . pack('v', 0) . pack('v', 0) . pack('V', 32) . pack('V', 0);
         $cdrec .= $name;
         // combine data
         $fileData = $fr . $cdrec . $eof_ctrl_dir;
@@ -90,22 +87,21 @@
         if ($zp = fopen(BACKUP_PATH . $backupfile, "a")) {
           fwrite($zp, $fileData);
           fclose($zp);
-          return TRUE;
-        }
-        else {
-          return FALSE;
+
+          return true;
+        } else {
+          return false;
         }
         // uncompressed
-      }
-      else {
+      } else {
         /** @noinspection PhpAssignmentInConditionInspection */
         if ($zp = fopen(BACKUP_PATH . $backupfile, "a")) {
           fwrite($zp, $fileData);
           fclose($zp);
-          return TRUE;
-        }
-        else {
-          return FALSE;
+
+          return true;
+        } else {
+          return false;
         }
       }
     }
@@ -116,9 +112,11 @@
      *
      * @return string
      */
-    public static function convert_size($size) {
+    public static function convert_size($size)
+    {
       $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
       $i    = (int) floor(log($size, 1024));
+
       return @round($size / pow(1024, $i), 2) . ' ' . $unit[$i];
     }
     /**
@@ -127,9 +125,10 @@
      * @param      $path
      * @param bool $wipe
      */
-    public static function flush_dir($path, $wipe = FALSE) {
+    public static function flush_dir($path, $wipe = false)
+    {
       $dir = opendir($path);
-      while (FALSE !== ($fname = readdir($dir))) {
+      while (false !== ($fname = readdir($dir))) {
         if ($fname == '.' || $fname == '..' || $fname == 'CVS' || (!$wipe && $fname == 'index.php')) {
           continue;
         }
@@ -138,8 +137,7 @@
           if ($wipe) {
             @rmdir($path . DS . $fname);
           }
-        }
-        else {
+        } else {
           @unlink($path . DS . $fname);
         }
       }

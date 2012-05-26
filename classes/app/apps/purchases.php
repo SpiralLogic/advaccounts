@@ -7,12 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Apps_Purchases extends Application {
-
+  class Apps_Purchases extends Application
+  {
     /**
 
      */
-    function __construct() {
+    public function __construct()
+    {
       global $installed_extensions;
       parent::__construct("Purchases", _($this->help_context = "&Purchases"));
 
@@ -48,5 +49,4 @@
       }
     }
   }
-
 

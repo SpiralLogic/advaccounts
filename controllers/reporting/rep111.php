@@ -12,7 +12,8 @@
 
   Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP);
   print_sales_quotations();
-  function print_sales_quotations() {
+  function print_sales_quotations()
+  {
     global $print_as_quote;
     include_once(APPPATH . "reports/pdf.php");
     $from     = $_POST['PARAM_0'];
@@ -20,10 +21,10 @@
     $currency = $_POST['PARAM_2'];
     $email    = $_POST['PARAM_3'];
     $comments = $_POST['PARAM_4'];
-    if ($from == NULL) {
+    if ($from == null) {
       $from = 0;
     }
-    if ($to == NULL) {
+    if ($to == null) {
       $to = 0;
     }
     $dec  = User::price_dec();
@@ -36,7 +37,7 @@
       $rep           = new ADVReport(_("SALES QUOTATION"), "SalesQuotationBulk", User::page_size());
       $rep->currency = $cur;
       $rep->Font();
-      $rep->Info($params, $cols, NULL, $aligns);
+      $rep->Info($params, $cols, null, $aligns);
     }
     for (
       $i = $from; $i <= $to; $i++
@@ -50,7 +51,7 @@
         $rep->currency = $cur;
         $rep->Font();
         $rep->filename = "SalesQuotation" . $i . ".pdf";
-        $rep->Info($params, $cols, NULL, $aligns);
+        $rep->Info($params, $cols, null, $aligns);
       }
       $rep->title = _("SALES QUOTATION");
       $rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE);
@@ -69,8 +70,7 @@
         $DisplayNet   = Num::format($Net, $dec);
         if ($myrow2["discount_percent"] == 0) {
           $DisplayDiscount = "";
-        }
-        else {
+        } else {
           $DisplayDiscount = Num::format($myrow2["discount_percent"] * 100, User::percent_dec()) . "%";
         }
         $rep->TextCol(0, 1, $myrow2['stk_code'], -2);
@@ -102,12 +102,11 @@
       $DisplayTaxTot     = Num::format($TaxTotal, $dec);
       $display_sub_total = Num::format($SubTotal, $dec);
       $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
-      $linetype          = TRUE;
+      $linetype          = true;
       $doctype           = ST_SALESQUOTE;
       if ($rep->currency != $myrow['curr_code']) {
         include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
-      }
-      else {
+      } else {
         include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
       }
       $rep->TextCol(4, 7, $doc_sub_total, -2);

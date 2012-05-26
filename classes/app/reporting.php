@@ -11,9 +11,9 @@
   // Ex. Cell::label(static::print_doc_link($myrow['order_no'], _("Print")), $type);
   // or Event::warning(static::print_doc_link($order_no, _("Print this order")));
   // You only need full parameter list for invoices/credit notes
-  class Reporting {
-
-    static $debug = NULL;
+  class Reporting
+  {
+    public static $debug = null;
 
     /**
      * @static
@@ -30,12 +30,13 @@
      *
      * @return string
      */
-    public static function print_doc_link($doc_no, $link_text, $link = TRUE, $type_no, $icon = FALSE, $class = 'button printlink',
+    public static function print_doc_link($doc_no, $link_text, $link = true, $type_no, $icon = false, $class = 'button printlink',
                                           $id = '', $email = 0, $extra = 0) {
       $url     = '/reporting/prn_redirect.php?';
       $options = static::print_option_array($type_no, $doc_no, $email, $extra);
       $ar      = $options[0];
       $rep     = $options[1];
+
       return static::print_link($link_text, $rep, $ar, "", $icon, $class, $id);
     }
 
@@ -49,7 +50,8 @@
      *
      * @return array
      */
-    public static function print_option_array($type_no, $doc_no, $email = 0, $extra = 0) {
+    public static function print_option_array($type_no, $doc_no, $email = 0, $extra = 0)
+    {
       $ar  = array();
       $rep = '';
       switch ($type_no) {
@@ -166,6 +168,7 @@
           break;
         //		default: $ar = array();
       }
+
       return array($ar, $rep);
     }
 
@@ -184,10 +187,10 @@
      *
      * @return bool|string
      */
-    public static function email_link($doc_no, $link_text, $link = TRUE, $type_no, $class = 'EmailLink', $id = '',
-                                      $emails = array(), $extra = 0, $return = FALSE) {
+    public static function email_link($doc_no, $link_text, $link = true, $type_no, $class = 'EmailLink', $id = '',
+                                      $emails = array(), $extra = 0, $return = false) {
       if (empty($emails)) {
-        return FALSE;
+        return false;
       }
       if ($return) {
         ob_start();
@@ -215,17 +218,19 @@
         'data-url' => $url
       ))->p;
       $js = <<<JS
-		$('#EmailButton$type_no').click(function() {
-		if (!confirm("Send email now?")) { return false;}
-			var email = $("#EmailSelect$type_no").val();
-		Adv.loader.on(65000);
-				$.getJSON($(this).data('url') + "&Email="+email);
-			\$emailBox.dialog("close");
-		return false;
-		});
+        $('#EmailButton$type_no').click(function() {
+        if (!confirm("Send email now?")) { return false;}
+            var email = $("#EmailSelect$type_no").val();
+        Adv.loader.on(65000);
+                $.getJSON($(this).data('url') + "&Email="+email);
+            \$emailBox.dialog("close");
+
+        return false;
+        });
 JS;
       if ($return) {
-        HTML::script('null', $js, FALSE);
+        HTML::script('null', $js, false);
+
         return ob_get_clean();
       }
       JS::onload($js);
@@ -245,7 +250,7 @@ JS;
      *
      * @return string
      */
-    public static function print_link($link_text, $rep, $pars = array(), $dir = '', $icon = FALSE, $class = 'printlink',
+    public static function print_link($link_text, $rep, $pars = array(), $dir = '', $icon = false, $class = 'printlink',
                                       $id = '') {
       $url = $dir == '' ? BASE_URL . 'reporting/prn_redirect.php?' : $dir;
       $id  = JS::default_focus($id);
@@ -255,7 +260,7 @@ JS;
       $pars[] = 'REP_ID=' . urlencode($rep);
       $url .= implode('&', $pars);
       if ($class != '') {
-        static::$debug = static::$debug !== NULL ? static::$debug : Config::get('debug.pdf');
+        static::$debug = static::$debug !== null ? static::$debug : Config::get('debug.pdf');
         $class         = static::$debug ? '' : "class='" . e($class) . "'";
       }
       if ($id != '') {
@@ -265,6 +270,7 @@ JS;
       if (User::graphic_links() && $icon) {
         $pars[0] = set_icon($icon, $pars[0]);
       }
+
       return "<a target='_blank' href='" . e($url) . "' $id $class $pars[1]>$pars[0]</a>";
     }
     /**
@@ -277,13 +283,15 @@ JS;
      *
      * @return ADV\Core\HTML|string
      */
-    public static function emailDialogue($id, $type, $type_no, $text = "Email") {
-      HTML::setReturn(TRUE);
-      UI::button(FALSE, $text, array(
+    public static function emailDialogue($id, $type, $type_no, $text = "Email")
+    {
+      HTML::setReturn(true);
+      UI::button(false, $text, array(
         'class'        => 'button email-button',
         'data-emailid' => $id . '-' . $type . '-' .
           $type_no
       ));
-      return HTML::setReturn(FALSE);
+
+      return HTML::setReturn(false);
     }
   }

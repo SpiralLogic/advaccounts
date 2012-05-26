@@ -11,22 +11,21 @@
   /**
 
    */
-  class Apps_Sales extends Application {
-
+  class Apps_Sales extends Application
+  {
     /**
 
      */
-    function __construct() {
+    public function __construct()
+    {
       global $installed_extensions;
       parent::__construct('Sales', _($this->help_context = '&Sales'));
-
       $this->add_module(_('Quotations and Orders'));
       $this->add_lapp_function(0, '', '');
       $this->add_lapp_function(0, _('New Sales &Quotation'), '/sales/sales_order_entry?' . Orders::ADD . '=0&' . Orders::TYPE . '=' . ST_SALESQUOTE, SA_SALESQUOTE);
       $this->add_lapp_function(0, _('Search Quotatio&ns'), '/sales/inquiry/sales_orders_view?' . Orders::TYPE . '=32', SA_SALESTRANSVIEW);
       $this->add_lapp_function(0, '', '');
       $this->add_rapp_function(0, _('New Sales &Order'), '/sales/sales_order_entry?' . Orders::ADD . '=0&' . Orders::TYPE . '=' . ST_SALESORDER, SA_SALESORDER);
-
       $this->add_rapp_function(0, _('Search  S&ales Orders'), '/sales/inquiry/sales_orders_view?' . Orders::TYPE . '=' . ST_SALESORDER, SA_SALESTRANSVIEW);
       $this->add_module(_('Deliveries and Invoices'));
       $this->add_lapp_function(1, _('New D&irect Delivery'), '/sales/sales_order_entry?' . Orders::ADD . '=0&' . Orders::TYPE . '=' . ST_CUSTDELIVERY, SA_SALESDELIVERY);
@@ -60,13 +59,11 @@
       if (count($installed_extensions) > 0) {
         foreach ($installed_extensions as $mod) {
           if (@$mod['active'] && $mod['type'] == 'plugin' && $mod['tab'] == 'sales') {
-            $this->add_rapp_function(2, $mod['title'],
-              'modules/' . $mod['path'] . '/' . $mod['filename'] . '?',
-              isset($mod['access']) ? $mod['access'] : SA_OPEN);
+            $this->add_rapp_function(2, $mod['title'], 'modules/' . $mod['path'] . '/' . $mod['filename'] . '?', isset($mod['access']) ?
+                                        $mod['access'] : SA_OPEN);
           }
         }
       }
     }
   }
-
 

@@ -7,9 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Tax Types"), SA_TAXRATES);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM && Tax_Types::can_process($selected_id)) {
     Tax_Types::add($_POST['name'], $_POST['sales_gl_code'], $_POST['purchasing_gl_code'], Validation::input_num('rate', 0));
     Event::success(_('New tax type has been added'));
@@ -41,7 +40,6 @@
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-
     Cell::label($myrow["name"]);
     Cell::label(Num::percent_format($myrow["rate"]), "class='right'");
     Cell::label($myrow["sales_gl_code"] . "&nbsp;" . $myrow["SalesAccountName"]);
@@ -67,8 +65,8 @@
   }
   text_row_ex(_("Description:"), 'name', 50);
   small_amount_row(_("Default Rate:"), 'rate', '0', "", "%", User::percent_dec());
-  GL_UI::all_row(_("Sales GL Account:"), 'sales_gl_code', NULL);
-  GL_UI::all_row(_("Purchasing GL Account:"), 'purchasing_gl_code', NULL);
+  GL_UI::all_row(_("Sales GL Account:"), 'sales_gl_code', null);
+  GL_UI::all_row(_("Purchasing GL Account:"), 'purchasing_gl_code', null);
   Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();

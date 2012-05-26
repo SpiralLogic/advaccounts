@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class WO_Produce {
-
+  class WO_Produce
+  {
     /**
      * @static
      *
@@ -19,7 +19,8 @@
      * @param $memo_
      * @param $close_wo
      */
-    public static function add($woid, $ref, $quantity, $date_, $memo_, $close_wo) {
+    public static function add($woid, $ref, $quantity, $date_, $memo_, $close_wo)
+    {
       DB::begin();
       $details = WO::get($woid);
       if (strlen($details[0]) == 0) {
@@ -32,8 +33,9 @@
         exit;
       }
       $date = Dates::date2sql($date_);
-      $sql  = "INSERT INTO wo_manufacture (workorder_id, reference, quantity, date_)
-		VALUES (" . DB::escape($woid) . ", " . DB::escape($ref) . ", " . DB::escape($quantity) . ", '$date')";
+      $sql
+            = "INSERT INTO wo_manufacture (workorder_id, reference, quantity, date_)
+        VALUES (" . DB::escape($woid) . ", " . DB::escape($ref) . ", " . DB::escape($quantity) . ", '$date')";
       DB::query($sql, "A work order manufacture could not be added");
       $id = DB::insert_id();
       // -------------------------------------------------------------------------
@@ -58,13 +60,15 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    public static function get($id) {
+    public static function get($id)
+    {
       $sql    = "SELECT wo_manufacture.*,workorders.stock_id, " . "stock_master.description AS StockDescription
-		FROM wo_manufacture, workorders, stock_master
-		WHERE wo_manufacture.workorder_id=workorders.id
-		AND stock_master.stock_id=workorders.stock_id
-		AND wo_manufacture.id=" . DB::escape($id);
+        FROM wo_manufacture, workorders, stock_master
+        WHERE wo_manufacture.workorder_id=workorders.id
+        AND stock_master.stock_id=workorders.stock_id
+        AND wo_manufacture.id=" . DB::escape($id);
       $result = DB::query($sql, "The work order production could not be retrieved");
+
       return DB::fetch($result);
     }
     /**
@@ -74,8 +78,10 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($woid) {
+    public static function get_all($woid)
+    {
       $sql = "SELECT * FROM wo_manufacture WHERE workorder_id=" . DB::escape($woid) . " ORDER BY id";
+
       return DB::query($sql, "The work order issues could not be retrieved");
     }
     /**
@@ -85,9 +91,11 @@
      *
      * @return bool
      */
-    public static function exists($id) {
+    public static function exists($id)
+    {
       $sql    = "SELECT id FROM wo_manufacture WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "Cannot retreive a wo production");
+
       return (DB::num_rows($result) > 0);
     }
     /**
@@ -96,11 +104,11 @@
      * @param $type
      * @param $type_no
      */
-    public static function void($type, $type_no) {
+    public static function void($type, $type_no)
+    {
       if ($type != ST_MANURECEIVE) {
         $type = ST_MANURECEIVE;
       }
-
       DB::begin();
       $row = WO_Produce::get($type_no);
       // deduct the quantity of this production from the parent work order
@@ -112,7 +120,7 @@
       // void all related stock moves
       Inv_Movement::void($type, $type_no);
       // void any related gl trans
-      GL_Trans::void($type, $type_no, TRUE);
+      GL_Trans::void($type, $type_no, true);
       DB::commit();
     }
     /**
@@ -120,24 +128,23 @@
      *
      * @param $woid
      */
-    public static function display($woid) {
+    public static function display($woid)
+    {
       $result = WO_Produce::get_all($woid);
       if (DB::num_rows($result) == 0) {
         Display::note(_("There are no Productions for this Order."), 1, 1);
-      }
-      else {
+      } else {
         Table::start('tablestyle grid');
         $th = array(_("#"), _("Reference"), _("Date"), _("Quantity"));
         Table::header($th);
         $k         = 0; //row colour counter
         $total_qty = 0;
         while ($myrow = DB::fetch($result)) {
-
           $total_qty += $myrow['quantity'];
           Cell::label(GL_UI::trans_view(29, $myrow["id"]));
           Cell::label($myrow['reference']);
           Cell::label(Dates::sql2date($myrow["date_"]));
-          Cell::qty($myrow['quantity'], FALSE, Item::qty_dec($myrow['reference']));
+          Cell::qty($myrow['quantity'], false, Item::qty_dec($myrow['reference']));
           Row::end();
         }
         //end of while
@@ -146,5 +153,4 @@
       }
     }
   }
-
 

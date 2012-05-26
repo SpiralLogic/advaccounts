@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  abstract class Orders extends DB_abstract {
-
+  abstract class Orders extends DB_abstract
+  {
     const NEW_ORDER       = 'NewOrder';
     const MODIFY_ORDER    = 'ModifyOrder';
     const NEW_QUOTE       = 'NewQuote';
@@ -73,7 +73,8 @@
      *
      * @return void
      */
-    protected static function setup($type) {
+    protected static function setup($type)
+    {
       if (!isset($_SESSION['orders'])) {
         $_SESSION['orders'] = array();
       }
@@ -90,10 +91,11 @@
      * @internal param $id
      * @return \Purch_Order|\Sales_Order
      */
-    public static function session_get($id = NULL) {
+    public static function session_get($id = null)
+    {
       if (is_null($id)) {
         if (!isset($_POST['order_id'])) {
-          return FALSE;
+          return false;
         }
         $id = $_POST['order_id'];
       }
@@ -103,7 +105,8 @@
       if (isset($_SESSION['orders'][$type][$id])) {
         return $_SESSION['orders'][$type][$id];
       }
-      return FALSE;
+
+      return false;
     }
 
     /**
@@ -113,10 +116,12 @@
      *
      * @return Sales_Order|Purch_Order
      */
-    public static function session_set($order) {
+    public static function session_set($order)
+    {
       list($type, $id) = explode('.', $order->order_id);
       static::setup($type);
       $_SESSION['orders'][$type][$id] = $order;
+
       return $order;
     }
 
@@ -127,7 +132,8 @@
      *
      * @return void
      */
-    public static function session_start($order) {
+    public static function session_start($order)
+    {
     }
 
     /**
@@ -137,9 +143,11 @@
      *
      * @return bool
      */
-    public static function session_exists($order) {
+    public static function session_exists($order)
+    {
       list($type, $id) = explode('.', $order->order_id);
       static::setup($type);
+
       return isset($_SESSION['orders'][$type][$id]);
     }
 
@@ -148,7 +156,8 @@
      *
      * @param Purch_Order|Sales_Order|int $id Can be object or order_id number
      */
-    public static function session_delete($id) {
+    public static function session_delete($id)
+    {
       if (is_object($id)) {
         $id = $id->order_id;
       }

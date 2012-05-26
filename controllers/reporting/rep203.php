@@ -9,9 +9,7 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   Page::set_security(SA_SUPPPAYMREP);
-
   print_payment_report();
   /**
    * @param $supplier
@@ -19,29 +17,32 @@
    *
    * @return null|PDOStatement
    */
-  function get_transactions($supplier, $date) {
+  function get_transactions($supplier, $date)
+  {
     $date = Dates::date2sql($date);
     $dec  = User::price_dec();
     $sql
           = "SELECT creditor_trans.supplier_reference,
-			creditor_trans.tran_date,
-			creditor_trans.due_date,
-			creditor_trans.trans_no,
-			creditor_trans.type,
-			creditor_trans.rate,
-			(ABS(creditor_trans.ov_amount) + ABS(creditor_trans.ov_gst) - creditor_trans.alloc) AS Balance,
-			(ABS(creditor_trans.ov_amount) + ABS(creditor_trans.ov_gst) ) AS TranTotal
-		FROM creditor_trans
-		WHERE creditor_trans.supplier_id = '" . $supplier . "'
-		AND ROUND(ABS(creditor_trans.ov_amount),$dec) + ROUND(ABS(creditor_trans.ov_gst),$dec) -
-		ROUND(creditor_trans.alloc,$dec) != 0
-		AND creditor_trans.tran_date <='" . $date . "'
-		ORDER BY creditor_trans.type,
-			creditor_trans.trans_no";
+            creditor_trans.tran_date,
+            creditor_trans.due_date,
+            creditor_trans.trans_no,
+            creditor_trans.type,
+            creditor_trans.rate,
+            (ABS(creditor_trans.ov_amount) + ABS(creditor_trans.ov_gst) - creditor_trans.alloc) AS Balance,
+            (ABS(creditor_trans.ov_amount) + ABS(creditor_trans.ov_gst) ) AS TranTotal
+        FROM creditor_trans
+        WHERE creditor_trans.supplier_id = '" . $supplier . "'
+        AND ROUND(ABS(creditor_trans.ov_amount),$dec) + ROUND(ABS(creditor_trans.ov_gst),$dec) -
+        ROUND(creditor_trans.alloc,$dec) != 0
+        AND creditor_trans.tran_date <='" . $date . "'
+        ORDER BY creditor_trans.type,
+            creditor_trans.trans_no";
+
     return DB::query($sql, "No transactions were returned");
   }
 
-  function print_payment_report() {
+  function print_payment_report()
+  {
     global $systypes_array;
     $to          = $_POST['PARAM_0'];
     $fromsupp    = $_POST['PARAM_1'];
@@ -51,34 +52,29 @@
     $destination = $_POST['PARAM_5'];
     if ($destination) {
       include_once(APPPATH . "reports/excel.php");
-    }
-    else {
+    } else {
       include_once(APPPATH . "reports/pdf.php");
     }
     if ($fromsupp == ALL_NUMERIC) {
       $from = _('All');
-    }
-    else {
+    } else {
       $from = Creditor::get_name($fromsupp);
     }
     $dec = User::price_dec();
     if ($currency == ALL_TEXT) {
-      $convert  = TRUE;
+      $convert  = true;
       $currency = _('Balances in Home Currency');
-    }
-    else {
-      $convert = FALSE;
+    } else {
+      $convert = false;
     }
     if ($no_zeros) {
       $nozeros = _('Yes');
-    }
-    else {
+    } else {
       $nozeros = _('No');
     }
     $cols    = array(0, 100, 130, 190, 250, 320, 385, 450, 515);
     $headers = array(
-      _('Trans Type'), _('#'), _('Due Date'), '', '',
-      '', _('Total'), _('Balance')
+      _('Trans Type'), _('#'), _('Due Date'), '', '', '', _('Total'), _('Balance')
     );
     $aligns  = array('left', 'left', 'left', 'left', 'right', 'right', 'right', 'right');
     $params  = array(
@@ -96,13 +92,13 @@
     $grandtotal = array(0, 0);
     $sql
                 = "SELECT supplier_id, name, curr_code, payment_terms.terms FROM suppliers, payment_terms
-		WHERE ";
+        WHERE ";
     if ($fromsupp != ALL_NUMERIC) {
       $sql .= "supplier_id=" . DB::escape($fromsupp) . " AND ";
     }
     $sql
       .= "suppliers.payment_terms = payment_terms.terms_indicator
-		ORDER BY name";
+        ORDER BY name";
     $result = DB::query($sql, "The customers could not be retrieved");
     while ($myrow = DB::fetch($result)) {
       if (!$convert && $currency != $myrow['curr_code']) {
@@ -130,18 +126,16 @@
         }
         if ($convert) {
           $rate = $trans['rate'];
-        }
-        else {
+        } else {
           $rate = 1.0;
         }
         $rep->NewLine(1, 2);
         $rep->TextCol(0, 1, $systypes_array[$trans['type']]);
         $rep->TextCol(1, 2, $trans['supplier_reference']);
         if ($trans['type'] == ST_SUPPINVOICE) {
-          $rep->DateCol(2, 3, $trans['due_date'], TRUE);
-        }
-        else {
-          $rep->DateCol(2, 3, $trans['tran_date'], TRUE);
+          $rep->DateCol(2, 3, $trans['due_date'], true);
+        } else {
+          $rep->DateCol(2, 3, $trans['tran_date'], true);
         }
         if ($trans['type'] != ST_SUPPINVOICE) {
           $trans['TranTotal'] = -$trans['TranTotal'];
@@ -176,5 +170,4 @@
     $rep->NewLine();
     $rep->End();
   }
-
 

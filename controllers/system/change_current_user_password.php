@@ -12,49 +12,50 @@
   /**
    * @return bool
    */
-  function can_process() {
+  function can_process()
+  {
     if (strlen($_POST['password']) < 4) {
       Event::error(_("The password entered must be at least 4 characters long."));
       JS::set_focus('password');
-      return FALSE;
+
+      return false;
     }
-    if (strstr($_POST['password'], User::i()->username) != FALSE) {
+    if (strstr($_POST['password'], User::i()->username) != false) {
       Event::error(_("The password cannot contain the user login."));
       JS::set_focus('password');
-      return FALSE;
+
+      return false;
     }
     if ($_POST['password'] != $_POST['passwordConfirm']) {
       Event::error(_("The passwords entered are not the same."));
       JS::set_focus('password');
-      return FALSE;
+
+      return false;
     }
-    return TRUE;
+
+    return true;
   }
 
   if (isset($_POST[UPDATE_ITEM])) {
     if (can_process()) {
       if (Config::get('demo_mode')) {
         Event::warning(_("Password cannot be changed in demo mode."));
-      }
-      else {
+      } else {
         $auth  = new Auth(User::i()->username);
         $check = $auth->checkPasswordStrength($_POST['password']);
         if ($check['error'] > 0) {
           Event::error($check['text']);
-        }
-        elseif ($check['strength'] < 3) {
+        } elseif ($check['strength'] < 3) {
           Event::error(_("Password Too Weak!"));
-        }
-        else {
+        } else {
           $auth->update_password(User::i()->user, $_POST['password']);
-          User::i()->change_password = FALSE;
+          User::i()->change_password = false;
           Event::success(_("Password Changed"));
         }
       }
       Ajax::i()->activate('_page_body');
     }
-  }
-  elseif (User::i()->change_password) {
+  } elseif (User::i()->change_password) {
     Event::warning('You are required to change your password!');
   }
   start_form();
@@ -66,7 +67,7 @@
   password_row(_("Password:"), 'password', $_POST['password']);
   password_row(_("Repeat password:"), 'passwordConfirm', $_POST['passwordConfirm']);
   Table::end(1);
-  submit_center(UPDATE_ITEM, _('Change password'), TRUE, '', 'default');
+  submit_center(UPDATE_ITEM, _('Change password'), true, '', 'default');
   end_form();
   Page::end();
 

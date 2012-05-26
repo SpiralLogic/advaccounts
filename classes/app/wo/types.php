@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class WO_Types {
-
+  class WO_Types
+  {
     //------------------------------------------------------------------------------------------------
     /**
      * @static
@@ -18,14 +18,13 @@
      *
      * @return string
      */
-    public static function select($name, $selected_id = NULL) {
+    public static function select($name, $selected_id = null)
+    {
       global $wo_types_array;
-      return array_selector(
-        $name, $selected_id, $wo_types_array, array(
-          'select_submit' => TRUE,
-          'async'         => TRUE
-        )
-      );
+
+      return array_selector($name, $selected_id, $wo_types_array, array(
+                                                                       'select_submit' => true, 'async'         => true
+                                                                  ));
     }
     /**
      * @static
@@ -34,7 +33,8 @@
      * @param      $name
      * @param null $selected_id
      */
-    public static function row($label, $name, $selected_id = NULL) {
+    public static function row($label, $name, $selected_id = null)
+    {
       echo "<tr><td class='label'>$label</td><td>\n";
       echo static::select($name, $selected_id);
       echo "</td></tr>\n";

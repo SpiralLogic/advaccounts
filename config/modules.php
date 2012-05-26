@@ -7,12 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+
   return array(
-    'Jobsboard'=> array('enabled'=> FALSE, 'init'=> TRUE),
-    'Youtrack' => array('enabled'=> TRUE, 'init'=> TRUE),
+    'Jobsboard'=> array('enabled'=> false, 'init'=> true),
+    'Youtrack' => array('enabled'=> true, 'init'=> true),
     'Volusion' => array(
-      'enabled'       => TRUE,
-      'init'          => TRUE,
+      'enabled'       => true,
+      'init'          => true,
       'apiuser'       => 'admin@advancedroadsigns.com.au',
       'apikey'        => 'EB9100FB7E17AB8D0731073FB818BA3803447431B2C10E672BE241FA15ED3C17',
       'apiurl'        => 'http://www.advancedroadsigns.com.au/net/WebService.aspx?',

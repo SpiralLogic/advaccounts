@@ -7,9 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Currencies"), SA_CURRENCY);
-  list($Mode, $selected_id) = Page::simple_mode(FALSE);
+  list($Mode, $selected_id) = Page::simple_mode(false);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     handle_submit($Mode, $selected_id);
   }
@@ -30,28 +29,31 @@
   /**
    * @return bool
    */
-  function check_data() {
+  function check_data()
+  {
     if (strlen($_POST['Abbreviation']) == 0) {
       Event::error(_("The currency abbreviation must be entered."));
       JS::set_focus('Abbreviation');
-      return FALSE;
-    }
-    elseif (strlen($_POST['CurrencyName']) == 0) {
+
+      return false;
+    } elseif (strlen($_POST['CurrencyName']) == 0) {
       Event::error(_("The currency name must be entered."));
       JS::set_focus('CurrencyName');
-      return FALSE;
-    }
-    elseif (strlen($_POST['Symbol']) == 0) {
+
+      return false;
+    } elseif (strlen($_POST['Symbol']) == 0) {
       Event::error(_("The currency symbol must be entered."));
       JS::set_focus('Symbol');
-      return FALSE;
-    }
-    elseif (strlen($_POST['hundreds_name']) == 0) {
+
+      return false;
+    } elseif (strlen($_POST['hundreds_name']) == 0) {
       Event::error(_("The hundredths name must be entered."));
       JS::set_focus('hundreds_name');
-      return FALSE;
+
+      return false;
     }
-    return TRUE;
+
+    return true;
   }
 
   /**
@@ -60,15 +62,15 @@
    *
    * @return bool
    */
-  function handle_submit(&$Mode, $selected_id) {
+  function handle_submit(&$Mode, $selected_id)
+  {
     if (!check_data()) {
-      return FALSE;
+      return false;
     }
     if ($selected_id != "") {
       GL_Currency::update($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], $_POST['country'], $_POST['hundreds_name'], check_value('auto_update'));
       Event::success(_('Selected currency settings has been updated'));
-    }
-    else {
+    } else {
       GL_Currency::add($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], $_POST['country'], $_POST['hundreds_name'], check_value('auto_update'));
       Event::success(_('New currency has been added'));
     }
@@ -80,9 +82,10 @@
    *
    * @return bool
    */
-  function check_can_delete($selected_id) {
+  function check_can_delete($selected_id)
+  {
     if ($selected_id == "") {
-      return FALSE;
+      return false;
     }
     $curr = DB::escape($selected_id);
     // PREVENT DELETES IF DEPENDENT RECORDS IN debtors
@@ -91,21 +94,24 @@
     $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this currency, because customer accounts have been created referring to this currency."));
-      return FALSE;
+
+      return false;
     }
     $sql    = "SELECT COUNT(*) FROM suppliers WHERE curr_code = $curr";
     $result = DB::query($sql);
     $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this currency, because supplier accounts have been created referring to this currency."));
-      return FALSE;
+
+      return false;
     }
     $sql    = "SELECT COUNT(*) FROM company WHERE curr_default = $curr";
     $result = DB::query($sql);
     $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this currency, because the company preferences uses this currency."));
-      return FALSE;
+
+      return false;
     }
     // see if there are any bank accounts that use this currency
     $sql    = "SELECT COUNT(*) FROM bank_accounts WHERE bank_curr_code = $curr";
@@ -113,16 +119,19 @@
     $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this currency, because thre are bank accounts that use this currency."));
-      return FALSE;
+
+      return false;
     }
-    return TRUE;
+
+    return true;
   }
 
   /**
    * @param $Mode
    * @param $selected_id
    */
-  function handle_delete(&$Mode, $selected_id) {
+  function handle_delete(&$Mode, $selected_id)
+  {
     if (check_can_delete($selected_id)) {
       //only delete if used in neither customer or supplier, comp prefs, bank trans accounts
       GL_Currency::delete($selected_id);
@@ -131,7 +140,8 @@
     $Mode = MODE_RESET;
   }
 
-  function display_currencies() {
+  function display_currencies()
+  {
     $company_currency = Bank_Currency::for_company();
     $result           = GL_Currency::get_all(check_value('show_inactive'));
     Table::start('tablestyle grid');
@@ -144,8 +154,7 @@
     while ($myrow = DB::fetch($result)) {
       if ($myrow[1] == $company_currency) {
         Row::start("class='currencybg'");
-      }
-      else {
+      } else {
       }
       Cell::label($myrow["curr_abrev"]);
       Cell::label($myrow["curr_symbol"]);
@@ -157,8 +166,7 @@
       edit_button_cell("Edit" . $myrow["curr_abrev"], _("Edit"));
       if ($myrow["curr_abrev"] != $company_currency) {
         delete_button_cell("Delete" . $myrow["curr_abrev"], _("Delete"));
-      }
-      else {
+      } else {
         Cell::label('');
       }
       Row::end();
@@ -172,7 +180,8 @@
    * @param $Mode
    * @param $selected_id
    */
-  function display_currency_edit($Mode, $selected_id) {
+  function display_currency_edit($Mode, $selected_id)
+  {
     Table::start('tablestyle2');
     if ($selected_id != '') {
       if ($Mode == MODE_EDIT) {
@@ -188,8 +197,7 @@
       hidden('Abbreviation');
       hidden('selected_id', $selected_id);
       Row::label(_("Currency Abbreviation:"), $_POST['Abbreviation']);
-    }
-    else {
+    } else {
       $_POST['auto_update'] = 1;
       text_row_ex(_("Currency Abbreviation:"), 'Abbreviation', 4, 3);
     }

@@ -7,17 +7,15 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "GL Account Groups"), SA_GLACCOUNTGROUP);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     if (can_process($selected_id)) {
       if ($selected_id != -1) {
         if (GL_Type::update($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
           Event::success(_('Selected account type has been updated'));
         }
-      }
-      else {
+      } else {
         if (GL_Type::add($_POST['id'], $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
           Event::success(_('New account type has been added'));
           $Mode = MODE_RESET;
@@ -45,12 +43,10 @@
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-
     $bs_text = GL_Class::get_name($myrow["class_id"]);
     if ($myrow["parent"] == ANY_NUMERIC) {
       $parent_text = "";
-    }
-    else {
+    } else {
       $parent_text = GL_Type::get_name($myrow["parent"]);
     }
     Cell::label($myrow["id"]);
@@ -77,13 +73,12 @@
     }
     hidden('id');
     Row::label(_("ID:"), $_POST['id']);
-  }
-  else {
+  } else {
     text_row_ex(_("ID:"), 'id', 10);
   }
   text_row_ex(_("Name:"), 'name', 50);
-  GL_Type::row(_("Subgroup Of:"), 'parent', NULL, _("None"), TRUE);
-  GL_Class::row(_("Class Type:"), 'class_id', NULL);
+  GL_Type::row(_("Subgroup Of:"), 'parent', null, _("None"), true);
+  GL_Class::row(_("Class Type:"), 'class_id', null);
   Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
@@ -93,28 +88,34 @@
    *
    * @return bool
    */
-  function can_delete($selected_id) {
+  function can_delete($selected_id)
+  {
     if ($selected_id == -1) {
-      return FALSE;
+      return false;
     }
-    $type   = DB::escape($selected_id);
-    $sql    = "SELECT COUNT(*) FROM chart_master
-		WHERE account_type=$type";
+    $type = DB::escape($selected_id);
+    $sql
+            = "SELECT COUNT(*) FROM chart_master
+        WHERE account_type=$type";
     $result = DB::query($sql, "could not query chart master");
     $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account group because GL accounts have been created referring to it."));
-      return FALSE;
+
+      return false;
     }
-    $sql    = "SELECT COUNT(*) FROM chart_types
-		WHERE parent=$type";
+    $sql
+            = "SELECT COUNT(*) FROM chart_types
+        WHERE parent=$type";
     $result = DB::query($sql, "could not query chart types");
     $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account group because GL account groups have been created referring to it."));
-      return FALSE;
+
+      return false;
     }
-    return TRUE;
+
+    return true;
   }
 
   /**
@@ -122,20 +123,25 @@
    *
    * @return bool
    */
-  function can_process(&$selected_id) {
+  function can_process(&$selected_id)
+  {
     if (!Validation::input_num('id')) {
       Event::error(_("The account id must be an integer and cannot be empty."));
       JS::set_focus('id');
-      return FALSE;
+
+      return false;
     }
     if (strlen($_POST['name']) == 0) {
       Event::error(_("The account group name cannot be empty."));
       JS::set_focus('name');
-      return FALSE;
+
+      return false;
     }
     if (isset($selected_id) && ($selected_id == $_POST['parent'])) {
       Event::error(_("You cannot set an account group to be a subgroup of itself."));
-      return FALSE;
+
+      return false;
     }
-    return TRUE;
+
+    return true;
   }

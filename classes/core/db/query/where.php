@@ -1,21 +1,21 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core.db
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   namespace ADV\Core\DB;
   use PDO, PDOStatement, PDOException, PDORow;
 
   /**
 
    */
-  abstract class Query_Where {
-
+  abstract class Query_Where
+  {
     /**
      * @var array
      */
@@ -32,7 +32,8 @@
      * @var int
      */
     protected $count = 0;
-    protected function resetWhere() {
+    protected function resetWhere()
+    {
       $this->wheredata = $this->where = array();
       $this->count     = 0;
     }
@@ -43,25 +44,27 @@
      *
      * @return Query_Select
      */
-    protected function _where($conditions, $type = 'AND', $uservar = NULL) {
+    protected function _where($conditions, $type = 'AND', $uservar = null)
+    {
       if (is_array($conditions)) {
         foreach ($conditions as $condition) {
           if (is_array($condition)) {
             $this->_where($condition[0], $type, $condition[1]);
-          }
-          else {
+          } else {
             $this->_where($condition);
           }
         }
+
         return $this;
       }
-      if ($uservar !== NULL) {
+      if ($uservar !== null) {
         $name = ':dbcondition' . $this->count;
         $this->count++;
         $this->wheredata[$name] = $uservar;
         $conditions             = $conditions . ' ' . $name;
       }
       $this->where[] = (empty($this->where)) ? $conditions : $type . ' ' . $conditions;
+
       return $this;
     }
     /**
@@ -70,7 +73,8 @@
      *
      * @return Query|Query_Select
      */
-    public function where($condition, $uservar = NULL) {
+    public function where($condition, $uservar = null)
+    {
       return $this->_where($condition, 'AND', $uservar);
     }
     /**
@@ -79,7 +83,8 @@
      *
      * @return Query_Select
      */
-    public function or_where($condition, $uservar = NULL) {
+    public function or_where($condition, $uservar = null)
+    {
       return $this->_where($condition, 'OR', $uservar);
     }
     /**
@@ -88,7 +93,8 @@
      *
      * @return Query_Select
      */
-    public function and_where($condition, $uservar = NULL) {
+    public function and_where($condition, $uservar = null)
+    {
       return $this->_where($condition, 'AND', $uservar);
     }
     /**
@@ -97,7 +103,8 @@
      *
      * @return Query_Select
      */
-    public function or_open($condition, $uservar = NULL) {
+    public function or_open($condition, $uservar = null)
+    {
       return $this->_where($condition, 'OR (', $uservar);
     }
     /**
@@ -106,7 +113,8 @@
      *
      * @return Query_Select
      */
-    public function and_open($condition, $uservar = NULL) {
+    public function and_open($condition, $uservar = null)
+    {
       return $this->_where($condition, 'AND (', $uservar);
     }
     /**
@@ -115,7 +123,8 @@
      *
      * @return Query_Select
      */
-    public function close_and($condition, $uservar = NULL) {
+    public function close_and($condition, $uservar = null)
+    {
       return $this->_where($condition, ') AND', $uservar);
     }
     /**
@@ -124,7 +133,8 @@
      *
      * @return Query_Select
      */
-    public function close_or($condition, $uservar = NULL) {
+    public function close_or($condition, $uservar = null)
+    {
       return $this->_where($condition, ') OR', $uservar);
     }
     /**
@@ -133,28 +143,34 @@
      *
      * @return Query_Select
      */
-    public function open($condition, $uservar = NULL) {
+    public function open($condition, $uservar = null)
+    {
       if (empty($this->where)) {
         $condition = '(' . $condition;
       }
+
       return $this->_where($condition, ' AND ', $uservar);
     }
     /**
      * @return Query_Where
      */
-    public function close() {
+    public function close()
+    {
       array_push($this->where, array_pop($this->where) . ') ');
+
       return $this;
     }
     /**
      * @return string
      */
-    protected function _buildWhere() {
+    protected function _buildWhere()
+    {
       $sql = '';
       if (!empty($this->where)) {
         $sql .= ' WHERE ' . implode(' ', $this->where);
       }
       $this->data = $this->data + $this->wheredata;
+
       return $sql;
     }
   }

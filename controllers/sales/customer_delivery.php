@@ -10,7 +10,6 @@
   //
   //	Entry/Modify Delivery Note against Sales Order
   //
-
   JS::open_window(900, 500);
   $page_title = _($help_context = "Deliver Items for a Sales Order");
   if (isset($_GET[Orders::MODIFY_DELIVERY])) {
@@ -22,36 +21,29 @@
     $dispatch_no = $_GET[ADDED_ID];
     Event::success(sprintf(_("Delivery # %d has been entered."), $dispatch_no));
     Display::note(Debtor::trans_view(ST_CUSTDELIVERY, $dispatch_no, _("&View This Delivery"), 0, 'button button-large'), 1, 0);
-    Display::note(Reporting::print_doc_link($dispatch_no, _("&Print Delivery Note"), TRUE, ST_CUSTDELIVERY), 1, 0);
-    Display::note(Reporting::print_doc_link($dispatch_no, _("&Email Delivery Note"), TRUE, ST_CUSTDELIVERY, FALSE,
-      "printlink button", "", 1), 1, 0);
-    Display::note(Reporting::print_doc_link($dispatch_no, _("P&rint as Packing Slip"), TRUE, ST_CUSTDELIVERY, FALSE,
-      "printlink button"), 1, 0);
-    Display::note(Reporting::print_doc_link($dispatch_no, _("E&mail as Packing Slip"), TRUE, ST_CUSTDELIVERY, FALSE,
-      "printlink button", "", 1, 1), 1, 0);
+    Display::note(Reporting::print_doc_link($dispatch_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY), 1, 0);
+    Display::note(Reporting::print_doc_link($dispatch_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink button", "", 1), 1, 0);
+    Display::note(Reporting::print_doc_link($dispatch_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink button"), 1, 0);
+    Display::note(Reporting::print_doc_link($dispatch_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink button", "", 1, 1), 1, 0);
     Display::note(GL_UI::view(13, $dispatch_no, _("View the GL Journal Entries"), 0, 'button button-large'), 1, 0);
     Display::submenu_option(_("Invoice This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$dispatch_no");
     Display::submenu_option(_("Select Another Order For Dispatch"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
     Page::footer_exit();
-  }
-  elseif (isset($_GET[UPDATED_ID])) {
+  } elseif (isset($_GET[UPDATED_ID])) {
     $delivery_no = $_GET[UPDATED_ID];
     Event::success(sprintf(_('Delivery Note # %d has been updated.'), $delivery_no));
     Display::note(GL_UI::trans_view(ST_CUSTDELIVERY, $delivery_no, _("View this delivery"), 0, 'button  button-large'), 1, 0);
-    Display::note(Reporting::print_doc_link($delivery_no, _("&Print Delivery Note"), TRUE, ST_CUSTDELIVERY));
-    Display::note(Reporting::print_doc_link($delivery_no, _("&Email Delivery Note"), TRUE, ST_CUSTDELIVERY, FALSE,
-      "printlink button", "", 1), 1, 1);
-    Display::note(Reporting::print_doc_link($delivery_no, _("P&rint as Packing Slip"), TRUE, ST_CUSTDELIVERY, FALSE,
-      "printlink button", "", 0, 1));
-    Display::note(Reporting::print_doc_link($delivery_no, _("E&mail as Packing Slip"), TRUE, ST_CUSTDELIVERY, FALSE,
-      "printlink button", "", 1, 1), 1);
+    Display::note(Reporting::print_doc_link($delivery_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY));
+    Display::note(Reporting::print_doc_link($delivery_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink button", "", 1), 1, 1);
+    Display::note(Reporting::print_doc_link($delivery_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink button", "", 0, 1));
+    Display::note(Reporting::print_doc_link($delivery_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink button", "", 1, 1), 1);
     Display::link_params("/sales/customer_invoice.php", _("Confirm Delivery and Invoice"), "DeliveryNumber=$delivery_no");
     Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select A Different Delivery"), "OutstandingOnly=1");
     Page::footer_exit();
   }
-  $order = Orders::session_get() ? : NULL;
+  $order = Orders::session_get() ? : null;
   if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
-    $order = new Sales_Order(ST_SALESORDER, $_GET['OrderNumber'], TRUE);
+    $order = new Sales_Order(ST_SALESORDER, $_GET['OrderNumber'], true);
     /*read in all the selected order into the Items order */
     if ($order->count_items() == 0) {
       Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select a different sales order to delivery"), "OutstandingOnly=1");
@@ -64,8 +56,7 @@
     $order->reference     = Ref::get_next(ST_CUSTDELIVERY);
     $order->document_date = Dates::new_doc_date();
     Sales_Delivery::copyToPost($order);
-  }
-  elseif (isset($_GET[Orders::MODIFY_DELIVERY]) && $_GET[Orders::MODIFY_DELIVERY] > 0) {
+  } elseif (isset($_GET[Orders::MODIFY_DELIVERY]) && $_GET[Orders::MODIFY_DELIVERY] > 0) {
     $order = new Sales_Order(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
     Sales_Delivery::copyToPost($order);
     if ($order->count_items() == 0) {
@@ -73,19 +64,16 @@
       echo "<br><div class='center'><span class='bold'>" . _("This delivery has all items invoiced. There is nothing to modify.") . "</div></span>";
       Page::footer_exit();
     }
-  }
-  elseif (!Orders::session_exists($order)) {
+  } elseif (!Orders::session_exists($order)) {
     /* This page can only be called with an order number for invoicing*/
     Event::error(_("This page can only be opened if an order or delivery note has been selected. Please select it first."));
     Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select a Sales Order to Delivery"), "OutstandingOnly=1");
     Page::end();
     exit;
-  }
-  else {
+  } else {
     if (!Sales_Delivery::check_quantities($order)) {
       Event::error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
-    }
-    elseif (!Validation::post_num('ChargeFreightCost', 0)) {
+    } elseif (!Validation::post_num('ChargeFreightCost', 0)) {
       Event::error(_("Freight cost cannot be less than zero"));
       JS::set_focus('ChargeFreightCost');
     }
@@ -94,8 +82,7 @@
     $dn = $order;
     if ($_POST['bo_policy']) {
       $bo_policy = 0;
-    }
-    else {
+    } else {
       $bo_policy = 1;
     }
     $newdelivery = ($dn->trans_no == 0);
@@ -107,8 +94,7 @@
     $dn->finish();
     if ($newdelivery) {
       Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$delivery_no");
-    }
-    else {
+    } else {
       Display::meta_forward($_SERVER['DOCUMENT_URI'], "UpdatedID=$delivery_no");
     }
   }
@@ -129,9 +115,8 @@
   //if (!isset($_POST['ref']))
   //	$_POST['ref'] = Ref::get_next(ST_CUSTDELIVERY);
   if ($order->trans_no == 0) {
-    ref_cells(_("Reference"), 'ref', '', NULL, "class='label'");
-  }
-  else {
+    ref_cells(_("Reference"), 'ref', '', null, "class='label'");
+  } else {
     Cell::labels(_("Reference"), $order->reference, "class='label'");
     hidden('ref', $order->reference);
   }
@@ -143,12 +128,12 @@
     $_POST['location'] = $order->location;
   }
   Cell::label(_("Delivery From"), "class='label'");
-  Inv_Location::cells(NULL, 'location', NULL, FALSE, TRUE);
+  Inv_Location::cells(null, 'location', null, false, true);
   if (!isset($_POST['ship_via'])) {
     $_POST['ship_via'] = $order->ship_via;
   }
   Cell::label(_("Shipping Company"), "class='label'");
-  Sales_UI::shippers_cells(NULL, 'ship_via', $_POST['ship_via']);
+  Sales_UI::shippers_cells(null, 'ship_via', $_POST['ship_via']);
   // set this up here cuz it's used to calc qoh
   if (!isset($_POST['DispatchDate']) || !Dates::is_date($_POST['DispatchDate'])) {
     $_POST['DispatchDate'] = Dates::new_doc_date();
@@ -165,7 +150,7 @@
     $_POST['due_date'] = $order->get_invoice_duedate($order->customer_id, $_POST['DispatchDate']);
   }
   Row::start();
-  date_cells(_("Invoice Dead-line"), 'due_date', '', NULL, 0, 0, 0, "class='label'");
+  date_cells(_("Invoice Dead-line"), 'due_date', '', null, 0, 0, 0, "class='label'");
   Row::end();
   Table::end();
   echo "</td></tr>";
@@ -182,21 +167,29 @@
   Table::start('tablestyle grid width90');
   $new = $order->trans_no == 0;
   $th  = array(
-    _("Item Code"), _("Item Description"), $new ? _("Ordered") : _("Max. delivery"), _("Units"),
-    $new ? _("Delivered") : _("Invoiced"), _("This Delivery"), _("Price"), _("Tax Type"), _("Discount"), _("Total")
+    _("Item Code"),
+    _("Item Description"),
+    $new ? _("Ordered") : _("Max. delivery"),
+    _("Units"),
+    $new ? _("Delivered") : _("Invoiced"),
+    _("This Delivery"),
+    _("Price"),
+    _("Tax Type"),
+    _("Discount"),
+    _("Total")
   );
   Table::header($th);
   $k          = 0;
-  $has_marked = FALSE;
+  $has_marked = false;
   foreach ($order->line_items as $line_no => $line) {
     if ($line->quantity == $line->qty_done) {
       continue; //this line is fully delivered
     }
     // if it's a non-stock item (eg. service) don't show qoh
-    $show_qoh = TRUE;
+    $show_qoh = true;
     if (DB_Company::get_pref('allow_negative_stock') || !WO::has_stock_holding($line->mb_flag) || $line->qty_dispatched == 0
     ) {
-      $show_qoh = FALSE;
+      $show_qoh = false;
     }
     if ($show_qoh) {
       $qoh = Item::get_qoh_on_date($line->stock_id, $_POST['location'], $_POST['DispatchDate']);
@@ -204,17 +197,16 @@
     if ($show_qoh && ($line->qty_dispatched > $qoh)) {
       // oops, we don't have enough of one of the component items
       Row::start("class='stockmankobg'");
-      $has_marked = TRUE;
-    }
-    else {
+      $has_marked = true;
+    } else {
     }
     Item_UI::status_cell($line->stock_id);
-    text_cells(NULL, 'Line' . $line_no . 'Desc', $line->description, 30, 50);
+    text_cells(null, 'Line' . $line_no . 'Desc', $line->description, 30, 50);
     $dec = Item::qty_dec($line->stock_id);
-    Cell::qty($line->quantity, FALSE, $dec);
+    Cell::qty($line->quantity, false, $dec);
     Cell::label($line->units);
-    Cell::qty($line->qty_done, FALSE, $dec);
-    small_qty_cells(NULL, 'Line' . $line_no, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), NULL, NULL, $dec);
+    Cell::qty($line->qty_done, false, $dec);
+    small_qty_cells(null, 'Line' . $line_no, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), null, null, $dec);
     $display_discount_percent = Num::percent_format($line->discount_percent * 100) . "%";
     $line_total               = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
     Cell::amount($line->price);
@@ -227,7 +219,7 @@
   $colspan                    = 9;
   Row::start();
   Cell::label(_("Shipping Cost"), "colspan=$colspan class='right'");
-  small_amount_cells(NULL, 'ChargeFreightCost', $order->freight_cost);
+  small_amount_cells(null, 'ChargeFreightCost', $order->freight_cost);
   Row::end();
   $inv_items_total   = $order->get_items_total_dispatch();
   $display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
@@ -241,11 +233,11 @@
     Event::warning(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='red'");
   }
   Table::start('tablestyle2');
-  Sales_UI::policy_row(_("Action For Balance"), "bo_policy", NULL);
-  textarea_row(_("Memo"), 'Comments', NULL, 50, 4);
+  Sales_UI::policy_row(_("Action For Balance"), "bo_policy", null);
+  textarea_row(_("Memo"), 'Comments', null, 50, 4);
   Table::end(1);
   Display::div_end();
-  submit_center_first('Update', _("Update"), _('Refresh document page'), TRUE);
+  submit_center_first('Update', _("Update"), _('Refresh document page'), true);
   submit_center_last('process_delivery', _("Process Dispatch"), _('Check entered data and save document'), 'default');
   end_form();
   Page::end();

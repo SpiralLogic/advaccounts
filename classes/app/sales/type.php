@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Sales_Type {
-
+  class Sales_Type
+  {
     /**
      * @static
      *
@@ -16,7 +16,8 @@
      * @param $tax_included
      * @param $factor
      */
-    public static function add($name, $tax_included, $factor) {
+    public static function add($name, $tax_included, $factor)
+    {
       $sql = "INSERT INTO sales_types (sales_type,tax_included,factor) VALUES (" . DB::escape($name) . ","
         . DB::escape($tax_included) . "," . DB::escape($factor) . ")";
       DB::query($sql, "could not add sales type");
@@ -29,9 +30,10 @@
      * @param $tax_included
      * @param $factor
      */
-    public static function update($id, $name, $tax_included, $factor) {
+    public static function update($id, $name, $tax_included, $factor)
+    {
       $sql = "UPDATE sales_types SET sales_type = " . DB::escape($name) . ",
-	tax_included =" . DB::escape($tax_included) . ", factor=" . DB::escape($factor) . " WHERE id = " . DB::escape($id);
+    tax_included =" . DB::escape($tax_included) . ", factor=" . DB::escape($factor) . " WHERE id = " . DB::escape($id);
       DB::query($sql, "could not update sales type");
     }
     /**
@@ -41,11 +43,13 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($all = FALSE) {
+    public static function get_all($all = false)
+    {
       $sql = "SELECT * FROM sales_types";
       if (!$all) {
         $sql .= " WHERE !inactive";
       }
+
       return DB::query($sql, "could not get all sales types");
     }
     /**
@@ -55,9 +59,11 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    public static function get($id) {
+    public static function get($id)
+    {
       $sql    = "SELECT * FROM sales_types WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "could not get sales type");
+
       return DB::fetch($result);
     }
     /**
@@ -67,10 +73,12 @@
      *
      * @return mixed
      */
-    public static function get_name($id) {
+    public static function get_name($id)
+    {
       $sql    = "SELECT sales_type FROM sales_types WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "could not get sales type");
       $row    = DB::fetch_row($result);
+
       return $row[0];
     }
     /**
@@ -78,7 +86,8 @@
      *
      * @param $id
      */
-    public static function delete($id) {
+    public static function delete($id)
+    {
       $sql = "DELETE FROM sales_types WHERE id=" . DB::escape($id);
       DB::query($sql, "The Sales type record could not be deleted");
       $sql = "DELETE FROM prices WHERE sales_type_id=" . DB::escape($id);
@@ -94,10 +103,12 @@
      *
      * @return string
      */
-    public static function  select($name, $selected_id = NULL, $submit_on_change = FALSE, $special_option = FALSE) {
+    public static function  select($name, $selected_id = null, $submit_on_change = false, $special_option = false)
+    {
       $sql = "SELECT id, sales_type, inactive FROM sales_types";
+
       return select_box($name, $selected_id, $sql, 'id', 'sales_type', array(
-        'spec_option'                => $special_option === TRUE ? _("All Sales Types") :
+        'spec_option'                => $special_option === true ? _("All Sales Types") :
           $special_option, 'spec_id' => 0, 'select_submit' => $submit_on_change, //	 'async' => false,
       ));
     }
@@ -110,8 +121,9 @@
      * @param bool $submit_on_change
      * @param bool $special_option
      */
-    public static function  cells($label, $name, $selected_id = NULL, $submit_on_change = FALSE, $special_option = FALSE) {
-      if ($label != NULL) {
+    public static function  cells($label, $name, $selected_id = null, $submit_on_change = false, $special_option = false)
+    {
+      if ($label != null) {
         echo "<td>$label</td>\n";
       }
       echo "<td>";
@@ -127,28 +139,32 @@
      * @param bool $submit_on_change
      * @param bool $special_option
      */
-    public static function  row($label, $name, $selected_id = NULL, $submit_on_change = FALSE, $special_option = FALSE) {
+    public static function  row($label, $name, $selected_id = null, $submit_on_change = false, $special_option = false)
+    {
       echo "<tr><td class='label'>$label</td>";
-      static::cells(NULL, $name, $selected_id, $submit_on_change, $special_option);
+      static::cells(null, $name, $selected_id, $submit_on_change, $special_option);
       echo "</tr>\n";
     }
     /**
      * @static
      * @return bool
      */
-    public static function can_process() {
+    public static function can_process()
+    {
       if (strlen($_POST['sales_type']) == 0) {
         Event::error(_("The sales type description cannot be empty."));
         JS::set_focus('sales_type');
-        return FALSE;
+
+        return false;
       }
       if (!Validation::post_num('factor', 0)) {
         Event::error(_("Calculation factor must be valid positive number."));
         JS::set_focus('factor');
-        return FALSE;
+
+        return false;
       }
-      return TRUE;
+
+      return true;
     }
   }
-
 

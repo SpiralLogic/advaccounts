@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class GL_QuickEntry {
-
+  class GL_QuickEntry
+  {
     /**
      * @static
      *
@@ -17,11 +17,11 @@
      * @param $base_amount
      * @param $base_desc
      */
-    public static function add($description, $type, $base_amount, $base_desc) {
-      $sql = "INSERT INTO quick_entries (description, type, base_amount, base_desc)
-		VALUES (" . DB::escape($description) . ", " . DB::escape($type) . ", "
-        . DB::escape($base_amount) . ", " . DB::escape($base_desc) . ")";
-
+    public static function add($description, $type, $base_amount, $base_desc)
+    {
+      $sql
+        = "INSERT INTO quick_entries (description, type, base_amount, base_desc)
+        VALUES (" . DB::escape($description) . ", " . DB::escape($type) . ", " . DB::escape($base_amount) . ", " . DB::escape($base_desc) . ")";
       DB::query($sql, "could not insert quick entry for $description");
     }
     /**
@@ -33,12 +33,11 @@
      * @param $base_amount
      * @param $base_desc
      */
-    public static function update($selected_id, $description, $type, $base_amount, $base_desc) {
+    public static function update($selected_id, $description, $type, $base_amount, $base_desc)
+    {
       $sql = "UPDATE quick_entries	SET description = " . DB::escape($description) . ",
-			type=" . DB::escape($type) . ", base_amount=" . DB::escape($base_amount)
-        . ", base_desc=" . DB::escape($base_desc) . "
-			WHERE id = " . DB::escape($selected_id);
-
+            type=" . DB::escape($type) . ", base_amount=" . DB::escape($base_amount) . ", base_desc=" . DB::escape($base_desc) . "
+            WHERE id = " . DB::escape($selected_id);
       DB::query($sql, "could not update quick entry for $selected_id");
     }
     /**
@@ -46,9 +45,9 @@
      *
      * @param $selected_id
      */
-    public static function delete($selected_id) {
+    public static function delete($selected_id)
+    {
       $sql = "DELETE FROM quick_entries WHERE id=" . DB::escape($selected_id);
-
       DB::query($sql, "could not delete quick entry $selected_id");
     }
     /**
@@ -61,13 +60,14 @@
      * @param $dim
      * @param $dim2
      */
-    public static function add_line($qid, $action, $dest_id, $amount, $dim, $dim2) {
-      $sql = "INSERT INTO quick_entry_lines
-			(qid, action, dest_id, amount, dimension_id, dimension2_id)
-		VALUES
-			($qid, " . DB::escape($action) . "," . DB::escape($dest_id) . ",
-				" . DB::escape($amount) . ", " . DB::escape($dim) . ", " . DB::escape($dim2) . ")";
-
+    public static function add_line($qid, $action, $dest_id, $amount, $dim, $dim2)
+    {
+      $sql
+        = "INSERT INTO quick_entry_lines
+            (qid, action, dest_id, amount, dimension_id, dimension2_id)
+        VALUES
+            ($qid, " . DB::escape($action) . "," . DB::escape($dest_id) . ",
+                " . DB::escape($amount) . ", " . DB::escape($dim) . ", " . DB::escape($dim2) . ")";
       DB::query($sql, "could not insert quick entry line for $qid");
     }
     /**
@@ -81,13 +81,11 @@
      * @param $dim
      * @param $dim2
      */
-    public static function update_line($selected_id, $qid, $action, $dest_id, $amount, $dim, $dim2) {
-      $sql = "UPDATE quick_entry_lines SET qid = " . DB::escape($qid)
-        . ", action=" . DB::escape($action) . ",
-			dest_id=" . DB::escape($dest_id) . ", amount=" . DB::escape($amount)
-        . ", dimension_id=" . DB::escape($dim) . ", dimension2_id=" . DB::escape($dim2) . "
-			WHERE id = " . DB::escape($selected_id);
-
+    public static function update_line($selected_id, $qid, $action, $dest_id, $amount, $dim, $dim2)
+    {
+      $sql = "UPDATE quick_entry_lines SET qid = " . DB::escape($qid) . ", action=" . DB::escape($action) . ",
+            dest_id=" . DB::escape($dest_id) . ", amount=" . DB::escape($amount) . ", dimension_id=" . DB::escape($dim) . ", dimension2_id=" . DB::escape($dim2) . "
+            WHERE id = " . DB::escape($selected_id);
       DB::query($sql, "could not update quick entry line for $selected_id");
     }
     /**
@@ -95,9 +93,9 @@
      *
      * @param $selected_id
      */
-    public static function delete_line($selected_id) {
+    public static function delete_line($selected_id)
+    {
       $sql = "DELETE FROM quick_entry_lines WHERE id=" . DB::escape($selected_id);
-
       DB::query($sql, "could not delete quick entry line $selected_id");
     }
     /**
@@ -107,13 +105,14 @@
      *
      * @return bool
      */
-    public static function has($type = NULL) {
+    public static function has($type = null)
+    {
       $sql = "SELECT id FROM quick_entries";
-      if ($type != NULL) {
+      if ($type != null) {
         $sql .= " WHERE type=" . DB::escape($type);
       }
-
       $result = DB::query($sql, "could not retreive quick entries");
+
       return DB::num_rows($result) > 0;
     }
     /**
@@ -123,9 +122,10 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($type = NULL) {
+    public static function get_all($type = null)
+    {
       $sql = "SELECT * FROM quick_entries";
-      if ($type != NULL) {
+      if ($type != null) {
         $sql .= " WHERE type=" . DB::escape($type);
       }
       $sql .= " ORDER BY description";
@@ -139,9 +139,9 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    public static function get($selected_id) {
+    public static function get($selected_id)
+    {
       $sql = "SELECT * FROM quick_entries WHERE id=" . DB::escape($selected_id);
-
       $result = DB::query($sql, "could not retreive quick entry $selected_id");
 
       return DB::fetch($result);
@@ -153,16 +153,18 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_lines($qid) {
-      $sql = "SELECT quick_entry_lines.*, chart_master.account_name,
-				tax_types.name as tax_name
-			FROM quick_entry_lines
-			LEFT JOIN chart_master ON
-				quick_entry_lines.dest_id = chart_master.account_code
-			LEFT JOIN tax_types ON
-				quick_entry_lines.dest_id = tax_types.id
-			WHERE
-				qid=" . DB::escape($qid) . " ORDER by id";
+    public static function get_lines($qid)
+    {
+      $sql
+        = "SELECT quick_entry_lines.*, chart_master.account_name,
+                tax_types.name as tax_name
+            FROM quick_entry_lines
+            LEFT JOIN chart_master ON
+                quick_entry_lines.dest_id = chart_master.account_code
+            LEFT JOIN tax_types ON
+                quick_entry_lines.dest_id = tax_types.id
+            WHERE
+                qid=" . DB::escape($qid) . " ORDER by id";
 
       return DB::query($sql, "could not retreive quick entries");
     }
@@ -173,10 +175,11 @@
      *
      * @return bool
      */
-    public static function has_lines($qid) {
+    public static function has_lines($qid)
+    {
       $sql = "SELECT id FROM quick_entry_lines WHERE qid=" . DB::escape($qid);
-
       $result = DB::query($sql, "could not retreive quick entries");
+
       return DB::num_rows($result) > 0;
     }
     /**
@@ -186,14 +189,13 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    public static function has_line($selected_id) {
+    public static function has_line($selected_id)
+    {
       $sql = "SELECT * FROM quick_entry_lines WHERE id=" . DB::escape($selected_id);
-
       $result = DB::query($sql, "could not retreive quick entry for $selected_id");
 
       return DB::fetch($result);
     }
-
     //
     //	Expands selected quick entry $id into GL posings and adds to order.
     //		returns calculated amount posted to bank GL account.
@@ -209,13 +211,13 @@
      *
      * @return int
      */
-    public static function show_menu(&$order, $id, $base, $type, $descr = '') {
+    public static function show_menu(&$order, $id, $base, $type, $descr = '')
+    {
       $bank_amount = 0;
-      if (!isset($id) || $id == NULL || $id == "") {
+      if (!isset($id) || $id == null || $id == "") {
         Event::error(_("No Quick Entries are defined."));
         JS::set_focus('total_amount');
-      }
-      else {
+      } else {
         if ($type == QE_DEPOSIT) {
           $base = -$base;
         }
@@ -241,13 +243,12 @@
               }
           }
         }
-        $first   = TRUE;
+        $first   = true;
         $taxbase = 0;
         if (!count($qe_lines)) {
           Event::error(_('There are no lines for this quick entry!'));
           Page::footer_exit();
         }
-
         foreach ($qe_lines as $qe_line) {
           switch (strtolower($qe_line['action'])) {
             case "=": // post current base amount to GL account
@@ -280,12 +281,11 @@
             case "t-": // ditto & reduce base amount
               if ($first) {
                 $taxbase = $base / ($totrate + 100);
-                $first   = FALSE;
+                $first   = false;
               }
               if (substr($qe_line['action'], 0, 1) != 'T') {
                 $part = $taxbase;
-              }
-              else {
+              } else {
                 $part = $base / 100;
               }
               $item_tax = Tax_Types::get($qe_line['dest_id']);
@@ -305,35 +305,34 @@
               if ($tax == 0) {
                 continue 2;
               }
-              $gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) ? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
+              $gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) ? $item_tax['sales_gl_code'] :
+                $item_tax['purchasing_gl_code'];
               if (!Tax_Types::is_tax_gl_unique($gl_code)) {
                 Event::error(_("Cannot post to GL account used by more than one tax type."));
                 break 2;
               }
               if ($type != QE_SUPPINV) {
                 $order->add_gl_item($gl_code, $qe_line['dimension_id'], $qe_line['dimension2_id'], $tax, $qe['description']);
-              }
-              else {
+              } else {
                 $acc_name = GL_Account::get_name($gl_code);
                 $order->add_gl_codes_to_trans($gl_code, $acc_name, $qe_line['dimension_id'], $qe_line['dimension2_id'], $tax, $qe['description']);
               }
               if (strpos($qe_line['action'], '+')) {
                 $base += $tax;
-              }
-              elseif (strpos($qe_line['action'], '-')) {
+              } elseif (strpos($qe_line['action'], '-')) {
                 $base -= $tax;
               }
               continue 2;
           }
           if ($type != QE_SUPPINV) {
             $order->add_gl_item($qe_line['dest_id'], $qe_line['dimension_id'], $qe_line['dimension2_id'], $part, $qe['description']);
-          }
-          else {
+          } else {
             $acc_name = GL_Account::get_name($qe_line['dest_id']);
             $order->add_gl_codes_to_trans($qe_line['dest_id'], $acc_name, $qe_line['dimension_id'], $qe_line['dimension2_id'], $part, $qe['description']);
           }
         }
       }
+
       return $bank_amount;
     }
     /**
@@ -346,15 +345,20 @@
      *
      * @return string
      */
-    public static function select($name, $selected_id = NULL, $type = NULL, $submit_on_change = FALSE) {
-      $where = FALSE;
+    public static function select($name, $selected_id = null, $type = null, $submit_on_change = false)
+    {
+      $where = false;
       $sql   = "SELECT id, description FROM quick_entries";
-      if ($type != NULL) {
+      if ($type != null) {
         $sql .= " WHERE type=$type";
       }
+
       return select_box($name, $selected_id, $sql, 'id', 'description', array(
-        'spec_id' => '', 'order' => 'description', 'select_submit' => $submit_on_change, 'async' => FALSE
-      ));
+                                                                             'spec_id'       => '',
+                                                                             'order'         => 'description',
+                                                                             'select_submit' => $submit_on_change,
+                                                                             'async'         => false
+                                                                        ));
     }
     /**
      * @static
@@ -365,8 +369,9 @@
      * @param      $type
      * @param bool $submit_on_change
      */
-    public static function cells($label, $name, $selected_id = NULL, $type, $submit_on_change = FALSE) {
-      if ($label != NULL) {
+    public static function cells($label, $name, $selected_id = null, $type, $submit_on_change = false)
+    {
+      if ($label != null) {
         echo "<td>$label</td>\n";
       }
       echo "<td>";
@@ -382,9 +387,10 @@
      * @param      $type
      * @param bool $submit_on_change
      */
-    public static function row($label, $name, $selected_id = NULL, $type, $submit_on_change = FALSE) {
+    public static function row($label, $name, $selected_id = null, $type, $submit_on_change = false)
+    {
       echo "<tr><td class='label'>$label</td>";
-      GL_QuickEntry::cells(NULL, $name, $selected_id, $type, $submit_on_change);
+      GL_QuickEntry::cells(null, $name, $selected_id, $type, $submit_on_change);
       echo "</tr>\n";
     }
     /**
@@ -395,7 +401,8 @@
      * @param null $selected_id
      * @param bool $submit_on_change
      */
-    public static function actions($label, $name, $selected_id = NULL, $submit_on_change = FALSE) {
+    public static function actions($label, $name, $selected_id = null, $submit_on_change = false)
+    {
       global $quick_actions;
       echo "<tr><td class='label'>$label</td><td>";
       echo array_selector($name, $selected_id, $quick_actions, array('select_submit' => $submit_on_change));
@@ -409,7 +416,8 @@
      * @param null $selected_id
      * @param bool $submit_on_change
      */
-    public static function types($label, $name, $selected_id = NULL, $submit_on_change = FALSE) {
+    public static function types($label, $name, $selected_id = null, $submit_on_change = false)
+    {
       global $quick_entry_types;
       echo "<tr><td class='label'>$label</td><td>";
       echo array_selector($name, $selected_id, $quick_entry_types, array('select_submit' => $submit_on_change));

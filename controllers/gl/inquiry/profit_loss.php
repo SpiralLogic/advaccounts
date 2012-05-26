@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   $js = "";
   Page::start(_($help_context = "Profit & Loss Drilldown"), SA_GLANALYTIC);
   // Ajax updates
@@ -49,7 +48,8 @@
    *
    * @return array
    */
-  function display_type($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension = 0, $dimension2 = 0, $drilldown) {
+  function display_type($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension = 0, $dimension2 = 0, $drilldown)
+  {
     global $levelptr, $k;
     $code_per_balance  = 0;
     $code_acc_balance  = 0;
@@ -58,21 +58,19 @@
     unset($totals_arr);
     $totals_arr = array();
     //Get Accounts directly under this group/type
-    $result = GL_Account::get_all(NULL, NULL, $type);
+    $result = GL_Account::get_all(null, null, $type);
     while ($account = DB::fetch($result)) {
       $per_balance = GL_Trans::get_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
       if ($compare == 2) {
         $acc_balance = GL_Trans::get_budget_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
-      }
-      else {
+      } else {
         $acc_balance = GL_Trans::get_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
       }
       if (!$per_balance && !$acc_balance) {
         continue;
       }
       if ($drilldown && $levelptr == 0) {
-        $url = "<a href='" . BASE_URL . "gl/inquiry/gl_account.php?TransFromDate=" . $from . "&TransToDate=" . $to
-          . "&account=" . $account['account_code'] . "'>" . $account['account_code'] . " " . $account['account_name'] . "</a>";
+        $url = "<a href='" . BASE_URL . "gl/inquiry/gl_account.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&account=" . $account['account_code'] . "'>" . $account['account_code'] . " " . $account['account_name'] . "</a>";
         Row::start("class='stockmankobg'");
         Cell::label($url);
         Cell::amount($per_balance * $convert);
@@ -85,7 +83,7 @@
     }
     $levelptr = 1;
     //Get Account groups/types under this group/type
-    $result = GL_Type::get_all(FALSE, FALSE, $type);
+    $result = GL_Type::get_all(false, false, $type);
     while ($accounttype = DB::fetch($result)) {
       $totals_arr = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, $pdec, $rep, $dimension, $dimension2, $drilldown);
       $per_balance_total += $totals_arr[0];
@@ -108,9 +106,7 @@
       ) //END Patch#2
         //elseif ($drilldown && $type != $_POST["AccGrp"])
       {
-        $url = "<a href='" . BASE_URL . "gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to .
-          "&Compare=" . $compare . "&AccGrp=" . $type . "'>" . $typename . "</a>";
-
+        $url = "<a href='" . BASE_URL . "gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&Compare=" . $compare . "&AccGrp=" . $type . "'>" . $typename . "</a>";
         Cell::label($url);
         Cell::amount(($code_per_balance + $per_balance_total) * $convert);
         Cell::amount(($code_acc_balance + $acc_balance_total) * $convert);
@@ -120,6 +116,7 @@
     }
     $totals_arr[0] = $code_per_balance + $per_balance_total;
     $totals_arr[1] = $code_acc_balance + $acc_balance_total;
+
     return $totals_arr;
   }
 
@@ -129,37 +126,40 @@
    *
    * @return float|int
    */
-  function Achieve($d1, $d2) {
+  function Achieve($d1, $d2)
+  {
     if ($d1 == 0 && $d2 == 0) {
       return 0;
-    }
-    elseif ($d2 == 0) {
+    } elseif ($d2 == 0) {
       return 999;
     }
     $ret = ($d1 / $d2 * 100.0);
     if ($ret > 999) {
       $ret = 999;
     }
+
     return $ret;
   }
 
-  function inquiry_controls() {
+  function inquiry_controls()
+  {
     Table::start('tablestyle_noborder');
-    date_cells(_("From:"), 'TransFromDate', '', NULL, -30);
+    date_cells(_("From:"), 'TransFromDate', '', null, -30);
     date_cells(_("To:"), 'TransToDate');
     //Compare Combo
     global $sel;
     $sel = array(_("Accumulated"), _("Period Y-1"), _("Budget"));
     echo "<td>" . _("Compare to") . ":</td>\n";
     echo "<td>";
-    echo array_selector('Compare', NULL, $sel);
+    echo array_selector('Compare', null, $sel);
     echo "</td>\n";
     submit_cells('Show', _("Show"), '', '', 'default');
     Table::end();
     hidden('AccGrp');
   }
 
-  function display_profit_and_loss() {
+  function display_profit_and_loss()
+  {
     global $sel;
     $dim       = DB_Company::get_pref('use_dimension');
     $dimension = $dimension2 = 0;
@@ -178,29 +178,28 @@
       $end = $to;
       if ($compare == 2) {
         $begin = $from;
-      }
-      else {
+      } else {
         $begin = Dates::begin_fiscalyear();
       }
-    }
-    elseif ($compare == 1) {
+    } elseif ($compare == 1) {
       $begin = Dates::add_months($from, -12);
       $end   = Dates::add_months($to, -12);
     }
     Display::div_start('pl_tbl');
     Table::start('tablestyle grid width50');
-    $tableheader = "<tr>
+    $tableheader
+      = "<tr>
  <td class='tablehead'>" . _("Group/Account Name") . "</td>
  <td class='tablehead'>" . _("Period") . "</td>
-		<td class='tablehead'>" . $sel[$compare] . "</td>
-		<td class='tablehead'>" . _("Achieved %") . "</td>
+        <td class='tablehead'>" . $sel[$compare] . "</td>
+        <td class='tablehead'>" . _("Achieved %") . "</td>
  </tr>";
     if (!$drilldown) //Root Level
     {
       $parent   = -1;
       $classper = $classacc = $salesper = $salesacc = 0.0;
       //Get classes for PL
-      $classresult = GL_Class::get_all(FALSE, 0);
+      $classresult = GL_Class::get_all(false, 0);
       while ($class = DB::fetch($classresult)) {
         $class_per_total = 0;
         $class_acc_total = 0;
@@ -209,15 +208,13 @@
         Table::sectionTitle($class["class_name"], 4);
         echo $tableheader;
         //Get Account groups/types under this group/type
-        $typeresult = GL_Type::get_all(FALSE, $class['cid'], -1);
+        $typeresult = GL_Type::get_all(false, $class['cid'], -1);
         while ($accounttype = DB::fetch($typeresult)) {
           $TypeTotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, $pdec, $rep, $dimension, $dimension2, $drilldown);
           $class_per_total += $TypeTotal[0];
           $class_acc_total += $TypeTotal[1];
           if ($TypeTotal[0] != 0 || $TypeTotal[1] != 0) {
-            $url = "<a href='" . BASE_URL . "gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to .
-              "&Compare=" . $compare . "&AccGrp=" . $accounttype['id'] . "'>" . $accounttype['name'] . "</a>";
-
+            $url = "<a href='" . BASE_URL . "gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&Compare=" . $compare . "&AccGrp=" . $accounttype['id'] . "'>" . $accounttype['name'] . "</a>";
             Cell::label($url);
             Cell::amount($TypeTotal[0] * $convert);
             Cell::amount($TypeTotal[1] * $convert);
@@ -241,8 +238,7 @@
       Cell::amount($salesacc * -1);
       Cell::amount(achieve($salesper, $salesacc));
       Row::end();
-    }
-    else {
+    } else {
       //Level Pointer : Global variable defined in order to control display of root
       global $levelptr;
       $levelptr    = 0;

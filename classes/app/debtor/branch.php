@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Debtor_Branch extends DB_abstract {
-
+  class Debtor_Branch extends DB_abstract
+  {
     /**
      * @var string
      */
@@ -136,7 +136,8 @@
     /**
      * @param int|null $id
      */
-    public function __construct($id = NULL) {
+    public function __construct($id = null)
+    {
       $this->id = &$this->branch_id;
       parent::__construct($id);
       $this->name         = &$this->br_name;
@@ -146,15 +147,18 @@
     /**
      * @return array|null
      */
-    public function delete() {
+    public function delete()
+    {
       DB::delete('branches')->where('branch_id=', $this->branch_id)->exec();
       $this->_new();
-      return $this->_status(TRUE, 'delete', "Branch deleted.");
+
+      return $this->_status(true, 'delete', "Branch deleted.");
     }
     /**
      * @return string
      */
-    public function getAddress() {
+    public function getAddress()
+    {
       $address = $this->br_address . "\n";
       if ($this->city) {
         $address .= $this->city;
@@ -165,26 +169,31 @@
       if ($this->postcode) {
         $address .= ", " . $this->postcode;
       }
+
       return $address;
     }
     /**
      * @return array|bool|null
      */
-    protected function _canProcess() {
+    protected function _canProcess()
+    {
       if (strlen($this->br_name) < 1) {
-        return $this->_status(FALSE, 'write', 'Branch name can not be empty');
+        return $this->_status(false, 'write', 'Branch name can not be empty');
       }
-      return TRUE;
+
+      return true;
     }
     /**
      * @return void
      */
-    protected function _countTransactions() {
+    protected function _countTransactions()
+    {
     }
     /**
      * @return void
      */
-    protected function _defaults() {
+    protected function _defaults()
+    {
       $company_record                 = DB_Company::get_prefs();
       $this->branch_id                = 0;
       $this->default_location         = Config::get('default.location');
@@ -196,16 +205,19 @@
     /**
      * @return array|null
      */
-    protected function _new() {
+    protected function _new()
+    {
       $this->_defaults();
-      return $this->_status(TRUE, 'new', 'Now working with a new Branch');
+
+      return $this->_status(true, 'new', 'Now working with a new Branch');
     }
     /**
      * @param null $changes
      *
      * @return array|null|void
      */
-    protected function setFromArray($changes = NULL) {
+    protected function setFromArray($changes = null)
+    {
       parent::setFromArray($changes);
       if (!empty($this->city)) {
         $this->br_name = $this->city . " " . strtoupper($this->state);
@@ -219,22 +231,28 @@
      *
      * @return array|bool|null
      */
-    protected function _read($params = FALSE) {
+    protected function _read($params = false)
+    {
       if (!$params) {
-        return $this->_status(FALSE, 'read', 'No Branch parameters provided');
+        return $this->_status(false, 'read', 'No Branch parameters provided');
       }
       $this->_defaults();
       if (!is_array($params)) {
         $params = array('branch_id' => $params);
       }
-      $sql = DB::select('b.*', 'a.description', 's.salesman_name', 't.name AS tax_group_name')->from('branches b, debtors c, areas a, salesman s, tax_groups t')->where(array(
-                                                                                                                                                                             'b.debtor_id=c.debtor_id', 'b.tax_group_id=t.id', 'b.area=a.area_code', 'b.salesman=s.salesman_code'
-                                                                                                                                                                        ));
+      $sql = DB::select('b.*', 'a.description', 's.salesman_name', 't.name AS tax_group_name')
+        ->from('branches b, debtors c, areas a, salesman s, tax_groups t')->where(array(
+                                                                                       'b.debtor_id=c.debtor_id',
+                                                                                       'b.tax_group_id=t.id',
+                                                                                       'b.area=a.area_code',
+                                                                                       'b.salesman=s.salesman_code'
+                                                                                  ));
       foreach ($params as $key => $value) {
         $sql->where("b.$key=", $value);
       }
       DB::fetch()->intoClass($this);
-      return $this->_status(TRUE, 'read', 'Read Branch from Database');
+
+      return $this->_status(true, 'read', 'Read Branch from Database');
     }
     /**
      * @static
@@ -249,15 +267,18 @@
      *
      * @return string
      */
-    public static function select($customer_id, $name, $selected_id = NULL, $spec_option = TRUE, $enabled = TRUE, $submit_on_change = FALSE, $editkey = FALSE) {
-      $sql = "SELECT branch_id, branch_ref FROM branches
-			WHERE branch_ref <> 'accounts' AND inactive <> 1  AND debtor_id='" . $customer_id . "' ";
-
+    public static function select($customer_id, $name, $selected_id = null, $spec_option = true, $enabled = true, $submit_on_change = false, $editkey = false)
+    {
+      $sql
+        = "SELECT branch_id, branch_ref FROM branches
+            WHERE branch_ref <> 'accounts' AND inactive <> 1  AND debtor_id='" . $customer_id . "' ";
       $where = $enabled ? array("disable_trans = 0") : array();
+
       return select_box($name, $selected_id, $sql, 'branch_id', 'br_name', array(
                                                                                 'where'         => $where,
                                                                                 'order'         => array('branch_ref'),
-                                                                                'spec_option'   => $spec_option === TRUE ? _('All branches') : $spec_option,
+                                                                                'spec_option'   => $spec_option === true ?
+                                                                                  _('All branches') : $spec_option,
                                                                                 'spec_id'       => ALL_TEXT,
                                                                                 'select_submit' => $submit_on_change,
                                                                                 'sel_hint'      => _('Select customer branch')
@@ -277,8 +298,9 @@
      *
      * @return void
      */
-    public static function cells($label, $customer_id, $name, $selected_id = NULL, $all_option = TRUE, $enabled = TRUE, $submit_on_change = FALSE, $editkey = FALSE) {
-      if ($label != NULL) {
+    public static function cells($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false)
+    {
+      if ($label != null) {
         echo "<td>$label</td>\n";
       }
       echo "<td>";
@@ -299,11 +321,11 @@
      *
      * @return void
      */
-    public static function row($label, $customer_id, $name, $selected_id = NULL, $all_option = TRUE, $enabled = TRUE, $submit_on_change = FALSE, $editkey = FALSE) {
+    public static function row($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false)
+    {
       echo "<tr><td class='label'>$label</td>";
-      Debtor_Branch::cells(NULL, $customer_id, $name, $selected_id, $all_option, $enabled, $submit_on_change, $editkey);
+      Debtor_Branch::cells(null, $customer_id, $name, $selected_id, $all_option, $enabled, $submit_on_change, $editkey);
       echo "</tr>";
     }
   }
-
 

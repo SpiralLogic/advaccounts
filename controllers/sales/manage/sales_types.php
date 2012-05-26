@@ -7,10 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Sales Types"), SA_SALESTYPES);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
-
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM && Sales_Type::can_process()) {
     Sales_Type::add($_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, Validation::input_num('factor'));
     Event::success(_('New sales type has been added'));
@@ -29,15 +27,13 @@
     $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this sale type because customer transactions have been created using this sales type."));
-    }
-    else {
+    } else {
       $sql    = "SELECT COUNT(*) FROM debtors WHERE sales_type=" . DB::escape($selected_id);
       $result = DB::query($sql, "The number of customers using this Sales type record could not be retrieved");
       $myrow  = DB::fetch_row($result);
       if ($myrow[0] > 0) {
         Event::error(_("Cannot delete this sale type because customers are currently set up to use this sales type."));
-      }
-      else {
+      } else {
         Sales_Type::delete($selected_id);
         Event::notice(_('Selected sales type has been deleted'));
       }
@@ -61,8 +57,7 @@
   while ($myrow = DB::fetch($result)) {
     if ($myrow["id"] == $base_sales) {
       Row::start("class='overduebg'");
-    }
-    else {
+    } else {
     }
     Cell::label($myrow["sales_type"]);
     $f = Num::format($myrow["factor"], 4);
@@ -94,16 +89,14 @@
       $_POST['factor']       = Num::format($myrow["factor"], 4);
     }
     hidden('selected_id', $selected_id);
-  }
-  else {
+  } else {
     $_POST['factor'] = Num::format(1, 4);
   }
   text_row_ex(_("Sales Type Name") . ':', 'sales_type', 20);
-  amount_row(_("Calculation factor") . ':', 'factor', NULL, NULL, NULL, 4);
+  amount_row(_("Calculation factor") . ':', 'factor', null, null, null, 4);
   check_row(_("Tax included") . ':', 'tax_included', $_POST['tax_included']);
   Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();
-
 

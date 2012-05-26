@@ -35,12 +35,14 @@
   /**
    * @return bool
    */
-  function can_process() {
+  function can_process()
+  {
     global $wo_details;
     if (!Ref::is_valid($_POST['ref'])) {
       Event::error(_("You must enter a reference."));
       JS::set_focus('ref');
-      return FALSE;
+
+      return false;
     }
     if (!Ref::is_new($_POST['ref'], ST_MANURECEIVE)) {
       $_POST['ref'] = Ref::get_next(ST_MANURECEIVE);
@@ -48,22 +50,25 @@
     if (!Validation::post_num('quantity', 0)) {
       Event::error(_("The quantity entered is not a valid number or less then zero."));
       JS::set_focus('quantity');
-      return FALSE;
+
+      return false;
     }
     if (!Dates::is_date($_POST['date_'])) {
       Event::error(_("The entered date is invalid."));
       JS::set_focus('date_');
-      return FALSE;
-    }
-    elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
+
+      return false;
+    } elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
       Event::error(_("The entered date is not in fiscal year."));
       JS::set_focus('date_');
-      return FALSE;
+
+      return false;
     }
     if (Dates::date_diff2(Dates::sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
       Event::error(_("The production date cannot be before the release date of the work order."));
       JS::set_focus('date_');
-      return FALSE;
+
+      return false;
     }
     // if unassembling we need to check the qoh
     if (($_POST['ProductionType'] == 0) && !DB_Company::get_pref('allow_negative_stock')) {
@@ -72,12 +77,13 @@
       if (-Validation::input_num('quantity') + $qoh < 0) {
         Event::error(_("The unassembling cannot be processed because there is insufficient stock."));
         JS::set_focus('quantity');
-        return FALSE;
+
+        return false;
       }
     }
     // if production we need to check the qoh of the wo requirements
     if (($_POST['ProductionType'] == 1) && !DB_Company::get_pref('allow_negative_stock')) {
-      $err    = FALSE;
+      $err    = false;
       $result = WO_Requirements::get($_POST['selected_id']);
       while ($row = DB::fetch($result)) {
         if ($row['mb_flag'] == 'D') // service, non stock
@@ -87,18 +93,20 @@
         $qoh = Item::get_qoh_on_date($row["stock_id"], $row["loc_code"], $_POST['date_']);
         if ($qoh - $row['units_req'] * Validation::input_num('quantity') < 0) {
           Event::error(_("The production cannot be processed because a required item would cause a negative inventory balance :") . " " . $row['stock_id'] . " - " . $row['description']);
-          $err = TRUE;
+          $err = true;
         }
       }
       if ($err) {
         JS::set_focus('quantity');
-        return FALSE;
+
+        return false;
       }
     }
-    return TRUE;
+
+    return true;
   }
 
-  if ((isset($_POST['Process']) || isset($_POST['ProcessAndClose'])) && can_process() == TRUE) {
+  if ((isset($_POST['Process']) || isset($_POST['ProcessAndClose'])) && can_process() == true) {
     $close_wo = 0;
     if (isset($_POST['ProcessAndClose']) && ($_POST['ProcessAndClose'] != "")) {
       $close_wo = 1;
@@ -125,13 +133,12 @@
     $_POST['ProductionType'] = 1;
   }
   yesno_list_row(_("Type:"), 'ProductionType', $_POST['ProductionType'], _("Produce Finished Items"), _("Return Items to Work Order"));
-  small_qty_row(_("Quantity:"), 'quantity', NULL, NULL, NULL, $dec);
+  small_qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
   date_row(_("Date:"), 'date_');
-  textarea_row(_("Memo:"), 'memo_', NULL, 40, 3);
+  textarea_row(_("Memo:"), 'memo_', null, 40, 3);
   Table::end(1);
   submit_center_first('Process', _("Process"), '', 'default');
-  submit_center_last('ProcessAndClose', _("Process And Close Order"), '', TRUE);
+  submit_center_last('ProcessAndClose', _("Process And Close Order"), '', true);
   end_form();
   Page::end();
-
 

@@ -17,11 +17,11 @@
   Page::start(_($help_context = "Messages"), SA_OPEN, Input::request('frame'));
   HTML::div(array('style' => 'margin:0 auto;text-align:center'));
   Users::row(_("User:"), 'user_id');
-  HTML::br(FALSE)->label(array(
+  HTML::br(false)->label(array(
     'content' => "Subject: ",
     'for'     => 'subject'
   ))->br->input('subject', array('size' => 50))->label;
-  HTML::br(FALSE)->label(array(
+  HTML::br(false)->label(array(
     'content' => "Message: ",
     'for'     => 'message'
   ))->br->textarea('message', array(

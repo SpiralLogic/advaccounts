@@ -7,35 +7,33 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Bank_UI {
-
+  class Bank_UI
+  {
     /**
      * @static
      *
      * @param $order
      */
-    public static function header($order) {
-
+    public static function header($order)
+    {
       $payment = $order->trans_type == ST_BANKPAYMENT;
       Display::div_start('pmt_header');
       Table::startOuter('tablestyle2 width90'); // outer table
       Table::section(1);
-      Bank_Account::row($payment ? _("From:") : _("To:"), 'bank_account', NULL, TRUE);
-      date_row(_("Date:"), 'date_', '', TRUE, 0, 0, 0, NULL, TRUE);
+      Bank_Account::row($payment ? _("From:") : _("To:"), 'bank_account', null, true);
+      date_row(_("Date:"), 'date_', '', true, 0, 0, 0, null, true);
       Table::section(2, "33%");
       if (!isset($_POST['PayType'])) {
         if (isset($_GET['PayType'])) {
           $_POST['PayType'] = $_GET['PayType'];
-        }
-        else {
+        } else {
           $_POST['PayType'] = "";
         }
       }
       if (!isset($_POST['person_id'])) {
         if (isset($_GET['PayPerson'])) {
           $_POST['person_id'] = $_GET['PayPerson'];
-        }
-        else {
+        } else {
           $_POST['person_id'] = "";
         }
       }
@@ -46,7 +44,7 @@
         Ajax::i()->activate('pagehelp');
         Ajax::i()->activate('editors');
       }
-      GL_UI::payment_person_type_row($payment ? _("Pay To:") : _("From:"), 'PayType', $_POST['PayType'], TRUE);
+      GL_UI::payment_person_type_row($payment ? _("Pay To:") : _("From:"), 'PayType', $_POST['PayType'], true);
       switch ($_POST['PayType']) {
         case PT_MISC :
           text_row_ex($payment ? _("To the Order of:") : _("Name:"), 'person_id', 40, 50);
@@ -55,29 +53,26 @@
         //	workorders_list_row(_("Work Order:"), 'person_id', null);
         //	break;
         case PT_SUPPLIER :
-          Creditor::row(_("Supplier:"), 'person_id', NULL, FALSE, TRUE, FALSE, TRUE);
+          Creditor::row(_("Supplier:"), 'person_id', null, false, true, false, true);
           break;
         case PT_CUSTOMER :
-          Debtor::row(_("Customer:"), 'person_id', NULL, FALSE, TRUE, FALSE, TRUE);
-          if (Input::post('person_id') && Validation::check(Validation::BRANCHES, _("No Branches for Customer"),
-            $_POST['person_id'])
+          Debtor::row(_("Customer:"), 'person_id', null, false, true, false, true);
+          if (Input::post('person_id') && Validation::check(Validation::BRANCHES, _("No Branches for Customer"), $_POST['person_id'])
           ) {
-            Debtor_Branch::row(_("Branch:"), $_POST['person_id'], 'PersonDetailID', NULL, FALSE, TRUE, TRUE, TRUE);
-          }
-          else {
+            Debtor_Branch::row(_("Branch:"), $_POST['person_id'], 'PersonDetailID', null, false, true, true, true);
+          } else {
             $_POST['PersonDetailID'] = ANY_NUMERIC;
             hidden('PersonDetailID');
           }
           break;
         case PT_QUICKENTRY :
-          GL_QuickEntry::row(_("Type") . ":", 'person_id', NULL, ($payment ? QE_PAYMENT : QE_DEPOSIT), TRUE);
+          GL_QuickEntry::row(_("Type") . ":", 'person_id', null, ($payment ? QE_PAYMENT : QE_DEPOSIT), true);
           $qid = GL_QuickEntry::get(get_post('person_id'));
           if (list_updated('person_id')) {
             unset($_POST['total_amount']); // enable default
             Ajax::i()->activate('total_amount');
           }
-          amount_row($qid['base_desc'] . ":", 'total_amount', Num::price_format($qid['base_amount']), NULL,
-            "&nbsp;&nbsp;" . submit('go', _("Go"), FALSE, FALSE, TRUE));
+          amount_row($qid['base_desc'] . ":", 'total_amount', Num::price_format($qid['base_amount']), null, "&nbsp;&nbsp;" . submit('go', _("Go"), false, false, true));
           break;
         //case payment_person_types::Project() :
         //	Dimensions::select_row(_("Dimension:"), 'person_id', $_POST['person_id'], false, null, true);
@@ -89,8 +84,7 @@
       Table::section(3, "33%");
       if (isset($_GET['NewPayment'])) {
         ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_BANKPAYMENT));
-      }
-      else {
+      } else {
         ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_BANKDEPOSIT));
       }
       Table::endOuter(1); // outer table
@@ -102,7 +96,8 @@
      * @param $title
      * @param $order
      */
-    public static function items($title, &$order) {
+    public static function items($title, &$order)
+    {
       $dim     = DB_Company::get_pref('use_dimension');
       $colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
       Display::heading($title);
@@ -112,14 +107,12 @@
         $th = array(
           _("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2", _("Amount"), _("Memo"), ""
         );
-      }
-      else {
+      } else {
         if ($dim == 1) {
           $th = array(
             _("Account Code"), _("Account Description"), _("Dimension"), _("Amount"), _("Memo"), ""
           );
-        }
-        else {
+        } else {
           $th = array(
             _("Account Code"), _("Account Description"), _("Amount"), _("Memo"), ""
           );
@@ -133,28 +126,25 @@
       $id = find_submit(MODE_EDIT);
       foreach ($order->gl_items as $line => $item) {
         if ($id != $line) {
-
           Cell::label($item->code_id);
           Cell::label($item->description);
           if ($dim >= 1) {
-            Cell::label(Dimensions::get_string($item->dimension_id, TRUE));
+            Cell::label(Dimensions::get_string($item->dimension_id, true));
           }
           if ($dim > 1) {
-            Cell::label(Dimensions::get_string($item->dimension2_id, TRUE));
+            Cell::label(Dimensions::get_string($item->dimension2_id, true));
           }
           //Cell::amount(abs($item->amount));
           if ($order->trans_type == ST_BANKDEPOSIT) {
             Cell::amount(-$item->amount);
-          }
-          else {
+          } else {
             Cell::amount($item->amount);
           }
           Cell::label($item->reference);
           edit_button_cell("Edit$line", _("Edit"), _('Edit document line'));
           delete_button_cell("Delete$line", _("Delete"), _('Remove line from document'));
           Row::end();
-        }
-        else {
+        } else {
           Bank_UI::item_controls($order, $dim, $line);
         }
       }
@@ -162,8 +152,7 @@
         Bank_UI::item_controls($order, $dim);
       }
       if ($order->count_gl_items()) {
-        Row::label(_("Total"), Num::format(abs($order->gl_items_total()), User::price_dec()),
-          "colspan=" . $colspan . " class='right'", "class='right'", 3);
+        Row::label(_("Total"), Num::format(abs($order->gl_items_total()), User::price_dec()), "colspan=" . $colspan . " class='right'", "class='right'", 3);
       }
       Table::end();
       Display::div_end();
@@ -175,8 +164,8 @@
      * @param      $dim
      * @param null $Index
      */
-    public static function item_controls($order, $dim, $Index = NULL) {
-
+    public static function item_controls($order, $dim, $Index = null)
+    {
       $payment = $order->trans_type == ST_BANKPAYMENT;
       Row::start();
       $id = find_submit(MODE_EDIT);
@@ -189,16 +178,15 @@
         $_POST['description']   = $item->description;
         $_POST['LineMemo']      = $item->reference;
         hidden('Index', $id);
-        echo GL_UI::all('code_id', NULL, TRUE, TRUE);
+        echo GL_UI::all('code_id', null, true, true);
         if ($dim >= 1) {
-          Dimensions::cells(NULL, 'dimension_id', NULL, TRUE, " ", FALSE, 1);
+          Dimensions::cells(null, 'dimension_id', null, true, " ", false, 1);
         }
         if ($dim > 1) {
-          Dimensions::cells(NULL, 'dimension2_id', NULL, TRUE, " ", FALSE, 2);
+          Dimensions::cells(null, 'dimension2_id', null, true, " ", false, 2);
         }
         Ajax::i()->activate('items_table');
-      }
-      else {
+      } else {
         $_POST['amount']        = Num::price_format(0);
         $_POST['dimension_id']  = 0;
         $_POST['dimension2_id'] = 0;
@@ -209,8 +197,7 @@
         if ($_POST['PayType'] == PT_CUSTOMER) {
           $acc              = Sales_Branch::get_accounts($_POST['PersonDetailID']);
           $_POST['code_id'] = $acc['receivables_account'];
-        }
-        elseif ($_POST['PayType'] == PT_SUPPLIER) {
+        } elseif ($_POST['PayType'] == PT_SUPPLIER) {
           $acc              = Creditor::get_accounts_name($_POST['person_id']);
           $_POST['code_id'] = $acc['payable_account'];
         } //elseif ($_POST['PayType'] == PT_WORKORDER)
@@ -218,12 +205,12 @@
         else {
           $_POST['code_id'] = DB_Company::get_pref($payment ? 'default_cogs_act' : 'default_inv_sales_act');
         }
-        echo GL_UI::all('code_id', NULL, TRUE, TRUE);
+        echo GL_UI::all('code_id', null, true, true);
         if ($dim >= 1) {
-          Dimensions::cells(NULL, 'dimension_id', NULL, TRUE, " ", FALSE, 1);
+          Dimensions::cells(null, 'dimension_id', null, true, " ", false, 1);
         }
         if ($dim > 1) {
-          Dimensions::cells(NULL, 'dimension2_id', NULL, TRUE, " ", FALSE, 2);
+          Dimensions::cells(null, 'dimension2_id', null, true, " ", false, 2);
         }
       }
       if ($dim < 1) {
@@ -232,22 +219,21 @@
       if ($dim < 2) {
         hidden('dimension2_id', 0);
       }
-      amount_cells(NULL, 'amount');
-      text_cells_ex(NULL, 'LineMemo', 35, 255);
+      amount_cells(null, 'amount');
+      text_cells_ex(null, 'LineMemo', 35, 255);
       if ($id != -1) {
         button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
         button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
         JS::set_focus('amount');
-      }
-      else {
-        submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), TRUE);
+      } else {
+        submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), true);
       }
       Row::end();
     }
-
-    public static function option_controls() {
+    public static function option_controls()
+    {
       echo "<br><table class='center'>";
-      textarea_row(_("Memo"), 'memo_', NULL, 50, 3);
+      textarea_row(_("Memo"), 'memo_', null, 50, 3);
       echo "</table>";
     }
     /**
@@ -261,13 +247,20 @@
      *
      * @return string
      */
-    public static function  reconcile($account, $name, $selected_id = NULL, $submit_on_change = FALSE, $special_option = FALSE) {
-      $sql = "SELECT reconciled FROM bank_trans
-							WHERE bank_act=" . DB::escape($account) . " AND reconciled IS NOT NULL AND amount!=0
-							GROUP BY reconciled";
+    public static function  reconcile($account, $name, $selected_id = null, $submit_on_change = false, $special_option = false)
+    {
+      $sql
+        = "SELECT reconciled FROM bank_trans
+                            WHERE bank_act=" . DB::escape($account) . " AND reconciled IS NOT null AND amount!=0
+                            GROUP BY reconciled";
+
       return select_box($name, $selected_id, $sql, 'id', 'reconciled', array(
-        'spec_option' => $special_option, 'format' => '_format_date', 'spec_id' => '', 'select_submit' => $submit_on_change, 'order' => 'reconciled DESC'
-      ));
+                                                                            'spec_option'   => $special_option,
+                                                                            'format'        => '_format_date',
+                                                                            'spec_id'       => '',
+                                                                            'select_submit' => $submit_on_change,
+                                                                            'order'         => 'reconciled DESC'
+                                                                       ));
     }
     /**
      * @static
@@ -279,8 +272,9 @@
      * @param bool $submit_on_change
      * @param bool $special_option
      */
-    public static function  reconcile_cells($label, $account, $name, $selected_id = NULL, $submit_on_change = FALSE, $special_option = FALSE) {
-      if ($label != NULL) {
+    public static function  reconcile_cells($label, $account, $name, $selected_id = null, $submit_on_change = false, $special_option = false)
+    {
+      if ($label != null) {
         echo "<td>$label</td>\n";
       }
       echo "<td>";
@@ -293,7 +287,8 @@
      * @param        $bank_acc
      * @param string $parms
      */
-    public static function  balance_row($bank_acc, $parms = '') {
+    public static function  balance_row($bank_acc, $parms = '')
+    {
       $to  = Dates::add_days(Dates::today(), 1);
       $bal = get_balance_before_for_bank_account($bank_acc, $to);
       Row::label(_("Bank Balance:"), "<a target='_blank' " . ($bal < 0 ? 'class="redfg openWindow"' :
@@ -307,17 +302,21 @@
      * @param null $selected_id
      * @param bool $submit_on_change
      */
-    public static function  cash_accounts_row($label, $name, $selected_id = NULL, $submit_on_change = FALSE) {
-      $sql = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
-						FROM bank_accounts
-						WHERE bank_accounts.account_type=3";
-      if ($label != NULL) {
+    public static function  cash_accounts_row($label, $name, $selected_id = null, $submit_on_change = false)
+    {
+      $sql
+        = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
+                        FROM bank_accounts
+                        WHERE bank_accounts.account_type=3";
+      if ($label != null) {
         echo "<tr><td class='label'>$label</td>\n";
       }
       echo "<td>";
       echo select_box($name, $selected_id, $sql, 'id', 'bank_account_name', array(
-        'format' => '_format_add_curr', 'select_submit' => $submit_on_change, 'async' => TRUE
-      ));
+                                                                                 'format'        => '_format_add_curr',
+                                                                                 'select_submit' => $submit_on_change,
+                                                                                 'async'         => true
+                                                                            ));
       echo "</td></tr>\n";
     }
     /**
@@ -332,7 +331,8 @@
      *
      * @return null|string
      */
-    public static function  trans_view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
+    public static function  trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
+    {
       if ($label == "") {
         $label = $trans_no;
       }
@@ -347,10 +347,10 @@
           $viewer = "gl_deposit.php";
           break;
         default:
-          return NULL;
+          return null;
       }
+
       return Display::viewer_link($label, "gl/view/$viewer?trans_no=$trans_no", $class, $id, $icon);
     }
   }
-
 

@@ -12,17 +12,15 @@
   //
 
   JS::open_window(900, 500);
-  $order = Orders::session_get() ? : NULL;
+  $order = Orders::session_get() ? : null;
   if (isset($_GET[Orders::NEW_CREDIT])) {
     $_SESSION['page_title'] = _($help_context = "Customer Credit Note");
     $order                  = handle_new_credit(0);
-  }
-  elseif (isset($_GET[Orders::MODIFY_CREDIT])) {
+  } elseif (isset($_GET[Orders::MODIFY_CREDIT])) {
     $_SESSION['page_title'] = sprintf(_("Modifying Customer Credit Note #%d"), $_GET[Orders::MODIFY_CREDIT]);
     $order                  = handle_new_credit($_GET[Orders::MODIFY_CREDIT]);
     $help_context           = "Modifying Customer Credit Note";
-  }
-  else {
+  } else {
     $_SESSION['page_title'] = _($help_context = "Customer Credit Note");
   }
   Page::start($_SESSION['page_title'], SA_SALESCREDIT);
@@ -39,8 +37,8 @@
     $trans_type = ST_CUSTCREDIT;
     Event::success(sprintf(_("Credit Note # %d has been processed"), $credit_no));
     Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View this credit note")), 0, 1);
-    Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Print This Credit Invoice"), TRUE, ST_CUSTCREDIT), 0, 1);
-    Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), TRUE, ST_CUSTCREDIT, FALSE, "printlink", "", 1), 0, 1);
+    Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT), 0, 1);
+    Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1), 0, 1);
     Display::note(GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
     Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another &Credit Note"), "NewCredit=yes");
     Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
@@ -94,12 +92,11 @@
     Sales_Credit::option_controls($order);
     echo "</td></tr>";
     Table::end();
-  }
-  else {
+  } else {
     Event::error($customer_error);
   }
   submit_center_first(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
-  submit_center_last('ProcessCredit', _("Process Credit Note"), '', FALSE);
+  submit_center_last('ProcessCredit', _("Process Credit Note"), '', false);
   echo "</tr></table></div>";
   end_form();
   Page::end();
@@ -108,7 +105,8 @@
    *
    * @return Sales_Order
    */
-  function copy_to_cn($order) {
+  function copy_to_cn($order)
+  {
     $order->Comments      = $_POST['CreditText'];
     $order->document_date = $_POST['OrderDate'];
     $order->freight_cost  = Validation::input_num('ChargeFreightCost');
@@ -120,13 +118,15 @@
     $order->ship_via      = $_POST['ShipperID'];
     $order->dimension_id  = $_POST['dimension_id'];
     $order->dimension2_id = $_POST['dimension2_id'];
+
     return $order;
   }
 
   /**
    * @param $order
    */
-  function copy_from_cn($order) {
+  function copy_from_cn($order)
+  {
     $order                      = Sales_Order::check_edit_conflicts($order);
     $_POST['CreditText']        = $order->Comments;
     $_POST['customer_id']       = $order->customer_id;
@@ -150,11 +150,13 @@
    *
    * @return Sales_Order
    */
-  function handle_new_credit($trans_no) {
+  function handle_new_credit($trans_no)
+  {
     $order = new Sales_Order(ST_CUSTCREDIT, $trans_no);
     Orders::session_delete($order->order_id);
     $order->start();
     copy_from_cn($order);
+
     return $order;
   }
 
@@ -163,18 +165,18 @@
    *
    * @return bool
    */
-  function can_process($order) {
+  function can_process($order)
+  {
     $input_error = 0;
     if ($order->count_items() == 0 && (!Validation::post_num('ChargeFreightCost', 0))) {
-      return FALSE;
+      return false;
     }
     if ($order->trans_no == 0) {
       if (!Ref::is_valid($_POST['ref'])) {
         Event::error(_("You must enter a reference."));
         JS::set_focus('ref');
         $input_error = 1;
-      }
-      elseif (!Ref::is_new($_POST['ref'], ST_CUSTCREDIT)) {
+      } elseif (!Ref::is_new($_POST['ref'], ST_CUSTCREDIT)) {
         $_POST['ref'] = Ref::get_next(ST_CUSTCREDIT);
       }
     }
@@ -182,33 +184,38 @@
       Event::error(_("The entered date for the credit note is invalid."));
       JS::set_focus('OrderDate');
       $input_error = 1;
-    }
-    elseif (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
+    } elseif (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
       Event::error(_("The entered date is not in fiscal year."));
       JS::set_focus('OrderDate');
       $input_error = 1;
     }
+
     return ($input_error == 0);
   }
 
   /**
    * @return bool
    */
-  function check_item_data() {
+  function check_item_data()
+  {
     if (!Validation::post_num('qty', 0)) {
       Event::error(_("The quantity must be greater than zero."));
       JS::set_focus('qty');
-      return FALSE;
+
+      return false;
     }
     if (!Validation::post_num('price', 0)) {
       Event::error(_("The entered price is negative or invalid."));
       JS::set_focus('price');
-      return FALSE;
+
+      return false;
     }
     if (!Validation::post_num('Disc', 0, 100)) {
       Event::error(_("The entered discount percent is negative, greater than 100 or invalid."));
       JS::set_focus('Disc');
-      return FALSE;
+
+      return false;
     }
-    return TRUE;
+
+    return true;
   }

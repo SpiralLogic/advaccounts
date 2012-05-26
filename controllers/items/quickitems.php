@@ -12,13 +12,11 @@
   if (AJAX_REFERRER) {
     if (isset($_GET['term'])) {
       $data = Item::search($_GET['term']);
-    }
-    elseif (isset($_POST['id'])) {
+    } elseif (isset($_POST['id'])) {
       if (isset($_POST['name'])) {
         $item = new Item($_POST);
         $item->save($_POST);
-      }
-      else {
+      } else {
         $id   = Item::getStockId($_POST['id']);
         $item = new Item($id);
       }
@@ -49,15 +47,14 @@
     ));
     HTML::div();
     $id = 0;
-  }
-  else {
+  } else {
     $id = Item::getStockId($_GET['stock_id']);
   }
   $data['item']        = $item = new Item($id);
   $data['stockLevels'] = $item->getStockLevels();
   $data                = json_encode($data, JSON_NUMERIC_CHECK);
   $js                  = <<<JS
-	Items.onload($data);
+    Items.onload($data);
 JS;
   JS::onload($js);
   $menu = new MenuUI();
@@ -86,14 +83,14 @@ HTML;
   $menu->endTab();
   $menu->startTab("Accounts", "Accounts");
   echo <<<HTML
-	<div id="Accounts" class="left formbox">
-	<label for="tax_type_id"><span>Item Tax Type:</span>$tax_itemtype</label>
-		<label for="mb_flag"><span>Item Type:</span>$stock_type</label>
-	{{if sales_account}}	<label for="sales_account"><span>Sales Account:</span>$sales_account</label>{{/if}}
-	{{if inventory_account}}		<label for="inventory_account"><span>Inventory Account:</span>$inventory_account</label>{{/if}}
-	<label for="cogs_account"><span>COGS Account:</span>$cogs_account</label>
-	{{if adjustment_account}} <label for="adjustment_account"><span>Adjustments&nbsp;Account:</span>$adjustment_account</label> {{/if}}
-	{{if assembly_account}} <label for="assembly_account"><span>Assembly Account:</span>$assembly_account</label>{{/if}}</div>
+    <div id="Accounts" class="left formbox">
+    <label for="tax_type_id"><span>Item Tax Type:</span>$tax_itemtype</label>
+        <label for="mb_flag"><span>Item Type:</span>$stock_type</label>
+    {{if sales_account}}	<label for="sales_account"><span>Sales Account:</span>$sales_account</label>{{/if}}
+    {{if inventory_account}}		<label for="inventory_account"><span>Inventory Account:</span>$inventory_account</label>{{/if}}
+    <label for="cogs_account"><span>COGS Account:</span>$cogs_account</label>
+    {{if adjustment_account}} <label for="adjustment_account"><span>Adjustments&nbsp;Account:</span>$adjustment_account</label> {{/if}}
+    {{if assembly_account}} <label for="assembly_account"><span>Assembly Account:</span>$assembly_account</label>{{/if}}</div>
 HTML;
   $menu->endTab();
 
@@ -108,11 +105,11 @@ HTML;
   $menu->endTab();
   $menu->startTab("Website", "Website page for product");
   echo "<iframe id='webFrame' data-srcpre='" . Config::get('modules.webstore')['product_url'] . "' data-srcpost='" . Config::get('modules.webstore')['url_extension'] . "'
-	style='width:100%'
-	height='500' frameborder='0'></iframe> ";
+    style='width:100%'
+    height='500' frameborder='0'></iframe> ";
   $menu->endTab();
   $menu->render();
 
   UI::button('btnCancel', 'Cancel', array("style" => "display:none"));
   UI::button('btnSave', 'Save', array("style" => "display:none"));
-  Page::end(TRUE);
+  Page::end(true);

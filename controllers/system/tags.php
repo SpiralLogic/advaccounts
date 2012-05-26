@@ -7,13 +7,11 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   // For tag constants
   // Set up page security based on what type of tags we're working with
   if (Input::get('type') == "account" || get_post('type') == TAG_ACCOUNT) {
     Page::set_security(SA_GLACCOUNTTAGS);
-  }
-  else {
+  } else {
     if (Input::get('type') == "dimension" || get_post('type') == TAG_DIMENSION) {
       Page::set_security(SA_DIMTAGS);
     }
@@ -23,11 +21,9 @@
   if (!Input::post('type')) {
     if (Input::get('type') == "account") {
       $_POST['type'] = TAG_ACCOUNT;
-    }
-    elseif (Input::get('type') == "dimension") {
+    } elseif (Input::get('type') == "dimension") {
       $_POST['type'] = TAG_DIMENSION;
-    }
-    else {
+    } else {
       die(_("Unspecified tag type"));
     }
   }
@@ -42,15 +38,14 @@
       $_SESSION['page_title'] = _($help_context = "Dimension Tags");
   }
   Page::start($_SESSION['page_title']);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     if (can_process()) {
       if ($selected_id != -1) {
         if ($ret = Tags::update($selected_id, $_POST['name'], $_POST['description'])) {
           Event::success(_('Selected tag settings have been updated'));
         }
-      }
-      else {
+      } else {
         if ($ret = Tags::add(Input::post('type'), $_POST['name'], $_POST['description'])) {
           Event::success(_('New tag has been added'));
         }
@@ -79,7 +74,6 @@
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-
     Cell::label($myrow['name']);
     Cell::label($myrow['description']);
     inactive_control_cell($myrow["id"], $myrow["inactive"], 'tags', 'id');
@@ -111,13 +105,16 @@
   /**
    * @return bool
    */
-  function can_process() {
+  function can_process()
+  {
     if (strlen($_POST['name']) == 0) {
       Event::error(_("The tag name cannot be empty."));
       JS::set_focus('name');
-      return FALSE;
+
+      return false;
     }
-    return TRUE;
+
+    return true;
   }
 
   /**
@@ -125,16 +122,18 @@
    *
    * @return bool
    */
-  function can_delete($selected_id) {
+  function can_delete($selected_id)
+  {
     if ($selected_id == -1) {
-      return FALSE;
+      return false;
     }
     $result = Tags::get_associated_records($selected_id);
     if (DB::num_rows($result) > 0) {
       Event::error(_("Cannot delete this tag because records have been created referring to it."));
-      return FALSE;
-    }
-    return TRUE;
-  }
 
+      return false;
+    }
+
+    return true;
+  }
 

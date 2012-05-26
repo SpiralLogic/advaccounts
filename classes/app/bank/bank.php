@@ -14,8 +14,8 @@
   //	because we have no way to select right bank account if
   //	there is more than one using given gl account.
   //
-  class Bank {
-
+  class Bank
+  {
     /**
      * @static
      *
@@ -25,7 +25,8 @@
      *
      * @return float
      */
-    public static function get_exchange_rate_from_to($from_curr_code, $to_curr_code, $date_) {
+    public static function get_exchange_rate_from_to($from_curr_code, $to_curr_code, $date_)
+    {
       //	echo "converting from $from_curr_code to $to_curr_code <BR>";
       if ($from_curr_code == $to_curr_code) {
         return 1.0000;
@@ -50,8 +51,10 @@
      *
      * @return float
      */
-    public static function exchange_from_to($amount, $from_curr_code, $to_curr_code, $date_) {
+    public static function exchange_from_to($amount, $from_curr_code, $to_curr_code, $date_)
+    {
       $ex_rate = static::get_exchange_rate_from_to($from_curr_code, $to_curr_code, $date_);
+
       return $amount / $ex_rate;
     }
     // Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
@@ -69,7 +72,8 @@
      *
      * @return mixed
      */
-    public static function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $amount, $person_type, $neg = FALSE) {
+    public static function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $amount, $person_type, $neg = false)
+    {
       global $systypes_array;
       if ($person_type == PT_CUSTOMER) {
         $trans     = Debtor_Trans::get($trans_no, $type);
@@ -78,8 +82,7 @@
         $person_id = $trans['debtor_id'];
         $curr      = $trans['curr_code'];
         $date      = Dates::sql2date($trans['tran_date']);
-      }
-      else {
+      } else {
         $trans         = Creditor_Trans::get($trans_no, $type);
         $pyt_trans     = Creditor_Trans::get($pyt_no, $pyt_type);
         $supplier_accs = Creditor::get_accounts_name($trans['supplier_id']);
@@ -104,13 +107,12 @@
         $exc_var_act = DB_Company::get_pref('exchange_diff_act');
         if (Dates::date1_greater_date2($date, $pyt_date)) {
           $memo = $systypes_array[$pyt_type] . " " . $pyt_no;
-          GL_Trans::add($type, $trans_no, $date, $ar_ap_act, 0, 0, $memo, -$diff, NULL, $person_type, $person_id);
-          GL_Trans::add($type, $trans_no, $date, $exc_var_act, 0, 0, $memo, $diff, NULL, $person_type, $person_id);
-        }
-        else {
+          GL_Trans::add($type, $trans_no, $date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
+          GL_Trans::add($type, $trans_no, $date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
+        } else {
           $memo = $systypes_array[$type] . " " . $trans_no;
-          GL_Trans::add($pyt_type, $pyt_no, $pyt_date, $ar_ap_act, 0, 0, $memo, -$diff, NULL, $person_type, $person_id);
-          GL_Trans::add($pyt_type, $pyt_no, $pyt_date, $exc_var_act, 0, 0, $memo, $diff, NULL, $person_type, $person_id);
+          GL_Trans::add($pyt_type, $pyt_no, $pyt_date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
+          GL_Trans::add($pyt_type, $pyt_no, $pyt_date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
         }
       }
     }
@@ -121,13 +123,15 @@
      *
      * @return bool|int|null
      */
-    public static function payment_person_has_items($type) {
+    public static function payment_person_has_items($type)
+    {
       switch ($type) {
         case PT_MISC :
-          return TRUE;
+          return true;
         case PT_QUICKENTRY :
           return Validation::check(Validation::QUICK_ENTRIES);
         case PT_WORKORDER : // 070305 changed to open workorders JH
+
           return Validation::check(Validation::OPEN_WORKORDERS);
         case PT_CUSTOMER :
           return Validation::check(Validation::CUSTOMERS);
@@ -135,7 +139,8 @@
           return Validation::check(Validation::SUPPLIERS);
         default :
           Errors::db_error("Invalid type sent to has_items", "");
-          return FALSE;
+
+          return false;
       }
     }
     /**
@@ -148,7 +153,8 @@
      *
      * @return string
      */
-    public static function payment_person_name($type, $person_id, $full = TRUE, $trans_no = NULL) {
+    public static function payment_person_name($type, $person_id, $full = true, $trans_no = null)
+    {
       global $payment_person_types;
       switch ($type) {
         case PT_MISC :
@@ -159,9 +165,11 @@
           if (!is_null($trans_no)) {
             $comment = "<br>" . DB_Comments::get_string(ST_BANKPAYMENT, $trans_no);
           }
+
           return ($full ? $payment_person_types[$type] . " " : "") . $qe["description"] . $comment;
         case PT_WORKORDER :
           global $wo_cost_types;
+
           return $wo_cost_types[$type];
         case PT_CUSTOMER :
           return ($full ? $payment_person_types[$type] . " " : "") . Debtor::get_name($person_id);
@@ -174,5 +182,4 @@
       }
     }
   }
-
 

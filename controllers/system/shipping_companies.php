@@ -7,23 +7,23 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Shipping Company"), SA_SHIPPING);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM && can_process()) {
-    $sql = "INSERT INTO shippers (shipper_name, contact, phone, phone2, address)
-		VALUES (" . DB::escape($_POST['shipper_name']) . ", " . DB::escape($_POST['contact']) . ", " . DB::escape($_POST['phone']) . ", " . DB::escape($_POST['phone2']) . ", " . DB::escape($_POST['address']) . ")";
+    $sql
+      = "INSERT INTO shippers (shipper_name, contact, phone, phone2, address)
+        VALUES (" . DB::escape($_POST['shipper_name']) . ", " . DB::escape($_POST['contact']) . ", " . DB::escape($_POST['phone']) . ", " . DB::escape($_POST['phone2']) . ", " . DB::escape($_POST['address']) . ")";
     DB::query($sql, "The Shipping Company could not be added");
     Event::success(_('New shipping company has been added'));
     $Mode = MODE_RESET;
   }
   if ($Mode == UPDATE_ITEM && can_process()) {
     $sql = "UPDATE shippers SET shipper_name=" . DB::escape($_POST['shipper_name']) . " ,
-		contact =" . DB::escape($_POST['contact']) . " ,
-		phone =" . DB::escape($_POST['phone']) . " ,
-		phone2 =" . DB::escape($_POST['phone2']) . " ,
-		address =" . DB::escape($_POST['address']) . "
-		WHERE shipper_id = " . DB::escape($selected_id);
+        contact =" . DB::escape($_POST['contact']) . " ,
+        phone =" . DB::escape($_POST['phone']) . " ,
+        phone2 =" . DB::escape($_POST['phone2']) . " ,
+        address =" . DB::escape($_POST['address']) . "
+        WHERE shipper_id = " . DB::escape($selected_id);
     DB::query($sql, "The shipping company could not be updated");
     Event::success(_('Selected shipping company has been updated'));
     $Mode = MODE_RESET;
@@ -36,8 +36,7 @@
     if ($myrow[0] > 0) {
       $cancel_delete = 1;
       Event::error(_("Cannot delete this shipping company because sales orders have been created using this shipper."));
-    }
-    else {
+    } else {
       // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
       $sql    = "SELECT COUNT(*) FROM debtor_trans WHERE ship_via=" . DB::escape($selected_id);
       $result = DB::query($sql, "check failed");
@@ -45,8 +44,7 @@
       if ($myrow[0] > 0) {
         $cancel_delete = 1;
         Event::error(_("Cannot delete this shipping company because invoices have been created using this shipping company."));
-      }
-      else {
+      } else {
         $sql = "DELETE FROM shippers WHERE shipper_id=" . DB::escape($selected_id);
         DB::query($sql, "could not delete shipper");
         Event::notice(_('Selected shipping company has been deleted'));
@@ -73,7 +71,6 @@
   Table::header($th);
   $k = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
-
     Cell::label($myrow["shipper_name"]);
     Cell::label($myrow["contact"]);
     Cell::label($myrow["phone"]);
@@ -113,13 +110,15 @@
   /**
    * @return bool
    */
-  function can_process() {
+  function can_process()
+  {
     if (strlen($_POST['shipper_name']) == 0) {
       Event::error(_("The shipping company name cannot be empty."));
       JS::set_focus('shipper_name');
-      return FALSE;
-    }
-    return TRUE;
-  }
 
+      return false;
+    }
+
+    return true;
+  }
 

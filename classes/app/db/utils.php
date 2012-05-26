@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class DB_Utils extends DB {
-
+  class DB_Utils extends DB
+  {
     /**
      * @static
      *
@@ -16,7 +16,8 @@
      *
      * @return int|resource
      */
-    public static function create($connection) {
+    public static function create($connection)
+    {
       $db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
       if (!mysql_select_db($connection["dbname"], $db)) {
         $sql = "CREATE DATABASE " . $connection["dbname"] . "";
@@ -25,6 +26,7 @@
         }
         mysql_select_db($connection["dbname"], $db);
       }
+
       return $db;
     }
     /**
@@ -36,7 +38,8 @@
      *
      * @return bool
      */
-    public static function import($filename, $connection = NULL, $force = TRUE) {
+    public static function import($filename, $connection = null, $force = true)
+    {
       $allowed_commands     = array(
         "create"               => 'table_queries',
         "alter table"          => 'table_queries',
@@ -61,11 +64,9 @@
       // uncrompress gziped backup files
       if (strpos($filename, ".gz") || strpos($filename, ".GZ")) {
         $lines = DB_Utils::ungzip("lines", $filename);
-      }
-      elseif (strpos($filename, ".zip") || strpos($filename, ".ZIP")) {
+      } elseif (strpos($filename, ".zip") || strpos($filename, ".ZIP")) {
         $lines = DB_Utils::unzip("lines", $filename);
-      }
-      else {
+      } else {
         $lines = file("" . $filename);
       }
       // parse input file
@@ -137,10 +138,10 @@
         // display first failure message; the rest are probably derivative
         $err = $sql_errors[0];
         Event::error(sprintf(_("SQL script execution failed in line %d: %s"), $err[1], $err[0]));
-        return FALSE;
-      }
-      else {
-        return TRUE;
+
+        return false;
+      } else {
+        return true;
       }
       //$shell_command = C_MYSQL_PATH . " -h $host -u $user -p{$password} $dbname < $filename";
       //shell_exec($shell_command);
@@ -155,13 +156,13 @@
      * @return array|string
      * returns the content of the gziped $path backup file. use of $mode see below
      */
-    public static function ungzip($mode, $path) {
+    public static function ungzip($mode, $path)
+    {
       $file_data = gzfile($path);
       // returns one string or an array of lines
       if ($mode != "lines") {
         return implode("", $file_data);
-      }
-      else {
+      } else {
         return $file_data;
       }
     }
@@ -175,7 +176,8 @@
      * @return array|string
      * returns the content of the ziped $path backup file. use of $mode see below
      */
-    public static function unzip($mode, $path) {
+    public static function unzip($mode, $path)
+    {
       $all = implode("", file($path));
       // convert path to name of ziped file
       $filename = preg_replace("/.*\//", "", $path);
@@ -184,12 +186,11 @@
       if (substr($all, 30, strlen($filename) - 4) . substr($all, 30 + strlen($filename) + 9, 4) != $filename
       ) {
         return ''; // exit if names differ
-      }
-      else {
+      } else {
         // get the suffix of the filename in hex
         $crc_bugfix = substr($all, 30, strlen($filename) + 13);
         $crc_bugfix = substr(substr($crc_bugfix, 0, strlen($crc_bugfix) - 4), strlen($crc_bugfix) - 12 - 4);
-        $suffix     = FALSE;
+        $suffix     = false;
         // convert hex to ascii
         for ($i = 0; $i < 12;) {
           $suffix .= chr($crc_bugfix[$i++] . $crc_bugfix[$i++] . $crc_bugfix[$i++]);
@@ -204,8 +205,7 @@
       // returns one string or an array of lines
       if ($mode != "lines") {
         return $file_data;
-      }
-      else {
+      } else {
         return explode("\n", $file_data);
       }
     }
@@ -218,8 +218,10 @@
      *
      * @return bool|string
      */
-    public static function backup($conn, $ext = 'no', $comm = '') {
+    public static function backup($conn, $ext = 'no', $comm = '')
+    {
       $filename = $conn['dbname'] . "_" . date("Ymd_Hi") . ".sql";
+
       return DB_Utils::export($conn, $filename, $ext, $comm);
     }
 
@@ -235,8 +237,9 @@
      * generates a dump of $db database
      * $drop and $zip tell if to include the drop table statement or dry to pack
      */
-    public static function export($conn, $filename, $zip = 'no', $comment = '') {
-      $error = FALSE;
+    public static function export($conn, $filename, $zip = 'no', $comment = '')
+    {
+      $error = false;
       // set max string size before writing to file
       $max_size = 1048576 * 2; // 2 MB
       // changes max size if value can be retrieved
@@ -246,11 +249,9 @@
       // set backupfile name
       if ($zip == "gzip") {
         $backupfile = $filename . ".gz";
-      }
-      elseif ($zip == "zip") {
+      } elseif ($zip == "zip") {
         $backupfile = $filename . ".zip";
-      }
-      else {
+      } else {
         $backupfile = $filename;
       }
       $company = DB_Company::get_pref('coy_name');
@@ -322,12 +323,12 @@
           // export data
           if (!$error) {
             $out .= "### Data of table `" . $tablename . "` ###\n\n";
-            // check if field types are NULL or NOT NULL
+            // check if field types are null or NOT null
             $res3       = DB::query("SHOW COLUMNS FROM `" . $tablename . "`");
             $field_null = array();
             for ($j = 0; $j < DB::num_rows($res3); $j++) {
               $row3         = DB::fetch($res3);
-              $field_null[] = $row3[2] == 'YES' && $row3[4] === NULL;
+              $field_null[] = $row3[2] == 'YES' && $row3[4] === null;
             }
             $res2 = DB::query("SELECT * FROM `" . $tablename . "`");
             for ($j = 0; $j < DB::num_rows($res2); $j++) {
@@ -345,44 +346,43 @@
               if (strlen($out) > $max_size && $zip != "zip") {
                 if (Files::save_to_file($backupfile, $out, $zip)) {
                   $out = "";
-                }
-                else {
-                  $error = TRUE;
+                } else {
+                  $error = true;
                 }
               }
             }
             // an error occurred! Try to delete file and return error status
-          }
-          elseif ($error) {
+          } elseif ($error) {
             unlink(BACKUP_PATH . $backupfile);
-            return FALSE;
+
+            return false;
           }
           // if saving is successful, then empty $out, else set error flag
           if (strlen($out) > $max_size && $zip != "zip") {
             if (Files::save_to_file($backupfile, $out, $zip)) {
               $out = "";
-            }
-            else {
-              $error = TRUE;
+            } else {
+              $error = true;
             }
           }
         }
         // an error occurred! Try to delete file and return error status
-      }
-      else {
+      } else {
         unlink(BACKUP_PATH . $backupfile);
-        return FALSE;
+
+        return false;
       }
       // if (mysql_error()) return "db_error(";
       //mysql_close($con);
       //if ($zip == "zip")
       //	$zip = $time;
       if (Files::save_to_file($backupfile, $out = '', $zip)) {
-      }
-      else {
+      } else {
         unlink(BACKUP_PATH . $backupfile);
-        return FALSE;
+
+        return false;
       }
+
       return $backupfile;
     }
 
@@ -396,7 +396,8 @@
      * orders the tables in $tables according to the constraints in $fks
      * $fks musst be filled like this: $fks[tablename][0]=needed_table1; $fks[tablename][1]=needed_table2; ...
      */
-    public static function order_sql_tables($tables, $fks) {
+    public static function order_sql_tables($tables, $fks)
+    {
       // do not order if no contraints exist
       if (!count($fks)) {
         return $tables;
@@ -404,9 +405,9 @@
       // order
       $new_tables = array();
       $existing   = array();
-      $modified   = TRUE;
-      while (count($tables) && $modified == TRUE) {
-        $modified = FALSE;
+      $modified   = true;
+      while (count($tables) && $modified == true) {
+        $modified = false;
         foreach ($tables as $key => $row) {
           // delete from $tables and add to $new_tables
           if (isset($fks[$row['Name']])) {
@@ -422,7 +423,7 @@
           $new_tables[] = $row;
           prev($tables);
           unset($tables[$key]);
-          $modified = TRUE;
+          $modified = true;
         }
       }
       if (count($tables)) {
@@ -434,6 +435,7 @@
         }
         echo "<div class=\"red_left\">THIS DATABASE SEEMS TO CONTAIN 'RING CONSTRAINTS'. WA DOES NOT SUPPORT THEM. PROBABLY THE FOLOWING BACKUP IS DEFECT!</div>";
       }
+
       return $new_tables;
     }
   }

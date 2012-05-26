@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::open_window(900, 500);
   Page::start(_($help_context = "Receive Purchase Order Items"), SA_GRN);
   if (isset($_GET[ADDED_ID])) {
@@ -19,11 +18,10 @@
     Display::link_no_params("/purchases/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
     Page::footer_exit();
   }
-  $order = Orders::session_get() ? : NULL;
+  $order = Orders::session_get() ? : null;
   if (isset($_GET['PONumber']) && $_GET['PONumber'] > 0 && !isset($_POST['Update'])) {
     $order = new Purch_Order($_GET['PONumber']);
-  }
-  elseif ((!isset($_GET['PONumber']) || $_GET['PONumber'] == 0) && !isset($_POST['order_id'])) {
+  } elseif ((!isset($_GET['PONumber']) || $_GET['PONumber'] == 0) && !isset($_POST['order_id'])) {
     Event::error(_("This page can only be opened if a purchase order has been selected. Please select a purchase order first."));
     Page::footer_exit();
   }
@@ -71,7 +69,7 @@
   }
   start_form();
   hidden('order_id');
-  Purch_GRN::display($order, TRUE);
+  Purch_GRN::display($order, true);
   Display::heading(_("Items to Receive"));
   Display::div_start('grn_items');
   Table::start('tablestyle grid width90');
@@ -93,7 +91,6 @@
   $k     = 0; //row colour counter
   if (count($order->line_items) > 0) {
     foreach ($order->line_items as $line) {
-
       $qty_outstanding = $line->quantity - $line->qty_received;
       if (!isset($_POST['Update']) && !isset($_POST['ProcessGoodsReceived']) && $line->receive_qty == 0) { //If no quantites yet input default the balance to be received
         $line->receive_qty = $qty_outstanding;
@@ -102,20 +99,18 @@
       $total += $line_total;
       Cell::label($line->stock_id);
       if ($qty_outstanding > 0) {
-        text_cells(NULL, $line->stock_id . "Desc", $line->description, 30, 50);
-      }
-      else {
+        text_cells(null, $line->stock_id . "Desc", $line->description, 30, 50);
+      } else {
         Cell::label($line->description);
       }
       $dec = Item::qty_dec($line->stock_id);
-      Cell::qty($line->quantity, FALSE, $dec);
+      Cell::qty($line->quantity, false, $dec);
       Cell::label($line->units);
-      Cell::qty($line->qty_received, FALSE, $dec);
-      Cell::qty($qty_outstanding, FALSE, $dec);
+      Cell::qty($line->qty_received, false, $dec);
+      Cell::qty($qty_outstanding, false, $dec);
       if ($qty_outstanding > 0) {
-        qty_cells(NULL, $line->line_no, Num::format($line->receive_qty, $dec), "class='right'", NULL, $dec);
-      }
-      else {
+        qty_cells(null, $line->line_no, Num::format($line->receive_qty, $dec), "class='right'", null, $dec);
+      } else {
         Cell::label(Num::format($line->receive_qty, $dec), "class='right'");
       }
       Cell::amountDecimal($line->price);
@@ -125,14 +120,14 @@
     }
   }
   Cell::label(_("Freight"), "colspan=9 class='right'");
-  small_amount_cells(NULL, 'freight', Num::price_format($order->freight));
+  small_amount_cells(null, 'freight', Num::price_format($order->freight));
   $display_total = Num::format($total + $_POST['freight'], User::price_dec());
   Row::label(_("Total value of items received"), $display_total, "colspan=9 class='right'", ' class="right nowrap"');
   Table::end();
   Display::div_end();
   Display::link_params("/purchases/po_entry_items.php", _("Edit This Purchase Order"), "ModifyOrder=" . $order->order_no);
   echo '<br>';
-  submit_center_first('Update', _("Update Totals"), '', TRUE);
+  submit_center_first('Update', _("Update Totals"), '', true);
   submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Clear all GL entry fields"), 'default');
   end_form();
   Page::end();

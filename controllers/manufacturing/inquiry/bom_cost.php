@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Costed Bill Of Material Inquiry"), SA_WORKORDERCOST);
   Validation::check(Validation::BOM_ITEMS, _("There are no manufactured or kit items defined in the system."), STOCK_MANUFACTURE);
   if (isset($_GET['stock_id'])) {
@@ -16,9 +15,9 @@
   if (list_updated('stock_id')) {
     Ajax::i()->activate('_page_body');
   }
-  start_form(FALSE);
+  start_form(false);
   Table::start('tablestyle_noborder');
-  Item_UI::manufactured_row(_("Select a manufacturable item:"), 'stock_id', NULL, FALSE, TRUE);
+  Item_UI::manufactured_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
   Table::end();
   Display::br();
   Display::heading(_("All Costs Are In:") . " " . Bank_Currency::for_company());

@@ -13,8 +13,7 @@
   }
   if (isset($_GET['postcode']) && isset($_GET['term'])) {
     $data = Contact_Postcode::searchByPostcode($_GET['term']);
-  }
-  elseif (isset($_GET['city']) && isset($_GET['term'])) {
+  } elseif (isset($_GET['city']) && isset($_GET['term'])) {
     $data = Contact_Postcode::searchByCity($_GET['term']);
   }
   JS::renderJSON($data, JSON_NUMERIC_CHECK);

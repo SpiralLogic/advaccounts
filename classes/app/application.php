@@ -10,8 +10,8 @@
   /**
 
    */
-  class app_function {
-
+  class app_function
+  {
     /**
      * @var
      */
@@ -29,7 +29,8 @@
      * @param        $link
      * @param string $access
      */
-    function app_function($label, $link, $access = SA_OPEN) {
+    public function app_function($label, $link, $access = SA_OPEN)
+    {
       $this->label  = $label;
       $this->link   = e($link);
       $this->access = $access;
@@ -39,8 +40,8 @@
   /**
 
    */
-  class module {
-
+  class module
+  {
     /**
      * @var
      */
@@ -61,7 +62,8 @@
      * @param      $name
      * @param null $icon
      */
-    public function module($name, $icon = NULL) {
+    public function module($name, $icon = null)
+    {
       $this->name          = $name;
       $this->icon          = $icon;
       $this->lappfunctions = array();
@@ -74,10 +76,12 @@
      *
      * @return app_function
      */
-    public function add_lapp_function($label, $link = "", $access = SA_OPEN) {
+    public function add_lapp_function($label, $link = "", $access = SA_OPEN)
+    {
       $appfunction = new app_function($label, $link, $access);
       //array_push($this->lappfunctions,$appfunction);
       $this->lappfunctions[] = $appfunction;
+
       return $appfunction;
     }
     /**
@@ -87,10 +91,12 @@
      *
      * @return app_function
      */
-    public function add_rapp_function($label, $link = "", $access = SA_OPEN) {
+    public function add_rapp_function($label, $link = "", $access = SA_OPEN)
+    {
       $appfunction = new app_function($label, $link, $access);
       //array_push($this->rappfunctions,$appfunction);
       $this->rappfunctions[] = $appfunction;
+
       return $appfunction;
     }
   }
@@ -98,8 +104,8 @@
   /**
 
    */
-  abstract class Application {
-
+  abstract class Application
+  {
     /**
      * @var
      */
@@ -111,7 +117,7 @@
     /**
      * @var bool
      */
-    public $direct = FALSE;
+    public $direct = false;
     /**
      * @var
      */
@@ -129,7 +135,8 @@
      * @param      $name
      * @param bool $enabled
      */
-    public function __construct($id, $name, $enabled = TRUE) {
+    public function __construct($id, $name, $enabled = true)
+    {
       $this->id      = $id;
       $this->name    = $name;
       $this->enabled = $enabled;
@@ -141,10 +148,12 @@
      *
      * @return module
      */
-    public function add_module($name, $icon = NULL) {
+    public function add_module($name, $icon = null)
+    {
       $module = new module($name, $icon);
       //array_push($this->modules,$module);
       $this->modules[] = $module;
+
       return $module;
     }
     /**
@@ -153,7 +162,8 @@
      * @param string $link
      * @param string $access
      */
-    public function add_lapp_function($level, $label, $link = "", $access = SA_OPEN) {
+    public function add_lapp_function($level, $label, $link = "", $access = SA_OPEN)
+    {
       $this->modules[$level]->lappfunctions[] = new app_function($label, $link, $access);
     }
     /**
@@ -162,9 +172,9 @@
      * @param string $link
      * @param string $access
      */
-    public function add_rapp_function($level, $label, $link = "", $access = SA_OPEN) {
+    public function add_rapp_function($level, $label, $link = "", $access = SA_OPEN)
+    {
       $this->modules[$level]->rappfunctions[] = new app_function($label, $link, $access);
     }
   }
-
 

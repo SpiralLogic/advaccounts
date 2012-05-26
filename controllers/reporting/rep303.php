@@ -19,37 +19,40 @@
    *
    * @return null|PDOStatement
    */
-  function get_transactions($category, $location) {
+  function get_transactions($category, $location)
+  {
     $sql
       = "SELECT stock_master.category_id,
-			stock_category.description AS cat_name,
-			stock_master.stock_id,
-			stock_master.description, stock_master.inactive,
-			IF(stock_moves.stock_id IS NULL, '', stock_moves.loc_code) AS loc_code,
-			SUM(IF(stock_moves.stock_id IS NULL,0,stock_moves.qty)) AS QtyOnHand
-		FROM (stock_master,
-			stock_category)
-		LEFT JOIN stock_moves ON
-			(stock_master.stock_id=stock_moves.stock_id OR stock_master.stock_id IS NULL)
-		WHERE stock_master.category_id=stock_category.category_id
-		AND (stock_master.mb_flag='" . STOCK_PURCHASED . "' OR stock_master.mb_flag='" . STOCK_MANUFACTURE . "')";
+            stock_category.description AS cat_name,
+            stock_master.stock_id,
+            stock_master.description, stock_master.inactive,
+            IF(stock_moves.stock_id IS null, '', stock_moves.loc_code) AS loc_code,
+            SUM(IF(stock_moves.stock_id IS null,0,stock_moves.qty)) AS QtyOnHand
+        FROM (stock_master,
+            stock_category)
+        LEFT JOIN stock_moves ON
+            (stock_master.stock_id=stock_moves.stock_id OR stock_master.stock_id IS null)
+        WHERE stock_master.category_id=stock_category.category_id
+        AND (stock_master.mb_flag='" . STOCK_PURCHASED . "' OR stock_master.mb_flag='" . STOCK_MANUFACTURE . "')";
     if ($category != 0) {
       $sql .= " AND stock_master.category_id = " . DB::escape($category);
     }
     if ($location != 'all') {
-      $sql .= " AND IF(stock_moves.stock_id IS NULL, '1=1',stock_moves.loc_code = " . DB::escape($location) . ")";
+      $sql .= " AND IF(stock_moves.stock_id IS null, '1=1',stock_moves.loc_code = " . DB::escape($location) . ")";
     }
     $sql
       .= " GROUP BY stock_master.category_id,
-		stock_category.description,
-		stock_master.stock_id,
-		stock_master.description
-		ORDER BY stock_master.category_id,
-		stock_master.stock_id";
+        stock_category.description,
+        stock_master.stock_id,
+        stock_master.description
+        ORDER BY stock_master.category_id,
+        stock_master.stock_id";
+
     return DB::query($sql, "No transactions were returned");
   }
 
-  function print_stock_check() {
+  function print_stock_check()
+  {
     $category    = $_POST['PARAM_0'];
     $location    = $_POST['PARAM_1'];
     $pictures    = $_POST['PARAM_2'];
@@ -60,8 +63,7 @@
     $destination = $_POST['PARAM_7'];
     if ($destination) {
       include_once(APPPATH . "reports/excel.php");
-    }
-    else {
+    } else {
       include_once(APPPATH . "reports/pdf.php");
     }
     if ($category == ALL_NUMERIC) {
@@ -69,8 +71,7 @@
     }
     if ($category == 0) {
       $cat = _('All');
-    }
-    else {
+    } else {
       $cat = Item_Category::get_name($category);
     }
     if ($location == ALL_TEXT) {
@@ -78,22 +79,19 @@
     }
     if ($location == 'all') {
       $loc = _('All');
-    }
-    else {
+    } else {
       $loc = Inv_Location::get_name($location);
     }
     if ($shortage) {
       $short     = _('Yes');
       $available = _('Shortage');
-    }
-    else {
+    } else {
       $short     = _('No');
       $available = _('Available');
     }
     if ($no_zeros) {
       $nozeros = _('Yes');
-    }
-    else {
+    } else {
       $nozeros = _('No');
     }
     if ($check) {
@@ -103,8 +101,7 @@
         _('On Order')
       );
       $aligns  = array('left', 'left', 'right', 'right', 'right', 'right', 'right');
-    }
-    else {
+    } else {
       $cols    = array(0, 100, 250, 315, 380, 445, 515);
       $headers = array(_('Stock ID'), _('Description'), _('Quantity'), _('Demand'), $available, _('On Order'));
       $aligns  = array('left', 'left', 'right', 'right', 'right', 'right');
@@ -141,8 +138,7 @@
     while ($trans = DB::fetch($res)) {
       if ($location == 'all') {
         $loc_code = "";
-      }
-      else {
+      } else {
         $loc_code = $location;
       }
       $demandqty = Item::get_demand($trans['stock_id'], $loc_code);
@@ -178,8 +174,7 @@
         $rep->AmountCol(4, 5, $demandqty, $dec);
         $rep->AmountCol(5, 6, $trans['QtyOnHand'] - $demandqty, $dec);
         $rep->AmountCol(6, 7, $onorder, $dec);
-      }
-      else {
+      } else {
         $rep->AmountCol(3, 4, $demandqty, $dec);
         $rep->AmountCol(4, 5, $trans['QtyOnHand'] - $demandqty, $dec);
         $rep->AmountCol(5, 6, $onorder, $dec);
@@ -203,5 +198,4 @@
     $rep->NewLine();
     $rep->End();
   }
-
 

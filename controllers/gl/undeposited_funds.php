@@ -22,7 +22,7 @@
       $_POST[$rowid]             = 1;
     }
   }
-  $update_pager = FALSE;
+  $update_pager = false;
   if (list_updated('deposit_date')) {
     $_POST['deposit_date'] = get_post('deposit_date') == '' ? Dates::today() : ($_POST['deposit_date']);
     update_data();
@@ -43,7 +43,7 @@
     change_tpl_flag($id);
   }
   if (isset($_POST['Deposit'])) {
-    $sql         = "SELECT * FROM bank_trans WHERE undeposited=1 AND reconciled IS NULL";
+    $sql         = "SELECT * FROM bank_trans WHERE undeposited=1 AND reconciled IS null";
     $query       = DB::query($sql);
     $undeposited = array();
     while ($row = DB::fetch($query)) {
@@ -76,8 +76,7 @@
         $sql = "UPDATE bank_trans SET undeposited=" . $order_no . " WHERE id=" . DB::escape($row['id']);
         DB::query($sql, "Can't change undeposited status");
       }
-    }
-    else {
+    } else {
       $row = reset($togroup);
       $sql = "UPDATE bank_trans SET undeposited=0, trans_date='" . Dates::date2sql($_POST['deposit_date']) . "',deposit_date='" . Dates::date2sql($_POST['deposit_date']) . "' WHERE id=" . DB::escape($row['id']);
       DB::query($sql, "Can't change undeposited status");
@@ -101,23 +100,23 @@
   Table::start();
   Table::header(_("Deposit Date"));
   Row::start();
-  date_cells("", "deposit_date", _('Date of funds to deposit'), get_post('deposit_date') == '', 0, 0, 0, NULL, FALSE, array('rebind' => FALSE));
+  date_cells("", "deposit_date", _('Date of funds to deposit'), get_post('deposit_date') == '', 0, 0, 0, null, false, array('rebind' => false));
   Row::end();
   Table::header(_("Total Amount"));
   Row::start();
-  Cell::amount($_POST['deposited'], FALSE, '', "deposited");
-  hidden("to_deposit", $_POST['to_deposit'], TRUE);
+  Cell::amount($_POST['deposited'], false, '', "deposited");
+  hidden("to_deposit", $_POST['to_deposit'], true);
   Row::end();
   Table::end();
-  submit_center('Deposit', _("Deposit"), TRUE, '', FALSE);
+  submit_center('Deposit', _("Deposit"), true, '', false);
   Display::div_end();
   echo "<hr>";
   $date         = Dates::add_days($_POST['deposit_date'], 10);
   $sql          = "SELECT	type, trans_no, ref, trans_date,
-				amount,	person_id, person_type_id, reconciled, id
-		FROM bank_trans
-		WHERE undeposited=1 AND trans_date <= '" . Dates::date2sql($date) . "' AND reconciled IS NULL AND amount<>0
-		ORDER BY trans_date DESC,bank_trans.id ";
+                amount,	person_id, person_type_id, reconciled, id
+        FROM bank_trans
+        WHERE undeposited=1 AND trans_date <= '" . Dates::date2sql($date) . "' AND reconciled IS null AND amount<>0
+        ORDER BY trans_date DESC,bank_trans.id ";
   $cols         = array(
     _("Type")                    => array(
       'fun' => 'systype_name', 'ord' => ''
@@ -126,30 +125,33 @@
     ), _("Reference"), _("Date") => array('date', 'ord' => 'desc'), _("Debit") => array(
       'align' => 'right', 'fun' => 'fmt_debit'
     ), _("Credit")               => array(
-      'align' => 'right', 'insert' => TRUE, 'fun' => 'fmt_credit'
+      'align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'
     ), _("Person/Item")          => array('fun' => 'fmt_person'), array(
-      'insert' => TRUE, 'fun' => 'gl_view'
+      'insert' => true, 'fun' => 'gl_view'
     ), "X"                       => array(
-      'insert' => TRUE, 'fun' => 'dep_checkbox'
+      'insert' => true, 'fun' => 'dep_checkbox'
     )
   );
   $table        =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
   $table->width = "80%";
   DB_Pager::display($table);
   Display::br(1);
-  submit_center('Deposit', _("Deposit"), TRUE, '', FALSE);
+  submit_center('Deposit', _("Deposit"), true, '', false);
   end_form();
   Page::end();
   /**
    * @return bool
    */
-  function check_date() {
+  function check_date()
+  {
     if (!Dates::is_date(get_post('deposit_date'))) {
       Event::error(_("Invalid deposit date format"));
       JS::setFocus('deposit_date');
-      return FALSE;
+
+      return false;
     }
-    return TRUE;
+
+    return true;
   }
 
   //
@@ -162,13 +164,14 @@
    *
    * @return string
    */
-  function dep_checkbox($row) {
+  function dep_checkbox($row)
+  {
     $name      = "dep_" . $row['id'];
     $hidden    = 'amount_' . $row['id'];
     $value     = $row['amount'];
     $chk_value = check_value("dep_" . $row['id']);
     // save also in hidden field for testing during 'Reconcile'
-    return checkbox(NULL, $name, $chk_value, TRUE, _('Deposit this transaction')) . hidden($hidden, $value, FALSE);
+    return checkbox(null, $name, $chk_value, true, _('Deposit this transaction')) . hidden($hidden, $value, false);
   }
 
   /**
@@ -177,8 +180,10 @@
    *
    * @return mixed
    */
-  function systype_name($dummy, $type) {
+  function systype_name($dummy, $type)
+  {
     global $systypes_array;
+
     return $systypes_array[$type];
   }
 
@@ -187,7 +192,8 @@
    *
    * @return null|string
    */
-  function trans_view($trans) {
+  function trans_view($trans)
+  {
     return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
   }
 
@@ -196,7 +202,8 @@
    *
    * @return string
    */
-  function gl_view($row) {
+  function gl_view($row)
+  {
     return GL_UI::view($row["type"], $row["trans_no"]);
   }
 
@@ -205,8 +212,10 @@
    *
    * @return int|string
    */
-  function fmt_debit($row) {
+  function fmt_debit($row)
+  {
     $value = $row["amount"];
+
     return $value >= 0 ? Num::price_format($value) : '';
   }
 
@@ -215,8 +224,10 @@
    *
    * @return int|string
    */
-  function fmt_credit($row) {
+  function fmt_credit($row)
+  {
     $value = -$row["amount"];
+
     return $value > 0 ? Num::price_format($value) : '';
   }
 
@@ -225,14 +236,16 @@
    *
    * @return string
    */
-  function fmt_person($row) {
+  function fmt_person($row)
+  {
     return Bank::payment_person_name($row["person_type_id"], $row["person_id"]);
   }
 
-  function update_data() {
+  function update_data()
+  {
     global $update_pager;
     Ajax::i()->activate('summary');
-    $update_pager = TRUE;
+    $update_pager = true;
   }
 
   // Update db record if respective checkbox value has changed.
@@ -242,10 +255,11 @@
    *
    * @return bool
    */
-  function change_tpl_flag($deposit_id) {
+  function change_tpl_flag($deposit_id)
+  {
     if (!check_date() && check_value("dep_" . $deposit_id)) // temporary fix
     {
-      return FALSE;
+      return false;
     }
     if (get_post('bank_date') == '') // new reconciliation
     {
@@ -260,10 +274,10 @@
     if (check_value("dep_" . $deposit_id)) {
       $_SESSION['undeposited']["dep_" . $deposit_id] = get_post('amount_' . $deposit_id);
       $_POST['deposited']                            = $_POST['to_deposit'] + get_post('amount_' . $deposit_id);
-    }
-    else {
+    } else {
       unset($_SESSION['undeposited']["dep_" . $deposit_id]);
       $_POST['deposited'] = $_POST['to_deposit'] - get_post('amount_' . $deposit_id);
     }
-    return TRUE;
+
+    return true;
   }

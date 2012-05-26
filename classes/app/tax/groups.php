@@ -7,9 +7,10 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Tax_Groups {
-
-    public static function clear_shipping_tax_group() {
+  class Tax_Groups
+  {
+    public static function clear_shipping_tax_group()
+    {
       $sql = "UPDATE tax_groups SET tax_shipping=0 WHERE 1";
       DB::query($sql, "could not update tax_shipping fields");
     }
@@ -21,7 +22,8 @@
      * @param $taxes
      * @param $rates
      */
-    public static function add($name, $tax_shipping, $taxes, $rates) {
+    public static function add($name, $tax_shipping, $taxes, $rates)
+    {
       DB::begin();
       if ($tax_shipping) // only one tax group for shipping
       {
@@ -42,7 +44,8 @@
      * @param $taxes
      * @param $rates
      */
-    public static function update($id, $name, $tax_shipping, $taxes, $rates) {
+    public static function update($id, $name, $tax_shipping, $taxes, $rates)
+    {
       DB::begin();
       if ($tax_shipping) // only one tax group for shipping
       {
@@ -61,11 +64,13 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($all = FALSE) {
+    public static function get_all($all = false)
+    {
       $sql = "SELECT * FROM tax_groups";
       if (!$all) {
         $sql .= " WHERE !inactive";
       }
+
       return DB::query($sql, "could not get all tax group");
     }
     /**
@@ -75,9 +80,11 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    public static function get($type_id) {
+    public static function get($type_id)
+    {
       $sql    = "SELECT * FROM tax_groups WHERE id=" . DB::escape($type_id);
       $result = DB::query($sql, "could not get tax group");
+
       return DB::fetch($result);
     }
     /**
@@ -87,9 +94,10 @@
      *
      * @return bool
      */
-    public static function delete($id) {
+    public static function delete($id)
+    {
       if (can_delete($id)) {
-        return FALSE;
+        return false;
       }
       DB::begin();
       $sql = "DELETE FROM tax_groups WHERE id=" . DB::escape($id);
@@ -105,11 +113,12 @@
      * @param $items
      * @param $rates
      */
-    public static function add_items($id, $items, $rates) {
+    public static function add_items($id, $items, $rates)
+    {
       for ($i = 0; $i < count($items); $i++) {
         $sql
           = "INSERT INTO tax_group_items (tax_group_id, tax_type_id, rate)
-			VALUES (" . DB::escape($id) . ", " . DB::escape($items[$i]) . ", " . $rates[$i] . ")";
+            VALUES (" . DB::escape($id) . ", " . DB::escape($items[$i]) . ", " . $rates[$i] . ")";
         DB::query($sql, "could not add item tax group item");
       }
     }
@@ -118,7 +127,8 @@
      *
      * @param $id
      */
-    public static function delete_items($id) {
+    public static function delete_items($id)
+    {
       $sql = "DELETE FROM tax_group_items WHERE tax_group_id=" . DB::escape($id);
       DB::query($sql, "could not delete item tax group items");
     }
@@ -129,11 +139,13 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_for_item($id) {
+    public static function get_for_item($id)
+    {
       $sql
         = "SELECT tax_group_items.*, tax_types.name AS tax_type_name, tax_types.rate,
-		tax_types.sales_gl_code, tax_types.purchasing_gl_code
-		FROM tax_group_items, tax_types	WHERE tax_group_id=" . DB::escape($id) . "	AND tax_types.id=tax_type_id";
+        tax_types.sales_gl_code, tax_types.purchasing_gl_code
+        FROM tax_group_items, tax_types	WHERE tax_group_id=" . DB::escape($id) . "	AND tax_types.id=tax_type_id";
+
       return DB::query($sql, "could not get item tax type group items");
     }
     /**
@@ -143,7 +155,8 @@
      *
      * @return array
      */
-    public static function get_items_as_array($id) {
+    public static function get_items_as_array($id)
+    {
       $ret_tax_array   = array();
       $tax_group_items = static::get_for_item($id);
       while ($tax_group_item = DB::fetch($tax_group_items)) {
@@ -155,27 +168,31 @@
         $ret_tax_array[$index]['rate']               = $tax_group_item['rate'];
         $ret_tax_array[$index]['Value']              = 0;
       }
+
       return $ret_tax_array;
     }
     /**
      * @static
      * @return null|PDOStatement
      */
-    public static function get_shipping_items() {
+    public static function get_shipping_items()
+    {
       $sql
         = "SELECT tax_group_items.*, tax_types.name AS tax_type_name, tax_types.rate,
-		tax_types.sales_gl_code, tax_types.purchasing_gl_code
-		FROM tax_group_items, tax_types, tax_groups
-		WHERE tax_groups.tax_shipping=1
-		AND tax_groups.id=tax_group_id
-		AND tax_types.id=tax_type_id";
+        tax_types.sales_gl_code, tax_types.purchasing_gl_code
+        FROM tax_group_items, tax_types, tax_groups
+        WHERE tax_groups.tax_shipping=1
+        AND tax_groups.id=tax_group_id
+        AND tax_types.id=tax_type_id";
+
       return DB::query($sql, "could not get shipping tax group items");
     }
     /**
      * @static
      * @return array
      */
-    public static function for_shipping_as_array() {
+    public static function for_shipping_as_array()
+    {
       $ret_tax_array   = array();
       $tax_group_items = static::get_shipping_items();
       while ($tax_group_item = DB::fetch($tax_group_items)) {
@@ -187,9 +204,9 @@
         $ret_tax_array[$index]['rate']               = $tax_group_item['rate'];
         $ret_tax_array[$index]['Value']              = 0;
       }
+
       return $ret_tax_array;
     }
-
     // TAX GROUPS
     /**
      * @static
@@ -201,13 +218,17 @@
      *
      * @return string
      */
-    public static function select($name, $selected_id = NULL, $none_option = FALSE, $submit_on_change = FALSE) {
+    public static function select($name, $selected_id = null, $none_option = false, $submit_on_change = false)
+    {
       $sql = "SELECT id, name FROM tax_groups";
+
       return select_box($name, $selected_id, $sql, 'id', 'name', array(
-        'order'         => 'id', 'spec_option' => $none_option,
-        'spec_id'       => ALL_NUMERIC,
-        'select_submit' => $submit_on_change, 'async' => FALSE,
-      ));
+                                                                      'order'         => 'id',
+                                                                      'spec_option'   => $none_option,
+                                                                      'spec_id'       => ALL_NUMERIC,
+                                                                      'select_submit' => $submit_on_change,
+                                                                      'async'         => false,
+                                                                 ));
     }
     /**
      * @static
@@ -218,8 +239,9 @@
      * @param bool $none_option
      * @param bool $submit_on_change
      */
-    public static function cells($label, $name, $selected_id = NULL, $none_option = FALSE, $submit_on_change = FALSE) {
-      if ($label != NULL) {
+    public static function cells($label, $name, $selected_id = null, $none_option = false, $submit_on_change = false)
+    {
+      if ($label != null) {
         echo "<td>$label</td>\n";
       }
       echo "<td>";
@@ -235,9 +257,10 @@
      * @param bool $none_option
      * @param bool $submit_on_change
      */
-    public static function row($label, $name, $selected_id = NULL, $none_option = FALSE, $submit_on_change = FALSE) {
+    public static function row($label, $name, $selected_id = null, $none_option = false, $submit_on_change = false)
+    {
       echo "<tr><td class='label'>$label</td>";
-      Tax_Groups::cells(NULL, $name, $selected_id, $none_option, $submit_on_change);
+      Tax_Groups::cells(null, $name, $selected_id, $none_option, $submit_on_change);
       echo "</tr>\n";
     }
     /**
@@ -245,26 +268,29 @@
      *
      * @return bool
      */
-    public static function can_delete($selected_id) {
+    public static function can_delete($selected_id)
+    {
       if ($selected_id == -1) {
-        return FALSE;
+        return false;
       }
       $sql    = "SELECT COUNT(*) FROM branches WHERE tax_group_id=" . DB::escape($selected_id);
       $result = DB::query($sql, "could not query customers");
       $myrow  = DB::fetch_row($result);
       if ($myrow[0] > 0) {
         Event::warning(_("Cannot delete this tax group because customer branches been created referring to it."));
-        return FALSE;
+
+        return false;
       }
       $sql    = "SELECT COUNT(*) FROM suppliers WHERE tax_group_id=" . DB::escape($selected_id);
       $result = DB::query($sql, "could not query suppliers");
       $myrow  = DB::fetch_row($result);
       if ($myrow[0] > 0) {
         Event::warning(_("Cannot delete this tax group because suppliers been created referring to it."));
-        return FALSE;
+
+        return false;
       }
-      return TRUE;
+
+      return true;
     }
   }
-
 

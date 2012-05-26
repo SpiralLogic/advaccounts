@@ -7,10 +7,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::open_window(900, 600);
   $trans_type = $_GET['trans_type'];
-  Page::start("", SA_SALESTRANSVIEW, TRUE);
+  Page::start("", SA_SALESTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {
     $trans_id = $_GET["trans_no"];
   }
@@ -23,8 +22,7 @@
   echo "<tr class='tablerowhead top'><th colspan=6>";
   if ($trans_type == ST_CUSTPAYMENT) {
     Display::heading(sprintf(_("Customer Payment #%d"), $trans_id));
-  }
-  else {
+  } else {
     Display::heading(sprintf(_("Customer Refund #%d"), $trans_id));
   }
   echo "</td></tr>";

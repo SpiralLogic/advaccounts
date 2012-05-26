@@ -7,13 +7,11 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::open_window(900, 600);
-  Page::start(_($help_context = "View Sales Invoice"), SA_SALESTRANSVIEW, TRUE);
+  Page::start(_($help_context = "View Sales Invoice"), SA_SALESTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {
     $trans_id = $_GET["trans_no"];
-  }
-  elseif (isset($_POST["trans_no"])) {
+  } elseif (isset($_POST["trans_no"])) {
     $trans_id = $_POST["trans_no"];
   }
   // 3 different queries to get the information - what a JOKE !!!!
@@ -63,26 +61,23 @@
       if ($myrow2["quantity"] == 0) {
         continue;
       }
-
       $value = Num::round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
       $sub_total += $value;
       if ($myrow2["discount_percent"] == 0) {
         $display_discount = "";
-      }
-      else {
+      } else {
         $display_discount = Num::percent_format($myrow2["discount_percent"] * 100) . "%";
       }
       Cell::label($myrow2["stock_id"]);
       Cell::label($myrow2["StockDescription"]);
-      Cell::qty($myrow2["quantity"], FALSE, Item::qty_dec($myrow2["stock_id"]));
+      Cell::qty($myrow2["quantity"], false, Item::qty_dec($myrow2["stock_id"]));
       Cell::label($myrow2["units"], "class='right'");
       Cell::amount($myrow2["unit_price"]);
       Cell::label($display_discount, ' class="right nowrap"');
       Cell::amount($value);
       Row::end();
     } //end while there are line items to print out
-  }
-  else {
+  } else {
     Event::warning(_("There are no line items on this invoice."), 1, 2);
   }
   $display_sub_tot = Num::price_format($sub_total);
@@ -102,7 +97,6 @@
   $customer = new Debtor($myrow['debtor_id']);
   $emails   = $customer->getEmailAddresses();
   Display::submenu_print(_("&Print This Invoice"), ST_SALESINVOICE, $_GET['trans_no'], 'prtopt');
-  Reporting::email_link($_GET['trans_no'], _("Email This Invoice"), TRUE, ST_SALESINVOICE, 'EmailLink', NULL, $emails, 1);
+  Reporting::email_link($_GET['trans_no'], _("Email This Invoice"), true, ST_SALESINVOICE, 'EmailLink', null, $emails, 1);
   Page::end();
-
 

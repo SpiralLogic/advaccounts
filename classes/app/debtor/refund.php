@@ -10,8 +10,8 @@
   /*
          Write/update customer refund.
        */
-  class Debtor_Refund {
-
+  class Debtor_Refund
+  {
     /**
      * @static
      *
@@ -29,7 +29,8 @@
      *
      * @return int
      */
-    public static function add($trans_no, $customer_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0) {
+    public static function add($trans_no, $customer_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0)
+    {
       $amount = $amount * -1;
       DB::begin();
       $company_record  = DB_Company::get_prefs();
@@ -37,8 +38,8 @@
       $bank_gl_account = Bank_Account::get_gl($bank_account);
       if ($trans_no != 0) {
         DB_Comments::delete(ST_CUSTREFUND, $trans_no);
-        Bank_Trans::void(ST_CUSTREFUND, $trans_no, TRUE);
-        GL_Trans::void(ST_CUSTREFUND, $trans_no, TRUE);
+        Bank_Trans::void(ST_CUSTREFUND, $trans_no, true);
+        GL_Trans::void(ST_CUSTREFUND, $trans_no, true);
         Sales_Allocation::void(ST_CUSTREFUND, $trans_no, $date_);
       }
       $total = 0;
@@ -48,8 +49,7 @@
         $branch_data      = Sales_Branch::get_accounts($branch_id);
         $debtors_account  = $branch_data["receivables_account"];
         $discount_account = $branch_data["payment_discount_account"];
-      }
-      else {
+      } else {
         $debtors_account  = $company_record["debtors_act"];
         $discount_account = $company_record["default_prompt_payment_act"];
       }
@@ -69,6 +69,7 @@
       DB_Comments::add(ST_CUSTREFUND, $refund_no, $date_, $memo_);
       Ref::save(ST_CUSTREFUND, $refund_no, $ref);
       DB::commit();
+
       return $refund_no;
     }
     /**
@@ -77,10 +78,11 @@
      * @param $type
      * @param $type_no
      */
-    public static function void($type, $type_no) {
+    public static function void($type, $type_no)
+    {
       DB::begin();
-      Bank_Trans::void($type, $type_no, TRUE);
-      GL_Trans::void($type, $type_no, TRUE);
+      Bank_Trans::void($type, $type_no, true);
+      GL_Trans::void($type, $type_no, true);
       Sales_Allocation::void($type, $type_no);
       Debtor_Trans::void($type, $type_no);
       DB::commit();

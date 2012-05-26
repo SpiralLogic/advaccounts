@@ -9,7 +9,6 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   Page::set_security(SA_CUSTPAYMREP);
   print_aged_customer_analysis();
   /**
@@ -18,38 +17,39 @@
    *
    * @return null|PDOStatement
    */
-  function get_invoices($customer_id, $to) {
+  function get_invoices($customer_id, $to)
+  {
     $todate    = Dates::date2sql($to);
     $past_due1 = DB_Company::get_pref('past_due_days');
     $past_due2 = 2 * $past_due1;
     // Revomed allocated from sql
-    $value = "(debtor_trans.ov_amount + debtor_trans.ov_gst + "
-      . "debtor_trans.ov_freight + debtor_trans.ov_freight_tax + "
-      . "debtor_trans.ov_discount)";
+    $value = "(debtor_trans.ov_amount + debtor_trans.ov_gst + " . "debtor_trans.ov_freight + debtor_trans.ov_freight_tax + " . "debtor_trans.ov_discount)";
     $due   = "IF (debtor_trans.type=" . ST_SALESINVOICE . ",debtor_trans.due_date,debtor_trans.tran_date)";
     $sql
            = "SELECT debtor_trans.type, debtor_trans.reference,
-		debtor_trans.tran_date,
-		$value as Balance,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0) AS Due,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past_due1,$value,0) AS Overdue1,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past_due2,$value,0) AS Overdue2
+        debtor_trans.tran_date,
+        $value as Balance,
+        IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0) AS Due,
+        IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past_due1,$value,0) AS Overdue1,
+        IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past_due2,$value,0) AS Overdue2
 
-		FROM debtors,
-			payment_terms,
-			debtor_trans
+        FROM debtors,
+            payment_terms,
+            debtor_trans
 
-		WHERE debtor_trans.type <> " . ST_CUSTDELIVERY . "
-			AND debtors.payment_terms = payment_terms.terms_indicator
-			AND debtors.debtor_id = debtor_trans.debtor_id
-			AND debtor_trans.debtor_id = $customer_id
-			AND debtor_trans.tran_date <= '$todate'
-			AND ABS(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight + debtor_trans.ov_freight_tax + debtor_trans.ov_discount) > 0.004
-			ORDER BY debtor_trans.tran_date";
+        WHERE debtor_trans.type <> " . ST_CUSTDELIVERY . "
+            AND debtors.payment_terms = payment_terms.terms_indicator
+            AND debtors.debtor_id = debtor_trans.debtor_id
+            AND debtor_trans.debtor_id = $customer_id
+            AND debtor_trans.tran_date <= '$todate'
+            AND ABS(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight + debtor_trans.ov_freight_tax + debtor_trans.ov_discount) > 0.004
+            ORDER BY debtor_trans.tran_date";
+
     return DB::query($sql, "The customer details could not be retrieved");
   }
 
-  function print_aged_customer_analysis() {
+  function print_aged_customer_analysis()
+  {
     global $systypes_array;
     $to          = $_POST['PARAM_0'];
     $fromcust    = $_POST['PARAM_1'];
@@ -61,8 +61,7 @@
     $destination = $_POST['PARAM_7'];
     if ($destination) {
       include_once(APPPATH . "reports/excel.php");
-    }
-    else {
+    } else {
       include_once(APPPATH . "reports/pdf.php");
     }
     if ($graphics) {
@@ -70,28 +69,24 @@
     }
     if ($fromcust == ALL_NUMERIC) {
       $from = _('All');
-    }
-    else {
+    } else {
       $from = Debtor::get_name($fromcust);
     }
     $dec = User::price_dec();
     if ($summaryOnly == 1) {
       $summary = _('Summary Only');
-    }
-    else {
+    } else {
       $summary = _('Detailed Report');
     }
     if ($currency == ALL_TEXT) {
-      $convert  = TRUE;
+      $convert  = true;
       $currency = _('Balances in Home Currency');
-    }
-    else {
-      $convert = FALSE;
+    } else {
+      $convert = false;
     }
     if ($no_zeros) {
       $nozeros = _('Yes');
-    }
-    else {
+    } else {
       $nozeros = _('No');
     }
     $past_due1     = DB_Company::get_pref('past_due_days');
@@ -101,36 +96,20 @@
     $txt_past_due2 = _('Over') . " " . $past_due2 . " " . _('Days');
     $cols          = array(0, 100, 130, 190, 250, 320, 385, 450, 515);
     $headers       = array(
-      _('Customer'), '', '', _('Current'), $txt_now_due, $txt_past_due1, $txt_past_due2,
-      _('Total Balance')
+      _('Customer'), '', '', _('Current'), $txt_now_due, $txt_past_due1, $txt_past_due2, _('Total Balance')
     );
     $aligns        = array('left', 'left', 'left', 'right', 'right', 'right', 'right', 'right');
     $params        = array(
-      0 => $comments,
-      1 => array(
-        'text' => _('End Date'),
-        'from' => $to,
-        'to'   => ''
-      ),
-      2 => array(
-        'text' => _('Customer'),
-        'from' => $from,
-        'to'   => ''
-      ),
-      3 => array(
-        'text' => _('Currency'),
-        'from' => $currency,
-        'to'   => ''
-      ),
-      4 => array(
-        'text' => _('Type'),
-        'from' => $summary,
-        'to'   => ''
-      ),
-      5 => array(
-        'text' => _('Suppress Zeros'),
-        'from' => $nozeros,
-        'to'   => ''
+      0    => $comments, 1 => array(
+        'text' => _('End Date'), 'from' => $to, 'to'   => ''
+      ), 2 => array(
+        'text' => _('Customer'), 'from' => $from, 'to'   => ''
+      ), 3 => array(
+        'text' => _('Currency'), 'from' => $currency, 'to'   => ''
+      ), 4 => array(
+        'text' => _('Type'), 'from' => $summary, 'to'   => ''
+      ), 5 => array(
+        'text' => _('Suppress Zeros'), 'from' => $nozeros, 'to'   => ''
       )
     );
     if ($convert) {
@@ -153,14 +132,11 @@
       }
       if ($convert) {
         $rate = Bank_Currency::exchange_rate_from_home($myrow['curr_code'], $to);
-      }
-      else {
+      } else {
         $rate = 1.0;
       }
       $custrec = Debtor::get_details($myrow['debtor_id'], $to);
-      foreach (
-        $custrec as $i => $value
-      ) {
+      foreach ($custrec as $i => $value) {
         $custrec[$i] *= $rate;
       }
       $str = array(
@@ -184,9 +160,7 @@
       $total[2] += ($custrec["Overdue1"] - $custrec["Overdue2"]);
       $total[3] += $custrec["Overdue2"];
       $total[4] += $custrec["Balance"];
-      for (
-        $i = 0; $i < count($str); $i++
-      ) {
+      for ($i = 0; $i < count($str); $i++) {
         $rep->AmountCol($i + 3, $i + 4, $str[$i], $dec);
       }
       $rep->NewLine(1, 2);
@@ -200,19 +174,15 @@
           $rep->NewLine(1, 2);
           $rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
           $rep->TextCol(1, 2, $trans['reference'], -2);
-          $rep->DateCol(2, 3, $trans['tran_date'], TRUE, -2);
-          if ($trans['type'] == ST_CUSTCREDIT || $trans['type'] == ST_CUSTPAYMENT
-            || $trans['type'] == ST_CUSTREFUND
-            || $trans['type'] == ST_BANKDEPOSIT
+          $rep->DateCol(2, 3, $trans['tran_date'], true, -2);
+          if ($trans['type'] == ST_CUSTCREDIT || $trans['type'] == ST_CUSTPAYMENT || $trans['type'] == ST_CUSTREFUND || $trans['type'] == ST_BANKDEPOSIT
           ) {
             $trans['Balance'] *= -1;
             $trans['Due'] *= -1;
             $trans['Overdue1'] *= -1;
             $trans['Overdue2'] *= -1;
           }
-          foreach (
-            $trans as $i => $value
-          ) {
+          foreach ($trans as $i => $value) {
             $trans[$i] *= $rate;
           }
           $str = array(
@@ -222,9 +192,7 @@
             $trans["Overdue2"],
             $trans["Balance"]
           );
-          for (
-            $i = 0; $i < count($str); $i++
-          ) {
+          for ($i = 0; $i < count($str); $i++) {
             $rep->AmountCol($i + 3, $i + 4, $str[$i], $dec);
           }
         }
@@ -239,9 +207,7 @@
     $rep->fontSize += 2;
     $rep->TextCol(0, 3, _('Grand Total'));
     $rep->fontSize -= 2;
-    for (
-      $i = 0; $i < count($total); $i++
-    ) {
+    for ($i = 0; $i < count($total); $i++) {
       $rep->AmountCol($i + 3, $i + 4, $total[$i], $dec);
       if ($graphics && $i < count($total) - 1) {
         $pg->y[$i] = abs($total[$i]);
@@ -256,11 +222,11 @@
       $pg->graphic_1      = $to;
       $pg->type           = $graphics;
       $pg->skin           = Config::get('graphs_skin');
-      $pg->built_in       = FALSE;
+      $pg->built_in       = false;
       $pg->fontfile       = DOCROOT . "reporting/fonts/Vera.ttf";
       $pg->latin_notation = (User::dec_sep() != ".");
       $filename           = COMPANY_PATH . "images/test.png";
-      $pg->display($filename, TRUE);
+      $pg->display($filename, true);
       $w = $pg->width / 1.5;
       $h = $pg->height / 1.5;
       $x = ($rep->pageWidth - $w) / 2;
@@ -273,5 +239,4 @@
     $rep->NewLine();
     $rep->End();
   }
-
 

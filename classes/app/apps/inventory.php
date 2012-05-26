@@ -7,12 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Apps_Inventory extends Application {
-
+  class Apps_Inventory extends Application
+  {
     /**
 
      */
-    function __construct() {
+    public function __construct()
+    {
       global $installed_extensions;
       parent::__construct("Inventory", _($this->help_context = "&Inventory"));
       $this->add_module(_("Transactions"));

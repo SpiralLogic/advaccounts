@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Reports_UI {
-
+  class Reports_UI
+  {
     /**
      * @static
      *
@@ -18,7 +18,8 @@
      * @param bool $spec_opt
      * @param bool $submit_on_change
      */
-    public static function print_profiles_row($label, $name, $selected_id = NULL, $spec_opt = FALSE, $submit_on_change = TRUE) {
+    public static function print_profiles_row($label, $name, $selected_id = null, $spec_opt = false, $submit_on_change = true)
+    {
       $sql      = "SELECT profile FROM print_profiles GROUP BY profile";
       $result   = DB::query($sql, 'cannot get all profile names');
       $profiles = array();
@@ -26,7 +27,7 @@
         $profiles[$myrow['profile']] = $myrow['profile'];
       }
       echo "<tr>";
-      if ($label != NULL) {
+      if ($label != null) {
         echo "<td class='label'>$label</td>\n";
       }
       echo "<td>";
@@ -45,7 +46,8 @@
      *
      * @return string
      */
-    public static function printers($name, $selected_id = NULL, $spec_opt = FALSE, $submit_on_change = FALSE) {
+    public static function printers($name, $selected_id = null, $spec_opt = false, $submit_on_change = false)
+    {
       static $printers; // query only once for page display
       if (!$printers) {
         $sql      = "SELECT id, name, description FROM printers";
@@ -55,6 +57,7 @@
           $printers[$myrow['id']] = $myrow['name'] . '&nbsp;-&nbsp;' . $myrow['description'];
         }
       }
+
       return array_selector($name, $selected_id, $printers, array(
         'select_submit' => $submit_on_change, 'spec_option' => $spec_opt, 'spec_id' => ''
       ));
@@ -66,7 +69,8 @@
      * @param      $name
      * @param null $value
      */
-    public static function pagesizes_row($label, $name, $value = NULL) {
+    public static function pagesizes_row($label, $name, $value = null)
+    {
       $items = array();
       foreach (Config::get('print_paper_sizes') as $pz) {
         $items[$pz] = $pz;

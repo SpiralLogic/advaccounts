@@ -7,16 +7,15 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
-  class GL_Journal {
-
+  class GL_Journal
+  {
     /**
      * @static
      *
      * @param $order
      */
-    public static function header($order) {
-
+    public static function header($order)
+    {
       $qes = GL_QuickEntry::has(QE_JOURNAL);
       $new = $order->order_id == 0;
       Table::startOuter('tablestyle2 width90');
@@ -30,20 +29,19 @@
       if ($new) {
         Table::section(3, "20%");
         Row::start();
-        check_cells(_("Reverse Transaction:"), 'Reverse', NULL);
+        check_cells(_("Reverse Transaction:"), 'Reverse', null);
         Row::end();
       }
-      if ($qes !== FALSE) {
+      if ($qes !== false) {
         Table::section(3, "50%");
         Row::start();
-        GL_QuickEntry::cells(_("Quick Entry") . ":", 'person_id', NULL, QE_JOURNAL, TRUE);
+        GL_QuickEntry::cells(_("Quick Entry") . ":", 'person_id', null, QE_JOURNAL, true);
         $qid = GL_QuickEntry::get(get_post('person_id'));
         if (list_updated('person_id')) {
           unset($_POST['total_amount']); // enable default
           Ajax::i()->activate('total_amount');
         }
-        amount_cells($qid['base_desc'] . ":", 'total_amount', Num::price_format($qid['base_amount']), NULL,
-          "&nbsp;&nbsp;" . submit('go', _("Go"), FALSE, FALSE, TRUE));
+        amount_cells($qid['base_desc'] . ":", 'total_amount', Num::price_format($qid['base_amount']), null, "&nbsp;&nbsp;" . submit('go', _("Go"), false, false, true));
         Row::end();
       }
       Table::endOuter(1);
@@ -54,24 +52,29 @@
      * @param            $title
      * @param Item_Order $order
      */
-
-    public static function items($title, &$order) {
+    public static function items($title, &$order)
+    {
       Display::heading($title);
       $dim = DB_Company::get_pref('use_dimension');
       Display::div_start('items_table');
       Table::start('tablestyle grid width95');
       if ($dim == 2) {
         $th = array(
-          _("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2", _("Debit"), _("Credit"), _("Memo"), ""
+          _("Account Code"),
+          _("Account Description"),
+          _("Dimension") . " 1",
+          _("Dimension") . " 2",
+          _("Debit"),
+          _("Credit"),
+          _("Memo"),
+          ""
         );
-      }
-      else {
+      } else {
         if ($dim == 1) {
           $th = array(
             _("Account Code"), _("Account Description"), _("Dimension"), _("Debit"), _("Credit"), _("Memo"), ""
           );
-        }
-        else {
+        } else {
           $th = array(
             _("Account Code"), _("Account Description"), _("Debit"), _("Credit"), _("Memo"), ""
           );
@@ -85,19 +88,17 @@
       $id = find_submit(MODE_EDIT);
       foreach ($order->gl_items as $line => $item) {
         if ($id != $line) {
-
           Cell::labels($item->code_id, $item->description);
           if ($dim >= 1) {
-            Cell::label(Dimensions::get_string($item->dimension_id, TRUE));
+            Cell::label(Dimensions::get_string($item->dimension_id, true));
           }
           if ($dim > 1) {
-            Cell::label(Dimensions::get_string($item->dimension2_id, TRUE));
+            Cell::label(Dimensions::get_string($item->dimension2_id, true));
           }
           if ($item->amount > 0) {
             Cell::amount(abs($item->amount));
             Cell::label("");
-          }
-          else {
+          } else {
             Cell::label("");
             Cell::amount(abs($item->amount));
           }
@@ -105,8 +106,7 @@
           edit_button_cell("Edit$line", _("Edit"), _('Edit journal line'));
           delete_button_cell("Delete$line", _("Delete"), _('Remove line from journal'));
           Row::end();
-        }
-        else {
+        } else {
           GL_Journal::item_controls($order, $dim, $line);
         }
       }
@@ -132,8 +132,8 @@
      * @param      $dim
      * @param null $Index
      */
-    public static function item_controls($order, $dim, $Index = NULL) {
-
+    public static function item_controls($order, $dim, $Index = null)
+    {
       Row::start();
       $id = find_submit(MODE_EDIT);
       if ($Index != -1 && $Index == $id) {
@@ -145,8 +145,7 @@
         if ($item->amount > 0) {
           $_POST['AmountDebit']  = Num::price_format($item->amount);
           $_POST['AmountCredit'] = "";
-        }
-        else {
+        } else {
           $_POST['AmountDebit']  = "";
           $_POST['AmountCredit'] = Num::price_format(abs($item->amount));
         }
@@ -154,16 +153,15 @@
         $_POST['LineMemo']    = $item->reference;
         hidden('Index', $id);
         $skip_bank = !User::i()->can_access(SA_BANKJOURNAL);
-        echo GL_UI::all('code_id', NULL, $skip_bank, TRUE);
+        echo GL_UI::all('code_id', null, $skip_bank, true);
         if ($dim >= 1) {
-          Dimensions::cells(NULL, 'dimension_id', NULL, TRUE, " ", FALSE, 1);
+          Dimensions::cells(null, 'dimension_id', null, true, " ", false, 1);
         }
         if ($dim > 1) {
-          Dimensions::cells(NULL, 'dimension2_id', NULL, TRUE, " ", FALSE, 2);
+          Dimensions::cells(null, 'dimension2_id', null, true, " ", false, 2);
         }
         Ajax::i()->activate('items_table');
-      }
-      else {
+      } else {
         // Adding a new row
         $_POST['AmountDebit']   = ''; //Num::price_format(0);
         $_POST['AmountCredit']  = ''; //Num::price_format(0);
@@ -176,12 +174,12 @@
           Ajax::i()->activate('code_id');
         }
         $skip_bank = !User::i()->can_access(SA_BANKJOURNAL);
-        echo GL_UI::all('code_id', NULL, $skip_bank, TRUE);
+        echo GL_UI::all('code_id', null, $skip_bank, true);
         if ($dim >= 1) {
-          Dimensions::cells(NULL, 'dimension_id', NULL, TRUE, " ", FALSE, 1);
+          Dimensions::cells(null, 'dimension_id', null, true, " ", false, 1);
         }
         if ($dim > 1) {
-          Dimensions::cells(NULL, 'dimension2_id', NULL, TRUE, " ", FALSE, 2);
+          Dimensions::cells(null, 'dimension2_id', null, true, " ", false, 2);
         }
       }
       if ($dim < 1) {
@@ -190,23 +188,22 @@
       if ($dim < 2) {
         hidden('dimension2_id', 0);
       }
-      small_amount_cells(NULL, 'AmountDebit');
-      small_amount_cells(NULL, 'AmountCredit');
-      text_cells_ex(NULL, 'LineMemo', 35, 255);
+      small_amount_cells(null, 'AmountDebit');
+      small_amount_cells(null, 'AmountCredit');
+      text_cells_ex(null, 'LineMemo', 35, 255);
       if ($id != -1) {
         button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
         button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
         JS::set_focus('amount');
-      }
-      else {
-        submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new line to journal'), TRUE);
+      } else {
+        submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new line to journal'), true);
       }
       Row::end();
     }
-
-    public static function option_controls() {
+    public static function option_controls()
+    {
       echo "<br><table class='center'>";
-      textarea_row(_("Memo"), 'memo_', NULL, 50, 3);
+      textarea_row(_("Memo"), 'memo_', null, 50, 3);
       echo "</table>";
     }
     /**
@@ -221,16 +218,17 @@
      *
      * @return null|string
      */
-    public static function  view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
+    public static function  view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
+    {
       if ($type == ST_JOURNAL || $type == ST_COSTUPDATE) {
         $viewer = "gl/view/gl_trans.php?type_id=$type&trans_no=$trans_no";
-      }
-      else {
-        return NULL;
+      } else {
+        return null;
       }
       if ($label == "") {
         $label = $trans_no;
       }
+
       return Display::viewer_link($label, $viewer, $class, $id, $icon);
     }
     /**
@@ -241,10 +239,11 @@
      * @param null $value
      * @param bool $submit_on_change
      */
-    public static function  cells($label, $name, $value = NULL, $submit_on_change = FALSE) {
+    public static function  cells($label, $name, $value = null, $submit_on_change = false)
+    {
       global $systypes_array;
       echo "<td>";
-      if ($label != NULL) {
+      if ($label != null) {
         echo "<label for=\"$name\"> $label</label>";
       }
       $items = $systypes_array;
@@ -253,11 +252,13 @@
         unset($items[$excl]);
       }
       echo array_selector($name, $value, $items, array(
-        'spec_option' => _("All"), 'spec_id' => -1, 'select_submit' => $submit_on_change, 'async' => FALSE
-      ));
+                                                      'spec_option'   => _("All"),
+                                                      'spec_id'       => -1,
+                                                      'select_submit' => $submit_on_change,
+                                                      'async'         => false
+                                                 ));
       echo "</td>\n";
     }
-
     // Write/update journal entries.
     //
     /**
@@ -269,7 +270,8 @@
      *
      * @return string
      */
-    public static function write($order, $reverse, $use_transaction = TRUE) {
+    public static function write($order, $reverse, $use_transaction = true)
+    {
       $date_      = $order->tran_date;
       $ref        = $order->reference;
       $memo_      = $order->memo_;
@@ -283,7 +285,7 @@
         DB::begin();
       }
       if (!$new) {
-        static::void($trans_type, $trans_id, FALSE);
+        static::void($trans_type, $trans_id, false);
       }
       foreach ($order->gl_items as $journal_item) {
         // post to first found bank account using given gl acount code.
@@ -298,9 +300,8 @@
       if ($new) {
         DB_Comments::add($trans_type, $trans_id, $date_, $memo_);
         Ref::save($trans_type, $ref);
-      }
-      else {
-        DB_Comments::update($trans_type, $trans_id, NULL, $memo_);
+      } else {
+        DB_Comments::update($trans_type, $trans_id, null, $memo_);
         Ref::update($trans_type, $trans_id, $ref);
       }
       DB_AuditTrail::add($trans_type, $trans_id, $date_);
@@ -325,6 +326,7 @@
       if ($use_transaction) {
         DB::commit();
       }
+
       return $trans_id;
     }
     /**
@@ -334,11 +336,12 @@
      * @param      $type_no
      * @param bool $use_transaction
      */
-    public static function void($type, $type_no, $use_transaction = TRUE) {
+    public static function void($type, $type_no, $use_transaction = true)
+    {
       if ($use_transaction) {
         DB::begin();
       }
-      Bank_Trans::void($type, $type_no, TRUE);
+      Bank_Trans::void($type, $type_no, true);
       //	static::void($type, $type_no, true);	 // this is done above
       //	static::void_tax_details($type, $type_no); // ditto
       if ($use_transaction) {
@@ -346,5 +349,4 @@
       }
     }
   }
-
 

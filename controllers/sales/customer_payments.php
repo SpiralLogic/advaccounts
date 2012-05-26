@@ -13,7 +13,7 @@
   Page::start(_($help_context = "Customer Payment Entry"), SA_SALESPAYMNT, Input::request('frame'));
   Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-  $_POST['customer_id'] = Input::post_get('customer_id', FALSE);
+  $_POST['customer_id'] = Input::post_get('customer_id', false);
   if (list_updated('branch_id') || !$_POST['customer_id']) {
     // when branch is selected via external editor also customer can change
     $br                   = Sales_Branch::get(get_post('branch_id'));
@@ -53,8 +53,7 @@
     $comp_currency = Bank_Currency::for_company();
     if ($comp_currency != $bank_currency && $bank_currency != $cust_currency) {
       $rate = 0;
-    }
-    else {
+    } else {
       $rate = Validation::input_num('_ex_rate');
     }
     if (check_value('createinvoice')) {
@@ -76,23 +75,22 @@
   if (isset($_POST["customer_id"])) {
     Validation::check(Validation::BRANCHES, _("No Branches for Customer") . $_POST["customer_id"], $_POST['customer_id']);
   }
-  Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', NULL, FALSE, TRUE, TRUE);
+  Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true);
   Debtor_Payment::read_customer_data($_POST['customer_id']);
   Session::i()->setGlobal('debtor', $_POST['customer_id']);
   if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
     Table::endOuter();
     Event::error(_("This customer account is on hold."));
-  }
-  else {
+  } else {
     $display_discount_percent = Num::percent_format($_POST['payment_discount'] * 100) . "%";
     Table::section(2);
     if (!list_updated('bank_account')) {
       $_POST['bank_account'] = Bank_Account::get_customer_default($_POST['customer_id']);
     }
-    Bank_Account::row(_("Into Bank Account:"), 'bank_account', NULL, TRUE);
-    text_row(_("Reference:"), 'ref', NULL, 20, 40);
+    Bank_Account::row(_("Into Bank Account:"), 'bank_account', null, true);
+    text_row(_("Reference:"), 'ref', null, 20, 40);
     Table::section(3);
-    date_row(_("Date of Deposit:"), 'DateBanked', '', TRUE, 0, 0, 0, NULL, TRUE);
+    date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
     $comp_currency = Bank_Currency::for_company();
     $cust_currency = Bank_Currency::for_debtor($_POST['customer_id']);
     $bank_currency = Bank_Currency::for_company($_POST['bank_account']);
@@ -104,7 +102,7 @@
     if ($cust_currency == $bank_currency) {
       Display::div_start('alloc_tbl');
       $_SESSION['alloc']->read();
-      Gl_Allocation::show_allocatable(FALSE);
+      Gl_Allocation::show_allocatable(false);
       Display::div_end();
     }
     Table::start('tablestyle width70');
@@ -114,13 +112,13 @@
       check_row(_("Create invoice and apply for this payment: "), 'createinvoice');
     }
     amount_row(_("Amount:"), 'amount');
-    textarea_row(_("Memo:"), 'memo_', NULL, 22, 4);
+    textarea_row(_("Memo:"), 'memo_', null, 22, 4);
     Table::end(1);
     if ($cust_currency != $bank_currency) {
       Event::warning(_("Amount and discount are in customer's currency."));
     }
     Display::br();
-    submit_center('AddPaymentItem', _("Add Payment"), TRUE, '', 'default');
+    submit_center('AddPaymentItem', _("Add Payment"), true, '', 'default');
   }
   Display::br();
   end_form();
@@ -130,5 +128,5 @@ var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tb
  alloc_tbl.find('.amount').each(function() { if (this.value != 0) hasallocated = true});
  if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();
 JS;
-  JS::addLiveEvent('a, :input', 'click change', $js, 'wrapper', TRUE);
+  JS::addLiveEvent('a, :input', 'click change', $js, 'wrapper', true);
   Page::end(!Input::request('frame'));

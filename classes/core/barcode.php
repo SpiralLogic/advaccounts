@@ -28,8 +28,8 @@
   /**
 
    */
-  class Barcode {
-
+  class Barcode
+  {
     /**
      * @static
      *
@@ -37,7 +37,8 @@
      *
      * @return array|bool|string
      */
-    public static function       create($datas) {
+    public static function       create($datas)
+    {
       return self::_draw($datas);
     }
     /**
@@ -47,25 +48,25 @@
      *
      * @return array|bool|string
      */
-    static private function _draw($datas) {
+    private static function _draw($datas)
+    {
       $code = '';
-      $rect = FALSE;
+      $rect = false;
       if (is_array($datas)) {
-        foreach (array('code' => '', 'crc' => TRUE, 'rect' => FALSE) as $v => $def) {
+        foreach (array('code' => '', 'crc' => true, 'rect' => false) as $v => $def) {
           $$v = isset($datas[$v]) ? $datas[$v] : $def;
         }
-      }
-      else {
+      } else {
         $code = $datas;
       }
       if ($code == '') {
-        return FALSE;
+        return false;
       }
       $code  = (string) $code;
       $digit = BarcodeDatamatrix::getDigit($code, $rect);
       $hri   = $code;
       if ($digit == '') {
-        return FALSE;
+        return false;
       }
       $width  = 2;
       $marge  = 3;
@@ -80,8 +81,9 @@
       $result        = self::digitToGDRenderer($res, $black, $size / 2, $size / 2, 0, $width, $height, $digit);
       $result['hri'] = $hri;
       ob_start(); /*don't send the output to the browser since we'll need to manipulate it*/
-      imagegif($res, NULL, 100);
+      imagegif($res, null, 100);
       $result = ob_get_clean();
+
       return $result;
     }
     // convert a bit string to an array of array of bit char
@@ -92,12 +94,14 @@
      *
      * @return array
      */
-    static private function bitStringTo2DArray($digit) {
+    private static function bitStringTo2DArray($digit)
+    {
       $d   = array();
       $len = strlen($digit);
       for ($i = 0; $i < $len; $i++) {
         $d[$i] = $digit[$i];
       }
+
       return (array($d));
     }
     // GD barcode renderer
@@ -115,7 +119,8 @@
      *
      * @return array
      */
-    static private function digitToGDRenderer($gd, $color, $xi, $yi, $angle, $mw, $mh, $digit) {
+    private static function digitToGDRenderer($gd, $color, $xi, $yi, $angle, $mw, $mh, $digit)
+    {
       $lines   = count($digit);
       $columns = count($digit[0]);
       $angle   = deg2rad(-$angle);
@@ -130,22 +135,19 @@
         for ($x = 0; $x < $columns; $x++) {
           if ($current == $digit[$y][$x]) {
             $len++;
-          }
-          else {
+          } else {
             if ($current == '1') {
               $px = $len * $mw;
               $xt = $xi + ($x - $len) * $mw;
               if ($angle == 0) {
                 if ($px > 2) {
                   imagefilledrectangle($gd, $xt, $yi + $y * $mh, $xt + $px - 1, $yi + ($y + 1) * $mh, $color);
-                }
-                else {
+                } else {
                   for ($i = 0; $i < $px; $i++) {
                     imageline($gd, $xt + $i, $yi + $y * $mh, $xt + $i, $yi + ($y + 1) * $mh, $color);
                   }
                 }
-              }
-              else {
+              } else {
                 for ($i = 0; $i < $px; $i++) {
                   self::_rotate($xt + $i - $xi, $y * $mh, $cos, $sin, $x1, $y1);
                   self::_rotate($xt + $i - $xi, ($y + 1) * $mh, $cos, $sin, $x2, $y2);
@@ -164,14 +166,12 @@
           if ($angle == 0) {
             if ($px > 2) {
               imagefilledrectangle($gd, $xt, $yi + $y * $mh, $xt + $px - 1, $yi + ($y + 1) * $mh, $color);
-            }
-            else {
+            } else {
               for ($i = 0; $i < $px; $i++) {
                 imageline($gd, $xt + $i, $yi + $y * $mh, $xt + $i, $yi + ($y + 1) * $mh, $color);
               }
             }
-          }
-          else {
+          } else {
             for ($i = 0; $i < $px; $i++) {
               self::_rotate($xt + $i - $xi, $y * $mh, $cos, $sin, $x1, $y1);
               self::_rotate($xt + $i - $xi, ($y + 1) * $mh, $cos, $sin, $x2, $y2);
@@ -180,6 +180,7 @@
           }
         }
       }
+
       return self::result($xi, $yi, $columns, $lines, $mw, $mh, $cos, $sin);
     }
     /**
@@ -196,11 +197,13 @@
      *
      * @return array
      */
-    static private function result($xi, $yi, $columns, $lines, $mw, $mh, $cos, $sin) {
+    private static function result($xi, $yi, $columns, $lines, $mw, $mh, $cos, $sin)
+    {
       self::_rotate(0, 0, $cos, $sin, $x1, $y1);
       self::_rotate($columns * $mw, 0, $cos, $sin, $x2, $y2);
       self::_rotate($columns * $mw, $lines * $mh, $cos, $sin, $x3, $y3);
       self::_rotate(0, $lines * $mh, $cos, $sin, $x4, $y4);
+
       return array(
         'width' => $columns * $mw, 'height' => $lines * $mh, 'p1' => array(
           'x' => $xi + $x1, 'y' => $yi + $y1
@@ -223,7 +226,8 @@
      * @param $x
      * @param $y
      */
-    static private function _rotate($x1, $y1, $cos, $sin, &$x, &$y) {
+    private static function _rotate($x1, $y1, $cos, $sin, &$x, &$y)
+    {
       $x = $x1 * $cos - $y1 * $sin;
       $y = $x1 * $sin + $y1 * $cos;
     }
@@ -236,7 +240,8 @@
      * @param $x
      * @param $y
      */
-    public static function rotate($x1, $y1, $angle, &$x, &$y) {
+    public static function rotate($x1, $y1, $angle, &$x, &$y)
+    {
       $angle = deg2rad(-$angle);
       $cos   = cos($angle);
       $sin   = sin($angle);
@@ -248,12 +253,12 @@
   /**
 
    */
-  class BarcodeDatamatrix {
-
+  class BarcodeDatamatrix
+  {
     /**
      * @var array
      */
-    static private $encoding
+    private static $encoding
       = array(
         '101010011', '101011001', '101001011', '110010101', //
         '101101001', '110101001', '100101011', '100101101', //
@@ -264,7 +269,7 @@
     /**
      * @var array
      */
-    static private $lengthRows
+    private static $lengthRows
       = array(
         10, 12, 14, 16, 18, 20, 22, 24, 26, // 24 squares et 6 rectangular
         32, 36, 40, 44, 48, 52, 64, 72, 80, //
@@ -274,7 +279,7 @@
     /**
      * @var array
      */
-    static private $lengthCols
+    private static $lengthCols
       = array(
         10, 12, 14, 16, 18, 20, 22, 24, 26, // Number of columns for the entire datamatrix
         32, 36, 40, 44, 48, 52, 64, 72, 80, //
@@ -284,7 +289,7 @@
     /**
      * @var array
      */
-    static private $mappingRows
+    private static $mappingRows
       = array(
         8, 10, 12, 14, 16, 18, 20, 22, 24, // Number of rows for the mapping matrix
         28, 32, 36, 40, 44, 48, 56, 64, 72, //
@@ -294,7 +299,7 @@
     /**
      * @var array
      */
-    static private $mappingCols
+    private static $mappingCols
       = array(
         8, 10, 12, 14, 16, 18, 20, 22, 24, // Number of columns for the mapping matrix
         28, 32, 36, 40, 44, 48, 56, 64, 72, //
@@ -304,7 +309,7 @@
     /**
      * @var array
      */
-    static private $dataCWCount
+    private static $dataCWCount
       = array(
         3, 5, 8, 12, 18, 22, 30, 36, // Number of data codewords for the datamatrix
         44, 62, 86, 114, 144, 174, //
@@ -315,7 +320,7 @@
     /**
      * @var array
      */
-    static private $solomonCWCount
+    private static $solomonCWCount
       = array(
         5, 7, 10, 12, 14, 18, 20, 24, 28, // Number of Reed-Solomon codewords for the datamatrix
         36, 42, 48, 56, 68, 84, 112, 144, //
@@ -325,7 +330,7 @@
     /**
      * @var array
      */
-    static private $dataRegionRows
+    private static $dataRegionRows
       = array(
         8, 10, 12, 14, 16, 18, 20, 22, // Number of rows per region
         24, 14, 16, 18, 20, 22, 24, 14, //
@@ -335,7 +340,7 @@
     /**
      * @var array
      */
-    static private $dataRegionCols
+    private static $dataRegionCols
       = array(
         8, 10, 12, 14, 16, 18, 20, 22, // Number of columns per region
         24, 14, 16, 18, 20, 22, 24, 14, //
@@ -345,7 +350,7 @@
     /**
      * @var array
      */
-    static private $regionRows
+    private static $regionRows
       = array(
         1, 1, 1, 1, 1, 1, 1, 1, // Number of regions per row
         1, 2, 2, 2, 2, 2, 2, 4, //
@@ -355,7 +360,7 @@
     /**
      * @var array
      */
-    static private $regionCols
+    private static $regionCols
       = array(
         1, 1, 1, 1, 1, 1, 1, 1, // Number of regions per column
         1, 2, 2, 2, 2, 2, 2, 4, //
@@ -365,7 +370,7 @@
     /**
      * @var array
      */
-    static private $interleavedBlocks
+    private static $interleavedBlocks
       = array(
         1, 1, 1, 1, 1, 1, 1, 1, // Number of blocks
         1, 1, 1, 1, 1, 1, 2, 2, //
@@ -375,7 +380,7 @@
     /**
      * @var array
      */
-    static private $logTab
+    private static $logTab
       = array(
         -255, 255, 1, 240, 2, 225, 241, 53, 3, // Table of log for the Galois field
         38, 226, 133, 242, 43, 54, 210, 4, 195, //
@@ -408,7 +413,7 @@
     /**
      * @var array
      */
-    static private $aLogTab
+    private static $aLogTab
       = array(
         1, 2, 4, 8, 16, 32, 64, 128, 45, 90, // Table of aLog for the Galois field
         180, 69, 138, 57, 114, 228, 229, 231, 227, 235, 251, 219, 155, 27, 54, 108, 216, 157, 23, 46, 92, 184, 93, 186, 89, 178,
@@ -615,10 +620,11 @@
      *
      * @return int
      */
-    static private function champGaloisMult($a, $b) { // MULTIPLICATION IN GALOIS FIELD GF(2^8)
+    private static function champGaloisMult($a, $b) { // MULTIPLICATION IN GALOIS FIELD GF(2^8)
       if (!$a || !$b) {
         return 0;
       }
+
       return self::$aLogTab[(self::$logTab[$a] + self::$logTab[$b]) % 255];
     }
     /**
@@ -629,13 +635,14 @@
      *
      * @return int
      */
-    static private function champGaloisDoub($a, $b) { // THE OPERATION a * 2^b IN GALOIS FIELD GF(2^8)
+    private static function champGaloisDoub($a, $b) { // THE OPERATION a * 2^b IN GALOIS FIELD GF(2^8)
       if (!$a) {
         return 0;
       }
       if (!$b) {
         return $a;
       }
+
       return self::$aLogTab[(self::$logTab[$a] + $b) % 255];
     }
     /**
@@ -646,7 +653,8 @@
      *
      * @return int
      */
-    static private function champGaloisSum($a, $b) { // SUM IN GALOIS FIELD GF(2^8)
+    private static function champGaloisSum($a, $b) { // SUM IN GALOIS FIELD GF(2^8)
+
       return $a ^ $b;
     }
     /**
@@ -657,7 +665,7 @@
      *
      * @return int
      */
-    static private function selectIndex($dataCodeWordsCount, $rectangular) { // CHOOSE THE GOOD INDEX FOR TABLES
+    private static function selectIndex($dataCodeWordsCount, $rectangular) { // CHOOSE THE GOOD INDEX FOR TABLES
       if (($dataCodeWordsCount < 1 || $dataCodeWordsCount > 1558) && !$rectangular) {
         return -1;
       }
@@ -668,6 +676,7 @@
       while (self::$dataCWCount[$n] < $dataCodeWordsCount) {
         $n++;
       }
+
       return $n;
     }
     /**
@@ -677,7 +686,8 @@
      *
      * @return array
      */
-    static private function encodeDataCodeWordsASCII($text) {
+    private static function encodeDataCodeWordsASCII($text)
+    {
       $dataCodeWords = array();
       $n             = 0;
       $len           = strlen($text);
@@ -687,20 +697,19 @@
           $dataCodeWords[$n] = 235;
           $c -= 127;
           $n++;
-        }
-        else {
+        } else {
           if (($c >= 48 && $c <= 57) && ($i + 1 < $len) && (preg_match('`[0-9]`', $text[$i + 1]))) {
             $c = (($c - 48) * 10) + intval($text[$i + 1]);
             $c += 130;
             $i++;
-          }
-          else {
+          } else {
             $c++;
           }
         }
         $dataCodeWords[$n] = $c;
         $n++;
       }
+
       return $dataCodeWords;
     }
     /**
@@ -712,7 +721,8 @@
      *
      * @return mixed
      */
-    static private function addPadCW(&$tab, $from, $to) {
+    private static function addPadCW(&$tab, $from, $to)
+    {
       if ($from >= $to) {
         return;
       }
@@ -729,7 +739,7 @@
      *
      * @return array
      */
-    static private function calculSolFactorTable($solomonCWCount) { // CALCULATE THE REED SOLOMON FACTORS
+    private static function calculSolFactorTable($solomonCWCount) { // CALCULATE THE REED SOLOMON FACTORS
       $g = array_fill(0, $solomonCWCount + 1, 1);
       for ($i = 1; $i <= $solomonCWCount; $i++) {
         for ($j = $i - 1; $j >= 0; $j--) {
@@ -739,6 +749,7 @@
           }
         }
       }
+
       return $g;
     }
     /**
@@ -752,7 +763,7 @@
      *
      * @return array
      */
-    static private function addReedSolomonCW($nSolomonCW, $coeffTab, $nDataCW, &$dataTab, $blocks) { // Add the Reed Solomon codewords
+    private static function addReedSolomonCW($nSolomonCW, $coeffTab, $nDataCW, &$dataTab, $blocks) { // Add the Reed Solomon codewords
       $temp         = 0;
       $errorBlocks  = $nSolomonCW / $blocks;
       $correctionCW = array();
@@ -765,8 +776,7 @@
           for ($j = $errorBlocks - 1; $j >= 0; $j--) {
             if (!$temp) {
               $correctionCW[$j] = 0;
-            }
-            else {
+            } else {
               $correctionCW[$j] = self::champGaloisMult($temp, $coeffTab[$j]);
             }
             if ($j > 0) {
@@ -781,6 +791,7 @@
           $j           = $j + $blocks;
         }
       }
+
       return $dataTab;
     }
     /**
@@ -790,11 +801,12 @@
      *
      * @return array
      */
-    static private function getBits($entier) { // Transform integer to tab of bits
+    private static function getBits($entier) { // Transform integer to tab of bits
       $bits = array();
       for ($i = 0; $i < 8; $i++) {
         $bits[$i] = $entier & (128 >> $i) ? 1 : 0;
       }
+
       return $bits;
     }
     /**
@@ -807,7 +819,7 @@
      * @param $datamatrix
      * @param $assigned
      */
-    static private function next($etape, $totalRows, $totalCols, $codeWordsBits, &$datamatrix, &$assigned) { // Place codewords into the matrix
+    private static function next($etape, $totalRows, $totalCols, $codeWordsBits, &$datamatrix, &$assigned) { // Place codewords into the matrix
       $chr = 0; // Place of the 8st bit from the first character to [4][0]
       $row = 4;
       $col = 0;
@@ -816,18 +828,15 @@
         if (($row == $totalRows) && ($col == 0)) {
           self::patternShapeSpecial1($datamatrix, $assigned, $codeWordsBits[$chr], $totalRows, $totalCols);
           $chr++;
-        }
-        else {
+        } else {
           if (($etape < 3) && ($row == $totalRows - 2) && ($col == 0) && ($totalCols % 4 != 0)) {
             self::patternShapeSpecial2($datamatrix, $assigned, $codeWordsBits[$chr], $totalRows, $totalCols);
             $chr++;
-          }
-          else {
+          } else {
             if (($row == $totalRows - 2) && ($col == 0) && ($totalCols % 8 == 4)) {
               self::patternShapeSpecial3($datamatrix, $assigned, $codeWordsBits[$chr], $totalRows, $totalCols);
               $chr++;
-            }
-            else {
+            } else {
               if (($row == $totalRows + 4) && ($col == 2) && ($totalCols % 8 == 0)) {
                 self::patternShapeSpecial4($datamatrix, $assigned, $codeWordsBits[$chr], $totalRows, $totalCols);
                 $chr++;
@@ -870,7 +879,7 @@
      * @param $totalRows
      * @param $totalCols
      */
-    static private function patternShapeStandard(&$datamatrix, &$assigned, $bits, $row, $col, $totalRows, $totalCols) { // Place bits in the matrix (standard or special case)
+    private static function patternShapeStandard(&$datamatrix, &$assigned, $bits, $row, $col, $totalRows, $totalCols) { // Place bits in the matrix (standard or special case)
       self::placeBitInDatamatrix($datamatrix, $assigned, $bits[0], $row - 2, $col - 2, $totalRows, $totalCols);
       self::placeBitInDatamatrix($datamatrix, $assigned, $bits[1], $row - 2, $col - 1, $totalRows, $totalCols);
       self::placeBitInDatamatrix($datamatrix, $assigned, $bits[2], $row - 1, $col - 2, $totalRows, $totalCols);
@@ -889,7 +898,8 @@
      * @param $totalRows
      * @param $totalCols
      */
-    static private function patternShapeSpecial1(&$datamatrix, &$assigned, $bits, $totalRows, $totalCols) {
+    private static function patternShapeSpecial1(&$datamatrix, &$assigned, $bits, $totalRows, $totalCols)
+    {
       self::placeBitInDatamatrix($datamatrix, $assigned, $bits[0], $totalRows - 1, 0, $totalRows, $totalCols);
       self::placeBitInDatamatrix($datamatrix, $assigned, $bits[1], $totalRows - 1, 1, $totalRows, $totalCols);
       self::placeBitInDatamatrix($datamatrix, $assigned, $bits[2], $totalRows - 1, 2, $totalRows, $totalCols);
@@ -908,7 +918,8 @@
      * @param $totalRows
      * @param $totalCols
      */
-    static private function patternShapeSpecial2(&$datamatrix, &$assigned, $bits, $totalRows, $totalCols) {
+    private static function patternShapeSpecial2(&$datamatrix, &$assigned, $bits, $totalRows, $totalCols)
+    {
       self::placeBitInDatamatrix($datamatrix, $assigned, $bits[0], $totalRows - 3, 0, $totalRows, $totalCols);
       self::placeBitInDatamatrix($datamatrix, $assigned, $bits[1], $totalRows - 2, 0, $totalRows, $totalCols);
       self::placeBitInDatamatrix($datamatrix, $assigned, $bits[2], $totalRows - 1, 0, $totalRows, $totalCols);
@@ -927,7 +938,8 @@
      * @param $totalRows
      * @param $totalCols
      */
-    static private function patternShapeSpecial3(&$datamatrix, &$assigned, $bits, $totalRows, $totalCols) {
+    private static function patternShapeSpecial3(&$datamatrix, &$assigned, $bits, $totalRows, $totalCols)
+    {
       self::placeBitInDatamatrix($datamatrix, $assigned, $bits[0], $totalRows - 3, 0, $totalRows, $totalCols);
       self::placeBitInDatamatrix($datamatrix, $assigned, $bits[1], $totalRows - 2, 0, $totalRows, $totalCols);
       self::placeBitInDatamatrix($datamatrix, $assigned, $bits[2], $totalRows - 1, 0, $totalRows, $totalCols);
@@ -946,7 +958,8 @@
      * @param $totalRows
      * @param $totalCols
      */
-    static private function patternShapeSpecial4(&$datamatrix, &$assigned, $bits, $totalRows, $totalCols) {
+    private static function patternShapeSpecial4(&$datamatrix, &$assigned, $bits, $totalRows, $totalCols)
+    {
       self::placeBitInDatamatrix($datamatrix, $assigned, $bits[0], $totalRows - 1, 0, $totalRows, $totalCols);
       self::placeBitInDatamatrix($datamatrix, $assigned, $bits[1], $totalRows - 1, $totalCols - 1, $totalRows, $totalCols);
       self::placeBitInDatamatrix($datamatrix, $assigned, $bits[2], 0, $totalCols - 3, $totalRows, $totalCols);
@@ -967,7 +980,7 @@
      * @param $totalRows
      * @param $totalCols
      */
-    static private function placeBitInDatamatrix(&$datamatrix, &$assigned, $bit, $row, $col, $totalRows, $totalCols) { // Put a bit into the matrix
+    private static function placeBitInDatamatrix(&$datamatrix, &$assigned, $bit, $row, $col, $totalRows, $totalCols) { // Put a bit into the matrix
       if ($row < 0) {
         $row += $totalRows;
         $col += 4 - (($totalRows + 4) % 8);
@@ -992,7 +1005,7 @@
      *
      * @return array
      */
-    static private function addFinderPattern($datamatrix, $rowsRegion, $colsRegion, $rowsRegionCW, $colsRegionCW) { // Add the finder pattern
+    private static function addFinderPattern($datamatrix, $rowsRegion, $colsRegion, $rowsRegionCW, $colsRegionCW) { // Add the finder pattern
       $totalRowsCW       = ($rowsRegionCW + 2) * $rowsRegion;
       $totalColsCW       = ($colsRegionCW + 2) * $colsRegion;
       $datamatrixTemp    = array();
@@ -1005,29 +1018,23 @@
           if ($i % ($rowsRegionCW + 2) == 0) {
             if ($j % 2 == 0) {
               $datamatrixTemp[$i + 1][$j + 1] = 1;
-            }
-            else {
+            } else {
               $datamatrixTemp[$i + 1][$j + 1] = 0;
             }
-          }
-          else {
+          } else {
             if ($i % ($rowsRegionCW + 2) == $rowsRegionCW + 1) {
               $datamatrixTemp[$i + 1][$j + 1] = 1;
-            }
-            else {
+            } else {
               if ($j % ($colsRegionCW + 2) == $colsRegionCW + 1) {
                 if ($i % 2 == 0) {
                   $datamatrixTemp[$i + 1][$j + 1] = 0;
-                }
-                else {
+                } else {
                   $datamatrixTemp[$i + 1][$j + 1] = 1;
                 }
-              }
-              else {
+              } else {
                 if ($j % ($colsRegionCW + 2) == 0) {
                   $datamatrixTemp[$i + 1][$j + 1] = 1;
-                }
-                else {
+                } else {
                   $datamatrixTemp[$i + 1][$j + 1] = 0;
                   $datamatrixTemp[$i + 1][$j + 1] = $datamatrix[$i - 1 - (2 * (floor($i / ($rowsRegionCW + 2))))][$j - 1 - (2 * (floor($j / ($colsRegionCW + 2))))]; // todo : parseInt => ?
                 }
@@ -1040,6 +1047,7 @@
       for ($j = 0; $j < $totalColsCW + 2; $j++) {
         $datamatrixTemp[$totalRowsCW + 1][$j] = 0;
       }
+
       return $datamatrixTemp;
     }
     /**
@@ -1050,7 +1058,8 @@
      *
      * @return array
      */
-    public static function getDigit($text, $rectangular) {
+    public static function getDigit($text, $rectangular)
+    {
       $dataCodeWords     = self::encodeDataCodeWordsASCII($text); // Code the text in the ASCII mode
       $dataCWCount       = count($dataCodeWords);
       $index             = self::selectIndex($dataCWCount, $rectangular); // Select the index for the data tables
@@ -1092,8 +1101,8 @@
       self::next(0, $rowsLengthMatrice, $colsLengthMatrice, $codeWordsBits, $datamatrix, $assigned);
       // Add the finder pattern
       $datamatrix = self::addFinderPattern($datamatrix, $rowsRegion, $colsRegion, $rowsRegionCW, $colsRegionCW);
+
       return $datamatrix;
     }
   }
-
 

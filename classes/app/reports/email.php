@@ -7,9 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
-  class Reports_Email {
-
+  class Reports_Email
+  {
     /**
      * @var array
      */
@@ -53,17 +52,17 @@
     /**
      * @param bool $defaults
      */
-    public function __construct($defaults = TRUE) {
-      $this->mail = new PHPMailer(TRUE);
+    public function __construct($defaults = true)
+    {
+      $this->mail = new PHPMailer(true);
       $this->mail->IsSMTP(); // telling the class to use SMTP
       $this->mail->Host     = Config::get('email.server'); // SMTP server
       $this->mail->Username = Config::get('email.username');
       $this->mail->Password = Config::get('email.password');
       $this->mail->From     = Config::get('email.from_email');
-      $this->mail->SMTPAuth = TRUE;
+      $this->mail->SMTPAuth = true;
       $this->mail->WordWrap = 50;
       if ($defaults) {
-
         $this->mail->FromName = Config::get('email.from_name');
         $bcc                  = Config::get('email.bcc');
         if ($bcc) {
@@ -74,55 +73,63 @@
     /**
      * @param $email
      */
-    private function _checkEmail($email) {
+    private function _checkEmail($email)
+    {
       if (preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $email)) {
-        $this->toerror = FALSE;
+        $this->toerror = false;
       }
     }
     /**
      * @param $mail
      */
-    public function to($mail) {
+    public function to($mail)
+    {
       $this->_checkEmail($mail);
       $this->mail->AddAddress($mail);
     }
     /**
      * @param $mail
      */
-    public function from($mail) {
+    public function from($mail)
+    {
       $this->_checkEmail($mail);
       $this->mail->From = $mail;
     }
     /**
      * @param $mail
      */
-    public function cc($mail) {
+    public function cc($mail)
+    {
       $this->_checkEmail($mail);
       $this->mail->AddCC($mail);
     }
     /**
      * @param $mail
      */
-    public function bcc($mail) {
+    public function bcc($mail)
+    {
       $this->_checkEmail($mail);
       $this->mail->AddBCC($mail);
     }
     /**
      * @param $file
      */
-    public function attachment($file) {
+    public function attachment($file)
+    {
       $this->mail->AddAttachment($file);
     }
     /**
      * @param $subject
      */
-    public function subject($subject) {
+    public function subject($subject)
+    {
       $this->mail->Subject = $subject;
     }
     /**
      * @param $text
      */
-    public function text($text) {
+    public function text($text)
+    {
       //$this->mail->ContentType = "Content-Type: text/plain; charset=ISO-8859-1\n";
       //$this->mail->Encoding = "8bit";
       $this->mail->Body = $text . "\n";
@@ -130,10 +137,11 @@
     /**
      * @param $html
      */
-    public function html($html) {
+    public function html($html)
+    {
       //$this->mail->ContentType = "text/html; charset=ISO-8859-1";
       //$this->mail->Encoding = "quoted-printable";
-      $this->mail->IsHTML(TRUE);
+      $this->mail->IsHTML(true);
       $this->mail->AltBody = $html . "\n";
       $this->mail->Body    = "<html><body>\n" . $html . "\n</body></html>\n";
     }
@@ -142,7 +150,8 @@
      *
      * @return string
      */
-    public function mime_type($filename) {
+    public function mime_type($filename)
+    {
       $file = basename($filename, '.zip');
       if ($filename == $file . '.zip') {
         return 'application/x-zip-compressed';
@@ -171,22 +180,25 @@
       if ($filename == $file . '.gz') {
         return 'application/x-gzip';
       }
+
       return 'application/unknown';
     }
     /**
      * @return bool
      */
-    public function send() {
+    public function send()
+    {
       if ($this->toerror) {
-        return FALSE;
+        return false;
       }
       try {
         $ret = $this->mail->Send();
+
         return $ret;
-      }
-      catch (phpmailerException $e) {
+      } catch (phpmailerException $e) {
         $this->toerror = $e->errorMessage();
-        return FALSE;
+
+        return false;
       }
     }
   }

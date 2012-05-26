@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::set_focus('account');
   JS::open_window(800, 500);
   Page::start(_($help_context = "Tax Inquiry"), SA_TAXREP);
@@ -32,12 +31,13 @@
   /**
 
    */
-  function tax_inquiry_controls() {
+  function tax_inquiry_controls()
+  {
     start_form();
     //Table::start('tablestyle2');
     Table::start('tablestyle_noborder');
     Row::start();
-    date_cells(_("from:"), 'TransFromDate', '', NULL, -30);
+    date_cells(_("from:"), 'TransFromDate', '', null, -30);
     date_cells(_("to:"), 'TransToDate');
     submit_cells('Show', _("Show"), '', '', 'default');
     Row::end();
@@ -48,7 +48,8 @@
   /**
 
    */
-  function show_results() {
+  function show_results()
+  {
     /*Now get the transactions */
     Display::div_start('trans_tbl');
     Table::start('tablestyle grid');
@@ -64,29 +65,25 @@
       $collectible = $tx['collectible'];
       $net         = $collectible + $payable;
       $total += $net;
-
       Cell::label($tx['name'] . " " . $tx['rate'] . "%");
       Cell::label(_("Charged on sales") . " (" . _("Output Tax") . "):");
       Cell::amount($payable);
       Cell::amount($tx['net_output']);
       Row::end();
-
       Cell::label($tx['name'] . " " . $tx['rate'] . "%");
       Cell::label(_("Paid on purchases") . " (" . _("Input Tax") . "):");
       Cell::amount($collectible);
       Cell::amount($tx['net_input']);
       Row::end();
-
       Cell::label("<span class='bold'>" . $tx['name'] . " " . $tx['rate'] . "%</span>");
       Cell::label("<span class='bold'>" . _("Net payable or collectible") . ":</span>");
-      Cell::amount($net, TRUE);
+      Cell::amount($net, true);
       Cell::label("");
       Row::end();
     }
-
     Cell::label("");
     Cell::label("<span class='bold'>" . _("Total payable or refund") . ":</span>");
-    Cell::amount($total, TRUE);
+    Cell::amount($total, true);
     Cell::label("");
     Row::end();
     Table::end(2);

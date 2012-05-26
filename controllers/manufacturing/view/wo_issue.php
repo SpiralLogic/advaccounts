@@ -7,16 +7,16 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::open_window(900, 500);
-  Page::start(_($help_context = "View Work Order Issue"), SA_MANUFTRANSVIEW, TRUE);
+  Page::start(_($help_context = "View Work Order Issue"), SA_MANUFTRANSVIEW, true);
   if ($_GET['trans_no'] != "") {
     $wo_issue_no = $_GET['trans_no'];
   }
   /**
    * @param $issue_no
    */
-  function display_wo_issue($issue_no) {
+  function display_wo_issue($issue_no)
+  {
     $myrow = WO_Issue::get($issue_no);
     Display::br(1);
     Table::start('tablestyle');
@@ -41,12 +41,12 @@
   /**
    * @param $issue_no
    */
-  function display_wo_issue_details($issue_no) {
+  function display_wo_issue_details($issue_no)
+  {
     $result = WO_Issue::get_details($issue_no);
     if (DB::num_rows($result) == 0) {
       Event::warning(_("There are no items for this issue."));
-    }
-    else {
+    } else {
       Table::start('tablestyle grid');
       $th = array(_("Component"), _("Quantity"), _("Units"));
       Table::header($th);
@@ -54,9 +54,8 @@
       $k          = 0; //row colour counter
       $total_cost = 0;
       while ($myrow = DB::fetch($result)) {
-
         Cell::label($myrow["stock_id"] . " - " . $myrow["description"]);
-        Cell::qty($myrow["qty_issued"], FALSE, Item::qty_dec($myrow["stock_id"]));
+        Cell::qty($myrow["qty_issued"], false, Item::qty_dec($myrow["stock_id"]));
         Cell::label($myrow["units"]);
         Row::end();
         ;
@@ -77,7 +76,5 @@
   Display::heading(_("Items for this Issue"));
   display_wo_issue_details($wo_issue_no);
   echo "<br>";
-  Page::end(TRUE);
-
-
+  Page::end(true);
 

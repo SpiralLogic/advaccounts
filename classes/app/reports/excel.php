@@ -13,8 +13,8 @@
   /**
 
    */
-  class ADVReport extends Spreadsheet_Excel_Writer_Workbook {
-
+  class ADVReport extends Spreadsheet_Excel_Writer_Workbook
+  {
     /**
      * @var string
      */
@@ -168,7 +168,8 @@
      * @param null   $margins
      * @param float  $excelColWidthFactor
      */
-    public function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = 6.5) {
+    public function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = null, $excelColWidthFactor = 6.5)
+    {
       if (!User::i()->can_access_page(Page::get_security())) {
         Event::error(_("The security settings on your account do not permit you to print this report"));
         Page::end();
@@ -215,12 +216,10 @@
       if ($how == 0) {
         $dateformat_long = "mm{$sep}dd{$sep}yyyy\ \ hh:mm\ am/pm";
         $dateformat      = "mm{$sep}dd{$sep}yyyy";
-      }
-      elseif ($how == 1) {
+      } elseif ($how == 1) {
         $dateformat_long = "dd{$sep}mm{$sep}yyyy\ \ hh:mm";
         $dateformat      = "dd{$sep}mm{$sep}yyyy";
-      }
-      else {
+      } else {
         $dateformat_long = "yyyy{$sep}mm{$sep}dd\ \ hh:mm";
         $dateformat      = "yyyy{$sep}mm{$sep}dd";
       }
@@ -283,7 +282,8 @@
      *
      * @return mixed|string
      */
-    public function worksheetNameGenerator($name) {
+    public function worksheetNameGenerator($name)
+    {
       // First, strip out characters which aren't allowed
       $illegal_chars = array(':', '\\', '/', '?', '*', '[', ']');
       for ($i = 0; $i < count($illegal_chars); $i++) {
@@ -293,6 +293,7 @@
       if (strlen($name) > 31) {
         $name = substr($name, 0, 31);
       }
+
       return $name;
     }
     /**
@@ -300,7 +301,8 @@
      *
      * @return mixed
      */
-    public function NumFormat($dec) {
+    public function NumFormat($dec)
+    {
       if (!isset($this->formatAmount[$dec])) {
         $dec    = (int) $dec;
         $tsep   = ',';
@@ -313,6 +315,7 @@
         $this->formatAmount[$dec]->setNumFormat($format);
         $this->formatAmount[$dec]->setAlign('right');
       }
+
       return $this->formatAmount[$dec];
     }
     /**
@@ -321,7 +324,8 @@
      *
      * @return void
      */
-    public function Font($fontname = '', $style = 'normal') {
+    public function Font($fontname = '', $style = 'normal')
+    {
     }
     /**
      * @param      $params
@@ -334,13 +338,13 @@
      *
      * @return void
      */
-    public function Info($params, $cols, $headers, $aligns, $cols2 = NULL, $headers2 = NULL, $aligns2 = NULL) {
+    public function Info($params, $cols, $headers, $aligns, $cols2 = null, $headers2 = null, $aligns2 = null)
+    {
       $this->company = DB_Company::get_prefs();
       $year          = DB_Company::get_current_fiscalyear();
       if ($year['closed'] == 0) {
         $how = _("Active");
-      }
-      else {
+      } else {
         $how = _("Closed");
       }
       $this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . " (" . $how . ")";
@@ -362,7 +366,8 @@
         $this->sheet->setColumn($i, $i, $this->px2units($this->cols[$i + 1] - $this->cols[$i]));
       }
     }
-    public function Header() {
+    public function Header()
+    {
       $tcol = $this->numcols - 1;
       $this->sheet->setRow($this->y, 20);
       for ($i = 0; $i < $this->numcols; $i++) {
@@ -407,18 +412,16 @@
         $this->sheet->writeString($this->y, 1, $this->params[0], $this->formatLeft);
       }
       $this->NewLine();
-      if ($this->headers2 != NULL) {
+      if ($this->headers2 != null) {
         for ($i = 0, $j = 0; $i < $this->numcols; $i++) {
           if ($this->cols2[$j] >= $this->cols[$i] && $this->cols2[$j] <= $this->cols[$i + 1]) {
             if ($this->aligns2[$j] == "right") {
               $this->sheet->writeString($this->y, $i, $this->headers2[$j], $this->formatHeaderRight);
-            }
-            else {
+            } else {
               $this->sheet->writeString($this->y, $i, $this->headers2[$j], $this->formatHeaderLeft);
             }
             $j++;
-          }
-          else {
+          } else {
             $this->sheet->writeString($this->y, $i, "", $this->formatHeaderLeft);
           }
         }
@@ -427,14 +430,12 @@
       for ($i = 0; $i < $this->numcols; $i++) {
         if (!isset($this->headers[$i])) {
           $header = "";
-        }
-        else {
+        } else {
           $header = $this->headers[$i];
         }
         if ($this->aligns[$i] == "right") {
           $this->sheet->writeString($this->y, $i, $header, $this->formatHeaderRight);
-        }
-        else {
+        } else {
           $this->sheet->writeString($this->y, $i, $header, $this->formatHeaderLeft);
         }
       }
@@ -449,13 +450,15 @@
      *
      * @return mixed
      */
-    public function Header2($myrow, $branch, $sales_order, $bankaccount, $doctype) {
+    public function Header2($myrow, $branch, $sales_order, $bankaccount, $doctype)
+    {
       return;
     }
     // Alternate header style - primary differences are for PDFs
-    public function Header3() {
+    public function Header3()
+    {
       // Flag to make sure we only print the company name once
-      $companyNamePrinted = FALSE;
+      $companyNamePrinted = false;
       $this->y            = 0;
       $tcol               = $this->numcols - 1;
       $this->sheet->setRow($this->y, 20);
@@ -477,7 +480,7 @@
           if (!$companyNamePrinted) {
             $this->sheet->writeString($this->y, $tcol - 1, $this->company['coy_name'], $this->formatLeft);
             $this->sheet->mergeCells($this->y, $tcol - 1, $this->y, $tcol);
-            $companyNamePrinted = TRUE;
+            $companyNamePrinted = true;
           }
         }
       }
@@ -493,7 +496,7 @@
           if (!$companyNamePrinted) {
             $this->sheet->writeString($this->y, $tcol - 1, $this->company['coy_name'], $this->formatLeft);
             $this->sheet->mergeCells($this->y, $tcol - 1, $this->y, $tcol);
-            $companyNamePrinted = TRUE;
+            $companyNamePrinted = true;
           }
         }
       }
@@ -515,7 +518,7 @@
       if (!$companyNamePrinted) {
         $this->sheet->writeString($this->y, $tcol - 1, $this->company['coy_name'], $this->formatLeft);
         $this->sheet->mergeCells($this->y, $tcol - 1, $this->y, $tcol);
-        $companyNamePrinted = TRUE;
+        $companyNamePrinted = true;
       }
       // Timestamp of when this copy of the report was generated
       $this->NewLine();
@@ -536,18 +539,16 @@
         $this->sheet->writeString($this->y, 1, $this->params[0], $this->formatLeft);
       }
       $this->NewLine();
-      if ($this->headers2 != NULL) {
+      if ($this->headers2 != null) {
         for ($i = 0, $j = 0; $i < $this->numcols; $i++) {
           if ($this->cols2[$j] >= $this->cols[$i] && $this->cols2[$j] <= $this->cols[$i + 1]) {
             if ($this->aligns2[$j] == "right") {
               $this->sheet->writeString($this->y, $i, $this->headers2[$j], $this->formatTopHeaderRight);
-            }
-            else {
+            } else {
               $this->sheet->writeString($this->y, $i, $this->headers2[$j], $this->formatTopHeaderLeft);
             }
             $j++;
-          }
-          else {
+          } else {
             $this->sheet->writeString($this->y, $i, "", $this->formatTopHeaderLeft);
           }
         }
@@ -556,23 +557,19 @@
       for ($i = 0; $i < $this->numcols; $i++) {
         if (!isset($this->headers[$i])) {
           $header = "";
-        }
-        else {
+        } else {
           $header = $this->headers[$i];
         }
         if ($this->aligns[$i] == "right") {
-          if ($this->headers2 == NULL) {
+          if ($this->headers2 == null) {
             $this->sheet->writeString($this->y, $i, $header, $this->formatHeaderRight);
-          }
-          else {
+          } else {
             $this->sheet->writeString($this->y, $i, $header, $this->formatBottomHeaderRight);
           }
-        }
-        else {
-          if ($this->headers2 == NULL) {
+        } else {
+          if ($this->headers2 == null) {
             $this->sheet->writeString($this->y, $i, $header, $this->formatHeaderLeft);
-          }
-          else {
+          } else {
             $this->sheet->writeString($this->y, $i, $header, $this->formatBottomHeaderLeft);
           }
         }
@@ -589,7 +586,8 @@
      * @return int|string
      * @access public
      */
-    public function DatePrettyPrint($date, $input_format = 0, $output_format = 0) {
+    public function DatePrettyPrint($date, $input_format = 0, $output_format = 0)
+    {
       if ($date != '') {
         $date  = Dates::date2sql($date);
         $year  = (int) (substr($date, 0, 4));
@@ -597,15 +595,12 @@
         $day   = (int) (substr($date, 8, 2));
         if ($output_format == 0) {
           return (date('F j, Y', mktime(12, 0, 0, $month, $day, $year)));
-        }
-        elseif ($output_format == 1) {
+        } elseif ($output_format == 1) {
           return (date('F Y', mktime(12, 0, 0, $month, $day, $year)));
-        }
-        elseif ($output_format == 2) {
+        } elseif ($output_format == 2) {
           return (date('M Y', mktime(12, 0, 0, $month, $day, $year)));
         }
-      }
-      else {
+      } else {
         return $date;
       }
     }
@@ -618,7 +613,8 @@
      *
      * @return mixed
      */
-    public function AddImage($logo, $x, $y, $w, $h) {
+    public function AddImage($logo, $x, $y, $w, $h)
+    {
       return;
     }
     /**
@@ -628,7 +624,8 @@
      *
      * @return mixed
      */
-    public function SetDrawColor($r, $g, $b) {
+    public function SetDrawColor($r, $g, $b)
+    {
       return;
     }
     /**
@@ -638,7 +635,8 @@
      *
      * @return mixed
      */
-    public function SetTextColor($r, $g, $b) {
+    public function SetTextColor($r, $g, $b)
+    {
       return;
     }
     /**
@@ -648,13 +646,15 @@
      *
      * @return mixed
      */
-    public function SetFillColor($r, $g, $b) {
+    public function SetFillColor($r, $g, $b)
+    {
       return;
     }
     /**
      * @return int
      */
-    public function GetCellPadding() {
+    public function GetCellPadding()
+    {
       return 0;
     }
     /**
@@ -662,7 +662,8 @@
      *
      * @return mixed
      */
-    public function SetCellPadding($pad) {
+    public function SetCellPadding($pad)
+    {
       return;
     }
     /**
@@ -679,7 +680,8 @@
      *
      * @return mixed
      */
-    public function Text($c, $txt, $n = 0, $corr = 0, $r = 0, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
+    public function Text($c, $txt, $n = 0, $corr = 0, $r = 0, $align = 'left', $border = 0, $fill = 0, $link = null, $stretch = 0)
+    {
       return;
     }
     /**
@@ -695,7 +697,8 @@
      *
      * @return mixed
      */
-    public function TextWrap($xpos, $ypos, $len, $str, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
+    public function TextWrap($xpos, $ypos, $len, $str, $align = 'left', $border = 0, $fill = 0, $link = null, $stretch = 0)
+    {
       return;
     }
     /**
@@ -711,12 +714,12 @@
      *
      * @return void
      */
-    public function TextCol($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
+    public function TextCol($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0)
+    {
       $txt = html_entity_decode($txt);
       if ($this->aligns[$c] == 'right') {
         $this->sheet->writeString($this->y, $c, $txt, $this->formatRight);
-      }
-      else {
+      } else {
         $this->sheet->writeString($this->y, $c, $txt, $this->formatLeft);
       }
       if ($n - $c > 1) {
@@ -738,7 +741,8 @@
      *
      * @return void
      */
-    public function AmountCol($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0, $color_red = FALSE) {
+    public function AmountCol($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0, $color_red = false)
+    {
       if (!is_numeric($txt)) {
         $txt = 0;
       }
@@ -761,7 +765,8 @@
      *
      * @return void
      */
-    public function AmountCol2($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0, $color_red = FALSE, $amount_locale = NULL, $amount_format = NULL) {
+    public function AmountCol2($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0, $color_red = false, $amount_locale = null, $amount_format = null)
+    {
       if (!is_numeric($txt)) {
         $txt = 0;
       }
@@ -781,7 +786,8 @@
      *
      * @return void
      */
-    public function DateCol($c, $n, $txt, $conv = FALSE, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
+    public function DateCol($c, $n, $txt, $conv = false, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0)
+    {
       if (!$conv) {
         $txt = Dates::date2sql($txt);
       }
@@ -802,7 +808,8 @@
      *
      * @return void
      */
-    public function TextCol2($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
+    public function TextCol2($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0)
+    {
       $txt = html_entity_decode($txt);
       $this->sheet->writeString($this->y, $c, $txt, $this->formatLeft);
       if ($n - $c > 1) {
@@ -822,7 +829,8 @@
      *
      * @return mixed
      */
-    public function TextColLines($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
+    public function TextColLines($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0)
+    {
       return;
     }
     /**
@@ -837,7 +845,8 @@
      *
      * @return mixed
      */
-    public function TextWrapLines($c, $width, $txt, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
+    public function TextWrapLines($c, $width, $txt, $align = 'left', $border = 0, $fill = 0, $link = null, $stretch = 0)
+    {
       return;
     }
     /**
@@ -849,7 +858,8 @@
      *
      * @return array
      */
-    public function TextWrapCalc($txt, $width, $spacebreak = FALSE) {
+    public function TextWrapCalc($txt, $width, $spacebreak = false)
+    {
       // Assume an average character width
       $avg_char_width = 5;
       $ret            = "";
@@ -860,15 +870,15 @@
         $k = intval($n * $width / $w);
         if ($k > 0 && $k < $n) {
           $txt2 = substr($txt, 0, $k);
-          if ($spacebreak && (($pos = strrpos($txt2, " ")) !== FALSE)) {
+          if ($spacebreak && (($pos = strrpos($txt2, " ")) !== false)) {
             $txt2 = substr($txt2, 0, $pos);
             $ret  = substr($txt, $pos + 1);
-          }
-          else {
+          } else {
             $ret = substr($txt, $k);
           }
         }
       }
+
       return array($txt2, $ret);
     }
     /**
@@ -876,7 +886,8 @@
      *
      * @return mixed
      */
-    public function SetLineStyle($style) {
+    public function SetLineStyle($style)
+    {
       return;
     }
     /**
@@ -884,7 +895,8 @@
      *
      * @return mixed
      */
-    public function SetLineWidth($width) {
+    public function SetLineWidth($width)
+    {
       return;
     }
     /**
@@ -895,7 +907,8 @@
      *
      * @return mixed
      */
-    public function LineTo($from, $row, $to, $row2) {
+    public function LineTo($from, $row, $to, $row2)
+    {
       return;
     }
     /**
@@ -904,7 +917,8 @@
      *
      * @return mixed
      */
-    public function Line($row, $height = 0) {
+    public function Line($row, $height = 0)
+    {
       return;
     }
     /**
@@ -916,7 +930,8 @@
      *
      * @return mixed
      */
-    public function UnderlineCell($c, $r = 0, $type = 1, $linewidth = 0, $style = array()) {
+    public function UnderlineCell($c, $r = 0, $type = 1, $linewidth = 0, $style = array())
+    {
       return;
     }
     /**
@@ -926,7 +941,8 @@
      *
      * @return void
      */
-    public function NewLine($l = 1, $np = 0, $h = NULL) {
+    public function NewLine($l = 1, $np = 0, $h = null)
+    {
       $this->y += $l;
     }
     /**
@@ -946,20 +962,17 @@
       }
       if ($mon < 1) {
         $mon = 1;
-      }
-      elseif ($mon > 12) {
+      } elseif ($mon > 12) {
         $mon = 12;
       }
       if ($day < 1) {
         $day = 1;
-      }
-      elseif ($day > $mo[$mon]) {
+      } elseif ($day > $mo[$mon]) {
         $day = $mo[$mon];
       }
       if ($year < $BASE) {
         $year = $BASE;
-      }
-      elseif ($year > $MAXYEAR) {
+      } elseif ($year > $MAXYEAR) {
         $year = $MAXYEAR;
       }
       $jul = (int) $day;
@@ -972,6 +985,7 @@
           $jul++;
         }
       }
+
       return $jul;
     }
     /**
@@ -983,6 +997,7 @@
     {
       $excel_column_width_factor = 256;
       $unit_offset_length        = $this->excelColWidthFactor;
+
       return ($px / $unit_offset_length);
     }
     /**
@@ -993,7 +1008,8 @@
      *
      * @return void
      */
-    public function End($email = 0, $subject = NULL, $myrow = NULL, $doctype = 0) {
+    public function End($email = 0, $subject = null, $myrow = null, $doctype = 0)
+    {
       for ($i = 0; $i < $this->numcols; $i++) {
         $this->sheet->writeBlank($this->y, $i, $this->formatFooter);
       }
@@ -1002,7 +1018,7 @@
       // first have a look through the directory,
       // and remove old temporary pdfs
       if ($d = @opendir($this->path)) {
-        while (($file = readdir($d)) !== FALSE) {
+        while (($file = readdir($d)) !== false) {
           if (!is_file($this->path . '/' . $file) || $file == 'index.php') {
             continue;
           }

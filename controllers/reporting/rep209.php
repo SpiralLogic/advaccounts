@@ -9,7 +9,6 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SUPPTRANSVIEW : SA_SUPPBULKREP);
   include_once(__DIR__ . DS . 'includes/lang/en_AU/report.php'); //TODO  change to language from config
   use \Reports\Report as Report;
@@ -20,17 +19,19 @@
    *
    * @return ADV\Core\DB\Query_Result|Array
    */
-  function get_po($order_no) {
+  function get_po($order_no)
+  {
     # __ADVANCEDEDIT__ BEGIN # include suppliers phone and fax number
     $sql
             = "SELECT purch_orders.*, suppliers.name, suppliers.account_no,
- 		suppliers.curr_code, suppliers.payment_terms, suppliers.phone, suppliers.fax, locations.location_name,
- 		suppliers.email, suppliers.address,suppliers.city,suppliers.state,suppliers.postcode, suppliers.contact
-		FROM purch_orders, suppliers, locations
-		WHERE purch_orders.supplier_id = suppliers.supplier_id
-		AND locations.loc_code = into_stock_location
-		AND purch_orders.order_no = " . DB::escape($order_no);
+         suppliers.curr_code, suppliers.payment_terms, suppliers.phone, suppliers.fax, locations.location_name,
+         suppliers.email, suppliers.address,suppliers.city,suppliers.state,suppliers.postcode, suppliers.contact
+        FROM purch_orders, suppliers, locations
+        WHERE purch_orders.supplier_id = suppliers.supplier_id
+        AND locations.loc_code = into_stock_location
+        AND purch_orders.order_no = " . DB::escape($order_no);
     $result = DB::query($sql, "The order cannot be retrieved");
+
     return DB::fetch($result);
   }
 
@@ -39,28 +40,31 @@
    *
    * @return null|PDOStatement
    */
-  function get_po_details($order_no) {
+  function get_po_details($order_no)
+  {
     $sql
       = "SELECT purch_order_details.*, units
-		FROM purch_order_details
-		LEFT JOIN stock_master
-		ON purch_order_details.item_code=stock_master.stock_id
-		WHERE order_no =" . DB::escape($order_no) . " ";
+        FROM purch_order_details
+        LEFT JOIN stock_master
+        ON purch_order_details.item_code=stock_master.stock_id
+        WHERE order_no =" . DB::escape($order_no) . " ";
     $sql .= " ORDER BY po_detail_item";
+
     return DB::query($sql, "Retreive order Line Items");
   }
 
-  function print_po() {
+  function print_po()
+  {
     include_once(APPPATH . "reports/pdf.php");
     $from     = $_POST['PARAM_0'];
     $to       = $_POST['PARAM_1'];
     $currency = $_POST['PARAM_2'];
     $email    = $_POST['PARAM_3'];
     $comments = $_POST['PARAM_4'];
-    if ($from == NULL) {
+    if ($from == null) {
       $from = 0;
     }
-    if ($to == NULL) {
+    if ($to == null) {
       $to = 0;
     }
     $dec  = User::price_dec();
@@ -73,7 +77,7 @@
       $rep           = new ADVReport(_('PURCHASE ORDER'), "PurchaseOrderBulk", User::page_size());
       $rep->currency = $cur;
       $rep->Font();
-      $rep->Info($params, $cols, NULL, $aligns);
+      $rep->Info($params, $cols, null, $aligns);
     }
     for ($i = $from; $i <= $to; $i++) {
       $myrow                 = get_po($i);
@@ -85,18 +89,17 @@
         $rep->Font();
         $rep->title    = _('PURCHASE ORDER');
         $rep->filename = "PurchaseOrder" . $i . ".pdf";
-        $rep->Info($params, $cols, NULL, $aligns);
-      }
-      else {
+        $rep->Info($params, $cols, null, $aligns);
+      } else {
         $rep->title = _('PURCHASE ORDER');
       }
-      $rep->Header2($myrow, NULL, $myrow, $baccount, ST_PURCHORDER);
+      $rep->Header2($myrow, null, $myrow, $baccount, ST_PURCHORDER);
       $result   = get_po_details($i);
       $SubTotal = 0;
       while ($myrow2 = DB::fetch($result)) {
         if ($myrow2['item_code'] != 'freight' || $myrow['freight'] != $myrow2['unit_price']) {
           $data = Purch_Order::get_data($myrow['supplier_id'], $myrow2['item_code']);
-          if ($data !== FALSE) {
+          if ($data !== false) {
             if ($data['supplier_description'] != "") {
               $myrow2['item_code'] = $data['supplier_description'];
             }
@@ -104,10 +107,8 @@
               $myrow2['units'] = $data['suppliers_uom'];
             }
             if ($data['conversion_factor'] > 1) {
-              $myrow2['unit_price']       = Num::round(
-                $myrow2['unit_price'] * $data['conversion_factor'], User::price_dec());
-              $myrow2['quantity_ordered'] = Num::round(
-                $myrow2['quantity_ordered'] / $data['conversion_factor'], User::qty_dec());
+              $myrow2['unit_price']       = Num::round($myrow2['unit_price'] * $data['conversion_factor'], User::price_dec());
+              $myrow2['quantity_ordered'] = Num::round($myrow2['quantity_ordered'] / $data['conversion_factor'], User::qty_dec());
             }
           }
           $Net = Num::round(($myrow2["unit_price"] * $myrow2["quantity_ordered"]), User::price_dec());
@@ -128,7 +129,7 @@
           $rep->TextCol(6, 7, $DisplayNet, -2);
           $rep->row = $newrow;
           if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) {
-            $rep->Header2($myrow, NULL, $myrow, $baccount, ST_PURCHORDER);
+            $rep->Header2($myrow, null, $myrow, $baccount, ST_PURCHORDER);
           }
         }
       }
@@ -138,12 +139,11 @@
       }
       $display_sub_total = Num::format($SubTotal, $dec);
       $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
-      $linetype          = TRUE;
+      $linetype          = true;
       $doctype           = ST_PURCHORDER;
       if ($rep->currency != $myrow['curr_code']) {
         include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
-      }
-      else {
+      } else {
         include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
       }
       $rep->TextCol(3, 6, Report::SUBTOTAL, -2);
@@ -166,8 +166,7 @@
         $myrow['contact_email'] = $myrow['email'];
         if (isset($myrow['contact'])) {
           $myrow['DebtorName'] = $myrow['contact'];
-        }
-        elseif (isset($myrow['name'])) {
+        } elseif (isset($myrow['name'])) {
           $myrow['DebtorName'] = $myrow['name'];
         }
         if ($myrow['reference'] == "") {
@@ -180,5 +179,4 @@
       $rep->End();
     }
   }
-
 

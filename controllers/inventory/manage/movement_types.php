@@ -9,7 +9,7 @@
    **/
 
   Page::start(_($help_context = "Inventory Movement Types"), SA_INVENTORYMOVETYPE);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     //initialise no input errors assumed initially before we test
     $input_error = 0;
@@ -22,8 +22,7 @@
       if ($selected_id != -1) {
         Inv_Movement::update_type($selected_id, $_POST['name']);
         Event::success(_('Selected movement type has been updated'));
-      }
-      else {
+      } else {
         Inv_Movement::add_type($_POST['name']);
         Event::success(_('New movement type has been added'));
       }
@@ -35,16 +34,19 @@
    *
    * @return bool
    */
-  function can_delete($selected_id) {
+  function can_delete($selected_id)
+  {
     $sql    = "SELECT COUNT(*) FROM stock_moves
-		WHERE type=" . ST_INVADJUST . " AND person_id=" . DB::escape($selected_id);
+        WHERE type=" . ST_INVADJUST . " AND person_id=" . DB::escape($selected_id);
     $result = DB::query($sql, "could not query stock moves");
     $myrow  = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this inventory movement type because item transactions have been created referring to it."));
-      return FALSE;
+
+      return false;
     }
-    return TRUE;
+
+    return true;
   }
 
   if ($Mode == MODE_DELETE) {
@@ -86,10 +88,9 @@
     }
     hidden('selected_id', $selected_id);
   }
-  text_row(_("Description:"), 'name', NULL, 50, 50);
+  text_row(_("Description:"), 'name', null, 50, 50);
   Table::end(1);
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();
-
 

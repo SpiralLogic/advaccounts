@@ -10,9 +10,8 @@
 
   if (isset($_GET['stock_id'])) {
     $_POST['stock_id'] = $_GET['stock_id'];
-    Page::start(_($help_context = "Inventory Item Status"), SA_ITEMSSTATVIEW, TRUE);
-  }
-  else {
+    Page::start(_($help_context = "Inventory Item Status"), SA_ITEMSSTATVIEW, true);
+  } else {
     Page::start(_($help_context = "Inventory Item Status"));
   }
   if (Input::post('stock_id')) {
@@ -24,23 +23,22 @@
     Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   }
   echo "<div class='center bold pad10 font13'> ";
-  Item::cells(_("Item:"), 'stock_id', $_POST['stock_id'], FALSE, TRUE, FALSE, FALSE);
+  Item::cells(_("Item:"), 'stock_id', $_POST['stock_id'], false, true, false, false);
   echo "</div>";
   Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   $mb_flag           = WO::get_mb_flag($_POST['stock_id']);
-  $kitset_or_service = FALSE;
+  $kitset_or_service = false;
   Display::div_start('status_tbl');
   if (Input::post('mb_flag') == STOCK_SERVICE) {
     Event::warning(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
-    $kitset_or_service = TRUE;
+    $kitset_or_service = true;
   }
   $loc_details = Inv_Location::get_details($_POST['stock_id']);
 
   Table::start('tablestyle grid');
-  if ($kitset_or_service == TRUE) {
+  if ($kitset_or_service == true) {
     $th = array(_("Location"), _("Demand"));
-  }
-  else {
+  } else {
     $th = array(
       _("Location"), _("Quantity On Hand"), _("Re-Order Level"), _("Demand"), _("Available"), _("On Order")
     );
@@ -55,21 +53,20 @@
     $demand_qty = Item::get_demand($_POST['stock_id'], $myrow["loc_code"]);
     $demand_qty += WO::get_demand_asm_qty($_POST['stock_id'], $myrow["loc_code"]);
     $qoh = Item::get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
-    if ($kitset_or_service == FALSE) {
+    if ($kitset_or_service == false) {
       $qoo = WO::get_on_porder_qty($_POST['stock_id'], $myrow["loc_code"]);
       $qoo += WO::get_on_worder_qty($_POST['stock_id'], $myrow["loc_code"]);
       Cell::label($myrow["location_name"]);
-      Cell::qty($qoh, FALSE, $dec);
-      Cell::qty($myrow["reorder_level"], FALSE, $dec);
-      Cell::qty($demand_qty, FALSE, $dec);
-      Cell::qty($qoh - $demand_qty, FALSE, $dec);
-      Cell::qty($qoo, FALSE, $dec);
+      Cell::qty($qoh, false, $dec);
+      Cell::qty($myrow["reorder_level"], false, $dec);
+      Cell::qty($demand_qty, false, $dec);
+      Cell::qty($qoh - $demand_qty, false, $dec);
+      Cell::qty($qoo, false, $dec);
       Row::end();
-    }
-    else {
+    } else {
       /* It must be a service or kitset part */
       Cell::label($myrow["location_name"]);
-      Cell::qty($demand_qty, FALSE, $dec);
+      Cell::qty($demand_qty, false, $dec);
       Row::end();
     }
     $j++;
@@ -82,5 +79,4 @@
   Display::div_end();
   end_form();
   Page::end();
-
 

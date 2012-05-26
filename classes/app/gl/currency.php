@@ -8,8 +8,8 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  class GL_Currency {
-
+  class GL_Currency
+  {
     /**
      * @static
      *
@@ -43,8 +43,8 @@
     public static function add($curr_abrev, $symbol, $currency, $country,
                                $hundreds_name, $auto_update) {
       $sql = "INSERT INTO currencies (curr_abrev, curr_symbol, currency,
-			country, hundreds_name, auto_update)
-		VALUES (" . DB::escape($curr_abrev) . ", " . DB::escape($symbol) . ", "
+            country, hundreds_name, auto_update)
+        VALUES (" . DB::escape($curr_abrev) . ", " . DB::escape($symbol) . ", "
         . DB::escape($currency) . ", " . DB::escape($country) . ", "
         . DB::escape($hundreds_name) . "," . DB::escape($auto_update) . ")";
 
@@ -55,7 +55,8 @@
      *
      * @param $curr_code
      */
-    public static function delete($curr_code) {
+    public static function delete($curr_code)
+    {
       $sql = "DELETE FROM currencies WHERE curr_abrev=" . DB::escape($curr_code);
       DB::query($sql, "could not delete currency	$curr_code");
 
@@ -69,11 +70,13 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    public static function get($curr_code) {
+    public static function get($curr_code)
+    {
       $sql    = "SELECT * FROM currencies WHERE curr_abrev=" . DB::escape($curr_code);
       $result = DB::query($sql, "could not get currency $curr_code");
 
       $row = DB::fetch($result);
+
       return $row;
     }
     /**
@@ -83,11 +86,13 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($all = FALSE) {
+    public static function get_all($all = false)
+    {
       $sql = "SELECT * FROM currencies";
       if (!$all) {
         $sql .= " WHERE !inactive";
       }
+
       return DB::query($sql, "could not get currencies");
     }
 
@@ -101,11 +106,12 @@
      *
      * @return string
      */
-    public static function select($name, $selected_id = NULL, $submit_on_change = FALSE) {
+    public static function select($name, $selected_id = null, $submit_on_change = false)
+    {
       $sql = "SELECT curr_abrev, currency, inactive FROM currencies";
       // default to the company currency
       return select_box($name, $selected_id, $sql, 'curr_abrev', 'currency', array(
-        'select_submit' => $submit_on_change, 'default' => Bank_Currency::for_company(), 'async' => FALSE
+        'select_submit' => $submit_on_change, 'default' => Bank_Currency::for_company(), 'async' => false
       ));
     }
     /**
@@ -116,8 +122,9 @@
      * @param null $selected_id
      * @param bool $submit_on_change
      */
-    public static function cells($label, $name, $selected_id = NULL, $submit_on_change = FALSE) {
-      if ($label != NULL) {
+    public static function cells($label, $name, $selected_id = null, $submit_on_change = false)
+    {
+      if ($label != null) {
         echo "<td>$label</td>\n";
       }
       echo "<td>";
@@ -132,9 +139,10 @@
      * @param null $selected_id
      * @param bool $submit_on_change
      */
-    public static function row($label, $name, $selected_id = NULL, $submit_on_change = FALSE) {
+    public static function row($label, $name, $selected_id = null, $submit_on_change = false)
+    {
       echo "<tr><td class='label'>$label</td>";
-      GL_Currency::cells(NULL, $name, $selected_id, $submit_on_change);
+      GL_Currency::cells(null, $name, $selected_id, $submit_on_change);
       echo "</tr>\n";
     }
   }

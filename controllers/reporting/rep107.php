@@ -10,10 +10,10 @@
            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
            See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
           * ********************************************************************* */
-
   Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP);
   print_invoices();
-  function print_invoices() {
+  function print_invoices()
+  {
     include_once(APPPATH . "reports/pdf.php");
     $from     = $_POST['PARAM_0'];
     $to       = $_POST['PARAM_1'];
@@ -21,10 +21,10 @@
     $email    = $_POST['PARAM_3'];
     $paylink  = $_POST['PARAM_4'];
     $comments = $_POST['PARAM_5'];
-    if ($from == NULL) {
+    if ($from == null) {
       $from = 0;
     }
-    if ($to == NULL) {
+    if ($to == null) {
       $to = 0;
     }
     $dec = User::price_dec();
@@ -40,7 +40,7 @@
       $rep           = new ADVReport(_('TAX INVOICE'), "InvoiceBulk", User::page_size());
       $rep->currency = $cur;
       $rep->Font();
-      $rep->Info($params, $cols, NULL, $aligns);
+      $rep->Info($params, $cols, null, $aligns);
     }
     for ($i = $fno[0]; $i <= $tno[0]; $i++) {
       for ($j = ST_SALESINVOICE; $j <= ST_CUSTCREDIT; $j++) {
@@ -58,9 +58,8 @@
         $branch['disable_branch'] = $paylink; // helper
         if ($j == ST_SALESINVOICE) {
           $sales_order = Sales_Order::get_header($myrow["order_"], ST_SALESORDER);
-        }
-        else {
-          $sales_order = NULL;
+        } else {
+          $sales_order = null;
         }
         if ($email == 1) {
           $rep           = new ADVReport("", "", User::page_size());
@@ -69,14 +68,12 @@
           if ($j == ST_SALESINVOICE) {
             $rep->title    = _('TAX INVOICE');
             $rep->filename = "Invoice" . $myrow['reference'] . ".pdf";
-          }
-          else {
+          } else {
             $rep->title    = _('CREDIT NOTE');
             $rep->filename = "CreditNote" . $myrow['reference'] . ".pdf";
           }
-          $rep->Info($params, $cols, NULL, $aligns);
-        }
-        else {
+          $rep->Info($params, $cols, null, $aligns);
+        } else {
           $rep->title = ($j == ST_SALESINVOICE) ? _('TAX INVOICE') : _('CREDIT NOTE');
         }
         $rep->Header2($myrow, $branch, $sales_order, $baccount, $j);
@@ -94,8 +91,7 @@
           $DisplayNet   = Num::format($Net, $dec);
           if ($myrow2["discount_percent"] == 0) {
             $DisplayDiscount = "";
-          }
-          else {
+          } else {
             $DisplayDiscount = Num::format($myrow2["discount_percent"] * 100, User::percent_dec()) . "%";
           }
           $rep->TextCol(0, 1, $myrow2['stock_id'], -2);
@@ -125,13 +121,12 @@
         $display_sub_total = Num::format($SubTotal, $dec);
         $display_freight   = Num::format($sign * $myrow["ov_freight"], $dec);
         $rep->row          = $rep->bottomMargin + (12 * $rep->lineHeight);
-        $linetype          = TRUE;
+        $linetype          = true;
         $doctype           = $j;
         $doc_included      = $doc_sub_total = $doc_shipping = $doc_amount = $doc_total_invoice = $doc_invoice_no = '';
         if ($rep->currency != $myrow['curr_code']) {
           include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
-        }
-        else {
+        } else {
           include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
         }
         $rep->TextCol(3, 7, $doc_sub_total, -2);
@@ -145,8 +140,7 @@
           $DisplayTax = Num::format($sign * $tax_item['amount'], $dec);
           if ($tax_item['included_in_price']) {
             $rep->TextCol(3, 7, $doc_included . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " . $doc_amount . ": " . $DisplayTax, -2);
-          }
-          else {
+          } else {
             $rep->TextCol(3, 7, $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)", -2);
             $rep->TextCol(7, 8, $DisplayTax, -2);
           }

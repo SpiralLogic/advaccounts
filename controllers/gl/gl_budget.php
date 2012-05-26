@@ -16,8 +16,7 @@
     for ($i = 0, $da = $_POST['begin']; Dates::date1_greater_date2($_POST['end'], $da); $i++) {
       if (isset($_POST['add'])) {
         add_update_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2'], Validation::input_num('amount' . $i));
-      }
-      else {
+      } else {
         delete_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
       }
       $da = Dates::add_months($da, 1);
@@ -25,8 +24,7 @@
     DB::commit();
     if (isset($_POST['add'])) {
       Event::success(_("The Budget has been saved."));
-    }
-    else {
+    } else {
       Event::notice(_("The Budget has been deleted."));
     }
     //Display::meta_forward($_SERVER['DOCUMENT_URI']);
@@ -39,8 +37,8 @@
   if (Validation::check(Validation::GL_ACCOUNTS)) {
     $dim = DB_Company::get_pref('use_dimension');
     Table::start('tablestyle2');
-    GL_UI::fiscalyears_row(_("Fiscal Year:"), 'fyear', NULL);
-    GL_UI::all_row(_("Account Code:"), 'account', NULL);
+    GL_UI::fiscalyears_row(_("Fiscal Year:"), 'fyear', null);
+    GL_UI::all_row(_("Account Code:"), 'account', null);
     if (!isset($_POST['dim1'])) {
       $_POST['dim1'] = 0;
     }
@@ -48,28 +46,25 @@
       $_POST['dim2'] = 0;
     }
     if ($dim == 2) {
-      Dimensions::select_row(_("Dimension") . " 1", 'dim1', $_POST['dim1'], TRUE, NULL, FALSE, 1);
-      Dimensions::select_row(_("Dimension") . " 2", 'dim2', $_POST['dim2'], TRUE, NULL, FALSE, 2);
-    }
-    else {
+      Dimensions::select_row(_("Dimension") . " 1", 'dim1', $_POST['dim1'], true, null, false, 1);
+      Dimensions::select_row(_("Dimension") . " 2", 'dim2', $_POST['dim2'], true, null, false, 2);
+    } else {
       if ($dim == 1) {
-        Dimensions::select_row(_("Dimension"), 'dim1', $_POST['dim1'], TRUE, NULL, FALSE, 1);
+        Dimensions::select_row(_("Dimension"), 'dim1', $_POST['dim1'], true, null, false, 1);
         hidden('dim2', 0);
-      }
-      else {
+      } else {
         hidden('dim1', 0);
         hidden('dim2', 0);
       }
     }
-    submit_row('submit', _("Get"), TRUE, '', '', TRUE);
+    submit_row('submit', _("Get"), true, '', '', true);
     Table::end(1);
     Display::div_start('budget_tbl');
     Table::start('tablestyle2');
     $showdims = (($dim == 1 && $_POST['dim1'] == 0) || ($dim == 2 && $_POST['dim1'] == 0 && $_POST['dim2'] == 0));
     if ($showdims) {
       $th = array(_("Period"), _("Amount"), _("Dim. incl."), _("Last Year"));
-    }
-    else {
+    } else {
       $th = array(_("Period"), _("Amount"), _("Last Year"));
     }
     Table::header($th);
@@ -90,7 +85,7 @@
         $_POST['amount' . $i] = Num::format(get_only_budget_trans_from_to($date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']), 0);
       }
       Cell::label($date_);
-      amount_cells(NULL, 'amount' . $i, NULL, 15, NULL, 0);
+      amount_cells(null, 'amount' . $i, null, 15, null, 0);
       if ($showdims) {
         $d = GL_Trans::get_budget_from_to($date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
         Cell::label(Num::format($d, 0), ' class="right nowrap"');
@@ -113,9 +108,9 @@
     Row::end();
     Table::end(1);
     Display::div_end();
-    submit_center_first('update', _("Update"), '', NULL);
-    submit('add', _("Save"), TRUE, '', 'default');
-    submit_center_last('delete', _("Delete"), '', TRUE);
+    submit_center_first('update', _("Update"), '', null);
+    submit('add', _("Save"), true, '', 'default');
+    submit_center_last('delete', _("Delete"), '', true);
   }
   end_form();
   Page::end();
@@ -127,10 +122,12 @@
    *
    * @return bool
    */
-  function exists_gl_budget($date_, $account, $dimension, $dimension2) {
+  function exists_gl_budget($date_, $account, $dimension, $dimension2)
+  {
     $sql    = "SELECT account FROM budget_trans WHERE account=" . DB::escape($account) . " AND tran_date='$date_' AND
-		dimension_id=" . DB::escape($dimension) . " AND dimension2_id=" . DB::escape($dimension2);
+        dimension_id=" . DB::escape($dimension) . " AND dimension2_id=" . DB::escape($dimension2);
     $result = DB::query($sql, "Cannot retreive a gl transaction");
+
     return (DB::num_rows($result) > 0);
   }
 
@@ -141,15 +138,15 @@
    * @param $dimension2
    * @param $amount
    */
-  function add_update_gl_budget_trans($date_, $account, $dimension, $dimension2, $amount) {
+  function add_update_gl_budget_trans($date_, $account, $dimension, $dimension2, $amount)
+  {
     $date = Dates::date2sql($date_);
     if (exists_gl_budget($date, $account, $dimension, $dimension2)) {
       $sql = "UPDATE budget_trans SET amount=" . DB::escape($amount) . " WHERE account=" . DB::escape($account) . " AND dimension_id=" . DB::escape($dimension) . " AND dimension2_id=" . DB::escape($dimension2) . " AND tran_date='$date'";
-    }
-    else {
+    } else {
       $sql = "INSERT INTO budget_trans (tran_date,
-			account, dimension_id, dimension2_id, amount, memo_) VALUES ('$date',
-			" . DB::escape($account) . ", " . DB::escape($dimension) . ", " . DB::escape($dimension2) . ", " . DB::escape($amount) . ", '')";
+            account, dimension_id, dimension2_id, amount, memo_) VALUES ('$date',
+            " . DB::escape($account) . ", " . DB::escape($dimension) . ", " . DB::escape($dimension2) . ", " . DB::escape($amount) . ", '')";
     }
     DB::query($sql, "The GL budget transaction could not be saved");
   }
@@ -160,7 +157,8 @@
    * @param $dimension
    * @param $dimension2
    */
-  function delete_gl_budget_trans($date_, $account, $dimension, $dimension2) {
+  function delete_gl_budget_trans($date_, $account, $dimension, $dimension2)
+  {
     $date = Dates::date2sql($date_);
     $sql  = "DELETE FROM budget_trans WHERE account=" . DB::escape($account) . " AND dimension_id=" . DB::escape($dimension) . " AND dimension2_id=" . DB::escape($dimension2) . " AND tran_date='$date'";
     DB::query($sql, "The GL budget transaction could not be deleted");
@@ -175,13 +173,15 @@
    *
    * @return mixed
    */
-  function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
+  function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0)
+  {
     $from   = Dates::date2sql($from_date);
     $to     = Dates::date2sql($to_date);
     $sql    = "SELECT SUM(amount) FROM budget_trans
-		WHERE account=" . DB::escape($account) . " AND tran_date >= '$from' AND tran_date <= '$to'
-		 AND dimension_id = " . DB::escape($dimension) . " AND dimension2_id = " . DB::escape($dimension2);
+        WHERE account=" . DB::escape($account) . " AND tran_date >= '$from' AND tran_date <= '$to'
+         AND dimension_id = " . DB::escape($dimension) . " AND dimension2_id = " . DB::escape($dimension2);
     $result = DB::query($sql, "No budget accounts were returned");
     $row    = DB::fetch_row($result);
+
     return $row[0];
   }

@@ -29,6 +29,7 @@
       'access'   => SA_ADVANCED, //
     ),
   );
+
   return array(
     'next_id'   => $GLOBALS['next_id'],
     'installed' => $GLOBALS['installed_extensions']

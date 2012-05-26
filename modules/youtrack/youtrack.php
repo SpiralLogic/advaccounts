@@ -15,22 +15,26 @@
   /**
 
    */
-  class Youtrack extends Module\Base {
-
-    public function _init() {
+  class Youtrack extends Module\Base
+  {
+    public function _init()
+    {
       User::register_login(__CLASS__, '_login');
     }
-    public function _login() {
+    public function _login()
+    {
       $host = 'advanced.advancedgroup.com.au/modules/youtrack';
-      if (strpos($_SERVER['HTTP_HOST'], 'dev') !== FALSE) {
+      if (strpos($_SERVER['HTTP_HOST'], 'dev') !== false) {
         $host = 'dev.' . $host;
       }
-      $js = <<<JS
+      $js
+        = <<<JS
 $.get('http://$host');
 JS;
       JS::onload($js);
     }
-    public function youtrack() {
+    public function youtrack()
+    {
       $ch = curl_init('http://advanced.advancedgroup.com.au:8090/rest/user/login');
       curl_setopt($ch, CURLOPT_POST, 2);
       $user = User::i()->username;

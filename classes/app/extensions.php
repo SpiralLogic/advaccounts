@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Extensions {
-
+  class Extensions
+  {
     /**
      * @static
      *
@@ -16,7 +16,8 @@
      *
      * @return array
      */
-    public static function get_access($id) {
+    public static function get_access($id)
+    {
       global $installed_extensions;
       $ext               = $installed_extensions[$id];
       $security_sections = $security_areas = array();
@@ -24,13 +25,15 @@
         /** @noinspection PhpIncludeInspection */
         include(DOCROOT . ($ext['type'] == 'plugin' ? 'modules/' : DS) . $ext['path'] . DS . $ext['acc_file']);
       }
+
       return array($security_areas, $security_sections);
     }
     /**
      * @static
 
      */
-    public static function add_access() {
+    public static function add_access()
+    {
       global $security_areas, $security_sections;
       $installed_extensions = Config::get('extensions.installed');
       /** @noinspection PhpUnusedLocalVariableInspection */
@@ -73,16 +76,18 @@
      *
      * @return string
      */
-    public static function view($name, $value = NULL, $submit_on_change = FALSE) {
+    public static function view($name, $value = null, $submit_on_change = false)
+    {
       $items = array();
       foreach (Config::get_all('db') as $comp) {
         $items[] = sprintf(_("Activated for '%s'"), $comp['name']);
       }
+
       return array_selector($name, $value, $items, array(
-        'spec_option'   => _("Installed on system"),
-        'spec_id'       => -1,
-        'select_submit' => $submit_on_change,
-        'async'         => TRUE
-      ));
+                                                        'spec_option'   => _("Installed on system"),
+                                                        'spec_id'       => -1,
+                                                        'select_submit' => $submit_on_change,
+                                                        'async'         => true
+                                                   ));
     }
   }

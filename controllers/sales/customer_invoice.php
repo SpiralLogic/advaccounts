@@ -11,25 +11,20 @@
   //	Entry/Modify Sales Invoice against single delivery
   //	Entry/Modify Batch Sales Invoice against batch of deliveries
   //
-
   JS::open_window(900, 500);
-
   $page_title = 'Sales Invoice Complete';
   if (isset($_GET[Orders::MODIFY_INVOICE])) {
     $page_title   = sprintf(_("Modifying Sales Invoice # %d."), $_GET[Orders::MODIFY_INVOICE]);
     $help_context = "Modifying Sales Invoice";
-  }
-  elseif (isset($_GET['DeliveryNumber'])) {
+  } elseif (isset($_GET['DeliveryNumber'])) {
     $page_title = _($help_context = "Issue an Invoice for Delivery Note");
-  }
-  elseif (isset($_GET[Orders::BATCH_INVOICE])) {
+  } elseif (isset($_GET[Orders::BATCH_INVOICE])) {
     $page_title = _($help_context = "Issue Batch Invoice for Delivery Notes");
-  }
-  elseif (isset($_GET[Orders::VIEW_INVOICE])) {
+  } elseif (isset($_GET[Orders::VIEW_INVOICE])) {
     $page_title = sprintf(_("View Sales Invoice # %d."), $_GET[Orders::VIEW_INVOICE]);
   }
   Page::start($page_title, SA_SALESINVOICE);
-  $order = Orders::session_get() ? : NULL;
+  $order = Orders::session_get() ? : null;
   if (isset($_GET[ADDED_ID])) {
     $order      = new Sales_Order(ST_SALESINVOICE, $_GET[ADDED_ID]);
     $customer   = new Debtor($order->customer_id);
@@ -38,16 +33,15 @@
     $reference  = $order->reference;
     Event::success(_("Invoice $reference has been entered."));
     $trans_type = ST_SALESINVOICE;
-    Event::success(_("Selected deliveries has been processed"), TRUE);
-    Display::note(Debtor::trans_view($trans_type, $invoice_no, _("&View This Invoice"), FALSE, 'button'), 0, 1);
-    Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), TRUE, ST_SALESINVOICE));
-    Reporting::email_link($invoice_no, _("Email This Invoice"), TRUE, ST_SALESINVOICE, 'EmailLink', NULL, $emails, 1);
-    Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"), '', TRUE, 'class="button"');
-    Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice"), FALSE, 'button'), 1);
-    Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1", TRUE, 'class="button"');
+    Event::success(_("Selected deliveries has been processed"), true);
+    Display::note(Debtor::trans_view($trans_type, $invoice_no, _("&View This Invoice"), false, 'button'), 0, 1);
+    Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
+    Reporting::email_link($invoice_no, _("Email This Invoice"), true, ST_SALESINVOICE, 'EmailLink', null, $emails, 1);
+    Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"), '', true, 'class="button"');
+    Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice"), false, 'button'), 1);
+    Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1", true, 'class="button"');
     Page::footer_exit();
-  }
-  elseif (isset($_GET[UPDATED_ID])) {
+  } elseif (isset($_GET[UPDATED_ID])) {
     $order      = new Sales_Order(ST_SALESINVOICE, $_GET[UPDATED_ID]);
     $customer   = new Debtor($order->customer_id);
     $emails     = $customer->getEmailAddresses();
@@ -55,12 +49,11 @@
     Event::success(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));
     Display::note(GL_UI::trans_view(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
     echo '<br>';
-    Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), TRUE, ST_SALESINVOICE));
-    Reporting::email_link($invoice_no, _("Email This Invoice"), TRUE, ST_SALESINVOICE, 'EmailLink', NULL, $emails, 1);
+    Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
+    Reporting::email_link($invoice_no, _("Email This Invoice"), true, ST_SALESINVOICE, 'EmailLink', null, $emails, 1);
     Display::link_no_params("/sales/inquiry/customer_inquiry.php", _("Select A Different &Invoice to Modify"));
     Page::footer_exit();
-  }
-  elseif (isset($_GET['RemoveDN'])) {
+  } elseif (isset($_GET['RemoveDN'])) {
     for ($line_no = 0; $line_no < count($order->line_items); $line_no++) {
       $line = $order->line_items[$line_no];
       if ($line->src_no == $_GET['RemoveDN']) {
@@ -77,12 +70,11 @@
     if (isset($_GET[Orders::BATCH_INVOICE])) {
       $src = $_SESSION['DeliveryBatch'];
       unset($_SESSION['DeliveryBatch']);
-    }
-    else {
+    } else {
       $src = array($_GET['DeliveryNumber']);
     }
     /* read in all the selected deliveries into the Items order */
-    $order = new Sales_Order(ST_CUSTDELIVERY, $src, TRUE);
+    $order = new Sales_Order(ST_CUSTDELIVERY, $src, true);
     if ($order->count_items() == 0) {
       Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select a different delivery to invoice"), "OutstandingOnly=1");
       die("<br><span class='bold'>" . _("There are no delivered items with a quantity left to invoice. There is nothing left to invoice.") . "</span>");
@@ -93,12 +85,11 @@
     $order->reference  = Ref::get_next(ST_SALESINVOICE);
     $order->due_date   = Sales_Order::get_invoice_duedate($order->customer_id, $order->document_date);
     Sales_Invoice::copyToPost($order);
-  }
-  elseif (isset($_GET[Orders::MODIFY_INVOICE]) && $_GET[Orders::MODIFY_INVOICE] > 0) {
+  } elseif (isset($_GET[Orders::MODIFY_INVOICE]) && $_GET[Orders::MODIFY_INVOICE] > 0) {
     if (Debtor_Trans::get_parent(ST_SALESINVOICE, $_GET[Orders::MODIFY_INVOICE]) == 0) { // 1.xx compatibility hack
       echo"<div class='center'><br><span class='bold'>" . _("There are no delivery notes for this invoice.<br>
-		Most likely this invoice was created in ADV Accounts version prior to 2.0
-		and therefore can not be modified.") . "</span></div>";
+        Most likely this invoice was created in ADV Accounts version prior to 2.0
+        and therefore can not be modified.") . "</span></div>";
       Page::footer_exit();
     }
     $order = new Sales_Order(ST_SALESINVOICE, $_GET[Orders::MODIFY_INVOICE]);
@@ -106,22 +97,19 @@
     Sales_Invoice::copyToPost($order);
     if ($order->count_items() == 0) {
       echo "<div class='center'><br><span class='bold'>" . _("All quantities on this invoice have been credited. There is
-			nothing to modify on this invoice") . "</span></div>";
+            nothing to modify on this invoice") . "</span></div>";
     }
-  }
-  elseif (isset($_GET[Orders::VIEW_INVOICE]) && $_GET[Orders::VIEW_INVOICE] > 0) {
+  } elseif (isset($_GET[Orders::VIEW_INVOICE]) && $_GET[Orders::VIEW_INVOICE] > 0) {
     $order = new Sales_Order(ST_SALESINVOICE, $_GET[Orders::VIEW_INVOICE]);
     $order->start();
     Sales_Invoice::copyToPost($order);
-  }
-  elseif (!$order && !isset($_GET['order_id'])) {
+  } elseif (!$order && !isset($_GET['order_id'])) {
     /* This page can only be called with a delivery for invoicing or invoice no for edit */
     Event::error(_("This page can only be opened after delivery selection. Please select delivery to invoicing first."));
     Display::link_no_params("/sales/inquiry/sales_deliveries_view.php", _("Select Delivery to Invoice"));
     Page::end();
     exit;
-  }
-  elseif ($order && !Sales_Invoice::check_quantities($order)) {
+  } elseif ($order && !Sales_Invoice::check_quantities($order)) {
     Event::error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
   }
   if (isset($_POST['Update'])) {
@@ -141,8 +129,7 @@
     $order->finish();
     if ($newinvoice) {
       Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$invoice_no");
-    }
-    else {
+    } else {
       //	Display::meta_forward($_SERVER['DOCUMENT_URI'], "UpdatedID=$invoice_no");
     }
   }
@@ -157,8 +144,7 @@
     }
     if ($line->src_no == $lastdn) {
       $spanlen++;
-    }
-    else {
+    } else {
       if ($lastdn != '') {
         $dspans[] = $spanlen;
         $spanlen  = 1;
@@ -179,9 +165,8 @@
   Row::end();
   Row::start();
   if ($order->trans_no == 0) {
-    ref_cells(_("Reference"), 'ref', '', NULL, "class='tablerowhead'");
-  }
-  else {
+    ref_cells(_("Reference"), 'ref', '', null, "class='tablerowhead'");
+  } else {
     Cell::labels(_("Reference"), $order->reference, "class='tablerowhead'");
   }
   Cell::labels(_("Delivery Notes:"), Debtor::trans_view(ST_CUSTDELIVERY, array_keys($order->src_docs)), "class='tablerowhead'");
@@ -193,9 +178,8 @@
   }
   Cell::label(_("Shipping Company"), "class='label'");
   if (!$order->view_only || !isset($order->ship_via)) {
-    Sales_UI::shippers_cells(NULL, 'ship_via', $_POST['ship_via']);
-  }
-  else {
+    Sales_UI::shippers_cells(null, 'ship_via', $_POST['ship_via']);
+  } else {
     Cell::label($order->ship_via);
   }
   if (!isset($_POST['InvoiceDate']) || !Dates::is_date($_POST['InvoiceDate'])) {
@@ -205,18 +189,16 @@
     }
   }
   if (!$order->view_only) {
-    date_cells(_("Date"), 'InvoiceDate', '', $order->trans_no == 0, 0, 0, 0, "class='tablerowhead'", TRUE);
-  }
-  else {
+    date_cells(_("Date"), 'InvoiceDate', '', $order->trans_no == 0, 0, 0, 0, "class='tablerowhead'", true);
+  } else {
     Cell::labels(_('Invoice Date:'), $_POST['InvoiceDate']);
   }
   if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
     $_POST['due_date'] = Sales_Order::get_invoice_duedate($order->customer_id, $_POST['InvoiceDate']);
   }
   if (!$order->view_only) {
-    date_cells(_("Due Date"), 'due_date', '', NULL, 0, 0, 0, "class='tablerowhead'");
-  }
-  else {
+    date_cells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tablerowhead'");
+  } else {
     Cell::labels(_('Due Date'), $_POST['due_date']);
   }
   Row::end();
@@ -232,8 +214,16 @@
   Display::div_start('Items');
   Table::start('tablestyle grid width90');
   $th = array(
-    _("Item Code"), _("Item Description"), _("Delivered"), _("Units"), _("Invoiced"), _("This Invoice"), _("Price"),
-    _("Tax Type"), _("Discount"), _("Total")
+    _("Item Code"),
+    _("Item Description"),
+    _("Delivered"),
+    _("Units"),
+    _("Invoiced"),
+    _("This Invoice"),
+    _("Price"),
+    _("Tax Type"),
+    _("Discount"),
+    _("Total")
   );
   if ($is_batch_invoice) {
     $th[] = _("DN");
@@ -244,37 +234,33 @@
   }
   Table::header($th);
   $k           = 0;
-  $has_marked  = FALSE;
-  $show_qoh    = TRUE;
+  $has_marked  = false;
+  $show_qoh    = true;
   $dn_line_cnt = 0;
   foreach ($order->line_items as $line_no => $line) {
     if (!$order->view_only && $line->quantity == $line->qty_done) {
       continue; // this line was fully invoiced
     }
-
     Item_UI::status_cell($line->stock_id);
     if (!$order->view_only) {
-      textarea_cells(NULL, 'Line' . $line_no . 'Desc', $line->description, 30, 3);
-    }
-    else {
+      textarea_cells(null, 'Line' . $line_no . 'Desc', $line->description, 30, 3);
+    } else {
       Cell::label($line->description);
     }
     $dec = Item::qty_dec($line->stock_id);
-    Cell::qty($line->quantity, FALSE, $dec);
+    Cell::qty($line->quantity, false, $dec);
     Cell::label($line->units);
-    Cell::qty($line->qty_done, FALSE, $dec);
+    Cell::qty($line->qty_done, false, $dec);
     if ($is_batch_invoice) {
       // for batch invoices we can only remove whole deliveries
       echo '<td class="right nowrap">';
       hidden('Line' . $line_no, $line->qty_dispatched);
       echo Num::format($line->qty_dispatched, $dec) . '</td>';
-    }
-    elseif ($order->view_only) {
+    } elseif ($order->view_only) {
       hidden('viewing');
-      Cell::qty($line->quantity, FALSE, $dec);
-    }
-    else {
-      small_qty_cells(NULL, 'Line' . $line_no, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), NULL, NULL, $dec);
+      Cell::qty($line->quantity, false, $dec);
+    } else {
+      small_qty_cells(null, 'Line' . $line_no, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), null, null, $dec);
     }
     $display_discount_percent = Num::percent_format($line->discount_percent * 100) . " %";
     $line_total               = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
@@ -300,8 +286,7 @@
   if (!isset($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] == "") {
     if ($order->any_already_delivered() == 1) {
       $_POST['ChargeFreightCost'] = Num::price_format(0);
-    }
-    else {
+    } else {
       $_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
     }
     if (!Validation::post_num('ChargeFreightCost')) {
@@ -316,9 +301,8 @@
   Row::start();
   Cell::label(_("Shipping Cost"), "colspan=$colspan class='right bold'");
   if (!$order->view_only) {
-    small_amount_cells(NULL, 'ChargeFreightCost', NULL);
-  }
-  else {
+    small_amount_cells(null, 'ChargeFreightCost', null);
+  } else {
     Cell::amount($order->freight_cost);
   }
   if ($is_batch_invoice) {
@@ -327,30 +311,31 @@
   Row::end();
   $inv_items_total   = $order->get_items_total_dispatch();
   $display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
-  Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right bold'", "class='right'", $is_batch_invoice ? 2 : 0);
+  Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right bold'", "class='right'", $is_batch_invoice ? 2 :
+    0);
   $taxes         = $order->get_taxes(Validation::input_num('ChargeFreightCost'));
   $tax_total     = Tax::edit_items($taxes, $colspan, $order->tax_included, $is_batch_invoice ? 2 : 0);
   $display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
-  Row::label(_("Invoice Total"), $display_total, "colspan=$colspan class='right bold'", "class='right'", $is_batch_invoice ? 2 : 0);
+  Row::label(_("Invoice Total"), $display_total, "colspan=$colspan class='right bold'", "class='right'", $is_batch_invoice ? 2 :
+    0);
   Table::end(1);
   Display::div_end();
   Table::start('tablestyle2');
-  textarea_row(_("Memo"), 'Comments', NULL, 50, 4);
+  textarea_row(_("Memo"), 'Comments', null, 50, 4);
   Table::end(1);
   Table::start('center red bold');
   if (!$order->view_only) {
     Cell::label(_("DON'T PRESS THE PROCESS TAX INVOICE BUTTON UNLESS YOU ARE 100% CERTAIN THAT YOU WON'T NEED TO EDIT ANYTHING IN THE
-	FUTURE ON THIS
-	INVOICE"));
+    FUTURE ON THIS
+    INVOICE"));
   }
   Table::end();
-
   if (!$order->view_only) {
-    submit_center_first('Update', _("Update"), _('Refresh document page'), TRUE);
+    submit_center_first('Update', _("Update"), _('Refresh document page'), true);
     submit_center_last('process_invoice', _("Process Invoice"), _('Check entered data and save document'), 'default');
     Table::start('center red bold');
     Cell::label(_("DON'T FUCK THIS UP, YOU WON'T BE ABLE TO EDIT ANYTHING AFTER THIS. DON'T MAKE YOURSELF FEEL AND LOOK LIKE A DICK!"), 'center');
   }
   Table::end();
   end_form();
-  Page::end(FALSE);
+  Page::end(false);

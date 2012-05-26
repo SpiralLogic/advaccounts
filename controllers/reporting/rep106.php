@@ -19,28 +19,31 @@
    *
    * @return null|PDOStatement
    */
-  function GetSalesmanTrans($from, $to) {
+  function GetSalesmanTrans($from, $to)
+  {
     $fromdate = Dates::date2sql($from);
     $todate   = Dates::date2sql($to);
     $sql
               = "SELECT DISTINCT debtor_trans.*,
-		ov_amount+ov_discount AS InvoiceTotal,
-		debtors.name AS DebtorName, debtors.curr_code, branches.br_name,
-		branches.contact_name, salesman.*
-		FROM debtor_trans, debtors, sales_orders, branches,
-			salesman
-		WHERE sales_orders.order_no=debtor_trans.order_
-		 AND sales_orders.branch_id=branches.branch_id
-		 AND branches.salesman=salesman.salesman_code
-		 AND debtor_trans.debtor_id=debtors.debtor_id
-		 AND (debtor_trans.type=" . ST_SALESINVOICE . " OR debtor_trans.type=" . ST_CUSTCREDIT . ")
-		 AND debtor_trans.tran_date>='$fromdate'
-		 AND debtor_trans.tran_date<='$todate'
-		ORDER BY salesman.salesman_code, debtor_trans.tran_date";
+        ov_amount+ov_discount AS InvoiceTotal,
+        debtors.name AS DebtorName, debtors.curr_code, branches.br_name,
+        branches.contact_name, salesman.*
+        FROM debtor_trans, debtors, sales_orders, branches,
+            salesman
+        WHERE sales_orders.order_no=debtor_trans.order_
+         AND sales_orders.branch_id=branches.branch_id
+         AND branches.salesman=salesman.salesman_code
+         AND debtor_trans.debtor_id=debtors.debtor_id
+         AND (debtor_trans.type=" . ST_SALESINVOICE . " OR debtor_trans.type=" . ST_CUSTCREDIT . ")
+         AND debtor_trans.tran_date>='$fromdate'
+         AND debtor_trans.tran_date<='$todate'
+        ORDER BY salesman.salesman_code, debtor_trans.tran_date";
+
     return DB::query($sql, "Error getting order details");
   }
 
-  function print_salesman_list() {
+  function print_salesman_list()
+  {
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
     $summary     = $_POST['PARAM_2'];
@@ -48,14 +51,12 @@
     $destination = $_POST['PARAM_4'];
     if ($destination) {
       include_once(APPPATH . "reports/excel.php");
-    }
-    else {
+    } else {
       include_once(APPPATH . "reports/pdf.php");
     }
     if ($summary == 0) {
       $sum = _("No");
-    }
-    else {
+    } else {
       $sum = _("Yes");
     }
     $dec      = User::price_dec();
@@ -96,7 +97,7 @@
         $salesman = 0;
         $rep->Header();
       }
-      $rep->NewLine(0, 2, FALSE, $salesman);
+      $rep->NewLine(0, 2, false, $salesman);
       if ($salesman != $myrow['salesman_code']) {
         if ($salesman != 0) {
           $rep->Line($rep->row - 8);
@@ -124,8 +125,7 @@
       $amt  = $myrow['InvoiceTotal'] * $rate;
       if ($subprov > $myrow['break_pt'] && $myrow['provision2'] != 0) {
         $prov = $myrow['provision2'] * $amt / 100;
-      }
-      else {
+      } else {
         $prov = $myrow['provision'] * $amt / 100;
       }
       if (!$summary) {
@@ -133,7 +133,7 @@
         $rep->TextCol(1, 2, $myrow['DebtorName']);
         $rep->TextCol(2, 3, $myrow['br_name']);
         $rep->TextCol(3, 4, $myrow['contact_name']);
-        $rep->DateCol(4, 5, $myrow['tran_date'], TRUE);
+        $rep->DateCol(4, 5, $myrow['tran_date'], true);
         $rep->AmountCol(5, 6, $amt, $dec);
         $rep->AmountCol(6, 7, $prov, $dec);
         $rep->NewLine();
@@ -165,5 +165,4 @@
     $rep->NewLine();
     $rep->End();
   }
-
 

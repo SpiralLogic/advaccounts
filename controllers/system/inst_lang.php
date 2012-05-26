@@ -7,18 +7,14 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Install/Update Languages"), SA_CREATELANGUAGE);
   if (isset($_GET['selected_id'])) {
     $selected_id = $_GET['selected_id'];
-  }
-  elseif (isset($_POST['selected_id'])) {
+  } elseif (isset($_POST['selected_id'])) {
     $selected_id = $_POST['selected_id'];
-  }
-  else {
+  } else {
     $selected_id = -1;
   }
-
   if (isset($_GET['c'])) {
     if ($_GET['c'] == 'df') {
       handle_delete();
@@ -36,21 +32,25 @@
   /**
    * @return bool
    */
-  function check_data() {
+  function check_data()
+  {
     if ($_POST['code'] == "" || $_POST['name'] == "" || $_POST['encoding'] == "") {
       Event::error(_("Language name, code nor encoding cannot be empty"));
-      return FALSE;
+
+      return false;
     }
-    return TRUE;
+
+    return true;
   }
 
   /**
    * @return bool
    */
-  function handle_submit() {
+  function handle_submit()
+  {
     $installed_languages = Config::get('languages.installed');
     if (!check_data()) {
-      return FALSE;
+      return false;
     }
     $id = $_GET['id'];
     if ($_POST['dflt']) {
@@ -64,7 +64,7 @@
     $lang                                 = $lang[$id]['code'];
     $filename                             = LANG_PATH . '$lang' . DS . 'LC_MESSAGES';
     if (!Files::save_to_file($filename, '')) {
-      return FALSE;
+      return false;
     }
     $directory = LANG_PATH . $_POST['code'];
     if (!file_exists($directory)) {
@@ -88,10 +88,12 @@
       move_uploaded_file($file1, $file2);
     }
     Config::set('languages.installed', $installed_languages);
-    return TRUE;
+
+    return true;
   }
 
-  function handle_delete() {
+  function handle_delete()
+  {
     $id       = $_GET['id'];
     $lang     = Config::get('languages.installed');
     $lang     = $lang[$id]['code'];
@@ -110,16 +112,19 @@
     Display::meta_forward($_SERVER['DOCUMENT_URI']);
   }
 
-  function display_languages() {
+  function display_languages()
+  {
     $lang = $_SESSION["language"]->code;
     echo "
-			<script language='javascript'>
-			function deleteLanguage(id) {
-				if (!confirm('" . _("Are you sure you want to delete language no. ") . "'+id))
-					return
-				document.location.replace('inst_lang.php?c=df&id='+id)
-			}
-			</script>";
+            <script language='javascript'>
+            function deleteLanguage(id)
+            {
+                if (!confirm('" . _("Are you sure you want to delete language no. ") . "'+id))
+
+                    return
+                document.location.replace('inst_lang.php?c=df&id='+id)
+            }
+            </script>";
     Table::start('tablestyle grid');
     $th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"), _("Default"), "", "");
     Table::header($th);
@@ -129,16 +134,14 @@
     for ($i = 0; $i < $n; $i++) {
       if ($conn[$i]['code'] == $lang) {
         Row::start("class='stockmankobg'");
-      }
-      else {
+      } else {
       }
       Cell::label($conn[$i]['code']);
       Cell::label($conn[$i]['name']);
       Cell::label($conn[$i]['encoding']);
       if (isset($conn[$i]['rtl']) && $conn[$i]['rtl']) {
         $rtl = _("Yes");
-      }
-      else {
+      } else {
         $rtl = _("No");
       }
       Cell::label($rtl);
@@ -160,21 +163,22 @@
   /**
    * @param $selected_id
    */
-  function display_language_edit($selected_id) {
+  function display_language_edit($selected_id)
+  {
     if ($selected_id != -1) {
       $n = $selected_id;
-    }
-    else {
+    } else {
       $n = count(Config::get('languages.installed'));
     }
-    start_form(TRUE);
+    start_form(true);
     echo "
-			<script language='javascript'>
-			function updateLanguage() {
-				document.forms[0].action='inst_lang.php?c=u&id=" . $n . "'
-				document.forms[0].submit()
-			}
-			</script>";
+            <script language='javascript'>
+            function updateLanguage()
+            {
+                document.forms[0].action='inst_lang.php?c=u&id=" . $n . "'
+                document.forms[0].submit()
+            }
+            </script>";
     Table::start('tablestyle2');
     if ($selected_id != -1) {
       $languages         = Config::get('languages.installed');
@@ -184,9 +188,8 @@
       $_POST['encoding'] = $conn['encoding'];
       if (isset($conn['rtl'])) {
         $_POST['rtl'] = $conn['rtl'];
-      }
-      else {
-        $_POST['rtl'] = FALSE;
+      } else {
+        $_POST['rtl'] = false;
       }
       $_POST['dflt'] = Config::set('default.lang', $conn['code']);
       hidden('selected_id', $selected_id);
@@ -194,8 +197,8 @@
     text_row_ex(_("Language Code"), 'code', 20);
     text_row_ex(_("Language Name"), 'name', 20);
     text_row_ex(_("Encoding"), 'encoding', 20);
-    yesno_list_row(_("Right To Left"), 'rtl', NULL, "", "", FALSE);
-    yesno_list_row(_("Default Language"), 'dflt', NULL, "", "", FALSE);
+    yesno_list_row(_("Right To Left"), 'rtl', null, "", "", false);
+    yesno_list_row(_("Default Language"), 'dflt', null, "", "", false);
     file_row(_("Language File") . " (PO)", 'uploadfile');
     file_row(_("Language File") . " (MO)", 'uploadfile2');
     Table::end(0);

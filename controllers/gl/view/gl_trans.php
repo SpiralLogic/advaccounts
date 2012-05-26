@@ -7,21 +7,20 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
-  Page::start(_($help_context = "General Ledger Transaction Details"), SA_GLTRANSVIEW, TRUE);
+  Page::start(_($help_context = "General Ledger Transaction Details"), SA_GLTRANSVIEW, true);
   if (!isset($_GET['type_id']) || !isset($_GET['trans_no'])) { /*Script was not passed the correct parameters */
     echo "<p>" . _("The script must be called with a valid transaction type and transaction number to review the general ledger postings for.") . "</p>";
     exit;
   }
-
-  $sql    = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
-	LEFT JOIN chart_master as cm ON gl.account = cm.account_code
-	LEFT JOIN refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)" . " WHERE gl.type= " . DB::escape($_GET['type_id']) . " AND gl.type_no = " . DB::escape($_GET['trans_no']) . " ORDER BY counter";
+  $sql
+          = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
+    LEFT JOIN chart_master as cm ON gl.account = cm.account_code
+    LEFT JOIN refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)" . " WHERE gl.type= " . DB::escape($_GET['type_id']) . " AND gl.type_no = " . DB::escape($_GET['trans_no']) . " ORDER BY counter";
   $result = DB::query($sql, "could not get transactions");
   //alert("sql = ".$sql);
   if (DB::num_rows($result) == 0) {
     echo "<p><div class='center'>" . _("No general ledger transactions have been created for") . " " . $systypes_array[$_GET['type_id']] . " " . _("number") . " " . $_GET['trans_no'] . "</div></p><br><br>";
-    Page::end(TRUE);
+    Page::end(true);
     exit;
   }
   /*show a table of the transactions returned by the sql */
@@ -30,21 +29,19 @@
     $th = array(
       _("Account Code"), _("Account Name"), _("Dimension") . " 1", _("Dimension") . " 2", _("Debit"), _("Credit"), _("Memo")
     );
-  }
-  else {
+  } else {
     if ($dim == 1) {
       $th = array(
         _("Account Code"), _("Account Name"), _("Dimension"), _("Debit"), _("Credit"), _("Memo")
       );
-    }
-    else {
+    } else {
       $th = array(
         _("Account Code"), _("Account Name"), _("Debit"), _("Credit"), _("Memo")
       );
     }
   }
   $k             = 0; //row colour counter
-  $heading_shown = FALSE;
+  $heading_shown = false;
   while ($myrow = DB::fetch($result)) {
     if ($myrow['amount'] == 0) {
       continue;
@@ -53,16 +50,15 @@
       display_gl_heading($myrow);
       Table::start('tablestyle grid width95');
       Table::header($th);
-      $heading_shown = TRUE;
+      $heading_shown = true;
     }
-
     Cell::label($myrow['account']);
     Cell::label($myrow['account_name']);
     if ($dim >= 1) {
-      Cell::label(Dimensions::get_string($myrow['dimension_id'], TRUE));
+      Cell::label(Dimensions::get_string($myrow['dimension_id'], true));
     }
     if ($dim > 1) {
-      Cell::label(Dimensions::get_string($myrow['dimension2_id'], TRUE));
+      Cell::label(Dimensions::get_string($myrow['dimension2_id'], true));
     }
     Cell::debitOrCredit($myrow['amount']);
     Cell::label($myrow['memo_']);
@@ -73,11 +69,12 @@
     Table::end(1);
   }
   Display::is_voided($_GET['type_id'], $_GET['trans_no'], _("This transaction has been voided."));
-  Page::end(TRUE);
+  Page::end(true);
   /**
    * @param $myrow
    */
-  function display_gl_heading($myrow) {
+  function display_gl_heading($myrow)
+  {
     global $systypes_array;
     $trans_name = $systypes_array[$_GET['type_id']];
     Table::start('tablestyle width95');

@@ -13,8 +13,8 @@
   /**
 
    */
-  class Ajax extends \JsHttpRequest {
-
+  class Ajax extends \JsHttpRequest
+  {
     use Traits\Singleton;
 
     /**
@@ -25,11 +25,11 @@
      * @var array
      */
     public $triggers = array();
-
     /**
 
      */
-    function __construct() {
+    public function __construct()
+    {
       $enc = (session_status() == PHP_SESSION_ACTIVE) ? $_SESSION['Language']->encoding : 'UTF-8';
       parent::__construct($enc);
     }
@@ -41,8 +41,9 @@
      *
      * @return void
      */
-    function activate($trigname) {
-      (Ajax::in_ajax()) and $this->triggers[$trigname] = TRUE;
+    public function activate($trigname)
+    {
+      (Ajax::in_ajax()) and $this->triggers[$trigname] = true;
     }
     /**
      *   Javascript clientside redirection.
@@ -52,9 +53,10 @@
      *
      * @return void
      */
-    function redirect($url) {
+    public function redirect($url)
+    {
       if (Ajax::in_ajax()) {
-        $this->_addCommand(TRUE, array('n' => 'rd'), $this->absolute_url($url));
+        $this->_addCommand(true, array('n' => 'rd'), $this->absolute_url($url));
         $this->run();
       }
     }
@@ -65,8 +67,9 @@
      *
      * @return void
      */
-    function popup($url) {
-      $this->_addCommand(TRUE, array('n' => 'pu'), $this->absolute_url($url));
+    public function popup($url)
+    {
+      $this->_addCommand(true, array('n' => 'pu'), $this->absolute_url($url));
     }
     /**
      * Adds an executable Javascript code.
@@ -76,8 +79,10 @@
      *
      * @return Ajax
      */
-    function addScript($trigger, $sJS) {
+    public function addScript($trigger, $sJS)
+    {
       $this->_addCommand($trigger, array('n' => 'js'), $sJS);
+
       return $this;
     }
     /**
@@ -90,10 +95,12 @@
      *
      * @return Ajax
      */
-    function addAssign($trigger, $sTarget, $sAttribute, $sData) {
+    public function addAssign($trigger, $sTarget, $sAttribute, $sData)
+    {
       $this->_addCommand($trigger, array(
-        'n' => 'as', 't' => $sTarget, 'p' => $sAttribute
-      ), $sData);
+                                        'n' => 'as', 't' => $sTarget, 'p' => $sAttribute
+                                   ), $sData);
+
       return $this;
     }
     /**
@@ -105,10 +112,12 @@
      *
      * @return Ajax
      */
-    function addUpdate($trigger, $sTarget, $sData) {
+    public function addUpdate($trigger, $sTarget, $sData)
+    {
       $this->_addCommand($trigger, array(
-        'n' => 'up', 't' => $sTarget
-      ), $sData);
+                                        'n' => 'up', 't' => $sTarget
+                                   ), $sData);
+
       return $this;
     }
     /**
@@ -120,10 +129,12 @@
      *
      * @return Ajax
      */
-    function addDisable($trigger, $sTarget, $sData = TRUE) {
+    public function addDisable($trigger, $sTarget, $sData = true)
+    {
       $this->_addCommand($trigger, array(
-        'n' => 'di', 't' => $sTarget
-      ), $sData);
+                                        'n' => 'di', 't' => $sTarget
+                                   ), $sData);
+
       return $this;
     }
     /**
@@ -135,10 +146,12 @@
      *
      * @return Ajax
      */
-    function addEnable($trigger, $sTarget, $sData = TRUE) {
+    public function addEnable($trigger, $sTarget, $sData = true)
+    {
       $this->_addCommand($trigger, array(
-        'n' => 'di', 't' => $sTarget
-      ), !$sData);
+                                        'n' => 'di', 't' => $sTarget
+                                   ), !$sData);
+
       return $this;
     }
     /**
@@ -149,8 +162,10 @@
      *
      * @return Ajax
      */
-    function addFocus($trigger, $sTarget) {
+    public function addFocus($trigger, $sTarget)
+    {
       $this->_addCommand($trigger, array('n' => 'fc'), $sTarget);
+
       return $this;
     }
     /**
@@ -162,8 +177,9 @@
      *
      * @return void
      */
-    function _addCommand($trigger, $aAttributes, $mData) {
-      if ($this->isActive() && ($trigger !== FALSE)) {
+    public function _addCommand($trigger, $aAttributes, $mData)
+    {
+      if ($this->isActive() && ($trigger !== false)) {
         //		Event::error('adding '.$trigger.':'.htmlentities($mData));
         $aAttributes['why']  = $trigger;
         $aAttributes['data'] = $mData;
@@ -173,7 +189,8 @@
     /**
      * @return mixed
      */
-    function run() {
+    public function run()
+    {
       if (!$this->isActive()) {
         return;
       }
@@ -181,11 +198,10 @@
       foreach ($this->aCommands as $idx => $com) {
         // If we should reload whole page content ignore all commands but the update.
         // This is page repost equivalent, although header and footer are not reloaded.
-        if ($com['why'] !== TRUE && !isset($this->triggers[$com['why']])) {
+        if ($com['why'] !== true && !isset($this->triggers[$com['why']])) {
           unset($this->aCommands[$idx]);
           //			Event::error('unset '.$com['t']);
-        }
-        else {
+        } else {
           if ($com['n'] == 'up' && $com['t'] == '_page_body') {
             $cmds = array($com);
             foreach ($this->aCommands as $cmd) {
@@ -207,7 +223,8 @@
      * @static
      * @return bool
      */
-    static function in_ajax() {
+    public static function in_ajax()
+    {
       return static::i()->isActive();
     }
     /**
@@ -218,9 +235,9 @@
      *
      * @return string
      */
-    public function absolute_url($url) {
+    public function absolute_url($url)
+    {
       return strpos($url, '..') === 0 ? dirname($_SERVER['DOCUMENT_URI']) . '/' . $url : str_replace(WEBROOT, '/', $url);
     }
   }
-
 

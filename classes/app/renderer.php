@@ -7,9 +7,10 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Renderer {
-
-    public function menu() {
+  class Renderer
+  {
+    public function menu()
+    {
       /** @var ADVAccounting $application */
       $application = ADVAccounting::i();
       echo '<ul class="menu" id="topmenu">';
@@ -19,8 +20,7 @@
         echo "<li " . ($selectedapp->id == $app->id ? "class='active' " : "") . ">";
         if ($app->direct) {
           echo "<a href='/" . ltrim($app->direct, '/') . "'$acc[1]>" . $acc[0] . "</a></li>\n";
-        }
-        else {
+        } else {
           echo "<a href='/index.php?application=" . $app->id . "'$acc[1]>" . $acc[0] . "</a></li>\n";
         }
       }
@@ -29,7 +29,8 @@
     /**
      * @param ADVAccounting $application
      */
-    public function display_application(ADVAccounting $application) {
+    public function display_application(ADVAccounting $application)
+    {
       if ($application->selected->direct) {
         Display::meta_forward($application->selected->direct);
       }
@@ -47,12 +48,10 @@
         foreach ($module->lappfunctions as $appfunction) {
           if ($appfunction->label == "") {
             echo "<li class='empty'>&nbsp;</li>\n";
-          }
-          elseif (User::i()->can_access_page($appfunction->access)) {
+          } elseif (User::i()->can_access_page($appfunction->access)) {
             echo "<li>" . Display::menu_link($appfunction->link, $appfunction->label) . "</li>";
-          }
-          else {
-            echo "<li><span class='inactive'>" . Display::access_string($appfunction->label, TRUE) . "</span></li>\n";
+          } else {
+            echo "<li><span class='inactive'>" . Display::access_string($appfunction->label, true) . "</span></li>\n";
           }
         }
         echo "</ul></td>\n";
@@ -62,13 +61,11 @@
           foreach ($module->rappfunctions as $appfunction) {
             if ($appfunction->label == "") {
               echo "<li class='empty'>&nbsp;</li>\n";
-            }
-            elseif (User::i()->can_access_page($appfunction->access)
+            } elseif (User::i()->can_access_page($appfunction->access)
             ) {
               echo "<li>" . Display::menu_link($appfunction->link, $appfunction->label) . "</li>";
-            }
-            else {
-              echo "<li><span class='inactive'>" . Display::access_string($appfunction->label, TRUE) . "</span></li>\n";
+            } else {
+              echo "<li><span class='inactive'>" . Display::access_string($appfunction->label, true) . "</span></li>\n";
             }
           }
           echo "</ul></td>\n";
@@ -77,5 +74,4 @@
       }
     }
   }
-
 

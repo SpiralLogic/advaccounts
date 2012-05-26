@@ -9,8 +9,8 @@
    **/
   // insert/update sales delivery
   //
-  class Sales_Delivery {
-
+  class Sales_Delivery
+  {
     /**
      * @static
      *
@@ -19,7 +19,8 @@
      *
      * @return int
      */
-    public static function add(Sales_Order $delivery, $bo_policy) {
+    public static function add(Sales_Order $delivery, $bo_policy)
+    {
       $trans_no = $delivery->trans_no;
       if (is_array($trans_no)) {
         $trans_no = key($trans_no);
@@ -42,9 +43,8 @@
         $freight_tax, $delivery->sales_type, $delivery->order_no, 0, $delivery->ship_via, $delivery->due_date, 0, 0, $delivery->dimension_id, $delivery->dimension2_id);
       if ($trans_no == 0) {
         $delivery->trans_no = array($delivery_no => 0);
-      }
-      else {
-        GL_Trans::void(ST_CUSTDELIVERY, $delivery_no, TRUE);
+      } else {
+        GL_Trans::void(ST_CUSTDELIVERY, $delivery_no, true);
         Inv_Movement::void(ST_CUSTDELIVERY, $delivery_no);
         GL_Trans::void_tax_details(ST_CUSTDELIVERY, $delivery_no);
         DB_Comments::delete(ST_CUSTDELIVERY, $delivery_no);
@@ -79,8 +79,7 @@
               ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]));
             GL_Trans::add_std_cost(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date, $stock_gl_code["cogs_account"], $dim, $dim2, "", $delivery_line->standard_cost * $delivery_line->qty_dispatched, PT_CUSTOMER, $delivery->customer_id, "The cost of sales GL posting could not be inserted");
             /*now the stock entry*/
-            GL_Trans::add_std_cost(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date, $stock_gl_code["inventory_account"], 0, 0, "", (-$delivery_line->standard_cost * $delivery_line->qty_dispatched), PT_CUSTOMER, $delivery->customer_id,
-              "The stock side of the cost of sales GL posting could not be inserted");
+            GL_Trans::add_std_cost(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date, $stock_gl_code["inventory_account"], 0, 0, "", (-$delivery_line->standard_cost * $delivery_line->qty_dispatched), PT_CUSTOMER, $delivery->customer_id, "The stock side of the cost of sales GL posting could not be inserted");
           } /* end of if GL and stock integrated and standard cost !=0 */
         } /*quantity dispatched is more than 0 */
       } /*end of order_line loop */
@@ -100,6 +99,7 @@
         Ref::save(ST_CUSTDELIVERY, $delivery->reference);
       }
       DB::commit();
+
       return $delivery_no;
     }
     /**
@@ -108,9 +108,10 @@
      * @param $type
      * @param $type_no
      */
-    public static function void($type, $type_no) {
+    public static function void($type, $type_no)
+    {
       DB::begin();
-      GL_Trans::void($type, $type_no, TRUE);
+      GL_Trans::void($type, $type_no, true);
       // reverse all the changes in the sales order
       $items_result = Debtor_TransDetail::get($type, $type_no);
       $order        = Debtor_Trans::get_order($type, $type_no);
@@ -137,27 +138,32 @@
      *
      * @return bool
      */
-    public static function check_data($order) {
+    public static function check_data($order)
+    {
       if (!isset($_POST['DispatchDate']) || !Dates::is_date($_POST['DispatchDate'])) {
         Event::error(_("The entered date of delivery is invalid."));
         JS::set_focus('DispatchDate');
-        return FALSE;
+
+        return false;
       }
       if (!Dates::is_date_in_fiscalyear($_POST['DispatchDate'])) {
         Event::error(_("The entered date of delivery is not in fiscal year."));
         JS::set_focus('DispatchDate');
-        return FALSE;
+
+        return false;
       }
       if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
         Event::error(_("The entered dead-line for invoice is invalid."));
         JS::set_focus('due_date');
-        return FALSE;
+
+        return false;
       }
       if ($order->trans_no == 0) {
         if (!Ref::is_valid($_POST['ref'])) {
           Event::error(_("You must enter a reference."));
           JS::set_focus('ref');
-          return FALSE;
+
+          return false;
         }
         if ($order->trans_no == 0 && !Ref::is_new($_POST['ref'], ST_CUSTDELIVERY)) {
           $_POST['ref'] = Ref::get_next(ST_CUSTDELIVERY);
@@ -169,23 +175,27 @@
       if (!Validation::post_num('ChargeFreightCost', 0)) {
         Event::error(_("The entered shipping value is not numeric."));
         JS::set_focus('ChargeFreightCost');
-        return FALSE;
+
+        return false;
       }
       if ($order->has_items_dispatch() == 0 && Validation::input_num('ChargeFreightCost') == 0) {
         Event::error(_("There are no item quantities on this delivery note."));
-        return FALSE;
+
+        return false;
       }
       if (!static::check_quantities($order)) {
-        return FALSE;
+        return false;
       }
-      return TRUE;
+
+      return true;
     }
     /**
      * @static
      *
      * @param $order
      */
-    public static function copyFromPost($order) {
+    public static function copyFromPost($order)
+    {
       $order->ship_via      = $_POST['ship_via'];
       $order->freight_cost  = Validation::input_num('ChargeFreightCost');
       $order->document_date = $_POST['DispatchDate'];
@@ -201,7 +211,8 @@
      *
      * @param $order
      */
-    public static function copyToPost($order) {
+    public static function copyToPost($order)
+    {
       $order                      = Sales_Order::check_edit_conflicts($order);
       $_POST['ship_via']          = $order->ship_via;
       $_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
@@ -220,7 +231,8 @@
      *
      * @return int
      */
-    public static function check_quantities($order) {
+    public static function check_quantities($order)
+    {
       $ok = 1;
       // Update order delivery quantities/descriptions
       foreach ($order->line_items as $line => $itm) {
@@ -228,18 +240,15 @@
           if ($order->trans_no) {
             $min = $itm->qty_done;
             $max = $itm->quantity;
-          }
-          else {
+          } else {
             $min = 0;
             $max = $itm->quantity - $itm->qty_done;
           }
           if ($itm->quantity > 0 && Validation::post_num('Line' . $line, $min, $max)) {
             $order->line_items[$line]->qty_dispatched = Validation::input_num('Line' . $line);
-          }
-          elseif ($itm->quantity < 0 && Validation::post_num('Line' . $line, $max, $min)) {
+          } elseif ($itm->quantity < 0 && Validation::post_num('Line' . $line, $max, $min)) {
             $order->line_items[$line]->qty_dispatched = Validation::input_num('Line' . $line);
-          }
-          else {
+          } else {
             JS::set_focus('Line' . $line);
             $ok = 0;
           }
@@ -263,18 +272,21 @@
      *
      * @return bool
      */
-    public static function check_qoh($order) {
+    public static function check_qoh($order)
+    {
       if (!DB_Company::get_pref('allow_negative_stock')) {
         foreach ($order->line_items as $itm) {
           if ($itm->qty_dispatched && WO::has_stock_holding($itm->mb_flag)) {
             $qoh = Item::get_qoh_on_date($itm->stock_id, $_POST['location'], $_POST['DispatchDate']);
             if ($itm->qty_dispatched > $qoh) {
               Event::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $itm->stock_id . " - " . $itm->description);
-              return FALSE;
+
+              return false;
             }
           }
         }
       }
-      return TRUE;
+
+      return true;
     }
   }

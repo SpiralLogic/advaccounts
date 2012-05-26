@@ -10,21 +10,19 @@
 
   JS::open_window(900, 600);
   if ($_GET['trans_type'] == ST_SALESQUOTE) {
-    Page::start(_($help_context = "View Sales Quotation"), SA_SALESTRANSVIEW, TRUE);
-  }
-  else {
-    Page::start(_($help_context = "View Sales Order"), TRUE);
+    Page::start(_($help_context = "View Sales Quotation"), SA_SALESTRANSVIEW, true);
+  } else {
+    Page::start(_($help_context = "View Sales Order"), true);
   }
   if (isset($_SESSION['View'])) {
     unset ($_SESSION['View']);
   }
-  $_SESSION['View'] = $view = new Sales_Order($_GET['trans_type'], $_GET['trans_no'], TRUE);
+  $_SESSION['View'] = $view = new Sales_Order($_GET['trans_type'], $_GET['trans_no'], true);
   Table::start('tablesstyle2 pad0 width95');
   echo "<tr class='tablerowhead top'><th colspan=4>";
   if ($_GET['trans_type'] != ST_SALESQUOTE) {
     Display::heading(sprintf(_("Sales Order #%d"), $_GET['trans_no']));
-  }
-  else {
+  } else {
     Display::heading(sprintf(_("Sales Quotation #%d"), $_GET['trans_no']));
   }
   echo "</td></tr>";
@@ -40,8 +38,7 @@
   Cell::labels(_("Reference"), $_SESSION['View']->reference, "class='label'");
   if ($_GET['trans_type'] == ST_SALESQUOTE) {
     Cell::labels(_("Valid until"), $_SESSION['View']->due_date, "class='label'");
-  }
-  else {
+  } else {
     Cell::labels(_("Requested Delivery"), $_SESSION['View']->due_date, "class='label'");
   }
   Cell::labels(_("Telephone"), $_SESSION['View']->phone, "class='label'");
@@ -80,7 +77,7 @@
       Cell::amount($this_total);
       Row::end();
     }
-    Row::label(NULL, Num::price_format($delivery_total), " ", "colspan=4 class='right'");
+    Row::label(null, Num::price_format($delivery_total), " ", "colspan=4 class='right'");
     Table::end();
     echo "</td><td class='top'>";
     Table::start('tablestyle grid width90');
@@ -105,7 +102,7 @@
         Row::end();
       }
     }
-    Row::label(NULL, Num::price_format($invoices_total), " ", "colspan=4 class='right'");
+    Row::label(null, Num::price_format($invoices_total), " ", "colspan=4 class='right'");
     Table::end();
     echo "</td><td class='top'>";
     Table::start('tablestyle grid width90');
@@ -128,7 +125,7 @@
         Row::end();
       }
     }
-    Row::label(NULL, Num::price_format($payments_total), " ", "colspan=4 class='right'");
+    Row::label(null, Num::price_format($payments_total), " ", "colspan=4 class='right'");
     Table::end();
     echo "</td><td class='top'>";
     Table::start('tablestyle grid width90');
@@ -153,7 +150,7 @@
         Row::end();
       }
     }
-    Row::label(NULL, "<font color=red>" . Num::price_format(-$credits_total) . "</font>", " ", "colspan=4 class='right'");
+    Row::label(null, "<font color=red>" . Num::price_format(-$credits_total) . "</font>", " ", "colspan=4 class='right'");
     Table::end();
     echo "</td></tr>";
     Table::end();
@@ -176,12 +173,12 @@
     Cell::label($stock_item->stock_id);
     Cell::label($stock_item->description);
     $dec = Item::qty_dec($stock_item->stock_id);
-    Cell::qty($stock_item->quantity, FALSE, $dec);
+    Cell::qty($stock_item->quantity, false, $dec);
     Cell::label($stock_item->units);
     Cell::amount($stock_item->price);
     Cell::amount($stock_item->discount_percent * 100);
     Cell::amount($line_total);
-    Cell::qty($stock_item->qty_done, FALSE, $dec);
+    Cell::qty($stock_item->qty_done, false, $dec);
     Row::end();
   }
   $display_total = 0;
@@ -209,13 +206,11 @@
   Display::submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $_GET['trans_no'], 'prtopt');
   if ($qty_remaining > 0) {
     Display::submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}' target='_top' ");
-  }
-  else {
+  } else {
     Display::submenu_option(_("Invoice Items On This Order"), "/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}' target='_top' ");
   }
   Display::submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?" . Orders::ADD . "=0&type=30' target='_top' ");
   //UploadHandler::insert($_GET['trans_no']);
   Debtor::addEditDialog();
   Page::end();
-
 

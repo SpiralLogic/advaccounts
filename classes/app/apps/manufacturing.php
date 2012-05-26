@@ -7,12 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Apps_Manufacturing extends Application {
-
+  class Apps_Manufacturing extends Application
+  {
     /**
 
      */
-    function __construct() {
+    public function __construct()
+    {
       global $installed_extensions;
       parent::__construct("Manufacturing", _($this->help_context = "&Manufacturing"));
       $this->add_module(_("Transactions"));
@@ -45,5 +46,4 @@
       }
     }
   }
-
 

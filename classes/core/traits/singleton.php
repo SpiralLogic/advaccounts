@@ -7,22 +7,22 @@
    * To change this template use File | Settings | File Templates.
    */
   namespace ADV\Core\Traits;
-
   /**
 
    */
   trait Singleton {
-
     /**
      * @var null
      */
-    protected static $i = NULL;
+    protected static $i = null;
     /***
      * @static
      * @return
      */
-    public static function i() {
-      (static::$i === NULL) and  static::$i = new static;
+    public static function i()
+    {
+      (static::$i === null) and  static::$i = new static;
+
       return static::$i;
     }
   }

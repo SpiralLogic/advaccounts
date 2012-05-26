@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Purch_GLItem {
-
+  class Purch_GLItem
+  {
     /* Contains relavent information from the purch_order_details as well to provide in cached form,
               all the info to do the necessary entries without looking up ie additional queries of the database again */
     /**
@@ -88,7 +88,7 @@
      * @param null $exp_price
      */
     public function __construct($id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv,
-                                $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = NULL) {
+                                $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = null) {
       $this->id                = $id;
       $this->po_detail_item    = $po_detail_item;
       $this->item_code         = $item_code;
@@ -98,7 +98,7 @@
       $this->this_quantity_inv = $this_quantity_inv;
       $this->order_price       = $order_price;
       $this->chg_price         = $chg_price;
-      $this->exp_price         = ($exp_price == NULL) ? $chg_price : $exp_price;
+      $this->exp_price         = ($exp_price == null) ? $chg_price : $exp_price;
       $this->discount          = $discount;
       $this->Complete          = $Complete;
       $this->std_cost_unit     = $std_cost_unit;
@@ -107,7 +107,8 @@
     /**
      * @param $freight
      */
-    public function setFreight($freight) {
+    public function setFreight($freight)
+    {
       $this->freight = $freight;
     }
     /**
@@ -116,7 +117,8 @@
      *
      * @return int
      */
-    public function full_charge_price($tax_group_id, $tax_group = NULL) {
+    public function full_charge_price($tax_group_id, $tax_group = null)
+    {
       return Tax::full_price_for_item($this->item_code, $this->chg_price * (1 - $this->discount), $tax_group_id, 0,
         $tax_group);
     }
@@ -126,7 +128,8 @@
      *
      * @return float|int
      */
-    public function taxfree_charge_price($tax_group_id, $tax_group = NULL) {
+    public function taxfree_charge_price($tax_group_id, $tax_group = null)
+    {
       //		if ($tax_group_id==null)
       //			return $this->chg_price;
       return Tax::tax_free_price($this->item_code, $this->chg_price * (1 - $this->discount / 100), $tax_group_id,
@@ -138,24 +141,25 @@
      * @param $creditor_trans
      * @param $k
      */
-    public static function display_controls($creditor_trans, $k) {
+    public static function display_controls($creditor_trans, $k)
+    {
       $accs             = Creditor::get_accounts_name($creditor_trans->supplier_id);
       $_POST['gl_code'] = $accs['purchase_account'];
 
-      echo GL_UI::all('gl_code', NULL, TRUE, TRUE);
+      echo GL_UI::all('gl_code', null, true, true);
       $dim = DB_Company::get_pref('use_dimension');
       if ($dim >= 1) {
-        Dimensions::cells(NULL, 'dimension_id', NULL, TRUE, " ", FALSE, 1);
+        Dimensions::cells(null, 'dimension_id', null, true, " ", false, 1);
         hidden('dimension_id', 0);
       }
       if ($dim > 1) {
-        Dimensions::cells(NULL, 'dimension2_id', NULL, TRUE, " ", FALSE, 2);
+        Dimensions::cells(null, 'dimension2_id', null, true, " ", false, 2);
         hidden('dimension2_id', 0);
       }
-      textarea_cells(NULL, 'memo_', NULL, 50, 1);
-      amount_cells(NULL, 'amount');
-      submit_cells('AddGLCodeToTrans', _("Add"), "", _('Add GL Line'), TRUE);
-      submit_cells('ClearFields', _("Reset"), "", _("Clear all GL entry fields"), TRUE);
+      textarea_cells(null, 'memo_', null, 50, 1);
+      amount_cells(null, 'amount');
+      submit_cells('AddGLCodeToTrans', _("Add"), "", _('Add GL Line'), true);
+      submit_cells('ClearFields', _("Reset"), "", _("Clear all GL entry fields"), true);
       Row::end();
     }
 
@@ -171,25 +175,24 @@
      *
      * @return int
      */
-    public static function display_items($creditor_trans, $mode = 0) {
-
+    public static function display_items($creditor_trans, $mode = 0)
+    {
       // if displaying in form, and no items, exit
       if (($mode == 2 || $mode == 3) && count($creditor_trans->gl_codes) == 0) {
         return 0;
       }
       if ($creditor_trans->is_invoice) {
         $heading = _("GL Items for this Invoice");
-      }
-      else {
+      } else {
         $heading = _("GL Items for this Credit Note");
       }
       Table::startOuter('tablestyle2 width95');
       if ($mode == 1) {
         $qes = GL_QuickEntry::has(QE_SUPPINV);
-        if ($qes !== FALSE) {
+        if ($qes !== false) {
           echo "<div style='float:right;'>";
           echo _("Quick Entry:") . "&nbsp;";
-          echo GL_QuickEntry::select('qid', NULL, QE_SUPPINV, TRUE);
+          echo GL_QuickEntry::select('qid', null, QE_SUPPINV, true);
           $qid = GL_QuickEntry::get(get_post('qid'));
           if (list_updated('qid')) {
             unset($_POST['total_amount']); // enable default
@@ -199,23 +202,21 @@
           $amount = Validation::input_num('total_amount', $qid['base_amount']);
           $dec    = User::price_dec();
           echo "<input class='amount font7' type='text' name='total_amount' maxlength='12' data-aspect=fallback'$dec' value='$amount'>&nbsp;";
-          submit('go', _("Go"), TRUE, FALSE, TRUE);
+          submit('go', _("Go"), true, false, true);
           echo "</div>";
         }
       }
       Display::heading($heading);
-      Table::endOuter(0, FALSE);
+      Table::endOuter(0, false);
       Display::div_start('gl_items');
       Table::start('tablestyle grid width80');
       $dim = DB_Company::get_pref('use_dimension');
       if ($dim == 2) {
         $th = array(_("Account"), _("Name"), _("Dimension") . " 1", _("Dimension") . " 2", _("Memo"), _("Amount"));
-      }
-      else {
+      } else {
         if ($dim == 1) {
           $th = array(_("Account"), _("Name"), _("Dimension"), _("Memo"), _("Amount"));
-        }
-        else {
+        } else {
           $th = array(_("Account"), _("Name"), _("Memo"), _("Amount"));
         }
       }
@@ -235,13 +236,13 @@
           Cell::label($entered_gl_code->gl_code);
           Cell::label($entered_gl_code->gl_act_name);
           if ($dim >= 1) {
-            Cell::label(Dimensions::get_string($entered_gl_code->gl_dim, TRUE));
+            Cell::label(Dimensions::get_string($entered_gl_code->gl_dim, true));
           }
           if ($dim > 1) {
-            Cell::label(Dimensions::get_string($entered_gl_code->gl_dim2, TRUE));
+            Cell::label(Dimensions::get_string($entered_gl_code->gl_dim2, true));
           }
           Cell::label($entered_gl_code->memo_);
-          Cell::amount($entered_gl_code->amount, TRUE);
+          Cell::amount($entered_gl_code->amount, true);
           if ($mode == 1) {
             delete_button_cell("Delete2" . $entered_gl_code->counter, _("Delete"), _('Remove line from document'));
             Cell::label("");
@@ -250,8 +251,7 @@
           /////////// 2009-08-18 Joe Hunt
           if ($mode > 1 && !Tax::is_account($entered_gl_code->gl_code)) {
             $total_gl_value += $entered_gl_code->amount;
-          }
-          else {
+          } else {
             $total_gl_value += $entered_gl_code->amount;
           }
           $i++;
@@ -269,6 +269,7 @@
         ($mode == 1 ? 3 : 0));
       Table::end(1);
       Display::div_end();
+
       return $total_gl_value;
     }
   }

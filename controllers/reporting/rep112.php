@@ -9,7 +9,6 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   Page::set_security($_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP);
   print_receipts();
   /**
@@ -18,22 +17,24 @@
    *
    * @return ADV\Core\DB\Query_Result|Array|bool
    */
-  function get_receipt($type, $trans_no) {
+  function get_receipt($type, $trans_no)
+  {
     $sql
             = "SELECT debtor_trans.*,
-				(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
-				debtor_trans.ov_freight_tax + debtor_trans.ov_discount) AS Total,
- 				debtors.name AS DebtorName, debtors.debtor_ref,
- 				debtors.curr_code, debtors.payment_terms, debtors.tax_id AS tax_id,
- 				debtors.email, debtors.address
- 			FROM debtor_trans, debtors
-				WHERE debtor_trans.debtor_id = debtors.debtor_id
-				AND debtor_trans.type = " . DB::escape($type) . "
-				AND debtor_trans.trans_no = " . DB::escape($trans_no);
+                (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
+                debtor_trans.ov_freight_tax + debtor_trans.ov_discount) AS Total,
+                 debtors.name AS DebtorName, debtors.debtor_ref,
+                 debtors.curr_code, debtors.payment_terms, debtors.tax_id AS tax_id,
+                 debtors.email, debtors.address
+             FROM debtor_trans, debtors
+                WHERE debtor_trans.debtor_id = debtors.debtor_id
+                AND debtor_trans.type = " . DB::escape($type) . "
+                AND debtor_trans.trans_no = " . DB::escape($trans_no);
     $result = DB::query($sql, "The remittance cannot be retrieved");
     if (DB::num_rows($result) == 0) {
-      return FALSE;
+      return false;
     }
+
     return DB::fetch($result);
   }
 
@@ -44,28 +45,30 @@
    *
    * @return null|PDOStatement
    */
-  function get_allocations_for_receipt($debtor_id, $type, $trans_no) {
+  function get_allocations_for_receipt($debtor_id, $type, $trans_no)
+  {
     $sql = Sales_Allocation::get_sql("amt, trans.reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
-		AND trans.type = alloc.trans_type_to
-		AND alloc.trans_no_from=$trans_no
-		AND alloc.trans_type_from=$type
-		AND trans.debtor_id=" . DB::escape($debtor_id),
-      "debtor_allocations as alloc");
+        AND trans.type = alloc.trans_type_to
+        AND alloc.trans_no_from=$trans_no
+        AND alloc.trans_type_from=$type
+        AND trans.debtor_id=" . DB::escape($debtor_id), "debtor_allocations as alloc");
     $sql .= " ORDER BY trans_no";
+
     return DB::query($sql, "Cannot retreive alloc to transactions");
   }
 
-  function print_receipts() {
+  function print_receipts()
+  {
     global $systypes_array;
     include_once(APPPATH . "reports/pdf.php");
     $from     = $_POST['PARAM_0'];
     $to       = $_POST['PARAM_1'];
     $currency = $_POST['PARAM_2'];
     $comments = $_POST['PARAM_3'];
-    if ($from == NULL) {
+    if ($from == null) {
       $from = 0;
     }
-    if ($to == NULL) {
+    if ($to == null) {
       $to = 0;
     }
     $dec  = User::price_dec();
@@ -79,12 +82,11 @@
     $rep           = new ADVReport(_('RECEIPT'), "ReceiptBulk", User::page_size());
     $rep->currency = $cur;
     $rep->Font();
-    $rep->Info($params, $cols, NULL, $aligns);
+    $rep->Info($params, $cols, null, $aligns);
     for ($i = $fno[0]; $i <= $tno[0]; $i++) {
       if ($fno[0] == $tno[0] && isset($fno[1])) {
         $types = array($fno[1]);
-      }
-      else {
+      } else {
         $types = array(ST_BANKDEPOSIT, ST_CUSTPAYMENT, ST_CUSTREFUND, ST_CUSTDELIVERY);
       }
       foreach ($types as $j) {
@@ -95,14 +97,13 @@
         $baccount              = Bank_Account::get_default($myrow['curr_code']);
         $params['bankaccount'] = $baccount['id'];
         $rep->title            = _('RECEIPT');
-        $rep->Header2($myrow, NULL, $myrow, $baccount, ST_CUSTPAYMENT);
+        $rep->Header2($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT);
         $result   = get_allocations_for_receipt($myrow['debtor_id'], $myrow['type'], $myrow['trans_no']);
-        $linetype = TRUE;
+        $linetype = true;
         $doctype  = ST_CUSTPAYMENT;
         if ($rep->currency != $myrow['curr_code']) {
           include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
-        }
-        else {
+        } else {
           include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
         }
         $total_allocated = 0;
@@ -119,7 +120,7 @@
           $total_allocated += $myrow2['amt'];
           $rep->NewLine(1);
           if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) {
-            $rep->Header2($myrow, NULL, $myrow, $baccount, ST_CUSTPAYMENT);
+            $rep->Header2($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT);
           }
         }
         $rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
@@ -155,5 +156,4 @@
     }
     $rep->End();
   }
-
 

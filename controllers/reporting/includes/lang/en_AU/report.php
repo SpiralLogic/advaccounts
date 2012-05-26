@@ -4,8 +4,8 @@
   /**
 
    */
-  class Report {
-
+  class Report
+  {
     const CUST_NO            = "Cust no";
     const DATE               = "Date";
     const STATEMENT_NOTE     = "IMPORTANT PLEASE PASS THIS ON TO YOUR ACCOUNTS DEPARTMENT ASAP";

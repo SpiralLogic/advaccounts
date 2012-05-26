@@ -8,8 +8,8 @@
    * @date      8/04/12
    * @link      http://www.advancedgroup.com.au
    **/
-  class Sales_Group {
-
+  class Sales_Group
+  {
     /**
      * @static
      *
@@ -17,10 +17,12 @@
      *
      * @return mixed
      */
-    public static function get_name($group_no) {
+    public static function get_name($group_no)
+    {
       $sql    = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);
       $result = DB::query($sql, "could not get group");
       $row    = DB::fetch($result);
+
       return $row[0];
     }
   }

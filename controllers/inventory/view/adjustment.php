@@ -7,8 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
-  Page::start(_($help_context = "View Inventory Adjustment"), SA_ITEMSTRANSVIEW, TRUE);
+  Page::start(_($help_context = "View Inventory Adjustment"), SA_ITEMSTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {
     $trans_no = $_GET["trans_no"];
   }
@@ -16,7 +15,7 @@
   Display::br(1);
   $adjustment_items = Inv_Adjustment::get($trans_no);
   $k                = 0;
-  $header_shown     = FALSE;
+  $header_shown     = false;
   while ($adjustment = DB::fetch($adjustment_items)) {
     if (!$header_shown) {
       $adjustment_type = Inv_Movement::get_type($adjustment['person_id']);
@@ -29,7 +28,7 @@
       Row::end();
       DB_Comments::display_row(ST_INVADJUST, $trans_no);
       Table::end();
-      $header_shown = TRUE;
+      $header_shown = true;
       echo "<br>";
       Table::start('tablestyle grid width90');
       $th = array(
@@ -37,15 +36,14 @@
       );
       Table::header($th);
     }
-
     Cell::label($adjustment['stock_id']);
     Cell::label($adjustment['description']);
-    Cell::qty($adjustment['qty'], FALSE, Item::qty_dec($adjustment['stock_id']));
+    Cell::qty($adjustment['qty'], false, Item::qty_dec($adjustment['stock_id']));
     Cell::label($adjustment['units']);
     Cell::amountDecimal($adjustment['standard_cost']);
     Row::end();
   }
   Table::end(1);
   Display::is_voided(ST_INVADJUST, $trans_no, _("This adjustment has been voided."));
-  Page::end(TRUE);
+  Page::end(true);
 

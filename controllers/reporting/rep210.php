@@ -18,21 +18,23 @@
    *
    * @return ADV\Core\DB\Query_Result|Array|bool
    */
-  function get_remittance($type, $trans_no) {
+  function get_remittance($type, $trans_no)
+  {
     $sql
             = "SELECT creditor_trans.*,
- 		(creditor_trans.ov_amount+creditor_trans.ov_gst+creditor_trans.ov_discount) AS Total,
- 		suppliers.name, suppliers.account_no, suppliers.city, suppliers.postcode, suppliers.state,
- 		suppliers.curr_code, suppliers.payment_terms, suppliers.gst_no AS tax_id,
- 		suppliers.email, suppliers.address, suppliers.contact
-		FROM creditor_trans, suppliers
-		WHERE creditor_trans.supplier_id = suppliers.supplier_id
-		AND creditor_trans.type = " . DB::escape($type) . "
-		AND creditor_trans.trans_no = " . DB::escape($trans_no);
+         (creditor_trans.ov_amount+creditor_trans.ov_gst+creditor_trans.ov_discount) AS Total,
+         suppliers.name, suppliers.account_no, suppliers.city, suppliers.postcode, suppliers.state,
+         suppliers.curr_code, suppliers.payment_terms, suppliers.gst_no AS tax_id,
+         suppliers.email, suppliers.address, suppliers.contact
+        FROM creditor_trans, suppliers
+        WHERE creditor_trans.supplier_id = suppliers.supplier_id
+        AND creditor_trans.type = " . DB::escape($type) . "
+        AND creditor_trans.trans_no = " . DB::escape($trans_no);
     $result = DB::query($sql, "The remittance cannot be retrieved");
     if (DB::num_rows($result) == 0) {
-      return FALSE;
+      return false;
     }
+
     return DB::fetch($result);
   }
 
@@ -43,18 +45,21 @@
    *
    * @return null|PDOStatement
    */
-  function get_allocations_for_remittance($supplier_id, $type, $trans_no) {
+  function get_allocations_for_remittance($supplier_id, $type, $trans_no)
+  {
     $sql = Purch_Allocation::get_sql("amt, supplier_reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
-		AND trans.type = alloc.trans_type_to
-		AND alloc.trans_no_from=" . DB::escape($trans_no) . "
-		AND alloc.trans_type_from=" . DB::escape($type) . "
-		AND trans.supplier_id=" . DB::escape($supplier_id),
+        AND trans.type = alloc.trans_type_to
+        AND alloc.trans_no_from=" . DB::escape($trans_no) . "
+        AND alloc.trans_type_from=" . DB::escape($type) . "
+        AND trans.supplier_id=" . DB::escape($supplier_id),
       "creditor_allocations as alloc");
     $sql .= " ORDER BY trans_no";
+
     return DB::query($sql, "Cannot retreive alloc to transactions");
   }
 
-  function print_remittances() {
+  function print_remittances()
+  {
     global $systypes_array;
     include_once(APPPATH . "reports/pdf.php");
     $from     = $_POST['PARAM_0'];
@@ -62,10 +67,10 @@
     $currency = $_POST['PARAM_2'];
     $email    = $_POST['PARAM_3'];
     $comments = $_POST['PARAM_4'];
-    if ($from == NULL) {
+    if ($from == null) {
       $from = 0;
     }
-    if ($to == NULL) {
+    if ($to == null) {
       $to = 0;
     }
     $dec  = User::price_dec();
@@ -80,13 +85,12 @@
       $rep           = new ADVReport(_('REMITTANCE'), "RemittanceBulk", User::page_size());
       $rep->currency = $cur;
       $rep->Font();
-      $rep->Info($params, $cols, NULL, $aligns);
+      $rep->Info($params, $cols, null, $aligns);
     }
     for ($i = $fno[0]; $i <= $tno[0]; $i++) {
       if ($fno[0] == $tno[0]) {
         $types = array($fno[1]);
-      }
-      else {
+      } else {
         $types = array(ST_BANKPAYMENT, ST_SUPPAYMENT, ST_SUPPCREDIT);
       }
       foreach ($types as $j) {
@@ -102,19 +106,17 @@
           $rep->Font();
           $rep->title    = _('REMITTANCE');
           $rep->filename = "Remittance" . $i . ".pdf";
-          $rep->Info($params, $cols, NULL, $aligns);
-        }
-        else {
+          $rep->Info($params, $cols, null, $aligns);
+        } else {
           $rep->title = _('REMITTANCE');
         }
-        $rep->Header2($myrow, NULL, $myrow, $baccount, ST_SUPPAYMENT);
+        $rep->Header2($myrow, null, $myrow, $baccount, ST_SUPPAYMENT);
         $result   = get_allocations_for_remittance($myrow['supplier_id'], $myrow['type'], $myrow['trans_no']);
-        $linetype = TRUE;
+        $linetype = true;
         $doctype  = ST_SUPPAYMENT;
         if ($rep->currency != $myrow['curr_code']) {
           include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
-        }
-        else {
+        } else {
           include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
         }
         $total_allocated = 0;
@@ -131,7 +133,7 @@
           $total_allocated += $myrow2['amt'];
           $rep->NewLine(1);
           if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) {
-            $rep->Header2($myrow, NULL, $myrow, $baccount, ST_SUPPAYMENT);
+            $rep->Header2($myrow, null, $myrow, $baccount, ST_SUPPAYMENT);
           }
         }
         $rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
@@ -165,5 +167,4 @@
       $rep->End();
     }
   }
-
 

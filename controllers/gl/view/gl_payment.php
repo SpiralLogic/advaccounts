@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  Page::start(_($help_context = "View Bank Payment"), SA_BANKTRANSVIEW, TRUE);
+  Page::start(_($help_context = "View Bank Payment"), SA_BANKTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {
     $trans_no = $_GET["trans_no"];
   }
@@ -19,9 +19,9 @@
   }
   $from_trans       = DB::fetch($result);
   $company_currency = Bank_Currency::for_company();
-  $show_currencies  = FALSE;
+  $show_currencies  = false;
   if ($from_trans['bank_curr_code'] != $company_currency) {
-    $show_currencies = TRUE;
+    $show_currencies = true;
   }
   Display::heading(_("GL Payment") . " #$trans_no");
   echo "<br>";
@@ -29,8 +29,7 @@
   if ($show_currencies) {
     $colspan1 = 5;
     $colspan2 = 8;
-  }
-  else {
+  } else {
     $colspan1 = 3;
     $colspan2 = 6;
   }
@@ -55,8 +54,7 @@
   $items  = GL_Trans::get_many(ST_BANKPAYMENT, $trans_no);
   if (DB::num_rows($items) == 0) {
     Event::warning(_("There are no items for this payment."));
-  }
-  else {
+  } else {
     Display::heading(_("Items for this Payment"));
     if ($show_currencies) {
       Display::heading(_("Item Amounts are Shown in :") . " " . $company_currency);
@@ -68,14 +66,12 @@
       $th = array(
         _("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2", _("Amount"), _("Memo")
       );
-    }
-    else {
+    } else {
       if ($dim == 1) {
         $th = array(
           _("Account Code"), _("Account Description"), _("Dimension"), _("Amount"), _("Memo")
         );
-      }
-      else {
+      } else {
         $th = array(
           _("Account Code"), _("Account Description"), _("Amount"), _("Memo")
         );
@@ -90,10 +86,10 @@
         Cell::label($item["account"]);
         Cell::label($item["account_name"]);
         if ($dim >= 1) {
-          Cell::label(Dimensions::get_string($item['dimension_id'], TRUE));
+          Cell::label(Dimensions::get_string($item['dimension_id'], true));
         }
         if ($dim > 1) {
-          Cell::label(Dimensions::get_string($item['dimension2_id'], TRUE));
+          Cell::label(Dimensions::get_string($item['dimension2_id'], true));
         }
         Cell::amount($item["amount"]);
         Cell::label($item["memo_"]);
@@ -107,4 +103,4 @@
       GL_Allocation::from($from_trans['person_type_id'], $from_trans['person_id'], 1, $trans_no, -$from_trans['amount']);
     }
   }
-  Page::end(TRUE);
+  Page::end(true);

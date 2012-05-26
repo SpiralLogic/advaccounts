@@ -7,13 +7,14 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+
   return array(
-    'enabled'    => FALSE, //
-    'sql'        => FALSE, //
-    'pdf'        => FALSE, //
-    'email'      => TRUE, //
-    'query_log'  => FALSE,
-    'select_log' => FALSE, //
+    'enabled'    => false, //
+    'sql'        => false, //
+    'pdf'        => false, //
+    'email'      => true, //
+    'query_log'  => false,
+    'select_log' => false, //
     'throttling' => 10, // Log file for error/warning messages. Should be set to any location
     'log_file'   => DOCROOT . 'tmp/errors.log',
   );

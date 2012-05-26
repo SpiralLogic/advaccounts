@@ -11,8 +11,8 @@
   /**
 
    */
-  class Arr {
-
+  class Arr
+  {
     /**
      * @static
      *
@@ -24,11 +24,13 @@
      *
      * @return bool
      */
-    static function insert(&$array, $index, $elements) {
+    public static function insert(&$array, $index, $elements)
+    {
       $elements = (array) ($elements);
       $head     = array_splice($array, 0, $index);
       $array    = array_merge($head, $elements, $array);
-      return TRUE;
+
+      return true;
     }
     /**
      * @static
@@ -39,20 +41,23 @@
      *
      * @return bool
      */
-    static function remove(&$array, $index, $len = 1) {
+    public static function remove(&$array, $index, $len = 1)
+    {
       array_splice($array, $index, $len);
-      return TRUE;
+
+      return true;
     }
     /**
      * @static
      *
-     * @param array        $array
-     * @param int|string   $key
-     * @param mixed        $default
+     * @param array      $array
+     * @param int|string $key
+     * @param mixed      $default
      *
      * @return mixed null
      */
-    static function get(array $array, $key, $default = NULL) {
+    public static function get(array $array, $key, $default = null)
+    {
       return (isset($array[$key])) ? $array[$key] : $default;
     }
     /**
@@ -65,10 +70,12 @@
      *
      * @return bool
      */
-    static function substitute(&$array, $index, $len, $elements) {
+    public static function substitute(&$array, $index, $len, $elements)
+    {
       array_splice($array, $index, $len);
       Arr::insert($array, $index, $elements);
-      return TRUE;
+
+      return true;
     }
     /**
      * @static
@@ -76,13 +83,13 @@
      * @param             &$array
      * @param array|mixed $elements elements to append,
      */
-    static function append(&$array, $elements = array()) {
+    public static function append(&$array, $elements = array())
+    {
       $elements = (array) $elements;
       foreach ($elements as $key => $el) {
         if (is_int($key)) {
           $array[] = $el;
-        }
-        else {
+        } else {
           $array[$key] = $el;
         }
       }
@@ -96,14 +103,16 @@
      *
      * @return int|null
      */
-    static function search_value($needle, $haystack, $valuekey = NULL) {
+    public static function search_value($needle, $haystack, $valuekey = null)
+    {
       foreach ($haystack as $value) {
         $val = isset($valuekey) ? $value[$valuekey] : $value;
         if ($needle == $val) {
           return $value;
         }
       }
-      return NULL;
+
+      return null;
     }
     /**
      * @static
@@ -114,58 +123,15 @@
      *
      * @return int|null|string
      */
-    static function search_key($needle, $haystack, $valuekey = NULL) {
+    public static function search_key($needle, $haystack, $valuekey = null)
+    {
       foreach ($haystack as $key => $value) {
         $val = isset($valuekey) ? $value[$valuekey] : $value;
         if ($needle == $val) {
           return $key;
         }
       }
-      return NULL;
-    }
-    /**
-     * @return array Returns the array sorted as required
-     *
-     * @param             $aryData     Array containing data to sort
-     * @param string      $strIndex    name of column to use as an index
-     * @param string      $strSortBy   Column to sort the array by
-     * @param bool|String $strSortType String containing either asc or desc [default to asc]
-     *
-     * @desc Naturally sorts an array using by the column $strSortBy
-     */
-    static function natsort($aryData, $strIndex, $strSortBy, $strSortType = FALSE) {
-      // if the parameters are invalid
-      if (!is_array($aryData) || !$strSortBy
-      ) // return the array
-      {
-        return $aryData;
-      }
-      // create our temporary arrays
-      $arySort = $aryResult = array();
-      // loop through the array
-      foreach ($aryData as $key => $aryRow) {
-        $arySort[$strIndex ? $aryRow[$strIndex] : $key] = $aryRow[$strSortBy];
-      }
-      // apply the natural sort
-      natsort($arySort);
-      // if the sort type is descending
-      if ($strSortType == "desc") {
-        arsort($arySort);
-      }
-      // loop through the sorted and original data
-      /** @noinspection PhpUnusedLocalVariableInspection */
-      foreach ($arySort as $arySortKey => $arySorted) {
-        if ($strIndex) {
-          foreach ($aryData as $aryOriginal) {
-            if ($aryOriginal[$strIndex] == $arySortKey) {
-              array_push($aryResult, $aryOriginal);
-            }
-          }
-        }
-        else {
-          $aryResult[$arySortKey] = $aryData[$arySortKey];
-        }
-      }
-      return $aryResult;
+
+      return null;
     }
   }

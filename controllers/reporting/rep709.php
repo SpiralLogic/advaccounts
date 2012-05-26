@@ -9,9 +9,7 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   Page::set_security(SA_TAXREP);
-
   print_tax_report();
   /**
    * @param $from
@@ -19,27 +17,28 @@
    *
    * @return null|PDOStatement
    */
-  function getTaxTransactions($from, $to) {
+  function getTaxTransactions($from, $to)
+  {
     $fromdate = Dates::date2sql($from);
     $todate   = Dates::date2sql($to);
     $sql
               = "SELECT taxrec.*, taxrec.amount*ex_rate AS amount,
-	 taxrec.net_amount*ex_rate AS net_amount,
-				IF(ISNULL(supp.name), debt.name, supp.name) as name,
-				branch.br_name
-		FROM trans_tax_details taxrec
-		LEFT JOIN creditor_trans strans
-			ON taxrec.trans_no=strans.trans_no AND taxrec.trans_type=strans.type
-		LEFT JOIN suppliers as supp ON strans.supplier_id=supp.supplier_id
-		LEFT JOIN debtor_trans dtrans
-			ON taxrec.trans_no=dtrans.trans_no AND taxrec.trans_type=dtrans.type
-		LEFT JOIN debtors as debt ON dtrans.debtor_id=debt.debtor_id
-		LEFT JOIN branches as branch ON dtrans.branch_id=branch.branch_id
-		WHERE (taxrec.amount <> 0 OR taxrec.net_amount <> 0)
-			AND taxrec.trans_type <> " . ST_CUSTDELIVERY . "
-			AND taxrec.tran_date >= '$fromdate'
-			AND taxrec.tran_date <= '$todate'
-		ORDER BY taxrec.tran_date";
+     taxrec.net_amount*ex_rate AS net_amount,
+                IF(ISNULL(supp.name), debt.name, supp.name) as name,
+                branch.br_name
+        FROM trans_tax_details taxrec
+        LEFT JOIN creditor_trans strans
+            ON taxrec.trans_no=strans.trans_no AND taxrec.trans_type=strans.type
+        LEFT JOIN suppliers as supp ON strans.supplier_id=supp.supplier_id
+        LEFT JOIN debtor_trans dtrans
+            ON taxrec.trans_no=dtrans.trans_no AND taxrec.trans_type=dtrans.type
+        LEFT JOIN debtors as debt ON dtrans.debtor_id=debt.debtor_id
+        LEFT JOIN branches as branch ON dtrans.branch_id=branch.branch_id
+        WHERE (taxrec.amount <> 0 OR taxrec.net_amount <> 0)
+            AND taxrec.trans_type <> " . ST_CUSTDELIVERY . "
+            AND taxrec.tran_date >= '$fromdate'
+            AND taxrec.tran_date <= '$todate'
+        ORDER BY taxrec.tran_date";
     //Event::error($sql);
     return DB::query($sql, "No transactions were returned");
   }
@@ -47,8 +46,10 @@
   /**
    * @return null|PDOStatement
    */
-  function getTaxTypes() {
+  function getTaxTypes()
+  {
     $sql = "SELECT * FROM tax_types ORDER BY id";
+
     return DB::query($sql, "No transactions were returned");
   }
 
@@ -57,13 +58,16 @@
    *
    * @return ADV\Core\DB\Query_Result|Array
    */
-  function getTaxInfo($id) {
+  function getTaxInfo($id)
+  {
     $sql    = "SELECT * FROM tax_types WHERE id=$id";
     $result = DB::query($sql, "No transactions were returned");
+
     return DB::fetch($result);
   }
 
-  function print_tax_report() {
+  function print_tax_report()
+  {
     global $trans_dir, $Hooks, $systypes_array;
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
@@ -72,16 +76,14 @@
     $destination = $_POST['PARAM_4'];
     if ($destination) {
       include_once(APPPATH . "reports/excel.php");
-    }
-    else {
+    } else {
       include_once(APPPATH . "reports/pdf.php");
     }
     $dec = User::price_dec();
     $rep = new ADVReport(_('Tax Report'), "TaxReport", User::page_size());
     if ($summaryOnly == 1) {
       $summary = _('Summary Only');
-    }
-    else {
+    } else {
       $summary = _('Detailed Report');
     }
     $res   = getTaxTypes();
@@ -96,8 +98,7 @@
     );
     $cols    = array(0, 100, 130, 180, 290, 370, 420, 470, 520);
     $headers = array(
-      _('Trans Type'), _('Ref'), _('Date'), _('Name'), _('Branch Name'),
-      _('Net'), _('Rate'), _('Tax')
+      _('Trans Type'), _('Ref'), _('Date'), _('Name'), _('Branch Name'), _('Net'), _('Rate'), _('Tax')
     );
     $aligns  = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right');
     $rep->Font();
@@ -119,7 +120,7 @@
           $trans['memo'] = Ref::get($trans['trans_type'], $trans['trans_no']);
         }
         $rep->TextCol(1, 2, $trans['memo']);
-        $rep->DateCol(2, 3, $trans['tran_date'], TRUE);
+        $rep->DateCol(2, 3, $trans['tran_date'], true);
         $rep->TextCol(3, 4, $trans['name']);
         $rep->TextCol(4, 5, $trans['br_name']);
         $rep->AmountCol(5, 6, $trans['net_amount'], $dec);
@@ -134,12 +135,10 @@
       if ($trans['trans_type'] == ST_JOURNAL && $trans['amount'] < 0) {
         $taxes[$trans['tax_type_id']]['taxout'] -= $trans['amount'];
         $taxes[$trans['tax_type_id']]['out'] -= $trans['net_amount'];
-      }
-      elseif (in_array($trans['trans_type'], array(ST_BANKDEPOSIT, ST_SALESINVOICE, ST_CUSTCREDIT))) {
+      } elseif (in_array($trans['trans_type'], array(ST_BANKDEPOSIT, ST_SALESINVOICE, ST_CUSTCREDIT))) {
         $taxes[$trans['tax_type_id']]['taxout'] += $trans['amount'];
         $taxes[$trans['tax_type_id']]['out'] += $trans['net_amount'];
-      }
-      else {
+      } else {
         $taxes[$trans['tax_type_id']]['taxin'] += $trans['amount'];
         $taxes[$trans['tax_type_id']]['in'] += $trans['net_amount'];
       }
@@ -182,5 +181,4 @@
     }
     $rep->End();
   }
-
 

@@ -9,9 +9,7 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   Page::set_security(SA_CUSTPAYMREP);
-
   // trial_inquiry_controls();
   print_customer_balances();
   /**
@@ -21,47 +19,49 @@
    *
    * @return ADV\Core\DB\Query_Result|Array
    */
-  function get_open_balance($debtorno, $to, $convert) {
+  function get_open_balance($debtorno, $to, $convert)
+  {
     $to  = Dates::date2sql($to);
     $sql = "SELECT SUM(IF(" . '' . "debtor_trans.type = " . ST_SALESINVOICE . ", (" . '' . "debtor_trans.ov_amount + " . '' . "debtor_trans.ov_gst +
- 	" . '' . "debtor_trans.ov_freight + " . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount)";
+     " . '' . "debtor_trans.ov_freight + " . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount)";
     if ($convert) {
       $sql .= " * rate";
     }
     $sql
       .= ", 0)) AS charges,
- 	SUM(IF(" . '' . "debtor_trans.type <> " . ST_SALESINVOICE . ", (" . '' . "debtor_trans.ov_amount + " . '' . "debtor_trans.ov_gst +
- 	" . '' . "debtor_trans.ov_freight + " . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount)";
+     SUM(IF(" . '' . "debtor_trans.type <> " . ST_SALESINVOICE . ", (" . '' . "debtor_trans.ov_amount + " . '' . "debtor_trans.ov_gst +
+     " . '' . "debtor_trans.ov_freight + " . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount)";
     if ($convert) {
       $sql .= " * rate";
     }
     $sql
       .= " * -1, 0)) AS credits,
-		SUM(" . '' . "debtor_trans.alloc";
+        SUM(" . '' . "debtor_trans.alloc";
     if ($convert) {
       $sql .= " * rate";
     }
     $sql
       .= ") AS Allocated,
-		SUM(IF(" . '' . "debtor_trans.type = " . ST_SALESINVOICE . ", (" . '' . "debtor_trans.ov_amount + " . '' . "debtor_trans.ov_gst +
- 	" . '' . "debtor_trans.ov_freight + " . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount - " . '' . "debtor_trans.alloc)";
+        SUM(IF(" . '' . "debtor_trans.type = " . ST_SALESINVOICE . ", (" . '' . "debtor_trans.ov_amount + " . '' . "debtor_trans.ov_gst +
+     " . '' . "debtor_trans.ov_freight + " . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount - " . '' . "debtor_trans.alloc)";
     if ($convert) {
       $sql .= " * rate";
     }
     $sql
       .= ",
- 	((" . '' . "debtor_trans.ov_amount + " . '' . "debtor_trans.ov_gst + " . '' . "debtor_trans.ov_freight +
- 	" . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount) * -1 + " . '' . "debtor_trans.alloc)";
+     ((" . '' . "debtor_trans.ov_amount + " . '' . "debtor_trans.ov_gst + " . '' . "debtor_trans.ov_freight +
+     " . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount) * -1 + " . '' . "debtor_trans.alloc)";
     if ($convert) {
       $sql .= " * rate";
     }
     $sql
       .= ")) AS OutStanding
-		FROM " . '' . "debtor_trans
- 	WHERE " . '' . "debtor_trans.tran_date < '$to'
-		AND " . '' . "debtor_trans.debtor_id = " . DB::escape($debtorno) . "
-		AND " . '' . "debtor_trans.type <> " . ST_CUSTDELIVERY . " GROUP BY debtor_id";
+        FROM " . '' . "debtor_trans
+     WHERE " . '' . "debtor_trans.tran_date < '$to'
+        AND " . '' . "debtor_trans.debtor_id = " . DB::escape($debtorno) . "
+        AND " . '' . "debtor_trans.type <> " . ST_CUSTDELIVERY . " GROUP BY debtor_id";
     $result = DB::query($sql, "No transactions were returned");
+
     return DB::fetch($result);
   }
 
@@ -72,25 +72,28 @@
    *
    * @return null|PDOStatement
    */
-  function get_transactions($debtorno, $from, $to) {
+  function get_transactions($debtorno, $from, $to)
+  {
     $from = Dates::date2sql($from);
     $to   = Dates::date2sql($to);
     $sql  = "SELECT " . '' . "debtor_trans.*,
-		(" . '' . "debtor_trans.ov_amount + " . '' . "debtor_trans.ov_gst + " . '' . "debtor_trans.ov_freight +
-		" . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount)
-		AS TotalAmount, " . '' . "debtor_trans.alloc AS Allocated,
-		((" . '' . "debtor_trans.type = " . ST_SALESINVOICE . ")
-		AND " . '' . "debtor_trans.due_date < '$to') AS OverDue
- 	FROM " . '' . "debtor_trans
- 	WHERE " . '' . "debtor_trans.tran_date >= '$from'
-		AND " . '' . "debtor_trans.tran_date <= '$to'
-		AND " . '' . "debtor_trans.debtor_id = " . DB::escape($debtorno) . "
-		AND " . '' . "debtor_trans.type <> " . ST_CUSTDELIVERY . "
- 	ORDER BY " . '' . "debtor_trans.tran_date";
+        (" . '' . "debtor_trans.ov_amount + " . '' . "debtor_trans.ov_gst + " . '' . "debtor_trans.ov_freight +
+        " . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount)
+        AS TotalAmount, " . '' . "debtor_trans.alloc AS Allocated,
+        ((" . '' . "debtor_trans.type = " . ST_SALESINVOICE . ")
+        AND " . '' . "debtor_trans.due_date < '$to') AS OverDue
+     FROM " . '' . "debtor_trans
+     WHERE " . '' . "debtor_trans.tran_date >= '$from'
+        AND " . '' . "debtor_trans.tran_date <= '$to'
+        AND " . '' . "debtor_trans.debtor_id = " . DB::escape($debtorno) . "
+        AND " . '' . "debtor_trans.type <> " . ST_CUSTDELIVERY . "
+     ORDER BY " . '' . "debtor_trans.tran_date";
+
     return DB::query($sql, "No transactions were returned");
   }
 
-  function print_customer_balances() {
+  function print_customer_balances()
+  {
     global $systypes_array;
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
@@ -101,34 +104,29 @@
     $destination = $_POST['PARAM_6'];
     if ($destination) {
       include_once(APPPATH . "reports/excel.php");
-    }
-    else {
+    } else {
       include_once(APPPATH . "reports/pdf.php");
     }
     if ($fromcust == ALL_NUMERIC) {
       $cust = _('All');
-    }
-    else {
+    } else {
       $cust = Debtor::get_name($fromcust);
     }
     $dec = User::price_dec();
     if ($currency == ALL_TEXT) {
-      $convert  = TRUE;
+      $convert  = true;
       $currency = _('Balances in Home Currency');
-    }
-    else {
-      $convert = FALSE;
+    } else {
+      $convert = false;
     }
     if ($no_zeros) {
       $nozeros = _('Yes');
-    }
-    else {
+    } else {
       $nozeros = _('No');
     }
     $cols    = array(0, 100, 130, 190, 250, 320, 385, 450, 515);
     $headers = array(
-      _('Trans Type'), _('#'), _('Date'), _('Due Date'), _('Charges'), _('Credits'),
-      _('Allocated'), _('Outstanding')
+      _('Trans Type'), _('#'), _('Date'), _('Due Date'), _('Charges'), _('Credits'), _('Allocated'), _('Outstanding')
     );
     $aligns  = array('left', 'left', 'left', 'left', 'right', 'right', 'right', 'right');
     $params  = array(
@@ -202,8 +200,7 @@
         }
         if ($convert) {
           $rate = $trans['rate'];
-        }
-        else {
+        } else {
           $rate = 1.0;
         }
         if ($trans['type'] == ST_CUSTCREDIT || $trans['type'] == ST_CUSTPAYMENT || $trans['type'] == ST_BANKDEPOSIT) {
@@ -212,8 +209,7 @@
         if ($trans['TotalAmount'] > 0.0) {
           $item[0] = Num::round(abs($trans['TotalAmount']) * $rate, $dec);
           //		$rep->AmountCol(4, 5, $item[0], $dec);
-        }
-        else {
+        } else {
           $item[1] = Num::round(Abs($trans['TotalAmount']) * $rate, $dec);
           //		$rep->AmountCol(5, 6, $item[1], $dec);
         }
@@ -227,8 +223,7 @@
                      */
         if ($trans['type'] == ST_SALESINVOICE || $trans['type'] == ST_BANKPAYMENT) {
           $item[3] = $item[0] + $item[1] - $item[2];
-        }
-        else {
+        } else {
           $item[3] = $item[0] - $item[1] + $item[2];
         }
         //	$rep->AmountCol(7, 8, $item[3], $dec);
@@ -255,5 +250,4 @@
     $rep->NewLine();
     $rep->End();
   }
-
 

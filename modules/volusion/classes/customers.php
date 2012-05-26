@@ -5,8 +5,8 @@
   /**
    * Class for getting Customers from Volusion and putting them in to the intermediate database.
    */
-  class Customers {
-
+  class Customers
+  {
     /**
      * @var \ADV\Core\Status
      */
@@ -18,72 +18,75 @@
     /**
 
      */
-    public function __construct() {
+    public function __construct()
+    {
       echo __NAMESPACE__;
       $this->status = new \ADV\Core\Status();
     }
-
-    public function process() {
+    public function process()
+    {
       $this->get();
       $this->insertCustomersToDB();
       $this->createCustomer();
     }
-
     /**
      * Gets XML from website containing customer information and stores in in $this->customers
      * @return bool returns false if nothing was retrieved or true otherwise.
      */
-    function get() {
+    public function get()
+    {
       $customersXML = $this->getXML();
       if (!$customersXML) {
-        return $this->status->set(FALSE, 'getXML', "Nothing retrieved from website");
+        return $this->status->set(false, 'getXML', "Nothing retrieved from website");
       }
       $this->customers = XMLParser::XMLtoArray($customersXML);
       if (!$this->customers) {
-        return $this->status->set(FALSE, 'XMLtoArray', "No new custoemrs!");
+        return $this->status->set(false, 'XMLtoArray', "No new custoemrs!");
       }
-      return $this->status->set(TRUE, 'get', "Customers retrieved");
+
+      return $this->status->set(true, 'get', "Customers retrieved");
     }
     /**
      * @internal param $customers
      * @return array
      */
-    function insertCustomersToDB() {
+    public function insertCustomersToDB()
+    {
       $customers = $this->customers;
       if (!$customers) {
-        return $this->status->set(FALSE, 'insertToDB', 'No Customers to add.');
+        return $this->status->set(false, 'insertToDB', 'No Customers to add.');
       }
       foreach ($customers as $customer) {
         $this->insertCustomerToDB($customer);
       }
-      return $this->status->set(TRUE, 'addedToDB', "Finished adding Customers to DB!");
+
+      return $this->status->set(true, 'addedToDB', "Finished adding Customers to DB!");
     }
     /**
      * @param $customer
      */
-    function insertCustomerToDB($customer) {
+    public function insertCustomerToDB($customer)
+    {
       if (!empty($customer['CompanyName'])) {
         $name = $customer['CompanyName'];
-      }
-      elseif (!empty($customer['FirstName']) || !empty($customer['LastName'])) {
+      } elseif (!empty($customer['FirstName']) || !empty($customer['LastName'])) {
         $name = ucwords($customer['FirstName'] . ' ' . $customer['LastName']);
-      }
-      else {
+      } else {
         $name = $customer['EmailAddress'];
       }
       try {
         DB::insert('WebCustomers')->values($customer)->exec();
-        $this->status->set(TRUE, 'insert', "Added Customer $name to website customer database! {$customer['CustomerID']} ");
-      }
-      catch (DBDuplicateException $e) {
+        $this->status->set(true, 'insert', "Added Customer $name to website customer database! {$customer['CustomerID']} ");
+      } catch (DBDuplicateException $e) {
         DB::update('WebCustomers')->values($customer)->where('CustomerID=', $customer['CustomerID'])->exec();
-        $this->status->set(FALSE, 'insert', "Updated Customer $name ! {$customer['CustomerID']}");
+        $this->status->set(false, 'insert', "Updated Customer $name ! {$customer['CustomerID']}");
       }
     }
     /**
      * @return string
      */
-    function getXML() {
+    public function getXML()
+    {
       $apiuser = \Config::get('modules.webstore')['apiuser'];
       $apikey  = \Config::get('modules.webstore')['apikey'];
       $url     = \Config::get('modules.webstore')['apiurl'];
@@ -94,33 +97,31 @@
       if (!$result = file_get_contents($url)) {
         Event::warning('Could not retrieve web customers');
       }
+
       return $result;
     }
-
     /**
      * @return array
      */
-    protected function createCustomer() {
+    protected function createCustomer()
+    {
       $result = DB::select()->from('WebCustomers')->where('extid=', 0)->fetch()->assoc()->all();
       if (!$result) {
-        return $this->status->set(FALSE, 'insert', "No new customers in database");
+        return $this->status->set(false, 'insert', "No new customers in database");
       }
       $added = $updated = 0;
       foreach ($result as $row) {
         if (!empty($row['CompanyName'])) {
           $name = $row['CompanyName'];
-        }
-        elseif (!empty($row['FirstName']) || !empty($row['LastName'])) {
+        } elseif (!empty($row['FirstName']) || !empty($row['LastName'])) {
           $name = $row['CompanyName'] = ucwords($row['FirstName'] . ' ' . $row['LastName']);
-        }
-        else {
+        } else {
           $name = $row['CompanyName'] = $row['EmailAddress'];
         }
         $result = \DB::select('debtor_id')->from('debtors')->where('webid =', $row["CustomerID"])->fetch()->assoc()->one();
         if ($result['debtor_id'] > 0) {
           $c = new \Debtor($result['debtor_id']);
-        }
-        else {
+        } else {
           $c = new \Debtor();
         }
         $c->name                                      = $c->debtor_ref = $name;
@@ -141,22 +142,21 @@
         $c->contact_name                              = $row["FirstName"] . ' ' . $row["LastName"];
         try {
           $c->save();
-        }
-        catch (\ADV\Core\DB\DBDuplicateException $e) {
-          $this->status->set(TRUE, 'Update ', "Customer {$c->name} could not be added or updated. {$c->webid}.<br>" . $result['address'] . ":" . $row["BillingAddress1"]);
+        } catch (\ADV\Core\DB\DBDuplicateException $e) {
+          $this->status->set(true, 'Update ', "Customer {$c->name} could not be added or updated. {$c->webid}.<br>" . $result['address'] . ":" . $row["BillingAddress1"]);
           continue;
         }
         if ($c->debtor_id > 0) {
-          $this->status->set(TRUE, 'update', "Customer {$c->name} has been updated. {$c->id} ");
+          $this->status->set(true, 'update', "Customer {$c->name} has been updated. {$c->id} ");
           $updated++;
-        }
-        else {
+        } else {
           $added++;
-          $this->status->set(TRUE, 'add', "Customer  {$c->name} has been added.  {$c->id} ");
+          $this->status->set(true, 'add', "Customer  {$c->name} has been added.  {$c->id} ");
         }
         \DB::update('WebCustomers')->value('extid', $c->id)->where('CustomerID=', $row['CustomerID'])->exec();
       }
       Event::notice("Added $added Customers. Updated $updated Customers.");
-      return $this->status->set(TRUE, 'adding', "Added $added Customers. Updated $updated Customers.");
+
+      return $this->status->set(true, 'adding', "Added $added Customers. Updated $updated Customers.");
     }
   }

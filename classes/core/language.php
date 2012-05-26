@@ -19,8 +19,8 @@
   /**
 
    */
-  class Language {
-
+  class Language
+  {
     use Traits\Singleton;
 
     /**
@@ -46,7 +46,6 @@
      * @var
      */
     protected $installed_languages;
-
     /**
      * @var
      */
@@ -57,17 +56,18 @@
      * @param        $encoding
      * @param string $dir
      */
-    public function __construct($name, $code, $encoding, $dir = 'ltr') {
+    public function __construct($name, $code, $encoding, $dir = 'ltr')
+    {
       $this->name     = $name;
       $this->code     = $code ? $code : 'en_US';
       $this->encoding = $encoding;
       $this->dir      = $dir;
     }
-
     /**
      * @param $code
      */
-    public function set_language($code) {
+    public function set_language($code)
+    {
       $changed = $this->code != $code;
       $lang    = Arr::search_value($code, Config::get('languages.installed'), 'code');
       if ($lang && $changed) {
@@ -92,7 +92,8 @@
     /**
 
      */
-    public static function set() {
+    public static function set()
+    {
       if (!isset($_SESSION['Language']) || !method_exists($_SESSION['Language'], 'set_language')) {
         $l         = Arr::search_value(Config::get('default.lang'), Config::get('languages.installed'), 'code');
         static::$i = new Language($l['name'], $l['code'], $l['encoding'], isset($l['rtl']) ? 'rtl' : 'ltr');
@@ -102,8 +103,7 @@
           include(DOCROOT . "lang/" . static::$i->code . "/locale.php");
         }
         $_SESSION['Language'] = static::$i;
-      }
-      else {
+      } else {
         static::$i = $_SESSION['Language'];
       }
     }
@@ -115,11 +115,13 @@
      *
      * @return mixed
      */
-    function _($text) {
+    function _($text)
+    {
       $retVal = $_SESSION['get_text']->gettext($text);
       if ($retVal == "") {
         return $text;
       }
+
       return $retVal;
     }
   }
