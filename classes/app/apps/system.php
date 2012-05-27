@@ -9,13 +9,13 @@
    **/
   class Apps_System extends Application
   {
+    public $name = "System";
+    public $help_context = "&System";
     /**
 
      */
-    public function __construct()
+    public function buildMenu()
     {
-      global $installed_extensions;
-      parent::__construct("System", _($this->help_context = "S&ystem"));
       $this->add_module(_("Company Setup"));
       $this->add_lapp_function(0, _("&Company Setup"), "/system/company_preferences?", SA_SETUPCOMPANY);
       $this->add_lapp_function(0, _("&User Accounts Setup"), "/system/users?", SA_USERS);
@@ -43,14 +43,6 @@
       $this->add_rapp_function(2, _("Install/Update &Languages"), "/system/inst_lang?", SA_CREATELANGUAGE);
       $this->add_rapp_function(2, _("Install/Activate &Extensions"), "/system/inst_module?", SA_CREATEMODULES);
       $this->add_rapp_function(2, _("Software &Upgrade"), "/system/inst_upgrade?", SA_SOFTWAREUPGRADE);
-      if (count($installed_extensions) > 0) {
-        foreach ($installed_extensions as $mod) {
-          if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "system") {
-            $this->add_rapp_function(2, $mod["title"], "modules/" . $mod["path"] . "/" . $mod["filename"] . "?", isset($mod["access"]) ?
-              $mod["access"] : SA_OPEN);
-          }
-        }
-      }
     }
   }
 

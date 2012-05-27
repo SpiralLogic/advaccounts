@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  Page::start(_($help_context = "View Bank Deposit"), SA_BANKTRANSVIEW, true);
+  Page::start(_($help_context = "View Bank Deposit"), SA_BANKTRANSVIEW, TRUE);
   if (isset($_GET["trans_no"])) {
     $trans_no = $_GET["trans_no"];
   }
@@ -19,9 +19,9 @@
   }
   $to_trans         = DB::fetch($result);
   $company_currency = Bank_Currency::for_company();
-  $show_currencies  = false;
+  $show_currencies  = FALSE;
   if ($to_trans['bank_curr_code'] != $company_currency) {
-    $show_currencies = true;
+    $show_currencies = TRUE;
   }
   echo "<div class='center'>";
   Display::heading(_("GL Deposit") . " #$trans_no");
@@ -86,10 +86,10 @@
         Cell::label($item["account"]);
         Cell::label($item["account_name"]);
         if ($dim >= 1) {
-          Cell::label(Dimensions::get_string($item['dimension_id'], true));
+          Cell::label(Dimensions::get_string($item['dimension_id'], TRUE));
         }
         if ($dim > 1) {
-          Cell::label(Dimensions::get_string($item['dimension2_id'], true));
+          Cell::label(Dimensions::get_string($item['dimension2_id'], TRUE));
         }
         Cell::amount($item["amount"]);
         Cell::label($item["memo_"]);
@@ -101,4 +101,4 @@
     Table::end(1);
     GL_Allocation::from($to_trans['person_type_id'], $to_trans['person_id'], 2, $trans_no, $to_trans['amount']);
   }
-  Page::end(true);
+  Page::end(TRUE);

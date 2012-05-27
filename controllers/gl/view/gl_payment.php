@@ -1,14 +1,15 @@
 <?php
   /**
-   * PHP version 5.4
-   * @category  PHP
-   * @package   ADVAccounts
-   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-   * @copyright 2010 - 2012
-   * @link      http://www.advancedgroup.com.au
-   **/
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
 
-  Page::start(_($help_context = "View Bank Payment"), SA_BANKTRANSVIEW, true);
+
+  Page::start(_($help_context = "View Bank Payment"), SA_BANKTRANSVIEW, TRUE);
   if (isset($_GET["trans_no"])) {
     $trans_no = $_GET["trans_no"];
   }
@@ -17,11 +18,11 @@
   if (DB::num_rows($result) != 1) {
     Errors::db_error("duplicate payment bank transaction found", "");
   }
-  $from_trans       = DB::fetch($result);
+  $from_trans = DB::fetch($result);
   $company_currency = Bank_Currency::for_company();
-  $show_currencies  = false;
+  $show_currencies = FALSE;
   if ($from_trans['bank_curr_code'] != $company_currency) {
-    $show_currencies = true;
+    $show_currencies = TRUE;
   }
   Display::heading(_("GL Payment") . " #$trans_no");
   echo "<br>";
@@ -29,7 +30,8 @@
   if ($show_currencies) {
     $colspan1 = 5;
     $colspan2 = 8;
-  } else {
+  }
+  else {
     $colspan1 = 3;
     $colspan2 = 6;
   }
@@ -51,10 +53,11 @@
   DB_Comments::display_row(ST_BANKPAYMENT, $trans_no);
   Table::end(1);
   $voided = Display::is_voided(ST_BANKPAYMENT, $trans_no, _("This payment has been voided."));
-  $items  = GL_Trans::get_many(ST_BANKPAYMENT, $trans_no);
+  $items = GL_Trans::get_many(ST_BANKPAYMENT, $trans_no);
   if (DB::num_rows($items) == 0) {
     Event::warning(_("There are no items for this payment."));
-  } else {
+  }
+  else {
     Display::heading(_("Items for this Payment"));
     if ($show_currencies) {
       Display::heading(_("Item Amounts are Shown in :") . " " . $company_currency);
@@ -66,19 +69,21 @@
       $th = array(
         _("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2", _("Amount"), _("Memo")
       );
-    } else {
+    }
+    else {
       if ($dim == 1) {
         $th = array(
           _("Account Code"), _("Account Description"), _("Dimension"), _("Amount"), _("Memo")
         );
-      } else {
+      }
+      else {
         $th = array(
           _("Account Code"), _("Account Description"), _("Amount"), _("Memo")
         );
       }
     }
     Table::header($th);
-    $k            = 0; //row colour counter
+    $k = 0; //row colour counter
     $total_amount = 0;
     while ($item = DB::fetch($items)) {
       if ($item["account"] != $from_trans["account_code"]) {
@@ -86,10 +91,10 @@
         Cell::label($item["account"]);
         Cell::label($item["account_name"]);
         if ($dim >= 1) {
-          Cell::label(Dimensions::get_string($item['dimension_id'], true));
+          Cell::label(Dimensions::get_string($item['dimension_id'], TRUE));
         }
         if ($dim > 1) {
-          Cell::label(Dimensions::get_string($item['dimension2_id'], true));
+          Cell::label(Dimensions::get_string($item['dimension2_id'], TRUE));
         }
         Cell::amount($item["amount"]);
         Cell::label($item["memo_"]);
@@ -103,4 +108,4 @@
       GL_Allocation::from($from_trans['person_type_id'], $from_trans['person_id'], 1, $trans_no, -$from_trans['amount']);
     }
   }
-  Page::end(true);
+  Page::end(TRUE);

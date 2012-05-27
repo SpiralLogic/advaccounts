@@ -93,20 +93,21 @@
      *
      * @return void
      */
-    public static function addInfoDialog($selector, $id = false)
+    public static function addInfoDialog($selector, $id = FALSE)
     {
       if ($id) {
         $company = new static($id);
       }
-      $content = '<div><span class="bold">Shipping Address:</span><br>${address}</br></br>
-                         <span class="bold">Mailing Address:</span><br>${post_address}</br></br>
-                         <span class="bold">Phone: </span>${phone}</br></br>
-                         <span class="bold">Phone2: </span>${phone2}</br></br>
-                         <span class="bold">Fax: </span>${fax}</br></br>
-                         <span class="bold">Contact: </span>${contact}</br></br>
-                         <span class="bold">Email: </span><a href="mailto:${email}">${email}</a></br></br>
-                         <span class="bold">Website: </span><a target="_new" href="http://${website}">${website}</a></br></br>
-                                            </div>';
+      $content
+               = '<div><span class="bold">Shipping Address:</span><br>${address}</br></br>
+				 		<span class="bold">Mailing Address:</span><br>${post_address}</br></br>
+				 		<span class="bold">Phone: </span>${phone}</br></br>
+				 		<span class="bold">Phone2: </span>${phone2}</br></br>
+				 		<span class="bold">Fax: </span>${fax}</br></br>
+				 		<span class="bold">Contact: </span>${contact}</br></br>
+				 		<span class="bold">Email: </span><a href="mailto:${email}">${email}</a></br></br>
+				 		<span class="bold">Website: </span><a target="_new" href="http://${website}">${website}</a></br></br>
+											</div>';
       $type    = explode('_', get_called_class());
       $type    = array_pop($type);
       $type    = ($type == 'c') ? 'customer' : 'supplier';
@@ -116,11 +117,12 @@
       if ($id) {
         $details->addOpenEvent($selector, 'click');
       } else {
-        $action = <<<JS
+        $action
+          = <<<JS
 
-                 $.post('/contacts/{$type}s.php',{id:$(this).data('id')},function(data) {Adv.o.company_details.render(data.$type); \$company_details.dialog('open');},'json');
+				 $.post('/contacts/{$type}s.php',{id:$(this).data('id')},function(data) {Adv.o.company_details.render(data.$type); \$company_details.dialog('open');},'json');
 JS;
-        JS::addLiveEvent($selector, 'click', $action, 'wrapper', true);
+        JS::addLiveEvent($selector, 'click', $action, 'wrapper', TRUE);
       }
       $details->addButton('Close', '$(this).dialog("close")');
       $details->show();
@@ -141,16 +143,14 @@ JS;
       if (count($emails) > 0) {
         $types   = $GLOBALS['systypes_array'];
         $text    = $types[$type];
-        $content = Reporting::email_link($trans, _("Email This $text"), true, $type, 'EmailLink', null, $emails, 0, true);
+        $content = Reporting::email_link($trans, _("Email This $text"), TRUE, $type, 'EmailLink', NULL, $emails, 0, TRUE);
         if ($type == ST_SALESQUOTE || $type == ST_SALESORDER) {
           $type = ($type == ST_SALESORDER) ? ST_PROFORMA : ST_PROFORMAQ;
           $text = $types[$type];
-          $content .= Reporting::email_link($trans, _("Email This ") . $text, true, $type, 'EmailLink', null, $emails, 0, true);
+          $content .= Reporting::email_link($trans, _("Email This ") . $text, TRUE, $type, 'EmailLink', NULL, $emails, 0, TRUE);
         }
-
         return $content;
       }
-
-      return false;
+      return FALSE;
     }
   }

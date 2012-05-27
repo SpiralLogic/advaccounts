@@ -9,12 +9,14 @@
    **/
   class Apps_Debtors extends Application
   {
+    public $name = "Debtors";
+    public $help_context = "&Customers";
+
     /**
 
      */
-    public function __construct()
+    public function buildMenu()
     {
       $this->direct = '/contacts/customers';
-      parent::__construct("Debtors", _($this->help_context = "&Customers"));
     }
   }

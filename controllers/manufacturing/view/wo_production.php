@@ -7,8 +7,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+
   JS::open_window(900, 500);
-  Page::start(_($help_context = "View Work Order Production"), SA_MANUFTRANSVIEW, true);
+  Page::start(_($help_context = "View Work Order Production"), SA_MANUFTRANSVIEW, TRUE);
   if ($_GET['trans_no'] != "") {
     $wo_production = $_GET['trans_no'];
   }
@@ -29,7 +30,7 @@
     Cell::label($myrow["reference"]);
     Cell::label(GL_UI::trans_view(ST_WORKORDER, $myrow["workorder_id"]));
     Cell::label($myrow["stock_id"] . " - " . $myrow["StockDescription"]);
-    Cell::qty($myrow["quantity"], false, Item::qty_dec($myrow["stock_id"]));
+    Cell::qty($myrow["quantity"], FALSE, Item::qty_dec($myrow["stock_id"]));
     Cell::label(Dates::sql2date($myrow["date_"]));
     Row::end();
     DB_Comments::display_row(ST_MANURECEIVE, $prod_id);
@@ -40,5 +41,7 @@
   Display::heading($systypes_array[ST_MANURECEIVE] . " # " . $wo_production);
   display_wo_production($wo_production);
   Display::br(2);
-  Page::end(true);
+  Page::end(TRUE);
+
+
 

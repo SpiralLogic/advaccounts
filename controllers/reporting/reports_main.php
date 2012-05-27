@@ -7,6 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+
   Page::start(_($help_context = "Reports and Analysis"), SA_OPEN);
   $reports = new Reports_Box();
   $dim     = DB_Company::get_pref('use_dimension');

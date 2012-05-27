@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class WO_Quick
-  {
+  class WO_Quick {
+
     /**
      * @static
      *
@@ -44,9 +44,9 @@
       }
       WO_Cost::add_labour($stock_id, $units_reqd, $date_, $labour);
       $sql = "INSERT INTO workorders (wo_ref, loc_code, units_reqd, units_issued, stock_id,
-        type, additional_costs, date_, released_date, required_by, released, closed)
-     VALUES (" . DB::escape($wo_ref) . ", " . DB::escape($loc_code) . ", " . DB::escape($units_reqd) . ", " . DB::escape($units_reqd) . ", " . DB::escape($stock_id) . ",
-        " . DB::escape($type) . ", " . DB::escape($costs) . ", '$date', '$date', '$date', 1, 1)";
+		type, additional_costs, date_, released_date, required_by, released, closed)
+ 	VALUES (" . DB::escape($wo_ref) . ", " . DB::escape($loc_code) . ", " . DB::escape($units_reqd) . ", " . DB::escape($units_reqd) . ", " . DB::escape($stock_id) . ",
+		" . DB::escape($type) . ", " . DB::escape($costs) . ", '$date', '$date', '$date', 1, 1)";
       DB::query($sql, "could not add work order");
       $woid = DB::insert_id();
       // create Work Order Requirements based on the bom
@@ -55,9 +55,9 @@
         $unit_quantity = $bom_item["quantity"];
         $item_quantity = $bom_item["quantity"] * $units_reqd;
         $sql           = "INSERT INTO wo_requirements (workorder_id, stock_id, workcentre, units_req, units_issued, loc_code)
-            VALUES ($woid, '" . $bom_item["component"] . "',
-            '" . $bom_item["workcentre_added"] . "',
-            $unit_quantity,	$item_quantity, '" . $bom_item["loc_code"] . "')";
+			VALUES ($woid, '" . $bom_item["component"] . "',
+			'" . $bom_item["workcentre_added"] . "',
+			$unit_quantity,	$item_quantity, '" . $bom_item["loc_code"] . "')";
         DB::query($sql, "The work order requirements could not be added");
         // insert a -ve stock move for each item
         Inv_Movement::add(ST_WORKORDER, $bom_item["component"], $woid, $bom_item["loc_code"], $date_, $wo_ref, -$item_quantity,
@@ -73,7 +73,6 @@
       Ref::save(ST_WORKORDER, $wo_ref);
       DB_AuditTrail::add(ST_WORKORDER, $woid, $date_, _("Quick production."));
       DB::commit();
-
       return $woid;
     }
     /**
@@ -104,7 +103,7 @@
           Inv_Movement::add(ST_MANURECEIVE, $bom_item["component"], $advanced, $bom_item["loc_code"], $date_, "",
             -$bom_item["quantity"] * $units_reqd, 0);
         }
-        $total_cost += GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $bom_accounts["inventory_account"], 0, 0, null,
+        $total_cost += GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $bom_accounts["inventory_account"], 0, 0, NULL,
           -$bom_cost);
       }
       if ($advanced) {
@@ -116,7 +115,7 @@
           $standard_cost = Item_Price::get_standard_cost($item['stock_id']);
           $issue_cost    = $standard_cost * $item['qty_issued'] * $units_reqd / $wo['units_reqd'];
           $issue         = Item::get_gl_code($item['stock_id']);
-          $total_cost += GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $issue["inventory_account"], 0, 0, null,
+          $total_cost += GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $issue["inventory_account"], 0, 0, NULL,
             -$issue_cost);
           $issue_total += $issue_cost;
         }
@@ -153,7 +152,7 @@
           $item_accounts["dimension2_id"], $wo_cost_types[WO_LABOUR], $labour, PT_WORKORDER, WO_LABOUR);
       }
       // debit total components $total_cost
-      GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["inventory_account"], 0, 0, null, -$total_cost);
+      GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["inventory_account"], 0, 0, NULL, -$total_cost);
     }
     /**
      * @static
@@ -161,8 +160,7 @@
      * @param      $woid
      * @param bool $suppress_view_link
      */
-    public static function display($woid, $suppress_view_link = false)
-    {
+    public static function display($woid, $suppress_view_link = FALSE) {
       global $wo_types_array;
       $myrow = WO::get($woid);
       if (strlen($myrow[0]) == 0) {
@@ -177,7 +175,8 @@
       Row::start();
       if ($suppress_view_link) {
         Cell::label($myrow["id"]);
-      } else {
+      }
+      else {
         Cell::label(GL_UI::trans_view(ST_WORKORDER, $myrow["id"]));
       }
       Cell::label($myrow["wo_ref"]);
@@ -185,13 +184,14 @@
       Item_UI::status_cell($myrow["stock_id"], $myrow["StockItemName"]);
       Cell::label($myrow["location_name"]);
       Cell::label(Dates::sql2date($myrow["date_"]));
-      Cell::qty($myrow["units_issued"], false, Item::qty_dec($myrow["stock_id"]));
+      Cell::qty($myrow["units_issued"], FALSE, Item::qty_dec($myrow["stock_id"]));
       Row::end();
       DB_Comments::display_row(ST_WORKORDER, $woid);
       Table::end();
-      if ($myrow["closed"] == true) {
+      if ($myrow["closed"] == TRUE) {
         Display::note(_("This work order is closed."));
       }
     }
   }
+
 

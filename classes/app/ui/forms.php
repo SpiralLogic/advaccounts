@@ -204,8 +204,8 @@
     }
     $_POST[$name] = $multi ? $selected_id : $selected_id[0];
     $selector     = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' :
-      '') . "$disabled id='$name' name='$name" . ($multi ?
-      '[]' : '') . "' class='combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
+      '') . "$disabled id='$name' name='$name" . ($multi ? '[]' :
+      '') . "' class='combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
     Ajax::i()->addUpdate($name, "_{$name}_sel", $selector);
     $selector = "<span id='_{$name}_sel'>" . $selector . "</span>\n";
     if ($select_submit != false) { // if submit on change is used - add select button
@@ -275,10 +275,9 @@
       }
     }
     $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') :
-      $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\" id=\"$name\" value=\"$value\"" . ($title ? " title='$title'"
-      : '') . ">" . ($icon ?
-      "<img alt='$value' src='/themes/" . User::theme() . "/images/$icon' height='12'>" : '') . "<span>$value</span>" .
-      "</button>\n";
+      $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\" id=\"$name\" value=\"$value\"" . ($title ? " title='$title'" :
+      '') . ">" . ($icon ? "<img alt='$value' src='/themes/" . User::theme() . "/images/$icon' height='12'>" :
+      '') . "<span>$value</span>" . "</button>\n";
     if ($echo) {
       echo $submit_str;
     } else {
@@ -505,12 +504,11 @@
       }
 
       return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='1'" . ($title ?
-        " title='$title'" :
-        " title='$value'") . ($aspect ? " data-aspect='$aspect'" : '') . $rel . " />" . set_icon($icon) . "</button>\n";
+        " title='$title'" : " title='$value'") . ($aspect ? " data-aspect='$aspect'" :
+        '') . $rel . " />" . set_icon($icon) . "</button>\n";
     } else {
       return "<input type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='$value'" . ($title ?
-        " title='$title'" : '') . ($aspect ?
-        " data-aspect='$aspect'" : '') . $rel . " />\n";
+        " title='$title'" : '') . ($aspect ? " data-aspect='$aspect'" : '') . $rel . " />\n";
     }
   }
 
@@ -667,8 +665,8 @@
     if ($value === null) {
       $value = get_post($name);
     }
-    echo "<input $inparams type=\"text\" name=\"$name\" id=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\"" .
-      ($title ? " title='$title'" : '') . ">";
+    echo "<input $inparams type=\"text\" name=\"$name\" id=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\"" . ($title ?
+      " title='$title'" : '') . ">";
     if ($post_label != "") {
       echo " " . $post_label;
     }
@@ -877,8 +875,7 @@
     if ($check && (get_post($name) != Dates::today())) {
       $aspect .= ' style="color:#FF0000"';
     }
-    echo "<input id='$name' type='text' name='$name' class='$class' $aspect size=\"10\" maxlength='10' value=\"" .
-      $_POST[$name] . "\"" . ($title ?
+    echo "<input id='$name' type='text' name='$name' class='$class' $aspect size=\"10\" maxlength='10' value=\"" . $_POST[$name] . "\"" . ($title ?
       " title='$title'" : '') . " > $post_label";
     echo "</td>\n";
     Ajax::i()->addUpdate($name, $name, $_POST[$name]);
@@ -1008,8 +1005,8 @@
    * @param string $inputparams
    * @param bool   $negatives
    */
-  function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null,
-                           $id = null, $inputparams = '', $negatives = false) {
+  function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null, $inputparams = '', $negatives = false)
+  {
     if (is_null($dec)) {
       $dec = User::price_dec();
     }
@@ -1187,8 +1184,8 @@
    * @param string $inputparams
    * @param bool   $negatives
    */
-  function small_amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null,
-                              $inputparams = '', $negatives = false) {
+  function small_amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '', $negatives = false)
+  {
     amount_cells_ex($label, $name, 4, 12, $init, $params, $post_label, $dec, null, $inputparams, $negatives);
   }
 
@@ -1311,8 +1308,8 @@
     $items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
 
     return array_selector($name, $selected_id, $items, array(
-      'select_submit' => $submit_on_change, 'async' => false
-    )); // FIX?
+                                                            'select_submit' => $submit_on_change, 'async' => false
+                                                       )); // FIX?
   }
 
   /**
@@ -1374,8 +1371,8 @@
     }
 
     return array_selector($name, $selected, $items, array(
-      'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
-    ));
+                                                         'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
+                                                    ));
   }
 
   /**
@@ -1476,7 +1473,7 @@
    */
   function _format_add_curr($row)
   {
-    public static $company_currency;
+    static $company_currency;
     if ($company_currency == null) {
       $company_currency = Bank_Currency::for_company();
     }

@@ -7,6 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+
   JS::set_focus('account');
   JS::open_window(800, 500);
   Page::start(_($help_context = "Tax Inquiry"), SA_TAXREP);
@@ -65,22 +66,26 @@
       $collectible = $tx['collectible'];
       $net         = $collectible + $payable;
       $total += $net;
+
       Cell::label($tx['name'] . " " . $tx['rate'] . "%");
       Cell::label(_("Charged on sales") . " (" . _("Output Tax") . "):");
       Cell::amount($payable);
       Cell::amount($tx['net_output']);
       Row::end();
+
       Cell::label($tx['name'] . " " . $tx['rate'] . "%");
       Cell::label(_("Paid on purchases") . " (" . _("Input Tax") . "):");
       Cell::amount($collectible);
       Cell::amount($tx['net_input']);
       Row::end();
+
       Cell::label("<span class='bold'>" . $tx['name'] . " " . $tx['rate'] . "%</span>");
       Cell::label("<span class='bold'>" . _("Net payable or collectible") . ":</span>");
       Cell::amount($net, true);
       Cell::label("");
       Row::end();
     }
+
     Cell::label("");
     Cell::label("<span class='bold'>" . _("Total payable or refund") . ":</span>");
     Cell::amount($total, true);

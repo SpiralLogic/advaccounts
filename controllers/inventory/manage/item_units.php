@@ -7,8 +7,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+
   Page::start(_($help_context = "Units of Measure"), SA_UOM);
-  list($Mode, $selected_id) = Page::simple_mode(false);
+  list($Mode, $selected_id) = Page::simple_mode(FALSE);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     //initialise no input errors assumed initially before we test
     $input_error = 0;
@@ -61,6 +62,7 @@
   Table::header($th);
   $k = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
+
     Cell::label($myrow["abbr"]);
     Cell::label($myrow["name"]);
     Cell::label(($myrow["decimals"] == -1 ? _("User Quantity Decimals") : $myrow["decimals"]));
@@ -86,12 +88,13 @@
     Row::label(_("Unit Abbreviation:"), $_POST['abbr']);
     hidden('abbr', $_POST['abbr']);
   } else {
-    text_row(_("Unit Abbreviation:"), 'abbr', null, 20, 20);
+    text_row(_("Unit Abbreviation:"), 'abbr', NULL, 20, 20);
   }
-  text_row(_("Descriptive Name:"), 'description', null, 40, 40);
-  number_list_row(_("Decimal Places:"), 'decimals', null, 0, 6, _("User Quantity Decimals"));
+  text_row(_("Descriptive Name:"), 'description', NULL, 40, 40);
+  number_list_row(_("Decimal Places:"), 'decimals', NULL, 0, 6, _("User Quantity Decimals"));
   Table::end(1);
   submit_add_or_update_center($selected_id == '', '', 'both');
   end_form();
   Page::end();
+
 

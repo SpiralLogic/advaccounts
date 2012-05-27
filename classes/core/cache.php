@@ -10,6 +10,21 @@
   namespace ADV\Core;
   use \Memcached;
 
+  interface Cachable
+  {
+    /**
+     * @abstract
+     *
+     * @param $key
+     * @param $value
+     * @param $expires
+     *
+     * @return mixed
+     */
+    function set($key, $value, $expires);
+    function delete($key);
+    function get($key, $default);
+  }
   /**
 
    */
@@ -52,7 +67,6 @@
           static::$i = $i;
         }
       }
-
       return (static::$connected) ? static::$i : false;
     }
     /**
@@ -71,7 +85,6 @@
       } elseif (class_exists('Session', false)) {
         $_SESSION['cache'][$key] = $value;
       }
-
       return $value;
     }
     /**
@@ -108,7 +121,6 @@
       } else {
         $result = $default;
       }
-
       return $result;
     }
     /**

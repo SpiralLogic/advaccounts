@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class WO_Cost
-  {
+  class WO_Cost {
+
     /**
      * @static
      *
@@ -16,8 +16,7 @@
      * @param $qty
      * @param $date_
      */
-    public static function add_material($stock_id, $qty, $date_)
-    {
+    public static function add_material($stock_id, $qty, $date_) {
       $m_cost = 0;
       $result = WO::get_bom($stock_id);
       while ($bom_item = DB::fetch($result)) {
@@ -30,7 +29,7 @@
       $result        = DB::query($sql);
       $myrow         = DB::fetch($result);
       $material_cost = $myrow['material_cost'];
-      $qoh           = Item::get_qoh_on_date($stock_id, null, $date_);
+      $qoh           = Item::get_qoh_on_date($stock_id, NULL, $date_);
       if ($qoh < 0) {
         $qoh = 0;
       }
@@ -39,7 +38,7 @@
       }
       $material_cost = Num::round($material_cost, $dec);
       $sql           = "UPDATE stock_master SET material_cost=$material_cost
-        WHERE stock_id=" . DB::escape($stock_id);
+		WHERE stock_id=" . DB::escape($stock_id);
       DB::query($sql, "The cost details for the inventory item could not be updated");
     }
     /**
@@ -50,8 +49,7 @@
      * @param $date_
      * @param $costs
      */
-    public static function add_overhead($stock_id, $qty, $date_, $costs)
-    {
+    public static function add_overhead($stock_id, $qty, $date_, $costs) {
       $dec = User::price_dec();
       Num::price_decimal($costs, $dec);
       if ($qty != 0) {
@@ -61,7 +59,7 @@
       $result        = DB::query($sql);
       $myrow         = DB::fetch($result);
       $overhead_cost = $myrow['overhead_cost'];
-      $qoh           = Item::get_qoh_on_date($stock_id, null, $date_);
+      $qoh           = Item::get_qoh_on_date($stock_id, NULL, $date_);
       if ($qoh < 0) {
         $qoh = 0;
       }
@@ -70,7 +68,7 @@
       }
       $overhead_cost = Num::round($overhead_cost, $dec);
       $sql           = "UPDATE stock_master SET overhead_cost=" . DB::escape($overhead_cost) . "
-        WHERE stock_id=" . DB::escape($stock_id);
+		WHERE stock_id=" . DB::escape($stock_id);
       DB::query($sql, "The cost details for the inventory item could not be updated");
     }
     /**
@@ -81,8 +79,7 @@
      * @param $date_
      * @param $costs
      */
-    public static function add_labour($stock_id, $qty, $date_, $costs)
-    {
+    public static function add_labour($stock_id, $qty, $date_, $costs) {
       $dec = User::price_dec();
       Num::price_decimal($costs, $dec);
       if ($qty != 0) {
@@ -92,7 +89,7 @@
       $result      = DB::query($sql);
       $myrow       = DB::fetch($result);
       $labour_cost = $myrow['labour_cost'];
-      $qoh         = Item::get_qoh_on_date($stock_id, null, $date_);
+      $qoh         = Item::get_qoh_on_date($stock_id, NULL, $date_);
       if ($qoh < 0) {
         $qoh = 0;
       }
@@ -101,7 +98,7 @@
       }
       $labour_cost = Num::round($labour_cost, $dec);
       $sql         = "UPDATE stock_master SET labour_cost=" . DB::escape($labour_cost) . "
-        WHERE stock_id=" . DB::escape($stock_id);
+		WHERE stock_id=" . DB::escape($stock_id);
       DB::query($sql, "The cost details for the inventory item could not be updated");
     }
     /**
@@ -112,8 +109,7 @@
      * @param $date_
      * @param $costs
      */
-    public static function add_issue($stock_id, $qty, $date_, $costs)
-    {
+    public static function add_issue($stock_id, $qty, $date_, $costs) {
       if ($qty != 0) {
         $costs /= $qty;
       }
@@ -123,7 +119,7 @@
       $material_cost = $myrow['material_cost'];
       $dec           = User::price_dec();
       Num::price_decimal($material_cost, $dec);
-      $qoh = Item::get_qoh_on_date($stock_id, null, $date_);
+      $qoh = Item::get_qoh_on_date($stock_id, NULL, $date_);
       if ($qoh < 0) {
         $qoh = 0;
       }
@@ -135,4 +131,5 @@
       DB::query($sql, "The cost details for the inventory item could not be updated");
     }
   }
+
 

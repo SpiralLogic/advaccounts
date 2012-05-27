@@ -11,8 +11,8 @@
    * if ($writeoff_acc==0) return goods into $order->location
    * if src_docs!=0 => credit invoice else credit note
    */
-  class Sales_Credit
-  {
+  class Sales_Credit {
+
     /**
      * @static
      *
@@ -21,8 +21,7 @@
      *
      * @return int
      */
-    public static function add($credit_note, $write_off_acc)
-    {
+    public static function add($credit_note, $write_off_acc) {
       $credit_invoice = is_array($credit_note->src_docs) ? reset(array_keys($credit_note->src_docs)) : $credit_note->src_docs;
       $credit_date    = $credit_note->document_date;
       $tax_group_id   = $credit_note->tax_group_id;
@@ -45,7 +44,8 @@
       if ($credit_note->tax_included == 0) {
         $items_added_tax   = $tax_total - $freight_tax;
         $freight_added_tax = $freight_tax;
-      } else {
+      }
+      else {
         $items_added_tax   = 0;
         $freight_added_tax = 0;
       }
@@ -53,7 +53,8 @@
       // the transaction will be settled at once.
       if (Bank_Account::is($branch_data['receivables_account'])) {
         $alloc = $credit_note_total + $items_added_tax + $credit_note->freight_cost + $freight_added_tax;
-      } else {
+      }
+      else {
         $alloc = 0;
       }
       //	$sales_order=$invoice->order_no;	//?
@@ -64,15 +65,16 @@
       /*Now insert the Credit Note into the debtor_trans table with the allocations as calculated above*/
       // all amounts in debtor's currency
       $credit_no = Debtor_Trans::write(ST_CUSTCREDIT, $trans_no, $credit_note->customer_id, $credit_note->Branch, $credit_date, $credit_note->reference, $credit_note_total, 0, $items_added_tax, $credit_note->freight_cost, $freight_added_tax, $credit_note->sales_type, $credit_note->order_no,
-        $credit_invoice, $credit_note->ship_via, null, $alloc, 0, $credit_note->dimension_id, $credit_note->dimension2_id);
+        $credit_invoice, $credit_note->ship_via, NULL, $alloc, 0, $credit_note->dimension_id, $credit_note->dimension2_id);
       // 2008-06-14 extra $alloc, 2008-11-12 dimension_id Joe Hunt
       if ($trans_no == 0) {
         $credit_note->trans_no = array($credit_no => 0);
         Debtor_Trans::set_parent($credit_note);
-      } else {
+      }
+      else {
         DB_Comments::delete(ST_CUSTCREDIT, $credit_no);
         Sales_Allocation::void(ST_CUSTCREDIT, $credit_no, $credit_date);
-        GL_Trans::void(ST_CUSTCREDIT, $credit_no, true);
+        GL_Trans::void(ST_CUSTCREDIT, $credit_no, TRUE);
         Inv_Movement::void(ST_CUSTCREDIT, $credit_no);
         GL_Trans::void_tax_details(ST_CUSTCREDIT, $credit_no);
       }
@@ -128,7 +130,6 @@
         Ref::save(ST_CUSTCREDIT, $credit_note->reference);
       }
       DB::commit();
-
       return $credit_no;
     }
     /**
@@ -143,14 +144,14 @@
      * a reversing stock movement to show the write off
 
      */
-    public static function add_movements($credit_note, $credit_line, $credit_type, $price, $credited_invoice = 0)
-    {
+    public static function add_movements($credit_note, $credit_line, $credit_type, $price, $credited_invoice = 0) {
       if ($credit_type == "Return") {
         $reference = "Return ";
         if ($credited_invoice) {
           $reference .= "Ex Inv: " . $credited_invoice;
         }
-      } elseif ($credit_type == "WriteOff") {
+      }
+      elseif ($credit_type == "WriteOff") {
         $reference = "WriteOff ";
         if ($credited_invoice) {
           $reference .= "Ex Inv: " . $credited_invoice;
@@ -172,8 +173,7 @@
      *
      * @return float|int
      */
-    public static function add_gl_costs($order, $order_line, $credit_no, $date_, $credit_type, $write_off_gl_code, &$branch_data)
-    {
+    public static function add_gl_costs($order, $order_line, $credit_no, $date_, $credit_type, $write_off_gl_code, &$branch_data) {
       $stock_gl_codes = Item::get_gl_code($order_line->stock_id);
       $customer       = Debtor::get($order->customer_id);
       // 2008-08-01. If there is a Customer Dimension, then override with this,
@@ -191,7 +191,8 @@
         /*now the stock entry*/
         if ($credit_type == "WriteOff") {
           $stock_entry_account = $write_off_gl_code;
-        } else {
+        }
+        else {
           $stock_gl_code       = Item::get_gl_code($order_line->stock_id);
           $stock_entry_account = $stock_gl_code["inventory_account"];
         }
@@ -205,7 +206,8 @@
         // else take the Item Sales Account
         if ($branch_data['sales_account'] != "") {
           $sales_account = $branch_data['sales_account'];
-        } else {
+        }
+        else {
           $sales_account = $stock_gl_codes['sales_account'];
         }
         $total += Debtor_TransDetail::add_gl_trans(ST_CUSTCREDIT, $credit_no, $date_, $sales_account, $dim, $dim2, ($line_taxfree_price * $order_line->qty_dispatched), $order->customer_id, "The credit note GL posting could not be inserted");
@@ -214,7 +216,6 @@
             "The credit note discount GL posting could not be inserted");
         } /*end of if discount !=0 */
       } /*if line_price!=0 */
-
       return $total;
     }
     /**
@@ -224,8 +225,7 @@
      *
      * @return mixed|string
      */
-    public static function header($order)
-    {
+    public static function header($order) {
       Table::startOuter('tablestyle width90');
       Table::section(1);
       $customer_error = "";
@@ -238,7 +238,7 @@
         // customer has changed
         Ajax::i()->activate('branch_id');
       }
-      Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true, true);
+      Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', NULL, FALSE, TRUE, TRUE, TRUE);
       //if (($_SESSION['credit_items']->order_no == 0) ||
       //	($order->customer_id != $_POST['customer_id']) ||
       //	($order->Branch != $_POST['branch_id']))
@@ -282,7 +282,8 @@
       }
       if ($order->trans_no == 0) {
         ref_row(_("Reference") . ':', 'ref');
-      } else {
+      }
+      else {
         Row::label(_("Reference") . ':', $order->reference);
       }
       if (!Bank_Currency::is_company($order->customer_currency)) {
@@ -294,7 +295,7 @@
       if (!isset($_POST['sales_type_id'])) {
         $_POST['sales_type_id'] = $order->sales_type;
       }
-      Sales_Type::row(_("Sales Type"), 'sales_type_id', $_POST['sales_type_id'], true);
+      Sales_Type::row(_("Sales Type"), 'sales_type_id', $_POST['sales_type_id'], TRUE);
       if ($order->sales_type != $_POST['sales_type_id']) {
         $myrow = Sales_Type::get($_POST['sales_type_id']);
         $order->set_sales_type($myrow['id'], $myrow['sales_type'], $myrow['tax_included'], $myrow['factor']);
@@ -307,7 +308,7 @@
       if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "") {
         $_POST['OrderDate'] = $order->document_date;
       }
-      date_row(_("Date:"), 'OrderDate', '', $order->trans_no == 0, 0, 0, 0, null, true);
+      date_row(_("Date:"), 'OrderDate', '', $order->trans_no == 0, 0, 0, 0, NULL, TRUE);
       if (isset($_POST['_OrderDate_changed'])) {
         if (!Bank_Currency::is_company($order->customer_currency) && (DB_Company::get_base_sales_type() > 0)
         ) {
@@ -318,13 +319,15 @@
       // 2008-11-12 Joe Hunt added dimensions
       $dim = DB_Company::get_pref('use_dimension');
       if ($dim > 0) {
-        Dimensions::select_row(_("Dimension") . ":", 'dimension_id', null, true, ' ', false, 1, false);
-      } else {
+        Dimensions::select_row(_("Dimension") . ":", 'dimension_id', NULL, TRUE, ' ', FALSE, 1, FALSE);
+      }
+      else {
         hidden('dimension_id', 0);
       }
       if ($dim > 1) {
-        Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', null, true, ' ', false, 2, false);
-      } else {
+        Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', NULL, TRUE, ' ', FALSE, 2, FALSE);
+      }
+      else {
         hidden('dimension2_id', 0);
       }
       Table::endOuter(1); // outer table
@@ -335,7 +338,6 @@
         }
         Ajax::i()->activate('items_table');
       }
-
       return $customer_error;
     }
     /**
@@ -344,8 +346,7 @@
      * @param             $title
      * @param Sales_Order $order
      */
-    public static function display_items($title, $order)
-    {
+    public static function display_items($title, $order) {
       Display::heading($title);
       Display::div_start('items_table');
       Table::start('tablestyle grid width90');
@@ -365,7 +366,7 @@
 
           Cell::label("<a target='_blank' href='" . BASE_URL . "inventory/inquiry/stock_status.php?stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
           Cell::label($line->description, ' class="nowrap"');
-          Cell::qty($line->qty_dispatched, false, Item::qty_dec($line->stock_id));
+          Cell::qty($line->qty_dispatched, FALSE, Item::qty_dec($line->stock_id));
           Cell::label($line->units);
           Cell::amount($line->price);
           Cell::percent($line->discount_percent * 100);
@@ -373,7 +374,8 @@
           edit_button_cell("Edit$line_no", _(MODE_EDIT), _('Edit document line'));
           delete_button_cell("Delete$line_no", _('Delete'), _('Remove line from document'));
           Row::end();
-        } else {
+        }
+        else {
           Sales_Credit::item_controls($order, $k, $line_no);
         }
         $subtotal += $line_total;
@@ -390,7 +392,7 @@
       }
       Row::start();
       Cell::label(_("Shipping"), "colspan=$colspan class='right bold'");
-      small_amount_cells(null, 'ChargeFreightCost', Num::price_format(get_post('ChargeFreightCost', 0)));
+      small_amount_cells(NULL, 'ChargeFreightCost', Num::price_format(get_post('ChargeFreightCost', 0)));
       Cell::label('', 'colspan=2');
       Row::end();
       $taxes         = $order->get_taxes($_POST['ChargeFreightCost']);
@@ -409,8 +411,8 @@
      * @param $rowcounter
      * @param $line_no
      */
-    public static function item_controls($order, $rowcounter, $line_no = -1)
-    {
+    public static function item_controls($order, $rowcounter, $line_no = -1) {
+
       $id = find_submit(MODE_EDIT);
       if ($line_no != -1 && $line_no == $id) {
         $_POST['stock_id'] = $order->line_items[$id]->stock_id;
@@ -422,8 +424,9 @@
         Cell::label($_POST['stock_id']);
         Cell::label($order->line_items[$id]->description, ' class="nowrap"');
         Ajax::i()->activate('items_table');
-      } else {
-        Sales_UI::items_cells(null, 'stock_id', null, false, false, array('description' => $order->line_items[$id]->description));
+      }
+      else {
+        Sales_UI::items_cells(NULL, 'stock_id', NULL, FALSE, FALSE, array('description' => $order->line_items[$id]->description));
         if (list_updated('stock_id')) {
           Ajax::i()->activate('price');
           Ajax::i()->activate('qty');
@@ -438,18 +441,19 @@
         // default to the customer's discount %
         $_POST['Disc'] = Num::percent_format($order->default_discount * 100);
       }
-      qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
+      qty_cells(NULL, 'qty', $_POST['qty'], NULL, NULL, $dec);
       Cell::label($_POST['units']);
-      amount_cells(null, 'price', null);
-      small_amount_cells(null, 'Disc', Num::percent_format(0), null, null, User::percent_dec());
+      amount_cells(NULL, 'price', NULL);
+      small_amount_cells(NULL, 'Disc', Num::percent_format(0), NULL, NULL, User::percent_dec());
       Cell::amount(Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('Disc') / 100));
       if ($id != -1) {
         button_cell(Orders::UPDATE_ITEM, _("Update"), _('Confirm changes'), ICON_UPDATE);
         button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
         hidden('line_no', $line_no);
         JS::set_focus('qty');
-      } else {
-        submit_cells(Orders::ADD_ITEM, _("Add Item"), "colspan=2", _('Add new item to document'), true);
+      }
+      else {
+        submit_cells(Orders::ADD_ITEM, _("Add Item"), "colspan=2", _('Add new item to document'), TRUE);
       }
       Row::end();
     }
@@ -458,26 +462,26 @@
      *
      * @param $credit
      */
-    public static function option_controls($credit)
-    {
+    public static function option_controls($credit) {
       echo "<br>";
       if (isset($_POST['_CreditType_update'])) {
         Ajax::i()->activate('options');
       }
       Display::div_start('options');
       Table::start('tablestyle2');
-      Sales_Credit::row(_("Credit Note Type"), 'CreditType', null, true);
+      Sales_Credit::row(_("Credit Note Type"), 'CreditType', NULL, TRUE);
       if ($_POST['CreditType'] == "Return") {
         /*if the credit note is a return of goods then need to know which location to receive them into */
         if (!isset($_POST['location'])) {
           $_POST['location'] = $credit->location;
         }
         Inv_Location::row(_("Items Returned to Location"), 'location');
-      } else {
-        /* the goods are to be written off to somewhere */
-        GL_UI::all_row(_("Write off the cost of the items to"), 'WriteOffGLCode', null);
       }
-      textarea_row(_("Memo"), "CreditText", null, 51, 3);
+      else {
+        /* the goods are to be written off to somewhere */
+        GL_UI::all_row(_("Write off the cost of the items to"), 'WriteOffGLCode', NULL);
+      }
+      textarea_row(_("Memo"), "CreditText", NULL, 51, 3);
       echo "</table>";
       Display::div_end();
     }
@@ -489,9 +493,8 @@
      * @param null $selected
      * @param bool $submit_on_change
      */
-    public static function cells($label, $name, $selected = null, $submit_on_change = false)
-    {
-      if ($label != null) {
+    public static function cells($label, $name, $selected = NULL, $submit_on_change = FALSE) {
+      if ($label != NULL) {
         Cell::label($label);
       }
       echo "<td>\n";
@@ -508,10 +511,9 @@
      * @param null $selected
      * @param bool $submit_on_change
      */
-    public static function row($label, $name, $selected = null, $submit_on_change = false)
-    {
+    public static function row($label, $name, $selected = NULL, $submit_on_change = FALSE) {
       echo "<tr><td class='label'>$label</td>";
-      Sales_Credit::cells(null, $name, $selected, $submit_on_change);
+      Sales_Credit::cells(NULL, $name, $selected, $submit_on_change);
       echo "</tr>\n";
     }
   }

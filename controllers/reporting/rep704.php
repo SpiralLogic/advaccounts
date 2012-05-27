@@ -9,8 +9,11 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
+
   Page::set_security(SA_GLREP);
+
   print_GL_transactions();
+
   function print_GL_transactions()
   {
     global $systypes_array;
@@ -47,6 +50,7 @@
     //------------0--1---2---3----4----5----6----7----8----9----10-------
     //-----------------------dim1-dim2-----------------------------------
     //-----------------------dim1----------------------------------------
+
     $aligns = array('left', 'left', 'left', 'left', 'left', 'left', 'left', 'right', 'right', 'right');
     if ($dim == 2) {
       $headers = array(
@@ -185,4 +189,5 @@
     }
     $rep->End();
   }
+
 

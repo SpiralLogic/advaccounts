@@ -12,6 +12,6 @@
   /**
 
    */
-  class DBInsertException extends DBException
-  {
+  class DBInsertException extends DBException {
+
   }
