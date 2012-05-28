@@ -9,12 +9,14 @@
    **/
   class Apps_Items extends Application
   {
+    public $name = "Items";
+    public $help_context = "&Items";
+
     /**
 
      */
-    public function __construct()
+    public function buildMenu()
     {
       $this->direct = '/items/items';
-      parent::__construct("Items", _($this->help_context = "Items"));
     }
   }

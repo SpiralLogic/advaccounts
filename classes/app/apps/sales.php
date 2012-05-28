@@ -13,13 +13,13 @@
    */
   class Apps_Sales extends Application
   {
+    public $name = 'Sales';
+    public $help_context = '&Sales';
     /**
 
      */
-    public function __construct()
+    public function buildMenu()
     {
-      global $installed_extensions;
-      parent::__construct('Sales', _($this->help_context = '&Sales'));
       $this->add_module(_('Quotations and Orders'));
       $this->add_lapp_function(0, '', '');
       $this->add_lapp_function(0, _('New Sales &Quotation'), '/sales/sales_order_entry?' . Orders::ADD . '=0&' . Orders::TYPE . '=' . ST_SALESQUOTE, SA_SALESQUOTE);
@@ -56,14 +56,6 @@
       $this->add_rapp_function(3, _('Sales &Persons'), '/sales/manage/sales_people?', SA_SALESMAN);
       $this->add_rapp_function(3, _('Sales &Areas'), '/sales/manage/sales_areas?', SA_SALESAREA);
       $this->add_rapp_function(3, _('Sales &Groups'), '/sales/manage/sales_groups?', SA_SALESGROUP);
-      if (count($installed_extensions) > 0) {
-        foreach ($installed_extensions as $mod) {
-          if (@$mod['active'] && $mod['type'] == 'plugin' && $mod['tab'] == 'sales') {
-            $this->add_rapp_function(2, $mod['title'], 'modules/' . $mod['path'] . '/' . $mod['filename'] . '?', isset($mod['access']) ?
-                                        $mod['access'] : SA_OPEN);
-          }
-        }
-      }
     }
   }
 

@@ -324,9 +324,9 @@
       if (!$content) {
         $content = '<div class="err_msg">A fatal error has occured!</div>';
       }
-      if ($_SESSION['current_user']->username == 'admin') {
+  //    if ($_SESSION['current_user']->username == 'admin') {
         $content .= '<pre class="left">' . var_export(Errors::$errors, true) . '</pre>';
-      }
+//      }
       if (class_exists('Page')) {
         \Page::error_exit($content, false);
       }

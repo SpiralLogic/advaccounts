@@ -1476,7 +1476,7 @@
    */
   function _format_add_curr($row)
   {
-    public static $company_currency;
+     static $company_currency;
     if ($company_currency == null) {
       $company_currency = Bank_Currency::for_company();
     }

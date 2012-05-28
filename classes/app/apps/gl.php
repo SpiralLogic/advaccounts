@@ -9,13 +9,13 @@
    **/
   class Apps_GL extends Application
   {
+    public $name = 'GL';
+    public $help_context = "&Banking";
     /**
 
      */
-    public function __construct()
+    public function buildMenu()
     {
-      global $installed_extensions;
-      parent::__construct("GL", _($this->help_context = "&Banking"));
       $this->add_module(_("Transactions"));
       $this->add_lapp_function(0, _("&Payments"), "/gl/gl_bank?NewPayment=Yes", SA_PAYMENT);
       $this->add_lapp_function(0, _("&Deposits"), "/gl/gl_bank?NewDeposit=Yes", SA_DEPOSIT);
@@ -44,14 +44,7 @@
       $this->add_rapp_function(2, _("&GL Accounts"), "/gl/manage/gl_accounts?", SA_GLACCOUNT);
       $this->add_rapp_function(2, _("GL Account &Groups"), "/gl/manage/gl_account_types?", SA_GLACCOUNTGROUP);
       $this->add_rapp_function(2, _("GL Account &Classes"), "/gl/manage/gl_account_classes?", SA_GLACCOUNTCLASS);
-      if (count($installed_extensions) > 0) {
-        foreach ($installed_extensions as $mod) {
-          if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "GL") {
-            $this->add_rapp_function(2, $mod["title"], "modules/" . $mod["path"] . "/" . $mod["filename"] . "?",
-              isset($mod["access"]) ? $mod["access"] : SA_OPEN);
-          }
-        }
-      }
+
     }
   }
 

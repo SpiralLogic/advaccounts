@@ -9,12 +9,10 @@
    **/
   class Apps_Creditors extends Application
   {
-    /**
-
-     */
-    public function __construct()
+    public $name = 'Creditors';
+    public $help_context = "&Suppliers";
+    function buildMenu()
     {
       $this->direct = '/contacts/suppliers';
-      parent::__construct("Creditors", _($this->help_context = "&Suppliers"));
     }
   }

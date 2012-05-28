@@ -9,13 +9,13 @@
    **/
   class Apps_Inventory extends Application
   {
+    public $name = "Inventory";
+     public $help_context = "&Inventory";
     /**
 
      */
-    public function __construct()
+    public function buildMenu()
     {
-      global $installed_extensions;
-      parent::__construct("Inventory", _($this->help_context = "&Inventory"));
       $this->add_module(_("Transactions"));
       $this->add_lapp_function(0, _("Inventory Location &Transfers"),
         "/inventory/transfers?NewTransfer=1", SA_LOCATIONTRANSFER);
@@ -54,14 +54,6 @@
         "/inventory/purchasing_data?", SA_PURCHASEPRICING);
       $this->add_rapp_function(3, _("Standard &Costs"),
         "/inventory/cost_update?", SA_STANDARDCOST);
-      if (count($installed_extensions) > 0) {
-        foreach ($installed_extensions as $mod) {
-          if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "inventory") {
-            $this->add_rapp_function(2, $mod["title"],
-              "modules/" . $mod["path"] . "/" . $mod["filename"] . "?",
-              isset($mod["access"]) ? $mod["access"] : SA_OPEN);
-          }
-        }
-      }
+
     }
   }

@@ -36,7 +36,6 @@
       $this->access = $access;
     }
   }
-
   /**
 
    */
@@ -81,7 +80,6 @@
       $appfunction = new app_function($label, $link, $access);
       //array_push($this->lappfunctions,$appfunction);
       $this->lappfunctions[] = $appfunction;
-
       return $appfunction;
     }
     /**
@@ -96,15 +94,17 @@
       $appfunction = new app_function($label, $link, $access);
       //array_push($this->rappfunctions,$appfunction);
       $this->rappfunctions[] = $appfunction;
-
       return $appfunction;
     }
   }
-
+  interface IApplication
+  {
+    function buildMenu();
+  }
   /**
 
    */
-  abstract class Application
+  abstract class Application implements IApplication
   {
     /**
      * @var
@@ -135,12 +135,19 @@
      * @param      $name
      * @param bool $enabled
      */
-    public function __construct($id, $name, $enabled = true)
+    public function __construct($enabled = true)
     {
-      $this->id      = $id;
-      $this->name    = $name;
+      global $installed_extensions;
+      $this->id      = strtolower($this->name);
+      $this->name    = $this->help_context ? : $name;
+      $this->help_context    = _($this->name);
       $this->enabled = $enabled;
       $this->modules = array();
+      $this->extensions = $installed_extensions;
+      $this->buildMenu();
+      if (count($this->extensions) > 0) {
+        $this->add_extensions();
+      }
     }
     /**
      * @param      $name
@@ -153,7 +160,6 @@
       $module = new module($name, $icon);
       //array_push($this->modules,$module);
       $this->modules[] = $module;
-
       return $module;
     }
     /**
@@ -175,6 +181,14 @@
     public function add_rapp_function($level, $label, $link = "", $access = SA_OPEN)
     {
       $this->modules[$level]->rappfunctions[] = new app_function($label, $link, $access);
+    }
+    protected function add_extensions()
+    {
+      foreach ($this->extensions as $mod) {
+        if (@$mod['active'] && $mod['type'] == 'plugin' && $mod['tab'] == $this->id) {
+          $this->add_rapp_function(2, $mod['title'], 'modules/' . $mod['path'] . '/' . $mod['filename'] . '?', isset($mod['access']) ? $mod['access'] : SA_OPEN);
+        }
+      }
     }
   }
 

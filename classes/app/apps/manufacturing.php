@@ -9,13 +9,13 @@
    **/
   class Apps_Manufacturing extends Application
   {
+    public $name = "Manufacturing";
+    public $help_context = "&Manufacturing";
     /**
 
      */
-    public function __construct()
+    public function buildMenu()
     {
-      global $installed_extensions;
-      parent::__construct("Manufacturing", _($this->help_context = "&Manufacturing"));
       $this->add_module(_("Transactions"));
       $this->add_lapp_function(0, _("Work &Order Entry"),
         "/manufacturing/work_order_entry?", SA_WORKORDERENTRY);
@@ -35,15 +35,6 @@
         "/manufacturing/manage/bom_edit?", SA_BOM);
       $this->add_lapp_function(2, _("&Work Centres"),
         "/manufacturing/manage/work_centres?", SA_WORKCENTRES);
-      if (count($installed_extensions) > 0) {
-        foreach ($installed_extensions as $mod) {
-          if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "manufacturing") {
-            $this->add_rapp_function(2, $mod["title"],
-              "modules/" . $mod["path"] . "/" . $mod["filename"] . "?",
-              isset($mod["access"]) ? $mod["access"] : SA_OPEN);
-          }
-        }
-      }
     }
   }
 

@@ -9,11 +9,13 @@
    **/
   class Apps_Claire extends Application
   {
+    public $name = 'Claire';
+    public $help_context = "&Claire";
+    public $enabled = false;
     /**
 
      */
-    public function __construct()
+    public function buildMenu()
     {
-      parent::__construct("Claire", _($this->help_context = "&Claire"));
     }
   }
