@@ -4,7 +4,7 @@ Adv.extend({
 		form.reset();
 		Adv.o.companysearch.prop('disabled', false);
 		Adv.btnConfirm.hide();
-		Adv.btnCancel.text('New');
+		Adv.btnCancel.attr('name','new').text('New');
 		Branches.btnBranchAdd();
 		Adv.Forms.resetHighlights();
 	},
@@ -48,7 +48,6 @@ var Contacts = function () {
 		init:function (data) {
 			Contacts.empty();
 			Contacts.addMany(data);
-			Contacts.New();
 		},
 		add:function (data) {
 			Contacts.addMany(data);
@@ -59,9 +58,8 @@ var Contacts = function () {
 				if (!blank && $v.id === 0) {
 					blank = $v;
 				}
-				if ($v.id !== 0) {
+        $v._k=$k;
 					contacts[contacts.length] = $v;
-				}
 			});
 			$.tmpl('contact', contacts).appendTo($Contacts);
 		},
@@ -238,6 +236,7 @@ var Company = function () {
 			}
 			$.post('#', {"id":item.id}, function (data) {
 				Company.setValues(data);
+        Adv.btnCancel.attr('name','new').text("New");
 			}, 'json');
 			Company.getFrames(item.id);
 		},
@@ -256,16 +255,16 @@ var Company = function () {
 			Branches.btnBranchAdd();
 			Adv.btnConfirm.prop('disabled', true);
 			$.post('#', Company.get(), function (data) {
+        Adv.btnConfirm.prop('disabled', false);
 				if (data.status) {
 					Adv.showStatus(data.status);
-					Adv.btnConfirm.prop('disabled', false);
 					if (!data.status.status) {
 						return;
 					}
 				}
-				Adv.Forms.resetHighlights();
 				Branches.adding = false;
 				Company.setValues(data);
+        Adv.revertState();
 			}, 'json');
 		},
 		set:function (key, value) {
@@ -297,15 +296,14 @@ $(function () {
 	Adv.extend({
 		tabs:$("#tabs0"),
 		accFields:$("[name^='accounts']"),
-		changed:false,
 		fieldsChanged:0,
-		btnConfirm:$("#btnConfirm").click(
+		btnConfirm:$("#btnConfirm").mousedown(
 		 function () {
 			 Company.Save();
 			 return false;
 		 }).hide(),
-		btnCancel:$("#btnCancel").click(function () {
-			(!Adv.fieldsChanged > 0) ? Adv.resetState() : Adv.revertState();
+		btnCancel:$("#btnCancel").mousedown(function () {
+			($(this).attr('name')=='new') ? Adv.resetState() : Adv.revertState();
 			return false;
 		}),
 		ContactLog:$("#contactLog").hide(),
@@ -381,17 +379,15 @@ $(function () {
 		}
 		Adv.Forms.stateModified($this);
 
-		if (!Adv.changed && Adv.fieldsChanged > 0) {
+		if ( Adv.fieldsChanged > 0) {
 			buttontext = (Company.get().id) ? "Save Changes" : "Save New";
-			Adv.btnConfirm.text(buttontext).show();
-			Adv.btnCancel.text('Cancel Changes');
+			Adv.btnConfirm.text(buttontext).attr('name','save').show();
+			Adv.btnCancel.attr('name','cancel').text('Cancel Changes');
 			Adv.o.companysearch.prop('disabled', true);
-			Adv.changed = true;
 		} else {
-			if (Adv.changed && Adv.fieldsChanged === 0) {
-				Adv.changed = false;
+			if ( Adv.fieldsChanged === 0) {
 				Adv.btnConfirm.hide();
-				Adv.btnCancel.text("New");
+				Adv.btnCancel.attr('name','new').text("New");
 			}
 		}
 		Company.set($thisname, $this.val());

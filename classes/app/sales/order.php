@@ -1215,12 +1215,12 @@
       Row::start();
       Cell::label(_("Total Discount"), "colspan=$colspan class='right'");
       small_amount_cells(null, null, $total_discount);
-      HTML::td(true)->button('discountall', 'Discount All', array('name' => 'discountall'), false);
+      HTML::td(true)->button('discountall', 'Discount All', array('name' => '_action','value'=>'discountall'), false);
       hidden('_discountall', '0', true);
       HTML::td();
       $action
         = "var discount = prompt('Discount Percent?',''); if (!discount) return false;
-                $(\"[name='_discountall']\").val(Number(discount));e=$(this);save_focus(e);JsHttpRequest.request(this);return false;";
+                $(\"#discountall\").val(Number(discount));e=$(this);save_focus(e);JsHttpRequest.request(this);return false;";
       JS::addLiveEvent('#discountall', 'click', $action);
       Row::end();
       Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan  class='right' ", "class='right'", 1);
@@ -1465,12 +1465,12 @@
       $line_total = Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('Disc') / 100);
       Cell::amount($line_total, false, '', 'line_total');
       if ($id != -1) {
-        button_cell(Orders::UPDATE_ITEM, _("Update"), _('Confirm changes'), ICON_UPDATE);
-        button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
+        button_cell('_action',Orders::UPDATE_ITEM, _('Confirm changes'), ICON_UPDATE);
+        button_cell('_action','CancelItemChanges',  _('Cancel changes'), ICON_CANCEL);
         hidden('LineNo', $line_no);
         JS::set_focus('qty');
       } else {
-        submit_cells(Orders::ADD_ITEM, _("Add Item"), 'colspan=2 class="center"', _('Add new item to document'), true);
+        submit_cells('_action',Orders::ADD_ITEM, 'colspan=2 class="center"', _('Add new item to document'), true);
       }
       Row::end();
     }

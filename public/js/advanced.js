@@ -487,14 +487,19 @@ Adv.extend({Forms:(function () {
 			Adv.Events.onLeave();
 		},
 		stateModified:function (feild) {
-			var value;
+			var value,defaultValue;
 			if (feild.is(':checkbox')) {
 				value = feild.prop('checked');
 				feild.val(value);
-			} else {
+        defaultValue=feild[0].defaultChecked;
+			} else if (feild.is('select')) {
+        value = feild[0].options[feild[0].selectedIndex].selected;
+        defaultValue= feild[0].options[feild[0].selectedIndex].defaultSelected;
+      }else {
 				value = feild.val();
+        defaultValue=feild[0].defaultValue;
 			}
-			if (feild.data('init') == value && feild.hasClass("ui-state-highlight")) {
+			if (defaultValue == value && feild.hasClass("ui-state-highlight")) {
 				Adv.fieldsChanged--;
 				if (Adv.fieldsChanged === 0) {
 					Adv.Forms.resetHighlights();
@@ -503,7 +508,7 @@ Adv.extend({Forms:(function () {
 				}
 				return;
 			} else {
-				if (feild.data('init') != value && !feild.hasClass("ui-state-highlight")) {
+				if (defaultValue != value && !feild.hasClass("ui-state-highlight")) {
 					Adv.fieldsChanged++;
 					if (feild.prop('disabled')) {
 						return Adv.fieldsChanged;

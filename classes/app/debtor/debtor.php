@@ -91,7 +91,6 @@
     public function __construct($id = null)
     {
       $this->debtor_id        =& $this->id;
-      $this->payment_discount =& $this->payment_discount;
       parent::__construct($id);
       $this->debtor_ref = substr($this->name, 0, 60);
     }
@@ -225,9 +224,11 @@
           unset($this->branches[0]);
         }
       }
-      foreach ($this->contacts as $contact) {
-        $contact->save(array('parent_id' => $this->id));
-        $this->contacts[$contact->id] = $contact;
+      $contacts = $this->contacts;
+      $this->contacts=[];
+      foreach ($contacts as $contact) {
+        $wasnew = $contact->save(array('parent_id' => (int)$this->id));
+        if ($wasnew) $this->contacts[] = $contact;
       }
 
       return $this->_setDefaults();
@@ -367,15 +368,14 @@
      */
     protected function _getContacts()
     {
-      DB::select()->from('contacts')->where('parent_id=', $this->id)->and_where('parent_type =', CT_CUSTOMER);
+      DB::select()->from('contacts')->where('parent_id=', $this->id)->and_where('parent_type =', CT_CUSTOMER)->orderby('name ASC');
       $contacts = DB::fetch()->asClassLate('Contact', array(CT_CUSTOMER));
       if (count($contacts)) {
         foreach ($contacts as $contact) {
-          $this->contacts[$contact->id] = $contact;
-        }
+                  $this->contacts[] = $contact;
+                }
         $this->defaultContact = reset($this->contacts)->id;
       }
-      $this->contacts[0] = new Contact(CT_CUSTOMER, array('parent_id' => $this->id));
     }
     /**
      * @return array|null
@@ -385,9 +385,7 @@
       $this->_defaults();
       $this->accounts               = new Debtor_Account();
       $this->branches[0]            = new Debtor_Branch();
-      $this->contacts[0]            = new Contact(CT_CUSTOMER);
       $this->branches[0]->debtor_id = $this->accounts->debtor_id = $this->id = 0;
-      $this->contacts[0]->parent_id = 0;
       $this->_setDefaults();
 
       return $this->_status(true, 'Initialize', 'Now working with a new customer');
@@ -407,7 +405,8 @@
       $this->_getContacts();
       $this->discount         = $this->discount * 100;
       $this->payment_discount = $this->payment_discount * 100;
-      $this->credit_limit     = Num::price_format($this->credit_limit);
+      $this->credit_limit     = Num::price_format($this->credit_limit);      $this->_setDefaults();
+
     }
     /**
      * @return void
@@ -415,8 +414,8 @@
     protected function _setDefaults()
     {
       $this->defaultBranch  = reset($this->branches)->branch_id;
-      $this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
-      $this->contacts[0]    = new Contact(CT_CUSTOMER, array('parent_id' => $this->id));
+      $this->defaultContact = count($this->contacts) ? reset($this->contacts)->id : 0;
+      $this->contacts[]    = new Contact(CT_CUSTOMER, array('parent_id' => $this->id));
     }
     /**
      * @static

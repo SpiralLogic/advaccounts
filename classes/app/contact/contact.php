@@ -13,6 +13,7 @@
      * @var int
      */
     public $id = 0;
+    public $contact_id = 0;
     /**
      * @var int
      */
@@ -55,7 +56,7 @@
      */
     public function __construct($type, $id = 0)
     {
-      $this->parent_type = $type;
+      $this->parent_type = (int)$type;
       parent::__construct($id, array('parent_type' => $type));
     }
     public function delete()
@@ -89,6 +90,7 @@
     }
     protected function _defaults()
     {
+      $this->id=(int)$this->id;
     }
     /**
      * @return bool|Status

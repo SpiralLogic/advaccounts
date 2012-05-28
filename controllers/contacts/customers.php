@@ -154,18 +154,18 @@
   Table::endOuter(1);
   $menu->endTab()->startTab('Customer Contacts', 'Customer Contacts');
   HTML::div(array('style' => 'text-align:center'))->div('Contacts', array('style' => 'min-height:200px;'));
-  HTML::script('contact_tmpl', array('type' => 'text/x-jquery-tmpl'))->table('contact-${id}', array(
+  HTML::script('contact_tmpl', array('type' => 'text/x-jquery-tmpl'))->table('contact-${_k}', array(
     'class' => '', 'style' => 'display:inline-block'
   ))->tr(true)->td(array(
     'content' => '${name}',
     'class'   => 'tablehead',
     'colspan' => 2
   ))->td->tr;
-  text_row("Name:", 'contact[name-${id}]', '${name}', 35, 40);
-  text_row("Phone:", 'contact[phone1-${id}]', '${phone1}', 35, 40);
-  text_row("Phone2:", 'contact[phone2-${id}]', '${phone2}', 35, 40);
-  text_row("Email:", 'contact[email-${id}]', '${email}', 35, 40);
-  text_row("Dept:", 'contact[department-${id}]', '${department}', 35, 40);
+  text_row("Name:", 'contact[name-${_k}]', '${name}', 35, 40);
+  text_row("Phone:", 'contact[phone1-${_k}]', '${phone1}', 35, 40);
+  text_row("Phone2:", 'contact[phone2-${_k}]', '${phone2}', 35, 40);
+  text_row("Email:", 'contact[email-${_k}]', '${email}', 35, 40);
+  text_row("Dept:", 'contact[department-${_k}]', '${department}', 35, 40);
   HTML::td()->tr->table->script->div->div;
   $menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info');
   Table::startOuter('tablestyle2');
