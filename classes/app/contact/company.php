@@ -118,7 +118,7 @@
       } else {
         $action = <<<JS
 
-				 $.post('/contacts/{$type}s.php',{id:$(this).data('id')},function(data) {Adv.o.company_details.render(data.$type); \$company_details.dialog('open');},'json');
+				 $.post('/contacts/{$type}s.php',{id:$(this).data('id')},function(data) {Adv.o.company_details.render(data.company); \$company_details.dialog('open');},'json');
 JS;
         JS::addLiveEvent($selector, 'click', $action, 'wrapper', TRUE);
       }
