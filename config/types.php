@@ -17,8 +17,7 @@
          $systypes_array, //
          $tag_types, //
          $wo_cost_types, //
-         $wo_types_array,
-         $sales_type_names;
+         $wo_types_array, $sales_type_names;
   //
   $bank_account_types   = array(
     BT_TRANSFER => "Savings Account", //

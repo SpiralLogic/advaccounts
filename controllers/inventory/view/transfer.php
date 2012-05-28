@@ -1,20 +1,21 @@
 <?php
   /**
-   * PHP version 5.4
-   * @category  PHP
-   * @package   ADVAccounts
-   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-   * @copyright 2010 - 2012
-   * @link      http://www.advancedgroup.com.au
-   **/
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
 
-  Page::start(_($help_context = "View Inventory Transfer"), SA_ITEMSTRANSVIEW, true);
+
+  Page::start(_($help_context = "View Inventory Transfer"), SA_ITEMSTRANSVIEW, TRUE);
   if (isset($_GET["trans_no"])) {
     $trans_no = $_GET["trans_no"];
   }
   $transfer_items = Inv_Transfer::get($trans_no);
-  $from_trans     = $transfer_items[0];
-  $to_trans       = $transfer_items[1];
+  $from_trans = $transfer_items[0];
+  $to_trans = $transfer_items[1];
   Display::heading($systypes_array[ST_LOCTRANSFER] . " #$trans_no");
   echo "<br>";
   Table::start('tablestyle2 width90');
@@ -36,13 +37,13 @@
   $th = array(_("Item"), _("Description"), _("Quantity"), _("Units"));
   Table::header($th);
   $transfer_items = Inv_Movement::get(ST_LOCTRANSFER, $trans_no);
-  $k              = 0;
+  $k = 0;
   while ($item = DB::fetch($transfer_items)) {
     if ($item['loc_code'] == $to_trans['loc_code']) {
 
       Cell::label($item['stock_id']);
       Cell::label($item['description']);
-      Cell::qty($item['qty'], false, Item::qty_dec($item['stock_id']));
+      Cell::qty($item['qty'], FALSE, Item::qty_dec($item['stock_id']));
       Cell::label($item['units']);
       Row::end();
       ;
@@ -50,5 +51,5 @@
   }
   Table::end(1);
   Display::is_voided(ST_LOCTRANSFER, $trans_no, _("This transfer has been voided."));
-  Page::end(true);
+  Page::end(TRUE);
 

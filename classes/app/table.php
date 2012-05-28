@@ -6,23 +6,23 @@
    * Time: 2:42 PM
    * To change this template use File | Settings | File Templates.
    */
-  class Table
-  {
+
+  class Table {
+
     /**
      * @param        $msg
      * @param int    $colspan
      * @param string $class
      */
-    public static function sectionTitle($msg, $colspan = 2, $class = 'tablehead')
-    {
+    static function sectionTitle($msg, $colspan = 2, $class = 'tablehead') {
       echo "<tr class='$class'><td colspan=$colspan class='$class'>$msg</td></tr>\n";
     }
+
     /**
      * @param        $labels
      * @param string $params
      */
-    public static function header($labels, $params = '')
-    {
+    static function header($labels, $params = '') {
       echo '<thead><tr>';
       $labels = (array) $labels;
       foreach ($labels as $label) {
@@ -30,32 +30,32 @@
       }
       echo '</tr></thead>';
     }
+
     /**
      * @param string $class
      */
-    public static function start($class = "")
-    {
+    static function start($class = "") {
       echo "<div class='center'><table";
       if ($class != "") {
         echo " class='$class'";
       }
       echo " >\n";
     }
+
     /**
      * @param int $breaks
      */
-    public static function end($breaks = 0)
-    {
+    static function end($breaks = 0) {
       echo "</table></div>\n";
       if ($breaks) {
         Display::br($breaks);
       }
     }
+
     /**
      * @param string $class
      */
-    public static function startOuter($class = "")
-    {
+    static function startOuter($class = "") {
       Table::start($class);
       echo "<tr class='top'><td>\n"; // outer table
     }
@@ -64,8 +64,7 @@
      * @param bool   $width
      * @param string $class
      */
-    public static function section($number = 1, $width = false, $class = '')
-    {
+    static function section($number = 1, $width = FALSE, $class = '') {
       if ($number > 1) {
         echo "</table>\n";
         $width = ($width ? "width:$width" : "");
@@ -78,23 +77,20 @@
      * @param int  $breaks
      * @param bool $close_table
      */
-    public static function endOuter($breaks = 0, $close_table = true)
-    {
+    static function endOuter($breaks = 0, $close_table = TRUE) {
       if ($close_table) {
         echo "</table>\n";
       }
       echo "</td></tr>\n";
       Table::end($breaks);
     }
-    public static function foot($class = '')
-    {
+    static function foot($class = '') {
       if ($class) {
         $class = " class='$class' ";
       }
       echo "<tfoot $class>";
     }
-    public static function footEnd()
-    {
+    static function footEnd() {
       echo "</tfoot>";
     }
   }

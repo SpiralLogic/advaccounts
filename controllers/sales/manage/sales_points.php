@@ -7,8 +7,10 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+
   Page::start(_($help_context = "POS settings"), SA_POSSETUP);
-  list($Mode, $selected_id) = Page::simple_mode(true);
+  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+
   if ($Mode == ADD_ITEM && Sales_Point::can_process()) {
     Sales_Point::add($_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'), check_value('credit'));
     Event::success(_('New point of sale has been added'));
@@ -24,7 +26,8 @@
     $res = DB::query($sql, "canot check pos usage");
     if (DB::num_rows($res)) {
       Event::error(_("Cannot delete this POS because it is used in users setup."));
-    } else {
+    }
+    else {
       Sales_Point::delete($selected_id);
       Event::notice(_('Selected point of sale has been deleted'));
       $Mode = MODE_RESET;
@@ -32,7 +35,7 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav         = get_post('show_inactive');
+    $sav = get_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
@@ -46,6 +49,7 @@
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
+
     Cell::label($myrow["pos_name"], ' class="nowrap"');
     Cell::label($myrow['credit_sale'] ? _('Yes') : _('No'));
     Cell::label($myrow['cash_sale'] ? _('Yes') : _('No'));
@@ -65,10 +69,10 @@
   Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
-      $myrow             = Sales_Point::get($selected_id);
-      $_POST['name']     = $myrow["pos_name"];
+      $myrow = Sales_Point::get($selected_id);
+      $_POST['name'] = $myrow["pos_name"];
       $_POST['location'] = $myrow["pos_location"];
-      $_POST['account']  = $myrow["pos_account"];
+      $_POST['account'] = $myrow["pos_account"];
       if ($myrow["credit_sale"]) {
         $_POST['credit_sale'] = 1;
       }
@@ -83,7 +87,8 @@
     check_row(_('Allowed credit sale'), 'credit', check_value('credit_sale'));
     check_row(_('Allowed cash sale'), 'cash', check_value('cash_sale'));
     Bank_UI::cash_accounts_row(_("Default cash account") . ':', 'account');
-  } else {
+  }
+  else {
     hidden('credit', 1);
     hidden('account', 0);
   }
@@ -92,4 +97,5 @@
   submit_add_or_update_center($selected_id == -1, '', 'both');
   end_form();
   Page::end();
+
 

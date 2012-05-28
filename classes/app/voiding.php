@@ -22,13 +22,13 @@
     public static function void($type, $type_no, $date_, $memo_)
     {
       $void_entry = static::get($type, $type_no);
-      if ($void_entry != null) {
-        return false;
+      if ($void_entry != NULL) {
+        return FALSE;
       }
       switch ($type) {
         case ST_JOURNAL : // it's a journal entry
           if (!GL_Trans::exists($type, $type_no)) {
-            return false;
+            return FALSE;
           }
           GL_Journal::void($type, $type_no);
           break;
@@ -36,7 +36,7 @@
         case ST_BANKDEPOSIT : // it's a deposit
         case ST_BANKTRANSFER : // it's a transfer
           if (!Bank_Trans::exists($type, $type_no)) {
-            return false;
+            return FALSE;
           }
           Bank_Trans::void($type, $type_no);
           break;
@@ -46,77 +46,73 @@
         case ST_CUSTREFUND : // it's a customer refund
         case ST_CUSTDELIVERY : // it's a customer dispatch
           if (!Debtor_Trans::exists($type, $type_no)) {
-            return false;
+            return FALSE;
           }
           if ($type == 13) // added 04 Oct 2008 by Joe Hunt. If delivery note has a not voided invoice, then NO.
           {
             $delivery = Debtor_Trans::get($type_no, $type);
             if ($delivery['trans_link'] != 0) {
-              if (static::get(10, $delivery['trans_link']) === false) {
-                return false;
+              if (static::get(10, $delivery['trans_link']) === FALSE) {
+                return FALSE;
               }
             }
           }
           Debtor_Trans::post_void($type, $type_no);
           break;
         case ST_LOCTRANSFER : // it's a stock transfer
-          if (Inv_Transfer::get_items($type_no) == null) {
-            return false;
+          if (Inv_Transfer::get_items($type_no) == NULL) {
+            return FALSE;
           }
           Inv_Transfer::void(ST_LOCTRANSFER, $type_no);
           break;
         case ST_INVADJUST : // it's a stock adjustment
-          if (Inv_Adjustment::get($type_no) == null) {
-            return false;
+          if (Inv_Adjustment::get($type_no) == NULL) {
+            return FALSE;
           }
           Inv_Adjustment::void(ST_INVADJUST, $type_no);
           break;
         case ST_PURCHORDER : // it's a PO
         case ST_SUPPRECEIVE : // it's a GRN
-
-          return false;
+          return FALSE;
         case ST_SUPPINVOICE : // it's a suppler invoice
         case ST_SUPPCREDIT : // it's a supplier credit note
         case ST_SUPPAYMENT : // it's a supplier payment
           if (!Creditor_Trans::exists($type, $type_no)) {
-            return false;
+            return FALSE;
           }
           if (!Creditor_Trans::post_void($type, $type_no)) {
-            return false;
+            return FALSE;
           }
           break;
         case ST_WORKORDER : // it's a work order
-          if (!WO::get($type_no, true)) {
-            return false;
+          if (!WO::get($type_no, TRUE)) {
+            return FALSE;
           }
           WO::void(ST_WORKORDER, $type_no);
           break;
         case ST_MANUISSUE : // it's a work order issue
           if (!WO_Issue::exists($type_no)) {
-            return false;
+            return FALSE;
           }
           WO_Issue::void(ST_MANUISSUE, $type_no);
           break;
         case ST_MANURECEIVE : // it's a work order production
           if (!WO_Produce::exists($type_no)) {
-            return false;
+            return FALSE;
           }
           WO_Produce::void(ST_MANURECEIVE, $type_no);
           break;
         case ST_SALESORDER: // it's a sales order
         case ST_SALESQUOTE: // it's a sales quotation
-
-          return false;
+          return FALSE;
         case ST_COSTUPDATE : // it's a stock cost update
-
-          return false;
+          return FALSE;
           break;
       }
       // only add an entry if it's actually been voided
       DB_AuditTrail::add($type, $type_no, $date_, _("Voided.") . "\n" . $memo_);
       static::add($type, $type_no, $date_, $memo_);
-
-      return true;
+      return TRUE;
     }
     /**
      * @static
@@ -130,7 +126,6 @@
     {
       $sql    = "SELECT * FROM voided WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($type_no);
       $result = DB::query($sql, "could not query voided transaction table");
-
       return DB::fetch($result);
     }
     /**
@@ -145,7 +140,6 @@
     {
       $sql    = "SELECT * FROM voided WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($type_no);
       $result = DB::query($sql, "could not query voided transaction table");
-
       return DB::num_rows($result);
     }
     /**
@@ -159,8 +153,9 @@
     public static function add($type, $type_no, $date_, $memo_)
     {
       $date = Dates::date2sql($date_);
-      $sql  = "INSERT INTO voided (type, id, date_, memo_)
-            VALUES (" . DB::escape($type) . ", " . DB::escape($type_no) . ", " . DB::escape($date) . ", " . DB::escape($memo_) . ")";
+      $sql
+            = "INSERT INTO voided (type, id, date_, memo_)
+			VALUES (" . DB::escape($type) . ", " . DB::escape($type_no) . ", " . DB::escape($date) . ", " . DB::escape($memo_) . ")";
       DB::query($sql, "could not add voided transaction entry");
     }
   }

@@ -43,7 +43,6 @@
       $this->add_rapp_function(2, _("Install/Update &Languages"), "/system/inst_lang?", SA_CREATELANGUAGE);
       $this->add_rapp_function(2, _("Install/Activate &Extensions"), "/system/inst_module?", SA_CREATEMODULES);
       $this->add_rapp_function(2, _("Software &Upgrade"), "/system/inst_upgrade?", SA_SOFTWAREUPGRADE);
-
     }
   }
 

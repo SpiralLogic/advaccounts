@@ -1,35 +1,34 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+
   namespace ADV\Core;
   /**
 
    */
-  class HTML
-  {
+  class HTML {
+
     /**
      * @var HTML
      */
-    protected static $_instance = null;
+    protected static $_instance = NULL;
     /**
      * @var bool
      */
-    protected static $_return = false;
+    protected static $_return = FALSE;
     /**
      * @param $func
      * @param $args
      *
      * @return null
      */
-    public function __call($func, $args)
-    {
+    function __call($func, $args) {
       return static::__callStatic($func, $args);
     }
     /**
@@ -37,10 +36,8 @@
      *
      * @return null
      */
-    public function __get($func)
-    {
+    function __get($func) {
       static::__callStatic($func);
-
       return static::$_instance;
     }
     /**
@@ -50,18 +47,17 @@
      *
      * @return HTML|string
      */
-    public static function setReturn($state = null)
-    {
-      if (static::$_instance === null) {
+    static function setReturn($state = NULL) {
+      if (static::$_instance === NULL) {
         static::$_instance = new static;
       }
-      static::$_return = ($state === null) ? !(static::$_return) : $state;
+      static::$_return = ($state === NULL) ? !(static::$_return) : $state;
       if (!static::$_return) {
         return ob_get_clean();
-      } else {
+      }
+      else {
         ob_start();
       }
-
       return static::$_instance;
     }
     /**
@@ -72,14 +68,12 @@
      *
      * @return null
      */
-    public static function __callStatic($func, $args = array())
-    {
-      if (static::$_instance === null) {
+    static function __callStatic($func, $args = array()) {
+      if (static::$_instance === NULL) {
         static::$_instance = new static;
       }
       (count($args) == 0) ? static::$_instance->_closeTag(($func[0] == '_') ? substr($func, 1) : $func)
         : static::$_instance->_Builder($func, $args);
-
       return static::$_instance;
     }
     /**
@@ -87,8 +81,7 @@
      * @param array  $attr
      * @param string $content
      */
-    protected function _openTag($type, $attr = array(), $content = '')
-    {
+    protected function _openTag($type, $attr = array(), $content = '') {
       $attrs = '';
       foreach (
         $attr as $key => $value
@@ -107,8 +100,7 @@
     /**
      * @param $type
      */
-    protected function _closeTag($type)
-    {
+    protected function _closeTag($type) {
       echo '</' . $type . '>';
     }
     /**
@@ -117,26 +109,28 @@
      * @param array  $attr
      * @param string $content
      */
-    protected function _Builder($func, $args, $attr = array(), $content = '')
-    {
-      $open = (is_bool(end($args))) ? array_pop($args) : true;
+    protected function _Builder($func, $args, $attr = array(), $content = '') {
+      $open = (is_bool(end($args))) ? array_pop($args) : TRUE;
       foreach (
         $args as $key => $val
       ) {
         if ($key == 0 && is_string($val)) {
           $attr['id'] = $val;
-        } elseif (!isset($attr['content']) && is_string($val)) {
+        }
+        elseif (!isset($attr['content']) && is_string($val)) {
           $content = $attr['content'] = $val;
-        } elseif (is_array($val)) {
+        }
+        elseif (is_array($val)) {
           $attr = array_merge($attr, $val);
         }
       }
       if (!$open) {
-        if ($open === false) {
+        if ($open === FALSE) {
           $this->_openTag($func, $attr, $content);
         }
         $this->_closeTag($func);
-      } else {
+      }
+      else {
         $this->_openTag($func, $attr);
       }
     }

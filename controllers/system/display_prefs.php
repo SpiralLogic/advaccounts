@@ -1,23 +1,26 @@
 <?php
   /**
-   * PHP version 5.4
-   * @category  PHP
-   * @package   ADVAccounts
-   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-   * @copyright 2010 - 2012
-   * @link      http://www.advancedgroup.com.au
-   **/
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
+
   Page::start(_($help_context = "Display Setup"), SA_SETUPDISPLAY);
   if (isset($_POST['setprefs'])) {
     if (!is_numeric($_POST['query_size']) || ($_POST['query_size'] < 1)) {
       Event::error($_POST['query_size']);
       Event::error(_("Query size must be integer and greater than zero."));
       JS::set_focus('query_size');
-    } else {
+    }
+    else {
       $chg_theme = User::theme() != $_POST['theme'];
-      $chg_lang  = $_SESSION['Language']->code != $_POST['language'];
+      $chg_lang = $_SESSION['Language']->code != $_POST['language'];
       User::i()
-        ->update_prefs($_POST['prices'], $_POST['Quantities'], $_POST['Rates'], $_POST['Percent'], check_value('show_gl'), check_value('show_codes'), $_POST['date_format'], $_POST['date_sep'], $_POST['tho_sep'], $_POST['dec_sep'], $_POST['theme'], $_POST['page_size'], check_value('show_hints'), $_POST['profile'], check_value('rep_popup'), (int) ($_POST['query_size']), check_value('graphic_links'), $_POST['language'], check_value('sticky_doc_date'), $_POST['startup_tab']);
+        ->update_prefs($_POST['prices'], $_POST['Quantities'], $_POST['Rates'], $_POST['Percent'], check_value('show_gl'), check_value('show_codes'), $_POST['date_format'], $_POST['date_sep'], $_POST['tho_sep'], $_POST['dec_sep'], $_POST['theme'], $_POST['page_size'], check_value('show_hints'),
+        $_POST['profile'], check_value('rep_popup'), (int) ($_POST['query_size']), check_value('graphic_links'), $_POST['language'], check_value('sticky_doc_date'), $_POST['startup_tab']);
       if ($chg_lang) {
         $_SESSION['Language']->set_language($_POST['language']);
       }
@@ -31,7 +34,8 @@
       }
       if (Config::get('demo_mode')) {
         Event::warning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));
-      } else {
+      }
+      else {
         Event::success(_("Display settings have been updated."));
       }
     }
@@ -73,13 +77,14 @@
   if (!isset($_POST['profile'])) {
     $_POST['profile'] = User::print_profile();
   }
-  Reports_UI::print_profiles_row(_("Printing profile") . ':', 'profile', null, _('Browser printing support'));
-  check_row(_("Use popup window to display reports:"), 'rep_popup', User::rep_popup(), false, _('Set this option to on if your browser directly supports pdf files'));
-  check_row(_("Use icons instead of text links:"), 'graphic_links', User::graphic_links(), false, _('Set this option to on for using icons instead of text links'));
+  Reports_UI::print_profiles_row(_("Printing profile") . ':', 'profile', NULL, _('Browser printing support'));
+  check_row(_("Use popup window to display reports:"), 'rep_popup', User::rep_popup(), FALSE, _('Set this option to on if your browser directly supports pdf files'));
+  check_row(_("Use icons instead of text links:"), 'graphic_links', User::graphic_links(), FALSE, _('Set this option to on for using icons instead of text links'));
   text_row_ex(_("Query page size:"), 'query_size', 5, 5, '', User::query_size());
-  check_row(_("Remember last document date:"), 'sticky_doc_date', User::sticky_doc_date(), false, _('If set document date is remembered on subsequent documents, otherwise default is current date'));
+  check_row(_("Remember last document date:"), 'sticky_doc_date', User::sticky_doc_date(), FALSE, _('If set document date is remembered on subsequent documents, otherwise default is current date'));
   Table::endOuter(1);
-  submit_center('setprefs', _("Update"), true, '', 'default');
+  submit_center('setprefs', _("Update"), TRUE, '', 'default');
   end_form(2);
   Page::end();
+
 

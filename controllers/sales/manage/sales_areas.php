@@ -9,7 +9,7 @@
    **/
 
   Page::start(_($help_context = "Sales Areas"), SA_SALESAREA);
-  list($Mode, $selected_id) = Page::simple_mode(true);
+  list($Mode, $selected_id) = Page::simple_mode(TRUE);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     $input_error = 0;
     if (strlen($_POST['description']) == 0) {
@@ -19,10 +19,11 @@
     }
     if ($input_error != 1) {
       if ($selected_id != -1) {
-        $sql  = "UPDATE areas SET description=" . DB::escape($_POST['description']) . " WHERE area_code = " . DB::escape($selected_id);
+        $sql = "UPDATE areas SET description=" . DB::escape($_POST['description']) . " WHERE area_code = " . DB::escape($selected_id);
         $note = _('Selected sales area has been updated');
-      } else {
-        $sql  = "INSERT INTO areas (description) VALUES (" . DB::escape($_POST['description']) . ")";
+      }
+      else {
+        $sql = "INSERT INTO areas (description) VALUES (" . DB::escape($_POST['description']) . ")";
         $note = _('New sales area has been added');
       }
       DB::query($sql, "The sales area could not be updated or added");
@@ -33,9 +34,9 @@
   if ($Mode == MODE_DELETE) {
     $cancel_delete = 0;
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors'
-    $sql    = "SELECT COUNT(*) FROM branches WHERE area=" . DB::escape($selected_id);
+    $sql = "SELECT COUNT(*) FROM branches WHERE area=" . DB::escape($selected_id);
     $result = DB::query($sql, "check failed");
-    $myrow  = DB::fetch_row($result);
+    $myrow = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       $cancel_delete = 1;
       Event::error(_("Cannot delete this area because customer branches have been created using this area."));
@@ -49,7 +50,7 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav         = get_post('show_inactive');
+    $sav = get_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
@@ -78,9 +79,9 @@
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing area
-      $sql                  = "SELECT * FROM areas WHERE area_code=" . DB::escape($selected_id);
-      $result               = DB::query($sql, "could not get area");
-      $myrow                = DB::fetch($result);
+      $sql = "SELECT * FROM areas WHERE area_code=" . DB::escape($selected_id);
+      $result = DB::query($sql, "could not get area");
+      $myrow = DB::fetch($result);
       $_POST['description'] = $myrow["description"];
     }
     hidden("selected_id", $selected_id);

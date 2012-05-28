@@ -9,7 +9,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   // Display demo user name and password within login form if "Config::get('demo_mode') " is true
-  if (Config::get('demo_mode') == true) {
+  if (Config::get('demo_mode') == TRUE) {
     $demo_text = _("Login as user: demouser and password: password");
   } else {
     $demo_text = _("Please login here");
@@ -32,7 +32,7 @@
   echo "<table class='titletext'><tr><td>$title</td></tr></table>\n";
   Display::div_start('_page_body');
   Display::br(2);
-  start_form(false, $_SESSION['timeout']['uri'], "loginform");
+  start_form(FALSE, $_SESSION['timeout']['uri'], "loginform");
   echo "<input type='hidden' id='ui_mode' name='ui_mode' value='" . User::i()->ui_mode . "' />\n";
   Table::start('login');
   Row::start();
@@ -60,6 +60,7 @@
     $companies = Config::get_all('db');
     echo "<tr><td class='label'><label for='login_company'>" . _("Company") . "</label></td><td><select id='login_company'
     name='login_company'>\n";
+
     foreach ($companies as $name => $company) {
       if (!$company['company']) {
         continue;
@@ -87,7 +88,7 @@
     echo   $date = date("m/d/Y") . " | " . date("h.i am");
   }
   echo "<br><a class='pad20' target='_blank' href='" . POWERED_URL . "' tabindex='-1'>" . APP_TITLE . ' ' . VERSION . " - " . _("Theme:") . "
-     " . $def_theme . "</a>\n";
+	 " . $def_theme . "</a>\n";
   echo "<br><br><a target='_blank' href='" . POWERED_URL . "' tabindex='-1'>" . POWERED_BY . "</a></div>";
   echo "<script>";
   if ($login_timeout) {

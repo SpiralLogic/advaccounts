@@ -15,21 +15,25 @@
   }
   $txt_date = _("Date:");
   if (isset($header2type)) {
-    $txt_cust_no     = _("Cust no");
+    $txt_cust_no = _("Cust no");
     $doc_customer_id = "Customer ID";
     if ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) { // Purchase Order
       $doc_Charge_To = _("Order To");
       if ($doctype == ST_PURCHORDER) {
         $doc_Delivered_To = _("Deliver To");
-      } else {
+      }
+      else {
         $doc_Delivered_To = _("Charge To");
       }
-    } else {
+    }
+    else {
       if ($doctype == ST_CUSTPAYMENT) {
         $doc_Charge_To = _("Charged To");
-      } elseif ($doctype == ST_CUSTREFUND) {
+      }
+      elseif ($doctype == ST_CUSTREFUND) {
         $doc_Charge_To = _("Refunded To");
-      } else {
+      }
+      else {
         $doc_Charge_To = _("Charge To");
       }
       $doc_Delivered_To = _("Delivered To");
@@ -37,58 +41,65 @@
     $doc_shipping_company = _("Shipping Company");
     if ($doctype == ST_SALESQUOTE) {
       $doc_Due_Date = _("Valid until");
-    } elseif ($doctype == ST_SALESORDER) {
+    }
+    elseif ($doctype == ST_SALESORDER) {
       $doc_Due_Date = _("Delivery Date");
-    } else {
+    }
+    else {
       $doc_Due_Date = _("Due Date");
     }
     $doc_Your_Ref = _("Your Ref");
     if ($doctype == ST_WORKORDER) {
-      $doc_Our_Ref       = _("Type");
-      $doc_Your_TAX_no   = _("Manufactured Item");
+      $doc_Our_Ref = _("Type");
+      $doc_Your_TAX_no = _("Manufactured Item");
       $doc_Payment_Terms = _("Required By");
       $doc_Customers_Ref = _("Reference");
-      $doc_Our_Order_No  = _("Into Location");
-      $doc_Due_Date      = _("Quantity");
-    } else {
+      $doc_Our_Order_No = _("Into Location");
+      $doc_Due_Date = _("Quantity");
+    }
+    else {
       //	if ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT)
       //			$doc_Our_Ref = _("Type");
       $doc_Our_Ref = "Contact";
       # __ADVANCEDEDIT__ BEGIN #
       if ($doctype == ST_PURCHORDER) {
-        $txt_date          = _("Date:");
+        $txt_date = _("Date:");
         $doc_Customers_Ref = "Acount Number";
-        $doc_Our_Ref       = "";
-        $doc_Your_TAX_no   = "Phone";
-        $doc_Our_Order_No  = "Fax";
-        $doc_Due_Date      = "";
-      } elseif ($doctype == ST_PROFORMA) {
+        $doc_Our_Ref = "";
+        $doc_Your_TAX_no = "Phone";
+        $doc_Our_Order_No = "Fax";
+        $doc_Due_Date = "";
+      }
+      elseif ($doctype == ST_PROFORMA) {
         $doc_Customers_Ref = "";
-        $doc_Our_Ref       = "Contact";
-        $doc_Your_TAX_no   = "";
-        $doc_Our_Order_No  = "";
-        $doc_Due_Date      = "Due Date";
+        $doc_Our_Ref = "Contact";
+        $doc_Your_TAX_no = "";
+        $doc_Our_Order_No = "";
+        $doc_Due_Date = "Due Date";
         $doc_Payment_Terms = _("Payment Terms");
-      } elseif ($doctype == ST_STATEMENT) {
-        $txt_date          = "Statement Date:";
+      }
+      elseif ($doctype == ST_STATEMENT) {
+        $txt_date = "Statement Date:";
         $doc_Customers_Ref = "";
-        $doc_Our_Ref       = "Customer ID";
-        $doc_Your_TAX_no   = "Phone";
-        $doc_Our_Order_No  = "Fax";
-        $doc_Due_Date      = "";
+        $doc_Our_Ref = "Customer ID";
+        $doc_Your_TAX_no = "Phone";
+        $doc_Our_Order_No = "Fax";
+        $doc_Due_Date = "";
         $doc_Payment_Terms = "Payment Terms";
-      } elseif ($doctype == ST_CUSTDELIVERY) {
+      }
+      elseif ($doctype == ST_CUSTDELIVERY) {
         $doc_Customers_Ref = "Purchase Order#";
         $doc_Payment_Terms = "";
-        $doc_Your_TAX_no   = "Phone";
-        $doc_Our_Order_No  = "Order No:";
-      } else {
+        $doc_Your_TAX_no = "Phone";
+        $doc_Our_Order_No = "Order No:";
+      }
+      else {
         $doc_Customers_Ref = ($doctype == ST_SALESQUOTE || $doctype == ST_STATEMENT) ? "" : "Purchase Order#";
-        $doc_Our_Ref       = "Contact";
+        $doc_Our_Ref = "Contact";
         $doc_Payment_Terms = "Payment Terms";
-        $doc_customer_id   = "Customer ID";
-        $doc_Your_TAX_no   = "Phone";
-        $doc_Our_Order_No  = "Fax";
+        $doc_customer_id = "Customer ID";
+        $doc_Your_TAX_no = "Phone";
+        $doc_Our_Order_No = "Fax";
       }
       # __ADVANCEDEDIT__ END #
     }
@@ -102,36 +113,45 @@
       }
       $doc_Bank_Account = '';
       $doc_Please_Quote = _("All amounts stated in");
-    } else {
-      $doc_Bank_Account = _("Bank Account");
-      $doc_Please_Quote = $doctype == ST_SALESINVOICE ? _("Please quote Invoice no. when paying. All amounts stated in") :
-        _("Please quote Credit no. when paying. All amounts stated in");
     }
-    $doc_Address         = _("Address");
+    else {
+      $doc_Bank_Account = _("Bank Account");
+      $doc_Please_Quote = $doctype == ST_SALESINVOICE ? _("Please quote Invoice no. when paying. All amounts stated in") : _("Please quote Credit no. when paying. All amounts stated in");
+    }
+    $doc_Address = _("Address");
     $doc_Phone_Fax_Email = _("Phone/Fax/Email");
-    $doc_Bank            = _("Bank");
-    $doc_Payment_Link    = _("You can pay through");
+    $doc_Bank = _("Bank");
+    $doc_Payment_Link = _("You can pay through");
     if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER || $doctype == ST_SALESINVOICE || $doctype == ST_CUSTCREDIT || $doctype == ST_CUSTDELIVERY || $doctype == ST_PROFORMA || $doctype == ST_WORKORDER || $doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND
     ) {
       if ($doctype == ST_SALESQUOTE) {
         $this->title = _("QUOTATION");
-      } elseif ($doctype == ST_PURCHORDER) {
+      }
+      elseif ($doctype == ST_PURCHORDER) {
         $this->title = _("PURCHASE ORDER");
-      } elseif ($doctype == ST_CUSTDELIVERY) {
+      }
+      elseif ($doctype == ST_CUSTDELIVERY) {
         $this->title = ($packing_slip == 1 ? _("PACKING SLIP") : _("DELIVERY NOTE"));
-      } elseif ($doctype == ST_SALESORDER) {
+      }
+      elseif ($doctype == ST_SALESORDER) {
         $this->title = ($print_as_quote == 1 ? _("QUOTE") : _("ORDER"));
-      } elseif ($doctype == ST_SALESINVOICE) {
+      }
+      elseif ($doctype == ST_SALESINVOICE) {
         $this->title = _("TAX INVOICE");
-      } elseif ($doctype == ST_WORKORDER) {
+      }
+      elseif ($doctype == ST_WORKORDER) {
         $this->title = _("WORK ORDER");
-      } elseif ($doctype == ST_SUPPAYMENT) {
+      }
+      elseif ($doctype == ST_SUPPAYMENT) {
         $this->title = _("REMITTANCE");
-      } elseif ($doctype == ST_CUSTPAYMENT) {
+      }
+      elseif ($doctype == ST_CUSTPAYMENT) {
         $this->title = _("RECEIPT");
-      } elseif ($doctype == ST_CUSTREFUND) {
+      }
+      elseif ($doctype == ST_CUSTREFUND) {
         $this->title = _("REFUND");
-      } else {
+      }
+      else {
         $this->title = _("CREDIT NOTE");
       }
       if (isset($isproforma) && $isproforma) {
@@ -139,48 +159,39 @@
       }
       if ($doctype == ST_PURCHORDER) {
         $this->headers = array(_("Item Code"), _("Item Description"), '', _("Quantity"), _("Unit"), _("Price"), _("Total"));
-      } elseif ($doctype == ST_WORKORDER) {
+      }
+      elseif ($doctype == ST_WORKORDER) {
         $this->headers = array(
-          _("Item Code"),
-          _("Item Description"),
-          _("From Location"),
-          _("Work Centre"),
-          _("Unit Quantity"),
-          _("Total Quantity"),
-          _("Units Issued")
+          _("Item Code"), _("Item Description"), _("From Location"), _("Work Centre"), _("Unit Quantity"), _("Total Quantity"), _("Units Issued")
         );
-      } elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
+      }
+      elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
         $this->headers = array(
           _("Trans Type"), _("#"), _("Date"), _("Due Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation")
         );
-      } elseif ($doctype == ST_CUSTDELIVERY) {
-        $this->headers = array(_("Item Code"), _("Item Description"), _("Qty"));
-      } else {
-        $this->headers = array(
-          _("Item Code"),
-          _("Item Description"),
-          _("Qty"),
-          _("Unit"),
-          _("Price"),
-          _("Disc.%"),
-          _("Tax"),
-          _("Total")
-        );
       }
-    } else {
+      elseif ($doctype == ST_CUSTDELIVERY) {
+        $this->headers = array(_("Item Code"), _("Item Description"), _("Qty"));
+      }
+      else {
+        $this->headers = array(_("Item Code"), _("Item Description"), _("Qty"), _("Unit"), _("Price"), _("Disc.%"), _("Tax"), _("Total"));
+      }
+    }
+    else {
       if ($doctype == ST_STATEMENT) {
-        $this->title   = _("STATEMENT");
+        $this->title = _("STATEMENT");
         $this->headers = array(
-          _("Transaction"), _("Invoice"), _("PO#"), _("Date"), _("Due"), _("Debits"), _("Credits"), _("Outstanding"), _("Balance")
+          _("Transaction"), _("Invoice"), _("PO#"), _("Date"), _("Due"), _("Debits"), _("Credits"),
+          _("Outstanding"), _("Balance")
         );
       }
     }
   }
   if (isset($emailtype)) {
-    $doc_Dear_Sirs       = _("Dear");
-    $doc_AttachedFile    = _("Attached you will find ");
+    $doc_Dear_Sirs = _("Dear");
+    $doc_AttachedFile = _("Attached you will find ");
     $doc_Kindest_regards = _("Kindest regards");
-    $doc_Payment_Link    = _("You can pay through");
+    $doc_Payment_Link = _("You can pay through");
   }
   if (isset($header2type) || isset($linetype)) {
     if (isset($header2type) || isset($linetype)) {
@@ -220,46 +231,51 @@
       }
     }
     $doc_Delivery_no = _("Delivery Note No.");
-    $doc_Order_no    = _("Order No.");
+    $doc_Order_no = _("Order No.");
   }
   if (isset($linetype)) {
     if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER || $doctype == ST_SALESINVOICE || $doctype == ST_CUSTCREDIT || $doctype == ST_CUSTDELIVERY
     ) {
-      $doc_sub_total      = _("Subtotal");
-      $doc_shipping       = _("Shipping");
-      $doc_included       = _("Included");
-      $doc_amount         = _("Amount");
-      $doc_total_invoice  = $doctype == ST_SALESINVOICE ? _("TOTAL INVOICE") : _("TOTAL CREDIT");
-      $doc_TOTAL_ORDER    = _("TOTAL ORDER EX GST");
-      $doc_TOTAL_ORDER2   = _("TOTAL ORDER GST INCL.");
-      $doc_TOTAL_PO       = _("TOTAL PO EX GST");
+      $doc_sub_total = _("Subtotal");
+      $doc_shipping = _("Shipping");
+      $doc_included = _("Included");
+      $doc_amount = _("Amount");
+      $doc_total_invoice = $doctype == ST_SALESINVOICE ? _("TOTAL INVOICE") : _("TOTAL CREDIT");
+      $doc_TOTAL_ORDER = _("TOTAL ORDER EX GST");
+      $doc_TOTAL_ORDER2 = _("TOTAL ORDER GST INCL.");
+      $doc_TOTAL_PO = _("TOTAL PO EX GST");
       $doc_TOTAL_DELIVERY = _("TOTAL DELIVERY INCL. GST");
-    } elseif ($doctype == ST_SUPPAYMENT || ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
-      $doc_Towards          = _("As advance / full / part / payment towards:");
-      $txt_by_Cheque        = _("By Cash / Cheque* / Draft No.");
-      $txt_dated            = _("Dated");
-      $doc_Drawn            = _("Drawn on Bank");
-      $doc_Drawn_Branch     = _("Branch");
-      $txt_received         = _("Received / Sign");
-      $txt_total_allocated  = _("Total Allocated");
+    }
+    elseif ($doctype == ST_SUPPAYMENT || ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
+      $doc_Towards = _("As advance / full / part / payment towards:");
+      $txt_by_Cheque = _("By Cash / Cheque* / Draft No.");
+      $txt_dated = _("Dated");
+      $doc_Drawn = _("Drawn on Bank");
+      $doc_Drawn_Branch = _("Branch");
+      $txt_received = _("Received / Sign");
+      $txt_total_allocated = _("Total Allocated");
       $txt_left_to_allocate = _("Left to Allocate");
       if ($doctype == ST_CUSTPAYMENT) {
         $txt_total_payment = _("TOTAL RECEIPT");
-      } elseif ($doctype == ST_CUSTREFUND) {
+      }
+      elseif ($doctype == ST_CUSTREFUND) {
         $txt_total_payment = _("TOTAL REFUND");
-      } else {
+      }
+      else {
         $txt_total_payment = _("TOTAL REMITTANCE");
       }
     }
   }
   if ($doctype == ST_STATEMENT) {
-    $txt_outstanding     = _("Outstanding Transactions");
+    $txt_outstanding = _("Outstanding Transactions");
     $txt_opening_balance = "Opening Balance";
+
     $txt_current = _("Current");
-    $txt_total_balance   = _("Total Balance");
-    $txt_statement       = _("Your Statement");
+
+    $txt_total_balance = _("Total Balance");
+    $txt_statement = _("Your Statement");
     $doc_Kindest_regards = _("Please pass this statement on to your accounts department.\n\nIf this is not the correct email address to send future statements to please respond to this email with the correct address.\n\nKindest regards");
-    $doc_as_of           = _("as of");
-    $txt_days            = _("Days");
-    $txt_over            = _("Over");
+    $doc_as_of = _("as of");
+    $txt_days = _("Days");
+    $txt_over = _("Over");
   }

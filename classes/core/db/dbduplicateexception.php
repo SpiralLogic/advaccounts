@@ -7,10 +7,11 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+
   namespace ADV\Core\DB;
   /**
 
    */
-  class DBDuplicateException extends DBException
-  {
+  class DBDuplicateException extends DBException {
+
   }

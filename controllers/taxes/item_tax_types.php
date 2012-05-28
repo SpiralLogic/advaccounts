@@ -9,7 +9,7 @@
    **/
 
   Page::start(_($help_context = "Item Tax Types"), SA_ITEMTAXTYPE);
-  list($Mode, $selected_id) = Page::simple_mode(true);
+  list($Mode, $selected_id) = Page::simple_mode(TRUE);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     $input_error = 0;
     if (strlen($_POST['name']) == 0) {
@@ -89,7 +89,7 @@
     hidden('selected_id', $selected_id);
   }
   text_row_ex(_("Description:"), 'name', 50);
-  yesno_list_row(_("Is Fully Tax-exempt:"), 'exempt', null, "", "", true);
+  yesno_list_row(_("Is Fully Tax-exempt:"), 'exempt', NULL, "", "", TRUE);
   Table::end(1);
   if (!isset($_POST['exempt']) || $_POST['exempt'] == 0) {
     Event::warning(_("Select which taxes this item tax type is exempt from."), 0, 1);
@@ -101,7 +101,7 @@
 
       Cell::label($myrow["name"]);
       Cell::label(Num::percent_format($myrow["rate"]) . " %", ' class="right nowrap"');
-      check_cells("", 'ExemptTax' . $myrow["id"], null);
+      check_cells("", 'ExemptTax' . $myrow["id"], NULL);
       Row::end();
     }
     Table::end(1);
@@ -114,4 +114,6 @@
  *
  * @return bool
  */
+
+
 

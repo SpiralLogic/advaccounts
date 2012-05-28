@@ -261,8 +261,7 @@
     protected static function prepare_backtrace($backtrace)
     {
       foreach ($backtrace as $key => $trace) {
-        if (!isset($trace['file']) || $trace['file'] == __FILE__ || (isset($trace['class']) && $trace['class'] == __CLASS__)
-          || $trace['function'] == 'trigger_error' || $trace['function'] == 'shutdown_handler'
+        if (!isset($trace['file']) || $trace['file'] == __FILE__ || (isset($trace['class']) && $trace['class'] == __CLASS__) || $trace['function'] == 'trigger_error' || $trace['function'] == 'shutdown_handler'
         ) {
           unset($backtrace[$key]);
         }
@@ -284,8 +283,7 @@
           Ajax::i()->aCommands = array();
         }
         static::$current_severity = -1;
-        $error                    = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'],
-          $last_error['line']);
+        $error                    = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']);
         static::exception_handler($error);
       }
       if (class_exists('Ajax', false) && Ajax::in_ajax()) {
@@ -324,8 +322,8 @@
       if (!$content) {
         $content = '<div class="err_msg">A fatal error has occured!</div>';
       }
-  //    if ($_SESSION['current_user']->username == 'admin') {
-        $content .= '<pre class="left">' . var_export(Errors::$errors, true) . '</pre>';
+      //    if ($_SESSION['current_user']->username == 'admin') {
+      $content .= '<pre class="left">' . var_export(Errors::$errors, true) . '</pre>';
 //      }
       if (class_exists('Page')) {
         \Page::error_exit($content, false);
@@ -342,7 +340,8 @@
      * @static
      * @return int
      */
-    public static function getSeverity() { return static::$current_severity; }
+    public static function getSeverity()
+    { return static::$current_severity; }
     /**
      * @static
      * @internal param bool $json

@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class GL_Bank
-  {
+  class GL_Bank {
+
     /**
      * @static
      *
@@ -23,12 +23,11 @@
      *
      * @return mixed
      */
-    protected static function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $account, $currency, $person_type_id = null, $person_id = "")
-    {
+    protected static function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $account, $currency, $person_type_id = NULL, $person_id = "") {
       if (Bank_Currency::is_company($currency)) {
         return;
       }
-      if ($date_ == null) {
+      if ($date_ == NULL) {
         $date_ = Dates::today();
       }
       $for_amount = 0;
@@ -36,9 +35,9 @@
       // upto $date_ and calculate with the exchange rates. And then compare with the GL account balance.
       // 2010-02-23 Joe Hunt with help of Ary Wibowo
       $sql    = "SELECT SUM(bt.amount) AS for_amount, ba.bank_curr_code
-        FROM bank_trans bt, bank_accounts ba
-        WHERE ba.id = bt.bank_act AND ba.account_code = " . DB::escape($account) . " AND bt.trans_date<='" . Dates::date2sql($date_) . "'
-        GROUP BY ba.bank_curr_code";
+		FROM bank_trans bt, bank_accounts ba
+		WHERE ba.id = bt.bank_act AND ba.account_code = " . DB::escape($account) . " AND bt.trans_date<='" . Dates::date2sql($date_) . "'
+		GROUP BY ba.bank_curr_code";
       $result = DB::query($sql, "Transactions for bank account $acc_id could not be calculated");
       while ($row = DB::fetch($result)) {
         if ($row['for_amount'] == 0) {
@@ -50,17 +49,17 @@
       $amount = GL_Trans::get_from_to("", $date_, $account);
       $diff   = $amount - $for_amount;
       if ($diff != 0) {
-        if ($trans_type == null) {
+        if ($trans_type == NULL) {
           $trans_type = ST_JOURNAL;
         }
-        if ($trans_no == null) {
+        if ($trans_no == NULL) {
           $trans_no = SysTypes::get_next_trans_no($trans_type);
         }
-        if ($person_type_id == null) {
+        if ($person_type_id == NULL) {
           $person_type_id = PT_MISC;
         }
-        GL_Trans::add($trans_type, $trans_no, $date_, $account, 0, 0, _("Exchange Variance"), -$diff, null, $person_type_id, $person_id);
-        GL_Trans::add($trans_type, $trans_no, $date_, DB_Company::get_pref('exchange_diff_act'), 0, 0, _("Exchange Variance"), $diff, null, $person_type_id, $person_id);
+        GL_Trans::add($trans_type, $trans_no, $date_, $account, 0, 0, _("Exchange Variance"), -$diff, NULL, $person_type_id, $person_id);
+        GL_Trans::add($trans_type, $trans_no, $date_, DB_Company::get_pref('exchange_diff_act'), 0, 0, _("Exchange Variance"), $diff, NULL, $person_type_id, $person_id);
       }
     }
     //	Add bank tranfer to database.
@@ -81,8 +80,7 @@
      *
      * @return int
      */
-    public static function add_bank_transfer($from_account, $to_account, $date_, $amount, $ref, $memo_, $charge = 0)
-    {
+    public static function add_bank_transfer($from_account, $to_account, $date_, $amount, $ref, $memo_, $charge = 0) {
       DB::begin();
       $trans_type      = ST_BANKTRANSFER;
       $currency        = Bank_Currency::for_company($from_account);
@@ -110,7 +108,6 @@
       Ref::save($trans_type, $ref);
       DB_AuditTrail::add($trans_type, $trans_no, $date_);
       DB::commit();
-
       return $trans_no;
     }
     //	Add bank payment or deposit to database.
@@ -138,13 +135,12 @@
      *
      * @return array
      */
-    public static function add_bank_transaction($trans_type, $from_account, $items, $date_, $person_type_id, $person_id, $person_detail_id, $ref, $memo_, $use_transaction = true)
-    {
+    public static function add_bank_transaction($trans_type, $from_account, $items, $date_, $person_type_id, $person_id, $person_detail_id, $ref, $memo_, $use_transaction = TRUE) {
       // we can only handle type 1 (payment)and type 2 (deposit)
       if ($trans_type != ST_BANKPAYMENT && $trans_type != ST_BANKDEPOSIT) {
         Errors::db_error("Invalid type ($trans_type) sent to add_bank_transaction");
       }
-      $do_exchange_variance = false;
+      $do_exchange_variance = FALSE;
       if ($use_transaction) {
         DB::begin();
       }
@@ -159,16 +155,18 @@
         // we need to negate it too
         $cust_amount = -$cust_amount;
         $trans_no    = Debtor_Trans::write($trans_type, 0, $person_id, $person_detail_id, $date_, $ref, $cust_amount);
-      } elseif ($person_type_id == PT_SUPPLIER) {
+      }
+      elseif ($person_type_id == PT_SUPPLIER) {
         // we need to add a supplier transaction record
         // convert to supp currency
         $supplier_amount = Bank::exchange_from_to($total_amount, $currency, Bank_Currency::for_creditor($person_id), $date_);
         // we need to negate it too
         $supplier_amount = -$supplier_amount;
         $trans_no        = Creditor_Trans::add($trans_type, $person_id, $date_, '', $ref, "", $supplier_amount, 0, 0);
-      } else {
+      }
+      else {
         $trans_no             = SysTypes::get_next_trans_no($trans_type);
-        $do_exchange_variance = true;
+        $do_exchange_variance = TRUE;
       }
       // do the source account postings
       Bank_Trans::add($trans_type, $trans_no, $from_account, $ref, $date_, -$total_amount, $person_type_id, $person_id, $currency, "Cannot insert a source bank transaction");
@@ -193,7 +191,7 @@
         GL_Trans::add_gl_tax_details($gl_item->code_id, $trans_type, $trans_no, -$amount, $ex_rate, $date_, $memo_);
       }
       // do the source account postings
-      GL_Trans::add($trans_type, $trans_no, $date_, $bank_gl_account, 0, 0, $memo_, -$total, null, $person_type_id, $person_id);
+      GL_Trans::add($trans_type, $trans_no, $date_, $bank_gl_account, 0, 0, $memo_, -$total, NULL, $person_type_id, $person_id);
       if ($do_exchange_variance) {
         static::add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $bank_gl_account, $currency, $person_type_id, $person_id);
       }
@@ -203,7 +201,6 @@
       if ($use_transaction) {
         DB::commit();
       }
-
       return array($trans_type, $trans_no);
     }
   }

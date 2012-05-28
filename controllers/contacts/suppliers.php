@@ -8,6 +8,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+
   ADVAccounting::i()->set_selected('Creditors');
   if (AJAX_REFERRER) {
     if (isset($_GET['term'])) {
@@ -45,24 +46,24 @@
     /** @noinspection PhpUndefinedMethodInspection */
     HTML::div('companysearch');
     HTML::table(array('class' => 'marginauto bold'));
-    HTML::tr(true)->td(true);
-    UI::search('supplier', array('label' => 'Search Supplier:', 'size' => 80, 'callback' => 'Company.fetch', 'focus' => true));
+    HTML::tr(TRUE)->td(TRUE);
+    UI::search('supplier', array('label' => 'Search Supplier:', 'size' => 80, 'callback' => 'Company.fetch', 'focus' => TRUE));
     HTML::td()->tr->table->div;
   }
   start_form();
   $menu = new MenuUI();
   $menu->startTab('Details', 'Supplier Details', '#', 'text-align:center');
   HTML::div('companyIDs');
-  HTML::table(array("class" => "marginauto bold"))->tr(true)->td(true);
+  HTML::table(array("class" => "marginauto bold"))->tr(TRUE)->td(TRUE);
   HTML::label(array(
                    'for' => 'name', 'content' => 'Supplier name:'
-              ), false);
+              ), FALSE);
   HTML::input('name', array(
                            'value' => $supplier->name, 'name' => 'name', 'size' => 50
                       ));
   HTML::td()->td(array(
                       'content' => _("Supplier ID: "), "style" => "width:90px"
-                 ), false)->td(true);
+                 ), FALSE)->td(TRUE);
   HTML::input('id', array(
                          'value' => $supplier->id, 'name' => 'id', 'size' => 10, 'maxlength' => '7'
                     ));
@@ -86,13 +87,14 @@
   Table::section(2);
   Table::sectionTitle(_("Accounts Details"), 2);
   /** @noinspection PhpUndefinedMethodInspection */
-  HTML::tr(true)->td(array(
+  HTML::tr(TRUE)->td(array(
                           'class' => "center", 'colspan' => 2
                      ));
   UI::button('useShipAddress', _("Use shipping details"), array('name' => 'useShipAddress'));
   HTML::_td()->tr;
   text_row(_("Phone Number:"), 'supp_phone', $supplier->phone2, 35, 30);
   textarea_row(_("Address:"), 'supp_address', $supplier->address, 35, 2);
+
   $postcode = new Contact_Postcode(array(
                                         'city'     => array('supp_city', $supplier->city),
                                         'state'    => array('supp_state', $supplier->state),
@@ -106,7 +108,7 @@
   Table::sectionTitle(_("Accounts Details:"), 2);
   percent_row(_("Prompt Payment Discount Percent:"), 'discount', $supplier->discount, (User::i()->can_access(SA_SUPPLIERCREDIT)) ?
     "" : " disabled");
-  amount_row(_("Credit Limit:"), 'credit_limit', $supplier->credit_limit, null, null, 0, (User::i()
+  amount_row(_("Credit Limit:"), 'credit_limit', $supplier->credit_limit, NULL, NULL, 0, (User::i()
     ->can_access(SA_SUPPLIERCREDIT)) ? "" : " disabled");
   record_status_list_row(_("Supplier status:"), 'inactive');
   text_row(_("GSTNo:"), 'tax_id', $supplier->tax_id, 35, 40);
@@ -128,7 +130,7 @@
   HTML::td(array(
                 'class' => 'ui-widget-content center'
            ));
-  UI::button('addLog', "Add log entry")->td->tr->tr(true)->td(null)->textarea('messageLog', array('cols' => 50, 'rows' => 20));
+  UI::button('addLog', "Add log entry")->td->tr->tr(TRUE)->td(NULL)->textarea('messageLog', array('cols' => 50, 'rows' => 20));
   Contact_Log::read($supplier->id, CT_SUPPLIER);
   /** @noinspection PhpUndefinedMethodInspection */
   HTML::textarea()->td->tr;
@@ -138,7 +140,7 @@
   HTML::script('contact_tmpl', array('type' => 'text/x-jquery-tmpl'))->table('contact-${id}', array(
                                                                                                    'class' => '',
                                                                                                    'style' => 'display:inline-block'
-                                                                                              ))->tr(true)->td(array(
+                                                                                              ))->tr(TRUE)->td(array(
                                                                                                                     'content' => '${name}',
                                                                                                                     'class'   => 'tablehead',
                                                                                                                     'colspan' => 2
@@ -149,11 +151,13 @@
   text_row("Email:", 'contact[email-${id}]', '${email}', 35, 40);
   text_row("Dept:", 'contact[department-${id}]', '${department}', 35, 40);
   HTML::td()->tr->table->script->div->div;
+
   $menu->endTab()->startTab('Invoices', 'Invoices');
   echo "<div id='invoiceFrame' data-src='" . BASE_URL . "purchases/inquiry/supplier_allocation_inquiry.php?supplier_id=" . $supplier->id . "' ></div> ";
   $menu->endTab()->render();
   hidden('frame', Input::request('frame'));
   HTML::div();
+
   end_form();
   HTML::div('contactLog', array(
                                'title' => 'New contact log entry', 'class' => 'ui-widget-overlay', 'style' => 'display:none;'
@@ -180,7 +184,7 @@
   HTML::_div();
   if (!Input::get('frame')) {
     HTML::div('shortcuts', array('class' => 'width50 center'));
-    $shortcuts = new MenuUI(array('noajax' => true));
+    $shortcuts = new MenuUI(array('noajax' => TRUE));
     $shortcuts->addLink('Supplier Payment', 'Make supplier payment!', '/purchases/supplier_payment.php?supplier_id=', 'id');
     $shortcuts->addLink('Supplier Invoice', 'Make supplier invoice!', '/purchases/supplier_invoice.php?New=1&supplier_id=', 'id');
     $shortcuts->render();
@@ -189,4 +193,5 @@
     UI::emailDialogue(CT_SUPPLIER);
   }
   HTML::_div();
-  Page::end(true);
+
+  Page::end(TRUE);
