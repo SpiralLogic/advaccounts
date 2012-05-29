@@ -120,7 +120,8 @@
         }
         $display_sub_total = Num::format($SubTotal, $dec);
         $display_freight   = Num::format($sign * $myrow["ov_freight"], $dec);
-        $rep->row          = $rep->bottomMargin + (12 * $rep->lineHeight);
+        $fromBottom = ($myrow['type']==ST_SALESINVOICE)?15:12;
+        $rep->row          = $rep->bottomMargin + ( $fromBottom * $rep->lineHeight);
         $linetype          = true;
         $doctype           = $j;
         $doc_included      = $doc_sub_total = $doc_shipping = $doc_amount = $doc_total_invoice = $doc_invoice_no = '';

@@ -167,15 +167,18 @@
           ->can_access(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())
         ) {
           submit_js_confirm(Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
-          submit_center_first('_action',Orders::DELETE_ORDER, _('Cancels document entry or removes sales order when editing an old document'));
+          submit_center_first(Orders::DELETE_ORDER, $deleteorder, _('Cancels document entry or removes sales order when editing an old document'));
+          submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
         }
-        submit_center_first('_action', 'Cancel', _("Revert this document entry back to its former state."));
-
+        else {
+          submit_center_first(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
+        }
         if (count($this->order->line_items)) {
           if ($this->order->trans_no > 0) {
-            submit_center_last('_action',Orders::PROCESS_ORDER, _('Validate changes and update document'), 'default');
-          } else {
-            submit_center_last('_action',Orders::PROCESS_ORDER, _('Check entered data and save document'), 'default');
+            submit_center_last(Orders::PROCESS_ORDER, $corder, _('Validate changes and update document'), 'default');
+          }
+          else {
+            submit_center_last(Orders::PROCESS_ORDER, $porder, _('Check entered data and save document'), 'default');
           }
         }
         if (isset($_GET[Orders::MODIFY_ORDER]) && is_numeric($_GET[Orders::MODIFY_ORDER])) {
@@ -538,14 +541,14 @@
       Item_Line::start_focus('_stock_id_edit');
     }
     protected function discountAll() {
-      $discount = Input::post('_discountall', Input::NUMERIC, FALSE);
-      if (!$discount) {
+      if (!is_numeric($_POST['_discountall'])) {
         Event::error(_("Discount must be a number"));
-      } elseif ($discount < 0 || $discount > 100) {
+      }
+      elseif ($_POST['_discountall'] < 0 || $_POST['_discountall'] > 100) {
         Event::error(_("Discount percentage must be between 0-100"));
       }
       else {
-        $this->order->discount_all($discount / 100);
+        $this->order->discount_all($_POST['_discountall'] / 100);
       }
       $this->ajax->activate('_page_body');
     }

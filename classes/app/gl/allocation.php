@@ -484,8 +484,7 @@
     /**
      * @param $order
      */
-    public
-    public function copy_from_order($order)
+function copy_from_order($order)
     {
       $_POST['Comments']         = $order->Comments;
       $_POST['OrderDate']        = $order->document_date;
