@@ -129,19 +129,18 @@
     /**
      * @var bool
      */
-    public $enabled;
+    public $enabled=true;
     /**
      * @param      $id
      * @param      $name
      * @param bool $enabled
      */
-    public function __construct($enabled = true)
+    public function __construct()
     {
       global $installed_extensions;
       $this->id      = strtolower($this->name);
       $this->name    = $this->help_context ? : $name;
       $this->help_context    = _($this->name);
-      $this->enabled = $enabled;
       $this->modules = array();
       $this->extensions = $installed_extensions;
       $this->buildMenu();

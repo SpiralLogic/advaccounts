@@ -62,7 +62,7 @@
             if (function_exists('apc_clear_cache')) {
               apc_clear_cache('user');
             }
-            \Display::meta_forward('/index.php');
+            \Display::meta_forward('/');
           }
           static::$i = $i;
         }
