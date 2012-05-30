@@ -81,7 +81,7 @@
         $this->removed();
       }
       //--------------- --------------------------------------------------------------
-      if (isset($_POST[Orders::PROCESS_ORDER]) && can_process($this->order)) {
+      if (isset($_POST[Orders::PROCESS_ORDER]) && $this->can_process($this->order)) {
         $this->process();
       }
       if (isset($_POST['update'])) {
