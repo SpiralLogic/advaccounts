@@ -535,7 +535,7 @@
       Page::footer_exit();
     }
     protected function updateItem() {
-      if ($_POST[Orders::UPDATE_ITEM] != '' && check_item_data($this->order)) {
+      if ($_POST[Orders::UPDATE_ITEM] != '' && $this->check_item_data($this->order)) {
         $this->order->update_order_item($_POST['LineNo'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
       }
       Item_Line::start_focus('_stock_id_edit');
