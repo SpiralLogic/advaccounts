@@ -9,32 +9,47 @@
    **/
   class SalesOrder extends Controller_Base
   {
-    protected $addTitles = array(
-      ST_SALESQUOTE  => "New Sales Quotation Entry", ST_SALESINVOICE=> "Direct Sales Invoice", ST_CUSTDELIVERY=> "Direct Sales Delivery", ST_SALESORDER  => "New Sales Order Entry"
-    );
-    protected $modifyTitles = array(
-      ST_SALESQUOTE  => "Modifying Sales Quotation # ", ST_SALESORDER  => "Modifying Sales Order # "
-    );
-    protected $typeSecurity = array(
-      ST_SALESORDER   => SA_SALESORDER, ST_SALESQUOTE   => SA_SALESQUOTE, ST_CUSTDELIVERY => SA_SALESDELIVERY, ST_SALESINVOICE => SA_SALESINVOICE
-    );
-    protected $processSecurity = array(
-      Orders::NEW_ORDER    => SA_SALESORDER, Orders::MODIFY_ORDER => SA_SALESORDER, Orders::NEW_QUOTE    => SA_SALESQUOTE, Orders::MODIFY_QUOTE => SA_SALESQUOTE, Orders::NEW_DELIVERY => SA_SALESDELIVERY, Orders::NEW_INVOICE  => SA_SALESINVOICE
-    );
+    protected $addTitles
+      = array(
+        ST_SALESQUOTE  => "New Sales Quotation Entry",
+        ST_SALESINVOICE=> "Direct Sales Invoice",
+        ST_CUSTDELIVERY=> "Direct Sales Delivery",
+        ST_SALESORDER  => "New Sales Order Entry"
+      );
+    protected $modifyTitles
+      = array(
+        ST_SALESQUOTE  => "Modifying Sales Quotation # ", //
+        ST_SALESORDER  => "Modifying Sales Order # "
+      );
+    protected $typeSecurity
+      = array(
+        ST_SALESORDER   => SA_SALESORDER,
+        ST_SALESQUOTE   => SA_SALESQUOTE,
+        ST_CUSTDELIVERY => SA_SALESDELIVERY,
+        ST_SALESINVOICE => SA_SALESINVOICE
+      );
+    protected $processSecurity
+      = array(
+        Orders::NEW_ORDER    => SA_SALESORDER,
+        Orders::MODIFY_ORDER => SA_SALESORDER,
+        Orders::NEW_QUOTE    => SA_SALESQUOTE,
+        Orders::MODIFY_QUOTE => SA_SALESQUOTE,
+        Orders::NEW_DELIVERY => SA_SALESDELIVERY,
+        Orders::NEW_INVOICE  => SA_SALESINVOICE
+      );
     public $type;
     /***
      * @var Sales_Order;
      */
     public $order;
-    protected $action;
     protected function before()
     {
       $this->order = Orders::session_get() ? : NULL;
-      Security::set_page((!$this->order) ? : $this->order->trans_type, $this->typeSecurity, $this->processSecurity);
+      Security::i()->set_page((!$this->order) ? : $this->order->trans_type, $this->typeSecurity, $this->processSecurity);
       JS::open_window(900, 500);
       if (Input::get('customer_id', Input::NUMERIC)) {
-        $_POST[Orders::CANCEL_CHANGES] = TRUE;
-        $_POST['customer_id']          = $_GET['customer_id'];
+        $this->action         = Orders::CANCEL_CHANGES;
+        $_POST['customer_id'] = $_GET['customer_id'];
         $this->ajax->activate('customer_id');
       }
       $this->type = Input::get('type');
@@ -55,7 +70,6 @@
       if (!isset($this->order)) {
         $this->order = $this->create_order(ST_SALESORDER, 0);
       }
-      $this->action = Input::post('_action');
     }
     public function index()
     {
@@ -71,97 +85,99 @@
       }
       if (strpos($this->action, Orders::DELETE_ITEM) !== false) {
         $id = str_replace(Orders::DELETE_ITEM, '', $this->action);
-          if ($this->order->some_already_delivered($id) == 0) {
-            $this->order->remove_from_order($id);
-          } else {
-            Event::error(_("This item cannot be deleted because some of it has already been delivered."));
-          }
-          Item_Line::start_focus('_stock_id_edit');
-      }
-      if (isset($_POST[Orders::UPDATE_ITEM])) {
-        $this->updateItem();
+        if ($this->order->some_already_delivered($id) == 0) {
+          $this->order->remove_from_order($id);
+        } else {
+          Event::error(_("This item cannot be deleted because some of it has already been delivered."));
+        }
+        Item_Line::start_focus('_stock_id_edit');
       }
       if ($this->action) {
         call_user_func(array($this, $this->action));
       }
-      if (isset($_POST['CancelItemChanges'])) {
-        Item_Line::start_focus('_stock_id_edit');
-      }
       Validation::check(Validation::STOCK_ITEMS, _("There are no inventory items defined in the system."));
       Validation::check(Validation::BRANCHES_ACTIVE, _("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
-      if ($this->order && $this->order->trans_type == ST_SALESINVOICE) {
-        $idate           = _("Invoice Date:");
-        $orderitems      = _("Sales Invoice Items");
-        $deliverydetails = _("Enter Delivery Details and Confirm Invoice");
-        $deleteorder     = _("Delete Invoice");
-        $corder          = '';
-        $porder          = _("Place Invoice");
-      } elseif ($this->order && $this->order->trans_type == ST_CUSTDELIVERY) {
-        $idate           = _("Delivery Date:");
-        $orderitems      = _("Delivery Note Items");
-        $deliverydetails = _("Enter Delivery Details and Confirm Dispatch");
-        $deleteorder     = _("Delete Delivery");
-        $corder          = '';
-        $porder          = _("Place Delivery");
-      } elseif ($this->order && $this->order->trans_type == ST_SALESQUOTE) {
-        $idate           = _("Quotation Date:");
-        $orderitems      = _("Sales Quotation Items");
-        $deliverydetails = _("Enter Delivery Details and Confirm Quotation");
-        $deleteorder     = _("Delete Quotation");
-        $porder          = _("Place Quotation");
-        $corder          = _("Commit Quotations Changes");
-      } elseif ($this->order && $this->order->trans_type == ST_SALESORDER) {
-        $idate           = _("Order Date:");
-        $orderitems      = _("Sales Order Items");
-        $deliverydetails = _("Enter Delivery Details and Confirm Order");
-        $deleteorder     = _("Delete Order");
-        $porder          = _("Place Order");
-        $corder          = _("Commit Order Changes");
+      if (!is_object($this->order)) {
+        $this->exitError('No current order to edit.');
+      }
+      switch ($this->order->trans_type) {
+        case ST_SALESINVOICE:
+          $idate       = _("Invoice Date:");
+          $orderitems  = _("Sales Invoice Items");
+          $deleteorder = _("Delete Invoice");
+          $corder      = '';
+          $porder      = _("Place Invoice");
+          break;
+        case ST_CUSTDELIVERY:
+          $idate       = _("Delivery Date:");
+          $orderitems  = _("Delivery Note Items");
+          $deleteorder = _("Delete Delivery");
+          $corder      = '';
+          $porder      = _("Place Delivery");
+          break;
+        case ST_SALESQUOTE:
+          $idate       = _("Quotation Date:");
+          $orderitems  = _("Sales Quotation Items");
+          $deleteorder = _("Delete Quotation");
+          $porder      = _("Place Quotation");
+          $corder      = _("Commit Quotations Changes");
+          break;
+        case ST_SALESORDER;
+        default:
+          $idate       = _("Order Date:");
+          $orderitems  = _("Sales Order Items");
+          $deleteorder = _("Delete Order");
+          $porder      = _("Place Order");
+          $corder      = _("Commit Order Changes");
+          break;
       }
       start_form();
-      if (is_object($this->order)) {
-        $customer_error = $this->order->header($idate);
-        hidden('order_id', $_POST['order_id']);
-      } else {
-        $customer_error = 'No current order to edit.';
+      $customer_error = $this->order->header($idate);
+      if ($customer_error != "") {
+        $this->exitError($customer_error);
       }
-      if ($customer_error == "") {
-        Table::start('tablesstyle center width90 pad10');
-        echo "<tr><td>";
-        $this->order->summary($orderitems, TRUE);
-        echo "</td></tr><tr><td>";
-        $this->order->display_delivery_details();
-        echo "</td></tr>";
-        Table::end(1);
-        Display::div_start('controls', 'items_table');
-        if ($this->order->trans_no > 0 && $this->user->can_access(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())
-        ) {
-          submit_js_confirm('_action', Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
-          submit_center_first('_action', Orders::DELETE_ORDER, $deleteorder); //, _('Cancels document entry or removes sales order when editing an old document')
-          submit_center_middle('_action', Orders::CANCEL_CHANGES, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
-        } else {
-          submit_center_first('_action', Orders::CANCEL_CHANGES, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
-        }
-        if (count($this->order->line_items)) {
-          if ($this->order->trans_no > 0) {
-            submit_center_last('_action', Orders::PROCESS_ORDER, $corder, 'default'); //_('Validate changes and update document'),
-          } else {
-            submit_center_last('_action', Orders::PROCESS_ORDER, $porder, 'default'); //_('Check entered data and save document'),
-          }
-        }
-        if (isset($_GET[Orders::MODIFY_ORDER]) && is_numeric($_GET[Orders::MODIFY_ORDER])) {
-          //UploadHandler::insert($_GET[Orders::MODIFY_ORDER]);
-        }
+      hidden('order_id', $_POST['order_id']);
+      Table::start('tablesstyle center width90 pad10');
+      echo "<tr><td>";
+      $this->order->summary($orderitems, TRUE);
+      echo "</td></tr><tr><td>";
+      $this->order->display_delivery_details();
+      echo "</td></tr>";
+      Table::end(1);
+      Display::div_start('controls', 'items_table');
+      if ($this->order->trans_no > 0 && $this->user->can_access(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())
+      ) {
+        submit_js_confirm('_action', Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
+        submit_center_first('_action', Orders::DELETE_ORDER, $deleteorder); //, _('Cancels document entry or removes sales order when editing an old document')
+        submit_center_middle('_action', Orders::CANCEL_CHANGES, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
       } else {
-        Event::warning($customer_error);
-        Session::i()->setGlobal('debtor', NULL);
-        Page::footer_exit();
+        submit_center_first('_action', Orders::CANCEL_CHANGES, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
+      }
+      if (count($this->order->line_items)) {
+        if ($this->order->trans_no > 0) {
+          submit_center_last('_action', Orders::PROCESS_ORDER, $corder, 'default'); //_('Validate changes and update document'),
+        } else {
+          submit_center_last('_action', Orders::PROCESS_ORDER, $porder, 'default'); //_('Check entered data and save document'),
+        }
       }
       Display::div_end();
       end_form();
       Debtor::addEditDialog();
       Item::addEditDialog();
       Page::end(TRUE);
+    }
+    protected function cancelItem()
+    {
+      Item_Line::start_focus('_stock_id_edit');
+    }
+    /**
+     * @param $error
+     */
+    protected function exitError($error)
+    {
+      Event::warning($error);
+      Session::i()->setGlobal('debtor', NULL);
+      Page::footer_exit();
     }
     public function Refresh()
     {
@@ -209,8 +225,10 @@
       Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
       Reporting::email_link($order_no, _("Email This $trans_name"), TRUE, $trans_type, 'EmailLink', NULL, $emails, 1);
       if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
-        Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
-        Reporting::email_link($order_no, _("Email This Proforma Invoice"), TRUE, ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), 'EmailLink', NULL, $emails, 1);
+        Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA :
+          ST_PROFORMAQ), $order_no, 'prtopt');
+        Reporting::email_link($order_no, _("Email This Proforma Invoice"), TRUE, ($trans_type == ST_SALESORDER ? ST_PROFORMA :
+          ST_PROFORMAQ), 'EmailLink', NULL, $emails, 1);
       }
       if ($trans_type == ST_SALESORDER) {
         Display::submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
@@ -226,7 +244,9 @@
         Display::submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $order_no, 'prtopt', NULL, 1);
         Display::note(GL_UI::view(ST_CUSTDELIVERY, $order_no, _("View the GL Journal Entries for this Dispatch")), 0, 1);
         Display::submenu_option(_("Make &Invoice Against This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$order_no");
-        ((isset($_GET['Type']) && $_GET['Type'] == 1)) ? Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes") : Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?add=0&type=" . ST_CUSTDELIVERY);
+        ((isset($_GET['Type']) && $_GET['Type'] == 1)) ?
+          Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes") :
+          Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?add=0&type=" . ST_CUSTDELIVERY);
       } elseif ($trans_type == ST_SALESINVOICE) {
         $sql    = "SELECT trans_type_from, trans_no_from FROM debtor_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . DB::escape($order_no);
         $result = DB::query($sql, "could not retrieve customer allocation");
@@ -437,7 +457,7 @@
       }
       Page::footer_exit();
     }
-    protected function ProcessOrder()
+    protected function processOrder()
     {
       if (!$this->can_process($this->order)) {
         return;
@@ -462,14 +482,14 @@
       }
       $this->page_complete($trans_no, $trans_type, TRUE, $modified);
     }
-    protected function CancelChanges()
+    protected function cancelChanges()
     {
       $type     = $this->order->trans_type;
       $order_no = (is_array($this->order->trans_no)) ? key($this->order->trans_no) : $this->order->trans_no;
       Orders::session_delete($_POST['order_id']);
       $this->order = $this->create_order($type, $order_no);
     }
-    protected function DeleteOrder()
+    protected function deleteOrder()
     {
       if (!$this->user->can_access(SS_SETUP)) {
         Event::error('You don\'t have access to delete orders');

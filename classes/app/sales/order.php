@@ -1465,12 +1465,12 @@
       $line_total = Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('Disc') / 100);
       Cell::amount($line_total, false, '', 'line_total');
       if ($id != -1) {
-        button_cell(Orders::UPDATE_ITEM, _("Update"), _('Confirm changes'), ICON_UPDATE);
-        button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
+        button_cell('_action', Orders::UPDATE_ITEM, _("Update"), ICON_UPDATE); //_('Confirm changes'),
+        button_cell('_action', Orders::CANCEL_ITEM_CHANGES, _("Cancel"), ICON_CANCEL); //, _('Cancel changes')
         hidden('LineNo', $line_no);
         JS::set_focus('qty');
       } else {
-        submit_cells('_action',Orders::ADD_ITEM, 'colspan=2 class="center"', _("Add Item"),  true); //_('Add new item to document'),
+        submit_cells('_action', Orders::ADD_ITEM, 'colspan=2 class="center"', _("Add Item"), true); //_('Add new item to document'),
       }
       Row::end();
     }

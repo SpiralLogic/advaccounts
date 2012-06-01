@@ -1,19 +1,19 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   JS::open_window(800, 500);
   Page::start(_($help_context = "Item Adjustments Note"), SA_INVENTORYADJUSTMENT);
   Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system which can be adjusted (Purchased or Manufactured)."), STOCK_SERVICE);
   Validation::check(Validation::MOVEMENT_TYPES, _("There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."));
   if (isset($_GET[ADDED_ID])) {
-    $trans_no = $_GET[ADDED_ID];
+    $trans_no   = $_GET[ADDED_ID];
     $trans_type = ST_INVADJUST;
     Event::notice(_("Items adjustment has been processed"));
     Display::note(GL_UI::trans_view($trans_type, $trans_no, _("&View this adjustment")));
@@ -39,7 +39,7 @@
   if (isset($_POST['UpdateItem'])) {
     handle_update_item();
   }
-  if (isset($_POST['CancelItemChanges'])) {
+  if (isset($_POST['cancelItem'])) {
     Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_GET['NewAdjustment']) || !isset($_SESSION['adj_items'])) {
@@ -58,7 +58,8 @@
   /**
    * @return bool
    */
-  function check_item_data() {
+  function check_item_data()
+  {
     if (!Validation::post_num('qty', 0)) {
       Event::error(_("The quantity entered is negative or invalid."));
       JS::set_focus('qty');
@@ -72,7 +73,8 @@
     return TRUE;
   }
 
-  function handle_update_item() {
+  function handle_update_item()
+  {
     if ($_POST['UpdateItem'] != "" && check_item_data()) {
       $id = $_POST['LineNo'];
       $_SESSION['adj_items']->update_order_item($id, Validation::input_num('qty'), Validation::input_num('std_cost'));
@@ -83,12 +85,14 @@
   /**
    * @param $id
    */
-  function handle_delete_item($id) {
+  function handle_delete_item($id)
+  {
     $_SESSION['adj_items']->remove_from_order($id);
     Item_Line::start_focus('_stock_id_edit');
   }
 
-  function handle_new_item() {
+  function handle_new_item()
+  {
     if (!check_item_data()) {
       return;
     }
@@ -96,14 +100,14 @@
     Item_Line::start_focus('_stock_id_edit');
   }
 
-
-  function handle_new_order() {
+  function handle_new_order()
+  {
     if (isset($_SESSION['adj_items'])) {
       $_SESSION['adj_items']->clear_items();
       unset ($_SESSION['adj_items']);
     }
     $_SESSION['adj_items'] = new Item_Order(ST_INVADJUST);
-    $_POST['AdjDate'] = Dates::new_doc_date();
+    $_POST['AdjDate']      = Dates::new_doc_date();
     if (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
       $_POST['AdjDate'] = Dates::end_fiscalyear();
     }
@@ -113,7 +117,8 @@
   /**
    * @return bool
    */
-  function can_process() {
+  function can_process()
+  {
     $adj = &$_SESSION['adj_items'];
     if (count($adj->line_items) == 0) {
       Event::error(_("You must enter at least one non empty item line."));
@@ -132,13 +137,11 @@
       Event::error(_("The entered date for the adjustment is invalid."));
       JS::set_focus('AdjDate');
       return FALSE;
-    }
-    elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
+    } elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
       Event::error(_("The entered date is not in fiscal year."));
       JS::set_focus('AdjDate');
       return FALSE;
-    }
-    else {
+    } else {
       $failed_item = $adj->check_qoh($_POST['StockLocation'], $_POST['AdjDate'], !$_POST['Increase']);
       if ($failed_item >= 0) {
         $line = $adj->line_items[$failed_item];

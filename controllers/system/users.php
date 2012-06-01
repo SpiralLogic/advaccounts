@@ -107,7 +107,7 @@
   text_row_ex(_("Full Name") . ":", 'real_name', 50);
   text_row_ex(_("Telephone No.:"), 'phone', 30);
   email_row_ex(_("Email Address:"), 'email', 50);
-  Security::roles_row(_("Access Level:"), 'Access', null);
+  Security::i()->roles_row(_("Access Level:"), 'Access', null);
   Languages::row(_("Language:"), 'language', null);
   Sales_Point::row(_("User's POS") . ':', 'pos', null);
   Reports_UI::print_profiles_row(_("Printing profile") . ':', 'profile', null, _('Browser printing support'));

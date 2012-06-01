@@ -207,7 +207,7 @@
       Cell::label($_POST['units'], '', 'units');
       if ($id != -1) {
         button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
-        button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
+        button_cell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
         hidden('LineNo', $line_no);
         JS::set_focus('qty');
       } else {

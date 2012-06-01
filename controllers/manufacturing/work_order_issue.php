@@ -128,7 +128,7 @@
   if (isset($_POST['UpdateItem'])) {
     handle_update_item();
   }
-  if (isset($_POST['CancelItemChanges'])) {
+  if (isset($_POST['cancelItem'])) {
     Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_GET['trans_no'])) {

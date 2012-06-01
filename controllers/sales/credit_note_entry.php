@@ -65,7 +65,7 @@
     }
     Item_Line::start_focus('_stock_id_edit');
   }
-  if (isset($_POST['CancelItemChanges'])) {
+  if (isset($_POST['cancelItem'])) {
     Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_POST['ProcessCredit']) && can_process($order)) {

@@ -193,7 +193,7 @@
       text_cells_ex(null, 'LineMemo', 35, 255);
       if ($id != -1) {
         button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
-        button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
+        button_cell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
         JS::set_focus('amount');
       } else {
         submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new line to journal'), true);

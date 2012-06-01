@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Inv_Adjustment {
-
+  class Inv_Adjustment
+  {
     /**
      * @static
      *
@@ -22,15 +22,15 @@
      *
      * @return int
      */
-    public static function add($items, $location, $date_, $type, $increase, $reference, $memo_) {
+    public static function add($items, $location, $date_, $type, $increase, $reference, $memo_)
+    {
       DB::begin();
       $adj_id = SysTypes::get_next_trans_no(ST_INVADJUST);
       foreach ($items as $line_item) {
         if (!$increase) {
           $line_item->quantity = -$line_item->quantity;
         }
-        static::add_item($adj_id, $line_item->stock_id, $location, $date_, $type, $reference,
-          $line_item->quantity, $line_item->standard_cost, $memo_);
+        static::add_item($adj_id, $line_item->stock_id, $location, $date_, $type, $reference, $line_item->quantity, $line_item->standard_cost, $memo_);
       }
       DB_Comments::add(ST_INVADJUST, $adj_id, $date_, $memo_);
       Ref::save(ST_INVADJUST, $reference);
@@ -44,7 +44,8 @@
      * @param $type
      * @param $type_no
      */
-    public static function void($type, $type_no) {
+    public static function void($type, $type_no)
+    {
       if ($type != ST_INVADJUST) {
         $type = ST_INVADJUST;
       }
@@ -58,7 +59,8 @@
      *
      * @return null|PDOStatement
      */
-    public static function get($trans_no) {
+    public static function get($trans_no)
+    {
       $result = Inv_Movement::get(ST_INVADJUST, $trans_no);
       if (DB::num_rows($result) == 0) {
         return NULL;
@@ -78,21 +80,18 @@
      * @param $standard_cost
      * @param $memo_
      */
-    public static function add_item($adj_id, $stock_id, $location, $date_, $type, $reference, $quantity, $standard_cost, $memo_) {
+    public static function add_item($adj_id, $stock_id, $location, $date_, $type, $reference, $quantity, $standard_cost, $memo_)
+    {
       $mb_flag = WO::get_mb_flag($stock_id);
       if (Input::post('mb_flag') == STOCK_SERVICE) {
         Errors::db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
       }
       Purch_GRN::update_average_material_cost(NULL, $stock_id, $standard_cost, $quantity, $date_);
-      Inv_Movement::add(ST_INVADJUST, $stock_id, $adj_id, $location,
-        $date_, $reference, $quantity, $standard_cost, $type);
+      Inv_Movement::add(ST_INVADJUST, $stock_id, $adj_id, $location, $date_, $reference, $quantity, $standard_cost, $type);
       if ($standard_cost > 0) {
         $stock_gl_codes = Item::get_gl_code($stock_id);
-        GL_Trans::add_std_cost(ST_INVADJUST, $adj_id, $date_,
-          $stock_gl_codes['adjustment_account'], $stock_gl_codes['dimension_id'],
-          $stock_gl_codes['dimension2_id'], $memo_, ($standard_cost * -($quantity)));
-        GL_Trans::add_std_cost(ST_INVADJUST, $adj_id, $date_,
-          $stock_gl_codes['inventory_account'], 0, 0, $memo_, ($standard_cost * $quantity));
+        GL_Trans::add_std_cost(ST_INVADJUST, $adj_id, $date_, $stock_gl_codes['adjustment_account'], $stock_gl_codes['dimension_id'], $stock_gl_codes['dimension2_id'], $memo_, ($standard_cost * -($quantity)));
+        GL_Trans::add_std_cost(ST_INVADJUST, $adj_id, $date_, $stock_gl_codes['inventory_account'], 0, 0, $memo_, ($standard_cost * $quantity));
       }
     }
     /**
@@ -100,7 +99,8 @@
      *
      * @param $order
      */
-    public static function header($order) {
+    public static function header($order)
+    {
       Table::startOuter('tablestyle2 width70'); // outer table
       Table::section(1);
       Inv_Location::row(_("Location:"), 'StockLocation', NULL);
@@ -121,7 +121,8 @@
      * @param $title
      * @param $order
      */
-    public static function display_items($title, $order) {
+    public static function display_items($title, $order)
+    {
       Display::heading($title);
       Display::div_start('items_table');
       Table::start('tablestyle grid width90');
@@ -148,8 +149,7 @@
           edit_button_cell("Edit$line_no", _("Edit"), _('Edit document line'));
           delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
           Row::end();
-        }
-        else {
+        } else {
           Inv_Adjustment::item_controls($order, $line_no);
         }
       }
@@ -166,7 +166,8 @@
      * @param $order
      * @param $line_no
      */
-    public static function item_controls($order, $line_no = -1) {
+    public static function item_controls($order, $line_no = -1)
+    {
 
       Row::start();
       $dec2 = 0;
@@ -181,8 +182,7 @@
         Cell::label($_POST['stock_id']);
         Cell::label($order->line_items[$id]->description, ' class="nowrap"');
         Ajax::i()->activate('items_table');
-      }
-      else {
+      } else {
         Item_UI::costable_cells(NULL, 'stock_id', NULL, FALSE, TRUE);
         if (list_updated('stock_id')) {
           Ajax::i()->activate('units');
@@ -203,17 +203,16 @@
       Cell::label("&nbsp;");
       if ($id != -1) {
         button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
-        button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
+        button_cell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
         hidden('LineNo', $line_no);
         JS::set_focus('qty');
-      }
-      else {
+      } else {
         submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), TRUE);
       }
       Row::end();
     }
-
-    public static function option_controls() {
+    public static function option_controls()
+    {
       echo "<br>";
       Table::start('center');
       textarea_row(_("Memo"), 'memo_', NULL, 50, 3);

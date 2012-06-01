@@ -98,7 +98,7 @@
   if (isset($_POST['UpdateItem'])) {
     handle_update_item();
   }
-  if (isset($_POST['CancelItemChanges'])) {
+  if (isset($_POST['cancelItem'])) {
     Item_Line::start_focus('_code_id_edit');
   }
   if (isset($_POST['go'])) {

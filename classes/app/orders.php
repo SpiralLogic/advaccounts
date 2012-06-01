@@ -7,35 +7,35 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  abstract class Orders extends DB_abstract {
-
-    const NEW_ORDER       = 'NewOrder';
-    const MODIFY_ORDER    = 'ModifyOrder';
-    const NEW_QUOTE       = 'NewQuote';
-    const QUOTE_TO_ORDER  = 'QuoteToOrder';
-    const MODIFY_QUOTE    = 'ModifyQuote';
-    const NEW_DELIVERY    = 'NewDelivery';
-    const MODIFY_DELIVERY = 'ModifyDelivery';
-    const NEW_INVOICE     = 'NewInvoice';
-    const MODIFY_INVOICE  = 'ModifyInvoice';
-    const CLONE_ORDER     = 'CloneOrder';
-    const BATCH_INVOICE   = 'BatchInvoice';
-    const VIEW_INVOICE    = 'ViewInvoice';
-    const MODIFY_CREDIT   = 'ModifyCredit';
-    const NEW_CREDIT      = 'NewCredit';
-    const PROCESS_ORDER   = 'ProcessOrder';
-    const CANCEL          = 'CancelOrder';
-    const CANCEL_CHANGES  = 'CancelChanges';
-    const DELETE_ORDER    = 'DeleteOrder';
-    const ADD_ITEM        = 'AddItem';
-    const UPDATE_ITEM     = 'UpdateItem';
-    const DELETE_ITEM     = 'DeleteItem';
-    const DISCOUNT_ALL     = 'discountall';
-    const ADD             = 'add';
-    const UPDATE          = 'update';
-    const REFRESH          = 'Refresh';
-    const TYPE            = 'type';
-
+  abstract class Orders extends DB_abstract
+  {
+    const NEW_ORDER           = 'NewOrder';
+    const MODIFY_ORDER        = 'ModifyOrder';
+    const NEW_QUOTE           = 'NewQuote';
+    const QUOTE_TO_ORDER      = 'QuoteToOrder';
+    const MODIFY_QUOTE        = 'ModifyQuote';
+    const NEW_DELIVERY        = 'NewDelivery';
+    const MODIFY_DELIVERY     = 'ModifyDelivery';
+    const NEW_INVOICE         = 'NewInvoice';
+    const MODIFY_INVOICE      = 'ModifyInvoice';
+    const CLONE_ORDER         = 'CloneOrder';
+    const BATCH_INVOICE       = 'BatchInvoice';
+    const VIEW_INVOICE        = 'ViewInvoice';
+    const MODIFY_CREDIT       = 'ModifyCredit';
+    const NEW_CREDIT          = 'NewCredit';
+    const PROCESS_ORDER       = 'processOrder';
+    const CANCEL              = 'cancelOrder';
+    const CANCEL_CHANGES      = 'cancelChanges';
+    const DELETE_ORDER        = 'deleteOrder';
+    const ADD_ITEM            = 'AddItem';
+    const UPDATE_ITEM         = 'UpdateItem';
+    const DELETE_ITEM         = 'DeleteItem';
+    const CANCEL_ITEM_CHANGES = 'cancelItem';
+    const DISCOUNT_ALL        = 'discountall';
+    const ADD                 = 'add';
+    const UPDATE              = 'update';
+    const REFRESH             = 'refresh';
+    const TYPE                = 'type';
     /**
      * @var
      */
@@ -76,7 +76,8 @@
      *
      * @return void
      */
-    protected static function setup($type) {
+    protected static function setup($type)
+    {
       if (!isset($_SESSION['orders'])) {
         $_SESSION['orders'] = array();
       }
@@ -93,7 +94,8 @@
      * @internal param $id
      * @return \Purch_Order|\Sales_Order
      */
-    public static function session_get($id = NULL) {
+    public static function session_get($id = NULL)
+    {
       if (is_null($id)) {
         if (!isset($_POST['order_id'])) {
           return FALSE;
@@ -108,7 +110,6 @@
       }
       return FALSE;
     }
-
     /**
      * @static
      *
@@ -116,13 +117,13 @@
      *
      * @return Sales_Order|Purch_Order
      */
-    public static function session_set($order) {
+    public static function session_set($order)
+    {
       list($type, $id) = explode('.', $order->order_id);
       static::setup($type);
       $_SESSION['orders'][$type][$id] = $order;
       return $order;
     }
-
     /**
      * @static
      *
@@ -130,9 +131,9 @@
      *
      * @return void
      */
-    public static function session_start($order) {
+    public static function session_start($order)
+    {
     }
-
     /**
      * @static
      *
@@ -140,18 +141,19 @@
      *
      * @return bool
      */
-    public static function session_exists($order) {
+    public static function session_exists($order)
+    {
       list($type, $id) = explode('.', $order->order_id);
       static::setup($type);
       return isset($_SESSION['orders'][$type][$id]);
     }
-
     /**
      * @static
      *
      * @param Purch_Order|Sales_Order|int $id Can be object or order_id number
      */
-    public static function session_delete($id) {
+    public static function session_delete($id)
+    {
       if (is_object($id)) {
         $id = $id->order_id;
       }

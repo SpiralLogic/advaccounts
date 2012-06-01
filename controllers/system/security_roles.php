@@ -90,10 +90,10 @@
       //		$areas = sort_areas($areas);
       $sections = array_values($sections);
       if ($new_role) {
-        Security::add_role($_POST['name'], $_POST['description'], $sections, $areas);
+        Security::i()->add_role($_POST['name'], $_POST['description'], $sections, $areas);
         Event::success(_("New security role has been added."));
       } else {
-        Security::update_role($_POST['role'], $_POST['name'], $_POST['description'], $sections, $areas);
+        Security::i()->update_role($_POST['role'], $_POST['name'], $_POST['description'], $sections, $areas);
         DB::update_record_status($_POST['role'], get_post('inactive'), 'security_roles', 'id');
         Event::success(_("Security role has been updated."));
       }
@@ -103,10 +103,10 @@
     }
   }
   if (get_post('delete')) {
-    if (Security::check_role_used(get_post('role'))) {
+    if (Security::i()->check_role_used(get_post('role'))) {
       Event::error(_("This role is currently assigned to some users and cannot be deleted"));
     } else {
-      Security::get_profile(get_post('role'));
+      Security::i()->delete(get_post('role'));
       Event::notice(_("Security role has been sucessfully deleted."));
       unset($_POST['role']);
     }
@@ -121,7 +121,7 @@
     $clone = get_post('clone');
     unset($_POST);
     if ($id) {
-      $row                  = Security::get_role($id);
+      $row                  = Security::i()->get_role($id);
       $_POST['description'] = $row['description'];
       $_POST['name']        = $row['role'];
       //	if ($row['inactive']
@@ -150,7 +150,7 @@
   start_form();
   Table::start('tablestyle_noborder');
   Row::start();
-  Security::roles_cells(_("Role:") . "&nbsp;", 'role', null, true, true, check_value('show_inactive'));
+  Security::i()->roles_cells(_("Role:") . "&nbsp;", 'role', null, true, true, check_value('show_inactive'));
   $new_role = get_post('role') == '';
   check_cells(_("Show inactive:"), 'show_inactive', null, true);
   Row::end();
