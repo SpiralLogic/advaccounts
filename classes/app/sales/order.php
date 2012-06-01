@@ -1188,8 +1188,8 @@
           Cell::percent($stock_item->discount_percent * 100);
           Cell::amount($line_total);
           if ($editable_items) {
-            edit_button_cell("Edit$line_no", _("Edit"), _('Edit document line'));
-            delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
+            edit_button_cell("$line_no", _("Edit"), _('Edit document line'));
+            delete_button_cell("$line_no", _("Delete"), _('Remove line from document'));
           }
           Row::end();
         } else {
@@ -1215,13 +1215,13 @@
       Row::start();
       Cell::label(_("Total Discount"), "colspan=$colspan class='right'");
       small_amount_cells(null, null, $total_discount);
-      HTML::td(true)->button('discountall', 'Discount All', array('name' => 'discountall'), false);
-      hidden('_discountall', '0', true);
+      HTML::td(true)->button('discountAll', 'Discount All', array('name' => 'discountAll'), false);
+      hidden('_discountAll', '0', true);
       HTML::td();
       $action
         = "var discount = prompt('Discount Percent?',''); if (!discount) return false;
-                $(\"[name='_discountall']\").val(Number(discount));e=$(this);save_focus(e);JsHttpRequest.request(this);return false;";
-      JS::addLiveEvent('#discountall', 'click', $action);
+                $(\"[name='_discountAll']\").val(Number(discount));e=$(this);save_focus(e);JsHttpRequest.request(this);return false;";
+      JS::addLiveEvent('#discountAll', 'click', $action);
       Row::end();
       Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan  class='right' ", "class='right'", 1);
       $taxes         = $this->get_taxes(Validation::input_num('freight_cost'));
@@ -1229,7 +1229,7 @@
       $display_total = Num::price_format(($total + Validation::input_num('freight_cost') + $tax_total));
       Row::start();
       Cell::labels(_("Amount Total"), $display_total, "colspan=$colspan style='background:inherit; text-align:right;'", "class='right'");
-      submit_cells('update', _("Update"), "", _("Refresh"), true);
+      submit_cells('_action', Orders::REFRESH, "", _("Refresh"), true);
       Row::end();
       Table::footEnd();
       Table::end();
@@ -1470,7 +1470,7 @@
         hidden('LineNo', $line_no);
         JS::set_focus('qty');
       } else {
-        submit_cells(Orders::ADD_ITEM, _("Add Item"), 'colspan=2 class="center"', _('Add new item to document'), true);
+        submit_cells('_action',Orders::ADD_ITEM, 'colspan=2 class="center"', _("Add Item"),  true); //_('Add new item to document'),
       }
       Row::end();
     }

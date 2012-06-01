@@ -7,39 +7,28 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class SalesOrder extends Controller_Base {
-
+  class SalesOrder extends Controller_Base
+  {
     protected $addTitles = array(
-      ST_SALESQUOTE  => "New Sales Quotation Entry",
-      ST_SALESINVOICE=> "Direct Sales Invoice",
-      ST_CUSTDELIVERY=> "Direct Sales Delivery",
-      ST_SALESORDER  => "New Sales Order Entry"
+      ST_SALESQUOTE  => "New Sales Quotation Entry", ST_SALESINVOICE=> "Direct Sales Invoice", ST_CUSTDELIVERY=> "Direct Sales Delivery", ST_SALESORDER  => "New Sales Order Entry"
     );
     protected $modifyTitles = array(
-      ST_SALESQUOTE  => "Modifying Sales Quotation # ",
-      ST_SALESORDER  => "Modifying Sales Order # "
+      ST_SALESQUOTE  => "Modifying Sales Quotation # ", ST_SALESORDER  => "Modifying Sales Order # "
     );
     protected $typeSecurity = array(
-      ST_SALESORDER   => SA_SALESORDER,
-      ST_SALESQUOTE   => SA_SALESQUOTE,
-      ST_CUSTDELIVERY => SA_SALESDELIVERY,
-      ST_SALESINVOICE => SA_SALESINVOICE
+      ST_SALESORDER   => SA_SALESORDER, ST_SALESQUOTE   => SA_SALESQUOTE, ST_CUSTDELIVERY => SA_SALESDELIVERY, ST_SALESINVOICE => SA_SALESINVOICE
     );
     protected $processSecurity = array(
-      Orders::NEW_ORDER    => SA_SALESORDER,
-      Orders::MODIFY_ORDER => SA_SALESORDER,
-      Orders::NEW_QUOTE    => SA_SALESQUOTE,
-      Orders::MODIFY_QUOTE => SA_SALESQUOTE,
-      Orders::NEW_DELIVERY => SA_SALESDELIVERY,
-      Orders::NEW_INVOICE  => SA_SALESINVOICE
+      Orders::NEW_ORDER    => SA_SALESORDER, Orders::MODIFY_ORDER => SA_SALESORDER, Orders::NEW_QUOTE    => SA_SALESQUOTE, Orders::MODIFY_QUOTE => SA_SALESQUOTE, Orders::NEW_DELIVERY => SA_SALESDELIVERY, Orders::NEW_INVOICE  => SA_SALESINVOICE
     );
     public $type;
     /***
      * @var Sales_Order;
      */
     public $order;
-
-    protected function before() {
+    protected $action;
+    protected function before()
+    {
       $this->order = Orders::session_get() ? : NULL;
       Security::set_page((!$this->order) ? : $this->order->trans_type, $this->typeSecurity, $this->processSecurity);
       JS::open_window(900, 500);
@@ -56,20 +45,20 @@
       } elseif (Input::get(Orders::UPDATE, Input::NUMERIC, -1) > 0) {
         $this->setTitle($this->modifyTitles[$this->type] . $_GET[Orders::UPDATE]);
         $this->order = $this->create_order($this->type, Input::get(Orders::UPDATE));
-      }
-      elseif (Input::get(Orders::QUOTE_TO_ORDER)) {
+      } elseif (Input::get(Orders::QUOTE_TO_ORDER)) {
         $this->setTitle("New Order from Quote");
         $this->order = $this->create_order(ST_SALESQUOTE, $_GET[Orders::QUOTE_TO_ORDER]);
-      }
-      elseif (Input::get(Orders::CLONE_ORDER)) {
+      } elseif (Input::get(Orders::CLONE_ORDER)) {
         $this->setTitle("New order from previous order");
         $this->order = $this->create_order(ST_SALESORDER, Input::get(Orders::CLONE_ORDER));
       }
       if (!isset($this->order)) {
         $this->order = $this->create_order(ST_SALESORDER, 0);
       }
+      $this->action = Input::post('_action');
     }
-    public function index() {
+    public function index()
+    {
       Page::start($this->title);
       if (list_updated('branch_id')) {
         // when branch is selected via external editor also customer can change
@@ -80,36 +69,20 @@
       if (isset($_GET[REMOVED])) {
         $this->removed();
       }
-      //--------------- --------------------------------------------------------------
-      if (isset($_POST[Orders::PROCESS_ORDER]) && $this->can_process($this->order)) {
-        $this->process();
-      }
-      if (isset($_POST['update'])) {
-        $this->ajax->activate('items_table');
-      }
-      if (isset($_POST[Orders::CANCEL_CHANGES])) {
-        $this->cancelChanges();
-      }
-      if (isset($_POST[Orders::DELETE_ORDER])) {
-        $this->delete();
-      }
-      $id = find_submit(MODE_DELETE);
-      if ($id != -1) {
-        if ($this->order->some_already_delivered($id) == 0) {
-          $this->order->remove_from_order($id);
-        } else {
-          Event::error(_("This item cannot be deleted because some of it has already been delivered."));
-        }
-        Item_Line::start_focus('_stock_id_edit');
+      if (strpos($this->action, Orders::DELETE_ITEM) !== false) {
+        $id = str_replace(Orders::DELETE_ITEM, '', $this->action);
+          if ($this->order->some_already_delivered($id) == 0) {
+            $this->order->remove_from_order($id);
+          } else {
+            Event::error(_("This item cannot be deleted because some of it has already been delivered."));
+          }
+          Item_Line::start_focus('_stock_id_edit');
       }
       if (isset($_POST[Orders::UPDATE_ITEM])) {
         $this->updateItem();
       }
-      if (isset($_POST['discountall'])) {
-        $this->discountAll();
-      }
-      if (isset($_POST[Orders::ADD_ITEM]) && $this->check_item_data($this->order)) {
-        $this->addItem();
+      if ($this->action) {
+        call_user_func(array($this, $this->action));
       }
       if (isset($_POST['CancelItemChanges'])) {
         Item_Line::start_focus('_stock_id_edit');
@@ -130,16 +103,14 @@
         $deleteorder     = _("Delete Delivery");
         $corder          = '';
         $porder          = _("Place Delivery");
-      }
-      elseif ($this->order && $this->order->trans_type == ST_SALESQUOTE) {
+      } elseif ($this->order && $this->order->trans_type == ST_SALESQUOTE) {
         $idate           = _("Quotation Date:");
         $orderitems      = _("Sales Quotation Items");
         $deliverydetails = _("Enter Delivery Details and Confirm Quotation");
         $deleteorder     = _("Delete Quotation");
         $porder          = _("Place Quotation");
         $corder          = _("Commit Quotations Changes");
-      }
-      elseif ($this->order && $this->order->trans_type == ST_SALESORDER) {
+      } elseif ($this->order && $this->order->trans_type == ST_SALESORDER) {
         $idate           = _("Order Date:");
         $orderitems      = _("Sales Order Items");
         $deliverydetails = _("Enter Delivery Details and Confirm Order");
@@ -163,22 +134,19 @@
         echo "</td></tr>";
         Table::end(1);
         Display::div_start('controls', 'items_table');
-        if ($this->order->trans_no > 0 && $this->user
-          ->can_access(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())
+        if ($this->order->trans_no > 0 && $this->user->can_access(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())
         ) {
-          submit_js_confirm(Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
-          submit_center_first(Orders::DELETE_ORDER, $deleteorder, _('Cancels document entry or removes sales order when editing an old document'));
-          submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
-        }
-        else {
-          submit_center_first(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
+          submit_js_confirm('_action', Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
+          submit_center_first('_action', Orders::DELETE_ORDER, $deleteorder); //, _('Cancels document entry or removes sales order when editing an old document')
+          submit_center_middle('_action', Orders::CANCEL_CHANGES, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
+        } else {
+          submit_center_first('_action', Orders::CANCEL_CHANGES, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
         }
         if (count($this->order->line_items)) {
           if ($this->order->trans_no > 0) {
-            submit_center_last(Orders::PROCESS_ORDER, $corder, _('Validate changes and update document'), 'default');
-          }
-          else {
-            submit_center_last(Orders::PROCESS_ORDER, $porder, _('Check entered data and save document'), 'default');
+            submit_center_last('_action', Orders::PROCESS_ORDER, $corder, 'default'); //_('Validate changes and update document'),
+          } else {
+            submit_center_last('_action', Orders::PROCESS_ORDER, $porder, 'default'); //_('Check entered data and save document'),
           }
         }
         if (isset($_GET[Orders::MODIFY_ORDER]) && is_numeric($_GET[Orders::MODIFY_ORDER])) {
@@ -195,10 +163,15 @@
       Item::addEditDialog();
       Page::end(TRUE);
     }
-    protected function add() {
-
+    public function Refresh()
+    {
+      $this->ajax->activate('items_table');
     }
-    public function after() {
+    protected function add()
+    {
+    }
+    public function after()
+    {
       unset($_SESSION['order_no']);
     }
     /**
@@ -210,7 +183,8 @@
      * @return void
      * @internal param string $trans_name
      */
-    protected function page_complete($order_no, $trans_type, $edit = FALSE, $update = FALSE) {
+    protected function page_complete($order_no, $trans_type, $edit = FALSE, $update = FALSE)
+    {
       switch ($trans_type) {
         case ST_SALESINVOICE:
           $trans_name = "Invoice";
@@ -225,7 +199,6 @@
         default:
           $trans_name = "Order";
       }
-
       $customer = new Debtor(Session::i()->getGlobal('debtor', 0));
       $emails   = $customer->getEmailAddresses();
       Event::success(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
@@ -236,10 +209,8 @@
       Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
       Reporting::email_link($order_no, _("Email This $trans_name"), TRUE, $trans_type, 'EmailLink', NULL, $emails, 1);
       if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
-        Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA :
-          ST_PROFORMAQ), $order_no, 'prtopt');
-        Reporting::email_link($order_no, _("Email This Proforma Invoice"), TRUE, ($trans_type == ST_SALESORDER ? ST_PROFORMA :
-          ST_PROFORMAQ), 'EmailLink', NULL, $emails, 1);
+        Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
+        Reporting::email_link($order_no, _("Email This Proforma Invoice"), TRUE, ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), 'EmailLink', NULL, $emails, 1);
       }
       if ($trans_type == ST_SALESORDER) {
         Display::submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
@@ -250,17 +221,13 @@
         Display::submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?" . Orders::QUOTE_TO_ORDER . "=$order_no");
         Display::submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?add=0&type=" . ST_SALESQUOTE);
         Display::submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
-      }
-      elseif ($trans_type == ST_CUSTDELIVERY) {
+      } elseif ($trans_type == ST_CUSTDELIVERY) {
         Display::submenu_print(_("&Print Delivery Note"), ST_CUSTDELIVERY, $order_no, 'prtopt');
         Display::submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $order_no, 'prtopt', NULL, 1);
         Display::note(GL_UI::view(ST_CUSTDELIVERY, $order_no, _("View the GL Journal Entries for this Dispatch")), 0, 1);
         Display::submenu_option(_("Make &Invoice Against This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$order_no");
-        ((isset($_GET['Type']) && $_GET['Type'] == 1)) ?
-          Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes") :
-          Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?add=0&type=" . ST_CUSTDELIVERY);
-      }
-      elseif ($trans_type == ST_SALESINVOICE) {
+        ((isset($_GET['Type']) && $_GET['Type'] == 1)) ? Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes") : Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?add=0&type=" . ST_CUSTDELIVERY);
+      } elseif ($trans_type == ST_SALESINVOICE) {
         $sql    = "SELECT trans_type_from, trans_no_from FROM debtor_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . DB::escape($order_no);
         $result = DB::query($sql, "could not retrieve customer allocation");
         $row    = DB::fetch($result);
@@ -286,7 +253,8 @@
      * @internal param \Sales_Order $order
      * @return bool
      */
-    protected function can_process() {
+    protected function can_process()
+    {
       if (!get_post('customer_id')) {
         Event::error(_("There is no customer selected."));
         JS::set_focus('customer_id');
@@ -383,7 +351,8 @@
      * @internal param $this ->order
      * @return bool
      */
-    protected function check_item_data() {
+    protected function check_item_data()
+    {
       if (!$this->user->can_access(SA_SALESCREDIT) && (!Validation::post_num('qty', 0) || !Validation::post_num('Disc', 0, 100))) {
         Event::error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
         JS::set_focus('qty');
@@ -392,9 +361,7 @@
         Event::error(_("Price for item must be entered and can not be less than 0"));
         JS::set_focus('price');
         return FALSE;
-      }
-      elseif (!$this->user
-        ->can_access(SA_SALESCREDIT) && isset($_POST['LineNo']) && isset($this->order->line_items[$_POST['LineNo']]) && !Validation::post_num('qty', $this->order->line_items[$_POST[LineNo]]->qty_done)
+      } elseif (!$this->user->can_access(SA_SALESCREDIT) && isset($_POST['LineNo']) && isset($this->order->line_items[$_POST['LineNo']]) && !Validation::post_num('qty', $this->order->line_items[$_POST[LineNo]]->qty_done)
       ) {
         JS::set_focus('qty');
         Event::error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
@@ -417,7 +384,8 @@
      *
      * @return \Purch_Order|\Sales_Order
      */
-    protected function create_order($type, $trans_no) {
+    protected function create_order($type, $trans_no)
+    {
       if (isset($_GET[Orders::QUOTE_TO_ORDER])) {
         $this->order    = new Sales_Order(ST_SALESQUOTE, array($trans_no));
         $doc            = clone($this->order);
@@ -434,8 +402,7 @@
         foreach ($doc->line_items as $line) {
           $line->qty_done = $line->qty_dispatched = 0;
         }
-      }
-      elseif ($type != ST_SALESORDER && $type != ST_SALESQUOTE && $trans_no != 0) { // this is template
+      } elseif ($type != ST_SALESORDER && $type != ST_SALESQUOTE && $trans_no != 0) { // this is template
         $doc                = new Sales_Order(ST_SALESORDER, array($trans_no));
         $doc->trans_type    = $type;
         $doc->trans_no      = 0;
@@ -452,13 +419,13 @@
         foreach ($doc->line_items as $line) {
           $doc->line_items[$line]->qty_done = 0;
         }
-      }
-      else {
+      } else {
         $doc = new Sales_Order($type, array($trans_no));
       }
       return Sales_Order::copyToPost($doc);
     }
-    protected function removed() {
+    protected function removed()
+    {
       if ($_GET['type'] == ST_SALESQUOTE) {
         Event::notice(_("This sales quotation has been deleted as requested."), 1);
         Display::submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?add=0type=" . ST_SALESQUOTE);
@@ -470,7 +437,11 @@
       }
       Page::footer_exit();
     }
-    protected function process() {
+    protected function ProcessOrder()
+    {
+      if (!$this->can_process($this->order)) {
+        return;
+      }
       Sales_Order::copyFromPost($this->order);
       $modified   = ($this->order->trans_no != 0);
       $so_type    = $this->order->so_type;
@@ -491,13 +462,15 @@
       }
       $this->page_complete($trans_no, $trans_type, TRUE, $modified);
     }
-    protected function cancelChanges() {
+    protected function CancelChanges()
+    {
       $type     = $this->order->trans_type;
       $order_no = (is_array($this->order->trans_no)) ? key($this->order->trans_no) : $this->order->trans_no;
       Orders::session_delete($_POST['order_id']);
       $this->order = $this->create_order($type, $order_no);
     }
-    protected function delete() {
+    protected function DeleteOrder()
+    {
       if (!$this->user->can_access(SS_SETUP)) {
         Event::error('You don\'t have access to delete orders');
         return;
@@ -508,8 +481,7 @@
       } elseif ($this->order->trans_type == ST_SALESINVOICE) {
         Event::notice(_("Direct invoice has been cancelled as requested."), 1);
         Display::submenu_option(_("Enter a New Sales Invoice"), "/sales/sales_order_entry.php?NewInvoice=1");
-      }
-      else {
+      } else {
         if ($this->order->trans_no != 0) {
           if ($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries()) {
             Event::error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
@@ -534,25 +506,29 @@
       Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
       Page::footer_exit();
     }
-    protected function updateItem() {
+    protected function updateItem()
+    {
       if ($_POST[Orders::UPDATE_ITEM] != '' && $this->check_item_data($this->order)) {
         $this->order->update_order_item($_POST['LineNo'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
       }
       Item_Line::start_focus('_stock_id_edit');
     }
-    protected function discountAll() {
-      if (!is_numeric($_POST['_discountall'])) {
+    protected function discountAll()
+    {
+      if (!is_numeric($_POST['_discountAll'])) {
         Event::error(_("Discount must be a number"));
-      }
-      elseif ($_POST['_discountall'] < 0 || $_POST['_discountall'] > 100) {
+      } elseif ($_POST['_discountAll'] < 0 || $_POST['_discountAll'] > 100) {
         Event::error(_("Discount percentage must be between 0-100"));
-      }
-      else {
-        $this->order->discount_all($_POST['_discountall'] / 100);
+      } else {
+        $this->order->discount_all($_POST['_discountAll'] / 100);
       }
       $this->ajax->activate('_page_body');
     }
-    protected function addItem() {
+    protected function AddItem()
+    {
+      if (!$this->check_item_data($this->order)) {
+        return;
+      }
       $this->order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
       $_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
       Item_Line::start_focus('_stock_id_edit');

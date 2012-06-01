@@ -277,7 +277,7 @@
     $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') :
       $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\" id=\"$name\" value=\"$value\"" . ($title ? " title='$title'" :
       '') . ">" . ($icon ? "<img alt='$value' src='/themes/" . User::theme() . "/images/$icon' height='12'>" :
-      '') . "<span>$value</span>" . "</button>\n";
+      '') . "<span>$title</span>" . "</button>\n";
     if ($echo) {
       echo $submit_str;
     } else {
@@ -507,8 +507,8 @@
         " title='$title'" : " title='$value'") . ($aspect ? " data-aspect='$aspect'" :
         '') . $rel . " />" . set_icon($icon) . "</button>\n";
     } else {
-      return "<input type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='$value'" . ($title ?
-        " title='$title'" : '') . ($aspect ? " data-aspect='$aspect'" : '') . $rel . " />\n";
+      return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='$value'" . ($title ?
+        " title='$title'" : '') . ($aspect ? " data-aspect='$aspect'" : '') . $rel . " >$title</button>\n";
     }
   }
 
@@ -533,7 +533,7 @@
    */
   function delete_button_cell($name, $value, $title = false)
   {
-    button_cell($name, $value, $title, ICON_DELETE);
+    button_cell('_action', Orders::DELETE_ITEM.$name, $value, ICON_DELETE);
   }
 
   /**

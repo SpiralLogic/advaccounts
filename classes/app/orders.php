@@ -29,8 +29,11 @@
     const DELETE_ORDER    = 'DeleteOrder';
     const ADD_ITEM        = 'AddItem';
     const UPDATE_ITEM     = 'UpdateItem';
+    const DELETE_ITEM     = 'DeleteItem';
+    const DISCOUNT_ALL     = 'discountall';
     const ADD             = 'add';
     const UPDATE          = 'update';
+    const REFRESH          = 'Refresh';
     const TYPE            = 'type';
 
     /**

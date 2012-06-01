@@ -136,7 +136,9 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
 	}
 	// this is to avoid caching problems
 	content['_random'] = Math.random() * 1234567;
-
+if (trigger.tagName === 'BUTTON') {
+  content['_action'] = trigger.value;
+}
 	var tcheck = setTimeout(
 	 function () {
 		 for (var id in JsHttpRequest.PENDING)
