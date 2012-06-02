@@ -202,12 +202,12 @@
       amount_cells(NULL, 'std_cost', NULL, NULL, NULL, $dec2);
       Cell::label("&nbsp;");
       if ($id != -1) {
-        button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
+        button_cell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
         button_cell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
         hidden('LineNo', $line_no);
         JS::set_focus('qty');
       } else {
-        submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), TRUE);
+        submit_cells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), TRUE);
       }
       Row::end();
     }

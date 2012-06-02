@@ -284,12 +284,12 @@
       Cell::label($_POST['units'], '', 'units');
       amount_cells(null, 'std_cost', $_POST['std_cost']);
       if ($id != -1) {
-        button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
+        button_cell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
         button_cell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
         hidden('LineNo', $line_no);
         JS::set_focus('qty');
       } else {
-        submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), true);
+        submit_cells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
       }
       Row::end();
     }

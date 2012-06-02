@@ -222,11 +222,11 @@
       amount_cells(null, 'amount');
       text_cells_ex(null, 'LineMemo', 35, 255);
       if ($id != -1) {
-        button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
+        button_cell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
         button_cell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
         JS::set_focus('amount');
       } else {
-        submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), true);
+        submit_cells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
       }
       Row::end();
     }

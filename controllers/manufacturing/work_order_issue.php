@@ -93,7 +93,7 @@
 
   function handle_update_item()
   {
-    if ($_POST['UpdateItem'] != "" && check_item_data()) {
+    if ($_POST['updateItem'] != "" && check_item_data()) {
       $id = $_POST['LineNo'];
       $_SESSION['issue_items']->update_order_item($id, Validation::input_num('qty'), Validation::input_num('std_cost'));
     }
@@ -122,10 +122,10 @@
   if ($id != -1) {
     handle_delete_item($id);
   }
-  if (isset($_POST['AddItem'])) {
+  if (isset($_POST['addLine'])) {
     handle_new_item();
   }
-  if (isset($_POST['UpdateItem'])) {
+  if (isset($_POST['updateItem'])) {
     handle_update_item();
   }
   if (isset($_POST['cancelItem'])) {

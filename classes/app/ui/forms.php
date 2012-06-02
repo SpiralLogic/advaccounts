@@ -533,7 +533,7 @@
    */
   function delete_button_cell($name, $value, $title = false)
   {
-    button_cell('_action', Orders::DELETE_ITEM.$name, $value, ICON_DELETE);
+    button_cell('_action', Orders::DELETE_LINE.$name, $value, ICON_DELETE);
   }
 
   /**

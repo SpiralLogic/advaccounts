@@ -308,7 +308,7 @@
   define('ADDED', 'added');
   define('UPDATED_ID', 'UpdatedID');
   define('UPDATED_QU', 'UpdatedQU');
-  define('UPDATE_ITEM', 'UpdateItem');
+  define('UPDATE_ITEM', 'updateItem');
   define('UPDATED', 'updated');
   define('TYPE', 'type');
   define('REMOVED_ID', 'RemovedID');

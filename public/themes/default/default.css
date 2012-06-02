@@ -249,7 +249,7 @@ img {
 
 #sidemenu li, #sidemenu a, #sidemenu em {
 	display:     block;
-	margin:      0.5em 0; /* padding: 0.3em 0.4em;*/
+	margin:      .7em 0; /* padding: 0.3em 0.4em;*/
 	white-space: nowrap;
 }
 
@@ -266,7 +266,16 @@ img {
 	float:          none;
 	vertical-align: middle
 }
-
+#sidemenu .ui-widget-content {
+  border:none;
+  padding:0;
+}
+#sidemenu ul, #sidemenu input {
+  margin:1.2em 1em;
+}
+#sidemenu ul input {
+  margin:0;
+}
 /*--------------------------------- END SIDEMENU -----------------------------------------------------------------*/
 
 /*--------------------------------- TOP -----------------------------------------------------------------*/

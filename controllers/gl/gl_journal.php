@@ -98,10 +98,10 @@
   if ($id != -1) {
     handle_delete_item($id);
   }
-  if (isset($_POST['AddItem'])) {
+  if (isset($_POST['addLine'])) {
     handle_new_item();
   }
-  if (isset($_POST['UpdateItem'])) {
+  if (isset($_POST['updateItem'])) {
     handle_update_item();
   }
   if (isset($_POST['cancelItem'])) {
@@ -179,7 +179,7 @@
 
   function handle_update_item()
   {
-    if ($_POST['UpdateItem'] != "" && check_item_data()) {
+    if ($_POST['updateItem'] != "" && check_item_data()) {
       if (Validation::input_num('AmountDebit') > 0) {
         $amount = Validation::input_num('AmountDebit');
       } else {

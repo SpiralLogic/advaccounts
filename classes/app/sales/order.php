@@ -1470,7 +1470,7 @@
         hidden('LineNo', $line_no);
         JS::set_focus('qty');
       } else {
-        submit_cells('_action', Orders::ADD_ITEM, 'colspan=2 class="center"', _("Add Item"), true); //_('Add new item to document'),
+        submit_cells('_action', Orders::ADD_LINE, 'colspan=2 class="center"', _("Add Item"), true); //_('Add new item to document'),
       }
       Row::end();
     }

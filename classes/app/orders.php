@@ -27,9 +27,9 @@
     const CANCEL              = 'cancelOrder';
     const CANCEL_CHANGES      = 'cancelChanges';
     const DELETE_ORDER        = 'deleteOrder';
-    const ADD_ITEM            = 'AddItem';
-    const UPDATE_ITEM         = 'UpdateItem';
-    const DELETE_ITEM         = 'DeleteItem';
+    const ADD_LINE            = 'addLine';
+    const UPDATE_ITEM         = 'updateItem';
+    const DELETE_LINE         = 'deleteLine';
     const CANCEL_ITEM_CHANGES = 'cancelItem';
     const DISCOUNT_ALL        = 'discountall';
     const ADD                 = 'add';

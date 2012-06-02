@@ -74,19 +74,14 @@
     public function index()
     {
       Page::start($this->title);
-      if (list_updated('branch_id')) {
-        // when branch is selected via external editor also customer can change
-        $br                   = Sales_Branch::get(get_post('branch_id'));
-        $_POST['customer_id'] = $br['debtor_no'];
-        $this->ajax->activate('customer_id');
-      }
+      $this->checkBranch();
       if (isset($_GET[REMOVED])) {
         $this->removed();
       }
-      if (strpos($this->action, Orders::DELETE_ITEM) !== false) {
-        $id = str_replace(Orders::DELETE_ITEM, '', $this->action);
-        if ($this->order->some_already_delivered($id) == 0) {
-          $this->order->remove_from_order($id);
+      if (strpos($this->action, Orders::DELETE_LINE) !== false) {
+        $line_id = str_replace(Orders::DELETE_LINE, '', $this->action);
+        if ($this->order->some_already_delivered($line_id) == 0) {
+          $this->order->remove_from_order($line_id);
         } else {
           Event::error(_("This item cannot be deleted because some of it has already been delivered."));
         }
@@ -165,6 +160,15 @@
       Debtor::addEditDialog();
       Item::addEditDialog();
       Page::end(TRUE);
+    }
+    protected function checkBranch()
+    {
+      if (list_updated('branch_id')) {
+        // when branch is selected via external editor also customer can change
+        $br                   = Sales_Branch::get(get_post('branch_id'));
+        $_POST['customer_id'] = $br['debtor_no'];
+        $this->ajax->activate('customer_id');
+      }
     }
     protected function cancelItem()
     {
@@ -457,6 +461,9 @@
       }
       Page::footer_exit();
     }
+    /**
+     * @return mixed
+     */
     protected function processOrder()
     {
       if (!$this->can_process($this->order)) {
@@ -544,7 +551,7 @@
       }
       $this->ajax->activate('_page_body');
     }
-    protected function AddItem()
+    protected function addLine()
     {
       if (!$this->check_item_data($this->order)) {
         return;

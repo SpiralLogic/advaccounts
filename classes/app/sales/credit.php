@@ -444,7 +444,7 @@
         hidden('line_no', $line_no);
         JS::set_focus('qty');
       } else {
-        submit_cells(Orders::ADD_ITEM, _("Add Item"), "colspan=2", _('Add new item to document'), TRUE);
+        submit_cells(Orders::ADD_LINE, _("Add Item"), "colspan=2", _('Add new item to document'), TRUE);
       }
       Row::end();
     }

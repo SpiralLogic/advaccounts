@@ -317,7 +317,7 @@
     'ADDED'                   => 'added',
     'UPDATED_ID'              => 'UpdatedID',
     'UPDATED_QU'              => 'UpdatedQU',
-    'UPDATE_ITEM'             => 'UpdateItem',
+    'UPDATE_ITEM'             => 'updateItem',
     'UPDATED'                 => 'updated',
     'TYPE'                    => 'type',
     'REMOVED_ID'              => 'RemovedID',
