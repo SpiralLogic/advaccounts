@@ -501,18 +501,24 @@
      * @param      $value
      * @param bool $title
      */
-    public static function buttonDeleteCell($name, $value, $title = false)
+    public static function buttonDeleteCell($line_no, $value, $title = false)
     {
-      Form::buttonCell('_action', Orders::DELETE_LINE . $name, $value, ICON_DELETE);
+      if (strpos('Delete', $line_no) === 0) {
+        Form::buttonCell($line_no, $value, $title, ICON_DELETE);
+      }
+      Form::buttonCell('_action', Orders::DELETE_LINE . $line_no, $value, ICON_DELETE);
     }
     /**
      * @param      $name
      * @param      $value
      * @param bool $title
      */
-    public static function buttonEditCell($name, $value, $title = false)
+    public static function buttonEditCell($line_no, $value, $title = false)
     {
-      Form::buttonCell($name, $value, $title, ICON_EDIT);
+      if (strpos('Edit', $line_no) === 0) {
+        Form::buttonCell($line_no, $value, $title, ICON_EDIT);
+      }
+      Form::buttonCell('_action', Orders::EDIT_LINE . $line_no, $value, ICON_EDIT);
     }
     /**
      * @param      $name
@@ -1269,7 +1275,7 @@
      */
     public static function  recordStatusListRow($label, $name)
     {
-       Form::yesnoListRow($label, $name, null, _('Inactive'), _('Active'));
+      Form::yesnoListRow($label, $name, null, _('Inactive'), _('Active'));
     }
     /**
      * @param      $name

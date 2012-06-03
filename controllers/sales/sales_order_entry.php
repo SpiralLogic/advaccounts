@@ -9,34 +9,19 @@
    **/
   class SalesOrder extends Controller_Base
   {
-    protected $addTitles
-      = array(
-        ST_SALESQUOTE  => "New Sales Quotation Entry",
-        ST_SALESINVOICE=> "Direct Sales Invoice",
-        ST_CUSTDELIVERY=> "Direct Sales Delivery",
-        ST_SALESORDER  => "New Sales Order Entry"
-      );
-    protected $modifyTitles
-      = array(
-        ST_SALESQUOTE  => "Modifying Sales Quotation # ", //
-        ST_SALESORDER  => "Modifying Sales Order # "
-      );
-    protected $typeSecurity
-      = array(
-        ST_SALESORDER   => SA_SALESORDER,
-        ST_SALESQUOTE   => SA_SALESQUOTE,
-        ST_CUSTDELIVERY => SA_SALESDELIVERY,
-        ST_SALESINVOICE => SA_SALESINVOICE
-      );
-    protected $processSecurity
-      = array(
-        Orders::NEW_ORDER    => SA_SALESORDER,
-        Orders::MODIFY_ORDER => SA_SALESORDER,
-        Orders::NEW_QUOTE    => SA_SALESQUOTE,
-        Orders::MODIFY_QUOTE => SA_SALESQUOTE,
-        Orders::NEW_DELIVERY => SA_SALESDELIVERY,
-        Orders::NEW_INVOICE  => SA_SALESINVOICE
-      );
+    protected $addTitles = array(
+      ST_SALESQUOTE  => "New Sales Quotation Entry", ST_SALESINVOICE=> "Direct Sales Invoice", ST_CUSTDELIVERY=> "Direct Sales Delivery", ST_SALESORDER  => "New Sales Order Entry"
+    );
+    protected $modifyTitles = array(
+      ST_SALESQUOTE  => "Modifying Sales Quotation # ", //
+      ST_SALESORDER  => "Modifying Sales Order # "
+    );
+    protected $typeSecurity = array(
+      ST_SALESORDER   => SA_SALESORDER, ST_SALESQUOTE   => SA_SALESQUOTE, ST_CUSTDELIVERY => SA_SALESDELIVERY, ST_SALESINVOICE => SA_SALESINVOICE
+    );
+    protected $processSecurity = array(
+      Orders::NEW_ORDER    => SA_SALESORDER, Orders::MODIFY_ORDER => SA_SALESORDER, Orders::NEW_QUOTE    => SA_SALESQUOTE, Orders::MODIFY_QUOTE => SA_SALESQUOTE, Orders::NEW_DELIVERY => SA_SALESDELIVERY, Orders::NEW_INVOICE  => SA_SALESINVOICE
+    );
     public $type;
     /***
      * @var Sales_Order;
@@ -78,15 +63,7 @@
       if (isset($_GET[REMOVED])) {
         $this->removed();
       }
-      if (strpos($this->action, Orders::DELETE_LINE) !== false) {
-        $line_id = str_replace(Orders::DELETE_LINE, '', $this->action);
-        if ($this->order->some_already_delivered($line_id) == 0) {
-          $this->order->remove_from_order($line_id);
-        } else {
-          Event::error(_("This item cannot be deleted because some of it has already been delivered."));
-        }
-        Item_Line::start_focus('_stock_id_edit');
-      }
+      $this->checkRowDelete();
       if ($this->action) {
         call_user_func(array($this, $this->action));
       }
@@ -134,7 +111,8 @@
       Form::hidden('order_id', $_POST['order_id']);
       Table::start('tablesstyle center width90 pad10');
       echo "<tr><td>";
-      $this->order->summary($orderitems, TRUE);
+      $edit_line = $this->getActionId(Orders::EDIT_LINE);
+      $this->order->summary($orderitems, $edit_line);
       echo "</td></tr><tr><td>";
       $this->order->display_delivery_details();
       echo "</td></tr>";
@@ -229,10 +207,8 @@
       Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
       Reporting::email_link($order_no, _("Email This $trans_name"), TRUE, $trans_type, 'EmailLink', NULL, $emails, 1);
       if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
-        Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA :
-          ST_PROFORMAQ), $order_no, 'prtopt');
-        Reporting::email_link($order_no, _("Email This Proforma Invoice"), TRUE, ($trans_type == ST_SALESORDER ? ST_PROFORMA :
-          ST_PROFORMAQ), 'EmailLink', NULL, $emails, 1);
+        Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
+        Reporting::email_link($order_no, _("Email This Proforma Invoice"), TRUE, ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), 'EmailLink', NULL, $emails, 1);
       }
       if ($trans_type == ST_SALESORDER) {
         Display::submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
@@ -248,9 +224,7 @@
         Display::submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $order_no, 'prtopt', NULL, 1);
         Display::note(GL_UI::view(ST_CUSTDELIVERY, $order_no, _("View the GL Journal Entries for this Dispatch")), 0, 1);
         Display::submenu_option(_("Make &Invoice Against This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$order_no");
-        ((isset($_GET['Type']) && $_GET['Type'] == 1)) ?
-          Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes") :
-          Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?add=0&type=" . ST_CUSTDELIVERY);
+        ((isset($_GET['Type']) && $_GET['Type'] == 1)) ? Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes") : Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?add=0&type=" . ST_CUSTDELIVERY);
       } elseif ($trans_type == ST_SALESINVOICE) {
         $sql    = "SELECT trans_type_from, trans_no_from FROM debtor_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . DB::escape($order_no);
         $result = DB::query($sql, "could not retrieve customer allocation");
@@ -496,6 +470,9 @@
       Orders::session_delete($_POST['order_id']);
       $this->order = $this->create_order($type, $order_no);
     }
+    /**
+     * @return mixed
+     */
     protected function deleteOrder()
     {
       if (!$this->user->can_access(SS_SETUP)) {
@@ -535,7 +512,7 @@
     }
     protected function updateItem()
     {
-      if ($_POST[Orders::UPDATE_ITEM] != '' && $this->check_item_data($this->order)) {
+      if ($this->check_item_data($this->order)) {
         $this->order->update_order_item($_POST['LineNo'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
       }
       Item_Line::start_focus('_stock_id_edit');
@@ -551,6 +528,9 @@
       }
       $this->ajax->activate('_page_body');
     }
+    /**
+     * @return mixed
+     */
     protected function addLine()
     {
       if (!$this->check_item_data($this->order)) {
@@ -558,6 +538,22 @@
       }
       $this->order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
       $_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
+      Item_Line::start_focus('_stock_id_edit');
+    }
+    /**
+     * @return mixed
+     */
+    protected function checkRowDelete()
+    {
+      $line_id = $this->getActionID(Orders::DELETE_LINE);
+      if (!$line_id === false) {
+        return;
+      }
+      if ($this->order->some_already_delivered($line_id) == 0) {
+        $this->order->remove_from_order($line_id);
+      } else {
+        Event::error(_("This item cannot be deleted because some of it has already been delivered."));
+      }
       Item_Line::start_focus('_stock_id_edit');
     }
   }

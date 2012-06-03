@@ -234,7 +234,7 @@
               break;
             case 'inactive':
               if (Form::getPost('show_inactive')) {
-                $pager-> Form::inactiveControlCell($row);
+                $pager->inactive_control_cell($row);
               }
               break;
             case 'id':
@@ -485,7 +485,7 @@
     public function  inactive_control_cell(&$row)
     {
       if ($this->inactive_ctrl) {
-        //	return  Form::inactiveControlCell($row[$this->inactive_ctrl['key']],
+        //	return inactive_control_cell($row[$this->inactive_ctrl['key']],
         // $row['inactive'], $this->inactive_ctrl['table'],
         // $this->inactive_ctrl['key']);
         $key   = $this->key ? $this->key : $this->columns[0]['name']; // TODO - support for complex keys

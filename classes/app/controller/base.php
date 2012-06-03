@@ -37,4 +37,16 @@
       $this->title = _($this->help_context = $title);
     }
     protected function after() { }
+    /**
+     * @param $prefix
+     *
+     * @return bool|mixed
+     */
+    protected function getActionId($prefix)
+    {
+      if (strpos($this->action, $prefix) !== false) {
+        return str_replace($prefix, '', $this->action);
+      }
+      return -1;
+    }
   }

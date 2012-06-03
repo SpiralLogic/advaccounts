@@ -30,6 +30,7 @@
     const ADD_LINE            = 'addLine';
     const UPDATE_ITEM         = 'updateItem';
     const DELETE_LINE         = 'deleteLine';
+    const EDIT_LINE         = 'editLine';
     const CANCEL_ITEM_CHANGES = 'cancelItem';
     const DISCOUNT_ALL        = 'discountall';
     const ADD                 = 'add';

@@ -364,7 +364,7 @@
           Cell::amount($line->price);
           Cell::percent($line->discount_percent * 100);
           Cell::amount($line_total);
-          Form::buttonEditCell("Edit$line_no", _(MODE_EDIT), _('Edit document line'));
+          Form::buttonEditCell("Edit$line_no", _("Edit"), _('Edit document line'));
           Form::buttonDeleteCell("Delete$line_no", _('Delete'), _('Remove line from document'));
           Row::end();
         } else {
