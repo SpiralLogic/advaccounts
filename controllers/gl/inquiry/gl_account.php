@@ -13,7 +13,7 @@
   Page::start(_($help_context = "General Ledger Inquiry"), SA_GLTRANSVIEW);
   // Ajax updates
   //
-  if (get_post('Show')) {
+  if (Form::getPost('Show')) {
     Ajax::i()->activate('trans_tbl');
   }
   if (isset($_GET["account"])) {
@@ -46,7 +46,7 @@
 
   gl_inquiry_controls();
   Display::div_start('trans_tbl');
-  if (get_post('Show') || get_post('account')) {
+  if (Form::getPost('Show') || Form::getPost('account')) {
     show_results();
   }
   Display::div_end();
@@ -54,12 +54,12 @@
   function gl_inquiry_controls()
   {
     $dim = DB_Company::get_pref('use_dimension');
-    start_form();
+    Form::start();
     Table::start('tablestyle_noborder');
     Row::start();
     GL_UI::all_cells(_("Account:"), 'account', null, false, false, "All Accounts");
-    date_cells(_("from:"), 'TransFromDate', '', null, -30);
-    date_cells(_("to:"), 'TransToDate');
+     Form::dateCells(_("from:"), 'TransFromDate', '', null, -30);
+     Form::dateCells(_("to:"), 'TransToDate');
     Row::end();
     Table::end();
     Table::start();
@@ -70,13 +70,13 @@
     if ($dim > 1) {
       Dimensions::cells(_("Dimension") . " 2:", 'Dimension2', null, true, " ", false, 2);
     }
-    small_amount_cells(_("Amount min:"), 'amount_min', null);
-    small_amount_cells(_("Amount max:"), 'amount_max', null);
-    submit_cells('Show', _("Show"), '', '', 'default');
+     Form::amountCellsSmall(_("Amount min:"), 'amount_min', null);
+     Form::amountCellsSmall(_("Amount max:"), 'amount_max', null);
+    Form::submitCells('Show', _("Show"), '', '', 'default');
     Row::end();
     Table::end();
     echo '<hr>';
-    end_form();
+    Form::end();
   }
 
   function show_results()

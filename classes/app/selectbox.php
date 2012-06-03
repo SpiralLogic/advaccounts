@@ -191,12 +191,12 @@
           '';
       }
       if ($this->selected_id == null) {
-        $this->selected_id = get_post($this->name, (string) $this->default);
+        $this->selected_id = Form::getPost($this->name, (string) $this->default);
       }
       if (!is_array($this->selected_id)) {
         $this->selected_id = array((string) $this->selected_id);
       } // code is generalized for multiple selection support
-      $txt = get_post($search_box);
+      $txt = Form::getPost($search_box);
       if (isset($_POST['_' . $this->name . '_update'])) { // select list or search box change
         if ($by_id) {
           $txt = $_POST[$this->name];
@@ -226,7 +226,7 @@
           $value = $row[0];
           $descr = $this->format == null ? $row[1] : call_user_func($this->format, $row);
           $sel   = '';
-          if (get_post($search_button) && ($txt == $value)) {
+          if (Form::getPost($search_button) && ($txt == $value)) {
             $this->selected_id[] = $value;
           }
           if (in_array((string) $value, $this->selected_id, true)) {
@@ -290,7 +290,7 @@
           }
           JS::set_focus($this->name . '_text'); // prevent lost focus
         } else {
-          if (get_post($search_submit ? $search_submit : "_{$this->name}_button")) {
+          if (Form::getPost($search_submit ? $search_submit : "_{$this->name}_button")) {
             JS::set_focus($this->name);
           }
         } // prevent lost focus
@@ -352,7 +352,7 @@
             if ($this->spec_option === false && $this->selected_id == array()) {
               $limit = ' LIMIT 1';
             } else {
-              $this->where[] = $this->valfield . "='" . get_post($this->name, $this->spec_id) . "'";
+              $this->where[] = $this->valfield . "='" . Form::getPost($this->name, $this->spec_id) . "'";
             }
           } else {
             if ($txt != '*') {

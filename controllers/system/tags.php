@@ -9,10 +9,10 @@
    **/
   // For tag constants
   // Set up page security based on what type of tags we're working with
-  if (Input::get('type') == "account" || get_post('type') == TAG_ACCOUNT) {
+  if (Input::get('type') == "account" || Form::getPost('type') == TAG_ACCOUNT) {
     Page::set_security(SA_GLACCOUNTTAGS);
   } else {
-    if (Input::get('type') == "dimension" || get_post('type') == TAG_DIMENSION) {
+    if (Input::get('type') == "dimension" || Form::getPost('type') == TAG_DIMENSION) {
       Page::set_security(SA_DIMTAGS);
     }
   }
@@ -66,22 +66,22 @@
     $selected_id   = -1;
     $_POST['name'] = $_POST['description'] = '';
   }
-  $result = Tags::get_all(Input::post('type'), check_value('show_inactive'));
-  start_form();
+  $result = Tags::get_all(Input::post('type'), Form::hasPost('show_inactive'));
+  Form::start();
   Table::start('tablestyle grid');
   $th = array(_("Tag Name"), _("Tag Description"), "", "");
-  inactive_control_column($th);
+   Form::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
     Cell::label($myrow['name']);
     Cell::label($myrow['description']);
-    inactive_control_cell($myrow["id"], $myrow["inactive"], 'tags', 'id');
-    edit_button_cell("Edit" . $myrow["id"], _("Edit"));
-    delete_button_cell("Delete" . $myrow["id"], _("Delete"));
+     Form::inactiveControlCell($myrow["id"], $myrow["inactive"], 'tags', 'id');
+    Form::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
+    Form::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     Row::end();
   }
-  inactive_control_row($th);
+   Form::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != -1) // We've selected a tag
@@ -93,14 +93,14 @@
       $_POST['description'] = $myrow["description"];
     }
     // Note the selected tag
-    hidden('selected_id', $selected_id);
+    Form::hidden('selected_id', $selected_id);
   }
-  text_row_ex(_("Tag Name:"), 'name', 15, 30);
-  text_row_ex(_("Tag Description:"), 'description', 40, 60);
-  hidden('type');
+   Form::textRowEx(_("Tag Name:"), 'name', 15, 30);
+   Form::textRowEx(_("Tag Description:"), 'description', 40, 60);
+  Form::hidden('type');
   Table::end(1);
-  submit_add_or_update_center($selected_id == -1, '', 'both');
-  end_form();
+  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Form::end();
   Page::end();
   /**
    * @return bool

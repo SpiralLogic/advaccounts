@@ -155,8 +155,8 @@
   $dspans[]         = $spanlen;
   $is_batch_invoice = count($order->src_docs) > 1;
   $is_edition       = $order->trans_type == ST_SALESINVOICE && $order->trans_no != 0;
-  start_form();
-  hidden('order_id');
+  Form::start();
+  Form::hidden('order_id');
   Table::start('tablestyle2 width90 pad5');
   Row::start();
   Cell::labels(_("Customer"), $order->customer_name, "class='tablerowhead'");
@@ -165,7 +165,7 @@
   Row::end();
   Row::start();
   if ($order->trans_no == 0) {
-    ref_cells(_("Reference"), 'ref', '', null, "class='tablerowhead'");
+     Form::refCells(_("Reference"), 'ref', '', null, "class='tablerowhead'");
   } else {
     Cell::labels(_("Reference"), $order->reference, "class='tablerowhead'");
   }
@@ -189,7 +189,7 @@
     }
   }
   if (!$order->view_only) {
-    date_cells(_("Date"), 'InvoiceDate', '', $order->trans_no == 0, 0, 0, 0, "class='tablerowhead'", true);
+     Form::dateCells(_("Date"), 'InvoiceDate', '', $order->trans_no == 0, 0, 0, 0, "class='tablerowhead'", true);
   } else {
     Cell::labels(_('Invoice Date:'), $_POST['InvoiceDate']);
   }
@@ -197,7 +197,7 @@
     $_POST['due_date'] = Sales_Order::get_invoice_duedate($order->customer_id, $_POST['InvoiceDate']);
   }
   if (!$order->view_only) {
-    date_cells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tablerowhead'");
+     Form::dateCells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tablerowhead'");
   } else {
     Cell::labels(_('Due Date'), $_POST['due_date']);
   }
@@ -206,7 +206,7 @@
   $row = Sales_Order::get_customer($order->customer_id);
   if ($row['dissallow_invoices'] == 1) {
     Event::error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
-    end_form();
+    Form::end();
     Page::end();
     exit();
   }
@@ -243,7 +243,7 @@
     }
     Item_UI::status_cell($line->stock_id);
     if (!$order->view_only) {
-      textarea_cells(null, 'Line' . $line_no . 'Desc', $line->description, 30, 3);
+       Form::textareaCells(null, 'Line' . $line_no . 'Desc', $line->description, 30, 3);
     } else {
       Cell::label($line->description);
     }
@@ -254,13 +254,13 @@
     if ($is_batch_invoice) {
       // for batch invoices we can only remove whole deliveries
       echo '<td class="right nowrap">';
-      hidden('Line' . $line_no, $line->qty_dispatched);
+      Form::hidden('Line' . $line_no, $line->qty_dispatched);
       echo Num::format($line->qty_dispatched, $dec) . '</td>';
     } elseif ($order->view_only) {
-      hidden('viewing');
+      Form::hidden('viewing');
       Cell::qty($line->quantity, false, $dec);
     } else {
-      small_qty_cells(null, 'Line' . $line_no, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), null, null, $dec);
+       Form::qtyCellsSmall(null, 'Line' . $line_no, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), null, null, $dec);
     }
     $display_discount_percent = Num::percent_format($line->discount_percent * 100) . " %";
     $line_total               = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
@@ -301,7 +301,7 @@
   Row::start();
   Cell::label(_("Shipping Cost"), "colspan=$colspan class='right bold'");
   if (!$order->view_only) {
-    small_amount_cells(null, 'ChargeFreightCost', null);
+     Form::amountCellsSmall(null, 'ChargeFreightCost', null);
   } else {
     Cell::amount($order->freight_cost);
   }
@@ -321,7 +321,7 @@
   Table::end(1);
   Display::div_end();
   Table::start('tablestyle2');
-  textarea_row(_("Memo"), 'Comments', null, 50, 4);
+   Form::textareaRow(_("Memo"), 'Comments', null, 50, 4);
   Table::end(1);
   Table::start('center red bold');
   if (!$order->view_only) {
@@ -331,11 +331,11 @@
   }
   Table::end();
   if (!$order->view_only) {
-    submit_center_first('Update', _("Update"), _('Refresh document page'), true);
-    submit_center_last('process_invoice', _("Process Invoice"), _('Check entered data and save document'), 'default');
+    Form::submitCenterBegin('Update', _("Update"), _('Refresh document page'), true);
+    Form::submitCenterEnd('process_invoice', _("Process Invoice"), _('Check entered data and save document'), 'default');
     Table::start('center red bold');
     Cell::label(_("DON'T FUCK THIS UP, YOU WON'T BE ABLE TO EDIT ANYTHING AFTER THIS. DON'T MAKE YOURSELF FEEL AND LOOK LIKE A DICK!"), 'center');
   }
   Table::end();
-  end_form();
+  Form::end();
   Page::end(false);

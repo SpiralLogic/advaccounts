@@ -25,7 +25,7 @@
         $items[$lang['code']] = $lang['name'];
       }
 
-      return array_selector($name, $selected_id, $items);
+      return Form::arraySelect($name, $selected_id, $items);
     }
     /**
      * @static

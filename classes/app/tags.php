@@ -269,7 +269,7 @@
         $spec_opt = false;
       }
 
-      return array_selector($name, null, $tags, array(
+      return Form::arraySelect($name, null, $tags, array(
                                                      'multi'       => $multi,
                                                      'height'      => $height,
                                                      'spec_option' => $spec_opt,

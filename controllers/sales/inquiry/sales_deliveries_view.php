@@ -17,13 +17,13 @@
     $_POST['OutstandingOnly'] = FALSE;
     Page::start(_($help_context = "Search All Deliveries"), SA_SALESINVOICE);
   }
-  $selected_customer = Input::get_post('customer_id', Input::NUMERIC, -1);
+  $selected_customer = Input::Form::getPost('customer_id', Input::NUMERIC, -1);
   if (isset($_POST[Orders::BATCH_INVOICE])) {
     // checking batch integrity
     $del_count = 0;
     foreach ($_POST['Sel_'] as $delivery => $branch) {
       $checkbox = 'Sel_' . $delivery;
-      if (check_value($checkbox)) {
+      if (Form::hasPost($checkbox)) {
         if (!$del_count) {
           $del_branch = $branch;
         }
@@ -45,8 +45,8 @@
       Display::meta_forward('/sales/customer_invoice.php', 'BatchInvoice=Yes');
     }
   }
-  if (get_post('_DeliveryNumber_changed')) {
-    $disable = get_post('DeliveryNumber') !== '';
+  if (Form::getPost('_DeliveryNumber_changed')) {
+    $disable = Form::getPost('DeliveryNumber') !== '';
     Ajax::i()->addDisable(TRUE, 'DeliveryAfterDate', $disable);
     Ajax::i()->addDisable(TRUE, 'DeliveryToDate', $disable);
     Ajax::i()->addDisable(TRUE, 'StockLocation', $disable);
@@ -61,17 +61,17 @@
     }
     Ajax::i()->activate('deliveries_tbl');
   }
-  start_form(FALSE, $_SERVER['DOCUMENT_URI'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
+  Form::start(FALSE, $_SERVER['DOCUMENT_URI'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
   Table::start('tablestyle_noborder');
   Row::start();
   Debtor::cells(_('Customer:'), 'customer_id', NULL, TRUE);
-  ref_cells(_("#:"), 'DeliveryNumber', '', NULL, '', TRUE);
-  date_cells(_("from:"), 'DeliveryAfterDate', '', NULL, -30);
-  date_cells(_("to:"), 'DeliveryToDate', '', NULL, 1);
+   Form::refCells(_("#:"), 'DeliveryNumber', '', NULL, '', TRUE);
+   Form::dateCells(_("from:"), 'DeliveryAfterDate', '', NULL, -30);
+   Form::dateCells(_("to:"), 'DeliveryToDate', '', NULL, 1);
   Inv_Location::cells(_("Location:"), 'StockLocation', NULL, TRUE);
   Item::cells(_("Item:"), 'SelectStockFromList', NULL, TRUE, FALSE, FALSE, FALSE, FALSE);
-  submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
-  hidden('OutstandingOnly', $_POST['OutstandingOnly']);
+  Form::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
+  Form::hidden('OutstandingOnly', $_POST['OutstandingOnly']);
   Row::end();
   Table::end();
   if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
@@ -138,7 +138,7 @@
     ), _("Due By") => array('type' => 'date'), _("Delivery Total") => array(
       'type' => 'amount', 'ord' => ''
     ), _("Currency") => array('align' => 'center'),
-    submit(Orders::BATCH_INVOICE, _("Batch"), FALSE, _("Batch Invoicing")) => array(
+    Form::submit(Orders::BATCH_INVOICE, _("Batch"), FALSE, _("Batch Invoicing")) => array(
       'insert' => TRUE, 'fun' => function ($row) {
         $name = "Sel_" . $row['trans_no'];
         return $row['Done'] ? '' :
@@ -178,5 +178,5 @@
     , _("Marked items are overdue."));
   //$table->width = "92%";
   DB_Pager::display($table);
-  end_form();
+  Form::end();
   Page::end();

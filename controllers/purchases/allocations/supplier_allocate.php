@@ -28,7 +28,7 @@
   if (isset($_GET['trans_no']) && isset($_GET['trans_type'])) {
     $_SESSION['alloc'] = new Gl_Allocation($_GET['trans_type'], $_GET['trans_no']);
   }
-  if (get_post('UpdateDisplay')) {
+  if (Form::getPost('UpdateDisplay')) {
     $_SESSION['alloc']->read();
     Ajax::i()->activate('alloc_tbl');
   }
@@ -51,9 +51,9 @@
   function edit_allocations_for_transaction($type, $trans_no)
   {
     global $systypes_array;
-    start_form();
+    Form::start();
     if (isset($_POST['inquiry']) || stristr($_SERVER['HTTP_REFERER'], 'supplier_allocation_inquiry.php')) {
-      hidden('inquiry', TRUE);
+      Form::hidden('inquiry', TRUE);
     }
     Display::heading(_("Allocation of") . " " . $systypes_array[$_SESSION['alloc']->type] . " # " . $_SESSION['alloc']->trans_no);
     Display::heading($_SESSION['alloc']->person_name);
@@ -63,15 +63,15 @@
     Display::div_start('alloc_tbl');
     if (count($_SESSION['alloc']->allocs) > 0) {
       Gl_Allocation::show_allocatable(TRUE);
-      submit_center_first('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), TRUE);
-      submit('Process', _("Process"), TRUE, _('Process allocations'), 'default');
-      submit_center_last('Cancel', _("Back to Allocations"), _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
+      Form::submitCenterBegin('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), TRUE);
+      Form::submit('Process', _("Process"), TRUE, _('Process allocations'), 'default');
+      Form::submitCenterEnd('Cancel', _("Back to Allocations"), _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
     } else {
       Event::warning(_("There are no unsettled transactions to allocate."), 0, 1);
-      submit_center('Cancel', _("Back to Allocations"), TRUE, _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
+      Form::submitCenter('Cancel', _("Back to Allocations"), TRUE, _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
     }
     Display::div_end();
-    end_form();
+    Form::end();
   }
 
 

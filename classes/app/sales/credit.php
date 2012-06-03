@@ -276,7 +276,7 @@
         $_POST['ref'] = Ref::get_next(ST_CUSTCREDIT);
       }
       if ($order->trans_no == 0) {
-        ref_row(_("Reference") . ':', 'ref');
+         Form::refRow(_("Reference") . ':', 'ref');
       } else {
         Row::label(_("Reference") . ':', $order->reference);
       }
@@ -302,7 +302,7 @@
       if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "") {
         $_POST['OrderDate'] = $order->document_date;
       }
-      date_row(_("Date:"), 'OrderDate', '', $order->trans_no == 0, 0, 0, 0, NULL, TRUE);
+       Form::dateRow(_("Date:"), 'OrderDate', '', $order->trans_no == 0, 0, 0, 0, NULL, TRUE);
       if (isset($_POST['_OrderDate_changed'])) {
         if (!Bank_Currency::is_company($order->customer_currency) && (DB_Company::get_base_sales_type() > 0)
         ) {
@@ -315,17 +315,17 @@
       if ($dim > 0) {
         Dimensions::select_row(_("Dimension") . ":", 'dimension_id', NULL, TRUE, ' ', FALSE, 1, FALSE);
       } else {
-        hidden('dimension_id', 0);
+        Form::hidden('dimension_id', 0);
       }
       if ($dim > 1) {
         Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', NULL, TRUE, ' ', FALSE, 2, FALSE);
       } else {
-        hidden('dimension2_id', 0);
+        Form::hidden('dimension2_id', 0);
       }
       Table::endOuter(1); // outer table
       if ($change_prices != 0) {
         foreach ($order->line_items as $line) {
-          $line->price = Item_Price::get_calculated_price($line->stock_id, $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'));
+          $line->price = Item_Price::get_calculated_price($line->stock_id, $order->customer_currency, $order->sales_type, $order->price_factor, Form::getPost('OrderDate'));
           //		$line->discount_percent = $order->default_discount;
         }
         Ajax::i()->activate('items_table');
@@ -352,7 +352,7 @@
       Table::header($th);
       $subtotal = 0;
       $k        = 0; //row colour counter
-      $id       = find_submit(MODE_EDIT);
+      $id       = Form::findPostPrefix(MODE_EDIT);
       foreach ($order->line_items as $line_no => $line) {
         $line_total = round($line->qty_dispatched * $line->price * (1 - $line->discount_percent), User::price_dec());
         if ($id != $line_no) {
@@ -364,8 +364,8 @@
           Cell::amount($line->price);
           Cell::percent($line->discount_percent * 100);
           Cell::amount($line_total);
-          edit_button_cell("Edit$line_no", _(MODE_EDIT), _('Edit document line'));
-          delete_button_cell("Delete$line_no", _('Delete'), _('Remove line from document'));
+          Form::buttonEditCell("Edit$line_no", _(MODE_EDIT), _('Edit document line'));
+          Form::buttonDeleteCell("Delete$line_no", _('Delete'), _('Remove line from document'));
           Row::end();
         } else {
           Sales_Credit::item_controls($order, $k, $line_no);
@@ -384,7 +384,7 @@
       }
       Row::start();
       Cell::label(_("Shipping"), "colspan=$colspan class='right bold'");
-      small_amount_cells(NULL, 'ChargeFreightCost', Num::price_format(get_post('ChargeFreightCost', 0)));
+       Form::amountCellsSmall(NULL, 'ChargeFreightCost', Num::price_format(Form::getPost('ChargeFreightCost', 0)));
       Cell::label('', 'colspan=2');
       Row::end();
       $taxes         = $order->get_taxes($_POST['ChargeFreightCost']);
@@ -406,20 +406,20 @@
     public static function item_controls($order, $rowcounter, $line_no = -1)
     {
 
-      $id = find_submit(MODE_EDIT);
+      $id = Form::findPostPrefix(MODE_EDIT);
       if ($line_no != -1 && $line_no == $id) {
         $_POST['stock_id'] = $order->line_items[$id]->stock_id;
         $_POST['qty']      = Item::qty_format($order->line_items[$id]->qty_dispatched, $_POST['stock_id'], $dec);
         $_POST['price']    = Num::price_format($order->line_items[$id]->price);
         $_POST['Disc']     = Num::percent_format(($order->line_items[$id]->discount_percent) * 100);
         $_POST['units']    = $order->line_items[$id]->units;
-        hidden('stock_id', $_POST['stock_id']);
+        Form::hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id']);
         Cell::label($order->line_items[$id]->description, ' class="nowrap"');
         Ajax::i()->activate('items_table');
       } else {
         Sales_UI::items_cells(NULL, 'stock_id', NULL, FALSE, FALSE, array('description' => $order->line_items[$id]->description));
-        if (list_updated('stock_id')) {
+        if (Form::isListUpdated('stock_id')) {
           Ajax::i()->activate('price');
           Ajax::i()->activate('qty');
           Ajax::i()->activate('units');
@@ -433,18 +433,18 @@
         // default to the customer's discount %
         $_POST['Disc'] = Num::percent_format($order->default_discount * 100);
       }
-      qty_cells(NULL, 'qty', $_POST['qty'], NULL, NULL, $dec);
+       Form::qtyCells(NULL, 'qty', $_POST['qty'], NULL, NULL, $dec);
       Cell::label($_POST['units']);
-      amount_cells(NULL, 'price', NULL);
-      small_amount_cells(NULL, 'Disc', Num::percent_format(0), NULL, NULL, User::percent_dec());
+       Form::amountCells(NULL, 'price', NULL);
+       Form::amountCellsSmall(NULL, 'Disc', Num::percent_format(0), NULL, NULL, User::percent_dec());
       Cell::amount(Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('Disc') / 100));
       if ($id != -1) {
-        button_cell(Orders::UPDATE_ITEM, _("Update"), _('Confirm changes'), ICON_UPDATE);
-        button_cell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
-        hidden('line_no', $line_no);
+        Form::buttonCell(Orders::UPDATE_ITEM, _("Update"), _('Confirm changes'), ICON_UPDATE);
+        Form::buttonCell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
+        Form::hidden('line_no', $line_no);
         JS::set_focus('qty');
       } else {
-        submit_cells(Orders::ADD_LINE, _("Add Item"), "colspan=2", _('Add new item to document'), TRUE);
+        Form::submitCells(Orders::ADD_LINE, _("Add Item"), "colspan=2", _('Add new item to document'), TRUE);
       }
       Row::end();
     }
@@ -472,7 +472,7 @@
         /* the goods are to be written off to somewhere */
         GL_UI::all_row(_("Write off the cost of the items to"), 'WriteOffGLCode', NULL);
       }
-      textarea_row(_("Memo"), "CreditText", NULL, 51, 3);
+       Form::textareaRow(_("Memo"), "CreditText", NULL, 51, 3);
       echo "</table>";
       Display::div_end();
     }
@@ -490,7 +490,7 @@
         Cell::label($label);
       }
       echo "<td>\n";
-      echo array_selector($name, $selected, array(
+      echo Form::arraySelect($name, $selected, array(
                                                  'Return'   => _("Items Returned to Inventory Location"),
                                                  'WriteOff' => _("Items Written Off")
                                             ), array('select_submit' => $submit_on_change));

@@ -132,7 +132,7 @@
         '5'      => _("Delivery Notes"),
         '6'      => _("Invoices Only")
       );
-      echo array_selector($name, $selected, $allocs);
+      echo Form::arraySelect($name, $selected, $allocs);
       echo "</td>\n";
     }
     /**
@@ -170,13 +170,13 @@
      */
     public static function can_process($type)
     {
-      if (!get_post('customer_id')) {
+      if (!Form::getPost('customer_id')) {
         Event::error(_("There is no customer selected."));
         JS::set_focus('customer_id');
 
         return false;
       }
-      if (!get_post('branch_id')) {
+      if (!Form::getPost('branch_id')) {
         Event::error(_("This customer has no branch defined."));
         JS::set_focus('branch_id');
 

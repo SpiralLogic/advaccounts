@@ -8,8 +8,8 @@
    * @link      http://www.advancedgroup.com.au
    **/
   Page::start(_($help_context = "Printing Profiles"), SA_PRINTPROFILE);
-  $selected_id = get_post('profile_id', '');
-  if (get_post('submit')) {
+  $selected_id = Form::getPost('profile_id', '');
+  if (Form::getPost('submit')) {
     $error = 0;
     if ($_POST['profile_id'] == '' && empty($_POST['name'])) {
       $error = 1;
@@ -17,13 +17,13 @@
       JS::set_focus('name');
     }
     if (!$error) {
-      $prof = array('' => get_post('Prn')); // store default value/profile name
+      $prof = array('' => Form::getPost('Prn')); // store default value/profile name
       foreach (get_reports() as $rep => $descr) {
-        $val        = get_post('Prn' . $rep);
+        $val        = Form::getPost('Prn' . $rep);
         $prof[$rep] = $val;
       }
       if ($_POST['profile_id'] == '') {
-        $_POST['profile_id'] = get_post('name');
+        $_POST['profile_id'] = Form::getPost('name');
       }
       Printer::update_profile($_POST['profile_id'], $prof);
       if ($selected_id == '') {
@@ -34,29 +34,29 @@
       }
     }
   }
-  if (get_post('delete')) {
-    if (!check_delete(get_post('name'))) {
+  if (Form::getPost('delete')) {
+    if (!check_delete(Form::getPost('name'))) {
       Printer::delete_profile($selected_id);
       Event::notice(_('Selected printing profile has been deleted'));
       clear_form($selected_id);
     }
   }
-  if (get_post('_profile_id_update')) {
+  if (Form::getPost('_profile_id_update')) {
     Ajax::i()->activate('_page_body');
   }
-  start_form();
+  Form::start();
   Table::start();
   Reports_UI::print_profiles_row(_('Select printing profile') . ':', 'profile_id', null, _('New printing profile'), true);
   Table::end();
   echo '<hr>';
   Table::start();
-  if (get_post('profile_id') == '') {
-    text_row(_("Printing Profile Name") . ':', 'name', null, 30, 30);
+  if (Form::getPost('profile_id') == '') {
+     Form::textRow(_("Printing Profile Name") . ':', 'name', null, 30, 30);
   } else {
-    Cell::labels(_("Printing Profile Name") . ':', get_post('profile_id'));
+    Cell::labels(_("Printing Profile Name") . ':', Form::getPost('profile_id'));
   }
   Table::end(1);
-  $result = Printer::get_profile(get_post('profile_id'));
+  $result = Printer::get_profile(Form::getPost('profile_id'));
   $prints = array();
   while ($myrow = DB::fetch($result)) {
     $prints[$myrow['report']] = $myrow['printer'];
@@ -85,14 +85,14 @@
     echo '<br>';
   }
   Display::div_start('controls');
-  if (get_post('profile_id') == '') {
-    submit_center('submit', _("Add New Profile"), true, '', 'default');
+  if (Form::getPost('profile_id') == '') {
+    Form::submitCenter('submit', _("Add New Profile"), true, '', 'default');
   } else {
-    submit_center_first('submit', _("Update Profile"), _('Update printer profile'), 'default');
-    submit_center_last('delete', _("Delete Profile"), _('Delete printer profile (only if not used by any user)'), true);
+    Form::submitCenterBegin('submit', _("Update Profile"), _('Update printer profile'), 'default');
+    Form::submitCenterEnd('delete', _("Delete Profile"), _('Delete printer profile (only if not used by any user)'), true);
   }
   Display::div_end();
-  end_form();
+  Form::end();
   Page::end();
   // Returns array of defined reports
   //

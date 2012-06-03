@@ -421,7 +421,7 @@
   {
     $company_year = DB_Company::get_pref('f_year');
     $result       = DB_Company::get_all_fiscalyears();
-    start_form();
+    Form::start();
     Event::warning(_("Warning: Deleting a fiscal year all transactions
         are removed and converted into relevant balances. This process is irreversible!"), 0, 0, "class='currentfg'");
     Table::start('tablestyle grid');
@@ -443,17 +443,17 @@
       Cell::label($from);
       Cell::label($to);
       Cell::label($closed_text);
-      edit_button_cell("Edit" . $myrow['id'], _("Edit"));
+      Form::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
       if ($myrow["id"] != $company_year) {
-        delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-        submit_js_confirm("Delete" . $myrow['id'], sprintf(_("Are you sure you want to delete fiscal year %s - %s? All transactions are deleted and converted into relevant balances. Do you want to continue ?"), $from, $to));
+        Form::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
+        Form::submitConfirm("Delete" . $myrow['id'], sprintf(_("Are you sure you want to delete fiscal year %s - %s? All transactions are deleted and converted into relevant balances. Do you want to continue ?"), $from, $to));
       } else {
         Cell::label('');
       }
       Row::end();
     }
     Table::end();
-    end_form();
+    Form::end();
     Display::note(_("The marked fiscal year is the current fiscal year which cannot be deleted."), 0, 0, "class='currentfg'");
   }
 
@@ -463,7 +463,7 @@
    */
   function display_fiscalyear_edit($Mode, $selected_id)
   {
-    start_form();
+    Form::start();
     Table::start('tablestyle2');
     if ($selected_id != -1) {
       if ($Mode == MODE_EDIT) {
@@ -472,18 +472,18 @@
         $_POST['to_date']   = Dates::sql2date($myrow["end"]);
         $_POST['closed']    = $myrow["closed"];
       }
-      hidden('from_date');
-      hidden('to_date');
+      Form::hidden('from_date');
+      Form::hidden('to_date');
       Row::label(_("Fiscal Year Begin:"), $_POST['from_date']);
       Row::label(_("Fiscal Year End:"), $_POST['to_date']);
     } else {
-      date_row(_("Fiscal Year Begin:"), 'from_date', '', null, 0, 0, 1001);
-      date_row(_("Fiscal Year End:"), 'to_date', '', null, 0, 0, 1001);
+       Form::dateRow(_("Fiscal Year Begin:"), 'from_date', '', null, 0, 0, 1001);
+       Form::dateRow(_("Fiscal Year End:"), 'to_date', '', null, 0, 0, 1001);
     }
-    hidden('selected_id', $selected_id);
-    yesno_list_row(_("Is Closed:"), 'closed', null, "", "", false);
+    Form::hidden('selected_id', $selected_id);
+     Form::yesnoListRow(_("Is Closed:"), 'closed', null, "", "", false);
     Table::end(1);
-    submit_add_or_update_center($selected_id == -1, '', 'both');
-    end_form();
+    Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+    Form::end();
   }
 

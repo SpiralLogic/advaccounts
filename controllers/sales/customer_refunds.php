@@ -40,7 +40,7 @@
   if (isset($_POST['_DateBanked_changed'])) {
     JS::setfocus('_DataBanked_changed');
   }
-  if (list_updated('customer_id') || list_updated('bank_account')) {
+  if (Form::isListUpdated('customer_id') || Form::isListUpdated('bank_account')) {
     $_SESSION['alloc']->read();
     Ajax::i()->activate('alloc_tbl');
   }
@@ -59,7 +59,7 @@
     $_SESSION['alloc']->write();
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$refund_id");
   }
-  start_form();
+  Form::start();
   Table::startOuter('tablestyle2 width60 pad5');
   Table::section(1);
   Debtor::newselect();
@@ -72,23 +72,23 @@
   } elseif (!isset($_POST['branch_id'])) {
     Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true);
   } else {
-    hidden('branch_id', ANY_NUMERIC);
+    Form::hidden('branch_id', ANY_NUMERIC);
   }
   Debtor_Payment::read_customer_data($customer->id, true);
   Session::i()->setGlobal('debtor', $customer->id);
   $display_discount_percent = Num::percent_format($_POST['payment_discount'] * 100) . "%";
   Table::section(2);
   Bank_Account::row(_("Into Bank Account:"), 'bank_account', null, true);
-  text_row(_("Reference:"), 'ref', null, 20, 40);
+   Form::textRow(_("Reference:"), 'ref', null, 20, 40);
   Table::section(3);
-  date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
+   Form::dateRow(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
   $comp_currency = Bank_Currency::for_company();
   $cust_currency = Bank_Currency::for_debtor($customer->id);
   $bank_currency = Bank_Currency::for_company($_POST['bank_account']);
   if ($cust_currency != $bank_currency) {
     GL_ExchangeRate::display($bank_currency, $cust_currency, $_POST['DateBanked'], ($bank_currency == $comp_currency));
   }
-  amount_row(_("Bank Charge:"), 'charge');
+   Form::AmountRow(_("Bank Charge:"), 'charge');
   Table::endOuter(1);
   if ($cust_currency == $bank_currency) {
     Display::div_start('alloc_tbl');
@@ -96,14 +96,14 @@
     Display::div_end();
   }
   Table::start('tablestyle width60');
-  amount_row(_("Amount:"), 'amount');
-  textarea_row(_("Memo:"), 'memo_', null, 22, 4);
+   Form::AmountRow(_("Amount:"), 'amount');
+   Form::textareaRow(_("Memo:"), 'memo_', null, 22, 4);
   Table::end(1);
   if ($cust_currency != $bank_currency) {
     Event::warning(_("Amount and discount are in customer's currency."));
   }
   Display::br();
-  submit_center('AddRefundItem', _("Add Refund"), true, '', 'default');
+  Form::submitCenter('AddRefundItem', _("Add Refund"), true, '', 'default');
   Display::br();
-  end_form();
+  Form::end();
   Page::end(!Input::request('frame'));

@@ -12,19 +12,19 @@
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
   // Ajax updates
   //
-  if (get_post('Show')) {
+  if (Form::getPost('Show')) {
     Ajax::i()->activate('trans_tbl');
   }
-  start_form();
+  Form::start();
   Table::start('tablestyle_noborder');
   Row::start();
   Bank_Account::cells(_("Account:"), 'bank_account', null);
-  date_cells(_("From:"), 'TransAfterDate', '', null, -30);
-  date_cells(_("To:"), 'TransToDate');
-  submit_cells('Show', _("Show"), '', '', 'default');
+   Form::dateCells(_("From:"), 'TransAfterDate', '', null, -30);
+   Form::dateCells(_("To:"), 'TransToDate');
+  Form::submitCells('Show', _("Show"), '', '', 'default');
   Row::end();
   Table::end();
-  end_form();
+  Form::end();
   $date_after = Dates::date2sql($_POST['TransAfterDate']);
   $date_to    = Dates::date2sql($_POST['TransToDate']);
   if (!isset($_POST['bank_account'])) {

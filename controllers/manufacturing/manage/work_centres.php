@@ -64,26 +64,26 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav         = get_post('show_inactive');
+    $sav         = Form::getPost('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = WO_WorkCentre::get_all(check_value('show_inactive'));
-  start_form();
+  $result = WO_WorkCentre::get_all(Form::hasPost('show_inactive'));
+  Form::start();
   Table::start('tablestyle grid width50');
   $th = array(_("Name"), _("description"), "", "");
-  inactive_control_column($th);
+   Form::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
     Cell::label($myrow["name"]);
     Cell::label($myrow["description"]);
-    inactive_control_cell($myrow["id"], $myrow["inactive"], 'workcentres', 'id');
-    edit_button_cell("Edit" . $myrow['id'], _("Edit"));
-    delete_button_cell("Delete" . $myrow['id'], _("Delete"));
+     Form::inactiveControlCell($myrow["id"], $myrow["inactive"], 'workcentres', 'id');
+    Form::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
+    Form::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
     Row::end();
   }
-  inactive_control_row($th);
+   Form::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != -1) {
@@ -93,12 +93,12 @@
       $_POST['name']        = $myrow["name"];
       $_POST['description'] = $myrow["description"];
     }
-    hidden('selected_id', $selected_id);
+    Form::hidden('selected_id', $selected_id);
   }
-  text_row_ex(_("Name:"), 'name', 40);
-  text_row_ex(_("Description:"), 'description', 50);
+   Form::textRowEx(_("Name:"), 'name', 40);
+   Form::textRowEx(_("Description:"), 'description', 50);
   Table::end(1);
-  submit_add_or_update_center($selected_id == -1, '', 'both');
-  end_form();
+  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Form::end();
   Page::end();
 

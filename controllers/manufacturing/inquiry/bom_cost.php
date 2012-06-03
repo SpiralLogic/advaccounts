@@ -14,16 +14,16 @@
   if (isset($_GET['stock_id'])) {
     $_POST['stock_id'] = $_GET['stock_id'];
   }
-  if (list_updated('stock_id')) {
+  if (Form::isListUpdated('stock_id')) {
     Ajax::i()->activate('_page_body');
   }
-  start_form(FALSE);
+  Form::start(FALSE);
   Table::start('tablestyle_noborder');
   Item_UI::manufactured_row(_("Select a manufacturable item:"), 'stock_id', NULL, FALSE, TRUE);
   Table::end();
   Display::br();
   Display::heading(_("All Costs Are In:") . " " . Bank_Currency::for_company());
   WO::display_bom(Input::post('stock_id'));
-  end_form();
+  Form::end();
   Page::end();
 

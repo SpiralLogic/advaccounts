@@ -95,7 +95,7 @@
     public static function link($link_text, $url, $icon = false)
     {
       if (User::graphic_links() && $icon) {
-        $link_text = set_icon($icon, $link_text);
+        $link_text = Form::setIcon($icon, $link_text);
       }
       $href = '/' . ltrim($url, '/');
       $href = (Input::request('frame')) ? "javascript:window.parent.location='$href'" : $href;
@@ -143,7 +143,7 @@
       $headers = array();
       foreach ($pager->columns as $num_col => $col) {
         // record status control column is displayed only when control checkbox is on
-        if (isset($col['head']) && ($col['type'] != 'inactive' || get_post('show_inactive'))) {
+        if (isset($col['head']) && ($col['type'] != 'inactive' || Form::getPost('show_inactive'))) {
           if (!isset($col['ord'])) {
             $headers[] = $col['head'];
           } else {
@@ -233,8 +233,8 @@
               Cell::label(Num::format($cell, User::exrate_dec()), "class='center'");
               break;
             case 'inactive':
-              if (get_post('show_inactive')) {
-                $pager->inactive_control_cell($row);
+              if (Form::getPost('show_inactive')) {
+                $pager-> Form::inactiveControlCell($row);
               }
               break;
             case 'id':
@@ -273,14 +273,14 @@
       }
       Row::start("class='navibar'");
       $colspan = count($pager->columns);
-      $inact   = $pager->inactive_ctrl == true ? ' ' . checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
+      $inact   = $pager->inactive_ctrl == true ? ' ' . Form::checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
       if ($pager->rec_count) {
         echo "<td colspan=$colspan class='navibar' >";
         echo "<table class='floatright'>";
         $but_pref = $pager->name . '_page_';
         Row::start();
         if (@$pager->inactive_ctrl) {
-          submit('Update', _('Update'), true, '', null);
+          Form::submit('Update', _('Update'), true, '', null);
         } // inactive update
         static::navi_cell($but_pref . 'first', _('First'), $pager->first_page);
         static::navi_cell($but_pref . 'prev', _('Prev'), $pager->prev_page);
@@ -482,10 +482,10 @@
      * Helper for display inactive control cells
 
      */
-    public function inactive_control_cell(&$row)
+    public function  inactive_control_cell(&$row)
     {
       if ($this->inactive_ctrl) {
-        //	return inactive_control_cell($row[$this->inactive_ctrl['key']],
+        //	return  Form::inactiveControlCell($row[$this->inactive_ctrl['key']],
         // $row['inactive'], $this->inactive_ctrl['table'],
         // $this->inactive_ctrl['key']);
         $key   = $this->key ? $this->key : $this->columns[0]['name']; // TODO - support for complex keys
@@ -493,13 +493,13 @@
         $table = $this->main_tbl;
         $name  = "Inactive" . $id;
         $value = $row['inactive'] ? 1 : 0;
-        if (check_value('show_inactive')) {
-          if (isset($_POST['LInact'][$id]) && (get_post('_Inactive' . $id . '_update') || get_post('Update')) && (check_value('Inactive' . $id) != $value)
+        if (Form::hasPost('show_inactive')) {
+          if (isset($_POST['LInact'][$id]) && (Form::getPost('_Inactive' . $id . '_update') || Form::getPost('Update')) && (Form::hasPost('Inactive' . $id) != $value)
           ) {
             DB::update_record_status($id, !$value, $table, $key);
             $value = !$value;
           }
-          echo '<td class="center">' . checkbox(null, $name, $value, true, '', "class='center'") . hidden("LInact[$id]", $value, false) . '</td>';
+          echo '<td class="center">' . Form::checkbox(null, $name, $value, true, '', "class='center'") . Form::hidden("LInact[$id]", $value, false) . '</td>';
         }
       } else {
         echo '';
@@ -585,8 +585,8 @@
      */
     public function select_records()
     {
-      $page = find_submit($this->name . '_page_', false);
-      $sort = find_submit($this->name . '_sort_', true);
+      $page = Form::findPostPrefix($this->name . '_page_', false);
+      $sort = Form::findPostPrefix($this->name . '_sort_', true);
       if ($page) {
         $this->change_page($page);
         if ($page == 'next' && !$this->next_page || $page == 'last' && !$this->last_page

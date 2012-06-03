@@ -149,8 +149,8 @@
       $edit   = _("Edit");
       $delete = _("Delete");
       if (User::graphic_links()) {
-        $edit   = set_icon(ICON_EDIT, $edit);
-        $delete = set_icon(ICON_DELETE, $delete);
+        $edit   = Form::setIcon(ICON_EDIT, $edit);
+        $delete = Form::setIcon(ICON_DELETE, $delete);
       }
       Cell::label("<a href='" . $_SERVER['DOCUMENT_URI'] . "?selected_id=$i'>$edit</a>");
       Cell::label($conn[$i]['code'] == $lang ? '' : "<a href=''>$delete</a>");
@@ -170,13 +170,13 @@
     } else {
       $n = count(Config::get('languages.installed'));
     }
-    start_form(true);
+    Form::start(true);
     echo "
             <script language='javascript'>
             function updateLanguage()
             {
                 document.forms[0].action='inst_lang.php?c=u&id=" . $n . "'
-                document.forms[0].submit()
+                document.forms[0].Form::submit()
             }
             </script>";
     Table::start('tablestyle2');
@@ -192,17 +192,17 @@
         $_POST['rtl'] = false;
       }
       $_POST['dflt'] = Config::set('default.lang', $conn['code']);
-      hidden('selected_id', $selected_id);
+      Form::hidden('selected_id', $selected_id);
     }
-    text_row_ex(_("Language Code"), 'code', 20);
-    text_row_ex(_("Language Name"), 'name', 20);
-    text_row_ex(_("Encoding"), 'encoding', 20);
-    yesno_list_row(_("Right To Left"), 'rtl', null, "", "", false);
-    yesno_list_row(_("Default Language"), 'dflt', null, "", "", false);
-    file_row(_("Language File") . " (PO)", 'uploadfile');
-    file_row(_("Language File") . " (MO)", 'uploadfile2');
+     Form::textRowEx(_("Language Code"), 'code', 20);
+     Form::textRowEx(_("Language Name"), 'name', 20);
+     Form::textRowEx(_("Encoding"), 'encoding', 20);
+     Form::yesnoListRow(_("Right To Left"), 'rtl', null, "", "", false);
+     Form::yesnoListRow(_("Default Language"), 'dflt', null, "", "", false);
+     Form::fileRow(_("Language File") . " (PO)", 'uploadfile');
+     Form::fileRow(_("Language File") . " (MO)", 'uploadfile2');
     Table::end(0);
     Event::warning(_("Select your language files from your local harddisk."), 0, 1);
     echo "<div class='center'><input type='button' style='width:150px' value='" . _("Save") . "'></div>";
-    end_form();
+    Form::end();
   }

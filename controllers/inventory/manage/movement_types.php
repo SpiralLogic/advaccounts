@@ -57,26 +57,26 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav = Form::getPost('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Inv_Movement::get_all_types(check_value('show_inactive'));
-  start_form();
+  $result = Inv_Movement::get_all_types(Form::hasPost('show_inactive'));
+  Form::start();
   Table::start('tablestyle grid width30');
   $th = array(_("Description"), "", "");
-  inactive_control_column($th);
+   Form::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
 
     Cell::label($myrow["name"]);
-    inactive_control_cell($myrow["id"], $myrow["inactive"], 'movement_types', 'id');
-    edit_button_cell("Edit" . $myrow['id'], _("Edit"));
-    delete_button_cell("Delete" . $myrow['id'], _("Delete"));
+     Form::inactiveControlCell($myrow["id"], $myrow["inactive"], 'movement_types', 'id');
+    Form::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
+    Form::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
     Row::end();
   }
-  inactive_control_row($th);
+   Form::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != -1) {
@@ -85,12 +85,12 @@
       $myrow = Inv_Movement::get_type($selected_id);
       $_POST['name'] = $myrow["name"];
     }
-    hidden('selected_id', $selected_id);
+    Form::hidden('selected_id', $selected_id);
   }
-  text_row(_("Description:"), 'name', NULL, 50, 50);
+   Form::textRow(_("Description:"), 'name', NULL, 50, 50);
   Table::end(1);
-  submit_add_or_update_center($selected_id == -1, '', 'both');
-  end_form();
+  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Form::end();
   Page::end();
 
 

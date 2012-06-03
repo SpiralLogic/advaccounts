@@ -50,29 +50,29 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav = Form::getPost('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
   $sql = "SELECT * FROM areas";
-  if (!check_value('show_inactive')) {
+  if (!Form::hasPost('show_inactive')) {
     $sql .= " WHERE !inactive";
   }
   $result = DB::query($sql, "could not get areas");
-  start_form();
+  Form::start();
   Table::start('tablestyle grid width30');
   $th = array(_("Area Name"), "", "");
-  inactive_control_column($th);
+   Form::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
     Cell::label($myrow["description"]);
-    inactive_control_cell($myrow["area_code"], $myrow["inactive"], 'areas', 'area_code');
-    edit_button_cell("Edit" . $myrow["area_code"], _("Edit"));
-    delete_button_cell("Delete" . $myrow["area_code"], _("Delete"));
+     Form::inactiveControlCell($myrow["area_code"], $myrow["inactive"], 'areas', 'area_code');
+    Form::buttonEditCell("Edit" . $myrow["area_code"], _("Edit"));
+    Form::buttonDeleteCell("Delete" . $myrow["area_code"], _("Delete"));
     Row::end();
   }
-  inactive_control_row($th);
+   Form::inactiveControlRow($th);
   Table::end();
   echo '<br>';
   Table::start('tablestyle2');
@@ -84,11 +84,11 @@
       $myrow = DB::fetch($result);
       $_POST['description'] = $myrow["description"];
     }
-    hidden("selected_id", $selected_id);
+    Form::hidden("selected_id", $selected_id);
   }
-  text_row_ex(_("Area Name:"), 'description', 30);
+   Form::textRowEx(_("Area Name:"), 'description', 30);
   Table::end(1);
-  submit_add_or_update_center($selected_id == -1, '', 'both');
-  end_form();
+  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Form::end();
   Page::end();
 

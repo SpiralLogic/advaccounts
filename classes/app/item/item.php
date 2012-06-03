@@ -997,7 +997,7 @@ JS;
         = "SELECT stock_id, s.description, c.description, s.inactive, s.editable, s.long_description
                     FROM stock_master s,stock_category c WHERE s.category_id=c.category_id";
 
-      return select_box($name, $selected_id, $sql, 'stock_id', 's.description', array_merge(array(
+      return Form::selectBox($name, $selected_id, $sql, 'stock_id', 's.description', array_merge(array(
                                                                                                  'format'        => '_format_stock_items',
                                                                                                  'spec_option'   => $all_option === true ?
                                                                                                    _("All Items") : $all_option,

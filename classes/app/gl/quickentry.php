@@ -353,7 +353,7 @@
         $sql .= " WHERE type=$type";
       }
 
-      return select_box($name, $selected_id, $sql, 'id', 'description', array(
+      return Form::selectBox($name, $selected_id, $sql, 'id', 'description', array(
                                                                              'spec_id'       => '',
                                                                              'order'         => 'description',
                                                                              'select_submit' => $submit_on_change,
@@ -405,7 +405,7 @@
     {
       global $quick_actions;
       echo "<tr><td class='label'>$label</td><td>";
-      echo array_selector($name, $selected_id, $quick_actions, array('select_submit' => $submit_on_change));
+      echo Form::arraySelect($name, $selected_id, $quick_actions, array('select_submit' => $submit_on_change));
       echo "</td></tr>\n";
     }
     /**
@@ -420,7 +420,7 @@
     {
       global $quick_entry_types;
       echo "<tr><td class='label'>$label</td><td>";
-      echo array_selector($name, $selected_id, $quick_entry_types, array('select_submit' => $submit_on_change));
+      echo Form::arraySelect($name, $selected_id, $quick_entry_types, array('select_submit' => $submit_on_change));
       echo "</td></tr>\n";
     }
   }

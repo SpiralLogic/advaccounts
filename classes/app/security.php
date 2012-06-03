@@ -160,7 +160,7 @@
     public function  roles($name, $selected_id = NULL, $new_item = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE)
     {
       $sql = "SELECT id, role, inactive FROM security_roles";
-      return select_box($name, $selected_id, $sql, 'id', 'description', array(
+      return Form::selectBox($name, $selected_id, $sql, 'id', 'description', array(
                                                                              'spec_option'   => $new_item ? _("New role") : FALSE,
                                                                              'spec_id'       => '',
                                                                              'select_submit' => $submit_on_change,

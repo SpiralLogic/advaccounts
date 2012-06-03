@@ -117,7 +117,7 @@
     {
       $sql = "SELECT cid, class_name FROM chart_class";
 
-      return select_box($name, $selected_id, $sql, 'cid', 'class_name', array(
+      return Form::selectBox($name, $selected_id, $sql, 'cid', 'class_name', array(
                                                                              'select_submit' => $submit_on_change,
                                                                              'async'         => false
                                                                         ));
@@ -165,7 +165,7 @@
     {
       global $class_types;
       echo "<tr><td class='label'>$label</td><td>";
-      echo array_selector($name, $selected_id, $class_types, array('select_submit' => $submit_on_change));
+      echo Form::arraySelect($name, $selected_id, $class_types, array('select_submit' => $submit_on_change));
       echo "</td></tr>\n";
     }
   }

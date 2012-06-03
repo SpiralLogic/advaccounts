@@ -12,12 +12,12 @@
   list($Mode, $selected_id) = Page::simple_mode(TRUE);
 
   if ($Mode == ADD_ITEM && Sales_Point::can_process()) {
-    Sales_Point::add($_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'), check_value('credit'));
+    Sales_Point::add($_POST['name'], $_POST['location'], $_POST['account'], Form::hasPost('cash'), Form::hasPost('credit'));
     Event::success(_('New point of sale has been added'));
     $Mode = MODE_RESET;
   }
   if ($Mode == UPDATE_ITEM && Sales_Point::can_process()) {
-    Sales_Point::update($selected_id, $_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'), check_value('credit'));
+    Sales_Point::update($selected_id, $_POST['name'], $_POST['location'], $_POST['account'], Form::hasPost('cash'), Form::hasPost('credit'));
     Event::success(_('Selected point of sale has been updated'));
     $Mode = MODE_RESET;
   }
@@ -35,17 +35,17 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav = Form::getPost('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Sales_Point::get_all(check_value('show_inactive'));
-  start_form();
+  $result = Sales_Point::get_all(Form::hasPost('show_inactive'));
+  Form::start();
   Table::start('tablestyle grid');
   $th = array(
     _('POS Name'), _('Credit sale'), _('Cash sale'), _('location'), _('Default account'), '', ''
   );
-  inactive_control_column($th);
+   Form::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
@@ -55,12 +55,12 @@
     Cell::label($myrow['cash_sale'] ? _('Yes') : _('No'));
     Cell::label($myrow["location_name"], "");
     Cell::label($myrow["bank_account_name"], "");
-    inactive_control_cell($myrow["id"], $myrow["inactive"], "sales_pos", 'id');
-    edit_button_cell("Edit" . $myrow['id'], _("Edit"));
-    delete_button_cell("Delete" . $myrow['id'], _("Delete"));
+     Form::inactiveControlCell($myrow["id"], $myrow["inactive"], "sales_pos", 'id');
+    Form::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
+    Form::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
     Row::end();
   }
-  inactive_control_row($th);
+   Form::inactiveControlRow($th);
   Table::end(1);
   $cash = Validation::check(Validation::CASH_ACCOUNTS);
   if (!$cash) {
@@ -80,22 +80,22 @@
         $_POST['cash_sale'] = 1;
       }
     }
-    hidden('selected_id', $selected_id);
+    Form::hidden('selected_id', $selected_id);
   }
-  text_row_ex(_("Point of Sale Name") . ':', 'name', 20, 30);
+   Form::textRowEx(_("Point of Sale Name") . ':', 'name', 20, 30);
   if ($cash) {
-    check_row(_('Allowed credit sale'), 'credit', check_value('credit_sale'));
-    check_row(_('Allowed cash sale'), 'cash', check_value('cash_sale'));
+     Form::checkRow(_('Allowed credit sale'), 'credit', Form::hasPost('credit_sale'));
+     Form::checkRow(_('Allowed cash sale'), 'cash', Form::hasPost('cash_sale'));
     Bank_UI::cash_accounts_row(_("Default cash account") . ':', 'account');
   }
   else {
-    hidden('credit', 1);
-    hidden('account', 0);
+    Form::hidden('credit', 1);
+    Form::hidden('account', 0);
   }
   Inv_Location::row(_("POS location") . ':', 'location');
   Table::end(1);
-  submit_add_or_update_center($selected_id == -1, '', 'both');
-  end_form();
+  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Form::end();
   Page::end();
 
 

@@ -41,7 +41,7 @@
   Row::start();
   Cell::labels(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']]);
   Cell::labels(_("Reference"), $receipt['reference'], 'class="label" colspan=1');
-  end_form();
+  Form::end();
   Row::end();
   DB_Comments::display_row($trans_type, $trans_id);
   Table::end(1);

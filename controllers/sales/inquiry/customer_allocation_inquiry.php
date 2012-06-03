@@ -20,10 +20,10 @@
       $_POST[$k] = $v;
     }
   }
-  if (list_updated('customer_id')) {
+  if (Form::isListUpdated('customer_id')) {
     Ajax::i()->activate('customer_id');
   }
-  start_form(FALSE, '', 'invoiceForm');
+  Form::start(FALSE, '', 'invoiceForm');
   Table::start('tablestyle_noborder');
   Row::start();
   if (!Input::get('frame')) {
@@ -41,11 +41,11 @@
   elseif (isset($_POST['TransToDate'])) {
     Session::i()->setGlobal('TransToDate',$_POST['TransToDate']);
   }
-  date_cells(_("from:"), 'TransAfterDate', '', NULL, -31, -12);
-  date_cells(_("to:"), 'TransToDate', '', NULL, 1);
+   Form::dateCells(_("from:"), 'TransAfterDate', '', NULL, -31, -12);
+   Form::dateCells(_("to:"), 'TransToDate', '', NULL, 1);
   Debtor_Payment::allocations_select(_("Type:"), 'filterType', NULL);
-  check_cells(" " . _("show settled:"), 'showSettled', NULL);
-  submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
+   Form::checkCells(" " . _("show settled:"), 'showSettled', NULL);
+  Form::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
   Row::end();
   Table::end();
   $data_after = Dates::date2sql($_POST['TransAfterDate']);
@@ -95,13 +95,13 @@
   else {
     $sql .= " AND trans.type <> " . ST_CUSTDELIVERY . " ";
   }
-  if (!check_value('showSettled')) {
+  if (!Form::hasPost('showSettled')) {
     $sql .= " AND (round(abs(trans.ov_amount + trans.ov_gst + " . "trans.ov_freight + trans.ov_freight_tax + " . "trans.ov_discount) - trans.alloc,2) > 0) ";
   }
   $cols = array(
     "<button id='emailInvoices'>Email</button> " => array(
       'fun' => function ($row) {
-        return ($row['type'] == ST_SALESINVOICE) ? checkbox(NULL, 'emailChk') : '';
+        return ($row['type'] == ST_SALESINVOICE) ? Form::checkbox(NULL, 'emailChk') : '';
       }
     , 'align' => 'center'
     ),
@@ -182,7 +182,7 @@
     , _("Marked items are overdue."));
   $table->width = "80%";
   DB_Pager::display($table);
-  end_form();
+  Form::end();
   $action
     = <<<JS
 

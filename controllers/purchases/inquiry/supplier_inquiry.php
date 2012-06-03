@@ -19,17 +19,17 @@
   if (isset($_GET['ToDate'])) {
     $_POST['TransToDate'] = $_GET['ToDate'];
   }
-  start_form();
+  Form::start();
   if (!isset($_POST['supplier_id'])) {
     $_POST['supplier_id'] = Session::i()->getGlobal('creditor');
   }
   Table::start('tablestyle_noborder');
   Row::start();
   Creditor::cells(_("Supplier:"), 'supplier_id', NULL, TRUE);
-  date_cells(_("From:"), 'TransAfterDate', '', NULL, -90);
-  date_cells(_("To:"), 'TransToDate');
+   Form::dateCells(_("From:"), 'TransAfterDate', '', NULL, -90);
+   Form::dateCells(_("To:"), 'TransToDate');
   Purch_Allocation::row("filterType", NULL);
-  submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
+  Form::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
   Row::end();
   Table::end();
   Session::i()->setGlobal('creditor',$_POST['supplier_id']);
@@ -39,7 +39,7 @@
     display_supplier_summary($supplier_record);
   }
   Display::div_end();
-  if (get_post('RefreshInquiry')) {
+  if (Form::getPost('RefreshInquiry')) {
     Ajax::i()->activate('totals_tbl');
   }
   if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
@@ -144,7 +144,7 @@
   $table->width = "90";
   DB_Pager::display($table);
   Creditor::addInfoDialog('.pagerclick');
-  end_form();
+  Form::end();
   Page::end();
   /**
    * @param $dummy

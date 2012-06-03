@@ -63,17 +63,17 @@
     = "SELECT account.*, gl_account.account_name
     FROM bank_accounts account, chart_master gl_account
     WHERE account.account_code = gl_account.account_code";
-  if (!check_value('show_inactive')) {
+  if (!Form::hasPost('show_inactive')) {
     $sql .= " AND !account.inactive";
   }
   $sql .= " ORDER BY account_code, bank_curr_code";
   $result = DB::query($sql, "could not get bank accounts");
-  start_form();
+  Form::start();
   Table::start('tablestyle grid width80');
   $th = array(
     _("Account Name"), _("Type"), _("Currency"), _("GL Account"), _("Bank"), _("Number"), _("Bank Address"), _("Dflt"), '', ''
   );
-  inactive_control_column($th);
+   Form::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   global $bank_account_types;
@@ -90,12 +90,12 @@
     } else {
       Cell::label(_("No"));
     }
-    inactive_control_cell($myrow["id"], $myrow["inactive"], 'bank_accounts', 'id');
-    edit_button_cell("Edit" . $myrow["id"], _("Edit"));
-    delete_button_cell("Delete" . $myrow["id"], _("Delete"));
+     Form::inactiveControlCell($myrow["id"], $myrow["inactive"], 'bank_accounts', 'id');
+    Form::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
+    Form::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     Row::end();
   }
-  inactive_control_row($th);
+   Form::inactiveControlRow($th);
   Table::end(1);
   $is_editing = $selected_id != -1;
   Table::start('tablestyle2');
@@ -111,13 +111,13 @@
       $_POST['BankAccountCurrency'] = $myrow["bank_curr_code"];
       $_POST['dflt_curr_act']       = $myrow["dflt_curr_act"];
     }
-    hidden('selected_id', $selected_id);
-    hidden('account_code');
-    hidden('account_type');
-    hidden('BankAccountCurrency', $_POST['BankAccountCurrency']);
+    Form::hidden('selected_id', $selected_id);
+    Form::hidden('account_code');
+    Form::hidden('account_type');
+    Form::hidden('BankAccountCurrency', $_POST['BankAccountCurrency']);
     JS::set_focus('bank_account_name');
   }
-  text_row(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
+   Form::textRow(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
   if ($is_editing) {
     global $bank_account_types;
     Row::label(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
@@ -129,16 +129,16 @@
   } else {
     GL_Currency::row(_("Bank Account Currency:"), 'BankAccountCurrency', null);
   }
-  yesno_list_row(_("Default currency account:"), 'dflt_curr_act');
+   Form::yesnoListRow(_("Default currency account:"), 'dflt_curr_act');
   if ($is_editing) {
     Row::label(_("Bank Account GL Code:"), $_POST['account_code']);
   } else {
     GL_UI::all_row(_("Bank Account GL Code:"), 'account_code', null);
   }
-  text_row(_("Bank Name:"), 'bank_name', null, 50, 60);
-  text_row(_("Bank Account Number:"), 'bank_account_number', null, 30, 60);
-  textarea_row(_("Bank Address:"), 'bank_address', null, 40, 5);
+   Form::textRow(_("Bank Name:"), 'bank_name', null, 50, 60);
+   Form::textRow(_("Bank Account Number:"), 'bank_account_number', null, 30, 60);
+   Form::textareaRow(_("Bank Address:"), 'bank_address', null, 40, 5);
   Table::end(1);
-  submit_add_or_update_center($selected_id == -1, '', 'both');
-  end_form();
+  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Form::end();
   Page::end();

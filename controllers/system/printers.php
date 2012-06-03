@@ -26,7 +26,7 @@
       JS::set_focus('tout');
     }
     if ($error != 1) {
-      Printer::write_def($selected_id, get_post('name'), get_post('descr'), get_post('queue'), get_post('host'), Validation::input_num('port', 0), Validation::input_num('tout', 0));
+      Printer::write_def($selected_id, Form::getPost('name'), Form::getPost('descr'), Form::getPost('queue'), Form::getPost('host'), Validation::input_num('port', 0), Validation::input_num('tout', 0));
       Event::success($selected_id == -1 ? _('New printer definition has been created') : _('Selected printer definition has been updated'));
       $Mode = MODE_RESET;
     }
@@ -51,7 +51,7 @@
     unset($_POST);
   }
   $result = Printer::get_all();
-  start_form();
+  Form::start();
   Table::start('tablestyle grid');
   $th = array(_("Name"), _("Description"), _("Host"), _("Printer Queue"), '', '');
   Table::header($th);
@@ -62,14 +62,14 @@
     Cell::label($myrow['description']);
     Cell::label($myrow['host']);
     Cell::label($myrow['queue']);
-    edit_button_cell("Edit" . $myrow['id'], _("Edit"));
-    delete_button_cell("Delete" . $myrow['id'], _("Delete"));
+    Form::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
+    Form::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
     Row::end();
   } //END WHILE LIST LOOP
   Table::end();
-  end_form();
+  Form::end();
   echo '<br>';
-  start_form();
+  Form::start();
   Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
@@ -81,7 +81,7 @@
       $_POST['host'] = $myrow['host'];
       $_POST['port'] = $myrow['port'];
     }
-    hidden('selected_id', $selected_id);
+    Form::hidden('selected_id', $selected_id);
   }
   else {
     if (!isset($_POST['host'])) {
@@ -91,15 +91,15 @@
       $_POST['port'] = '515';
     }
   }
-  text_row(_("Printer Name") . ':', 'name', NULL, 20, 20);
-  text_row(_("Printer Description") . ':', 'descr', NULL, 40, 60);
-  text_row(_("Host name or IP") . ':', 'host', NULL, 30, 40);
-  text_row(_("Port") . ':', 'port', NULL, 5, 5);
-  text_row(_("Printer Queue") . ':', 'queue', NULL, 20, 20);
-  text_row(_("Timeout") . ':', 'tout', NULL, 5, 5);
+   Form::textRow(_("Printer Name") . ':', 'name', NULL, 20, 20);
+   Form::textRow(_("Printer Description") . ':', 'descr', NULL, 40, 60);
+   Form::textRow(_("Host name or IP") . ':', 'host', NULL, 30, 40);
+   Form::textRow(_("Port") . ':', 'port', NULL, 5, 5);
+   Form::textRow(_("Printer Queue") . ':', 'queue', NULL, 20, 20);
+   Form::textRow(_("Timeout") . ':', 'tout', NULL, 5, 5);
   Table::end(1);
-  submit_add_or_update_center($selected_id == -1, '', 'both');
-  end_form();
+  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Form::end();
   Page::end();
 
 

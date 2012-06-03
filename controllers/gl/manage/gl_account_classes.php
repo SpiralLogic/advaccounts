@@ -34,23 +34,23 @@
     $selected_id = -1;
     $_POST['id'] = $_POST['name'] = $_POST['ctype'] = '';
   }
-  $result = GL_Class::get_all(check_value('show_inactive'));
-  start_form();
+  $result = GL_Class::get_all(Form::hasPost('show_inactive'));
+  Form::start();
   Table::start('tablestyle grid');
   $th = array(_("class ID"), _("class Name"), _("class Type"), "", "");
-  inactive_control_column($th);
+   Form::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
     Cell::label($myrow["cid"]);
     Cell::label($myrow['class_name']);
     Cell::label($class_types[$myrow["ctype"]]);
-    inactive_control_cell($myrow["cid"], $myrow["inactive"], 'chart_class', 'cid');
-    edit_button_cell("Edit" . $myrow["cid"], _("Edit"));
-    delete_button_cell("Delete" . $myrow["cid"], _("Delete"));
+     Form::inactiveControlCell($myrow["cid"], $myrow["inactive"], 'chart_class', 'cid');
+    Form::buttonEditCell("Edit" . $myrow["cid"], _("Edit"));
+    Form::buttonDeleteCell("Delete" . $myrow["cid"], _("Delete"));
     Row::end();
   }
-  inactive_control_row($th);
+   Form::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != -1) {
@@ -60,18 +60,18 @@
       $_POST['id']    = $myrow["cid"];
       $_POST['name']  = $myrow["class_name"];
       $_POST['ctype'] = $myrow["ctype"];
-      hidden('selected_id', $selected_id);
+      Form::hidden('selected_id', $selected_id);
     }
-    hidden('id');
+    Form::hidden('id');
     Row::label(_("Class ID:"), $_POST['id']);
   } else {
-    text_row_ex(_("Class ID:"), 'id', 3);
+     Form::textRowEx(_("Class ID:"), 'id', 3);
   }
-  text_row_ex(_("Class Name:"), 'name', 50, 60);
+   Form::textRowEx(_("Class Name:"), 'name', 50, 60);
   GL_Class::types_row(_("Class Type:"), 'ctype', null);
   Table::end(1);
-  submit_add_or_update_center($selected_id == -1, '', 'both');
-  end_form();
+  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Form::end();
   Page::end();
   /**
    * @return bool

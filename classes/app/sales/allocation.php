@@ -222,22 +222,22 @@
       Display::heading(_("Date:") . " <span class='bold'>" . $_SESSION['alloc']->date_ . "</span>");
       Display::heading(_("Total:") . " <span class='bold'>" . Num::price_format($_SESSION['alloc']->amount) . "</span>");
       echo "<br>";
-      start_form();
+      Form::start();
       if (isset($_POST['inquiry'], $_SERVER['HTTP_REFERER']) || stristr($_SERVER['HTTP_REFERER'], 'customer_allocation_inquiry.php')) {
-        hidden('inquiry', true);
+        Form::hidden('inquiry', true);
       }
       Display::div_start('alloc_tbl');
       if (count($_SESSION['alloc']->allocs) > 0) {
         Gl_Allocation::show_allocatable(true);
-        submit_center_first('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), true);
-        submit('Process', _("Process"), true, _('Process allocations'), 'default');
-        submit_center_last('Cancel', _("Back to Allocations"), _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
+        Form::submitCenterBegin('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), true);
+        Form::submit('Process', _("Process"), true, _('Process allocations'), 'default');
+        Form::submitCenterEnd('Cancel', _("Back to Allocations"), _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
       } else {
         Event::warning(_("There are no unsettled transactions to allocate."), 0, 1);
-        submit_center('Cancel', _("Back to Allocations"), true, _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
+        Form::submitCenter('Cancel', _("Back to Allocations"), true, _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
       }
       Display::div_end();
-      end_form();
+      Form::end();
     }
     /**
      * @static

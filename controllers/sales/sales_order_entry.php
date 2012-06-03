@@ -126,12 +126,12 @@
           $corder      = _("Commit Order Changes");
           break;
       }
-      start_form();
+      Form::start();
       $customer_error = $this->order->header($idate);
       if ($customer_error != "") {
         $this->exitError($customer_error);
       }
-      hidden('order_id', $_POST['order_id']);
+      Form::hidden('order_id', $_POST['order_id']);
       Table::start('tablesstyle center width90 pad10');
       echo "<tr><td>";
       $this->order->summary($orderitems, TRUE);
@@ -142,30 +142,30 @@
       Display::div_start('controls', 'items_table');
       if ($this->order->trans_no > 0 && $this->user->can_access(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())
       ) {
-        submit_js_confirm('_action', Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
-        submit_center_first('_action', Orders::DELETE_ORDER, $deleteorder); //, _('Cancels document entry or removes sales order when editing an old document')
-        submit_center_middle('_action', Orders::CANCEL_CHANGES, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
+        Form::submitConfirm('_action', Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
+        Form::submitCenterBegin('_action', Orders::DELETE_ORDER, $deleteorder); //, _('Cancels document entry or removes sales order when editing an old document')
+        Form::submitCenterInsert('_action', Orders::CANCEL_CHANGES, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
       } else {
-        submit_center_first('_action', Orders::CANCEL_CHANGES, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
+        Form::submitCenterBegin('_action', Orders::CANCEL_CHANGES, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
       }
       if (count($this->order->line_items)) {
         if ($this->order->trans_no > 0) {
-          submit_center_last('_action', Orders::PROCESS_ORDER, $corder, 'default'); //_('Validate changes and update document'),
+          Form::submitCenterEnd('_action', Orders::PROCESS_ORDER, $corder, 'default'); //_('Validate changes and update document'),
         } else {
-          submit_center_last('_action', Orders::PROCESS_ORDER, $porder, 'default'); //_('Check entered data and save document'),
+          Form::submitCenterEnd('_action', Orders::PROCESS_ORDER, $porder, 'default'); //_('Check entered data and save document'),
         }
       }
       Display::div_end();
-      end_form();
+      Form::end();
       Debtor::addEditDialog();
       Item::addEditDialog();
       Page::end(TRUE);
     }
     protected function checkBranch()
     {
-      if (list_updated('branch_id')) {
+      if (Form::isListUpdated('branch_id')) {
         // when branch is selected via external editor also customer can change
-        $br                   = Sales_Branch::get(get_post('branch_id'));
+        $br                   = Sales_Branch::get(Form::getPost('branch_id'));
         $_POST['customer_id'] = $br['debtor_no'];
         $this->ajax->activate('customer_id');
       }
@@ -279,12 +279,12 @@
      */
     protected function can_process()
     {
-      if (!get_post('customer_id')) {
+      if (!Form::getPost('customer_id')) {
         Event::error(_("There is no customer selected."));
         JS::set_focus('customer_id');
         return FALSE;
       }
-      if (!get_post('branch_id')) {
+      if (!Form::getPost('branch_id')) {
         Event::error(_("This customer has no branch defined."));
         JS::set_focus('branch_id');
         return FALSE;

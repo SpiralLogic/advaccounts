@@ -14,11 +14,11 @@
     $order_number = $_GET['order_number'];
   }
   $supplier_id = Input::post_get('supplier_id', Input::NUMERIC, -1);
-  if (get_post('SearchOrders')) {
+  if (Form::getPost('SearchOrders')) {
     Ajax::i()->activate('orders_tbl');
   }
-  elseif (get_post('_order_number_changed')) {
-    $disable = get_post('order_number') !== '';
+  elseif (Form::getPost('_order_number_changed')) {
+    $disable = Form::getPost('order_number') !== '';
     Ajax::i()->addDisable(TRUE, 'OrdersAfterDate', $disable);
     Ajax::i()->addDisable(TRUE, 'OrdersToDate', $disable);
     Ajax::i()->addDisable(TRUE, 'StockLocation', $disable);
@@ -33,17 +33,17 @@
     }
     Ajax::i()->activate('orders_tbl');
   }
-  start_form();
+  Form::start();
   if (!Input::request('frame')) {
     Table::start('tablestyle_noborder');
     Row::start();
     Creditor::cells(_("Supplier: "), 'supplier_id', NULL, TRUE);
-    ref_cells(_("#:"), 'order_number', '', NULL, '', TRUE);
-    date_cells(_("From:"), 'OrdersAfterDate', '', NULL, -30);
-    date_cells(_("To:"), 'OrdersToDate');
+     Form::refCells(_("#:"), 'order_number', '', NULL, '', TRUE);
+     Form::dateCells(_("From:"), 'OrdersAfterDate', '', NULL, -30);
+     Form::dateCells(_("To:"), 'OrdersToDate');
     Inv_Location::cells(_("Location:"), 'StockLocation', NULL, TRUE);
     Item::cells(_("Item:"), 'SelectStockFromList', NULL, TRUE);
-    submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
+    Form::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
     Row::end();
     Table::end();
   }
@@ -129,7 +129,7 @@
     // Edit link
     array('insert' => TRUE, 'fun' => function ($row) { return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . SID . Orders::MODIFY_ORDER . "=" . $row["order_no"], ICON_EDIT); }) //
   );
-  if (get_post('StockLocation') != ALL_TEXT) {
+  if (Form::getPost('StockLocation') != ALL_TEXT) {
     $cols[_("Location")] = 'skip';
   }
   if ((Input::get(LOC_NOT_FAXED_YET) == 1)) {
@@ -161,5 +161,5 @@
   DB_Pager::display($table);
   Creditor::addInfoDialog('.pagerclick');
   UI::emailDialogue(CT_SUPPLIER);
-  end_form();
+  Form::end();
   Page::end();

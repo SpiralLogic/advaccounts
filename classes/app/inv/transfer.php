@@ -131,8 +131,8 @@
       Inv_Location::row(_("From Location:"), 'FromStockLocation', null);
       Inv_Location::row(_("To Location:"), 'ToStockLocation', null);
       Table::section(2, "33%");
-      ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_LOCTRANSFER));
-      date_row(_("Date:"), 'AdjDate', '', true);
+       Form::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_LOCTRANSFER));
+       Form::dateRow(_("Date:"), 'AdjDate', '', true);
       Table::section(3, "33%");
       Inv_Movement::row(_("Transfer Type:"), 'type', null);
       Table::endOuter(1); // outer table
@@ -154,15 +154,15 @@
       }
       Table::header($th);
       $k  = 0; //row colour counter
-      $id = find_submit(MODE_EDIT);
+      $id = Form::findPostPrefix(MODE_EDIT);
       foreach ($order->line_items as $line_no => $stock_item) {
         if ($id != $line_no) {
           Item_UI::status_cell($stock_item->stock_id);
           Cell::label($stock_item->description);
           Cell::qty($stock_item->quantity, false, Item::qty_dec($stock_item->stock_id));
           Cell::label($stock_item->units);
-          edit_button_cell("Edit$line_no", _("Edit"), _('Edit document line'));
-          delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
+          Form::buttonEditCell("Edit$line_no", _("Edit"), _('Edit document line'));
+          Form::buttonDeleteCell("Delete$line_no", _("Delete"), _('Remove line from document'));
           Row::end();
         } else {
           Inv_Transfer::item_controls($order, $line_no);
@@ -183,18 +183,18 @@
     public static function item_controls($order, $line_no = -1)
     {
       Row::start();
-      $id = find_submit(MODE_EDIT);
+      $id = Form::findPostPrefix(MODE_EDIT);
       if ($line_no != -1 && $line_no == $id) {
         $_POST['stock_id'] = $order->line_items[$id]->stock_id;
         $_POST['qty']      = Item::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
         $_POST['units']    = $order->line_items[$id]->units;
-        hidden('stock_id', $_POST['stock_id']);
+        Form::hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id']);
         Cell::label($order->line_items[$id]->description);
         Ajax::i()->activate('items_table');
       } else {
         Item_UI::costable_cells(null, 'stock_id', null, false, true);
-        if (list_updated('stock_id')) {
+        if (Form::isListUpdated('stock_id')) {
           Ajax::i()->activate('units');
           Ajax::i()->activate('qty');
         }
@@ -203,15 +203,15 @@
         $_POST['qty']   = Num::format(0, $dec);
         $_POST['units'] = $item_info["units"];
       }
-      small_qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
+       Form::qtyCellsSmall(null, 'qty', $_POST['qty'], null, null, $dec);
       Cell::label($_POST['units'], '', 'units');
       if ($id != -1) {
-        button_cell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
-        button_cell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
-        hidden('LineNo', $line_no);
+        Form::buttonCell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
+        Form::buttonCell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
+        Form::hidden('LineNo', $line_no);
         JS::set_focus('qty');
       } else {
-        submit_cells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
+        Form::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
       }
       Row::end();
     }
@@ -219,7 +219,7 @@
     {
       echo "<br>";
       Table::start();
-      textarea_row(_("Memo"), 'memo_', null, 50, 3);
+       Form::textareaRow(_("Memo"), 'memo_', null, 50, 3);
       Table::end(1);
     }
   }

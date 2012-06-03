@@ -457,7 +457,7 @@
     {
       $sql  = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
       $mode = DB_Company::get_pref('no_supplier_list');
-      return select_box($name, $selected_id, $sql, 'supplier_id', 'name', array(
+      return Form::selectBox($name, $selected_id, $sql, 'supplier_id', 'name', array(
                                                                                'format'        => '_format_add_curr',
                                                                                'order'         => array('supp_ref'),
                                                                                'search_box'    => $mode != 0,

@@ -23,14 +23,14 @@
     }
   }
   $update_pager = false;
-  if (list_updated('deposit_date')) {
-    $_POST['deposit_date'] = get_post('deposit_date') == '' ? Dates::today() : ($_POST['deposit_date']);
+  if (Form::isListUpdated('deposit_date')) {
+    $_POST['deposit_date'] = Form::getPost('deposit_date') == '' ? Dates::today() : ($_POST['deposit_date']);
     update_data();
   }
-  if (get_post('_deposit_date_changed')) {
+  if (Form::getPost('_deposit_date_changed')) {
     $_POST['deposited']      = 0;
     $_SESSION['undeposited'] = array();
-    $_POST['deposit_date']   = check_date() ? (get_post('deposit_date')) : '';
+    $_POST['deposit_date']   = check_date() ? (Form::getPost('deposit_date')) : '';
     foreach ($_POST as $rowid => $row) {
       if (substr($rowid, 0, 4) == 'dep_') {
         unset($_POST[$rowid]);
@@ -38,7 +38,7 @@
     }
     update_data();
   }
-  $id = find_submit('_dep_');
+  $id = Form::findPostPrefix('_dep_');
   if ($id != -1) {
     change_tpl_flag($id);
   }
@@ -94,21 +94,21 @@
   }
   $_POST['deposited'] = $_POST['to_deposit'];
   Ajax::i()->activate('summary');
-  start_form();
+  Form::start();
   echo "<hr>";
   Display::div_start('summary');
   Table::start();
   Table::header(_("Deposit Date"));
   Row::start();
-  date_cells("", "deposit_date", _('Date of funds to deposit'), get_post('deposit_date') == '', 0, 0, 0, null, false, array('rebind' => false));
+   Form::dateCells("", "deposit_date", _('Date of funds to deposit'), Form::getPost('deposit_date') == '', 0, 0, 0, null, false, array('rebind' => false));
   Row::end();
   Table::header(_("Total Amount"));
   Row::start();
   Cell::amount($_POST['deposited'], false, '', "deposited");
-  hidden("to_deposit", $_POST['to_deposit'], true);
+  Form::hidden("to_deposit", $_POST['to_deposit'], true);
   Row::end();
   Table::end();
-  submit_center('Deposit', _("Deposit"), true, '', false);
+  Form::submitCenter('Deposit', _("Deposit"), true, '', false);
   Display::div_end();
   echo "<hr>";
   $date         = Dates::add_days($_POST['deposit_date'], 10);
@@ -136,15 +136,15 @@
   $table->width = "80%";
   DB_Pager::display($table);
   Display::br(1);
-  submit_center('Deposit', _("Deposit"), true, '', false);
-  end_form();
+  Form::submitCenter('Deposit', _("Deposit"), true, '', false);
+  Form::end();
   Page::end();
   /**
    * @return bool
    */
   function check_date()
   {
-    if (!Dates::is_date(get_post('deposit_date'))) {
+    if (!Dates::is_date(Form::getPost('deposit_date'))) {
       Event::error(_("Invalid deposit date format"));
       JS::setFocus('deposit_date');
 
@@ -169,9 +169,9 @@
     $name      = "dep_" . $row['id'];
     $hidden    = 'amount_' . $row['id'];
     $value     = $row['amount'];
-    $chk_value = check_value("dep_" . $row['id']);
+    $chk_value = Form::hasPost("dep_" . $row['id']);
     // save also in hidden field for testing during 'Reconcile'
-    return checkbox(null, $name, $chk_value, true, _('Deposit this transaction')) . hidden($hidden, $value, false);
+    return Form::checkbox(null, $name, $chk_value, true, _('Deposit this transaction')) . Form::hidden($hidden, $value, false);
   }
 
   /**
@@ -257,26 +257,26 @@
    */
   function change_tpl_flag($deposit_id)
   {
-    if (!check_date() && check_value("dep_" . $deposit_id)) // temporary fix
+    if (!check_date() && Form::hasPost("dep_" . $deposit_id)) // temporary fix
     {
       return false;
     }
-    if (get_post('bank_date') == '') // new reconciliation
+    if (Form::getPost('bank_date') == '') // new reconciliation
     {
       Ajax::i()->activate('bank_date');
     }
-    $_POST['bank_date'] = Dates::date2sql(get_post('deposited_date'));
+    $_POST['bank_date'] = Dates::date2sql(Form::getPost('deposited_date'));
     /*	$sql = "UPDATE ".''."bank_trans SET undeposited=0"
                          ." WHERE id=".DB::escape($deposit_id);
 
                         DB::query($sql, "Can't change undeposited status");*/
     // save last reconcilation status (date, end balance)
-    if (check_value("dep_" . $deposit_id)) {
-      $_SESSION['undeposited']["dep_" . $deposit_id] = get_post('amount_' . $deposit_id);
-      $_POST['deposited']                            = $_POST['to_deposit'] + get_post('amount_' . $deposit_id);
+    if (Form::hasPost("dep_" . $deposit_id)) {
+      $_SESSION['undeposited']["dep_" . $deposit_id] = Form::getPost('amount_' . $deposit_id);
+      $_POST['deposited']                            = $_POST['to_deposit'] + Form::getPost('amount_' . $deposit_id);
     } else {
       unset($_SESSION['undeposited']["dep_" . $deposit_id]);
-      $_POST['deposited'] = $_POST['to_deposit'] - get_post('amount_' . $deposit_id);
+      $_POST['deposited'] = $_POST['to_deposit'] - Form::getPost('amount_' . $deposit_id);
     }
 
     return true;

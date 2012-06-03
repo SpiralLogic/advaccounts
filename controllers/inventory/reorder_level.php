@@ -12,11 +12,11 @@
   if (isset($_GET['stock_id'])) {
     $_POST['stock_id'] = $_GET['stock_id'];
   }
-  if (list_updated('stock_id')) {
+  if (Form::isListUpdated('stock_id')) {
     Ajax::i()->activate('show_heading');
     Ajax::i()->activate('reorders');
   }
-  start_form(false, $_SERVER['REQUEST_URI']);
+  Form::start(false, $_SERVER['REQUEST_URI']);
   if (!Input::post('stock_id')) {
     Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   }
@@ -49,9 +49,9 @@
     Cell::label($myrow["location_name"]);
     $_POST[$myrow["loc_code"]] = Item::qty_format($myrow["reorder_level"], $_POST['stock_id'], $dec);
     Cell::qty($qoh, false, $dec);
-    text_cells(null, 'shelf_primary' . $myrow["loc_code"], $myrow["shelf_primary"]);
-    text_cells(null, 'shelf_secondary' . $myrow["loc_code"], $myrow["shelf_secondary"]);
-    qty_cells(null, $myrow["loc_code"], null, null, null, $dec);
+     Form::textCells(null, 'shelf_primary' . $myrow["loc_code"], $myrow["shelf_primary"]);
+     Form::textCells(null, 'shelf_secondary' . $myrow["loc_code"], $myrow["shelf_secondary"]);
+     Form::qtyCells(null, $myrow["loc_code"], null, null, null, $dec);
     Row::end();
     $j++;
     If ($j == 12) {
@@ -64,8 +64,8 @@
   }
   Table::end(1);
   Display::div_end();
-  submit_center('UpdateData', _("Update"), true, false, 'default');
-  end_form();
+  Form::submitCenter('UpdateData', _("Update"), true, false, 'default');
+  Form::end();
   if (Input::request('frame')) {
     Page::end(true);
   } else {

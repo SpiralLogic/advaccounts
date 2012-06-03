@@ -13,10 +13,10 @@
   Page::start(_($help_context = "Tax Inquiry"), SA_TAXREP);
   // Ajax updates
   //
-  if (get_post('Show')) {
+  if (Form::getPost('Show')) {
     Ajax::i()->activate('trans_tbl');
   }
-  if (get_post('TransFromDate') == "" && get_post('TransToDate') == "") {
+  if (Form::getPost('TransFromDate') == "" && Form::getPost('TransToDate') == "") {
     $date                   = Dates::today();
     $row                    = DB_Company::get_prefs();
     $edate                  = Dates::add_months($date, -$row['tax_last']);
@@ -34,16 +34,16 @@
    */
   function tax_inquiry_controls()
   {
-    start_form();
+    Form::start();
     //Table::start('tablestyle2');
     Table::start('tablestyle_noborder');
     Row::start();
-    date_cells(_("from:"), 'TransFromDate', '', null, -30);
-    date_cells(_("to:"), 'TransToDate');
-    submit_cells('Show', _("Show"), '', '', 'default');
+     Form::dateCells(_("from:"), 'TransFromDate', '', null, -30);
+     Form::dateCells(_("to:"), 'TransToDate');
+    Form::submitCells('Show', _("Show"), '', '', 'default');
     Row::end();
     Table::end();
-    end_form();
+    Form::end();
   }
 
   /**

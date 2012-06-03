@@ -11,24 +11,24 @@
   JS::open_window(800, 500);
   Page::start(_($help_context = "Inventory Item Movement"), SA_ITEMSTRANSVIEW);
   Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
-  if (get_post('ShowMoves')) {
+  if (Form::getPost('ShowMoves')) {
     Ajax::i()->activate('doc_tbl');
   }
   if (isset($_GET['stock_id'])) {
     $_POST['stock_id'] = $_GET['stock_id'];
   }
-  start_form();
+  Form::start();
   if (!Input::post('stock_id')) {
     Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   }
   Table::start('tablestyle_noborder');
   Item::cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], false, true, false);
   Inv_Location::cells(_("From Location:"), 'StockLocation', null);
-  date_cells(_("From:"), 'AfterDate', '', null, -30);
-  date_cells(_("To:"), 'BeforeDate');
-  submit_cells('ShowMoves', _("Show Movements"), '', _('Refresh Inquiry'), 'default');
+   Form::dateCells(_("From:"), 'AfterDate', '', null, -30);
+   Form::dateCells(_("To:"), 'BeforeDate');
+  Form::submitCells('ShowMoves', _("Show Movements"), '', _('Refresh Inquiry'), 'default');
   Table::end();
-  end_form();
+  Form::end();
   Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   $before_date = Dates::date2sql($_POST['BeforeDate']);
   $after_date  = Dates::date2sql($_POST['AfterDate']);

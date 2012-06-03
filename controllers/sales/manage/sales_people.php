@@ -78,21 +78,21 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav = Form::getPost('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
   $sql = "SELECT s.*,u.user_id,u.id FROM salesman s, users u WHERE s.user_id=u.id";
-  if (!check_value('show_inactive')) {
+  if (!Form::hasPost('show_inactive')) {
     $sql .= " AND !s.inactive";
   }
   $result = DB::query($sql, "could not get sales persons");
-  start_form();
+  Form::start();
   Table::start('tablestyle grid nowrap width80');
   $th = array(
     _("Name"), _("User"), _("Phone"), _("Fax"), _("Email"), _("Provision"), _("Break Pt."), _("Provision") . " 2", "", ""
   );
-  inactive_control_column($th);
+   Form::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
@@ -105,12 +105,12 @@
     Cell::label(Num::percent_format($myrow["provision"]) . " %", ' class="right nowrap"');
     Cell::amount($myrow["break_pt"]);
     Cell::label(Num::percent_format($myrow["provision2"]) . " %", ' class="right nowrap"');
-    inactive_control_cell($myrow["salesman_code"], $myrow["inactive"], 'salesman', 'salesman_code');
-    edit_button_cell("Edit" . $myrow["salesman_code"], _("Edit"));
-    delete_button_cell("Delete" . $myrow["salesman_code"], _("Delete"));
+     Form::inactiveControlCell($myrow["salesman_code"], $myrow["inactive"], 'salesman', 'salesman_code');
+    Form::buttonEditCell("Edit" . $myrow["salesman_code"], _("Edit"));
+    Form::buttonDeleteCell("Delete" . $myrow["salesman_code"], _("Delete"));
     Row::end();
   } //END WHILE LIST LOOP
-  inactive_control_row($th);
+   Form::inactiveControlRow($th);
   Table::end();
   echo '<br>';
   $_POST['salesman_email'] = "";
@@ -129,7 +129,7 @@
       $_POST['break_pt'] = Num::price_format($myrow["break_pt"]);
       $_POST['provision2'] = Num::percent_format($myrow["provision2"]);
     }
-    hidden('selected_id', $selected_id);
+    Form::hidden('selected_id', $selected_id);
   }
   elseif ($Mode != ADD_ITEM) {
     $_POST['provision'] = Num::percent_format(0);
@@ -138,16 +138,16 @@
   }
   Table::start('tablestyle2');
   Users::row(_('User:'), 'user_id');
-  text_row_ex(_("Sales person name:"), 'salesman_name', 30);
-  text_row_ex(_("Telephone number:"), 'salesman_phone', 20);
-  text_row_ex(_("Fax number:"), 'salesman_fax', 20);
-  email_row_ex(_("E-mail:"), 'salesman_email', 40);
-  percent_row(_("Provision") . ':', 'provision');
-  amount_row(_("Break Pt.:"), 'break_pt');
-  percent_row(_("Provision") . " 2:", 'provision2');
+   Form::textRowEx(_("Sales person name:"), 'salesman_name', 30);
+   Form::textRowEx(_("Telephone number:"), 'salesman_phone', 20);
+   Form::textRowEx(_("Fax number:"), 'salesman_fax', 20);
+   Form::emailRowEx(_("E-mail:"), 'salesman_email', 40);
+   Form::percentRow(_("Provision") . ':', 'provision');
+   Form::AmountRow(_("Break Pt.:"), 'break_pt');
+   Form::percentRow(_("Provision") . " 2:", 'provision2');
   Table::end(1);
-  submit_add_or_update_center($selected_id == -1, '', 'both');
-  end_form();
+  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Form::end();
   Page::end();
 
 

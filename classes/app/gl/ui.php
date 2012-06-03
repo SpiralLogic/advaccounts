@@ -37,7 +37,7 @@
                 WHERE chart.account_type=type.id";
       }
 
-      return select_box($name, $selected_id, $sql, 'chart.account_code', 'chart.account_name', array(
+      return Form::selectBox($name, $selected_id, $sql, 'chart.account_code', 'chart.account_name', array(
                                                                                                     'cache'                  => true,
                                                                                                     'format'                 => '_format_account',
                                                                                                     'type'                   => 2,
@@ -198,7 +198,7 @@
     {
       $sql = "SELECT * FROM fiscal_year";
       // default to the company current fiscal year
-      return select_box($name, $selected_id, $sql, 'id', '', array(
+      return Form::selectBox($name, $selected_id, $sql, 'id', '', array(
                                                                   'order'         => 'begin',
                                                                   'default'       => DB_Company::get_pref('f_year'),
                                                                   'format'        => '_format_fiscalyears',
@@ -254,7 +254,7 @@
         }
       }
 
-      return array_selector($name, $selected_id, $items, array('select_submit' => $submit_on_change));
+      return Form::arraySelect($name, $selected_id, $items, array('select_submit' => $submit_on_change));
     }
     /**
      * @static
@@ -303,7 +303,7 @@
       }
       $sql = "SELECT terms_indicator, terms, inactive FROM payment_terms";
 
-      return select_box($name, $selected_id, $sql, 'terms_indicator', 'terms_indicator', array('disabled' => $disabled));
+      return Form::selectBox($name, $selected_id, $sql, 'terms_indicator', 'terms_indicator', array('disabled' => $disabled));
     }
     /**
      * @static

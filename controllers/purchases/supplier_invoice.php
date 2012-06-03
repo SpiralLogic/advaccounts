@@ -58,7 +58,7 @@
         $input_error = true;
       }
     }
-    if (!Tax_Types::is_tax_gl_unique(get_post('gl_code'))) {
+    if (!Tax_Types::is_tax_gl_unique(Form::getPost('gl_code'))) {
       Event::error(_("Cannot post to GL account used by more than one tax type."));
       JS::set_focus('gl_code');
       $input_error = true;
@@ -85,22 +85,22 @@
     if (!check_data()) {
       return;
     }
-    if (get_post('ChgTax', 0) != 0) {
+    if (Form::getPost('ChgTax', 0) != 0) {
       $taxexists = false;
       foreach (Creditor_Trans::i()->gl_codes as &$gl_item) {
         if ($gl_item->gl_code == 2430) {
           $taxexists = true;
-          $gl_item->amount += get_post('ChgTax');
+          $gl_item->amount += Form::getPost('ChgTax');
           break;
         }
       }
       if (!$taxexists) {
-        Creditor_Trans::i()->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, get_post('ChgTax'), 'GST Correction');
+        Creditor_Trans::i()->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, Form::getPost('ChgTax'), 'GST Correction');
       }
     }
-    if (get_post('ChgTotal', 0) != 0) {
+    if (Form::getPost('ChgTotal', 0) != 0) {
       Creditor_Trans::i()
-        ->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, get_post('ChgTotal'), 'Rounding Correction');
+        ->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, Form::getPost('ChgTotal'), 'Rounding Correction');
     }
     $invoice_no                          = Purch_Invoice::add(Creditor_Trans::i());
     $_SESSION['history'][ST_SUPPINVOICE] = Creditor_Trans::i()->reference;
@@ -109,7 +109,7 @@
     Creditor_Trans::killInstance();
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$invoice_no");
   }
-  $id = find_submit('grn_item_id');
+  $id = Form::findPostPrefix('grn_item_id');
   if ($id != -1) {
     commit_item_data($id);
   }
@@ -122,13 +122,13 @@
       }
     }
   }
-  $id3 = find_submit(MODE_DELETE);
+  $id3 = Form::findPostPrefix(MODE_DELETE);
   if ($id3 != -1) {
     Creditor_Trans::i()->remove_grn_from_trans($id3);
     Ajax::i()->activate('grn_items');
     Ajax::i()->activate('inv_tot');
   }
-  $id4 = find_submit('Delete2');
+  $id4 = Form::findPostPrefix('Delete2');
   if ($id4 != -1) {
     if (!isset($taxtotal)) {
       $taxtotal = 0;
@@ -152,7 +152,7 @@
   }
   $id2 = -1;
   if (User::i()->can_access(SA_GRNDELETE)) {
-    $id2 = find_submit('void_item_id');
+    $id2 = Form::findPostPrefix('void_item_id');
     if ($id2 != -1) {
       DB::begin();
       $myrow = Purch_GRN::get_item($id2);
@@ -178,7 +178,7 @@
     Ajax::i()->activate('total_amount');
     Ajax::i()->activate('inv_tot');
   }
-  start_form();
+  Form::start();
   Purch_Invoice::header(Creditor_Trans::i());
   $_POST['supplier_id'] = Session::i()->getGlobal('creditor', '');
   if (Creditor_Trans::i()) {
@@ -197,13 +197,13 @@
     Ajax::i()->activate('grn_items');
     Ajax::i()->activate('inv_tot');
   }
-  if (get_post('AddGLCodeToTrans')) {
+  if (Form::getPost('AddGLCodeToTrans')) {
     Ajax::i()->activate('inv_tot');
   }
   Display::br();
-  submit_center('PostInvoice', _("Enter Invoice"), true, '', 'default');
+  Form::submitCenter('PostInvoice', _("Enter Invoice"), true, '', 'default');
   Display::br();
-  end_form();
+  Form::end();
   Item::addEditDialog();
   $js
     = <<<JS

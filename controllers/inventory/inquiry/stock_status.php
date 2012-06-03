@@ -18,7 +18,7 @@
     Ajax::i()->activate('status_tbl');
   }
   Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
-  start_form();
+  Form::start();
   if (!Input::post('stock_id')) {
     Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   }
@@ -77,7 +77,7 @@
   }
   Table::end();
   Display::div_end();
-  end_form();
+  Form::end();
   Page::end();
 
 

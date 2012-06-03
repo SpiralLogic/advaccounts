@@ -21,8 +21,8 @@
   }
   Page::start($_SESSION['page_title'], $page_security);
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-  if (list_updated('PersonDetailID')) {
-    $br                 = Sales_Branch::get(get_post('PersonDetailID'));
+  if (Form::isListUpdated('PersonDetailID')) {
+    $br                 = Sales_Branch::get(Form::getPost('PersonDetailID'));
     $_POST['person_id'] = $br['debtor_id'];
     Ajax::i()->activate('person_id');
   }
@@ -80,7 +80,7 @@
     }
   }
   if (isset($_POST['Process'])) {
-    $trans      = GL_Bank::add_bank_transaction($_SESSION['pay_items']->trans_type, $_POST['bank_account'], $_SESSION['pay_items'], $_POST['date_'], $_POST['PayType'], $_POST['person_id'], get_post('PersonDetailID'), $_POST['ref'], $_POST['memo_']);
+    $trans      = GL_Bank::add_bank_transaction($_SESSION['pay_items']->trans_type, $_POST['bank_account'], $_SESSION['pay_items'], $_POST['date_'], $_POST['PayType'], $_POST['person_id'], Form::getPost('PersonDetailID'), $_POST['ref'], $_POST['memo_']);
     $trans_type = $trans[0];
     $trans_no   = $trans[1];
     Dates::new_doc_date($_POST['date_']);
@@ -88,7 +88,7 @@
     unset($_SESSION['pay_items']);
     Display::meta_forward($_SERVER['DOCUMENT_URI'], $trans_type == ST_BANKPAYMENT ? "AddedID=$trans_no" : "AddedDep=$trans_no");
   } /*end of process credit note */
-  $id = find_submit(MODE_DELETE);
+  $id = Form::findPostPrefix(MODE_DELETE);
   if ($id != -1) {
     handle_delete_item($id);
   }
@@ -108,7 +108,7 @@
     Ajax::i()->activate('total_amount');
     Item_Line::start_focus('_code_id_edit');
   }
-  start_form();
+  Form::start();
   Bank_UI::header($_SESSION['pay_items']);
   Table::start('tablesstyle2 width90 pad10');
   Row::start();
@@ -119,10 +119,10 @@
   echo "</td>";
   Row::end();
   Table::end(1);
-  submit_center_first('Update', _("Update"), '', null);
-  submit_center_last('Process', $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? _("Process Payment") :
+  Form::submitCenterBegin('Update', _("Update"), '', null);
+  Form::submitCenterEnd('Process', $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? _("Process Payment") :
     _("Process Deposit"), '', 'default');
-  end_form();
+  Form::end();
   Page::end();
   /**
    * @return bool
