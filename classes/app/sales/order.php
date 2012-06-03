@@ -746,7 +746,8 @@
       $order_no   = SysTypes::get_next_trans_no($this->trans_type);
       $del_date   = Dates::date2sql($this->due_date);
       $order_type = 0; // this is default on new order
-      $sql        = "INSERT INTO sales_orders (order_no, type, debtor_id, trans_type, branch_id, customer_ref, reference, salesman, comments, source_no, ord_date,
+      $sql
+                  = "INSERT INTO sales_orders (order_no, type, debtor_id, trans_type, branch_id, customer_ref, reference, salesman, comments, source_no, ord_date,
             order_type, ship_via, deliver_to, delivery_address, contact_name, contact_phone,
             contact_email, freight_cost, from_stk_loc, delivery_date)
             VALUES (" . DB::escape($order_no) . "," . DB::escape($order_type) . "," . DB::escape($this->customer_id) . ", " . DB::escape($this->trans_type) . "," . DB::escape($this->Branch) . ", " . DB::escape($this->cust_ref) . "," . DB::escape($this->reference) . "," . DB::escape($this->salesman) . "," . DB::escape($this->Comments) . "," . DB::escape($this->source_no) . ",'" . Dates::date2sql($this->document_date) . "', " . DB::escape($this->sales_type) . ", " . DB::escape($this->ship_via) . "," . DB::escape($this->deliver_to) . "," . DB::escape($this->delivery_address) . ", " . DB::escape($this->name) . ", " . DB::escape($this->phone) . ", " . DB::escape($this->email) . ", " . DB::escape($this->freight_cost) . ", " . DB::escape($this->location) . ", " . DB::escape($del_date) . ")";
@@ -760,7 +761,8 @@
       }
       foreach ($this->line_items as $line) {
         if (Config::get('accounts.stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
-          $sql = "SELECT stock_location.*, locations.location_name, locations.email
+          $sql
+               = "SELECT stock_location.*, locations.location_name, locations.email
                     FROM stock_location, locations
                     WHERE stock_location.loc_code=locations.loc_code
                     AND stock_location.stock_id = '" . $line->stock_id . "'
@@ -971,7 +973,8 @@
       }
       foreach ($this->line_items as $line) {
         if (Config::get('accounts.stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
-          $sql = "SELECT stock_location.*, locations.location_name, locations.email
+          $sql
+               = "SELECT stock_location.*, locations.location_name, locations.email
                             FROM stock_location, locations
                             WHERE stock_location.loc_code=locations.loc_code
                              AND stock_location.stock_id = " . DB::escape($line->stock_id) . "
@@ -991,11 +994,13 @@
             }
           }
         }
-        $sql = "INSERT INTO sales_order_details
+        $sql
+          = "INSERT INTO sales_order_details
                      (id, order_no, trans_type, stk_code, description, unit_price, quantity,
                      discount_percent, qty_sent)
                      VALUES (";
-        $sql .= DB::escape($line->id ? $line->id : 0) . "," . $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ",
+        $sql .= DB::escape($line->id ? $line->id :
+                             0) . "," . $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ",
                         " . DB::escape($line->description) . ", " . DB::escape($line->price) . ", " . DB::escape($line->quantity) . ", " . DB::escape($line->discount_percent) . ", " . DB::escape($line->qty_done) . " )";
         DB::query($sql, "Old order Cannot be Inserted");
       } /* inserted line items into sales order details */
@@ -1018,7 +1023,6 @@
       $this->order_no = 0;
       $this->generateID();
     }
-
     /**
      * @param $loc
      * @param $st_ids
@@ -1118,7 +1122,15 @@
       }
       Table::start('tablestyle grid ');
       $th = array(
-        _("Item Code"), _("Item Description"), _("Quantity"), _("Delivered"), _("Unit"), _("Price"), _("Discount %"), _("Total"), ""
+        _("Item Code"),
+        _("Item Description"),
+        _("Quantity"),
+        _("Delivered"),
+        _("Unit"),
+        _("Price"),
+        _("Discount %"),
+        _("Total"),
+        ""
       );
       if ($this->trans_no == 0) {
         unset($th[3]);
@@ -1136,12 +1148,12 @@
         $line_discount = round($stock_item->qty_dispatched * $stock_item->price, User::price_dec()) - $line_total;
         $qoh_msg       = '';
         if (!$editable_items || $id != $line_no) {
-          $rowclass='';
+          $rowclass = '';
           if (!DB_Company::get_pref('allow_negative_stock') && Item::is_inventory_item($stock_item->stock_id)) {
             $qoh = Item::get_qoh_on_date($stock_item->stock_id, $_POST['location'], $_POST['OrderDate']);
             if ($stock_item->qty_dispatched > $qoh) {
               // oops, we don't have enough of one of the component items
-              $row_class="class='stockmankobg'";
+              $row_class = "class='stockmankobg'";
               $qoh_msg .= $stock_item->stock_id . " - " . $stock_item->description . ": " . _("Quantity On Hand") . " = " . Num::format($qoh, Item::qty_dec($stock_item->stock_id)) . '<br>';
               $has_marked = true;
             }
@@ -1181,25 +1193,26 @@
       Row::start();
       Cell::label(_("Shipping Charge"), "colspan=$colspan class='right'");
       Form::amountCellsSmall(null, 'freight_cost', Num::price_format(Form::getPost('freight_cost', 0)));
-      Cell::label('', '');
+      Cell::label('', 'colspan=2');
       Row::end();
       $display_sub_total = Num::price_format($total + Validation::input_num('freight_cost'));
       Row::start();
       Cell::label(_("Total Discount"), "colspan=$colspan class='right'");
       Form::amountCellsSmall(null, null, $total_discount);
-      HTML::td(true)->button('discountAll', 'Discount All', array('name' => 'discountAll'), false);
+      HTML::td(null, array('colspan'=> 2, 'class'=> 'center'))
+        ->button('discountAll', 'Discount All', array('name' => 'discountAll'), false);
       Form::hidden('_discountAll', '0', true);
       HTML::td();
       $action = "var discount = prompt('Discount Percent?',''); if (!discount) return false; $(\"[name='_discountAll']\").val(Number(discount));e=$(this);save_focus(e);JsHttpRequest.request(this);return false;";
       JS::addLiveEvent('#discountAll', 'click', $action);
       Row::end();
-      Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan  class='right' ", "class='right'", 1);
+      Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan  class='right' ", "class='right'", 2);
       $taxes         = $this->get_taxes(Validation::input_num('freight_cost'));
-      $tax_total     = Tax::edit_items($taxes, $colspan, $this->tax_included, 1);
+      $tax_total     = Tax::edit_items($taxes, $colspan, $this->tax_included, 2);
       $display_total = Num::price_format(($total + Validation::input_num('freight_cost') + $tax_total));
       Row::start();
       Cell::labels(_("Amount Total"), $display_total, "colspan=$colspan style='background:inherit; text-align:right;'", "class='right'");
-      Form::submitCells('_action', Orders::REFRESH, "", _("Refresh"), true);
+      Form::submitCells('_action', Orders::REFRESH, "colspan=2", _("Refresh"), true);
       Row::end();
       Table::footEnd();
       Table::end();
@@ -1317,7 +1330,8 @@
       if (!Bank_Currency::is_company($this->customer_currency)) {
         Table::section(2);
         Row::label(_("Customer Currency:"), $this->customer_currency);
-        GL_ExchangeRate::display($this->customer_currency, Bank_Currency::for_company(), ($editable && Input::post('OrderDate') ? $_POST['OrderDate'] : $this->document_date));
+        GL_ExchangeRate::display($this->customer_currency, Bank_Currency::for_company(), ($editable && Input::post('OrderDate') ?
+          $_POST['OrderDate'] : $this->document_date));
       }
       Table::section(3);
       if ($_POST['customer_id']) {
@@ -1479,7 +1493,8 @@
         if (Form::isListUpdated('location')) {
           Ajax::i()->activate('items_table');
         }
-        Form::dateRow($delname, 'delivery_date', $this->trans_type == ST_SALESORDER ? _('Enter requested day of delivery') : $this->trans_type == ST_SALESQUOTE ? _('Enter Valid until Date') : '');
+        Form::dateRow($delname, 'delivery_date', $this->trans_type == ST_SALESORDER ? _('Enter requested day of delivery') :
+          $this->trans_type == ST_SALESQUOTE ? _('Enter Valid until Date') : '');
         Form::textRow(_("Deliver To:"), 'deliver_to', $this->deliver_to, 40, 40, _('Additional identifier for delivery e.g. name of receiving person'));
         Form::textareaRow("<a href='#'>Address:</a>", 'delivery_address', $this->delivery_address, 35, 5, _('Delivery address. Default is address of customer branch'), null, 'id="address_map"');
         if (strlen($this->delivery_address) > 10) {
@@ -1522,7 +1537,8 @@
      */
     public static function get_header($order_no, $trans_type)
     {
-      $sql    = "SELECT DISTINCT sales_orders.*,
+      $sql
+              = "SELECT DISTINCT sales_orders.*,
          debtors.name,
          debtors.curr_code,
          debtors.email AS master_email,
@@ -1570,7 +1586,8 @@
      */
     public static function get_details($order_no, $trans_type)
     {
-      $sql = "SELECT sales_order_details.id, stk_code, unit_price, sales_order_details.description,sales_order_details.quantity,
+      $sql
+        = "SELECT sales_order_details.id, stk_code, unit_price, sales_order_details.description,sales_order_details.quantity,
         discount_percent, qty_sent as qty_done, stock_master.units,stock_master.tax_type_id,stock_master.material_cost + stock_master.labour_cost + stock_master.overhead_cost AS standard_cost
         FROM sales_order_details, stock_master WHERE sales_order_details.stk_code = stock_master.stock_id AND order_no =" . DB::escape($order_no) . " AND trans_type = " . DB::escape($trans_type) . " ORDER BY id";
       return DB::query($sql, "Retreive order Line Items");
@@ -1594,7 +1611,8 @@
      */
     public static function close($order_no)
     {
-      $sql = "UPDATE sales_order_details
+      $sql
+        = "UPDATE sales_order_details
             SET quantity = qty_sent WHERE order_no = " . DB::escape($order_no) . " AND trans_type=" . ST_SALESORDER . "";
       DB::query($sql, "The sales order detail record could not be updated");
     }
@@ -1611,7 +1629,8 @@
       if (!Dates::is_date($invdate)) {
         return Dates::new_doc_date();
       }
-      $sql    = "SELECT debtors.debtor_id, debtors.payment_terms, payment_terms.* FROM debtors,
+      $sql
+              = "SELECT debtors.debtor_id, debtors.payment_terms, payment_terms.* FROM debtors,
             payment_terms WHERE debtors.payment_terms = payment_terms.terms_indicator AND
             debtors.debtor_id = " . DB::escape($debtorno);
       $result = DB::query($sql, "The customer details could not be retrieved");
@@ -1636,7 +1655,8 @@
     public static function get_customer($customer_id)
     {
       // Now check to ensure this account is not on hold */
-      $sql    = "SELECT debtors.name,
+      $sql
+              = "SELECT debtors.name,
          debtors.address,
          credit_status.dissallow_invoices,
          debtors.sales_type AS salestype,
@@ -1667,7 +1687,8 @@
     public static function get_branch($customer_id, $branch_id)
     {
       // the branch was also selected from the customer selection so default the delivery details from the customer branches table branches. The order process will ask for branch details later anyway
-      $sql = "SELECT branches.br_name,
+      $sql
+        = "SELECT branches.br_name,
      branches.br_address,
      branches.city, branches.state, branches.postcode, branches.contact_name, branches.br_post_address, branches.phone, branches.email,
                  default_location, location_name, default_ship_via, tax_groups.name AS tax_group_name, tax_groups.id AS tax_group_id
@@ -1718,11 +1739,13 @@
         return false;
       } else {
         if ($doc_type == ST_SALESORDER) {
-          $sql = "UPDATE sales_order_details
+          $sql
+            = "UPDATE sales_order_details
                                 SET qty_sent = qty_sent + $qty_dispatched
                                 WHERE id=" . DB::escape($line_id);
         } else {
-          $sql = "UPDATE debtor_trans_details
+          $sql
+            = "UPDATE debtor_trans_details
                                 SET qty_done = qty_done + $qty_dispatched
                                 WHERE id=" . DB::escape($line_id);
         }
