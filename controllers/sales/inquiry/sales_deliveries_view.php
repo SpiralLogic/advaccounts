@@ -17,7 +17,7 @@
     $_POST['OutstandingOnly'] = FALSE;
     Page::start(_($help_context = "Search All Deliveries"), SA_SALESINVOICE);
   }
-  $selected_customer = Input::Form::getPost('customer_id', Input::NUMERIC, -1);
+  $selected_customer = Input::get_post('customer_id', Input::NUMERIC, -1);
   if (isset($_POST[Orders::BATCH_INVOICE])) {
     // checking batch integrity
     $del_count = 0;

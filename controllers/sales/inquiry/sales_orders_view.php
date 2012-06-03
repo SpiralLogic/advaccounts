@@ -54,7 +54,7 @@
     Session::i()->page_title  = _($help_context = "Search All Sales Quotations");
   }
   Page::start(Session::i()->page_title);
-  $selected_customer = Input::Form::getPost('customer_id', Input::NUMERIC, -1);
+  $selected_customer = Input::get_post('customer_id', Input::NUMERIC, -1);
   if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
   ) {
     $selected_stock_item = $_POST['SelectStockFromList'];

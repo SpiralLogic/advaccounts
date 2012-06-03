@@ -9,10 +9,10 @@
    **/
   JS::open_window(900, 500);
   Page::start(_($help_context = "Search Outstanding Purchase Orders"), SA_SUPPTRANSVIEW);
-  $_POST['order_number']        = Input::Form::getPost('order_number', Input::NUMERIC);
-  $_POST['StockLocation']       = Input::Form::getPost('StockLocation', Input::STRING, '');
-  $_POST['SelectStockFromList'] = Input::Form::getPost('SelectStockFromList', Input::STRING, '');
-  $_POST['supplier_id']         = Input::Form::getPost('supplier_id', Input::NUMERIC, 0);
+  $_POST['order_number']        = Input::get_post('order_number', Input::NUMERIC);
+  $_POST['StockLocation']       = Input::get_post('StockLocation', Input::STRING, '');
+  $_POST['SelectStockFromList'] = Input::get_post('SelectStockFromList', Input::STRING, '');
+  $_POST['supplier_id']         = Input::get_post('supplier_id', Input::NUMERIC, 0);
   // Ajax updates
   //
   if (Form::getPost('SearchOrders')) {
