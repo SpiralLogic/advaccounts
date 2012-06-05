@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Contact extends DB_abstract
+  class Contact extends DB_Base
   {
     /**
      * @var int
@@ -56,7 +56,7 @@
      */
     public function __construct($type, $id = 0)
     {
-      $this->parent_type = (int)$type;
+      $this->parent_type = (int) $type;
       parent::__construct($id, array('parent_type' => $type));
     }
     public function delete()
@@ -90,7 +90,7 @@
     }
     protected function _defaults()
     {
-      $this->id=(int)$this->id;
+      $this->id = (int) $this->id;
     }
     /**
      * @return bool|Status

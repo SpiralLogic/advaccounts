@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  abstract class Orders extends DB_abstract
+  abstract class Orders extends DB_Base
   {
     const NEW_ORDER           = 'NewOrder';
     const MODIFY_ORDER        = 'ModifyOrder';
@@ -30,7 +30,7 @@
     const ADD_LINE            = 'addLine';
     const UPDATE_ITEM         = 'updateItem';
     const DELETE_LINE         = 'deleteLine';
-    const EDIT_LINE         = 'editLine';
+    const EDIT_LINE           = 'editLine';
     const CANCEL_ITEM_CHANGES = 'cancelItem';
     const DISCOUNT_ALL        = 'discountall';
     const ADD                 = 'add';

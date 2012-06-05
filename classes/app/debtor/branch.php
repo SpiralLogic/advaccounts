@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Debtor_Branch extends DB_abstract
+  class Debtor_Branch extends DB_Base
   {
     /**
      * @var string
@@ -270,19 +270,19 @@
     public static function select($customer_id, $name, $selected_id = null, $spec_option = true, $enabled = true, $submit_on_change = false, $editkey = false)
     {
       $sql
-        = "SELECT branch_id, branch_ref FROM branches
+             = "SELECT branch_id, branch_ref FROM branches
             WHERE branch_ref <> 'accounts' AND inactive <> 1  AND debtor_id='" . $customer_id . "' ";
       $where = $enabled ? array("disable_trans = 0") : array();
 
       return Form::selectBox($name, $selected_id, $sql, 'branch_id', 'br_name', array(
-                                                                                'where'         => $where,
-                                                                                'order'         => array('branch_ref'),
-                                                                                'spec_option'   => $spec_option === true ?
-                                                                                  _('All branches') : $spec_option,
-                                                                                'spec_id'       => ALL_TEXT,
-                                                                                'select_submit' => $submit_on_change,
-                                                                                'sel_hint'      => _('Select customer branch')
-                                                                           ));
+                                                                                     'where'         => $where,
+                                                                                     'order'         => array('branch_ref'),
+                                                                                     'spec_option'   => $spec_option === true ?
+                                                                                       _('All branches') : $spec_option,
+                                                                                     'spec_id'       => ALL_TEXT,
+                                                                                     'select_submit' => $submit_on_change,
+                                                                                     'sel_hint'      => _('Select customer branch')
+                                                                                ));
     }
     /**
      * @static

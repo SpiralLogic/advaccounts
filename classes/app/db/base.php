@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  abstract class DB_abstract
+  abstract class DB_Base
   {
     use \ADV\Core\Traits\SetFromArray;
     use \ADV\Core\Traits\Status;
@@ -48,7 +48,8 @@
       DB::begin();
       try {
         DB::update($this->_table)->values($data)->where($this->_id_column . '=', $this->id)->exec();
-      } catch (DBUpdateException $e) {
+      }
+      catch (DBUpdateException $e) {
         DB::cancel();
 
         return $this->_status(Status::ERROR, 'write', "Could not update " . get_class($this));
@@ -57,7 +58,8 @@
         try {
           /** @noinspection PhpUndefinedFieldInspection */
           DB::update_record_status($this->id, $this->inactive, $this->_table, $this->_id_column);
-        } catch (DBUpdateException $e) {
+        }
+        catch (DBUpdateException $e) {
           DB::cancel();
 
           return $this->_status(Status::ERROR, 'write', "Could not update active status of " . get_class($this));
@@ -114,7 +116,8 @@
           $query->and_where($field . '=', $value);
         }
         DB::fetch()->intoClass($this);
-      } catch (DBSelectException $e) {
+      }
+      catch (DBSelectException $e) {
         return $this->_status(false, 'read', 'Could not read ' . get_class($this), (string) $id);
       }
 
@@ -128,9 +131,11 @@
       try {
         $this->id = DB::insert($this->_table)->values((array) $this)->exec();
         var_dump($this->id);
-      } catch (DBInsertException $e) {
+      }
+      catch (DBInsertException $e) {
         return $this->_status(false, 'write', 'Could not add to databse: ' . get_class($this));
-      } catch (DBDuplicateException $e) {
+      }
+      catch (DBDuplicateException $e) {
         return $this->_status(false, 'write', $e->getMessage() . '. The entered information is a duplicate. Please modify the existing record or use different values.');
       }
 

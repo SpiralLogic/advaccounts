@@ -1,8 +1,10 @@
 var Adv;
 jQuery.widget("custom.catcomplete", $.ui.autocomplete, {
-  _renderMenu:function (ul, items) {
+  _renderMenu:function (ul, items)
+  {
     var self = this, currentCategory = "";
-    $.each(items, function (index, item) {
+    $.each(items, function (index, item)
+    {
       if (item.category != currentCategory) {
         ul.append("<li class='ui-autocomplete-category'>" + item.category + "</li>");
         currentCategory = item.category;
@@ -11,9 +13,11 @@ jQuery.widget("custom.catcomplete", $.ui.autocomplete, {
     });
   }
 });
-jQuery.fn.quickEach = (function () {
+jQuery.fn.quickEach = (function ()
+{
   var jq = jQuery([1]);
-  return function (c) {
+  return function (c)
+  {
     var i = -1, el, len = this.length;
     try {
       while (++i < len && (el = jq[0] = this[i]) && c.call(jq, i, el) !== false) {
@@ -29,47 +33,54 @@ jQuery.fn.quickEach = (function () {
 }());
 jQuery.easing['jswing'] = jQuery.easing['swing'];
 jQuery.extend(jQuery.easing, {
-  def:'easeOutExpo',
-  easeOutExpo:function (x, t, b, c, d) {
+  def:        'easeOutExpo',
+  easeOutExpo:function (x, t, b, c, d)
+  {
     return (t == d) ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
   }
 });
-(function (window, $, undefined) {
+(function (window, $, undefined)
+{
   //noinspection LocalVariableNamingConventionJS
   var Adv = {
-    loader:document.getElementById('ajaxmark'),
+    loader:       document.getElementById('ajaxmark'),
     fieldsChanged:0,
-    debug:{ ajax:true},
-    lastXhr:'',
-    o:{$content:$("#content"), tabs:{}}
+    debug:        { ajax:true},
+    lastXhr:      '',
+    o:            {$content:$("#content"), tabs:{}}
   };
-  (function () {
+  (function ()
+  {
     var extender = jQuery.extend;
     this.o.wrapper = $("#wrapper");
     this.o.autocomplete = {};
-    $(this.loader).ajaxStart(
-      function () {
-        Adv.loader.on();
-        if (Adv.debug.ajax) {
-          console.time('ajax')
-        }
-      }).ajaxStop(function () {
-        Adv.loader.off();
-        if (Adv.debug.ajax) {
-          console.timeEnd('ajax');
-        }
-      });
+    $(this.loader).ajaxStart(function ()
+                             {
+                               Adv.loader.on();
+                               if (Adv.debug.ajax) {
+                                 console.time('ajax')
+                               }
+                             }).ajaxStop(function ()
+                                         {
+                                           Adv.loader.off();
+                                           if (Adv.debug.ajax) {
+                                             console.timeEnd('ajax');
+                                           }
+                                         });
     this.extend = function (object) {extender(Adv, object)};
     extender(Adv.loader, {
-      off:function (img) {
+      off:function (img)
+      {
         if (img) {
           Adv.loader.src = user.theme + 'images/' + img;
           Adv.loader.style.visibility = 'visible';
-        } else {
+        }
+        else {
           Adv.loader.style.visibility = 'hidden';
         }
       },
-      on:function (tout) {
+      on: function (tout)
+      {
         var img = tout > 50000 ? 'progressbar.gif' : 'ajax-loader.gif';
         Adv.loader.off(img);
       }
@@ -78,153 +89,165 @@ jQuery.extend(jQuery.easing, {
   window.Adv = Adv;
 })(window, jQuery);
 Adv.extend({
-  msgbox:$('#msgbox').ajaxError(
-    function (event, request, settings) {
-      if (request.statusText == "abort") {
-        return;
-      }
-      var status = {
-        status:256,
-        message:"Request failed: " + settings.url + "<br>"
-      };
-      Adv.showStatus(status);
-    }).ajaxComplete(function (event, request) {
-      Behaviour.apply();
-      try {
-        var data = $.parseJSON(request.responseText);
-        if (data && data.status) {
-          Adv.showStatus(data.status);
-        }
-      }
-      catch (e) {
-        return false
-      }
-    }),
-  showStatus:function (status) {
-    var text = '', closeTime;
-    status = status || {status:null, message:''};
-    if (status.status === 'redirect') {
-      window.onunload = null;
-      return window.location.href = status.message;
-    }
-    if (status.html) {
-      text = status.html;
-    } else {
-      if (status.message) {
-        switch (status.status) {
-          case 1024:
-            status.class = 'info_msg';
-            break;
-          case 512:
-            status.class = 'warn_msg';
-            break;
-          case 256:
-          case 8:
-            status.class = 'err_msg';
-            break;
-          case 61438:
-          default:
-            status.class = 'success_msg';
-            break;
-        }
-        text = '<div class="' + status.class + '">' + status.message + '</div>';
-      }
-    }
-    if (text) {
-      Adv.msgbox.html(text);
-    }
-    window.clearTimeout(closeTime);
-    Adv.msgbox.stop(true, true).animate({ height:'show', opacity:1 }, 1000, 'easeOutExpo', function () {
-      closeTime = window.setTimeout(Adv.hideStatus, 15000);
-    });
-    try {
-      var y = Adv.Forms.elementPos(Adv.msgbox[0]).y - 40;
-    }
-    catch (e) {
-      return;
-    }
-    if (text && $.isNumeric(y)) {
-      scrollTo(0, y);
-    }
-  },
-  hideStatus:function () {
-    Adv.msgbox.stop(true, true).animate({ height:'hide', opacity:0 }, 2000, 'easeOutExpo');
-  },
-  openWindow:function (url, title, width, height) {
-    width = width || 900;
-    height = height || 600;
-    var left = (screen.width - width) / 2;
-    var top = (screen.height - height) / 2;
-    return window.open(url, title, 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
-  },
-  hoverWindow:{
-    _init:false, init:function (width, height) {
-      Adv.hoverWindow.width = width || 600;
-      Adv.hoverWindow.height = height || 600;
-      if (Adv.hoverWindow._init) {
-        return;
-      }
-      Adv.hoverWindow._init = true;
-      Adv.o.$content.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open', 'div .openWindow,td .openWindow', function (e) {
-        if (e.type == 'click') {
-          Adv.openWindow(this.href, this.target, Adv.hoverWindow.width, Adv.hoverWindow.height);
-          return false;
-        }
-        if (e.type == 'mouseenter') {
-          if (Adv.o.popupCurrent) {
-            window.clearTimeout(Adv.o.popupCurrent);
-          }
-          Adv.o.popupEl = this;
-          Adv.o.popupParent = $(this).parent();
-          Adv.o.popupCurrent = window.setTimeout(Adv.popupWindow, 750);
-        }
-        if (e.type == 'mouseleave') {
-          window.clearTimeout(Adv.o.popupCurrent);
-        }
-      })
-    },
-    loaded:function () {
-      Adv.o.popupWindow.show();
-      var height = Adv.o.popupWindow[0].contentWindow.document.body.clientHeight;
-      var top = ($(window).height() / 2 - (height / 2));
-      if (height > Adv.hoverWindow.height) {
-        top = 20;
-        height = Adv.hoverWindow.height
-      }
-      var left = ($(window).width() / 2 - Adv.hoverWindow.width / 2);
-      Adv.o.popupWindow.css('height', height);
-      Adv.o.popupDiv.css({width:Adv.hoverWindow.width, 'height':height, 'left':left, 'top':top});
-    }},
-  popupWindow:function () {
-    if (Adv.o.popupWindow) {
-      Adv.o.popupWindow.parent().remove();
-    }
-    console.log(Adv.o.popupEl.href);
-    Adv.o.popupWindow = $("<iframe>", {
-      src:Adv.o.popupEl.href + '&frame=1',
-      width:Adv.hoverWindow.width,
-      onload:'Adv.hoverWindow.loaded()'
-    }).css({background:'white'}).hide();
-    Adv.o.popupDiv = $('<div>', {
-      id:'iframePopup',
-      width:100,
-      height:100}).html(Adv.o.popupWindow).on('mouseleave',
-      function () { $(this).remove(); }).appendTo(Adv.o.wrapper).position({my:"center center", at:"center center", of:document.body});
-  }
-});
-Adv.extend({Forms:(function () {
+             msgbox:     $('#msgbox').ajaxError(function (event, request, settings)
+                                                {
+                                                  if (request.statusText == "abort") {
+                                                    return;
+                                                  }
+                                                  var status = {
+                                                    status: 256,
+                                                    message:"Request failed: " + settings.url + "<br>"
+                                                  };
+                                                  Adv.showStatus(status);
+                                                }).ajaxComplete(function (event, request)
+                                                                {
+                                                                  Behaviour.apply();
+                                                                  try {
+                                                                    var data = $.parseJSON(request.responseText);
+                                                                    if (data && data.status) {
+                                                                      Adv.showStatus(data.status);
+                                                                    }
+                                                                  }
+                                                                  catch (e) {
+                                                                    return false
+                                                                  }
+                                                                }),
+             showStatus: function (status)
+             {
+               var text = '', closeTime;
+               status = status || {status:null, message:''};
+               if (status.status === 'redirect') {
+                 window.onunload = null;
+                 return window.location.href = status.message;
+               }
+               if (status.html) {
+                 text = status.html;
+               }
+               else {
+                 if (status.message) {
+                   switch (status.status) {
+                     case 1024:
+                       status.class = 'info_msg';
+                       break;
+                     case 512:
+                       status.class = 'warn_msg';
+                       break;
+                     case 256:
+                     case 8:
+                     case -1:
+                       status.class = 'err_msg';
+                       break;
+                     case 61438:
+                     default:
+                       status.class = 'success_msg';
+                       break;
+                   }
+                   text = '<div class="' + status.class + '">' + status.message + '</div>';
+                 }
+               }
+               if (text) {
+                 Adv.msgbox.html(text);
+               }
+               window.clearTimeout(closeTime);
+               Adv.msgbox.stop(true, true).animate({ height:'show', opacity:1 }, 1000, 'easeOutExpo', function ()
+               {
+                 closeTime = window.setTimeout(Adv.hideStatus, 15000);
+               });
+               try {
+                 var y = Adv.Forms.elementPos(Adv.msgbox[0]).y - 40;
+               }
+               catch (e) {
+                 return;
+               }
+               if (text && $.isNumeric(y)) {
+                 scrollTo(0, y);
+               }
+             },
+             hideStatus: function ()
+             {
+               Adv.msgbox.stop(true, true).animate({ height:'hide', opacity:0 }, 2000, 'easeOutExpo');
+             },
+             openWindow: function (url, title, width, height)
+             {
+               width = width || 900;
+               height = height || 600;
+               var left = (screen.width - width) / 2;
+               var top = (screen.height - height) / 2;
+               return window.open(url, title, 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
+             },
+             hoverWindow:{
+               _init: false, init:function (width, height)
+               {
+                 Adv.hoverWindow.width = width || 600;
+                 Adv.hoverWindow.height = height || 600;
+                 if (Adv.hoverWindow._init) {
+                   return;
+                 }
+                 Adv.hoverWindow._init = true;
+                 Adv.o.$content.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open', 'div .openWindow,td .openWindow', function (e)
+                 {
+                   if (e.type == 'click') {
+                     Adv.openWindow(this.href, this.target, Adv.hoverWindow.width, Adv.hoverWindow.height);
+                     return false;
+                   }
+                   if (e.type == 'mouseenter') {
+                     if (Adv.o.popupCurrent) {
+                       window.clearTimeout(Adv.o.popupCurrent);
+                     }
+                     Adv.o.popupEl = this;
+                     Adv.o.popupParent = $(this).parent();
+                     Adv.o.popupCurrent = window.setTimeout(Adv.popupWindow, 750);
+                   }
+                   if (e.type == 'mouseleave') {
+                     window.clearTimeout(Adv.o.popupCurrent);
+                   }
+                 })
+               },
+               loaded:function ()
+               {
+                 Adv.o.popupWindow.show();
+                 var height = Adv.o.popupWindow[0].contentWindow.document.body.clientHeight;
+                 var top = ($(window).height() / 2 - (height / 2));
+                 if (height > Adv.hoverWindow.height) {
+                   top = 20;
+                   height = Adv.hoverWindow.height
+                 }
+                 var left = ($(window).width() / 2 - Adv.hoverWindow.width / 2);
+                 Adv.o.popupWindow.css('height', height);
+                 Adv.o.popupDiv.css({width:Adv.hoverWindow.width, 'height':height, 'left':left, 'top':top});
+               }},
+             popupWindow:function ()
+             {
+               if (Adv.o.popupWindow) {
+                 Adv.o.popupWindow.parent().remove();
+               }
+               console.log(Adv.o.popupEl.href);
+               Adv.o.popupWindow = $("<iframe>", {
+                 src:   Adv.o.popupEl.href + '&frame=1',
+                 width: Adv.hoverWindow.width,
+                 onload:'Adv.hoverWindow.loaded()'
+               }).css({background:'white'}).hide();
+               Adv.o.popupDiv = $('<div>', {
+                 id:    'iframePopup',
+                 width: 100,
+                 height:100}).html(Adv.o.popupWindow).on('mouseleave',function () { $(this).remove(); }).appendTo(Adv.o.wrapper).position({my:"center center", at:"center center", of:document.body});
+             }
+           });
+Adv.extend({Forms:(function ()
+{
 //	var i = document.createElement("input");
   //i.setAttribute("type", "date");
   //if (i.type == "text") {
-  Adv.o.wrapper.on('focus.datepicker', ".datepicker", function () {
-    $(this).datepicker({numberOfMonths:3,
-      showButtonPanel:true,
-      showCurrentAtPos:2,
-      dateFormat:'dd/mm/yy'})
-      .off('focus.datepicker');
+  Adv.o.wrapper.on('focus.datepicker', ".datepicker", function ()
+  {
+    $(this).datepicker({numberOfMonths:   3,
+                         showButtonPanel: true,
+                         showCurrentAtPos:2,
+                         dateFormat:      'dd/mm/yy'}).off('focus.datepicker');
   });
 //	}
-  var _setFormValue = function (el, value, disabled, isdefault) {
+  var _setFormValue = function (el, value, disabled, isdefault)
+  {
     if (!el) {
       return;
     }
@@ -268,86 +291,93 @@ Adv.extend({Forms:(function () {
     return el;
   };
   return {
-    findInputEl:function (id) {
+    findInputEl:    function (id)
+    {
       var els = document.getElementsByName ? document.getElementsByName(id) : $("[name='" + id + "'");
       if (!els.length) {
         els = [document.getElementById(id)];
       }
       return els;
     },
-    setFormValue:function (id, value, disabled) {
+    setFormValue:   function (id, value, disabled)
+    {
       var isdefault, els = Adv.Forms.findInputEl(id);
       isdefault = !!arguments[3];
-      $.each(els, function (k, el) {
+      $.each(els, function (k, el)
+      {
         _setFormValue(el, value, disabled, isdefault);
       });
       return els;
     },
-    setFormDefaults:function (id, value, disabled) {
+    setFormDefaults:function (id, value, disabled)
+    {
       this.setFormValue(id, value, disabled, true);
     },
-    autocomplete:function (id, url, callback) {
+    autocomplete:   function (id, url, callback)
+    {
       var $this, els = Adv.Forms.findInputEl(id);
       Adv.Forms.findInputEl(id);
-      Adv.o.autocomplete[id] = $this = $(els)
-        .autocomplete({
-          minLength:2,
-          delay:400,
-          autoFocus:true,
-          source:function (request, response) {
-            var $this = Adv.o.autocomplete[id];
-            $this.off('change.autocomplete');
-            $this.data('default', null);
-            if ($this.data().autocomplete.previous == $this.val()) {
-              return false;
-            }
-            Adv.loader.off();
-            Adv.lastXhr = $.getJSON(url, request, function (data, status, xhr) {
-              Adv.loader.on();
-              if (!$this.data('active')) {
-                if (data.length === 0) {
-                  data = [
-                    {id:0, value:''}
-                  ]
-                }
-                callback(data[0]);
-                return false;
-              }
-              $this.data('default', data[0]);
-              response(data);
-            });
-          },
-          select:function (event, ui) {
-            $this.data('default', null);
-            if (callback(ui.item, event, this) === false) {
-              return false;
-            }
-          },
-          focus:function () {return false;}})
-        .blur(function () {$(this).data('active', false); })
-        .bind('autocompleteclose', function () {
-          if (this.value.length > 1 && $this.data().autocomplete.selectedItem === null && $this.data()['default'] !== null) {
-            if (callback($this.data()['default'], event, this) !== false) {
-              $this.val($this.data()['default'].label);
-            }
-          }
-          $this.data('default', null)
-        })
-        .focus(
-        function () {
-          $(this).data('active', true).on('change.autocomplete', function () {
-            $(this).autocomplete('search', $this.val());
-          })
-        }).on('paste', function () {
-          var $this = $(this);
-          window.setTimeout(function () {$this.autocomplete('search', $this.val())}, 1)
-        })
-        .css({'z-index':'2'});
+      Adv.o.autocomplete[id] = $this = $(els).autocomplete({
+                                                             minLength:2,
+                                                             delay:    400,
+                                                             autoFocus:true,
+                                                             source:   function (request, response)
+                                                             {
+                                                               var $this = Adv.o.autocomplete[id];
+                                                               $this.off('change.autocomplete');
+                                                               $this.data('default', null);
+                                                               if ($this.data().autocomplete.previous == $this.val()) {
+                                                                 return false;
+                                                               }
+                                                               Adv.loader.off();
+                                                               Adv.lastXhr = $.getJSON(url, request, function (data, status, xhr)
+                                                               {
+                                                                 Adv.loader.on();
+                                                                 if (!$this.data('active')) {
+                                                                   if (data.length === 0) {
+                                                                     data = [
+                                                                       {id:0, value:''}
+                                                                     ]
+                                                                   }
+                                                                   callback(data[0]);
+                                                                   return false;
+                                                                 }
+                                                                 $this.data('default', data[0]);
+                                                                 response(data);
+                                                               });
+                                                             },
+                                                             select:   function (event, ui)
+                                                             {
+                                                               $this.data('default', null);
+                                                               if (callback(ui.item, event, this) === false) {
+                                                                 return false;
+                                                               }
+                                                             },
+                                                             focus:    function () {return false;}}).blur(function () {$(this).data('active', false); }).bind('autocompleteclose', function ()
+                                                                                                                                                              {
+                                                                                                                                                                if (this.value.length > 1 && $this.data().autocomplete.selectedItem === null && $this.data()['default'] !== null) {
+                                                                                                                                                                  if (callback($this.data()['default'], event, this) !== false) {
+                                                                                                                                                                    $this.val($this.data()['default'].label);
+                                                                                                                                                                  }
+                                                                                                                                                                }
+                                                                                                                                                                $this.data('default', null)
+                                                                                                                                                              }).focus(function ()
+                                                                                                                                                                       {
+                                                                                                                                                                         $(this).data('active', true).on('change.autocomplete', function ()
+                                                                                                                                                                         {
+                                                                                                                                                                           $(this).autocomplete('search', $this.val());
+                                                                                                                                                                         })
+                                                                                                                                                                       }).on('paste', function ()
+                                                                                                                                                                             {
+                                                                                                                                                                               var $this = $(this);
+                                                                                                                                                                               window.setTimeout(function () {$this.autocomplete('search', $this.val())}, 1)
+                                                                                                                                                                             }).css({'z-index':'2'});
       if (document.activeElement === $this[0]) {
         $this.data('active', true);
       }
     },
-    moveFocus:function (dir, e0, neighbours) {
+    moveFocus:      function (dir, e0, neighbours)
+    {
       var p0 = Adv.Forms.elementPos(e0), t, l = 0;
       for (var i = 0; i < neighbours.length; i++) {
         var e = neighbours[i], p = Adv.Forms.elementPos(e);
@@ -366,7 +396,8 @@ Adv.extend({Forms:(function () {
       }
       return t;
     },
-    priceFormat:function (post, num, dec, label, color) {
+    priceFormat:    function (post, num, dec, label, color)
+    {
       var el = label ? document.getElementById(post) : document.getElementsByName(post)[0];
       //num = num.toString().replace(/\$|\,/g,'');
       if (isNaN(num)) {
@@ -392,29 +423,34 @@ Adv.extend({Forms:(function () {
       }
       if (label) {
         el.innerHTML = num;
-      } else {
+      }
+      else {
         el.value = num;
       }
       if (color) {
         el.style.color = (sign) ? '' : '#FF0000';
       }
     },
-    getAmount:function (doc, label) {
+    getAmount:      function (doc, label)
+    {
       var val;
       if (label) {
         val = document.getElementById(doc).innerHTML;
-      } else {
+      }
+      else {
         val = typeof(doc) === "string" ? document.getElementsByName(doc)[0].value : doc.value;
       }
       val = val.replace(new RegExp('\\' + user.ts, 'g'), '');
       val = +val.replace(new RegExp('\\' + user.ds, 'g'), '.');
       return isNaN(val) ? 0 : val;
     },
-    setFocus:function (name, byId) {
+    setFocus:       function (name, byId)
+    {
       var el;
       if (typeof(name) == 'object') {
         el = name;
-      } else {
+      }
+      else {
         if (!name) { // page load/ajax update
           if (_focus) {
             name = _focus;
@@ -435,7 +471,8 @@ Adv.extend({Forms:(function () {
       if (el && el.focus) {
         // The timeout is needed to prevent unpredictable behaviour on IE & Gecko.
         // Using tmp var prevents crash on IE5
-        var tmp = function () {
+        var tmp = function ()
+        {
           el.focus();
           if (el.select) {
             el.select();
@@ -445,7 +482,8 @@ Adv.extend({Forms:(function () {
       }
     },
     //returns the absolute position of some element within document
-    elementPos:function (e) {
+    elementPos:     function (e)
+    {
       var res = new Object();
       res.x = 0;
       res.y = 0;
@@ -480,21 +518,25 @@ Adv.extend({Forms:(function () {
       }
       return res;
     },
-    resetHighlights:function () {
+    resetHighlights:function ()
+    {
       $(".ui-state-highlight").removeClass("ui-state-highlight");
       Adv.fieldsChanged = 0;
       Adv.Events.onLeave();
     },
-    stateModified:function (feild) {
+    stateModified:  function (feild)
+    {
       var value, defaultValue;
       if (feild.is(':checkbox')) {
         value = feild.prop('checked');
         feild.val(value);
         defaultValue = feild[0].defaultChecked;
-      } else if (feild.is('select')) {
+      }
+      else if (feild.is('select')) {
         value = feild[0].options[feild[0].selectedIndex].selected;
         defaultValue = feild[0].options[feild[0].selectedIndex].defaultSelected;
-      } else {
+      }
+      else {
         value = feild.val();
         defaultValue = feild[0].defaultValue;
       }
@@ -502,11 +544,13 @@ Adv.extend({Forms:(function () {
         Adv.fieldsChanged--;
         if (Adv.fieldsChanged === 0) {
           Adv.Forms.resetHighlights();
-        } else {
+        }
+        else {
           feild.removeClass("ui-state-highlight");
         }
         return;
-      } else {
+      }
+      else {
         if (defaultValue != value && !feild.hasClass("ui-state-highlight")) {
           Adv.fieldsChanged++;
           if (feild.prop('disabled')) {
@@ -521,16 +565,20 @@ Adv.extend({Forms:(function () {
     }
   }
 })()});
-Adv.extend({Events:(function () {
-  var events = [], onload = false, toClean = false, toFocus = {}, firstBind = function (s, t, a) {
+Adv.extend({Events:(function ()
+{
+  var events = [], onload = false, toClean = false, toFocus = {}, firstBind = function (s, t, a)
+  {
     $(s).bind(t, a);
   };
   return {
-    bind:function (selector, types, action) {
+    bind:   function (selector, types, action)
+    {
       events[events.length] = {s:selector, t:types, a:action};
       firstBind(selector, types, action);
     },
-    onload:function (actions, clean) {
+    onload: function (actions, clean)
+    {
       var c = !!onload;
       onload = actions;
       if (c) {
@@ -541,14 +589,16 @@ Adv.extend({Events:(function () {
         toClean = clean;
       }
     },
-    rebind:function () {
+    rebind: function ()
+    {
       if (toClean) {
         toClean();
       }
       if (onload) {
         onload();
       }
-      $.each(events, function (k, v) {
+      $.each(events, function (k, v)
+      {
         firstBind(v.s, v.t, v.a);
       });
       if (Adv.msgbox.children().length) {
@@ -562,21 +612,26 @@ Adv.extend({Events:(function () {
       }
       toFocus = {el:false, pos:false};
     },
-    onFocus:function (el, pos) {
+    onFocus:function (el, pos)
+    {
       toFocus = {el:el, pos:pos};
     },
-    onLeave:function (msg) {
+    onLeave:function (msg)
+    {
       if (msg) {
-        window.onbeforeunload = function () {
+        window.onbeforeunload = function ()
+        {
           return msg;
         };
-      } else {
-        window.onbeforeunload = function () {
+      }
+      else {
+        window.onbeforeunload = function ()
+        {
           return null;
         };
       }
     }
   }
 }())
-});
+           });
 

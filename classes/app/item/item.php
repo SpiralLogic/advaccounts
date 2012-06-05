@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Item extends DB_abstract
+  class Item extends DB_Base
   {
     /**
      * @var int
@@ -607,7 +607,8 @@
       $sql  = "SELECT stock_id AS id, description AS label, stock_id AS value FROM stock_master WHERE stock_id LIKE $term OR description LIKE $term LIMIT 200";
       DB::query($sql, 'Couldn\'t Get Items');
       $data = DB::fetch_all();
-      array_walk_recursive($data, function(&$v) {
+      array_walk_recursive($data, function(&$v)
+      {
         $v = htmlspecialchars_decode($v, ENT_QUOTES);
       });
 
@@ -998,26 +999,28 @@ JS;
                     FROM stock_master s,stock_category c WHERE s.category_id=c.category_id";
 
       return Form::selectBox($name, $selected_id, $sql, 'stock_id', 's.description', array_merge(array(
-                                                                                                 'format'        => '_format_stock_items',
-                                                                                                 'spec_option'   => $all_option === true ?
-                                                                                                   _("All Items") : $all_option,
-                                                                                                 'spec_id'       => ALL_TEXT,
-                                                                                                 'search_box'    => false,
-                                                                                                 'search'        => array(
-                                                                                                   "stock_id",
-                                                                                                   "c.description",
-                                                                                                   "s.description"
-                                                                                                 ),
-                                                                                                 'search_submit' => DB_Company::get_pref('no_item_list') != 0,
-                                                                                                 'size'          => 10,
-                                                                                                 'select_submit' => $submit_on_change,
-                                                                                                 'category'      => 2,
-                                                                                                 'order'         => array(
-                                                                                                   'c.description', 'stock_id'
-                                                                                                 ),
-                                                                                                 'editable'      => 30,
-                                                                                                 'max'           => 50
-                                                                                            ), $opts));
+                                                                                                      'format'        => '_format_stock_items',
+                                                                                                      'spec_option'   => $all_option === true ?
+                                                                                                        _("All Items") :
+                                                                                                        $all_option,
+                                                                                                      'spec_id'       => ALL_TEXT,
+                                                                                                      'search_box'    => false,
+                                                                                                      'search'        => array(
+                                                                                                        "stock_id",
+                                                                                                        "c.description",
+                                                                                                        "s.description"
+                                                                                                      ),
+                                                                                                      'search_submit' => DB_Company::get_pref('no_item_list') != 0,
+                                                                                                      'size'          => 10,
+                                                                                                      'select_submit' => $submit_on_change,
+                                                                                                      'category'      => 2,
+                                                                                                      'order'         => array(
+                                                                                                        'c.description',
+                                                                                                        'stock_id'
+                                                                                                      ),
+                                                                                                      'editable'      => 30,
+                                                                                                      'max'           => 50
+                                                                                                 ), $opts));
     }
     /**
      * @static

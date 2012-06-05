@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class DB_Company extends DB_abstract
+  class DB_Company extends DB_Base
   {
     /**
      * @var int
