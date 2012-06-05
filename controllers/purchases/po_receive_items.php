@@ -67,8 +67,8 @@
     unset($order);
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$grn");
   }
-  start_form();
-  hidden('order_id');
+  Form::start();
+  Form::hidden('order_id');
   Purch_GRN::display($order, true);
   Display::heading(_("Items to Receive"));
   Display::div_start('grn_items');
@@ -99,7 +99,7 @@
       $total += $line_total;
       Cell::label($line->stock_id);
       if ($qty_outstanding > 0) {
-        text_cells(null, $line->stock_id . "Desc", $line->description, 30, 50);
+         Form::textCells(null, $line->stock_id . "Desc", $line->description, 30, 50);
       } else {
         Cell::label($line->description);
       }
@@ -109,7 +109,7 @@
       Cell::qty($line->qty_received, false, $dec);
       Cell::qty($qty_outstanding, false, $dec);
       if ($qty_outstanding > 0) {
-        qty_cells(null, $line->line_no, Num::format($line->receive_qty, $dec), "class='right'", null, $dec);
+         Form::qtyCells(null, $line->line_no, Num::format($line->receive_qty, $dec), "class='right'", null, $dec);
       } else {
         Cell::label(Num::format($line->receive_qty, $dec), "class='right'");
       }
@@ -120,14 +120,14 @@
     }
   }
   Cell::label(_("Freight"), "colspan=9 class='right'");
-  small_amount_cells(null, 'freight', Num::price_format($order->freight));
+   Form::amountCellsSmall(null, 'freight', Num::price_format($order->freight));
   $display_total = Num::format($total + $_POST['freight'], User::price_dec());
   Row::label(_("Total value of items received"), $display_total, "colspan=9 class='right'", ' class="right nowrap"');
   Table::end();
   Display::div_end();
   Display::link_params("/purchases/po_entry_items.php", _("Edit This Purchase Order"), "ModifyOrder=" . $order->order_no);
   echo '<br>';
-  submit_center_first('Update', _("Update Totals"), '', true);
-  submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Clear all GL entry fields"), 'default');
-  end_form();
+  Form::submitCenterBegin('Update', _("Update Totals"), '', true);
+  Form::submitCenterEnd('ProcessGoodsReceived', _("Process Receive Items"), _("Clear all GL entry fields"), 'default');
+  Form::end();
   Page::end();

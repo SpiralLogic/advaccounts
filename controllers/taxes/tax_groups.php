@@ -69,15 +69,15 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav = Form::getPost('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Tax_Groups::get_all(check_value('show_inactive'));
-  start_form();
+  $result = Tax_Groups::get_all(Form::hasPost('show_inactive'));
+  Form::start();
   Table::start('tablestyle grid');
   $th = array(_("Description"), _("Shipping Tax"), "", "");
-  inactive_control_column($th);
+   Form::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
@@ -92,13 +92,13 @@
     /*for ($i=0; $i< 5; $i++)
                   if ($myrow["type" . $i] != ALL_NUMERIC)
                     echo "<td>" . $myrow["type" . $i] . "</td>";*/
-    inactive_control_cell($myrow["id"], $myrow["inactive"], 'tax_groups', 'id');
-    edit_button_cell("Edit" . $myrow["id"], _("Edit"));
-    delete_button_cell("Delete" . $myrow["id"], _("Delete"));
+     Form::inactiveControlCell($myrow["id"], $myrow["inactive"], 'tax_groups', 'id');
+    Form::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
+    Form::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     Row::end();
     ;
   }
-  inactive_control_row($th);
+   Form::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != -1) {
@@ -118,10 +118,10 @@
         unset($_POST['tax_type_id' . $i++]);
       }
     }
-    hidden('selected_id', $selected_id);
+    Form::hidden('selected_id', $selected_id);
   }
-  text_row_ex(_("Description:"), 'name', 40);
-  yesno_list_row(_("Tax applied to Shipping:"), 'tax_shipping', NULL, "", "", TRUE);
+   Form::textRowEx(_("Description:"), 'name', 40);
+   Form::yesnoListRow(_("Tax applied to Shipping:"), 'tax_shipping', NULL, "", "", TRUE);
   Table::end();
   Event::warning(_("Select the taxes that are included in this group."), 1);
   Table::start('tablestyle2');
@@ -141,14 +141,14 @@
       //Editable rate has been removed 090920 Joe Hunt
       //if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
       //	$_POST['rate' . $i] = Num::percent_format($default_rate);
-      //small_amount_cells(null, 'rate' . $i, $_POST['rate' . $i], null, null,
+      // Form::amountCellsSmall(null, 'rate' . $i, $_POST['rate' . $i], null, null,
       // User::percent_dec());
     }
     Row::end();
   }
   Table::end(1);
-  submit_add_or_update_center($selected_id == -1, '', 'both');
-  end_form();
+  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Form::end();
   Page::end();
 
 

@@ -58,7 +58,7 @@
   }
   $sql    = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_id";
   $result = DB::query($sql, "could not get recurrent invoices");
-  start_form();
+  Form::start();
   Table::start('tablestyle grid width70');
   $th = array(
     _("Description"),
@@ -94,14 +94,14 @@
     Cell::label($begin);
     Cell::label($end);
     Cell::label($last_sent);
-    edit_button_cell("Edit" . $myrow["id"], _("Edit"));
-    delete_button_cell("Delete" . $myrow["id"], _("Delete"));
+    Form::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
+    Form::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     Row::end();
   }
   Table::end();
-  end_form();
+  Form::end();
   echo '<br>';
-  start_form();
+  Form::start();
   Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
@@ -118,9 +118,9 @@
       $_POST['begin']       = Dates::sql2date($myrow["begin"]);
       $_POST['end']         = Dates::sql2date($myrow["end"]);
     }
-    hidden("selected_id", $selected_id);
+    Form::hidden("selected_id", $selected_id);
   }
-  text_row_ex(_("Description:"), 'description', 50);
+   Form::textRowEx(_("Description:"), 'description', 50);
   Sales_UI::templates_row(_("Template:"), 'order_no');
   Debtor::row(_("Customer:"), 'debtor_id', NULL, " ", TRUE);
   if ($_POST['debtor_id'] > 0) {
@@ -128,11 +128,11 @@
   } else {
     Sales_UI::groups_row(_("Sales Group:"), 'group_no', NULL, " ");
   }
-  small_amount_row(_("Days:"), 'days', 0, NULL, NULL, 0);
-  small_amount_row(_("Monthly:"), 'monthly', 0, NULL, NULL, 0);
-  date_row(_("Begin:"), 'begin');
-  date_row(_("End:"), 'end', NULL, NULL, 0, 0, 5);
+   Form::SmallAmountRow(_("Days:"), 'days', 0, NULL, NULL, 0);
+   Form::SmallAmountRow(_("Monthly:"), 'monthly', 0, NULL, NULL, 0);
+   Form::dateRow(_("Begin:"), 'begin');
+   Form::dateRow(_("End:"), 'end', NULL, NULL, 0, 0, 5);
   Table::end(1);
-  submit_add_or_update_center($selected_id == -1, '', 'both');
-  end_form();
+  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Form::end();
   Page::end();

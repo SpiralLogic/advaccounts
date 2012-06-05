@@ -65,12 +65,12 @@ HTML;
     protected $bank
       = <<<HTML
 				 <h3><a href="#">Banking</a></h3>
-		 <div>
-		 <a href="/gl/gl_bank.php?NewPayment=Yes">Payment</a>
-		 <a href="/gl/gl_bank.php?NewDeposit=Yes">Deposit</a>
-		 <a href="/gl/bank_account_reconcile.php?">Reconcile</a>
-		 <a href="/gl/undeposited_funds.php?">Undeposited</a>
-		 </div>
+		 <div><ul>
+		 <li><a href="/gl/gl_bank.php?NewPayment=Yes">Payment</a></li>
+		 <li><a href="/gl/gl_bank.php?NewDeposit=Yes">Deposit</a></li>
+		 <li><a href="/gl/bank_account_reconcile.php?">Reconcile</a></li>
+		 <li><a href="/gl/undeposited_funds.php?">Undeposited</a></li>
+		 </ul></div>
 HTML;
     /**
      * @var string
@@ -78,12 +78,12 @@ HTML;
     protected $sales
       = <<<HTML
 <h3><a href="#">Create</a></h3>
-		 <div>
-		 <a href="/sales/sales_order_entry.php?type=32">Quote</a>
-		 <a href="/sales/sales_order_entry.php?New=30">Order</a>
-		 <a href="/sales/sales_order_entry.php?New=0">Direct Invoice</a>
-		 <a href="/purchases/po_entry_items.php?New=0">Purchase Order</a>
-		 </div>
+		 <div><ul>
+		 <li><a href="/sales/sales_order_entry.php?type=32">Quote</a></li>
+		 <li><a href="/sales/sales_order_entry.php?New=30">Order</a></li>
+		 <li><a href="/sales/sales_order_entry.php?New=0">Direct Invoice</a></li>
+		 <li><a href="/purchases/po_entry_items.php?New=0">Purchase Order</a></li>
+		 </ul></div>
 HTML;
     static function render() {
       $sidemenu = new static;

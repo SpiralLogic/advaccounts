@@ -146,16 +146,16 @@
       $dim = DB_Company::get_pref('use_dimension');
       if ($dim >= 1) {
         Dimensions::cells(NULL, 'dimension_id', NULL, TRUE, " ", FALSE, 1);
-        hidden('dimension_id', 0);
+        Form::hidden('dimension_id', 0);
       }
       if ($dim > 1) {
         Dimensions::cells(NULL, 'dimension2_id', NULL, TRUE, " ", FALSE, 2);
-        hidden('dimension2_id', 0);
+        Form::hidden('dimension2_id', 0);
       }
-      textarea_cells(NULL, 'memo_', NULL, 50, 1);
-      amount_cells(NULL, 'amount');
-      submit_cells('AddGLCodeToTrans', _("Add"), "", _('Add GL Line'), TRUE);
-      submit_cells('ClearFields', _("Reset"), "", _("Clear all GL entry fields"), TRUE);
+       Form::textareaCells(NULL, 'memo_', NULL, 50, 1);
+       Form::amountCells(NULL, 'amount');
+      Form::submitCells('AddGLCodeToTrans', _("Add"), "", _('Add GL Line'), TRUE);
+      Form::submitCells('ClearFields', _("Reset"), "", _("Clear all GL entry fields"), TRUE);
       Row::end();
     }
 
@@ -190,8 +190,8 @@
           echo "<div style='float:right;'>";
           echo _("Quick Entry:") . "&nbsp;";
           echo GL_QuickEntry::select('qid', NULL, QE_SUPPINV, TRUE);
-          $qid = GL_QuickEntry::get(get_post('qid'));
-          if (list_updated('qid')) {
+          $qid = GL_QuickEntry::get(Form::getPost('qid'));
+          if (Form::isListUpdated('qid')) {
             unset($_POST['total_amount']); // enable default
             Ajax::i()->activate('total_amount');
           }
@@ -199,7 +199,7 @@
           $amount = Validation::input_num('total_amount', $qid['base_amount']);
           $dec = User::price_dec();
           echo "<input class='amount font7' type='text' name='total_amount' maxlength='12' data-aspect=fallback'$dec' value='$amount'>&nbsp;";
-          submit('go', _("Go"), TRUE, FALSE, TRUE);
+          Form::submit('go', _("Go"), TRUE, FALSE, TRUE);
           echo "</div>";
         }
       }
@@ -243,7 +243,7 @@
           Cell::label($entered_gl_code->memo_);
           Cell::amount($entered_gl_code->amount, TRUE);
           if ($mode == 1) {
-            delete_button_cell("Delete2" . $entered_gl_code->counter, _("Delete"), _('Remove line from document'));
+            Form::buttonDeleteCell("Delete2" . $entered_gl_code->counter, _("Delete"), _('Remove line from document'));
             Cell::label("");
           }
           Row::end();

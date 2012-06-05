@@ -6,6 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 ;
+//noinspection JSUnusedLocalSymbols
 (function (window, $, undefined) {
 	var $current, Searchboxtimeout, menuTimeout, Adv = window.Adv, sidemenu = {}, searchInput = $('<input/>')
 	 .attr({type:'text', value:'', size:14, maxlength:18}).data({'id':'', url:''}), $search = $("#search"), $quickCustomer = $('#quickCustomer'), $quickSupplier = $('#quickSupplier');
@@ -39,7 +40,7 @@
 			$wrapper.html(data);
 			Adv.showStatus({html:$('.msgbox').detach().html()});
 		};
-		$search.delegate("li", "click", function (event) {
+		$search.delegate("li", "click", function () {
 			searchInput.trigger('blur');
 			$current = $(this).hide();
 			$this.sidemenuOff();

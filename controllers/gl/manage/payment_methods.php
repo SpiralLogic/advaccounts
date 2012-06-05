@@ -59,28 +59,28 @@
     $_POST['undeposited'] = $_POST['name'] = '';
   }
   /* Always show the list of accounts */
-  start_form();
+  Form::start();
   Table::start('tablestyle grid width80');
   $sql = "SELECT * FROM payment_methods";
-  if (!check_value('show_inactive')) {
+  if (!Form::hasPost('show_inactive')) {
     $sql .= " AND !inactive";
   }
   $sql .= " ORDER BY name";
   $result = DB::query($sql, "could not get payment methods");
   $th     = array(_("Payment Method"), _("Goes To Undeposited"), '', '');
-  inactive_control_column($th);
+   Form::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
 
     Cell::label($myrow["name"], ' class="nowrap"');
     Cell::label($myrow["undeposited"], ' class="nowrap"');
-    inactive_control_cell($myrow["id"], $myrow["inactive"], 'payment_methods', 'id');
-    edit_button_cell("Edit" . $myrow["id"], _("Edit"));
-    delete_button_cell("Delete" . $myrow["id"], _("Delete"));
+     Form::inactiveControlCell($myrow["id"], $myrow["inactive"], 'payment_methods', 'id');
+    Form::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
+    Form::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     Row::end();
   }
-  inactive_control_row($th);
+   Form::inactiveControlRow($th);
   Table::end(1);
   $is_editing = $selected_id != -1;
   Table::start('tablestyle2');
@@ -91,12 +91,12 @@
       $_POST['undeposited'] = $myrow["undeposited"];
       $_POST['inactive']    = $myrow["inactive"];
     }
-    hidden('id', $selected_id);
+    Form::hidden('id', $selected_id);
     JS::set_focus('name');
   }
-  text_row(_("Payment Method Name:"), 'name', null, 50, 100);
-  yesno_list_row(_("Goes to Undeposited Funds:"), 'undeposited');
+   Form::textRow(_("Payment Method Name:"), 'name', null, 50, 100);
+   Form::yesnoListRow(_("Goes to Undeposited Funds:"), 'undeposited');
   Table::end(1);
-  submit_add_or_update_center($selected_id == -1, '', 'both');
-  end_form();
+  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Form::end();
   Page::end();

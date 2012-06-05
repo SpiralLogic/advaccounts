@@ -135,7 +135,7 @@
      */
     public static function select($name, $value = NULL, $spec_opt = FALSE, $submit_on_change = FALSE) {
       global $systypes_array;
-      return array_selector($name, $value, $systypes_array, array(
+      return Form::arraySelect($name, $value, $systypes_array, array(
         'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => FALSE,
       ));
     }

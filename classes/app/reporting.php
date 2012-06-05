@@ -263,7 +263,7 @@ JS;
       }
       $pars = Display::access_string($link_text);
       if (User::graphic_links() && $icon) {
-        $pars[0] = set_icon($icon, $pars[0]);
+        $pars[0] = Form::setIcon($icon, $pars[0]);
       }
       return "<a target='_blank' href='" . e($url) . "' $id $class $pars[1]>$pars[0]</a>";
     }

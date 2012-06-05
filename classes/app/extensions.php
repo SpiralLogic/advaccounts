@@ -83,7 +83,7 @@
         $items[] = sprintf(_("Activated for '%s'"), $comp['name']);
       }
 
-      return array_selector($name, $value, $items, array(
+      return Form::arraySelect($name, $value, $items, array(
                                                         'spec_option'   => _("Installed on system"),
                                                         'spec_id'       => -1,
                                                         'select_submit' => $submit_on_change,

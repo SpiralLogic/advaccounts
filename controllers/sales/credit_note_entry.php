@@ -26,9 +26,9 @@
   Page::start($_SESSION['page_title'], SA_SALESCREDIT);
   Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
   Validation::check(Validation::BRANCHES_ACTIVE, _("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
-  if (list_updated('branch_id')) {
+  if (Form::isListUpdated('branch_id')) {
     // when branch is selected via external editor also customer can change
-    $br                   = Sales_Branch::get(get_post('branch_id'));
+    $br                   = Sales_Branch::get(Form::getPost('branch_id'));
     $_POST['customer_id'] = $br['debtor_id'];
     Ajax::i()->activate('customer_id');
   }
@@ -50,12 +50,12 @@
     Orders::session_delete($_POST['order_id']);
     $order = handle_new_credit($order_no);
   }
-  $id = find_submit(MODE_DELETE);
+  $id = Form::findPostPrefix(MODE_DELETE);
   if ($id != -1) {
     $order->remove_from_order($line_no);
     Item_Line::start_focus('_stock_id_edit');
   }
-  if (isset($_POST[Orders::ADD_ITEM]) && check_item_data()) {
+  if (isset($_POST[Orders::ADD_LINE]) && check_item_data()) {
     $order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
     Item_Line::start_focus('_stock_id_edit');
   }
@@ -65,7 +65,7 @@
     }
     Item_Line::start_focus('_stock_id_edit');
   }
-  if (isset($_POST['CancelItemChanges'])) {
+  if (isset($_POST['cancelItem'])) {
     Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_POST['ProcessCredit']) && can_process($order)) {
@@ -82,8 +82,8 @@
     Dates::new_doc_date($credit->document_date);
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$credit_no");
   } /*end of process credit note */
-  start_form();
-  hidden('order_id', $_POST['order_id']);
+  Form::start();
+  Form::hidden('order_id', $_POST['order_id']);
   $customer_error = Sales_Credit::header($order);
   if ($customer_error == "") {
     Table::start('tables_style2 width90 pad10');
@@ -95,10 +95,10 @@
   } else {
     Event::error($customer_error);
   }
-  submit_center_first(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
-  submit_center_last('ProcessCredit', _("Process Credit Note"), '', false);
+  Form::submitCenterBegin(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
+  Form::submitCenterEnd('ProcessCredit', _("Process Credit Note"), '', false);
   echo "</tr></table></div>";
-  end_form();
+  Form::end();
   Page::end();
   /***
    * @param $order

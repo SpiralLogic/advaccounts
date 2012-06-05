@@ -151,8 +151,8 @@
         $this->amount      = $trans["Total"];
         $this->date_       = Dates::sql2date($trans["tran_date"]);
       } else {
-        $this->person_id = get_post($this->person_type ? 'supplier_id' : 'customer_id');
-        $this->date_     = get_post($this->person_type ? 'DatePaid' : 'DateBanked', Dates::today());
+        $this->person_id = Form::getPost($this->person_type ? 'supplier_id' : 'customer_id');
+        $this->date_     = Form::getPost($this->person_type ? 'DatePaid' : 'DateBanked', Dates::today());
       }
       /* Now populate the array of possible (and previous actual) allocations
                                           for this customer/supplier. First get the transactions that have
@@ -252,11 +252,11 @@
           Cell::amount($alloc_item->amount);
           Cell::amount($alloc_item->amount_allocated);
           $_POST['amount' . $counter] = Num::price_format($alloc_item->current_allocated + Input::post('amount' . $counter, Input::NUMERIC));
-          amount_cells(null, "amount" . $counter, Num::price_format('amount' . $counter));
+           Form::amountCells(null, "amount" . $counter, Num::price_format('amount' . $counter));
           $un_allocated = $alloc_item->amount - $alloc_item->amount_allocated;
           Cell::amount($un_allocated, false, '');
           Cell::label("<a href='#' name=Alloc$counter class='button allocateAll'>" . _("All") . "</a>");
-          Cell::label("<a href='#' name=DeAll$counter class='button allocateNone'>" . _("None") . "</a>" . hidden("un_allocated" . $counter, Num::price_format($un_allocated), false));
+          Cell::label("<a href='#' name=DeAll$counter class='button allocateNone'>" . _("None") . "</a>" . Form::hidden("un_allocated" . $counter, Num::price_format($un_allocated), false));
           Row::end();
           $total_allocated += Validation::input_num('amount' . $counter);
           $counter++;
@@ -279,7 +279,7 @@
         }
         Table::end(1);
       }
-      hidden('TotalNumberOfAllocs', $counter);
+      Form::hidden('TotalNumberOfAllocs', $counter);
     }
     /**
      * @static

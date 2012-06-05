@@ -9,12 +9,12 @@
      **/
 
 
-  if (get_post('view')) {
-    if (!get_post('backups')) {
+  if (Form::getPost('view')) {
+    if (!Form::getPost('backups')) {
       Event::error(_('Select backup file first.'));
     }
     else {
-      $filename = BACKUP_PATH . get_post('backups');
+      $filename = BACKUP_PATH . Form::getPost('backups');
       if (Ajax::in_ajax()) {
         Ajax::i()->popup($filename);
       }
@@ -28,8 +28,8 @@
     }
   }
   ;
-  if (get_post('download')) {
-    download_file(BACKUP_PATH . get_post('backups'));
+  if (Form::getPost('download')) {
+    download_file(BACKUP_PATH . Form::getPost('backups'));
     exit;
   }
   Page::start(_($help_context = "Backup and Restore Database"), SA_BACKUP);
@@ -37,19 +37,19 @@
   $db_name = User::i()->company;
   $connections = Config::get_all('db');
   $conn = $connections[$db_name];
-  if (get_post('creat')) {
-    generate_backup($conn, get_post('comp'), get_post('comments'));
+  if (Form::getPost('creat')) {
+    generate_backup($conn, Form::getPost('comp'), Form::getPost('comments'));
     Ajax::i()->activate('backups');
   }
   ;
-  if (get_post('restore')) {
-    if (DB_Utils::import(BACKUP_PATH . get_post('backups'), $conn)) {
+  if (Form::getPost('restore')) {
+    if (DB_Utils::import(BACKUP_PATH . Form::getPost('backups'), $conn)) {
       Event::success(_("Restore backup completed."));
     }
   }
-  if (get_post('deldump')) {
-    if (unlink(BACKUP_PATH . get_post('backups'))) {
-      Event::notice(_("File successfully deleted.") . " " . _("Filename") . ": " . get_post('backups'));
+  if (Form::getPost('deldump')) {
+    if (unlink(BACKUP_PATH . Form::getPost('backups'))) {
+      Event::notice(_("File successfully deleted.") . " " . _("Filename") . ": " . Form::getPost('backups'));
       Ajax::i()->activate('backups');
     }
     else {
@@ -57,7 +57,7 @@
     }
   }
   ;
-  if (get_post('upload')) {
+  if (Form::getPost('upload')) {
     $tmpname = $_FILES['uploadfile']['tmp_name'];
     $fname = $_FILES['uploadfile']['name'];
     if (!preg_match("/.sql(.zip|.gz)?$/", $fname)) {
@@ -72,34 +72,34 @@
       Event::error(_("File was not uploaded into the system."));
     }
   }
-  start_form(TRUE);
+  Form::start(TRUE);
   Table::startOuter('tablestyle2');
   Table::section(1);
   Table::sectionTitle(_("Create backup"));
-  textarea_row(_("Comments:"), 'comments', NULL, 30, 8);
+   Form::textareaRow(_("Comments:"), 'comments', NULL, 30, 8);
   compress_list_row(_("Compression:"), 'comp');
-  submit_row('creat', _("Create Backup"), FALSE, "colspan=2 class='center'", '', 'process');
+  Form::submitRow('creat', _("Create Backup"), FALSE, "colspan=2 class='center'", '', 'process');
   Table::section(2);
   Table::sectionTitle(_("Backup scripts maintenance"));
   Row::start();
   echo "<td style='padding-left:20px'class='left'>" . get_backup_file_combo() . "</td>";
   echo "<td class='top'>";
   Table::start();
-  submit_row('view', _("View Backup"), FALSE, '', '', TRUE);
-  submit_row('download', _("Download Backup"), FALSE, '', '', FALSE);
-  submit_row('restore', _("Restore Backup"), FALSE, '', '', 'process');
-  submit_js_confirm('restore', _("You are about to restore database from backup file.\nDo you want to continue?"));
-  submit_row('deldump', _("Delete Backup"), FALSE, '', '', TRUE);
+  Form::submitRow('view', _("View Backup"), FALSE, '', '', TRUE);
+  Form::submitRow('download', _("Download Backup"), FALSE, '', '', FALSE);
+  Form::submitRow('restore', _("Restore Backup"), FALSE, '', '', 'process');
+  Form::submitConfirm('restore', _("You are about to restore database from backup file.\nDo you want to continue?"));
+  Form::submitRow('deldump', _("Delete Backup"), FALSE, '', '', TRUE);
   // don't use 'delete' name or IE js errors appear
-  submit_js_confirm('deldump', sprintf(_("You are about to remove selected backup file.\nDo you want to continue ?")));
+  Form::submitConfirm('deldump', sprintf(_("You are about to remove selected backup file.\nDo you want to continue ?")));
   Table::end();
   echo "</td>";
   Row::end();
   Row::start();
   echo "<td style='padding-left:20px' class='left'><input name='uploadfile' type='file'></td>";
-  submit_cells('upload', _("Upload file"), '', '', TRUE);
+  Form::submitCells('upload', _("Upload file"), '', '', TRUE);
   Row::end();
   Table::endOuter();
-  end_form();
+  Form::end();
   Page::end();
 

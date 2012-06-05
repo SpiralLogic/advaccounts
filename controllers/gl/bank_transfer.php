@@ -32,28 +32,28 @@
   function gl_payment_controls()
   {
     $home_currency = Bank_Currency::for_company();
-    start_form();
+    Form::start();
     Table::startOuter('tablestyle2');
     Table::section(1);
     Bank_Account::row(_("From Account:"), 'FromBankAccount', null, true);
     Bank_Account::row(_("To Account:"), 'ToBankAccount', null, true);
-    date_row(_("Transfer Date:"), 'DatePaid', '', null, 0, 0, 0, null, true);
+     Form::dateRow(_("Transfer Date:"), 'DatePaid', '', null, 0, 0, 0, null, true);
     $from_currency = Bank_Currency::for_company($_POST['FromBankAccount']);
     $to_currency   = Bank_Currency::for_company($_POST['ToBankAccount']);
     if ($from_currency != "" && $to_currency != "" && $from_currency != $to_currency) {
-      amount_row(_("Amount:"), 'amount', null, null, $from_currency);
-      amount_row(_("Bank Charge:"), 'charge', null, null, $from_currency);
+       Form::AmountRow(_("Amount:"), 'amount', null, null, $from_currency);
+       Form::AmountRow(_("Bank Charge:"), 'charge', null, null, $from_currency);
       GL_ExchangeRate::display($from_currency, $to_currency, $_POST['DatePaid']);
     } else {
-      amount_row(_("Amount:"), 'amount');
-      amount_row(_("Bank Charge:"), 'charge');
+       Form::AmountRow(_("Amount:"), 'amount');
+       Form::AmountRow(_("Bank Charge:"), 'charge');
     }
     Table::section(2);
-    ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_BANKTRANSFER));
-    textarea_row(_("Memo:"), 'memo_', null, 40, 4);
+     Form::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_BANKTRANSFER));
+     Form::textareaRow(_("Memo:"), 'memo_', null, 40, 4);
     Table::endOuter(1); // outer table
-    submit_center('AddPayment', _("Enter Transfer"), true, '', 'default');
-    end_form();
+    Form::submitCenter('AddPayment', _("Enter Transfer"), true, '', 'default');
+    Form::end();
   }
 
   /**

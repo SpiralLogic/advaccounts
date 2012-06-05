@@ -290,9 +290,9 @@
       }
       if ($tax_correcting) {
         Cell::label(_("Tax Correction"), "colspan=$columns style='background:inherit; text-align:right; width:90%'");
-        small_amount_cells(null, 'ChgTax', Num::price_format(get_post('ChgTax'), User::price_dec()));
+         Form::amountCellsSmall(null, 'ChgTax', Num::price_format(Form::getPost('ChgTax'), User::price_dec()));
         Row::end();
-        $total += get_post('ChgTax');
+        $total += Form::getPost('ChgTax');
       }
 
       return $total;

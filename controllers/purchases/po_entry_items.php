@@ -44,7 +44,7 @@
     Orders::session_delete($_POST['order_id']);
     $order = create_order($order_no);
   }
-  $id = find_submit(MODE_DELETE);
+  $id = Form::findPostPrefix(MODE_DELETE);
   if ($id != -1 && $order) {
     if ($order->some_already_received($id) == 0) {
       $order->remove_from_order($id);
@@ -147,32 +147,32 @@
       echo "<div class='center'><iframe src='/purchases/inquiry/po_search_completed.php?" . LOC_NOT_FAXED_YET . "=1&frame=1' class='width70' style='height:300px' frameborder='0'></iframe></div>";
     }
   }
-  start_form();
+  Form::start();
   echo "<br>";
-  hidden('order_id');
+  Form::hidden('order_id');
   $order->header();
   $order->display_items();
   Table::start('tablestyle2');
-  textarea_row(_("Memo:"), 'Comments', NULL, 70, 4);
+   Form::textareaRow(_("Memo:"), 'Comments', NULL, 70, 4);
   Table::end(1);
   Display::div_start('controls', 'items_table');
   if ($order->order_has_items()) {
-    submit_center_first(Orders::CANCEL, _("Delete This Order"));
-    submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
+    Form::submitCenterBegin(Orders::CANCEL, _("Delete This Order"));
+    Form::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
     if ($order->order_no) {
-      submit_center_last(COMMIT, _("Update Order"), '', 'default');
+      Form::submitCenterEnd(COMMIT, _("Update Order"), '', 'default');
     }
     else {
-      submit_center_last(COMMIT, _("Place Order"), '', 'default');
+      Form::submitCenterEnd(COMMIT, _("Place Order"), '', 'default');
     }
   }
   else {
-    submit_js_confirm(Orders::CANCEL, _('You are about to void this Document.\nDo you want to continue?'));
-    submit_center_first(Orders::CANCEL, _("Delete This Order"), TRUE, FALSE, ICON_DELETE);
-    submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
+    Form::submitConfirm(Orders::CANCEL, _('You are about to void this Document.\nDo you want to continue?'));
+    Form::submitCenterBegin(Orders::CANCEL, _("Delete This Order"), TRUE, FALSE, ICON_DELETE);
+    Form::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
   }
   Display::div_end();
-  end_form();
+  Form::end();
   Item::addEditDialog();
   if (isset($order->supplier_id)) {
     Creditor::addInfoDialog("td[name=\"supplier_name\"]", $order->supplier_details['supplier_id']);
@@ -267,7 +267,7 @@
       Event::error(_("You are not currently editing an order."));
       Page::footer_exit();
     }
-    if (!get_post('supplier_id')) {
+    if (!Form::getPost('supplier_id')) {
       Event::error(_("There is no supplier selected."));
       JS::set_focus('supplier_id');
       return FALSE;
@@ -277,7 +277,7 @@
       JS::set_focus('OrderDate');
       return FALSE;
     }
-    if (get_post('delivery_address') == '') {
+    if (Form::getPost('delivery_address') == '') {
       Event::error(_("There is no delivery address specified."));
       JS::set_focus('delivery_address');
       return FALSE;
@@ -287,7 +287,7 @@
       JS::set_focus('freight');
       return FALSE;
     }
-    if (get_post('location') == '') {
+    if (Form::getPost('location') == '') {
       Event::error(_("There is no location specified to move any items into."));
       JS::set_focus('location');
       return FALSE;
@@ -297,7 +297,7 @@
       return FALSE;
     }
     if (!$order->order_no) {
-      if (!Ref::is_valid(get_post('ref'))) {
+      if (!Ref::is_valid(Form::getPost('ref'))) {
         Event::error(_("There is no reference entered for this purchase order."));
         JS::set_focus('ref');
         return FALSE;

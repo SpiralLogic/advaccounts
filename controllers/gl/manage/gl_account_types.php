@@ -35,11 +35,11 @@
     $_POST['id'] = $_POST['name'] = '';
     unset($_POST['parent'], $_POST['class_id']);
   }
-  $result = GL_Type::get_all(check_value('show_inactive'));
-  start_form();
+  $result = GL_Type::get_all(Form::hasPost('show_inactive'));
+  Form::start();
   Table::start('tablestyle grid');
   $th = array(_("ID"), _("Name"), _("Subgroup Of"), _("Class Type"), "", "");
-  inactive_control_column($th);
+   Form::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
@@ -53,12 +53,12 @@
     Cell::label($myrow["name"]);
     Cell::label($parent_text);
     Cell::label($bs_text);
-    inactive_control_cell($myrow["id"], $myrow["inactive"], 'chart_types', 'id');
-    edit_button_cell("Edit" . $myrow["id"], _("Edit"));
-    delete_button_cell("Delete" . $myrow["id"], _("Delete"));
+     Form::inactiveControlCell($myrow["id"], $myrow["inactive"], 'chart_types', 'id');
+    Form::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
+    Form::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     Row::end();
   }
-  inactive_control_row($th);
+   Form::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != -1) {
@@ -69,19 +69,19 @@
       $_POST['name']     = $myrow["name"];
       $_POST['parent']   = $myrow["parent"];
       $_POST['class_id'] = $myrow["class_id"];
-      hidden('selected_id', $selected_id);
+      Form::hidden('selected_id', $selected_id);
     }
-    hidden('id');
+    Form::hidden('id');
     Row::label(_("ID:"), $_POST['id']);
   } else {
-    text_row_ex(_("ID:"), 'id', 10);
+     Form::textRowEx(_("ID:"), 'id', 10);
   }
-  text_row_ex(_("Name:"), 'name', 50);
+   Form::textRowEx(_("Name:"), 'name', 50);
   GL_Type::row(_("Subgroup Of:"), 'parent', null, _("None"), true);
   GL_Class::row(_("Class Type:"), 'class_id', null);
   Table::end(1);
-  submit_add_or_update_center($selected_id == -1, '', 'both');
-  end_form();
+  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Form::end();
   Page::end();
   /**
    * @param $selected_id

@@ -58,10 +58,10 @@
     $selected_id = -1;
     unset($_POST);
   }
-  if (list_updated('stock_id')) {
+  if (Form::isListUpdated('stock_id')) {
     Ajax::i()->activate('_page_body');
   }
-  start_form();
+  Form::start();
   if (!Input::post('stock_id')) {
     Session::i()->setGlobal('stock_id',$_POST['stock_id']);
   }
@@ -89,8 +89,8 @@
     Cell::label($units);
     Cell::label($myrow["description"]);
     Cell::label($myrow["cat_name"]);
-    edit_button_cell("Edit" . $myrow['id'], _("Edit"));
-    edit_button_cell("Delete" . $myrow['id'], _("Delete"));
+    Form::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
+    Form::buttonEditCell("Delete" . $myrow['id'], _("Delete"));
     Row::end();
     $j++;
     If ($j == 12) {
@@ -108,7 +108,7 @@
       $_POST['description'] = $myrow["description"];
       $_POST['category_id'] = $myrow["category_id"];
     }
-    hidden('selected_id', $selected_id);
+    Form::hidden('selected_id', $selected_id);
   }
   else {
     $_POST['quantity'] = 1;
@@ -117,14 +117,14 @@
   }
   echo "<br>";
   Table::start('tablestyle2');
-  hidden('code_id', $selected_id);
-  text_row(_("UPC/EAN code:"), 'item_code', NULL, 20, 21);
-  qty_row(_("Quantity:"), 'quantity', NULL, '', $units, $dec);
-  text_row(_("Description:"), 'description', NULL, 50, 200);
+  Form::hidden('code_id', $selected_id);
+   Form::textRow(_("UPC/EAN code:"), 'item_code', NULL, 20, 21);
+   Form::qtyRow(_("Quantity:"), 'quantity', NULL, '', $units, $dec);
+   Form::textRow(_("Description:"), 'description', NULL, 50, 200);
   Item_Category::row(_("Category:"), 'category_id', NULL);
   Table::end(1);
-  submit_add_or_update_center($selected_id == -1, '', 'both');
-  end_form();
+  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Form::end();
   Page::end();
 
 

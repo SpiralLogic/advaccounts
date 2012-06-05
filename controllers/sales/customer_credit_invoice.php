@@ -87,14 +87,14 @@
     Orders::session_delete($_POST['order_id']);
     create_order($type, $order_no);
   }
-  if (get_post('Update')) {
+  if (Form::getPost('Update')) {
     Ajax::i()->activate('credit_items');
   }
   display_credit_items();
   display_credit_options();
-  submit_center_first('Update', _("Update"), _('Update credit value for quantities entered'), false, ICON_UPDATE);
-  submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
-  submit_center_last('ProcessCredit', _("Process Credit Note"), true, '', 'default');
+  Form::submitCenterBegin('Update', _("Update"), _('Update credit value for quantities entered'), false, ICON_UPDATE);
+  Form::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
+  Form::submitCenterEnd('ProcessCredit', _("Process Credit Note"), true, '', 'default');
   Page::end();
   /**
    * @return int
@@ -197,8 +197,8 @@
 
   function display_credit_items()
   {
-    start_form();
-    hidden('order_id');
+    Form::start();
+    Form::hidden('order_id');
     Table::start('tablestyle2 width90 pad5');
     echo "<tr><td>"; // outer table
     Table::start('tablestyle width100');
@@ -209,7 +209,7 @@
     Row::end();
     Row::start();
     if (Orders::session_get($_POST['order_id'])->trans_no == 0) {
-      ref_cells(_("Reference"), 'ref', '', null, "class='tablerowhead'");
+       Form::refCells(_("Reference"), 'ref', '', null, "class='tablerowhead'");
     } else {
       Cell::labels(_("Reference"), Orders::session_get($_POST['order_id'])->reference, "class='tablerowhead'");
     }
@@ -228,7 +228,7 @@
     echo "</td><td>"; // outer table
     Table::start('tablestyle width100');
     Row::label(_("Invoice Date"), Orders::session_get($_POST['order_id'])->src_date, "class='tablerowhead'");
-    date_row(_("Credit Note Date"), 'CreditDate', '', Orders::session_get($_POST['order_id'])->trans_no == 0, 0, 0, 0, "class='tablerowhead'");
+     Form::dateRow(_("Credit Note Date"), 'CreditDate', '', Orders::session_get($_POST['order_id'])->trans_no == 0, 0, 0, 0, "class='tablerowhead'");
     Table::end();
     echo "</td></tr>";
     Table::end(1); // outer table
@@ -252,11 +252,11 @@
       }
       //	Item_UI::status_cell($line->stock_id); alternative view
       Cell::label($line->stock_id);
-      text_cells(null, 'Line' . $line_no . 'Desc', $line->description, 30, 50);
+       Form::textCells(null, 'Line' . $line_no . 'Desc', $line->description, 30, 50);
       $dec = Item::qty_dec($line->stock_id);
       Cell::qty($line->quantity, false, $dec);
       Cell::label($line->units);
-      amount_cells(null, 'Line' . $line_no, Num::format($line->qty_dispatched, $dec), null, null, $dec);
+       Form::amountCells(null, 'Line' . $line_no, Num::format($line->qty_dispatched, $dec), null, null, $dec);
       $line_total = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
       Cell::amount($line->price);
       Cell::percent($line->discount_percent * 100);
@@ -269,7 +269,7 @@
     $colspan = 7;
     Row::start();
     Cell::label(_("Credit Shipping Cost"), "colspan=$colspan class='right'");
-    small_amount_cells(null, "ChargeFreightCost", Num::price_format(get_post('ChargeFreightCost', 0)));
+     Form::amountCellsSmall(null, "ChargeFreightCost", Num::price_format(Form::getPost('ChargeFreightCost', 0)));
     Row::end();
     $inv_items_total   = Orders::session_get($_POST['order_id'])->get_items_total_dispatch();
     $display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
@@ -301,7 +301,7 @@
       /* the goods are to be written off to somewhere */
       GL_UI::all_row(_("Write off the cost of the items to"), 'WriteOffGLCode', null);
     }
-    textarea_row(_("Memo"), "CreditText", null, 51, 3);
+     Form::textareaRow(_("Memo"), "CreditText", null, 51, 3);
     echo "</table>";
     Display::div_end();
   }

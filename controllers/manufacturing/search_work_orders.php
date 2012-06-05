@@ -18,10 +18,10 @@
   }
   // Ajax updates
   //
-  if (get_post('SearchOrders')) {
+  if (Form::getPost('SearchOrders')) {
     Ajax::i()->activate('orders_tbl');
-  } elseif (get_post('_OrderNumber_changed')) {
-    $disable = get_post('OrderNumber') !== '';
+  } elseif (Form::getPost('_OrderNumber_changed')) {
+    $disable = Form::getPost('OrderNumber') !== '';
     Ajax::i()->addDisable(true, 'StockLocation', $disable);
     Ajax::i()->addDisable(true, 'OverdueOnly', $disable);
     Ajax::i()->addDisable(true, 'OpenOnly', $disable);
@@ -36,17 +36,17 @@
   if (isset($_GET["stock_id"])) {
     $_POST['SelectedStockItem'] = $_GET["stock_id"];
   }
-  start_form(false, $_SERVER['DOCUMENT_URI'] . "?outstanding_only=$outstanding_only");
+  Form::start(false, $_SERVER['DOCUMENT_URI'] . "?outstanding_only=$outstanding_only");
   Table::start('tablestyle_noborder');
   Row::start();
-  ref_cells(_("Reference:"), 'OrderNumber', '', null, '', true);
+   Form::refCells(_("Reference:"), 'OrderNumber', '', null, '', true);
   Inv_Location::cells(_("at Location:"), 'StockLocation', null, true);
-  check_cells(_("Only Overdue:"), 'OverdueOnly', null);
+   Form::checkCells(_("Only Overdue:"), 'OverdueOnly', null);
   if ($outstanding_only == 0) {
-    check_cells(_("Only Open:"), 'OpenOnly', null);
+     Form::checkCells(_("Only Open:"), 'OpenOnly', null);
   }
   Item_UI::manufactured_cells(_("for item:"), 'SelectedStockItem', null, true);
-  submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
+  Form::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
   Row::end();
   Table::end();
   /**
@@ -191,7 +191,7 @@
     WHERE workorder.stock_id=item.stock_id
         AND workorder.loc_code=location.loc_code
         AND item.units=unit.abbr";
-  if (check_value('OpenOnly') || $outstanding_only != 0) {
+  if (Form::hasPost('OpenOnly') || $outstanding_only != 0) {
     $sql .= " AND workorder.closed=0";
   }
   if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
@@ -203,7 +203,7 @@
   if (isset($_POST['SelectedStockItem']) && $_POST['SelectedStockItem'] != ALL_TEXT) {
     $sql .= " AND workorder.stock_id=" . DB::quote($_POST['SelectedStockItem']);
   }
-  if (check_value('OverdueOnly')) {
+  if (Form::hasPost('OverdueOnly')) {
     $Today = Dates::date2sql(Dates::today());
     $sql .= " AND workorder.required_by < '$Today' ";
   }
@@ -244,6 +244,6 @@
   $table->set_marker('check_overdue', _("Marked orders are overdue."));
   $table->width = "90%";
   DB_Pager::display($table);
-  end_form();
+  Form::end();
   Page::end();
 

@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Page {
-
+  class Page
+  {
     /** @var \Renderer */
     public $renderer = NULL;
     /**
@@ -61,7 +61,8 @@
      * @param      $title
      * @param bool $index
      */
-    protected function __construct($title, $index = FALSE) {
+    protected function __construct($title, $index = FALSE)
+    {
       $this->is_index = $index;
       $this->title    = $title;
       $this->frame    = isset($_GET['frame']);
@@ -69,7 +70,8 @@
     /**
      * @param $menu
      */
-    protected function init($menu) {
+    protected function init($menu)
+    {
       $this->app      = ADVAccounting::i();
       $this->sel_app  = $this->app->selected;
       $this->ajaxpage = (AJAX_REFERRER || Ajax::in_ajax());
@@ -93,13 +95,14 @@
         echo "<div class='titletext'>$this->title" . (User::hints() ? "<span id='hints' class='floatright'
 										style='display:none'></span>" : '') . "</div>";
       }
-      Security::check_page(static::$security);
+      Security::i()->check_page(static::$security);
       Display::div_start('_page_body');
     }
     /**
 
      */
-    protected function header() {
+    protected function header()
+    {
       $this->header = TRUE;
       JS::open_window(900, 500);
       if (!headers_sent()) {
@@ -122,11 +125,10 @@
     /**
 
      */
-    protected function menu_header() {
+    protected function menu_header()
+    {
       echo "<div class='ajaxmark'><img alt='Ajax Loading' width='25' height='25' id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif'>\n";
-      echo "<div id='top'><p>" . Config::get('db.' . User::i()->company)['company'] . " | " . $_SERVER['SERVER_NAME'] . " | " .
-        User::i()
-          ->name . "</p>\n";
+      echo "<div id='top'><p>" . Config::get('db.' . User::i()->company)['company'] . " | " . $_SERVER['SERVER_NAME'] . " | " . User::i()->name . "</p>\n";
       echo "<ul>\n";
       echo   " <li><a href='" . BASE_URL . "system/display_prefs.php?'>" . _("Preferences") . "</a></li>\n" . " <li><a
 		href='" . BASE_URL . "system/change_current_user_password.php?selected_id=" . User::i()->username . "'>" . _("Change password") . "</a></li>\n";
@@ -143,30 +145,28 @@
      *
      * @return string
      */
-    protected function help_url($context = NULL) {
+    protected function help_url($context = NULL)
+    {
       global $help_context;
       $country = $_SESSION['Language']->code;
       if ($context != NULL) {
         $help_page_url = $context;
-      }
-      elseif (isset($help_context)) {
+      } elseif (isset($help_context)) {
         $help_page_url = $help_context;
-      }
-      else // main menu
+      } else // main menu
       {
         $help_page_url = ADVAccounting::i()->applications[ADVAccounting::i()->selected->id]->help_context;
         $help_page_url = Display::access_string($help_page_url, TRUE);
       }
       return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-        ' ' => '',
-        '/' => '',
-        '&' => 'And'
-      ))) . '&ctxhelp=1&lang=' . $country;
+                                                                                         ' ' => '', '/' => '', '&' => 'And'
+                                                                                    ))) . '&ctxhelp=1&lang=' . $country;
     }
     /**
      * @param $hide_back_link
      */
-    protected function end_page($hide_back_link) {
+    protected function end_page($hide_back_link)
+    {
       if ($this->frame) {
         $hide_back_link = TRUE;
         $this->header   = FALSE;
@@ -180,10 +180,11 @@
     /**
      * @return mixed
      */
-    protected function footer() {
+    protected function footer()
+    {
       $validate = array();
       $this->menu_footer();
-      JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . Ajax::i()->php2js($validate) . ";");
+      JS::beforeload("_focus = '" . Form::getPost('_focus') . "';_validate = " . Ajax::i()->php2js($validate) . ";");
       User::add_js_data();
       echo "</div>";
       if ($this->header && $this->menu) {
@@ -192,8 +193,7 @@
       if (AJAX_REFERRER) {
         JS::render();
         return;
-      }
-      else {
+      } else {
         Messages::show();
       }
       JS::render();
@@ -203,7 +203,8 @@
     /**
 
      */
-    protected function menu_footer() {
+    protected function menu_footer()
+    {
       echo "</div>"; //end wrapper div
       if ($this->menu && !AJAX_REFERRER) {
         echo "<div id='footer'>\n";
@@ -221,7 +222,8 @@
     /**
 
      */
-    protected function display_loaded() {
+    protected function display_loaded()
+    {
       $loaded = Autoloader::getPerf();
       $row    = "<table id='autoloaded'>";
       while ($v1 = array_shift($loaded)) {
@@ -233,7 +235,8 @@
     /**
 
      */
-    protected function renderCSS() {
+    protected function renderCSS()
+    {
       $this->css += class_exists('Config', FALSE) ? \Config::get('assets.css') : array('default.css');
       $path = DS . "themes" . DS . $this->theme . DS;
       $css  = implode(',', $this->css);
@@ -244,7 +247,8 @@
      *
      * @param bool $hide_back_link
      */
-    public static function end($hide_back_link = FALSE) {
+    public static function end($hide_back_link = FALSE)
+    {
       if (static::$i) {
         static::$i->end_page($hide_back_link);
       }
@@ -255,7 +259,8 @@
      * @param      $text
      * @param bool $exit
      */
-    public static function error_exit($text, $exit = TRUE) {
+    public static function error_exit($text, $exit = TRUE)
+    {
       ob_get_clean();
       $page = new static('Fatal Error.', FALSE);
       $page->header();
@@ -272,7 +277,8 @@
      *
      * @return null|Page
      */
-    public static function start($title, $security = SA_OPEN, $no_menu = FALSE, $is_index = FALSE) {
+    public static function start($title, $security = SA_OPEN, $no_menu = FALSE, $is_index = FALSE)
+    {
       static::set_security($security);
       if (static::$i === NULL) {
         static::$i = new static($title, $is_index);
@@ -287,9 +293,10 @@
      *
      * @return array
      */
-    public static function simple_mode($numeric_id = TRUE) {
+    public static function simple_mode($numeric_id = TRUE)
+    {
       $default     = $numeric_id ? -1 : '';
-      $selected_id = get_post('selected_id', $default);
+      $selected_id = Form::getPost('selected_id', $default);
       foreach (array(ADD_ITEM, UPDATE_ITEM, MODE_RESET, MODE_CLONE) as $m) {
         if (isset($_POST[$m])) {
           Ajax::i()->activate('_page_body');
@@ -317,7 +324,8 @@
      *
      * @param bool $file
      */
-    public static function add_css($file = FALSE) {
+    public static function add_css($file = FALSE)
+    {
       static::$i->css[] = $file;
     }
     /**
@@ -325,7 +333,8 @@
      *
      * @param $security
      */
-    public static function set_security($security) {
+    public static function set_security($security)
+    {
       static::$security = $security;
     }
     /**
@@ -337,7 +346,8 @@
      * @static
 
      */
-    public static function footer_exit() {
+    public static function footer_exit()
+    {
       Display::br(2);
       static::$i->end_page(TRUE);
       exit;

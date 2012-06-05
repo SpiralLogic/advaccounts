@@ -17,7 +17,7 @@
     DB::commit();
     Event::success(_("Forms settings have been updated."));
   }
-  start_form();
+  Form::start();
   Table::startOuter('tablestyle2');
   $systypes = SysTypes::get();
   Table::section(1);
@@ -29,10 +29,10 @@
       Table::section(2);
       Table::header($th);
     }
-    ref_row($systypes_array[$type["type_id"]], 'id' . $type["type_id"], '', $type["next_reference"]);
+     Form::refRow($systypes_array[$type["type_id"]], 'id' . $type["type_id"], '', $type["next_reference"]);
   }
   Table::endOuter(1);
-  submit_center('setprefs', _("Update"), true, '', 'default');
-  end_form(2);
+  Form::submitCenter('setprefs', _("Update"), true, '', 'default');
+  Form::end(2);
   Page::end();
 

@@ -84,7 +84,7 @@
     $order->reference = $_POST['ref'];
     $order->memo_     = $_POST['memo_'];
     $order->tran_date = $_POST['date_'];
-    $trans_no         = GL_Journal::write($order, check_value('Reverse'));
+    $trans_no         = GL_Journal::write($order, Form::hasPost('Reverse'));
     $order->clear_items();
     Dates::new_doc_date($_POST['date_']);
     unset($_SESSION['journal_items']);
@@ -94,17 +94,17 @@
       Display::meta_forward($_SERVER['DOCUMENT_URI'], "UpdatedID=$trans_no");
     }
   }
-  $id = find_submit(MODE_DELETE);
+  $id = Form::findPostPrefix(MODE_DELETE);
   if ($id != -1) {
     handle_delete_item($id);
   }
-  if (isset($_POST['AddItem'])) {
+  if (isset($_POST['addLine'])) {
     handle_new_item();
   }
-  if (isset($_POST['UpdateItem'])) {
+  if (isset($_POST['updateItem'])) {
     handle_update_item();
   }
-  if (isset($_POST['CancelItemChanges'])) {
+  if (isset($_POST['cancelItem'])) {
     Item_Line::start_focus('_code_id_edit');
   }
   if (isset($_POST['go'])) {
@@ -113,7 +113,7 @@
     Ajax::i()->activate('total_amount');
     Item_Line::start_focus('_code_id_edit');
   }
-  start_form();
+  Form::start();
   GL_Journal::header($_SESSION['journal_items']);
   Table::start('tables_style2 width90 pad10');
   Row::start();
@@ -123,8 +123,8 @@
   echo "</td>";
   Row::end();
   Table::end(1);
-  submit_center('Process', _("Process Journal Entry"), true, _('Process journal entry only if debits equal to credits'), 'default');
-  end_form();
+  Form::submitCenter('Process', _("Process Journal Entry"), true, _('Process journal entry only if debits equal to credits'), 'default');
+  Form::end();
   Page::end();
   /**
    * @return bool
@@ -161,7 +161,7 @@
 
       return false;
     }
-    if (!Tax_Types::is_tax_gl_unique(get_post('code_id'))) {
+    if (!Tax_Types::is_tax_gl_unique(Form::getPost('code_id'))) {
       Event::error(_("Cannot post to GL account used by more than one tax type."));
       JS::set_focus('code_id');
 
@@ -179,7 +179,7 @@
 
   function handle_update_item()
   {
-    if ($_POST['UpdateItem'] != "" && check_item_data()) {
+    if ($_POST['updateItem'] != "" && check_item_data()) {
       if (Validation::input_num('AmountDebit') > 0) {
         $amount = Validation::input_num('AmountDebit');
       } else {

@@ -67,23 +67,23 @@
     unset($_SESSION['transfer_items']);
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$trans_no");
   } /*end of process credit note */
-  $id = find_submit(MODE_DELETE);
+  $id = Form::findPostPrefix(MODE_DELETE);
   if ($id != -1) {
     handle_delete_item($id);
   }
-  if (isset($_POST['AddItem'])) {
+  if (isset($_POST['addLine'])) {
     handle_new_item();
   }
-  if (isset($_POST['UpdateItem'])) {
+  if (isset($_POST['updateItem'])) {
     handle_update_item();
   }
-  if (isset($_POST['CancelItemChanges'])) {
+  if (isset($_POST['cancelItem'])) {
     Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_GET['NewTransfer']) || !isset($_SESSION['transfer_items'])) {
     handle_new_order();
   }
-  start_form();
+  Form::start();
   Inv_Transfer::header($_SESSION['transfer_items']);
   Table::start('tablesstyle width70 pad10');
   Row::start();
@@ -93,9 +93,9 @@
   echo "</td>";
   Row::end();
   Table::end(1);
-  submit_center_first('Update', _("Update"), '', null);
-  submit_center_last('Process', _("Process Transfer"), '', 'default');
-  end_form();
+  Form::submitCenterBegin('Update', _("Update"), '', null);
+  Form::submitCenterEnd('Process', _("Process Transfer"), '', 'default');
+  Form::end();
   Page::end();
   /**
    * @return bool
@@ -114,7 +114,7 @@
 
   function handle_update_item()
   {
-    if ($_POST['UpdateItem'] != "" && check_item_data()) {
+    if ($_POST['updateItem'] != "" && check_item_data()) {
       $id = $_POST['LineNo'];
       if (!isset($_POST['std_cost'])) {
         $_POST['std_cost'] = $_SESSION['transfer_items']->line_items[$id]->standard_cost;

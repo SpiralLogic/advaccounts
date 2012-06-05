@@ -44,11 +44,11 @@
     protected function before()
     {
       $this->order = Orders::session_get() ? : NULL;
-      Security::set_page((!$this->order) ? : $this->order->trans_type, $this->typeSecurity, $this->processSecurity);
+      Security::i()->set_page((!$this->order) ? : $this->order->trans_type, $this->typeSecurity, $this->processSecurity);
       JS::open_window(900, 500);
       if (Input::get('customer_id', Input::NUMERIC)) {
-        $_POST[Orders::CANCEL_CHANGES] = TRUE;
-        $_POST['customer_id']          = $_GET['customer_id'];
+        $this->action         = Orders::CANCEL_CHANGES;
+        $_POST['customer_id'] = $_GET['customer_id'];
         $this->ajax->activate('customer_id');
       }
       $this->type = Input::get('type');
@@ -73,133 +73,114 @@
     public function index()
     {
       Page::start($this->title);
-      if (list_updated('branch_id')) {
-        // when branch is selected via external editor also customer can change
-        $br                   = Sales_Branch::get(get_post('branch_id'));
-        $_POST['customer_id'] = $br['debtor_id'];
-        $this->ajax->activate('customer_id');
-      }
+      $this->checkBranch();
       if (isset($_GET[REMOVED])) {
         $this->removed();
       }
-      //--------------- --------------------------------------------------------------
-      if (isset($_POST[Orders::PROCESS_ORDER]) && $this->can_process($this->order)) {
-        $this->process();
-      }
-      if (isset($_POST['update'])) {
-        $this->ajax->activate('items_table');
-      }
-      if (isset($_POST[Orders::CANCEL_CHANGES])) {
-        $this->cancelChanges();
-      }
-      if (isset($_POST[Orders::DELETE_ORDER])) {
-        $this->delete();
-      }
-      $id = find_submit(MODE_DELETE);
-      if ($id != -1) {
-        if ($this->order->some_already_delivered($id) == 0) {
-          $this->order->remove_from_order($id);
-        } else {
-          Event::error(_("This item cannot be deleted because some of it has already been delivered."));
-        }
-        Item_Line::start_focus('_stock_id_edit');
-      }
-      if (isset($_POST[Orders::UPDATE_ITEM])) {
-        $this->updateItem();
-      }
-      if (isset($_POST['discountall'])) {
-        $this->discountAll();
-      }
-      if (isset($_POST[Orders::ADD_ITEM]) && $this->check_item_data($this->order)) {
-        $this->addItem();
-      }
-      if (isset($_POST['CancelItemChanges'])) {
-        Item_Line::start_focus('_stock_id_edit');
+      $this->checkRowDelete();
+      if ($this->action) {
+        call_user_func(array($this, $this->action));
       }
       Validation::check(Validation::STOCK_ITEMS, _("There are no inventory items defined in the system."));
       Validation::check(Validation::BRANCHES_ACTIVE, _("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
-      if ($this->order && $this->order->trans_type == ST_SALESINVOICE) {
-        $idate           = _("Invoice Date:");
-        $orderitems      = _("Sales Invoice Items");
-        $deliverydetails = _("Enter Delivery Details and Confirm Invoice");
-        $deleteorder     = _("Delete Invoice");
-        $corder          = '';
-        $porder          = _("Place Invoice");
-      } elseif ($this->order && $this->order->trans_type == ST_CUSTDELIVERY) {
-        $idate           = _("Delivery Date:");
-        $orderitems      = _("Delivery Note Items");
-        $deliverydetails = _("Enter Delivery Details and Confirm Dispatch");
-        $deleteorder     = _("Delete Delivery");
-        $corder          = '';
-        $porder          = _("Place Delivery");
-      } elseif ($this->order && $this->order->trans_type == ST_SALESQUOTE) {
-        $idate           = _("Quotation Date:");
-        $orderitems      = _("Sales Quotation Items");
-        $deliverydetails = _("Enter Delivery Details and Confirm Quotation");
-        $deleteorder     = _("Delete Quotation");
-        $porder          = _("Place Quotation");
-        $corder          = _("Commit Quotations Changes");
-      } elseif ($this->order && $this->order->trans_type == ST_SALESORDER) {
-        $idate           = _("Order Date:");
-        $orderitems      = _("Sales Order Items");
-        $deliverydetails = _("Enter Delivery Details and Confirm Order");
-        $deleteorder     = _("Delete Order");
-        $porder          = _("Place Order");
-        $corder          = _("Commit Order Changes");
+      if (!is_object($this->order)) {
+        $this->exitError('No current order to edit.');
       }
-      start_form();
-      if (is_object($this->order)) {
-        $customer_error = $this->order->header($idate);
-        hidden('order_id', $_POST['order_id']);
+      switch ($this->order->trans_type) {
+        case ST_SALESINVOICE:
+          $idate       = _("Invoice Date:");
+          $orderitems  = _("Sales Invoice Items");
+          $deleteorder = _("Delete Invoice");
+          $corder      = '';
+          $porder      = _("Place Invoice");
+          break;
+        case ST_CUSTDELIVERY:
+          $idate       = _("Delivery Date:");
+          $orderitems  = _("Delivery Note Items");
+          $deleteorder = _("Delete Delivery");
+          $corder      = '';
+          $porder      = _("Place Delivery");
+          break;
+        case ST_SALESQUOTE:
+          $idate       = _("Quotation Date:");
+          $orderitems  = _("Sales Quotation Items");
+          $deleteorder = _("Delete Quotation");
+          $porder      = _("Place Quotation");
+          $corder      = _("Commit Quotations Changes");
+          break;
+        case ST_SALESORDER;
+        default:
+          $idate       = _("Order Date:");
+          $orderitems  = _("Sales Order Items");
+          $deleteorder = _("Delete Order");
+          $porder      = _("Place Order");
+          $corder      = _("Commit Order Changes");
+          break;
+      }
+      Form::start();
+      $customer_error = $this->order->header($idate);
+      if ($customer_error != "") {
+        $this->exitError($customer_error);
+      }
+      Form::hidden('order_id', $_POST['order_id']);
+      Table::start('tablesstyle center width90 pad10');
+      echo "<tr><td>";
+      $edit_line = $this->getActionId(Orders::EDIT_LINE);
+      $this->order->summary($orderitems, $edit_line);
+      echo "</td></tr><tr><td>";
+      $this->order->display_delivery_details();
+      echo "</td></tr>";
+      Table::end(1);
+      Display::div_start('controls', 'items_table');
+      if ($this->order->trans_no > 0 && $this->user->can_access(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())
+      ) {
+        Form::submitConfirm('_action', Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
+        Form::submitCenterBegin('_action', Orders::DELETE_ORDER, $deleteorder); //, _('Cancels document entry or removes sales order when editing an old document')
+        Form::submitCenterInsert('_action', Orders::CANCEL_CHANGES, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
       } else {
-        $customer_error = 'No current order to edit.';
+        Form::submitCenterBegin('_action', Orders::CANCEL_CHANGES, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
       }
-      if ($customer_error == "") {
-        Table::start('tablesstyle center width90 pad10');
-        echo "<tr><td>";
-        $this->order->summary($orderitems, TRUE);
-        echo "</td></tr><tr><td>";
-        $this->order->display_delivery_details();
-        echo "</td></tr>";
-        Table::end(1);
-        Display::div_start('controls', 'items_table');
-        if ($this->order->trans_no > 0 && $this->user->can_access(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())
-        ) {
-          submit_js_confirm(Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
-          submit_center_first(Orders::DELETE_ORDER, $deleteorder, _('Cancels document entry or removes sales order when editing an old document'));
-          submit_center_middle(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
+      if (count($this->order->line_items)) {
+        if ($this->order->trans_no > 0) {
+          Form::submitCenterEnd('_action', Orders::PROCESS_ORDER, $corder, 'default'); //_('Validate changes and update document'),
         } else {
-          submit_center_first(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
+          Form::submitCenterEnd('_action', Orders::PROCESS_ORDER, $porder, 'default'); //_('Check entered data and save document'),
         }
-        if (count($this->order->line_items)) {
-          if ($this->order->trans_no > 0) {
-            submit_center_last(Orders::PROCESS_ORDER, $corder, _('Validate changes and update document'), 'default');
-          } else {
-            submit_center_last(Orders::PROCESS_ORDER, $porder, _('Check entered data and save document'), 'default');
-          }
-        }
-        if (isset($_GET[Orders::MODIFY_ORDER]) && is_numeric($_GET[Orders::MODIFY_ORDER])) {
-          //UploadHandler::insert($_GET[Orders::MODIFY_ORDER]);
-        }
-      } else {
-        Event::warning($customer_error);
-        Session::i()->setGlobal('debtor', NULL);
-        Page::footer_exit();
       }
       Display::div_end();
-      end_form();
+      Form::end();
       Debtor::addEditDialog();
       Item::addEditDialog();
       Page::end(TRUE);
     }
     protected function checkBranch()
     {
-      if (list_updated('branch_id')) {
+      if (Form::isListUpdated('branch_id')) {
         // when branch is selected via external editor also customer can change
-        $br                   = Sales_Branch::get(get_post('branch_id'));
-        $_POST['customer_id'] = $br['debtor_id'];
+        $br                   = Sales_Branch::get(Form::getPost('branch_id'));
+        $_POST['customer_id'] = $br['debtor_no'];
         $this->ajax->activate('customer_id');
       }
+    }
+    protected function cancelItem()
+    {
+      Item_Line::start_focus('_stock_id_edit');
+    }
+    /**
+     * @param $error
+     */
+    protected function exitError($error)
+    {
+      Event::warning($error);
+      Session::i()->setGlobal('debtor', NULL);
+      Page::footer_exit();
+    }
+    public function Refresh()
+    {
+      $this->ajax->activate('items_table');
+    }
+    protected function add()
+    {
     }
     public function after()
     {
@@ -230,7 +211,6 @@
         default:
           $trans_name = "Order";
       }
-
       $customer = new Debtor(Session::i()->getGlobal('debtor', 0));
       $emails   = $customer->getEmailAddresses();
       Event::success(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
@@ -291,12 +271,12 @@
      */
     protected function can_process()
     {
-      if (!get_post('customer_id')) {
+      if (!Form::getPost('customer_id')) {
         Event::error(_("There is no customer selected."));
         JS::set_focus('customer_id');
         return FALSE;
       }
-      if (!get_post('branch_id')) {
+      if (!Form::getPost('branch_id')) {
         Event::error(_("This customer has no branch defined."));
         JS::set_focus('branch_id');
         return FALSE;
@@ -473,8 +453,14 @@
       }
       Page::footer_exit();
     }
-    protected function process()
+    /**
+     * @return mixed
+     */
+    protected function processOrder()
     {
+      if (!$this->can_process($this->order)) {
+        return;
+      }
       Sales_Order::copyFromPost($this->order);
       $modified   = ($this->order->trans_no != 0);
       $so_type    = $this->order->so_type;
@@ -502,7 +488,10 @@
       Orders::session_delete($_POST['order_id']);
       $this->order = $this->create_order($type, $order_no);
     }
-    protected function delete()
+    /**
+     * @return mixed
+     */
+    protected function deleteOrder()
     {
       if (!$this->user->can_access(SS_SETUP)) {
         Event::error('You don\'t have access to delete orders');
@@ -541,26 +530,48 @@
     }
     protected function updateItem()
     {
-      if ($_POST[Orders::UPDATE_ITEM] != '' && $this->check_item_data($this->order)) {
+      if ($this->check_item_data($this->order)) {
         $this->order->update_order_item($_POST['LineNo'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
       }
       Item_Line::start_focus('_stock_id_edit');
     }
     protected function discountAll()
     {
-      if (!is_numeric($_POST['_discountall'])) {
+      if (!is_numeric($_POST['_discountAll'])) {
         Event::error(_("Discount must be a number"));
-      } elseif ($_POST['_discountall'] < 0 || $_POST['_discountall'] > 100) {
+      } elseif ($_POST['_discountAll'] < 0 || $_POST['_discountAll'] > 100) {
         Event::error(_("Discount percentage must be between 0-100"));
       } else {
-        $this->order->discount_all($_POST['_discountall'] / 100);
+        $this->order->discount_all($_POST['_discountAll'] / 100);
       }
       $this->ajax->activate('_page_body');
     }
-    protected function addItem()
+    /**
+     * @return mixed
+     */
+    protected function addLine()
     {
+      if (!$this->check_item_data($this->order)) {
+        return;
+      }
       $this->order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
       $_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
+      Item_Line::start_focus('_stock_id_edit');
+    }
+    /**
+     * @return mixed
+     */
+    protected function checkRowDelete()
+    {
+      $line_id = $this->getActionID(Orders::DELETE_LINE);
+      if ($line_id === -1) {
+        return;
+      }
+      if ($this->order->some_already_delivered($line_id) == 0) {
+        $this->order->remove_from_order($line_id);
+      } else {
+        Event::error(_("This item cannot be deleted because some of it has already been delivered."));
+      }
       Item_Line::start_focus('_stock_id_edit');
     }
   }

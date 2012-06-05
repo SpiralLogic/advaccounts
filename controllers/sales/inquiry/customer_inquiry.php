@@ -16,21 +16,21 @@
   if (isset($_GET['customer_id'])) {
     $_POST['customer_id'] = $_GET['customer_id'];
   }
-  start_form();
+  Form::start();
   if (!isset($_POST['customer_id'])) {
     $_POST['customer_id'] = Session::i()->getGlobal('debtor');
   }
   Table::start('tablestyle_noborder');
   Row::start();
-  ref_cells(_("Ref"), 'reference', '', NULL, '', TRUE);
+   Form::refCells(_("Ref"), 'reference', '', NULL, '', TRUE);
   Debtor::cells(_("Select a customer: "), 'customer_id', NULL, TRUE);
-  date_cells(_("From:"), 'TransAfterDate', '', NULL, -30);
-  date_cells(_("To:"), 'TransToDate', '', NULL, 1);
+   Form::dateCells(_("From:"), 'TransAfterDate', '', NULL, -30);
+   Form::dateCells(_("To:"), 'TransToDate', '', NULL, 1);
   if (!isset($_POST['filterType'])) {
     $_POST['filterType'] = 0;
   }
   Debtor_Payment::allocations_select(NULL, 'filterType', $_POST['filterType'], TRUE);
-  submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
+  Form::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
   Row::end();
   Table::end();
   Session::i()->setGlobal('debtor', $_POST['customer_id']);
@@ -41,7 +41,7 @@
     echo "<br>";
   }
   Display::div_end();
-  if (get_post('RefreshInquiry')) {
+  if (Form::getPost('RefreshInquiry')) {
     Ajax::i()->activate('totals_tbl');
   }
   $date_after = Dates::date2sql($_POST['TransAfterDate']);
@@ -303,5 +303,5 @@
   $table->width = "80%";
   DB_Pager::display($table);
   UI::emailDialogue(CT_CUSTOMER);
-  end_form();
+  Form::end();
   Page::end();

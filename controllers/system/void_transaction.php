@@ -123,20 +123,20 @@
    */
   function voiding_controls()
   {
-    start_form();
+    Form::start();
     Table::start('tablestyle2');
     SysTypes::row(_("Transaction Type:"), "filterType", null, true);
-    text_row(_("Transaction #:"), 'trans_no', null, 12, 12);
-    date_row(_("Voiding Date:"), 'date_');
-    textarea_row(_("Memo:"), 'memo_', null, 30, 4);
+     Form::textRow(_("Transaction #:"), 'trans_no', null, 12, 12);
+     Form::dateRow(_("Voiding Date:"), 'date_');
+     Form::textareaRow(_("Memo:"), 'memo_', null, 30, 4);
     Table::end(1);
     if (!isset($_POST['ProcessVoiding'])) {
-      submit_center('ProcessVoiding', _("Void Transaction"), true, '', 'default');
+      Form::submitCenter('ProcessVoiding', _("Void Transaction"), true, '', 'default');
     } else {
       if (!exist_transaction($_POST['filterType'], $_POST['trans_no'])) {
         Event::error(_("The entered transaction does not exist or cannot be voided."));
         unset($_POST['trans_no'], $_POST['memo_'], $_POST['date_']);
-        submit_center('ProcessVoiding', _("Void Transaction"), true, '', 'default');
+        Form::submitCenter('ProcessVoiding', _("Void Transaction"), true, '', 'default');
       } else {
         Event::warning(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
         $_SESSION['voiding'] = $_POST['trans_no'] . $_POST['filterType'];
@@ -148,11 +148,11 @@
         }
         Event::warning($view_str);
         Display::br();
-        submit_center_first('ConfirmVoiding', _("Proceed"), '', true);
-        submit_center_last('CancelVoiding', _("Cancel"), '', 'cancel');
+        Form::submitCenterBegin('ConfirmVoiding', _("Proceed"), '', true);
+        Form::submitCenterEnd('CancelVoiding', _("Cancel"), '', 'cancel');
       }
     }
-    end_form();
+    Form::end();
   }
 
   /**

@@ -157,7 +157,7 @@
     {
       $sql = "SELECT id, name FROM item_tax_types";
 
-      return select_box($name, $selected_id, $sql, 'id', 'name', array('order' => 'id'));
+      return Form::selectBox($name, $selected_id, $sql, 'id', 'name', array('order' => 'id'));
     }
     /**
      * @static

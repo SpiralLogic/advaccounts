@@ -22,7 +22,7 @@
   if (isset($_POST['_DatePaid_changed'])) {
     Ajax::i()->activate('_ex_rate');
   }
-  if (list_updated('supplier_id') || list_updated('bank_account')) {
+  if (Form::isListUpdated('supplier_id') || Form::isListUpdated('bank_account')) {
     $_SESSION['alloc']->read();
     Ajax::i()->activate('alloc_tbl');
   }
@@ -57,7 +57,7 @@
     Page::end();
     exit;
   }
-  start_form();
+  Form::start();
   Table::startOuter('tablestyle2 width60 pad5');
   Table::section(1);
   Creditor::row(_("Payment To:"), 'supplier_id', null, false, true);
@@ -68,15 +68,15 @@
   Session::i()->setGlobal('creditor', $_POST['supplier_id']);
   Bank_Account::row(_("From Bank Account:"), 'bank_account', null, true);
   Table::section(2);
-  ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_SUPPAYMENT));
-  date_row(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
+   Form::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_SUPPAYMENT));
+   Form::dateRow(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
   Table::section(3);
   $supplier_currency = Bank_Currency::for_creditor($_POST['supplier_id']);
   $bank_currency     = Bank_Currency::for_company($_POST['bank_account']);
   if ($bank_currency != $supplier_currency) {
     GL_ExchangeRate::display($bank_currency, $supplier_currency, $_POST['DatePaid'], true);
   }
-  amount_row(_("Bank Charge:"), 'charge');
+   Form::AmountRow(_("Bank Charge:"), 'charge');
   Table::endOuter(1); // outer table
   if ($bank_currency == $supplier_currency) {
     Display::div_start('alloc_tbl');
@@ -84,14 +84,14 @@
     Display::div_end();
   }
   Table::start('tablestyle width60');
-  amount_row(_("Amount of Discount:"), 'discount');
-  amount_row(_("Amount of Payment:"), 'amount');
-  textarea_row(_("Memo:"), 'memo_', null, 22, 4);
+   Form::AmountRow(_("Amount of Discount:"), 'discount');
+   Form::AmountRow(_("Amount of Payment:"), 'amount');
+   Form::textareaRow(_("Memo:"), 'memo_', null, 22, 4);
   Table::end(1);
   if ($bank_currency != $supplier_currency) {
     Event::warning(_("The amount and discount are in the bank account's currency."), 0, 1);
   }
-  submit_center('ProcessSuppPayment', _("Enter Payment"), true, '', 'default');
-  end_form();
+  Form::submitCenter('ProcessSuppPayment', _("Enter Payment"), true, '', 'default');
+  Form::end();
   Page::end();
 

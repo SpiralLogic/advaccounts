@@ -21,7 +21,7 @@
   if (!isset($_POST['curr_abrev'])) {
     $_POST['curr_abrev'] = Bank_Currency::for_company();
   }
-  start_form(false, $_SERVER['REQUEST_URI']);
+  Form::start(false, $_SERVER['REQUEST_URI']);
   if (!Input::post('stock_id')) {
     Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   }
@@ -59,11 +59,11 @@
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
   }
-  if (list_updated('stock_id')) {
+  if (Form::isListUpdated('stock_id')) {
     Ajax::i()->activate('price_table');
     Ajax::i()->activate('price_details');
   }
-  if (list_updated('stock_id') || isset($_POST['_curr_abrev_update']) || isset($_POST['_sales_type_id_update'])) {
+  if (Form::isListUpdated('stock_id') || isset($_POST['_curr_abrev_update']) || isset($_POST['_sales_type_id_update'])) {
     // after change of stock, currency or salestype selector
     // display default calculated price for new settings.
     // If we have this price already in db it is overwritten later.
@@ -85,8 +85,8 @@
     Cell::label($myrow["curr_abrev"]);
     Cell::label($myrow["sales_type"]);
     Cell::amount($myrow["price"]);
-    edit_button_cell("Edit" . $myrow['id'], _("Edit"));
-    delete_button_cell("Delete" . $myrow['id'], _("Delete"));
+    Form::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
+    Form::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
     Row::end();
   }
   Table::end();
@@ -104,23 +104,23 @@
     $_POST['sales_type_id'] = $myrow["sales_type_id"];
     $_POST['price']         = Num::price_format($myrow["price"]);
   }
-  hidden('selected_id', $selected_id);
+  Form::hidden('selected_id', $selected_id);
   Display::div_start('price_details');
   Table::start('tableinfo');
   GL_Currency::row(_("Currency:"), 'curr_abrev', null, true);
   Sales_Type::row(_("Sales Type:"), 'sales_type_id', null, true);
   if (!isset($_POST['price'])) {
-    $_POST['price'] = Num::price_format(Item_Price::get_kit(get_post('stock_id'), get_post('curr_abrev'), get_post('sales_type_id')));
+    $_POST['price'] = Num::price_format(Item_Price::get_kit(Form::getPost('stock_id'), Form::getPost('curr_abrev'), Form::getPost('sales_type_id')));
   }
   $kit = Item_Code::get_defaults($_POST['stock_id']);
-  small_amount_row(_("Price:"), 'price', null, '', _('per') . ' ' . $kit["units"]);
+   Form::SmallAmountRow(_("Price:"), 'price', null, '', _('per') . ' ' . $kit["units"]);
   Table::end(1);
   if ($calculated) {
     Event::warning(_("The price is calculated."), 0, 1);
   }
-  submit_add_or_update_center($selected_id == -1, '', 'both');
+  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Display::div_end();
-  end_form();
+  Form::end();
   if (Input::request('frame')) {
     Page::end(true);
   } else {

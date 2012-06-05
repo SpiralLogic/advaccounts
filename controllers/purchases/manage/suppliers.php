@@ -14,7 +14,7 @@
   if (isset($_GET['supplier_id'])) {
     $_POST['supplier_id'] = $_GET['supplier_id'];
   }
-  $new_supplier = get_post('supplier_id') == '';
+  $new_supplier = Form::getPost('supplier_id') == '';
   if (isset($_POST['submit'])) {
     //initialise no input errors assumed initially before we test
     $input_error = 0;
@@ -103,22 +103,22 @@
       Ajax::i()->activate('_page_body');
     } //end if Delete supplier
   }
-  start_form();
+  Form::start();
   if (Validation::check(Validation::SUPPLIERS)) {
     Table::start('tablestyle_noborder pad3');
     //	Table::start('tablestyle_noborder');
     Row::start();
-    Creditor::cells(_("Select a supplier: "), 'supplier_id', NULL, _('New supplier'), TRUE, check_value('show_inactive'));
-    check_cells(_("Show inactive:"), 'show_inactive', NULL, TRUE);
+    Creditor::cells(_("Select a supplier: "), 'supplier_id', NULL, _('New supplier'), TRUE, Form::hasPost('show_inactive'));
+     Form::checkCells(_("Show inactive:"), 'show_inactive', NULL, TRUE);
     Row::end();
     Table::end();
-    if (get_post('_show_inactive_update')) {
+    if (Form::getPost('_show_inactive_update')) {
       Ajax::i()->activate('supplier_id');
       JS::set_focus('supplier_id');
     }
   }
   else {
-    hidden('supplier_id', get_post('supplier_id'));
+    Form::hidden('supplier_id', Form::getPost('supplier_id'));
   }
   Table::startOuter('tablestyle2');
   Table::section(1);
@@ -166,26 +166,26 @@
     $_POST['inactive'] = 0;
   }
   Table::sectionTitle(_("Name and Contact"));
-  text_row(_("Supplier Name:"), 'name', NULL, 42, 40);
-  text_row(_("Supplier Short Name:"), 'ref', NULL, 30, 30);
-  text_row(_("Contact Person:"), 'contact', NULL, 42, 40);
-  text_row(_("Phone Number:"), 'phone', NULL, 32, 30);
-  text_row(_("Secondary Phone Number:"), 'phone2', NULL, 32, 30);
-  text_row(_("Fax Number:"), 'fax', NULL, 32, 30);
-  email_row(_("E-mail:"), 'email', NULL, 35, 55);
-  link_row(_("Website:"), 'website', NULL, 35, 55);
-  text_row(_("Our Customer No:"), 'account_no', NULL, 42, 40);
+   Form::textRow(_("Supplier Name:"), 'name', NULL, 42, 40);
+   Form::textRow(_("Supplier Short Name:"), 'ref', NULL, 30, 30);
+   Form::textRow(_("Contact Person:"), 'contact', NULL, 42, 40);
+   Form::textRow(_("Phone Number:"), 'phone', NULL, 32, 30);
+   Form::textRow(_("Secondary Phone Number:"), 'phone2', NULL, 32, 30);
+   Form::textRow(_("Fax Number:"), 'fax', NULL, 32, 30);
+   Form::emailRow(_("E-mail:"), 'email', NULL, 35, 55);
+   Form::linkRow(_("Website:"), 'website', NULL, 35, 55);
+   Form::textRow(_("Our Customer No:"), 'account_no', NULL, 42, 40);
   Table::sectionTitle(_("Addresses"));
-  textarea_row(_("Mailing Address:"), 'address', NULL, 35, 5);
-  textarea_row(_("Physical Address:"), 'address', NULL, 35, 5);
+   Form::textareaRow(_("Mailing Address:"), 'address', NULL, 35, 5);
+   Form::textareaRow(_("Physical Address:"), 'address', NULL, 35, 5);
   Table::section(2);
   Table::sectionTitle(_("Purchasing"));
-  text_row(_("GSTNo:"), 'gst_no', NULL, 42, 40);
-  text_row(_("Bank Name/Account:"), 'bank_account', NULL, 42, 40);
-  amount_row(_("Credit Limit:"), 'credit_limit', NULL);
+   Form::textRow(_("GSTNo:"), 'gst_no', NULL, 42, 40);
+   Form::textRow(_("Bank Name/Account:"), 'bank_account', NULL, 42, 40);
+   Form::AmountRow(_("Credit Limit:"), 'credit_limit', NULL);
   if (!$new_supplier) {
     Row::label(_("Supplier's Currency:"), $_POST['curr_code']);
-    hidden('curr_code', $_POST['curr_code']);
+    Form::hidden('curr_code', $_POST['curr_code']);
   }
   else {
     GL_Currency::row(_("Supplier's Currency:"), 'curr_code', NULL);
@@ -205,27 +205,27 @@
     }
   }
   if ($dim < 1) {
-    hidden('dimension_id', 0);
+    Form::hidden('dimension_id', 0);
   }
   if ($dim < 2) {
-    hidden('dimension2_id', 0);
+    Form::hidden('dimension2_id', 0);
   }
   Table::sectionTitle(_("General"));
-  textarea_row(_("General Notes:"), 'notes', NULL, 35, 5);
-  record_status_list_row(_("Supplier status:"), 'inactive');
+   Form::textareaRow(_("General Notes:"), 'notes', NULL, 35, 5);
+   Form::recordStatusListRow(_("Supplier status:"), 'inactive');
   Table::endOuter(1);
   Display::div_start('controls');
   if (!$new_supplier) {
-    submit_center_first('submit', _("Update Supplier"), _('Update supplier data'), Input::request('frame') ? TRUE : 'default');
-    submit_return('select', get_post('supplier_id'), _("Select this supplier and return to document entry."));
-    submit_center_last('delete', _("Delete Supplier"), _('Delete supplier data if have been never used'), TRUE);
+    Form::submitCenterBegin('submit', _("Update Supplier"), _('Update supplier data'), Input::request('frame') ? TRUE : 'default');
+    Form::submitReturn('select', Form::getPost('supplier_id'), _("Select this supplier and return to document entry."));
+    Form::submitCenterEnd('delete', _("Delete Supplier"), _('Delete supplier data if have been never used'), TRUE);
   }
   else {
-    submit_center('submit', _("Add New Supplier Details"), TRUE, '', 'default');
+    Form::submitCenter('submit', _("Add New Supplier Details"), TRUE, '', 'default');
   }
   Display::div_end();
-  hidden('frame', Input::request('frame'));
-  end_form();
+  Form::hidden('frame', Input::request('frame'));
+  Form::end();
   Page::end();
 
 

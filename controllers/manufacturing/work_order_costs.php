@@ -74,26 +74,26 @@
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=" . $_POST['selected_id']);
   }
   WO_Cost::display($_POST['selected_id']);
-  start_form();
-  hidden('selected_id', $_POST['selected_id']);
-  //hidden('WOReqQuantity', $_POST['WOReqQuantity']);
+  Form::start();
+  Form::hidden('selected_id', $_POST['selected_id']);
+  //Form::hidden('WOReqQuantity', $_POST['WOReqQuantity']);
   Table::start('tablestyle2');
   Display::br();
-  yesno_list_row(_("Type:"), 'PaymentType', null, $wo_cost_types[WO_OVERHEAD], $wo_cost_types[WO_LABOUR]);
-  date_row(_("Date:"), 'date_');
+   Form::yesnoListRow(_("Type:"), 'PaymentType', null, $wo_cost_types[WO_OVERHEAD], $wo_cost_types[WO_LABOUR]);
+   Form::dateRow(_("Date:"), 'date_');
   $item_accounts   = Item::get_gl_code($wo_details['stock_id']);
   $_POST['db_acc'] = $item_accounts['assembly_account'];
   $sql             = "SELECT DISTINCT account_code FROM bank_accounts";
   $rs              = DB::query($sql, "could not get bank accounts");
   $r               = DB::fetch_row($rs);
   $_POST['cr_acc'] = $r[0];
-  amount_row(_("Additional Costs:"), 'costs');
+   Form::AmountRow(_("Additional Costs:"), 'costs');
   GL_UI::all_row(_("Debit Account"), 'db_acc', null);
   GL_UI::all_row(_("Credit Account"), 'cr_acc', null);
   Table::end(1);
-  hidden('dim1', $item_accounts["dimension_id"]);
-  hidden('dim2', $item_accounts["dimension2_id"]);
-  submit_center('process', _("Process Additional Cost"), true, '', true);
-  end_form();
+  Form::hidden('dim1', $item_accounts["dimension_id"]);
+  Form::hidden('dim2', $item_accounts["dimension2_id"]);
+  Form::submitCenter('process', _("Process Additional Cost"), true, '', true);
+  Form::end();
   Page::end();
 

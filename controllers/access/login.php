@@ -32,7 +32,7 @@
   echo "<table class='titletext'><tr><td>$title</td></tr></table>\n";
   Display::div_start('_page_body');
   Display::br(2);
-  start_form(FALSE, $_SESSION['timeout']['uri'], "loginform");
+  Form::start(FALSE, $_SESSION['timeout']['uri'], "loginform");
   echo "<input type='hidden' id='ui_mode' name='ui_mode' value='" . User::i()->ui_mode . "' />\n";
   Table::start('login');
   Row::start();
@@ -50,11 +50,11 @@
   Row::start();
   Cell::label($demo_text, "colspan=2 class='center'");
   Row::end();
-  text_row(_("User name"), "user_name", $value, 20, 30);
+   Form::textRow(_("User name"), "user_name", $value, 20, 30);
   $password = Config::get('demo_mode') ? "password" : "";
-  password_row(_("Password:"), 'password', $password);
+   Form::passwordRow(_("Password:"), 'password', $password);
   if ($login_timeout) {
-    hidden('login_company', User::i()->company);
+    Form::hidden('login_company', User::i()->company);
   } else {
     $coy       = User::i()->company;
     $companies = Config::get_all('db');
@@ -79,7 +79,7 @@
       echo "<input type='hidden' name='" . serialize($p) . "' value='$val'>";
     }
   }
-  end_form(1);
+  Form::end(1);
   Display::div_end();
   echo "<div class='center'>\n";
   if (User::i()) {

@@ -10,7 +10,7 @@
   $js = "";
   Page::start(_($help_context = "Profit & Loss Drilldown"), SA_GLANALYTIC);
   // Ajax updates
-  if (get_post('Show')) {
+  if (Form::getPost('Show')) {
     Ajax::i()->activate('pl_tbl');
   }
   if (isset($_GET["TransFromDate"])) {
@@ -25,10 +25,10 @@
   if (isset($_GET["AccGrp"])) {
     $_POST["AccGrp"] = $_GET["AccGrp"];
   }
-  start_form();
+  Form::start();
   inquiry_controls();
   display_profit_and_loss();
-  end_form();
+  Form::end();
   Page::end();
   /**
    * @param     $type
@@ -144,18 +144,18 @@
   function inquiry_controls()
   {
     Table::start('tablestyle_noborder');
-    date_cells(_("From:"), 'TransFromDate', '', null, -30);
-    date_cells(_("To:"), 'TransToDate');
+     Form::dateCells(_("From:"), 'TransFromDate', '', null, -30);
+     Form::dateCells(_("To:"), 'TransToDate');
     //Compare Combo
     global $sel;
     $sel = array(_("Accumulated"), _("Period Y-1"), _("Budget"));
     echo "<td>" . _("Compare to") . ":</td>\n";
     echo "<td>";
-    echo array_selector('Compare', null, $sel);
+    echo Form::arraySelect('Compare', null, $sel);
     echo "</td>\n";
-    submit_cells('Show', _("Show"), '', '', 'default');
+    Form::submitCells('Show', _("Show"), '', '', 'default');
     Table::end();
-    hidden('AccGrp');
+    Form::hidden('AccGrp');
   }
 
   function display_profit_and_loss()

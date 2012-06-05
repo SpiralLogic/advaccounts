@@ -24,12 +24,12 @@
     handle_delete($selected_id);
     $Mode = MODE_RESET;
   }
-  if (get_post('Update')) {
+  if (Form::getPost('Update')) {
     $exts = DB_Company::get_company_extensions();
     foreach ($exts as $i => $ext) {
-      $exts[$i]['active'] = check_value('Active' . $i);
+      $exts[$i]['active'] = Form::hasPost('Active' . $i);
     }
-    advaccounting::write_extensions($exts, get_post('extset'));
+    advaccounting::write_extensions($exts, Form::getPost('extset'));
     $installed_extensions = $exts;
     Event::notice(_('Current active extensions set has been saved.'));
   }
@@ -37,21 +37,21 @@
     $selected_id = -1;
     unset($_POST);
   }
-  start_form(true);
-  if (list_updated('extset')) {
+  Form::start(true);
+  if (Form::isListUpdated('extset')) {
     Ajax::i()->activate('_page_body');
   }
   echo "<div class='center'>" . _('Extensions:') . "&nbsp;&nbsp;";
   echo Extensions::view('extset', null, true);
   echo "</div><br>";
-  $set = get_post('extset', -1);
+  $set = Form::getPost('extset', -1);
   if ($set == -1) {
     display_extensions();
     display_ext_edit($Mode, $selected_id);
   } else {
     company_extensions($set);
   }
-  end_form();
+  Form::end();
   Page::end();
   /**
    * @param $extensions
@@ -147,7 +147,7 @@
     $extensions[$id]['name']   = $_POST['name'];
     $extensions[$id]['path']   = $_POST['path'];
     $extensions[$id]['title']  = $_POST['title'];
-    $extensions[$id]['active'] = check_value('active');
+    $extensions[$id]['active'] = Form::hasPost('active');
     // Currently we support only plugin extensions here.
     $extensions[$id]['type'] = 'plugin';
     $directory               = DOCROOT . "modules/" . $_POST['path'];
@@ -163,7 +163,7 @@
       }
       move_uploaded_file($file1, $file2);
     } else {
-      $extensions[$id]['filename'] = get_post('filename');
+      $extensions[$id]['filename'] = Form::getPost('filename');
     }
     if (is_uploaded_file($_FILES['uploadfile2']['tmp_name'])) {
       $file1 = $_FILES['uploadfile2']['tmp_name'];
@@ -184,7 +184,7 @@
       }
       move_uploaded_file($file1, $file2);
     } else {
-      $extensions[$id]['acc_file'] = get_post('acc_file');
+      $extensions[$id]['acc_file'] = Form::getPost('acc_file');
     }
     // security area guess for plugins
     if ($extensions[$id]['type'] == 'plugin') {
@@ -247,10 +247,10 @@
       if ($is_mod) {
         Cell::label(''); // not implemented (yet)
       } else {
-        edit_button_cell("Edit" . $i, _("Edit"));
+        Form::buttonEditCell("Edit" . $i, _("Edit"));
       }
-      delete_button_cell("Delete" . $i, _("Delete"));
-      submit_js_confirm(MODE_DELETE . $i, _('You are about to delete this extension\nDo you want to continue?'));
+      Form::buttonDeleteCell("Delete" . $i, _("Delete"));
+      Form::submitConfirm(MODE_DELETE . $i, _('You are about to delete this extension\nDo you want to continue?'));
       Row::end();
     }
     Table::end(1);
@@ -284,11 +284,11 @@
                     Display::access_string(ADVAccounting::i()->applications[$mod['tab']]->name, true));
       $ttl = Display::access_string($mod['title']);
       Cell::label($ttl[0]);
-      check_cells(null, 'Active' . $i, @$mod['active'] ? 1 : 0, false, false, "class='center'");
+       Form::checkCells(null, 'Active' . $i, @$mod['active'] ? 1 : 0, false, false, "class='center'");
       Row::end();
     }
     Table::end(1);
-    submit_center('Update', _('Update'), true, false, 'default');
+    Form::submitCenter('Update', _('Update'), true, false, 'default');
   }
 
   /**
@@ -308,21 +308,21 @@
         $_POST['path']     = $mod['path'];
         $_POST['filename'] = $mod['filename'];
         $_POST['acc_file'] = @$mod['acc_file'];
-        hidden('filename', $_POST['filename']);
-        hidden('acc_file', $_POST['acc_file']);
+        Form::hidden('filename', $_POST['filename']);
+        Form::hidden('acc_file', $_POST['acc_file']);
       }
-      hidden('selected_id', $selected_id);
+      Form::hidden('selected_id', $selected_id);
     }
-    text_row_ex(_("Name"), 'name', 30);
-    text_row_ex(_("Folder"), 'path', 20);
+     Form::textRowEx(_("Name"), 'name', 30);
+     Form::textRowEx(_("Folder"), 'path', 20);
     Users::tabs_row(_("Menu Tab"), 'tab', null, true);
-    text_row_ex(_("Menu Link Text"), 'title', 30);
-    record_status_list_row(_("Default status"), 'active');
-    file_row(_("Module File"), 'uploadfile');
-    file_row(_("Access Levels Extensions"), 'uploadfile3');
-    file_row(_("SQL File"), 'uploadfile2');
+     Form::textRowEx(_("Menu Link Text"), 'title', 30);
+     Form::recordStatusListRow(_("Default status"), 'active');
+     Form::fileRow(_("Module File"), 'uploadfile');
+     Form::fileRow(_("Access Levels Extensions"), 'uploadfile3');
+     Form::fileRow(_("SQL File"), 'uploadfile2');
     Table::end(0);
     Event::warning(_("Select your module PHP file from your local harddisk."), 0, 1);
-    submit_add_or_update_center($selected_id == -1, '', 'both');
+    Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
   }
 

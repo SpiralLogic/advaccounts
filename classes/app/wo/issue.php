@@ -223,7 +223,7 @@
       Table::header($th);
       //	$total = 0;
       $k  = 0; //row colour counter
-      $id = find_submit(MODE_EDIT);
+      $id = Form::findPostPrefix(MODE_EDIT);
       foreach ($order->line_items as $line_no => $stock_item) {
         //		$total += ($stock_item->standard_cost * $stock_item->quantity);
         if ($id != $line_no) {
@@ -233,8 +233,8 @@
           Cell::label($stock_item->units);
           Cell::amount($stock_item->standard_cost);
           //			Cell::amount($stock_item->standard_cost * $stock_item->quantity);
-          edit_button_cell("Edit$line_no", _("Edit"), _('Edit document line'));
-          delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
+          Form::buttonEditCell("Edit$line_no", _("Edit"), _('Edit document line'));
+          Form::buttonDeleteCell("Delete$line_no", _("Delete"), _('Remove line from document'));
           Row::end();
         } else {
           WO_Issue::edit_controls($order, $line_no);
@@ -256,20 +256,20 @@
     public static function edit_controls($order, $line_no = -1)
     {
       Row::start();
-      $id = find_submit(MODE_EDIT);
+      $id = Form::findPostPrefix(MODE_EDIT);
       if ($line_no != -1 && $line_no == $id) {
         $_POST['stock_id'] = $order->line_items[$id]->stock_id;
         $_POST['qty']      = Item::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
         $_POST['std_cost'] = Num::price_format($order->line_items[$id]->standard_cost);
         $_POST['units']    = $order->line_items[$id]->units;
-        hidden('stock_id', $_POST['stock_id']);
+        Form::hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id']);
         Cell::label($order->line_items[$id]->description);
         Ajax::i()->activate('items_table');
       } else {
         $wo_details = WO::get($_SESSION['issue_items']->order_id);
         Item_UI::component_cells(null, 'stock_id', $wo_details["stock_id"], null, false, true);
-        if (list_updated('stock_id')) {
+        if (Form::isListUpdated('stock_id')) {
           Ajax::i()->activate('units');
           Ajax::i()->activate('qty');
           Ajax::i()->activate('std_cost');
@@ -280,16 +280,16 @@
         $_POST['std_cost'] = Num::price_format($item_info["standard_cost"]);
         $_POST['units']    = $item_info["units"];
       }
-      qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
+       Form::qtyCells(null, 'qty', $_POST['qty'], null, null, $dec);
       Cell::label($_POST['units'], '', 'units');
-      amount_cells(null, 'std_cost', $_POST['std_cost']);
+       Form::amountCells(null, 'std_cost', $_POST['std_cost']);
       if ($id != -1) {
-        button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
-        button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
-        hidden('LineNo', $line_no);
+        Form::buttonCell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
+        Form::buttonCell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
+        Form::hidden('LineNo', $line_no);
         JS::set_focus('qty');
       } else {
-        submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), true);
+        Form::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
       }
       Row::end();
     }
@@ -297,15 +297,15 @@
     {
       echo "<br>";
       Table::start();
-      ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_MANUISSUE));
+       Form::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_MANUISSUE));
       if (!isset($_POST['IssueType'])) {
         $_POST['IssueType'] = 0;
       }
-      yesno_list_row(_("Type:"), 'IssueType', $_POST['IssueType'], _("Return Items to Location"), _("Issue Items to Work order"));
+       Form::yesnoListRow(_("Type:"), 'IssueType', $_POST['IssueType'], _("Return Items to Location"), _("Issue Items to Work order"));
       Inv_Location::row(_("From Location:"), 'location');
       workcenter_list_row(_("To Work Centre:"), 'WorkCentre');
-      date_row(_("Issue Date:"), 'date_');
-      textarea_row(_("Memo"), 'memo_', null, 50, 3);
+       Form::dateRow(_("Issue Date:"), 'date_');
+       Form::textareaRow(_("Memo"), 'memo_', null, 50, 3);
       Table::end(1);
     }
   }

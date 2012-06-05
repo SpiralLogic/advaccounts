@@ -26,7 +26,7 @@
       $_POST[$k] = $v;
     }
   }
-  start_form(false, '', 'invoiceForm');
+  Form::start(false, '', 'invoiceForm');
   if (!isset($_POST['supplier_id'])) {
     $_POST['supplier_id'] = Session::i()->getGlobal('creditor');
   }
@@ -45,11 +45,11 @@
   if (!Input::get('frame')) {
     Creditor::cells(_("Supplier: "), 'supplier_id', null, true);
   }
-  date_cells(_("From:"), 'TransAfterDate', '', null, -90);
-  date_cells(_("To:"), 'TransToDate', '', null, 1);
+   Form::dateCells(_("From:"), 'TransAfterDate', '', null, -90);
+   Form::dateCells(_("To:"), 'TransToDate', '', null, 1);
   Purch_Allocation::row("filterType", null);
-  check_cells(_("Show settled:"), 'showSettled', null);
-  submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
+   Form::checkCells(_("Show settled:"), 'showSettled', null);
+  Form::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
   Session::i()->setGlobal('creditor', $_POST['supplier_id']);
   Row::end();
   Table::end();
@@ -183,7 +183,7 @@
       $sql .= " AND trans.due_date < '$today' ";
     }
   }
-  if (!check_value('showSettled')) {
+  if (!Form::hasPost('showSettled')) {
     $sql .= " AND (round(abs(ov_amount + ov_gst + ov_discount) - alloc,6) != 0) ";
   }
   $cols = array(
@@ -218,6 +218,6 @@
   $table->width = "90";
   DB_Pager::display($table);
   Creditor::addInfoDialog('.pagerclick');
-  end_form();
+  Form::end();
   Page::end();
 

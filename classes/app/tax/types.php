@@ -171,7 +171,7 @@
     {
       $sql = "SELECT id, CONCAT(name, ' (',rate,'%)') as name FROM tax_types";
 
-      return select_box($name, $selected_id, $sql, 'id', 'name', array(
+      return Form::selectBox($name, $selected_id, $sql, 'id', 'name', array(
         'spec_option' => $none_option, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => false,
       ));
     }
@@ -249,7 +249,7 @@
 
         return false;
       }
-      if (!Tax_Types::is_tax_gl_unique(get_post('sales_gl_code'), get_post('purchasing_gl_code'), $selected_id)) {
+      if (!Tax_Types::is_tax_gl_unique(Form::getPost('sales_gl_code'), Form::getPost('purchasing_gl_code'), $selected_id)) {
         Event::error(_("Selected GL Accounts cannot be used by another tax type."));
         JS::set_focus('sales_gl_code');
 

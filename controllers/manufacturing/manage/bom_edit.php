@@ -31,7 +31,7 @@
   /*if (isset($_GET["selected_component"])) {
        $selected_component = $_GET["selected_component"];
      } else {
-       $selected_component = get_post("selected_component", -1);
+       $selected_component = Form::getPost("selected_component", -1);
      }
      */
   /**
@@ -79,8 +79,8 @@
       Cell::label($myrow["WorkCentreDescription"]);
       Cell::qty($myrow["quantity"], false, Item::qty_dec($myrow["component"]));
       Cell::label($myrow["units"]);
-      edit_button_cell("Edit" . $myrow['id'], _("Edit"));
-      delete_button_cell("Delete" . $myrow['id'], _("Delete"));
+      Form::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
+      Form::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
       Row::end();
     } //END WHILE LIST LOOP
     Table::end();
@@ -151,22 +151,22 @@
     $selected_id = -1;
     unset($_POST['quantity']);
   }
-  start_form();
-  start_form(false);
+  Form::start();
+  Form::start(false);
   Table::start('tablestyle_noborder');
   Item_UI::manufactured_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
-  if (list_updated('stock_id')) {
+  if (Form::isListUpdated('stock_id')) {
     Ajax::i()->activate('_page_body');
   }
   Table::end();
   Display::br();
-  end_form();
-  if (get_post('stock_id') != '') { //Parent Item selected so display bom or edit component
+  Form::end();
+  if (Form::getPost('stock_id') != '') { //Parent Item selected so display bom or edit component
     $selected_parent = $_POST['stock_id'];
     if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
       on_submit($selected_parent, $selected_id);
     }
-    start_form();
+    Form::start();
     display_bom_items($selected_parent);
     echo '<br>';
     Table::start('tablestyle2');
@@ -184,27 +184,27 @@
         $_POST['quantity']         = Num::format($myrow["quantity"], Item::qty_dec($myrow["component"]));
         Row::label(_("Component:"), $myrow["component"] . " - " . $myrow["description"]);
       }
-      hidden('selected_id', $selected_id);
+      Form::hidden('selected_id', $selected_id);
     } else {
       Row::start();
       Cell::label(_("Component:"));
       echo "<td>";
       echo Item_UI::component('component', $selected_parent, null, false, true);
-      if (get_post('_component_update')) {
+      if (Form::getPost('_component_update')) {
         Ajax::i()->activate('quantity');
       }
       echo "</td>";
       Row::end();
     }
-    hidden('stock_id', $selected_parent);
+    Form::hidden('stock_id', $selected_parent);
     Inv_Location::row(_("Location to Draw From:"), 'loc_code', null);
     workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);
-    $dec               = Item::qty_dec(get_post('component'));
+    $dec               = Item::qty_dec(Form::getPost('component'));
     $_POST['quantity'] = Num::format(Validation::input_num('quantity', 1), $dec);
-    qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
+     Form::qtyRow(_("Quantity:"), 'quantity', null, null, null, $dec);
     Table::end(1);
-    submit_add_or_update_center($selected_id == -1, '', 'both');
-    end_form();
+    Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+    Form::end();
   }
   // ----------------------------------------------------------------------------------
   Page::end();

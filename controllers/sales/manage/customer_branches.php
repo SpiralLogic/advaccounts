@@ -108,16 +108,16 @@
     } //end ifs to test if the branch can be deleted
     $Mode = MODE_RESET;
   }
-  if ($Mode == MODE_RESET || get_post('_customer_id_update')) {
+  if ($Mode == MODE_RESET || Form::getPost('_customer_id_update')) {
     $selected_id = -1;
     $cust_id     = $_POST['customer_id'];
-    $inact       = get_post('show_inactive');
+    $inact       = Form::getPost('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $inact;
     $_POST['customer_id']   = $cust_id;
     Ajax::i()->activate('_page_body');
   }
-  start_form();
+  Form::start();
   echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
   echo Debtor::select('customer_id', null, false, true);
   echo "</div><br>";
@@ -133,7 +133,7 @@
         AND b.area=a.area_code
         AND b.salesman=s.salesman_code
         AND b.debtor_id = " . DB::quote($_POST['customer_id']);
-    if (!get_post('show_inactive')) {
+    if (!Form::getPost('show_inactive')) {
       $sql .= " AND !b.inactive";
     }
     if ($num_branches) {
@@ -152,17 +152,17 @@
         //		array('fun'=>'inactive'),
         ' '           => array(
           'insert' => true, 'fun' => function ($row) {
-            return button("Select" . $row["branch_id"], $row["branch_id"], '', ICON_ADD, 'selector');
+            return Form::button("Select" . $row["branch_id"], $row["branch_id"], '', ICON_ADD, 'selector');
           }
         ),
         array(
           'insert' => true, 'fun' => function ($row) {
-          return button("Edit" . $row["branch_id"], _("Edit"), '', ICON_EDIT);
+          return Form::button("Edit" . $row["branch_id"], _("Edit"), '', ICON_EDIT);
         }
         ),
         array(
           'insert' => true, 'fun' => function ($row) {
-          return button("Delete" . $row["branch_id"], _("Delete"), '', ICON_DELETE);
+          return Form::button("Delete" . $row["branch_id"], _("Delete"), '', ICON_DELETE);
         }
         )
       );
@@ -239,17 +239,17 @@
       $_POST['payment_discount_account'] = $company_record['default_prompt_payment_act'];
     }
   }
-  hidden('selected_id', $selected_id);
-  hidden('branch_id');
-  hidden('frame', Input::request('frame'));
+  Form::hidden('selected_id', $selected_id);
+  Form::hidden('branch_id');
+  Form::hidden('frame', Input::request('frame'));
   Table::sectionTitle(_("Name and Contact"));
-  text_row(_("Branch Name:"), 'br_name', null, 35, 40);
-  text_row(_("Branch Short Name:"), 'br_ref', null, 30, 30);
-  text_row(_("Contact Person:"), 'contact_name', null, 35, 40);
-  text_row(_("Phone Number:"), 'phone', null, 32, 30);
-  text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
-  text_row(_("Fax Number:"), 'fax', null, 32, 30);
-  email_row(_("E-mail:"), 'email', null, 35, 55);
+   Form::textRow(_("Branch Name:"), 'br_name', null, 35, 40);
+   Form::textRow(_("Branch Short Name:"), 'br_ref', null, 30, 30);
+   Form::textRow(_("Contact Person:"), 'contact_name', null, 35, 40);
+   Form::textRow(_("Phone Number:"), 'phone', null, 32, 30);
+   Form::textRow(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
+   Form::textRow(_("Fax Number:"), 'fax', null, 32, 30);
+   Form::emailRow(_("E-mail:"), 'email', null, 35, 55);
   Table::sectionTitle(_("Sales"));
   Sales_UI::persons_row(_("Sales Person:"), 'salesman', null);
   Sales_UI::areas_row(_("Sales Area:"), 'area', null);
@@ -257,7 +257,7 @@
   Inv_Location::row(_("Default Inventory Location:"), 'default_location', null);
   Sales_UI::shippers_row(_("Default Shipping Company:"), 'default_ship_via', null);
   Tax_Groups::row(_("Tax Group:"), 'tax_group_id', null);
-  yesno_list_row(_("Disable this Branch:"), 'disable_trans', null);
+   Form::yesnoListRow(_("Disable this Branch:"), 'disable_trans', null);
   Table::section(2);
   Table::sectionTitle(_("GL Accounts"));
   // 2006-06-14. Changed gl_al_accounts_list to have an optional all_option 'Use Item Sales Accounts'
@@ -266,10 +266,10 @@
   GL_UI::all_row(_("Accounts Receivable Account:"), 'receivables_account');
   GL_UI::all_row(_("Prompt Payment Discount Account:"), 'payment_discount_account');
   Table::sectionTitle(_("Addresses"));
-  textarea_row(_("Mailing Address:"), 'br_post_address', null, 35, 4);
-  textarea_row(_("Billing Address:"), 'br_address', null, 35, 4);
-  textarea_row(_("General Notes:"), 'notes', null, 35, 4);
+   Form::textareaRow(_("Mailing Address:"), 'br_post_address', null, 35, 4);
+   Form::textareaRow(_("Billing Address:"), 'br_address', null, 35, 4);
+   Form::textareaRow(_("General Notes:"), 'notes', null, 35, 4);
   Table::endOuter(1);
-  submit_add_or_update_center($selected_id == -1, '', 'both');
-  end_form();
+  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Form::end();
   Page::end();

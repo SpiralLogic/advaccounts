@@ -89,7 +89,7 @@
      */
     public static function    can_process()
     {
-      if (!get_post('supplier_id')) {
+      if (!Form::getPost('supplier_id')) {
         Event::error(_("There is no supplier selected."));
         JS::set_focus('supplier_id');
 

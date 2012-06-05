@@ -32,31 +32,31 @@
     unset($_SESSION['adj_items']);
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$trans_no");
   } /*end of process credit note */
-  $id = find_submit(MODE_DELETE);
+  $id = Form::findPostPrefix(MODE_DELETE);
   if ($id != -1) {
     handle_delete_item($id);
   }
-  if (isset($_POST['AddItem'])) {
+  if (isset($_POST['addLine'])) {
     handle_new_item();
   }
-  if (isset($_POST['UpdateItem'])) {
+  if (isset($_POST['updateItem'])) {
     handle_update_item();
   }
-  if (isset($_POST['CancelItemChanges'])) {
+  if (isset($_POST['cancelItem'])) {
     Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_GET['NewAdjustment']) || !isset($_SESSION['adj_items'])) {
     handle_new_order();
   }
-  start_form();
+  Form::start();
   Inv_Adjustment::header($_SESSION['adj_items']);
   Table::startOuter('tablestyle width80 pad10');
   Inv_Adjustment::display_items(_("Adjustment Items"), $_SESSION['adj_items']);
   Inv_Adjustment::option_controls();
   Table::endOuter(1, false);
-  submit_center_first('Update', _("Update"), '', null);
-  submit_center_last('Process', _("Process Adjustment"), '', 'default');
-  end_form();
+  Form::submitCenterBegin('Update', _("Update"), '', null);
+  Form::submitCenterEnd('Process', _("Process Adjustment"), '', 'default');
+  Form::end();
   Page::end();
   /**
    * @return bool
@@ -81,7 +81,7 @@
 
   function handle_update_item()
   {
-    if ($_POST['UpdateItem'] != "" && check_item_data()) {
+    if ($_POST['updateItem'] != "" && check_item_data()) {
       $id = $_POST['LineNo'];
       $_SESSION['adj_items']->update_order_item($id, Validation::input_num('qty'), Validation::input_num('std_cost'));
     }

@@ -10,7 +10,7 @@
   $js = "";
   Page::start(_($help_context = "Balance Sheet Drilldown"), SA_GLANALYTIC);
   // Ajax updates
-  if (get_post('Show')) {
+  if (Form::getPost('Show')) {
     Ajax::i()->activate('balance_tbl');
   }
   if (isset($_GET["TransFromDate"])) {
@@ -22,10 +22,10 @@
   if (isset($_GET["AccGrp"])) {
     $_POST["AccGrp"] = $_GET["AccGrp"];
   }
-  start_form();
+  Form::start();
   inquiry_controls();
   display_balance_sheet();
-  end_form();
+  Form::end();
   Page::end();
   /**
    * @param $type
@@ -94,11 +94,11 @@
   function inquiry_controls()
   {
     Table::start('tablestyle_noborder');
-    date_cells(_("As at:"), 'TransToDate');
-    submit_cells('Show', _("Show"), '', '', 'default');
+     Form::dateCells(_("As at:"), 'TransToDate');
+    Form::submitCells('Show', _("Show"), '', '', 'default');
     Table::end();
-    hidden('TransFromDate');
-    hidden('AccGrp');
+    Form::hidden('TransFromDate');
+    Form::hidden('AccGrp');
   }
 
   function display_balance_sheet()

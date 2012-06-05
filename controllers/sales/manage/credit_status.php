@@ -31,15 +31,15 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav = Form::getPost('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Sales_CreditStatus::get_all(check_value('show_inactive'));
-  start_form();
+  $result = Sales_CreditStatus::get_all(Form::hasPost('show_inactive'));
+  Form::start();
   Table::start('tablestyle grid width40');
   $th = array(_("Description"), _("Dissallow Invoices"), '', '');
-  inactive_control_column($th);
+   Form::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
@@ -52,12 +52,12 @@
     }
     Cell::label($myrow["reason_description"]);
     Cell::label($disallow_text);
-    inactive_control_cell($myrow["id"], $myrow["inactive"], 'credit_status', 'id');
-    edit_button_cell("Edit" . $myrow['id'], _("Edit"));
-    delete_button_cell("Delete" . $myrow['id'], _("Delete"));
+     Form::inactiveControlCell($myrow["id"], $myrow["inactive"], 'credit_status', 'id');
+    Form::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
+    Form::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
     Row::end();
   }
-  inactive_control_row($th);
+   Form::inactiveControlRow($th);
   Table::end();
   echo '<br>';
   Table::start('tablestyle2');
@@ -68,11 +68,11 @@
       $_POST['reason_description'] = $myrow["reason_description"];
       $_POST['DisallowInvoices'] = $myrow["dissallow_invoices"];
     }
-    hidden('selected_id', $selected_id);
+    Form::hidden('selected_id', $selected_id);
   }
-  text_row_ex(_("Description:"), 'reason_description', 50);
-  yesno_list_row(_("Dissallow invoicing ?"), 'DisallowInvoices', NULL);
+   Form::textRowEx(_("Description:"), 'reason_description', 50);
+   Form::yesnoListRow(_("Dissallow invoicing ?"), 'DisallowInvoices', NULL);
   Table::end(1);
-  submit_add_or_update_center($selected_id == -1, '', 'both');
-  end_form();
+  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Form::end();
   Page::end();

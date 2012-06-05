@@ -124,7 +124,7 @@
     {
       $sql = "SELECT id, name FROM chart_types";
 
-      return select_box($name, $selected_id, $sql, 'id', 'name', array(
+      return Form::selectBox($name, $selected_id, $sql, 'id', 'name', array(
                                                                       'order'       => 'id',
                                                                       'spec_option' => $all_option,
                                                                       'spec_id'     => $all_option_numeric ? 0 : ALL_TEXT

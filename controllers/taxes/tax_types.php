@@ -26,18 +26,18 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = get_post('show_inactive');
+    $sav = Form::getPost('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Tax_Types::get_all(check_value('show_inactive'));
-  start_form();
+  $result = Tax_Types::get_all(Form::hasPost('show_inactive'));
+  Form::start();
   Event::warning(_("To avoid problems with manual journal entry all tax types should have unique Sales/Purchasing GL accounts."));
   Table::start('tablestyle grid');
   $th = array(
     _("Description"), _("Default Rate (%)"), _("Sales GL Account"), _("Purchasing GL Account"), "", ""
   );
-  inactive_control_column($th);
+   Form::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
@@ -46,12 +46,12 @@
     Cell::label(Num::percent_format($myrow["rate"]), "class='right'");
     Cell::label($myrow["sales_gl_code"] . "&nbsp;" . $myrow["SalesAccountName"]);
     Cell::label($myrow["purchasing_gl_code"] . "&nbsp;" . $myrow["PurchasingAccountName"]);
-    inactive_control_cell($myrow["id"], $myrow["inactive"], 'tax_types', 'id');
-    edit_button_cell("Edit" . $myrow["id"], _("Edit"));
-    delete_button_cell("Delete" . $myrow["id"], _("Delete"));
+     Form::inactiveControlCell($myrow["id"], $myrow["inactive"], 'tax_types', 'id');
+    Form::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
+    Form::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     Row::end();
   }
-  inactive_control_row($th);
+   Form::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != -1) {
@@ -63,13 +63,13 @@
       $_POST['sales_gl_code'] = $myrow["sales_gl_code"];
       $_POST['purchasing_gl_code'] = $myrow["purchasing_gl_code"];
     }
-    hidden('selected_id', $selected_id);
+    Form::hidden('selected_id', $selected_id);
   }
-  text_row_ex(_("Description:"), 'name', 50);
-  small_amount_row(_("Default Rate:"), 'rate', '0', "", "%", User::percent_dec());
+   Form::textRowEx(_("Description:"), 'name', 50);
+   Form::SmallAmountRow(_("Default Rate:"), 'rate', '0', "", "%", User::percent_dec());
   GL_UI::all_row(_("Sales GL Account:"), 'sales_gl_code', NULL);
   GL_UI::all_row(_("Purchasing GL Account:"), 'purchasing_gl_code', NULL);
   Table::end(1);
-  submit_add_or_update_center($selected_id == -1, '', 'both');
-  end_form();
+  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Form::end();
   Page::end();

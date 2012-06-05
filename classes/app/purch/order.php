@@ -596,10 +596,10 @@
         if (isset($_POST['supplier_id'])) {
           $this->supplier_to_order($_POST['supplier_id']);
         }
-        hidden('supplier_id', $this->supplier_id);
+        Form::hidden('supplier_id', $this->supplier_id);
         Row::label(_("Supplier:"), $this->supplier_name, 'class="label" name="supplier_name"');
       }
-      if ($this->supplier_id != get_post('supplier_id', -1)) {
+      if ($this->supplier_id != Form::getPost('supplier_id', -1)) {
         $old_supp = $this->supplier_id;
         $this->supplier_to_order($_POST['supplier_id']);
         // supplier default price update
@@ -615,18 +615,18 @@
         GL_ExchangeRate::display($this->curr_code, Bank_Currency::for_company(), $_POST['OrderDate']);
       }
       if ($editable) {
-        ref_row(_("Purchase Order #:"), 'ref', '', Ref::get_next(ST_PURCHORDER));
+         Form::refRow(_("Purchase Order #:"), 'ref', '', Ref::get_next(ST_PURCHORDER));
       } else {
-        hidden('ref', $this->reference);
+        Form::hidden('ref', $this->reference);
         Row::label(_("Purchase Order #:"), $this->reference);
       }
       Sales_UI::persons_row(_("Sales Person:"), 'salesman', $this->salesman);
       Table::section(2);
-      date_row(_("Order Date:"), 'OrderDate', '', true, 0, 0, 0, null, true);
+       Form::dateRow(_("Order Date:"), 'OrderDate', '', true, 0, 0, 0, null, true);
       if (isset($_POST['_OrderDate_changed'])) {
         Ajax::i()->activate('_ex_rate');
       }
-      text_row(_("Supplier's Order #:"), 'Requisition', null, 16, 15);
+       Form::textRow(_("Supplier's Order #:"), 'Requisition', null, 16, 15);
       Inv_Location::row(_("Receive Into:"), 'location', null, false, true);
       Table::section(3);
       if (!isset($_POST['location']) || $_POST['location'] == "" || isset($_POST['_location_update']) || !isset($_POST['delivery_address']) || $_POST['delivery_address'] == "") {
@@ -642,7 +642,7 @@
           Event::error(_("The default stock location set up for this user is not a currently defined stock location. Your system administrator needs to amend your user record."));
         }
       }
-      textarea_row(_("Deliver to:"), 'delivery_address', $_POST['delivery_address'], 35, 4);
+       Form::textareaRow(_("Deliver to:"), 'delivery_address', $_POST['delivery_address'], 35, 4);
       Table::endOuter(); // outer table
     }
     /**
@@ -669,7 +669,7 @@
         $th[] = '';
       }
       Table::header($th);
-      $id    = find_submit(MODE_EDIT);
+      $id    = Form::findPostPrefix(MODE_EDIT);
       $total = 0;
       $k     = 0;
       if (!$this->line_items) {
@@ -689,8 +689,8 @@
               Cell::percent($po_line->discount * 100);
               Cell::amount($line_total);
               if ($editable) {
-                edit_button_cell("Edit$line_no", _("Edit"), _('Edit document line'));
-                delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
+                Form::buttonEditCell("Edit$line_no", _("Edit"), _('Edit document line'));
+                Form::buttonDeleteCell("Delete$line_no", _("Delete"), _('Remove line from document'));
               }
               Row::end();
             } else {
@@ -704,7 +704,7 @@
         $this->item_controls();
       }
       Table::foot();
-      small_amount_row(_("Freight"), 'freight', Num::price_format(get_post('freight', 0)), "colspan=8 class='bold right'", null, null, 3);
+       Form::SmallAmountRow(_("Freight"), 'freight', Num::price_format(Form::getPost('freight', 0)), "colspan=8 class='bold right'", null, null, 3);
       $display_total = Num::price_format($total + Validation::input_num('freight'));
       Row::label(_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 class='bold right'", "nowrap class=right _nofreight='$total'", 2);
       Table::footEnd();
@@ -758,9 +758,9 @@
     {
       Row::start();
       $dec2 = 0;
-      $id   = find_submit(MODE_EDIT);
+      $id   = Form::findPostPrefix(MODE_EDIT);
       if (($id != -1) && $stock_id != null) {
-        hidden('line_no', $id);
+        Form::hidden('line_no', $id);
         $_POST['stock_id'] = $this->line_items[$id]->stock_id;
         $dec               = Item::qty_dec($_POST['stock_id']);
         $_POST['qty']      = Item::qty_format($this->line_items[$id]->quantity, $_POST['stock_id'], $dec);
@@ -770,15 +770,15 @@
         $_POST['req_del_date'] = $this->line_items[$id]->req_del_date;
         $_POST['description']  = $this->line_items[$id]->description;
         $_POST['units']        = $this->line_items[$id]->units;
-        hidden('stock_id', $_POST['stock_id']);
+        Form::hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id'], " class='stock' data-stock_id='{$_POST['stock_id']}'");
-        textarea_cells(null, 'description', null, 50, 5);
+         Form::textareaCells(null, 'description', null, 50, 5);
         Ajax::i()->activate('items_table');
         $qty_rcvd = $this->line_items[$id]->qty_received;
       } else {
-        hidden('line_no', ($this->lines_on_order + 1));
+        Form::hidden('line_no', ($this->lines_on_order + 1));
         Item_Purchase::cells(null, 'stock_id', null, false, true, true);
-        if (list_updated('stock_id')) {
+        if (Form::isListUpdated('stock_id')) {
           Ajax::i()->activate('price');
           Ajax::i()->activate('units');
           Ajax::i()->activate('description');
@@ -797,20 +797,20 @@
         $_POST['discount']     = Num::percent_format(0);
         $qty_rcvd              = '';
       }
-      qty_cells(null, 'qty', null, null, null, $dec);
+       Form::qtyCells(null, 'qty', null, null, null, $dec);
       Cell::qty($qty_rcvd, false, $dec);
       Cell::label($_POST['units'], '', 'units');
-      date_cells(null, 'req_del_date', '', null, 0, 0, 0);
-      amount_cells(null, 'price', null, null, null, $dec2);
-      small_amount_cells(null, 'discount', Num::percent_format($_POST['discount']), null, null, User::percent_dec());
+       Form::dateCells(null, 'req_del_date', '', null, 0, 0, 0);
+       Form::amountCells(null, 'price', null, null, null, $dec2);
+       Form::amountCellsSmall(null, 'discount', Num::percent_format($_POST['discount']), null, null, User::percent_dec());
       $line_total = Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('discount') / 100);
       Cell::amount($line_total, false, '', 'line_total');
       if ($id != -1) {
-        button_cell(UPDATE_ITEM, _("Update"), _('Confirm changes'), ICON_UPDATE);
-        button_cell(CANCEL, _("Cancel"), _('Cancel changes'), ICON_CANCEL);
+        Form::buttonCell(UPDATE_ITEM, _("Update"), _('Confirm changes'), ICON_UPDATE);
+        Form::buttonCell(CANCEL, _("Cancel"), _('Cancel changes'), ICON_CANCEL);
         JS::set_focus('qty');
       } else {
-        submit_cells(ADD_ITEM, _("Add Item"), "colspan=2", _('Add new item to document'), true);
+        Form::submitCells(ADD_ITEM, _("Add Item"), "colspan=2", _('Add new item to document'), true);
       }
       Row::end();
     }

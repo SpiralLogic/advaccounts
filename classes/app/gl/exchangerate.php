@@ -244,7 +244,7 @@
         }
         $rate = Num::format($rate, User::exrate_dec());
         if ($edit_rate) {
-          text_cells(_("Exchange Rate:"), '_ex_rate', $rate, 8, 8, null, "class='label'", " $from_currency = 1 $to_currency");
+           Form::textCells(_("Exchange Rate:"), '_ex_rate', $rate, 8, 8, null, "class='label'", " $from_currency = 1 $to_currency");
         } else {
           Cell::labels(_("Exchange Rate:"), "<span style='vertical-align:top;' id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency", '');
         }

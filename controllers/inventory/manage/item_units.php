@@ -50,15 +50,15 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = '';
-    $sav         = get_post('show_inactive');
+    $sav         = Form::getPost('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Item_Unit::get_all(check_value('show_inactive'));
-  start_form();
+  $result = Item_Unit::get_all(Form::hasPost('show_inactive'));
+  Form::start();
   Table::start('tablestyle grid width40');
   $th = array(_('Unit'), _('Description'), _('Decimals'), "", "");
-  inactive_control_column($th);
+   Form::inactiveControlCol($th);
   Table::header($th);
   $k = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
@@ -66,12 +66,12 @@
     Cell::label($myrow["abbr"]);
     Cell::label($myrow["name"]);
     Cell::label(($myrow["decimals"] == -1 ? _("User Quantity Decimals") : $myrow["decimals"]));
-    inactive_control_cell($myrow["abbr"], $myrow["inactive"], 'item_units', 'abbr');
-    edit_button_cell("Edit" . $myrow["abbr"], _("Edit"));
-    delete_button_cell("Delete" . $myrow["abbr"], _("Delete"));
+     Form::inactiveControlCell($myrow["abbr"], $myrow["inactive"], 'item_units', 'abbr');
+    Form::buttonEditCell("Edit" . $myrow["abbr"], _("Edit"));
+    Form::buttonDeleteCell("Delete" . $myrow["abbr"], _("Delete"));
     Row::end();
   }
-  inactive_control_row($th);
+   Form::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != '') {
@@ -82,19 +82,19 @@
       $_POST['description'] = $myrow["name"];
       $_POST['decimals']    = $myrow["decimals"];
     }
-    hidden('selected_id', $selected_id);
+    Form::hidden('selected_id', $selected_id);
   }
   if ($selected_id != '' && Item_Unit::used($selected_id)) {
     Row::label(_("Unit Abbreviation:"), $_POST['abbr']);
-    hidden('abbr', $_POST['abbr']);
+    Form::hidden('abbr', $_POST['abbr']);
   } else {
-    text_row(_("Unit Abbreviation:"), 'abbr', NULL, 20, 20);
+     Form::textRow(_("Unit Abbreviation:"), 'abbr', NULL, 20, 20);
   }
-  text_row(_("Descriptive Name:"), 'description', NULL, 40, 40);
-  number_list_row(_("Decimal Places:"), 'decimals', NULL, 0, 6, _("User Quantity Decimals"));
+   Form::textRow(_("Descriptive Name:"), 'description', NULL, 40, 40);
+   Form::numberListRow(_("Decimal Places:"), 'decimals', NULL, 0, 6, _("User Quantity Decimals"));
   Table::end(1);
-  submit_add_or_update_center($selected_id == '', '', 'both');
-  end_form();
+  Form::submitAddUpdateCenter($selected_id == '', '', 'both');
+  Form::end();
   Page::end();
 
 

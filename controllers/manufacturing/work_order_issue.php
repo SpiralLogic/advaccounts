@@ -93,7 +93,7 @@
 
   function handle_update_item()
   {
-    if ($_POST['UpdateItem'] != "" && check_item_data()) {
+    if ($_POST['updateItem'] != "" && check_item_data()) {
       $id = $_POST['LineNo'];
       $_SESSION['issue_items']->update_order_item($id, Validation::input_num('qty'), Validation::input_num('std_cost'));
     }
@@ -118,17 +118,17 @@
     Item_Line::start_focus('_stock_id_edit');
   }
 
-  $id = find_submit(MODE_DELETE);
+  $id = Form::findPostPrefix(MODE_DELETE);
   if ($id != -1) {
     handle_delete_item($id);
   }
-  if (isset($_POST['AddItem'])) {
+  if (isset($_POST['addLine'])) {
     handle_new_item();
   }
-  if (isset($_POST['UpdateItem'])) {
+  if (isset($_POST['updateItem'])) {
     handle_update_item();
   }
-  if (isset($_POST['CancelItemChanges'])) {
+  if (isset($_POST['cancelItem'])) {
     Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_GET['trans_no'])) {
@@ -136,14 +136,14 @@
   }
   WO_Cost::display($_SESSION['issue_items']->order_id);
   echo "<br>";
-  start_form();
+  Form::start();
   Table::start('tablesstyle width90 pad10');
   echo "<tr><td>";
   WO_Issue::display_items(_("Items to Issue"), $_SESSION['issue_items']);
   WO_Issue::option_controls();
   echo "</td></tr>";
   Table::end();
-  submit_center('Process', _("Process Issue"), true, '', 'default');
-  end_form();
+  Form::submitCenter('Process', _("Process Issue"), true, '', 'default');
+  Form::end();
   Page::end();
 

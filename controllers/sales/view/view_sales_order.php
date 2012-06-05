@@ -30,7 +30,7 @@
   Table::start('tablestyle width100');
   Row::start();
   Cell::labels(_("Customer Name"), $_SESSION['View']->customer_name, "class='label pointer customer_id_label'", 'class="pointer" id="customer_id_label"');
-  hidden("customer_id", $_SESSION['View']->customer_id);
+  Form::hidden("customer_id", $_SESSION['View']->customer_id);
   Cell::labels(_("Deliver To Branch"), $_SESSION['View']->deliver_to, "class='label'");
   Cell::labels(_("Person Ordering"), nl2br($_SESSION['View']->name), "class='label'");
   Row::end();

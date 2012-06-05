@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class User {
-
+  class User
+  {
     use \ADV\Core\Traits\Hook;
 
     /***
@@ -76,13 +76,11 @@
      * @var bool
      */
     public $change_password = FALSE;
-
     public $selectedApp;
     /**
      * @var
      */
     protected $access_sections;
-
     protected $_hash;
     /**
      * @var null
@@ -95,7 +93,8 @@
     /**
 
      */
-    public function __construct() {
+    public function __construct()
+    {
       $this->loginname = $this->username = $this->name = "";
       $this->company   = Config::get('default.company') ? : 'default';
       $this->logged    = FALSE;
@@ -104,7 +103,8 @@
     /**
      * @param null $salesmanid
      */
-    public function set_salesman($salesmanid = NULL) {
+    public function set_salesman($salesmanid = NULL)
+    {
       if ($salesmanid == NULL) {
         $salesman_name = $this->name;
         $sql           = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::escape($salesman_name);
@@ -121,7 +121,8 @@
     /**
      * @return bool
      */
-    public function logged_in() {
+    public function logged_in()
+    {
       $this->timeout();
       if ($this->logged && date('i', time() - $this->last_record) > 4) {
         static::i()->last_record = time();
@@ -132,7 +133,8 @@
     /**
      * @param $company
      */
-    public function set_company($company) {
+    public function set_company($company)
+    {
       $this->company = $company;
     }
     /**
@@ -142,7 +144,8 @@
      * @internal param $password
      * @return bool
      */
-    public function login($company, $loginname) {
+    public function login($company, $loginname)
+    {
       $this->set_company($company);
       $this->logged = FALSE;
       $myrow        = Users::get_for_login($loginname, $_POST['password']);
@@ -152,7 +155,7 @@
           $this->access   = $myrow["role_id"];
           $this->_hash    = $myrow["hash"];
           // store area codes available for current user role
-          $role = Security::get_role($this->access);
+          $role = Security::i()->get_role($this->access);
           if (!$role) {
             return FALSE;
           }
@@ -188,7 +191,8 @@
      * @param       $function
      * @param array $arguments
      */
-    public static function register_login($object, $function = NULL, $arguments = array()) {
+    public static function register_login($object, $function = NULL, $arguments = array())
+    {
       User::registerHook('login', $object, $function, $arguments);
     }
     /**
@@ -198,13 +202,15 @@
      * @param       $function
      * @param array $arguments
      */
-    public static function register_logout($object, $function, $arguments = array()) {
+    public static function register_logout($object, $function, $arguments = array())
+    {
       User::registerHook('logout', $object, $function, $arguments);
     }
     /**
 
      */
-    public function timeout() {
+    public function timeout()
+    {
       // skip timeout on logout page
       if ($this->logged) {
         $tout = $this->timeout;
@@ -214,19 +220,19 @@
         $this->last_act = time();
       }
     }
-    public static function addLog() {
+    public static function addLog()
+    {
       DB::insert('user_login_log')->values(array(
-        'user'    => static::i()->username,
-        'IP'      => Users::get_ip(),
-        'success' => 2
-      ))->exec();
+                                                'user'    => static::i()->username, 'IP'      => Users::get_ip(), 'success' => 2
+                                           ))->exec();
     }
     /**
      * @param $page_level
      *
      * @return bool
      */
-    public function can_access($page_level) {
+    public function can_access($page_level)
+    {
       global $security_areas;
       if ($page_level === SA_OPEN) {
         return TRUE;
@@ -238,8 +244,7 @@
       if (isset($security_areas[$page_level])) {
         $code   = $security_areas[$page_level][0];
         $access = $code && in_array($code, $this->role_set);
-      }
-      elseif (isset($this->access_sections) && in_array($page_level, $this->access_sections)) {
+      } elseif (isset($this->access_sections) && in_array($page_level, $this->access_sections)) {
         $access = in_array($page_level, $this->access_sections);
       }
       // only first registered company has site admin privileges
@@ -250,7 +255,8 @@
      *
      * @return bool
      */
-    public function can_access_page($page_level) {
+    public function can_access_page($page_level)
+    {
       return $this->can_access($page_level);
     }
     /**
@@ -275,7 +281,8 @@
      * @param $stickydate
      * @param $startup_tab
      */
-    public function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $show_gl, $show_codes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $page_size, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab) {
+    public function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $show_gl, $show_codes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $page_size, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab)
+    {
       $user = array(
         'price_dec'       => $price_dec,
         'qty_dec'         => $qty_dec,
@@ -307,11 +314,11 @@
      * @static
      * @return User
      */
-    public static function i() {
+    public static function i()
+    {
       if (isset($_SESSION["current_user"])) {
         static::$_instance = $_SESSION["current_user"];
-      }
-      elseif (static::$_instance === NULL) {
+      } elseif (static::$_instance === NULL) {
         static::$_instance = $_SESSION["current_user"] = new static;
       }
       return static::$_instance;
@@ -320,14 +327,16 @@
      * @static
      * @return userPrefs
      */
-    public static function prefs() {
+    public static function prefs()
+    {
       return static::i()->prefs;
     }
     /**
      * @static
 
      */
-    public static function add_js_data() {
+    public static function add_js_data()
+    {
       $js
         = "var user = {theme: '/themes/" . static::theme() . "/',loadtxt: '" . _('Requesting data...') . "',date: '" . Dates::today() . "',datefmt: " . static::date_format() . ",datesep: '" . Config::get('date.ui_format') . "',
         ts: '" . static::tho_sep() . "',ds: '" . static::dec_sep() . "',pdec: " . static::price_dec() . "};";
@@ -337,7 +346,8 @@
      * @static
      * @return bool
      */
-    public static function  fallback() {
+    public static function  fallback()
+    {
       return static::i()->ui_mode == 0;
     }
     /**
@@ -347,7 +357,8 @@
      *
      * @return bool|float|int|mixed|string
      */
-    public static function  numeric($input) {
+    public static function  numeric($input)
+    {
       $num = trim($input);
       $sep = static::tho_sep();
       if ($sep != '') {
@@ -363,8 +374,7 @@
       $num = (float) $num;
       if ($num == (int) $num) {
         return (int) $num;
-      }
-      else {
+      } else {
         return $num;
       }
     }
@@ -372,167 +382,192 @@
      * @static
      * @return mixed
      */
-    public static function  pos() {
+    public static function  pos()
+    {
       return static::i()->pos;
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  language() {
+    public static function  language()
+    {
       return static::prefs()->language();
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  qty_dec() {
+    public static function  qty_dec()
+    {
       return static::prefs()->qty_dec();
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  price_dec() {
+    public static function  price_dec()
+    {
       return static::prefs()->price_dec();
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  exrate_dec() {
+    public static function  exrate_dec()
+    {
       return static::prefs()->exrate_dec();
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  percent_dec() {
+    public static function  percent_dec()
+    {
       return static::prefs()->percent_dec();
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  show_gl() {
+    public static function  show_gl()
+    {
       return static::prefs()->show_gl();
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  show_codes() {
+    public static function  show_codes()
+    {
       return static::prefs()->show_codes();
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  date_format() {
+    public static function  date_format()
+    {
       return static::prefs()->date_format();
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  date_display() {
+    public static function  date_display()
+    {
       return static::prefs()->date_display();
     }
     /**
      * @static
      * @return int
      */
-    public static function  date_sep() {
+    public static function  date_sep()
+    {
       return (isset($_SESSION["current_user"])) ? static::prefs()->date_sep() : Config::get('date.ui_separator');
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  tho_sep() {
+    public static function  tho_sep()
+    {
       return static::prefs()->tho_sep();
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  dec_sep() {
+    public static function  dec_sep()
+    {
       return static::prefs()->dec_sep();
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  theme() {
+    public static function  theme()
+    {
       return static::prefs()->get_theme();
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  page_size() {
+    public static function  page_size()
+    {
       return static::prefs()->get_pagesize();
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  hints() {
+    public static function  hints()
+    {
       return static::prefs()->show_hints();
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  print_profile() {
+    public static function  print_profile()
+    {
       return static::prefs()->print_profile();
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  rep_popup() {
+    public static function  rep_popup()
+    {
       return static::prefs()->rep_popup();
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  query_size() {
+    public static function  query_size()
+    {
       return static::prefs()->query_size();
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  graphic_links() {
+    public static function  graphic_links()
+    {
       return static::prefs()->graphic_links();
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  sticky_doc_date() {
+    public static function  sticky_doc_date()
+    {
       return static::prefs()->sticky_doc_date();
     }
     /**
      * @static
      * @return mixed
      */
-    public static function  startup_tab() {
+    public static function  startup_tab()
+    {
       return static::prefs()->start_up_tab();
     }
     /**
      * @return mixed
      */
-    private function get_salesmanid() {
+    private function get_salesmanid()
+    {
       return DB::select('salesman_code')->from('salesman')->where('user_id=', $this->user)->fetch()->one('salesman_code');
     }
-    public static function logout() {
+    public static function logout()
+    {
       Session::kill();
       static::i()->logged = FALSE;
     }
-    public function getHash() {
+    public function getHash()
+    {
       return $this->_hash;
     }
   }

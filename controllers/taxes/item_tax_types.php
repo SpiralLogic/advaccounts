@@ -23,7 +23,7 @@
       $tax_types   = Tax_Types::get_all_simple();
       $i           = 0;
       while ($myrow = DB::fetch($tax_types)) {
-        if (check_value('ExemptTax' . $myrow["id"])) {
+        if (Form::hasPost('ExemptTax' . $myrow["id"])) {
           $exempt_from[$i] = $myrow["id"];
           $i++;
         }
@@ -44,15 +44,15 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav         = get_post('show_inactive');
+    $sav         = Form::getPost('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result2 = $result = Tax_ItemType::get_all(check_value('show_inactive'));
-  start_form();
+  $result2 = $result = Tax_ItemType::get_all(Form::hasPost('show_inactive'));
+  Form::start();
   Table::start('tablestyle grid width30');
   $th = array(_("Name"), _("Tax exempt"), '', '');
-  inactive_control_column($th);
+   Form::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result2)) {
@@ -64,12 +64,12 @@
     }
     Cell::label($myrow["name"]);
     Cell::label($disallow_text);
-    inactive_control_cell($myrow["id"], $myrow["inactive"], 'item_tax_types', 'id');
-    edit_button_cell("Edit" . $myrow["id"], _("Edit"));
-    delete_button_cell("Delete" . $myrow["id"], _("Delete"));
+     Form::inactiveControlCell($myrow["id"], $myrow["inactive"], 'item_tax_types', 'id');
+    Form::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
+    Form::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     Row::end();
   }
-  inactive_control_row($th);
+   Form::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != -1) {
@@ -86,10 +86,10 @@
         }
       }
     }
-    hidden('selected_id', $selected_id);
+    Form::hidden('selected_id', $selected_id);
   }
-  text_row_ex(_("Description:"), 'name', 50);
-  yesno_list_row(_("Is Fully Tax-exempt:"), 'exempt', NULL, "", "", TRUE);
+   Form::textRowEx(_("Description:"), 'name', 50);
+   Form::yesnoListRow(_("Is Fully Tax-exempt:"), 'exempt', NULL, "", "", TRUE);
   Table::end(1);
   if (!isset($_POST['exempt']) || $_POST['exempt'] == 0) {
     Event::warning(_("Select which taxes this item tax type is exempt from."), 0, 1);
@@ -101,13 +101,13 @@
 
       Cell::label($myrow["name"]);
       Cell::label(Num::percent_format($myrow["rate"]) . " %", ' class="right nowrap"');
-      check_cells("", 'ExemptTax' . $myrow["id"], NULL);
+       Form::checkCells("", 'ExemptTax' . $myrow["id"], NULL);
       Row::end();
     }
     Table::end(1);
   }
-  submit_add_or_update_center($selected_id == -1, '', 'both');
-  end_form();
+  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Form::end();
   Page::end();
 /**
  * @param $selected_id

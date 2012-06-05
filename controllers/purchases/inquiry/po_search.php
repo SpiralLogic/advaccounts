@@ -15,10 +15,10 @@
   $_POST['supplier_id']         = Input::get_post('supplier_id', Input::NUMERIC, 0);
   // Ajax updates
   //
-  if (get_post('SearchOrders')) {
+  if (Form::getPost('SearchOrders')) {
     Ajax::i()->activate('orders_tbl');
-  } elseif (get_post('_order_number_changed')) {
-    $disable = get_post('order_number') !== '';
+  } elseif (Form::getPost('_order_number_changed')) {
+    $disable = Form::getPost('order_number') !== '';
     Ajax::i()->addDisable(true, 'OrdersAfterDate', $disable);
     Ajax::i()->addDisable(true, 'OrdersToDate', $disable);
     Ajax::i()->addDisable(true, 'StockLocation', $disable);
@@ -31,16 +31,16 @@
     }
     Ajax::i()->activate('orders_tbl');
   }
-  start_form();
+  Form::start();
   Table::start('tablestyle_noborder');
   Row::start();
   Creditor::cells(_("Supplier: "), 'supplier_id', Input::post('supplier_id'), true);
-  ref_cells(_("#:"), 'order_number', '', null, '', true);
-  date_cells(_("From:"), 'OrdersAfterDate', '', null, -30);
-  date_cells(_("To:"), 'OrdersToDate');
+   Form::refCells(_("#:"), 'order_number', '', null, '', true);
+   Form::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
+   Form::dateCells(_("To:"), 'OrdersToDate');
   Inv_Location::cells(_("Location:"), 'StockLocation', null, true);
   //Item::cells(_("Item:"), 'SelectStockFromList', null, true,false,false,false,true);
-  submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
+  Form::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
   Row::end();
   Table::end();
   //figure out the sql required from the inputs available
@@ -104,7 +104,7 @@
       'insert' => true, 'fun' => function ($row) { return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE); }
     )
   );
-  if (get_post('StockLocation') != ALL_TEXT) {
+  if (Form::getPost('StockLocation') != ALL_TEXT) {
     $cols[_("Location")] = 'skip';
   }
   $table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
@@ -112,5 +112,5 @@
   $table->width = "80%";
   DB_Pager::display($table);
   Creditor::addInfoDialog('.pagerclick');
-  end_form();
+  Form::end();
   Page::end();
