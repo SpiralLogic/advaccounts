@@ -26,8 +26,7 @@
     $sql
                = "SELECT debtor_trans.*,
                 SUM((debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
-                debtor_trans.ov_freight_tax + debtor_trans.ov_discount))
-                AS TotalAmount, SUM(debtor_trans.alloc) AS Allocated,
+                debtor_trans.ov_freight_tax + debtor_trans.ov_discount) * IF(debtor_trans.type = ".ST_SALESINVOICE.",1,-1) ) AS TotalAmount, SUM(debtor_trans.alloc* IF(debtor_trans.type = ".ST_CUSTPAYMENT.",-1,1)) AS Allocated,
                 ( debtor_trans.due_date < '$datestart') AS OverDue
              FROM debtor_trans
              WHERE debtor_trans.due_date <= '$dateend' AND debtor_trans.debtor_id = " . DB::escape($debtorno) . "
@@ -148,13 +147,13 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
           $outstanding         = abs($trans["TotalAmount"] - $trans["Allocated"]);
           $display_outstanding = Num::format($outstanding, $dec);
           if ($inc_all) {
-            $balance += ($trans['type'] == ST_SALESINVOICE) ? $outstanding : -$outstanding;
+            $balance += ($trans['type'] == ST_SALESINVOICE ) ? $outstanding : -$outstanding;
           } else {
-            $balance += ($trans['type'] == ST_SALESINVOICE) ? $trans["TotalAmount"] : -$trans["TotalAmount"];
+            $balance += ($trans['type'] == ST_SALESINVOICE||true) ? $trans["TotalAmount"] : -$trans["TotalAmount"];
           }
         }
         $display_balance = Num::format($balance, $dec);
-        if ($inc_all && $outstanding == 0) {
+        if ($inc_all  && $outstanding == 0) {
           continue;
         }
         if ($openingbalance && !$inc_all) {
