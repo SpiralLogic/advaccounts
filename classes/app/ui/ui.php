@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class UI extends HTML
-  {
+  class UI extends HTML {
+
     /**
      * @static
      *
@@ -185,8 +185,8 @@
       HTML::input($id, array('value' => $o['selected'], 'name' => $id, 'size' => $o['size']));
       if ($o['editable']) {
         HTML::label('lineedit', 'edit', array(
-                                             'for' => $id, 'class' => 'stock button', 'style' => 'display:none'
-                                        ), false);
+          'for' => $id, 'class' => 'stock button', 'style' => 'display:none'
+        ), false);
         $desc_js .= '$("#lineedit").data("stock_id",value.stock_id).show().parent().css("white-space","nowrap"); ';
       }
       if ($o['cells']) {
@@ -197,8 +197,8 @@
         $selectjs = $o['selectjs'];
       } elseif ($o['description'] !== false) {
         HTML::textarea('description', $o['description'], array(
-                                                              'name' => 'description', 'rows' => 1, 'cols' => 35
-                                                         ), false);
+          'name' => 'description', 'rows' => 1, 'cols' => 35
+        ), false);
         $desc_js .= "$('#description').css('height','auto').attr('rows',4);";
       } elseif ($o['submitonselect']) {
         $selectjs
@@ -283,8 +283,8 @@ JS;
       $emailBox = new Dialog('Select Email Address:', 'emailBox', '');
       $emailBox->addButtons(array('Close' => '$(this).dialog("close");'));
       $emailBox->setOptions(array(
-                                 'modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false
-                            ));
+        'modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false
+      ));
       $emailBox->show();
       $action
         = <<<JS
@@ -298,5 +298,29 @@ JS;
 JS;
       JS::addLiveEvent('.email-button', 'click', $action, 'wrapper', true);
       $loaded = true;
+    }
+    public static function lineSortable()
+    {
+      $js = <<<JS
+$('.grid').find('tbody').sortable({
+  items:'tr:not(.edit)',
+  stop:function () {
+    var _this = $(this).find('tr:not(".edit")'), lines = {};
+    $.each(_this, function (k, v) {
+      lines[$(this).data('line')] = k;
+      if (k == _this.length - 1) {
+        $.post('#', {lineMap:lines, _action:'setLineOrder'},
+          function (data) {console.log(data)}, 'json');
+      }
+    });
+  },
+  helper:function (e, ui) {
+    ui.children().each(function () {
+      $(this).width($(this).width());
+    });
+    return ui;
+  }});
+JS;
+      JS::addLive($js);
     }
   }

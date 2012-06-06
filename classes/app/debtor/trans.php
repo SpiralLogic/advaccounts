@@ -177,7 +177,7 @@
       }
       $SQLDate = Dates::date2sql($date_);
       if ($due_date == "") {
-        $SQLDueDate = "0000-00-00";
+        $SQLDueDate = $SQLDate;
       } else {
         $SQLDueDate = Dates::date2sql($due_date);
       }

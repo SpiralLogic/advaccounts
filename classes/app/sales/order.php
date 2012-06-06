@@ -18,8 +18,8 @@
   /**
 
    */
-  class Sales_Order
-  {
+  class Sales_Order {
+
     /**
      * @var int
      */
@@ -1000,7 +1000,7 @@
                      discount_percent, qty_sent)
                      VALUES (";
         $sql .= DB::escape($line->id ? $line->id :
-                             0) . "," . $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ",
+          0) . "," . $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ",
                         " . DB::escape($line->description) . ", " . DB::escape($line->price) . ", " . DB::escape($line->quantity) . ", " . DB::escape($line->discount_percent) . ", " . DB::escape($line->qty_done) . " )";
         DB::query($sql, "Old order Cannot be Inserted");
       } /* inserted line items into sales order details */
@@ -1105,6 +1105,19 @@
       return $ret_error;
     }
     /**
+     * @param array $order_map
+     */
+    public function setLineOrder(array $order_map)
+    {
+      if (!$order_map || count($order_map)!=count($this->line_items)) return false;
+      $current_lines    = $this->line_items;
+      $this->line_items = array();
+      foreach ($current_lines as $line_no => $line) {
+        $this->line_items[$order_map[$line_no]] = $line;
+      }
+      return true;
+    }
+    /**
      * @param      $title
      * @param bool $editable_items
      */
@@ -1158,7 +1171,7 @@
               $has_marked = true;
             }
           }
-          Row::start($row_class);
+          Row::start($row_class . 'data-line=' . $line_no);
           Cell::label($stock_item->stock_id, "class='stock pointer' data-stock_id='{$stock_item->stock_id}'");
           //Cell::label($stock_item->description, ' class="nowrap"' );
           Cell::description($stock_item->description);
@@ -1183,7 +1196,8 @@
         $total_discount += $line_discount;
       }
       if ($id == -1 && $editable_items) {
-        $this->item_controls($id);
+        $this->item_controls($id);      \UI::lineSortable();
+
       }
       $colspan = 6;
       if ($this->trans_no != 0) {

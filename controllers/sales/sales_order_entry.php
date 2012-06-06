@@ -572,6 +572,11 @@
       Validation::check(Validation::STOCK_ITEMS, _("There are no inventory items defined in the system."));
       Validation::check(Validation::BRANCHES_ACTIVE, _("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
     }
+    protected function setLineOrder() {
+      $this->order->setLineOrder(Input::get_post('lineMap',array()));
+      $data=['lines'=>$this->order->line_items,'status'=>''];
+      \JS::renderJSON($data);
+    }
   }
 
   new SalesOrder();

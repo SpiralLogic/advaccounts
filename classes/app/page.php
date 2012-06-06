@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Page
-  {
+  class Page {
+
     /** @var \Renderer */
     public $renderer = NULL;
     /**
@@ -87,16 +87,19 @@
           $this->menu_header();
         }
       }
-      Errors::error_box();
+      if (!IS_JSON_REQUEST) {
+        Errors::error_box();
+      }
+
       if (!$this->ajaxpage) {
         echo "<div id='wrapper'>";
       }
-      if ($this->title && !$this->is_index && !$this->frame) {
+      Security::i()->check_page(static::$security);
+      if ($this->title && !$this->is_index && !$this->frame && !IS_JSON_REQUEST) {
         echo "<div class='titletext'>$this->title" . (User::hints() ? "<span id='hints' class='floatright'
 										style='display:none'></span>" : '') . "</div>";
+        Display::div_start('_page_body');
       }
-      Security::i()->check_page(static::$security);
-      Display::div_start('_page_body');
     }
     /**
 
@@ -159,8 +162,8 @@
         $help_page_url = Display::access_string($help_page_url, TRUE);
       }
       return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-                                                                                         ' ' => '', '/' => '', '&' => 'And'
-                                                                                    ))) . '&ctxhelp=1&lang=' . $country;
+        ' ' => '', '/' => '', '&' => 'And'
+      ))) . '&ctxhelp=1&lang=' . $country;
     }
     /**
      * @param $hide_back_link

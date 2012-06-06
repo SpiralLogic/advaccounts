@@ -26,7 +26,7 @@
     $sql
                = "SELECT DISTINCT d.*,
                 SUM((d.ov_amount + d.ov_gst + d.ov_freight + d.ov_freight_tax + d.ov_discount) * IF(d.type = " . ST_SALESINVOICE . ",1,-1) ) AS TotalAmount,
-                SUM(d.alloc* IF(d.type = " . ST_CUSTPAYMENT . ",-1, 1)) AS Allocated, ( d.due_date < '$datestart' and DATE(b.tran_date)< '$datestart' ) AS OverDue
+                SUM(a.amt* IF(d.type = " . ST_SALESINVOICE . ",-1, 1)) AS Allocated, ( d.due_date < '$datestart' and (DATE(b.tran_date)< '$datestart' OR b.tran_date is NULL) ) AS OverDue
              FROM debtor_trans d
              LEFT JOIN debtor_allocations a ON d.trans_no = a.trans_no_to AND d.type=a.trans_type_to
              LEFT JOIN debtor_trans b ON b.trans_no = a.trans_no_from AND b.type=a.trans_type_from
@@ -35,9 +35,9 @@
                 AND ((d.ov_amount + d.ov_gst + d.ov_freight + d.ov_freight_tax + d.ov_discount != 0
                  AND d.due_date <= '$dateend')  )
                 GROUP BY d.debtor_id ";
-    $sql .= ($inc_all) ? ", d.trans_no " : ", if(d.due_date>'$datestart' OR b.tran_date>'$datestart' ,d.trans_no,0) ";
+    $sql .= ($inc_all) ? ", d.trans_no " : ", if(d.due_date>'$datestart' OR b.tran_date>'$datestart' ,d.trans_no,0)   ";
 
-    $sql .= " ,	b.trans_no  ORDER BY  d.tran_date,	d.type, d.branch_id";
+    $sql .= " ORDER BY   max(d.tran_date),	d.type, d.branch_id";
     Errors::log($sql);
     return DB::query($sql, "No transactions were returned");
   }
@@ -58,7 +58,7 @@
 
   function print_statements()
   {
-    global $systypes_array;
+    global $systypes_array,$systypes_array_short;
     include_once(APPPATH . "reports/pdf.php");
     $txt_statement       = "Statement";
     $txt_opening_balance = 'Opening Balance';
@@ -117,7 +117,7 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
         $transactions[] = $transaction;
       }
       if ($balance <= 0) {
-        continue;
+ //       continue;
       }
       if ($email == 1) {
         $rep           = new ADVReport("", "", User::page_size());
@@ -167,7 +167,7 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
           $openingbalance = 0;
           continue;
         }
-        $rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
+        $rep->TextCol(0, 1, $systypes_array_short[$trans['type']], -2);
         if ($trans['type'] == ST_SALESINVOICE) {
           $rep->Font('bold');
         }
