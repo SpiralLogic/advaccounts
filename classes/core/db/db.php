@@ -11,7 +11,15 @@
   use PDO, PDOStatement, PDOException, PDORow, Cache;
 
   /**
-
+   * @method query($sql, $err_msg = null)
+   * @method escape($value, $null = false)
+   * @method fetch($result = null, $fetch_mode = \PDO::FETCH_BOTH)
+   * @method fetch_row($result = null)
+   * @method num_rows($sql = null)
+   * @method begin()
+   * @method commit()
+   * @method \ADV\Core\DB\Query_Select select($columns = null)
+   * @method \ADV\Core\DB\Query_Update update($into)
    */
   class DB
   {
@@ -50,9 +58,9 @@
      */
     protected $useCache = false;
     /**
-     * @var bool
+     * @var \Config
      */
-    protected $useConfig = false;
+    protected $config = false;
     /**
      * @var bool
      */
@@ -65,38 +73,43 @@
      * @var
      */
     protected $default_connection;
+    /** @var \Cache */
+    protected $cache;
+    /**
+     * @static
+     *
+     * @param $func
+     * @param $args
+     *
+     * @return mixed
+     */
     public static function __callStatic($func, $args)
     {
-    return  call_user_func_array(array(static::i(), '_' . $func), $args);
+      return call_user_func_array(array(static::i(), '_' . $func), $args);
     }
     /***
      * @static
-     *
-     * @param array $config
-     *
-     * @internal \PDO $conn
      * @return DB
      */
-    protected static function i($config = array())
+    public static function i()
     {
       if (static::$i === null) {
-        static::$i = new static($config);
+        static::$i = new static();
       }
       return static::$i;
     }
     /**
-     * @param $config
      *
-     * @throws \ADV\Core\DB\DBException
+     * @throws DBException
      */
-    protected function __construct($config)
+    public function __construct($config = null, $cache = null)
     {
-      $this->useConfig = class_exists('Config');
-      $this->useCache  = class_exists('Cache');
-      if (!$config && !$this->useConfig) {
+      $this->config   = $config ? : \Config::i();
+      $this->useCache = class_exists('Cache');
+      if (!$this->config) {
         throw new DBException('No database configuration provided');
       }
-      $config      = $config ? : \Config::get('db.default');
+      $config      = $this->config->get('db.default');
       $this->debug = false;
       $this->_connect($config);
       $this->default_connection = $config['name'];
@@ -128,36 +141,29 @@
      *
      * @param mixed $name
      *
-     * @throws \ADV\Core\DB\DBException
-     * @return void
+     * @throws DBException
+     * @return bool|\PDO
      */
     public static function change_connection($name = false)
     {
-      $name = $name ? : static::i()->default_connection;
+      $instance = static::i();
+      $name     = $name ? : $instance->default_connection;
       if (!isset(static::$connections[$name])) {
-        if (static::i()->useConfig && $name && !is_array($name)) {
-          $config = \Config::get('db.' . $name);
+        if ($instance->config && $name && !is_array($name)) {
+          $config = $instance->config->_get('db.' . $name);
         } elseif (is_array($name)) {
           $config = $name;
         } else {
           throw new DBException('No database configuration provided');
         }
-        static::i()->_connect($config);
+        $instance->_connect($config);
       }
       if (isset(static::$connections[$name])) {
-        static::i()->conn = static::$connections[$name];
+        $instance->conn = static::$connections[$name];
+        return $instance->conn;
       } else {
         throw new DBException("There is no connection with this name");
       }
-    }
-    /**
-     * @static
-     *
-     * @param $config
-     */
-    public static function connect($config)
-    {
-      static::i()->_connect($config);
     }
     /**
      * @static
@@ -201,7 +207,7 @@
      */
     /**
      * @param      $value
-     * @param null $type
+     * @param int|null $type
      *
      * @return string
      */
@@ -361,7 +367,6 @@
       return $this->query;
     }
     /***
-     * @static
      *
      * @param \PDOStatement $result     The result of the query or whatever cunt
      * @param int           $fetch_mode
@@ -508,13 +513,13 @@
       if (is_object($sql)) {
         return $sql->rowCount();
       }
-      $rows = ($this->useCache) ? Cache::get('sql.rowcount.' . md5($sql)) : false;
+      $rows = ($this->cache) ? $this->cache->get('sql.rowcount.' . md5($sql)) : false;
       if ($rows !== false) {
         return (int) $rows;
       }
       $rows = $this->_query($sql)->rowCount();
-      if ($this->useCache) {
-        Cache::set('sql.rowcount.' . md5($sql), $rows);
+      if ($this->cache) {
+        $this->cache->set('sql.rowcount.' . md5($sql), $rows);
       }
       return $rows;
     }

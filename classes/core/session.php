@@ -16,14 +16,36 @@
   class SessionException extends \Exception
   {
   }
-
   /**
    * @property \ADVAccounting App
+   * @method  getGlobal($var, $default = null)
+   * @method setGlobal($var, $value = null)
    */
   class Session
   {
     use Traits\Singleton;
-
+    /**
+     * @static
+     *
+     * @param $func
+     * @param $args
+     *
+     * @return mixed
+     */
+    public static function __callStatic($func, $args)
+    {
+      return call_user_func_array(array(static::i(), '_' . $func), $args);
+    }
+    /**
+     * @param $func
+     * @param $args
+     *
+     * @return mixed
+     */
+    public function __call($func, $args)
+    {
+      return call_user_func_array(array($this, '_' . $func), $args);
+    }
     /***
      * @var \gettextNativeSupport|\gettext_php_support
      */
@@ -78,10 +100,8 @@
     {
       if (Arr::get($_SESSION, 'HTTP_USER_AGENT') != sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR']))) {
         static::setUserAgent();
-
         return false;
       }
-
       return true;
     }
     /**
@@ -129,16 +149,14 @@
      * @internal param $valie
      * @return float|string
      */
-    public function setGlobal($var, $value = null)
+    public function _setGlobal($var, $value = null)
     {
       if ($value === null) {
         unset($_SESSION['globals'][$var]);
-
         return null;
       }
       $_SESSION['globals'][$var] = $value;
       $_SESSION[$var]            = $value;
-
       return $value;
     }
     /**
@@ -147,14 +165,14 @@
      *
      * @return mixed
      */
-    public function getGlobal($var, $default = null)
+    public function _getGlobal($var, $default = null)
     {
       return isset($_SESSION['globals'][$var]) ? $_SESSION['globals'][$var] : $default;
     }
     /**
-     * @param $globals
+     * @internal param $globals
      */
-    public function removeGlobal($globals)
+    public function _removeGlobal()
     {
       $globals = func_get_args();
       foreach ($globals as $var) {
@@ -167,7 +185,7 @@
      * @static
      * @return void
      */
-    public static function kill()
+    public static function _kill()
     {
       static::i();
       Config::removeAll();
@@ -178,7 +196,7 @@
      * @static
      * @return void
      */
-    public static function regenerate()
+    public static function _regenerate()
     {
       session_regenerate_id();
     }

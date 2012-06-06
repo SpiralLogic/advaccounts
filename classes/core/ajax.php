@@ -11,7 +11,7 @@
   use \JsHttpRequest;
 
   /**
-
+   * @static Ajax i()
    */
   class Ajax extends \JsHttpRequest
   {

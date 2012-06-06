@@ -10,6 +10,9 @@
   namespace ADV\Core;
   use \Memcached;
 
+  /**
+
+   */
   interface Cachable
   {
     /**
@@ -22,14 +25,54 @@
      * @return mixed
      */
     function set($key, $value, $expires);
+    /**
+     * @abstract
+     *
+     * @param $key
+     *
+     * @return mixed
+     */
     function delete($key);
+    /**
+     * @abstract
+     *
+     * @param $key
+     * @param $default
+     *
+     * @return mixed
+     */
     function get($key, $default);
   }
   /**
-
+   * @method get($key, $default = false)
+   * @method set($key, $value, $expires = 86400)
+   * @method define_constants($name, $constants)
+   * @method delete($key)
    */
   class Cache
   {
+    /**
+     * @static
+     *
+     * @param $func
+     * @param $args
+     *
+     * @return mixed
+     */
+    public static function __callStatic($func, $args)
+    {
+      return call_user_func_array(array(static::i(), '_' . $func), $args);
+    }
+    /**
+     * @param $func
+     * @param $args
+     *
+     * @return mixed
+     */
+    public function __call($func, $args)
+    {
+      return call_user_func_array(array($this, '_' . $func), $args);
+    }
     /**
      * @var Memcached
      */
@@ -37,37 +80,46 @@
     /**
      * @var bool
      */
-    protected static $connected = false;
+    protected $connected = false;
+    protected $connection = null;
     /**
      * @static
-     * @return Memcached
+     * @return \Memcached|null
      */
-    protected static function i()
+    public static function i()
     {
       if (static::$i === null) {
-        if (class_exists('\\Memcached', false)) {
-          $i = new Memcached($_SERVER["SERVER_NAME"] . '.');
-          if (!count($i->getServerList())) {
-            $i->setOption(Memcached::OPT_RECV_TIMEOUT, 1000);
-            $i->setOption(Memcached::OPT_SEND_TIMEOUT, 3000);
-            $i->setOption(Memcached::OPT_TCP_NODELAY, true);
-            $i->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
-            $i->setOption(Memcached::OPT_PREFIX_KEY, $_SERVER["SERVER_NAME"] . '.');
-            (Memcached::HAVE_IGBINARY) and $i->setOption(Memcached::SERIALIZER_IGBINARY, true);
-            $i->addServer('127.0.0.1', 11211);
-          }
-          static::$connected = ($i->getVersion() !== false);
-          if (static::$connected && isset($_GET['reload_cache'])) {
-            $i->flush(0);
-            if (function_exists('apc_clear_cache')) {
-              apc_clear_cache('user');
-            }
-            \Display::meta_forward('/');
-          }
-          static::$i = $i;
-        }
+        static::$i = new static();
       }
-      return (static::$connected) ? static::$i : false;
+      return static::$i;
+    }
+    /**
+     * @static
+     * @return \ADV\Core\Cache
+     */
+    public function __construct()
+    {
+      if (class_exists('\\Memcached', false)) {
+        $i = new Memcached($_SERVER["SERVER_NAME"] . '.');
+        if (!count($i->getServerList())) {
+          $i->setOption(Memcached::OPT_RECV_TIMEOUT, 1000);
+          $i->setOption(Memcached::OPT_SEND_TIMEOUT, 3000);
+          $i->setOption(Memcached::OPT_TCP_NODELAY, true);
+          $i->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
+          $i->setOption(Memcached::OPT_PREFIX_KEY, $_SERVER["SERVER_NAME"] . '.');
+          (Memcached::HAVE_IGBINARY) and $i->setOption(Memcached::SERIALIZER_IGBINARY, true);
+          $i->addServer('127.0.0.1', 11211);
+        }
+        $this->connected = ($i->getVersion() !== false);
+        if ($this->connected && isset($_GET['reload_cache'])) {
+          $i->flush(0);
+          if (function_exists('apc_clear_cache')) {
+            apc_clear_cache('user');
+          }
+          \Display::meta_forward('/');
+        }
+        $this->connection = $i;
+      }
     }
     /**
      * @static
@@ -78,10 +130,10 @@
      *
      * @return mixed
      */
-    public static function set($key, $value, $expires = 86400)
+    public function _set($key, $value, $expires = 86400)
     {
-      if (static::i() !== false) {
-        static::i()->set($key, $value, time() + $expires);
+      if ($this->connection !== false) {
+        $this->connection->set($key, $value, time() + $expires);
       } elseif (class_exists('Session', false)) {
         $_SESSION['cache'][$key] = $value;
       }
@@ -92,10 +144,10 @@
      *
      * @param $key
      */
-    public static function delete($key)
+    public function _delete($key)
     {
-      if (static::i() !== false) {
-        static::i()->delete($key);
+      if ($this->connection !== false) {
+        $this->connection->delete($key);
       } elseif (class_exists('Session', false)) {
         unset($_SESSION['cache'][$key]);
       }
@@ -108,11 +160,11 @@
      *
      * @return mixed
      */
-    public static function get($key, $default = false)
+    public function _get($key, $default = false)
     {
-      if (static::i() !== false) {
-        $result = static::i()->get($key);
-        $result = (static::$i->getResultCode() === Memcached::RES_NOTFOUND) ? $default : $result;
+      if ($this->connection !== false) {
+        $result = $this->connection->get($key);
+        $result = ($this->connection->getResultCode() === Memcached::RES_NOTFOUND) ? $default : $result;
       } elseif (class_exists('Session', false)) {
         if (!isset($_SESSION['cache'])) {
           $_SESSION['cache'] = array();
@@ -127,35 +179,35 @@
      * @static
      * @return mixed
      */
-    public static function getStats()
+    public function _getStats()
     {
-      return (static::$connected) ? static::i()->getStats() : false;
+      return ($this->connected) ? $this->connection->getStats() : false;
     }
     /**
      * @static
      * @return mixed
      */
-    public static function getVersion()
+    public function _getVersion()
     {
-      return (static::$connected) ? static::i()->getVersion() : false;
+      return ($this->connected) ? $this->connection->getVersion() : false;
     }
     /**
      * @static
      * @return mixed
      */
-    public static function getServerList()
+    public function _getServerList()
     {
-      return (static::$connected) ? static::i()->getServerList() : false;
+      return ($this->connected) ? $this->connection->getServerList() : false;
     }
     /**
      * @static
      *
      * @param int $time
      */
-    public static function flush($time = 0)
+    public function _flush($time = 0)
     {
-      if (static::i()) {
-        static::i()->flush($time);
+      if ($this->connection) {
+        $this->connection->flush($time);
       } else {
         $_SESSION['cache'] = array();
       }
@@ -166,7 +218,7 @@
      * @param array|closure $constants
      * @param null          $name
      */
-    public static function define_constants($name, $constants)
+    public function _define_constants($name, $constants)
     {
       if (function_exists('apc_load_constants')) {
         if (!apc_load_constants($name)) {

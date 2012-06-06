@@ -14,12 +14,22 @@
     protected $user;
     /*** @var Ajax */
     protected $ajax;
+    /*** @var Session */
+    protected $session;
+    /*** @var \DB */
+    protected $db;
     protected $action;
     public $help_context;
+    /**
+
+     */
     function __construct()
     {
       $this->user   = User::i();
       $this->ajax   = Ajax::i();
+      $this->session = Session::i();
+      $this->db = \DB::i();
+
       $this->action = Input::post('_action');
       $this->before();
       $this->index();
@@ -37,11 +47,15 @@
     }
     abstract protected function after();
     /**
-     * @param $prefix
-     *
+     * @internal param $prefix
      * @return bool|mixed
      */
     abstract protected function runValidation();
+    /**
+     * @param $prefix
+     *
+     * @return int|mixed
+     */
     protected function getActionId($prefix)
     {
       if (strpos($this->action, $prefix) !== false) {

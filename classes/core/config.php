@@ -11,12 +11,12 @@
   /**
 
    */
-  class Config_Exception extends \Exception {
-
+  class Config_Exception extends \Exception
+  {
   }
-
   /**
-
+   * @method get($var, $default = false)
+   * @method removeAll()
    */
   class Config
   {
@@ -29,16 +29,37 @@
     /**
      * @static
      *
+     * @param $func
+     * @param $args
+     *
+     * @return mixed
+     */
+    public static function __callStatic($func, $args)
+    {
+      return call_user_func_array(array(static::i(), '_' . $func), $args);
+    }
+    /**
+     * @param $func
+     * @param $args
+     *
+     * @return mixed
+     */
+    public function __call($func, $args)
+    {
+      return call_user_func_array(array($this, '_' . $func), $args);
+    }
+    /**
+     * @static
+     *
      * @param        $var
      * @param        $value
      * @param string $group
      *
      * @return mixed
      */
-    public static function set($var, $value, $group = 'config')
+    public function _set($var, $value, $group = 'config')
     {
-      static::i()->_vars[$group][$var] = $value;
-
+      $this->_vars[$group][$var] = $value;
       return $value;
     }
     /***
@@ -50,21 +71,19 @@
      * @internal param null $array_key
      * @return Array|mixed
      */
-    public static function get($var, $default = false)
+    public function _get($var, $default = false)
     {
-      $i = static::i();
       if (!strstr($var, '.')) {
         $var = 'config.' . $var;
       }
       $group_array = explode('.', $var);
       $var         = array_pop($group_array);
       $group       = implode('.', $group_array);
-      (isset($i->_vars[$group], $i->_vars[$group][$var])) or $i->load($group_array);
-      if (!isset($i->_vars[$group][$var])) {
+      (isset($this->_vars[$group], $this->_vars[$group][$var])) or $this->load($group_array);
+      if (!isset($this->_vars[$group][$var])) {
         return $default;
       }
-
-      return $i->_vars[$group][$var];
+      return $this->_vars[$group][$var];
     }
     /**
      * @static
@@ -72,10 +91,10 @@
      * @param        $var
      * @param string $group
      */
-    public static function remove($var, $group = 'config')
+    public function _remove($var, $group = 'config')
     {
-      if (array_key_exists($var, static::i()->_vars[$group])) {
-        unset(static::i()->_vars[$group][$var]);
+      if (array_key_exists($var, $this->_vars[$group])) {
+        unset($this->_vars[$group][$var]);
       }
     }
     /**
@@ -87,19 +106,18 @@
      * @return mixed
      * @return array
      */
-    public static function get_all($group = 'config', $default = array())
+    public function _get_all($group = 'config', $default = array())
     {
-      if (!isset(static::i()->_vars[$group]) && static::i()->load($group) === false) {
+      if (!isset($this->_vars[$group]) && $this->load($group) === false) {
         return $default;
       }
-
-      return static::i()->_vars[$group];
+      return $this->_vars[$group];
     }
     /**
      * @static
 
      */
-    public static function removeAll()
+    public function _removeAll()
     {
       Cache::delete('config');
     }
@@ -107,12 +125,11 @@
      * @static
 
      */
-    public static function reset()
+    public function _reset()
     {
-      static::removeAll();
-      static::i()->load();
+      $this->_removeAll();
+      $this->load();
     }
-
     public static function _shutdown()
     {
       Cache::set('config', static::i()->_vars);
@@ -160,5 +177,6 @@
       /** @noinspection PhpIncludeInspection */
       $this->_vars[$group_name] = include($file);
       Event::register_shutdown(__CLASS__);
+    return true;
     }
   }

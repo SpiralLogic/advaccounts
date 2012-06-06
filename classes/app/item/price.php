@@ -85,6 +85,7 @@
      * @param      $curr_abrev
      * @param      $price
      * @param null $item_code_id
+     * @return bool
      */
     public static function add($stock_id, $sales_type_id, $curr_abrev, $price, $item_code_id = null)
     {

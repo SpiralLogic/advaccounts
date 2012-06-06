@@ -314,20 +314,17 @@
   define('REMOVED_ID', 'RemovedID');
   define('REMOVED', 'Removed');
   define('CANCEL', 'CancelUpdate');
-  class Arr extends ADV\Core\Arr {
-
+  class Arr extends ADV\Core\Arr
+  {
   }
-
-  class Adv_Exception extends ADV\Core\Adv_Exception {
-
+  class Adv_Exception extends ADV\Core\Adv_Exception
+  {
   }
-
   /**
    * @property Ajax i
    */
-
-  class Ajax extends ADV\Core\Ajax {
-
+  class Ajax extends ADV\Core\Ajax
+  {
     /**
      * @static
      * @return Ajax
@@ -337,93 +334,66 @@
       return static::i();
     }
   }
-
-  class Auth extends ADV\Core\Auth {
-
+  class Auth extends ADV\Core\Auth
+  {
+  }
+  class Assets extends ADV\Core\Assets
+  {
+  }
+  class Cache extends ADV\Core\Cache
+  {
+  }
+  class Config extends ADV\Core\Config
+  {
+  }
+  class Dates extends ADV\Core\Dates
+  {
   }
 
-  class Assets extends ADV\Core\Assets {
-
+  class DB extends ADV\Core\DB\DB
+  {
   }
-
-  class Cache extends ADV\Core\Cache {
-
+  class Query_Result extends ADV\Core\DB\Query_Result
+  {
   }
-
-  class Config extends ADV\Core\Config {
-
-    /**
-     * @static
-     * @return ADV\Core\Config
-     */
-    public static function i()
-    {
-      return static::i();
-    }
+  class Dialog extends ADV\Core\Dialog
+  {
   }
-
-  class Dates extends ADV\Core\Dates {
-
+  class Event extends ADV\Core\Event
+  {
   }
-
-  class DB extends ADV\Core\DB\DB {
-
+  class Errors extends ADV\Core\Errors
+  {
   }
-
-  class Query_Result extends ADV\Core\DB\Query_Result {
-
+  class Files extends ADV\Core\Files
+  {
   }
-
-  class Dialog extends ADV\Core\Dialog {
-
+  class HTML extends ADV\Core\HTML
+  {
   }
-
-  class Event extends ADV\Core\Event {
-
+  class Hook extends ADV\Core\Hook
+  {
   }
-
-  class Errors extends ADV\Core\Errors {
-
+  class Input extends ADV\Core\Input
+  {
   }
-
-  class Files extends ADV\Core\Files {
-
+  class JS extends ADV\Core\JS
+  {
   }
-
-  class HTML extends ADV\Core\HTML {
-
+  class Language extends ADV\Core\Language
+  {
   }
-
-  class Hook extends ADV\Core\Hook {
-
+  class Menu extends ADV\Core\Menu
+  {
   }
-
-  class Input extends ADV\Core\Input {
-
+  class MenuUI extends ADV\Core\MenuUI
+  {
   }
-
-  class JS extends ADV\Core\JS {
-
+  class Num extends ADV\Core\Num
+  {
   }
-
-  class Language extends ADV\Core\Language {
-
-  }
-
-  class Menu extends ADV\Core\Menu {
-
-  }
-
-  class MenuUI extends ADV\Core\MenuUI {
-
-  }
-
-  class Num extends ADV\Core\Num {
-
-  }
-
-  class Session extends ADV\Core\Session {
-
+  class Session extends ADV\Core\Session
+  {
     public $app;
     /**
      * @static
@@ -434,31 +404,24 @@
       return static::i();
     }
   }
-
-  class Status extends ADV\Core\Status {
-
+  class Status extends ADV\Core\Status
+  {
   }
-
-  class UploadHandler extends ADV\Core\UploadHandler {
-
+  class UploadHandler extends ADV\Core\UploadHandler
+  {
   }
-
-  class DBException extends ADV\Core\DB\DBException {
-
+  class DBException extends ADV\Core\DB\DBException
+  {
   }
-
-  class DBSelectException extends ADV\Core\DB\DBException {
-
+  class DBSelectException extends ADV\Core\DB\DBException
+  {
   }
-
-  class DBUpdateException extends ADV\Core\DB\DBException {
-
+  class DBUpdateException extends ADV\Core\DB\DBException
+  {
   }
-
-  class DBDeleteException extends ADV\Core\DB\DBException {
-
+  class DBDeleteException extends ADV\Core\DB\DBException
+  {
   }
-
-  class DBInsertException extends ADV\Core\DB\DBException {
-
+  class DBInsertException extends ADV\Core\DB\DBException
+  {
   }

@@ -10,16 +10,28 @@
   class SalesOrder extends Controller_Base
   {
     protected $addTitles = array(
-      ST_SALESQUOTE  => "New Sales Quotation Entry", ST_SALESINVOICE=> "Direct Sales Invoice", ST_CUSTDELIVERY=> "Direct Sales Delivery", ST_SALESORDER  => "New Sales Order Entry"
+      ST_SALESQUOTE  => "New Sales Quotation Entry", //
+      ST_SALESINVOICE=> "Direct Sales Invoice", //
+      ST_CUSTDELIVERY=> "Direct Sales Delivery", //
+      ST_SALESORDER  => "New Sales Order Entry"
     );
     protected $modifyTitles = array(
-      ST_SALESQUOTE  => "Modifying Sales Quotation # ", ST_SALESORDER  => "Modifying Sales Order # "
+      ST_SALESQUOTE  => "Modifying Sales Quotation # ", //
+      ST_SALESORDER  => "Modifying Sales Order # "
     );
     protected $typeSecurity = array(
-      ST_SALESORDER   => SA_SALESORDER, ST_SALESQUOTE   => SA_SALESQUOTE, ST_CUSTDELIVERY => SA_SALESDELIVERY, ST_SALESINVOICE => SA_SALESINVOICE
+      ST_SALESORDER   => SA_SALESORDER, //
+      ST_SALESQUOTE   => SA_SALESQUOTE, ///
+      ST_CUSTDELIVERY => SA_SALESDELIVERY, //
+      ST_SALESINVOICE => SA_SALESINVOICE
     );
     protected $processSecurity = array(
-      Orders::NEW_ORDER    => SA_SALESORDER, Orders::MODIFY_ORDER => SA_SALESORDER, Orders::NEW_QUOTE    => SA_SALESQUOTE, Orders::MODIFY_QUOTE => SA_SALESQUOTE, Orders::NEW_DELIVERY => SA_SALESDELIVERY, Orders::NEW_INVOICE  => SA_SALESINVOICE
+      Orders::NEW_ORDER    => SA_SALESORDER, //
+      Orders::MODIFY_ORDER => SA_SALESORDER, //
+      Orders::NEW_QUOTE    => SA_SALESQUOTE, //
+      Orders::MODIFY_QUOTE => SA_SALESQUOTE, //
+      Orders::NEW_DELIVERY => SA_SALESDELIVERY, //
+      Orders::NEW_INVOICE  => SA_SALESINVOICE
     );
     public $type;
     /***
@@ -151,7 +163,7 @@
     protected function exitError($error)
     {
       Event::warning($error);
-      Session::i()->setGlobal('debtor', NULL);
+      $this->session->setGlobal('debtor', NULL);
       Page::footer_exit();
     }
     public function Refresh()
@@ -190,7 +202,7 @@
         default:
           $trans_name = "Order";
       }
-      $customer = new Debtor(Session::i()->getGlobal('debtor', 0));
+      $customer = new Debtor($this->session->getGlobal('debtor', 0));
       $emails   = $customer->getEmailAddresses();
       Event::success(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
       Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
@@ -219,9 +231,9 @@
         Display::submenu_option(_("Make &Invoice Against This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$order_no");
         ((isset($_GET['Type']) && $_GET['Type'] == 1)) ? Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes") : Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?add=0&type=" . ST_CUSTDELIVERY);
       } elseif ($trans_type == ST_SALESINVOICE) {
-        $sql    = "SELECT trans_type_from, trans_no_from FROM debtor_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . DB::escape($order_no);
-        $result = DB::query($sql, "could not retrieve customer allocation");
-        $row    = DB::fetch($result);
+        $sql    = "SELECT trans_type_from, trans_no_from FROM debtor_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . $this->db->escape($order_no);
+        $result = $this->db->query($sql, "could not retrieve customer allocation");
+        $row    = $this->db->fetch($result);
         if ($row !== FALSE) {
           Display::submenu_print(_("Print &Receipt"), $row['trans_type_from'], $row['trans_no_from'] . "-" . $row['trans_type_from'], 'prtopt');
         }
@@ -232,7 +244,7 @@
           Display::submenu_option(_("Enter a &New Direct Invoice"), "/sales/sales_order_entry.php?add=0&type=10");
         }
         Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"));
-        if (isset($_GET[ADDED_DI]) && Session::i()->getGlobal('debtor') && $row == FALSE) {
+        if (isset($_GET[ADDED_DI]) && $this->session->getGlobal('debtor') && $row == FALSE) {
           echo "<div style='text-align:center;'><iframe style='margin:0 auto; border-width:0;' src='/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
         }
       }
@@ -352,7 +364,7 @@
         Event::error(_("Price for item must be entered and can not be less than 0"));
         JS::set_focus('price');
         return FALSE;
-      } elseif (!$this->user->can_access(SA_SALESCREDIT) && isset($_POST['LineNo']) && isset($this->order->line_items[$_POST['LineNo']]) && !Validation::post_num('qty', $this->order->line_items[$_POST[LineNo]]->qty_done)
+      } elseif (!$this->user->can_access(SA_SALESCREDIT) && isset($_POST['LineNo']) && isset($this->order->line_items[$_POST['LineNo']]) && !Validation::post_num('qty', $this->order->line_items[$_POST['LineNo']]->qty_done)
       ) {
         JS::set_focus('qty');
         Event::error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
@@ -441,7 +453,7 @@
       $so_type    = $this->order->so_type;
       $trans_type = $this->order->trans_type;
       Dates::new_doc_date($this->order->document_date);
-      Session::i()->setGlobal('debtor', $this->order->customer_id);
+      $this->session->setGlobal('debtor', $this->order->customer_id);
       $this->order->write(1);
       $jobsboard_order = clone ($this->order);
       $trans_no        = $jobsboard_order->trans_no = key($this->order->trans_no);
@@ -549,6 +561,9 @@
       }
       Item_Line::start_focus('_stock_id_edit');
     }
+    /**
+     * @return bool|mixed|void
+     */
     protected function runValidation()
     {
       if (!is_object($this->order)) {
