@@ -25,10 +25,9 @@
       $this->index();
       $this->after();
     }
-    protected function before()
-    {
-    }
-    abstract function index();
+  abstract protected function before();
+    abstract protected function index();
+
     /**
      * @param $title
      */
@@ -36,12 +35,13 @@
     {
       $this->title = _($this->help_context = $title);
     }
-    protected function after() { }
+    abstract protected function after();
     /**
      * @param $prefix
      *
      * @return bool|mixed
      */
+    abstract protected function runValidation();
     protected function getActionId($prefix)
     {
       if (strpos($this->action, $prefix) !== false) {
@@ -49,4 +49,12 @@
       }
       return -1;
     }
+    protected function runAction()
+    {
+      if ($this->action) {
+        call_user_func(array($this, $this->action));
+      }
+    }
+
+
   }

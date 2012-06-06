@@ -145,7 +145,7 @@
         $buttons .= ']);';
       }
       if ($this->_template) {
-        $this->contents = '<script id="' . $this->name . '-template" type="text/x-jquery-tmpl">' . $this->contents . '</script>';
+        $this->contents = '<script id="' . $this->name . '_template" type="text/x-jquery-tmpl">' . $this->contents . '</script>';
         echo '<div id="' . $this->name . '" title="' . $this->title . '">' . $this->contents . '</div>';
         $js = '$' . $this->name . '=$("#' . $this->name . '").dialog(' . JS::arrayToOptions($this->options) . ')' . $buttons;
       } else {
@@ -156,7 +156,7 @@
         JS::addEvents($this->events);
         JS::addLive($js);
         if ($this->_template) {
-          $js = '$("#' . $this->name . '-template").template("' . $this->name . '"); Adv.o.' . $this->name . ' = { render: function(data) { $("#' . $this->name . '").empty().append($.tmpl("' . $this->name . '",data))} }; ';
+          $js = '$("#' . $this->name . '_template").template("' . $this->name . '"); Adv.o.' . $this->name . ' = { render: function(data) { $("#' . $this->name . '").empty().append($.tmpl("' . $this->name . '",data))} }; ';
           if (!empty($this->data)) {
             $js .= 'Adv.o.' . $this->name . '.render(' . json_encode($this->data) . ');';
           }

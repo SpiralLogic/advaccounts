@@ -21,9 +21,9 @@
   if (!isset($_POST['curr_abrev'])) {
     $_POST['curr_abrev'] = Bank_Currency::for_company();
   }
-  Form::start(false, $_SERVER['REQUEST_URI']);
+  Form::start(false, $_SERVER['DOCUMENT_URI'] . '?frame=1');
   if (!Input::post('stock_id')) {
-    Session::i()->setGlobal('stock_id', $_POST['stock_id']);
+    $_POST['stock_id']=  Session::i()->getGlobal('stock_id');
   }
   if (!Input::request('frame')) {
     echo "<div class='bold center pad10 font15'><span class='pad10'>" . _("Item:") . '</span>';
@@ -40,11 +40,11 @@
     if ($input_error != 1) {
       if ($selected_id != -1) {
         //editing an existing price
-        Item_Price::update($selected_id, $_POST['sales_type_id'], $_POST['curr_abrev'], Validation::input_num('price'));
-        $msg = _("This price has been updated.");
+        $result = Item_Price::update($selected_id, $_POST['sales_type_id'], $_POST['curr_abrev'], Validation::input_num('price'));
+        if ($result) $msg= _("This price has been updated.");
       } else {
-        Item_Price::add($_POST['stock_id'], $_POST['sales_type_id'], $_POST['curr_abrev'], Validation::input_num('price'));
-        $msg = _("The new price has been added.");
+        $result = Item_Price::add($_POST['stock_id'], $_POST['sales_type_id'], $_POST['curr_abrev'], Validation::input_num('price'));
+        if ($result) $msg = _("The new price has been added.");
       }
       Event::success($msg);
       $Mode = MODE_RESET;
