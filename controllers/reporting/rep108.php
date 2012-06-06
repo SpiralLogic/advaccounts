@@ -24,17 +24,21 @@
     $dateend   = date('Y-m-d', mktime(0, 0, 0, date('n') - $month, 0));
     $datestart = date('Y-m-d', mktime(0, 0, 0, date('n') - $month - 1, 1));
     $sql
-               = "SELECT debtor_trans.*,
-                SUM((debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
-                debtor_trans.ov_freight_tax + debtor_trans.ov_discount) * IF(debtor_trans.type = ".ST_SALESINVOICE.",1,-1) ) AS TotalAmount, SUM(debtor_trans.alloc* IF(debtor_trans.type = ".ST_CUSTPAYMENT.",-1,1)) AS Allocated,
-                ( debtor_trans.due_date < '$datestart') AS OverDue
-             FROM debtor_trans
-             WHERE debtor_trans.due_date <= '$dateend' AND debtor_trans.debtor_id = " . DB::escape($debtorno) . "
-                 AND debtor_trans.type <> " . ST_CUSTDELIVERY . "	AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight + debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0
-                         GROUP BY debtor_id, ";
-    $sql .= ($inc_all) ? " debtor_trans.trans_no " : " if(debtor_trans.due_date<'$datestart',0,debtor_trans.trans_no) ";
-    $sql .= " ORDER BY  debtor_trans.tran_date,	debtor_trans.type,	debtor_trans.branch_id";
+               = "SELECT DISTINCT d.*,
+                SUM((d.ov_amount + d.ov_gst + d.ov_freight + d.ov_freight_tax + d.ov_discount) * IF(d.type = " . ST_SALESINVOICE . ",1,-1) ) AS TotalAmount,
+                SUM(d.alloc* IF(d.type = " . ST_CUSTPAYMENT . ",-1, 1)) AS Allocated, ( d.due_date < '$datestart' and DATE(b.tran_date)< '$datestart' ) AS OverDue
+             FROM debtor_trans d
+             LEFT JOIN debtor_allocations a ON d.trans_no = a.trans_no_to AND d.type=a.trans_type_to
+             LEFT JOIN debtor_trans b ON b.trans_no = a.trans_no_from AND b.type=a.trans_type_from
+             WHERE  d.debtor_id = " . DB::escape($debtorno) . "
+                AND d.type <> " . ST_CUSTDELIVERY . "
+                AND ((d.ov_amount + d.ov_gst + d.ov_freight + d.ov_freight_tax + d.ov_discount != 0
+                 AND d.due_date <= '$dateend')  )
+                GROUP BY d.debtor_id ";
+    $sql .= ($inc_all) ? ", d.trans_no " : ", if(d.due_date>'$datestart' OR b.tran_date>'$datestart' ,d.trans_no,0) ";
 
+    $sql .= " ,	b.trans_no  ORDER BY  d.tran_date,	d.type, d.branch_id";
+    Errors::log($sql);
     return DB::query($sql, "No transactions were returned");
   }
 
@@ -146,15 +150,15 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
           $display_total       = Num::format(abs($trans["TotalAmount"]), $dec);
           $outstanding         = abs($trans["TotalAmount"] - $trans["Allocated"]);
           $display_outstanding = Num::format($outstanding, $dec);
-          if ($inc_all) {
-            $balance += ($trans['type'] == ST_SALESINVOICE ) ? $outstanding : -$outstanding;
+          if (!$inc_all) {
+            $balance += ($trans['type'] == ST_SALESINVOICE) ? $outstanding : -$outstanding;
           } else {
-            $balance += ($trans['type'] == ST_SALESINVOICE||true) ? $trans["TotalAmount"] : -$trans["TotalAmount"];
+            $balance += $trans["TotalAmount"];
           }
         }
         $display_balance = Num::format($balance, $dec);
-        if ($inc_all  && $outstanding == 0) {
-          continue;
+        if ($inc_all && $outstanding == 0) {
+          // continue;
         }
         if ($openingbalance && !$inc_all) {
           $rep->TextCol(0, 8, $txt_opening_balance);

@@ -139,10 +139,12 @@
     public static function shutdown()
     {
       Errors::process();
+
       // flush all output buffers (works also with exit inside any div levels)
       while (ob_get_level()) {
         ob_end_flush();
       }
+
       session_write_close();
       fastcgi_finish_request();
       static::$request_finsihed = true;

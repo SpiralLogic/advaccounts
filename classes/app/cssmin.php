@@ -13,10 +13,12 @@
     protected $filedir = '.';
     protected $source;
     /**
-     * @param          $filedir
-     * @param string[] $minify_type_settings
-     * @param array    $mimeTypes
+     * @param       $source
+     * @param array $options
      *
+     * @internal param $filedir
+     * @internal param \string[] $minify_type_settings
+     * @internal param array $mimeTypes
      * @internal param $url
      * @internal param $count
      * @return \CSSMin
@@ -83,8 +85,7 @@
       return 'data:' . $mimeType . ';base64,' . $base64;
     }
     /**
-     * @param $str
-     *
+     * @internal param $str
      * @return string
      */
     public function minify()

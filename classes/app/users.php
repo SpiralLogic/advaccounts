@@ -9,12 +9,12 @@
    **/
   class Users
   {
+
     /**
      * @static
      *
      * @param $user_id
      * @param $real_name
-     * @param $password
      * @param $phone
      * @param $email
      * @param $role_id
@@ -22,6 +22,8 @@
      * @param $profile
      * @param $rep_popup
      * @param $pos
+     *
+     * @internal param $password
      */
     public static function  add($user_id, $real_name, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos)
     {

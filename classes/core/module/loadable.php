@@ -7,6 +7,9 @@
    * To change this template use File | Settings | File Templates.
    */
   namespace ADV\Core\Module;
+  /**
+
+   */
   interface Loadable
   {
     public function _init();

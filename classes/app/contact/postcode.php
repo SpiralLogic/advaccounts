@@ -29,11 +29,10 @@
     }
     /**
      * @static
-     *
-     * @param       $city
-     * @param       $state
-     * @param       $postcode
-     * @param array $options
+     * @internal param $city
+     * @internal param $state
+     * @internal param $postcode
+     * @internal param array $options
      */
     public function render()
     {
@@ -78,12 +77,12 @@
       HTML::td()->tr;
       $this->registerJS();
     }
+
     /**
      * @static
-     *
-     * @param $this->city
-     * @param $state
-     * @param $postcode
+     * @internal param $this ->city
+     * @internal param $state
+     * @internal param $postcode
      */
     public function registerJS()
     {

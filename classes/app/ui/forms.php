@@ -21,9 +21,9 @@
       $action = $_SERVER['DOCUMENT_URI'];
     }
     if ($multi) {
-      echo "<form enctype='multipart/form-data' method='post' action='$action' $name>\n";
+      echo "<form enctype='multipart/form-data' method='post' action='".$action."' $name>\n";
     } else {
-      echo "<form method='post' action='$action' $name>\n";
+      echo "<form method='post' action='".$action."' $name>\n";
     }
   }
 
@@ -681,9 +681,11 @@
    * @param null $max
    * @param null $init
    * @param null $title
-   * @param null $labparams
+   * @param null $params
    * @param null $post_label
    * @param bool $submit_on_change
+   *
+   * @internal param null $labparams
    */
   function text_cells_ex($label, $name, $size, $max = null, $init = null, $title = null, $params = null, $post_label = null, $submit_on_change = false)
   {

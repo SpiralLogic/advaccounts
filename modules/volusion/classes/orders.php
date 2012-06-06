@@ -217,8 +217,7 @@
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Return the key of the current element
      * @link http://php.net/manual/en/iterator.key.php
-     * @return scalar scalar on success, integer
-     * 0 on failure.
+     * @return \Modules\Volusion\scalar|\scalar scalar on success, integer
      */
     public function key()
     {

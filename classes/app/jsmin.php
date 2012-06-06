@@ -11,9 +11,15 @@
 
     protected $minified = '';
     protected $source;
+    /**
+     * @param $source
+     */
     public function __construct($source) {
       $this->source = $source;
     }
+    /**
+     * @return string
+     */
     public function minify() {
       $str = $this->source;
       $res = '';
@@ -148,6 +154,9 @@
       $this->minified = $res;
       return $this->minified;
     }
+    /**
+     * @return string
+     */
     public function __toString() {
       return $this->minified;
     }

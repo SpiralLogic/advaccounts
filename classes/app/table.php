@@ -84,6 +84,11 @@
       echo "</td></tr>\n";
       Table::end($breaks);
     }
+    /**
+     * @static
+     *
+     * @param string $class
+     */
     static function foot($class = '') {
       if ($class) {
         $class = " class='$class' ";

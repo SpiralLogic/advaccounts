@@ -12,6 +12,9 @@
     public $name = "Dimensions";
     public $help_context = "&Dimensions";
     public $enabled = false;
+    /**
+
+     */
     public function __construct()
     {
       $this->enabled = DB_Company::get_pref('use_dimension');

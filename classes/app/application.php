@@ -97,7 +97,10 @@
       return $appfunction;
     }
   }
-  interface IApplication
+
+  /**
+
+   */interface IApplication
   {
     function buildMenu();
   }
@@ -131,9 +134,9 @@
      */
     public $enabled=true;
     /**
-     * @param      $id
-     * @param      $name
-     * @param bool $enabled
+     * @internal param $id
+     * @internal param $name
+     * @internal param bool $enabled
      */
     public function __construct()
     {

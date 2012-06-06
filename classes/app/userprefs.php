@@ -125,6 +125,9 @@
     {
       return $this->price_dec;
     }
+    /**
+     * @return int
+     */
     public function exrate_dec()
     {
       return $this->exrate_dec;

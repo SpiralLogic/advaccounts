@@ -81,7 +81,7 @@
     Session::i();
     Ajax::i();
     Config::i();
- // ob_start('adv_ob_flush_handler', 0);
+  ob_start('adv_ob_flush_handler', 0);
    ADVAccounting::i();
   }
  if (extension_loaded('xhprof') &&substr_compare($_SERVER['DOCUMENT_URI'], '/profile/', 0, 9, true) !== 0 ) {

@@ -156,6 +156,14 @@
 
       return (\DB::fetch($query)[0] > Config::get('max_login_attempts', 50));
     }
+    /**
+     * @static
+     *
+     * @param $password
+     * @param $user_id
+     *
+     * @return string
+     */
     public static function makeHash($password, $user_id)
     {
       return crypt($password, $user_id);
