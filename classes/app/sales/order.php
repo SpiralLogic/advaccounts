@@ -783,9 +783,9 @@
           }
         }
         $sql = "INSERT INTO sales_order_details (order_no, trans_type, stk_code, description, unit_price, quantity, discount_percent,sort_order) VALUES (";
-        $sql .= $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ", " . DB::escape($line->description) . ",". $line->price.", ".
-                    $line->quantity.", ".
-                    $line->discount_percent.", ".$position.")";
+        $sql .= $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ", " . DB::escape($line->description) . "," . $line->price . ", " .
+          $line->quantity . ", " .
+          $line->discount_percent . ", " . $position . ")";
         DB::query($sql, "order Details Cannot be Added");
       } /* inserted line items into sales order details */
       DB_AuditTrail::add($this->trans_type, $order_no, $this->document_date);
@@ -971,7 +971,7 @@
         $st_num     = array();
         $st_reorder = array();
       }
-      foreach ($this->line_items as $position =>$line) {
+      foreach ($this->line_items as $position => $line) {
         if (Config::get('accounts.stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
           $sql
                = "SELECT stock_location.*, locations.location_name, locations.email
@@ -1001,7 +1001,7 @@
                      VALUES (";
         $sql .= DB::escape($line->id ? $line->id :
           0) . "," . $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ",
-                        " . DB::escape($line->description) . ", " . DB::escape($line->price) . ", " . DB::escape($line->quantity) . ", " . DB::escape($line->discount_percent) . ", " . DB::escape($line->qty_done) . ", ".$position." )";
+                        " . DB::escape($line->description) . ", " . DB::escape($line->price) . ", " . DB::escape($line->quantity) . ", " . DB::escape($line->discount_percent) . ", " . DB::escape($line->qty_done) . ", " . $position . " )";
         DB::query($sql, "Old order Cannot be Inserted");
       } /* inserted line items into sales order details */
       DB_AuditTrail::add($this->trans_type, $order_no, $this->document_date, _("Updated."));
@@ -1426,7 +1426,8 @@
     {
 
       if ($line_no != -1 && $line_no == $id) // edit old line
-      {      Row::start('class="editline"');
+      {
+        Row::start('class="editline"');
 
         $_POST['stock_id']    = $this->line_items[$id]->stock_id;
         $dec                  = Item::qty_dec($_POST['stock_id']);
@@ -1440,7 +1441,8 @@
         Form::textareaCells(null, 'description', null, 50, 5);
         Ajax::i()->activate('items_table');
       } else // prepare new line
-      {      Row::start('class="newline"');
+      {
+        Row::start('class="newline"');
 
         Sales_UI::items_cells(null, 'stock_id', null, false, false, array('description' => ''));
         if (Form::isListUpdated('stock_id')) {

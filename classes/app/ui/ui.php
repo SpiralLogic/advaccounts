@@ -197,7 +197,7 @@
         $selectjs = $o['selectjs'];
       } elseif ($o['description'] !== false) {
         HTML::textarea('description', $o['description'], array(
-          'name' => 'description', 'rows' => 1, 'cols' => 35
+          'name' => 'description', 'rows' => 1, 'class'=> 'width90'
         ), false);
         $desc_js .= "$('#description').css('height','auto').attr('rows',4);";
       } elseif ($o['submitonselect']) {
@@ -303,9 +303,9 @@ JS;
     {
       $js = <<<JS
 $('.grid').find('tbody').sortable({
-  items:'tr:not(".newline")',
+  items:'tr:not(.newline,.editline)',
   stop:function (e, ui) {
-    var self = $(this), _this = self.find('tr:not(".newline")'), lines = {};
+    var self = $(this), _this = self.find('tr:not(".newline,.editline")'), lines = {};
     self.sortable('disable');
     $.each(_this, function (k, v) {
       lines[$(this).data('line')] = k;
@@ -334,7 +334,13 @@ $('.grid').find('tbody').sortable({
       $(this).width($(this).width());
     });
     return ui;
-  }});
+  }}).find('tr:not(.newline,.editline)');
+$('.grid').find('.newline').droppable({drop:function (event, ui) {
+  var infields = $(this).find('td');
+  $(ui.draggable).find('td').each(function (k, v) {
+    var currfield = infields.eq(k),currvalue=$(v).text();
+    currfield.find('input').val(currvalue).end().find('textarea').text(currvalue).attr('rows',4);
+    currfield.not(':has(input),:has(textarea),:has(button)').text(currvalue)})}})
 JS;
       JS::addLive($js);
     }
