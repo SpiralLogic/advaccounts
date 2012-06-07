@@ -759,7 +759,7 @@
         $st_num     = array();
         $st_reorder = array();
       }
-      foreach ($this->line_items as $line) {
+      foreach ($this->line_items as $position => $line) {
         if (Config::get('accounts.stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
           $sql
                = "SELECT stock_location.*, locations.location_name, locations.email
@@ -782,10 +782,10 @@
             }
           }
         }
-        $sql = "INSERT INTO sales_order_details (order_no, trans_type, stk_code, description, unit_price, quantity, discount_percent) VALUES (";
-        $sql .= $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ", " . DB::escape($line->description) . ", $line->price,
-                    $line->quantity,
-                    $line->discount_percent)";
+        $sql = "INSERT INTO sales_order_details (order_no, trans_type, stk_code, description, unit_price, quantity, discount_percent,sort_order) VALUES (";
+        $sql .= $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ", " . DB::escape($line->description) . ",". $line->price.", ".
+                    $line->quantity.", ".
+                    $line->discount_percent.", ".$position.")";
         DB::query($sql, "order Details Cannot be Added");
       } /* inserted line items into sales order details */
       DB_AuditTrail::add($this->trans_type, $order_no, $this->document_date);
@@ -971,7 +971,7 @@
         $st_num     = array();
         $st_reorder = array();
       }
-      foreach ($this->line_items as $line) {
+      foreach ($this->line_items as $position =>$line) {
         if (Config::get('accounts.stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
           $sql
                = "SELECT stock_location.*, locations.location_name, locations.email
@@ -997,11 +997,11 @@
         $sql
           = "INSERT INTO sales_order_details
                      (id, order_no, trans_type, stk_code, description, unit_price, quantity,
-                     discount_percent, qty_sent)
+                     discount_percent, qty_sent, sort_order)
                      VALUES (";
         $sql .= DB::escape($line->id ? $line->id :
           0) . "," . $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ",
-                        " . DB::escape($line->description) . ", " . DB::escape($line->price) . ", " . DB::escape($line->quantity) . ", " . DB::escape($line->discount_percent) . ", " . DB::escape($line->qty_done) . " )";
+                        " . DB::escape($line->description) . ", " . DB::escape($line->price) . ", " . DB::escape($line->quantity) . ", " . DB::escape($line->discount_percent) . ", " . DB::escape($line->qty_done) . ", ".$position." )";
         DB::query($sql, "Old order Cannot be Inserted");
       } /* inserted line items into sales order details */
       DB_AuditTrail::add($this->trans_type, $order_no, $this->document_date, _("Updated."));
@@ -1106,15 +1106,20 @@
     }
     /**
      * @param array $order_map
+     *
+     * @return bool
      */
     public function setLineOrder(array $order_map)
     {
-      if (!$order_map || count($order_map)!=count($this->line_items)) return false;
+      if (!$order_map || count($order_map) != count($this->line_items)) {
+        return false;
+      }
       $current_lines    = $this->line_items;
       $this->line_items = array();
       foreach ($current_lines as $line_no => $line) {
         $this->line_items[$order_map[$line_no]] = $line;
       }
+      ksort($this->line_items);
       return true;
     }
     /**
@@ -1196,8 +1201,8 @@
         $total_discount += $line_discount;
       }
       if ($id == -1 && $editable_items) {
-        $this->item_controls($id);      \UI::lineSortable();
-
+        $this->item_controls($id);
+        \UI::lineSortable();
       }
       $colspan = 6;
       if ($this->trans_no != 0) {
@@ -1420,9 +1425,9 @@
     public function item_controls($id, $line_no = -1)
     {
 
-      Row::start('class="edit"');
       if ($line_no != -1 && $line_no == $id) // edit old line
-      {
+      {      Row::start('class="editline"');
+
         $_POST['stock_id']    = $this->line_items[$id]->stock_id;
         $dec                  = Item::qty_dec($_POST['stock_id']);
         $_POST['qty']         = Num::format($this->line_items[$id]->qty_dispatched, $dec);
@@ -1435,7 +1440,8 @@
         Form::textareaCells(null, 'description', null, 50, 5);
         Ajax::i()->activate('items_table');
       } else // prepare new line
-      {
+      {      Row::start('class="newline"');
+
         Sales_UI::items_cells(null, 'stock_id', null, false, false, array('description' => ''));
         if (Form::isListUpdated('stock_id')) {
           Ajax::i()->activate('price');
@@ -1603,7 +1609,7 @@
       $sql
         = "SELECT sales_order_details.id, stk_code, unit_price, sales_order_details.description,sales_order_details.quantity,
         discount_percent, qty_sent as qty_done, stock_master.units,stock_master.tax_type_id,stock_master.material_cost + stock_master.labour_cost + stock_master.overhead_cost AS standard_cost
-        FROM sales_order_details, stock_master WHERE sales_order_details.stk_code = stock_master.stock_id AND order_no =" . DB::escape($order_no) . " AND trans_type = " . DB::escape($trans_type) . " ORDER BY id";
+        FROM sales_order_details, stock_master WHERE sales_order_details.stk_code = stock_master.stock_id AND order_no =" . DB::escape($order_no) . " AND trans_type = " . DB::escape($trans_type) . " ORDER BY sort_order, id";
       return DB::query($sql, "Retreive order Line Items");
     }
     /**

@@ -12,8 +12,8 @@
    * @param string $action
    * @param string $name
    */
-  class Form
-  {
+  class Form {
+
     /**
      * @static
      *
@@ -448,10 +448,17 @@
     }
     /**
      * @param $name
+     * @param $action
      * @param $msg
      */
-    public static function submitConfirm($name, $msg)
+    public static function submitConfirm($name, $action, $msg = null)
     {
+      if (!$msg) {
+        $msg = $action;
+      } else {
+        $name = $action;
+      }
+
       JS::beforeload("_validate.$name=function(){ return confirm('" . strtr($msg, array("\n" => '\\n')) . "');};");
     }
     /**
@@ -1259,8 +1266,8 @@
       $items['0'] = strlen($name_no) ? $name_no : _("No");
       $items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
       return Form::arraySelect($name, $selected_id, $items, array(
-                                                                 'select_submit' => $submit_on_change, 'async' => false
-                                                            )); // FIX?
+        'select_submit' => $submit_on_change, 'async' => false
+      )); // FIX?
     }
     /**
      * @param        $label
@@ -1317,8 +1324,8 @@
         $items[$i] = "$i";
       }
       return Form::arraySelect($name, $selected, $items, array(
-                                                              'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
-                                                         ));
+        'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
+      ));
     }
     /**
      * @param      $label

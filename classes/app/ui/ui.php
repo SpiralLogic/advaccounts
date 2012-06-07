@@ -303,14 +303,29 @@ JS;
     {
       $js = <<<JS
 $('.grid').find('tbody').sortable({
-  items:'tr:not(.edit)',
-  stop:function () {
-    var _this = $(this).find('tr:not(".edit")'), lines = {};
+  items:'tr:not(".newline")',
+  stop:function (e, ui) {
+    var self = $(this), _this = self.find('tr:not(".newline")'), lines = {};
+    self.sortable('disable');
     $.each(_this, function (k, v) {
       lines[$(this).data('line')] = k;
       if (k == _this.length - 1) {
-        $.post('#', {lineMap:lines, _action:'setLineOrder'},
-          function (data) {console.log(data)}, 'json');
+        $.post('#', {lineMap:lines, _action:'setLineOrder', order_id:$("#order_id").val()},
+          function (data) {
+            $.each(_this, function (k, v) {
+              var that = $(this), curline = that.data('line'), buttons = that.find('#_action');
+              that.data('line', lines[curline]);
+              if (that.hasClass('editline')) {
+                that.find('#LineNo').attr('value', lines[curline]).val(lines[curline])
+              }
+              $.each(buttons, function () {
+                var curbutton = $(this), curvalue = curbutton.val(), newvalue = curvalue.replace(curline, lines[curline]);
+                curbutton.attr('value', newvalue).val(newvalue);
+              });
+            });
+            self.sortable('enable');
+            console.log(_this)
+          }, 'json');
       }
     });
   },
