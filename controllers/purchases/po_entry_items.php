@@ -253,7 +253,7 @@
       Event::error(_("You are not currently editing an order."));
       Page::footer_exit();
     }
-    if (!Form::getPost('supplier_id')) {
+    if (!Input::post('supplier_id')) {
       Event::error(_("There is no supplier selected."));
       JS::set_focus('supplier_id');
       return FALSE;
@@ -263,7 +263,7 @@
       JS::set_focus('OrderDate');
       return FALSE;
     }
-    if (Form::getPost('delivery_address') == '') {
+    if (Input::post('delivery_address') == '') {
       Event::error(_("There is no delivery address specified."));
       JS::set_focus('delivery_address');
       return FALSE;
@@ -273,7 +273,7 @@
       JS::set_focus('freight');
       return FALSE;
     }
-    if (Form::getPost('location') == '') {
+    if (Input::post('location') == '') {
       Event::error(_("There is no location specified to move any items into."));
       JS::set_focus('location');
       return FALSE;
@@ -283,7 +283,7 @@
       return FALSE;
     }
     if (!$order->order_no) {
-      if (!Ref::is_valid(Form::getPost('ref'))) {
+      if (!Ref::is_valid(Input::post('ref'))) {
         Event::error(_("There is no reference entered for this purchase order."));
         JS::set_focus('ref');
         return FALSE;

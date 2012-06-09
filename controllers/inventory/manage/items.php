@@ -10,7 +10,7 @@
 
   Page::start(_($help_context = "Items"), SA_ITEM, Input::request('frame'));
   $user_comp = '';
-  $new_item = Form::getPost('stock_id') == '' || Form::getPost('cancel') || Form::getPost('clone');
+  $new_item = Input::post('stock_id') == '' || Input::post('cancel') || Input::post('clone');
   if (isset($_GET['stock_id'])) {
     $_POST['stock_id'] = $stock_id = $_GET['stock_id'];
   }
@@ -18,12 +18,12 @@
     $stock_id = $_POST['stock_id'];
   }
   if (Form::isListUpdated('stock_id')) {
-    $_POST['NewStockID'] = Form::getPost('stock_id');
+    $_POST['NewStockID'] = Input::post('stock_id');
     clear_data();
     Ajax::i()->activate('details');
     Ajax::i()->activate('controls');
   }
-  if (Form::getPost('cancel')) {
+  if (Input::post('cancel')) {
     $_POST['NewStockID'] = $_POST['stock_id'] = '';
     clear_data();
     JS::set_focus('stock_id');
@@ -108,7 +108,7 @@
         }
       }
       if (!$new_item) { /*so its an existing one */
-        Item::update($_POST['NewStockID'], $_POST['description'], $_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'], Form::getPost('units'), Form::getPost('mb_flag'), $_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'], $_POST['adjustment_account'],
+        Item::update($_POST['NewStockID'], $_POST['description'], $_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'], Input::post('units'), Input::post('mb_flag'), $_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'], $_POST['adjustment_account'],
           $_POST['assembly_account'], $_POST['dimension_id'], $_POST['dimension2_id'], Form::hasPost('no_sale'), Form::hasPost('editable'));
         DB::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'stock_master', 'stock_id');
         DB::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'item_codes', 'item_code');
@@ -134,7 +134,7 @@
       Ajax::i()->activate('_page_body');
     }
   }
-  if (Form::getPost('clone')) {
+  if (Input::post('clone')) {
     unset($_POST['stock_id'], $_POST['inactive']);
     JS::set_focus('NewStockID');
     Ajax::i()->activate('_page_body');
@@ -210,10 +210,10 @@
     else {
       Form::hidden('stock_id', $_POST['stock_id']);
     }
-    $new_item = Form::getPost('stock_id') == '';
+    $new_item = Input::post('stock_id') == '';
     Row::end();
     Table::end();
-    if (Form::getPost('_show_inactive_update')) {
+    if (Input::post('_show_inactive_update')) {
       $_SESSION['options']['stock_id']['inactive'] = Form::hasPost('show_inactive');
       Ajax::i()->activate('stock_id');
     }
@@ -227,7 +227,7 @@
     $_POST['inactive'] = 0;
   }
   else { // Must be modifying an existing item
-    if (Form::getPost('NewStockID') != Form::getPost('stock_id') || Form::getPost('addupdate')) { // first item display
+    if (Input::post('NewStockID') != Input::post('stock_id') || Input::post('addupdate')) { // first item display
       $_POST['NewStockID'] = $_POST['stock_id'];
       $myrow = Item::get($_POST['NewStockID']);
       $_POST['long_description'] = $myrow["long_description"];
@@ -338,17 +338,17 @@
   }
   else {
     Form::submitCenterBegin('addupdate', _("Update Item"), '', Input::request('frame') ? TRUE : 'default');
-    Form::submitReturn('select', Form::getPost('stock_id'), _("Select this items and return to document entry."), 'default');
+    Form::submitReturn('select', Input::post('stock_id'), _("Select this items and return to document entry."), 'default');
     Form::submit('clone', _("Clone This Item"), TRUE, '', TRUE);
     Form::submit('delete', _("Delete This Item"), TRUE, '', TRUE);
     Form::submit('addupdatenew', _("Save & New"), TRUE, '', TRUE);
     Form::submitCenterEnd('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
   }
-  if (Form::getPost('stock_id')) {
+  if (Input::post('stock_id')) {
     Session::i()->setGlobal('stock_id', $_POST['stock_id']);
     echo "<iframe src='/inventory/purchasing_data.php?frame=1' style='width:48%;height:450px;overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
   }
-  if (Form::getPost('stock_id')) {
+  if (Input::post('stock_id')) {
     Session::i()->setGlobal('stock_id', $_POST['stock_id']);
     echo "<iframe src='/inventory/prices.php?frame=1' style='float:right;width:48%;height:450px;overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
   }

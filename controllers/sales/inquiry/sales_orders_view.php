@@ -28,7 +28,7 @@
     $trans_type = ST_SALESQUOTE;
   } elseif (isset($searchArray)) {
     $trans_type = ST_SALESORDER;
-  } elseif (Form::getPost('type')) {
+  } elseif (Input::post('type')) {
     $trans_type = $_POST['type'];
   } elseif (isset($_GET['type']) && ($_GET['type'] == ST_SALESQUOTE)) {
     $trans_type = ST_SALESQUOTE;
@@ -79,8 +79,8 @@
   }
   //	Order range form
   //
-  if (Form::getPost('_OrderNumber_changed')) { // enable/disable selection controls
-    $disable = Form::getPost('OrderNumber') !== '';
+  if (Input::post('_OrderNumber_changed')) { // enable/disable selection controls
+    $disable = Input::post('OrderNumber') !== '';
     if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
       Ajax::i()->addDisable(TRUE, 'OrdersAfterDate', $disable);
       Ajax::i()->addDisable(TRUE, 'OrdersToDate', $disable);

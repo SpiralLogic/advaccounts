@@ -26,7 +26,7 @@
       JS::set_focus('tout');
     }
     if ($error != 1) {
-      Printer::write_def($selected_id, Form::getPost('name'), Form::getPost('descr'), Form::getPost('queue'), Form::getPost('host'), Validation::input_num('port', 0), Validation::input_num('tout', 0));
+      Printer::write_def($selected_id, Input::post('name'), Input::post('descr'), Input::post('queue'), Input::post('host'), Validation::input_num('port', 0), Validation::input_num('tout', 0));
       Event::success($selected_id == -1 ? _('New printer definition has been created') : _('Selected printer definition has been updated'));
       $Mode = MODE_RESET;
     }

@@ -80,7 +80,7 @@
      Form::checkCells(_("Show inactive:"), 'show_inactive', null, true);
     Row::end();
     Table::end();
-    if (Form::getPost('_show_inactive_update')) {
+    if (Input::post('_show_inactive_update')) {
       Ajax::i()->activate('AccountList');
       JS::set_focus('AccountList');
     }

@@ -31,7 +31,7 @@
   /*if (isset($_GET["selected_component"])) {
        $selected_component = $_GET["selected_component"];
      } else {
-       $selected_component = Form::getPost("selected_component", -1);
+       $selected_component = Input::post("selected_component",null,-1);
      }
      */
   /**
@@ -161,7 +161,7 @@
   Table::end();
   Display::br();
   Form::end();
-  if (Form::getPost('stock_id') != '') { //Parent Item selected so display bom or edit component
+  if (Input::post('stock_id') != '') { //Parent Item selected so display bom or edit component
     $selected_parent = $_POST['stock_id'];
     if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
       on_submit($selected_parent, $selected_id);
@@ -190,7 +190,7 @@
       Cell::label(_("Component:"));
       echo "<td>";
       echo Item_UI::component('component', $selected_parent, null, false, true);
-      if (Form::getPost('_component_update')) {
+      if (Input::post('_component_update')) {
         Ajax::i()->activate('quantity');
       }
       echo "</td>";
@@ -199,7 +199,7 @@
     Form::hidden('stock_id', $selected_parent);
     Inv_Location::row(_("Location to Draw From:"), 'loc_code', null);
     workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);
-    $dec               = Item::qty_dec(Form::getPost('component'));
+    $dec               = Item::qty_dec(Input::post('component'));
     $_POST['quantity'] = Num::format(Validation::input_num('quantity', 1), $dec);
      Form::qtyRow(_("Quantity:"), 'quantity', null, null, null, $dec);
     Table::end(1);

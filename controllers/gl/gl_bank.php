@@ -22,7 +22,7 @@
   Page::start($_SESSION['page_title'], $page_security);
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
   if (Form::isListUpdated('PersonDetailID')) {
-    $br                 = Sales_Branch::get(Form::getPost('PersonDetailID'));
+    $br                 = Sales_Branch::get(Input::post('PersonDetailID'));
     $_POST['person_id'] = $br['debtor_id'];
     Ajax::i()->activate('person_id');
   }
@@ -80,7 +80,7 @@
     }
   }
   if (isset($_POST['Process'])) {
-    $trans      = GL_Bank::add_bank_transaction($_SESSION['pay_items']->trans_type, $_POST['bank_account'], $_SESSION['pay_items'], $_POST['date_'], $_POST['PayType'], $_POST['person_id'], Form::getPost('PersonDetailID'), $_POST['ref'], $_POST['memo_']);
+    $trans      = GL_Bank::add_bank_transaction($_SESSION['pay_items']->trans_type, $_POST['bank_account'], $_SESSION['pay_items'], $_POST['date_'], $_POST['PayType'], $_POST['person_id'], Input::post('PersonDetailID'), $_POST['ref'], $_POST['memo_']);
     $trans_type = $trans[0];
     $trans_no   = $trans[1];
     Dates::new_doc_date($_POST['date_']);

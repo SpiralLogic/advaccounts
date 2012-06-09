@@ -66,7 +66,7 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav         = Form::getPost('show_inactive');
+    $sav         = Input::post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
@@ -151,19 +151,19 @@
       $_POST['description']      = '';
       $_POST['no_sale']          = 0;
       $company_record            = DB_Company::get_prefs();
-      if (Form::getPost('inventory_account') == "") {
+      if (Input::post('inventory_account') == "") {
         $_POST['inventory_account'] = $company_record["default_inventory_act"];
       }
-      if (Form::getPost('cogs_account') == "") {
+      if (Input::post('cogs_account') == "") {
         $_POST['cogs_account'] = $company_record["default_cogs_act"];
       }
-      if (Form::getPost('sales_account') == "") {
+      if (Input::post('sales_account') == "") {
         $_POST['sales_account'] = $company_record["default_inv_sales_act"];
       }
-      if (Form::getPost('adjustment_account') == "") {
+      if (Input::post('adjustment_account') == "") {
         $_POST['adjustment_account'] = $company_record["default_adj_act"];
       }
-      if (Form::getPost('assembly_account') == "") {
+      if (Input::post('assembly_account') == "") {
         $_POST['assembly_account'] = $company_record["default_assembly_act"];
       }
     }

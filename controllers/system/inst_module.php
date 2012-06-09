@@ -24,12 +24,12 @@
     handle_delete($selected_id);
     $Mode = MODE_RESET;
   }
-  if (Form::getPost('Update')) {
+  if (Input::post('Update')) {
     $exts = DB_Company::get_company_extensions();
     foreach ($exts as $i => $ext) {
       $exts[$i]['active'] = Form::hasPost('Active' . $i);
     }
-    advaccounting::write_extensions($exts, Form::getPost('extset'));
+    advaccounting::write_extensions($exts, Input::post('extset'));
     $installed_extensions = $exts;
     Event::notice(_('Current active extensions set has been saved.'));
   }
@@ -44,7 +44,7 @@
   echo "<div class='center'>" . _('Extensions:') . "&nbsp;&nbsp;";
   echo Extensions::view('extset', null, true);
   echo "</div><br>";
-  $set = Form::getPost('extset', -1);
+  $set = Input::post('extset',null,-1);
   if ($set == -1) {
     display_extensions();
     display_ext_edit($Mode, $selected_id);
@@ -163,7 +163,7 @@
       }
       move_uploaded_file($file1, $file2);
     } else {
-      $extensions[$id]['filename'] = Form::getPost('filename');
+      $extensions[$id]['filename'] = Input::post('filename');
     }
     if (is_uploaded_file($_FILES['uploadfile2']['tmp_name'])) {
       $file1 = $_FILES['uploadfile2']['tmp_name'];
@@ -184,7 +184,7 @@
       }
       move_uploaded_file($file1, $file2);
     } else {
-      $extensions[$id]['acc_file'] = Form::getPost('acc_file');
+      $extensions[$id]['acc_file'] = Input::post('acc_file');
     }
     // security area guess for plugins
     if ($extensions[$id]['type'] == 'plugin') {

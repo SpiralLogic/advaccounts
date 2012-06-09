@@ -12,7 +12,7 @@
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
   // Ajax updates
   //
-  if (Form::getPost('Show')) {
+  if (Input::post('Show')) {
     Ajax::i()->activate('trans_tbl');
   }
   Form::start();

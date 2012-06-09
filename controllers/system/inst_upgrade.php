@@ -17,7 +17,7 @@
   //		'Type', 'Null', 'Key', 'Default', 'Extra'
   //
   $installers = get_installers();
-  if (Form::getPost('Upgrade')) {
+  if (Input::post('Upgrade')) {
     $ret = TRUE;
     foreach (Config::get_all('db') as $conn) {
       // connect to database
@@ -162,8 +162,8 @@ You have to clean database manually to enable them, or try to perform forced upg
     global $installers;
     $inst = $installers[$index];
     $ret = TRUE;
-    $force = Form::getPost('force_' . $index);
-    if ($force || Form::getPost('install_' . $index)) {
+    $force = Input::post('force_' . $index);
+    if ($force || Input::post('install_' . $index)) {
       $state = $inst->installed();
       if (!$state || $force) {
         if (!$inst->pre_check($force)) {

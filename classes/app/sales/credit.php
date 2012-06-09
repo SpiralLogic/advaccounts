@@ -325,7 +325,7 @@
       Table::endOuter(1); // outer table
       if ($change_prices != 0) {
         foreach ($order->line_items as $line) {
-          $line->price = Item_Price::get_calculated_price($line->stock_id, $order->customer_currency, $order->sales_type, $order->price_factor, Form::getPost('OrderDate'));
+          $line->price = Item_Price::get_calculated_price($line->stock_id, $order->customer_currency, $order->sales_type, $order->price_factor, Input::post('OrderDate'));
           //		$line->discount_percent = $order->default_discount;
         }
         Ajax::i()->activate('items_table');
@@ -384,7 +384,7 @@
       }
       Row::start();
       Cell::label(_("Shipping"), "colspan=$colspan class='right bold'");
-       Form::amountCellsSmall(NULL, 'ChargeFreightCost', Num::price_format(Form::getPost('ChargeFreightCost', 0)));
+       Form::amountCellsSmall(NULL, 'ChargeFreightCost', Num::price_format(Input::post('ChargeFreightCost',null, 0)));
       Cell::label('', 'colspan=2');
       Row::end();
       $taxes         = $order->get_taxes($_POST['ChargeFreightCost']);

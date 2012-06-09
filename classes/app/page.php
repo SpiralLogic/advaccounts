@@ -190,7 +190,7 @@
     {
       $validate = array();
       $this->menu_footer();
-      JS::beforeload("_focus = '" . Form::getPost('_focus') . "';_validate = " . Ajax::i()->php2js($validate) . ";");
+      JS::beforeload("_focus = '" . Input::post('_focus') . "';_validate = " . Ajax::i()->php2js($validate) . ";");
       User::add_js_data();
       echo "<!-- end content div-->";
       echo "</div>";
@@ -307,7 +307,7 @@
     public static function simple_mode($numeric_id = TRUE)
     {
       $default     = $numeric_id ? -1 : '';
-      $selected_id = Form::getPost('selected_id', $default);
+      $selected_id = Input::post('selected_id',null,$default);
       foreach (array(ADD_ITEM, UPDATE_ITEM, MODE_RESET, MODE_CLONE) as $m) {
         if (isset($_POST[$m])) {
           Ajax::i()->activate('_page_body');

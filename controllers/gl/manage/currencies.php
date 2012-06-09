@@ -205,7 +205,7 @@
      Form::textRowEx(_("Currency Name:"), 'CurrencyName', 20);
      Form::textRowEx(_("Hundredths Name:"), 'hundreds_name', 15);
      Form::textRowEx(_("Country:"), 'country', 40);
-     Form::checkRow(_("Automatic exchange rate update:"), 'auto_update', Form::getPost('auto_update'));
+     Form::checkRow(_("Automatic exchange rate update:"), 'auto_update', Input::post('auto_update'));
     Table::end(1);
     Form::submitAddUpdateCenter($selected_id == '', '', 'both');
   }

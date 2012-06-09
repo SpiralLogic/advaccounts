@@ -33,7 +33,7 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav         = Form::getPost('show_inactive');
+    $sav         = Input::post('show_inactive');
     unset($_POST); // clean all input fields
     $_POST['show_inactive'] = $sav;
   }

@@ -600,7 +600,7 @@
         Form::hidden('supplier_id', $this->supplier_id);
         Row::label(_("Supplier:"), $this->supplier_name, 'class="label" name="supplier_name"');
       }
-      if ($this->supplier_id != Form::getPost('supplier_id', -1)) {
+      if ($this->supplier_id != Input::post('supplier_id',null,-1)) {
         $old_supp = $this->supplier_id;
         $this->supplier_to_order($_POST['supplier_id']);
         // supplier default price update
@@ -707,7 +707,7 @@
         $this->item_controls();
       }
       Table::foot();
-      Form::SmallAmountRow(_("Freight"), 'freight', Num::price_format(Form::getPost('freight', 0)), "colspan=8 class='bold right'", null, null, 3);
+      Form::SmallAmountRow(_("Freight"), 'freight', Num::price_format(Input::post('freight',null,0)), "colspan=8 class='bold right'", null, null, 3);
       $display_total = Num::price_format($total + Validation::input_num('freight'));
       Row::label(_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 class='bold right'", "nowrap class=right _nofreight='$total'", 2);
       Table::footEnd();

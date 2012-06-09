@@ -13,10 +13,10 @@
   Page::start(_($help_context = "Tax Inquiry"), SA_TAXREP);
   // Ajax updates
   //
-  if (Form::getPost('Show')) {
+  if (Input::post('Show')) {
     Ajax::i()->activate('trans_tbl');
   }
-  if (Form::getPost('TransFromDate') == "" && Form::getPost('TransToDate') == "") {
+  if (Input::post('TransFromDate') == "" && Input::post('TransToDate') == "") {
     $date                   = Dates::today();
     $row                    = DB_Company::get_prefs();
     $edate                  = Dates::add_months($date, -$row['tax_last']);

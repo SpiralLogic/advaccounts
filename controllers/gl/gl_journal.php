@@ -161,7 +161,7 @@
 
       return false;
     }
-    if (!Tax_Types::is_tax_gl_unique(Form::getPost('code_id'))) {
+    if (!Tax_Types::is_tax_gl_unique(Input::post('code_id'))) {
       Event::error(_("Cannot post to GL account used by more than one tax type."));
       JS::set_focus('code_id');
 

@@ -67,7 +67,7 @@
           break;
         case PT_QUICKENTRY :
           GL_QuickEntry::row(_("Type") . ":", 'person_id', null, ($payment ? QE_PAYMENT : QE_DEPOSIT), true);
-          $qid = GL_QuickEntry::get(Form::getPost('person_id'));
+          $qid = GL_QuickEntry::get(Input::post('person_id'));
           if (Form::isListUpdated('person_id')) {
             unset($_POST['total_amount']); // enable default
             Ajax::i()->activate('total_amount');

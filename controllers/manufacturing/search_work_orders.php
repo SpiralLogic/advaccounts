@@ -18,10 +18,10 @@
   }
   // Ajax updates
   //
-  if (Form::getPost('SearchOrders')) {
+  if (Input::post('SearchOrders')) {
     Ajax::i()->activate('orders_tbl');
-  } elseif (Form::getPost('_OrderNumber_changed')) {
-    $disable = Form::getPost('OrderNumber') !== '';
+  } elseif (Input::post('_OrderNumber_changed')) {
+    $disable = Input::post('OrderNumber') !== '';
     Ajax::i()->addDisable(true, 'StockLocation', $disable);
     Ajax::i()->addDisable(true, 'OverdueOnly', $disable);
     Ajax::i()->addDisable(true, 'OpenOnly', $disable);

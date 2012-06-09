@@ -45,8 +45,8 @@
       Display::meta_forward('/sales/customer_invoice.php', 'BatchInvoice=Yes');
     }
   }
-  if (Form::getPost('_DeliveryNumber_changed')) {
-    $disable = Form::getPost('DeliveryNumber') !== '';
+  if (Input::post('_DeliveryNumber_changed')) {
+    $disable = Input::post('DeliveryNumber') !== '';
     Ajax::i()->addDisable(TRUE, 'DeliveryAfterDate', $disable);
     Ajax::i()->addDisable(TRUE, 'DeliveryToDate', $disable);
     Ajax::i()->addDisable(TRUE, 'StockLocation', $disable);

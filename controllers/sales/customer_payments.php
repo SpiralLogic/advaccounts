@@ -16,7 +16,7 @@
   $_POST['customer_id'] = Input::post_get('customer_id', FALSE);
   if (Form::isListUpdated('branch_id') || !$_POST['customer_id']) {
     // when branch is selected via external editor also customer can change
-    $br = Sales_Branch::get(Form::getPost('branch_id'));
+    $br = Sales_Branch::get(Input::post('branch_id'));
     $_POST['customer_id'] = $br['debtor_id'];
     Ajax::i()->activate('customer_id');
   }

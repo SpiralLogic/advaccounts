@@ -12,7 +12,7 @@
   Page::start(_($help_context = "Trial Balance"), SA_GLANALYTIC);
   // Ajax updates
   //
-  if (Form::getPost('Show')) {
+  if (Input::post('Show')) {
     Ajax::i()->activate('balance_tbl');
   }
   gl_inquiry_controls();

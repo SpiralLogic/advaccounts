@@ -24,13 +24,13 @@
   }
   $update_pager = false;
   if (Form::isListUpdated('deposit_date')) {
-    $_POST['deposit_date'] = Form::getPost('deposit_date') == '' ? Dates::today() : ($_POST['deposit_date']);
+    $_POST['deposit_date'] = Input::post('deposit_date') == '' ? Dates::today() : ($_POST['deposit_date']);
     update_data();
   }
-  if (Form::getPost('_deposit_date_changed')) {
+  if (Input::post('_deposit_date_changed')) {
     $_POST['deposited']      = 0;
     $_SESSION['undeposited'] = array();
-    $_POST['deposit_date']   = check_date() ? (Form::getPost('deposit_date')) : '';
+    $_POST['deposit_date']   = check_date() ? (Input::post('deposit_date')) : '';
     foreach ($_POST as $rowid => $row) {
       if (substr($rowid, 0, 4) == 'dep_') {
         unset($_POST[$rowid]);
@@ -100,7 +100,7 @@
   Table::start();
   Table::header(_("Deposit Date"));
   Row::start();
-   Form::dateCells("", "deposit_date", _('Date of funds to deposit'), Form::getPost('deposit_date') == '', 0, 0, 0, null, false, array('rebind' => false));
+   Form::dateCells("", "deposit_date", _('Date of funds to deposit'), Input::post('deposit_date') == '', 0, 0, 0, null, false, array('rebind' => false));
   Row::end();
   Table::header(_("Total Amount"));
   Row::start();
@@ -144,7 +144,7 @@
    */
   function check_date()
   {
-    if (!Dates::is_date(Form::getPost('deposit_date'))) {
+    if (!Dates::is_date(Input::post('deposit_date'))) {
       Event::error(_("Invalid deposit date format"));
       JS::setFocus('deposit_date');
 
@@ -261,22 +261,22 @@
     {
       return false;
     }
-    if (Form::getPost('bank_date') == '') // new reconciliation
+    if (Input::post('bank_date') == '') // new reconciliation
     {
       Ajax::i()->activate('bank_date');
     }
-    $_POST['bank_date'] = Dates::date2sql(Form::getPost('deposited_date'));
+    $_POST['bank_date'] = Dates::date2sql(Input::post('deposited_date'));
     /*	$sql = "UPDATE ".''."bank_trans SET undeposited=0"
                          ." WHERE id=".DB::escape($deposit_id);
 
                         DB::query($sql, "Can't change undeposited status");*/
     // save last reconcilation status (date, end balance)
     if (Form::hasPost("dep_" . $deposit_id)) {
-      $_SESSION['undeposited']["dep_" . $deposit_id] = Form::getPost('amount_' . $deposit_id);
-      $_POST['deposited']                            = $_POST['to_deposit'] + Form::getPost('amount_' . $deposit_id);
+      $_SESSION['undeposited']["dep_" . $deposit_id] = Input::post('amount_' . $deposit_id);
+      $_POST['deposited']                            = $_POST['to_deposit'] + Input::post('amount_' . $deposit_id);
     } else {
       unset($_SESSION['undeposited']["dep_" . $deposit_id]);
-      $_POST['deposited'] = $_POST['to_deposit'] - Form::getPost('amount_' . $deposit_id);
+      $_POST['deposited'] = $_POST['to_deposit'] - Input::post('amount_' . $deposit_id);
     }
 
     return true;

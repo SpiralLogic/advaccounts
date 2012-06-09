@@ -190,7 +190,7 @@
           echo "<div style='float:right;'>";
           echo _("Quick Entry:") . "&nbsp;";
           echo GL_QuickEntry::select('qid', NULL, QE_SUPPINV, TRUE);
-          $qid = GL_QuickEntry::get(Form::getPost('qid'));
+          $qid = GL_QuickEntry::get(Input::post('qid'));
           if (Form::isListUpdated('qid')) {
             unset($_POST['total_amount']); // enable default
             Ajax::i()->activate('total_amount');

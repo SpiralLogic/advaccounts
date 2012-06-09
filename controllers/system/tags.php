@@ -9,10 +9,10 @@
    **/
   // For tag constants
   // Set up page security based on what type of tags we're working with
-  if (Input::get('type') == "account" || Form::getPost('type') == TAG_ACCOUNT) {
+  if (Input::get('type') == "account" || Input::post('type') == TAG_ACCOUNT) {
     Page::set_security(SA_GLACCOUNTTAGS);
   } else {
-    if (Input::get('type') == "dimension" || Form::getPost('type') == TAG_DIMENSION) {
+    if (Input::get('type') == "dimension" || Input::post('type') == TAG_DIMENSION) {
       Page::set_security(SA_DIMTAGS);
     }
   }

@@ -9,12 +9,12 @@
      **/
 
 
-  if (Form::getPost('view')) {
-    if (!Form::getPost('backups')) {
+  if (Input::post('view')) {
+    if (!Input::post('backups')) {
       Event::error(_('Select backup file first.'));
     }
     else {
-      $filename = BACKUP_PATH . Form::getPost('backups');
+      $filename = BACKUP_PATH . Input::post('backups');
       if (Ajax::in_ajax()) {
         Ajax::i()->popup($filename);
       }
@@ -28,8 +28,8 @@
     }
   }
   ;
-  if (Form::getPost('download')) {
-    download_file(BACKUP_PATH . Form::getPost('backups'));
+  if (Input::post('download')) {
+    download_file(BACKUP_PATH . Input::post('backups'));
     exit;
   }
   Page::start(_($help_context = "Backup and Restore Database"), SA_BACKUP);
@@ -37,19 +37,19 @@
   $db_name = User::i()->company;
   $connections = Config::get_all('db');
   $conn = $connections[$db_name];
-  if (Form::getPost('creat')) {
-    generate_backup($conn, Form::getPost('comp'), Form::getPost('comments'));
+  if (Input::post('creat')) {
+    generate_backup($conn, Input::post('comp'), Input::post('comments'));
     Ajax::i()->activate('backups');
   }
   ;
-  if (Form::getPost('restore')) {
-    if (DB_Utils::import(BACKUP_PATH . Form::getPost('backups'), $conn)) {
+  if (Input::post('restore')) {
+    if (DB_Utils::import(BACKUP_PATH . Input::post('backups'), $conn)) {
       Event::success(_("Restore backup completed."));
     }
   }
-  if (Form::getPost('deldump')) {
-    if (unlink(BACKUP_PATH . Form::getPost('backups'))) {
-      Event::notice(_("File successfully deleted.") . " " . _("Filename") . ": " . Form::getPost('backups'));
+  if (Input::post('deldump')) {
+    if (unlink(BACKUP_PATH . Input::post('backups'))) {
+      Event::notice(_("File successfully deleted.") . " " . _("Filename") . ": " . Input::post('backups'));
       Ajax::i()->activate('backups');
     }
     else {
@@ -57,7 +57,7 @@
     }
   }
   ;
-  if (Form::getPost('upload')) {
+  if (Input::post('upload')) {
     $tmpname = $_FILES['uploadfile']['tmp_name'];
     $fname = $_FILES['uploadfile']['name'];
     if (!preg_match("/.sql(.zip|.gz)?$/", $fname)) {

@@ -151,8 +151,8 @@
         $this->amount      = $trans["Total"];
         $this->date_       = Dates::sql2date($trans["tran_date"]);
       } else {
-        $this->person_id = Form::getPost($this->person_type ? 'supplier_id' : 'customer_id');
-        $this->date_     = Form::getPost($this->person_type ? 'DatePaid' : 'DateBanked', Dates::today());
+        $this->person_id = Input::post($this->person_type ? 'supplier_id' : 'customer_id');
+        $this->date_     = Input::post($this->person_type ? 'DatePaid' : 'DateBanked',null, Dates::today());
       }
       /* Now populate the array of possible (and previous actual) allocations
                                           for this customer/supplier. First get the transactions that have

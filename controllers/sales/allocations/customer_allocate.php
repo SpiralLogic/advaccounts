@@ -29,7 +29,7 @@
     Sales_Allocation::clear_allocations();
     $_SESSION['alloc'] = new Gl_Allocation($_GET['trans_type'], $_GET['trans_no']);
   }
-  if (Form::getPost('UpdateDisplay')) {
+  if (Input::post('UpdateDisplay')) {
     $_SESSION['alloc']->read();
     Ajax::i()->activate('alloc_tbl');
   }

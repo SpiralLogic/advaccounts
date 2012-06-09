@@ -110,7 +110,7 @@
   GL_Currency::row(_("Currency:"), 'curr_abrev', null, true);
   Sales_Type::row(_("Sales Type:"), 'sales_type_id', null, true);
   if (!isset($_POST['price'])) {
-    $_POST['price'] = Num::price_format(Item_Price::get_kit(Form::getPost('stock_id'), Form::getPost('curr_abrev'), Form::getPost('sales_type_id')));
+    $_POST['price'] = Num::price_format(Item_Price::get_kit(Input::post('stock_id'), Input::post('curr_abrev'), Input::post('sales_type_id')));
   }
   $kit = Item_Code::get_defaults($_POST['stock_id']);
    Form::SmallAmountRow(_("Price:"), 'price', null, '', _('per') . ' ' . $kit["units"]);

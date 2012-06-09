@@ -859,7 +859,7 @@
           return;
         }
       }
-      $std_price = Item_Price::get_kit($new_item, $this->customer_currency, $this->sales_type, $this->price_factor, Form::getPost('OrderDate'), true);
+      $std_price = Item_Price::get_kit($new_item, $this->customer_currency, $this->sales_type, $this->price_factor, Input::post('OrderDate'), true);
       if ($std_price == 0) {
         $price_factor = 0;
       } else {
@@ -868,7 +868,7 @@
       $kit      = Item_Code::get_kit($new_item);
       $item_num = DB::num_rows($kit);
       while ($item = DB::fetch($kit)) {
-        $std_price = Item_Price::get_kit($item['stock_id'], $this->customer_currency, $this->sales_type, $this->price_factor, Form::getPost('OrderDate'), true);
+        $std_price = Item_Price::get_kit($item['stock_id'], $this->customer_currency, $this->sales_type, $this->price_factor, Input::post('OrderDate'), true);
         // rounding differences are included in last price item in kit
         $item_num--;
         if ($item_num) {
@@ -1207,7 +1207,7 @@
       Table::foot();
       Row::start();
       Cell::label(_("Shipping Charge"), "colspan=$colspan class='right'");
-      Form::amountCellsSmall(null, 'freight_cost', Num::price_format(Form::getPost('freight_cost', 0)));
+      Form::amountCellsSmall(null, 'freight_cost', Num::price_format(Input::post('freight_cost',null, 0)));
       Cell::label('', 'colspan=2');
       Row::end();
       $display_sub_total = Num::price_format($total + Validation::input_num('freight_cost'));
@@ -1268,12 +1268,12 @@
       } else {
         //Debtor::row(_("Customer:"), 'customer_id', null, false, true, false, true);
         Debtor::newselect();
-        if ($this->customer_id != Form::getPost('customer_id', -1)) {
+        if ($this->customer_id != Input::post('customer_id',null, -1)) {
           // customer has changed
           Ajax::i()->activate('_page_body');
         }
         Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true, true);
-        if (($this->Branch != Form::getPost('branch_id', -1))) {
+        if (($this->Branch != Input::post('branch_id',null, -1))) {
           if (!isset($_POST['branch_id']) || $_POST['branch_id'] == "") {
             // ignore errors on customer search box call
             if ($_POST['customer_id'] == '') {
@@ -1291,7 +1291,7 @@
             $_POST['delivery_address'] = $this->delivery_address;
             $_POST['name']             = $this->name;
             $_POST['phone']            = $this->phone;
-            if (Form::getPost('cash') !== $this->cash) {
+            if (Input::post('cash') !== $this->cash) {
               $_POST['cash'] = $this->cash;
               Ajax::i()->activate('delivery');
               Ajax::i()->activate('cash');
@@ -1376,9 +1376,9 @@
           }
           Ajax::i()->activate('_ex_rate');
           if ($this->trans_type == ST_SALESINVOICE) {
-            $_POST['delivery_date'] = Sales_Order::get_invoice_duedate(Form::getPost('customer_id'), Form::getPost('OrderDate'));
+            $_POST['delivery_date'] = Sales_Order::get_invoice_duedate(Input::post('customer_id'), Input::post('OrderDate'));
           } else {
-            $_POST['delivery_date'] = Dates::add_days(Form::getPost('OrderDate'), DB_Company::get_pref('default_delivery_required'));
+            $_POST['delivery_date'] = Dates::add_days(Input::post('OrderDate'), DB_Company::get_pref('default_delivery_required'));
           }
           Ajax::i()->activate('items_table');
           Ajax::i()->activate('delivery_date');
@@ -1408,7 +1408,7 @@
       Table::endOuter(1); // outer table
       if ($change_prices != 0) {
         foreach ($this->line_items as $line) {
-          $line->price = Item_Price::get_kit($line->stock_id, $this->customer_currency, $this->sales_type, $this->price_factor, Form::getPost('OrderDate'));
+          $line->price = Item_Price::get_kit($line->stock_id, $this->customer_currency, $this->sales_type, $this->price_factor, Input::post('OrderDate'));
         }
         Ajax::i()->activate('items_table');
       }
@@ -1452,7 +1452,7 @@
         $units          = $item_info["units"];
         $dec            = $item_info['decimals'];
         $_POST['qty']   = Num::format(1, $dec);
-        $price          = Item_Price::get_kit(Input::post('stock_id'), $this->customer_currency, $this->sales_type, $this->price_factor, Form::getPost('OrderDate'));
+        $price          = Item_Price::get_kit(Input::post('stock_id'), $this->customer_currency, $this->sales_type, $this->price_factor, Input::post('OrderDate'));
         $_POST['price'] = Num::price_format($price);
         $_POST['Disc']  = Num::percent_format($this->default_discount * 100);
       }
@@ -1481,7 +1481,7 @@
     public function display_delivery_details()
     {
       Display::div_start('delivery');
-      if (Form::getPost('cash', 0)) { // Direct payment sale
+      if (Input::post('cash',null, 0)) { // Direct payment sale
         Ajax::i()->activate('items_table');
         Display::heading(_('Cash payment'));
         Table::start('tablestyle2 width60');

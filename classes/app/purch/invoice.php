@@ -573,8 +573,8 @@
       $taxes     = $creditor_trans->get_taxes($creditor_trans->tax_group_id);
       $tax_total = Tax::edit_items($taxes, $colspan, 0, null, true); // tax_included==0 (we are the company)
       Cell::label(_("Total Correction"), "colspan=$colspan class='right' style='width:90%'");
-       Form::amountCellsSmall(null, 'ChgTotal', Num::price_format(Form::getPost('ChgTotal'), 2));
-      $total = $creditor_trans->ov_amount + $tax_total + Form::getPost('ChgTotal');
+       Form::amountCellsSmall(null, 'ChgTotal', Num::price_format(Input::post('ChgTotal'), 2));
+      $total = $creditor_trans->ov_amount + $tax_total + Input::post('ChgTotal');
       if ($creditor_trans->is_invoice) {
         Row::label(_("Invoice Total:"), Num::price_format($total), "colspan=$colspan class='right bold'", "class=right id='invoiceTotal' data-total=" . $total . " class='bold'");
       } else {

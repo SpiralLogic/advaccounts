@@ -53,7 +53,7 @@
         $input_error = true;
       }
     }
-    if (!Tax_Types::is_tax_gl_unique(Form::getPost('gl_code'))) {
+    if (!Tax_Types::is_tax_gl_unique(Input::post('gl_code'))) {
       Event::error(_("Cannot post to GL account used by more than one tax type."));
       JS::set_focus('gl_code');
       $input_error = true;
@@ -129,7 +129,7 @@
     Ajax::i()->activate('grn_items');
     Ajax::i()->activate('inv_tot');
   }
-  if (Form::getPost('AddGLCodeToTrans')) {
+  if (Input::post('AddGLCodeToTrans')) {
     Ajax::i()->activate('inv_tot');
   }
   Display::br();

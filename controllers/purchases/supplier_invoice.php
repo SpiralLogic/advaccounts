@@ -58,7 +58,7 @@
         $input_error = true;
       }
     }
-    if (!Tax_Types::is_tax_gl_unique(Form::getPost('gl_code'))) {
+    if (!Tax_Types::is_tax_gl_unique(Input::post('gl_code'))) {
       Event::error(_("Cannot post to GL account used by more than one tax type."));
       JS::set_focus('gl_code');
       $input_error = true;
@@ -85,22 +85,22 @@
     if (!check_data()) {
       return;
     }
-    if (Form::getPost('ChgTax', 0) != 0) {
+    if (Input::post('ChgTax',null,0) != 0) {
       $taxexists = false;
       foreach (Creditor_Trans::i()->gl_codes as &$gl_item) {
         if ($gl_item->gl_code == 2430) {
           $taxexists = true;
-          $gl_item->amount += Form::getPost('ChgTax');
+          $gl_item->amount += Input::post('ChgTax');
           break;
         }
       }
       if (!$taxexists) {
-        Creditor_Trans::i()->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, Form::getPost('ChgTax'), 'GST Correction');
+        Creditor_Trans::i()->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, Input::post('ChgTax'), 'GST Correction');
       }
     }
-    if (Form::getPost('ChgTotal', 0) != 0) {
+    if (Input::post('ChgTotal',null,0) != 0) {
       Creditor_Trans::i()
-        ->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, Form::getPost('ChgTotal'), 'Rounding Correction');
+        ->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, Input::post('ChgTotal'), 'Rounding Correction');
     }
     $invoice_no                          = Purch_Invoice::add(Creditor_Trans::i());
     $_SESSION['history'][ST_SUPPINVOICE] = Creditor_Trans::i()->reference;
@@ -197,7 +197,7 @@
     Ajax::i()->activate('grn_items');
     Ajax::i()->activate('inv_tot');
   }
-  if (Form::getPost('AddGLCodeToTrans')) {
+  if (Input::post('AddGLCodeToTrans')) {
     Ajax::i()->activate('inv_tot');
   }
   Display::br();

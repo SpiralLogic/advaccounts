@@ -39,7 +39,7 @@
     display_supplier_summary($supplier_record);
   }
   Display::div_end();
-  if (Form::getPost('RefreshInquiry')) {
+  if (Input::post('RefreshInquiry')) {
     Ajax::i()->activate('totals_tbl');
   }
   if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {

@@ -129,7 +129,7 @@
      Form::checkCells(_("Show inactive:"), 'show_inactive', NULL, TRUE);
     Row::end();
     Table::end();
-    if (Form::getPost('_show_inactive_update')) {
+    if (Input::post('_show_inactive_update')) {
       Ajax::i()->activate('customer_id');
       JS::set_focus('customer_id');
     }
@@ -224,7 +224,7 @@
   }
   else {
     Form::submitCenterBegin('submit', _("Update Customer"), _('Update customer data'), Input::request('frame') ? TRUE : 'default');
-    Form::submitReturn('select', Form::getPost('customer_id'), _("Select this customer and return to document entry."));
+    Form::submitReturn('select', Input::post('customer_id'), _("Select this customer and return to document entry."));
     Form::submitCenterEnd('delete', _("Delete Customer"), _('Delete customer data if have been never used'), TRUE);
   }
   Display::div_end();

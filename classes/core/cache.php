@@ -58,7 +58,7 @@
      * @var bool
      */
     protected $connected = false;
-    protected $connection = null;
+    protected $connection = false;
     /**
      * @static
      * @return \ADV\Core\Cache

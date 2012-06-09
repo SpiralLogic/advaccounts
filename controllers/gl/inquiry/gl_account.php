@@ -13,7 +13,7 @@
   Page::start(_($help_context = "General Ledger Inquiry"), SA_GLTRANSVIEW);
   // Ajax updates
   //
-  if (Form::getPost('Show')) {
+  if (Input::post('Show')) {
     Ajax::i()->activate('trans_tbl');
   }
   if (isset($_GET["account"])) {
@@ -46,7 +46,7 @@
 
   gl_inquiry_controls();
   Display::div_start('trans_tbl');
-  if (Form::getPost('Show') || Form::getPost('account')) {
+  if (Input::post('Show') || Input::post('account')) {
     show_results();
   }
   Display::div_end();

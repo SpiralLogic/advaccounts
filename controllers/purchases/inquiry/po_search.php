@@ -15,10 +15,10 @@
   $_POST['supplier_id']         = Input::get_post('supplier_id', Input::NUMERIC, 0);
   // Ajax updates
   //
-  if (Form::getPost('SearchOrders')) {
+  if (Input::post('SearchOrders')) {
     Ajax::i()->activate('orders_tbl');
-  } elseif (Form::getPost('_order_number_changed')) {
-    $disable = Form::getPost('order_number') !== '';
+  } elseif (Input::post('_order_number_changed')) {
+    $disable = Input::post('order_number') !== '';
     Ajax::i()->addDisable(true, 'OrdersAfterDate', $disable);
     Ajax::i()->addDisable(true, 'OrdersToDate', $disable);
     Ajax::i()->addDisable(true, 'StockLocation', $disable);
@@ -104,7 +104,7 @@
       'insert' => true, 'fun' => function ($row) { return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE); }
     )
   );
-  if (Form::getPost('StockLocation') != ALL_TEXT) {
+  if (Input::post('StockLocation') != ALL_TEXT) {
     $cols[_("Location")] = 'skip';
   }
   $table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);

@@ -206,7 +206,7 @@
   function simple_page_mode2($numeric_id = true)
   {
     $default      = $numeric_id ? -1 : '';
-    $selected_id2 = Form::getPost('selected_id2', $default);
+    $selected_id2 = Input::post('selected_id2',null,$default);
     foreach (array('ADD_ITEM2', 'UPDATE_ITEM2', 'RESET2') as $m) {
       if (isset($_POST[$m])) {
         Ajax::i()->activate('_page_body');

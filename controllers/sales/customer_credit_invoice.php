@@ -87,7 +87,7 @@
     Orders::session_delete($_POST['order_id']);
     create_order($type, $order_no);
   }
-  if (Form::getPost('Update')) {
+  if (Input::post('Update')) {
     Ajax::i()->activate('credit_items');
   }
   display_credit_items();
@@ -269,7 +269,7 @@
     $colspan = 7;
     Row::start();
     Cell::label(_("Credit Shipping Cost"), "colspan=$colspan class='right'");
-     Form::amountCellsSmall(null, "ChargeFreightCost", Num::price_format(Form::getPost('ChargeFreightCost', 0)));
+     Form::amountCellsSmall(null, "ChargeFreightCost", Num::price_format(Input::post('ChargeFreightCost',null,0)));
     Row::end();
     $inv_items_total   = Orders::session_get($_POST['order_id'])->get_items_total_dispatch();
     $display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));

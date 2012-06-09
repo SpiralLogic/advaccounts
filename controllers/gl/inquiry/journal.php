@@ -11,7 +11,7 @@
   Page::start(_($help_context = "Journal Inquiry"), SA_GLANALYTIC);
   // Ajax updates
   //
-  if (Form::getPost('Search')) {
+  if (Input::post('Search')) {
     Ajax::i()->activate('journal_tbl');
   }
   if (!isset($_POST['filterType'])) {
@@ -62,8 +62,8 @@
   if (isset($_POST['Ref']) && $_POST['Ref'] != "") {
     $sql .= " AND reference LIKE '%". $_POST['Ref'] . "%'";
   }
-  if (Form::getPost('filterType') != -1) {
-    $sql .= " AND gl.type=".Form::getPost('filterType');
+  if (Input::post('filterType') != -1) {
+    $sql .= " AND gl.type=".Input::post('filterType');
   }
   if (!Form::hasPost('AlsoClosed')) {
     $sql .= " AND gl_seq=0";
@@ -97,8 +97,8 @@
   if (isset($_POST['Memo']) && $_POST['Memo'] != "") {
     $sql .= " AND com.memo_ LIKE '%" . $_POST['Memo'] . "%'";
   }
-  if (Form::getPost('filterType') != -1) {
-    $sql .= " AND gl.type=" . Form::getPost('filterType');
+  if (Input::post('filterType') != -1) {
+    $sql .= " AND gl.type=" . Input::post('filterType');
   }
   if (!Form::hasPost('AlsoClosed')) {
     $sql .= " AND gl_seq=0";

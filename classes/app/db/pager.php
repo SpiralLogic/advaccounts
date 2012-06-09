@@ -143,7 +143,7 @@
       $headers = array();
       foreach ($pager->columns as $num_col => $col) {
         // record status control column is displayed only when control checkbox is on
-        if (isset($col['head']) && ($col['type'] != 'inactive' || Form::getPost('show_inactive'))) {
+        if (isset($col['head']) && ($col['type'] != 'inactive' || Input::post('show_inactive'))) {
           if (!isset($col['ord'])) {
             $headers[] = $col['head'];
           } else {
@@ -233,7 +233,7 @@
               Cell::label(Num::format($cell, User::exrate_dec()), "class='center'");
               break;
             case 'inactive':
-              if (Form::getPost('show_inactive')) {
+              if (Input::post('show_inactive')) {
                 $pager->inactive_control_cell($row);
               }
               break;
@@ -494,7 +494,7 @@
         $name  = "Inactive" . $id;
         $value = $row['inactive'] ? 1 : 0;
         if (Form::hasPost('show_inactive')) {
-          if (isset($_POST['LInact'][$id]) && (Form::getPost('_Inactive' . $id . '_update') || Form::getPost('Update')) && (Form::hasPost('Inactive' . $id) != $value)
+          if (isset($_POST['LInact'][$id]) && (Input::post('_Inactive' . $id . '_update') || Input::post('Update')) && (Form::hasPost('Inactive' . $id) != $value)
           ) {
             DB::update_record_status($id, !$value, $table, $key);
             $value = !$value;

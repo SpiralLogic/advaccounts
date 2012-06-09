@@ -41,7 +41,7 @@
     echo "<br>";
   }
   Display::div_end();
-  if (Form::getPost('RefreshInquiry')) {
+  if (Input::post('RefreshInquiry')) {
     Ajax::i()->activate('totals_tbl');
   }
   $date_after = Dates::date2sql($_POST['TransAfterDate']);

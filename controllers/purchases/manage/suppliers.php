@@ -14,7 +14,7 @@
   if (isset($_GET['supplier_id'])) {
     $_POST['supplier_id'] = $_GET['supplier_id'];
   }
-  $new_supplier = Form::getPost('supplier_id') == '';
+  $new_supplier = Input::post('supplier_id') == '';
   if (isset($_POST['submit'])) {
     //initialise no input errors assumed initially before we test
     $input_error = 0;
@@ -112,13 +112,13 @@
      Form::checkCells(_("Show inactive:"), 'show_inactive', NULL, TRUE);
     Row::end();
     Table::end();
-    if (Form::getPost('_show_inactive_update')) {
+    if (Input::post('_show_inactive_update')) {
       Ajax::i()->activate('supplier_id');
       JS::set_focus('supplier_id');
     }
   }
   else {
-    Form::hidden('supplier_id', Form::getPost('supplier_id'));
+    Form::hidden('supplier_id', Input::post('supplier_id'));
   }
   Table::startOuter('tablestyle2');
   Table::section(1);
@@ -217,7 +217,7 @@
   Display::div_start('controls');
   if (!$new_supplier) {
     Form::submitCenterBegin('submit', _("Update Supplier"), _('Update supplier data'), Input::request('frame') ? TRUE : 'default');
-    Form::submitReturn('select', Form::getPost('supplier_id'), _("Select this supplier and return to document entry."));
+    Form::submitReturn('select', Input::post('supplier_id'), _("Select this supplier and return to document entry."));
     Form::submitCenterEnd('delete', _("Delete Supplier"), _('Delete supplier data if have been never used'), TRUE);
   }
   else {

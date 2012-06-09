@@ -14,11 +14,11 @@
     $order_number = $_GET['order_number'];
   }
   $supplier_id = Input::post_get('supplier_id', Input::NUMERIC, -1);
-  if (Form::getPost('SearchOrders')) {
+  if (Input::post('SearchOrders')) {
     Ajax::i()->activate('orders_tbl');
   }
-  elseif (Form::getPost('_order_number_changed')) {
-    $disable = Form::getPost('order_number') !== '';
+  elseif (Input::post('_order_number_changed')) {
+    $disable = Input::post('order_number') !== '';
     Ajax::i()->addDisable(TRUE, 'OrdersAfterDate', $disable);
     Ajax::i()->addDisable(TRUE, 'OrdersToDate', $disable);
     Ajax::i()->addDisable(TRUE, 'StockLocation', $disable);
@@ -129,7 +129,7 @@
     // Edit link
     array('insert' => TRUE, 'fun' => function ($row) { return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . SID . Orders::MODIFY_ORDER . "=" . $row["order_no"], ICON_EDIT); }) //
   );
-  if (Form::getPost('StockLocation') != ALL_TEXT) {
+  if (Input::post('StockLocation') != ALL_TEXT) {
     $cols[_("Location")] = 'skip';
   }
   if ((Input::get(LOC_NOT_FAXED_YET) == 1)) {

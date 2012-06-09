@@ -69,7 +69,7 @@
     }
     Table::header($th);
     $year = $_POST['fyear'];
-    if (Form::getPost('update') == '') {
+    if (Input::post('update') == '') {
       $sql            = "SELECT * FROM fiscal_year WHERE id=" . DB::escape($year);
       $result         = DB::query($sql, "could not get current fiscal year");
       $fyear          = DB::fetch($result);
@@ -81,7 +81,7 @@
     $total = $btotal = $ltotal = 0;
     for ($i = 0, $date_ = $_POST['begin']; Dates::date1_greater_date2($_POST['end'], $date_); $i++) {
       Row::start();
-      if (Form::getPost('update') == '') {
+      if (Input::post('update') == '') {
         $_POST['amount' . $i] = Num::format(get_only_budget_trans_from_to($date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']), 0);
       }
       Cell::label($date_);

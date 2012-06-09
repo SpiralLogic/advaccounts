@@ -249,7 +249,7 @@
 
         return false;
       }
-      if (!Tax_Types::is_tax_gl_unique(Form::getPost('sales_gl_code'), Form::getPost('purchasing_gl_code'), $selected_id)) {
+      if (!Tax_Types::is_tax_gl_unique(Input::post('sales_gl_code'), Input::post('purchasing_gl_code'), $selected_id)) {
         Event::error(_("Selected GL Accounts cannot be used by another tax type."));
         JS::set_focus('sales_gl_code');
 

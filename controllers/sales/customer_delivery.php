@@ -215,7 +215,7 @@
     Cell::amount($line_total);
     Row::end();
   }
-  $_POST['ChargeFreightCost'] = Form::getPost('ChargeFreightCost', Num::price_format($order->freight_cost));
+  $_POST['ChargeFreightCost'] = Input::post('ChargeFreightCost', null,Num::price_format($order->freight_cost));
   $colspan                    = 9;
   Row::start();
   Cell::label(_("Shipping Cost"), "colspan=$colspan class='right'");

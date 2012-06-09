@@ -108,10 +108,10 @@
     } //end ifs to test if the branch can be deleted
     $Mode = MODE_RESET;
   }
-  if ($Mode == MODE_RESET || Form::getPost('_customer_id_update')) {
+  if ($Mode == MODE_RESET || Input::post('_customer_id_update')) {
     $selected_id = -1;
     $cust_id     = $_POST['customer_id'];
-    $inact       = Form::getPost('show_inactive');
+    $inact       = Input::post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $inact;
     $_POST['customer_id']   = $cust_id;
@@ -133,7 +133,7 @@
         AND b.area=a.area_code
         AND b.salesman=s.salesman_code
         AND b.debtor_id = " . DB::quote($_POST['customer_id']);
-    if (!Form::getPost('show_inactive')) {
+    if (!Input::post('show_inactive')) {
       $sql .= " AND !b.inactive";
     }
     if ($num_branches) {

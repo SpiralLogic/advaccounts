@@ -205,7 +205,7 @@
     WO::close($selected_id);
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "ClosedID=$selected_id");
   }
-  if (Form::getPost('_type_update')) {
+  if (Input::post('_type_update')) {
     Ajax::i()->activate('_page_body');
   }
   Form::start();
@@ -254,7 +254,7 @@
      Form::refRow(_("Reference:"), 'wo_ref', '', Ref::get_next(ST_WORKORDER));
     WO_Types::row(_("Type:"), 'type', NULL);
   }
-  if (Form::getPost('released')) {
+  if (Input::post('released')) {
     Form::hidden('stock_id', Input::post('stock_id'));
     Form::hidden('StockLocation', $_POST['StockLocation']);
     Form::hidden('type', $_POST['type']);
@@ -274,7 +274,7 @@
   else {
     $_POST['quantity'] = Item::qty_format($_POST['quantity'], Input::post('stock_id'), $dec);
   }
-  if (Form::getPost('type') == WO_ADVANCED) {
+  if (Input::post('type') == WO_ADVANCED) {
      Form::qtyRow(_("Quantity Required:"), 'quantity', NULL, NULL, NULL, $dec);
     if ($_POST['released']) {
       Row::label(_("Quantity Manufactured:"), number_format($_POST['units_issued'], Item::qty_dec(Input::post('stock_id'))));
@@ -302,7 +302,7 @@
      Form::AmountRow($wo_cost_types[WO_OVERHEAD], 'Costs');
     GL_UI::all_row(_("Credit Overhead Account"), 'cr_acc', NULL);
   }
-  if (Form::getPost('released')) {
+  if (Input::post('released')) {
     Row::label(_("Released On:"), $_POST['released_date']);
   }
    Form::textareaRow(_("Memo:"), 'memo_', NULL, 40, 5);
@@ -310,7 +310,7 @@
   if (isset($selected_id)) {
     echo "<table class=center><tr>";
     Form::submitCells(UPDATE_ITEM, _("Update"), '', _('Save changes to work order'), 'default');
-    if (Form::getPost('released')) {
+    if (Input::post('released')) {
       Form::submitCells('close', _("Close This Work Order"), '', '', TRUE);
     }
     Form::submitCells('delete', _("Delete This Work Order"), '', '', TRUE);

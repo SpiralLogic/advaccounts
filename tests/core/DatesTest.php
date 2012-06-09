@@ -98,7 +98,6 @@
     {
       $date = Dates::new_doc_date();
       $this->assertEquals(Dates::today(), $date, $date);
-      // Remove the following lines when you implement this test.
     }
     /**
      * @covers ADV\Core\Dates::is_date_in_fiscalyear

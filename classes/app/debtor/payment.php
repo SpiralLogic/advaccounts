@@ -170,13 +170,13 @@
      */
     public static function can_process($type)
     {
-      if (!Form::getPost('customer_id')) {
+      if (!Input::post('customer_id')) {
         Event::error(_("There is no customer selected."));
         JS::set_focus('customer_id');
 
         return false;
       }
-      if (!Form::getPost('branch_id')) {
+      if (!Input::post('branch_id')) {
         Event::error(_("This customer has no branch defined."));
         JS::set_focus('branch_id');
 

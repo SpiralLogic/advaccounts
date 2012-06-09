@@ -36,7 +36,7 @@
         Table::section(3, "50%");
         Row::start();
         GL_QuickEntry::cells(_("Quick Entry") . ":", 'person_id', null, QE_JOURNAL, true);
-        $qid = GL_QuickEntry::get(Form::getPost('person_id'));
+        $qid = GL_QuickEntry::get(Input::post('person_id'));
         if (Form::isListUpdated('person_id')) {
           unset($_POST['total_amount']); // enable default
           Ajax::i()->activate('total_amount');
