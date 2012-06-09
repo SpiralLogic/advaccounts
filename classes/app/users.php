@@ -9,7 +9,6 @@
    **/
   class Users
   {
-
     /**
      * @static
      *
@@ -33,7 +32,6 @@
                 " . DB::escape($real_name) . ", " . DB::escape($phone) . "," . DB::escape($email) . ", " . DB::escape($role_id) . ", " . DB::escape($language) . ", " . DB::escape($pos) . "," . DB::escape($profile) . "," . DB::escape($rep_popup) . "," . DB::escape($hash) . " )";
       DB::query($sql, "could not add user for $user_id");
     }
-
     /**
      * @static
      *
@@ -180,7 +178,8 @@
      * @internal param $password
      * @return bool|mixed
      */
-    static public function  get_for_login($user_id) {
+    static public function  get_for_login($user_id)
+    {
       $auth = new Auth($user_id);
       if ($auth->isBruteForce()) {
         return false;
@@ -262,11 +261,17 @@
      */
     public static function themes_row($label, $name, $value = null)
     {
-      $themes   = array();
-      $themedir = opendir(THEME_PATH);
-      while (false !== ($fname = readdir($themedir))) {
-        if ($fname != '.' && $fname != '..' && $fname != 'CVS' && is_dir(THEME_PATH . $fname)) {
-          $themes[$fname] = $fname;
+      $themes = [];
+      try {
+        $themedir = new DirectoryIterator(WEBROOT . THEME_PATH);
+      }
+      catch (UnexpectedValueException $e) {
+        Event::error($e->getMessage());
+      }
+      foreach ($themedir as $theme) {
+
+        if (!$theme->isDot() && $theme->isDir()) {
+          $themes[$theme->getFilename()] = $theme->getFilename();
         }
       }
       ksort($themes);
@@ -315,10 +320,10 @@
       $sql = "SELECT id, real_name, inactive FROM users";
 
       return Form::selectBox($name, $selected_id, $sql, 'id', 'real_name', array(
-                                                                           'order'       => array('real_name'),
-                                                                           'spec_option' => $spec_opt,
-                                                                           'spec_id'     => ALL_NUMERIC
-                                                                      ));
+                                                                                'order'       => array('real_name'),
+                                                                                'spec_option' => $spec_opt,
+                                                                                'spec_id'     => ALL_NUMERIC
+                                                                           ));
     }
     /**
      * @static

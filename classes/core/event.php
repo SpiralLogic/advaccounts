@@ -45,7 +45,7 @@
       if ($shutdown_events) {
 
         while ($msg = array_pop($shutdown_events)) {
-          static::handle($msg[0], $msg[1], $msg[2]);
+          static::handle($msg[0], $msg[1], $msg[2], $msg[3]);
         }
       }
     }
@@ -56,9 +56,9 @@
      *
      * @return bool
      */
-    public static function error($message)
+    public static function error($message, $log = true)
     {
-      return static::handle($message, reset(debug_backtrace()), E_USER_ERROR);
+      return static::handle($message, reset(debug_backtrace()), E_USER_ERROR, $log);
     }
     /**
      * @static
@@ -67,9 +67,9 @@
      *
      * @return bool
      */
-    public static function notice($message)
+    public static function notice($message, $log = true)
     {
-      return static::handle($message, reset(debug_backtrace()), E_USER_NOTICE);
+      return static::handle($message, reset(debug_backtrace()), E_USER_NOTICE, $log);
     }
     /**
      * @static
@@ -78,9 +78,9 @@
      *
      * @return bool
      */
-    public static function success($message)
+    public static function success($message, $log = true)
     {
-      return static::handle($message, reset(debug_backtrace()), E_SUCCESS);
+      return static::handle($message, reset(debug_backtrace()), E_SUCCESS, $log);
     }
     /**
      * @static
@@ -89,9 +89,9 @@
      *
      * @return bool
      */
-    public static function warning($message)
+    public static function warning($message, $log = true)
     {
-      return static::handle($message, reset(debug_backtrace()), E_USER_WARNING);
+      return static::handle($message, reset(debug_backtrace()), E_USER_WARNING, $log);
     }
     /**
      * @static
@@ -102,13 +102,14 @@
      *
      * @return bool
      */
-    protected static function handle($message, $source, $type)
+    protected static function handle($message, $source, $type, $log)
     {
       if (static::$request_finsihed) {
-        static::$shutdown_events[] = array($message, $source, $type);
+        static::$shutdown_events[] = array($message, $source, $type, $log);
       } else {
-        $message = $message . '||' . $source['file'] . '||' . $source['line'];
-        ($type == E_SUCCESS) ? Errors::handler($type, $message) : trigger_error($message, $type);
+        $message = $message . '||' . $source['file'] . '||' . $source['line'] . '||';
+        $message .= $log ? 1 : 0;
+        ($type === E_SUCCESS) ? Errors::handler($type, $message) : trigger_error($message, $type);
       }
 
       return ($type === E_SUCCESS || $type === E_USER_NOTICE);
@@ -150,7 +151,8 @@
       static::$request_finsihed = true;
       try {
         static::fireHooks('shutdown');
-      } catch (\Exception $e) {
+      }
+      catch (\Exception $e) {
         static::error('Error during post processing: ' . $e->getMessage());
       }
       Cache::set(static::$shutdown_events_id, static::$shutdown_events);

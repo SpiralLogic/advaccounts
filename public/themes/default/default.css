@@ -171,7 +171,6 @@ img {
   text-indent:    20px;
   background:     white;
   height:         60px;
-
 }
 
 #hints {
@@ -798,7 +797,7 @@ table .headingtext {
 table.tablestyle {
   border-collapse: collapse;
   border:          2px solid #e1e1e1;
-  margin:          0 auto;
+  margin:          10px auto 0;
   padding:         10px;
   min-width:       50%;
   max-width:       90%
@@ -1493,7 +1492,7 @@ body.lite {
   margin: 3px;
 }
 
-form ::-webkit-scrollbar{
+form ::-webkit-scrollbar {
   width:  7px;
   height: 7px;
 }

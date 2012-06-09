@@ -12,8 +12,8 @@
    * @param string $action
    * @param string $name
    */
-  class Form {
-
+  class Form
+  {
     /**
      * @static
      *
@@ -271,12 +271,11 @@
           }
         }
       }
-      $caption = ($name == '_action') ? $title : $value;
-
+      $caption    = ($name == '_action') ? $title : $value;
+      $id         = ($name == '_action') ? '' : "id=\"$name\"";
       $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') :
-        $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\" id=\"$name\" value=\"$value\"" . ($title ?
-        " title='$title'" : '') . ">" . ($icon ?
-        "<img alt='$value' src='/themes/" . User::theme() . "/images/$icon' height='12'>" :
+        $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\"  value=\"$value\"" . ($title ? " title='$title'" :
+        '') . ">" . ($icon ? "<img alt='$value' src='/themes/" . User::theme() . "/images/$icon' height='12'>" :
         '') . "<span>$caption</span>" . "</button>\n";
       if ($echo) {
         echo $submit_str;
@@ -1266,8 +1265,8 @@
       $items['0'] = strlen($name_no) ? $name_no : _("No");
       $items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
       return Form::arraySelect($name, $selected_id, $items, array(
-        'select_submit' => $submit_on_change, 'async' => false
-      )); // FIX?
+                                                                 'select_submit' => $submit_on_change, 'async' => false
+                                                            )); // FIX?
     }
     /**
      * @param        $label
@@ -1324,8 +1323,8 @@
         $items[$i] = "$i";
       }
       return Form::arraySelect($name, $selected, $items, array(
-        'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
-      ));
+                                                              'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
+                                                         ));
     }
     /**
      * @param      $label

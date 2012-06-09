@@ -1,14 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-  class Sidemenu {
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
+  class Sidemenu
+  {
     /**
      * @var string
      */
@@ -22,6 +22,7 @@ HTML;
      */
     protected $end
       = <<<HTML
+  <!-- end sidemenu div-->
 	</div>
 HTML;
     /**
@@ -85,18 +86,20 @@ HTML;
 		 <li><a href="/purchases/po_entry_items.php?New=0">Purchase Order</a></li>
 		 </ul></div>
 HTML;
-    static function render() {
+    static function render()
+    {
       $sidemenu = new static;
       echo $sidemenu->display;
     }
     /**
-     *
+
      */
-    protected function __construct() {
+    protected function __construct()
+    {
       $this->display = $this->start . $this->search . $this->sales;
       if (User::i()->can_access(SS_GL)) {
         $this->display .= $this->bank;
       }
-      $this->display .= $this->customer . $this->supplier .$this->end;
+      $this->display .= $this->customer . $this->supplier . $this->end;
     }
   }

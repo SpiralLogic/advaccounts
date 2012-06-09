@@ -14,40 +14,19 @@
   class Config_Exception extends \Exception
   {
   }
+
   /**
    * @method get($var, $default = false)
    * @method removeAll()
    */
   class Config
   {
-    use Traits\Singleton;
+    use Traits\StaticAccess;
 
     /***
      * @var array|null
      */
     protected $_vars = null;
-    /**
-     * @static
-     *
-     * @param $func
-     * @param $args
-     *
-     * @return mixed
-     */
-    public static function __callStatic($func, $args)
-    {
-      return call_user_func_array(array(static::i(), '_' . $func), $args);
-    }
-    /**
-     * @param $func
-     * @param $args
-     *
-     * @return mixed
-     */
-    public function __call($func, $args)
-    {
-      return call_user_func_array(array($this, '_' . $func), $args);
-    }
     /**
      * @static
      *
@@ -177,6 +156,6 @@
       /** @noinspection PhpIncludeInspection */
       $this->_vars[$group_name] = include($file);
       Event::register_shutdown(__CLASS__);
-    return true;
+      return true;
     }
   }

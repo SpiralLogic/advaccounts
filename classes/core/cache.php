@@ -43,6 +43,7 @@
      */
     function get($key, $default);
   }
+
   /**
    * @method get($key, $default = false)
    * @method set($key, $value, $expires = 86400)
@@ -51,48 +52,13 @@
    */
   class Cache
   {
-    /**
-     * @static
-     *
-     * @param $func
-     * @param $args
-     *
-     * @return mixed
-     */
-    public static function __callStatic($func, $args)
-    {
-      return call_user_func_array(array(static::i(), '_' . $func), $args);
-    }
-    /**
-     * @param $func
-     * @param $args
-     *
-     * @return mixed
-     */
-    public function __call($func, $args)
-    {
-      return call_user_func_array(array($this, '_' . $func), $args);
-    }
-    /**
-     * @var Memcached
-     */
-    protected static $i = null;
+    use Traits\StaticAccess;
+
     /**
      * @var bool
      */
     protected $connected = false;
     protected $connection = null;
-    /**
-     * @static
-     * @return \Memcached|null
-     */
-    public static function i()
-    {
-      if (static::$i === null) {
-        static::$i = new static();
-      }
-      return static::$i;
-    }
     /**
      * @static
      * @return \ADV\Core\Cache

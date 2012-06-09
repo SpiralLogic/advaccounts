@@ -16,40 +16,25 @@
   class SessionException extends \Exception
   {
   }
+
   /**
    * @property \ADVAccounting App
    * @method  getGlobal($var, $default = null)
    * @method setGlobal($var, $value = null)
+   * @method kill()
+   * @method regenerate()
+   * @method checkUserAgent()
+   * @method setUserAgent()
+   *@method Session i()
    */
   class Session
   {
-    use Traits\Singleton;
-    /**
-     * @static
-     *
-     * @param $func
-     * @param $args
-     *
-     * @return mixed
-     */
-    public static function __callStatic($func, $args)
-    {
-      return call_user_func_array(array(static::i(), '_' . $func), $args);
-    }
-    /**
-     * @param $func
-     * @param $args
-     *
-     * @return mixed
-     */
-    public function __call($func, $args)
-    {
-      return call_user_func_array(array($this, '_' . $func), $args);
-    }
+    use Traits\StaticAccess;
+
     /***
      * @var \gettextNativeSupport|\gettext_php_support
      */
-    public static $get_text;
+    public $get_text;
     /**
      * @var array
      */
@@ -86,7 +71,7 @@
         throw new SessionException('Could not start a Session!');
       }
       header("Cache-control: private");
-      $this->setTextSupport();
+      $this->_setTextSupport();
       Language::set();
       $this->_session = &$_SESSION;
       // Ajax communication object
@@ -96,10 +81,10 @@
      * @static
      * @return bool
      */
-    public static function checkUserAgent()
+    public function _checkUserAgent()
     {
       if (Arr::get($_SESSION, 'HTTP_USER_AGENT') != sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR']))) {
-        static::setUserAgent();
+        $this->_setUserAgent();
         return false;
       }
       return true;
@@ -108,19 +93,19 @@
      * @static
      * @return bool
      */
-    protected static function setUserAgent()
+    protected function _setUserAgent()
     {
       return ($_SESSION['HTTP_USER_AGENT'] = sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR'])));
     }
     /**
      * @return mixed
      */
-    protected function setTextSupport()
+    protected function _setTextSupport()
     {
       if (isset($_SESSION['get_text'])) {
-        static::$get_text = $_SESSION['get_text'];
+        $this->get_text = $_SESSION['get_text'];
       } else {
-        static::$get_text = $_SESSION['get_text'] = \gettextNativeSupport::i();
+        $this->get_text = $_SESSION['get_text'] = \gettextNativeSupport::i();
       }
     }
     /**
@@ -185,9 +170,8 @@
      * @static
      * @return void
      */
-    public static function _kill()
+    public function _kill()
     {
-      static::i();
       Config::removeAll();
       session_unset();
       session_destroy();
@@ -196,7 +180,7 @@
      * @static
      * @return void
      */
-    public static function _regenerate()
+    public function _regenerate()
     {
       session_regenerate_id();
     }

@@ -80,14 +80,15 @@
     /**
      * @static
      *
-     * @param $type
-     * @param $message
-     * @param $file
-     * @param $line
+     * @param      $type
+     * @param      $message
+     * @param      $file
+     * @param      $line
+     * @param bool $log
      *
      * @return bool
      */
-    public static function handler($type, $message, $file = null, $line = null)
+    public static function handler($type, $message, $file = null, $line = null, $log = true)
     {
       if (in_array($type, static::$ignore)) {
         return true;
@@ -99,7 +100,7 @@
         static::$current_severity = $type;
       }
       if (in_array($type, static::$user_errors)) {
-        list($message, $file, $line) = explode('||', $message) + [1 => 'No File Given', 2 => 'No Line Given'];
+        list($message, $file, $line, $log) = explode('||', $message) + [1 => 'No File Given', 2 => 'No Line Given', 3=> true];
       }
       $error = array(
         'type' => $type, 'message' => $message, 'file' => $file, 'line' => $line
@@ -108,9 +109,9 @@
         static::$messages[] = $error;
       }
       if (is_writable(DOCROOT . '../error_log')) {
-        error_log($error['type'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n", 3, DOCROOT . '../error_log');
+        error_log(date(DATE_RFC822) . ' ' . $error['type'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n", 3, DOCROOT . '../error_log');
       }
-      if (!in_array($type, static::$user_errors) || $type == E_USER_ERROR) {
+      if (!in_array($type, static::$user_errors) || ($type == E_USER_ERROR && $log)) {
         $error['backtrace'] = static::prepare_backtrace(debug_backtrace());
         static::$errors[]   = $error;
       }
@@ -182,47 +183,30 @@
      */
     public static function send_debug_email()
     {
-      if ((static::$current_severity == -1 || count(static::$errors) || count(static::$dberrors) || count(static::$debugLog))) {
+      if (static::$current_severity == -1 || static::$errors || static::$dberrors || static::$debugLog) {
         $text            = '';
         $with_back_trace = array();
-        if (count(static::$debugLog)) {
-          $text .= "<div><pre><h3>Debug Values: </h3>" . var_export(static::$debugLog, true) . "\n\n";
-        }
-
-        if (count(static::$errors)) {
+        $text .= count(static::$debugLog) ? "<div><pre><h3>Debug Values: </h3>" . var_export(static::$debugLog, true) . "\n\n" :
+          '';
+        if (static::$errors) {
           foreach (static::$errors as $id => $error) {
             $with_back_trace[] = $error;
             unset(static::$errors[$id]['backtrace']);
           }
           $text .= "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, true) . "\n\n";
         }
-        if (count(static::$dberrors)) {
-          $text .= "<h3>DB Errors: </h3>" . var_export(static::$dberrors, true) . "\n\n";
-        }
-        if (count(static::$messages)) {
-          $text .= "<h3>Messages: </h3>" . var_export(static::$messages, true) . "\n\n";
-        }
-
+        $text .= static::$dberrors ? "<h3>DB Errors: </h3>" . var_export(static::$dberrors, true) . "\n\n" : '';
+        $text .= static::$messages ? "<h3>Messages: </h3>" . var_export(static::$messages, true) . "\n\n" : '';
         $id = md5($text);
         $text .= "<h3>SERVER: </h3>" . var_export($_SERVER, true) . "\n\n";
-        if (isset($_POST) && count($_POST)) {
-          $text .= "<h3>POST: </h3>" . var_export($_POST, true) . "\n\n";
-        }
-        if (isset($_GET) && count($_GET)) {
-          $text .= "<h3>GET: </h3>" . var_export($_GET, true) . "\n\n";
-        }
-        if (isset($_REQUEST) && count($_REQUEST)) {
-          $text .= "<h3>REQUEST: </h3>" . var_export($_REQUEST, true) . "\n\n";
-        }
-        if ($with_back_trace) {
-
-          $text .= "<div><pre><h3>Errors with backtrace: </h3>" . var_export($with_back_trace, true) . "\n\n";
-        }
+        $text .= (isset($_POST) && count($_POST)) ? "<h3>POST: </h3>" . var_export($_POST, true) . "\n\n" : '';
+        $text .= (isset($_GET) && count($_GET)) ? "<h3>GET: </h3>" . var_export($_GET, true) . "\n\n" : '';
+        $text .= (isset($_REQUEST) && count($_REQUEST)) ? "<h3>REQUEST: </h3>" . var_export($_REQUEST, true) . "\n\n" : '';
+        $text .= ($with_back_trace) ? "<div><pre><h3>Errors with backtrace: </h3>" . var_export($with_back_trace, true) . "\n\n" :
+          '';
         $subject = 'Error log: ';
-        if (isset(static::$session['current_user'])) {
-          $subject .= static::$session['current_user']->username;
-        }
-        if (count(static::$session)) {
+        $subject .= (isset(static::$session['current_user'])) ? static::$session['current_user']->username . ', ' : '';
+        if (static::$session) {
           //    unset(static::$session['current_user'], static::$session['config'], static::$session['App']);
           if (isset(static::$session['orders_tbl'])) {
             static::$session['orders_tbl'] = count(static::$session['orders_tbl']);
@@ -232,12 +216,9 @@
           }
           $text .= "<h3>Session: </h3>" . var_export(static::$session, true) . "\n\n</pre></div>";
         }
-        if (isset(static::$levels[static::$current_severity])) {
-          $subject .= ', Severity: ' . static::$levels[static::$current_severity];
-        }
-        if (count(static::$dberrors)) {
-          $subject .= ', DB Error';
-        }
+        $subject .= (isset(static::$levels[static::$current_severity])) ?
+          'Severity: ' . static::$levels[static::$current_severity] : '';
+        $subject .= static::$dberrors ? ', DB Error' : '';
         $subject .= ' ' . $id;
         $to      = 'errors@advancedgroup.com.au';
         $headers = 'MIME-Version: 1.0' . "\r\n";
@@ -275,7 +256,8 @@
      */
     public static function process()
     {
-      $last_error      = error_get_last();
+      $last_error = error_get_last();
+      /** @noinspection PhpUndefinedFunctionInspection */
       static::$session = (session_status() == PHP_SESSION_ACTIVE) ? $_SESSION : array();
       // Only show valid fatal errors
       if ($last_error && in_array($last_error['type'], static::$fatal_levels)) {

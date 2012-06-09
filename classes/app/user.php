@@ -90,11 +90,13 @@
      * @var
      */
     public $last_record;
+    protected $session;
     /**
 
      */
     public function __construct()
     {
+      $this->session   = Session::i();
       $this->loginname = $this->username = $this->name = "";
       $this->company   = Config::get('default.company') ? : 'default';
       $this->logged    = FALSE;
@@ -178,7 +180,7 @@
         $this->timeout         = DB_Company::get_pref('login_tout');
         $this->salesmanid      = $this->get_salesmanid();
         User::fireHooks('login');
-        Session::checkUserAgent();
+        $this->session->checkUserAgent();
         Event::register_shutdown('Users', 'update_visitdate', [User::i()->username]);
         Event::register_shutdown(__CLASS__, 'addLog');
       }
@@ -563,7 +565,7 @@
     }
     public static function logout()
     {
-      Session::kill();
+      static::i()->session->kill();
       static::i()->logged = FALSE;
     }
     public function getHash()

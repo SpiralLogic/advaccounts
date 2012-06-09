@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Page {
-
+  class Page
+  {
     /** @var \Renderer */
     public $renderer = NULL;
     /**
@@ -114,7 +114,8 @@
       echo "<!DOCTYPE HTML>\n";
       echo "<html " . (is_object($this->sel_app) ? "class='" . strtolower($this->sel_app->id) . "'" :
         '') . " dir='" . $this->lang_dir . "' >\n";
-      echo "<head><title>" . $this->title . "</title>";
+      echo "<head>    <meta charset='utf-8'>
+      <title>" . $this->title . "</title>";
       HTML::script(NULL, "document.documentElement.className = document.documentElement.className +' js'", FALSE);
       $this->renderCSS();
 
@@ -162,8 +163,8 @@
         $help_page_url = Display::access_string($help_page_url, TRUE);
       }
       return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-        ' ' => '', '/' => '', '&' => 'And'
-      ))) . '&ctxhelp=1&lang=' . $country;
+                                                                                         ' ' => '', '/' => '', '&' => 'And'
+                                                                                    ))) . '&ctxhelp=1&lang=' . $country;
     }
     /**
      * @param $hide_back_link
@@ -177,6 +178,8 @@
       if ((!$this->is_index && !$hide_back_link) && method_exists('Display', 'link_back')) {
         Display::link_back(TRUE, !$this->menu);
       }
+      echo "<!-- end page body div -->";
+
       Display::div_end(); // end of _page_body section
       $this->footer();
     }
@@ -189,10 +192,12 @@
       $this->menu_footer();
       JS::beforeload("_focus = '" . Form::getPost('_focus') . "';_validate = " . Ajax::i()->php2js($validate) . ";");
       User::add_js_data();
+      echo "<!-- end content div-->";
       echo "</div>";
       if ($this->header && $this->menu) {
         Sidemenu::render();
       }
+
       if (AJAX_REFERRER) {
         JS::render();
         return;
@@ -200,7 +205,6 @@
         Messages::show();
       }
       JS::render();
-      //End content div
       echo   "</body></html>\n";
     }
     /**
@@ -208,6 +212,8 @@
      */
     protected function menu_footer()
     {
+      echo "<!-- end wrapper div-->";
+
       echo "</div>"; //end wrapper div
       if ($this->menu && !AJAX_REFERRER) {
         echo "<div id='footer'>\n";
@@ -220,6 +226,8 @@
       if (Config::get('debug.enabled')) {
         $this->display_loaded();
       }
+      echo "<!-- end footer div-->";
+
       echo "</div>\n"; //end footer div
     }
     /**

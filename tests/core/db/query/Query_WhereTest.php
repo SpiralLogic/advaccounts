@@ -6,6 +6,7 @@
    */
   class Query_WhereTest extends \PHPUnit_Framework_TestCase
   {
+    protected $stub;
     /**
      * @var Query_Where
      */
@@ -16,6 +17,7 @@
      */
     protected function setUp()
     {
+      $this->stub = $stub = $this->getMockForAbstractClass('\\ADV\\Core\\DB\\Query_Where');
     }
     /**
      * Tears down the fixture, for example, closes a network connection.
@@ -31,29 +33,46 @@
     public function testWhere()
     {
       /** @var Query_Where $stub  */
-      $stub = $this->getMockForAbstractClass('\\ADV\\Core\\DB\\Query_Where');
+      $stub = $this->stub;
       $this->assertEquals($stub, $stub->where('test=', 3));
 
       $this->assertAttributeEquals([0=> 'test= :dbcondition0'], 'where', $stub);
       $this->assertAttributeEquals([':dbcondition0'=> 3], 'wheredata', $stub);
+      $this->assertEquals($stub, $stub->where('test=', 6));
+
+      $this->assertAttributeEquals([0=> 'test= :dbcondition0', 1=> 'AND test= :dbcondition1'], 'where', $stub);
+      $this->assertAttributeEquals([':dbcondition0'=> 3, ':dbcondition1'=> 6], 'wheredata', $stub);
     }
     public function testWhereWithArray()
     {
       /** @var Query_Where $stub  */
-      $stub = $this->getMockForAbstractClass('\\ADV\\Core\\DB\\Query_Where');
+      $stub = $this->stub;
       $this->assertEquals($stub, $stub->where([['test=', 3], ['test2=', 5]]));
 
       $this->assertAttributeEquals([0=> 'test= :dbcondition0', 1=> 'AND test2= :dbcondition1'], 'where', $stub);
       $this->assertAttributeEquals([':dbcondition0'=> 3, ':dbcondition1'=> 5], 'wheredata', $stub);
     }
+    public function testOr()
+    {
+      /** @var Query_Where $stub  */
+      $stub = $this->stub;
+      $this->assertEquals($stub, $stub->or_where('test=', 3));
+
+      $this->assertAttributeEquals([0=> 'test= :dbcondition0'], 'where', $stub);
+      $this->assertAttributeEquals([':dbcondition0'=> 3], 'wheredata', $stub);
+    }
     /**
      * @covers ADV\Core\DB\Query_Where::or_where
      * @todo   Implement testOr_where().
      */
-    public function testOr_where()
+    public function testOr_whereWithArray()
     {
-      // Remove the following lines when you implement this test.
-      $this->markTestIncomplete('This test has not been implemented yet.');
+      /** @var Query_Where $stub  */
+      $stub = $this->stub;
+      $this->assertEquals($stub, $stub->or_where([['test=', 3], ['test2=', 5]]));
+
+      $this->assertAttributeEquals([0=> 'test= :dbcondition0', 1=> 'OR test2= :dbcondition1'], 'where', $stub);
+      $this->assertAttributeEquals([':dbcondition0'=> 3, ':dbcondition1'=> 5], 'wheredata', $stub);
     }
     /**
      * @covers ADV\Core\DB\Query_Where::and_where

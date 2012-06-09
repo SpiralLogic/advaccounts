@@ -18,8 +18,8 @@
   /**
 
    */
-  class Sales_Order {
-
+  class Sales_Order
+  {
     /**
      * @var int
      */
@@ -783,9 +783,7 @@
           }
         }
         $sql = "INSERT INTO sales_order_details (order_no, trans_type, stk_code, description, unit_price, quantity, discount_percent,sort_order) VALUES (";
-        $sql .= $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ", " . DB::escape($line->description) . "," . $line->price . ", " .
-          $line->quantity . ", " .
-          $line->discount_percent . ", " . $position . ")";
+        $sql .= $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ", " . DB::escape($line->description) . "," . $line->price . ", " . $line->quantity . ", " . $line->discount_percent . ", " . $position . ")";
         DB::query($sql, "order Details Cannot be Added");
       } /* inserted line items into sales order details */
       DB_AuditTrail::add($this->trans_type, $order_no, $this->document_date);
@@ -1000,7 +998,7 @@
                      discount_percent, qty_sent, sort_order)
                      VALUES (";
         $sql .= DB::escape($line->id ? $line->id :
-          0) . "," . $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ",
+                             0) . "," . $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ",
                         " . DB::escape($line->description) . ", " . DB::escape($line->price) . ", " . DB::escape($line->quantity) . ", " . DB::escape($line->discount_percent) . ", " . DB::escape($line->qty_done) . ", " . $position . " )";
         DB::query($sql, "Old order Cannot be Inserted");
       } /* inserted line items into sales order details */
@@ -1129,16 +1127,13 @@
     public function summary($title, $editable_items = false)
     {
       Display::heading($title);
-      Display::div_start('items_table');
       if (count($this->line_items) > 0) {
-        Table::startOuter('center width90');
-        Table::section(1);
-        Display::link_params_separate("/purchases/po_entry_items.php", _("Create PO from this order"), "NewOrder=Yes&UseOrder=" . $this->order_id . "' class='button'", true, true);
-        Table::section(2);
-        Display::link_params_separate("/purchases/po_entry_items.php", _("Dropship this order"), "NewOrder=Yes&UseOrder=" . $this->order_id . "&DRP=1' class='button'", true, true);
-        Table::endOuter(1);
+        Display::link_params_separate("/purchases/po_entry_items.php", _("Create PO from this order"), "NewOrder=Yes&UseOrder=" . $this->order_id . "' class='button'", false, true);
+        Display::link_params_separate("/purchases/po_entry_items.php", _("Dropship this order"), "NewOrder=Yes&UseOrder=" . $this->order_id . "&DRP=1' class='button   '", false, true);
       }
-      Table::start('tablestyle grid ');
+      Display::div_start('items_table');
+
+      Table::start('tablestyle grid');
       $th = array(
         _("Item Code"),
         _("Item Description"),
@@ -1148,6 +1143,7 @@
         _("Price"),
         _("Discount %"),
         _("Total"),
+        "",
         ""
       );
       if ($this->trans_no == 0) {

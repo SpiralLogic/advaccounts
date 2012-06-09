@@ -10,10 +10,24 @@
 
   namespace ADV\Core;
   /**
-
+   * @method HTML table()
+   * @method HTML tr()
+   * @method HTML td()
+   * @method HTML div()
+   * @method HTML textarea()
+   * @method HTML label()
+   * @method HTML input()
+   * @method HTML _td()
+   * @method HTML _div()
+   * @method HTML script()
+   * @property HTML tr
+   * @property HTML td
+   * @property HTML script
+   * @property HTML table
+   * @property HTML div
    */
-  class HTML {
-
+  class HTML
+  {
     /**
      * @var HTML
      */
@@ -28,7 +42,8 @@
      *
      * @return null
      */
-    function __call($func, $args) {
+    function __call($func, $args)
+    {
       return static::__callStatic($func, $args);
     }
     /**
@@ -36,7 +51,8 @@
      *
      * @return null
      */
-    function __get($func) {
+    function __get($func)
+    {
       static::__callStatic($func);
       return static::$_instance;
     }
@@ -47,15 +63,15 @@
      *
      * @return HTML|string
      */
-    static function setReturn($state = NULL) {
+    static function setReturn($state = NULL)
+    {
       if (static::$_instance === NULL) {
         static::$_instance = new static;
       }
       static::$_return = ($state === NULL) ? !(static::$_return) : $state;
       if (!static::$_return) {
         return ob_get_clean();
-      }
-      else {
+      } else {
         ob_start();
       }
       return static::$_instance;
@@ -68,12 +84,13 @@
      *
      * @return null
      */
-    static function __callStatic($func, $args = array()) {
+    static function __callStatic($func, $args = array())
+    {
       if (static::$_instance === NULL) {
         static::$_instance = new static;
       }
-      (count($args) == 0) ? static::$_instance->_closeTag(($func[0] == '_') ? substr($func, 1) : $func)
-        : static::$_instance->_Builder($func, $args);
+      (count($args) == 0) ? static::$_instance->_closeTag(($func[0] == '_') ? substr($func, 1) : $func) :
+        static::$_instance->_Builder($func, $args);
       return static::$_instance;
     }
     /**
@@ -81,11 +98,10 @@
      * @param array  $attr
      * @param string $content
      */
-    protected function _openTag($type, $attr = array(), $content = '') {
+    protected function _openTag($type, $attr = array(), $content = '')
+    {
       $attrs = '';
-      foreach (
-        $attr as $key => $value
-      ) {
+      foreach ($attr as $key => $value) {
         if (is_bool($value)) {
           $attrs .= ' ' . $key;
           continue;
@@ -100,7 +116,8 @@
     /**
      * @param $type
      */
-    protected function _closeTag($type) {
+    protected function _closeTag($type)
+    {
       echo '</' . $type . '>';
     }
     /**
@@ -109,18 +126,15 @@
      * @param array  $attr
      * @param string $content
      */
-    protected function _Builder($func, $args, $attr = array(), $content = '') {
+    protected function _Builder($func, $args, $attr = array(), $content = '')
+    {
       $open = (is_bool(end($args))) ? array_pop($args) : TRUE;
-      foreach (
-        $args as $key => $val
-      ) {
+      foreach ($args as $key => $val) {
         if ($key == 0 && is_string($val)) {
           $attr['id'] = $val;
-        }
-        elseif (!isset($attr['content']) && is_string($val)) {
+        } elseif (!isset($attr['content']) && is_string($val)) {
           $content = $attr['content'] = $val;
-        }
-        elseif (is_array($val)) {
+        } elseif (is_array($val)) {
           $attr = array_merge($attr, $val);
         }
       }
@@ -129,8 +143,7 @@
           $this->_openTag($func, $attr, $content);
         }
         $this->_closeTag($func);
-      }
-      else {
+      } else {
         $this->_openTag($func, $attr);
       }
     }

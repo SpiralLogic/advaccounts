@@ -591,7 +591,8 @@
         if (!isset($_POST['supplier_id']) && Session::i()->getGlobal('creditor')) {
           $_POST['supplier_id'] = Session::i()->getGlobal('creditor');
         }
-        Creditor::row(_("Supplier:"), 'supplier_id', null, false, true, false, true);
+        //Creditor::row(_("Supplier:"), 'supplier_id', null, false, true, false, true);
+        Creditor::newselect();
       } else {
         if (isset($_POST['supplier_id'])) {
           $this->supplier_to_order($_POST['supplier_id']);
@@ -612,21 +613,23 @@
       Session::i()->setGlobal('creditor', $_POST['supplier_id']);
       if (!Bank_Currency::is_company($this->curr_code)) {
         Row::label(_("Supplier Currency:"), $this->curr_code);
+        Row::start();
         GL_ExchangeRate::display($this->curr_code, Bank_Currency::for_company(), $_POST['OrderDate']);
+        row::end();
       }
       if ($editable) {
-         Form::refRow(_("Purchase Order #:"), 'ref', '', Ref::get_next(ST_PURCHORDER));
+        Form::refRow(_("Purchase Order #:"), 'ref', '', Ref::get_next(ST_PURCHORDER));
       } else {
         Form::hidden('ref', $this->reference);
         Row::label(_("Purchase Order #:"), $this->reference);
       }
       Sales_UI::persons_row(_("Sales Person:"), 'salesman', $this->salesman);
       Table::section(2);
-       Form::dateRow(_("Order Date:"), 'OrderDate', '', true, 0, 0, 0, null, true);
+      Form::dateRow(_("Order Date:"), 'OrderDate', '', true, 0, 0, 0, null, true);
       if (isset($_POST['_OrderDate_changed'])) {
         Ajax::i()->activate('_ex_rate');
       }
-       Form::textRow(_("Supplier's Order #:"), 'Requisition', null, 16, 15);
+      Form::textRow(_("Supplier's Order #:"), 'Requisition', null, 16, 15);
       Inv_Location::row(_("Receive Into:"), 'location', null, false, true);
       Table::section(3);
       if (!isset($_POST['location']) || $_POST['location'] == "" || isset($_POST['_location_update']) || !isset($_POST['delivery_address']) || $_POST['delivery_address'] == "") {
@@ -642,7 +645,7 @@
           Event::error(_("The default stock location set up for this user is not a currently defined stock location. Your system administrator needs to amend your user record."));
         }
       }
-       Form::textareaRow(_("Deliver to:"), 'delivery_address', $_POST['delivery_address'], 35, 4);
+      Form::textareaRow(_("Deliver to:"), 'delivery_address', $_POST['delivery_address'], 35, 4);
       Table::endOuter(); // outer table
     }
     /**
@@ -704,11 +707,12 @@
         $this->item_controls();
       }
       Table::foot();
-       Form::SmallAmountRow(_("Freight"), 'freight', Num::price_format(Form::getPost('freight', 0)), "colspan=8 class='bold right'", null, null, 3);
+      Form::SmallAmountRow(_("Freight"), 'freight', Num::price_format(Form::getPost('freight', 0)), "colspan=8 class='bold right'", null, null, 3);
       $display_total = Num::price_format($total + Validation::input_num('freight'));
       Row::label(_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 class='bold right'", "nowrap class=right _nofreight='$total'", 2);
       Table::footEnd();
       Table::end(1);
+      Creditor::addEditDialog();
       Display::div_end();
     }
     /**
@@ -772,7 +776,7 @@
         $_POST['units']        = $this->line_items[$id]->units;
         Form::hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id'], " class='stock' data-stock_id='{$_POST['stock_id']}'");
-         Form::textareaCells(null, 'description', null, 50, 5);
+        Form::textareaCells(null, 'description', null, 50, 5);
         Ajax::i()->activate('items_table');
         $qty_rcvd = $this->line_items[$id]->qty_received;
       } else {
@@ -797,12 +801,12 @@
         $_POST['discount']     = Num::percent_format(0);
         $qty_rcvd              = '';
       }
-       Form::qtyCells(null, 'qty', null, null, null, $dec);
+      Form::qtyCells(null, 'qty', null, null, null, $dec);
       Cell::qty($qty_rcvd, false, $dec);
       Cell::label($_POST['units'], '', 'units');
-       Form::dateCells(null, 'req_del_date', '', null, 0, 0, 0);
-       Form::amountCells(null, 'price', null, null, null, $dec2);
-       Form::amountCellsSmall(null, 'discount', Num::percent_format($_POST['discount']), null, null, User::percent_dec());
+      Form::dateCells(null, 'req_del_date', '', null, 0, 0, 0);
+      Form::amountCells(null, 'price', null, null, null, $dec2);
+      Form::amountCellsSmall(null, 'discount', Num::percent_format($_POST['discount']), null, null, User::percent_dec());
       $line_total = Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('discount') / 100);
       Cell::amount($line_total, false, '', 'line_total');
       if ($id != -1) {

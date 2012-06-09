@@ -36,13 +36,16 @@
      */
     public static $i = false;
     public $buildversion;
+    /** @var Session */
+    protected $session = null;
     /**
 
      */
     public function __construct()
     {
-      $extensions = Config::get('extensions.installed');
-      $this->menu = new Menu(_("Main Menu"));
+      $this->session = Session::i();
+      $extensions    = Config::get('extensions.installed');
+      $this->menu    = new Menu(_("Main Menu"));
       $this->menu->add_item(_("Main Menu"), "index.php");
       $this->menu->add_item(_("Logout"), "/account/access/logout.php");
       $apps = Config::get('apps.active');
@@ -55,7 +58,7 @@
           $ext = 'Apps_' . $ext['name'];
           $this->add_application(new $ext());
         }
-        Session::$get_text->add_domain(Language::i()->code, LANG_PATH);
+        $this->session->get_text->add_domain(Language::i()->code, LANG_PATH);
       }
       $this->add_application(new Apps_System());
       $this->get_selected();
@@ -165,7 +168,7 @@
       // logout.php is the only page we should have always
       // accessable regardless of access level and current login status.
       if (!strstr($_SERVER['DOCUMENT_URI'], 'logout.php')) {
-        static::checkLogin();
+        static::$i->checkLogin();
       }
       Event::init();
 
@@ -174,7 +177,7 @@
     /**
 
      */
-    public static function loginFail()
+    public function loginFail()
     {
       header("HTTP/1.1 401 Authorization Required");
       echo "<div class='font5 red bold center'><br><br>" . _("Incorrect Password") . "<br><br>";
@@ -182,7 +185,7 @@
       echo _("If you are not an authorized user, please contact your system administrator to obtain an account to enable you to use the system.");
       echo "<br><a href='/index.php'>" . _("Try again") . "</a>";
       echo "</div>";
-      Session::kill();
+      $this->session->kill();
       die();
     }
     /**
@@ -260,16 +263,16 @@
 
       return true;
     }
-    protected static function checkLogin()
+    protected function checkLogin()
     {
-      if (!Session::checkUserAgent()) {
-        static::showLogin();
+      if (!$this->session->checkUserAgent()) {
+        $this->showLogin();
       }
       static::$user = User::i();
       if (Input::post("user_name")) {
-        self::login();
+        $this->login();
       } elseif (!static::$user->logged_in()) {
-        static::showLogin();
+        $this->showLogin();
       }
       if ($_SESSION['current_user']->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev') !== false) {
         Display::meta_forward('http://dev.advanced.advancedgroup.com.au:8090');
@@ -279,21 +282,21 @@
         Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . static::$user->username);
       }
     }
-    protected static function login()
+    protected function login()
     {
       $company = Input::post('login_company', null, 'default');
       if ($company) {
         try {
           if (!static::$user->login($company, $_POST["user_name"], $_POST["password"])) {
             // Incorrect password
-            static::loginFail();
+            $this->loginFail();
           }
         }
         catch (\ADV\Core\DB\DBException $e) {
           Page::error_exit('Could not connect to database!');
         }
         static::$user->ui_mode = $_POST['ui_mode'];
-        Session::regenerate();
+        $this->session->regenerate();
         Language::i()->set_language($_SESSION['Language']->code);
       }
     }

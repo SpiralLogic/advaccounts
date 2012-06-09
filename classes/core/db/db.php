@@ -18,11 +18,14 @@
    * @method num_rows($sql = null)
    * @method begin()
    * @method commit()
+   * @method error_no()
    * @method \ADV\Core\DB\Query_Select select($columns = null)
    * @method \ADV\Core\DB\Query_Update update($into)
    */
   class DB
   {
+    use \ADV\Core\Traits\StaticAccess;
+
     const SELECT = 0;
     const INSERT = 1;
     const UPDATE = 2;
@@ -67,8 +70,6 @@
     protected $intransaction = false;
     /*** @var \PDO */
     protected $conn = false;
-    /** @var DB */
-    protected static $i = null;
     /**
      * @var
      */
@@ -76,30 +77,6 @@
     /** @var \Cache */
     protected $cache;
     /**
-     * @static
-     *
-     * @param $func
-     * @param $args
-     *
-     * @return mixed
-     */
-    public static function __callStatic($func, $args)
-    {
-      return call_user_func_array(array(static::i(), '_' . $func), $args);
-    }
-    /***
-     * @static
-     * @return DB
-     */
-    public static function i()
-    {
-      if (static::$i === null) {
-        static::$i = new static();
-      }
-      return static::$i;
-    }
-    /**
-     *
      * @throws DBException
      */
     public function __construct($config = null, $cache = null)
@@ -206,7 +183,7 @@
      * @return mixed
      */
     /**
-     * @param      $value
+     * @param          $value
      * @param int|null $type
      *
      * @return string
@@ -307,14 +284,6 @@
      * @static
      * @return string
      */
-    public static function insert_id()
-    {
-      return static::i()->_insert_id();
-    }
-    /**
-     * @static
-     * @return string
-     */
     public function _insert_id()
     {
       return $this->conn->lastInsertId();
@@ -367,7 +336,6 @@
       return $this->query;
     }
     /***
-     *
      * @param \PDOStatement $result     The result of the query or whatever cunt
      * @param int           $fetch_mode
      *
@@ -390,13 +358,6 @@
       return false;
     }
     /**
-     * @static
-     *
-     * @param null $result
-     *
-     * @return mixed
-     */
-    /**
      * @param null|\PDOStatement $result
      *
      * @return Query_Result|Array
@@ -406,30 +367,12 @@
       return $this->_fetch($result, \PDO::FETCH_NUM);
     }
     /**
-     * @static
-     * @return mixed
-     */
-    /**
-     * @static
-     *
-     * @param null $result
-     *
-     * @return mixed
-     */
-    /**
      * @return bool|mixed
      */
     public function _fetch_assoc()
     {
       return is_a($this->prepared, '\PDOStatement') ? $this->prepared->fetch(\PDO::FETCH_ASSOC) : false;
     }
-    /**
-     * @static
-     *
-     * @param int $fetch_type
-     *
-     * @return array
-     */
     /**
      * @param int $fetch_type
      *
