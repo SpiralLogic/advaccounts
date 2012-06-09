@@ -8,26 +8,35 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
-  if (function_exists("date_default_timezone_set") && function_exists("date_default_timezone_get")) {
-    @date_default_timezone_set(@date_default_timezone_get());
-  }
+    /**
+    date validation and parsing functions
+
+    These functions refer to the global variable defining the date format
+    The date format is defined in config.php called dateformats
+    this can be a string either "d/m/Y" for UK/Australia/New Zealand dates or
+    "m/d/Y" for US/Canada format dates depending on setting in preferences.
+
+     */
   /**
-  date validation and parsing functions
-
-  These functions refer to the global variable defining the date format
-  The date format is defined in config.php called dateformats
-  this can be a string either "d/m/Y" for UK/Australia/New Zealand dates or
-  "m/d/Y" for US/Canada format dates depending on setting in preferences.
-
-   */
-  /**
-
+   * @method __date()
    */
   class Dates
   {
-    public static $sep = null;
-    public static $formats = null;
-    public static $seps = null;
+    use Traits\StaticAccess;
+
+    protected $sep = null;
+    protected $formats = null;
+    protected $seps = null;
+    protected $seperators = null;
+    /**
+
+     */
+    public function __construct()
+    {
+      $this->formats    = Config::get('date.formats');
+      $this->sep        = Config::get('date.separators')[Config::get('date.ui_separator')];
+      $this->seperators = Config::get('date.separators');
+    }
     /**
      * @static
      *
@@ -38,14 +47,11 @@
      *
      * @return string
      */
-    public static function __date($year, $month, $day, $format = null)
+    public function ___date($year, $month, $day, $format = null)
     {
-      static::$formats = static::$formats ? : Config::get('date.formats');
-      $how             = static::$formats [($format !== null) ? $format : \User::date_format()];
-      static::$sep     = static::$sep ? : Config::get('date.separators')[Config::get('date.ui_separator')];
-      $date            = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
-      $how             = str_replace('/', static::$sep, $how);
-
+      $how  = $this->formats [($format !== null) ? $format : \User::date_format()];
+      $date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
+      $how  = str_replace('/', $this->sep, $how);
       return date($how, $date);
     }
     /**
@@ -57,14 +63,13 @@
      * @internal param $date_
      * @return int
      */
-    public static function is_date($date = null, $format = null)
+    public function _is_date($date = null, $format = null)
     {
       if ($date == null || $date == "") {
         return false;
       }
-      $how        = ($format !== null) ? $format : \User::date_format();
-      $seperators = Config::get('date.separators');
-      $date       = str_replace($seperators, '/', trim($date));
+      $how  = ($format !== null) ? $format : \User::date_format();
+      $date = str_replace($this->seperators, '/', trim($date));
       if ($how == 0) {
         list($month, $day, $year) = explode('/', $date);
       } elseif ($how == 1) {
@@ -82,23 +87,20 @@
           return false;
         }
       } else { /*Can't be in an appropriate DefaultDateFormat */
-
         return false;
       }
     }
     /**
-     * @static
      * @return string
      */
-    public static function today()
+    public function _today()
     {
-      return Dates::__date(date("Y"), date("n"), date("j"));
+      return $this->___date(date("Y"), date("n"), date("j"));
     }
     /**
-     * @static
      * @return string
      */
-    public static function now()
+    public function _now()
     {
       if (\User::date_format() == 0) {
         return date("h:i a");
@@ -113,7 +115,7 @@
      *
      * @return mixed|null
      */
-    public static function new_doc_date($date = null)
+    public function _new_doc_date($date = null)
     {
       if (!$date) {
         \Session::i()->setGlobal('date', $date);
@@ -121,9 +123,8 @@
         $date = \Session::i()->getGlobal('date');
       }
       if (!$date || !\User::sticky_doc_date()) {
-        $date = \Session::i()->setGlobal('date', Dates::today());
+        $date = \Session::i()->setGlobal('date', $this->_today());
       }
-
       return $date;
     }
     /**
@@ -134,7 +135,7 @@
      *
      * @return int
      */
-    public static function is_date_in_fiscalyear($date, $convert = false)
+    public function _is_date_in_fiscalyear($date, $convert = false)
     {
       if (!Config::get('use_fiscalyear')) {
         return 1;
@@ -144,34 +145,31 @@
         return 0;
       }
       if ($convert) {
-        $date2 = Dates::sql2date($date);
+        $date2 = $this->_sql2date($date);
       } else {
         $date2 = $date;
       }
-      $begin = Dates::sql2date($myrow['begin']);
-      $end   = Dates::sql2date($myrow['end']);
-
-      return (Dates::date1_greater_date2($date2, $begin) || Dates::date1_greater_date2($end, $date2));
+      $begin = $this->_sql2date($myrow['begin']);
+      $end   = $this->_sql2date($myrow['end']);
+      return ($this->_date1_greater_date2($date2, $begin) || $this->_date1_greater_date2($end, $date2));
     }
     /**
      * @static
      * @return string
      */
-    public static function begin_fiscalyear()
+    public function _begin_fiscalyear()
     {
       $myrow = \DB_Company::get_current_fiscalyear();
-
-      return Dates::sql2date($myrow['begin']);
+      return $this->_sql2date($myrow['begin']);
     }
     /**
      * @static
      * @return string
      */
-    public static function end_fiscalyear()
+    public function _end_fiscalyear()
     {
       $myrow = \DB_Company::get_current_fiscalyear();
-
-      return Dates::sql2date($myrow['end']);
+      return $this->_sql2date($myrow['end']);
     }
     /**
      * @static
@@ -180,11 +178,11 @@
      *
      * @return string
      */
-    public static function begin_month($date)
+    public function _begin_month($date)
     {
-      list($day, $month, $year) = Dates::explode_date_to_dmy($date);
-
-      return Dates::__date($year, $month, 1);
+      /** @noinspection PhpUnusedLocalVariableInspection */
+      list($day, $month, $year) = $this->_explode_date_to_dmy($date);
+      return $this->___date($year, $month, 1);
     }
     /**
      * @static
@@ -193,14 +191,14 @@
      *
      * @return string
      */
-    public static function end_month($date)
+    public function _end_month($date)
     {
-      list($day, $month, $year) = Dates::explode_date_to_dmy($date);
+      /** @noinspection PhpUnusedLocalVariableInspection */
+      list($day, $month, $year) = $this->_explode_date_to_dmy($date);
       $days_in_month = array(
         31, ((!($year % 4) && (($year % 100) || !($year % 400))) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
       );
-
-      return Dates::__date($year, $month, $days_in_month[$month - 1]);
+      return $this->___date($year, $month, $days_in_month[$month - 1]);
     }
     /**
      * @static
@@ -210,11 +208,10 @@
      *
      * @return string
      */
-    public static function add_days($date, $days)
+    public function _add_days($date, $days)
     {
-      list($day, $month, $year) = Dates::explode_date_to_dmy($date);
+      list($day, $month, $year) = $this->_explode_date_to_dmy($date);
       $timet = mktime(0, 0, 0, $month, $day + $days, $year);
-
       return date(\User::date_display(), $timet);
     }
     /**
@@ -225,11 +222,10 @@
      *
      * @return string
      */
-    public static function add_months($date, $months)
+    public function _add_months($date, $months)
     {
-      list($day, $month, $year) = Dates::explode_date_to_dmy($date);
+      list($day, $month, $year) = $this->_explode_date_to_dmy($date);
       $timet = Mktime(0, 0, 0, $month + $months, $day, $year);
-
       return date(\User::date_display(), $timet);
     }
     /**
@@ -240,11 +236,10 @@
      *
      * @return string
      */
-    public static function add_years($date, $years)
+    public function _add_years($date, $years)
     {
-      list($day, $month, $year) = Dates::explode_date_to_dmy($date);
-      $timet = Mktime(0, 0, 0, $month, $day, $year + $years);
-
+      list($day, $month, $year) = $this->_explode_date_to_dmy($date);
+      $timet = mktime(0, 0, 0, $month, $day, $year + $years);
       return date(\User::date_display(), $timet);
     }
     /**
@@ -254,7 +249,7 @@
      *
      * @return string
      */
-    public static function sql2date($date_)
+    public function _sql2date($date_)
     {
       //for MySQL dates are in the format YYYY-mm-dd
       if ($date_ == null || strlen($date_) == 0) {
@@ -269,8 +264,7 @@
       if (!isset($date) && strlen($day) > 4) { /*chop off the time stuff */
         $day = substr($day, 0, 2);
       }
-
-      return Dates::__date($year, $month, $day);
+      return $this->___date($year, $month, $day);
     } // end static function sql2date
     /**
      * @static
@@ -280,15 +274,14 @@
      * @internal param bool $pad
      * @return int|string
      */
-    public static function date2sql($date_)
+    public function _date2sql($date_)
     {
       if (!$date_) {
         return '';
       }
-      $how          = \User::date_format();
-      static::$seps = static::$seps ? : Config::get('date.separators');
-      $sep          = static::$seps[\User::date_sep()];
-      $date_        = trim($date_);
+      $how = \User::date_format();
+      $sep   = $this->seps[\User::date_sep()];
+      $date_ = trim($date_);
       /** @noinspection PhpUnusedLocalVariableInspection */
       $year = $month = $day = 0;
       // Split up the date by the separator based on "how" to split it
@@ -302,10 +295,8 @@
       list($year, $month, $day) = explode('-', $date_);
       if (!checkdate($month, $day, $year)) {
         Event::error('Incorrect date entered!');
-
         return false;
       }
-
       return $date_;
     }
     /**
@@ -316,14 +307,14 @@
      *
      * @return int
      */
-    public static function date1_greater_date2($date1, $date2)
+    public function _date1_greater_date2($date1, $date2)
     {
       /* returns 1 true if date1 is greater than date_ 2 */
       if (!$date1 || !$date2) {
         return false;
       }
-      $date1 = Dates::date2sql($date1);
-      $date2 = Dates::date2sql($date2);
+      $date1 = $this->_date2sql($date1);
+      $date2 = $this->_date2sql($date2);
       list($year1, $month1, $day1) = explode("-", $date1);
       list($year2, $month2, $day2) = explode("-", $date2);
       if ($year1 > $year2) {
@@ -337,7 +328,6 @@
           }
         }
       }
-
       return 0;
     }
     /**
@@ -349,13 +339,13 @@
      *
      * @return int
      */
-    public static function date_diff2($date1, $date2, $period)
+    public function _date_diff2($date1, $date2, $period)
     {
       /* expects dates in the format specified in $DefaultDateFormat - period can be one of 'd','w','y','m'
                                                             months are assumed to be 30 days and years 365.25 days This only works
                                                             provided that both dates are after 1970. Also only works for dates up to the year 2035 ish */
-      $date1 = Dates::date2sql($date1);
-      $date2 = Dates::date2sql($date2);
+      $date1 = $this->_date2sql($date1);
+      $date2 = $this->_date2sql($date2);
       list($year1, $month1, $day1) = explode("-", $date1);
       list($year2, $month2, $day2) = explode("-", $date2);
       $stamp1     = mktime(0, 0, 0, (int) $month1, (int) $day1, (int) $year1);
@@ -386,15 +376,14 @@
      * @internal param $date_
      * @return array
      */
-    public static function explode_date_to_dmy($date)
+    public function _explode_date_to_dmy($date)
     {
-      $date = Dates::date2sql($date);
+      $date = $this->_date2sql($date);
       if ($date == "") {
         $disp = \User::date_display();
         throw new \Adv_Exception("Dates must be entered in the format $disp. Sent was $date");
       }
       list($year, $month, $day) = explode("-", $date);
-
       return array($day, $month, $year);
     }
     /**
@@ -405,7 +394,7 @@
      *
      * @return int
      */
-    public static function div($a, $b)
+    public function _div($a, $b)
     {
       return (int) ($a / $b);
     }
@@ -420,14 +409,14 @@
      *
      * @return array
      */
-    public static function gregorian_to_jalali($g_y, $g_m, $g_d)
+    public function _gregorian_to_jalali($g_y, $g_m, $g_d)
     {
       $g_days_in_month = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
       $j_days_in_month = array(31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29);
       $gy              = $g_y - 1600;
       $gm              = $g_m - 1;
       $gd              = $g_d - 1;
-      $g_day_no        = 365 * $gy + static::div($gy + 3, 4) - static::div($gy + 99, 100) + static::div($gy + 399, 400);
+      $g_day_no        = 365 * $gy + $this->_div($gy + 3, 4) - $this->_div($gy + 99, 100) + $this->_div($gy + 399, 400);
       for ($i = 0; $i < $gm; ++$i) {
         $g_day_no += $g_days_in_month[$i];
       }
@@ -437,12 +426,12 @@
       }
       $g_day_no += $gd;
       $j_day_no = $g_day_no - 79;
-      $j_np     = static::div($j_day_no, 12053); /* 12053 = 365*33 + 32/4 */
+      $j_np     = $this->_div($j_day_no, 12053); /* 12053 = 365*33 + 32/4 */
       $j_day_no %= 12053;
-      $jy = 979 + 33 * $j_np + 4 * static::div($j_day_no, 1461); /* 1461 = 365*4 + 4/4 */
+      $jy = 979 + 33 * $j_np + 4 * $this->_div($j_day_no, 1461); /* 1461 = 365*4 + 4/4 */
       $j_day_no %= 1461;
       if ($j_day_no >= 366) {
-        $jy += static::div($j_day_no - 1, 365);
+        $jy += $this->_div($j_day_no - 1, 365);
         $j_day_no = ($j_day_no - 1) % 365;
       }
       for ($i = 0; $i < 11 && $j_day_no >= $j_days_in_month[$i]; ++$i) {
@@ -450,7 +439,6 @@
       }
       $jm = $i + 1;
       $jd = $j_day_no + 1;
-
       return array($jy, $jm, $jd);
     }
     /**
@@ -462,25 +450,25 @@
      *
      * @return array
      */
-    public static function jalali_to_gregorian($j_y, $j_m, $j_d)
+    public function _jalali_to_gregorian($j_y, $j_m, $j_d)
     {
       $g_days_in_month = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
       $j_days_in_month = array(31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29);
       $jy              = $j_y - 979;
       $jm              = $j_m - 1;
       $jd              = $j_d - 1;
-      $j_day_no        = 365 * $jy + static::div($jy, 33) * 8 + static::div($jy % 33 + 3, 4);
+      $j_day_no        = 365 * $jy + $this->_div($jy, 33) * 8 + $this->_div($jy % 33 + 3, 4);
       for ($i = 0; $i < $jm; ++$i) {
         $j_day_no += $j_days_in_month[$i];
       }
       $j_day_no += $jd;
       $g_day_no = $j_day_no + 79;
-      $gy       = 1600 + 400 * static::div($g_day_no, 146097); /* 146097 = 365*400 + 400/4 - 400/100 + 400/400 */
+      $gy       = 1600 + 400 * $this->_div($g_day_no, 146097); /* 146097 = 365*400 + 400/4 - 400/100 + 400/400 */
       $g_day_no %= 146097;
       $leap = true;
       if ($g_day_no >= 36525) /* 36525 = 365*100 + 100/4 */ {
         $g_day_no--;
-        $gy += 100 * static::div($g_day_no, 36524); /* 36524 = 365*100 + 100/4 - 100/100 */
+        $gy += 100 * $this->_div($g_day_no, 36524); /* 36524 = 365*100 + 100/4 - 100/100 */
         $g_day_no %= 36524;
         if ($g_day_no >= 365) {
           $g_day_no++;
@@ -488,12 +476,12 @@
           $leap = false;
         }
       }
-      $gy += 4 * static::div($g_day_no, 1461); /* 1461 = 365*4 + 4/4 */
+      $gy += 4 * $this->_div($g_day_no, 1461); /* 1461 = 365*4 + 4/4 */
       $g_day_no %= 1461;
       if ($g_day_no >= 366) {
         $leap = false;
         $g_day_no--;
-        $gy += static::div($g_day_no, 365);
+        $gy += $this->_div($g_day_no, 365);
         $g_day_no %= 365;
       }
       for ($i = 0; $g_day_no >= $g_days_in_month[$i] + ($i == 1 && $leap); $i++) {
@@ -501,7 +489,6 @@
       }
       $gm = $i + 1;
       $gd = $g_day_no + 1;
-
       return array($gy, $gm, $gd);
     }
     /**
@@ -512,13 +499,12 @@
      *
      * @return string
      */
-    public static function months($name, $month = 0)
+    public function _months($name, $month = 0)
     {
       $months = array();
       for ($i = 0; $i < 12; $i++) {
         $months[$i] = date('F', strtotime("now - $i months"));
       }
-
       return \Form::arraySelect($name, $month, $months);
     }
     /**
@@ -530,7 +516,7 @@
      *
      * @return array
      */
-    public static function gregorian_to_islamic($g_y, $g_m, $g_d)
+    public function _gregorian_to_islamic($g_y, $g_m, $g_d)
     {
       $y = $g_y;
       $m = $g_m;
@@ -548,7 +534,6 @@
       $m = (int) ((24 * $l) / 709);
       $d = $l - (int) ((709 * $m) / 24);
       $y = 30 * $n + $j - 30;
-
       return array($y, $m, $d);
     }
     /**
@@ -560,7 +545,7 @@
      *
      * @return array
      */
-    public static function islamic_to_gregorian($i_y, $i_m, $i_d)
+    public function _islamic_to_gregorian($i_y, $i_m, $i_d)
     {
       $y  = $i_y;
       $m  = $i_m;
@@ -589,7 +574,6 @@
         $m = $j + 2 - 12 * $i;
         $y = 4 * $k + $n + $i - 4716;
       }
-
       return array($y, $m, $d);
     }
     /**
@@ -613,7 +597,6 @@
         $ret       = ($time / 1000) / 60;
       }
       $ret = number_format($ret, 3, '.', '') . ' ' . $formats[$formatter];
-
       return $ret;
     }
   }
