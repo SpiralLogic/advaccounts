@@ -68,9 +68,9 @@
       $this->title    = $title;
       $this->frame    = isset($_GET['frame']);
       require_once 'Twig/Autoloader.php';
-      Twig_Autoloader::register();
-      $loader     = new Twig_Loader_Filesystem(DOCROOT . 'views');
-      $this->twig = new Twig_Environment($loader);
+      \Twig_Autoloader::register();
+      $loader     = new \Twig_Loader_Filesystem(DOCROOT . 'views');
+      $this->twig = new \Twig_Environment($loader);
     }
     /**
      * @param $menu
@@ -119,11 +119,11 @@
       $viewdata['lang_dir']   = $this->lang_dir;
       $viewdata['title']      = $this->title;
       $viewdata['body_class'] = !$this->menu ? ' class="lite"' : '';
-      $viewdata['css']        = $this->renderCSS();
+      $viewdata['stylesheets']        = $this->renderCSS();
       if (class_exists('JS', FALSE)) {
         $viewdata['scripts'] = JS::renderHeader();
       }
-      echo $this->twig->render('header.php', $viewdata);
+      echo $this->twig->render('header.twig', $viewdata);
     }
     /**
 
@@ -246,7 +246,7 @@
       $this->css += class_exists('Config', FALSE) ? \Config::get('assets.css') : array('default.css');
       $path = DS . "themes" . DS . $this->theme . DS;
       $css  = implode(',', $this->css);
-      return "<link href='{$path}{$css}' rel='stylesheet'> \n";
+      return [$path.$css];
     }
     /**
      * @static

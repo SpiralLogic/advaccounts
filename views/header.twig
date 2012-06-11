@@ -1,0 +1,17 @@
+<!DOCTYPE HTML>
+<html {{ class }} dir='{{ lang_dir }}'>
+<head>
+  <meta charset='utf-8'>
+  <title>{{ title }}</title>
+  <script>document.documentElement.className = document.documentElement.className + ' js'</script>
+  <link rel='apple-touch-icon' href='/company/images/Advanced-Group-Logo.png'/>
+  {% for css in stylesheets %}
+  <link href='{{ css }}' rel='stylesheet'/>
+  {% endfor %}
+  {% for script in scripts %}
+  <script src='{{ script }}'></script>
+  {% endfor %}
+
+</head>
+<body {{ body_class }}>
+<div id='content'>

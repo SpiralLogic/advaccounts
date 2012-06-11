@@ -209,13 +209,13 @@ JSS;
      */
     public static function renderHeader()
     {
+      $scripts=[];
       /** @noinspection PhpDynamicAsStaticMethodCallInspection */
-      HTML::setReturn(true)->script(null, "document.documentElement.className = document.documentElement.className +' js'", false);
       foreach (self::$_headerFiles as $dir => $files) {
         /** @noinspection PhpDynamicAsStaticMethodCallInspection */
-        HTML::script(array('src' => $dir . '/' . implode(',', $files)), false);
+        $scripts[]= $dir . '/' . implode(',', $files);
       }
-      return HTML::setReturn(false);
+      return $scripts;
     }
     /**
      * @static
