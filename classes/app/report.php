@@ -28,6 +28,7 @@
     const DATEBEGIN           = 'DATEBEGIN';
     const DATEENDM            = 'DATEENDM';
     const CUSTOMERS_NO_FILTER = 'CUSTOMERS_NO_FILTER';
+    const CUSTOMERS_NOZERO_BALANCE = 'CUSTOMERS_NOZERO_BALANCE';
     const CURRENCY            = 'CURRENCY';
     const YES_NO              = 'YES_NO';
     const DATE                = 'DATE';

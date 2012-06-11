@@ -66,7 +66,7 @@
 		$this->Font();
 		$this->fontSize -= 4;
 	}
-	//$this->SetTextColor(190, 190, 190);
+  $this->SetTextColor(0, 0, 0);
 	$this->fontSize += 10;
 	$this->Font('bold');
 	$this->TextWrap($mcol, $this->row, $this->pageWidth - $this->rightMargin - $mcol - 20, $this->title, 'right');
@@ -74,7 +74,8 @@
 	$temp = $this->row;
 	if ($doctype == ST_STATEMENT) {
 		$this->NewLine();
-		$this->NewLine();
+		$this->NewLine();	$this->Font('bold');
+
 		$this->TextWrap($mcol+100, $this->row, 150, date('F Y',strtotime($myrow['tran_date'].'- 1 day')), 'center');
 		$this->Font();
 		$this->row = $temp;

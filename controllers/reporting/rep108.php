@@ -36,7 +36,6 @@
                                GROUP BY d.debtor_id ";
     $sql .= ", d.trans_no,	d.type";
     $sql .= " ORDER BY  d.tran_date,	d.type,	d.branch_id";
-    Errors::log($sql);
     return DB::query($sql, "No transactions were returned");
   }
 

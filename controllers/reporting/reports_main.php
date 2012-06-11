@@ -81,7 +81,7 @@
                                                                        _('Comments')              => Report::TEXTBOX
                                                                   ));
   $reports->addReport(_('Customer'), 108, _('Print &Statements'), array(
-                                                                       _('Customer')          => Report::CUSTOMERS_NO_FILTER,
+                                                                       _('Customer')          => Report::CUSTOMERS_NOZERO_BALANCE,
                                                                        _('Currency Filter')   => Report::CURRENCY,
                                                                        _('Email Customers')   => Report::YES_NO,
                                                                        _('Comments')          => Report::TEXTBOX,
