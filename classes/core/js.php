@@ -100,14 +100,12 @@
     {
       $address = str_replace(array("\r", "\t", "\n", "\v"), ", ", $address);
       $apikey  = Config::get('js.maps_api_key');
-      $js
-               = <<<JS
+      $js      = <<<JS
 
                 Adv.maps = { api_key: '$apikey'}
 JS;
       JS::beforeload($js);
-      $js
-        = <<<JS
+      $js = <<<JS
 var map = $("<div/>").gMap({
     address:"{$address}",
     markers: [{ address:"{$address}", html: "_address", popup: true}],
@@ -151,7 +149,6 @@ JS;
       if (!isset($_POST['_focus'])) {
         JS::set_focus($name);
       }
-
       return $name;
     }
     /**
@@ -176,8 +173,7 @@ JS;
       extract(array_merge($defaults, $options));
       $content = "Adv.o.tabs.$id = $('#" . $id . "').tabs(";
       if ($hasLinks) {
-        $content
-          .= <<<JSS
+        $content .= <<<JSS
     {
     select: function(event, ui) {
     var \$tab = $(ui.tab);
@@ -214,11 +210,12 @@ JSS;
     public static function renderHeader()
     {
       /** @noinspection PhpDynamicAsStaticMethodCallInspection */
-      HTML::script(null, "document.documentElement.className = document.documentElement.className +' js'", false);
+      HTML::setReturn(true)->script(null, "document.documentElement.className = document.documentElement.className +' js'", false);
       foreach (self::$_headerFiles as $dir => $files) {
         /** @noinspection PhpDynamicAsStaticMethodCallInspection */
         HTML::script(array('src' => $dir . '/' . implode(',', $files)), false);
       }
+      return HTML::setReturn(false);
     }
     /**
      * @static
@@ -322,7 +319,6 @@ JSS;
         foreach ($funcs as $key => $value) {
           $input_json = str_replace('"' . $key . '"', $value, $input_json);
         }
-
         return $input_json;
       }
     }
@@ -352,7 +348,6 @@ JSS;
         return self::addLive("$('$selector').bind('$type',function(e){ {$action} });");
       }
       $cached = (!$cached) ? "$('$delegate')" : 'Adv.o.' . $delegate;
-
       return self::register($cached . ".delegate('$selector','$type',function(e){ {$action} } )", self::$_onload);
     }
     /**

@@ -23,19 +23,19 @@
     /**
      * @var int
      */
-    protected static $time = 0;
+    protected $time = 0;
     /**
      * @var array
      */
-    protected static $classes = array();
+    protected $classes = array();
     /**
      * @var array
      */
-    protected static $global_classes = array();
+    protected $global_classes = array();
     /**
      * @var array
      */
-    public static $loaded = array();
+    public $loaded = array();
     /**
      * @static
 
@@ -43,33 +43,42 @@
     public static function i()
     {
       class_alias(__CLASS__, 'Autoloader');
-      spl_autoload_register('\\ADV\\Core\\Autoloader::load', true);
+      $autoloader=new self;
+      spl_autoload_register(array($autoloader,'load'), true);
       $cachedClasses = \ADV\Core\Cache::get('autoload', array());
       if ($cachedClasses) {
-        static::$global_classes = $cachedClasses['global_classes'];
-        static::$classes        = $cachedClasses['classes'];
-        static::$loaded         = $cachedClasses['paths'];
+        $autoloader->global_classes = $cachedClasses['global_classes'];
+        $autoloader->classes        = $cachedClasses['classes'];
+        $autoloader->loaded         = $cachedClasses['paths'];
       } else {
         $core = include(DOCROOT . 'config' . DS . 'core.php');
-        static::import_namespaces((array) $core);
-        $vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
-        static::add_classes((array) $vendor, VENDORPATH);
+        $autoloader->import_namespaces((array) $core);
+        $vendor= include(DOCROOT . 'config' . DS . 'vendor.php');
+        $autoloader->add_classes((array) $vendor, VENDORPATH);
       }
-      spl_autoload_register('\\ADV\\Core\\Autoloader::loadFromCache', true, true);
+      spl_autoload_register(array($autoloader,'loadFromCache'), true, true);
+
     }
+    /**
+
+     */
+    public function __construct() {
+
+    }
+
     /**
      * @static
      *
      * @param array $classes
      * @param       $type
      */
-    protected static function add_classes(array $classes, $type)
+    protected function add_classes(array $classes, $type)
     {
       foreach ($classes as $dir => $class) {
         if (!is_string($dir)) {
           $dir = '';
         }
-        static::$classes[$class] = $type . $dir;
+        $this->classes[$class] = $type . $dir;
       }
     }
     /**
@@ -78,19 +87,19 @@
      * @param $namespace
      * @param $classes
      */
-    protected static function import_namespace($namespace, $classes)
+    protected function import_namespace($namespace, $classes)
     {
-      static::$global_classes = array_merge(static::$global_classes, array_fill_keys($classes, $namespace));
+      $this->global_classes = array_merge($this->global_classes, array_fill_keys($classes, $namespace));
     }
     /**
      * @static
      *
      * @param array $namespaces
      */
-    protected static function import_namespaces(array $namespaces)
+    protected function import_namespaces(array $namespaces)
     {
       foreach ($namespaces as $namespace => $classes) {
-        static::import_namespace($namespace, $classes);
+        $this->import_namespace($namespace, $classes);
       }
     }
     /**
@@ -103,13 +112,13 @@
      * @internal param $path
      * @return string
      */
-    protected static function tryPath($paths, $required_class)
+    protected function tryPath($paths, $required_class)
     {
       $paths = (array) $paths;
       while ($path = array_shift($paths)) {
         $filepath = realpath($path);
         if (is_readable($filepath)) {
-          return static::includeFile($filepath, $required_class);
+          return $this->includeFile($filepath, $required_class);
         }
       }
 
@@ -125,7 +134,7 @@
      * @internal param $class
      * @return bool
      */
-    protected static function includeFile($filepath, $required_class)
+    protected function includeFile($filepath, $required_class)
     {
       if (empty($filepath)) {
         throw new Autoload_Exception('File for class ' . $required_class . ' cannot be found!');
@@ -133,10 +142,10 @@
       if (!include_once($filepath)) {
         throw new Autoload_Exception('File for class ' . $required_class . ' cannot be	loaded from : ' . $filepath);
       }
-      if (!isset(static::$loaded[$required_class])) {
-        static::$loaded[$required_class] = $filepath;
+      if (!isset($this->loaded[$required_class])) {
+        $this->loaded[$required_class] = $filepath;
         if (is_callable('Event::register_shutdown')) {
-          Event::register_shutdown(__CLASS__);
+          Event::register_shutdown($this);
         }
       }
 
@@ -149,18 +158,18 @@
      *
      * @return bool|string
      */
-    public static function loadFromCache($required_class)
+    public function loadFromCache($required_class)
     {
       $result = false;
-      if (isset(static::$loaded[$required_class])) {
+      if (isset($this->loaded[$required_class])) {
         try {
-          $result = static::includeFile(static::$loaded[$required_class], $required_class);
+          $result = $this->includeFile($this->loaded[$required_class], $required_class);
         }
         catch (Autoload_Exception $e) {
-          Event::register_shutdown(__CLASS__);
+          Event::register_shutdown($this);
         }
-        if ($result && isset(static::$global_classes[$required_class])) {
-          class_alias(static::$global_classes[$required_class] . '\\' . $required_class, '\\' . $required_class);
+        if ($result && isset($this->global_classes[$required_class])) {
+          class_alias($this->global_classes[$required_class] . '\\' . $required_class, '\\' . $required_class);
         }
       }
 
@@ -175,7 +184,7 @@
      * @internal param $required_class
      * @return bool|string
      */
-    public static function load($requested_class)
+    public function load($requested_class)
     {
       $classname = ltrim($requested_class, '\\');
       $namespace = '';
@@ -185,15 +194,15 @@
       }
       $alias      = false;
       $class_file = str_replace('_', DS, $classname);
-      if (isset(static::$global_classes[$classname]) && (!$namespace || static::$global_classes[$classname] == $namespace)) {
-        $namespace = static::$global_classes[$classname];
+      if (isset($this->global_classes[$classname]) && (!$namespace || $this->global_classes[$classname] == $namespace)) {
+        $namespace = $this->global_classes[$classname];
         $alias     = true;
       }
       if ($namespace) {
         $namespacepath = str_replace(['\\', 'ADV'], [DS, 'classes'], $namespace);
         $dir           = DOCROOT . strtolower($namespacepath);
-      } elseif (isset(static::$classes[$classname])) {
-        $dir = static::$classes[$classname] . DS . $class_file;
+      } elseif (isset($this->classes[$classname])) {
+        $dir = $this->classes[$classname] . DS . $class_file;
       } else {
         $dir = APPPATH . strtolower($class_file);
       }
@@ -202,11 +211,11 @@
       $paths[]    = $dir . DS . $class_file . '.php';
       $paths[]    = $dir . DS . $class_file . DS . $class_file . '.php';
       $paths[]    = $dir . DS . 'classes' . DS . $class_file . '.php';
-      $result     = static::trypath($paths, $requested_class);
+      $result     = $this->trypath($paths, $requested_class);
       if ($result && $alias) {
-        $fullclass                  = static::$global_classes[$classname] . '\\' . $classname;
-        static::$loaded[$fullclass] = static::$loaded[$requested_class];
-        static::$loaded[$classname] = static::$loaded[$requested_class];
+        $fullclass                  = $this->global_classes[$classname] . '\\' . $classname;
+        $this->loaded[$fullclass] = $this->loaded[$requested_class];
+        $this->loaded[$classname] = $this->loaded[$requested_class];
         class_alias($fullclass, $classname);
       }
 
@@ -216,12 +225,12 @@
      * @static
 
      */
-    public static function _shutdown()
+    public function _shutdown()
     {
       Cache::set('autoload', array(
-                                  'classes'        => static::$classes,
-                                  'global_classes' => static::$global_classes,
-                                  'paths'          => static::$loaded
+                                  'classes'        => $this->classes,
+                                  'global_classes' => $this->global_classes,
+                                  'paths'          => $this->loaded
                              ));
     }
   }

@@ -11,6 +11,7 @@
   {
     /** @var \Renderer */
     public $renderer = NULL;
+    public $twig = NULL;
     /**
      * @var
      */
@@ -66,6 +67,10 @@
       $this->is_index = $index;
       $this->title    = $title;
       $this->frame    = isset($_GET['frame']);
+      require_once 'Twig/Autoloader.php';
+      Twig_Autoloader::register();
+      $loader     = new Twig_Loader_Filesystem(DOCROOT . 'views');
+      $this->twig = new Twig_Environment($loader);
     }
     /**
      * @param $menu
@@ -90,7 +95,6 @@
       if (!IS_JSON_REQUEST) {
         Errors::error_box();
       }
-
       if (!$this->ajaxpage) {
         echo "<div id='wrapper'>";
       }
@@ -111,20 +115,15 @@
       if (!headers_sent()) {
         header("Content-type: text/html; charset={$this->encoding}");
       }
-      echo "<!DOCTYPE HTML>\n";
-      echo "<html " . (is_object($this->sel_app) ? "class='" . strtolower($this->sel_app->id) . "'" :
-        '') . " dir='" . $this->lang_dir . "' >\n";
-      echo "<head>    <meta charset='utf-8'>
-      <title>" . $this->title . "</title>";
-      HTML::script(NULL, "document.documentElement.className = document.documentElement.className +' js'", FALSE);
-      $this->renderCSS();
-
-      echo "<link rel='apple-touch-icon' href='/company/images/Advanced-Group-Logo.png'/>";
+      $viewdata['class']      = (is_object($this->sel_app) ? "class='" . strtolower($this->sel_app->id) . "'" : '');
+      $viewdata['lang_dir']   = $this->lang_dir;
+      $viewdata['title']      = $this->title;
+      $viewdata['body_class'] = !$this->menu ? ' class="lite"' : '';
+      $viewdata['css']        = $this->renderCSS();
       if (class_exists('JS', FALSE)) {
-        JS::renderHeader();
+        $viewdata['scripts'] = JS::renderHeader();
       }
-      echo "</head><body" . (!$this->menu ? ' class="lite">' : '>');
-      echo "<div id='content'>\n";
+      echo $this->twig->render('header.php', $viewdata);
     }
     /**
 
@@ -179,7 +178,6 @@
         Display::link_back(TRUE, !$this->menu);
       }
       echo "<!-- end page body div -->";
-
       Display::div_end(); // end of _page_body section
       $this->footer();
     }
@@ -197,7 +195,6 @@
       if ($this->header && $this->menu) {
         Sidemenu::render();
       }
-
       if (AJAX_REFERRER) {
         JS::render();
         return;
@@ -213,7 +210,6 @@
     protected function menu_footer()
     {
       echo "<!-- end wrapper div-->";
-
       echo "</div>"; //end wrapper div
       if ($this->menu && !AJAX_REFERRER) {
         echo "<div id='footer'>\n";
@@ -227,7 +223,6 @@
         $this->display_loaded();
       }
       echo "<!-- end footer div-->";
-
       echo "</div>\n"; //end footer div
     }
     /**
@@ -251,7 +246,7 @@
       $this->css += class_exists('Config', FALSE) ? \Config::get('assets.css') : array('default.css');
       $path = DS . "themes" . DS . $this->theme . DS;
       $css  = implode(',', $this->css);
-      echo "<link href='{$path}{$css}' rel='stylesheet'> \n";
+      return "<link href='{$path}{$css}' rel='stylesheet'> \n";
     }
     /**
      * @static
@@ -307,7 +302,7 @@
     public static function simple_mode($numeric_id = TRUE)
     {
       $default     = $numeric_id ? -1 : '';
-      $selected_id = Input::post('selected_id',null,$default);
+      $selected_id = Input::post('selected_id', null, $default);
       foreach (array(ADD_ITEM, UPDATE_ITEM, MODE_RESET, MODE_CLONE) as $m) {
         if (isset($_POST[$m])) {
           Ajax::i()->activate('_page_body');
