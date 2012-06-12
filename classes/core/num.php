@@ -38,7 +38,7 @@
     /**
 
      */
-    protected function __construct()
+    public function __construct()
     {
       static::$price_dec   = \User::prefs()->price_dec();
       static::$tho_sep     = \User::tho_sep();
@@ -56,7 +56,6 @@
     public static function  price_format($number)
     {
       static::i();
-
       return static::format(static::round($number, static::$price_dec + 2), static::$price_dec);
     }
     /**
@@ -67,10 +66,10 @@
      *
      * @return int|string
      */
-    public static function  price_decimal($number, &$dec)
+    public static function  price_decimal($number, $dec = null)
     {
       static::i();
-      $dec = static::$price_dec;
+      $dec = $dec ? : static::$price_dec;
       $str = strval($number);
       $pos = strpos($str, '.');
       if ($pos !== false) {
@@ -79,7 +78,6 @@
           $dec = $len;
         }
       }
-
       return Num::format($number, $dec);
     }
     /**

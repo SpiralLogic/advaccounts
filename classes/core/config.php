@@ -8,16 +8,14 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
-  /**
+    /**
 
-   */
-  class Config_Exception extends \Exception
-  {
-  }
+     */
 
   /**
    * @method get($var, $default = false)
    * @method removeAll()
+   * @method Config i();
    */
   class Config
   {
@@ -116,7 +114,7 @@
     /**
 
      */
-    protected function __construct()
+    public function __construct(Cachable $cache = null)
     {
       if (isset($_GET['reload_config'])) {
         Cache::delete('config');
@@ -151,7 +149,7 @@
         return true;
       }
       if (!file_exists($file)) {
-        throw new Config_Exception("There is no file for config: " . $file);
+        throw new \RuntimeException("There is no file for config: " . $file);
       }
       /** @noinspection PhpIncludeInspection */
       $this->_vars[$group_name] = include($file);

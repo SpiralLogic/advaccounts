@@ -115,11 +115,12 @@
       if (!headers_sent()) {
         header("Content-type: text/html; charset={$this->encoding}");
       }
-      $viewdata['class']      = (is_object($this->sel_app) ? "class='" . strtolower($this->sel_app->id) . "'" : '');
-      $viewdata['lang_dir']   = $this->lang_dir;
-      $viewdata['title']      = $this->title;
-      $viewdata['body_class'] = !$this->menu ? ' class="lite"' : '';
-      $viewdata['stylesheets']        = $this->renderCSS();
+      $viewdata['class']       = (is_object($this->sel_app) ? strtolower($this->sel_app->id) : '');
+      $viewdata['lang_dir']    = $this->lang_dir;
+      $viewdata['title']       = $this->title;
+      $viewdata['body_class']  = !$this->menu ? 'lite' : '';
+      $viewdata['encoding']    = $_SESSION['Language']->encoding;
+      $viewdata['stylesheets'] = $this->renderCSS();
       if (class_exists('JS', FALSE)) {
         $viewdata['scripts'] = JS::renderHeader();
       }
@@ -246,7 +247,7 @@
       $this->css += class_exists('Config', FALSE) ? \Config::get('assets.css') : array('default.css');
       $path = DS . "themes" . DS . $this->theme . DS;
       $css  = implode(',', $this->css);
-      return [$path.$css];
+      return [$path . $css];
     }
     /**
      * @static
