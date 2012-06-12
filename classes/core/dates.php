@@ -34,8 +34,8 @@
     public function __construct()
     {
       $this->formats    = Config::get('date.formats');
-      $this->sep        = Config::get('date.separators')[Config::get('date.ui_separator')];
       $this->seperators = Config::get('date.separators');
+      $this->sep = $this->seperators[Config::get('date.ui_separator')];
     }
     /**
      * @static
@@ -279,7 +279,7 @@
       if (!$date_) {
         return '';
       }
-      $how = \User::date_format();
+      $how   = \User::date_format();
       $sep   = $this->seps[\User::date_sep()];
       $date_ = trim($date_);
       /** @noinspection PhpUnusedLocalVariableInspection */

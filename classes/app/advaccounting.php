@@ -43,7 +43,6 @@
      */
     public function __construct()
     {
-      $this->session = Session::i();
       $extensions    = Config::get('extensions.installed');
       $this->menu    = new Menu(_("Main Menu"));
       $this->menu->add_item(_("Main Menu"), "index.php");
@@ -58,7 +57,7 @@
           $ext = 'Apps_' . $ext['name'];
           $this->add_application(new $ext());
         }
-        $this->session->get_text->add_domain(Language::i()->code, LANG_PATH);
+        Session::i()->get_text->add_domain(Language::i()->code, LANG_PATH);
       }
       $this->add_application(new Apps_System());
       $this->get_selected();
@@ -185,7 +184,7 @@
       echo _("If you are not an authorized user, please contact your system administrator to obtain an account to enable you to use the system.");
       echo "<br><a href='/index.php'>" . _("Try again") . "</a>";
       echo "</div>";
-      $this->session->kill();
+      Session::i()->kill();
       die();
     }
     /**
@@ -265,7 +264,7 @@
     }
     protected function checkLogin()
     {
-      if (!$this->session->checkUserAgent()) {
+      if (!Session::i()->checkUserAgent()) {
         $this->showLogin();
       }
       static::$user = User::i();
@@ -296,7 +295,7 @@
           Page::error_exit('Could not connect to database!');
         }
         static::$user->ui_mode = $_POST['ui_mode'];
-        $this->session->regenerate();
+        Session::i()->regenerate();
         Language::i()->set_language($_SESSION['Language']->code);
       }
     }
