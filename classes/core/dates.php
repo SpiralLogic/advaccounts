@@ -26,16 +26,19 @@
 
     protected $sep = null;
     protected $formats = null;
-    protected $seps = null;
     protected $seperators = null;
+    protected $session = null;
     /**
 
      */
-    public function __construct()
+    public function __construct($config = null, $user = null, $session = null)
     {
-      $this->formats    = Config::get('date.formats');
-      $this->seperators = Config::get('date.separators');
-      $this->sep = $this->seperators[Config::get('date.ui_separator')];
+      $this->config     = $config ? : Config::i();
+      $this->user       = $user ? : \User::i();
+      $this->session    = $session ? : \Session::i();
+      $this->formats    = $this->config->get('date.formats');
+      $this->seperators = $this->config->get('date.separators');
+      $this->sep        = $this->seperators[$this->config->get('date.ui_separator')];
     }
     /**
      * @static
@@ -49,7 +52,7 @@
      */
     public function ___date($year, $month, $day, $format = null)
     {
-      $how  = $this->formats [($format !== null) ? $format : \User::date_format()];
+      $how  = $this->formats [($format !== null) ? $format : $this->user->date_format()];
       $date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
       $how  = str_replace('/', $this->sep, $how);
       return date($how, $date);
@@ -68,7 +71,7 @@
       if ($date == null || $date == "") {
         return false;
       }
-      $how  = ($format !== null) ? $format : \User::date_format();
+      $how  = ($format !== null) ? $format : $this->user->date_format();
       $date = str_replace($this->seperators, '/', trim($date));
       if ($how == 0) {
         list($month, $day, $year) = explode('/', $date);
@@ -102,7 +105,7 @@
      */
     public function _now()
     {
-      if (\User::date_format() == 0) {
+      if ($this->user->date_format() == 0) {
         return date("h:i a");
       } else {
         return date("H:i");
@@ -118,12 +121,12 @@
     public function _new_doc_date($date = null)
     {
       if (!$date) {
-        \Session::i()->setGlobal('date', $date);
+        $this->session->setGlobal('date', $date);
       } else {
-        $date = \Session::i()->getGlobal('date');
+        $date = $this->session->getGlobal('date');
       }
-      if (!$date || !\User::sticky_doc_date()) {
-        $date = \Session::i()->setGlobal('date', $this->_today());
+      if (!$date || !$this->user->sticky_doc_date()) {
+        $date = $this->session->setGlobal('date', $this->_today());
       }
       return $date;
     }
@@ -137,7 +140,7 @@
      */
     public function _is_date_in_fiscalyear($date, $convert = false)
     {
-      if (!Config::get('use_fiscalyear')) {
+      if (!$this->config->get('use_fiscalyear')) {
         return 1;
       }
       $myrow = \DB_Company::get_current_fiscalyear();
@@ -212,7 +215,7 @@
     {
       list($day, $month, $year) = $this->_explode_date_to_dmy($date);
       $timet = mktime(0, 0, 0, $month, $day + $days, $year);
-      return date(\User::date_display(), $timet);
+      return date($this->user->date_display(), $timet);
     }
     /**
      * @static
@@ -226,7 +229,7 @@
     {
       list($day, $month, $year) = $this->_explode_date_to_dmy($date);
       $timet = Mktime(0, 0, 0, $month + $months, $day, $year);
-      return date(\User::date_display(), $timet);
+      return date($this->user->date_display(), $timet);
     }
     /**
      * @static
@@ -240,7 +243,7 @@
     {
       list($day, $month, $year) = $this->_explode_date_to_dmy($date);
       $timet = mktime(0, 0, 0, $month, $day, $year + $years);
-      return date(\User::date_display(), $timet);
+      return date($this->user->date_display(), $timet);
     }
     /**
      * @static
@@ -279,12 +282,13 @@
       if (!$date_) {
         return '';
       }
-      $how   = \User::date_format();
-      $sep   = $this->seps[\User::date_sep()];
+      $how   = $this->user->date_format();
+      $sep   = $this->seperators[$this->user->date_sep()];
       $date_ = trim($date_);
       /** @noinspection PhpUnusedLocalVariableInspection */
       $year = $month = $day = 0;
       // Split up the date by the separator based on "how" to split it
+
       if ($how == 0) // MMDDYYYY
       {
         $date_ = str_replace($sep, '/', $date_);
@@ -380,11 +384,11 @@
     {
       $date = $this->_date2sql($date);
       if ($date == "") {
-        $disp = \User::date_display();
+        $disp = $this->user->date_display();
         throw new \Adv_Exception("Dates must be entered in the format $disp. Sent was $date");
       }
       list($year, $month, $day) = explode("-", $date);
-      return array($day, $month, $year);
+      return [$day, $month, $year];
     }
     /**
      * @static

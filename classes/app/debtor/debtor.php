@@ -90,7 +90,7 @@
      */
     public function __construct($id = null)
     {
-      $this->debtor_id        =& $this->id;
+      $this->debtor_id =& $this->id;
       parent::__construct($id);
       $this->debtor_ref = substr($this->name, 0, 60);
     }
@@ -224,11 +224,13 @@
           unset($this->branches[0]);
         }
       }
-      $contacts = $this->contacts;
-      $this->contacts=[];
+      $contacts       = $this->contacts;
+      $this->contacts = [];
       foreach ($contacts as $contact) {
-        $wasnew = $contact->save(array('parent_id' => (int)$this->id));
-        if ($wasnew) $this->contacts[] = $contact;
+        $wasnew = $contact->save(array('parent_id' => (int) $this->id));
+        if ($wasnew) {
+          $this->contacts[] = $contact;
+        }
       }
 
       return $this->_setDefaults();
@@ -368,12 +370,13 @@
      */
     protected function _getContacts()
     {
-      DB::select()->from('contacts')->where('parent_id=', $this->id)->and_where('parent_type =', CT_CUSTOMER)->orderby('name ASC');
+      DB::select()->from('contacts')->where('parent_id=', $this->id)->and_where('parent_type =', CT_CUSTOMER)
+        ->orderby('name ASC');
       $contacts = DB::fetch()->asClassLate('Contact', array(CT_CUSTOMER));
       if (count($contacts)) {
         foreach ($contacts as $contact) {
-                  $this->contacts[] = $contact;
-                }
+          $this->contacts[] = $contact;
+        }
         $this->defaultContact = reset($this->contacts)->id;
       }
     }
@@ -405,8 +408,8 @@
       $this->_getContacts();
       $this->discount         = $this->discount * 100;
       $this->payment_discount = $this->payment_discount * 100;
-      $this->credit_limit     = Num::price_format($this->credit_limit);      $this->_setDefaults();
-
+      $this->credit_limit     = Num::price_format($this->credit_limit);
+      $this->_setDefaults();
     }
     /**
      * @return void
@@ -415,7 +418,7 @@
     {
       $this->defaultBranch  = reset($this->branches)->branch_id;
       $this->defaultContact = count($this->contacts) ? reset($this->contacts)->id : 0;
-      $this->contacts[]    = new Contact(CT_CUSTOMER, array('parent_id' => $this->id));
+      $this->contacts[]     = new Contact(CT_CUSTOMER, array('parent_id' => $this->id));
     }
     /**
      * @static
@@ -748,21 +751,21 @@ JS;
       $mode = DB_Company::get_pref('no_customer_list');
 
       return Form::selectBox($name, $selected_id, $sql, 'debtor_id', 'name', array(
-                                                                             'format'        => '_format_add_curr',
-                                                                             'order'         => array('debtor_ref'),
-                                                                             'search_box'    => $mode != 0,
-                                                                             'type'          => 1,
-                                                                             'size'          => 20,
-                                                                             'spec_option'   => $spec_option === true ?
-                                                                               _("All Customers") : $spec_option,
-                                                                             'spec_id'       => ALL_TEXT,
-                                                                             'select_submit' => $submit_on_change,
-                                                                             'async'         => $async,
-                                                                             'sel_hint'      => $mode ?
-                                                                               _('Press Space tab to filter by name fragment; F2 - entry new customer') :
-                                                                               _('Select customer'),
-                                                                             'show_inactive' => $show_inactive
-                                                                        ));
+                                                                                  'format'        => '_format_add_curr',
+                                                                                  'order'         => array('debtor_ref'),
+                                                                                  'search_box'    => $mode != 0,
+                                                                                  'type'          => 1,
+                                                                                  'size'          => 20,
+                                                                                  'spec_option'   => $spec_option === true ?
+                                                                                    _("All Customers") : $spec_option,
+                                                                                  'spec_id'       => ALL_TEXT,
+                                                                                  'select_submit' => $submit_on_change,
+                                                                                  'async'         => $async,
+                                                                                  'sel_hint'      => $mode ?
+                                                                                    _('Press Space tab to filter by name fragment; F2 - entry new customer') :
+                                                                                    _('Select customer'),
+                                                                                  'show_inactive' => $show_inactive
+                                                                             ));
     }
     /**
      * @static

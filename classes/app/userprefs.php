@@ -42,7 +42,7 @@
     /**
      * @var Array|mixed
      */
-    public $date_format=1;
+    public $date_format = 1;
     /**
      * @var Array|mixed
      */

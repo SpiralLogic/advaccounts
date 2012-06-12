@@ -25,7 +25,7 @@
       ), array(
         'code'     => 'en_US', //
         'name'     => 'English', //
-        'encoding' => 'utf-8' //
+        'encoding' => 'UTF-8' //
       )
     )
   );

@@ -74,6 +74,9 @@
       $this->_setTextSupport();
       Language::set();
       $this->_session = &$_SESSION;
+      if (!isset($this->_session['globals'])) {
+        $this->_session['globals'] = [];
+      }
       // Ajax communication object
       (!class_exists('Ajax'))  or Ajax::i();
     }
@@ -137,7 +140,9 @@
     public function _setGlobal($var, $value = null)
     {
       if ($value === null) {
-        unset($_SESSION['globals'][$var]);
+        if (isset($_SESSION['globals'][$var])) {
+          unset($_SESSION['globals'][$var]);
+        }
         return null;
       }
       $_SESSION['globals'][$var] = $value;

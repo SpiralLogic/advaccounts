@@ -50,7 +50,7 @@
    * @method define_constants($name, $constants)
    * @method delete($key)
    */
-  class Cache
+  class Cache implements Cachable
   {
     use Traits\StaticAccess;
 
