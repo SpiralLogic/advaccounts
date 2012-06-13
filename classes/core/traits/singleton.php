@@ -7,12 +7,11 @@
    * To change this template use File | Settings | File Templates.
    */
   namespace ADV\Core\Traits;
-
   /**
 
    */
-  trait Singleton {
-
+  trait Singleton
+  {
     /**
      * @var null
      */
@@ -21,8 +20,17 @@
      * @static
      * @return
      */
-    public static function i() {
-      (static::$i === NULL) and  static::$i = new static;
-      return static::$i;
+    public static function i()
+    {
+      global $dic;
+      if (static::$i === NULL) {
+        $class_name = $class = get_called_class();
+        if ($lastNsPos = strripos($class, '\\')) {
+          $class_name = substr($class, $lastNsPos + 1);
+        }
+        $dic[$class_name] = $dic->share(function() use ($class) { return new $class; });
+        static::$i = $class_name;
+      }
+      return $dic[static::$i];
     }
   }

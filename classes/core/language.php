@@ -56,12 +56,18 @@
      * @param        $encoding
      * @param string $dir
      */
-    public function __construct($name, $code, $encoding, $dir = 'ltr')
+    public function __construct($name = null, $code = null, $encoding = null, $dir = 'ltr')
     {
-      $this->name     = $name;
-      $this->code     = $code ? $code : 'en_US';
-      $this->encoding = $encoding;
-      $this->dir      = $dir;
+      $l              = Arr::search_value(Config::get('default.lang'), Config::get('languages.installed'), 'code');
+      $this->name     = $name ? : $l['name'];
+      $this->code     = $code ? : $l['code'] ? : 'en_US';
+      $this->encoding = $encoding ? : $l['encoding'];
+      $this->dir      = isset($l['rtl']) ? 'rtl' : 'ltr';
+      $this->set_language($this->code);
+      if (file_exists(DOCROOT . "lang/" . $this->code . "/locale.php")) {
+        /** @noinspection PhpIncludeInspection */
+        include(DOCROOT . "lang/" . $this->code . "/locale.php");
+      }
     }
     /**
      * @param $code
@@ -94,18 +100,6 @@
      */
     public static function set()
     {
-      if (!isset($_SESSION['Language']) || !method_exists($_SESSION['Language'], 'set_language')) {
-        $l         = Arr::search_value(Config::get('default.lang'), Config::get('languages.installed'), 'code');
-        static::$i = new Language($l['name'], $l['code'], $l['encoding'], isset($l['rtl']) ? 'rtl' : 'ltr');
-        static::$i->set_language(static::$i->code);
-        if (file_exists(DOCROOT . "lang/" . static::$i->code . "/locale.php")) {
-          /** @noinspection PhpIncludeInspection */
-          include(DOCROOT . "lang/" . static::$i->code . "/locale.php");
-        }
-        $_SESSION['Language'] = static::$i;
-      } else {
-        static::$i = $_SESSION['Language'];
-      }
     }
   }
 
@@ -121,7 +115,6 @@
       if ($retVal == "") {
         return $text;
       }
-
       return $retVal;
     }
   }

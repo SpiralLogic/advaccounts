@@ -36,6 +36,7 @@
      * @var array
      */
     public $loaded = array();
+    static $i;
     /**
      * @static
 
@@ -43,20 +44,8 @@
     public static function i()
     {
       class_alias(__CLASS__, 'Autoloader');
-      $autoloader=new self;
+      static::$i=$autoloader=new self;
       spl_autoload_register(array($autoloader,'load'), true);
-      $cachedClasses = \ADV\Core\Cache::get('autoload', array());
-      if ($cachedClasses) {
-        $autoloader->global_classes = $cachedClasses['global_classes'];
-        $autoloader->classes        = $cachedClasses['classes'];
-        $autoloader->loaded         = $cachedClasses['paths'];
-      } else {
-        $core = include(DOCROOT . 'config' . DS . 'core.php');
-        $autoloader->import_namespaces((array) $core);
-        $vendor= include(DOCROOT . 'config' . DS . 'vendor.php');
-        $autoloader->add_classes((array) $vendor, VENDORPATH);
-      }
-      spl_autoload_register(array($autoloader,'loadFromCache'), true, true);
 
     }
     /**
@@ -66,6 +55,21 @@
 
     }
 
+public static function loadCache() {
+  $cachedClasses = \ADV\Core\Cache::get('autoload', array());
+  if ($cachedClasses) {
+    static::$i->global_classes = $cachedClasses['global_classes'];
+    static::$i->classes        = $cachedClasses['classes'];
+    static::$i->loaded         = $cachedClasses['paths'];
+  } else {
+    $core = include(DOCROOT . 'config' . DS . 'core.php');
+    static::$i->import_namespaces((array) $core);
+    $vendor= include(DOCROOT . 'config' . DS . 'vendor.php');
+    static::$i->add_classes((array) $vendor, VENDORPATH);
+  }
+  spl_autoload_register(array(static::$i,'loadFromCache'), true, true);
+
+}
     /**
      * @static
      *

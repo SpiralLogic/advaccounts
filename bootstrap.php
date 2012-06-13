@@ -12,14 +12,14 @@
   } elseif (strpos($_SERVER['HTTP_HOST'], 'advaccounts') !== false) {
     header('Location: http://advanced.advancedgroup.com.au' . $_SERVER['REQUEST_URI']);
   }
- if (extension_loaded('xhprof')) {
+  if (extension_loaded('xhprof')) {
     $XHPROF_ROOT = realpath(dirname(__FILE__) . '/xhprof');
     include_once $XHPROF_ROOT . "/xhprof_lib/config.php";
     include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
     include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
-   /** @noinspection PhpUndefinedFunctionInspection */
-   /** @noinspection PhpUndefinedConstantInspection */
-   xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
+    /** @noinspection PhpUndefinedFunctionInspection */
+    /** @noinspection PhpUndefinedConstantInspection */
+    xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
   }
   error_reporting(-1);
   ini_set('display_errors', 1);
@@ -38,12 +38,13 @@
   define('IS_JSON_REQUEST', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false));
   define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
   define('CRLF', chr(13) . chr(10));
-  set_error_handler(function ($severity, $message, $filepath, $line) {
+  set_error_handler(function ($severity, $message, $filepath, $line)
+  {
     class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'errors.php';
-
     return ADV\Core\Errors::handler($severity, $message, $filepath, $line);
   });
-  set_exception_handler(function (\Exception $e) {
+  set_exception_handler(function (\Exception $e)
+  {
     class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'errors.php';
     ADV\Core\Errors::exception_handler($e);
   });
@@ -58,7 +59,8 @@
       function e($string)
       { return Security::htmlentities($string); }
     }
-    register_shutdown_function(function () {
+    register_shutdown_function(function ()
+    {
       ADV\Core\Event::shutdown();
     });
     if (!function_exists('adv_ob_flush_handler')) {
@@ -73,7 +75,10 @@
         return (Ajax::i()->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
       }
     }
-    Cache::define_constants('defines', function() {
+    $dic = new \ADV\Core\DIC();
+    \ADV\Core\Autoloader::loadCache();
+    Cache::define_constants('defines', function()
+    {
       return include(DOCROOT . 'config' . DS . 'defines.php');
     });
     include(DOCROOT . 'config' . DS . 'types.php');
@@ -81,11 +86,12 @@
     Session::i();
     Ajax::i();
     Config::i();
-  ob_start('adv_ob_flush_handler', 0);
-   ADVAccounting::i();
+    ob_start('adv_ob_flush_handler', 0);
+    ADVAccounting::i($dic['Config'],$dic['Session'],$dic['Cache']);
   }
- if (extension_loaded('xhprof') &&substr_compare($_SERVER['DOCUMENT_URI'], '/profile/', 0, 9, true) !== 0 ) {
-    register_shutdown_function(function() {
+  if (extension_loaded('xhprof') && substr_compare($_SERVER['DOCUMENT_URI'], '/profile/', 0, 9, true) !== 0) {
+    register_shutdown_function(function()
+    {
       $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
       /** @noinspection PhpUndefinedFunctionInspection */
       $xhprof_data = xhprof_disable();
@@ -96,7 +102,7 @@
     });
   }
   if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
-    new Assets();
+    new \ADV\Core\Assets();
   } else {
     $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
     $index      = $controller == $_SERVER['SCRIPT_NAME'];
@@ -109,7 +115,7 @@
       if (file_exists($controller)) {
         include($controller);
       } else {
-        $show404 =      true;
+        $show404 = true;
       }
     }
     if ($show404) {

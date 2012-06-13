@@ -72,7 +72,7 @@
       }
       header("Cache-control: private");
       $this->_setTextSupport();
-      Language::set();
+      $_SESSION['Language']=new Language();
       $this->_session = &$_SESSION;
       if (!isset($this->_session['globals'])) {
         $this->_session['globals'] = [];

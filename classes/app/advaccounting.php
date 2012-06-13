@@ -41,13 +41,13 @@
     /**
 
      */
-    public function __construct()
+    public function __construct($config,$session)
     {
-      $extensions    = Config::get('extensions.installed');
+      $extensions    = $config->_get('extensions.installed');
       $this->menu    = new Menu(_("Main Menu"));
       $this->menu->add_item(_("Main Menu"), "index.php");
       $this->menu->add_item(_("Logout"), "/account/access/logout.php");
-      $apps = Config::get('apps.active');
+      $apps = $config->_get('apps.active');
       foreach ($apps as $app) {
         $app = 'Apps_' . $app;
         $this->add_application(new $app());
@@ -57,7 +57,7 @@
           $ext = 'Apps_' . $ext['name'];
           $this->add_application(new $ext());
         }
-        Session::i()->get_text->add_domain(Language::i()->code, LANG_PATH);
+        $session->get_text->add_domain(Language::i()->code, LANG_PATH);
       }
       $this->add_application(new Apps_System());
       $this->get_selected();
@@ -128,10 +128,10 @@
      * @static
      * @return ADVAccounting
      */
-    public static function i()
+    public static function i(Config $config=null,Session $session=null,Cache $cache=null)
     {
       if (static::$i === false) {
-        static::init();
+        static::init($config,$session,$cache);
       }
 
       return static::$i;
@@ -140,21 +140,21 @@
      * @static
      * @return \ADVAccounting|bool
      */
-    public static function init()
+    protected static function init($config,$session,$cache)
     {
       array_walk($_POST, function(&$v)
       {
         $v = is_string($v) ? trim($v) : $v;
       });
       require APPPATH . "main.php";
-      $modules = Config::get_all('modules', array());
-      foreach ($modules as $module => $config) {
+      $modules = $config->_get_all('modules', array());
+      foreach ($modules as $module => $module_config) {
         $module = '\\Modules\\' . $module;
-        new $module($config);
+        new $module($module_config);
       }
-      static::$i = Cache::get('App');
+      static::$i = $cache->_get('App');
       if (static::$i === false) {
-        static::refresh();
+        static::refresh($config,$session,$cache);
       }
       if (!static::$i->buildversion) {
         is_readable(DOCROOT . 'version') and define('BUILD_VERSION', file_get_contents(DOCROOT . 'version', null, null, null, 6));
@@ -316,9 +316,9 @@
       }
       exit();
     }
-    public static function refresh()
+    public static function refresh($config,$session,$cache)
     {
-      static::$i = Cache::set('App', new static());
+      static::$i = $cache->_set('App', new static($config,$session,$cache));
     }
   }
 
