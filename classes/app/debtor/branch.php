@@ -231,14 +231,14 @@
      *
      * @return array|bool|null
      */
-    protected function _read($params = false)
+    protected function _read($id = null, $extra = array())
     {
-      if (!$params) {
+      if (!$id) {
         return $this->_status(false, 'read', 'No Branch parameters provided');
       }
       $this->_defaults();
-      if (!is_array($params)) {
-        $params = array('branch_id' => $params);
+      if (!is_array($id)) {
+        $id = array('branch_id' => $id);
       }
       $sql = DB::select('b.*', 'a.description', 's.salesman_name', 't.name AS tax_group_name')
         ->from('branches b, debtors c, areas a, salesman s, tax_groups t')->where(array(
@@ -247,7 +247,7 @@
                                                                                        'b.area=a.area_code',
                                                                                        'b.salesman=s.salesman_code'
                                                                                   ));
-      foreach ($params as $key => $value) {
+      foreach ($id as $key => $value) {
         $sql->where("b.$key=", $value);
       }
       DB::fetch()->intoClass($this);

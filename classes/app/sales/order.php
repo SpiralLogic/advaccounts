@@ -1162,7 +1162,7 @@
         $line_discount = round($stock_item->qty_dispatched * $stock_item->price, User::price_dec()) - $line_total;
         $qoh_msg       = '';
         if (!$editable_items || $id != $line_no) {
-          $rowclass = '';
+          $row_class = '';
           if (!DB_Company::get_pref('allow_negative_stock') && Item::is_inventory_item($stock_item->stock_id)) {
             $qoh = Item::get_qoh_on_date($stock_item->stock_id, $_POST['location'], $_POST['OrderDate']);
             if ($stock_item->qty_dispatched > $qoh) {
@@ -1207,7 +1207,7 @@
       Table::foot();
       Row::start();
       Cell::label(_("Shipping Charge"), "colspan=$colspan class='right'");
-      Form::amountCellsSmall(null, 'freight_cost', Num::price_format(Input::post('freight_cost',null, 0)));
+      Form::amountCellsSmall(null, 'freight_cost', Num::price_format(Input::post('freight_cost', null, 0)));
       Cell::label('', 'colspan=2');
       Row::end();
       $display_sub_total = Num::price_format($total + Validation::input_num('freight_cost'));
@@ -1268,12 +1268,12 @@
       } else {
         //Debtor::row(_("Customer:"), 'customer_id', null, false, true, false, true);
         Debtor::newselect();
-        if ($this->customer_id != Input::post('customer_id',null, -1)) {
+        if ($this->customer_id != Input::post('customer_id', null, -1)) {
           // customer has changed
           Ajax::i()->activate('_page_body');
         }
         Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true, true);
-        if (($this->Branch != Input::post('branch_id',null, -1))) {
+        if (($this->Branch != Input::post('branch_id', null, -1))) {
           if (!isset($_POST['branch_id']) || $_POST['branch_id'] == "") {
             // ignore errors on customer search box call
             if ($_POST['customer_id'] == '') {
@@ -1481,7 +1481,7 @@
     public function display_delivery_details()
     {
       Display::div_start('delivery');
-      if (Input::post('cash',null, 0)) { // Direct payment sale
+      if (Input::post('cash', null, 0)) { // Direct payment sale
         Ajax::i()->activate('items_table');
         Display::heading(_('Cash payment'));
         Table::start('tablestyle2 width60');

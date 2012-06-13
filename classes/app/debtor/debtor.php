@@ -398,7 +398,7 @@
      *
      * @return array|bool
      */
-    protected function _read($id = false)
+    protected function _read($id = null, $extra = array())
     {
       if (!parent::_read($id)) {
         return $this->_status->get();

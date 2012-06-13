@@ -141,7 +141,7 @@
      */
     public $ref = '';
     /**
-     * @var array
+     * @var Contact[]
      */
     public $contacts = array();
     /**
@@ -220,6 +220,8 @@
         foreach ($changes['contacts'] as $id => $contact) {
           $this->contacts[] = new Contact(CT_SUPPLIER, $contact);
         }
+      } else {
+        $this->contacts = [];
       }
       $this->discount     = User::numeric($this->discount) / 100;
       $this->ref          = substr($this->name, 0, 29);

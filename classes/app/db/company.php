@@ -285,8 +285,9 @@
      *
      * @return bool|void
      */
-    protected function _read($id = 0)
+    protected function _read($id = null, $extra = array())
     {
+      $id     = $id ? : 0;
       $result = DB::select()->from('company')->where('coy_code=', $id)->fetch()->intoObject($this);
     }
     /**
