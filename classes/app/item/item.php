@@ -139,8 +139,9 @@
      *
      * @return bool|void
      */
-    protected function _read($id = 0)
+    protected function _read($id = null, $extra = array())
     {
+      $id = $id ? : 0;
       if (!is_numeric($id)) {
         $stockid = static::getStockID((string) $id);
         if ($stockid) {

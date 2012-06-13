@@ -41,7 +41,7 @@
     {
       static::$shutdown_events_id = 'shutdown.events.' . User::i()->username;
       $shutdown_events            = Cache::get(static::$shutdown_events_id);
-
+      Cache::delete(static::$shutdown_events_id);
       if ($shutdown_events) {
 
         while ($msg = array_pop($shutdown_events)) {
@@ -58,7 +58,8 @@
      */
     public static function error($message, $log = true)
     {
-      return static::handle($message, reset(debug_backtrace()), E_USER_ERROR, $log);
+      $backtrace = debug_backtrace();
+      return static::handle($message, reset($backtrace), E_USER_ERROR, $log);
     }
     /**
      * @static
@@ -69,7 +70,8 @@
      */
     public static function notice($message, $log = true)
     {
-      return static::handle($message, reset(debug_backtrace()), E_USER_NOTICE, $log);
+      $backtrace = debug_backtrace();
+      return static::handle($message, reset($backtrace), E_USER_NOTICE, $log);
     }
     /**
      * @static
@@ -80,7 +82,8 @@
      */
     public static function success($message, $log = true)
     {
-      return static::handle($message, reset(debug_backtrace()), E_SUCCESS, $log);
+      $backtrace = debug_backtrace();
+      return static::handle($message, reset($backtrace), E_SUCCESS, $log);
     }
     /**
      * @static
@@ -91,7 +94,8 @@
      */
     public static function warning($message, $log = true)
     {
-      return static::handle($message, reset(debug_backtrace()), E_USER_WARNING, $log);
+      $backtrace = debug_backtrace();
+      return static::handle($message, reset($backtrace), E_USER_WARNING, $log);
     }
     /**
      * @static

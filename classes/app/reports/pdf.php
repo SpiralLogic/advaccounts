@@ -424,7 +424,7 @@
           $this->Text($titleCol, $str, $companyCol);
         }
       }
-      if ($this->params[0] != '') { // Comments
+      if (isset($this->params[0]) && $this->params[0] != '') { // Comments
         $this->NewLine();
         $str = _("Comments") . ':';
         $this->Text($this->leftMargin, $str, $titleCol);
@@ -486,7 +486,7 @@
       }
       include(REPORTS_PATH . 'includes' . DS . 'header.php');
       // }
-      $this->row = $temp;
+      $this->row = isset($temp) ? $temp : $this->row;
     }
     // Alternate header style which also supports a simple footer
     public function Header3()
