@@ -230,7 +230,9 @@ if (trigger.tagName === 'BUTTON') {
 			 }
 			 // Write errors to the debug div.
 			 if (errors) {Adv.showStatus({html: errors});}
-			 Adv.loader.off();
+			if (Adv.loader) {
+        Adv.loader.off();
+      }
 
 			 Behaviour.apply();
 			 if (errors.length > 0)
