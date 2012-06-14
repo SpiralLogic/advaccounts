@@ -105,6 +105,7 @@
     $_POST['price']         = Num::price_format($myrow["price"]);
   }
   Form::hidden('selected_id', $selected_id);
+  Form::hidden('stock_id');
   Display::div_start('price_details');
   Table::start('tableinfo');
   GL_Currency::row(_("Currency:"), 'curr_abrev', null, true);
