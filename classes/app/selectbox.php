@@ -301,7 +301,7 @@
       }
       Ajax::i()->addUpdate($this->name, "_{$this->name}_sel", $selector);
       // span for select list/input field update
-      $selector = "<span id='_{$this->name}_sel'>" . $selector . "</span>\n";
+      $selector = "<div id='_{$this->name}_sel' class='combodiv'>" . $selector . "</div>\n";
       // if selectable or editable list is used - add select button
       if ($select_submit != false || $search_button) {
         $_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url(/themes/%s/images/button_ok.png) no-repeat;%s' data-aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> "; // button class selects form reload/ajax selector update

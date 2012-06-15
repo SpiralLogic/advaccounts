@@ -38,6 +38,7 @@
       if ($changes !== null) {
         $this->setFromArray($changes);
       }
+
       if (!$this->_canProcess()) {
         return false;
       }

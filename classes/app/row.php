@@ -17,17 +17,17 @@
      * @param int    $leftfill
      * @param null   $id
      */
-    public static function label($label, $value, $params = "", $params2 = "", $leftfill = 0, $id = null)
+    public static function label($label, $value, $label_cell_params= "", $params2 = "", $leftfill = 0, $id = null)
     {
       echo "<tr>";
-      if ($params == "") {
+      if ($label_cell_params == "") {
         echo "<td class='label'>$label</td>";
         $label = null;
-      } elseif (stristr($params, 'class')) {
-        echo "<td $params>$label</td>";
+      } elseif (stristr($label_cell_params, 'class')) {
+        echo "<td $label_cell_params>$label</td>";
         $label = null;
       }
-      Cell::labels($label, $value, $params, $params2, $id);
+      Cell::labels($label, $value, $label_cell_params, $params2, $id);
       if ($leftfill != 0) {
         echo "<td colspan=$leftfill></td>";
       }

@@ -152,10 +152,11 @@
     }
     protected function checkBranch()
     {
+
       if (Form::isListUpdated('branch_id')) {
         // when branch is selected via external editor also customer can change
         $br                   = Sales_Branch::get(Input::post('branch_id'));
-        $_POST['customer_id'] = $br['debtor_no'];
+        $_POST['customer_id'] = $br['debtor_id'];
         $this->ajax->activate('customer_id');
       }
     }

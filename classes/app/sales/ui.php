@@ -38,8 +38,9 @@
      */
     public static function  persons_cells($label, $name, $selected_id = null, $spec_opt = false)
     {
+
       if ($label != null) {
-        echo "<td>$label</td>\n";
+        echo "<td class='label' > <label for=\"$name\"> $label</label></td>";
       }
       echo "<td>\n";
       echo Sales_UI::persons($name, $selected_id, $spec_opt);

@@ -106,6 +106,7 @@
           $attrs .= ' ' . $key;
           continue;
         }
+        if (is_null($value))continue;
         if ($key == 'input') {
           $value = \Form::prep_value($value);
         }

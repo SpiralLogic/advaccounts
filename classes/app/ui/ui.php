@@ -83,34 +83,27 @@
         'url'      => false, //
         'nodiv'    => false, //
         'label'    => false, //
-        'size'     => 30, //
-        'name'     => false, //
-        'set'      => false, //
-        'value'    => false, //
-        'focus'    => false, //
-        'callback' => false //
+        'name'     => null, //
+        'set'      => null, //
+        'class'      => 'width95 ', //
+        'value'    => null, //
+        'focus'    => null, //
+        'callback' => false, //
+
       );
       $o   = array_merge($o, $attr);
       $url = ($o['url']) ? $o['url'] : false;
       if (!$o['nodiv']) {
-        HTML::div(array('class' => 'ui-widget'));
+        HTML::div(array('class' => 'ui-widget pad5'));
       }
       if (($o['label'])) {
         HTML::label(null, $o['label'], array('for' => $id), false);
       }
-      $input_attr['size'] = $o['size'];
-      if (($o['name'])) {
+      $input_attr['class'] = $o['class'];
         $input_attr['name'] = $o['name'];
-      }
-      if (($o['set'])) {
         $input_attr['data-set'] = $o['set'];
-      }
-      if (($o['value'])) {
         $input_attr['value'] = htmlentities($o['value']);
-      }
-      if ($o['focus']) {
-        $input_attr['autofocus'] = true;
-      }
+        $input_attr['autofocus'] = $o['focus'];
       $input_attr['type'] = 'search';
       HTML::input($id, $input_attr);
       if (!($o['nodiv'])) {

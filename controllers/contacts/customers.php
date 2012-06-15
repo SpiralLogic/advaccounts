@@ -56,18 +56,18 @@
   $menu = new MenuUI();
   $menu->startTab('Details', 'Customer Details', '#', 'text-align:center');
   HTML::div('companyIDs');
-  HTML::table(array("class" => "marginauto bold"))->tr(true)->td(true);
+  HTML::table(array("class" => "marginauto width80 bold"))->tr(true)->td(true);
   HTML::label(array(
     'for' => 'name', 'content' => 'Customer name:'
   ), false);
   HTML::input('name', array(
-    'value' => $customer->name, 'name' => 'name', 'size' => 50
+    'value' => $customer->name, 'name' => 'name','class'=>'med'
   ));
   HTML::td()->td(array(
-    'content' => _("Customer ID: "), "style" => "width:90px"
+    'content' => _("Customer ID: "),
   ), false)->td(true);
   HTML::input('id', array(
-    'value' => $customer->id, 'name' => 'id', 'size' => 10, 'maxlength' => '7'
+    'value' => $customer->id, 'name' => 'id', 'class'=>'small' ,'maxlength' => '7'
   ));
   HTML::td()->tr->table->div;
   Table::startOuter('tablestyle2');
@@ -79,12 +79,12 @@
   ));
   UI::select('branchList', array_map(function($v) {
     return $v->br_name;
-  }, $customer->branches), array('name' => 'branchList'));
+  }, $customer->branches), array('class'=>'med','name' => 'branchList'));
   UI::button('addBranch', 'Add new address', array(
     'class' => 'invis', 'name' => 'addBranch'
   ));
   HTML::td()->tr;
-   Form::textRow(_("Contact:"), 'branch[contact_name]', $currentBranch->contact_name, 35, 40);
+   Form::textRow(_("Contact:"), 'branch[contact_name]', $currentBranch->contact_name, null, 40);
   //Form::hidden('br_contact_name', $customer->contact_name);
    Form::textRow(_("Phone Number:"), 'branch[phone]', $currentBranch->phone, 35, 30);
    Form::textRow(_("2nd Phone Number:"), 'branch[phone2]', $currentBranch->phone2, 35, 30);
@@ -129,10 +129,10 @@
    Form::percentRow(_("Prompt Payment Discount Percent:"), 'payment_discount', $customer->payment_discount, (User::i()->can_access(SA_CUSTOMER_CREDIT)) ? "" :
     " disabled");
    Form::AmountRow(_("Credit Limit:"), 'credit_limit', $customer->credit_limit, null, null, 0, (User::i()->can_access(SA_CUSTOMER_CREDIT)) ? "" :
-    " disabled");
+    " disabled");   Form::textRow(_("GSTNo:"), 'tax_id', $customer->tax_id, null, 40);
+
   Sales_Type::row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
    Form::recordStatusListRow(_("Customer status:"), 'inactive');
-   Form::textRow(_("GSTNo:"), 'tax_id', $customer->tax_id, 35, 40);
   if (!$customer->id) {
     GL_Currency::row(_("Customer's Currency:"), 'curr_code', $customer->curr_code);
   } else {
@@ -183,7 +183,7 @@
     'content' => _("Website ID: "), "class" => "label"
   ), false)->td(true);
   HTML::input('webid', array(
-    'value' => $customer->webid, 'disabled' => true, 'name' => 'webid', 'size' => 10, 'maxlength' => '7'
+    'value' => $customer->webid, 'disabled' => true, 'name' => 'webid', 'maxlength' => '7'
   ));
   HTML::td()->tr;
   Table::section(2);

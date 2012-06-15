@@ -170,17 +170,17 @@
     }
     Form::hidden("selected_id", $selected_id);
     Form::hidden("loc_code");
-    Row::label(_("Location Code:"), $_POST['loc_code']);
+    Row::label(_("Location Code:"), $_POST['loc_code'],'',' class="margin5"');
   } else { //end of if $selected_id only do the else when a new record is being entered
-     Form::textRow(_("Location Code:"), 'loc_code', null, 5, 5);
+     Form::textRow(_("Location Code:"), 'loc_code', null, 'small', 5);
   }
-   Form::textRowEx(_("Location Name:"), 'location_name', 50, 50);
-   Form::textRowEx(_("Contact for deliveries:"), 'contact', 30, 30);
-   Form::textareaRow(_("Address:"), 'delivery_address', null, 35, 5);
-   Form::textRowEx(_("Telephone No:"), 'phone', 32, 30);
-   Form::textRowEx(_("Secondary Phone Number:"), 'phone2', 32, 30);
-   Form::textRowEx(_("Facsimile No:"), 'fax', 32, 30);
-   Form::emailRowEx(_("E-mail:"), 'email', 30);
+   Form::textRowEx(_("Location Name:"), 'location_name', 'big', 50);
+   Form::textRowEx(_("Contact for deliveries:"), 'contact', 'big', 30);
+   Form::textareaRow(_("Address:"), 'delivery_address', null, 'big', 5);
+   Form::textRowEx(_("Telephone No:"), 'phone', 'big', 30);
+   Form::textRowEx(_("Secondary Phone Number:"), 'phone2', 'big', 30);
+   Form::textRowEx(_("Facsimile No:"), 'fax', 'big', 30);
+   Form::emailRowEx(_("E-mail:"), 'email','big');
   Table::end(1);
   Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Form::end();

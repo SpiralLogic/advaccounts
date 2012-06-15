@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Creditor extends Contact_Company
-  {
+  class Creditor extends \Contact_Company {
+
     /**
      * @static
      *
@@ -39,11 +39,11 @@
     /**
      * @var
      */
-    public $id, $supplier_id; //
+    public $id = 0, $supplier_id; //
     /**
      * @var
      */
-    public $name; //
+    public $name = 'New Supplier'; //
     /**
      * @var
      */
@@ -123,7 +123,7 @@
     /**
      * @var string
      */
-    public $tax_group_id = '';
+    public $tax_group_id;
     /**
      * @var
      */
@@ -139,7 +139,7 @@
     /**
      * @var string
      */
-    public $ref = '';
+    public $supp_ref = '';
     /**
      * @var Contact[]
      */
@@ -178,7 +178,7 @@
       $this->address = &$this->post_address;
       $this->phone2  = &$this->supp_phone;
       parent::__construct($id);
-      $this->ref = substr($this->name, 0, 29);
+      $this->supp_ref = substr($this->name, 0, 29);
     }
     /**
      * @return array
@@ -199,7 +199,9 @@
         return false;
       }
       foreach ($this->contacts as $contact) {
-        $contact->save(array('parent_id' => $this->id));
+        if ($contact instanceof Contact) {
+          $contact->save(array('parent_id' => $this->id));
+        }
       }
       $this->_setDefaults();
       return true;
@@ -264,9 +266,9 @@
       $this->payable_account          = $company_record["creditors_act"];
       $this->purchase_account         = $company_record["default_cogs_act"];
       $this->payment_discount_account = $company_record['pyt_discount_act'];
+      $this->tax_group_id             = 1;
       $this->id                       = 0;
       $this->_setDefaults();
-      return $this->_status(true, 'Initialize', 'Now working with a new customer');
     }
     /**
      * @return bool|Status
@@ -302,12 +304,12 @@
       $customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
       $customerBox->addBeforeClose('$("#supplier_id").trigger("change")');
       $customerBox->setOptions(array(
-                                    'autoOpen'   => false,
-                                    'modal'      => true,
-                                    'width'      => '850',
-                                    'height'     => '715',
-                                    'resizeable' => true
-                               ));
+        'autoOpen'   => false,
+        'modal'      => true,
+        'width'      => '850',
+        'height'     => '715',
+        'resizeable' => true
+      ));
       $customerBox->show();
       $js
         = <<<JS
@@ -321,7 +323,7 @@ JS;
      *
      * @return array|bool
      */
-    protected function _read($id = false)
+    protected function _read($id = false, $extra = array())
     {
       if (!parent::_read($id)) {
         return $this->_status->get();
@@ -478,9 +480,19 @@ JS;
      *
      * @return void
      */
-    public static function newselect($value = null)
+    public static function newselect($value = null, $options = array())
     {
-      echo "<tr><td id='supplier_id_label' class='label pointer'>Supplier: </td><td class='nowrap'>";
+      $o = [
+        'row'        => true,
+        'cell_params'=> '',
+        'rowspan'    => null,
+      ];
+      $o = array_merge($o, $options);
+      if ($o['row']) {
+        echo '<tr>';
+      }
+      $rowspan = $o['rowspan'] ? "rowspan=" . $o['rowspan'] : '';
+      echo "<td id='supplier_id_label' $rowspan class='label pointer'><label for='supplier'>Supplier:</label></td><td $rowspan class='nowrap' " . $o['cell_params'] . ">";
       $focus = false;
       if (!$value && Input::post('supplier')) {
         $value = $_POST['supplier'];
@@ -497,9 +509,13 @@ JS;
       }
       Form::hidden('supplier_id');
       UI::search('supplier', array(
-                                  'url'  => '/contacts/suppliers.php', 'name'  => 'supplier', 'focus' => $focus, 'value' => $value
-                             ));
-      echo "</td>\n</tr>\n";
+        'url'  => '/contacts/suppliers.php', 'name'  => 'supplier', 'focus' => $focus, 'value' => $value,
+      ));
+      echo "</td>\n";
+      if ($o['row']) {
+        echo "</tr>\n";
+      }
+
       JS::beforeload("var Supplier= function(data) {
             var id = document.getElementById('supplier_id');
             id.value= data.id;
@@ -524,20 +540,20 @@ JS;
       $sql  = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
       $mode = DB_Company::get_pref('no_supplier_list');
       return Form::selectBox($name, $selected_id, $sql, 'supplier_id', 'name', array(
-                                                                                    'format'        => '_format_add_curr',
-                                                                                    'order'         => array('supp_ref'),
-                                                                                    'search_box'    => $mode != 0,
-                                                                                    'type'          => 1,
-                                                                                    'spec_option'   => $spec_option === true ?
-                                                                                      _("All Suppliers") : $spec_option,
-                                                                                    'spec_id'       => ALL_TEXT,
-                                                                                    'select_submit' => $submit_on_change,
-                                                                                    'async'         => false,
-                                                                                    'sel_hint'      => $mode ?
-                                                                                      _('Press Space tab to filter by name fragment') :
-                                                                                      _('Select supplier'),
-                                                                                    'show_inactive' => $all
-                                                                               ));
+        'format'        => '_format_add_curr',
+        'order'         => array('supp_ref'),
+        'search_box'    => $mode != 0,
+        'type'          => 1,
+        'spec_option'   => $spec_option === true ?
+          _("All Suppliers") : $spec_option,
+        'spec_id'       => ALL_TEXT,
+        'select_submit' => $submit_on_change,
+        'async'         => false,
+        'sel_hint'      => $mode ?
+          _('Press Space tab to filter by name fragment') :
+          _('Select supplier'),
+        'show_inactive' => $all
+      ));
     }
     /**
      * @static

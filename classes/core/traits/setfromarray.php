@@ -18,12 +18,12 @@
      *
      * @return array|null
      */
-    protected function setFromArray($changes = NULL) {
+    protected function setFromArray($changes = NULL)
+    {
       if (!$changes || !is_array($changes)) {
         return;
       }
       foreach ($changes as $key => $value) {
-
         if (!is_array($value) && !is_object($value)) {
           $value = (trim($value) == NULL) ? '' : trim($value);
         }

@@ -207,7 +207,7 @@
       '') . "$disabled id='$name' name='$name" . ($multi ? '[]' :
       '') . "' class='combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
     Ajax::i()->addUpdate($name, "_{$name}_sel", $selector);
-    $selector = "<span id='_{$name}_sel'>" . $selector . "</span>\n";
+    $selector = "<div id='_{$name}_sel'>" . $selector . "</div>\n";
     if ($select_submit != false) { // if submit on change is used - add select button
       $_select_button
         = "<input %s type='submit' class='combo_select' style='border:0;background:url

@@ -173,7 +173,6 @@
       if (!$selected_id && !isset($_POST[$name])) {
         $selected_id = $all_option === true ? -1 : Config::get('default.location');
       }
-
       return Form::selectBox($name, $selected_id, $sql, 'loc_code', 'location_name', array(
                                                                                      'spec_option'   => $all_option === true ?
                                                                                        _("All Locations") : $all_option,
@@ -192,10 +191,10 @@
      */
     public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false)
     {
-      echo "<td >";
       if ($label != null) {
-        echo "<label for=\"$name\"> $label</label>";
+        echo "<td class='label'><label for=\"$name\"> $label</label></td>";
       }
+echo "<td>";
       echo Inv_Location::select($name, $selected_id, $all_option, $submit_on_change);
       echo "</td>\n";
     }

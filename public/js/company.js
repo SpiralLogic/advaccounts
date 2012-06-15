@@ -451,7 +451,7 @@ $(function ()
       else {
         if (Adv.fieldsChanged === 0) {
           Adv.btnConfirm.hide();
-          Adv.btnCancel.attr('name', 'new').text("New");
+          Adv.btnCancel.attr('name', 'new').text("New").show();
         }
       }
       Company.set($thisname, $this.val());

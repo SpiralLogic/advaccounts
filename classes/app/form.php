@@ -12,8 +12,8 @@
    * @param string $action
    * @param string $name
    */
-  class Form
-  {
+  class Form {
+
     /**
      * @static
      *
@@ -195,7 +195,7 @@
         '') . "$disabled id='$name' name='$name" . ($multi ? '[]' :
         '') . "' class='combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
       Ajax::i()->addUpdate($name, "_{$name}_sel", $selector);
-      $selector = "<span id='_{$name}_sel'>" . $selector . "</span>\n";
+      $selector = "<div id='_{$name}_sel' class='combodiv'>" . $selector . "</div>\n";
       if ($select_submit != false) { // if submit on change is used - add select button
         $_select_button
           = "<input %s type='submit' class='combo_select' style='border:0;background:url
@@ -555,7 +555,7 @@
      * @param string $params
      * @param string $post_label
      */
-    public static function  textRow($label, $name, $value, $size = false, $max, $title = null, $params = "", $post_label = "")
+    public static function  textRow($label, $name, $value, $size = null, $max, $title = null, $params = "", $post_label = "")
     {
       echo "<tr><td class='label'><label for='$name'>$label</label></td>";
       Form::textCells(null, $name, $value, $size, $max, $title, $params, $post_label);
@@ -573,10 +573,10 @@
      * @param string $params2
      * @param bool   $submit_on_change
      */
-    public static function  textRowEx($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null, $params2 = '', $submit_on_change = false)
+    public static function  textRowEx($label, $name, $size, $max = null, $title = null, $value = null, $rowparams = null, $post_label = null, $label_cell_params = '', $submit_on_change = false)
     {
-      echo "<tr {$params}><td class='label' {$params2}>$label</td>";
-      Form::textCellsEx(null, $name, $size, $max, $value, $title, $params, $post_label, $submit_on_change);
+      echo "<tr {$rowparams}><td class='label' {$label_cell_params}><label for='$name'>$label</label></td>";
+      Form::textCellsEx(null, $name, $size, $max, $value, $title, $rowparams, $post_label, $submit_on_change);
       echo "</tr>\n";
     }
     /**
@@ -843,8 +843,8 @@
       $items['0'] = strlen($name_no) ? $name_no : _("No");
       $items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
       return Form::arraySelect($name, $selected_id, $items, array(
-                                                                 'select_submit' => $submit_on_change, 'async' => false
-                                                            )); // FIX?
+        'select_submit' => $submit_on_change, 'async' => false
+      )); // FIX?
     }
     /**
      * @param        $label
@@ -884,8 +884,8 @@
         $items[$i] = "$i";
       }
       return Form::arraySelect($name, $selected, $items, array(
-                                                              'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
-                                                         ));
+        'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
+      ));
     }
     /**
      * @param      $label
@@ -1158,16 +1158,15 @@
 
       $post_label = "";
       if ($label != null) {
-        echo "<td class='label'><label for=\"$name\"> $label</label>";
-      } else {
-        echo "<td >";
+        echo "<td class='label'><label for=\"$name\"> $label</label></td>";
       }
+      echo "<td >";
       $class  = $submit_on_change ? 'searchbox datepicker' : 'datepicker';
       $aspect = $check ? ' data-aspect="cdate"' : '';
       if ($check && (Input::post($name) != Dates::today())) {
         $aspect .= ' style="color:#FF0000"';
       }
-      echo "<input id='$name' type='text' name='$name' class='$class' $aspect size=\"10\" maxlength='10' value=\"" . $_POST[$name] . "\"" . ($title ?
+      echo "<input id='$name' type='text' name='$name' class='$class' $aspect  maxlength='10' value=\"" . $_POST[$name] . "\"" . ($title ?
         " title='$title'" : '') . " > $post_label";
       echo "</td>\n";
       Ajax::i()->addUpdate($name, $name, $_POST[$name]);
@@ -1186,13 +1185,18 @@
     public static function  textCells($label, $name, $value = null, $size = "", $max = "", $title = false, $labparams = "", $post_label = "", $inparams = "")
     {
       if ($label != null) {
-        Cell::label($label, $labparams);
+        echo "<td class='label'><label for=\"$name\"> $label</label></td>";
       }
-      echo "<td>";
+      echo "<td >";
       if ($value === null) {
         $value = Input::post($name);
       }
-      echo "<input $inparams type=\"text\" name=\"$name\" id=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\"" . ($title ?
+      if ($size && is_numeric($size)) {
+        $size = " size='$size'";
+      } elseif (is_string($size)) {
+        $size = " class='$size'";
+      }
+      echo "<input $inparams type=\"text\" name=\"$name\" id=\"$name\" $size maxlength=\"$max\" value=\"$value\"" . ($title ?
         " title='$title'" : '') . ">";
       if ($post_label != "") {
         echo " " . $post_label;
@@ -1207,11 +1211,13 @@
      * @param null $max
      * @param null $init
      * @param null $title
-     * @param null $labparams
+     * @param null $params
      * @param null $post_label
      * @param bool $submit_on_change
+     *
+     * @internal param null $labparams
      */
-    public static function  textCellsEx($label, $name, $size, $max = null, $init = null, $title = null, $params = null, $post_label = null, $submit_on_change = false)
+    public static function  textCellsEx($label, $name, $size = null, $max = null, $init = null, $title = null, $params = null, $post_label = null, $submit_on_change = false)
     {
       JS::default_focus($name);
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
@@ -1222,15 +1228,21 @@
         }
       }
       if ($label != null) {
-        echo "<td class='label' $params> <label for=\"$name\"> $label</label>";
+        echo "<td class='label' $params> <label for=\"$name\"> $label</label></td><td>";
       } else {
-        echo "<td >";
+        echo   "<td>";
       }
+
       if (!isset($max)) {
         $max = $size;
       }
+      if ($size && is_numeric($size)) {
+        $size = " size='$size'";
+      } elseif (is_string($size)) {
+        $size = " class='$size'";
+      }
       $class = $submit_on_change ? 'class="searchbox"' : '';
-      echo "<input $class type=\"text\" name=\"$name\" id=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"" . $_POST[$name] . "\"" . ($title ?
+      echo "<input $class type=\"text\" name=\"$name\" id=\"$name\" $size maxlength=\"$max\" value=\"" . $_POST[$name] . "\"" . ($title ?
         " title='$title'" : '') . " >";
       if ($post_label) {
         echo " " . $post_label;
@@ -1261,7 +1273,7 @@
      */
     public static function  refCells($label, $name, $title = null, $init = null, $params = null, $submit_on_change = false)
     {
-      Form::textCellsEx($label, $name, 9, 18, $init, $title, $params, null, $submit_on_change);
+      Form::textCellsEx($label, $name, 'small', 18, $init, $title, $params, null, $submit_on_change);
     }
     /**
      * @param        $label
@@ -1289,47 +1301,43 @@
      * @param string $inputparams
      * @param bool   $negatives
      */
-    public static function amountCellsEx($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null, $inputparams = '', $negatives = false)
+    public static function amountCellsEx($label, $name, $size = 10, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null, $inputparams = '', $negatives = false)
     {
-      if (is_null($dec)) {
-        $dec = User::price_dec();
-      }
-      if (!isset($_POST[$name]) || $_POST[$name] == "") {
-        if ($init !== null) {
-          $_POST[$name] = $init;
-        } else {
-          $_POST[$name] = 0;
-        }
-      }
-      if ($label != null) {
-        if ($params == null) {
-          $params = " class='label'";
-        }
+      if ($label) {
+        $params = $params ? : " class='label'";
         Cell::label($label, $params);
-      }
-      if (!isset($max)) {
-        $max = $size;
-      }
-      if ($label != null) {
-        echo "<td>";
+        echo  "<td>";
       } else {
-        echo "<td class='right'>";
+        echo "<td class='right nowrap' >";
       }
-      echo "<input ";
-      if ($id != null) {
-        echo "id='$id'";
-      }
-      if ($name == 'freight') {
-        echo "class='freight' ";
-      } else {
-        echo "class='amount' ";
-      }
+      $dec = $dec ? : User::price_dec();
       if (!Input::post($name)) {
-        $_POST[$name] = number_format(0, $dec);
+        $init         = $init ? : 0;
+        $_POST[$name] = number_format($init, $dec);
       }
-      echo "type='text' name='$name' size='$size' maxlength='$max' data-dec='$dec' value='" . $_POST[$name] . "' $inputparams>";
+      $input_attr['name']     = $name;
+      $input_attr['value']    = $_POST[$name];
+      $input_attr['data-dec'] = $dec;
+      $input_attr['class']    = ($name == 'freight') ? 'freight ' : 'amount ';
+      if ($size && is_numeric($size)) {
+        $input_attr['size'] = $size;
+      } elseif (is_string($size)) {
+        $input_attr['class'] .= $size;
+      }
+      $input_attr['maxlength'] = $max ? : $size;
+      $input_attr['id']        = $id ? : $name;
+      $input_attr['type']      = 'text';
+
+      foreach ($input_attr as $k=> $v) {
+        if ($v === null) {
+          continue;
+        }
+        $inputparams .= " $k='$v'";
+      }
+      echo "<input  $inputparams>";
+
       if ($post_label) {
-        echo "<span id='_{$name}_label'> $post_label</span>";
+        echo "<span id='_{$name}_label'>$post_label</span>";
         Ajax::i()->addUpdate($name, '_' . $name . '_label', $post_label);
       }
       echo "</td>\n";
@@ -1348,7 +1356,7 @@
      */
     public static function  amountCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $id = null, $inputparams = '')
     {
-      Form::amountCellsEx($label, $name, 10, 15, $init, $params, $post_label, $dec, $id, $inputparams);
+      Form::amountCellsEx($label, $name, null, 15, $init, $params, $post_label, $dec, $id, $inputparams);
     }
     /**
      *   JAM  Allow entered unit prices to be fractional
@@ -1365,7 +1373,7 @@
       if (!isset($dec)) {
         $dec = User::price_dec() + 2;
       }
-      Form::amountCellsEx($label, $name, 10, 15, $init, $params, $post_label, $dec + 2);
+      Form::amountCellsEx($label, $name, null, 15, $init, $params, $post_label, $dec + 2);
     }
     /**
      * @param        $label
@@ -1379,7 +1387,7 @@
      */
     public static function  amountCellsSmall($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '', $negatives = false)
     {
-      Form::amountCellsEx($label, $name, 4, 12, $init, $params, $post_label, $dec, null, $inputparams, $negatives);
+      Form::amountCellsEx($label, $name, 'small', 12, $init, $params, $post_label, $dec, null, $inputparams, $negatives);
     }
     /**
      * @param      $label
@@ -1394,7 +1402,7 @@
       if (!isset($dec)) {
         $dec = User::qty_dec();
       }
-      Form::amountCellsEx($label, $name, 7, 12, $init, $params, $post_label, $dec, null, null, true);
+      Form::amountCellsEx($label, $name, 'small', 12, $init, $params, $post_label, $dec, null, null, true);
     }
     /**
      * @param      $label
@@ -1443,11 +1451,18 @@
     {
       if ($label != null) {
         echo "<td $params>$label</td>\n";
+        $params = '';
       }
       if ($value === null) {
         $value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
       }
-      echo "<td><textarea id='$name' name='$name' cols='" . ($cols + 2) . "' rows='$rows'" . ($title ? " title='$title'" :
+      if ($cols && is_numeric($cols)) {
+        $cols = "cols='" . ($cols + 2) . "'";
+      } elseif (is_string($cols)) {
+        $cols = "class='$cols'";
+      }
+
+      echo "<td $params><textarea id='$name' name='$name' $cols rows='$rows'" . ($title ? " title='$title'" :
         '') . ">$value</textarea></td>\n";
       Ajax::i()->addUpdate($name, $name, $value);
     }
@@ -1464,6 +1479,6 @@
       if (!isset($dec)) {
         $dec = User::qty_dec();
       }
-      Form::amountCellsEx($label, $name, 6, 15, $init, $params, $post_label, $dec, null, null, true);
+      Form::amountCellsEx($label, $name, null, 15, $init, $params, $post_label, $dec, null, null, true);
     }
   }

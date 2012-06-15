@@ -12,8 +12,8 @@
   /**
 
    */
-  class Purch_Order
-  {
+  class Purch_Order {
+
     /**
      * @var
      */
@@ -585,22 +585,24 @@
     public function header()
     {
       $editable = ($this->order_no == 0);
-      Table::startOuter('tablestyle2 width90');
-      Table::section(1);
+      Table::start('tablestyle2 width90');
+      Row::start();
+      $show_currencies = (!Bank_Currency::is_company($this->curr_code)) ? 1 : 2;
+
       if ($editable) {
         if (!isset($_POST['supplier_id']) && Session::i()->getGlobal('creditor')) {
           $_POST['supplier_id'] = Session::i()->getGlobal('creditor');
         }
         //Creditor::row(_("Supplier:"), 'supplier_id', null, false, true, false, true);
-        Creditor::newselect();
+        Creditor::newselect(null, ['cell_params'=> 'colspan=' . ($show_currencies + 2), 'rowspan'=> $show_currencies, 'row'=> false]);
       } else {
         if (isset($_POST['supplier_id'])) {
           $this->supplier_to_order($_POST['supplier_id']);
         }
         Form::hidden('supplier_id', $this->supplier_id);
-        Row::label(_("Supplier:"), $this->supplier_name, 'class="label" name="supplier_name"');
+        Cell::labels(_("Supplier:"), $this->supplier_name,'rowspan=2 ',' colspan=' . ($show_currencies + 2).' rowspan=2');
       }
-      if ($this->supplier_id != Input::post('supplier_id',null,-1)) {
+      if ($this->supplier_id != Input::post('supplier_id', null, -1)) {
         $old_supp = $this->supplier_id;
         $this->supplier_to_order($_POST['supplier_id']);
         // supplier default price update
@@ -611,27 +613,16 @@
         Ajax::i()->activate('items_table');
       }
       Session::i()->setGlobal('creditor', $_POST['supplier_id']);
-      if (!Bank_Currency::is_company($this->curr_code)) {
-        Row::label(_("Supplier Currency:"), $this->curr_code);
-        Row::start();
+      echo "<td class='label'><label for=\"location\">" . _('Receive Into:') . "</label></td>";
+      echo "<td colspan=2>";
+      echo Inv_Location::select('location', null, false, true);
+      echo "</td>\n";
+      row::end();
+      row::start();
+      if ($show_currencies == 1 && $this->curr_code !=Bank_Currency::for_company()) {
+        Cell::labels(_("Supplier Currency:"), $this->curr_code);
         GL_ExchangeRate::display($this->curr_code, Bank_Currency::for_company(), $_POST['OrderDate']);
-        row::end();
       }
-      if ($editable) {
-        Form::refRow(_("Purchase Order #:"), 'ref', '', Ref::get_next(ST_PURCHORDER));
-      } else {
-        Form::hidden('ref', $this->reference);
-        Row::label(_("Purchase Order #:"), $this->reference);
-      }
-      Sales_UI::persons_row(_("Sales Person:"), 'salesman', $this->salesman);
-      Table::section(2);
-      Form::dateRow(_("Order Date:"), 'OrderDate', '', true, 0, 0, 0, null, true);
-      if (isset($_POST['_OrderDate_changed'])) {
-        Ajax::i()->activate('_ex_rate');
-      }
-      Form::textRow(_("Supplier's Order #:"), 'Requisition', null, 16, 15);
-      Inv_Location::row(_("Receive Into:"), 'location', null, false, true);
-      Table::section(3);
       if (!isset($_POST['location']) || $_POST['location'] == "" || isset($_POST['_location_update']) || !isset($_POST['delivery_address']) || $_POST['delivery_address'] == "") {
         $sql    = "SELECT delivery_address, phone FROM locations WHERE loc_code='" . $_POST['location'] . "'";
         $result = DB::query($sql, "could not get location info");
@@ -645,8 +636,25 @@
           Event::error(_("The default stock location set up for this user is not a currently defined stock location. Your system administrator needs to amend your user record."));
         }
       }
-      Form::textareaRow(_("Deliver to:"), 'delivery_address', $_POST['delivery_address'], 35, 4);
-      Table::endOuter(); // outer table
+      Form::textareaCells(null, 'delivery_address', $_POST['delivery_address'], 'width95', 4, null, 'colspan=' . (5-$show_currencies) . ' rowspan=' . (5-$show_currencies ));
+      row::end();
+      row::start();
+      if ($editable) {
+        Form::refCells(_("Purchase Order #:"), 'ref', '', Ref::get_next(ST_PURCHORDER));
+      } else {
+        Form::hidden('ref', $this->reference);
+        Cell::labels(_("Purchase Order #:"), $this->reference);
+      }
+      Sales_UI::persons_cells(_("Sales Person:"), 'salesman', $this->salesman);
+      if (isset($_POST['_OrderDate_changed'])) {
+        Ajax::i()->activate('_ex_rate');
+      }
+      row::end();
+      row::start();
+      Form::textCells(_("Supplier's Order #:"), 'Requisition', null, 'small', 15);
+      Form::dateCells(_("Order Date:"), 'OrderDate', '', true, 0, 0, 0, null, true);
+      row::end();
+      Table::end(); // outer table
     }
     /**
      * @param bool $editable
@@ -707,7 +715,7 @@
         $this->item_controls();
       }
       Table::foot();
-      Form::SmallAmountRow(_("Freight"), 'freight', Num::price_format(Input::post('freight',null,0)), "colspan=8 class='bold right'", null, null, 3);
+      Form::SmallAmountRow(_("Freight"), 'freight', Num::price_format(Input::post('freight', null, 0)), "colspan=8 class='bold right'", null, null, 3);
       $display_total = Num::price_format($total + Validation::input_num('freight'));
       Row::label(_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 class='bold right'", "nowrap class=right _nofreight='$total'", 2);
       Table::footEnd();

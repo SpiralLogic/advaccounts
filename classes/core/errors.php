@@ -14,8 +14,8 @@
   /**
 
    */
-  class Errors
-  {
+  class Errors {
+
     /**
 
      */
@@ -109,7 +109,7 @@
         static::$messages[] = $error;
       }
       if (is_writable(DOCROOT . '../error_log')) {
-        error_log(date(DATE_RFC822) . ' ' . $error['type'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n", 3, DOCROOT . '../error_log');
+        error_log(date(DATE_RFC822) . ' ' . $error['type'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n", 3, DOCROOT . '../error_log');
       }
       if (!in_array($type, static::$user_errors) || ($type == E_USER_ERROR && $log)) {
         $error['backtrace'] = static::prepare_backtrace(debug_backtrace());
@@ -134,8 +134,8 @@
       );
       static::$current_severity = -1;
       static::$messages[]       = $error;
-      if (is_writable(DOCROOT . 'tmp/errors.log')) {
-        error_log($error['code'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n", 3, DOCROOT . 'tmp/errors.log');
+      if (is_writable(DOCROOT . '../error_log')) {
+        error_log($error['code'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n", 3,DOCROOT . '../error_log');
       }
       $error['backtrace'] = static::prepare_backtrace($e->getTrace());
       static::$errors[]   = $error;
@@ -383,6 +383,9 @@
       $db_class_file      = $source['file'];
       while ($source['file'] == $db_class_file) {
         $source = array_shift($backtrace);
+      }
+      if (is_writable(DOCROOT . '../error_log')) {
+        error_log( date(DATE_RFC822) . ": " . $error['message'] ."\n" . $error['debug'] . "\n\n\n", 3, DOCROOT . '../error_log');
       }
       trigger_error($error['message'] . '||' . $source['file'] . '||' . $source['line'], E_USER_ERROR);
     }

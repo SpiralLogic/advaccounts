@@ -72,11 +72,7 @@
   }
   $prices_list = Item_Price::get_all($_POST['stock_id']);
   Display::div_start('price_table');
-  if (Input::request('frame')) {
-    Table::start('tablestyle grid width90');
-  } else {
-    Table::start('tablestyle grid width30');
-  }
+    Table::start('tablestyle grid width90 ');
   $th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");
   Table::header($th);
   $k          = 0; //row colour counter

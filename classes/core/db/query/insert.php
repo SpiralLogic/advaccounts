@@ -13,8 +13,8 @@
   /**
 
    */
-  Class Query_Insert extends Query
-  {
+  Class Query_Insert extends Query {
+
     /**
      * @var
      */
@@ -111,10 +111,11 @@
      */
     protected function execute($data = null)
     {
-      if ($this->data !== null) {
+      if ($data !== null) {
         $this->values((array) $data);
       }
       $this->data   = array_intersect_key($this->data, array_flip($this->hasfields));
+      $this->data   = array_filter($this->data, function($value) { return !is_object($value); });
       $this->fields = array_keys($this->data);
 
       return $this->_buildQuery();

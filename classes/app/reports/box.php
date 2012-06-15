@@ -288,7 +288,10 @@
           }
         case 'CUSTOMERS_NOZERO_BALANCE':
           $sql = 'SELECT  c.debtor_id, c.name FROM debtor_balances db, debtors c WHERE c.debtor_id=db.debtor_id AND Balance<>0 ';
-          return Form::selectBox($name, '', $sql, 'debtor_id', 'name', null);
+          return Form::selectBox($name, '', $sql, 'debtor_id', 'name', array(
+                                                                                   'spec_option' => _("No Customer Filter"),
+                                                                                   'spec_id'     => ALL_NUMERIC
+                                                                              ));
         case 'SUPPLIERS_NO_FILTER':
         case 'SUPPLIERS':
           $sql = "SELECT supplier_id, name FROM suppliers";

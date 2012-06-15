@@ -154,12 +154,12 @@
     $_POST['price'] = $_POST['suppliers_uom'] = $_POST['conversion_factor'] = $_POST['supplier_description'] = "";
   }
    Form::AmountRow(_("Price:"), 'price', null, '', Bank_Currency::for_creditor($selected_id), $dec2);
-   Form::textRow(_("Suppliers Unit of Measure:"), 'suppliers_uom', null, false, 51);
+   Form::textRow(_("Suppliers Unit of Measure:"), 'suppliers_uom', null, null, 51);
   if (!isset($_POST['conversion_factor']) || $_POST['conversion_factor'] == "") {
     $_POST['conversion_factor'] = Num::exrate_format(1);
   }
    Form::AmountRow(_("Conversion Factor (to our UOM):"), 'conversion_factor', Num::exrate_format($_POST['conversion_factor']), null, null, User::exrate_dec());
-   Form::textRow(_("Supplier's Product Code:"), 'supplier_description', null, 50, 51);
+   Form::textRow(_("Supplier's Product Code:"), 'supplier_description', null, null, 51);
   Table::end(1);
   Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Form::end();

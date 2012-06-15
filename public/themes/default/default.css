@@ -34,6 +34,8 @@ table {
 }
 
 input, select, textarea {
+  font-size:       11px;
+  width:           95%;
   padding:         1px 4px 1px 4px;
   border-radius:   4px;
   box-shadow:      0 0 2px #333 inset;
@@ -43,7 +45,7 @@ input, select, textarea {
 }
 
 input, textarea {
-  min-width:          80px;
+  min-width:          8em;
   border:             none;
   -moz-border-radius: 4px;
   margin-left:        3px;
@@ -60,24 +62,27 @@ textarea {
 }
 
 select {
-  font-size:  11px;
   padding:    1px 2px;
-  min-width:  80px;
+  min-width:  8em;
   min-height: 25px;
   height:     25px;
   border:     lightgray solid 1px;
 }
-
-input.big {
-  width: 100px;
+.med{
+  max-width:15em;
+}
+input.big, textarea.big {
+  width: 20em;
 }
 
 input.small {
-  width: 50px;
+  width: 5em;
 }
 
 select, input {
-  max-width: 300px;
+  max-width:   30em;
+  font-family: Verdana, Arial, Helvetica, serif;
+
 }
 
 input {
@@ -156,6 +161,10 @@ img {
   width:      80%;
   min-width:  930px;
   background: white;
+}
+
+.lite #content {
+  min-width: inherit;
 }
 
 #iframePopup {
@@ -716,6 +725,14 @@ div.formbox {
   margin:  0 auto;
 }
 
+.combodiv {
+  display: block;
+}
+
+.combo {
+  width: 100%;
+}
+
 div.formbox label {
   display:       block;
   margin-bottom: 10px;
@@ -734,8 +751,7 @@ div.formbox label span:first-child {
 }
 
 .amount {
-  max-width:   8.5em;
-  font-family: Verdana, Arial, Helvetica, serif;
+  max-width:   8em;
   font-size:   11px;
   white-space: nowrap;
   text-align:  right;
@@ -750,7 +766,7 @@ input.amount, input.freight {
 }
 
 input.datepicker {
-  max-width: 85px;
+  max-width: 8em;
   min-width: inherit;
 }
 
@@ -873,7 +889,7 @@ td.tableheader3 {
 }
 
 .grid input {
-  min-width: 60px;
+  min-width: 6em;
 }
 
 td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid tbody td:first-child, .tablestyle tbody td:first-child {
@@ -901,7 +917,7 @@ td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid 
 }
 
 .tableinfo input, .tableinfo textarea, .tableinfo select {
-  max-width: 300px;
+  max-width: 30em;
 }
 
 /*--------------------------------- END TABLES -----------------------------------------------------------------*/
@@ -1315,6 +1331,10 @@ body.lite {
   white-space: nowrap;
 }
 
+.size15 {
+  width: 15em;
+}
+
 .width15 {
   width: 15%;
 }
@@ -1398,6 +1418,10 @@ body.lite {
 
 .marginauto {
   margin: 0 auto;
+}
+
+.margin5 {
+  margin: 5px;
 }
 
 .margin20 {
