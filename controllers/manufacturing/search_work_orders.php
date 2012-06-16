@@ -36,17 +36,17 @@
   if (isset($_GET["stock_id"])) {
     $_POST['SelectedStockItem'] = $_GET["stock_id"];
   }
-  Form::start(false, $_SERVER['DOCUMENT_URI'] . "?outstanding_only=$outstanding_only");
+  Forms::start(false, $_SERVER['DOCUMENT_URI'] . "?outstanding_only=$outstanding_only");
   Table::start('tablestyle_noborder');
   Row::start();
-   Form::refCells(_("Reference:"), 'OrderNumber', '', null, '', true);
+   Forms::refCells(_("Reference:"), 'OrderNumber', '', null, '', true);
   Inv_Location::cells(_("at Location:"), 'StockLocation', null, true);
-   Form::checkCells(_("Only Overdue:"), 'OverdueOnly', null);
+   Forms::checkCells(_("Only Overdue:"), 'OverdueOnly', null);
   if ($outstanding_only == 0) {
-     Form::checkCells(_("Only Open:"), 'OpenOnly', null);
+     Forms::checkCells(_("Only Open:"), 'OpenOnly', null);
   }
   Item_UI::manufactured_cells(_("for item:"), 'SelectedStockItem', null, true);
-  Form::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
+  Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
   Row::end();
   Table::end();
   /**
@@ -191,7 +191,7 @@
     WHERE workorder.stock_id=item.stock_id
         AND workorder.loc_code=location.loc_code
         AND item.units=unit.abbr";
-  if (Form::hasPost('OpenOnly') || $outstanding_only != 0) {
+  if (Forms::hasPost('OpenOnly') || $outstanding_only != 0) {
     $sql .= " AND workorder.closed=0";
   }
   if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
@@ -203,7 +203,7 @@
   if (isset($_POST['SelectedStockItem']) && $_POST['SelectedStockItem'] != ALL_TEXT) {
     $sql .= " AND workorder.stock_id=" . DB::quote($_POST['SelectedStockItem']);
   }
-  if (Form::hasPost('OverdueOnly')) {
+  if (Forms::hasPost('OverdueOnly')) {
     $Today = Dates::date2sql(Dates::today());
     $sql .= " AND workorder.required_by < '$Today' ";
   }
@@ -244,6 +244,6 @@
   $table->set_marker('check_overdue', _("Marked orders are overdue."));
   $table->width = "90%";
   DB_Pager::display($table);
-  Form::end();
+  Forms::end();
   Page::end();
 

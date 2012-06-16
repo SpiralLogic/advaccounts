@@ -11,14 +11,14 @@
   Page::start(_($help_context = "System and General GL Setup"), SA_GLSETUP);
 
   if (isset($_POST['submit']) && can_process()) {
-    $_POST['allow_negative_stock'] = Form::hasPost('allow_negative_stock');
+    $_POST['allow_negative_stock'] = Forms::hasPost('allow_negative_stock');
     $_POST['po_over_receive']      = Validation::input_num('po_over_receive');
     $_POST['po_over_charge']       = Validation::input_num('po_over_charge');
-    $_POST['accumulate_shipping']  = Form::hasPost('accumulate_shipping');
+    $_POST['accumulate_shipping']  = Forms::hasPost('accumulate_shipping');
     DB_Company::update_gl_setup($_POST);
     Event::success(_("The general GL setup has been updated."));
   } /* end of if submit */
-  Form::start();
+  Forms::start();
   //Table::startOuter("class='tablestyle'");
   Table::startOuter('tablestyle2');
   Table::section(1);
@@ -55,15 +55,15 @@
   //GL_UI::all_row(_("Retained Earning Clearing Account:"), 'retained_earnings_act', $_POST['retained_earnings_act']);
   // Not used in FA2.0.
   //GL_UI::all_row(_("Payroll Account:"), 'payroll_act', $_POST['payroll_act']);
-   Form::textRow(_("Past Due Days Interval:"), 'past_due_days', $_POST['past_due_days'], 6, 6, '', "", _("days"));
+   Forms::textRow(_("Past Due Days Interval:"), 'past_due_days', $_POST['past_due_days'], 6, 6, '', "", _("days"));
   GL_UI::all_row(_("Retained Earnings:"), 'retained_earnings_act', $_POST['retained_earnings_act']);
   GL_UI::all_row(_("Profit/Loss Year:"), 'profit_loss_year_act', $_POST['profit_loss_year_act']);
   GL_UI::all_row(_("Exchange Variances Account:"), 'exchange_diff_act', $_POST['exchange_diff_act']);
   GL_UI::all_row(_("Bank Charges Account:"), 'bank_charge_act', $_POST['bank_charge_act']);
   Table::sectionTitle(_("Customers and Sales"));
-   Form::textRow(_("Default Credit Limit:"), 'default_credit_limit', $_POST['default_credit_limit'], 12, 12);
-   Form::checkRow(_("Accumulate batch shipping:"), 'accumulate_shipping', NULL);
-   Form::textareaRow(_("Legal Text on Invoice:"), 'legal_text', $_POST['legal_text'], 32, 3);
+   Forms::textRow(_("Default Credit Limit:"), 'default_credit_limit', $_POST['default_credit_limit'], 12, 12);
+   Forms::checkRow(_("Accumulate batch shipping:"), 'accumulate_shipping', NULL);
+   Forms::textareaRow(_("Legal Text on Invoice:"), 'legal_text', $_POST['legal_text'], 32, 3);
   GL_UI::all_row(_("Shipping Charged Account:"), 'freight_act', $_POST['freight_act']);
   Table::sectionTitle(_("Customers and Sales Defaults"));
   // default for customer branch
@@ -71,18 +71,18 @@
   GL_UI::all_row(_("Sales Account:"), 'default_sales_act', NULL, FALSE, FALSE, TRUE);
   GL_UI::all_row(_("Sales Discount Account:"), 'default_sales_discount_act');
   GL_UI::all_row(_("Prompt Payment Discount Account:"), 'default_prompt_payment_act');
-   Form::textRow(_("Delivery Required By:"), 'default_delivery_required', $_POST['default_delivery_required'], 6, 6, '', "", _("days"));
+   Forms::textRow(_("Delivery Required By:"), 'default_delivery_required', $_POST['default_delivery_required'], 6, 6, '', "", _("days"));
   Table::section(2);
   Table::sectionTitle(_("Dimension Defaults"));
-   Form::textRow(_("Dimension Required By After:"), 'default_dim_required', $_POST['default_dim_required'], 6, 6, '', "", _("days"));
+   Forms::textRow(_("Dimension Required By After:"), 'default_dim_required', $_POST['default_dim_required'], 6, 6, '', "", _("days"));
   Table::sectionTitle(_("Suppliers and Purchasing"));
-   Form::percentRow(_("Delivery Over-Receive Allowance:"), 'po_over_receive');
-   Form::percentRow(_("Invoice Over-Charge Allowance:"), 'po_over_charge');
+   Forms::percentRow(_("Delivery Over-Receive Allowance:"), 'po_over_receive');
+   Forms::percentRow(_("Invoice Over-Charge Allowance:"), 'po_over_charge');
   Table::sectionTitle(_("Suppliers and Purchasing Defaults"));
   GL_UI::all_row(_("Payable Account:"), 'creditors_act', $_POST['creditors_act']);
   GL_UI::all_row(_("Purchase Discount Account:"), 'pyt_discount_act', $_POST['pyt_discount_act']);
   Table::sectionTitle(_("Inventory"));
-   Form::checkRow(_("Allow Negative Inventory:"), 'allow_negative_stock', NULL);
+   Forms::checkRow(_("Allow Negative Inventory:"), 'allow_negative_stock', NULL);
   Row::label(NULL, _("Warning: This may cause a delay in GL postings"), "", "class='stockmankofg' colspan=2");
   Table::sectionTitle(_("Items Defaults"));
   GL_UI::all_row(_("Sales Account:"), 'default_inv_sales_act', $_POST['default_inv_sales_act']);
@@ -92,10 +92,10 @@
   GL_UI::all_row(_("Inventory Adjustments Account:"), 'default_adj_act', $_POST['default_adj_act']);
   GL_UI::all_row(_("Item Assembly Costs Account:"), 'default_assembly_act', $_POST['default_assembly_act']);
   Table::sectionTitle(_("Manufacturing Defaults"));
-   Form::textRow(_("Work Order Required By After:"), 'default_workorder_required', $_POST['default_workorder_required'], 6, 6, '', "", _("days"));
+   Forms::textRow(_("Work Order Required By After:"), 'default_workorder_required', $_POST['default_workorder_required'], 6, 6, '', "", _("days"));
   Table::endOuter(1);
-  Form::submitCenter('submit', _("Update"), TRUE, '', 'default');
-  Form::end(2);
+  Forms::submitCenter('submit', _("Update"), TRUE, '', 'default');
+  Forms::end(2);
   Page::end();
   /**
    * @return bool

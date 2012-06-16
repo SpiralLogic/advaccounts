@@ -22,10 +22,10 @@
   if (isset($_GET["AccGrp"])) {
     $_POST["AccGrp"] = $_GET["AccGrp"];
   }
-  Form::start();
+  Forms::start();
   inquiry_controls();
   display_balance_sheet();
-  Form::end();
+  Forms::end();
   Page::end();
   /**
    * @param $type
@@ -94,11 +94,11 @@
   function inquiry_controls()
   {
     Table::start('tablestyle_noborder');
-     Form::dateCells(_("As at:"), 'TransToDate');
-    Form::submitCells('Show', _("Show"), '', '', 'default');
+     Forms::dateCells(_("As at:"), 'TransToDate');
+    Forms::submitCells('Show', _("Show"), '', '', 'default');
     Table::end();
-    Form::hidden('TransFromDate');
-    Form::hidden('AccGrp');
+    Forms::hidden('TransFromDate');
+    Forms::hidden('AccGrp');
   }
 
   function display_balance_sheet()

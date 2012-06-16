@@ -32,7 +32,7 @@
   echo "<table class='titletext'><tr><td>$title</td></tr></table>\n";
   Display::div_start('_page_body');
   Display::br(2);
-  Form::start(FALSE, $_SESSION['timeout']['uri'], "loginform");
+  Forms::start(FALSE, $_SESSION['timeout']['uri'], "loginform");
   echo "<input type='hidden' id='ui_mode' name='ui_mode' value='" . User::i()->ui_mode . "' />\n";
   Table::start('login');
   Row::start();
@@ -50,16 +50,16 @@
   Row::start();
   Cell::label($demo_text, "colspan=2 class='center'");
   Row::end();
-   Form::textRow(_("User name"), "user_name", $value, 20, 30);
+   Forms::textRow(_("User name"), "user_name", $value, 'med', 30);
   $password = Config::get('demo_mode') ? "password" : "";
-   Form::passwordRow(_("Password:"), 'password', $password);
+   Forms::passwordRow(_("Password:"), 'password', $password);
   if ($login_timeout) {
-    Form::hidden('login_company', User::i()->company);
+    Forms::hidden('login_company', User::i()->company);
   } else {
     $coy       = User::i()->company;
     $companies = Config::get_all('db');
     echo "<tr><td class='label'><label for='login_company'>" . _("Company") . "</label></td><td><select id='login_company'
-    name='login_company'>\n";
+    name='login_company' class='med'>\n";
 
     foreach ($companies as $name => $company) {
       if (!$company['company']) {
@@ -79,7 +79,7 @@
       echo "<input type='hidden' name='" . serialize($p) . "' value='$val'>";
     }
   }
-  Form::end(1);
+  Forms::end(1);
   Display::div_end();
   echo "<div class='center'>\n";
   if (User::i()) {

@@ -107,7 +107,7 @@
     {
       $sql = "SELECT id, sales_type, inactive FROM sales_types";
 
-      return Form::selectBox($name, $selected_id, $sql, 'id', 'sales_type', array(
+      return Forms::selectBox($name, $selected_id, $sql, 'id', 'sales_type', array(
         'spec_option'                => $special_option === true ? _("All Sales Types") :
           $special_option, 'spec_id' => 0, 'select_submit' => $submit_on_change, //	 'async' => false,
       ));

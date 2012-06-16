@@ -507,7 +507,7 @@ JS;
           $focus = true;
         }
       }
-      Form::hidden('supplier_id');
+      Forms::hidden('supplier_id');
       UI::search('supplier', array(
         'url'  => '/contacts/suppliers.php', 'name'  => 'supplier', 'focus' => $focus, 'value' => $value,
       ));
@@ -539,7 +539,7 @@ JS;
     {
       $sql  = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
       $mode = DB_Company::get_pref('no_supplier_list');
-      return Form::selectBox($name, $selected_id, $sql, 'supplier_id', 'name', array(
+      return Forms::selectBox($name, $selected_id, $sql, 'supplier_id', 'name', array(
         'format'        => '_format_add_curr',
         'order'         => array('supp_ref'),
         'search_box'    => $mode != 0,

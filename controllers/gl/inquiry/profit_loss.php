@@ -25,10 +25,10 @@
   if (isset($_GET["AccGrp"])) {
     $_POST["AccGrp"] = $_GET["AccGrp"];
   }
-  Form::start();
+  Forms::start();
   inquiry_controls();
   display_profit_and_loss();
-  Form::end();
+  Forms::end();
   Page::end();
   /**
    * @param     $type
@@ -144,18 +144,18 @@
   function inquiry_controls()
   {
     Table::start('tablestyle_noborder');
-     Form::dateCells(_("From:"), 'TransFromDate', '', null, -30);
-     Form::dateCells(_("To:"), 'TransToDate');
+     Forms::dateCells(_("From:"), 'TransFromDate', '', null, -30);
+     Forms::dateCells(_("To:"), 'TransToDate');
     //Compare Combo
     global $sel;
     $sel = array(_("Accumulated"), _("Period Y-1"), _("Budget"));
     echo "<td>" . _("Compare to") . ":</td>\n";
     echo "<td>";
-    echo Form::arraySelect('Compare', null, $sel);
+    echo Forms::arraySelect('Compare', null, $sel);
     echo "</td>\n";
-    Form::submitCells('Show', _("Show"), '', '', 'default');
+    Forms::submitCells('Show', _("Show"), '', '', 'default');
     Table::end();
-    Form::hidden('AccGrp');
+    Forms::hidden('AccGrp');
   }
 
   function display_profit_and_loss()

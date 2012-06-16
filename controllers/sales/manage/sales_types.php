@@ -46,11 +46,11 @@
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Sales_Type::get_all(Form::hasPost('show_inactive'));
-  Form::start();
+  $result = Sales_Type::get_all(Forms::hasPost('show_inactive'));
+  Forms::start();
   Table::start('tablestyle grid width30');
   $th = array(_('Type Name'), _('Factor'), _('Tax Incl'), '', '');
-   Form::inactiveControlCol($th);
+   Forms::inactiveControlCol($th);
   Table::header($th);
   $k          = 0;
   $base_sales = DB_Company::get_base_sales_type();
@@ -66,12 +66,12 @@
     }
     Cell::label($f);
     Cell::label($myrow["tax_included"] ? _('Yes') : _('No'), 'class=center');
-     Form::inactiveControlCell($myrow["id"], $myrow["inactive"], 'sales_types', 'id');
-    Form::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
-    Form::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
+     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'sales_types', 'id');
+    Forms::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
+    Forms::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
     Row::end();
   }
-   Form::inactiveControlRow($th);
+   Forms::inactiveControlRow($th);
   Table::end();
   Event::warning(_("Marked sales type is the company base pricelist for prices calculations."), 0, 0, "class='overduefg'");
   if (!isset($_POST['tax_included'])) {
@@ -88,15 +88,15 @@
       $_POST['tax_included'] = $myrow["tax_included"];
       $_POST['factor']       = Num::format($myrow["factor"], 4);
     }
-    Form::hidden('selected_id', $selected_id);
+    Forms::hidden('selected_id', $selected_id);
   } else {
     $_POST['factor'] = Num::format(1, 4);
   }
-   Form::textRowEx(_("Sales Type Name") . ':', 'sales_type', 20);
-   Form::AmountRow(_("Calculation factor") . ':', 'factor', null, null, null, 4);
-   Form::checkRow(_("Tax included") . ':', 'tax_included', $_POST['tax_included']);
+   Forms::textRowEx(_("Sales Type Name") . ':', 'sales_type', 20);
+   Forms::AmountRow(_("Calculation factor") . ':', 'factor', null, null, null, 4);
+   Forms::checkRow(_("Tax included") . ':', 'tax_included', $_POST['tax_included']);
   Table::end(1);
-  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Form::end();
+  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Forms::end();
   Page::end();
 

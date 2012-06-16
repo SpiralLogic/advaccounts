@@ -141,7 +141,7 @@
       while ($unit = DB::fetch($result)) {
         $units[$unit['abbr']] = $unit['name'];
       }
-      echo Form::arraySelect($name, $value, $units, array('disabled' => !$enabled));
+      echo Forms::arraySelect($name, $value, $units, array('disabled' => !$enabled));
       echo "</td></tr>\n";
     }
     /**
@@ -161,6 +161,6 @@
         $units[$unit['abbr']] = $unit['name'];
       }
 
-      return Form::arraySelect($name, $value, $units, array('disabled' => !$enabled));
+      return Forms::arraySelect($name, $value, $units, array('disabled' => !$enabled));
     }
   }

@@ -116,7 +116,7 @@
         echo "<td class='label'>$label</td>\n";
       }
       echo "<td>";
-      echo Form::selectBox($name, $selected_id, $sql, 'id', 'pos_name', array(
+      echo Forms::selectBox($name, $selected_id, $sql, 'id', 'pos_name', array(
                                                                         'select_submit' => $submit_on_change,
                                                                         'async'         => true,
                                                                         'spec_option'   => $spec_option,
@@ -137,7 +137,7 @@
 
         return false;
       }
-      if (!Form::hasPost('cash') && !Form::hasPost('credit')) {
+      if (!Forms::hasPost('cash') && !Forms::hasPost('credit')) {
         Event::error(_("You must allow cash or credit sale."));
         JS::set_focus('credit');
 

@@ -474,7 +474,7 @@
       if ($url != "") {
         $pars = Display::access_string($label);
         if (User::graphic_links() && $icon) {
-          $pars[0] = Form::setIcon($icon, $pars[0]);
+          $pars[0] = Forms::setIcon($icon, $pars[0]);
         }
         $preview_str = "<a target='_blank' $class $id href='/" . e(ltrim($url, '/')) . "' $pars[1]>$pars[0]</a>";
       } else {

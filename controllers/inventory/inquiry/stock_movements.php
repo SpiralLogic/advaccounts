@@ -17,18 +17,18 @@
   if (isset($_GET['stock_id'])) {
     $_POST['stock_id'] = $_GET['stock_id'];
   }
-  Form::start();
+  Forms::start();
   if (!Input::post('stock_id')) {
     Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   }
   Table::start('tablestyle_noborder');
   Item::cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], false, true, false);
   Inv_Location::cells(_("From Location:"), 'StockLocation', null);
-   Form::dateCells(_("From:"), 'AfterDate', '', null, -30);
-   Form::dateCells(_("To:"), 'BeforeDate');
-  Form::submitCells('ShowMoves', _("Show Movements"), '', _('Refresh Inquiry'), 'default');
+   Forms::dateCells(_("From:"), 'AfterDate', '', null, -30);
+   Forms::dateCells(_("To:"), 'BeforeDate');
+  Forms::submitCells('ShowMoves', _("Show Movements"), '', _('Refresh Inquiry'), 'default');
   Table::end();
-  Form::end();
+  Forms::end();
   Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   $before_date = Dates::date2sql($_POST['BeforeDate']);
   $after_date  = Dates::date2sql($_POST['AfterDate']);

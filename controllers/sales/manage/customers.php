@@ -121,12 +121,12 @@
     } //end if Delete Customer
   }
   Validation::check(Validation::SALES_TYPES, _("There are no sales types defined. Please define at least one sales type before adding a customer."));
-  Form::start();
+  Forms::start();
   if (Validation::check(Validation::CUSTOMERS, _('There are no customers.'))) {
     Table::start('tablestyle_noborder');
     Row::start();
-    Debtor::cells(_("Select a customer: "), 'customer_id', NULL, _('New customer'), TRUE, Form::hasPost('show_inactive'));
-     Form::checkCells(_("Show inactive:"), 'show_inactive', NULL, TRUE);
+    Debtor::cells(_("Select a customer: "), 'customer_id', NULL, _('New customer'), TRUE, Forms::hasPost('show_inactive'));
+     Forms::checkCells(_("Show inactive:"), 'show_inactive', NULL, TRUE);
     Row::end();
     Table::end();
     if (Input::post('_show_inactive_update')) {
@@ -135,7 +135,7 @@
     }
   }
   else {
-    Form::hidden('customer_id');
+    Forms::hidden('customer_id');
   }
   if ($new_customer) {
     $_POST['CustName'] = $_POST['cust_ref'] = $_POST['address'] = $_POST['tax_id'] = '';
@@ -174,24 +174,24 @@
   Table::startOuter('tablestyle2');
   Table::section(1);
   Table::sectionTitle(_("Name and Address"));
-   Form::textRow(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 80);
-   Form::textRow(_("Customer Short Name:"), 'cust_ref', NULL, 30, 30);
-   Form::textareaRow(_("Address:"), 'address', $_POST['address'], 35, 5);
-   Form::emailRow(_("E-mail:"), 'email', NULL, 40, 40);
-   Form::textRow(_("GSTNo:"), 'tax_id', NULL, 40, 40);
+   Forms::textRow(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 80);
+   Forms::textRow(_("Customer Short Name:"), 'cust_ref', NULL, 30, 30);
+   Forms::textareaRow(_("Address:"), 'address', $_POST['address'], 35, 5);
+   Forms::emailRow(_("E-mail:"), 'email', NULL, 40, 40);
+   Forms::textRow(_("GSTNo:"), 'tax_id', NULL, 40, 40);
   if ($new_customer) {
     GL_Currency::row(_("Customer's Currency:"), 'curr_code', $_POST['curr_code']);
   }
   else {
     Row::label(_("Customer's Currency:"), $_POST['curr_code']);
-    Form::hidden('curr_code', $_POST['curr_code']);
+    Forms::hidden('curr_code', $_POST['curr_code']);
   }
   Sales_Type::row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
   Table::section(2);
   Table::sectionTitle(_("Sales"));
-   Form::percentRow(_("Discount Percent:"), 'discount', $_POST['discount']);
-   Form::percentRow(_("Prompt Payment Discount Percent:"), 'payment_discount', $_POST['payment_discount']);
-   Form::AmountRow(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
+   Forms::percentRow(_("Discount Percent:"), 'discount', $_POST['discount']);
+   Forms::percentRow(_("Prompt Payment Discount Percent:"), 'payment_discount', $_POST['payment_discount']);
+   Forms::AmountRow(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
   GL_UI::payment_terms_row(_("Payment Terms:"), 'payment_terms', $_POST['payment_terms']);
   Sales_CreditStatus::row(_("Credit Status:"), 'credit_status', $_POST['credit_status']);
   $dim = DB_Company::get_pref('use_dimension');
@@ -202,10 +202,10 @@
     Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', $_POST['dimension2_id'], TRUE, " ", FALSE, 2);
   }
   if ($dim < 1) {
-    Form::hidden('dimension_id', 0);
+    Forms::hidden('dimension_id', 0);
   }
   if ($dim < 2) {
-    Form::hidden('dimension2_id', 0);
+    Forms::hidden('dimension2_id', 0);
   }
   if (!$new_customer) {
     Row::start();
@@ -215,21 +215,21 @@
       '&frame=1' : ''));
     Row::end();
   }
-   Form::textareaRow(_("General Notes:"), 'notes', NULL, 35, 5);
-   Form::recordStatusListRow(_("Customer status:"), 'inactive');
+   Forms::textareaRow(_("General Notes:"), 'notes', NULL, 35, 5);
+   Forms::recordStatusListRow(_("Customer status:"), 'inactive');
   Table::endOuter(1);
   Display::div_start('controls');
   if ($new_customer) {
-    Form::submitCenter('submit', _("Add New Customer"), TRUE, '', 'default');
+    Forms::submitCenter('submit', _("Add New Customer"), TRUE, '', 'default');
   }
   else {
-    Form::submitCenterBegin('submit', _("Update Customer"), _('Update customer data'), Input::request('frame') ? TRUE : 'default');
-    Form::submitReturn('select', Input::post('customer_id'), _("Select this customer and return to document entry."));
-    Form::submitCenterEnd('delete', _("Delete Customer"), _('Delete customer data if have been never used'), TRUE);
+    Forms::submitCenterBegin('submit', _("Update Customer"), _('Update customer data'), Input::request('frame') ? TRUE : 'default');
+    Forms::submitReturn('select', Input::post('customer_id'), _("Select this customer and return to document entry."));
+    Forms::submitCenterEnd('delete', _("Delete Customer"), _('Delete customer data if have been never used'), TRUE);
   }
   Display::div_end();
-  Form::hidden('frame', Input::request('frame'));
-  Form::end();
+  Forms::hidden('frame', Input::request('frame'));
+  Forms::end();
   Page::end();
 
 

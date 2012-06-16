@@ -21,7 +21,7 @@
       Table::startOuter('tablestyle2 width90'); // outer table
       Table::section(1);
       Bank_Account::row($payment ? _("From:") : _("To:"), 'bank_account', null, true);
-       Form::dateRow(_("Date:"), 'date_', '', true, 0, 0, 0, null, true);
+       Forms::dateRow(_("Date:"), 'date_', '', true, 0, 0, 0, null, true);
       Table::section(2, "33%");
       if (!isset($_POST['PayType'])) {
         if (isset($_GET['PayType'])) {
@@ -47,7 +47,7 @@
       GL_UI::payment_person_type_row($payment ? _("Pay To:") : _("From:"), 'PayType', $_POST['PayType'], true);
       switch ($_POST['PayType']) {
         case PT_MISC :
-           Form::textRowEx($payment ? _("To the Order of:") : _("Name:"), 'person_id', 40, 50);
+           Forms::textRowEx($payment ? _("To the Order of:") : _("Name:"), 'person_id', 40, 50);
           break;
         //case PT_WORKORDER :
         //	workorders_list_row(_("Work Order:"), 'person_id', null);
@@ -62,17 +62,17 @@
             Debtor_Branch::row(_("Branch:"), $_POST['person_id'], 'PersonDetailID', null, false, true, true, true);
           } else {
             $_POST['PersonDetailID'] = ANY_NUMERIC;
-            Form::hidden('PersonDetailID');
+            Forms::hidden('PersonDetailID');
           }
           break;
         case PT_QUICKENTRY :
           GL_QuickEntry::row(_("Type") . ":", 'person_id', null, ($payment ? QE_PAYMENT : QE_DEPOSIT), true);
           $qid = GL_QuickEntry::get(Input::post('person_id'));
-          if (Form::isListUpdated('person_id')) {
+          if (Forms::isListUpdated('person_id')) {
             unset($_POST['total_amount']); // enable default
             Ajax::i()->activate('total_amount');
           }
-           Form::AmountRow($qid['base_desc'] . ":", 'total_amount', Num::price_format($qid['base_amount']), null, "&nbsp;&nbsp;" . Form::submit('go', _("Go"), false, false, true));
+           Forms::AmountRow($qid['base_desc'] . ":", 'total_amount', Num::price_format($qid['base_amount']), null, "&nbsp;&nbsp;" . Forms::submit('go', _("Go"), false, false, true));
           break;
         //case payment_person_types::Project() :
         //	Dimensions::select_row(_("Dimension:"), 'person_id', $_POST['person_id'], false, null, true);
@@ -83,9 +83,9 @@
       GL_ExchangeRate::display($bank_currency, $person_currency, $_POST['date_']);
       Table::section(3, "33%");
       if (isset($_GET['NewPayment'])) {
-         Form::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_BANKPAYMENT));
+         Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_BANKPAYMENT));
       } else {
-         Form::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_BANKDEPOSIT));
+         Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_BANKDEPOSIT));
       }
       Table::endOuter(1); // outer table
       Display::div_end();
@@ -123,7 +123,7 @@
       }
       Table::header($th);
       $k  = 0; //row colour counter
-      $id = Form::findPostPrefix(MODE_EDIT);
+      $id = Forms::findPostPrefix(MODE_EDIT);
       foreach ($order->gl_items as $line => $item) {
         if ($id != $line) {
           Cell::label($item->code_id);
@@ -141,8 +141,8 @@
             Cell::amount($item->amount);
           }
           Cell::label($item->reference);
-          Form::buttonEditCell("Edit$line", _("Edit"), _('Edit document line'));
-          Form::buttonDeleteCell("Delete$line", _("Delete"), _('Remove line from document'));
+          Forms::buttonEditCell("Edit$line", _("Edit"), _('Edit document line'));
+          Forms::buttonDeleteCell("Delete$line", _("Delete"), _('Remove line from document'));
           Row::end();
         } else {
           Bank_UI::item_controls($order, $dim, $line);
@@ -168,7 +168,7 @@
     {
       $payment = $order->trans_type == ST_BANKPAYMENT;
       Row::start();
-      $id = Form::findPostPrefix(MODE_EDIT);
+      $id = Forms::findPostPrefix(MODE_EDIT);
       if ($Index != -1 && $Index == $id) {
         $item                   = $order->gl_items[$Index];
         $_POST['code_id']       = $item->code_id;
@@ -177,7 +177,7 @@
         $_POST['amount']        = Num::price_format(abs($item->amount));
         $_POST['description']   = $item->description;
         $_POST['LineMemo']      = $item->reference;
-        Form::hidden('Index', $id);
+        Forms::hidden('Index', $id);
         echo GL_UI::all('code_id', null, true, true);
         if ($dim >= 1) {
           Dimensions::cells(null, 'dimension_id', null, true, " ", false, 1);
@@ -214,26 +214,26 @@
         }
       }
       if ($dim < 1) {
-        Form::hidden('dimension_id', 0);
+        Forms::hidden('dimension_id', 0);
       }
       if ($dim < 2) {
-        Form::hidden('dimension2_id', 0);
+        Forms::hidden('dimension2_id', 0);
       }
-       Form::amountCells(null, 'amount');
-       Form::textCellsEx(null, 'LineMemo', 35, 255);
+       Forms::amountCells(null, 'amount');
+       Forms::textCellsEx(null, 'LineMemo', 35, 255);
       if ($id != -1) {
-        Form::buttonCell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
-        Form::buttonCell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
+        Forms::buttonCell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
+        Forms::buttonCell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
         JS::set_focus('amount');
       } else {
-        Form::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
+        Forms::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
       }
       Row::end();
     }
     public static function option_controls()
     {
       echo "<br><table class='center'>";
-       Form::textareaRow(_("Memo"), 'memo_', null, 50, 3);
+       Forms::textareaRow(_("Memo"), 'memo_', null, 50, 3);
       echo "</table>";
     }
     /**
@@ -254,7 +254,7 @@
                             WHERE bank_act=" . DB::escape($account) . " AND reconciled IS NOT null AND amount!=0
                             GROUP BY reconciled";
 
-      return Form::selectBox($name, $selected_id, $sql, 'id', 'reconciled', array(
+      return Forms::selectBox($name, $selected_id, $sql, 'id', 'reconciled', array(
                                                                             'spec_option'   => $special_option,
                                                                             'format'        => '_format_date',
                                                                             'spec_id'       => '',
@@ -312,7 +312,7 @@
         echo "<tr><td class='label'>$label</td>\n";
       }
       echo "<td>";
-      echo Form::selectBox($name, $selected_id, $sql, 'id', 'bank_account_name', array(
+      echo Forms::selectBox($name, $selected_id, $sql, 'id', 'bank_account_name', array(
                                                                                  'format'        => '_format_add_curr',
                                                                                  'select_submit' => $submit_on_change,
                                                                                  'async'         => true

@@ -31,16 +31,16 @@
     }
     Ajax::i()->activate('orders_tbl');
   }
-  Form::start();
+  Forms::start();
   Table::start('tablestyle_noborder');
   Row::start();
   Creditor::cells(_("Supplier: "), 'supplier_id', Input::post('supplier_id'), true);
-   Form::refCells(_("#:"), 'order_number', '', null, '', true);
-   Form::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
-   Form::dateCells(_("To:"), 'OrdersToDate');
+   Forms::refCells(_("#:"), 'order_number', '', null, '', true);
+   Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
+   Forms::dateCells(_("To:"), 'OrdersToDate');
   Inv_Location::cells(_("Location:"), 'StockLocation', null, true);
   //Item::cells(_("Item:"), 'SelectStockFromList', null, true,false,false,false,true);
-  Form::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
+  Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
   Row::end();
   Table::end();
   //figure out the sql required from the inputs available
@@ -112,5 +112,5 @@
   $table->width = "80%";
   DB_Pager::display($table);
   Creditor::addInfoDialog('.pagerclick');
-  Form::end();
+  Forms::end();
   Page::end();

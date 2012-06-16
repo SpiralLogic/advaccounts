@@ -26,7 +26,7 @@
   Page::start($_SESSION['page_title'], SA_SALESCREDIT);
   Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
   Validation::check(Validation::BRANCHES_ACTIVE, _("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
-  if (Form::isListUpdated('branch_id')) {
+  if (Forms::isListUpdated('branch_id')) {
     // when branch is selected via external editor also customer can change
     $br                   = Sales_Branch::get(Input::post('branch_id'));
     $_POST['customer_id'] = $br['debtor_id'];
@@ -50,7 +50,7 @@
     Orders::session_delete($_POST['order_id']);
     $order = handle_new_credit($order_no);
   }
-  $id = Form::findPostPrefix(MODE_DELETE);
+  $id = Forms::findPostPrefix(MODE_DELETE);
   if ($id != -1) {
     $order->remove_from_order($line_no);
     Item_Line::start_focus('_stock_id_edit');
@@ -82,8 +82,8 @@
     Dates::new_doc_date($credit->document_date);
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$credit_no");
   } /*end of process credit note */
-  Form::start();
-  Form::hidden('order_id', $_POST['order_id']);
+  Forms::start();
+  Forms::hidden('order_id', $_POST['order_id']);
   $customer_error = Sales_Credit::header($order);
   if ($customer_error == "") {
     Table::start('tables_style2 width90 pad10');
@@ -95,10 +95,10 @@
   } else {
     Event::error($customer_error);
   }
-  Form::submitCenterBegin(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
-  Form::submitCenterEnd('ProcessCredit', _("Process Credit Note"), '', false);
+  Forms::submitCenterBegin(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
+  Forms::submitCenterEnd('ProcessCredit', _("Process Credit Note"), '', false);
   echo "</tr></table></div>";
-  Form::end();
+  Forms::end();
   Page::end();
   /***
    * @param $order

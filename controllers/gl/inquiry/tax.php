@@ -34,16 +34,16 @@
    */
   function tax_inquiry_controls()
   {
-    Form::start();
+    Forms::start();
     //Table::start('tablestyle2');
     Table::start('tablestyle_noborder');
     Row::start();
-     Form::dateCells(_("from:"), 'TransFromDate', '', null, -30);
-     Form::dateCells(_("to:"), 'TransToDate');
-    Form::submitCells('Show', _("Show"), '', '', 'default');
+     Forms::dateCells(_("from:"), 'TransFromDate', '', null, -30);
+     Forms::dateCells(_("to:"), 'TransToDate');
+    Forms::submitCells('Show', _("Show"), '', '', 'default');
     Row::end();
     Table::end();
-    Form::end();
+    Forms::end();
   }
 
   /**

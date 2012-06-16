@@ -46,7 +46,7 @@
     }
     Ajax::i()->activate('_page_body');
   }
-  Form::start();
+  Forms::start();
   Table::start('tablestyle grid');
   $th = array(
     _("Version"), _("Description"), _("Sql file"), _("Install"), _("Force upgrade")
@@ -69,14 +69,14 @@
     }
     else {
       if (!$check) {
-         Form::checkCells(NULL, 'install_' . $i, 0);
+         Forms::checkCells(NULL, 'install_' . $i, 0);
       }
       else {
         Cell::label("<span class=redfg>" . sprintf(_("Partially installed (%s)"), $check) . "</span>");
         $partial++;
       }
     }
-     Form::checkCells(NULL, 'force_' . $i, 0);
+     Forms::checkCells(NULL, 'force_' . $i, 0);
     Row::end();
   }
   Table::end(1);
@@ -85,8 +85,8 @@
 You have to clean database manually to enable them, or try to perform forced upgrade."));
     Display::br();
   }
-  Form::submitCenter('Upgrade', _('Upgrade system'), TRUE, _('Save database and perform upgrade'), 'process');
-  Form::end();
+  Forms::submitCenter('Upgrade', _('Upgrade system'), TRUE, _('Save database and perform upgrade'), 'process');
+  Forms::end();
   Page::end();
   /**
    * @param      $pref

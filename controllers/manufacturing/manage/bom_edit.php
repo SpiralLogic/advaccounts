@@ -79,8 +79,8 @@
       Cell::label($myrow["WorkCentreDescription"]);
       Cell::qty($myrow["quantity"], false, Item::qty_dec($myrow["component"]));
       Cell::label($myrow["units"]);
-      Form::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
-      Form::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
+      Forms::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
+      Forms::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
       Row::end();
     } //END WHILE LIST LOOP
     Table::end();
@@ -151,22 +151,22 @@
     $selected_id = -1;
     unset($_POST['quantity']);
   }
-  Form::start();
-  Form::start(false);
+  Forms::start();
+  Forms::start(false);
   Table::start('tablestyle_noborder');
   Item_UI::manufactured_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
-  if (Form::isListUpdated('stock_id')) {
+  if (Forms::isListUpdated('stock_id')) {
     Ajax::i()->activate('_page_body');
   }
   Table::end();
   Display::br();
-  Form::end();
+  Forms::end();
   if (Input::post('stock_id') != '') { //Parent Item selected so display bom or edit component
     $selected_parent = $_POST['stock_id'];
     if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
       on_submit($selected_parent, $selected_id);
     }
-    Form::start();
+    Forms::start();
     display_bom_items($selected_parent);
     echo '<br>';
     Table::start('tablestyle2');
@@ -184,7 +184,7 @@
         $_POST['quantity']         = Num::format($myrow["quantity"], Item::qty_dec($myrow["component"]));
         Row::label(_("Component:"), $myrow["component"] . " - " . $myrow["description"]);
       }
-      Form::hidden('selected_id', $selected_id);
+      Forms::hidden('selected_id', $selected_id);
     } else {
       Row::start();
       Cell::label(_("Component:"));
@@ -196,15 +196,15 @@
       echo "</td>";
       Row::end();
     }
-    Form::hidden('stock_id', $selected_parent);
+    Forms::hidden('stock_id', $selected_parent);
     Inv_Location::row(_("Location to Draw From:"), 'loc_code', null);
     workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);
     $dec               = Item::qty_dec(Input::post('component'));
     $_POST['quantity'] = Num::format(Validation::input_num('quantity', 1), $dec);
-     Form::qtyRow(_("Quantity:"), 'quantity', null, null, null, $dec);
+     Forms::qtyRow(_("Quantity:"), 'quantity', null, null, null, $dec);
     Table::end(1);
-    Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
-    Form::end();
+    Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+    Forms::end();
   }
   // ----------------------------------------------------------------------------------
   Page::end();

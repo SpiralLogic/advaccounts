@@ -78,7 +78,7 @@
     Creditor_Trans::killInstance();
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$invoice_no");
   }
-  $id = Form::findPostPrefix('grn_item_id');
+  $id = Forms::findPostPrefix('grn_item_id');
   if ($id != -1) {
     commit_item_data($id);
   }
@@ -91,13 +91,13 @@
       }
     }
   }
-  $id3 = Form::findPostPrefix(MODE_DELETE);
+  $id3 = Forms::findPostPrefix(MODE_DELETE);
   if ($id3 != -1) {
     Creditor_Trans::i()->remove_grn_from_trans($id3);
     Ajax::i()->activate('grn_items');
     Ajax::i()->activate('inv_tot');
   }
-  $id4 = Form::findPostPrefix('Delete2');
+  $id4 = Forms::findPostPrefix('Delete2');
   if ($id4 != -1) {
     Creditor_Trans::i()->remove_gl_codes_from_trans($id4);
     unset($_POST['gl_code'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_'], $_POST['AddGLCodeToTrans']);
@@ -116,7 +116,7 @@
     Ajax::i()->activate('total_amount');
     Ajax::i()->activate('inv_tot');
   }
-  Form::start();
+  Forms::start();
   Purch_Invoice::header(Creditor_Trans::i());
   if ($_POST['supplier_id'] != '') {
     $total_grn_value = Purch_GRN::display_items(Creditor_Trans::i(), 1);
@@ -133,9 +133,9 @@
     Ajax::i()->activate('inv_tot');
   }
   Display::br();
-  Form::submitCenter('PostCreditNote', _("Enter Credit Note"), true, '', 'default');
+  Forms::submitCenter('PostCreditNote', _("Enter Credit Note"), true, '', 'default');
   Display::br();
-  Form::end();
+  Forms::end();
   $js
     = <<<JS
            $("#wrapper").delegate('.amount','change',function() {

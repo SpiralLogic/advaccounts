@@ -50,7 +50,7 @@
     Page::end();
     exit;
   }
-  Form::start();
+  Forms::start();
   $myrow             = WO::get($selected_id);
   $_POST['released'] = $myrow["released"];
   $_POST['memo_']    = "";
@@ -58,13 +58,13 @@
     Table::start('tablestyle2');
     Row::label(_("Work Order #:"), $selected_id);
     Row::label(_("Work Order Reference:"), $myrow["wo_ref"]);
-     Form::dateRow(_("Released Date") . ":", 'released_date');
-     Form::textareaRow(_("Memo:"), 'memo_', $_POST['memo_'], 40, 5);
+     Forms::dateRow(_("Released Date") . ":", 'released_date');
+     Forms::textareaRow(_("Memo:"), 'memo_', $_POST['memo_'], 40, 5);
     Table::end(1);
-    Form::submitCenter('release', _("Release Work Order"), true, '', 'default');
-    Form::hidden('selected_id', $selected_id);
-    Form::hidden('stock_id', $myrow['stock_id']);
+    Forms::submitCenter('release', _("Release Work Order"), true, '', 'default');
+    Forms::hidden('selected_id', $selected_id);
+    Forms::hidden('stock_id', $myrow['stock_id']);
   }
-  Form::end();
+  Forms::end();
   Page::end();
 

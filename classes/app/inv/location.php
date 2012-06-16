@@ -173,7 +173,7 @@
       if (!$selected_id && !isset($_POST[$name])) {
         $selected_id = $all_option === true ? -1 : Config::get('default.location');
       }
-      return Form::selectBox($name, $selected_id, $sql, 'loc_code', 'location_name', array(
+      return Forms::selectBox($name, $selected_id, $sql, 'loc_code', 'location_name', array(
                                                                                      'spec_option'   => $all_option === true ?
                                                                                        _("All Locations") : $all_option,
                                                                                      'spec_id'       => ALL_TEXT,

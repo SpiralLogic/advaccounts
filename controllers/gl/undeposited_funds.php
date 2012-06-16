@@ -23,7 +23,7 @@
     }
   }
   $update_pager = false;
-  if (Form::isListUpdated('deposit_date')) {
+  if (Forms::isListUpdated('deposit_date')) {
     $_POST['deposit_date'] = Input::post('deposit_date') == '' ? Dates::today() : ($_POST['deposit_date']);
     update_data();
   }
@@ -38,7 +38,7 @@
     }
     update_data();
   }
-  $id = Form::findPostPrefix('_dep_');
+  $id = Forms::findPostPrefix('_dep_');
   if ($id != -1) {
     change_tpl_flag($id);
   }
@@ -94,21 +94,21 @@
   }
   $_POST['deposited'] = $_POST['to_deposit'];
   Ajax::i()->activate('summary');
-  Form::start();
+  Forms::start();
   echo "<hr>";
   Display::div_start('summary');
   Table::start();
   Table::header(_("Deposit Date"));
   Row::start();
-   Form::dateCells("", "deposit_date", _('Date of funds to deposit'), Input::post('deposit_date') == '', 0, 0, 0, null, false, array('rebind' => false));
+   Forms::dateCells("", "deposit_date", _('Date of funds to deposit'), Input::post('deposit_date') == '', 0, 0, 0, null, false, array('rebind' => false));
   Row::end();
   Table::header(_("Total Amount"));
   Row::start();
   Cell::amount($_POST['deposited'], false, '', "deposited");
-  Form::hidden("to_deposit", $_POST['to_deposit'], true);
+  Forms::hidden("to_deposit", $_POST['to_deposit'], true);
   Row::end();
   Table::end();
-  Form::submitCenter('Deposit', _("Deposit"), true, '', false);
+  Forms::submitCenter('Deposit', _("Deposit"), true, '', false);
   Display::div_end();
   echo "<hr>";
   $date         = Dates::add_days($_POST['deposit_date'], 10);
@@ -136,8 +136,8 @@
   $table->width = "80%";
   DB_Pager::display($table);
   Display::br(1);
-  Form::submitCenter('Deposit', _("Deposit"), true, '', false);
-  Form::end();
+  Forms::submitCenter('Deposit', _("Deposit"), true, '', false);
+  Forms::end();
   Page::end();
   /**
    * @return bool
@@ -169,9 +169,9 @@
     $name      = "dep_" . $row['id'];
     $hidden    = 'amount_' . $row['id'];
     $value     = $row['amount'];
-    $chk_value = Form::hasPost("dep_" . $row['id']);
+    $chk_value = Forms::hasPost("dep_" . $row['id']);
     // save also in hidden field for testing during 'Reconcile'
-    return Form::checkbox(null, $name, $chk_value, true, _('Deposit this transaction')) . Form::hidden($hidden, $value, false);
+    return Forms::checkbox(null, $name, $chk_value, true, _('Deposit this transaction')) . Forms::hidden($hidden, $value, false);
   }
 
   /**
@@ -257,7 +257,7 @@
    */
   function change_tpl_flag($deposit_id)
   {
-    if (!check_date() && Form::hasPost("dep_" . $deposit_id)) // temporary fix
+    if (!check_date() && Forms::hasPost("dep_" . $deposit_id)) // temporary fix
     {
       return false;
     }
@@ -271,7 +271,7 @@
 
                         DB::query($sql, "Can't change undeposited status");*/
     // save last reconcilation status (date, end balance)
-    if (Form::hasPost("dep_" . $deposit_id)) {
+    if (Forms::hasPost("dep_" . $deposit_id)) {
       $_SESSION['undeposited']["dep_" . $deposit_id] = Input::post('amount_' . $deposit_id);
       $_POST['deposited']                            = $_POST['to_deposit'] + Input::post('amount_' . $deposit_id);
     } else {

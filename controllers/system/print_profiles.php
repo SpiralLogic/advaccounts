@@ -44,14 +44,14 @@
   if (Input::post('_profile_id_update')) {
     Ajax::i()->activate('_page_body');
   }
-  Form::start();
+  Forms::start();
   Table::start();
   Reports_UI::print_profiles_row(_('Select printing profile') . ':', 'profile_id', null, _('New printing profile'), true);
   Table::end();
   echo '<hr>';
   Table::start();
   if (Input::post('profile_id') == '') {
-     Form::textRow(_("Printing Profile Name") . ':', 'name', null, 30, 30);
+     Forms::textRow(_("Printing Profile Name") . ':', 'name', null, 30, 30);
   } else {
     Cell::labels(_("Printing Profile Name") . ':', Input::post('profile_id'));
   }
@@ -86,13 +86,13 @@
   }
   Display::div_start('controls');
   if (Input::post('profile_id') == '') {
-    Form::submitCenter('submit', _("Add New Profile"), true, '', 'default');
+    Forms::submitCenter('submit', _("Add New Profile"), true, '', 'default');
   } else {
-    Form::submitCenterBegin('submit', _("Update Profile"), _('Update printer profile'), 'default');
-    Form::submitCenterEnd('delete', _("Delete Profile"), _('Delete printer profile (only if not used by any user)'), true);
+    Forms::submitCenterBegin('submit', _("Update Profile"), _('Update printer profile'), 'default');
+    Forms::submitCenterEnd('delete', _("Delete Profile"), _('Delete printer profile (only if not used by any user)'), true);
   }
   Display::div_end();
-  Form::end();
+  Forms::end();
   Page::end();
   // Returns array of defined reports
   //

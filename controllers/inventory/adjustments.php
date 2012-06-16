@@ -29,7 +29,7 @@
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$trans_no");
   } /*end of process credit note */
 
-  $id = Form::findPostPrefix(MODE_DELETE);
+  $id = Forms::findPostPrefix(MODE_DELETE);
   if ($id != -1) {
     handle_delete_item($id);
   }
@@ -45,15 +45,15 @@
   if (isset($_GET['NewAdjustment']) || !isset($_SESSION['adj_items'])) {
     handle_new_order();
   }
-  Form::start();
+  Forms::start();
   Inv_Adjustment::header($_SESSION['adj_items']);
   Table::startOuter('tablestyle width80 pad10');
   Inv_Adjustment::display_items(_("Adjustment Items"), $_SESSION['adj_items']);
   Inv_Adjustment::option_controls();
   Table::endOuter(1, FALSE);
-  Form::submitCenterBegin('Update', _("Update"), '', NULL);
-  Form::submitCenterEnd('Process', _("Process Adjustment"), '', 'default');
-  Form::end();
+  Forms::submitCenterBegin('Update', _("Update"), '', NULL);
+  Forms::submitCenterEnd('Process', _("Process Adjustment"), '', 'default');
+  Forms::end();
   Page::end();
   /**
    * @return bool

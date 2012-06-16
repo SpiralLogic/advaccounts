@@ -57,26 +57,26 @@
     }
   }
   $sql = "SELECT * FROM groups";
-  if (!Form::hasPost('show_inactive')) {
+  if (!Forms::hasPost('show_inactive')) {
     $sql .= " WHERE !inactive";
   }
   $sql .= " ORDER BY description";
   $result = DB::query($sql, "could not get groups");
-  Form::start();
+  Forms::start();
   Table::start('tablestyle grid width30');
   $th = array(_("Group Name"), "", "");
-   Form::inactiveControlCol($th);
+   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
 
     Cell::label($myrow["description"]);
-     Form::inactiveControlCell($myrow["id"], $myrow["inactive"], 'groups', 'id');
-    Form::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
-    Form::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
+     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'groups', 'id');
+    Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
+    Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     Row::end();
   }
-   Form::inactiveControlRow($th);
+   Forms::inactiveControlRow($th);
   Table::end();
   echo '<br>';
   Table::start('tablestyle2');
@@ -88,11 +88,11 @@
       $myrow = DB::fetch($result);
       $_POST['description'] = $myrow["description"];
     }
-    Form::hidden("selected_id", $selected_id);
+    Forms::hidden("selected_id", $selected_id);
   }
-   Form::textRowEx(_("Group Name:"), 'description', 30);
+   Forms::textRowEx(_("Group Name:"), 'description', 30);
   Table::end(1);
-  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Form::end();
+  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Forms::end();
   Page::end();
 

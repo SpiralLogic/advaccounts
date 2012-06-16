@@ -35,11 +35,11 @@
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Sales_CreditStatus::get_all(Form::hasPost('show_inactive'));
-  Form::start();
+  $result = Sales_CreditStatus::get_all(Forms::hasPost('show_inactive'));
+  Forms::start();
   Table::start('tablestyle grid width40');
   $th = array(_("Description"), _("Dissallow Invoices"), '', '');
-   Form::inactiveControlCol($th);
+   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
@@ -52,12 +52,12 @@
     }
     Cell::label($myrow["reason_description"]);
     Cell::label($disallow_text);
-     Form::inactiveControlCell($myrow["id"], $myrow["inactive"], 'credit_status', 'id');
-    Form::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
-    Form::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
+     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'credit_status', 'id');
+    Forms::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
+    Forms::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
     Row::end();
   }
-   Form::inactiveControlRow($th);
+   Forms::inactiveControlRow($th);
   Table::end();
   echo '<br>';
   Table::start('tablestyle2');
@@ -68,11 +68,11 @@
       $_POST['reason_description'] = $myrow["reason_description"];
       $_POST['DisallowInvoices'] = $myrow["dissallow_invoices"];
     }
-    Form::hidden('selected_id', $selected_id);
+    Forms::hidden('selected_id', $selected_id);
   }
-   Form::textRowEx(_("Description:"), 'reason_description', 50);
-   Form::yesnoListRow(_("Dissallow invoicing ?"), 'DisallowInvoices', NULL);
+   Forms::textRowEx(_("Description:"), 'reason_description', 50);
+   Forms::yesnoListRow(_("Dissallow invoicing ?"), 'DisallowInvoices', NULL);
   Table::end(1);
-  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Form::end();
+  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Forms::end();
   Page::end();

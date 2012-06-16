@@ -100,7 +100,7 @@
      */
     public static function select($name, $selected_id = NULL, $spec_opt = FALSE, $submit_on_change = FALSE) {
       $sql = "SELECT category_id, description, inactive FROM stock_category";
-      return Form::selectBox($name, $selected_id, $sql, 'category_id', 'description', array(
+      return Forms::selectBox($name, $selected_id, $sql, 'category_id', 'description', array(
         'order' => 'category_id', 'spec_option' => $spec_opt, 'spec_id' => -1, 'select_submit' => $submit_on_change, 'async' => TRUE
       ));
     }

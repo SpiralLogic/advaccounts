@@ -83,16 +83,16 @@
     $_POST['show_inactive'] = $sav;
   }
   $sql = "SELECT s.*,u.user_id,u.id FROM salesman s, users u WHERE s.user_id=u.id";
-  if (!Form::hasPost('show_inactive')) {
+  if (!Forms::hasPost('show_inactive')) {
     $sql .= " AND !s.inactive";
   }
   $result = DB::query($sql, "could not get sales persons");
-  Form::start();
+  Forms::start();
   Table::start('tablestyle grid nowrap width80');
   $th = array(
     _("Name"), _("User"), _("Phone"), _("Fax"), _("Email"), _("Provision"), _("Break Pt."), _("Provision") . " 2", "", ""
   );
-   Form::inactiveControlCol($th);
+   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
@@ -105,12 +105,12 @@
     Cell::label(Num::percent_format($myrow["provision"]) . " %", ' class="right nowrap"');
     Cell::amount($myrow["break_pt"]);
     Cell::label(Num::percent_format($myrow["provision2"]) . " %", ' class="right nowrap"');
-     Form::inactiveControlCell($myrow["salesman_code"], $myrow["inactive"], 'salesman', 'salesman_code');
-    Form::buttonEditCell("Edit" . $myrow["salesman_code"], _("Edit"));
-    Form::buttonDeleteCell("Delete" . $myrow["salesman_code"], _("Delete"));
+     Forms::inactiveControlCell($myrow["salesman_code"], $myrow["inactive"], 'salesman', 'salesman_code');
+    Forms::buttonEditCell("Edit" . $myrow["salesman_code"], _("Edit"));
+    Forms::buttonDeleteCell("Delete" . $myrow["salesman_code"], _("Delete"));
     Row::end();
   } //END WHILE LIST LOOP
-   Form::inactiveControlRow($th);
+   Forms::inactiveControlRow($th);
   Table::end();
   echo '<br>';
   $_POST['salesman_email'] = "";
@@ -129,7 +129,7 @@
       $_POST['break_pt'] = Num::price_format($myrow["break_pt"]);
       $_POST['provision2'] = Num::percent_format($myrow["provision2"]);
     }
-    Form::hidden('selected_id', $selected_id);
+    Forms::hidden('selected_id', $selected_id);
   }
   elseif ($Mode != ADD_ITEM) {
     $_POST['provision'] = Num::percent_format(0);
@@ -138,16 +138,16 @@
   }
   Table::start('tablestyle2');
   Users::row(_('User:'), 'user_id');
-   Form::textRowEx(_("Sales person name:"), 'salesman_name', 30);
-   Form::textRowEx(_("Telephone number:"), 'salesman_phone', 20);
-   Form::textRowEx(_("Fax number:"), 'salesman_fax', 20);
-   Form::emailRowEx(_("E-mail:"), 'salesman_email', 40);
-   Form::percentRow(_("Provision") . ':', 'provision');
-   Form::AmountRow(_("Break Pt.:"), 'break_pt');
-   Form::percentRow(_("Provision") . " 2:", 'provision2');
+   Forms::textRowEx(_("Sales person name:"), 'salesman_name', 30);
+   Forms::textRowEx(_("Telephone number:"), 'salesman_phone', 20);
+   Forms::textRowEx(_("Fax number:"), 'salesman_fax', 20);
+   Forms::emailRowEx(_("E-mail:"), 'salesman_email', 40);
+   Forms::percentRow(_("Provision") . ':', 'provision');
+   Forms::AmountRow(_("Break Pt.:"), 'break_pt');
+   Forms::percentRow(_("Provision") . " 2:", 'provision2');
   Table::end(1);
-  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Form::end();
+  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Forms::end();
   Page::end();
 
 

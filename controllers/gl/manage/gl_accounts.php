@@ -72,12 +72,12 @@
       Ajax::i()->activate('_page_body');
     }
   }
-  Form::start();
+  Forms::start();
   if (Validation::check(Validation::GL_ACCOUNTS)) {
     Table::start('tablestyle_noborder');
     Row::start();
-    GL_UI::all_cells(null, 'AccountList', null, false, false, _('New account'), true, Form::hasPost('show_inactive'));
-     Form::checkCells(_("Show inactive:"), 'show_inactive', null, true);
+    GL_UI::all_cells(null, 'AccountList', null, false, false, _('New account'), true, Forms::hasPost('show_inactive'));
+     Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
     Row::end();
     Table::end();
     if (Input::post('_show_inactive_update')) {
@@ -101,8 +101,8 @@
       $tagids[] = $tag['id'];
     }
     $_POST['account_tags'] = $tagids;
-    Form::hidden('account_code', $_POST['account_code']);
-    Form::hidden('selected_account', $selected_account);
+    Forms::hidden('account_code', $_POST['account_code']);
+    Forms::hidden('selected_account', $selected_account);
     Row::label(_("Account Code:"), $_POST['account_code']);
   } else {
     if (!isset($_POST['account_code'])) {
@@ -111,21 +111,21 @@
       $_POST['account_name'] = $_POST['account_type'] = '';
       $_POST['inactive']     = 0;
     }
-     Form::textRowEx(_("Account Code:"), 'account_code', 11);
+     Forms::textRowEx(_("Account Code:"), 'account_code', 11);
   }
-   Form::textRowEx(_("Account Code 2:"), 'account_code2', 11);
-   Form::textRowEx(_("Account Name:"), 'account_name', 60);
+   Forms::textRowEx(_("Account Code 2:"), 'account_code2', 11);
+   Forms::textRowEx(_("Account Name:"), 'account_name', 60);
   GL_Type::row(_("Account Group:"), 'account_type', null);
   Tags::row(_("Account Tags:"), 'account_tags', 5, TAG_ACCOUNT, true);
-   Form::recordStatusListRow(_("Account status:"), 'inactive');
+   Forms::recordStatusListRow(_("Account status:"), 'inactive');
   Table::end(1);
   if ($selected_account == "") {
-    Form::submitCenter('add', _("Add Account"), true, '', 'default');
+    Forms::submitCenter('add', _("Add Account"), true, '', 'default');
   } else {
-    Form::submitCenterBegin('update', _("Update Account"), '', 'default');
-    Form::submitCenterEnd('delete', _("Delete account"), '', true);
+    Forms::submitCenterBegin('update', _("Update Account"), '', 'default');
+    Forms::submitCenterEnd('delete', _("Delete account"), '', true);
   }
-  Form::end();
+  Forms::end();
   Page::end();
   /**
    * @param $selected_account

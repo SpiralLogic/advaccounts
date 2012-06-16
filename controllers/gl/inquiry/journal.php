@@ -17,16 +17,16 @@
   if (!isset($_POST['filterType'])) {
     $_POST['filterType'] = -1;
   }
-  Form::start();
+  Forms::start();
   Table::start('tablestyle_noborder');
   Row::start();
-   Form::refCells(_("Reference:"), 'Ref', '', null, _('Enter reference fragment or leave empty'));
+   Forms::refCells(_("Reference:"), 'Ref', '', null, _('Enter reference fragment or leave empty'));
   GL_Journal::cells(_("Type:"), "filterType");
-   Form::dateCells(_("From:"), 'FromDate', '', null, 0, -1, 0);
-   Form::dateCells(_("To:"), 'ToDate');
-   Form::checkCells(_("Show closed:"), 'AlsoClosed', null);
-   Form::refCells(_("Memo:"), 'Memo', '', null, _('Enter memo fragment or leave empty'));
-  Form::submitCells('Search', _("Search"), '', '', 'default');
+   Forms::dateCells(_("From:"), 'FromDate', '', null, 0, -1, 0);
+   Forms::dateCells(_("To:"), 'ToDate');
+   Forms::checkCells(_("Show closed:"), 'AlsoClosed', null);
+   Forms::refCells(_("Memo:"), 'Memo', '', null, _('Enter memo fragment or leave empty'));
+  Forms::submitCells('Search', _("Search"), '', '', 'default');
   Row::end();
   Table::end();
   /*
@@ -65,7 +65,7 @@
   if (Input::post('filterType') != -1) {
     $sql .= " AND gl.type=".Input::post('filterType');
   }
-  if (!Form::hasPost('AlsoClosed')) {
+  if (!Forms::hasPost('AlsoClosed')) {
     $sql .= " AND gl_seq=0";
   }
   $sql .= " GROUP BY gl.type, gl.type_no";
@@ -100,7 +100,7 @@
   if (Input::post('filterType') != -1) {
     $sql .= " AND gl.type=" . Input::post('filterType');
   }
-  if (!Form::hasPost('AlsoClosed')) {
+  if (!Forms::hasPost('AlsoClosed')) {
     $sql .= " AND gl_seq=0";
   }
   $sql .= " GROUP BY gl.type, gl.type_no";
@@ -124,13 +124,13 @@
       'insert' => true, 'fun' => 'edit_link'
     )
   );
-  if (!Form::hasPost('AlsoClosed')) {
+  if (!Forms::hasPost('AlsoClosed')) {
     $cols[_("#")] = 'skip';
   }
   $table        =& db_pager::new_db_pager('journal_tbl', $sql, $cols);
   $table->width = "80%";
   DB_Pager::display($table);
-  Form::end();
+  Forms::end();
   Page::end();
   /**
    * @param $row

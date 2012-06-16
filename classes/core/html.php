@@ -108,7 +108,7 @@
         }
         if (is_null($value))continue;
         if ($key == 'input') {
-          $value = \Form::prep_value($value);
+          $value = \Forms::prep_value($value);
         }
         $attrs .= (empty($value) || $key == 'content') ? '' : ' ' . $key . '="' . $value . '"';
       }

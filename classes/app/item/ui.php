@@ -132,7 +132,7 @@
         echo "<td class='label'>$label</td>\n";
       }
       echo "<td>";
-      echo Form::arraySelect($name, $selected_id, $stock_types, array(
+      echo Forms::arraySelect($name, $selected_id, $stock_types, array(
         'select_submit' => TRUE, 'disabled' => !$enabled
       ));
       echo "</td></tr>\n";
@@ -148,7 +148,7 @@
      */
     public static function type($name, $selected_id = NULL, $enabled = TRUE) {
       global $stock_types;
-      return Form::arraySelect($name, $selected_id, $stock_types, array(
+      return Forms::arraySelect($name, $selected_id, $stock_types, array(
         'select_submit' => TRUE, 'disabled' => !$enabled
       ));
     }

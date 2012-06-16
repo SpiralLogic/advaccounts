@@ -61,16 +61,16 @@
     $selected_id = $_POST['selected_id'];
     Ajax::i()->activate('_page_body');
   }
-  if (Form::isListUpdated('stock_id')) {
+  if (Forms::isListUpdated('stock_id')) {
     Ajax::i()->activate('price_table');
   }
   if (Input::request('frame')) {
     if (!Input::post('stock_id') && isset($_GET['stock_id'])) {
       $_POST['stock_id'] = $_GET['stock_id'];
     }
-    Form::start(false, $_SERVER['DOCUMENT_URI'] . '?frame=1');
+    Forms::start(false, $_SERVER['DOCUMENT_URI'] . '?frame=1');
   } else {
-    Form::start();
+    Forms::start();
   }
   if (!Input::post('stock_id')) {
     $_POST['stock_id'] = Session::i()->getGlobal('stock_id');
@@ -80,7 +80,7 @@
     echo Item_Purchase::select('stock_id', $_POST['stock_id'], false, true, false, false);
     echo "<hr></div>";
   } else {
-    Form::hidden('stock_id', null, true);
+    Forms::hidden('stock_id', null, true);
   }
   Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   $mb_flag = WO::get_mb_flag($_POST['stock_id']);
@@ -116,8 +116,8 @@
         Cell::label($myrow["suppliers_uom"]);
         Cell::qty($myrow['conversion_factor'], false, User::exrate_dec());
         Cell::label($myrow["supplier_description"]);
-        Form::buttonEditCell("Edit" . $myrow['supplier_id'], _("Edit"));
-        Form::buttonDeleteCell("Delete" . $myrow['supplier_id'], _("Delete"));
+        Forms::buttonEditCell("Edit" . $myrow['supplier_id'], _("Edit"));
+        Forms::buttonDeleteCell("Delete" . $myrow['supplier_id'], _("Delete"));
         Row::end();
         $j++;
         If ($j == 12) {
@@ -144,25 +144,25 @@
     $_POST['conversion_factor']    = Num::exrate_format($myrow["conversion_factor"]);
   }
   Display::br();
-  Form::hidden('selected_id', $selected_id);
+  Forms::hidden('selected_id', $selected_id);
   Table::start('tableinfo');
   if ($Mode == MODE_EDIT) {
-    Form::hidden('supplier_id');
+    Forms::hidden('supplier_id');
     Row::label(_("Supplier:"), $name);
   } else {
     Creditor::row(_("Supplier:"), 'supplier_id', null, false, true);
     $_POST['price'] = $_POST['suppliers_uom'] = $_POST['conversion_factor'] = $_POST['supplier_description'] = "";
   }
-   Form::AmountRow(_("Price:"), 'price', null, '', Bank_Currency::for_creditor($selected_id), $dec2);
-   Form::textRow(_("Suppliers Unit of Measure:"), 'suppliers_uom', null, null, 51);
+   Forms::AmountRow(_("Price:"), 'price', null, '', Bank_Currency::for_creditor($selected_id), $dec2);
+   Forms::textRow(_("Suppliers Unit of Measure:"), 'suppliers_uom', null, null, 51);
   if (!isset($_POST['conversion_factor']) || $_POST['conversion_factor'] == "") {
     $_POST['conversion_factor'] = Num::exrate_format(1);
   }
-   Form::AmountRow(_("Conversion Factor (to our UOM):"), 'conversion_factor', Num::exrate_format($_POST['conversion_factor']), null, null, User::exrate_dec());
-   Form::textRow(_("Supplier's Product Code:"), 'supplier_description', null, null, 51);
+   Forms::AmountRow(_("Conversion Factor (to our UOM):"), 'conversion_factor', Num::exrate_format($_POST['conversion_factor']), null, null, User::exrate_dec());
+   Forms::textRow(_("Supplier's Product Code:"), 'supplier_description', null, null, 51);
   Table::end(1);
-  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Form::end();
+  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Forms::end();
   if (Input::request('frame')) {
     Page::end(true);
   } else {

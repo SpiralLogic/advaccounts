@@ -21,15 +21,15 @@
       Table::startOuter('tablestyle2 width90');
       Table::section(1);
       Row::start();
-       Form::dateCells(_("Date:"), 'date_', '', $new);
+       Forms::dateCells(_("Date:"), 'date_', '', $new);
       Table::section(2, $qes ? "20%" : "50%");
-       Form::refCells(_("Reference:"), 'ref', '');
-      Form::hidden('ref_original');
+       Forms::refCells(_("Reference:"), 'ref', '');
+      Forms::hidden('ref_original');
       Row::end();
       if ($new) {
         Table::section(3, "20%");
         Row::start();
-         Form::checkCells(_("Reverse Transaction:"), 'Reverse', null);
+         Forms::checkCells(_("Reverse Transaction:"), 'Reverse', null);
         Row::end();
       }
       if ($qes !== false) {
@@ -37,11 +37,11 @@
         Row::start();
         GL_QuickEntry::cells(_("Quick Entry") . ":", 'person_id', null, QE_JOURNAL, true);
         $qid = GL_QuickEntry::get(Input::post('person_id'));
-        if (Form::isListUpdated('person_id')) {
+        if (Forms::isListUpdated('person_id')) {
           unset($_POST['total_amount']); // enable default
           Ajax::i()->activate('total_amount');
         }
-         Form::amountCells($qid['base_desc'] . ":", 'total_amount', Num::price_format($qid['base_amount']), null, "&nbsp;&nbsp;" . Form::submit('go', _("Go"), false, false, true));
+         Forms::amountCells($qid['base_desc'] . ":", 'total_amount', Num::price_format($qid['base_amount']), null, "&nbsp;&nbsp;" . Forms::submit('go', _("Go"), false, false, true));
         Row::end();
       }
       Table::endOuter(1);
@@ -85,7 +85,7 @@
       }
       Table::header($th);
       $k  = 0;
-      $id = Form::findPostPrefix(MODE_EDIT);
+      $id = Forms::findPostPrefix(MODE_EDIT);
       foreach ($order->gl_items as $line => $item) {
         if ($id != $line) {
           Cell::labels($item->code_id, $item->description);
@@ -103,8 +103,8 @@
             Cell::amount(abs($item->amount));
           }
           Cell::label($item->reference);
-          Form::buttonEditCell("Edit$line", _("Edit"), _('Edit journal line'));
-          Form::buttonDeleteCell("Delete$line", _("Delete"), _('Remove line from journal'));
+          Forms::buttonEditCell("Edit$line", _("Edit"), _('Edit journal line'));
+          Forms::buttonDeleteCell("Delete$line", _("Delete"), _('Remove line from journal'));
           Row::end();
         } else {
           GL_Journal::item_controls($order, $dim, $line);
@@ -135,7 +135,7 @@
     public static function item_controls($order, $dim, $Index = null)
     {
       Row::start();
-      $id = Form::findPostPrefix(MODE_EDIT);
+      $id = Forms::findPostPrefix(MODE_EDIT);
       if ($Index != -1 && $Index == $id) {
         // Modifying an existing row
         $item                   = $order->gl_items[$Index];
@@ -151,7 +151,7 @@
         }
         $_POST['description'] = $item->description;
         $_POST['LineMemo']    = $item->reference;
-        Form::hidden('Index', $id);
+        Forms::hidden('Index', $id);
         $skip_bank = !User::i()->can_access(SA_BANKJOURNAL);
         echo GL_UI::all('code_id', null, $skip_bank, true);
         if ($dim >= 1) {
@@ -183,27 +183,27 @@
         }
       }
       if ($dim < 1) {
-        Form::hidden('dimension_id', 0);
+        Forms::hidden('dimension_id', 0);
       }
       if ($dim < 2) {
-        Form::hidden('dimension2_id', 0);
+        Forms::hidden('dimension2_id', 0);
       }
-       Form::amountCellsSmall(null, 'AmountDebit');
-       Form::amountCellsSmall(null, 'AmountCredit');
-       Form::textCellsEx(null, 'LineMemo', 35, 255);
+       Forms::amountCellsSmall(null, 'AmountDebit');
+       Forms::amountCellsSmall(null, 'AmountCredit');
+       Forms::textCellsEx(null, 'LineMemo', 35, 255);
       if ($id != -1) {
-        Form::buttonCell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
-        Form::buttonCell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
+        Forms::buttonCell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
+        Forms::buttonCell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
         JS::set_focus('amount');
       } else {
-        Form::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new line to journal'), true);
+        Forms::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new line to journal'), true);
       }
       Row::end();
     }
     public static function option_controls()
     {
       echo "<br><table class='center'>";
-       Form::textareaRow(_("Memo"), 'memo_', null, 50, 3);
+       Forms::textareaRow(_("Memo"), 'memo_', null, 50, 3);
       echo "</table>";
     }
     /**
@@ -251,7 +251,7 @@
       foreach (array(ST_PURCHORDER, ST_WORKORDER, ST_SALESORDER, ST_DIMENSION, ST_SALESQUOTE) as $excl) {
         unset($items[$excl]);
       }
-      echo Form::arraySelect($name, $value, $items, array(
+      echo Forms::arraySelect($name, $value, $items, array(
                                                       'spec_option'   => _("All"),
                                                       'spec_id'       => -1,
                                                       'select_submit' => $submit_on_change,

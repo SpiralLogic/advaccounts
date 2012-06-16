@@ -222,7 +222,7 @@
     {
       $sql = "SELECT id, name FROM tax_groups";
 
-      return Form::selectBox($name, $selected_id, $sql, 'id', 'name', array(
+      return Forms::selectBox($name, $selected_id, $sql, 'id', 'name', array(
                                                                       'order'         => 'id',
                                                                       'spec_option'   => $none_option,
                                                                       'spec_id'       => ALL_NUMERIC,

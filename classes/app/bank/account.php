@@ -172,7 +172,7 @@
         = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
                                                 FROM bank_accounts";
 
-      return Form::selectBox($name, $selected_id, $sql, 'id', 'bank_account_name', array(
+      return Forms::selectBox($name, $selected_id, $sql, 'id', 'bank_account_name', array(
                                                                                    'format'        => '_format_add_curr',
                                                                                    'select_submit' => $submit_on_change,
                                                                                    'async'         => false
@@ -221,7 +221,7 @@
     {
       global $bank_account_types;
 
-      return Form::arraySelect($name, $selected_id, $bank_account_types);
+      return Forms::arraySelect($name, $selected_id, $bank_account_types);
     }
     /**
      * @static

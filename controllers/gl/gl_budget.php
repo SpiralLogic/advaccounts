@@ -33,7 +33,7 @@
   if (isset($_POST['submit']) || isset($_POST['update'])) {
     Ajax::i()->activate('budget_tbl');
   }
-  Form::start();
+  Forms::start();
   if (Validation::check(Validation::GL_ACCOUNTS)) {
     $dim = DB_Company::get_pref('use_dimension');
     Table::start('tablestyle2');
@@ -51,13 +51,13 @@
     } else {
       if ($dim == 1) {
         Dimensions::select_row(_("Dimension"), 'dim1', $_POST['dim1'], true, null, false, 1);
-        Form::hidden('dim2', 0);
+        Forms::hidden('dim2', 0);
       } else {
-        Form::hidden('dim1', 0);
-        Form::hidden('dim2', 0);
+        Forms::hidden('dim1', 0);
+        Forms::hidden('dim2', 0);
       }
     }
-    Form::submitRow('submit', _("Get"), true, '', '', true);
+    Forms::submitRow('submit', _("Get"), true, '', '', true);
     Table::end(1);
     Display::div_start('budget_tbl');
     Table::start('tablestyle2');
@@ -76,8 +76,8 @@
       $_POST['begin'] = Dates::sql2date($fyear['begin']);
       $_POST['end']   = Dates::sql2date($fyear['end']);
     }
-    Form::hidden('begin');
-    Form::hidden('end');
+    Forms::hidden('begin');
+    Forms::hidden('end');
     $total = $btotal = $ltotal = 0;
     for ($i = 0, $date_ = $_POST['begin']; Dates::date1_greater_date2($_POST['end'], $date_); $i++) {
       Row::start();
@@ -85,7 +85,7 @@
         $_POST['amount' . $i] = Num::format(get_only_budget_trans_from_to($date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']), 0);
       }
       Cell::label($date_);
-       Form::amountCells(null, 'amount' . $i, null, 15, null, 0);
+       Forms::amountCells(null, 'amount' . $i, null, 15, null, 0);
       if ($showdims) {
         $d = GL_Trans::get_budget_from_to($date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
         Cell::label(Num::format($d, 0), ' class="right nowrap"');
@@ -108,11 +108,11 @@
     Row::end();
     Table::end(1);
     Display::div_end();
-    Form::submitCenterBegin('update', _("Update"), '', null);
-    Form::submit('add', _("Save"), true, '', 'default');
-    Form::submitCenterEnd('delete', _("Delete"), '', true);
+    Forms::submitCenterBegin('update', _("Update"), '', null);
+    Forms::submit('add', _("Save"), true, '', 'default');
+    Forms::submitCenterEnd('delete', _("Delete"), '', true);
   }
-  Form::end();
+  Forms::end();
   Page::end();
   /**
    * @param $date_

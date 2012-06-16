@@ -15,16 +15,16 @@
   if (Input::post('Show')) {
     Ajax::i()->activate('trans_tbl');
   }
-  Form::start();
+  Forms::start();
   Table::start('tablestyle_noborder');
   Row::start();
   Bank_Account::cells(_("Account:"), 'bank_account', null);
-   Form::dateCells(_("From:"), 'TransAfterDate', '', null, -30);
-   Form::dateCells(_("To:"), 'TransToDate');
-  Form::submitCells('Show', _("Show"), '', '', 'default');
+   Forms::dateCells(_("From:"), 'TransAfterDate', '', null, -30);
+   Forms::dateCells(_("To:"), 'TransToDate');
+  Forms::submitCells('Show', _("Show"), '', '', 'default');
   Row::end();
   Table::end();
-  Form::end();
+  Forms::end();
   $date_after = Dates::date2sql($_POST['TransAfterDate']);
   $date_to    = Dates::date2sql($_POST['TransToDate']);
   if (!isset($_POST['bank_account'])) {

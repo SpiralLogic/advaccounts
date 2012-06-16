@@ -509,7 +509,7 @@
       for ($i = 0; $i < 12; $i++) {
         $months[$i] = date('F', strtotime("now - $i months"));
       }
-      return \Form::arraySelect($name, $month, $months);
+      return \Forms::arraySelect($name, $month, $months);
     }
     /**
      * @static

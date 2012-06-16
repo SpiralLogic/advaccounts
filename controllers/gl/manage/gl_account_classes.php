@@ -34,23 +34,23 @@
     $selected_id = -1;
     $_POST['id'] = $_POST['name'] = $_POST['ctype'] = '';
   }
-  $result = GL_Class::get_all(Form::hasPost('show_inactive'));
-  Form::start();
+  $result = GL_Class::get_all(Forms::hasPost('show_inactive'));
+  Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("class ID"), _("class Name"), _("class Type"), "", "");
-   Form::inactiveControlCol($th);
+   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
     Cell::label($myrow["cid"]);
     Cell::label($myrow['class_name']);
     Cell::label($class_types[$myrow["ctype"]]);
-     Form::inactiveControlCell($myrow["cid"], $myrow["inactive"], 'chart_class', 'cid');
-    Form::buttonEditCell("Edit" . $myrow["cid"], _("Edit"));
-    Form::buttonDeleteCell("Delete" . $myrow["cid"], _("Delete"));
+     Forms::inactiveControlCell($myrow["cid"], $myrow["inactive"], 'chart_class', 'cid');
+    Forms::buttonEditCell("Edit" . $myrow["cid"], _("Edit"));
+    Forms::buttonDeleteCell("Delete" . $myrow["cid"], _("Delete"));
     Row::end();
   }
-   Form::inactiveControlRow($th);
+   Forms::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != -1) {
@@ -60,18 +60,18 @@
       $_POST['id']    = $myrow["cid"];
       $_POST['name']  = $myrow["class_name"];
       $_POST['ctype'] = $myrow["ctype"];
-      Form::hidden('selected_id', $selected_id);
+      Forms::hidden('selected_id', $selected_id);
     }
-    Form::hidden('id');
+    Forms::hidden('id');
     Row::label(_("Class ID:"), $_POST['id']);
   } else {
-     Form::textRowEx(_("Class ID:"), 'id', 3);
+     Forms::textRowEx(_("Class ID:"), 'id', 3);
   }
-   Form::textRowEx(_("Class Name:"), 'name', 50, 60);
+   Forms::textRowEx(_("Class Name:"), 'name', 50, 60);
   GL_Class::types_row(_("Class Type:"), 'ctype', null);
   Table::end(1);
-  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Form::end();
+  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Forms::end();
   Page::end();
   /**
    * @return bool

@@ -21,7 +21,7 @@
   }
   Page::start($_SESSION['page_title'], $page_security);
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-  if (Form::isListUpdated('PersonDetailID')) {
+  if (Forms::isListUpdated('PersonDetailID')) {
     $br                 = Sales_Branch::get(Input::post('PersonDetailID'));
     $_POST['person_id'] = $br['debtor_id'];
     Ajax::i()->activate('person_id');
@@ -88,7 +88,7 @@
     unset($_SESSION['pay_items']);
     Display::meta_forward($_SERVER['DOCUMENT_URI'], $trans_type == ST_BANKPAYMENT ? "AddedID=$trans_no" : "AddedDep=$trans_no");
   } /*end of process credit note */
-  $id = Form::findPostPrefix(MODE_DELETE);
+  $id = Forms::findPostPrefix(MODE_DELETE);
   if ($id != -1) {
     handle_delete_item($id);
   }
@@ -108,7 +108,7 @@
     Ajax::i()->activate('total_amount');
     Item_Line::start_focus('_code_id_edit');
   }
-  Form::start();
+  Forms::start();
   Bank_UI::header($_SESSION['pay_items']);
   Table::start('tablesstyle2 width90 pad10');
   Row::start();
@@ -119,10 +119,10 @@
   echo "</td>";
   Row::end();
   Table::end(1);
-  Form::submitCenterBegin('Update', _("Update"), '', null);
-  Form::submitCenterEnd('Process', $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? _("Process Payment") :
+  Forms::submitCenterBegin('Update', _("Update"), '', null);
+  Forms::submitCenterEnd('Process', $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? _("Process Payment") :
     _("Process Deposit"), '', 'default');
-  Form::end();
+  Forms::end();
   Page::end();
   /**
    * @return bool

@@ -23,7 +23,7 @@
     $del_count = 0;
     foreach ($_POST['Sel_'] as $delivery => $branch) {
       $checkbox = 'Sel_' . $delivery;
-      if (Form::hasPost($checkbox)) {
+      if (Forms::hasPost($checkbox)) {
         if (!$del_count) {
           $del_branch = $branch;
         }
@@ -61,17 +61,17 @@
     }
     Ajax::i()->activate('deliveries_tbl');
   }
-  Form::start(FALSE, $_SERVER['DOCUMENT_URI'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
+  Forms::start(FALSE, $_SERVER['DOCUMENT_URI'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
   Table::start('tablestyle_noborder');
   Row::start();
   Debtor::cells(_('Customer:'), 'customer_id', NULL, TRUE);
-   Form::refCells(_("#:"), 'DeliveryNumber', '', NULL, '', TRUE);
-   Form::dateCells(_("from:"), 'DeliveryAfterDate', '', NULL, -30);
-   Form::dateCells(_("to:"), 'DeliveryToDate', '', NULL, 1);
+   Forms::refCells(_("#:"), 'DeliveryNumber', '', NULL, '', TRUE);
+   Forms::dateCells(_("from:"), 'DeliveryAfterDate', '', NULL, -30);
+   Forms::dateCells(_("to:"), 'DeliveryToDate', '', NULL, 1);
   Inv_Location::cells(_("Location:"), 'StockLocation', NULL, TRUE);
   Item::cells(_("Item:"), 'SelectStockFromList', NULL, TRUE, FALSE, FALSE, FALSE, FALSE);
-  Form::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
-  Form::hidden('OutstandingOnly', $_POST['OutstandingOnly']);
+  Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
+  Forms::hidden('OutstandingOnly', $_POST['OutstandingOnly']);
   Row::end();
   Table::end();
   if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
@@ -138,7 +138,7 @@
     ), _("Due By") => array('type' => 'date'), _("Delivery Total") => array(
       'type' => 'amount', 'ord' => ''
     ), _("Currency") => array('align' => 'center'),
-    Form::submit(Orders::BATCH_INVOICE, _("Batch"), FALSE, _("Batch Invoicing")) => array(
+    Forms::submit(Orders::BATCH_INVOICE, _("Batch"), FALSE, _("Batch Invoicing")) => array(
       'insert' => TRUE, 'fun' => function ($row) {
         $name = "Sel_" . $row['trans_no'];
         return $row['Done'] ? '' :
@@ -178,5 +178,5 @@
     , _("Marked items are overdue."));
   //$table->width = "92%";
   DB_Pager::display($table);
-  Form::end();
+  Forms::end();
   Page::end();

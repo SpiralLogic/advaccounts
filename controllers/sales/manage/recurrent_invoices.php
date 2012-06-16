@@ -58,7 +58,7 @@
   }
   $sql    = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_id";
   $result = DB::query($sql, "could not get recurrent invoices");
-  Form::start();
+  Forms::start();
   Table::start('tablestyle grid width70');
   $th = array(
     _("Description"),
@@ -94,14 +94,14 @@
     Cell::label($begin);
     Cell::label($end);
     Cell::label($last_sent);
-    Form::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
-    Form::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
+    Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
+    Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     Row::end();
   }
   Table::end();
-  Form::end();
+  Forms::end();
   echo '<br>';
-  Form::start();
+  Forms::start();
   Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
@@ -118,9 +118,9 @@
       $_POST['begin']       = Dates::sql2date($myrow["begin"]);
       $_POST['end']         = Dates::sql2date($myrow["end"]);
     }
-    Form::hidden("selected_id", $selected_id);
+    Forms::hidden("selected_id", $selected_id);
   }
-   Form::textRowEx(_("Description:"), 'description', 50);
+   Forms::textRowEx(_("Description:"), 'description', 50);
   Sales_UI::templates_row(_("Template:"), 'order_no');
   Debtor::row(_("Customer:"), 'debtor_id', NULL, " ", TRUE);
   if ($_POST['debtor_id'] > 0) {
@@ -128,11 +128,11 @@
   } else {
     Sales_UI::groups_row(_("Sales Group:"), 'group_no', NULL, " ");
   }
-   Form::SmallAmountRow(_("Days:"), 'days', 0, NULL, NULL, 0);
-   Form::SmallAmountRow(_("Monthly:"), 'monthly', 0, NULL, NULL, 0);
-   Form::dateRow(_("Begin:"), 'begin');
-   Form::dateRow(_("End:"), 'end', NULL, NULL, 0, 0, 5);
+   Forms::SmallAmountRow(_("Days:"), 'days', 0, NULL, NULL, 0);
+   Forms::SmallAmountRow(_("Monthly:"), 'monthly', 0, NULL, NULL, 0);
+   Forms::dateRow(_("Begin:"), 'begin');
+   Forms::dateRow(_("End:"), 'end', NULL, NULL, 0, 0, 5);
   Table::end(1);
-  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Form::end();
+  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Forms::end();
   Page::end();

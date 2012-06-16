@@ -109,7 +109,7 @@
     Creditor_Trans::killInstance();
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$invoice_no");
   }
-  $id = Form::findPostPrefix('grn_item_id');
+  $id = Forms::findPostPrefix('grn_item_id');
   if ($id != -1) {
     commit_item_data($id);
   }
@@ -122,13 +122,13 @@
       }
     }
   }
-  $id3 = Form::findPostPrefix(MODE_DELETE);
+  $id3 = Forms::findPostPrefix(MODE_DELETE);
   if ($id3 != -1) {
     Creditor_Trans::i()->remove_grn_from_trans($id3);
     Ajax::i()->activate('grn_items');
     Ajax::i()->activate('inv_tot');
   }
-  $id4 = Form::findPostPrefix('Delete2');
+  $id4 = Forms::findPostPrefix('Delete2');
   if ($id4 != -1) {
     if (!isset($taxtotal)) {
       $taxtotal = 0;
@@ -152,7 +152,7 @@
   }
   $id2 = -1;
   if (User::i()->can_access(SA_GRNDELETE)) {
-    $id2 = Form::findPostPrefix('void_item_id');
+    $id2 = Forms::findPostPrefix('void_item_id');
     if ($id2 != -1) {
       DB::begin();
       $myrow = Purch_GRN::get_item($id2);
@@ -178,7 +178,7 @@
     Ajax::i()->activate('total_amount');
     Ajax::i()->activate('inv_tot');
   }
-  Form::start();
+  Forms::start();
   Purch_Invoice::header(Creditor_Trans::i());
   $_POST['supplier_id'] = Session::i()->getGlobal('creditor', '');
   if (Creditor_Trans::i()) {
@@ -201,9 +201,9 @@
     Ajax::i()->activate('inv_tot');
   }
   Display::br();
-  Form::submitCenter('PostInvoice', _("Enter Invoice"), true, '', 'default');
+  Forms::submitCenter('PostInvoice', _("Enter Invoice"), true, '', 'default');
   Display::br();
-  Form::end();
+  Forms::end();
   Item::addEditDialog();
   $js
     = <<<JS

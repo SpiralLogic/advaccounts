@@ -276,7 +276,7 @@
       }
       ksort($themes);
       echo "<tr><td class='label'>$label</td>\n<td>";
-      echo Form::arraySelect($name, $value, $themes);
+      echo Forms::arraySelect($name, $value, $themes);
       echo "</td></tr>\n";
     }
     /**
@@ -303,7 +303,7 @@
       }
       echo "<tr>\n";
       echo "<td class='label'>$label</td><td>\n";
-      echo Form::arraySelect($name, $selected_id, $tabs);
+      echo Forms::arraySelect($name, $selected_id, $tabs);
       echo "</td></tr>\n";
     }
     /**
@@ -319,7 +319,7 @@
     {
       $sql = "SELECT id, real_name, inactive FROM users";
 
-      return Form::selectBox($name, $selected_id, $sql, 'id', 'real_name', array(
+      return Forms::selectBox($name, $selected_id, $sql, 'id', 'real_name', array(
                                                                                 'order'       => array('real_name'),
                                                                                 'spec_option' => $spec_opt,
                                                                                 'spec_id'     => ALL_NUMERIC

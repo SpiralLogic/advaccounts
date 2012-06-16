@@ -84,7 +84,7 @@
     $order->reference = $_POST['ref'];
     $order->memo_     = $_POST['memo_'];
     $order->tran_date = $_POST['date_'];
-    $trans_no         = GL_Journal::write($order, Form::hasPost('Reverse'));
+    $trans_no         = GL_Journal::write($order, Forms::hasPost('Reverse'));
     $order->clear_items();
     Dates::new_doc_date($_POST['date_']);
     unset($_SESSION['journal_items']);
@@ -94,7 +94,7 @@
       Display::meta_forward($_SERVER['DOCUMENT_URI'], "UpdatedID=$trans_no");
     }
   }
-  $id = Form::findPostPrefix(MODE_DELETE);
+  $id = Forms::findPostPrefix(MODE_DELETE);
   if ($id != -1) {
     handle_delete_item($id);
   }
@@ -113,7 +113,7 @@
     Ajax::i()->activate('total_amount');
     Item_Line::start_focus('_code_id_edit');
   }
-  Form::start();
+  Forms::start();
   GL_Journal::header($_SESSION['journal_items']);
   Table::start('tables_style2 width90 pad10');
   Row::start();
@@ -123,8 +123,8 @@
   echo "</td>";
   Row::end();
   Table::end(1);
-  Form::submitCenter('Process', _("Process Journal Entry"), true, _('Process journal entry only if debits equal to credits'), 'default');
-  Form::end();
+  Forms::submitCenter('Process', _("Process Journal Entry"), true, _('Process journal entry only if debits equal to credits'), 'default');
+  Forms::end();
   Page::end();
   /**
    * @return bool

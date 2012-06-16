@@ -27,7 +27,7 @@
     }
     if ($inpug_error != 1) {
       if ($selected_id != -1) {
-        if (Form::hasPost('DaysOrFoll')) {
+        if (Forms::hasPost('DaysOrFoll')) {
           $sql = "UPDATE payment_terms SET terms=" . DB::escape($_POST['terms']) . ",
 					day_in_following_month=0,
 					days_before_due=" . DB::escape($_POST['DayNumber']) . "
@@ -42,7 +42,7 @@
         $note = _('Selected payment terms have been updated');
       }
       else {
-        if (Form::hasPost('DaysOrFoll')) {
+        if (Forms::hasPost('DaysOrFoll')) {
           $sql = "INSERT INTO payment_terms (terms,
 					days_before_due, day_in_following_month)
 					VALUES (" . DB::escape($_POST['terms']) . ", " . DB::escape($_POST['DayNumber']) . ", 0)";
@@ -93,14 +93,14 @@
     $_POST['show_inactive'] = $sav;
   }
   $sql = "SELECT * FROM payment_terms";
-  if (!Form::hasPost('show_inactive')) {
+  if (!Forms::hasPost('show_inactive')) {
     $sql .= " WHERE !inactive";
   }
   $result = DB::query($sql, "could not get payment terms");
-  Form::start();
+  Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("Description"), _("Following Month On"), _("Due After (Days)"), "", "");
-   Form::inactiveControlCol($th);
+   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
@@ -120,12 +120,12 @@
     Cell::label($myrow["terms"]);
     Cell::label($full_text);
     Cell::label($after_text);
-     Form::inactiveControlCell($myrow["terms_indicator"], $myrow["inactive"], 'payment_terms', "terms_indicator");
-    Form::buttonEditCell("Edit" . $myrow["terms_indicator"], _("Edit"));
-    Form::buttonDeleteCell("Delete" . $myrow["terms_indicator"], _("Delete"));
+     Forms::inactiveControlCell($myrow["terms_indicator"], $myrow["inactive"], 'payment_terms', "terms_indicator");
+    Forms::buttonEditCell("Edit" . $myrow["terms_indicator"], _("Edit"));
+    Forms::buttonDeleteCell("Delete" . $myrow["terms_indicator"], _("Delete"));
     Row::end();
   } //END WHILE LIST LOOP
-   Form::inactiveControlRow($th);
+   Forms::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   $day_in_following_month = $days_before_due = 0;
@@ -141,10 +141,10 @@
       $day_in_following_month = $myrow["day_in_following_month"];
       unset($_POST['DayNumber']);
     }
-    Form::hidden('selected_id', $selected_id);
+    Forms::hidden('selected_id', $selected_id);
   }
-   Form::textRow(_("Terms Description:"), 'terms', NULL, 40, 40);
-   Form::checkRow(_("Due After A Given No. Of Days:"), 'DaysOrFoll', $day_in_following_month == 0);
+   Forms::textRow(_("Terms Description:"), 'terms', NULL, 40, 40);
+   Forms::checkRow(_("Due After A Given No. Of Days:"), 'DaysOrFoll', $day_in_following_month == 0);
   if (!isset($_POST['DayNumber'])) {
     if ($days_before_due != 0) {
       $_POST['DayNumber'] = $days_before_due;
@@ -153,10 +153,10 @@
       $_POST['DayNumber'] = $day_in_following_month;
     }
   }
-   Form::textRowEx(_("Days (Or Day In Following Month):"), 'DayNumber', 3);
+   Forms::textRowEx(_("Days (Or Day In Following Month):"), 'DayNumber', 3);
   Table::end(1);
-  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Form::end();
+  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Forms::end();
   Page::end();
 
 

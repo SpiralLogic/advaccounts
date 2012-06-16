@@ -17,7 +17,7 @@
   elseif (isset($_POST['stock_id'])) {
     $stock_id = $_POST['stock_id'];
   }
-  if (Form::isListUpdated('stock_id')) {
+  if (Forms::isListUpdated('stock_id')) {
     $_POST['NewStockID'] = Input::post('stock_id');
     clear_data();
     Ajax::i()->activate('details');
@@ -29,7 +29,7 @@
     JS::set_focus('stock_id');
     Ajax::i()->activate('_page_body');
   }
-  if (Form::isListUpdated('category_id') || Form::isListUpdated('mb_flag')) {
+  if (Forms::isListUpdated('category_id') || Forms::isListUpdated('mb_flag')) {
     Ajax::i()->activate('details');
   }
   $upload_file = "";
@@ -101,7 +101,7 @@
       JS::set_focus('NewStockID');
     }
     if ($input_error != 1) {
-      if (Form::hasPost('del_image')) {
+      if (Forms::hasPost('del_image')) {
         $filename = COMPANY_PATH . "$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg";
         if (file_exists($filename)) {
           unlink($filename);
@@ -109,7 +109,7 @@
       }
       if (!$new_item) { /*so its an existing one */
         Item::update($_POST['NewStockID'], $_POST['description'], $_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'], Input::post('units'), Input::post('mb_flag'), $_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'], $_POST['adjustment_account'],
-          $_POST['assembly_account'], $_POST['dimension_id'], $_POST['dimension2_id'], Form::hasPost('no_sale'), Form::hasPost('editable'));
+          $_POST['assembly_account'], $_POST['dimension_id'], $_POST['dimension2_id'], Forms::hasPost('no_sale'), Forms::hasPost('editable'));
         DB::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'stock_master', 'stock_id');
         DB::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'item_codes', 'item_code');
         Ajax::i()->activate('stock_id'); // in case of status change
@@ -117,7 +117,7 @@
       }
       else { //it is a NEW part
         Item::add($_POST['NewStockID'], $_POST['description'], $_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'], $_POST['units'], $_POST['mb_flag'], $_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'], $_POST['adjustment_account'],
-          $_POST['assembly_account'], $_POST['dimension_id'], $_POST['dimension2_id'], Form::hasPost('no_sale'), Form::hasPost('editable'));
+          $_POST['assembly_account'], $_POST['dimension_id'], $_POST['dimension2_id'], Forms::hasPost('no_sale'), Forms::hasPost('editable'));
         Event::success(_("A new item has been added."));
         JS::set_focus('NewStockID');
       }
@@ -199,22 +199,22 @@
       Ajax::i()->activate('_page_body');
     }
   }
-  Form::start(TRUE);
+  Forms::start(TRUE);
   if (Validation::check(Validation::STOCK_ITEMS)) {
     Table::start('tablestyle_noborder');
     Row::start();
     if ($new_item) {
-      Item::cells(_("Select an item:"), 'stock_id', NULL, _('New item'), TRUE, Form::hasPost('show_inactive'), FALSE);
-       Form::checkCells(_("Show inactive:"), 'show_inactive', NULL, TRUE);
+      Item::cells(_("Select an item:"), 'stock_id', NULL, _('New item'), TRUE, Forms::hasPost('show_inactive'), FALSE);
+       Forms::checkCells(_("Show inactive:"), 'show_inactive', NULL, TRUE);
     }
     else {
-      Form::hidden('stock_id', $_POST['stock_id']);
+      Forms::hidden('stock_id', $_POST['stock_id']);
     }
     $new_item = Input::post('stock_id') == '';
     Row::end();
     Table::end();
     if (Input::post('_show_inactive_update')) {
-      $_SESSION['options']['stock_id']['inactive'] = Form::hasPost('show_inactive');
+      $_SESSION['options']['stock_id']['inactive'] = Forms::hasPost('show_inactive');
       Ajax::i()->activate('stock_id');
     }
   }
@@ -223,7 +223,7 @@
   Table::section(1);
   Table::sectionTitle(_("Item"));
   if ($new_item) {
-     Form::textRow(_("Item Code:"), 'NewStockID', NULL, 21, 20);
+     Forms::textRow(_("Item Code:"), 'NewStockID', NULL, 21, 20);
     $_POST['inactive'] = 0;
   }
   else { // Must be modifying an existing item
@@ -249,13 +249,13 @@
       $_POST['editable'] = $myrow["editable"];
     }
     Row::label(_("Item Code:"), $_POST['NewStockID']);
-    Form::hidden('NewStockID', $_POST['NewStockID']);
+    Forms::hidden('NewStockID', $_POST['NewStockID']);
     JS::set_focus('description');
   }
-   Form::textRow(_("Name:"), 'description', NULL, 52, 200);
-   Form::textareaRow(_('Description:'), 'long_description', NULL, 42, 3);
+   Forms::textRow(_("Name:"), 'description', NULL, 52, 200);
+   Forms::textareaRow(_('Description:'), 'long_description', NULL, 42, 3);
   Item_Category::row(_("Category:"), 'category_id', NULL, FALSE, $new_item);
-  if ($new_item && (Form::isListUpdated('category_id') || !isset($_POST['units']))) {
+  if ($new_item && (Forms::isListUpdated('category_id') || !isset($_POST['units']))) {
     $category_record = Item_Category::get($_POST['category_id']);
     $_POST['tax_type_id'] = $category_record["dflt_tax_type"];
     $_POST['units'] = $category_record["dflt_units"];
@@ -274,8 +274,8 @@
   Tax_ItemType::row(_("Item Tax Type:"), 'tax_type_id', NULL);
   Item_UI::type_row(_("Item Type:"), 'mb_flag', NULL, $fresh_item);
   Item_Unit::row(_('Units of Measure:'), 'units', NULL, $fresh_item);
-   Form::checkRow(_("Editable description:"), 'editable');
-   Form::checkRow(_("Exclude from sales:"), 'no_sale');
+   Forms::checkRow(_("Editable description:"), 'editable');
+   Forms::checkRow(_("Exclude from sales:"), 'no_sale');
   Table::section(2);
   $dim = DB_Company::get_pref('use_dimension');
   if ($dim >= 1) {
@@ -286,10 +286,10 @@
     }
   }
   if ($dim < 1) {
-    Form::hidden('dimension_id', 0);
+    Forms::hidden('dimension_id', 0);
   }
   if ($dim < 2) {
-    Form::hidden('dimension2_id', 0);
+    Forms::hidden('dimension2_id', 0);
   }
   Table::section(2);
   Table::sectionTitle(_("GL Accounts"));
@@ -301,18 +301,18 @@
   }
   else {
     GL_UI::all_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
-    Form::hidden('inventory_account', $_POST['inventory_account']);
-    Form::hidden('adjustment_account', $_POST['adjustment_account']);
+    Forms::hidden('inventory_account', $_POST['inventory_account']);
+    Forms::hidden('adjustment_account', $_POST['adjustment_account']);
   }
   if (STOCK_MANUFACTURE == $_POST['mb_flag']) {
     GL_UI::all_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
   }
   else {
-    Form::hidden('assembly_account', $_POST['assembly_account']);
+    Forms::hidden('assembly_account', $_POST['assembly_account']);
   }
   Table::sectionTitle(_("Other"));
   // Add image for New Item - by Joe
-   Form::fileRow(_("Image File (.jpg)") . ":", 'pic', 'pic');
+   Forms::fileRow(_("Image File (.jpg)") . ":", 'pic', 'pic');
   // Add Image upload for New Item - by Joe
   $stock_img_link = "";
   $check_remove_image = FALSE;
@@ -326,23 +326,23 @@
   }
   Row::label("&nbsp;", $stock_img_link);
   if ($check_remove_image) {
-     Form::checkRow(_("Delete Image:"), 'del_image');
+     Forms::checkRow(_("Delete Image:"), 'del_image');
   }
-   Form::checkRow(_("Exclude from sales:"), 'no_sale');
-   Form::checkRow(_("Item status:"), 'inactive');
+   Forms::checkRow(_("Exclude from sales:"), 'no_sale');
+   Forms::checkRow(_("Item status:"), 'inactive');
   Table::endOuter(1);
   Display::div_end();
   Display::div_start('controls');
   if (!isset($_POST['NewStockID']) || $new_item) {
-    Form::submitCenter('addupdate', _("Insert New Item"), TRUE, '', 'default');
+    Forms::submitCenter('addupdate', _("Insert New Item"), TRUE, '', 'default');
   }
   else {
-    Form::submitCenterBegin('addupdate', _("Update Item"), '', Input::request('frame') ? TRUE : 'default');
-    Form::submitReturn('select', Input::post('stock_id'), _("Select this items and return to document entry."), 'default');
-    Form::submit('clone', _("Clone This Item"), TRUE, '', TRUE);
-    Form::submit('delete', _("Delete This Item"), TRUE, '', TRUE);
-    Form::submit('addupdatenew', _("Save & New"), TRUE, '', TRUE);
-    Form::submitCenterEnd('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
+    Forms::submitCenterBegin('addupdate', _("Update Item"), '', Input::request('frame') ? TRUE : 'default');
+    Forms::submitReturn('select', Input::post('stock_id'), _("Select this items and return to document entry."), 'default');
+    Forms::submit('clone', _("Clone This Item"), TRUE, '', TRUE);
+    Forms::submit('delete', _("Delete This Item"), TRUE, '', TRUE);
+    Forms::submit('addupdatenew', _("Save & New"), TRUE, '', TRUE);
+    Forms::submitCenterEnd('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
   }
   if (Input::post('stock_id')) {
     Session::i()->setGlobal('stock_id', $_POST['stock_id']);
@@ -353,7 +353,7 @@
     echo "<iframe src='/inventory/prices.php?frame=1' style='float:right;width:48%;height:450px;overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
   }
   Display::div_end();
-  Form::hidden('frame', Input::request('frame'));
-  Form::end();
+  Forms::hidden('frame', Input::request('frame'));
+  Forms::end();
   Page::end();
 

@@ -146,7 +146,6 @@
       {
         $v = is_string($v) ? trim($v) : $v;
       });
-      require APPPATH . "main.php";
       $modules = $config->_get_all('modules', array());
       foreach ($modules as $module => $module_config) {
         $module = '\\Modules\\' . $module;

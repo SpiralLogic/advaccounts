@@ -207,7 +207,7 @@
       $allocs = array(
         ALL_TEXT => _("All Types"), '1' => _("Invoices"), '2' => _("Overdue Invoices"), '6' => _("Unpaid Invoices"), '3' => _("Payments"), '4' => _("Credit Notes"), '5' => _("Overdue Credit Notes")
       );
-      echo Form::arraySelect($name, $selected, $allocs);
+      echo Forms::arraySelect($name, $selected, $allocs);
       echo "</td>\n";
     }
   }

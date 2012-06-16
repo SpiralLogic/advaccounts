@@ -101,8 +101,8 @@
   if (isset($_POST['Update']) || isset($_POST['_location_update'])) {
     Ajax::i()->activate('Items');
   }
-  Form::start();
-  Form::hidden('order_id');
+  Forms::start();
+  Forms::hidden('order_id');
   Table::start('tablestyle2 width90 pad5');
   echo "<tr><td>"; // outer table
   Table::start('tablestyle width100');
@@ -115,10 +115,10 @@
   //if (!isset($_POST['ref']))
   //	$_POST['ref'] = Ref::get_next(ST_CUSTDELIVERY);
   if ($order->trans_no == 0) {
-     Form::refCells(_("Reference"), 'ref', '', null, "class='label'");
+     Forms::refCells(_("Reference"), 'ref', '', null, "class='label'");
   } else {
     Cell::labels(_("Reference"), $order->reference, "class='label'");
-    Form::hidden('ref', $order->reference);
+    Forms::hidden('ref', $order->reference);
   }
   Cell::labels(_("For Sales Order"), Debtor::trans_view(ST_SALESORDER, $order->order_no), "class='tablerowhead'");
   Cell::labels(_("Sales Type"), $order->sales_type_name, "class='label'");
@@ -141,7 +141,7 @@
       $_POST['DispatchDate'] = Dates::end_fiscalyear();
     }
   }
-   Form::dateCells(_("Date"), 'DispatchDate', '', $order->trans_no == 0, 0, 0, 0, "class='label'");
+   Forms::dateCells(_("Date"), 'DispatchDate', '', $order->trans_no == 0, 0, 0, 0, "class='label'");
   Row::end();
   Table::end();
   echo "</td><td>"; // outer table
@@ -150,7 +150,7 @@
     $_POST['due_date'] = $order->get_invoice_duedate($order->customer_id, $_POST['DispatchDate']);
   }
   Row::start();
-   Form::dateCells(_("Invoice Dead-line"), 'due_date', '', null, 0, 0, 0, "class='label'");
+   Forms::dateCells(_("Invoice Dead-line"), 'due_date', '', null, 0, 0, 0, "class='label'");
   Row::end();
   Table::end();
   echo "</td></tr>";
@@ -158,7 +158,7 @@
   $row = Sales_Order::get_customer($order->customer_id);
   if ($row['dissallow_invoices'] == 1) {
     Event::error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
-    Form::end();
+    Forms::end();
     Page::end();
     exit();
   }
@@ -201,12 +201,12 @@
     } else {
     }
     Item_UI::status_cell($line->stock_id);
-     Form::textCells(null, 'Line' . $line_no . 'Desc', $line->description, 30, 50);
+     Forms::textCells(null, 'Line' . $line_no . 'Desc', $line->description, 30, 50);
     $dec = Item::qty_dec($line->stock_id);
     Cell::qty($line->quantity, false, $dec);
     Cell::label($line->units);
     Cell::qty($line->qty_done, false, $dec);
-     Form::qtyCellsSmall(null, 'Line' . $line_no, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), null, null, $dec);
+     Forms::qtyCellsSmall(null, 'Line' . $line_no, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), null, null, $dec);
     $display_discount_percent = Num::percent_format($line->discount_percent * 100) . "%";
     $line_total               = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
     Cell::amount($line->price);
@@ -219,7 +219,7 @@
   $colspan                    = 9;
   Row::start();
   Cell::label(_("Shipping Cost"), "colspan=$colspan class='right'");
-   Form::amountCellsSmall(null, 'ChargeFreightCost', $order->freight_cost);
+   Forms::amountCellsSmall(null, 'ChargeFreightCost', $order->freight_cost);
   Row::end();
   $inv_items_total   = $order->get_items_total_dispatch();
   $display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
@@ -234,10 +234,10 @@
   }
   Table::start('tablestyle2');
   Sales_UI::policy_row(_("Action For Balance"), "bo_policy", null);
-   Form::textareaRow(_("Memo"), 'Comments', null, 50, 4);
+   Forms::textareaRow(_("Memo"), 'Comments', null, 50, 4);
   Table::end(1);
   Display::div_end();
-  Form::submitCenterBegin('Update', _("Update"), _('Refresh document page'), true);
-  Form::submitCenterEnd('process_delivery', _("Process Dispatch"), _('Check entered data and save document'), 'default');
-  Form::end();
+  Forms::submitCenterBegin('Update', _("Update"), _('Refresh document page'), true);
+  Forms::submitCenterEnd('process_delivery', _("Process Dispatch"), _('Check entered data and save document'), 'default');
+  Forms::end();
   Page::end();

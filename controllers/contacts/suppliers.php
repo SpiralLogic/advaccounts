@@ -50,7 +50,7 @@
     UI::search('supplier', array('label' => 'Search Supplier:', 'size' => 80, 'callback' => 'Company.fetch', 'focus' => TRUE));
     HTML::td()->tr->table->div;
   }
-  Form::start();
+  Forms::start();
   $menu = new MenuUI();
   $menu->startTab('Details', 'Supplier Details', '#', 'text-align:center');
   HTML::div('companyIDs');
@@ -66,12 +66,12 @@
   Table::section(1);
   Table::sectionTitle(_("Shipping Details"), 2);
   /** @noinspection PhpUndefinedMethodInspection */
-  Form::textRow(_("Contact:"), 'contact', $supplier->contact, 35, 40);
-  //Form::hidden('br_contact_name', $supplier->contact_name);
-  Form::textRow(_("Phone Number:"), 'phone', $supplier->phone, 35, 30);
-  Form::textRow(_("Fax Number:"), 'fax', $supplier->fax, 35, 30);
-  Form::emailRow(_("Email:"), 'email', $supplier->email, 35, 55);
-  Form::textareaRow(_("Street:"), 'address', $supplier->address, 35, 2);
+  Forms::textRow(_("Contact:"), 'contact', $supplier->contact, 35, 40);
+  //Forms::hidden('br_contact_name', $supplier->contact_name);
+  Forms::textRow(_("Phone Number:"), 'phone', $supplier->phone, 35, 30);
+  Forms::textRow(_("Fax Number:"), 'fax', $supplier->fax, 35, 30);
+  Forms::emailRow(_("Email:"), 'email', $supplier->email, 35, 55);
+  Forms::textareaRow(_("Street:"), 'address', $supplier->address, 35, 2);
   $branch_postcode = new Contact_Postcode(array(
     'city'     => array('city', $supplier->city),
     'state'    => array('state', $supplier->state),
@@ -86,8 +86,8 @@
   ));
   UI::button('useShipAddress', _("Use shipping details"), array('name' => 'useShipAddress'));
   HTML::_td()->tr;
-  Form::textRow(_("Phone Number:"), 'supp_phone', $supplier->phone2, 35, 30);
-  Form::textareaRow(_("Address:"), 'supp_address', $supplier->address, 35, 2);
+  Forms::textRow(_("Phone Number:"), 'supp_phone', $supplier->phone2, 35, 30);
+  Forms::textareaRow(_("Address:"), 'supp_address', $supplier->address, 35, 2);
 
   $postcode = new Contact_Postcode(array(
     'city'     => array('supp_city', $supplier->city),
@@ -100,20 +100,20 @@
   Table::startOuter('tablestyle2');
   Table::section(1);
   Table::sectionTitle(_("Accounts Details:"), 2);
-  Form::percentRow(_("Prompt Payment Discount Percent:"), 'discount', $supplier->discount, (User::i()->can_access(SA_SUPPLIERCREDIT)) ?
+  Forms::percentRow(_("Prompt Payment Discount Percent:"), 'discount', $supplier->discount, (User::i()->can_access(SA_SUPPLIERCREDIT)) ?
     "" : " disabled");
-  Form::AmountRow(_("Credit Limit:"), 'credit_limit', $supplier->credit_limit, null, NULL, 0, (User::i()
+  Forms::AmountRow(_("Credit Limit:"), 'credit_limit', $supplier->credit_limit, null, NULL, 0, (User::i()
     ->can_access(SA_SUPPLIERCREDIT)) ? "" : " disabled");
-  Form::textRow(_("GST No:"), 'tax_id', $supplier->tax_id, 'big', 40);
+  Forms::textRow(_("GST No:"), 'tax_id', $supplier->tax_id, 'big', 40);
   Tax_Groups::row(_("Tax Group:"), 'tax_group_id', $supplier->tax_group_id);
-  Form::textareaRow(_("General Notes:"), 'notes', $supplier->notes, 'big', 4);
+  Forms::textareaRow(_("General Notes:"), 'notes', $supplier->notes, 'big', 4);
 
-  Form::recordStatusListRow(_("Supplier status:"), 'inactive');
+  Forms::recordStatusListRow(_("Supplier status:"), 'inactive');
   if (!$supplier->id) {
     GL_Currency::row(_("Supplier's Currency:"), 'curr_code', $supplier->curr_code);
   } else {
     Row::label(_("Supplier's Currency:"), $supplier->curr_code);
-    Form::hidden('curr_code', $supplier->curr_code);
+    Forms::hidden('curr_code', $supplier->curr_code);
   }
   GL_UI::payment_terms_row(_("Pament Terms:"), 'payment_terms', $supplier->payment_terms);
   Table::sectionTitle(_("GL Accounts"));
@@ -141,28 +141,28 @@
     'class'   => 'tablehead',
     'colspan' => 2
   ))->td->tr;
-  Form::textRow("Name:", 'contact[name-${id}]', '${name}', 35, 40);
-  Form::textRow("Phone:", 'contact[phone1-${id}]', '${phone1}', 35, 40);
-  Form::textRow("Phone2:", 'contact[phone2-${id}]', '${phone2}', 35, 40);
-  Form::textRow("Email:", 'contact[email-${id}]', '${email}', 35, 40);
-  Form::textRow("Dept:", 'contact[department-${id}]', '${department}', 35, 40);
+  Forms::textRow("Name:", 'contact[name-${id}]', '${name}', 35, 40);
+  Forms::textRow("Phone:", 'contact[phone1-${id}]', '${phone1}', 35, 40);
+  Forms::textRow("Phone2:", 'contact[phone2-${id}]', '${phone2}', 35, 40);
+  Forms::textRow("Email:", 'contact[email-${id}]', '${email}', 35, 40);
+  Forms::textRow("Dept:", 'contact[department-${id}]', '${department}', 35, 40);
   HTML::td()->tr->table->script->div->div;
 
   $menu->endTab()->startTab('Invoices', 'Invoices');
   echo "<div id='invoiceFrame' data-src='" . BASE_URL . "purchases/inquiry/supplier_allocation_inquiry.php?supplier_id=" . $supplier->id . "' ></div> ";
   $menu->endTab()->render();
-  Form::hidden('frame', Input::request('frame'));
+  Forms::hidden('frame', Input::request('frame'));
   HTML::div();
 
-  Form::end();
+  Forms::end();
   HTML::div('contactLog', array(
     'title' => 'New contact log entry', 'class' => 'ui-widget-overlay', 'style' => 'display:none;'
   ));
-  Form::hidden('type', CT_SUPPLIER);
+  Forms::hidden('type', CT_SUPPLIER);
   Table::start();
   Row::label('Date:', date('Y-m-d H:i:s'));
-  Form::textRow('Contact:', 'contact_name', $supplier->contact_name, 35, 40);
-  Form::textareaRow('Entry:', 'message', '', 100, 10);
+  Forms::textRow('Contact:', 'contact_name', $supplier->contact_name, 35, 40);
+  Forms::textareaRow('Entry:', 'message', '', 100, 10);
   Table::end();
   HTML::_div()->div(array('class' => 'center width50'));
   UI::button('btnConfirm', ($supplier->id) ? 'Update Supplier' : 'New Supplier', array(

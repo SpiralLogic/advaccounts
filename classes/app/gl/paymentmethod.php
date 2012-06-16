@@ -76,7 +76,7 @@
         $payment_methods[] = $row['name'];
       }
 
-      return Form::arraySelect($name, $selected_id, $payment_methods);
+      return Forms::arraySelect($name, $selected_id, $payment_methods);
     }
     /**
      * @static

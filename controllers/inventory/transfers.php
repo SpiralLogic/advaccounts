@@ -67,7 +67,7 @@
     unset($_SESSION['transfer_items']);
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$trans_no");
   } /*end of process credit note */
-  $id = Form::findPostPrefix(MODE_DELETE);
+  $id = Forms::findPostPrefix(MODE_DELETE);
   if ($id != -1) {
     handle_delete_item($id);
   }
@@ -83,7 +83,7 @@
   if (isset($_GET['NewTransfer']) || !isset($_SESSION['transfer_items'])) {
     handle_new_order();
   }
-  Form::start();
+  Forms::start();
   Inv_Transfer::header($_SESSION['transfer_items']);
   Table::start('tablesstyle width70 pad10');
   Row::start();
@@ -93,9 +93,9 @@
   echo "</td>";
   Row::end();
   Table::end(1);
-  Form::submitCenterBegin('Update', _("Update"), '', null);
-  Form::submitCenterEnd('Process', _("Process Transfer"), '', 'default');
-  Form::end();
+  Forms::submitCenterBegin('Update', _("Update"), '', null);
+  Forms::submitCenterEnd('Process', _("Process Transfer"), '', 'default');
+  Forms::end();
   Page::end();
   /**
    * @return bool

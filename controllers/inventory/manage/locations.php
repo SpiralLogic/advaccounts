@@ -127,15 +127,15 @@
     $_POST['show_inactive'] = $sav;
   }
   $sql = "SELECT * FROM locations";
-  if (!Form::hasPost('show_inactive')) {
+  if (!Forms::hasPost('show_inactive')) {
     $sql .= " WHERE !inactive";
   }
   $result = DB::query($sql, "could not query locations");
   ;
-  Form::start();
+  Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("Location Code"), _("Location Name"), _("Address"), _("Phone"), _("Secondary Phone"), "", "");
-   Form::inactiveControlCol($th);
+   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
@@ -144,13 +144,13 @@
     Cell::label($myrow["delivery_address"]);
     Cell::label($myrow["phone"]);
     Cell::label($myrow["phone2"]);
-     Form::inactiveControlCell($myrow["loc_code"], $myrow["inactive"], 'locations', 'loc_code');
-    Form::buttonEditCell("Edit" . $myrow["loc_code"], _("Edit"));
-    Form::buttonDeleteCell("Delete" . $myrow["loc_code"], _("Delete"));
+     Forms::inactiveControlCell($myrow["loc_code"], $myrow["inactive"], 'locations', 'loc_code');
+    Forms::buttonEditCell("Edit" . $myrow["loc_code"], _("Edit"));
+    Forms::buttonDeleteCell("Delete" . $myrow["loc_code"], _("Delete"));
     Row::end();
   }
   //END WHILE LIST LOOP
-   Form::inactiveControlRow($th);
+   Forms::inactiveControlRow($th);
   Table::end();
   echo '<br>';
   Table::start('tablestyle2');
@@ -168,21 +168,21 @@
       $_POST['fax']              = $myrow["fax"];
       $_POST['email']            = $myrow["email"];
     }
-    Form::hidden("selected_id", $selected_id);
-    Form::hidden("loc_code");
+    Forms::hidden("selected_id", $selected_id);
+    Forms::hidden("loc_code");
     Row::label(_("Location Code:"), $_POST['loc_code'],'',' class="margin5"');
   } else { //end of if $selected_id only do the else when a new record is being entered
-     Form::textRow(_("Location Code:"), 'loc_code', null, 'small', 5);
+     Forms::textRow(_("Location Code:"), 'loc_code', null, 'small', 5);
   }
-   Form::textRowEx(_("Location Name:"), 'location_name', 'big', 50);
-   Form::textRowEx(_("Contact for deliveries:"), 'contact', 'big', 30);
-   Form::textareaRow(_("Address:"), 'delivery_address', null, 'big', 5);
-   Form::textRowEx(_("Telephone No:"), 'phone', 'big', 30);
-   Form::textRowEx(_("Secondary Phone Number:"), 'phone2', 'big', 30);
-   Form::textRowEx(_("Facsimile No:"), 'fax', 'big', 30);
-   Form::emailRowEx(_("E-mail:"), 'email','big');
+   Forms::textRowEx(_("Location Name:"), 'location_name', 'big', 50);
+   Forms::textRowEx(_("Contact for deliveries:"), 'contact', 'big', 30);
+   Forms::textareaRow(_("Address:"), 'delivery_address', null, 'big', 5);
+   Forms::textRowEx(_("Telephone No:"), 'phone', 'big', 30);
+   Forms::textRowEx(_("Secondary Phone Number:"), 'phone2', 'big', 30);
+   Forms::textRowEx(_("Facsimile No:"), 'fax', 'big', 30);
+   Forms::emailRowEx(_("E-mail:"), 'email','big');
   Table::end(1);
-  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Form::end();
+  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Forms::end();
   Page::end();
 

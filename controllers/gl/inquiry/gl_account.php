@@ -54,12 +54,12 @@
   function gl_inquiry_controls()
   {
     $dim = DB_Company::get_pref('use_dimension');
-    Form::start();
+    Forms::start();
     Table::start('tablestyle_noborder');
     Row::start();
     GL_UI::all_cells(_("Account:"), 'account', null, false, false, "All Accounts");
-     Form::dateCells(_("from:"), 'TransFromDate', '', null, -30);
-     Form::dateCells(_("to:"), 'TransToDate');
+     Forms::dateCells(_("from:"), 'TransFromDate', '', null, -30);
+     Forms::dateCells(_("to:"), 'TransToDate');
     Row::end();
     Table::end();
     Table::start();
@@ -70,13 +70,13 @@
     if ($dim > 1) {
       Dimensions::cells(_("Dimension") . " 2:", 'Dimension2', null, true, " ", false, 2);
     }
-     Form::amountCellsSmall(_("Amount min:"), 'amount_min', null);
-     Form::amountCellsSmall(_("Amount max:"), 'amount_max', null);
-    Form::submitCells('Show', _("Show"), '', '', 'default');
+     Forms::amountCellsSmall(_("Amount min:"), 'amount_min', null);
+     Forms::amountCellsSmall(_("Amount max:"), 'amount_max', null);
+    Forms::submitCells('Show', _("Show"), '', '', 'default');
     Row::end();
     Table::end();
     echo '<hr>';
-    Form::end();
+    Forms::end();
   }
 
   function show_results()

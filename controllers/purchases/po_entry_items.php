@@ -41,7 +41,7 @@
     Orders::session_delete($_POST['order_id']);
     $order = create_order($order_no);
   }
-  $id = Form::findPostPrefix(MODE_DELETE);
+  $id = Forms::findPostPrefix(MODE_DELETE);
   if ($id != -1 && $order) {
     if ($order->some_already_received($id) == 0) {
       $order->remove_from_order($id);
@@ -136,30 +136,30 @@
       echo "<div class='center'><iframe src='" . e('/purchases/inquiry/po_search_completed.php?' . LOC_NOT_FAXED_YET . '=1&frame=1') . "' class='width70' style='height:300px' ></iframe></div>";
     }
   }
-  Form::start();
+  Forms::start();
   echo "<br>";
-  Form::hidden('order_id');
+  Forms::hidden('order_id');
   $order->header();
   $order->display_items();
   Table::start('tablestyle2');
-  Form::textareaRow(_("Memo:"), 'Comments', NULL, 70, 4);
+  Forms::textareaRow(_("Memo:"), 'Comments', NULL, 70, 4);
   Table::end(1);
   Display::div_start('controls', 'items_table');
   if ($order->order_has_items()) {
-    Form::submitCenterBegin(Orders::CANCEL, _("Delete This Order"));
-    Form::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
+    Forms::submitCenterBegin(Orders::CANCEL, _("Delete This Order"));
+    Forms::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
     if ($order->order_no) {
-      Form::submitCenterEnd(COMMIT, _("Update Order"), '', 'default');
+      Forms::submitCenterEnd(COMMIT, _("Update Order"), '', 'default');
     } else {
-      Form::submitCenterEnd(COMMIT, _("Place Order"), '', 'default');
+      Forms::submitCenterEnd(COMMIT, _("Place Order"), '', 'default');
     }
   } else {
-    Form::submitConfirm(Orders::CANCEL, _('You are about to void this Document.\nDo you want to continue?'));
-    Form::submitCenterBegin(Orders::CANCEL, _("Delete This Order"), TRUE, FALSE, ICON_DELETE);
-    Form::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
+    Forms::submitConfirm(Orders::CANCEL, _('You are about to void this Document.\nDo you want to continue?'));
+    Forms::submitCenterBegin(Orders::CANCEL, _("Delete This Order"), TRUE, FALSE, ICON_DELETE);
+    Forms::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
   }
   Display::div_end();
-  Form::end();
+  Forms::end();
   Item::addEditDialog();
   if (isset($order->supplier_id)) {
     Creditor::addInfoDialog("td[name=\"supplier_name\"]", $order->supplier_details['supplier_id']);

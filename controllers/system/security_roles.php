@@ -43,7 +43,7 @@
     return $areas;
   }
 
-  if (Form::isListUpdated('role')) {
+  if (Forms::isListUpdated('role')) {
     Ajax::i()->activate('details');
     Ajax::i()->activate('controls');
   }
@@ -116,7 +116,7 @@
     unset($_POST['role']);
     Ajax::i()->activate('_page_body');
   }
-  if (!isset($_POST['role']) || Input::post('clone') || Form::isListUpdated('role')) {
+  if (!isset($_POST['role']) || Input::post('clone') || Forms::isListUpdated('role')) {
     $id    = Input::post('role');
     $clone = Input::post('clone');
     unset($_POST);
@@ -147,12 +147,12 @@
       $_POST['role'] = $id;
     }
   }
-  Form::start();
+  Forms::start();
   Table::start('tablestyle_noborder');
   Row::start();
-  Security::i()->roles_cells(_("Role:") . "&nbsp;", 'role', null, true, true, Form::hasPost('show_inactive'));
+  Security::i()->roles_cells(_("Role:") . "&nbsp;", 'role', null, true, true, Forms::hasPost('show_inactive'));
   $new_role = Input::post('role') == '';
-   Form::checkCells(_("Show inactive:"), 'show_inactive', null, true);
+   Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
   Row::end();
   Table::end();
   echo "<hr>";
@@ -160,14 +160,14 @@
     Ajax::i()->activate('role');
     JS::set_focus('role');
   }
-  if (Form::findPostPrefix('_Section')) {
+  if (Forms::findPostPrefix('_Section')) {
     Ajax::i()->activate('details');
   }
   Display::div_start('details');
   Table::start('tablestyle2');
-   Form::textRow(_("Role name:"), 'name', null, 20, 22);
-   Form::textRow(_("Role description:"), 'description', null, 50, 52);
-   Form::recordStatusListRow(_("Current status:"), 'inactive');
+   Forms::textRow(_("Role name:"), 'name', null, 20, 22);
+   Forms::textRow(_("Role description:"), 'description', null, 50, 52);
+   Forms::recordStatusListRow(_("Current status:"), 'inactive');
   Table::end(1);
   Table::start('tablestyle grid width40');
   $k   = $j = 0; //row colour counter
@@ -186,29 +186,29 @@
       $m   = $parms[0] & ~0xff;
       //			if(!isset($security_sections[$m]))
       //			 Event::error(sprintf("Bad section %X:", $m));
-      Row::label($security_sections[$m] . ':', Form::checkbox(null, 'Section' . $m, null, true, _("On/off set of features")), "class='left tablehead'", "class='tablehead'");
+      Row::label($security_sections[$m] . ':', Forms::checkbox(null, 'Section' . $m, null, true, _("On/off set of features")), "class='left tablehead'", "class='tablehead'");
     }
-    if (Form::hasPost('Section' . $m)) {
-       Form::checkRow($parms[1], 'Area' . $parms[0], null, false, '', "class='center'");
+    if (Forms::hasPost('Section' . $m)) {
+       Forms::checkRow($parms[1], 'Area' . $parms[0], null, false, '', "class='center'");
       Row::end();
     } else {
-      Form::hidden('Area' . $parms[0]);
+      Forms::hidden('Area' . $parms[0]);
     }
   }
   Table::end(1);
   Display::div_end();
   Display::div_start('controls');
   if ($new_role) {
-    Form::submitCenterBegin('Update', _("Update view"), '', null);
-    Form::submitCenterEnd('addupdate', _("Insert New Role"), '', 'default');
+    Forms::submitCenterBegin('Update', _("Update view"), '', null);
+    Forms::submitCenterEnd('addupdate', _("Insert New Role"), '', 'default');
   } else {
-    Form::submitCenterBegin('addupdate', _("Save Role"), '', 'default');
-    Form::submit('Update', _("Update view"), true, '', null);
-    Form::submit('clone', _("Clone This Role"), true, '', true);
-    Form::submit('delete', _("Delete This Role"), true, '', true);
-    Form::submitCenterEnd('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
+    Forms::submitCenterBegin('addupdate', _("Save Role"), '', 'default');
+    Forms::submit('Update', _("Update view"), true, '', null);
+    Forms::submit('clone', _("Clone This Role"), true, '', true);
+    Forms::submit('delete', _("Delete This Role"), true, '', true);
+    Forms::submitCenterEnd('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
   }
   Display::div_end();
-  Form::end();
+  Forms::end();
   Page::end();
 

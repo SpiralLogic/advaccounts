@@ -59,28 +59,28 @@
     $_POST['undeposited'] = $_POST['name'] = '';
   }
   /* Always show the list of accounts */
-  Form::start();
+  Forms::start();
   Table::start('tablestyle grid width80');
   $sql = "SELECT * FROM payment_methods";
-  if (!Form::hasPost('show_inactive')) {
+  if (!Forms::hasPost('show_inactive')) {
     $sql .= " AND !inactive";
   }
   $sql .= " ORDER BY name";
   $result = DB::query($sql, "could not get payment methods");
   $th     = array(_("Payment Method"), _("Goes To Undeposited"), '', '');
-   Form::inactiveControlCol($th);
+   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
 
     Cell::label($myrow["name"], ' class="nowrap"');
     Cell::label($myrow["undeposited"], ' class="nowrap"');
-     Form::inactiveControlCell($myrow["id"], $myrow["inactive"], 'payment_methods', 'id');
-    Form::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
-    Form::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
+     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'payment_methods', 'id');
+    Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
+    Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     Row::end();
   }
-   Form::inactiveControlRow($th);
+   Forms::inactiveControlRow($th);
   Table::end(1);
   $is_editing = $selected_id != -1;
   Table::start('tablestyle2');
@@ -91,12 +91,12 @@
       $_POST['undeposited'] = $myrow["undeposited"];
       $_POST['inactive']    = $myrow["inactive"];
     }
-    Form::hidden('id', $selected_id);
+    Forms::hidden('id', $selected_id);
     JS::set_focus('name');
   }
-   Form::textRow(_("Payment Method Name:"), 'name', null, 50, 100);
-   Form::yesnoListRow(_("Goes to Undeposited Funds:"), 'undeposited');
+   Forms::textRow(_("Payment Method Name:"), 'name', null, 50, 100);
+   Forms::yesnoListRow(_("Goes to Undeposited Funds:"), 'undeposited');
   Table::end(1);
-  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Form::end();
+  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Forms::end();
   Page::end();

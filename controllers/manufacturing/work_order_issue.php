@@ -118,7 +118,7 @@
     Item_Line::start_focus('_stock_id_edit');
   }
 
-  $id = Form::findPostPrefix(MODE_DELETE);
+  $id = Forms::findPostPrefix(MODE_DELETE);
   if ($id != -1) {
     handle_delete_item($id);
   }
@@ -136,14 +136,14 @@
   }
   WO_Cost::display($_SESSION['issue_items']->order_id);
   echo "<br>";
-  Form::start();
+  Forms::start();
   Table::start('tablesstyle width90 pad10');
   echo "<tr><td>";
   WO_Issue::display_items(_("Items to Issue"), $_SESSION['issue_items']);
   WO_Issue::option_controls();
   echo "</td></tr>";
   Table::end();
-  Form::submitCenter('Process', _("Process Issue"), true, '', 'default');
-  Form::end();
+  Forms::submitCenter('Process', _("Process Issue"), true, '', 'default');
+  Forms::end();
   Page::end();
 

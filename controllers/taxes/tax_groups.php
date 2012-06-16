@@ -73,11 +73,11 @@
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Tax_Groups::get_all(Form::hasPost('show_inactive'));
-  Form::start();
+  $result = Tax_Groups::get_all(Forms::hasPost('show_inactive'));
+  Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("Description"), _("Shipping Tax"), "", "");
-   Form::inactiveControlCol($th);
+   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
@@ -92,13 +92,13 @@
     /*for ($i=0; $i< 5; $i++)
                   if ($myrow["type" . $i] != ALL_NUMERIC)
                     echo "<td>" . $myrow["type" . $i] . "</td>";*/
-     Form::inactiveControlCell($myrow["id"], $myrow["inactive"], 'tax_groups', 'id');
-    Form::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
-    Form::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
+     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'tax_groups', 'id');
+    Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
+    Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     Row::end();
     ;
   }
-   Form::inactiveControlRow($th);
+   Forms::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != -1) {
@@ -118,10 +118,10 @@
         unset($_POST['tax_type_id' . $i++]);
       }
     }
-    Form::hidden('selected_id', $selected_id);
+    Forms::hidden('selected_id', $selected_id);
   }
-   Form::textRowEx(_("Description:"), 'name', 40);
-   Form::yesnoListRow(_("Tax applied to Shipping:"), 'tax_shipping', NULL, "", "", TRUE);
+   Forms::textRowEx(_("Description:"), 'name', 40);
+   Forms::yesnoListRow(_("Tax applied to Shipping:"), 'tax_shipping', NULL, "", "", TRUE);
   Table::end();
   Event::warning(_("Select the taxes that are included in this group."), 1);
   Table::start('tablestyle2');
@@ -141,14 +141,14 @@
       //Editable rate has been removed 090920 Joe Hunt
       //if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
       //	$_POST['rate' . $i] = Num::percent_format($default_rate);
-      // Form::amountCellsSmall(null, 'rate' . $i, $_POST['rate' . $i], null, null,
+      // Forms::amountCellsSmall(null, 'rate' . $i, $_POST['rate' . $i], null, null,
       // User::percent_dec());
     }
     Row::end();
   }
   Table::end(1);
-  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Form::end();
+  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Forms::end();
   Page::end();
 
 

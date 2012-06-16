@@ -59,15 +59,15 @@
     $_POST['show_inactive'] = $sav;
   }
   $sql = "SELECT * FROM shippers";
-  if (!Form::hasPost('show_inactive')) {
+  if (!Forms::hasPost('show_inactive')) {
     $sql .= " WHERE !inactive";
   }
   $sql .= " ORDER BY shipper_id";
   $result = DB::query($sql, "could not get shippers");
-  Form::start();
+  Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("Name"), _("Contact Person"), _("Phone Number"), _("Secondary Phone"), _("Address"), "", "");
-   Form::inactiveControlCol($th);
+   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
@@ -76,12 +76,12 @@
     Cell::label($myrow["phone"]);
     Cell::label($myrow["phone2"]);
     Cell::label($myrow["address"]);
-     Form::inactiveControlCell($myrow["shipper_id"], $myrow["inactive"], 'shippers', 'shipper_id');
-    Form::buttonEditCell("Edit" . $myrow["shipper_id"], _("Edit"));
-    Form::buttonDeleteCell("Delete" . $myrow["shipper_id"], _("Delete"));
+     Forms::inactiveControlCell($myrow["shipper_id"], $myrow["inactive"], 'shippers', 'shipper_id');
+    Forms::buttonEditCell("Edit" . $myrow["shipper_id"], _("Edit"));
+    Forms::buttonDeleteCell("Delete" . $myrow["shipper_id"], _("Delete"));
     Row::end();
   }
-   Form::inactiveControlRow($th);
+   Forms::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != -1) {
@@ -96,16 +96,16 @@
       $_POST['phone2']       = $myrow["phone2"];
       $_POST['address']      = $myrow["address"];
     }
-    Form::hidden('selected_id', $selected_id);
+    Forms::hidden('selected_id', $selected_id);
   }
-   Form::textRowEx(_("Name:"), 'shipper_name', 40);
-   Form::textRowEx(_("Contact Person:"), 'contact', 30);
-   Form::textRowEx(_("Phone Number:"), 'phone', 32, 30);
-   Form::textRowEx(_("Secondary Phone Number:"), 'phone2', 32, 30);
-   Form::textRowEx(_("Address:"), 'address', 50);
+   Forms::textRowEx(_("Name:"), 'shipper_name', 40);
+   Forms::textRowEx(_("Contact Person:"), 'contact', 30);
+   Forms::textRowEx(_("Phone Number:"), 'phone', 32, 30);
+   Forms::textRowEx(_("Secondary Phone Number:"), 'phone2', 32, 30);
+   Forms::textRowEx(_("Address:"), 'address', 50);
   Table::end(1);
-  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Form::end();
+  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Forms::end();
   Page::end();
   /**
    * @return bool

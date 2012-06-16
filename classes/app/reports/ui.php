@@ -30,7 +30,7 @@
         echo "<td class='label'>$label</td>\n";
       }
       echo "<td>";
-      echo Form::arraySelect($name, $selected_id, $profiles, array(
+      echo Forms::arraySelect($name, $selected_id, $profiles, array(
         'select_submit' => $submit_on_change, 'spec_option' => $spec_opt, 'spec_id' => ''
       ));
       echo "</td></tr>\n";
@@ -55,7 +55,7 @@
           $printers[$myrow['id']] = $myrow['name'] . '&nbsp;-&nbsp;' . $myrow['description'];
         }
       }
-      return Form::arraySelect($name, $selected_id, $printers, array(
+      return Forms::arraySelect($name, $selected_id, $printers, array(
         'select_submit' => $submit_on_change, 'spec_option' => $spec_opt, 'spec_id' => ''
       ));
     }
@@ -72,7 +72,7 @@
         $items[$pz] = $pz;
       }
       echo "<tr><td class='label'>$label</td>\n<td>";
-      echo Form::arraySelect($name, $value, $items);
+      echo Forms::arraySelect($name, $value, $items);
       echo "</td></tr>\n";
     }
   }

@@ -21,11 +21,11 @@
     if ($input_error != 1) {
       if ($selected_id != -1) {
         Item_Category::update($selected_id, $_POST['description'], $_POST['tax_type_id'], $_POST['sales_account'], $_POST['cogs_account'], $_POST['inventory_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'],
-          Form::hasPost('no_sale'));
+          Forms::hasPost('no_sale'));
         Event::success(_('Selected item category has been updated'));
       } else {
         Item_Category::add($_POST['description'], $_POST['tax_type_id'], $_POST['sales_account'], $_POST['cogs_account'], $_POST['inventory_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'],
-          Form::hasPost('no_sale'));
+          Forms::hasPost('no_sale'));
         Event::success(_('New item category has been added'));
       }
       $Mode = MODE_RESET;
@@ -38,7 +38,7 @@
    */
   function edit_link($row)
   {
-    return Form::button("Edit" . $row["category_id"], _("Edit"));
+    return Forms::button("Edit" . $row["category_id"], _("Edit"));
   }
 
   /**
@@ -48,7 +48,7 @@
    */
   function delete_link($row)
   {
-    return Form::button("Delete" . $row["category_id"], _("Delete"));
+    return Forms::button("Delete" . $row["category_id"], _("Delete"));
   }
 
   if ($Mode == MODE_DELETE) {
@@ -70,15 +70,15 @@
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  if (Form::isListUpdated('mb_flag')) {
+  if (Forms::isListUpdated('mb_flag')) {
     Ajax::i()->activate('details');
   }
   $sql = "SELECT c.*, t.name as tax_name FROM stock_category c, item_tax_types t WHERE c.dflt_tax_type=t.id";
-  if (!Form::hasPost('show_inactive')) {
+  if (!Forms::hasPost('show_inactive')) {
     $sql .= " AND !c.inactive";
   }
   /*$result = DB::query($sql, "could not get stock categories");
-    Form::start();
+    Forms::start();
     Table::start('tablestyle width90');*/
   $th = array(
     array('type' => 'skip'),
@@ -99,7 +99,7 @@
       'insert' => true, 'fun' => 'delete_link'
     )
   );
-  /*	 Form::inactiveControlCol($th);
+  /*	 Forms::inactiveControlCol($th);
  Table::header($th);
  $k = 0; //row colour counter
  while ($myrow = DB::fetch($result)) {
@@ -113,12 +113,12 @@
    Cell::label($myrow["dflt_cogs_act"], "class=center");
    Cell::label($myrow["dflt_adjustment_act"], "class=center");
    Cell::label($myrow["dflt_assembly_act"], "class=center");
-    Form::inactiveControlCell($myrow["category_id"], $myrow["inactive"], 'stock_category', 'category_id');
-   Form::buttonEditCell("Edit" . $myrow["category_id"], _("Edit"));
-   Form::buttonDeleteCell("Delete" . $myrow["category_id"], _("Delete"));
+    Forms::inactiveControlCell($myrow["category_id"], $myrow["inactive"], 'stock_category', 'category_id');
+   Forms::buttonEditCell("Edit" . $myrow["category_id"], _("Edit"));
+   Forms::buttonDeleteCell("Delete" . $myrow["category_id"], _("Delete"));
    Row::end();
  }
-  Form::inactiveControlRow($th);*/
+  Forms::inactiveControlRow($th);*/
   $table =& db_pager::new_db_pager('cat_tbl', $sql, $th);
   //$table->width = "92%";
   DB_Pager::display($table);
@@ -143,8 +143,8 @@
       $_POST['dim2']               = $myrow["dflt_dim2"];
       $_POST['no_sale']            = $myrow["dflt_no_sale"];
     }
-    Form::hidden('selected_id', $selected_id);
-    Form::hidden('category_id');
+    Forms::hidden('selected_id', $selected_id);
+    Forms::hidden('category_id');
   } else {
     if ($Mode != MODE_CLONE) {
       $_POST['long_description'] = '';
@@ -168,17 +168,17 @@
       }
     }
   }
-   Form::textRow(_("Category Name:"), 'description', null, 30, 30);
+   Forms::textRow(_("Category Name:"), 'description', null, 30, 30);
   Table::sectionTitle(_("Default values for new items"));
   Tax_ItemType::row(_("Item Tax Type:"), 'tax_type_id', null);
   Item_UI::type_row(_("Item Type:"), 'mb_flag', null, true);
   Item_Unit::row(_("Units of Measure:"), 'units', null);
-   Form::checkRow(_("Exclude from sales:"), 'no_sale');
+   Forms::checkRow(_("Exclude from sales:"), 'no_sale');
   GL_UI::all_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
   if (Input::post('mb_flag') == STOCK_SERVICE) {
     GL_UI::all_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
-    Form::hidden('inventory_account', $_POST['inventory_account']);
-    Form::hidden('adjustment_account', $_POST['adjustment_account']);
+    Forms::hidden('inventory_account', $_POST['inventory_account']);
+    Forms::hidden('adjustment_account', $_POST['adjustment_account']);
   } else {
     GL_UI::all_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
     GL_UI::all_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
@@ -187,7 +187,7 @@
   if (STOCK_MANUFACTURE == $_POST['mb_flag']) {
     GL_UI::all_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
   } else {
-    Form::hidden('assembly_account', $_POST['assembly_account']);
+    Forms::hidden('assembly_account', $_POST['assembly_account']);
   }
   $dim = DB_Company::get_pref('use_dimension');
   if ($dim >= 1) {
@@ -197,14 +197,14 @@
     }
   }
   if ($dim < 1) {
-    Form::hidden('dim1', 0);
+    Forms::hidden('dim1', 0);
   }
   if ($dim < 2) {
-    Form::hidden('dim2', 0);
+    Forms::hidden('dim2', 0);
   }
   Table::end(1);
   Display::div_end();
-  Form::submitAddUpdateCenter($selected_id == -1, '', 'both', true);
-  Form::end();
+  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both', true);
+  Forms::end();
   Page::end();
 

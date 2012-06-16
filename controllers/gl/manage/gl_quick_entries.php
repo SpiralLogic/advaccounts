@@ -58,7 +58,7 @@
     $_POST['actn'] = $_POST['dest_id'] = $_POST['amount'] = $_POST['dimension_id'] = $_POST['dimension2_id'] = '';
   }
   $result = GL_QuickEntry::get_all();
-  Form::start();
+  Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("Description"), _("Type"), "", "");
   Table::header($th);
@@ -67,13 +67,13 @@
     $type_text = $quick_entry_types[$myrow["type"]];
     Cell::label($myrow['description']);
     Cell::label($type_text);
-    Form::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
-    Form::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
+    Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
+    Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     Row::end();
   }
   Table::end(1);
-  Form::end();
-  Form::start();
+  Forms::end();
+  Forms::start();
   Table::start('tablestyle2');
   if ($selected_id != -1) {
     //if ($Mode == MODE_EDIT)
@@ -85,20 +85,20 @@
     $_POST['type']        = $myrow["type"];
     $_POST['base_desc']   = $myrow["base_desc"];
     $_POST['base_amount'] = Num::price_format($myrow["base_amount"]);
-    Form::hidden('selected_id', $selected_id);
+    Forms::hidden('selected_id', $selected_id);
     //}
   }
-   Form::textRowEx(_("Description") . ':', 'description', 50, 60);
+   Forms::textRowEx(_("Description") . ':', 'description', 50, 60);
   GL_QuickEntry::types(_("Entry Type") . ':', 'type');
-   Form::textRowEx(_("Base Amount Description") . ':', 'base_desc', 50, 60, '', _('Base Amount'));
-   Form::AmountRow(_("Default Base Amount") . ':', 'base_amount', Num::price_format(0));
+   Forms::textRowEx(_("Base Amount Description") . ':', 'base_desc', 50, 60, '', _('Base Amount'));
+   Forms::AmountRow(_("Default Base Amount") . ':', 'base_amount', Num::price_format(0));
   Table::end(1);
-  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Form::end();
+  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Forms::end();
   if ($selected_id != -1) {
     Display::heading(_("Quick Entry Lines") . " - " . $_POST['description']);
     $result = GL_QuickEntry::get_lines($selected_id);
-    Form::start();
+    Forms::start();
     Table::start('tablestyle2 grid');
     $dim = DB_Company::get_pref('use_dimension');
     if ($dim == 2) {
@@ -133,17 +133,17 @@
       if ($dim > 1) {
         Cell::label(Dimensions::get_string($myrow['dimension2_id'], true));
       }
-      Form::buttonEditCell("BEd" . $myrow["id"], _("Edit"));
-      Form::buttonDeleteCell("BDel" . $myrow["id"], _("Delete"));
+      Forms::buttonEditCell("BEd" . $myrow["id"], _("Edit"));
+      Forms::buttonDeleteCell("BDel" . $myrow["id"], _("Delete"));
       Row::end();
     }
     Table::end(1);
-    Form::hidden('selected_id', $selected_id);
-    Form::hidden('selected_id2', $selected_id2);
-    Form::hidden('description', $_POST['description']);
-    Form::hidden('type', $_POST['type']);
-    Form::end();
-    Form::start();
+    Forms::hidden('selected_id', $selected_id);
+    Forms::hidden('selected_id2', $selected_id2);
+    Forms::hidden('description', $_POST['description']);
+    Forms::hidden('type', $_POST['type']);
+    Forms::end();
+    Forms::start();
     Display::div_start('edit_line');
     Table::start('tablestyle2');
     if ($selected_id2 != -1) {
@@ -159,7 +159,7 @@
       }
     }
     GL_QuickEntry::actions(_("Posted") . ":", 'actn', null, true);
-    if (Form::isListUpdated('actn')) {
+    if (Forms::isListUpdated('actn')) {
       Ajax::i()->activate('edit_line');
     }
     $actn = strtolower(substr($_POST['actn'], 0, 1));
@@ -170,9 +170,9 @@
       GL_UI::all_row(_("Account") . ":", 'dest_id', null, $_POST['type'] == QE_DEPOSIT || $_POST['type'] == QE_PAYMENT);
       if ($actn != '=') {
         if ($actn == '%') {
-           Form::SmallAmountRow(_("Part") . ":", 'amount', Num::price_format(0), null, "%", User::exrate_dec());
+           Forms::SmallAmountRow(_("Part") . ":", 'amount', Num::price_format(0), null, "%", User::exrate_dec());
         } else {
-           Form::AmountRow(_("Amount") . ":", 'amount', Num::price_format(0));
+           Forms::AmountRow(_("Amount") . ":", 'amount', Num::price_format(0));
         }
       }
     }
@@ -184,18 +184,18 @@
     }
     Table::end(1);
     if ($dim < 2) {
-      Form::hidden('dimension2_id', 0);
+      Forms::hidden('dimension2_id', 0);
     }
     if ($dim < 1) {
-      Form::hidden('dimension_id', 0);
+      Forms::hidden('dimension_id', 0);
     }
     Display::div_end();
-    Form::hidden('selected_id', $selected_id);
-    Form::hidden('selected_id2', $selected_id2);
-    Form::hidden('description', $_POST['description']);
-    Form::hidden('type', $_POST['type']);
+    Forms::hidden('selected_id', $selected_id);
+    Forms::hidden('selected_id2', $selected_id2);
+    Forms::hidden('description', $_POST['description']);
+    Forms::hidden('type', $_POST['type']);
     submit_add_or_update_center2($selected_id2 == -1, '', true);
-    Form::end();
+    Forms::end();
   }
   Page::end();
   /**
@@ -242,10 +242,10 @@
   {
     echo "<div class='center'>";
     if ($add) {
-      Form::submit('ADD_ITEM2', _("Add new"), true, $title, $async);
+      Forms::submit('ADD_ITEM2', _("Add new"), true, $title, $async);
     } else {
-      Form::submit('UPDATE_ITEM2', _("Update"), true, $title, $async);
-      Form::submit('RESET2', _("Cancel"), true, $title, $async);
+      Forms::submit('UPDATE_ITEM2', _("Update"), true, $title, $async);
+      Forms::submit('RESET2', _("Cancel"), true, $title, $async);
     }
     echo "</div>";
   }

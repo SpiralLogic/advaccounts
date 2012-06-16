@@ -208,7 +208,7 @@
   if (Input::post('_type_update')) {
     Ajax::i()->activate('_page_body');
   }
-  Form::start();
+  Forms::start();
   Table::start('tablestyle2');
   $existing_comments = "";
   $dec = 0;
@@ -238,32 +238,32 @@
     $_POST['units_issued'] = $myrow["units_issued"];
     $_POST['Costs'] = Num::price_format($myrow["additional_costs"]);
     $_POST['memo_'] = DB_Comments::get_string(ST_WORKORDER, $selected_id);
-    Form::hidden('wo_ref', $_POST['wo_ref']);
-    Form::hidden('units_issued', $_POST['units_issued']);
-    Form::hidden('released', $_POST['released']);
-    Form::hidden('released_date', $_POST['released_date']);
-    Form::hidden('selected_id', $selected_id);
-    Form::hidden('old_qty', $myrow["units_reqd"]);
-    Form::hidden('old_stk_id', $myrow["stock_id"]);
+    Forms::hidden('wo_ref', $_POST['wo_ref']);
+    Forms::hidden('units_issued', $_POST['units_issued']);
+    Forms::hidden('released', $_POST['released']);
+    Forms::hidden('released_date', $_POST['released_date']);
+    Forms::hidden('selected_id', $selected_id);
+    Forms::hidden('old_qty', $myrow["units_reqd"]);
+    Forms::hidden('old_stk_id', $myrow["stock_id"]);
     Row::label(_("Reference:"), $_POST['wo_ref']);
     Row::label(_("Type:"), $wo_types_array[$_POST['type']]);
-    Form::hidden('type', $myrow["type"]);
+    Forms::hidden('type', $myrow["type"]);
   }
   else {
     $_POST['units_issued'] = $_POST['released'] = 0;
-     Form::refRow(_("Reference:"), 'wo_ref', '', Ref::get_next(ST_WORKORDER));
+     Forms::refRow(_("Reference:"), 'wo_ref', '', Ref::get_next(ST_WORKORDER));
     WO_Types::row(_("Type:"), 'type', NULL);
   }
   if (Input::post('released')) {
-    Form::hidden('stock_id', Input::post('stock_id'));
-    Form::hidden('StockLocation', $_POST['StockLocation']);
-    Form::hidden('type', $_POST['type']);
+    Forms::hidden('stock_id', Input::post('stock_id'));
+    Forms::hidden('StockLocation', $_POST['StockLocation']);
+    Forms::hidden('type', $_POST['type']);
     Row::label(_("Item:"), $myrow["StockItemName"]);
     Row::label(_("Destination Location:"), $myrow["location_name"]);
   }
   else {
     Item_UI::manufactured_row(_("Item:"), 'stock_id', NULL, FALSE, TRUE);
-    if (Form::isListUpdated('stock_id')) {
+    if (Forms::isListUpdated('stock_id')) {
       Ajax::i()->activate('quantity');
     }
     Inv_Location::row(_("Destination Location:"), 'StockLocation', NULL);
@@ -275,17 +275,17 @@
     $_POST['quantity'] = Item::qty_format($_POST['quantity'], Input::post('stock_id'), $dec);
   }
   if (Input::post('type') == WO_ADVANCED) {
-     Form::qtyRow(_("Quantity Required:"), 'quantity', NULL, NULL, NULL, $dec);
+     Forms::qtyRow(_("Quantity Required:"), 'quantity', NULL, NULL, NULL, $dec);
     if ($_POST['released']) {
       Row::label(_("Quantity Manufactured:"), number_format($_POST['units_issued'], Item::qty_dec(Input::post('stock_id'))));
     }
-     Form::dateRow(_("Date") . ":", 'date_', '', TRUE);
-     Form::dateRow(_("Date Required By") . ":", 'RequDate', '', NULL, DB_Company::get_pref('default_workorder_required'));
+     Forms::dateRow(_("Date") . ":", 'date_', '', TRUE);
+     Forms::dateRow(_("Date Required By") . ":", 'RequDate', '', NULL, DB_Company::get_pref('default_workorder_required'));
   }
   else {
-     Form::qtyRow(_("Quantity:"), 'quantity', NULL, NULL, NULL, $dec);
-     Form::dateRow(_("Date") . ":", 'date_', '', TRUE);
-    Form::hidden('RequDate', '');
+     Forms::qtyRow(_("Quantity:"), 'quantity', NULL, NULL, NULL, $dec);
+     Forms::dateRow(_("Date") . ":", 'date_', '', TRUE);
+    Forms::hidden('RequDate', '');
     $sql = "SELECT DISTINCT account_code FROM bank_accounts";
     $rs = DB::query($sql, "could not get bank accounts");
     $r = DB::fetch_row($rs);
@@ -293,33 +293,33 @@
       $_POST['Labour'] = Num::price_format(0);
       $_POST['cr_lab_acc'] = $r[0];
     }
-     Form::AmountRow($wo_cost_types[WO_LABOUR], 'Labour');
+     Forms::AmountRow($wo_cost_types[WO_LABOUR], 'Labour');
     GL_UI::all_row(_("Credit Labour Account"), 'cr_lab_acc', NULL);
     if (!isset($_POST['Costs'])) {
       $_POST['Costs'] = Num::price_format(0);
       $_POST['cr_acc'] = $r[0];
     }
-     Form::AmountRow($wo_cost_types[WO_OVERHEAD], 'Costs');
+     Forms::AmountRow($wo_cost_types[WO_OVERHEAD], 'Costs');
     GL_UI::all_row(_("Credit Overhead Account"), 'cr_acc', NULL);
   }
   if (Input::post('released')) {
     Row::label(_("Released On:"), $_POST['released_date']);
   }
-   Form::textareaRow(_("Memo:"), 'memo_', NULL, 40, 5);
+   Forms::textareaRow(_("Memo:"), 'memo_', NULL, 40, 5);
   Table::end(1);
   if (isset($selected_id)) {
     echo "<table class=center><tr>";
-    Form::submitCells(UPDATE_ITEM, _("Update"), '', _('Save changes to work order'), 'default');
+    Forms::submitCells(UPDATE_ITEM, _("Update"), '', _('Save changes to work order'), 'default');
     if (Input::post('released')) {
-      Form::submitCells('close', _("Close This Work Order"), '', '', TRUE);
+      Forms::submitCells('close', _("Close This Work Order"), '', '', TRUE);
     }
-    Form::submitCells('delete', _("Delete This Work Order"), '', '', TRUE);
+    Forms::submitCells('delete', _("Delete This Work Order"), '', '', TRUE);
     echo "</tr></table>";
   }
   else {
-    Form::submitCenter(ADD_ITEM, _("Add Workorder"), TRUE, '', 'default');
+    Forms::submitCenter(ADD_ITEM, _("Add Workorder"), TRUE, '', 'default');
   }
-  Form::end();
+  Forms::end();
   Page::end();
 
 

@@ -119,26 +119,26 @@
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=" . $_POST['selected_id'] . "&date=" . $_POST['date_']);
   }
   WO_Cost::display($_POST['selected_id']);
-  Form::start();
-  Form::hidden('selected_id', $_POST['selected_id']);
-  //Form::hidden('WOReqQuantity', $_POST['WOReqQuantity']);
+  Forms::start();
+  Forms::hidden('selected_id', $_POST['selected_id']);
+  //Forms::hidden('WOReqQuantity', $_POST['WOReqQuantity']);
   $dec = Item::qty_dec($wo_details["stock_id"]);
   if (!isset($_POST['quantity']) || $_POST['quantity'] == '') {
     $_POST['quantity'] = Item::qty_format(max($wo_details["units_reqd"] - $wo_details["units_issued"], 0), $wo_details["stock_id"], $dec);
   }
   Table::start('tablestyle2');
   Display::br();
-   Form::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_MANURECEIVE));
+   Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_MANURECEIVE));
   if (!isset($_POST['ProductionType'])) {
     $_POST['ProductionType'] = 1;
   }
-   Form::yesnoListRow(_("Type:"), 'ProductionType', $_POST['ProductionType'], _("Produce Finished Items"), _("Return Items to Work Order"));
-   Form::qtyRowSmall(_("Quantity:"), 'quantity', null, null, null, $dec);
-   Form::dateRow(_("Date:"), 'date_');
-   Form::textareaRow(_("Memo:"), 'memo_', null, 40, 3);
+   Forms::yesnoListRow(_("Type:"), 'ProductionType', $_POST['ProductionType'], _("Produce Finished Items"), _("Return Items to Work Order"));
+   Forms::qtyRowSmall(_("Quantity:"), 'quantity', null, null, null, $dec);
+   Forms::dateRow(_("Date:"), 'date_');
+   Forms::textareaRow(_("Memo:"), 'memo_', null, 40, 3);
   Table::end(1);
-  Form::submitCenterBegin('Process', _("Process"), '', 'default');
-  Form::submitCenterEnd('ProcessAndClose', _("Process And Close Order"), '', true);
-  Form::end();
+  Forms::submitCenterBegin('Process', _("Process"), '', 'default');
+  Forms::submitCenterEnd('ProcessAndClose', _("Process And Close Order"), '', true);
+  Forms::end();
   Page::end();
 

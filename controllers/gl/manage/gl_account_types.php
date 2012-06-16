@@ -35,11 +35,11 @@
     $_POST['id'] = $_POST['name'] = '';
     unset($_POST['parent'], $_POST['class_id']);
   }
-  $result = GL_Type::get_all(Form::hasPost('show_inactive'));
-  Form::start();
+  $result = GL_Type::get_all(Forms::hasPost('show_inactive'));
+  Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("ID"), _("Name"), _("Subgroup Of"), _("Class Type"), "", "");
-   Form::inactiveControlCol($th);
+   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
@@ -53,12 +53,12 @@
     Cell::label($myrow["name"]);
     Cell::label($parent_text);
     Cell::label($bs_text);
-     Form::inactiveControlCell($myrow["id"], $myrow["inactive"], 'chart_types', 'id');
-    Form::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
-    Form::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
+     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'chart_types', 'id');
+    Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
+    Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     Row::end();
   }
-   Form::inactiveControlRow($th);
+   Forms::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != -1) {
@@ -69,19 +69,19 @@
       $_POST['name']     = $myrow["name"];
       $_POST['parent']   = $myrow["parent"];
       $_POST['class_id'] = $myrow["class_id"];
-      Form::hidden('selected_id', $selected_id);
+      Forms::hidden('selected_id', $selected_id);
     }
-    Form::hidden('id');
+    Forms::hidden('id');
     Row::label(_("ID:"), $_POST['id']);
   } else {
-     Form::textRowEx(_("ID:"), 'id', 10);
+     Forms::textRowEx(_("ID:"), 'id', 10);
   }
-   Form::textRowEx(_("Name:"), 'name', 50);
+   Forms::textRowEx(_("Name:"), 'name', 50);
   GL_Type::row(_("Subgroup Of:"), 'parent', null, _("None"), true);
   GL_Class::row(_("Class Type:"), 'class_id', null);
   Table::end(1);
-  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Form::end();
+  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Forms::end();
   Page::end();
   /**
    * @param $selected_id

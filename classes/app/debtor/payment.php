@@ -132,7 +132,7 @@
         '5'      => _("Delivery Notes"),
         '6'      => _("Invoices Only")
       );
-      echo Form::arraySelect($name, $selected, $allocs);
+      echo Forms::arraySelect($name, $selected, $allocs);
       echo "</td>\n";
     }
     /**

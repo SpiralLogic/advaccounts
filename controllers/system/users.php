@@ -13,14 +13,14 @@
     $auth = new Auth($_POST['user_id']);
     if (can_process($auth)) {
       if ($Mode == UPDATE_ITEM) {
-        Users::update($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], Form::hasPost('rep_popup'), $_POST['pos']);
+        Users::update($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], Forms::hasPost('rep_popup'), $_POST['pos']);
         $auth->update_password($_POST['user_id'], $_POST['password']);
         Event::success(_("The selected user has been updated."));
       } else {
-        Users::add($_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], Form::hasPost('rep_popup'), $_POST['pos']);
+        Users::add($_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], Forms::hasPost('rep_popup'), $_POST['pos']);
         // use current user display preferences as start point for new user
         $auth->update_password($_POST['user_id'], $_POST['password']);
-        Users::update_display_prefs(DB::insert_id(), User::price_dec(), User::qty_dec(), User::exrate_dec(), User::percent_dec(), User::show_gl(), User::show_codes(), User::date_format(), User::date_sep(), User::prefs()->tho_sep, User::prefs()->dec_sep, User::theme(), User::page_size(), User::hints(), $_POST['profile'], Form::hasPost('rep_popup'), User::query_size(), User::graphic_links(), $_POST['language'], User::sticky_doc_date(), User::startup_tab());
+        Users::update_display_prefs(DB::insert_id(), User::price_dec(), User::qty_dec(), User::exrate_dec(), User::percent_dec(), User::show_gl(), User::show_codes(), User::date_format(), User::date_sep(), User::prefs()->tho_sep, User::prefs()->dec_sep, User::theme(), User::page_size(), User::hints(), $_POST['profile'], Forms::hasPost('rep_popup'), User::query_size(), User::graphic_links(), $_POST['language'], User::sticky_doc_date(), User::startup_tab());
         Event::success(_("A new user has been added."));
       }
       $Mode = MODE_RESET;
@@ -37,13 +37,13 @@
     unset($_POST); // clean all input fields
     $_POST['show_inactive'] = $sav;
   }
-  $result = Users::get_all(Form::hasPost('show_inactive'));
-  Form::start();
+  $result = Users::get_all(Forms::hasPost('show_inactive'));
+  Forms::start();
   Table::start('tablestyle grid');
   $th = array(
     _("User login"), _("Full Name"), _("Phone"), _("E-mail"), _("Last Visit"), _("Access Level"), "", ""
   );
-   Form::inactiveControlCol($th);
+   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
@@ -57,19 +57,19 @@
     Cell::label($last_visit_date, ' class="nowrap"');
     Cell::label($myrow["role"]);
     if ($not_me) {
-       Form::inactiveControlCell($myrow["id"], $myrow["inactive"], 'users', 'id');
-    } elseif (Form::hasPost('show_inactive')) {
+       Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'users', 'id');
+    } elseif (Forms::hasPost('show_inactive')) {
       Cell::label('');
     }
-    Form::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
+    Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
     if ($not_me) {
-      Form::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
+      Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     } else {
       Cell::label('');
     }
     Row::end();
   } //END WHILE LIST LOOP
-   Form::inactiveControlRow($th);
+   Forms::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   $_POST['email'] = "";
@@ -88,33 +88,33 @@
       $_POST['rep_popup'] = $myrow["rep_popup"];
       $_POST['pos']       = $myrow["pos"];
     }
-    Form::hidden('selected_id', $selected_id);
-    Form::hidden('user_id');
+    Forms::hidden('selected_id', $selected_id);
+    Forms::hidden('user_id');
     Row::start();
     Row::label(_("User login:"), Input::post('user_id'));
   } else { //end of if $selected_id only do the else when a new record is being entered
-     Form::textRow(_("User Login:"), "user_id", null, 22, 20);
+     Forms::textRow(_("User Login:"), "user_id", null, 22, 20);
     $_POST['language']  = User::language();
     $_POST['profile']   = User::print_profile();
     $_POST['rep_popup'] = User::rep_popup();
     $_POST['pos']       = User::pos();
   }
   $_POST['password'] = "";
-   Form::passwordRow(_("Password:"), 'password', $_POST['password']);
+   Forms::passwordRow(_("Password:"), 'password', $_POST['password']);
   if ($selected_id != -1) {
     Table::sectionTitle(_("Enter a new password to change, leave empty to keep current."));
   }
-   Form::textRowEx(_("Full Name") . ":", 'real_name', 50);
-   Form::textRowEx(_("Telephone No.:"), 'phone', 30);
-   Form::emailRowEx(_("Email Address:"), 'email', 50);
+   Forms::textRowEx(_("Full Name") . ":", 'real_name', 50);
+   Forms::textRowEx(_("Telephone No.:"), 'phone', 30);
+   Forms::emailRowEx(_("Email Address:"), 'email', 50);
   Security::i()->roles_row(_("Access Level:"), 'Access', null);
   Languages::row(_("Language:"), 'language', null);
   Sales_Point::row(_("User's POS") . ':', 'pos', null);
   Reports_UI::print_profiles_row(_("Printing profile") . ':', 'profile', null, _('Browser printing support'));
-   Form::checkRow(_("Use popup window for reports:"), 'rep_popup', Input::post('rep_popup'), false, _('Set this option to on if your browser directly supports pdf files'));
+   Forms::checkRow(_("Use popup window for reports:"), 'rep_popup', Input::post('rep_popup'), false, _('Set this option to on if your browser directly supports pdf files'));
   Table::end(1);
-  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Form::end();
+  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Forms::end();
   Page::end();
   /**
    * @param \Auth $auth

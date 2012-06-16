@@ -21,10 +21,10 @@
     $_POST['CurrencyName']  = $_POST['country'] = '';
     $_POST['hundreds_name'] = '';
   }
-  Form::start();
+  Forms::start();
   display_currencies();
   display_currency_edit($Mode, $selected_id);
-  Form::end();
+  Forms::end();
   Page::end();
   /**
    * @return bool
@@ -68,10 +68,10 @@
       return false;
     }
     if ($selected_id != "") {
-      GL_Currency::update($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], $_POST['country'], $_POST['hundreds_name'], Form::hasPost('auto_update'));
+      GL_Currency::update($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], $_POST['country'], $_POST['hundreds_name'], Forms::hasPost('auto_update'));
       Event::success(_('Selected currency settings has been updated'));
     } else {
-      GL_Currency::add($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], $_POST['country'], $_POST['hundreds_name'], Form::hasPost('auto_update'));
+      GL_Currency::add($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], $_POST['country'], $_POST['hundreds_name'], Forms::hasPost('auto_update'));
       Event::success(_('New currency has been added'));
     }
     $Mode = MODE_RESET;
@@ -143,12 +143,12 @@
   function display_currencies()
   {
     $company_currency = Bank_Currency::for_company();
-    $result           = GL_Currency::get_all(Form::hasPost('show_inactive'));
+    $result           = GL_Currency::get_all(Forms::hasPost('show_inactive'));
     Table::start('tablestyle grid');
     $th = array(
       _("Abbreviation"), _("Symbol"), _("Currency Name"), _("Hundredths name"), _("Country"), _("Auto update"), "", ""
     );
-     Form::inactiveControlCol($th);
+     Forms::inactiveControlCol($th);
     Table::header($th);
     $k = 0; //row colour counter
     while ($myrow = DB::fetch($result)) {
@@ -162,16 +162,16 @@
       Cell::label($myrow["hundreds_name"]);
       Cell::label($myrow["country"]);
       Cell::label($myrow[1] == $company_currency ? '-' : ($myrow["auto_update"] ? _('Yes') : _('No')), "class='center'");
-       Form::inactiveControlCell($myrow["curr_abrev"], $myrow["inactive"], 'currencies', 'curr_abrev');
-      Form::buttonEditCell("Edit" . $myrow["curr_abrev"], _("Edit"));
+       Forms::inactiveControlCell($myrow["curr_abrev"], $myrow["inactive"], 'currencies', 'curr_abrev');
+      Forms::buttonEditCell("Edit" . $myrow["curr_abrev"], _("Edit"));
       if ($myrow["curr_abrev"] != $company_currency) {
-        Form::buttonDeleteCell("Delete" . $myrow["curr_abrev"], _("Delete"));
+        Forms::buttonDeleteCell("Delete" . $myrow["curr_abrev"], _("Delete"));
       } else {
         Cell::label('');
       }
       Row::end();
     } //END WHILE LIST LOOP
-     Form::inactiveControlRow($th);
+     Forms::inactiveControlRow($th);
     Table::end();
     Event::warning(_("The marked currency is the home currency which cannot be deleted."), 0, 0, "class='currentfg'");
   }
@@ -194,18 +194,18 @@
         $_POST['hundreds_name'] = $myrow["hundreds_name"];
         $_POST['auto_update']   = $myrow["auto_update"];
       }
-      Form::hidden('Abbreviation');
-      Form::hidden('selected_id', $selected_id);
+      Forms::hidden('Abbreviation');
+      Forms::hidden('selected_id', $selected_id);
       Row::label(_("Currency Abbreviation:"), $_POST['Abbreviation']);
     } else {
       $_POST['auto_update'] = 1;
-       Form::textRowEx(_("Currency Abbreviation:"), 'Abbreviation', 4, 3);
+       Forms::textRowEx(_("Currency Abbreviation:"), 'Abbreviation', 4, 3);
     }
-     Form::textRowEx(_("Currency Symbol:"), 'Symbol', 10);
-     Form::textRowEx(_("Currency Name:"), 'CurrencyName', 20);
-     Form::textRowEx(_("Hundredths Name:"), 'hundreds_name', 15);
-     Form::textRowEx(_("Country:"), 'country', 40);
-     Form::checkRow(_("Automatic exchange rate update:"), 'auto_update', Input::post('auto_update'));
+     Forms::textRowEx(_("Currency Symbol:"), 'Symbol', 10);
+     Forms::textRowEx(_("Currency Name:"), 'CurrencyName', 20);
+     Forms::textRowEx(_("Hundredths Name:"), 'hundreds_name', 15);
+     Forms::textRowEx(_("Country:"), 'country', 40);
+     Forms::checkRow(_("Automatic exchange rate update:"), 'auto_update', Input::post('auto_update'));
     Table::end(1);
-    Form::submitAddUpdateCenter($selected_id == '', '', 'both');
+    Forms::submitAddUpdateCenter($selected_id == '', '', 'both');
   }

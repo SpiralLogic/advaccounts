@@ -10,14 +10,14 @@
 
   JS::open_window(900, 500);
   Page::start(_($help_context = "Customer Allocations"), SA_SALESALLOC);
-  Form::start();
+  Forms::start();
   /* show all outstanding receipts and credits to be allocated */
   if (!isset($_POST['customer_id'])) {
     $_POST['customer_id'] = Session::i()->getGlobal('debtor');  }
   echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
   echo Debtor::select('customer_id', $_POST['customer_id'], TRUE, TRUE);
   echo "<br>";
-  Form::check(_("Show Settled Items:"), 'ShowSettled', NULL, TRUE);
+  Forms::check(_("Show Settled Items:"), 'ShowSettled', NULL, TRUE);
   echo "</div><br><br>";
   Session::i()->setGlobal('debtor',$_POST['customer_id']);  if (isset($_POST['customer_id']) && ($_POST['customer_id'] == ALL_TEXT)) {
     unset($_POST['customer_id']);
@@ -28,7 +28,7 @@
              echo _("Customer Currency:") . $custCurr;
          }*/
   $settled = FALSE;
-  if (Form::hasPost('ShowSettled')) {
+  if (Forms::hasPost('ShowSettled')) {
     $settled = TRUE;
   }
   $customer_id = NULL;
@@ -56,7 +56,7 @@
   $table->set_marker('Sales_Allocation::check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
   $table->width = "75%";
   DB_Pager::display($table);
-  Form::end();
+  Forms::end();
   Page::end();
 
 

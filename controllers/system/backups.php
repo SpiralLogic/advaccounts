@@ -72,34 +72,34 @@
       Event::error(_("File was not uploaded into the system."));
     }
   }
-  Form::start(TRUE);
+  Forms::start(TRUE);
   Table::startOuter('tablestyle2');
   Table::section(1);
   Table::sectionTitle(_("Create backup"));
-   Form::textareaRow(_("Comments:"), 'comments', NULL, 30, 8);
+   Forms::textareaRow(_("Comments:"), 'comments', NULL, 30, 8);
   compress_list_row(_("Compression:"), 'comp');
-  Form::submitRow('creat', _("Create Backup"), FALSE, "colspan=2 class='center'", '', 'process');
+  Forms::submitRow('creat', _("Create Backup"), FALSE, "colspan=2 class='center'", '', 'process');
   Table::section(2);
   Table::sectionTitle(_("Backup scripts maintenance"));
   Row::start();
   echo "<td style='padding-left:20px'class='left'>" . get_backup_file_combo() . "</td>";
   echo "<td class='top'>";
   Table::start();
-  Form::submitRow('view', _("View Backup"), FALSE, '', '', TRUE);
-  Form::submitRow('download', _("Download Backup"), FALSE, '', '', FALSE);
-  Form::submitRow('restore', _("Restore Backup"), FALSE, '', '', 'process');
-  Form::submitConfirm('restore', _("You are about to restore database from backup file.\nDo you want to continue?"));
-  Form::submitRow('deldump', _("Delete Backup"), FALSE, '', '', TRUE);
+  Forms::submitRow('view', _("View Backup"), FALSE, '', '', TRUE);
+  Forms::submitRow('download', _("Download Backup"), FALSE, '', '', FALSE);
+  Forms::submitRow('restore', _("Restore Backup"), FALSE, '', '', 'process');
+  Forms::submitConfirm('restore', _("You are about to restore database from backup file.\nDo you want to continue?"));
+  Forms::submitRow('deldump', _("Delete Backup"), FALSE, '', '', TRUE);
   // don't use 'delete' name or IE js errors appear
-  Form::submitConfirm('deldump', sprintf(_("You are about to remove selected backup file.\nDo you want to continue ?")));
+  Forms::submitConfirm('deldump', sprintf(_("You are about to remove selected backup file.\nDo you want to continue ?")));
   Table::end();
   echo "</td>";
   Row::end();
   Row::start();
   echo "<td style='padding-left:20px' class='left'><input name='uploadfile' type='file'></td>";
-  Form::submitCells('upload', _("Upload file"), '', '', TRUE);
+  Forms::submitCells('upload', _("Upload file"), '', '', TRUE);
   Row::end();
   Table::endOuter();
-  Form::end();
+  Forms::end();
   Page::end();
 

@@ -22,7 +22,7 @@
     {
       $sql = "SELECT salesman_code, salesman_name, inactive FROM salesman";
 
-      return Form::selectBox($name, $selected_id, $sql, 'salesman_code', 'salesman_name', array(
+      return Forms::selectBox($name, $selected_id, $sql, 'salesman_code', 'salesman_name', array(
                                                                                           'order'       => array('salesman_name'),
                                                                                           'spec_option' => $spec_opt,
                                                                                           'spec_id'     => ALL_NUMERIC
@@ -72,7 +72,7 @@
     {
       $sql = "SELECT area_code, description, inactive FROM areas";
 
-      return Form::selectBox($name, $selected_id, $sql, 'area_code', 'description', array());
+      return Forms::selectBox($name, $selected_id, $sql, 'area_code', 'description', array());
     }
     /**
      * @static
@@ -116,7 +116,7 @@
     {
       $sql = "SELECT id, description, inactive FROM groups";
 
-      return Form::selectBox($name, $selected_id, $sql, 'id', 'description', array(
+      return Forms::selectBox($name, $selected_id, $sql, 'id', 'description', array(
                                                                              'spec_option'                    => $special_option === true ?
                                                                                ' ' : $special_option,
                                                                              'order'                          => 'description',
@@ -166,7 +166,7 @@
     {
       $sql = "SELECT shipper_id, shipper_name, inactive FROM shippers";
 
-      return Form::selectBox($name, $selected_id, $sql, 'shipper_id', 'shipper_name', array('order' => array('shipper_name')));
+      return Forms::selectBox($name, $selected_id, $sql, 'shipper_id', 'shipper_name', array('order' => array('shipper_name')));
     }
     /**
      * @static
@@ -210,7 +210,7 @@
         Cell::label($label);
       }
       echo "<td>\n";
-      echo Form::arraySelect($name, $selected, array(
+      echo Forms::arraySelect($name, $selected, array(
                                                  ''    => _("Automatically put balance on back order"),
                                                  'CAN' => _("Cancel any quantites not delivered")
                                             ));
@@ -245,7 +245,7 @@
                 FROM sales_orders as sorder, sales_order_details as line
                 WHERE sorder.order_no = line.order_no AND sorder.type = 1 GROUP BY line.order_no";
 
-      return Form::selectBox($name, $selected_id, $sql, 'order_no', 'OrderValue', array(
+      return Forms::selectBox($name, $selected_id, $sql, 'order_no', 'OrderValue', array(
                                                                                   'format'                         => '_format_template_items',
                                                                                   'spec_option'                    => $special_option === true ?
                                                                                     ' ' : $special_option,
@@ -336,7 +336,7 @@
                     FROM stock_master s, item_codes i LEFT JOIN stock_category c ON i.category_id=c.category_id
                     WHERE i.stock_id=s.stock_id $where AND !i.inactive AND !s.inactive AND !s.no_sale GROUP BY i.item_code";
 
-      return Form::selectBox($name, $selected_id, $sql, 'i.item_code', 'c.description', array_merge(array(
+      return Forms::selectBox($name, $selected_id, $sql, 'i.item_code', 'c.description', array_merge(array(
                                                                                                     'format'        => '_format_stock_items',
                                                                                                     'spec_option'   => $all_option === true ?
                                                                                                       _("All Items") :
@@ -431,7 +431,7 @@
         echo "<td class='label'>$label</td>\n";
       }
       echo "<td>";
-      echo  Form::yesnoList($name, $selected_id, _('Cash'), _('Delayed'), $submit_on_change);
+      echo  Forms::yesnoList($name, $selected_id, _('Cash'), _('Delayed'), $submit_on_change);
       echo "</td>\n";
     }
   }

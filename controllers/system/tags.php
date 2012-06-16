@@ -66,22 +66,22 @@
     $selected_id   = -1;
     $_POST['name'] = $_POST['description'] = '';
   }
-  $result = Tags::get_all(Input::post('type'), Form::hasPost('show_inactive'));
-  Form::start();
+  $result = Tags::get_all(Input::post('type'), Forms::hasPost('show_inactive'));
+  Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("Tag Name"), _("Tag Description"), "", "");
-   Form::inactiveControlCol($th);
+   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
     Cell::label($myrow['name']);
     Cell::label($myrow['description']);
-     Form::inactiveControlCell($myrow["id"], $myrow["inactive"], 'tags', 'id');
-    Form::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
-    Form::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
+     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'tags', 'id');
+    Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
+    Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     Row::end();
   }
-   Form::inactiveControlRow($th);
+   Forms::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != -1) // We've selected a tag
@@ -93,14 +93,14 @@
       $_POST['description'] = $myrow["description"];
     }
     // Note the selected tag
-    Form::hidden('selected_id', $selected_id);
+    Forms::hidden('selected_id', $selected_id);
   }
-   Form::textRowEx(_("Tag Name:"), 'name', 15, 30);
-   Form::textRowEx(_("Tag Description:"), 'description', 40, 60);
-  Form::hidden('type');
+   Forms::textRowEx(_("Tag Name:"), 'name', 15, 30);
+   Forms::textRowEx(_("Tag Description:"), 'description', 40, 60);
+  Forms::hidden('type');
   Table::end(1);
-  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Form::end();
+  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Forms::end();
   Page::end();
   /**
    * @return bool

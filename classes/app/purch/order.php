@@ -599,7 +599,7 @@
         if (isset($_POST['supplier_id'])) {
           $this->supplier_to_order($_POST['supplier_id']);
         }
-        Form::hidden('supplier_id', $this->supplier_id);
+        Forms::hidden('supplier_id', $this->supplier_id);
         Cell::labels(_("Supplier:"), $this->supplier_name,'rowspan=2 ',' colspan=' . ($show_currencies + 2).' rowspan=2');
       }
       if ($this->supplier_id != Input::post('supplier_id', null, -1)) {
@@ -636,13 +636,13 @@
           Event::error(_("The default stock location set up for this user is not a currently defined stock location. Your system administrator needs to amend your user record."));
         }
       }
-      Form::textareaCells(null, 'delivery_address', $_POST['delivery_address'], 'width95', 4, null, 'colspan=' . (5-$show_currencies) . ' rowspan=' . (5-$show_currencies ));
+      Forms::textareaCells(null, 'delivery_address', $_POST['delivery_address'], 'width95', 4, null, 'colspan=' . (5-$show_currencies) . ' rowspan=' . (5-$show_currencies ));
       row::end();
       row::start();
       if ($editable) {
-        Form::refCells(_("Purchase Order #:"), 'ref', '', Ref::get_next(ST_PURCHORDER));
+        Forms::refCells(_("Purchase Order #:"), 'ref', '', Ref::get_next(ST_PURCHORDER));
       } else {
-        Form::hidden('ref', $this->reference);
+        Forms::hidden('ref', $this->reference);
         Cell::labels(_("Purchase Order #:"), $this->reference);
       }
       Sales_UI::persons_cells(_("Sales Person:"), 'salesman', $this->salesman);
@@ -651,8 +651,8 @@
       }
       row::end();
       row::start();
-      Form::textCells(_("Supplier's Order #:"), 'Requisition', null, 'small', 15);
-      Form::dateCells(_("Order Date:"), 'OrderDate', '', true, 0, 0, 0, null, true);
+      Forms::textCells(_("Supplier's Order #:"), 'Requisition', null, 'small', 15);
+      Forms::dateCells(_("Order Date:"), 'OrderDate', '', true, 0, 0, 0, null, true);
       row::end();
       Table::end(); // outer table
     }
@@ -680,7 +680,7 @@
         $th[] = '';
       }
       Table::header($th);
-      $id    = Form::findPostPrefix(MODE_EDIT);
+      $id    = Forms::findPostPrefix(MODE_EDIT);
       $total = 0;
       $k     = 0;
       if (!$this->line_items) {
@@ -700,8 +700,8 @@
               Cell::percent($po_line->discount * 100);
               Cell::amount($line_total);
               if ($editable) {
-                Form::buttonEditCell("Edit$line_no", _("Edit"), _('Edit document line'));
-                Form::buttonDeleteCell("Delete$line_no", _("Delete"), _('Remove line from document'));
+                Forms::buttonEditCell("Edit$line_no", _("Edit"), _('Edit document line'));
+                Forms::buttonDeleteCell("Delete$line_no", _("Delete"), _('Remove line from document'));
               }
               Row::end();
             } else {
@@ -715,7 +715,7 @@
         $this->item_controls();
       }
       Table::foot();
-      Form::SmallAmountRow(_("Freight"), 'freight', Num::price_format(Input::post('freight', null, 0)), "colspan=8 class='bold right'", null, null, 3);
+      Forms::SmallAmountRow(_("Freight"), 'freight', Num::price_format(Input::post('freight', null, 0)), "colspan=8 class='bold right'", null, null, 3);
       $display_total = Num::price_format($total + Validation::input_num('freight'));
       Row::label(_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 class='bold right'", "nowrap class=right _nofreight='$total'", 2);
       Table::footEnd();
@@ -770,9 +770,9 @@
     {
       Row::start();
       $dec2 = 0;
-      $id   = Form::findPostPrefix(MODE_EDIT);
+      $id   = Forms::findPostPrefix(MODE_EDIT);
       if (($id != -1) && $stock_id != null) {
-        Form::hidden('line_no', $id);
+        Forms::hidden('line_no', $id);
         $_POST['stock_id'] = $this->line_items[$id]->stock_id;
         $dec               = Item::qty_dec($_POST['stock_id']);
         $_POST['qty']      = Item::qty_format($this->line_items[$id]->quantity, $_POST['stock_id'], $dec);
@@ -782,15 +782,15 @@
         $_POST['req_del_date'] = $this->line_items[$id]->req_del_date;
         $_POST['description']  = $this->line_items[$id]->description;
         $_POST['units']        = $this->line_items[$id]->units;
-        Form::hidden('stock_id', $_POST['stock_id']);
+        Forms::hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id'], " class='stock' data-stock_id='{$_POST['stock_id']}'");
-        Form::textareaCells(null, 'description', null, 50, 5);
+        Forms::textareaCells(null, 'description', null, 50, 5);
         Ajax::i()->activate('items_table');
         $qty_rcvd = $this->line_items[$id]->qty_received;
       } else {
-        Form::hidden('line_no', ($this->lines_on_order + 1));
+        Forms::hidden('line_no', ($this->lines_on_order + 1));
         Item_Purchase::cells(null, 'stock_id', null, false, true, true);
-        if (Form::isListUpdated('stock_id')) {
+        if (Forms::isListUpdated('stock_id')) {
           Ajax::i()->activate('price');
           Ajax::i()->activate('units');
           Ajax::i()->activate('description');
@@ -809,20 +809,20 @@
         $_POST['discount']     = Num::percent_format(0);
         $qty_rcvd              = '';
       }
-      Form::qtyCells(null, 'qty', null, null, null, $dec);
+      Forms::qtyCells(null, 'qty', null, null, null, $dec);
       Cell::qty($qty_rcvd, false, $dec);
       Cell::label($_POST['units'], '', 'units');
-      Form::dateCells(null, 'req_del_date', '', null, 0, 0, 0);
-      Form::amountCells(null, 'price', null, null, null, $dec2);
-      Form::amountCellsSmall(null, 'discount', Num::percent_format($_POST['discount']), null, null, User::percent_dec());
+      Forms::dateCells(null, 'req_del_date', '', null, 0, 0, 0);
+      Forms::amountCells(null, 'price', null, null, null, $dec2);
+      Forms::amountCellsSmall(null, 'discount', Num::percent_format($_POST['discount']), null, null, User::percent_dec());
       $line_total = Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('discount') / 100);
       Cell::amount($line_total, false, '', 'line_total');
       if ($id != -1) {
-        Form::buttonCell(UPDATE_ITEM, _("Update"), _('Confirm changes'), ICON_UPDATE);
-        Form::buttonCell(CANCEL, _("Cancel"), _('Cancel changes'), ICON_CANCEL);
+        Forms::buttonCell(UPDATE_ITEM, _("Update"), _('Confirm changes'), ICON_UPDATE);
+        Forms::buttonCell(CANCEL, _("Cancel"), _('Cancel changes'), ICON_CANCEL);
         JS::set_focus('qty');
       } else {
-        Form::submitCells(ADD_ITEM, _("Add Item"), "colspan=2", _('Add new item to document'), true);
+        Forms::submitCells(ADD_ITEM, _("Add Item"), "colspan=2", _('Add new item to document'), true);
       }
       Row::end();
     }

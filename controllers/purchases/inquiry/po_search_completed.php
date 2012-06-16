@@ -33,17 +33,17 @@
     }
     Ajax::i()->activate('orders_tbl');
   }
-  Form::start();
+  Forms::start();
   if (!Input::request('frame')) {
     Table::start('tablestyle_noborder');
     Row::start();
     Creditor::cells(_("Supplier: "), 'supplier_id', NULL, TRUE);
-     Form::refCells(_("#:"), 'order_number', '', NULL, '', TRUE);
-     Form::dateCells(_("From:"), 'OrdersAfterDate', '', NULL, -30);
-     Form::dateCells(_("To:"), 'OrdersToDate');
+     Forms::refCells(_("#:"), 'order_number', '', NULL, '', TRUE);
+     Forms::dateCells(_("From:"), 'OrdersAfterDate', '', NULL, -30);
+     Forms::dateCells(_("To:"), 'OrdersToDate');
     Inv_Location::cells(_("Location:"), 'StockLocation', NULL, TRUE);
     Item::cells(_("Item:"), 'SelectStockFromList', NULL, TRUE);
-    Form::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
+    Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
     Row::end();
     Table::end();
   }
@@ -161,5 +161,5 @@
   DB_Pager::display($table);
   Creditor::addInfoDialog('.pagerclick');
   UI::emailDialogue(CT_SUPPLIER);
-  Form::end();
+  Forms::end();
   Page::end();

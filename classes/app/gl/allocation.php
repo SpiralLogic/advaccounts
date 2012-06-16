@@ -252,11 +252,11 @@
           Cell::amount($alloc_item->amount);
           Cell::amount($alloc_item->amount_allocated);
           $_POST['amount' . $counter] = Num::price_format($alloc_item->current_allocated + Input::post('amount' . $counter, Input::NUMERIC));
-           Form::amountCells(null, "amount" . $counter, Num::price_format('amount' . $counter));
+           Forms::amountCells(null, "amount" . $counter, Num::price_format('amount' . $counter));
           $un_allocated = $alloc_item->amount - $alloc_item->amount_allocated;
           Cell::amount($un_allocated, false, '');
           Cell::label("<a href='#' name=Alloc$counter class='button allocateAll'>" . _("All") . "</a>");
-          Cell::label("<a href='#' name=DeAll$counter class='button allocateNone'>" . _("None") . "</a>" . Form::hidden("un_allocated" . $counter, Num::price_format($un_allocated), false));
+          Cell::label("<a href='#' name=DeAll$counter class='button allocateNone'>" . _("None") . "</a>" . Forms::hidden("un_allocated" . $counter, Num::price_format($un_allocated), false));
           Row::end();
           $total_allocated += Validation::input_num('amount' . $counter);
           $counter++;
@@ -279,7 +279,7 @@
         }
         Table::end(1);
       }
-      Form::hidden('TotalNumberOfAllocs', $counter);
+      Forms::hidden('TotalNumberOfAllocs', $counter);
     }
     /**
      * @static

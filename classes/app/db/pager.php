@@ -95,7 +95,7 @@
     public static function link($link_text, $url, $icon = false)
     {
       if (User::graphic_links() && $icon) {
-        $link_text = Form::setIcon($icon, $link_text);
+        $link_text = Forms::setIcon($icon, $link_text);
       }
       $href = '/' . ltrim($url, '/');
       $href = (Input::request('frame')) ? "javascript:window.parent.location='$href'" : $href;
@@ -273,14 +273,14 @@
       }
       Row::start("class='navibar'");
       $colspan = count($pager->columns);
-      $inact   = $pager->inactive_ctrl == true ? ' ' . Form::checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
+      $inact   = $pager->inactive_ctrl == true ? ' ' . Forms::checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
       if ($pager->rec_count) {
         echo "<td colspan=$colspan class='navibar' >";
         echo "<table class='floatright'>";
         $but_pref = $pager->name . '_page_';
         Row::start();
         if (@$pager->inactive_ctrl) {
-          Form::submit('Update', _('Update'), true, '', null);
+          Forms::submit('Update', _('Update'), true, '', null);
         } // inactive update
         static::navi_cell($but_pref . 'first', _('First'), $pager->first_page);
         static::navi_cell($but_pref . 'prev', _('Prev'), $pager->prev_page);
@@ -493,13 +493,13 @@
         $table = $this->main_tbl;
         $name  = "Inactive" . $id;
         $value = $row['inactive'] ? 1 : 0;
-        if (Form::hasPost('show_inactive')) {
-          if (isset($_POST['LInact'][$id]) && (Input::post('_Inactive' . $id . '_update') || Input::post('Update')) && (Form::hasPost('Inactive' . $id) != $value)
+        if (Forms::hasPost('show_inactive')) {
+          if (isset($_POST['LInact'][$id]) && (Input::post('_Inactive' . $id . '_update') || Input::post('Update')) && (Forms::hasPost('Inactive' . $id) != $value)
           ) {
             DB::update_record_status($id, !$value, $table, $key);
             $value = !$value;
           }
-          echo '<td class="center">' . Form::checkbox(null, $name, $value, true, '', "class='center'") . Form::hidden("LInact[$id]", $value, false) . '</td>';
+          echo '<td class="center">' . Forms::checkbox(null, $name, $value, true, '', "class='center'") . Forms::hidden("LInact[$id]", $value, false) . '</td>';
         }
       } else {
         echo '';
@@ -585,8 +585,8 @@
      */
     public function select_records()
     {
-      $page = Form::findPostPrefix($this->name . '_page_', false);
-      $sort = Form::findPostPrefix($this->name . '_sort_', true);
+      $page = Forms::findPostPrefix($this->name . '_page_', false);
+      $sort = Forms::findPostPrefix($this->name . '_sort_', true);
       if ($page) {
         $this->change_page($page);
         if ($page == 'next' && !$this->next_page || $page == 'last' && !$this->last_page

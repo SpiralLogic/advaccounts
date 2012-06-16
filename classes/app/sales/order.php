@@ -1186,8 +1186,8 @@
           Cell::percent($stock_item->discount_percent * 100);
           Cell::amount($line_total);
           if ($editable_items) {
-            Form::buttonEditCell($line_no, _("Edit"), _('Edit document line'));
-            Form::buttonDeleteCell($line_no, _("Delete"), _('Remove line from document'));
+            Forms::buttonEditCell($line_no, _("Edit"), _('Edit document line'));
+            Forms::buttonDeleteCell($line_no, _("Delete"), _('Remove line from document'));
           }
           Row::end();
         } else {
@@ -1207,16 +1207,16 @@
       Table::foot();
       Row::start();
       Cell::label(_("Shipping Charge"), "colspan=$colspan class='right'");
-      Form::amountCellsSmall(null, 'freight_cost', Num::price_format(Input::post('freight_cost', null, 0)));
+      Forms::amountCellsSmall(null, 'freight_cost', Num::price_format(Input::post('freight_cost', null, 0)));
       Cell::label('', 'colspan=2');
       Row::end();
       $display_sub_total = Num::price_format($total + Validation::input_num('freight_cost'));
       Row::start();
       Cell::label(_("Total Discount"), "colspan=$colspan class='right'");
-      Form::amountCellsSmall(null, null, $total_discount);
+      Forms::amountCellsSmall(null, null, $total_discount);
       HTML::td(null, array('colspan'=> 2, 'class'=> 'center'))
         ->button('discountAll', 'Discount All', array('name' => 'discountAll'), false);
-      Form::hidden('_discountAll', '0', true);
+      Forms::hidden('_discountAll', '0', true);
       HTML::td();
       $action = "var discount = prompt('Discount Percent?',''); if (!discount) return false; $(\"[name='_discountAll']\").val(Number(discount));e=$(this);save_focus(e);JsHttpRequest.request(this);return false;";
       JS::addLiveEvent('#discountAll', 'click', $action);
@@ -1227,7 +1227,7 @@
       $display_total = Num::price_format(($total + Validation::input_num('freight_cost') + $tax_total));
       Row::start();
       Cell::labels(_("Amount Total"), $display_total, "colspan=$colspan style='background:inherit; text-align:right;'", "class='right'");
-      Form::submitCells('_action', Orders::REFRESH, "colspan=2", _("Refresh"), true);
+      Forms::submitCells('_action', Orders::REFRESH, "colspan=2", _("Refresh"), true);
       Row::end();
       Table::footEnd();
       Table::end();
@@ -1257,12 +1257,12 @@
           // can't change the customer/branch if items already received on this order
           //echo $this->customer_name . " - " . $this->deliver_to;
           Row::label(_('Customer:'), $this->customer_name . " - " . $this->deliver_to, "id='customer_id_label' class='label pointer'");
-          Form::hidden('customer_id', $this->customer_id);
-          Form::hidden('branch_id', $this->Branch);
-          Form::hidden('sales_type', $this->sales_type);
+          Forms::hidden('customer_id', $this->customer_id);
+          Forms::hidden('branch_id', $this->Branch);
+          Forms::hidden('sales_type', $this->sales_type);
           //		if ($this->trans_type != ST_SALESORDER && $this->trans_type != ST_SALESQUOTE) {
-          Form::hidden('dimension_id', $this->dimension_id); // 2008-11-12 Joe Hunt
-          Form::hidden('dimension2_id', $this->dimension2_id);
+          Forms::hidden('dimension_id', $this->dimension_id); // 2008-11-12 Joe Hunt
+          Forms::hidden('dimension2_id', $this->dimension2_id);
           //		}
         }
       } else {
@@ -1337,9 +1337,9 @@
         }
       }
       if ($editable) {
-        Form::refRow(_("Reference") . ':', 'ref', _('Reference number unique for this document type'), null, '');
+        Forms::refRow(_("Reference") . ':', 'ref', _('Reference number unique for this document type'), null, '');
       } else {
-        Form::hidden('ref', $this->reference);
+        Forms::hidden('ref', $this->reference);
         Row::label(_("Reference:"), $this->reference);
       }
       if (!Bank_Currency::is_company($this->customer_currency)) {
@@ -1369,7 +1369,7 @@
         if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "") {
           $_POST['OrderDate'] = $this->document_date;
         }
-        Form::dateRow($date_text, 'OrderDate', null, $this->trans_no == 0, 0, 0, 0, null, true);
+        Forms::dateRow($date_text, 'OrderDate', null, $this->trans_no == 0, 0, 0, 0, null, true);
         if (isset($_POST['_OrderDate_changed'])) {
           if (!Bank_Currency::is_company($this->customer_currency) && (DB_Company::get_base_sales_type() > 0)) {
             $change_prices = 1;
@@ -1388,21 +1388,21 @@
           if ($dim > 0) {
             Dimensions::select_row(_("Dimension") . ":", 'dimension_id', null, true, ' ', false, 1, false);
           } else {
-            Form::hidden('dimension_id', 0);
+            Forms::hidden('dimension_id', 0);
           }
           if ($dim > 1) {
             Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', null, true, ' ', false, 2, false);
           } else {
-            Form::hidden('dimension2_id', 0);
+            Forms::hidden('dimension2_id', 0);
           }
         }
       } else {
         Row::label($date_text, $this->document_date);
-        Form::hidden('OrderDate', $this->document_date);
+        Forms::hidden('OrderDate', $this->document_date);
       }
       if ($display_tax_group) {
         Row::label(_("Tax Group:"), $this->tax_group_name);
-        Form::hidden('tax_group_id', $this->tax_group_id);
+        Forms::hidden('tax_group_id', $this->tax_group_id);
       }
       Sales_UI::persons_row(_("Sales Person:"), 'salesman', (isset($this->salesman)) ? $this->salesman : User::i()->salesmanid);
       Table::endOuter(1); // outer table
@@ -1432,16 +1432,16 @@
         $_POST['Disc']        = Num::percent_format($this->line_items[$id]->discount_percent * 100);
         $_POST['description'] = $this->line_items[$id]->description;
         $units                = $this->line_items[$id]->units;
-        Form::hidden('stock_id', $_POST['stock_id']);
+        Forms::hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id'], 'class="stock"');
-        Form::textareaCells(null, 'description', null, 50, 5);
+        Forms::textareaCells(null, 'description', null, 50, 5);
         Ajax::i()->activate('items_table');
       } else // prepare new line
       {
         Row::start('class="newline"');
 
         Sales_UI::items_cells(null, 'stock_id', null, false, false, array('description' => ''));
-        if (Form::isListUpdated('stock_id')) {
+        if (Forms::isListUpdated('stock_id')) {
           Ajax::i()->activate('price');
           Ajax::i()->activate('description');
           Ajax::i()->activate('units');
@@ -1456,22 +1456,22 @@
         $_POST['price'] = Num::price_format($price);
         $_POST['Disc']  = Num::percent_format($this->default_discount * 100);
       }
-      Form::qtyCells(null, 'qty', $_POST['qty'], null, null, $dec);
+      Forms::qtyCells(null, 'qty', $_POST['qty'], null, null, $dec);
       if ($this->trans_no != 0) {
         Cell::qty($line_no == -1 ? 0 : $this->line_items[$line_no]->qty_done, false, $dec);
       }
       Cell::label($units, '', 'units');
-      Form::amountCells(null, 'price');
-      Form::percentCells(null, 'Disc', Num::percent_format($_POST['Disc']));
+      Forms::amountCells(null, 'price');
+      Forms::percentCells(null, 'Disc', Num::percent_format($_POST['Disc']));
       $line_total = Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('Disc') / 100);
       Cell::amount($line_total, false, '', 'line_total');
       if ($id != -1) {
-        Form::buttonCell('_action', Orders::UPDATE_ITEM, _("Update"), ICON_UPDATE); //_('Confirm changes'),
-        Form::buttonCell('_action', Orders::CANCEL_ITEM_CHANGES, _("Cancel"), ICON_CANCEL); //, _('Cancel changes')
-        Form::hidden('LineNo', $line_no);
+        Forms::buttonCell('_action', Orders::UPDATE_ITEM, _("Update"), ICON_UPDATE); //_('Confirm changes'),
+        Forms::buttonCell('_action', Orders::CANCEL_ITEM_CHANGES, _("Cancel"), ICON_CANCEL); //, _('Cancel changes')
+        Forms::hidden('LineNo', $line_no);
         JS::set_focus('qty');
       } else {
-        Form::submitCells('_action', Orders::ADD_LINE, 'colspan=2 class="center"', _("Add Item"), true); //_('Add new item to document'),
+        Forms::submitCells('_action', Orders::ADD_LINE, 'colspan=2 class="center"', _("Add Item"), true); //_('Add new item to document'),
       }
       Row::end();
     }
@@ -1486,9 +1486,9 @@
         Display::heading(_('Cash payment'));
         Table::start('tablestyle2 width60');
         Row::label(_("Deliver from Location:"), $this->location_name);
-        Form::hidden('location', $this->location);
+        Forms::hidden('location', $this->location);
         Row::label(_("Cash account:"), $this->account_name);
-        Form::textareaRow(_("Comments:"), "Comments", $this->Comments, 31, 5);
+        Forms::textareaRow(_("Comments:"), "Comments", $this->Comments, 31, 5);
         Table::end();
       } else {
         if ($this->trans_type == ST_SALESINVOICE) {
@@ -1508,21 +1508,21 @@
         Table::startOuter('tablestyle2 width90');
         Table::section(1);
         Inv_Location::row(_("Deliver from Location:"), 'location', null, false, true);
-        if (Form::isListUpdated('location')) {
+        if (Forms::isListUpdated('location')) {
           Ajax::i()->activate('items_table');
         }
-        Form::dateRow($delname, 'delivery_date', $this->trans_type == ST_SALESORDER ? _('Enter requested day of delivery') :
+        Forms::dateRow($delname, 'delivery_date', $this->trans_type == ST_SALESORDER ? _('Enter requested day of delivery') :
           $this->trans_type == ST_SALESQUOTE ? _('Enter Valid until Date') : '');
-        Form::textRow(_("Deliver To:"), 'deliver_to', $this->deliver_to, 40, 40, _('Additional identifier for delivery e.g. name of receiving person'));
-        Form::textareaRow("<a href='#'>Address:</a>", 'delivery_address', $this->delivery_address, 35, 5, _('Delivery address. Default is address of customer branch'), null, 'id="address_map"');
+        Forms::textRow(_("Deliver To:"), 'deliver_to', $this->deliver_to, 40, 40, _('Additional identifier for delivery e.g. name of receiving person'));
+        Forms::textareaRow("<a href='#'>Address:</a>", 'delivery_address', $this->delivery_address, 35, 5, _('Delivery address. Default is address of customer branch'), null, 'id="address_map"');
         if (strlen($this->delivery_address) > 10) {
           //JS::gmap("#address_map", $this->delivery_address, $this->deliver_to);
         }
         Table::section(2);
-        Form::textRow(_("Person ordering:"), 'name', $this->name, 25, 25, 'Ordering person&#39;s name');
-        Form::textRow(_("Contact Phone Number:"), 'phone', $this->phone, 25, 25, _('Phone number of ordering person. Defaults to branch phone number'));
-        Form::textRow(_("Customer Purchase Order #:"), 'cust_ref', $this->cust_ref, 25, 25, _('Customer reference number for this order (if any)'));
-        Form::textareaRow(_("Comments:"), "Comments", $this->Comments, 31, 5);
+        Forms::textRow(_("Person ordering:"), 'name', $this->name, 25, 25, 'Ordering person&#39;s name');
+        Forms::textRow(_("Contact Phone Number:"), 'phone', $this->phone, 25, 25, _('Phone number of ordering person. Defaults to branch phone number'));
+        Forms::textRow(_("Customer Purchase Order #:"), 'cust_ref', $this->cust_ref, 25, 25, _('Customer reference number for this order (if any)'));
+        Forms::textareaRow(_("Comments:"), "Comments", $this->Comments, 31, 5);
         Sales_UI::shippers_row(_("Shipping Company:"), 'ship_via', $this->ship_via);
         Table::endOuter(1);
       }

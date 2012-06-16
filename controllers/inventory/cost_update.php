@@ -35,10 +35,10 @@
       }
     }
   }
-  if (Form::isListUpdated('stock_id')) {
+  if (Forms::isListUpdated('stock_id')) {
     Ajax::i()->activate('cost_table');
   }
-  Form::start();
+  Forms::start();
   if (!Input::post('stock_id')) {
     Session::i()->setGlobal('stock_id', $_POST['stock_id']);
   }
@@ -54,25 +54,25 @@
   $result = DB::query($sql, "The cost details for the item could not be retrieved");
   $myrow  = DB::fetch($result);
   Display::div_start('cost_table');
-  Form::hidden("OldMaterialCost", $myrow["material_cost"]);
-  Form::hidden("OldLabourCost", $myrow["labour_cost"]);
-  Form::hidden("OldOverheadCost", $myrow["overhead_cost"]);
+  Forms::hidden("OldMaterialCost", $myrow["material_cost"]);
+  Forms::hidden("OldLabourCost", $myrow["labour_cost"]);
+  Forms::hidden("OldOverheadCost", $myrow["overhead_cost"]);
   Table::start('tablestyle2');
   $dec1                   = $dec2 = $dec3 = 0;
   $_POST['material_cost'] = Num::price_decimal($myrow["material_cost"], $dec1);
   $_POST['labour_cost']   = Num::price_decimal($myrow["labour_cost"], $dec2);
   $_POST['overhead_cost'] = Num::price_decimal($myrow["overhead_cost"], $dec3);
-   Form::AmountRow(_("Standard Material Cost Per Unit"), "material_cost", null, "class='tablerowhead'", null, $dec1);
+   Forms::AmountRow(_("Standard Material Cost Per Unit"), "material_cost", null, "class='tablerowhead'", null, $dec1);
   if ($myrow["mb_flag"] == STOCK_MANUFACTURE) {
-     Form::AmountRow(_("Standard Labour Cost Per Unit"), "labour_cost", null, "class='tablerowhead'", null, $dec2);
-     Form::AmountRow(_("Standard Overhead Cost Per Unit"), "overhead_cost", null, "class='tablerowhead'", null, $dec3);
+     Forms::AmountRow(_("Standard Labour Cost Per Unit"), "labour_cost", null, "class='tablerowhead'", null, $dec2);
+     Forms::AmountRow(_("Standard Overhead Cost Per Unit"), "overhead_cost", null, "class='tablerowhead'", null, $dec3);
   } else {
-    Form::hidden("labour_cost", 0);
-    Form::hidden("overhead_cost", 0);
+    Forms::hidden("labour_cost", 0);
+    Forms::hidden("overhead_cost", 0);
   }
   Table::end(1);
   Display::div_end();
-  Form::submitCenter('UpdateData', _("Update"), true, false, 'default');
-  Form::end();
+  Forms::submitCenter('UpdateData', _("Update"), true, false, 'default');
+  Forms::end();
   Page::end();
 

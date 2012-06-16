@@ -9,7 +9,7 @@
    **/
   JS::open_window(900, 500);
   Page::start(_($help_context = "Supplier Allocations"), SA_SUPPLIERALLOC);
-  Form::start();
+  Forms::start();
   /* show all outstanding receipts and credits to be allocated */
   if (!isset($_POST['supplier_id'])) {
     $_POST['supplier_id'] = Session::i()->getGlobal('creditor');
@@ -17,14 +17,14 @@
   echo "<div class='center'>" . _("Select a Supplier: ") . "&nbsp;&nbsp;";
   echo Creditor::select('supplier_id', $_POST['supplier_id'], true, true);
   echo "<br>";
-  Form::check(_("Show Settled Items:"), 'ShowSettled', null, true);
+  Forms::check(_("Show Settled Items:"), 'ShowSettled', null, true);
   echo "</div><br><br>";
   Session::i()->setGlobal('creditor', $_POST['supplier_id']);
   if (isset($_POST['supplier_id']) && ($_POST['supplier_id'] == ALL_TEXT)) {
     unset($_POST['supplier_id']);
   }
   $settled = false;
-  if (Form::hasPost('ShowSettled')) {
+  if (Forms::hasPost('ShowSettled')) {
     $settled = true;
   }
   $supplier_id = null;
@@ -114,6 +114,6 @@
   $table->set_marker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
   $table->width = "80%";
   DB_Pager::display($table);
-  Form::end();
+  Forms::end();
   Page::end();
 

@@ -209,8 +209,8 @@
       $edit   = _("Edit");
       $delete = _("Delete");
       if (User::graphic_links()) {
-        $edit   = Form::setIcon(ICON_EDIT, $edit);
-        $delete = Form::setIcon(ICON_DELETE, $delete);
+        $edit   = Forms::setIcon(ICON_EDIT, $edit);
+        $delete = Forms::setIcon(ICON_DELETE, $delete);
       }
       Cell::label("<a href='" . $_SERVER['DOCUMENT_URI'] . "?selected_id=$i'>$edit</a>");
       Cell::label($i == $coyno ? '' : "<a href=''>$delete</a>");
@@ -230,7 +230,7 @@
     } else {
       $n = count(Config::get_all('db'));
     }
-    Form::start(true);
+    Forms::start(true);
     echo "
             <script language='javascript'>
             function updateCompany()
@@ -240,7 +240,7 @@
                 } else {
                     document.forms[0].action='create_coy.php?c=u&id=" . $n . "'
                 }
-                document.forms[0].Form::submit()
+                document.forms[0].Forms::submit()
             }
             </script>";
     Table::start('tablestyle2');
@@ -257,22 +257,22 @@
         $_POST['def'] = false;
       }
       $_POST['dbcreate'] = false;
-      Form::hidden('selected_id', $selected_id);
-      Form::hidden('dbpassword', $_POST['dbpassword']);
+      Forms::hidden('selected_id', $selected_id);
+      Forms::hidden('dbpassword', $_POST['dbpassword']);
     }
-     Form::textRowEx(_("Company"), 'name', 30);
-     Form::textRowEx(_("Host"), 'host', 30);
-     Form::textRowEx(_("Database User"), 'dbuser', 30);
+     Forms::textRowEx(_("Company"), 'name', 30);
+     Forms::textRowEx(_("Host"), 'host', 30);
+     Forms::textRowEx(_("Database User"), 'dbuser', 30);
     if ($selected_id == -1) {
-       Form::textRowEx(_("Database Password"), 'dbpassword', 30);
+       Forms::textRowEx(_("Database Password"), 'dbpassword', 30);
     }
-     Form::textRowEx(_("Database Name"), 'dbname', 30);
-     Form::yesnoListRow(_("Default"), 'def', null, "", "", false);
-     Form::fileRow(_("Database Script"), "uploadfile");
-     Form::textRowEx(_("New script Admin Password"), 'admpassword', 20);
+     Forms::textRowEx(_("Database Name"), 'dbname', 30);
+     Forms::yesnoListRow(_("Default"), 'def', null, "", "", false);
+     Forms::fileRow(_("Database Script"), "uploadfile");
+     Forms::textRowEx(_("New script Admin Password"), 'admpassword', 20);
     Table::end();
     Event::warning(_("Choose from Database scripts in SQL folder. No Database is created without a script."), 0, 1);
     echo "<div class='center'><input type='button' style='width:150px' value='" . _("Save") . "'></div>";
-    Form::end();
+    Forms::end();
   }
 

@@ -62,7 +62,7 @@
     unset($selected_stock_item);
   }
 
-  $id = Form::findPostPrefix('_chgtpl');
+  $id = Forms::findPostPrefix('_chgtpl');
   if ($id != -1) {
     $sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
     DB::query($sql, "Can't change sales order type");
@@ -70,7 +70,7 @@
   }
   if (isset($_POST['Update']) && isset($_POST['last'])) {
     foreach ($_POST['last'] as $id => $value) {
-      if ($value != Form::hasPost('chgtpl' . $id)) {
+      if ($value != Forms::hasPost('chgtpl' . $id)) {
         $sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
         DB::query($sql, "Can't change sales order type");
         Ajax::i()->activate('orders_tbl');
@@ -95,26 +95,26 @@
     }
     Ajax::i()->activate('orders_tbl');
   }
-  Form::start();
+  Forms::start();
   Table::start('tablestyle_noborder');
   Row::start();
   Debtor::cells(_(""), 'customer_id', $selected_customer, TRUE);
-   Form::refCells(_("#:"), 'OrderNumber', '', NULL, '', TRUE);
+   Forms::refCells(_("#:"), 'OrderNumber', '', NULL, '', TRUE);
   if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
-     Form::dateCells(_("From:"), 'OrdersAfterDate', '', NULL, -30);
-     Form::dateCells(_("To:"), 'OrdersToDate', '', NULL, 1);
+     Forms::dateCells(_("From:"), 'OrdersAfterDate', '', NULL, -30);
+     Forms::dateCells(_("To:"), 'OrdersToDate', '', NULL, 1);
   }
   Inv_Location::cells(_(""), 'StockLocation', NULL, TRUE);
   Item::cells(_("Item:"), 'SelectStockFromList', NULL, TRUE);
   if ($trans_type == ST_SALESQUOTE) {
-     Form::checkCells(_("Show All:"), 'show_all');
+     Forms::checkCells(_("Show All:"), 'show_all');
   }
-  Form::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
+  Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
   Row::end();
   Table::end(1);
 
-  Form::hidden('order_view_mode', $_POST['order_view_mode']);
-  Form::hidden('type', $trans_type);
+  Forms::hidden('order_view_mode', $_POST['order_view_mode']);
+  Forms::hidden('type', $trans_type);
   //	Orders inquiry table
   //
   $sql
@@ -185,7 +185,7 @@
       $date_before = Dates::date2sql($_POST['OrdersToDate']);
       $sql .= " AND sorder.ord_date >= '$date_after' AND sorder.ord_date <= '$date_before'";
     }
-    if ($trans_type == 32 && !Form::hasPost('show_all')) {
+    if ($trans_type == 32 && !Forms::hasPost('show_all')) {
       $sql .= " AND sorder.delivery_date >= '" . Dates::date2sql(Dates::today()) . "'";
     }
     if ($selected_customer != -1) {
@@ -305,7 +305,7 @@
                                 $name  = "chgtpl" . $row['order_no'];
                                 $value = $row['type'] ? 1 : 0;
                                 // save also in hidden field for testing during 'Update'
-                                return Form::checkbox(NULL, $name, $value, TRUE, _('Set this order as a template for direct deliveries/invoices')) . Form::hidden('last[' . $row
+                                return Forms::checkbox(NULL, $name, $value, TRUE, _('Set this order as a template for direct deliveries/invoices')) . Forms::hidden('last[' . $row
                                 ['order_no'] . ']', $value, FALSE);
                               }
                               ), array(
@@ -345,8 +345,8 @@
     }, _("Marked items are overdue."));
   $table->width = "80%";
   DB_Pager::display($table);
-  Form::submitCenter('Update', _("Update"), TRUE, '', NULL);
-  Form::end();
+  Forms::submitCenter('Update', _("Update"), TRUE, '', NULL);
+  Forms::end();
 
   Page::end();
 

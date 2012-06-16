@@ -247,7 +247,7 @@
       if ($showtype) {
         $options['where'][] = "type_=$showtype";
       }
-      return Form::selectBox($name, $selected_id, $sql, 'id', 'ref', $options);
+      return Forms::selectBox($name, $selected_id, $sql, 'id', 'ref', $options);
     }
     /**
      * @static

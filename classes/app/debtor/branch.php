@@ -274,7 +274,7 @@
             WHERE branch_ref <> 'accounts' AND inactive <> 1  AND debtor_id='" . $customer_id . "' ";
       $where = $enabled ? array("disable_trans = 0") : array();
 
-      return Form::selectBox($name, $selected_id, $sql, 'branch_id', 'br_name', array(
+      return Forms::selectBox($name, $selected_id, $sql, 'branch_id', 'br_name', array(
                                                                                      'where'         => $where,
                                                                                      'order'         => array('branch_ref'),
                                                                                      'spec_option'   => $spec_option === true ?

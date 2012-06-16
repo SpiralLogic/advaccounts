@@ -91,7 +91,7 @@
       }
       $sql = "SELECT id, reason_description, inactive FROM credit_status";
 
-      return Form::selectBox($name, $selected_id, $sql, 'id', 'reason_description', array('disabled' => $disabled));
+      return Forms::selectBox($name, $selected_id, $sql, 'id', 'reason_description', array('disabled' => $disabled));
     }
     /**
      * @static

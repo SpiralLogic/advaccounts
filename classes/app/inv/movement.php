@@ -191,7 +191,7 @@
     {
       $sql = "SELECT id, name FROM movement_types";
 
-      return Form::selectBox($name, $selected_id, $sql, 'id', 'name', array());
+      return Forms::selectBox($name, $selected_id, $sql, 'id', 'name', array());
     }
     /**
      * @static

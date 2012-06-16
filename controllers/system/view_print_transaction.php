@@ -15,10 +15,10 @@
     }
     Ajax::i()->activate('transactions');
   }
-  Form::start(false);
+  Forms::start(false);
   viewing_controls();
   handle_search();
-  Form::end(2);
+  Forms::end(2);
   Page::end();
   /**
    * @param $trans
@@ -66,9 +66,9 @@
     if (!isset($_POST['ToTransNo'])) {
       $_POST['ToTransNo'] = "999999";
     }
-     Form::refCells(_("from #:"), 'FromTransNo');
-     Form::refCells(_("to #:"), 'ToTransNo');
-    Form::submitCells('ProcessSearch', _("Search"), '', '', 'default');
+     Forms::refCells(_("from #:"), 'FromTransNo');
+     Forms::refCells(_("to #:"), 'ToTransNo');
+    Forms::submitCells('ProcessSearch', _("Search"), '', '', 'default');
     Row::end();
     Table::end(1);
   }

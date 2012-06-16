@@ -19,17 +19,17 @@
   if (isset($_GET['ToDate'])) {
     $_POST['TransToDate'] = $_GET['ToDate'];
   }
-  Form::start();
+  Forms::start();
   if (!isset($_POST['supplier_id'])) {
     $_POST['supplier_id'] = Session::i()->getGlobal('creditor');
   }
   Table::start('tablestyle_noborder');
   Row::start();
   Creditor::cells(_("Supplier:"), 'supplier_id', NULL, TRUE);
-   Form::dateCells(_("From:"), 'TransAfterDate', '', NULL, -90);
-   Form::dateCells(_("To:"), 'TransToDate');
+   Forms::dateCells(_("From:"), 'TransAfterDate', '', NULL, -90);
+   Forms::dateCells(_("To:"), 'TransToDate');
   Purch_Allocation::row("filterType", NULL);
-  Form::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
+  Forms::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
   Row::end();
   Table::end();
   Session::i()->setGlobal('creditor',$_POST['supplier_id']);
@@ -144,7 +144,7 @@
   $table->width = "90";
   DB_Pager::display($table);
   Creditor::addInfoDialog('.pagerclick');
-  Form::end();
+  Forms::end();
   Page::end();
   /**
    * @param $dummy

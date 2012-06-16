@@ -720,7 +720,7 @@ JS;
           $focus = true;
         }
       }
-      Form::hidden('customer_id');
+      Forms::hidden('customer_id');
       UI::search('customer', array(
                                   'url'  => '/contacts/customers.php', 'name'  => 'customer', 'focus' => $focus, 'value' => $value
                              ));
@@ -750,7 +750,7 @@ JS;
       $sql  = "SELECT debtor_id, debtor_ref, curr_code, inactive FROM debtors ";
       $mode = DB_Company::get_pref('no_customer_list');
 
-      return Form::selectBox($name, $selected_id, $sql, 'debtor_id', 'name', array(
+      return Forms::selectBox($name, $selected_id, $sql, 'debtor_id', 'name', array(
                                                                                   'format'        => '_format_add_curr',
                                                                                   'order'         => array('debtor_ref'),
                                                                                   'search_box'    => $mode != 0,

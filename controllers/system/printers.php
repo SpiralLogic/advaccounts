@@ -51,7 +51,7 @@
     unset($_POST);
   }
   $result = Printer::get_all();
-  Form::start();
+  Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("Name"), _("Description"), _("Host"), _("Printer Queue"), '', '');
   Table::header($th);
@@ -62,14 +62,14 @@
     Cell::label($myrow['description']);
     Cell::label($myrow['host']);
     Cell::label($myrow['queue']);
-    Form::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
-    Form::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
+    Forms::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
+    Forms::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
     Row::end();
   } //END WHILE LIST LOOP
   Table::end();
-  Form::end();
+  Forms::end();
   echo '<br>';
-  Form::start();
+  Forms::start();
   Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
@@ -81,7 +81,7 @@
       $_POST['host'] = $myrow['host'];
       $_POST['port'] = $myrow['port'];
     }
-    Form::hidden('selected_id', $selected_id);
+    Forms::hidden('selected_id', $selected_id);
   }
   else {
     if (!isset($_POST['host'])) {
@@ -91,15 +91,15 @@
       $_POST['port'] = '515';
     }
   }
-   Form::textRow(_("Printer Name") . ':', 'name', NULL, 20, 20);
-   Form::textRow(_("Printer Description") . ':', 'descr', NULL, 40, 60);
-   Form::textRow(_("Host name or IP") . ':', 'host', NULL, 30, 40);
-   Form::textRow(_("Port") . ':', 'port', NULL, 5, 5);
-   Form::textRow(_("Printer Queue") . ':', 'queue', NULL, 20, 20);
-   Form::textRow(_("Timeout") . ':', 'tout', NULL, 5, 5);
+   Forms::textRow(_("Printer Name") . ':', 'name', NULL, 20, 20);
+   Forms::textRow(_("Printer Description") . ':', 'descr', NULL, 40, 60);
+   Forms::textRow(_("Host name or IP") . ':', 'host', NULL, 30, 40);
+   Forms::textRow(_("Port") . ':', 'port', NULL, 5, 5);
+   Forms::textRow(_("Printer Queue") . ':', 'queue', NULL, 20, 20);
+   Forms::textRow(_("Timeout") . ':', 'tout', NULL, 5, 5);
   Table::end(1);
-  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Form::end();
+  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Forms::end();
   Page::end();
 
 

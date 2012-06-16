@@ -146,16 +146,16 @@
       $dim = DB_Company::get_pref('use_dimension');
       if ($dim >= 1) {
         Dimensions::cells(NULL, 'dimension_id', NULL, TRUE, " ", FALSE, 1);
-        Form::hidden('dimension_id', 0);
+        Forms::hidden('dimension_id', 0);
       }
       if ($dim > 1) {
         Dimensions::cells(NULL, 'dimension2_id', NULL, TRUE, " ", FALSE, 2);
-        Form::hidden('dimension2_id', 0);
+        Forms::hidden('dimension2_id', 0);
       }
-       Form::textareaCells(NULL, 'memo_', NULL, 50, 1);
-       Form::amountCells(NULL, 'amount');
-      Form::submitCells('AddGLCodeToTrans', _("Add"), "", _('Add GL Line'), TRUE);
-      Form::submitCells('ClearFields', _("Reset"), "", _("Clear all GL entry fields"), TRUE);
+       Forms::textareaCells(NULL, 'memo_', NULL, 50, 1);
+       Forms::amountCells(NULL, 'amount');
+      Forms::submitCells('AddGLCodeToTrans', _("Add"), "", _('Add GL Line'), TRUE);
+      Forms::submitCells('ClearFields', _("Reset"), "", _("Clear all GL entry fields"), TRUE);
       Row::end();
     }
 
@@ -191,7 +191,7 @@
           echo _("Quick Entry:") . "&nbsp;";
           echo GL_QuickEntry::select('qid', NULL, QE_SUPPINV, TRUE);
           $qid = GL_QuickEntry::get(Input::post('qid'));
-          if (Form::isListUpdated('qid')) {
+          if (Forms::isListUpdated('qid')) {
             unset($_POST['total_amount']); // enable default
             Ajax::i()->activate('total_amount');
           }
@@ -199,7 +199,7 @@
           $amount = Validation::input_num('total_amount', $qid['base_amount']);
           $dec = User::price_dec();
           echo "<input class='amount font7' type='text' name='total_amount' maxlength='12' data-aspect=fallback'$dec' value='$amount'>&nbsp;";
-          Form::submit('go', _("Go"), TRUE, FALSE, TRUE);
+          Forms::submit('go', _("Go"), TRUE, FALSE, TRUE);
           echo "</div>";
         }
       }
@@ -243,7 +243,7 @@
           Cell::label($entered_gl_code->memo_);
           Cell::amount($entered_gl_code->amount, TRUE);
           if ($mode == 1) {
-            Form::buttonDeleteCell("Delete2" . $entered_gl_code->counter, _("Delete"), _('Remove line from document'));
+            Forms::buttonDeleteCell("Delete2" . $entered_gl_code->counter, _("Delete"), _('Remove line from document'));
             Cell::label("");
           }
           Row::end();

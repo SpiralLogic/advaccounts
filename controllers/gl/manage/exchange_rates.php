@@ -16,7 +16,7 @@
   if ($Mode == MODE_DELETE) {
     handle_delete($selected_id);
   }
-  Form::start();
+  Forms::start();
   if (!isset($_POST['curr_abrev'])) {
     $_POST['curr_abrev'] = Session::i()->getGlobal('curr_abrev');
   }
@@ -53,7 +53,7 @@
     Display::br(1);
     display_rate_edit($selected_id);
   }
-  Form::end();
+  Forms::end();
   Page::end();
   /**
    * @return bool
@@ -123,7 +123,7 @@
    */
   function edit_link($row)
   {
-    return Form::button(MODE_EDIT . $row["id"], _("Edit"), true, ICON_EDIT);
+    return Forms::button(MODE_EDIT . $row["id"], _("Edit"), true, ICON_EDIT);
   }
 
   /**
@@ -133,7 +133,7 @@
    */
   function del_link($row)
   {
-    return Form::button(MODE_DELETE . $row["id"], _("Delete"), true, ICON_DELETE);
+    return Forms::button(MODE_DELETE . $row["id"], _("Delete"), true, ICON_DELETE);
   }
 
   /**
@@ -154,21 +154,21 @@
       $myrow            = GL_ExchangeRate::get($selected_id);
       $_POST['date_']   = Dates::sql2date($myrow["date_"]);
       $_POST['BuyRate'] = Num::exrate_format($myrow["rate_buy"]);
-      Form::hidden('selected_id', $selected_id);
-      Form::hidden('date_', $_POST['date_']);
+      Forms::hidden('selected_id', $selected_id);
+      Forms::hidden('date_', $_POST['date_']);
       Row::label(_("Date to Use From:"), $_POST['date_']);
     } else {
       $_POST['date_']   = Dates::today();
       $_POST['BuyRate'] = '';
-       Form::dateRow(_("Date to Use From:"), 'date_');
+       Forms::dateRow(_("Date to Use From:"), 'date_');
     }
     if (isset($_POST['get_rate'])) {
       $_POST['BuyRate'] = Num::exrate_format(GL_ExchangeRate::retrieve($_POST['curr_abrev'], $_POST['date_']));
       Ajax::i()->activate('BuyRate');
     }
-     Form::SmallAmountRow(_("Exchange Rate:"), 'BuyRate', null, '', Form::submit('get_rate', _("Get"), false, _('Get current ECB rate'), true), User::exrate_dec());
+     Forms::SmallAmountRow(_("Exchange Rate:"), 'BuyRate', null, '', Forms::submit('get_rate', _("Get"), false, _('Get current ECB rate'), true), User::exrate_dec());
     Table::end(1);
-    Form::submitAddUpdateCenter($selected_id == '', '', 'both');
+    Forms::submitAddUpdateCenter($selected_id == '', '', 'both');
     Event::warning(_("Exchange rates are entered against the company currency."), 1);
   }
 

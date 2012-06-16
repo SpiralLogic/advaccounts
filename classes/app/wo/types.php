@@ -22,7 +22,7 @@
     {
       global $wo_types_array;
 
-      return Form::arraySelect($name, $selected_id, $wo_types_array, array(
+      return Forms::arraySelect($name, $selected_id, $wo_types_array, array(
                                                                        'select_submit' => true, 'async'         => true
                                                                   ));
     }

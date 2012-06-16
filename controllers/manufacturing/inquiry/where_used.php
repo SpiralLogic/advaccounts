@@ -11,7 +11,7 @@
 
   Page::start(_($help_context = "Inventory Item Where Used Inquiry"), SA_WORKORDERANALYTIC);
   Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
-  Form::start(FALSE);
+  Forms::start(FALSE);
   if (!Input::post('stock_id')) {
     Session::i()->setGlobal('stock_id',$_POST['stock_id']);
   }
@@ -45,7 +45,7 @@
   $table =& db_pager::new_db_pager('usage_table', $sql, $cols);
   $table->width = "80%";
   DB_Pager::display($table);
-  Form::end();
+  Forms::end();
   Page::end();
 
 

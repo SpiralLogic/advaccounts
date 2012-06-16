@@ -13,7 +13,7 @@
     $view_id = $_GET['vw'];
   }
   else {
-    $view_id = Form::findPostPrefix('view');
+    $view_id = Forms::findPostPrefix('view');
   }
   if ($view_id != -1) {
     $row = get_attachment($view_id);
@@ -40,7 +40,7 @@
     $download_id = $_GET['dl'];
   }
   else {
-    $download_id = Form::findPostPrefix('download');
+    $download_id = Forms::findPostPrefix('download');
   }
   if ($download_id != -1) {
     $row = get_attachment($download_id);
@@ -138,30 +138,30 @@
   if (isset($_POST['filterType'])) {
     display_rows($_POST['filterType']);
   }
-  Form::start(TRUE);
+  Forms::start(TRUE);
   Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       $row = get_attachment($selected_id);
       $_POST['trans_no'] = $row["trans_no"];
       $_POST['description'] = $row["description"];
-      Form::hidden('trans_no', $row['trans_no']);
-      Form::hidden('unique_name', $row['unique_name']);
+      Forms::hidden('trans_no', $row['trans_no']);
+      Forms::hidden('unique_name', $row['unique_name']);
       Row::label(_("Transaction #"), $row['trans_no']);
     }
-    Form::hidden('selected_id', $selected_id);
+    Forms::hidden('selected_id', $selected_id);
   }
   else {
-     Form::textRowEx(_("Transaction #") . ':', 'trans_no', 10);
+     Forms::textRowEx(_("Transaction #") . ':', 'trans_no', 10);
   }
-   Form::textRowEx(_("Description") . ':', 'description', 40);
-   Form::fileRow(_("Attached File") . ":", 'filename', 'filename');
+   Forms::textRowEx(_("Description") . ':', 'description', 40);
+   Forms::fileRow(_("Attached File") . ":", 'filename', 'filename');
   Table::end(1);
   if (isset($_POST['filterType'])) {
-    Form::hidden('filterType', $_POST['filterType']);
+    Forms::hidden('filterType', $_POST['filterType']);
   }
-  Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Form::end();
+  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+  Forms::end();
   Page::end();
 
 

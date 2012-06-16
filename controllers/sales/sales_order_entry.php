@@ -112,12 +112,12 @@
           $corder      = _("Commit Order Changes");
           break;
       }
-      Form::start();
+      Forms::start();
       $customer_error = $this->order->header($idate);
       if ($customer_error != "") {
         $this->exitError($customer_error);
       }
-      Form::hidden('order_id', $_POST['order_id']);
+      Forms::hidden('order_id', $_POST['order_id']);
       Table::start('tablesstyle center width90 pad10');
       echo "<tr><td>";
       $edit_line = $this->getActionId(Orders::EDIT_LINE);
@@ -129,23 +129,23 @@
       Display::div_start('controls', 'items_table');
       if ($this->order->trans_no > 0 && $this->user->can_access(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())
       ) {
-        Form::submitConfirm('_action', Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
-        Form::submitCenterBegin('_action', Orders::DELETE_ORDER, $deleteorder); //, _('Cancels document entry or removes sales order when editing an old document')
-        Form::submitCenterInsert('_action', Orders::CANCEL_CHANGES, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
+        Forms::submitConfirm('_action', Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
+        Forms::submitCenterBegin('_action', Orders::DELETE_ORDER, $deleteorder); //, _('Cancels document entry or removes sales order when editing an old document')
+        Forms::submitCenterInsert('_action', Orders::CANCEL_CHANGES, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
       } else {
-        Form::submitCenterBegin('_action', Orders::CANCEL_CHANGES, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
+        Forms::submitCenterBegin('_action', Orders::CANCEL_CHANGES, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
       }
       if (count($this->order->line_items)) {
         if ($this->order->trans_no > 0) {
-          Form::submitCenterEnd('_action', Orders::PROCESS_ORDER, $corder, 'default'); //_('Validate changes and update document'),
+          Forms::submitCenterEnd('_action', Orders::PROCESS_ORDER, $corder, 'default'); //_('Validate changes and update document'),
         } else {
-          Form::submitCenterEnd('_action', Orders::PROCESS_ORDER, $porder, 'default'); //_('Check entered data and save document'),
+          Forms::submitCenterEnd('_action', Orders::PROCESS_ORDER, $porder, 'default'); //_('Check entered data and save document'),
         }
       } else {
         echo '</div>';
       }
       Display::div_end();
-      Form::end();
+      Forms::end();
       Debtor::addEditDialog();
       Item::addEditDialog();
       Page::end(TRUE);
@@ -153,7 +153,7 @@
     protected function checkBranch()
     {
 
-      if (Form::isListUpdated('branch_id')) {
+      if (Forms::isListUpdated('branch_id')) {
         // when branch is selected via external editor also customer can change
         $br                   = Sales_Branch::get(Input::post('branch_id'));
         $_POST['customer_id'] = $br['debtor_id'];

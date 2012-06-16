@@ -27,7 +27,7 @@
   if (Input::post('Update')) {
     $exts = DB_Company::get_company_extensions();
     foreach ($exts as $i => $ext) {
-      $exts[$i]['active'] = Form::hasPost('Active' . $i);
+      $exts[$i]['active'] = Forms::hasPost('Active' . $i);
     }
     advaccounting::write_extensions($exts, Input::post('extset'));
     $installed_extensions = $exts;
@@ -37,8 +37,8 @@
     $selected_id = -1;
     unset($_POST);
   }
-  Form::start(true);
-  if (Form::isListUpdated('extset')) {
+  Forms::start(true);
+  if (Forms::isListUpdated('extset')) {
     Ajax::i()->activate('_page_body');
   }
   echo "<div class='center'>" . _('Extensions:') . "&nbsp;&nbsp;";
@@ -51,7 +51,7 @@
   } else {
     company_extensions($set);
   }
-  Form::end();
+  Forms::end();
   Page::end();
   /**
    * @param $extensions
@@ -147,7 +147,7 @@
     $extensions[$id]['name']   = $_POST['name'];
     $extensions[$id]['path']   = $_POST['path'];
     $extensions[$id]['title']  = $_POST['title'];
-    $extensions[$id]['active'] = Form::hasPost('active');
+    $extensions[$id]['active'] = Forms::hasPost('active');
     // Currently we support only plugin extensions here.
     $extensions[$id]['type'] = 'plugin';
     $directory               = DOCROOT . "modules/" . $_POST['path'];
@@ -247,10 +247,10 @@
       if ($is_mod) {
         Cell::label(''); // not implemented (yet)
       } else {
-        Form::buttonEditCell("Edit" . $i, _("Edit"));
+        Forms::buttonEditCell("Edit" . $i, _("Edit"));
       }
-      Form::buttonDeleteCell("Delete" . $i, _("Delete"));
-      Form::submitConfirm(MODE_DELETE . $i, _('You are about to delete this extension\nDo you want to continue?'));
+      Forms::buttonDeleteCell("Delete" . $i, _("Delete"));
+      Forms::submitConfirm(MODE_DELETE . $i, _('You are about to delete this extension\nDo you want to continue?'));
       Row::end();
     }
     Table::end(1);
@@ -284,11 +284,11 @@
                     Display::access_string(ADVAccounting::i()->applications[$mod['tab']]->name, true));
       $ttl = Display::access_string($mod['title']);
       Cell::label($ttl[0]);
-       Form::checkCells(null, 'Active' . $i, @$mod['active'] ? 1 : 0, false, false, "class='center'");
+       Forms::checkCells(null, 'Active' . $i, @$mod['active'] ? 1 : 0, false, false, "class='center'");
       Row::end();
     }
     Table::end(1);
-    Form::submitCenter('Update', _('Update'), true, false, 'default');
+    Forms::submitCenter('Update', _('Update'), true, false, 'default');
   }
 
   /**
@@ -308,21 +308,21 @@
         $_POST['path']     = $mod['path'];
         $_POST['filename'] = $mod['filename'];
         $_POST['acc_file'] = @$mod['acc_file'];
-        Form::hidden('filename', $_POST['filename']);
-        Form::hidden('acc_file', $_POST['acc_file']);
+        Forms::hidden('filename', $_POST['filename']);
+        Forms::hidden('acc_file', $_POST['acc_file']);
       }
-      Form::hidden('selected_id', $selected_id);
+      Forms::hidden('selected_id', $selected_id);
     }
-     Form::textRowEx(_("Name"), 'name', 30);
-     Form::textRowEx(_("Folder"), 'path', 20);
+     Forms::textRowEx(_("Name"), 'name', 30);
+     Forms::textRowEx(_("Folder"), 'path', 20);
     Users::tabs_row(_("Menu Tab"), 'tab', null, true);
-     Form::textRowEx(_("Menu Link Text"), 'title', 30);
-     Form::recordStatusListRow(_("Default status"), 'active');
-     Form::fileRow(_("Module File"), 'uploadfile');
-     Form::fileRow(_("Access Levels Extensions"), 'uploadfile3');
-     Form::fileRow(_("SQL File"), 'uploadfile2');
+     Forms::textRowEx(_("Menu Link Text"), 'title', 30);
+     Forms::recordStatusListRow(_("Default status"), 'active');
+     Forms::fileRow(_("Module File"), 'uploadfile');
+     Forms::fileRow(_("Access Levels Extensions"), 'uploadfile3');
+     Forms::fileRow(_("SQL File"), 'uploadfile2');
     Table::end(0);
     Event::warning(_("Select your module PHP file from your local harddisk."), 0, 1);
-    Form::submitAddUpdateCenter($selected_id == -1, '', 'both');
+    Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   }
 
