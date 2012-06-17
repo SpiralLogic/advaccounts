@@ -13,7 +13,7 @@
    */
   class Num
   {
-    use Traits\Singleton;
+    use Traits\StaticAccess;
 
     /**
      * @var int
@@ -144,7 +144,7 @@
      *
      * @return float|int
      */
-    public function _round_to_nearest($price, $round_to)
+    public function _round_to_nearest_cents($price, $round_to)
     {
       if ($price == 0) {
         return 0;

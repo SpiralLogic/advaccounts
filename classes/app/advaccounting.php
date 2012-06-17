@@ -267,7 +267,6 @@
         $this->showLogin();
       }
       static::$user = User::getCurrentUser();
-
       if (Input::post("user_name")) {
         $this->login();
 

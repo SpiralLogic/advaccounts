@@ -12,15 +12,15 @@
   } elseif (strpos($_SERVER['HTTP_HOST'], 'advaccounts') !== false) {
     header('Location: http://advanced.advancedgroup.com.au' . $_SERVER['REQUEST_URI']);
   }
-  if (extension_loaded('xhprof')) {
+ /* if (extension_loaded('xhprof')) {
     $XHPROF_ROOT = realpath(dirname(__FILE__) . '/xhprof');
     include_once $XHPROF_ROOT . "/xhprof_lib/config.php";
     include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
     include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
-    /** @noinspection PhpUndefinedFunctionInspection */
-    /** @noinspection PhpUndefinedConstantInspection */
+    /** @noinspection PhpUndefinedFunctionInspection
+    /** @noinspection PhpUndefinedConstantInspection
     xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
-  }
+  }*/
   error_reporting(-1);
   ini_set('display_errors', 1);
   ini_set("ignore_repeated_errors", "On");
@@ -89,18 +89,18 @@
     ob_start('adv_ob_flush_handler', 0);
     ADVAccounting::i($dic['Config'],$dic['Session'],$dic['Cache']);
   }
-  if (extension_loaded('xhprof') && substr_compare($_SERVER['DOCUMENT_URI'], '/profile/', 0, 9, true) !== 0) {
+ /* if (extension_loaded('xhprof') && substr_compare($_SERVER['DOCUMENT_URI'], '/profile/', 0, 9, true) !== 0) {
     register_shutdown_function(function()
     {
       $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
-      /** @noinspection PhpUndefinedFunctionInspection */
+      /** @noinspection PhpUndefinedFunctionInspection
       $xhprof_data = xhprof_disable();
-      /** @noinspection PhpUndefinedClassInspection */
+      /** @noinspection PhpUndefinedClassInspection
       $xhprof_runs = new \XHProfRuns_Default();
-      /** @noinspection PhpUndefinedMethodInspection */
+      /** @noinspection PhpUndefinedMethodInspection
       $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
     });
-  }
+  }*/
   if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
     new \ADV\Core\Assets();
   } else {

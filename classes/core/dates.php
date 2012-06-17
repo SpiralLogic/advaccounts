@@ -1,39 +1,42 @@
 <?php
   /**
+   * ADVAccounting
    * PHP version 5.4
    * @category  PHP
-   * @package   adv.accounts.core
+   * @package   Adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
+   * @license   http://www.advancedgroup.com.au/license Advanced Licence
+   * @version   GIT:
    * @link      http://www.advancedgroup.com.au
-   **/
-  namespace ADV\Core;
-    /**
-    date validation and parsing functions
-
-    These functions refer to the global variable defining the date format
-    The date format is defined in config.php called dateformats
-    this can be a string either "d/m/Y" for UK/Australia/New Zealand dates or
-    "m/d/Y" for US/Canada format dates depending on setting in preferences.
-
-     */
-  /**
-   * @method __date()
    */
-  class Dates
-  {
+
+  namespace ADV\Core;
+
+  /**
+   * Dates validation and parsing functions
+   *  These functions refer to the global variable defining the date format
+   * The date format is defined in config.php called dateformats
+   * this can be a string either "d/m/Y" for UK/Australia/New Zealand dates or
+   * "m/d/Y" for US/Canada format dates depending on setting in preferences.
+   * @category  PHP
+   * @package   Adv.accounts.core
+   * @method   __date()
+   */
+  class Dates {
+
     use Traits\StaticAccess;
 
     protected $sep = null;
     protected $formats = null;
     protected $separators = null;
-    public  $user=null;
-    public   $config=null;
+    public $user = null;
+    public $config = null;
     protected $session = null;
     /**
 
      */
-    public function __construct(Config $config = null, $user = null,Session $session = null)
+    public function __construct(Config $config = null, $user = null, Session $session = null)
     {
       $this->config     = $config ? : Config::i();
       $this->user       = $user ? : \User::i();
@@ -41,7 +44,6 @@
       $this->formats    = $this->config->_get('date.formats');
       $this->separators = $this->config->_get('date.separators');
       $this->sep        = $this->separators[$this->config->_get('date.ui_separator')];
-
     }
     /**
      * @static
@@ -77,11 +79,11 @@
       $how  = ($format !== null) ? $format : $this->user->_date_format();
       $date = str_replace($this->separators, '/', trim($date));
       if ($how == 0) {
-        list($month, $day, $year) = explode('/', $date) +[0=>false,1=>false,2=>false];
+        list($month, $day, $year) = explode('/', $date) + [0=> false, 1=> false, 2=> false];
       } elseif ($how == 1) {
-        list($day, $month, $year) = explode('/', $date) +[0=>false,1=>false,2=>false];
+        list($day, $month, $year) = explode('/', $date) + [0=> false, 1=> false, 2=> false];
       } else {
-        list($year, $month, $day) = explode('/', $date) +[0=>false,1=>false,2=>false];
+        list($year, $month, $day) = explode('/', $date) + [0=> false, 1=> false, 2=> false];
       }
       if (!isset($year) || (int) $year > 9999) {
         return false;

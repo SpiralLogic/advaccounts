@@ -171,7 +171,7 @@ use Traits\StaticAccess;
         return true;
       }
 
-      return ($this->_has($_POST, func_get_args()));
+      return ($this->doesHave($_POST, func_get_args()));
     }
     /***
      * @static
@@ -186,7 +186,7 @@ use Traits\StaticAccess;
         return true;
       }
 
-      return ($this->_has($_GET, func_get_args()));
+      return ($this->doesHave($_GET, func_get_args()));
     }
     /***
      * @static

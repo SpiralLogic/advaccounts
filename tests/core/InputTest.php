@@ -25,7 +25,7 @@
     {
     }
     /**
-     * @covers ADV\Core\Input::post
+     * @covers ADV\Core\Input::_post
      */
     public function testPost()
     {
@@ -73,7 +73,7 @@
       $this->assertSame(7, Input::post('test3', Input::NUMERIC, 1));
     }
     /**
-     * @covers ADV\Core\Input::get
+     * @covers ADV\Core\Input::_get
      * @todo   Implement testGet().
      */
     public function testGet()
@@ -122,7 +122,7 @@
       $this->assertSame(7, Input::get('test3', Input::NUMERIC, 1));
     }
     /**
-     * @covers ADV\Core\Input::request
+     * @covers ADV\Core\Input::_request
      * @todo   Implement testRequest().
      */
     public function testRequest()
@@ -143,7 +143,7 @@
       $this->assertSame(7, Input::post('test3', Input::NUMERIC, 1));
     }
     /**
-     * @covers ADV\Core\Input::get_post
+     * @covers ADV\Core\Input::_get_post
      * @todo   Implement testGet_post().
      */
     public function testGet_post()
@@ -152,7 +152,7 @@
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Input::get_post_global
+     * @covers ADV\Core\Input::_get_post_global
      * @todo   Implement testGet_post_global().
      */
     public function testGet_post_global()
@@ -161,7 +161,7 @@
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Input::post_global
+     * @covers ADV\Core\Input::_post_global
      * @todo   Implement testPost_global().
      */
     public function testPost_global()
@@ -170,7 +170,7 @@
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Input::post_get
+     * @covers ADV\Core\Input::_post_get
      * @todo   Implement testPost_get().
      */
     public function testPost_get()
@@ -179,7 +179,7 @@
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Input::session
+     * @covers ADV\Core\Input::_session
      * @todo   Implement testSession().
      */
     public function testSession()
@@ -188,7 +188,7 @@
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Input::has_post
+     * @covers ADV\Core\Input::_has_post
      * @todo   Implement testHas_post().
      */
     public function testHas_post()
@@ -205,7 +205,7 @@
       $this->assertSame(TRUE, Input::has_post('test', 'test2'), 'Both are set but test2 is set but is NULL so it should return false!');
     }
     /**
-     * @covers ADV\Core\Input::has_get
+     * @covers ADV\Core\Input::_has_get
      * @todo   Implement testHas_get().
      */
     public function testHas_get()
@@ -214,7 +214,7 @@
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Input::has
+     * @covers ADV\Core\Input::_has
      * @todo   Implement testHas().
      */
     public function testHas()
@@ -223,7 +223,7 @@
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Input::has_session
+     * @covers ADV\Core\Input::_has_session
      * @todo   Implement testHas_session().
      */
     public function testHas_session()

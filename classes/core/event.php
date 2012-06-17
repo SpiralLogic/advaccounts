@@ -39,7 +39,7 @@
      */
     public static function init()
     {
-      static::$shutdown_events_id = 'shutdown.events.' . User::i()->username;
+      static::$shutdown_events_id = 'shutdown.events.' . \User::i()->username;
       $shutdown_events            = Cache::get(static::$shutdown_events_id);
       Cache::delete(static::$shutdown_events_id);
       if ($shutdown_events) {

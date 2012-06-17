@@ -123,8 +123,12 @@
      */
     public function testRound_to_nearest()
     {
-      $actual   = $this->object->Round_to_nearest(231.00, 200);
-      $expected = 'Two Hundred and Thirty-One';
+      $actual   = $this->object->_round_to_nearest_cents(1111.125,100);
+      $expected = '231.56';
+      $this->assertEquals($expected, $actual); $actual   = $this->object->_round_to_nearest_cents(231.00, 10);
+      $expected = '231';
+      $this->assertEquals($expected, $actual); $actual   = $this->object->_round_to_nearest_cents(231.1112, 100);
+      $expected = '300';
       $this->assertEquals($expected, $actual);
     }
     /**
@@ -134,13 +138,13 @@
     public function testTo_words()
     {
       // Remove the following lines when you implement this test.
-      $actual   = $this->object->to_words(231);
+      $actual   = $this->object->_to_words(231);
       $expected = 'Two Hundred and Thirty-One';
       $this->assertEquals($expected, $actual);
-      $actual   = $this->object->to_words(4249);
+      $actual   = $this->object->_to_words(4249);
       $expected = 'Four Thousand Two Hundred and Fourty-Nine';
       $this->assertEquals($expected, $actual);
-      $actual   = $this->object->to_words(4249.22);
+      $actual   = $this->object->_to_words(4249.22);
       $expected = 'Four Thousand Two Hundred and Fourty-Nine';
       $this->assertEquals($expected, $actual);
     }

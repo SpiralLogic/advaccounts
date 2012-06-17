@@ -100,7 +100,7 @@
       return $today;
     }
     /**
-     * @covers ADV\Core\$this->dates->_now
+     * @covers ADV\Core\Dates::_now
      * @todo   Implement testNow().
      */
     public function testNow()
@@ -108,7 +108,7 @@
       $this->assertEquals(date("H:i"), $this->dates->_now());
     }
     /**
-     * @covers ADV\Core\Dates::new_doc_date
+     * @covers ADV\Core\Dates::_new_doc_date
      * @depends test_Today
      */
     public function testNew_doc_date($today)

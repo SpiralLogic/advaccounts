@@ -92,6 +92,10 @@
      */
     public $last_record;
     protected $session;
+    /**
+     * @static
+     * @return mixed
+     */
     static function  getCurrentUser()
     {
       global $dic;
