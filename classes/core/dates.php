@@ -27,15 +27,17 @@
     protected $sep = null;
     protected $formats = null;
     protected $seperators = null;
+    public  $user=null;
+    public   $config=null;
     protected $session = null;
     /**
 
      */
-    public function __construct($config = null, $user = null, $session = null)
+    public function __construct(Config $config = null, $user = null,Session $session = null)
     {
       $this->config     = $config ? : Config::i();
-      $this->user       = $user ? : \User::i();
-      $this->session    = $session ? : \Session::i();
+      $this->user       = $user ;//? : \User::i();
+      $this->session    = $session ;//? : Session::i();
       $this->formats    = $this->config->get('date.formats');
       $this->seperators = $this->config->get('date.separators');
       $this->sep        = $this->seperators[$this->config->get('date.ui_separator')];
@@ -52,7 +54,7 @@
      */
     public function ___date($year, $month, $day, $format = null)
     {
-      $how  = $this->formats [($format !== null) ? $format : $this->user->date_format()];
+      $how  = $this->formats [($format !== null) ? $format : $this->user->_date_format()];
       $date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
       $how  = str_replace('/', $this->sep, $how);
       return date($how, $date);

@@ -23,13 +23,19 @@
     public static function i()
     {
       global $dic;
+      if (!$dic instanceof \ADV\Core\DIC) {
+        if (static::$i === NULL) {
+          static::$i = new static;
+        }
+        return static::$i;
+      }
       if (static::$i === NULL) {
         $class_name = $class = get_called_class();
         if ($lastNsPos = strripos($class, '\\')) {
           $class_name = substr($class, $lastNsPos + 1);
         }
         $dic[$class_name] = $dic->share(function() use ($class) { return new $class; });
-        static::$i = $class_name;
+        static::$i        = $class_name;
       }
       return $dic[static::$i];
     }

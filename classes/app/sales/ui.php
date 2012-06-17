@@ -246,7 +246,7 @@
                 WHERE sorder.order_no = line.order_no AND sorder.type = 1 GROUP BY line.order_no";
 
       return Forms::selectBox($name, $selected_id, $sql, 'order_no', 'OrderValue', array(
-                                                                                  'format'                         => '_format_template_items',
+                                                                                  'format'                         => 'Forms::templateItemsFormat',
                                                                                   'spec_option'                    => $special_option === true ?
                                                                                     ' ' : $special_option,
                                                                                   'order'                          => 'order_no',
@@ -337,7 +337,7 @@
                     WHERE i.stock_id=s.stock_id $where AND !i.inactive AND !s.inactive AND !s.no_sale GROUP BY i.item_code";
 
       return Forms::selectBox($name, $selected_id, $sql, 'i.item_code', 'c.description', array_merge(array(
-                                                                                                    'format'        => '_format_stock_items',
+                                                                                                    'format'        => 'Forms::stockItemsFormat',
                                                                                                     'spec_option'   => $all_option === true ?
                                                                                                       _("All Items") :
                                                                                                       $all_option,

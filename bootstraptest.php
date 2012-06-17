@@ -18,16 +18,8 @@
   define('IS_JSON_REQUEST', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false));
   define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
   define('CRLF', chr(13) . chr(10));
-  set_error_handler(function ($severity, $message, $filepath, $line) {
-    class_exists('Adv\\Core\\Errors', false) or include COREPATH . 'errors.php';
 
-    return ADV\Core\Errors::handler($severity, $message, $filepath, $line);
-  });
-  set_exception_handler(function (\Exception $e) {
-    var_dump(class_exists('\\ADV\\Core\\Errors', false));
-    class_exists('ADV\\Core\\Errors', false) or include COREPATH . 'errors.php';
-    ADV\Core\Errors::exception_handler($e);
-  });
+
   require COREPATH . 'autoloader.php';
   if (!function_exists('e')) {
     /**

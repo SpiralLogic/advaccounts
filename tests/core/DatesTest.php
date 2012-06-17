@@ -15,7 +15,15 @@
      */
     protected function setUp()
     {
-      $this->dates = new Dates();
+      $session = $this->getMockBuilder('ADV\\Core\\Session')->disableOriginalConstructor()->getMock();
+      $config  = $this->getMock('ADV\\Core\\Config');
+      $map     = array(
+        array('date.separators', null, ['-', '/']), ['date.formats', null, "m/d/Y", "d/m/Y", "Y/m/d"], ['date.ui_separator', null, 1]
+      );
+      $config->expects($this->any())->method('_get')->will($this->returnValueMap($map));
+      $user = $this->getMockBuilder('User')->disableOriginalConstructor()->getMock();
+      $user->expects($this->any())->method('date_format')->will($this->returnValue(1));
+      $this->dates = new Dates($config, $user, $session);
     }
     /**
      * Tears down the fixture, for example, closes a network connection.
@@ -30,15 +38,14 @@
      */
     public function testdate()
     {
-      $seps     = Config::get('date.separators');
-      $sep      = $seps[Config::get('date.ui_separator')];
-      $expected = '01' . $sep . '13' . $sep . '2011';
+      $this->assertEquals(2,$this->dates->config->_get('date.ui_separator',null));
+      $expected = '01-13-2011';
       $actual   = $this->dates->___date(2011, 1, 13, 0);
       $this->assertEquals($expected, $actual);
-      $expected = '13' . $sep . '01' . $sep . '2011';
+      $expected = '13-01-2011';
       $actual   = $this->dates->___date(2011, 1, 13, 1);
       $this->assertEquals($expected, $actual);
-      $expected = '2011' . $sep . '01' . $sep . '13';
+      $expected = '2011-01-13';
       $actual   = $this->dates->___date(2011, 1, 13, 2);
       $this->assertEquals($expected, $actual);
     }
@@ -143,7 +150,6 @@
      */
     public function testEnd_month()
     {
-
       $date     = $this->dates->_end_month('04/04/2012');
       $expected = '30/04/2012';
       $this->assertEquals($expected, $date);
@@ -246,7 +252,6 @@
      */
     public function testDate_diff2()
     {
-
       $date2  = '01/01/2012';
       $date1  = '15/01/2012';
       $actual = $this->dates->_date_diff2($date1, $date2, 'w');

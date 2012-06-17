@@ -751,7 +751,7 @@ JS;
       $mode = DB_Company::get_pref('no_customer_list');
 
       return Forms::selectBox($name, $selected_id, $sql, 'debtor_id', 'name', array(
-                                                                                  'format'        => '_format_add_curr',
+                                                                                  'format'        => 'Forms::addCurrFormat',
                                                                                   'order'         => array('debtor_ref'),
                                                                                   'search_box'    => $mode != 0,
                                                                                   'type'          => 1,

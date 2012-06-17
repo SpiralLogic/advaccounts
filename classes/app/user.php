@@ -94,9 +94,9 @@
     /**
 
      */
-    public function __construct()
+    public function __construct(Session $session=null)
     {
-      $this->session   = Session::i();
+      $this->session   = $session?:Session::i();
       $this->loginname = $this->username = $this->name = "";
       $this->company   = Config::get('default.company') ? : 'default';
       $this->logged    = FALSE;
@@ -448,7 +448,7 @@
      * @static
      * @return mixed
      */
-    public static function  date_format()
+    public  function  date_format()
     {
       return static::prefs()->date_format();
     }

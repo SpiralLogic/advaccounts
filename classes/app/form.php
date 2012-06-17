@@ -27,7 +27,7 @@
         $name = "name='$name' id='$name'";
       }
       if ($action == "") {
-        $action = $_SERVER['DOCUMENT_URI'];
+        $action = $_SERVER['DOCUMENT_URI'];                                                                                          ewwwee
       }
       if ($multi) {
         echo "<form enctype='multipart/form-data' method='post' action='$action' $name>\n";
@@ -961,10 +961,10 @@
      */
     public function addCurrFormat($row)
     {
-      $company_currency;
-      if ($company_currency == null) {
+ //     $company_currency;
+     // if ($company_currency == null) {
         $company_currency = Bank_Currency::for_company();
-      }
+     // }
       return $row[1] . ($row[2] == $company_currency ? '' : ("&nbsp;-&nbsp;" . $row[2]));
     }
     /**

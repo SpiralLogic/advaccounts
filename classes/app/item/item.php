@@ -1000,7 +1000,7 @@ JS;
                     FROM stock_master s,stock_category c WHERE s.category_id=c.category_id";
 
       return Forms::selectBox($name, $selected_id, $sql, 'stock_id', 's.description', array_merge(array(
-                                                                                                      'format'        => '_format_stock_items',
+                                                                                                      'format'        => 'Forms::stockItemsFormat',
                                                                                                       'spec_option'   => $all_option === true ?
                                                                                                         _("All Items") :
                                                                                                         $all_option,

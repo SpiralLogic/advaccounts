@@ -29,7 +29,6 @@
       $elements = (array) ($elements);
       $head     = array_splice($array, 0, $index);
       $array    = array_merge($head, $elements, $array);
-
       return true;
     }
     /**
@@ -44,7 +43,6 @@
     public static function remove(&$array, $index, $len = 1)
     {
       array_splice($array, $index, $len);
-
       return true;
     }
     /**
@@ -74,7 +72,6 @@
     {
       array_splice($array, $index, $len);
       Arr::insert($array, $index, $elements);
-
       return true;
     }
     /**
@@ -106,12 +103,17 @@
     public static function search_value($needle, $haystack, $valuekey = null)
     {
       foreach ($haystack as $value) {
-        $val = isset($valuekey) ? $value[$valuekey] : $value;
+        if ($valuekey === null) {
+          $val = $value;
+        } elseif (is_array($value)) {
+          $val = $value[$valuekey];
+        } else {
+          continue;
+        }
         if ($needle == $val) {
           return $value;
         }
       }
-
       return null;
     }
     /**
@@ -131,7 +133,6 @@
           return $key;
         }
       }
-
       return null;
     }
   }

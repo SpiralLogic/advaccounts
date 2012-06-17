@@ -39,7 +39,7 @@
 
       return Forms::selectBox($name, $selected_id, $sql, 'chart.account_code', 'chart.account_name', array(
                                                                                                     'cache'                  => true,
-                                                                                                    'format'                 => '_format_account',
+                                                                                                    'format'                 => 'Forms::accountFormat',
                                                                                                     'type'                   => 2,
                                                                                                     'spec_option'            => $all_option === true ?
                                                                                                       _("Use Item Sales Accounts") :
@@ -201,7 +201,7 @@
       return Forms::selectBox($name, $selected_id, $sql, 'id', '', array(
                                                                   'order'         => 'begin',
                                                                   'default'       => DB_Company::get_pref('f_year'),
-                                                                  'format'        => '_format_fiscalyears',
+                                                                  'format'        => 'Forms::fiscalYearFormat(',
                                                                   'select_submit' => $submit_on_change,
                                                                   'async'         => false
                                                              ));

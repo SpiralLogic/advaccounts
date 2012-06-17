@@ -102,8 +102,8 @@
       if ($this->title && !$this->is_index && !$this->frame && !IS_JSON_REQUEST) {
         echo "<div class='titletext'>$this->title" . (User::hints() ? "<span id='hints' class='floatright'
 										style='display:none'></span>" : '') . "</div>";
-        Display::div_start('_page_body');
-      }
+      }        Display::div_start('_page_body');
+
     }
     /**
 

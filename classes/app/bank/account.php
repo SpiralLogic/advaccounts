@@ -173,7 +173,7 @@
                                                 FROM bank_accounts";
 
       return Forms::selectBox($name, $selected_id, $sql, 'id', 'bank_account_name', array(
-                                                                                   'format'        => '_format_add_curr',
+                                                                                   'format'        => 'Forms::addCurrFormat',
                                                                                    'select_submit' => $submit_on_change,
                                                                                    'async'         => false
                                                                               ));

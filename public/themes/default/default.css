@@ -733,10 +733,14 @@ div.formbox {
   width: 100%;
 }
 
-div.formbox label {
+.formbox label {
   display:       block;
   margin-bottom: 10px;
   color:         #555555;
+}
+
+.formbox input,.formbox textarea,.formbox select {
+width:50%;
 }
 
 div.formbox label span:first-child {
