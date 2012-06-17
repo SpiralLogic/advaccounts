@@ -26,7 +26,7 @@
 
     protected $sep = null;
     protected $formats = null;
-    protected $seperators = null;
+    protected $separators = null;
     public  $user=null;
     public   $config=null;
     protected $session = null;
@@ -36,11 +36,12 @@
     public function __construct(Config $config = null, $user = null,Session $session = null)
     {
       $this->config     = $config ? : Config::i();
-      $this->user       = $user ;//? : \User::i();
-      $this->session    = $session ;//? : Session::i();
-      $this->formats    = $this->config->get('date.formats');
-      $this->seperators = $this->config->get('date.separators');
-      $this->sep        = $this->seperators[$this->config->get('date.ui_separator')];
+      $this->user       = $user ? : \User::i();
+      $this->session    = $session ? : Session::i();
+      $this->formats    = $this->config->_get('date.formats');
+      $this->separators = $this->config->_get('date.separators');
+      $this->sep        = $this->separators[$this->config->_get('date.ui_separator')];
+
     }
     /**
      * @static
@@ -70,17 +71,17 @@
      */
     public function _is_date($date = null, $format = null)
     {
-      if ($date == null || $date == "") {
+      if (!$date) {
         return false;
       }
-      $how  = ($format !== null) ? $format : $this->user->date_format();
-      $date = str_replace($this->seperators, '/', trim($date));
+      $how  = ($format !== null) ? $format : $this->user->_date_format();
+      $date = str_replace($this->separators, '/', trim($date));
       if ($how == 0) {
-        list($month, $day, $year) = explode('/', $date);
+        list($month, $day, $year) = explode('/', $date) +[0=>false,1=>false,2=>false];
       } elseif ($how == 1) {
-        list($day, $month, $year) = explode('/', $date);
+        list($day, $month, $year) = explode('/', $date) +[0=>false,1=>false,2=>false];
       } else {
-        list($year, $month, $day) = explode('/', $date);
+        list($year, $month, $day) = explode('/', $date) +[0=>false,1=>false,2=>false];
       }
       if (!isset($year) || (int) $year > 9999) {
         return false;
@@ -107,7 +108,7 @@
      */
     public function _now()
     {
-      if ($this->user->date_format() == 0) {
+      if ($this->user->_date_format() == 0) {
         return date("h:i a");
       } else {
         return date("H:i");
@@ -123,12 +124,12 @@
     public function _new_doc_date($date = null)
     {
       if (!$date) {
-        $this->session->setGlobal('date', $date);
+        $this->session->_setGlobal('date', $date);
       } else {
-        $date = $this->session->getGlobal('date');
+        $date = $this->session->_getGlobal('date');
       }
-      if (!$date || !$this->user->sticky_doc_date()) {
-        $date = $this->session->setGlobal('date', $this->_today());
+      if (!$date || !$this->user->_sticky_doc_date()) {
+        $date = $this->session->_setGlobal('date', $this->_today());
       }
       return $date;
     }
@@ -285,7 +286,7 @@
         return '';
       }
       $how   = $this->user->date_format();
-      $sep   = $this->seperators[$this->user->date_sep()];
+      $sep   = $this->separators[$this->user->date_sep()];
       $date_ = trim($date_);
       /** @noinspection PhpUnusedLocalVariableInspection */
       $year = $month = $day = 0;
@@ -386,7 +387,7 @@
     {
       $date = $this->_date2sql($date);
       if ($date == "") {
-        $disp = $this->user->date_display();
+        $disp = $this->user->_date_display();
         throw new \Adv_Exception("Dates must be entered in the format $disp. Sent was $date");
       }
       list($year, $month, $day) = explode("-", $date);

@@ -11,8 +11,8 @@
   /**
 
    */
-  class ADVAccounting
-  {
+  class ADVAccounting {
+
     /**
      * @var
      */
@@ -41,10 +41,10 @@
     /**
 
      */
-    public function __construct($config,$session)
+    public function __construct($config, $session)
     {
-      $extensions    = $config->_get('extensions.installed');
-      $this->menu    = new Menu(_("Main Menu"));
+      $extensions = $config->_get('extensions.installed');
+      $this->menu = new Menu(_("Main Menu"));
       $this->menu->add_item(_("Main Menu"), "index.php");
       $this->menu->add_item(_("Logout"), "/account/access/logout.php");
       $apps = $config->_get('apps.active');
@@ -128,10 +128,10 @@
      * @static
      * @return ADVAccounting
      */
-    public static function i(Config $config=null,Session $session=null,Cache $cache=null)
+    public static function i(Config $config = null, Session $session = null, Cache $cache = null)
     {
       if (static::$i === false) {
-        static::init($config,$session,$cache);
+        static::init($config, $session, $cache);
       }
 
       return static::$i;
@@ -140,7 +140,7 @@
      * @static
      * @return \ADVAccounting|bool
      */
-    protected static function init($config,$session,$cache)
+    protected static function init($config, $session, $cache)
     {
       array_walk($_POST, function(&$v)
       {
@@ -153,7 +153,7 @@
       }
       static::$i = $cache->_get('App');
       if (static::$i === false) {
-        static::refresh($config,$session,$cache);
+        static::refresh($config, $session, $cache);
       }
       if (!static::$i->buildversion) {
         is_readable(DOCROOT . 'version') and define('BUILD_VERSION', file_get_contents(DOCROOT . 'version', null, null, null, 6));
@@ -266,13 +266,15 @@
       if (!Session::i()->checkUserAgent()) {
         $this->showLogin();
       }
-      static::$user = User::i();
+      static::$user = User::getCurrentUser();
+
       if (Input::post("user_name")) {
         $this->login();
+
       } elseif (!static::$user->logged_in()) {
         $this->showLogin();
       }
-      if ($_SESSION['current_user']->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev') !== false) {
+      if ( static::$user->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev') !== false) {
         Display::meta_forward('http://dev.advanced.advancedgroup.com.au:8090');
       }
       static::$i->selected = static::$user->selectedApp;
@@ -315,9 +317,16 @@
       }
       exit();
     }
-    public static function refresh($config,$session,$cache)
+    /**
+     * @static
+     *
+     * @param $config
+     * @param $session
+     * @param $cache
+     */
+    public static function refresh($config, $session, $cache)
     {
-      static::$i = $cache->_set('App', new static($config,$session,$cache));
+      static::$i = $cache->_set('App', new static($config, $session, $cache));
     }
   }
 

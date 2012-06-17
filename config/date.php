@@ -9,6 +9,8 @@
    **/
 
   return array(
-    'formats'      => array("m/d/Y", "d/m/Y", "Y/m/d"), 'ui_format'    => 1, //
-    'ui_separator' => 0, 'separators'   => array('/', ".", "-", " ")
+    'formats'      => array("m/d/Y", "d/m/Y", "Y/m/d"), //
+    'ui_format'    => 1, //
+    'ui_separator' => 0, //
+    'separators'   => array('/', ".", "-", " ")
   );

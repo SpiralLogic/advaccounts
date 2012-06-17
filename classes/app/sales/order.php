@@ -880,6 +880,7 @@
           }
           $item_price = $price;
         }
+
         $item_price = round($item_price, User::price_dec());
         if (!$item['is_foreign'] && $item['item_code'] != $item['stock_id']) { // this is sales kit - recurse
           $this->add_line($item['stock_id'], $new_item_qty * $item['quantity'], $item_price, $discount, $std_price);

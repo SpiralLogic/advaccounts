@@ -126,6 +126,7 @@
       $this->order->display_delivery_details();
       echo "</td></tr>";
       Table::end(1);
+
       Display::div_start('controls', 'items_table');
       if ($this->order->trans_no > 0 && $this->user->can_access(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())
       ) {
@@ -256,7 +257,7 @@
         }
         Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"));
         if (isset($_GET[ADDED_DI]) && $this->session->getGlobal('debtor') && $row == FALSE) {
-          echo "<div style='text-align:center;'><iframe style='margin:0 auto; border-width:0;' src='/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
+          echo "<div style='text-align:center;'><iframe style='margin:0 auto; border-width:0;' src='".'/sales/customer_payments.php'."?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
         }
       }
       JS::set_focus('prtopt');

@@ -27,12 +27,12 @@
         $name = "name='$name' id='$name'";
       }
       if ($action == "") {
-        $action = $_SERVER['DOCUMENT_URI'];                                                                                          ewwwee
+        $action = $_SERVER['DOCUMENT_URI'];
       }
       if ($multi) {
-        echo "<form enctype='multipart/form-data' method='post' action='$action' $name>\n";
+        echo "<form enctype='multipart/form-data' method='post' action='".$action."' $name>\n";
       } else {
-        echo "<form method='post' action='$action' $name>\n";
+        echo "<form method='post' action='".$action."' $name>\n";
       }
     }
     /**

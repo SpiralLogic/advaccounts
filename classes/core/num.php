@@ -18,33 +18,37 @@
     /**
      * @var int
      */
-    public static $price_dec = 2;
+    public  $price_dec = 2;
     /**
      * @var string
      */
-    public static $tho_sep = ',';
+    public  $tho_sep = ',';
     /**
      * @var string
      */
-    public static $dec_sep = '.';
+    public  $dec_sep = '.';
     /**
      * @var string
      */
-    public static $exrate_dec = '.';
+    public  $exrate_dec = '.';
     /**
      * @var
      */
-    public static $percent_dec;
+    public  $percent_dec;
+    protected $user;
     /**
 
      */
-    public function __construct()
+
+    public function __construct(\User $user = null)
     {
-      static::$price_dec   = \User::prefs()->price_dec();
-      static::$tho_sep     = \User::tho_sep();
-      static::$dec_sep     = \User::dec_sep();
-      static::$exrate_dec  = \User::prefs()->exrate_dec();
-      static::$percent_dec = \User::prefs()->percent_dec();
+
+      $this->user = $user?:\User::i();
+      $this->price_dec   = $this->user->_prefs()->price_dec();
+      $this->tho_sep     = $this->user->_tho_sep();
+      $this->dec_sep     = $this->user->_dec_sep();
+      $this->exrate_dec  = $this->user->_prefs()->exrate_dec();
+      $this->percent_dec = $this->user->_prefs()->percent_dec();
     }
     /**
      * @static
@@ -53,10 +57,9 @@
      *
      * @return int|string
      */
-    public static function  price_format($number)
+    public function _price_format($number)
     {
-      static::i();
-      return static::format(static::round($number, static::$price_dec + 2), static::$price_dec);
+      return $this->_format($this->_round($number, $this->price_dec + 2), $this->price_dec);
     }
     /**
      * @static
@@ -66,10 +69,9 @@
      *
      * @return int|string
      */
-    public static function  price_decimal($number, $dec = null)
+    public function _price_decimal($number, $dec = null)
     {
-      static::i();
-      $dec = $dec ? : static::$price_dec;
+      $dec = $dec ? : $this->price_dec;
       $str = strval($number);
       $pos = strpos($str, '.');
       if ($pos !== false) {
@@ -78,7 +80,7 @@
           $dec = $len;
         }
       }
-      return Num::format($number, $dec);
+      return $this->_format($number, $dec);
     }
     /**
      * @static
@@ -88,7 +90,7 @@
      *
      * @return float
      */
-    public static function  round($number, $decimals = 0)
+    public function _round($number, $decimals = 0)
     {
       return round($number, $decimals, PHP_ROUND_HALF_EVEN);
     }
@@ -100,11 +102,10 @@
      *
      * @return int|string
      */
-    public static function  format($number, $decimals = 0)
+    public function _format($number, $decimals = 0)
     {
-      static::i();
-      $tsep = static::$tho_sep;
-      $dsep = static::$dec_sep;
+      $tsep = $this->tho_sep;
+      $dsep = $this->dec_sep;
       //return number_format($number, $decimals, $dsep,	$tsep);
       $delta  = ($number < 0 ? -.0000000001 : .0000000001);
       $number = number_format($number + $delta, $decimals, $dsep, $tsep);
@@ -118,11 +119,10 @@
      *
      * @return int|string
      */
-    public static function  exrate_format($number)
+    public function _exrate_format($number)
     {
-      static::i();
 
-      return static::format($number, static::$exrate_dec);
+      return $this->_format($number, $this->exrate_dec);
     }
     /**
      * @static
@@ -131,11 +131,10 @@
      *
      * @return int|string
      */
-    public static function  percent_format($number)
+    public function _percent_format($number)
     {
-      static::i();
 
-      return static::format($number, static::$percent_dec);
+      return $this->_format($number, $this->percent_dec);
     }
     /**
      * @static
@@ -145,12 +144,12 @@
      *
      * @return float|int
      */
-    public static function round_to_nearest($price, $round_to)
+    public function _round_to_nearest($price, $round_to)
     {
       if ($price == 0) {
         return 0;
       }
-      $pow = pow(10, static::$price_dec);
+      $pow = pow(10, $this->price_dec);
       if ($pow >= $round_to) {
         $mod = ($pow % $round_to);
       } else {
@@ -173,7 +172,7 @@
      * Simple English version of number to words conversion.
 
      */
-    public static function to_words($number)
+    public function _to_words($number)
     {
       $Bn = floor($number / 1000000000); /* Billions (giga) */
       $number -= $Bn * 1000000000;
@@ -187,16 +186,16 @@
       $n   = $number % 10; /* Ones */
       $res = "";
       if ($Bn) {
-        $res .= Num::to_words($Bn) . " Billion";
+        $res .= $this->_to_words($Bn) . " Billion";
       }
       if ($Gn) {
-        $res .= (empty($res) ? "" : " ") . Num::to_words($Gn) . " Million";
+        $res .= (empty($res) ? "" : " ") . $this->_to_words($Gn) . " Million";
       }
       if ($kn) {
-        $res .= (empty($res) ? "" : " ") . Num::to_words($kn) . " Thousand";
+        $res .= (empty($res) ? "" : " ") . $this->_to_words($kn) . " Thousand";
       }
       if ($Hn) {
-        $res .= (empty($res) ? "" : " ") . Num::to_words($Hn) . " Hundred";
+        $res .= (empty($res) ? "" : " ") . $this->_to_words($Hn) . " Hundred";
       }
       $ones = array(
         "",
