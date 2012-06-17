@@ -23,8 +23,8 @@
    * @package   Adv.accounts.core
    * @method   __date()
    */
-  class Dates {
-
+  class Dates
+  {
     use Traits\StaticAccess;
 
     protected $sep = null;
@@ -220,7 +220,7 @@
     {
       list($day, $month, $year) = $this->_explode_date_to_dmy($date);
       $timet = mktime(0, 0, 0, $month, $day + $days, $year);
-      return date($this->user->date_display(), $timet);
+      return date($this->user->_date_display(), $timet);
     }
     /**
      * @static
@@ -233,8 +233,8 @@
     public function _add_months($date, $months)
     {
       list($day, $month, $year) = $this->_explode_date_to_dmy($date);
-      $timet = Mktime(0, 0, 0, $month + $months, $day, $year);
-      return date($this->user->date_display(), $timet);
+      $timet = mktime(0, 0, 0, $month + $months, $day, $year);
+      return date($this->user->_date_display(), $timet);
     }
     /**
      * @static
@@ -248,7 +248,7 @@
     {
       list($day, $month, $year) = $this->_explode_date_to_dmy($date);
       $timet = mktime(0, 0, 0, $month, $day, $year + $years);
-      return date($this->user->date_display(), $timet);
+      return date($this->user->_date_display(), $timet);
     }
     /**
      * @static
@@ -287,8 +287,8 @@
       if (!$date_) {
         return '';
       }
-      $how   = $this->user->date_format();
-      $sep   = $this->separators[$this->user->date_sep()];
+      $how   = $this->user->_date_format();
+      $sep   = $this->separators[$this->user->_date_sep()];
       $date_ = trim($date_);
       /** @noinspection PhpUnusedLocalVariableInspection */
       $year = $month = $day = 0;

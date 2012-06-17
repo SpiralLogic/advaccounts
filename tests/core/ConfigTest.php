@@ -73,8 +73,11 @@
      */
     public function test_get_all()
     {
-      // Remove the following lines when you implement this test.
-      $this->markTestIncomplete('This test has not been implemented yet.');
+      $vars = $this->readAttribute($this->object, '_vars');
+      $this->assertEquals($vars['config'], $this->object->_get_all());
+      $actual = $this->object->_get_all('apps');
+      $vars   = $this->readAttribute($this->object, '_vars');
+      $this->assertEquals($vars['apps'], $actual);
     }
     /**
      * @covers ADV\Core\Config::_removeAll
