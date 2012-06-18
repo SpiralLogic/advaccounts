@@ -20,7 +20,7 @@
      * @static
      * @return
      */
-    public static function i()
+    public static function i($class = null)
     {
       global $dic;
       if (!$dic instanceof \ADV\Core\DIC) {
@@ -28,6 +28,11 @@
           static::$i = new static;
         }
         return static::$i;
+      }
+      if ($class && static::$i === NULL) {
+        $class_name       = get_called_class();
+        $dic[$class_name] = $dic->share(function() use ($class) { return  $class; });
+        static::$i        = $class_name;
       }
       if (static::$i === NULL) {
         $class_name = $class = get_called_class();

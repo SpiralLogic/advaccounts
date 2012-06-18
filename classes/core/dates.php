@@ -22,6 +22,7 @@
    * @category  PHP
    * @package   Adv.accounts.core
    * @method   __date()
+   * @method  date2sql($date_)
    */
   class Dates
   {
@@ -30,20 +31,22 @@
     protected $sep = null;
     protected $formats = null;
     protected $separators = null;
-    public $user = null;
-    public $config = null;
-    protected $session = null;
+    protected $User = null;
+    protected $Config = null;
+    protected $Session = null;
+    protected $Company = null;
     /**
 
      */
-    public function __construct(Config $config = null, $user = null, Session $session = null)
+    public function __construct(Config $Config = null, $User = null, Session $Session = null,\DB_Company $Company=null)
     {
-      $this->config     = $config ? : Config::i();
-      $this->user       = $user ? : \User::i();
-      $this->session    = $session ? : Session::i();
-      $this->formats    = $this->config->_get('date.formats');
-      $this->separators = $this->config->_get('date.separators');
-      $this->sep        = $this->separators[$this->config->_get('date.ui_separator')];
+      $this->Config     = $Config ? : Config::i();
+      $this->User       = $User ? : \User::i();
+      $this->Session    = $Session ? : Session::i();
+      $this->Company    = $Company ? : \DB_Company::i();
+      $this->formats    = $this->Config->_get('date.formats');
+      $this->separators = $this->Config->_get('date.separators');
+      $this->sep        = $this->separators[$this->Config->_get('date.ui_separator')];
     }
     /**
      * @static
@@ -55,9 +58,9 @@
      *
      * @return string
      */
-    public function ___date($year, $month, $day, $format = null)
+    protected function date($year, $month, $day, $format = null)
     {
-      $how  = $this->formats [($format !== null) ? $format : $this->user->_date_format()];
+      $how  = $this->formats [($format !== null) ? $format : $this->User->_date_format()];
       $date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
       $how  = str_replace('/', $this->sep, $how);
       return date($how, $date);
@@ -76,7 +79,7 @@
       if (!$date) {
         return false;
       }
-      $how  = ($format !== null) ? $format : $this->user->_date_format();
+      $how  = ($format !== null) ? $format : $this->User->_date_format();
       $date = str_replace($this->separators, '/', trim($date));
       if ($how == 0) {
         list($month, $day, $year) = explode('/', $date) + [0=> false, 1=> false, 2=> false];
@@ -103,14 +106,14 @@
      */
     public function _today()
     {
-      return $this->___date(date("Y"), date("n"), date("j"));
+      return $this->date(date("Y"), date("n"), date("j"));
     }
     /**
      * @return string
      */
     public function _now()
     {
-      if ($this->user->_date_format() == 0) {
+      if ($this->User->_date_format() == 0) {
         return date("h:i a");
       } else {
         return date("H:i");
@@ -126,12 +129,12 @@
     public function _new_doc_date($date = null)
     {
       if (!$date) {
-        $this->session->_setGlobal('date', $date);
+        $this->Session->_setGlobal('date', $date);
       } else {
-        $date = $this->session->_getGlobal('date');
+        $date = $this->Session->_getGlobal('date');
       }
-      if (!$date || !$this->user->_sticky_doc_date()) {
-        $date = $this->session->_setGlobal('date', $this->_today());
+      if (!$date || !$this->User->_sticky_doc_date()) {
+        $date = $this->Session->_setGlobal('date', $this->_today());
       }
       return $date;
     }
@@ -145,7 +148,7 @@
      */
     public function _is_date_in_fiscalyear($date, $convert = false)
     {
-      if (!$this->config->get('use_fiscalyear')) {
+      if (!$this->Config->get('use_fiscalyear')) {
         return 1;
       }
       $myrow = \DB_Company::get_current_fiscalyear();
@@ -190,7 +193,7 @@
     {
       /** @noinspection PhpUnusedLocalVariableInspection */
       list($day, $month, $year) = $this->_explode_date_to_dmy($date);
-      return $this->___date($year, $month, 1);
+      return $this->date($year, $month, 1);
     }
     /**
      * @static
@@ -206,7 +209,7 @@
       $days_in_month = array(
         31, ((!($year % 4) && (($year % 100) || !($year % 400))) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
       );
-      return $this->___date($year, $month, $days_in_month[$month - 1]);
+      return $this->date($year, $month, $days_in_month[$month - 1]);
     }
     /**
      * @static
@@ -220,7 +223,7 @@
     {
       list($day, $month, $year) = $this->_explode_date_to_dmy($date);
       $timet = mktime(0, 0, 0, $month, $day + $days, $year);
-      return date($this->user->_date_display(), $timet);
+      return date($this->User->_date_display(), $timet);
     }
     /**
      * @static
@@ -234,7 +237,7 @@
     {
       list($day, $month, $year) = $this->_explode_date_to_dmy($date);
       $timet = mktime(0, 0, 0, $month + $months, $day, $year);
-      return date($this->user->_date_display(), $timet);
+      return date($this->User->_date_display(), $timet);
     }
     /**
      * @static
@@ -248,7 +251,7 @@
     {
       list($day, $month, $year) = $this->_explode_date_to_dmy($date);
       $timet = mktime(0, 0, 0, $month, $day, $year + $years);
-      return date($this->user->_date_display(), $timet);
+      return date($this->User->_date_display(), $timet);
     }
     /**
      * @static
@@ -272,7 +275,7 @@
       if (!isset($date) && strlen($day) > 4) { /*chop off the time stuff */
         $day = substr($day, 0, 2);
       }
-      return $this->___date($year, $month, $day);
+      return $this->date($year, $month, $day);
     } // end static function sql2date
     /**
      * @static
@@ -287,8 +290,8 @@
       if (!$date_) {
         return '';
       }
-      $how   = $this->user->_date_format();
-      $sep   = $this->separators[$this->user->_date_sep()];
+      $how   = $this->User->_date_format();
+      $sep   = $this->separators[$this->User->_date_sep()];
       $date_ = trim($date_);
       /** @noinspection PhpUnusedLocalVariableInspection */
       $year = $month = $day = 0;
@@ -389,7 +392,7 @@
     {
       $date = $this->_date2sql($date);
       if ($date == "") {
-        $disp = $this->user->_date_display();
+        $disp = $this->User->_date_display();
         throw new \Adv_Exception("Dates must be entered in the format $disp. Sent was $date");
       }
       list($year, $month, $day) = explode("-", $date);
@@ -403,7 +406,7 @@
      *
      * @return int
      */
-    public function _div($a, $b)
+    protected function div($a, $b)
     {
       return (int) ($a / $b);
     }
@@ -425,7 +428,7 @@
       $gy              = $g_y - 1600;
       $gm              = $g_m - 1;
       $gd              = $g_d - 1;
-      $g_day_no        = 365 * $gy + $this->_div($gy + 3, 4) - $this->_div($gy + 99, 100) + $this->_div($gy + 399, 400);
+      $g_day_no        = 365 * $gy + $this->div($gy + 3, 4) - $this->div($gy + 99, 100) + $this->div($gy + 399, 400);
       for ($i = 0; $i < $gm; ++$i) {
         $g_day_no += $g_days_in_month[$i];
       }
@@ -435,12 +438,12 @@
       }
       $g_day_no += $gd;
       $j_day_no = $g_day_no - 79;
-      $j_np     = $this->_div($j_day_no, 12053); /* 12053 = 365*33 + 32/4 */
+      $j_np     = $this->div($j_day_no, 12053); /* 12053 = 365*33 + 32/4 */
       $j_day_no %= 12053;
-      $jy = 979 + 33 * $j_np + 4 * $this->_div($j_day_no, 1461); /* 1461 = 365*4 + 4/4 */
+      $jy = 979 + 33 * $j_np + 4 * $this->div($j_day_no, 1461); /* 1461 = 365*4 + 4/4 */
       $j_day_no %= 1461;
       if ($j_day_no >= 366) {
-        $jy += $this->_div($j_day_no - 1, 365);
+        $jy += $this->div($j_day_no - 1, 365);
         $j_day_no = ($j_day_no - 1) % 365;
       }
       for ($i = 0; $i < 11 && $j_day_no >= $j_days_in_month[$i]; ++$i) {
@@ -466,18 +469,18 @@
       $jy              = $j_y - 979;
       $jm              = $j_m - 1;
       $jd              = $j_d - 1;
-      $j_day_no        = 365 * $jy + $this->_div($jy, 33) * 8 + $this->_div($jy % 33 + 3, 4);
+      $j_day_no        = 365 * $jy + $this->div($jy, 33) * 8 + $this->div($jy % 33 + 3, 4);
       for ($i = 0; $i < $jm; ++$i) {
         $j_day_no += $j_days_in_month[$i];
       }
       $j_day_no += $jd;
       $g_day_no = $j_day_no + 79;
-      $gy       = 1600 + 400 * $this->_div($g_day_no, 146097); /* 146097 = 365*400 + 400/4 - 400/100 + 400/400 */
+      $gy       = 1600 + 400 * $this->div($g_day_no, 146097); /* 146097 = 365*400 + 400/4 - 400/100 + 400/400 */
       $g_day_no %= 146097;
       $leap = true;
       if ($g_day_no >= 36525) /* 36525 = 365*100 + 100/4 */ {
         $g_day_no--;
-        $gy += 100 * $this->_div($g_day_no, 36524); /* 36524 = 365*100 + 100/4 - 100/100 */
+        $gy += 100 * $this->div($g_day_no, 36524); /* 36524 = 365*100 + 100/4 - 100/100 */
         $g_day_no %= 36524;
         if ($g_day_no >= 365) {
           $g_day_no++;
@@ -485,12 +488,12 @@
           $leap = false;
         }
       }
-      $gy += 4 * $this->_div($g_day_no, 1461); /* 1461 = 365*4 + 4/4 */
+      $gy += 4 * $this->div($g_day_no, 1461); /* 1461 = 365*4 + 4/4 */
       $g_day_no %= 1461;
       if ($g_day_no >= 366) {
         $leap = false;
         $g_day_no--;
-        $gy += $this->_div($g_day_no, 365);
+        $gy += $this->div($g_day_no, 365);
         $g_day_no %= 365;
       }
       for ($i = 0; $g_day_no >= $g_days_in_month[$i] + ($i == 1 && $leap); $i++) {

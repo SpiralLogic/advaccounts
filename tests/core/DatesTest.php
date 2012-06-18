@@ -16,6 +16,7 @@
     protected function setUp()
     {
       $session = $this->getMockBuilder('ADV\\Core\\Session')->disableOriginalConstructor()->getMock();
+      $company = $this->getMockBuilder('DB_Company')->disableOriginalConstructor()->getMock();
       $session->expects($this->any())->method('_setGlobal')->will($this->returnArgument(1));
       $session->expects($this->any())->method('_getGlobal')->will($this->returnArgument(1));
 
@@ -33,7 +34,7 @@
       $user->expects($this->any())->method('_date_sep')->will($this->returnValue(1));
       $user->expects($this->any())->method('_sticky_doc_date')->will($this->returnValue(false));
 
-      $this->dates = new Dates($config, $user, $session);
+      $this->dates = new Dates($config, $user, $session,$company);
     }
     /**
      * Tears down the fixture, for example, closes a network connection.
@@ -43,19 +44,21 @@
     {
     }
     /**
-     * @covers ADV\Core\Dates::___date
+     * @covers ADV\Core\Dates::date
      * @todo   Implement test__date().
      */
     public function testdate()
-    {
+    { $class = new \ReflectionClass('ADV\\Core\\Dates');
+      $method = $class->getMethod('date');
+      $method->setAccessible(true);
       $expected = '01/13/2011';
-      $actual   = $this->dates->___date(2011, 1, 13, 0);
+      $actual   = $method->invokeArgs($this->dates,[2011, 1, 13, 0]);
       $this->assertEquals($expected, $actual);
       $expected = '13/01/2011';
-      $actual   = $this->dates->___date(2011, 1, 13, 1);
+      $actual   =$method->invokeArgs($this->dates,[2011, 1, 13, 1]);
       $this->assertEquals($expected, $actual);
       $expected = '2011/01/13';
-      $actual   = $this->dates->___date(2011, 1, 13, 2);
+      $actual   = $method->invokeArgs($this->dates,[2011, 1, 13, 2]);
       $this->assertEquals($expected, $actual);
     }
     /**
