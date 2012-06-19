@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Page
-  {
+  class Page {
+
     /** @var \Renderer */
     public $renderer = NULL;
     /** @var \Twig_Environment  */
@@ -167,8 +167,8 @@
         $help_page_url = Display::access_string($help_page_url, TRUE);
       }
       return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-                                                                                         ' ' => '', '/' => '', '&' => 'And'
-                                                                                    ))) . '&ctxhelp=1&lang=' . $country;
+        ' ' => '', '/' => '', '&' => 'And'
+      ))) . '&ctxhelp=1&lang=' . $country;
     }
     /**
      * @param $hide_back_link
@@ -214,21 +214,14 @@
      */
     protected function menu_footer()
     {
-      echo "<!-- end wrapper div-->";
-      echo "</div>"; //end wrapper div
-      if ($this->menu && !AJAX_REFERRER) {
-        echo "<div id='footer'>\n";
-        if (User::i()) {
-          echo "<span class='power'><a target='_blank' href='" . POWERED_URL . "'>" . POWERED_BY . "</a></span>\n";
-          echo "<span class='date'>" . Dates::today() . " | " . Dates::now() . "</span>\n";
-          echo "<span> </span>| <span>mem/peak: " . Files::convert_size(memory_get_usage(TRUE)) . '/' . Files::convert_size(memory_get_peak_usage(TRUE)) . ' </span><span>|</span><span> load time: ' . Dates::getReadableTime(microtime(TRUE) - $_SERVER['REQUEST_TIME_FLOAT']) . "</span>";
-        }
-      }
-      if (Config::get('debug.enabled')) {
-        $this->display_loaded();
-      }
-      echo "<!-- end footer div-->";
-      echo "</div>\n"; //end footer div
+      $today     = Dates::today();
+      $now       = Dates::now();
+      $mem       = Files::convert_size(memory_get_usage(TRUE)) . '/' . Files::convert_size(memory_get_peak_usage(TRUE));
+      $load_time = Dates::getReadableTime(microtime(TRUE) - $_SERVER['REQUEST_TIME_FLOAT']);
+      $user      = User::i();
+      $debug     = Config::get('debug.enabled') ? $this->display_loaded() : '';
+      $footer    = $this->menu && !AJAX_REFERRER;
+      include(DOCROOT . 'views/footer.php');
     }
     /**
 

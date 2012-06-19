@@ -48,24 +48,7 @@
       $this->separators = $this->Config->_get('date.separators');
       $this->sep        = $this->separators[$this->Config->_get('date.ui_separator')];
     }
-    /**
-     * @static
-     *
-     * @param      $year
-     * @param      $month
-     * @param      $day
-     * @param null $format
-     *
-     * @return string
-     */
-    protected function date($year, $month, $day, $format = null)
-    {
-      $how  = $this->formats [($format !== null) ? $format : $this->User->_date_format()];
-      $date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
-      $how  = str_replace('/', $this->sep, $how);
-      return date($how, $date);
-    }
-    /**
+   /**
      * @static
      *
      * @param null $date
@@ -398,18 +381,7 @@
       list($year, $month, $day) = explode("-", $date);
       return [$day, $month, $year];
     }
-    /**
-     * @static
-     *
-     * @param $a
-     * @param $b
-     *
-     * @return int
-     */
-    protected function div($a, $b)
-    {
-      return (int) ($a / $b);
-    }
+
     /** Based on converter to and from Gregorian and Jalali calendars.
     Copyright (C) 2000 Roozbeh Pournader and Mohammad Toossi
     Released under GNU General Public License
@@ -610,6 +582,34 @@
       }
       $ret = number_format($ret, 3, '.', '') . ' ' . $formats[$formatter];
       return $ret;
-    }
+    }    /**
+         * @static
+         *
+         * @param $a
+         * @param $b
+         *
+         * @return int
+         */
+        protected function div($a, $b)
+        {
+          return (int) ($a / $b);
+        }   /**
+             * @static
+             *
+             * @param      $year
+             * @param      $month
+             * @param      $day
+             * @param null $format
+             *
+             * @return string
+             */
+            protected function date($year, $month, $day, $format = null)
+            {
+              $how  = $this->formats [($format !== null) ? $format : $this->User->_date_format()];
+              $date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
+              $how  = str_replace('/', $this->sep, $how);
+              return date($how, $date);
+            }
+
   }
 

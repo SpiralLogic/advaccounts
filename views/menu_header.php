@@ -11,4 +11,4 @@
   </div>
 </div>
 <div id='logo'><h1><?= APP_TITLE ?><br><span class='slogan'><?= VERSION ?></span></h1></div>
-<div id='_tabs2'><?= $menu ?>
+      <div id='_tabs2'><?= $menu ?>

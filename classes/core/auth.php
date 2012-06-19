@@ -164,7 +164,7 @@
      *
      * @return string
      */
-    public static function makeHash($password, $user_id)
+    public  function makeHash($password, $user_id)
     {
       return crypt($password, $user_id);
     }
