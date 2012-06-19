@@ -9,7 +9,7 @@
    **/
   namespace ADV\Core;
   /**
-
+   * @method JS i
    */
   class JS
   {
@@ -100,12 +100,14 @@
     {
       $address = str_replace(array("\r", "\t", "\n", "\v"), ", ", $address);
       $apikey  = Config::get('js.maps_api_key');
-      $js      = <<<JS
+      $js
+               = <<<JS
 
                 Adv.maps = { api_key: '$apikey'}
 JS;
       JS::beforeload($js);
-      $js = <<<JS
+      $js
+        = <<<JS
 var map = $("<div/>").gMap({
     address:"{$address}",
     markers: [{ address:"{$address}", html: "_address", popup: true}],
@@ -173,7 +175,8 @@ JS;
       extract(array_merge($defaults, $options));
       $content = "Adv.o.tabs.$id = $('#" . $id . "').tabs(";
       if ($hasLinks) {
-        $content .= <<<JSS
+        $content
+          .= <<<JSS
     {
     select: function(event, ui) {
     var \$tab = $(ui.tab);
@@ -209,11 +212,11 @@ JSS;
      */
     public static function renderHeader()
     {
-      $scripts=[];
+      $scripts = [];
       /** @noinspection PhpDynamicAsStaticMethodCallInspection */
       foreach (self::$_headerFiles as $dir => $files) {
         /** @noinspection PhpDynamicAsStaticMethodCallInspection */
-        $scripts[]= $dir . '/' . implode(',', $files);
+        $scripts[] = $dir . '/' . implode(',', $files);
       }
       return $scripts;
     }

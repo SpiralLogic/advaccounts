@@ -7,8 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class User {
 
+  /**
+   * @method User i
+   * @method theme
+   */
+  class User
+  {
     use \ADV\Core\Traits\Hook;
     use ADV\Core\Traits\StaticAccess;
 
@@ -106,7 +111,6 @@
 
       return $dic['User'];
     }
-
     /**
 
      */
@@ -242,8 +246,8 @@
     public function _addLog()
     {
       DB::insert('user_login_log')->values(array(
-        'user'    => $this->username, 'IP'      => Users::get_ip(), 'success' => 2
-      ))->exec();
+                                                'user'    => $this->username, 'IP'      => Users::get_ip(), 'success' => 2
+                                           ))->exec();
     }
     /**
      * @param $page_level

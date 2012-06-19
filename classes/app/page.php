@@ -11,7 +11,9 @@
   {
     /** @var \Renderer */
     public $renderer = NULL;
-    public $twig = NULL;
+    /** @var \Twig_Environment  */
+
+    public $Twig = NULL;
     /**
      * @var
      */
@@ -23,6 +25,8 @@
     public $lang_dir = '';
     /** @var ADVAccounting */
     protected $app;
+    protected $User;
+    protected $Config;
     protected $sel_app;
     /**
      * @var bool
@@ -64,13 +68,16 @@
      */
     protected function __construct($title, $index = FALSE)
     {
+      $this->User     = User::i();
+      $this->Config   = Config::i();
+      $this->Ajax     = Ajax::i();
       $this->is_index = $index;
       $this->title    = $title;
       $this->frame    = isset($_GET['frame']);
       require_once 'Twig/Autoloader.php';
       \Twig_Autoloader::register();
       $loader     = new \Twig_Loader_Filesystem(DOCROOT . 'views');
-      $this->twig = new \Twig_Environment($loader);
+      $this->Twig = new \Twig_Environment($loader);
     }
     /**
      * @param $menu
@@ -82,9 +89,10 @@
       $this->ajaxpage = (AJAX_REFERRER || Ajax::in_ajax());
       $this->menu     = ($this->frame) ? FALSE : $menu;
       $this->renderer = new Renderer();
-      $this->theme    = User::theme();
+      $this->theme    = $this->User->theme();
       $this->encoding = $_SESSION['Language']->encoding;
       $this->lang_dir = $_SESSION['Language']->dir;
+
       if (!$this->ajaxpage) {
         $this->header();
         JS::open_window(900, 500);
@@ -100,10 +108,10 @@
       }
       Security::i()->check_page(static::$security);
       if ($this->title && !$this->is_index && !$this->frame && !IS_JSON_REQUEST) {
-        echo "<div class='titletext'>$this->title" . (User::hints() ? "<span id='hints' class='floatright'
+        echo "<div class='titletext'>$this->title" . ($this->User->hints() ? "<span id='hints' class='floatright'
 										style='display:none'></span>" : '') . "</div>";
-      }        Display::div_start('_page_body');
-
+      }
+      Display::div_start('_page_body');
     }
     /**
 
@@ -124,23 +132,25 @@
       if (class_exists('JS', FALSE)) {
         $viewdata['scripts'] = JS::renderHeader();
       }
-      echo $this->twig->render('header.twig', $viewdata);
+      echo $this->Twig->render('header.twig', $viewdata);
     }
     /**
 
      */
     protected function menu_header()
     {
-      echo "<div class='ajaxmark'><img alt='Ajax Loading' width='25' height='25' id='ajaxmark' src='/themes/" . User::theme() . "/images/ajax-loader.gif'>\n";
-      echo "<div id='top'><p>" . Config::get('db.' . User::i()->company)['company'] . " | " . $_SERVER['SERVER_NAME'] . " | " . User::i()->name . "</p>\n";
-      echo "<ul>\n";
-      echo   " <li><a href='" . BASE_URL . "system/display_prefs.php?'>" . _("Preferences") . "</a></li>\n" . " <li><a
-		href='" . BASE_URL . "system/change_current_user_password.php?selected_id=" . User::i()->username . "'>" . _("Change password") . "</a></li>\n";
+      $viewdata['BASE_URL']    = BASE_URL;
+      $viewdata['APP_TITLE']   = APP_TITLE;
+      $viewdata['VERSION']     = VERSION;
+      $viewdata['theme']       = $this->User->theme();
+      $viewdata['company']     = Config::get('db.' . $this->User->company)['company'];
+      $viewdata['server_name'] = $_SERVER['SERVER_NAME'];
+      $viewdata['username']    = $this->User->name;
+      $viewdata['help_url']    = '';
       if (Config::get('help_baseurl') != NULL) {
-        echo " <li><a target = '_blank' class='.openWindow' href='" . $this->help_url() . "'>" . _("Help") . "</a></li>";
+        $viewdata['help_url'] = $this->help_url();
       }
-      echo " <li><a href='" . BASE_URL . "access/logout.php?'>" . _("Logout") . "</a></li></ul></div></div><div
-			id='logo'><h1>" . APP_TITLE . "<br><span class='slogan'>" . VERSION . "</span></h1></div><div id='_tabs2'>";
+      echo $this->Twig->render('menu_header.twig', $viewdata);
       $this->renderer->menu();
       echo "</div>";
     }
@@ -189,8 +199,8 @@
     {
       $validate = array();
       $this->menu_footer();
-      JS::beforeload("_focus = '" . Input::post('_focus') . "';_validate = " . Ajax::php2js($validate) . ";");
-      User::add_js_data();
+      JS::beforeload("_focus = '" . Input::post('_focus') . "';_validate = " . Ajax::i()->php2js($validate) . ";");
+      $this->User->add_js_data();
       echo "<!-- end content div-->";
       echo "</div>";
       if ($this->header && $this->menu) {
