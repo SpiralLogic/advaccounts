@@ -1,15 +1,16 @@
 <!DOCTYPE HTML>
-<html " . (is_object($this->sel_app) ? "class='" . strtolower($this->sel_app->id) . "'" :
-  '') . " dir='" . $this->lang_dir . "' >\n";
+<html class='<?= $class ?>' dir='<?= $lang_dir ?>'>
 <head>
-  <meta charset='{{ encoding }}'>
-  <title>" . $this->title . "</title>";
-  HTML::script(NULL, "document.documentElement.className = document.documentElement.className +' js'", FALSE);
-  $this->renderCSS();
+  <meta charset='utf-8'>
+  <title><?= $title ?></title>
+  <script>document.documentElement.className = document.documentElement.className + ' js'</script>
   <link rel='apple-touch-icon' href='/company/images/Advanced-Group-Logo.png'/>
-  ";
-  if (class_exists('JS', FALSE)) {
-  JS::renderHeader();
-  }
-</head><body" . (!$this->menu ? ' class="lite">' : '>');
-<div id='content'>\n";
+  <? foreach ($stylesheets as $css): ?>
+  <link href='<?= $css ?>' rel='stylesheet'/>
+  <? endforeach; ?>
+  <? foreach ($scripts as $script): ?>
+  <script src='<?= $script ?>'></script>
+  <? endforeach; ?>
+</head>
+<body class='<?= $body_class ?>'>
+<div id='content'>

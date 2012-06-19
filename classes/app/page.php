@@ -74,10 +74,6 @@
       $this->is_index = $index;
       $this->title    = $title;
       $this->frame    = isset($_GET['frame']);
-      require_once 'Twig/Autoloader.php';
-      \Twig_Autoloader::register();
-      $loader     = new \Twig_Loader_Filesystem(DOCROOT . 'views');
-      $this->Twig = new \Twig_Environment($loader,['debug'=>'true']);
     }
     /**
      * @param $menu
@@ -132,16 +128,14 @@
       if (class_exists('JS', FALSE)) {
         $viewdata['scripts'] = JS::renderHeader();
       }
-      echo $this->Twig->render('header.twig', $viewdata);
+      extract($viewdata);
+      include(DOCROOT . 'views/header.php');
     }
     /**
 
      */
     protected function menu_header()
     {
-      $viewdata['BASE_URL']    = BASE_URL;
-      $viewdata['APP_TITLE']   = APP_TITLE;
-      $viewdata['VERSION']     = VERSION;
       $viewdata['theme']       = $this->User->theme();
       $viewdata['company']     = Config::get('db.' . $this->User->company)['company'];
       $viewdata['server_name'] = $_SERVER['SERVER_NAME'];
@@ -150,9 +144,9 @@
       if (Config::get('help_baseurl') != NULL) {
         $viewdata['help_url'] = $this->help_url();
       }
-      echo $this->Twig->render('menu_header.twig', $viewdata);
-      $this->renderer->menu();
-      echo "</div>";
+      $viewdata['menu'] = $this->renderer->menu();
+      extract($viewdata);
+      include(DOCROOT . 'views/menu_header.php');
     }
     /**
      * @param null $context

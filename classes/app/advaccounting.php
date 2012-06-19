@@ -11,8 +11,8 @@
   /**
 
    */
-  class ADVAccounting {
-
+  class ADVAccounting
+  {
     /**
      * @var
      */
@@ -128,7 +128,7 @@
      * @static
      * @return ADVAccounting
      */
-    public static function i(Config $config = null, Session $session = null, Cache $cache = null)
+    public static function i(Config $config = null, Session $session = null, \ADV\Core\Cache $cache = null)
     {
       if (static::$i === false) {
         static::init($config, $session, $cache);
@@ -269,11 +269,10 @@
       static::$user = User::getCurrentUser();
       if (Input::post("user_name")) {
         $this->login();
-
       } elseif (!static::$user->logged_in()) {
         $this->showLogin();
       }
-      if ( static::$user->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev') !== false) {
+      if (static::$user->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev') !== false) {
         Display::meta_forward('http://dev.advanced.advancedgroup.com.au:8090');
       }
       static::$i->selected = static::$user->selectedApp;
