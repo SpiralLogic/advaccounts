@@ -14,7 +14,6 @@
   class Autoload_Exception extends \Exception
   {
   }
-
   /**
 
    */
@@ -32,47 +31,40 @@
      * @var array
      */
     protected $global_classes = array();
+    protected $Cachr = null;
     /**
      * @var array
      */
     public $loaded = array();
-    static $i;
+/** @var Cache */
+    public $Cache;
     /**
-     * @static
 
      */
-    public static function i()
+    public function __construct()
     {
-      class_alias(__CLASS__, 'Autoloader');
-      static::$i=$autoloader=new self;
-      spl_autoload_register(array($autoloader,'load'), true);
-
+      spl_autoload_register(array($this, 'load'), true);
     }
     /**
-
+     * @param Cache $cache
      */
-    public function __construct() {
-
+    public function registerCache(Cache $cache)
+    {
+      $this->Cache   = $cache;
+      $cachedClasses = $cache->get('autoload', array());
+      if ($cachedClasses) {
+        $this->global_classes = $cachedClasses['global_classes'];
+        $this->classes        = $cachedClasses['classes'];
+        $this->loaded         = $cachedClasses['paths'];
+      } else {
+        $core = include(DOCROOT . 'config' . DS . 'core.php');
+        $this->import_namespaces((array) $core);
+        $vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
+        $this->add_classes((array) $vendor, VENDORPATH);
+      }
+      spl_autoload_register(array($this, 'loadFromCache'), true, true);
     }
-
-public static function loadCache() {
-  $cachedClasses = \ADV\Core\Cache::get('autoload', array());
-  if ($cachedClasses) {
-    static::$i->global_classes = $cachedClasses['global_classes'];
-    static::$i->classes        = $cachedClasses['classes'];
-    static::$i->loaded         = $cachedClasses['paths'];
-  } else {
-    $core = include(DOCROOT . 'config' . DS . 'core.php');
-    static::$i->import_namespaces((array) $core);
-    $vendor= include(DOCROOT . 'config' . DS . 'vendor.php');
-    static::$i->add_classes((array) $vendor, VENDORPATH);
-  }
-  spl_autoload_register(array(static::$i,'loadFromCache'), true, true);
-
-}
     /**
-     * @static
-     *
      * @param array $classes
      * @param       $type
      */
@@ -86,8 +78,6 @@ public static function loadCache() {
       }
     }
     /**
-     * @static
-     *
      * @param $namespace
      * @param $classes
      */
@@ -96,7 +86,6 @@ public static function loadCache() {
       $this->global_classes = array_merge($this->global_classes, array_fill_keys($classes, $namespace));
     }
     /**
-     * @static
      *
      * @param array $namespaces
      */
@@ -125,11 +114,9 @@ public static function loadCache() {
           return $this->includeFile($filepath, $required_class);
         }
       }
-
       return false;
     }
     /**
-     * @static
      *
      * @param $filepath
      * @param $required_class
@@ -152,12 +139,9 @@ public static function loadCache() {
           Event::register_shutdown($this);
         }
       }
-
       return true;
     }
     /**
-     * @static
-     *
      * @param $required_class
      *
      * @return bool|string
@@ -176,12 +160,9 @@ public static function loadCache() {
           class_alias($this->global_classes[$required_class] . '\\' . $required_class, '\\' . $required_class);
         }
       }
-
       return $result;
     }
     /**
-     * @static
-     *
      * @param $requested_class
      *
      * @internal param $required_class
@@ -217,26 +198,23 @@ public static function loadCache() {
       $paths[]    = $dir . DS . 'classes' . DS . $class_file . '.php';
       $result     = $this->trypath($paths, $requested_class);
       if ($result && $alias) {
-        $fullclass                  = $this->global_classes[$classname] . '\\' . $classname;
+        $fullclass                = $this->global_classes[$classname] . '\\' . $classname;
         $this->loaded[$fullclass] = $this->loaded[$requested_class];
         $this->loaded[$classname] = $this->loaded[$requested_class];
         class_alias($fullclass, $classname);
       }
-
       return $result;
     }
-    /**
-     * @static
-
-     */
     public function _shutdown()
     {
-      Cache::set('autoload', array(
-                                  'classes'        => $this->classes,
-                                  'global_classes' => $this->global_classes,
-                                  'paths'          => $this->loaded
-                             ));
+      if ($this->Cache) {
+        $this->Cache->set('autoload', array(
+                                           'classes'        => $this->classes, //
+                                           'global_classes' => $this->global_classes, //
+                                           'paths'          => $this->loaded
+                                      ));
+      }
     }
   }
 
-  Autoloader::i();
+  return new Autoloader();

@@ -77,13 +77,14 @@
       require_once 'Twig/Autoloader.php';
       \Twig_Autoloader::register();
       $loader     = new \Twig_Loader_Filesystem(DOCROOT . 'views');
-      $this->Twig = new \Twig_Environment($loader);
+      $this->Twig = new \Twig_Environment($loader,['debug'=>'true']);
     }
     /**
      * @param $menu
      */
     protected function init($menu)
     {
+
       $this->app      = ADVAccounting::i();
       $this->sel_app  = $this->app->selected;
       $this->ajaxpage = (AJAX_REFERRER || Ajax::in_ajax());
@@ -92,7 +93,6 @@
       $this->theme    = $this->User->theme();
       $this->encoding = $_SESSION['Language']->encoding;
       $this->lang_dir = $_SESSION['Language']->dir;
-
       if (!$this->ajaxpage) {
         $this->header();
         JS::open_window(900, 500);

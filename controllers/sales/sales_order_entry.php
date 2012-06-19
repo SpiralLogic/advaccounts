@@ -9,34 +9,30 @@
    **/
   class SalesOrder extends Controller_Base
   {
-    protected $addTitles
-      = array(
-        ST_SALESQUOTE  => "New Sales Quotation Entry", //
-        ST_SALESINVOICE=> "Direct Sales Invoice", //
-        ST_CUSTDELIVERY=> "Direct Sales Delivery", //
-        ST_SALESORDER  => "New Sales Order Entry"
-      );
-    protected $modifyTitles
-      = array(
-        ST_SALESQUOTE  => "Modifying Sales Quotation # ", //
-        ST_SALESORDER  => "Modifying Sales Order # "
-      );
-    protected $typeSecurity
-      = array(
-        ST_SALESORDER   => SA_SALESORDER, //
-        ST_SALESQUOTE   => SA_SALESQUOTE, ///
-        ST_CUSTDELIVERY => SA_SALESDELIVERY, //
-        ST_SALESINVOICE => SA_SALESINVOICE
-      );
-    protected $processSecurity
-      = array(
-        Orders::NEW_ORDER    => SA_SALESORDER, //
-        Orders::MODIFY_ORDER => SA_SALESORDER, //
-        Orders::NEW_QUOTE    => SA_SALESQUOTE, //
-        Orders::MODIFY_QUOTE => SA_SALESQUOTE, //
-        Orders::NEW_DELIVERY => SA_SALESDELIVERY, //
-        Orders::NEW_INVOICE  => SA_SALESINVOICE
-      );
+    protected $addTitles = array(
+      ST_SALESQUOTE  => "New Sales Quotation Entry", //
+      ST_SALESINVOICE=> "Direct Sales Invoice", //
+      ST_CUSTDELIVERY=> "Direct Sales Delivery", //
+      ST_SALESORDER  => "New Sales Order Entry"
+    );
+    protected $modifyTitles = array(
+      ST_SALESQUOTE  => "Modifying Sales Quotation # ", //
+      ST_SALESORDER  => "Modifying Sales Order # "
+    );
+    protected $typeSecurity = array(
+      ST_SALESORDER   => SA_SALESORDER, //
+      ST_SALESQUOTE   => SA_SALESQUOTE, ///
+      ST_CUSTDELIVERY => SA_SALESDELIVERY, //
+      ST_SALESINVOICE => SA_SALESINVOICE
+    );
+    protected $processSecurity = array(
+      Orders::NEW_ORDER    => SA_SALESORDER, //
+      Orders::MODIFY_ORDER => SA_SALESORDER, //
+      Orders::NEW_QUOTE    => SA_SALESQUOTE, //
+      Orders::MODIFY_QUOTE => SA_SALESQUOTE, //
+      Orders::NEW_DELIVERY => SA_SALESDELIVERY, //
+      Orders::NEW_INVOICE  => SA_SALESINVOICE
+    );
     public $type;
     /***
      * @var Sales_Order;
@@ -126,7 +122,6 @@
       $this->order->display_delivery_details();
       echo "</td></tr>";
       Table::end(1);
-
       Display::div_start('controls', 'items_table');
       if ($this->order->trans_no > 0 && $this->user->can_access(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())
       ) {
@@ -153,7 +148,6 @@
     }
     protected function checkBranch()
     {
-
       if (Forms::isListUpdated('branch_id')) {
         // when branch is selected via external editor also customer can change
         $br                   = Sales_Branch::get(Input::post('branch_id'));
@@ -220,19 +214,16 @@
       Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
       Reporting::email_link($order_no, _("Email This $trans_name"), TRUE, $trans_type, 'EmailLink', NULL, $emails, 1);
       if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
-        Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA :
-          ST_PROFORMAQ), $order_no, 'prtopt');
-        Reporting::email_link($order_no, _("Email This Proforma Invoice"), TRUE, ($trans_type == ST_SALESORDER ? ST_PROFORMA :
-          ST_PROFORMAQ), 'EmailLink', NULL, $emails, 1);
-          }
+        Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
+        Reporting::email_link($order_no, _("Email This Proforma Invoice"), TRUE, ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), 'EmailLink', NULL, $emails, 1);
+      }
       if ($trans_type == ST_SALESORDER) {
-        Display::submenu_option(_("Create PO from this order"),"/purchases/po_entry_items.php?NewOrder=Yes&UseOrder=" . $order_no . "'");
-                  Display::submenu_option(_("Dropship this order"),"/purchases/po_entry_items.php?NewOrder=Yes&UseOrder=" .$order_no. "&DRP=1' ");
+        Display::submenu_option(_("Create PO from this order"), "/purchases/po_entry_items.php?NewOrder=Yes&UseOrder=" . $order_no . "'");
+        Display::submenu_option(_("Dropship this order"), "/purchases/po_entry_items.php?NewOrder=Yes&UseOrder=" . $order_no . "&DRP=1' ");
         Display::submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
         Display::submenu_option(_("Show outstanding &Orders"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
         Display::submenu_option(_("Enter a New &Order"), "/sales/sales_order_entry.php?add=0&type=" . ST_SALESORDER);
         Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
-
       } elseif ($trans_type == ST_SALESQUOTE) {
         Display::submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?" . Orders::QUOTE_TO_ORDER . "=$order_no");
         Display::submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?add=0&type=" . ST_SALESQUOTE);
@@ -242,9 +233,7 @@
         Display::submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $order_no, 'prtopt', NULL, 1);
         Display::note(GL_UI::view(ST_CUSTDELIVERY, $order_no, _("View the GL Journal Entries for this Dispatch")), 0, 1);
         Display::submenu_option(_("Make &Invoice Against This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$order_no");
-        ((isset($_GET['Type']) && $_GET['Type'] == 1)) ?
-          Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes") :
-          Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?add=0&type=" . ST_CUSTDELIVERY);
+        ((isset($_GET['Type']) && $_GET['Type'] == 1)) ? Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes") : Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?add=0&type=" . ST_CUSTDELIVERY);
       } elseif ($trans_type == ST_SALESINVOICE) {
         $sql    = "SELECT trans_type_from, trans_no_from FROM debtor_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . $this->db->escape($order_no);
         $result = $this->db->query($sql, "could not retrieve customer allocation");
@@ -260,7 +249,7 @@
         }
         Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"));
         if (isset($_GET[ADDED_DI]) && $this->session->getGlobal('debtor') && $row == FALSE) {
-          echo "<div style='text-align:center;'><iframe style='margin:0 auto; border-width:0;' src='".'/sales/customer_payments.php'."?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
+          echo "<div style='text-align:center;'><iframe style='margin:0 auto; border-width:0;' src='" . '/sales/customer_payments.php' . "?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
         }
       }
       JS::set_focus('prtopt');

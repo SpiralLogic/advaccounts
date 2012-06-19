@@ -12,13 +12,11 @@
   } elseif (strpos($_SERVER['HTTP_HOST'], 'advaccounts') !== false) {
     header('Location: http://advanced.advancedgroup.com.au' . $_SERVER['REQUEST_URI']);
   }
-  /* if (extension_loaded('xhprof')) {
+/*  if (extension_loaded('xhprof')) {
     $XHPROF_ROOT = realpath(dirname(__FILE__) . '/xhprof');
     include_once $XHPROF_ROOT . "/xhprof_lib/config.php";
     include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
     include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
-    /** @noinspection PhpUndefinedFunctionInspection
-    /** @noinspection PhpUndefinedConstantInspection
     xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
   }*/
   error_reporting(-1);
@@ -48,7 +46,7 @@
     class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'errors.php';
     ADV\Core\Errors::exception_handler($e);
   });
-  require COREPATH . 'autoloader.php';
+  $loader = require COREPATH . 'autoloader.php';
   if ($_SERVER['DOCUMENT_URI'] !== '/assets.php') {
     if (!function_exists('e')) {
       /**
@@ -76,29 +74,25 @@
       }
     }
     $dic = new \ADV\Core\DIC();
-    \ADV\Core\Autoloader::loadCache();
-    Cache::define_constants('defines', function()
+    $loader->registerCache(\ADV\Core\Cache::i());
+    \ADV\Core\Cache::define_constants('defines', function()
     {
       return include(DOCROOT . 'config' . DS . 'defines.php');
     });
     include(DOCROOT . 'config' . DS . 'types.php');
     include(DOCROOT . 'config' . DS . 'access_levels.php');
     Session::i();
-
     Ajax::i();
     Config::i();
     ob_start('adv_ob_flush_handler', 0);
     ADVAccounting::i($dic['Config'], $dic['Session'], $dic['Cache']);
   }
-  /* if (extension_loaded('xhprof') && substr_compare($_SERVER['DOCUMENT_URI'], '/profile/', 0, 9, true) !== 0) {
+/*  if (extension_loaded('xhprof') && substr_compare($_SERVER['QUERY_STRING'], '/profile/', 0, 9, true) !== 0) {
     register_shutdown_function(function()
     {
       $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
-      /** @noinspection PhpUndefinedFunctionInspection
       $xhprof_data = xhprof_disable();
-      /** @noinspection PhpUndefinedClassInspection
       $xhprof_runs = new \XHProfRuns_Default();
-      /** @noinspection PhpUndefinedMethodInspection
       $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
     });
   }*/
