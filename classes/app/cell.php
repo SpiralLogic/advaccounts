@@ -93,7 +93,7 @@
         $params .= " id='$id'";
         Ajax::addUpdate($id, $id, $label);
       }
-        echo "<td".$params.">$label</td>\n";
+      echo "<td $params >$label</td>\n";
 
       return $label;
     }

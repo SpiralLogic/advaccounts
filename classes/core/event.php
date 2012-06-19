@@ -16,6 +16,7 @@
   class Event
   {
     use \ADV\Core\Traits\Hook;
+    use \ADV\Core\Traits\StaticAccess;
 
     /**
      * @var array all objects with methods to be run on shutdown

@@ -41,6 +41,9 @@
       $actual   = $this->object->_price_format('25.563434');
       $expected = ('25.56');
       $this->assertEquals($expected, $actual);
+      $actual   = $this->object->_price_format(0);
+      $expected = '0.00';
+      $this->assertSame($expected, $actual);
     }
     /**
      * @covers ADV\Core\Num::round

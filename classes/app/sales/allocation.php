@@ -8,8 +8,8 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  class Sales_Allocation
-  {
+  class Sales_Allocation {
+
     /**
      * @static
      *
@@ -20,7 +20,8 @@
      * @param $trans_no_to
      */
     public static function add($amount, $trans_type_from, $trans_no_from,
-                               $trans_type_to, $trans_no_to) {
+                               $trans_type_to, $trans_no_to)
+    {
       $sql
         = "INSERT INTO debtor_allocations (
         amt, date_alloc,
@@ -53,12 +54,13 @@
     public static function get_balance($trans_type, $trans_no)
     {
       $sql
-              = "SELECT (ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc) AS BalToAllocate
+               = "SELECT (ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc) AS BalToAllocate
         FROM debtor_trans WHERE trans_no=" . DB::escape($trans_no) . " AND type=" . DB::escape($trans_type);
-      $result = DB::query($sql, "calculate the allocation");
-      $myrow  = DB::fetch_row($result);
+      $result  = DB::query($sql, "calculate the allocation");
+      $myrow   = DB::fetch_row($result);
+      $balance = (abs($myrow[0]) <= Config::get('accounts.allocation_allowance')) ? 0 : $myrow[0];
 
-      return $myrow[0];
+      return $balance;
     }
     /**
      * @static

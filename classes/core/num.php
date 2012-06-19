@@ -108,9 +108,9 @@
       $dsep = $this->dec_sep;
       //return number_format($number, $decimals, $dsep,	$tsep);
       $delta  = ($number < 0 ? -.0000000001 : .0000000001);
-      $number = number_format($number + $delta, $decimals, $dsep, $tsep);
+      $number = number_format(($number == -0 ? 0 : $number)+ $delta, $decimals, $dsep, $tsep);
 
-      return ($number == -0 ? 0 : $number);
+      return $number;
     }
     /**
      * @static
