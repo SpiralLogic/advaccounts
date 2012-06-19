@@ -58,7 +58,7 @@
 				tax_group_id=" . DB::escape($_POST['tax_group_id']) . " WHERE supplier_id = " . DB::escape($_POST['supplier_id']);
         DB::query($sql, "The supplier could not be updated");
         DB::update_record_status($_POST['supplier_id'], $_POST['inactive'], 'suppliers', 'supplier_id');
-        Ajax::i()->activate('supplier_id'); // in case of status change
+        Ajax::activate('supplier_id'); // in case of status change
         Event::success(_("Supplier has been updated."));
       }
       else {
@@ -71,7 +71,7 @@
         $_POST['supplier_id'] = DB::insert_id();
         $new_supplier = FALSE;
         Event::success(_("A new supplier has been added."));
-        Ajax::i()->activate('_page_body');
+        Ajax::activate('_page_body');
       }
     }
   }
@@ -100,7 +100,7 @@
       DB::query($sql, "check failed");
       unset($_SESSION['supplier_id']);
       $new_supplier = TRUE;
-      Ajax::i()->activate('_page_body');
+      Ajax::activate('_page_body');
     } //end if Delete supplier
   }
   Forms::start();
@@ -113,7 +113,7 @@
     Row::end();
     Table::end();
     if (Input::post('_show_inactive_update')) {
-      Ajax::i()->activate('supplier_id');
+      Ajax::activate('supplier_id');
       JS::set_focus('supplier_id');
     }
   }

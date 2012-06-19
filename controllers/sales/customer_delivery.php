@@ -99,7 +99,7 @@
     }
   }
   if (isset($_POST['Update']) || isset($_POST['_location_update'])) {
-    Ajax::i()->activate('Items');
+    Ajax::activate('Items');
   }
   Forms::start();
   Forms::hidden('order_id');

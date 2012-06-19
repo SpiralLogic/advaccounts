@@ -47,19 +47,19 @@
   }
   if (Input::post('_DeliveryNumber_changed')) {
     $disable = Input::post('DeliveryNumber') !== '';
-    Ajax::i()->addDisable(TRUE, 'DeliveryAfterDate', $disable);
-    Ajax::i()->addDisable(TRUE, 'DeliveryToDate', $disable);
-    Ajax::i()->addDisable(TRUE, 'StockLocation', $disable);
-    Ajax::i()->addDisable(TRUE, '_SelectStockFromList_edit', $disable);
-    Ajax::i()->addDisable(TRUE, 'SelectStockFromList', $disable);
+    Ajax::addDisable(TRUE, 'DeliveryAfterDate', $disable);
+    Ajax::addDisable(TRUE, 'DeliveryToDate', $disable);
+    Ajax::addDisable(TRUE, 'StockLocation', $disable);
+    Ajax::addDisable(TRUE, '_SelectStockFromList_edit', $disable);
+    Ajax::addDisable(TRUE, 'SelectStockFromList', $disable);
     // if search is not empty rewrite table
     if ($disable) {
-      Ajax::i()->addFocus(TRUE, 'DeliveryNumber');
+      Ajax::addFocus(TRUE, 'DeliveryNumber');
     }
     else {
-      Ajax::i()->addFocus(TRUE, 'DeliveryAfterDate');
+      Ajax::addFocus(TRUE, 'DeliveryAfterDate');
     }
-    Ajax::i()->activate('deliveries_tbl');
+    Ajax::activate('deliveries_tbl');
   }
   Forms::start(FALSE, $_SERVER['DOCUMENT_URI'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
   Table::start('tablestyle_noborder');

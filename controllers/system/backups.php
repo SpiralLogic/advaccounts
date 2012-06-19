@@ -16,7 +16,7 @@
     else {
       $filename = BACKUP_PATH . Input::post('backups');
       if (Ajax::in_ajax()) {
-        Ajax::i()->popup($filename);
+        Ajax::popup($filename);
       }
       else {
         header('Content-type: application/octet-stream');
@@ -39,7 +39,7 @@
   $conn = $connections[$db_name];
   if (Input::post('creat')) {
     generate_backup($conn, Input::post('comp'), Input::post('comments'));
-    Ajax::i()->activate('backups');
+    Ajax::activate('backups');
   }
   ;
   if (Input::post('restore')) {
@@ -50,7 +50,7 @@
   if (Input::post('deldump')) {
     if (unlink(BACKUP_PATH . Input::post('backups'))) {
       Event::notice(_("File successfully deleted.") . " " . _("Filename") . ": " . Input::post('backups'));
-      Ajax::i()->activate('backups');
+      Ajax::activate('backups');
     }
     else {
       Event::error(_("Can't delete backup file."));
@@ -66,7 +66,7 @@
     elseif (is_uploaded_file($tmpname)) {
       rename($tmpname, BACKUP_PATH . $fname);
       Event::notice("File uploaded to backup directory");
-      Ajax::i()->activate('backups');
+      Ajax::activate('backups');
     }
     else {
       Event::error(_("File was not uploaded into the system."));

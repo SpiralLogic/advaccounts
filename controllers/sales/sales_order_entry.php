@@ -224,12 +224,15 @@
           ST_PROFORMAQ), $order_no, 'prtopt');
         Reporting::email_link($order_no, _("Email This Proforma Invoice"), TRUE, ($trans_type == ST_SALESORDER ? ST_PROFORMA :
           ST_PROFORMAQ), 'EmailLink', NULL, $emails, 1);
-      }
+          }
       if ($trans_type == ST_SALESORDER) {
+        Display::submenu_option(_("Create PO from this order"),"/purchases/po_entry_items.php?NewOrder=Yes&UseOrder=" . $order_no . "'");
+                  Display::submenu_option(_("Dropship this order"),"/purchases/po_entry_items.php?NewOrder=Yes&UseOrder=" .$order_no. "&DRP=1' ");
         Display::submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
         Display::submenu_option(_("Show outstanding &Orders"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
         Display::submenu_option(_("Enter a New &Order"), "/sales/sales_order_entry.php?add=0&type=" . ST_SALESORDER);
         Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
+
       } elseif ($trans_type == ST_SALESQUOTE) {
         Display::submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?" . Orders::QUOTE_TO_ORDER . "=$order_no");
         Display::submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?add=0&type=" . ST_SALESQUOTE);

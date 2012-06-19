@@ -66,14 +66,14 @@
   if ($id != -1) {
     $sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
     DB::query($sql, "Can't change sales order type");
-    Ajax::i()->activate('orders_tbl');
+    Ajax::activate('orders_tbl');
   }
   if (isset($_POST['Update']) && isset($_POST['last'])) {
     foreach ($_POST['last'] as $id => $value) {
       if ($value != Forms::hasPost('chgtpl' . $id)) {
         $sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
         DB::query($sql, "Can't change sales order type");
-        Ajax::i()->activate('orders_tbl');
+        Ajax::activate('orders_tbl');
       }
     }
   }
@@ -82,18 +82,18 @@
   if (Input::post('_OrderNumber_changed')) { // enable/disable selection controls
     $disable = Input::post('OrderNumber') !== '';
     if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
-      Ajax::i()->addDisable(TRUE, 'OrdersAfterDate', $disable);
-      Ajax::i()->addDisable(TRUE, 'OrdersToDate', $disable);
+      Ajax::addDisable(TRUE, 'OrdersAfterDate', $disable);
+      Ajax::addDisable(TRUE, 'OrdersToDate', $disable);
     }
-    Ajax::i()->addDisable(TRUE, 'StockLocation', $disable);
-    Ajax::i()->addDisable(TRUE, '_SelectStockFromList_edit', $disable);
-    Ajax::i()->addDisable(TRUE, 'SelectStockFromList', $disable);
+    Ajax::addDisable(TRUE, 'StockLocation', $disable);
+    Ajax::addDisable(TRUE, '_SelectStockFromList_edit', $disable);
+    Ajax::addDisable(TRUE, 'SelectStockFromList', $disable);
     if ($disable) {
-      Ajax::i()->addFocus(TRUE, 'OrderNumber');
+      Ajax::addFocus(TRUE, 'OrderNumber');
     } else {
-      Ajax::i()->addFocus(TRUE, 'OrdersAfterDate');
+      Ajax::addFocus(TRUE, 'OrdersAfterDate');
     }
-    Ajax::i()->activate('orders_tbl');
+    Ajax::activate('orders_tbl');
   }
   Forms::start();
   Table::start('tablestyle_noborder');

@@ -42,6 +42,6 @@
      */
      function adv_ob_flush_handler($text)
     {
-      return (Ajax::i()->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
+      return (Ajax::in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
     }
   }

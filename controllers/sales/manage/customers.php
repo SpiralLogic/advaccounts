@@ -61,7 +61,7 @@
     	 WHERE debtor_id = " . DB::escape($_POST['customer_id']);
       DB::query($sql, "The customer could not be updated");
       DB::update_record_status($_POST['customer_id'], $_POST['inactive'], 'debtors', 'debtor_id');
-      Ajax::i()->activate('customer_id'); // in case of status change
+      Ajax::activate('customer_id'); // in case of status change
       Event::success(_("Customer has been updated."));
     }
     else { //it is a new customer
@@ -77,7 +77,7 @@
       $new_customer = FALSE;
       DB::commit();
       Event::success(_("A new customer has been added."));
-      Ajax::i()->activate('_page_body');
+      Ajax::activate('_page_body');
     }
   }
   if (isset($_POST['delete'])) {
@@ -117,7 +117,7 @@
       Event::notice(_("Selected customer has been deleted."));
       unset($_POST['customer_id']);
       $new_customer = TRUE;
-      Ajax::i()->activate('_page_body');
+      Ajax::activate('_page_body');
     } //end if Delete Customer
   }
   Validation::check(Validation::SALES_TYPES, _("There are no sales types defined. Please define at least one sales type before adding a customer."));
@@ -130,7 +130,7 @@
     Row::end();
     Table::end();
     if (Input::post('_show_inactive_update')) {
-      Ajax::i()->activate('customer_id');
+      Ajax::activate('customer_id');
       JS::set_focus('customer_id');
     }
   }

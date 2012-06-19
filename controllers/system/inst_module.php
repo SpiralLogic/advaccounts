@@ -39,7 +39,7 @@
   }
   Forms::start(true);
   if (Forms::isListUpdated('extset')) {
-    Ajax::i()->activate('_page_body');
+    Ajax::activate('_page_body');
   }
   echo "<div class='center'>" . _('Extensions:') . "&nbsp;&nbsp;";
   echo Extensions::view('extset', null, true);

@@ -122,7 +122,7 @@
       if (count($ajax_divs)) {
         $div = array_pop($ajax_divs);
         if ($div[1] !== null) {
-          Ajax::i()->addUpdate($div[1], $div[0], ob_get_flush());
+          Ajax::addUpdate($div[1], $div[0], ob_get_flush());
         }
         echo "</div>";
       }
@@ -223,7 +223,7 @@
       if ($params != '') {
         $params = '?' . $params;
       }
-      Ajax::i()->redirect($forward_to . $params);
+      Ajax::redirect($forward_to . $params);
       exit;
     }
     /**

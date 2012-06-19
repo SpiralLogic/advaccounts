@@ -1107,14 +1107,6 @@
    */
   class Ajax extends ADV\Core\Ajax
   {
-    /**
-     * @static
-     * @return Ajax
-     */
-    public static function i()
-    {
-      return static::i();
-    }
   }
 
   /**

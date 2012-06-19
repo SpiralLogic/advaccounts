@@ -231,7 +231,7 @@
       Debtor::newselect();
       if ($order->customer_id != $_POST['customer_id'] /*|| $order->sales_type != $_POST['sales_type_id']*/) {
         // customer has changed
-        Ajax::i()->activate('branch_id');
+        Ajax::activate('branch_id');
       }
       Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', NULL, FALSE, TRUE, TRUE, TRUE);
       //if (($_SESSION['credit_items']->order_no == 0) ||
@@ -247,27 +247,27 @@
         $_POST['delivery_address'] = $order->delivery_address;
         $_POST['name']             = $order->name;
         $_POST['phone']            = $order->phone;
-        Ajax::i()->activate('location');
-        Ajax::i()->activate('deliver_to');
-        Ajax::i()->activate('name');
-        Ajax::i()->activate('phone');
-        Ajax::i()->activate('delivery_address');
+        Ajax::activate('location');
+        Ajax::activate('deliver_to');
+        Ajax::activate('name');
+        Ajax::activate('phone');
+        Ajax::activate('delivery_address');
         if ($old_order->customer_currency != $order->customer_currency) {
           $change_prices = 1;
         }
         if ($old_order->sales_type != $order->sales_type) {
           // || $old_order->default_discount!=$order->default_discount
           $_POST['sales_type_id'] = $order->sales_type;
-          Ajax::i()->activate('sales_type_id');
+          Ajax::activate('sales_type_id');
           $change_prices = 1;
         }
         if ($old_order->dimension_id != $order->dimension_id) {
           $_POST['dimension_id'] = $order->dimension_id;
-          Ajax::i()->activate('dimension_id');
+          Ajax::activate('dimension_id');
         }
         if ($old_order->dimension2_id != $order->dimension2_id) {
           $_POST['dimension2_id'] = $order->dimension2_id;
-          Ajax::i()->activate('dimension2_id');
+          Ajax::activate('dimension2_id');
         }
         unset($old_order);
       }
@@ -293,7 +293,7 @@
       if ($order->sales_type != $_POST['sales_type_id']) {
         $myrow = Sales_Type::get($_POST['sales_type_id']);
         $order->set_sales_type($myrow['id'], $myrow['sales_type'], $myrow['tax_included'], $myrow['factor']);
-        Ajax::i()->activate('sales_type_id');
+        Ajax::activate('sales_type_id');
         $change_prices = 1;
       }
       Sales_UI::shippers_row(_("Shipping Company:"), 'ShipperID', $order->ship_via);
@@ -308,7 +308,7 @@
         ) {
           $change_prices = 1;
         }
-        Ajax::i()->activate('_ex_rate');
+        Ajax::activate('_ex_rate');
       }
       // 2008-11-12 Joe Hunt added dimensions
       $dim = DB_Company::get_pref('use_dimension');
@@ -328,7 +328,7 @@
           $line->price = Item_Price::get_calculated_price($line->stock_id, $order->customer_currency, $order->sales_type, $order->price_factor, Input::post('OrderDate'));
           //		$line->discount_percent = $order->default_discount;
         }
-        Ajax::i()->activate('items_table');
+        Ajax::activate('items_table');
       }
       return $customer_error;
     }
@@ -416,14 +416,14 @@
         Forms::hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id']);
         Cell::label($order->line_items[$id]->description, ' class="nowrap"');
-        Ajax::i()->activate('items_table');
+        Ajax::activate('items_table');
       } else {
         Sales_UI::items_cells(NULL, 'stock_id', NULL, FALSE, FALSE, array('description' => $order->line_items[$id]->description));
         if (Forms::isListUpdated('stock_id')) {
-          Ajax::i()->activate('price');
-          Ajax::i()->activate('qty');
-          Ajax::i()->activate('units');
-          Ajax::i()->activate('line_total');
+          Ajax::activate('price');
+          Ajax::activate('qty');
+          Ajax::activate('units');
+          Ajax::activate('line_total');
         }
         $item_info      = Item::get_edit_info(Input::post('stock_id'));
         $dec            = $item_info['decimals'];
@@ -457,7 +457,7 @@
     {
       echo "<br>";
       if (isset($_POST['_CreditType_update'])) {
-        Ajax::i()->activate('options');
+        Ajax::activate('options');
       }
       Display::div_start('options');
       Table::start('tablestyle2');

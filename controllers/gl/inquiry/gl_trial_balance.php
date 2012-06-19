@@ -13,7 +13,7 @@
   // Ajax updates
   //
   if (Input::post('Show')) {
-    Ajax::i()->activate('balance_tbl');
+    Ajax::activate('balance_tbl');
   }
   gl_inquiry_controls();
   display_trial_balance();

@@ -99,7 +99,7 @@
       $value = get_post($name);
     }
     $ret = "<input type=\"hidden\" id=\"$name\" name=\"$name\" value=\"$value\">";
-    Ajax::i()->addUpdate($name, $name, $value);
+    Ajax::addUpdate($name, $name, $value);
     if ($echo) {
       echo $ret . "\n";
     } else {
@@ -170,9 +170,9 @@
     } // code is generalized for multiple selection support
     if (isset($_POST['_' . $name . '_update'])) {
       if (!$opts['async']) {
-        Ajax::i()->activate('_page_body');
+        Ajax::activate('_page_body');
       } else {
-        Ajax::i()->activate($name);
+        Ajax::activate($name);
       }
     }
     // ------ make selector ----------
@@ -206,7 +206,7 @@
     $selector     = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' :
       '') . "$disabled id='$name' name='$name" . ($multi ? '[]' :
       '') . "' class='combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
-    Ajax::i()->addUpdate($name, "_{$name}_sel", $selector);
+    Ajax::addUpdate($name, "_{$name}_sel", $selector);
     $selector = "<div id='_{$name}_sel'>" . $selector . "</div>\n";
     if ($select_submit != false) { // if submit on change is used - add select button
       $_select_button
@@ -596,7 +596,7 @@
     $str .= "<input" . ($value == 1 ? ' checked' :
       '') . " type='checkbox' name='$name' id='$name' value='1'" . ($submit_on_change ? " onclick='$submit_on_change'" :
       '') . ($title ? " title='$title'" : '') . " >\n";
-    Ajax::i()->addUpdate($name, $name, $value);
+    Ajax::addUpdate($name, $name, $value);
 
     return $str;
   }
@@ -671,7 +671,7 @@
       echo " " . $post_label;
     }
     echo "</td>\n";
-    Ajax::i()->addUpdate($name, $name, $value);
+    Ajax::addUpdate($name, $name, $value);
   }
 
   /**
@@ -712,7 +712,7 @@
       echo " " . $post_label;
     }
     echo "</td>\n";
-    Ajax::i()->addUpdate($name, $name, $_POST[$name]);
+    Ajax::addUpdate($name, $name, $_POST[$name]);
   }
 
   /**
@@ -880,7 +880,7 @@
     echo "<input id='$name' type='text' name='$name' class='$class' $aspect size=\"10\" maxlength='10' value=\"" . $_POST[$name] . "\"" . ($title ?
       " title='$title'" : '') . " > $post_label";
     echo "</td>\n";
-    Ajax::i()->addUpdate($name, $name, $_POST[$name]);
+    Ajax::addUpdate($name, $name, $_POST[$name]);
   }
 
   /**
@@ -1048,11 +1048,11 @@
     echo "type='text' name='$name' size='$size' maxlength='$max' data-dec='$dec' value='" . $_POST[$name] . "' $inputparams>";
     if ($post_label) {
       echo "<span id='_{$name}_label'> $post_label</span>";
-      Ajax::i()->addUpdate($name, '_' . $name . '_label', $post_label);
+      Ajax::addUpdate($name, '_' . $name . '_label', $post_label);
     }
     echo "</td>\n";
-    Ajax::i()->addUpdate($name, $name, $_POST[$name]);
-    Ajax::i()->addAssign($name, $name, 'data-dec', $dec);
+    Ajax::addUpdate($name, $name, $_POST[$name]);
+    Ajax::addAssign($name, $name, 'data-dec', $dec);
   }
 
   /**
@@ -1226,7 +1226,7 @@
     }
     echo "<td><textarea id='$name' name='$name' cols='" . ($cols + 2) . "' rows='$rows'" . ($title ? " title='$title'" :
       '') . ">$value</textarea></td>\n";
-    Ajax::i()->addUpdate($name, $name, $value);
+    Ajax::addUpdate($name, $name, $value);
   }
 
   /**
@@ -1290,7 +1290,7 @@
       Arr::insert($th, count($th) - 2, _("Inactive"));
     }
     if (get_post('_show_inactive_update')) {
-      Ajax::i()->activate('_page_body');
+      Ajax::activate('_page_body');
     }
   }
 

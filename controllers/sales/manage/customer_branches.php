@@ -115,7 +115,7 @@
     unset($_POST);
     $_POST['show_inactive'] = $inact;
     $_POST['customer_id']   = $cust_id;
-    Ajax::i()->activate('_page_body');
+    Ajax::activate('_page_body');
   }
   Forms::start();
   echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";

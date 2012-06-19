@@ -262,14 +262,14 @@
       // Only show valid fatal errors
       if ($last_error && in_array($last_error['type'], static::$fatal_levels)) {
         if (class_exists('Ajax', false)) {
-          Ajax::i()->aCommands = array();
+          Ajax::flush();
         }
         static::$current_severity = -1;
         $error                    = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']);
         static::exception_handler($error);
       }
       if (class_exists('Ajax', false) && Ajax::in_ajax()) {
-        Ajax::i()->run();
+        Ajax::run();
       } elseif (AJAX_REFERRER && IS_JSON_REQUEST && !static::$jsonerrorsent) {
         ob_end_clean();
         echo static::getJSONError();

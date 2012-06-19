@@ -39,7 +39,7 @@
         $qid = GL_QuickEntry::get(Input::post('person_id'));
         if (Forms::isListUpdated('person_id')) {
           unset($_POST['total_amount']); // enable default
-          Ajax::i()->activate('total_amount');
+          Ajax::activate('total_amount');
         }
          Forms::amountCells($qid['base_desc'] . ":", 'total_amount', Num::price_format($qid['base_amount']), null, "&nbsp;&nbsp;" . Forms::submit('go', _("Go"), false, false, true));
         Row::end();
@@ -160,7 +160,7 @@
         if ($dim > 1) {
           Dimensions::cells(null, 'dimension2_id', null, true, " ", false, 2);
         }
-        Ajax::i()->activate('items_table');
+        Ajax::activate('items_table');
       } else {
         // Adding a new row
         $_POST['AmountDebit']   = ''; //Num::price_format(0);
@@ -171,7 +171,7 @@
         $_POST['_code_id_edit'] = "";
         $_POST['code_id']       = "";
         if (isset($_POST['_code_id_update'])) {
-          Ajax::i()->activate('code_id');
+          Ajax::activate('code_id');
         }
         $skip_bank = !User::i()->can_access(SA_BANKJOURNAL);
         echo GL_UI::all('code_id', null, $skip_bank, true);

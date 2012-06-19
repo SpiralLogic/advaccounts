@@ -13,7 +13,7 @@
     if (!check_valid_entries()) {
       unset($_POST['ProcessSearch']);
     }
-    Ajax::i()->activate('transactions');
+    Ajax::activate('transactions');
   }
   Forms::start(false);
   viewing_controls();

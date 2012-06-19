@@ -110,7 +110,7 @@
   if (isset($_POST['go'])) {
     Display::quick_entries($_SESSION['journal_items'], $_POST['person_id'], Validation::input_num('total_amount'), QE_JOURNAL);
     $_POST['total_amount'] = Num::price_format(0);
-    Ajax::i()->activate('total_amount');
+    Ajax::activate('total_amount');
     Item_Line::start_focus('_code_id_edit');
   }
   Forms::start();

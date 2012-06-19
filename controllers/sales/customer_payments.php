@@ -18,7 +18,7 @@
     // when branch is selected via external editor also customer can change
     $br = Sales_Branch::get(Input::post('branch_id'));
     $_POST['customer_id'] = $br['debtor_id'];
-    Ajax::i()->activate('customer_id');
+    Ajax::activate('customer_id');
   }
   if (!isset($_POST['DateBanked'])) {
     $_POST['DateBanked'] = Dates::new_doc_date();
@@ -39,13 +39,13 @@
   // validate inputs
   if (isset($_POST['_customer_id_button'])) {
     //	unset($_POST['branch_id']);
-    Ajax::i()->activate('branch_id');
+    Ajax::activate('branch_id');
   }
   if (isset($_POST['_DateBanked_changed'])) {
-    Ajax::i()->activate('_ex_rate');
+    Ajax::activate('_ex_rate');
   }
   if (Input::has_post('customer_id') || Forms::isListUpdated('bank_account')) {
-    Ajax::i()->activate('_page_body');
+    Ajax::activate('_page_body');
   }
   if (isset($_POST['AddPaymentItem']) && Debtor_Payment::can_process(ST_CUSTPAYMENT)) {
     $cust_currency = Bank_Currency::for_debtor($_POST['customer_id']);

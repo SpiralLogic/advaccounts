@@ -191,12 +191,12 @@
         Forms::hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id']);
         Cell::label($order->line_items[$id]->description);
-        Ajax::i()->activate('items_table');
+        Ajax::activate('items_table');
       } else {
         Item_UI::costable_cells(null, 'stock_id', null, false, true);
         if (Forms::isListUpdated('stock_id')) {
-          Ajax::i()->activate('units');
-          Ajax::i()->activate('qty');
+          Ajax::activate('units');
+          Ajax::activate('qty');
         }
         $item_info      = Item::get_edit_info(Input::post('stock_id'));
         $dec            = $item_info['decimals'];

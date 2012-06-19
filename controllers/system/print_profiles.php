@@ -42,7 +42,7 @@
     }
   }
   if (Input::post('_profile_id_update')) {
-    Ajax::i()->activate('_page_body');
+    Ajax::activate('_page_body');
   }
   Forms::start();
   Table::start();
@@ -142,7 +142,7 @@
   {
     $selected_id   = '';
     $_POST['name'] = '';
-    Ajax::i()->activate('_page_body');
+    Ajax::activate('_page_body');
   }
 
   /**

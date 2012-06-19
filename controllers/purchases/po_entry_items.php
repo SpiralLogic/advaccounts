@@ -84,8 +84,7 @@
     $allow_update = check_data();
     if ($allow_update == TRUE) {
       if ($allow_update == TRUE) {
-        $sql
-                = "SELECT long_description as description , units, mb_flag
+        $sql    = "SELECT long_description as description , units, mb_flag
 				FROM stock_master WHERE stock_id = " . DB::escape($_POST['stock_id']);
         $result = DB::query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
         if (DB::num_rows($result) == 0) {
@@ -165,7 +164,6 @@
     Creditor::addInfoDialog("td[name=\"supplier_name\"]", $order->supplier_details['supplier_id']);
   }
   Page::end(TRUE);
-
   /**
    * @param int $order_no
    *
@@ -173,10 +171,14 @@
    */
   function create_order($order_no = 0)
   {
-    if (isset($_GET['UseOrder']) && $_GET['UseOrder'] && isset(Orders::session_get($_GET['UseOrder'])->line_items)) {
-      $sales_order = Orders::session_get($_GET['UseOrder']);
-      $order       = new Purch_Order($order_no);
-      $stock       = $myrow = array();
+    if (isset($_GET['UseOrder']) && $_GET['UseOrder']) {
+      if (isset(Orders::session_get($_GET['UseOrder'])->line_items)) {
+        $sales_order = Orders::session_get($_GET['UseOrder']);
+      } else {
+        $sales_order = new Sales_Order(ST_SALESORDER, array($_GET['UseOrder']));
+      }
+      $order = new Purch_Order($order_no);
+      $stock = $myrow = array();
       foreach ($sales_order->line_items as $line_item) {
         $stock[] = ' stock_id = ' . DB::escape($line_item->stock_id);
       }

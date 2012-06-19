@@ -160,7 +160,7 @@
     }
     GL_QuickEntry::actions(_("Posted") . ":", 'actn', null, true);
     if (Forms::isListUpdated('actn')) {
-      Ajax::i()->activate('edit_line');
+      Ajax::activate('edit_line');
     }
     $actn = strtolower(substr($_POST['actn'], 0, 1));
     if ($actn == 't') {
@@ -209,7 +209,7 @@
     $selected_id2 = Input::post('selected_id2',null,$default);
     foreach (array('ADD_ITEM2', 'UPDATE_ITEM2', 'RESET2') as $m) {
       if (isset($_POST[$m])) {
-        Ajax::i()->activate('_page_body');
+        Ajax::activate('_page_body');
         if ($m == 'RESET2') {
           $selected_id2 = $default;
         }
@@ -223,7 +223,7 @@
           //				$selected_id2 = strtr(substr($p, strlen($m)), array('%2E'=>'.'));
           unset($_POST['_focus']); // focus on first form entry
           $selected_id2 = quoted_printable_decode(substr($p, strlen($m)));
-          Ajax::i()->activate('_page_body');
+          Ajax::activate('_page_body');
 
           return array($m, $selected_id2);
         }

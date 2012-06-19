@@ -91,7 +91,7 @@
     {
       if (!empty($id)) {
         $params .= " id='$id'";
-        Ajax::i()->addUpdate($id, $id, $label);
+        Ajax::addUpdate($id, $id, $label);
       }
       echo "<td $params >$label</td>\n";
 

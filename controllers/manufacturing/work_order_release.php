@@ -46,7 +46,7 @@
     Event::notice(_("The work order has been released to manufacturing."));
     Display::note(GL_UI::trans_view(ST_WORKORDER, $selected_id, _("View this Work Order")));
     Display::link_no_params("search_work_orders.php", _("Select another &work order"));
-    Ajax::i()->activate('_page_body');
+    Ajax::activate('_page_body');
     Page::end();
     exit;
   }

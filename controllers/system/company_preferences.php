@@ -82,7 +82,7 @@
       Event::success(_("Company setup has been updated."));
     }
     JS::set_focus('coy_name');
-    Ajax::i()->activate('_page_body');
+    Ajax::activate('_page_body');
   } /* end of if submit */
   Forms::start(TRUE);
   $myrow = DB_Company::get_prefs();

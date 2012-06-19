@@ -248,7 +248,7 @@
         } else {
           Cell::labels(_("Exchange Rate:"), "<span style='vertical-align:top;' id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency", '');
         }
-        Ajax::i()->addUpdate('_ex_rate', '_ex_rate', $rate);
+        Ajax::addUpdate('_ex_rate', '_ex_rate', $rate);
       }
     }
   }

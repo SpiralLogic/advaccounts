@@ -21,7 +21,7 @@
     }
   }
   if (Forms::isListUpdated('customer_id')) {
-    Ajax::i()->activate('customer_id');
+    Ajax::activate('customer_id');
   }
   Forms::start(FALSE, '', 'invoiceForm');
   Table::start('tablestyle_noborder');

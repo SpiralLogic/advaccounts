@@ -32,11 +32,11 @@
   //
   if (isset($_POST['ClearFields'])) {
     unset($_POST['gl_code'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_'], $_POST['AddGLCodeToTrans']);
-    Ajax::i()->activate('gl_items');
+    Ajax::activate('gl_items');
     JS::set_focus('gl_code');
   }
   if (isset($_POST['AddGLCodeToTrans'])) {
-    Ajax::i()->activate('gl_items');
+    Ajax::activate('gl_items');
     $input_error = false;
     $sql         = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DB::escape($_POST['gl_code']);
     $result      = DB::query($sql, "get account information");
@@ -94,27 +94,27 @@
   $id3 = Forms::findPostPrefix(MODE_DELETE);
   if ($id3 != -1) {
     Creditor_Trans::i()->remove_grn_from_trans($id3);
-    Ajax::i()->activate('grn_items');
-    Ajax::i()->activate('inv_tot');
+    Ajax::activate('grn_items');
+    Ajax::activate('inv_tot');
   }
   $id4 = Forms::findPostPrefix('Delete2');
   if ($id4 != -1) {
     Creditor_Trans::i()->remove_gl_codes_from_trans($id4);
     unset($_POST['gl_code'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_'], $_POST['AddGLCodeToTrans']);
     JS::set_focus('gl_code');
-    Ajax::i()->activate('gl_items');
-    Ajax::i()->activate('inv_tot');
+    Ajax::activate('gl_items');
+    Ajax::activate('inv_tot');
   }
   if (isset($_POST['RefreshInquiry'])) {
-    Ajax::i()->activate('grn_items');
-    Ajax::i()->activate('inv_tot');
+    Ajax::activate('grn_items');
+    Ajax::activate('inv_tot');
   }
   if (isset($_POST['go'])) {
-    Ajax::i()->activate('gl_items');
+    Ajax::activate('gl_items');
     GL_QuickEntry::show_menu(Creditor_Trans::i(), $_POST['qid'], Validation::input_num('total_amount'), QE_SUPPINV);
     $_POST['total_amount'] = Num::price_format(0);
-    Ajax::i()->activate('total_amount');
-    Ajax::i()->activate('inv_tot');
+    Ajax::activate('total_amount');
+    Ajax::activate('inv_tot');
   }
   Forms::start();
   Purch_Invoice::header(Creditor_Trans::i());
@@ -126,11 +126,11 @@
     Display::div_end();
   }
   if ($id != -1) {
-    Ajax::i()->activate('grn_items');
-    Ajax::i()->activate('inv_tot');
+    Ajax::activate('grn_items');
+    Ajax::activate('inv_tot');
   }
   if (Input::post('AddGLCodeToTrans')) {
-    Ajax::i()->activate('inv_tot');
+    Ajax::activate('inv_tot');
   }
   Display::br();
   Forms::submitCenter('PostCreditNote', _("Enter Credit Note"), true, '', 'default');

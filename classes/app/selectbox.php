@@ -202,16 +202,16 @@
           $txt = $_POST[$this->name];
         }
         if (!$this->async) {
-          Ajax::i()->activate('_page_body');
+          Ajax::activate('_page_body');
         } else {
-          Ajax::i()->activate($this->name);
+          Ajax::activate($this->name);
         }
       }
       if (isset($_POST[$search_button])) {
         if (!$this->async) {
-          Ajax::i()->activate('_page_body');
+          Ajax::activate('_page_body');
         } else {
-          Ajax::i()->activate($this->name);
+          Ajax::activate($this->name);
         }
       }
       $this->generateSQL($search_box, $search_button, $txt);
@@ -297,9 +297,9 @@
         if (!$this->editable) {
           $txt = $found;
         }
-        Ajax::i()->addUpdate($this->name, $search_box, $txt ? $txt : '');
+        Ajax::addUpdate($this->name, $search_box, $txt ? $txt : '');
       }
-      Ajax::i()->addUpdate($this->name, "_{$this->name}_sel", $selector);
+      Ajax::addUpdate($this->name, "_{$this->name}_sel", $selector);
       // span for select list/input field update
       $selector = "<div id='_{$this->name}_sel' class='combodiv'>" . $selector . "</div>\n";
       // if selectable or editable list is used - add select button
@@ -343,9 +343,9 @@
           if (isset($_POST[$search_button])) {
             $this->selected_id = array(); // ignore selected_id while search
             if (!$this->async) {
-              Ajax::i()->activate('_page_body');
+              Ajax::activate('_page_body');
             } else {
-              Ajax::i()->activate($this->name);
+              Ajax::activate($this->name);
             }
           }
           if ($txt == '') {

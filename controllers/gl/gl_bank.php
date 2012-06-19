@@ -24,7 +24,7 @@
   if (Forms::isListUpdated('PersonDetailID')) {
     $br                 = Sales_Branch::get(Input::post('PersonDetailID'));
     $_POST['person_id'] = $br['debtor_id'];
-    Ajax::i()->activate('person_id');
+    Ajax::activate('person_id');
   }
   if (isset($_GET[ADDED_ID])) {
     $trans_no   = $_GET[ADDED_ID];
@@ -45,7 +45,7 @@
     Page::footer_exit();
   }
   if (isset($_POST['_date__changed'])) {
-    Ajax::i()->activate('_ex_rate');
+    Ajax::activate('_ex_rate');
   }
   if (isset($_POST['Process'])) {
     $input_error = 0;
@@ -105,7 +105,7 @@
     GL_QuickEntry::show_menu($_SESSION['pay_items'], $_POST['person_id'], Validation::input_num('total_amount'), $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ?
       QE_PAYMENT : QE_DEPOSIT);
     $_POST['total_amount'] = Num::price_format(0);
-    Ajax::i()->activate('total_amount');
+    Ajax::activate('total_amount');
     Item_Line::start_focus('_code_id_edit');
   }
   Forms::start();

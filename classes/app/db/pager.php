@@ -512,7 +512,7 @@
      */
     public function query()
     {
-      Ajax::i()->activate("_{$this->name}_span");
+      Ajax::activate("_{$this->name}_span");
       $this->data = array();
       if (!$this->_init()) {
         return false;

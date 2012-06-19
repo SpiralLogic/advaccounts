@@ -209,7 +209,7 @@
       }
       $ars = Display::access_string($link_text);
       HTML::br()->p(array('class' => 'center'));
-      UI::select('EmailSelect' . $type_no, $emails, array('style' => 'max-width:600px'))->br;
+      UI::select('EmailSelect' . $type_no, $emails, array('style' => 'max-width:400px'))->br;
       UI::button('EmailButton' . $type_no, $link_text, array(
         'style'    => 'margin:20px',
         'data-url' => $url

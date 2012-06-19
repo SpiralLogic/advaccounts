@@ -36,7 +36,7 @@
     }
   }
   if (Forms::isListUpdated('stock_id')) {
-    Ajax::i()->activate('cost_table');
+    Ajax::activate('cost_table');
   }
   Forms::start();
   if (!Input::post('stock_id')) {

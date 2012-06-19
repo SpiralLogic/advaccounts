@@ -88,7 +88,7 @@
     create_order($type, $order_no);
   }
   if (Input::post('Update')) {
-    Ajax::i()->activate('credit_items');
+    Ajax::activate('credit_items');
   }
   display_credit_items();
   display_credit_options();
@@ -286,7 +286,7 @@
   {
     echo "<br>";
     if (isset($_POST['_CreditType_update'])) {
-      Ajax::i()->activate('options');
+      Ajax::activate('options');
     }
     Display::div_start('options');
     Table::start('tablestyle2');

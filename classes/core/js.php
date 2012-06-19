@@ -485,7 +485,7 @@ JSS;
      */
     public static function set_focus($name)
     {
-      Ajax::i()->addFocus(true, $name);
+      Ajax::addFocus(true, $name);
       $_POST['_focus'] = $name;
     }
   }

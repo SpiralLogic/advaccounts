@@ -164,7 +164,7 @@
     }
     if (isset($_POST['get_rate'])) {
       $_POST['BuyRate'] = Num::exrate_format(GL_ExchangeRate::retrieve($_POST['curr_abrev'], $_POST['date_']));
-      Ajax::i()->activate('BuyRate');
+      Ajax::activate('BuyRate');
     }
      Forms::SmallAmountRow(_("Exchange Rate:"), 'BuyRate', null, '', Forms::submit('get_rate', _("Get"), false, _('Get current ECB rate'), true), User::exrate_dec());
     Table::end(1);

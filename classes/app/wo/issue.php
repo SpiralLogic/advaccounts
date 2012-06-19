@@ -265,14 +265,14 @@
         Forms::hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id']);
         Cell::label($order->line_items[$id]->description);
-        Ajax::i()->activate('items_table');
+        Ajax::activate('items_table');
       } else {
         $wo_details = WO::get($_SESSION['issue_items']->order_id);
         Item_UI::component_cells(null, 'stock_id', $wo_details["stock_id"], null, false, true);
         if (Forms::isListUpdated('stock_id')) {
-          Ajax::i()->activate('units');
-          Ajax::i()->activate('qty');
-          Ajax::i()->activate('std_cost');
+          Ajax::activate('units');
+          Ajax::activate('qty');
+          Ajax::activate('std_cost');
         }
         $item_info         = Item::get_edit_info($_POST['stock_id']);
         $dec               = $item_info["decimals"];

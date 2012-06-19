@@ -156,7 +156,7 @@
   Table::start('tablestyle_noborder');
   Item_UI::manufactured_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
   if (Forms::isListUpdated('stock_id')) {
-    Ajax::i()->activate('_page_body');
+    Ajax::activate('_page_body');
   }
   Table::end();
   Display::br();
@@ -191,7 +191,7 @@
       echo "<td>";
       echo Item_UI::component('component', $selected_parent, null, false, true);
       if (Input::post('_component_update')) {
-        Ajax::i()->activate('quantity');
+        Ajax::activate('quantity');
       }
       echo "</td>";
       Row::end();

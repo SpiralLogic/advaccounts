@@ -181,13 +181,13 @@
         Forms::hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id']);
         Cell::label($order->line_items[$id]->description, ' class="nowrap"');
-        Ajax::i()->activate('items_table');
+        Ajax::activate('items_table');
       } else {
         Item_UI::costable_cells(NULL, 'stock_id', NULL, FALSE, TRUE);
         if (Forms::isListUpdated('stock_id')) {
-          Ajax::i()->activate('units');
-          Ajax::i()->activate('qty');
-          Ajax::i()->activate('std_cost');
+          Ajax::activate('units');
+          Ajax::activate('qty');
+          Ajax::activate('std_cost');
         }
         $item_info    = Item::get_edit_info((isset($_POST['stock_id']) ? $_POST['stock_id'] : ''));
         $dec          = $item_info['decimals'];

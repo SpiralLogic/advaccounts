@@ -14,7 +14,7 @@
   // Ajax updates
   //
   if (Input::post('Show')) {
-    Ajax::i()->activate('trans_tbl');
+    Ajax::activate('trans_tbl');
   }
   if (isset($_GET["account"])) {
     $_POST["account"] = $_GET["account"];

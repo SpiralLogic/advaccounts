@@ -11,7 +11,7 @@
   Page::start(_($help_context = "Profit & Loss Drilldown"), SA_GLANALYTIC);
   // Ajax updates
   if (Input::post('Show')) {
-    Ajax::i()->activate('pl_tbl');
+    Ajax::activate('pl_tbl');
   }
   if (isset($_GET["TransFromDate"])) {
     $_POST["TransFromDate"] = $_GET["TransFromDate"];

@@ -1222,10 +1222,10 @@
           if ($printer == false) {
             if (Ajax::in_ajax()) {
               if (User::rep_popup()) {
-                Ajax::i()->popup($fname);
+                Ajax::popup($fname);
               } // when embeded pdf viewer used
               else {
-                Ajax::i()->redirect($fname);
+                Ajax::redirect($fname);
               } // otherwise use faster method
             } else {
               //echo '<html>

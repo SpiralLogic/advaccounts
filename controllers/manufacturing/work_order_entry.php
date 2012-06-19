@@ -206,7 +206,7 @@
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "ClosedID=$selected_id");
   }
   if (Input::post('_type_update')) {
-    Ajax::i()->activate('_page_body');
+    Ajax::activate('_page_body');
   }
   Forms::start();
   Table::start('tablestyle2');
@@ -264,7 +264,7 @@
   else {
     Item_UI::manufactured_row(_("Item:"), 'stock_id', NULL, FALSE, TRUE);
     if (Forms::isListUpdated('stock_id')) {
-      Ajax::i()->activate('quantity');
+      Ajax::activate('quantity');
     }
     Inv_Location::row(_("Destination Location:"), 'StockLocation', NULL);
   }

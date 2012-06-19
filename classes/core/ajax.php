@@ -12,19 +12,30 @@
 
   /**
    * @method Ajax i()
+   * @method Ajax activate($trigname)
+   * @method Ajax redirect($url)
+   * @method Ajax popup($url)
+   * @method Ajax addAssign($trigger, $sTarget, $sAttribute, $sData)
+   * @method Ajax addUpdate($trigger, $sTarget, $sData)
+   * @method Ajax addEnable($trigger, $sTarget, $sData = true)
+   * @method Ajax addFocus($trigger, $sTarget)
+   * @method Ajax run()
+   * @method Ajax flush()
+   * @method Ajax in_ajax()
+   * @method Ajax absolute_url()
    */
   class Ajax extends \JsHttpRequest
   {
-    use Traits\Singleton;
+    use Traits\StaticAccess;
 
     /**
      * @var array
      */
-    public $aCommands = array();
+    protected  $aCommands = array();
     /**
      * @var array
      */
-    public $triggers = array();
+    protected  $triggers = array();
     /**
 
      */
@@ -41,9 +52,9 @@
      *
      * @return void
      */
-    public function activate($trigname)
+    public function _activate($trigname)
     {
-      (Ajax::in_ajax()) and $this->triggers[$trigname] = true;
+      ($this->_in_ajax()) and $this->triggers[$trigname] = true;
     }
     /**
      *   Javascript clientside redirection.
@@ -53,11 +64,11 @@
      *
      * @return void
      */
-    public function redirect($url)
+    public function _redirect($url)
     {
-      if (Ajax::in_ajax()) {
-        $this->_addCommand(true, array('n' => 'rd'), $this->absolute_url($url));
-        $this->run();
+      if ($this->_in_ajax()) {
+        $this->addCommand(true, array('n' => 'rd'), $this->_absolute_url($url));
+        $this->_run();
       }
     }
     /**
@@ -67,9 +78,9 @@
      *
      * @return void
      */
-    public function popup($url)
+    public function _popup($url)
     {
-      $this->_addCommand(true, array('n' => 'pu'), $this->absolute_url($url));
+      $this->addCommand(true, array('n' => 'pu'), $this->_absolute_url($url));
     }
     /**
      * Adds an executable Javascript code.
@@ -79,10 +90,9 @@
      *
      * @return Ajax
      */
-    public function addScript($trigger, $sJS)
+    public function _addScript($trigger, $sJS)
     {
-      $this->_addCommand($trigger, array('n' => 'js'), $sJS);
-
+      $this->addCommand($trigger, array('n' => 'js'), $sJS);
       return $this;
     }
     /**
@@ -95,12 +105,11 @@
      *
      * @return Ajax
      */
-    public function addAssign($trigger, $sTarget, $sAttribute, $sData)
+    public function _addAssign($trigger, $sTarget, $sAttribute, $sData)
     {
-      $this->_addCommand($trigger, array(
-                                        'n' => 'as', 't' => $sTarget, 'p' => $sAttribute
-                                   ), $sData);
-
+      $this->addCommand($trigger, array(
+                                       'n' => 'as', 't' => $sTarget, 'p' => $sAttribute
+                                  ), $sData);
       return $this;
     }
     /**
@@ -112,12 +121,11 @@
      *
      * @return Ajax
      */
-    public function addUpdate($trigger, $sTarget, $sData)
+    public function _addUpdate($trigger, $sTarget, $sData)
     {
-      $this->_addCommand($trigger, array(
-                                        'n' => 'up', 't' => $sTarget
-                                   ), $sData);
-
+      $this->addCommand($trigger, array(
+                                       'n' => 'up', 't' => $sTarget
+                                  ), $sData);
       return $this;
     }
     /**
@@ -129,12 +137,11 @@
      *
      * @return Ajax
      */
-    public function addDisable($trigger, $sTarget, $sData = true)
+    public function _addDisable($trigger, $sTarget, $sData = true)
     {
-      $this->_addCommand($trigger, array(
-                                        'n' => 'di', 't' => $sTarget
-                                   ), $sData);
-
+      $this->addCommand($trigger, array(
+                                       'n' => 'di', 't' => $sTarget
+                                  ), $sData);
       return $this;
     }
     /**
@@ -146,12 +153,11 @@
      *
      * @return Ajax
      */
-    public function addEnable($trigger, $sTarget, $sData = true)
+    public function _addEnable($trigger, $sTarget, $sData = true)
     {
-      $this->_addCommand($trigger, array(
-                                        'n' => 'di', 't' => $sTarget
-                                   ), !$sData);
-
+      $this->addCommand($trigger, array(
+                                       'n' => 'di', 't' => $sTarget
+                                  ), !$sData);
       return $this;
     }
     /**
@@ -162,10 +168,9 @@
      *
      * @return Ajax
      */
-    public function addFocus($trigger, $sTarget)
+    public function _addFocus($trigger, $sTarget)
     {
-      $this->_addCommand($trigger, array('n' => 'fc'), $sTarget);
-
+      $this->addCommand($trigger, array('n' => 'fc'), $sTarget);
       return $this;
     }
     /**
@@ -177,7 +182,7 @@
      *
      * @return void
      */
-    public function _addCommand($trigger, $aAttributes, $mData)
+    protected function addCommand($trigger, $aAttributes, $mData)
     {
       if ($this->isActive() && ($trigger !== false)) {
         //		Event::error('adding '.$trigger.':'.htmlentities($mData));
@@ -189,7 +194,7 @@
     /**
      * @return mixed
      */
-    public function run()
+    public function _run()
     {
       if (!$this->isActive()) {
         return;
@@ -223,9 +228,17 @@
      * @static
      * @return bool
      */
-    public static function in_ajax()
+    public function _in_ajax()
     {
-      return static::i()->isActive();
+      return $this->isActive();
+    }
+    /**
+     * @static
+     * @return bool
+     */
+    public function _flush()
+    {
+      $this->aCommands=[];
     }
     /**
      * Returns absolute path of relative $url. To be used in ajax calls
@@ -235,9 +248,8 @@
      *
      * @return string
      */
-    public function absolute_url($url)
+    public function _absolute_url($url)
     {
       return strpos($url, '..') === 0 ? dirname($_SERVER['DOCUMENT_URI']) . '/' . $url : str_replace(WEBROOT, '/', $url);
     }
   }
-

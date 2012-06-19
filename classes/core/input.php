@@ -9,6 +9,7 @@
    **/
   namespace ADV\Core;
   /**
+   * @method post($var, $type = null, $default = null)
 
    */
   class Input
@@ -43,7 +44,6 @@ use Traits\StaticAccess;
      */
     protected $default_bool = false;
     /***
-     * @static
      *
      * @param mixed     $var     $_POST variable to return
      * @param Input|int $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
@@ -56,7 +56,7 @@ use Traits\StaticAccess;
       return $this->_isset($_POST, $var, $type, $default);
     }
     /***
-     * @static
+     * @method
      *
      * @param           $var
      * @param Input|int $type Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING,

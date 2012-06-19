@@ -587,13 +587,16 @@
       $editable = ($this->order_no == 0);
       Table::start('tablestyle2 width90');
       Row::start();
-      $show_currencies = (!Bank_Currency::is_company($this->curr_code)) ? 1 : 2;
+      $show_currencies = ($this->curr_code ==Bank_Currency::for_company() && !Bank_Currency::is_company($this->curr_code)) ? 1 : 2;
 
       if ($editable) {
-        if (!isset($_POST['supplier_id']) && Session::i()->getGlobal('creditor')) {
-          $_POST['supplier_id'] = Session::i()->getGlobal('creditor');
+        if (!Input::post('supplier_id') ) {
+          $_POST['supplier_id'] = Session::getGlobal('creditor');
         }
-        //Creditor::row(_("Supplier:"), 'supplier_id', null, false, true, false, true);
+        if ($_POST['supplier_id']) {
+          Ajax::activate('_page_body');
+
+        }
         Creditor::newselect(null, ['cell_params'=> 'colspan=' . ($show_currencies + 2), 'rowspan'=> $show_currencies, 'row'=> false]);
       } else {
         if (isset($_POST['supplier_id'])) {
@@ -610,16 +613,16 @@
           $line->price    = Item_Price::get_purchase($this->supplier_id, $line->stock_id);
           $line->quantity = $line->quantity / Creditor_Trans::get_conversion_factor($old_supp, $line->stock_id) * Creditor_Trans::get_conversion_factor($this->supplier_id, $line->stock_id);
         }
-        Ajax::i()->activate('items_table');
+        Ajax::activate('items_table');
       }
-      Session::i()->setGlobal('creditor', $_POST['supplier_id']);
+      Session::setGlobal('creditor', $_POST['supplier_id']);
       echo "<td class='label'><label for=\"location\">" . _('Receive Into:') . "</label></td>";
       echo "<td colspan=2>";
       echo Inv_Location::select('location', null, false, true);
       echo "</td>\n";
       row::end();
       row::start();
-      if ($show_currencies == 1 && $this->curr_code !=Bank_Currency::for_company()) {
+      if ($show_currencies == 1 ) {
         Cell::labels(_("Supplier Currency:"), $this->curr_code);
         GL_ExchangeRate::display($this->curr_code, Bank_Currency::for_company(), $_POST['OrderDate']);
       }
@@ -629,7 +632,7 @@
         if (DB::num_rows($result) == 1) {
           $loc_row                   = DB::fetch($result);
           $_POST['delivery_address'] = $loc_row["delivery_address"];
-          Ajax::i()->activate('delivery_address');
+          Ajax::activate('delivery_address');
           $this->location         = $_POST['location'];
           $this->delivery_address = $_POST['delivery_address'];
         } else { /* The default location of the user is crook */
@@ -647,7 +650,7 @@
       }
       Sales_UI::persons_cells(_("Sales Person:"), 'salesman', $this->salesman);
       if (isset($_POST['_OrderDate_changed'])) {
-        Ajax::i()->activate('_ex_rate');
+        Ajax::activate('_ex_rate');
       }
       row::end();
       row::start();
@@ -785,19 +788,19 @@
         Forms::hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id'], " class='stock' data-stock_id='{$_POST['stock_id']}'");
         Forms::textareaCells(null, 'description', null, 50, 5);
-        Ajax::i()->activate('items_table');
+        Ajax::activate('items_table');
         $qty_rcvd = $this->line_items[$id]->qty_received;
       } else {
         Forms::hidden('line_no', ($this->lines_on_order + 1));
         Item_Purchase::cells(null, 'stock_id', null, false, true, true);
         if (Forms::isListUpdated('stock_id')) {
-          Ajax::i()->activate('price');
-          Ajax::i()->activate('units');
-          Ajax::i()->activate('description');
-          Ajax::i()->activate('qty');
-          Ajax::i()->activate('discount');
-          Ajax::i()->activate('req_del_date');
-          Ajax::i()->activate('line_total');
+          Ajax::activate('price');
+          Ajax::activate('units');
+          Ajax::activate('description');
+          Ajax::activate('qty');
+          Ajax::activate('discount');
+          Ajax::activate('req_del_date');
+          Ajax::activate('line_total');
         }
         $item_info             = Item::get_edit_info(Input::post('stock_id'));
         $_POST['units']        = $item_info["units"];

@@ -1271,7 +1271,7 @@
         Debtor::newselect();
         if ($this->customer_id != Input::post('customer_id', null, -1)) {
           // customer has changed
-          Ajax::i()->activate('_page_body');
+          Ajax::activate('_page_body');
         }
         Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true, true);
         if (($this->Branch != Input::post('branch_id', null, -1))) {
@@ -1294,18 +1294,18 @@
             $_POST['phone']            = $this->phone;
             if (Input::post('cash') !== $this->cash) {
               $_POST['cash'] = $this->cash;
-              Ajax::i()->activate('delivery');
-              Ajax::i()->activate('cash');
+              Ajax::activate('delivery');
+              Ajax::activate('cash');
             } else {
               if ($this->trans_type == ST_SALESINVOICE) {
                 $_POST['delivery_date'] = $this->due_date;
-                Ajax::i()->activate('delivery_date');
+                Ajax::activate('delivery_date');
               }
-              Ajax::i()->activate('location');
-              Ajax::i()->activate('deliver_to');
-              Ajax::i()->activate('name');
-              Ajax::i()->activate('phone');
-              Ajax::i()->activate('delivery_address');
+              Ajax::activate('location');
+              Ajax::activate('deliver_to');
+              Ajax::activate('name');
+              Ajax::activate('phone');
+              Ajax::activate('delivery_address');
             }
             // change prices if necessary
             // what about discount in template case?
@@ -1315,16 +1315,16 @@
             if ($old_order->sales_type != $this->sales_type) {
               // || $old_order->default_discount!=$this->default_discount
               $_POST['sales_type'] = $this->sales_type;
-              Ajax::i()->activate('sales_type');
+              Ajax::activate('sales_type');
               $change_prices = 1;
             }
             if ($old_order->dimension_id != $this->dimension_id) {
               $_POST['dimension_id'] = $this->dimension_id;
-              Ajax::i()->activate('dimension_id');
+              Ajax::activate('dimension_id');
             }
             if ($old_order->dimension2_id != $this->dimension2_id) {
               $_POST['dimension2_id'] = $this->dimension2_id;
-              Ajax::i()->activate('dimension2_id');
+              Ajax::activate('dimension2_id');
             }
             unset($old_order);
           }
@@ -1361,7 +1361,7 @@
       if ($this->sales_type != $_POST['sales_type']) {
         $myrow = Sales_Type::get($_POST['sales_type']);
         $this->set_sales_type($myrow['id'], $myrow['sales_type'], $myrow['tax_included'], $myrow['factor']);
-        Ajax::i()->activate('sales_type');
+        Ajax::activate('sales_type');
         $change_prices = 1;
       }
       Row::label(_("Customer Discount:"), ($this->default_discount * 100) . "%");
@@ -1375,14 +1375,14 @@
           if (!Bank_Currency::is_company($this->customer_currency) && (DB_Company::get_base_sales_type() > 0)) {
             $change_prices = 1;
           }
-          Ajax::i()->activate('_ex_rate');
+          Ajax::activate('_ex_rate');
           if ($this->trans_type == ST_SALESINVOICE) {
             $_POST['delivery_date'] = Sales_Order::get_invoice_duedate(Input::post('customer_id'), Input::post('OrderDate'));
           } else {
             $_POST['delivery_date'] = Dates::add_days(Input::post('OrderDate'), DB_Company::get_pref('default_delivery_required'));
           }
-          Ajax::i()->activate('items_table');
-          Ajax::i()->activate('delivery_date');
+          Ajax::activate('items_table');
+          Ajax::activate('delivery_date');
         }
         if ($this->trans_type != ST_SALESORDER && $this->trans_type != ST_SALESQUOTE) { // 2008-11-12 Joe Hunt added dimensions
           $dim = DB_Company::get_pref('use_dimension');
@@ -1411,7 +1411,7 @@
         foreach ($this->line_items as $line) {
           $line->price = Item_Price::get_kit($line->stock_id, $this->customer_currency, $this->sales_type, $this->price_factor, Input::post('OrderDate'));
         }
-        Ajax::i()->activate('items_table');
+        Ajax::activate('items_table');
       }
       return $customer_error;
     }
@@ -1436,18 +1436,18 @@
         Forms::hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id'], 'class="stock"');
         Forms::textareaCells(null, 'description', null, 50, 5);
-        Ajax::i()->activate('items_table');
+        Ajax::activate('items_table');
       } else // prepare new line
       {
         Row::start('class="newline"');
 
         Sales_UI::items_cells(null, 'stock_id', null, false, false, array('description' => ''));
         if (Forms::isListUpdated('stock_id')) {
-          Ajax::i()->activate('price');
-          Ajax::i()->activate('description');
-          Ajax::i()->activate('units');
-          Ajax::i()->activate('qty');
-          Ajax::i()->activate('line_total');
+          Ajax::activate('price');
+          Ajax::activate('description');
+          Ajax::activate('units');
+          Ajax::activate('qty');
+          Ajax::activate('line_total');
         }
         $item_info      = Item::get_edit_info(Input::post('stock_id'));
         $units          = $item_info["units"];
@@ -1483,7 +1483,7 @@
     {
       Display::div_start('delivery');
       if (Input::post('cash', null, 0)) { // Direct payment sale
-        Ajax::i()->activate('items_table');
+        Ajax::activate('items_table');
         Display::heading(_('Cash payment'));
         Table::start('tablestyle2 width60');
         Row::label(_("Deliver from Location:"), $this->location_name);
@@ -1510,7 +1510,7 @@
         Table::section(1);
         Inv_Location::row(_("Deliver from Location:"), 'location', null, false, true);
         if (Forms::isListUpdated('location')) {
-          Ajax::i()->activate('items_table');
+          Ajax::activate('items_table');
         }
         Forms::dateRow($delname, 'delivery_date', $this->trans_type == ST_SALESORDER ? _('Enter requested day of delivery') :
           $this->trans_type == ST_SALESQUOTE ? _('Enter Valid until Date') : '');

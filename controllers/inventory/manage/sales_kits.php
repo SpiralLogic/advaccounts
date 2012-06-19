@@ -13,7 +13,7 @@
   if (Input::post('update_name')) {
     Item_Code::update_kit_props(Input::post('item_code'), Input::post('description'), Input::post('category'));
     Event::success(_('Kit common properties has been updated'));
-    Ajax::i()->activate('_page_body');
+    Ajax::activate('_page_body');
   }
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     update_component($Mode, $_POST['item_code'], $selected_id);
@@ -54,7 +54,7 @@
     if (Input::post('item_code') == '') {
       $_POST['description'] = '';
     }
-    Ajax::i()->activate('_page_body');
+    Ajax::activate('_page_body');
   }
   $selected_kit = $_POST['item_code'];
   if (Input::post('item_code') == '') {
@@ -97,8 +97,8 @@
   $units = $res["units"] == '' ? _('kits') : $res["units"];
   if (Forms::isListUpdated('component')) {
     $_POST['quantity'] = Num::format(1, $dec);
-    Ajax::i()->activate('quantity');
-    Ajax::i()->activate('category');
+    Ajax::activate('quantity');
+    Ajax::activate('category');
   }
    Forms::qtyRow(_("Quantity:"), 'quantity', Num::format(1, $dec), '', $units, $dec);
   Table::end(1);
@@ -198,6 +198,6 @@
       Event::success(_("Component of selected kit has been updated."));
     }
     $Mode = MODE_RESET;
-    Ajax::i()->activate('_page_body');
+    Ajax::activate('_page_body');
   }
 

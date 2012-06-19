@@ -51,7 +51,7 @@
           Event::success(_("Password Changed"));
         }
       }
-      Ajax::i()->activate('_page_body');
+      Ajax::activate('_page_body');
     }
   }
   elseif (User::i()->change_password) {

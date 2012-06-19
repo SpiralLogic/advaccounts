@@ -93,7 +93,7 @@
     }
   }
   $_POST['deposited'] = $_POST['to_deposit'];
-  Ajax::i()->activate('summary');
+  Ajax::activate('summary');
   Forms::start();
   echo "<hr>";
   Display::div_start('summary');
@@ -244,7 +244,7 @@
   function update_data()
   {
     global $update_pager;
-    Ajax::i()->activate('summary');
+    Ajax::activate('summary');
     $update_pager = true;
   }
 
@@ -263,7 +263,7 @@
     }
     if (Input::post('bank_date') == '') // new reconciliation
     {
-      Ajax::i()->activate('bank_date');
+      Ajax::activate('bank_date');
     }
     $_POST['bank_date'] = Dates::date2sql(Input::post('deposited_date'));
     /*	$sql = "UPDATE ".''."bank_trans SET undeposited=0"

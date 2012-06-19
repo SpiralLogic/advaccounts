@@ -499,13 +499,13 @@
       Table::header(_("Date") . ":");
        Forms::dateCells(null, 'tran_date', '', true, 0, 0, 0, "", true);
       if (isset($_POST['_tran_date_changed'])) {
-        Ajax::i()->activate('_ex_rate');
+        Ajax::activate('_ex_rate');
         $creditor_trans->tran_date = $_POST['tran_date'];
         Row::end();
         Row::start();
         Creditor_Trans::get_duedate_from_terms($creditor_trans);
         $_POST['due_date'] = $creditor_trans->due_date;
-        Ajax::i()->activate('due_date');
+        Ajax::activate('due_date');
       }
       Row::end();
       Row::start();

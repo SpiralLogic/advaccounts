@@ -20,7 +20,7 @@
     Page::footer_exit();
   }
   if (isset($_POST['_DatePaid_changed'])) {
-    Ajax::i()->activate('_ex_rate');
+    Ajax::activate('_ex_rate');
   }
   if (isset($_POST['AddPayment'])) {
     if (check_valid_entries() == true) {

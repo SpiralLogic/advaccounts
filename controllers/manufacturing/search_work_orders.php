@@ -19,19 +19,19 @@
   // Ajax updates
   //
   if (Input::post('SearchOrders')) {
-    Ajax::i()->activate('orders_tbl');
+    Ajax::activate('orders_tbl');
   } elseif (Input::post('_OrderNumber_changed')) {
     $disable = Input::post('OrderNumber') !== '';
-    Ajax::i()->addDisable(true, 'StockLocation', $disable);
-    Ajax::i()->addDisable(true, 'OverdueOnly', $disable);
-    Ajax::i()->addDisable(true, 'OpenOnly', $disable);
-    Ajax::i()->addDisable(true, 'SelectedStockItem', $disable);
+    Ajax::addDisable(true, 'StockLocation', $disable);
+    Ajax::addDisable(true, 'OverdueOnly', $disable);
+    Ajax::addDisable(true, 'OpenOnly', $disable);
+    Ajax::addDisable(true, 'SelectedStockItem', $disable);
     if ($disable) {
       JS::set_focus('OrderNumber');
     } else {
       JS::set_focus('StockLocation');
     }
-    Ajax::i()->activate('orders_tbl');
+    Ajax::activate('orders_tbl');
   }
   if (isset($_GET["stock_id"])) {
     $_POST['SelectedStockItem'] = $_GET["stock_id"];

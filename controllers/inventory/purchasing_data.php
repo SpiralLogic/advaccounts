@@ -59,10 +59,10 @@
   }
   if (isset($_POST['_selected_id_update'])) {
     $selected_id = $_POST['selected_id'];
-    Ajax::i()->activate('_page_body');
+    Ajax::activate('_page_body');
   }
   if (Forms::isListUpdated('stock_id')) {
-    Ajax::i()->activate('price_table');
+    Ajax::activate('price_table');
   }
   if (Input::request('frame')) {
     if (!Input::post('stock_id') && isset($_GET['stock_id'])) {

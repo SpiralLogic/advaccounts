@@ -71,7 +71,7 @@
     $_POST['show_inactive'] = $sav;
   }
   if (Forms::isListUpdated('mb_flag')) {
-    Ajax::i()->activate('details');
+    Ajax::activate('details');
   }
   $sql = "SELECT c.*, t.name as tax_name FROM stock_category c, item_tax_types t WHERE c.dflt_tax_type=t.id";
   if (!Forms::hasPost('show_inactive')) {

@@ -13,7 +13,7 @@
   // Ajax updates
   //
   if (Input::post('Show')) {
-    Ajax::i()->activate('trans_tbl');
+    Ajax::activate('trans_tbl');
   }
   Forms::start();
   Table::start('tablestyle_noborder');

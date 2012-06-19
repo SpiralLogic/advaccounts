@@ -310,7 +310,7 @@
       );
       require(DOCROOT . "controllers/access/login.php");
       if (Ajax::in_ajax()) {
-        Ajax::i()->redirect($_SERVER['DOCUMENT_URI']);
+        Ajax::redirect($_SERVER['DOCUMENT_URI']);
       } elseif (AJAX_REFERRER) {
         JS::redirect('/');
       }

@@ -13,8 +13,8 @@
     $_POST['stock_id'] = $_GET['stock_id'];
   }
   if (Forms::isListUpdated('stock_id')) {
-    Ajax::i()->activate('show_heading');
-    Ajax::i()->activate('reorders');
+    Ajax::activate('show_heading');
+    Ajax::activate('reorders');
   }
   Forms::start(false, $_SERVER['REQUEST_URI']);
   if (!Input::post('stock_id')) {

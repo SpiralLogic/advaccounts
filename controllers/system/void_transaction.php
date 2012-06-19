@@ -22,16 +22,16 @@
     } else {
       handle_void_transaction();
     }
-    Ajax::i()->activate('_page_body');
+    Ajax::activate('_page_body');
   }
   if (isset($_POST['ProcessVoiding'])) {
     if (!check_valid_entries()) {
       unset($_POST['ProcessVoiding']);
     }
-    Ajax::i()->activate('_page_body');
+    Ajax::activate('_page_body');
   }
   if (isset($_POST['CancelVoiding'])) {
-    Ajax::i()->activate('_page_body');
+    Ajax::activate('_page_body');
   }
   voiding_controls();
   Page::end();

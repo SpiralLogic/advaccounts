@@ -12,7 +12,7 @@
   } elseif (strpos($_SERVER['HTTP_HOST'], 'advaccounts') !== false) {
     header('Location: http://advanced.advancedgroup.com.au' . $_SERVER['REQUEST_URI']);
   }
- /* if (extension_loaded('xhprof')) {
+  /* if (extension_loaded('xhprof')) {
     $XHPROF_ROOT = realpath(dirname(__FILE__) . '/xhprof');
     include_once $XHPROF_ROOT . "/xhprof_lib/config.php";
     include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
@@ -72,7 +72,7 @@
        */
       function adv_ob_flush_handler($text)
       {
-        return (Ajax::i()->in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
+        return (Ajax::in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
       }
     }
     $dic = new \ADV\Core\DIC();
@@ -84,12 +84,13 @@
     include(DOCROOT . 'config' . DS . 'types.php');
     include(DOCROOT . 'config' . DS . 'access_levels.php');
     Session::i();
+
     Ajax::i();
     Config::i();
     ob_start('adv_ob_flush_handler', 0);
-    ADVAccounting::i($dic['Config'],$dic['Session'],$dic['Cache']);
+    ADVAccounting::i($dic['Config'], $dic['Session'], $dic['Cache']);
   }
- /* if (extension_loaded('xhprof') && substr_compare($_SERVER['DOCUMENT_URI'], '/profile/', 0, 9, true) !== 0) {
+  /* if (extension_loaded('xhprof') && substr_compare($_SERVER['DOCUMENT_URI'], '/profile/', 0, 9, true) !== 0) {
     register_shutdown_function(function()
     {
       $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application

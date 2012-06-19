@@ -11,7 +11,7 @@
   Page::start(_($help_context = "Balance Sheet Drilldown"), SA_GLANALYTIC);
   // Ajax updates
   if (Input::post('Show')) {
-    Ajax::i()->activate('balance_tbl');
+    Ajax::activate('balance_tbl');
   }
   if (isset($_GET["TransFromDate"])) {
     $_POST["TransFromDate"] = $_GET["TransFromDate"];

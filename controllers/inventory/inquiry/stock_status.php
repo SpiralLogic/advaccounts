@@ -15,7 +15,7 @@
     Page::start(_($help_context = "Inventory Item Status"));
   }
   if (Input::post('stock_id')) {
-    Ajax::i()->activate('status_tbl');
+    Ajax::activate('status_tbl');
   }
   Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
   Forms::start();

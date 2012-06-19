@@ -20,11 +20,11 @@
     }
   }
   if (isset($_POST['_DatePaid_changed'])) {
-    Ajax::i()->activate('_ex_rate');
+    Ajax::activate('_ex_rate');
   }
   if (Forms::isListUpdated('supplier_id') || Forms::isListUpdated('bank_account')) {
     $_SESSION['alloc']->read();
-    Ajax::i()->activate('alloc_tbl');
+    Ajax::activate('alloc_tbl');
   }
   if (isset($_GET[ADDED_ID])) {
     $payment_id = $_GET[ADDED_ID];

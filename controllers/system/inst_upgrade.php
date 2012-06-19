@@ -44,7 +44,7 @@
       User::i()->prefs = new userPrefs($user);
       Event::success(_('All companies data has been successfully updated'));
     }
-    Ajax::i()->activate('_page_body');
+    Ajax::activate('_page_body');
   }
   Forms::start();
   Table::start('tablestyle grid');

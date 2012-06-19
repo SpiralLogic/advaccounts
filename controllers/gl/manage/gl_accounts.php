@@ -47,7 +47,7 @@
         ) {
           DB::update_record_status($_POST['account_code'], $_POST['inactive'], 'chart_master', 'account_code');
           Tags::update_associations(TAG_ACCOUNT, $_POST['account_code'], $_POST['account_tags']);
-          Ajax::i()->activate('account_code'); // in case of status change
+          Ajax::activate('account_code'); // in case of status change
           Event::success(_("Account data has been updated."));
         }
       } else {
@@ -58,7 +58,7 @@
           $selected_account = $_POST['AccountList'] = $_POST['account_code'];
         }
       }
-      Ajax::i()->activate('_page_body');
+      Ajax::activate('_page_body');
     }
   }
   if (isset($_POST['delete'])) {
@@ -69,7 +69,7 @@
       $selected_account = $_POST['AccountList'] = '';
       Event::notice(_("Selected account has been deleted"));
       unset($_POST['account_code']);
-      Ajax::i()->activate('_page_body');
+      Ajax::activate('_page_body');
     }
   }
   Forms::start();
@@ -81,7 +81,7 @@
     Row::end();
     Table::end();
     if (Input::post('_show_inactive_update')) {
-      Ajax::i()->activate('AccountList');
+      Ajax::activate('AccountList');
       JS::set_focus('AccountList');
     }
   }

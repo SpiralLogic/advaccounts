@@ -30,7 +30,7 @@
     // when branch is selected via external editor also customer can change
     $br                   = Sales_Branch::get(Input::post('branch_id'));
     $_POST['customer_id'] = $br['debtor_id'];
-    Ajax::i()->activate('customer_id');
+    Ajax::activate('customer_id');
   }
   if (isset($_GET[ADDED_ID])) {
     $credit_no  = $_GET[ADDED_ID];

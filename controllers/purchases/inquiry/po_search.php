@@ -16,20 +16,20 @@
   // Ajax updates
   //
   if (Input::post('SearchOrders')) {
-    Ajax::i()->activate('orders_tbl');
+    Ajax::activate('orders_tbl');
   } elseif (Input::post('_order_number_changed')) {
     $disable = Input::post('order_number') !== '';
-    Ajax::i()->addDisable(true, 'OrdersAfterDate', $disable);
-    Ajax::i()->addDisable(true, 'OrdersToDate', $disable);
-    Ajax::i()->addDisable(true, 'StockLocation', $disable);
-    Ajax::i()->addDisable(true, '_SelectStockFromList_edit', $disable);
-    Ajax::i()->addDisable(true, 'SelectStockFromList', $disable);
+    Ajax::addDisable(true, 'OrdersAfterDate', $disable);
+    Ajax::addDisable(true, 'OrdersToDate', $disable);
+    Ajax::addDisable(true, 'StockLocation', $disable);
+    Ajax::addDisable(true, '_SelectStockFromList_edit', $disable);
+    Ajax::addDisable(true, 'SelectStockFromList', $disable);
     if ($disable) {
-      Ajax::i()->addFocus(true, 'order_number');
+      Ajax::addFocus(true, 'order_number');
     } else {
-      Ajax::i()->addFocus(true, 'OrdersAfterDate');
+      Ajax::addFocus(true, 'OrdersAfterDate');
     }
-    Ajax::i()->activate('orders_tbl');
+    Ajax::activate('orders_tbl');
   }
   Forms::start();
   Table::start('tablestyle_noborder');

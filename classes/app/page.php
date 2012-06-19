@@ -189,7 +189,7 @@
     {
       $validate = array();
       $this->menu_footer();
-      JS::beforeload("_focus = '" . Input::post('_focus') . "';_validate = " . Ajax::i()->php2js($validate) . ";");
+      JS::beforeload("_focus = '" . Input::post('_focus') . "';_validate = " . Ajax::php2js($validate) . ";");
       User::add_js_data();
       echo "<!-- end content div-->";
       echo "</div>";
@@ -306,7 +306,7 @@
       $selected_id = Input::post('selected_id', null, $default);
       foreach (array(ADD_ITEM, UPDATE_ITEM, MODE_RESET, MODE_CLONE) as $m) {
         if (isset($_POST[$m])) {
-          Ajax::i()->activate('_page_body');
+          Ajax::activate('_page_body');
           if ($m == MODE_RESET || $m == MODE_CLONE) {
             $selected_id = $default;
           }
@@ -319,7 +319,7 @@
           if (strpos($p, $m) === 0) {
             unset($_POST['_focus']); // focus on first form entry
             $selected_id = quoted_printable_decode(substr($p, strlen($m)));
-            Ajax::i()->activate('_page_body');
+            Ajax::activate('_page_body');
             return array($m, $selected_id);
           }
         }

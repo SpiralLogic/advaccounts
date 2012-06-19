@@ -30,7 +30,7 @@
   }
   if (Input::post('UpdateDisplay')) {
     $_SESSION['alloc']->read();
-    Ajax::i()->activate('alloc_tbl');
+    Ajax::activate('alloc_tbl');
   }
   if (isset($_SESSION['alloc'])) {
     edit_allocations_for_transaction($_SESSION['alloc']->type, $_SESSION['alloc']->trans_no);

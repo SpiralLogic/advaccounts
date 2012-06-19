@@ -47,7 +47,7 @@
         }
       }
     }
-    Ajax::i()->activate('grn_items');
+    Ajax::activate('grn_items');
   }
   if (isset($_POST['ProcessGoodsReceived']) && $order->can_receive()) {
     if ($order->has_changed()) {
@@ -55,7 +55,7 @@
       Display::link_no_params("/purchases/inquiry/po_search.php", _("Select a different purchase order for receiving goods against"));
       Display::link_params("/purchases/po_receive_items.php", _("Re-Read the updated purchase order for receiving goods against"), "PONumber=" . $order->order_no);
       unset($order->line_items, $order, $_POST['ProcessGoodsReceived']);
-      Ajax::i()->activate('_page_body');
+      Ajax::activate('_page_body');
       Page::footer_exit();
     }
     Session::i()->setGlobal('creditor', $order->supplier_id);

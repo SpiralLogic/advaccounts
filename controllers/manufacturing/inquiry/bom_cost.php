@@ -15,7 +15,7 @@
     $_POST['stock_id'] = $_GET['stock_id'];
   }
   if (Forms::isListUpdated('stock_id')) {
-    Ajax::i()->activate('_page_body');
+    Ajax::activate('_page_body');
   }
   Forms::start(FALSE);
   Table::start('tablestyle_noborder');

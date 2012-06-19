@@ -71,7 +71,7 @@
         throw new SessionException('Could not start a Session!');
       }
       header("Cache-control: private");
-      $this->_setTextSupport();
+      $this->setTextSupport();
       $_SESSION['Language']=new Language();
       $this->_session = &$_SESSION;
       if (!isset($this->_session['globals'])) {
@@ -87,7 +87,7 @@
     public function _checkUserAgent()
     {
       if (Arr::get($_SESSION, 'HTTP_USER_AGENT') != sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR']))) {
-        $this->_setUserAgent();
+        $this->setUserAgent();
         return false;
       }
       return true;
@@ -96,14 +96,14 @@
      * @static
      * @return bool
      */
-    protected function _setUserAgent()
+    protected function setUserAgent()
     {
       return ($_SESSION['HTTP_USER_AGENT'] = sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR'])));
     }
     /**
      * @return mixed
      */
-    protected function _setTextSupport()
+    protected function setTextSupport()
     {
       if (isset($_SESSION['get_text'])) {
         $this->get_text = $_SESSION['get_text'];

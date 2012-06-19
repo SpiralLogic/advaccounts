@@ -39,10 +39,10 @@
       }
       if (isset($_POST['_PayType_update'])) {
         $_POST['person_id'] = '';
-        Ajax::i()->activate('pmt_header');
-        Ajax::i()->activate('code_id');
-        Ajax::i()->activate('pagehelp');
-        Ajax::i()->activate('editors');
+        Ajax::activate('pmt_header');
+        Ajax::activate('code_id');
+        Ajax::activate('pagehelp');
+        Ajax::activate('editors');
       }
       GL_UI::payment_person_type_row($payment ? _("Pay To:") : _("From:"), 'PayType', $_POST['PayType'], true);
       switch ($_POST['PayType']) {
@@ -70,7 +70,7 @@
           $qid = GL_QuickEntry::get(Input::post('person_id'));
           if (Forms::isListUpdated('person_id')) {
             unset($_POST['total_amount']); // enable default
-            Ajax::i()->activate('total_amount');
+            Ajax::activate('total_amount');
           }
            Forms::AmountRow($qid['base_desc'] . ":", 'total_amount', Num::price_format($qid['base_amount']), null, "&nbsp;&nbsp;" . Forms::submit('go', _("Go"), false, false, true));
           break;
@@ -185,14 +185,14 @@
         if ($dim > 1) {
           Dimensions::cells(null, 'dimension2_id', null, true, " ", false, 2);
         }
-        Ajax::i()->activate('items_table');
+        Ajax::activate('items_table');
       } else {
         $_POST['amount']        = Num::price_format(0);
         $_POST['dimension_id']  = 0;
         $_POST['dimension2_id'] = 0;
         //$_POST['LineMemo'] = ""; // let memo go to next line Joe Hunt 2010-05-30
         if (isset($_POST['_code_id_update'])) {
-          Ajax::i()->activate('code_id');
+          Ajax::activate('code_id');
         }
         if ($_POST['PayType'] == PT_CUSTOMER) {
           $acc              = Sales_Branch::get_accounts($_POST['PersonDetailID']);

@@ -40,7 +40,7 @@
   }
   Display::div_end();
   if (Input::post('RefreshInquiry')) {
-    Ajax::i()->activate('totals_tbl');
+    Ajax::activate('totals_tbl');
   }
   if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
     $searchArray = explode(' ', $_POST['ajaxsearch']);
