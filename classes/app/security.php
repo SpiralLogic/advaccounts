@@ -57,13 +57,13 @@
       // first check is this is not start page call
       foreach ($gtrans as $key => $area) {
         if (isset($_GET[$key])) {
-          Page::set_security($area);
+          $this->Page->set_security($area);
           return;
         }
       }
       // then check session value
       if (isset($trans[$value])) {
-        Page::set_security($trans[$value]);
+        $this->Page->set_security($trans[$value]);
         return;
       }
     }
