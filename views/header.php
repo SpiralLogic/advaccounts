@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html class='<?= $class ?>' dir='<?= $lang_dir ?>'>
+<html <?= $class?"class='$class'":'' ?>dir='<?= $lang_dir ?>'>
 <head>
   <meta charset='utf-8'>
   <title><?= $title %></title>
@@ -12,5 +12,5 @@
   <script src='<?= $script ?>'></script>
   <% endforeach; %>
 </head>
-<body class='<?= $body_class ?>'>
+<body<?= $class?"class='$class'":'' ?>>
 <div id='content'>

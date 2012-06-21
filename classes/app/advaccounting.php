@@ -109,7 +109,7 @@
       Extensions::add_access();
       Input::get('application')  and $this->set_selected($_GET['application']);
       $page = Page::start(_($help_context = "Main Menu"), SA_OPEN, false, true);
-      $page->renderer->display_application($this);
+      $page->display_application($this);
       Page::end();
     }
     /**

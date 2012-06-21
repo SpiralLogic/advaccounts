@@ -36,6 +36,7 @@
       'Session', //
       'Status', //
       'UploadHandler', //
+      'View', //
       'XMLParser', //
     ), 'ADV\\Core\\DB'    => array(
       'DB', //

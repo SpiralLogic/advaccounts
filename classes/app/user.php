@@ -178,7 +178,7 @@
           $this->access   = $myrow["role_id"];
           $this->_hash    = $myrow["hash"];
           // store area codes available for current user role
-          $role = Security::i()->get_role($this->access);
+          $role = Security::get_role($this->access);
           if (!$role) {
             return FALSE;
           }
