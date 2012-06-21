@@ -9,5 +9,17 @@
     <? endif; ?>
   <? endif; ?>
   <?= $debug ?>
-  <!-- end footer div-->
+  <!-- end content div-->
+  </div>
+  <?= $sidemenu ?>
+<!-- end footer div-->
 </div>
+  <?= $messages ?>
+<? if (!AJAX_REFERRER): ?>
+</body>
+<? endif; ?>
+  <?= $js ?>
+
+<? if (!AJAX_REFERRER): ?>
+</html>
+<? endif; ?>

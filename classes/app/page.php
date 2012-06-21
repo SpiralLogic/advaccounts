@@ -20,6 +20,7 @@
     public $lang_dir = '';
     /** @var ADVAccounting */
     protected $App;
+    /** @var User */
     protected $User;
     protected $Config;
     protected $sel_app;
@@ -57,7 +58,49 @@
      * @var Security
      */
     protected $Security = NULL;
-    public $pagesecurity;
+    protected static $pagesecurity;
+    /**
+     * @param $hide_back_link
+     */
+    public function end_page($hide_back_link)
+    {
+      if ($this->frame) {
+        $hide_back_link = TRUE;
+        $this->header   = FALSE;
+      }
+      if ((!$this->is_index && !$hide_back_link) && method_exists('Display', 'link_back')) {
+        Display::link_back(TRUE, !$this->menu);
+      }
+      echo "<!-- end page body div -->";
+      Display::div_end(); // end of _page_body section
+      $this->footer();
+    }
+    public function display_application(Application $application)
+    {
+      if ($application->direct) {
+        Display::meta_forward($application->direct);
+      }
+      foreach ($application->modules as $module) {
+        $app            = new View('application');
+        $app['colspan'] = (count($module->rappfunctions) > 0) ? 2 : 1;
+        $app['name']    = $module->name;
+        foreach ([$module->lappfunctions, $module->rappfunctions] as $modules) {
+          $mods = [];
+          foreach ($modules as $func) {
+            $mod['access'] = User::i()->can_access_page($func->access);
+            $mod['label']  = $func->label;
+            if ($mod['access']) {
+              $mod['link'] = Display::menu_link($func->link, $func->label);
+            } else {
+              $mod['anchor'] = Display::access_string($func->label, TRUE);
+            }
+            $mods[] = $mod;
+          }
+          $app->set((!$app['lmods']) ? 'lmods' : 'rmods', $mods);
+        }
+        $app->render();
+      }
+    }
     /**
      * @param      $title
      * @param bool $index
@@ -76,7 +119,7 @@
      */
     protected function init($menu)
     {
-      $this->Security = new Security($this->User,$this);
+      $this->Security = new Security($this->User, $this);
       $this->App      = ADVAccounting::i();
       $this->sel_app  = $this->App->selected;
       $this->ajaxpage = (AJAX_REFERRER || Ajax::in_ajax());
@@ -97,10 +140,10 @@
       if (!$this->ajaxpage) {
         echo "<div id='wrapper'>";
       }
-      $this->Security->check_page($this->pagesecurity);
+      $this->Security->check_page(static::$pagesecurity);
       if ($this->title && !$this->is_index && !$this->frame && !IS_JSON_REQUEST) {
         echo "<div class='titletext'>$this->title" . ($this->User->hints() ? "<span id='hints' class='floatright'
-										style='display:none'></span>" : '') . "</div>";
+    										style='display:none'></span>" : '') . "</div>";
       }
       Display::div_start('_page_body');
     }
@@ -173,24 +216,8 @@
         $help_page_url = Display::access_string($help_page_url, TRUE);
       }
       return $this->Config->_get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-                                                                                         ' ' => '', '/' => '', '&' => 'And'
-                                                                                    ))) . '&ctxhelp=1&lang=' . $country;
-    }
-    /**
-     * @param $hide_back_link
-     */
-    public function end_page($hide_back_link)
-    {
-      if ($this->frame) {
-        $hide_back_link = TRUE;
-        $this->header   = FALSE;
-      }
-      if ((!$this->is_index && !$hide_back_link) && method_exists('Display', 'link_back')) {
-        Display::link_back(TRUE, !$this->menu);
-      }
-      echo "<!-- end page body div -->";
-      Display::div_end(); // end of _page_body section
-      $this->footer();
+                                                                                                 ' ' => '', '/' => '', '&' => 'And'
+                                                                                            ))) . '&ctxhelp=1&lang=' . $country;
     }
     /**
      * @return mixed
@@ -198,22 +225,22 @@
     protected function footer()
     {
       $validate = array();
-      $this->menu_footer();
+      $footer   = $this->menu_footer();
       JS::beforeload("_focus = '" . Input::post('_focus') . "';_validate = " . $this->Ajax->php2js($validate) . ";");
-      $this->User->add_js_data();
-      echo "<!-- end content div-->";
-      echo "</div>";
+      $this->User->_add_js_data();
       if ($this->header && $this->menu) {
-        Sidemenu::render();
-      }
-      if (AJAX_REFERRER) {
-        JS::render();
-        return;
+        $footer->set('sidemenu', Sidemenu::render());
       } else {
-        Messages::show();
+        $footer->set('sidemenu', '');
       }
-      JS::render();
-      echo   "</body></html>\n";
+      $footer->set('js',       JS::render(true)
+      );
+      if (!AJAX_REFERRER) {
+        $footer->set('messages', Messages::show());
+      } else {
+        $footer->set('messages', '');
+      }
+      $footer->render();
     }
     /**
 
@@ -227,7 +254,7 @@
       $footer['load_time'] = Dates::getReadableTime(microtime(TRUE) - $_SERVER['REQUEST_TIME_FLOAT']);
       $footer['user']      = $this->User->username;
       $footer['footer']    = $this->menu && !AJAX_REFERRER;
-      $footer->render();
+      return $footer;
     }
     /**
 
@@ -280,7 +307,6 @@
         static::$i = new static($title, $is_index);
       }
       static::$i->set_security($security);
-
       static::$i->init(!$no_menu);
       return static::$i;
     }
@@ -322,9 +348,9 @@
      *
      * @param $security
      */
-    public function set_security($security)
+    public static function set_security($security)
     {
-      $this->pagesecurity = $security;
+      static::$pagesecurity = $security;
     }
     /**
      * @static
@@ -332,39 +358,13 @@
      */
     public static function get_security()
     {
-      return static::$i->pagesecurity;
+      return static::$pagesecurity;
     }
     public static function footer_exit()
     {
       Display::br(2);
       static::$i->end_page(TRUE);
       exit;
-    }
-    public function display_application(ADVAccounting $application)
-    {
-      if ($application->selected->direct) {
-        Display::meta_forward($application->selected->direct);
-      }
-      foreach ($application->selected->modules as $module) {
-        $app            = new View('application');
-        $app['colspan'] = (count($module->rappfunctions) > 0) ? 2 : 1;
-        $app['name']    = $module->name;
-        foreach ([$module->lappfunctions, $module->rappfunctions] as $modules) {
-          $mods = [];
-          foreach ($modules as $func) {
-            $mod['access'] = User::i()->can_access_page($func->access);
-            $mod['label']  = $func->label;
-            if ($mod['access']) {
-              $mod['link'] = Display::menu_link($func->link, $func->label);
-            } else {
-              $mod['anchor'] = Display::access_string($func->label, TRUE);
-            }
-            $mods[] = $mod;
-          }
-          $app->set((!$app['lmods']) ? 'lmods' : 'rmods', $mods);
-        }
-        $app->render();
-      }
     }
   }
 

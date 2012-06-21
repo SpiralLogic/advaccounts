@@ -22,14 +22,25 @@
       }
       $this->_template = $template;
     }
-    public function render()
+    public function render($return = false)
     {
       if (!$this->_template) {
         throw new \RuntimeException("There is nothing to render!");
       }
       extract($this->_viewdata);
+      if ($return) {
+        ob_start();
+      }
       include($this->_template);
+      if ($return) {
+        return ob_get_clean();
+      }
     }
+    /**
+     * @param      $offset
+     * @param      $value
+     * @param bool $escape
+     */
     public function set($offset, $value, $escape = false)
     {
       $value                    = $escape ? e($value) : $value;

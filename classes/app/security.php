@@ -52,18 +52,18 @@
      *
      * @return mixed
      */
-    function set_page($value = NULL, $trans = array(), $gtrans = array())
+    public function set_page($value = NULL, $trans = array(), $gtrans = array())
     {
       // first check is this is not start page call
       foreach ($gtrans as $key => $area) {
         if (isset($_GET[$key])) {
-          $this->Page->set_security($area);
+          Page::set_security($area);
           return;
         }
       }
       // then check session value
       if (isset($trans[$value])) {
-        $this->Page->set_security($trans[$value]);
+        Page::set_security($trans[$value]);
         return;
       }
     }
