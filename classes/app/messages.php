@@ -78,12 +78,14 @@
     {
       $user = $user ? : User::i();
       if (!$user || !$user->logged) {
-        return;
+        return '';
       }
+      ob_start();
       static::get($user->user);
       if (static::$count > 0) {
         static::makeDialog();
       }
+      return ob_get_clean();
     }
     public static function makeDialog()
     {

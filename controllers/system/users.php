@@ -107,7 +107,7 @@
    Forms::textRowEx(_("Full Name") . ":", 'real_name', 50);
    Forms::textRowEx(_("Telephone No.:"), 'phone', 30);
    Forms::emailRowEx(_("Email Address:"), 'email', 50);
-  Security::i()->roles_row(_("Access Level:"), 'Access', null);
+  Security::roles_row(_("Access Level:"), 'Access', null);
   Languages::row(_("Language:"), 'language', null);
   Sales_Point::row(_("User's POS") . ':', 'pos', null);
   Reports_UI::print_profiles_row(_("Printing profile") . ':', 'profile', null, _('Browser printing support'));

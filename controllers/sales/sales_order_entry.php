@@ -41,7 +41,7 @@
     protected function before()
     {
       $this->order = Orders::session_get() ? : NULL;
-      Security::i()->set_page((!$this->order) ? : $this->order->trans_type, $this->typeSecurity, $this->processSecurity);
+      Security::set_page((!$this->order) ? : $this->order->trans_type, $this->typeSecurity, $this->processSecurity);
       JS::open_window(900, 500);
       if (Input::get('customer_id', Input::NUMERIC)) {
         $this->action         = Orders::CANCEL_CHANGES;

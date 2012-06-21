@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   /**
    * @method User i
    * @method theme
@@ -108,7 +107,6 @@
         $dic['User'] = $dic->share(function() { return $_SESSION["current_user"]; });
       }
       $_SESSION["current_user"] = static::i();
-
       return $dic['User'];
     }
     /**
@@ -116,7 +114,6 @@
      */
     public function __construct(Session $session = null)
     {
-
       $this->session   = $session ? : Session::i();
       $this->loginname = $this->username = $this->name = "";
       $this->company   = Config::get('default.company') ? : 'default';
@@ -178,7 +175,7 @@
           $this->access   = $myrow["role_id"];
           $this->_hash    = $myrow["hash"];
           // store area codes available for current user role
-          $role = Security::i()->get_role($this->access);
+          $role = Security::get_role($this->access);
           if (!$role) {
             return FALSE;
           }
@@ -347,9 +344,15 @@
      */
     public function _add_js_data()
     {
-      $js
-        = "var user = {theme: '/themes/" . $this->theme() . "/',loadtxt: '" . _('Requesting data...') . "',date: '" . Dates::today() . "',datefmt: " . $this->date_format() . ",datesep: '" . Config::get('date.ui_format') . "',
-        ts: '" . $this->tho_sep() . "',ds: '" . $this->dec_sep() . "',pdec: " . $this->price_dec() . "};";
+      $js = "var user = {theme: '/themes/" . $this->_theme() . "/'" //
+        . ",loadtxt: '" . _('Requesting data...') //
+        . "',date: '" . Dates::today() //
+        . "',datefmt: " . $this->_date_format() //
+        . ",datesep: '" . Config::get('date.ui_format') //
+        . "',ts: '" . $this->_tho_sep() //
+        . "',ds: '" . $this->_dec_sep() //
+        . "',pdec: " . $this->_price_dec() //
+        . "};";
       JS::beforeload($js);
     }
     /**
@@ -498,7 +501,7 @@
      */
     public function _theme()
     {
-      return $this->prefs()->get_theme();
+      return $this->_prefs()->get_theme();
     }
     /**
      * @static

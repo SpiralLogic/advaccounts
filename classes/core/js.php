@@ -224,8 +224,9 @@ JSS;
      * @static
 
      */
-    public static function render()
+    public static function render($return =false)
     {
+      if ($return){ ob_start();}
       $files = $content = $onReady = '';
       if (!AJAX_REFERRER) {
         foreach (self::$_footerFiles as $dir => $file) {
@@ -262,7 +263,10 @@ JSS;
       //		}
       /** @noinspection PhpDynamicAsStaticMethodCallInspection */
       HTML::script(array('content' => $content))->script;
-    }
+
+      if ($return){
+        return ob_get_clean();
+      }    }
     /**
      * @static
      *

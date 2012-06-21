@@ -90,10 +90,10 @@
       //		$areas = sort_areas($areas);
       $sections = array_values($sections);
       if ($new_role) {
-        Security::i()->add_role($_POST['name'], $_POST['description'], $sections, $areas);
+        Security::add_role($_POST['name'], $_POST['description'], $sections, $areas);
         Event::success(_("New security role has been added."));
       } else {
-        Security::i()->update_role($_POST['role'], $_POST['name'], $_POST['description'], $sections, $areas);
+        Security::update_role($_POST['role'], $_POST['name'], $_POST['description'], $sections, $areas);
         DB::update_record_status($_POST['role'], Input::post('inactive'), 'security_roles', 'id');
         Event::success(_("Security role has been updated."));
       }
@@ -103,10 +103,10 @@
     }
   }
   if (Input::post('delete')) {
-    if (Security::i()->check_role_used(Input::post('role'))) {
+    if (Security::check_role_used(Input::post('role'))) {
       Event::error(_("This role is currently assigned to some users and cannot be deleted"));
     } else {
-      Security::i()->delete(Input::post('role'));
+      Security::delete(Input::post('role'));
       Event::notice(_("Security role has been sucessfully deleted."));
       unset($_POST['role']);
     }
@@ -121,7 +121,7 @@
     $clone = Input::post('clone');
     unset($_POST);
     if ($id) {
-      $row                  = Security::i()->get_role($id);
+      $row                  = Security::get_role($id);
       $_POST['description'] = $row['description'];
       $_POST['name']        = $row['role'];
       //	if ($row['inactive']
@@ -150,7 +150,7 @@
   Forms::start();
   Table::start('tablestyle_noborder');
   Row::start();
-  Security::i()->roles_cells(_("Role:") . "&nbsp;", 'role', null, true, true, Forms::hasPost('show_inactive'));
+  Security::roles_cells(_("Role:") . "&nbsp;", 'role', null, true, true, Forms::hasPost('show_inactive'));
   $new_role = Input::post('role') == '';
    Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
   Row::end();

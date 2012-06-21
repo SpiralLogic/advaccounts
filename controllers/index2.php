@@ -1,10 +1,9 @@
 <?php
-
-  $phil       = new User();
-  $mike       = new User();
-  $phil->name = 'Phil';
-  $mike->name = "Mike";
-  echo $phil->name . "<br>";
-  echo $mike->name . "<br>";
-  echo User::i()->name;
-
+  Page::start('test');
+  $test         = new View('test');
+  $test['test'] = 'this was assigned first';
+  $store        = $test->render(true);
+  $test['test'] = 'wewerwewe';
+  $test->render();
+  echo $store;
+  Page::end();

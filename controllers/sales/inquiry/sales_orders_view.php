@@ -11,7 +11,7 @@
           See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
           * ********************************************************************* */
 
-  Security::i()->set_page(Input::post('order_view_mode'), array(
+  Security::set_page(Input::post('order_view_mode'), array(
                                                                'OutstandingOnly'  => SA_SALESDELIVERY,
                                                                'InvoiceTemplates' => SA_SALESINVOICE
                                                           ), array(

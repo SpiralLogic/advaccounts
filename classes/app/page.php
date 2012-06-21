@@ -7,13 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Page {
-
-    /** @var \Renderer */
-    public $renderer = NULL;
-    /** @var \Twig_Environment  */
-
-    public $Twig = NULL;
+  class Page
+  {
     /**
      * @var
      */
@@ -24,7 +19,8 @@
     public $ajaxpage;
     public $lang_dir = '';
     /** @var ADVAccounting */
-    protected $app;
+    protected $App;
+    /** @var User */
     protected $User;
     protected $Config;
     protected $sel_app;
@@ -59,9 +55,52 @@
     /** @var Page */
     protected static $i = NULL;
     /**
-     * @var null
+     * @var Security
      */
-    protected static $security = NULL;
+    protected $Security = NULL;
+    protected static $pagesecurity;
+    /**
+     * @param $hide_back_link
+     */
+    public function end_page($hide_back_link)
+    {
+      if ($this->frame) {
+        $hide_back_link = TRUE;
+        $this->header   = FALSE;
+      }
+      if ((!$this->is_index && !$hide_back_link) && method_exists('Display', 'link_back')) {
+        Display::link_back(TRUE, !$this->menu);
+      }
+      echo "<!-- end page body div -->";
+      Display::div_end(); // end of _page_body section
+      $this->footer();
+    }
+    public function display_application(Application $application)
+    {
+      if ($application->direct) {
+        Display::meta_forward($application->direct);
+      }
+      foreach ($application->modules as $module) {
+        $app            = new View('application');
+        $app['colspan'] = (count($module->rappfunctions) > 0) ? 2 : 1;
+        $app['name']    = $module->name;
+        foreach ([$module->lappfunctions, $module->rappfunctions] as $modules) {
+          $mods = [];
+          foreach ($modules as $func) {
+            $mod['access'] = User::i()->can_access_page($func->access);
+            $mod['label']  = $func->label;
+            if ($mod['access']) {
+              $mod['link'] = Display::menu_link($func->link, $func->label);
+            } else {
+              $mod['anchor'] = Display::access_string($func->label, TRUE);
+            }
+            $mods[] = $mod;
+          }
+          $app->set((!$app['lmods']) ? 'lmods' : 'rmods', $mods);
+        }
+        $app->render();
+      }
+    }
     /**
      * @param      $title
      * @param bool $index
@@ -80,12 +119,11 @@
      */
     protected function init($menu)
     {
-
-      $this->app      = ADVAccounting::i();
-      $this->sel_app  = $this->app->selected;
+      $this->Security = new Security($this->User, $this);
+      $this->App      = ADVAccounting::i();
+      $this->sel_app  = $this->App->selected;
       $this->ajaxpage = (AJAX_REFERRER || Ajax::in_ajax());
       $this->menu     = ($this->frame) ? FALSE : $menu;
-      $this->renderer = new Renderer();
       $this->theme    = $this->User->theme();
       $this->encoding = $_SESSION['Language']->encoding;
       $this->lang_dir = $_SESSION['Language']->dir;
@@ -102,10 +140,10 @@
       if (!$this->ajaxpage) {
         echo "<div id='wrapper'>";
       }
-      Security::i()->check_page(static::$security);
+      $this->Security->check_page(static::$pagesecurity);
       if ($this->title && !$this->is_index && !$this->frame && !IS_JSON_REQUEST) {
         echo "<div class='titletext'>$this->title" . ($this->User->hints() ? "<span id='hints' class='floatright'
-										style='display:none'></span>" : '') . "</div>";
+    										style='display:none'></span>" : '') . "</div>";
       }
       Display::div_start('_page_body');
     }
@@ -119,34 +157,45 @@
       if (!headers_sent()) {
         header("Content-type: text/html; charset={$this->encoding}");
       }
-      $viewdata['class']       = (is_object($this->sel_app) ? strtolower($this->sel_app->id) : '');
-      $viewdata['lang_dir']    = $this->lang_dir;
-      $viewdata['title']       = $this->title;
-      $viewdata['body_class']  = !$this->menu ? 'lite' : '';
-      $viewdata['encoding']    = $_SESSION['Language']->encoding;
-      $viewdata['stylesheets'] = $this->renderCSS();
+      $header                = new View('header');
+      $header['class']       = (is_object($this->sel_app) ? strtolower($this->sel_app->id) : '');
+      $header['lang_dir']    = $this->lang_dir;
+      $header['title']       = $this->title;
+      $header['body_class']  = !$this->menu ? 'lite' : '';
+      $header['encoding']    = $_SESSION['Language']->encoding;
+      $header['stylesheets'] = $this->renderCSS();
       if (class_exists('JS', FALSE)) {
-        $viewdata['scripts'] = JS::renderHeader();
+        $header['scripts'] = JS::renderHeader();
       }
-      extract($viewdata);
-      include(DOCROOT . 'views/header.php');
+      $header->render();
     }
     /**
 
      */
     protected function menu_header()
     {
-      $viewdata['theme']       = $this->User->theme();
-      $viewdata['company']     = Config::get('db.' . $this->User->company)['company'];
-      $viewdata['server_name'] = $_SERVER['SERVER_NAME'];
-      $viewdata['username']    = $this->User->name;
-      $viewdata['help_url']    = '';
-      if (Config::get('help_baseurl') != NULL) {
-        $viewdata['help_url'] = $this->help_url();
+      $menu                = new View('menu_header');
+      $menu['theme']       = $this->User->theme();
+      $menu['company']     = $this->Config->_get('db.' . $this->User->company)['company'];
+      $menu['server_name'] = $_SERVER['SERVER_NAME'];
+      $menu['username']    = $this->User->name;
+      $menu['help_url']    = '';
+      if ($this->Config->_get('help_baseurl') != NULL) {
+        $menu['help_url'] = $this->help_url();
       }
-      $viewdata['menu'] = $this->renderer->menu();
-      extract($viewdata);
-      include(DOCROOT . 'views/menu_header.php');
+      /** @var ADVAccounting $application */
+      $menuitems = [];
+      foreach ($this->App->applications as $app) {
+        $item          = [];
+        $acc           = Display::access_string($app->name);
+        $item['acc0']  = $acc[0];
+        $item['acc1']  = $acc[1];
+        $item['class'] = ($this->sel_app && $this->sel_app->id == $app->id) ? "active" : "";
+        $item['href']  = (!$app->direct) ? '/index.php?application=' . $app->id : '/' . ltrim($app->direct, '/');
+        $menuitems[]   = $item;
+      }
+      $menu->set('menu', $menuitems);
+      $menu->render();
     }
     /**
      * @param null $context
@@ -163,28 +212,12 @@
         $help_page_url = $help_context;
       } else // main menu
       {
-        $help_page_url = ADVAccounting::i()->applications[ADVAccounting::i()->selected->id]->help_context;
+        $help_page_url = $this->App->applications[$this->App->selected->id]->help_context;
         $help_page_url = Display::access_string($help_page_url, TRUE);
       }
-      return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-        ' ' => '', '/' => '', '&' => 'And'
-      ))) . '&ctxhelp=1&lang=' . $country;
-    }
-    /**
-     * @param $hide_back_link
-     */
-    protected function end_page($hide_back_link)
-    {
-      if ($this->frame) {
-        $hide_back_link = TRUE;
-        $this->header   = FALSE;
-      }
-      if ((!$this->is_index && !$hide_back_link) && method_exists('Display', 'link_back')) {
-        Display::link_back(TRUE, !$this->menu);
-      }
-      echo "<!-- end page body div -->";
-      Display::div_end(); // end of _page_body section
-      $this->footer();
+      return $this->Config->_get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
+                                                                                                 ' ' => '', '/' => '', '&' => 'And'
+                                                                                            ))) . '&ctxhelp=1&lang=' . $country;
     }
     /**
      * @return mixed
@@ -192,56 +225,43 @@
     protected function footer()
     {
       $validate = array();
-      $this->menu_footer();
-      JS::beforeload("_focus = '" . Input::post('_focus') . "';_validate = " . Ajax::i()->php2js($validate) . ";");
-      $this->User->add_js_data();
-      echo "<!-- end content div-->";
-      echo "</div>";
+      $footer   = $this->menu_footer();
+      JS::beforeload("_focus = '" . Input::post('_focus') . "';_validate = " . $this->Ajax->php2js($validate) . ";");
+      $this->User->_add_js_data();
       if ($this->header && $this->menu) {
-        Sidemenu::render();
-      }
-      if (AJAX_REFERRER) {
-        JS::render();
-        return;
+        $footer->set('sidemenu', Sidemenu::render());
       } else {
-        Messages::show();
+        $footer->set('sidemenu', '');
       }
-      JS::render();
-      echo   "</body></html>\n";
+      $footer->set('js',       JS::render(true)
+      );
+      if (!AJAX_REFERRER) {
+        $footer->set('messages', Messages::show());
+      } else {
+        $footer->set('messages', '');
+      }
+      $footer->render();
     }
     /**
 
      */
     protected function menu_footer()
     {
-      $today     = Dates::today();
-      $now       = Dates::now();
-      $mem       = Files::convert_size(memory_get_usage(TRUE)) . '/' . Files::convert_size(memory_get_peak_usage(TRUE));
-      $load_time = Dates::getReadableTime(microtime(TRUE) - $_SERVER['REQUEST_TIME_FLOAT']);
-      $user      = User::i();
-      $debug     = Config::get('debug.enabled') ? $this->display_loaded() : '';
-      $footer    = $this->menu && !AJAX_REFERRER;
-      include(DOCROOT . 'views/footer.php');
-    }
-    /**
-
-     */
-    protected function display_loaded()
-    {
-      $loaded = Autoloader::getPerf();
-      $row    = "<table id='autoloaded'>";
-      while ($v1 = array_shift($loaded)) {
-        $v2 = array_shift($loaded);
-        $row .= "<tr><td>{$v1[0]}</td><td>{$v1[1]}</td><td>{$v1[2]}</td><td>{$v1[3]}</td><td>{$v2[0]}</td><td>{$v2[1]}</td><td>{$v2[2]}</td><td>{$v2[3]}</td></tr>";
-      }
-      echo $row . "</table>";
+      $footer              = new View('footer');
+      $footer['today']     = Dates::today();
+      $footer['now']       = Dates::now();
+      $footer['mem']       = Files::convert_size(memory_get_usage(TRUE)) . '/' . Files::convert_size(memory_get_peak_usage(TRUE));
+      $footer['load_time'] = Dates::getReadableTime(microtime(TRUE) - $_SERVER['REQUEST_TIME_FLOAT']);
+      $footer['user']      = $this->User->username;
+      $footer['footer']    = $this->menu && !AJAX_REFERRER;
+      return $footer;
     }
     /**
 
      */
     protected function renderCSS()
     {
-      $this->css += class_exists('Config', FALSE) ? \Config::get('assets.css') : array('default.css');
+      $this->css += class_exists('Config', FALSE) ? $this->Config->_get('assets.css') : array('default.css');
       $path = DS . "themes" . DS . $this->theme . DS;
       $css  = implode(',', $this->css);
       return [$path . $css];
@@ -283,10 +303,10 @@
      */
     public static function start($title, $security = SA_OPEN, $no_menu = FALSE, $is_index = FALSE)
     {
-      static::set_security($security);
       if (static::$i === NULL) {
         static::$i = new static($title, $is_index);
       }
+      static::$i->set_security($security);
       static::$i->init(!$no_menu);
       return static::$i;
     }
@@ -326,30 +346,20 @@
     /**
      * @static
      *
-     * @param bool $file
-     */
-    public static function add_css($file = FALSE)
-    {
-      static::$i->css[] = $file;
-    }
-    /**
-     * @static
-     *
      * @param $security
      */
     public static function set_security($security)
     {
-      static::$security = $security;
+      static::$pagesecurity = $security;
     }
     /**
      * @static
      * @return null
      */
-    public static function get_security() { return static::$security; }
-    /**
-     * @static
-
-     */
+    public static function get_security()
+    {
+      return static::$pagesecurity;
+    }
     public static function footer_exit()
     {
       Display::br(2);

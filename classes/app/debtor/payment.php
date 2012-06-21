@@ -15,6 +15,7 @@
    */
   class Debtor_Payment
   {
+
     /**
      * @static
      *
