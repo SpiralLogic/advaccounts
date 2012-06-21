@@ -30,7 +30,7 @@
   define('APPPATH', DOCROOT . 'classes' . DS . 'app' . DS);
   define('COREPATH', DOCROOT . 'classes' . DS . 'core' . DS);
   define('VENDORPATH', DOCROOT . 'classes' . DS . 'vendor' . DS);
-  define('VIEWPATH', DOCROOT . 'views' . DS );
+  define('VIEWPATH', DOCROOT . 'views' . DS);
   define('COMPANY_PATH', WEBROOT . 'company' . DS);
   define('LANG_PATH', DOCROOT . 'lang' . DS);
   define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
@@ -71,7 +71,7 @@
        */
       function adv_ob_flush_handler($text)
       {
-        return (Ajax::in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
+        return (Ajax::inAjax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
       }
     }
     $dic = new \ADV\Core\DIC();

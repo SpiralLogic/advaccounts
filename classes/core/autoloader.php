@@ -14,6 +14,7 @@
   class Autoload_Exception extends \Exception
   {
   }
+
   /**
 
    */
@@ -36,7 +37,7 @@
      * @var array
      */
     public $loaded = array();
-/** @var Cache */
+    /** @var Cache */
     public $Cache;
     /**
 
@@ -58,7 +59,7 @@
         $this->loaded         = $cachedClasses['paths'];
       } else {
         $core = include(DOCROOT . 'config' . DS . 'core.php');
-        $this->import_namespaces((array) $core);
+        $this->importNamespaces((array) $core);
         $vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
         $this->add_classes((array) $vendor, VENDORPATH);
       }
@@ -81,18 +82,17 @@
      * @param $namespace
      * @param $classes
      */
-    protected function import_namespace($namespace, $classes)
+    protected function importNamespace($namespace, $classes)
     {
       $this->global_classes = array_merge($this->global_classes, array_fill_keys($classes, $namespace));
     }
     /**
-     *
      * @param array $namespaces
      */
-    protected function import_namespaces(array $namespaces)
+    protected function importNamespaces(array $namespaces)
     {
       foreach ($namespaces as $namespace => $classes) {
-        $this->import_namespace($namespace, $classes);
+        $this->importNamespace($namespace, $classes);
       }
     }
     /**
@@ -117,7 +117,6 @@
       return false;
     }
     /**
-     *
      * @param $filepath
      * @param $required_class
      *

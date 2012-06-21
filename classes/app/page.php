@@ -123,7 +123,7 @@
       $this->Security = new Security($this->User, $this);
       $this->App      = ADVAccounting::i();
       $this->sel_app  = $this->App->selected;
-      $this->ajaxpage = (AJAX_REFERRER || Ajax::in_ajax());
+      $this->ajaxpage = (AJAX_REFERRER || Ajax::inAjax());
       $this->menu     = ($this->frame) ? FALSE : $menu;
       $this->theme    = $this->User->theme();
       $this->encoding = $_SESSION['Language']->encoding;
@@ -217,7 +217,9 @@
         $help_page_url = Display::access_string($help_page_url, TRUE);
       }
       return $this->Config->_get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-                                                                                                 ' ' => '', '/' => '', '&' => 'And'
+                                                                                                 ' ' => '',
+                                                                                                 '/' => '',
+                                                                                                 '&' => 'And'
                                                                                             ))) . '&ctxhelp=1&lang=' . $country;
     }
     /**
@@ -234,8 +236,7 @@
       } else {
         $footer->set('sidemenu', '');
       }
-      $footer->set('js',       JS::render(true)
-      );
+      $footer->set('js', JS::render(true));
       if (!AJAX_REFERRER) {
         $footer->set('messages', Messages::show());
       } else {

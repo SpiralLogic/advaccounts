@@ -91,29 +91,29 @@
       $this->assertEquals($expected, $initial);
     }
     /**
-     * @covers ADV\Core\Arr::search_value
-     * @todo   Implement testSearch_value().
+     * @covers ADV\Core\Arr::searchValue
+     * @todo   Implement testsearchValue().
      */
-    public function testSearch_value()
+    public function testsearchValue()
     {
       // Remove the following lines when you implement this test.
       $array  = [1=> 'one', 2=> 'two', 'three'=> 3, 'four'=> '4', 'five', 6=> array('six'=> 6, 'seven'=> 'seven')];
-      $actual = Arr::search_value(3, $array);
+      $actual = Arr::searchValue(3, $array);
       $this->assertSame(3, $actual);
       $expected = $array[6];
-    $actual   = Arr::search_value(6, $array, 'six');
-     $this->assertSame($expected, $actual);
+      $actual   = Arr::searchValue(6, $array, 'six');
+      $this->assertSame($expected, $actual);
     }
     /**
-     * @covers ADV\Core\Arr::search_key
-     * @todo   Implement testSearch_key().
+     * @covers ADV\Core\Arr::searchKey
+     * @todo   Implement testsearchKey().
      */
-    public function testSearch_key()
+    public function testsearchKey()
     {
       $array  = [1=> 'one', 2=> 'two', 'three'=> 3, 'four'=> '4', 'five', 6=> array('six'=> 6, 'seven'=> 'seven')];
-      $actual = Arr::search_key('five', $array);
+      $actual = Arr::searchKey('five', $array);
       $this->assertSame(3, $actual);
-      $actual = Arr::search_key('4', $array);
+      $actual = Arr::searchKey('4', $array);
       $this->assertSame('four', $actual);
     }
   }

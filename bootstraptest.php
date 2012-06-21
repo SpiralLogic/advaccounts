@@ -19,7 +19,6 @@
   define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
   define('CRLF', chr(13) . chr(10));
 
-
   require COREPATH . 'autoloader.php';
   if (!function_exists('e')) {
     /**
@@ -27,9 +26,10 @@
      *
      * @return array|string
      */
-     function e($string) { return Security::htmlentities($string); }
+    function e($string) { return Security::htmlentities($string); }
   }
-  register_shutdown_function(function () {
+  register_shutdown_function(function ()
+  {
     class_exists('Event', false) or  include(COREPATH . 'event.php');
     Event::shutdown();
   });
@@ -40,8 +40,8 @@
      * @return string
      * @noinspection PhpUnusedFunctionInspection
      */
-     function adv_ob_flush_handler($text)
+    function adv_ob_flush_handler($text)
     {
-      return (Ajax::in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
+      return (Ajax::inAjax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
     }
   }

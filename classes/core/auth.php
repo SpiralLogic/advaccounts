@@ -37,9 +37,9 @@
      * @param $id
      * @param $password
      */
-    public function update_password($id, $password)
+    public function updatePassword($id, $password)
     {
-      \DB::update('users')->value('password', $this->hash_password($password))->value('user_id', $this->username)
+      \DB::update('users')->value('password', $this->hashPassword($password))->value('user_id', $this->username)
         ->value('hash', $this->makeHash($password, $id))->value('change_password', 0)->where('id=', $id)->exec();
       session_regenerate_id();
     }
@@ -47,7 +47,7 @@
      * @internal param $password
      * @return string
      */
-    public function hash_password()
+    public function hashPassword()
     {
       $password = crypt($this->password, '$6$rounds=5000$' . Config::get('auth_salt') . '$');
 
@@ -60,16 +60,16 @@
      * @internal param $password
      * @return bool|mixed
      */
-    public function check_user_password($username)
+    public function checkUserPassword($username)
     {
-      $password = $this->hash_password($this->password);
+      $password = $this->hashPassword($this->password);
       $result   = \DB::select()->from('users')->where('user_id=', $username)->and_where('inactive =', 0)
         ->and_where('password=', $password)->fetch()->one();
       if ($result['password'] != $password) {
         $result = false;
       } else {
         if (!isset($result['hash']) || !$result['hash']) {
-          $this->update_password($result['id'], $this->password);
+          $this->updatePassword($result['id'], $this->password);
           $result['hash'] = $this->makeHash($password, $result['id']);
         }
         unset($result['password']);
@@ -164,7 +164,7 @@
      *
      * @return string
      */
-    public  function makeHash($password, $user_id)
+    public function makeHash($password, $user_id)
     {
       return crypt($password, $user_id);
     }
