@@ -1,4 +1,5 @@
 <?php
+  namespace ADV;
   /**
    * PHP version 5.4
    * @category  PHP
