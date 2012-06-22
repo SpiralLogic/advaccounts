@@ -62,6 +62,7 @@
      */
     public function checkUserPassword($username)
     {
+      $username = $username ? : $this->username;
       $password = $this->hashPassword($this->password);
       $result   = \DB::select()->from('users')->where('user_id=', $username)->and_where('inactive =', 0)
         ->and_where('password=', $password)->fetch()->one();
