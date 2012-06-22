@@ -18,7 +18,8 @@
 <? if (!AJAX_REFERRER): ?>
 </body>
 <? endif; ?>
-  <?= $js ?>
+<script><?=$beforescripts?>
+</script>  <?= $js ?>
 
 <? if (!AJAX_REFERRER): ?>
 </html>

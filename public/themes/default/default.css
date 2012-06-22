@@ -74,7 +74,9 @@ select {
 input.big, textarea.big {
   width: 20em;
 }
-
+.auto{
+  width:auto;
+}
 input.small {
   width: 5em;
 }

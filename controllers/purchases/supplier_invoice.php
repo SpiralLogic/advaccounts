@@ -228,7 +228,7 @@
      }
      nodes.price.val(fv.price);
      nodes.discount.val(fv.discount);
-     } elseif (fv.qty > 0 && fv.price > 0) {
+     } else if (fv.qty > 0 && fv.price > 0) {
      fv.total = fv.qty*fv.price*((100-fv.discount)/100);
      nodes.total.val(Math.round(fv.total*100)/100 );
      };

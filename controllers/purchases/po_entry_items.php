@@ -54,19 +54,11 @@
   if (isset($_POST[COMMIT])) {
     Purch_Order::copyFromPost($order);
     if (can_commit($order)) {
-      if ($order->order_no == 0) {
-        /*its a new order to be inserted */
-        $order_no                           = $order->add();
-        $_SESSION['history'][ST_PURCHORDER] = $order->reference;
+      $order_no = ($order->order_no == 0) ? $order->add() : $order->update();
+      if ($order_no) {
         Dates::new_doc_date($order->orig_order_date);
         Orders::session_delete($_POST['order_id']);
         Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$order_no");
-      } else {
-        /*its an existing order need to update the old order info */
-        $order_no                           = $order->update();
-        $_SESSION['history'][ST_PURCHORDER] = $order->reference;
-        Orders::session_delete($_POST['order_id']);
-        Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$order_no&Updated=1");
       }
     }
   }

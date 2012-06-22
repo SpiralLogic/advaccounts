@@ -42,11 +42,11 @@
     class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'errors.php';
     return ADV\Core\Errors::handler($severity, $message, $filepath, $line);
   });
-  set_exception_handler(function (\Exception $e)
-  {
-    class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'errors.php';
-    ADV\Core\Errors::exception_handler($e);
-  });
+//  set_exception_handler(function (\Exception $e)
+ // {
+//    class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'errors.php';
+//    ADV\Core\Errors::exception_handler($e);
+//  });
   $loader = require COREPATH . 'autoloader.php';
   if ($_SERVER['DOCUMENT_URI'] !== '/assets.php') {
     if (!function_exists('e')) {

@@ -139,7 +139,8 @@
                                                                                   'where'       => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
                                                                                   'editable'    => 30,
                                                                                   'cells'       => true,
-                                                                                  'description' => ''
+                                                                                  'description' => '',
+        'class'=>'auto'
                                                                              ));
     }
     /**

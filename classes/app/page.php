@@ -244,7 +244,7 @@
     {
       $validate = array();
       $footer   = $this->menu_footer();
-      JS::beforeload("_focus = '" . Input::post('_focus') . "';_validate = " . $this->Ajax->php2js($validate) . ";");
+      $footer->set('beforescripts', "_focus = '" . Input::post('_focus') . "';_validate = " . $this->Ajax->php2js($validate) . ";");
       $this->User->_add_js_data();
       if ($this->header && $this->menu) {
         $footer->set('sidemenu', Sidemenu::render());

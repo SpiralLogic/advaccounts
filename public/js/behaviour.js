@@ -139,6 +139,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
 if (trigger.tagName === 'BUTTON') {
   content['_action'] = trigger.value;
 }
+  content['_control']=trigger.id;
 	var tcheck = setTimeout(
 	 function () {
 		 for (var id in JsHttpRequest.PENDING)
