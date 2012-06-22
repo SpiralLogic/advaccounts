@@ -11,15 +11,14 @@
   list($Mode, $selected_id) = list($Mode, $selected_id) = Page::simple_mode(true);
   if (!empty($_POST['password']) && ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM)) {
     $auth = new Auth($_POST['user_id']);
+    $auth->updatePassword($_POST['user_id'], $_POST['password']);
+
     if (can_process($auth)) {
       if ($Mode == UPDATE_ITEM) {
         Users::update($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], Forms::hasPost('rep_popup'), $_POST['pos']);
-        $auth->updatePassword($_POST['user_id'], $_POST['password']);
         Event::success(_("The selected user has been updated."));
       } else {
         Users::add($_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], Forms::hasPost('rep_popup'), $_POST['pos']);
-        // use current user display preferences as start point for new user
-        $auth->updatePassword($_POST['user_id'], $_POST['password']);
         Users::update_display_prefs(DB::insert_id(), User::price_dec(), User::qty_dec(), User::exrate_dec(), User::percent_dec(), User::show_gl(), User::show_codes(), User::date_format(), User::date_sep(), User::prefs()->tho_sep, User::prefs()->dec_sep, User::theme(), User::page_size(), User::hints(), $_POST['profile'], Forms::hasPost('rep_popup'), User::query_size(), User::graphic_links(), $_POST['language'], User::sticky_doc_date(), User::startup_tab());
         Event::success(_("A new user has been added."));
       }
@@ -130,7 +129,7 @@
 
       return false;
     }
-    $check = (is_a($auth, 'Auth')) ? $auth->checkPasswordStrength() : false;
+    $check = (is_a($auth, 'Auth')) ? $auth->checkUserPassword() : false;
     if (!$check && $check['error'] > 0) {
       Event::error($check['text']);
 
