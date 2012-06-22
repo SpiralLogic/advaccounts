@@ -56,5 +56,7 @@
     ), 'ADV\\Core\\Module'=> array(
       'Base', //
       'Loadable', //
-    )
+    ), 'ADV\\App'=> array(
+          'Page', //
+        )
   );

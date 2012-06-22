@@ -1,4 +1,5 @@
 <?php
+  namespace ADV\App;
   /**
    * PHP version 5.4
    * @category  PHP
@@ -7,6 +8,21 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  use Display;
+  use ADV\Core\Errors;
+  use ADV\Core\Files;
+  use ADV\Core\Dates;
+  use Messages;
+  use Sidemenu;
+  use ADV\Core\Input;
+  use ADV\Core\View;
+  use ADV\Core\JS;
+  use Security;
+  use ADVAccounting;
+  use ADV\Core\Ajax;
+  use ADV\Core\Config;
+  use User;
+
   class Page
   {
     /**
@@ -122,7 +138,7 @@
       $this->Security = new Security($this->User, $this);
       $this->App      = ADVAccounting::i();
       $this->sel_app  = $this->App->selected;
-      $this->ajaxpage = (AJAX_REFERRER || Ajax::in_ajax());
+      $this->ajaxpage = (AJAX_REFERRER || Ajax::inAjax());
       $this->menu     = ($this->frame) ? FALSE : $menu;
       $this->theme    = $this->User->theme();
       $this->encoding = $_SESSION['Language']->encoding;
@@ -216,7 +232,9 @@
         $help_page_url = Display::access_string($help_page_url, TRUE);
       }
       return $this->Config->_get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-                                                                                                 ' ' => '', '/' => '', '&' => 'And'
+                                                                                                 ' ' => '',
+                                                                                                 '/' => '',
+                                                                                                 '&' => 'And'
                                                                                             ))) . '&ctxhelp=1&lang=' . $country;
     }
     /**
@@ -233,8 +251,7 @@
       } else {
         $footer->set('sidemenu', '');
       }
-      $footer->set('js',       JS::render(true)
-      );
+      $footer->set('js', JS::render(true));
       if (!AJAX_REFERRER) {
         $footer->set('messages', Messages::show());
       } else {

@@ -21,8 +21,8 @@
    * @method Ajax addFocus($trigger, $sTarget)
    * @method Ajax run()
    * @method Ajax flush()
-   * @method Ajax in_ajax()
-   * @method Ajax absolute_url()
+   * @method Ajax inAjax()
+   * @method Ajax absoluteURL()
    */
   class Ajax extends \JsHttpRequest
   {
@@ -31,11 +31,11 @@
     /**
      * @var array
      */
-    protected  $aCommands = array();
+    protected $aCommands = array();
     /**
      * @var array
      */
-    protected  $triggers = array();
+    protected $triggers = array();
     /**
 
      */
@@ -54,7 +54,7 @@
      */
     public function _activate($trigname)
     {
-      ($this->_in_ajax()) and $this->triggers[$trigname] = true;
+      ($this->_inAjax()) and $this->triggers[$trigname] = true;
     }
     /**
      *   Javascript clientside redirection.
@@ -66,8 +66,8 @@
      */
     public function _redirect($url)
     {
-      if ($this->_in_ajax()) {
-        $this->addCommand(true, array('n' => 'rd'), $this->_absolute_url($url));
+      if ($this->_inAjax()) {
+        $this->addCommand(true, array('n' => 'rd'), $this->_absoluteURL($url));
         $this->_run();
       }
     }
@@ -80,7 +80,7 @@
      */
     public function _popup($url)
     {
-      $this->addCommand(true, array('n' => 'pu'), $this->_absolute_url($url));
+      $this->addCommand(true, array('n' => 'pu'), $this->_absoluteURL($url));
     }
     /**
      * Adds an executable Javascript code.
@@ -228,7 +228,7 @@
      * @static
      * @return bool
      */
-    public function _in_ajax()
+    public function _inAjax()
     {
       return $this->isActive();
     }
@@ -238,7 +238,7 @@
      */
     public function _flush()
     {
-      $this->aCommands=[];
+      $this->aCommands = [];
     }
     /**
      * Returns absolute path of relative $url. To be used in ajax calls
@@ -248,7 +248,7 @@
      *
      * @return string
      */
-    public function _absolute_url($url)
+    public function _absoluteURL($url)
     {
       return strpos($url, '..') === 0 ? dirname($_SERVER['DOCUMENT_URI']) . '/' . $url : str_replace(WEBROOT, '/', $url);
     }

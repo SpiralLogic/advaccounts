@@ -576,7 +576,7 @@
     }
     public function _logout()
     {
-      $this->session->kill();
+     $this->session->_kill();
       $this->logged = FALSE;
     }
     public function getHash()

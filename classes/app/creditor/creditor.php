@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Creditor extends \Contact_Company {
-
+  class Creditor extends \Contact_Company
+  {
     /**
      * @static
      *
@@ -219,7 +219,7 @@
     {
       parent::setFromArray($changes);
       if (isset($changes['contacts']) && is_array($changes['contacts'])) {
-        foreach ($changes['contacts'] as $id => $contact) {
+        foreach ($changes['contacts'] as $contact) {
           $this->contacts[] = new Contact(CT_SUPPLIER, $contact);
         }
       } else {
@@ -304,12 +304,12 @@
       $customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
       $customerBox->addBeforeClose('$("#supplier_id").trigger("change")');
       $customerBox->setOptions(array(
-        'autoOpen'   => false,
-        'modal'      => true,
-        'width'      => '850',
-        'height'     => '715',
-        'resizeable' => true
-      ));
+                                    'autoOpen'   => false,
+                                    'modal'      => true,
+                                    'width'      => '850',
+                                    'height'     => '715',
+                                    'resizeable' => true
+                               ));
       $customerBox->show();
       $js
         = <<<JS
@@ -320,6 +320,7 @@ JS;
     }
     /**
      * @param bool|int|null $id
+     * @param array         $extra
      *
      * @return array|bool
      */
@@ -476,16 +477,15 @@ JS;
     /**
      * @static
      *
-     * @param null $value
+     * @param null  $value
+     * @param array $options
      *
      * @return void
      */
     public static function newselect($value = null, $options = array())
     {
       $o = [
-        'row'        => true,
-        'cell_params'=> '',
-        'rowspan'    => null,
+        'row'        => true, 'cell_params'=> '', 'rowspan'    => null,
       ];
       $o = array_merge($o, $options);
       if ($o['row']) {
@@ -509,8 +509,11 @@ JS;
       }
       Forms::hidden('supplier_id');
       UI::search('supplier', array(
-        'url'  => '/contacts/suppliers.php', 'name'  => 'supplier', 'focus' => $focus, 'value' => $value,
-      ));
+                                  'url'   => '/contacts/suppliers.php',
+                                  'name'  => 'supplier',
+                                  'focus' => $focus,
+                                  'value' => $value,
+                             ));
       echo "</td>\n";
       if ($o['row']) {
         echo "</tr>\n";
@@ -540,20 +543,20 @@ JS;
       $sql  = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
       $mode = DB_Company::get_pref('no_supplier_list');
       return Forms::selectBox($name, $selected_id, $sql, 'supplier_id', 'name', array(
-        'format'        => 'Forms::addCurrFormat',
-        'order'         => array('supp_ref'),
-        'search_box'    => $mode != 0,
-        'type'          => 1,
-        'spec_option'   => $spec_option === true ?
-          _("All Suppliers") : $spec_option,
-        'spec_id'       => ALL_TEXT,
-        'select_submit' => $submit_on_change,
-        'async'         => false,
-        'sel_hint'      => $mode ?
-          _('Press Space tab to filter by name fragment') :
-          _('Select supplier'),
-        'show_inactive' => $all
-      ));
+                                                                                     'format'        => 'Forms::addCurrFormat',
+                                                                                     'order'         => array('supp_ref'),
+                                                                                     'search_box'    => $mode != 0,
+                                                                                     'type'          => 1,
+                                                                                     'spec_option'   => $spec_option === true ?
+                                                                                       _("All Suppliers") : $spec_option,
+                                                                                     'spec_id'       => ALL_TEXT,
+                                                                                     'select_submit' => $submit_on_change,
+                                                                                     'async'         => false,
+                                                                                     'sel_hint'      => $mode ?
+                                                                                       _('Press Space tab to filter by name fragment') :
+                                                                                       _('Select supplier'),
+                                                                                     'show_inactive' => $all
+                                                                                ));
     }
     /**
      * @static

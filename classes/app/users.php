@@ -185,7 +185,7 @@
         return false;
       }
 
-      return $auth->check_user_password($user_id);
+      return $auth->checkUserPassword($user_id);
     }
     /**
      * @static
@@ -320,10 +320,10 @@
       $sql = "SELECT id, real_name, inactive FROM users";
 
       return Forms::selectBox($name, $selected_id, $sql, 'id', 'real_name', array(
-                                                                                'order'       => array('real_name'),
-                                                                                'spec_option' => $spec_opt,
-                                                                                'spec_id'     => ALL_NUMERIC
-                                                                           ));
+                                                                                 'order'       => array('real_name'),
+                                                                                 'spec_option' => $spec_opt,
+                                                                                 'spec_id'     => ALL_NUMERIC
+                                                                            ));
     }
     /**
      * @static

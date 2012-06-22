@@ -58,7 +58,7 @@
      */
     public function __construct($name = null, $code = null, $encoding = null, $dir = 'ltr')
     {
-      $l              = Arr::search_value(Config::get('default.lang'), Config::get('languages.installed'), 'code');
+      $l              = Arr::searchValue(Config::get('default.lang'), Config::get('languages.installed'), 'code');
       $this->name     = $name ? : $l['name'];
       $this->code     = $code ? : $l['code'] ? : 'en_US';
       $this->encoding = $encoding ? : $l['encoding'];
@@ -75,7 +75,7 @@
     public function set_language($code)
     {
       $changed = $this->code != $code;
-      $lang    = Arr::search_value($code, Config::get('languages.installed'), 'code');
+      $lang    = Arr::searchValue($code, Config::get('languages.installed'), 'code');
       if ($lang && $changed) {
         // flush cache as we can use several languages in one account
         Files::flush_dir(COMPANY_PATH . 'js_cache');

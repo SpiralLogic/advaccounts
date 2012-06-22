@@ -100,7 +100,7 @@
      *
      * @return int|null
      */
-    public static function search_value($needle, $haystack, $valuekey = null)
+    public static function searchValue($needle, $haystack, $valuekey = null)
     {
       foreach ($haystack as $value) {
         if ($valuekey === null) {
@@ -125,7 +125,7 @@
      *
      * @return int|null|string
      */
-    public static function search_key($needle, $haystack, $valuekey = null)
+    public static function searchKey($needle, $haystack, $valuekey = null)
     {
       foreach ($haystack as $key => $value) {
         $val = isset($valuekey) ? $value[$valuekey] : $value;

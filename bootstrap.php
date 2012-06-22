@@ -30,7 +30,7 @@
   define('APPPATH', DOCROOT . 'classes' . DS . 'app' . DS);
   define('COREPATH', DOCROOT . 'classes' . DS . 'core' . DS);
   define('VENDORPATH', DOCROOT . 'classes' . DS . 'vendor' . DS);
-  define('VIEWPATH', DOCROOT . 'views' . DS );
+  define('VIEWPATH', DOCROOT . 'views' . DS);
   define('COMPANY_PATH', WEBROOT . 'company' . DS);
   define('LANG_PATH', DOCROOT . 'lang' . DS);
   define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
@@ -71,7 +71,7 @@
        */
       function adv_ob_flush_handler($text)
       {
-        return (Ajax::in_ajax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
+        return (Ajax::inAjax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
       }
     }
     $dic = new \ADV\Core\DIC();
@@ -85,10 +85,10 @@
     Session::i();
     Ajax::i();
     Config::i();
-    ob_start('adv_ob_flush_handler', 0);
+   ob_start('adv_ob_flush_handler', 0);
     ADVAccounting::i($dic['Config'], $dic['Session'], $dic['Cache']);
   }
-  if (extension_loaded('xhprof') && substr_compare($_SERVER['QUERY_STRING'], '/profile/', 0, 9, true) !== 0) {
+  if (extension_loaded('xhprof') &&!$_SERVER['QUERY_STRING']|| substr_compare($_SERVER['QUERY_STRING'], '/profile/', 0, 9, true) !== 0) {
     register_shutdown_function(function()
     {
       $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application

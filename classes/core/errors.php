@@ -14,8 +14,8 @@
   /**
 
    */
-  class Errors {
-
+  class Errors
+  {
     /**
 
      */
@@ -135,7 +135,7 @@
       static::$current_severity = -1;
       static::$messages[]       = $error;
       if (is_writable(DOCROOT . '../error_log')) {
-        error_log($error['code'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n", 3,DOCROOT . '../error_log');
+        error_log($error['code'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n", 3, DOCROOT . '../error_log');
       }
       $error['backtrace'] = static::prepare_backtrace($e->getTrace());
       static::$errors[]   = $error;
@@ -268,7 +268,7 @@
         $error                    = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']);
         static::exception_handler($error);
       }
-      if (class_exists('Ajax', false) && Ajax::in_ajax()) {
+      if (class_exists('Ajax', false) && Ajax::inAjax()) {
         Ajax::run();
       } elseif (AJAX_REFERRER && IS_JSON_REQUEST && !static::$jsonerrorsent) {
         ob_end_clean();
@@ -385,7 +385,7 @@
         $source = array_shift($backtrace);
       }
       if (is_writable(DOCROOT . '../error_log')) {
-        error_log( date(DATE_RFC822) . ": " . $error['message'] ."\n" . $error['debug'] . "\n\n\n", 3, DOCROOT . '../error_log');
+        error_log(date(DATE_RFC822) . ": " . $error['message'] . "\n" . $error['debug'] . "\n\n\n", 3, DOCROOT . '../error_log');
       }
       trigger_error($error['message'] . '||' . $source['file'] . '||' . $source['line'], E_USER_ERROR);
     }

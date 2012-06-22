@@ -14,8 +14,8 @@
   /**
 
    */
-  class Gl_Allocation
-  {
+  class Gl_Allocation {
+
     /**
      * @var
      */
@@ -152,7 +152,7 @@
         $this->date_       = Dates::sql2date($trans["tran_date"]);
       } else {
         $this->person_id = Input::post($this->person_type ? 'supplier_id' : 'customer_id');
-        $this->date_     = Input::post($this->person_type ? 'DatePaid' : 'DateBanked',null, Dates::today());
+        $this->date_     = Input::post($this->person_type ? 'DatePaid' : 'DateBanked', null, Dates::today());
       }
       /* Now populate the array of possible (and previous actual) allocations
                                           for this customer/supplier. First get the transactions that have
@@ -165,8 +165,8 @@
       $results = DB::fetch_all();
       foreach ($results as $myrow) {
         $this->add_item($myrow["type"], $myrow["trans_no"], Dates::sql2date($myrow["tran_date"]), Dates::sql2date($myrow["due_date"]), $myrow["Total"], // trans total
-                        $myrow["alloc"], // trans total allocated
-                        0); // this allocation
+          $myrow["alloc"], // trans total allocated
+          0); // this allocation
       }
       if ($trans_no == 0) {
         return;
@@ -252,7 +252,7 @@
           Cell::amount($alloc_item->amount);
           Cell::amount($alloc_item->amount_allocated);
           $_POST['amount' . $counter] = Num::price_format($alloc_item->current_allocated + Input::post('amount' . $counter, Input::NUMERIC));
-           Forms::amountCells(null, "amount" . $counter, Num::price_format('amount' . $counter));
+          Forms::amountCells(null, "amount" . $counter, Num::price_format('amount' . $counter));
           $un_allocated = $alloc_item->amount - $alloc_item->amount_allocated;
           Cell::amount($un_allocated, false, '');
           Cell::label("<a href='#' name=Alloc$counter class='button allocateAll'>" . _("All") . "</a>");
@@ -429,8 +429,8 @@
   /**
 
    */
-  class allocation_item
-  {
+  class allocation_item {
+
     /**
      * @var
      */
@@ -484,7 +484,7 @@
     /**
      * @param $order
      */
-function copy_from_order($order)
+    function copy_from_order($order)
     {
       $_POST['Comments']         = $order->Comments;
       $_POST['OrderDate']        = $order->document_date;
