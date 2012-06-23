@@ -174,7 +174,7 @@
         return $prefix . $nextval . $postfix;
       }
       else {
-        return $reference;
+        return $reference.'1';
       }
     }
     /**

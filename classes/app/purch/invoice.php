@@ -523,8 +523,11 @@
         Cell::labels('Supplier', $supp . Forms::hidden('supplier_id', $_POST['supplier_id'], false));
       } else {
         $_POST['supplier_id'] = Input::post('supplier_id', Input::NUMERIC, Session::i()->getGlobal('creditor', ''));
-        Creditor::cells(_("Supplier:"), 'supplier_id', null, false, true);
+        Creditor::newselect(null,array('row'=>false));
         JS::set_focus('supplier_id');
+      }
+      if (Input::post('_control')=='supplier') {
+        Ajax::i()->activate("_page_body");
       }
       if ($creditor_trans->supplier_id != $_POST['supplier_id']) {
         // supplier has changed
@@ -545,12 +548,12 @@
       }
       $supplier_currency = Bank_Currency::for_creditor($creditor_trans->supplier_id);
       $company_currency  = Bank_Currency::for_company();
-      GL_ExchangeRate::display($supplier_currency, $company_currency, $_POST['tran_date']);
       Session::i()->setGlobal('creditor', $_POST['supplier_id']);
-      if (!empty($creditor_trans->tax_description)) {
-        Cell::labels(_("Tax Group:"), $creditor_trans->tax_description);
-      }
-      if ($supplier_currency != $company_currency) {
+
+      if ($supplier_currency && $supplier_currency != $company_currency) {      GL_ExchangeRate::display($supplier_currency, $company_currency, $_POST['tran_date']);
+            if (!empty($creditor_trans->tax_description)) {
+              Cell::labels(_("Tax Group:"), $creditor_trans->tax_description);
+            }
         Cell::labels(_("Supplier's Currency:"), "<span class='bold'>" . $supplier_currency . "</span>");
         Row::end();
         Row::end();

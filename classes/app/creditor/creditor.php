@@ -478,14 +478,16 @@ JS;
      * @static
      *
      * @param null  $value
-     * @param array $options
+     * @param array $options options are<br> (bool)row, (string)cell_params, (int|null)rowspan
      *
      * @return void
      */
     public static function newselect($value = null, $options = array())
     {
       $o = [
-        'row'        => true, 'cell_params'=> '', 'rowspan'    => null,
+        'row'        => true, //
+        'cell_params'=> '',//
+        'rowspan'    => null,
       ];
       $o = array_merge($o, $options);
       if ($o['row']) {

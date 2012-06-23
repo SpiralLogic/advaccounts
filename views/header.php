@@ -12,5 +12,5 @@
   <script src='<?= $script ?>'></script>
   <% endforeach; %>
 </head>
-<body<?= $class?"class='$class'":'' ?>>
+<body<?= $class?" class='$class'":'' ?>>
 <div id='content'>

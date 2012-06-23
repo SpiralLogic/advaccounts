@@ -175,7 +175,7 @@
       if ($o['label']) {
         HTML::label(null, $o['label'], array('for' => $id), false);
       }
-      HTML::input($id, array('value' => $o['selected'], 'name' => $id, 'size' => $o['size']));
+      HTML::input($id, array('value' => $o['selected'], 'name' => $id, 'class'=>$o['class'], 'size' => $o['size']));
       if ($o['editable']) {
         HTML::label('lineedit', 'edit', array(
           'for' => $id, 'class' => 'stock button', 'style' => 'display:none'

@@ -1,4 +1,6 @@
 <?php
+  use ADV\Core\DB\DBDuplicateException;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -354,9 +356,8 @@
         $sql .= DB::escape($this->supplier_id) . "," . DB::escape($this->Comments) . ",'" . Dates::date2sql($this->orig_order_date) . "', " . DB::escape($this->reference) . ", " . DB::escape($this->requisition_no) . ", " . DB::escape($this->location) . ", " . DB::escape($this->delivery_address) . ", " . DB::escape($this->freight) . ", " . DB::escape($this->salesman) . ")";
         DB::query($sql, "The purchase order header record could not be inserted.");
       }
-      catch (DBException $e) {
-        Event::error('Purchase order could not be added: ' . $e->getMessage());
-
+      catch (DBDuplicateException $e) {
+        Event::error('Purchase order could not be added: A purchase order already exists with this number!');
         return false;
       }
       /*Get the auto increment value of the order number created from the sql above */
@@ -417,7 +418,7 @@
         }
         DB::query($sql, "One of the purchase order detail records could not be updated");
       }
-      //DB_Comments::add(ST_PURCHORDER, $this->order_no, $this->orig_order_date, $this->Comments);
+      DB_Comments::add(ST_PURCHORDER, $this->order_no, $this->orig_order_date, $this->Comments);
       DB::commit();
       Orders::session_delete($this->order_id);
 
