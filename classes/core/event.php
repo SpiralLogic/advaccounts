@@ -39,11 +39,11 @@
      */
     public static function init()
     {
+      $cache                      = Cache::i();
       static::$shutdown_events_id = 'shutdown.events.' . \User::i()->username;
-      $shutdown_events            = Cache::get(static::$shutdown_events_id);
-      Cache::delete(static::$shutdown_events_id);
+      $shutdown_events            = $cache->get(static::$shutdown_events_id);
+      $cache->delete(static::$shutdown_events_id);
       if ($shutdown_events) {
-
         while ($msg = array_pop($shutdown_events)) {
           static::handle($msg[0], $msg[1], $msg[2], $msg[3]);
         }
@@ -149,7 +149,6 @@
       while (ob_get_level()) {
         ob_end_flush();
       }
-
       session_write_close();
       fastcgi_finish_request();
       static::$request_finsihed = true;
@@ -159,6 +158,7 @@
       catch (\Exception $e) {
         static::error('Error during post processing: ' . $e->getMessage());
       }
-      Cache::set(static::$shutdown_events_id, static::$shutdown_events);
+      Cache::i()->set(static::$shutdown_events_id, static::$shutdown_events);
     }
   }
+

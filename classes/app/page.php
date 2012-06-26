@@ -91,7 +91,7 @@
       Display::div_end(); // end of _page_body section
       $this->footer();
     }
-    public function display_application(Application $application)
+    public function display_application($application)
     {
       if ($application->direct) {
         Display::meta_forward($application->direct);
@@ -121,11 +121,12 @@
      * @param      $title
      * @param bool $index
      */
-    protected function __construct($title, $index = FALSE)
+    protected function __construct($title, $index = FALSE, $app)
     {
       $this->User     = User::i();
       $this->Config   = Config::i();
       $this->Ajax     = Ajax::i();
+      $this->App      = $app;
       $this->is_index = $index;
       $this->title    = $title;
       $this->frame    = isset($_GET['frame']);
@@ -136,7 +137,6 @@
     protected function init($menu)
     {
       $this->Security = new Security($this->User, $this);
-      $this->App      = ADVAccounting::i();
       $this->sel_app  = $this->App->selected;
       $this->ajaxpage = (AJAX_REFERRER || Ajax::inAjax());
       $this->menu     = ($this->frame) ? FALSE : $menu;
@@ -318,10 +318,10 @@
      *
      * @return null|Page
      */
-    public static function start($title, $security = SA_OPEN, $no_menu = FALSE, $is_index = FALSE)
+    public static function start($title, $security = SA_OPEN, $no_menu = FALSE, $is_index = FALSE, $app = null)
     {
       if (static::$i === NULL) {
-        static::$i = new static($title, $is_index);
+        static::$i = new static($title, $is_index, $app);
       }
       static::$i->set_security($security);
       static::$i->init(!$no_menu);

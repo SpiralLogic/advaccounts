@@ -8,7 +8,6 @@
     <span> </span>| <span>mem/peak: <?=  $mem ?> </span><span>|</span><span> load time: <?= $load_time ?></span>
     <? endif; ?>
   <? endif; ?>
-  <?= $debug ?>
   <!-- end content div-->
   </div>
   <?= $sidemenu ?>

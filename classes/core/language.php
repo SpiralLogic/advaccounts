@@ -95,12 +95,6 @@
         \ADVAccounting::refresh();
       } // refresh menu
     }
-    /**
-
-     */
-    public static function set()
-    {
-    }
   }
 
   if (!function_exists("_")) {

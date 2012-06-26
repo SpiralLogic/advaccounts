@@ -45,14 +45,11 @@
   }
 
   /**
-   * @method get($key, $default = false)
-   * @method set($key, $value, $expires = 86400)
-   * @method define_constants($name, $constants)
-   * @method delete($key)
+   * @method Cache i()
    */
   class Cache
   {
-    use Traits\StaticAccess;
+    use Traits\Singleton;
 
     /**
      * @var bool
@@ -96,7 +93,7 @@
      *
      * @return mixed
      */
-    public function _set($key, $value, $expires = 86400)
+    public function set($key, $value, $expires = 86400)
     {
       if ($this->connection !== false) {
         $this->connection->set($key, $value, time() + $expires);
@@ -110,7 +107,7 @@
      *
      * @param $key
      */
-    public function _delete($key)
+    public function delete($key)
     {
       if ($this->connection !== false) {
         $this->connection->delete($key);
@@ -126,7 +123,7 @@
      *
      * @return mixed
      */
-    public function _get($key, $default = false)
+    public function get($key, $default = false)
     {
       if ($this->connection !== false) {
         $result = $this->connection->get($key);
@@ -145,7 +142,7 @@
      * @static
      * @return mixed
      */
-    public function _getStats()
+    public function getStats()
     {
       return ($this->connected) ? $this->connection->getStats() : false;
     }
@@ -153,7 +150,7 @@
      * @static
      * @return mixed
      */
-    public function _getVersion()
+    public function getVersion()
     {
       return ($this->connected) ? $this->connection->getVersion() : false;
     }
@@ -161,7 +158,7 @@
      * @static
      * @return mixed
      */
-    public function _getServerList()
+    public function getServerList()
     {
       return ($this->connected) ? $this->connection->getServerList() : false;
     }
@@ -170,7 +167,7 @@
      *
      * @param int $time
      */
-    public function _flush($time = 0)
+    public function flush($time = 0)
     {
       if ($this->connection) {
         $this->connection->flush($time);
@@ -184,7 +181,7 @@
      * @param array|closure $constants
      * @param null          $name
      */
-    public function _define_constants($name, $constants)
+    public function define_constants($name, $constants)
     {
 
       if (function_exists('apc_load_constants')) {

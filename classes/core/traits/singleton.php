@@ -16,6 +16,7 @@
      * @var null
      */
     protected static $i = NULL;
+    protected $dic = NULL;
     /***
      * @static
      * @return
@@ -29,19 +30,17 @@
         }
         return static::$i;
       }
+      $namespaced_class = $class_name = get_called_class();
+      if ($lastNsPos = strripos($namespaced_class, '\\')) {
+        $class_name = substr($namespaced_class, $lastNsPos + 1);
+      }
       if ($class && static::$i === NULL) {
-        $class_name       = get_called_class();
-        $dic[$class_name] = $dic->share(function() use ($class) { return  $class; });
-        static::$i        = $class_name;
+        $dic[$class_name] = $dic->share(function() use ($class) { return $class; });
       }
       if (static::$i === NULL) {
-        $class_name = $class = get_called_class();
-        if ($lastNsPos = strripos($class, '\\')) {
-          $class_name = substr($class, $lastNsPos + 1);
-        }
-        $dic[$class_name] = $dic->share(function() use ($class) { return new $class; });
-        static::$i        = $class_name;
+        $dic[$class_name] = $dic->share(function() use ($namespaced_class) { return new $namespaced_class; });
       }
+      static::$i = $class_name;
       return $dic[static::$i];
     }
   }

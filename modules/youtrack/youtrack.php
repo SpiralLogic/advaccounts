@@ -19,7 +19,7 @@
   {
     public function _init()
     {
-      User::register_login(__CLASS__, '_login');
+      User::register_login($this, '_login');
     }
     public function _login()
     {

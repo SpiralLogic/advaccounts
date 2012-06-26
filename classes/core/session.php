@@ -27,7 +27,7 @@
    * @method setUserAgent()
    *@method Session i()
    */
-  class Session
+  class Session implements \ArrayAccess
   {
     use Traits\StaticAccess;
 
@@ -35,6 +35,7 @@
      * @var \gettextNativeSupport|\gettext_php_support
      */
     public $get_text;
+    public $tester = false;
     /**
      * @var array
      */
@@ -49,6 +50,7 @@
       if (session_status() === PHP_SESSION_DISABLED) {
         throw new SessionException('Sessions are disasbled!');
       }
+
       ini_set('session.gc_maxlifetime', 3200); // 10hrs
       session_name('ADV' . md5($_SERVER['SERVER_NAME']));
       $old_serializer = $old_handler = $old_path = null;
@@ -56,7 +58,7 @@
       if (session_status() === PHP_SESSION_NONE && extension_loaded('Memcached')) {
         $old_handler = ini_set('session.save_handler', 'Memcached');
         $old_path    = ini_set('session.save_path', '127.0.0.1:11211');
-        (Memcached::HAVE_IGBINARY)  and  $old_serializer = ini_set('session.serialize_handler', 'igbinary');
+        //   (Memcached::HAVE_IGBINARY)  and  $old_serializer = ini_set('session.serialize_handler', 'igbinary');
         session_start();
       }
       /** @noinspection PhpUndefinedFunctionInspection */
@@ -70,10 +72,10 @@
       if (session_status() !== PHP_SESSION_ACTIVE) {
         throw new SessionException('Could not start a Session!');
       }
+      var_dump($_SESSION);
       header("Cache-control: private");
       $this->setTextSupport();
-      $_SESSION['Language']=new Language();
-      $this->_session = &$_SESSION;
+      $_SESSION['Language'] = new Language();
       if (!isset($this->_session['globals'])) {
         $this->_session['globals'] = [];
       }
@@ -88,7 +90,7 @@
     {
       if (Arr::get($_SESSION, 'HTTP_USER_AGENT') != sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR']))) {
         $this->setUserAgent();
-        return false;
+        //return false;
       }
       return true;
     }
@@ -178,7 +180,8 @@
     public function _kill()
     {
       Config::removeAll();
-      session_unset();
+      session_start();
+      $this->_regenerate();
       session_destroy();
     }
     /**
@@ -187,6 +190,72 @@
      */
     public function _regenerate()
     {
-      session_regenerate_id();
+      // session_regenerate_id();
+    }
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Whether a offset exists
+     * @link http://php.net/manual/en/arrayaccess.offsetexists.php
+     *
+     * @param mixed $offset <p>
+     *                      An offset to check for.
+     * </p>
+     *
+     * @return boolean true on success or false on failure.
+     * </p>
+     * <p>
+     *       The return value will be casted to boolean if non-boolean was returned.
+     */
+    public function offsetExists($offset)
+    {
+      return array_key_exists($offset, $_SESSION);
+    }
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Offset to retrieve
+     * @link http://php.net/manual/en/arrayaccess.offsetget.php
+     *
+     * @param mixed $offset <p>
+     *                      The offset to retrieve.
+     * </p>
+     *
+     * @return mixed Can return all value types.
+     */
+    public function offsetGet($offset)
+    {
+      return $_SESSION[$offset];
+    }
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Offset to set
+     * @link http://php.net/manual/en/arrayaccess.offsetset.php
+     *
+     * @param mixed $offset <p>
+     *                      The offset to assign the value to.
+     * </p>
+     * @param mixed $value  <p>
+     *                      The value to set.
+     * </p>
+     *
+     * @return void
+     */
+    public function offsetSet($offset, $value)
+    {
+      $_SESSION[$offset] = $value;
+    }
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Offset to unset
+     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
+     *
+     * @param mixed $offset <p>
+     *                      The offset to unset.
+     * </p>
+     *
+     * @return void
+     */
+    public function offsetUnset($offset)
+    {
+      unset($_SESSION[$offset]);
     }
   }

@@ -9,6 +9,8 @@
    **/
   class Validation
   {
+    use ADV\Core\Traits\StaticAccess;
+
     const CUSTOMERS         = "debtors";
     const CURRENCIES        = "currencies";
     const SALES_TYPES       = "sales_types";
@@ -41,6 +43,13 @@
     const QUICK_ENTRIES     = "quick_entries";
     const TAGS              = "FROM tags WHERE type=";
     const EMPTY_RESULT      = "";
+    protected $Cache;
+    protected $User;
+    public function __construct(Cache $cache = null, User $user = null)
+    {
+      $this->Cache = $cache ? : Cache::i();
+      $this->User  = $user ? : User::i();
+    }
     /**
      * @static
      *
@@ -52,13 +61,13 @@
      * @return int|null
      * @throws Adv_Exception
      */
-    public static function check($validate, $msg = '', $extra = null, $default = null)
+    public function _check($validate, $msg = '', $extra = null, $default = null)
     {
       if ($extra === false) {
         return 0;
       }
       $cachekey = 'validation.' . md5($validate . $extra);
-      if (Cache::get($cachekey)) {
+      if ($this->Cache->get($cachekey)) {
         return 1;
       }
       if ($extra !== null) {
@@ -77,7 +86,7 @@
       if (!($myrow[0] > 0)) {
         throw new Adv_Exception($msg);
       } else {
-        Cache::set($cachekey, true);
+        $this->Cache->set($cachekey, true);
 
         return $myrow[0];
       }
@@ -95,7 +104,7 @@
      *
      * @return bool|int
      */
-    public static function is_int($postname, $min = null, $max = null)
+    public function is_int($postname, $min = null, $max = null)
     {
       if (!isset($_POST) || !isset($_POST[$postname])) {
         return 0;
@@ -126,13 +135,13 @@
      *
      * @return int
      */
-    public static function post_num($postname, $min = null, $max = null, $default = 0)
+    public function _post_num($postname, $min = null, $max = null, $default = 0)
     {
       if (!isset($_POST) || !isset($_POST[$postname])) {
         $_POST[$postname] = $default;
       }
 
-      return Validation::is_num($_POST[$postname], $min, $max, $default);
+      return $this->_is_num($_POST[$postname], $min, $max, $default);
     }
     /**
      * @static
@@ -144,7 +153,7 @@
      *
      * @return int
      */
-    public static function is_num($value, $min = null, $max = null, $default = 0)
+    public function _is_num($value, $min = null, $max = null, $default = 0)
     {
       $result = filter_var($value, FILTER_VALIDATE_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND);
       if ($min !== null && $result < $min) {
@@ -167,7 +176,7 @@
      * @internal param int $dflt
      * @return bool|float|int|mixed|string
      */
-    public static function input_num($postname = null, $default = 0, $min = null, $max = null)
+    public function _input_num($postname = null, $default = 0, $min = null, $max = null)
     {
       if (!isset($_POST) || !isset($_POST[$postname])) {
         $_POST[$postname] = $default;
@@ -180,6 +189,6 @@
         $result = false;
       }
 
-      return ($result === false || $result === null) ? 0 : User::numeric($result);
+      return ($result === false || $result === null) ? 0 : $this->User->_numeric($result);
     }
   }

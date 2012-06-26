@@ -108,60 +108,6 @@
       }
     }
     /**
-     * @return Array|mixed
-     */
-    public function language()
-    {
-      return $this->language;
-    }
-    public function qty_dec()
-    {
-      return $this->qty_dec;
-    }
-    /**
-     * @return int
-     */
-    public function price_dec()
-    {
-      return $this->price_dec;
-    }
-    /**
-     * @return int
-     */
-    public function exrate_dec()
-    {
-      return $this->exrate_dec;
-    }
-    /**
-     * @return int
-     */
-    public function percent_dec()
-    {
-      return $this->percent_dec;
-    }
-    public function show_gl()
-    {
-      return $this->show_gl;
-    }
-    public function show_codes()
-    {
-      return $this->show_codes;
-    }
-    /**
-     * @return Array|mixed
-     */
-    public function date_format()
-    {
-      return $this->date_format;
-    }
-    /**
-     * @return Array|mixed
-     */
-    public function date_sep()
-    {
-      return $this->date_sep;
-    }
-    /**
      * @return string
      */
     public function date_display()
@@ -193,50 +139,5 @@
       $dec_seps = Config::get('separators_decimal');
 
       return $dec_seps [$this->dec_sep];
-    }
-    /**
-     * @return string
-     */
-    public function get_theme()
-    {
-      return $this->theme;
-    }
-    public function get_pagesize()
-    {
-      return $this->page_size;
-    }
-    public function show_hints()
-    {
-      return $this->show_hints;
-    }
-    public function print_profile()
-    {
-      return $this->print_profile;
-    }
-    public function rep_popup()
-    {
-      return $this->rep_popup;
-    }
-    public function query_size()
-    {
-      return $this->query_size;
-    }
-    public function graphic_links()
-    {
-      return $this->graphic_links;
-    }
-    /**
-     * @return int
-     */
-    public function sticky_doc_date()
-    {
-      return $this->sticky_doc_date;
-    }
-    /**
-     * @return Array|mixed
-     */
-    public function start_up_tab()
-    {
-      return $this->startup_tab;
     }
   }

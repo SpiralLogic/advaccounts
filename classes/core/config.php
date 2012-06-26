@@ -96,7 +96,7 @@
      */
     public function _removeAll()
     {
-      Cache::delete('config');
+      $this->Cache->delete('config');
     }
     /**
      * @static
@@ -107,20 +107,21 @@
       $this->_removeAll();
       $this->load();
     }
-    public static function _shutdown()
+    public function _shutdown()
     {
-      Cache::set('config', static::i()->_vars);
+      $this->Cache->set('config', $this->_vars);
     }
     /**
 
      */
-    public function __construct(Cachable $cache = null)
+    public function __construct(Cache $cache = null)
     {
+      $this->Cache = $cache ? : Cache::i();
       if (isset($_GET['reload_config'])) {
-        Cache::delete('config');
+        $this->Cache->delete('config');
         header('Location: /');
       } elseif ($this->_vars === null) {
-        $this->_vars = Cache::get('config');
+        $this->_vars = $this->Cache->get('config');
       }
       if (!$this->_vars) {
         $this->load();
@@ -153,7 +154,7 @@
       }
       /** @noinspection PhpIncludeInspection */
       $this->_vars[$group_name] = include($file);
-      Event::register_shutdown(__CLASS__);
+      Event::register_shutdown($this);
       return true;
     }
   }

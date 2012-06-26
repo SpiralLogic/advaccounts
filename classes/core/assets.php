@@ -99,6 +99,8 @@
       header("Expires: " . $this->gmdatestr(time() + 315360000));
       header("Cache-Control: max-age=315360000");
       header("Vary: Accept-Encoding", false);
+      header("Last-Modified: " . $this->gmdatestr());
+
       $this->contentHeader();
     }
     /**
@@ -210,6 +212,9 @@
       if (!$this->clientCache || !$this->clientCacheCheck || !isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || $_SERVER['HTTP_IF_MODIFIED_SINCE'] != $mtimestr) {
         if ($this->clientCache && $this->clientCacheCheck) {
           header("Last-Modified: " . $mtimestr);
+          header("Expires: " . $this->gmdatestr(time() + 315360000));
+          header("Vary: Accept-Encoding", false);
+
           header("Cache-Control: must-revalidate");
         } elseif ($this->clientCache) {
           $this->headerNeverExpire();
@@ -230,7 +235,8 @@
               }
               $minifier_class                   = $minify_type_settings['minifier'];
               $minify_type_settings['settings'] = $minify_type_settings['settings'] ? : array();
-              $minifier                         = new $minifier_class($content, array('fileDir'            => $fileDir,
+              $minifier                         = new $minifier_class($content, array(
+                                                                                     'fileDir'             => $fileDir,
                                                                                      'minify_type_settings'=> $minify_type_settings['settings'],
                                                                                      'mimeTypes'           => $this->mimeTypes
                                                                                 ));

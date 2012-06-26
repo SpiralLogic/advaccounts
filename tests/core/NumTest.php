@@ -16,10 +16,8 @@
      */
     protected function setUp()
     {
-      $user      = $this->getMockBuilder('\\User')->disableOriginalConstructor()->getMock();
-      $userprefs = $this->getMockBuilder('\\Userprefs')->disableOriginalConstructor()->getMock();
-      $userprefs->expects($this->any())->method('price_dec')->will($this->returnValue(2));
-      $user->expects($this->any())->method('_prefs')->will($this->returnValue($userprefs));
+      $user = $this->getMockBuilder('\\User')->disableOriginalConstructor()->getMock();
+      $user->expects($this->any())->method('_price_dec')->will($this->returnValue(2));
       $user->expects($this->any())->method('_tho_sep')->will($this->returnValue(','));
       $user->expects($this->any())->method('_dec_sep')->will($this->returnValue('.'));
 

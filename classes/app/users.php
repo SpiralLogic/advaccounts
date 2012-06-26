@@ -362,7 +362,8 @@
      */
     protected static function get_online()
     {
-      $usersonline = Cache::get('users_online');
+      $cache       = Cache::i();
+      $usersonline = $cache->_get('users_online');
       if ($usersonline) {
         return $usersonline;
       }
@@ -383,7 +384,7 @@
       } else {
         $users = 1;
       }
-      Cache::set('users_online', $users, 300);
+      $cache->_set('users_online', $users, 300);
 
       return $users;
     }
