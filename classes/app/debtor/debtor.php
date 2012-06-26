@@ -621,25 +621,7 @@ JS;
 
       return $row[0];
     }
-    /**
-     * @static
-     *
-     * @param $customer_id
-     *
-     * @return Array|DB_Query_Result
-     */
-    public static function get_habit($customer_id)
-    {
-      $sql
-              = "SELECT debtors.payment_discount,
-                 credit_status.dissallow_invoices
-                FROM debtors, credit_status
-                WHERE debtors.credit_status = credit_status.id
-                    AND debtors.debtor_id = " . DB::escape($customer_id);
-      $result = DB::query($sql, "could not query customers");
 
-      return DB::fetch($result);
-    }
     /**
      * @static
      *

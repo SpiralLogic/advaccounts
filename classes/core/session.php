@@ -58,21 +58,20 @@
       if (session_status() === PHP_SESSION_NONE && extension_loaded('Memcached')) {
         $old_handler = ini_set('session.save_handler', 'Memcached');
         $old_path    = ini_set('session.save_path', '127.0.0.1:11211');
-        //   (Memcached::HAVE_IGBINARY)  and  $old_serializer = ini_set('session.serialize_handler', 'igbinary');
+        (Memcached::HAVE_IGBINARY)  and  $old_serializer = ini_set('session.serialize_handler', 'igbinary');
         session_start();
       }
       /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() === PHP_SESSION_NONE) {
-        ini_set('session.save_handler', $old_handler);
-        ini_set('session.save_path', $old_path);
-        ini_set('session.serialize_handler', $old_serializer);
+        ini_restore('session.save_handler');
+        ini_restore('session.save_path');
+        ini_restore('session.serialize_handler');
         session_start();
       }
       /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() !== PHP_SESSION_ACTIVE) {
         throw new SessionException('Could not start a Session!');
       }
-      var_dump($_SESSION);
       header("Cache-control: private");
       $this->setTextSupport();
       $_SESSION['Language'] = new Language();

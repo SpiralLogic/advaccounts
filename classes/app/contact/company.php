@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  abstract class Contact_Company extends DB_Base implements JsonSerializable
+  abstract class Contact_Company extends DB_Base
   {
     /**
      * @var string

@@ -20,6 +20,7 @@
    */
   class Sales_Order
   {
+
     /**
      * @var int
      */
@@ -753,7 +754,27 @@
                   = "INSERT INTO sales_orders (order_no, type, debtor_id, trans_type, branch_id, customer_ref, reference, salesman, comments, source_no, ord_date,
             order_type, ship_via, deliver_to, delivery_address, contact_name, contact_phone,
             contact_email, freight_cost, from_stk_loc, delivery_date)
-            VALUES (" . $this->DB->_escape($order_no) . "," . $this->DB->_escape($order_type) . "," . $this->DB->_escape($this->customer_id) . ", " . $this->DB->_escape($this->trans_type) . "," . $this->DB->_escape($this->Branch) . ", " . $this->DB->_escape($this->cust_ref) . "," . $this->DB->_escape($this->reference) . "," . $this->DB->_escape($this->salesman) . "," . $this->DB->_escape($this->Comments) . "," . $this->DB->_escape($this->source_no) . ",'" . Dates::date2sql($this->document_date) . "', " . $this->DB->_escape($this->sales_type) . ", " . $this->DB->_escape($this->ship_via) . "," . $this->DB->_escape($this->deliver_to) . "," . $this->DB->_escape($this->delivery_address) . ", " . $this->DB->_escape($this->name) . ", " . $this->DB->_escape($this->phone) . ", " . $this->DB->_escape($this->email) . ", " . $this->DB->_escape($this->freight_cost) . ", " . $this->DB->_escape($this->location) . ", " . $this->DB->_escape($del_date) . ")";
+            VALUES (" . $this->DB->_escape($order_no) . "," . //
+        $this->DB->_escape($order_type) . "," . //
+        $this->DB->_escape($this->customer_id) . ", " . //
+        $this->DB->_escape($this->trans_type) . "," . //
+        $this->DB->_escape($this->Branch) . ", " . //
+        $this->DB->_escape($this->cust_ref) . ",
+            " . $this->DB->_escape($this->reference) . "," . //
+        $this->DB->_escape($this->salesman) . "," . //
+        $this->DB->_escape($this->Comments) . "," . //
+        $this->DB->_escape($this->source_no) . ",'" . //
+        Dates::date2sql($this->document_date) . "', " . //
+        $this->DB->_escape($this->sales_type) . ",
+            " . $this->DB->_escape($this->ship_via) . "," . //
+        $this->DB->_escape($this->deliver_to) . "," . //
+        $this->DB->_escape($this->delivery_address) . ", " . //
+        $this->DB->_escape($this->name) . ", " . //
+        $this->DB->_escape($this->phone) . ", " . //
+        $this->DB->_escape($this->email) . ", //
+            " . $this->DB->_escape($this->freight_cost) . ", " . //
+        $this->DB->_escape($this->location) . ", " . //
+        $this->DB->_escape($del_date) . ")";
       $this->DB->_query($sql, "order Cannot be Added");
       $this->trans_no = array($order_no => 0);
       $st_ids         = array();
@@ -1002,7 +1023,7 @@
                      discount_percent, qty_sent, sort_order)
                      VALUES (";
         $sql .= $this->DB->_escape($line->id ? $line->id :
-                                     0) . "," . $order_no . "," . $this->trans_type . "," . $this->DB->_escape($line->stock_id) . ",
+          0) . "," . $order_no . "," . $this->trans_type . "," . $this->DB->_escape($line->stock_id) . ",
                         " . $this->DB->_escape($line->description) . ", " . $this->DB->_escape($line->price) . ", " . $this->DB->_escape($line->quantity) . ", " . $this->DB->_escape($line->discount_percent) . ", " . $this->DB->_escape($line->qty_done) . ", " . $position . " )";
         $this->DB->_query($sql, "Old order Cannot be Inserted");
       } /* inserted line items into sales order details */

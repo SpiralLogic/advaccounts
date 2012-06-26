@@ -405,7 +405,7 @@
      */
     public function _language()
     {
-      return $this->prefs()->language();
+      return $this->prefs->language;
     }
     /**
      * @static
@@ -413,7 +413,7 @@
      */
     public function _qty_dec()
     {
-      return $this->prefs()->qty_dec();
+      return $this->prefs->qty_dec;
     }
     /**
      * @static
@@ -421,7 +421,7 @@
      */
     public function _price_dec()
     {
-      return $this->prefs()->price_dec();
+      return $this->prefs->price_dec;
     }
     /**
      * @static
@@ -429,7 +429,7 @@
      */
     public function _exrate_dec()
     {
-      return $this->prefs()->exrate_dec();
+      return $this->prefs->exrate_dec;
     }
     /**
      * @static
@@ -437,7 +437,7 @@
      */
     public function _percent_dec()
     {
-      return $this->prefs()->percent_dec();
+      return $this->prefs->percent_dec;
     }
     /**
      * @static
@@ -445,7 +445,7 @@
      */
     public function _show_gl()
     {
-      return $this->prefs()->show_gl();
+      return $this->prefs->show_gl;
     }
     /**
      * @static
@@ -453,7 +453,7 @@
      */
     public function _show_codes()
     {
-      return $this->prefs()->show_codes();
+      return $this->prefs->show_codes;
     }
     /**
      * @static
@@ -461,7 +461,7 @@
      */
     public function _date_format()
     {
-      return $this->prefs()->date_format();
+      return $this->prefs->date_format;
     }
     /**
      * @static
@@ -469,7 +469,7 @@
      */
     public function _date_display()
     {
-      return $this->prefs()->date_display();
+      return $this->prefs->date_display();
     }
     /**
      * @static
@@ -485,7 +485,7 @@
      */
     public function _tho_sep()
     {
-      return $this->prefs()->tho_sep();
+      return $this->prefs->tho_sep();
     }
     /**
      * @static
@@ -493,7 +493,7 @@
      */
     public function _dec_sep()
     {
-      return $this->prefs()->dec_sep();
+      return $this->prefs->dec_sep();
     }
     /**
      * @static
@@ -501,7 +501,7 @@
      */
     public function _theme()
     {
-      return $this->_prefs()->get_theme();
+      return $this->prefs->theme;
     }
     /**
      * @static
@@ -509,7 +509,7 @@
      */
     public function _page_size()
     {
-      return $this->prefs()->get_pagesize();
+      return $this->prefs->page_size;
     }
     /**
      * @static
@@ -517,7 +517,7 @@
      */
     public function _hints()
     {
-      return $this->prefs()->show_hints();
+      return $this->prefs->show_hints;
     }
     /**
      * @static
@@ -525,7 +525,7 @@
      */
     public function _print_profile()
     {
-      return $this->prefs()->print_profile();
+      return $this->prefs->print_profile;
     }
     /**
      * @static
@@ -533,7 +533,7 @@
      */
     public function _rep_popup()
     {
-      return $this->prefs()->rep_popup();
+      return $this->prefs->rep_popup;
     }
     /**
      * @static
@@ -541,7 +541,7 @@
      */
     public function _query_size()
     {
-      return $this->prefs()->query_size();
+      return $this->prefs->query_size;
     }
     /**
      * @static
@@ -549,7 +549,7 @@
      */
     public function _graphic_links()
     {
-      return $this->prefs()->graphic_links();
+      return $this->prefs->graphic_links;
     }
     /**
      * @static
@@ -557,7 +557,7 @@
      */
     public function _sticky_doc_date()
     {
-      return $this->prefs()->sticky_doc_date();
+      return $this->prefs->sticky_doc_date;
     }
     /**
      * @static
@@ -565,7 +565,7 @@
      */
     public function _startup_tab()
     {
-      return $this->prefs()->start_up_tab();
+      return $this->prefs->startup_tab;
     }
     /**
      * @return mixed

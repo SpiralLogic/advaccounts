@@ -6,6 +6,7 @@
    */
   class NumTest extends \PHPUnit_Framework_TestCase
   {
+
     /**
      * @var Num
      */
@@ -38,6 +39,8 @@
     {
       $actual   = $this->object->_price_format('25.563434');
       $expected = ('25.56');
+      $actual   = $this->object->_price_format('25');
+      $expected = ('25.00');
       $this->assertEquals($expected, $actual);
       $actual   = $this->object->_price_format(0);
       $expected = '0.00';
