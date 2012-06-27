@@ -153,7 +153,6 @@
      */
     public static function i($name = null)
     {
-      unset($_SESSION['company']);
       /** @noinspection PhpUndefinedFieldInspection */
       if (static::$i === null) {
         $name    = $name ? : User::i()->company;

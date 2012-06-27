@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class UI extends HTML {
-
+  class UI extends HTML
+  {
     /**
      * @static
      *
@@ -30,7 +30,6 @@
         $attr['class'] = 'button';
       }
       HTML::button($id, $content, $attr, false);
-
       return static::$_instance;
     }
     /**
@@ -57,7 +56,6 @@
         }
       }
       echo HTML::_select()->setReturn(false);
-
       return static::$_instance;
     }
     /***
@@ -80,38 +78,49 @@
     public static function search($id, $attr = array(), $options = array())
     {
       $o   = array(
-        'url'      => false, //
-        'nodiv'    => false, //
-        'label'    => false, //
-        'name'     => null, //
-        'set'      => null, //
+        'url'        => false, //
+        'nodiv'      => false, //
+        'label'      => false, //
+        'name'       => null, //
+        'set'        => null, //
         'class'      => 'width95 ', //
-        'value'    => null, //
-        'focus'    => null, //
-        'callback' => false, //
-
+        'value'      => null, //
+        'focus'      => null, //
+        'callback'   => false, //
+        'cells'      => false,
       );
       $o   = array_merge($o, $attr);
       $url = ($o['url']) ? $o['url'] : false;
       if (!$o['nodiv']) {
         HTML::div(array('class' => 'ui-widget pad5'));
       }
+      if ($o['cells']) {
+        HTML::td(null, $o['label_cell_params']);
+      }
       if (($o['label'])) {
         HTML::label(null, $o['label'], array('for' => $id), false);
       }
-      $input_attr['class'] = $o['class'];
-        $input_attr['name'] = $o['name'];
-        $input_attr['data-set'] = $o['set'];
-        $input_attr['value'] = htmlentities($o['value']);
-        $input_attr['autofocus'] = $o['focus'];
-      $input_attr['type'] = 'search';
+      if ($o['cells']) {
+        HTML::_td();
+      }
+      $input_attr['class']     = $o['class'];
+      $input_attr['name']      = $o['name'];
+      $input_attr['data-set']  = $o['set'];
+      $input_attr['value']     = htmlentities($o['value']);
+      $input_attr['autofocus'] = $o['focus'];
+      $input_attr['type']      = 'search';
+      if ($o['cells']) {
+        HTML::td(null, $o['input_cell_params']);
+      }
       HTML::input($id, $input_attr);
+      if ($o['cells']) {
+        HTML::_td();
+      }
       if (!($o['nodiv'])) {
         HTML::div();
       }
       $callback = (($o['callback'])) ? $o['callback'] : strtoupper($id[0]) . strtolower(substr($id, 1));
       JS::autocomplete($id, $callback, $url, $options);
-
       return static::$_instance;
     }
     /**
@@ -175,11 +184,11 @@
       if ($o['label']) {
         HTML::label(null, $o['label'], array('for' => $id), false);
       }
-      HTML::input($id, array('value' => $o['selected'], 'name' => $id, 'class'=>$o['class'], 'size' => $o['size']));
+      HTML::input($id, array('value' => $o['selected'], 'name' => $id, 'class'=> $o['class'], 'size' => $o['size']));
       if ($o['editable']) {
         HTML::label('lineedit', 'edit', array(
-          'for' => $id, 'class' => 'stock button', 'style' => 'display:none'
-        ), false);
+                                             'for' => $id, 'class' => 'stock button', 'style' => 'display:none'
+                                        ), false);
         $desc_js .= '$("#lineedit").data("stock_id",value.stock_id).show().parent().css("white-space","nowrap"); ';
       }
       if ($o['cells']) {
@@ -190,26 +199,23 @@
         $selectjs = $o['selectjs'];
       } elseif ($o['description'] !== false) {
         HTML::textarea('description', $o['description'], array(
-          'name' => 'description', 'rows' => 1, 'class'=> 'width90'
-        ), false);
+                                                              'name' => 'description', 'rows' => 1, 'class'=> 'width90'
+                                                         ), false);
         $desc_js .= "$('#description').css('height','auto').attr('rows',4);";
       } elseif ($o['submitonselect']) {
-        $selectjs
-          = <<<JS
+        $selectjs = <<<JS
                 $(this).val(value.stock_id);
                 $('form').trigger('submit'); return false;
 JS;
       } else {
-        $selectjs
-          = <<<JS
+        $selectjs = <<<JS
                 $(this).val(value.stock_id);return false;
 JS;
       }
       if ($o['cells']) {
         HTML::td();
       }
-      $js
-             = <<<JS
+      $js    = <<<JS
     Adv.o.stock_id = \$$id = $("#$id").catcomplete({
                 delay: 0,
                 autoFocus: true,
@@ -257,7 +263,6 @@ JS;
 JS;
       $clean = "\$$id.catcomplete('destroy');";
       JS::addLive($js, $clean);
-
       return HTML::setReturn(false);
     }
     /**
@@ -276,11 +281,10 @@ JS;
       $emailBox = new Dialog('Select Email Address:', 'emailBox', '');
       $emailBox->addButtons(array('Close' => '$(this).dialog("close");'));
       $emailBox->setOptions(array(
-        'modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false
-      ));
+                                 'modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false
+                            ));
       $emailBox->show();
-      $action
-        = <<<JS
+      $action = <<<JS
      var emailID= $(this).data('emailid');
      $.post('/contacts/emails.php',{type: $contactType, id: emailID}, function(data) {
      \$emailBox.html(data).dialog('open');

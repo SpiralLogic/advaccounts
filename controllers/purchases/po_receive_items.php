@@ -14,7 +14,7 @@
     $trans_type = ST_SUPPRECEIVE;
     Event::success(_("Purchase Order Delivery has been processed"));
     Display::note(GL_UI::trans_view($trans_type, $grn, _("&View this Delivery")));
-    Display::link_params("/purchases/supplier_invoice.php", _("Entry purchase &invoice for this receival"), "New=1");
+    Display::link_params("/purchases/supplier_invoice.php", _("Enter purchase &invoice for this receival"), "New=1");
     Display::link_no_params("/purchases/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
     Page::footer_exit();
   }

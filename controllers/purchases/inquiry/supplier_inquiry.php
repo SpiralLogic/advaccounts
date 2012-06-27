@@ -31,7 +31,7 @@ $supplier_id = Input::get_post('supplier_id',INPUT::NUMERIC);
   Table::end();
   Session::i()->setGlobal('creditor', $supplier_id);
   Display::div_start('totals_tbl');
-  if ($supplier_id) {
+  if ($supplier_id>0) {
     $supplier_record = Creditor::get_to_trans($supplier_id);
     display_supplier_summary($supplier_record);
   }

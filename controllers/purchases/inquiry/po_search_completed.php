@@ -24,11 +24,11 @@
   if (!Input::request('frame')) {
     Table::start('tablestyle_noborder');
     Row::start();
-    Creditor::newselect(null, ['row'=> false, 'label'=> false, 'cell_class'=> 'med']);
+    Creditor::newselect(null, ['row'=> false, 'cell_class'=> 'med']);
     Forms::refCells(_("#:"), 'order_number');
     Forms::dateCells(_("From:"), 'OrdersAfterDate', '', NULL, -30);
     Forms::dateCells(_("To:"), 'OrdersToDate');
-    Inv_Location::cells(_("Location:"), 'StockLocation', NULL, TRUE);
+    //Inv_Location::cells(_("Location:"), 'StockLocation', NULL, TRUE);
     Item::cells(_("Item:"), 'SelectStockFromList', NULL, TRUE);
     Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
     Row::end();
