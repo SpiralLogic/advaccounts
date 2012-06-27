@@ -20,7 +20,6 @@
    */
   class Sales_Order
   {
-
     /**
      * @var int
      */
@@ -213,7 +212,6 @@
      * @var bool
      */
     public $view_only = false;
-    protected $DB;
     //
     // $trans_no==0 => open new/direct document
     // $trans_no!=0 && $this->view_only==false => read for view
@@ -227,8 +225,6 @@
     public function __construct($type, $trans_no = 0, $view = false)
     {
       /*Constructor function initialises a new shopping order */
-      $this->DB = DB::i();
-
       $this->line_items = array();
       $this->sales_type = "";
       $this->view_only  = $view;
@@ -286,7 +282,7 @@
               $srcdetails     = Debtor_TransDetail::get($src_type, array_keys($this->src_docs));
             }
             // calculate & save: qtys on other docs and free qtys on src doc
-            for ($line_no = 0; $srcline = $this->DB->_fetch($srcdetails); $line_no++) {
+            for ($line_no = 0; $srcline = DB::fetch($srcdetails); $line_no++) {
               $sign          = 1; // $type==13 ? 1 : -1; // this is strange debtor_trans atavism
               $line          = &$this->line_items[$line_no];
               $line->src_id  = $srcline['id']; // save src line ids for update
@@ -404,9 +400,9 @@
      */
     public function check_cust_ref($cust_ref)
     {
-      $sql    = "SELECT customer_ref,type FROM sales_orders WHERE debtor_id=" . $this->DB->_escape($this->customer_id) . " AND customer_ref=" . $this->DB->_escape($cust_ref) . " AND type != " . $this->trans_type;
-      $result = $this->DB->_query($sql);
-      return ($this->DB->_num_rows($result) > 0) ? true : false;
+      $sql    = "SELECT customer_ref,type FROM sales_orders WHERE debtor_id=" . DB::escape($this->customer_id) . " AND customer_ref=" . DB::escape($cust_ref) . " AND type != " . $this->trans_type;
+      $result = DB::query($sql);
+      return (DB::num_rows($result) > 0) ? true : false;
     }
     /**
      * @param $customer_id
@@ -455,9 +451,9 @@
     {
       if ($salesman_code == null) {
         $salesman_name = User::i()->name;
-        $sql           = "SELECT salesman_code FROM salesman WHERE salesman_name = " . $this->DB->_escape($salesman_name);
-        $query         = $this->DB->_query($sql, 'Couldn\'t find current salesman');
-        $result        = $this->DB->_fetch_assoc($query);
+        $sql           = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::escape($salesman_name);
+        $query         = DB::query($sql, 'Couldn\'t find current salesman');
+        $result        = DB::fetch_assoc($query);
         if (!empty($result['salesman_code'])) {
           $salesman_code = $result['salesman_code'];
         }
@@ -746,7 +742,7 @@
      */
     public function add()
     {
-      $this->DB->_begin();
+      DB::begin();
       $order_no   = SysTypes::get_next_trans_no($this->trans_type);
       $del_date   = Dates::date2sql($this->due_date);
       $order_type = 0; // this is default on new order
@@ -754,28 +750,8 @@
                   = "INSERT INTO sales_orders (order_no, type, debtor_id, trans_type, branch_id, customer_ref, reference, salesman, comments, source_no, ord_date,
             order_type, ship_via, deliver_to, delivery_address, contact_name, contact_phone,
             contact_email, freight_cost, from_stk_loc, delivery_date)
-            VALUES (" . $this->DB->_escape($order_no) . "," . //
-        $this->DB->_escape($order_type) . "," . //
-        $this->DB->_escape($this->customer_id) . ", " . //
-        $this->DB->_escape($this->trans_type) . "," . //
-        $this->DB->_escape($this->Branch) . ", " . //
-        $this->DB->_escape($this->cust_ref) . ",
-            " . $this->DB->_escape($this->reference) . "," . //
-        $this->DB->_escape($this->salesman) . "," . //
-        $this->DB->_escape($this->Comments) . "," . //
-        $this->DB->_escape($this->source_no) . ",'" . //
-        Dates::date2sql($this->document_date) . "', " . //
-        $this->DB->_escape($this->sales_type) . ",
-            " . $this->DB->_escape($this->ship_via) . "," . //
-        $this->DB->_escape($this->deliver_to) . "," . //
-        $this->DB->_escape($this->delivery_address) . ", " . //
-        $this->DB->_escape($this->name) . ", " . //
-        $this->DB->_escape($this->phone) . ", " . //
-        $this->DB->_escape($this->email) . ", //
-            " . $this->DB->_escape($this->freight_cost) . ", " . //
-        $this->DB->_escape($this->location) . ", " . //
-        $this->DB->_escape($del_date) . ")";
-      $this->DB->_query($sql, "order Cannot be Added");
+            VALUES (" . DB::escape($order_no) . "," . DB::escape($order_type) . "," . DB::escape($this->customer_id) . ", " . DB::escape($this->trans_type) . "," . DB::escape($this->Branch) . ", " . DB::escape($this->cust_ref) . "," . DB::escape($this->reference) . "," . DB::escape($this->salesman) . "," . DB::escape($this->Comments) . "," . DB::escape($this->source_no) . ",'" . Dates::date2sql($this->document_date) . "', " . DB::escape($this->sales_type) . ", " . DB::escape($this->ship_via) . "," . DB::escape($this->deliver_to) . "," . DB::escape($this->delivery_address) . ", " . DB::escape($this->name) . ", " . DB::escape($this->phone) . ", " . DB::escape($this->email) . ", " . DB::escape($this->freight_cost) . ", " . DB::escape($this->location) . ", " . DB::escape($del_date) . ")";
+      DB::query($sql, "order Cannot be Added");
       $this->trans_no = array($order_no => 0);
       $st_ids         = array();
       if (Config::get('accounts.stock_emailnotify') == 1) {
@@ -791,8 +767,8 @@
                     WHERE stock_location.loc_code=locations.loc_code
                     AND stock_location.stock_id = '" . $line->stock_id . "'
                     AND stock_location.loc_code = '" . $this->location . "'";
-          $res = $this->DB->_query($sql, "a location could not be retreived");
-          $loc = $this->DB->_fetch($res);
+          $res = DB::query($sql, "a location could not be retreived");
+          $loc = DB::fetch($res);
           if ($loc['email'] != "") {
             $qoh = Item::get_qoh_on_date($line->stock_id, $this->location);
             $qoh -= Item::get_demand($line->stock_id, $this->location);
@@ -807,12 +783,12 @@
           }
         }
         $sql = "INSERT INTO sales_order_details (order_no, trans_type, stk_code, description, unit_price, quantity, discount_percent,sort_order) VALUES (";
-        $sql .= $order_no . "," . $this->trans_type . "," . $this->DB->_escape($line->stock_id) . ", " . $this->DB->_escape($line->description) . "," . $line->price . ", " . $line->quantity . ", " . $line->discount_percent . ", " . $position . ")";
-        $this->DB->_query($sql, "order Details Cannot be Added");
+        $sql .= $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ", " . DB::escape($line->description) . "," . $line->price . ", " . $line->quantity . ", " . $line->discount_percent . ", " . $position . ")";
+        DB::query($sql, "order Details Cannot be Added");
       } /* inserted line items into sales order details */
       DB_AuditTrail::add($this->trans_type, $order_no, $this->document_date);
       Ref::save($this->trans_type, $this->reference);
-      $this->DB->_commit();
+      DB::commit();
       if (isset($loc, $st_names, $st_reorder) && Config::get('accounts.stock_emailnotify') == 1 && count($st_ids) > 0) {
         $this->email_notify($loc, $st_ids, $st_names, $st_reorder, $st_num);
       }
@@ -846,9 +822,9 @@
       $this->due_date      = Dates::sql2date($myrow["delivery_date"]);
       $this->document_date = Dates::sql2date($myrow["ord_date"]);
       $result              = Sales_Order::get_details($order_no, $this->trans_type);
-      if ($this->DB->_num_rows($result) > 0) {
+      if (DB::num_rows($result) > 0) {
         $line_no = 0;
-        while ($myrow = $this->DB->_fetch($result)) {
+        while ($myrow = DB::fetch($result)) {
           $this->add_to_order($line_no, $myrow["stk_code"], $myrow["quantity"], $myrow["unit_price"], $myrow["discount_percent"], $myrow["qty_done"], $myrow["standard_cost"], $myrow["description"], $myrow["id"]);
           $line_no++;
         }
@@ -870,8 +846,8 @@
       // calculate item price to sum of kit element prices factor for
       // value distribution over all exploded kit items
       $item = Item_Code::is_kit($new_item);
-      if ($this->DB->_num_rows($item) == 1) {
-        $item = $this->DB->_fetch($item);
+      if (DB::num_rows($item) == 1) {
+        $item = DB::fetch($item);
         if (!$item['is_foreign'] && $item['item_code'] == $item['stock_id']) {
           foreach ($this->line_items as $order_item) {
             if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0 && !$no_errors) {
@@ -890,8 +866,8 @@
         $price_factor = $price / $std_price;
       }
       $kit      = Item_Code::get_kit($new_item);
-      $item_num = $this->DB->_num_rows($kit);
-      while ($item = $this->DB->_fetch($kit)) {
+      $item_num = DB::num_rows($kit);
+      while ($item = DB::fetch($kit)) {
         $std_price = Item_Price::get_kit($item['stock_id'], $this->customer_currency, $this->sales_type, $this->price_factor, Input::post('OrderDate'), true);
         // rounding differences are included in last price item in kit
         $item_num--;
@@ -962,32 +938,32 @@
       $ord_date = Dates::date2sql($this->document_date);
       $order_no = key($this->trans_no);
       $version  = current($this->trans_no);
-      $this->DB->_begin();
-      $sql = "UPDATE sales_orders SET type =" . $this->DB->_escape($this->so_type) . " ,
-                    debtor_id = " . $this->DB->_escape($this->customer_id) . ",
-                    branch_id = " . $this->DB->_escape($this->Branch) . ",
-                    customer_ref = " . $this->DB->_escape($this->cust_ref) . ",
-                    source_no = " . $this->DB->_escape($this->source_no) . ",
-                    reference = " . $this->DB->_escape($this->reference) . ",
-                    salesman = " . $this->DB->_escape($this->salesman) . ",
-                    comments = " . $this->DB->_escape($this->Comments) . ",
-                    ord_date = " . $this->DB->_escape($ord_date) . ",
-                    order_type = " . $this->DB->_escape($this->sales_type) . ",
-                    ship_via = " . $this->DB->_escape($this->ship_via) . ",
-                    deliver_to = " . $this->DB->_escape($this->deliver_to) . ",
-                    delivery_address = " . $this->DB->_escape($this->delivery_address) . ",
-                    contact_name = " . $this->DB->_escape($this->name) . ",
-                    contact_phone = " . $this->DB->_escape($this->phone) . ",
-                    contact_email = " . $this->DB->_escape($this->email) . ",
-                    freight_cost = " . $this->DB->_escape($this->freight_cost) . ",
-                    from_stk_loc = " . $this->DB->_escape($this->location) . ",
-                    delivery_date = " . $this->DB->_escape($del_date) . ",
+      DB::begin();
+      $sql = "UPDATE sales_orders SET type =" . DB::escape($this->so_type) . " ,
+                    debtor_id = " . DB::escape($this->customer_id) . ",
+                    branch_id = " . DB::escape($this->Branch) . ",
+                    customer_ref = " . DB::escape($this->cust_ref) . ",
+                    source_no = " . DB::escape($this->source_no) . ",
+                    reference = " . DB::escape($this->reference) . ",
+                    salesman = " . DB::escape($this->salesman) . ",
+                    comments = " . DB::escape($this->Comments) . ",
+                    ord_date = " . DB::escape($ord_date) . ",
+                    order_type = " . DB::escape($this->sales_type) . ",
+                    ship_via = " . DB::escape($this->ship_via) . ",
+                    deliver_to = " . DB::escape($this->deliver_to) . ",
+                    delivery_address = " . DB::escape($this->delivery_address) . ",
+                    contact_name = " . DB::escape($this->name) . ",
+                    contact_phone = " . DB::escape($this->phone) . ",
+                    contact_email = " . DB::escape($this->email) . ",
+                    freight_cost = " . DB::escape($this->freight_cost) . ",
+                    from_stk_loc = " . DB::escape($this->location) . ",
+                    delivery_date = " . DB::escape($del_date) . ",
                     version = " . ($version + 1) . "
                  WHERE order_no=" . $order_no . "
                  AND trans_type=" . $this->trans_type . " AND version=" . $version;
-      $this->DB->_query($sql, "order Cannot be Updated, this can be concurrent edition conflict");
+      DB::query($sql, "order Cannot be Updated, this can be concurrent edition conflict");
       $sql = "DELETE FROM sales_order_details WHERE order_no =" . $order_no . " AND trans_type=" . $this->trans_type;
-      $this->DB->_query($sql, "Old order Cannot be Deleted");
+      DB::query($sql, "Old order Cannot be Deleted");
       if (Config::get('accounts.stock_emailnotify') == 1) {
         $st_ids     = array();
         $st_names   = array();
@@ -1000,10 +976,10 @@
                = "SELECT stock_location.*, locations.location_name, locations.email
                             FROM stock_location, locations
                             WHERE stock_location.loc_code=locations.loc_code
-                             AND stock_location.stock_id = " . $this->DB->_escape($line->stock_id) . "
-                             AND stock_location.loc_code = " . $this->DB->_escape($this->location);
-          $res = $this->DB->_query($sql, "a location could not be retreived");
-          $loc = $this->DB->_fetch($res);
+                             AND stock_location.stock_id = " . DB::escape($line->stock_id) . "
+                             AND stock_location.loc_code = " . DB::escape($this->location);
+          $res = DB::query($sql, "a location could not be retreived");
+          $loc = DB::fetch($res);
           if ($loc['email'] != "") {
             $qoh = Item::get_qoh_on_date($line->stock_id, $this->location);
             $qoh -= Item::get_demand($line->stock_id, $this->location);
@@ -1022,15 +998,15 @@
                      (id, order_no, trans_type, stk_code, description, unit_price, quantity,
                      discount_percent, qty_sent, sort_order)
                      VALUES (";
-        $sql .= $this->DB->_escape($line->id ? $line->id :
-          0) . "," . $order_no . "," . $this->trans_type . "," . $this->DB->_escape($line->stock_id) . ",
-                        " . $this->DB->_escape($line->description) . ", " . $this->DB->_escape($line->price) . ", " . $this->DB->_escape($line->quantity) . ", " . $this->DB->_escape($line->discount_percent) . ", " . $this->DB->_escape($line->qty_done) . ", " . $position . " )";
-        $this->DB->_query($sql, "Old order Cannot be Inserted");
+        $sql .= DB::escape($line->id ? $line->id :
+                             0) . "," . $order_no . "," . $this->trans_type . "," . DB::escape($line->stock_id) . ",
+                        " . DB::escape($line->description) . ", " . DB::escape($line->price) . ", " . DB::escape($line->quantity) . ", " . DB::escape($line->discount_percent) . ", " . DB::escape($line->qty_done) . ", " . $position . " )";
+        DB::query($sql, "Old order Cannot be Inserted");
       } /* inserted line items into sales order details */
       DB_AuditTrail::add($this->trans_type, $order_no, $this->document_date, _("Updated."));
       Ref::delete($this->trans_type, $order_no);
       Ref::save($this->trans_type, $this->reference);
-      $this->DB->_commit();
+      DB::commit();
       if (Config::get('accounts.stock_emailnotify') == 1 && count($st_ids) > 0) {
         $this->email_notify($loc, $st_ids, $st_names, $st_reorder, $st_num);
       }
@@ -1091,10 +1067,10 @@
         $this->dimension2_id = $myrow['dimension2_id'];
       }
       $result = Sales_Order::get_branch($customer_id, $branch_id);
-      if ($this->DB->_num_rows($result) == 0) {
+      if (DB::num_rows($result) == 0) {
         return _("The selected customer and branch are not valid, or the customer does not have any branches.");
       }
-      $myrow = $this->DB->_fetch($result);
+      $myrow = DB::fetch($result);
       $this->set_branch($branch_id, $myrow["tax_group_id"], $myrow["tax_group_name"], $myrow["phone"], $myrow["email"]);
       //$address = trim($myrow["br_post_address"]) != '' ? $myrow["br_post_address"] : (trim($myrow["br_address"]) != '' ?		$myrow["br_address"] : $deliver);
       $address = $myrow['br_address'] . "\n";
@@ -1560,14 +1536,14 @@
      */
     public function delete()
     {
-      $this->DB->_begin();
-      $sql = "DELETE FROM sales_orders WHERE order_no=" . $this->DB->_escape($this->order_no) . " AND trans_type=" . $this->DB->_escape($this->trans_type);
-      $this->DB->_query($sql, "order Header Delete");
-      $sql = "DELETE FROM sales_order_details WHERE order_no =" . $this->DB->_escape($this->order_no) . " AND trans_type=" . $this->DB->_escape($this->trans_type);
-      $this->DB->_query($sql, "order Detail Delete");
+      DB::begin();
+      $sql = "DELETE FROM sales_orders WHERE order_no=" . DB::escape($this->order_no) . " AND trans_type=" . DB::escape($this->trans_type);
+      DB::query($sql, "order Header Delete");
+      $sql = "DELETE FROM sales_order_details WHERE order_no =" . DB::escape($this->order_no) . " AND trans_type=" . DB::escape($this->trans_type);
+      DB::query($sql, "order Detail Delete");
       Ref::delete($this->trans_type, $this->order_no);
       DB_AuditTrail::add($this->trans_type, key($this->trans_no), Dates::today(), _("Deleted."));
-      $this->DB->_commit();
+      DB::commit();
     }
     /**
      * @static

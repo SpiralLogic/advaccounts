@@ -38,7 +38,7 @@
     /**
 
      */
-    public function __construct(Config $Config = null, $User = null, Session $Session = null, \DB_Company $Company = null)
+    public function __construct(Config $Config = null, $User = null, Session $Session = null,\DB_Company $Company=null)
     {
       $this->Config     = $Config ? : Config::i();
       $this->User       = $User ? : \User::i();
@@ -48,7 +48,7 @@
       $this->separators = $this->Config->_get('date.separators');
       $this->sep        = $this->separators[$this->Config->_get('date.ui_separator')];
     }
-    /**
+   /**
      * @static
      *
      * @param null $date
@@ -134,7 +134,7 @@
       if (!$this->Config->get('use_fiscalyear')) {
         return 1;
       }
-      $myrow = $this->Company->_get_current_fiscalyear();
+      $myrow = \DB_Company::get_current_fiscalyear();
       if ($myrow['closed'] == 1) {
         return 0;
       }
@@ -153,7 +153,7 @@
      */
     public function _begin_fiscalyear()
     {
-      $myrow = $this->Company->_get_current_fiscalyear();
+      $myrow = \DB_Company::get_current_fiscalyear();
       return $this->_sql2date($myrow['begin']);
     }
     /**
@@ -162,7 +162,7 @@
      */
     public function _end_fiscalyear()
     {
-      $myrow = $this->Company->_get_current_fiscalyear();
+      $myrow = \DB_Company::get_current_fiscalyear();
       return $this->_sql2date($myrow['end']);
     }
     /**
@@ -376,11 +376,11 @@
       $date = $this->_date2sql($date);
       if ($date == "") {
         $disp = $this->User->_date_display();
-        throw new \Adv_Exception("Dates must be entered in the format $disp. Sent was $date");
       }
       list($year, $month, $day) = explode("-", $date);
       return [$day, $month, $year];
     }
+
     /** Based on converter to and from Gregorian and Jalali calendars.
     Copyright (C) 2000 Roozbeh Pournader and Mohammad Toossi
     Released under GNU General Public License
@@ -581,35 +581,34 @@
       }
       $ret = number_format($ret, 3, '.', '') . ' ' . $formats[$formatter];
       return $ret;
-    }
-    /**
-     * @static
-     *
-     * @param $a
-     * @param $b
-     *
-     * @return int
-     */
-    protected function div($a, $b)
-    {
-      return (int) ($a / $b);
-    }
-    /**
-     * @static
-     *
-     * @param      $year
-     * @param      $month
-     * @param      $day
-     * @param null $format
-     *
-     * @return string
-     */
-    protected function date($year, $month, $day, $format = null)
-    {
-      $how  = $this->formats [($format !== null) ? $format : $this->User->_date_format()];
-      $date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
-      $how  = str_replace('/', $this->sep, $how);
-      return date($how, $date);
-    }
+    }    /**
+         * @static
+         *
+         * @param $a
+         * @param $b
+         *
+         * @return int
+         */
+        protected function div($a, $b)
+        {
+          return (int) ($a / $b);
+        }   /**
+             * @static
+             *
+             * @param      $year
+             * @param      $month
+             * @param      $day
+             * @param null $format
+             *
+             * @return string
+             */
+            protected function date($year, $month, $day, $format = null)
+            {
+              $how  = $this->formats [($format !== null) ? $format : $this->User->_date_format()];
+              $date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
+              $how  = str_replace('/', $this->sep, $how);
+              return date($how, $date);
+            }
+
   }
 

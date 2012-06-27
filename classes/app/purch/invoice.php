@@ -551,9 +551,9 @@
       Session::i()->setGlobal('creditor', $_POST['supplier_id']);
 
       if ($supplier_currency && $supplier_currency != $company_currency) {      GL_ExchangeRate::display($supplier_currency, $company_currency, $_POST['tran_date']);
-            if (!empty($creditor_trans->tax_description)) {
-              Cell::labels(_("Tax Group:"), $creditor_trans->tax_description);
-            }
+      if (!empty($creditor_trans->tax_description)) {
+        Cell::labels(_("Tax Group:"), $creditor_trans->tax_description);
+      }
         Cell::labels(_("Supplier's Currency:"), "<span class='bold'>" . $supplier_currency . "</span>");
         Row::end();
         Row::end();

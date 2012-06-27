@@ -9,43 +9,32 @@
    **/
   JS::open_window(900, 500);
   Page::start(_($help_context = "Search Outstanding Purchase Orders"), SA_SUPPTRANSVIEW);
-  $_POST['order_number']        = Input::get_post('order_number', Input::NUMERIC);
-  $_POST['StockLocation']       = Input::get_post('StockLocation', Input::STRING, '');
-  $_POST['SelectStockFromList'] = Input::get_post('SelectStockFromList', Input::STRING, '');
-  $_POST['supplier_id']         = Input::get_post('supplier_id', Input::NUMERIC, 0);
+  $order_number = $_POST['order_number'] = Input::get_post('order_number', Input::NUMERIC);
   // Ajax updates
   //
   if (Input::post('SearchOrders')) {
     Ajax::activate('orders_tbl');
-  } elseif (Input::post('_order_number_changed')) {
-    $disable = Input::post('order_number') !== '';
-    Ajax::addDisable(true, 'OrdersAfterDate', $disable);
-    Ajax::addDisable(true, 'OrdersToDate', $disable);
-    Ajax::addDisable(true, 'StockLocation', $disable);
-    Ajax::addDisable(true, '_SelectStockFromList_edit', $disable);
-    Ajax::addDisable(true, 'SelectStockFromList', $disable);
-    if ($disable) {
-      Ajax::addFocus(true, 'order_number');
-    } else {
-      Ajax::addFocus(true, 'OrdersAfterDate');
-    }
-    Ajax::activate('orders_tbl');
   }
+  if ($order_number) {
+    Ajax::addFocus(true, 'order_number');
+  } else {
+    Ajax::addFocus(true, 'OrdersAfterDate');
+  }
+  Ajax::activate('orders_tbl');
   Forms::start();
   Table::start('tablestyle_noborder');
   Row::start();
-  Creditor::cells(_("Supplier: "), 'supplier_id', Input::post('supplier_id'), true);
-   Forms::refCells(_("#:"), 'order_number', '', null, '', true);
-   Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
-   Forms::dateCells(_("To:"), 'OrdersToDate');
+  Creditor::cells(_(""), 'supplier_id', Input::post('supplier_id'), true);
+  Forms::refCells(_("#:"), 'order_number');
+  Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
+  Forms::dateCells(_("To:"), 'OrdersToDate');
   Inv_Location::cells(_("Location:"), 'StockLocation', null, true);
   //Item::cells(_("Item:"), 'SelectStockFromList', null, true,false,false,false,true);
   Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
   Row::end();
   Table::end();
   //figure out the sql required from the inputs available
-  $sql
-    = "SELECT
+  $sql         = "SELECT
     porder.order_no,
     porder.reference,
     supplier.name,
@@ -62,38 +51,42 @@
     AND porder.supplier_id = supplier.supplier_id
     AND location.loc_code = porder.into_stock_location
     AND (line.quantity_ordered > line.quantity_received) ";
-  if ($_POST['supplier_id']) {
-    $sql .= " AND supplier.supplier_id = " . DB::quote($_POST['supplier_id']);
+  $supplier_id = Input::get_post('supplier_id', Input::NUMERIC, 0);
+  if ($supplier_id) {
+    $sql .= " AND supplier.supplier_id = " . DB::quote($supplier_id);
   }
-  if ($_POST['order_number']) {
-    $sql .= "AND porder.reference LIKE " . DB::quote($_POST['order_number']);
+  if ($order_number) {
+    $sql .= " AND (porder.order_no LIKE " . DB::quote('%' . $order_number . '%');
+    $sql .= " OR porder.reference LIKE " . DB::quote('%' . $order_number . '%') . ') ';
   } else {
     $data_after  = Dates::date2sql($_POST['OrdersAfterDate']);
     $data_before = Dates::date2sql($_POST['OrdersToDate']);
     $sql .= " AND porder.ord_date >= '$data_after'";
     $sql .= " AND porder.ord_date <= '$data_before'";
-    if ($_POST['StockLocation']) {
-      $sql .= " AND porder.into_stock_location = " . DB::quote($_POST['StockLocation']);
+    $stock_location = Input::get_post('StockLocation', Input::STRING, '');
+    if ($stock_location) {
+      $sql .= " AND porder.into_stock_location = " . DB::quote($stock_location);
     }
-    if (isset($selected_stock_item)) {
-      $sql .= " AND line.item_code=" . DB::quote($_POST['SelectStockFromList']);
+    $selected_stock_item = Input::get_post('SelectStockFromList', Input::STRING, '');
+    if ($selected_stock_item) {
+      $sql .= " AND line.item_code=" . DB::quote($selected_stock_item);
     }
   } //end not order number selected
   $sql .= " GROUP BY porder.order_no";
   $result = DB::query($sql, "No orders were returned");
   /*show a table of the orders returned by the sql */
   $cols = array(
-    _("#")                              => array(
+    _("#")                                                                                                          => array(
       'fun'                                                                   => function ($trans) { return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]); }, 'ord' => ''
     ),
     _("Reference"),
-    _("Supplier")                       => array('ord' => '', 'type' => 'id'),
-    _("Supplier ID")                    => 'skip',
+    _("Supplier")                                                                                                   => array('ord' => '', 'type' => 'id'),
+    _("Supplier ID")                                                                                                => 'skip',
     _("Location"),
     _("Supplier's Reference"),
-    _("Order Date")                     => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'),
-    _("Currency")                       => array('align' => 'center'),
-    _("Order Total")                    => 'amount',
+    _("Order Date")                                                                                                 => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'),
+    _("Currency")                                                                                                   => array('align' => 'center'),
+    _("Order Total")                                                                                                => 'amount',
     array(
       'insert' => true, 'fun' => function ($row) { return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrder=" . $row["order_no"], ICON_EDIT); }
     ),
@@ -104,7 +97,7 @@
       'insert' => true, 'fun' => function ($row) { return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE); }
     )
   );
-  if (Input::post('StockLocation') != ALL_TEXT) {
+  if (!$stock_location) {
     $cols[_("Location")] = 'skip';
   }
   $table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);

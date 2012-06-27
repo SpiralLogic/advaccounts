@@ -49,7 +49,7 @@
    */
   class Cache
   {
-    use Traits\Singleton;
+    use Traits\StaticAccess;
 
     /**
      * @var bool
@@ -93,7 +93,7 @@
      *
      * @return mixed
      */
-    public function set($key, $value, $expires = 86400)
+    public function _set($key, $value, $expires = 86400)
     {
       if ($this->connection !== false) {
         $this->connection->set($key, $value, time() + $expires);
@@ -107,7 +107,7 @@
      *
      * @param $key
      */
-    public function delete($key)
+    public function _delete($key)
     {
       if ($this->connection !== false) {
         $this->connection->delete($key);
@@ -123,7 +123,7 @@
      *
      * @return mixed
      */
-    public function get($key, $default = false)
+    public function _get($key, $default = false)
     {
       if ($this->connection !== false) {
         $result = $this->connection->get($key);
@@ -142,7 +142,7 @@
      * @static
      * @return mixed
      */
-    public function getStats()
+    public function _getStats()
     {
       return ($this->connected) ? $this->connection->getStats() : false;
     }
@@ -150,7 +150,7 @@
      * @static
      * @return mixed
      */
-    public function getVersion()
+    public function _getVersion()
     {
       return ($this->connected) ? $this->connection->getVersion() : false;
     }
@@ -158,7 +158,7 @@
      * @static
      * @return mixed
      */
-    public function getServerList()
+    public function _getServerList()
     {
       return ($this->connected) ? $this->connection->getServerList() : false;
     }
@@ -167,7 +167,7 @@
      *
      * @param int $time
      */
-    public function flush($time = 0)
+    public function _flush($time = 0)
     {
       if ($this->connection) {
         $this->connection->flush($time);
@@ -181,7 +181,7 @@
      * @param array|closure $constants
      * @param null          $name
      */
-    public function define_constants($name, $constants)
+    public function _define_constants($name, $constants)
     {
 
       if (function_exists('apc_load_constants')) {

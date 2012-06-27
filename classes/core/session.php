@@ -35,7 +35,6 @@
      * @var \gettextNativeSupport|\gettext_php_support
      */
     public $get_text;
-    public $tester = false;
     /**
      * @var array
      */
@@ -74,7 +73,8 @@
       }
       header("Cache-control: private");
       $this->setTextSupport();
-      $_SESSION['Language'] = new Language();
+      $_SESSION['Language']=new Language();
+      $this->_session = &$_SESSION;
       if (!isset($this->_session['globals'])) {
         $this->_session['globals'] = [];
       }
@@ -89,7 +89,7 @@
     {
       if (Arr::get($_SESSION, 'HTTP_USER_AGENT') != sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR']))) {
         $this->setUserAgent();
-        //return false;
+        return false;
       }
       return true;
     }
@@ -189,7 +189,7 @@
      */
     public function _regenerate()
     {
-      // session_regenerate_id();
+      session_regenerate_id();
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>

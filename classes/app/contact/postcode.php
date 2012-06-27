@@ -22,9 +22,8 @@
     /**
      * @param $options
      */
-    public function __construct($options, Cache $cache = null)
+    public function __construct($options)
     {
-      $this->Cache = $cache ? : Cache::i();
       static::$count++;
       $this->setFromArray($options);
     }
@@ -38,7 +37,8 @@
     public function render()
     {
       HTML::tr(TRUE)->td(array('class' => 'label '))->label(array(
-                                                                 'content'  => 'City: ', 'for'      => $this->city[0]
+                                                                 'content'  => 'City: ',
+                                                                 'for'      => $this->city[0]
                                                             ), FALSE)->td->td(TRUE);
       UI::search($this->city[0], array(
                                       'url'      => $this->url . '?city=1',
@@ -51,7 +51,8 @@
                                  ));
       HTML::td()->tr;
       HTML::tr(TRUE)->td(array('class' => 'label'))->label(array(
-                                                                'content'  => 'State: ', 'for'      => $this->state[0]
+                                                                'content'  => 'State: ',
+                                                                'for'      => $this->state[0]
                                                            ), FALSE)->td->td(TRUE);
       HTML::input($this->state[0], array(
                                         'maxlength'  => 35,
@@ -76,6 +77,7 @@
       HTML::td()->tr;
       $this->registerJS();
     }
+
     /**
      * @static
      * @internal param $this ->city
@@ -133,7 +135,7 @@ JS;
     }
     protected function initjs()
     {
-      $js = $this->Cache->get('js.postcode');
+      $js = Cache::get('js.postcode');
       if ($js === FALSE) {
         $js
                = <<<JS
@@ -158,7 +160,7 @@ JS;
 JS;
         $jsmin = new JSMin($js);
         $js    = $jsmin->minify();
-        $this->Cache->set('js.postcode', $js);
+        Cache::set('js.postcode', $js);
       }
       JS::beforeload($js);
     }

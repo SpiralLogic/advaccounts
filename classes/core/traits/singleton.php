@@ -16,7 +16,6 @@
      * @var null
      */
     protected static $i = NULL;
-    protected $dic = NULL;
     /***
      * @static
      * @return
@@ -30,8 +29,9 @@
         }
         return static::$i;
       }
-      $namespaced_class = $class_name = get_called_class();
-      if ($lastNsPos = strripos($namespaced_class, '\\')) {
+      $namespaced_class = $class_name = $class ? get_class($class) : get_called_class();
+      $lastNsPos        = strripos($namespaced_class, '\\');
+      if ($lastNsPos) {
         $class_name = substr($namespaced_class, $lastNsPos + 1);
       }
       if ($class && static::$i === NULL) {

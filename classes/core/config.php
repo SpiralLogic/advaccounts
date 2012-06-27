@@ -11,11 +11,9 @@
     /**
 
      */
-
   /**
    * @method get($var, $default = false)
    * @method removeAll()
-   * @method Config i();
    */
   class Config
   {
@@ -34,8 +32,14 @@
      *
      * @return mixed
      */
-    public function _set($var, $value, $group = 'config')
+    public function _set($var, $value)
     {
+      if (!strstr($var, '.')) {
+        $var = 'config.' . $var;
+      }
+      $group_array               = explode('.', $var);
+      $var                       = array_pop($group_array);
+      $group                     = implode('.', $group_array);
       $this->_vars[$group][$var] = $value;
       return $value;
     }
@@ -96,7 +100,8 @@
      */
     public function _removeAll()
     {
-      $this->Cache->delete('config');
+      Cache::delete('config');
+      $this->_vars = [];
     }
     /**
      * @static
@@ -109,7 +114,7 @@
     }
     public function _shutdown()
     {
-      $this->Cache->set('config', $this->_vars);
+      return $this->Cache->_set('config', $this->_vars);
     }
     /**
 

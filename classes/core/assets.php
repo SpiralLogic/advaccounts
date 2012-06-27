@@ -235,8 +235,7 @@
               }
               $minifier_class                   = $minify_type_settings['minifier'];
               $minify_type_settings['settings'] = $minify_type_settings['settings'] ? : array();
-              $minifier                         = new $minifier_class($content, array(
-                                                                                     'fileDir'             => $fileDir,
+              $minifier                         = new $minifier_class($content, array('fileDir'            => $fileDir,
                                                                                      'minify_type_settings'=> $minify_type_settings['settings'],
                                                                                      'mimeTypes'           => $this->mimeTypes
                                                                                 ));

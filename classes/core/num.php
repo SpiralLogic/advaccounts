@@ -18,23 +18,23 @@
     /**
      * @var int
      */
-    public $price_dec = 2;
+    public  $price_dec = 2;
     /**
      * @var string
      */
-    public $tho_sep = ',';
+    public  $tho_sep = ',';
     /**
      * @var string
      */
-    public $dec_sep = '.';
+    public  $dec_sep = '.';
     /**
      * @var string
      */
-    public $exrate_dec = '.';
+    public  $exrate_dec = '.';
     /**
      * @var
      */
-    public $percent_dec;
+    public  $percent_dec;
     protected $user;
     /**
 
@@ -43,7 +43,7 @@
     public function __construct(\User $user = null)
     {
 
-      $this->user        = $user ? : \User::i();
+      $this->user = $user?:\User::i();
       $this->price_dec   = $this->user->_price_dec();
       $this->tho_sep     = $this->user->_tho_sep();
       $this->dec_sep     = $this->user->_dec_sep();
@@ -108,7 +108,7 @@
       $dsep = $this->dec_sep;
       //return number_format($number, $decimals, $dsep,	$tsep);
       $delta  = ($number < 0 ? -.0000000001 : .0000000001);
-      $number = number_format(($number == -0 ? 0 : $number) + $delta, $decimals, $dsep, $tsep);
+      $number = number_format(($number == -0 ? 0 : $number)+ $delta, $decimals, $dsep, $tsep);
 
       return $number;
     }

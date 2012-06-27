@@ -13,8 +13,8 @@
   /**
 
    */
-  Class Query_Insert extends Query
-  {
+  Class Query_Insert extends Query {
+
     /**
      * @var
      */
@@ -46,17 +46,16 @@
         $this->into($table);
       }
       $this->type      = DB::INSERT;
-      $this->hasfields = ($this->Cache) ? $this->Cache->get('INFORMATION_SCHEMA.COLUMNS.' . $table) : false;
+      $this->hasfields = Cache::get('INFORMATION_SCHEMA.COLUMNS.' . $table);
       if (!$this->hasfields) {
         $query = DB::query('SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = ' . DB::quote($table), false);
         /** @noinspection PhpAssignmentInConditionInspection */
         while ($row = $query->fetch(\PDO::FETCH_ASSOC)) {
           $this->hasfields[] = $row['COLUMN_NAME'];
         }
-        if ($this->Cache) {
-          $this->Cache->set('INFORMATION_SCHEMA.COLUMNS.' . $table, $this->hasfields);
-        }
+        Cache::set('INFORMATION_SCHEMA.COLUMNS.' . $table, $this->hasfields);
       }
+
       return $this;
     }
     /**

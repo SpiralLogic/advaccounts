@@ -103,7 +103,7 @@
         foreach ([$module->lappfunctions, $module->rappfunctions] as $modules) {
           $mods = [];
           foreach ($modules as $func) {
-            $mod['access'] = User::i()->can_access_page($func->access);
+            $mod['access'] = $this->User->can_access_page($func->access);
             $mod['label']  = $func->label;
             if ($mod['access']) {
               $mod['link'] = Display::menu_link($func->link, $func->label);
@@ -121,12 +121,11 @@
      * @param      $title
      * @param bool $index
      */
-    protected function __construct($title, $index = FALSE, $app)
+    protected function __construct($title, $index = FALSE)
     {
       $this->User     = User::i();
       $this->Config   = Config::i();
       $this->Ajax     = Ajax::i();
-      $this->App      = $app;
       $this->is_index = $index;
       $this->title    = $title;
       $this->frame    = isset($_GET['frame']);
@@ -137,6 +136,7 @@
     protected function init($menu)
     {
       $this->Security = new Security($this->User, $this);
+      $this->App      = ADVAccounting::i();
       $this->sel_app  = $this->App->selected;
       $this->ajaxpage = (AJAX_REFERRER || Ajax::inAjax());
       $this->menu     = ($this->frame) ? FALSE : $menu;
@@ -180,6 +180,7 @@
       $header['body_class']  = !$this->menu ? 'lite' : '';
       $header['encoding']    = $_SESSION['Language']->encoding;
       $header['stylesheets'] = $this->renderCSS();
+      $header['scripts']=[];
       if (class_exists('JS', FALSE)) {
         $header['scripts'] = JS::renderHeader();
       }
@@ -318,10 +319,10 @@
      *
      * @return null|Page
      */
-    public static function start($title, $security = SA_OPEN, $no_menu = FALSE, $is_index = FALSE, $app = null)
+    public static function start($title, $security = SA_OPEN, $no_menu = FALSE, $is_index = FALSE)
     {
       if (static::$i === NULL) {
-        static::$i = new static($title, $is_index, $app);
+        static::$i = new static($title, $is_index);
       }
       static::$i->set_security($security);
       static::$i->init(!$no_menu);

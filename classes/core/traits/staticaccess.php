@@ -23,7 +23,7 @@
      *
      * @return mixed
      */
-    use Singleton;
+      use Singleton;
     /**
      * @static
      *

@@ -18,6 +18,7 @@
    * @method Ajax addAssign($trigger, $sTarget, $sAttribute, $sData)
    * @method Ajax addUpdate($trigger, $sTarget, $sData)
    * @method Ajax addEnable($trigger, $sTarget, $sData = true)
+   * @method Ajax addDisable($trigger, $sTarget, $sData = true)
    * @method Ajax addFocus($trigger, $sTarget)
    * @method Ajax run()
    * @method Ajax flush()

@@ -1200,11 +1200,11 @@
   {
   }
 
-  /**
-
-   */
   class Input extends ADV\Core\Input
   {
+    /**
+       * @static
+       */
   }
 
   /**
@@ -1265,6 +1265,41 @@
   /**
 
    */
+  class DBException extends ADV\Core\DB\DBException
+  {
+  }
+
+  /**
+
+   */
+  class DBSelectException extends ADV\Core\DB\DBException
+  {
+  }
+
+  /**
+
+   */
+  class DBUpdateException extends ADV\Core\DB\DBException
+  {
+  }
+
+  /**
+
+   */
+  class DBDeleteException extends ADV\Core\DB\DBException
+  {
+  }
+
+  /**
+
+   */
+  class DBInsertException extends ADV\Core\DB\DBException
+  {
+  }
+
+  /**
+
+   */
   class View extends \ADV\Core\View implements \ArrayAccess
   {
     /**
@@ -1289,11 +1324,9 @@
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to retrieve
      * @link http://php.net/manual/en/arrayaccess.offsetget.php
-     *
      * @param mixed $offset <p>
      *                      The offset to retrieve.
      * </p>
-     *
      * @return mixed Can return all value types.
      */
     public function offsetGet($offset)
@@ -1304,14 +1337,12 @@
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to set
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
-     *
      * @param mixed $offset <p>
      *                      The offset to assign the value to.
      * </p>
      * @param mixed $value  <p>
      *                      The value to set.
      * </p>
-     *
      * @return void
      */
     public function offsetSet($offset, $value)
@@ -1322,22 +1353,12 @@
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to unset
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
-     *
      * @param mixed $offset <p>
      *                      The offset to unset.
      * </p>
-     *
      * @return void
      */
     public function offsetUnset($offset)
     {
       // TODO: Implement offsetUnset() method.
-    }
-  }
-
-  /**
-
-   */
-  class DBException extends Exception
-  {
-  }
+}}

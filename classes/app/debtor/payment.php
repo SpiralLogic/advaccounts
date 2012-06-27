@@ -144,14 +144,20 @@
      */
     public static function read_customer_data($customer_id, $refund = false)
     {
-      $type                      = ($refund == false) ? ST_CUSTPAYMENT : ST_CUSTREFUND;
-      $sql                       = "SELECT debtors.payment_discount,
-                        credit_status.dissallow_invoices
-                        FROM debtors, credit_status
-                        WHERE debtors.credit_status = credit_status.id
-                            AND debtors.debtor_id = " . $customer_id;
-      $result                    = DB::query($sql, "could not query customers");
-      $myrow                     = DB::fetch($result);
+      if ($refund == false) {
+        $myrow = Debtor::get_habit($customer_id);
+        $type  = ST_CUSTPAYMENT;
+      } else {
+        $sql
+                = "SELECT debtors.payment_discount,
+                  credit_status.dissallow_invoices
+                  FROM debtors, credit_status
+                  WHERE debtors.credit_status = credit_status.id
+                      AND debtors.debtor_id = " . $customer_id;
+        $result = DB::query($sql, "could not query customers");
+        $myrow  = DB::fetch($result);
+        $type   = ST_CUSTREFUND;
+      }
       $_POST['HoldAccount']      = $myrow["dissallow_invoices"];
       $_POST['payment_discount'] = $myrow["payment_discount"];
       $_POST['ref']              = Ref::get_next($type);

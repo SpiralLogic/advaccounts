@@ -23,221 +23,57 @@
      * @var int
      */
     public $id = 0;
-    /**
-     * @var
-     */
     public $coy_code;
-    /**
-     * @var
-     */
     public $coy_name;
-    /**
-     * @var
-     */
     public $gst_no;
-    /**
-     * @var
-     */
     public $coy_no;
-    /**
-     * @var
-     */
-    public $tax_prd;
-    /**
-     * @var
-     */
     public $tax_last;
-    /**
-     * @var
-     */
     public $postal_address;
-    /**
-     * @var
-     */
     public $phone;
-    /**
-     * @var
-     */
     public $fax;
-    /**
-     * @var
-     */
     public $email;
-    /**
-     * @var
-     */
     public $coy_logo;
-    /**
-     * @var
-     */
     public $suburb;
-    /**
-     * @var
-     */
     public $curr_default;
-    /**
-     * @var
-     */
     public $debtors_act;
-    /**
-     * @var
-     */
     public $pyt_discount_act;
-    /**
-     * @var
-     */
-    public $creditors_act;
-    /**
-     * @var
-     */
     public $bank_charge_act;
-    /**
-     * @var
-     */
     public $exchange_diff_act;
-    /**
-     * @var
-     */
     public $profit_loss_year_act;
-    /**
-     * @var
-     */
     public $retained_earnings_act;
-    /**
-     * @var
-     */
     public $freight_act;
-    /**
-     * @var
-     */
     public $default_sales_act;
-    /**
-     * @var
-     */
     public $default_sales_discount_act;
-    /**
-     * @var
-     */
     public $default_prompt_pament_act;
-    /**
-     * @var
-     */
     public $default_inventory_act;
-    /**
-     * @var
-     */
     public $default_cogs_act;
-    /**
-     * @var
-     */
     public $default_adj_act;
-    /**
-     * @var
-     */
     public $default_inv_sales_act;
-    /**
-     * @var
-     */
     public $default_assembly_act;
-    /**
-     * @var
-     */
     public $payroll_act;
-    /**
-     * @var
-     */
     public $allow_negative_stock;
-    /**
-     * @var
-     */
     public $po_over_receive;
-    /**
-     * @var
-     */
     public $po_over_charge;
-    /**
-     * @var
-     */
     public $default_credit_limit;
-    /**
-     * @var
-     */
     public $default_workorder_required;
-    /**
-     * @var
-     */
     public $default_dim_required;
-    /**
-     * @var
-     */
     public $past_due_days;
-    /**
-     * @var
-     */
     public $use_dimension;
-    /**
-     * @var
-     */
     public $f_year;
-    /**
-     * @var
-     */
     public $no_item_list;
-    /**
-     * @var
-     */
     public $no_customer_list;
-    /**
-     * @var
-     */
     public $no_supplier_list;
-    /**
-     * @var
-     */
     public $base_sales;
-    /**
-     * @var
-     */
     public $foreign_codes;
-    /**
-     * @var
-     */
     public $accumulate_shipping;
-    /**
-     * @var
-     */
     public $legal_text;
-    /**
-     * @var
-     */
     public $default_delivery_required;
-    /**
-     * @var
-     */
     public $version_id;
-    /**
-     * @var
-     */
     public $time_zone;
-    /**
-     * @var
-     */
     public $custom0_name;
-    /**
-     * @var
-     */
     public $custom0_value;
-    /**
-     * @var
-     */
     public $add_pct;
-    /**
-     * @var
-     */
     public $round_to;
-    /**
-     * @var
-     */
     public $login_tout;
     /**
      * @param int $id
@@ -297,7 +133,7 @@
      */
     protected function _read($id = null, $extra = array())
     {
-      $id     = $id ? : 0;
+      $id = $id ? : 0;
       DB::select()->from('company')->where('coy_code=', $id)->fetch()->intoObject($this);
     }
     /**
@@ -307,30 +143,29 @@
     {
       // TODO: Implement _saveNew() method.
     }
-    /***
+    /**
      * @static
      *
-     * @param null $id
+     * @param null $name
      *
-     * @return DB_Company
+     * @internal param null $id
+     * @return \DB_Company
      */
-    public static function i($id = null)
+    public static function i($name = null)
     {
+      unset($_SESSION['company']);
       /** @noinspection PhpUndefinedFieldInspection */
       if (static::$i === null) {
-        if (isset($_POST['login_comapny'])) {
-          $company = Config::get('db.' . $_POST['login_company']);
+        $name    = $name ? : User::i()->company;
+        $company = Config::get('db.' . Input::post('login_company', null, $name));
+        if (isset($_SESSION['company']) && $_SESSION['company']->id == $company['id']) {
+          $company = $_SESSION['company'];
+        } else {
+          $company = new static($company['id']);
         }
-        if (!isset($company)) {
-          $id      = $id ? : User::i()->company;
-          $company = Config::get('db.' . $id);
-        }
-        $id = $company['id'];
-        if (isset($_SESSION['config']['company'])) {
-          return static::ii($_SESSION['config']['company']);
-        }
+        $_SESSION['company'] = static::ii($company);
       }
-      return static::ii(new static($id));
+      return $_SESSION['company'];
     }
     /**
      * @static
@@ -466,7 +301,7 @@
      */
     public function _get_pref($pref_name)
     {
-      $prefs = $this->_get_prefs() ;
+      $prefs = (array) $this;
       return $prefs[$pref_name];
     }
     /**
@@ -475,7 +310,6 @@
      */
     public function _get_prefs()
     {
-
       return (array) $this;
     }
     /**

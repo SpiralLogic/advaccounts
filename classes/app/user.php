@@ -109,7 +109,7 @@
       $_SESSION["current_user"] = static::i();
       return $dic['User'];
     }
-    /**
+      /**
 
      */
     public function __construct(Session $session = null)
@@ -118,7 +118,7 @@
       $this->loginname = $this->username = $this->name = "";
       $this->company   = Config::get('default.company') ? : 'default';
       $this->logged    = FALSE;
-      $this->prefs     = new userPrefs();
+      $this->prefs     = new userPrefs((array)$this);
     }
     /**
      * @param null $salesmanid
@@ -477,7 +477,7 @@
      */
     public function _date_sep()
     {
-      return (isset($_SESSION["current_user"])) ? $this->prefs()->date_sep() : Config::get('date.ui_separator');
+      return (isset($_SESSION["current_user"])) ? $this->prefs->date_sep : Config::get('date.ui_separator');
     }
     /**
      * @static

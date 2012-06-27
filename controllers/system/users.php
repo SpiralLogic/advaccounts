@@ -129,7 +129,7 @@
 
       return false;
     }
-    $check = (is_a($auth, 'Auth')) ? $auth->checkUserPassword() : false;
+    $check = (is_a($auth, 'Auth')) ? $auth->checkPasswordStrength() : false;
     if (!$check && $check['error'] > 0) {
       Event::error($check['text']);
 
