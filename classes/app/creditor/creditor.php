@@ -284,7 +284,8 @@
     protected function _getContacts()
     {
       $this->contacts = [];
-      \DB::select()->from('contacts')->where('parent_id=', $this->id)->and_where('parent_type=', CT_SUPPLIER)->orderby('name DESC');
+      \DB::select()->from('contacts')->where('parent_id=', $this->id)->and_where('parent_type=', CT_SUPPLIER)
+        ->orderby('name DESC');
       $contacts = DB::fetch()->asClassLate('Contact', array(CT_SUPPLIER));
       if (count($contacts)) {
         foreach ($contacts as $contact) {
@@ -303,10 +304,15 @@
       $customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
       $customerBox->addBeforeClose('$("#supplier_id").trigger("change")');
       $customerBox->setOptions(array(
-                                    'autoOpen'   => false, 'modal'      => true, 'width'      => '850', 'height'     => '715', 'resizeable' => true
+                                    'autoOpen'   => false,
+                                    'modal'      => true,
+                                    'width'      => '850',
+                                    'height'     => '715',
+                                    'resizeable' => true
                                ));
       $customerBox->show();
-      $js = <<<JS
+      $js
+        = <<<JS
                             var val = $("#supplier_id").val();
                             $("#supplierBox").html("<iframe src='/contacts/suppliers.php?frame=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
@@ -350,7 +356,8 @@ JS;
       // removed - creditor_trans.alloc from all summations
       $value = "(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)";
       $due   = "IF (creditor_trans.type=" . ST_SUPPINVOICE . " OR creditor_trans.type=" . ST_SUPPCREDIT . ",creditor_trans.due_date,creditor_trans.tran_date)";
-      $sql   = "SELECT suppliers.name, suppliers.curr_code, payment_terms.terms,
+      $sql
+              = "SELECT suppliers.name, suppliers.curr_code, payment_terms.terms,
         Sum($value) AS Balance,
         Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0)) AS Due,
         Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past_due1,$value,0)) AS Overdue1,
@@ -372,7 +379,8 @@ JS;
       if (DB::num_rows($result) == 0) {
         /*Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
         $nil_balance = true;
-        $sql         = "SELECT suppliers.name, suppliers.curr_code, suppliers.supplier_id, payment_terms.terms FROM suppliers,
+        $sql
+                     = "SELECT suppliers.name, suppliers.curr_code, suppliers.supplier_id, payment_terms.terms FROM suppliers,
                  payment_terms WHERE
                  suppliers.payment_terms = payment_terms.terms_indicator
                  AND suppliers.supplier_id = " . DB::escape($supplier_id);
@@ -403,7 +411,8 @@ JS;
       $date_from = Dates::date2sql($date_from);
       $date_to   = Dates::date2sql($date_to);
       // Sherifoz 22.06.03 Also get the description
-      $sql     = "SELECT
+      $sql
+               = "SELECT
 
 
      SUM((trans.ov_amount + trans.ov_gst + trans.ov_discount)) AS Total
@@ -472,14 +481,17 @@ JS;
       $o = [
         'row'        => true, //
         'cell_params'=> '', //
-        'rowspan'    => null,
+        'rowspan'    => null, 'label'=> true,
       ];
       $o = array_merge($o, $options);
       if ($o['row']) {
         echo '<tr>';
       }
       $rowspan = $o['rowspan'] ? "rowspan=" . $o['rowspan'] : '';
-      echo "<td id='supplier_id_label' $rowspan class='label pointer'><label for='supplier'>Supplier:</label></td><td $rowspan class='nowrap' " . $o['cell_params'] . ">";
+      if ($o['label']) {
+        echo "<td id='supplier_id_label' $rowspan class='label pointer'><label for='supplier'>Supplier:</label></td>";
+      }
+      echo  "<td $rowspan class='nowrap {$o['cell_class']}' " . $o['cell_params'] . ">";
       $focus = false;
       if (!$value && Input::post('supplier')) {
         $value = $_POST['supplier'];
@@ -496,7 +508,10 @@ JS;
       }
       Forms::hidden('supplier_id');
       UI::search('supplier', array(
-                                  'url'   => '/contacts/suppliers.php', 'name'  => 'supplier', 'focus' => $focus, 'value' => $value,
+                                  'url'   => '/contacts/suppliers.php',
+                                  'name'  => 'supplier',
+                                  'focus' => $focus,
+                                  'value' => $value,
                              ));
       echo "</td>\n";
       if ($o['row']) {
@@ -530,11 +545,14 @@ JS;
                                                                                      'order'         => array('supp_ref'),
                                                                                      'search_box'    => $mode != 0,
                                                                                      'type'          => 1,
-                                                                                     'spec_option'   => $spec_option === true ? _("All Suppliers") : $spec_option,
+                                                                                     'spec_option'   => $spec_option === true ?
+                                                                                       _("All Suppliers") : $spec_option,
                                                                                      'spec_id'       => ALL_TEXT,
                                                                                      'select_submit' => $submit_on_change,
                                                                                      'async'         => false,
-                                                                                     'sel_hint'      => $mode ? _('Press Space tab to filter by name fragment') : _('Select supplier'),
+                                                                                     'sel_hint'      => $mode ?
+                                                                                       _('Press Space tab to filter by name fragment') :
+                                                                                       _('Select supplier'),
                                                                                      'show_inactive' => $all
                                                                                 ));
     }

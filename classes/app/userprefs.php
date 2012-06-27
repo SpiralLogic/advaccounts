@@ -46,7 +46,7 @@
     /**
      * @var Array|mixed
      */
-    public $date_sep='/';
+    public $date_sep = '/';
     /**
      * @var int
      */

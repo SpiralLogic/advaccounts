@@ -60,7 +60,7 @@
     /**
      * @var bool
      */
-    protected $Cache = false;
+    protected $useCache = false;
     /**
      * @var \Config
      */
@@ -80,20 +80,15 @@
     /**
      * @throws DBException
      */
-    public function __construct($config = null, Cache $cache = null)
+    public function __construct($config = null, $cache = null)
     {
-      $config      = $config ? : \Config::i();
-      $this->Cache = $cache ? : \Cache::i();
-
-      if ($config instanceof \ADV\Core\Config) {
-        $this->config = $config;
-        $config       = $this->config->get('db.default');
-      }
-      $this->debug = false;
-      if (!$config) {
+      $this->config   = $config ? : \Config::i();
+      $this->useCache = class_exists('Cache');
+      if (!$this->config) {
         throw new DBException('No database configuration provided');
       }
-
+      $config      = $this->config->get('db.default');
+      $this->debug = false;
       $this->_connect($config);
       $this->default_connection = $config['name'];
     }
@@ -303,7 +298,7 @@
     {
       $this->prepared = null;
       $columns        = (is_string($columns)) ? func_get_args() : array();
-      $this->query    = new Query_Select($columns, $this);
+      $this->query    = new Query_Select($columns, static::i());
       return $this->query;
     }
     /**
@@ -327,7 +322,7 @@
     public function _insert($into)
     {
       $this->prepared = null;
-      $this->query    = (new Query_Insert($into, $this))->setCache($this->Cache);
+      $this->query    = new Query_Insert($into, $this);
       return $this->query;
     }
     /**
@@ -693,12 +688,5 @@
         throw new DBException($error);
       }
       \Errors::db_error($error, $this->errorSql, $data);
-    }
-    function __sleep()
-    {
-      $vars = (array) $this;
-      unset($vars['conn']);
-      unset($vars['prepared']);
-      return array_keys($vars);
     }
   }

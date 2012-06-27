@@ -31,8 +31,6 @@
      * @var DB
      */
     protected $conn;
-    /** @var \Cache */
-    protected $Cache = null;
     /**
      * @abstract
      * @return
@@ -76,15 +74,5 @@
     public function fetch()
     {
       return $this->exec(null);
-    }
-    /**
-     * @param \Cache $cache
-     *
-     * @return Query_Insert
-     */
-    public function setCache(\Cache $cache)
-    {
-      $this->Cache = $cache;
-      return $this;
     }
   }

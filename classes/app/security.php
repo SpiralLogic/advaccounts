@@ -160,7 +160,11 @@
     {
       $sql = "SELECT id, role, inactive FROM security_roles";
       return Forms::selectBox($name, $selected_id, $sql, 'id', 'description', array(
-                                                                                   'spec_option' => $new_item ? _("New role") : FALSE, 'spec_id' => '', 'select_submit' => $submit_on_change, 'show_inactive' => $show_inactive
+                                                                                   'spec_option'      => $new_item ?
+                                                                                     _("New role") : FALSE,
+                                                                                   'spec_id'          => '',
+                                                                                   'select_submit'    => $submit_on_change,
+                                                                                   'show_inactive'    => $show_inactive
                                                                               ));
     }
     /**

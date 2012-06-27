@@ -45,6 +45,10 @@
   }
 
   /**
+   * @method get($key, $default = false)
+   * @method set($key, $value, $expires = 86400)
+   * @method define_constants($name, $constants)
+   * @method delete($key)
    * @method Cache i()
    */
   class Cache

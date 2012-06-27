@@ -180,7 +180,7 @@
       $header['body_class']  = !$this->menu ? 'lite' : '';
       $header['encoding']    = $_SESSION['Language']->encoding;
       $header['stylesheets'] = $this->renderCSS();
-      $header['scripts']=[];
+      $header['scripts']     = [];
       if (class_exists('JS', FALSE)) {
         $header['scripts'] = JS::renderHeader();
       }
