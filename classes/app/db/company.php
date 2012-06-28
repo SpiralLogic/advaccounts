@@ -15,10 +15,7 @@
    */
   class DB_Company extends DB_Base
   {
-    use StaticAccess {
-    StaticAccess::i as ii;
-    }
-
+    use StaticAccess;
     /**
      * @var int
      */
@@ -78,9 +75,11 @@
     /**
      * @param int $id
      */
-    public function __construct($id = 0)
+    public function __construct($name = 0)
     {
-      parent::__construct($id);
+      $name    = $name ? : User::i()->company;
+      $company = Config::get('db.' . Input::post('login_company', null, $name));
+           parent::__construct($company);
       $this->id = &$this->coy_code;
     }
     /**
@@ -142,29 +141,6 @@
     protected function _saveNew()
     {
       // TODO: Implement _saveNew() method.
-    }
-    /**
-     * @static
-     *
-     * @param null $name
-     *
-     * @internal param null $id
-     * @return \DB_Company
-     */
-    public static function i($name = null)
-    {
-      /** @noinspection PhpUndefinedFieldInspection */
-      if (static::$i === null) {
-        $name    = $name ? : User::i()->company;
-        $company = Config::get('db.' . Input::post('login_company', null, $name));
-        if (isset($_SESSION['company']) && $_SESSION['company']->id == $company['id']) {
-          $company = $_SESSION['company'];
-        } else {
-          $company = new static($company['id']);
-        }
-        $_SESSION['company'] = static::ii($company);
-      }
-      return $_SESSION['company'];
     }
     /**
      * @static

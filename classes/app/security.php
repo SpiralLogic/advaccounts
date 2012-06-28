@@ -52,7 +52,7 @@
      *
      * @return mixed
      */
-    public function set_page($value = NULL, $trans = array(), $gtrans = array())
+    public static function set_page($value = NULL, $trans = array(), $gtrans = array())
     {
       // first check is this is not start page call
       foreach ($gtrans as $key => $area) {

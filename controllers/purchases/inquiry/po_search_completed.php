@@ -20,6 +20,9 @@
     Ajax::addFocus(TRUE, 'OrdersAfterDate');
   }
   Ajax::activate('orders_tbl');
+  if (Input::post('_control') != 'supplier' && !Input::post('supplier')) {
+    $_POST['supplier_id'] = Session::i()->setGlobal('creditor','');
+  }
   Forms::start();
   if (!Input::request('frame')) {
     Table::start('tablestyle_noborder');
@@ -39,8 +42,7 @@
     $searchArray = explode(' ', $_POST['ajaxsearch']);
     unset($_POST['supplier_id']);
   }
-  $sql
-    = "SELECT
+  $sql = "SELECT
 	porder.order_no, 
 	porder.reference, 
 	supplier.name,
@@ -63,8 +65,7 @@
         continue;
       }
       $ajaxsearch = DB::quote("%" . $ajaxsearch . "%");
-      $sql
-        .= " AND (supplier.name LIKE $ajaxsearch OR porder.order_no LIKE $ajaxsearch
+      $sql .= " AND (supplier.name LIKE $ajaxsearch OR porder.order_no LIKE $ajaxsearch
 		 OR porder.reference LIKE $ajaxsearch
 		 OR porder.requisition_no LIKE $ajaxsearch
 		 OR location.location_name LIKE $ajaxsearch)";
@@ -89,7 +90,6 @@
       $sql .= " AND porder.ord_date <= '$date_before'";
     }
     $selected_stock_item = Input::post('SelectStockFromList');
-
     if ($selected_stock_item) {
       $sql .= " AND line.item_code=" . DB::quote($selected_stock_item);
     }
@@ -98,8 +98,7 @@
   $cols = array(
     // Transaction link
     _("#")           => array(
-      'ord' => '',
-      'fun' => function ($trans) { return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]); }
+      'ord' => '', 'fun' => function ($trans) { return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]); }
     ), //
     _("Reference"), //
     _("Supplier")    => array('ord' => '', 'type' => 'id'), //
@@ -111,8 +110,7 @@
     _("Order Total") => 'amount', //
     // Edit link
     array(
-      'insert' => TRUE,
-      'fun'    => function ($row) { return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . Orders::MODIFY_ORDER . "=" . $row["order_no"], ICON_EDIT); }
+      'insert' => TRUE, 'fun'    => function ($row) { return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . Orders::MODIFY_ORDER . "=" . $row["order_no"], ICON_EDIT); }
     ) //
   );
   if ($stock_location) {
@@ -124,13 +122,11 @@
     Arr::append($cols, array(
                             // Email button
                             array(
-                              'insert' => TRUE,
-                              'fun'    => function ($row) { return Reporting::emailDialogue($row['id'], ST_PURCHORDER, $row['order_no']); }
+                              'insert' => TRUE, 'fun'    => function ($row) { return Reporting::emailDialogue($row['id'], ST_PURCHORDER, $row['order_no']); }
                             ), //
                             // Print button
                             array(
-                              'insert' => TRUE,
-                              'fun'    => function ($row) { return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, 18, ICON_PRINT, 'button printlink'); }
+                              'insert' => TRUE, 'fun'    => function ($row) { return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, 18, ICON_PRINT, 'button printlink'); }
                             ), //
                             // Recieve/Invoice button
                             array(

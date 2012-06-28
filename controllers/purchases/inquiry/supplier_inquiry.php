@@ -9,7 +9,7 @@
    **/
   JS::open_window(900, 500);
   Page::start(_($help_context = "Supplier Inquiry"), SA_SUPPTRANSVIEW);
-$supplier_id = Input::get_post('supplier_id',INPUT::NUMERIC);
+$supplier_id = Input::get_post('supplier_id',INPUT::NUMERIC,-1);
   if (isset($_GET['FromDate'])) {
     $_POST['TransAfterDate'] = $_GET['FromDate'];
   }
@@ -29,11 +29,11 @@ $supplier_id = Input::get_post('supplier_id',INPUT::NUMERIC);
   Forms::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
   Row::end();
   Table::end();
-  Session::i()->setGlobal('creditor', $supplier_id);
   Display::div_start('totals_tbl');
   if ($supplier_id>0) {
     $supplier_record = Creditor::get_to_trans($supplier_id);
     display_supplier_summary($supplier_record);
+    Session::i()->setGlobal('creditor', $supplier_id);
   }
   Display::div_end();
   if (Input::post('RefreshInquiry')) {

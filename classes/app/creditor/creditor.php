@@ -344,8 +344,7 @@ JS;
       } else {
         $todate = Dates::date2sql($to);
       }
-      $past_due1 = DB_Company::get_pref('past_due_days');
-      var_dump($past_due1);
+      $past_due1 = DB_Company::get_pref('past_due_days')?:30;
       $past_due2 = 2 * $past_due1;
       // removed - creditor_trans.alloc from all summations
       $value  = "(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)";
