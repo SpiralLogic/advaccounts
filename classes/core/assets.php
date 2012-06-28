@@ -16,6 +16,7 @@
    */
   class Assets
   {
+
     protected $baseDir = WEBROOT;
     protected $charSet = 'UTF-8';
     protected $debug = false;
@@ -235,10 +236,11 @@
               }
               $minifier_class                   = $minify_type_settings['minifier'];
               $minify_type_settings['settings'] = $minify_type_settings['settings'] ? : array();
-              $minifier                         = new $minifier_class($content, array('fileDir'            => $fileDir,
-                                                                                     'minify_type_settings'=> $minify_type_settings['settings'],
-                                                                                     'mimeTypes'           => $this->mimeTypes
-                                                                                ));
+              $minifier                         = new $minifier_class($content, array(
+                'fileDir'             => $fileDir,
+                'minify_type_settings'=> $minify_type_settings['settings'],
+                'mimeTypes'           => $this->mimeTypes
+              ));
               $content                          = $minifier->minify();
             }
           }
@@ -255,7 +257,9 @@
           header('Content-Length: ' . strlen($content));
           echo $content;
         } else {
-          header('Content-Length: ' . filesize($cachedFile));
+          if (!headers_sent($file, $log)) {
+            header('Content-Length: ' . filesize($cachedFile));
+          }
           readfile($cachedFile);
         }
       } else {

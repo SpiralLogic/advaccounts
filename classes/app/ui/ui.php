@@ -9,6 +9,7 @@
    **/
   class UI extends HTML
   {
+
     /**
      * @static
      *
@@ -78,16 +79,18 @@
     public static function search($id, $attr = array(), $options = array())
     {
       $o   = array(
-        'url'        => false, //
-        'nodiv'      => false, //
-        'label'      => false, //
-        'name'       => null, //
-        'set'        => null, //
-        'class'      => 'width95 ', //
-        'value'      => null, //
-        'focus'      => null, //
-        'callback'   => false, //
-        'cells'      => false,
+        'url'             => false, //
+        'nodiv'           => false, //
+        'label'           => false, //
+        'name'            => null, //
+        'set'             => null, //
+        'class'           => 'width95 ', //
+        'value'           => null, //
+        'focus'           => null, //
+        'callback'        => false, //
+        'cells'           => false,
+        'cell_class'      => null,
+        'input_cell_params', null
       );
       $o   = array_merge($o, $attr);
       $url = ($o['url']) ? $o['url'] : false;
@@ -153,25 +156,28 @@
     public static function searchLine($id, $url = '#', $options = array())
     {
       $defaults                      = array(
-        'description'    => false,
-        'disabled'       => false,
-        'editable'       => true,
-        'selected'       => '',
-        'label'          => null,
-        'cells'          => false,
-        'inactive'       => false,
-        'purchase'       => false,
-        'sale'           => false,
-        'js'             => '',
-        'selectjs'       => '',
-        'submitonselect' => '',
-        'sales_type'     => 1,
-        'no_sale'        => false,
-        'select'         => false,
-        'type'           => 'local',
-        'kitsonly'       => false,
-        'where'          => '',
-        'size'           => '15'
+        'description'     => false,
+        'disabled'        => false,
+        'editable'        => true,
+        'selected'        => '',
+        'label'           => null,
+        'cells'           => false,
+        'class'           => null,
+        'inactive'        => false,
+        'purchase'        => false,
+        'sale'            => false,
+        'js'              => '',
+        'selectjs'        => '',
+        'submitonselect'  => '',
+        'sales_type'      => 1,
+        'no_sale'         => false,
+        'select'          => false,
+        'type'            => 'local',
+        'kitsonly'        => false,
+        'where'           => '',
+        'size'            => '15',
+        'cell_class'      => false,
+        'input_cell_params', null
       );
       $o                             = array_merge($defaults, $options);
       $UniqueID                      = md5(serialize($o));
@@ -187,8 +193,8 @@
       HTML::input($id, array('value' => $o['selected'], 'name' => $id, 'class'=> $o['class'], 'size' => $o['size']));
       if ($o['editable']) {
         HTML::label('lineedit', 'edit', array(
-                                             'for' => $id, 'class' => 'stock button', 'style' => 'display:none'
-                                        ), false);
+          'for' => $id, 'class' => 'stock button', 'style' => 'display:none'
+        ), false);
         $desc_js .= '$("#lineedit").data("stock_id",value.stock_id).show().parent().css("white-space","nowrap"); ';
       }
       if ($o['cells']) {
@@ -199,8 +205,8 @@
         $selectjs = $o['selectjs'];
       } elseif ($o['description'] !== false) {
         HTML::textarea('description', $o['description'], array(
-                                                              'name' => 'description', 'rows' => 1, 'class'=> 'width90'
-                                                         ), false);
+          'name' => 'description', 'rows' => 1, 'class'=> 'width90'
+        ), false);
         $desc_js .= "$('#description').css('height','auto').attr('rows',4);";
       } elseif ($o['submitonselect']) {
         $selectjs = <<<JS
@@ -281,8 +287,8 @@ JS;
       $emailBox = new Dialog('Select Email Address:', 'emailBox', '');
       $emailBox->addButtons(array('Close' => '$(this).dialog("close");'));
       $emailBox->setOptions(array(
-                                 'modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false
-                            ));
+        'modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false
+      ));
       $emailBox->show();
       $action = <<<JS
      var emailID= $(this).data('emailid');

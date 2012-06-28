@@ -15,7 +15,9 @@
    */
   class DB_Company extends DB_Base
   {
+
     use StaticAccess;
+
     /**
      * @var int
      */
@@ -73,13 +75,15 @@
     public $round_to;
     public $login_tout;
     /**
-     * @param int $id
+     * @param int $name
+     *
+     * @internal param int $id
      */
     public function __construct($name = 0)
     {
       $name    = $name ? : User::i()->company;
       $company = Config::get('db.' . Input::post('login_company', null, $name));
-           parent::__construct($company);
+      parent::__construct($company);
       $this->id = &$this->coy_code;
     }
     /**

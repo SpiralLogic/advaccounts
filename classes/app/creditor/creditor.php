@@ -473,7 +473,8 @@ JS;
         'cell_params'=> '', //
         'rowspan'    => null, //
         'label'      => 'Supplier:', //
-        'cells'      => true,
+        'cells'      => true,//
+        'cell_class'=>null
       ];
       $o     = array_merge($o, $options);
       $focus = false;

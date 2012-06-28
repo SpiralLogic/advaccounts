@@ -16,6 +16,7 @@
    */
   class Errors
   {
+
     /**
 
      */
@@ -401,7 +402,9 @@
       foreach ($args as $arg) {
         $content[] = var_export($arg, true);
       }
-      static::$debugLog[] = array('line' => $source['line'], 'file' => $source['file'], 'content' => $content);
+      $error              = array('line' => $source['line'], 'file' => $source['file'], 'content' => $content);
+      static::$debugLog[] = $error;
+      error_log(date(DATE_RFC822) . ' ' . 'LOG' . ": " . print_r($content,true) . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n", 3, DOCROOT . '../error_log');
     }
   }
 
