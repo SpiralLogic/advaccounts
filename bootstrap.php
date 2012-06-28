@@ -37,7 +37,7 @@
   define('IS_JSON_REQUEST', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false));
   define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
   define('CRLF', chr(13) . chr(10));
-   set_error_handler(function ($severity, $message, $filepath, $line)
+  set_error_handler(function ($severity, $message, $filepath, $line)
   {
     class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'errors.php';
     return ADV\Core\Errors::handler($severity, $message, $filepath, $line);
@@ -60,7 +60,7 @@
           $xhprof_data        = xhprof_disable();
           $xhprof_runs        = new \XHProfRuns_Default();
           $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
-  });
+        });
       });
     }
     if (!function_exists('e')) {
@@ -99,10 +99,9 @@
     Session::i();
     Ajax::i();
     Config::i();
-   ob_start('adv_ob_flush_handler', 0);
+    ob_start('adv_ob_flush_handler', 0);
     ADVAccounting::i($dic['Config'], $dic['Session']);
   }
-
   if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
     new \ADV\Core\Assets();
   } else {
