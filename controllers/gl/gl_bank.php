@@ -14,10 +14,8 @@
     $_SESSION['page_title'] = _($help_context = "Bank Account Payment Entry");
     handle_new_order(ST_BANKPAYMENT);
   } else {
-    if (isset($_GET['NewDeposit'])) {
       $_SESSION['page_title'] = _($help_context = "Bank Account Deposit Entry");
       handle_new_order(ST_BANKDEPOSIT);
-    }
   }
   Page::start($_SESSION['page_title'], $page_security);
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
