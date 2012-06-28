@@ -344,6 +344,7 @@
      */
     public function add()
     {
+
       DB::begin();
       /*Insert to purchase order header record */
       if (!$this->order_no) {
@@ -371,7 +372,7 @@
         }
       }
       Ref::save(ST_PURCHORDER, $this->reference);
-      //DB_Comments::add(ST_PURCHORDER, $this->order_no, $this->orig_order_date, $this->Comments);
+      DB_Comments::add(ST_PURCHORDER, $this->order_no, $this->orig_order_date, $this->Comments);
       DB_AuditTrail::add(ST_PURCHORDER, $this->order_no, $this->orig_order_date);
       DB::commit();
       Orders::session_delete($this->order_id);
@@ -418,7 +419,7 @@
         }
         DB::query($sql, "One of the purchase order detail records could not be updated");
       }
-      DB_Comments::add(ST_PURCHORDER, $this->order_no, $this->orig_order_date, $this->Comments);
+      DB_Comments::update(ST_PURCHORDER, $this->order_no, $this->orig_order_date, $this->Comments);
       DB::commit();
       Orders::session_delete($this->order_id);
 
