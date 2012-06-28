@@ -1,4 +1,6 @@
 <?php
+  use ADV\App\Page;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -36,7 +38,7 @@
         echo _("The security settings on your account do not permit you to access this function");
         echo "</span>";
         echo "<br><br><br><br></div>";
-        $this->Page->end_page(false);
+        Page::end(false);
         exit;
       }
     }
