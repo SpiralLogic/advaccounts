@@ -80,11 +80,11 @@
      * @param $rep_popup
      * @param $query_size
      * @param $graphic_links
-     * @param $lang
+     * @param $language
      * @param $stickydate
      * @param $startup_tab
      */
-    public static function  update_display_prefs($id, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $show_gl, $show_codes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $page_size, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab)
+    public static function  update_display_prefs($id, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $show_gl, $show_codes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $page_size, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $language, $stickydate, $startup_tab)
     {
       $sql
         = "UPDATE users SET
@@ -105,7 +105,7 @@
                 rep_popup=" . DB::escape($rep_popup) . ",
                 query_size=" . DB::escape($query_size) . ",
                 graphic_links=" . DB::escape($graphic_links) . ",
-                language=" . DB::escape($lang) . ",
+                language=" . DB::escape($language) . ",
                 sticky_doc_date=" . DB::escape($stickydate) . ",
                 startup_tab=" . DB::escape($startup_tab) . "
                 WHERE id = " . DB::escape($id);

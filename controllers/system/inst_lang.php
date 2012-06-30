@@ -54,15 +54,15 @@
     }
     $id = $_GET['id'];
     if ($_POST['dflt']) {
-      Config::set('default.lang', $_POST['code']);
+      Config::set('default.language', $_POST['code']);
     }
     $installed_languages[$id]['code']     = $_POST['code'];
     $installed_languages[$id]['name']     = $_POST['name'];
     $installed_languages[$id]['encoding'] = $_POST['encoding'];
     $installed_languages[$id]['rtl']      = (bool) $_POST['rtl'];
-    $lang                                 = Config::get('languages.installed');
-    $lang                                 = $lang[$id]['code'];
-    $filename                             = LANG_PATH . '$lang' . DS . 'LC_MESSAGES';
+    $language                             = Config::get('languages.installed');
+    $language                             = $language[$id]['code'];
+    $filename                             = LANG_PATH . '$language' . DS . 'LC_MESSAGES';
     if (!Files::save_to_file($filename, '')) {
       return false;
     }
@@ -95,18 +95,18 @@
   function handle_delete()
   {
     $id       = $_GET['id'];
-    $lang     = Config::get('languages.installed');
-    $lang     = $lang[$id]['code'];
-    $filename = LANG_PATH . $lang . DS . 'LC_MESSAGES';
-    if ($lang == Config::get('default.lang')) {
+    $language = Config::get('languages.installed');
+    $language = $language[$id]['code'];
+    $filename = LANG_PATH . $language . DS . 'LC_MESSAGES';
+    if ($language == Config::get('default.language')) {
       // on delete set default to current.
-      Config::set('default.lang', $_SESSION['Language']->code);
+      Config::set('default.language', $_SESSION['Language']->code);
     }
     Config::remove('languages.installed', $id);
     if (!Files::save_to_file($filename, '')) {
       return;
     }
-    $filename = LANG_PATH . $lang;
+    $filename = LANG_PATH . $language;
     Files::flush_dir($filename);
     rmdir($filename);
     Display::meta_forward($_SERVER['DOCUMENT_URI']);
@@ -114,7 +114,7 @@
 
   function display_languages()
   {
-    $lang = $_SESSION["language"]->code;
+    $language = $_SESSION["language"]->code;
     echo "
             <script language='javascript'>
             function deleteLanguage(id)
@@ -132,7 +132,7 @@
     $conn = Config::get('languages.installed');
     $n    = count($conn);
     for ($i = 0; $i < $n; $i++) {
-      if ($conn[$i]['code'] == $lang) {
+      if ($conn[$i]['code'] == $language) {
         Row::start("class='stockmankobg'");
       } else {
       }
@@ -145,7 +145,7 @@
         $rtl = _("No");
       }
       Cell::label($rtl);
-      Cell::label(Config::get('default.lang') == $conn[$i]['code'] ? _("Yes") : _("No"));
+      Cell::label(Config::get('default.language') == $conn[$i]['code'] ? _("Yes") : _("No"));
       $edit   = _("Edit");
       $delete = _("Delete");
       if (User::graphic_links()) {
@@ -153,7 +153,7 @@
         $delete = Forms::setIcon(ICON_DELETE, $delete);
       }
       Cell::label("<a href='" . $_SERVER['DOCUMENT_URI'] . "?selected_id=$i'>$edit</a>");
-      Cell::label($conn[$i]['code'] == $lang ? '' : "<a href=''>$delete</a>");
+      Cell::label($conn[$i]['code'] == $language ? '' : "<a href=''>$delete</a>");
       Row::end();
     }
     Table::end();
@@ -191,16 +191,16 @@
       } else {
         $_POST['rtl'] = false;
       }
-      $_POST['dflt'] = Config::set('default.lang', $conn['code']);
+      $_POST['dflt'] = Config::set('default.language', $conn['code']);
       Forms::hidden('selected_id', $selected_id);
     }
-     Forms::textRowEx(_("Language Code"), 'code', 20);
-     Forms::textRowEx(_("Language Name"), 'name', 20);
-     Forms::textRowEx(_("Encoding"), 'encoding', 20);
-     Forms::yesnoListRow(_("Right To Left"), 'rtl', null, "", "", false);
-     Forms::yesnoListRow(_("Default Language"), 'dflt', null, "", "", false);
-     Forms::fileRow(_("Language File") . " (PO)", 'uploadfile');
-     Forms::fileRow(_("Language File") . " (MO)", 'uploadfile2');
+    Forms::textRowEx(_("Language Code"), 'code', 20);
+    Forms::textRowEx(_("Language Name"), 'name', 20);
+    Forms::textRowEx(_("Encoding"), 'encoding', 20);
+    Forms::yesnoListRow(_("Right To Left"), 'rtl', null, "", "", false);
+    Forms::yesnoListRow(_("Default Language"), 'dflt', null, "", "", false);
+    Forms::fileRow(_("Language File") . " (PO)", 'uploadfile');
+    Forms::fileRow(_("Language File") . " (MO)", 'uploadfile2');
     Table::end(0);
     Event::warning(_("Select your language files from your local harddisk."), 0, 1);
     echo "<div class='center'><input type='button' style='width:150px' value='" . _("Save") . "'></div>";

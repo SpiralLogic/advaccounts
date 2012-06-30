@@ -100,7 +100,7 @@
         // set default values, used before login
         $this->date_sep    = Config::get('date.ui_separator');
         $this->date_format = Config::get('date.ui_format');
-        $this->language    = Config::get('default.lang');
+        $this->language    = Config::get('default.language');
         $this->startup_tab = Config::get('apps.default');
       } else {
         $this->setFromArray($user);

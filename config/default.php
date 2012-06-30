@@ -9,10 +9,10 @@
    **/
 
   return array(
-    'company'   => 'default', //
-    'location'  => 'KEYS', //
-    'tax_group' => 1, //
-    'area'      => 1, //
-    'ship_via'  => 1, //
-    'lang'      => 'en_AU',
+    'company'       => 'default', //
+    'location'      => 'KEYS', //
+    'tax_group'     => 1, //
+    'area'          => 1, //
+    'ship_via'      => 1, //
+    'language'      => 'en_AU',
   );

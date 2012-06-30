@@ -194,7 +194,7 @@
         $this->salesmanid      = $this->get_salesmanid();
         $this->fireHooks('login');
         $this->Session->checkUserAgent();
-        $_SESSION['User']=$this;
+        $_SESSION['User'] = $this;
         Event::register_shutdown('Users', 'update_visitdate', [$this->username]);
         Event::register_shutdown(__CLASS__, 'addLog');
       }
@@ -293,11 +293,11 @@
      * @param $rep_popup
      * @param $query_size
      * @param $graphic_links
-     * @param $lang
+     * @param $language
      * @param $stickydate
      * @param $startup_tab
      */
-    public function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $show_gl, $show_codes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $page_size, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab)
+    public function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $show_gl, $show_codes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $page_size, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $language, $stickydate, $startup_tab)
     {
       $user = array(
         'price_dec'       => $price_dec,
@@ -317,12 +317,12 @@
         'rep_popup'       => $rep_popup,
         'query_size'      => $query_size,
         'graphic_links'   => $graphic_links,
-        'language'        => $lang,
+        'language'        => $language,
         'sticky_doc_date' => $stickydate,
         'startup_tab'     => $startup_tab
       );
       if (!Config::get('demo_mode')) {
-        Users::update_display_prefs($this->user, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $show_gl, $show_codes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $page_size, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
+        Users::update_display_prefs($this->user, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $show_gl, $show_codes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $page_size, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $language, $stickydate, $startup_tab);
       }
       $this->prefs = new userPrefs(Users::get($this->user));
     }

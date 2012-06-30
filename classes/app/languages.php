@@ -21,8 +21,8 @@
     {
       $items = array();
       $langs = Config::get('languages.installed');
-      foreach ($langs as $lang) {
-        $items[$lang['code']] = $lang['name'];
+      foreach ($langs as $language) {
+        $items[$language['code']] = $language['name'];
       }
 
       return Forms::arraySelect($name, $selected_id, $items);

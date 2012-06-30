@@ -276,20 +276,20 @@
     $test['comments'] = array();
     $old              = setlocale(LC_MESSAGES, '0');
     $langs            = array();
-    foreach (Config::get('languages.installed') as $lang) {
-      $langs[] = $lang['code'];
-      if ($lang['code'] == 'en_AU') {
+    foreach (Config::get('languages.installed') as $language) {
+      $langs[] = $language['code'];
+      if ($language['code'] == 'en_AU') {
         continue;
       } // native ADV language
-      $file = LANG_PATH . $lang['code'] . DS . 'LC_MESSAGES' . DS . $lang['code'];
+      $file = LANG_PATH . $language['code'] . DS . 'LC_MESSAGES' . DS . $languageuage['code'];
       $file .= function_exists('gettext') ? '.mo' : '.po';
       if (!is_file($file)) {
         $test['result']     = false;
         $test['comments'][] = sprintf(_('Missing %s translation file.'), $file);
       }
-      if (!setlocale(LC_MESSAGES, $lang['code'] . "." . $lang['encoding'])) {
+      if (!setlocale(LC_MESSAGES, $language['code'] . "." . $language['encoding'])) {
         $test['result']     = false;
-        $test['comments'][] = sprintf(_('Missing system locale: %s'), $lang['code'] . "." . $lang['encoding']);
+        $test['comments'][] = sprintf(_('Missing system locale: %s'), $language['code'] . "." . $language['encoding']);
       }
       ;
     }
