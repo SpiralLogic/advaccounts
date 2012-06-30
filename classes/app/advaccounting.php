@@ -16,12 +16,12 @@
   {
     use ADV\Core\Traits\Singleton;
 
-    public $settings;
     public $applications = array();
     /** var Application*/
     public $selected;
     /** @var \Menu */
     public $menu;
+
     public $buildversion;
     /** @var User $user */
     protected $User = null;
@@ -35,7 +35,7 @@
       $this->Config  = $config ? : Config::i();
       $this->Cache   = $cache ? : Cache::i();
       $this->Session = $session ? : Session::i();
-      $this->User    =       User::getCurrentUser();
+      $this->User    = User::getCurrentUser($this->Session);
       $this->menu    = new Menu(_("Main Menu"));
       $this->menu->add_item(_("Main Menu"), "index.php");
       $this->menu->add_item(_("Logout"), "/account/access/logout.php");
@@ -46,7 +46,7 @@
       $this->loadModules();
       $this->applications = $this->Cache->_get('applications');
       if (!$this->applications) {
-        $this->setUpApplications();
+        $this->setupApplications();
       }
       is_readable(DOCROOT . 'version') and define('BUILD_VERSION', file_get_contents(DOCROOT . 'version', null, null, null, 6));
       defined('BUILD_VERSION') or define('BUILD_VERSION', 000);
@@ -57,33 +57,6 @@
         $this->checkLogin();
       }
       Event::init();
-    }
-    protected function loadModules()
-    {
-      $modules = $this->Config->_get_all('modules', array());
-      foreach ($modules as $module => $module_config) {
-        $module = '\\Modules\\' . $module;
-        new $module($module_config);
-      }
-    }
-    protected function setUpApplications()
-    {
-      $this->applications = [];
-      $extensions         = $this->Config->_get('extensions.installed');
-      $apps               = $this->Config->_get('apps.active');
-      foreach ($apps as $app) {
-        $app = 'Apps_' . $app;
-        $this->add_application(new $app());
-      }
-      if (count($extensions) > 0) {
-        foreach ($extensions as $ext) {
-          $ext = 'Apps_' . $ext['name'];
-          $this->add_application(new $ext());
-        }
-        $this->Session->get_text->add_domain(Language::i()->code, LANG_PATH);
-      }
-      $this->add_application(new Apps_System());
-      $this->Cache->_set('applications', $this->applications);
     }
     /**
      * @param $app
@@ -133,67 +106,28 @@
       $page->display_application($this->get_selected());
       Page::end();
     }
-    /**
-
-     */
     public function loginFail()
     {
       header("HTTP/1.1 401 Authorization Required");
       (new View('failed_login'))->render();
-      Session::kill();
+      $this->Session->_kill();
       die();
-    }
-    protected function checkLogin()
-    {
-      if (!Session::checkUserAgent()) {
-        $this->showLogin();
-      }
-      if (Input::post("user_name")) {
-        $this->login();
-      } elseif (!$this->User->logged_in()) {
-        $this->showLogin();
-      }
-      if ($this->User->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev') !== false) {
-        Display::meta_forward('http://dev.advanced.advancedgroup.com.au:8090');
-      } else {
-        ini_set('html_errors', 'On');
-      }
-      $this->selected = $this->User->selectedApp;
-      if ($this->User->change_password && strstr($_SERVER['DOCUMENT_URI'], 'change_current_user_password.php') == false) {
-        Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $this->User->username);
-      }
-    }
-    protected function login()
-    {
-      $company = Input::post('login_company', null, 'default');
-      if ($company) {
-        try {
-          if (!$this->User->login($company, $_POST["user_name"], $_POST["password"])) {
-            // Incorrect password
-            $this->loginFail();
-          }
-        }
-        catch (\ADV\Core\DB\DBException $e) {
-          Page::error_exit('Could not connect to database!');
-        }
-        $this->User->ui_mode = $_POST['ui_mode'];
-        Session::regenerate();
-        Language::i()->set_language($_SESSION['Language']->code);
-      }
     }
     /**
      * @static
-     *
-     * @param $config
-     * @param $session
-     * @param $cache
+     * @internal param $config
+     * @internal param $session
+     * @internal param $cache
      */
     public static function refresh()
     {
+      /** @var ADVAccounting $instance  */
+      $instance               = static::i();
+      $instance->applications = [];
+      $instance->setupApplications();
     }
     /**
      * @param $app_id
-     *
      * @return bool
      */
     public function set_selected($app_id)
@@ -272,9 +206,44 @@
       }
       return true;
     }
-    /**
-
-     */
+    protected function checkLogin()
+    {
+      if (!$this->Session->_checkUserAgent()) {
+        $this->showLogin();
+      }
+      if (Input::post("user_name")) {
+        $this->login();
+      } elseif (!$this->User->logged_in()) {
+        $this->showLogin();
+      }
+      if ($this->User->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev') !== false) {
+        Display::meta_forward('http://dev.advanced.advancedgroup.com.au:8090');
+      } else {
+        ini_set('html_errors', 'On');
+      }
+      $this->selected = $this->User->selectedApp;
+      if ($this->User->change_password && strstr($_SERVER['DOCUMENT_URI'], 'change_current_user_password.php') == false) {
+        Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $this->User->username);
+      }
+    }
+    protected function login()
+    {
+      $company = Input::post('login_company', null, 'default');
+      if ($company) {
+        try {
+          if (!$this->User->login($company, $_POST["user_name"], $_POST["password"])) {
+            // Incorrect password
+            $this->loginFail();
+          }
+        }
+        catch (\ADV\Core\DB\DBException $e) {
+          Page::error_exit('Could not connect to database!');
+        }
+        $this->User->ui_mode = $_POST['ui_mode'];
+        $this->Session->regenerate();
+        $this->Session['Language']->set_language($this->Session['Language']->code);
+      }
+    }
     protected function showLogin()
     {
       // strip ajax marker from uri, to force synchronous page reload
@@ -288,6 +257,33 @@
         JS::redirect('/');
       }
       exit();
+    }
+    protected function loadModules()
+    {
+      $modules = $this->Config->_get_all('modules', array());
+      foreach ($modules as $module => $module_config) {
+        $module = '\\Modules\\' . $module;
+        new $module($module_config);
+      }
+    }
+    protected function setupApplications()
+    {
+      $this->applications = [];
+      $extensions         = $this->Config->_get('extensions.installed');
+      $apps               = $this->Config->_get('apps.active');
+      foreach ($apps as $app) {
+        $app = 'Apps_' . $app;
+        $this->add_application(new $app());
+      }
+      if (count($extensions) > 0) {
+        foreach ($extensions as $ext) {
+          $ext = 'Apps_' . $ext['name'];
+          $this->add_application(new $ext());
+        }
+        $this->Session['get_text']->add_domain($this->Session['langauge']->code, LANG_PATH);
+      }
+      $this->add_application(new Apps_System());
+      $this->Cache->_set('applications', $this->applications);
     }
   }
 

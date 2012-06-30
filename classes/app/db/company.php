@@ -11,11 +11,12 @@
 
   /**
    * @property null i
-   * @Static null i
+   * @method DB_Company i()
+   * @method get_pref($pref_name)
+   * @method get_current_fiscalyear()
    */
   class DB_Company extends DB_Base
   {
-
     use StaticAccess;
 
     /**

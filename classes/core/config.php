@@ -14,7 +14,7 @@
   /**
    * @method get($var, $default = false)
    * @method removeAll()
-   * @static i
+   * @method Config i()
    */
   class Config
   {
@@ -29,8 +29,8 @@
      *
      * @param        $var
      * @param        $value
-     * @param string $group
      *
+     * @internal param string $group
      * @return mixed
      */
     public function _set($var, $value)
@@ -113,6 +113,9 @@
       $this->_removeAll();
       $this->load();
     }
+    /**
+     * @return mixed
+     */
     public function _shutdown()
     {
       return $this->Cache->_set('config', $this->_vars);
@@ -138,7 +141,7 @@
      *
      * @param string $group
      *
-     * @throws \ADV\Core\Config_Exception
+     * @throws \RuntimeException
      * @return mixed
      */
     protected function load($group = 'config')

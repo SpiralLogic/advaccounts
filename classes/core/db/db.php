@@ -11,9 +11,10 @@
   use PDO, PDOStatement, PDOException, PDORow, Cache;
 
   /**
-   * @method query($sql, $err_msg = null)
-   * @method select($columns = null)
-   * @method update($into)
+   * @method \PDOStatement query($sql, $err_msg = null)
+   * @method Query_Se;ect select($columns = null)
+   * @method Query_Insert insert($into)
+   * @method Query_Update update($into)
    * @method escape($value, $null = false)
    * @method fetch($result = null, $fetch_mode = \PDO::FETCH_BOTH)
    * @method fetch_row($result = null)
@@ -22,6 +23,7 @@
    * @method begin()
    * @method commit()
    * @method error_no()
+   * @method quote($value, $type = null)
    * @method \ADV\Core\DB\Query_Select select($columns = null)
    * @method \ADV\Core\DB\Query_Update update($into)
    */
@@ -116,14 +118,6 @@
         throw new DBException('Could not connect to database:' . $config['name'] . ', check configuration!');
       }
     }
-    /**
-     * @static
-     *
-     * @param      $sql
-     * @param null $err_msg
-     *
-     * @return null|\PDOStatement
-     */
     /**
      * @param      $sql
      * @param null $err_msg
@@ -271,7 +265,7 @@
     {
       $this->prepared = null;
       $columns        = (is_string($columns)) ? func_get_args() : array();
-      $this->query    = new Query_Select($columns, static::i());
+      $this->query    = new Query_Select($columns, $this);
       return $this->query;
     }
     /**
@@ -662,6 +656,9 @@
       }
       \Errors::db_error($error, $this->errorSql, $data);
     }
+    /**
+     * @return array
+     */
     public function __sleep()
     {
       $this->conn = null;

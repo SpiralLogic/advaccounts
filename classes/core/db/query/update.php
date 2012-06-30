@@ -11,7 +11,7 @@
   use PDO, PDOStatement, PDOException, PDORow;
 
   /**
-
+   * @method values($values)
    */
   class Query_Update extends Query_Insert
   {

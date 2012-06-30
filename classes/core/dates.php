@@ -23,6 +23,7 @@
    * @package   Adv.accounts.core
    * @method   __date()
    * @method  date2sql($date_)
+   * @method  today()
    */
   class Dates
   {
@@ -374,9 +375,6 @@
     public function _explode_date_to_dmy($date)
     {
       $date = $this->_date2sql($date);
-      if ($date == "") {
-        $disp = $this->User->_date_display();
-      }
       list($year, $month, $day) = explode("-", $date);
       return [$day, $month, $year];
     }

@@ -10,11 +10,13 @@
   namespace ADV\Core;
   /**
    * @method post($var, $type = null, $default = null)
+   * @method get($var, $type = null, $default = null)
 
    */
   class Input
   {
-use Traits\StaticAccess;
+    use Traits\StaticAccess;
+
     /**
 
      */
@@ -44,7 +46,6 @@ use Traits\StaticAccess;
      */
     protected $default_bool = false;
     /***
-     *
      * @param mixed     $var     $_POST variable to return
      * @param Input|int $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
      * @param null      $default Default value if there is no current variable
@@ -57,11 +58,10 @@ use Traits\StaticAccess;
     }
     /***
      * @method
-     *
      * @param           $var
-     * @param Input|int $type Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING,
+     * @param Input|int $type       Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING,
      *                              Input::BOOL
-     * @param mixed $default Default value if there is no current variable
+     * @param mixed     $default    Default value if there is no current variable
      *
      * @internal param mixed $public $_GET variable to return
      * @return bool|int|string|object
@@ -111,7 +111,6 @@ use Traits\StaticAccess;
       if ($result === false) {
         $result = $this->_get_global($var, $type, $default);
       }
-
       return $result;
     }
     /**
@@ -129,7 +128,6 @@ use Traits\StaticAccess;
       if ($result === false) {
         $result = $this->_get_global($var, $type, $default);
       }
-
       return $result;
     }
     /***
@@ -170,7 +168,6 @@ use Traits\StaticAccess;
       if (is_null($vars)) {
         return true;
       }
-
       return ($this->doesHave($_POST, func_get_args()));
     }
     /***
@@ -185,7 +182,6 @@ use Traits\StaticAccess;
       if (is_null($vars)) {
         return true;
       }
-
       return ($this->doesHave($_GET, func_get_args()));
     }
     /***
@@ -200,7 +196,6 @@ use Traits\StaticAccess;
       if (is_null($vars)) {
         return true;
       }
-
       return ($this->doesHave($_REQUEST, func_get_args()));
     }
     /***
@@ -215,7 +210,6 @@ use Traits\StaticAccess;
       if (is_null($vars)) {
         return true;
       }
-
       return ($this->doesHave($_SESSION, func_get_args()));
     }
     /**
@@ -231,10 +225,8 @@ use Traits\StaticAccess;
     {
       if (!isset($_SESSION['globals'])) {
         $_SESSION['globals'] = array();
-
         return null;
       }
-
       return $this->_isset($_SESSION['globals'], $var, $type, $default);
     }
     /**
@@ -251,7 +243,6 @@ use Traits\StaticAccess;
     protected function getPost($first, $second, $var, $type = null, $default = null)
     {
       $array = ($this->doesHave($first, $var)) ? $first : $second;
-
       return static::_isset($array, $var, $type, $default);
     }
     /**
@@ -275,7 +266,6 @@ use Traits\StaticAccess;
           return false;
         }
       }
-
       return true;
     }
     /**
@@ -297,14 +287,12 @@ use Traits\StaticAccess;
           if ($value === null || !is_numeric($value)) {
             return ($default === null) ? $this->default_number : $default;
           }
-
           return ($value === $this->default_number) ? true : $value + 0;
         case self::STRING:
           if ($value === null || !is_string($value)) {
             return ($default === null) ? $this->default_string : $default;
           }
       }
-
       return $value;
     }
   }

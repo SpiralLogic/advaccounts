@@ -91,6 +91,9 @@
       Display::div_end(); // end of _page_body section
       $this->footer();
     }
+    /**
+     * @param $application
+     */
     public function display_application($application)
     {
       if ($application->direct) {

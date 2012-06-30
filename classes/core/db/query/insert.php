@@ -13,7 +13,7 @@
   /**
 
    */
-  Class Query_Insert extends Query {
+  class Query_Insert extends Query {
 
     /**
      * @var

@@ -9,6 +9,7 @@
    **/
   /**
    * @method theme
+   * @method User i()
    */
   class User
   {
@@ -93,13 +94,13 @@
     protected $Session;
     /**
      * @static
-     * @return mixed
+     * @return User
      */
-    static function  getCurrentUser()
+    static function  getCurrentUser(Session $session)
     {
       $user = null;
-      if (isset($_SESSION["User"])) {
-        $user = $_SESSION["User"];
+      if (isset($session['User'])) {
+        $user = $session['User'];
       }
       return static::i($user);
     }
@@ -368,11 +369,11 @@
     public function _numeric($input)
     {
       $num = trim($input);
-      $sep = $this->tho_sep();
+      $sep = $this->_tho_sep();
       if ($sep != '') {
         $num = str_replace($sep, '', $num);
       }
-      $sep = $this->dec_sep();
+      $sep = $this->_dec_sep();
       if ($sep != '.') {
         $num = str_replace($sep, '.', $num);
       }
