@@ -16,7 +16,6 @@
    */
   class Errors
   {
-
     /**
 
      */
@@ -36,25 +35,24 @@
     /** @var array Error constants to text */
     protected static $session = false;
     /** @var array */
-    protected static $levels
-      = array(
-        -1                => 'Fatal!',
-        0                 => 'Error',
-        E_ERROR           => 'Error',
-        E_WARNING         => 'Warning',
-        E_PARSE           => 'Parsing Error',
-        E_NOTICE          => 'Notice',
-        E_CORE_ERROR      => 'Core Error',
-        E_CORE_WARNING    => 'Core Warning',
-        E_COMPILE_ERROR   => 'Compile Error',
-        E_COMPILE_WARNING => 'Compile Warning',
-        E_USER_ERROR      => 'User Error',
-        E_USER_WARNING    => 'User Warning',
-        E_USER_NOTICE     => 'User Notice',
-        E_STRICT          => 'Runtime Notice',
-        E_ALL             => 'No Error',
-        E_SUCCESS         => 'Success!'
-      );
+    protected static $levels = array(
+      -1                => 'Fatal!',
+      0                 => 'Error',
+      E_ERROR           => 'Error',
+      E_WARNING         => 'Warning',
+      E_PARSE           => 'Parsing Error',
+      E_NOTICE          => 'Notice',
+      E_CORE_ERROR      => 'Core Error',
+      E_CORE_WARNING    => 'Core Warning',
+      E_COMPILE_ERROR   => 'Compile Error',
+      E_COMPILE_WARNING => 'Compile Warning',
+      E_USER_ERROR      => 'User Error',
+      E_USER_WARNING    => 'User Warning',
+      E_USER_NOTICE     => 'User Notice',
+      E_STRICT          => 'Runtime Notice',
+      E_ALL             => 'No Error',
+      E_SUCCESS         => 'Success!'
+    );
     /** @var string  temporary container for output html data before error box */
     public static $before_box = '';
     /** @var array Errors which terminate execution */
@@ -116,7 +114,6 @@
         $error['backtrace'] = static::prepare_backtrace(debug_backtrace());
         static::$errors[]   = $error;
       }
-
       return true;
     }
     /**
@@ -127,11 +124,7 @@
     public static function exception_handler(\Exception $e)
     {
       $error                    = array(
-        'type'    => -1,
-        'code'    => $e->getCode(),
-        'message' => end(explode('\\', get_class($e))) . ' ' . $e->getMessage(),
-        'file'    => $e->getFile(),
-        'line'    => $e->getLine()
+        'type'    => -1, 'code'    => $e->getCode(), 'message' => end(explode('\\', get_class($e))) . ' ' . $e->getMessage(), 'file'    => $e->getFile(), 'line'    => $e->getLine()
       );
       static::$current_severity = -1;
       static::$messages[]       = $error;
@@ -156,11 +149,7 @@
     public static function format()
     {
       $msg_class = array(
-        E_USER_ERROR        => array('ERROR', 'err_msg'),
-        E_RECOVERABLE_ERROR => array('ERROR', 'err_msg'),
-        E_USER_WARNING      => array('WARNING', 'warn_msg'),
-        E_USER_NOTICE       => array('USER', 'info_msg'),
-        E_SUCCESS           => array('SUCCESS', 'success_msg')
+        E_USER_ERROR        => array('ERROR', 'err_msg'), E_RECOVERABLE_ERROR => array('ERROR', 'err_msg'), E_USER_WARNING      => array('WARNING', 'warn_msg'), E_USER_NOTICE       => array('USER', 'info_msg'), E_SUCCESS           => array('SUCCESS', 'success_msg')
       );
       $content   = '';
       foreach (static::$messages as $msg) {
@@ -175,7 +164,6 @@
           JS::beforeload("Adv.showStatus();");
         }
       }
-
       return $content;
     }
     /**
@@ -187,8 +175,7 @@
       if (static::$current_severity == -1 || static::$errors || static::$dberrors || static::$debugLog) {
         $text            = '';
         $with_back_trace = array();
-        $text .= count(static::$debugLog) ? "<div><pre><h3>Debug Values: </h3>" . var_export(static::$debugLog, true) . "\n\n" :
-          '';
+        $text .= count(static::$debugLog) ? "<div><pre><h3>Debug Values: </h3>" . var_export(static::$debugLog, true) . "\n\n" : '';
         if (static::$errors) {
           foreach (static::$errors as $id => $error) {
             $with_back_trace[] = $error;
@@ -203,8 +190,7 @@
         $text .= (isset($_POST) && count($_POST)) ? "<h3>POST: </h3>" . var_export($_POST, true) . "\n\n" : '';
         $text .= (isset($_GET) && count($_GET)) ? "<h3>GET: </h3>" . var_export($_GET, true) . "\n\n" : '';
         $text .= (isset($_REQUEST) && count($_REQUEST)) ? "<h3>REQUEST: </h3>" . var_export($_REQUEST, true) . "\n\n" : '';
-        $text .= ($with_back_trace) ? "<div><pre><h3>Errors with backtrace: </h3>" . var_export($with_back_trace, true) . "\n\n" :
-          '';
+        $text .= ($with_back_trace) ? "<div><pre><h3>Errors with backtrace: </h3>" . var_export($with_back_trace, true) . "\n\n" : '';
         $subject = 'Error log: ';
         $subject .= (isset(static::$session['current_user'])) ? static::$session['current_user']->username . ', ' : '';
         if (static::$session) {
@@ -217,8 +203,7 @@
           }
           $text .= "<h3>Session: </h3>" . var_export(static::$session, true) . "\n\n</pre></div>";
         }
-        $subject .= (isset(static::$levels[static::$current_severity])) ?
-          'Severity: ' . static::$levels[static::$current_severity] : '';
+        $subject .= (isset(static::$levels[static::$current_severity])) ? 'Severity: ' . static::$levels[static::$current_severity] : '';
         $subject .= static::$dberrors ? ', DB Error' : '';
         $subject .= ' ' . $id;
         $to      = 'errors@advancedgroup.com.au';
@@ -248,7 +233,6 @@
           unset($backtrace[$key]);
         }
       }
-
       return $backtrace;
     }
     /**
@@ -301,16 +285,14 @@
     protected static function fatal()
     {
       ob_end_clean();
-      $content = static::format();
+      $content = strip_tags(static::format());
       if (!$content) {
-        $content = '<div class="err_msg">A fatal error has occured!</div>';
+        $content = 'A fatal error has occured!';
       }
-      //    if ($_SESSION['current_user']->username == 'admin') {
-      $content .= '<pre class="left">' . var_export(Errors::$errors, true) . '</pre>';
-//      }
-      if (class_exists('Page')) {
-        \Page::error_exit($content, false);
-      }
+      $view = new View('fatal_error');
+      $view['message']=$content;
+      $view->set('debug',$_SESSION['User']->username == 'admin'? var_export(Errors::$errors, true):'');
+      $view->render();
       session_write_close();
       if (function_exists('fastcgi_finish_request')) {
         /** @noinspection PhpUndefinedFunctionInspection */
@@ -347,7 +329,6 @@
         $status['process'] = '';
       }
       static::$jsonerrorsent = true;
-
       return $status;
     }
     /**
@@ -404,7 +385,7 @@
       }
       $error              = array('line' => $source['line'], 'file' => $source['file'], 'content' => $content);
       static::$debugLog[] = $error;
-      error_log(date(DATE_RFC822) . ' ' . 'LOG' . ": " . print_r($content,true) . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n", 3, DOCROOT . '../error_log');
+      error_log(date(DATE_RFC822) . ' ' . 'LOG' . ": " . print_r($content, true) . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n", 3, DOCROOT . '../error_log');
     }
   }
 

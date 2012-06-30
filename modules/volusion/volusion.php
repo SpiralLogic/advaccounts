@@ -27,6 +27,7 @@
     public function _init()
     {
       User::register_login('ADV\\Core\\Event', 'register_shutdown', [$this, 'doWebsales']);
+
     }
     public function doWebsales()
     {
@@ -44,7 +45,7 @@
         }
       }
       $this->notOnJobsboard();
-      DB::change_connection();
+
     }
     /**
      * @return bool|Volusion\Orders
@@ -72,8 +73,7 @@
      */
     protected function getNotOnJobsboard()
     {
-      DB::change_connection();
-      $results = DB::select('OrderID,ison_jobsboard')->from('WebOrders')->where('ison_jobsboard IS null')->fetch()->all();
+            $results = DB::select('OrderID,ison_jobsboard')->from('WebOrders')->where('ison_jobsboard IS null')->fetch()->all();
 
       return $results;
     }
@@ -105,7 +105,7 @@
      */
     protected function insertJob($id)
     {
-      DB::change_connection();
+
       $order = DB::select()->from('WebOrders')->where('OrderID=', $id)->fetch()->one();
       if (!$order) {
         \Event::error('Could not find job ' . $id . ' in database');
@@ -113,8 +113,8 @@
         return false;
       }
       $orderdetails = DB::select()->from('WebOrderDetails')->where('OrderID=', $id)->fetch()->all();
-      DB::change_connection('jobsboard');
-      $jobsboard_no = DB::select('Advanced_Job_No')->from('Job_List')->where('websaleid=', $id)->fetch()->one();
+
+      $jobsboard_no = $this->jobsboardDB->_select('Advanced_Job_No')->from('Job_List')->where('websaleid=', $id)->fetch()->one();
       $jobsboard_no = $jobsboard_no['Advanced_Job_No'];
       $lineitems    = $lines = array();
       foreach ($orderdetails as $detail) {
@@ -139,7 +139,7 @@
         $newJob         = array(
           'Advanced_Job_No' => $jobsboard_no, 'websaleid'       => $id, 'Detail'          => $detail,
         );
-        DB::update('Job_List')->values($newJob)->where('Advanced_Job_No=', $jobsboard_no)->exec();
+        $this->jobsboardDB->_update('Job_List')->values($newJob)->where('Advanced_Job_No=', $jobsboard_no)->exec();
         $this->insertJobsboardlines($lineitems, $jobsboard_no);
 
         return $jobsboard_no;
@@ -190,10 +190,9 @@
         }
       }
       $newJob['Updates'] = $updates;
-      $jobsboard_no      = DB::insert('Job_List')->values($newJob)->exec();
+      $jobsboard_no      = $this->jobsboardDB->_insert('Job_List')->values($newJob)->exec();
       $this->insertJobsboardlines($lineitems, $jobsboard_no);
-      DB::change_connection();
-      DB::update('WebOrders')->value('ison_jobsboard', $jobsboard_no)->where('OrderID=', $order['OrderID'])->exec();
+            DB::update('WebOrders')->value('ison_jobsboard', $jobsboard_no)->where('OrderID=', $order['OrderID'])->exec();
       $result = $jobsboard_no;
 
       return $result;
@@ -209,7 +208,7 @@
       foreach ($deleted as $line) {
         $line['quantity'] = 0;
         $line['description'] .= " DELETED!";
-        DB::update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->and_where('job_id=', $jobid)->exec();
+        $this->jobsboardDB->_update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->and_where('job_id=', $jobid)->exec();
       }
       foreach ($lines as $line) {
         $line['job_id'] = $jobid;
@@ -227,7 +226,7 @@
      */
     protected function getJobsboardLines($jobid)
     {
-      $result = DB::select()->from('JobListItems')->where('job_id=', $jobid)->fetch()->all();
+      $result = $this->jobsboardDB->_select()->from('JobListItems')->where('job_id=', $jobid)->fetch()->all();
 
       return $result;
     }

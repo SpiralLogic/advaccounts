@@ -35,10 +35,11 @@
         $class_name = substr($namespaced_class, $lastNsPos + 1);
       }
       if ($class && static::$i === NULL) {
-        $dic[$class_name] = $dic->share(function() use ($class) { return $class; });
+        static::$i = $class_name;
+        $dic[$class_name] = function() use ($class) { return $class; };
       }
       if (static::$i === NULL) {
-        $dic[$class_name] = $dic->share(function() use ($namespaced_class) { return new $namespaced_class; });
+        $dic[$class_name] = function() use ($namespaced_class) { return new $namespaced_class; };
       }
       static::$i = $class_name;
       return $dic[static::$i];

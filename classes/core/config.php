@@ -14,6 +14,7 @@
   /**
    * @method get($var, $default = false)
    * @method removeAll()
+   * @static i
    */
   class Config
   {

@@ -16,7 +16,6 @@
   class SessionException extends \Exception
   {
   }
-
   /**
    * @property \ADVAccounting App
    * @method  getGlobal($var, $default = null)
@@ -49,7 +48,6 @@
       if (session_status() === PHP_SESSION_DISABLED) {
         throw new SessionException('Sessions are disasbled!');
       }
-
       ini_set('session.gc_maxlifetime', 3200); // 10hrs
       session_name('ADV' . md5($_SERVER['SERVER_NAME']));
       $old_serializer = $old_handler = $old_path = null;
@@ -73,10 +71,10 @@
       }
       header("Cache-control: private");
       $this->setTextSupport();
-      $_SESSION['Language']=new Language();
+      $this['Language'] = new Language();
       $this->_session = &$_SESSION;
       if (!isset($this->_session['globals'])) {
-        $this->_session['globals'] = [];
+        $this['globals'] = [];
       }
       // Ajax communication object
       (!class_exists('Ajax'))  or Ajax::i();
@@ -87,7 +85,7 @@
      */
     public function _checkUserAgent()
     {
-      if (Arr::get($_SESSION, 'HTTP_USER_AGENT') != sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR']))) {
+      if ($this['HTTP_USER_AGENT'] != sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR']))) {
         $this->setUserAgent();
         return false;
       }
@@ -99,17 +97,17 @@
      */
     protected function setUserAgent()
     {
-      return ($_SESSION['HTTP_USER_AGENT'] = sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR'])));
+      return ($this['HTTP_USER_AGENT'] = sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR'])));
     }
     /**
      * @return mixed
      */
     protected function setTextSupport()
     {
-      if (isset($_SESSION['get_text'])) {
-        $this->get_text = $_SESSION['get_text'];
+      if (isset($this['get_text'])) {
+        $this->get_text = $this['get_text'];
       } else {
-        $this->get_text = $_SESSION['get_text'] = \gettextNativeSupport::i();
+        $this->get_text = $this['get_text'] = \gettextNativeSupport::i();
       }
     }
     /**
@@ -119,7 +117,7 @@
      */
     public function __get($var)
     {
-      return isset($this->_session[$var]) ? $this->_session[$var] : null;
+      return isset($this[$var]) ? $this[$var] : null;
     }
     /**
      * @param $var
@@ -129,7 +127,7 @@
      */
     public function __set($var, $value)
     {
-      $this->_session[$var] = $value;
+      $this[$var] = $value;
     }
     /**
      * @param $var
@@ -141,13 +139,13 @@
     public function _setGlobal($var, $value = null)
     {
       if ($value === null) {
-        if (isset($_SESSION['globals'][$var])) {
-          unset($_SESSION['globals'][$var]);
+        if (isset($this['globals'][$var])) {
+          unset($this['globals'][$var]);
         }
         return null;
       }
-      $_SESSION['globals'][$var] = $value;
-      $_SESSION[$var]            = $value;
+      $this['globals'][$var] = $value;
+      $this[$var]            = $value;
       return $value;
     }
     /**
@@ -158,7 +156,7 @@
      */
     public function _getGlobal($var, $default = null)
     {
-      return isset($_SESSION['globals'][$var]) ? $_SESSION['globals'][$var] : $default;
+      return isset($this['globals'][$var]) ? $this['globals'][$var] : $default;
     }
     /**
      * @internal param $globals
@@ -168,7 +166,7 @@
       $globals = func_get_args();
       foreach ($globals as $var) {
         if (is_string($var) || is_int($var)) {
-          unset ($_SESSION['globals'][$var]);
+          unset ($this['globals'][$var]);
         }
       }
     }
@@ -222,6 +220,9 @@
      */
     public function offsetGet($offset)
     {
+      if (!$this->offsetExists($offset)) {
+        return null;
+      }
       return $_SESSION[$offset];
     }
     /**

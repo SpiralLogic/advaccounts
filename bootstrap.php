@@ -100,11 +100,6 @@
     Ajax::i();
     Config::i();
     ob_start('adv_ob_flush_handler', 0);
-    ADVAccounting::i($dic['Config'], $dic['Session']);
-  }
-  if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
-    new \ADV\Core\Assets();
-  } else {
     $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
     $index      = $controller == $_SERVER['SCRIPT_NAME'];
     $show404    = false;
@@ -122,11 +117,8 @@
     if ($show404) {
       header('HTTP/1.0 404 Not Found');
       Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
-    }
+          }
     if ($index || $show404) {
       ADVAccounting::i()->display();
     }
   }
-
-
-

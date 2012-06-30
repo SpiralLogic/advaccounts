@@ -14,6 +14,8 @@
    */
   class ADVAccounting
   {
+    use ADV\Core\Traits\Singleton;
+
     public $settings;
     public $applications = array();
     /** var Application*/
@@ -21,24 +23,54 @@
     /** @var \Menu */
     public $menu;
     public $buildversion;
-    /** @var ADVAccounting */
-    public static $i = false;
     /** @var User $user */
     protected $User = null;
     /** @var Config $Config */
     protected $Config = null;
     /** @var Session */
-    protected $session = null;
+    protected $Session = null;
     /** */
-    public function __construct(Config $config, $session)
+    public function __construct(Config $config = null, Session $session = null, Cache $cache = null)
     {
-      $this->Config = $config ? : Config::i();
-      $extensions   = $config->_get('extensions.installed');
-      $this->User   = User::getCurrentUser();
-      $this->menu   = new Menu(_("Main Menu"));
+      $this->Config  = $config ? : Config::i();
+      $this->Cache   = $cache ? : Cache::i();
+      $this->Session = $session ? : Session::i();
+      $this->User    =       User::getCurrentUser();
+      $this->menu    = new Menu(_("Main Menu"));
       $this->menu->add_item(_("Main Menu"), "index.php");
       $this->menu->add_item(_("Logout"), "/account/access/logout.php");
-      $apps = $config->_get('apps.active');
+      array_walk($_POST, function(&$v)
+      {
+        $v = is_string($v) ? trim($v) : $v;
+      });
+      $this->loadModules();
+      $this->applications = $this->Cache->_get('applications');
+      if (!$this->applications) {
+        $this->setUpApplications();
+      }
+      is_readable(DOCROOT . 'version') and define('BUILD_VERSION', file_get_contents(DOCROOT . 'version', null, null, null, 6));
+      defined('BUILD_VERSION') or define('BUILD_VERSION', 000);
+      define('VERSION', '3.' . BUILD_VERSION . '-SYEDESIGN');
+      // logout.php is the only page we should have always
+      // accessable regardless of access level and current login status.
+      if (!strstr($_SERVER['DOCUMENT_URI'], 'logout.php')) {
+        $this->checkLogin();
+      }
+      Event::init();
+    }
+    protected function loadModules()
+    {
+      $modules = $this->Config->_get_all('modules', array());
+      foreach ($modules as $module => $module_config) {
+        $module = '\\Modules\\' . $module;
+        new $module($module_config);
+      }
+    }
+    protected function setUpApplications()
+    {
+      $this->applications = [];
+      $extensions         = $this->Config->_get('extensions.installed');
+      $apps               = $this->Config->_get('apps.active');
       foreach ($apps as $app) {
         $app = 'Apps_' . $app;
         $this->add_application(new $app());
@@ -48,9 +80,10 @@
           $ext = 'Apps_' . $ext['name'];
           $this->add_application(new $ext());
         }
-        $session->get_text->add_domain(Language::i()->code, LANG_PATH);
+        $this->Session->get_text->add_domain(Language::i()->code, LANG_PATH);
       }
       $this->add_application(new Apps_System());
+      $this->Cache->_set('applications', $this->applications);
     }
     /**
      * @param $app
@@ -96,7 +129,7 @@
     {
       Extensions::add_access();
       Input::get('application')  and $this->set_selected($_GET['application']);
-      $page = Page ::start(_($help_context = "Main Menu"), SA_OPEN, false, true);
+      $page = Page::start(_($help_context = "Main Menu"), SA_OPEN, false, true);
       $page->display_application($this->get_selected());
       Page::end();
     }
@@ -122,8 +155,10 @@
       }
       if ($this->User->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev') !== false) {
         Display::meta_forward('http://dev.advanced.advancedgroup.com.au:8090');
+      } else {
+        ini_set('html_errors', 'On');
       }
-      static::$i->selected = $this->User->selectedApp;
+      $this->selected = $this->User->selectedApp;
       if ($this->User->change_password && strstr($_SERVER['DOCUMENT_URI'], 'change_current_user_password.php') == false) {
         Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $this->User->username);
       }
@@ -153,9 +188,8 @@
      * @param $session
      * @param $cache
      */
-    public static function refresh($config, $session)
+    public static function refresh()
     {
-      static::$i = Cache::set('App', new static($config, $session));
     }
     /**
      * @param $app_id
@@ -167,17 +201,6 @@
       $this->User->selectedApp = $this->get_application($app_id);
       $this->selected          = $this->User->selectedApp;
       return $this->selected;
-    }
-    /**
-     * @static
-     * @return ADVAccounting
-     */
-    public static function i(Config $config = null, Session $session = null)
-    {
-      if (static::$i === false) {
-        static::init($config, $session);
-      }
-      return static::$i;
     }
     /**
      * @static
@@ -252,7 +275,7 @@
     /**
 
      */
-    protected static function showLogin()
+    protected function showLogin()
     {
       // strip ajax marker from uri, to force synchronous page reload
       $_SESSION['timeout'] = array(
@@ -265,43 +288,6 @@
         JS::redirect('/');
       }
       exit();
-    }
-    /**
-     * @static
-     * @return \ADVAccounting|bool
-     */
-    protected static function init(Config $config, $session)
-    {
-      array_walk($_POST, function(&$v)
-      {
-        $v = is_string($v) ? trim($v) : $v;
-      });
-      $modules = $config->_get_all('modules', array());
-      foreach ($modules as $module => $module_config) {
-        $module = '\\Modules\\' . $module;
-        new $module($module_config);
-      }
-      static::$i = Cache::get('App');
-      if (static::$i === false) {
-        static::refresh($config, $session);
-      } else {
-        static::$i->User = User::getCurrentUser();
-      }
-      if (!static::$i->buildversion) {
-        is_readable(DOCROOT . 'version') and define('BUILD_VERSION', file_get_contents(DOCROOT . 'version', null, null, null, 6));
-        defined('BUILD_VERSION') or define('BUILD_VERSION', 000);
-        static::$i->buildversion = BUILD_VERSION;
-      } else {
-        define('BUILD_VERSION', static::$i->buildversion);
-      }
-      define('VERSION', '3.' . BUILD_VERSION . '-SYEDESIGN');
-      // logout.php is the only page we should have always
-      // accessable regardless of access level and current login status.
-      if (!strstr($_SERVER['DOCUMENT_URI'], 'logout.php')) {
-        static::$i->checkLogin();
-      }
-      Event::init();
-      return static::$i;
     }
   }
 

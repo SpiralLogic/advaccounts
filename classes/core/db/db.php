@@ -12,6 +12,8 @@
 
   /**
    * @method query($sql, $err_msg = null)
+   * @method select($columns = null)
+   * @method update($into)
    * @method escape($value, $null = false)
    * @method fetch($result = null, $fetch_mode = \PDO::FETCH_BOTH)
    * @method fetch_row($result = null)
@@ -80,14 +82,14 @@
     /**
      * @throws DBException
      */
-    public function __construct($config = null, $cache = null)
+    public function __construct($name='default', \Config $config = null, $cache = null)
     {
       $this->config   = $config ? : \Config::i();
       $this->useCache = class_exists('Cache');
       if (!$this->config) {
         throw new DBException('No database configuration provided');
       }
-      $config      = $this->config->get('db.default');
+      $config      = $this->config->_get('db.'.$name);
       $this->debug = false;
       $this->_connect($config);
       $this->default_connection = $config['name'];
@@ -112,35 +114,6 @@
       }
       catch (\PDOException $e) {
         throw new DBException('Could not connect to database:' . $config['name'] . ', check configuration!');
-      }
-    }
-    /**
-     * @static
-     *
-     * @param mixed $name
-     *
-     * @throws DBException
-     * @return bool|\PDO
-     */
-    public static function change_connection($name = false)
-    {
-      $instance = static::i();
-      $name     = $name ? : $instance->default_connection;
-      if (!isset(static::$connections[$name])) {
-        if ($instance->config && $name && !is_array($name)) {
-          $config = $instance->config->_get('db.' . $name);
-        } elseif (is_array($name)) {
-          $config = $name;
-        } else {
-          throw new DBException('No database configuration provided');
-        }
-        $instance->_connect($config);
-      }
-      if (isset(static::$connections[$name])) {
-        $instance->conn = static::$connections[$name];
-        return $instance->conn;
-      } else {
-        throw new DBException("There is no connection with this name");
       }
     }
     /**
@@ -688,5 +661,10 @@
         throw new DBException($error);
       }
       \Errors::db_error($error, $this->errorSql, $data);
+    }
+    public function __sleep()
+    {
+      $this->conn = null;
+      return array_keys((array) $this);
     }
   }

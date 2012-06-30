@@ -8,7 +8,6 @@
    * @link      http://www.advancedgroup.com.au
    **/
   /**
-   * @method User i
    * @method theme
    */
   class User
@@ -88,37 +87,32 @@
     protected $access_sections;
     protected $_hash;
     /**
-     * @var null
-     */
-    protected static $_instance = NULL;
-    /**
      * @var
      */
     public $last_record;
-    protected $session;
+    protected $Session;
     /**
      * @static
      * @return mixed
      */
     static function  getCurrentUser()
     {
-      global $dic;
-      if (isset($_SESSION["current_user"])) {
-        $dic['User'] = $dic->share(function() { return $_SESSION["current_user"]; });
+      $user = null;
+      if (isset($_SESSION["User"])) {
+        $user = $_SESSION["User"];
       }
-      $_SESSION["current_user"] = static::i();
-      return $dic['User'];
+      return static::i($user);
     }
-      /**
+    /**
 
      */
     public function __construct(Session $session = null)
     {
-      $this->session   = $session ? : Session::i();
+      $this->Session   = $session ? : Session::i();
       $this->loginname = $this->username = $this->name = "";
       $this->company   = Config::get('default.company') ? : 'default';
       $this->logged    = FALSE;
-      $this->prefs     = new userPrefs((array)$this);
+      $this->prefs     = new userPrefs((array) $this);
     }
     /**
      * @param null $salesmanid
@@ -146,7 +140,7 @@
       $this->timeout();
       if ($this->logged && date('i', time() - $this->last_record) > 4) {
         $this->last_record = time();
-        Event::register_shutdown(__CLASS__, 'addLog');
+        Event::register_shutdown($this, '_addLog');
       }
       return $this->logged;
     }
@@ -198,7 +192,8 @@
         $this->timeout         = DB_Company::get_pref('login_tout');
         $this->salesmanid      = $this->get_salesmanid();
         $this->fireHooks('login');
-        $this->session->checkUserAgent();
+        $this->Session->checkUserAgent();
+        $_SESSION['User']=$this;
         Event::register_shutdown('Users', 'update_visitdate', [$this->username]);
         Event::register_shutdown(__CLASS__, 'addLog');
       }
@@ -576,7 +571,8 @@
     }
     public function _logout()
     {
-     $this->session->_kill();
+
+      $this->Session->_kill();
       $this->logged = FALSE;
     }
     public function getHash()

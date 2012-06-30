@@ -1,45 +1,47 @@
 <?php
 
-  /*
-  * This file is part of Pimple.
-  *
-  * Copyright (c) 2009 Fabien Potencier
-  *
-  * Permission is hereby granted, free of charge, to any person obtaining a copy
-  * of this software and associated documentation files (the "Software"), to deal
-  * in the Software without restriction, including without limitation the rights
-  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  * copies of the Software, and to permit persons to whom the Software is furnished
-  * to do so, subject to the following conditions:
-  *
-  * The above copyright notice and this permission notice shall be included in all
-  * copies or substantial portions of the Software.
-  *
-  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  * THE SOFTWARE.
-  */
   namespace ADV\Core;
   /**
 
    */
   class DIC implements \ArrayAccess
   {
-    /** @var Closure[]|String|\Callable[] */
-    private $values;
+    protected $_objects = array();
+    protected $_callbacks = array();
     /**
-     * Instantiate the container.
-     * Objects and parameters can be passed as argument to the constructor.
+     * @param       $name
+     * @param array $arguments
      *
-     * @param array $values The parameters or objects.
+     * @return mixed
+     * @throws \InvalidArgumentException
      */
-    function __construct(array $values = array())
+    public function __call($name, $arguments = array())
     {
-      $this->values = $values;
+      // Parse function name
+      preg_match_all('/_?([A-Z][a-z0-9]*|[a-z0-9]+)/', $name, $parts);
+      $parts = $parts[1];
+      // Determine method
+      $method = array_shift($parts);
+      if ('new' == $method) {
+        $method = 'fresh';
+      }
+      // Determine object key
+      $key = strtolower(implode('_', $parts));
+      array_unshift($arguments, $key);
+      // Call method if exists
+      if (method_exists($this, $method)) {
+        return call_user_func_array(array($this, $method), $arguments);
+      }
+      // Throw exception on miss
+      throw new \InvalidArgumentException(sprintf('Methood "%s" does not exist.', $method));
+    }
+    /**
+     * @param         $name
+     * @param Closure $callable
+     */
+    public function set($name, \Closure $callable)
+    {
+      $this->_callbacks[$name] = $callable;
     }
     /**
      * Sets a parameter or an object.
@@ -48,132 +50,132 @@
      * as function names (strings) are callable (creating a function with
      * the same a name as an existing parameter would break your container).
      *
-     * @param string $id    The unique identifier for the parameter or object
-     * @param mixed  $value The value of the parameter or a closure to defined an object
+     * @param string $name   The unique identifier for the parameter or object
+     * @param mixed  $value  The value of the parameter or a closure to defined an object
      */
-    function offsetSet($id, $value)
+    function offsetSet($name, $value)
     {
-      $this->values[$id] = $value;
+      $this->set($name, $value);
     }
     /**
-     * Gets a parameter or an object.
-     *
-     * @param  string $id The unique identifier for the parameter or object
-     *
-     * @return mixed  The value of the parameter or an object
-     * @throws \InvalidArgumentException if the identifier is not defined
+     * @param $name
+     * @param $param
      */
-    function offsetGet($id)
+    public function setParam($name, $param)
     {
-      if (!array_key_exists($id, $this->values)) {
-        throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
-      }
-      if ($this->values[$id] instanceof \Closure) {
-        $function = $this->values[$id];
-        return $function($this);
-      }
-      return $this->values[$id];
+      $this->set($name, function() use ($param)
+      {
+        return $param;
+      });
+    }
+    /**
+     * @param $name
+     *
+     * @return bool
+     */
+    public function has($name)
+    {
+      return isset($this->_callbacks[$name]);
     }
     /**
      * Checks if a parameter or an object is set.
      *
-     * @param  string $id The unique identifier for the parameter or object
+     * @param  string $name The unique identifier for the parameter or object
      *
      * @return Boolean
      */
-    function offsetExists($id)
+    function offsetExists($name)
     {
-      return array_key_exists($id, $this->values);
+      return $this->has($name);
+    }
+    /**
+     * @param $name
+     *
+     * @return mixed
+     */
+    public function get($name)
+    {
+      // Return object if it's already instantiated
+      if (isset($this->_objects[$name])) {
+        $args = func_get_args();
+        array_shift($args);
+        $key = $this->_keyForArguments($args);
+        if ('_no_arguments' == $key && !isset($this->_objects[$name][$key]) && !empty($this->_objects[$name])) {
+          $key = key($this->_objects[$name]);
+        }
+        if (isset($this->_objects[$name][$key])) {
+          return $this->_objects[$name][$key];
+        }
+      }
+      // Otherwise create a new one
+      return call_user_func_array(array($this, 'fresh'), func_get_args());
+    }
+    /**
+     * Gets a parameter or an object.
+     *
+     * @param  string $name The unique identifier for the parameter or object
+     *
+     * @return mixed  The value of the parameter or an object
+     * @throws \InvalidArgumentException if the identifier is not defined
+     */
+    function offsetGet($name)
+    {
+      return $this->get($name);
+    }
+    /**
+     * @param $name
+     *
+     * @return mixed
+     * @throws \InvalidArgumentException
+     */
+    public function fresh($name)
+    {
+      if (!isset($this->_callbacks[$name])) {
+        throw new \InvalidArgumentException(sprintf('Callback for "%s" does not exist.', $name));
+      }
+      $arguments                   = func_get_args();
+      $arguments[0]                = $this;
+      $key                         = $this->_keyForArguments($arguments);
+      $this->_objects[$name][$key] = call_user_func_array($this->_callbacks[$name], $arguments);
+      return $this->_objects[$name][$key];
+    }
+    /**
+     * @param $name
+     *
+     * @return bool
+     */
+    public function delete($name)
+    {
+      // TODO: Should this also delete the callback?
+      if (isset($this->_objects[$name])) {
+        unset($this->_objects[$name]);
+        return true;
+      }
+      return false;
     }
     /**
      * Unsets a parameter or an object.
      *
-     * @param  string $id The unique identifier for the parameter or object
+     * @param  string $name The unique identifier for the parameter or object
      */
-    function offsetUnset($id)
+    function offsetUnset($name)
     {
-      unset($this->values[$id]);
+      $this->delete($name);
     }
     /**
-     * Returns a closure that stores the result of the given closure for
-     * uniqueness in the scope of this instance of Pimple.
+     * @param array $arguments
      *
-     * @param Closure $callable A closure to wrap for uniqueness
-     *
-     * @return Closure The wrapped closure
+     * @return string
      */
-    function share(\Closure $callable)
+    protected function _keyForArguments(Array $arguments)
     {
-      return function ($c) use ($callable)
-      {
-        static $object;
-        if (is_null($object)) {
-          $object = $callable($c);
-        }
-        return $object;
-      };
-    }
-    /**
-     * Protects a callable from being interpreted as a service.
-     * This is useful when you want to store a callable as a parameter.
-     *
-     * @param Closure $callable A closure to protect from being evaluated
-     *
-     * @return Closure The protected closure
-     */
-    function protect(\Closure $callable)
-    {
-      return function ($c) use ($callable)
-      {
-        return $callable;
-      };
-    }
-    /**
-     * Gets a parameter or the closure defining an object.
-     *
-     * @param  string $id The unique identifier for the parameter or object
-     *
-     * @return mixed  The value of the parameter or the closure defining an object
-     * @throws \InvalidArgumentException if the identifier is not defined
-     */
-    function raw($id)
-    {
-      if (!array_key_exists($id, $this->values)) {
-        throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+      if (count($arguments) && $this === $arguments[0]) {
+        array_shift($arguments);
       }
-      return $this->values[$id];
-    }
-    /**
-     * Extends an object definition.
-     * Useful when you want to extend an existing object definition,
-     * without necessarily loading that object.
-     *
-     * @param  string  $id       The unique identifier for the object
-     * @param  Closure $callable A closure to extend the original
-     *
-     * @return Closure The wrapped closure
-     * @throws \InvalidArgumentException if the identifier is not defined
-     */
-    function extend($id, \Closure $callable)
-    {
-      if (!array_key_exists($id, $this->values)) {
-        throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+      if (0 == count($arguments)) {
+        return '_no_arguments';
       }
-      $factory = $this->values[$id];
-      if (!($factory instanceof \Closure)) {
-        throw new \InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
-      }
-      return $this->values[$id] = function ($c) use ($callable, $factory)
-      {
-        return $callable($factory($c), $c);
-      };
-    }
-    /**
-     * Returns all defined value names.
-     * @return array An array of value names
-     */
-    function keys()
-    {
-      return array_keys($this->values);
+      return md5(serialize($arguments));
     }
   }
+
