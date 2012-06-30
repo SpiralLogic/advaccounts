@@ -9,7 +9,7 @@
    **/
 
   Page::start(_($help_context = "Credit Status"), SA_CRSTATUS);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
 
   if ($Mode == ADD_ITEM && Sales_CreditStatus::can_process()) {
     Sales_CreditStatus::add($_POST['reason_description'], $_POST['DisallowInvoices']);
@@ -71,7 +71,7 @@
     Forms::hidden('selected_id', $selected_id);
   }
    Forms::textRowEx(_("Description:"), 'reason_description', 50);
-   Forms::yesnoListRow(_("Dissallow invoicing ?"), 'DisallowInvoices', NULL);
+   Forms::yesnoListRow(_("Dissallow invoicing ?"), 'DisallowInvoices', null);
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();

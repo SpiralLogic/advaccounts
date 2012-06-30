@@ -43,15 +43,15 @@
     /**
      * @var bool
      */
-    protected $frame = FALSE;
+    protected $frame = false;
     /**
      * @var bool
      */
-    protected $menu = TRUE;
+    protected $menu = true;
     /**
      * @var bool
      */
-    protected $is_index = FALSE;
+    protected $is_index = false;
     /**
      * @var array
      */
@@ -59,7 +59,7 @@
     /**
      * @var bool
      */
-    protected $header = TRUE;
+    protected $header = true;
     /**
      * @var string
      */
@@ -69,11 +69,11 @@
      */
     protected $title = '';
     /** @var Page */
-    protected static $i = NULL;
+    protected static $i = null;
     /**
      * @var Security
      */
-    protected $Security = NULL;
+    protected $Security = null;
     protected static $pagesecurity;
     /**
      * @param $hide_back_link
@@ -81,11 +81,11 @@
     public function end_page($hide_back_link)
     {
       if ($this->frame) {
-        $hide_back_link = TRUE;
-        $this->header   = FALSE;
+        $hide_back_link = true;
+        $this->header   = false;
       }
       if ((!$this->is_index && !$hide_back_link) && method_exists('Display', 'link_back')) {
-        Display::link_back(TRUE, !$this->menu);
+        Display::link_back(true, !$this->menu);
       }
       echo "<!-- end page body div -->";
       Display::div_end(); // end of _page_body section
@@ -111,7 +111,7 @@
             if ($mod['access']) {
               $mod['link'] = Display::menu_link($func->link, $func->label);
             } else {
-              $mod['anchor'] = Display::access_string($func->label, TRUE);
+              $mod['anchor'] = Display::access_string($func->label, true);
             }
             $mods[] = $mod;
           }
@@ -124,7 +124,7 @@
      * @param      $title
      * @param bool $index
      */
-    protected function __construct($title, $index = FALSE)
+    protected function __construct($title, $index = false)
     {
       $this->User     = User::i();
       $this->Config   = Config::i();
@@ -142,7 +142,7 @@
       $this->App      = ADVAccounting::i();
       $this->sel_app  = $this->App->selected;
       $this->ajaxpage = (AJAX_REFERRER || Ajax::inAjax());
-      $this->menu     = ($this->frame) ? FALSE : $menu;
+      $this->menu     = ($this->frame) ? false : $menu;
       $this->theme    = $this->User->theme();
       $this->encoding = $_SESSION['Language']->encoding;
       $this->lang_dir = $_SESSION['Language']->dir;
@@ -171,7 +171,7 @@
      */
     protected function header()
     {
-      $this->header = TRUE;
+      $this->header = true;
       JS::open_window(900, 500);
       if (!headers_sent()) {
         header("Content-type: text/html; charset={$this->encoding}");
@@ -184,7 +184,7 @@
       $header['encoding']    = $_SESSION['Language']->encoding;
       $header['stylesheets'] = $this->renderCSS();
       $header['scripts']     = [];
-      if (class_exists('JS', FALSE)) {
+      if (class_exists('JS', false)) {
         $header['scripts'] = JS::renderHeader();
       }
       $header->render();
@@ -200,7 +200,7 @@
       $menu['server_name'] = $_SERVER['SERVER_NAME'];
       $menu['username']    = $this->User->name;
       $menu['help_url']    = '';
-      if ($this->Config->_get('help_baseurl') != NULL) {
+      if ($this->Config->_get('help_baseurl') != null) {
         $menu['help_url'] = $this->help_url();
       }
       /** @var ADVAccounting $application */
@@ -222,18 +222,18 @@
      *
      * @return string
      */
-    protected function help_url($context = NULL)
+    protected function help_url($context = null)
     {
       global $help_context;
       $country = $_SESSION['Language']->code;
-      if ($context != NULL) {
+      if ($context != null) {
         $help_page_url = $context;
       } elseif (isset($help_context)) {
         $help_page_url = $help_context;
       } else // main menu
       {
         $help_page_url = $this->App->applications[$this->App->selected->id]->help_context;
-        $help_page_url = Display::access_string($help_page_url, TRUE);
+        $help_page_url = Display::access_string($help_page_url, true);
       }
       return $this->Config->_get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
                                                                                                  ' ' => '',
@@ -271,8 +271,8 @@
       $footer              = new View('footer');
       $footer['today']     = Dates::today();
       $footer['now']       = Dates::now();
-      $footer['mem']       = Files::convert_size(memory_get_usage(TRUE)) . '/' . Files::convert_size(memory_get_peak_usage(TRUE));
-      $footer['load_time'] = Dates::getReadableTime(microtime(TRUE) - $_SERVER['REQUEST_TIME_FLOAT']);
+      $footer['mem']       = Files::convert_size(memory_get_usage(true)) . '/' . Files::convert_size(memory_get_peak_usage(true));
+      $footer['load_time'] = Dates::getReadableTime(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
       $footer['user']      = $this->User->username;
       $footer['footer']    = $this->menu && !AJAX_REFERRER;
       return $footer;
@@ -282,7 +282,7 @@
      */
     protected function renderCSS()
     {
-      $this->css += class_exists('Config', FALSE) ? $this->Config->_get('assets.css') : array('default.css');
+      $this->css += class_exists('Config', false) ? $this->Config->_get('assets.css') : array('default.css');
       $path = DS . "themes" . DS . $this->theme . DS;
       $css  = implode(',', $this->css);
       return [$path . $css];
@@ -292,7 +292,7 @@
      *
      * @param bool $hide_back_link
      */
-    public static function end($hide_back_link = FALSE)
+    public static function end($hide_back_link = false)
     {
       if (static::$i) {
         static::$i->end_page($hide_back_link);
@@ -304,10 +304,10 @@
      * @param      $text
      * @param bool $exit
      */
-    public static function error_exit($text, $exit = TRUE)
+    public static function error_exit($text, $exit = true)
     {
       ob_get_clean();
-      $page = new static('Fatal Error.', FALSE);
+      $page = new static('Fatal Error.', false);
       $page->header();
       echo "<div id='msgbox'>$text</div></div></body></html>";
       ($exit)  and exit();
@@ -322,9 +322,9 @@
      *
      * @return null|Page
      */
-    public static function start($title, $security = SA_OPEN, $no_menu = FALSE, $is_index = FALSE)
+    public static function start($title, $security = SA_OPEN, $no_menu = false, $is_index = false)
     {
-      if (static::$i === NULL) {
+      if (static::$i === null) {
         static::$i = new static($title, $is_index);
       }
       static::$i->set_security($security);
@@ -338,7 +338,7 @@
      *
      * @return array
      */
-    public static function simple_mode($numeric_id = TRUE)
+    public static function simple_mode($numeric_id = true)
     {
       $default     = $numeric_id ? -1 : '';
       $selected_id = Input::post('selected_id', null, $default);
@@ -384,7 +384,7 @@
     public static function footer_exit()
     {
       Display::br(2);
-      static::$i->end_page(TRUE);
+      static::$i->end_page(true);
       exit;
     }
   }

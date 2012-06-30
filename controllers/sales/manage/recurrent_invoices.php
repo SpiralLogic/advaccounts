@@ -10,7 +10,7 @@
 
   JS::open_window(900, 600);
   Page::start(_($help_context = "Recurrent Invoices"), SA_SRECURRENT);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     $input_error = 0;
     if (strlen($_POST['description']) == 0) {
@@ -122,16 +122,16 @@
   }
    Forms::textRowEx(_("Description:"), 'description', 50);
   Sales_UI::templates_row(_("Template:"), 'order_no');
-  Debtor::row(_("Customer:"), 'debtor_id', NULL, " ", TRUE);
+  Debtor::row(_("Customer:"), 'debtor_id', null, " ", true);
   if ($_POST['debtor_id'] > 0) {
-    Debtor_Branch::row(_("Branch:"), $_POST['debtor_id'], 'group_no', NULL, FALSE);
+    Debtor_Branch::row(_("Branch:"), $_POST['debtor_id'], 'group_no', null, false);
   } else {
-    Sales_UI::groups_row(_("Sales Group:"), 'group_no', NULL, " ");
+    Sales_UI::groups_row(_("Sales Group:"), 'group_no', null, " ");
   }
-   Forms::SmallAmountRow(_("Days:"), 'days', 0, NULL, NULL, 0);
-   Forms::SmallAmountRow(_("Monthly:"), 'monthly', 0, NULL, NULL, 0);
+   Forms::SmallAmountRow(_("Days:"), 'days', 0, null, null, 0);
+   Forms::SmallAmountRow(_("Monthly:"), 'monthly', 0, null, null, 0);
    Forms::dateRow(_("Begin:"), 'begin');
-   Forms::dateRow(_("End:"), 'end', NULL, NULL, 0, 0, 5);
+   Forms::dateRow(_("End:"), 'end', null, null, 0, 0, 5);
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();

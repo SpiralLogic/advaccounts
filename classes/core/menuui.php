@@ -43,7 +43,6 @@
     protected function addTab($title, $tooltip = '', $link = '#')
     {
       $this->items[] = new MenuUI_item($title, $tooltip, $link);
-
       return $this;
     }
     /**
@@ -59,7 +58,6 @@
     {
       $this->items[]             = new MenuUI_item($title, $tooltip, $link, $param_element, $target);
       $this->options['hasLinks'] = true;
-
       return $this;
     }
     /**
@@ -75,7 +73,6 @@
       $this->items[]             = new MenuUI_item($title, $tooltip, '#' . $name);
       $this->options['hasLinks'] = true;
       JS::onload($onselect);
-
       return $this;
     }
     /**
@@ -98,7 +95,6 @@
         echo ' style="' . $style . '" ';
       }
       echo '>';
-
       return $this;
     }
     /**
@@ -107,7 +103,6 @@
     public function endTab()
     {
       echo '</div>';
-
       return $this;
     }
     /**
@@ -136,7 +131,6 @@
       MenuUI::$menuCount++;
     }
   }
-
   /**
 
    */

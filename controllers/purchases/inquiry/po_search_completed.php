@@ -15,9 +15,9 @@
     Ajax::activate('orders_tbl');
   }
   if ($order_number) {
-    Ajax::addFocus(TRUE, 'order_number');
+    Ajax::addFocus(true, 'order_number');
   } else {
-    Ajax::addFocus(TRUE, 'OrdersAfterDate');
+    Ajax::addFocus(true, 'OrdersAfterDate');
   }
   Ajax::activate('orders_tbl');
   if (Input::post('_control') != 'supplier' && !Input::post('supplier')) {
@@ -29,10 +29,10 @@
     Row::start();
     Creditor::newselect(null, ['row'=> false, 'cell_class'=> 'med']);
     Forms::refCells(_("#:"), 'order_number');
-    Forms::dateCells(_("From:"), 'OrdersAfterDate', '', NULL, -30);
+    Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
     Forms::dateCells(_("To:"), 'OrdersToDate');
-    //Inv_Location::cells(_("Location:"), 'StockLocation', NULL, TRUE);
-    Item::cells(_("Item:"), 'SelectStockFromList', NULL, TRUE);
+    //Inv_Location::cells(_("Location:"), 'StockLocation', null, true);
+    Item::cells(_("Item:"), 'SelectStockFromList', null, true);
     Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
     Row::end();
     Table::end();
@@ -110,7 +110,7 @@
     _("Order Total") => 'amount', //
     // Edit link
     array(
-      'insert' => TRUE, 'fun'    => function ($row) { return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . Orders::MODIFY_ORDER . "=" . $row["order_no"], ICON_EDIT); }
+      'insert' => true, 'fun'    => function ($row) { return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . Orders::MODIFY_ORDER . "=" . $row["order_no"], ICON_EDIT); }
     ) //
   );
   if ($stock_location) {
@@ -122,15 +122,15 @@
     Arr::append($cols, array(
                             // Email button
                             array(
-                              'insert' => TRUE, 'fun'    => function ($row) { return Reporting::emailDialogue($row['id'], ST_PURCHORDER, $row['order_no']); }
+                              'insert' => true, 'fun'    => function ($row) { return Reporting::emailDialogue($row['id'], ST_PURCHORDER, $row['order_no']); }
                             ), //
                             // Print button
                             array(
-                              'insert' => TRUE, 'fun'    => function ($row) { return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, 18, ICON_PRINT, 'button printlink'); }
+                              'insert' => true, 'fun'    => function ($row) { return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink'); }
                             ), //
                             // Recieve/Invoice button
                             array(
-                              'insert' => TRUE, 'fun' => function ($row)
+                              'insert' => true, 'fun' => function ($row)
                             {
                               if ($row['Received'] > 0) {
                                 return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);

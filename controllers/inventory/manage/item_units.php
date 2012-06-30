@@ -9,7 +9,7 @@
    **/
 
   Page::start(_($help_context = "Units of Measure"), SA_UOM);
-  list($Mode, $selected_id) = Page::simple_mode(FALSE);
+  list($Mode, $selected_id) = Page::simple_mode(false);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     //initialise no input errors assumed initially before we test
     $input_error = 0;
@@ -88,10 +88,10 @@
     Row::label(_("Unit Abbreviation:"), $_POST['abbr']);
     Forms::hidden('abbr', $_POST['abbr']);
   } else {
-     Forms::textRow(_("Unit Abbreviation:"), 'abbr', NULL, 20, 20);
+     Forms::textRow(_("Unit Abbreviation:"), 'abbr', null, 20, 20);
   }
-   Forms::textRow(_("Descriptive Name:"), 'description', NULL, 40, 40);
-   Forms::numberListRow(_("Decimal Places:"), 'decimals', NULL, 0, 6, _("User Quantity Decimals"));
+   Forms::textRow(_("Descriptive Name:"), 'description', null, 40, 40);
+   Forms::numberListRow(_("Decimal Places:"), 'decimals', null, 0, 6, _("User Quantity Decimals"));
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == '', '', 'both');
   Forms::end();

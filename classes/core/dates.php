@@ -10,9 +10,7 @@
    * @version   GIT:
    * @link      http://www.advancedgroup.com.au
    */
-
   namespace ADV\Core;
-
   /**
    * Dates validation and parsing functions
    *  These functions refer to the global variable defining the date format
@@ -39,7 +37,7 @@
     /**
 
      */
-    public function __construct(Config $Config = null, $User = null, Session $Session = null,\DB_Company $Company=null)
+    public function __construct(Config $Config = null, $User = null, Session $Session = null, \DB_Company $Company = null)
     {
       $this->Config     = $Config ? : Config::i();
       $this->User       = $User ? : \User::i();
@@ -49,7 +47,7 @@
       $this->separators = $this->Config->_get('date.separators');
       $this->sep        = $this->separators[$this->Config->_get('date.ui_separator')];
     }
-   /**
+    /**
      * @static
      *
      * @param null $date
@@ -280,7 +278,6 @@
       /** @noinspection PhpUnusedLocalVariableInspection */
       $year = $month = $day = 0;
       // Split up the date by the separator based on "how" to split it
-
       if ($how == 0) // MMDDYYYY
       {
         $date_ = str_replace($sep, '/', $date_);
@@ -378,7 +375,6 @@
       list($year, $month, $day) = explode("-", $date);
       return [$day, $month, $year];
     }
-
     /** Based on converter to and from Gregorian and Jalali calendars.
     Copyright (C) 2000 Roozbeh Pournader and Mohammad Toossi
     Released under GNU General Public License
@@ -579,34 +575,35 @@
       }
       $ret = number_format($ret, 3, '.', '') . ' ' . $formats[$formatter];
       return $ret;
-    }    /**
-         * @static
-         *
-         * @param $a
-         * @param $b
-         *
-         * @return int
-         */
-        protected function div($a, $b)
-        {
-          return (int) ($a / $b);
-        }   /**
-             * @static
-             *
-             * @param      $year
-             * @param      $month
-             * @param      $day
-             * @param null $format
-             *
-             * @return string
-             */
-            protected function date($year, $month, $day, $format = null)
-            {
-              $how  = $this->formats [($format !== null) ? $format : $this->User->_date_format()];
-              $date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
-              $how  = str_replace('/', $this->sep, $how);
-              return date($how, $date);
-            }
-
+    }
+    /**
+     * @static
+     *
+     * @param $a
+     * @param $b
+     *
+     * @return int
+     */
+    protected function div($a, $b)
+    {
+      return (int) ($a / $b);
+    }
+    /**
+     * @static
+     *
+     * @param      $year
+     * @param      $month
+     * @param      $day
+     * @param null $format
+     *
+     * @return string
+     */
+    protected function date($year, $month, $day, $format = null)
+    {
+      $how  = $this->formats [($format !== null) ? $format : $this->User->_date_format()];
+      $date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
+      $how  = str_replace('/', $this->sep, $how);
+      return date($how, $date);
+    }
   }
 

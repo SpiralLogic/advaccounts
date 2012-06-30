@@ -10,7 +10,7 @@
 
 
   JS::open_window(900, 500);
-  Page::start(_($help_context = "View Purchase Order Delivery"), SA_SUPPTRANSVIEW, TRUE);
+  Page::start(_($help_context = "View Purchase Order Delivery"), SA_SUPPTRANSVIEW, true);
   if (!isset($_GET['trans_no'])) {
     die ("<BR>" . _("This page must be called with a Purchase Order Delivery number to review."));
   }
@@ -34,11 +34,11 @@
     Cell::label($stock_item->description);
     Cell::label($stock_item->req_del_date, ' class="right nowrap"');
     $dec = Item::qty_dec($stock_item->stock_id);
-    Cell::qty($stock_item->qty_received, FALSE, $dec);
+    Cell::qty($stock_item->qty_received, false, $dec);
     Cell::label($stock_item->units);
     Cell::amountDecimal($stock_item->price);
     Cell::amount($line_total);
-    Cell::qty($stock_item->qty_inv, FALSE, $dec);
+    Cell::qty($stock_item->qty_inv, false, $dec);
     Row::end();
     $total += $line_total;
   }
@@ -46,6 +46,6 @@
   Row::label(_("Total Excluding Tax/Shipping"), $display_total, "colspan=6", ' class="right nowrap"');
   Table::end(1);
   Display::is_voided(ST_SUPPRECEIVE, $_GET['trans_no'], _("This delivery has been voided."));
-  Page::end(TRUE);
+  Page::end(true);
 
 

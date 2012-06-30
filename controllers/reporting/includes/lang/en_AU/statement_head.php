@@ -132,7 +132,7 @@
 	$this->Text($ccol, $name, $icol);
 	$this->NewLine();
 	$this->TextWrapLines($ccol, $icol - $ccol, $addr);
-	if ($sales_order != NULL) {
+	if ($sales_order != null) {
 		$this->row = $temp;
 		if (isset($sales_order['delivery_address'])) {
 			$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $sales_order['delivery_address']);

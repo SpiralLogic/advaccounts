@@ -10,7 +10,7 @@
 
 
   Page::start(_($help_context = "Inventory Movement Types"), SA_INVENTORYMOVETYPE);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     //initialise no input errors assumed initially before we test
     $input_error = 0;
@@ -43,9 +43,9 @@
     $myrow = DB::fetch_row($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this inventory movement type because item transactions have been created referring to it."));
-      return FALSE;
+      return false;
     }
-    return TRUE;
+    return true;
   }
 
   if ($Mode == MODE_DELETE) {
@@ -87,7 +87,7 @@
     }
     Forms::hidden('selected_id', $selected_id);
   }
-   Forms::textRow(_("Description:"), 'name', NULL, 50, 50);
+   Forms::textRow(_("Description:"), 'name', null, 50, 50);
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();

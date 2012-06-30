@@ -18,7 +18,7 @@
      * @param bool $spec_opt
      * @param bool $submit_on_change
      */
-    public static function print_profiles_row($label, $name, $selected_id = NULL, $spec_opt = FALSE, $submit_on_change = TRUE) {
+    public static function print_profiles_row($label, $name, $selected_id = null, $spec_opt = false, $submit_on_change = true) {
       $sql      = "SELECT profile FROM print_profiles GROUP BY profile";
       $result   = DB::query($sql, 'cannot get all profile names');
       $profiles = array();
@@ -26,7 +26,7 @@
         $profiles[$myrow['profile']] = $myrow['profile'];
       }
       echo "<tr>";
-      if ($label != NULL) {
+      if ($label != null) {
         echo "<td class='label'>$label</td>\n";
       }
       echo "<td>";
@@ -45,7 +45,7 @@
      *
      * @return string
      */
-    public static function printers($name, $selected_id = NULL, $spec_opt = FALSE, $submit_on_change = FALSE) {
+    public static function printers($name, $selected_id = null, $spec_opt = false, $submit_on_change = false) {
       static $printers; // query only once for page display
       if (!$printers) {
         $sql      = "SELECT id, name, description FROM printers";
@@ -66,7 +66,7 @@
      * @param      $name
      * @param null $value
      */
-    public static function pagesizes_row($label, $name, $value = NULL) {
+    public static function pagesizes_row($label, $name, $value = null) {
       $items = array();
       foreach (Config::get('print_paper_sizes') as $pz) {
         $items[$pz] = $pz;

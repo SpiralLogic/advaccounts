@@ -9,7 +9,7 @@
    **/
 
   Page::start(_($help_context = "Tax Types"), SA_TAXRATES);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM && Tax_Types::can_process($selected_id)) {
     Tax_Types::add($_POST['name'], $_POST['sales_gl_code'], $_POST['purchasing_gl_code'], Validation::input_num('rate', 0));
     Event::success(_('New tax type has been added'));
@@ -67,8 +67,8 @@
   }
    Forms::textRowEx(_("Description:"), 'name', 50);
    Forms::SmallAmountRow(_("Default Rate:"), 'rate', '0', "", "%", User::percent_dec());
-  GL_UI::all_row(_("Sales GL Account:"), 'sales_gl_code', NULL);
-  GL_UI::all_row(_("Purchasing GL Account:"), 'purchasing_gl_code', NULL);
+  GL_UI::all_row(_("Sales GL Account:"), 'sales_gl_code', null);
+  GL_UI::all_row(_("Purchasing GL Account:"), 'purchasing_gl_code', null);
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();

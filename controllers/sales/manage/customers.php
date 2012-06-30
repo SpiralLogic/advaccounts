@@ -20,29 +20,29 @@
     if (strlen($_POST['CustName']) == 0) {
       Event::error(_("The customer name cannot be empty."));
       JS::set_focus('CustName');
-      return FALSE;
+      return false;
     }
     if (strlen($_POST['cust_ref']) == 0) {
       Event::error(_("The customer short name cannot be empty."));
       JS::set_focus('cust_ref');
-      return FALSE;
+      return false;
     }
     if (!Validation::is_num('credit_limit', 0)) {
       Event::error(_("The credit limit must be numeric and not less than zero."));
       JS::set_focus('credit_limit');
-      return FALSE;
+      return false;
     }
     if (!Validation::is_num('payment_discount', 0, 100)) {
       Event::error(_("The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0."));
       JS::set_focus('payment_discount');
-      return FALSE;
+      return false;
     }
     if (!Validation::is_num('discount', 0, 100)) {
       Event::error(_("The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0."));
       JS::set_focus('discount');
-      return FALSE;
+      return false;
     }
-    if ($new_customer == FALSE) {
+    if ($new_customer == false) {
       $sql = "UPDATE debtors SET name=" . DB::escape($_POST['CustName']) . ",
     				debtor_ref=" . DB::escape($_POST['cust_ref']) . ",
     				address=" . DB::escape($_POST['address']) . ",
@@ -74,7 +74,7 @@
     				" . Validation::input_num('payment_discount') / 100 . ", " . Validation::input_num('credit_limit') . ", " . DB::escape($_POST['sales_type']) . ", " . DB::escape($_POST['notes']) . ")";
       DB::query($sql, "The customer could not be added");
       $_POST['customer_id'] = DB::insert_id();
-      $new_customer = FALSE;
+      $new_customer = false;
       DB::commit();
       Event::success(_("A new customer has been added."));
       Ajax::activate('_page_body');
@@ -116,7 +116,7 @@
       DB::query($sql, "cannot delete customer");
       Event::notice(_("Selected customer has been deleted."));
       unset($_POST['customer_id']);
-      $new_customer = TRUE;
+      $new_customer = true;
       Ajax::activate('_page_body');
     } //end if Delete Customer
   }
@@ -125,8 +125,8 @@
   if (Validation::check(Validation::CUSTOMERS, _('There are no customers.'))) {
     Table::start('tablestyle_noborder');
     Row::start();
-    Debtor::cells(_("Select a customer: "), 'customer_id', NULL, _('New customer'), TRUE, Forms::hasPost('show_inactive'));
-     Forms::checkCells(_("Show inactive:"), 'show_inactive', NULL, TRUE);
+    Debtor::cells(_("Select a customer: "), 'customer_id', null, _('New customer'), true, Forms::hasPost('show_inactive'));
+     Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
     Row::end();
     Table::end();
     if (Input::post('_show_inactive_update')) {
@@ -175,10 +175,10 @@
   Table::section(1);
   Table::sectionTitle(_("Name and Address"));
    Forms::textRow(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 80);
-   Forms::textRow(_("Customer Short Name:"), 'cust_ref', NULL, 30, 30);
+   Forms::textRow(_("Customer Short Name:"), 'cust_ref', null, 30, 30);
    Forms::textareaRow(_("Address:"), 'address', $_POST['address'], 35, 5);
-   Forms::emailRow(_("E-mail:"), 'email', NULL, 40, 40);
-   Forms::textRow(_("GSTNo:"), 'tax_id', NULL, 40, 40);
+   Forms::emailRow(_("E-mail:"), 'email', null, 40, 40);
+   Forms::textRow(_("GSTNo:"), 'tax_id', null, 40, 40);
   if ($new_customer) {
     GL_Currency::row(_("Customer's Currency:"), 'curr_code', $_POST['curr_code']);
   }
@@ -196,10 +196,10 @@
   Sales_CreditStatus::row(_("Credit Status:"), 'credit_status', $_POST['credit_status']);
   $dim = DB_Company::get_pref('use_dimension');
   if ($dim >= 1) {
-    Dimensions::select_row(_("Dimension") . " 1:", 'dimension_id', $_POST['dimension_id'], TRUE, " ", FALSE, 1);
+    Dimensions::select_row(_("Dimension") . " 1:", 'dimension_id', $_POST['dimension_id'], true, " ", false, 1);
   }
   if ($dim > 1) {
-    Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', $_POST['dimension2_id'], TRUE, " ", FALSE, 2);
+    Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', $_POST['dimension2_id'], true, " ", false, 2);
   }
   if ($dim < 1) {
     Forms::hidden('dimension_id', 0);
@@ -215,17 +215,17 @@
       '&frame=1' : ''));
     Row::end();
   }
-   Forms::textareaRow(_("General Notes:"), 'notes', NULL, 35, 5);
+   Forms::textareaRow(_("General Notes:"), 'notes', null, 35, 5);
    Forms::recordStatusListRow(_("Customer status:"), 'inactive');
   Table::endOuter(1);
   Display::div_start('controls');
   if ($new_customer) {
-    Forms::submitCenter('submit', _("Add New Customer"), TRUE, '', 'default');
+    Forms::submitCenter('submit', _("Add New Customer"), true, '', 'default');
   }
   else {
-    Forms::submitCenterBegin('submit', _("Update Customer"), _('Update customer data'), Input::request('frame') ? TRUE : 'default');
+    Forms::submitCenterBegin('submit', _("Update Customer"), _('Update customer data'), Input::request('frame') ? true : 'default');
     Forms::submitReturn('select', Input::post('customer_id'), _("Select this customer and return to document entry."));
-    Forms::submitCenterEnd('delete', _("Delete Customer"), _('Delete customer data if have been never used'), TRUE);
+    Forms::submitCenterEnd('delete', _("Delete Customer"), _('Delete customer data if have been never used'), true);
   }
   Display::div_end();
   Forms::hidden('frame', Input::request('frame'));

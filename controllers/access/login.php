@@ -9,7 +9,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   // Display demo user name and password within login form if "Config::get('demo_mode') " is true
-  if (Config::get('demo_mode') == TRUE) {
+  if (Config::get('demo_mode') == true) {
     $demo_text = _("Login as user: demouser and password: password");
   } else {
     $demo_text = _("Please login here");
@@ -32,7 +32,7 @@
   echo "<table class='titletext'><tr><td>$title</td></tr></table>\n";
   Display::div_start('_page_body');
   Display::br(2);
-  Forms::start(FALSE, $_SESSION['timeout']['uri'], "loginform");
+  Forms::start(false, $_SESSION['timeout']['uri'], "loginform");
   echo "<input type='hidden' id='ui_mode' name='ui_mode' value='" . User::i()->ui_mode . "' />\n";
   Table::start('login');
   Row::start();

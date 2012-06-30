@@ -9,7 +9,7 @@
      **/
 
   Page::start(_($help_context = "Tax Groups"), SA_TAXGROUPS);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   Validation::check(Validation::TAX_TYPES, _("There are no tax types defined. Define tax types before defining tax groups."));
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     //initialise no input errors assumed initially before we test
@@ -121,7 +121,7 @@
     Forms::hidden('selected_id', $selected_id);
   }
    Forms::textRowEx(_("Description:"), 'name', 40);
-   Forms::yesnoListRow(_("Tax applied to Shipping:"), 'tax_shipping', NULL, "", "", TRUE);
+   Forms::yesnoListRow(_("Tax applied to Shipping:"), 'tax_shipping', null, "", "", true);
   Table::end();
   Event::warning(_("Select the taxes that are included in this group."), 1);
   Table::start('tablestyle2');
@@ -134,7 +134,7 @@
     if (!isset($_POST['tax_type_id' . $i])) {
       $_POST['tax_type_id' . $i] = 0;
     }
-    Tax_Types::cells(NULL, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), TRUE);
+    Tax_Types::cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
     if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != ALL_NUMERIC) {
       $default_rate = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
       Cell::label(Num::percent_format($default_rate), ' class="right nowrap"');

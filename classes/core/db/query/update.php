@@ -35,7 +35,6 @@
       }
       $sql .= implode(', ', $this->fields);
       $sql .= $this->_buildWhere();
-
       return $sql;
     }
   }

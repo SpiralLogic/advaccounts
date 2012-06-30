@@ -13,7 +13,7 @@
   // You only need full parameter list for invoices/credit notes
   class Reporting {
 
-    static $debug = NULL;
+    static $debug = null;
 
     /**
      * @static
@@ -30,7 +30,7 @@
      *
      * @return string
      */
-    public static function print_doc_link($doc_no, $link_text, $link = TRUE, $type_no, $icon = FALSE, $class = 'button printlink',
+    public static function print_doc_link($doc_no, $link_text, $link = true, $type_no, $icon = false, $class = 'button printlink',
                                           $id = '', $email = 0, $extra = 0) {
       $url     = '/reporting/prn_redirect.php?';
       $options = static::print_option_array($type_no, $doc_no, $email, $extra);
@@ -184,10 +184,10 @@
      *
      * @return bool|string
      */
-    public static function email_link($doc_no, $link_text, $link = TRUE, $type_no, $class = 'EmailLink', $id = '',
-                                      $emails = array(), $extra = 0, $return = FALSE) {
+    public static function email_link($doc_no, $link_text, $link = true, $type_no, $class = 'EmailLink', $id = '',
+                                      $emails = array(), $extra = 0, $return = false) {
       if (empty($emails)) {
-        return FALSE;
+        return false;
       }
       if ($return) {
         ob_start();
@@ -225,7 +225,7 @@
 		});
 JS;
       if ($return) {
-        HTML::script('null', $js, FALSE);
+        HTML::script('null', $js, false);
         return ob_get_clean();
       }
       JS::onload($js);
@@ -245,7 +245,7 @@ JS;
      *
      * @return string
      */
-    public static function print_link($link_text, $rep, $pars = array(), $dir = '', $icon = FALSE, $class = 'printlink',
+    public static function print_link($link_text, $rep, $pars = array(), $dir = '', $icon = false, $class = 'printlink',
                                       $id = '') {
       $url = $dir == '' ? BASE_URL . 'reporting/prn_redirect.php?' : $dir;
       $id  = JS::default_focus($id);
@@ -255,7 +255,7 @@ JS;
       $pars[] = 'REP_ID=' . urlencode($rep);
       $url .= implode('&', $pars);
       if ($class != '') {
-        static::$debug = static::$debug !== NULL ? static::$debug : Config::get('debug.pdf');
+        static::$debug = static::$debug !== null ? static::$debug : Config::get('debug.pdf');
         $class         = static::$debug ? '' : "class='" . e($class) . "'";
       }
       if ($id != '') {
@@ -278,12 +278,12 @@ JS;
      * @return ADV\Core\HTML|string
      */
     public static function emailDialogue($id, $type, $type_no, $text = "Email") {
-      HTML::setReturn(TRUE);
-      UI::button(FALSE, $text, array(
+      HTML::setReturn(true);
+      UI::button(false, $text, array(
         'class'        => 'button email-button',
         'data-emailid' => $id . '-' . $type . '-' .
           $type_no
       ));
-      return HTML::setReturn(FALSE);
+      return HTML::setReturn(false);
     }
   }

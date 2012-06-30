@@ -29,7 +29,7 @@
       $result        = DB::query($sql);
       $myrow         = DB::fetch($result);
       $material_cost = $myrow['material_cost'];
-      $qoh           = Item::get_qoh_on_date($stock_id, NULL, $date_);
+      $qoh           = Item::get_qoh_on_date($stock_id, null, $date_);
       if ($qoh < 0) {
         $qoh = 0;
       }
@@ -59,7 +59,7 @@
       $result        = DB::query($sql);
       $myrow         = DB::fetch($result);
       $overhead_cost = $myrow['overhead_cost'];
-      $qoh           = Item::get_qoh_on_date($stock_id, NULL, $date_);
+      $qoh           = Item::get_qoh_on_date($stock_id, null, $date_);
       if ($qoh < 0) {
         $qoh = 0;
       }
@@ -89,7 +89,7 @@
       $result      = DB::query($sql);
       $myrow       = DB::fetch($result);
       $labour_cost = $myrow['labour_cost'];
-      $qoh         = Item::get_qoh_on_date($stock_id, NULL, $date_);
+      $qoh         = Item::get_qoh_on_date($stock_id, null, $date_);
       if ($qoh < 0) {
         $qoh = 0;
       }
@@ -119,7 +119,7 @@
       $material_cost = $myrow['material_cost'];
       $dec           = User::price_dec();
       Num::price_decimal($material_cost, $dec);
-      $qoh = Item::get_qoh_on_date($stock_id, NULL, $date_);
+      $qoh = Item::get_qoh_on_date($stock_id, null, $date_);
       if ($qoh < 0) {
         $qoh = 0;
       }

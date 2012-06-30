@@ -9,7 +9,7 @@
    **/
 
   JS::open_window(900, 500);
-  Page::start(_($help_context = "View Credit Note"), SA_SALESTRANSVIEW, TRUE);
+  Page::start(_($help_context = "View Credit Note"), SA_SALESTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {
     $trans_id = $_GET["trans_no"];
   }
@@ -26,14 +26,14 @@
   Table::start('tablestyle width100');
   $th = array(_("Customer"));
   Table::header($th);
-  Row::label(NULL, $myrow["DebtorName"] . "<br>" . nl2br($myrow["address"]), ' class="nowrap"');
+  Row::label(null, $myrow["DebtorName"] . "<br>" . nl2br($myrow["address"]), ' class="nowrap"');
   Table::end();
   /*end of the small table showing charge to account details */
   echo "</td><td>"; // outer table
   Table::start('tablestyle width100');
   $th = array(_("Branch"));
   Table::header($th);
-  Row::label(NULL, $branch["br_name"] . "<br>" . nl2br($branch["br_address"]), ' class="nowrap"');
+  Row::label(null, $branch["br_name"] . "<br>" . nl2br($branch["br_address"]), ' class="nowrap"');
   Table::end();
   echo "</td><td>"; // outer table
   Table::start('tablestyle width100');
@@ -75,7 +75,7 @@
       }
       Cell::label($myrow2["stock_id"]);
       Cell::label($myrow2["StockDescription"]);
-      Cell::qty($myrow2["quantity"], FALSE, Item::qty_dec($myrow2["stock_id"]));
+      Cell::qty($myrow2["quantity"], false, Item::qty_dec($myrow2["stock_id"]));
       Cell::label($myrow2["units"], "class='right'");
       Cell::amount($myrow2["unit_price"]);
       Cell::label($display_discount, "class='right'");

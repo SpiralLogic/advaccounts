@@ -50,8 +50,8 @@
   Table::startOuter('tablestyle width80 pad10');
   Inv_Adjustment::display_items(_("Adjustment Items"), $_SESSION['adj_items']);
   Inv_Adjustment::option_controls();
-  Table::endOuter(1, FALSE);
-  Forms::submitCenterBegin('Update', _("Update"), '', NULL);
+  Table::endOuter(1, false);
+  Forms::submitCenterBegin('Update', _("Update"), '', null);
   Forms::submitCenterEnd('Process', _("Process Adjustment"), '', 'default');
   Forms::end();
   Page::end();
@@ -63,14 +63,14 @@
     if (!Validation::post_num('qty', 0)) {
       Event::error(_("The quantity entered is negative or invalid."));
       JS::set_focus('qty');
-      return FALSE;
+      return false;
     }
     if (!Validation::post_num('std_cost', 0)) {
       Event::error(_("The entered standard cost is negative or invalid."));
       JS::set_focus('std_cost');
-      return FALSE;
+      return false;
     }
-    return TRUE;
+    return true;
   }
 
   function handle_update_item()
@@ -123,12 +123,12 @@
     if (count($adj->line_items) == 0) {
       Event::error(_("You must enter at least one non empty item line."));
       JS::set_focus('stock_id');
-      return FALSE;
+      return false;
     }
     if (!Ref::is_valid($_POST['ref'])) {
       Event::error(_("You must enter a reference."));
       JS::set_focus('ref');
-      return FALSE;
+      return false;
     }
     if (!Ref::is_new($_POST['ref'], ST_INVADJUST)) {
       $_POST['ref'] = Ref::get_next(ST_INVADJUST);
@@ -136,11 +136,11 @@
     if (!Dates::is_date($_POST['AdjDate'])) {
       Event::error(_("The entered date for the adjustment is invalid."));
       JS::set_focus('AdjDate');
-      return FALSE;
+      return false;
     } elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
       Event::error(_("The entered date is not in fiscal year."));
       JS::set_focus('AdjDate');
-      return FALSE;
+      return false;
     } else {
       $failed_item = $adj->check_qoh($_POST['StockLocation'], $_POST['AdjDate'], !$_POST['Increase']);
       if ($failed_item >= 0) {
@@ -148,10 +148,10 @@
         Event::error(_("The adjustment cannot be processed because an adjustment item would cause a negative inventory balance :") . " " . $line->stock_id . " - " . $line->description);
         $_POST[MODE_EDIT . $failed_item] = 1; // enter edit mode
         unset($_POST['Process']);
-        return FALSE;
+        return false;
       }
     }
-    return TRUE;
+    return true;
   }
 
 

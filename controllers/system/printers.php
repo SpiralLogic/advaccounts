@@ -9,7 +9,7 @@
      **/
 
   Page::start(_($help_context = "Printer Locations"), SA_PRINTERS);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     $error = 0;
     if (empty($_POST['name'])) {
@@ -91,12 +91,12 @@
       $_POST['port'] = '515';
     }
   }
-   Forms::textRow(_("Printer Name") . ':', 'name', NULL, 20, 20);
-   Forms::textRow(_("Printer Description") . ':', 'descr', NULL, 40, 60);
-   Forms::textRow(_("Host name or IP") . ':', 'host', NULL, 30, 40);
-   Forms::textRow(_("Port") . ':', 'port', NULL, 5, 5);
-   Forms::textRow(_("Printer Queue") . ':', 'queue', NULL, 20, 20);
-   Forms::textRow(_("Timeout") . ':', 'tout', NULL, 5, 5);
+   Forms::textRow(_("Printer Name") . ':', 'name', null, 20, 20);
+   Forms::textRow(_("Printer Description") . ':', 'descr', null, 40, 60);
+   Forms::textRow(_("Host name or IP") . ':', 'host', null, 30, 40);
+   Forms::textRow(_("Port") . ':', 'port', null, 5, 5);
+   Forms::textRow(_("Printer Queue") . ':', 'queue', null, 20, 20);
+   Forms::textRow(_("Timeout") . ':', 'tout', null, 5, 5);
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();

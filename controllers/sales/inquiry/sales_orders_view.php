@@ -39,14 +39,14 @@
     if (Input::get('OutstandingOnly')) {
       $_POST['order_view_mode'] = 'OutstandingOnly';
       Session::i()->page_title  = _($help_context = "Search Outstanding Sales Orders");
-    } elseif (isset($_GET['InvoiceTemplates']) && ($_GET['InvoiceTemplates'] == TRUE)) {
+    } elseif (isset($_GET['InvoiceTemplates']) && ($_GET['InvoiceTemplates'] == true)) {
       $_POST['order_view_mode'] = 'InvoiceTemplates';
       Session::i()->page_title  = _($help_context = "Search Template for Invoicing");
-    } elseif (isset($_GET['DeliveryTemplates']) && ($_GET['DeliveryTemplates'] == TRUE)) {
+    } elseif (isset($_GET['DeliveryTemplates']) && ($_GET['DeliveryTemplates'] == true)) {
       $_POST['order_view_mode'] = 'DeliveryTemplates';
       Session::i()->page_title  = _($help_context = "Select Template for Delivery");
     } elseif (!isset($_POST['order_view_mode'])) {
-      $_POST['order_view_mode'] = FALSE;
+      $_POST['order_view_mode'] = false;
       Session::i()->page_title  = _($help_context = "Search All Sales Orders");
     }
   } else {
@@ -82,30 +82,30 @@
   if (Input::post('_OrderNumber_changed')) { // enable/disable selection controls
     $disable = Input::post('OrderNumber') !== '';
     if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
-      Ajax::addDisable(TRUE, 'OrdersAfterDate', $disable);
-      Ajax::addDisable(TRUE, 'OrdersToDate', $disable);
+      Ajax::addDisable(true, 'OrdersAfterDate', $disable);
+      Ajax::addDisable(true, 'OrdersToDate', $disable);
     }
-    Ajax::addDisable(TRUE, 'StockLocation', $disable);
-    Ajax::addDisable(TRUE, '_SelectStockFromList_edit', $disable);
-    Ajax::addDisable(TRUE, 'SelectStockFromList', $disable);
+    Ajax::addDisable(true, 'StockLocation', $disable);
+    Ajax::addDisable(true, '_SelectStockFromList_edit', $disable);
+    Ajax::addDisable(true, 'SelectStockFromList', $disable);
     if ($disable) {
-      Ajax::addFocus(TRUE, 'OrderNumber');
+      Ajax::addFocus(true, 'OrderNumber');
     } else {
-      Ajax::addFocus(TRUE, 'OrdersAfterDate');
+      Ajax::addFocus(true, 'OrdersAfterDate');
     }
     Ajax::activate('orders_tbl');
   }
   Forms::start();
   Table::start('tablestyle_noborder');
   Row::start();
-  Debtor::cells(_(""), 'customer_id', $selected_customer, TRUE);
-   Forms::refCells(_("#:"), 'OrderNumber', '', NULL, '', TRUE);
+  Debtor::cells(_(""), 'customer_id', $selected_customer, true);
+   Forms::refCells(_("#:"), 'OrderNumber', '', null, '', true);
   if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
-     Forms::dateCells(_("From:"), 'OrdersAfterDate', '', NULL, -30);
-     Forms::dateCells(_("To:"), 'OrdersToDate', '', NULL, 1);
+     Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
+     Forms::dateCells(_("To:"), 'OrdersToDate', '', null, 1);
   }
-  Inv_Location::cells(_(""), 'StockLocation', NULL, TRUE);
-  Item::cells(_("Item:"), 'SelectStockFromList', NULL, TRUE);
+  Inv_Location::cells(_(""), 'StockLocation', null, true);
+  Item::cells(_("Item:"), 'SelectStockFromList', null, true);
   if ($trans_type == ST_SALESQUOTE) {
      Forms::checkCells(_("Show All:"), 'show_all');
   }
@@ -211,7 +211,7 @@
 				sorder.customer_ref,
 				sorder.deliver_to";
   }
-  $ord = NULL;
+  $ord = null;
   if ($trans_type == ST_SALESORDER) {
     $ord  = "Order #";
     $cols = array(
@@ -272,7 +272,7 @@
     Arr::substitute($cols, 3, 1, _("Description"));
     Arr::append($cols, array(
                             array(
-                              'insert' => TRUE, 'fun' => function ($row)
+                              'insert' => true, 'fun' => function ($row)
                             {
                               if ($row['trans_type'] == ST_SALESORDER) {
                                 return DB_Pager::link(_("Invoice"), "/sales/sales_order_entry.php?NewInvoice=" . $row["order_no"], ICON_DOC);
@@ -287,7 +287,7 @@
       Arr::substitute($cols, 3, 1, _("Description"));
       Arr::append($cols, array(
                               array(
-                                'insert' => TRUE, 'fun' => function ($row)
+                                'insert' => true, 'fun' => function ($row)
                               {
                                 return DB_Pager::link(_("Delivery"), "/sales/sales_order_entry.php?NewDelivery=" . $row['order_no'], ICON_DOC);
                               }
@@ -296,7 +296,7 @@
     } elseif ($trans_type == ST_SALESQUOTE || $trans_type == ST_SALESORDER) {
       Arr::append($cols, array(
                               array(
-                                'insert' => TRUE, 'fun' => function ($row)
+                                'insert' => true, 'fun' => function ($row)
                               {
                                 global $trans_type;
                                 if ($row['trans_type'] == ST_SALESQUOTE) {
@@ -305,35 +305,35 @@
                                 $name  = "chgtpl" . $row['order_no'];
                                 $value = $row['type'] ? 1 : 0;
                                 // save also in hidden field for testing during 'Update'
-                                return Forms::checkbox(NULL, $name, $value, TRUE, _('Set this order as a template for direct deliveries/invoices')) . Forms::hidden('last[' . $row
-                                ['order_no'] . ']', $value, FALSE);
+                                return Forms::checkbox(null, $name, $value, true, _('Set this order as a template for direct deliveries/invoices')) . Forms::hidden('last[' . $row
+                                ['order_no'] . ']', $value, false);
                               }
                               ), array(
-                           'insert' => TRUE, 'fun' => function ($row)
+                           'insert' => true, 'fun' => function ($row)
                            {
                              return DB_Pager::link(_("Edit"), "/sales/sales_order_entry?update=" . $row['order_no'] . "&type=" . $row['trans_type'], ICON_EDIT);
                            }
                          ), array(
-                           'insert' => TRUE, 'fun' => function ($row)
+                           'insert' => true, 'fun' => function ($row)
                            {
                              return Reporting::emailDialogue($row['debtor_id'], $row['trans_type'], $row['order_no']);
                            }
                          ), array(
-                           'insert' => TRUE, 'fun' => function ($row)
+                           'insert' => true, 'fun' => function ($row)
                            {
-                             return Reporting::print_doc_link($row['order_no'], _("Proforma"), TRUE, ($row['trans_type'] == ST_SALESORDER ?
+                             return Reporting::print_doc_link($row['order_no'], _("Proforma"), true, ($row['trans_type'] == ST_SALESORDER ?
                                ST_PROFORMA : ST_PROFORMAQ), ICON_PRINT, 'button printlink');
                            }
                          ), array(
-                           'insert' => TRUE, 'fun' => function ($row)
+                           'insert' => true, 'fun' => function ($row)
                            {
-                             return Reporting::print_doc_link($row['order_no'], _("Print"), TRUE, $row['trans_type'], ICON_PRINT, 'button printlink');
+                             return Reporting::print_doc_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT, 'button printlink');
                            }
                          )
                          ));
     }
   }
-  $table = & db_pager::new_db_pager('orders_tbl', $sql, $cols, NULL, NULL, 0, 4);
+  $table = & db_pager::new_db_pager('orders_tbl', $sql, $cols, null, null, 0, 4);
   $table->set_marker(function ($row)
     {
       global $trans_type;
@@ -345,7 +345,7 @@
     }, _("Marked items are overdue."));
   $table->width = "80%";
   DB_Pager::display($table);
-  Forms::submitCenter('Update', _("Update"), TRUE, '', NULL);
+  Forms::submitCenter('Update', _("Update"), true, '', null);
   Forms::end();
 
   Page::end();

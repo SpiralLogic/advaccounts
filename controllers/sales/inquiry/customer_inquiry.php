@@ -22,14 +22,14 @@
   }
   Table::start('tablestyle_noborder');
   Row::start();
-   Forms::refCells(_("Ref"), 'reference', '', NULL, '', TRUE);
-  Debtor::cells(_("Select a customer: "), 'customer_id', NULL, TRUE);
-   Forms::dateCells(_("From:"), 'TransAfterDate', '', NULL, -30);
-   Forms::dateCells(_("To:"), 'TransToDate', '', NULL, 1);
+   Forms::refCells(_("Ref"), 'reference', '', null, '', true);
+  Debtor::cells(_("Select a customer: "), 'customer_id', null, true);
+   Forms::dateCells(_("From:"), 'TransAfterDate', '', null, -30);
+   Forms::dateCells(_("To:"), 'TransToDate', '', null, 1);
   if (!isset($_POST['filterType'])) {
     $_POST['filterType'] = 0;
   }
-  Debtor_Payment::allocations_select(NULL, 'filterType', $_POST['filterType'], TRUE);
+  Debtor_Payment::allocations_select(null, 'filterType', $_POST['filterType'], true);
   Forms::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
   Row::end();
   Table::end();
@@ -98,7 +98,7 @@
         continue;
       }
       if (stripos($ajaxsearch, '/') > 0) {
-        $sql .= " tran_date LIKE '%" . Dates::date2sql($ajaxsearch, FALSE) . "%' OR";
+        $sql .= " tran_date LIKE '%" . Dates::date2sql($ajaxsearch, false) . "%' OR";
         continue;
       }
       if (is_numeric($ajaxsearch)) {
@@ -193,7 +193,7 @@
       }
     ),
     _("Credit")       => array(
-      'align' => 'right', 'insert' => TRUE, 'fun' => function ($row)
+      'align' => 'right', 'insert' => true, 'fun' => function ($row)
       {
         $value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_BANKDEPOSIT) ?
           -$row["TotalAmount"] : $row["TotalAmount"];
@@ -203,32 +203,32 @@
     array('type' => 'skip'),
     _("RB")           => array('align' => 'right', 'type' => 'amount'),
     array(
-      'insert' => TRUE, 'fun' => function ($row)
+      'insert' => true, 'fun' => function ($row)
     {
       return GL_UI::view($row["type"], $row["trans_no"]);
     }
     ),
     array(
-      'insert' => TRUE, 'align' => 'center', 'fun' => function ($row)
+      'insert' => true, 'align' => 'center', 'fun' => function ($row)
     {
       return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
         DB_Pager::link(_("Credit"), "/sales/customer_credit_invoice.php?InvoiceNumber=" . $row['trans_no'], ICON_CREDIT) : '';
     }
     ),
     array(
-      'insert' => TRUE, 'align' => 'center', 'fun' => function ($row)
+      'insert' => true, 'align' => 'center', 'fun' => function ($row)
     {
       return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
         DB_Pager::link(_("Payment"), "/sales/customer_payments.php?customer_id=" . $row['debtor_id'], ICON_MONEY) : '';
     }
     ),
     array(
-      'insert' => TRUE, 'align' => 'center', 'fun' => function ($row)
+      'insert' => true, 'align' => 'center', 'fun' => function ($row)
     {
       $str = '';
       switch ($row['type']) {
         case ST_SALESINVOICE:
-          if (Voiding::get(ST_SALESINVOICE, $row["trans_no"]) === FALSE || AJAX_REFERRER) {
+          if (Voiding::get(ST_SALESINVOICE, $row["trans_no"]) === false || AJAX_REFERRER) {
             if ($row['Allocated'] == 0) {
               $str = "/sales/customer_invoice.php?ModifyInvoice=" . $row['trans_no'];
             } else {
@@ -237,7 +237,7 @@
           }
           break;
         case ST_CUSTCREDIT:
-          if (Voiding::get(ST_CUSTCREDIT, $row["trans_no"]) === FALSE && $row['Allocated'] == 0) {
+          if (Voiding::get(ST_CUSTCREDIT, $row["trans_no"]) === false && $row['Allocated'] == 0) {
             if ($row['order_'] == 0) {
               $str = "/sales/credit_note_entry.php?ModifyCredit=" . $row['trans_no'];
             } else {
@@ -249,7 +249,7 @@
           if ($row['still_to_deliver'] == 0) {
             continue;
           }
-          if (Voiding::get(ST_CUSTDELIVERY, $row["trans_no"]) === FALSE) {
+          if (Voiding::get(ST_CUSTDELIVERY, $row["trans_no"]) === false) {
             $str = "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'];
           }
           break;
@@ -261,28 +261,28 @@
     }
     ),
     array(
-      'insert' => TRUE, 'align' => 'center', 'fun' => function ($row)
+      'insert' => true, 'align' => 'center', 'fun' => function ($row)
     {
       if ($row['type'] != ST_SALESINVOICE) {
         return;
       }
-      HTML::setReturn(TRUE);
-      UI::button(FALSE, 'Email', array(
+      HTML::setReturn(true);
+      UI::button(false, 'Email', array(
                                       'class'        => 'button email-button',
                                       'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
                                  ));
-      return HTML::setReturn(FALSE);
+      return HTML::setReturn(false);
     }
     ),
     array(
-      'insert' => TRUE, 'align' => 'center', 'fun' => function ($row)
+      'insert' => true, 'align' => 'center', 'fun' => function ($row)
     {
       if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND && $row['type'] != ST_BANKDEPOSIT
       ) // customer payment or bank deposit printout not defined yet.
       {
-        return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Print"), TRUE, $row['type'], ICON_PRINT, 'button printlink');
+        return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Print"), true, $row['type'], ICON_PRINT, 'button printlink');
       } else {
-        return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Receipt"), TRUE, $row['type'], ICON_PRINT, 'button printlink');
+        return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Receipt"), true, $row['type'], ICON_PRINT, 'button printlink');
       }
     }
     )

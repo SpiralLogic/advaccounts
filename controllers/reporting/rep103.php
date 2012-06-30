@@ -163,14 +163,14 @@
 		$sman = '';
 		while ($myrow = DB::fetch($result))
 		{
-			$printcustomer = TRUE;
+			$printcustomer = true;
 			if ($more != '' || $less != '') {
 				$turnover = get_transactions($myrow['debtor_id'], $myrow['branch_id'], $from);
 				if ($more != 0.0 && $turnover <= (double)$more) {
-					$printcustomer = FALSE;
+					$printcustomer = false;
 				}
 				if ($less != 0.0 && $turnover >= (double)$less) {
-					$printcustomer = FALSE;
+					$printcustomer = false;
 				}
 			}
 			if ($printcustomer) {

@@ -62,7 +62,7 @@
   Table::header($th);
   $k = 0;
   $today = Dates::add_days(Dates::today(), 1);
-  $due = FALSE;
+  $due = false;
   while ($myrow = DB::fetch($result)) {
     $begin = Dates::sql2date($myrow["begin"]);
     $end = Dates::sql2date($myrow["end"]);
@@ -78,7 +78,7 @@
     $overdue = Dates::date1_greater_date2($today, $due_date) && Dates::date1_greater_date2($today, $begin) && Dates::date1_greater_date2($end, $today);
     if ($overdue) {
       Row::start("class='overduebg'");
-      $due = TRUE;
+      $due = true;
     }
     else {
 

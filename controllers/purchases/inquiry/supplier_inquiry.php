@@ -22,10 +22,10 @@ $supplier_id = Input::get_post('supplier_id',INPUT::NUMERIC,-1);
   }
   Table::start('tablestyle_noborder');
   Row::start();
-  Creditor::cells(_(''), 'supplier_id', NULL, true);
-  Forms::dateCells(_("From:"), 'TransAfterDate', '', NULL, -90);
+  Creditor::cells(_(''), 'supplier_id', null, true);
+  Forms::dateCells(_("From:"), 'TransAfterDate', '', null, -90);
   Forms::dateCells(_("To:"), 'TransToDate');
-  Purch_Allocation::row("filterType", NULL);
+  Purch_Allocation::row("filterType", null);
   Forms::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
   Row::end();
   Table::end();
@@ -111,16 +111,16 @@ $supplier_id = Input::get_post('supplier_id',INPUT::NUMERIC,-1);
       'align' => 'right', 'fun' => 'fmt_debit'
     ),
     _("Credit")      => array(
-      'align' => 'right', 'insert' => TRUE, 'fun' => 'fmt_credit'
+      'align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'
     ),
     array(
-      'insert' => TRUE, 'fun' => 'gl_view'
+      'insert' => true, 'fun' => 'gl_view'
     ),
     array(
-      'insert' => TRUE, 'fun' => 'credit_link'
+      'insert' => true, 'fun' => 'credit_link'
     ),
     array(
-      'insert' => TRUE, 'fun' => 'prt_link'
+      'insert' => true, 'fun' => 'prt_link'
     )
   );
   if ($supplier_id>0) {
@@ -217,7 +217,7 @@ $supplier_id = Input::get_post('supplier_id',INPUT::NUMERIC,-1);
   function prt_link($row)
   {
     if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT || $row['type'] == ST_SUPPCREDIT) {
-      return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Remittance"), TRUE, ST_SUPPAYMENT, ICON_PRINT);
+      return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Remittance"), true, ST_SUPPAYMENT, ICON_PRINT);
     }
   }
 

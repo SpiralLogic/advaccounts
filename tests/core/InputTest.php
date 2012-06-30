@@ -50,7 +50,7 @@
       $this->assertSame(0, Input::post('test', Input::NUMERIC));
       $this->assertSame(0, Input::post('test', Input::NUMERIC, 0));
       $this->assertSame(1, Input::post('test', Input::NUMERIC, 1));
-      $this->assertSame(NULL, Input::post('test2'));
+      $this->assertSame(null, Input::post('test2'));
       $this->assertEquals('', Input::post('test2'));
       $this->assertSame('', Input::post('test2', Input::STRING));
       $this->assertSame(0, Input::post('test2', Input::NUMERIC));
@@ -62,7 +62,7 @@
       $this->assertSame(0, Input::post('test2', Input::NUMERIC));
       $this->assertSame(0, Input::post('test2', Input::NUMERIC, 0));
       $this->assertSame(0, Input::post('test2', Input::NUMERIC, 1));
-      $this->assertSame(NULL, Input::post('test3'));
+      $this->assertSame(null, Input::post('test3'));
       $this->assertEquals(0, Input::post('test3'));
       $_POST['test3'] = 7;
       $this->assertSame(7, Input::post('test3'));
@@ -99,7 +99,7 @@
       $this->assertSame(0, Input::get('test', Input::NUMERIC));
       $this->assertSame(0, Input::get('test', Input::NUMERIC, 0));
       $this->assertSame(1, Input::get('test', Input::NUMERIC, 1));
-      $this->assertSame(NULL, Input::get('test2'));
+      $this->assertSame(null, Input::get('test2'));
       $this->assertEquals('', Input::get('test2'));
       $this->assertSame('', Input::get('test2', Input::STRING));
       $this->assertSame(0, Input::get('test2', Input::NUMERIC));
@@ -111,7 +111,7 @@
       $this->assertSame(0, Input::get('test2', Input::NUMERIC));
       $this->assertSame(0, Input::get('test2', Input::NUMERIC, 0));
       $this->assertSame(0, Input::get('test2', Input::NUMERIC, 1));
-      $this->assertSame(NULL, Input::get('test3'));
+      $this->assertSame(null, Input::get('test3'));
       $this->assertEquals(0, Input::get('test3'));
       $_GET['test3'] = 7;
       $this->assertSame(7, Input::get('test3'));
@@ -193,16 +193,16 @@
      */
     public function testHas_post()
     {
-      $this->assertSame(FALSE, Input::has_post('test'));
-      $this->assertSame(FALSE, Input::has_post('test', 'test2'));
-      $_POST['test'] = FALSE;
-      $this->assertSame(FALSE, Input::has_post('test', 'test2'), 'Should return false even if one variable is set.');
-      $this->assertSame(TRUE, Input::has_post('test'), 'Should return true if post variable is set to false because it exists');
-      $_POST['test2'] = NULL;
-      $this->assertSame(FALSE, Input::has_post('test2'), 'Test2 is set but is NULL so it should return false!');
-      $this->assertSame(FALSE, Input::has_post('test', 'test2'), 'Both are set but test2 is set but is NULL so it should return false!');
+      $this->assertSame(false, Input::has_post('test'));
+      $this->assertSame(false, Input::has_post('test', 'test2'));
+      $_POST['test'] = false;
+      $this->assertSame(false, Input::has_post('test', 'test2'), 'Should return false even if one variable is set.');
+      $this->assertSame(true, Input::has_post('test'), 'Should return true if post variable is set to false because it exists');
+      $_POST['test2'] = null;
+      $this->assertSame(false, Input::has_post('test2'), 'Test2 is set but is null so it should return false!');
+      $this->assertSame(false, Input::has_post('test', 'test2'), 'Both are set but test2 is set but is null so it should return false!');
       $_POST['test2'] = 'something';
-      $this->assertSame(TRUE, Input::has_post('test', 'test2'), 'Both are set but test2 is set but is NULL so it should return false!');
+      $this->assertSame(true, Input::has_post('test', 'test2'), 'Both are set but test2 is set but is null so it should return false!');
     }
     /**
      * @covers ADV\Core\Input::_has_get

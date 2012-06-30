@@ -85,7 +85,6 @@
       $this->index  = 0;
       $this->parsed = $this->parse_recurse();
       $this->status = 'parsing complete';
-
       return $this->parsed;
     }
     /**
@@ -142,7 +141,6 @@
             break;
         }
       }
-
       return $found;
     }
     /**
@@ -159,7 +157,6 @@
         $this->error   = 'error: ' . xml_error_string(xml_get_error_code($parser)) . ' at line ' . xml_get_current_line_number($parser);
       }
       xml_parser_free($parser);
-
       return $res;
     }
     /**

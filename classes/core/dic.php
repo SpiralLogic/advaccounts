@@ -4,8 +4,7 @@
   /**
 
    */
-  class DIC implements \ArrayAccess
-  {
+  class DIC implements \ArrayAccess {
     protected $_objects = array();
     protected $_callbacks = array();
     /**

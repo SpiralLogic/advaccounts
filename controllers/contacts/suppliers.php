@@ -46,19 +46,19 @@
     /** @noinspection PhpUndefinedMethodInspection */
     HTML::div('companysearch');
     HTML::table(array('class' => 'marginauto bold'));
-    HTML::tr(TRUE)->td(TRUE);
-    UI::search('supplier', array('label' => 'Search Supplier:', 'size' => 80, 'callback' => 'Company.fetch', 'focus' => TRUE));
+    HTML::tr(true)->td(true);
+    UI::search('supplier', array('label' => 'Search Supplier:', 'size' => 80, 'callback' => 'Company.fetch', 'focus' => true));
     HTML::td()->tr->table->div;
   }
   Forms::start();
   $menu = new MenuUI();
   $menu->startTab('Details', 'Supplier Details', '#', 'text-align:center');
   HTML::div('companyIDs');
-  HTML::table(array("class" => "marginauto width80 bold"))->tr(TRUE)->td(array('class'=>'right'));
-  HTML::label(array('for' => 'name', 'content' => 'Supplier name:'), FALSE);
+  HTML::table(array("class" => "marginauto width80 bold"))->tr(true)->td(array('class'=>'right'));
+  HTML::label(array('for' => 'name', 'content' => 'Supplier name:'), false);
   HTML::input('name', array('value' => $supplier->name, 'name' => 'name', 'class' => 'width60 '));
   HTML::td()->td(array('class'=>'right'));
-  HTML::label(array('content' => _("Supplier ID: "), "class" => 'width50'), FALSE);
+  HTML::label(array('content' => _("Supplier ID: "), "class" => 'width50'), false);
   HTML::input('id', array('value' => $supplier->id, 'name' => 'id', 'class'=>'small', 'maxlength' => '7'
   ));
   HTML::td()->tr->table->div;
@@ -81,7 +81,7 @@
   Table::section(2);
   Table::sectionTitle(_("Accounts Details"), 2);
   /** @noinspection PhpUndefinedMethodInspection */
-  HTML::tr(TRUE)->td(array(
+  HTML::tr(true)->td(array(
     'class' => "center", 'colspan' => 2
   ));
   UI::button('useShipAddress', _("Use shipping details"), array('name' => 'useShipAddress'));
@@ -102,7 +102,7 @@
   Table::sectionTitle(_("Accounts Details:"), 2);
   Forms::percentRow(_("Prompt Payment Discount Percent:"), 'discount', $supplier->discount, (User::i()->can_access(SA_SUPPLIERCREDIT)) ?
     "" : " disabled");
-  Forms::AmountRow(_("Credit Limit:"), 'credit_limit', $supplier->credit_limit, null, NULL, 0, (User::i()
+  Forms::AmountRow(_("Credit Limit:"), 'credit_limit', $supplier->credit_limit, null, null, 0, (User::i()
     ->can_access(SA_SUPPLIERCREDIT)) ? "" : " disabled");
   Forms::textRow(_("GST No:"), 'tax_id', $supplier->tax_id, 'big', 40);
   Tax_Groups::row(_("Tax Group:"), 'tax_group_id', $supplier->tax_group_id);
@@ -126,7 +126,7 @@
   HTML::td(array(
     'class' => 'ui-widget-content center'
   ));
-  UI::button('addLog', "Add log entry")->td->tr->tr(TRUE)->td(NULL)->textarea('messageLog', array('cols' => 50, 'rows' => 20));
+  UI::button('addLog', "Add log entry")->td->tr->tr(true)->td(null)->textarea('messageLog', array('cols' => 50, 'rows' => 20));
   Contact_Log::read($supplier->id, CT_SUPPLIER);
   /** @noinspection PhpUndefinedMethodInspection */
   HTML::textarea()->td->tr;
@@ -136,7 +136,7 @@
   HTML::script('contact_tmpl', array('type' => 'text/x-jquery-tmpl'))->table('contact-${id}', array(
     'class' => '',
     'style' => 'display:inline-block'
-  ))->tr(TRUE)->td(array(
+  ))->tr(true)->td(array(
     'content' => '${name}',
     'class'   => 'tablehead',
     'colspan' => 2
@@ -180,7 +180,7 @@
   HTML::_div();
   if (!Input::get('frame')) {
     HTML::div('shortcuts', array('class' => 'width50 center'));
-    $shortcuts = new MenuUI(array('noajax' => TRUE));
+    $shortcuts = new MenuUI(array('noajax' => true));
     $shortcuts->addLink('Supplier Payment', 'Make supplier payment!', '/purchases/supplier_payment.php?supplier_id=', 'id');
     $shortcuts->addLink('Supplier Invoice', 'Make supplier invoice!', '/purchases/supplier_invoice.php?New=1&supplier_id=', 'id');
     $shortcuts->render();
@@ -190,4 +190,4 @@
   }
   HTML::_div();
 
-  Page::end(TRUE);
+  Page::end(true);

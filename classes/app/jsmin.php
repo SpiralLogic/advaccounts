@@ -23,7 +23,7 @@
     public function minify() {
       $str = $this->source;
       $res = '';
-      $maybe_regex = TRUE;
+      $maybe_regex = true;
       $i = 0;
       $current_char = '';
       while ($i + 1 < strlen($str)) {
@@ -46,7 +46,7 @@
             $res .= $str[$i++];
           } while ($i < strlen($str) && $str[$i] != '/');
           $res .= $str[$i++];
-          $maybe_regex = FALSE;
+          $maybe_regex = false;
           continue;
         }
         elseif ($str[$i] == '"' || $str[$i] == "'") { //quoted string detected
@@ -79,17 +79,17 @@
           }
         }
 
-        $LF_needed = FALSE;
+        $LF_needed = false;
         if (preg_match('/[\n\r\t ]/', $str[$i])) {
           if (strlen($res) && preg_match('/[\n ]/', $res[strlen($res) - 1])) {
             if ($res[strlen($res) - 1] == "\n") {
-              $LF_needed = TRUE;
+              $LF_needed = true;
             }
             $res = substr($res, 0, -1);
           }
           while ($i + 1 < strlen($str) && preg_match('/[\n\r\t ]/', $str[$i + 1])) {
             if (!$LF_needed && preg_match('/[\n\r]/', $str[$i])) {
-              $LF_needed = TRUE;
+              $LF_needed = true;
             }
             $i++;
           }
@@ -140,10 +140,10 @@
 
         // if the next charachter be a slash, detects if it is a divide operator or start of a regex
         if (preg_match('/[({[=+\-*\/%&|!><?:~^,;]/', $current_char)) {
-          $maybe_regex = TRUE;
+          $maybe_regex = true;
         }
         elseif (!preg_match('/[\n ]/', $current_char)) {
-          $maybe_regex = FALSE;
+          $maybe_regex = false;
         }
 
         $i++;

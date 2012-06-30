@@ -12,7 +12,8 @@
 
   /**
    * @method \PDOStatement query($sql, $err_msg = null)
-   * @method Query_Se;ect select($columns = null)
+   * @method Query_Se;
+  ect select($columns = null)
    * @method Query_Insert insert($into)
    * @method Query_Update update($into)
    * @method escape($value, $null = false)
@@ -84,14 +85,14 @@
     /**
      * @throws DBException
      */
-    public function __construct($name='default', \Config $config = null, $cache = null)
+    public function __construct($name = 'default', \Config $config = null, $cache = null)
     {
       $this->config   = $config ? : \Config::i();
       $this->useCache = class_exists('Cache');
       if (!$this->config) {
         throw new DBException('No database configuration provided');
       }
-      $config      = $this->config->_get('db.'.$name);
+      $config      = $this->config->_get('db.' . $name);
       $this->debug = false;
       $this->_connect($config);
       $this->default_connection = $config['name'];

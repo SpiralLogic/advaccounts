@@ -9,7 +9,7 @@
      **/
 
 
-  Page::start(_($help_context = "View Inventory Transfer"), SA_ITEMSTRANSVIEW, TRUE);
+  Page::start(_($help_context = "View Inventory Transfer"), SA_ITEMSTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {
     $trans_no = $_GET["trans_no"];
   }
@@ -43,7 +43,7 @@
 
       Cell::label($item['stock_id']);
       Cell::label($item['description']);
-      Cell::qty($item['qty'], FALSE, Item::qty_dec($item['stock_id']));
+      Cell::qty($item['qty'], false, Item::qty_dec($item['stock_id']));
       Cell::label($item['units']);
       Row::end();
       ;
@@ -51,5 +51,5 @@
   }
   Table::end(1);
   Display::is_voided(ST_LOCTRANSFER, $trans_no, _("This transfer has been voided."));
-  Page::end(TRUE);
+  Page::end(true);
 

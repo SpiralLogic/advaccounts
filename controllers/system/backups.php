@@ -66,24 +66,24 @@
       Event::error(_("File was not uploaded into the system."));
     }
   }
-  Forms::start(TRUE);
+  Forms::start(true);
   Table::startOuter('tablestyle2');
   Table::section(1);
   Table::sectionTitle(_("Create backup"));
-  Forms::textareaRow(_("Comments:"), 'comments', NULL, 30, 8);
+  Forms::textareaRow(_("Comments:"), 'comments', null, 30, 8);
   compress_list_row(_("Compression:"), 'comp');
-  Forms::submitRow('creat', _("Create Backup"), FALSE, "colspan=2 class='center'", '', 'process');
+  Forms::submitRow('creat', _("Create Backup"), false, "colspan=2 class='center'", '', 'process');
   Table::section(2);
   Table::sectionTitle(_("Backup scripts maintenance"));
   Row::start();
   echo "<td style='padding-left:20px'class='left'>" . get_backup_file_combo() . "</td>";
   echo "<td class='top'>";
   Table::start();
-  Forms::submitRow('view', _("View Backup"), FALSE, '', '', TRUE);
-  Forms::submitRow('download', _("Download Backup"), FALSE, '', '', FALSE);
-  Forms::submitRow('restore', _("Restore Backup"), FALSE, '', '', 'process');
+  Forms::submitRow('view', _("View Backup"), false, '', '', true);
+  Forms::submitRow('download', _("Download Backup"), false, '', '', false);
+  Forms::submitRow('restore', _("Restore Backup"), false, '', '', 'process');
   Forms::submitConfirm('restore', _("You are about to restore database from backup file.\nDo you want to continue?"));
-  Forms::submitRow('deldump', _("Delete Backup"), FALSE, '', '', TRUE);
+  Forms::submitRow('deldump', _("Delete Backup"), false, '', '', true);
   // don't use 'delete' name or IE js errors appear
   Forms::submitConfirm('deldump', sprintf(_("You are about to remove selected backup file.\nDo you want to continue ?")));
   Table::end();
@@ -91,7 +91,7 @@
   Row::end();
   Row::start();
   echo "<td style='padding-left:20px' class='left'><input name='uploadfile' type='file'></td>";
-  Forms::submitCells('upload', _("Upload file"), '', '', TRUE);
+  Forms::submitCells('upload', _("Upload file"), '', '', true);
   Row::end();
   Table::endOuter();
   Forms::end();

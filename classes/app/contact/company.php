@@ -93,7 +93,7 @@
      *
      * @return void
      */
-    public static function addInfoDialog($selector, $id = FALSE)
+    public static function addInfoDialog($selector, $id = false)
     {
       if ($id) {
         $company = new static($id);
@@ -122,7 +122,7 @@
 
 				 $.post('/contacts/{$type}s.php',{id:$(this).data('id')},function(data) {Adv.o.company_details.render(data.company); \$company_details.dialog('open');},'json');
 JS;
-        JS::addLiveEvent($selector, 'click', $action, 'wrapper', TRUE);
+        JS::addLiveEvent($selector, 'click', $action, 'wrapper', true);
       }
       $details->addButton('Close', '$(this).dialog("close")');
       $details->show();
@@ -143,15 +143,15 @@ JS;
       if (count($emails) > 0) {
         $types   = $GLOBALS['systypes_array'];
         $text    = $types[$type];
-        $content = Reporting::email_link($trans, _("Email This $text"), TRUE, $type, 'EmailLink', NULL, $emails, 0, TRUE);
+        $content = Reporting::email_link($trans, _("Email This $text"), true, $type, 'EmailLink', null, $emails, 0, true);
         if ($type == ST_SALESQUOTE || $type == ST_SALESORDER) {
           $type = ($type == ST_SALESORDER) ? ST_PROFORMA : ST_PROFORMAQ;
           $text = $types[$type];
-          $content .= Reporting::email_link($trans, _("Email This ") . $text, TRUE, $type, 'EmailLink', NULL, $emails, 0, TRUE);
+          $content .= Reporting::email_link($trans, _("Email This ") . $text, true, $type, 'EmailLink', null, $emails, 0, true);
         }
         return $content;
       }
-      return FALSE;
+      return false;
     }
     /**
      * @return array

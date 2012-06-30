@@ -53,7 +53,7 @@
     global $systypes_array;
     Forms::start();
     if (isset($_POST['inquiry']) || stristr($_SERVER['HTTP_REFERER'], 'supplier_allocation_inquiry.php')) {
-      Forms::hidden('inquiry', TRUE);
+      Forms::hidden('inquiry', true);
     }
     Display::heading(_("Allocation of") . " " . $systypes_array[$_SESSION['alloc']->type] . " # " . $_SESSION['alloc']->trans_no);
     Display::heading($_SESSION['alloc']->person_name);
@@ -62,13 +62,13 @@
     echo "<br>";
     Display::div_start('alloc_tbl');
     if (count($_SESSION['alloc']->allocs) > 0) {
-      Gl_Allocation::show_allocatable(TRUE);
-      Forms::submitCenterBegin('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), TRUE);
-      Forms::submit('Process', _("Process"), TRUE, _('Process allocations'), 'default');
+      Gl_Allocation::show_allocatable(true);
+      Forms::submitCenterBegin('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), true);
+      Forms::submit('Process', _("Process"), true, _('Process allocations'), 'default');
       Forms::submitCenterEnd('Cancel', _("Back to Allocations"), _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
     } else {
       Event::warning(_("There are no unsettled transactions to allocate."), 0, 1);
-      Forms::submitCenter('Cancel', _("Back to Allocations"), TRUE, _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
+      Forms::submitCenter('Cancel', _("Back to Allocations"), true, _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
     }
     Display::div_end();
     Forms::end();

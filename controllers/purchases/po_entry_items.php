@@ -26,16 +26,16 @@
     } else {
       Event::success(_("Purchase Order: " . Session::i()->history[ST_PURCHORDER] . " has been updated"));
     }
-    Display::note(GL_UI::trans_view($trans_type, $order_no, _("&View this order"), FALSE, 'button'), 0, 1);
-    Display::note(Reporting::print_doc_link($order_no, _("&Print This Order"), TRUE, $trans_type), 0, 1);
+    Display::note(GL_UI::trans_view($trans_type, $order_no, _("&View this order"), false, 'button'), 0, 1);
+    Display::note(Reporting::print_doc_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
     Display::submenu_button(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrder=$order_no");
-    Reporting::email_link($order_no, _("Email This Order"), TRUE, $trans_type, 'EmailLink', NULL, $supplier->getEmailAddresses(), 1);
+    Reporting::email_link($order_no, _("Email This Order"), true, $trans_type, 'EmailLink', null, $supplier->getEmailAddresses(), 1);
     Display::link_button("/purchases/po_receive_items.php", _("&Receive Items on this PO"), "PONumber=$order_no");
     Display::link_button($_SERVER['DOCUMENT_URI'], _("&New Purchase Order"), "NewOrder=yes");
-    Display::link_no_params("/purchases/inquiry/po_search.php", _("&Outstanding Purchase Orders"), TRUE, TRUE);
+    Display::link_no_params("/purchases/inquiry/po_search.php", _("&Outstanding Purchase Orders"), true, true);
     Page::footer_exit();
   }
-  $order = Orders::session_get() ? : NULL;
+  $order = Orders::session_get() ? : null;
   if (isset($_POST[Orders::CANCEL_CHANGES])) {
     $order_no = $order->order_no;
     Orders::session_delete($_POST['order_id']);
@@ -74,13 +74,13 @@
   }
   if (isset($_POST[ADD_ITEM])) {
     $allow_update = check_data();
-    if ($allow_update == TRUE) {
-      if ($allow_update == TRUE) {
+    if ($allow_update == true) {
+      if ($allow_update == true) {
         $sql    = "SELECT long_description as description , units, mb_flag
 				FROM stock_master WHERE stock_id = " . DB::escape($_POST['stock_id']);
         $result = DB::query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
         if (DB::num_rows($result) == 0) {
-          $allow_update = FALSE;
+          $allow_update = false;
         }
         if ($allow_update) {
           $myrow = DB::fetch($result);
@@ -133,7 +133,7 @@
   $order->header();
   $order->display_items();
   Table::start('tablestyle2');
-  Forms::textareaRow(_("Memo:"), 'Comments', NULL, 70, 4);
+  Forms::textareaRow(_("Memo:"), 'Comments', null, 70, 4);
   Table::end(1);
   Display::div_start('controls', 'items_table');
   if ($order->order_has_items()) {
@@ -146,7 +146,7 @@
     }
   } else {
     Forms::submitConfirm(Orders::CANCEL, _('You are about to void this Document.\nDo you want to continue?'));
-    Forms::submitCenterBegin(Orders::CANCEL, _("Delete This Order"), TRUE, FALSE, ICON_DELETE);
+    Forms::submitCenterBegin(Orders::CANCEL, _("Delete This Order"), true, false, ICON_DELETE);
     Forms::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
   }
   Display::div_end();
@@ -155,7 +155,7 @@
   if (isset($order->supplier_id)) {
     Creditor::addInfoDialog("td[name=\"supplier_name\"]", $order->supplier_details['supplier_id']);
   }
-  Page::end(TRUE);
+  Page::end(true);
   /**
    * @param int $order_no
    *
@@ -216,24 +216,24 @@
       $min = Num::format($min, $dec);
       Event::error(_("The quantity of the order item must be numeric and not less than ") . $min);
       JS::set_focus('qty');
-      return FALSE;
+      return false;
     }
     if (!Validation::post_num('price', 0)) {
       Event::error(_("The price entered must be numeric and not less than zero."));
       JS::set_focus('price');
-      return FALSE;
+      return false;
     }
     if (!Validation::post_num('discount', 0, 100)) {
       Event::error(_("Discount percent can not be less than 0 or more than 100."));
       JS::set_focus('discount');
-      return FALSE;
+      return false;
     }
     if (!Dates::is_date($_POST['req_del_date'])) {
       Event::error(_("The date entered is in an invalid format."));
       JS::set_focus('req_del_date');
-      return FALSE;
+      return false;
     }
-    return TRUE;
+    return true;
   }
 
   /**
@@ -250,43 +250,43 @@
     if (!Input::post('supplier_id')) {
       Event::error(_("There is no supplier selected."));
       JS::set_focus('supplier_id');
-      return FALSE;
+      return false;
     }
     if (!Dates::is_date($_POST['OrderDate'])) {
       Event::error(_("The entered order date is invalid."));
       JS::set_focus('OrderDate');
-      return FALSE;
+      return false;
     }
     if (Input::post('delivery_address') == '') {
       Event::error(_("There is no delivery address specified."));
       JS::set_focus('delivery_address');
-      return FALSE;
+      return false;
     }
     if (!Validation::post_num('freight', 0)) {
       Event::error(_("The freight entered must be numeric and not less than zero."));
       JS::set_focus('freight');
-      return FALSE;
+      return false;
     }
     if (Input::post('location') == '') {
       Event::error(_("There is no location specified to move any items into."));
       JS::set_focus('location');
-      return FALSE;
+      return false;
     }
-    if ($order->order_has_items() == FALSE) {
+    if ($order->order_has_items() == false) {
       Event::error(_("The order cannot be placed because there are no lines entered on this order."));
-      return FALSE;
+      return false;
     }
     if (!$order->order_no) {
       if (!Ref::is_valid(Input::post('ref'))) {
         Event::error(_("There is no reference entered for this purchase order."));
         JS::set_focus('ref');
-        return FALSE;
+        return false;
       }
       if (!Ref::is_new($_POST['ref'], ST_PURCHORDER)) {
         $_POST['ref'] = Ref::get_next(ST_PURCHORDER);
       }
     }
-    return TRUE;
+    return true;
   }
 
 

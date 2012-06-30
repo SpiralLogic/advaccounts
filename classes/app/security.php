@@ -54,7 +54,7 @@
      *
      * @return mixed
      */
-    public static function set_page($value = NULL, $trans = array(), $gtrans = array())
+    public static function set_page($value = null, $trans = array(), $gtrans = array())
     {
       // first check is this is not start page call
       foreach ($gtrans as $key => $area) {
@@ -81,7 +81,7 @@
       $sql = "SELECT * FROM security_roles WHERE id='$id'";
       $ret = DB::query($sql, "could not retrieve security roles");
       $row = DB::fetch($ret);
-      if ($row != FALSE) {
+      if ($row != false) {
         $row['areas']    = explode(';', $row['areas']);
         $row['sections'] = explode(';', $row['sections']);
       }
@@ -158,12 +158,12 @@
      *
      * @return string
      */
-    public static function roles($name, $selected_id = NULL, $new_item = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE)
+    public static function roles($name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false)
     {
       $sql = "SELECT id, role, inactive FROM security_roles";
       return Forms::selectBox($name, $selected_id, $sql, 'id', 'description', array(
                                                                                    'spec_option'      => $new_item ?
-                                                                                     _("New role") : FALSE,
+                                                                                     _("New role") : false,
                                                                                    'spec_id'          => '',
                                                                                    'select_submit'    => $submit_on_change,
                                                                                    'show_inactive'    => $show_inactive
@@ -179,9 +179,9 @@
      * @param bool $submit_on_change
      * @param bool $show_inactive
      */
-    public static function roles_cells($label, $name, $selected_id = NULL, $new_item = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE)
+    public static function roles_cells($label, $name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false)
     {
-      if ($label != NULL) {
+      if ($label != null) {
         echo "<td>$label</td>\n";
       }
       echo "<td>";
@@ -198,10 +198,10 @@
      * @param bool $submit_on_change
      * @param bool $show_inactive
      */
-    public function roles_row($label, $name, $selected_id = NULL, $new_item = FALSE, $submit_on_change = FALSE, $show_inactive = FALSE)
+    public function roles_row($label, $name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false)
     {
       echo "<tr><td class='label'>$label</td>";
-      static::roles_cells(NULL, $name, $selected_id, $new_item, $submit_on_change, $show_inactive);
+      static::roles_cells(null, $name, $selected_id, $new_item, $submit_on_change, $show_inactive);
       echo "</tr>\n";
     }
     /**
@@ -216,11 +216,11 @@
     {
       static $already_cleaned = array();
       // Nothing to escape for non-string scalars, or for already processed values
-      if (is_bool($value) or is_int($value) or is_float($value) or in_array($value, $already_cleaned, TRUE)) {
+      if (is_bool($value) or is_int($value) or is_float($value) or in_array($value, $already_cleaned, true)) {
         return $value;
       }
       if (is_string($value)) {
-        $value = htmlentities($value, ENT_COMPAT, $_SESSION['Language']->encoding, FALSE);
+        $value = htmlentities($value, ENT_COMPAT, $_SESSION['Language']->encoding, false);
       } elseif (is_array($value) or ($value instanceof \Iterator and $value instanceof \ArrayAccess)) {
         // Add to $already_cleaned variable when object
         is_object($value) and $already_cleaned[] = $value;

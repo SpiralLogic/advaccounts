@@ -100,7 +100,7 @@
         // 2008-09-20 Joe Hunt
         if ($date != "") {
           Bank::exchange_variation($type, $type_no, $row['trans_type_to'], $row['trans_no_to'], $date,
-            $row['amt'], PT_SUPPLIER, TRUE);
+            $row['amt'], PT_SUPPLIER, true);
         }
         //////////////////////
       }
@@ -119,7 +119,7 @@
      *
      * @return string
      */
-    public static function get_sql($extra_fields = NULL, $extra_conditions = NULL, $extra_tables = NULL) {
+    public static function get_sql($extra_fields = null, $extra_conditions = null, $extra_tables = null) {
       $sql = "SELECT
 		trans.type,
 		trans.trans_no,
@@ -164,7 +164,7 @@
         $settled_sql = "AND round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) > 0";
       }
       $supplier_sql = "";
-      if ($supplier_id != NULL) {
+      if ($supplier_id != null) {
         $supplier_sql = " AND trans.supplier_id = " . DB::quote($supplier_id);
       }
       $sql = Purch_Allocation::get_sql("round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) <= 0 AS settled",
@@ -180,8 +180,8 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_allocatable_to_trans($supplier_id, $trans_no = NULL, $type = NULL) {
-      if ($trans_no != NULL && $type != NULL) {
+    public static function get_allocatable_to_trans($supplier_id, $trans_no = null, $type = null) {
+      if ($trans_no != null && $type != null) {
         $sql = Purch_Allocation::get_sql("amt, supplier_reference", "trans.trans_no = alloc.trans_no_to
 			AND trans.type = alloc.trans_type_to
 			AND alloc.trans_no_from=" . DB::escape($trans_no) . "
@@ -190,7 +190,7 @@
           "creditor_allocations as alloc");
       }
       else {
-        $sql = Purch_Allocation::get_sql(NULL, "round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) > 0
+        $sql = Purch_Allocation::get_sql(null, "round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) > 0
 			AND trans.type != " . ST_SUPPAYMENT . "
 			AND trans.supplier_id=" . DB::escape($supplier_id));
       }
@@ -202,7 +202,7 @@
      * @param      $name
      * @param null $selected
      */
-    public static function row($name, $selected = NULL) {
+    public static function row($name, $selected = null) {
       echo "<td>\n";
       $allocs = array(
         ALL_TEXT => _("All Types"), '1' => _("Invoices"), '2' => _("Overdue Invoices"), '6' => _("Unpaid Invoices"), '3' => _("Payments"), '4' => _("Credit Notes"), '5' => _("Overdue Credit Notes")

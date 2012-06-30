@@ -13,8 +13,8 @@
   /**
 
    */
-  class Query_Insert extends Query {
-
+  class Query_Insert extends Query
+  {
     /**
      * @var
      */
@@ -55,7 +55,6 @@
         }
         Cache::set('INFORMATION_SCHEMA.COLUMNS.' . $table, $this->hasfields);
       }
-
       return $this;
     }
     /**
@@ -66,7 +65,6 @@
     public function into($table)
     {
       $this->table = $table;
-
       return $this;
     }
     /**
@@ -77,7 +75,6 @@
     public function values($values)
     {
       $this->data = (array) $values + $this->data;
-
       return $this;
     }
     /**
@@ -101,7 +98,6 @@
       } else {
         $this->values(array($feild => $value));
       }
-
       return $this;
     }
     /**
@@ -117,7 +113,6 @@
       $this->data   = array_intersect_key($this->data, array_flip($this->hasfields));
       $this->data   = array_filter($this->data, function($value) { return !is_object($value); });
       $this->fields = array_keys($this->data);
-
       return $this->_buildQuery();
     }
     /**
@@ -129,7 +124,6 @@
       $sql .= implode(', ', $this->fields) . ") VALUES (";
       $sql .= ':' . implode(', :', str_replace('-', '_', $this->fields));
       $sql .= ') ';
-
       return $sql;
     }
   }

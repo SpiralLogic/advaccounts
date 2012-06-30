@@ -10,7 +10,7 @@
 
   JS::open_window(900, 600);
   $trans_type = $_GET['trans_type'];
-  Page::start("", SA_SALESTRANSVIEW, TRUE);
+  Page::start("", SA_SALESTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {
     $trans_id = $_GET["trans_no"];
   }

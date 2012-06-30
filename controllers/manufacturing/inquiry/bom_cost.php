@@ -17,9 +17,9 @@
   if (Forms::isListUpdated('stock_id')) {
     Ajax::activate('_page_body');
   }
-  Forms::start(FALSE);
+  Forms::start(false);
   Table::start('tablestyle_noborder');
-  Item_UI::manufactured_row(_("Select a manufacturable item:"), 'stock_id', NULL, FALSE, TRUE);
+  Item_UI::manufactured_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
   Table::end();
   Display::br();
   Display::heading(_("All Costs Are In:") . " " . Bank_Currency::for_company());

@@ -43,7 +43,6 @@
     {
       $sql = "DELETE FROM " . $this->table;
       $sql .= $this->_buildWhere();
-
       return $sql;
     }
   }

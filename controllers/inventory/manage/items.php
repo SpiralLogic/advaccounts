@@ -124,7 +124,7 @@
       if (isset($_POST['addupdatenew'])) {
         $_POST['NewStockID'] = $_POST['stock_id'] = '';
         clear_data();
-        $new_item = TRUE;
+        $new_item = true;
         Display::meta_forward($_SERVER['DOCUMENT_URI']);
       }
       else {
@@ -145,7 +145,7 @@
    *
    * @return bool
    */
-  function check_usage($stock_id, $dispmsg = TRUE) {
+  function check_usage($stock_id, $dispmsg = true) {
     $sqls = array(
       "SELECT COUNT(*) FROM stock_moves WHERE stock_id=" => _('Cannot delete this item because there are stock movements that refer to this item.'),
       "SELECT COUNT(*) FROM bom WHERE component=" => _('Cannot delete this item record because there are bills of material that require this part as a component.'),
@@ -179,9 +179,9 @@
       if ($dispmsg) {
         Event::error($msg);
       }
-      return FALSE;
+      return false;
     }
-    return TRUE;
+    return true;
   }
 
   if (isset($_POST['delete']) && strlen($_POST['delete']) > 1) {
@@ -195,17 +195,17 @@
       Event::notice(_("Selected item has been deleted."));
       $_POST['stock_id'] = '';
       clear_data();
-      $new_item = TRUE;
+      $new_item = true;
       Ajax::activate('_page_body');
     }
   }
-  Forms::start(TRUE);
+  Forms::start(true);
   if (Validation::check(Validation::STOCK_ITEMS)) {
     Table::start('tablestyle_noborder');
     Row::start();
     if ($new_item) {
-      Item::cells(_("Select an item:"), 'stock_id', NULL, _('New item'), TRUE, Forms::hasPost('show_inactive'), FALSE);
-       Forms::checkCells(_("Show inactive:"), 'show_inactive', NULL, TRUE);
+      Item::cells(_("Select an item:"), 'stock_id', null, _('New item'), true, Forms::hasPost('show_inactive'), false);
+       Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
     }
     else {
       Forms::hidden('stock_id', $_POST['stock_id']);
@@ -223,7 +223,7 @@
   Table::section(1);
   Table::sectionTitle(_("Item"));
   if ($new_item) {
-     Forms::textRow(_("Item Code:"), 'NewStockID', NULL, 21, 20);
+     Forms::textRow(_("Item Code:"), 'NewStockID', null, 21, 20);
     $_POST['inactive'] = 0;
   }
   else { // Must be modifying an existing item
@@ -252,9 +252,9 @@
     Forms::hidden('NewStockID', $_POST['NewStockID']);
     JS::set_focus('description');
   }
-   Forms::textRow(_("Name:"), 'description', NULL, 52, 200);
-   Forms::textareaRow(_('Description:'), 'long_description', NULL, 42, 3);
-  Item_Category::row(_("Category:"), 'category_id', NULL, FALSE, $new_item);
+   Forms::textRow(_("Name:"), 'description', null, 52, 200);
+   Forms::textareaRow(_('Description:'), 'long_description', null, 42, 3);
+  Item_Category::row(_("Category:"), 'category_id', null, false, $new_item);
   if ($new_item && (Forms::isListUpdated('category_id') || !isset($_POST['units']))) {
     $category_record = Item_Category::get($_POST['category_id']);
     $_POST['tax_type_id'] = $category_record["dflt_tax_type"];
@@ -270,19 +270,19 @@
     $_POST['no_sale'] = $category_record["dflt_no_sale"];
     $_POST['editable'] = 0;
   }
-  $fresh_item = !isset($_POST['NewStockID']) || $new_item || check_usage($_POST['stock_id'], FALSE);
-  Tax_ItemType::row(_("Item Tax Type:"), 'tax_type_id', NULL);
-  Item_UI::type_row(_("Item Type:"), 'mb_flag', NULL, $fresh_item);
-  Item_Unit::row(_('Units of Measure:'), 'units', NULL, $fresh_item);
+  $fresh_item = !isset($_POST['NewStockID']) || $new_item || check_usage($_POST['stock_id'], false);
+  Tax_ItemType::row(_("Item Tax Type:"), 'tax_type_id', null);
+  Item_UI::type_row(_("Item Type:"), 'mb_flag', null, $fresh_item);
+  Item_Unit::row(_('Units of Measure:'), 'units', null, $fresh_item);
    Forms::checkRow(_("Editable description:"), 'editable');
    Forms::checkRow(_("Exclude from sales:"), 'no_sale');
   Table::section(2);
   $dim = DB_Company::get_pref('use_dimension');
   if ($dim >= 1) {
     Table::sectionTitle(_("Dimensions"));
-    Dimensions::select_row(_("Dimension") . " 1", 'dimension_id', NULL, TRUE, " ", FALSE, 1);
+    Dimensions::select_row(_("Dimension") . " 1", 'dimension_id', null, true, " ", false, 1);
     if ($dim > 1) {
-      Dimensions::select_row(_("Dimension") . " 2", 'dimension2_id', NULL, TRUE, " ", FALSE, 2);
+      Dimensions::select_row(_("Dimension") . " 2", 'dimension2_id', null, true, " ", false, 2);
     }
   }
   if ($dim < 1) {
@@ -315,11 +315,11 @@
    Forms::fileRow(_("Image File (.jpg)") . ":", 'pic', 'pic');
   // Add Image upload for New Item - by Joe
   $stock_img_link = "";
-  $check_remove_image = FALSE;
+  $check_remove_image = false;
   if (isset($_POST['NewStockID']) && file_exists(COMPANY_PATH . "$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg")) {
     // 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
     $stock_img_link .= "<img id='item_img' alt = '[" . $_POST['NewStockID'] . ".jpg]' src='" . COMPANY_PATH . "$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg?nocache=" . rand() . "' height='" . Config::get('item_images_height') . "' >";
-    $check_remove_image = TRUE;
+    $check_remove_image = true;
   }
   else {
     $stock_img_link .= _("No image");
@@ -334,14 +334,14 @@
   Display::div_end();
   Display::div_start('controls');
   if (!isset($_POST['NewStockID']) || $new_item) {
-    Forms::submitCenter('addupdate', _("Insert New Item"), TRUE, '', 'default');
+    Forms::submitCenter('addupdate', _("Insert New Item"), true, '', 'default');
   }
   else {
-    Forms::submitCenterBegin('addupdate', _("Update Item"), '', Input::request('frame') ? TRUE : 'default');
+    Forms::submitCenterBegin('addupdate', _("Update Item"), '', Input::request('frame') ? true : 'default');
     Forms::submitReturn('select', Input::post('stock_id'), _("Select this items and return to document entry."), 'default');
-    Forms::submit('clone', _("Clone This Item"), TRUE, '', TRUE);
-    Forms::submit('delete', _("Delete This Item"), TRUE, '', TRUE);
-    Forms::submit('addupdatenew', _("Save & New"), TRUE, '', TRUE);
+    Forms::submit('clone', _("Clone This Item"), true, '', true);
+    Forms::submit('delete', _("Delete This Item"), true, '', true);
+    Forms::submit('addupdatenew', _("Save & New"), true, '', true);
     Forms::submitCenterEnd('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
   }
   if (Input::post('stock_id')) {

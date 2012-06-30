@@ -100,14 +100,12 @@
     {
       $address = str_replace(array("\r", "\t", "\n", "\v"), ", ", $address);
       $apikey  = Config::get('js.maps_api_key');
-      $js
-               = <<<JS
+      $js      = <<<JS
 
                 Adv.maps = { api_key: '$apikey'}
 JS;
       JS::beforeload($js);
-      $js
-        = <<<JS
+      $js = <<<JS
 var map = $("<div/>").gMap({
     address:"{$address}",
     markers: [{ address:"{$address}", html: "_address", popup: true}],
@@ -175,8 +173,7 @@ JS;
       extract(array_merge($defaults, $options));
       $content = "Adv.o.tabs.$id = $('#" . $id . "').tabs(";
       if ($hasLinks) {
-        $content
-          .= <<<JSS
+        $content .= <<<JSS
     {
     select: function(event, ui) {
     var \$tab = $(ui.tab);
@@ -224,9 +221,11 @@ JSS;
      * @static
 
      */
-    public static function render($return =false)
+    public static function render($return = false)
     {
-      if ($return){ ob_start();}
+      if ($return) {
+        ob_start();
+      }
       $files = $content = $onReady = '';
       if (!AJAX_REFERRER) {
         foreach (self::$_footerFiles as $dir => $file) {
@@ -256,10 +255,9 @@ JSS;
       if ($onReady != '') {
         $content .= "\n$(function(){ " . $onReady . '});';
       }
-
       /** @noinspection PhpDynamicAsStaticMethodCallInspection */
       HTML::script(array('content' => $content))->script;
-      if ($return){
+      if ($return) {
         return ob_get_clean();
       }
       return true;

@@ -88,7 +88,7 @@
      * @param null $exp_price
      */
     public function __construct($id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv,
-                                $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = NULL) {
+                                $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = null) {
       $this->id = $id;
       $this->po_detail_item = $po_detail_item;
       $this->item_code = $item_code;
@@ -98,7 +98,7 @@
       $this->this_quantity_inv = $this_quantity_inv;
       $this->order_price = $order_price;
       $this->chg_price = $chg_price;
-      $this->exp_price = ($exp_price == NULL) ? $chg_price : $exp_price;
+      $this->exp_price = ($exp_price == null) ? $chg_price : $exp_price;
       $this->discount = $discount;
       $this->Complete = $Complete;
       $this->std_cost_unit = $std_cost_unit;
@@ -116,7 +116,7 @@
      *
      * @return int
      */
-    public function full_charge_price($tax_group_id, $tax_group = NULL) {
+    public function full_charge_price($tax_group_id, $tax_group = null) {
       return Tax::full_price_for_item($this->item_code, $this->chg_price * (1 - $this->discount), $tax_group_id, 0,
         $tax_group);
     }
@@ -126,7 +126,7 @@
      *
      * @return float|int
      */
-    public function taxfree_charge_price($tax_group_id, $tax_group = NULL) {
+    public function taxfree_charge_price($tax_group_id, $tax_group = null) {
       //		if ($tax_group_id==null)
       //			return $this->chg_price;
       return Tax::tax_free_price($this->item_code, $this->chg_price * (1 - $this->discount / 100), $tax_group_id,
@@ -142,20 +142,20 @@
       $accs = Creditor::get_accounts_name($creditor_trans->supplier_id);
       $_POST['gl_code'] = $accs['purchase_account'];
 
-      echo GL_UI::all('gl_code', NULL, TRUE, TRUE);
+      echo GL_UI::all('gl_code', null, true, true);
       $dim = DB_Company::get_pref('use_dimension');
       if ($dim >= 1) {
-        Dimensions::cells(NULL, 'dimension_id', NULL, TRUE, " ", FALSE, 1);
+        Dimensions::cells(null, 'dimension_id', null, true, " ", false, 1);
         Forms::hidden('dimension_id', 0);
       }
       if ($dim > 1) {
-        Dimensions::cells(NULL, 'dimension2_id', NULL, TRUE, " ", FALSE, 2);
+        Dimensions::cells(null, 'dimension2_id', null, true, " ", false, 2);
         Forms::hidden('dimension2_id', 0);
       }
-       Forms::textareaCells(NULL, 'memo_', NULL, 50, 1);
-       Forms::amountCells(NULL, 'amount');
-      Forms::submitCells('AddGLCodeToTrans', _("Add"), "", _('Add GL Line'), TRUE);
-      Forms::submitCells('ClearFields', _("Reset"), "", _("Clear all GL entry fields"), TRUE);
+       Forms::textareaCells(null, 'memo_', null, 50, 1);
+       Forms::amountCells(null, 'amount');
+      Forms::submitCells('AddGLCodeToTrans', _("Add"), "", _('Add GL Line'), true);
+      Forms::submitCells('ClearFields', _("Reset"), "", _("Clear all GL entry fields"), true);
       Row::end();
     }
 
@@ -186,10 +186,10 @@
       Table::startOuter('tablestyle2 width95');
       if ($mode == 1) {
         $qes = GL_QuickEntry::has(QE_SUPPINV);
-        if ($qes !== FALSE) {
+        if ($qes !== false) {
           echo "<div style='float:right;'>";
           echo _("Quick Entry:") . "&nbsp;";
-          echo GL_QuickEntry::select('qid', NULL, QE_SUPPINV, TRUE);
+          echo GL_QuickEntry::select('qid', null, QE_SUPPINV, true);
           $qid = GL_QuickEntry::get(Input::post('qid'));
           if (Forms::isListUpdated('qid')) {
             unset($_POST['total_amount']); // enable default
@@ -199,12 +199,12 @@
           $amount = Validation::input_num('total_amount', $qid['base_amount']);
           $dec = User::price_dec();
           echo "<input class='amount font7' type='text' name='total_amount' maxlength='12' data-aspect=fallback'$dec' value='$amount'>&nbsp;";
-          Forms::submit('go', _("Go"), TRUE, FALSE, TRUE);
+          Forms::submit('go', _("Go"), true, false, true);
           echo "</div>";
         }
       }
       Display::heading($heading);
-      Table::endOuter(0, FALSE);
+      Table::endOuter(0, false);
       Display::div_start('gl_items');
       Table::start('tablestyle grid width80');
       $dim = DB_Company::get_pref('use_dimension');
@@ -235,13 +235,13 @@
           Cell::label($entered_gl_code->gl_code);
           Cell::label($entered_gl_code->gl_act_name);
           if ($dim >= 1) {
-            Cell::label(Dimensions::get_string($entered_gl_code->gl_dim, TRUE));
+            Cell::label(Dimensions::get_string($entered_gl_code->gl_dim, true));
           }
           if ($dim > 1) {
-            Cell::label(Dimensions::get_string($entered_gl_code->gl_dim2, TRUE));
+            Cell::label(Dimensions::get_string($entered_gl_code->gl_dim2, true));
           }
           Cell::label($entered_gl_code->memo_);
-          Cell::amount($entered_gl_code->amount, TRUE);
+          Cell::amount($entered_gl_code->amount, true);
           if ($mode == 1) {
             Forms::buttonDeleteCell("Delete2" . $entered_gl_code->counter, _("Delete"), _('Remove line from document'));
             Cell::label("");

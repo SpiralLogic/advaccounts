@@ -9,12 +9,12 @@
    **/
 
   JS::open_window(900, 600);
-  if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == TRUE)) {
-    $_POST['OutstandingOnly'] = TRUE;
+  if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true)) {
+    $_POST['OutstandingOnly'] = true;
     Page::start(_($help_context = "Search Not Invoiced Deliveries"), SA_SALESINVOICE);
   }
   else {
-    $_POST['OutstandingOnly'] = FALSE;
+    $_POST['OutstandingOnly'] = false;
     Page::start(_($help_context = "Search All Deliveries"), SA_SALESINVOICE);
   }
   $selected_customer = Input::get_post('customer_id', Input::NUMERIC, -1);
@@ -47,29 +47,29 @@
   }
   if (Input::post('_DeliveryNumber_changed')) {
     $disable = Input::post('DeliveryNumber') !== '';
-    Ajax::addDisable(TRUE, 'DeliveryAfterDate', $disable);
-    Ajax::addDisable(TRUE, 'DeliveryToDate', $disable);
-    Ajax::addDisable(TRUE, 'StockLocation', $disable);
-    Ajax::addDisable(TRUE, '_SelectStockFromList_edit', $disable);
-    Ajax::addDisable(TRUE, 'SelectStockFromList', $disable);
+    Ajax::addDisable(true, 'DeliveryAfterDate', $disable);
+    Ajax::addDisable(true, 'DeliveryToDate', $disable);
+    Ajax::addDisable(true, 'StockLocation', $disable);
+    Ajax::addDisable(true, '_SelectStockFromList_edit', $disable);
+    Ajax::addDisable(true, 'SelectStockFromList', $disable);
     // if search is not empty rewrite table
     if ($disable) {
-      Ajax::addFocus(TRUE, 'DeliveryNumber');
+      Ajax::addFocus(true, 'DeliveryNumber');
     }
     else {
-      Ajax::addFocus(TRUE, 'DeliveryAfterDate');
+      Ajax::addFocus(true, 'DeliveryAfterDate');
     }
     Ajax::activate('deliveries_tbl');
   }
-  Forms::start(FALSE, $_SERVER['DOCUMENT_URI'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
+  Forms::start(false, $_SERVER['DOCUMENT_URI'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
   Table::start('tablestyle_noborder');
   Row::start();
-  Debtor::cells(_('Customer:'), 'customer_id', NULL, TRUE);
-   Forms::refCells(_("#:"), 'DeliveryNumber', '', NULL, '', TRUE);
-   Forms::dateCells(_("from:"), 'DeliveryAfterDate', '', NULL, -30);
-   Forms::dateCells(_("to:"), 'DeliveryToDate', '', NULL, 1);
-  Inv_Location::cells(_("Location:"), 'StockLocation', NULL, TRUE);
-  Item::cells(_("Item:"), 'SelectStockFromList', NULL, TRUE, FALSE, FALSE, FALSE, FALSE);
+  Debtor::cells(_('Customer:'), 'customer_id', null, true);
+   Forms::refCells(_("#:"), 'DeliveryNumber', '', null, '', true);
+   Forms::dateCells(_("from:"), 'DeliveryAfterDate', '', null, -30);
+   Forms::dateCells(_("to:"), 'DeliveryToDate', '', null, 1);
+  Inv_Location::cells(_("Location:"), 'StockLocation', null, true);
+  Item::cells(_("Item:"), 'SelectStockFromList', null, true, false, false, false, false);
   Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
   Forms::hidden('OutstandingOnly', $_POST['OutstandingOnly']);
   Row::end();
@@ -138,8 +138,8 @@
     ), _("Due By") => array('type' => 'date'), _("Delivery Total") => array(
       'type' => 'amount', 'ord' => ''
     ), _("Currency") => array('align' => 'center'),
-    Forms::submit(Orders::BATCH_INVOICE, _("Batch"), FALSE, _("Batch Invoicing")) => array(
-      'insert' => TRUE, 'fun' => function ($row) {
+    Forms::submit(Orders::BATCH_INVOICE, _("Batch"), false, _("Batch Invoicing")) => array(
+      'insert' => true, 'fun' => function ($row) {
         $name = "Sel_" . $row['trans_no'];
         return $row['Done'] ? '' :
           "<input type='checkbox' name='$name' value='1' >" // add also trans_no => branch code for checking after 'Batch' submit
@@ -147,20 +147,20 @@
       }
     , 'align' => 'center'
     ), array(
-      'insert' => TRUE, 'fun' => function ($row) {
+      'insert' => true, 'fun' => function ($row) {
         return $row["Outstanding"] == 0 ? '' :
           DB_Pager::link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'], ICON_EDIT);
       }
 
     ), array(
-      'insert' => TRUE, 'fun' => function ($row) {
+      'insert' => true, 'fun' => function ($row) {
         return $row["Outstanding"] == 0 ? '' :
           DB_Pager::link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no'], ICON_DOC);
       }
 
     ), array(
-      'insert' => TRUE, 'fun' => function ($row) {
-        return Reporting::print_doc_link($row['trans_no'], _("Print"), TRUE, ST_CUSTDELIVERY, ICON_PRINT);
+      'insert' => true, 'fun' => function ($row) {
+        return Reporting::print_doc_link($row['trans_no'], _("Print"), true, ST_CUSTDELIVERY, ICON_PRINT);
       }
 
     )

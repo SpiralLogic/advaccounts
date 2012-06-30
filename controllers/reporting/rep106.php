@@ -101,7 +101,7 @@ Page::set_security(SA_SALESMANREP);
 				$salesman = 0;
 				$rep->Header();
 			}
-			$rep->NewLine(0, 2, FALSE, $salesman);
+			$rep->NewLine(0, 2, false, $salesman);
 			if ($salesman != $myrow['salesman_code']) {
 				if ($salesman != 0) {
 					$rep->Line($rep->row - 8);
@@ -139,7 +139,7 @@ Page::set_security(SA_SALESMANREP);
 				$rep->TextCol(1, 2, $myrow['DebtorName']);
 				$rep->TextCol(2, 3, $myrow['br_name']);
 				$rep->TextCol(3, 4, $myrow['contact_name']);
-				$rep->DateCol(4, 5, $myrow['tran_date'], TRUE);
+				$rep->DateCol(4, 5, $myrow['tran_date'], true);
 				$rep->AmountCol(5, 6, $amt, $dec);
 				$rep->AmountCol(6, 7, $prov, $dec);
 				$rep->NewLine();

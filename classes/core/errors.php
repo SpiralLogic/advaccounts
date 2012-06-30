@@ -289,9 +289,9 @@
       if (!$content) {
         $content = 'A fatal error has occured!';
       }
-      $view = new View('fatal_error');
-      $view['message']=$content;
-      $view->set('debug',$_SESSION['User']->username == 'admin'? var_export(Errors::$errors, true):'');
+      $view            = new View('fatal_error');
+      $view['message'] = $content;
+      $view->set('debug', $_SESSION['User']->username == 'admin' ? var_export(Errors::$errors, true) : '');
       $view->render();
       session_write_close();
       if (function_exists('fastcgi_finish_request')) {

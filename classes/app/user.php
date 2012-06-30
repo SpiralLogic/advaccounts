@@ -44,7 +44,7 @@
     /**
      * @var bool
      */
-    public $salesmanid = FALSE;
+    public $salesmanid = false;
     /**
      * @var
      */
@@ -68,7 +68,7 @@
     /**
      * @var bool
      */
-    public $logged = FALSE;
+    public $logged = false;
     /**
      * @var int
      */
@@ -80,7 +80,7 @@
     /**
      * @var bool
      */
-    public $change_password = FALSE;
+    public $change_password = false;
     public $selectedApp;
     /**
      * @var
@@ -112,15 +112,15 @@
       $this->Session   = $session ? : Session::i();
       $this->loginname = $this->username = $this->name = "";
       $this->company   = Config::get('default.company') ? : 'default';
-      $this->logged    = FALSE;
+      $this->logged    = false;
       $this->prefs     = new userPrefs((array) $this);
     }
     /**
      * @param null $salesmanid
      */
-    public function set_salesman($salesmanid = NULL)
+    public function set_salesman($salesmanid = null)
     {
-      if ($salesmanid == NULL) {
+      if ($salesmanid == null) {
         $salesman_name = $this->name;
         $sql           = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::escape($salesman_name);
         $query         = DB::query($sql, 'Couldn\'t find current salesman');
@@ -129,7 +129,7 @@
           $this->salesmanid = $result['salesman_code'];
         }
       }
-      if ($salesmanid != NULL) {
+      if ($salesmanid != null) {
         $this->salesmanid = $salesmanid;
       }
     }
@@ -162,7 +162,7 @@
     public function login($company, $loginname)
     {
       $this->set_company($company);
-      $this->logged = FALSE;
+      $this->logged = false;
       $myrow        = Users::get_for_login($loginname, $_POST['password']);
       if ($myrow) {
         if (!$myrow["inactive"]) {
@@ -172,7 +172,7 @@
           // store area codes available for current user role
           $role = Security::get_role($this->access);
           if (!$role) {
-            return FALSE;
+            return false;
           }
           $this->access_sections = $role['sections'];
           foreach ($role['areas'] as $code) // filter only area codes for enabled security sections
@@ -183,7 +183,7 @@
           }
         }
         $this->change_password = $myrow['change_password'];
-        $this->logged          = TRUE;
+        $this->logged          = true;
         $this->name            = $myrow["real_name"];
         $this->pos             = $myrow["pos"];
         $this->username        = $this->loginname = $loginname;
@@ -207,7 +207,7 @@
      * @param       $function
      * @param array $arguments
      */
-    public function _register_login($object, $function = NULL, $arguments = array())
+    public function _register_login($object, $function = null, $arguments = array())
     {
       $this->registerHook('login', $object, $function, $arguments);
     }
@@ -231,7 +231,7 @@
       if ($this->logged) {
         $tout = $this->timeout;
         if ($tout && (time() > $this->last_act + $tout)) {
-          $this->logged = FALSE;
+          $this->logged = false;
         }
         $this->last_act = time();
       }
@@ -251,12 +251,12 @@
     {
       global $security_areas;
       if ($page_level === SA_OPEN) {
-        return TRUE;
+        return true;
       }
       if ($page_level === SA_DENIED || $page_level === '') {
-        return FALSE;
+        return false;
       }
-      $access = FALSE;
+      $access = false;
       if (isset($security_areas[$page_level])) {
         $code   = $security_areas[$page_level][0];
         $access = $code && in_array($code, $this->role_set);
@@ -378,7 +378,7 @@
         $num = str_replace($sep, '.', $num);
       }
       if (!is_numeric($num)) {
-        return FALSE;
+        return false;
       }
       $num = (float) $num;
       if ($num == (int) $num) {
@@ -574,7 +574,7 @@
     {
 
       $this->Session->_kill();
-      $this->logged = FALSE;
+      $this->logged = false;
     }
     public function getHash()
     {

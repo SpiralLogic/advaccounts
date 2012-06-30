@@ -9,7 +9,7 @@
    **/
 
   Page::start(_($help_context = "POS settings"), SA_POSSETUP);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
 
   if ($Mode == ADD_ITEM && Sales_Point::can_process()) {
     Sales_Point::add($_POST['name'], $_POST['location'], $_POST['account'], Forms::hasPost('cash'), Forms::hasPost('credit'));

@@ -67,7 +67,6 @@
       if ($status == self::ERROR) {
         $this->_errors[] = $newstatus;
       }
-
       return !($status == self::ERROR);
     }
     /**
@@ -82,7 +81,6 @@
         return true;
       }
       $this->_status[] = $status;
-
       return false;
     }
     /**
@@ -96,7 +94,6 @@
       if (!empty($this->_status)) {
         return end($this->_status);
       }
-
       return false;
     }
     /**
@@ -107,7 +104,6 @@
       if (!empty($this->_errors)) {
         return end($this->_errors);
       }
-
       return false;
     }
     /**
@@ -126,7 +122,6 @@
       $str  = ucwords($last['process']);
       $str .= ($last['status'] != self::ERROR) ? ' Succeeded: ' : ' Failed: ';
       $str .= $last['message'];
-
       return $str;
     }
   }

@@ -64,9 +64,9 @@
         $db_name = $db_info[0];
         $db_type = $db_info[1];
         $db_ref  = $db_info[3];
-        if ($db_ref != NULL) {
+        if ($db_ref != null) {
           $sql = "SELECT $db_ref FROM $db_name ";
-          if ($db_type != NULL) {
+          if ($db_type != null) {
             $sql .= " AND $db_type=$type";
           }
           $sql .= " ORDER BY $db_ref DESC LIMIT 1";
@@ -131,7 +131,7 @@
      * @return bool
      */
     public static function exists($type, $reference) {
-      return (static::find($type, $reference) != NULL);
+      return (static::find($type, $reference) != null);
     }
     /**
      * @static
@@ -190,16 +190,16 @@
       $db_name = $db_info[0];
       $db_type = $db_info[1];
       $db_ref  = $db_info[3];
-      if ($db_ref != NULL) {
+      if ($db_ref != null) {
         $sql = "SELECT $db_ref FROM $db_name WHERE $db_ref='$ref'";
-        if ($db_type != NULL) {
+        if ($db_type != null) {
           $sql .= " AND $db_type=$type";
         }
         $result = DB::query($sql, "could not test for unique reference");
         return (DB::num_rows($result) == 0);
       }
       // it's a type that doesn't use references - shouldn't be calling here, but say yes anyways
-      return TRUE;
+      return true;
     }
   }
 

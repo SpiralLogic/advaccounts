@@ -37,8 +37,8 @@
       $bank_gl_account = Bank_Account::get_gl($bank_account);
       if ($trans_no != 0) {
         DB_Comments::delete(ST_CUSTREFUND, $trans_no);
-        Bank_Trans::void(ST_CUSTREFUND, $trans_no, TRUE);
-        GL_Trans::void(ST_CUSTREFUND, $trans_no, TRUE);
+        Bank_Trans::void(ST_CUSTREFUND, $trans_no, true);
+        GL_Trans::void(ST_CUSTREFUND, $trans_no, true);
         Sales_Allocation::void(ST_CUSTREFUND, $trans_no, $date_);
       }
       $total = 0;
@@ -79,8 +79,8 @@
      */
     public static function void($type, $type_no) {
       DB::begin();
-      Bank_Trans::void($type, $type_no, TRUE);
-      GL_Trans::void($type, $type_no, TRUE);
+      Bank_Trans::void($type, $type_no, true);
+      GL_Trans::void($type, $type_no, true);
       Sales_Allocation::void($type, $type_no);
       Debtor_Trans::void($type, $type_no);
       DB::commit();

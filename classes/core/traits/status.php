@@ -24,7 +24,6 @@
       if ($string) {
         return $this->_status;
       }
-
       return $this->_status->get();
     }
     /***
@@ -39,10 +38,8 @@
     {
       if (!$this->_status) {
         $this->_status = new \ADV\Core\Status($status, $process, $message, $var);
-
         return $status;
       }
-
       return $this->_status->set($status, $process, $message, $var);
     }
   }

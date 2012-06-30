@@ -64,7 +64,7 @@
      * @param bool   $width
      * @param string $class
      */
-    static function section($number = 1, $width = FALSE, $class = '') {
+    static function section($number = 1, $width = false, $class = '') {
       if ($number > 1) {
         echo "</table>\n";
         $width = ($width ? "width:$width" : "");
@@ -77,7 +77,7 @@
      * @param int  $breaks
      * @param bool $close_table
      */
-    static function endOuter($breaks = 0, $close_table = TRUE) {
+    static function endOuter($breaks = 0, $close_table = true) {
       if ($close_table) {
         echo "</table>\n";
       }

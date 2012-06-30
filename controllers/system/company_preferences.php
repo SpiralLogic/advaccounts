@@ -84,7 +84,7 @@
     JS::set_focus('coy_name');
     Ajax::activate('_page_body');
   } /* end of if submit */
-  Forms::start(TRUE);
+  Forms::start(true);
   $myrow = DB_Company::get_prefs();
   $_POST['coy_name'] = $myrow["coy_name"];
   $_POST['gst_no'] = $myrow["gst_no"];
@@ -126,26 +126,26 @@
   GL_Currency::row(_("Home Currency:"), 'curr_default', $_POST['curr_default']);
   GL_UI::fiscalyears_row(_("Fiscal Year:"), 'f_year', $_POST['f_year']);
   Table::section(2);
-   Forms::textRowEx(_("Tax Periods:"), 'tax_prd', 10, 10, '', NULL, NULL, _('Months.'));
-   Forms::textRowEx(_("Tax Last Period:"), 'tax_last', 10, 10, '', NULL, NULL, _('Months back.'));
+   Forms::textRowEx(_("Tax Periods:"), 'tax_prd', 10, 10, '', null, null, _('Months.'));
+   Forms::textRowEx(_("Tax Last Period:"), 'tax_last', 10, 10, '', null, null, _('Months back.'));
   Row::label(_("Company Logo:"), $_POST['coy_logo']);
    Forms::fileRow(_("New Company Logo (.jpg)") . ":", 'pic', 'pic');
    Forms::checkRow(_("Delete Company Logo:"), 'del_coy_logo', $_POST['del_coy_logo']);
-   Forms::numberListRow(_("Use Dimensions:"), 'use_dimension', NULL, 0, 2);
-  Sales_Type::row(_("Base for auto price calculations:"), 'base_sales', $_POST['base_sales'], FALSE, _('No base price list'));
-   Forms::textRowEx(_("Add Price from Std Cost:"), 'add_pct', 10, 10, '', NULL, NULL, "%");
+   Forms::numberListRow(_("Use Dimensions:"), 'use_dimension', null, 0, 2);
+  Sales_Type::row(_("Base for auto price calculations:"), 'base_sales', $_POST['base_sales'], false, _('No base price list'));
+   Forms::textRowEx(_("Add Price from Std Cost:"), 'add_pct', 10, 10, '', null, null, "%");
   $curr = GL_Currency::get($_POST['curr_default']);
-   Forms::textRowEx(_("Round to nearest:"), 'round_to', 10, 10, '', NULL, NULL, $curr['hundreds_name']);
-   Forms::checkRow(_("Search Item List"), 'no_item_list', NULL);
-   Forms::checkRow(_("Search Customer List"), 'no_customer_list', NULL);
-   Forms::checkRow(_("Search Supplier List"), 'no_supplier_list', NULL);
+   Forms::textRowEx(_("Round to nearest:"), 'round_to', 10, 10, '', null, null, $curr['hundreds_name']);
+   Forms::checkRow(_("Search Item List"), 'no_item_list', null);
+   Forms::checkRow(_("Search Customer List"), 'no_customer_list', null);
+   Forms::checkRow(_("Search Supplier List"), 'no_supplier_list', null);
   Row::label("", "&nbsp;");
    Forms::checkRow(_("Time Zone on Reports"), 'time_zone', $_POST['time_zone']);
-   Forms::textRowEx(_("Login Timeout:"), 'login_tout', 10, 10, '', NULL, NULL, _('seconds'));
+   Forms::textRowEx(_("Login Timeout:"), 'login_tout', 10, 10, '', null, null, _('seconds'));
   Row::label(_("Version Id"), $_POST['version_id']);
   Table::endOuter(1);
   Forms::hidden('coy_logo', $_POST['coy_logo']);
-  Forms::submitCenter('update', _("Update"), TRUE, '', 'default');
+  Forms::submitCenter('update', _("Update"), true, '', 'default');
   Forms::end(2);
   Page::end();
 

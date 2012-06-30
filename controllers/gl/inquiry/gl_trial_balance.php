@@ -21,10 +21,10 @@
   function gl_inquiry_controls() {
     Forms::start();
     Table::start('tablestyle_noborder');
-     Forms::dateCells(_("From:"), 'TransFromDate', '', NULL, -30);
+     Forms::dateCells(_("From:"), 'TransFromDate', '', null, -30);
      Forms::dateCells(_("To:"), 'TransToDate');
-     Forms::checkCells(_("No zero values"), 'NoZero', NULL);
-     Forms::checkCells(_("Only balances"), 'Balance', NULL);
+     Forms::checkCells(_("No zero values"), 'NoZero', null);
+     Forms::checkCells(_("Only balances"), 'Balance', null);
     Forms::submitCells('Show', _("Show"), '', '', 'default');
     Table::end();
     Forms::end();
@@ -57,9 +57,9 @@
     }
     $begin = Dates::add_days($begin, -1);
     while ($account = DB::fetch($accounts)) {
-      $prev = GL_Trans::get_balance($account["account_code"], 0, 0, $begin, $_POST['TransFromDate'], FALSE, FALSE);
-      $curr = GL_Trans::get_balance($account["account_code"], 0, 0, $_POST['TransFromDate'], $_POST['TransToDate'], TRUE, TRUE);
-      $tot = GL_Trans::get_balance($account["account_code"], 0, 0, $begin, $_POST['TransToDate'], FALSE, TRUE);
+      $prev = GL_Trans::get_balance($account["account_code"], 0, 0, $begin, $_POST['TransFromDate'], false, false);
+      $curr = GL_Trans::get_balance($account["account_code"], 0, 0, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
+      $tot = GL_Trans::get_balance($account["account_code"], 0, 0, $begin, $_POST['TransToDate'], false, true);
       if (Forms::hasPost("NoZero") && !$prev['balance'] && !$curr['balance'] && !$tot['balance']) {
         continue;
       }

@@ -31,7 +31,6 @@
         if ($zp) {
           gzwrite($zp, $fileData);
           gzclose($zp);
-
           return true;
         } else {
           return false;
@@ -87,7 +86,6 @@
         if ($zp = fopen(BACKUP_PATH . $backupfile, "a")) {
           fwrite($zp, $fileData);
           fclose($zp);
-
           return true;
         } else {
           return false;
@@ -98,7 +96,6 @@
         if ($zp = fopen(BACKUP_PATH . $backupfile, "a")) {
           fwrite($zp, $fileData);
           fclose($zp);
-
           return true;
         } else {
           return false;
@@ -116,7 +113,6 @@
     {
       $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
       $i    = (int) floor(log($size, 1024));
-
       return @round($size / pow(1024, $i), 2) . ' ' . $unit[$i];
     }
     /**

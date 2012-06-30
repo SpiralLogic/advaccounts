@@ -36,13 +36,13 @@
      */
     public function render()
     {
-      HTML::tr(TRUE)->td(array('class' => 'label '))->label(array(
+      HTML::tr(true)->td(array('class' => 'label '))->label(array(
                                                                  'content'  => 'City: ',
                                                                  'for'      => $this->city[0]
-                                                            ), FALSE)->td->td(TRUE);
+                                                            ), false)->td->td(true);
       UI::search($this->city[0], array(
                                       'url'      => $this->url . '?city=1',
-                                      'nodiv'    => TRUE,
+                                      'nodiv'    => true,
                                       'set'      => static::$count,
                                       'name'     => $this->city[0],
                                       'size'     => 35,
@@ -50,10 +50,10 @@
                                       'callback' => 'Adv.postcode.fetch'
                                  ));
       HTML::td()->tr;
-      HTML::tr(TRUE)->td(array('class' => 'label'))->label(array(
+      HTML::tr(true)->td(array('class' => 'label'))->label(array(
                                                                 'content'  => 'State: ',
                                                                 'for'      => $this->state[0]
-                                                           ), FALSE)->td->td(TRUE);
+                                                           ), false)->td->td(true);
       HTML::input($this->state[0], array(
                                         'maxlength'  => 35,
                                         'data-set'   => static::$count,
@@ -61,13 +61,13 @@
                                         'value'      => $this->state[1],
                                         'name'       => $this->state[0]
                                    ));
-      HTML::td()->tr()->tr(TRUE)->td(array('class' => 'label'))->label(array(
+      HTML::td()->tr()->tr(true)->td(array('class' => 'label'))->label(array(
                                                                             'content'  => 'Postcode: ',
                                                                             'for'      => $this->postcode[0]
-                                                                       ), FALSE)->td->td(TRUE);
+                                                                       ), false)->td->td(true);
       UI::search($this->postcode[0], array(
                                           'url'      => $this->url . '?postcode=1',
-                                          'nodiv'    => TRUE,
+                                          'nodiv'    => true,
                                           'set'      => static::$count,
                                           'name'     => $this->postcode[0],
                                           'size'     => 35,
@@ -136,7 +136,7 @@ JS;
     protected function initjs()
     {
       $js = Cache::get('js.postcode');
-      if ($js === FALSE) {
+      if ($js === false) {
         $js
                = <<<JS
 						Adv.extend({

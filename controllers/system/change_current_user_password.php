@@ -17,19 +17,19 @@
     if (strlen($_POST['password']) < 4) {
       Event::error(_("The password entered must be at least 4 characters long."));
       JS::set_focus('password');
-      return FALSE;
+      return false;
     }
-    if (strstr($_POST['password'], User::i()->username) != FALSE) {
+    if (strstr($_POST['password'], User::i()->username) != false) {
       Event::error(_("The password cannot contain the user login."));
       JS::set_focus('password');
-      return FALSE;
+      return false;
     }
     if ($_POST['password'] != $_POST['passwordConfirm']) {
       Event::error(_("The passwords entered are not the same."));
       JS::set_focus('password');
-      return FALSE;
+      return false;
     }
-    return TRUE;
+    return true;
   }
 
   if (isset($_POST[UPDATE_ITEM])) {
@@ -45,7 +45,7 @@
           Event::error(_("Password Too Weak!"));
         } else {
           $auth->updatePassword(User::i()->user, $_POST['password']);
-          User::i()->change_password = FALSE;
+          User::i()->change_password = false;
           Event::success(_("Password Changed"));
         }
       }
@@ -63,7 +63,7 @@
   Forms::passwordRow(_("Password:"), 'password', $_POST['password']);
   Forms::passwordRow(_("Repeat password:"), 'passwordConfirm', $_POST['passwordConfirm']);
   Table::end(1);
-  Forms::submitCenter(UPDATE_ITEM, _('Change password'), TRUE, '', 'default');
+  Forms::submitCenter(UPDATE_ITEM, _('Change password'), true, '', 'default');
   Forms::end();
   Page::end();
 

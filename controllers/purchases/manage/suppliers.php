@@ -69,7 +69,7 @@
           0) . ", " . DB::escape($_POST['dimension_id']) . ", " . DB::escape($_POST['dimension2_id']) . ", " . DB::escape($_POST['curr_code']) . ", " . DB::escape($_POST['payment_terms']) . ", " . DB::escape($_POST['payable_account']) . ", " . DB::escape($_POST['purchase_account']) . ", " . DB::escape($_POST['payment_discount_account']) . ", " . DB::escape($_POST['notes']) . ", " . DB::escape($_POST['tax_group_id']) . ")";
         DB::query($sql, "The supplier could not be added");
         $_POST['supplier_id'] = DB::insert_id();
-        $new_supplier = FALSE;
+        $new_supplier = false;
         Event::success(_("A new supplier has been added."));
         Ajax::activate('_page_body');
       }
@@ -99,7 +99,7 @@
       $sql = "DELETE FROM suppliers WHERE supplier_id=" . DB::escape($_POST['supplier_id']);
       DB::query($sql, "check failed");
       unset($_SESSION['supplier_id']);
-      $new_supplier = TRUE;
+      $new_supplier = true;
       Ajax::activate('_page_body');
     } //end if Delete supplier
   }
@@ -108,8 +108,8 @@
     Table::start('tablestyle_noborder pad3');
     //	Table::start('tablestyle_noborder');
     Row::start();
-    Creditor::cells(_("Select a supplier: "), 'supplier_id', NULL, _('New supplier'), TRUE, Forms::hasPost('show_inactive'));
-     Forms::checkCells(_("Show inactive:"), 'show_inactive', NULL, TRUE);
+    Creditor::cells(_("Select a supplier: "), 'supplier_id', null, _('New supplier'), true, Forms::hasPost('show_inactive'));
+     Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
     Row::end();
     Table::end();
     if (Input::post('_show_inactive_update')) {
@@ -166,32 +166,32 @@
     $_POST['inactive'] = 0;
   }
   Table::sectionTitle(_("Name and Contact"));
-   Forms::textRow(_("Supplier Name:"), 'name', NULL, 42, 40);
-   Forms::textRow(_("Supplier Short Name:"), 'ref', NULL, 30, 30);
-   Forms::textRow(_("Contact Person:"), 'contact', NULL, 42, 40);
-   Forms::textRow(_("Phone Number:"), 'phone', NULL, 32, 30);
-   Forms::textRow(_("Secondary Phone Number:"), 'phone2', NULL, 32, 30);
-   Forms::textRow(_("Fax Number:"), 'fax', NULL, 32, 30);
-   Forms::emailRow(_("E-mail:"), 'email', NULL, 35, 55);
-   Forms::linkRow(_("Website:"), 'website', NULL, 35, 55);
-   Forms::textRow(_("Our Customer No:"), 'account_no', NULL, 42, 40);
+   Forms::textRow(_("Supplier Name:"), 'name', null, 42, 40);
+   Forms::textRow(_("Supplier Short Name:"), 'ref', null, 30, 30);
+   Forms::textRow(_("Contact Person:"), 'contact', null, 42, 40);
+   Forms::textRow(_("Phone Number:"), 'phone', null, 32, 30);
+   Forms::textRow(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
+   Forms::textRow(_("Fax Number:"), 'fax', null, 32, 30);
+   Forms::emailRow(_("E-mail:"), 'email', null, 35, 55);
+   Forms::linkRow(_("Website:"), 'website', null, 35, 55);
+   Forms::textRow(_("Our Customer No:"), 'account_no', null, 42, 40);
   Table::sectionTitle(_("Addresses"));
-   Forms::textareaRow(_("Mailing Address:"), 'address', NULL, 35, 5);
-   Forms::textareaRow(_("Physical Address:"), 'address', NULL, 35, 5);
+   Forms::textareaRow(_("Mailing Address:"), 'address', null, 35, 5);
+   Forms::textareaRow(_("Physical Address:"), 'address', null, 35, 5);
   Table::section(2);
   Table::sectionTitle(_("Purchasing"));
-   Forms::textRow(_("GSTNo:"), 'gst_no', NULL, 42, 40);
-   Forms::textRow(_("Bank Name/Account:"), 'bank_account', NULL, 42, 40);
-   Forms::AmountRow(_("Credit Limit:"), 'credit_limit', NULL);
+   Forms::textRow(_("GSTNo:"), 'gst_no', null, 42, 40);
+   Forms::textRow(_("Bank Name/Account:"), 'bank_account', null, 42, 40);
+   Forms::AmountRow(_("Credit Limit:"), 'credit_limit', null);
   if (!$new_supplier) {
     Row::label(_("Supplier's Currency:"), $_POST['curr_code']);
     Forms::hidden('curr_code', $_POST['curr_code']);
   }
   else {
-    GL_Currency::row(_("Supplier's Currency:"), 'curr_code', NULL);
+    GL_Currency::row(_("Supplier's Currency:"), 'curr_code', null);
   }
-  Tax_Groups::row(_("Tax Group:"), 'tax_group_id', NULL);
-  GL_UI::payment_terms_row(_("Payment Terms:"), 'payment_terms', NULL);
+  Tax_Groups::row(_("Tax Group:"), 'tax_group_id', null);
+  GL_UI::payment_terms_row(_("Payment Terms:"), 'payment_terms', null);
   Table::sectionTitle(_("Accounts"));
   GL_UI::all_row(_("Accounts Payable Account:"), 'payable_account', $_POST['payable_account']);
   GL_UI::all_row(_("Purchase Account:"), 'purchase_account', $_POST['purchase_account']);
@@ -199,9 +199,9 @@
   $dim = DB_Company::get_pref('use_dimension');
   if ($dim >= 1) {
     Table::sectionTitle(_("Dimension"));
-    Dimensions::select_row(_("Dimension") . " 1:", 'dimension_id', NULL, TRUE, " ", FALSE, 1);
+    Dimensions::select_row(_("Dimension") . " 1:", 'dimension_id', null, true, " ", false, 1);
     if ($dim > 1) {
-      Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', NULL, TRUE, " ", FALSE, 2);
+      Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', null, true, " ", false, 2);
     }
   }
   if ($dim < 1) {
@@ -211,17 +211,17 @@
     Forms::hidden('dimension2_id', 0);
   }
   Table::sectionTitle(_("General"));
-   Forms::textareaRow(_("General Notes:"), 'notes', NULL, 35, 5);
+   Forms::textareaRow(_("General Notes:"), 'notes', null, 35, 5);
    Forms::recordStatusListRow(_("Supplier status:"), 'inactive');
   Table::endOuter(1);
   Display::div_start('controls');
   if (!$new_supplier) {
-    Forms::submitCenterBegin('submit', _("Update Supplier"), _('Update supplier data'), Input::request('frame') ? TRUE : 'default');
+    Forms::submitCenterBegin('submit', _("Update Supplier"), _('Update supplier data'), Input::request('frame') ? true : 'default');
     Forms::submitReturn('select', Input::post('supplier_id'), _("Select this supplier and return to document entry."));
-    Forms::submitCenterEnd('delete', _("Delete Supplier"), _('Delete supplier data if have been never used'), TRUE);
+    Forms::submitCenterEnd('delete', _("Delete Supplier"), _('Delete supplier data if have been never used'), true);
   }
   else {
-    Forms::submitCenter('submit', _("Add New Supplier Details"), TRUE, '', 'default');
+    Forms::submitCenter('submit', _("Add New Supplier Details"), true, '', 'default');
   }
   Display::div_end();
   Forms::hidden('frame', Input::request('frame'));

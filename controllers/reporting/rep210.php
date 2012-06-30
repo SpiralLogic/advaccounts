@@ -34,7 +34,7 @@
 		AND creditor_trans.trans_no = " . DB::escape($trans_no);
 			$result = DB::query($sql, "The remittance cannot be retrieved");
 			if (DB::num_rows($result) == 0) {
-				return FALSE;
+				return false;
 			}
 			return DB::fetch($result);
 		}
@@ -66,10 +66,10 @@
 			$currency = $_POST['PARAM_2'];
 			$email = $_POST['PARAM_3'];
 			$comments = $_POST['PARAM_4'];
-			if ($from == NULL) {
+			if ($from == null) {
 				$from = 0;
 			}
-			if ($to == NULL) {
+			if ($to == null) {
 				$to = 0;
 			}
 			$dec = User::price_dec();
@@ -84,7 +84,7 @@
 				$rep = new ADVReport(_('REMITTANCE'), "RemittanceBulk", User::page_size());
 				$rep->currency = $cur;
 				$rep->Font();
-				$rep->Info($params, $cols, NULL, $aligns);
+				$rep->Info($params, $cols, null, $aligns);
 			}
 			for ($i = $fno[0]; $i <= $tno[0]; $i++)
 			{
@@ -109,15 +109,15 @@
 						$rep->Font();
 						$rep->title = _('REMITTANCE');
 						$rep->filename = "Remittance" . $i . ".pdf";
-						$rep->Info($params, $cols, NULL, $aligns);
+						$rep->Info($params, $cols, null, $aligns);
 					}
 					else
 					{
 						$rep->title = _('REMITTANCE');
 					}
-					$rep->Header2($myrow, NULL, $myrow, $baccount, ST_SUPPAYMENT);
+					$rep->Header2($myrow, null, $myrow, $baccount, ST_SUPPAYMENT);
 					$result = get_allocations_for_remittance($myrow['supplier_id'], $myrow['type'], $myrow['trans_no']);
-					$linetype = TRUE;
+					$linetype = true;
 					$doctype = ST_SUPPAYMENT;
 					if ($rep->currency != $myrow['curr_code']) {
 						include(REPORTS_PATH . 'includes'.DS.'doctext2.php');
@@ -139,7 +139,7 @@
 						$total_allocated += $myrow2['amt'];
 						$rep->NewLine(1);
 						if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) {
-							$rep->Header2($myrow, NULL, $myrow, $baccount, ST_SUPPAYMENT);
+							$rep->Header2($myrow, null, $myrow, $baccount, ST_SUPPAYMENT);
 						}
 					}
 					$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);

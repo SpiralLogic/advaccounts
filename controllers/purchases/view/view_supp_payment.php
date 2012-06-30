@@ -9,20 +9,20 @@
    **/
 
   JS::open_window(900, 500);
-  Page::start(_($help_context = "View Payment to Supplier"), SA_SUPPTRANSVIEW, TRUE);
+  Page::start(_($help_context = "View Payment to Supplier"), SA_SUPPTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {
     $trans_no = $_GET["trans_no"];
   }
   $receipt           = Creditor_Trans::get($trans_no, ST_SUPPAYMENT);
   $company_currency  = Bank_Currency::for_company();
-  $show_currencies   = FALSE;
-  $show_both_amounts = FALSE;
+  $show_currencies   = false;
+  $show_both_amounts = false;
   if (($receipt['bank_curr_code'] != $company_currency) || ($receipt['SupplierCurrCode'] != $company_currency)) {
-    $show_currencies = TRUE;
+    $show_currencies = true;
   }
   if ($receipt['bank_curr_code'] != $receipt['SupplierCurrCode']) {
-    $show_currencies   = TRUE;
-    $show_both_amounts = TRUE;
+    $show_currencies   = true;
+    $show_both_amounts = true;
   }
   echo "<div class='center'>";
   Display::heading(_("Payment to Supplier") . " #$trans_no");
@@ -59,5 +59,5 @@
   if (Input::get('frame')) {
     return;
   }
-  Page::end(TRUE);
+  Page::end(true);
 

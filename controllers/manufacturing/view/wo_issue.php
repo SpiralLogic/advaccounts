@@ -10,7 +10,7 @@
 
 
   JS::open_window(900, 500);
-  Page::start(_($help_context = "View Work Order Issue"), SA_MANUFTRANSVIEW, TRUE);
+  Page::start(_($help_context = "View Work Order Issue"), SA_MANUFTRANSVIEW, true);
   if ($_GET['trans_no'] != "") {
     $wo_issue_no = $_GET['trans_no'];
   }
@@ -57,7 +57,7 @@
       while ($myrow = DB::fetch($result)) {
 
         Cell::label($myrow["stock_id"] . " - " . $myrow["description"]);
-        Cell::qty($myrow["qty_issued"], FALSE, Item::qty_dec($myrow["stock_id"]));
+        Cell::qty($myrow["qty_issued"], false, Item::qty_dec($myrow["stock_id"]));
         Cell::label($myrow["units"]);
         Row::end();
         ;
@@ -78,7 +78,7 @@
   Display::heading(_("Items for this Issue"));
   display_wo_issue_details($wo_issue_no);
   echo "<br>";
-  Page::end(TRUE);
+  Page::end(true);
 
 
 

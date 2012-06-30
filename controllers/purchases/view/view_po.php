@@ -9,13 +9,13 @@
      **/
 
   JS::open_window(900, 500);
-  Page::start(_($help_context = "View Purchase Order"), SA_SUPPTRANSVIEW, TRUE);
+  Page::start(_($help_context = "View Purchase Order"), SA_SUPPTRANSVIEW, true);
   if (!isset($_GET['trans_no'])) {
     die ("<br>" . _("This page must be called with a purchase order number to review."));
   }
   $order = new Purch_Order($_GET['trans_no']);
   echo "<br>";
-  $order->summary(TRUE);
+  $order->summary(true);
   Table::start('tablestyle width90 pad6');
   Display::heading(_("Line Details"));
   Table::start('tablestyle grid width100');
@@ -24,14 +24,14 @@
   );
   Table::header($th);
   $total = $k = 0;
-  $overdue_items = FALSE;
+  $overdue_items = false;
   foreach ($order->line_items as $stock_item) {
     $line_total = $stock_item->quantity * $stock_item->price * (1 - $stock_item->discount);
     // if overdue and outstanding quantities, then highlight as so
     if (($stock_item->quantity - $stock_item->qty_received > 0) && Dates::date1_greater_date2(Dates::today(), $stock_item->req_del_date)
     ) {
       Row::start("class='overduebg'");
-      $overdue_items = TRUE;
+      $overdue_items = true;
     }
     else {
 
@@ -39,14 +39,14 @@
     Cell::label($stock_item->stock_id);
     Cell::label($stock_item->description);
     $dec = Item::qty_dec($stock_item->stock_id);
-    Cell::qty($stock_item->quantity, FALSE, $dec);
+    Cell::qty($stock_item->quantity, false, $dec);
     Cell::label($stock_item->units);
     Cell::amountDecimal($stock_item->price);
     Cell::percent($stock_item->discount * 100);
     Cell::amount($line_total);
     Cell::label($stock_item->req_del_date);
-    Cell::qty($stock_item->qty_received, FALSE, $dec);
-    Cell::qty($stock_item->qty_inv, FALSE, $dec);
+    Cell::qty($stock_item->qty_received, false, $dec);
+    Cell::qty($stock_item->qty_inv, false, $dec);
     Row::end();
     $total += $line_total;
   }
@@ -97,6 +97,6 @@
   }
   Display::submenu_print(_("Print This Order"), ST_PURCHORDER, $_GET['trans_no'], 'prtopt');
   Display::submenu_option(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrder=" . $_GET['trans_no']);
-  Page::end(TRUE);
+  Page::end(true);
 
 

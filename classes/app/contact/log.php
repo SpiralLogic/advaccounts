@@ -26,7 +26,7 @@
      */
     public static function add($parent_id, $contact_name, $type, $message) {
       if (!isset($contact_id, $contact_name, $type, $message)) {
-        return FALSE;
+        return false;
       }
       $sql = "INSERT INTO " . self::$_table . " (parent_id, contact_name, parent_type,
  message) VALUES (" . DB::escape($parent_id) . "," . DB::escape($contact_name) . "," . DB::escape($type) . ",
@@ -45,7 +45,7 @@
      */
     public static function read($parent_id, $type) {
       if (!isset($parent_id, $type) || !$parent_id) {
-        return FALSE;
+        return false;
       }
       $sql     = "SELECT * FROM " . self::$_table . " WHERE parent_id=" . $parent_id . " AND parent_type=" . DB::escape($type) . " ORDER BY date DESC";
       $result  = DB::query($sql, "Couldn't get contact log entries");

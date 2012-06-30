@@ -71,7 +71,7 @@
      *
      * @return Query_Select
      */
-    public function from($tables = NULL)
+    public function from($tables = null)
     {
       if (is_null($tables)) {
         return $this;
@@ -85,7 +85,7 @@
      *
      * @return Query_Select
      */
-    public function orderby($by = NULL)
+    public function orderby($by = null)
     {
       if (is_null($by)) {
         return $this;
@@ -99,7 +99,7 @@
      *
      * @return Query_Select
      */
-    public function groupby($by = NULL)
+    public function groupby($by = null)
     {
       if (is_null($by)) {
         return $this;
@@ -114,9 +114,9 @@
      *
      * @return Query_Select
      */
-    public function limit($start = 0, $quantity = NULL)
+    public function limit($start = 0, $quantity = null)
     {
-      $this->limit = ($quantity == NULL) ? $start : "$start, $quantity";
+      $this->limit = ($quantity == null) ? $start : "$start, $quantity";
       return $this;
     }
     /**

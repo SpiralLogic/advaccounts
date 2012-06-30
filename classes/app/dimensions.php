@@ -57,7 +57,7 @@
 		due_date='$duedate'
 		WHERE id = " . DB::escape($id);
       DB::query($sql, "could not update dimension");
-      DB_Comments::update(ST_DIMENSION, $id, NULL, $memo_);
+      DB_Comments::update(ST_DIMENSION, $id, null, $memo_);
       DB::commit();
       return $id;
     }
@@ -82,7 +82,7 @@
      *
      * @return DB_Query_Result
      */
-    public static function get($id, $allow_null = FALSE) {
+    public static function get($id, $allow_null = false) {
       $sql    = "SELECT * FROM dimensions	WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "The dimension could not be retrieved");
       if (!$allow_null && DB::num_rows($result) == 0) {
@@ -99,7 +99,7 @@
      *
      * @return string
      */
-    public static function get_string($id, $html = FALSE, $space = ' ') {
+    public static function get_string($id, $html = false, $space = ' ') {
       if ($id <= 0) {
         if ($html) {
           $dim = "&nbsp;";
@@ -109,7 +109,7 @@
         }
       }
       else {
-        $row = Dimensions::get($id, TRUE);
+        $row = Dimensions::get($id, true);
         $dim = $row['reference'] . $space . $row['name'];
       }
       return $dim;
@@ -210,12 +210,12 @@
         Row::start();
         Cell::label("<span class='bold'>" . _("Balance") . "</span>");
         if ($total >= 0) {
-          Cell::amount($total, TRUE);
+          Cell::amount($total, true);
           Cell::label("");
         }
         else {
           Cell::label("");
-          Cell::amount(abs($total), TRUE);
+          Cell::amount(abs($total), true);
         }
         Row::end();
         Table::end();
@@ -235,11 +235,11 @@
      *
      * @return string
      */
-    public static function select($name, $selected_id = NULL, $no_option = FALSE, $showname = ' ', $submit_on_change = FALSE, $showclosed = FALSE, $showtype = 1) {
+    public static function select($name, $selected_id = null, $no_option = false, $showname = ' ', $submit_on_change = false, $showclosed = false, $showtype = 1) {
       $sql     = "SELECT id, CONCAT(reference,' ',name) as ref FROM dimensions";
       $options = array(
         'order'            => 'reference', 'spec_option' => $no_option ? $showname :
-          FALSE, 'spec_id' => 0, 'select_submit' => $submit_on_change, 'async' => FALSE
+          false, 'spec_id' => 0, 'select_submit' => $submit_on_change, 'async' => false
       );
       if (!$showclosed) {
         $options['where'][] = "closed=0";
@@ -261,8 +261,8 @@
      * @param int  $showtype
      * @param bool $submit_on_change
      */
-    public static function cells($label, $name, $selected_id = NULL, $no_option = FALSE, $showname = NULL, $showclosed = FALSE, $showtype = 0, $submit_on_change = FALSE) {
-      if ($label != NULL) {
+    public static function cells($label, $name, $selected_id = null, $no_option = false, $showname = null, $showclosed = false, $showtype = 0, $submit_on_change = false) {
+      if ($label != null) {
         echo "<td>$label</td>\n";
       }
       echo "<td>";
@@ -281,9 +281,9 @@
      * @param int  $showtype
      * @param bool $submit_on_change
      */
-    public static function select_row($label, $name, $selected_id = NULL, $no_option = FALSE, $showname = NULL, $showclosed = FALSE, $showtype = 0, $submit_on_change = FALSE) {
+    public static function select_row($label, $name, $selected_id = null, $no_option = false, $showname = null, $showclosed = false, $showtype = 0, $submit_on_change = false) {
       echo "<tr><td class='label'>$label</td>";
-      Dimensions::cells(NULL, $name, $selected_id, $no_option, $showname, $showclosed, $showtype, $submit_on_change);
+      Dimensions::cells(null, $name, $selected_id, $no_option, $showname, $showclosed, $showtype, $submit_on_change);
       echo "</tr>\n";
     }
     /**
@@ -298,12 +298,12 @@
      *
      * @return null|string
      */
-    public static function trans_view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
+    public static function trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
       if ($type == ST_DIMENSION) {
         $viewer = "dimensions/view/view_dimension.php?trans_no=$trans_no";
       }
       else {
-        return NULL;
+        return null;
       }
       if ($label == "") {
         $label = $trans_no;

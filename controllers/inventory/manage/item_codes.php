@@ -11,7 +11,7 @@
 
   Page::start(_($help_context = "Foreign Item Codes"), SA_FORITEMCODE);
   Validation::check(Validation::PURCHASE_ITEMS, _("There are no inventory items defined in the system."), STOCK_PURCHASED);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     $input_error = 0;
     if ($_POST['stock_id'] == "" || !isset($_POST['stock_id'])) {
@@ -66,7 +66,7 @@
     Session::i()->setGlobal('stock_id',$_POST['stock_id']);
   }
   echo "<div class='center'>" . _("Item:") . "&nbsp;";
-  echo Item_Purchase::select('stock_id', $_POST['stock_id'], FALSE, TRUE, FALSE, FALSE);
+  echo Item_Purchase::select('stock_id', $_POST['stock_id'], false, true, false, false);
   echo "<hr></div>";
   Session::i()->setGlobal('stock_id',$_POST['stock_id']);
   $result = Item_Code::get_defaults($_POST['stock_id']);
@@ -118,10 +118,10 @@
   echo "<br>";
   Table::start('tablestyle2');
   Forms::hidden('code_id', $selected_id);
-   Forms::textRow(_("UPC/EAN code:"), 'item_code', NULL, 20, 21);
-   Forms::qtyRow(_("Quantity:"), 'quantity', NULL, '', $units, $dec);
-   Forms::textRow(_("Description:"), 'description', NULL, 50, 200);
-  Item_Category::row(_("Category:"), 'category_id', NULL);
+   Forms::textRow(_("UPC/EAN code:"), 'item_code', null, 20, 21);
+   Forms::qtyRow(_("Quantity:"), 'quantity', null, '', $units, $dec);
+   Forms::textRow(_("Description:"), 'description', null, 50, 200);
+  Item_Category::row(_("Category:"), 'category_id', null);
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();

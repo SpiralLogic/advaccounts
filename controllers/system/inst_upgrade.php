@@ -18,7 +18,7 @@
   //
   $installers = get_installers();
   if (Input::post('Upgrade')) {
-    $ret = TRUE;
+    $ret = true;
     foreach (Config::get_all('db') as $conn) {
       // connect to database
       if (!($db = db_open($conn))) {
@@ -64,19 +64,19 @@
     // but in fact we should always upgrade all data sets after
     // source upgrade.
     $check = $inst->installed('');
-    if ($check === TRUE) {
+    if ($check === true) {
       Cell::label(_("Installed"));
     }
     else {
       if (!$check) {
-         Forms::checkCells(NULL, 'install_' . $i, 0);
+         Forms::checkCells(null, 'install_' . $i, 0);
       }
       else {
         Cell::label("<span class=redfg>" . sprintf(_("Partially installed (%s)"), $check) . "</span>");
         $partial++;
       }
     }
-     Forms::checkCells(NULL, 'force_' . $i, 0);
+     Forms::checkCells(null, 'force_' . $i, 0);
     Row::end();
   }
   Table::end(1);
@@ -85,7 +85,7 @@
 You have to clean database manually to enable them, or try to perform forced upgrade."));
     Display::br();
   }
-  Forms::submitCenter('Upgrade', _('Upgrade system'), TRUE, _('Save database and perform upgrade'), 'process');
+  Forms::submitCenter('Upgrade', _('Upgrade system'), true, _('Save database and perform upgrade'), 'process');
   Forms::end();
   Page::end();
   /**
@@ -96,7 +96,7 @@ You have to clean database manually to enable them, or try to perform forced upg
    *
    * @return int
    */
-  function check_table($pref, $table, $field = NULL, $properties = NULL) {
+  function check_table($pref, $table, $field = null, $properties = null) {
     $tables = @DB::query("SHOW TABLES LIKE '" . $pref . $table . "'");
     if (!DB::num_rows($tables)) {
       return 1;
@@ -132,8 +132,8 @@ You have to clean database manually to enable them, or try to perform forced upg
     $upgrades = array();
     $datadir = @opendir($patchdir);
     if ($datadir) {
-      while (FALSE !== ($fname = readdir($datadir))) { // check all php files but index.php
-        if (!is_dir($patchdir . $fname) && ($fname != 'index.php') && stristr($fname, '.php') != FALSE
+      while (false !== ($fname = readdir($datadir))) { // check all php files but index.php
+        if (!is_dir($patchdir . $fname) && ($fname != 'index.php') && stristr($fname, '.php') != false
         ) {
           unset($install);
           include_once($patchdir . $fname);
@@ -161,13 +161,13 @@ You have to clean database manually to enable them, or try to perform forced upg
   function upgrade_step($index, $conn) {
     global $installers;
     $inst = $installers[$index];
-    $ret = TRUE;
+    $ret = true;
     $force = Input::post('force_' . $index);
     if ($force || Input::post('install_' . $index)) {
       $state = $inst->installed();
       if (!$state || $force) {
         if (!$inst->pre_check($force)) {
-          return FALSE;
+          return false;
         }
         $sql = $inst->sql;
         if ($sql != '') {
@@ -176,9 +176,9 @@ You have to clean database manually to enable them, or try to perform forced upg
         $ret &= $inst->install($force);
       }
       else {
-        if ($state !== TRUE) {
+        if ($state !== true) {
           Event::error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
-          $ret = FALSE;
+          $ret = false;
         }
       }
     }
@@ -193,10 +193,10 @@ You have to clean database manually to enable them, or try to perform forced upg
   function db_open($conn) {
     $db = mysql_connect($conn["host"], $conn["dbuser"], $conn["dbpassword"]);
     if (!$db) {
-      return FALSE;
+      return false;
     }
     if (!mysql_select_db($conn["dbname"], $db)) {
-      return FALSE;
+      return false;
     }
     return $db;
   }

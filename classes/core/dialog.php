@@ -55,11 +55,7 @@
         $this->setContents($contents);
       }
       $this->options = array(
-        'autoOpen'      => false,
-        'modal'         => false,
-        'width'         => 300,
-        'resizable'     => true,
-        'closeOnEscape' => true
+        'autoOpen'      => false, 'modal'         => false, 'width'         => 300, 'resizable'     => true, 'closeOnEscape' => true
       );
       $this->setOptions($options);
     }

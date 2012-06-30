@@ -89,12 +89,12 @@
       $this->id = $id;
       $this->src_no = $src_no;
       $item_row = Item::get($stock_id);
-      if ($item_row == NULL) {
+      if ($item_row == null) {
         Errors::db_error("invalid item added to order : $stock_id", "");
       }
       $this->mb_flag = $item_row["mb_flag"];
       $this->units = $item_row["units"];
-      if ($description == NULL) {
+      if ($description == null) {
         $this->description = $item_row["long_description"];
       }
       else {

@@ -67,7 +67,6 @@
     {
       $result         = $this->prepared->fetchAll();
       $this->prepared = null;
-
       return $result;
     }
     /**
@@ -78,7 +77,6 @@
     public function one($column = null)
     {
       $result = $this->prepared->fetch();
-
       return ($column !== null && isset($result[$column])) ? $result[$column] : $result;
     }
     /**
@@ -87,7 +85,6 @@
     public function assoc()
     {
       $this->prepared->setFetchMode(\PDO::FETCH_ASSOC);
-
       return $this;
     }
     /**
@@ -96,7 +93,6 @@
     public function num()
     {
       $this->prepared->setFetchMode(\PDO::FETCH_NUM);
-
       return $this;
     }
     /**
@@ -108,7 +104,6 @@
     public function asClassLate($class, $construct = array())
     {
       $this->prepared->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $class, $construct);
-
       return $this;
     }
     /**
@@ -120,7 +115,6 @@
     public function asClass($class, $construct = array())
     {
       $this->prepared->setFetchMode(\PDO::FETCH_CLASS, $class, $construct);
-
       return $this;
     }
     /**
@@ -139,7 +133,6 @@
       $this->prepared->fetch();
       $this->count    = $this->prepared->rowCount();
       $this->prepared = null;
-
       return $this->count;
     }
     /**
@@ -148,7 +141,6 @@
     public function asObject()
     {
       $this->prepared->setFetchMode(\PDO::FETCH_OBJ);
-
       return $this;
     }
     /**
@@ -191,7 +183,6 @@
       if (!$this->current) {
         $this->valid = false;
       }
-
       return $this->valid;
     }
     /**
@@ -229,7 +220,6 @@
       if ($this->cursor === 0) {
         $this->next();
       }
-
       return var_export($this->current(), true);
     }
   }

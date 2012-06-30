@@ -9,7 +9,6 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core\Traits;
-
   /**
 
    */
@@ -23,7 +22,7 @@
      *
      * @return mixed
      */
-      use Singleton;
+    use Singleton;
     /**
      * @static
      *
@@ -34,7 +33,6 @@
      */
     public static function __callStatic($func, $args)
     {
-
       if (method_exists(static::i(), '_' . $func)) {
         return call_user_func_array(array(static::i(), '_' . $func), $args);
       }

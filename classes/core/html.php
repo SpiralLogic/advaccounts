@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   namespace ADV\Core;
   /**
    * @method HTML table()
@@ -31,11 +30,11 @@
     /**
      * @var HTML
      */
-    protected static $_instance = NULL;
+    protected static $_instance = null;
     /**
      * @var bool
      */
-    protected static $_return = FALSE;
+    protected static $_return = false;
     /**
      * @param $func
      * @param $args
@@ -63,12 +62,12 @@
      *
      * @return HTML|string
      */
-    static function setReturn($state = NULL)
+    static function setReturn($state = null)
     {
-      if (static::$_instance === NULL) {
+      if (static::$_instance === null) {
         static::$_instance = new static;
       }
-      static::$_return = ($state === NULL) ? !(static::$_return) : $state;
+      static::$_return = ($state === null) ? !(static::$_return) : $state;
       if (!static::$_return) {
         return ob_get_clean();
       } else {
@@ -86,11 +85,10 @@
      */
     static function __callStatic($func, $args = array())
     {
-      if (static::$_instance === NULL) {
+      if (static::$_instance === null) {
         static::$_instance = new static;
       }
-      (count($args) == 0) ? static::$_instance->_closeTag(($func[0] == '_') ? substr($func, 1) : $func) :
-        static::$_instance->_Builder($func, $args);
+      (count($args) == 0) ? static::$_instance->_closeTag(($func[0] == '_') ? substr($func, 1) : $func) : static::$_instance->_Builder($func, $args);
       return static::$_instance;
     }
     /**
@@ -106,7 +104,9 @@
           $attrs .= ' ' . $key;
           continue;
         }
-        if (is_null($value))continue;
+        if (is_null($value)) {
+          continue;
+        }
         if ($key == 'input') {
           $value = \Forms::prep_value($value);
         }
@@ -129,7 +129,7 @@
      */
     protected function _Builder($func, $args, $attr = array(), $content = '')
     {
-      $open = (is_bool(end($args))) ? array_pop($args) : TRUE;
+      $open = (is_bool(end($args))) ? array_pop($args) : true;
       foreach ($args as $key => $val) {
         if ($key == 0 && is_string($val)) {
           $attr['id'] = $val;
@@ -140,7 +140,7 @@
         }
       }
       if (!$open) {
-        if ($open === FALSE) {
+        if ($open === false) {
           $this->_openTag($func, $attr, $content);
         }
         $this->_closeTag($func);

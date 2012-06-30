@@ -98,10 +98,10 @@
      *
      * @return string
      */
-    public static function select($name, $selected_id = NULL, $spec_opt = FALSE, $submit_on_change = FALSE) {
+    public static function select($name, $selected_id = null, $spec_opt = false, $submit_on_change = false) {
       $sql = "SELECT category_id, description, inactive FROM stock_category";
       return Forms::selectBox($name, $selected_id, $sql, 'category_id', 'description', array(
-        'order' => 'category_id', 'spec_option' => $spec_opt, 'spec_id' => -1, 'select_submit' => $submit_on_change, 'async' => TRUE
+        'order' => 'category_id', 'spec_option' => $spec_opt, 'spec_id' => -1, 'select_submit' => $submit_on_change, 'async' => true
       ));
     }
     /**
@@ -113,8 +113,8 @@
      * @param bool $spec_opt
      * @param bool $submit_on_change
      */
-    public static function cells($label, $name, $selected_id = NULL, $spec_opt = FALSE, $submit_on_change = FALSE) {
-      if ($label != NULL) {
+    public static function cells($label, $name, $selected_id = null, $spec_opt = false, $submit_on_change = false) {
+      if ($label != null) {
         echo "<td>$label</td>\n";
       }
       echo "<td>";
@@ -130,9 +130,9 @@
      * @param bool $spec_opt
      * @param bool $submit_on_change
      */
-    public static function row($label, $name, $selected_id = NULL, $spec_opt = FALSE, $submit_on_change = FALSE) {
+    public static function row($label, $name, $selected_id = null, $spec_opt = false, $submit_on_change = false) {
       echo "<tr><td class='label'>$label</td>";
-      Item_Category::cells(NULL, $name, $selected_id, $spec_opt, $submit_on_change);
+      Item_Category::cells(null, $name, $selected_id, $spec_opt, $submit_on_change);
       echo "</tr>\n";
     }
   }

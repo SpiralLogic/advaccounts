@@ -11,12 +11,12 @@
 
   Page::start(_($help_context = "Inventory Item Where Used Inquiry"), SA_WORKORDERANALYTIC);
   Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
-  Forms::start(FALSE);
+  Forms::start(false);
   if (!Input::post('stock_id')) {
     Session::i()->setGlobal('stock_id',$_POST['stock_id']);
   }
   echo "<div class='center'>" . _("Select an item to display its parent item(s).") . "&nbsp;";
-  echo Item::select('stock_id', $_POST['stock_id'], FALSE, TRUE);
+  echo Item::select('stock_id', $_POST['stock_id'], false, true);
   echo "<hr></div>";
   Session::i()->setGlobal('stock_id',$_POST['stock_id']);
   /**

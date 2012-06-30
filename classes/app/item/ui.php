@@ -20,7 +20,7 @@
      *
      * @return string
      */
-    public static function manufactured($name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE) {
+    public static function manufactured($name, $selected_id = null, $all_option = false, $submit_on_change = false) {
       return Item::select($name, $selected_id, $all_option, $submit_on_change, array('where' => array("mb_flag= '" . STOCK_MANUFACTURE . "'")));
     }
     /**
@@ -32,11 +32,11 @@
      * @param bool $all_option
      * @param bool $submit_on_change
      */
-    public static function manufactured_cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE) {
-      if ($label != NULL) {
+    public static function manufactured_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false) {
+      if ($label != null) {
         echo "<td>$label</td>\n";
       }
-      echo Item_UI::manufactured($name, $selected_id, $all_option, $submit_on_change, array('cells' => TRUE));
+      echo Item_UI::manufactured($name, $selected_id, $all_option, $submit_on_change, array('cells' => true));
       echo "\n";
     }
     /**
@@ -48,9 +48,9 @@
      * @param bool $all_option
      * @param bool $submit_on_change
      */
-    public static function manufactured_row($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE) {
+    public static function manufactured_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false) {
       echo "<tr><td class='label'>$label</td>";
-      Item_UI::manufactured_cells(NULL, $name, $selected_id, $all_option, $submit_on_change);
+      Item_UI::manufactured_cells(null, $name, $selected_id, $all_option, $submit_on_change);
       echo "</tr>\n";
     }
     /**
@@ -65,7 +65,7 @@
      *
      * @return string
      */
-    public static function component($name, $parent_stock_id, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $editkey = FALSE) {
+    public static function component($name, $parent_stock_id, $selected_id = null, $all_option = false, $submit_on_change = false, $editkey = false) {
       return Item::select($name, $selected_id, $all_option, $submit_on_change, array('where' => " stock_id != '$parent_stock_id' "));
     }
     /**
@@ -79,12 +79,12 @@
      * @param bool $submit_on_change
      * @param bool $editkey
      */
-    public static function component_cells($label, $name, $parent_stock_id, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE, $editkey = FALSE) {
-      if ($label != NULL) {
+    public static function component_cells($label, $name, $parent_stock_id, $selected_id = null, $all_option = false, $submit_on_change = false, $editkey = false) {
+      if ($label != null) {
         echo "<td>$label</td>\n";
       }
       echo Item::select($name, $selected_id, $all_option, $submit_on_change, array(
-        'where' => "stock_id != '$parent_stock_id'", 'cells' => TRUE
+        'where' => "stock_id != '$parent_stock_id'", 'cells' => true
       ));
     }
     /**
@@ -97,7 +97,7 @@
      *
      * @return string
      */
-    public static function costable($name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE) {
+    public static function costable($name, $selected_id = null, $all_option = false, $submit_on_change = false) {
       return Item::select($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!='" . STOCK_SERVICE . "'"));
     }
     /**
@@ -109,12 +109,12 @@
      * @param bool $all_option
      * @param bool $submit_on_change
      */
-    public static function costable_cells($label, $name, $selected_id = NULL, $all_option = FALSE, $submit_on_change = FALSE) {
-      if ($label != NULL) {
+    public static function costable_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false) {
+      if ($label != null) {
         echo "<td>$label</td>\n";
       }
       echo Item::select($name, $selected_id, $all_option, $submit_on_change, array(
-        'where' => "mb_flag!='" . STOCK_SERVICE . "'", 'cells' => TRUE, 'description' => ''
+        'where' => "mb_flag!='" . STOCK_SERVICE . "'", 'cells' => true, 'description' => ''
       ));
     }
     /**
@@ -125,15 +125,15 @@
      * @param null $selected_id
      * @param bool $enabled
      */
-    public static function type_row($label, $name, $selected_id = NULL, $enabled = TRUE) {
+    public static function type_row($label, $name, $selected_id = null, $enabled = true) {
       global $stock_types;
       echo "<tr>";
-      if ($label != NULL) {
+      if ($label != null) {
         echo "<td class='label'>$label</td>\n";
       }
       echo "<td>";
       echo Forms::arraySelect($name, $selected_id, $stock_types, array(
-        'select_submit' => TRUE, 'disabled' => !$enabled
+        'select_submit' => true, 'disabled' => !$enabled
       ));
       echo "</td></tr>\n";
     }
@@ -146,10 +146,10 @@
      *
      * @return string
      */
-    public static function type($name, $selected_id = NULL, $enabled = TRUE) {
+    public static function type($name, $selected_id = null, $enabled = true) {
       global $stock_types;
       return Forms::arraySelect($name, $selected_id, $stock_types, array(
-        'select_submit' => TRUE, 'disabled' => !$enabled
+        'select_submit' => true, 'disabled' => !$enabled
       ));
     }
     /**
@@ -164,7 +164,7 @@
      *
      * @return null|string
      */
-    public static function trans_view($type, $trans_no, $label = "", $icon = FALSE, $class = '', $id = '') {
+    public static function trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
       $viewer = "inventory/view/";
       switch ($type) {
         case ST_INVADJUST:
@@ -174,7 +174,7 @@
           $viewer .= "transfer.php";
           break;
         default:
-          return NULL;
+          return null;
       }
       $viewer .= "?trans_no=$trans_no";
       if ($label == "") {
@@ -191,7 +191,7 @@
      *
      * @return string
      */
-    public static function status($stock_id, $description = NULL, $echo = TRUE) {
+    public static function status($stock_id, $description = null, $echo = true) {
       if ($description) //Display::link_params_separate( "/inventory/inquiry/stock_status.php", (User::show_codes()?$stock_id . " - ":"") . $description, "stock_id=$stock_id");
       {
         $preview_str = "<a class='openWindow' target='_blank' href='/inventory/inquiry/stock_status.php?stock_id=$stock_id' >" . (User::show_codes()
@@ -212,7 +212,7 @@
      * @param      $stock_id
      * @param null $description
      */
-    public static function status_cell($stock_id, $description = NULL) {
+    public static function status_cell($stock_id, $description = null) {
       echo "<td>";
       Item_UI::status($stock_id, $description);
       echo "</td>";

@@ -9,7 +9,7 @@
      **/
 
   Page::start(_($help_context = "Payment Terms"), SA_PAYTERMS);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     $inpug_error = 0;
     if (!is_numeric($_POST['DayNumber'])) {
@@ -143,7 +143,7 @@
     }
     Forms::hidden('selected_id', $selected_id);
   }
-   Forms::textRow(_("Terms Description:"), 'terms', NULL, 40, 40);
+   Forms::textRow(_("Terms Description:"), 'terms', null, 40, 40);
    Forms::checkRow(_("Due After A Given No. Of Days:"), 'DaysOrFoll', $day_in_following_month == 0);
   if (!isset($_POST['DayNumber'])) {
     if ($days_before_due != 0) {

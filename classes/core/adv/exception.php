@@ -8,11 +8,10 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   namespace ADV\Core;
   /**
 
    */
-  class Adv_Exception extends \Exception {
-
+  class Adv_Exception extends \Exception
+  {
   }

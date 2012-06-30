@@ -14,7 +14,7 @@
     /**
      * @var null
      */
-    protected static $_instance = NULL;
+    protected static $_instance = null;
     /***
      * @static
      *
@@ -22,11 +22,11 @@
      *
      * @return Creditor_Trans
      */
-    public static function i($reset_session = FALSE) {
+    public static function i($reset_session = false) {
       if (!$reset_session && isset($_SESSION["Creditor_Trans"])) {
         static::$_instance = $_SESSION["Creditor_Trans"];
       }
-      elseif (static::$_instance === NULL) {
+      elseif (static::$_instance === null) {
         static::$_instance = $_SESSION["Creditor_Trans"] = new static;
       }
       return static::$_instance;
@@ -138,7 +138,7 @@
      *
      * @return int
      */
-    public function add_grn_to_trans($grn_item_id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = NULL) {
+    public function add_grn_to_trans($grn_item_id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = null) {
       $this->grn_items[$grn_item_id] = new Purch_GLItem($grn_item_id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount, $exp_price);
       return 1;
     }
@@ -189,10 +189,10 @@
      *
      * @return array|null
      */
-    public function get_taxes($tax_group_id = NULL, $shipping_cost = 0, $gl_codes = TRUE) {
+    public function get_taxes($tax_group_id = null, $shipping_cost = 0, $gl_codes = true) {
       $items  = array();
       $prices = array();
-      if ($tax_group_id == NULL) {
+      if ($tax_group_id == null) {
         $tax_group_id = $this->tax_group_id;
       }
       $tax_group = Tax_Groups::get_items_as_array($tax_group_id);
@@ -201,7 +201,7 @@
         $items[]  = $line->item_code;
         $prices[] = round(($line->this_quantity_inv * $line->taxfree_charge_price($tax_group_id, $tax_group)), User::price_dec(), PHP_ROUND_HALF_EVEN);
       }
-      if ($tax_group_id == NULL) {
+      if ($tax_group_id == null) {
         $tax_group_id = $this->tax_group_id;
       }
       $taxes = Tax::for_items($items, $prices, $shipping_cost, $tax_group_id);
@@ -209,7 +209,7 @@
       if ($gl_codes) {
         foreach ($this->gl_codes as $gl_code) {
           $index = Tax::is_account($gl_code->gl_code);
-          if ($index !== FALSE) {
+          if ($index !== false) {
             $taxes[$index]['Value'] += $gl_code->amount;
           }
         }
@@ -222,14 +222,14 @@
      *
      * @return int
      */
-    public function get_total_charged($tax_group_id = NULL) {
+    public function get_total_charged($tax_group_id = null) {
       $total = 0;
       // preload the taxgroup !
-      if ($tax_group_id != NULL) {
+      if ($tax_group_id != null) {
         $tax_group = Tax_Groups::get_items_as_array($tax_group_id);
       }
       else {
-        $tax_group = NULL;
+        $tax_group = null;
       }
       foreach ($this->grn_items as $line) {
         $total += ($line->this_quantity_inv * $line->taxfree_charge_price($tax_group_id, $tax_group));
@@ -322,12 +322,12 @@
       $result = DB::query($sql, "Cannot retreive a supplier transaction");
       if (DB::num_rows($result) == 0) {
         // can't return nothing
-        Errors::db_error("no supplier trans found for given params", $sql, TRUE);
+        Errors::db_error("no supplier trans found for given params", $sql, true);
         exit;
       }
       if (DB::num_rows($result) > 1) {
         // can't return multiple
-        Errors::db_error("duplicate supplier transactions found for given params", $sql, TRUE);
+        Errors::db_error("duplicate supplier transactions found for given params", $sql, true);
         exit;
       }
       return DB::fetch($result);
@@ -372,16 +372,16 @@
     public static function post_void($type, $type_no) {
       if ($type == ST_SUPPAYMENT) {
         Creditor_Payment::void($type, $type_no);
-        return TRUE;
+        return true;
       }
       if ($type == ST_SUPPINVOICE || $type == ST_SUPPCREDIT) {
         Purch_Invoice::void($type, $type_no);
-        return TRUE;
+        return true;
       }
       if ($type == ST_SUPPRECEIVE) {
         return Purch_GRN::void(ST_SUPPRECEIVE, $type_no);
       }
-      return FALSE;
+      return false;
     }
 
     // add a supplier-related gl transaction

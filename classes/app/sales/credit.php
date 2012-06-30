@@ -63,7 +63,7 @@
       }
       /*Now insert the Credit Note into the debtor_trans table with the allocations as calculated above*/
       // all amounts in debtor's currency
-      $credit_no = Debtor_Trans::write(ST_CUSTCREDIT, $trans_no, $credit_note->customer_id, $credit_note->Branch, $credit_date, $credit_note->reference, $credit_note_total, 0, $items_added_tax, $credit_note->freight_cost, $freight_added_tax, $credit_note->sales_type, $credit_note->order_no, $credit_invoice, $credit_note->ship_via, NULL, $alloc, 0, $credit_note->dimension_id, $credit_note->dimension2_id);
+      $credit_no = Debtor_Trans::write(ST_CUSTCREDIT, $trans_no, $credit_note->customer_id, $credit_note->Branch, $credit_date, $credit_note->reference, $credit_note_total, 0, $items_added_tax, $credit_note->freight_cost, $freight_added_tax, $credit_note->sales_type, $credit_note->order_no, $credit_invoice, $credit_note->ship_via, null, $alloc, 0, $credit_note->dimension_id, $credit_note->dimension2_id);
       // 2008-06-14 extra $alloc, 2008-11-12 dimension_id Joe Hunt
       if ($trans_no == 0) {
         $credit_note->trans_no = array($credit_no => 0);
@@ -71,7 +71,7 @@
       } else {
         DB_Comments::delete(ST_CUSTCREDIT, $credit_no);
         Sales_Allocation::void(ST_CUSTCREDIT, $credit_no, $credit_date);
-        GL_Trans::void(ST_CUSTCREDIT, $credit_no, TRUE);
+        GL_Trans::void(ST_CUSTCREDIT, $credit_no, true);
         Inv_Movement::void(ST_CUSTCREDIT, $credit_no);
         GL_Trans::void_tax_details(ST_CUSTCREDIT, $credit_no);
       }
@@ -233,7 +233,7 @@
         // customer has changed
         Ajax::activate('branch_id');
       }
-      Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', NULL, FALSE, TRUE, TRUE, TRUE);
+      Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true, true);
       //if (($_SESSION['credit_items']->order_no == 0) ||
       //	($order->customer_id != $_POST['customer_id']) ||
       //	($order->Branch != $_POST['branch_id']))
@@ -289,7 +289,7 @@
       if (!isset($_POST['sales_type_id'])) {
         $_POST['sales_type_id'] = $order->sales_type;
       }
-      Sales_Type::row(_("Sales Type"), 'sales_type_id', $_POST['sales_type_id'], TRUE);
+      Sales_Type::row(_("Sales Type"), 'sales_type_id', $_POST['sales_type_id'], true);
       if ($order->sales_type != $_POST['sales_type_id']) {
         $myrow = Sales_Type::get($_POST['sales_type_id']);
         $order->set_sales_type($myrow['id'], $myrow['sales_type'], $myrow['tax_included'], $myrow['factor']);
@@ -302,7 +302,7 @@
       if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "") {
         $_POST['OrderDate'] = $order->document_date;
       }
-       Forms::dateRow(_("Date:"), 'OrderDate', '', $order->trans_no == 0, 0, 0, 0, NULL, TRUE);
+       Forms::dateRow(_("Date:"), 'OrderDate', '', $order->trans_no == 0, 0, 0, 0, null, true);
       if (isset($_POST['_OrderDate_changed'])) {
         if (!Bank_Currency::is_company($order->customer_currency) && (DB_Company::get_base_sales_type() > 0)
         ) {
@@ -313,12 +313,12 @@
       // 2008-11-12 Joe Hunt added dimensions
       $dim = DB_Company::get_pref('use_dimension');
       if ($dim > 0) {
-        Dimensions::select_row(_("Dimension") . ":", 'dimension_id', NULL, TRUE, ' ', FALSE, 1, FALSE);
+        Dimensions::select_row(_("Dimension") . ":", 'dimension_id', null, true, ' ', false, 1, false);
       } else {
         Forms::hidden('dimension_id', 0);
       }
       if ($dim > 1) {
-        Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', NULL, TRUE, ' ', FALSE, 2, FALSE);
+        Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', null, true, ' ', false, 2, false);
       } else {
         Forms::hidden('dimension2_id', 0);
       }
@@ -359,7 +359,7 @@
 
           Cell::label("<a target='_blank' href='" . BASE_URL . "inventory/inquiry/stock_status.php?stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
           Cell::label($line->description, ' class="nowrap"');
-          Cell::qty($line->qty_dispatched, FALSE, Item::qty_dec($line->stock_id));
+          Cell::qty($line->qty_dispatched, false, Item::qty_dec($line->stock_id));
           Cell::label($line->units);
           Cell::amount($line->price);
           Cell::percent($line->discount_percent * 100);
@@ -384,7 +384,7 @@
       }
       Row::start();
       Cell::label(_("Shipping"), "colspan=$colspan class='right bold'");
-       Forms::amountCellsSmall(NULL, 'ChargeFreightCost', Num::price_format(Input::post('ChargeFreightCost',null, 0)));
+       Forms::amountCellsSmall(null, 'ChargeFreightCost', Num::price_format(Input::post('ChargeFreightCost',null, 0)));
       Cell::label('', 'colspan=2');
       Row::end();
       $taxes         = $order->get_taxes($_POST['ChargeFreightCost']);
@@ -418,7 +418,7 @@
         Cell::label($order->line_items[$id]->description, ' class="nowrap"');
         Ajax::activate('items_table');
       } else {
-        Sales_UI::items_cells(NULL, 'stock_id', NULL, FALSE, FALSE, array('description' => $order->line_items[$id]->description));
+        Sales_UI::items_cells(null, 'stock_id', null, false, false, array('description' => $order->line_items[$id]->description));
         if (Forms::isListUpdated('stock_id')) {
           Ajax::activate('price');
           Ajax::activate('qty');
@@ -433,10 +433,10 @@
         // default to the customer's discount %
         $_POST['Disc'] = Num::percent_format($order->default_discount * 100);
       }
-       Forms::qtyCells(NULL, 'qty', $_POST['qty'], NULL, NULL, $dec);
+       Forms::qtyCells(null, 'qty', $_POST['qty'], null, null, $dec);
       Cell::label($_POST['units']);
-       Forms::amountCells(NULL, 'price', NULL);
-       Forms::amountCellsSmall(NULL, 'Disc', Num::percent_format(0), NULL, NULL, User::percent_dec());
+       Forms::amountCells(null, 'price', null);
+       Forms::amountCellsSmall(null, 'Disc', Num::percent_format(0), null, null, User::percent_dec());
       Cell::amount(Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('Disc') / 100));
       if ($id != -1) {
         Forms::buttonCell(Orders::UPDATE_ITEM, _("Update"), _('Confirm changes'), ICON_UPDATE);
@@ -444,7 +444,7 @@
         Forms::hidden('line_no', $line_no);
         JS::set_focus('qty');
       } else {
-        Forms::submitCells(Orders::ADD_LINE, _("Add Item"), "colspan=2", _('Add new item to document'), TRUE);
+        Forms::submitCells(Orders::ADD_LINE, _("Add Item"), "colspan=2", _('Add new item to document'), true);
       }
       Row::end();
     }
@@ -461,7 +461,7 @@
       }
       Display::div_start('options');
       Table::start('tablestyle2');
-      Sales_Credit::row(_("Credit Note Type"), 'CreditType', NULL, TRUE);
+      Sales_Credit::row(_("Credit Note Type"), 'CreditType', null, true);
       if ($_POST['CreditType'] == "Return") {
         /*if the credit note is a return of goods then need to know which location to receive them into */
         if (!isset($_POST['location'])) {
@@ -470,9 +470,9 @@
         Inv_Location::row(_("Items Returned to Location"), 'location');
       } else {
         /* the goods are to be written off to somewhere */
-        GL_UI::all_row(_("Write off the cost of the items to"), 'WriteOffGLCode', NULL);
+        GL_UI::all_row(_("Write off the cost of the items to"), 'WriteOffGLCode', null);
       }
-       Forms::textareaRow(_("Memo"), "CreditText", NULL, 51, 3);
+       Forms::textareaRow(_("Memo"), "CreditText", null, 51, 3);
       echo "</table>";
       Display::div_end();
     }
@@ -484,9 +484,9 @@
      * @param null $selected
      * @param bool $submit_on_change
      */
-    public static function cells($label, $name, $selected = NULL, $submit_on_change = FALSE)
+    public static function cells($label, $name, $selected = null, $submit_on_change = false)
     {
-      if ($label != NULL) {
+      if ($label != null) {
         Cell::label($label);
       }
       echo "<td>\n";
@@ -504,10 +504,10 @@
      * @param null $selected
      * @param bool $submit_on_change
      */
-    public static function row($label, $name, $selected = NULL, $submit_on_change = FALSE)
+    public static function row($label, $name, $selected = null, $submit_on_change = false)
     {
       echo "<tr><td class='label'>$label</td>";
-      Sales_Credit::cells(NULL, $name, $selected, $submit_on_change);
+      Sales_Credit::cells(null, $name, $selected, $submit_on_change);
       echo "</tr>\n";
     }
   }

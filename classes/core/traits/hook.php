@@ -22,6 +22,7 @@
      * @param       $object
      * @param       $function
      * @param array $arguments
+     *
      * @return bool
      */
     public static function registerHook($hook, $object, $function = null, $arguments = array())

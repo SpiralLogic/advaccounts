@@ -43,7 +43,6 @@
      */
     function get($key, $default);
   }
-
   /**
    * @method get($key, $default = false)
    * @method set($key, $value, $expires = 86400)
@@ -187,7 +186,6 @@
      */
     public function _define_constants($name, $constants)
     {
-
       if (function_exists('apc_load_constants')) {
         if (!apc_load_constants($name)) {
           if (is_callable($constants)) {

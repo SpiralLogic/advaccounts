@@ -9,7 +9,7 @@
    **/
 
   Page::start(_($help_context = "Sales Groups"), SA_SALESGROUP);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     $input_error = 0;
     if (strlen($_POST['description']) == 0) {

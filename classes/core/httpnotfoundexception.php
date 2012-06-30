@@ -10,6 +10,6 @@
   /**
 
    */
-  class HttpNotFoundException extends Adv_Exception {
-
+  class HttpNotFoundException extends Adv_Exception
+  {
   }

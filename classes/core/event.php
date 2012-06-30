@@ -43,7 +43,6 @@
       $shutdown_events            = Cache::get(static::$shutdown_events_id);
       Cache::delete(static::$shutdown_events_id);
       if ($shutdown_events) {
-
         while ($msg = array_pop($shutdown_events)) {
           static::handle($msg[0], $msg[1], $msg[2], $msg[3]);
         }
@@ -115,7 +114,6 @@
         $message .= $log ? 1 : 0;
         ($type === E_SUCCESS) ? Errors::handler($type, $message) : trigger_error($message, $type);
       }
-
       return ($type === E_SUCCESS || $type === E_USER_NOTICE);
     }
     /**
@@ -144,12 +142,10 @@
     public static function shutdown()
     {
       Errors::process();
-
       // flush all output buffers (works also with exit inside any div levels)
       while (ob_get_level()) {
         ob_end_flush();
       }
-
       session_write_close();
       fastcgi_finish_request();
       static::$request_finsihed = true;

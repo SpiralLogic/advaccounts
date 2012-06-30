@@ -54,7 +54,7 @@
   }
   JS::open_window(800, 500);
   Page::start(_($help_context = "Attach Documents"), SA_ATTACHDOCUMENT);
-  list($Mode, $selected_id) = Page::simple_mode(TRUE);
+  list($Mode, $selected_id) = Page::simple_mode(true);
   if (isset($_GET['filterType'])) // catch up external links
   {
     $_POST['filterType'] = $_GET['filterType'];
@@ -132,7 +132,7 @@
   if (isset($_POST['filterType'])) {
     display_rows($_POST['filterType']);
   }
-  Forms::start(TRUE);
+  Forms::start(true);
   Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {

@@ -63,7 +63,7 @@
     {
       $result = Inv_Movement::get(ST_INVADJUST, $trans_no);
       if (DB::num_rows($result) == 0) {
-        return NULL;
+        return null;
       }
       return $result;
     }
@@ -86,7 +86,7 @@
       if (Input::post('mb_flag') == STOCK_SERVICE) {
         Errors::db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
       }
-      Purch_GRN::update_average_material_cost(NULL, $stock_id, $standard_cost, $quantity, $date_);
+      Purch_GRN::update_average_material_cost(null, $stock_id, $standard_cost, $quantity, $date_);
       Inv_Movement::add(ST_INVADJUST, $stock_id, $adj_id, $location, $date_, $reference, $quantity, $standard_cost, $type);
       if ($standard_cost > 0) {
         $stock_gl_codes = Item::get_gl_code($stock_id);
@@ -103,12 +103,12 @@
     {
       Table::startOuter('tablestyle2 width70'); // outer table
       Table::section(1);
-      Inv_Location::row(_("Location:"), 'StockLocation', NULL);
+      Inv_Location::row(_("Location:"), 'StockLocation', null);
        Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_INVADJUST));
       Table::section(2, "33%");
-       Forms::dateRow(_("Date:"), 'AdjDate', '', TRUE);
+       Forms::dateRow(_("Date:"), 'AdjDate', '', true);
       Table::section(3, "33%");
-      Inv_Movement::row(_("Detail:"), 'type', NULL);
+      Inv_Movement::row(_("Detail:"), 'type', null);
       if (!isset($_POST['Increase'])) {
         $_POST['Increase'] = 1;
       }
@@ -142,7 +142,7 @@
 
           Item_UI::status_cell($stock_item->stock_id);
           Cell::label($stock_item->description);
-          Cell::qty($stock_item->quantity, FALSE, Item::qty_dec($stock_item->stock_id));
+          Cell::qty($stock_item->quantity, false, Item::qty_dec($stock_item->stock_id));
           Cell::label($stock_item->units);
           Cell::amountDecimal($stock_item->standard_cost);
           Cell::amount($stock_item->standard_cost * $stock_item->quantity);
@@ -183,7 +183,7 @@
         Cell::label($order->line_items[$id]->description, ' class="nowrap"');
         Ajax::activate('items_table');
       } else {
-        Item_UI::costable_cells(NULL, 'stock_id', NULL, FALSE, TRUE);
+        Item_UI::costable_cells(null, 'stock_id', null, false, true);
         if (Forms::isListUpdated('stock_id')) {
           Ajax::activate('units');
           Ajax::activate('qty');
@@ -196,10 +196,10 @@
         $_POST['std_cost'] = Num::price_decimal($item_info["standard_cost"], $dec2);
         $_POST['units']    = $item_info["units"];
       }
-       Forms::qtyCells(NULL, 'qty', $_POST['qty'], NULL, NULL, $dec);
+       Forms::qtyCells(null, 'qty', $_POST['qty'], null, null, $dec);
       Cell::label($_POST['units'], '', 'units');
       // Forms::amountCells(null, 'std_cost', $_POST['std_cost']);
-       Forms::amountCells(NULL, 'std_cost', NULL, NULL, NULL, $dec2);
+       Forms::amountCells(null, 'std_cost', null, null, null, $dec2);
       Cell::label("&nbsp;");
       if ($id != -1) {
         Forms::buttonCell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
@@ -207,7 +207,7 @@
         Forms::hidden('LineNo', $line_no);
         JS::set_focus('qty');
       } else {
-        Forms::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), TRUE);
+        Forms::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
       }
       Row::end();
     }
@@ -215,7 +215,7 @@
     {
       echo "<br>";
       Table::start('center');
-       Forms::textareaRow(_("Memo"), 'memo_', NULL, 50, 3);
+       Forms::textareaRow(_("Memo"), 'memo_', null, 50, 3);
       Table::end(1);
     }
   }

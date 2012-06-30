@@ -7,11 +7,10 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   namespace ADV\Core\DB;
   /**
 
    */
-  class DBInsertException extends DBException {
-
+  class DBInsertException extends DBException
+  {
   }

@@ -10,7 +10,7 @@
 
 
   JS::open_window(800, 500);
-  Page::start(_($help_context = "View Work Order"), SA_MANUFTRANSVIEW, TRUE);
+  Page::start(_($help_context = "View Work Order"), SA_MANUFTRANSVIEW, true);
   $woid = 0;
   if ($_GET['trans_no'] != "") {
     $woid = $_GET['trans_no'];
@@ -19,15 +19,15 @@
   Display::br(1);
   $myrow = WO::get($woid);
   if ($myrow["type"] == WO_ADVANCED) {
-    WO_Cost::display($woid, TRUE);
+    WO_Cost::display($woid, true);
   }
   else {
-    WO_Quick::display($woid, TRUE);
+    WO_Quick::display($woid, true);
   }
   echo "<div class='center'>";
   // display the WO requirements
   Display::br(1);
-  if ($myrow["released"] == FALSE) {
+  if ($myrow["released"] == false) {
     Display::heading(_("BOM for item:") . " " . $myrow["StockItemName"]);
     WO::display_bom($myrow["stock_id"]);
   }
@@ -55,6 +55,6 @@
   }
   echo "<br></div>";
   Display::is_voided(ST_WORKORDER, $woid, _("This work order has been voided."));
-  Page::end(TRUE);
+  Page::end(true);
 
 

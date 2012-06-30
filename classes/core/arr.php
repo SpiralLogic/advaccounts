@@ -11,8 +11,7 @@
   /**
 
    */
-  class Arr
-  {
+  class Arr {
     /**
      * @static
      *

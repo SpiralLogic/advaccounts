@@ -15,7 +15,7 @@
     /**
      * @var null
      */
-    protected static $i = NULL;
+    protected static $i = null;
     /***
      * @static
      * @return
@@ -24,7 +24,7 @@
     {
       global $dic;
       if (!$dic instanceof \ADV\Core\DIC) {
-        if (static::$i === NULL) {
+        if (static::$i === null) {
           static::$i = new static;
         }
         return static::$i;
@@ -34,11 +34,11 @@
       if ($lastNsPos) {
         $class_name = substr($namespaced_class, $lastNsPos + 1);
       }
-      if ($class && static::$i === NULL) {
+      if ($class && static::$i === null) {
         $dic[$class_name] = function() use ($class) { return $class; };
         static::$i        = $class_name;
       }
-      if (static::$i === NULL) {
+      if (static::$i === null) {
         $args             = (func_num_args() > 1) ? array_slice(func_get_args(), 1) : [];
         $dic[$class_name] = function() use ($namespaced_class, $args)
         {

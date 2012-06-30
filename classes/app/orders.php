@@ -95,11 +95,11 @@
      * @internal param $id
      * @return \Purch_Order|\Sales_Order
      */
-    public static function session_get($id = NULL)
+    public static function session_get($id = null)
     {
       if (is_null($id)) {
         if (!isset($_POST['order_id'])) {
-          return FALSE;
+          return false;
         }
         $id = $_POST['order_id'];
       }
@@ -109,7 +109,7 @@
       if (isset($_SESSION['orders'][$type][$id])) {
         return $_SESSION['orders'][$type][$id];
       }
-      return FALSE;
+      return false;
     }
     /**
      * @static
