@@ -180,7 +180,6 @@
   }
   Forms::start();
   Purch_Invoice::header(Creditor_Trans::i());
-  $_POST['supplier_id'] = Session::getGlobal('creditor', '');
   if (Creditor_Trans::i()) {
     Session::removeGlobal('creditor', 'delivery_po');
   }
