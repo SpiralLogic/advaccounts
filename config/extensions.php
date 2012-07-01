@@ -11,7 +11,7 @@
      'tab' - index of the module tab (new for module, or one of standard module names for plugin);
      'title' - is the menu text (for plugin) or new tab name
      'active' - current status of extension
-     'acc_file' - (optional) file name with $security_areas/$security_sections extensions;
+     'acc_file' - (optional) file name with User::i()->Security['areas']/$security_sections extensions;
        related to 'path'
      'access' - security area code in string form
    */

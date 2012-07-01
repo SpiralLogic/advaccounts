@@ -23,6 +23,10 @@
     public static function i($class = null)
     {
       global $dic;
+      if (static::$i !== null) {
+        return $dic->get(static::$i);
+      }
+
       if (!$dic instanceof \ADV\Core\DIC) {
         if (static::$i === null) {
           static::$i = new static;
@@ -35,21 +39,21 @@
         $class_name = substr($namespaced_class, $lastNsPos + 1);
       }
       if ($class && static::$i === null) {
-        $dic[$class_name] = function() use ($class) { return $class; };
-        static::$i        = $class_name;
+        $dic->set($class_name, function() use ($class) { return $class; });
+        static::$i = $class_name;
       }
       if (static::$i === null) {
-        $args             = (func_num_args() > 1) ? array_slice(func_get_args(), 1) : [];
-        $dic[$class_name] = function() use ($namespaced_class, $args)
+        $args = (func_num_args() > 1) ? array_slice(func_get_args(), 1) : [];
+        $dic->set($class_name, function() use ($namespaced_class, $args)
         {
           if (!$args) {
             return new $namespaced_class;
           }
           $ref = new \ReflectionClass($namespaced_class);
           return $ref->newInstanceArgs($args);
-        };
-        static::$i        = $class_name;
+        });
+        static::$i = $class_name;
       }
-      return $dic[static::$i];
+      return $dic->get(static::$i);
     }
   }

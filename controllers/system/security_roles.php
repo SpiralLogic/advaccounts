@@ -65,11 +65,12 @@
     }
     // prevent accidental editor lockup by removing SA_SECROLES
     if (Input::post('role') == User::i()->access) {
-      if (!isset($_POST['Area' . $security_areas[SA_SECROLES][0]]) || !isset($_POST[Section . SS_SETUP])
+      if (!isset($_POST['Area' . User::i()->Security['areas'][SA_SECROLES][0]]) || !isset($_POST[Section . SS_SETUP])
       ) {
         Event::error(_("Access level edition in Company setup section have to be enabled for your account."));
         $input_error = 1;
-        JS::setFocus(!isset($_POST['Section' . SS_SETUP]) ? 'Section' . SS_SETUP : 'Area' . $security_areas[SA_SECROLES][0]);
+        JS::setFocus(!isset($_POST['Section' . SS_SETUP]) ? 'Section' . SS_SETUP :
+                       'Area' . User::i()->Security['areas'][SA_SECROLES][0]);
       }
     }
     if ($input_error == 0) {
@@ -172,7 +173,7 @@
   Table::start('tablestyle grid width40');
   $k   = $j = 0; //row colour counter
   $ext = $sec = $m = -1;
-  foreach (sort_areas($security_areas) as $area => $parms) {
+  foreach (sort_areas(User::i()->Security['areas']) as $area => $parms) {
     // system setup areas are accessable only for site admins i.e.
     // admins of first registered company
     if ((($parms[0] & 0xff00) == SS_SADMIN)) {
@@ -186,7 +187,7 @@
       $m   = $parms[0] & ~0xff;
       //			if(!isset($security_sections[$m]))
       //			 Event::error(sprintf("Bad section %X:", $m));
-      Row::label($security_sections[$m] . ':', Forms::checkbox(null, 'Section' . $m, null, true, _("On/off set of features")), "class='left tablehead'", "class='tablehead'");
+      Row::label(User::i()->Security['sections'][$m] . ':', Forms::checkbox(null, 'Section' . $m, null, true, _("On/off set of features")), "class='left tablehead'", "class='tablehead'");
     }
     if (Forms::hasPost('Section' . $m)) {
       Forms::checkRow($parms[1], 'Area' . $parms[0], null, false, '', "class='center'");

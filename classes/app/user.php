@@ -97,6 +97,7 @@
      */
     public $last_record;
     protected $Session;
+    public $Security;
     /**
      * @static
      *
@@ -172,13 +173,6 @@
     }
     /**
      * @param $company
-     */
-    public function set_company($company)
-    {
-      $this->company = $company;
-    }
-    /**
-     * @param $company
      * @param $loginname
      *
      * @internal param $password
@@ -186,16 +180,17 @@
      */
     public function login($company, $loginname)
     {
-      $this->set_company($company);
-      $this->logged = false;
-      $myrow        = Users::get_for_login($loginname, $_POST['password']);
+      $this->company = $company;
+      $this->logged  = false;
+      $myrow         = Users::get_for_login($loginname, $_POST['password']);
       if ($myrow) {
         if (!$myrow["inactive"]) {
           $this->role_set = array();
           $this->access   = $myrow["role_id"];
           $this->_hash    = $myrow["hash"];
+          $this->Security = new Security();
           // store area codes available for current user role
-          $role = Security::get_role($this->access);
+          $role = $this->Security->get_role($this->access);
           if (!$role) {
             return false;
           }
@@ -218,10 +213,10 @@
         $this->timeout         = DB_Company::get_pref('login_tout');
         $this->salesmanid      = $this->get_salesmanid();
         $this->fireHooks('login');
-        $this->Session->checkUserAgent();
+        $this->Session->_checkUserAgent();
         $this->Session['User'] = $this;
         Event::registerShutdown('Users', 'update_visitdate', [$this->username]);
-        Event::registerShutdown(__CLASS__, 'addLog');
+        Event::registerShutdown($this, '_addLog');
       }
       return $this->logged;
     }
@@ -274,7 +269,6 @@
      */
     public function can_access($page_level)
     {
-      global $security_areas;
       if ($page_level === SA_OPEN) {
         return true;
       }
@@ -282,8 +276,8 @@
         return false;
       }
       $access = false;
-      if (isset($security_areas[$page_level])) {
-        $code   = $security_areas[$page_level][0];
+      if (isset($this->Security['areas'][$page_level])) {
+        $code   = $this->Security['areas'][$page_level][0];
         $access = $code && in_array($code, $this->role_set);
       } elseif (isset($this->access_sections) && in_array($page_level, $this->access_sections)) {
         $access = in_array($page_level, $this->access_sections);

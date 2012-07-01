@@ -99,7 +99,7 @@
     }
     public function display()
     {
-      Extensions::add_access();
+      Extensions::add_access($this->User);
       Input::get('application')  and $this->set_selected($_GET['application']);
       $page = Page::start(_($help_context = "Main Menu"), SA_OPEN, false, true);
       $page->display_application($this->get_selected());

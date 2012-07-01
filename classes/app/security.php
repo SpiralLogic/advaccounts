@@ -13,18 +13,25 @@
    * @property Security i
    * @method Security i
    */
-  class Security
+  class Security implements ArrayAccess
   {
+    public $areas;
+    protected $sections;
+    protected $Config;
     protected $User;
     /** @var Page $page */
     protected $Page;
     /**
 
      */
-    public function __construct(User $user = null, \ADV\App\Page $page = null)
+    public function __construct(User $user = null, \ADV\App\Page $page = null, \ADV\Core\Config $config = null)
     {
-      $this->User = $user ? : User::i();
-      $this->Psge = $page;
+      $this->User   = $user ? : User::i();
+      $this->Config = $config ? : Config::i();
+      $this->Page   = $page;
+
+      $this->areas    = $this->Config->_get('access_levels.areas');
+      $this->sections = $this->Config->_get('access_levels.sections');
     }
     /**
      * @static
@@ -76,7 +83,7 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    public static function get_role($id)
+    public function get_role($id)
     {
       $sql = "SELECT * FROM security_roles WHERE id='$id'";
       $ret = DB::query($sql, "could not retrieve security roles");
@@ -162,11 +169,11 @@
     {
       $sql = "SELECT id, role, inactive FROM security_roles";
       return Forms::selectBox($name, $selected_id, $sql, 'id', 'description', array(
-                                                                                   'spec_option'      => $new_item ?
+                                                                                   'spec_option'                               => $new_item ?
                                                                                      _("New role") : false,
-                                                                                   'spec_id'          => '',
-                                                                                   'select_submit'    => $submit_on_change,
-                                                                                   'show_inactive'    => $show_inactive
+                                                                                   'spec_id'                                   => '',
+                                                                                   'select_submit'                             => $submit_on_change,
+                                                                                   'show_inactive'                             => $show_inactive
                                                                               ));
     }
     /**
@@ -241,5 +248,76 @@
         $value = static::htmlentities((string) $value);
       }
       return $value;
+    }
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Whether a offset exists
+     * @link http://php.net/manual/en/arrayaccess.offsetexists.php
+     *
+     * @param mixed $offset <p>
+     *                      An offset to check for.
+     * </p>
+     *
+     * @return boolean true on success or false on failure.
+     * </p>
+     * <p>
+     *       The return value will be casted to boolean if non-boolean was returned.
+     */
+    public function offsetExists($offset)
+    {
+      // TODO: Implement offsetExists() method.
+    }
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Offset to retrieve
+     * @link http://php.net/manual/en/arrayaccess.offsetget.php
+     *
+     * @param mixed $offset <p>
+     *                      The offset to retrieve.
+     * </p>
+     *
+     * @return mixed Can return all value types.
+     */
+    public function offsetGet($offset)
+    {
+      switch ($offset) {
+        case 'areas':
+          return $this->areas;
+        case 'sections':
+          return $this->sections;
+      }
+    }
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Offset to set
+     * @link http://php.net/manual/en/arrayaccess.offsetset.php
+     *
+     * @param mixed $offset <p>
+     *                      The offset to assign the value to.
+     * </p>
+     * @param mixed $value  <p>
+     *                      The value to set.
+     * </p>
+     *
+     * @return void
+     */
+    public function offsetSet($offset, $value)
+    {
+      return;
+    }
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Offset to unset
+     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
+     *
+     * @param mixed $offset <p>
+     *                      The offset to unset.
+     * </p>
+     *
+     * @return void
+     */
+    public function offsetUnset($offset)
+    {
+      // TODO: Implement offsetUnset() method.
     }
   }

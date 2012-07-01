@@ -1,4 +1,2 @@
 <?php
-  var_dump($dic['Session']);
-  var_dump(Session::i());
-
+  var_dump(\ADV\Core\Config::i()->_getAll('access_levels'));

@@ -394,6 +394,7 @@
     }
     /**
      * @param bool|int|null $id
+     * @param array         $extra
      *
      * @return array|bool
      */
@@ -702,8 +703,18 @@ JS;
      *
      * @return void
      */
-    public static function newselect($value = null)
+    public static function newselect($value = null, $options = array())
     {
+
+      $o = [
+        'row'        => true, //
+        'cell_params'=> '', //
+        'rowspan'    => null, //
+        'label'      => 'Supplier:', //
+        'cells'      => true, //
+        'cell_class' => null
+      ];
+      $o = array_merge($o, $options);
       echo "<tr><td id='customer_id_label' class='label pointer'>Customer: </td><td class='nowrap'>";
       $focus = false;
       if (!$value && Input::post('customer')) {

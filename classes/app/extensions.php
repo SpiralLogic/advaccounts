@@ -32,9 +32,8 @@
      * @static
 
      */
-    public static function add_access()
+    public static function add_access(User $user)
     {
-      global $security_areas, $security_sections;
       $installed_extensions = Config::get('extensions.installed');
       /** @noinspection PhpUnusedLocalVariableInspection */
       foreach ($installed_extensions as $extid => $ext) {
@@ -48,7 +47,7 @@
         foreach ($extsections as $code => $name) {
           $trans[$code] = $scode << 8;
           // reassign section codes
-          $security_sections[$trans[$code] | $extcode] = $name;
+          $user->Security['sections'][$trans[$code] | $extcode] = $name;
           $scode++;
         }
         foreach ($extareas as $code => $area) {
@@ -62,8 +61,8 @@
           }
           // otherwise assign next available
           // area code >99
-          $area[0]               = $extcode | $section | ($acode++);
-          $security_areas[$code] = $area;
+          $area[0]                        = $extcode | $section | ($acode++);
+          $user->Security['areas'][$code] = $area;
         }
       }
     }

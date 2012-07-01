@@ -152,6 +152,7 @@
       $this->sql         = $sql;
       $this->valfield    = $valfield;
       $this->namefield   = $namefield;
+      $this->DB          = \DB::i();
       $options           = (array) $options;
       foreach ($options as $option => $value) {
         if (property_exists($this, $option)) {
@@ -222,7 +223,7 @@
       $lastcat  = null;
       $edit     = false;
       if ($result = $this->executeSQL()) {
-        while ($row = DB::fetch($result)) {
+        while ($row = $this->DB->_fetch($result)) {
           $value = $row[0];
           $descr = $this->format == null ? $row[1] : call_user_func($this->format, $row);
           $sel   = '';
@@ -257,7 +258,7 @@
           }
           $selector .= "<option $sel $optclass value='$value'>$descr</option>\n";
         }
-        DB::freeResult($result);
+        $this->DB->_freeResult($result);
       }
       // Prepend special option.
       if ($this->spec_option !== false) { // if special option used - add it
@@ -363,7 +364,7 @@
                 }
                 $search_fields = $this->search;
                 foreach ($search_fields as $i => $s) {
-                  $search_fields[$i] = $s . ' LIKE ' . DB::escape("%$text%");
+                  $search_fields[$i] = $s . ' LIKE ' . $this->DB->_escape("%$text%");
                 }
                 $this->where[] = '(' . implode($search_fields, ' OR ') . ')';
               }
@@ -396,7 +397,7 @@
      */
     private function executeSQL()
     {
-      return DB::query($this->sql);
+      return $this->DB->_query($this->sql);
     }
     /**
      * @param $result
@@ -405,6 +406,6 @@
      */
     private function getNext($result)
     {
-      return DB::fetch($result);
+      return $this->DB->_fetch($result);
     }
   }

@@ -22,8 +22,8 @@
   }
   Table::start('tablestyle_noborder');
   Row::start();
-  Forms::refCells(_("Ref"), 'reference', '', null, '', true);
-  Debtor::cells(_("Select a customer: "), 'customer_id', null, true);
+  Debtor::newselect();
+  Forms::refCells(_("#"), 'reference', '', null, '', true);
   Forms::dateCells(_("From:"), 'TransAfterDate', '', null, -30);
   Forms::dateCells(_("To:"), 'TransToDate', '', null, 1);
   if (!isset($_POST['filterType'])) {
@@ -153,38 +153,38 @@
   }
   DB::query("set @bal:=0");
   $cols = array(
-    _("Type")            => array(
+    _("Type")               => array(
       'fun'    => function ($dummy, $type)
       {
         global $systypes_array;
         return $systypes_array[$type];
       }, 'ord' => ''
     ),
-    _("#")               => array(
+    _("#")                  => array(
       'fun'    => function ($trans)
       {
         return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
       }, 'ord' => ''
     ),
-    _("Order")           => array(
+    _("Order")              => array(
       'fun' => function ($row)
       {
         return $row['order_'] > 0 ? Debtor::trans_view(ST_SALESORDER, $row['order_']) : "";
       }
     ),
-    _("Reference")       => array('ord' => ''),
-    _("Date")            => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
-    _("Due Date")        => array(
+    _("Reference")          => array('ord' => ''),
+    _("Date")               => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
+    _("Due Date")           => array(
       'type' => 'date', 'fun' => function ($row)
       {
         return $row["type"] == ST_SALESINVOICE ? $row["due_date"] : '';
       }
     ),
-    _("Customer")        => array('ord' => 'asc'),
+    _("Customer")           => array('ord' => 'asc'),
     array('type' => 'skip'),
-    _("Branch")          => array('ord' => ''),
-    _("Currency")        => array('align' => 'center', 'type' => 'skip'),
-    _("Debit")           => array(
+    _("Branch")             => array('ord' => ''),
+    _("Currency")           => array('align' => 'center', 'type' => 'skip'),
+    _("Debit")              => array(
       'align' => 'right', 'fun' => function ($row)
       {
         $value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ?
@@ -192,7 +192,7 @@
         return $value >= 0 ? Num::priceFormat($value) : '';
       }
     ),
-    _("Credit")          => array(
+    _("Credit")             => array(
       'align' => 'right', 'insert' => true, 'fun' => function ($row)
       {
         $value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_BANKDEPOSIT) ?
@@ -201,7 +201,7 @@
       }
     ),
     array('type' => 'skip'),
-    _("RB")              => array('align' => 'right', 'type' => 'amount'),
+    _("RB")                 => array('align' => 'right', 'type' => 'amount'),
     array(
       'insert' => true, 'fun' => function ($row)
     {
