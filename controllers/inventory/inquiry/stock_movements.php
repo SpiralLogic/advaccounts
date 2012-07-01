@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::open_window(800, 500);
+  JS::openWindow(800, 500);
   Page::start(_($help_context = "Inventory Item Movement"), SA_ITEMSTRANSVIEW);
   Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
   if (Input::post('ShowMoves')) {
@@ -19,20 +19,21 @@
   }
   Forms::start();
   if (!Input::post('stock_id')) {
-    Session::i()->setGlobal('stock_id', $_POST['stock_id']);
+    Session::setGlobal('stock_id', $_POST['stock_id']);
   }
   Table::start('tablestyle_noborder');
   Item::cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], false, true, false);
   Inv_Location::cells(_("From Location:"), 'StockLocation', null);
-   Forms::dateCells(_("From:"), 'AfterDate', '', null, -30);
-   Forms::dateCells(_("To:"), 'BeforeDate');
+  Forms::dateCells(_("From:"), 'AfterDate', '', null, -30);
+  Forms::dateCells(_("To:"), 'BeforeDate');
   Forms::submitCells('ShowMoves', _("Show Movements"), '', _('Refresh Inquiry'), 'default');
   Table::end();
   Forms::end();
-  Session::i()->setGlobal('stock_id', $_POST['stock_id']);
-  $before_date = Dates::date2sql($_POST['BeforeDate']);
-  $after_date  = Dates::date2sql($_POST['AfterDate']);
-  $sql         = "SELECT type, trans_no, tran_date, person_id, qty, reference
+  Session::setGlobal('stock_id', $_POST['stock_id']);
+  $before_date = Dates::dateToSql($_POST['BeforeDate']);
+  $after_date  = Dates::dateToSql($_POST['AfterDate']);
+  $sql
+               = "SELECT type, trans_no, tran_date, person_id, qty, reference
     FROM stock_moves
     WHERE loc_code=" . DB::escape($_POST['StockLocation']) . "
     AND tran_date >= '" . $after_date . "'
@@ -49,7 +50,7 @@
     AND loc_code=" . DB::escape($_POST['StockLocation']) . "
     AND tran_date < '" . $after_date . "'";
   $before_qty     = DB::query($sql, "The starting quantity on hand could not be calculated");
-  $before_qty_row = DB::fetch_row($before_qty);
+  $before_qty_row = DB::fetchRow($before_qty);
   $after_qty      = $before_qty = $before_qty_row[0];
   if (!isset($before_qty_row[0])) {
     $after_qty = $before_qty = 0;
@@ -66,7 +67,7 @@
   $total_out = 0;
   while ($myrow = DB::fetch($result)) {
 
-    $trandate  = Dates::sql2date($myrow["tran_date"]);
+    $trandate  = Dates::sqlToDate($myrow["tran_date"]);
     $type_name = $systypes_array[$myrow["type"]];
     if ($myrow["qty"] > 0) {
       $quantity_formatted = Num::format($myrow["qty"], $dec);

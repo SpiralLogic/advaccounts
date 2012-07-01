@@ -79,18 +79,18 @@
         $this->rawXML = $xml;
       }
       $this->isError = false;
-      if (!$this->parse_init()) {
+      if (!$this->parseInit()) {
         return false;
       }
       $this->index  = 0;
-      $this->parsed = $this->parse_recurse();
+      $this->parsed = $this->parseRecurse();
       $this->status = 'parsing complete';
       return $this->parsed;
     }
     /**
      * @return array
      */
-    public function parse_recurse()
+    public function parseRecurse()
     {
       $found    = array();
       $tagCount = array();
@@ -117,7 +117,7 @@
         }
         switch ($tag['type']) {
           case 'open':
-            $tagRef = $this->parse_recurse();
+            $tagRef = $this->parseRecurse();
             if (isset($tag['attributes'])) {
               $tagRef[$this->attribKey] = $tag['attributes'];
             }
@@ -146,7 +146,7 @@
     /**
      * @return bool
      */
-    public function parse_init()
+    public function parseInit()
     {
       $this->parser = xml_parser_create();
       $parser       = $this->parser;

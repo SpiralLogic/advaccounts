@@ -32,17 +32,17 @@
     }
     /**
      * @covers ADV\Core\Num::price_format
-     * @todo   Implement testPrice_format().
+     * @todo   Implement testpriceFormat().
      */
-    public function testPrice_format()
+    public function testpriceFormat()
     {
-      $actual   = $this->object->_price_format('25.563434');
+      $actual   = $this->object->_priceFormat('25.563434');
       $expected = ('25.56');
       $this->assertEquals($expected, $actual);
-      $actual   = $this->object->_price_format('25');
+      $actual   = $this->object->_priceFormat('25');
       $expected = ('25.00');
       $this->assertEquals($expected, $actual);
-      $actual   = $this->object->_price_format(0);
+      $actual   = $this->object->_priceFormat(0);
       $expected = '0.00';
       $this->assertSame($expected, $actual);
     }
@@ -50,7 +50,7 @@
      * @covers ADV\Core\Num::round
      * @todo   Implement testRound().
      */
-    public function testRound()
+    public function test_Round()
     {
       $actual   = $this->object->_round('25.563434', 2);
       $expected = '25.56';
@@ -67,9 +67,9 @@
     }
     /**
      * @covers  ADV\Core\Num::format
-     * @depends testRound
+     * @depends test_Round
      */
-    public function testFormat()
+    public function test_Format()
     {
       $actual   = $this->object->_format(25.56, 4);
       $expected = '25.5600';
@@ -85,35 +85,33 @@
       $this->assertEquals($expected, $actual);
     }
     /**
-     * @covers  ADV\Core\Num::price_decimal
-     * @depends testFormat
+     * @covers  ADV\Core\Num::_priceDecimal
+     * @depends test_Format
      */
-    public function testPrice_decimal()
+    public function test_priceDecimal()
     {
-      $actual   = $this->object->_price_decimal(25.56, 4);
+      $actual   = $this->object->_priceDecimal(25.56, 4);
       $expected = '25.5600';
       $this->assertEquals($expected, $actual);
-      $actual   = $this->object->_price_decimal(25.534534, 4);
+      $actual   = $this->object->_priceDecimal(25.534534, 4);
       $expected = '25.534534';
       $this->assertEquals($expected, $actual);
-      $actual   = $this->object->_price_decimal(25, 2);
+      $actual   = $this->object->_priceDecimal(25, 2);
       $expected = '25.00';
       $this->assertEquals($expected, $actual);
     }
     /**
-     * @covers ADV\Core\Num::exrate_format
-     * @todo   Implement testExrate_format().
+     * @covers ADV\Core\Num::_exrateFormat
      */
-    public function testExrate_format()
+    public function test_exrateFormat()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Num::percent_format
-     * @todo   Implement testPercent_format().
+     * @covers ADV\Core\Num::_percentFormat
      */
-    public function testPercent_format()
+    public function test_percentFormat()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');
@@ -121,32 +119,32 @@
     /**
      * @covers ADV\Core\Num::_round_to_nearest_cents
      */
-    public function test_round_to_nearest_cents()
+    public function test_toNearestCents()
     {
-      $actual   = $this->object->_round_to_nearest_cents(1111.125, 100);
+      $actual   = $this->object->_toNearestCents(1111.125, 100);
       $expected = '1112';
       //$this->assertEquals($expected, $actual);
-      $actual   = $this->object->_round_to_nearest_cents(231.56, 10);
+      $actual   = $this->object->_toNearestCents(231.56, 10);
       $expected = '231.60';
       $this->assertEquals($expected, $actual);
-      $actual   = $this->object->_round_to_nearest_cents(231.1112, 1);
+      $actual   = $this->object->_toNearestCents(231.1112, 1);
       $expected = '231.12';
       $this->assertEquals($expected, $actual);
     }
     /**
      * @covers ADV\Core\Num::to_words
-     * @todo   Implement testTo_words().
+     * @todo   Implement testtoWords().
      */
-    public function testTo_words()
+    public function test_toWords()
     {
       // Remove the following lines when you implement this test.
-      $actual   = $this->object->_to_words(231);
+      $actual   = $this->object->_toWords(231);
       $expected = 'Two Hundred and Thirty-One';
       $this->assertEquals($expected, $actual);
-      $actual   = $this->object->_to_words(4249);
+      $actual   = $this->object->_toWords(4249);
       $expected = 'Four Thousand Two Hundred and Fourty-Nine';
       $this->assertEquals($expected, $actual);
-      $actual   = $this->object->_to_words(4249.22);
+      $actual   = $this->object->_toWords(4249.22);
       $expected = 'Four Thousand Two Hundred and Fourty-Nine';
       $this->assertEquals($expected, $actual);
     }

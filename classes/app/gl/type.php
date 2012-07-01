@@ -53,7 +53,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($all = false, $class_id = false, $parent = false)
+    public static function getAll($all = false, $class_id = false, $parent = false)
     {
       $sql = "SELECT * FROM chart_types";
       if (!$all) {
@@ -96,7 +96,7 @@
     {
       $sql    = "SELECT name FROM chart_types WHERE id = " . DB::escape($id);
       $result = DB::query($sql, "could not get account type");
-      $row    = DB::fetch_row($result);
+      $row    = DB::fetchRow($result);
 
       return $row[0];
     }
@@ -125,10 +125,10 @@
       $sql = "SELECT id, name FROM chart_types";
 
       return Forms::selectBox($name, $selected_id, $sql, 'id', 'name', array(
-                                                                      'order'       => 'id',
-                                                                      'spec_option' => $all_option,
-                                                                      'spec_id'     => $all_option_numeric ? 0 : ALL_TEXT
-                                                                 ));
+                                                                            'order'       => 'id',
+                                                                            'spec_option' => $all_option,
+                                                                            'spec_id'     => $all_option_numeric ? 0 : ALL_TEXT
+                                                                       ));
     }
     /**
      * @static

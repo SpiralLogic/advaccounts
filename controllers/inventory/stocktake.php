@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::open_window(800, 500);
+  JS::openWindow(800, 500);
   Page::start(_($help_context = "Item Stocktake Note"), SA_INVENTORYADJUSTMENT);
   Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system which can be adjusted (Purchased or Manufactured)."), STOCK_SERVICE);
   Validation::check(Validation::MOVEMENT_TYPES, _("There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."));
@@ -27,7 +27,7 @@
       $line->quantity -= $current_stock['qty'];
     }
     $trans_no = Inv_Adjustment::add($_SESSION['adj_items']->line_items, $_POST['StockLocation'], $_POST['AdjDate'], $_POST['type'], $_POST['Increase'], $_POST['ref'], $_POST['memo_']);
-    Dates::new_doc_date($_POST['AdjDate']);
+    Dates::newDocDate($_POST['AdjDate']);
     $_SESSION['adj_items']->clear_items();
     unset($_SESSION['adj_items']);
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$trans_no");
@@ -65,13 +65,13 @@
   {
     if (!Validation::post_num('qty', 0)) {
       Event::error(_("The quantity entered is negative or invalid."));
-      JS::set_focus('qty');
+      JS::setFocus('qty');
 
       return false;
     }
     if (!Validation::post_num('std_cost', 0)) {
       Event::error(_("The entered standard cost is negative or invalid."));
-      JS::set_focus('std_cost');
+      JS::setFocus('std_cost');
 
       return false;
     }
@@ -113,9 +113,9 @@
       unset ($_SESSION['adj_items']);
     }
     $_SESSION['adj_items'] = new Item_Order(ST_INVADJUST);
-    $_POST['AdjDate']      = Dates::new_doc_date();
-    if (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
-      $_POST['AdjDate'] = Dates::end_fiscalyear();
+    $_POST['AdjDate']      = Dates::newDocDate();
+    if (!Dates::isDateInFiscalYear($_POST['AdjDate'])) {
+      $_POST['AdjDate'] = Dates::endFiscalYear();
     }
     $_SESSION['adj_items']->tran_date = $_POST['AdjDate'];
   }
@@ -128,27 +128,27 @@
     $adj = &$_SESSION['adj_items'];
     if (count($adj->line_items) == 0) {
       Event::error(_("You must enter at least one non empty item line."));
-      JS::set_focus('stock_id');
+      JS::setFocus('stock_id');
 
       return false;
     }
     if (!Ref::is_valid($_POST['ref'])) {
       Event::error(_("You must enter a reference."));
-      JS::set_focus('ref');
+      JS::setFocus('ref');
 
       return false;
     }
     if (!Ref::is_new($_POST['ref'], ST_INVADJUST)) {
       $_POST['ref'] = Ref::get_next(ST_INVADJUST);
     }
-    if (!Dates::is_date($_POST['AdjDate'])) {
+    if (!Dates::isDate($_POST['AdjDate'])) {
       Event::error(_("The entered date for the adjustment is invalid."));
-      JS::set_focus('AdjDate');
+      JS::setFocus('AdjDate');
 
       return false;
-    } elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
+    } elseif (!Dates::isDateInFiscalYear($_POST['AdjDate'])) {
       Event::error(_("The entered date is not in fiscal year."));
-      JS::set_focus('AdjDate');
+      JS::setFocus('AdjDate');
 
       return false;
     }

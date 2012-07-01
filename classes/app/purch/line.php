@@ -127,7 +127,7 @@
       }
       DB::query($sql, $err_msg);
 
-      return DB::insert_id();
+      return DB::insertId();
     }
     /**
      * @static

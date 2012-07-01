@@ -19,7 +19,7 @@
         Event::success(_("The selected user has been updated."));
       } else {
         Users::add($_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], Forms::hasPost('rep_popup'), $_POST['pos']);
-        Users::update_display_prefs(DB::insert_id(), User::price_dec(), User::qty_dec(), User::exrate_dec(), User::percent_dec(), User::show_gl(), User::show_codes(), User::date_format(), User::date_sep(), User::prefs()->tho_sep, User::prefs()->dec_sep, User::theme(), User::page_size(), User::hints(), $_POST['profile'], Forms::hasPost('rep_popup'), User::query_size(), User::graphic_links(), $_POST['language'], User::sticky_doc_date(), User::startup_tab());
+        Users::update_display_prefs(DB::insertId(), User::price_dec(), User::qty_dec(), User::exrate_dec(), User::percent_dec(), User::show_gl(), User::show_codes(), User::date_format(), User::date_sep(), User::prefs()->tho_sep, User::prefs()->dec_sep, User::theme(), User::page_size(), User::hints(), $_POST['profile'], Forms::hasPost('rep_popup'), User::query_size(), User::graphic_links(), $_POST['language'], User::sticky_doc_date(), User::startup_tab());
         Event::success(_("A new user has been added."));
       }
       $Mode = MODE_RESET;
@@ -36,7 +36,7 @@
     unset($_POST); // clean all input fields
     $_POST['show_inactive'] = $sav;
   }
-  $result = Users::get_all(Forms::hasPost('show_inactive'));
+  $result = Users::getAll(Forms::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid');
   $th = array(
@@ -46,7 +46,7 @@
   Table::header($th);
   $k = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
-    $last_visit_date = Dates::sql2date($myrow["last_visit_date"]);
+    $last_visit_date = Dates::sqlToDate($myrow["last_visit_date"]);
     /*The security_headings array is defined in config.php */
     $not_me = strcasecmp($myrow["user_id"], User::i()->username);
     Cell::label($myrow["user_id"]);
@@ -125,7 +125,7 @@
   {
     if (strlen($_POST['user_id']) < 4) {
       Event::error(_("The user login entered must be at least 4 characters long."));
-      JS::set_focus('user_id');
+      JS::setFocus('user_id');
 
       return false;
     }

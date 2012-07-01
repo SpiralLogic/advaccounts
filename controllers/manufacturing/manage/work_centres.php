@@ -15,7 +15,7 @@
     if (strlen($_POST['name']) == 0) {
       $input_error = 1;
       Event::error(_("The work centre name cannot be empty."));
-      JS::set_focus('name');
+      JS::setFocus('name');
     }
     if ($input_error != 1) {
       if ($selected_id != -1) {
@@ -37,7 +37,7 @@
   {
     $sql    = "SELECT COUNT(*) FROM bom WHERE workcentre_added=" . DB::escape($selected_id);
     $result = DB::query($sql, "check can delete work centre");
-    $myrow  = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this work centre because BOMs have been created referring to it."));
 
@@ -45,7 +45,7 @@
     }
     $sql    = "SELECT COUNT(*) FROM wo_requirements WHERE workcentre=" . DB::escape($selected_id);
     $result = DB::query($sql, "check can delete work centre");
-    $myrow  = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this work centre because work order requirements have been created referring to it."));
 
@@ -68,22 +68,22 @@
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = WO_WorkCentre::get_all(Forms::hasPost('show_inactive'));
+  $result = WO_WorkCentre::getAll(Forms::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid width50');
   $th = array(_("Name"), _("description"), "", "");
-   Forms::inactiveControlCol($th);
+  Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
     Cell::label($myrow["name"]);
     Cell::label($myrow["description"]);
-     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'workcentres', 'id');
+    Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'workcentres', 'id');
     Forms::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
     Row::end();
   }
-   Forms::inactiveControlRow($th);
+  Forms::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != -1) {
@@ -95,8 +95,8 @@
     }
     Forms::hidden('selected_id', $selected_id);
   }
-   Forms::textRowEx(_("Name:"), 'name', 40);
-   Forms::textRowEx(_("Description:"), 'description', 50);
+  Forms::textRowEx(_("Name:"), 'name', 40);
+  Forms::textRowEx(_("Description:"), 'description', 50);
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();

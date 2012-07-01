@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::open_window(800, 500);
+  JS::openWindow(800, 500);
   Page::start(_($help_context = "Issue Items to Work Order"), SA_MANUFISSUE);
   if (isset($_GET[ADDED_ID])) {
     Event::success(_("The work order issue has been entered."));
@@ -31,20 +31,20 @@
    */
   function can_process()
   {
-    if (!Dates::is_date($_POST['date_'])) {
+    if (!Dates::isDate($_POST['date_'])) {
       Event::error(_("The entered date for the issue is invalid."));
-      JS::set_focus('date_');
+      JS::setFocus('date_');
 
       return false;
-    } elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
+    } elseif (!Dates::isDateInFiscalYear($_POST['date_'])) {
       Event::error(_("The entered date is not in fiscal year."));
-      JS::set_focus('date_');
+      JS::setFocus('date_');
 
       return false;
     }
     if (!Ref::is_valid($_POST['ref'])) {
       Event::error(_("You must enter a reference."));
-      JS::set_focus('ref');
+      JS::setFocus('ref');
 
       return false;
     }
@@ -77,13 +77,13 @@
   {
     if (!Validation::post_num('qty', 0)) {
       Event::error(_("The quantity entered is negative or invalid."));
-      JS::set_focus('qty');
+      JS::setFocus('qty');
 
       return false;
     }
     if (!Validation::post_num('std_cost', 0)) {
       Event::error(_("The entered standard cost is negative or invalid."));
-      JS::set_focus('std_cost');
+      JS::setFocus('std_cost');
 
       return false;
     }

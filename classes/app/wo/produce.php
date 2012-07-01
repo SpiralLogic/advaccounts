@@ -32,12 +32,12 @@
         DB::cancel();
         exit;
       }
-      $date = Dates::date2sql($date_);
+      $date = Dates::dateToSql($date_);
       $sql
             = "INSERT INTO wo_manufacture (workorder_id, reference, quantity, date_)
         VALUES (" . DB::escape($woid) . ", " . DB::escape($ref) . ", " . DB::escape($quantity) . ", '$date')";
       DB::query($sql, "A work order manufacture could not be added");
-      $id = DB::insert_id();
+      $id = DB::insertId();
       // -------------------------------------------------------------------------
       WO_Quick::costs($woid, $details["stock_id"], $quantity, $date_, $id);
       // -------------------------------------------------------------------------
@@ -78,7 +78,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($woid)
+    public static function getAll($woid)
     {
       $sql = "SELECT * FROM wo_manufacture WHERE workorder_id=" . DB::escape($woid) . " ORDER BY id";
 
@@ -96,7 +96,7 @@
       $sql    = "SELECT id FROM wo_manufacture WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "Cannot retreive a wo production");
 
-      return (DB::num_rows($result) > 0);
+      return (DB::numRows($result) > 0);
     }
     /**
      * @static
@@ -113,7 +113,7 @@
       $row = WO_Produce::get($type_no);
       // deduct the quantity of this production from the parent work order
       WO::update_finished_quantity($row["workorder_id"], -$row["quantity"]);
-      WO_Quick::costs($row['workorder_id'], $row['stock_id'], -$row['quantity'], Dates::sql2date($row['date_']), $type_no);
+      WO_Quick::costs($row['workorder_id'], $row['stock_id'], -$row['quantity'], Dates::sqlToDate($row['date_']), $type_no);
       // clear the production record
       $sql = "UPDATE wo_manufacture SET quantity=0 WHERE id=" . DB::escape($type_no);
       DB::query($sql, "Cannot void a wo production");
@@ -130,8 +130,8 @@
      */
     public static function display($woid)
     {
-      $result = WO_Produce::get_all($woid);
-      if (DB::num_rows($result) == 0) {
+      $result = WO_Produce::getAll($woid);
+      if (DB::numRows($result) == 0) {
         Display::note(_("There are no Productions for this Order."), 1, 1);
       } else {
         Table::start('tablestyle grid');
@@ -143,7 +143,7 @@
           $total_qty += $myrow['quantity'];
           Cell::label(GL_UI::trans_view(29, $myrow["id"]));
           Cell::label($myrow['reference']);
-          Cell::label(Dates::sql2date($myrow["date_"]));
+          Cell::label(Dates::sqlToDate($myrow["date_"]));
           Cell::qty($myrow['quantity'], false, Item::qty_dec($myrow['reference']));
           Row::end();
         }

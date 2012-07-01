@@ -113,7 +113,7 @@
       }
       $result = DB::query($sql, "could not retreive quick entries");
 
-      return DB::num_rows($result) > 0;
+      return DB::numRows($result) > 0;
     }
     /**
      * @static
@@ -122,7 +122,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($type = null)
+    public static function getAll($type = null)
     {
       $sql = "SELECT * FROM quick_entries";
       if ($type != null) {
@@ -141,7 +141,7 @@
      */
     public static function get($selected_id)
     {
-      $sql = "SELECT * FROM quick_entries WHERE id=" . DB::escape($selected_id);
+      $sql    = "SELECT * FROM quick_entries WHERE id=" . DB::escape($selected_id);
       $result = DB::query($sql, "could not retreive quick entry $selected_id");
 
       return DB::fetch($result);
@@ -177,10 +177,10 @@
      */
     public static function has_lines($qid)
     {
-      $sql = "SELECT id FROM quick_entry_lines WHERE qid=" . DB::escape($qid);
+      $sql    = "SELECT id FROM quick_entry_lines WHERE qid=" . DB::escape($qid);
       $result = DB::query($sql, "could not retreive quick entries");
 
-      return DB::num_rows($result) > 0;
+      return DB::numRows($result) > 0;
     }
     /**
      * @static
@@ -191,7 +191,7 @@
      */
     public static function has_line($selected_id)
     {
-      $sql = "SELECT * FROM quick_entry_lines WHERE id=" . DB::escape($selected_id);
+      $sql    = "SELECT * FROM quick_entry_lines WHERE id=" . DB::escape($selected_id);
       $result = DB::query($sql, "could not retreive quick entry for $selected_id");
 
       return DB::fetch($result);
@@ -216,7 +216,7 @@
       $bank_amount = 0;
       if (!isset($id) || $id == null || $id == "") {
         Event::error(_("No Quick Entries are defined."));
-        JS::set_focus('total_amount');
+        JS::setFocus('total_amount');
       } else {
         if ($type == QE_DEPOSIT) {
           $base = -$base;
@@ -354,11 +354,11 @@
       }
 
       return Forms::selectBox($name, $selected_id, $sql, 'id', 'description', array(
-                                                                             'spec_id'       => '',
-                                                                             'order'         => 'description',
-                                                                             'select_submit' => $submit_on_change,
-                                                                             'async'         => false
-                                                                        ));
+                                                                                   'spec_id'       => '',
+                                                                                   'order'         => 'description',
+                                                                                   'select_submit' => $submit_on_change,
+                                                                                   'async'         => false
+                                                                              ));
     }
     /**
      * @static

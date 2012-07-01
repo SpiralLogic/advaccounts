@@ -7,14 +7,19 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  use ADV\Core\Session;
+  use ADV\Core\Config;
+  use ADV\Core\Traits\StaticAccess;
+
   /**
    * @method theme
-   * @method User i()
    */
   class User
   {
     use \ADV\Core\Traits\Hook;
-    use ADV\Core\Traits\StaticAccess;
+    use StaticAccess {
+    StaticAccess::i as ii;
+    }
 
     /***
      * @static
@@ -94,24 +99,44 @@
     protected $Session;
     /**
      * @static
+     *
+     * @param Session $session
+     * @param Config  $config
+     *
      * @return User
      */
-    static function  getCurrentUser(Session $session)
+    public static function getCurrentUser(Session $session, Config $config)
     {
-      $user = null;
+      return static::i($session, $config);
+    }
+    /**
+     * @static
+     *
+     * @param Session $session
+     * @param Config  $config
+     *
+     * @return User
+     */
+    public static function  i(Session $session = null, Config $config = null)
+    {
+      $session = $session ? : Session::i();
+      $config  = $config ? : Config::i();
+      $user    = null;
+
       if (isset($session['User'])) {
         $user = $session['User'];
       }
-      return static::i($user);
+      return static::ii($user, $session, $config);
     }
     /**
 
      */
-    public function __construct(Session $session = null)
+    public function __construct(Session $session = null, Config $config = null)
     {
       $this->Session   = $session ? : Session::i();
+      $this->Config    = $config ? : Config::i();
       $this->loginname = $this->username = $this->name = "";
-      $this->company   = Config::get('default.company') ? : 'default';
+      $this->company   = $this->Config->_get('default.company') ? : 'default';
       $this->logged    = false;
       $this->prefs     = new userPrefs((array) $this);
     }
@@ -124,7 +149,7 @@
         $salesman_name = $this->name;
         $sql           = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::escape($salesman_name);
         $query         = DB::query($sql, 'Couldn\'t find current salesman');
-        $result        = DB::fetch_assoc($query);
+        $result        = DB::fetchAssoc($query);
         if (!empty($result['salesman_code'])) {
           $this->salesmanid = $result['salesman_code'];
         }
@@ -141,7 +166,7 @@
       $this->timeout();
       if ($this->logged && date('i', time() - $this->last_record) > 4) {
         $this->last_record = time();
-        Event::register_shutdown($this, '_addLog');
+        Event::registerShutdown($this, '_addLog');
       }
       return $this->logged;
     }
@@ -194,9 +219,9 @@
         $this->salesmanid      = $this->get_salesmanid();
         $this->fireHooks('login');
         $this->Session->checkUserAgent();
-        $_SESSION['User'] = $this;
-        Event::register_shutdown('Users', 'update_visitdate', [$this->username]);
-        Event::register_shutdown(__CLASS__, 'addLog');
+        $this->Session['User'] = $this;
+        Event::registerShutdown('Users', 'update_visitdate', [$this->username]);
+        Event::registerShutdown(__CLASS__, 'addLog');
       }
       return $this->logged;
     }
@@ -321,7 +346,7 @@
         'sticky_doc_date' => $stickydate,
         'startup_tab'     => $startup_tab
       );
-      if (!Config::get('demo_mode')) {
+      if (!$this->Config->_get('demo_mode')) {
         Users::update_display_prefs($this->user, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $show_gl, $show_codes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $page_size, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $language, $stickydate, $startup_tab);
       }
       $this->prefs = new userPrefs(Users::get($this->user));
@@ -344,7 +369,7 @@
         . ",loadtxt: '" . _('Requesting data...') //
         . "',date: '" . Dates::today() //
         . "',datefmt: " . $this->_date_format() //
-        . ",datesep: '" . Config::get('date.ui_format') //
+        . ",datesep: '" . $this->Config->_get('date.ui_format') //
         . "',ts: '" . $this->_tho_sep() //
         . "',ds: '" . $this->_dec_sep() //
         . "',pdec: " . $this->_price_dec() //
@@ -473,7 +498,7 @@
      */
     public function _date_sep()
     {
-      return (isset($_SESSION["current_user"])) ? $this->prefs->date_sep : Config::get('date.ui_separator');
+      return (isset($_SESSION["current_user"])) ? $this->prefs->date_sep : $this->Config->_get('date.ui_separator');
     }
     /**
      * @static

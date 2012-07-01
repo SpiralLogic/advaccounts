@@ -16,17 +16,17 @@
   {
     if (strlen($_POST['password']) < 4) {
       Event::error(_("The password entered must be at least 4 characters long."));
-      JS::set_focus('password');
+      JS::setFocus('password');
       return false;
     }
     if (strstr($_POST['password'], User::i()->username) != false) {
       Event::error(_("The password cannot contain the user login."));
-      JS::set_focus('password');
+      JS::setFocus('password');
       return false;
     }
     if ($_POST['password'] != $_POST['passwordConfirm']) {
       Event::error(_("The passwords entered are not the same."));
-      JS::set_focus('password');
+      JS::setFocus('password');
       return false;
     }
     return true;

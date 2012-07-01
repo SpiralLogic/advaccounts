@@ -22,6 +22,12 @@
       }
       $this->_template = $template;
     }
+    /**
+     * @param bool $return
+     *
+     * @return string
+     * @throws \RuntimeException
+     */
     public function render($return = false)
     {
       if (!$this->_template) {

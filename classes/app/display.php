@@ -153,7 +153,7 @@
       }
       Table::start('tablestyle width50');
       echo "<tr><td class=center><span class='red'>$label</span><br>";
-      echo "<span class='red'>" . _("Date Voided:") . " " . Dates::sql2date($void_entry["date_"]) . "</span><br>";
+      echo "<span class='red'>" . _("Date Voided:") . " " . Dates::sqlToDate($void_entry["date_"]) . "</span><br>";
       if (strlen($void_entry["memo_"]) > 0) {
         echo "<div class='center'><span class='red'>" . _("Memo:") . " " . $void_entry["memo_"] . "</span></div><br>";
       }
@@ -171,7 +171,7 @@
     {
       if ($stock_id != "") {
         $result = DB::query("SELECT description, units FROM stock_master WHERE stock_id=" . DB::escape($stock_id));
-        $myrow  = DB::fetch_row($result);
+        $myrow  = DB::fetchRow($result);
         static::heading("$stock_id - $myrow[0]");
         $units = $myrow[1];
         static::heading(_("in units of : ") . $units);
@@ -188,7 +188,7 @@
      */
     public static function menu_link($url, $label, $id = null)
     {
-      $id   = JS::default_focus($id);
+      $id   = JS::defaultFocus($id);
       $pars = Display::access_string($label);
 
       return "<a href='$url' class='menu_option' id='$id' $pars[1]>$pars[0]</a>";
@@ -204,7 +204,7 @@
      */
     public static function menu_button($url, $label, $id = null)
     {
-      $id   = JS::default_focus($id);
+      $id   = JS::defaultFocus($id);
       $pars = Display::access_string($label);
 
       return "<a href='$url' class='button  button-large' id='$id' $pars[1]>$pars[0]</a>";
@@ -275,7 +275,7 @@
      */
     public static function link_no_params($target, $label, $center = true, $button = false)
     {
-      $id   = JS::default_focus();
+      $id   = JS::defaultFocus();
       $pars = Display::access_string($label);
       if ($target == '') {
         $target = $_SERVER['DOCUMENT_URI'];
@@ -314,7 +314,7 @@
      */
     public static function link_params($target, $label, $link_params = '', $center = true, $params = '')
     {
-      $id   = JS::default_focus();
+      $id   = JS::defaultFocus();
       $pars = Display::access_string($label);
       if ($target == '') {
         $target = $_SERVER['DOCUMENT_URI'];
@@ -338,7 +338,7 @@
      */
     public static function link_button($target, $label, $link_params = '', $center = true, $params = '')
     {
-      $id   = JS::default_focus();
+      $id   = JS::defaultFocus();
       $pars = Display::access_string($label);
       if ($target == '') {
         $target = $_SERVER['DOCUMENT_URI'];
@@ -376,7 +376,7 @@
      */
     public static function link_params_separate($target, $label, $params, $center = false, $nobr = false)
     {
-      $id   = JS::default_focus();
+      $id   = JS::defaultFocus();
       $pars = Display::access_string($label);
       if (!$nobr) {
         echo "<br>";

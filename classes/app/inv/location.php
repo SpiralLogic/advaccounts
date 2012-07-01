@@ -131,12 +131,12 @@
     {
       $sql    = "SELECT location_name FROM locations WHERE loc_code=" . DB::escape($loc_code);
       $result = DB::query($sql, "could not retreive the location name for $loc_code");
-      if (DB::num_rows($result) == 1) {
-        $row = DB::fetch_row($result);
+      if (DB::numRows($result) == 1) {
+        $row = DB::fetchRow($result);
 
         return $row[0];
       }
-      Errors::db_error("could not retreive the location name for $loc_code", $sql, true);
+      Errors::databaseError("could not retreive the location name for $loc_code", $sql, true);
     }
     /***
      * @static
@@ -151,7 +151,7 @@
     {
       $sql    = "SELECT locations.* FROM stock_moves," . "locations" . " WHERE type=" . DB::escape($order->trans_type) . " AND trans_no=" . key($order->trans_no) . " AND qty!=0 " . " AND locations.loc_code=stock_moves.loc_code";
       $result = DB::query($sql, 'Retreiving inventory location');
-      if (DB::num_rows($result)) {
+      if (DB::numRows($result)) {
         return DB::fetch($result);
       }
 
@@ -174,11 +174,11 @@
         $selected_id = $all_option === true ? -1 : Config::get('default.location');
       }
       return Forms::selectBox($name, $selected_id, $sql, 'loc_code', 'location_name', array(
-                                                                                     'spec_option'   => $all_option === true ?
-                                                                                       _("All Locations") : $all_option,
-                                                                                     'spec_id'       => ALL_TEXT,
-                                                                                     'select_submit' => $submit_on_change
-                                                                                ));
+                                                                                           'spec_option'   => $all_option === true ?
+                                                                                             _("All Locations") : $all_option,
+                                                                                           'spec_id'       => ALL_TEXT,
+                                                                                           'select_submit' => $submit_on_change
+                                                                                      ));
     }
     /**
      * @static
@@ -194,7 +194,7 @@
       if ($label != null) {
         echo "<td class='label'><label for=\"$name\"> $label</label></td>";
       }
-echo "<td>";
+      echo "<td>";
       echo Inv_Location::select($name, $selected_id, $all_option, $submit_on_change);
       echo "</td>\n";
     }

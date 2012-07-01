@@ -24,13 +24,13 @@
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
     $sql    = "SELECT COUNT(*) FROM debtor_trans WHERE tpe=" . DB::escape($selected_id);
     $result = DB::query($sql, "The number of transactions using this Sales type record could not be retrieved");
-    $myrow  = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this sale type because customer transactions have been created using this sales type."));
     } else {
       $sql    = "SELECT COUNT(*) FROM debtors WHERE sales_type=" . DB::escape($selected_id);
       $result = DB::query($sql, "The number of customers using this Sales type record could not be retrieved");
-      $myrow  = DB::fetch_row($result);
+      $myrow  = DB::fetchRow($result);
       if ($myrow[0] > 0) {
         Event::error(_("Cannot delete this sale type because customers are currently set up to use this sales type."));
       } else {
@@ -46,11 +46,11 @@
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Sales_Type::get_all(Forms::hasPost('show_inactive'));
+  $result = Sales_Type::getAll(Forms::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid width30');
   $th = array(_('Type Name'), _('Factor'), _('Tax Incl'), '', '');
-   Forms::inactiveControlCol($th);
+  Forms::inactiveControlCol($th);
   Table::header($th);
   $k          = 0;
   $base_sales = DB_Company::get_base_sales_type();
@@ -66,12 +66,12 @@
     }
     Cell::label($f);
     Cell::label($myrow["tax_included"] ? _('Yes') : _('No'), 'class=center');
-     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'sales_types', 'id');
+    Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'sales_types', 'id');
     Forms::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
     Row::end();
   }
-   Forms::inactiveControlRow($th);
+  Forms::inactiveControlRow($th);
   Table::end();
   Event::warning(_("Marked sales type is the company base pricelist for prices calculations."), 0, 0, "class='overduefg'");
   if (!isset($_POST['tax_included'])) {
@@ -92,9 +92,9 @@
   } else {
     $_POST['factor'] = Num::format(1, 4);
   }
-   Forms::textRowEx(_("Sales Type Name") . ':', 'sales_type', 20);
-   Forms::AmountRow(_("Calculation factor") . ':', 'factor', null, null, null, 4);
-   Forms::checkRow(_("Tax included") . ':', 'tax_included', $_POST['tax_included']);
+  Forms::textRowEx(_("Sales Type Name") . ':', 'sales_type', 20);
+  Forms::AmountRow(_("Calculation factor") . ':', 'factor', null, null, null, 4);
+  Forms::checkRow(_("Tax included") . ':', 'tax_included', $_POST['tax_included']);
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();

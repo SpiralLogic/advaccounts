@@ -25,19 +25,19 @@
      */
     function __construct()
     {
-      $this->user   = User::i();
-      $this->ajax   = Ajax::i();
+      $this->ajax    = Ajax::i();
       $this->session = Session::i();
-      $this->db = \DB::i();
+      $this->user    = User::getCurrentUser($this->session, Config::i());
+      $this->db      = \DB::i();
 
       $this->action = Input::post('_action');
       $this->before();
+
       $this->index();
       $this->after();
     }
-  abstract protected function before();
+    abstract protected function before();
     abstract protected function index();
-
     /**
      * @param $title
      */
@@ -69,6 +69,4 @@
         call_user_func(array($this, $this->action));
       }
     }
-
-
   }

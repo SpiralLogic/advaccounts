@@ -21,7 +21,7 @@
     {
       $sql    = 'SELECT trans_link FROM ' . 'debtor_trans WHERE (trans_no=' . DB::escape($trans_no) . ' AND type=' . DB::escape($trans_type) . ' AND trans_link!=0)';
       $result = DB::query($sql, 'Parent document numbers cannot be retrieved');
-      if (DB::num_rows($result)) {
+      if (DB::numRows($result)) {
         $link = DB::fetch($result);
 
         return array($link['trans_link']);
@@ -33,7 +33,7 @@
       $sql      = 'SELECT trans_no FROM ' . 'debtor_trans WHERE (trans_link=' . DB::escape($trans_no) . ' AND type=' . Debtor_Trans::get_parent_type($trans_type) . ')';
       $result   = DB::query($sql, 'Delivery links cannot be retrieved');
       $delivery = array();
-      if (DB::num_rows($result) > 0) {
+      if (DB::numRows($result) > 0) {
         while ($link = DB::fetch($result)) {
           $delivery[] = $link['trans_no'];
         }
@@ -175,11 +175,11 @@
       if ($rate == 0) {
         $rate = Bank_Currency::exchange_rate_from_home($curr, $date_);
       }
-      $SQLDate = Dates::date2sql($date_);
+      $SQLDate = Dates::dateToSql($date_);
       if ($due_date == "") {
         $SQLDueDate = $SQLDate;
       } else {
-        $SQLDueDate = Dates::date2sql($due_date);
+        $SQLDueDate = Dates::dateToSql($due_date);
       }
       if ($trans_type == ST_BANKPAYMENT) {
         $total = -$total;
@@ -254,8 +254,8 @@
         $order->reference     = $myrow["reference"];
         $order->order_no      = $myrow["order_"];
         $order->trans_link    = $myrow["trans_link"];
-        $order->due_date      = Dates::sql2date($myrow["due_date"]);
-        $order->document_date = Dates::sql2date($myrow["tran_date"]);
+        $order->due_date      = Dates::sqlToDate($myrow["due_date"]);
+        $order->document_date = Dates::sqlToDate($myrow["tran_date"]);
         $order->dimension_id  = $myrow['dimension_id']; // added 2.1 Joe Hunt 2008-11-12
         $order->dimension2_id = $myrow['dimension2_id'];
         $order->Comments      = '';
@@ -270,7 +270,7 @@
           $order->set_location($myrow['loc_code'], $myrow['location_name']);
         }
         $result = Debtor_TransDetail::get($doc_type, $trans_no);
-        if (DB::num_rows($result) > 0) {
+        if (DB::numRows($result) > 0) {
           for ($line_no = 0; $myrow = DB::fetch($result); $line_no++) {
             $order->line_items[$line_no] = new Sales_Line($myrow["stock_id"], $myrow["quantity"], $myrow["unit_price"], $myrow["discount_percent"], $myrow["qty_done"], $myrow["standard_cost"], $myrow["StockDescription"], $myrow["id"], $myrow["debtor_trans_no"]);
           }
@@ -332,11 +332,11 @@
             AND branches.tax_group_id = tax_groups.id ";
       }
       $result = DB::query($sql, "Cannot retreive a debtor transaction");
-      if (DB::num_rows($result) == 0) {
+      if (DB::numRows($result) == 0) {
         // can't return nothing
         Event::error("no debtor trans found for given params", $sql, true);
       }
-      if (DB::num_rows($result) > 1) {
+      if (DB::numRows($result) > 1) {
         // can't return multiple
         Event::error("duplicate debtor transactions found for given params", $sql, true);
       }
@@ -360,7 +360,7 @@
         AND trans_no=" . DB::escape($type_no);
       $result = DB::query($sql, "Cannot retreive a debtor transaction");
 
-      return (DB::num_rows($result) > 0);
+      return (DB::numRows($result) > 0);
     }
     /***
      * @static
@@ -375,7 +375,7 @@
     {
       $sql    = "SELECT order_ FROM debtor_trans WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
       $result = DB::query($sql, "The debtor transaction could not be queried");
-      $row    = DB::fetch_row($result);
+      $row    = DB::fetchRow($result);
 
       return $row[0];
     }
@@ -458,7 +458,7 @@
     public static function display_tax_details($tax_items, $columns)
     {
       while ($tax_item = DB::fetch($tax_items)) {
-        $tax = Num::price_format($tax_item['amount']);
+        $tax = Num::priceFormat($tax_item['amount']);
         if ($tax_item['included_in_price']) {
           Row::label(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " . _("Amount") . ": $tax", "", "colspan=$columns class='right'", "class='right'");
         } else {

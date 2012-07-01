@@ -73,7 +73,7 @@
       }
 
       $result = DB::query('SELECT COUNT(*) FROM ' . $validate . ' ' . $extra, 'Could not do check empty query');
-      $myrow  = DB::fetch_row($result);
+      $myrow  = DB::fetchRow($result);
       if (!($myrow[0] > 0)) {
         throw new Adv_Exception($msg);
       } else {

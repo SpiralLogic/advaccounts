@@ -253,7 +253,7 @@
     {
       $sql    = "SELECT * FROM prices WHERE stockid = " . $this->id;
       $result = DB::query($sql, 'Could not get item pricing');
-      while ($row = DB::fetch_assoc($result)) {
+      while ($row = DB::fetchAssoc($result)) {
         $this->salePrices[$row['id']] = array(
           "curr" => $row['curr_abrev'], "type" => $row['type'], "price" => $row['price']
         );
@@ -272,9 +272,9 @@
       }
       $result = DB::query($sql, 'Could not get item pricing');
       if ($option['min']) {
-        return DB::fetch_assoc($result);
+        return DB::fetchAssoc($result);
       }
-      while ($row = DB::fetch_assoc($result)) {
+      while ($row = DB::fetchAssoc($result)) {
         $this->salePrices[$row['supplier_id']] = array(
           "code" => $row['supplier_description'], "price" => $row['price'], //					"suppliers_uom" => $row['uom'],
           "conv" => $row['conversion_factor']
@@ -310,9 +310,9 @@
       }
       $result = DB::query($sql, 'Could not get item stock levels');
       if ($location !== null) {
-        return DB::fetch_assoc($result);
+        return DB::fetchAssoc($result);
       }
-      while ($row = DB::fetch_assoc($result)) {
+      while ($row = DB::fetchAssoc($result)) {
         $row['demand']       = ($row['demand']) ? : 0;
         $row['qty']          = ($row['qty']) ? : 0;
         $row['available']    = ($row['available']) ? : 0;
@@ -340,7 +340,7 @@
      * @static
      * @return null|PDOStatement
      */
-    public static function get_all()
+    public static function getAll()
     {
       $sql = "SELECT * FROM stock_master";
 
@@ -359,7 +359,7 @@
       if ($date_ == null) {
         $date_ = Dates::today();
       }
-      $date = Dates::date2sql($date_);
+      $date = Dates::dateToSql($date_);
       $sql
             = "SELECT SUM(qty) FROM stock_moves
              WHERE stock_id=" . DB::escape($stock_id) . "
@@ -368,13 +368,13 @@
         $sql .= " AND loc_code = " . DB::escape($location);
       }
       $result = DB::query($sql, "QOH calulcation failed");
-      $myrow  = DB::fetch_row($result);
+      $myrow  = DB::fetchRow($result);
       if ($exclude > 0) {
         $sql
                 = "SELECT SUM(qty) FROM stock_moves
                  WHERE stock_id=" . DB::escape($stock_id) . " AND type=" . DB::escape($exclude) . " AND tran_date = '$date'";
         $result = DB::query($sql, "QOH calulcation failed");
-        $myrow2 = DB::fetch_row($result);
+        $myrow2 = DB::fetchRow($result);
         if ($myrow2 !== false) {
           $myrow[0] -= $myrow2[0];
         }
@@ -399,7 +399,7 @@
       $result = array(
         'standard_cost' => 0, 'units' => 'ea', 'decimals' => User::price_dec()
       );
-      if (DB::num_rows($query) == 0) {
+      if (DB::numRows($query) == 0) {
         $result = DB::fetch($query);
       }
 
@@ -419,7 +419,7 @@
              WHERE stock_id=" . DB::escape($stock_id) . " AND mb_flag <> 'D'";
       $result = DB::query($sql, "Cannot query is inventory item or not");
 
-      return DB::num_rows($result) > 0;
+      return DB::numRows($result) > 0;
     }
     /**
      * @static
@@ -431,7 +431,7 @@
      */
     public static function last_negative_stock_begin_date($stock_id, $to)
     {
-      $to  = Dates::date2sql($to);
+      $to  = Dates::dateToSql($to);
       $sql = "SET @q = 0";
       DB::query($sql);
       $sql = "SET @flag = 0";
@@ -443,7 +443,7 @@
              AND qty <> 0
              GROUP BY stock_id ORDER BY tran_date";
       $result = DB::query($sql, "The dstock moves could not be retrieved");
-      $row    = DB::fetch_row($result);
+      $row    = DB::fetchRow($result);
 
       return $row[3];
     }
@@ -458,15 +458,15 @@
      */
     public static function get_deliveries_between($stock_id, $from, $to)
     {
-      $from = Dates::date2sql($from);
-      $to   = Dates::date2sql($to);
+      $from = Dates::dateToSql($from);
+      $to   = Dates::dateToSql($to);
       $sql
               = "SELECT SUM(-qty), SUM(-qty*standard_cost) FROM stock_moves
              WHERE type=" . ST_CUSTDELIVERY . " AND stock_id=" . DB::escape($stock_id) . " AND
                  tran_date>='$from' AND tran_date<='$to' GROUP BY stock_id";
       $result = DB::query($sql, "The deliveries could not be updated");
 
-      return DB::fetch_row($result);
+      return DB::fetchRow($result);
     }
     /**
      * @static
@@ -486,7 +486,7 @@
       if ($from == false || $from == "") {
         return;
       }
-      $from = Dates::sql2date($from);
+      $from = Dates::sqlToDate($from);
       $row  = Item::get_deliveries_between($stock_id, $from, $to);
       if ($row == false) {
         return;
@@ -496,8 +496,8 @@
       $diff     = $new_cost - $old_cost;
       if ($diff != 0) {
         $update_no = SysTypes::get_next_trans_no(ST_COSTUPDATE);
-        if (!Dates::is_date_in_fiscalyear($to)) {
-          $to = Dates::end_fiscalyear();
+        if (!Dates::isDateInFiscalYear($to)) {
+          $to = Dates::endFiscalYear();
         }
         $stock_gl_code = Item::get_gl_code($stock_id);
         $memo_         = _("Cost was ") . $old_cost . _(" changed to ") . $new_cost . _(" for item ") . "'$stock_id'";
@@ -584,7 +584,7 @@
      */
     protected static function load_stock_levels($location = '')
     {
-      $date = Dates::date2sql(Dates::today());
+      $date = Dates::dateToSql(Dates::today());
       $sql  = "SELECT stock_id, SUM(qty) FROM stock_moves WHERE tran_date <= '$date'";
       if ($location != '') {
         $sql .= " AND loc_code = " . DB::escape($location);
@@ -607,7 +607,7 @@
       $term = DB::quote("%$term%");
       $sql  = "SELECT stock_id AS id, description AS label, stock_id AS value FROM stock_master WHERE stock_id LIKE $term OR description LIKE $term LIMIT 200";
       DB::query($sql, 'Couldn\'t Get Items');
-      $data = DB::fetch_all();
+      $data = DB::fetchAll();
       array_walk_recursive($data, function(&$v)
       {
         $v = htmlspecialchars_decode($v, ENT_QUOTES);

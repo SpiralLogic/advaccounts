@@ -19,8 +19,8 @@
    */
   function getTaxTransactions($from, $to)
   {
-    $fromdate = Dates::date2sql($from);
-    $todate   = Dates::date2sql($to);
+    $fromdate = Dates::dateToSql($from);
+    $todate   = Dates::dateToSql($to);
     $sql
               = "SELECT taxrec.*, taxrec.amount*ex_rate AS amount,
      taxrec.net_amount*ex_rate AS net_amount,

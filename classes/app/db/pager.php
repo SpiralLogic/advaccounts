@@ -81,7 +81,7 @@
       $sql    = "SELECT * FROM " . $table . " WHERE " . $feild . " LIKE " . DB::escape($where) . " LIMIT 1";
       $result = DB::query($sql, 'Couldnt do shit');
 
-      return DB::num_rows($result);
+      return DB::numRows($result);
     }
     /**
      * @static
@@ -201,13 +201,13 @@
               Cell::label($cell, "width=40");
               break;
             case 'date':
-              Cell::label(Dates::sql2date($cell), ' class="center nowrap"');
+              Cell::label(Dates::sqlToDate($cell), ' class="center nowrap"');
               break;
             case 'dstamp': // time stamp displayed as date
-              Cell::label(Dates::sql2date(substr($cell, 0, 10)), ' class="center nowrap"');
+              Cell::label(Dates::sqlToDate(substr($cell, 0, 10)), ' class="center nowrap"');
               break;
             case 'tstamp': // time stamp - FIX user format
-              Cell::label(Dates::sql2date(substr($cell, 0, 10)) . ' ' . substr($cell, 10), "class='center'");
+              Cell::label(Dates::sqlToDate(substr($cell, 0, 10)) . ' ' . substr($cell, 10), "class='center'");
               break;
             case 'percent':
               Cell::percent($cell);
@@ -273,7 +273,8 @@
       }
       Row::start("class='navibar'");
       $colspan = count($pager->columns);
-      $inact   = $pager->inactive_ctrl == true ? ' ' . Forms::checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
+      $inact   = $pager->inactive_ctrl == true ?
+        ' ' . Forms::checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
       if ($pager->rec_count) {
         echo "<td colspan=$colspan class='navibar' >";
         echo "<table class='floatright'>";
@@ -496,7 +497,7 @@
         if (Forms::hasPost('show_inactive')) {
           if (isset($_POST['LInact'][$id]) && (Input::post('_Inactive' . $id . '_update') || Input::post('Update')) && (Forms::hasPost('Inactive' . $id) != $value)
           ) {
-            DB::update_record_status($id, !$value, $table, $key);
+            DB::updateRecordStatus($id, !$value, $table, $key);
             $value = !$value;
           }
           echo '<td class="center">' . Forms::checkbox(null, $name, $value, true, '', "class='center'") . Forms::hidden("LInact[$id]", $value, false) . '</td>';
@@ -526,7 +527,7 @@
         // setting field names for subsequent queries
         // add result field names to column defs for
         // col value retrieve and sort purposes
-        while ($row = DB::fetch_assoc($result)) {
+        while ($row = DB::fetchAssoc($result)) {
           $this->data[] = $row;
         }
         $dbfeild_names = array_keys($this->data[0]);
@@ -591,11 +592,11 @@
         $this->change_page($page);
         if ($page == 'next' && !$this->next_page || $page == 'last' && !$this->last_page
         ) {
-          JS::set_focus($this->name . '_page_prev');
+          JS::setFocus($this->name . '_page_prev');
         }
         if ($page == 'prev' && !$this->prev_page || $page == 'first' && !$this->first_page
         ) {
-          JS::set_focus($this->name . '_page_next');
+          JS::setFocus($this->name . '_page_next');
         }
       } elseif ($sort != -1) {
         $this->sort_table($sort);
@@ -827,7 +828,7 @@
         if ($result == false) {
           return false;
         }
-        $row             = DB::fetch_row($result);
+        $row             = DB::fetchRow($result);
         $this->rec_count = $row[0];
         $this->max_page  = $this->page_len ? ceil($this->rec_count / $this->page_len) : 0;
         if (Config::get('debug.enabled')) { // FIX - need column name parsing, but for now:

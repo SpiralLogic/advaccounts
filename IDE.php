@@ -1129,12 +1129,12 @@
   class Cache extends ADV\Core\Cache
   {
   }
+
   /**
 
    */
   class Config extends ADV\Core\Config
   {
-
   }
 
   /**
@@ -1239,6 +1239,13 @@
 
    */
   class Num extends ADV\Core\Num
+  {
+  }
+
+  /**
+
+   */
+  class Page extends ADV\App\Page
   {
   }
 

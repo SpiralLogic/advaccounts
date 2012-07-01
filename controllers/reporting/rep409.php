@@ -45,7 +45,7 @@
       if ($myrow === false) {
         continue;
       }
-      $date_ = Dates::sql2date($myrow["date_"]);
+      $date_ = Dates::sqlToDate($myrow["date_"]);
       if ($email == 1) {
         $rep           = new ADVReport("", "", User::page_size());
         $rep->currency = $cur;
@@ -99,7 +99,7 @@
       $rep->NewLine(1);
       $rep->TextCol(0, 5, " *** = " . _("Insufficient stock"), -2);
       $comments = DB_Comments::get(ST_WORKORDER, $i);
-      if ($comments && DB::num_rows($comments)) {
+      if ($comments && DB::numRows($comments)) {
         $rep->NewLine();
         while ($comment = DB::fetch($comments)) {
           $rep->TextColLines(0, 6, $comment['memo_'], -2);

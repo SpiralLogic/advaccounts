@@ -9,8 +9,8 @@
    **/
   /* Definition of the Supplier Transactions class to hold all the information for an accounts payable invoice or credit note
    */
-  class Creditor_Trans {
-
+  class Creditor_Trans
+  {
     /**
      * @var null
      */
@@ -22,20 +22,19 @@
      *
      * @return Creditor_Trans
      */
-    public static function i($reset_session = false) {
+    public static function i($reset_session = false)
+    {
       if (!$reset_session && isset($_SESSION["Creditor_Trans"])) {
         static::$_instance = $_SESSION["Creditor_Trans"];
-      }
-      elseif (static::$_instance === null) {
+      } elseif (static::$_instance === null) {
         static::$_instance = $_SESSION["Creditor_Trans"] = new static;
       }
       return static::$_instance;
     }
-
-    public static function killInstance() {
+    public static function killInstance()
+    {
       unset($_SESSION["Creditor_Trans"]);
     }
-
     /**
      * @var array
      */
@@ -115,7 +114,8 @@
     /**
 
      */
-    public function __construct() {
+    public function __construct()
+    {
       /*Constructor function initialises a new Supplier Transaction object */
       $this->grn_items = array();
       $this->gl_codes  = array();
@@ -138,7 +138,8 @@
      *
      * @return int
      */
-    public function add_grn_to_trans($grn_item_id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = null) {
+    public function add_grn_to_trans($grn_item_id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = null)
+    {
       $this->grn_items[$grn_item_id] = new Purch_GLItem($grn_item_id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount, $exp_price);
       return 1;
     }
@@ -152,7 +153,8 @@
      *
      * @return int
      */
-    public function add_gl_codes_to_trans($gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_) {
+    public function add_gl_codes_to_trans($gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_)
+    {
       $this->gl_codes[$this->gl_codes_counter] = new Purch_GLCode($this->gl_codes_counter, $gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_);
       $this->gl_codes_counter++;
       return 1;
@@ -160,23 +162,26 @@
     /**
      * @param $grn_item_id
      */
-    public function remove_grn_from_trans($grn_item_id) {
+    public function remove_grn_from_trans($grn_item_id)
+    {
       unset($this->grn_items[$grn_item_id]);
     }
     /**
      * @param $gl_code_counter
      */
-    public function remove_gl_codes_from_trans(&$gl_code_counter) {
+    public function remove_gl_codes_from_trans(&$gl_code_counter)
+    {
       unset($this->gl_codes[$gl_code_counter]);
     }
     /**
      * @return bool
      */
-    public function is_valid_trans_to_post() {
+    public function is_valid_trans_to_post()
+    {
       return (count($this->grn_items) > 0 || count($this->gl_codes) > 0 || ($this->ov_amount != 0) || ($this->ov_discount > 0));
     }
-
-    public function clear_items() {
+    public function clear_items()
+    {
       unset($this->grn_items, $this->gl_codes);
       $this->ov_amount = $this->ov_discount = $this->supplier_id = $this->tax_correction = $this->total_correction = 0;
       $this->grn_items = array();
@@ -189,7 +194,8 @@
      *
      * @return array|null
      */
-    public function get_taxes($tax_group_id = null, $shipping_cost = 0, $gl_codes = true) {
+    public function get_taxes($tax_group_id = null, $shipping_cost = 0, $gl_codes = true)
+    {
       $items  = array();
       $prices = array();
       if ($tax_group_id == null) {
@@ -222,13 +228,13 @@
      *
      * @return int
      */
-    public function get_total_charged($tax_group_id = null) {
+    public function get_total_charged($tax_group_id = null)
+    {
       $total = 0;
       // preload the taxgroup !
       if ($tax_group_id != null) {
         $tax_group = Tax_Groups::get_items_as_array($tax_group_id);
-      }
-      else {
+      } else {
         $tax_group = null;
       }
       foreach ($this->grn_items as $line) {
@@ -258,13 +264,13 @@
      *
      * @return int
      */
-    public static function add($type, $supplier_id, $date_, $due_date, $reference, $supplier_reference, $amount, $amount_tax, $discount, $err_msg = "", $rate = 0) {
-      $date = Dates::date2sql($date_);
+    public static function add($type, $supplier_id, $date_, $due_date, $reference, $supplier_reference, $amount, $amount_tax, $discount, $err_msg = "", $rate = 0)
+    {
+      $date = Dates::dateToSql($date_);
       if ($due_date == "") {
         $due_date = "0000-00-00";
-      }
-      else {
-        $due_date = Dates::date2sql($due_date);
+      } else {
+        $due_date = Dates::dateToSql($due_date);
       }
       $trans_no = SysTypes::get_next_trans_no($type);
       $curr     = Bank_Currency::for_creditor($supplier_id);
@@ -291,7 +297,8 @@
      *
      * @return ADV\Core\DB\Query_Result|Array
      */
-    public static function get($trans_no, $trans_type = -1) {
+    public static function get($trans_no, $trans_type = -1)
+    {
 
       $sql
         = "SELECT creditor_trans.*, (creditor_trans.ov_amount+creditor_trans.ov_gst+creditor_trans.ov_discount) AS Total,
@@ -320,14 +327,14 @@
 					AND bank_accounts.id=bank_trans.bank_act ";
       }
       $result = DB::query($sql, "Cannot retreive a supplier transaction");
-      if (DB::num_rows($result) == 0) {
+      if (DB::numRows($result) == 0) {
         // can't return nothing
-        Errors::db_error("no supplier trans found for given params", $sql, true);
+        Errors::databaseError("no supplier trans found for given params", $sql, true);
         exit;
       }
-      if (DB::num_rows($result) > 1) {
+      if (DB::numRows($result) > 1) {
         // can't return multiple
-        Errors::db_error("duplicate supplier transactions found for given params", $sql, true);
+        Errors::databaseError("duplicate supplier transactions found for given params", $sql, true);
         exit;
       }
       return DB::fetch($result);
@@ -340,14 +347,15 @@
      *
      * @return bool
      */
-    public static function exists($type, $type_no) {
+    public static function exists($type, $type_no)
+    {
       if ($type == ST_SUPPRECEIVE) {
         return Purch_GRN::exists($type_no);
       }
       $sql    = "SELECT trans_no FROM creditor_trans WHERE type=" . DB::escape($type) . "
 				AND trans_no=" . DB::escape($type_no);
       $result = DB::query($sql, "Cannot retreive a supplier transaction");
-      return (DB::num_rows($result) > 0);
+      return (DB::numRows($result) > 0);
     }
     /**
      * @static
@@ -355,7 +363,8 @@
      * @param $type
      * @param $type_no
      */
-    public static function void($type, $type_no) {
+    public static function void($type, $type_no)
+    {
       $sql
         = "UPDATE creditor_trans SET ov_amount=0, ov_discount=0, ov_gst=0,
 				alloc=0 WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
@@ -369,7 +378,8 @@
      *
      * @return bool
      */
-    public static function post_void($type, $type_no) {
+    public static function post_void($type, $type_no)
+    {
       if ($type == ST_SUPPAYMENT) {
         Creditor_Payment::void($type, $type_no);
         return true;
@@ -383,7 +393,6 @@
       }
       return false;
     }
-
     // add a supplier-related gl transaction
     // $date_ is display date (non-sql)
     // $amount is in SUPPLIERS'S currency
@@ -404,7 +413,8 @@
      *
      * @return float
      */
-    public static function add_gl($type, $type_no, $date_, $account, $dimension, $dimension2, $amount, $supplier_id, $err_msg = "", $rate = 0, $memo = "") {
+    public static function add_gl($type, $type_no, $date_, $account, $dimension, $dimension2, $amount, $supplier_id, $err_msg = "", $rate = 0, $memo = "")
+    {
       if ($err_msg == "") {
         $err_msg = "The supplier GL transaction could not be inserted";
       }
@@ -418,17 +428,17 @@
      *
      * @return int
      */
-    public static function get_conversion_factor($supplier_id, $stock_id) {
+    public static function get_conversion_factor($supplier_id, $stock_id)
+    {
       $sql
               = "SELECT conversion_factor FROM purch_data
 					WHERE supplier_id = " . DB::escape($supplier_id) . "
 					AND stock_id = " . DB::escape($stock_id);
       $result = DB::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
-      if (DB::num_rows($result) == 1) {
+      if (DB::numRows($result) == 1) {
         $myrow = DB::fetch($result);
         return $myrow['conversion_factor'];
-      }
-      else {
+      } else {
         return 1;
       }
     }
@@ -439,14 +449,14 @@
      * @param     $columns
      * @param int $tax_recorded
      */
-    public static function trans_tax_details($tax_items, $columns, $tax_recorded = 0) {
+    public static function trans_tax_details($tax_items, $columns, $tax_recorded = 0)
+    {
       $tax_total = 0;
       while ($tax_item = DB::fetch($tax_items)) {
         $tax = Num::format(abs($tax_item['amount']), User::price_dec());
         if ($tax_item['included_in_price']) {
           Row::label(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " . _("Amount") . ": $tax", "colspan=$columns class='right'", "class='right'");
-        }
-        else {
+        } else {
           Row::label($tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)", $tax, "colspan=$columns class='right'", "class='right'");
         }
         $tax_total += $tax;
@@ -461,15 +471,15 @@
      *
      * @param $creditor_trans
      */
-    public static function get_duedate_from_terms($creditor_trans) {
-      if (!Dates::is_date($creditor_trans->tran_date)) {
+    public static function get_duedate_from_terms($creditor_trans)
+    {
+      if (!Dates::isDate($creditor_trans->tran_date)) {
         $creditor_trans->tran_date = Dates::today();
       }
       if (substr($creditor_trans->terms, 0, 1) == "1") { /*Its a day in the following month when due */
-        $creditor_trans->due_date = Dates::add_days(Dates::end_month($creditor_trans->tran_date), (int) substr($creditor_trans->terms, 1));
-      }
-      else { /*Use the Days Before Due to add to the invoice date */
-        $creditor_trans->due_date = Dates::add_days($creditor_trans->tran_date, (int) substr($creditor_trans->terms, 1));
+        $creditor_trans->due_date = Dates::addDays(Dates::endMonth($creditor_trans->tran_date), (int) substr($creditor_trans->terms, 1));
+      } else { /*Use the Days Before Due to add to the invoice date */
+        $creditor_trans->due_date = Dates::addDays($creditor_trans->tran_date, (int) substr($creditor_trans->terms, 1));
       }
     }
   } /* end of class defintion */

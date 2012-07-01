@@ -12,8 +12,8 @@
    * @param string $action
    * @param string $name
    */
-  class Form {
-
+  class Form
+  {
     /**
      * @static
      *
@@ -30,9 +30,9 @@
         $action = $_SERVER['DOCUMENT_URI'];
       }
       if ($multi) {
-        echo "<form enctype='multipart/form-data' method='post' action='".$action."' $name>\n";
+        echo "<form enctype='multipart/form-data' method='post' action='" . $action . "' $name>\n";
       } else {
-        echo "<form method='post' action='".$action."' $name>\n";
+        echo "<form method='post' action='" . $action . "' $name>\n";
       }
     }
     /**
@@ -203,10 +203,10 @@
         $selector .= sprintf($_select_button, $disabled, User::theme(), (User::fallback() ? '' :
           'display:none;'), '_' . $name . '_update') . "\n";
       }
-      JS::default_focus($name);
+      JS::defaultFocus($name);
       return $selector;
     }
-// SUBMITS //
+    // SUBMITS //
     /**
      * Universal submit form button.
      * $atype - type of submit:
@@ -843,8 +843,8 @@
       $items['0'] = strlen($name_no) ? $name_no : _("No");
       $items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
       return Forms::arraySelect($name, $selected_id, $items, array(
-        'select_submit' => $submit_on_change, 'async' => false
-      )); // FIX?
+                                                                  'select_submit' => $submit_on_change, 'async' => false
+                                                             )); // FIX?
     }
     /**
      * @param        $label
@@ -884,8 +884,8 @@
         $items[$i] = "$i";
       }
       return Forms::arraySelect($name, $selected, $items, array(
-        'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
-      ));
+                                                               'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
+                                                          ));
     }
     /**
      * @param      $label
@@ -952,7 +952,7 @@
      */
     public function dateFormat($row)
     {
-      return Dates::sql2date($row['reconciled']);
+      return Dates::sqlToDate($row['reconciled']);
     }
     /**
      * @param $row
@@ -961,10 +961,10 @@
      */
     public function addCurrFormat($row)
     {
- //     $company_currency;
-     // if ($company_currency == null) {
-        $company_currency = Bank_Currency::for_company();
-     // }
+      //     $company_currency;
+      // if ($company_currency == null) {
+      $company_currency = Bank_Currency::for_company();
+      // }
       return $row[1] . ($row[2] == $company_currency ? '' : ("&nbsp;-&nbsp;" . $row[2]));
     }
     /**
@@ -992,7 +992,7 @@
      */
     public function fiscalYearFormat($row)
     {
-      return Dates::sql2date($row[1]) . "&nbsp;-&nbsp;" . Dates::sql2date($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') :
+      return Dates::sqlToDate($row[1]) . "&nbsp;-&nbsp;" . Dates::sqlToDate($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') :
         _('Active')) . "</option>\n";
     }
     /**
@@ -1052,7 +1052,7 @@
       if (Forms::hasPost('show_inactive')) {
         if (isset($_POST['LInact'][$id]) && (Input::post('_Inactive' . $id . '_update') || Input::post('Update')) && (Forms::hasPost('Inactive' . $id) != $value)
         ) {
-          DB::update_record_status($id, !$value, $table, $key);
+          DB::updateRecordStatus($id, !$value, $table, $key);
         }
         echo "<td class='center'>";
         echo Forms::checkbox(null, $name, $value, true, '', "class='center'") . Forms::hidden("LInact[$id]", $value, false);
@@ -1144,13 +1144,13 @@
         } else {
           $dd = Dates::today();
           if ($inc_days != 0) {
-            $dd = Dates::add_days($dd, $inc_days);
+            $dd = Dates::addDays($dd, $inc_days);
           }
           if ($inc_months != 0) {
-            $dd = Dates::add_months($dd, $inc_months);
+            $dd = Dates::addMonths($dd, $inc_months);
           }
           if ($inc_years != 0) {
-            $dd = Dates::add_years($dd, $inc_years);
+            $dd = Dates::addYears($dd, $inc_years);
           }
           $_POST[$name] = $dd;
         }
@@ -1219,7 +1219,7 @@
      */
     public function  textCellsEx($label, $name, $size = null, $max = null, $init = null, $title = null, $params = null, $post_label = null, $submit_on_change = false)
     {
-      JS::default_focus($name);
+      JS::defaultFocus($name);
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         if ($init !== null) {
           $_POST[$name] = $init;

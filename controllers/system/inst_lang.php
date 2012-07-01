@@ -63,7 +63,7 @@
     $language                             = Config::get('languages.installed');
     $language                             = $language[$id]['code'];
     $filename                             = LANG_PATH . '$language' . DS . 'LC_MESSAGES';
-    if (!Files::save_to_file($filename, '')) {
+    if (!Files::saveToFile($filename, '')) {
       return false;
     }
     $directory = LANG_PATH . $_POST['code'];
@@ -103,11 +103,11 @@
       Config::set('default.language', $_SESSION['Language']->code);
     }
     Config::remove('languages.installed', $id);
-    if (!Files::save_to_file($filename, '')) {
+    if (!Files::saveToFile($filename, '')) {
       return;
     }
     $filename = LANG_PATH . $language;
-    Files::flush_dir($filename);
+    Files::flushDir($filename);
     rmdir($filename);
     Display::meta_forward($_SERVER['DOCUMENT_URI']);
   }

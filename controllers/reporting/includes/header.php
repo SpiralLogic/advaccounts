@@ -136,11 +136,11 @@
   $this->NewLine(3);
   $this->Text($mcol + 100, $txt_date);
   if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) {
-    $this->Text($mcol + 180, Dates::sql2date($myrow['ord_date']));
+    $this->Text($mcol + 180, Dates::sqlToDate($myrow['ord_date']));
   } elseif ($doctype == ST_WORKORDER) {
-    $this->Text($mcol + 180, Dates::sql2date($myrow['date_']));
+    $this->Text($mcol + 180, Dates::sqlToDate($myrow['date_']));
   } else {
-    $this->Text($mcol + 180, Dates::sql2date($myrow['tran_date']));
+    $this->Text($mcol + 180, Dates::sqlToDate($myrow['tran_date']));
   }
   $this->NewLine();
   $this->Text($mcol + 100, $doc_invoice_no);
@@ -346,20 +346,20 @@
   # __ADVANCEDEDIT__ END #
   $col += $width;
   if ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE) {
-    $this->TextWrap($col, $this->row, $width, Dates::sql2date($myrow['delivery_date']), 'C');
+    $this->TextWrap($col, $this->row, $width, Dates::sqlToDate($myrow['delivery_date']), 'C');
   } elseif ($doctype == ST_WORKORDER) {
     $this->TextWrap($col, $this->row, $width, $myrow["units_issued"], 'C');
   } elseif ($doctype != ST_PURCHORDER && $doctype != ST_CUSTCREDIT && $doctype != ST_CUSTPAYMENT && $doctype != ST_CUSTREFUND && $doctype != ST_SUPPAYMENT && isset
   ($myrow['due_date'])
   ) {
-    $this->TextWrap($col, $this->row, $width, Dates::sql2date($myrow['due_date']), 'C');
+    $this->TextWrap($col, $this->row, $width, Dates::sqlToDate($myrow['due_date']), 'C');
   }
   # __ADVANCEDEDIT__ BEGIN # remove payment terms from purchase order
   if ((!isset($packing_slip) || $packing_slip == 0) && $doctype != ST_PURCHORDER && $doctype != ST_CUSTDELIVERY) {
     # __ADVANCEDEDIT__ END #
     $this->row -= (2 * $this->lineHeight);
     if ($doctype == ST_WORKORDER) {
-      $str = Dates::sql2date($myrow["required_by"]);
+      $str = Dates::sqlToDate($myrow["required_by"]);
     } else {
       $id     = $myrow['payment_terms'];
       $sql    = "SELECT terms FROM payment_terms WHERE terms_indicator='$id'";

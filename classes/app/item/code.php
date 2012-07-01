@@ -103,7 +103,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function  get_all($stock_id, $foreign = 1)
+    public static function  getAll($stock_id, $foreign = 1)
     {
       $sql    = "SELECT i.*, c.description as cat_name FROM " . "item_codes as i," . "stock_category as c
                 WHERE stock_id=" . DB::escape($stock_id) . "

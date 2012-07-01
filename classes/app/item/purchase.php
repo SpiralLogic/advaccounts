@@ -70,7 +70,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($stock_id)
+    public static function getAll($stock_id)
     {
       $sql
         = "SELECT purch_data.*,suppliers.name, suppliers.curr_code
@@ -140,7 +140,7 @@
                                                                                   'editable'    => 30,
                                                                                   'cells'       => true,
                                                                                   'description' => '',
-        'class'=>'auto'
+                                                                                  'class'       => 'auto'
                                                                              ));
     }
     /**

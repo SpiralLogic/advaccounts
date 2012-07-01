@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::open_window(900, 600);
+  JS::openWindow(900, 600);
   Page::start(_($help_context = "Recurrent Invoices"), SA_SRECURRENT);
   list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
@@ -16,7 +16,7 @@
     if (strlen($_POST['description']) == 0) {
       $input_error = 1;
       Event::error(_("The area description cannot be empty."));
-      JS::set_focus('description');
+      JS::setFocus('description');
     }
     if ($input_error != 1) {
       if ($selected_id != -1) {
@@ -28,14 +28,14 @@
  			group_no=" . DB::escape($_POST['group_no']) . ",
  			days=" . Validation::input_num('days', 0) . ",
  			monthly=" . Validation::input_num('monthly', 0) . ",
- 			begin='" . Dates::date2sql($_POST['begin']) . "',
- 			end='" . Dates::date2sql($_POST['end']) . "'
+ 			begin='" . Dates::dateToSql($_POST['begin']) . "',
+ 			end='" . Dates::dateToSql($_POST['end']) . "'
  			WHERE id = " . DB::escape($selected_id);
         $note = _('Selected recurrent invoice has been updated');
       } else {
         $sql
               = "INSERT INTO recurrent_invoices (description, order_no, debtor_id,
- 			group_no, days, monthly, begin, end, last_sent) VALUES (" . DB::escape($_POST['description']) . ", " . DB::escape($_POST['order_no']) . ", " . DB::escape($_POST['debtor_id']) . ", " . DB::escape($_POST['group_no']) . ", " . Validation::input_num('days', 0) . ", " . Validation::input_num('monthly', 0) . ", '" . Dates::date2sql($_POST['begin']) . "', '" . Dates::date2sql($_POST['end']) . "', '" . Dates::date2sql(Add_Years($_POST['begin'], -5)) . "')";
+ 			group_no, days, monthly, begin, end, last_sent) VALUES (" . DB::escape($_POST['description']) . ", " . DB::escape($_POST['order_no']) . ", " . DB::escape($_POST['debtor_id']) . ", " . DB::escape($_POST['group_no']) . ", " . Validation::input_num('days', 0) . ", " . Validation::input_num('monthly', 0) . ", '" . Dates::dateToSql($_POST['begin']) . "', '" . Dates::dateToSql($_POST['end']) . "', '" . Dates::dateToSql(addYears($_POST['begin'], -5)) . "')";
         $note = _('New recurrent invoice has been added');
       }
       DB::query($sql, "The recurrent invoice could not be updated or added");
@@ -76,9 +76,9 @@
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
-    $begin     = Dates::sql2date($myrow["begin"]);
-    $end       = Dates::sql2date($myrow["end"]);
-    $last_sent = Dates::sql2date($myrow["last_sent"]);
+    $begin     = Dates::sqlToDate($myrow["begin"]);
+    $end       = Dates::sqlToDate($myrow["end"]);
+    $last_sent = Dates::sqlToDate($myrow["last_sent"]);
 
     Cell::label($myrow["description"]);
     Cell::label(Debtor::trans_view(ST_SALESORDER, $myrow["order_no"]));
@@ -115,12 +115,12 @@
       $_POST['group_no']    = $myrow["group_no"];
       $_POST['days']        = $myrow["days"];
       $_POST['monthly']     = $myrow["monthly"];
-      $_POST['begin']       = Dates::sql2date($myrow["begin"]);
-      $_POST['end']         = Dates::sql2date($myrow["end"]);
+      $_POST['begin']       = Dates::sqlToDate($myrow["begin"]);
+      $_POST['end']         = Dates::sqlToDate($myrow["end"]);
     }
     Forms::hidden("selected_id", $selected_id);
   }
-   Forms::textRowEx(_("Description:"), 'description', 50);
+  Forms::textRowEx(_("Description:"), 'description', 50);
   Sales_UI::templates_row(_("Template:"), 'order_no');
   Debtor::row(_("Customer:"), 'debtor_id', null, " ", true);
   if ($_POST['debtor_id'] > 0) {
@@ -128,10 +128,10 @@
   } else {
     Sales_UI::groups_row(_("Sales Group:"), 'group_no', null, " ");
   }
-   Forms::SmallAmountRow(_("Days:"), 'days', 0, null, null, 0);
-   Forms::SmallAmountRow(_("Monthly:"), 'monthly', 0, null, null, 0);
-   Forms::dateRow(_("Begin:"), 'begin');
-   Forms::dateRow(_("End:"), 'end', null, null, 0, 0, 5);
+  Forms::SmallAmountRow(_("Days:"), 'days', 0, null, null, 0);
+  Forms::SmallAmountRow(_("Monthly:"), 'monthly', 0, null, null, 0);
+  Forms::dateRow(_("Begin:"), 'begin');
+  Forms::dateRow(_("End:"), 'end', null, null, 0, 0, 5);
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();

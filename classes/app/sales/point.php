@@ -45,7 +45,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($all = false)
+    public static function getAll($all = false)
     {
       $sql = "SELECT pos.*, loc.location_name, acc.bank_account_name FROM " . "sales_pos as pos
         LEFT JOIN locations as loc on pos.pos_location=loc.loc_code
@@ -84,7 +84,7 @@
     {
       $sql    = "SELECT pos_name FROM sales_pos WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "could not get POS name");
-      $row    = DB::fetch_row($result);
+      $row    = DB::fetchRow($result);
 
       return $row[0];
     }
@@ -110,19 +110,19 @@
     public static function row($label, $name, $selected_id = null, $spec_option = false, $submit_on_change = false)
     {
       $sql = "SELECT id, pos_name, inactive FROM sales_pos";
-      JS::default_focus($name);
+      JS::defaultFocus($name);
       echo '<tr>';
       if ($label != null) {
         echo "<td class='label'>$label</td>\n";
       }
       echo "<td>";
       echo Forms::selectBox($name, $selected_id, $sql, 'id', 'pos_name', array(
-                                                                        'select_submit' => $submit_on_change,
-                                                                        'async'         => true,
-                                                                        'spec_option'   => $spec_option,
-                                                                        'spec_id'       => -1,
-                                                                        'order'         => array('pos_name')
-                                                                   ));
+                                                                              'select_submit' => $submit_on_change,
+                                                                              'async'         => true,
+                                                                              'spec_option'   => $spec_option,
+                                                                              'spec_id'       => -1,
+                                                                              'order'         => array('pos_name')
+                                                                         ));
       echo "</td></tr>\n";
     }
     /**
@@ -133,13 +133,13 @@
     {
       if (strlen($_POST['name']) == 0) {
         Event::error(_("The POS name cannot be empty."));
-        JS::set_focus('pos_name');
+        JS::setFocus('pos_name');
 
         return false;
       }
       if (!Forms::hasPost('cash') && !Forms::hasPost('credit')) {
         Event::error(_("You must allow cash or credit sale."));
-        JS::set_focus('credit');
+        JS::setFocus('credit');
 
         return false;
       }

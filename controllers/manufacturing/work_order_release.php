@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::open_window(800, 500);
+  JS::openWindow(800, 500);
   Page::start(_($help_context = "Work Order Release to Manufacturing"), SA_MANUFRELEASE);
   if (isset($_GET["trans_no"])) {
     $selected_id = $_GET["trans_no"];
@@ -26,14 +26,14 @@
   {
     if ($myrow['released']) {
       Event::error(_("This work order has already been released."));
-      JS::set_focus('released');
+      JS::setFocus('released');
 
       return false;
     }
     // make sure item has components
     if (!WO::has_bom($myrow['stock_id'])) {
       Event::error(_("This Work Order cannot be released. The selected item to manufacture does not have a bom."));
-      JS::set_focus('stock_id');
+      JS::setFocus('stock_id');
 
       return false;
     }
@@ -58,8 +58,8 @@
     Table::start('tablestyle2');
     Row::label(_("Work Order #:"), $selected_id);
     Row::label(_("Work Order Reference:"), $myrow["wo_ref"]);
-     Forms::dateRow(_("Released Date") . ":", 'released_date');
-     Forms::textareaRow(_("Memo:"), 'memo_', $_POST['memo_'], 40, 5);
+    Forms::dateRow(_("Released Date") . ":", 'released_date');
+    Forms::textareaRow(_("Memo:"), 'memo_', $_POST['memo_'], 40, 5);
     Table::end(1);
     Forms::submitCenter('release', _("Release Work Order"), true, '', 'default');
     Forms::hidden('selected_id', $selected_id);

@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::open_window(800, 500);
+  JS::openWindow(800, 500);
   if (isset($_GET['outstanding_only']) && ($_GET['outstanding_only'] == true)) {
     // curently outstanding simply means not closed
     $outstanding_only = 1;
@@ -27,9 +27,9 @@
     Ajax::addDisable(true, 'OpenOnly', $disable);
     Ajax::addDisable(true, 'SelectedStockItem', $disable);
     if ($disable) {
-      JS::set_focus('OrderNumber');
+      JS::setFocus('OrderNumber');
     } else {
-      JS::set_focus('StockLocation');
+      JS::setFocus('StockLocation');
     }
     Ajax::activate('orders_tbl');
   }
@@ -39,11 +39,11 @@
   Forms::start(false, $_SERVER['DOCUMENT_URI'] . "?outstanding_only=$outstanding_only");
   Table::start('tablestyle_noborder');
   Row::start();
-   Forms::refCells(_("Reference:"), 'OrderNumber', '', null, '', true);
+  Forms::refCells(_("Reference:"), 'OrderNumber', '', null, '', true);
   Inv_Location::cells(_("at Location:"), 'StockLocation', null, true);
-   Forms::checkCells(_("Only Overdue:"), 'OverdueOnly', null);
+  Forms::checkCells(_("Only Overdue:"), 'OverdueOnly', null);
   if ($outstanding_only == 0) {
-     Forms::checkCells(_("Only Open:"), 'OpenOnly', null);
+    Forms::checkCells(_("Only Open:"), 'OpenOnly', null);
   }
   Item_UI::manufactured_cells(_("for item:"), 'SelectedStockItem', null, true);
   Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
@@ -56,7 +56,7 @@
    */
   function check_overdue($row)
   {
-    return (!$row["closed"] && Dates::date_diff2(Dates::today(), Dates::sql2date($row["required_by"]), "d") > 0);
+    return (!$row["closed"] && Dates::differenceBetween(Dates::today(), Dates::sqlToDate($row["required_by"]), "d") > 0);
   }
 
   /**
@@ -204,7 +204,7 @@
     $sql .= " AND workorder.stock_id=" . DB::quote($_POST['SelectedStockItem']);
   }
   if (Forms::hasPost('OverdueOnly')) {
-    $Today = Dates::date2sql(Dates::today());
+    $Today = Dates::dateToSql(Dates::today());
     $sql .= " AND workorder.required_by < '$Today' ";
   }
   $cols  = array(

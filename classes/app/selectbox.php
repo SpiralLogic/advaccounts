@@ -191,7 +191,7 @@
           '';
       }
       if ($this->selected_id == null) {
-        $this->selected_id = Input::post($this->name, null, (string)$this->default);
+        $this->selected_id = Input::post($this->name, null, (string) $this->default);
       }
       if (!is_array($this->selected_id)) {
         $this->selected_id = array((string) $this->selected_id);
@@ -257,7 +257,7 @@
           }
           $selector .= "<option $sel $optclass value='$value'>$descr</option>\n";
         }
-        DB::free_result($result);
+        DB::freeResult($result);
       }
       // Prepend special option.
       if ($this->spec_option !== false) { // if special option used - add it
@@ -276,7 +276,7 @@
         $this->selected_id = array($first_id);
       }
       $_POST[$this->name] = $multi ? $this->selected_id : $this->selected_id[0];
-      $selector = "<select id='$this->name' " . ($multi ? "multiple" : '') . ($this->height !== false ?
+      $selector           = "<select id='$this->name' " . ($multi ? "multiple" : '') . ($this->height !== false ?
         ' size="' . $this->height . '"' : '') . "$disabled name='$this->name" . ($multi ? '[]' :
         '') . "' class='$class' title='" . $this->sel_hint . "' " . $this->rel . ">" . $selector . "</select>\n";
       if ($by_id && ($search_box != false || $this->editable)) {
@@ -288,10 +288,10 @@
           } else {
             $selector .= "<input type='text' $disabled name='{$this->name}_text' id='{$this->name}_text' size='" . $this->editable . "' maxlength='" . $this->max . "' " . $this->rel . " value='$edit'>\n";
           }
-          JS::set_focus($this->name . '_text'); // prevent lost focus
+          JS::setFocus($this->name . '_text'); // prevent lost focus
         } else {
           if (Input::post($search_submit ? $search_submit : "_{$this->name}_button")) {
-            JS::set_focus($this->name);
+            JS::setFocus($this->name);
           }
         } // prevent lost focus
         if (!$this->editable) {
@@ -319,7 +319,7 @@
             'display:none;'), $search_submit ? $search_submit : "_{$this->name}_button") . "\n";
         }
       }
-      JS::default_focus(($search_box && $by_id) ? $search_box : $this->name);
+      JS::defaultFocus(($search_box && $by_id) ? $search_box : $this->name);
       if ($search_box && $this->cells) {
         $str = ($edit_entry != '' ? "<td>$edit_entry</td>" : '') . "<td>$selector</td>";
       } else {
@@ -352,7 +352,7 @@
             if ($this->spec_option === false && $this->selected_id == array()) {
               $limit = ' LIMIT 1';
             } else {
-              $this->where[] = $this->valfield . "='" . Input::post($this->name,null,$this->spec_id) . "'";
+              $this->where[] = $this->valfield . "='" . Input::post($this->name, null, $this->spec_id) . "'";
             }
           } else {
             if ($txt != '*') {

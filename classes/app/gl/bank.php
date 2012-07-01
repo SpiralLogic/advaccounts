@@ -7,8 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class GL_Bank {
-
+  class GL_Bank
+  {
     /**
      * @static
      *
@@ -23,7 +23,8 @@
      *
      * @return mixed
      */
-    protected static function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $account, $currency, $person_type_id = null, $person_id = "") {
+    protected static function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $account, $currency, $person_type_id = null, $person_id = "")
+    {
       if (Bank_Currency::is_company($currency)) {
         return;
       }
@@ -34,9 +35,10 @@
       // We have to calculate all the currency accounts belonging to the GL account
       // upto $date_ and calculate with the exchange rates. And then compare with the GL account balance.
       // 2010-02-23 Joe Hunt with help of Ary Wibowo
-      $sql    = "SELECT SUM(bt.amount) AS for_amount, ba.bank_curr_code
+      $sql
+              = "SELECT SUM(bt.amount) AS for_amount, ba.bank_curr_code
 		FROM bank_trans bt, bank_accounts ba
-		WHERE ba.id = bt.bank_act AND ba.account_code = " . DB::escape($account) . " AND bt.trans_date<='" . Dates::date2sql($date_) . "'
+		WHERE ba.id = bt.bank_act AND ba.account_code = " . DB::escape($account) . " AND bt.trans_date<='" . Dates::dateToSql($date_) . "'
 		GROUP BY ba.bank_curr_code";
       $result = DB::query($sql, "Transactions for bank account $acc_id could not be calculated");
       while ($row = DB::fetch($result)) {
@@ -80,7 +82,8 @@
      *
      * @return int
      */
-    public static function add_bank_transfer($from_account, $to_account, $date_, $amount, $ref, $memo_, $charge = 0) {
+    public static function add_bank_transfer($from_account, $to_account, $date_, $amount, $ref, $memo_, $charge = 0)
+    {
       DB::begin();
       $trans_type      = ST_BANKTRANSFER;
       $currency        = Bank_Currency::for_company($from_account);
@@ -135,10 +138,11 @@
      *
      * @return array
      */
-    public static function add_bank_transaction($trans_type, $from_account, $items, $date_, $person_type_id, $person_id, $person_detail_id, $ref, $memo_, $use_transaction = true) {
+    public static function add_bank_transaction($trans_type, $from_account, $items, $date_, $person_type_id, $person_id, $person_detail_id, $ref, $memo_, $use_transaction = true)
+    {
       // we can only handle type 1 (payment)and type 2 (deposit)
       if ($trans_type != ST_BANKPAYMENT && $trans_type != ST_BANKDEPOSIT) {
-        Errors::db_error("Invalid type ($trans_type) sent to add_bank_transaction");
+        Errors::databaseError("Invalid type ($trans_type) sent to add_bank_transaction");
       }
       $do_exchange_variance = false;
       if ($use_transaction) {
@@ -155,16 +159,14 @@
         // we need to negate it too
         $cust_amount = -$cust_amount;
         $trans_no    = Debtor_Trans::write($trans_type, 0, $person_id, $person_detail_id, $date_, $ref, $cust_amount);
-      }
-      elseif ($person_type_id == PT_SUPPLIER) {
+      } elseif ($person_type_id == PT_SUPPLIER) {
         // we need to add a supplier transaction record
         // convert to supp currency
         $supplier_amount = Bank::exchange_from_to($total_amount, $currency, Bank_Currency::for_creditor($person_id), $date_);
         // we need to negate it too
         $supplier_amount = -$supplier_amount;
         $trans_no        = Creditor_Trans::add($trans_type, $person_id, $date_, '', $ref, "", $supplier_amount, 0, 0);
-      }
-      else {
+      } else {
         $trans_no             = SysTypes::get_next_trans_no($trans_type);
         $do_exchange_variance = true;
       }
@@ -175,7 +177,7 @@
         $is_bank_to = Bank_Account::is($gl_item->code_id);
         if ($trans_type == ST_BANKPAYMENT AND $is_bank_to) {
           // we don't allow payments to go to a bank account. use transfer for this !
-          Errors::db_error("invalid payment entered. Cannot pay to another bank account", "");
+          Errors::databaseError("invalid payment entered. Cannot pay to another bank account", "");
         }
         // do the destination account postings
         $total += GL_Trans::add($trans_type, $trans_no, $date_, $gl_item->code_id, $gl_item->dimension_id, $gl_item->dimension2_id, $gl_item->reference, $gl_item->amount, $currency, $person_type_id, $person_id);

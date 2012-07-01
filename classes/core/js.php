@@ -63,7 +63,7 @@
      *
      * @return mixed
      */
-    public static function open_window($width, $height)
+    public static function openWindow($width, $height)
     {
       if (static::$_openWindow || !Config::get('ui_windows_popups')) {
         return;
@@ -100,12 +100,14 @@
     {
       $address = str_replace(array("\r", "\t", "\n", "\v"), ", ", $address);
       $apikey  = Config::get('js.maps_api_key');
-      $js      = <<<JS
+      $js
+               = <<<JS
 
                 Adv.maps = { api_key: '$apikey'}
 JS;
       JS::beforeload($js);
-      $js = <<<JS
+      $js
+        = <<<JS
 var map = $("<div/>").gMap({
     address:"{$address}",
     markers: [{ address:"{$address}", html: "_address", popup: true}],
@@ -126,7 +128,7 @@ JS;
      * @static
 
      */
-    public static function png_fix()
+    public static function pngFix()
     {
       $js = "function fixPNG(myImage)\n{\n var arVersion = navigator.appVersion.split(\"MSIE\")\n var version = parseFloat(arVersion[1])\n if ((version >= 5.5) && (version < 7) && (document.body.filters))\n {\n" . " var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n var imgTitle = (myImage.title) ?\n" . " \"title='\" + myImage.title + \"' \" : \"title='\" + myImage.alt + \"' \"\n var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n + \" style=\\\"\" + \"width:\" + myImage.width\n" . " + \"px; height:\" + myImage.height\n + \"px;\" + imgStyle + \";\"\n + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n myImage.outerHTML = strNewHTML\n }\n" . "}\n";
       JS::beforeload($js);
@@ -141,13 +143,13 @@ JS;
      * Returns unique name if $name=null
 
      */
-    public static function default_focus($name = null)
+    public static function defaultFocus($name = null)
     {
       if ($name == null) {
         $name = uniqid('_el', true);
       }
       if (!isset($_POST['_focus'])) {
-        JS::set_focus($name);
+        JS::setFocus($name);
       }
       return $name;
     }
@@ -155,7 +157,7 @@ JS;
      * @static
 
      */
-    public static function reset_focus()
+    public static function resetFocus()
     {
       unset($_POST['_focus']);
     }
@@ -173,7 +175,8 @@ JS;
       extract(array_merge($defaults, $options));
       $content = "Adv.o.tabs.$id = $('#" . $id . "').tabs(";
       if ($hasLinks) {
-        $content .= <<<JSS
+        $content
+          .= <<<JSS
     {
     select: function(event, ui) {
     var \$tab = $(ui.tab);
@@ -285,10 +288,13 @@ JSS;
      *
      * @param      $selector
      * @param bool $cached
+     * @param bool $cached
      */
     public static function setFocus($selector, $cached = false)
     {
-      $_POST['_focus'] = self::$_focus = ($selector) ? (!$cached) ? "$('$selector')" : 'Adv.o.' . $selector : false;
+      self::$_focus = ($selector) ? (!$cached) ? "$('$selector')" : 'Adv.o.' . $selector : false;
+      Ajax::addFocus(true, $selector);
+      $_POST['_focus'] = $selector;
     }
     /**
      * @static
@@ -298,6 +304,7 @@ JSS;
      * @param int   $level
      *
      * @return string
+     * @return array|mixed|string
      */
     public static function arrayToOptions($options = array(), $funcs = array(), $level = 0)
     {
@@ -477,18 +484,6 @@ JSS;
     {
       $data['status'] = array('status' => 'redirect', 'message' => $url);
       static::renderJSON($data);
-    }
-    /***
-     * @static
-     *
-     * @param $name
-     * Setting focus on element $name in $form.
-     * If $form<0 $name is element id.
-     */
-    public static function set_focus($name)
-    {
-      Ajax::addFocus(true, $name);
-      $_POST['_focus'] = $name;
     }
   }
 

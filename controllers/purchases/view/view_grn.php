@@ -1,15 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
-
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   Page::start(_($help_context = "View Purchase Order Delivery"), SA_SUPPTRANSVIEW, true);
   if (!isset($_GET['trans_no'])) {
     die ("<BR>" . _("This page must be called with a Purchase Order Delivery number to review."));
@@ -22,11 +21,18 @@
   Display::heading(_("Line Details"));
   Table::start('tablestyle grid width90');
   $th = array(
-    _("Item Code"), _("Item Description"), _("Delivery Date"), _("Quantity"), _("Unit"), _("Price"), _("Line Total"), _("Quantity Invoiced")
+    _("Item Code"),
+    _("Item Description"),
+    _("Delivery Date"),
+    _("Quantity"),
+    _("Unit"),
+    _("Price"),
+    _("Line Total"),
+    _("Quantity Invoiced")
   );
   Table::header($th);
   $total = 0;
-  $k = 0; //row colour counter
+  $k     = 0; //row colour counter
   foreach ($purchase_order->line_items as $stock_item) {
     $line_total = $stock_item->qty_received * $stock_item->price;
 

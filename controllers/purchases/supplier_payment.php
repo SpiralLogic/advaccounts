@@ -7,16 +7,16 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   JS::footerFile('/js/payalloc.js');
   Page::start(_($help_context = "Supplier Payment Entry"), SA_SUPPLIERPAYMNT);
-  $_POST['supplier_id'] = Input::get_post_global('supplier_id', Input::NUMERIC, -1);
+  $_POST['supplier_id'] = Input::getPostGlobal('supplier_id', Input::NUMERIC, -1);
   Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
   if (!isset($_POST['DatePaid'])) {
-    $_POST['DatePaid'] = Dates::new_doc_date();
-    if (!Dates::is_date_in_fiscalyear($_POST['DatePaid'])) {
-      $_POST['DatePaid'] = Dates::end_fiscalyear();
+    $_POST['DatePaid'] = Dates::newDocDate();
+    if (!Dates::isDateInFiscalYear($_POST['DatePaid'])) {
+      $_POST['DatePaid'] = Dates::endFiscalYear();
     }
   }
   if (isset($_POST['_DatePaid_changed'])) {
@@ -48,7 +48,7 @@
       $rate = Validation::input_num('_ex_rate');
     }
     $payment_id = Creditor_Payment::add($_POST['supplier_id'], $_POST['DatePaid'], $_POST['bank_account'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['ref'], $_POST['memo_'], $rate, Validation::input_num('charge'));
-    Dates::new_doc_date($_POST['DatePaid']);
+    Dates::newDocDate($_POST['DatePaid']);
     $_SESSION['alloc']->trans_no = $payment_id;
     $_SESSION['alloc']->write();
     //unset($_POST['supplier_id']);
@@ -65,18 +65,18 @@
   {
     $_SESSION['alloc'] = new Gl_Allocation(ST_SUPPAYMENT, 0);
   }
-  Session::i()->setGlobal('creditor', $_POST['supplier_id']);
+  Session::setGlobal('creditor', $_POST['supplier_id']);
   Bank_Account::row(_("From Bank Account:"), 'bank_account', null, true);
   Table::section(2);
-   Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_SUPPAYMENT));
-   Forms::dateRow(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
+  Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_SUPPAYMENT));
+  Forms::dateRow(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
   Table::section(3);
   $supplier_currency = Bank_Currency::for_creditor($_POST['supplier_id']);
   $bank_currency     = Bank_Currency::for_company($_POST['bank_account']);
   if ($bank_currency != $supplier_currency) {
     GL_ExchangeRate::display($bank_currency, $supplier_currency, $_POST['DatePaid'], true);
   }
-   Forms::AmountRow(_("Bank Charge:"), 'charge');
+  Forms::AmountRow(_("Bank Charge:"), 'charge');
   Table::endOuter(1); // outer table
   if ($bank_currency == $supplier_currency) {
     Display::div_start('alloc_tbl');
@@ -84,9 +84,9 @@
     Display::div_end();
   }
   Table::start('tablestyle width60');
-   Forms::AmountRow(_("Amount of Discount:"), 'discount');
-   Forms::AmountRow(_("Amount of Payment:"), 'amount');
-   Forms::textareaRow(_("Memo:"), 'memo_', null, 22, 4);
+  Forms::AmountRow(_("Amount of Discount:"), 'discount');
+  Forms::AmountRow(_("Amount of Payment:"), 'amount');
+  Forms::textareaRow(_("Memo:"), 'memo_', null, 22, 4);
   Table::end(1);
   if ($bank_currency != $supplier_currency) {
     Event::warning(_("The amount and discount are in the bank account's currency."), 0, 1);

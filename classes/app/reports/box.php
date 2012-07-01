@@ -67,11 +67,11 @@
       foreach ($this->ar_classes as $key => $value) {
         $style = $class_counter == $_REQUEST['Class'] ? '' : "style='display:none'";
         $acc   = Display::access_string($key);
-        $st_classes .= "<a href='" . $_SERVER['DOCUMENT_URI'] . "?Class=$class_counter' class='menu_option' id='" . JS::default_focus() . "' onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
+        $st_classes .= "<a href='" . $_SERVER['DOCUMENT_URI'] . "?Class=$class_counter' class='menu_option' id='" . JS::defaultFocus() . "' onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
         $st_reports .= "<table id='TAB_" . $class_counter . "' $style cellpadding=0 cellspacing=0 style='width:100%'><tr><td><span class='bold'>" . _("Reports For Class: ") . "&nbsp;$key</span></td></tr>\n";
         foreach ($value as $report) {
           $acc = Display::access_string($report->name);
-          $st_reports .= "<tr><td><a class='printlink' href='" . $_SERVER['DOCUMENT_URI'] . "?Class=$class_counter&rep_id=$report->id' id='" . JS::default_focus() . "'$acc[1]>$acc[0]</a><tr><td>\n";
+          $st_reports .= "<tr><td><a class='printlink' href='" . $_SERVER['DOCUMENT_URI'] . "?Class=$class_counter&rep_id=$report->id' id='" . JS::defaultFocus() . "'$acc[1]>$acc[0]</a><tr><td>\n";
           if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id'] == $report->id) {
             $action    = BASE_URL . 'reporting/prn_redirect.php';
             $st_params = "<table><tr><td>\n<form method='POST' action='$action' target='_blank'>\n";
@@ -79,7 +79,7 @@
               false : 'default process') . Forms::hidden('REP_ID', $report->id, false) . '<br><br>';
             $st_params .= $this->getOptions($report->get_controls());
             $st_params .= "\n</form></td></tr></table>\n";
-            JS::set_focus('Rep' . $report->id);
+            JS::setFocus('Rep' . $report->id);
             $Ajax->addUpdate(true, 'rep_form', $st_params);
           }
         }
@@ -182,10 +182,10 @@
           $sql = "SELECT curr_abrev, concat(curr_abrev,' - ', currency) AS name FROM currencies";
 
           return Forms::selectBox($name, '', $sql, 'curr_abrev', 'name', array(
-                                                                        'spec_option' => _("No Currency Filter"),
-                                                                        'spec_id'     => ALL_TEXT,
-                                                                        'order'       => false
-                                                                   ));
+                                                                              'spec_option' => _("No Currency Filter"),
+                                                                              'spec_id'     => ALL_TEXT,
+                                                                              'order'       => false
+                                                                         ));
         case 'DATEMONTH':
           return Dates::months($name);
         case 'DATE':
@@ -196,25 +196,25 @@
         case 'DATEBEGINTAX':
         case 'DATEENDTAX':
           if ($type == 'DATEBEGIN') {
-            $date = Dates::begin_fiscalyear();
+            $date = Dates::beginFiscalYear();
           } elseif ($type == 'DATEEND') {
-            $date = Dates::end_fiscalyear();
+            $date = Dates::endFiscalYear();
           } else {
             $date = Dates::today();
           }
           if ($type == 'DATEBEGINM') {
-            $date = Dates::begin_month($date);
+            $date = Dates::beginMonth($date);
           } elseif ($type == 'DATEENDM') {
-            $date = Dates::end_month($date);
+            $date = Dates::endMonth($date);
           } elseif ($type == 'DATEBEGINTAX' || $type == 'DATEENDTAX') {
             $row   = DB_Company::get_prefs();
-            $edate = Dates::add_months($date, -$row['tax_last']);
-            $edate = Dates::end_month($edate);
+            $edate = Dates::addMonths($date, -$row['tax_last']);
+            $edate = Dates::endMonth($edate);
             if ($type == 'DATEENDTAX') {
               $date = $edate;
             } else {
-              $bdate = Dates::begin_month($edate);
-              $bdate = Dates::add_months($bdate, -$row['tax_prd'] + 1);
+              $bdate = Dates::beginMonth($edate);
+              $bdate = Dates::addMonths($bdate, -$row['tax_prd'] + 1);
               $date  = $bdate;
             }
           }
@@ -223,7 +223,7 @@
           return $st;
           break;
         case 'YES_NO':
-          return  Forms::yesnoList($name);
+          return Forms::yesnoList($name);
         case 'PAYMENT_LINK':
           $sel = array(_("No payment Link"), "PayPal");
 
@@ -253,8 +253,8 @@
         case 'TEXTBOX':
           return "<textarea rows=4 cols=30 name='$name'></textarea>";
         case 'ACCOUNTS': // not used
-//					$sql = "SELECT id, name FROM ".''."chart_types";
-//					return Forms::selectBox($name, '', $sql, 'id', 'name',array('spec_option'=>_("No Account Group Filter"),'spec_id'=>ALL_NUMERIC));
+          //					$sql = "SELECT id, name FROM ".''."chart_types";
+          //					return Forms::selectBox($name, '', $sql, 'id', 'name',array('spec_option'=>_("No Account Group Filter"),'spec_id'=>ALL_NUMERIC));
           return GL_Type::select($name, null, _("No Account Group Filter"), true);
         case 'ACCOUNTS_NO_FILTER': // not used
 
@@ -280,26 +280,26 @@
           $sql = "SELECT debtor_id, name FROM debtors";
           if ($type == 'CUSTOMERS_NO_FILTER') {
             return Forms::selectBox($name, '', $sql, 'debtor_id', 'name', array(
-                                                                         'spec_option' => _("No Customer Filter"),
-                                                                         'spec_id'     => ALL_NUMERIC
-                                                                    ));
+                                                                               'spec_option' => _("No Customer Filter"),
+                                                                               'spec_id'     => ALL_NUMERIC
+                                                                          ));
           } else {
             return Forms::selectBox($name, '', $sql, 'debtor_id', 'name', null);
           }
         case 'CUSTOMERS_NOZERO_BALANCE':
           $sql = 'SELECT  c.debtor_id, c.name FROM debtor_balances db, debtors c WHERE c.debtor_id=db.debtor_id AND Balance<>0 ';
           return Forms::selectBox($name, '', $sql, 'debtor_id', 'name', array(
-                                                                                   'spec_option' => _("No Customer Filter"),
-                                                                                   'spec_id'     => ALL_NUMERIC
-                                                                              ));
+                                                                             'spec_option' => _("No Customer Filter"),
+                                                                             'spec_id'     => ALL_NUMERIC
+                                                                        ));
         case 'SUPPLIERS_NO_FILTER':
         case 'SUPPLIERS':
           $sql = "SELECT supplier_id, name FROM suppliers";
           if ($type == 'SUPPLIERS_NO_FILTER') {
             return Forms::selectBox($name, '', $sql, 'supplier_id', 'name', array(
-                                                                           'spec_option' => _("No Supplier Filter"),
-                                                                           'spec_id'     => ALL_NUMERIC
-                                                                      ));
+                                                                                 'spec_option' => _("No Supplier Filter"),
+                                                                                 'spec_id'     => ALL_NUMERIC
+                                                                            ));
           } // FIX allitems numeric!
           //						return Creditor::select($name, null, _("No Supplier Filter"));
           else {
@@ -411,9 +411,9 @@
           $sql = "SELECT id, user_id FROM users";
 
           return Forms::selectBox($name, '', $sql, 'id', 'user_id', array(
-                                                                   'spec_option' => _("No Users Filter"),
-                                                                   'spec_id'     => ALL_NUMERIC
-                                                              ));
+                                                                         'spec_option' => _("No Users Filter"),
+                                                                         'spec_id'     => ALL_NUMERIC
+                                                                    ));
         case 'ACCOUNTTAGS':
         case 'DIMENSIONTAGS':
           if ($type == 'ACCOUNTTAGS') {
@@ -452,7 +452,9 @@
       }
 
       return Forms::arraySelect($name, $value, $types, array(
-                                                        'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC, 'async' => false,
-                                                   ));
+                                                            'spec_option' => $spec_opt,
+                                                            'spec_id'     => ALL_NUMERIC,
+                                                            'async'       => false,
+                                                       ));
     }
   }

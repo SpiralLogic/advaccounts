@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   Page::start(_($help_context = "View Payment to Supplier"), SA_SUPPTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {
     $trans_no = $_GET["trans_no"];
@@ -31,7 +31,7 @@
   Row::start();
   Cell::labels(_("To Supplier"), $receipt['supplier_name'], "class='tablerowhead'");
   Cell::labels(_("From Bank Account"), $receipt['bank_account_name'], "class='tablerowhead'");
-  Cell::labels(_("Date Paid"), Dates::sql2date($receipt['tran_date']), "class='tablerowhead'");
+  Cell::labels(_("Date Paid"), Dates::sqlToDate($receipt['tran_date']), "class='tablerowhead'");
   Row::end();
   Row::start();
   if ($show_currencies) {

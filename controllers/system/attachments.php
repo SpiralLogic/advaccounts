@@ -52,7 +52,7 @@
       }
     }
   }
-  JS::open_window(800, 500);
+  JS::openWindow(800, 500);
   Page::start(_($help_context = "Attach Documents"), SA_ATTACHDOCUMENT);
   list($Mode, $selected_id) = Page::simple_mode(true);
   if (isset($_GET['filterType'])) // catch up external links
@@ -87,7 +87,7 @@
       $unique_name = $filename = $filetype = "";
       $filesize    = 0;
     }
-    $date = Dates::date2sql(Dates::today());
+    $date = Dates::dateToSql(Dates::today());
     if ($Mode == ADD_ITEM) {
       $sql
         = "INSERT INTO attachments (type_no, trans_no, description, filename, unique_name,

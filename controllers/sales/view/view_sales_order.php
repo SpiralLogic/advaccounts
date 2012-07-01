@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::open_window(900, 600);
+  JS::openWindow(900, 600);
   if ($_GET['trans_type'] == ST_SALESQUOTE) {
     Page::start(_($help_context = "View Sales Quotation"), SA_SALESTRANSVIEW, true);
   } else {
@@ -73,11 +73,11 @@
       $delivery_total += $this_total;
       Cell::label(Debtor::trans_view($del_row["type"], $del_row["trans_no"]));
       Cell::label($del_row["reference"]);
-      Cell::label(Dates::sql2date($del_row["tran_date"]));
+      Cell::label(Dates::sqlToDate($del_row["tran_date"]));
       Cell::amount($this_total);
       Row::end();
     }
-    Row::label(null, Num::price_format($delivery_total), " ", "colspan=4 class='right'");
+    Row::label(null, Num::priceFormat($delivery_total), " ", "colspan=4 class='right'");
     Table::end();
     echo "</td><td class='top'>";
     Table::start('tablestyle grid width90');
@@ -97,12 +97,12 @@
         $inv_numbers[] = $inv_row["trans_no"];
         Cell::label(Debtor::trans_view($inv_row["type"], $inv_row["trans_no"]));
         Cell::label($inv_row["reference"]);
-        Cell::label(Dates::sql2date($inv_row["tran_date"]));
+        Cell::label(Dates::sqlToDate($inv_row["tran_date"]));
         Cell::amount($this_total);
         Row::end();
       }
     }
-    Row::label(null, Num::price_format($invoices_total), " ", "colspan=4 class='right'");
+    Row::label(null, Num::priceFormat($invoices_total), " ", "colspan=4 class='right'");
     Table::end();
     echo "</td><td class='top'>";
     Table::start('tablestyle grid width90');
@@ -120,12 +120,12 @@
         $payments_total += $this_total;
         Cell::label(Debtor::trans_view($payment_row["trans_type_from"], $payment_row["trans_no_from"]));
         Cell::label($payment_row["reference"]);
-        Cell::label(Dates::sql2date($payment_row["date_alloc"]));
+        Cell::label(Dates::sqlToDate($payment_row["date_alloc"]));
         Cell::amount($this_total);
         Row::end();
       }
     }
-    Row::label(null, Num::price_format($payments_total), " ", "colspan=4 class='right'");
+    Row::label(null, Num::priceFormat($payments_total), " ", "colspan=4 class='right'");
     Table::end();
     echo "</td><td class='top'>";
     Table::start('tablestyle grid width90');
@@ -145,12 +145,12 @@
         $credits_total += $this_total;
         Cell::label(Debtor::trans_view($credits_row["type"], $credits_row["trans_no"]));
         Cell::label($credits_row["reference"]);
-        Cell::label(Dates::sql2date($credits_row["tran_date"]));
+        Cell::label(Dates::sqlToDate($credits_row["tran_date"]));
         Cell::amount(-$this_total);
         Row::end();
       }
     }
-    Row::label(null, "<font color=red>" . Num::price_format(-$credits_total) . "</font>", " ", "colspan=4 class='right'");
+    Row::label(null, "<font color=red>" . Num::priceFormat(-$credits_total) . "</font>", " ", "colspan=4 class='right'");
     Table::end();
     echo "</td></tr>";
     Table::end();
@@ -162,7 +162,13 @@
   Display::heading(_("Line Details"));
   Table::start('tablestyle grid width95');
   $th = array(
-    _("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Total"),
+    _("Item Code"),
+    _("Item Description"),
+    _("Quantity"),
+    _("Unit"),
+    _("Price"),
+    _("Discount"),
+    _("Total"),
     _("Quantity Delivered")
   );
   Table::header($th);
@@ -187,19 +193,19 @@
     return ($line->quantity - $line->qty_done);
   }, $_SESSION['View']->line_items));
   $items_total   = $_SESSION['View']->get_items_total();
-  Row::label(_("Shipping"), Num::price_format($_SESSION['View']->freight_cost), "class=right colspan=6", ' class="right nowrap"', 1);
+  Row::label(_("Shipping"), Num::priceFormat($_SESSION['View']->freight_cost), "class=right colspan=6", ' class="right nowrap"', 1);
   $taxes = $view->get_taxes_for_order();
   foreach ($taxes as $tax) {
     $display_total += $tax['Value'];
-    Row::label(_("Tax: " . $tax['tax_type_name']), Num::price_format($tax['Value']), "class=right colspan=6", ' class="right nowrap"', 1);
+    Row::label(_("Tax: " . $tax['tax_type_name']), Num::priceFormat($tax['Value']), "class=right colspan=6", ' class="right nowrap"', 1);
   }
-  $display_total = Num::price_format($items_total + $_SESSION['View']->freight_cost);
+  $display_total = Num::priceFormat($items_total + $_SESSION['View']->freight_cost);
   Row::label(_("Total Order Value"), $display_total, "class=right colspan=6", ' class="right nowrap"', 1);
   Table::end(2);
   if (Input::get('frame')) {
     return;
   }
-  if (Input::get('trans_type')==ST_SALESORDER) {
+  if (Input::get('trans_type') == ST_SALESORDER) {
     Display::submenu_option(_("Clone This Order"), "/sales/sales_order_entry.php?CloneOrder={$_GET['trans_no']}' target='_top' ");
     Display::submenu_option(_('Edit Order'), "/sales/sales_order_entry.php?" . Orders::UPDATE . "=" . $_GET['trans_no'] . "&type=" . ST_SALESORDER . "' target='_top' ");
     Display::submenu_print(_("&Print Order"), ST_SALESORDER, $_GET['trans_no'], 'prtopt');
@@ -210,12 +216,12 @@
       Display::submenu_option(_("Invoice Items On This Order"), "/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}' target='_top' ");
     }
     Display::submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?" . Orders::ADD . "=0&type=30' target='_top' ");
-  }elseif (Input::get('trans_type')==ST_SALESQUOTE) {
+  } elseif (Input::get('trans_type') == ST_SALESQUOTE) {
     Display::submenu_option(_('Edit Quote'), "/sales/sales_order_entry.php?" . Orders::UPDATE . "=" . $_GET['trans_no'] . "&type=" . ST_SALESQUOTE . "' target='_top' ");
     Display::submenu_print(_("&Print Quote"), ST_SALESQUOTE, $_GET['trans_no'], 'prtopt');
     Display::submenu_print(_("Print Proforma Invoice"), ST_PROFORMAQ, $_GET['trans_no'], 'prtopt');
-      Display::submenu_option(_("Make &Order from This Quote"), "/sales/sales_order_entry.php?".Orders::QUOTE_TO_ORDER .'='.Input::get('trans_no')."' target='_top' ");
-    Display::submenu_option(_("&New Quote"), "/sales/sales_order_entry.php?" . Orders::ADD . "=0&type=".ST_SALESQUOTE."' target='_top' ");
+    Display::submenu_option(_("Make &Order from This Quote"), "/sales/sales_order_entry.php?" . Orders::QUOTE_TO_ORDER . '=' . Input::get('trans_no') . "' target='_top' ");
+    Display::submenu_option(_("&New Quote"), "/sales/sales_order_entry.php?" . Orders::ADD . "=0&type=" . ST_SALESQUOTE . "' target='_top' ");
   }
   //UploadHandler::insert($_GET['trans_no']);
   Debtor::addEditDialog();

@@ -36,7 +36,7 @@
      * @static
      * @return null|PDOStatement
      */
-    public static function get_all()
+    public static function getAll()
     {
       $sql = "SELECT * FROM printers";
 

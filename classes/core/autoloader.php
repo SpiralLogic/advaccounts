@@ -14,6 +14,7 @@
   class Autoload_Exception extends \Exception
   {
   }
+
   /**
 
    */
@@ -133,8 +134,8 @@
       }
       if (!isset($this->loaded[$required_class])) {
         $this->loaded[$required_class] = $filepath;
-        if (is_callable('Event::register_shutdown')) {
-          Event::register_shutdown($this);
+        if (is_callable('Event::registerShutdown')) {
+          Event::registerShutdown($this);
         }
       }
       return true;
@@ -152,7 +153,7 @@
           $result = $this->includeFile($this->loaded[$required_class], $required_class);
         }
         catch (Autoload_Exception $e) {
-          Event::register_shutdown($this);
+          Event::registerShutdown($this);
         }
         if ($result && isset($this->global_classes[$required_class])) {
           class_alias($this->global_classes[$required_class] . '\\' . $required_class, '\\' . $required_class);

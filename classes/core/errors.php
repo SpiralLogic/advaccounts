@@ -35,24 +35,25 @@
     /** @var array Error constants to text */
     protected static $session = false;
     /** @var array */
-    protected static $levels = array(
-      -1                => 'Fatal!',
-      0                 => 'Error',
-      E_ERROR           => 'Error',
-      E_WARNING         => 'Warning',
-      E_PARSE           => 'Parsing Error',
-      E_NOTICE          => 'Notice',
-      E_CORE_ERROR      => 'Core Error',
-      E_CORE_WARNING    => 'Core Warning',
-      E_COMPILE_ERROR   => 'Compile Error',
-      E_COMPILE_WARNING => 'Compile Warning',
-      E_USER_ERROR      => 'User Error',
-      E_USER_WARNING    => 'User Warning',
-      E_USER_NOTICE     => 'User Notice',
-      E_STRICT          => 'Runtime Notice',
-      E_ALL             => 'No Error',
-      E_SUCCESS         => 'Success!'
-    );
+    protected static $levels
+      = array(
+        -1                => 'Fatal!',
+        0                 => 'Error',
+        E_ERROR           => 'Error',
+        E_WARNING         => 'Warning',
+        E_PARSE           => 'Parsing Error',
+        E_NOTICE          => 'Notice',
+        E_CORE_ERROR      => 'Core Error',
+        E_CORE_WARNING    => 'Core Warning',
+        E_COMPILE_ERROR   => 'Compile Error',
+        E_COMPILE_WARNING => 'Compile Warning',
+        E_USER_ERROR      => 'User Error',
+        E_USER_WARNING    => 'User Warning',
+        E_USER_NOTICE     => 'User Notice',
+        E_STRICT          => 'Runtime Notice',
+        E_ALL             => 'No Error',
+        E_SUCCESS         => 'Success!'
+      );
     /** @var string  temporary container for output html data before error box */
     public static $before_box = '';
     /** @var array Errors which terminate execution */
@@ -73,7 +74,7 @@
       static::$useConfigClass = class_exists('Config', false);
       error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
       if (class_exists('\ADV\Core\Event')) {
-        Event::register_shutdown(__CLASS__, 'send_debug_email');
+        Event::registerShutdown(__CLASS__, 'sendDebugEmail');
       }
     }
     /**
@@ -111,7 +112,7 @@
         error_log(date(DATE_RFC822) . ' ' . $error['type'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n", 3, DOCROOT . '../error_log');
       }
       if (!in_array($type, static::$user_errors) || ($type == E_USER_ERROR && $log)) {
-        $error['backtrace'] = static::prepare_backtrace(debug_backtrace());
+        $error['backtrace'] = static::prepareBacktrace(debug_backtrace());
         static::$errors[]   = $error;
       }
       return true;
@@ -121,21 +122,25 @@
      *
      * @param \Exception $e
      */
-    public static function exception_handler(\Exception $e)
+    public static function exceptionHandler(\Exception $e)
     {
       $error                    = array(
-        'type'    => -1, 'code'    => $e->getCode(), 'message' => end(explode('\\', get_class($e))) . ' ' . $e->getMessage(), 'file'    => $e->getFile(), 'line'    => $e->getLine()
+        'type'    => -1,
+        'code'    => $e->getCode(),
+        'message' => end(explode('\\', get_class($e))) . ' ' . $e->getMessage(),
+        'file'    => $e->getFile(),
+        'line'    => $e->getLine()
       );
       static::$current_severity = -1;
       static::$messages[]       = $error;
       if (is_writable(DOCROOT . '../error_log')) {
         error_log($error['code'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n", 3, DOCROOT . '../error_log');
       }
-      $error['backtrace'] = static::prepare_backtrace($e->getTrace());
+      $error['backtrace'] = static::prepareBacktrace($e->getTrace());
       static::$errors[]   = $error;
     }
     /** @static */
-    public static function error_box()
+    public static function errorBox()
     {
       printf("<div %s='msgbox'>", AJAX_REFERRER ? 'class' : 'id');
       static::$before_box = ob_get_clean(); // save html content before error box
@@ -149,7 +154,11 @@
     public static function format()
     {
       $msg_class = array(
-        E_USER_ERROR        => array('ERROR', 'err_msg'), E_RECOVERABLE_ERROR => array('ERROR', 'err_msg'), E_USER_WARNING      => array('WARNING', 'warn_msg'), E_USER_NOTICE       => array('USER', 'info_msg'), E_SUCCESS           => array('SUCCESS', 'success_msg')
+        E_USER_ERROR        => array('ERROR', 'err_msg'),
+        E_RECOVERABLE_ERROR => array('ERROR', 'err_msg'),
+        E_USER_WARNING      => array('WARNING', 'warn_msg'),
+        E_USER_NOTICE       => array('USER', 'info_msg'),
+        E_SUCCESS           => array('SUCCESS', 'success_msg')
       );
       $content   = '';
       foreach (static::$messages as $msg) {
@@ -170,12 +179,13 @@
      * @static
 
      */
-    public static function send_debug_email()
+    public static function sendDebugEmail()
     {
       if (static::$current_severity == -1 || static::$errors || static::$dberrors || static::$debugLog) {
         $text            = '';
         $with_back_trace = array();
-        $text .= count(static::$debugLog) ? "<div><pre><h3>Debug Values: </h3>" . var_export(static::$debugLog, true) . "\n\n" : '';
+        $text .= count(static::$debugLog) ? "<div><pre><h3>Debug Values: </h3>" . var_export(static::$debugLog, true) . "\n\n" :
+          '';
         if (static::$errors) {
           foreach (static::$errors as $id => $error) {
             $with_back_trace[] = $error;
@@ -190,7 +200,8 @@
         $text .= (isset($_POST) && count($_POST)) ? "<h3>POST: </h3>" . var_export($_POST, true) . "\n\n" : '';
         $text .= (isset($_GET) && count($_GET)) ? "<h3>GET: </h3>" . var_export($_GET, true) . "\n\n" : '';
         $text .= (isset($_REQUEST) && count($_REQUEST)) ? "<h3>REQUEST: </h3>" . var_export($_REQUEST, true) . "\n\n" : '';
-        $text .= ($with_back_trace) ? "<div><pre><h3>Errors with backtrace: </h3>" . var_export($with_back_trace, true) . "\n\n" : '';
+        $text .= ($with_back_trace) ? "<div><pre><h3>Errors with backtrace: </h3>" . var_export($with_back_trace, true) . "\n\n" :
+          '';
         $subject = 'Error log: ';
         $subject .= (isset(static::$session['current_user'])) ? static::$session['current_user']->username . ', ' : '';
         if (static::$session) {
@@ -203,7 +214,8 @@
           }
           $text .= "<h3>Session: </h3>" . var_export(static::$session, true) . "\n\n</pre></div>";
         }
-        $subject .= (isset(static::$levels[static::$current_severity])) ? 'Severity: ' . static::$levels[static::$current_severity] : '';
+        $subject .= (isset(static::$levels[static::$current_severity])) ?
+          'Severity: ' . static::$levels[static::$current_severity] : '';
         $subject .= static::$dberrors ? ', DB Error' : '';
         $subject .= ' ' . $id;
         $to      = 'errors@advancedgroup.com.au';
@@ -225,7 +237,7 @@
      *
      * @return mixed
      */
-    protected static function prepare_backtrace($backtrace)
+    protected static function prepareBacktrace($backtrace)
     {
       foreach ($backtrace as $key => $trace) {
         if (!isset($trace['file']) || $trace['file'] == __FILE__ || (isset($trace['class']) && $trace['class'] == __CLASS__) || $trace['function'] == 'trigger_error' || $trace['function'] == 'shutdown_handler'
@@ -251,7 +263,7 @@
         }
         static::$current_severity = -1;
         $error                    = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']);
-        static::exception_handler($error);
+        static::exceptionHandler($error);
       }
       if (class_exists('Ajax', false) && Ajax::inAjax()) {
         Ajax::run();
@@ -298,7 +310,7 @@
         /** @noinspection PhpUndefinedFunctionInspection */
         fastcgi_finish_request();
       }
-      static::send_debug_email();
+      static::sendDebugEmail();
       exit();
     }
     /***
@@ -350,9 +362,9 @@
      * @internal param null $sql_statement
      * @internal param bool $exit
      */
-    public static function db_error($error, $sql = null, $data = array())
+    public static function databaseError($error, $sql = null, $data = array())
     {
-      $errorCode        = DB\DB::error_no();
+      $errorCode        = DB\DB::errorNo();
       $error['message'] = _("DATABASE ERROR $errorCode:") . $error['message'];
       if ($errorCode == static::DB_DUPLICATE_ERROR_CODE) {
         $error['message'] .= _("The entered information is a duplicate. Please go back and enter different values.");
@@ -360,7 +372,7 @@
       $error['debug']     = '<br>SQL that failed was: "' . $sql . '" with data: ' . serialize($data) . '<br>with error: ' . $error['debug'];
       $backtrace          = debug_backtrace();
       $source             = array_shift($backtrace);
-      $error['backtrace'] = static::prepare_backtrace($backtrace);
+      $error['backtrace'] = static::prepareBacktrace($backtrace);
       static::$dberrors[] = $error;
       $db_class_file      = $source['file'];
       while ($source['file'] == $db_class_file) {

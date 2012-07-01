@@ -22,7 +22,7 @@
   {
     $printtitle = 0; //Flag for printing type name
     //Get Accounts directly under this group/type
-    $result = GL_Account::get_all(null, null, $type);
+    $result = GL_Account::getAll(null, null, $type);
     while ($account = DB::fetch($result)) {
       //Print Type Title if it has atleast one non-zero account
       if (!$printtitle) {
@@ -35,7 +35,7 @@
         $rep->NewLine();
       }
       if ($showbalance == 1) {
-        $begin = Dates::begin_fiscalyear();
+        $begin = Dates::beginFiscalYear();
         if (GL_Account::is_balancesheet($account["account_code"])) {
           $begin = "";
         }
@@ -50,7 +50,7 @@
       $rep->NewLine();
     }
     //Get Account groups/types under this group/type
-    $result = GL_Type::get_all(false, false, $type);
+    $result = GL_Type::getAll(false, false, $type);
     while ($accounttype = DB::fetch($result)) {
       //Print Type Title if has sub types and not previously printed
       if (!$printtitle) {
@@ -86,7 +86,7 @@
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
-    $classresult = GL_Class::get_all(false);
+    $classresult = GL_Class::getAll(false);
     while ($class = DB::fetch($classresult)) {
       $rep->Font('bold');
       $rep->TextCol(0, 1, $class['cid']);
@@ -94,7 +94,7 @@
       $rep->Font();
       $rep->NewLine();
       //Get Account groups/types under this group/type with no parents
-      $typeresult = GL_Type::get_all(false, $class['cid'], -1);
+      $typeresult = GL_Type::getAll(false, $class['cid'], -1);
       while ($accounttype = DB::fetch($typeresult)) {
         display_type($accounttype["id"], $accounttype["name"], $dec, $rep, $showbalance);
       }

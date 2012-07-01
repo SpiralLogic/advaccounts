@@ -66,22 +66,22 @@
     $selected_id   = -1;
     $_POST['name'] = $_POST['description'] = '';
   }
-  $result = Tags::get_all(Input::post('type'), Forms::hasPost('show_inactive'));
+  $result = Tags::getAll(Input::post('type'), Forms::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("Tag Name"), _("Tag Description"), "", "");
-   Forms::inactiveControlCol($th);
+  Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
     Cell::label($myrow['name']);
     Cell::label($myrow['description']);
-     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'tags', 'id');
+    Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'tags', 'id');
     Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     Row::end();
   }
-   Forms::inactiveControlRow($th);
+  Forms::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != -1) // We've selected a tag
@@ -95,8 +95,8 @@
     // Note the selected tag
     Forms::hidden('selected_id', $selected_id);
   }
-   Forms::textRowEx(_("Tag Name:"), 'name', 15, 30);
-   Forms::textRowEx(_("Tag Description:"), 'description', 40, 60);
+  Forms::textRowEx(_("Tag Name:"), 'name', 15, 30);
+  Forms::textRowEx(_("Tag Description:"), 'description', 40, 60);
   Forms::hidden('type');
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
@@ -109,7 +109,7 @@
   {
     if (strlen($_POST['name']) == 0) {
       Event::error(_("The tag name cannot be empty."));
-      JS::set_focus('name');
+      JS::setFocus('name');
 
       return false;
     }
@@ -128,7 +128,7 @@
       return false;
     }
     $result = Tags::get_associated_records($selected_id);
-    if (DB::num_rows($result) > 0) {
+    if (DB::numRows($result) > 0) {
       Event::error(_("Cannot delete this tag because records have been created referring to it."));
 
       return false;

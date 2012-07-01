@@ -63,7 +63,7 @@
       $this->code     = $code ? : $l['code'] ? : 'en_US';
       $this->encoding = $encoding ? : $l['encoding'];
       $this->dir      = isset($l['rtl']) ? 'rtl' : 'ltr';
-      $this->set_language($this->code);
+      $this->setLanguage($this->code);
       if (file_exists(DOCROOT . "lang/" . $this->code . "/locale.php")) {
         /** @noinspection PhpIncludeInspection */
         include(DOCROOT . "lang/" . $this->code . "/locale.php");
@@ -72,13 +72,13 @@
     /**
      * @param $code
      */
-    public function set_language($code)
+    public function setLanguage($code)
     {
       $changed  = $this->code != $code;
       $language = Arr::searchValue($code, Config::get('languages.installed'), 'code');
       if ($language && $changed) {
         // flush cache as we can use several languages in one account
-        Files::flush_dir(COMPANY_PATH . 'js_cache');
+        Files::flushDir(COMPANY_PATH . 'js_cache');
         $this->name           = $language['name'];
         $this->code           = $language['code'];
         $this->encoding       = $language['encoding'];
@@ -86,7 +86,7 @@
         $locale               = DOCROOT . "lang/" . $this->code . "/locale.php";
         $this->is_locale_file = file_exists($locale);
       }
-      $_SESSION['get_text']->set_language($this->code, $this->encoding);
+      $_SESSION['get_text']->setLanguage($this->code, $this->encoding);
       $_SESSION['get_text']->add_domain($this->code, DOCROOT . "lang");
       // Necessary for ajax calls. Due to bug in php 4.3.10 for this
       // version set globally in php.ini

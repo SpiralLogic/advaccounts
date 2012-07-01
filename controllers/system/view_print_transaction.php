@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::open_window(800, 500);
+  JS::openWindow(800, 500);
   Page::start(_($help_context = "View or Print Transactions"), SA_VIEWPRINTTRANSACTION);
   if (isset($_POST['ProcessSearch'])) {
     if (!check_valid_entries()) {
@@ -66,8 +66,8 @@
     if (!isset($_POST['ToTransNo'])) {
       $_POST['ToTransNo'] = "999999";
     }
-     Forms::refCells(_("from #:"), 'FromTransNo');
-     Forms::refCells(_("to #:"), 'ToTransNo');
+    Forms::refCells(_("from #:"), 'FromTransNo');
+    Forms::refCells(_("to #:"), 'ToTransNo');
     Forms::submitCells('ProcessSearch', _("Search"), '', '', 'default');
     Row::end();
     Table::end(1);

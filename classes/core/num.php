@@ -11,7 +11,8 @@
   /**
 
    */
-  class Num {
+  class Num
+  {
     use Traits\StaticAccess;
 
     /**
@@ -54,7 +55,7 @@
      *
      * @return int|string
      */
-    public function _price_format($number)
+    public function _priceFormat($number)
     {
       return $this->_format($this->_round($number, $this->price_dec + 2), $this->price_dec);
     }
@@ -66,7 +67,7 @@
      *
      * @return int|string
      */
-    public function _price_decimal($number, $dec = null)
+    public function _priceDecimal($number, $dec = null)
     {
       $dec = $dec ? : $this->price_dec;
       $str = strval($number);
@@ -115,7 +116,7 @@
      *
      * @return int|string
      */
-    public function _exrate_format($number)
+    public function _exrateFormat($number)
     {
       return $this->_format($number, $this->exrate_dec);
     }
@@ -126,7 +127,7 @@
      *
      * @return int|string
      */
-    public function _percent_format($number)
+    public function _percentFormat($number)
     {
       return $this->_format($number, $this->percent_dec);
     }
@@ -138,7 +139,7 @@
      *
      * @return float|int
      */
-    public function _round_to_nearest_cents($price, $round_to)
+    public function _toNearestCents($price, $round_to)
     {
       if ($price == 0) {
         return 0;
@@ -165,7 +166,7 @@
      * Simple English version of number to words conversion.
 
      */
-    public function _to_words($number)
+    public function _toWords($number)
     {
       $Bn = floor($number / 1000000000); /* Billions (giga) */
       $number -= $Bn * 1000000000;
@@ -179,19 +180,38 @@
       $n   = $number % 10; /* Ones */
       $res = "";
       if ($Bn) {
-        $res .= $this->_to_words($Bn) . " Billion";
+        $res .= $this->_toWords($Bn) . " Billion";
       }
       if ($Gn) {
-        $res .= (empty($res) ? "" : " ") . $this->_to_words($Gn) . " Million";
+        $res .= (empty($res) ? "" : " ") . $this->_toWords($Gn) . " Million";
       }
       if ($kn) {
-        $res .= (empty($res) ? "" : " ") . $this->_to_words($kn) . " Thousand";
+        $res .= (empty($res) ? "" : " ") . $this->_toWords($kn) . " Thousand";
       }
       if ($Hn) {
-        $res .= (empty($res) ? "" : " ") . $this->_to_words($Hn) . " Hundred";
+        $res .= (empty($res) ? "" : " ") . $this->_toWords($Hn) . " Hundred";
       }
       $ones = array(
-        "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eightteen", "Nineteen"
+        "",
+        "One",
+        "Two",
+        "Three",
+        "Four",
+        "Five",
+        "Six",
+        "Seven",
+        "Eight",
+        "Nine",
+        "Ten",
+        "Eleven",
+        "Twelve",
+        "Thirteen",
+        "Fourteen",
+        "Fifteen",
+        "Sixteen",
+        "Seventeen",
+        "Eightteen",
+        "Nineteen"
       );
       $tens = array("", "", "Twenty", "Thirty", "Fourty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety");
       if ($Dn || $n) {

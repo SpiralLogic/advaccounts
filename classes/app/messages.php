@@ -36,7 +36,7 @@
         return false;
       }
       $result        = DB::select('um.*,u.real_name as `from`')->from('user_messages um, users u')->where('um.user=', $userid)
-        ->and_where('um.from=u.id')->and_where('unread>', 0)->fetch()->all();
+        ->andWhere('um.from=u.id')->andWhere('unread>', 0)->fetch()->all();
       static::$count = count($result);
       foreach ($result as $row) {
         if (!empty($row['subject'])) {

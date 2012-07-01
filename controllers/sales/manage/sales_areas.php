@@ -15,15 +15,14 @@
     if (strlen($_POST['description']) == 0) {
       $input_error = 1;
       Event::error(_("The area description cannot be empty."));
-      JS::set_focus('description');
+      JS::setFocus('description');
     }
     if ($input_error != 1) {
       if ($selected_id != -1) {
-        $sql = "UPDATE areas SET description=" . DB::escape($_POST['description']) . " WHERE area_code = " . DB::escape($selected_id);
+        $sql  = "UPDATE areas SET description=" . DB::escape($_POST['description']) . " WHERE area_code = " . DB::escape($selected_id);
         $note = _('Selected sales area has been updated');
-      }
-      else {
-        $sql = "INSERT INTO areas (description) VALUES (" . DB::escape($_POST['description']) . ")";
+      } else {
+        $sql  = "INSERT INTO areas (description) VALUES (" . DB::escape($_POST['description']) . ")";
         $note = _('New sales area has been added');
       }
       DB::query($sql, "The sales area could not be updated or added");
@@ -34,9 +33,9 @@
   if ($Mode == MODE_DELETE) {
     $cancel_delete = 0;
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors'
-    $sql = "SELECT COUNT(*) FROM branches WHERE area=" . DB::escape($selected_id);
+    $sql    = "SELECT COUNT(*) FROM branches WHERE area=" . DB::escape($selected_id);
     $result = DB::query($sql, "check failed");
-    $myrow = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       $cancel_delete = 1;
       Event::error(_("Cannot delete this area because customer branches have been created using this area."));
@@ -50,7 +49,7 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = Input::post('show_inactive');
+    $sav         = Input::post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
@@ -62,31 +61,31 @@
   Forms::start();
   Table::start('tablestyle grid width30');
   $th = array(_("Area Name"), "", "");
-   Forms::inactiveControlCol($th);
+  Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
     Cell::label($myrow["description"]);
-     Forms::inactiveControlCell($myrow["area_code"], $myrow["inactive"], 'areas', 'area_code');
+    Forms::inactiveControlCell($myrow["area_code"], $myrow["inactive"], 'areas', 'area_code');
     Forms::buttonEditCell("Edit" . $myrow["area_code"], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow["area_code"], _("Delete"));
     Row::end();
   }
-   Forms::inactiveControlRow($th);
+  Forms::inactiveControlRow($th);
   Table::end();
   echo '<br>';
   Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing area
-      $sql = "SELECT * FROM areas WHERE area_code=" . DB::escape($selected_id);
-      $result = DB::query($sql, "could not get area");
-      $myrow = DB::fetch($result);
+      $sql                  = "SELECT * FROM areas WHERE area_code=" . DB::escape($selected_id);
+      $result               = DB::query($sql, "could not get area");
+      $myrow                = DB::fetch($result);
       $_POST['description'] = $myrow["description"];
     }
     Forms::hidden("selected_id", $selected_id);
   }
-   Forms::textRowEx(_("Area Name:"), 'description', 30);
+  Forms::textRowEx(_("Area Name:"), 'description', 30);
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();

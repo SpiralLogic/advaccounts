@@ -21,15 +21,15 @@
       Table::startOuter('tablestyle2 width90');
       Table::section(1);
       Row::start();
-       Forms::dateCells(_("Date:"), 'date_', '', $new);
+      Forms::dateCells(_("Date:"), 'date_', '', $new);
       Table::section(2, $qes ? "20%" : "50%");
-       Forms::refCells(_("Reference:"), 'ref', '');
+      Forms::refCells(_("Reference:"), 'ref', '');
       Forms::hidden('ref_original');
       Row::end();
       if ($new) {
         Table::section(3, "20%");
         Row::start();
-         Forms::checkCells(_("Reverse Transaction:"), 'Reverse', null);
+        Forms::checkCells(_("Reverse Transaction:"), 'Reverse', null);
         Row::end();
       }
       if ($qes !== false) {
@@ -41,7 +41,7 @@
           unset($_POST['total_amount']); // enable default
           Ajax::activate('total_amount');
         }
-         Forms::amountCells($qid['base_desc'] . ":", 'total_amount', Num::price_format($qid['base_amount']), null, "&nbsp;&nbsp;" . Forms::submit('go', _("Go"), false, false, true));
+        Forms::amountCells($qid['base_desc'] . ":", 'total_amount', Num::priceFormat($qid['base_amount']), null, "&nbsp;&nbsp;" . Forms::submit('go', _("Go"), false, false, true));
         Row::end();
       }
       Table::endOuter(1);
@@ -143,11 +143,11 @@
         $_POST['dimension_id']  = $item->dimension_id;
         $_POST['dimension2_id'] = $item->dimension2_id;
         if ($item->amount > 0) {
-          $_POST['AmountDebit']  = Num::price_format($item->amount);
+          $_POST['AmountDebit']  = Num::priceFormat($item->amount);
           $_POST['AmountCredit'] = "";
         } else {
           $_POST['AmountDebit']  = "";
-          $_POST['AmountCredit'] = Num::price_format(abs($item->amount));
+          $_POST['AmountCredit'] = Num::priceFormat(abs($item->amount));
         }
         $_POST['description'] = $item->description;
         $_POST['LineMemo']    = $item->reference;
@@ -163,8 +163,8 @@
         Ajax::activate('items_table');
       } else {
         // Adding a new row
-        $_POST['AmountDebit']   = ''; //Num::price_format(0);
-        $_POST['AmountCredit']  = ''; //Num::price_format(0);
+        $_POST['AmountDebit']   = ''; //Num::priceFormat(0);
+        $_POST['AmountCredit']  = ''; //Num::priceFormat(0);
         $_POST['dimension_id']  = 0;
         $_POST['dimension2_id'] = 0;
         //$_POST['LineMemo'] = ""; // let memo go to next line Joe Hunt 2010-05-30
@@ -188,13 +188,13 @@
       if ($dim < 2) {
         Forms::hidden('dimension2_id', 0);
       }
-       Forms::amountCellsSmall(null, 'AmountDebit');
-       Forms::amountCellsSmall(null, 'AmountCredit');
-       Forms::textCellsEx(null, 'LineMemo', 35, 255);
+      Forms::amountCellsSmall(null, 'AmountDebit');
+      Forms::amountCellsSmall(null, 'AmountCredit');
+      Forms::textCellsEx(null, 'LineMemo', 35, 255);
       if ($id != -1) {
         Forms::buttonCell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
         Forms::buttonCell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
-        JS::set_focus('amount');
+        JS::setFocus('amount');
       } else {
         Forms::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new line to journal'), true);
       }
@@ -203,7 +203,7 @@
     public static function option_controls()
     {
       echo "<br><table class='center'>";
-       Forms::textareaRow(_("Memo"), 'memo_', null, 50, 3);
+      Forms::textareaRow(_("Memo"), 'memo_', null, 50, 3);
       echo "</table>";
     }
     /**
@@ -252,11 +252,11 @@
         unset($items[$excl]);
       }
       echo Forms::arraySelect($name, $value, $items, array(
-                                                      'spec_option'   => _("All"),
-                                                      'spec_id'       => -1,
-                                                      'select_submit' => $submit_on_change,
-                                                      'async'         => false
-                                                 ));
+                                                          'spec_option'   => _("All"),
+                                                          'spec_id'       => -1,
+                                                          'select_submit' => $submit_on_change,
+                                                          'async'         => false
+                                                     ));
       echo "</td>\n";
     }
     // Write/update journal entries.
@@ -308,7 +308,7 @@
       if ($reverse) {
         //$reversingDate = date(User::date_display(),
         //	Mktime(0,0,0,get_month($date_)+1,1,get_year($date_)));
-        $reversingDate    = Dates::begin_month(Dates::add_months($date_, 1));
+        $reversingDate    = Dates::beginMonth(Dates::addMonths($date_, 1));
         $trans_id_reverse = SysTypes::get_next_trans_no($trans_type);
         foreach ($order->gl_items as $journal_item) {
           $is_bank_to = Bank_Account::is($journal_item->code_id);

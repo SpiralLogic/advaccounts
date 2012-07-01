@@ -43,10 +43,11 @@
      */
     function get($key, $default);
   }
+
   /**
    * @method get($key, $default = false)
    * @method set($key, $value, $expires = 86400)
-   * @method define_constants($name, $constants)
+   * @method defineConstants($name, $constants)
    * @method delete($key)
    * @method Cache i()
    */
@@ -184,7 +185,7 @@
      * @param array|closure $constants
      * @param null          $name
      */
-    public function _define_constants($name, $constants)
+    public function _defineConstants($name, $constants)
     {
       if (function_exists('apc_load_constants')) {
         if (!apc_load_constants($name)) {

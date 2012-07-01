@@ -42,7 +42,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($all = false)
+    public static function getAll($all = false)
     {
       $sql = "SELECT * FROM workcentres";
       if (!$all) {

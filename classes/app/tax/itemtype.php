@@ -23,7 +23,7 @@
         = "INSERT INTO item_tax_types (name, exempt)
         VALUES (" . DB::escape($name) . "," . DB::escape($exempt) . ")";
       DB::query($sql, "could not add item tax type");
-      $id = DB::insert_id();
+      $id = DB::insertId();
       // add the exemptions
       static::add_exemptions($id, $exempt_from);
       DB::commit();
@@ -50,7 +50,7 @@
      * @static
      * @return null|PDOStatement
      */
-    public static function get_all()
+    public static function getAll()
     {
       $sql = "SELECT * FROM item_tax_types";
 
@@ -199,7 +199,7 @@
     {
       $sql    = "SELECT COUNT(*) FROM stock_master WHERE tax_type_id=" . DB::escape($selected_id);
       $result = DB::query($sql, "could not query stock master");
-      $myrow  = DB::fetch_row($result);
+      $myrow  = DB::fetchRow($result);
       if ($myrow[0] > 0) {
         Event::error(_("Cannot delete this item tax type because items have been created referring to it."));
 

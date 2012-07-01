@@ -20,7 +20,7 @@
     public static function add($type, $type_no, $date_, $memo_)
     {
       if ($memo_ != null && $memo_ != "") {
-        $date = Dates::date2sql($date_);
+        $date = Dates::dateToSql($date_);
         $sql
               = "INSERT INTO comments (type, id, date_, memo_)
                  VALUES (" . DB::escape($type) . ", " . DB::escape($type_no) . ", '$date', " . DB::escape($memo_) . ")";
@@ -47,7 +47,7 @@
     public static function display_row($type, $id)
     {
       $comments = DB_Comments::get($type, $id);
-      if ($comments and DB::num_rows($comments)) {
+      if ($comments and DB::numRows($comments)) {
         echo "<tr><td class='label'>Comments</td><td colspan=15>";
         while ($comment = DB::fetch($comments)) {
           echo $comment["memo_"] . "<br>";
@@ -104,7 +104,7 @@
         DB_Comments::delete($type, $id);
         DB_Comments::add($type, $id, Dates::today(), $memo_);
       } else {
-        $date = Dates::date2sql($date_);
+        $date = Dates::dateToSql($date_);
         $sql  = "UPDATE comments SET memo_=" . DB::escape($memo_) . " WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($id) . " AND date_='$date'";
         DB::query($sql, "could not update comments");
       }

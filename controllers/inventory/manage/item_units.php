@@ -16,17 +16,17 @@
     if (strlen($_POST['abbr']) == 0) {
       $input_error = 1;
       Event::error(_("The unit of measure code cannot be empty."));
-      JS::set_focus('abbr');
+      JS::setFocus('abbr');
     }
     if (strlen($_POST['abbr']) > (20 + 2)) {
       $input_error = 1;
       Event::error(_("The unit of measure code is too long."));
-      JS::set_focus('abbr');
+      JS::setFocus('abbr');
     }
     if (strlen($_POST['description']) == 0) {
       $input_error = 1;
       Event::error(_("The unit of measure description cannot be empty."));
-      JS::set_focus('description');
+      JS::setFocus('description');
     }
     if ($input_error != 1) {
       Item_Unit::write(htmlentities($selected_id), $_POST['abbr'], $_POST['description'], $_POST['decimals']);
@@ -54,11 +54,11 @@
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Item_Unit::get_all(Forms::hasPost('show_inactive'));
+  $result = Item_Unit::getAll(Forms::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid width40');
   $th = array(_('Unit'), _('Description'), _('Decimals'), "", "");
-   Forms::inactiveControlCol($th);
+  Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
@@ -66,12 +66,12 @@
     Cell::label($myrow["abbr"]);
     Cell::label($myrow["name"]);
     Cell::label(($myrow["decimals"] == -1 ? _("User Quantity Decimals") : $myrow["decimals"]));
-     Forms::inactiveControlCell($myrow["abbr"], $myrow["inactive"], 'item_units', 'abbr');
+    Forms::inactiveControlCell($myrow["abbr"], $myrow["inactive"], 'item_units', 'abbr');
     Forms::buttonEditCell("Edit" . $myrow["abbr"], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow["abbr"], _("Delete"));
     Row::end();
   }
-   Forms::inactiveControlRow($th);
+  Forms::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != '') {
@@ -88,10 +88,10 @@
     Row::label(_("Unit Abbreviation:"), $_POST['abbr']);
     Forms::hidden('abbr', $_POST['abbr']);
   } else {
-     Forms::textRow(_("Unit Abbreviation:"), 'abbr', null, 20, 20);
+    Forms::textRow(_("Unit Abbreviation:"), 'abbr', null, 20, 20);
   }
-   Forms::textRow(_("Descriptive Name:"), 'description', null, 40, 40);
-   Forms::numberListRow(_("Decimal Places:"), 'decimals', null, 0, 6, _("User Quantity Decimals"));
+  Forms::textRow(_("Descriptive Name:"), 'description', null, 40, 40);
+  Forms::numberListRow(_("Decimal Places:"), 'decimals', null, 0, 6, _("User Quantity Decimals"));
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == '', '', 'both');
   Forms::end();

@@ -30,7 +30,8 @@
         $result = DB::select('curr_default')->from('company')->fetch()->one();
 
         return $result['curr_default'];
-      } catch (DBSelectException $e) {
+      }
+      catch (DBSelectException $e) {
         Event::error('Could not get company currency');
       }
 
@@ -57,7 +58,7 @@
     {
       $sql    = "SELECT bank_curr_code FROM bank_accounts WHERE id='$id'";
       $result = DB::query($sql, "retreive bank account currency");
-      $myrow  = DB::fetch_row($result);
+      $myrow  = DB::fetchRow($result);
 
       return $myrow[0];
     }
@@ -72,7 +73,7 @@
     {
       $sql    = "SELECT curr_code FROM debtors WHERE debtor_id = '$customer_id'";
       $result = DB::query($sql, "Retreive currency of customer $customer_id");
-      $myrow  = DB::fetch_row($result);
+      $myrow  = DB::fetchRow($result);
 
       return $myrow[0];
     }
@@ -87,7 +88,7 @@
     {
       $sql    = "SELECT curr_code FROM suppliers WHERE supplier_id = '$supplier_id'";
       $result = DB::query($sql, "Retreive currency of supplier $supplier_id");
-      $myrow  = DB::fetch_row($result);
+      $myrow  = DB::fetchRow($result);
 
       return $myrow[0];
     }
@@ -127,18 +128,18 @@
       if ($currency_code == static::for_company() || $currency_code == null) {
         return 1.0000;
       }
-      $date = Dates::date2sql($date_);
+      $date = Dates::dateToSql($date_);
       $sql
               = "SELECT rate_buy, max(date_) as date_ FROM exchange_rates WHERE curr_code = '$currency_code'
                         AND date_ <= '$date' GROUP BY rate_buy ORDER BY date_ Desc LIMIT 1";
       $result = DB::query($sql, "could not query exchange rates");
-      if (DB::num_rows($result) == 0) {
+      if (DB::numRows($result) == 0) {
         // no stored exchange rate, just return 1
         Event::error(sprintf(_("Cannot retrieve exchange rate for currency %s as of %s. Please add exchange rate manually on Exchange Rates page."), $currency_code, $date_));
 
         return 1.000;
       }
-      $myrow = DB::fetch_row($result);
+      $myrow = DB::fetchRow($result);
 
       return $myrow[0];
     }

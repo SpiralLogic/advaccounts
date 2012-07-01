@@ -19,12 +19,12 @@
    */
   function get_bank_balance_to($to, $account)
   {
-    $to = Dates::date2sql($to);
+    $to = Dates::dateToSql($to);
     $sql
             = "SELECT SUM(amount) FROM bank_trans WHERE bank_act='$account'
     AND trans_date < '$to'";
     $result = DB::query($sql, "The starting balance on hand could not be calculated");
-    $row    = DB::fetch_row($result);
+    $row    = DB::fetchRow($result);
 
     return $row[0];
   }
@@ -38,8 +38,8 @@
    */
   function get_bank_transactions($from, $to, $account)
   {
-    $from = Dates::date2sql($from);
-    $to   = Dates::date2sql($to);
+    $from = Dates::dateToSql($from);
+    $to   = Dates::dateToSql($to);
     $sql
           = "SELECT bank_trans.* FROM bank_trans
         WHERE bank_trans.bank_act = '$account'
@@ -84,7 +84,7 @@
     $rep->Header();
     $prev_balance = get_bank_balance_to($from, $account["id"]);
     $trans        = get_bank_transactions($from, $to, $account['id']);
-    $rows         = DB::num_rows($trans);
+    $rows         = DB::numRows($trans);
     if ($prev_balance != 0.0 || $rows != 0) {
       $rep->Font('bold');
       $rep->TextCol(0, 3, $act);

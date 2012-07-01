@@ -62,7 +62,7 @@
     public static function get($trans_no)
     {
       $result = Inv_Movement::get(ST_INVADJUST, $trans_no);
-      if (DB::num_rows($result) == 0) {
+      if (DB::numRows($result) == 0) {
         return null;
       }
       return $result;
@@ -84,7 +84,7 @@
     {
       $mb_flag = WO::get_mb_flag($stock_id);
       if (Input::post('mb_flag') == STOCK_SERVICE) {
-        Errors::db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
+        Errors::databaseError("Cannot do inventory adjustment for Service item : $stock_id", "");
       }
       Purch_GRN::update_average_material_cost(null, $stock_id, $standard_cost, $quantity, $date_);
       Inv_Movement::add(ST_INVADJUST, $stock_id, $adj_id, $location, $date_, $reference, $quantity, $standard_cost, $type);
@@ -104,15 +104,15 @@
       Table::startOuter('tablestyle2 width70'); // outer table
       Table::section(1);
       Inv_Location::row(_("Location:"), 'StockLocation', null);
-       Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_INVADJUST));
+      Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_INVADJUST));
       Table::section(2, "33%");
-       Forms::dateRow(_("Date:"), 'AdjDate', '', true);
+      Forms::dateRow(_("Date:"), 'AdjDate', '', true);
       Table::section(3, "33%");
       Inv_Movement::row(_("Detail:"), 'type', null);
       if (!isset($_POST['Increase'])) {
         $_POST['Increase'] = 1;
       }
-       Forms::yesnoListRow(_("Type:"), 'Increase', $_POST['Increase'], _("Positive Adjustment"), _("Negative Adjustment"));
+      Forms::yesnoListRow(_("Type:"), 'Increase', $_POST['Increase'], _("Positive Adjustment"), _("Negative Adjustment"));
       Table::endOuter(1); // outer table
     }
     /**
@@ -175,8 +175,8 @@
       if ($line_no != -1 && $line_no == $id) {
         $_POST['stock_id'] = $order->line_items[$id]->stock_id;
         $_POST['qty']      = Item::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
-        //$_POST['std_cost'] = Num::price_format($order->line_items[$id]->standard_cost);
-        $_POST['std_cost'] = Num::price_decimal($order->line_items[$id]->standard_cost, $dec2);
+        //$_POST['std_cost'] = Num::priceFormat($order->line_items[$id]->standard_cost);
+        $_POST['std_cost'] = Num::priceDecimal($order->line_items[$id]->standard_cost, $dec2);
         $_POST['units']    = $order->line_items[$id]->units;
         Forms::hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id']);
@@ -192,20 +192,20 @@
         $item_info    = Item::get_edit_info((isset($_POST['stock_id']) ? $_POST['stock_id'] : ''));
         $dec          = $item_info['decimals'];
         $_POST['qty'] = Num::format(0, $dec);
-        //$_POST['std_cost'] = Num::price_format($item_info["standard_cost"]);
-        $_POST['std_cost'] = Num::price_decimal($item_info["standard_cost"], $dec2);
+        //$_POST['std_cost'] = Num::priceFormat($item_info["standard_cost"]);
+        $_POST['std_cost'] = Num::priceDecimal($item_info["standard_cost"], $dec2);
         $_POST['units']    = $item_info["units"];
       }
-       Forms::qtyCells(null, 'qty', $_POST['qty'], null, null, $dec);
+      Forms::qtyCells(null, 'qty', $_POST['qty'], null, null, $dec);
       Cell::label($_POST['units'], '', 'units');
       // Forms::amountCells(null, 'std_cost', $_POST['std_cost']);
-       Forms::amountCells(null, 'std_cost', null, null, null, $dec2);
+      Forms::amountCells(null, 'std_cost', null, null, null, $dec2);
       Cell::label("&nbsp;");
       if ($id != -1) {
         Forms::buttonCell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
         Forms::buttonCell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
         Forms::hidden('LineNo', $line_no);
-        JS::set_focus('qty');
+        JS::setFocus('qty');
       } else {
         Forms::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
       }
@@ -215,7 +215,7 @@
     {
       echo "<br>";
       Table::start('center');
-       Forms::textareaRow(_("Memo"), 'memo_', null, 50, 3);
+      Forms::textareaRow(_("Memo"), 'memo_', null, 50, 3);
       Table::end(1);
     }
   }

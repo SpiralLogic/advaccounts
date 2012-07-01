@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "General Ledger Transaction Details"), SA_GLTRANSVIEW, true);
   if (!isset($_GET['type_id']) || !isset($_GET['trans_no'])) { /*Script was not passed the correct parameters */
@@ -15,12 +14,13 @@
     exit;
   }
 
-  $sql = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
+  $sql
+          = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
 	LEFT JOIN chart_master as cm ON gl.account = cm.account_code
 	LEFT JOIN refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)" . " WHERE gl.type= " . DB::escape($_GET['type_id']) . " AND gl.type_no = " . DB::escape($_GET['trans_no']) . " ORDER BY counter";
   $result = DB::query($sql, "could not get transactions");
   //alert("sql = ".$sql);
-  if (DB::num_rows($result) == 0) {
+  if (DB::numRows($result) == 0) {
     echo "<p><div class='center'>" . _("No general ledger transactions have been created for") . " " . $systypes_array[$_GET['type_id']] . " " . _("number") . " " . $_GET['trans_no'] . "</div></p><br><br>";
     Page::end(true);
     exit;
@@ -31,20 +31,18 @@
     $th = array(
       _("Account Code"), _("Account Name"), _("Dimension") . " 1", _("Dimension") . " 2", _("Debit"), _("Credit"), _("Memo")
     );
-  }
-  else {
+  } else {
     if ($dim == 1) {
       $th = array(
         _("Account Code"), _("Account Name"), _("Dimension"), _("Debit"), _("Credit"), _("Memo")
       );
-    }
-    else {
+    } else {
       $th = array(
         _("Account Code"), _("Account Name"), _("Debit"), _("Credit"), _("Memo")
       );
     }
   }
-  $k = 0; //row colour counter
+  $k             = 0; //row colour counter
   $heading_shown = false;
   while ($myrow = DB::fetch($result)) {
     if ($myrow['amount'] == 0) {
@@ -78,7 +76,8 @@
   /**
    * @param $myrow
    */
-  function display_gl_heading($myrow) {
+  function display_gl_heading($myrow)
+  {
     global $systypes_array;
     $trans_name = $systypes_array[$_GET['type_id']];
     Table::start('tablestyle width95');
@@ -89,7 +88,7 @@
     Row::start();
     Cell::label("$trans_name #" . $_GET['trans_no']);
     Cell::label($myrow["reference"]);
-    Cell::label(Dates::sql2date($myrow["tran_date"]));
+    Cell::label(Dates::sqlToDate($myrow["tran_date"]));
     Cell::label(Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
     Row::end();
     DB_Comments::display_row($_GET['type_id'], $_GET['trans_no']);

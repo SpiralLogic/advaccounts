@@ -19,8 +19,8 @@
    */
   function get_transactions($from, $to)
   {
-    $from = Dates::date2sql($from);
-    $to   = Dates::date2sql($to);
+    $from = Dates::dateToSql($from);
+    $to   = Dates::dateToSql($to);
     $sql
           = "SELECT DISTINCT grn_batch.supplier_id,
  purch_order_details.*,
@@ -81,7 +81,7 @@
         $stock_id = $trans['item_code'];
       }
       $curr = Bank_Currency::for_creditor($trans['supplier_id']);
-      $rate = Bank_Currency::exchange_rate_from_home($curr, Dates::sql2date($trans['delivery_date']));
+      $rate = Bank_Currency::exchange_rate_from_home($curr, Dates::sqlToDate($trans['delivery_date']));
       $trans['unit_price'] *= $rate;
       $trans['act_price'] *= $rate;
       $rep->NewLine();

@@ -38,9 +38,9 @@
       // insert the actual issue
       $sql
         = "INSERT INTO wo_issues (workorder_id, reference, issue_date, loc_code, workcentre_id)
-        VALUES (" . DB::escape($woid) . ", " . DB::escape($ref) . ", '" . Dates::date2sql($date_) . "', " . DB::escape($location) . ", " . DB::escape($workcentre) . ")";
+        VALUES (" . DB::escape($woid) . ", " . DB::escape($ref) . ", '" . Dates::dateToSql($date_) . "', " . DB::escape($location) . ", " . DB::escape($workcentre) . ")";
       DB::query($sql, "The work order issue could not be added");
-      $number = DB::insert_id();
+      $number = DB::insertId();
       foreach ($items as $item) {
         if ($to_work_order) {
           $item->quantity = -$item->quantity;
@@ -66,7 +66,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($woid)
+    public static function getAll($woid)
     {
       $sql = "SELECT * FROM wo_issues WHERE workorder_id=" . DB::escape($woid) . " ORDER BY issue_no";
 
@@ -140,7 +140,7 @@
       $sql    = "SELECT issue_no FROM wo_issues WHERE issue_no=" . DB::escape($issue_no);
       $result = DB::query($sql, "Cannot retreive a wo issue");
 
-      return (DB::num_rows($result) > 0);
+      return (DB::numRows($result) > 0);
     }
     /**
      * @static
@@ -149,8 +149,8 @@
      */
     public static function display($woid)
     {
-      $result = WO_Issue::get_all($woid);
-      if (DB::num_rows($result) == 0) {
+      $result = WO_Issue::getAll($woid);
+      if (DB::numRows($result) == 0) {
         Display::note(_("There are no Issues for this Order."), 0, 1);
       } else {
         Table::start('tablestyle grid');
@@ -160,7 +160,7 @@
         while ($myrow = DB::fetch($result)) {
           Cell::label(GL_UI::trans_view(28, $myrow["issue_no"]));
           Cell::label($myrow['reference']);
-          Cell::label(Dates::sql2date($myrow["issue_date"]));
+          Cell::label(Dates::sqlToDate($myrow["issue_date"]));
           Row::end();
         }
         Table::end();
@@ -260,7 +260,7 @@
       if ($line_no != -1 && $line_no == $id) {
         $_POST['stock_id'] = $order->line_items[$id]->stock_id;
         $_POST['qty']      = Item::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
-        $_POST['std_cost'] = Num::price_format($order->line_items[$id]->standard_cost);
+        $_POST['std_cost'] = Num::priceFormat($order->line_items[$id]->standard_cost);
         $_POST['units']    = $order->line_items[$id]->units;
         Forms::hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id']);
@@ -277,17 +277,17 @@
         $item_info         = Item::get_edit_info($_POST['stock_id']);
         $dec               = $item_info["decimals"];
         $_POST['qty']      = Num::format(0, $dec);
-        $_POST['std_cost'] = Num::price_format($item_info["standard_cost"]);
+        $_POST['std_cost'] = Num::priceFormat($item_info["standard_cost"]);
         $_POST['units']    = $item_info["units"];
       }
-       Forms::qtyCells(null, 'qty', $_POST['qty'], null, null, $dec);
+      Forms::qtyCells(null, 'qty', $_POST['qty'], null, null, $dec);
       Cell::label($_POST['units'], '', 'units');
-       Forms::amountCells(null, 'std_cost', $_POST['std_cost']);
+      Forms::amountCells(null, 'std_cost', $_POST['std_cost']);
       if ($id != -1) {
         Forms::buttonCell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
         Forms::buttonCell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
         Forms::hidden('LineNo', $line_no);
-        JS::set_focus('qty');
+        JS::setFocus('qty');
       } else {
         Forms::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
       }
@@ -297,15 +297,15 @@
     {
       echo "<br>";
       Table::start();
-       Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_MANUISSUE));
+      Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_MANUISSUE));
       if (!isset($_POST['IssueType'])) {
         $_POST['IssueType'] = 0;
       }
-       Forms::yesnoListRow(_("Type:"), 'IssueType', $_POST['IssueType'], _("Return Items to Location"), _("Issue Items to Work order"));
+      Forms::yesnoListRow(_("Type:"), 'IssueType', $_POST['IssueType'], _("Return Items to Location"), _("Issue Items to Work order"));
       Inv_Location::row(_("From Location:"), 'location');
       workcenter_list_row(_("To Work Centre:"), 'WorkCentre');
-       Forms::dateRow(_("Issue Date:"), 'date_');
-       Forms::textareaRow(_("Memo"), 'memo_', null, 50, 3);
+      Forms::dateRow(_("Issue Date:"), 'date_');
+      Forms::textareaRow(_("Memo"), 'memo_', null, 50, 3);
       Table::end(1);
     }
   }

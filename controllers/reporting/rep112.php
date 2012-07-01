@@ -31,7 +31,7 @@
                 AND debtor_trans.type = " . DB::escape($type) . "
                 AND debtor_trans.trans_no = " . DB::escape($trans_no);
     $result = DB::query($sql, "The remittance cannot be retrieved");
-    if (DB::num_rows($result) == 0) {
+    if (DB::numRows($result) == 0) {
       return false;
     }
 
@@ -112,8 +112,8 @@
         while ($myrow2 = DB::fetch($result)) {
           $rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
           $rep->TextCol(1, 2, $myrow2['reference'], -2);
-          $rep->TextCol(2, 3, Dates::sql2date($myrow2['tran_date']), -2);
-          $rep->TextCol(3, 4, Dates::sql2date($myrow2['due_date']), -2);
+          $rep->TextCol(2, 3, Dates::sqlToDate($myrow2['tran_date']), -2);
+          $rep->TextCol(3, 4, Dates::sqlToDate($myrow2['due_date']), -2);
           $rep->AmountCol(4, 5, $myrow2['Total'], $dec, -2);
           $rep->AmountCol(5, 6, $myrow2['Total'] - $myrow2['alloc'], $dec, -2);
           $rep->AmountCol(6, 7, $myrow2['amt'], $dec, -2);
@@ -133,7 +133,7 @@
         $rep->Font('bold');
         $rep->TextCol(3, 6, $txt_total_payment, -2);
         $rep->AmountCol(6, 7, $myrow['Total'], $dec, -2);
-        $words = Item_Price::to_words($myrow['Total'], ST_CUSTPAYMENT);
+        $words = Item_Price::toWords($myrow['Total'], ST_CUSTPAYMENT);
         if ($words != "") {
           $rep->NewLine(1);
           $rep->TextCol(0, 7, $myrow['curr_code'] . ": " . $words, -2);

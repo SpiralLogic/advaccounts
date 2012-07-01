@@ -7,12 +7,12 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::open_window(800, 500);
+  JS::openWindow(800, 500);
   Page::start(_($help_context = "Void a Transaction"), SA_VOIDTRANSACTION);
   if (!isset($_POST['date_'])) {
     $_POST['date_'] = Dates::today();
-    if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
-      $_POST['date_'] = Dates::end_fiscalyear();
+    if (!Dates::isDateInFiscalYear($_POST['date_'])) {
+      $_POST['date_'] = Dates::endFiscalYear();
     }
   }
   if (isset($_POST['ConfirmVoiding'])) {
@@ -126,9 +126,9 @@
     Forms::start();
     Table::start('tablestyle2');
     SysTypes::row(_("Transaction Type:"), "filterType", null, true);
-     Forms::textRow(_("Transaction #:"), 'trans_no', null, 12, 12);
-     Forms::dateRow(_("Voiding Date:"), 'date_');
-     Forms::textareaRow(_("Memo:"), 'memo_', null, 30, 4);
+    Forms::textRow(_("Transaction #:"), 'trans_no', null, 12, 12);
+    Forms::dateRow(_("Voiding Date:"), 'date_');
+    Forms::textareaRow(_("Memo:"), 'memo_', null, 30, 4);
     Table::end(1);
     if (!isset($_POST['ProcessVoiding'])) {
       Forms::submitCenter('ProcessVoiding', _("Void Transaction"), true, '', 'default');
@@ -162,25 +162,25 @@
   {
     if (DB_AuditTrail::is_closed_trans($_POST['filterType'], $_POST['trans_no'])) {
       Event::error(_("The selected transaction was closed for edition and cannot be voided."));
-      JS::set_focus('trans_no');
+      JS::setFocus('trans_no');
 
       return false;
     }
-    if (!Dates::is_date($_POST['date_'])) {
+    if (!Dates::isDate($_POST['date_'])) {
       Event::error(_("The entered date is invalid."));
-      JS::set_focus('date_');
+      JS::setFocus('date_');
 
       return false;
     }
-    /*if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
+    /*if (!Dates::isDateInFiscalYear($_POST['date_'])) {
       Event::error(_("The entered date is not in fiscal year."));
-      JS::set_focus('date_');
+      JS::setFocus('date_');
 
       return false;
     }*/
     if (!is_numeric($_POST['trans_no']) OR $_POST['trans_no'] <= 0) {
       Event::error(_("The transaction number is expected to be numeric and greater than zero."));
-      JS::set_focus('trans_no');
+      JS::setFocus('trans_no');
 
       return false;
     }
@@ -212,7 +212,7 @@
       } else {
         Event::error($error);
         unset($_POST['trans_no'], $_POST['memo_'], $_POST['date_']);
-        JS::set_focus('trans_no');
+        JS::setFocus('trans_no');
       }
     }
   }

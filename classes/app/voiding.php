@@ -140,7 +140,7 @@
     {
       $sql    = "SELECT * FROM voided WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($type_no);
       $result = DB::query($sql, "could not query voided transaction table");
-      return DB::num_rows($result);
+      return DB::numRows($result);
     }
     /**
      * @static
@@ -152,7 +152,7 @@
      */
     public static function add($type, $type_no, $date_, $memo_)
     {
-      $date = Dates::date2sql($date_);
+      $date = Dates::dateToSql($date_);
       $sql
             = "INSERT INTO voided (type, id, date_, memo_)
 			VALUES (" . DB::escape($type) . ", " . DB::escape($type_no) . ", " . DB::escape($date) . ", " . DB::escape($memo_) . ")";

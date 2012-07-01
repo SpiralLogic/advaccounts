@@ -1,12 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "Tax Groups"), SA_TAXGROUPS);
   list($Mode, $selected_id) = Page::simple_mode(true);
@@ -17,7 +17,7 @@
     if (strlen($_POST['name']) == 0) {
       $input_error = 1;
       Event::error(_("The tax group name cannot be empty."));
-      JS::set_focus('name');
+      JS::setFocus('name');
     }
     /* Editable rate has been removed 090920 Joe Hunt
              else
@@ -31,7 +31,7 @@
                  {
                  Event::error( _("An entered tax rate is invalid or less than zero."));
                    $input_error = 1;
-                 JS::set_focus('rate');
+                 JS::setFocus('rate');
                  break;
                  }
                }
@@ -53,8 +53,7 @@
       if ($selected_id != -1) {
         Tax_Groups::update($selected_id, $_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
         Event::success(_('Selected tax group has been updated'));
-      }
-      else {
+      } else {
         Tax_Groups::add($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
         Event::success(_('New tax group has been added'));
       }
@@ -62,22 +61,21 @@
     }
   }
 
-
   if ($Mode == MODE_DELETE) {
-      Tax_Groups::delete($selected_id);
+    Tax_Groups::delete($selected_id);
     $Mode = MODE_RESET;
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = Input::post('show_inactive');
+    $sav         = Input::post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Tax_Groups::get_all(Forms::hasPost('show_inactive'));
+  $result = Tax_Groups::getAll(Forms::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("Description"), _("Shipping Tax"), "", "");
-   Forms::inactiveControlCol($th);
+  Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
@@ -85,33 +83,32 @@
     Cell::label($myrow["name"]);
     if ($myrow["tax_shipping"]) {
       Cell::label(_("Yes"));
-    }
-    else {
+    } else {
       Cell::label(_("No"));
     }
     /*for ($i=0; $i< 5; $i++)
                   if ($myrow["type" . $i] != ALL_NUMERIC)
                     echo "<td>" . $myrow["type" . $i] . "</td>";*/
-     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'tax_groups', 'id');
+    Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'tax_groups', 'id');
     Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     Row::end();
     ;
   }
-   Forms::inactiveControlRow($th);
+  Forms::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != -1) {
     //editing an existing status code
     if ($Mode == MODE_EDIT) {
-      $group = Tax_Groups::get($selected_id);
-      $_POST['name'] = $group["name"];
+      $group                 = Tax_Groups::get($selected_id);
+      $_POST['name']         = $group["name"];
       $_POST['tax_shipping'] = $group["tax_shipping"];
-      $items = Tax_Groups::get_for_item($selected_id);
-      $i = 0;
+      $items                 = Tax_Groups::get_for_item($selected_id);
+      $i                     = 0;
       while ($tax_item = DB::fetch($items)) {
         $_POST['tax_type_id' . $i] = $tax_item["tax_type_id"];
-        $_POST['rate' . $i] = Num::percent_format($tax_item["rate"]);
+        $_POST['rate' . $i]        = Num::percentFormat($tax_item["rate"]);
         $i++;
       }
       while ($i < 5) {
@@ -120,8 +117,8 @@
     }
     Forms::hidden('selected_id', $selected_id);
   }
-   Forms::textRowEx(_("Description:"), 'name', 40);
-   Forms::yesnoListRow(_("Tax applied to Shipping:"), 'tax_shipping', null, "", "", true);
+  Forms::textRowEx(_("Description:"), 'name', 40);
+  Forms::yesnoListRow(_("Tax applied to Shipping:"), 'tax_shipping', null, "", "", true);
   Table::end();
   Event::warning(_("Select the taxes that are included in this group."), 1);
   Table::start('tablestyle2');
@@ -137,10 +134,10 @@
     Tax_Types::cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
     if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != ALL_NUMERIC) {
       $default_rate = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
-      Cell::label(Num::percent_format($default_rate), ' class="right nowrap"');
+      Cell::label(Num::percentFormat($default_rate), ' class="right nowrap"');
       //Editable rate has been removed 090920 Joe Hunt
       //if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
-      //	$_POST['rate' . $i] = Num::percent_format($default_rate);
+      //	$_POST['rate' . $i] = Num::percentFormat($default_rate);
       // Forms::amountCellsSmall(null, 'rate' . $i, $_POST['rate' . $i], null, null,
       // User::percent_dec());
     }

@@ -16,7 +16,7 @@
     if (strlen($_POST['bank_account_name']) == 0) {
       $input_error = 1;
       Event::error(_("The bank account name cannot be empty."));
-      JS::set_focus('bank_account_name');
+      JS::setFocus('bank_account_name');
     }
     if ($input_error != 1) {
       if ($selected_id != -1) {
@@ -35,14 +35,14 @@
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'bank_trans'
     $sql    = "SELECT COUNT(*) FROM bank_trans WHERE bank_act=$acc";
     $result = DB::query($sql, "check failed");
-    $myrow  = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       $cancel_delete = 1;
       Event::error(_("Cannot delete this bank account because transactions have been created using this account."));
     }
     $sql    = "SELECT COUNT(*) FROM sales_pos WHERE pos_account=$acc";
     $result = DB::query($sql, "check failed");
-    $myrow  = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       $cancel_delete = 1;
       Event::error(_("Cannot delete this bank account because POS definitions have been created using this account."));
@@ -73,7 +73,7 @@
   $th = array(
     _("Account Name"), _("Type"), _("Currency"), _("GL Account"), _("Bank"), _("Number"), _("Bank Address"), _("Dflt"), '', ''
   );
-   Forms::inactiveControlCol($th);
+  Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   global $bank_account_types;
@@ -90,12 +90,12 @@
     } else {
       Cell::label(_("No"));
     }
-     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'bank_accounts', 'id');
+    Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'bank_accounts', 'id');
     Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     Row::end();
   }
-   Forms::inactiveControlRow($th);
+  Forms::inactiveControlRow($th);
   Table::end(1);
   $is_editing = $selected_id != -1;
   Table::start('tablestyle2');
@@ -115,9 +115,9 @@
     Forms::hidden('account_code');
     Forms::hidden('account_type');
     Forms::hidden('BankAccountCurrency', $_POST['BankAccountCurrency']);
-    JS::set_focus('bank_account_name');
+    JS::setFocus('bank_account_name');
   }
-   Forms::textRow(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
+  Forms::textRow(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
   if ($is_editing) {
     global $bank_account_types;
     Row::label(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
@@ -129,15 +129,15 @@
   } else {
     GL_Currency::row(_("Bank Account Currency:"), 'BankAccountCurrency', null);
   }
-   Forms::yesnoListRow(_("Default currency account:"), 'dflt_curr_act');
+  Forms::yesnoListRow(_("Default currency account:"), 'dflt_curr_act');
   if ($is_editing) {
     Row::label(_("Bank Account GL Code:"), $_POST['account_code']);
   } else {
     GL_UI::all_row(_("Bank Account GL Code:"), 'account_code', null);
   }
-   Forms::textRow(_("Bank Name:"), 'bank_name', null, 50, 60);
-   Forms::textRow(_("Bank Account Number:"), 'bank_account_number', null, 30, 60);
-   Forms::textareaRow(_("Bank Address:"), 'bank_address', null, 40, 5);
+  Forms::textRow(_("Bank Name:"), 'bank_name', null, 50, 60);
+  Forms::textRow(_("Bank Account Number:"), 'bank_account_number', null, 30, 60);
+  Forms::textareaRow(_("Bank Address:"), 'bank_address', null, 40, 5);
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();

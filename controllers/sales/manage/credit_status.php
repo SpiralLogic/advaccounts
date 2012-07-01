@@ -31,47 +31,46 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = Input::post('show_inactive');
+    $sav         = Input::post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Sales_CreditStatus::get_all(Forms::hasPost('show_inactive'));
+  $result = Sales_CreditStatus::getAll(Forms::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid width40');
   $th = array(_("Description"), _("Dissallow Invoices"), '', '');
-   Forms::inactiveControlCol($th);
+  Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
 
     if ($myrow["dissallow_invoices"] == 0) {
       $disallow_text = _("Invoice OK");
-    }
-    else {
+    } else {
       $disallow_text = "<span class='bold'>" . _("NO INVOICING") . "</span>";
     }
     Cell::label($myrow["reason_description"]);
     Cell::label($disallow_text);
-     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'credit_status', 'id');
+    Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'credit_status', 'id');
     Forms::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
     Row::end();
   }
-   Forms::inactiveControlRow($th);
+  Forms::inactiveControlRow($th);
   Table::end();
   echo '<br>';
   Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing status code
-      $myrow = Sales_CreditStatus::get($selected_id);
+      $myrow                       = Sales_CreditStatus::get($selected_id);
       $_POST['reason_description'] = $myrow["reason_description"];
-      $_POST['DisallowInvoices'] = $myrow["dissallow_invoices"];
+      $_POST['DisallowInvoices']   = $myrow["dissallow_invoices"];
     }
     Forms::hidden('selected_id', $selected_id);
   }
-   Forms::textRowEx(_("Description:"), 'reason_description', 50);
-   Forms::yesnoListRow(_("Dissallow invoicing ?"), 'DisallowInvoices', null);
+  Forms::textRowEx(_("Description:"), 'reason_description', 50);
+  Forms::yesnoListRow(_("Dissallow invoicing ?"), 'DisallowInvoices', null);
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();

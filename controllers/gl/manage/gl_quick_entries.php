@@ -39,7 +39,7 @@
       $Mode = MODE_RESET;
     } else {
       Event::error(_("The Quick Entry has Quick Entry Lines. Cannot be deleted."));
-      JS::set_focus('description');
+      JS::setFocus('description');
     }
   }
   if ($Mode2 == 'BDel') {
@@ -51,13 +51,13 @@
     $selected_id          = -1;
     $_POST['description'] = $_POST['type'] = '';
     $_POST['base_desc']   = _('Base Amount');
-    $_POST['base_amount'] = Num::price_format(0);
+    $_POST['base_amount'] = Num::priceFormat(0);
   }
   if ($Mode2 == 'RESET2') {
     $selected_id2  = -1;
     $_POST['actn'] = $_POST['dest_id'] = $_POST['amount'] = $_POST['dimension_id'] = $_POST['dimension2_id'] = '';
   }
-  $result = GL_QuickEntry::get_all();
+  $result = GL_QuickEntry::getAll();
   Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("Description"), _("Type"), "", "");
@@ -84,14 +84,14 @@
     $_POST['description'] = $myrow["description"];
     $_POST['type']        = $myrow["type"];
     $_POST['base_desc']   = $myrow["base_desc"];
-    $_POST['base_amount'] = Num::price_format($myrow["base_amount"]);
+    $_POST['base_amount'] = Num::priceFormat($myrow["base_amount"]);
     Forms::hidden('selected_id', $selected_id);
     //}
   }
-   Forms::textRowEx(_("Description") . ':', 'description', 50, 60);
+  Forms::textRowEx(_("Description") . ':', 'description', 50, 60);
   GL_QuickEntry::types(_("Entry Type") . ':', 'type');
-   Forms::textRowEx(_("Base Amount Description") . ':', 'base_desc', 50, 60, '', _('Base Amount'));
-   Forms::AmountRow(_("Default Base Amount") . ':', 'base_amount', Num::price_format(0));
+  Forms::textRowEx(_("Base Amount Description") . ':', 'base_desc', 50, 60, '', _('Base Amount'));
+  Forms::AmountRow(_("Default Base Amount") . ':', 'base_amount', Num::priceFormat(0));
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();
@@ -170,9 +170,9 @@
       GL_UI::all_row(_("Account") . ":", 'dest_id', null, $_POST['type'] == QE_DEPOSIT || $_POST['type'] == QE_PAYMENT);
       if ($actn != '=') {
         if ($actn == '%') {
-           Forms::SmallAmountRow(_("Part") . ":", 'amount', Num::price_format(0), null, "%", User::exrate_dec());
+          Forms::SmallAmountRow(_("Part") . ":", 'amount', Num::priceFormat(0), null, "%", User::exrate_dec());
         } else {
-           Forms::AmountRow(_("Amount") . ":", 'amount', Num::price_format(0));
+          Forms::AmountRow(_("Amount") . ":", 'amount', Num::priceFormat(0));
         }
       }
     }
@@ -206,7 +206,7 @@
   function simple_page_mode2($numeric_id = true)
   {
     $default      = $numeric_id ? -1 : '';
-    $selected_id2 = Input::post('selected_id2',null,$default);
+    $selected_id2 = Input::post('selected_id2', null, $default);
     foreach (array('ADD_ITEM2', 'UPDATE_ITEM2', 'RESET2') as $m) {
       if (isset($_POST[$m])) {
         Ajax::activate('_page_body');
@@ -257,13 +257,13 @@
   {
     if (strlen($_POST['description']) == 0) {
       Event::error(_("The Quick Entry description cannot be empty."));
-      JS::set_focus('description');
+      JS::setFocus('description');
 
       return false;
     }
     if (strlen($_POST['base_desc']) == 0) {
       Event::error(_("The base amount description cannot be empty."));
-      JS::set_focus('base_desc');
+      JS::setFocus('base_desc');
 
       return false;
     }

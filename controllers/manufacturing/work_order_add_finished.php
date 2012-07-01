@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   Page::start(_($help_context = "Produce or Unassemble Finished Items From Work Order"), SA_MANUFRECEIVE);
   if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
     $_POST['selected_id'] = $_GET['trans_no'];
@@ -40,7 +40,7 @@
     global $wo_details;
     if (!Ref::is_valid($_POST['ref'])) {
       Event::error(_("You must enter a reference."));
-      JS::set_focus('ref');
+      JS::setFocus('ref');
 
       return false;
     }
@@ -49,24 +49,24 @@
     }
     if (!Validation::post_num('quantity', 0)) {
       Event::error(_("The quantity entered is not a valid number or less then zero."));
-      JS::set_focus('quantity');
+      JS::setFocus('quantity');
 
       return false;
     }
-    if (!Dates::is_date($_POST['date_'])) {
+    if (!Dates::isDate($_POST['date_'])) {
       Event::error(_("The entered date is invalid."));
-      JS::set_focus('date_');
+      JS::setFocus('date_');
 
       return false;
-    } elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
+    } elseif (!Dates::isDateInFiscalYear($_POST['date_'])) {
       Event::error(_("The entered date is not in fiscal year."));
-      JS::set_focus('date_');
+      JS::setFocus('date_');
 
       return false;
     }
-    if (Dates::date_diff2(Dates::sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
+    if (Dates::differenceBetween(Dates::sqlToDate($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
       Event::error(_("The production date cannot be before the release date of the work order."));
-      JS::set_focus('date_');
+      JS::setFocus('date_');
 
       return false;
     }
@@ -76,7 +76,7 @@
       $qoh        = Item::get_qoh_on_date($wo_details["stock_id"], $wo_details["loc_code"], $_POST['date_']);
       if (-Validation::input_num('quantity') + $qoh < 0) {
         Event::error(_("The unassembling cannot be processed because there is insufficient stock."));
-        JS::set_focus('quantity');
+        JS::setFocus('quantity');
 
         return false;
       }
@@ -97,7 +97,7 @@
         }
       }
       if ($err) {
-        JS::set_focus('quantity');
+        JS::setFocus('quantity');
 
         return false;
       }
@@ -128,14 +128,14 @@
   }
   Table::start('tablestyle2');
   Display::br();
-   Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_MANURECEIVE));
+  Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_MANURECEIVE));
   if (!isset($_POST['ProductionType'])) {
     $_POST['ProductionType'] = 1;
   }
-   Forms::yesnoListRow(_("Type:"), 'ProductionType', $_POST['ProductionType'], _("Produce Finished Items"), _("Return Items to Work Order"));
-   Forms::qtyRowSmall(_("Quantity:"), 'quantity', null, null, null, $dec);
-   Forms::dateRow(_("Date:"), 'date_');
-   Forms::textareaRow(_("Memo:"), 'memo_', null, 40, 3);
+  Forms::yesnoListRow(_("Type:"), 'ProductionType', $_POST['ProductionType'], _("Produce Finished Items"), _("Return Items to Work Order"));
+  Forms::qtyRowSmall(_("Quantity:"), 'quantity', null, null, null, $dec);
+  Forms::dateRow(_("Date:"), 'date_');
+  Forms::textareaRow(_("Memo:"), 'memo_', null, 40, 3);
   Table::end(1);
   Forms::submitCenterBegin('Process', _("Process"), '', 'default');
   Forms::submitCenterEnd('ProcessAndClose', _("Process And Close Order"), '', true);

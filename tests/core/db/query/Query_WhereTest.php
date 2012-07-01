@@ -56,65 +56,65 @@
     {
       /** @var Query_Where $stub  */
       $stub = $this->stub;
-      $this->assertEquals($stub, $stub->or_where('test=', 3));
+      $this->assertEquals($stub, $stub->orWhere('test=', 3));
 
       $this->assertAttributeEquals([0=> 'test= :dbcondition0'], 'where', $stub);
       $this->assertAttributeEquals([':dbcondition0'=> 3], 'wheredata', $stub);
     }
     /**
      * @covers ADV\Core\DB\Query_Where::or_where
-     * @todo   Implement testOr_where().
+     * @todo   Implement testorWhere().
      */
     public function testOr_whereWithArray()
     {
       /** @var Query_Where $stub  */
       $stub = $this->stub;
-      $this->assertEquals($stub, $stub->or_where([['test=', 3], ['test2=', 5]]));
+      $this->assertEquals($stub, $stub->orWhere([['test=', 3], ['test2=', 5]]));
 
       $this->assertAttributeEquals([0=> 'test= :dbcondition0', 1=> 'OR test2= :dbcondition1'], 'where', $stub);
       $this->assertAttributeEquals([':dbcondition0'=> 3, ':dbcondition1'=> 5], 'wheredata', $stub);
     }
     /**
      * @covers ADV\Core\DB\Query_Where::and_where
-     * @todo   Implement testAnd_where().
+     * @todo   Implement testandWhere().
      */
-    public function testAnd_where()
+    public function testandWhere()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
      * @covers ADV\Core\DB\Query_Where::or_open
-     * @todo   Implement testOr_open().
+     * @todo   Implement testorOpen().
      */
-    public function testOr_open()
+    public function testorOpen()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
      * @covers ADV\Core\DB\Query_Where::and_open
-     * @todo   Implement testAnd_open().
+     * @todo   Implement testandOpen().
      */
-    public function testAnd_open()
+    public function testandOpen()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
      * @covers ADV\Core\DB\Query_Where::close_and
-     * @todo   Implement testClose_and().
+     * @todo   Implement testcloseAnd().
      */
-    public function testClose_and()
+    public function testcloseAnd()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
      * @covers ADV\Core\DB\Query_Where::close_or
-     * @todo   Implement testClose_or().
+     * @todo   Implement testcloseOr().
      */
-    public function testClose_or()
+    public function testcloseOr()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');

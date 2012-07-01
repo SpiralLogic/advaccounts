@@ -21,7 +21,7 @@
    */
   function get_open_balance($debtorno, $to, $convert)
   {
-    $to  = Dates::date2sql($to);
+    $to  = Dates::dateToSql($to);
     $sql = "SELECT SUM(IF(" . '' . "debtor_trans.type = " . ST_SALESINVOICE . ", (" . '' . "debtor_trans.ov_amount + " . '' . "debtor_trans.ov_gst +
      " . '' . "debtor_trans.ov_freight + " . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount)";
     if ($convert) {
@@ -74,8 +74,8 @@
    */
   function get_transactions($debtorno, $from, $to)
   {
-    $from = Dates::date2sql($from);
-    $to   = Dates::date2sql($to);
+    $from = Dates::dateToSql($from);
+    $to   = Dates::dateToSql($to);
     $sql  = "SELECT " . '' . "debtor_trans.*,
         (" . '' . "debtor_trans.ov_amount + " . '' . "debtor_trans.ov_gst + " . '' . "debtor_trans.ov_freight +
         " . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount)
@@ -160,7 +160,7 @@
       $init[3] = Num::round($bal['OutStanding'], $dec);
       ;
       $res = get_transactions($myrow['debtor_id'], $from, $to);
-      if ($no_zeros && DB::num_rows($res) == 0) {
+      if ($no_zeros && DB::numRows($res) == 0) {
         continue;
       }
       $num_lines++;
@@ -181,7 +181,7 @@
         $grandtotal[$i] += $init[$i];
       }
       $rep->NewLine(1, 2);
-      if (DB::num_rows($res) == 0) {
+      if (DB::numRows($res) == 0) {
         continue;
       }
       $rep->Line($rep->row + 4);

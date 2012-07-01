@@ -23,9 +23,9 @@
     // if selected kit is not included in any other kit.
     //
     $other_kits = Item_Code::get_where_used($_POST['item_code']);
-    $num_kits   = DB::num_rows($other_kits);
+    $num_kits   = DB::numRows($other_kits);
     $kit        = Item_Code::get_kit($_POST['item_code']);
-    if ((DB::num_rows($kit) == 1) && $num_kits) {
+    if ((DB::numRows($kit) == 1) && $num_kits) {
       $msg = _("This item cannot be deleted because it is the last item in the kit used by following kits") . ':<br>';
       while ($num_kits--) {
         $kit = DB::fetch($other_kits);
@@ -60,13 +60,13 @@
   if (Input::post('item_code') == '') {
     // New sales kit entry
     Table::start('tablestyle2');
-     Forms::textRow(_("Alias/kit code:"), 'kit_code', null, 20, 21);
+    Forms::textRow(_("Alias/kit code:"), 'kit_code', null, 20, 21);
   } else {
     // Kit selected so display bom or edit component
     $_POST['description'] = $props['description'];
     $_POST['category']    = $props['category_id'];
     Table::start('tablestyle2');
-     Forms::textRow(_("Description:"), 'description', null, 50, 200);
+    Forms::textRow(_("Description:"), 'description', null, 50, 200);
     Item_Category::row(_("Category:"), 'category', null);
     Forms::submitRow('update_name', _("Update"), false, 'class=center colspan=2', _('Update kit/alias name'), true);
     Row::end();
@@ -89,7 +89,7 @@
       $_POST['description'] = $props['description'];
       $_POST['category']    = $props['category_id'];
     }
-     Forms::textRow(_("Description:"), 'description', null, 50, 200);
+    Forms::textRow(_("Description:"), 'description', null, 50, 200);
     Item_Category::row(_("Category:"), 'category', null);
   }
   $res   = Item::get_edit_info(Input::post('component'));
@@ -100,7 +100,7 @@
     Ajax::activate('quantity');
     Ajax::activate('category');
   }
-   Forms::qtyRow(_("Quantity:"), 'quantity', Num::format(1, $dec), '', $units, $dec);
+  Forms::qtyRow(_("Quantity:"), 'quantity', Num::format(1, $dec), '', $units, $dec);
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();
@@ -143,27 +143,27 @@
     global $selected_kit;
     if (!Validation::post_num('quantity', 0)) {
       Event::error(_("The quantity entered must be numeric and greater than zero."));
-      JS::set_focus('quantity');
+      JS::setFocus('quantity');
 
       return;
     } elseif ($_POST['description'] == '') {
       Event::error(_("Item code description cannot be empty."));
-      JS::set_focus('description');
+      JS::setFocus('description');
 
       return;
     } elseif ($selected_item == -1) // adding new item or new alias/kit
     {
       if (Input::post('item_code') == '') { // New kit/alias definition
         $kit = Item_Code::get_kit($_POST['kit_code']);
-        if (DB::num_rows($kit)) {
+        if (DB::numRows($kit)) {
           Event::error(_("This item code is already assigned to stock item or sale kit."));
-          JS::set_focus('kit_code');
+          JS::setFocus('kit_code');
 
           return;
         }
         if (Input::post('kit_code') == '') {
           Event::error(_("Kit/alias code cannot be empty."));
-          JS::set_focus('kit_code');
+          JS::setFocus('kit_code');
 
           return;
         }
@@ -171,14 +171,14 @@
     }
     if (Item_Code::is_item_in_kit($selected_item, $kit_code, $_POST['component'], true)) {
       Event::error(_("The selected component contains directly or on any lower level the kit under edition. Recursive kits are not allowed."));
-      JS::set_focus('component');
+      JS::setFocus('component');
 
       return;
     }
     /*Now check to see that the component is not already in the kit */
     if (Item_Code::is_item_in_kit($selected_item, $kit_code, $_POST['component'])) {
       Event::error(_("The selected component is already in this kit. You can modify it's quantity but it cannot appear more than once in the same kit."));
-      JS::set_focus('component');
+      JS::setFocus('component');
 
       return;
     }

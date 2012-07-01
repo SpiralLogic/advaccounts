@@ -1,13 +1,12 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
   Page::start(_($help_context = "View Bank Payment"), SA_BANKTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {
@@ -15,12 +14,12 @@
   }
   // get the pay-from bank payment info
   $result = Bank_Trans::get(ST_BANKPAYMENT, $trans_no);
-  if (DB::num_rows($result) != 1) {
-    Errors::db_error("duplicate payment bank transaction found", "");
+  if (DB::numRows($result) != 1) {
+    Errors::databaseError("duplicate payment bank transaction found", "");
   }
-  $from_trans = DB::fetch($result);
+  $from_trans       = DB::fetch($result);
   $company_currency = Bank_Currency::for_company();
-  $show_currencies = false;
+  $show_currencies  = false;
   if ($from_trans['bank_curr_code'] != $company_currency) {
     $show_currencies = true;
   }
@@ -30,8 +29,7 @@
   if ($show_currencies) {
     $colspan1 = 5;
     $colspan2 = 8;
-  }
-  else {
+  } else {
     $colspan1 = 3;
     $colspan2 = 6;
   }
@@ -41,7 +39,7 @@
     Cell::labels(_("Currency"), $from_trans['bank_curr_code'], "class='tablerowhead'");
   }
   Cell::labels(_("Amount"), Num::format($from_trans['amount'], User::price_dec()), "class='tablerowhead'", "class='right'");
-  Cell::labels(_("Date"), Dates::sql2date($from_trans['trans_date']), "class='tablerowhead'");
+  Cell::labels(_("Date"), Dates::sqlToDate($from_trans['trans_date']), "class='tablerowhead'");
   Row::end();
   Row::start();
   Cell::labels(_("Pay To"), Bank::payment_person_name($from_trans['person_type_id'], $from_trans['person_id']), "class='tablerowhead'", "colspan=$colspan1");
@@ -53,11 +51,10 @@
   DB_Comments::display_row(ST_BANKPAYMENT, $trans_no);
   Table::end(1);
   $voided = Display::is_voided(ST_BANKPAYMENT, $trans_no, _("This payment has been voided."));
-  $items = GL_Trans::get_many(ST_BANKPAYMENT, $trans_no);
-  if (DB::num_rows($items) == 0) {
+  $items  = GL_Trans::get_many(ST_BANKPAYMENT, $trans_no);
+  if (DB::numRows($items) == 0) {
     Event::warning(_("There are no items for this payment."));
-  }
-  else {
+  } else {
     Display::heading(_("Items for this Payment"));
     if ($show_currencies) {
       Display::heading(_("Item Amounts are Shown in :") . " " . $company_currency);
@@ -69,21 +66,19 @@
       $th = array(
         _("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2", _("Amount"), _("Memo")
       );
-    }
-    else {
+    } else {
       if ($dim == 1) {
         $th = array(
           _("Account Code"), _("Account Description"), _("Dimension"), _("Amount"), _("Memo")
         );
-      }
-      else {
+      } else {
         $th = array(
           _("Account Code"), _("Account Description"), _("Amount"), _("Memo")
         );
       }
     }
     Table::header($th);
-    $k = 0; //row colour counter
+    $k            = 0; //row colour counter
     $total_amount = 0;
     while ($item = DB::fetch($items)) {
       if ($item["account"] != $from_trans["account_code"]) {

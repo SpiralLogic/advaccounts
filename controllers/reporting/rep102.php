@@ -19,7 +19,7 @@
    */
   function get_invoices($customer_id, $to)
   {
-    $todate    = Dates::date2sql($to);
+    $todate    = Dates::dateToSql($to);
     $past_due1 = DB_Company::get_pref('past_due_days');
     $past_due2 = 2 * $past_due1;
     // Revomed allocated from sql
@@ -166,7 +166,7 @@
       $rep->NewLine(1, 2);
       if (!$summaryOnly) {
         $res = get_invoices($myrow['debtor_id'], $to);
-        if (DB::num_rows($res) == 0) {
+        if (DB::numRows($res) == 0) {
           continue;
         }
         $rep->Line($rep->row + 4);

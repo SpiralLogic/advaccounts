@@ -22,8 +22,8 @@
    */
   function GetSalesOrders($from, $to, $category = 0, $location = null, $backorder = 0)
   {
-    $fromdate = Dates::date2sql($from);
-    $todate   = Dates::date2sql($to);
+    $fromdate = Dates::dateToSql($from);
+    $todate   = Dates::dateToSql($to);
     $sql
               = "SELECT sales_orders.order_no,
                 sales_orders.debtor_id,

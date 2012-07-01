@@ -25,7 +25,7 @@
       $sql .= " LIMIT 20";
       $result = DB::query($sql, 'Couldn\'t Get Supplier');
       $data   = '';
-      while ($row = DB::fetch_assoc($result)) {
+      while ($row = DB::fetchAssoc($result)) {
         foreach ($row as &$value) {
           $value = htmlspecialchars_decode($value);
         }
@@ -260,7 +260,7 @@
      */
     protected function _defaults()
     {
-      $this->credit_limit             = Num::price_format(0);
+      $this->credit_limit             = Num::priceFormat(0);
       $company_record                 = DB_Company::get_prefs();
       $this->curr_code                = $company_record["curr_default"];
       $this->payable_account          = $company_record["creditors_act"];
@@ -284,7 +284,8 @@
     protected function _getContacts()
     {
       $this->contacts = [];
-      \DB::select()->from('contacts')->where('parent_id=', $this->id)->and_where('parent_type=', CT_SUPPLIER)->orderby('name DESC');
+      \DB::select()->from('contacts')->where('parent_id=', $this->id)->andWhere('parent_type=', CT_SUPPLIER)
+        ->orderby('name DESC');
       $contacts = DB::fetch()->asClassLate('Contact', array(CT_SUPPLIER));
       if (count($contacts)) {
         foreach ($contacts as $contact) {
@@ -303,10 +304,15 @@
       $customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
       $customerBox->addBeforeClose('$("#supplier_id").trigger("change")');
       $customerBox->setOptions(array(
-                                    'autoOpen'   => false, 'modal'      => true, 'width'      => '850', 'height'     => '715', 'resizeable' => true
+                                    'autoOpen'   => false,
+                                    'modal'      => true,
+                                    'width'      => '850',
+                                    'height'     => '715',
+                                    'resizeable' => true
                                ));
       $customerBox->show();
-      $js = <<<JS
+      $js
+        = <<<JS
                             var val = $("#supplier_id").val();
                             $("#supplierBox").html("<iframe src='/contacts/suppliers.php?frame=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
@@ -325,7 +331,7 @@ JS;
       }
       $this->_getContacts();
       $this->discount     = $this->discount * 100;
-      $this->credit_limit = Num::price_format($this->credit_limit);
+      $this->credit_limit = Num::priceFormat($this->credit_limit);
       $this->_setDefaults();
       return $this;
     }
@@ -342,14 +348,15 @@ JS;
       if ($to == null) {
         $todate = date("Y-m-d");
       } else {
-        $todate = Dates::date2sql($to);
+        $todate = Dates::dateToSql($to);
       }
-      $past_due1 = DB_Company::get_pref('past_due_days')?:30;
+      $past_due1 = DB_Company::get_pref('past_due_days') ? : 30;
       $past_due2 = 2 * $past_due1;
       // removed - creditor_trans.alloc from all summations
-      $value  = "(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)";
-      $due    = "IF (creditor_trans.type=" . ST_SUPPINVOICE . " OR creditor_trans.type=" . ST_SUPPCREDIT . ",creditor_trans.due_date,creditor_trans.tran_date)";
-      $sql    = "SELECT suppliers.name, suppliers.curr_code, payment_terms.terms,
+      $value = "(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)";
+      $due   = "IF (creditor_trans.type=" . ST_SUPPINVOICE . " OR creditor_trans.type=" . ST_SUPPCREDIT . ",creditor_trans.due_date,creditor_trans.tran_date)";
+      $sql
+              = "SELECT suppliers.name, suppliers.curr_code, payment_terms.terms,
         Sum($value) AS Balance,
         Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0)) AS Due,
         Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past_due1,$value,0)) AS Overdue1,
@@ -368,10 +375,11 @@ JS;
              payment_terms.days_before_due,
              payment_terms.day_in_following_month";
       $result = DB::query($sql, "The supplier details could not be retrieved");
-      if (DB::num_rows($result) == 0) {
+      if (DB::numRows($result) == 0) {
         /*Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
         $nil_balance = true;
-        $sql         = "SELECT suppliers.name, suppliers.curr_code, suppliers.supplier_id, payment_terms.terms FROM suppliers,
+        $sql
+                     = "SELECT suppliers.name, suppliers.curr_code, suppliers.supplier_id, payment_terms.terms FROM suppliers,
                  payment_terms WHERE
                  suppliers.payment_terms = payment_terms.terms_indicator
                  AND suppliers.supplier_id = " . DB::escape($supplier_id);
@@ -399,10 +407,11 @@ JS;
      */
     public static function get_oweing($supplier_id, $date_from, $date_to)
     {
-      $date_from = Dates::date2sql($date_from);
-      $date_to   = Dates::date2sql($date_to);
+      $date_from = Dates::dateToSql($date_from);
+      $date_to   = Dates::dateToSql($date_to);
       // Sherifoz 22.06.03 Also get the description
-      $sql     = "SELECT
+      $sql
+               = "SELECT
 
 
      SUM((trans.ov_amount + trans.ov_gst + trans.ov_discount)) AS Total
@@ -442,7 +451,7 @@ JS;
     {
       $sql    = "SELECT name AS name FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
       $result = DB::query($sql, "could not get supplier");
-      $row    = DB::fetch_row($result);
+      $row    = DB::fetchRow($result);
       return $row[0];
     }
     /**
@@ -473,21 +482,21 @@ JS;
         'cell_params'=> '', //
         'rowspan'    => null, //
         'label'      => 'Supplier:', //
-        'cells'      => true,//
-        'cell_class'=>null
+        'cells'      => true, //
+        'cell_class' => null
       ];
       $o     = array_merge($o, $options);
       $focus = false;
       if (!$value && Input::post('supplier')) {
         $value = $_POST['supplier'];
-        JS::set_focus('stock_id');
+        JS::setFocus('stock_id');
       } elseif (!$value) {
-        $value = Session::i()->getGlobal('creditor');
+        $value = Session::getGlobal('creditor');
         if ($value) {
           $_POST['supplier_id'] = $value;
           $value                = Creditor::get_name($value);
         } else {
-          JS::set_focus('supplier');
+          JS::setFocus('supplier');
           $focus = true;
         }
       }
@@ -535,11 +544,14 @@ JS;
                                                                                      'order'         => array('supp_ref'),
                                                                                      'search_box'    => $mode != 0,
                                                                                      'type'          => 1,
-                                                                                     'spec_option'   => $spec_option === true ? _("All Suppliers") : $spec_option,
+                                                                                     'spec_option'   => $spec_option === true ?
+                                                                                       _("All Suppliers") : $spec_option,
                                                                                      'spec_id'       => ALL_TEXT,
                                                                                      'select_submit' => $submit_on_change,
                                                                                      'async'         => false,
-                                                                                     'sel_hint'      => $mode ? _('Press Space tab to filter by name fragment') : _('Select supplier'),
+                                                                                     'sel_hint'      => $mode ?
+                                                                                       _('Press Space tab to filter by name fragment') :
+                                                                                       _('Select supplier'),
                                                                                      'show_inactive' => $all
                                                                                 ));
     }

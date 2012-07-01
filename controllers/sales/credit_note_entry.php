@@ -11,7 +11,7 @@
   //	Entry/Modify free hand Credit Note
   //
 
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   $order = Orders::session_get() ? : null;
   if (isset($_GET[Orders::NEW_CREDIT])) {
     $_SESSION['page_title'] = _($help_context = "Customer Credit Note");
@@ -79,7 +79,7 @@
     }
     $credit    = copy_to_cn($order);
     $credit_no = $credit->write($_POST['WriteOffGLCode']);
-    Dates::new_doc_date($credit->document_date);
+    Dates::newDocDate($credit->document_date);
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$credit_no");
   } /*end of process credit note */
   Forms::start();
@@ -132,7 +132,7 @@
     $_POST['customer_id']       = $order->customer_id;
     $_POST['branch_id']         = $order->Branch;
     $_POST['OrderDate']         = $order->document_date;
-    $_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
+    $_POST['ChargeFreightCost'] = Num::priceFormat($order->freight_cost);
     $_POST['location']          = $order->location;
     $_POST['sales_type_id']     = $order->sales_type;
     if ($order->trans_no == 0) {
@@ -174,19 +174,19 @@
     if ($order->trans_no == 0) {
       if (!Ref::is_valid($_POST['ref'])) {
         Event::error(_("You must enter a reference."));
-        JS::set_focus('ref');
+        JS::setFocus('ref');
         $input_error = 1;
       } elseif (!Ref::is_new($_POST['ref'], ST_CUSTCREDIT)) {
         $_POST['ref'] = Ref::get_next(ST_CUSTCREDIT);
       }
     }
-    if (!Dates::is_date($_POST['OrderDate'])) {
+    if (!Dates::isDate($_POST['OrderDate'])) {
       Event::error(_("The entered date for the credit note is invalid."));
-      JS::set_focus('OrderDate');
+      JS::setFocus('OrderDate');
       $input_error = 1;
-    } elseif (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
+    } elseif (!Dates::isDateInFiscalYear($_POST['OrderDate'])) {
       Event::error(_("The entered date is not in fiscal year."));
-      JS::set_focus('OrderDate');
+      JS::setFocus('OrderDate');
       $input_error = 1;
     }
 
@@ -200,19 +200,19 @@
   {
     if (!Validation::post_num('qty', 0)) {
       Event::error(_("The quantity must be greater than zero."));
-      JS::set_focus('qty');
+      JS::setFocus('qty');
 
       return false;
     }
     if (!Validation::post_num('price', 0)) {
       Event::error(_("The entered price is negative or invalid."));
-      JS::set_focus('price');
+      JS::setFocus('price');
 
       return false;
     }
     if (!Validation::post_num('Disc', 0, 100)) {
       Event::error(_("The entered discount percent is negative, greater than 100 or invalid."));
-      JS::set_focus('Disc');
+      JS::setFocus('Disc');
 
       return false;
     }

@@ -14,7 +14,8 @@
   /**
 
    */
-  class Assets {
+  class Assets
+  {
     protected $baseDir = WEBROOT;
     protected $charSet = 'UTF-8';
     protected $debug = false;
@@ -31,36 +32,38 @@
     protected $clientCache = true;
     protected $clientCacheCheck = true;
     protected $file = array();
-    protected $minifyTypes = array(
-      'js'  => array(
-        'minify'   => true, //
-        'minifier' => 'JSMin', //
-        'settings' => array() //
-      ), //
-      'css' => array( //
-        'minify'   => true, //
-        'minifier' => 'CSSMin', //
-        'settings' => array( //
-          'embed'           => true, //
-          'embedMaxSize'    => 5120, //
-          'embedExceptions' => 'htc',
+    protected $minifyTypes
+      = array(
+        'js'  => array(
+          'minify'   => true, //
+          'minifier' => 'JSMin', //
+          'settings' => array() //
+        ), //
+        'css' => array( //
+          'minify'   => true, //
+          'minifier' => 'CSSMin', //
+          'settings' => array( //
+            'embed'           => true, //
+            'embedMaxSize'    => 5120, //
+            'embedExceptions' => 'htc',
+          )
         )
-      )
-    );
-    protected $mimeTypes = array(
-      "js"   => "text/javascript",
-      "css"  => "text/css",
-      "htm"  => "text/html",
-      "html" => "text/html",
-      "xml"  => "text/xml",
-      "txt"  => "text/plain",
-      "jpg"  => "image/jpeg",
-      "jpeg" => "image/jpeg",
-      "png"  => "image/png",
-      "gif"  => "image/gif",
-      "swf"  => "application/x-shockwave-flash",
-      "ico"  => "image/x-icon",
-    ); //mime types
+      );
+    protected $mimeTypes
+      = array(
+        "js"   => "text/javascript",
+        "css"  => "text/css",
+        "htm"  => "text/html",
+        "html" => "text/html",
+        "xml"  => "text/xml",
+        "txt"  => "text/plain",
+        "jpg"  => "image/jpeg",
+        "jpeg" => "image/jpeg",
+        "png"  => "image/png",
+        "gif"  => "image/gif",
+        "swf"  => "application/x-shockwave-flash",
+        "ico"  => "image/x-icon",
+      ); //mime types
     /**
      * @param $status
      */
@@ -149,7 +152,7 @@
      */
     public function __construct()
     {
-      //  $this->setFromArray(Config::get_all('assets22'));
+      //  $this->setFromArray(Config::getAll('assets22'));
       list($query) = explode('?', urldecode($_SERVER['QUERY_STRING']));
       if (preg_match('/^\/?(.+\/)?(.+)$/', $query, $matchResult)) {
         $fileNames = $matchResult[2];
@@ -189,7 +192,8 @@
       $this->minify      = $this->minify && class_exists($this->minifyTypes[$this->fileType]['minifier']);
       $this->serverCache = $this->serverCache && ($this->minify || $this->gzip || $this->concatenate);
       if ($this->serverCache) {
-        $cachedFile = $this->cacheDir . DIRECTORY_SEPARATOR . $this->cachePrefix . md5($query) . '.' . $this->fileType . ($this->gzip ? '.gz' : '');
+        $cachedFile = $this->cacheDir . DIRECTORY_SEPARATOR . $this->cachePrefix . md5($query) . '.' . $this->fileType . ($this->gzip ?
+          '.gz' : '');
       }
       $generateContent = ((!$this->serverCache && (!$this->clientCache || !$this->clientCacheCheck || !isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || $_SERVER['HTTP_IF_MODIFIED_SINCE'] != $this->gmdatestr($this->filesmtime()))) || ($this->serverCache && (!file_exists($cachedFile) || ($this->serverCacheCheck && $this->filesmtime() > filemtime($cachedFile)))));
       if ($this->clientCache && $this->clientCacheCheck) {
@@ -228,7 +232,9 @@
               $minifier_class                   = $minify_type_settings['minifier'];
               $minify_type_settings['settings'] = $minify_type_settings['settings'] ? : array();
               $minifier                         = new $minifier_class($content, array(
-                                                                                     'fileDir'             => $fileDir, 'minify_type_settings'=> $minify_type_settings['settings'], 'mimeTypes'           => $this->mimeTypes
+                                                                                     'fileDir'             => $fileDir,
+                                                                                     'minify_type_settings'=> $minify_type_settings['settings'],
+                                                                                     'mimeTypes'           => $this->mimeTypes
                                                                                 ));
               $content                          = $minifier->minify();
             }

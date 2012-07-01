@@ -29,7 +29,7 @@
      */
     public static function add($type, $trans_no, $bank_act, $ref, $date_, $amount, $person_type_id, $person_id, $currency = "", $err_msg = "", $rate = 0)
     {
-      $sqlDate = Dates::date2sql($date_);
+      $sqlDate = Dates::dateToSql($date_);
       // convert $amount to the bank's currency
       if ($currency != "") {
         $bank_account_currency = Bank_Currency::for_company($bank_act);
@@ -68,7 +68,7 @@
       $sql    = "SELECT trans_no FROM bank_trans WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
       $result = DB::query($sql, "Cannot retreive a bank transaction");
 
-      return (DB::num_rows($result) > 0);
+      return (DB::numRows($result) > 0);
     }
     /**
      * @static

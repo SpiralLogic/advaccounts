@@ -21,9 +21,9 @@
       $action = $_SERVER['DOCUMENT_URI'];
     }
     if ($multi) {
-      echo "<form enctype='multipart/form-data' method='post' action='".$action."' $name>\n";
+      echo "<form enctype='multipart/form-data' method='post' action='" . $action . "' $name>\n";
     } else {
-      echo "<form method='post' action='".$action."' $name>\n";
+      echo "<form method='post' action='" . $action . "' $name>\n";
     }
   }
 
@@ -215,7 +215,7 @@
       $selector .= sprintf($_select_button, $disabled, User::theme(), (User::fallback() ? '' :
         'display:none;'), '_' . $name . '_update') . "\n";
     }
-    JS::default_focus($name);
+    JS::defaultFocus($name);
 
     return $selector;
   }
@@ -689,7 +689,7 @@
    */
   function text_cells_ex($label, $name, $size, $max = null, $init = null, $title = null, $params = null, $post_label = null, $submit_on_change = false)
   {
-    JS::default_focus($name);
+    JS::defaultFocus($name);
     if (!isset($_POST[$name]) || $_POST[$name] == "") {
       if ($init !== null) {
         $_POST[$name] = $init;
@@ -855,13 +855,13 @@
       } else {
         $dd = Dates::today();
         if ($inc_days != 0) {
-          $dd = Dates::add_days($dd, $inc_days);
+          $dd = Dates::addDays($dd, $inc_days);
         }
         if ($inc_months != 0) {
-          $dd = Dates::add_months($dd, $inc_months);
+          $dd = Dates::addMonths($dd, $inc_months);
         }
         if ($inc_years != 0) {
-          $dd = Dates::add_years($dd, $inc_years);
+          $dd = Dates::addYears($dd, $inc_years);
         }
         $_POST[$name] = $dd;
       }
@@ -1263,7 +1263,7 @@
     if (check_value('show_inactive')) {
       if (isset($_POST['LInact'][$id]) && (get_post('_Inactive' . $id . '_update') || get_post('Update')) && (check_value('Inactive' . $id) != $value)
       ) {
-        DB::update_record_status($id, !$value, $table, $key);
+        DB::updateRecordStatus($id, !$value, $table, $key);
       }
       echo '<td class="center">' . checkbox(null, $name, $value, true, '', "class='center'") . hidden("LInact[$id]", $value, false) . '</td>';
     }
@@ -1465,7 +1465,7 @@
    */
   function _format_date($row)
   {
-    return Dates::sql2date($row['reconciled']);
+    return Dates::sqlToDate($row['reconciled']);
   }
 
   /**
@@ -1510,7 +1510,7 @@
    */
   function _format_fiscalyears($row)
   {
-    return Dates::sql2date($row[1]) . "&nbsp;-&nbsp;" . Dates::sql2date($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') :
+    return Dates::sqlToDate($row[1]) . "&nbsp;-&nbsp;" . Dates::sqlToDate($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') :
       _('Active')) . "</option>\n";
   }
 

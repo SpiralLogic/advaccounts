@@ -203,7 +203,7 @@
         //$shipping += $sales_order['freight_cost'];
         $shipping += $myrow['ov_freight'];
       }
-      $_POST['ChargeFreightCost'] = Num::price_format($shipping);
+      $_POST['ChargeFreightCost'] = Num::priceFormat($shipping);
     }
     /**
      * @param $order
@@ -227,10 +227,10 @@
     public static function copyToPost($order)
     {
       $order->view_only = isset($_GET[Orders::VIEW_INVOICE]) || isset($_POST['viewing']);
-      $order = Sales_Order::check_edit_conflicts($order);
+      $order            = Sales_Order::check_edit_conflicts($order);
       if (!$order->view_only) {
         $_POST['ship_via']          = $order->ship_via;
-        $_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
+        $_POST['ChargeFreightCost'] = Num::priceFormat($order->freight_cost);
         $_POST['InvoiceDate']       = $order->document_date;
         $_POST['due_date']          = $order->due_date;
         $_POST['ref']               = $order->reference;
@@ -247,28 +247,28 @@
      */
     public static function check_data($order)
     {
-      if (!isset($_POST['InvoiceDate']) || !Dates::is_date($_POST['InvoiceDate'])) {
+      if (!isset($_POST['InvoiceDate']) || !Dates::isDate($_POST['InvoiceDate'])) {
         Event::error(_("The entered invoice date is invalid."));
-        JS::set_focus('InvoiceDate');
+        JS::setFocus('InvoiceDate');
 
         return false;
       }
-      if (!Dates::is_date_in_fiscalyear($_POST['InvoiceDate'])) {
+      if (!Dates::isDateInFiscalYear($_POST['InvoiceDate'])) {
         Event::error(_("The entered invoice date is not in fiscal year."));
-        JS::set_focus('InvoiceDate');
+        JS::setFocus('InvoiceDate');
 
         return false;
       }
-      if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
+      if (!isset($_POST['due_date']) || !Dates::isDate($_POST['due_date'])) {
         Event::error(_("The entered invoice due date is invalid."));
-        JS::set_focus('due_date');
+        JS::setFocus('due_date');
 
         return false;
       }
       if ($order->trans_no == 0) {
         if (!Ref::is_valid($_POST['ref'])) {
           Event::error(_("You must enter a reference."));
-          JS::set_focus('ref');
+          JS::setFocus('ref');
 
           return false;
         }
@@ -277,11 +277,11 @@
         }
       }
       if ($_POST['ChargeFreightCost'] == "") {
-        $_POST['ChargeFreightCost'] = Num::price_format(0);
+        $_POST['ChargeFreightCost'] = Num::priceFormat(0);
       }
       if (!Validation::post_num('ChargeFreightCost', 0)) {
         Event::error(_("The entered shipping value is not numeric."));
-        JS::set_focus('ChargeFreightCost');
+        JS::setFocus('ChargeFreightCost');
 
         return false;
       }
@@ -326,7 +326,7 @@
       $order->trans_type = ST_SALESINVOICE;
       $order->reference  = Ref::get_next($order->trans_type);
       $invno             = $order->write(1);
-      $date              = Dates::date2sql($order->document_date);
+      $date              = Dates::dateToSql($order->document_date);
       $sql               = "UPDATE recurrent_invoices SET last_sent='$date' WHERE id=" . DB::escape($tmpl_no);
       DB::query($sql, "The recurrent invoice could not be updated or added");
 

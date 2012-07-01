@@ -19,7 +19,7 @@
    */
   function get_invoices($supplier_id, $to)
   {
-    $todate    = Dates::date2sql($to);
+    $todate    = Dates::dateToSql($to);
     $past_due1 = DB_Company::get_pref('past_due_days');
     $past_due2 = 2 * $past_due1;
     // Revomed allocated from sql
@@ -172,7 +172,7 @@
       $rep->NewLine(1, 2);
       if (!$summaryOnly) {
         $res = get_invoices($myrow['supplier_id'], $to);
-        if (DB::num_rows($res) == 0) {
+        if (DB::numRows($res) == 0) {
           continue;
         }
         $rep->Line($rep->row + 4);
@@ -180,7 +180,7 @@
           $rep->NewLine(1, 2);
           $rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
           $rep->TextCol(1, 2, $trans['reference'], -2);
-          $rep->TextCol(2, 3, Dates::sql2date($trans['tran_date']), -2);
+          $rep->TextCol(2, 3, Dates::sqlToDate($trans['tran_date']), -2);
           foreach ($trans as $i => $value) {
             $trans[$i] *= $rate;
           }

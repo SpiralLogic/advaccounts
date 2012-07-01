@@ -57,11 +57,11 @@
     if ($_POST['description'] == '') {
       $input_error = 1;
       Event::error(_("Role description cannot be empty."));
-      JS::set_focus('description');
+      JS::setFocus('description');
     } elseif ($_POST['name'] == '') {
       $input_error = 1;
       Event::error(_("Role name cannot be empty."));
-      JS::set_focus('name');
+      JS::setFocus('name');
     }
     // prevent accidental editor lockup by removing SA_SECROLES
     if (Input::post('role') == User::i()->access) {
@@ -69,7 +69,7 @@
       ) {
         Event::error(_("Access level edition in Company setup section have to be enabled for your account."));
         $input_error = 1;
-        JS::set_focus(!isset($_POST['Section' . SS_SETUP]) ? 'Section' . SS_SETUP : 'Area' . $security_areas[SA_SECROLES][0]);
+        JS::setFocus(!isset($_POST['Section' . SS_SETUP]) ? 'Section' . SS_SETUP : 'Area' . $security_areas[SA_SECROLES][0]);
       }
     }
     if ($input_error == 0) {
@@ -94,7 +94,7 @@
         Event::success(_("New security role has been added."));
       } else {
         Security::update_role($_POST['role'], $_POST['name'], $_POST['description'], $sections, $areas);
-        DB::update_record_status($_POST['role'], Input::post('inactive'), 'security_roles', 'id');
+        DB::updateRecordStatus($_POST['role'], Input::post('inactive'), 'security_roles', 'id');
         Event::success(_("Security role has been updated."));
       }
       $new_role = true;
@@ -141,7 +141,7 @@
       $_POST['Section' . $s] = 1;
     }
     if ($clone) {
-      JS::set_focus('name');
+      JS::setFocus('name');
       Ajax::activate('_page_body');
     } else {
       $_POST['role'] = $id;
@@ -152,22 +152,22 @@
   Row::start();
   Security::roles_cells(_("Role:") . "&nbsp;", 'role', null, true, true, Forms::hasPost('show_inactive'));
   $new_role = Input::post('role') == '';
-   Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
+  Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
   Row::end();
   Table::end();
   echo "<hr>";
   if (Input::post('_show_inactive_update')) {
     Ajax::activate('role');
-    JS::set_focus('role');
+    JS::setFocus('role');
   }
   if (Forms::findPostPrefix('_Section')) {
     Ajax::activate('details');
   }
   Display::div_start('details');
   Table::start('tablestyle2');
-   Forms::textRow(_("Role name:"), 'name', null, 20, 22);
-   Forms::textRow(_("Role description:"), 'description', null, 50, 52);
-   Forms::recordStatusListRow(_("Current status:"), 'inactive');
+  Forms::textRow(_("Role name:"), 'name', null, 20, 22);
+  Forms::textRow(_("Role description:"), 'description', null, 50, 52);
+  Forms::recordStatusListRow(_("Current status:"), 'inactive');
   Table::end(1);
   Table::start('tablestyle grid width40');
   $k   = $j = 0; //row colour counter
@@ -189,7 +189,7 @@
       Row::label($security_sections[$m] . ':', Forms::checkbox(null, 'Section' . $m, null, true, _("On/off set of features")), "class='left tablehead'", "class='tablehead'");
     }
     if (Forms::hasPost('Section' . $m)) {
-       Forms::checkRow($parms[1], 'Area' . $parms[0], null, false, '', "class='center'");
+      Forms::checkRow($parms[1], 'Area' . $parms[0], null, false, '', "class='center'");
       Row::end();
     } else {
       Forms::hidden('Area' . $parms[0]);

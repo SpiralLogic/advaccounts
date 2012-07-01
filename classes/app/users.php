@@ -24,7 +24,7 @@
      *
      * @internal param $password
      */
-    public static function  add($user_id, $real_name, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos)
+    public static function  add($user_id, $real_name, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos, $hash)
     {
       $sql
         = "INSERT INTO users (user_id, real_name, phone, email, role_id, language, pos, print_profile, rep_popup,hash)
@@ -119,7 +119,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function  get_all($all = false)
+    public static function  getAll($all = false)
     {
       $sql
         = "SELECT u.*, r.role FROM users u, security_roles r
@@ -367,7 +367,7 @@
         return $usersonline;
       }
       $result = DB::query("SHOW TABLES LIKE 'useronline'");
-      if (DB::num_rows($result) == 1) {
+      if (DB::numRows($result) == 1) {
         $timeoutseconds = 120;
         $timestamp      = time();
         $timeout        = $timestamp - $timeoutseconds;
@@ -379,7 +379,7 @@
         DB::query("DELETE FROM useronline WHERE timestamp<" . $timeout);
         // Select online users
         $result = DB::query("SELECT DISTINCT ip FROM useronline");
-        $users  = DB::num_rows($result);
+        $users  = DB::numRows($result);
       } else {
         $users = 1;
       }

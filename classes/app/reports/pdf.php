@@ -354,7 +354,7 @@
       } else {
         $how = _("Closed");
       }
-      $this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . " (" . $how . ")";
+      $this->fiscal_year = Dates::sqlToDate($year['begin']) . " - " . Dates::sqlToDate($year['end']) . " (" . $how . ")";
       $this->company     = DB_Company::get_prefs();
       $this->user        = User::i()->name;
       $this->host        = $_SERVER['SERVER_NAME'];
@@ -693,7 +693,7 @@
     public function DatePrettyPrint($date, $input_format = 0, $output_format = 0)
     {
       if ($date != '') {
-        $date  = Dates::date2sql($date);
+        $date  = Dates::dateToSql($date);
         $year  = (int) (substr($date, 0, 4));
         $month = (int) (substr($date, 5, 2));
         $day   = (int) (substr($date, 8, 2));
@@ -911,7 +911,7 @@
       if ($color_red && $txt < 0) {
         $this->SetTextColor(255, 0, 0);
       }
-      $ret = $this->TextCol($c, $n, Num::price_format($txt), $corr, $r, $border, $fill, $link, $stretch);
+      $ret = $this->TextCol($c, $n, Num::priceFormat($txt), $corr, $r, $border, $fill, $link, $stretch);
       if ($color_red && $txt < 0) {
         $this->SetTextColor(0, 0, 0);
       }
@@ -935,7 +935,7 @@
     public function DateCol($c, $n, $txt, $conv = false, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 1)
     {
       if ($conv) {
-        $txt = Dates::sql2date($txt);
+        $txt = Dates::sqlToDate($txt);
       }
 
       return $this->TextCol($c, $n, $txt, $corr, $r, $border, $fill, $link, $stretch);

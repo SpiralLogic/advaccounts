@@ -54,7 +54,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($type, $all = false)
+    public static function getAll($type, $all = false)
     {
       $sql = "SELECT * FROM tags WHERE type=" . DB::escape($type);
       if (!$all) {
@@ -89,7 +89,7 @@
     {
       $sql    = "SELECT type FROM tags WHERE id = " . DB::escape($id);
       $result = DB::query($sql, "could not get tag type");
-      $row    = DB::fetch_row($result);
+      $row    = DB::fetchRow($result);
 
       return $row[0];
     }
@@ -104,7 +104,7 @@
     {
       $sql    = "SELECT name FROM tags WHERE id = " . DB::escape($id);
       $result = DB::query($sql, "could not get tag name");
-      $row    = DB::fetch_row($result);
+      $row    = DB::fetchRow($result);
 
       return $row[0];
     }
@@ -119,7 +119,7 @@
     {
       $sql    = "SELECT description FROM tags WHERE id = " . DB::escape($id);
       $result = DB::query($sql, "could not get tag description");
-      $row    = DB::fetch_row($result);
+      $row    = DB::fetchRow($result);
 
       return $row[0];
     }
@@ -260,7 +260,7 @@
     public static function select($name, $height, $type, $multi = false, $all = false, $spec_opt = false)
     {
       // Get tags
-      $results = Tags::get_all($type, $all);
+      $results = Tags::getAll($type, $all);
       while ($tag = DB::fetch($results)) {
         $tags[$tag['id']] = $tag['name'];
       }
@@ -270,11 +270,11 @@
       }
 
       return Forms::arraySelect($name, null, $tags, array(
-                                                     'multi'       => $multi,
-                                                     'height'      => $height,
-                                                     'spec_option' => $spec_opt,
-                                                     'spec_id'     => -1,
-                                                ));
+                                                         'multi'       => $multi,
+                                                         'height'      => $height,
+                                                         'spec_option' => $spec_opt,
+                                                         'spec_id'     => -1,
+                                                    ));
     }
     /**
      * @static

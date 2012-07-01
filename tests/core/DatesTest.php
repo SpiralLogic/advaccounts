@@ -28,13 +28,13 @@
       );
       $config->expects($this->any())->method('_get')->will($this->returnValueMap($map));
 
-      $user = $this->getMockBuilder('User')->disableOriginalConstructor()->getMock();
+      $user = $this->getMockBuilder('\\User')->disableOriginalConstructor()->getMock();
       $user->expects($this->any())->method('_date_format')->will($this->returnValue(1));
       $user->expects($this->any())->method('_date_display')->will($this->returnValue('d/m/Y'));
       $user->expects($this->any())->method('_date_sep')->will($this->returnValue(1));
       $user->expects($this->any())->method('_sticky_doc_date')->will($this->returnValue(false));
 
-      $this->dates = new Dates($config, $user, $session,$company);
+      $this->dates = new Dates($config, $user, $session, $company);
     }
     /**
      * Tears down the fixture, for example, closes a network connection.
@@ -45,52 +45,52 @@
     }
     /**
      * @covers ADV\Core\Dates::date
-     * @todo   Implement test__date().
      */
     public function testdate()
-    { $class = new \ReflectionClass('ADV\\Core\\Dates');
+    {
+      $class  = new \ReflectionClass('ADV\\Core\\Dates');
       $method = $class->getMethod('date');
       $method->setAccessible(true);
       $expected = '01/13/2011';
-      $actual   = $method->invokeArgs($this->dates,[2011, 1, 13, 0]);
+      $actual   = $method->invokeArgs($this->dates, [2011, 1, 13, 0]);
       $this->assertEquals($expected, $actual);
       $expected = '13/01/2011';
-      $actual   =$method->invokeArgs($this->dates,[2011, 1, 13, 1]);
+      $actual   = $method->invokeArgs($this->dates, [2011, 1, 13, 1]);
       $this->assertEquals($expected, $actual);
       $expected = '2011/01/13';
-      $actual   = $method->invokeArgs($this->dates,[2011, 1, 13, 2]);
+      $actual   = $method->invokeArgs($this->dates, [2011, 1, 13, 2]);
       $this->assertEquals($expected, $actual);
     }
     /**
-     * @covers ADV\Core\Dates::_is_date
-     * @todo   Implement testIs_date().
+     * @covers ADV\Core\Dates::_isDate
+     * @todo   Implement testisDate().
      */
-    public function testIs_date()
+    public function testisDate()
     {
       $date   = 'this is not a date';
-      $result = $this->dates->_is_date($date, 0);
+      $result = $this->dates->_isDate($date, 0);
       $this->assertFalse($result, 'this is not a date');
       $date   = 'this is not a date';
-      $result = $this->dates->_is_date($date, 0);
+      $result = $this->dates->_isDate($date, 0);
       $this->assertFalse($result, 'this is not a date');
       $date   = '12/20/2011';
-      $result = $this->dates->_is_date($date, 0);
+      $result = $this->dates->_isDate($date, 0);
       $this->assertTrue($result, '12/20/2011 0');
-      $result = $this->dates->_is_date($date, 1);
+      $result = $this->dates->_isDate($date, 1);
       $this->assertFalse($result, '12/20/2011 1');
       $date   = '20-12-2011';
-      $result = $this->dates->_is_date($date, 1);
+      $result = $this->dates->_isDate($date, 1);
       $this->assertTrue($result, '20-12-2011 1');
-      $result = $this->dates->_is_date($date, 0);
+      $result = $this->dates->_isDate($date, 0);
       $this->assertFalse($result, '20-12-2011 0');
       $date   = '2011.12.20';
-      $result = $this->dates->_is_date($date, 2);
+      $result = $this->dates->_isDate($date, 2);
       $this->assertTrue($result, '2011.12.20 2');
-      $result = $this->dates->_is_date($date, 0);
+      $result = $this->dates->_isDate($date, 0);
       $this->assertFalse($result, '2011.12.20 0');
 
       $date   = '130/13/11';
-      $result = $this->dates->_is_date($date, 0);
+      $result = $this->dates->_isDate($date, 0);
       $this->assertFalse($result, '130/13/11 0');
     }
     /**
@@ -113,176 +113,179 @@
       $this->assertEquals(date("H:i"), $this->dates->_now());
     }
     /**
-     * @covers  ADV\Core\Dates::_new_doc_date
+     * @covers  ADV\Core\Dates::_newDocDate
      * @depends test_Today
      */
-    public function testNew_doc_date($today)
+    public function test_newDocDate($today)
     {
 
-      $date = $this->dates->_new_doc_date();
+      $date = $this->dates->_newDocDate();
       $this->assertEquals($today, $date);
     }
     /**
-     * @covers ADV\Core\Dates::is_date_in_fiscalyear
-     * @todo   Implement testIs_date_in_fiscalyear().
+     * @covers ADV\Core\Dates::isDateInFiscalYear
      */
-    public function testIs_date_in_fiscalyear()
+    public function test_isDateInFiscalYear()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Dates::begin_fiscalyear
-     * @todo   Implement testBegin_fiscalyear().
+     * @covers ADV\Core\Dates::beginFiscalYear
+     * @todo   Implement testbeginFiscalYear().
      */
-    public function testBegin_fiscalyear()
+    public function testbeginFiscalYear()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Dates::end_fiscalyear
-     * @todo   Implement testEnd_fiscalyear().
+     * @covers ADV\Core\Dates::endFiscalYear
+     * @todo   Implement testendFiscalYear().
      */
-    public function testEnd_fiscalyear()
+    public function testendFiscalYear()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Dates::begin_month
-     * @todo   Implement testBegin_month().
+     * @covers ADV\Core\Dates::beginMonth
+     * @todo   Implement testbeginMonth().
      */
-    public function testBegin_month()
+    public function testbeginMonth()
     {
       // Remove the following lines when you implement this test.
-      $date     = $this->dates->_begin_month('04/03/2011');
+      $date     = $this->dates->_beginMonth('04/03/2011');
       $expected = '01/03/2011';
       $this->assertEquals($expected, $date);
-      $date     = $this->dates->_begin_month('13/12/2011');
+      $date     = $this->dates->_beginMonth('13/12/2011');
       $expected = '01/12/2011';
       $this->assertEquals($expected, $date);
     }
     /**
-     * @covers ADV\Core\Dates::end_month
-     * @todo   Implement testEnd_month().
+     * @covers ADV\Core\Dates::endMonth
+     * @todo   Implement testendMonth().
      */
-    public function testEnd_month()
+    public function testendMonth()
     {
-      $date     = $this->dates->_end_month('04/04/2012');
+      $date     = $this->dates->_endMonth('04/04/2012');
       $expected = '30/04/2012';
       $this->assertEquals($expected, $date);
-      $date     = $this->dates->_end_month('13/12/2012');
+      $date     = $this->dates->_endMonth('13/12/2012');
       $expected = '31/12/2012';
       $this->assertEquals($expected, $date);
-      $date     = $this->dates->_end_month('2/2/2012');
+      $date     = $this->dates->_endMonth('2/2/2012');
       $expected = '29/02/2012';
       $this->assertEquals($expected, $date);
     }
     /**
-     * @covers ADV\Core\Dates::add_days
-     * @todo   Implement testAdd_days().
+     * @covers ADV\Core\Dates::addDays
+     * @todo   Implement testaddDays().
      */
-    public function testAdd_days()
+    public function testaddDays()
     {
-      $date     = $this->dates->_add_days('04/04/2012', 7);
+      $date     = $this->dates->_addDays('04/04/2012', 7);
       $expected = '11/04/2012';
       $this->assertEquals($expected, $date);
-      $date     = $this->dates->_add_days('25/04/2012', 7);
+      $date     = $this->dates->_addDays('25/04/2012', 7);
       $expected = '02/05/2012';
       $this->assertEquals($expected, $date);
-      $date     = $this->dates->_add_days('28/2/2012', 7);
+      $date     = $this->dates->_addDays('28/2/2012', 7);
       $expected = '06/03/2012';
       $this->assertEquals($expected, $date);
-      $date     = $this->dates->_add_days('28/2/2012', -7);
+      $date     = $this->dates->_addDays('28/2/2012', -7);
       $expected = '21/02/2012';
       $this->assertEquals($expected, $date);
     }
     /**
-     * @covers ADV\Core\Dates::add_months
-     * @todo   Implement testAdd_months().
+     * @covers ADV\Core\Dates::addMonths
+     * @todo   Implement testaddMonths().
      */
-    public function testAdd_months()
+    public function testaddMonths()
     {
       // Remove the following lines when you implement this test.
-      $date     = $this->dates->_add_months('04/04/2012', 4);
+      $date     = $this->dates->_addMonths('04/04/2012', 4);
       $expected = '04/08/2012';
       $this->assertEquals($expected, $date);
-      $date     = $this->dates->_add_months('25/09/2012', 4);
+      $date     = $this->dates->_addMonths('25/09/2012', 4);
       $expected = '25/01/2013';
       $this->assertEquals($expected, $date);
-      $date     = $this->dates->_add_months('25/09/2012', -4);
+      $date     = $this->dates->_addMonths('25/09/2012', -4);
       $expected = '25/05/2012';
       $this->assertEquals($expected, $date);
     }
     /**
-     * @covers ADV\Core\Dates::add_years
-     * @todo   Implement testAdd_years().
+     * @covers ADV\Core\Dates::addYears
+     * @todo   Implement testaddYears().
      */
-    public function testAdd_years()
+    public function testaddYears()
     {
-      $date     = $this->dates->_add_years('04/04/2012', 4);
+      $date     = $this->dates->_addYears('04/04/2012', 4);
       $expected = '04/04/2016';
       $this->assertEquals($expected, $date);
-      $date     = $this->dates->_add_years('25/09/2012', 4);
+      $date     = $this->dates->_addYears('25/09/2012', 4);
       $expected = '25/09/2016';
       $this->assertEquals($expected, $date);
-      $date     = $this->dates->_add_years('25/09/2012', -4);
+      $date     = $this->dates->_addYears('25/09/2012', -4);
       $expected = '25/09/2008';
       $this->assertEquals($expected, $date);
     }
     /**
-     * @covers ADV\Core\$this->dates->_sql2date
-     * @todo   Implement testSql2date().
+     * @covers ADV\Core\$this->dates->_sqlToDate
+     * @todo   Implement testsqlToDate().
      */
-    public function testSql2date()
+    public function testsqlToDate()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Dates::date2sql
-     * @todo   Implement testDate2sql().
+     * @covers ADV\Core\Dates::dateToSql
+     * @todo   Implement testdateToSql().
      */
-    public function testDate2sql()
+    public function testdateToSql()
     {
       $expected = '2012-03-04';
-      $actual   = $this->dates->_date2sql('04/03/2012');
+      $actual   = $this->dates->_dateToSql('04/03/2012');
       $this->assertEquals($expected, $actual);
     }
     /**
-     * @covers ADV\Core\Dates::date1_greater_date2
-     * @todo   Implement testDate1_greater_date2().
+     * @covers ADV\Core\Dates::isGreaterThan
+     * @todo   Implement testisGreaterThan().
      */
-    public function testDate1_greater_date2()
+    public function testisGreaterThan()
     {
       $date1  = '01/01/2012';
       $date2  = '01/10/2012';
-      $actual = $this->dates->_date1_greater_date2($date1, $date2);
+      $actual = $this->dates->_isGreaterThan($date1, $date2);
       $this->assertEquals(false, $actual);
       $date1  = '01/01/2013';
       $date2  = '01/10/2010';
-      $actual = $this->dates->_date1_greater_date2($date1, $date2);
+      $actual = $this->dates->_isGreaterThan($date1, $date2);
       $this->assertEquals(true, $actual);
     }
     /**
-     * @covers ADV\Core\Dates::date_diff2
-     * @todo   Implement testDate_diff2().
+     * @covers ADV\Core\Dates::differenceBetween
+     * @todo   Implement testdifferenceBetween().
      */
-    public function testDate_diff2()
+    public function testdifferenceBetween()
     {
       $date2  = '01/01/2012';
       $date1  = '15/01/2012';
-      $actual = $this->dates->_date_diff2($date1, $date2, 'w');
+      $actual = $this->dates->_differenceBetween($date1, $date2, 'w');
       $this->assertEquals(2, $actual);
     }
     /**
-     * @covers ADV\Core\Dates::explode_date_to_dmy
-     * @todo   Implement testExplode_date_to_dmy().
+     * @covers ADV\Core\Dates::explode
+     * @todo   Implement testexplode().
      */
-    public function testExplode_date_to_dmy()
+    public function testexplode()
     {
-      $actual = $this->dates->_explode_date_to_dmy('03/04/2012');
+      $class  = new \ReflectionClass('ADV\\Core\\Dates');
+      $method = $class->getMethod('_explode');
+      $method->setAccessible(true);
+
+      $actual = $method->invokeArgs($this->dates, ['03/04/2012']);
       $this->assertEquals(['03', '04', '2012'], $actual);
     }
     /**
@@ -295,19 +298,19 @@
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Dates::gregorian_to_jalali
-     * @todo   Implement testGregorian_to_jalali().
+     * @covers ADV\Core\Dates::gregorianToJalai
+     * @todo   Implement testgregorianToJalai().
      */
-    public function testGregorian_to_jalali()
+    public function testgregorianToJalai()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Dates::jalali_to_gregorian
-     * @todo   Implement testJalali_to_gregorian().
+     * @covers ADV\Core\Dates::jalaiToGregorian
+     * @todo   Implement testjalaiToGregorian().
      */
-    public function testJalali_to_gregorian()
+    public function testjalaiToGregorian()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');
@@ -322,19 +325,19 @@
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Dates::gregorian_to_islamic
-     * @todo   Implement testGregorian_to_islamic().
+     * @covers ADV\Core\Dates::gregorianToIslamic
+     * @todo   Implement testgregorianToIslamic().
      */
-    public function testGregorian_to_islamic()
+    public function testgregorianToIslamic()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Dates::islamic_to_gregorian
-     * @todo   Implement testIslamic_to_gregorian().
+     * @covers ADV\Core\Dates::islamicToGregorian
+     * @todo   Implement testislamicToGregorian().
      */
-    public function testIslamic_to_gregorian()
+    public function testislamicToGregorian()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');

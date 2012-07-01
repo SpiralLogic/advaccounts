@@ -19,7 +19,7 @@
    */
   function get_transactions($supplier, $date)
   {
-    $date = Dates::date2sql($date);
+    $date = Dates::dateToSql($date);
     $dec  = User::price_dec();
     $sql
           = "SELECT creditor_trans.supplier_reference,
@@ -105,7 +105,7 @@
         continue;
       }
       $res = get_transactions($myrow['supplier_id'], $to);
-      if ($no_zeros && DB::num_rows($res) == 0) {
+      if ($no_zeros && DB::numRows($res) == 0) {
         continue;
       }
       $rep->fontSize += 2;
@@ -115,7 +115,7 @@
       }
       $rep->fontSize -= 2;
       $rep->NewLine(1, 2);
-      if (DB::num_rows($res) == 0) {
+      if (DB::numRows($res) == 0) {
         continue;
       }
       $rep->Line($rep->row + 4);

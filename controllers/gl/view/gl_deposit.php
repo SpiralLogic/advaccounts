@@ -14,8 +14,8 @@
   }
   // get the pay-to bank payment info
   $result = Bank_Trans::get(ST_BANKDEPOSIT, $trans_no);
-  if (DB::num_rows($result) != 1) {
-    Errors::db_error("duplicate payment bank transaction found", "");
+  if (DB::numRows($result) != 1) {
+    Errors::databaseError("duplicate payment bank transaction found", "");
   }
   $to_trans         = DB::fetch($result);
   $company_currency = Bank_Currency::for_company();
@@ -40,7 +40,7 @@
     Cell::labels(_("Currency"), $to_trans['bank_curr_code'], "class='tablerowhead'");
   }
   Cell::labels(_("Amount"), Num::format($to_trans['amount'], User::price_dec()), "class='tablerowhead'", "class='right'");
-  Cell::labels(_("Date"), Dates::sql2date($to_trans['trans_date']), "class='tablerowhead'");
+  Cell::labels(_("Date"), Dates::sqlToDate($to_trans['trans_date']), "class='tablerowhead'");
   Row::end();
   Row::start();
   Cell::labels(_("From"), Bank::payment_person_name($to_trans['person_type_id'], $to_trans['person_id']), "class='tablerowhead'", "colspan=$colspan1");
@@ -53,7 +53,7 @@
   Table::end(1);
   Display::is_voided(ST_BANKDEPOSIT, $trans_no, _("This deposit has been voided."));
   $items = GL_Trans::get_many(ST_BANKDEPOSIT, $trans_no);
-  if (DB::num_rows($items) == 0) {
+  if (DB::numRows($items) == 0) {
     Event::warning(_("There are no items for this deposit."));
   } else {
     Display::heading(_("Items for this Deposit"));

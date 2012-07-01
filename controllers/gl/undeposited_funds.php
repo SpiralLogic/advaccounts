@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::open_window(800, 500);
+  JS::openWindow(800, 500);
   JS::footerFile('/js/reconcile.js');
   Page::start(_($help_context = "Undeposited Funds"), SA_RECONCILE, Input::request('frame'));
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
@@ -63,13 +63,13 @@
         $total_amount += $row['amount'];
         $ref[] = $row['ref'];
       }
-      $sql      = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (" . ST_GROUPDEPOSIT . ", 5, $total_amount," . DB::escape(implode($ref, ', ')) . ",'" . Dates::date2sql($_POST['deposit_date']) . "', 6, '" . User::i()->user . "',0)";
+      $sql      = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (" . ST_GROUPDEPOSIT . ", 5, $total_amount," . DB::escape(implode($ref, ', ')) . ",'" . Dates::dateToSql($_POST['deposit_date']) . "', 6, '" . User::i()->user . "',0)";
       $query    = DB::query($sql, "Undeposited Cannot be Added");
-      $order_no = DB::insert_id($query);
+      $order_no = DB::insertId($query);
       if (!isset($order_no) || !empty($order_no) || $order_no == 127) {
         $sql      = "SELECT LAST_INSERT_ID()";
         $order_no = DB::query($sql);
-        $order_no = DB::fetch_row($order_no);
+        $order_no = DB::fetchRow($order_no);
         $order_no = $order_no[0];
       }
       foreach ($togroup as $row) {
@@ -78,7 +78,7 @@
       }
     } else {
       $row = reset($togroup);
-      $sql = "UPDATE bank_trans SET undeposited=0, trans_date='" . Dates::date2sql($_POST['deposit_date']) . "',deposit_date='" . Dates::date2sql($_POST['deposit_date']) . "' WHERE id=" . DB::escape($row['id']);
+      $sql = "UPDATE bank_trans SET undeposited=0, trans_date='" . Dates::dateToSql($_POST['deposit_date']) . "',deposit_date='" . Dates::dateToSql($_POST['deposit_date']) . "' WHERE id=" . DB::escape($row['id']);
       DB::query($sql, "Can't change undeposited status");
     }
     unset($_POST, $_SESSION['undeposited']);
@@ -100,7 +100,7 @@
   Table::start();
   Table::header(_("Deposit Date"));
   Row::start();
-   Forms::dateCells("", "deposit_date", _('Date of funds to deposit'), Input::post('deposit_date') == '', 0, 0, 0, null, false, array('rebind' => false));
+  Forms::dateCells("", "deposit_date", _('Date of funds to deposit'), Input::post('deposit_date') == '', 0, 0, 0, null, false, array('rebind' => false));
   Row::end();
   Table::header(_("Total Amount"));
   Row::start();
@@ -111,11 +111,12 @@
   Forms::submitCenter('Deposit', _("Deposit"), true, '', false);
   Display::div_end();
   echo "<hr>";
-  $date         = Dates::add_days($_POST['deposit_date'], 10);
-  $sql          = "SELECT	type, trans_no, ref, trans_date,
+  $date = Dates::addDays($_POST['deposit_date'], 10);
+  $sql
+                = "SELECT	type, trans_no, ref, trans_date,
                 amount,	person_id, person_type_id, reconciled, id
         FROM bank_trans
-        WHERE undeposited=1 AND trans_date <= '" . Dates::date2sql($date) . "' AND reconciled IS null AND amount<>0
+        WHERE undeposited=1 AND trans_date <= '" . Dates::dateToSql($date) . "' AND reconciled IS null AND amount<>0
         ORDER BY trans_date DESC,bank_trans.id ";
   $cols         = array(
     _("Type")                    => array(
@@ -144,7 +145,7 @@
    */
   function check_date()
   {
-    if (!Dates::is_date(Input::post('deposit_date'))) {
+    if (!Dates::isDate(Input::post('deposit_date'))) {
       Event::error(_("Invalid deposit date format"));
       JS::setFocus('deposit_date');
 
@@ -216,7 +217,7 @@
   {
     $value = $row["amount"];
 
-    return $value >= 0 ? Num::price_format($value) : '';
+    return $value >= 0 ? Num::priceFormat($value) : '';
   }
 
   /**
@@ -228,7 +229,7 @@
   {
     $value = -$row["amount"];
 
-    return $value > 0 ? Num::price_format($value) : '';
+    return $value > 0 ? Num::priceFormat($value) : '';
   }
 
   /**
@@ -265,7 +266,7 @@
     {
       Ajax::activate('bank_date');
     }
-    $_POST['bank_date'] = Dates::date2sql(Input::post('deposited_date'));
+    $_POST['bank_date'] = Dates::dateToSql(Input::post('deposited_date'));
     /*	$sql = "UPDATE ".''."bank_trans SET undeposited=0"
                          ." WHERE id=".DB::escape($deposit_id);
 

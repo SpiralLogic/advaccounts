@@ -221,7 +221,7 @@
       return $test;
     }
     ;
-    foreach (Config::get_all('db') as $n => $comp) {
+    foreach (Config::getAll('db') as $n => $comp) {
       $path = COMPANY_PATH . "";
       if (!is_dir($path) || !is_writable($path)) {
         $test['result']     = false;
@@ -323,7 +323,7 @@
     $test['test']       = DOCROOT . 'config' . DS . 'extensions.php';
     $test['result']     = is_file($test['test']) && is_writable($test['test']);
     $test['comments'][] = sprintf(_("'%s' file should be writeable"), $test['test']);
-    foreach (Config::get_all('db') as $n => $comp) {
+    foreach (Config::getAll('db') as $n => $comp) {
       $path = COMPANY_PATH . "$n";
       if (!is_dir($path)) {
         continue;

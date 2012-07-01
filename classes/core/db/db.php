@@ -18,12 +18,12 @@
    * @method Query_Update update($into)
    * @method escape($value, $null = false)
    * @method fetch($result = null, $fetch_mode = \PDO::FETCH_BOTH)
-   * @method fetch_row($result = null)
-   * @method fetch_assoc()
-   * @method num_rows($sql = null)
+   * @method fetchRow($result = null)
+   * @method fetchAssoc()
+   * @method numRows($sql = null)
    * @method begin()
    * @method commit()
-   * @method error_no()
+   * @method errorNo()
    * @method quote($value, $type = null)
    * @method \ADV\Core\DB\Query_Select select($columns = null)
    * @method \ADV\Core\DB\Query_Update update($into)
@@ -253,7 +253,7 @@
      * @static
      * @return string
      */
-    public function _insert_id()
+    public function _insertId()
     {
       return $this->conn->lastInsertId();
     }
@@ -331,14 +331,14 @@
      *
      * @return Query_Result|Array
      */
-    public function _fetch_row($result = null)
+    public function _fetchRow($result = null)
     {
       return $this->_fetch($result, \PDO::FETCH_NUM);
     }
     /**
      * @return bool|mixed
      */
-    public function _fetch_assoc()
+    public function _fetchAssoc()
     {
       return is_a($this->prepared, '\PDOStatement') ? $this->prepared->fetch(\PDO::FETCH_ASSOC) : false;
     }
@@ -347,7 +347,7 @@
      *
      * @return array|bool
      */
-    public function _fetch_all($fetch_type = \PDO::FETCH_ASSOC)
+    public function _fetchAll($fetch_type = \PDO::FETCH_ASSOC)
     {
       $results = $this->results;
       if (!$this->results) {
@@ -360,7 +360,7 @@
      * @static
      * @return mixed
      */
-    public function _error_no()
+    public function _errorNo()
     {
       $info = $this->_errorInfo();
       return $info[1];
@@ -383,7 +383,7 @@
      * @static
      * @return mixed
      */
-    public function _error_msg()
+    public function _errorMsg()
     {
       $info = $this->_errorInfo();
       return isset($info[2]) ? $info[2] : false;
@@ -403,7 +403,7 @@
      * @static
      * @return bool
      */
-    public function _free_result()
+    public function _freeResult()
     {
       $result         = ($this->prepared) ? $this->prepared->closeCursor() : false;
       $this->errorSql = $this->errorInfo = $this->prepared = null;
@@ -417,7 +417,7 @@
      *
      * @return int
      */
-    public function _num_rows($sql = null)
+    public function _numRows($sql = null)
     {
       if ($sql === null) {
         return $this->prepared->rowCount();
@@ -439,7 +439,7 @@
      * @static
      * @return int
      */
-    public function _num_fields()
+    public function _numFields()
     {
       return $this->prepared->columnCount();
     }
@@ -506,13 +506,13 @@
      *
      * @return Query_Result
      */
-    public function _update_record_status($id, $status, $table, $key)
+    public function _updateRecordStatus($id, $status, $table, $key)
     {
       try {
         $this->_update($table)->value('inactive', $status)->where($key . '=', $id)->exec();
       }
       catch (DBUpdateException $e) {
-        static::_insert_record_status($id, $status, $table, $key);
+        static::_insertRecordStatus($id, $status, $table, $key);
       }
     }
     /**
@@ -526,7 +526,7 @@
      * @throws \ADV\Core\DB\DBUpdateException
      * @return Query_Result
      */
-    public function _insert_record_status($id, $status, $table, $key)
+    public function _insertRecordStatus($id, $status, $table, $key)
     {
       try {
         $this->_insert($table)->values(array('inactive' => $status, $key => $id))->exec();
@@ -655,7 +655,7 @@
       if (!class_exists('Errors')) {
         throw new DBException($error);
       }
-      \Errors::db_error($error, $this->errorSql, $data);
+      \Errors::databaseError($error, $this->errorSql, $data);
     }
     /**
      * @return array

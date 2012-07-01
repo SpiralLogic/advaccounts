@@ -21,7 +21,7 @@
       Table::startOuter('tablestyle2 width90'); // outer table
       Table::section(1);
       Bank_Account::row($payment ? _("From:") : _("To:"), 'bank_account', null, true);
-       Forms::dateRow(_("Date:"), 'date_', '', true, 0, 0, 0, null, true);
+      Forms::dateRow(_("Date:"), 'date_', '', true, 0, 0, 0, null, true);
       Table::section(2, "33%");
       if (!isset($_POST['PayType'])) {
         if (isset($_GET['PayType'])) {
@@ -47,7 +47,7 @@
       GL_UI::payment_person_type_row($payment ? _("Pay To:") : _("From:"), 'PayType', $_POST['PayType'], true);
       switch ($_POST['PayType']) {
         case PT_MISC :
-           Forms::textRowEx($payment ? _("To the Order of:") : _("Name:"), 'person_id', 40, 50);
+          Forms::textRowEx($payment ? _("To the Order of:") : _("Name:"), 'person_id', 40, 50);
           break;
         //case PT_WORKORDER :
         //	workorders_list_row(_("Work Order:"), 'person_id', null);
@@ -72,7 +72,7 @@
             unset($_POST['total_amount']); // enable default
             Ajax::activate('total_amount');
           }
-           Forms::AmountRow($qid['base_desc'] . ":", 'total_amount', Num::price_format($qid['base_amount']), null, "&nbsp;&nbsp;" . Forms::submit('go', _("Go"), false, false, true));
+          Forms::AmountRow($qid['base_desc'] . ":", 'total_amount', Num::priceFormat($qid['base_amount']), null, "&nbsp;&nbsp;" . Forms::submit('go', _("Go"), false, false, true));
           break;
         //case payment_person_types::Project() :
         //	Dimensions::select_row(_("Dimension:"), 'person_id', $_POST['person_id'], false, null, true);
@@ -83,9 +83,9 @@
       GL_ExchangeRate::display($bank_currency, $person_currency, $_POST['date_']);
       Table::section(3, "33%");
       if (isset($_GET['NewPayment'])) {
-         Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_BANKPAYMENT));
+        Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_BANKPAYMENT));
       } else {
-         Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_BANKDEPOSIT));
+        Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_BANKDEPOSIT));
       }
       Table::endOuter(1); // outer table
       Display::div_end();
@@ -174,7 +174,7 @@
         $_POST['code_id']       = $item->code_id;
         $_POST['dimension_id']  = $item->dimension_id;
         $_POST['dimension2_id'] = $item->dimension2_id;
-        $_POST['amount']        = Num::price_format(abs($item->amount));
+        $_POST['amount']        = Num::priceFormat(abs($item->amount));
         $_POST['description']   = $item->description;
         $_POST['LineMemo']      = $item->reference;
         Forms::hidden('Index', $id);
@@ -187,7 +187,7 @@
         }
         Ajax::activate('items_table');
       } else {
-        $_POST['amount']        = Num::price_format(0);
+        $_POST['amount']        = Num::priceFormat(0);
         $_POST['dimension_id']  = 0;
         $_POST['dimension2_id'] = 0;
         //$_POST['LineMemo'] = ""; // let memo go to next line Joe Hunt 2010-05-30
@@ -219,12 +219,12 @@
       if ($dim < 2) {
         Forms::hidden('dimension2_id', 0);
       }
-       Forms::amountCells(null, 'amount');
-       Forms::textCellsEx(null, 'LineMemo', 35, 255);
+      Forms::amountCells(null, 'amount');
+      Forms::textCellsEx(null, 'LineMemo', 35, 255);
       if ($id != -1) {
         Forms::buttonCell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
         Forms::buttonCell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
-        JS::set_focus('amount');
+        JS::setFocus('amount');
       } else {
         Forms::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
       }
@@ -233,7 +233,7 @@
     public static function option_controls()
     {
       echo "<br><table class='center'>";
-       Forms::textareaRow(_("Memo"), 'memo_', null, 50, 3);
+      Forms::textareaRow(_("Memo"), 'memo_', null, 50, 3);
       echo "</table>";
     }
     /**
@@ -255,12 +255,12 @@
                             GROUP BY reconciled";
 
       return Forms::selectBox($name, $selected_id, $sql, 'id', 'reconciled', array(
-                                                                            'spec_option'   => $special_option,
-                                                                            'format'        => 'Forms::dateFormat',
-                                                                            'spec_id'       => '',
-                                                                            'select_submit' => $submit_on_change,
-                                                                            'order'         => 'reconciled DESC'
-                                                                       ));
+                                                                                  'spec_option'   => $special_option,
+                                                                                  'format'        => 'Forms::dateFormat',
+                                                                                  'spec_id'       => '',
+                                                                                  'select_submit' => $submit_on_change,
+                                                                                  'order'         => 'reconciled DESC'
+                                                                             ));
     }
     /**
      * @static
@@ -289,10 +289,10 @@
      */
     public static function  balance_row($bank_acc, $parms = '')
     {
-      $to  = Dates::add_days(Dates::today(), 1);
+      $to  = Dates::addDays(Dates::today(), 1);
       $bal = get_balance_before_for_bank_account($bank_acc, $to);
       Row::label(_("Bank Balance:"), "<a target='_blank' " . ($bal < 0 ? 'class="redfg openWindow"' :
-        '') . "href='/gl/inquiry/bank.php?bank_account=" . $bank_acc . "'" . " >&nbsp;" . Num::price_format($bal) . "</a>", $parms);
+        '') . "href='/gl/inquiry/bank.php?bank_account=" . $bank_acc . "'" . " >&nbsp;" . Num::priceFormat($bal) . "</a>", $parms);
     }
     /**
      * @static
@@ -313,10 +313,10 @@
       }
       echo "<td>";
       echo Forms::selectBox($name, $selected_id, $sql, 'id', 'bank_account_name', array(
-                                                                                 'format'        => 'Forms::addCurrFormat',
-                                                                                 'select_submit' => $submit_on_change,
-                                                                                 'async'         => true
-                                                                            ));
+                                                                                       'format'        => 'Forms::addCurrFormat',
+                                                                                       'select_submit' => $submit_on_change,
+                                                                                       'async'         => true
+                                                                                  ));
       echo "</td></tr>\n";
     }
     /**

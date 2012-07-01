@@ -157,9 +157,11 @@
           \DB::update($this->table)->values($current)->where($this->idcolumn . '=', $current[$this->idcolumn])->exec();
 
           return 'Updated ' . $this->_classname . ' ' . $current[$this->idcolumn];
-        } catch (\DBUpdateException $e) {
+        }
+        catch (\DBUpdateException $e) {
           return 'Could not update ' . $this->_classname . ' ' . $current[$this->idcolumn];
-        } catch (\DBDuplicateException $e) {
+        }
+        catch (\DBDuplicateException $e) {
           $this->status = 'Could not insert ' . $this->_classname . ' ' . $current[$this->idcolumn] . ' it already exists!';
         }
       } else {
@@ -168,9 +170,11 @@
           \DB::insert($this->table)->values($current)->exec();
 
           return 'Inserted ' . $this->_classname . ' ' . $current[$this->idcolumn];
-        } catch (\DBInsertException $e) {
+        }
+        catch (\DBInsertException $e) {
           return 'Could not insert ' . $this->_classname;
-        } catch (\DBDuplicateException $e) {
+        }
+        catch (\DBDuplicateException $e) {
           return 'Could not insert ' . $this->_classname . ' ' . $current[$this->idcolumn] . ' it already exists!';
         }
       }
@@ -358,7 +362,7 @@
     {
       $current = $this->current();
       $results = \DB::select()->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])
-        ->and_where('OrderDetailID=', $current['OrderDetailID'])->fetch()->all();
+        ->andWhere('OrderDetailID=', $current['OrderDetailID'])->fetch()->all();
 
       return (count($results) > 0);
     }

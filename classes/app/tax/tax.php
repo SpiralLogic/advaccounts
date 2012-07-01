@@ -258,7 +258,7 @@
               = "SELECT id FROM tax_types WHERE
         sales_gl_code=" . DB::escape($account_code) . " OR purchasing_gl_code=" . DB::escape($account_code);
       $result = DB::query($sql, "checking account is tax account");
-      if (DB::num_rows($result) > 0) {
+      if (DB::numRows($result) > 0) {
         $acct = DB::fetch($result);
 
         return $acct['id'];
@@ -290,7 +290,7 @@
       }
       if ($tax_correcting) {
         Cell::label(_("Tax Correction"), "colspan=$columns style='background:inherit; text-align:right; width:90%'");
-         Forms::amountCellsSmall(null, 'ChgTax', Num::price_format(Input::post('ChgTax'), User::price_dec()));
+        Forms::amountCellsSmall(null, 'ChgTax', Num::priceFormat(Input::post('ChgTax'), User::price_dec()));
         Row::end();
         $total += Input::post('ChgTax');
       }

@@ -37,9 +37,18 @@
       ini_set('post_max_size', '3M');
       ini_set('upload_max_filesize', '3M');
       $this->options = array(
-        'script_url'              => $_SERVER['DOCUMENT_URI'], 'upload_dir'              => DOCROOT . '/upload/upload/', 'upload_url'              => BASE_URL . '/upload/upload/', 'param_name'              => 'files', // The php.ini settings upload_max_filesize and post_max_size
+        'script_url'              => $_SERVER['DOCUMENT_URI'],
+        'upload_dir'              => DOCROOT . '/upload/upload/',
+        'upload_url'              => BASE_URL . '/upload/upload/',
+        'param_name'              => 'files',
+        // The php.ini settings upload_max_filesize and post_max_size
         // take precedence over the following max_file_size setting:
-        'max_file_size'           => null, 'min_file_size'           => 1, 'accept_file_types'       => '/.+$/i', 'max_number_of_files'     => 10, 'discard_aborted_uploads' => true, 'image_versions'          => array(
+        'max_file_size'           => null,
+        'min_file_size'           => 1,
+        'accept_file_types'       => '/.+$/i',
+        'max_number_of_files'     => 10,
+        'discard_aborted_uploads' => true,
+        'image_versions'          => array(
           // Uncomment the following version to restrict the size of
           // uploaded images. You can also add additional versions with
           // their own upload directories:
@@ -52,7 +61,10 @@
                                          ),
                                          */
           'thumbnail' => array(
-            'upload_dir' => DOCROOT . 'upload/upload/thumbnails/', 'upload_url' => BASE_URL . 'upload/upload/thumbnails/', 'max_width'  => 80, 'max_height' => 80
+            'upload_dir' => DOCROOT . 'upload/upload/thumbnails/',
+            'upload_url' => BASE_URL . 'upload/upload/thumbnails/',
+            'max_width'  => 80,
+            'max_height' => 80
           )
         )
       );
@@ -84,7 +96,7 @@
       }
       /*$sql = "SELECT * FROM upload WHERE id = {$upload_id} LIMIT 1";
                $result = DB::query($sql, 'Could not query uploads');
-               $result = DB::fetch_assoc($result);
+               $result = DB::fetchAssoc($result);
                $file = new stdClass();
                $file->name = $result ['filename'];
                $file->type = $result ['type'];
@@ -240,7 +252,7 @@
       /* DB::begin();
                $sql = "INSERT INTO upload (`filename`,`size`,`type`,`order_no`,`content`) VALUES ('{$file->name}','{$file->size}','{$file->type}','{$this->order_no}', '{$content}')";
                DB::query($sql, 'Could not insert file into database');
-               $upload_id = DB::insert_id();
+               $upload_id = DB::insertId();
                $file->id = $this->upload_id = $upload_id;*/
       return $file;
     }
@@ -254,7 +266,7 @@
       if ($upload_id) {
         $sql    = "SELECT content as content,type FROM upload WHERE `id` = {$upload_id}";
         $result = DB::query($sql, 'Could not retrieve file');
-        $result = DB::fetch_assoc($result);
+        $result = DB::fetchAssoc($result);
         header('Cache-Control: no-cache, must-revalidate');
         header('Content-type: ' . $result['type']);
         $content = $result['content'];
@@ -262,11 +274,11 @@
       } else {
         $sql    = "SELECT `id`,`filename` as name, `size` ,`type` FROM upload WHERE `order_no` = " . $this->order_no;
         $result = DB::query($sql, 'Could not retrieve upload information');
-        if (DB::num_rows($result) < 1) {
+        if (DB::numRows($result) < 1) {
           return;
         } else {
           /** @noinspection PhpAssignmentInConditionInspection */
-          while ($row = DB::fetch_assoc($result)) {
+          while ($row = DB::fetchAssoc($result)) {
             $info[] = $row;
           }
         }
@@ -287,12 +299,22 @@
       if (is_array($upload['tmp_name'])) {
         /** @noinspection PhpUnusedLocalVariableInspection */
         foreach ($upload['tmp_name'] as $index => $value) {
-          $info[] = $this->handle_file_upload($upload['tmp_name'][$index], isset($_SERVER['HTTP_X_FILE_NAME']) ? $_SERVER['HTTP_X_FILE_NAME'] : $upload['name'][$index], isset($_SERVER['HTTP_X_FILE_SIZE']) ? $_SERVER['HTTP_X_FILE_SIZE'] : $upload['size'][$index],
-            isset($_SERVER['HTTP_X_FILE_TYPE']) ? $_SERVER['HTTP_X_FILE_TYPE'] : $upload['type'][$index], $upload['error'][$index]);
+          $info[] = $this->handle_file_upload($upload['tmp_name'][$index], isset($_SERVER['HTTP_X_FILE_NAME']) ?
+                                                                           $_SERVER['HTTP_X_FILE_NAME'] :
+                                                                           $upload['name'][$index], isset($_SERVER['HTTP_X_FILE_SIZE']) ?
+                                                                           $_SERVER['HTTP_X_FILE_SIZE'] :
+                                                                           $upload['size'][$index], isset($_SERVER['HTTP_X_FILE_TYPE']) ?
+                                                                           $_SERVER['HTTP_X_FILE_TYPE'] :
+                                                                           $upload['type'][$index], $upload['error'][$index]);
         }
       } else {
-        $info[] = $this->handle_file_upload($upload['tmp_name'], isset($_SERVER['HTTP_X_FILE_NAME']) ? $_SERVER['HTTP_X_FILE_NAME'] : $upload['name'], isset($_SERVER['HTTP_X_FILE_SIZE']) ? $_SERVER['HTTP_X_FILE_SIZE'] : $upload['size'],
-          isset($_SERVER['HTTP_X_FILE_TYPE']) ? $_SERVER['HTTP_X_FILE_TYPE'] : $upload['type'], $upload['error']);
+        $info[] = $this->handle_file_upload($upload['tmp_name'], isset($_SERVER['HTTP_X_FILE_NAME']) ?
+                                                                 $_SERVER['HTTP_X_FILE_NAME'] :
+                                                                 $upload['name'], isset($_SERVER['HTTP_X_FILE_SIZE']) ?
+                                                                 $_SERVER['HTTP_X_FILE_SIZE'] :
+                                                                 $upload['size'], isset($_SERVER['HTTP_X_FILE_TYPE']) ?
+                                                                 $_SERVER['HTTP_X_FILE_TYPE'] :
+                                                                 $upload['type'], $upload['error']);
       }
       header('Vary: Accept');
       if (isset($_SERVER['HTTP_ACCEPT']) && (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)

@@ -12,13 +12,13 @@
           * ********************************************************************* */
 
   Security::set_page(Input::post('order_view_mode'), array(
-                                                               'OutstandingOnly'  => SA_SALESDELIVERY,
-                                                               'InvoiceTemplates' => SA_SALESINVOICE
-                                                          ), array(
-                                                                  'OutstandingOnly'  => SA_SALESDELIVERY,
-                                                                  'InvoiceTemplates' => SA_SALESINVOICE
-                                                             ));
-  JS::open_window(900, 600);
+                                                          'OutstandingOnly'  => SA_SALESDELIVERY,
+                                                          'InvoiceTemplates' => SA_SALESINVOICE
+                                                     ), array(
+                                                             'OutstandingOnly'  => SA_SALESDELIVERY,
+                                                             'InvoiceTemplates' => SA_SALESINVOICE
+                                                        ));
+  JS::openWindow(900, 600);
   if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
     $searchArray = explode(' ', $_POST['ajaxsearch']);
   }
@@ -54,7 +54,7 @@
     Session::i()->page_title  = _($help_context = "Search All Sales Quotations");
   }
   Page::start(Session::i()->page_title);
-  $selected_customer = Input::get_post('customer_id', Input::NUMERIC, -1);
+  $selected_customer = Input::getPost('customer_id', Input::NUMERIC, -1);
   if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
   ) {
     $selected_stock_item = $_POST['SelectStockFromList'];
@@ -99,15 +99,15 @@
   Table::start('tablestyle_noborder');
   Row::start();
   Debtor::cells(_(""), 'customer_id', $selected_customer, true);
-   Forms::refCells(_("#:"), 'OrderNumber', '', null, '', true);
+  Forms::refCells(_("#:"), 'OrderNumber', '', null, '', true);
   if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
-     Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
-     Forms::dateCells(_("To:"), 'OrdersToDate', '', null, 1);
+    Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
+    Forms::dateCells(_("To:"), 'OrdersToDate', '', null, 1);
   }
   Inv_Location::cells(_(""), 'StockLocation', null, true);
   Item::cells(_("Item:"), 'SelectStockFromList', null, true);
   if ($trans_type == ST_SALESQUOTE) {
-     Forms::checkCells(_("Show All:"), 'show_all');
+    Forms::checkCells(_("Show All:"), 'show_all');
   }
   Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
   Row::end();
@@ -181,12 +181,12 @@
   } else { // ... or select inquiry constraints
     if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates' && !isset($_POST['ajaxsearch'])
     ) {
-      $date_after  = Dates::date2sql($_POST['OrdersAfterDate']);
-      $date_before = Dates::date2sql($_POST['OrdersToDate']);
+      $date_after  = Dates::dateToSql($_POST['OrdersAfterDate']);
+      $date_before = Dates::dateToSql($_POST['OrdersToDate']);
       $sql .= " AND sorder.ord_date >= '$date_after' AND sorder.ord_date <= '$date_before'";
     }
     if ($trans_type == 32 && !Forms::hasPost('show_all')) {
-      $sql .= " AND sorder.delivery_date >= '" . Dates::date2sql(Dates::today()) . "'";
+      $sql .= " AND sorder.delivery_date >= '" . Dates::dateToSql(Dates::today()) . "'";
     }
     if ($selected_customer != -1) {
       $sql .= " AND sorder.debtor_id=" . DB::quote($selected_customer);
@@ -216,41 +216,41 @@
     $ord  = "Order #";
     $cols = array(
       array('type' => 'skip'),
-      _("Order #")                       => array(
+      _("Order #")                                             => array(
         'fun'    => function ($row, $order_no)
         {
           return Debtor::trans_view($row['trans_type'], $order_no);
         }, 'ord' => ''
       ),
-      _("Ref")                           => array('ord' => ''),
-      _("PO#")                           => array('ord' => ''),
-      _("Date")                          => array('type' => 'date', 'ord' => 'asc'),
-      _("Required")                      => array('type' => 'date', 'ord' => ''),
-      _("Customer")                      => array('ord' => 'asc'),
+      _("Ref")                                                 => array('ord' => ''),
+      _("PO#")                                                 => array('ord' => ''),
+      _("Date")                                                => array('type' => 'date', 'ord' => 'asc'),
+      _("Required")                                            => array('type' => 'date', 'ord' => ''),
+      _("Customer")                                            => array('ord' => 'asc'),
       array('type' => 'skip'),
-      _("Branch")                        => array('ord' => ''),
+      _("Branch")                                              => array('ord' => ''),
       _("Address"),
-      _("Total")                         => array('type' => 'amount', 'ord' => ''),
+      _("Total")                                               => array('type' => 'amount', 'ord' => ''),
     );
   } else {
     $ord  = "Quote #";
     $cols = array(
       array('type' => 'skip'),
-      _("Quote #")                       => array(
+      _("Quote #")                                             => array(
         'fun'    => function ($row, $order_no)
         {
           return Debtor::trans_view($row['trans_type'], $order_no);
         }, 'ord' => ''
       ),
-      _("Ref")                           => array('ord' => ''),
-      _("PO#")                           => array('type' => 'skip'),
-      _("Date")                          => array('type' => 'date', 'ord' => 'desc'),
-      _("Valid until")                   => array('type' => 'date', 'ord' => ''),
-      _("Customer")                      => array('ord' => 'asc'),
+      _("Ref")                                                 => array('ord' => ''),
+      _("PO#")                                                 => array('type' => 'skip'),
+      _("Date")                                                => array('type' => 'date', 'ord' => 'desc'),
+      _("Valid until")                                         => array('type' => 'date', 'ord' => ''),
+      _("Customer")                                            => array('ord' => 'asc'),
       array('type' => 'skip'),
-      _("Branch")                        => array('ord' => ''),
+      _("Branch")                                              => array('ord' => ''),
       _("Delivery To"),
-      _("Total")                         => array('type' => 'amount', 'ord' => ''),
+      _("Total")                                               => array('type' => 'amount', 'ord' => ''),
     );
   }
   if ($trans_type == ST_CUSTDELIVERY) {
@@ -309,40 +309,40 @@
                                 ['order_no'] . ']', $value, false);
                               }
                               ), array(
-                           'insert' => true, 'fun' => function ($row)
-                           {
-                             return DB_Pager::link(_("Edit"), "/sales/sales_order_entry?update=" . $row['order_no'] . "&type=" . $row['trans_type'], ICON_EDIT);
-                           }
-                         ), array(
-                           'insert' => true, 'fun' => function ($row)
-                           {
-                             return Reporting::emailDialogue($row['debtor_id'], $row['trans_type'], $row['order_no']);
-                           }
-                         ), array(
-                           'insert' => true, 'fun' => function ($row)
-                           {
-                             return Reporting::print_doc_link($row['order_no'], _("Proforma"), true, ($row['trans_type'] == ST_SALESORDER ?
-                               ST_PROFORMA : ST_PROFORMAQ), ICON_PRINT, 'button printlink');
-                           }
-                         ), array(
-                           'insert' => true, 'fun' => function ($row)
-                           {
-                             return Reporting::print_doc_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT, 'button printlink');
-                           }
-                         )
+          'insert' => true, 'fun' => function ($row)
+          {
+            return DB_Pager::link(_("Edit"), "/sales/sales_order_entry?update=" . $row['order_no'] . "&type=" . $row['trans_type'], ICON_EDIT);
+          }
+        ), array(
+          'insert' => true, 'fun' => function ($row)
+          {
+            return Reporting::emailDialogue($row['debtor_id'], $row['trans_type'], $row['order_no']);
+          }
+        ), array(
+          'insert' => true, 'fun' => function ($row)
+          {
+            return Reporting::print_doc_link($row['order_no'], _("Proforma"), true, ($row['trans_type'] == ST_SALESORDER ?
+              ST_PROFORMA : ST_PROFORMAQ), ICON_PRINT, 'button printlink');
+          }
+        ), array(
+          'insert' => true, 'fun' => function ($row)
+          {
+            return Reporting::print_doc_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT, 'button printlink');
+          }
+        )
                          ));
     }
   }
   $table = & db_pager::new_db_pager('orders_tbl', $sql, $cols, null, null, 0, 4);
   $table->set_marker(function ($row)
-    {
-      global $trans_type;
-      if ($trans_type == ST_SALESQUOTE) {
-        return (Dates::date1_greater_date2(Dates::today(), Dates::sql2date($row['delivery_date'])));
-      } else {
-        return ($row['type'] == 0 && Dates::date1_greater_date2(Dates::today(), Dates::sql2date($row['delivery_date'])) && ($row['TotDelivered'] < $row['TotQuantity']));
-      }
-    }, _("Marked items are overdue."));
+  {
+    global $trans_type;
+    if ($trans_type == ST_SALESQUOTE) {
+      return (Dates::isGreaterThan(Dates::today(), Dates::sqlToDate($row['delivery_date'])));
+    } else {
+      return ($row['type'] == 0 && Dates::isGreaterThan(Dates::today(), Dates::sqlToDate($row['delivery_date'])) && ($row['TotDelivered'] < $row['TotQuantity']));
+    }
+  }, _("Marked items are overdue."));
   $table->width = "80%";
   DB_Pager::display($table);
   Forms::submitCenter('Update', _("Update"), true, '', null);

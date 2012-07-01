@@ -81,7 +81,7 @@
     $totals_arr = array();
     $printtitle = 0; //Flag for printing type name
     //Get Accounts directly under this group/type
-    $result = GL_Account::get_all(null, null, $type);
+    $result = GL_Account::getAll(null, null, $type);
     while ($account = DB::fetch($result)) {
       $bal = getPeriods($yr, $mo, $account["account_code"], $dimension, $dimension2);
       if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] && !$bal['per05'] && !$bal['per06'] && !$bal['per07'] && !$bal['per08'] && !$bal['per09'] && !$bal['per10'] && !$bal['per11'] && !$bal['per12']
@@ -120,7 +120,7 @@
       $rep->NewLine();
     }
     //Get Account groups/types under this group/type
-    $result = GL_Type::get_all(false, false, $type);
+    $result = GL_Type::getAll(false, false, $type);
     while ($accounttype = DB::fetch($result)) {
       //Print Type Title if has sub types and not previously printed
       if (!$printtitle) {
@@ -191,7 +191,7 @@
     $sql     = "SELECT begin, end, YEAR(end) AS yr, MONTH(end) AS mo FROM fiscal_year WHERE id=" . DB::escape($year);
     $result  = DB::query($sql, "could not get fiscal year");
     $row     = DB::fetch($result);
-    $year    = Dates::sql2date($row['begin']) . " - " . Dates::sql2date($row['end']);
+    $year    = Dates::sqlToDate($row['begin']) . " - " . Dates::sqlToDate($row['end']);
     $yr      = $row['yr'];
     $mo      = $row['mo'];
     $da      = 1;
@@ -264,7 +264,7 @@
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
     $sales       = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    $classresult = GL_Class::get_all(false, 0);
+    $classresult = GL_Class::getAll(false, 0);
     while ($class = DB::fetch($classresult)) {
       $ctotal  = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       $convert = Systypes::get_class_type_convert($class["ctype"]);
@@ -274,7 +274,7 @@
       $rep->Font();
       $rep->NewLine();
       //Get Account groups/types under this group/type with no parents
-      $typeresult = GL_Type::get_all(false, $class['cid'], -1);
+      $typeresult = GL_Type::getAll(false, $class['cid'], -1);
       while ($accounttype = DB::fetch($typeresult)) {
         $classtotal = display_type($accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2);
         for ($i = 1; $i <= 12; $i++) {

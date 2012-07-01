@@ -43,7 +43,7 @@
 
       return false;
     }
-    foreach (Config::get_all('db') as $id => $con) {
+    foreach (Config::getAll('db') as $id => $con) {
       if ($id != $selected_id && $_POST['host'] == $con['host'] && $_POST['dbname'] == $con['dbname']
       ) {
       }
@@ -65,7 +65,7 @@
       return false;
     }
     $id                          = $_GET['id'];
-    $connections                 = Config::get_all('db');
+    $connections                 = Config::getAll('db');
     $new                         = !isset($connections[$id]);
     $db_connection['name']       = $_POST['name'];
     $db_connection['host']       = $_POST['host'];
@@ -127,7 +127,7 @@
     $id = $_GET['id'];
     // First make sure all company directories from the one under removal are writable.
     // Without this after operation we end up with changed per-company owners!
-    for ($i = $id; $i < count(Config::get_all('db')); $i++) {
+    for ($i = $id; $i < count(Config::getAll('db')); $i++) {
       if (!is_dir(COMPANY_PATH . DS . $i) || !is_writable(COMPANY_PATH . DS . $i)) {
         Event::error(_('Broken company subdirectories system. You have to remove this company manually.'));
 
@@ -146,7 +146,7 @@
       return;
     }
     // 'shift' company directories names
-    for ($i = $id + 1; $i < count(Config::get_all('db')); $i++) {
+    for ($i = $id + 1; $i < count(Config::getAll('db')); $i++) {
       if (!rename(COMPANY_PATH . DS . $i, COMPANY_PATH . DS . ($i - 1))) {
         Event::error(_("Cannot rename company subdirectory"));
 
@@ -161,7 +161,7 @@
       Config::set('default.company', 1);
     }
     // finally remove renamed company directory
-    @Files::flush_dir($tmpname, true);
+    @Files::flushDir($tmpname, true);
     if (!@rmdir($tmpname)) {
       Event::error(_("Cannot remove temporary renamed company data directory ") . $tmpname);
 
@@ -189,7 +189,7 @@
     );
     Table::header($th);
     $k    = 0;
-    $conn = Config::get_all('db');
+    $conn = Config::getAll('db');
     $n    = count($conn);
     for ($i = 0; $i < $n; $i++) {
       if ($i == Config::get('default.company')) {
@@ -228,7 +228,7 @@
     if ($selected_id != -1) {
       $n = $selected_id;
     } else {
-      $n = count(Config::get_all('db'));
+      $n = count(Config::getAll('db'));
     }
     Forms::start(true);
     echo "
@@ -260,16 +260,16 @@
       Forms::hidden('selected_id', $selected_id);
       Forms::hidden('dbpassword', $_POST['dbpassword']);
     }
-     Forms::textRowEx(_("Company"), 'name', 30);
-     Forms::textRowEx(_("Host"), 'host', 30);
-     Forms::textRowEx(_("Database User"), 'dbuser', 30);
+    Forms::textRowEx(_("Company"), 'name', 30);
+    Forms::textRowEx(_("Host"), 'host', 30);
+    Forms::textRowEx(_("Database User"), 'dbuser', 30);
     if ($selected_id == -1) {
-       Forms::textRowEx(_("Database Password"), 'dbpassword', 30);
+      Forms::textRowEx(_("Database Password"), 'dbpassword', 30);
     }
-     Forms::textRowEx(_("Database Name"), 'dbname', 30);
-     Forms::yesnoListRow(_("Default"), 'def', null, "", "", false);
-     Forms::fileRow(_("Database Script"), "uploadfile");
-     Forms::textRowEx(_("New script Admin Password"), 'admpassword', 20);
+    Forms::textRowEx(_("Database Name"), 'dbname', 30);
+    Forms::yesnoListRow(_("Default"), 'def', null, "", "", false);
+    Forms::fileRow(_("Database Script"), "uploadfile");
+    Forms::textRowEx(_("New script Admin Password"), 'admpassword', 20);
     Table::end();
     Event::warning(_("Choose from Database scripts in SQL folder. No Database is created without a script."), 0, 1);
     echo "<div class='center'><input type='button' style='width:150px' value='" . _("Save") . "'></div>";

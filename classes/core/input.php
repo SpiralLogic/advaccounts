@@ -92,9 +92,9 @@
      *
      * @return bool|int|string|object
      */
-    public function _get_post($var, $type = null, $default = null)
+    public function _getPost($var, $type = null, $default = null)
     {
-      return $this->getPost($_GET, $_POST, $var, $type, $default);
+      return $this->getThenPost($_GET, $_POST, $var, $type, $default);
     }
     /**
      * @static
@@ -105,11 +105,11 @@
      *
      * @return bool|int|null|string
      */
-    public function _get_post_global($var, $type, $default = null)
+    public function _getPostGlobal($var, $type, $default = null)
     {
-      $result = $this->getPost($_GET, $_POST, $var, $type, false);
+      $result = $this->getThenPost($_GET, $_POST, $var, $type, false);
       if ($result === false) {
-        $result = $this->_get_global($var, $type, $default);
+        $result = $this->_getGlobal($var, $type, $default);
       }
       return $result;
     }
@@ -122,11 +122,11 @@
      *
      * @return bool|int|null|string
      */
-    public function _post_global($var, $type, $default = null)
+    public function _postGlobal($var, $type, $default = null)
     {
       $result = $this->_isset($_POST, $var, $type, false);
       if ($result === false) {
-        $result = $this->_get_global($var, $type, $default);
+        $result = $this->_getGlobal($var, $type, $default);
       }
       return $result;
     }
@@ -139,9 +139,9 @@
      *
      * @return bool|int|string|object
      */
-    public function _post_get($var, $type = null, $default = null)
+    public function _postGet($var, $type = null, $default = null)
     {
-      return $this->getPost($_POST, $_GET, $var, $type, $default);
+      return $this->getThenPost($_POST, $_GET, $var, $type, $default);
     }
     /***
      * @static
@@ -163,7 +163,7 @@
      *
      * @return bool
      */
-    public function _has_post($vars)
+    public function _hasPost($vars)
     {
       if (is_null($vars)) {
         return true;
@@ -177,7 +177,7 @@
      *
      * @return bool
      */
-    public function _has_get($vars)
+    public function _hasGet($vars)
     {
       if (is_null($vars)) {
         return true;
@@ -205,7 +205,7 @@
      *
      * @return bool
      */
-    public function has_session($vars)
+    public function hasSession($vars)
     {
       if (is_null($vars)) {
         return true;
@@ -221,7 +221,7 @@
      *
      * @return bool|int|null|string
      */
-    protected function _get_global($var, $type, $default)
+    protected function _getGlobal($var, $type, $default)
     {
       if (!isset($_SESSION['globals'])) {
         $_SESSION['globals'] = array();
@@ -240,7 +240,7 @@
      *
      * @return bool|int|null|string
      */
-    protected function getPost($first, $second, $var, $type = null, $default = null)
+    protected function getThenPost($first, $second, $var, $type = null, $default = null)
     {
       $array = ($this->doesHave($first, $var)) ? $first : $second;
       return static::_isset($array, $var, $type, $default);

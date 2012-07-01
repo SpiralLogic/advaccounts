@@ -50,7 +50,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($all = false, $balance = -1)
+    public static function getAll($all = false, $balance = -1)
     {
       $sql = "SELECT * FROM chart_class";
       if (!$all) {
@@ -90,7 +90,7 @@
     {
       $sql    = "SELECT class_name FROM chart_class WHERE cid =" . DB::escape($id);
       $result = DB::query($sql, "could not get account type");
-      $row    = DB::fetch_row($result);
+      $row    = DB::fetchRow($result);
 
       return $row[0];
     }
@@ -118,9 +118,9 @@
       $sql = "SELECT cid, class_name FROM chart_class";
 
       return Forms::selectBox($name, $selected_id, $sql, 'cid', 'class_name', array(
-                                                                             'select_submit' => $submit_on_change,
-                                                                             'async'         => false
-                                                                        ));
+                                                                                   'select_submit' => $submit_on_change,
+                                                                                   'async'         => false
+                                                                              ));
     }
     /**
      * @static

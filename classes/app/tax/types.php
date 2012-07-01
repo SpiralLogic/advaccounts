@@ -19,9 +19,9 @@
      */
     public static function add($name, $sales_gl_code, $purchasing_gl_code, $rate)
     {
-      $sql = "INSERT INTO tax_types (name, sales_gl_code, purchasing_gl_code, rate)
-        VALUES (" . DB::escape($name) . ", " . DB::escape($sales_gl_code)
-        . ", " . DB::escape($purchasing_gl_code) . ", $rate)";
+      $sql
+        = "INSERT INTO tax_types (name, sales_gl_code, purchasing_gl_code, rate)
+        VALUES (" . DB::escape($name) . ", " . DB::escape($sales_gl_code) . ", " . DB::escape($purchasing_gl_code) . ", $rate)";
       DB::query($sql, "could not add tax type");
     }
     /**
@@ -49,9 +49,10 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($all = false)
+    public static function getAll($all = false)
     {
-      $sql = "SELECT tax_types.*,
+      $sql
+        = "SELECT tax_types.*,
         Chart1.account_name AS SalesAccountName,
         Chart2.account_name AS PurchasingAccountName
         FROM tax_types, chart_master AS Chart1,
@@ -83,7 +84,8 @@
      */
     public static function get($type_id)
     {
-      $sql    = "SELECT tax_types.*,
+      $sql
+              = "SELECT tax_types.*,
         Chart1.account_name AS SalesAccountName,
         Chart2.account_name AS PurchasingAccountName
         FROM tax_types, chart_master AS Chart1,
@@ -105,7 +107,7 @@
     {
       $sql    = "SELECT rate FROM tax_types WHERE id=" . DB::escape($type_id);
       $result = DB::query($sql, "could not get tax type rate");
-      $row    = DB::fetch_row($result);
+      $row    = DB::fetchRow($result);
 
       return $row[0];
     }
@@ -145,10 +147,8 @@
     public static function is_tax_gl_unique($gl_code, $gl_code2 = -1, $selected_id = -1)
     {
       $purch_code = $gl_code2 == -1 ? $gl_code : $gl_code2;
-      $sql        = "SELECT count(*) FROM "
-        . "tax_types
-        WHERE (sales_gl_code=" . DB::escape($gl_code)
-        . " OR purchasing_gl_code=" . DB::escape($purch_code) . ")";
+      $sql        = "SELECT count(*) FROM " . "tax_types
+        WHERE (sales_gl_code=" . DB::escape($gl_code) . " OR purchasing_gl_code=" . DB::escape($purch_code) . ")";
       if ($selected_id != -1) {
         $sql .= " AND id!=" . DB::escape($selected_id);
       }
@@ -172,8 +172,11 @@
       $sql = "SELECT id, CONCAT(name, ' (',rate,'%)') as name FROM tax_types";
 
       return Forms::selectBox($name, $selected_id, $sql, 'id', 'name', array(
-        'spec_option' => $none_option, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => false,
-      ));
+                                                                            'spec_option'   => $none_option,
+                                                                            'spec_id'       => ALL_NUMERIC,
+                                                                            'select_submit' => $submit_on_change,
+                                                                            'async'         => false,
+                                                                       ));
     }
     /**
      * @static
@@ -208,7 +211,6 @@
       Tax_Types::cells(null, $name, $selected_id, $none_option, $submit_on_change);
       echo "</tr>\n";
     }
-
     /**
      * @static
      *
@@ -220,7 +222,7 @@
     {
       $sql    = "SELECT COUNT(*) FROM tax_group_items	WHERE tax_type_id=" . DB::escape($selected_id);
       $result = DB::query($sql, "could not query tax groups");
-      $myrow  = DB::fetch_row($result);
+      $myrow  = DB::fetchRow($result);
       if ($myrow[0] > 0) {
         Event::error(_("Cannot delete this tax type because tax groups been created referring to it."));
 
@@ -240,18 +242,18 @@
     {
       if (strlen($_POST['name']) == 0) {
         Event::error(_("The tax type name cannot be empty."));
-        JS::set_focus('name');
+        JS::setFocus('name');
 
         return false;
       } elseif (!Validation::post_num('rate', 0)) {
         Event::error(_("The default tax rate must be numeric and not less than zero."));
-        JS::set_focus('rate');
+        JS::setFocus('rate');
 
         return false;
       }
       if (!Tax_Types::is_tax_gl_unique(Input::post('sales_gl_code'), Input::post('purchasing_gl_code'), $selected_id)) {
         Event::error(_("Selected GL Accounts cannot be used by another tax type."));
-        JS::set_focus('sales_gl_code');
+        JS::setFocus('sales_gl_code');
 
         return false;
       }

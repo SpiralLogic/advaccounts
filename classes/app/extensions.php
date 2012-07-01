@@ -79,15 +79,15 @@
     public static function view($name, $value = null, $submit_on_change = false)
     {
       $items = array();
-      foreach (Config::get_all('db') as $comp) {
+      foreach (Config::getAll('db') as $comp) {
         $items[] = sprintf(_("Activated for '%s'"), $comp['name']);
       }
 
       return Forms::arraySelect($name, $value, $items, array(
-                                                        'spec_option'   => _("Installed on system"),
-                                                        'spec_id'       => -1,
-                                                        'select_submit' => $submit_on_change,
-                                                        'async'         => true
-                                                   ));
+                                                            'spec_option'   => _("Installed on system"),
+                                                            'spec_id'       => -1,
+                                                            'select_submit' => $submit_on_change,
+                                                            'async'         => true
+                                                       ));
     }
   }

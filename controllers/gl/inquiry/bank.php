@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::open_window(800, 500);
+  JS::openWindow(800, 500);
   Page::start(_($help_context = "Bank Statement"), SA_BANKTRANSVIEW);
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
   // Ajax updates
@@ -19,14 +19,14 @@
   Table::start('tablestyle_noborder');
   Row::start();
   Bank_Account::cells(_("Account:"), 'bank_account', null);
-   Forms::dateCells(_("From:"), 'TransAfterDate', '', null, -30);
-   Forms::dateCells(_("To:"), 'TransToDate');
+  Forms::dateCells(_("From:"), 'TransAfterDate', '', null, -30);
+  Forms::dateCells(_("To:"), 'TransToDate');
   Forms::submitCells('Show', _("Show"), '', '', 'default');
   Row::end();
   Table::end();
   Forms::end();
-  $date_after = Dates::date2sql($_POST['TransAfterDate']);
-  $date_to    = Dates::date2sql($_POST['TransToDate']);
+  $date_after = Dates::dateToSql($_POST['TransAfterDate']);
+  $date_to    = Dates::dateToSql($_POST['TransToDate']);
   if (!isset($_POST['bank_account'])) {
     $_POST['bank_account'] = "";
   }
@@ -50,7 +50,7 @@
   $before_qty = DB::query($sql, "The starting balance on hand could not be calculated");
   Row::start("class='inquirybg'");
   Cell::label("<span class='bold'>" . _("Opening Balance") . " - " . $_POST['TransAfterDate'] . "</span>", "colspan=4");
-  $bfw_row = DB::fetch_row($before_qty);
+  $bfw_row = DB::fetchRow($before_qty);
   $bfw     = $bfw_row[0];
   Cell::debitOrCredit($bfw);
   Cell::label("");
@@ -61,7 +61,7 @@
   $k             = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
     $running_total += $myrow["amount"];
-    $trandate = Dates::sql2date($myrow["trans_date"]);
+    $trandate = Dates::sqlToDate($myrow["trans_date"]);
     Cell::label($systypes_array[$myrow["type"]]);
     Cell::label(GL_UI::trans_view($myrow["type"], $myrow["trans_no"]));
     Cell::label(GL_UI::trans_view($myrow["type"], $myrow["trans_no"], $myrow['ref']));

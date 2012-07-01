@@ -148,13 +148,13 @@
       $this->lang_dir = $_SESSION['Language']->dir;
       if (!$this->ajaxpage) {
         $this->header();
-        JS::open_window(900, 500);
+        JS::openWindow(900, 500);
         if ($this->menu) {
           $this->menu_header();
         }
       }
       if (!IS_JSON_REQUEST) {
-        Errors::error_box();
+        Errors::errorBox();
       }
       if (!$this->ajaxpage) {
         echo "<div id='wrapper'>";
@@ -172,7 +172,7 @@
     protected function header()
     {
       $this->header = true;
-      JS::open_window(900, 500);
+      JS::openWindow(900, 500);
       if (!headers_sent()) {
         header("Content-type: text/html; charset={$this->encoding}");
       }
@@ -271,7 +271,7 @@
       $footer              = new View('footer');
       $footer['today']     = Dates::today();
       $footer['now']       = Dates::now();
-      $footer['mem']       = Files::convert_size(memory_get_usage(true)) . '/' . Files::convert_size(memory_get_peak_usage(true));
+      $footer['mem']       = Files::convertSize(memory_get_usage(true)) . '/' . Files::convertSize(memory_get_peak_usage(true));
       $footer['load_time'] = Dates::getReadableTime(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
       $footer['user']      = $this->User->username;
       $footer['footer']    = $this->menu && !AJAX_REFERRER;

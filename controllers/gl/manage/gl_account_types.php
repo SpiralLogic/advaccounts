@@ -35,11 +35,11 @@
     $_POST['id'] = $_POST['name'] = '';
     unset($_POST['parent'], $_POST['class_id']);
   }
-  $result = GL_Type::get_all(Forms::hasPost('show_inactive'));
+  $result = GL_Type::getAll(Forms::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("ID"), _("Name"), _("Subgroup Of"), _("Class Type"), "", "");
-   Forms::inactiveControlCol($th);
+  Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
@@ -53,12 +53,12 @@
     Cell::label($myrow["name"]);
     Cell::label($parent_text);
     Cell::label($bs_text);
-     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'chart_types', 'id');
+    Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'chart_types', 'id');
     Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
     Row::end();
   }
-   Forms::inactiveControlRow($th);
+  Forms::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != -1) {
@@ -74,9 +74,9 @@
     Forms::hidden('id');
     Row::label(_("ID:"), $_POST['id']);
   } else {
-     Forms::textRowEx(_("ID:"), 'id', 10);
+    Forms::textRowEx(_("ID:"), 'id', 10);
   }
-   Forms::textRowEx(_("Name:"), 'name', 50);
+  Forms::textRowEx(_("Name:"), 'name', 50);
   GL_Type::row(_("Subgroup Of:"), 'parent', null, _("None"), true);
   GL_Class::row(_("Class Type:"), 'class_id', null);
   Table::end(1);
@@ -98,7 +98,7 @@
             = "SELECT COUNT(*) FROM chart_master
         WHERE account_type=$type";
     $result = DB::query($sql, "could not query chart master");
-    $myrow  = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account group because GL accounts have been created referring to it."));
 
@@ -108,7 +108,7 @@
             = "SELECT COUNT(*) FROM chart_types
         WHERE parent=$type";
     $result = DB::query($sql, "could not query chart types");
-    $myrow  = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account group because GL account groups have been created referring to it."));
 
@@ -127,13 +127,13 @@
   {
     if (!Validation::input_num('id')) {
       Event::error(_("The account id must be an integer and cannot be empty."));
-      JS::set_focus('id');
+      JS::setFocus('id');
 
       return false;
     }
     if (strlen($_POST['name']) == 0) {
       Event::error(_("The account group name cannot be empty."));
-      JS::set_focus('name');
+      JS::setFocus('name');
 
       return false;
     }

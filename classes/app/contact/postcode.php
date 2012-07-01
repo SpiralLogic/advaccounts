@@ -37,8 +37,7 @@
     public function render()
     {
       HTML::tr(true)->td(array('class' => 'label '))->label(array(
-                                                                 'content'  => 'City: ',
-                                                                 'for'      => $this->city[0]
+                                                                 'content'  => 'City: ', 'for'      => $this->city[0]
                                                             ), false)->td->td(true);
       UI::search($this->city[0], array(
                                       'url'      => $this->url . '?city=1',
@@ -51,8 +50,7 @@
                                  ));
       HTML::td()->tr;
       HTML::tr(true)->td(array('class' => 'label'))->label(array(
-                                                                'content'  => 'State: ',
-                                                                'for'      => $this->state[0]
+                                                                'content'  => 'State: ', 'for'      => $this->state[0]
                                                            ), false)->td->td(true);
       HTML::input($this->state[0], array(
                                         'maxlength'  => 35,
@@ -77,7 +75,6 @@
       HTML::td()->tr;
       $this->registerJS();
     }
-
     /**
      * @static
      * @internal param $this ->city
@@ -112,7 +109,7 @@ JS;
     {
       $sql    = "SELECT ID as id, CONCAT(Locality,', ',State,', ',Pcode) as label, CONCAT(Locality,'|',State,'|',Pcode) as value FROM postcodes WHERE Locality LIKE " . DB::escape('%' . $city . '%') . " ORDER BY Locality LIMIT 20";
       $result = DB::query($sql, "Could not find city");
-      while (($resultArray[] = DB::fetch_assoc($result)) || array_pop($resultArray)) {
+      while (($resultArray[] = DB::fetchAssoc($result)) || array_pop($resultArray)) {
         ;
       }
       return $resultArray;
@@ -128,7 +125,7 @@ JS;
     {
       $sql    = "SELECT ID as id, CONCAT(Locality,', ',State,', ',Pcode) as label, CONCAT(Locality,'|',State,'|',Pcode) as value FROM postcodes WHERE Pcode LIKE " . DB::escape($postcode . '%') . " ORDER BY Pcode LIMIT 20";
       $result = DB::query($sql, "Could not find postcode");
-      while (($resultArray[] = DB::fetch_assoc($result)) || array_pop($resultArray)) {
+      while (($resultArray[] = DB::fetchAssoc($result)) || array_pop($resultArray)) {
         ;
       }
       return $resultArray;

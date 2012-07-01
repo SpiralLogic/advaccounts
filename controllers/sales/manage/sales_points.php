@@ -24,10 +24,9 @@
   if ($Mode == MODE_DELETE) {
     $sql = "SELECT * FROM users WHERE pos=" . DB::escape($selected_id);
     $res = DB::query($sql, "canot check pos usage");
-    if (DB::num_rows($res)) {
+    if (DB::numRows($res)) {
       Event::error(_("Cannot delete this POS because it is used in users setup."));
-    }
-    else {
+    } else {
       Sales_Point::delete($selected_id);
       Event::notice(_('Selected point of sale has been deleted'));
       $Mode = MODE_RESET;
@@ -35,17 +34,17 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav = Input::post('show_inactive');
+    $sav         = Input::post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Sales_Point::get_all(Forms::hasPost('show_inactive'));
+  $result = Sales_Point::getAll(Forms::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid');
   $th = array(
     _('POS Name'), _('Credit sale'), _('Cash sale'), _('location'), _('Default account'), '', ''
   );
-   Forms::inactiveControlCol($th);
+  Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
@@ -55,12 +54,12 @@
     Cell::label($myrow['cash_sale'] ? _('Yes') : _('No'));
     Cell::label($myrow["location_name"], "");
     Cell::label($myrow["bank_account_name"], "");
-     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], "sales_pos", 'id');
+    Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], "sales_pos", 'id');
     Forms::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
     Row::end();
   }
-   Forms::inactiveControlRow($th);
+  Forms::inactiveControlRow($th);
   Table::end(1);
   $cash = Validation::check(Validation::CASH_ACCOUNTS);
   if (!$cash) {
@@ -69,10 +68,10 @@
   Table::start('tablestyle2');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
-      $myrow = Sales_Point::get($selected_id);
-      $_POST['name'] = $myrow["pos_name"];
+      $myrow             = Sales_Point::get($selected_id);
+      $_POST['name']     = $myrow["pos_name"];
       $_POST['location'] = $myrow["pos_location"];
-      $_POST['account'] = $myrow["pos_account"];
+      $_POST['account']  = $myrow["pos_account"];
       if ($myrow["credit_sale"]) {
         $_POST['credit_sale'] = 1;
       }
@@ -82,13 +81,12 @@
     }
     Forms::hidden('selected_id', $selected_id);
   }
-   Forms::textRowEx(_("Point of Sale Name") . ':', 'name', 20, 30);
+  Forms::textRowEx(_("Point of Sale Name") . ':', 'name', 20, 30);
   if ($cash) {
-     Forms::checkRow(_('Allowed credit sale'), 'credit', Forms::hasPost('credit_sale'));
-     Forms::checkRow(_('Allowed cash sale'), 'cash', Forms::hasPost('cash_sale'));
+    Forms::checkRow(_('Allowed credit sale'), 'credit', Forms::hasPost('credit_sale'));
+    Forms::checkRow(_('Allowed cash sale'), 'cash', Forms::hasPost('cash_sale'));
     Bank_UI::cash_accounts_row(_("Default cash account") . ':', 'account');
-  }
-  else {
+  } else {
     Forms::hidden('credit', 1);
     Forms::hidden('account', 0);
   }

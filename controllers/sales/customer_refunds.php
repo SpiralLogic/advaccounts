@@ -8,18 +8,18 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   JS::headerFile('/js/payalloc.js');
   Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::request('frame'));
   Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-  if (!isset($_POST['customer_id']) && Session::i()->getGlobal('debtor')) {
-    $customer = new Debtor(Session::i()->getGlobal('debtor'));
+  if (!isset($_POST['customer_id']) && Session::getGlobal('debtor')) {
+    $customer = new Debtor(Session::getGlobal('debtor'));
   }
   if (!isset($_POST['DateBanked'])) {
-    $_POST['DateBanked'] = Dates::new_doc_date();
-    if (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
-      $_POST['DateBanked'] = Dates::end_fiscalyear();
+    $_POST['DateBanked'] = Dates::newDocDate();
+    if (!Dates::isDateInFiscalYear($_POST['DateBanked'])) {
+      $_POST['DateBanked'] = Dates::endFiscalYear();
     }
   }
   if (isset($_GET[ADDED_ID])) {
@@ -53,7 +53,7 @@
     } else {
       $rate = Validation::input_num('_ex_rate');
     }
-    Dates::new_doc_date($_POST['DateBanked']);
+    Dates::newDocDate($_POST['DateBanked']);
     $refund_id                   = Debtor_Refund::add(0, $_POST['customer_id'], $_POST['branch_id'], $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate, Validation::input_num('charge'));
     $_SESSION['alloc']->trans_no = $refund_id;
     $_SESSION['alloc']->write();
@@ -75,20 +75,20 @@
     Forms::hidden('branch_id', ANY_NUMERIC);
   }
   Debtor_Payment::read_customer_data($customer->id, true);
-  Session::i()->setGlobal('debtor', $customer->id);
-  $display_discount_percent = Num::percent_format($_POST['payment_discount'] * 100) . "%";
+  Session::setGlobal('debtor', $customer->id);
+  $display_discount_percent = Num::percentFormat($_POST['payment_discount'] * 100) . "%";
   Table::section(2);
   Bank_Account::row(_("Into Bank Account:"), 'bank_account', null, true);
-   Forms::textRow(_("Reference:"), 'ref', null, 20, 40);
+  Forms::textRow(_("Reference:"), 'ref', null, 20, 40);
   Table::section(3);
-   Forms::dateRow(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
+  Forms::dateRow(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
   $comp_currency = Bank_Currency::for_company();
   $cust_currency = Bank_Currency::for_debtor($customer->id);
   $bank_currency = Bank_Currency::for_company($_POST['bank_account']);
   if ($cust_currency != $bank_currency) {
     GL_ExchangeRate::display($bank_currency, $cust_currency, $_POST['DateBanked'], ($bank_currency == $comp_currency));
   }
-   Forms::AmountRow(_("Bank Charge:"), 'charge');
+  Forms::AmountRow(_("Bank Charge:"), 'charge');
   Table::endOuter(1);
   if ($cust_currency == $bank_currency) {
     Display::div_start('alloc_tbl');
@@ -96,8 +96,8 @@
     Display::div_end();
   }
   Table::start('tablestyle width60');
-   Forms::AmountRow(_("Amount:"), 'amount');
-   Forms::textareaRow(_("Memo:"), 'memo_', null, 22, 4);
+  Forms::AmountRow(_("Amount:"), 'amount');
+  Forms::textareaRow(_("Memo:"), 'memo_', null, 22, 4);
   Table::end(1);
   if ($cust_currency != $bank_currency) {
     Event::warning(_("Amount and discount are in customer's currency."));

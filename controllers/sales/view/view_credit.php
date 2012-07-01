@@ -8,12 +8,11 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   Page::start(_($help_context = "View Credit Note"), SA_SALESTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {
     $trans_id = $_GET["trans_no"];
-  }
-  elseif (isset($_POST["trans_no"])) {
+  } elseif (isset($_POST["trans_no"])) {
     $trans_id = $_POST["trans_no"];
   }
   $myrow  = Debtor_Trans::get($trans_id, ST_CUSTCREDIT);
@@ -39,7 +38,7 @@
   Table::start('tablestyle width100');
   Row::start();
   Cell::labels(_("Ref"), $myrow["reference"], "class='tablerowhead'");
-  Cell::labels(_("Date"), Dates::sql2date($myrow["tran_date"]), "class='tablerowhead'");
+  Cell::labels(_("Date"), Dates::sqlToDate($myrow["tran_date"]), "class='tablerowhead'");
   Cell::labels(_("Currency"), $myrow["curr_code"], "class='tablerowhead'");
   Row::end();
   Row::start();
@@ -53,7 +52,7 @@
   $sub_total = 0;
   $result    = Debtor_TransDetail::get(ST_CUSTCREDIT, $trans_id);
   Table::start('tablestyle grid width95');
-  if (DB::num_rows($result) > 0) {
+  if (DB::numRows($result) > 0) {
     $th = array(
       _("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total")
     );
@@ -69,9 +68,8 @@
       $sub_total += $value;
       if ($myrow2["discount_percent"] == 0) {
         $display_discount = "";
-      }
-      else {
-        $display_discount = Num::percent_format($myrow2["discount_percent"] * 100) . "%";
+      } else {
+        $display_discount = Num::percentFormat($myrow2["discount_percent"] * 100) . "%";
       }
       Cell::label($myrow2["stock_id"]);
       Cell::label($myrow2["StockDescription"]);
@@ -82,14 +80,13 @@
       Cell::amount($value);
       Row::end();
     } //end while there are line items to print out
-  }
-  else {
+  } else {
     Event::warning(_("There are no line items on this credit note."), 1, 2);
   }
-  $display_sub_tot = Num::price_format($sub_total);
-  $display_freight = Num::price_format($myrow["ov_freight"]);
+  $display_sub_tot = Num::priceFormat($sub_total);
+  $display_freight = Num::priceFormat($myrow["ov_freight"]);
   $credit_total    = $myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"];
-  $display_total   = Num::price_format($credit_total);
+  $display_total   = Num::priceFormat($credit_total);
   /*Print out the invoice text entered */
   if ($sub_total != 0) {
     Row::label(_("Sub Total"), $display_sub_tot, "colspan=6 class='right'", " class='nowrap right width15'");

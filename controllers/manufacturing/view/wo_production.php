@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   Page::start(_($help_context = "View Work Order Production"), SA_MANUFTRANSVIEW, true);
   if ($_GET['trans_no'] != "") {
     $wo_production = $_GET['trans_no'];
@@ -31,7 +31,7 @@
     Cell::label(GL_UI::trans_view(ST_WORKORDER, $myrow["workorder_id"]));
     Cell::label($myrow["stock_id"] . " - " . $myrow["StockDescription"]);
     Cell::qty($myrow["quantity"], false, Item::qty_dec($myrow["stock_id"]));
-    Cell::label(Dates::sql2date($myrow["date_"]));
+    Cell::label(Dates::sqlToDate($myrow["date_"]));
     Row::end();
     DB_Comments::display_row(ST_MANURECEIVE, $prod_id);
     Table::end(1);

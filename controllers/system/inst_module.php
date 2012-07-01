@@ -44,7 +44,7 @@
   echo "<div class='center'>" . _('Extensions:') . "&nbsp;&nbsp;";
   echo Extensions::view('extset', null, true);
   echo "</div><br>";
-  $set = Input::post('extset',null,-1);
+  $set = Input::post('extset', null, -1);
   if ($set == -1) {
     display_extensions();
     display_ext_edit($Mode, $selected_id);
@@ -66,7 +66,7 @@
       return false;
     }
     // update per company files
-    $cnt = count(Config::get_all('db'));
+    $cnt = count(Config::getAll('db'));
     for ($i = 0; $i < $cnt; $i++) {
       $newexts = $extensions;
       // update 'active' status
@@ -215,7 +215,7 @@
     $extensions = DB_Company::get_company_extensions();
     $id         = $selected_id;
     $filename   = DOCROOT . ($extensions[$id]['type'] == 'plugin' ? "modules" . DS : DS) . $extensions[$id]['path'];
-    Files::flush_dir($filename);
+    Files::flushDir($filename);
     rmdir($filename);
     unset($extensions[$id]);
     if (update_extensions($extensions)) {
@@ -284,7 +284,7 @@
                     Display::access_string(ADVAccounting::i()->applications[$mod['tab']]->name, true));
       $ttl = Display::access_string($mod['title']);
       Cell::label($ttl[0]);
-       Forms::checkCells(null, 'Active' . $i, @$mod['active'] ? 1 : 0, false, false, "class='center'");
+      Forms::checkCells(null, 'Active' . $i, @$mod['active'] ? 1 : 0, false, false, "class='center'");
       Row::end();
     }
     Table::end(1);
@@ -313,14 +313,14 @@
       }
       Forms::hidden('selected_id', $selected_id);
     }
-     Forms::textRowEx(_("Name"), 'name', 30);
-     Forms::textRowEx(_("Folder"), 'path', 20);
+    Forms::textRowEx(_("Name"), 'name', 30);
+    Forms::textRowEx(_("Folder"), 'path', 20);
     Users::tabs_row(_("Menu Tab"), 'tab', null, true);
-     Forms::textRowEx(_("Menu Link Text"), 'title', 30);
-     Forms::recordStatusListRow(_("Default status"), 'active');
-     Forms::fileRow(_("Module File"), 'uploadfile');
-     Forms::fileRow(_("Access Levels Extensions"), 'uploadfile3');
-     Forms::fileRow(_("SQL File"), 'uploadfile2');
+    Forms::textRowEx(_("Menu Link Text"), 'title', 30);
+    Forms::recordStatusListRow(_("Default status"), 'active');
+    Forms::fileRow(_("Module File"), 'uploadfile');
+    Forms::fileRow(_("Access Levels Extensions"), 'uploadfile3');
+    Forms::fileRow(_("SQL File"), 'uploadfile2');
     Table::end(0);
     Event::warning(_("Select your module PHP file from your local harddisk."), 0, 1);
     Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');

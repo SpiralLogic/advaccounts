@@ -47,7 +47,7 @@
     $sql    = "SELECT component FROM bom WHERE parent=" . DB::escape($component_to_check);
     $result = DB::query($sql, "could not check recursive bom");
     if ($result != 0) {
-      while ($myrow = DB::fetch_row($result)) {
+      while ($myrow = DB::fetchRow($result)) {
         if ($myrow[0] == $ultimate_parent) {
           return 1;
         }
@@ -97,7 +97,7 @@
   {
     if (!Validation::post_num('quantity', 0)) {
       Event::error(_("The quantity entered must be numeric and greater than zero."));
-      JS::set_focus('quantity');
+      JS::setFocus('quantity');
 
       return;
     }
@@ -123,7 +123,7 @@
                 AND workcentre_added=" . DB::escape($_POST['workcentre_added']) . "
                 AND loc_code=" . DB::escape($_POST['loc_code']);
         $result = DB::query($sql, "check failed");
-        if (DB::num_rows($result) == 0) {
+        if (DB::numRows($result) == 0) {
           $sql
             = "INSERT INTO bom (parent, component, workcentre_added, loc_code, quantity)
                     VALUES (" . DB::escape($selected_parent) . ", " . DB::escape($_POST['component']) . "," . DB::escape($_POST['workcentre_added']) . ", " . DB::escape($_POST['loc_code']) . ", " . Validation::input_num('quantity') . ")";
@@ -201,7 +201,7 @@
     workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);
     $dec               = Item::qty_dec(Input::post('component'));
     $_POST['quantity'] = Num::format(Validation::input_num('quantity', 1), $dec);
-     Forms::qtyRow(_("Quantity:"), 'quantity', null, null, null, $dec);
+    Forms::qtyRow(_("Quantity:"), 'quantity', null, null, null, $dec);
     Table::end(1);
     Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
     Forms::end();

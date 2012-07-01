@@ -133,7 +133,7 @@
       if (!Item::is_inventory_item($stock_id)) {
         return null;
       }
-      $date = Dates::date2sql($date_);
+      $date = Dates::dateToSql($date_);
       $sql
             = "INSERT INTO stock_moves (stock_id, trans_no, type, loc_code,
             tran_date, person_id, reference, qty, standard_cost, visible, price,
@@ -143,7 +143,7 @@
       }
       DB::query($sql, $error_msg);
 
-      return DB::insert_id();
+      return DB::insertId();
     }
     /***
      * @static

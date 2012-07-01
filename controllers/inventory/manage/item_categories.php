@@ -16,16 +16,14 @@
     if (strlen($_POST['description']) == 0) {
       $input_error = 1;
       Event::error(_("The item category description cannot be empty."));
-      JS::set_focus('description');
+      JS::setFocus('description');
     }
     if ($input_error != 1) {
       if ($selected_id != -1) {
-        Item_Category::update($selected_id, $_POST['description'], $_POST['tax_type_id'], $_POST['sales_account'], $_POST['cogs_account'], $_POST['inventory_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'],
-          Forms::hasPost('no_sale'));
+        Item_Category::update($selected_id, $_POST['description'], $_POST['tax_type_id'], $_POST['sales_account'], $_POST['cogs_account'], $_POST['inventory_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'], Forms::hasPost('no_sale'));
         Event::success(_('Selected item category has been updated'));
       } else {
-        Item_Category::add($_POST['description'], $_POST['tax_type_id'], $_POST['sales_account'], $_POST['cogs_account'], $_POST['inventory_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'],
-          Forms::hasPost('no_sale'));
+        Item_Category::add($_POST['description'], $_POST['tax_type_id'], $_POST['sales_account'], $_POST['cogs_account'], $_POST['inventory_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'], Forms::hasPost('no_sale'));
         Event::success(_('New item category has been added'));
       }
       $Mode = MODE_RESET;
@@ -55,7 +53,7 @@
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
     $sql    = "SELECT COUNT(*) FROM stock_master WHERE category_id=" . DB::escape($selected_id);
     $result = DB::query($sql, "could not query stock master");
-    $myrow  = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this item category because items have been created using this item category."));
     } else {
@@ -168,12 +166,12 @@
       }
     }
   }
-   Forms::textRow(_("Category Name:"), 'description', null, 30, 30);
+  Forms::textRow(_("Category Name:"), 'description', null, 30, 30);
   Table::sectionTitle(_("Default values for new items"));
   Tax_ItemType::row(_("Item Tax Type:"), 'tax_type_id', null);
   Item_UI::type_row(_("Item Type:"), 'mb_flag', null, true);
   Item_Unit::row(_("Units of Measure:"), 'units', null);
-   Forms::checkRow(_("Exclude from sales:"), 'no_sale');
+  Forms::checkRow(_("Exclude from sales:"), 'no_sale');
   GL_UI::all_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
   if (Input::post('mb_flag') == STOCK_SERVICE) {
     GL_UI::all_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);

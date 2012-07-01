@@ -107,8 +107,8 @@
       if (is_array($drop_queries)) {
         foreach ($drop_queries as $drop_query) {
           if (!DB::query($drop_query[0])) {
-            if (!in_array(DB::error_no(), $ignored_mysql_errors) || !$force) {
-              $sql_errors[] = array(DB::error_msg(), $drop_query[1]);
+            if (!in_array(DB::errorNo(), $ignored_mysql_errors) || !$force) {
+              $sql_errors[] = array(DB::errorMsg(), $drop_query[1]);
             }
           }
         }
@@ -117,8 +117,8 @@
       if (is_array($table_queries)) {
         foreach ($table_queries as $table_query) {
           if (!DB::query($table_query[0])) {
-            if (!in_array(DB::error_no(), $ignored_mysql_errors) || !$force) {
-              $sql_errors[] = array(DB::error_msg(), $table_query[1]);
+            if (!in_array(DB::errorNo(), $ignored_mysql_errors) || !$force) {
+              $sql_errors[] = array(DB::errorMsg(), $table_query[1]);
             }
           }
         }
@@ -127,8 +127,8 @@
       if (is_array($data_queries)) {
         foreach ($data_queries as $data_query) {
           if (!DB::query($data_query[0])) {
-            if (!in_array(DB::error_no(), $ignored_mysql_errors) || !$force) {
-              $sql_errors[] = array(DB::error_msg(), $data_query[1]);
+            if (!in_array(DB::errorNo(), $ignored_mysql_errors) || !$force) {
+              $sql_errors[] = array(DB::errorMsg(), $data_query[1]);
             }
           }
         }
@@ -146,7 +146,6 @@
       //$shell_command = C_MYSQL_PATH . " -h $host -u $user -p{$password} $dbname < $filename";
       //shell_exec($shell_command);
     }
-
     /**
      * @static
      *
@@ -166,7 +165,6 @@
         return $file_data;
       }
     }
-
     /**
      * @static
      *
@@ -198,7 +196,7 @@
         // remove central directory information (we have always just one ziped file)
         $comp = substr($all, -(strlen($all) - 30 - strlen($filename) - 13));
         $comp = substr($comp, 0, (strlen($comp) - 80 - strlen($filename) - 13));
-        // fix the crc bugfix (see function save_to_file)
+        // fix the crc bugfix (see function saveToFile)
         $comp      = "x�" . $comp . $suffix;
         $file_data = gzuncompress($comp);
       }
@@ -224,7 +222,6 @@
 
       return DB_Utils::export($conn, $filename, $ext, $comm);
     }
-
     /**
      * @static
      *
@@ -326,16 +323,16 @@
             // check if field types are null or NOT null
             $res3       = DB::query("SHOW COLUMNS FROM `" . $tablename . "`");
             $field_null = array();
-            for ($j = 0; $j < DB::num_rows($res3); $j++) {
+            for ($j = 0; $j < DB::numRows($res3); $j++) {
               $row3         = DB::fetch($res3);
               $field_null[] = $row3[2] == 'YES' && $row3[4] === null;
             }
             $res2 = DB::query("SELECT * FROM `" . $tablename . "`");
-            for ($j = 0; $j < DB::num_rows($res2); $j++) {
+            for ($j = 0; $j < DB::numRows($res2); $j++) {
               $out .= "INSERT INTO `" . $tablename . "` VALUES (";
-              $row2 = DB::fetch_row($res2);
+              $row2 = DB::fetchRow($res2);
               // run through each field
-              for ($k = 0; $k < $nf = DB::num_fields($res2); $k++) {
+              for ($k = 0; $k < $nf = DB::numFields($res2); $k++) {
                 $out .= DB::escape($row2[$k], $field_null[$k]);
                 if ($k < ($nf - 1)) {
                   $out .= ", ";
@@ -344,7 +341,7 @@
               $out .= ");\n";
               // if saving is successful, then empty $out, else set error flag
               if (strlen($out) > $max_size && $zip != "zip") {
-                if (Files::save_to_file($backupfile, $out, $zip)) {
+                if (Files::saveToFile($backupfile, $out, $zip)) {
                   $out = "";
                 } else {
                   $error = true;
@@ -359,7 +356,7 @@
           }
           // if saving is successful, then empty $out, else set error flag
           if (strlen($out) > $max_size && $zip != "zip") {
-            if (Files::save_to_file($backupfile, $out, $zip)) {
+            if (Files::saveToFile($backupfile, $out, $zip)) {
               $out = "";
             } else {
               $error = true;
@@ -372,11 +369,11 @@
 
         return false;
       }
-      // if (mysql_error()) return "db_error(";
+      // if (mysql_error()) return "databaseError(";
       //mysql_close($con);
       //if ($zip == "zip")
       //	$zip = $time;
-      if (Files::save_to_file($backupfile, $out = '', $zip)) {
+      if (Files::saveToFile($backupfile, $out = '', $zip)) {
       } else {
         unlink(BACKUP_PATH . $backupfile);
 
@@ -385,7 +382,6 @@
 
       return $backupfile;
     }
-
     /**
      * @static
      *

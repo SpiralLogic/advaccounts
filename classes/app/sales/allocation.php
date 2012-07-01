@@ -8,8 +8,8 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  class Sales_Allocation {
-
+  class Sales_Allocation
+  {
     /**
      * @static
      *
@@ -19,15 +19,13 @@
      * @param $trans_type_to
      * @param $trans_no_to
      */
-    public static function add($amount, $trans_type_from, $trans_no_from,
-                               $trans_type_to, $trans_no_to)
+    public static function add($amount, $trans_type_from, $trans_no_from, $trans_type_to, $trans_no_to)
     {
       $sql
         = "INSERT INTO debtor_allocations (
         amt, date_alloc,
         trans_type_from, trans_no_from, trans_no_to, trans_type_to)
-        VALUES ($amount, Now() ," . DB::escape($trans_type_from) . ", " . DB::escape($trans_no_from) . ", " . DB::escape($trans_no_to)
-        . ", " . DB::escape($trans_type_to) . ")";
+        VALUES ($amount, Now() ," . DB::escape($trans_type_from) . ", " . DB::escape($trans_no_from) . ", " . DB::escape($trans_no_to) . ", " . DB::escape($trans_type_to) . ")";
       DB::query($sql, "A customer allocation could not be added to the database");
     }
     /**
@@ -57,7 +55,7 @@
                = "SELECT (ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc) AS BalToAllocate
         FROM debtor_trans WHERE trans_no=" . DB::escape($trans_no) . " AND type=" . DB::escape($trans_type);
       $result  = DB::query($sql, "calculate the allocation");
-      $myrow   = DB::fetch_row($result);
+      $myrow   = DB::fetchRow($result);
       $balance = (abs($myrow[0]) <= Config::get('accounts.allocation_allowance')) ? 0 : $myrow[0];
 
       return $balance;
@@ -98,8 +96,7 @@
         DB::query($sql, "could not clear allocation");
         // 2008-09-20 Joe Hunt
         if ($date != "") {
-          Bank::exchange_variation($type, $type_no, $row['trans_type_to'], $row['trans_no_to'], $date,
-            $row['amt'], PT_CUSTOMER, true);
+          Bank::exchange_variation($type, $type_no, $row['trans_type_to'], $row['trans_no_to'], $date, $row['amt'], PT_CUSTOMER, true);
         }
         //////////////////////
       }
@@ -137,8 +134,7 @@
       if ($extra_fields) {
         $sql .= ", $extra_fields ";
       }
-      $sql .= " FROM debtor_trans as trans, "
-        . "debtors as debtor";
+      $sql .= " FROM debtor_trans as trans, " . "debtors as debtor";
       if ($extra_tables) {
         $sql .= ",$extra_tables ";
       }
@@ -169,8 +165,7 @@
       }
       $cust_sql .= ' and  trans.debtor_id<>4721 '; //TODO: REMOVE
 
-      $sql = Sales_Allocation::get_sql("round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,2) <= 0 AS settled",
-        "(type=" . ST_CUSTPAYMENT . " OR type=" . ST_CUSTREFUND . " OR type=" . ST_CUSTCREDIT . " OR type=" . ST_BANKDEPOSIT . ") AND (trans.ov_amount > 0) " . $settled_sql . $cust_sql);
+      $sql = Sales_Allocation::get_sql("round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,2) <= 0 AS settled", "(type=" . ST_CUSTPAYMENT . " OR type=" . ST_CUSTREFUND . " OR type=" . ST_CUSTCREDIT . " OR type=" . ST_BANKDEPOSIT . ") AND (trans.ov_amount > 0) " . $settled_sql . $cust_sql);
 
       return $sql;
     }
@@ -190,8 +185,7 @@
             AND trans.type = alloc.trans_type_to
             AND alloc.trans_no_from=$trans_no
             AND alloc.trans_type_from=$type
-            AND trans.debtor_id=" . DB::escape($customer_id),
-          "debtor_allocations as alloc");
+            AND trans.debtor_id=" . DB::escape($customer_id), "debtor_allocations as alloc");
       } else {
         $sql = Sales_Allocation::get_sql(null, "round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) > 0
             AND trans.type <> " . ST_CUSTPAYMENT . "
@@ -222,7 +216,7 @@
       Display::heading(sprintf(_("Allocation of %s # %d"), $systypes_array[$_SESSION['alloc']->type], $_SESSION['alloc']->trans_no));
       Display::heading($_SESSION['alloc']->person_name);
       Display::heading(_("Date:") . " <span class='bold'>" . $_SESSION['alloc']->date_ . "</span>");
-      Display::heading(_("Total:") . " <span class='bold'>" . Num::price_format($_SESSION['alloc']->amount) . "</span>");
+      Display::heading(_("Total:") . " <span class='bold'>" . Num::priceFormat($_SESSION['alloc']->amount) . "</span>");
       echo "<br>";
       Forms::start();
       if (isset($_POST['inquiry'], $_SERVER['HTTP_REFERER']) || stristr($_SERVER['HTTP_REFERER'], 'customer_allocation_inquiry.php')) {
@@ -286,7 +280,7 @@
      */
     public static function amount_left($row)
     {
-      return Num::price_format($row["Total"] - $row["alloc"]);
+      return Num::priceFormat($row["Total"] - $row["alloc"]);
     }
     /**
      * @static

@@ -143,37 +143,37 @@
       $this->assertSame(7, Input::post('test3', Input::NUMERIC, 1));
     }
     /**
-     * @covers ADV\Core\Input::_get_post
-     * @todo   Implement testGet_post().
+     * @covers ADV\Core\Input::_getPost
+     * @todo   Implement testgetPost().
      */
-    public function testGet_post()
+    public function testGetPost()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Input::_get_post_global
-     * @todo   Implement testGet_post_global().
+     * @covers ADV\Core\Input::_getPostGlobal
+     * @todo   Implement testgetPostGlobal().
      */
-    public function testGet_post_global()
+    public function testgetPostGlobal()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Input::_post_global
-     * @todo   Implement testPost_global().
+     * @covers ADV\Core\Input::_postGlobal
+     * @todo   Implement testpostGlobal().
      */
-    public function testPost_global()
+    public function testpostGlobal()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Input::_post_get
-     * @todo   Implement testPost_get().
+     * @covers ADV\Core\Input::_postGet
+     * @todo   Implement testpostGet().
      */
-    public function testPost_get()
+    public function testpostGet()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');
@@ -188,27 +188,27 @@
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Input::_has_post
-     * @todo   Implement testHas_post().
+     * @covers ADV\Core\Input::_hasPost
+     * @todo   Implement testhasPost().
      */
-    public function testHas_post()
+    public function testhasPost()
     {
-      $this->assertSame(false, Input::has_post('test'));
-      $this->assertSame(false, Input::has_post('test', 'test2'));
+      $this->assertSame(false, Input::hasPost('test'));
+      $this->assertSame(false, Input::hasPost('test', 'test2'));
       $_POST['test'] = false;
-      $this->assertSame(false, Input::has_post('test', 'test2'), 'Should return false even if one variable is set.');
-      $this->assertSame(true, Input::has_post('test'), 'Should return true if post variable is set to false because it exists');
+      $this->assertSame(false, Input::hasPost('test', 'test2'), 'Should return false even if one variable is set.');
+      $this->assertSame(true, Input::hasPost('test'), 'Should return true if post variable is set to false because it exists');
       $_POST['test2'] = null;
-      $this->assertSame(false, Input::has_post('test2'), 'Test2 is set but is null so it should return false!');
-      $this->assertSame(false, Input::has_post('test', 'test2'), 'Both are set but test2 is set but is null so it should return false!');
+      $this->assertSame(false, Input::hasPost('test2'), 'Test2 is set but is null so it should return false!');
+      $this->assertSame(false, Input::hasPost('test', 'test2'), 'Both are set but test2 is set but is null so it should return false!');
       $_POST['test2'] = 'something';
-      $this->assertSame(true, Input::has_post('test', 'test2'), 'Both are set but test2 is set but is null so it should return false!');
+      $this->assertSame(true, Input::hasPost('test', 'test2'), 'Both are set but test2 is set but is null so it should return false!');
     }
     /**
-     * @covers ADV\Core\Input::_has_get
-     * @todo   Implement testHas_get().
+     * @covers ADV\Core\Input::_hasGet
+     * @todo   Implement testhasGet().
      */
-    public function testHas_get()
+    public function testhasGet()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');
@@ -223,10 +223,10 @@
       $this->markTestIncomplete('This test has not been implemented yet.');
     }
     /**
-     * @covers ADV\Core\Input::_has_session
-     * @todo   Implement testHas_session().
+     * @covers ADV\Core\Input::_hasSession
+     * @todo   Implement testhasSession().
      */
-    public function testHas_session()
+    public function testhasSession()
     {
       // Remove the following lines when you implement this test.
       $this->markTestIncomplete('This test has not been implemented yet.');

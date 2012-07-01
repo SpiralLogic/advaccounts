@@ -18,18 +18,18 @@
   }
   Forms::start();
   if (!isset($_POST['curr_abrev'])) {
-    $_POST['curr_abrev'] = Session::i()->getGlobal('curr_abrev');
+    $_POST['curr_abrev'] = Session::getGlobal('curr_abrev');
   }
   echo "<div class='center'>";
   echo _("Select a currency :") . " ";
   echo GL_Currency::select('curr_abrev', null, true);
   echo "</div>";
   // if currency sel has changed, clear the form
-  if ($_POST['curr_abrev'] != Session::i()->getGlobal('curr_abrev')) {
+  if ($_POST['curr_abrev'] != Session::getGlobal('curr_abrev')) {
     clear_data();
     $selected_id = "";
   }
-  Session::i()->setGlobal('curr_abrev', $_POST['curr_abrev']);
+  Session::setGlobal('curr_abrev', $_POST['curr_abrev']);
   $sql   = "SELECT date_, rate_buy, id FROM exchange_rates " . "WHERE curr_code=" . DB::quote($_POST['curr_abrev']) . "
      ORDER BY date_ DESC";
   $cols  = array(
@@ -60,21 +60,21 @@
    */
   function check_data()
   {
-    if (!Dates::is_date($_POST['date_'])) {
+    if (!Dates::isDate($_POST['date_'])) {
       Event::error(_("The entered date is invalid."));
-      JS::set_focus('date_');
+      JS::setFocus('date_');
 
       return false;
     }
     if (Validation::input_num('BuyRate') <= 0) {
       Event::error(_("The exchange rate cannot be zero or a negative number."));
-      JS::set_focus('BuyRate');
+      JS::setFocus('BuyRate');
 
       return false;
     }
     if (GL_ExchangeRate::get_date($_POST['curr_abrev'], $_POST['date_'])) {
       Event::error(_("The exchange rate for the date is already there."));
-      JS::set_focus('date_');
+      JS::setFocus('date_');
 
       return false;
     }
@@ -152,21 +152,21 @@
     if ($selected_id != "") {
       //editing an existing exchange rate
       $myrow            = GL_ExchangeRate::get($selected_id);
-      $_POST['date_']   = Dates::sql2date($myrow["date_"]);
-      $_POST['BuyRate'] = Num::exrate_format($myrow["rate_buy"]);
+      $_POST['date_']   = Dates::sqlToDate($myrow["date_"]);
+      $_POST['BuyRate'] = Num::exrateFormat($myrow["rate_buy"]);
       Forms::hidden('selected_id', $selected_id);
       Forms::hidden('date_', $_POST['date_']);
       Row::label(_("Date to Use From:"), $_POST['date_']);
     } else {
       $_POST['date_']   = Dates::today();
       $_POST['BuyRate'] = '';
-       Forms::dateRow(_("Date to Use From:"), 'date_');
+      Forms::dateRow(_("Date to Use From:"), 'date_');
     }
     if (isset($_POST['get_rate'])) {
-      $_POST['BuyRate'] = Num::exrate_format(GL_ExchangeRate::retrieve($_POST['curr_abrev'], $_POST['date_']));
+      $_POST['BuyRate'] = Num::exrateFormat(GL_ExchangeRate::retrieve($_POST['curr_abrev'], $_POST['date_']));
       Ajax::activate('BuyRate');
     }
-     Forms::SmallAmountRow(_("Exchange Rate:"), 'BuyRate', null, '', Forms::submit('get_rate', _("Get"), false, _('Get current ECB rate'), true), User::exrate_dec());
+    Forms::SmallAmountRow(_("Exchange Rate:"), 'BuyRate', null, '', Forms::submit('get_rate', _("Get"), false, _('Get current ECB rate'), true), User::exrate_dec());
     Table::end(1);
     Forms::submitAddUpdateCenter($selected_id == '', '', 'both');
     Event::warning(_("Exchange rates are entered against the company currency."), 1);

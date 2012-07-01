@@ -7,9 +7,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   Page::start(_($help_context = "Supplier Inquiry"), SA_SUPPTRANSVIEW);
-$supplier_id = Input::get_post('supplier_id',INPUT::NUMERIC,-1);
+  $supplier_id = Input::getPost('supplier_id', INPUT::NUMERIC, -1);
   if (isset($_GET['FromDate'])) {
     $_POST['TransAfterDate'] = $_GET['FromDate'];
   }
@@ -18,7 +18,7 @@ $supplier_id = Input::get_post('supplier_id',INPUT::NUMERIC,-1);
   }
   Forms::start();
   if (!$supplier_id) {
-    $_POST['supplier_id'] =$supplier_id= Session::i()->getGlobal('creditor',-1);
+    $_POST['supplier_id'] = $supplier_id = Session::getGlobal('creditor', -1);
   }
   Table::start('tablestyle_noborder');
   Row::start();
@@ -30,10 +30,10 @@ $supplier_id = Input::get_post('supplier_id',INPUT::NUMERIC,-1);
   Row::end();
   Table::end();
   Display::div_start('totals_tbl');
-  if ($supplier_id>0) {
+  if ($supplier_id > 0) {
     $supplier_record = Creditor::get_to_trans($supplier_id);
     display_supplier_summary($supplier_record);
-    Session::i()->setGlobal('creditor', $supplier_id);
+    Session::setGlobal('creditor', $supplier_id);
   }
   Display::div_end();
   if (Input::post('RefreshInquiry')) {
@@ -43,12 +43,13 @@ $supplier_id = Input::get_post('supplier_id',INPUT::NUMERIC,-1);
     $searchArray = explode(' ', $_POST['ajaxsearch']);
     unset($_POST['supplier_id']);
   }
-  $date_after = Dates::date2sql($_POST['TransAfterDate']);
-  $date_to    = Dates::date2sql($_POST['TransToDate']);
+  $date_after = Dates::dateToSql($_POST['TransAfterDate']);
+  $date_to    = Dates::dateToSql($_POST['TransToDate']);
   // Sherifoz 22.06.03 Also get the description
-  $sql = "SELECT trans.type,
+  $sql
+    = "SELECT trans.type,
 		trans.trans_no,
-		trans.reference, 
+		trans.reference,
 		supplier.name,
 		supplier.supplier_id as id,
 		trans.supplier_reference,
@@ -57,7 +58,7 @@ $supplier_id = Input::get_post('supplier_id',INPUT::NUMERIC,-1);
 		supplier.curr_code,
  	(trans.ov_amount + trans.ov_gst + trans.ov_discount) AS TotalAmount,
 		trans.alloc AS Allocated,
-		((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::date2sql(Dates::today()) . "') AS OverDue,
+		((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::dateToSql(Dates::today()) . "') AS OverDue,
  	(ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount - trans.alloc) <= 0.005) AS Settled
  	FROM creditor_trans as trans, suppliers as supplier
  	WHERE supplier.supplier_id = trans.supplier_id
@@ -72,10 +73,11 @@ $supplier_id = Input::get_post('supplier_id',INPUT::NUMERIC,-1);
       $sql .= " supplier.name LIKE " . DB::quote($ajaxsearch) . " OR trans.trans_no LIKE " . DB::quote($ajaxsearch) . " OR trans.reference LIKE " . DB::quote($ajaxsearch) . " OR trans.supplier_reference LIKE " . DB::quote($ajaxsearch) . ")";
     }
   } else {
-    $sql .= " AND trans . tran_date >= '$date_after'
+    $sql
+      .= " AND trans . tran_date >= '$date_after'
 	 AND trans . tran_date <= '$date_to'";
   }
-  if ($supplier_id>0) {
+  if ($supplier_id > 0) {
     $sql .= " AND trans.supplier_id = " . DB::quote($supplier_id);
   }
   if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
@@ -91,7 +93,7 @@ $supplier_id = Input::get_post('supplier_id',INPUT::NUMERIC,-1);
       $sql .= " AND trans.type = " . ST_SUPPCREDIT . " ";
     }
     if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) {
-      $today = Dates::date2sql(Dates::today());
+      $today = Dates::dateToSql(Dates::today());
       $sql .= " AND trans.due_date < '$today' ";
     }
   }
@@ -123,7 +125,7 @@ $supplier_id = Input::get_post('supplier_id',INPUT::NUMERIC,-1);
       'insert' => true, 'fun' => 'prt_link'
     )
   );
-  if ($supplier_id>0) {
+  if ($supplier_id > 0) {
     $cols[_("Supplier")] = 'skip';
     $cols[_("Currency")] = 'skip';
   }
@@ -184,7 +186,8 @@ $supplier_id = Input::get_post('supplier_id',INPUT::NUMERIC,-1);
    */
   function credit_link($row)
   {
-    return $row['type'] == ST_SUPPINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ? DB_Pager::link(_("Credit"), "/purchases/supplier_credit.php?New=1&invoice_no=" . $row['trans_no'], ICON_CREDIT) : '';
+    return $row['type'] == ST_SUPPINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
+      DB_Pager::link(_("Credit"), "/purchases/supplier_credit.php?New=1&invoice_no=" . $row['trans_no'], ICON_CREDIT) : '';
   }
 
   /**
@@ -195,7 +198,7 @@ $supplier_id = Input::get_post('supplier_id',INPUT::NUMERIC,-1);
   function fmt_debit($row)
   {
     $value = $row["TotalAmount"];
-    return $value >= 0 ? Num::price_format($value) : '';
+    return $value >= 0 ? Num::priceFormat($value) : '';
   }
 
   /**
@@ -206,7 +209,7 @@ $supplier_id = Input::get_post('supplier_id',INPUT::NUMERIC,-1);
   function fmt_credit($row)
   {
     $value = -$row["TotalAmount"];
-    return $value > 0 ? Num::price_format($value) : '';
+    return $value > 0 ? Num::priceFormat($value) : '';
   }
 
   /**
@@ -243,7 +246,14 @@ $supplier_id = Input::get_post('supplier_id',INPUT::NUMERIC,-1);
     $txt_past_due2 = _('Over') . " " . $past_due2 . " " . _('Days');
     Table::start('tablestyle width90');
     $th = array(
-      _("Currency"), _("Terms"), _("Current"), $txt_now_due, $txt_past_due1, $txt_past_due2, _("Total Balance"), _("Total For Search Period")
+      _("Currency"),
+      _("Terms"),
+      _("Current"),
+      $txt_now_due,
+      $txt_past_due1,
+      $txt_past_due2,
+      _("Total Balance"),
+      _("Total For Search Period")
     );
     Table::header($th);
     Row::start();

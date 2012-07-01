@@ -39,8 +39,8 @@
   function getYTD($dim)
   {
     $date = Dates::today();
-    $date = Dates::begin_fiscalyear($date);
-    Dates::date2sql($date);
+    $date = Dates::beginFiscalYear($date);
+    Dates::dateToSql($date);
     $sql
                 = "SELECT SUM(amount) AS Balance
         FROM
@@ -48,8 +48,8 @@
         WHERE (dimension_id = '$dim' OR dimension2_id = '$dim')
         AND tran_date >= '$date'";
     $trans_rows = DB::query($sql, "No transactions were returned");
-    if (DB::num_rows($trans_rows) == 1) {
-      $DemandRow = DB::fetch_row($trans_rows);
+    if (DB::numRows($trans_rows) == 1) {
+      $DemandRow = DB::fetchRow($trans_rows);
       $balance   = $DemandRow[0];
     } else {
       $balance = 0.0;

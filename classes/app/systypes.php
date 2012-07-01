@@ -10,8 +10,8 @@
   //	Returns next transaction number.
   //	Used only for transactions stored in tables without autoincremented key.
   //
-  class SysTypes {
-
+  class SysTypes
+  {
     /**
      * @static
      *
@@ -19,7 +19,8 @@
      *
      * @return int
      */
-    public static function get_next_trans_no($trans_type) {
+    public static function get_next_trans_no($trans_type)
+    {
       $st = SysTypes::get_db_info($trans_type);
       if (!($st && $st[0] && $st[2])) {
         // this is in fact internal error condition.
@@ -32,13 +33,13 @@
       }
       $unique = false;
       $result = DB::query($sql, "The next transaction number for $trans_type could not be retrieved");
-      $myrow  = DB::fetch_row($result);
+      $myrow  = DB::fetchRow($result);
       $ref    = $myrow[0];
       while (!$unique) {
         $ref++;
         $sql    = "SELECT id FROM refs WHERE `id`=" . $ref . " AND `type`=" . $trans_type;
         $result = DB::query($sql);
-        $unique = (DB::num_rows($result) > 0) ? false : true;
+        $unique = (DB::numRows($result) > 0) ? false : true;
       }
       return $ref;
     }
@@ -49,7 +50,8 @@
      *
      * @return array|null
      */
-    public static function get_db_info($type) {
+    public static function get_db_info($type)
+    {
       switch ($type) {
         case   ST_JOURNAL    :
           return array("gl_trans", "type", "type_no", null, "tran_date");
@@ -102,13 +104,14 @@
         case   ST_COSTUPDATE   :
           return array("gl_trans", "type", "type_no", null, "tran_date");
       }
-      Errors::db_error("invalid type ($type) sent to get_systype_db_info", "", true);
+      Errors::databaseError("invalid type ($type) sent to get_systype_db_info", "", true);
     }
     /**
      * @static
      * @return null|PDOStatement
      */
-    public static function get() {
+    public static function get()
+    {
       $sql    = "SELECT type_id,type_no,CONCAT(prefix,next_reference)as next_reference FROM sys_types";
       $result = DB::query($sql, "could not query systypes table");
       return $result;
@@ -120,7 +123,8 @@
      *
      * @return int
      */
-    public static function get_class_type_convert($ctype) {
+    public static function get_class_type_convert($ctype)
+    {
       return ((($ctype >= CL_LIABILITIES && $ctype <= CL_INCOME) || $ctype == CL_NONE) ? -1 : 1);
     }
     /**
@@ -133,11 +137,15 @@
      *
      * @return string
      */
-    public static function select($name, $value = null, $spec_opt = false, $submit_on_change = false) {
+    public static function select($name, $value = null, $spec_opt = false, $submit_on_change = false)
+    {
       global $systypes_array;
       return Forms::arraySelect($name, $value, $systypes_array, array(
-        'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => false,
-      ));
+                                                                     'spec_option'   => $spec_opt,
+                                                                     'spec_id'       => ALL_NUMERIC,
+                                                                     'select_submit' => $submit_on_change,
+                                                                     'async'         => false,
+                                                                ));
     }
     /**
      * @static
@@ -147,7 +155,8 @@
      * @param null $value
      * @param bool $submit_on_change
      */
-    public static function cells($label, $name, $value = null, $submit_on_change = false) {
+    public static function cells($label, $name, $value = null, $submit_on_change = false)
+    {
       if ($label != null) {
         echo "<td>$label</td>\n";
       }
@@ -163,7 +172,8 @@
      * @param null $value
      * @param bool $submit_on_change
      */
-    public static function row($label, $name, $value = null, $submit_on_change = false) {
+    public static function row($label, $name, $value = null, $submit_on_change = false)
+    {
       echo "<tr><td class='label'>$label</td>";
       SysTypes::cells(null, $name, $value, $submit_on_change);
       echo "</tr>\n";

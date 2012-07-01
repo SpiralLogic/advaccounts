@@ -18,7 +18,7 @@
   }
   Forms::start(false, $_SERVER['REQUEST_URI']);
   if (!Input::post('stock_id')) {
-    Session::i()->setGlobal('stock_id', $_POST['stock_id']);
+    Session::setGlobal('stock_id', $_POST['stock_id']);
   }
   if (!Input::request('frame')) {
     echo "<div class='center'>" . _("Item:") . "&nbsp;";
@@ -28,7 +28,7 @@
     Display::item_heading($_POST['stock_id']);
     Display::br();
     Display::div_end();
-    Session::i()->setGlobal('stock_id', $_POST['stock_id']);
+    Session::setGlobal('stock_id', $_POST['stock_id']);
   }
   Display::div_start('reorders');
   Table::start('tablestyle grid width30');
@@ -49,9 +49,9 @@
     Cell::label($myrow["location_name"]);
     $_POST[$myrow["loc_code"]] = Item::qty_format($myrow["reorder_level"], $_POST['stock_id'], $dec);
     Cell::qty($qoh, false, $dec);
-     Forms::textCells(null, 'shelf_primary' . $myrow["loc_code"], $myrow["shelf_primary"]);
-     Forms::textCells(null, 'shelf_secondary' . $myrow["loc_code"], $myrow["shelf_secondary"]);
-     Forms::qtyCells(null, $myrow["loc_code"], null, null, null, $dec);
+    Forms::textCells(null, 'shelf_primary' . $myrow["loc_code"], $myrow["shelf_primary"]);
+    Forms::textCells(null, 'shelf_secondary' . $myrow["loc_code"], $myrow["shelf_secondary"]);
+    Forms::qtyCells(null, $myrow["loc_code"], null, null, null, $dec);
     Row::end();
     $j++;
     If ($j == 12) {

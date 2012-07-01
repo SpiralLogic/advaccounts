@@ -81,7 +81,7 @@
         $ar_ap_act = $trans['receivables_account'];
         $person_id = $trans['debtor_id'];
         $curr      = $trans['curr_code'];
-        $date      = Dates::sql2date($trans['tran_date']);
+        $date      = Dates::sqlToDate($trans['tran_date']);
       } else {
         $trans         = Creditor_Trans::get($trans_no, $type);
         $pyt_trans     = Creditor_Trans::get($pyt_no, $pyt_type);
@@ -89,7 +89,7 @@
         $ar_ap_act     = $supplier_accs['payable_account'];
         $person_id     = $trans['supplier_id'];
         $curr          = $trans['SupplierCurrCode'];
-        $date          = Dates::sql2date($trans['tran_date']);
+        $date          = Dates::sqlToDate($trans['tran_date']);
       }
       if (Bank_Currency::is_company($curr)) {
         return;
@@ -105,7 +105,7 @@
           $diff = -$diff;
         }
         $exc_var_act = DB_Company::get_pref('exchange_diff_act');
-        if (Dates::date1_greater_date2($date, $pyt_date)) {
+        if (Dates::isGreaterThan($date, $pyt_date)) {
           $memo = $systypes_array[$pyt_type] . " " . $pyt_no;
           GL_Trans::add($type, $trans_no, $date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
           GL_Trans::add($type, $trans_no, $date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
@@ -138,7 +138,7 @@
         case PT_SUPPLIER :
           return Validation::check(Validation::SUPPLIERS);
         default :
-          Errors::db_error("Invalid type sent to has_items", "");
+          Errors::databaseError("Invalid type sent to has_items", "");
 
           return false;
       }

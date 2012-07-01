@@ -22,8 +22,8 @@
    */
   function get_transactions($category, $location, $fromcust, $from, $to)
   {
-    $from = Dates::date2sql($from);
-    $to   = Dates::date2sql($to);
+    $from = Dates::dateToSql($from);
+    $to   = Dates::dateToSql($to);
     $sql
           = "SELECT stock_master.category_id,
             stock_category.description AS cat_name,
@@ -148,7 +148,7 @@
         $rep->NewLine();
       }
       $curr = Bank_Currency::for_debtor($trans['debtor_id']);
-      $rate = Bank_Currency::exchange_rate_from_home($curr, Dates::sql2date($trans['tran_date']));
+      $rate = Bank_Currency::exchange_rate_from_home($curr, Dates::sqlToDate($trans['tran_date']));
       $trans['amt'] *= $rate;
       $cb = $trans['amt'] - $trans['cost'];
       $rep->NewLine();

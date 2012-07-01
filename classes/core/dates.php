@@ -20,7 +20,7 @@
    * @category  PHP
    * @package   Adv.accounts.core
    * @method   __date()
-   * @method  date2sql($date_)
+   * @method  dateToSql($date_)
    * @method  today()
    */
   class Dates
@@ -37,7 +37,7 @@
     /**
 
      */
-    public function __construct(Config $Config = null, $User = null, Session $Session = null, \DB_Company $Company = null)
+    public function __construct(Config $Config = null, \User $User = null, Session $Session = null, \DB_Company $Company = null)
     {
       $this->Config     = $Config ? : Config::i();
       $this->User       = $User ? : \User::i();
@@ -56,7 +56,7 @@
      * @internal param $date_
      * @return int
      */
-    public function _is_date($date = null, $format = null)
+    public function _isDate($date = null, $format = null)
     {
       if (!$date) {
         return false;
@@ -108,7 +108,7 @@
      *
      * @return mixed|null
      */
-    public function _new_doc_date($date = null)
+    public function _newDocDate($date = null)
     {
       if (!$date) {
         $this->Session->_setGlobal('date', $date);
@@ -128,7 +128,7 @@
      *
      * @return int
      */
-    public function _is_date_in_fiscalyear($date, $convert = false)
+    public function _isDateInFiscalYear($date, $convert = false)
     {
       if (!$this->Config->get('use_fiscalyear')) {
         return 1;
@@ -138,31 +138,31 @@
         return 0;
       }
       if ($convert) {
-        $date2 = $this->_sql2date($date);
+        $date2 = $this->_sqlToDate($date);
       } else {
         $date2 = $date;
       }
-      $begin = $this->_sql2date($myrow['begin']);
-      $end   = $this->_sql2date($myrow['end']);
-      return ($this->_date1_greater_date2($date2, $begin) || $this->_date1_greater_date2($end, $date2));
+      $begin = $this->_sqlToDate($myrow['begin']);
+      $end   = $this->_sqlToDate($myrow['end']);
+      return ($this->_isGreaterThan($date2, $begin) || $this->_isGreaterThan($end, $date2));
     }
     /**
      * @static
      * @return string
      */
-    public function _begin_fiscalyear()
+    public function _beginFiscalYear()
     {
       $myrow = \DB_Company::get_current_fiscalyear();
-      return $this->_sql2date($myrow['begin']);
+      return $this->_sqlToDate($myrow['begin']);
     }
     /**
      * @static
      * @return string
      */
-    public function _end_fiscalyear()
+    public function _endFiscalYear()
     {
       $myrow = \DB_Company::get_current_fiscalyear();
-      return $this->_sql2date($myrow['end']);
+      return $this->_sqlToDate($myrow['end']);
     }
     /**
      * @static
@@ -171,10 +171,10 @@
      *
      * @return string
      */
-    public function _begin_month($date)
+    public function _beginMonth($date)
     {
       /** @noinspection PhpUnusedLocalVariableInspection */
-      list($day, $month, $year) = $this->_explode_date_to_dmy($date);
+      list($day, $month, $year) = $this->_explode($date);
       return $this->date($year, $month, 1);
     }
     /**
@@ -184,10 +184,10 @@
      *
      * @return string
      */
-    public function _end_month($date)
+    public function _endMonth($date)
     {
       /** @noinspection PhpUnusedLocalVariableInspection */
-      list($day, $month, $year) = $this->_explode_date_to_dmy($date);
+      list($day, $month, $year) = $this->_explode($date);
       $days_in_month = array(
         31, ((!($year % 4) && (($year % 100) || !($year % 400))) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
       );
@@ -201,9 +201,9 @@
      *
      * @return string
      */
-    public function _add_days($date, $days)
+    public function _addDays($date, $days)
     {
-      list($day, $month, $year) = $this->_explode_date_to_dmy($date);
+      list($day, $month, $year) = $this->_explode($date);
       $timet = mktime(0, 0, 0, $month, $day + $days, $year);
       return date($this->User->_date_display(), $timet);
     }
@@ -215,9 +215,9 @@
      *
      * @return string
      */
-    public function _add_months($date, $months)
+    public function _addMonths($date, $months)
     {
-      list($day, $month, $year) = $this->_explode_date_to_dmy($date);
+      list($day, $month, $year) = $this->_explode($date);
       $timet = mktime(0, 0, 0, $month + $months, $day, $year);
       return date($this->User->_date_display(), $timet);
     }
@@ -229,9 +229,9 @@
      *
      * @return string
      */
-    public function _add_years($date, $years)
+    public function _addYears($date, $years)
     {
-      list($day, $month, $year) = $this->_explode_date_to_dmy($date);
+      list($day, $month, $year) = $this->_explode($date);
       $timet = mktime(0, 0, 0, $month, $day, $year + $years);
       return date($this->User->_date_display(), $timet);
     }
@@ -242,7 +242,7 @@
      *
      * @return string
      */
-    public function _sql2date($date_)
+    public function _sqlToDate($date_)
     {
       //for MySQL dates are in the format YYYY-mm-dd
       if ($date_ == null || strlen($date_) == 0) {
@@ -258,7 +258,7 @@
         $day = substr($day, 0, 2);
       }
       return $this->date($year, $month, $day);
-    } // end static function sql2date
+    } // end static function sqlToDate
     /**
      * @static
      *
@@ -267,7 +267,7 @@
      * @internal param bool $pad
      * @return int|string
      */
-    public function _date2sql($date_)
+    public function _dateToSql($date_)
     {
       if (!$date_) {
         return '';
@@ -300,14 +300,14 @@
      *
      * @return int
      */
-    public function _date1_greater_date2($date1, $date2)
+    public function _isGreaterThan($date1, $date2)
     {
       /* returns 1 true if date1 is greater than date_ 2 */
       if (!$date1 || !$date2) {
         return false;
       }
-      $date1 = $this->_date2sql($date1);
-      $date2 = $this->_date2sql($date2);
+      $date1 = $this->_dateToSql($date1);
+      $date2 = $this->_dateToSql($date2);
       list($year1, $month1, $day1) = explode("-", $date1);
       list($year2, $month2, $day2) = explode("-", $date2);
       if ($year1 > $year2) {
@@ -332,13 +332,13 @@
      *
      * @return int
      */
-    public function _date_diff2($date1, $date2, $period)
+    public function _differenceBetween($date1, $date2, $period)
     {
       /* expects dates in the format specified in $DefaultDateFormat - period can be one of 'd','w','y','m'
                                                             months are assumed to be 30 days and years 365.25 days This only works
                                                             provided that both dates are after 1970. Also only works for dates up to the year 2035 ish */
-      $date1 = $this->_date2sql($date1);
-      $date2 = $this->_date2sql($date2);
+      $date1 = $this->_dateToSql($date1);
+      $date2 = $this->_dateToSql($date2);
       list($year1, $month1, $day1) = explode("-", $date1);
       list($year2, $month2, $day2) = explode("-", $date2);
       $stamp1     = mktime(0, 0, 0, (int) $month1, (int) $day1, (int) $year1);
@@ -369,9 +369,9 @@
      * @internal param $date_
      * @return array
      */
-    public function _explode_date_to_dmy($date)
+    protected function _explode($date)
     {
-      $date = $this->_date2sql($date);
+      $date = $this->_dateToSql($date);
       list($year, $month, $day) = explode("-", $date);
       return [$day, $month, $year];
     }
@@ -386,7 +386,7 @@
      *
      * @return array
      */
-    public function _gregorian_to_jalali($g_y, $g_m, $g_d)
+    public function _gregorianToJalai($g_y, $g_m, $g_d)
     {
       $g_days_in_month = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
       $j_days_in_month = array(31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29);
@@ -427,7 +427,7 @@
      *
      * @return array
      */
-    public function _jalali_to_gregorian($j_y, $j_m, $j_d)
+    public function _jalaiToGregorian($j_y, $j_m, $j_d)
     {
       $g_days_in_month = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
       $j_days_in_month = array(31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29);
@@ -493,7 +493,7 @@
      *
      * @return array
      */
-    public function _gregorian_to_islamic($g_y, $g_m, $g_d)
+    public function _gregorianToIslamic($g_y, $g_m, $g_d)
     {
       $y = $g_y;
       $m = $g_m;
@@ -522,7 +522,7 @@
      *
      * @return array
      */
-    public function _islamic_to_gregorian($i_y, $i_m, $i_d)
+    public function _islamicToGregorian($i_y, $i_m, $i_d)
     {
       $y  = $i_y;
       $m  = $i_m;

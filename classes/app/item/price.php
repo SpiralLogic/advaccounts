@@ -39,10 +39,12 @@
     {
       switch ($type) {
         case self::PURCHASE:
-          $result = DB::select()->from('purch_data')->where('stockid=', $stockid)->orderby($sort)->fetch()->asClassLate('Item_Price', array(self::PURCHASE))->all();
+          $result = DB::select()->from('purch_data')->where('stockid=', $stockid)->orderby($sort)->fetch()
+            ->asClassLate('Item_Price', array(self::PURCHASE))->all();
           break;
         case self::SALE:
-          $result = DB::select()->from('prices')->where('stockid=', $stockid)->orderby($sort)->fetch()->asClassLate('Item_Price', array(self::SALE))->all();
+          $result = DB::select()->from('prices')->where('stockid=', $stockid)->orderby($sort)->fetch()
+            ->asClassLate('Item_Price', array(self::SALE))->all();
           break;
         default:
           $result = [];
@@ -63,7 +65,8 @@
      */
     public static function getPriceBySupplier($stockid, $supplierid)
     {
-      $result = DB::select()->from('purch_data')->where('stockid=', $stockid)->and_where('supplier_id=', $supplierid)->fetch()->asClassLate('Item_Price', array(self::PURCHASE))->one();
+      $result = DB::select()->from('purch_data')->where('stockid=', $stockid)->andWhere('supplier_id=', $supplierid)->fetch()
+        ->asClassLate('Item_Price', array(self::PURCHASE))->one();
       return $result;
     }
     /**
@@ -75,7 +78,7 @@
     }
     public function save()
     {
-      DB::update('prices')->where('stockid=', $this->stockid)->and_where('id=', $this->id)->exec($this);
+      DB::update('prices')->where('stockid=', $this->stockid)->andWhere('id=', $this->id)->exec($this);
     }
     /**
      * @static
@@ -85,6 +88,7 @@
      * @param      $curr_abrev
      * @param      $price
      * @param null $item_code_id
+     *
      * @return bool
      */
     public static function add($stock_id, $sales_type_id, $curr_abrev, $price, $item_code_id = null)
@@ -92,7 +96,8 @@
       if ($item_code_id == null) {
         $item_code_id = Item_Code::get_id($stock_id);
       }
-      $sql = "INSERT INTO prices (item_code_id, stock_id, sales_type_id, curr_abrev, price)
+      $sql
+        = "INSERT INTO prices (item_code_id, stock_id, sales_type_id, curr_abrev, price)
             VALUES (" . DB::escape($item_code_id) . ", " . DB::escape($stock_id) . ", " . DB::escape($sales_type_id) . ", " . DB::escape($curr_abrev) . ", " . DB::escape($price) . ")";
       try {
         DB::query($sql, "an item price could not be added");
@@ -135,9 +140,10 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($stock_id)
+    public static function getAll($stock_id)
     {
-      $sql = "SELECT sales_types.sales_type, prices.*
+      $sql
+        = "SELECT sales_types.sales_type, prices.*
             FROM prices, sales_types
             WHERE prices.sales_type_id = sales_types.id
             AND stock_id=" . DB::escape($stock_id) . " ORDER BY curr_abrev, sales_type_id";
@@ -168,7 +174,7 @@
       $sql    = "SELECT IF(s.mb_flag='" . STOCK_SERVICE . "', 0, material_cost + labour_cost + overhead_cost) AS std_cost
                 FROM stock_master s WHERE stock_id=" . DB::escape($stock_id);
       $result = DB::query($sql, "The standard cost cannot be retrieved");
-      $myrow  = DB::fetch_row($result);
+      $myrow  = DB::fetchRow($result);
       return $myrow[0];
     }
     /**
@@ -201,7 +207,7 @@
     public static function get_calculated_price($stock_id, $currency, $sales_type_id, $factor = null, $date = null)
     {
       if ($date == null) {
-        $date = Dates::new_doc_date();
+        $date = Dates::newDocDate();
       }
       if ($factor === null) {
         $myrow  = Sales_Type::get($sales_type_id);
@@ -211,12 +217,13 @@
       $base_id   = DB_Company::get_base_sales_type();
       $home_curr = Bank_Currency::for_company();
       //	AND (sales_type_id = $sales_type_id	OR sales_type_id = $base_id)
-      $sql      = "SELECT price, curr_abrev, sales_type_id
+      $sql
+                = "SELECT price, curr_abrev, sales_type_id
             FROM prices
             WHERE stock_id = " . DB::escape($stock_id) . "
                 AND (curr_abrev = " . DB::escape($currency) . " OR curr_abrev = " . DB::escape($home_curr) . ")";
       $result   = DB::query($sql, "There was a problem retrieving the pricing information for the part $stock_id for customer");
-      $num_rows = DB::num_rows($result);
+      $num_rows = DB::numRows($result);
       $rate     = Num::round(Bank_Currency::exchange_rate_from_home($currency, $date), User::exrate_dec());
       $round_to = DB_Company::get_pref('round_to');
       $prices   = array();
@@ -254,7 +261,7 @@
       if ($price === false) {
         return 0;
       } elseif ($round_to != 1) {
-        return Num::round_to_nearest($price, $round_to);
+        return Num::toNearestCents($price, $round_to);
       } else {
         return Num::round($price, User::price_dec());
       }
@@ -305,11 +312,12 @@
      */
     public static function get_purchase($supplier_id, $stock_id)
     {
-      $sql    = "SELECT price, conversion_factor FROM purch_data
+      $sql
+              = "SELECT price, conversion_factor FROM purch_data
                 WHERE supplier_id = " . DB::escape($supplier_id) . "
                 AND stock_id = " . DB::escape($stock_id);
       $result = DB::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
-      if (DB::num_rows($result) == 1) {
+      if (DB::numRows($result) == 1) {
         $myrow = DB::fetch($result);
         return $myrow["price"] / $myrow['conversion_factor'];
       } else {
@@ -330,7 +338,7 @@
     public static function update_cost($stock_id, $material_cost, $labour_cost, $overhead_cost, $last_cost)
     {
       if (Input::post('mb_flag') == STOCK_SERVICE) {
-        Errors::db_error("Cannot do cost update for Service item : $stock_id", "");
+        Errors::databaseError("Cannot do cost update for Service item : $stock_id", "");
       }
       $update_no = -1;
       DB::begin();
@@ -344,8 +352,8 @@
       $date_ = Dates::today();
       if ($qoh > 0) {
         $update_no = SysTypes::get_next_trans_no(ST_COSTUPDATE);
-        if (!Dates::is_date_in_fiscalyear($date_)) {
-          $date_ = Dates::end_fiscalyear();
+        if (!Dates::isDateInFiscalYear($date_)) {
+          $date_ = Dates::endFiscalYear();
         }
         $stock_gl_code   = Item::get_gl_code($stock_id);
         $new_cost        = $material_cost + $labour_cost + $overhead_cost;
@@ -366,7 +374,7 @@
      *
      * @return string
      */
-    public static function to_words($amount, $document = 0)
+    public static function toWords($amount, $document = 0)
     {
       // Only usefor Remittance and Receipts as default
       if (!($document == ST_SUPPAYMENT || $document == ST_CUSTPAYMENT || $document == ST_CUSTREFUND || $document == ST_CHEQUE)) {
@@ -385,6 +393,6 @@
       } else {
         $frac = "";
       }
-      return Num::to_words(intval($amount)) . $frac;
+      return Num::toWords(intval($amount)) . $frac;
     }
   }

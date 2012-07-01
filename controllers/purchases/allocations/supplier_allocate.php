@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   JS::footerFile('/js/allocate.js');
   Page::start(_($help_context = "Allocate Supplier Payment or Credit Note"), SA_SUPPLIERALLOC);
 
@@ -58,7 +58,7 @@
     Display::heading(_("Allocation of") . " " . $systypes_array[$_SESSION['alloc']->type] . " # " . $_SESSION['alloc']->trans_no);
     Display::heading($_SESSION['alloc']->person_name);
     Display::heading(_("Date:") . " <span class='bold'>" . $_SESSION['alloc']->date_ . "</span>");
-    Display::heading(_("Total:") . " <span class='bold'>" . Num::price_format(-$_SESSION['alloc']->amount) . "</span>");
+    Display::heading(_("Total:") . " <span class='bold'>" . Num::priceFormat(-$_SESSION['alloc']->amount) . "</span>");
     echo "<br>";
     Display::div_start('alloc_tbl');
     if (count($_SESSION['alloc']->allocs) > 0) {

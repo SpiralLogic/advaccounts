@@ -50,14 +50,14 @@
   Row::start();
   Cell::label($demo_text, "colspan=2 class='center'");
   Row::end();
-   Forms::textRow(_("User name"), "user_name", $value, 'med', 30);
+  Forms::textRow(_("User name"), "user_name", $value, 'med', 30);
   $password = Config::get('demo_mode') ? "password" : "";
-   Forms::passwordRow(_("Password:"), 'password', $password);
+  Forms::passwordRow(_("Password:"), 'password', $password);
   if ($login_timeout) {
     Forms::hidden('login_company', User::i()->company);
   } else {
     $coy       = User::i()->company;
-    $companies = Config::get_all('db');
+    $companies = Config::getAll('db');
     echo "<tr><td class='label'><label for='login_company'>" . _("Company") . "</label></td><td><select id='login_company'
     name='login_company' class='med'>\n";
 

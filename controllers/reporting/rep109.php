@@ -172,9 +172,9 @@
       $rep->TextCol(4, 7, $doc_TOTAL_ORDER2, -2);
       $rep->TextCol(7, 8, $display_total, -2);
       if ($print_as_quote < 3) {
-        $words = Item_Price::to_words($myrow["freight_cost"] + $SubTotal, ST_SALESORDER);
+        $words = Item_Price::toWords($myrow["freight_cost"] + $SubTotal, ST_SALESORDER);
       } else {
-        $words = Item_Price::to_words($myrow["freight_cost"] + $SubTotal, ST_SALESQUOTE);
+        $words = Item_Price::toWords($myrow["freight_cost"] + $SubTotal, ST_SALESQUOTE);
       }
       if ($words != "") {
         $rep->NewLine(1);

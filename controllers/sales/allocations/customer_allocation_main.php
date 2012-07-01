@@ -8,18 +8,20 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   Page::start(_($help_context = "Customer Allocations"), SA_SALESALLOC);
   Forms::start();
   /* show all outstanding receipts and credits to be allocated */
   if (!isset($_POST['customer_id'])) {
-    $_POST['customer_id'] = Session::i()->getGlobal('debtor');  }
+    $_POST['customer_id'] = Session::getGlobal('debtor');
+  }
   echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
   echo Debtor::select('customer_id', $_POST['customer_id'], true, true);
   echo "<br>";
   Forms::check(_("Show Settled Items:"), 'ShowSettled', null, true);
   echo "</div><br><br>";
-  Session::i()->setGlobal('debtor',$_POST['customer_id']);  if (isset($_POST['customer_id']) && ($_POST['customer_id'] == ALL_TEXT)) {
+  Session::setGlobal('debtor', $_POST['customer_id']);
+  if (isset($_POST['customer_id']) && ($_POST['customer_id'] == ALL_TEXT)) {
     unset($_POST['customer_id']);
   }
   /*if (isset($_POST['customer_id'])) {
@@ -35,16 +37,21 @@
   if (isset($_POST['customer_id'])) {
     $customer_id = $_POST['customer_id'];
   }
-  $sql = Sales_Allocation::get_allocatable_sql($customer_id, $settled);
+  $sql  = Sales_Allocation::get_allocatable_sql($customer_id, $settled);
   $cols = array(
     _("Transaction Type") => array('fun' => 'Sales_Allocation::systype_name'),
-    _("#") => array('fun' => 'Sales_Allocation::trans_view'), _("Reference"),
-    _("Date") => array(
+    _("#")                => array('fun' => 'Sales_Allocation::trans_view'),
+    _("Reference"),
+    _("Date")             => array(
       'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'
-    ), _("Customer") => array('ord' => ''),
-    _("Currency") => array('align' => 'center'), _("Total") => 'amount', _("Left to Allocate") => array(
+    ),
+    _("Customer")         => array('ord' => ''),
+    _("Currency")         => array('align' => 'center'),
+    _("Total")            => 'amount',
+    _("Left to Allocate") => array(
       'align' => 'right', 'insert' => true, 'fun' => 'Sales_Allocation::amount_left'
-    ), array(
+    ),
+    array(
       'insert' => true, 'fun' => 'Sales_Allocation::alloc_link'
     )
   );

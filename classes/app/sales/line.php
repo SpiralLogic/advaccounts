@@ -1,14 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   adv.accounts.app
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
-  class Sales_Line extends \Sales_Order {
-
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
+  class Sales_Line extends \Sales_Order
+  {
     /**
      * @var int
      */
@@ -84,39 +84,39 @@
      * @param int       $id
      * @param int       $src_no
      */
-    function __construct($stock_id, $qty, $prc, $disc_percent, $qty_done, $standard_cost, $description, $id = 0, $src_no = 0) {
+    function __construct($stock_id, $qty, $prc, $disc_percent, $qty_done, $standard_cost, $description, $id = 0, $src_no = 0)
+    {
       /* Constructor function to add a new LineDetail object with passed params */
-      $this->id = $id;
+      $this->id     = $id;
       $this->src_no = $src_no;
-      $item_row = Item::get($stock_id);
+      $item_row     = Item::get($stock_id);
       if ($item_row == null) {
-        Errors::db_error("invalid item added to order : $stock_id", "");
+        Errors::databaseError("invalid item added to order : $stock_id", "");
       }
       $this->mb_flag = $item_row["mb_flag"];
-      $this->units = $item_row["units"];
+      $this->units   = $item_row["units"];
       if ($description == null) {
         $this->description = $item_row["long_description"];
-      }
-      else {
+      } else {
         $this->description = $description;
       }
       //$this->standard_cost = $item_row["material_cost"] + $item_row["labour_cost"] + $item_row["overhead_cost"];
-      $this->tax_type = $item_row["tax_type_id"];
-      $this->tax_type_name = $item_row["tax_type_name"];
-      $this->stock_id = $stock_id;
-      $this->quantity = $qty;
-      $this->qty_dispatched = $qty;
-      $this->price = $prc;
+      $this->tax_type         = $item_row["tax_type_id"];
+      $this->tax_type_name    = $item_row["tax_type_name"];
+      $this->stock_id         = $stock_id;
+      $this->quantity         = $qty;
+      $this->qty_dispatched   = $qty;
+      $this->price            = $prc;
       $this->discount_percent = $disc_percent;
-      $this->qty_done = $qty_done;
-      $this->standard_cost = $standard_cost;
+      $this->qty_done         = $qty_done;
+      $this->standard_cost    = $standard_cost;
     }
-
     // get unit price as stated on document
     /**
      * @return bool
      */
-    function line_price() {
+    function line_price()
+    {
       return $this->price;
     }
   }

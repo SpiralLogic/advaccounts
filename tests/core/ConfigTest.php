@@ -71,24 +71,24 @@
     }
     /**
      * @covers ADV\Core\Config::_get_all
-     * @todo   Implement test_get_all().
+     * @todo   Implement test_getAll().
      */
-    public function test_get_all()
+    public function test_getAll()
     {
       $vars = $this->readAttribute($this->object, '_vars');
-      $this->assertEquals($vars['config'], $this->object->_get_all());
-      $actual = $this->object->_get_all('apps');
+      $this->assertEquals($vars['config'], $this->object->_getAll());
+      $actual = $this->object->_getAll('apps');
       $vars   = $this->readAttribute($this->object, '_vars');
       $this->assertEquals($vars['apps'], $actual);
       return $vars;
     }
     /**
      * @covers  ADV\Core\Config::_removeAll
-     * @depends test_get_all
+     * @depends test_getAll
      */
     public function test_removeAll($vars)
     {
-      $actual = $this->object->_get_all('apps');
+      $actual = $this->object->_getAll('apps');
       $this->assertEquals($vars['apps'], $actual);
       $this->object->_removeAll();
       $actual = $this->readAttribute($this->object, '_vars');
@@ -99,11 +99,11 @@
      */
     public function test_reset()
     {
-      $actual = $this->object->_get_all(); // Remove the following lines when you implement this test.
+      $actual = $this->object->_getAll(); // Remove the following lines when you implement this test.
       $this->assertAttributeNotEmpty('_vars', $this->object);
       $vars = $this->readAttribute($this->object, '_vars');
       $this->assertArrayHasKey('config', $vars);
-      $this->assertSame($vars['config'],$actual);
+      $this->assertSame($vars['config'], $actual);
       $this->object->_set('config.test', 'testing');
       $vars = $this->readAttribute($this->object, '_vars');
       $this->assertSame($vars['config']['test'], 'testing');
@@ -118,8 +118,8 @@
      */
     public function test_shutdown()
     {
-$actual = $this->object->_shutdown();
-      $expected = $this->readAttribute($this->object,'_vars');
-      $this->assertSame($expected,$actual);
+      $actual   = $this->object->_shutdown();
+      $expected = $this->readAttribute($this->object, '_vars');
+      $this->assertSame($expected, $actual);
     }
   }

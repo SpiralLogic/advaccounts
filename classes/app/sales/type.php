@@ -18,8 +18,7 @@
      */
     public static function add($name, $tax_included, $factor)
     {
-      $sql = "INSERT INTO sales_types (sales_type,tax_included,factor) VALUES (" . DB::escape($name) . ","
-        . DB::escape($tax_included) . "," . DB::escape($factor) . ")";
+      $sql = "INSERT INTO sales_types (sales_type,tax_included,factor) VALUES (" . DB::escape($name) . "," . DB::escape($tax_included) . "," . DB::escape($factor) . ")";
       DB::query($sql, "could not add sales type");
     }
     /**
@@ -43,7 +42,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($all = false)
+    public static function getAll($all = false)
     {
       $sql = "SELECT * FROM sales_types";
       if (!$all) {
@@ -77,7 +76,7 @@
     {
       $sql    = "SELECT sales_type FROM sales_types WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "could not get sales type");
-      $row    = DB::fetch_row($result);
+      $row    = DB::fetchRow($result);
 
       return $row[0];
     }
@@ -108,9 +107,12 @@
       $sql = "SELECT id, sales_type, inactive FROM sales_types";
 
       return Forms::selectBox($name, $selected_id, $sql, 'id', 'sales_type', array(
-        'spec_option'                => $special_option === true ? _("All Sales Types") :
-          $special_option, 'spec_id' => 0, 'select_submit' => $submit_on_change, //	 'async' => false,
-      ));
+                                                                                  'spec_option'                => $special_option === true ?
+                                                                                    _("All Sales Types") : $special_option,
+                                                                                  'spec_id'                    => 0,
+                                                                                  'select_submit'              => $submit_on_change,
+                                                                                  //	 'async' => false,
+                                                                             ));
     }
     /**
      * @static
@@ -153,13 +155,13 @@
     {
       if (strlen($_POST['sales_type']) == 0) {
         Event::error(_("The sales type description cannot be empty."));
-        JS::set_focus('sales_type');
+        JS::setFocus('sales_type');
 
         return false;
       }
       if (!Validation::post_num('factor', 0)) {
         Event::error(_("Calculation factor must be valid positive number."));
-        JS::set_focus('factor');
+        JS::setFocus('factor');
 
         return false;
       }

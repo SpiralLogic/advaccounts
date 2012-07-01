@@ -90,7 +90,7 @@
         }
       }
       $comments = DB_Comments::get(ST_CUSTDELIVERY, $i);
-      if ($comments && DB::num_rows($comments)) {
+      if ($comments && DB::numRows($comments)) {
         $rep->NewLine();
         while ($comment = DB::fetch($comments)) {
           $rep->TextColLines(0, 6, $comment['memo_'], -2);

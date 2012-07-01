@@ -34,23 +34,23 @@
     $selected_id = -1;
     $_POST['id'] = $_POST['name'] = $_POST['ctype'] = '';
   }
-  $result = GL_Class::get_all(Forms::hasPost('show_inactive'));
+  $result = GL_Class::getAll(Forms::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("class ID"), _("class Name"), _("class Type"), "", "");
-   Forms::inactiveControlCol($th);
+  Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::fetch($result)) {
     Cell::label($myrow["cid"]);
     Cell::label($myrow['class_name']);
     Cell::label($class_types[$myrow["ctype"]]);
-     Forms::inactiveControlCell($myrow["cid"], $myrow["inactive"], 'chart_class', 'cid');
+    Forms::inactiveControlCell($myrow["cid"], $myrow["inactive"], 'chart_class', 'cid');
     Forms::buttonEditCell("Edit" . $myrow["cid"], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow["cid"], _("Delete"));
     Row::end();
   }
-   Forms::inactiveControlRow($th);
+  Forms::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != -1) {
@@ -65,9 +65,9 @@
     Forms::hidden('id');
     Row::label(_("Class ID:"), $_POST['id']);
   } else {
-     Forms::textRowEx(_("Class ID:"), 'id', 3);
+    Forms::textRowEx(_("Class ID:"), 'id', 3);
   }
-   Forms::textRowEx(_("Class Name:"), 'name', 50, 60);
+  Forms::textRowEx(_("Class Name:"), 'name', 50, 60);
   GL_Class::types_row(_("Class Type:"), 'ctype', null);
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
@@ -80,13 +80,13 @@
   {
     if (!is_numeric($_POST['id'])) {
       Event::error(_("The account class ID must be numeric."));
-      JS::set_focus('id');
+      JS::setFocus('id');
 
       return false;
     }
     if (strlen($_POST['name']) == 0) {
       Event::error(_("The account class name cannot be empty."));
-      JS::set_focus('name');
+      JS::setFocus('name');
 
       return false;
     }
@@ -108,7 +108,7 @@
             = "SELECT COUNT(*) FROM chart_types
         WHERE class_id=$selected_id";
     $result = DB::query($sql, "could not query chart master");
-    $myrow  = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account class because GL account types have been created referring to it."));
 

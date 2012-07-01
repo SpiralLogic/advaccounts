@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::open_window(900, 600);
+  JS::openWindow(900, 600);
   $trans_type = $_GET['trans_type'];
   Page::start("", SA_SALESTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {
@@ -23,20 +23,19 @@
   echo "<tr class='tablerowhead top'><th colspan=6>";
   if ($trans_type == ST_CUSTPAYMENT) {
     Display::heading(sprintf(_("Customer Payment #%d"), $trans_id));
-  }
-  else {
+  } else {
     Display::heading(sprintf(_("Customer Refund #%d"), $trans_id));
   }
   echo "</td></tr>";
   Row::start();
   Cell::labels(_("From Customer"), $receipt['DebtorName']);
   Cell::labels(_("Into Bank Account"), $receipt['bank_account_name']);
-  Cell::labels(_("Date of Deposit"), Dates::sql2date($receipt['tran_date']));
+  Cell::labels(_("Date of Deposit"), Dates::sqlToDate($receipt['tran_date']));
   Row::end();
   Row::start();
   Cell::labels(_("Payment Currency"), $receipt['curr_code']);
-  Cell::labels(_("Amount"), Num::price_format($receipt['Total'] - $receipt['ov_discount']));
-  Cell::labels(_("Discount"), Num::price_format($receipt['ov_discount']));
+  Cell::labels(_("Amount"), Num::priceFormat($receipt['Total'] - $receipt['ov_discount']));
+  Cell::labels(_("Discount"), Num::priceFormat($receipt['ov_discount']));
   Row::end();
   Row::start();
   Cell::labels(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']]);

@@ -20,11 +20,11 @@
     {
       $input_error = 1;
       Event::error(_("The location code must be five characters or less long (including converted special chars)."));
-      JS::set_focus('loc_code');
+      JS::setFocus('loc_code');
     } elseif (strlen($_POST['location_name']) == 0) {
       $input_error = 1;
       Event::error(_("The location name must be entered."));
-      JS::set_focus('location_name');
+      JS::setFocus('location_name');
     }
     if ($input_error != 1) {
       if ($selected_id != -1) {
@@ -47,7 +47,7 @@
   {
     $sql    = "SELECT COUNT(*) FROM stock_moves WHERE loc_code=" . DB::escape($selected_id);
     $result = DB::query($sql, "could not query stock moves");
-    $myrow  = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this location because item movements have been created using this location."));
 
@@ -55,7 +55,7 @@
     }
     $sql    = "SELECT COUNT(*) FROM workorders WHERE loc_code=" . DB::escape($selected_id);
     $result = DB::query($sql, "could not query work orders");
-    $myrow  = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this location because it is used by some work orders records."));
 
@@ -63,7 +63,7 @@
     }
     $sql    = "SELECT COUNT(*) FROM branches WHERE default_location='$selected_id'";
     $result = DB::query($sql, "could not query customer branches");
-    $myrow  = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this location because it is used by some branch records as the default location to deliver from."));
 
@@ -71,7 +71,7 @@
     }
     $sql    = "SELECT COUNT(*) FROM bom WHERE loc_code=" . DB::escape($selected_id);
     $result = DB::query($sql, "could not query bom");
-    $myrow  = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this location because it is used by some related records in other tables."));
 
@@ -79,7 +79,7 @@
     }
     $sql    = "SELECT COUNT(*) FROM grn_batch WHERE loc_code=" . DB::escape($selected_id);
     $result = DB::query($sql, "could not query grn batch");
-    $myrow  = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this location because it is used by some related records in other tables."));
 
@@ -87,7 +87,7 @@
     }
     $sql    = "SELECT COUNT(*) FROM purch_orders WHERE into_stock_location=" . DB::escape($selected_id);
     $result = DB::query($sql, "could not query purch orders");
-    $myrow  = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this location because it is used by some related records in other tables."));
 
@@ -95,7 +95,7 @@
     }
     $sql    = "SELECT COUNT(*) FROM sales_orders WHERE from_stk_loc=" . DB::escape($selected_id);
     $result = DB::query($sql, "could not query sales orders");
-    $myrow  = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this location because it is used by some related records in other tables."));
 
@@ -103,7 +103,7 @@
     }
     $sql    = "SELECT COUNT(*) FROM sales_pos WHERE pos_location=" . DB::escape($selected_id);
     $result = DB::query($sql, "could not query sales pos");
-    $myrow  = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this location because it is used by some related records in other tables."));
 
@@ -135,7 +135,7 @@
   Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("Location Code"), _("Location Name"), _("Address"), _("Phone"), _("Secondary Phone"), "", "");
-   Forms::inactiveControlCol($th);
+  Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
@@ -144,13 +144,13 @@
     Cell::label($myrow["delivery_address"]);
     Cell::label($myrow["phone"]);
     Cell::label($myrow["phone2"]);
-     Forms::inactiveControlCell($myrow["loc_code"], $myrow["inactive"], 'locations', 'loc_code');
+    Forms::inactiveControlCell($myrow["loc_code"], $myrow["inactive"], 'locations', 'loc_code');
     Forms::buttonEditCell("Edit" . $myrow["loc_code"], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow["loc_code"], _("Delete"));
     Row::end();
   }
   //END WHILE LIST LOOP
-   Forms::inactiveControlRow($th);
+  Forms::inactiveControlRow($th);
   Table::end();
   echo '<br>';
   Table::start('tablestyle2');
@@ -170,17 +170,17 @@
     }
     Forms::hidden("selected_id", $selected_id);
     Forms::hidden("loc_code");
-    Row::label(_("Location Code:"), $_POST['loc_code'],'',' class="margin5"');
+    Row::label(_("Location Code:"), $_POST['loc_code'], '', ' class="margin5"');
   } else { //end of if $selected_id only do the else when a new record is being entered
-     Forms::textRow(_("Location Code:"), 'loc_code', null, 'small', 5);
+    Forms::textRow(_("Location Code:"), 'loc_code', null, 'small', 5);
   }
-   Forms::textRowEx(_("Location Name:"), 'location_name', 'big', 50);
-   Forms::textRowEx(_("Contact for deliveries:"), 'contact', 'big', 30);
-   Forms::textareaRow(_("Address:"), 'delivery_address', null, 'big', 5);
-   Forms::textRowEx(_("Telephone No:"), 'phone', 'big', 30);
-   Forms::textRowEx(_("Secondary Phone Number:"), 'phone2', 'big', 30);
-   Forms::textRowEx(_("Facsimile No:"), 'fax', 'big', 30);
-   Forms::emailRowEx(_("E-mail:"), 'email','big');
+  Forms::textRowEx(_("Location Name:"), 'location_name', 'big', 50);
+  Forms::textRowEx(_("Contact for deliveries:"), 'contact', 'big', 30);
+  Forms::textareaRow(_("Address:"), 'delivery_address', null, 'big', 5);
+  Forms::textRowEx(_("Telephone No:"), 'phone', 'big', 30);
+  Forms::textRowEx(_("Secondary Phone Number:"), 'phone2', 'big', 30);
+  Forms::textRowEx(_("Facsimile No:"), 'fax', 'big', 30);
+  Forms::emailRowEx(_("E-mail:"), 'email', 'big');
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();

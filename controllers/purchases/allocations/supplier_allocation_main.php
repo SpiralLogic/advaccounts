@@ -7,19 +7,19 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   Page::start(_($help_context = "Supplier Allocations"), SA_SUPPLIERALLOC);
   Forms::start();
   /* show all outstanding receipts and credits to be allocated */
   if (!isset($_POST['supplier_id'])) {
-    $_POST['supplier_id'] = Session::i()->getGlobal('creditor');
+    $_POST['supplier_id'] = Session::getGlobal('creditor');
   }
   echo "<div class='center'>" . _("Select a Supplier: ") . "&nbsp;&nbsp;";
   echo Creditor::select('supplier_id', $_POST['supplier_id'], true, true);
   echo "<br>";
   Forms::check(_("Show Settled Items:"), 'ShowSettled', null, true);
   echo "</div><br><br>";
-  Session::i()->setGlobal('creditor', $_POST['supplier_id']);
+  Session::setGlobal('creditor', $_POST['supplier_id']);
   if (isset($_POST['supplier_id']) && ($_POST['supplier_id'] == ALL_TEXT)) {
     unset($_POST['supplier_id']);
   }
@@ -71,7 +71,7 @@
    */
   function amount_left($row)
   {
-    return Num::price_format(-$row["Total"] - $row["alloc"]);
+    return Num::priceFormat(-$row["Total"] - $row["alloc"]);
   }
 
   /**
@@ -81,7 +81,7 @@
    */
   function amount_total($row)
   {
-    return Num::price_format(-$row["Total"]);
+    return Num::priceFormat(-$row["Total"]);
   }
 
   /**

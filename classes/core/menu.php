@@ -25,12 +25,13 @@
      * @param $label
      * @param $link
      */
-    public function menu_item($label, $link)
+    public function __construct($label, $link)
     {
       $this->label = $label;
       $this->link  = $link;
     }
   }
+
   /**
 
    */

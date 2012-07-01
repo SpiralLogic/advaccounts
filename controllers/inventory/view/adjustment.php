@@ -23,7 +23,7 @@
       Row::start();
       Cell::labels(_("At Location"), $adjustment['location_name'], "class='tablerowhead'");
       Cell::labels(_("Reference"), $adjustment['reference'], "class='tablerowhead'", "colspan=6");
-      Cell::labels(_("Date"), Dates::sql2date($adjustment['tran_date']), "class='tablerowhead'");
+      Cell::labels(_("Date"), Dates::sqlToDate($adjustment['tran_date']), "class='tablerowhead'");
       Cell::labels(_("Adjustment Type"), $adjustment_type['name'], "class='tablerowhead'");
       Row::end();
       DB_Comments::display_row(ST_INVADJUST, $trans_no);

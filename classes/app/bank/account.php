@@ -133,7 +133,7 @@
     {
       $sql    = "SELECT curr_code FROM debtors WHERE debtor_id=" . DB::escape($cust_id);
       $result = DB::query($sql, "could not retreive default customer currency code");
-      $row    = DB::fetch_row($result);
+      $row    = DB::fetchRow($result);
       $ba     = static::get_default($row[0]);
 
       return $ba['id'];
@@ -149,7 +149,7 @@
     {
       $sql    = "SELECT id FROM bank_accounts WHERE account_code='$account_code'";
       $result = DB::query($sql, "checking account is bank account");
-      if (DB::num_rows($result) > 0) {
+      if (DB::numRows($result) > 0) {
         $acct = DB::fetch($result);
 
         return $acct['id'];
@@ -173,10 +173,10 @@
                                                 FROM bank_accounts";
 
       return Forms::selectBox($name, $selected_id, $sql, 'id', 'bank_account_name', array(
-                                                                                   'format'        => 'Forms::addCurrFormat',
-                                                                                   'select_submit' => $submit_on_change,
-                                                                                   'async'         => false
-                                                                              ));
+                                                                                         'format'        => 'Forms::addCurrFormat',
+                                                                                         'select_submit' => $submit_on_change,
+                                                                                         'async'         => false
+                                                                                    ));
     }
     /**
      * @static

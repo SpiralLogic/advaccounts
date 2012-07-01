@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   Page::start(_($help_context = "Supplier Credit Note"), SA_SUPPLIERCREDIT);
   Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
   if (isset($_GET[ADDED_ID])) {
@@ -33,35 +33,35 @@
   if (isset($_POST['ClearFields'])) {
     unset($_POST['gl_code'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_'], $_POST['AddGLCodeToTrans']);
     Ajax::activate('gl_items');
-    JS::set_focus('gl_code');
+    JS::setFocus('gl_code');
   }
   if (isset($_POST['AddGLCodeToTrans'])) {
     Ajax::activate('gl_items');
     $input_error = false;
     $sql         = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DB::escape($_POST['gl_code']);
     $result      = DB::query($sql, "get account information");
-    if (DB::num_rows($result) == 0) {
+    if (DB::numRows($result) == 0) {
       Event::error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
-      JS::set_focus('gl_code');
+      JS::setFocus('gl_code');
       $input_error = true;
     } else {
-      $myrow       = DB::fetch_row($result);
+      $myrow       = DB::fetchRow($result);
       $gl_act_name = $myrow[1];
       if (!Validation::post_num('amount')) {
         Event::error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
-        JS::set_focus('amount');
+        JS::setFocus('amount');
         $input_error = true;
       }
     }
     if (!Tax_Types::is_tax_gl_unique(Input::post('gl_code'))) {
       Event::error(_("Cannot post to GL account used by more than one tax type."));
-      JS::set_focus('gl_code');
+      JS::setFocus('gl_code');
       $input_error = true;
     }
     if ($input_error == false) {
       Creditor_Trans::i()
         ->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, $_POST['dimension_id'], $_POST['dimension2_id'], Validation::input_num('amount'), $_POST['memo_']);
-      JS::set_focus('gl_code');
+      JS::setFocus('gl_code');
     }
   }
   if (isset($_POST['PostCreditNote'])) {
@@ -101,7 +101,7 @@
   if ($id4 != -1) {
     Creditor_Trans::i()->remove_gl_codes_from_trans($id4);
     unset($_POST['gl_code'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_'], $_POST['AddGLCodeToTrans']);
-    JS::set_focus('gl_code');
+    JS::setFocus('gl_code');
     Ajax::activate('gl_items');
     Ajax::activate('inv_tot');
   }
@@ -112,7 +112,7 @@
   if (isset($_POST['go'])) {
     Ajax::activate('gl_items');
     GL_QuickEntry::show_menu(Creditor_Trans::i(), $_POST['qid'], Validation::input_num('total_amount'), QE_SUPPINV);
-    $_POST['total_amount'] = Num::price_format(0);
+    $_POST['total_amount'] = Num::priceFormat(0);
     Ajax::activate('total_amount');
     Ajax::activate('inv_tot');
   }
@@ -182,13 +182,13 @@ JS;
     global $total_grn_value, $total_gl_value;
     if (!Creditor_Trans::i()->is_valid_trans_to_post()) {
       Event::error(_("The credit note cannot be processed because the there are no items or values on the invoice. Credit notes are expected to have a charge."));
-      JS::set_focus('');
+      JS::setFocus('');
 
       return false;
     }
     if (!Ref::is_valid(Creditor_Trans::i()->reference)) {
       Event::error(_("You must enter an credit note reference."));
-      JS::set_focus('reference');
+      JS::setFocus('reference');
 
       return false;
     }
@@ -197,24 +197,24 @@ JS;
     }
     if (!Ref::is_valid(Creditor_Trans::i()->supplier_reference)) {
       Event::error(_("You must enter a supplier's credit note reference."));
-      JS::set_focus('supplier_reference');
+      JS::setFocus('supplier_reference');
 
       return false;
     }
-    if (!Dates::is_date(Creditor_Trans::i()->tran_date)) {
+    if (!Dates::isDate(Creditor_Trans::i()->tran_date)) {
       Event::error(_("The credit note as entered cannot be processed because the date entered is not valid."));
-      JS::set_focus('tran_date');
+      JS::setFocus('tran_date');
 
       return false;
-    } elseif (!Dates::is_date_in_fiscalyear(Creditor_Trans::i()->tran_date)) {
+    } elseif (!Dates::isDateInFiscalYear(Creditor_Trans::i()->tran_date)) {
       Event::error(_("The entered date is not in fiscal year."));
-      JS::set_focus('tran_date');
+      JS::setFocus('tran_date');
 
       return false;
     }
-    if (!Dates::is_date(Creditor_Trans::i()->due_date)) {
+    if (!Dates::isDate(Creditor_Trans::i()->due_date)) {
       Event::error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
-      JS::set_focus('due_date');
+      JS::setFocus('due_date');
 
       return false;
     }
@@ -237,13 +237,13 @@ JS;
   {
     if (!Validation::post_num('this_quantityCredited' . $n, 0)) {
       Event::error(_("The quantity to credit must be numeric and greater than zero."));
-      JS::set_focus('this_quantityCredited' . $n);
+      JS::setFocus('this_quantityCredited' . $n);
 
       return false;
     }
     if (!Validation::post_num('ChgPrice' . $n, 0)) {
       Event::error(_("The price is either not numeric or negative."));
-      JS::set_focus('ChgPrice' . $n);
+      JS::setFocus('ChgPrice' . $n);
 
       return false;
     }

@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   Page::start(_($help_context = "Supplier Allocation Inquiry"), SA_SUPPLIERALLOC);
   if (isset($_GET['supplier_id']) || isset($_GET['id'])) {
     $_POST['supplier_id'] = isset($_GET['id']) ? $_GET['id'] : $_GET['supplier_id'];
@@ -28,29 +28,29 @@
   }
   Forms::start(false, '', 'invoiceForm');
   if (!isset($_POST['supplier_id'])) {
-    $_POST['supplier_id'] = Session::i()->getGlobal('creditor');
+    $_POST['supplier_id'] = Session::getGlobal('creditor');
   }
-  if (!isset($_POST['TransAfterDate']) && Session::i()->getGlobal('TransAfterDate')) {
-    $_POST['TransAfterDate'] = Session::i()->getGlobal('TransAfterDate');
+  if (!isset($_POST['TransAfterDate']) && Session::getGlobal('TransAfterDate')) {
+    $_POST['TransAfterDate'] = Session::getGlobal('TransAfterDate');
   } elseif (isset($_POST['TransAfterDate'])) {
-    Session::i()->setGlobal('TransAfterDate', $_POST['TransAfterDate']);
+    Session::setGlobal('TransAfterDate', $_POST['TransAfterDate']);
   }
-  if (!isset($_POST['TransToDate']) && Session::i()->getGlobal('TransToDate')) {
-    $_POST['TransToDate'] = Session::i()->getGlobal('TransToDate');
+  if (!isset($_POST['TransToDate']) && Session::getGlobal('TransToDate')) {
+    $_POST['TransToDate'] = Session::getGlobal('TransToDate');
   } elseif (isset($_POST['TransToDate'])) {
-    Session::i()->setGlobal('TransToDate', $_POST['TransToDate']);
+    Session::setGlobal('TransToDate', $_POST['TransToDate']);
   }
   Table::start('tablestyle_noborder');
   Row::start();
   if (!Input::get('frame')) {
     Creditor::cells(_("Supplier: "), 'supplier_id', null, true);
   }
-   Forms::dateCells(_("From:"), 'TransAfterDate', '', null, -90);
-   Forms::dateCells(_("To:"), 'TransToDate', '', null, 1);
+  Forms::dateCells(_("From:"), 'TransAfterDate', '', null, -90);
+  Forms::dateCells(_("To:"), 'TransToDate', '', null, 1);
   Purch_Allocation::row("filterType", null);
-   Forms::checkCells(_("Show settled:"), 'showSettled', null);
+  Forms::checkCells(_("Show settled:"), 'showSettled', null);
   Forms::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-  Session::i()->setGlobal('creditor', $_POST['supplier_id']);
+  Session::setGlobal('creditor', $_POST['supplier_id']);
   Row::end();
   Table::end();
   /**
@@ -131,7 +131,7 @@
   {
     $value = -$row["TotalAmount"];
 
-    return $value >= 0 ? Num::price_format($value) : '';
+    return $value >= 0 ? Num::priceFormat($value) : '';
   }
 
   /**
@@ -143,11 +143,11 @@
   {
     $value = $row["TotalAmount"];
 
-    return $value > 0 ? Num::price_format($value) : '';
+    return $value > 0 ? Num::priceFormat($value) : '';
   }
 
-  $date_after = Dates::date2sql($_POST['TransAfterDate']);
-  $date_to    = Dates::date2sql($_POST['TransToDate']);
+  $date_after = Dates::dateToSql($_POST['TransAfterDate']);
+  $date_to    = Dates::dateToSql($_POST['TransToDate']);
   // Sherifoz 22.06.03 Also get the description
   $sql
     = "SELECT
@@ -162,7 +162,7 @@
         supplier.curr_code,
          (trans.ov_amount + trans.ov_gst + trans.ov_discount) AS TotalAmount,
         trans.alloc AS Allocated,
-        ((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::date2sql(Dates::today()) . "') AS OverDue
+        ((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::dateToSql(Dates::today()) . "') AS OverDue
      FROM creditor_trans as trans, suppliers as supplier
      WHERE supplier.supplier_id = trans.supplier_id
      AND trans.tran_date >= '$date_after'
@@ -179,7 +179,7 @@
       $sql .= " AND trans.type = " . ST_SUPPCREDIT . " ";
     }
     if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) {
-      $today = Dates::date2sql(Dates::today());
+      $today = Dates::dateToSql(Dates::today());
       $sql .= " AND trans.due_date < '$today' ";
     }
   }

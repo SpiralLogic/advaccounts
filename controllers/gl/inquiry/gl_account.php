@@ -8,8 +8,8 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::set_focus('account');
-  JS::open_window(800, 500);
+  JS::setFocus('account');
+  JS::openWindow(800, 500);
   Page::start(_($help_context = "General Ledger Inquiry"), SA_GLTRANSVIEW);
   // Ajax updates
   //
@@ -38,10 +38,10 @@
     $_POST["amount_max"] = $_GET["amount_max"];
   }
   if (!isset($_POST["amount_min"])) {
-    $_POST["amount_min"] = Num::price_format(0);
+    $_POST["amount_min"] = Num::priceFormat(0);
   }
   if (!isset($_POST["amount_max"])) {
-    $_POST["amount_max"] = Num::price_format(0);
+    $_POST["amount_max"] = Num::priceFormat(0);
   }
 
   gl_inquiry_controls();
@@ -58,8 +58,8 @@
     Table::start('tablestyle_noborder');
     Row::start();
     GL_UI::all_cells(_("Account:"), 'account', null, false, false, "All Accounts");
-     Forms::dateCells(_("from:"), 'TransFromDate', '', null, -30);
-     Forms::dateCells(_("to:"), 'TransToDate');
+    Forms::dateCells(_("from:"), 'TransFromDate', '', null, -30);
+    Forms::dateCells(_("to:"), 'TransToDate');
     Row::end();
     Table::end();
     Table::start();
@@ -70,8 +70,8 @@
     if ($dim > 1) {
       Dimensions::cells(_("Dimension") . " 2:", 'Dimension2', null, true, " ", false, 2);
     }
-     Forms::amountCellsSmall(_("Amount min:"), 'amount_min', null);
-     Forms::amountCellsSmall(_("Amount max:"), 'amount_max', null);
+    Forms::amountCellsSmall(_("Amount min:"), 'amount_min', null);
+    Forms::amountCellsSmall(_("Amount max:"), 'amount_max', null);
     Forms::submitCells('Show', _("Show"), '', '', 'default');
     Row::end();
     Table::end();
@@ -127,11 +127,11 @@
     if ($_POST["account"] != null && GL_Account::is_balancesheet($_POST["account"])) {
       $begin = "";
     } else {
-      $begin = Dates::begin_fiscalyear();
-      if (Dates::date1_greater_date2($begin, $_POST['TransFromDate'])) {
+      $begin = Dates::beginFiscalYear();
+      if (Dates::isGreaterThan($begin, $_POST['TransFromDate'])) {
         $begin = $_POST['TransFromDate'];
       }
-      $begin = Dates::add_days($begin, -1);
+      $begin = Dates::addDays($begin, -1);
     }
     $bfw = 0;
     if ($show_balances) {
@@ -149,7 +149,7 @@
     while ($myrow = DB::fetch($result)) {
 
       $running_total += $myrow["amount"];
-      $trandate = Dates::sql2date($myrow["tran_date"]);
+      $trandate = Dates::sqlToDate($myrow["tran_date"]);
       Cell::label($systypes_array[$myrow["type"]]);
       Cell::label(GL_UI::view($myrow["type"], $myrow["type_no"], $myrow["type_no"], true));
       Cell::label($trandate);
@@ -185,7 +185,7 @@
       Row::end();
     }
     Table::end(2);
-    if (DB::num_rows($result) == 0) {
+    if (DB::numRows($result) == 0) {
       Event::warning(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
     }
   }

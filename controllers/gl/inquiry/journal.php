@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::open_window(800, 500);
+  JS::openWindow(800, 500);
   Page::start(_($help_context = "Journal Inquiry"), SA_GLANALYTIC);
   // Ajax updates
   //
@@ -20,12 +20,12 @@
   Forms::start();
   Table::start('tablestyle_noborder');
   Row::start();
-   Forms::refCells(_("Reference:"), 'Ref', '', null, _('Enter reference fragment or leave empty'));
+  Forms::refCells(_("Reference:"), 'Ref', '', null, _('Enter reference fragment or leave empty'));
   GL_Journal::cells(_("Type:"), "filterType");
-   Forms::dateCells(_("From:"), 'FromDate', '', null, 0, -1, 0);
-   Forms::dateCells(_("To:"), 'ToDate');
-   Forms::checkCells(_("Show closed:"), 'AlsoClosed', null);
-   Forms::refCells(_("Memo:"), 'Memo', '', null, _('Enter memo fragment or leave empty'));
+  Forms::dateCells(_("From:"), 'FromDate', '', null, 0, -1, 0);
+  Forms::dateCells(_("To:"), 'ToDate');
+  Forms::checkCells(_("Show closed:"), 'AlsoClosed', null);
+  Forms::refCells(_("Memo:"), 'Memo', '', null, _('Enter memo fragment or leave empty'));
   Forms::submitCells('Search', _("Search"), '', '', 'default');
   Row::end();
   Table::end();
@@ -56,8 +56,8 @@
       a.user=u.id
      LEFT JOIN ".''."bank_trans as bank_trans ON
       (gl.type=bank_trans.type AND gl.type_no=bank_trans.trans_no)
-    WHERE gl.tran_date >= '" . Dates::date2sql($_POST['FromDate']) . "'
-    AND gl.tran_date <= '" . Dates::date2sql($_POST['ToDate']) . "'
+    WHERE gl.tran_date >= '" . Dates::dateToSql($_POST['FromDate']) . "'
+    AND gl.tran_date <= '" . Dates::dateToSql($_POST['ToDate']) . "'
     AND gl.amount!=0";
   if (isset($_POST['Ref']) && $_POST['Ref'] != "") {
     $sql .= " AND reference LIKE '%". $_POST['Ref'] . "%'";
@@ -88,8 +88,8 @@
          (gl.type=refs.type AND gl.type_no=refs.id)
       LEFT JOIN users as u ON
          a.user=u.id
-     WHERE gl.tran_date >= '" . Dates::date2sql($_POST['FromDate']) . "'
-     AND gl.tran_date <= '" . Dates::date2sql($_POST['ToDate']) . "'
+     WHERE gl.tran_date >= '" . Dates::dateToSql($_POST['FromDate']) . "'
+     AND gl.tran_date <= '" . Dates::dateToSql($_POST['ToDate']) . "'
      AND gl.amount!=0";
   if (isset($_POST['Ref']) && $_POST['Ref'] != "") {
     $sql .= " AND reference LIKE '%" . $_POST['Ref'] . "%'";
@@ -105,19 +105,19 @@
   }
   $sql .= " GROUP BY gl.type, gl.type_no";
   $cols = array(
-    _("#")             => array(
+    _("#")                => array(
       'fun' => 'journal_pos', 'align' => 'center'
     ),
-    _("Date")          => array(
+    _("Date")             => array(
       'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'
     ),
-    _("Type")          => array('fun' => 'systype_name'),
-    _("Trans #")       => array('fun' => 'view_link'),
+    _("Type")             => array('fun' => 'systype_name'),
+    _("Trans #")          => array('fun' => 'view_link'),
     _("Reference"),
-    _("Amount")        => array('type' => 'amount'),
+    _("Amount")           => array('type' => 'amount'),
     _("Memo"),
     _("User"),
-    _("View")          => array(
+    _("View")             => array(
       'insert' => true, 'fun' => 'gl_link'
     ),
     array(

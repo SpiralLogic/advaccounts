@@ -11,7 +11,7 @@
   //	Entry/Modify Sales Invoice against single delivery
   //	Entry/Modify Batch Sales Invoice against batch of deliveries
   //
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   $page_title = 'Sales Invoice Complete';
   if (isset($_GET[Orders::MODIFY_INVOICE])) {
     $page_title   = sprintf(_("Modifying Sales Invoice # %d."), $_GET[Orders::MODIFY_INVOICE]);
@@ -123,7 +123,7 @@
     $newinvoice = $order->trans_no == 0;
     Sales_Invoice::copyFromPost($order);
     if ($newinvoice) {
-      Dates::new_doc_date($order->document_date);
+      Dates::newDocDate($order->document_date);
     }
     $invoice_no = $order->write();
     $order->finish();
@@ -165,7 +165,7 @@
   Row::end();
   Row::start();
   if ($order->trans_no == 0) {
-     Forms::refCells(_("Reference"), 'ref', '', null, "class='tablerowhead'");
+    Forms::refCells(_("Reference"), 'ref', '', null, "class='tablerowhead'");
   } else {
     Cell::labels(_("Reference"), $order->reference, "class='tablerowhead'");
   }
@@ -182,22 +182,22 @@
   } else {
     Cell::label($order->ship_via);
   }
-  if (!isset($_POST['InvoiceDate']) || !Dates::is_date($_POST['InvoiceDate'])) {
-    $_POST['InvoiceDate'] = Dates::new_doc_date();
-    if (!Dates::is_date_in_fiscalyear($_POST['InvoiceDate'])) {
-      $_POST['InvoiceDate'] = Dates::end_fiscalyear();
+  if (!isset($_POST['InvoiceDate']) || !Dates::isDate($_POST['InvoiceDate'])) {
+    $_POST['InvoiceDate'] = Dates::newDocDate();
+    if (!Dates::isDateInFiscalYear($_POST['InvoiceDate'])) {
+      $_POST['InvoiceDate'] = Dates::endFiscalYear();
     }
   }
   if (!$order->view_only) {
-     Forms::dateCells(_("Date"), 'InvoiceDate', '', $order->trans_no == 0, 0, 0, 0, "class='tablerowhead'", true);
+    Forms::dateCells(_("Date"), 'InvoiceDate', '', $order->trans_no == 0, 0, 0, 0, "class='tablerowhead'", true);
   } else {
     Cell::labels(_('Invoice Date:'), $_POST['InvoiceDate']);
   }
-  if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
+  if (!isset($_POST['due_date']) || !Dates::isDate($_POST['due_date'])) {
     $_POST['due_date'] = Sales_Order::get_invoice_duedate($order->customer_id, $_POST['InvoiceDate']);
   }
   if (!$order->view_only) {
-     Forms::dateCells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tablerowhead'");
+    Forms::dateCells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tablerowhead'");
   } else {
     Cell::labels(_('Due Date'), $_POST['due_date']);
   }
@@ -243,7 +243,7 @@
     }
     Item_UI::status_cell($line->stock_id);
     if (!$order->view_only) {
-       Forms::textareaCells(null, 'Line' . $line_no . 'Desc', $line->description, 30, 3);
+      Forms::textareaCells(null, 'Line' . $line_no . 'Desc', $line->description, 30, 3);
     } else {
       Cell::label($line->description);
     }
@@ -260,9 +260,9 @@
       Forms::hidden('viewing');
       Cell::qty($line->quantity, false, $dec);
     } else {
-       Forms::qtyCellsSmall(null, 'Line' . $line_no, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), null, null, $dec);
+      Forms::qtyCellsSmall(null, 'Line' . $line_no, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), null, null, $dec);
     }
-    $display_discount_percent = Num::percent_format($line->discount_percent * 100) . " %";
+    $display_discount_percent = Num::percentFormat($line->discount_percent * 100) . " %";
     $line_total               = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
     Cell::amount($line->price);
     Cell::label($line->tax_type_name);
@@ -285,12 +285,12 @@
             was not fully delivered the first time ?? */
   if (!isset($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] == "") {
     if ($order->any_already_delivered() == 1) {
-      $_POST['ChargeFreightCost'] = Num::price_format(0);
+      $_POST['ChargeFreightCost'] = Num::priceFormat(0);
     } else {
-      $_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
+      $_POST['ChargeFreightCost'] = Num::priceFormat($order->freight_cost);
     }
     if (!Validation::post_num('ChargeFreightCost')) {
-      $_POST['ChargeFreightCost'] = Num::price_format(0);
+      $_POST['ChargeFreightCost'] = Num::priceFormat(0);
     }
   }
   $accumulate_shipping = DB_Company::get_pref('accumulate_shipping');
@@ -301,7 +301,7 @@
   Row::start();
   Cell::label(_("Shipping Cost"), "colspan=$colspan class='right bold'");
   if (!$order->view_only) {
-     Forms::amountCellsSmall(null, 'ChargeFreightCost', null);
+    Forms::amountCellsSmall(null, 'ChargeFreightCost', null);
   } else {
     Cell::amount($order->freight_cost);
   }
@@ -310,18 +310,18 @@
   }
   Row::end();
   $inv_items_total   = $order->get_items_total_dispatch();
-  $display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
+  $display_sub_total = Num::priceFormat($inv_items_total + Validation::input_num('ChargeFreightCost'));
   Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right bold'", "class='right'", $is_batch_invoice ? 2 :
     0);
   $taxes         = $order->get_taxes(Validation::input_num('ChargeFreightCost'));
   $tax_total     = Tax::edit_items($taxes, $colspan, $order->tax_included, $is_batch_invoice ? 2 : 0);
-  $display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
+  $display_total = Num::priceFormat(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
   Row::label(_("Invoice Total"), $display_total, "colspan=$colspan class='right bold'", "class='right'", $is_batch_invoice ? 2 :
     0);
   Table::end(1);
   Display::div_end();
   Table::start('tablestyle2');
-   Forms::textareaRow(_("Memo"), 'Comments', null, 50, 4);
+  Forms::textareaRow(_("Memo"), 'Comments', null, 50, 4);
   Table::end(1);
   Table::start('center red bold');
   if (!$order->view_only) {

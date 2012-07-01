@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   Page::start(_($help_context = "Work Order Additional Costs"), SA_WORKORDERCOST);
   if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
     $_POST['selected_id'] = $_GET['trans_no'];
@@ -37,24 +37,24 @@
     global $wo_details;
     if (!Validation::post_num('costs', 0)) {
       Event::error(_("The amount entered is not a valid number or less then zero."));
-      JS::set_focus('costs');
+      JS::setFocus('costs');
 
       return false;
     }
-    if (!Dates::is_date($_POST['date_'])) {
+    if (!Dates::isDate($_POST['date_'])) {
       Event::error(_("The entered date is invalid."));
-      JS::set_focus('date_');
+      JS::setFocus('date_');
 
       return false;
-    } elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
+    } elseif (!Dates::isDateInFiscalYear($_POST['date_'])) {
       Event::error(_("The entered date is not in fiscal year."));
-      JS::set_focus('date_');
+      JS::setFocus('date_');
 
       return false;
     }
-    if (Dates::date_diff2(Dates::sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
+    if (Dates::differenceBetween(Dates::sqlToDate($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
       Event::error(_("The additional cost date cannot be before the release date of the work order."));
-      JS::set_focus('date_');
+      JS::setFocus('date_');
 
       return false;
     }
@@ -79,15 +79,15 @@
   //Forms::hidden('WOReqQuantity', $_POST['WOReqQuantity']);
   Table::start('tablestyle2');
   Display::br();
-   Forms::yesnoListRow(_("Type:"), 'PaymentType', null, $wo_cost_types[WO_OVERHEAD], $wo_cost_types[WO_LABOUR]);
-   Forms::dateRow(_("Date:"), 'date_');
+  Forms::yesnoListRow(_("Type:"), 'PaymentType', null, $wo_cost_types[WO_OVERHEAD], $wo_cost_types[WO_LABOUR]);
+  Forms::dateRow(_("Date:"), 'date_');
   $item_accounts   = Item::get_gl_code($wo_details['stock_id']);
   $_POST['db_acc'] = $item_accounts['assembly_account'];
   $sql             = "SELECT DISTINCT account_code FROM bank_accounts";
   $rs              = DB::query($sql, "could not get bank accounts");
-  $r               = DB::fetch_row($rs);
+  $r               = DB::fetchRow($rs);
   $_POST['cr_acc'] = $r[0];
-   Forms::AmountRow(_("Additional Costs:"), 'costs');
+  Forms::AmountRow(_("Additional Costs:"), 'costs');
   GL_UI::all_row(_("Debit Account"), 'db_acc', null);
   GL_UI::all_row(_("Credit Account"), 'cr_acc', null);
   Table::end(1);

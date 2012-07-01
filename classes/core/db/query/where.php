@@ -80,7 +80,7 @@
      *
      * @return Query_Select
      */
-    public function or_where($condition, $uservar = null)
+    public function orWhere($condition, $uservar = null)
     {
       return $this->_where($condition, 'OR', $uservar);
     }
@@ -90,7 +90,7 @@
      *
      * @return Query_Select
      */
-    public function and_where($condition, $uservar = null)
+    public function andWhere($condition, $uservar = null)
     {
       return $this->_where($condition, 'AND', $uservar);
     }
@@ -100,7 +100,7 @@
      *
      * @return Query_Select
      */
-    public function or_open($condition, $uservar = null)
+    public function orOpen($condition, $uservar = null)
     {
       return $this->_where($condition, 'OR (', $uservar);
     }
@@ -110,7 +110,7 @@
      *
      * @return Query_Select
      */
-    public function and_open($condition, $uservar = null)
+    public function andOpen($condition, $uservar = null)
     {
       return $this->_where($condition, 'AND (', $uservar);
     }
@@ -120,7 +120,7 @@
      *
      * @return Query_Select
      */
-    public function close_and($condition, $uservar = null)
+    public function closeAnd($condition, $uservar = null)
     {
       return $this->_where($condition, ') AND', $uservar);
     }
@@ -130,7 +130,7 @@
      *
      * @return Query_Select
      */
-    public function close_or($condition, $uservar = null)
+    public function closeOr($condition, $uservar = null)
     {
       return $this->_where($condition, ') OR', $uservar);
     }

@@ -24,7 +24,7 @@
     public static function amountDecimal($label, $params = "", $id = null)
     {
       $dec = 0;
-      Cell::label(Num::price_decimal($label, $dec), ' class="right nowrap"' . $params, $id);
+      Cell::label(Num::priceDecimal($label, $dec), ' class="right nowrap"' . $params, $id);
     }
     /**
      * @param        $label
@@ -35,9 +35,9 @@
     public static function amount($label, $bold = false, $params = "", $id = null)
     {
       if ($bold) {
-        Cell::label("<span class='bold'>" . Num::price_format($label) . "</span>", "class='amount'" . $params, $id);
+        Cell::label("<span class='bold'>" . Num::priceFormat($label) . "</span>", "class='amount'" . $params, $id);
       } else {
-        Cell::label(Num::price_format($label), "class='amount'" . $params, $id);
+        Cell::label(Num::priceFormat($label), "class='amount'" . $params, $id);
       }
     }
     /**
@@ -105,9 +105,9 @@
     public static function percent($label, $bold = false, $id = null)
     {
       if ($bold) {
-        Cell::label("<span class='bold'>" . Num::percent_format($label) . "</span>", ' class="right nowrap"', $id);
+        Cell::label("<span class='bold'>" . Num::percentFormat($label) . "</span>", ' class="right nowrap"', $id);
       } else {
-        Cell::label(Num::percent_format($label), ' class="right nowrap"', $id);
+        Cell::label(Num::percentFormat($label), ' class="right nowrap"', $id);
       }
     }
     /**
@@ -136,9 +136,9 @@
     public static function unit_amount($label, $bold = false, $params = "", $id = null)
     {
       if ($bold) {
-        Cell::label("<span class='bold'>" . unit_price_format($label) . "</span>", ' class="right nowrap"' . $params, $id);
+        Cell::label("<span class='bold'>" . Num::priceForamt($label) . "</span>", ' class="right nowrap"' . $params, $id);
       } else {
-        Cell::label(unit_price_format($label), ' class="right nowrap"' . $params, $id);
+        Cell::label(Num::priceForamt($label), ' class="right nowrap"' . $params, $id);
       }
     }
     /**

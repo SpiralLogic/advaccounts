@@ -140,28 +140,28 @@
      */
     public static function check_data($order)
     {
-      if (!isset($_POST['DispatchDate']) || !Dates::is_date($_POST['DispatchDate'])) {
+      if (!isset($_POST['DispatchDate']) || !Dates::isDate($_POST['DispatchDate'])) {
         Event::error(_("The entered date of delivery is invalid."));
-        JS::set_focus('DispatchDate');
+        JS::setFocus('DispatchDate');
 
         return false;
       }
-      if (!Dates::is_date_in_fiscalyear($_POST['DispatchDate'])) {
+      if (!Dates::isDateInFiscalYear($_POST['DispatchDate'])) {
         Event::error(_("The entered date of delivery is not in fiscal year."));
-        JS::set_focus('DispatchDate');
+        JS::setFocus('DispatchDate');
 
         return false;
       }
-      if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
+      if (!isset($_POST['due_date']) || !Dates::isDate($_POST['due_date'])) {
         Event::error(_("The entered dead-line for invoice is invalid."));
-        JS::set_focus('due_date');
+        JS::setFocus('due_date');
 
         return false;
       }
       if ($order->trans_no == 0) {
         if (!Ref::is_valid($_POST['ref'])) {
           Event::error(_("You must enter a reference."));
-          JS::set_focus('ref');
+          JS::setFocus('ref');
 
           return false;
         }
@@ -170,11 +170,11 @@
         }
       }
       if ($_POST['ChargeFreightCost'] == "") {
-        $_POST['ChargeFreightCost'] = Num::price_format(0);
+        $_POST['ChargeFreightCost'] = Num::priceFormat(0);
       }
       if (!Validation::post_num('ChargeFreightCost', 0)) {
         Event::error(_("The entered shipping value is not numeric."));
-        JS::set_focus('ChargeFreightCost');
+        JS::setFocus('ChargeFreightCost');
 
         return false;
       }
@@ -215,7 +215,7 @@
     {
       $order                      = Sales_Order::check_edit_conflicts($order);
       $_POST['ship_via']          = $order->ship_via;
-      $_POST['ChargeFreightCost'] = Num::price_format($order->freight_cost);
+      $_POST['ChargeFreightCost'] = Num::priceFormat($order->freight_cost);
       $_POST['DispatchDate']      = $order->document_date;
       $_POST['due_date']          = $order->due_date;
       $_POST['location']          = $order->location;
@@ -249,7 +249,7 @@
           } elseif ($itm->quantity < 0 && Validation::post_num('Line' . $line, $max, $min)) {
             $order->line_items[$line]->qty_dispatched = Validation::input_num('Line' . $line);
           } else {
-            JS::set_focus('Line' . $line);
+            JS::setFocus('Line' . $line);
             $ok = 0;
           }
         }

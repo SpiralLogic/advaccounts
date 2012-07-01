@@ -8,13 +8,13 @@
    * @link      http://www.advancedgroup.com.au
    **/
   Page::start(_($help_context = "Printing Profiles"), SA_PRINTPROFILE);
-  $selected_id = Input::post('profile_id',null,'');
+  $selected_id = Input::post('profile_id', null, '');
   if (Input::post('submit')) {
     $error = 0;
     if ($_POST['profile_id'] == '' && empty($_POST['name'])) {
       $error = 1;
       Event::error(_("Printing profile name cannot be empty."));
-      JS::set_focus('name');
+      JS::setFocus('name');
     }
     if (!$error) {
       $prof = array('' => Input::post('Prn')); // store default value/profile name
@@ -51,7 +51,7 @@
   echo '<hr>';
   Table::start();
   if (Input::post('profile_id') == '') {
-     Forms::textRow(_("Printing Profile Name") . ':', 'name', null, 30, 30);
+    Forms::textRow(_("Printing Profile Name") . ':', 'name', null, 30, 30);
   } else {
     Cell::labels(_("Printing Profile Name") . ':', Input::post('profile_id'));
   }
@@ -159,6 +159,6 @@
     $sql = "SELECT * FROM users WHERE print_profile=" . DB::escape($name);
     $res = DB::query($sql, 'cannot check printing profile usage');
 
-    return DB::num_rows($res);
+    return DB::numRows($res);
   }
 

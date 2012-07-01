@@ -158,9 +158,10 @@
      */
     public function _add_fiscalyear($from_date, $to_date, $closed)
     {
-      $from = Dates::date2sql($from_date);
-      $to   = Dates::date2sql($to_date);
-      $sql  = "INSERT INTO fiscal_year (begin, end, closed)
+      $from = Dates::dateToSql($from_date);
+      $to   = Dates::dateToSql($to_date);
+      $sql
+            = "INSERT INTO fiscal_year (begin, end, closed)
         VALUES (" . DB::escape($from) . "," . DB::escape($to) . ", " . DB::escape($closed) . ")";
       DB::query($sql, "could not add fiscal year");
     }
@@ -176,11 +177,13 @@
     public function _add_payment_terms($daysOrFoll, $terms, $dayNumber)
     {
       if ($daysOrFoll) {
-        $sql = "INSERT INTO payment_terms (terms,
+        $sql
+          = "INSERT INTO payment_terms (terms,
                     days_before_due, day_in_following_month)
                     VALUES (" . DB::escape($terms) . ", " . DB::escape($dayNumber) . ", 0)";
       } else {
-        $sql = "INSERT INTO payment_terms (terms,
+        $sql
+          = "INSERT INTO payment_terms (terms,
                     days_before_due, day_in_following_month)
                     VALUES (" . DB::escape($terms) . ",
                     0, " . DB::escape($dayNumber) . ")";
@@ -216,7 +219,7 @@
      * @static
      * @return null|PDOStatement
      */
-    public function _get_all_fiscalyears()
+    public function _getAll_fiscalyears()
     {
       $sql = "SELECT * FROM fiscal_year ORDER BY begin";
       return DB::query($sql, "could not get all fiscal years");
@@ -326,7 +329,8 @@
      */
     public function _get_payment_terms($selected_id)
     {
-      $sql    = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
+      $sql
+              = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
      FROM payment_terms t WHERE terms_indicator=" . DB::escape($selected_id);
       $result = DB::query($sql, "could not get payment term");
       return DB::fetch($result);

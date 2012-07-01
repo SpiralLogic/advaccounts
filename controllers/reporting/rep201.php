@@ -20,7 +20,7 @@
    */
   function get_open_balance($supplier_id, $to, $convert)
   {
-    $to  = Dates::date2sql($to);
+    $to  = Dates::dateToSql($to);
     $sql = "SELECT SUM(IF(creditor_trans.type = " . ST_SUPPINVOICE . ", (creditor_trans.ov_amount + creditor_trans.ov_gst +
      creditor_trans.ov_discount)";
     if ($convert) {
@@ -65,8 +65,8 @@
    */
   function get_transactions($supplier_id, $from, $to)
   {
-    $from = Dates::date2sql($from);
-    $to   = Dates::date2sql($to);
+    $from = Dates::dateToSql($from);
+    $to   = Dates::dateToSql($to);
     $sql
                 = "SELECT creditor_trans.*,
                 (creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)
@@ -164,7 +164,7 @@
         $grandtotal[$i] += $init[$i];
       }
       $res = get_transactions($myrow['supplier_id'], $from, $to);
-      if ($no_zeros && DB::num_rows($res) == 0) {
+      if ($no_zeros && DB::numRows($res) == 0) {
         continue;
       }
       $rep->TextCol(0, 2, $myrow['name']);
@@ -178,7 +178,7 @@
       $rep->AmountCol(7, 8, $init[2], $dec);
       $rep->AmountCol(8, 9, $init[3], $dec);
       $rep->NewLine(1, 2);
-      if (DB::num_rows($res) == 0) {
+      if (DB::numRows($res) == 0) {
         continue;
       }
       $rep->Line($rep->row + 4);

@@ -60,7 +60,7 @@
       if (property_exists($this, 'inactive')) {
         try {
           /** @noinspection PhpUndefinedFieldInspection */
-          DB::update_record_status($this->id, $this->inactive, $this->_table, $this->_id_column);
+          DB::updateRecordStatus($this->id, $this->inactive, $this->_table, $this->_id_column);
         }
         catch (DBUpdateException $e) {
           DB::cancel();
@@ -116,7 +116,7 @@
       try {
         $query = DB::select()->from($this->_table)->where($this->_id_column . '=', $id);
         foreach ($extra as $field => $value) {
-          $query->and_where($field . '=', $value);
+          $query->andWhere($field . '=', $value);
         }
         DB::fetch()->intoClass($this);
       }

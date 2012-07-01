@@ -4,36 +4,10 @@
   /**
 
    */
-  class DIC implements \ArrayAccess {
+  class DIC implements \ArrayAccess
+  {
     protected $_objects = array();
     protected $_callbacks = array();
-    /**
-     * @param       $name
-     * @param array $arguments
-     *
-     * @return mixed
-     * @throws \InvalidArgumentException
-     */
-    public function __call($name, $arguments = array())
-    {
-      // Parse function name
-      preg_match_all('/_?([A-Z][a-z0-9]*|[a-z0-9]+)/', $name, $parts);
-      $parts = $parts[1];
-      // Determine method
-      $method = array_shift($parts);
-      if ('new' == $method) {
-        $method = 'fresh';
-      }
-      // Determine object key
-      $key = strtolower(implode('_', $parts));
-      array_unshift($arguments, $key);
-      // Call method if exists
-      if (method_exists($this, $method)) {
-        return call_user_func_array(array($this, $method), $arguments);
-      }
-      // Throw exception on miss
-      throw new \InvalidArgumentException(sprintf('Methood "%s" does not exist.', $method));
-    }
     /**
      * @param         $name
      * @param Closure $callable
@@ -52,7 +26,7 @@
      * @param string $name   The unique identifier for the parameter or object
      * @param mixed  $value  The value of the parameter or a closure to defined an object
      */
-    function offsetSet($name, $value)
+    public function offsetSet($name, $value)
     {
       $this->set($name, $value);
     }
@@ -83,7 +57,7 @@
      *
      * @return Boolean
      */
-    function offsetExists($name)
+    public function offsetExists($name)
     {
       return $this->has($name);
     }
@@ -117,9 +91,10 @@
      * @return mixed  The value of the parameter or an object
      * @throws \InvalidArgumentException if the identifier is not defined
      */
-    function offsetGet($name)
+    public function offsetGet($name)
     {
-      return $this->get($name);
+      $args = func_get_args();
+      return call_user_func_array([$this, 'get'], $args);
     }
     /**
      * @param $name
@@ -157,7 +132,7 @@
      *
      * @param  string $name The unique identifier for the parameter or object
      */
-    function offsetUnset($name)
+    public function offsetUnset($name)
     {
       $this->delete($name);
     }

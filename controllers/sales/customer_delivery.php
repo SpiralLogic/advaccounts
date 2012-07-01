@@ -10,7 +10,7 @@
   //
   //	Entry/Modify Delivery Note against Sales Order
   //
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   $page_title = _($help_context = "Deliver Items for a Sales Order");
   if (isset($_GET[Orders::MODIFY_DELIVERY])) {
     $page_title   = sprintf(_("Modifying Delivery Note # %d."), $_GET[Orders::MODIFY_DELIVERY]);
@@ -54,7 +54,7 @@
     $order->order_no      = key($order->trans_no);
     $order->trans_no      = 0;
     $order->reference     = Ref::get_next(ST_CUSTDELIVERY);
-    $order->document_date = Dates::new_doc_date();
+    $order->document_date = Dates::newDocDate();
     Sales_Delivery::copyToPost($order);
   } elseif (isset($_GET[Orders::MODIFY_DELIVERY]) && $_GET[Orders::MODIFY_DELIVERY] > 0) {
     $order = new Sales_Order(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
@@ -75,7 +75,7 @@
       Event::error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
     } elseif (!Validation::post_num('ChargeFreightCost', 0)) {
       Event::error(_("Freight cost cannot be less than zero"));
-      JS::set_focus('ChargeFreightCost');
+      JS::setFocus('ChargeFreightCost');
     }
   }
   if (isset($_POST['process_delivery']) && Sales_Delivery::check_data($order) && Sales_Delivery::check_qoh($order)) {
@@ -88,7 +88,7 @@
     $newdelivery = ($dn->trans_no == 0);
     Sales_Delivery::copyFromPost($order);
     if ($newdelivery) {
-      Dates::new_doc_date($dn->document_date);
+      Dates::newDocDate($dn->document_date);
     }
     $delivery_no = $dn->write($bo_policy);
     $dn->finish();
@@ -115,7 +115,7 @@
   //if (!isset($_POST['ref']))
   //	$_POST['ref'] = Ref::get_next(ST_CUSTDELIVERY);
   if ($order->trans_no == 0) {
-     Forms::refCells(_("Reference"), 'ref', '', null, "class='label'");
+    Forms::refCells(_("Reference"), 'ref', '', null, "class='label'");
   } else {
     Cell::labels(_("Reference"), $order->reference, "class='label'");
     Forms::hidden('ref', $order->reference);
@@ -135,22 +135,22 @@
   Cell::label(_("Shipping Company"), "class='label'");
   Sales_UI::shippers_cells(null, 'ship_via', $_POST['ship_via']);
   // set this up here cuz it's used to calc qoh
-  if (!isset($_POST['DispatchDate']) || !Dates::is_date($_POST['DispatchDate'])) {
-    $_POST['DispatchDate'] = Dates::new_doc_date();
-    if (!Dates::is_date_in_fiscalyear($_POST['DispatchDate'])) {
-      $_POST['DispatchDate'] = Dates::end_fiscalyear();
+  if (!isset($_POST['DispatchDate']) || !Dates::isDate($_POST['DispatchDate'])) {
+    $_POST['DispatchDate'] = Dates::newDocDate();
+    if (!Dates::isDateInFiscalYear($_POST['DispatchDate'])) {
+      $_POST['DispatchDate'] = Dates::endFiscalYear();
     }
   }
-   Forms::dateCells(_("Date"), 'DispatchDate', '', $order->trans_no == 0, 0, 0, 0, "class='label'");
+  Forms::dateCells(_("Date"), 'DispatchDate', '', $order->trans_no == 0, 0, 0, 0, "class='label'");
   Row::end();
   Table::end();
   echo "</td><td>"; // outer table
   Table::start('tablestyle width90');
-  if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
+  if (!isset($_POST['due_date']) || !Dates::isDate($_POST['due_date'])) {
     $_POST['due_date'] = $order->get_invoice_duedate($order->customer_id, $_POST['DispatchDate']);
   }
   Row::start();
-   Forms::dateCells(_("Invoice Dead-line"), 'due_date', '', null, 0, 0, 0, "class='label'");
+  Forms::dateCells(_("Invoice Dead-line"), 'due_date', '', null, 0, 0, 0, "class='label'");
   Row::end();
   Table::end();
   echo "</td></tr>";
@@ -201,13 +201,13 @@
     } else {
     }
     Item_UI::status_cell($line->stock_id);
-     Forms::textCells(null, 'Line' . $line_no . 'Desc', $line->description, 30, 50);
+    Forms::textCells(null, 'Line' . $line_no . 'Desc', $line->description, 30, 50);
     $dec = Item::qty_dec($line->stock_id);
     Cell::qty($line->quantity, false, $dec);
     Cell::label($line->units);
     Cell::qty($line->qty_done, false, $dec);
-     Forms::qtyCellsSmall(null, 'Line' . $line_no, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), null, null, $dec);
-    $display_discount_percent = Num::percent_format($line->discount_percent * 100) . "%";
+    Forms::qtyCellsSmall(null, 'Line' . $line_no, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), null, null, $dec);
+    $display_discount_percent = Num::percentFormat($line->discount_percent * 100) . "%";
     $line_total               = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
     Cell::amount($line->price);
     Cell::label($line->tax_type_name);
@@ -215,18 +215,18 @@
     Cell::amount($line_total);
     Row::end();
   }
-  $_POST['ChargeFreightCost'] = Input::post('ChargeFreightCost', null,Num::price_format($order->freight_cost));
+  $_POST['ChargeFreightCost'] = Input::post('ChargeFreightCost', null, Num::priceFormat($order->freight_cost));
   $colspan                    = 9;
   Row::start();
   Cell::label(_("Shipping Cost"), "colspan=$colspan class='right'");
-   Forms::amountCellsSmall(null, 'ChargeFreightCost', $order->freight_cost);
+  Forms::amountCellsSmall(null, 'ChargeFreightCost', $order->freight_cost);
   Row::end();
   $inv_items_total   = $order->get_items_total_dispatch();
-  $display_sub_total = Num::price_format($inv_items_total + Validation::input_num('ChargeFreightCost'));
+  $display_sub_total = Num::priceFormat($inv_items_total + Validation::input_num('ChargeFreightCost'));
   Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan class='right'", "class='right'");
   $taxes         = $order->get_taxes(Validation::input_num('ChargeFreightCost'));
   $tax_total     = Tax::edit_items($taxes, $colspan, $order->tax_included);
-  $display_total = Num::price_format(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
+  $display_total = Num::priceFormat(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
   Row::label(_("Amount Total"), $display_total, "colspan=$colspan class='right'", "class='right'");
   Table::end(1);
   if ($has_marked) {
@@ -234,7 +234,7 @@
   }
   Table::start('tablestyle2');
   Sales_UI::policy_row(_("Action For Balance"), "bo_policy", null);
-   Forms::textareaRow(_("Memo"), 'Comments', null, 50, 4);
+  Forms::textareaRow(_("Memo"), 'Comments', null, 50, 4);
   Table::end(1);
   Display::div_end();
   Forms::submitCenterBegin('Update', _("Update"), _('Refresh document page'), true);

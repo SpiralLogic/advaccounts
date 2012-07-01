@@ -69,7 +69,7 @@
     {
       $sql    = "SELECT description FROM item_units WHERE abbr=" . DB::escape($unit);
       $result = DB::query($sql, "could not unit description");
-      $row    = DB::fetch_row($result);
+      $row    = DB::fetchRow($result);
 
       return $row[0];
     }
@@ -84,7 +84,7 @@
     {
       $sql    = "SELECT COUNT(*) FROM stock_master WHERE units=" . DB::escape($unit);
       $result = DB::query($sql, "could not query stock master");
-      $myrow  = DB::fetch_row($result);
+      $myrow  = DB::fetchRow($result);
 
       return ($myrow[0] > 0);
     }
@@ -95,7 +95,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($all = false)
+    public static function getAll($all = false)
     {
       $sql = "SELECT * FROM item_units";
       if (!$all) {
@@ -118,7 +118,7 @@
               = "SELECT decimals FROM item_units,	stock_master
         WHERE abbr=units AND stock_id=" . DB::escape($stock_id) . " LIMIT 1";
       $result = DB::query($sql, "could not get unit decimals");
-      $row    = DB::fetch_row($result);
+      $row    = DB::fetchRow($result);
 
       return $row[0];
     }
@@ -132,7 +132,7 @@
      */
     public static function row($label, $name, $value = null, $enabled = true)
     {
-      $result = Item_Unit::get_all();
+      $result = Item_Unit::getAll();
       echo "<tr>";
       if ($label != null) {
         echo "<td class='label'>$label</td>\n";
@@ -155,7 +155,7 @@
      */
     public static function select($name, $value = null, $enabled = true)
     {
-      $result = Item_Unit::get_all();
+      $result = Item_Unit::getAll();
       $units  = array();
       while ($unit = DB::fetch($result)) {
         $units[$unit['abbr']] = $unit['name'];

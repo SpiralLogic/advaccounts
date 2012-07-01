@@ -1,14 +1,14 @@
 <?php
   /**
-     * PHP version 5.4
-     * @category  PHP
-     * @package   ADVAccounts
-     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-     * @copyright 2010 - 2012
-     * @link      http://www.advancedgroup.com.au
-     **/
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
 
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   Page::start(_($help_context = "View Purchase Order"), SA_SUPPTRANSVIEW, true);
   if (!isset($_GET['trans_no'])) {
     die ("<br>" . _("This page must be called with a purchase order number to review."));
@@ -23,18 +23,16 @@
     _("Code"), _("Item"), _("Qty"), _("Unit"), _("Price"), _("Disc"), _("Total"), _("Needed By"), _("Received"), _("Invoiced")
   );
   Table::header($th);
-  $total = $k = 0;
+  $total         = $k = 0;
   $overdue_items = false;
   foreach ($order->line_items as $stock_item) {
     $line_total = $stock_item->quantity * $stock_item->price * (1 - $stock_item->discount);
     // if overdue and outstanding quantities, then highlight as so
-    if (($stock_item->quantity - $stock_item->qty_received > 0) && Dates::date1_greater_date2(Dates::today(), $stock_item->req_del_date)
+    if (($stock_item->quantity - $stock_item->qty_received > 0) && Dates::isGreaterThan(Dates::today(), $stock_item->req_del_date)
     ) {
       Row::start("class='overduebg'");
       $overdue_items = true;
-    }
-    else {
-
+    } else {
     }
     Cell::label($stock_item->stock_id);
     Cell::label($stock_item->description);
@@ -56,9 +54,9 @@
   if ($overdue_items) {
     Event::warning(_("Marked items are overdue."), 0, 0, "class='overduefg'");
   }
-  $k = 0;
+  $k           = 0;
   $grns_result = Purch_GRN::get_for_po($_GET['trans_no']);
-  if (DB::num_rows($grns_result) > 0) {
+  if (DB::numRows($grns_result) > 0) {
     echo "</td><td class='top'>"; // outer table
     Display::heading(_("Deliveries"));
     Table::start('tablestyle grid');
@@ -68,14 +66,14 @@
 
       Cell::label(GL_UI::trans_view(ST_SUPPRECEIVE, $myrow["id"]));
       Cell::label($myrow["reference"]);
-      Cell::label(Dates::sql2date($myrow["delivery_date"]));
+      Cell::label(Dates::sqlToDate($myrow["delivery_date"]));
       Row::end();
     }
     Table::end();
   }
   $invoice_result = Purch_Invoice::get_po_credits($_GET['trans_no']);
-  $k = 0;
-  if (DB::num_rows($invoice_result) > 0) {
+  $k              = 0;
+  if (DB::numRows($invoice_result) > 0) {
     echo "</td><td class='top'>"; // outer table
     Display::heading(_("Invoices/Credits"));
     Table::start('tablestyle grid');
@@ -84,7 +82,7 @@
     while ($myrow = DB::fetch($invoice_result)) {
 
       Cell::label(GL_UI::trans_view($myrow["type"], $myrow["trans_no"]));
-      Cell::label(Dates::sql2date($myrow["tran_date"]));
+      Cell::label(Dates::sqlToDate($myrow["tran_date"]));
       Cell::amount($myrow["Total"]);
       Row::end();
     }

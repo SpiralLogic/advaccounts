@@ -20,13 +20,9 @@
      * @param $hundreds_name
      * @param $auto_update
      */
-    public static function update($curr_abrev, $symbol, $currency, $country,
-                                  $hundreds_name, $auto_update) {
-      $sql = "UPDATE currencies SET currency=" . DB::escape($currency)
-        . ", curr_symbol=" . DB::escape($symbol) . ",	country=" . DB::escape($country)
-        . ", hundreds_name=" . DB::escape($hundreds_name)
-        . ",auto_update = " . DB::escape($auto_update)
-        . " WHERE curr_abrev = " . DB::escape($curr_abrev);
+    public static function update($curr_abrev, $symbol, $currency, $country, $hundreds_name, $auto_update)
+    {
+      $sql = "UPDATE currencies SET currency=" . DB::escape($currency) . ", curr_symbol=" . DB::escape($symbol) . ",	country=" . DB::escape($country) . ", hundreds_name=" . DB::escape($hundreds_name) . ",auto_update = " . DB::escape($auto_update) . " WHERE curr_abrev = " . DB::escape($curr_abrev);
 
       DB::query($sql, "could not update currency for $curr_abrev");
     }
@@ -40,13 +36,12 @@
      * @param $hundreds_name
      * @param $auto_update
      */
-    public static function add($curr_abrev, $symbol, $currency, $country,
-                               $hundreds_name, $auto_update) {
-      $sql = "INSERT INTO currencies (curr_abrev, curr_symbol, currency,
+    public static function add($curr_abrev, $symbol, $currency, $country, $hundreds_name, $auto_update)
+    {
+      $sql
+        = "INSERT INTO currencies (curr_abrev, curr_symbol, currency,
             country, hundreds_name, auto_update)
-        VALUES (" . DB::escape($curr_abrev) . ", " . DB::escape($symbol) . ", "
-        . DB::escape($currency) . ", " . DB::escape($country) . ", "
-        . DB::escape($hundreds_name) . "," . DB::escape($auto_update) . ")";
+        VALUES (" . DB::escape($curr_abrev) . ", " . DB::escape($symbol) . ", " . DB::escape($currency) . ", " . DB::escape($country) . ", " . DB::escape($hundreds_name) . "," . DB::escape($auto_update) . ")";
 
       DB::query($sql, "could not add currency for $curr_abrev");
     }
@@ -86,7 +81,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($all = false)
+    public static function getAll($all = false)
     {
       $sql = "SELECT * FROM currencies";
       if (!$all) {
@@ -95,7 +90,6 @@
 
       return DB::query($sql, "could not get currencies");
     }
-
     // CURRENCIES
     /**
      * @static
@@ -111,8 +105,10 @@
       $sql = "SELECT curr_abrev, currency, inactive FROM currencies";
       // default to the company currency
       return Forms::selectBox($name, $selected_id, $sql, 'curr_abrev', 'currency', array(
-        'select_submit' => $submit_on_change, 'default' => Bank_Currency::for_company(), 'async' => false
-      ));
+                                                                                        'select_submit' => $submit_on_change,
+                                                                                        'default'       => Bank_Currency::for_company(),
+                                                                                        'async'         => false
+                                                                                   ));
     }
     /**
      * @static

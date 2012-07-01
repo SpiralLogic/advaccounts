@@ -52,6 +52,7 @@
      * @static
      *
      * @param string $message Error message
+     * @param bool   $log
      *
      * @return bool
      */
@@ -64,6 +65,7 @@
      * @static
      *
      * @param string $message
+     * @param bool   $log
      *
      * @return bool
      */
@@ -76,6 +78,7 @@
      * @static
      *
      * @param string $message
+     * @param bool   $log
      *
      * @return bool
      */
@@ -87,7 +90,8 @@
     /**
      * @static
      *
-     * @param $message
+     * @param      $message
+     * @param bool $log
      *
      * @return bool
      */
@@ -102,6 +106,7 @@
      * @param $message
      * @param $source
      * @param $type
+     * @param $log
      *
      * @return bool
      */
@@ -123,7 +128,7 @@
      * @param string $function
      * @param array  $arguments
      */
-    public static function register_shutdown($object, $function = '_shutdown', $arguments = array())
+    public static function registerShutdown($object, $function = '_shutdown', $arguments = array())
     {
       Event::registerHook('shutdown', $object, $function, $arguments);
     }
@@ -134,7 +139,7 @@
      * @param string $function
      * @param array  $arguments
      */
-    public static function register_pre_shutdown($object, $function = '_shutdown', $arguments = array())
+    public static function registerPreShutdown($object, $function = '_shutdown', $arguments = array())
     {
       Event::registerHook('pre_shutdown', $object, $function, $arguments);
     }

@@ -88,7 +88,7 @@
      * @return mixed
      * @return array
      */
-    public function _get_all($group = 'config', $default = array())
+    public function _getAll($group = 'config', $default = array())
     {
       if (!isset($this->_vars[$group]) && $this->load($group) === false) {
         return $default;
@@ -163,7 +163,7 @@
       }
       /** @noinspection PhpIncludeInspection */
       $this->_vars[$group_name] = include($file);
-      Event::register_shutdown($this);
+      Event::registerShutdown($this);
       return true;
     }
   }

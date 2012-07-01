@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::open_window(800, 500);
+  JS::openWindow(800, 500);
   Page::start(_($help_context = "Inventory Location Transfers"), SA_LOCATIONTRANSFER);
   Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);
   Validation::check(Validation::MOVEMENT_TYPES, _("There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."));
@@ -24,27 +24,27 @@
     $input_error = 0;
     if (count($tr->line_items) == 0) {
       Event::error(_("You must enter at least one non empty item line."));
-      JS::set_focus('stock_id');
+      JS::setFocus('stock_id');
 
       return false;
     }
     if (!Ref::is_valid($_POST['ref'])) {
       Event::error(_("You must enter a reference."));
-      JS::set_focus('ref');
+      JS::setFocus('ref');
       $input_error = 1;
     } elseif (!Ref::is_new($_POST['ref'], ST_LOCTRANSFER)) {
       $_POST['ref'] = Ref::get_next(ST_LOCTRANSFER);
-    } elseif (!Dates::is_date($_POST['AdjDate'])) {
+    } elseif (!Dates::isDate($_POST['AdjDate'])) {
       Event::error(_("The entered date for the adjustment is invalid."));
-      JS::set_focus('AdjDate');
+      JS::setFocus('AdjDate');
       $input_error = 1;
-    } elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
+    } elseif (!Dates::isDateInFiscalYear($_POST['AdjDate'])) {
       Event::error(_("The entered date is not in fiscal year."));
-      JS::set_focus('AdjDate');
+      JS::setFocus('AdjDate');
       $input_error = 1;
     } elseif ($_POST['FromStockLocation'] == $_POST['ToStockLocation']) {
       Event::error(_("The locations to transfer from and to must be different."));
-      JS::set_focus('FromStockLocation');
+      JS::setFocus('FromStockLocation');
       $input_error = 1;
     } else {
       $failed_item = $tr->check_qoh($_POST['FromStockLocation'], $_POST['AdjDate'], true);
@@ -62,7 +62,7 @@
   }
   if (isset($_POST['Process'])) {
     $trans_no = Inv_Transfer::add($_SESSION['transfer_items']->line_items, $_POST['FromStockLocation'], $_POST['ToStockLocation'], $_POST['AdjDate'], $_POST['type'], $_POST['ref'], $_POST['memo_']);
-    Dates::new_doc_date($_POST['AdjDate']);
+    Dates::newDocDate($_POST['AdjDate']);
     $_SESSION['transfer_items']->clear_items();
     unset($_SESSION['transfer_items']);
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$trans_no");
@@ -104,7 +104,7 @@
   {
     if (!Validation::post_num('qty', 0)) {
       Event::error(_("The quantity entered must be a positive number."));
-      JS::set_focus('qty');
+      JS::setFocus('qty');
 
       return false;
     }
@@ -152,9 +152,9 @@
       unset ($_SESSION['transfer_items']);
     }
     $_SESSION['transfer_items'] = new Item_Order(ST_LOCTRANSFER);
-    $_POST['AdjDate']           = Dates::new_doc_date();
-    if (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
-      $_POST['AdjDate'] = Dates::end_fiscalyear();
+    $_POST['AdjDate']           = Dates::newDocDate();
+    if (!Dates::isDateInFiscalYear($_POST['AdjDate'])) {
+      $_POST['AdjDate'] = Dates::endFiscalYear();
     }
     $_SESSION['transfer_items']->tran_date = $_POST['AdjDate'];
   }

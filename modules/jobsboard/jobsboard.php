@@ -52,7 +52,8 @@
         $this->currentJob['order_ref']            = '';
         $this->currentJob['order_no']             = '';
         $this->currentJob['Priority_Level']       = 5;
-        $this->jobsboardDB->_update('Job_List')->values($this->currentJob)->where('Advanced_Job_No=', $this->currentJob['Advanced_Job_No'])->exec();
+        $this->jobsboardDB->_update('Job_List')->values($this->currentJob)
+          ->where('Advanced_Job_No=', $this->currentJob['Advanced_Job_No'])->exec();
         \Event::success('Order ' . $trans_no . ' has been removed from the Jobs Board!');
       } else {
         \Event::error('There is no current Order to remove from jobsboard');
@@ -72,16 +73,20 @@
       $this->order_no = $order_no = $job_data->trans_no;
       $user_name      = \User::i()->name;
       $orderlines     = $this->getOrderLines();
-      $update = var_export($job_data, true);
-      $job    = $this->get_job($order_no);
-      $exists = ($job['Advanced_Job_No'] > 0);
-      $lines  = array();
+      $update         = var_export($job_data, true);
+      $job            = $this->get_job($order_no);
+      $exists         = ($job['Advanced_Job_No'] > 0);
+      $lines          = array();
       foreach ($orderlines as $line) {
         /***
          * @var \Sales_Line $line
          */
         $lines[$line['id']] = array(
-          'line_id'     => $line['id'], 'stock_code'  => $line['stk_code'], 'price'       => $line['unit_price'], 'description' => $line['description'], 'quantity'    => $line['quantity']
+          'line_id'     => $line['id'],
+          'stock_code'  => $line['stk_code'],
+          'price'       => $line['unit_price'],
+          'description' => $line['description'],
+          'quantity'    => $line['quantity']
         );
       }
       if ($exists) {
@@ -169,7 +174,8 @@
      */
     protected function updateJob($data)
     {
-      $result = $this->jobsboardDB->_update('Job_List')->values($data)->where('Advanced_Job_No=', $this->currentJob['Advanced_Job_No'])->exec();
+      $result = $this->jobsboardDB->_update('Job_List')->values($data)
+        ->where('Advanced_Job_No=', $this->currentJob['Advanced_Job_No'])->exec();
       if ($result) {
         $this->insertLines();
       }
@@ -205,14 +211,16 @@
     protected function updateLine($line)
     {
       $line['job_id'] = $this->currentJob['Advanced_Job_No'];
-      $this->jobsboardDB->_update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->and_where('job_id=', $this->currentJob['Advanced_Job_No'])->exec();
+      $this->jobsboardDB->_update('JobListItems')->values($line)->where('line_id=', $line['line_id'])
+        ->andWhere('job_id=', $this->currentJob['Advanced_Job_No'])->exec();
     }
     /**
      * @return array Get lines from jobsboard for current order
      */
     protected function getLines()
     {
-      $lines  = $this->jobsboardDB->_select()->from('JobListItems')->where('job_id=', $this->currentJob['Advanced_Job_No'])->fetch()->all();
+      $lines  = $this->jobsboardDB->_select()->from('JobListItems')->where('job_id=', $this->currentJob['Advanced_Job_No'])
+        ->fetch()->all();
       $result = array();
       foreach ($lines as $line) {
         $result[$line['line_id']] = $line;
@@ -238,7 +246,7 @@
       try {
         $this->jobsboardDB->_query('UPDATE Job_List SET priority_changed = NOW() , Main_Employee_Responsible = previous_user WHERE
         Priority_Level<5 AND priority_changed < (NOW() - INTERVAL 3 DAY) AND Main_Employee_Responsible<>previous_user AND priority_changed>0');
-        $result = $this->jobsboardDB->_num_rows();
+        $result = $this->jobsboardDB->_numRows();
       }
       catch (\Exception $e) {
       }
@@ -249,7 +257,7 @@
       try {
         $this->jobsboardDB->_query('UPDATE Job_List SET has_worked_change = NOW() , Can_work_be_done_today = -1 WHERE
         Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_be_done_today=0 AND has_worked_change>0');
-        $result = $this->jobsboardDB->_num_rows();
+        $result = $this->jobsboardDB->_numRows();
       }
       catch (\Exception $e) {
       }

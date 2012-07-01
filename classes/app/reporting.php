@@ -11,10 +11,9 @@
   // Ex. Cell::label(static::print_doc_link($myrow['order_no'], _("Print")), $type);
   // or Event::warning(static::print_doc_link($order_no, _("Print this order")));
   // You only need full parameter list for invoices/credit notes
-  class Reporting {
-
+  class Reporting
+  {
     static $debug = null;
-
     /**
      * @static
      *
@@ -30,15 +29,14 @@
      *
      * @return string
      */
-    public static function print_doc_link($doc_no, $link_text, $link = true, $type_no, $icon = false, $class = 'button printlink',
-                                          $id = '', $email = 0, $extra = 0) {
+    public static function print_doc_link($doc_no, $link_text, $link = true, $type_no, $icon = false, $class = 'button printlink', $id = '', $email = 0, $extra = 0)
+    {
       $url     = '/reporting/prn_redirect.php?';
       $options = static::print_option_array($type_no, $doc_no, $email, $extra);
       $ar      = $options[0];
       $rep     = $options[1];
       return static::print_link($link_text, $rep, $ar, "", $icon, $class, $id);
     }
-
     /**
      * @static
      *
@@ -49,7 +47,8 @@
      *
      * @return array
      */
-    public static function print_option_array($type_no, $doc_no, $email = 0, $extra = 0) {
+    public static function print_option_array($type_no, $doc_no, $email = 0, $extra = 0)
+    {
       $ar  = array();
       $rep = '';
       switch ($type_no) {
@@ -57,33 +56,21 @@
           $rep = 111;
           // from, to, currency, bank acc, email, quote, comments
           $ar = array(
-            'PARAM_0' => $doc_no,
-            'PARAM_1' => $doc_no,
-            'PARAM_2' => '',
-            'PARAM_3' => $email,
-            'PARAM_4' => ''
+            'PARAM_0' => $doc_no, 'PARAM_1' => $doc_no, 'PARAM_2' => '', 'PARAM_3' => $email, 'PARAM_4' => ''
           );
           break;
         case ST_SALESORDER :
           $rep = 109;
           // from, to, currency, bank acc, email, quote, comments
           $ar = array(
-            'PARAM_0' => $doc_no,
-            'PARAM_1' => $doc_no,
-            'PARAM_2' => '',
-            'PARAM_3' => $email,
-            'PARAM_4' => 0,
-            'PARAM_5' => ''
+            'PARAM_0' => $doc_no, 'PARAM_1' => $doc_no, 'PARAM_2' => '', 'PARAM_3' => $email, 'PARAM_4' => 0, 'PARAM_5' => ''
           );
           break;
         case ST_CUSTDELIVERY :
           $rep = 110;
           // from, to, email, comments
           $ar = array(
-            'PARAM_0' => $doc_no,
-            'PARAM_1' => $doc_no,
-            'PARAM_2' => $email,
-            'PARAM_3' => $extra
+            'PARAM_0' => $doc_no, 'PARAM_1' => $doc_no, 'PARAM_2' => $email, 'PARAM_3' => $extra
           );
           break;
         case ST_SALESINVOICE : // Sales Invoice
@@ -104,71 +91,48 @@
           $rep = 209;
           // from, to, currency, bank acc, email, comments
           $ar = array(
-            'PARAM_0' => $doc_no,
-            'PARAM_1' => $doc_no,
-            'PARAM_2' => '',
-            'PARAM_3' => $email,
-            'PARAM_4' => ''
+            'PARAM_0' => $doc_no, 'PARAM_1' => $doc_no, 'PARAM_2' => '', 'PARAM_3' => $email, 'PARAM_4' => ''
           );
           break;
         case ST_CUSTPAYMENT :
           $rep = 112;
           // from, to, currency, bank acc, email, comments
           $ar = array(
-            'PARAM_0' => $doc_no,
-            'PARAM_1' => $doc_no,
-            'PARAM_2' => '',
-            'PARAM_4' => ''
+            'PARAM_0' => $doc_no, 'PARAM_1' => $doc_no, 'PARAM_2' => '', 'PARAM_4' => ''
           );
           break;
         case ST_CUSTREFUND :
           $rep = 113;
           // from, to, currency, bank acc, email, comments
           $ar = array(
-            'PARAM_0' => $doc_no,
-            'PARAM_1' => $doc_no,
-            'PARAM_2' => '',
-            'PARAM_4' => ''
+            'PARAM_0' => $doc_no, 'PARAM_1' => $doc_no, 'PARAM_2' => '', 'PARAM_4' => ''
           );
           break;
         case ST_PROFORMA :
           $rep = 129;
           // from, to, currency, bank acc, email, comments
           $ar = array(
-            'PARAM_0' => $doc_no,
-            'PARAM_1' => $doc_no,
-            'PARAM_2' => '',
-            'PARAM_3' => $email,
-            'PARAM_4' => '2'
+            'PARAM_0' => $doc_no, 'PARAM_1' => $doc_no, 'PARAM_2' => '', 'PARAM_3' => $email, 'PARAM_4' => '2'
           );
           break;
         case ST_PROFORMAQ :
           $rep = 131;
           // from, to, currency, bank acc, email, comments
           $ar = array(
-            'PARAM_0' => $doc_no,
-            'PARAM_1' => $doc_no,
-            'PARAM_2' => '',
-            'PARAM_3' => $email,
-            'PARAM_4' => '3'
+            'PARAM_0' => $doc_no, 'PARAM_1' => $doc_no, 'PARAM_2' => '', 'PARAM_3' => $email, 'PARAM_4' => '3'
           );
           break;
         case ST_SUPPAYMENT :
           $rep = 210;
           // from, to, currency, bank acc, email, comments
           $ar = array(
-            'PARAM_0' => $doc_no,
-            'PARAM_1' => $doc_no,
-            'PARAM_2' => '',
-            'PARAM_3' => $email,
-            'PARAM_4' => ''
+            'PARAM_0' => $doc_no, 'PARAM_1' => $doc_no, 'PARAM_2' => '', 'PARAM_3' => $email, 'PARAM_4' => ''
           );
           break;
         //		default: $ar = array();
       }
       return array($ar, $rep);
     }
-
     /**
      * @static
      *
@@ -184,8 +148,8 @@
      *
      * @return bool|string
      */
-    public static function email_link($doc_no, $link_text, $link = true, $type_no, $class = 'EmailLink', $id = '',
-                                      $emails = array(), $extra = 0, $return = false) {
+    public static function email_link($doc_no, $link_text, $link = true, $type_no, $class = 'EmailLink', $id = '', $emails = array(), $extra = 0, $return = false)
+    {
       if (empty($emails)) {
         return false;
       }
@@ -211,10 +175,10 @@
       HTML::br()->p(array('class' => 'center'));
       UI::select('EmailSelect' . $type_no, $emails, array('style' => 'max-width:400px'))->br;
       UI::button('EmailButton' . $type_no, $link_text, array(
-        'style'    => 'margin:20px',
-        'data-url' => $url
-      ))->p;
-      $js = <<<JS
+                                                            'style'    => 'margin:20px', 'data-url' => $url
+                                                       ))->p;
+      $js
+        = <<<JS
 		$('#EmailButton$type_no').click(function() {
 		if (!confirm("Send email now?")) { return false;}
 			var email = $("#EmailSelect$type_no").val();
@@ -230,7 +194,6 @@ JS;
       }
       JS::onload($js);
     }
-
     /**
      * Universal link to any kind of report.
      * @static
@@ -245,10 +208,10 @@ JS;
      *
      * @return string
      */
-    public static function print_link($link_text, $rep, $pars = array(), $dir = '', $icon = false, $class = 'printlink',
-                                      $id = '') {
+    public static function print_link($link_text, $rep, $pars = array(), $dir = '', $icon = false, $class = 'printlink', $id = '')
+    {
       $url = $dir == '' ? BASE_URL . 'reporting/prn_redirect.php?' : $dir;
-      $id  = JS::default_focus($id);
+      $id  = JS::defaultFocus($id);
       foreach ($pars as $par => $val) {
         $pars[$par] = "$par=" . urlencode($val);
       }
@@ -277,13 +240,12 @@ JS;
      *
      * @return ADV\Core\HTML|string
      */
-    public static function emailDialogue($id, $type, $type_no, $text = "Email") {
+    public static function emailDialogue($id, $type, $type_no, $text = "Email")
+    {
       HTML::setReturn(true);
       UI::button(false, $text, array(
-        'class'        => 'button email-button',
-        'data-emailid' => $id . '-' . $type . '-' .
-          $type_no
-      ));
+                                    'class'        => 'button email-button', 'data-emailid' => $id . '-' . $type . '-' . $type_no
+                               ));
       return HTML::setReturn(false);
     }
   }

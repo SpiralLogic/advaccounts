@@ -1,192 +1,156 @@
 <?php
-namespace ADV\Core;
+  namespace ADV\Core;
 
+  /**
+   * Container test case.
+   */
+  class DICTests extends \PHPUnit_Framework_TestCase
+  {
+    /**
+     * @var Container
+     */
+    private $container;
+    /**
+     * Prepares the environment before running a test.
+     */
+    protected function setUp()
+    {
+      parent::setUp();
+      $this->container = new DIC();
+    }
+    /**
+     * Cleans up the environment after running a test.
+     */
+    protected function tearDown()
+    {
+      $this->container = null;
+      parent::tearDown();
+    }
+    public function testSetAndHas()
+    {
+      $c = $this->container;
 
-/**
- * Container test case.
- */
-class DICTests extends \PHPUnit_Framework_TestCase
-{
-	/**
-	 * @var Container
-	 */
-	private $container;
+      // Explicit Call
+      $c->set('test', function() { });
+      $this->assertTrue($c->has('test'));
+    }
+    public function testSetParam()
+    {
+      $c = $this->container;
 
-	/**
-	 * Prepares the environment before running a test.
-	 */
-	protected function setUp()
-	{
-		parent::setUp();
-		$this->container = new DIC();
-	}
+      // Explicit Call Only
+      $c->setParam('test', 'testing');
+      $this->assertEquals('testing', $c->get('test'));
+    }
+    public function testGet()
+    {
+      $c = $this->container;
 
-	/**
-	 * Cleans up the environment after running a test.
-	 */
-	protected function tearDown()
-	{
-		$this->container = null;
-		parent::tearDown();
-	}
+      // Explicit Call
+      $c->set('test', function($c, $name)
+      {
+        return new TestObj($name);
+      });
+      $obj = $c->get('test', 'testing');
+      $this->assertInstanceOf('\\ADV\\Core\\TestObj', $obj);
+      $this->assertAttributeEquals('testing', 'name', $obj);
+    }
+    public function testFresh()
+    {
+      $c = $this->container;
 
-	public function testSetAndHas()
-	{
-		$c = $this->container;
+      $c->set('Obj', function($c, $name)
+      {
+        return new TestObj($name);
+      });
 
-		// Explicit Call
-		$c->set('test', function() {});
-		$this->assertTrue($c->has('test'));
+      $o1 = $c->fresh('Obj', 'one');
+      $o2 = $c->fresh('Obj', 'one');
+      $this->assertNotSame($o1, $o2);
+    }
+    /*
+    public function testDelete()
+    {
+      $c = $this->container;
+      $c->setObj(function() { return new \stdClass(); });
+      $c->deleteObj();
+    }
+    */
 
-		// Magic Call
-		$c->setTest2(function() {});
-		$this->assertTrue($c->hasTest2());
-	}
+    public function testDependency()
+    {
+      $c = $this->container;
 
-	public function testSetParam()
-	{
-		$c = $this->container;
+      $c->set('Parent', function()
+      {
+        return new \stdClass();
+      });
 
-		// Explicit Call Only
-		$c->setParam('test', 'testing');
-		$this->assertEquals('testing', $c->get('test'));
-	}
+      $c->set('Child', function($c)
+      {
+        $child         = new \stdClass();
+        $child->parent = $c->get('Parent');
+        return $child;
+      });
 
-	public function testGet()
-	{
-		$c = $this->container;
+      $parent = $c->get('Parent');
+      $child  = $c->get('Child');
 
-		// Explicit Call
-		$c->set('test', function($c, $name) {
-			return new TestObj($name);
-		});
-		$obj = $c->get('test', 'testing');
-		$this->assertInstanceOf('\\ADV\\Core\\TestObj', $obj);
-		$this->assertAttributeEquals('testing', 'name', $obj);
+      $this->assertSame($parent, $child->parent);
+    }
+    public function testConstructorArguments()
+    {
+      $c = $this->container;
 
-		// Magic Call
-		$c->setAnotherTest(function($c, $name) {
-			return new TestObj($name);
-		});
-		$obj2 = $c->getAnotherTest('still testing');
-		$this->assertInstanceOf('\\ADV\\Core\\TestObj', $obj2);
-		$this->assertAttributeEquals('still testing', 'name', $obj2);
+      $c->set('TestObj', function($c, $name)
+      {
+        return new TestObj($name);
+      });
 
-		// Sanity Check
-		$this->assertNotSame($obj, $obj2);
-	}
+      $o1 = $c->get('TestObj', 'A');
+      $o2 = $c->get('TestObj');
+      $o3 = $c->fresh('TestObj', 'B');
+      $o4 = $c->get('TestObj', 'A');
 
-	public function testFresh()
-	{
-		$c = $this->container;
+      $this->assertAttributeEquals('A', 'name', $o1);
+      $this->assertAttributeEquals('A', 'name', $o2);
+      $this->assertAttributeEquals('B', 'name', $o3);
+      $this->assertSame($o1, $o4);
+    }
+    public function testAlternateMethodFormat()
+    {
+      $c = $this->container;
 
-		$c->setObj(function($c, $name) {
-			return new TestObj($name);
-		});
+      $c['arrayaccess'] = function($c, $name)
+      {
+        return new TestObj($name);
+      };
 
-		$o1 = $c->fresh('obj', 'one');
-		$o2 = $c->freshObj('Two');
-		$o3 = $c->fresh_obj('Three');
-		$o4 = $c->newObj('Four');
-		$o5 = $c->new_obj('Five');
+      $obj = $c->get('arrayaccess', 'wawa');
+      $this->assertInstanceOf('ADV\\Core\\TestObj', $obj);
+      $this->assertAttributeEquals('wawa', 'name', $obj);
+    }
+    public function testMixedMethodFormat()
+    {
+      $c = $this->container;
 
-		$this->assertNotSame($o1, $o2);
-		$this->assertNotSame($o1, $o3);
-		$this->assertNotSame($o1, $o4);
-		$this->assertNotSame($o1, $o5);
+      $c->set('ObjectOne', function()
+      {
+        return new TestObj('object one');
+      });
 
-		$this->assertNotSame($o2, $o3);
-		$this->assertNotSame($o2, $o4);
-		$this->assertNotSame($o2, $o5);
+      $obj = $c['ObjectOne'];
 
-		$this->assertNotSame($o3, $o4);
-		$this->assertNotSame($o3, $o5);
+      $this->assertInstanceOf('\\ADV\\Core\\TestObj', $obj);
+      $this->assertAttributeEquals('object one', 'name', $obj);
+    }
+  }
 
-		$this->assertNotSame($o4, $o5);
-	}
-
-	/*
-	public function testDelete()
-	{
-		$c = $this->container;
-		$c->setObj(function() { return new \stdClass(); });
-		$c->deleteObj();
-	}
-	*/
-
-	public function testDependency()
-	{
-		$c = $this->container;
-
-		$c->setParent(function() {
-			return new \stdClass();
-		});
-
-		$c->setChild(function($c) {
-			$child = new \stdClass();
-			$child->parent = $c->getParent();
-			return $child;
-		});
-
-		$parent = $c->getParent();
-		$child = $c->getChild();
-
-		$this->assertSame($parent, $child->parent);
-	}
-
-	public function testConstructorArguments()
-	{
-		$c = $this->container;
-
-		$c->setTestObj(function($c, $name) {
-			return new TestObj($name);
-		});
-
-		$o1 = $c->getTestObj('A');
-		$o2 = $c->getTestObj();
-		$o3 = $c->newTestObj('B');
-		$o4 = $c->getTestObj('A');
-
-		$this->assertAttributeEquals('A', 'name', $o1);
-		$this->assertAttributeEquals('A', 'name', $o2);
-		$this->assertAttributeEquals('B', 'name', $o3);
-		$this->assertSame($o1, $o4);
-	}
-
-	public function testAlternateMethodFormat()
-	{
-		$c = $this->container;
-
-		$c->set_with_underscores(function($c, $name) {
-			return new TestObj($name);
-		});
-
-		$obj = $c->get_with_underscores('Alternate');
-
-		$this->assertInstanceOf('\\ADV\\Core\\TestObj', $obj);
-		$this->assertAttributeEquals('Alternate', 'name', $obj);
-	}
-
-	public function testMixedMethodFormat()
-	{
-		$c = $this->container;
-
-		$c->setObjectOne(function() {
-			return new TestObj('object one');
-		});
-
-		$obj = $c->get_object_one();
-
-		$this->assertInstanceOf('\\ADV\\Core\\TestObj', $obj);
-		$this->assertAttributeEquals('object one', 'name', $obj);
-	}
-}
-class TestObj
-{
-	public $name;
-
-	function __construct($name)
-	{
-		$this->name = $name;
-	}
-}
+  class TestObj
+  {
+    public $name;
+    function __construct($name)
+    {
+      $this->name = $name;
+    }
+  }

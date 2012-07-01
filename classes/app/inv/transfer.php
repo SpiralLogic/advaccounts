@@ -65,8 +65,8 @@
     public static function get($trans_no)
     {
       $result = Inv_Transfer::get_items($trans_no);
-      if (DB::num_rows($result) < 2) {
-        Errors::db_error("transfer with less than 2 items : $trans_no", "");
+      if (DB::numRows($result) < 2) {
+        Errors::databaseError("transfer with less than 2 items : $trans_no", "");
       }
       // this public static function is very bad that it assumes that 1st record and 2nd record contain the
       // from and to locations - if get_stock_moves uses a different ordering than trans_no then
@@ -90,7 +90,7 @@
     public static function get_items($trans_no)
     {
       $result = Inv_Movement::get(ST_LOCTRANSFER, $trans_no);
-      if (DB::num_rows($result) == 0) {
+      if (DB::numRows($result) == 0) {
         return null;
       }
 
@@ -118,8 +118,8 @@
      */
     public static function update_pid($type, $stock_id, $from, $to, $pid, $cost)
     {
-      $from = Dates::date2sql($from);
-      $to   = Dates::date2sql($to);
+      $from = Dates::dateToSql($from);
+      $to   = Dates::dateToSql($to);
       $sql  = "UPDATE stock_moves SET standard_cost=" . DB::escape($cost) . " WHERE type=" . DB::escape($type) . "	AND stock_id=" . DB::escape($stock_id) . " AND tran_date>='$from' AND tran_date<='$to'
                 AND person_id = " . DB::escape($pid);
       DB::query($sql, "The stock movement standard_cost cannot be updated");
@@ -131,8 +131,8 @@
       Inv_Location::row(_("From Location:"), 'FromStockLocation', null);
       Inv_Location::row(_("To Location:"), 'ToStockLocation', null);
       Table::section(2, "33%");
-       Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_LOCTRANSFER));
-       Forms::dateRow(_("Date:"), 'AdjDate', '', true);
+      Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_LOCTRANSFER));
+      Forms::dateRow(_("Date:"), 'AdjDate', '', true);
       Table::section(3, "33%");
       Inv_Movement::row(_("Transfer Type:"), 'type', null);
       Table::endOuter(1); // outer table
@@ -203,13 +203,13 @@
         $_POST['qty']   = Num::format(0, $dec);
         $_POST['units'] = $item_info["units"];
       }
-       Forms::qtyCellsSmall(null, 'qty', $_POST['qty'], null, null, $dec);
+      Forms::qtyCellsSmall(null, 'qty', $_POST['qty'], null, null, $dec);
       Cell::label($_POST['units'], '', 'units');
       if ($id != -1) {
         Forms::buttonCell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
         Forms::buttonCell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
         Forms::hidden('LineNo', $line_no);
-        JS::set_focus('qty');
+        JS::setFocus('qty');
       } else {
         Forms::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
       }
@@ -219,7 +219,7 @@
     {
       echo "<br>";
       Table::start();
-       Forms::textareaRow(_("Memo"), 'memo_', null, 50, 3);
+      Forms::textareaRow(_("Memo"), 'memo_', null, 50, 3);
       Table::end(1);
     }
   }

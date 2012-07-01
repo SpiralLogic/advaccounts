@@ -112,7 +112,7 @@
           }
         }
         $comments = DB_Comments::get($j, $i);
-        if ($comments && DB::num_rows($comments)) {
+        if ($comments && DB::numRows($comments)) {
           $rep->NewLine();
           while ($comment = DB::fetch($comments)) {
             $rep->TextColLines(0, 6, $comment['memo_'], -2);
@@ -120,8 +120,8 @@
         }
         $display_sub_total = Num::format($SubTotal, $dec);
         $display_freight   = Num::format($sign * $myrow["ov_freight"], $dec);
-        $fromBottom = ($myrow['type']==ST_SALESINVOICE)?15:12;
-        $rep->row          = $rep->bottomMargin + ( $fromBottom * $rep->lineHeight);
+        $fromBottom        = ($myrow['type'] == ST_SALESINVOICE) ? 15 : 12;
+        $rep->row          = $rep->bottomMargin + ($fromBottom * $rep->lineHeight);
         $linetype          = true;
         $doctype           = $j;
         $doc_included      = $doc_sub_total = $doc_shipping = $doc_amount = $doc_total_invoice = $doc_invoice_no = '';
@@ -151,16 +151,16 @@
         $rep->Font('bold');
         $rep->TextCol(3, 7, $doc_total_invoice, -2);
         $rep->TextCol(7, 8, $display_total, -2);
-        $words = Item_Price::to_words($myrow['Total'], $j);
+        $words = Item_Price::toWords($myrow['Total'], $j);
         if ($myrow['type'] == ST_SALESINVOICE) {
           $rep->NewLine();
           $rep->NewLine();
-          $invBalance = Num::price_format(Sales_Allocation::get_balance($myrow['type'], $myrow['trans_no']));
+          $invBalance = Num::priceFormat(Sales_Allocation::get_balance($myrow['type'], $myrow['trans_no']));
           $rep->TextCol(3, 7, 'Total Received', -2);
           $rep->AmountCol(7, 8, $myrow['Total'] - $invBalance, $dec, -2);
           $rep->NewLine();
           $rep->TextCol(3, 7, 'Outstanding Balance', -2);
-          $rep->TextCol(7, 8, $invBalance,  -2);
+          $rep->TextCol(7, 8, $invBalance, -2);
           $rep->NewLine();
           if ($words != "") {
             $rep->NewLine(1);

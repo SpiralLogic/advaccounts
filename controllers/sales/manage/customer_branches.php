@@ -34,12 +34,12 @@
     if (strlen($_POST['br_name']) == 0) {
       $input_error = 1;
       Event::error(_("The Branch name cannot be empty."));
-      JS::set_focus('br_name');
+      JS::setFocus('br_name');
     }
     if (strlen($_POST['br_ref']) == 0) {
       $input_error = 1;
       Event::error(_("The Branch short name cannot be empty."));
-      JS::set_focus('br_ref');
+      JS::setFocus('br_ref');
     }
     if ($input_error != 1) {
       if ($selected_id != -1) {
@@ -83,7 +83,7 @@
       Event::success($note);
       $Mode = MODE_RESET;
       if (Input::request('frame')) {
-        JS::set_focus("Select" . ($_POST['branch_id'] == -1 ? DB::insert_id() : $_POST['branch_id']));
+        JS::setFocus("Select" . ($_POST['branch_id'] == -1 ? DB::insertId() : $_POST['branch_id']));
       }
     }
   } elseif ($Mode == MODE_DELETE) {
@@ -91,13 +91,13 @@
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
     $sql    = "SELECT COUNT(*) FROM debtor_trans WHERE branch_id=" . DB::escape($_POST['branch_id']) . " AND debtor_id = " . DB::escape($_POST['customer_id']);
     $result = DB::query($sql, "could not query debtortrans");
-    $myrow  = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this branch because customer transactions have been created to this branch."));
     } else {
       $sql    = "SELECT COUNT(*) FROM sales_orders WHERE branch_id=" . DB::escape($_POST['branch_id']) . " AND debtor_id = " . DB::escape($_POST['customer_id']);
       $result = DB::query($sql, "could not query sales orders");
-      $myrow  = DB::fetch_row($result);
+      $myrow  = DB::fetchRow($result);
       if ($myrow[0] > 0) {
         Event::error(_("Cannot delete this branch because sales orders exist for it. Purge old sales orders first."));
       } else {
@@ -151,17 +151,20 @@
         _("Inactive") => 'inactive',
         //		array('fun'=>'inactive'),
         ' '           => array(
-          'insert' => true, 'fun' => function ($row) {
+          'insert' => true, 'fun' => function ($row)
+          {
             return Forms::button("Select" . $row["branch_id"], $row["branch_id"], '', ICON_ADD, 'selector');
           }
         ),
         array(
-          'insert' => true, 'fun' => function ($row) {
+          'insert' => true, 'fun' => function ($row)
+        {
           return Forms::button("Edit" . $row["branch_id"], _("Edit"), '', ICON_EDIT);
         }
         ),
         array(
-          'insert' => true, 'fun' => function ($row) {
+          'insert' => true, 'fun' => function ($row)
+        {
           return Forms::button("Delete" . $row["branch_id"], _("Delete"), '', ICON_DELETE);
         }
         )
@@ -191,7 +194,7 @@
             AND debtor_id=" . DB::escape($_POST['customer_id']);
       $result = DB::query($sql, "check failed");
       $myrow  = DB::fetch($result);
-      JS::set_focus('br_name');
+      JS::setFocus('br_name');
       $_POST['branch_id']                = $myrow["branch_id"];
       $_POST['br_name']                  = $myrow["br_name"];
       $_POST['br_ref']                   = $myrow["branch_ref"];
@@ -243,13 +246,13 @@
   Forms::hidden('branch_id');
   Forms::hidden('frame', Input::request('frame'));
   Table::sectionTitle(_("Name and Contact"));
-   Forms::textRow(_("Branch Name:"), 'br_name', null, 35, 40);
-   Forms::textRow(_("Branch Short Name:"), 'br_ref', null, 30, 30);
-   Forms::textRow(_("Contact Person:"), 'contact_name', null, 35, 40);
-   Forms::textRow(_("Phone Number:"), 'phone', null, 32, 30);
-   Forms::textRow(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
-   Forms::textRow(_("Fax Number:"), 'fax', null, 32, 30);
-   Forms::emailRow(_("E-mail:"), 'email', null, 35, 55);
+  Forms::textRow(_("Branch Name:"), 'br_name', null, 35, 40);
+  Forms::textRow(_("Branch Short Name:"), 'br_ref', null, 30, 30);
+  Forms::textRow(_("Contact Person:"), 'contact_name', null, 35, 40);
+  Forms::textRow(_("Phone Number:"), 'phone', null, 32, 30);
+  Forms::textRow(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
+  Forms::textRow(_("Fax Number:"), 'fax', null, 32, 30);
+  Forms::emailRow(_("E-mail:"), 'email', null, 35, 55);
   Table::sectionTitle(_("Sales"));
   Sales_UI::persons_row(_("Sales Person:"), 'salesman', null);
   Sales_UI::areas_row(_("Sales Area:"), 'area', null);
@@ -257,7 +260,7 @@
   Inv_Location::row(_("Default Inventory Location:"), 'default_location', null);
   Sales_UI::shippers_row(_("Default Shipping Company:"), 'default_ship_via', null);
   Tax_Groups::row(_("Tax Group:"), 'tax_group_id', null);
-   Forms::yesnoListRow(_("Disable this Branch:"), 'disable_trans', null);
+  Forms::yesnoListRow(_("Disable this Branch:"), 'disable_trans', null);
   Table::section(2);
   Table::sectionTitle(_("GL Accounts"));
   // 2006-06-14. Changed gl_al_accounts_list to have an optional all_option 'Use Item Sales Accounts'
@@ -266,9 +269,9 @@
   GL_UI::all_row(_("Accounts Receivable Account:"), 'receivables_account');
   GL_UI::all_row(_("Prompt Payment Discount Account:"), 'payment_discount_account');
   Table::sectionTitle(_("Addresses"));
-   Forms::textareaRow(_("Mailing Address:"), 'br_post_address', null, 35, 4);
-   Forms::textareaRow(_("Billing Address:"), 'br_address', null, 35, 4);
-   Forms::textareaRow(_("General Notes:"), 'notes', null, 35, 4);
+  Forms::textareaRow(_("Mailing Address:"), 'br_post_address', null, 35, 4);
+  Forms::textareaRow(_("Billing Address:"), 'br_address', null, 35, 4);
+  Forms::textareaRow(_("General Notes:"), 'notes', null, 35, 4);
   Table::endOuter(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();

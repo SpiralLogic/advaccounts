@@ -7,10 +7,10 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   Page::start(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, Input::request('frame'));
-  $order_number = Input::get_post('order_number', Input::STRING);
-  $supplier_id  = Input::post_get('supplier_id', Input::NUMERIC, -1);
+  $order_number = Input::getPost('order_number', Input::STRING);
+  $supplier_id  = Input::postGet('supplier_id', Input::NUMERIC, -1);
   if (Input::post('SearchOrders')) {
     Ajax::activate('orders_tbl');
   }
@@ -21,7 +21,7 @@
   }
   Ajax::activate('orders_tbl');
   if (Input::post('_control') != 'supplier' && !Input::post('supplier')) {
-    $_POST['supplier_id'] = Session::i()->setGlobal('creditor','');
+    $_POST['supplier_id'] = Session::i()->setGlobal('creditor', '');
   }
   Forms::start();
   if (!Input::request('frame')) {
@@ -42,15 +42,16 @@
     $searchArray = explode(' ', $_POST['ajaxsearch']);
     unset($_POST['supplier_id']);
   }
-  $sql = "SELECT
-	porder.order_no, 
-	porder.reference, 
+  $sql
+    = "SELECT
+	porder.order_no,
+	porder.reference,
 	supplier.name,
 	supplier.supplier_id as id,
 	location.location_name,
-	porder.requisition_no, 
-	porder.ord_date, 
-	supplier.curr_code, 
+	porder.requisition_no,
+	porder.ord_date,
+	supplier.curr_code,
 	Sum(line.unit_price*line.quantity_ordered)+porder.freight AS OrderValue,
 	Sum(line.quantity_ordered - line.quantity_received) AS Received,
 	Sum(line.quantity_received - line.qty_invoiced) AS Invoiced,
@@ -65,7 +66,8 @@
         continue;
       }
       $ajaxsearch = DB::quote("%" . $ajaxsearch . "%");
-      $sql .= " AND (supplier.name LIKE $ajaxsearch OR porder.order_no LIKE $ajaxsearch
+      $sql
+        .= " AND (supplier.name LIKE $ajaxsearch OR porder.order_no LIKE $ajaxsearch
 		 OR porder.reference LIKE $ajaxsearch
 		 OR porder.requisition_no LIKE $ajaxsearch
 		 OR location.location_name LIKE $ajaxsearch)";
@@ -84,8 +86,8 @@
       $sql .= " AND porder.into_stock_location = ";
       $sql .= ($location == 1) ? "'" . LOC_NOT_FAXED_YET . "'" : DB::quote($stock_location);
     } else {
-      $data_after  = Dates::date2sql($_POST['OrdersAfterDate']);
-      $date_before = Dates::date2sql($_POST['OrdersToDate']);
+      $data_after  = Dates::dateToSql($_POST['OrdersAfterDate']);
+      $date_before = Dates::dateToSql($_POST['OrdersToDate']);
       $sql .= " AND porder.ord_date >= '$data_after'";
       $sql .= " AND porder.ord_date <= '$date_before'";
     }
@@ -110,7 +112,8 @@
     _("Order Total") => 'amount', //
     // Edit link
     array(
-      'insert' => true, 'fun'    => function ($row) { return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . Orders::MODIFY_ORDER . "=" . $row["order_no"], ICON_EDIT); }
+      'insert' => true,
+      'fun'    => function ($row) { return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . Orders::MODIFY_ORDER . "=" . $row["order_no"], ICON_EDIT); }
     ) //
   );
   if ($stock_location) {
@@ -122,11 +125,13 @@
     Arr::append($cols, array(
                             // Email button
                             array(
-                              'insert' => true, 'fun'    => function ($row) { return Reporting::emailDialogue($row['id'], ST_PURCHORDER, $row['order_no']); }
+                              'insert' => true,
+                              'fun'    => function ($row) { return Reporting::emailDialogue($row['id'], ST_PURCHORDER, $row['order_no']); }
                             ), //
                             // Print button
                             array(
-                              'insert' => true, 'fun'    => function ($row) { return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink'); }
+                              'insert' => true,
+                              'fun'    => function ($row) { return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink'); }
                             ), //
                             // Recieve/Invoice button
                             array(

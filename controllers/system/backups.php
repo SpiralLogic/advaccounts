@@ -32,7 +32,7 @@
   Page::start(_($help_context = "Backup and Restore Database"), SA_BACKUP);
   check_paths();
   $db_name     = User::i()->company;
-  $connections = Config::get_all('db');
+  $connections = Config::getAll('db');
   $conn        = $connections[$db_name];
   if (Input::post('creat')) {
     generate_backup($conn, Input::post('comp'), Input::post('comments'));

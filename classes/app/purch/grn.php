@@ -20,7 +20,7 @@
         $currency = null;
       }
       $dec = User::price_dec();
-      Num::price_decimal($price, $dec);
+      Num::priceDecimal($price, $dec);
       $price = Num::round($price, $dec);
       if ($currency != null) {
         $ex_rate                = Bank_Currency::exchange_rate_to_home($currency, $date);
@@ -100,13 +100,13 @@
     }
     public static function add_batch($po_number, $supplier_id, $reference, $location, $date_)
     {
-      $date = Dates::date2sql($date_);
+      $date = Dates::dateToSql($date_);
       $sql
             = "INSERT INTO grn_batch (purch_order_no, delivery_date, supplier_id, reference, loc_code)
             VALUES (" . DB::escape($po_number) . ", " . DB::escape($date) . ", " . DB::escape($supplier_id) . ", " . DB::escape($reference) . ", " . DB::escape($location) . ")";
       DB::query($sql, "A grn batch record could not be inserted.");
 
-      return DB::insert_id();
+      return DB::insertId();
     }
     public static function add_item($grn_batch_id, $po_detail_item, $item_code, $description, $standard_unit_cost, $quantity_received, $price, $discount)
     {
@@ -123,13 +123,13 @@
         VALUES (" . DB::escape($grn_batch_id) . ", " . DB::escape($po_detail_item) . ", " . DB::escape($item_code) . ", " . DB::escape($description) . ", " . DB::escape($quantity_received) . ", " . DB::escape($discount) . ")";
       DB::query($sql, "A GRN detail item could not be inserted.");
 
-      return DB::insert_id();
+      return DB::insertId();
     }
     public static function get_batch_for_item($item)
     {
       $sql    = "SELECT grn_batch_id FROM grn_items WHERE id=" . DB::escape($item);
       $result = DB::query($sql, "Could not retreive GRN batch id");
-      $row    = DB::fetch_row($result);
+      $row    = DB::fetchRow($result);
 
       return $row[0];
     }
@@ -178,10 +178,10 @@
       }
       $sql .= " AND " . "stock_master.stock_id=" . "grn_items.item_code ";
       if ($begin != "") {
-        $sql .= " AND grn_batch.delivery_date>='" . Dates::date2sql($begin) . "'";
+        $sql .= " AND grn_batch.delivery_date>='" . Dates::dateToSql($begin) . "'";
       }
       if ($end != "") {
-        $sql .= " AND grn_batch.delivery_date<='" . Dates::date2sql($end) . "'";
+        $sql .= " AND grn_batch.delivery_date<='" . Dates::dateToSql($end) . "'";
       }
       if ($grn_batch_id != 0) {
         $sql .= " AND grn_batch.id=" . DB::escape($grn_batch_id) . " AND grn_items.grn_batch_id=" . DB::escape($grn_batch_id);
@@ -217,14 +217,14 @@
     public static function get_items_to_order($grn_batch, &$order)
     {
       $result = static::get_items($grn_batch);
-      if (DB::num_rows($result) > 0) {
+      if (DB::numRows($result) > 0) {
         while ($myrow = DB::fetch($result)) {
           if (is_null($myrow["units"])) {
             $units = "";
           } else {
             $units = $myrow["units"];
           }
-          $order->add_to_order($order->lines_on_order + 1, $myrow["item_code"], 1, $myrow["description"], $myrow["unit_price"], $units, Dates::sql2date($myrow["delivery_date"]), $myrow["quantity_inv"], $myrow["qty_recd"], $myrow['discount']);
+          $order->add_to_order($order->lines_on_order + 1, $myrow["item_code"], 1, $myrow["description"], $myrow["unit_price"], $units, Dates::sqlToDate($myrow["delivery_date"]), $myrow["quantity_inv"], $myrow["qty_recd"], $myrow['discount']);
           $order->line_items[$order->lines_on_order]->po_detail_rec = $myrow["po_detail_item"];
         } /* line po from purchase order details */
       } //end of checks on returned data set
@@ -238,7 +238,7 @@
       $po_number = $row["purch_order_no"];
       $result    = $order->get_header($po_number);
       if ($result) {
-        $order->orig_order_date = Dates::sql2date($row["delivery_date"]);
+        $order->orig_order_date = Dates::sqlToDate($row["delivery_date"]);
         $order->location        = $row["loc_code"];
         $order->reference       = $row["reference"];
         static::get_items_to_order($grn_batch, $order);
@@ -256,7 +256,7 @@
       $sql    = "SELECT id FROM grn_batch WHERE id=" . DB::escape($grn_batch);
       $result = DB::query($sql, "Cannot retreive a grn");
 
-      return (DB::num_rows($result) > 0);
+      return (DB::numRows($result) > 0);
     }
     public static function exists_on_invoices($grn_batch)
     {
@@ -267,7 +267,7 @@
         AND grn_batch_id=" . DB::escape($grn_batch);
       $result = DB::query($sql, "Cannot query GRNs");
 
-      return (DB::num_rows($result) > 0);
+      return (DB::numRows($result) > 0);
     }
     public static function void($type, $grn_batch)
     {
@@ -282,7 +282,7 @@
       GL_Trans::void($type, $grn_batch, true);
       // clear the quantities of the grn items in the POs and invoices
       $result = static::get_items($grn_batch);
-      if (DB::num_rows($result) > 0) {
+      if (DB::numRows($result) > 0) {
         while ($myrow = DB::fetch($result)) {
           $sql
             = "UPDATE purch_order_details
@@ -319,16 +319,16 @@
         if (!isset($_POST['ref'])) {
           $_POST['ref'] = Ref::get_next(ST_SUPPRECEIVE);
         }
-         Forms::refCells(_("Reference"), 'ref', '', null, "class='label'");
+        Forms::refCells(_("Reference"), 'ref', '', null, "class='label'");
         if (!isset($_POST['location'])) {
           $_POST['location'] = $po->location;
         }
         Cell::label(_("Deliver Into Location"), "class='label'");
         Inv_Location::cells(null, 'location', $_POST['location']);
         if (!isset($_POST['DefaultReceivedDate'])) {
-          $_POST['DefaultReceivedDate'] = Dates::new_doc_date();
+          $_POST['DefaultReceivedDate'] = Dates::newDocDate();
         }
-         Forms::dateCells(_("Date Items Received"), 'DefaultReceivedDate', '', true, 0, 0, 0, "class='label'");
+        Forms::dateCells(_("Date Items Received"), 'DefaultReceivedDate', '', true, 0, 0, 0, "class='label'");
       } else {
         Cell::labels(_("Reference"), $po->reference, "class='label'");
         Cell::labels(_("Deliver Into Location"), Inv_Location::get_name($po->location), "class='label'");
@@ -358,7 +358,7 @@
           }
         }
       }
-      if (DB::num_rows($result) == 0) {
+      if (DB::numRows($result) == 0) {
         return false;
       }
       /*Set up a table to show the outstanding GRN items for selection */
@@ -381,24 +381,24 @@
             $stock_code = ($myrow["item_code"] != $result1[0]) ? $myrow["item_code"] . '<br>' . $result1[0] : $myrow["item_code"];
             Cell::label($stock_code, "class='stock' data-stock_id='" . $myrow['item_code'] . "'");
             Cell::label($myrow["description"]);
-            Cell::label(Dates::sql2date($myrow["delivery_date"]));
+            Cell::label(Dates::sqlToDate($myrow["delivery_date"]));
             $dec = Item::qty_dec($myrow["item_code"]);
             Cell::qty($myrow["qty_recd"], false, $dec);
             Cell::qty($myrow["quantity_inv"], false, $dec);
             if ($creditor_trans->is_invoice) {
-               Forms::qtyCells(null, 'this_quantity_inv' . $n, Num::format($myrow["qty_recd"] - $myrow["quantity_inv"], $dec), null, null, $dec);
+              Forms::qtyCells(null, 'this_quantity_inv' . $n, Num::format($myrow["qty_recd"] - $myrow["quantity_inv"], $dec), null, null, $dec);
             } else {
-               Forms::qtyCells(null, 'this_quantityCredited' . $n, Num::format(max($myrow["quantity_inv"], 0), $dec), null, null, $dec);
+              Forms::qtyCells(null, 'this_quantityCredited' . $n, Num::format(max($myrow["quantity_inv"], 0), $dec), null, null, $dec);
             }
             $dec2 = 0;
-             Forms::amountCells(null, 'ChgPrice' . $n, Num::price_decimal($myrow["unit_price"], $dec2), null, null, $dec2, 'ChgPriceCalc' . $n);
-             Forms::amountCells(null, 'ExpPrice' . $n, Num::price_decimal($myrow["unit_price"], $dec2), null, null, $dec2, 'ExpPriceCalc' . $n);
-             Forms::amountCellsSmall(null, 'ChgDiscount' . $n, Num::percent_format($myrow['discount'] * 100), null, null, User::percent_dec());
-            Cell::amount(Num::price_decimal(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2), false, ' data-dec="' . $dec2 . '"', 'Ea' . $n);
+            Forms::amountCells(null, 'ChgPrice' . $n, Num::priceDecimal($myrow["unit_price"], $dec2), null, null, $dec2, 'ChgPriceCalc' . $n);
+            Forms::amountCells(null, 'ExpPrice' . $n, Num::priceDecimal($myrow["unit_price"], $dec2), null, null, $dec2, 'ExpPriceCalc' . $n);
+            Forms::amountCellsSmall(null, 'ChgDiscount' . $n, Num::percentFormat($myrow['discount'] * 100), null, null, User::percent_dec());
+            Cell::amount(Num::priceDecimal(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2), false, ' data-dec="' . $dec2 . '"', 'Ea' . $n);
             if ($creditor_trans->is_invoice) {
-               Forms::amountCells(null, 'ChgTotal' . $n, Num::price_decimal($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount']), $dec2), null, null, $dec2, 'ChgTotalCalc' . $n);
+              Forms::amountCells(null, 'ChgTotal' . $n, Num::priceDecimal($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount']), $dec2), null, null, $dec2, 'ChgTotalCalc' . $n);
             } else {
-               Forms::amountCells(null, 'ChgTotal' . $n, Num::price_decimal($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount']), $dec2), null, null, $dec2, 'ChgTotalCalc' . $n);
+              Forms::amountCells(null, 'ChgTotal' . $n, Num::priceDecimal($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount']), $dec2), null, null, $dec2, 'ChgTotalCalc' . $n);
             }
             Forms::submitCells('grn_item_id' . $n, _("Add"), '', ($creditor_trans->is_invoice ? _("Add to Invoice") :
               _("Add to Credit Note")), true);
@@ -464,8 +464,8 @@
         Table::endOuter(0, false);
         Table::startOuter('center');
         Row::start();
-         Forms::dateCells(_("Received between"), 'receive_begin', "", null, -30, 0, 0, "class='vmiddle'");
-         Forms::dateCells(_("and"), 'receive_end', '', null, 1, 0, 0, "class='vmiddle'");
+        Forms::dateCells(_("Received between"), 'receive_begin', "", null, -30, 0, 0, "class='vmiddle'");
+        Forms::dateCells(_("and"), 'receive_end', '', null, 1, 0, 0, "class='vmiddle'");
         Forms::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), true);
         Row::end();
       }
@@ -558,7 +558,7 @@
       } else {
         $colspan = 8;
       }
-      Row::label(_("Total"), Num::price_format($total_grn_value), "colspan=$colspan class='right bold'", "nowrap class='right bold'");
+      Row::label(_("Total"), Num::priceFormat($total_grn_value), "colspan=$colspan class='right bold'", "nowrap class='right bold'");
       if (!$ret) {
         Row::start();
         echo "<td colspan=" . ($colspan + 1) . ">";

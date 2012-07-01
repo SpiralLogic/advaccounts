@@ -32,7 +32,7 @@
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'sales_orders'
     $sql    = "SELECT COUNT(*) FROM sales_orders WHERE ship_via=" . DB::escape($selected_id);
     $result = DB::query($sql, "check failed");
-    $myrow  = DB::fetch_row($result);
+    $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       $cancel_delete = 1;
       Event::error(_("Cannot delete this shipping company because sales orders have been created using this shipper."));
@@ -40,7 +40,7 @@
       // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
       $sql    = "SELECT COUNT(*) FROM debtor_trans WHERE ship_via=" . DB::escape($selected_id);
       $result = DB::query($sql, "check failed");
-      $myrow  = DB::fetch_row($result);
+      $myrow  = DB::fetchRow($result);
       if ($myrow[0] > 0) {
         $cancel_delete = 1;
         Event::error(_("Cannot delete this shipping company because invoices have been created using this shipping company."));
@@ -67,7 +67,7 @@
   Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("Name"), _("Contact Person"), _("Phone Number"), _("Secondary Phone"), _("Address"), "", "");
-   Forms::inactiveControlCol($th);
+  Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0; //row colour counter
   while ($myrow = DB::fetch($result)) {
@@ -76,12 +76,12 @@
     Cell::label($myrow["phone"]);
     Cell::label($myrow["phone2"]);
     Cell::label($myrow["address"]);
-     Forms::inactiveControlCell($myrow["shipper_id"], $myrow["inactive"], 'shippers', 'shipper_id');
+    Forms::inactiveControlCell($myrow["shipper_id"], $myrow["inactive"], 'shippers', 'shipper_id');
     Forms::buttonEditCell("Edit" . $myrow["shipper_id"], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow["shipper_id"], _("Delete"));
     Row::end();
   }
-   Forms::inactiveControlRow($th);
+  Forms::inactiveControlRow($th);
   Table::end(1);
   Table::start('tablestyle2');
   if ($selected_id != -1) {
@@ -98,11 +98,11 @@
     }
     Forms::hidden('selected_id', $selected_id);
   }
-   Forms::textRowEx(_("Name:"), 'shipper_name', 40);
-   Forms::textRowEx(_("Contact Person:"), 'contact', 30);
-   Forms::textRowEx(_("Phone Number:"), 'phone', 32, 30);
-   Forms::textRowEx(_("Secondary Phone Number:"), 'phone2', 32, 30);
-   Forms::textRowEx(_("Address:"), 'address', 50);
+  Forms::textRowEx(_("Name:"), 'shipper_name', 40);
+  Forms::textRowEx(_("Contact Person:"), 'contact', 30);
+  Forms::textRowEx(_("Phone Number:"), 'phone', 32, 30);
+  Forms::textRowEx(_("Secondary Phone Number:"), 'phone2', 32, 30);
+  Forms::textRowEx(_("Address:"), 'address', 50);
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();
@@ -114,7 +114,7 @@
   {
     if (strlen($_POST['shipper_name']) == 0) {
       Event::error(_("The shipping company name cannot be empty."));
-      JS::set_focus('shipper_name');
+      JS::setFocus('shipper_name');
 
       return false;
     }

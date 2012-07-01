@@ -31,7 +31,7 @@
       }
       $sql = "INSERT INTO tax_groups (name, tax_shipping) VALUES (" . DB::escape($name) . ", " . DB::escape($tax_shipping) . ")";
       DB::query($sql, "could not add tax group");
-      $id = DB::insert_id();
+      $id = DB::insertId();
       static::add_items($id, $taxes, $rates);
       DB::commit();
     }
@@ -64,7 +64,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($all = false)
+    public static function getAll($all = false)
     {
       $sql = "SELECT * FROM tax_groups";
       if (!$all) {
@@ -223,12 +223,12 @@
       $sql = "SELECT id, name FROM tax_groups";
 
       return Forms::selectBox($name, $selected_id, $sql, 'id', 'name', array(
-                                                                      'order'         => 'id',
-                                                                      'spec_option'   => $none_option,
-                                                                      'spec_id'       => ALL_NUMERIC,
-                                                                      'select_submit' => $submit_on_change,
-                                                                      'async'         => false,
-                                                                 ));
+                                                                            'order'         => 'id',
+                                                                            'spec_option'   => $none_option,
+                                                                            'spec_id'       => ALL_NUMERIC,
+                                                                            'select_submit' => $submit_on_change,
+                                                                            'async'         => false,
+                                                                       ));
     }
     /**
      * @static
@@ -275,7 +275,7 @@
       }
       $sql    = "SELECT COUNT(*) FROM branches WHERE tax_group_id=" . DB::escape($selected_id);
       $result = DB::query($sql, "could not query customers");
-      $myrow  = DB::fetch_row($result);
+      $myrow  = DB::fetchRow($result);
       if ($myrow[0] > 0) {
         Event::warning(_("Cannot delete this tax group because customer branches been created referring to it."));
 
@@ -283,7 +283,7 @@
       }
       $sql    = "SELECT COUNT(*) FROM suppliers WHERE tax_group_id=" . DB::escape($selected_id);
       $result = DB::query($sql, "could not query suppliers");
-      $myrow  = DB::fetch_row($result);
+      $myrow  = DB::fetchRow($result);
       if ($myrow[0] > 0) {
         Event::warning(_("Cannot delete this tax group because suppliers been created referring to it."));
 

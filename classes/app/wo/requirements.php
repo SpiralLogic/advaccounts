@@ -93,7 +93,7 @@
     public static function display($woid, $quantity, $show_qoh = false, $date = null)
     {
       $result = WO_Requirements::get($woid);
-      if (DB::num_rows($result) == 0) {
+      if (DB::numRows($result) == 0) {
         Display::note(_("There are no Requirements for this Order."), 1, 0);
       } else {
         Table::start('tablestyle grid width90');

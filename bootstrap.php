@@ -45,7 +45,7 @@
   set_exception_handler(function (\Exception $e)
   {
     class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'errors.php';
-    ADV\Core\Errors::exception_handler($e);
+    ADV\Core\Errors::exceptionHandler($e);
   });
   $loader = require COREPATH . 'autoloader.php';
   if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
@@ -90,7 +90,7 @@
     }
     $dic = new \ADV\Core\DIC();
     $loader->registerCache(\ADV\Core\Cache::i());
-    Cache::define_constants('defines', function()
+    Cache::defineConstants('defines', function()
     {
       return include(DOCROOT . 'config' . DS . 'defines.php');
     });
@@ -117,7 +117,7 @@
     if ($show404) {
       header('HTTP/1.0 404 Not Found');
       Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
-          }
+    }
     if ($index || $show404) {
       ADVAccounting::i()->display();
     }

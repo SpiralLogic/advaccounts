@@ -110,20 +110,20 @@
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
-    $accounts = GL_Account::get_all($fromacc, $toacc);
+    $accounts = GL_Account::getAll($fromacc, $toacc);
     while ($account = DB::fetch($accounts)) {
       if (GL_Account::is_balancesheet($account["account_code"])) {
         $begin = "";
       } else {
-        $begin = Dates::begin_fiscalyear();
-        if (Dates::date1_greater_date2($begin, $from)) {
+        $begin = Dates::beginFiscalYear();
+        if (Dates::isGreaterThan($begin, $from)) {
           $begin = $from;
         }
-        $begin = Dates::add_days($begin, -1);
+        $begin = Dates::addDays($begin, -1);
       }
       $prev_balance = GL_Trans::get_balance_from_to($begin, $from, $account["account_code"], $dimension, $dimension2);
       $trans        = GL_Trans::get($from, $to, -1, $account['account_code'], $dimension, $dimension2);
-      $rows         = DB::num_rows($trans);
+      $rows         = DB::numRows($trans);
       if ($prev_balance == 0.0 && $rows == 0) {
         continue;
       }

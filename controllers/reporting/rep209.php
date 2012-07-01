@@ -114,7 +114,7 @@
           $Net = Num::round(($myrow2["unit_price"] * $myrow2["quantity_ordered"]), User::price_dec());
           $SubTotal += $Net;
           $dec2         = 0;
-          $DisplayPrice = Num::price_decimal($myrow2["unit_price"], $dec2);
+          $DisplayPrice = Num::priceDecimal($myrow2["unit_price"], $dec2);
           $DisplayQty   = Num::format($myrow2["quantity_ordered"], Item::qty_dec($myrow2['item_code']));
           $DisplayNet   = Num::format($Net, $dec);
           $rep->TextCol(0, 1, $myrow2['item_code'], -2);
@@ -156,7 +156,7 @@
       $rep->Font('bold');
       $rep->TextCol(3, 6, Report::TOTAL_PO_EX_TAX, -2);
       $rep->TextCol(6, 7, $display_total, -2);
-      $words = Item_Price::to_words($SubTotal, ST_PURCHORDER);
+      $words = Item_Price::toWords($SubTotal, ST_PURCHORDER);
       if ($words != "" && isset($myrow['curr_code'])) {
         $rep->NewLine(1);
         $rep->TextCol(1, 7, $myrow['curr_code'] . ": " . $words, -2);

@@ -26,8 +26,7 @@
   {
     public function _init()
     {
-      User::register_login('ADV\\Core\\Event', 'register_shutdown', [$this, 'doWebsales']);
-
+      User::register_login('ADV\\Core\\Event', 'registerShutdown', [$this, 'doWebsales']);
     }
     public function doWebsales()
     {
@@ -45,7 +44,6 @@
         }
       }
       $this->notOnJobsboard();
-
     }
     /**
      * @return bool|Volusion\Orders
@@ -73,7 +71,7 @@
      */
     protected function getNotOnJobsboard()
     {
-            $results = DB::select('OrderID,ison_jobsboard')->from('WebOrders')->where('ison_jobsboard IS null')->fetch()->all();
+      $results = DB::select('OrderID,ison_jobsboard')->from('WebOrders')->where('ison_jobsboard IS null')->fetch()->all();
 
       return $results;
     }
@@ -192,7 +190,7 @@
       $newJob['Updates'] = $updates;
       $jobsboard_no      = $this->jobsboardDB->_insert('Job_List')->values($newJob)->exec();
       $this->insertJobsboardlines($lineitems, $jobsboard_no);
-            DB::update('WebOrders')->value('ison_jobsboard', $jobsboard_no)->where('OrderID=', $order['OrderID'])->exec();
+      DB::update('WebOrders')->value('ison_jobsboard', $jobsboard_no)->where('OrderID=', $order['OrderID'])->exec();
       $result = $jobsboard_no;
 
       return $result;
@@ -208,14 +206,16 @@
       foreach ($deleted as $line) {
         $line['quantity'] = 0;
         $line['description'] .= " DELETED!";
-        $this->jobsboardDB->_update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->and_where('job_id=', $jobid)->exec();
+        $this->jobsboardDB->_update('JobListItems')->values($line)->where('line_id=', $line['line_id'])
+          ->andWhere('job_id=', $jobid)->exec();
       }
       foreach ($lines as $line) {
         $line['job_id'] = $jobid;
         try {
           $line['line_id'] = DB::insert('JobListItems')->values($line)->exec();
-        } catch (DBDuplicateException $e) {
-          DB::update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->and_where('job_id=', $jobid)->exec();
+        }
+        catch (DBDuplicateException $e) {
+          DB::update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->andWhere('job_id=', $jobid)->exec();
         }
       }
     }

@@ -20,12 +20,12 @@
   Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
   Forms::start();
   if (!Input::post('stock_id')) {
-    Session::i()->setGlobal('stock_id', $_POST['stock_id']);
+    Session::setGlobal('stock_id', $_POST['stock_id']);
   }
   echo "<div class='center bold pad10 font13'> ";
   Item::cells(_("Item:"), 'stock_id', $_POST['stock_id'], false, true, false, false);
   echo "</div>";
-  Session::i()->setGlobal('stock_id', $_POST['stock_id']);
+  Session::setGlobal('stock_id', $_POST['stock_id']);
   $mb_flag           = WO::get_mb_flag($_POST['stock_id']);
   $kitset_or_service = false;
   Display::div_start('status_tbl');

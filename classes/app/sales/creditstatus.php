@@ -42,7 +42,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_all($all = false)
+    public static function getAll($all = false)
     {
       $sql = "SELECT * FROM credit_status";
       if (!$all) {
@@ -137,7 +137,7 @@
               = "SELECT COUNT(*) FROM debtors
             WHERE credit_status=" . DB::escape($selected_id);
       $result = DB::query($sql, "could not query customers");
-      $myrow  = DB::fetch_row($result);
+      $myrow  = DB::fetchRow($result);
       if ($myrow[0] > 0) {
         Event::error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
 
@@ -154,7 +154,7 @@
     {
       if (strlen($_POST['reason_description']) == 0) {
         Event::error(_("The credit status description cannot be empty."));
-        JS::set_focus('reason_description');
+        JS::setFocus('reason_description');
 
         return false;
       }

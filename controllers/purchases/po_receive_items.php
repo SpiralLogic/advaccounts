@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::open_window(900, 500);
+  JS::openWindow(900, 500);
   Page::start(_($help_context = "Receive Purchase Order Items"), SA_GRN);
   if (isset($_GET[ADDED_ID])) {
     $grn        = $_GET[ADDED_ID];
@@ -39,7 +39,7 @@
           $_POST[$line->line_no] = Num::format(0, Item::qty_dec($line->stock_id));
         }
         if (!isset($_POST['DefaultReceivedDate']) || $_POST['DefaultReceivedDate'] == "") {
-          $_POST['DefaultReceivedDate'] = Dates::new_doc_date();
+          $_POST['DefaultReceivedDate'] = Dates::newDocDate();
         }
         $order->line_items[$line->line_no]->receive_qty = Validation::input_num($line->line_no);
         if (isset($_POST[$line->stock_id . "Desc"]) && strlen($_POST[$line->stock_id . "Desc"]) > 0) {
@@ -58,10 +58,10 @@
       Ajax::activate('_page_body');
       Page::footer_exit();
     }
-    Session::i()->setGlobal('creditor', $order->supplier_id);
+    Session::setGlobal('creditor', $order->supplier_id);
     $grn                     = Purch_GRN::add($order, $_POST['DefaultReceivedDate'], $_POST['ref'], $_POST['location']);
     $_SESSION['delivery_po'] = $order->order_no;
-    Dates::new_doc_date($_POST['DefaultReceivedDate']);
+    Dates::newDocDate($_POST['DefaultReceivedDate']);
     unset($order->line_items);
     $order->finish($_POST['order_id']);
     unset($order);
@@ -99,7 +99,7 @@
       $total += $line_total;
       Cell::label($line->stock_id);
       if ($qty_outstanding > 0) {
-         Forms::textCells(null, $line->stock_id . "Desc", $line->description, 30, 50);
+        Forms::textCells(null, $line->stock_id . "Desc", $line->description, 30, 50);
       } else {
         Cell::label($line->description);
       }
@@ -109,7 +109,7 @@
       Cell::qty($line->qty_received, false, $dec);
       Cell::qty($qty_outstanding, false, $dec);
       if ($qty_outstanding > 0) {
-         Forms::qtyCells(null, $line->line_no, Num::format($line->receive_qty, $dec), "class='right'", null, $dec);
+        Forms::qtyCells(null, $line->line_no, Num::format($line->receive_qty, $dec), "class='right'", null, $dec);
       } else {
         Cell::label(Num::format($line->receive_qty, $dec), "class='right'");
       }
@@ -120,7 +120,7 @@
     }
   }
   Cell::label(_("Freight"), "colspan=9 class='right'");
-   Forms::amountCellsSmall(null, 'freight', Num::price_format($order->freight));
+  Forms::amountCellsSmall(null, 'freight', Num::priceFormat($order->freight));
   $display_total = Num::format($total + $_POST['freight'], User::price_dec());
   Row::label(_("Total value of items received"), $display_total, "colspan=9 class='right'", ' class="right nowrap"');
   Table::end();

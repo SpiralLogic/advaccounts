@@ -8,8 +8,8 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::set_focus('account');
-  JS::open_window(800, 500);
+  JS::setFocus('account');
+  JS::openWindow(800, 500);
   Page::start(_($help_context = "Tax Inquiry"), SA_TAXREP);
   // Ajax updates
   //
@@ -19,10 +19,10 @@
   if (Input::post('TransFromDate') == "" && Input::post('TransToDate') == "") {
     $date                   = Dates::today();
     $row                    = DB_Company::get_prefs();
-    $edate                  = Dates::add_months($date, -$row['tax_last']);
-    $edate                  = Dates::end_month($edate);
-    $bdate                  = Dates::begin_month($edate);
-    $bdate                  = Dates::add_months($bdate, -$row['tax_prd'] + 1);
+    $edate                  = Dates::addMonths($date, -$row['tax_last']);
+    $edate                  = Dates::endMonth($edate);
+    $bdate                  = Dates::beginMonth($edate);
+    $bdate                  = Dates::addMonths($bdate, -$row['tax_prd'] + 1);
     $_POST["TransFromDate"] = $bdate;
     $_POST["TransToDate"]   = $edate;
   }
@@ -38,8 +38,8 @@
     //Table::start('tablestyle2');
     Table::start('tablestyle_noborder');
     Row::start();
-     Forms::dateCells(_("from:"), 'TransFromDate', '', null, -30);
-     Forms::dateCells(_("to:"), 'TransToDate');
+    Forms::dateCells(_("from:"), 'TransFromDate', '', null, -30);
+    Forms::dateCells(_("to:"), 'TransToDate');
     Forms::submitCells('Show', _("Show"), '', '', 'default');
     Row::end();
     Table::end();
@@ -58,8 +58,8 @@
     Table::header($th);
     $k     = 0;
     $total = 0;
-    $bdate = Dates::date2sql($_POST['TransFromDate']);
-    $edate = Dates::date2sql($_POST['TransToDate']);
+    $bdate = Dates::dateToSql($_POST['TransFromDate']);
+    $edate = Dates::dateToSql($_POST['TransToDate']);
     $taxes = GL_Trans::get_tax_summary($_POST['TransFromDate'], $_POST['TransToDate']);
     while ($tx = DB::fetch($taxes)) {
       $payable     = $tx['payable'];

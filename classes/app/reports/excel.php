@@ -347,7 +347,7 @@
       } else {
         $how = _("Closed");
       }
-      $this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . " (" . $how . ")";
+      $this->fiscal_year = Dates::sqlToDate($year['begin']) . " - " . Dates::sqlToDate($year['end']) . " (" . $how . ")";
       $this->user        = User::i()->name;
       $this->host        = $_SERVER['SERVER_NAME'];
       $this->params      = $params;
@@ -589,7 +589,7 @@
     public function DatePrettyPrint($date, $input_format = 0, $output_format = 0)
     {
       if ($date != '') {
-        $date  = Dates::date2sql($date);
+        $date  = Dates::dateToSql($date);
         $year  = (int) (substr($date, 0, 4));
         $month = (int) (substr($date, 5, 2));
         $day   = (int) (substr($date, 8, 2));
@@ -789,7 +789,7 @@
     public function DateCol($c, $n, $txt, $conv = false, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0)
     {
       if (!$conv) {
-        $txt = Dates::date2sql($txt);
+        $txt = Dates::dateToSql($txt);
       }
       list($year, $mo, $day) = explode("-", $txt);
       $date = $this->ymd2date((int) $year, (int) $mo, (int) $day);
