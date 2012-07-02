@@ -78,6 +78,7 @@
         //	Dimensions::select_row(_("Dimension:"), 'person_id', $_POST['person_id'], false, null, true);
         //	break;
       }
+
       $person_currency = Bank_Currency::for_payment_person($_POST['PayType'], $_POST['person_id']);
       $bank_currency   = Bank_Currency::for_company($_POST['bank_account']);
       GL_ExchangeRate::display($bank_currency, $person_currency, $_POST['date_']);

@@ -10,10 +10,10 @@
   $page_security = isset($_GET['NewPayment']) || (isset($_SESSION['pay_items']) && $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT) ?
     SA_PAYMENT : SA_DEPOSIT;
   JS::openWindow(800, 500);
-  if (isset($_GET['NewPayment'])) {
+  if (isset($_GET['NewPayment']) && !isset($_SESSION['pay_items'])) {
     $_SESSION['page_title'] = _($help_context = "Bank Account Payment Entry");
     handle_new_order(ST_BANKPAYMENT);
-  } else {
+  } elseif (isset($_GET['NewDeposit']) || !isset($_SESSION['pay_items'])) {
     $_SESSION['page_title'] = _($help_context = "Bank Account Deposit Entry");
     handle_new_order(ST_BANKDEPOSIT);
   }
@@ -108,6 +108,7 @@
   }
   Forms::start();
   Bank_UI::header($_SESSION['pay_items']);
+
   Table::start('tablesstyle2 width90 pad10');
   Row::start();
   echo "<td>";

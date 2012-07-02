@@ -144,8 +144,8 @@
       $this->ajaxpage = (AJAX_REFERRER || Ajax::inAjax());
       $this->menu     = ($this->frame) ? false : $menu;
       $this->theme    = $this->User->theme();
-      $this->encoding = $_SESSION['Language']->encoding;
-      $this->lang_dir = $_SESSION['Language']->dir;
+      $this->encoding = $_SESSION['language']->encoding;
+      $this->lang_dir = $_SESSION['language']->dir;
       if (!$this->ajaxpage) {
         $this->header();
         JS::openWindow(900, 500);
@@ -181,7 +181,7 @@
       $header['lang_dir']    = $this->lang_dir;
       $header['title']       = $this->title;
       $header['body_class']  = !$this->menu ? 'lite' : '';
-      $header['encoding']    = $_SESSION['Language']->encoding;
+      $header['encoding']    = $_SESSION['language']->encoding;
       $header['stylesheets'] = $this->renderCSS();
       $header['scripts']     = [];
       if (class_exists('JS', false)) {
@@ -198,7 +198,8 @@
       $menu['theme']       = $this->User->theme();
       $menu['company']     = $this->Config->_get('db.' . $this->User->company)['company'];
       $menu['server_name'] = $_SERVER['SERVER_NAME'];
-      $menu['username']    = $this->User->name;
+      $menu['username']    = $this->User->username;
+      $menu['name']        = $this->User->name;
       $menu['help_url']    = '';
       if ($this->Config->_get('help_baseurl') != null) {
         $menu['help_url'] = $this->help_url();
@@ -225,7 +226,7 @@
     protected function help_url($context = null)
     {
       global $help_context;
-      $country = $_SESSION['Language']->code;
+      $country = $_SESSION['language']->code;
       if ($context != null) {
         $help_page_url = $context;
       } elseif (isset($help_context)) {

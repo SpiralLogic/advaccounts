@@ -1079,7 +1079,7 @@
      */
     public static function buttonDeleteCell($line_no, $value, $title = false)
     {
-      if (strpos($line_no, 'Delete') === 0) {
+      if (strpos($line_no, 'Delete') === 0 || strpos($line_no, 'BDel') === 0) {
         Forms::buttonCell($line_no, $value, $title, ICON_DELETE);
       } else {
         Forms::buttonCell('_action', Orders::DELETE_LINE . $line_no, $value, ICON_DELETE);
@@ -1092,7 +1092,7 @@
      */
     public static function buttonEditCell($line_no, $value, $title = false)
     {
-      if (strpos($line_no, 'Edit') === 0) {
+      if (strpos($line_no, 'Edit') === 0 || strpos($line_no, 'BEdit') === 0) {
         Forms::buttonCell($line_no, $value, $title, ICON_EDIT);
       } else {
         Forms::buttonCell('_action', Orders::EDIT_LINE . $line_no, $value, ICON_EDIT);

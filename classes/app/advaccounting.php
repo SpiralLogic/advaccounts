@@ -243,7 +243,7 @@
         }
         $this->User->ui_mode = $_POST['ui_mode'];
         $this->Session->regenerate();
-        $this->Session['Language']->setLanguage($this->Session['Language']->code);
+        $this->Session['language']->setLanguage($this->Session['language']->code);
       }
     }
     protected function showLogin()

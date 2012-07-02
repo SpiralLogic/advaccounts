@@ -271,9 +271,9 @@
       $this->currency       = '';
       $this->scaleLogoWidth = false; // if Logo, scale on width (else height).
       $this->headerFunc     = 'Header'; // default to the original header template
-      $rtl                  = ($_SESSION['Language']->dir === 'rtl' ? 'rtl' : 'ltr');
-      $code                 = $_SESSION['Language']->code;
-      $enc                  = strtoupper($_SESSION['Language']->encoding);
+      $rtl                  = ($_SESSION['language']->dir === 'rtl' ? 'rtl' : 'ltr');
+      $code                 = $_SESSION['language']->code;
+      $enc                  = strtoupper($_SESSION['language']->encoding);
       // for the language array in class.pdf.inc
       $l = array(
         'a_meta_charset' => $enc, 'a_meta_dir' => $rtl, 'a_meta_language' => $code, 'w_page' => 'page'

@@ -184,8 +184,8 @@
       $this->y                   = 0;
       $this->currency            = '';
       $this->excelColWidthFactor = $excelColWidthFactor;
-      $rtl                       = ($_SESSION['Language']->dir == 'rtl');
-      $this->code                = strtolower($_SESSION['Language']->encoding);
+      $rtl                       = ($_SESSION['language']->dir == 'rtl');
+      $this->code                = strtolower($_SESSION['language']->encoding);
       $this->filename            = $filename . ".xls";
       $this->unique_name         = uniqid('') . ".xls";
       $this->path                = COMPANY_PATH . 'pdf_files';

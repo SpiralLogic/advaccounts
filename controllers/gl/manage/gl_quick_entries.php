@@ -63,6 +63,7 @@
   $th = array(_("Description"), _("Type"), "", "");
   Table::header($th);
   $k = 0;
+  global $quick_entry_types, $quick_actions;
   while ($myrow = DB::fetch($result)) {
     $type_text = $quick_entry_types[$myrow["type"]];
     Cell::label($myrow['description']);
@@ -133,7 +134,7 @@
       if ($dim > 1) {
         Cell::label(Dimensions::get_string($myrow['dimension2_id'], true));
       }
-      Forms::buttonEditCell("BEd" . $myrow["id"], _("Edit"));
+      Forms::buttonEditCell("BEdit" . $myrow["id"], _("Edit"));
       Forms::buttonDeleteCell("BDel" . $myrow["id"], _("Delete"));
       Row::end();
     }
@@ -147,7 +148,7 @@
     Display::div_start('edit_line');
     Table::start('tablestyle2');
     if ($selected_id2 != -1) {
-      if ($Mode2 == 'BEd') {
+      if ($Mode2 == 'BEdit') {
         //editing an existing status code
         $myrow                  = GL_QuickEntry::has_line($selected_id2);
         $_POST['id']            = $myrow["id"];
@@ -217,7 +218,7 @@
         return array($m, $selected_id2);
       }
     }
-    foreach (array('BEd', 'BDel') as $m) {
+    foreach (array('BEdit', 'BDel') as $m) {
       foreach ($_POST as $p => $pvar) {
         if (strpos($p, $m) === 0) {
           //				$selected_id2 = strtr(substr($p, strlen($m)), array('%2E'=>'.'));

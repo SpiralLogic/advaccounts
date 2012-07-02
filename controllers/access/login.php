@@ -17,7 +17,7 @@
   $def_theme     = "default";
   $login_timeout = User::i()->last_act;
   $title         = $login_timeout ? _('Authorization timeout') : APP_TITLE . " " . VERSION . " - " . _("Login");
-  $encoding      = isset($_SESSION['Language']->encoding) ? $_SESSION['Language']->encoding : "utf-8";
+  $encoding      = isset($_SESSION['language']->encoding) ? $_SESSION['language']->encoding : "utf-8";
   $rtl           = isset($_SESSION['Language']->dir) ? $_SESSION['Language']->dir : "ltr";
   if (!headers_sent()) {
     header("Content-type: text/html; charset=UTF-8");

@@ -42,7 +42,7 @@
      */
     public function __construct()
     {
-      $enc = (session_status() == PHP_SESSION_ACTIVE) ? $_SESSION['Language']->encoding : 'UTF-8';
+      $enc = (session_status() == PHP_SESSION_ACTIVE) ? $_SESSION['language']->encoding : 'UTF-8';
       parent::__construct($enc);
     }
     /**

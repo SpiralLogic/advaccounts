@@ -1,2 +1,3 @@
 <?php
-  var_dump(\ADV\Core\Config::i()->_getAll('access_levels'));
+  Page::start('test');
+  Page::end();

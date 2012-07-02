@@ -227,7 +227,7 @@
         return $value;
       }
       if (is_string($value)) {
-        $value = htmlentities($value, ENT_COMPAT, $_SESSION['Language']->encoding, false);
+        $value = htmlentities($value, ENT_COMPAT, $_SESSION['language']->encoding, false);
       } elseif (is_array($value) or ($value instanceof \Iterator and $value instanceof \ArrayAccess)) {
         // Add to $already_cleaned variable when object
         is_object($value) and $already_cleaned[] = $value;

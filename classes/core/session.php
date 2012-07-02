@@ -16,6 +16,7 @@
   class SessionException extends \Exception
   {
   }
+
   /**
    * @property \ADVAccounting App
    * @method  getGlobal($var, $default = null)
@@ -70,7 +71,7 @@
       }
       header("Cache-control: private");
       $this->setTextSupport();
-      $this['Language'] = new Language();
+      $this['language'] = new Language();
       $this->_session   = &$_SESSION;
       if (!isset($this->_session['globals'])) {
         $this['globals'] = [];

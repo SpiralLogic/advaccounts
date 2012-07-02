@@ -45,13 +45,13 @@
   set_exception_handler(function (\Exception $e)
   {
     class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'errors.php';
-    ADV\Core\Errors::exceptionHandler($e);
+    ADV\Core\Errors::exception_handler($e);
   });
   $loader = require COREPATH . 'autoloader.php';
   if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
     new \ADV\Core\Assets();
   } else {
-    if (extension_loaded('xhprof') && !$_SERVER['QUERY_STRING'] || ($_SERVER['QUERY_STRING'] && substr_compare($_SERVER['QUERY_STRING'], '/profile/', 0, 9, true) !== 0)) {
+    /*    if (extension_loaded('xhprof') && !$_SERVER['QUERY_STRING'] || ($_SERVER['QUERY_STRING'] && substr_compare($_SERVER['QUERY_STRING'], '/profile/', 0, 9, true) !== 0)) {
       register_shutdown_function(function()
       {
         register_shutdown_function(function()
@@ -62,7 +62,7 @@
           $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
         });
       });
-    }
+    }*/
     if (!function_exists('e')) {
       /**
        * @param $string
@@ -90,16 +90,20 @@
     }
     $dic = new \ADV\Core\DIC();
     $loader->registerCache(\ADV\Core\Cache::i());
-    Cache::defineConstants($_SERVER["SERVER_NAME"] . 'defines', function()
+    Cache::i()->_defineConstants($_SERVER['SERVER_NAME'] . '.defines', function()
     {
       return include(DOCROOT . 'config' . DS . 'defines.php');
     });
     include(DOCROOT . 'config' . DS . 'types.php');
-    include(DOCROOT . 'config' . DS . 'access_levels.php');
     Session::i();
     Ajax::i();
     Config::i();
     ob_start('adv_ob_flush_handler', 0);
+    ADVAccounting::i();
+  }
+  if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
+    new \ADV\Core\Assets();
+  } else {
     $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
     $index      = $controller == $_SERVER['SCRIPT_NAME'];
     $show404    = false;
@@ -122,3 +126,6 @@
       ADVAccounting::i()->display();
     }
   }
+
+
+
