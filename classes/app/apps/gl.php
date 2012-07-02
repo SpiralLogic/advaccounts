@@ -38,7 +38,7 @@
       $this->add_lapp_function(2, _("Bank &Accounts"), "/gl/manage/bank_accounts?", SA_BANKACCOUNT);
       $this->add_lapp_function(2, _("&Quick Entries"), "/gl/manage/gl_quick_entries?", SA_QUICKENTRY);
       $this->add_lapp_function(2, _("Account &Tags"), "system/tags?type=account", SA_GLACCOUNTTAGS);
-      $this->add_lapp_function(2, _("Payment Methods"), "/gl/manage/payment_methods", SA_BANKACCOUNT);
+    //  $this->add_lapp_function(2, _("Payment Methods"), "/gl/manage/payment_methods", SA_BANKACCOUNT);
       $this->add_lapp_function(2, _("&Currencies"), "/gl/manage/currencies?", SA_CURRENCY);
       $this->add_lapp_function(2, _("&Exchange Rates"), "/gl/manage/exchange_rates?", SA_EXCHANGERATE);
       $this->add_rapp_function(2, _("&GL Accounts"), "/gl/manage/gl_accounts?", SA_GLACCOUNT);
