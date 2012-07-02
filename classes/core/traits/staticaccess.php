@@ -14,6 +14,7 @@
    */
   trait StaticAccess
   {
+
     /**
      * @static
      *
@@ -31,8 +32,7 @@
      *
      * @return mixed
      */
-    public static function __callStatic($func, $args)
-    {
+    public static function __callStatic($func, $args) {
       if (method_exists(static::i(), '_' . $func)) {
         return call_user_func_array(array(static::i(), '_' . $func), $args);
       }
@@ -43,8 +43,7 @@
      *
      * @return mixed
      */
-    public function __call($func, $args)
-    {
+    public function __call($func, $args) {
       if (method_exists($this, '_' . $func)) {
         return call_user_func_array(array($this, '_' . $func), $args);
       }

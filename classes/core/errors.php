@@ -16,6 +16,7 @@
    */
   class Errors
   {
+
     /**
 
      */
@@ -69,8 +70,7 @@
      */
     protected static $useConfigClass;
     /** @static Initialiser */
-    public static function init()
-    {
+    public static function init() {
       static::$useConfigClass = class_exists('Config', false);
       error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
       if (class_exists('\ADV\Core\Event')) {
@@ -88,8 +88,7 @@
      *
      * @return bool
      */
-    public static function handler($type, $message, $file = null, $line = null, $log = true)
-    {
+    public static function handler($type, $message, $file = null, $line = null, $log = true) {
       if (in_array($type, static::$ignore)) {
         return true;
       }
@@ -122,8 +121,7 @@
      *
      * @param \Exception $e
      */
-    public static function exceptionHandler(\Exception $e)
-    {
+    public static function exceptionHandler(\Exception $e) {
       $error                    = array(
         'type'    => -1,
         'code'    => $e->getCode(),
@@ -140,8 +138,7 @@
       static::$errors[]   = $error;
     }
     /** @static */
-    public static function errorBox()
-    {
+    public static function errorBox() {
       printf("<div %s='msgbox'>", AJAX_REFERRER ? 'class' : 'id');
       static::$before_box = ob_get_clean(); // save html content before error box
       ob_start('adv_ob_flush_handler');
@@ -151,8 +148,7 @@
      * @static
      * @return string
      */
-    public static function format()
-    {
+    public static function format() {
       $msg_class = array(
         E_USER_ERROR        => array('ERROR', 'err_msg'),
         E_RECOVERABLE_ERROR => array('ERROR', 'err_msg'),
@@ -179,8 +175,7 @@
      * @static
 
      */
-    public static function sendDebugEmail()
-    {
+    public static function sendDebugEmail() {
       if (static::$current_severity == -1 || static::$errors || static::$dberrors || static::$debugLog) {
         $text            = '';
         $with_back_trace = array();
@@ -237,8 +232,7 @@
      *
      * @return mixed
      */
-    protected static function prepareBacktrace($backtrace)
-    {
+    protected static function prepareBacktrace($backtrace) {
       foreach ($backtrace as $key => $trace) {
         if (!isset($trace['file']) || $trace['file'] == __FILE__ || (isset($trace['class']) && $trace['class'] == __CLASS__) || $trace['function'] == 'trigger_error' || $trace['function'] == 'shutdown_handler'
         ) {
@@ -251,8 +245,7 @@
      * @static
 
      */
-    public static function process()
-    {
+    public static function process() {
       $last_error = error_get_last();
       /** @noinspection PhpUndefinedFunctionInspection */
       static::$session = (session_status() == PHP_SESSION_ACTIVE) ? $_SESSION : array();
@@ -278,24 +271,21 @@
      * @static
      * @return int
      */
-    public static function dbErrorCount()
-    {
+    public static function dbErrorCount() {
       return count(static::$dberrors);
     }
     /**
      * @static
      * @return int
      */
-    public static function messageCount()
-    {
+    public static function messageCount() {
       return count(static::$messages);
     }
     /**
      * @static
      * @internal param null $e
      */
-    protected static function fatal()
-    {
+    protected static function fatal() {
       ob_end_clean();
       $content = strip_tags(static::format());
       if (!$content) {
@@ -317,15 +307,15 @@
      * @static
      * @return int
      */
-    public static function getSeverity()
-    { return static::$current_severity; }
+    public static function getSeverity() {
+      return static::$current_severity;
+    }
     /**
      * @static
      * @internal param bool $json
      * @return array|bool|string
      */
-    public static function JSONError()
-    {
+    public static function JSONError() {
       $status = false;
       if (count(static::$dberrors) > 0) {
         $dberror           = end(static::$dberrors);
@@ -347,8 +337,7 @@
      * @static
      * @return string
      */
-    protected static function getJSONError()
-    {
+    protected static function getJSONError() {
       return json_encode(array('status' => static::JSONError()));
     }
     /**
@@ -362,8 +351,7 @@
      * @internal param null $sql_statement
      * @internal param bool $exit
      */
-    public static function databaseError($error, $sql = null, $data = array())
-    {
+    public static function databaseError($error, $sql = null, $data = array()) {
       $errorCode        = DB\DB::errorNo();
       $error['message'] = _("DATABASE ERROR $errorCode:") . $error['message'];
       if ($errorCode == static::DB_DUPLICATE_ERROR_CODE) {
@@ -387,8 +375,7 @@
      * @static
 
      */
-    public static function log()
-    {
+    public static function log() {
       $source  = reset(debug_backtrace());
       $args    = func_get_args();
       $content = array();

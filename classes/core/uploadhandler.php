@@ -14,6 +14,7 @@
    */
   class UploadHandler
   {
+
     /**
      * @var #Farray_replace_recursive|array|?
      */
@@ -30,8 +31,7 @@
      * @param $order_no
      * @param $options
      */
-    public function __construct($order_no, $options)
-    {
+    public function __construct($order_no, $options) {
       $this->order_no = $order_no;
       error_reporting(E_ALL | E_STRICT);
       ini_set('post_max_size', '3M');
@@ -77,8 +77,7 @@
      *
      * @return null|\stdClass
      */
-    private function get_file_object($file_name)
-    {
+    private function get_file_object($file_name) {
       $file_path = $this->options['upload_dir'] . $file_name;
       if (is_file($file_path) && $file_name[0] !== '.') {
         $file       = new \stdClass();
@@ -109,8 +108,7 @@
     /**
      * @return array
      */
-    private function get_file_objects()
-    {
+    private function get_file_objects() {
       return array_values(array_filter(array_map(array($this, 'get_file_object'), scandir($this->options['upload_dir']))));
     }
     /**
@@ -119,8 +117,7 @@
      *
      * @return bool
      */
-    private function create_scaled_image($file_name, $options)
-    {
+    private function create_scaled_image($file_name, $options) {
       $file_path     = $this->options['upload_dir'] . $file_name;
       $new_file_path = $options['upload_dir'] . $file_name;
       list($img_width, $img_height) = @getimagesize($file_path);
@@ -168,8 +165,7 @@
      *
      * @return string
      */
-    private function has_error($uploaded_file, $file, $error)
-    {
+    private function has_error($uploaded_file, $file, $error) {
       if ($error) {
         return $error;
       }
@@ -204,8 +200,7 @@
      *
      * @return \stdClass
      */
-    private function handle_file_upload($uploaded_file, $name, $size, $type, $error)
-    {
+    private function handle_file_upload($uploaded_file, $name, $size, $type, $error) {
       $file = new \stdClass();
       // Remove path information and dots around the filename, to prevent uploading
       // into different directories or replacing hidden system files.
@@ -259,8 +254,7 @@
     /**
      * @return mixed
      */
-    public function get()
-    {
+    public function get() {
       $info      = array();
       $upload_id = (isset($_REQUEST['id'])) ? stripslashes($_REQUEST['id']) : null;
       if ($upload_id) {
@@ -290,8 +284,7 @@
     /**
 
      */
-    public function post()
-    {
+    public function post() {
       $upload = isset($_FILES[$this->options['param_name']]) ? $_FILES[$this->options['param_name']] : array(
         'tmp_name' => null, 'name'     => null, 'size'     => null, 'type'     => null, 'error'    => null
       );
@@ -300,21 +293,21 @@
         /** @noinspection PhpUnusedLocalVariableInspection */
         foreach ($upload['tmp_name'] as $index => $value) {
           $info[] = $this->handle_file_upload($upload['tmp_name'][$index], isset($_SERVER['HTTP_X_FILE_NAME']) ?
-                                                                           $_SERVER['HTTP_X_FILE_NAME'] :
-                                                                           $upload['name'][$index], isset($_SERVER['HTTP_X_FILE_SIZE']) ?
-                                                                           $_SERVER['HTTP_X_FILE_SIZE'] :
-                                                                           $upload['size'][$index], isset($_SERVER['HTTP_X_FILE_TYPE']) ?
-                                                                           $_SERVER['HTTP_X_FILE_TYPE'] :
-                                                                           $upload['type'][$index], $upload['error'][$index]);
+            $_SERVER['HTTP_X_FILE_NAME'] :
+            $upload['name'][$index], isset($_SERVER['HTTP_X_FILE_SIZE']) ?
+            $_SERVER['HTTP_X_FILE_SIZE'] :
+            $upload['size'][$index], isset($_SERVER['HTTP_X_FILE_TYPE']) ?
+            $_SERVER['HTTP_X_FILE_TYPE'] :
+            $upload['type'][$index], $upload['error'][$index]);
         }
       } else {
         $info[] = $this->handle_file_upload($upload['tmp_name'], isset($_SERVER['HTTP_X_FILE_NAME']) ?
-                                                                 $_SERVER['HTTP_X_FILE_NAME'] :
-                                                                 $upload['name'], isset($_SERVER['HTTP_X_FILE_SIZE']) ?
-                                                                 $_SERVER['HTTP_X_FILE_SIZE'] :
-                                                                 $upload['size'], isset($_SERVER['HTTP_X_FILE_TYPE']) ?
-                                                                 $_SERVER['HTTP_X_FILE_TYPE'] :
-                                                                 $upload['type'], $upload['error']);
+          $_SERVER['HTTP_X_FILE_NAME'] :
+          $upload['name'], isset($_SERVER['HTTP_X_FILE_SIZE']) ?
+          $_SERVER['HTTP_X_FILE_SIZE'] :
+          $upload['size'], isset($_SERVER['HTTP_X_FILE_TYPE']) ?
+          $_SERVER['HTTP_X_FILE_TYPE'] :
+          $upload['type'], $upload['error']);
       }
       header('Vary: Accept');
       if (isset($_SERVER['HTTP_ACCEPT']) && (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)
@@ -330,12 +323,11 @@
      *
      * @param $id
      */
-    public static function insert($id)
-    {
+    public static function insert($id) {
       if (!self::$inserted) {
         JS::footerFile(array(
-                            '/js/js2/jquery.fileupload.js', '/js/js2/jquery.fileupload-ui.js', '/js/js2/jquery.fileupload-app.js'
-                       ));
+          '/js/js2/jquery.fileupload.js', '/js/js2/jquery.fileupload-ui.js', '/js/js2/jquery.fileupload-app.js'
+        ));
         self::$inserted = true;
       }
       echo '
@@ -387,8 +379,7 @@
     /**
 
      */
-    private function make_dir()
-    {
+    private function make_dir() {
       $old = umask(0);
       //@mkdir($this->upload_dir, 0777);
       umask($old);
@@ -396,8 +387,7 @@
     /**
 
      */
-    public function delete()
-    {
+    public function delete() {
       $name   = isset($_REQUEST['file']) ? ($_REQUEST['file']) : null;
       $id     = isset($_REQUEST['id']) ? ($_REQUEST['id']) : null;
       $sql    = "DELETE FROM upload WHERE `id` = {$id} AND `filename` = '{$name}'";

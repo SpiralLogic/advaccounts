@@ -16,6 +16,7 @@
    */
   class Assets
   {
+
     protected $baseDir = WEBROOT;
     protected $charSet = 'UTF-8';
     protected $debug = false;
@@ -67,8 +68,7 @@
     /**
      * @param $status
      */
-    protected function headerExit($status)
-    {
+    protected function headerExit($status) {
       header("Pragma: Public");
       header("Expires: " . $this->gmdatestr(time() + 315360000));
       header("Cache-Control: max-age=315360000");
@@ -77,8 +77,7 @@
       $this->contentHeader();
       exit();
     }
-    protected function headerNoCache()
-    {
+    protected function headerNoCache() {
       // already expired
       header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
       // always modified
@@ -94,8 +93,7 @@
       header('Etag: ' . microtime());
       $this->contentHeader();
     }
-    protected function headerNeverExpire()
-    {
+    protected function headerNeverExpire() {
       header("Expires: " . $this->gmdatestr(time() + 315360000));
       header("Cache-Control: max-age=315360000");
       header("Vary: Accept-Encoding", false);
@@ -105,8 +103,7 @@
     /**
      * @param $msg
      */
-    protected function debugExit($msg)
-    {
+    protected function debugExit($msg) {
       if (!$this->debug) {
         $this->headerExit('404 Not Found');
       }
@@ -123,8 +120,7 @@
      *
      * @return string
      */
-    protected function gmdatestr($time = null)
-    {
+    protected function gmdatestr($time = null) {
       if (is_null($time)) {
         $time = time();
       }
@@ -133,8 +129,7 @@
     /**
      * @return int|mixed
      */
-    protected function filesmtime()
-    {
+    protected function filesmtime() {
       static $filesmtime;
       if ($filesmtime) {
         return $filesmtime;
@@ -150,8 +145,7 @@
     /**
 
      */
-    public function __construct()
-    {
+    public function __construct() {
       //  $this->setFromArray(Config::getAll('assets22'));
       list($query) = explode('?', urldecode($_SERVER['QUERY_STRING']));
       if (preg_match('/^\/?(.+\/)?(.+)$/', $query, $matchResult)) {
@@ -232,10 +226,10 @@
               $minifier_class                   = $minify_type_settings['minifier'];
               $minify_type_settings['settings'] = $minify_type_settings['settings'] ? : array();
               $minifier                         = new $minifier_class($content, array(
-                                                                                     'fileDir'             => $fileDir,
-                                                                                     'minify_type_settings'=> $minify_type_settings['settings'],
-                                                                                     'mimeTypes'           => $this->mimeTypes
-                                                                                ));
+                'fileDir'             => $fileDir,
+                'minify_type_settings'=> $minify_type_settings['settings'],
+                'mimeTypes'           => $this->mimeTypes
+              ));
               $content                          = $minifier->minify();
             }
           }
@@ -261,8 +255,7 @@
         $this->headerExit('304 Not Modified');
       }
     }
-    protected function contentHeader()
-    {
+    protected function contentHeader() {
       if (isset($this->mimeTypes[$this->fileType])) {
         header('Content-Type: ' . $this->mimeTypes[$this->fileType]);
       }

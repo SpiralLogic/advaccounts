@@ -69,7 +69,7 @@ select {
   border:     lightgray solid 1px;
 }
 .med{
-  max-width:17em;
+  max-width:15em;
 }
 input.big, textarea.big {
   width: 20em;

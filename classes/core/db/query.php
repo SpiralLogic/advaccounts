@@ -15,6 +15,7 @@
    */
   abstract class Query extends Query_Where
   {
+
     /**
      * @var Query
      */
@@ -39,8 +40,7 @@
     /**
      * @param $conn
      */
-    protected function __construct($conn)
-    {
+    protected function __construct($conn) {
       $this->conn    = $conn;
       static::$query = $this;
     }
@@ -49,8 +49,7 @@
      *
      * @return bool
      */
-    protected function getQuery($data)
-    {
+    protected function getQuery($data) {
       if (!$this->compiled_query) {
         $this->compiled_query = $this->execute($data);
       }
@@ -61,16 +60,14 @@
      *
      * @return Query_Result|int|bool
      */
-    public function exec($data = null)
-    {
+    public function exec($data = null) {
       $result = $this->conn->exec($this->getQuery($data), $this->type, $this->data);
       return $result;
     }
     /***
      * @return Query_Result
      */
-    public function fetch()
-    {
+    public function fetch() {
       return $this->exec(null);
     }
   }

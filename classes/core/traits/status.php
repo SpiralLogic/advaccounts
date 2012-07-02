@@ -13,6 +13,7 @@
    */
   trait Status
   {
+
     /** @var \ADV\Core\Status */
     protected $_status = null;
     /**
@@ -20,8 +21,7 @@
      *
      * @return string|array
      */
-    public function getStatus($string = false)
-    {
+    public function getStatus($string = false) {
       if ($string) {
         return $this->_status;
       }
@@ -35,8 +35,7 @@
      *
      * @return Status|bool
      */
-    protected function _status($status = null, $process = null, $message = '', $var = null)
-    {
+    protected function _status($status = null, $process = null, $message = '', $var = null) {
       if (!$this->_status) {
         $this->_status = new \ADV\Core\Status($status, $process, $message, $var);
         return $status;

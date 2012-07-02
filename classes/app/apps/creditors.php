@@ -9,10 +9,11 @@
    **/
   class Apps_Creditors extends Application
   {
+
     public $name = 'Creditors';
+
     public $help_context = "&Suppliers";
-    function buildMenu()
-    {
+    function buildMenu() {
       $this->direct = '/contacts/suppliers';
     }
   }

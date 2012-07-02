@@ -183,12 +183,12 @@ all the info to do the necessary entries without looking up ie additional querie
         $heading = _("GL Items for this Invoice");
       } else {
         $heading = _("GL Items for this Credit Note");
-      }
-      Table::startOuter('tablestyle2 width95');
+      }      Display::heading($heading);
+
       if ($mode == 1) {
         $qes = GL_QuickEntry::has(QE_SUPPINV);
         if ($qes !== false) {
-          echo "<div style='float:right;'>";
+          echo "<div class='center'>";
           echo _("Quick Entry:") . "&nbsp;";
           echo GL_QuickEntry::select('qid', null, QE_SUPPINV, true);
           $qid = GL_QuickEntry::get(Input::post('qid'));
@@ -199,13 +199,11 @@ all the info to do the necessary entries without looking up ie additional querie
           echo "&nbsp;" . $qid['base_desc'] . ":&nbsp;";
           $amount = Validation::input_num('total_amount', $qid['base_amount']);
           $dec    = User::price_dec();
-          echo "<input class='amount font7' type='text' name='total_amount' maxlength='12' data-aspect=fallback'$dec' value='$amount'>&nbsp;";
+          echo "<input class='amount' type='text' name='total_amount' maxlength='12'  value='$amount'>&nbsp;";
           Forms::submit('go', _("Go"), true, false, true);
           echo "</div>";
         }
       }
-      Display::heading($heading);
-      Table::endOuter(0, false);
       Display::div_start('gl_items');
       Table::start('tablestyle grid width80');
       $dim = DB_Company::get_pref('use_dimension');

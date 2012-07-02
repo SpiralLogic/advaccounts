@@ -15,6 +15,7 @@
    */
   class Input
   {
+
     use Traits\StaticAccess;
 
     /**
@@ -52,8 +53,7 @@
      *
      * @return bool|int|string|object
      */
-    public function _post($var, $type = null, $default = null)
-    {
+    public function _post($var, $type = null, $default = null) {
       return $this->_isset($_POST, $var, $type, $default);
     }
     /***
@@ -66,8 +66,7 @@
      * @internal param mixed $public $_GET variable to return
      * @return bool|int|string|object
      */
-    public function _get($var, $type = null, $default = null)
-    {
+    public function _get($var, $type = null, $default = null) {
       return $this->_isset($_GET, $var, $type, $default);
     }
     /***
@@ -79,8 +78,7 @@
      *
      * @return bool|int|string|object
      */
-    public function _request($var, $type = null, $default = null)
-    {
+    public function _request($var, $type = null, $default = null) {
       return $this->_isset($_REQUEST, $var, $type, $default);
     }
     /***
@@ -92,8 +90,7 @@
      *
      * @return bool|int|string|object
      */
-    public function _getPost($var, $type = null, $default = null)
-    {
+    public function _getPost($var, $type = null, $default = null) {
       return $this->getThenPost($_GET, $_POST, $var, $type, $default);
     }
     /**
@@ -105,8 +102,7 @@
      *
      * @return bool|int|null|string
      */
-    public function _getPostGlobal($var, $type, $default = null)
-    {
+    public function _getPostGlobal($var, $type, $default = null) {
       $result = $this->getThenPost($_GET, $_POST, $var, $type, false);
       if ($result === false) {
         $result = $this->_getGlobal($var, $type, $default);
@@ -122,8 +118,7 @@
      *
      * @return bool|int|null|string
      */
-    public function _postGlobal($var, $type, $default = null)
-    {
+    public function _postGlobal($var, $type, $default = null) {
       $result = $this->_isset($_POST, $var, $type, false);
       if ($result === false) {
         $result = $this->_getGlobal($var, $type, $default);
@@ -139,8 +134,7 @@
      *
      * @return bool|int|string|object
      */
-    public function _postGet($var, $type = null, $default = null)
-    {
+    public function _postGet($var, $type = null, $default = null) {
       return $this->getThenPost($_POST, $_GET, $var, $type, $default);
     }
     /***
@@ -152,8 +146,7 @@
      *
      * @return bool|int|string|object
      */
-    public function _session($var = array(), $type = null, $default = null)
-    {
+    public function _session($var = array(), $type = null, $default = null) {
       return (!isset($_SESSION)) ? false : $this->_isset($_SESSION, $var, $type, $default);
     }
     /***
@@ -163,8 +156,7 @@
      *
      * @return bool
      */
-    public function _hasPost($vars)
-    {
+    public function _hasPost($vars) {
       if (is_null($vars)) {
         return true;
       }
@@ -177,8 +169,7 @@
      *
      * @return bool
      */
-    public function _hasGet($vars)
-    {
+    public function _hasGet($vars) {
       if (is_null($vars)) {
         return true;
       }
@@ -191,8 +182,7 @@
      *
      * @return bool
      */
-    public function _has($vars)
-    {
+    public function _has($vars) {
       if (is_null($vars)) {
         return true;
       }
@@ -205,8 +195,7 @@
      *
      * @return bool
      */
-    public function hasSession($vars)
-    {
+    public function hasSession($vars) {
       if (is_null($vars)) {
         return true;
       }
@@ -221,8 +210,7 @@
      *
      * @return bool|int|null|string
      */
-    protected function _getGlobal($var, $type, $default)
-    {
+    protected function _getGlobal($var, $type, $default) {
       if (!isset($_SESSION['globals'])) {
         $_SESSION['globals'] = array();
         return null;
@@ -240,8 +228,7 @@
      *
      * @return bool|int|null|string
      */
-    protected function getThenPost($first, $second, $var, $type = null, $default = null)
-    {
+    protected function getThenPost($first, $second, $var, $type = null, $default = null) {
       $array = ($this->doesHave($first, $var)) ? $first : $second;
       return static::_isset($array, $var, $type, $default);
     }
@@ -253,8 +240,7 @@
      *
      * @return bool
      */
-    public function doesHave(array $array, $vars)
-    {
+    public function doesHave(array $array, $vars) {
       if (is_null($vars)) {
         return true;
       } elseif (!is_array($vars)) {
@@ -278,8 +264,7 @@
      *
      * @return bool|int|null|string
      */
-    protected function _isset(array $array, $var, $type = null, $default = null)
-    {
+    protected function _isset(array $array, $var, $type = null, $default = null) {
       //     if ($type!==null&&$default===null) $default=$type;
       $value = (is_string($var) && isset($array[$var])) ? $array[$var] : $default; //chnage back to null if fuckoutz happen
       switch ($type) {

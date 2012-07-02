@@ -1093,6 +1093,7 @@
    */
   class Arr extends ADV\Core\Arr
   {
+
   }
 
   /**
@@ -1100,6 +1101,7 @@
    */
   class Adv_Exception extends ADV\Core\Adv_Exception
   {
+
   }
 
   /**
@@ -1107,6 +1109,7 @@
    */
   class Ajax extends ADV\Core\Ajax
   {
+
   }
 
   /**
@@ -1114,6 +1117,7 @@
    */
   class Auth extends ADV\Core\Auth
   {
+
   }
 
   /**
@@ -1121,6 +1125,7 @@
    */
   class Assets extends ADV\Core\Assets
   {
+
   }
 
   /**
@@ -1128,6 +1133,7 @@
    */
   class Cache extends ADV\Core\Cache
   {
+
   }
 
   /**
@@ -1135,6 +1141,7 @@
    */
   class Config extends ADV\Core\Config
   {
+
   }
 
   /**
@@ -1142,6 +1149,7 @@
    */
   class Dates extends ADV\Core\Dates
   {
+
   }
 
   /**
@@ -1149,6 +1157,7 @@
    */
   class DB extends ADV\Core\DB\DB
   {
+
   }
 
   /**
@@ -1156,6 +1165,7 @@
    */
   class Query_Result extends ADV\Core\DB\Query_Result
   {
+
   }
 
   /**
@@ -1163,6 +1173,7 @@
    */
   class Dialog extends ADV\Core\Dialog
   {
+
   }
 
   /**
@@ -1170,6 +1181,7 @@
    */
   class Event extends ADV\Core\Event
   {
+
   }
 
   /**
@@ -1177,6 +1189,7 @@
    */
   class Errors extends ADV\Core\Errors
   {
+
   }
 
   /**
@@ -1184,6 +1197,7 @@
    */
   class Files extends ADV\Core\Files
   {
+
   }
 
   /**
@@ -1191,6 +1205,7 @@
    */
   class HTML extends ADV\Core\HTML
   {
+
   }
 
   /**
@@ -1198,10 +1213,12 @@
    */
   class Hook extends ADV\Core\Hook
   {
+
   }
 
   class Input extends ADV\Core\Input
   {
+
     /**
      * @static
      */
@@ -1212,6 +1229,7 @@
    */
   class JS extends ADV\Core\JS
   {
+
   }
 
   /**
@@ -1219,6 +1237,7 @@
    */
   class Language extends ADV\Core\Language
   {
+
   }
 
   /**
@@ -1226,6 +1245,7 @@
    */
   class Menu extends ADV\Core\Menu
   {
+
   }
 
   /**
@@ -1233,6 +1253,7 @@
    */
   class MenuUI extends ADV\Core\MenuUI
   {
+
   }
 
   /**
@@ -1240,6 +1261,7 @@
    */
   class Num extends ADV\Core\Num
   {
+
   }
 
   /**
@@ -1247,12 +1269,14 @@
    */
   class Page extends ADV\App\Page
   {
+
   }
 
   /**
    */
   class Session extends ADV\Core\Session
   {
+
   }
 
   /**
@@ -1260,6 +1284,7 @@
    */
   class Status extends ADV\Core\Status
   {
+
   }
 
   /**
@@ -1267,6 +1292,7 @@
    */
   class UploadHandler extends ADV\Core\UploadHandler
   {
+
   }
 
   /**
@@ -1274,6 +1300,7 @@
    */
   class DBException extends ADV\Core\DB\DBException
   {
+
   }
 
   /**
@@ -1281,6 +1308,7 @@
    */
   class DBSelectException extends ADV\Core\DB\DBException
   {
+
   }
 
   /**
@@ -1288,6 +1316,7 @@
    */
   class DBUpdateException extends ADV\Core\DB\DBException
   {
+
   }
 
   /**
@@ -1295,6 +1324,7 @@
    */
   class DBDeleteException extends ADV\Core\DB\DBException
   {
+
   }
 
   /**
@@ -1302,6 +1332,7 @@
    */
   class DBInsertException extends ADV\Core\DB\DBException
   {
+
   }
 
   /**
@@ -1309,6 +1340,7 @@
    */
   class View extends \ADV\Core\View implements \ArrayAccess
   {
+
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Whether a offset exists
@@ -1323,8 +1355,7 @@
      * <p>
      *       The return value will be casted to boolean if non-boolean was returned.
      */
-    public function offsetExists($offset)
-    {
+    public function offsetExists($offset) {
       // TODO: Implement offsetExists() method.
     }
     /**
@@ -1338,8 +1369,7 @@
      *
      * @return mixed Can return all value types.
      */
-    public function offsetGet($offset)
-    {
+    public function offsetGet($offset) {
       // TODO: Implement offsetGet() method.
     }
     /**
@@ -1356,8 +1386,7 @@
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
-    {
+    public function offsetSet($offset, $value) {
       // TODO: Implement offsetSet() method.
     }
     /**
@@ -1371,8 +1400,7 @@
      *
      * @return void
      */
-    public function offsetUnset($offset)
-    {
+    public function offsetUnset($offset) {
       // TODO: Implement offsetUnset() method.
     }
   }

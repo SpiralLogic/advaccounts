@@ -13,4 +13,5 @@
    */
   class DBInsertException extends DBException
   {
+
   }

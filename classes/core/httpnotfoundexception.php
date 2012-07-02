@@ -12,4 +12,5 @@
    */
   class HttpNotFoundException extends Adv_Exception
   {
+
   }

@@ -13,6 +13,7 @@
    */
   class Files
   {
+
     /**
      * @static
      *
@@ -24,8 +25,7 @@
      * saves the string in $fileData to the file $backupfile as gz file or not ($zip)
      * returns backup file name if name has changed (zip), else true. If saving failed, return value is false
      */
-    public static function saveToFile($backupfile, $fileData, $zip = false)
-    {
+    public static function saveToFile($backupfile, $fileData, $zip = false) {
       if ($zip == "gzip") {
         $zp = gzopen(BACKUP_PATH . $backupfile, "a9");
         if ($zp) {
@@ -109,8 +109,7 @@
      *
      * @return string
      */
-    public static function convertSize($size)
-    {
+    public static function convertSize($size) {
       $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
       $i    = (int) floor(log($size, 1024));
       return @round($size / pow(1024, $i), 2) . ' ' . $unit[$i];
@@ -121,8 +120,7 @@
      * @param      $path
      * @param bool $wipe
      */
-    public static function flushDir($path, $wipe = false)
-    {
+    public static function flushDir($path, $wipe = false) {
       $dir = opendir($path);
       while (false !== ($fname = readdir($dir))) {
         if ($fname == '.' || $fname == '..' || $fname == 'CVS' || (!$wipe && $fname == 'index.php')) {

@@ -15,6 +15,7 @@
    */
   interface Cachable
   {
+
     /**
      * @abstract
      *
@@ -53,6 +54,7 @@
    */
   class Cache
   {
+
     use Traits\StaticAccess;
 
     /**
@@ -64,8 +66,7 @@
      * @static
      * @return \ADV\Core\Cache
      */
-    public function __construct()
-    {
+    public function __construct() {
       if (class_exists('\\Memcached', false)) {
         $i = new Memcached($_SERVER["SERVER_NAME"] . '.');
         if (!count($i->getServerList())) {
@@ -97,8 +98,7 @@
      *
      * @return mixed
      */
-    public function _set($key, $value, $expires = 86400)
-    {
+    public function _set($key, $value, $expires = 86400) {
       if ($this->connection !== false) {
         $this->connection->set($key, $value, time() + $expires);
       } elseif (class_exists('Session', false)) {
@@ -111,8 +111,7 @@
      *
      * @param $key
      */
-    public function _delete($key)
-    {
+    public function _delete($key) {
       if ($this->connection !== false) {
         $this->connection->delete($key);
       } elseif (class_exists('Session', false)) {
@@ -127,8 +126,7 @@
      *
      * @return mixed
      */
-    public function _get($key, $default = false)
-    {
+    public function _get($key, $default = false) {
       if ($this->connection !== false) {
         $result = $this->connection->get($key);
         $result = ($this->connection->getResultCode() === Memcached::RES_NOTFOUND) ? $default : $result;
@@ -146,24 +144,21 @@
      * @static
      * @return mixed
      */
-    public function _getStats()
-    {
+    public function _getStats() {
       return ($this->connected) ? $this->connection->getStats() : false;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _getVersion()
-    {
+    public function _getVersion() {
       return ($this->connected) ? $this->connection->getVersion() : false;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _getServerList()
-    {
+    public function _getServerList() {
       return ($this->connected) ? $this->connection->getServerList() : false;
     }
     /**
@@ -171,8 +166,7 @@
      *
      * @param int $time
      */
-    public function _flush($time = 0)
-    {
+    public function _flush($time = 0) {
       if ($this->connection) {
         $this->connection->flush($time);
       } else {
@@ -185,8 +179,7 @@
      * @param array|closure $constants
      * @param null          $name
      */
-    public function _defineConstants($name, $constants)
-    {
+    public function _defineConstants($name, $constants) {
       if (function_exists('apc_load_constants')) {
         if (!apc_load_constants($name)) {
           if (is_callable($constants)) {

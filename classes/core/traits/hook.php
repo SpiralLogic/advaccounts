@@ -13,6 +13,7 @@
    */
   trait Hook
   {
+
     /** @var \Hook $hooks */
     protected static $hooks = null;
     /**
@@ -25,8 +26,7 @@
      *
      * @return bool
      */
-    public static function registerHook($hook, $object, $function = null, $arguments = array())
-    {
+    public static function registerHook($hook, $object, $function = null, $arguments = array()) {
       if (static::$hooks === null) {
         static::$hooks = new \ADV\Core\Hook();
       }
@@ -43,8 +43,7 @@
      *
      * @param $hook
      */
-    public static function fireHooks($hook)
-    {
+    public static function fireHooks($hook) {
       if (static::$hooks) {
         static::$hooks->fire($hook);
       }

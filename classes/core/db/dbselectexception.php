@@ -13,4 +13,5 @@
    */
   class DBSelectException extends DBException
   {
+
   }

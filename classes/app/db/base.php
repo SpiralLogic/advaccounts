@@ -11,6 +11,7 @@
    **/
   abstract class DB_Base
   {
+
     use \ADV\Core\Traits\SetFromArray;
     use \ADV\Core\Traits\Status;
 
@@ -35,12 +36,10 @@
      *
      * @return array|bool|int|null
      */
-    public function save($changes = null)
-    {
+    public function save($changes = null) {
       if ($changes !== null) {
         $this->setFromArray($changes);
       }
-
       if (!$this->_canProcess()) {
         return false;
       }
@@ -54,7 +53,6 @@
       }
       catch (DBUpdateException $e) {
         DB::cancel();
-
         return $this->_status(Status::ERROR, 'write', "Could not update " . get_class($this));
       }
       if (property_exists($this, 'inactive')) {
@@ -64,20 +62,17 @@
         }
         catch (DBUpdateException $e) {
           DB::cancel();
-
           return $this->_status(Status::ERROR, 'write', "Could not update active status of " . get_class($this));
         }
       }
       DB::commit();
-
       return $this->_status(Status::SUCCESS, 'write', get_class($this) . ' changes saved to database.');
     }
     /**
      * @param int   $id    Id to read from database, or an array of changes which can include the id to load before applying changes or 0 for a new object
      * @param array $extra
      */
-    protected function __construct($id = 0, $extra = array())
-    {
+    protected function __construct($id = 0, $extra = array()) {
       $_id_column = $this->_id_column;
       if ($_id_column && $_id_column != 'id') {
         $this->id = &$this->$_id_column;
@@ -85,7 +80,6 @@
       if (is_numeric($id) && $id > 0) {
         $this->id = $id;
         $this->_read($id, $extra);
-
         return $this->_status(true, 'initalise', get_class($this) . " details loaded from DB!");
       } elseif (is_array($id)) {
         $this->_defaults();
@@ -95,10 +89,8 @@
           $this->_new();
         }
         $this->setFromArray($id);
-
         return $this->_status(true, 'initalise', get_class($this) . " details constructed!");
       }
-
       return $this->_new();
     }
     /***
@@ -107,8 +99,7 @@
      *
      * @return bool
      */
-    protected function _read($id = null, $extra = array())
-    {
+    protected function _read($id = null, $extra = array()) {
       if ($id === null) {
         return $this->_status(false, 'read', 'No ' . get_class($this), ' ID to read');
       }
@@ -123,14 +114,12 @@
       catch (DBSelectException $e) {
         return $this->_status(false, 'read', 'Could not read ' . get_class($this), (string) $id);
       }
-
       return $this->_status(true, 'read', 'Successfully read ' . get_class($this), $id);
     }
     /**
      * @return int|bool Id assigned to new database row or false if entry failed
      */
-    protected function _saveNew()
-    {
+    protected function _saveNew() {
       try {
         $this->id = DB::insert($this->_table)->values((array) $this)->exec();
       }
@@ -140,7 +129,6 @@
       catch (DBDuplicateException $e) {
         return $this->_status(false, 'write', $e->getMessage() . '. The entered information is a duplicate. Please modify the existing record or use different values.');
       }
-
       return $this->_status(true, 'write', 'Added to databse: ' . get_class($this));
     }
   }

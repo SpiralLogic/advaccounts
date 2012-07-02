@@ -13,6 +13,7 @@
    */
   class Status
   {
+
     /**
      * @var array
      */
@@ -31,8 +32,7 @@
      * @param string $message
      * @param null   $var
      */
-    public function __construct($status = null, $process = null, $message = '', $var = null)
-    {
+    public function __construct($status = null, $process = null, $message = '', $var = null) {
       $this->set($status, $process, $message, $var);
     }
     /**
@@ -43,8 +43,7 @@
      *
      * @return array
      */
-    public function set($status = null, $process = null, $message = '', $var = null)
-    {
+    public function set($status = null, $process = null, $message = '', $var = null) {
       if ($status === true) {
         $status = self::INFO;
       }
@@ -75,8 +74,7 @@
      *
      * @return mixed
      */
-    public function append(array $status, $error_only = true)
-    {
+    public function append(array $status, $error_only = true) {
       if ($error_only && $status['status'] != self::ERROR) {
         return true;
       }
@@ -86,8 +84,7 @@
     /**
      * @return array
      */
-    public function get()
-    {
+    public function get() {
       if (!empty($this->_errors)) {
         return end($this->_errors);
       }
@@ -99,8 +96,7 @@
     /**
      * @return bool|mixed
      */
-    public function hasError()
-    {
+    public function hasError() {
       if (!empty($this->_errors)) {
         return end($this->_errors);
       }
@@ -109,15 +105,13 @@
     /**
      * @return array
      */
-    public function getAll()
-    {
+    public function getAll() {
       return $this->_status;
     }
     /**
      * @return string
      */
-    public function __toString()
-    {
+    public function __toString() {
       $last = $this->get();
       $str  = ucwords($last['process']);
       $str .= ($last['status'] != self::ERROR) ? ' Succeeded: ' : ' Failed: ';

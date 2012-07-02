@@ -13,4 +13,5 @@
    */
   class DBDeleteException extends DBException
   {
+
   }

@@ -12,5 +12,6 @@
    */
   interface Loadable
   {
+
     public function _init();
   }

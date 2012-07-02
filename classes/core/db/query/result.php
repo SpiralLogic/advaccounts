@@ -16,6 +16,7 @@
    */
   class Query_Result implements \Countable, \Iterator
   {
+
     /**
      * @var \PDOStatement thing
      */
@@ -44,8 +45,7 @@
      * @param      $prepared
      * @param null $data
      */
-    public function __construct($prepared, $data = null)
-    {
+    public function __construct($prepared, $data = null) {
       $this->data     = $data;
       $this->prepared = $prepared;
       $this->prepared->setFetchMode(\PDO::FETCH_ASSOC);
@@ -54,8 +54,7 @@
     /**
 
      */
-    protected function execute()
-    {
+    protected function execute() {
       $this->cursor = 0;
       $this->valid  = $this->prepared->execute($this->data);
       $this->count  = $this->prepared->rowCount();
@@ -63,8 +62,7 @@
     /**
      * @return array
      */
-    public function all()
-    {
+    public function all() {
       $result         = $this->prepared->fetchAll();
       $this->prepared = null;
       return $result;
@@ -74,24 +72,21 @@
      *
      * @return mixed
      */
-    public function one($column = null)
-    {
+    public function one($column = null) {
       $result = $this->prepared->fetch();
       return ($column !== null && isset($result[$column])) ? $result[$column] : $result;
     }
     /**
      * @return Query_Result
      */
-    public function assoc()
-    {
+    public function assoc() {
       $this->prepared->setFetchMode(\PDO::FETCH_ASSOC);
       return $this;
     }
     /**
      * @return Query_Result
      */
-    public function num()
-    {
+    public function num() {
       $this->prepared->setFetchMode(\PDO::FETCH_NUM);
       return $this;
     }
@@ -101,8 +96,7 @@
      *
      * @return Query_Result
      */
-    public function asClassLate($class, $construct = array())
-    {
+    public function asClassLate($class, $construct = array()) {
       $this->prepared->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $class, $construct);
       return $this;
     }
@@ -112,23 +106,20 @@
      *
      * @return Query_Result
      */
-    public function asClass($class, $construct = array())
-    {
+    public function asClass($class, $construct = array()) {
       $this->prepared->setFetchMode(\PDO::FETCH_CLASS, $class, $construct);
       return $this;
     }
     /**
      * @param $object
      */
-    public function intoClass($object)
-    {
+    public function intoClass($object) {
       return $this->intoObject($object);
     }
     /**
      * @param $object
      */
-    public function intoObject($object)
-    {
+    public function intoObject($object) {
       $this->prepared->setFetchMode(\PDO::FETCH_INTO, $object);
       $this->prepared->fetch();
       $this->count    = $this->prepared->rowCount();
@@ -138,8 +129,7 @@
     /**
      * @return Query_Result
      */
-    public function asObject()
-    {
+    public function asObject() {
       $this->prepared->setFetchMode(\PDO::FETCH_OBJ);
       return $this;
     }
@@ -149,8 +139,7 @@
      * @link http://php.net/manual/en/iterator.current.php
      * @return mixed Can return any type.
      */
-    public function current()
-    {
+    public function current() {
       return $this->current;
     }
     /**
@@ -159,8 +148,7 @@
      * @link http://php.net/manual/en/iterator.next.php
      * @return void Any returned value is ignored.
      */
-    public function next()
-    {
+    public function next() {
       $this->current = $this->prepared->fetch();
       ++$this->cursor;
     }
@@ -171,15 +159,13 @@
      * @return mixed scalar scalar on success, integer
      * 0 on failure.
      */
-    public function key()
-    {
+    public function key() {
       return $this->cursor;
     }
     /**
      * @return mixed
      */
-    public function valid()
-    {
+    public function valid() {
       if (!$this->current) {
         $this->valid = false;
       }
@@ -191,8 +177,7 @@
      * @link http://php.net/manual/en/iterator.rewind.php
      * @return void Any returned value is ignored.
      */
-    public function rewind()
-    {
+    public function rewind() {
       if ($this->cursor > -1) {
         $this->prepared->closeCursor();
       }
@@ -208,15 +193,13 @@
      * <p>
      *       The return value is cast to an integer.
      */
-    public function count()
-    {
+    public function count() {
       return $this->count;
     }
     /**
      * @return mixed
      */
-    public function __toString()
-    {
+    public function __toString() {
       if ($this->cursor === 0) {
         $this->next();
       }

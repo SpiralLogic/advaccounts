@@ -13,4 +13,5 @@
    */
   class DBDuplicateException extends DBException
   {
+
   }

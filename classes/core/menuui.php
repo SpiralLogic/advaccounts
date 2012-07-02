@@ -13,6 +13,7 @@
    */
   class MenuUI extends Menu
   {
+
     /**
      * @var array
      */
@@ -28,8 +29,7 @@
     /**
      * @param array $options
      */
-    public function __construct($options = array())
-    {
+    public function __construct($options = array()) {
       $this->options = $options;
       ob_start();
     }
@@ -40,8 +40,7 @@
      *
      * @return MenuUI
      */
-    protected function addTab($title, $tooltip = '', $link = '#')
-    {
+    protected function addTab($title, $tooltip = '', $link = '#') {
       $this->items[] = new MenuUI_item($title, $tooltip, $link);
       return $this;
     }
@@ -54,8 +53,7 @@
      *
      * @return MenuUI
      */
-    public function addLink($title, $tooltip = '', $link, $param_element, $target = null)
-    {
+    public function addLink($title, $tooltip = '', $link, $param_element, $target = null) {
       $this->items[]             = new MenuUI_item($title, $tooltip, $link, $param_element, $target);
       $this->options['hasLinks'] = true;
       return $this;
@@ -68,8 +66,7 @@
      *
      * @return MenuUI
      */
-    public function addJSLink($title, $tooltip = '', $name, $onselect)
-    {
+    public function addJSLink($title, $tooltip = '', $name, $onselect) {
       $this->items[]             = new MenuUI_item($title, $tooltip, '#' . $name);
       $this->options['hasLinks'] = true;
       JS::onload($onselect);
@@ -83,8 +80,7 @@
      *
      * @return MenuUI
      */
-    public function startTab($title, $tooltip, $link = '#', $style = '')
-    {
+    public function startTab($title, $tooltip, $link = '#', $style = '') {
       $count = count($this->items);
       $this->addTab($title, $tooltip, $link);
       echo '<div id="tabs' . MenuUI::$menuCount . '-' . $count . '" ';
@@ -100,16 +96,14 @@
     /**
      * @return MenuUI
      */
-    public function endTab()
-    {
+    public function endTab() {
       echo '</div>';
       return $this;
     }
     /**
      * @return void
      */
-    public function render()
-    {
+    public function render() {
       $menu = "<div class='width90 center ui-tabs ui-widget ui-widget-content ui-corner-all tabs' id='tabs" . MenuUI::$menuCount . "'><ul class='ui-tabs-nav
             ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all'>\n";
       foreach ($this->items as $key => $item) {
@@ -131,11 +125,13 @@
       MenuUI::$menuCount++;
     }
   }
+
   /**
 
    */
   class MenuUI_item extends menu_item
   {
+
     /**
      * @var string
      */
@@ -155,8 +151,7 @@
      * @param null   $param_element
      * @param null   $target
      */
-    public function __construct($label, $tooltip = '', $link = '#', $param_element = null, $target = null)
-    {
+    public function __construct($label, $tooltip = '', $link = '#', $param_element = null, $target = null) {
       $this->label         = $label;
       $this->link          = e($link);
       $this->tooltip       = e($tooltip);

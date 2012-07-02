@@ -464,8 +464,9 @@
         Table::endOuter(0, false);
         Table::startOuter('center');
         Row::start();
-        Forms::dateCells(_("Received between"), 'receive_begin', "", null, -30, 0, 0, "class='vmiddle'");
-        Forms::dateCells(_("and"), 'receive_end', '', null, 1, 0, 0, "class='vmiddle'");
+ /*       Forms::dateCells(_("Received between"), 'receive_begin', "", null, -30, 0, 0, "class='vmiddle'");
+        Forms::dateCells(_("and"), 'receive_end', '', null, 1, 0, 0, "class='vmiddle'");*/
+        Forms::textCells(_("PO #"),"ponum");
         Forms::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), true);
         Row::end();
       }

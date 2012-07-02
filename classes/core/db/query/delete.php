@@ -15,6 +15,7 @@
    */
   class Query_Delete extends Query
   {
+
     /**
      * @var bool
      */
@@ -23,8 +24,7 @@
      * @param bool $table
      * @param      $db
      */
-    public function __construct($table = false, $db)
-    {
+    public function __construct($table = false, $db) {
       $this->table = $table;
       $this->type  = DB::DELETE;
       parent::__construct($db);
@@ -32,15 +32,13 @@
     /**
      * @return string
      */
-    protected function execute()
-    {
+    protected function execute() {
       return $this->_buildQuery();
     }
     /**
      * @return string
      */
-    protected function _buildQuery()
-    {
+    protected function _buildQuery() {
       $sql = "DELETE FROM " . $this->table;
       $sql .= $this->_buildWhere();
       return $sql;

@@ -13,5 +13,6 @@
    */
   class DBException extends \Exception
   {
+
   }
 

@@ -9,6 +9,7 @@
    **/
   class Apps_Advanced extends Application
   {
+
     public $name = 'Advanced';
     public $help_context = "&Advanced";
     /**
@@ -17,8 +18,7 @@
     /**
 
      */
-    public function buildMenu()
-    {
+    public function buildMenu() {
       $this->add_module(_("Websales To Jobsboard"));
       $this->add_lapp_function(0, _("Put websales on Bobs Joard"), "/jobsboard/websales/", SA_OPEN);
       $this->add_lapp_function(0, _("Put web customers into accounting"), "/modules/advanced/web", SA_OPEN);

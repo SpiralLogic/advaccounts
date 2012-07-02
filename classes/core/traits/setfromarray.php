@@ -12,13 +12,13 @@
    */
   trait SetFromArray
   {
+
     /**
      * @param null $changes
      *
      * @return array|null
      */
-    protected function setFromArray($changes = null)
-    {
+    protected function setFromArray($changes = null) {
       if (!$changes || !is_array($changes)) {
         return;
       }

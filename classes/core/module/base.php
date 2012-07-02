@@ -12,6 +12,7 @@
    */
   abstract class Base implements Loadable
   {
+
     /**
      * @var array
      */
@@ -19,8 +20,7 @@
     /**
      * @param array $config
      */
-    public function __construct($config = [])
-    {
+    public function __construct($config = []) {
       $this->_enabled = $config and \Arr::get($config, 'enabled', false);
       if ($this->_enabled) {
         $this->_init();

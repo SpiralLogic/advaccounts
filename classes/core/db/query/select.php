@@ -15,6 +15,7 @@
    */
   class Query_Select extends Query
   {
+
     /**
      * @var array
      */
@@ -49,8 +50,7 @@
      *
      * @return Query_Select
      */
-    public function __construct($columns, $db)
-    {
+    public function __construct($columns, $db) {
       parent::__construct($db);
       $this->type = DB::SELECT;
       call_user_func_array(array($this, 'select'), $columns);
@@ -60,8 +60,7 @@
      *
      * @return Query_Select
      */
-    public function select()
-    {
+    public function select() {
       $columns      = func_get_args();
       $this->select = array_merge($this->select, $columns);
       return $this;
@@ -71,8 +70,7 @@
      *
      * @return Query_Select
      */
-    public function from($tables = null)
-    {
+    public function from($tables = null) {
       if (is_null($tables)) {
         return $this;
       }
@@ -85,8 +83,7 @@
      *
      * @return Query_Select
      */
-    public function orderby($by = null)
-    {
+    public function orderby($by = null) {
       if (is_null($by)) {
         return $this;
       }
@@ -99,8 +96,7 @@
      *
      * @return Query_Select
      */
-    public function groupby($by = null)
-    {
+    public function groupby($by = null) {
       if (is_null($by)) {
         return $this;
       }
@@ -114,16 +110,14 @@
      *
      * @return Query_Select
      */
-    public function limit($start = 0, $quantity = null)
-    {
+    public function limit($start = 0, $quantity = null) {
       $this->limit = ($quantity == null) ? $start : "$start, $quantity";
       return $this;
     }
     /**
      * @return Query_Select
      */
-    public function union()
-    {
+    public function union() {
       $this->union[] = '(' . $this->_buildQuery() . ')';
       $this->select  = $this->from = $this->orderby = $this->groupby = array();
       $this->limit   = '';
@@ -136,15 +130,13 @@
      *
      * @return void
      */
-    public function union_or($condition, $var)
-    {
+    public function union_or($condition, $var) {
       $this->union_or[$condition] = $var;
     }
     /**
      * @return string
      */
-    protected function execute()
-    {
+    protected function execute() {
       if ($this->union) {
         return implode(' UNION ', $this->union);
       }
@@ -153,8 +145,7 @@
     /**
      * @return string
      */
-    protected function _buildQuery()
-    {
+    protected function _buildQuery() {
       $sql = "SELECT ";
       $sql .= (empty($this->select)) ? '*' : implode(', ', $this->select);
       $sql .= " FROM " . implode(', ', $this->from);

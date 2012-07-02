@@ -162,8 +162,7 @@
    *
    * @return \Purch_Order|\Sales_Order
    */
-  function create_order($order_no = 0)
-  {
+  function create_order($order_no = 0) {
     if (isset($_GET['UseOrder']) && $_GET['UseOrder']) {
       if (isset(Orders::session_get($_GET['UseOrder'])->line_items)) {
         $sales_order = Orders::session_get($_GET['UseOrder']);
@@ -209,8 +208,7 @@
   /**
    * @return bool
    */
-  function check_data()
-  {
+  function check_data() {
     $dec = Item::qty_dec($_POST['stock_id']);
     $min = 1 / pow(10, $dec);
     if (!Validation::post_num('qty', $min)) {
@@ -242,8 +240,7 @@
    *
    * @return bool
    */
-  function can_commit($order)
-  {
+  function can_commit($order) {
     if (!$order) {
       Event::error(_("You are not currently editing an order."));
       Page::footer_exit();
