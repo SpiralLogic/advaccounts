@@ -90,7 +90,7 @@
     }
     $dic = new \ADV\Core\DIC();
     $loader->registerCache(\ADV\Core\Cache::i());
-    Cache::defineConstants('defines', function()
+    Cache::defineConstants($_SERVER["SERVER_NAME"] . 'defines', function()
     {
       return include(DOCROOT . 'config' . DS . 'defines.php');
     });
