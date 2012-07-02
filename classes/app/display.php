@@ -223,7 +223,7 @@
       if ($params != '') {
         $params = '?' . $params;
       }
-      Ajax::redirect($forward_to . $params);
+      \ADV\Core\Ajax::redirect($forward_to . $params);
       exit;
     }
     /**

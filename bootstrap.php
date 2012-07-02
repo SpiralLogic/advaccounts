@@ -51,7 +51,7 @@
   if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
     new \ADV\Core\Assets();
   } else {
-    /*    if (extension_loaded('xhprof') && !$_SERVER['QUERY_STRING'] || ($_SERVER['QUERY_STRING'] && substr_compare($_SERVER['QUERY_STRING'], '/profile/', 0, 9, true) !== 0)) {
+   if (extension_loaded('xhprof') && !$_SERVER['QUERY_STRING'] || ($_SERVER['QUERY_STRING'] && substr_compare($_SERVER['QUERY_STRING'], '/profile/', 0, 9, true) !== 0)) {
       register_shutdown_function(function()
       {
         register_shutdown_function(function()
@@ -62,7 +62,7 @@
           $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
         });
       });
-    }*/
+    }
     if (!function_exists('e')) {
       /**
        * @param $string
