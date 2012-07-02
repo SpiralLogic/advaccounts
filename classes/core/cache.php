@@ -84,7 +84,7 @@
           if (function_exists('apc_clear_cache')) {
             apc_clear_cache('user');
           }
-          \Display::meta_forward('/');
+          header('Location: '.BASE_URL);
         }
         $this->connection = $i;
       }
