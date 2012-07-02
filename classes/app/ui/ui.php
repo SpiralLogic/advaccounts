@@ -90,7 +90,7 @@
         'callback'        => false, //
         'cells'           => false,
         'cell_class'      => null,
-        'input_cell_params', null
+        'input_cell_params'=> null
       );
       $o   = array_merge($o, $attr);
       $url = ($o['url']) ? $o['url'] : false;

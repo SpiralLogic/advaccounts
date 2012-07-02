@@ -178,7 +178,9 @@
       if (!isset($this->mimeTypes[$this->fileType])) {
         $this->debugExit("Unsupported file type ($this->fileType)");
       }
-      header("Content-Type: {$this->mimeTypes[$this->fileType]}; charset=" . $this->charSet);
+      if (!headers_sent($file, $log)) {
+        header("Content-Type: {$this->mimeTypes[$this->fileType]}; charset=" . $this->charSet);
+      }
       $this->gzip = ($this->gzip && !in_array($this->fileType, $this->gzipExceptions) && in_array('gzip', array_map('trim', explode(',', @$_SERVER['HTTP_ACCEPT_ENCODING']))) && function_exists('gzencode'));
       if ($this->gzip) {
         header("Content-Encoding: gzip");

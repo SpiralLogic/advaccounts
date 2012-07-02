@@ -136,7 +136,7 @@
         }
         return null;
       }
-      $this['globals'][$var] = $value;
+      $_SESSION['globals'][$var] = $value;
       $this[$var]            = $value;
       return $value;
     }
@@ -156,7 +156,7 @@
       $globals = func_get_args();
       foreach ($globals as $var) {
         if (is_string($var) || is_int($var)) {
-          unset ($this['globals'][$var]);
+          unset ($_SESSION['globals'][$var]);
         }
       }
     }

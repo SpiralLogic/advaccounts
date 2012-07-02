@@ -14,6 +14,7 @@
    */
   class Forms
   {
+
     /**
      * @static
      *
@@ -21,8 +22,7 @@
      * @param string $action
      * @param string $name
      */
-    public static function start($multi = false, $action = "", $name = "")
-    {
+    public static function start($multi = false, $action = "", $name = "") {
       if ($name != "") {
         $name = "name='$name' id='$name'";
       }
@@ -38,8 +38,7 @@
     /**
      * @param int $breaks
      */
-    public static function end($breaks = 0)
-    {
+    public static function end($breaks = 0) {
       if ($breaks) {
         Display::br($breaks);
       }
@@ -56,8 +55,7 @@
      *
      * @return int|null|string
      */
-    public static function findPostPrefix($prefix, $numeric = true)
-    {
+    public static function findPostPrefix($prefix, $numeric = true) {
       foreach ($_POST as $postkey => $postval) {
         if (strpos($postkey, $prefix) === 0) {
           $id = substr($postkey, strlen($prefix));
@@ -74,8 +72,7 @@
      *
      * @return bool
      */
-    public static function isListUpdated($name)
-    {
+    public static function isListUpdated($name) {
       return isset($_POST['_' . $name . '_update']) || isset($_POST['_' . $name . '_button']);
     }
     /**
@@ -85,8 +82,7 @@
      *
      * @return string
      */
-    public static function hidden($name, $value = null, $echo = true)
-    {
+    public static function hidden($name, $value = null, $echo = true) {
       if ($value === null) {
         $value = Input::post($name);
       }
@@ -112,8 +108,7 @@
      *
      * @return string
      */
-    public static function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = null)
-    {
+    public static function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = null) {
       $box = new SelectBox($name, $selected_id, $sql, $valfield, $namefield, $options);
       return $box->create();
     }
@@ -129,8 +124,7 @@
      *
      * @return string
      */
-    public static function arraySelect($name, $selected_id, $items, $options = array())
-    {
+    public static function arraySelect($name, $selected_id, $items, $options = array()) {
       $opts = array( // default options
         'spec_option'   => false, // option text or false
         'spec_id'       => 0, // option id
@@ -231,8 +225,7 @@
      *
      * @return string
      */
-    public static function submit($name, $value, $echo = true, $title = false, $atype = false, $icon = false)
-    {
+    public static function submit($name, $value, $echo = true, $title = false, $atype = false, $icon = false) {
       $aspect = '';
       if ($atype === null) {
         $aspect = User::fallback() ? " data-aspect='fallback'" : " style='display:none;'";
@@ -281,8 +274,7 @@
      * @param bool $async
      * @param bool $icon
      */
-    public static function submitCenter($name, $value, $echo = true, $title = false, $async = false, $icon = false)
-    {
+    public static function submitCenter($name, $value, $echo = true, $title = false, $async = false, $icon = false) {
       if ($echo) {
         echo "<div class='center'>";
       }
@@ -298,8 +290,7 @@
      * @param bool $async
      * @param bool $icon
      */
-    public static function submitCenterBegin($name, $value, $title = false, $async = false, $icon = false)
-    {
+    public static function submitCenterBegin($name, $value, $title = false, $async = false, $icon = false) {
       echo "<div class='center'>";
       Forms::submit($name, $value, true, $title, $async, $icon);
       echo "&nbsp;";
@@ -311,8 +302,7 @@
      * @param bool $async
      * @param bool $icon
      */
-    public static function submitCenterInsert($name, $value, $title = false, $async = false, $icon = false)
-    {
+    public static function submitCenterInsert($name, $value, $title = false, $async = false, $icon = false) {
       Forms::submit($name, $value, true, $title, $async, $icon);
       echo "&nbsp;";
     }
@@ -323,8 +313,7 @@
      * @param bool $async
      * @param bool $icon
      */
-    public static function submitCenterEnd($name, $value, $title = false, $async = false, $icon = false)
-    {
+    public static function submitCenterEnd($name, $value, $title = false, $async = false, $icon = false) {
       echo "&nbsp;";
       Forms::submit($name, $value, true, $title, $async, $icon);
       echo "</div>";
@@ -339,8 +328,7 @@
      * @param bool $async
      * @param bool $clone
      */
-    public static function submitAddUpdate($add = true, $title = false, $async = false, $clone = false)
-    {
+    public static function submitAddUpdate($add = true, $title = false, $async = false, $clone = false) {
       $cancel = $async;
       if ($async === 'both') {
         $async  = 'default';
@@ -370,8 +358,7 @@
      * @param bool $async
      * @param bool $clone
      */
-    public static function submitAddUpdateCenter($add = true, $title = false, $async = false, $clone = false)
-    {
+    public static function submitAddUpdateCenter($add = true, $title = false, $async = false, $clone = false) {
       echo "<div class='center'>";
       Forms::submitAddUpdate($add, $title, $async, $clone);
       echo "</div>";
@@ -384,8 +371,7 @@
      * @param bool   $async
      * @param bool   $clone
      */
-    public static function submitAddUpdateRow($add = true, $right = true, $extra = "", $title = false, $async = false, $clone = false)
-    {
+    public static function submitAddUpdateRow($add = true, $right = true, $extra = "", $title = false, $async = false, $clone = false) {
       echo "<tr>";
       if ($right) {
         echo "<td>&nbsp;</td>\n";
@@ -402,8 +388,7 @@
      * @param bool   $title
      * @param bool   $async
      */
-    public static function submitRow($name, $value, $right = true, $extra = "", $title = false, $async = false)
-    {
+    public static function submitRow($name, $value, $right = true, $extra = "", $title = false, $async = false) {
       echo "<tr>";
       if ($right) {
         echo "<td>&nbsp;</td>\n";
@@ -416,8 +401,7 @@
      * @param      $value
      * @param bool $title
      */
-    public static function submitReturn($name, $value, $title = false)
-    {
+    public static function submitReturn($name, $value, $title = false) {
       if (Input::request('frame')) {
         Forms::submit($name, $value, true, $title, 'selector');
       }
@@ -427,8 +411,7 @@
      * @param $action
      * @param $msg
      */
-    public static function submitConfirm($name, $action, $msg = null)
-    {
+    public static function submitConfirm($name, $action, $msg = null) {
       if (!$msg) {
         $msg = $action;
       } else {
@@ -442,8 +425,7 @@
      *
      * @return string
      */
-    public static function setIcon($icon, $title = false)
-    {
+    public static function setIcon($icon, $title = false) {
       return "<img src='/themes/" . User::theme() . "/images/$icon' style='width:12' height='12' " . ($title ? " title='$title'" :
         "") . " />\n";
     }
@@ -456,8 +438,7 @@
      *
      * @return string
      */
-    public static function button($name, $value, $title = false, $icon = false, $aspect = '')
-    {
+    public static function button($name, $value, $title = false, $icon = false, $aspect = '') {
       // php silently changes dots,spaces,'[' and characters 128-159
       // to underscore in POST names, to maintain compatibility with register_globals
       $rel = '';
@@ -485,8 +466,7 @@
      *
      * @return int
      */
-    public static function hasPost($name)
-    {
+    public static function hasPost($name) {
       if (!isset($_POST[$name])) {
         return 0;
       }
@@ -501,8 +481,7 @@
      *
      * @return string
      */
-    public static function checkbox($label, $name, $value = null, $submit_on_change = false, $title = false)
-    {
+    public static function checkbox($label, $name, $value = null, $submit_on_change = false, $title = false) {
       $str = '';
       if ($label) {
         $str .= $label . " ";
@@ -528,8 +507,7 @@
      * @param bool $submit_on_change
      * @param bool $title
      */
-    public static function check($label, $name, $value = null, $submit_on_change = false, $title = false)
-    {
+    public static function check($label, $name, $value = null, $submit_on_change = false, $title = false) {
       echo Forms::checkbox($label, $name, $value, $submit_on_change, $title);
     }
     /**
@@ -539,8 +517,7 @@
      * @param bool $submit_on_change
      * @param bool $title
      */
-    public static function  checkRow($label, $name, $value = null, $submit_on_change = false, $title = false)
-    {
+    public static function  checkRow($label, $name, $value = null, $submit_on_change = false, $title = false) {
       echo "<tr><td class='label'>$label</td>";
       Forms::checkCells(null, $name, $value, $submit_on_change, $title);
       echo "</tr>\n";
@@ -555,8 +532,7 @@
      * @param string $params
      * @param string $post_label
      */
-    public static function  textRow($label, $name, $value, $size = null, $max, $title = null, $params = "", $post_label = "")
-    {
+    public static function  textRow($label, $name, $value, $size = null, $max, $title = null, $params = "", $post_label = "") {
       echo "<tr><td class='label'><label for='$name'>$label</label></td>";
       Forms::textCells(null, $name, $value, $size, $max, $title, $params, $post_label);
       echo "</tr>\n";
@@ -573,8 +549,7 @@
      * @param string $params2
      * @param bool   $submit_on_change
      */
-    public static function  textRowEx($label, $name, $size, $max = null, $title = null, $value = null, $rowparams = null, $post_label = null, $label_cell_params = '', $submit_on_change = false)
-    {
+    public static function  textRowEx($label, $name, $size, $max = null, $title = null, $value = null, $rowparams = null, $post_label = null, $label_cell_params = '', $submit_on_change = false) {
       echo "<tr {$rowparams}><td class='label' {$label_cell_params}><label for='$name'>$label</label></td>";
       Forms::textCellsEx(null, $name, $size, $max, $value, $title, $rowparams, $post_label, $submit_on_change);
       echo "</tr>\n";
@@ -589,8 +564,7 @@
      * @param string $params
      * @param string $post_label
      */
-    public static function emailRow($label, $name, $value, $size, $max, $title = null, $params = "", $post_label = "")
-    {
+    public static function emailRow($label, $name, $value, $size, $max, $title = null, $params = "", $post_label = "") {
       if (Input::post($name)) {
         $label = "<a href='Mailto:" . $_POST[$name] . "'>$label</a>";
       }
@@ -606,8 +580,7 @@
      * @param null $params
      * @param null $post_label
      */
-    public static function emailRowEx($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null)
-    {
+    public static function emailRowEx($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null) {
       if (Input::post($name)) {
         $label = "<a href='Mailto:" . $_POST[$name] . "'>$label</a>";
       }
@@ -623,8 +596,7 @@
      * @param string $params
      * @param string $post_label
      */
-    public static function linkRow($label, $name, $value, $size, $max, $title = null, $params = "", $post_label = "")
-    {
+    public static function linkRow($label, $name, $value, $size, $max, $title = null, $params = "", $post_label = "") {
       $val = Input::post($name);
       if ($val) {
         if (strpos($val, 'http://') === false) {
@@ -644,8 +616,7 @@
      * @param null $params
      * @param null $post_label
      */
-    public static function linkRowEx($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null)
-    {
+    public static function linkRowEx($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null) {
       $val = Input::post($name);
       if ($val) {
         if (strpos($val, 'http://') === false) {
@@ -666,8 +637,7 @@
      * @param null $params
      * @param bool $submit_on_change
      */
-    public static function  dateRow($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false)
-    {
+    public static function  dateRow($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false) {
       echo "<tr><td class='label'><label for='$name'> $label</label></td>";
       Forms::dateCells(null, $name, $title, $check, $inc_days, $inc_months, $inc_years, $params, $submit_on_change);
       echo "</tr>\n";
@@ -677,8 +647,7 @@
      * @param $name
      * @param $value
      */
-    public static function passwordRow($label, $name, $value)
-    {
+    public static function passwordRow($label, $name, $value) {
       echo "<tr><td class='label'><label for='$name'>$label</label></td>";
       Cell::label("<input type='password' class='med'  name='$name' id='$name' value='$value' />");
       echo "</tr>\n";
@@ -688,8 +657,7 @@
      * @param        $name
      * @param string $id
      */
-    public static function fileRow($label, $name, $id = "")
-    {
+    public static function fileRow($label, $name, $id = "") {
       echo "<tr><td class='label'>$label</td>";
       Forms::fileCells(null, $name, $id);
       echo "</tr>\n";
@@ -701,8 +669,7 @@
      * @param null $init
      * @param bool $submit_on_change
      */
-    public static function  refRow($label, $name, $title = null, $init = null, $submit_on_change = false)
-    {
+    public static function  refRow($label, $name, $title = null, $init = null, $submit_on_change = false) {
       echo "<tr><td class='label'><label for='$name'> $label</label></td>";
       Forms::refCells(null, $name, $title, $init, null, $submit_on_change);
       echo "</tr>\n";
@@ -714,8 +681,7 @@
      * @param string $cellparams
      * @param string $inputparams
      */
-    public static function percentRow($label, $name, $init = null, $cellparams = '', $inputparams = '')
-    {
+    public static function percentRow($label, $name, $init = null, $cellparams = '', $inputparams = '') {
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         $_POST[$name] = ($init === null) ? '' : $init;
       }
@@ -730,8 +696,7 @@
      * @param null   $dec
      * @param string $inputparams
      */
-    public static function  AmountRow($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '')
-    {
+    public static function  AmountRow($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '') {
       echo "<tr>";
       Forms::amountCells($label, $name, $init, $params, $post_label, $dec, $inputparams);
       echo "</tr>\n";
@@ -746,8 +711,7 @@
      * @param int    $leftfill
      * @param string $inputparams
      */
-    public static function  SmallAmountRow($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $leftfill = 0, $inputparams = '')
-    {
+    public static function  SmallAmountRow($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $leftfill = 0, $inputparams = '') {
       echo "<tr>";
       Forms::amountCellsSmall($label, $name, $init, $params, $post_label, $dec, $inputparams);
       if ($leftfill != 0) {
@@ -763,8 +727,7 @@
      * @param null $post_label
      * @param null $dec
      */
-    public static function qtyRow($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
-    {
+    public static function qtyRow($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
       if (!isset($dec)) {
         $dec = User::qty_dec();
       }
@@ -780,8 +743,7 @@
      * @param null $post_label
      * @param null $dec
      */
-    public static function qtyRowSmall($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
-    {
+    public static function qtyRowSmall($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
       if (!isset($dec)) {
         $dec = User::qty_dec();
       }
@@ -799,8 +761,7 @@
      * @param string $params
      * @param string $labelparams
      */
-    public static function  textareaRow($label, $name, $value, $cols, $rows, $title = null, $params = "", $labelparams = "")
-    {
+    public static function  textareaRow($label, $name, $value, $cols, $rows, $title = null, $params = "", $labelparams = "") {
       echo "<tr><td class='label' $labelparams><label for='$name'>$label</label></td>";
       Forms::textareaCells(null, $name, $value, $cols, $rows, $title, $params);
       echo "</tr>\n";
@@ -810,8 +771,7 @@
      *
      * @param $th
      */
-    public static function  inactiveControlRow($th)
-    {
+    public static function  inactiveControlRow($th) {
       echo  "<tr><td colspan=" . (count($th)) . ">" . "<div style='float:left;'>" . Forms::checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") . "</div><div style='float:right;'>" . Forms::submit('Update', _('Update'), false, '', null) . "</div></td></tr>";
     }
     /**
@@ -819,8 +779,7 @@
      *
      * @param $th
      */
-    public static function inactiveControlCol(&$th)
-    {
+    public static function inactiveControlCol(&$th) {
       if (Forms::hasPost('show_inactive')) {
         Arr::insert($th, count($th) - 2, _("Inactive"));
       }
@@ -837,14 +796,13 @@
      *
      * @return string
      */
-    public static function  yesnoList($name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false)
-    {
+    public static function  yesnoList($name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false) {
       $items      = array();
       $items['0'] = strlen($name_no) ? $name_no : _("No");
       $items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
       return Forms::arraySelect($name, $selected_id, $items, array(
-                                                                  'select_submit' => $submit_on_change, 'async' => false
-                                                             )); // FIX?
+        'select_submit' => $submit_on_change, 'async' => false
+      )); // FIX?
     }
     /**
      * @param        $label
@@ -854,8 +812,7 @@
      * @param string $name_no
      * @param bool   $submit_on_change
      */
-    public static function  yesnoListRow($label, $name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false)
-    {
+    public static function  yesnoListRow($label, $name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false) {
       echo "<tr><td class='label'>$label</td>";
       Forms::yesnoListCells(null, $name, $selected_id, $name_yes, $name_no, $submit_on_change);
       echo "</tr>\n";
@@ -864,8 +821,7 @@
      * @param $label
      * @param $name
      */
-    public static function  recordStatusListRow($label, $name)
-    {
+    public static function  recordStatusListRow($label, $name) {
       Forms::yesnoListRow($label, $name, null, _('Inactive'), _('Active'));
     }
     /**
@@ -877,15 +833,14 @@
      *
      * @return string
      */
-    public static function numberList($name, $selected, $from, $to, $no_option = false)
-    {
+    public static function numberList($name, $selected, $from, $to, $no_option = false) {
       $items = array();
       for ($i = $from; $i <= $to; $i++) {
         $items[$i] = "$i";
       }
       return Forms::arraySelect($name, $selected, $items, array(
-                                                               'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
-                                                          ));
+        'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
+      ));
     }
     /**
      * @param      $label
@@ -895,8 +850,7 @@
      * @param      $to
      * @param bool $no_option
      */
-    public static function numberListRow($label, $name, $selected, $from, $to, $no_option = false)
-    {
+    public static function numberListRow($label, $name, $selected, $from, $to, $no_option = false) {
       echo "<tr><td class='label'>$label</td>";
       Forms::numberListCells(null, $name, $selected, $from, $to, $no_option);
       echo "</tr>\n";
@@ -906,8 +860,7 @@
      * @param      $name
      * @param null $value
      */
-    public static function dateFormatsListRow($label, $name, $value = null)
-    {
+    public static function dateFormatsListRow($label, $name, $value = null) {
       echo "<tr><td class='label'>$label</td>\n<td>";
       echo Forms::arraySelect($name, $value, Config::get('date.formats'));
       echo "</td></tr>\n";
@@ -917,8 +870,7 @@
      * @param      $name
      * @param null $value
      */
-    public static function dateSepsListRow($label, $name, $value = null)
-    {
+    public static function dateSepsListRow($label, $name, $value = null) {
       echo "<tr><td class='label'>$label</td>\n<td>";
       echo Forms::arraySelect($name, $value, Config::get('date.separators'));
       echo "</td></tr>\n";
@@ -928,8 +880,7 @@
      * @param      $name
      * @param null $value
      */
-    public static function thoSepsListRow($label, $name, $value = null)
-    {
+    public static function thoSepsListRow($label, $name, $value = null) {
       echo "<tr><td class='label'>$label</td>\n<td>";
       echo Forms::arraySelect($name, $value, Config::get('separators_thousands'));
       echo "</td></tr>\n";
@@ -939,8 +890,7 @@
      * @param      $name
      * @param null $value
      */
-    public static function decSepsListRow($label, $name, $value = null)
-    {
+    public static function decSepsListRow($label, $name, $value = null) {
       echo "<tr><td class='label'>$label</td>\n<td>";
       echo Forms::arraySelect($name, $value, Config::get('separators_decimal'));
       echo "</td></tr>\n";
@@ -950,8 +900,7 @@
      *
      * @return string
      */
-    public static function dateFormat($row)
-    {
+    public static function dateFormat($row) {
       return Dates::sqlToDate($row['reconciled']);
     }
     /**
@@ -959,8 +908,7 @@
      *
      * @return string
      */
-    public static function addCurrFormat($row)
-    {
+    public static function addCurrFormat($row) {
       static $company_currency;
       if ($company_currency == null) {
         $company_currency = Bank_Currency::for_company();
@@ -972,8 +920,7 @@
      *
      * @return string
      */
-    public static function stockItemsFormat($row)
-    {
+    public static function stockItemsFormat($row) {
       return (User::show_codes() ? ($row[0] . "&nbsp;-&nbsp;") : "") . $row[1];
     }
     /**
@@ -981,8 +928,7 @@
      *
      * @return string
      */
-    public static function templateItemsFormat($row)
-    {
+    public static function templateItemsFormat($row) {
       return ($row[0] . "&nbsp;- &nbsp;" . _("Amount") . "&nbsp;" . $row[1]);
     }
     /**
@@ -990,8 +936,7 @@
      *
      * @return string
      */
-    public static function fiscalYearFormat($row)
-    {
+    public static function fiscalYearFormat($row) {
       return Dates::sqlToDate($row[1]) . "&nbsp;-&nbsp;" . Dates::sqlToDate($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') :
         _('Active')) . "</option>\n";
     }
@@ -1000,8 +945,7 @@
      *
      * @return string
      */
-    public static function accountFormat($row)
-    {
+    public static function accountFormat($row) {
       return $row[0] . "&nbsp;&nbsp;&nbsp;&nbsp;" . $row[1];
     }
     /**
@@ -1012,8 +956,7 @@
      *
      * @return string
      */
-    public static function prep_value($value)
-    {
+    public static function prep_value($value) {
       $value = htmlspecialchars($value);
       $value = str_replace(array("'", '"'), array("&#39;", "&quot;"), $value);
       return $value;
@@ -1026,8 +969,7 @@
      * @param bool   $title
      * @param string $params
      */
-    public static function  checkCells($label, $name, $value = null, $submit_on_change = false, $title = false, $params = '')
-    {
+    public static function  checkCells($label, $name, $value = null, $submit_on_change = false, $title = false, $params = '') {
       echo "<td $params>";
       if ($label != null) {
         echo "<label for=\"$name\"> $label</label>";
@@ -1045,8 +987,7 @@
      * @param $table
      * @param $key
      */
-    public static function  inactiveControlCell($id, $value, $table, $key)
-    {
+    public static function  inactiveControlCell($id, $value, $table, $key) {
       $name  = "Inactive" . $id;
       $value = $value ? 1 : 0;
       if (Forms::hasPost('show_inactive')) {
@@ -1066,8 +1007,7 @@
      * @param bool   $icon
      * @param string $aspect
      */
-    public static function buttonCell($name, $value, $title = false, $icon = false, $aspect = '')
-    {
+    public static function buttonCell($name, $value, $title = false, $icon = false, $aspect = '') {
       echo "<td class='center'>";
       echo Forms::button($name, $value, $title, $icon, $aspect);
       echo "</td>";
@@ -1077,8 +1017,7 @@
      * @param      $value
      * @param bool $title
      */
-    public static function buttonDeleteCell($line_no, $value, $title = false)
-    {
+    public static function buttonDeleteCell($line_no, $value, $title = false) {
       if (strpos($line_no, 'Delete') === 0 || strpos($line_no, 'BDel') === 0) {
         Forms::buttonCell($line_no, $value, $title, ICON_DELETE);
       } else {
@@ -1090,8 +1029,7 @@
      * @param      $value
      * @param bool $title
      */
-    public static function buttonEditCell($line_no, $value, $title = false)
-    {
+    public static function buttonEditCell($line_no, $value, $title = false) {
       if (strpos($line_no, 'Edit') === 0 || strpos($line_no, 'BEdit') === 0) {
         Forms::buttonCell($line_no, $value, $title, ICON_EDIT);
       } else {
@@ -1103,8 +1041,7 @@
      * @param      $value
      * @param bool $title
      */
-    public static function buttonSelectCell($name, $value, $title = false)
-    {
+    public static function buttonSelectCell($name, $value, $title = false) {
       Forms::buttonCell($name, $value, $title, ICON_ADD, 'selector');
     }
     /**
@@ -1112,8 +1049,7 @@
      * @param        $name
      * @param string $id
      */
-    public static function fileCells($label, $name, $id = "")
-    {
+    public static function fileCells($label, $name, $id = "") {
       if ($id != "") {
         $id = "id='$id'";
       }
@@ -1135,8 +1071,7 @@
      * @param bool  $submit_on_change
      * @param array $options
      */
-    public static function dateCells($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false, $options = array())
-    {
+    public static function dateCells($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false, $options = array()) {
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         if ($inc_years == 1001) {
           $_POST[$name] = null;
@@ -1180,10 +1115,11 @@
      * @param string $post_label
      * @param string $inparams
      */
-    public static function  textCells($label, $name, $value = null, $size = "", $max = "", $title = false, $labparams = "", $post_label = "", $inparams = "")
-    {
+    public static function  textCells($label, $name, $value = null, $size = "", $max = "", $title = false, $labparams = "", $post_label = "", $inparams = "") {
+      $placeholder = '';
       if ($label != null) {
         echo "<td class='label'><label for=\"$name\"> $label</label></td>";
+        $placeholder = " placeholder='$label'";
       }
       echo "<td >";
       if ($value === null) {
@@ -1194,7 +1130,7 @@
       } elseif (is_string($size)) {
         $size = " class='$size'";
       }
-      echo "<input $inparams type=\"text\" name=\"$name\" id=\"$name\" $size maxlength=\"$max\" value=\"$value\"" . ($title ?
+      echo "<input $inparams type=\"text\" name=\"$name\" $placeholder id=\"$name\" $size maxlength=\"$max\" value=\"$value\"" . ($title ?
         " title='$title'" : '') . ">";
       if ($post_label != "") {
         echo " " . $post_label;
@@ -1215,8 +1151,7 @@
      *
      * @internal param null $labparams
      */
-    public static function  textCellsEx($label, $name, $size = null, $max = null, $init = null, $title = null, $params = null, $post_label = null, $submit_on_change = false)
-    {
+    public static function  textCellsEx($label, $name, $size = null, $max = null, $init = null, $title = null, $params = null, $post_label = null, $submit_on_change = false) {
       JS::defaultFocus($name);
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         if ($init !== null) {
@@ -1254,8 +1189,7 @@
      * @param bool   $title
      * @param bool   $async
      */
-    public static function submitCells($name, $value, $extra = "", $title = false, $async = false)
-    {
+    public static function submitCells($name, $value, $extra = "", $title = false, $async = false) {
       echo "<td $extra>";
       Forms::submit($name, $value, true, $title, $async);
       echo "</td>\n";
@@ -1268,8 +1202,7 @@
      * @param null $params
      * @param bool $submit_on_change
      */
-    public static function  refCells($label, $name, $title = null, $init = null, $params = null, $submit_on_change = false)
-    {
+    public static function  refCells($label, $name, $title = null, $init = null, $params = null, $submit_on_change = false) {
       Forms::textCellsEx($label, $name, 'small', 18, $init, $title, $params, null, $submit_on_change);
     }
     /**
@@ -1278,8 +1211,7 @@
      * @param null   $init
      * @param string $inputparams
      */
-    public static function  percentCells($label, $name, $init = null, $inputparams = '')
-    {
+    public static function  percentCells($label, $name, $init = null, $inputparams = '') {
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         $_POST[$name] = ($init === null) ? '' : $init;
       }
@@ -1298,8 +1230,7 @@
      * @param string $inputparams
      * @param bool   $negatives
      */
-    public static function amountCellsEx($label, $name, $size = 10, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null, $inputparams = '', $negatives = false)
-    {
+    public static function amountCellsEx($label, $name, $size = 10, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null, $inputparams = '', $negatives = false) {
       if ($label) {
         $params = $params ? : " class='label'";
         Cell::label($label, $params);
@@ -1349,8 +1280,7 @@
      * @param null   $id
      * @param string $inputparams
      */
-    public static function  amountCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $id = null, $inputparams = '')
-    {
+    public static function  amountCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $id = null, $inputparams = '') {
       Forms::amountCellsEx($label, $name, null, 15, $init, $params, $post_label, $dec, $id, $inputparams);
     }
     /**
@@ -1363,8 +1293,7 @@
      * @param null $post_label
      * @param null $dec
      */
-    public static function unitAmountCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
-    {
+    public static function unitAmountCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
       if (!isset($dec)) {
         $dec = User::price_dec() + 2;
       }
@@ -1380,8 +1309,7 @@
      * @param string $inputparams
      * @param bool   $negatives
      */
-    public static function  amountCellsSmall($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '', $negatives = false)
-    {
+    public static function  amountCellsSmall($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '', $negatives = false) {
       Forms::amountCellsEx($label, $name, 'small', 12, $init, $params, $post_label, $dec, null, $inputparams, $negatives);
     }
     /**
@@ -1392,8 +1320,7 @@
      * @param null $post_label
      * @param null $dec
      */
-    public static function  qtyCellsSmall($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
-    {
+    public static function  qtyCellsSmall($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
       if (!isset($dec)) {
         $dec = User::qty_dec();
       }
@@ -1407,8 +1334,7 @@
      * @param      $to
      * @param bool $no_option
      */
-    public static function numberListCells($label, $name, $selected, $from, $to, $no_option = false)
-    {
+    public static function numberListCells($label, $name, $selected, $from, $to, $no_option = false) {
       if ($label != null) {
         Cell::label($label);
       }
@@ -1424,8 +1350,7 @@
      * @param string $name_no
      * @param bool   $submit_on_change
      */
-    public static function yesnoListCells($label, $name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false)
-    {
+    public static function yesnoListCells($label, $name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false) {
       if ($label != null) {
         echo "<td>$label</td>\n";
       }
@@ -1442,8 +1367,7 @@
      * @param null   $title
      * @param string $params
      */
-    public static function  textareaCells($label, $name, $value, $cols, $rows, $title = null, $params = "")
-    {
+    public static function  textareaCells($label, $name, $value, $cols, $rows, $title = null, $params = "") {
       if ($label != null) {
         echo "<td $params>$label</td>\n";
         $params = '';
@@ -1468,8 +1392,7 @@
      * @param null $post_label
      * @param null $dec
      */
-    public static function  qtyCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
-    {
+    public static function  qtyCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
       if (!isset($dec)) {
         $dec = User::qty_dec();
       }

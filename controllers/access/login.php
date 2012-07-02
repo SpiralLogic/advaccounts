@@ -23,7 +23,8 @@
     header("Content-type: text/html; charset=UTF-8");
   }
   echo "<!DOCTYPE HTML>\n";
-  echo "<html dir='$rtl' >\n";
+  echo "<html lang='en'  dir='$rtl' >\n";
+  echo "<meta charset='utf-8'> ";
   echo "<head><title>$title</title>\n";
   echo "<link rel='apple-touch-icon' href='/company/images/advanced-icon.png'/>";
   echo "<link href='/themes/{$def_theme}/default.css' rel='stylesheet'> \n";
@@ -60,7 +61,6 @@
     $companies = Config::getAll('db');
     echo "<tr><td class='label'><label for='login_company'>" . _("Company") . "</label></td><td><select id='login_company'
     name='login_company' class='med'>\n";
-
     foreach ($companies as $name => $company) {
       if (!$company['company']) {
         continue;

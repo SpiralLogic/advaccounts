@@ -523,10 +523,10 @@
         Cell::labels('Supplier', $supp . Forms::hidden('supplier_id', $_POST['supplier_id'], false));
       } else {
         $_POST['supplier_id'] = Input::post('supplier_id', Input::NUMERIC, Session::getGlobal('creditor', ''));
-        Creditor::newselect(null, array('row'=> false));
+        Creditor::newselect($creditor_trans->supplier, array('row'=> false));
         JS::setFocus('supplier_id');
       }
-      if (Input::post('_control') == 'supplier') {
+      if (Input::post('_control') == 'supplier') {$creditor_trans->supplier=$_POST['supplier'];
         Ajax::i()->activate("_page_body");
       }
       if ($creditor_trans->supplier_id != $_POST['supplier_id']) {
@@ -538,7 +538,7 @@
         Purch_Invoice::copy_from_trans($creditor_trans);
       }
       if ($creditor_trans->is_invoice) {
-        Forms::refCells("PO #: ", 'reference', '', Ref::get_next(ST_SUPPINVOICE), 'colspan=2');
+        Forms::refCells("INVOICE #: ", 'reference', '', Ref::get_next(ST_SUPPINVOICE), 'colspan=2');
       } else {
         Forms::refCells("CREDIT #: ", 'reference', '', Ref::get_next(ST_SUPPCREDIT), 'colspan=2');
       }

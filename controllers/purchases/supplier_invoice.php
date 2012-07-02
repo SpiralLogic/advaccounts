@@ -19,19 +19,16 @@
     protected function before() {
       JS::openWindow(900, 500);
       Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
-      if (Input::get('New')) {
-        $this->trans = Creditor_Trans::i(true);
-      } else {
-        $this->trans = Creditor_Trans::i();
-      }
+      $this->trans             = Creditor_Trans::i();
+
       $this->trans->is_invoice = true;
-      $this->supplier_id       = Input::getPost('supplier_id', Input::NUMERIC, null);
       if (isset($_POST['ClearFields'])) {
         $this->clearFields();
       }
-      if (isset($_POST['Cancel'])) {
+      if (isset($_POST['Cancel']) ) {
         $this->cancelInvoice();
       }
+      $this->supplier_id = $this->trans->supplier_id ? : Input::getPost('supplier_id', Input::NUMERIC, null);
       if (isset($_POST['AddGLCodeToTrans'])) {
         $this->addGlCodesToTrans();
       }
@@ -45,8 +42,7 @@
       if (isset($_POST['InvGRNAll'])) {
         $this->invGrnAll();
       }
-      if (Input::post('ponum')!=$_SESSION['delivery_po']) {
-        $_SESSION['delivery_po']=$_POST['ponum'];
+      if (Input::post('ponum')) {
         $this->ajax->_activate('grn_items');
         $this->ajax->_activate('inv_tot');
       }
@@ -350,7 +346,11 @@
       $this->trans->clear_items();
       unset($_SESSION['delivery_po']);
       unset($_POST['ponum']);
+      unset($_POST['supplier_id']);
+      unset($_POST['supplier']);
       Creditor_Trans::killInstance();
+      $this->trans = Creditor_Trans::i(true);
+      $this->ajax->_activate('_page_body');
     }
     protected function go() {
       $this->ajax->_activate('gl_items');
