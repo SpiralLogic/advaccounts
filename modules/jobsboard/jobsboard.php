@@ -18,6 +18,7 @@
    */
   class Jobsboard extends Module\Base
   {
+
     /**
      * @var
      */
@@ -32,18 +33,21 @@
     public $order_no;
     /** @var \DB */
     protected $jobsboardDB;
-    public function _init()
-    {
+    public function __construct($config = []) {
+      parent::__construct($config);
+      if (!$this->jobsboardDB) {
+        $this->jobsboardDB = new \DB('jobsboard');
+      }
+    }
+    public function _init() {
       User::register_login($this, 'tasks');
-      $this->jobsboardDB = new \DB('jobsboard');
     }
     /**
      * @param $trans_no
      *
      * @return mixed
      */
-    public function removejob($trans_no)
-    {
+    public function removejob($trans_no) {
       $job = $this->get_job($trans_no);
       if ($trans_no && $this->jobExists($trans_no)) {
         $this->currentJob['Customer']             = $job['Customer'] . ' - CANCELLED';
@@ -68,8 +72,7 @@
      * @internal param $so_type
      * @return mixed
      */
-    public function addjob($job_data)
-    {
+    public function addjob($job_data) {
       $this->order_no = $order_no = $job_data->trans_no;
       $user_name      = \User::i()->name;
       $orderlines     = $this->getOrderLines();
@@ -137,8 +140,7 @@
      *
      * @return array
      */
-    protected function get_job($trans_no)
-    {
+    protected function get_job($trans_no) {
       $this->currentJob = $this->jobsboardDB->_select()->from('Job_List')->where('order_no=', $trans_no)->fetch()->one();
       if ($this->currentJob) {
         $this->getLines();
@@ -149,8 +151,7 @@
      * @return bool
      * Returns if there is currently a job that exists stored in currentJob
      */
-    protected function jobExists()
-    {
+    protected function jobExists() {
       if (empty($this->currentJob)) {
         return false;
       }
@@ -160,8 +161,7 @@
      * @param array $data  Data to insert as job
      *                     Will insert lines
      */
-    protected function insertJob($data)
-    {
+    protected function insertJob($data) {
       $result = $this->jobsboardDB->_insert('Job_List')->values($data)->exec();
       if ($result) {
         $data['Advanced_Job_No'] = $result;
@@ -172,8 +172,7 @@
     /**
      * @param array $data Data to update Jobsboard job
      */
-    protected function updateJob($data)
-    {
+    protected function updateJob($data) {
       $result = $this->jobsboardDB->_update('Job_List')->values($data)
         ->where('Advanced_Job_No=', $this->currentJob['Advanced_Job_No'])->exec();
       if ($result) {
@@ -183,8 +182,7 @@
     /**
 
      */
-    protected function insertLines()
-    {
+    protected function insertLines() {
       $lines        = $this->lines;
       $this->lines  = array();
       $currentLines = $this->getLines();
@@ -199,8 +197,7 @@
     /**
      * @param array $line Insert line into Jobsboard
      */
-    protected function insertLine($line)
-    {
+    protected function insertLine($line) {
       $line['job_id']        = $this->currentJob['Advanced_Job_No'];
       $line_id               = $this->jobsboardDB->_insert('JobListItems')->values($line)->exec();
       $this->lines[$line_id] = $line;
@@ -208,8 +205,7 @@
     /**
      * @param array $line Updateline into jobsboard
      */
-    protected function updateLine($line)
-    {
+    protected function updateLine($line) {
       $line['job_id'] = $this->currentJob['Advanced_Job_No'];
       $this->jobsboardDB->_update('JobListItems')->values($line)->where('line_id=', $line['line_id'])
         ->andWhere('job_id=', $this->currentJob['Advanced_Job_No'])->exec();
@@ -217,8 +213,7 @@
     /**
      * @return array Get lines from jobsboard for current order
      */
-    protected function getLines()
-    {
+    protected function getLines() {
       $lines  = $this->jobsboardDB->_select()->from('JobListItems')->where('job_id=', $this->currentJob['Advanced_Job_No'])
         ->fetch()->all();
       $result = array();
@@ -231,8 +226,7 @@
      * Get line from order
      * @return array Lines from accounting order
      */
-    protected function getOrderLines()
-    {
+    protected function getOrderLines() {
       $lines = $this->jobsboardDB->_select()->from('sales_order_details')->where('order_no=', $this->order_no)->fetch()->all();
       return $lines;
     }
@@ -240,8 +234,7 @@
      * @static
 
      */
-    public function tasks()
-    {
+    public function tasks() {
       $result = false;
       try {
         $this->jobsboardDB->_query('UPDATE Job_List SET priority_changed = NOW() , Main_Employee_Responsible = previous_user WHERE
