@@ -227,7 +227,7 @@
      * @return array Lines from accounting order
      */
     protected function getOrderLines() {
-      $lines = $this->jobsboardDB->_select()->from('sales_order_details')->where('order_no=', $this->order_no)->fetch()->all();
+      $lines = \DB::select()->from('sales_order_details')->where('order_no=', $this->order_no)->fetch()->all();
       return $lines;
     }
     /**
