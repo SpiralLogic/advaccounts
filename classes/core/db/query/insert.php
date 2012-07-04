@@ -17,7 +17,6 @@
    */
   class Insert extends Query
   {
-
     /**
      * @var
      */
@@ -42,7 +41,8 @@
      * @param bool $table
      * @param      $db
      */
-    public function __construct($table = false, $db) {
+    public function __construct($table = false, $db)
+    {
       parent::__construct($db);
       if ($table) {
         $this->into($table);
@@ -65,7 +65,8 @@
      *
      * @return Query\Insert
      */
-    public function into($table) {
+    public function into($table)
+    {
       $this->table = $table;
 
       return $this;
@@ -75,7 +76,8 @@
      *
      * @return Insert|Update
      */
-    public function values($values) {
+    public function values($values)
+    {
       $this->data = (array) $values + $this->data;
 
       return $this;
@@ -87,7 +89,8 @@
      * @throws \ADV\Core\DB\DBException
      * @return \ADV\Core\DB\Query\Insert
      */
-    public function value($feild, $value) {
+    public function value($feild, $value)
+    {
       if (is_array($feild) && is_array($value)) {
         if (count($feild) != count($value)) {
           throw new DBException('Feild count and Value count unequal');
@@ -108,12 +111,14 @@
      *
      * @return string
      */
-    protected function execute($data = null) {
+    protected function execute($data = null)
+    {
       if ($data !== null) {
         $this->values((array) $data);
       }
       $this->data   = array_intersect_key($this->data, array_flip($this->hasfields));
-      $this->data   = array_filter($this->data, function($value) {
+      $this->data   = array_filter($this->data, function($value)
+      {
         return !is_object($value);
       });
       $this->fields = array_keys($this->data);
@@ -123,7 +128,8 @@
     /**
      * @return string
      */
-    protected function _buildQuery() {
+    protected function _buildQuery()
+    {
       $sql = "INSERT INTO " . $this->table . " (";
       $sql .= implode(', ', $this->fields) . ") VALUES (";
       $sql .= ':' . implode(', :', str_replace('-', '_', $this->fields));

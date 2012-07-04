@@ -13,7 +13,6 @@
    */
   class menu_item
   {
-
     /**
      * @var
      */
@@ -26,7 +25,8 @@
      * @param $label
      * @param $link
      */
-    public function __construct($label, $link) {
+    public function __construct($label, $link)
+    {
       $this->label = $label;
       $this->link  = $link;
     }
@@ -37,7 +37,6 @@
    */
   class Menu
   {
-
     /**
      * @var
      */
@@ -49,7 +48,8 @@
     /**
      * @param $title
      */
-    public function __construct($title) {
+    public function __construct($title)
+    {
       $this->title = $title;
       $this->items;
     }
@@ -59,7 +59,8 @@
      *
      * @return menu_item|mixed
      */
-    public function addItem($label, $link) {
+    public function addItem($label, $link)
+    {
       $item = new menu_item($label, $link);
       array_push($this->items, $item);
 

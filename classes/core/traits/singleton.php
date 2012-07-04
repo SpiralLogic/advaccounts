@@ -12,7 +12,6 @@
    */
   trait Singleton
   {
-
     /**
      * @var null
      */
@@ -21,7 +20,8 @@
      * @static
      * @return
      */
-    public static function i($class = null) {
+    public static function i($class = null)
+    {
       global $dic;
       if (!$dic instanceof \ADV\Core\DIC) {
         if (static::$i === null) {
@@ -38,14 +38,16 @@
         $class_name = substr($namespaced_class, $lastNsPos + 1);
       }
       if ($class && static::$i === null) {
-        $dic->set($class_name, function() use ($class) {
+        $dic->set($class_name, function() use ($class)
+        {
           return $class;
         });
         static::$i = $class_name;
       }
       if (static::$i === null) {
         $args = (func_num_args() > 1) ? array_slice(func_get_args(), 1) : [];
-        $dic->set($class_name, function() use ($namespaced_class, $args) {
+        $dic->set($class_name, function() use ($namespaced_class, $args)
+        {
           if (!$args) {
             return new $namespaced_class;
           }
