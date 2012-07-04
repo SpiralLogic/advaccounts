@@ -32,11 +32,13 @@
      *
      * @return bool
      */
-    public function add($name, $callback, $arguments = array()) {
+    public function add($name, $callback, $arguments = array())
+    {
       $callback_id = (is_string($callback)) ? $callback : count($this->hooks);
       if (!isset($this->hooks[$name][$callback_id])) {
         return $this->hooks[$name][$callback_id] = [$callback, (array) $arguments];
       }
+
       return false;
     }
     /**
@@ -44,13 +46,15 @@
      *
      * @return array
      */
-    public function getCallbacks($name) {
+    public function getCallbacks($name)
+    {
       return isset($this->hooks[$name]) ? $this->hooks[$name] : array();
     }
     /**
      * @param $name
      */
-    public function fire($name) {
+    public function fire($name)
+    {
       foreach ($this->getCallbacks($name) as $callback) {
         if (!is_callable($callback[0])) {
           continue;

@@ -36,8 +36,8 @@
       $this->Session = $session ? : Session::i();
       $this->User    = User::i($this->Session);
       $this->menu    = new Menu(_("Main Menu"));
-      $this->menu->add_item(_("Main Menu"), "index.php");
-      $this->menu->add_item(_("Logout"), "/account/access/logout.php");
+      $this->menu->addItem(_("Main Menu"), "index.php");
+      $this->menu->addItem(_("Logout"), "/account/access/logout.php");
       array_walk($_POST, function(&$v)
       {
         $v = is_string($v) ? trim($v) : $v;
@@ -274,17 +274,17 @@
       $extensions         = $this->Config->_get('extensions.installed');
       $apps               = $this->Config->_get('apps.active');
       foreach ($apps as $app) {
-        $app = 'Apps_' . $app;
+        $app = '\\ADV\\App\\Apps\\' . $app;
         $this->add_application(new $app());
       }
       if (count($extensions) > 0) {
         foreach ($extensions as $ext) {
-          $ext = 'Apps_' . $ext['name'];
+          $ext = '\\ADV\\App\\Apps\\' . $ext['name'];
           $this->add_application(new $ext());
         }
         $this->Session['get_text']->add_domain($this->Session['langauge']->code, LANG_PATH);
       }
-      $this->add_application(new Apps_System());
+      $this->add_application(new \ADV\App\Apps\System());
       $this->Cache->_set('applications', $this->applications);
     }
   }

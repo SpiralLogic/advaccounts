@@ -40,20 +40,14 @@
       'XMLParser', //
     ), 'ADV\\Core\\DB'    => array(
       'DB', //
-      'DB_Query', //
-      'DB_Query_Delete', //
-      'DB_Query_Insert', //
-      'DB_Query_Result', //
-      'DB_Query_Select', //
-      'DB_Query_Update', //
-      'DB_Query_Where', //
       'DBException', //
       'DBDuplicateException', //
       'DBDeleteException', //
       'DBInsertException', //
       'DBSelectException', //
       'DBUpdateException', //
-    ), 'ADV\\Core\\Module'=> array(
+    ),
+    'ADV\\Core\\Module'=> array(
       'Base', //
       'Loadable', //
     ), 'ADV\\App'=> array(

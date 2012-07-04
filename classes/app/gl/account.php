@@ -86,7 +86,7 @@
      *
      * @param $code
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($code)
     {
@@ -142,7 +142,7 @@
      * @param $bank_account
      * @param $bank_date
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get_ending_reconciled($bank_account, $bank_date)
     {

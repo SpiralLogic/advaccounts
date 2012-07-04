@@ -54,7 +54,7 @@
      *
      * @param $type_id
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get_type($type_id)
     {

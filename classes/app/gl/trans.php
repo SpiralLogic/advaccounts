@@ -293,7 +293,7 @@
      * @param bool $from_incl
      * @param bool $to_incl
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get_balance($account, $dimension, $dimension2, $from, $to, $from_incl = true, $to_incl = true)
     {

@@ -86,7 +86,7 @@
      * @param $selected_id
      * @param $stock_id
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($selected_id, $stock_id)
     {

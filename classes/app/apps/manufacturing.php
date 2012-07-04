@@ -7,7 +7,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Apps_Manufacturing extends Application
+  namespace ADV\App\Apps;
+
+  class Manufacturing extends \Application
   {
     public $name = "Manufacturing";
     public $help_context = "&Manufacturing";

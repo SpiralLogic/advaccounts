@@ -7,7 +7,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Apps_Claire extends Application
+  namespace ADV\App\Apps;
+
+  class Claire extends \Application
   {
     public $name = 'Claire';
     public $help_context = "&Claire";

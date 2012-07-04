@@ -57,7 +57,8 @@
      * @param        $encoding
      * @param string $dir
      */
-    public function __construct($name = null, $code = null, $encoding = null, $dir = 'ltr') {
+    public function __construct($name = null, $code = null, $encoding = null, $dir = 'ltr')
+    {
       $l              = Arr::searchValue(Config::get('default.language'), Config::get('languages.installed'), 'code');
       $this->name     = $name ? : $l['name'];
       $this->code     = $code ? : $l['code'] ? : 'en_US';
@@ -72,7 +73,8 @@
     /**
      * @param $code
      */
-    public function setLanguage($code) {
+    public function setLanguage($code)
+    {
       $changed  = $this->code != $code;
       $language = Arr::searchValue($code, Config::get('languages.installed'), 'code');
       if ($language && $changed) {
@@ -102,11 +104,13 @@
      *
      * @return mixed
      */
-    function _($text) {
+    public function _($text)
+    {
       $retVal = $_SESSION['get_text']->gettext($text);
       if ($retVal == "") {
         return $text;
       }
+
       return $retVal;
     }
   }

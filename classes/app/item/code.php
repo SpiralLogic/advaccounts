@@ -86,7 +86,7 @@
      *
      * @param $id
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function  get($id)
     {
@@ -196,7 +196,7 @@
      *
      * @param $kit_code
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function  get_kit_props($kit_code)
     {
@@ -222,7 +222,7 @@
      *
      * @param $stock_id
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function  get_defaults($stock_id)
     {

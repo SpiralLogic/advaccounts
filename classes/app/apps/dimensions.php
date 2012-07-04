@@ -6,8 +6,11 @@
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   **/
-  class Apps_Dimensions extends Application
+   **/namespace ADV\App\Apps;
+
+  use DB_Company;
+
+  class Dimensions extends \Application
   {
     public $name = "Dimensions";
     public $help_context = "&Dimensions";

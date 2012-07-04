@@ -7,13 +7,14 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace ADV\Core\DB;
+  namespace ADV\Core\DB\Query;
   use PDO, PDOStatement, PDOException, PDORow;
+  use ADV\Core\DB\DB;
 
   /**
 
    */
-  class Query_Delete extends Query
+  class Delete extends Query
   {
 
     /**
@@ -41,6 +42,7 @@
     protected function _buildQuery() {
       $sql = "DELETE FROM " . $this->table;
       $sql .= $this->_buildWhere();
+
       return $sql;
     }
   }

@@ -13,7 +13,6 @@
    */
   class Autoload_Exception extends \Exception
   {
-
   }
 
   /**
@@ -21,7 +20,6 @@
    */
   class Autoloader
   {
-
     /**
      * @var int
      */
@@ -44,13 +42,15 @@
     /**
 
      */
-    public function __construct() {
+    public function __construct()
+    {
       spl_autoload_register(array($this, 'load'), true);
     }
     /**
      * @param Cache $cache
      */
-    public function registerCache(Cache $cache) {
+    public function registerCache(Cache $cache)
+    {
       $this->Cache   = $cache;
       $cachedClasses = $cache->get('autoload', array());
       if ($cachedClasses) {
@@ -61,7 +61,7 @@
         $core = include(DOCROOT . 'config' . DS . 'core.php');
         $this->importNamespaces((array) $core);
         $vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
-        $this->add_classes((array) $vendor, VENDORPATH);
+        $this->addClasses((array) $vendor, VENDORPATH);
       }
       spl_autoload_register(array($this, 'loadFromCache'), true, true);
     }
@@ -69,7 +69,8 @@
      * @param array $classes
      * @param       $type
      */
-    protected function add_classes(array $classes, $type) {
+    protected function addClasses(array $classes, $type)
+    {
       foreach ($classes as $dir => $class) {
         if (!is_string($dir)) {
           $dir = '';
@@ -81,13 +82,15 @@
      * @param $namespace
      * @param $classes
      */
-    protected function importNamespace($namespace, $classes) {
+    protected function importNamespace($namespace, $classes)
+    {
       $this->global_classes = array_merge($this->global_classes, array_fill_keys($classes, $namespace));
     }
     /**
      * @param array $namespaces
      */
-    protected function importNamespaces(array $namespaces) {
+    protected function importNamespaces(array $namespaces)
+    {
       foreach ($namespaces as $namespace => $classes) {
         $this->importNamespace($namespace, $classes);
       }
@@ -102,7 +105,8 @@
      * @internal param $path
      * @return string
      */
-    protected function tryPath($paths, $required_class) {
+    protected function tryPath($paths, $required_class)
+    {
       $paths = (array) $paths;
       while ($path = array_shift($paths)) {
         $filepath = realpath($path);
@@ -110,6 +114,7 @@
           return $this->includeFile($filepath, $required_class);
         }
       }
+
       return false;
     }
     /**
@@ -120,7 +125,8 @@
      * @internal param $class
      * @return bool
      */
-    protected function includeFile($filepath, $required_class) {
+    protected function includeFile($filepath, $required_class)
+    {
       if (empty($filepath)) {
         throw new Autoload_Exception('File for class ' . $required_class . ' cannot be found!');
       }
@@ -133,6 +139,7 @@
           Event::registerShutdown($this);
         }
       }
+
       return true;
     }
     /**
@@ -140,7 +147,8 @@
      *
      * @return bool|string
      */
-    public function loadFromCache($required_class) {
+    public function loadFromCache($required_class)
+    {
       $result = false;
       if (isset($this->loaded[$required_class])) {
         try {
@@ -153,6 +161,7 @@
           class_alias($this->global_classes[$required_class] . '\\' . $required_class, '\\' . $required_class);
         }
       }
+
       return $result;
     }
     /**
@@ -162,7 +171,8 @@
      * @internal param $required_class
      * @return bool|string
      */
-    public function load($requested_class) {
+    public function load($requested_class)
+    {
       $classname = ltrim($requested_class, '\\');
       $namespace = '';
       if ($lastNsPos = strripos($classname, '\\')) {
@@ -195,16 +205,17 @@
         $this->loaded[$classname] = $this->loaded[$requested_class];
         class_alias($fullclass, $classname);
       }
+
       return $result;
     }
-
-    public function _shutdown() {
+    public function _shutdown()
+    {
       if ($this->Cache) {
         $this->Cache->set('autoload', array(
-          'classes'        => $this->classes, //
-          'global_classes' => $this->global_classes, //
-          'paths'          => $this->loaded
-        ));
+                                           'classes'        => $this->classes, //
+                                           'global_classes' => $this->global_classes, //
+                                           'paths'          => $this->loaded
+                                      ));
       }
     }
   }

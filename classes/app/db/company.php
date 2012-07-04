@@ -239,7 +239,7 @@
     }
     /**
      * @static
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public function _get_current_fiscalyear() {
       $year   = $this->_get_pref('f_year');
@@ -252,7 +252,7 @@
      *
      * @param $id
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public function _get_fiscalyear($id) {
       $sql    = "SELECT * FROM fiscal_year WHERE id=" . DB::escape($id);
@@ -306,7 +306,7 @@
      *
      * @param $selected_id
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public function _get_payment_terms($selected_id) {
       $sql

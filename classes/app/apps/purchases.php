@@ -6,8 +6,9 @@
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   **/
-  class Apps_Purchases extends Application
+   **/namespace ADV\App\Apps;
+
+  class Purchases extends \Application
   {
     public $name = 'Purchases';
     public $help_context = "&Purchases";

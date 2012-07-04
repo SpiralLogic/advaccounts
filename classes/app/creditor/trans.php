@@ -295,7 +295,7 @@
      * @param $trans_no
      * @param $trans_type
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($trans_no, $trans_type = -1)
     {

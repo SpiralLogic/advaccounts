@@ -14,8 +14,8 @@
    * @method \PDOStatement query($sql, $err_msg = null)
    * @method Query_Se;
   ect select($columns = null)
-   * @method Query_Insert insert($into)
-   * @method Query_Update update($into)
+   * @method Query\Insert insert($into)
+   * @method Query\Update update($into)
    * @method escape($value, $null = false)
    * @method fetch($result = null, $fetch_mode = \PDO::FETCH_BOTH)
    * @method fetchRow($result = null)
@@ -25,8 +25,8 @@
    * @method commit()
    * @method errorNo()
    * @method quote($value, $type = null)
-   * @method \ADV\Core\DB\Query_Select select($columns = null)
-   * @method \ADV\Core\DB\Query_Update update($into)
+   * @method \ADV\Core\DB\Query\Select select($columns = null)
+   * @method \ADV\Core\DB\Query\Update update($into)
    */
   class DB
   {
@@ -112,9 +112,9 @@
         if ($this->conn === false) {
           $this->conn = $conn;
         }
+
         return true;
-      }
-      catch (\PDOException $e) {
+      } catch (\PDOException $e) {
         throw new DBException('Could not connect to database:' . $config['name'] . ', check configuration!');
       }
     }
@@ -130,15 +130,14 @@
         $this->prepared = $this->_prepare($sql);
         try {
           $this->prepared->execute();
-        }
-        catch (\PDOException $e) {
+        } catch (\PDOException $e) {
           $this->error($e, " (execute) " . $err_msg);
         }
-      }
-      catch (\PDOException $e) {
+      } catch (\PDOException $e) {
         $this->error($e, " (prepare) " . $err_msg);
       }
       $this->data = array();
+
       return $this->prepared;
     }
     /**
@@ -182,6 +181,7 @@
         $type = false;
       }
       $this->data[] = array($value, $type);
+
       return ' ? ';
     }
     /**
@@ -207,8 +207,7 @@
           $prepared->bindValue($k, $v[0], $v[1]);
           $k++;
         }
-      }
-      catch (\PDOException $e) {
+      } catch (\PDOException $e) {
         $prepared = false;
         $this->error($e);
       }
@@ -217,6 +216,7 @@
       }
       $this->data     = array();
       $this->prepared = $prepared;
+
       return $prepared;
     }
     /**
@@ -236,11 +236,11 @@
       try {
         $this->prepared->execute($data);
         $result = $this->prepared->fetchAll(\PDO::FETCH_ASSOC);
-      }
-      catch (\PDOException $e) {
+      } catch (\PDOException $e) {
         $result = $this->error($e);
       }
       $this->data = array();
+
       return $result;
     }
     /**
@@ -253,12 +253,13 @@
     /***
      * @param string $columns,... Database columns to select
      *
-     * @return Query_Select
+     * @return Query\Select
      */
     public function _select($columns = null) {
       $this->prepared = null;
       $columns        = (is_string($columns)) ? func_get_args() : array();
-      $this->query    = new Query_Select($columns, $this);
+      $this->query    = new Query\Select($columns, $this);
+
       return $this->query;
     }
     /**
@@ -266,21 +267,23 @@
      *
      * @param $into
      *
-     * @return Query_Update
+     * @return Query\Update
      */
     public function _update($into) {
       $this->prepared = null;
-      $this->query    = new Query_Update($into, $this);
+      $this->query    = new Query\Update($into, $this);
+
       return $this->query;
     }
     /**
      * @param $into
      *
-     * @return Query_Insert|bool
+     * @return Query\Insert|bool
      */
     public function _insert($into) {
       $this->prepared = null;
-      $this->query    = new Query_Insert($into, $this);
+      $this->query    = new Query\Insert($into, $this);
+
       return $this->query;
     }
     /**
@@ -290,14 +293,15 @@
      */
     public function _delete($into) {
       $this->prepared = null;
-      $this->query    = new Query_Delete($into, $this);
+      $this->query    = new Query\Delete($into, $this);
+
       return $this->query;
     }
     /***
      * @param \PDOStatement $result     The result of the query or whatever cunt
      * @param int           $fetch_mode
      *
-     * @return Query_Result|Array This is something
+     * @return Query\Result|Array This is something
      */
     public function _fetch($result = null, $fetch_mode = \PDO::FETCH_BOTH) {
       try {
@@ -307,17 +311,18 @@
         if ($this->prepared === null) {
           return $this->query->fetch($fetch_mode);
         }
+
         return $this->prepared->fetch($fetch_mode);
-      }
-      catch (\Exception $e) {
+      } catch (\Exception $e) {
         $this->error($e);
       }
+
       return false;
     }
     /**
      * @param null|\PDOStatement $result
      *
-     * @return Query_Result|Array
+     * @return Query\Result|Array
      */
     public function _fetchRow($result = null) {
       return $this->_fetch($result, \PDO::FETCH_NUM);
@@ -339,6 +344,7 @@
         $results = $this->prepared->fetchAll($fetch_type);
       }
       $this->results = false;
+
       return $results;
     }
     /**
@@ -347,6 +353,7 @@
      */
     public function _errorNo() {
       $info = $this->_errorInfo();
+
       return $info[1];
     }
     /**
@@ -360,6 +367,7 @@
       if ($this->prepared) {
         return $this->prepared->errorInfo();
       }
+
       return $this->conn->errorInfo();
     }
     /**
@@ -368,6 +376,7 @@
      */
     public function _errorMsg() {
       $info = $this->_errorInfo();
+
       return isset($info[2]) ? $info[2] : false;
     }
     /**
@@ -388,6 +397,7 @@
       $result         = ($this->prepared) ? $this->prepared->closeCursor() : false;
       $this->errorSql = $this->errorInfo = $this->prepared = null;
       $this->data     = array();
+
       return $result;
     }
     /**
@@ -412,6 +422,7 @@
       if ($this->cache) {
         $this->cache->set('sql.rowcount.' . md5($sql), $rows);
       }
+
       return $rows;
     }
     /**
@@ -431,8 +442,7 @@
         try {
           $this->conn->beginTransaction();
           $this->intransaction = true;
-        }
-        catch (\PDOException $e) {
+        } catch (\PDOException $e) {
           $this->error($e);
         }
       }
@@ -447,8 +457,7 @@
         $this->intransaction = false;
         try {
           $this->conn->commit();
-        }
-        catch (\PDOException $e) {
+        } catch (\PDOException $e) {
           $this->error($e);
         }
       }
@@ -463,8 +472,7 @@
         try {
           $this->intransaction = false;
           $this->conn->rollBack();
-        }
-        catch (\PDOException $e) {
+        } catch (\PDOException $e) {
           $this->error($e);
         }
       }
@@ -479,13 +487,12 @@
      * @param $key
      * Update record activity status.
      *
-     * @return Query_Result
+     * @return Query\Result
      */
     public function _updateRecordStatus($id, $status, $table, $key) {
       try {
         $this->_update($table)->value('inactive', $status)->where($key . '=', $id)->exec();
-      }
-      catch (DBUpdateException $e) {
+      } catch (DBUpdateException $e) {
         static::_insertRecordStatus($id, $status, $table, $key);
       }
     }
@@ -498,13 +505,12 @@
      * @param $key
      *
      * @throws \ADV\Core\DB\DBUpdateException
-     * @return Query_Result
+     * @return Query\Result
      */
     public function _insertRecordStatus($id, $status, $table, $key) {
       try {
         $this->_insert($table)->values(array('inactive' => $status, $key => $id))->exec();
-      }
-      catch (DBInsertException $e) {
+      } catch (DBInsertException $e) {
         throw new DBUpdateException('Could not update record inactive status');
       }
     }
@@ -517,7 +523,7 @@
      * @throws \ADV\Core\DB\DBUpdateException
      * @throws \ADV\Core\DB\DBInsertException
      * @throws \ADV\Core\DB\DBSelectException
-     * @return Query_Result|int
+     * @return Query\Result|int
      */
     public function exec($sql, $type, $data = array()) {
       $this->errorInfo = false;
@@ -532,16 +538,17 @@
         $prepared = $this->_prepare($sql);
         switch ($type) {
           case DB::SELECT:
-            return new Query_Result($prepared, $data);
+            return new Query\Result($prepared, $data);
           case DB::INSERT:
             $prepared->execute($data);
+
             return $this->conn->lastInsertId();
           case DB::UPDATE or DB::DELETE:
             $prepared->execute($data);
+
             return true;
         }
-      }
-      catch (\PDOException $e) {
+      } catch (\PDOException $e) {
         $this->error($e);
         switch ($type) {
           case DB::SELECT:
@@ -559,6 +566,7 @@
         }
       }
       $this->data = array();
+
       return false;
     }
     /**
@@ -573,6 +581,7 @@
       foreach ($data as $k => $v) {
         $sql = str_replace(":$k", " '$v' ", $sql); // outputs '123def abcdef abcdef' str_replace(,,$sql);
       }
+
       return $sql;
     }
     /**
@@ -590,6 +599,7 @@
         }
         $sql = preg_replace('/\?/i', "'$v'", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
       }
+
       return $sql;
     }
     /**
@@ -631,6 +641,7 @@
      */
     public function __sleep() {
       $this->conn = null;
+
       return array_keys((array) $this);
     }
   }

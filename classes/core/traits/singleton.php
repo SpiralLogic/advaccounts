@@ -23,14 +23,14 @@
      */
     public static function i($class = null) {
       global $dic;
-      if (static::$i !== null) {
-        return $dic->get(static::$i);
-      }
       if (!$dic instanceof \ADV\Core\DIC) {
         if (static::$i === null) {
           static::$i = new static;
         }
         return static::$i;
+      }
+      if (static::$i !== null) {
+        return $dic->get(static::$i);
       }
       $namespaced_class = $class_name = $class ? get_class($class) : get_called_class();
       $lastNsPos        = strripos($namespaced_class, '\\');
@@ -50,10 +50,12 @@
             return new $namespaced_class;
           }
           $ref = new \ReflectionClass($namespaced_class);
+
           return $ref->newInstanceArgs($args);
         });
         static::$i = $class_name;
       }
+
       return $dic->get(static::$i);
     }
   }

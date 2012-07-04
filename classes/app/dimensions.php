@@ -83,7 +83,7 @@
      * @param      $id
      * @param bool $allow_null
      *
-     * @return DB_Query_Result
+     * @return \ADV\Core\DB\Query\Result
      */
     public static function get($id, $allow_null = false)
     {

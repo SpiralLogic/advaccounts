@@ -438,7 +438,7 @@
      * @param      $woid
      * @param bool $allow_null
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($woid, $allow_null = false)
     {

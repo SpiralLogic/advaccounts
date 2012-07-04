@@ -154,7 +154,7 @@
      *
      * @param $price_id
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($price_id)
     {

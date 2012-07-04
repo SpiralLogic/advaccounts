@@ -285,7 +285,7 @@
      * @param $trans_id
      * @param $trans_type
      *
-     * @return Array|DB_Query_Result
+     * @return Array|\ADV\Core\DB\Query\Result
      */
     public static function get($trans_id, $trans_type)
     {
@@ -385,7 +385,7 @@
      * @param $type
      * @param $type_no
      *
-     * @return Array|DB_Query_Result
+     * @return Array|\ADV\Core\DB\Query\Result
      */
     public static function get_details($type, $type_no)
     {

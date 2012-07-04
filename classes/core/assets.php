@@ -68,7 +68,8 @@
     /**
      * @param $status
      */
-    protected function headerExit($status) {
+    protected function headerExit($status)
+    {
       header("Pragma: Public");
       header("Expires: " . $this->gmdatestr(time() + 315360000));
       header("Cache-Control: max-age=315360000");
@@ -77,7 +78,8 @@
       $this->contentHeader();
       exit();
     }
-    protected function headerNoCache() {
+    protected function headerNoCache()
+    {
       // already expired
       header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
       // always modified
@@ -93,7 +95,8 @@
       header('Etag: ' . microtime());
       $this->contentHeader();
     }
-    protected function headerNeverExpire() {
+    protected function headerNeverExpire()
+    {
       header("Expires: " . $this->gmdatestr(time() + 315360000));
       header("Cache-Control: max-age=315360000");
       header("Vary: Accept-Encoding", false);
@@ -103,7 +106,8 @@
     /**
      * @param $msg
      */
-    protected function debugExit($msg) {
+    protected function debugExit($msg)
+    {
       if (!$this->debug) {
         $this->headerExit('404 Not Found');
       }
@@ -120,16 +124,19 @@
      *
      * @return string
      */
-    protected function gmdatestr($time = null) {
+    protected function gmdatestr($time = null)
+    {
       if (is_null($time)) {
         $time = time();
       }
+
       return gmdate("D, d M Y H:i:s", $time) . " GMT";
     }
     /**
      * @return int|mixed
      */
-    protected function filesmtime() {
+    protected function filesmtime()
+    {
       static $filesmtime;
       if ($filesmtime) {
         return $filesmtime;
@@ -140,12 +147,14 @@
         }
         $filesmtime = max(filemtime($file), $filesmtime);
       }
+
       return $filesmtime;
     }
     /**
 
      */
-    public function __construct() {
+    public function __construct()
+    {
       //  $this->setFromArray(Config::getAll('assets22'));
       list($query) = explode('?', urldecode($_SERVER['QUERY_STRING']));
       if (preg_match('/^\/?(.+\/)?(.+)$/', $query, $matchResult)) {
@@ -257,7 +266,8 @@
         $this->headerExit('304 Not Modified');
       }
     }
-    protected function contentHeader() {
+    protected function contentHeader()
+    {
       if (isset($this->mimeTypes[$this->fileType])) {
         header('Content-Type: ' . $this->mimeTypes[$this->fileType]);
       }

@@ -31,7 +31,8 @@
      * @param $order_no
      * @param $options
      */
-    public function __construct($order_no, $options) {
+    public function __construct($order_no, $options)
+    {
       $this->order_no = $order_no;
       error_reporting(E_ALL | E_STRICT);
       ini_set('post_max_size', '3M');
@@ -77,7 +78,8 @@
      *
      * @return null|\stdClass
      */
-    private function get_file_object($file_name) {
+    private function get_file_object($file_name)
+    {
       $file_path = $this->options['upload_dir'] . $file_name;
       if (is_file($file_path) && $file_name[0] !== '.') {
         $file       = new \stdClass();
@@ -91,6 +93,7 @@
         }
         $file->delete_url  = $this->options['script_url'] . '?file=' . rawurlencode($file->name);
         $file->delete_type = 'DELETE';
+
         return $file;
       }
       /*$sql = "SELECT * FROM upload WHERE id = {$upload_id} LIMIT 1";
@@ -103,12 +106,14 @@
 
                return $file;
                */
+
       return null;
     }
     /**
      * @return array
      */
-    private function get_file_objects() {
+    private function get_file_objects()
+    {
       return array_values(array_filter(array_map(array($this, 'get_file_object'), scandir($this->options['upload_dir']))));
     }
     /**
@@ -117,7 +122,8 @@
      *
      * @return bool
      */
-    private function create_scaled_image($file_name, $options) {
+    private function create_scaled_image($file_name, $options)
+    {
       $file_path     = $this->options['upload_dir'] . $file_name;
       $new_file_path = $options['upload_dir'] . $file_name;
       list($img_width, $img_height) = @getimagesize($file_path);
@@ -156,6 +162,7 @@
       // Free up memory (imagedestroy does not delete files):
       @imagedestroy($src_img);
       @imagedestroy($new_img);
+
       return $success;
     }
     /**
@@ -165,7 +172,8 @@
      *
      * @return string
      */
-    private function has_error($uploaded_file, $file, $error) {
+    private function has_error($uploaded_file, $file, $error)
+    {
       if ($error) {
         return $error;
       }
@@ -189,6 +197,7 @@
       ) {
         return 'maxNumberOfFiles';
       }
+
       return $error;
     }
     /**
@@ -200,7 +209,8 @@
      *
      * @return \stdClass
      */
-    private function handle_file_upload($uploaded_file, $name, $size, $type, $error) {
+    private function handle_file_upload($uploaded_file, $name, $size, $type, $error)
+    {
       $file = new \stdClass();
       // Remove path information and dots around the filename, to prevent uploading
       // into different directories or replacing hidden system files.
@@ -249,12 +259,14 @@
                DB::query($sql, 'Could not insert file into database');
                $upload_id = DB::insertId();
                $file->id = $this->upload_id = $upload_id;*/
+
       return $file;
     }
     /**
      * @return mixed
      */
-    public function get() {
+    public function get()
+    {
       $info      = array();
       $upload_id = (isset($_REQUEST['id'])) ? stripslashes($_REQUEST['id']) : null;
       if ($upload_id) {
@@ -284,7 +296,8 @@
     /**
 
      */
-    public function post() {
+    public function post()
+    {
       $upload = isset($_FILES[$this->options['param_name']]) ? $_FILES[$this->options['param_name']] : array(
         'tmp_name' => null, 'name'     => null, 'size'     => null, 'type'     => null, 'error'    => null
       );
@@ -323,7 +336,8 @@
      *
      * @param $id
      */
-    public static function insert($id) {
+    public static function insert($id)
+    {
       if (!self::$inserted) {
         JS::footerFile(array(
           '/js/js2/jquery.fileupload.js', '/js/js2/jquery.fileupload-ui.js', '/js/js2/jquery.fileupload-app.js'
@@ -379,7 +393,8 @@
     /**
 
      */
-    private function make_dir() {
+    private function make_dir()
+    {
       $old = umask(0);
       //@mkdir($this->upload_dir, 0777);
       umask($old);
@@ -387,7 +402,8 @@
     /**
 
      */
-    public function delete() {
+    public function delete()
+    {
       $name   = isset($_REQUEST['file']) ? ($_REQUEST['file']) : null;
       $id     = isset($_REQUEST['id']) ? ($_REQUEST['id']) : null;
       $sql    = "DELETE FROM upload WHERE `id` = {$id} AND `filename` = '{$name}'";

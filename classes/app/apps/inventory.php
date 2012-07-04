@@ -7,7 +7,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Apps_Inventory extends Application
+  namespace ADV\App\Apps;
+
+  class Inventory extends \Application
   {
     public $name = "Inventory";
     public $help_context = "&Inventory";

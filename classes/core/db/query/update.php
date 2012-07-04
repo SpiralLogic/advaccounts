@@ -7,13 +7,14 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace ADV\Core\DB;
+  namespace ADV\Core\DB\Query;
   use PDO, PDOStatement, PDOException, PDORow;
+  use ADV\Core\DB\DB;
 
   /**
    * @method values($values)
    */
-  class Query_Update extends Query_Insert
+  class Update extends Insert
   {
 
     /**
@@ -34,6 +35,7 @@
       }
       $sql .= implode(', ', $this->fields);
       $sql .= $this->_buildWhere();
+
       return $sql;
     }
   }

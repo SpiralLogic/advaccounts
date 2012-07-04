@@ -7,13 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace ADV\Core\DB;
+  namespace ADV\Core\DB\Query;
   use PDO, PDOStatement, PDOException, PDORow;
 
   /**
 
    */
-  abstract class Query extends Query_Where
+  abstract class Query extends Where
   {
 
     /**
@@ -53,19 +53,21 @@
       if (!$this->compiled_query) {
         $this->compiled_query = $this->execute($data);
       }
+
       return $this->compiled_query;
     }
     /***
      * @param null $data
      *
-     * @return Query_Result|int|bool
+     * @return Query\Result|int|bool
      */
     public function exec($data = null) {
       $result = $this->conn->exec($this->getQuery($data), $this->type, $this->data);
+
       return $result;
     }
     /***
-     * @return Query_Result
+     * @return Query\Result
      */
     public function fetch() {
       return $this->exec(null);

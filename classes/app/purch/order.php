@@ -841,7 +841,7 @@
      * @param $supplier_id
      * @param $stock_id
      *
-     * @return Array|DB_Query_Result
+     * @return Array|\ADV\Core\DB\Query\Result
      */
     public static function get_data($supplier_id, $stock_id)
     {

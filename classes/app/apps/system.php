@@ -6,8 +6,9 @@
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   **/
-  class Apps_System extends Application
+   **/namespace ADV\App\Apps;
+
+  class System extends \Application
   {
     public $name = "System";
     public $help_context = "&System";

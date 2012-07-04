@@ -47,7 +47,7 @@
      *
      * @param $id
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($id)
     {
@@ -92,7 +92,7 @@
      * @param $profile
      * @param $report
      *
-     * @return ADV\Core\DB\Query_Result|Array|bool
+     * @return \ADV\Core\DB\Query\Result|Array|bool
      */
     public static function get_report($profile, $report)
     {

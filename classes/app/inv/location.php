@@ -67,7 +67,7 @@
      *
      * @param $item_location
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($item_location)
     {
@@ -143,7 +143,7 @@
      *
      * @param $order
      *
-     * @return DB_Query_Result|null
+     * @return \ADV\Core\DB\Query\Result|null
      * find inventory location for given transaction
 
      */

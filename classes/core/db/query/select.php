@@ -7,13 +7,14 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace ADV\Core\DB;
+  namespace ADV\Core\DB\Query;
   use PDO, PDOStatement, PDOException, PDORow;
+  use ADV\Core\DB\DB;
 
   /**
 
    */
-  class Query_Select extends Query
+  class Select extends Query
   {
 
     /**
@@ -48,7 +49,7 @@
      * @param string $columns,... Database columns to select
      * @param        DB_C
      *
-     * @return Query_Select
+     * @return Select
      */
     public function __construct($columns, $db) {
       parent::__construct($db);
@@ -58,17 +59,18 @@
     /***
      * @param mixed ... Database columns to select
      *
-     * @return Query_Select
+     * @return Select
      */
     public function select() {
       $columns      = func_get_args();
       $this->select = array_merge($this->select, $columns);
+
       return $this;
     }
     /***
      * @param null $tables
      *
-     * @return Query_Select
+     * @return Select
      */
     public function from($tables = null) {
       if (is_null($tables)) {
@@ -76,12 +78,13 @@
       }
       $tables     = func_get_args();
       $this->from = array_merge($this->from, $tables);
+
       return $this;
     }
     /**
      * @param null $by
      *
-     * @return Query_Select
+     * @return Select
      */
     public function orderby($by = null) {
       if (is_null($by)) {
@@ -89,12 +92,13 @@
       }
       $by            = func_get_args();
       $this->orderby = array_merge($this->orderby, $by);
+
       return $this;
     }
     /**
      * @param null $by
      *
-     * @return Query_Select
+     * @return Select
      */
     public function groupby($by = null) {
       if (is_null($by)) {
@@ -102,26 +106,29 @@
       }
       $by            = func_get_args();
       $this->groupby = array_merge($this->groupby, $by);
+
       return $this;
     }
     /**
      * @param      $start
      * @param null $quantity
      *
-     * @return Query_Select
+     * @return Select
      */
     public function limit($start = 0, $quantity = null) {
       $this->limit = ($quantity == null) ? $start : "$start, $quantity";
+
       return $this;
     }
     /**
-     * @return Query_Select
+     * @return Select
      */
     public function union() {
       $this->union[] = '(' . $this->_buildQuery() . ')';
       $this->select  = $this->from = $this->orderby = $this->groupby = array();
       $this->limit   = '';
       $this->resetWhere();
+
       return $this;
     }
     /**
@@ -140,6 +147,7 @@
       if ($this->union) {
         return implode(' UNION ', $this->union);
       }
+
       return $this->_buildQuery();
     }
     /**
@@ -166,6 +174,7 @@
       if (!empty($this->limit)) {
         $sql .= ' LIMIT ' . $this->limit;
       }
+
       return $sql;
     }
   }

@@ -387,7 +387,7 @@
      *
      * @param $stock_id
      *
-     * @return Array|DB_Query_Result
+     * @return Array|\ADV\Core\DB\Query\Result
      */
     public static function get_edit_info($stock_id)
     {
@@ -511,7 +511,7 @@
      *
      * @param $stock_id
      *
-     * @return Array|DB_Query_Result
+     * @return Array|\ADV\Core\DB\Query\Result
      */
     public static function get_gl_code($stock_id)
     {
@@ -922,7 +922,7 @@ JS;
      *
      * @param $stock_id
      *
-     * @return Array|DB_Query_Result
+     * @return Array|\ADV\Core\DB\Query\Result
      */
     public static function get($stock_id)
     {

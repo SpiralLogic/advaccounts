@@ -1551,7 +1551,7 @@
      * @param $order_no
      * @param $trans_type
      *
-     * @return ADV\Core\DB\Query_Result|void
+     * @return \ADV\Core\DB\Query\Result|void
      * @throws DBException
      */
     public static function get_header($order_no, $trans_type)
@@ -1669,7 +1669,7 @@
      *
      * @param $customer_id
      *
-     * @return \ADV\Core\DB\Query_Result
+     * @return \ADV\Core\DB\Query\Result
 
      */
     public static function get_customer($customer_id)

@@ -159,7 +159,15 @@
       if (!$this->ajaxpage) {
         echo "<div id='wrapper'>";
       }
-      $this->Security->check_page(static::$pagesecurity);
+      if ($this->Security->check_page(static::$pagesecurity)){
+        echo "<div class='center'><br><br><br><span class='bold'>";
+        echo _("The security settings on your account do not permit you to access this function");
+        echo "</span>";
+        echo "<br><br><br><br></div>";
+        $this->end_page(false);
+        exit;
+      }
+
       if ($this->title && !$this->is_index && !$this->frame && !IS_JSON_REQUEST) {
         echo "<div class='titletext'>$this->title" . ($this->User->hints() ? "<span id='hints' class='floatright'
     										style='display:none'></span>" : '') . "</div>";

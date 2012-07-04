@@ -16,7 +16,7 @@
    * @param $type
    * @param $trans_no
    *
-   * @return ADV\Core\DB\Query_Result|Array|bool
+   * @return \ADV\Core\DB\Query\Result|Array|bool
    */
   function get_remittance($type, $trans_no)
   {

@@ -1163,7 +1163,7 @@
   /**
 
    */
-  class Query_Result extends ADV\Core\DB\Query_Result
+  class Result extends ADV\Core\DB\Query\Result
   {
 
   }

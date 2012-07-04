@@ -6,8 +6,9 @@
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   **/
-  class Apps_GL extends Application
+   **/namespace ADV\App\Apps;
+
+  class GL extends \Application
   {
     public $name = 'GL';
     public $help_context = "&Banking";

@@ -341,7 +341,7 @@ JS;
      * @param      $supplier_id
      * @param null $to
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get_to_trans($supplier_id, $to = null)
     {
@@ -432,7 +432,7 @@ JS;
      *
      * @param $supplier_id
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($supplier_id)
     {
@@ -459,7 +459,7 @@ JS;
      *
      * @param $supplier_id
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get_accounts_name($supplier_id)
     {

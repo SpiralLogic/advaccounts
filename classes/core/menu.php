@@ -59,9 +59,10 @@
      *
      * @return menu_item|mixed
      */
-    public function add_item($label, $link) {
+    public function addItem($label, $link) {
       $item = new menu_item($label, $link);
       array_push($this->items, $item);
+
       return $item;
     }
   }

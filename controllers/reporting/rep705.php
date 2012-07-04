@@ -18,7 +18,7 @@
    * @param $dimension
    * @param $dimension2
    *
-   * @return ADV\Core\DB\Query_Result|Array
+   * @return \ADV\Core\DB\Query\Result|Array
    */
   function getPeriods($yr, $mo, $account, $dimension, $dimension2)
   {

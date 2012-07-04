@@ -42,7 +42,8 @@
      *
      * @return null
      */
-    function __call($func, $args) {
+    public function __call($func, $args)
+    {
       return static::__callStatic($func, $args);
     }
     /**
@@ -50,8 +51,10 @@
      *
      * @return null
      */
-    function __get($func) {
+    public function __get($func)
+    {
       static::__callStatic($func);
+
       return static::$_instance;
     }
     /**
@@ -61,7 +64,8 @@
      *
      * @return HTML|string
      */
-    static function setReturn($state = null) {
+    public static function setReturn($state = null)
+    {
       if (static::$_instance === null) {
         static::$_instance = new static;
       }
@@ -71,6 +75,7 @@
       } else {
         ob_start();
       }
+
       return static::$_instance;
     }
     /**
@@ -81,11 +86,13 @@
      *
      * @return null
      */
-    static function __callStatic($func, $args = array()) {
+    public static function __callStatic($func, $args = array())
+    {
       if (static::$_instance === null) {
         static::$_instance = new static;
       }
       (count($args) == 0) ? static::$_instance->_closeTag(($func[0] == '_') ? substr($func, 1) : $func) : static::$_instance->_Builder($func, $args);
+
       return static::$_instance;
     }
     /**
@@ -93,7 +100,8 @@
      * @param array  $attr
      * @param string $content
      */
-    protected function _openTag($type, $attr = array(), $content = '') {
+    protected function _openTag($type, $attr = array(), $content = '')
+    {
       $attrs = '';
       foreach ($attr as $key => $value) {
         if (is_bool($value)) {
@@ -113,7 +121,8 @@
     /**
      * @param $type
      */
-    protected function _closeTag($type) {
+    protected function _closeTag($type)
+    {
       echo '</' . $type . '>';
     }
     /**
@@ -122,7 +131,8 @@
      * @param array  $attr
      * @param string $content
      */
-    protected function _Builder($func, $args, $attr = array(), $content = '') {
+    protected function _Builder($func, $args, $attr = array(), $content = '')
+    {
       $open = (is_bool(end($args))) ? array_pop($args) : true;
       foreach ($args as $key => $val) {
         if ($key == 0 && is_string($val)) {

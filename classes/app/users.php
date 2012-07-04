@@ -135,7 +135,7 @@
      *
      * @param $id
      *
-     * @return DB_Query_Result
+     * @return \ADV\Core\DB\Query\Result
      */
     public static function  get($id)
     {
@@ -151,7 +151,7 @@
      *
      * @param $user_id
      *
-     * @return DB_Query_Result
+     * @return \ADV\Core\DB\Query\Result
      */
     public static function  get_by_login($user_id)
     {

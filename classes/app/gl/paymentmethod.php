@@ -52,7 +52,7 @@
      *
      * @param $id
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($id)
     {

@@ -99,7 +99,7 @@
     /**
      * @param $id
      *
-     * @return \ADV\Core\DB\Query_Result|bool|int|mixed
+     * @return \ADV\Core\DB\Query\Result|bool|int|mixed
      */
     protected function insertJob($id)
     {

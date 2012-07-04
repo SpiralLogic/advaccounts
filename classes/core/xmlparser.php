@@ -13,7 +13,6 @@
    */
   class XMLParser
   {
-
     /**
      * @public null
      */
@@ -65,7 +64,8 @@
     /**
      * @param null $xml
      */
-    public function __construct($xml = null) {
+    public function __construct($xml = null)
+    {
       $this->rawXML = $xml;
     }
     /**
@@ -73,7 +73,8 @@
      *
      * @return array|bool
      */
-    public function parse($xml = null) {
+    public function parse($xml = null)
+    {
       if (!is_null($xml)) {
         $this->rawXML = $xml;
       }
@@ -84,12 +85,14 @@
       $this->index  = 0;
       $this->parsed = $this->parseRecurse();
       $this->status = 'parsing complete';
+
       return $this->parsed;
     }
     /**
      * @return array
      */
-    public function parseRecurse() {
+    public function parseRecurse()
+    {
       $found    = array();
       $tagCount = array();
       while (isset($this->valueArray[$this->index])) {
@@ -139,12 +142,14 @@
             break;
         }
       }
+
       return $found;
     }
     /**
      * @return bool
      */
-    public function parseInit() {
+    public function parseInit()
+    {
       $this->parser = xml_parser_create();
       $parser       = $this->parser;
       xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
@@ -154,6 +159,7 @@
         $this->error   = 'error: ' . xml_error_string(xml_get_error_code($parser)) . ' at line ' . xml_get_current_line_number($parser);
       }
       xml_parser_free($parser);
+
       return $res;
     }
     /**
@@ -163,7 +169,8 @@
      *
      * @return array|mixed
      */
-    public static function XMLtoArray($data) {
+    public static function XMLtoArray($data)
+    {
       $XML    = new XMLParser($data);
       $array  = $XML->parse();
       $result = '';

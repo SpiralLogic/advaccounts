@@ -15,7 +15,7 @@
      *
      * @param $branch_id
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($branch_id)
     {
@@ -32,7 +32,7 @@
      *
      * @param $branch_id
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get_accounts($branch_id)
     {

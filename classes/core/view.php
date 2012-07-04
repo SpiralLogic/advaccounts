@@ -15,7 +15,8 @@
     /**
      * @param $template
      */
-    public function __construct($template) {
+    public function __construct($template)
+    {
       $template = VIEWPATH . $template . '.php';
       if (!file_exists($template)) {
         throw new \InvalidArgumentException("There is no view $template !");
@@ -28,7 +29,8 @@
      * @return string
      * @throws \RuntimeException
      */
-    public function render($return = false) {
+    public function render($return = false)
+    {
       if (!$this->_template) {
         throw new \RuntimeException("There is nothing to render!");
       }
@@ -46,7 +48,8 @@
      * @param      $value
      * @param bool $escape
      */
-    public function set($offset, $value, $escape = false) {
+    public function set($offset, $value, $escape = false)
+    {
       $value                    = $escape ? e($value) : $value;
       $this->_viewdata[$offset] = $value;
     }
@@ -64,7 +67,8 @@
      * <p>
      *       The return value will be casted to boolean if non-boolean was returned.
      */
-    public function offsetExists($offset) {
+    public function offsetExists($offset)
+    {
       return (array_key_exists($offset, $this->_viewdata));
     }
     /**
@@ -78,10 +82,12 @@
      *
      * @return mixed Can return all value types.
      */
-    public function offsetGet($offset) {
+    public function offsetGet($offset)
+    {
       if (!array_key_exists($offset, $this->_viewdata)) {
         return null;
       }
+
       return $this->_viewdata[$offset];
     }
     /**
@@ -92,13 +98,14 @@
      * @param mixed $offset <p>
      *                      The offset to assign the value to.
      * </p>
-     * @param mixed $value  <p>
+     * @param mixed $value <p>
      *                      The value to set.
      * </p>
      *
      * @return void
      */
-    public function offsetSet($offset, $value) {
+    public function offsetSet($offset, $value)
+    {
       $this->set($offset, $value, true);
     }
     /**
@@ -112,7 +119,8 @@
      *
      * @return void
      */
-    public function offsetUnset($offset) {
+    public function offsetUnset($offset)
+    {
       if ($this->offsetExists($offset)) {
         unset($this->_viewdata[$offset]);
       }

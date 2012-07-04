@@ -7,7 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Apps_Advanced extends Application
+namespace ADV\App\Apps;
+  class Advanced extends \Application
   {
 
     public $name = 'Advanced';

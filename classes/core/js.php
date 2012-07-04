@@ -53,7 +53,8 @@
     /**
 
      */
-    private function __construct() {
+    private function __construct()
+    {
     }
     /**
      * @static
@@ -63,7 +64,8 @@
      *
      * @return mixed
      */
-    public static function openWindow($width, $height) {
+    public static function openWindow($width, $height)
+    {
       if (static::$_openWindow || !Config::get('ui_windows_popups')) {
         return;
       }
@@ -79,7 +81,8 @@
      * @param bool  $url
      * @param array $options
      */
-    public static function autocomplete($id, $callback, $url = false, $options = array()) {
+    public static function autocomplete($id, $callback, $url = false, $options = array())
+    {
       if (!$url) {
         $url = $_SERVER['REQUEST_URI'];
       }
@@ -94,7 +97,8 @@
      * @param $address
      * @param $title
      */
-    public static function gmap($selector, $address, $title) {
+    public static function gmap($selector, $address, $title)
+    {
       $address = str_replace(array("\r", "\t", "\n", "\v"), ", ", $address);
       $apikey  = Config::get('js.maps_api_key');
       $js
@@ -125,7 +129,8 @@ JS;
      * @static
 
      */
-    public static function pngFix() {
+    public static function pngFix()
+    {
       $js = "function fixPNG(myImage)\n{\n var arVersion = navigator.appVersion.split(\"MSIE\")\n var version = parseFloat(arVersion[1])\n if ((version >= 5.5) && (version < 7) && (document.body.filters))\n {\n" . " var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n var imgTitle = (myImage.title) ?\n" . " \"title='\" + myImage.title + \"' \" : \"title='\" + myImage.alt + \"' \"\n var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n + \" style=\\\"\" + \"width:\" + myImage.width\n" . " + \"px; height:\" + myImage.height\n + \"px;\" + imgStyle + \";\"\n + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n myImage.outerHTML = strNewHTML\n }\n" . "}\n";
       JS::beforeload($js);
     }
@@ -139,20 +144,23 @@ JS;
      * Returns unique name if $name=null
 
      */
-    public static function defaultFocus($name = null) {
+    public static function defaultFocus($name = null)
+    {
       if ($name == null) {
         $name = uniqid('_el', true);
       }
       if (!isset($_POST['_focus'])) {
         JS::setFocus($name);
       }
+
       return $name;
     }
     /**
      * @static
 
      */
-    public static function resetFocus() {
+    public static function resetFocus()
+    {
       unset($_POST['_focus']);
     }
     /**
@@ -162,7 +170,8 @@ JS;
      * @param array $options
      * @param       $page
      */
-    public static function tabs($id, $options = array(), $page = null) {
+    public static function tabs($id, $options = array(), $page = null)
+    {
       $defaults = array('noajax' => false, 'hasLinks' => false);
       $hasLinks = false;
       extract(array_merge($defaults, $options));
@@ -203,20 +212,23 @@ JSS;
      * @static
 
      */
-    public static function renderHeader() {
+    public static function renderHeader()
+    {
       $scripts = [];
       /** @noinspection PhpDynamicAsStaticMethodCallInspection */
       foreach (self::$_headerFiles as $dir => $files) {
         /** @noinspection PhpDynamicAsStaticMethodCallInspection */
         $scripts[] = $dir . '/' . implode(',', $files);
       }
+
       return $scripts;
     }
     /**
      * @static
 
      */
-    public static function render($return = false) {
+    public static function render($return = false)
+    {
       if ($return) {
         ob_start();
       }
@@ -254,6 +266,7 @@ JSS;
       if ($return) {
         return ob_get_clean();
       }
+
       return true;
     }
     /**
@@ -261,7 +274,8 @@ JSS;
      *
      * @param $data
      */
-    public static function renderJSON($data) {
+    public static function renderJSON($data)
+    {
       $data  = (array) $data;
       $error = Errors::JSONError();
       if (isset($data['status']) && $data['status'] && Errors::dbErrorCount()) {
@@ -280,7 +294,8 @@ JSS;
      * @param bool $cached
      * @param bool $cached
      */
-    public static function setFocus($selector, $cached = false) {
+    public static function setFocus($selector, $cached = false)
+    {
       self::$_focus = ($selector) ? (!$cached) ? "$('$selector')" : 'Adv.o.' . $selector : false;
       Ajax::addFocus(true, $selector);
       $_POST['_focus'] = $selector;
@@ -295,7 +310,8 @@ JSS;
      * @return string
      * @return array|mixed|string
      */
-    public static function arrayToOptions($options = array(), $funcs = array(), $level = 0) {
+    public static function arrayToOptions($options = array(), $funcs = array(), $level = 0)
+    {
       foreach ($options as $key => $value) {
         if (is_array($value)) {
           $ret           = static::arrayToOptions($value, $funcs, 1);
@@ -316,6 +332,7 @@ JSS;
         foreach ($funcs as $key => $value) {
           $input_json = str_replace('"' . $key . '"', $value, $input_json);
         }
+
         return $input_json;
       }
     }
@@ -326,7 +343,8 @@ JSS;
      * @param $type
      * @param $action
      */
-    public static function addEvent($selector, $type, $action) {
+    public static function addEvent($selector, $type, $action)
+    {
       self::onload("$('$selector').bind('$type',function(e){ {$action} }).css('cursor','pointer');");
     }
     /**
@@ -338,11 +356,13 @@ JSS;
      * @param bool $delegate
      * @param bool $cached
      */
-    public static function addLiveEvent($selector, $type, $action, $delegate = false, $cached = false) {
+    public static function addLiveEvent($selector, $type, $action, $delegate = false, $cached = false)
+    {
       if (!$delegate) {
         return self::addLive("$('$selector').bind('$type',function(e){ {$action} });");
       }
       $cached = (!$cached) ? "$('$delegate')" : 'Adv.o.' . $delegate;
+
       return self::register($cached . ".delegate('$selector','$type',function(e){ {$action} } )", self::$_onload);
     }
     /**
@@ -351,7 +371,8 @@ JSS;
      * @param      $action
      * @param bool $clean
      */
-    public static function addLive($action, $clean = false) {
+    public static function addLive($action, $clean = false)
+    {
       self::register($action, self::$_onlive);
       if ($clean) {
         self::register($clean, self::$_toclean);
@@ -362,7 +383,8 @@ JSS;
      *
      * @param array $events
      */
-    public static function addEvents($events = array()) {
+    public static function addEvents($events = array())
+    {
       if (is_array($events)) {
         foreach ($events as $event) {
           if (count($event == 3)) {
@@ -376,7 +398,8 @@ JSS;
      *
      * @param bool $js
      */
-    public static function onload($js = false) {
+    public static function onload($js = false)
+    {
       if ($js) {
         self::register($js, self::$_onload);
       }
@@ -386,7 +409,8 @@ JSS;
      *
      * @param bool $js
      */
-    public static function beforeload($js = false) {
+    public static function beforeload($js = false)
+    {
       if ($js) {
         self::register($js, self::$_beforeload);
       }
@@ -396,7 +420,8 @@ JSS;
      *
      * @param $file
      */
-    public static function headerFile($file) {
+    public static function headerFile($file)
+    {
       self::registerFile($file, self::$_headerFiles);
     }
     /**
@@ -404,7 +429,8 @@ JSS;
      *
      * @param $file
      */
-    public static function footerFile($file) {
+    public static function footerFile($file)
+    {
       self::registerFile($file, self::$_footerFiles);
     }
     /**
@@ -413,7 +439,8 @@ JSS;
      * @param array|bool $js
      * @param            $var
      */
-    protected static function register($js = false, &$var) {
+    protected static function register($js = false, &$var)
+    {
       if (is_array($js)) {
         foreach ($js as $j) {
           self::register($j, $var);
@@ -429,7 +456,8 @@ JSS;
      * @param array|bool $file
      * @param            $var
      */
-    protected static function registerFile($file, &$var) {
+    protected static function registerFile($file, &$var)
+    {
       if (is_array($file)) {
         foreach ($file as $f) {
           self::registerFile($f, $var);
@@ -446,7 +474,8 @@ JSS;
      *
      * @param bool $message
      */
-    public static function onUnload($message = false) {
+    public static function onUnload($message = false)
+    {
       if ($message) {
         self::addLiveEvent(':input', 'change', "Adv.Events.onLeave('$message')", 'wrapper', true);
         self::addLiveEvent('form', 'submit', "Adv.Events.onLeave()", 'wrapper', true);
@@ -457,7 +486,8 @@ JSS;
      *
      * @param $url
      */
-    public static function redirect($url) {
+    public static function redirect($url)
+    {
       $data['status'] = array('status' => 'redirect', 'message' => $url);
       static::renderJSON($data);
     }

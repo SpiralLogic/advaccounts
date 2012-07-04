@@ -522,7 +522,7 @@ JS;
      * @param null $to
      * @param bool $istimestamp
      *
-     * @return Array|\DB_Query_Result
+     * @return Array|\\ADV\Core\DB\Query\Result
      */
     public static function get_details($customer_id, $to = null, $istimestamp = false)
     {
@@ -597,7 +597,7 @@ JS;
      *
      * @param $customer_id
      *
-     * @return Array|DB_Query_Result
+     * @return Array|\ADV\Core\DB\Query\Result
      */
     public static function get($customer_id)
     {
@@ -626,7 +626,7 @@ JS;
      *
      * @param $customer_id
      *
-     * @return Array|DB_Query_Result
+     * @return Array|\ADV\Core\DB\Query\Result
      */
     public static function get_habit($customer_id)
     {

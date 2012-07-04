@@ -40,14 +40,31 @@
      */
     public function check_page($page_security)
     {
-      if (!$this->User->can_access_page($page_security)) {
-        echo "<div class='center'><br><br><br><span class='bold'>";
-        echo _("The security settings on your account do not permit you to access this function");
-        echo "</span>";
-        echo "<br><br><br><br></div>";
-        Page::end(false);
-        exit;
+      return (!$this->hasAccess($page_security));
+
+    }
+    /**
+     * @param $page_level
+     *
+     * @return bool
+     */
+    public function hasAccess($page_level) {
+
+      if ($page_level === SA_OPEN) {
+        return true;
       }
+      if ($page_level === SA_DENIED || $page_level === '') {
+        return false;
+      }
+      $access = false;
+      if (isset($this->areas[$page_level])) {
+        $code   = $this->areas[$page_level][0];
+        $access = $code && $this->User->hasRole($code);
+      } elseif ($this->User->hasSectionAccess($page_level)) {
+        $access = $this->User->hasSectionAccess($page_level);
+      }
+      // only first registered company has site admin privileges
+      return $access && ($this->User->company == 'default' || (isset($code) && ($code & ~0xff) != SS_SADMIN));
     }
     /**
      * Helper function for setting page security level depeding on
@@ -81,7 +98,7 @@
      *
      * @param $id
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public function get_role($id)
     {

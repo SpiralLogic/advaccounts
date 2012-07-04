@@ -269,21 +269,25 @@
      */
     public function can_access($page_level)
     {
-      if ($page_level === SA_OPEN) {
-        return true;
-      }
-      if ($page_level === SA_DENIED || $page_level === '') {
-        return false;
-      }
-      $access = false;
-      if (isset($this->Security['areas'][$page_level])) {
-        $code   = $this->Security['areas'][$page_level][0];
-        $access = $code && in_array($code, $this->role_set);
-      } elseif (isset($this->access_sections) && in_array($page_level, $this->access_sections)) {
-        $access = in_array($page_level, $this->access_sections);
-      }
-      // only first registered company has site admin privileges
-      return $access && ($this->company == 'default' || (isset($code) && ($code & ~0xff) != SS_SADMIN));
+    return   $this->Security->hasAccess($page_level);
+    }
+    /**
+     * @param $section
+     *
+     * @return bool
+     */
+    public function hasSectionAccess($section)
+    {
+      return isset($this->access_sections) and in_array($section, $this->access_sections);
+    }
+    /**
+     * @param $role
+     *
+     * @return bool
+     */
+    public function hasRole($role)
+    {
+      return in_array($role, $this->role_set);
     }
     /**
      * @param $page_level

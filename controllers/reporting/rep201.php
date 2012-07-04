@@ -16,7 +16,7 @@
    * @param $to
    * @param $convert
    *
-   * @return ADV\Core\DB\Query_Result|Array
+   * @return \ADV\Core\DB\Query\Result|Array
    */
   function get_open_balance($supplier_id, $to, $convert)
   {

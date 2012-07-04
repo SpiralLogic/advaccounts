@@ -42,7 +42,8 @@
     /**
      * @throws \ADV\Core\SessionException
      */
-    final protected function __construct() {
+    final protected function __construct()
+    {
       /** @noinspection PhpUndefinedConstantInspection */
       /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() === PHP_SESSION_DISABLED) {
@@ -81,24 +82,29 @@
      * @static
      * @return bool
      */
-    public function _checkUserAgent() {
+    public function _checkUserAgent()
+    {
       if ($this['HTTP_USER_AGENT'] != sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR']))) {
         $this->setUserAgent();
+
         return false;
       }
+
       return true;
     }
     /**
      * @static
      * @return bool
      */
-    protected function setUserAgent() {
+    protected function setUserAgent()
+    {
       return ($this['HTTP_USER_AGENT'] = sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR'])));
     }
     /**
      * @return mixed
      */
-    protected function setTextSupport() {
+    protected function setTextSupport()
+    {
       if (isset($this['get_text'])) {
         $this->get_text = $this['get_text'];
       } else {
@@ -110,7 +116,8 @@
      *
      * @return mixed|null
      */
-    public function __get($var) {
+    public function __get($var)
+    {
       return isset($this[$var]) ? $this[$var] : null;
     }
     /**
@@ -119,7 +126,8 @@
      *
      * @return void
      */
-    public function __set($var, $value) {
+    public function __set($var, $value)
+    {
       $this[$var] = $value;
     }
     /**
@@ -129,15 +137,18 @@
      * @internal param $valie
      * @return float|string
      */
-    public function _setGlobal($var, $value = null) {
+    public function _setGlobal($var, $value = null)
+    {
       if ($value === null) {
         if (isset($this['globals'][$var])) {
           unset($this['globals'][$var]);
         }
+
         return null;
       }
       $_SESSION['globals'][$var] = $value;
       $this[$var]            = $value;
+
       return $value;
     }
     /**
@@ -146,13 +157,15 @@
      *
      * @return mixed
      */
-    public function _getGlobal($var, $default = null) {
+    public function _getGlobal($var, $default = null)
+    {
       return isset($this['globals'][$var]) ? $this['globals'][$var] : $default;
     }
     /**
      * @internal param $globals
      */
-    public function _removeGlobal() {
+    public function _removeGlobal()
+    {
       $globals = func_get_args();
       foreach ($globals as $var) {
         if (is_string($var) || is_int($var)) {
@@ -164,7 +177,8 @@
      * @static
      * @return void
      */
-    public function _kill() {
+    public function _kill()
+    {
       Config::removeAll();
       session_start();
       $this->_regenerate();
@@ -174,7 +188,8 @@
      * @static
      * @return void
      */
-    public function _regenerate() {
+    public function _regenerate()
+    {
       session_regenerate_id();
     }
     /**
@@ -191,7 +206,8 @@
      * <p>
      *       The return value will be casted to boolean if non-boolean was returned.
      */
-    public function offsetExists($offset) {
+    public function offsetExists($offset)
+    {
       return array_key_exists($offset, $_SESSION);
     }
     /**
@@ -205,10 +221,12 @@
      *
      * @return mixed Can return all value types.
      */
-    public function offsetGet($offset) {
+    public function offsetGet($offset)
+    {
       if (!$this->offsetExists($offset)) {
         return null;
       }
+
       return $_SESSION[$offset];
     }
     /**
@@ -219,13 +237,14 @@
      * @param mixed $offset <p>
      *                      The offset to assign the value to.
      * </p>
-     * @param mixed $value  <p>
+     * @param mixed $value <p>
      *                      The value to set.
      * </p>
      *
      * @return void
      */
-    public function offsetSet($offset, $value) {
+    public function offsetSet($offset, $value)
+    {
       $_SESSION[$offset] = $value;
     }
     /**
@@ -239,7 +258,8 @@
      *
      * @return void
      */
-    public function offsetUnset($offset) {
+    public function offsetUnset($offset)
+    {
       unset($_SESSION[$offset]);
     }
     /**
@@ -248,11 +268,13 @@
      *
      * @return null
      */
-    public function _get($var, $default = null) {
+    public function _get($var, $default = null)
+    {
       $value = $default;
       if (!isset($_SESSION[$var])) {
         $value = $_SESSION[$var];
       }
+
       return $value;
     }
     /**
@@ -261,8 +283,10 @@
      *
      * @return mixed
      */
-    public function _set($var, $value) {
+    public function _set($var, $value)
+    {
       $_SESSION[$var] = $value;
+
       return $value;
     }
   }

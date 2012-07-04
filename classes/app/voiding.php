@@ -120,7 +120,7 @@
      * @param $type
      * @param $type_no
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($type, $type_no)
     {

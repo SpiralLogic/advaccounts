@@ -17,7 +17,7 @@
   /**
    * @param $order_no
    *
-   * @return ADV\Core\DB\Query_Result|Array
+   * @return \ADV\Core\DB\Query\Result|Array
    */
   function get_po($order_no)
   {

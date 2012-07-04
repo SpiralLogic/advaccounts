@@ -137,7 +137,7 @@
      *
      * @param $selected_id
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($selected_id)
     {
@@ -187,7 +187,7 @@
      *
      * @param $selected_id
      *
-     * @return ADV\Core\DB\Query_Result|Array
+     * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function has_line($selected_id)
     {

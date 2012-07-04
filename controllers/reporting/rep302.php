@@ -53,7 +53,7 @@
    * @param $stockid
    * @param $location
    *
-   * @return ADV\Core\DB\Query_Result|Array
+   * @return \ADV\Core\DB\Query\Result|Array
    */
   function getPeriods($stockid, $location)
   {
