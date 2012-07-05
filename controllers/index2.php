@@ -1,3 +1,1 @@
-<?php
-  Page::start('test');
-  Page::end();
+<?php  $test = new Modules\Volusion;
