@@ -22,7 +22,7 @@
     $group_refs = $_POST['ungroup_' . $groupid];
     $sql        = "UPDATE bank_trans SET undeposited=1, reconciled=null WHERE undeposited =" . DB::escape($groupid);
     DB::query($sql, "Couldn't ungroup group deposit");
-    $sql = "UPDATE bank_trans SET ref=" . DB::escape('Removed group: ' . $group_refs) . ", amount=0, reconciled='" . Dates::dateToSql(Dates::today()) . "', undeposited=" . $groupid . " WHERE id=" . $groupid;
+    $sql = "UPDATE bank_trans SET ref=" . DB::quote('Removed group: ' . $group_refs) . ", amount=0, reconciled='" . Dates::dateToSql(Dates::today()) . "', undeposited=" . $groupid . " WHERE id=" . $groupid;
     DB::query($sql, "Couldn't update removed group deposit data");
     update_data();
   }

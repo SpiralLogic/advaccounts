@@ -63,7 +63,7 @@
         $total_amount += $row['amount'];
         $ref[] = $row['ref'];
       }
-      $sql      = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (" . ST_GROUPDEPOSIT . ", 5, $total_amount," . DB::escape(implode($ref, ', ')) . ",'" . Dates::dateToSql($_POST['deposit_date']) . "', 6, '" . User::i()->user . "',0)";
+      $sql      = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (" . ST_GROUPDEPOSIT . ", 5, $total_amount," . DB::quote(implode($ref, ', ')) . ",'" . Dates::dateToSql($_POST['deposit_date']) . "', 6, '" . User::i()->user . "',0)";
       $query    = DB::query($sql, "Undeposited Cannot be Added");
       $order_no = DB::insertId($query);
       if (!isset($order_no) || !empty($order_no) || $order_no == 127) {
@@ -228,7 +228,6 @@
   function fmt_credit($row)
   {
     $value = -$row["amount"];
-
     return $value > 0 ? Num::priceFormat($value) : '';
   }
 
