@@ -1,1 +1,3 @@
-<?php  $test = new Modules\Volusion;
+<?php
+
+  $test = new Modules\Volusion;
