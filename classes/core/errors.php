@@ -12,7 +12,7 @@
 
      */
   /**
-   * @property mixed admin
+
    */
   class Errors
   {
@@ -73,7 +73,7 @@
     public static function init()
     {
       static::$useConfigClass = class_exists('Config', false);
-      // error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
+      error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
       if (class_exists('\ADV\Core\Event')) {
         Event::registerShutdown(__CLASS__, 'sendDebugEmail');
       }
@@ -110,13 +110,14 @@
       if (in_array($type, static::$user_errors) || in_array($type, static::$fatal_levels)) {
         static::$messages[] = $error;
       }
+      if (is_writable(DOCROOT . '../error_log')) {
+        error_log(date(DATE_RFC822) . ' ' . $error['type'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n", 3, DOCROOT . '../error_log');
+      }
       if (!in_array($type, static::$user_errors) || ($type == E_USER_ERROR && $log)) {
         $error['backtrace'] = static::prepareBacktrace(debug_backtrace());
         static::$errors[]   = $error;
       }
-      if (is_writable(DOCROOT . '../error_log')) {
-        error_log(date(DATE_RFC822) . ' ' . $error['type'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n", 3, DOCROOT . '../error_log');
-      }
+
       return true;
     }
     /**
@@ -175,6 +176,7 @@
           JS::beforeload("Adv.showStatus();");
         }
       }
+
       return $content;
     }
     /**
@@ -247,6 +249,7 @@
           unset($backtrace[$key]);
         }
       }
+
       return $backtrace;
     }
     /**
@@ -298,7 +301,6 @@
      */
     protected static function fatal()
     {
-      restore_error_handler();
       ob_end_clean();
       $content = strip_tags(static::format());
       if (!$content) {
@@ -346,6 +348,7 @@
         $status['process'] = '';
       }
       static::$jsonerrorsent = true;
+
       return $status;
     }
     /**

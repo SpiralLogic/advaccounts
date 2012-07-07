@@ -15,6 +15,7 @@
    */
   class SessionException extends \Exception
   {
+
   }
 
   /**
@@ -31,6 +32,7 @@
    */
   class Session implements \ArrayAccess
   {
+
     use Traits\StaticAccess;
 
     /***
@@ -145,7 +147,7 @@
         return null;
       }
       $_SESSION['globals'][$var] = $value;
-      $this[$var]                = $value;
+      $this[$var]            = $value;
 
       return $value;
     }
@@ -235,7 +237,7 @@
      * @param mixed $offset <p>
      *                      The offset to assign the value to.
      * </p>
-     * @param mixed $value  <p>
+     * @param mixed $value <p>
      *                      The value to set.
      * </p>
      *

@@ -167,8 +167,8 @@
         exit;
       }
 
-      if ($this->title && !$this->isIndex && !$this->frame && !IS_JSON_REQUEST) {
-        echo "<div class='titletext'>$this->title" . ($this->User->_hints() ? "<span id='hints' class='floatright'
+      if ($this->title && !$this->is_index && !$this->frame && !IS_JSON_REQUEST) {
+        echo "<div class='titletext'>$this->title" . ($this->User->hints() ? "<span id='hints' class='floatright'
     										style='display:none'></span>" : '') . "</div>";
       }
      if (!IS_JSON_REQUEST) Display::div_start('_page_body');
@@ -179,7 +179,7 @@
     protected function header()
     {
       $this->header = true;
-      $this->JS->_openWindow(900, 500);
+      JS::openWindow(900, 500);
       if (!headers_sent()) {
         header("Content-type: text/html; charset={$this->encoding}");
       }
@@ -192,7 +192,7 @@
       $header['stylesheets'] = $this->renderCSS();
       $header['scripts']     = [];
       if (class_exists('JS', false)) {
-        $header['scripts'] = $this->JS->_renderHeader();
+        $header['scripts'] = JS::renderHeader();
       }
       $header->render();
     }
@@ -259,11 +259,11 @@
       $footer->set('beforescripts', "_focus = '" . Input::post('_focus') . "';_validate = " . $this->Ajax->php2js($validate) . ";");
       $this->User->_add_js_data();
       if ($this->header && $this->menu) {
-        $footer->set('sidemenu', (new Sidemenu($this->User))->render());
+        $footer->set('sidemenu', Sidemenu::render());
       } else {
         $footer->set('sidemenu', '');
       }
-      $footer->set('js', $this->JS->_render(true));
+      $footer->set('js', JS::render(true));
       if (!AJAX_REFERRER) {
         $footer->set('messages', Messages::show());
       } else {
@@ -326,18 +326,15 @@
      * @param        $title
      * @param string $security
      * @param bool   $no_menu
-     * @param bool   $isIndex
+     * @param bool   $is_index
      *
-     * @internal param bool $isIndex
      * @return null|Page
      */
-    public static function start($title, $security = SA_OPEN, $no_menu = false, $isIndex = false)
+    public static function start($title, $security = SA_OPEN, $no_menu = false, $is_index = false)
     {
       if (static::$i === null) {
-        static::$i = new static(User::i(),Config::i(),Ajax::i(),JS::i());
+        static::$i = new static($title, $is_index);
       }
-    static::$i->title = $title;
-      static::$i->isIndex = $isIndex;
       static::$i->security=$security;
       static::$i->init(!$no_menu);
       return static::$i;
@@ -377,7 +374,7 @@
     }
     public static function footer_exit()
     {
-
+      Display::br(2);
       static::$i->end_page(true);
       exit;
     }
