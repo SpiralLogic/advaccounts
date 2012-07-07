@@ -7,7 +7,8 @@
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   **/namespace ADV\App\Apps;
+   **/
+  namespace ADV\App\Apps;
 
   /**
 
@@ -26,7 +27,7 @@
       $this->add_module(_('Quotations and Orders'));
       $this->add_lapp_function(0, '', '');
       $this->add_lapp_function(0, _('New Sales &Quotation'), '/sales/sales_order_entry?' . Orders::ADD . '=0&' . Orders::TYPE . '=' . ST_SALESQUOTE, SA_SALESQUOTE);
-      $this->add_lapp_function(0, _('Search Quotatio&ns'), '/sales/inquiry/sales_orders_view?' . Orders::TYPE . '=32', SA_SALESTRANSVIEW);
+      $this->add_lapp_function(0, _('Search Quotatio&ns'), '/sales/inquiry/sales_orders_view?' . Orders::TYPE . '=' . ST_SALESQUOTE . '', SA_SALESTRANSVIEW);
       $this->add_lapp_function(0, '', '');
       $this->add_rapp_function(0, _('New Sales &Order'), '/sales/sales_order_entry?' . Orders::ADD . '=0&' . Orders::TYPE . '=' . ST_SALESORDER, SA_SALESORDER);
       $this->add_rapp_function(0, _('Search  S&ales Orders'), '/sales/inquiry/sales_orders_view?' . Orders::TYPE . '=' . ST_SALESORDER, SA_SALESTRANSVIEW);

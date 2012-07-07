@@ -90,6 +90,7 @@
       {
         $child         = new \stdClass();
         $child->parent = $c->get('Parent');
+
         return $child;
       });
 
@@ -149,7 +150,7 @@
   class TestObj
   {
     public $name;
-    function __construct($name)
+    public function __construct($name)
     {
       $this->name = $name;
     }

@@ -79,6 +79,7 @@
       $actual = $this->object->_getAll('apps');
       $vars   = $this->readAttribute($this->object, '_vars');
       $this->assertEquals($vars['apps'], $actual);
+
       return $vars;
     }
     /**
