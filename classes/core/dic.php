@@ -86,7 +86,7 @@
         }
       }
       // Otherwise create a new one
-      return call_user_func_array(array($this, 'fresh'), func_get_args());
+      return $this->fresh($name,func_get_args());
     }
     /**
      * Gets a parameter or an object.
@@ -108,12 +108,12 @@
      * @return mixed
      * @throws \InvalidArgumentException
      */
-    public function fresh($name)
+    public function fresh($name,$args=null)
     {
       if (!isset($this->_callbacks[$name])) {
         throw new \InvalidArgumentException(sprintf('Callback for "%s" does not exist.', $name));
       }
-      $arguments                   = func_get_args();
+      $arguments                   = is_array($args)&&func_num_args()==2?$args:func_get_args();
       $arguments[0]                = $this;
       $key                         = $this->_keyForArguments($arguments);
       $this->_objects[$name][$key] = call_user_func_array($this->_callbacks[$name], $arguments);

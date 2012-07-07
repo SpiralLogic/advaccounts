@@ -165,7 +165,7 @@
       }
       if (!static::$JS) {
         static::$JS = JS::i();
-      }
+       }
       $url     = '/reporting/prn_redirect.php?';
       $options = static::print_option_array($type_no, $doc_no, 1, $extra);
       $ars     = $options[0];

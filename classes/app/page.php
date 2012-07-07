@@ -23,8 +23,7 @@
   use ADV\Core\Config;
   use User;
 
-  class Page
-  {
+  class Page {
     /**
      * @var
      */
@@ -78,8 +77,7 @@
     /**
      * @param $hide_back_link
      */
-    public function end_page($hide_back_link)
-    {
+    public function end_page($hide_back_link) {
       if ($this->frame) {
         $hide_back_link = true;
         $this->header   = false;
@@ -94,16 +92,15 @@
     /**
      * @param $application
      */
-    public function display_application($application)
-    {
+    public function display_application($application) {
       if ($application->direct) {
         Display::meta_forward($application->direct);
       }
       foreach ($application->modules as $module) {
         $app            = new View('application');
-        $app['colspan'] = (count($module->rappfunctions) > 0) ? 2 : 1;
+        $app['colspan'] = (count($module->rightAppFunctions) > 0) ? 2 : 1;
         $app['name']    = $module->name;
-        foreach ([$module->lappfunctions, $module->rappfunctions] as $modules) {
+        foreach ([$module->leftAppFunctions, $module->rightAppFunctions] as $modules) {
           $mods = [];
           foreach ($modules as $func) {
             $mod['access'] = $this->User->hasAccess($func->access);
@@ -124,20 +121,17 @@
      * @param      $title
      * @param bool $index
      */
-    public function __construct(User $user, Config $config,Ajax $ajax,JS $js)
-    {
-      $this->User     = $user?:User::i();
-      $this->Config   = $config?:Config::i();
-      $this->Ajax     = $ajax?:Ajax::i();
-      $this->JS     = $js?:JS::i();
-      $this->frame    = isset($_GET['frame']);
+    public function __construct(User $user, Config $config, Ajax $ajax, JS $js) {
+      $this->User   = $user ? : User::i();
+      $this->Config = $config ? : Config::i();
+      $this->Ajax   = $ajax ? : Ajax::i();
+      $this->JS     = $js ? : JS::i();
+      $this->frame  = isset($_GET['frame']);
     }
-
     /**
      * @param $menu
      */
-    protected function init($menu)
-    {
+    protected function init($menu) {
       $this->App      = ADVAccounting::i();
       $this->sel_app  = $this->App->selected;
       $this->ajaxpage = (AJAX_REFERRER || Ajax::inAjax());
@@ -158,7 +152,7 @@
       if (!$this->ajaxpage) {
         echo "<div id='wrapper'>";
       }
-      if (!$this->User->hasAccess($this->security)){
+      if (!$this->User->hasAccess($this->security)) {
         echo "<div class='center'><br><br><br><span class='bold'>";
         echo _("The security settings on your account do not permit you to access this function");
         echo "</span>";
@@ -166,20 +160,20 @@
         $this->end_page(false);
         exit;
       }
-
-      if ($this->title && !$this->is_index && !$this->frame && !IS_JSON_REQUEST) {
-        echo "<div class='titletext'>$this->title" . ($this->User->hints() ? "<span id='hints' class='floatright'
+      if ($this->title && !$this->isIndex && !$this->frame && !IS_JSON_REQUEST) {
+        echo "<div class='titletext'>$this->title" . ($this->User->_hints() ? "<span id='hints' class='floatright'
     										style='display:none'></span>" : '') . "</div>";
       }
-     if (!IS_JSON_REQUEST) Display::div_start('_page_body');
+      if (!IS_JSON_REQUEST) {
+        Display::div_start('_page_body');
+      }
     }
     /**
 
      */
-    protected function header()
-    {
+    protected function header() {
       $this->header = true;
-      JS::openWindow(900, 500);
+      $this->JS->_openWindow(900, 500);
       if (!headers_sent()) {
         header("Content-type: text/html; charset={$this->encoding}");
       }
@@ -192,15 +186,14 @@
       $header['stylesheets'] = $this->renderCSS();
       $header['scripts']     = [];
       if (class_exists('JS', false)) {
-        $header['scripts'] = JS::renderHeader();
+        $header['scripts'] = $this->JS->_renderHeader();
       }
       $header->render();
     }
     /**
 
      */
-    protected function menu_header()
-    {
+    protected function menu_header() {
       $menu                = new View('menu_header');
       $menu['theme']       = $this->User->theme();
       $menu['company']     = $this->Config->_get('db.' . $this->User->company)['company'];
@@ -230,8 +223,7 @@
      *
      * @return string
      */
-    protected function help_url($context = null)
-    {
+    protected function help_url($context = null) {
       global $help_context;
       $country = $_SESSION['language']->code;
       if ($context != null) {
@@ -244,26 +236,23 @@
         $help_page_url = Display::access_string($help_page_url, true);
       }
       return $this->Config->_get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-                                                                                                 ' ' => '',
-                                                                                                 '/' => '',
-                                                                                                 '&' => 'And'
+                                                                                                 ' ' => '', '/' => '', '&' => 'And'
                                                                                             ))) . '&ctxhelp=1&lang=' . $country;
     }
     /**
      * @return mixed
      */
-    protected function footer()
-    {
+    protected function footer() {
       $validate = array();
       $footer   = $this->menu_footer();
       $footer->set('beforescripts', "_focus = '" . Input::post('_focus') . "';_validate = " . $this->Ajax->php2js($validate) . ";");
       $this->User->_add_js_data();
       if ($this->header && $this->menu) {
-        $footer->set('sidemenu', Sidemenu::render());
+        $footer->set('sidemenu', (new Sidemenu($this->User))->render());
       } else {
         $footer->set('sidemenu', '');
       }
-      $footer->set('js', JS::render(true));
+      $footer->set('js', $this->JS->_render(true));
       if (!AJAX_REFERRER) {
         $footer->set('messages', Messages::show());
       } else {
@@ -274,8 +263,7 @@
     /**
 
      */
-    protected function menu_footer()
-    {
+    protected function menu_footer() {
       $footer              = new View('footer');
       $footer['today']     = Dates::today();
       $footer['now']       = Dates::now();
@@ -288,8 +276,7 @@
     /**
 
      */
-    protected function renderCSS()
-    {
+    protected function renderCSS() {
       $this->css += class_exists('Config', false) ? $this->Config->_get('assets.css') : array('default.css');
       $path = DS . "themes" . DS . $this->theme . DS;
       $css  = implode(',', $this->css);
@@ -300,8 +287,7 @@
      *
      * @param bool $hide_back_link
      */
-    public static function end($hide_back_link = false)
-    {
+    public static function end($hide_back_link = false) {
       if (static::$i) {
         static::$i->end_page($hide_back_link);
       }
@@ -309,33 +295,20 @@
     /**
      * @static
      *
-     * @param      $text
-     * @param bool $exit
-     */
-    public static function error_exit($text, $exit = true)
-    {
-      ob_get_clean();
-      $page = new static('Fatal Error.', false);
-      $page->header();
-      echo "<div id='msgbox'>$text</div></div></body></html>";
-      ($exit)  and exit();
-    }
-    /**
-     * @static
-     *
      * @param        $title
      * @param string $security
      * @param bool   $no_menu
-     * @param bool   $is_index
+     * @param bool   $isIndex
      *
      * @return null|Page
      */
-    public static function start($title, $security = SA_OPEN, $no_menu = false, $is_index = false)
-    {
+    public static function start($title, $security = SA_OPEN, $no_menu = false, $isIndex = false) {
       if (static::$i === null) {
-        static::$i = new static($title, $is_index);
+        static::$i = new static(User::i(), Config::i(), Ajax::i(), JS::i());
       }
-      static::$i->security=$security;
+      static::$i->title    = $title;
+      static::$i->isIndex  = $isIndex;
+      static::$i->security = $security;
       static::$i->init(!$no_menu);
       return static::$i;
     }
@@ -346,8 +319,7 @@
      *
      * @return array
      */
-    public static function simple_mode($numeric_id = true)
-    {
+    public static function simple_mode($numeric_id = true) {
       $default     = $numeric_id ? -1 : '';
       $selected_id = Input::post('selected_id', null, $default);
       foreach (array(ADD_ITEM, UPDATE_ITEM, MODE_RESET, MODE_CLONE) as $m) {
@@ -372,8 +344,7 @@
       }
       return array('', $selected_id);
     }
-    public static function footer_exit()
-    {
+    public static function footer_exit() {
       Display::br(2);
       static::$i->end_page(true);
       exit;

@@ -8,16 +8,18 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Apps;
+  use ADV\App\Application;
 
-  class Claire extends \Application
-  {
+  /**
+
+   */
+  class Claire extends Application {
     public $name = 'Claire';
     public $help_context = "&Claire";
     public $enabled = false;
     /**
 
      */
-    public function buildMenu()
-    {
+    public function buildMenu() {
     }
   }

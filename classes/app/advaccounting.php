@@ -239,7 +239,7 @@
           }
         }
         catch (\ADV\Core\DB\DBException $e) {
-          Page::error_exit('Could not connect to database!');
+         throw new \ADV\Core\DB\DBException('Could not connect to database!');
         }
         $this->User->ui_mode = $_POST['ui_mode'];
         $this->Session->regenerate();

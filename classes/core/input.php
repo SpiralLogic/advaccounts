@@ -110,7 +110,7 @@
     {
       $result = $this->getThenPost($_GET, $_POST, $var, $type, false);
       if ($result === false) {
-        $result = $this->_getGlobal($var, $type, $default);
+        $result = $this->getGlobal($var, $type, $default);
       }
 
       return $result;
@@ -128,7 +128,7 @@
     {
       $result = $this->_isset($_POST, $var, $type, false);
       if ($result === false) {
-        $result = $this->_getGlobal($var, $type, $default);
+        $result = $this->getGlobal($var, $type, $default);
       }
 
       return $result;
@@ -228,11 +228,10 @@
      *
      * @return bool|int|null|string
      */
-    protected function _getGlobal($var, $type, $default)
+    protected function getGlobal($var, $type, $default)
     {
       if (!isset($_SESSION['globals'])) {
         $_SESSION['globals'] = array();
-
         return null;
       }
 
@@ -263,7 +262,7 @@
      *
      * @return bool
      */
-    public function doesHave(array $array, $vars)
+    protected function doesHave(array $array, $vars)
     {
       if (is_null($vars)) {
         return true;

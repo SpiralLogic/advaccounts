@@ -22,6 +22,7 @@
    * @method   __date()
    * @method  dateToSql($date_)
    * @method  today()
+   * @method  now()
    * @method isDate($date = null, $format = null)
    * @method isDateInFiscalYear($date, $convert = false)
    */
