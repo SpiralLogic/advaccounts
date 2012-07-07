@@ -167,7 +167,7 @@
         exit;
       }
 
-      if ($this->title && !$this->is_index && !$this->frame && !IS_JSON_REQUEST) {
+      if ($this->title && !$this->isIndex && !$this->frame && !IS_JSON_REQUEST) {
         echo "<div class='titletext'>$this->title" . ($this->User->_hints() ? "<span id='hints' class='floatright'
     										style='display:none'></span>" : '') . "</div>";
       }
@@ -328,7 +328,7 @@
      * @param bool   $no_menu
      * @param bool   $isIndex
      *
-     * @internal param bool $is_index
+     * @internal param bool $isIndex
      * @return null|Page
      */
     public static function start($title, $security = SA_OPEN, $no_menu = false, $isIndex = false)

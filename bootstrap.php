@@ -48,77 +48,70 @@
   $loader = require COREPATH . 'autoloader.php';
   if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
     new \ADV\Core\Assets();
-  } else {
-    if (extension_loaded('xhprof') && !$_SERVER['QUERY_STRING'] || ($_SERVER['QUERY_STRING'] && substr_compare($_SERVER['QUERY_STRING'], '/profile/', 0, 9, true) !== 0)) {
-      register_shutdown_function(function() {
-        register_shutdown_function(function() {
-          $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
-          $xhprof_data        = xhprof_disable();
-          $xhprof_runs        = new \XHProfRuns_Default();
-          $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
-        });
-      });
-    }
-    if (!function_exists('e')) {
-      /**
-       * @param $string
-       *
-       * @return array|string
-       */
-      function e($string) {
-        return Security::htmlentities($string);
-      }
-    }
-    register_shutdown_function(function () {
-      ADV\Core\Event::shutdown();
-    });
-    if (!function_exists('adv_ob_flush_handler')) {
-      /**
-       * @param $text
-       *
-       * @return string
-       * @noinspection PhpUnusedFunctionInspection
-       */
-      function adv_ob_flush_handler($text) {
-        return (Ajax::inAjax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
-      }
-    }
-    $dic = new \ADV\Core\DIC();
-    $loader->registerCache(\ADV\Core\Cache::i());
-    Cache::i()->_defineConstants($_SERVER['SERVER_NAME'] . '.defines', function() {
-      return include(DOCROOT . 'config' . DS . 'defines.php');
-    });
-    include(DOCROOT . 'config' . DS . 'types.php');
-    Session::i();
-    Ajax::i();
-    Config::i();
-    ob_start('adv_ob_flush_handler', 0);
-    ADVAccounting::i();
+    exit;
   }
-  if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
-    new \ADV\Core\Assets();
-  } else {
-    $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
-    $index      = $controller == $_SERVER['SCRIPT_NAME'];
-    $show404    = false;
-    if (!$index && $controller) {
-      $controller = ltrim($controller, '/');
-      // substr_compare returns 0 if true
-      $controller = (substr_compare($controller, '.php', -4, 4, true) === 0) ? $controller : $controller . '.php';
-      $controller = DOCROOT . 'controllers' . DS . $controller;
-      if (file_exists($controller)) {
-        include($controller);
-      } else {
-        $show404 = true;
-      }
+  if (extension_loaded('xhprof') && !$_SERVER['QUERY_STRING'] || ($_SERVER['QUERY_STRING'] && substr_compare($_SERVER['QUERY_STRING'], '/profile/', 0, 9, true) !== 0)) {
+    register_shutdown_function(function() {
+      register_shutdown_function(function() {
+        $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
+        $xhprof_data        = xhprof_disable();
+        $xhprof_runs        = new \XHProfRuns_Default();
+        $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
+      });
+    });
+  }
+  if (!function_exists('e')) {
+    /**
+     * @param $string
+     *
+     * @return array|string
+     */
+    function e($string) {
+      return Security::htmlentities($string);
     }
-    if ($show404) {
+  }
+  register_shutdown_function(function () {
+    ADV\Core\Event::shutdown();
+  });
+  if (!function_exists('adv_ob_flush_handler')) {
+    /**
+     * @param $text
+     *
+     * @return string
+     * @noinspection PhpUnusedFunctionInspection
+     */
+    function adv_ob_flush_handler($text) {
+      return (Ajax::inAjax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
+    }
+  }
+  $dic = new \ADV\Core\DIC();
+  $loader->registerCache(\ADV\Core\Cache::i());
+  Cache::i()->_defineConstants($_SERVER['SERVER_NAME'] . '.defines', function() {
+    return include(DOCROOT . 'config' . DS . 'defines.php');
+  });
+  include(DOCROOT . 'config' . DS . 'types.php');
+  Session::i();
+  Ajax::i();
+  Config::i();
+  ob_start('adv_ob_flush_handler', 0);
+  $app        = ADVAccounting::i();
+  $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
+  $index      = $controller == $_SERVER['SCRIPT_NAME'];
+  $show404    = false;
+  if (!$index && $controller) {
+    $controller = ltrim($controller, '/');
+    // substr_compare returns 0 if true
+    $controller = (substr_compare($controller, '.php', -4, 4, true) === 0) ? $controller : $controller . '.php';
+    $controller = DOCROOT . 'controllers' . DS . $controller;
+    if (file_exists($controller)) {
+      include($controller);
+    } else {$show404=true;
       header('HTTP/1.0 404 Not Found');
       Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
     }
-    if ($index || $show404) {
-      ADVAccounting::i()->display();
-    }
+  }
+  if ($index || $show404) {
+    $app->display();
   }
 
 

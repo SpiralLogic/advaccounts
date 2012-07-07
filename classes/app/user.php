@@ -13,6 +13,7 @@
 
   /**
    * @method theme
+   * @method User ii()
    */
   class User {
     use \ADV\Core\Traits\Hook;
@@ -120,11 +121,9 @@
      * @return User
      */
     public static function  i(Session $session = null, Config $config = null) {
-      $session = $session ? : Session::i();
-      $config  = $config ? : Config::i();
       $user    = null;
-      if (isset($session['User'])) {
-        $user = $session['User'];
+      if (isset($_SESSION['User'])) {
+        $user = $_SESSION['User'];
       }
       return static::ii($user, $session, $config);
     }

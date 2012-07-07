@@ -45,7 +45,7 @@
      */
     protected function convertUrl($url, $count)
     {
-      $baseUrl = '/';
+      $baseUrl = (strpos($url,'..')===0)?'':'/';
       $url     = trim($url);
       if (preg_match('@^[^/]+:@', $url)) {
         return $url;
@@ -62,7 +62,7 @@
       ) {
         if (strpos($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME'] . '?') === 0 || strpos($_SERVER['REQUEST_URI'], rtrim(dirname($_SERVER['SCRIPT_NAME']), '\/') . '/?') === 0
         ) {
-          if (!$baseUrl) {
+          if ($baseUrl) {
             return $this->filedir . $url;
           }
         }
@@ -76,7 +76,7 @@
         $oldBaseUrl    = $baseUrl;
         $baseUrl       = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 's' :
           '') . '://' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['SCRIPT_NAME']), '\/') . '/' . $this->filedir;
-        $contents      = minify_css($contents);
+        $contents      = $this->minify($contents);
         $this->filedir = $oldFileDir;
         $baseUrl       = $oldBaseUrl;
       }

@@ -134,7 +134,7 @@
         $this->Cache->delete('config');
         header('Location: /');
       } elseif ($this->_vars === null) {
-        $this->_vars = $this->Cache->get('config');
+        $this->_vars = $this->Cache->_get('config');
       }
       if (!$this->_vars) {
         $this->load();

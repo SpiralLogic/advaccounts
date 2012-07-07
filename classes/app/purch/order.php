@@ -371,7 +371,7 @@
         if ($po_line->Deleted == true) {
           // Sherifoz 21.06.03 Handle deleting existing lines
           if (!empty($po_line->po_detail_rec)) {
-            $sql = "DELETE FROM purch_order_details WHERE po_detail_item=" . DB::escape($po_line->po_detail_rec);
+            $sql = "DELETE FROM purch_order_details WHERE po_detail_item=" . DB::quote($po_line->po_detail_rec);
           }
         } else {
           if (!$po_line->po_detail_rec) {

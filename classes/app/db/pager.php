@@ -14,6 +14,8 @@
    */
   class DB_Pager
   {
+
+    static $User;
     /**
      * @static
      *
@@ -27,8 +29,7 @@
      *
      * @return DB_Pager
      */
-    static function &new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_len = 0, $sort = null)
-    {
+    static function &new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_len = 0, $sort = null) {
       if (!isset($_SESSION['pager'])) {
         $_SESSION['pager'] = array();
       }
@@ -50,21 +51,18 @@
           $column['fun'] = $coldef[$column['funkey']]['fun'];
         }
       }
-
       return $_SESSION['pager'][$name];
     }
     /**
      * @return array
      */
-    public function __sleep()
-    {
+    public function __sleep() {
       foreach ($this->columns as &$column) {
         if (isset($column['fun']) && ($column['fun'] instanceof Closure)) {
           unset($column['fun']);
         }
       }
       unset($this->marker);
-
       return array_keys((array) $this);
     }
     /**
@@ -76,11 +74,9 @@
      *
      * @return int
      */
-    public static function countFilter($table, $feild, $where)
-    {
+    public static function countFilter($table, $feild, $where) {
       $sql    = "SELECT * FROM " . $table . " WHERE " . $feild . " LIKE " . DB::escape($where) . " LIMIT 1";
       $result = DB::query($sql, 'Couldnt do shit');
-
       return DB::numRows($result);
     }
     /**
@@ -92,14 +88,15 @@
      *
      * @return string
      */
-    public static function link($link_text, $url, $icon = false)
-    {
-      if (User::graphic_links() && $icon) {
+    public static function link($link_text, $url, $icon = false) {
+      if (!static::$User) {
+        static::$User = User::i();
+      }
+      if (static::$User->_graphic_links() && $icon) {
         $link_text = Forms::setIcon($icon, $link_text);
       }
       $href = '/' . ltrim($url, '/');
       $href = (Input::request('frame')) ? "javascript:window.parent.location='$href'" : $href;
-
       return '<a href="' . e($href) . '" class="button">' . $link_text . "</a>";
     }
     /**
@@ -112,11 +109,13 @@
      *
      * @return string
      */
-    public static function navi($name, $value, $enabled = true, $icon = false)
-    {
+    public static function navi($name, $value, $enabled = true, $icon = false) {
+      if (!static::$User) {
+        static::$User = User::i();
+      }
       return "<button " . ($enabled ? '' :
         'disabled') . " class=\"navibutton\" type=\"submit\"" . " name=\"$name\" id=\"$name\" value=\"$value\">" . ($icon ?
-        "<img src='/themes/" . User::theme() . "/images/" . $icon . "'>" : '') . "<span>$value</span></button>\n";
+        "<img src='/themes/" . static::$User->_theme() . "/images/" . $icon . "'>" : '') . "<span>$value</span></button>\n";
     }
     /**
      * @static
@@ -125,8 +124,7 @@
      * @param      $value
      * @param bool $enabled
      */
-    public static function navi_cell($name, $value, $enabled = true)
-    {
+    public static function navi_cell($name, $value, $enabled = true) {
       Cell::label(static::navi($name, $value, $enabled));
     }
     /**
@@ -136,8 +134,13 @@
      *
      * @return bool
      */
-    public static function display($pager)
-    {
+    public static function display($pager) {
+      if (!static::$dates) {
+        static::$dates = Dates::i();
+      }
+      if (!static::$User) {
+        static::$User = User::i();
+      }
       $pager->select_records();
       Display::div_start("_{$pager->name}_span");
       $headers = array();
@@ -201,13 +204,13 @@
               Cell::label($cell, "width=40");
               break;
             case 'date':
-              Cell::label(Dates::sqlToDate($cell), ' class="center nowrap"');
+              Cell::label(static::$dates->_sqlToDate($cell), ' class="center nowrap"');
               break;
             case 'dstamp': // time stamp displayed as date
-              Cell::label(Dates::sqlToDate(substr($cell, 0, 10)), ' class="center nowrap"');
+              Cell::label(static::$dates->_sqlToDate(substr($cell, 0, 10)), ' class="center nowrap"');
               break;
             case 'tstamp': // time stamp - FIX user format
-              Cell::label(Dates::sqlToDate(substr($cell, 0, 10)) . ' ' . substr($cell, 10), "class='center'");
+              Cell::label(static::$dates->_sqlToDate(substr($cell, 0, 10)) . ' ' . substr($cell, 10), "class='center'");
               break;
             case 'percent':
               Cell::percent($cell);
@@ -307,7 +310,6 @@
         Event::warning($pager->marker_txt, 0, 1, "class='$pager->notice_class'");
       }
       Display::div_end();
-
       return true;
     }
     /**
@@ -446,17 +448,20 @@
      * $name is base name for pager controls
      */
     public $key;
+    static $dates;
     /**
      * @param      $sql
      * @param      $name
      * @param null $table
      * @param int  $page_len
      */
-    public function __construct($sql, $name, $table = null, $page_len = 0)
-    {
+    public function __construct($sql, $name, $table = null, $page_len = 0) {
+      if (!static::$User) {
+        static::$User = User::i();
+      }
       $this->width = "80%";
       if ($page_len == 0) {
-        $page_len = User::query_size();
+        $page_len = static::$User->_query_size();
       }
       $this->name     = $name;
       $this->page_len = $page_len;
@@ -469,11 +474,9 @@
      * Set query result page
 
      */
-    public function change_page($page = null)
-    {
+    public function change_page($page = null) {
       $this->set_page($page);
       $this->query();
-
       return true;
     }
     /**
@@ -483,8 +486,7 @@
      * Helper for display inactive control cells
 
      */
-    public function  inactive_control_cell(&$row)
-    {
+    public function  inactive_control_cell(&$row) {
       if ($this->inactive_ctrl) {
         //	return inactive_control_cell($row[$this->inactive_ctrl['key']],
         // $row['inactive'], $this->inactive_ctrl['table'],
@@ -511,8 +513,7 @@
      * Query database
 
      */
-    public function query()
-    {
+    public function query() {
       Ajax::activate("_{$this->name}_span");
       $this->data = array();
       if (!$this->_init()) {
@@ -544,7 +545,6 @@
       } else {
         return false;
       }
-
       return true;
     }
     /**
@@ -574,8 +574,7 @@
      *              Force pager initialization.
 
      */
-    public function refresh_pager($name)
-    {
+    public function refresh_pager($name) {
       if (isset($_SESSION[$name])) {
         $_SESSION[$name]->ready = false;
       }
@@ -584,8 +583,7 @@
      * Set current page in response to user control.
 
      */
-    public function select_records()
-    {
+    public function select_records() {
       $page = Forms::findPostPrefix($this->name . '_page_', false);
       $sort = Forms::findPostPrefix($this->name . '_sort_', true);
       if ($page) {
@@ -609,8 +607,7 @@
      * Set column definitions
      * $flds: array( fldname1, fldname2=>type,...)
      */
-    public function set_columns($flds)
-    {
+    public function set_columns($flds) {
       $this->columns = array();
       if (!is_array($flds)) {
         $flds = array($flds);
@@ -662,8 +659,7 @@
      * Return array of column contents.
 
      */
-    public function set_footer($func, $footercl = 'inquirybg')
-    {
+    public function set_footer($func, $footercl = 'inquirybg') {
       $this->footer_fun   = $func;
       $this->footer_class = $footercl;
     }
@@ -672,8 +668,7 @@
      * Calculates page numbers for html controls.
 
      */
-    public function set_page($to)
-    {
+    public function set_page($to) {
       switch ($to) {
         case 'next':
           $page = $this->curr_page + 1;
@@ -710,8 +705,7 @@
      * @param $sql
      * Parse base sql select query.
      */
-    public function set_sql($sql)
-    {
+    public function set_sql($sql) {
       if ($sql != $this->sql) {
         $this->sql   = $sql;
         $this->ready = false;
@@ -744,8 +738,7 @@
      * @return mixed
      * Set additional constraint on record set
      */
-    public function set_where($where = null)
-    {
+    public function set_where($where = null) {
       if ($where) {
         if (!is_array($where)) {
           $where = array($where);
@@ -765,8 +758,7 @@
      * Change sort column direction
      * in order asc->desc->none->asc
      */
-    public function sort_table($col)
-    {
+    public function sort_table($col) {
       if (is_null($col)) {
         return false;
       }
@@ -775,7 +767,6 @@
       $this->columns[$col]['ord'] = $ord;
       $this->set_page(1);
       $this->query();
-
       return true;
     }
     /**
@@ -785,8 +776,7 @@
      * Return array of column contents.
 
      */
-    public function set_header($func, $headercl = 'inquirybg')
-    {
+    public function set_header($func, $headercl = 'inquirybg') {
       $this->header_fun   = $func;
       $this->header_class = $headercl;
     }
@@ -796,8 +786,7 @@
      * Setter for table editors with inactive cell control.
 
      */
-    public function set_inactive_ctrl($table, $key)
-    {
+    public function set_inactive_ctrl($table, $key) {
       $this->inactive_ctrl = array(
         'table' => $table, 'key'   => $key
       );
@@ -809,8 +798,7 @@
      * @param string $msgclass
      * Set check function to mark some rows.
      */
-    public function set_marker($func, $notice = '', $markercl = 'overduebg', $msgclass = 'overduefg')
-    {
+    public function set_marker($func, $notice = '', $markercl = 'overduebg', $msgclass = 'overduefg') {
       $this->marker       = $func;
       $this->marker_txt   = $notice;
       $this->marker_class = $markercl;
@@ -820,8 +808,7 @@
      * @return bool
      * Initialization after changing record set
      */
-    protected function _init()
-    {
+    protected function _init() {
       if ($this->ready == false) {
         $sql    = $this->_sql_gen(true);
         $result = DB::query($sql, 'Error reading record set');
@@ -845,7 +832,6 @@
         $this->set_page(1);
         $this->ready = true;
       }
-
       return true;
     }
     /**
@@ -857,8 +843,7 @@
      * $count==true  - for total records count
 
      */
-    protected function _sql_gen($count = false)
-    {
+    protected function _sql_gen($count = false) {
       $select = $this->select;
       $from   = $this->from;
       $where  = $this->where;
@@ -872,7 +857,6 @@
       }
       if ($count) {
         $group = $group == '' ? "*" : "DISTINCT $group";
-
         return "SELECT COUNT($group) FROM $from $where";
       }
       $sql = "$select FROM $from $where";
@@ -897,7 +881,6 @@
       $page_len = $this->page_len;
       $offset   = ($this->curr_page - 1) * $page_len;
       $sql .= " LIMIT $offset, $page_len";
-
       return $sql;
     }
   }
