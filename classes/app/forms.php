@@ -1353,7 +1353,9 @@
      * @param string $params
      */
     public static function  textareaCells($label, $name, $value, $cols, $rows, $title = null, $params = "") {
-      if ($label != null) {
+      if (!static::$ajax) {
+           static::$ajax = \ADV\Core\Ajax::i();
+         }  if ($label != null) {
         echo "<td $params>$label</td>\n";
         $params = '';
       }
