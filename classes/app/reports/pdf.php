@@ -1117,7 +1117,7 @@
      *
      * @return void
      */
-    public function  End($doc_Payment_Link, $email = 0, $subject = null, $myrow = null, $doctype = 0) {
+    public function  End($email = 0, $subject = null, $myrow = null, $doctype = 0) {
       if (Config::get('debug.pdf') == 1) {
         $pdfcode = $this->Output('', 'S');
         $pdfcode = str_replace("\n", "\n<br>", htmlspecialchars($pdfcode));

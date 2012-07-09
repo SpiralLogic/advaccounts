@@ -18,6 +18,7 @@
   }
   if (isset($_POST['name'])) {
     $data['company'] = $supplier = new Creditor();
+    unset($_POST['supp_ref']);
     $data['company']->save($_POST);
   } elseif (Input::request('id', Input::NUMERIC) > 0) {
     $data['company']     = $supplier = new Creditor(Input::request('id', Input::NUMERIC));

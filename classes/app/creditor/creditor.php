@@ -177,8 +177,8 @@
       $this->contact = &$this->contact_name;
       $this->address = &$this->post_address;
       $this->phone2  = &$this->supp_phone;
+      $this->supp_ref = &$this->name;
       parent::__construct($id);
-      $this->supp_ref = substr($this->name, 0, 29);
     }
     /**
      * @return array
@@ -194,6 +194,7 @@
      */
     public function save($changes = null)
     {
+
       if (!parent::save($changes)) {
         $this->_setDefaults();
         return false;

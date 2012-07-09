@@ -10,10 +10,10 @@
   $page_security = isset($_GET['NewPayment']) || (isset($_SESSION['pay_items']) && $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT) ?
     SA_PAYMENT : SA_DEPOSIT;
   JS::openWindow(800, 500);
-  if (isset($_GET['NewPayment']) && !isset($_SESSION['pay_items'])) {
+  if (isset($_GET['NewPayment'])) {
     $_SESSION['page_title'] = _($help_context = "Bank Account Payment Entry");
     handle_new_order(ST_BANKPAYMENT);
-  } elseif (isset($_GET['NewDeposit']) || !isset($_SESSION['pay_items'])) {
+  } elseif (isset($_GET['NewDeposit'])) {
     $_SESSION['page_title'] = _($help_context = "Bank Account Deposit Entry");
     handle_new_order(ST_BANKDEPOSIT);
   }
