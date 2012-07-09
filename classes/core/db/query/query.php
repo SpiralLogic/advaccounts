@@ -28,7 +28,7 @@
      */
     protected $type;
     /**
-     * @var DB
+     * @var \DB
      */
     protected $conn;
     /**

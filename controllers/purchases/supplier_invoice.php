@@ -9,15 +9,15 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class SupplierInvoice extends Controller_Base
+  class SupplierInvoice extends \ADV\App\Controller\Base
   {
 
     /** @var Creditor_Trans */
     protected $trans;
     protected $supplier_id;
     protected function before() {
-      JS::openWindow(900, 500);
-      Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
+      $this->JS->_openWindow(900, 500);
+
       $this->trans             = Creditor_Trans::i();
       $this->trans->is_invoice = true;
       if (isset($_POST['ClearFields'])) {
@@ -41,8 +41,8 @@
         $this->invGrnAll();
       }
       if (Input::post('ponum')) {
-        $this->ajax->_activate('grn_items');
-        $this->ajax->_activate('inv_tot');
+        $this->Ajax->_activate('grn_items');
+        $this->Ajax->_activate('inv_tot');
       }
       $this->checkDelete();
       if (isset($_POST['go'])) {
@@ -57,7 +57,7 @@
       Forms::start();
       Purch_Invoice::header($this->trans);
       if ($this->trans) {
-        $this->session->_removeGlobal('creditor', 'delivery_po');
+        $this->Session->_removeGlobal('creditor', 'delivery_po');
       }
       if (!$this->supplier_id) {
         Event::warning(_("There is no supplier selected."));
@@ -69,7 +69,7 @@
         Display::div_end();
       }
       if (Input::post('AddGLCodeToTrans')) {
-        $this->ajax->_activate('inv_tot');
+        $this->Ajax->_activate('inv_tot');
       }
       Display::br();
       Forms::submitCenterBegin('Cancel', _("Cancel Invoice"));
@@ -94,26 +94,26 @@
       Page::footer_exit();
     }
     protected function addGlCodesToTrans() {
-      $this->ajax->_activate('gl_items');
+      $this->Ajax->_activate('gl_items');
       $input_error = false;
       $sql         = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DB::escape($_POST['gl_code']);
       $result      = DB::query($sql, "get account information");
       if (DB::numRows($result) == 0) {
         Event::error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
-        JS::setFocus('gl_code');
+        $this->JS->_setFocus('gl_code');
         $input_error = true;
       } else {
         $myrow       = DB::fetchRow($result);
         $gl_act_name = $myrow[1];
         if (!Validation::post_num('amount')) {
           Event::error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
-          JS::setFocus('amount');
+          $this->JS->_setFocus('amount');
           $input_error = true;
         }
       }
       if (!Tax_Types::is_tax_gl_unique(Input::post('gl_code'))) {
         Event::error(_("Cannot post to GL account used by more than one tax type."));
-        JS::setFocus('gl_code');
+        $this->JS->_setFocus('gl_code');
         $input_error = true;
       }
       if ($input_error == false) {
@@ -129,15 +129,15 @@
         if (!$taxexists) {
           $this->trans->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, Validation::input_num('amount') * .1, 'GST TAX Paid');
         }
-        JS::setFocus('gl_code');
+        $this->JS->_setFocus('gl_code');
       }
     }
     protected function checkDelete() {
       $id3 = Forms::findPostPrefix(MODE_DELETE);
       if ($id3 != -1) {
         $this->trans->remove_grn_from_trans($id3);
-        $this->ajax->_activate('grn_items');
-        $this->ajax->_activate('inv_tot');
+        $this->Ajax->_activate('grn_items');
+        $this->Ajax->_activate('inv_tot');
       }
       $id4 = Forms::findPostPrefix('Delete2');
       if ($id4 != -1) {
@@ -157,10 +157,10 @@
           $this->trans->gl_codes[$taxrecord]->amount = $taxtotal * .1;
         }
         unset($_POST['gl_code'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_'], $_POST['AddGLCodeToTrans']);
-        $this->ajax->_activate('gl_items');
-        JS::setFocus('gl_code');
-        $this->ajax->_activate('gl_items');
-        $this->ajax->_activate('inv_tot');
+        $this->Ajax->_activate('gl_items');
+        $this->JS->_setFocus('gl_code');
+        $this->Ajax->_activate('gl_items');
+        $this->Ajax->_activate('inv_tot');
       }
       $id2 = -1;
       if (User::i()->hasAccess(SA_GRNDELETE)) {
@@ -181,8 +181,8 @@
           Inv_Movement::add(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], Dates::sqlToDate($grn["delivery_date"]), "", -$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
           DB::commit();
           Event::notice(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
-          $this->ajax->_activate('grn_items');
-          $this->ajax->_activate('inv_tot');
+          $this->Ajax->_activate('grn_items');
+          $this->Ajax->_activate('inv_tot');
         }
       }
     }
@@ -209,7 +209,7 @@
       }
       $invoice_no                          = Purch_Invoice::add($this->trans);
       $_SESSION['history'][ST_SUPPINVOICE] = $this->trans->reference;
-      $this->session->_setGlobal('creditor', $this->supplier_id, '');
+      $this->Session->_setGlobal('creditor', $this->supplier_id, '');
       $this->trans->clear_items();
       Creditor_Trans::killInstance();
       Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$invoice_no");
@@ -219,18 +219,18 @@
     //
     function clearFields() {
       unset($_POST['gl_code'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_'], $_POST['AddGLCodeToTrans']);
-      $this->ajax->_activate('gl_items');
-      JS::setFocus('gl_code');
+      $this->Ajax->_activate('gl_items');
+      $this->JS->_setFocus('gl_code');
     }
     protected function after() {
-      $this->session->_set('Creditor_Trans', $this->trans);
+      $this->Session->_set('Creditor_Trans', $this->trans);
     }
     /**
      * @internal param $prefix
      * @return bool|mixed
      */
     protected function runValidation() {
-      // TODO: Implement runValidation() method.
+      Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
     }
     /**
      * @return bool
@@ -242,7 +242,7 @@
       }
       if (!Ref::is_valid($this->trans->reference)) {
         Event::error(_("You must enter an invoice reference."));
-        JS::setFocus('reference');
+        $this->JS->_setFocus('reference');
         return false;
       }
       if (!Ref::is_new($this->trans->reference, ST_SUPPINVOICE)) {
@@ -250,21 +250,21 @@
       }
       if (!Ref::is_valid($this->trans->supplier_reference)) {
         Event::error(_("You must enter a supplier's invoice reference."));
-        JS::setFocus('supplier_reference');
+        $this->JS->_setFocus('supplier_reference');
         return false;
       }
       if (!Dates::isDate($this->trans->tran_date)) {
         Event::error(_("The invoice as entered cannot be processed because the invoice date is in an incorrect format."));
-        JS::setFocus('trans_date');
+        $this->JS->_setFocus('trans_date');
         return false;
       } elseif (!Dates::isDateInFiscalYear($this->trans->tran_date)) {
         Event::error(_("The entered date is not in fiscal year."));
-        JS::setFocus('trans_date');
+        $this->JS->_setFocus('trans_date');
         return false;
       }
       if (!Dates::isDate($this->trans->due_date)) {
         Event::error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
-        JS::setFocus('due_date');
+        $this->JS->_setFocus('due_date');
         return false;
       }
       $sql    = "SELECT Count(*) FROM creditor_trans WHERE supplier_id=" . DB::escape($this->trans->supplier_id) . " AND supplier_reference=" . DB::escape($_POST['supplier_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
@@ -284,27 +284,27 @@
     protected function checkItemData($n) {
       if (!Validation::post_num('this_quantity_inv' . $n, 0) || Validation::input_num('this_quantity_inv' . $n) == 0) {
         Event::error(_("The quantity to invoice must be numeric and greater than zero."));
-        JS::setFocus('this_quantity_inv' . $n);
+        $this->JS->_setFocus('this_quantity_inv' . $n);
         return false;
       }
       if (!Validation::post_num('ChgPrice' . $n)) {
         Event::error(_("The price is not numeric."));
-        JS::setFocus('ChgPrice' . $n);
+        $this->JS->_setFocus('ChgPrice' . $n);
         return false;
       }
       if (!Validation::post_num('ExpPrice' . $n)) {
         Event::error(_("The price is not numeric."));
-        JS::setFocus('ExpPrice' . $n);
+        $this->JS->_setFocus('ExpPrice' . $n);
         return false;
       }
       $margin = DB_Company::get_pref('po_over_charge');
       if (Config::get('purchases.valid_charged_to_delivered_price') == true && $margin != 0) {
         if ($_POST['order_price' . $n] != Validation::input_num('ChgPrice' . $n)) {
           if (Input::post('order_price' . $n, Input::NUMERIC, 0) != 0 && Validation::input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {
-            if (!$this->session->_get['err_over_charge']) {
+            if (!$this->Session->_get('err_over_charge')) {
               Event::warning(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage
               allowance is :") . $margin . "%");
-              JS::setFocus('ChgPrice' . $n);
+              $this->JS->_setFocus('ChgPrice' . $n);
               $_SESSION['err_over_charge'] = true;
               return false;
             } else {
@@ -316,7 +316,7 @@
       if (Config::get('purchases.valid_charged_to_delivered_qty') == true) {
         if (Validation::input_num('this_quantity_inv' . $n) / ($_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n]) > (1 + ($margin / 100))) {
           Event::error(_("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");
-          JS::setFocus('this_quantity_inv' . $n);
+          $this->JS->_setFocus('this_quantity_inv' . $n);
           return false;
         }
       }
@@ -337,8 +337,8 @@
           ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('this_quantity_inv' . $n), $_POST['order_price' . $n], Validation::input_num('ChgPrice' . $n),
           $complete, $_POST['std_cost_unit' . $n], "", Validation::input_num('ChgDiscount' . $n), Validation::input_num('ExpPrice' . $n));
       }
-      $this->ajax->_activate('grn_items');
-      $this->ajax->_activate('inv_tot');
+      $this->Ajax->_activate('grn_items');
+      $this->Ajax->_activate('inv_tot');
     }
     protected function cancelInvoice() {
       $this->trans->clear_items();
@@ -348,14 +348,14 @@
       unset($_POST['supplier']);
       Creditor_Trans::killInstance();
       $this->trans = Creditor_Trans::i(true);
-      $this->ajax->_activate('_page_body');
+      $this->Ajax->_activate('_page_body');
     }
     protected function go() {
-      $this->ajax->_activate('gl_items');
+      $this->Ajax->_activate('gl_items');
       GL_QuickEntry::show_menu($this->trans, $_POST['qid'], Validation::input_num('total_amount'), QE_SUPPINV);
       $_POST['total_amount'] = Num::priceFormat(0);
-      $this->ajax->_activate('total_amount');
-      $this->ajax->_activate('inv_tot');
+      $this->Ajax->_activate('total_amount');
+      $this->Ajax->_activate('inv_tot');
     }
     protected function invGrnAll() {
       foreach ($_POST as $postkey => $postval) {
@@ -365,7 +365,7 @@
           $this->commitItemData($id);
         }
       }
-      $this->ajax->_activate('_page_body');
+      $this->Ajax->_activate('_page_body');
     }
     protected function addJS() {
       Item::addEditDialog();
@@ -405,7 +405,7 @@
                   Adv.Forms.priceFormat(invTotal.attr('id'),total+ChgTax+ChgTotal,2,true); }
               }});
 JS;
-      JS::onload($js);
+      $this->JS->_onload($js);
     }
   }
 

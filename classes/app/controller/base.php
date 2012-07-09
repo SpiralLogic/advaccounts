@@ -6,18 +6,30 @@
    * Time: 11:37 AM
    * To change this template use File | Settings | File Templates.
    */
-  //namespace Controller;
-  abstract class Controller_Base
+  namespace ADV\App\Controller;
+  use ADV\Core\Ajax;
+  use ADV\Core\JS;
+  use ADV\Core\Input;
+  use ADV\Core\Config;
+  use User;
+  use ADV\Core\Session;
+
+  /**
+
+   */
+  abstract class Base
   {
     protected $title;
-    /*** @var User */
-    protected $user;
-    /*** @var Ajax */
-    protected $ajax;
+    /*** @var \User */
+    protected $User;
+    /*** @var \Ajax */
+    protected $Ajax;
     /*** @var Session */
-    protected $session;
+    protected $Session;
     /*** @var \DB */
-    protected $db;
+    protected $DB;
+    /*** @var \JS */
+    protected $JS;
     protected $action;
     public $help_context;
     /**
@@ -25,10 +37,11 @@
      */
     function __construct()
     {
-      $this->ajax    = Ajax::i();
-      $this->session = Session::i();
-      $this->user    = User::getCurrentUser($this->session, Config::i());
-      $this->db      = \DB::i();
+      $this->Ajax    = Ajax::i();
+      $this->JS    = JS::i();
+      $this->Session = Session::i();
+      $this->User    = User::getCurrentUser($this->Session, Config::i());
+      $this->DB      = \DB::i();
 
       $this->action = Input::post('_action');
       $this->before();

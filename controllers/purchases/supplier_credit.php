@@ -7,12 +7,12 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class SupplierCredit extends Controller_Base {
+  class SupplierCredit extends ADV\App\Controller\Base {
     /** @var Creditor_trans */
     protected $trans;
     protected $supplier_id;
     protected function before() {
-      JS::openWindow(900, 500);
+      $this->JS->_openWindow(900, 500);
       Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
       $this->trans             = Creditor_Trans::i();
       $this->trans->is_invoice = false;
@@ -45,8 +45,8 @@
         $this->invGrnAll();
       }
       if (Input::post('ponum')) {
-        $this->ajax->_activate('grn_items');
-        $this->ajax->_activate('inv_tot');
+        $this->Ajax->_activate('grn_items');
+        $this->Ajax->_activate('inv_tot');
       }
       $this->checkDelete();
       if (isset($_POST['RefreshInquiry'])) {
@@ -118,7 +118,7 @@
             Adv.Forms.priceFormat(invTotal.attr('id'),total+ChgTax+ChgTotal,2,true); }
         }});
 JS;
-      JS::onload($js);
+      $this->JS->_onload($js);
     }
     protected function pageComplete() {
       $invoice_no = $_GET[ADDED_ID];
@@ -149,7 +149,7 @@ JS;
       if ($id4 != -1) {
         $this->trans->remove_gl_codes_from_trans($id4);
         unset($_POST['gl_code'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_'], $_POST['AddGLCodeToTrans']);
-        JS::setFocus('gl_code');
+        $this->JS->_setFocus('gl_code');
         Ajax::activate('gl_items');
         Ajax::activate('inv_tot');
       }
@@ -162,7 +162,7 @@ JS;
           $this->commitItemData($id);
         }
       }
-      $this->ajax->_activate('_page_body');
+      $this->Ajax->_activate('_page_body');
     }
     protected function postCredit() {
       Purch_Invoice::copy_to_trans($this->trans);
@@ -185,31 +185,31 @@ JS;
       $result      = DB::query($sql, "get account information");
       if (DB::numRows($result) == 0) {
         Event::error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
-        JS::setFocus('gl_code');
+        $this->JS->_setFocus('gl_code');
         $input_error = true;
       } else {
         $myrow       = DB::fetchRow($result);
         $gl_act_name = $myrow[1];
         if (!Validation::post_num('amount')) {
           Event::error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
-          JS::setFocus('amount');
+          $this->JS->_setFocus('amount');
           $input_error = true;
         }
       }
       if (!Tax_Types::is_tax_gl_unique(Input::post('gl_code'))) {
         Event::error(_("Cannot post to GL account used by more than one tax type."));
-        JS::setFocus('gl_code');
+        $this->JS->_setFocus('gl_code');
         $input_error = true;
       }
       if ($input_error == false) {
         $this->trans->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, $_POST['dimension_id'], $_POST['dimension2_id'], Validation::input_num('amount'), $_POST['memo_']);
-        JS::setFocus('gl_code');
+        $this->JS->_setFocus('gl_code');
       }
     }
     protected function clearFields() {
       unset($_POST['gl_code'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_'], $_POST['AddGLCodeToTrans']);
       Ajax::activate('gl_items');
-      JS::setFocus('gl_code');
+      $this->JS->_setFocus('gl_code');
     }
     /**
      * @return bool
@@ -218,12 +218,12 @@ JS;
       global $total_grn_value, $total_gl_value;
       if (!$this->trans->is_valid_trans_to_post()) {
         Event::error(_("The credit note cannot be processed because the there are no items or values on the invoice. Credit notes are expected to have a charge."));
-        JS::setFocus('');
+        $this->JS->_setFocus('');
         return false;
       }
       if (!Ref::is_valid($this->trans->reference)) {
         Event::error(_("You must enter an credit note reference."));
-        JS::setFocus('reference');
+        $this->JS->_setFocus('reference');
         return false;
       }
       if (!Ref::is_new($this->trans->reference, ST_SUPPCREDIT)) {
@@ -231,21 +231,21 @@ JS;
       }
       if (!Ref::is_valid($this->trans->supplier_reference)) {
         Event::error(_("You must enter a supplier's credit note reference."));
-        JS::setFocus('supplier_reference');
+        $this->JS->_setFocus('supplier_reference');
         return false;
       }
       if (!Dates::isDate($this->trans->tran_date)) {
         Event::error(_("The credit note as entered cannot be processed because the date entered is not valid."));
-        JS::setFocus('tran_date');
+        $this->JS->_setFocus('tran_date');
         return false;
       } elseif (!Dates::isDateInFiscalYear($this->trans->tran_date)) {
         Event::error(_("The entered date is not in fiscal year."));
-        JS::setFocus('tran_date');
+        $this->JS->_setFocus('tran_date');
         return false;
       }
       if (!Dates::isDate($this->trans->due_date)) {
         Event::error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
-        JS::setFocus('due_date');
+        $this->JS->_setFocus('due_date');
         return false;
       }
       if ($this->trans->ov_amount < ($total_gl_value + $total_grn_value)) {
@@ -263,12 +263,12 @@ JS;
     protected function checkItemData($n) {
       if (!Validation::post_num('this_quantityCredited' . $n, 0)) {
         Event::error(_("The quantity to credit must be numeric and greater than zero."));
-        JS::setFocus('this_quantityCredited' . $n);
+        $this->JS->_setFocus('this_quantityCredited' . $n);
         return false;
       }
       if (!Validation::post_num('ChgPrice' . $n, 0)) {
         Event::error(_("The price is either not numeric or negative."));
-        JS::setFocus('ChgPrice' . $n);
+        $this->JS->_setFocus('ChgPrice' . $n);
         return false;
       }
       return true;
@@ -281,7 +281,7 @@ JS;
       unset($_POST['supplier']);
       Creditor_Trans::killInstance();
       $this->trans = Creditor_Trans::i(true);
-      $this->ajax->_activate('_page_body');
+      $this->Ajax->_activate('_page_body');
     }
     /**
      * @param $n

@@ -569,11 +569,9 @@
             return new Query\Result($prepared, $data);
           case DB::INSERT:
             $prepared->execute($data);
-
             return $this->conn->lastInsertId();
           case DB::UPDATE or DB::DELETE:
             $prepared->execute($data);
-
             return true;
         }
       } catch (\PDOException $e) {

@@ -22,11 +22,11 @@
     /**
      * @var array
      */
-    public $leftAppFunctions;
+    public $leftAppFunctions=[];
     /**
      * @var array
      */
-    public $rightAppFunctions;
+    public $rightAppFunctions=[];
     /**
      * @param      $name
      * @param null $icon
