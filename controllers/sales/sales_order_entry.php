@@ -1,5 +1,5 @@
 <?php
-  use ADV\App\Page;
+  namespace ADV\App;
 
   /**
    * PHP version 5.4
@@ -9,6 +9,27 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  use Orders;
+  use ADV\Core\Errors;
+  use Sales_Point;
+  use Sales_Order;
+  use DB_Company;
+  use Ref;
+  use ADV\Core\Num;
+  use Validation;
+  use ADV\Core\Dates;
+  use GL_UI;
+  use Reporting;
+  use ADV\Core\Event;
+  use Item_Line;
+  use Sales_Branch;
+  use Item;
+  use Debtor;
+  use Display;
+  use Table;
+  use Forms;
+  use ADV\Core\Input;
+
   class SalesOrder extends Controller\Base {
     protected $addTitles = array(
       ST_SALESQUOTE  => "New Sales Quotation Entry", //
@@ -21,18 +42,17 @@
       ST_SALESORDER  => "Modifying Sales Order # "
     );
     protected $typeSecurity = array(
-      ST_SALESORDER   => SA_SALESORDER, //
-      ST_SALESQUOTE   => SA_SALESQUOTE, ///
-      ST_CUSTDELIVERY => SA_SALESDELIVERY, //
-        Orders::QUOTE_TO_ORDER => SA_SALESORDER, //
-        Orders::CLONE_ORDER    => SA_SALESORDER, //
-      ST_SALESINVOICE => SA_SALESINVOICE
+      ST_SALESORDER          => SA_SALESORDER, //
+      ST_SALESQUOTE          => SA_SALESQUOTE, ///
+      ST_CUSTDELIVERY        => SA_SALESDELIVERY, //
+      Orders::QUOTE_TO_ORDER => SA_SALESORDER, //
+      Orders::CLONE_ORDER    => SA_SALESORDER, //
+      ST_SALESINVOICE        => SA_SALESINVOICE
     );
-
     protected $security;
     public $type;
     /***
-     * @var Sales_Order;
+     * @var \Sales_Order;
      */
     public $order;
     protected function before() {
@@ -61,7 +81,6 @@
         $this->order = $this->createOrder(ST_SALESORDER, Input::get(Orders::CLONE_ORDER));
       }
       $this->setSecurity();
-
       if (!isset($this->order)) {
         $this->order = $this->createOrder(ST_SALESORDER, 0);
       }

@@ -235,8 +235,8 @@
      */
     protected function _setDefaults()
     {
-      $this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
       $this->contacts[]     = new Contact(CT_SUPPLIER, array('parent_id' => $this->id));
+      $this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
     }
     /**
      * @return bool

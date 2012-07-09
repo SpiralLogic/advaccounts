@@ -207,7 +207,7 @@
         $text .= ($with_back_trace) ? "<div><pre><h3>Errors with backtrace: </h3>" . var_export($with_back_trace, true) . "\n\n" :
           '';
         $subject = 'Error log: ';
-        $subject .= (isset(static::$session['current_user'])) ? static::$session['current_user']->username . ', ' : '';
+        $subject .= (isset(static::$session['User'])) ? static::$session['User']->username . ', ' : '';
         if (static::$session) {
           //    unset(static::$session['current_user'], static::$session['config'], static::$session['App']);
           if (isset(static::$session['orders_tbl'])) {

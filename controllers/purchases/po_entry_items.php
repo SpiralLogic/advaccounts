@@ -163,8 +163,9 @@
    * @return \Purch_Order|\Sales_Order
    */
   function create_order($order_no = 0) {
-    if (isset($_GET['UseOrder']) && $_GET['UseOrder']) {
-      if (isset(Orders::session_get($_GET['UseOrder'])->line_items)) {
+    $getUuseOrder = Input::get('UseOrder');
+    if ($getUuseOrder) {
+      if (isset(Orders::session_get($getUuseOrder)->line_items)) {
         $sales_order = Orders::session_get($_GET['UseOrder']);
       } else {
         $sales_order = new Sales_Order(ST_SALESORDER, array($_GET['UseOrder']));

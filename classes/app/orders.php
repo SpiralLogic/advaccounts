@@ -79,6 +79,7 @@
      */
     protected static function setup($type)
     {
+
       if (!isset($_SESSION['orders'])) {
         $_SESSION['orders'] = array();
       }
@@ -103,8 +104,7 @@
         }
         $id = $_POST['order_id'];
       }
-
-      list($type, $id) = explode('.', $id);
+      list($type, $id) = explode('.', $id)+[null,null];
       static::setup($type);
       if (isset($_SESSION['orders'][$type][$id])) {
         return $_SESSION['orders'][$type][$id];
