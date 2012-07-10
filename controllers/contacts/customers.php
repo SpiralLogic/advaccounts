@@ -8,7 +8,8 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class Debtors extends \ADV\App\Controller\Base {
-    public $customer;
+    /** @var Debtor */
+    protected $customer;
     protected function before() {
       ADVAccounting::i()->set_selected('Debtors');
       if (AJAX_REFERRER) {
@@ -20,10 +21,10 @@
       if (isset($_POST['name'])) {
         $data['company'] = $this->customer = new Debtor();
         $data['company']->save($_POST);
-      } elseif (Input::request('id', Input::NUMERIC) > 0) {
-        $data['company']     = $this->customer = new Debtor(Input::request('id', Input::NUMERIC));
+      } elseif ($this->Input->_request('id', Input::NUMERIC) > 0) {
+        $data['company']     = $this->customer = new Debtor($this->Input->_request('id', Input::NUMERIC));
         $data['contact_log'] = Contact_Log::read($this->customer->id, CT_CUSTOMER);
-        Session::setGlobal('debtor', $this->customer->id);
+        $this->Session->_setGlobal('debtor', $this->customer->id);
       } else {
         $data['company'] = $this->customer = new Debtor();
       }
@@ -35,7 +36,7 @@
       $this->JS->_onload("Company.setValues(" . json_encode($data) . ");");
     }
     protected function index() {
-      Page::start(_($help_context = "Customers"), SA_CUSTOMER, Input::request('frame'));
+      Page::start(_($help_context = "Customers"), SA_CUSTOMER, $this->Input->_request('frame'));
       $currentContact = $this->customer->contacts[$this->customer->defaultContact];
       $currentBranch  = $this->customer->branches[$this->customer->defaultBranch];
       if (isset($_POST['delete'])) {
@@ -43,14 +44,9 @@
         $status = $this->customer->getStatus();
         Event::notice($status['message']);
       }
-      if (!Input::get('frame') && !Input::get('id')) {
-        /** @noinspection PhpUndefinedMethodInspection */
-        HTML::div('companysearch');
-        HTML::table(array('class' => 'marginauto bold'));
-        HTML::tr(true)->td(true);
-        UI::search('customer', array('label' => 'Search Customer:', 'size' => 80, 'callback' => 'Company.fetch', 'focus' => true));
-        HTML::td()->tr->table->div;
-      }
+      $view          = new View('contacts/customers');
+      $view['frame'] = $this->Input->_get('frame') || $this->Input->_get('id');
+      $view->render();
       Forms::start();
       $menu = new MenuUI();
       $menu->startTab('Details', 'Customer Details', '#', 'text-align:center');
@@ -188,7 +184,7 @@
       $menu->startTab('Invoices', 'Invoices');
       echo "<div id='invoiceFrame' data-src='" . BASE_URL . "sales/inquiry/customer_allocation_inquiry.php?customer_id=" . $this->customer->id . "' ></div> ";
       $menu->endTab()->render();
-      Forms::hidden('frame', Input::request('frame'));
+      Forms::hidden('frame', $this->Input->_request('frame'));
       HTML::div();
       Forms::end();
       HTML::div('contactLog', array(
@@ -202,14 +198,14 @@
       Table::end();
       HTML::_div()->div(array('class' => 'center width50'));
       UI::button('btnConfirm', ($this->customer->id) ? 'Update Customer' : 'New Customer', array(
-                                                                                          'name'  => 'submit', 'type'  => 'submit', 'class' => 'ui-helper-hidden', 'style' => 'margin:10px;'
-                                                                                     ));
+                                                                                                'name'  => 'submit', 'type'  => 'submit', 'class' => 'ui-helper-hidden', 'style' => 'margin:10px;'
+                                                                                           ));
       UI::button('btnCancel', 'Cancel', array(
                                              'name' => 'cancel', 'type' => 'submit', 'style' => 'margin:10px;'
                                         ));
       /** @noinspection PhpUndefinedMethodInspection */
       HTML::_div();
-      if (!Input::get('frame')) {
+      if (!$this->Input->_get('frame')) {
         HTML::div('shortcuts', array('class' => 'width50 center'));
         $shortcuts = new MenuUI(array('noajax' => true));
         $shortcuts->addLink('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?type=' . ST_SALESQUOTE . '&add=' . ST_SALESQUOTE . '&customer_id=', 'id');
@@ -240,4 +236,5 @@
       Validation::check(Validation::TAX_GROUP, _("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
     }
   }
-new Debtors();
+
+  new Debtors();

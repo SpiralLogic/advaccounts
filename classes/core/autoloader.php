@@ -32,13 +32,11 @@
      * @var array
      */
     protected $global_classes = array();
-    protected $Cachr = null;
+    protected $Cache = null;
     /**
      * @var array
      */
     public $loaded = array();
-    /** @var Cache */
-    public $Cache;
     /**
 
      */

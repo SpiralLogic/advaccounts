@@ -76,7 +76,7 @@
       }
       Display::br();
       Forms::submitCenterBegin('Cancel', _("Cancel Invoice"));
-      Forms::submitCenterEnd('PostCreditNote', _("Enter Credit Note"), true, '', 'default');
+      Forms::submitCenterEnd('PostCreditNote', _("Enter Credit Note"), true, '');
       Display::br();
       Forms::end();
       $this->addJS();

@@ -12,6 +12,7 @@
    * @method post($var, $type = null, $default = null)
    * @method get($var, $type = null, $default = null)
    * @method getPost($var, $type = null, $default = null)
+   * @method Input i()
    */
   class Input
   {
