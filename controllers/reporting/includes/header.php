@@ -75,8 +75,15 @@
     $this->NewLine();
     $this->NewLine();
     $this->Font('bold');
-
-    $this->TextWrap($mcol + 100, $this->row, 150, date('F Y', strtotime($myrow['tran_date'] . '- 1 day')), 'center');
+    if
+    (Dates::isGreaterThan($myrow['tran_date'], Dates::today())) {
+      $date = _("Current");
+      $myrow['tran_date']=Dates::dateToSql(Dates::today());
+    } else {
+      $date = date('F Y', strtotime($myrow['tran_date'] . '- 1 day'));
+    }
+    ;
+    $this->TextWrap($mcol + 100, $this->row, 150, $date, 'center');
     $this->Font();
     $this->row = $temp;
   }
@@ -216,7 +223,6 @@
     $addr = $myrow['delivery_address'];
   } elseif ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) {
     $name = $myrow['name'];
-
     $addr = $myrow['address'] . "\n";
     if ($myrow['city']) {
       $addr .= $myrow['city'];
@@ -270,7 +276,6 @@
   } elseif (isset($myrow["debtor_ref"])) {
     $this->TextWrap($col, $this->row, $width, $myrow["debtor_ref"], 'C');
   }
-
   $col += $width;
   $report_contact = (!empty($myrow['contact_name'])) ? $myrow['contact_name'] : $branch['contact_name'];
   if ($doctype == ST_PURCHORDER) {

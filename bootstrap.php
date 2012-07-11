@@ -19,13 +19,13 @@
     include $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
     xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
     register_shutdown_function(function() {
-        register_shutdown_function(function() {
-          $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
-          $xhprof_data        = xhprof_disable();
-          $xhprof_runs        = new \XHProfRuns_Default();
-          $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
-        });
+      register_shutdown_function(function() {
+        $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
+        $xhprof_data        = xhprof_disable();
+        $xhprof_runs        = new \XHProfRuns_Default();
+        $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
       });
+    });
   }
   error_reporting(-1);
   ini_set('display_errors', 1);
@@ -84,8 +84,8 @@
   }
   $dic = new \ADV\Core\DIC();
   $loader->registerCache(\ADV\Core\Cache::i()->_defineConstants($_SERVER['SERVER_NAME'] . '.defines', function() {
-      return include(DOCROOT . 'config' . DS . 'defines.php');
-    })  );
+    return include(DOCROOT . 'config' . DS . 'defines.php');
+  }));
   include(DOCROOT . 'config' . DS . 'types.php');
   Session::i();
   Ajax::i();

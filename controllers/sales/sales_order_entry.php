@@ -1,5 +1,5 @@
 <?php
-  namespace ADV\App;
+  namespace ADV\Controllers;
   /**
    * PHP version 5.4
    * @category  PHP
@@ -9,6 +9,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   use Orders;
+  use ADV\App\Controller\Base;
   use Form;
   use ADV\Core\View;
   use ADV\Core\Errors;
@@ -31,7 +32,7 @@
   use Forms;
   use ADV\Core\Input;
 
-  class SalesOrder extends Controller\Base {
+  class SalesOrder extends Base {
     protected $addTitles = array(
       ST_SALESQUOTE  => "New Sales Quotation Entry", //
       ST_SALESINVOICE=> "Direct Sales Invoice", //

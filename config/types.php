@@ -115,11 +115,11 @@
 
     ST_DIMENSION    => "Dimension"
   ); $systypes_array_short       = array(
-      ST_SALESQUOTE   => "Quotw",
+      ST_SALESQUOTE   => "Quote",
       ST_SALESORDER   => "Order",
       ST_PROFORMA     => "Proforma",
-      ST_CUSTDELIVERY => "Delivery",
-      ST_SALESINVOICE => "Invoice",
+      ST_CUSTDELIVERY => "Despatch",
+      ST_SALESINVOICE => "Cust Invoice",
       ST_CUSTCREDIT   => "Credit Note",
       ST_CUSTPAYMENT  => "Payment",
       ST_CUSTREFUND   => "Refund",

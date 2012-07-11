@@ -116,9 +116,6 @@
      * @return bool
      */
     protected function includeFile($filepath, $required_class) {
-      static $count;
-      $count++;
-      var_dump('<br>'.$count);
       if (empty($filepath)) {
         return false;
       }
@@ -146,10 +143,6 @@
       if ($lastNsPos = strripos($classname, '\\')) {
         $namespace = substr($classname, 0, $lastNsPos);
         $classname = substr($classname, $lastNsPos + 1);
-      }
-      var_dump('<br>'.$requested_class, class_exists($requested_class, false), class_exists($classname, false));
-      if (isset($this->global_classes[$classname])) {
-        var_dump(class_exists($this->global_classes[$classname] . '\\' . $classname, false));
       }
       if (isset($this->loaded[$requested_class])) {
         if ($this->includeFile($this->loaded[$requested_class], $requested_class)) {

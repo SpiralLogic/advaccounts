@@ -58,7 +58,7 @@
      */
     public function __sleep() {
       foreach ($this->columns as &$column) {
-        if (isset($column['fun']) && ($column['fun'] instanceof Closure)) {
+        if (isset($column['fun']) && is_callable($column['fun'] )) {
           unset($column['fun']);
         }
       }
