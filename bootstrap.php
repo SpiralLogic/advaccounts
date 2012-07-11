@@ -83,10 +83,9 @@
     }
   }
   $dic = new \ADV\Core\DIC();
-  $loader->registerCache(\ADV\Core\Cache::i());
-  Cache::i()->_defineConstants($_SERVER['SERVER_NAME'] . '.defines', function() {
-    return include(DOCROOT . 'config' . DS . 'defines.php');
-  });
+  $loader->registerCache(\ADV\Core\Cache::i()->_defineConstants($_SERVER['SERVER_NAME'] . '.defines', function() {
+      return include(DOCROOT . 'config' . DS . 'defines.php');
+    })  );
   include(DOCROOT . 'config' . DS . 'types.php');
   Session::i();
   Ajax::i();

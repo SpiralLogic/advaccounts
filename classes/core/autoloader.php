@@ -43,7 +43,7 @@
     /**
      * @param Cache $cache
      */
-    public function registerCache(Cache $cache) {
+    public function registerCache(\ADV\Core\Cache $cache) {
       $this->Cache   = $cache;
       $cachedClasses = $cache->get('autoload', array());
       if ($cachedClasses) {
@@ -55,6 +55,9 @@
         $this->importNamespaces((array) $core);
         $vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
         $this->addClasses((array) $vendor, VENDORPATH);
+      }
+      if (isset($this->global_classes['Cache'])) {
+        class_alias($this->global_classes['Cache'] . '\\' . 'Cache', '\\' . 'Cache');
       }
     }
     /**
@@ -113,6 +116,9 @@
      * @return bool
      */
     protected function includeFile($filepath, $required_class) {
+      static $count;
+      $count++;
+      var_dump('<br>'.$count);
       if (empty($filepath)) {
         return false;
       }
@@ -127,7 +133,6 @@
       }
       return true;
     }
-
     /**
      * @param $requested_class
      *
@@ -136,22 +141,24 @@
      * @return bool|string
      */
     public function load($requested_class) {
-      if (isset($this->loaded[$requested_class])) {
-          if ($this->includeFile($this->loaded[$requested_class], $requested_class)) {
-            if (isset($this->global_classes[$requested_class])) {
-              class_alias($this->global_classes[$requested_class] . '\\' . $requested_class, '\\' . $requested_class);
-            }
-          }
-      }
       $classname = ltrim($requested_class, '\\');
       $namespace = '';
       if ($lastNsPos = strripos($classname, '\\')) {
         $namespace = substr($classname, 0, $lastNsPos);
         $classname = substr($classname, $lastNsPos + 1);
       }
-      var_dump('<br>', class_exists($requested_class,false),class_exists($classname,false));
-      if (isset($this->global_classes[$classname]) )
-      var_dump(class_exists($this->global_classes[$classname].'\\'.$classname,false));
+      var_dump('<br>'.$requested_class, class_exists($requested_class, false), class_exists($classname, false));
+      if (isset($this->global_classes[$classname])) {
+        var_dump(class_exists($this->global_classes[$classname] . '\\' . $classname, false));
+      }
+      if (isset($this->loaded[$requested_class])) {
+        if ($this->includeFile($this->loaded[$requested_class], $requested_class)) {
+          if (isset($this->global_classes[$requested_class])) {
+            class_alias($this->global_classes[$requested_class] . '\\' . $requested_class, '\\' . $requested_class);
+          }
+        }
+      }
+      if (class_exists($requested_class,false))return;
       $alias      = false;
       $class_file = str_replace('_', DS, $classname);
       if (isset($this->global_classes[$classname]) && (!$namespace || $this->global_classes[$classname] == $namespace)) {
