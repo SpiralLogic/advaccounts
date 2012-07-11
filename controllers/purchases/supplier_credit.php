@@ -44,7 +44,7 @@
       if (isset($_POST['InvGRNAll'])) {
         $this->invGrnAll();
       }
-      if (Input::post('ponum')) {
+      if (Input::post('PONumber')) {
         $this->Ajax->_activate('grn_items');
         $this->Ajax->_activate('inv_tot');
       }
@@ -276,7 +276,7 @@ JS;
     protected function cancelCredit() {
       $this->trans->clear_items();
       unset($_SESSION['delivery_po']);
-      unset($_POST['ponum']);
+      unset($_POST['PONumber']);
       unset($_POST['supplier_id']);
       unset($_POST['supplier']);
       Creditor_Trans::killInstance();

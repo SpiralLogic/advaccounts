@@ -17,13 +17,12 @@
     protected $supplier_id;
     protected function before() {
       $this->JS->_openWindow(900, 500);
-
       $this->trans             = Creditor_Trans::i();
       $this->trans->is_invoice = true;
       if (isset($_POST['ClearFields'])) {
         $this->clearFields();
       }
-      if (isset($_POST['Cancel']) ) {
+      if (isset($_POST['Cancel'])) {
         $this->cancelInvoice();
       }
       $this->supplier_id = $this->trans->supplier_id ? : Input::getPost('supplier_id', Input::NUMERIC, null);
@@ -40,7 +39,7 @@
       if (isset($_POST['InvGRNAll'])) {
         $this->invGrnAll();
       }
-      if (Input::post('ponum')) {
+      if (Input::post('PONumber')) {
         $this->Ajax->_activate('grn_items');
         $this->Ajax->_activate('inv_tot');
       }
@@ -343,7 +342,7 @@
     protected function cancelInvoice() {
       $this->trans->clear_items();
       unset($_SESSION['delivery_po']);
-      unset($_POST['ponum']);
+      unset($_POST['PONumber']);
       unset($_POST['supplier_id']);
       unset($_POST['supplier']);
       Creditor_Trans::killInstance();

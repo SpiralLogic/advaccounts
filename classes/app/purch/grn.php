@@ -155,7 +155,7 @@
     public static function get_items($grn_batch_id = 0, $supplier_id = "", $outstanding_only = false, $is_invoiced_only = false, $invoice_no = 0, $begin = "", $end = "") {
       $sql   = "SELECT  grn_batch.*,  grn_items.*,  purch_order_details.unit_price,  purch_order_details.std_cost_unit, units
       FROM  grn_batch,  grn_items,  purch_order_details,  stock_master ";
-      $ponum = Input::post('ponum');
+      $ponum = Input::post('PONumber');
       if ($ponum) {
         $sql .= ", purch_orders ";
       }
@@ -164,7 +164,7 @@
       }
       $sql .= " WHERE  grn_items.grn_batch_id= grn_batch.id AND  grn_items.po_detail_item= purch_order_details.po_detail_item";
       if ($ponum) {
-        $sql .= " AND purch_orders.order_no=purch_order_details.order_no AND purch_orders.reference LIKE " . DB::quote('%' . $ponum . '%');
+        $sql .= " AND purch_orders.order_no=purch_order_details.order_no AND (purch_orders.reference LIKE " . DB::quote('%' . $ponum . '%'). " OR purch_orders.reference LIKE " . DB::quote('%' . $ponum . '%').")";
       }
       if ($invoice_no != 0) {
         $sql .= " AND  creditor_trans_details.creditor_trans_type=" . ST_SUPPINVOICE . " AND  creditor_trans_details.creditor_trans_no=$invoice_no AND  grn_items.id= creditor_trans_details.grn_item_id";
@@ -443,7 +443,7 @@
         Row::start();
         /*       Forms::dateCells(_("Received between"), 'receive_begin', "", null, -30, 0, 0, "class='vmiddle'");
  Forms::dateCells(_("and"), 'receive_end', '', null, 1, 0, 0, "class='vmiddle'");*/
-        Forms::textCells(_("PO #"), "ponum");
+        Forms::textCells(_("PO #"), "PONumber");
         Forms::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), true);
         Row::end();
       }

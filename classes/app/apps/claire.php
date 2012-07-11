@@ -16,7 +16,7 @@
   class Claire extends Application {
     public $name = 'Claire';
     public $help_context = "&Claire";
-    public $enabled = false;
+    public $enabled = true;
     /**
 
      */

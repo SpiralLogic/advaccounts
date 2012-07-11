@@ -1256,7 +1256,11 @@ body.lite {
   color:       red;
   font-weight: bold;
 }
-
+.redborder {
+  border-width: 2px;
+  border-style: solid;
+  border-color:red;
+}
 .settledbg {
   background-color: #0b0;
 }

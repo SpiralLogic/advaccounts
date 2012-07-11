@@ -1,6 +1,5 @@
 <?php
   namespace ADV\App;
-
   /**
    * PHP version 5.4
    * @category  PHP
@@ -10,6 +9,8 @@
    * @link      http://www.advancedgroup.com.au
    **/
   use Orders;
+  use Form;
+  use ADV\Core\View;
   use ADV\Core\Errors;
   use Sales_Point;
   use Sales_Order;
@@ -30,7 +31,9 @@
   use Forms;
   use ADV\Core\Input;
 
-  class SalesOrder extends Controller\Base {
+  class SalesOrder extends Controller\Base
+  {
+
     protected $addTitles = array(
       ST_SALESQUOTE  => "New Sales Quotation Entry", //
       ST_SALESINVOICE=> "Direct Sales Invoice", //
@@ -140,23 +143,19 @@
       echo "</td></tr>";
       Table::end(1);
       Display::div_start('controls', 'items_table');
-      if ($this->order->trans_no > 0 && $this->User->hasAccess(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())
-      ) {
-        Forms::submitConfirm('_action', Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
-        Forms::submitCenterBegin('_action', Orders::DELETE_ORDER, $deleteorder); //, _('Cancels document entry or removes sales order when editing an old document')
-        Forms::submitCenterInsert('_action', Orders::CANCEL_CHANGES, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
-      } else {
-        Forms::submitCenterBegin('_action', Orders::CANCEL_CHANGES, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
+      $buttons = [];
+      if ($this->order->trans_no > 0 && $this->User->hasAccess(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())) {
+        $buttons[] = Form::submit('_action', Orders::DELETE_ORDER, false, _('You are about to void this Document.\nDo you want to continue?'));
       }
+      $buttons[] = Form::submit('_action', Orders::DELETE_ORDER, false, $deleteorder); //, _('Cancels document entry or removes sales order when editing an old document')
+      $buttons[] = Form::submit('_action', Orders::CANCEL_CHANGES, false, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
       if (count($this->order->line_items)) {
-        if ($this->order->trans_no > 0) {
-          Forms::submitCenterEnd('_action', Orders::PROCESS_ORDER, $corder, 'default'); //_('Validate changes and update document'),
-        } else {
-          Forms::submitCenterEnd('_action', Orders::PROCESS_ORDER, $porder, 'default'); //_('Check entered data and save document'),
-        }
-      } else {
-        echo '</div>';
+        $type      = ($this->order->trans_no > 0) ? $corder : $porder; //_('Check entered data and save document')
+        $buttons[] = Form::submit('_action', Orders::PROCESS_ORDER, false, $type, 'default');
       }
+      $view = new View('libraries/forms');
+      $view->set('buttons', $buttons);
+      $view->render();
       Display::div_end();
       Forms::end();
       Debtor::addEditDialog();

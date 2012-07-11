@@ -25,6 +25,7 @@
   Table::header($th);
   $total         = $k = 0;
   $overdue_items = false;
+  $still_to_receive=false;
   foreach ($order->line_items as $stock_item) {
     $line_total = $stock_item->quantity * $stock_item->price * (1 - $stock_item->discount);
     // if overdue and outstanding quantities, then highlight as so
@@ -34,6 +35,7 @@
       $overdue_items = true;
     } else {
     }
+    if ($stock_item->quantity-$stock_item->qty_received>0)$still_to_receive=true;
     Cell::label($stock_item->stock_id);
     Cell::label($stock_item->description);
     $dec = Item::qty_dec($stock_item->stock_id);
@@ -95,6 +97,7 @@
   }
   Display::submenu_print(_("Print This Order"), ST_PURCHORDER, $_GET['trans_no'], 'prtopt');
   Display::submenu_option(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrder=" . $_GET['trans_no']);
+  if ($still_to_receive) Display::link_button("/purchases/po_receive_items.php", _("&Receive Items on this PO"), "PONumber=". $_GET['trans_no']);
   Page::end(true);
 
 

@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::openWindow(800, 500);
   JS::footerFile('/js/reconcile.js');
   Page::start(_($help_context = "Reconcile Bank Account"), SA_RECONCILE);
@@ -73,7 +72,6 @@
   Forms::buttonCell("reset", "reset", "reset");
   Row::end();
   Table::end();
-
   $result = GL_Account::get_max_reconciled(Input::post('reconcile_date'), $_POST['bank_account']);
   if ($row = DB::fetch($result)) {
     $_POST["reconciled"] = Num::priceFormat($row["end_balance"] - $row["beg_balance"]);
@@ -121,7 +119,6 @@
   Cell::amount($difference, false, '', "difference");
   Row::end();
   Table::end();
-
   Display::div_end();
   echo "<hr>";
   $_POST['bank_account'] = Input::post('bank_account', Input::NUMERIC, '');
@@ -131,8 +128,12 @@
   $cols         = array(
     _("Type")        => array('fun' => 'systype_name', 'ord' => ''), //
     _("#")           => array('fun' => 'trans_view', 'ord' => ''), //
-    _("Reference"), //
-    _("Date")        => array('date', 'ord' => ''), //
+    _("Reference")   => array(
+      'fun'=> function($row) {
+        return substr($row['ref'], 0, 6);
+      }
+    ), //
+    _("Date")        => array('type'=> 'date', 'ord' => ''), //
     _("Debit")       => array('align' => 'right', 'fun' => 'fmt_debit', 'ord' => ''), //
     _("Credit")      => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit', 'ord' => ''), //
     _("Person/Item") => array('fun' => 'fmt_person'), //
@@ -148,13 +149,12 @@
   Forms::end();
   $js = '$(function() { $("th:nth-child(9)").click(function() { jQuery("#_trans_tbl_span").find("input").value("");})})';
   JS::onload($js);
-
+  JS::addLive("$('.grid tr').each(function(){var ischecked = $(this).children().find('input:checkbox').prop('checked'); if (ischecked) $(this).css('background','#33CCFF')})");
   Page::end();
   /**
    * @return bool
    */
-  function check_date()
-  {
+  function check_date() {
     if (!Dates::isDate(Input::post('reconcile_date'))) {
       Event::error(_("Invalid reconcile date format"));
       JS::setFocus('reconcile_date');
@@ -168,12 +168,10 @@
    *
    * @return string
    */
-  function rec_checkbox($row)
-  {
+  function rec_checkbox($row) {
     $name   = "rec_" . $row['id'];
     $hidden = 'last[' . $row['id'] . ']';
     $value  = $row['reconciled'] != '';
-
     return Forms::checkbox(null, $name, $value, true, _('Reconcile this transaction')) . Forms::hidden($hidden, $value, false);
   }
 
@@ -182,8 +180,7 @@
    *
    * @return string
    */
-  function ungroup($row)
-  {
+  function ungroup($row) {
     if ($row['type'] != 15) {
       return '';
     }
@@ -197,8 +194,7 @@
    *
    * @return mixed
    */
-  function systype_name($dummy, $type)
-  {
+  function systype_name($dummy, $type) {
     global $systypes_array;
     return $systypes_array[$type];
   }
@@ -208,8 +204,7 @@
    *
    * @return null|string
    */
-  function trans_view($trans)
-  {
+  function trans_view($trans) {
     return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
   }
 
@@ -218,8 +213,7 @@
    *
    * @return string
    */
-  function gl_view($row)
-  {
+  function gl_view($row) {
     return ($row['type'] != 15) ? GL_UI::view($row["type"], $row["trans_no"]) : '';
   }
 
@@ -228,10 +222,12 @@
    *
    * @return int|string
    */
-  function fmt_debit($row)
-  {
+  function fmt_debit($row) {
     $value = $row["amount"];
-    return $value >= 0 ? Num::priceFormat($value) : '';
+    if ($value < 0) {
+      return '';
+    }
+    return '<span class="bold">' . Num::priceFormat($value) . '</span>';
   }
 
   /**
@@ -239,10 +235,12 @@
    *
    * @return int|string
    */
-  function fmt_credit($row)
-  {
+  function fmt_credit($row) {
     $value = -$row["amount"];
-    return $value > 0 ? Num::priceFormat($value) : '';
+    if ($value <= 0) {
+      return '';
+    }
+    return '<span class="bold">' . Num::priceFormat($value) . '</span>';
   }
 
   /**
@@ -250,8 +248,7 @@
    *
    * @return string
    */
-  function fmt_person($row)
-  {
+  function fmt_person($row) {
     if ($row['type'] == ST_BANKTRANSFER) {
       return DB_Comments::get_string(ST_BANKTRANSFER, $row['trans_no']);
     } elseif ($row['type'] == ST_GROUPDEPOSIT) {
@@ -275,8 +272,7 @@
   /**
 
    */
-  function update_data()
-  {
+  function update_data() {
     global $update_pager;
     unset($_POST["beg_balance"], $_POST["end_balance"]);
     Ajax::activate('summary');
@@ -290,8 +286,7 @@
    *
    * @return bool
    */
-  function change_tpl_flag($reconcile_id)
-  {
+  function change_tpl_flag($reconcile_id) {
     if (!check_date() && Forms::hasPost("rec_" . $reconcile_id)) // temporary fix
     {
       return false;
@@ -307,6 +302,5 @@
     Ajax::activate('difference');
     Ajax::activate('summary');
     JS::setFocus($reconcile_id);
-
     return true;
   }

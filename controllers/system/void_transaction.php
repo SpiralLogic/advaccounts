@@ -146,7 +146,7 @@
         } else {
           $view_str = GL_UI::trans_view($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
         }
-        Event::warning($view_str);
+        echo "<div class='center pad5'><span class='redborder  bold font15 pad10'>$view_str</span></div>";
         Display::br();
         Forms::submitCenterBegin('ConfirmVoiding', _("Proceed"), '', true);
         Forms::submitCenterEnd('CancelVoiding', _("Cancel"), '', 'cancel');

@@ -12,7 +12,9 @@
    * @param string $action
    * @param string $name
    */
-  class Forms {
+  class Forms
+  {
+
     /**
      * @static
      *
@@ -21,21 +23,17 @@
      * @param string $name
      */
     public static function start($multi = false, $action = "", $name = "") {
-      $view           = new \ADV\Core\View('libraries/forms');
-      $view['action'] = $action ? : $_SERVER['DOCUMENT_URI'];
-      $view['name']   = $name;
-      $view['multi']  = $multi;
-      $view->render();
+      $multi = ($multi) ? "enctype='multipart/form-data'" : '';
+      $name  = $name ? "name='$name'" : '';
+      echo "<form $multi method='post' action='$action'  id='$name'>";
     }
     /**
      * @param int $breaks
      */
     public static function end($breaks = 0) {
-      if ($breaks) {
-        Display::br($breaks);
-      }
-      echo "<input type=\"hidden\" name=\"_focus\" value=\"" . Input::post('_focus') . "\">\n";
-      echo "</form>\n";
+      str_repeat('<br>', $breaks);
+      $focus = e(Input::post('_focus'));
+      echo "<input type='hidden' name='_focus' value='$focus'></form>";
     }
     /**
      * Seek for _POST variable with $prefix.
@@ -76,16 +74,13 @@
      */
     public static function hidden($name, $value = null, $echo = true) {
       global $dic;
-      if ($value === null) {
-        $value = Input::post($name);
-      }
-      $ret = "<input type=\"hidden\" id=\"$name\" name=\"$name\" value=\"$value\">";
+      $value =e($value ?:Input::post($name));
       $dic['Ajax']->_addUpdate($name, $name, $value);
-      if ($echo) {
-        echo $ret . "\n";
-      } else {
+      $ret = "<input type='hidden' id='$name' name='$name' value='$value'>";
+      if (!$echo) {
         return $ret;
       }
+      echo $ret;
     }
     /**
      * Universal sql combo generator
@@ -790,8 +785,8 @@
       $items['0'] = strlen($name_no) ? $name_no : _("No");
       $items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
       return Forms::arraySelect($name, $selected_id, $items, array(
-                                                                  'select_submit' => $submit_on_change, 'async' => false
-                                                             )); // FIX?
+        'select_submit' => $submit_on_change, 'async' => false
+      )); // FIX?
     }
     /**
      * @param        $label
@@ -828,8 +823,8 @@
         $items[$i] = "$i";
       }
       return Forms::arraySelect($name, $selected, $items, array(
-                                                               'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
-                                                          ));
+        'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
+      ));
     }
     /**
      * @param      $label

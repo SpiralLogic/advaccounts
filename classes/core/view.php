@@ -52,6 +52,7 @@
     {
       $value                    = $escape ? e($value) : $value;
       $this->_viewdata[$offset] = $value;
+      return $this;
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>

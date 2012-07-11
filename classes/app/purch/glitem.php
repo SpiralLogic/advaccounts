@@ -199,7 +199,7 @@ all the info to do the necessary entries without looking up ie additional querie
           echo "&nbsp;" . $qid['base_desc'] . ":&nbsp;";
           $amount = Validation::input_num('total_amount', $qid['base_amount']);
           $dec    = User::price_dec();
-          echo "<input class='amount' type='text' name='total_amount' maxlength='12'  value='$amount'>&nbsp;";
+          echo "<input class='amount' type='text' name='total_amount' data-dec='2' maxlength='12'  value='$amount'>&nbsp;";
           Forms::submit('go', _("Go"), true, false, true);
           echo "</div>";
         }

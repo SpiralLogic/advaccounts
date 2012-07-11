@@ -101,7 +101,7 @@
      * @param null   $trigger
      * @param bool   $non_ajax
      */
-    public static function div_start($id = '', $trigger = null, $non_ajax = false)
+    public static function div_start($id = '', $trigger = null, $non_ajax = false,$echo=true)
     {
       global $ajax_divs;
       if ($non_ajax) { // div for non-ajax elements
