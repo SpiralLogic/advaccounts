@@ -73,20 +73,19 @@
      * @var Security
      */
     protected $JS = null;
+    /** @var Dates */
+    protected $Dates = null;
     protected $security;
+    public $hide_back_link;
     /**
      * @param $hide_back_link
      */
     public function end_page($hide_back_link) {
+      $this->hide_back_link = $hide_back_link;
       if ($this->frame) {
-        $hide_back_link = true;
-        $this->header   = false;
+        $this->hide_back_link = true;
+        $this->header         = false;
       }
-      if ((!$this->isIndex && !$hide_back_link) && method_exists('Display', 'link_back')) {
-        Display::link_back(true, !$this->menu);
-      }
-      echo "<!-- end page body div -->";
-      Display::div_end(); // end of _page_body section
       $this->footer();
     }
     /**
@@ -121,11 +120,12 @@
      * @param      $title
      * @param bool $index
      */
-    public function __construct(User $user, Config $config, Ajax $ajax, JS $js) {
+    public function __construct(User $user, Config $config, Ajax $ajax, JS $js,Dates $dates) {
       $this->User   = $user ? : User::i();
       $this->Config = $config ? : Config::i();
       $this->Ajax   = $ajax ? : Ajax::i();
       $this->JS     = $js ? : JS::i();
+      $this->Dates     = $dates ? : Dates::i();
       $this->frame  = isset($_GET['frame']);
     }
     /**
@@ -161,8 +161,7 @@
         exit;
       }
       if ($this->title && !$this->isIndex && !$this->frame && !IS_JSON_REQUEST) {
-        echo "<div class='titletext'>$this->title" . ($this->User->_hints() ? "<span id='hints' class='floatright'
-    										style='display:none'></span>" : '') . "</div>";
+        echo "<div class='titletext'>$this->title" . ($this->User->_hints() ? "<span id='hints' class='floatright' style='display:none'></span>" : '') . "</div>";
       }
       if (!IS_JSON_REQUEST) {
         Display::div_start('_page_body');
@@ -240,33 +239,16 @@
                                                                                             ))) . '&ctxhelp=1&lang=' . $country;
     }
     /**
-     * @return mixed
-     */
-    protected function footer() {
-      $validate = array();
-      $footer   = $this->menu_footer();
-      $footer->set('beforescripts', "_focus = '" . Input::post('_focus') . "';_validate = " . $this->Ajax->php2js($validate) . ";");
-      $this->User->_add_js_data();
-      if ($this->header && $this->menu) {
-        $footer->set('sidemenu', (new Sidemenu($this->User))->render());
-      } else {
-        $footer->set('sidemenu', '');
-      }
-      $footer->set('js', $this->JS->_render(true));
-      if (!AJAX_REFERRER) {
-        $footer->set('messages', Messages::show());
-      } else {
-        $footer->set('messages', '');
-      }
-      $footer->render();
-    }
-    /**
 
      */
     protected function menu_footer() {
-      $footer              = new View('footer');
-      $footer['today']     = Dates::today();
-      $footer['now']       = Dates::now();
+      $footer             = new View('footer');
+      $footer['backlink'] = false;
+      if ((!$this->isIndex && !$this->hide_back_link)) {
+        $footer['backlink'] = $this->menu ? _("Back") : _("Close");
+      }
+      $footer['today']     = $this->Dates->_today();
+      $footer['now']       = $this->Dates->_now();
       $footer['mem']       = Files::convertSize(memory_get_usage(true)) . '/' . Files::convertSize(memory_get_peak_usage(true));
       $footer['load_time'] = Dates::getReadableTime(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
       $footer['user']      = $this->User->username;
@@ -274,11 +256,24 @@
       return $footer;
     }
     /**
+     * @return mixed
+     */
+    protected function footer() {
+      $validate = array();
+      $footer   = $this->menu_footer();
+      $footer->set('beforescripts', "_focus = '" . Input::post('_focus') . "';_validate = " . $this->Ajax->php2js($validate) . ";");
+      $this->User->_add_js_data();
+      $footer->set('sidemenu', ($this->header && $this->menu ? (new Sidemenu($this->User))->render() : ''));
+      $footer->set('js', $this->JS->_render(true));
+      $footer->set('messages', (!AJAX_REFERRER ? Messages::show() : ''));
+      $footer->render();
+    }
+    /**
 
      */
     protected function renderCSS() {
-      $this->css += class_exists('Config', false) ? $this->Config->_get('assets.css') : array('default.css');
-      $path = DS . "themes" . DS . $this->theme . DS;
+      $this->css += $this->Config->_get('assets.css') ;
+      $path = THEME_PATH. $this->theme . DS;
       $css  = implode(',', $this->css);
       return [$path . $css];
     }
@@ -304,7 +299,7 @@
      */
     public static function start($title, $security = SA_OPEN, $no_menu = false, $isIndex = false) {
       if (static::$i === null) {
-        static::$i = new static(User::i(), Config::i(), Ajax::i(), JS::i());
+        static::$i = new static(User::i(), Config::i(), Ajax::i(), JS::i(),Dates::i());
       }
       static::$i->title    = $title;
       static::$i->isIndex  = $isIndex;
@@ -345,7 +340,6 @@
       return array('', $selected_id);
     }
     public static function footer_exit() {
-      Display::br(2);
       static::$i->end_page(true);
       exit;
     }

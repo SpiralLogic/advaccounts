@@ -31,9 +31,7 @@
   use Forms;
   use ADV\Core\Input;
 
-  class SalesOrder extends Controller\Base
-  {
-
+  class SalesOrder extends Controller\Base {
     protected $addTitles = array(
       ST_SALESQUOTE  => "New Sales Quotation Entry", //
       ST_SALESINVOICE=> "Direct Sales Invoice", //
@@ -145,9 +143,9 @@
       Display::div_start('controls', 'items_table');
       $buttons = [];
       if ($this->order->trans_no > 0 && $this->User->hasAccess(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())) {
-        $buttons[] = Form::submit('_action', Orders::DELETE_ORDER, false, _('You are about to void this Document.\nDo you want to continue?'));
+        Form::submitConfirm('_action', Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
+        $buttons[] = Form::submit('_action', Orders::DELETE_ORDER, false, $deleteorder); //, _('Cancels document entry or removes sales order when editing an old document')
       }
-      $buttons[] = Form::submit('_action', Orders::DELETE_ORDER, false, $deleteorder); //, _('Cancels document entry or removes sales order when editing an old document')
       $buttons[] = Form::submit('_action', Orders::CANCEL_CHANGES, false, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
       if (count($this->order->line_items)) {
         $type      = ($this->order->trans_no > 0) ? $corder : $porder; //_('Check entered data and save document')

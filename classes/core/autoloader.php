@@ -11,15 +11,12 @@
   /**
 
    */
-  class Autoload_Exception extends \Exception
-  {
+  class Autoload_Exception extends \Exception {
   }
-
   /**
 
    */
-  class Autoloader
-  {
+  class Autoloader {
     /**
      * @var int
      */
@@ -40,15 +37,13 @@
     /**
 
      */
-    public function __construct()
-    {
+    public function __construct() {
       spl_autoload_register(array($this, 'load'), true);
     }
     /**
      * @param Cache $cache
      */
-    public function registerCache(Cache $cache)
-    {
+    public function registerCache(Cache $cache) {
       $this->Cache   = $cache;
       $cachedClasses = $cache->get('autoload', array());
       if ($cachedClasses) {
@@ -61,14 +56,12 @@
         $vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
         $this->addClasses((array) $vendor, VENDORPATH);
       }
-      spl_autoload_register(array($this, 'loadFromCache'), true, true);
     }
     /**
      * @param array $classes
      * @param       $type
      */
-    protected function addClasses(array $classes, $type)
-    {
+    protected function addClasses(array $classes, $type) {
       foreach ($classes as $dir => $class) {
         if (!is_string($dir)) {
           $dir = '';
@@ -80,15 +73,13 @@
      * @param $namespace
      * @param $classes
      */
-    protected function importNamespace($namespace, $classes)
-    {
+    protected function importNamespace($namespace, $classes) {
       $this->global_classes = array_merge($this->global_classes, array_fill_keys($classes, $namespace));
     }
     /**
      * @param array $namespaces
      */
-    protected function importNamespaces(array $namespaces)
-    {
+    protected function importNamespaces(array $namespaces) {
       foreach ($namespaces as $namespace => $classes) {
         $this->importNamespace($namespace, $classes);
       }
@@ -103,8 +94,7 @@
      * @internal param $path
      * @return string
      */
-    protected function tryPath($paths, $required_class)
-    {
+    protected function tryPath($paths, $required_class) {
       $paths = (array) $paths;
       while ($path = array_shift($paths)) {
         $filepath = realpath($path);
@@ -112,7 +102,6 @@
           return $this->includeFile($filepath, $required_class);
         }
       }
-
       return false;
     }
     /**
@@ -123,13 +112,12 @@
      * @internal param $class
      * @return bool
      */
-    protected function includeFile($filepath, $required_class)
-    {
+    protected function includeFile($filepath, $required_class) {
       if (empty($filepath)) {
-        throw new Autoload_Exception('File for class ' . $required_class . ' cannot be found!');
+        return false;
       }
       if (!include_once($filepath)) {
-        throw new Autoload_Exception('File for class ' . $required_class . ' cannot be	loaded from : ' . $filepath);
+        return false;
       }
       if (!isset($this->loaded[$required_class])) {
         $this->loaded[$required_class] = $filepath;
@@ -137,30 +125,9 @@
           Event::registerShutdown($this);
         }
       }
-
       return true;
     }
-    /**
-     * @param $required_class
-     *
-     * @return bool|string
-     */
-    public function loadFromCache($required_class)
-    {
-      $result = false;
-      if (isset($this->loaded[$required_class])) {
-        try {
-          $result = $this->includeFile($this->loaded[$required_class], $required_class);
-        } catch (Autoload_Exception $e) {
-          Event::registerShutdown($this);
-        }
-        if ($result && isset($this->global_classes[$required_class])) {
-          class_alias($this->global_classes[$required_class] . '\\' . $required_class, '\\' . $required_class);
-        }
-      }
 
-      return $result;
-    }
     /**
      * @param $requested_class
      *
@@ -168,14 +135,23 @@
      * @internal param $required_class
      * @return bool|string
      */
-    public function load($requested_class)
-    {
+    public function load($requested_class) {
+      if (isset($this->loaded[$requested_class])) {
+          if ($this->includeFile($this->loaded[$requested_class], $requested_class)) {
+            if (isset($this->global_classes[$requested_class])) {
+              class_alias($this->global_classes[$requested_class] . '\\' . $requested_class, '\\' . $requested_class);
+            }
+          }
+      }
       $classname = ltrim($requested_class, '\\');
       $namespace = '';
       if ($lastNsPos = strripos($classname, '\\')) {
         $namespace = substr($classname, 0, $lastNsPos);
         $classname = substr($classname, $lastNsPos + 1);
       }
+      var_dump('<br>', class_exists($requested_class,false),class_exists($classname,false));
+      if (isset($this->global_classes[$classname]) )
+      var_dump(class_exists($this->global_classes[$classname].'\\'.$classname,false));
       $alias      = false;
       $class_file = str_replace('_', DS, $classname);
       if (isset($this->global_classes[$classname]) && (!$namespace || $this->global_classes[$classname] == $namespace)) {
@@ -202,11 +178,9 @@
         $this->loaded[$classname] = $this->loaded[$requested_class];
         class_alias($fullclass, $classname);
       }
-
       return $result;
     }
-    public function _shutdown()
-    {
+    public function _shutdown() {
       if ($this->Cache) {
         $this->Cache->set('autoload', array(
                                            'classes'        => $this->classes, //

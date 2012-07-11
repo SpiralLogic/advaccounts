@@ -1,3 +1,10 @@
+<? if ($backlink): ?>
+<div class='center margin20'>
+  <a class='button' href='javascript:(window.history.length === 1) ? window.close() : window.history.go(-1);'><?=$backlink?></a>
+</div>
+<? endif; ?>
+<!-- end page body div -->
+<?=Display::div_end(true)?>
 <!-- end wrapper div-->
 </div>
 <? if ($footer): ?>
