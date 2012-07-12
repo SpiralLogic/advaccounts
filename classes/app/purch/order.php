@@ -688,7 +688,7 @@
         Cell::labels(_("Order Currency"), $this->curr_code, "class='label'");
       }
       if (!$is_self) {
-        Cell::labels(_("Purchase Order"), GL_UI::trans_view(ST_PURCHORDER, $this->order_no), "class='label'");
+        Cell::labels(_("Purchase Order"), GL_UI::viewTrans(ST_PURCHORDER, $this->order_no), "class='label'");
       }
       Row::end();
       Row::start();

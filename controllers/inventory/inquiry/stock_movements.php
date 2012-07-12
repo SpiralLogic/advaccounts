@@ -78,8 +78,8 @@
     }
     $after_qty += $myrow["qty"];
     Cell::label($type_name);
-    Cell::label(GL_UI::trans_view($myrow["type"], $myrow["trans_no"]));
-    Cell::label(GL_UI::trans_view($myrow["type"], $myrow["trans_no"], $myrow["reference"]));
+    Cell::label(GL_UI::viewTrans($myrow["type"], $myrow["trans_no"]));
+    Cell::label(GL_UI::viewTrans($myrow["type"], $myrow["trans_no"], $myrow["reference"]));
     Cell::label($trandate);
     $person     = $myrow["person_id"];
     $gl_posting = "";

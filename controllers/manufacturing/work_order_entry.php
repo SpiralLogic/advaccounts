@@ -21,7 +21,7 @@
     $id    = $_GET[ADDED_ID];
     $stype = ST_WORKORDER;
     Event::success(_("The work order been added."));
-    Display::note(GL_UI::trans_view($stype, $id, _("View this Work Order")));
+    Display::note(GL_UI::viewTrans($stype, $id, _("View this Work Order")));
     if ($_GET['type'] != WO_ADVANCED) {
       $ar = array(
         'PARAM_0' => $id, 'PARAM_1' => $id, 'PARAM_2' => 0

@@ -54,7 +54,7 @@
    *
    * @return bool
    */
-  function check_overdue($row)
+  function checkOverdue($row)
   {
     return (!$row["closed"] && Dates::differenceBetween(Dates::today(), Dates::sqlToDate($row["required_by"]), "d") > 0);
   }
@@ -67,7 +67,7 @@
    */
   function view_link($dummy, $order_no)
   {
-    return GL_UI::trans_view(ST_WORKORDER, $order_no);
+    return GL_UI::viewTrans(ST_WORKORDER, $order_no);
   }
 
   /**
@@ -240,10 +240,10 @@
       'insert' => true, 'fun' => 'view_gl_link'
     )
   );
-  $table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
-  $table->set_marker('check_overdue', _("Marked orders are overdue."));
+  $table = db_pager::new_db_pager('orders_tbl', $sql, $cols);
+  $table->set_marker('checkOverdue', _("Marked orders are overdue."));
   $table->width = "90%";
-  DB_Pager::display($table);
+  $table->display($table);
   Forms::end();
   Page::end();
 

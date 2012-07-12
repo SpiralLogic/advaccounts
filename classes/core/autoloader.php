@@ -11,12 +11,17 @@
   /**
 
    */
-  class Autoload_Exception extends \Exception {
+  class Autoload_Exception extends \Exception
+  {
+
   }
+
   /**
 
    */
-  class Autoloader {
+  class Autoloader
+  {
+
     /**
      * @var int
      */
@@ -56,6 +61,7 @@
         $vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
         $this->addClasses((array) $vendor, VENDORPATH);
       }
+
       if (isset($this->global_classes['Cache'])) {
         class_alias($this->global_classes['Cache'] . '\\' . 'Cache', '\\' . 'Cache');
       }
@@ -146,12 +152,14 @@
       }
       if (isset($this->loaded[$requested_class])) {
         if ($this->includeFile($this->loaded[$requested_class], $requested_class)) {
-          if (isset($this->global_classes[$requested_class])) {
-            class_alias($this->global_classes[$requested_class] . '\\' . $requested_class, '\\' . $requested_class);
+          if (isset($this->global_classes[$classname]) && !class_exists('\\' . $classname, false)) {
+            class_alias($this->global_classes[$classname] . '\\' . $classname, '\\' . $classname);
           }
         }
       }
-      if (class_exists($requested_class,false))return;
+      if (class_exists($requested_class, false)) {
+        return;
+      }
       $alias      = false;
       $class_file = str_replace('_', DS, $classname);
       if (isset($this->global_classes[$classname]) && (!$namespace || $this->global_classes[$classname] == $namespace)) {
@@ -183,10 +191,10 @@
     public function _shutdown() {
       if ($this->Cache) {
         $this->Cache->set('autoload', array(
-                                           'classes'        => $this->classes, //
-                                           'global_classes' => $this->global_classes, //
-                                           'paths'          => $this->loaded
-                                      ));
+          'classes'        => $this->classes, //
+          'global_classes' => $this->global_classes, //
+          'paths'          => $this->loaded
+        ));
       }
     }
   }

@@ -10,6 +10,10 @@
   namespace ADV\Core;
   /**
    * @method priceFormat($number)
+   * @method format($number, $decimals = 0)
+   * @method percentFormat($number)
+   * @method round($number, $decimals = 0)
+   *
    */
   class Num
   {

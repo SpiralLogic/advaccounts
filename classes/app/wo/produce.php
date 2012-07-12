@@ -141,7 +141,7 @@
         $total_qty = 0;
         while ($myrow = DB::fetch($result)) {
           $total_qty += $myrow['quantity'];
-          Cell::label(GL_UI::trans_view(29, $myrow["id"]));
+          Cell::label(GL_UI::viewTrans(29, $myrow["id"]));
           Cell::label($myrow['reference']);
           Cell::label(Dates::sqlToDate($myrow["date_"]));
           Cell::qty($myrow['quantity'], false, Item::qty_dec($myrow['reference']));

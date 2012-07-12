@@ -28,7 +28,7 @@
     Row::start();
     Cell::label($myrow["id"]);
     Cell::label($myrow["reference"]);
-    Cell::label(GL_UI::trans_view(ST_WORKORDER, $myrow["workorder_id"]));
+    Cell::label(GL_UI::viewTrans(ST_WORKORDER, $myrow["workorder_id"]));
     Cell::label($myrow["stock_id"] . " - " . $myrow["StockDescription"]);
     Cell::qty($myrow["quantity"], false, Item::qty_dec($myrow["stock_id"]));
     Cell::label(Dates::sqlToDate($myrow["date_"]));

@@ -243,7 +243,7 @@
      *
      * @return mixed
      */
-    public static function systype_name($dummy, $type)
+    public static function sysTypeName($dummy, $type)
     {
       global $systypes_array;
 
@@ -256,9 +256,9 @@
      *
      * @return null|string
      */
-    public static function trans_view($trans)
+    public static function viewTrans($trans)
     {
-      return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
+      return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
     }
     /**
      * @static

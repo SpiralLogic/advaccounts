@@ -27,7 +27,7 @@
    */
   function view_link($trans)
   {
-    return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
+    return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
   }
 
   /**
@@ -35,7 +35,7 @@
    *
    * @return string
    */
-  function prt_link($row)
+  function printLink($row)
   {
     if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND && $row['type'] != ST_BANKDEPOSIT
     ) // customer payment or bank deposit printout not defined yet.
@@ -49,7 +49,7 @@
    *
    * @return string
    */
-  function gl_view($row)
+  function viewGl($row)
   {
     return GL_UI::view($row["type"], $row["trans_no"]);
   }
@@ -120,9 +120,9 @@
         _("#"), _("Reference"), _("View") => array(
           'insert' => true, 'fun' => 'view_link'
         ), _("Print")                     => array(
-          'insert' => true, 'fun' => 'prt_link'
+          'insert' => true, 'fun' => 'printLink'
         ), _("GL")                        => array(
-          'insert' => true, 'fun' => 'gl_view'
+          'insert' => true, 'fun' => 'viewGl'
         )
       );
       if (!$print_out) {
@@ -131,9 +131,9 @@
       if (!$trans_ref) {
         Arr::remove($cols, 1);
       }
-      $table        =& db_pager::new_db_pager('transactions', $sql, $cols);
+      $table        =db_pager::new_db_pager('transactions', $sql, $cols);
       $table->width = "40%";
-      DB_Pager::display($table);
+      $table->display($table);
     }
   }
 

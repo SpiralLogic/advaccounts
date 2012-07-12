@@ -83,7 +83,7 @@
       $trans_type = ST_SUPPINVOICE;
       echo "<div class='center'>";
       Event::success(_("Supplier " . $_SESSION['history'][ST_SUPPINVOICE] . "invoice has been processed."));
-      Display::note(GL_UI::trans_view($trans_type, $invoice_no, _("View this Invoice")));
+      Display::note(GL_UI::viewTrans($trans_type, $invoice_no, _("View this Invoice")));
       Display::link_no_params("/purchases/inquiry/po_search.php", _("Purchase Order Maintainants"));
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another Invoice"), "New=1");
       Display::link_no_params("/purchases/supplier_payment.php", _("Entry supplier &payment for this invoice"));

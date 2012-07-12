@@ -39,8 +39,8 @@
   }
   $sql  = Sales_Allocation::get_allocatable_sql($customer_id, $settled);
   $cols = array(
-    _("Transaction Type") => array('fun' => 'Sales_Allocation::systype_name'),
-    _("#")                => array('fun' => 'Sales_Allocation::trans_view'),
+    _("Transaction Type") => array('fun' => 'Sales_Allocation::sysTypeName'),
+    _("#")                => array('fun' => 'Sales_Allocation::viewTrans'),
     _("Reference"),
     _("Date")             => array(
       'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'
@@ -59,10 +59,10 @@
     $cols[_("Customer")] = 'skip';
     $cols[_("Currency")] = 'skip';
   }
-  $table =& db_pager::new_db_pager('alloc_tbl', $sql, $cols);
+  $table = db_pager::new_db_pager('alloc_tbl', $sql, $cols);
   $table->set_marker('Sales_Allocation::check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
   $table->width = "75%";
-  DB_Pager::display($table);
+  $table->display($table);
   Forms::end();
   Page::end();
 

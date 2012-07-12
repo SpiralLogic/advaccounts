@@ -32,7 +32,7 @@
   Row::start();
   Cell::labels(_("Reference"), $myrow["reference"], "class='label'");
   Cell::labels(_("Currency"), $sales_order["curr_code"], "class='label'");
-  Cell::labels(_("Our Order No"), Debtor::trans_view(ST_SALESORDER, $sales_order["order_no"]), "class='label'");
+  Cell::labels(_("Our Order No"), Debtor::viewTrans(ST_SALESORDER, $sales_order["order_no"]), "class='label'");
   Row::end();
   Row::start();
   Cell::labels(_("PO #"), $sales_order["customer_ref"], "class='label'");
@@ -42,7 +42,7 @@
   Row::start();
   Cell::labels(_("Invoice Date"), Dates::sqlToDate($myrow["tran_date"]), "class='label'", ' class="nowrap"');
   Cell::labels(_("Due Date"), Dates::sqlToDate($myrow["due_date"]), "class='label'", ' class="nowrap"');
-  Cell::labels(_("Deliveries"), Debtor::trans_view(ST_CUSTDELIVERY, Debtor_Trans::get_parent(ST_SALESINVOICE, $trans_id)), "class='label'");
+  Cell::labels(_("Deliveries"), Debtor::viewTrans(ST_CUSTDELIVERY, Debtor_Trans::get_parent(ST_SALESINVOICE, $trans_id)), "class='label'");
   Row::end();
   DB_Comments::display_row(ST_SALESINVOICE, $trans_id);
   Table::end();

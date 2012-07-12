@@ -63,8 +63,8 @@
     $running_total += $myrow["amount"];
     $trandate = Dates::sqlToDate($myrow["trans_date"]);
     Cell::label($systypes_array[$myrow["type"]]);
-    Cell::label(GL_UI::trans_view($myrow["type"], $myrow["trans_no"]));
-    Cell::label(GL_UI::trans_view($myrow["type"], $myrow["trans_no"], $myrow['ref']));
+    Cell::label(GL_UI::viewTrans($myrow["type"], $myrow["trans_no"]));
+    Cell::label(GL_UI::viewTrans($myrow["type"], $myrow["trans_no"], $myrow['ref']));
     Cell::label($trandate);
     Cell::debitOrCredit($myrow["amount"]);
     Cell::amount($running_total);

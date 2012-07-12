@@ -81,7 +81,7 @@
     $last_sent = Dates::sqlToDate($myrow["last_sent"]);
 
     Cell::label($myrow["description"]);
-    Cell::label(Debtor::trans_view(ST_SALESORDER, $myrow["order_no"]));
+    Cell::label(Debtor::viewTrans(ST_SALESORDER, $myrow["order_no"]));
     if ($myrow["debtor_id"] == 0) {
       Cell::label("");
       Cell::label(Sales_Group::get_name($myrow["group_no"]));

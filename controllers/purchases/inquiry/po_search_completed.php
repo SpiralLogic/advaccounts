@@ -100,7 +100,7 @@
   $cols = array(
     // Transaction link
     _("#")           => array(
-      'ord' => '', 'fun' => function ($trans) { return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]); }
+      'ord' => '', 'fun' => function ($trans) { return GL_UI::viewTrans(ST_PURCHORDER, $trans["order_no"]); }
     ), //
     _("Reference"), //
     _("Supplier")    => array('ord' => '', 'type' => 'id'), //
@@ -148,9 +148,9 @@
                        )//
     );
   }
-  $table        =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
+  $table        = db_pager::new_db_pager('orders_tbl', $sql, $cols);
   $table->width = (Input::request('frame')) ? '100' : "90";
-  DB_Pager::display($table);
+  $table->display($table);
   Creditor::addInfoDialog('.pagerclick');
   UI::emailDialogue(CT_SUPPLIER);
   Forms::end();

@@ -32,7 +32,7 @@
   Display::div_start('totals_tbl');
   if ($supplier_id > 0) {
     $supplier_record = Creditor::get_to_trans($supplier_id);
-    display_supplier_summary($supplier_record);
+    displaySupplierSummary($supplier_record);
     Session::setGlobal('creditor', $supplier_id);
   }
   Display::div_end();
@@ -98,8 +98,8 @@
     }
   }
   $cols = array(
-    _("Type")        => array('fun' => 'systype_name', 'ord' => ''),
-    _("#")           => array('fun' => 'trans_view', 'ord' => ''),
+    _("Type")        => array('fun' => 'sysTypeName', 'ord' => ''),
+    _("#")           => array('fun' => 'viewTrans', 'ord' => ''),
     _("Reference"),
     _("Supplier")    => array('type' => 'id'),
     _("Supplier ID") => 'skip',
@@ -110,19 +110,19 @@
     ),
     _("Currency")    => array('align' => 'center'),
     _("Debit")       => array(
-      'align' => 'right', 'fun' => 'fmt_debit'
+      'align' => 'right', 'fun' => 'formatDebit'
     ),
     _("Credit")      => array(
-      'align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'
+      'align' => 'right', 'insert' => true, 'fun' => 'formatCredit'
     ),
     array(
-      'insert' => true, 'fun' => 'gl_view'
+      'insert' => true, 'fun' => 'viewGl'
     ),
     array(
-      'insert' => true, 'fun' => 'credit_link'
+      'insert' => true, 'fun' => 'creditLink'
     ),
     array(
-      'insert' => true, 'fun' => 'prt_link'
+      'insert' => true, 'fun' => 'printLink'
     )
   );
   if ($supplier_id > 0) {
@@ -130,10 +130,10 @@
     $cols[_("Currency")] = 'skip';
   }
   /*show a table of the transactions returned by the sql */
-  $table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
-  $table->set_marker('check_overdue', _("Marked items are overdue."));
+  $table = db_pager::new_db_pager('trans_tbl', $sql, $cols);
+  $table->set_marker('checkOverdue', _("Marked items are overdue."));
   $table->width = "90";
-  DB_Pager::display($table);
+  $table->display($table);
   Creditor::addInfoDialog('.pagerclick');
   Forms::end();
   Page::end();
@@ -143,7 +143,7 @@
    *
    * @return mixed
    */
-  function systype_name($dummy, $type)
+  function sysTypeName($dummy, $type)
   {
     global $systypes_array;
     return $systypes_array[$type];
@@ -154,9 +154,9 @@
    *
    * @return null|string
    */
-  function trans_view($trans)
+  function viewTrans($trans)
   {
-    return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
+    return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
   }
 
   /**
@@ -174,7 +174,7 @@
    *
    * @return string
    */
-  function gl_view($row)
+  function viewGl($row)
   {
     return GL_UI::view($row["type"], $row["trans_no"]);
   }
@@ -184,7 +184,7 @@
    *
    * @return string
    */
-  function credit_link($row)
+  function creditLink($row)
   {
     return $row['type'] == ST_SUPPINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
       DB_Pager::link(_("Credit"), "/purchases/supplier_credit.php?New=1&invoice_no=" . $row['trans_no'], ICON_CREDIT) : '';
@@ -195,7 +195,7 @@
    *
    * @return int|string
    */
-  function fmt_debit($row)
+  function formatDebit($row)
   {
     $value = $row["TotalAmount"];
     return $value >= 0 ? Num::priceFormat($value) : '';
@@ -206,7 +206,7 @@
    *
    * @return int|string
    */
-  function fmt_credit($row)
+  function formatCredit($row)
   {
     $value = -$row["TotalAmount"];
     return $value > 0 ? Num::priceFormat($value) : '';
@@ -217,7 +217,7 @@
    *
    * @return string
    */
-  function prt_link($row)
+  function printLink($row)
   {
     if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT || $row['type'] == ST_SUPPCREDIT) {
       return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Remittance"), true, ST_SUPPAYMENT, ICON_PRINT);
@@ -229,7 +229,7 @@
    *
    * @return bool
    */
-  function check_overdue($row)
+  function checkOverdue($row)
   {
     return $row['OverDue'] == 1 && (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
   }
@@ -237,7 +237,7 @@
   /**
    * @param $supplier_record
    */
-  function display_supplier_summary($supplier_record)
+  function displaySupplierSummary($supplier_record)
   {
     $past_due1     = DB_Company::get_pref('past_due_days');
     $past_due2     = 2 * $past_due1;

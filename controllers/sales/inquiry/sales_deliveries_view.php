@@ -125,7 +125,7 @@
     _("Delivery #")                                                               => array(
       'fun' => function ($trans, $trans_no)
       {
-        return Debtor::trans_view(ST_CUSTDELIVERY, $trans['trans_no']);
+        return Debtor::viewTrans(ST_CUSTDELIVERY, $trans['trans_no']);
       }
     ),
     _("Customer"),
@@ -181,12 +181,12 @@
     }
     unset($_SESSION['Batch']);
   }
-  $table =& db_pager::new_db_pager('deliveries_tbl', $sql, $cols);
+  $table = db_pager::new_db_pager('deliveries_tbl', $sql, $cols);
   $table->set_marker(function ($row)
     {
       return Dates::isGreaterThan(Dates::today(), Dates::sqlToDate($row["due_date"])) && $row["Outstanding"] != 0;
     }, _("Marked items are overdue."));
   //$table->width = "92%";
-  DB_Pager::display($table);
+  $table->display($table);
   Forms::end();
   Page::end();

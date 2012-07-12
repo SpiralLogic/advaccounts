@@ -152,29 +152,29 @@
      *
      * @return null|string
      */
-    public static function trans_view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
+    public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
     {
-      $view_str = Debtor::trans_view($type, $trans_no, $label, $icon, $class, $id);
+      $view_str = Debtor::viewTrans($type, $trans_no, $label, $icon, $class, $id);
       if ($view_str != null) {
         return $view_str;
       }
-      $view_str = Purch_UI::trans_view($type, $trans_no, $label, $icon, $class, $id);
+      $view_str = Purch_UI::viewTrans($type, $trans_no, $label, $icon, $class, $id);
       if ($view_str != null) {
         return $view_str;
       }
-      $view_str = Bank_UI::trans_view($type, $trans_no, $label, $icon, $class, $id);
+      $view_str = Bank_UI::viewTrans($type, $trans_no, $label, $icon, $class, $id);
       if ($view_str != null) {
         return $view_str;
       }
-      $view_str = Item_UI::trans_view($type, $trans_no, $label, $icon, $class, $id);
+      $view_str = Item_UI::viewTrans($type, $trans_no, $label, $icon, $class, $id);
       if ($view_str != null) {
         return $view_str;
       }
-      $view_str = WO::trans_view($type, $trans_no, $label, $icon, $class, $id);
+      $view_str = WO::viewTrans($type, $trans_no, $label, $icon, $class, $id);
       if ($view_str != null) {
         return $view_str;
       }
-      $view_str = Dimensions::trans_view($type, $trans_no, $label, $icon, $class, $id);
+      $view_str = Dimensions::viewTrans($type, $trans_no, $label, $icon, $class, $id);
       if ($view_str != null) {
         return $view_str;
       }

@@ -20,7 +20,7 @@
   if (isset($_GET[ADDED_ID])) {
     $dispatch_no = $_GET[ADDED_ID];
     Event::success(sprintf(_("Delivery # %d has been entered."), $dispatch_no));
-    Display::note(Debtor::trans_view(ST_CUSTDELIVERY, $dispatch_no, _("&View This Delivery"), 0, 'button button-large'), 1, 0);
+    Display::note(Debtor::viewTrans(ST_CUSTDELIVERY, $dispatch_no, _("&View This Delivery"), 0, 'button button-large'), 1, 0);
     Display::note(Reporting::print_doc_link($dispatch_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY), 1, 0);
     Display::note(Reporting::print_doc_link($dispatch_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink button", "", 1), 1, 0);
     Display::note(Reporting::print_doc_link($dispatch_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink button"), 1, 0);
@@ -32,7 +32,7 @@
   } elseif (isset($_GET[UPDATED_ID])) {
     $delivery_no = $_GET[UPDATED_ID];
     Event::success(sprintf(_('Delivery Note # %d has been updated.'), $delivery_no));
-    Display::note(GL_UI::trans_view(ST_CUSTDELIVERY, $delivery_no, _("View this delivery"), 0, 'button  button-large'), 1, 0);
+    Display::note(GL_UI::viewTrans(ST_CUSTDELIVERY, $delivery_no, _("View this delivery"), 0, 'button  button-large'), 1, 0);
     Display::note(Reporting::print_doc_link($delivery_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY));
     Display::note(Reporting::print_doc_link($delivery_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink button", "", 1), 1, 1);
     Display::note(Reporting::print_doc_link($delivery_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink button", "", 0, 1));
@@ -120,7 +120,7 @@
     Cell::labels(_("Reference"), $order->reference, "class='label'");
     Forms::hidden('ref', $order->reference);
   }
-  Cell::labels(_("For Sales Order"), Debtor::trans_view(ST_SALESORDER, $order->order_no), "class='tablerowhead'");
+  Cell::labels(_("For Sales Order"), Debtor::viewTrans(ST_SALESORDER, $order->order_no), "class='tablerowhead'");
   Cell::labels(_("Sales Type"), $order->sales_type_name, "class='label'");
   Row::end();
   Row::start();

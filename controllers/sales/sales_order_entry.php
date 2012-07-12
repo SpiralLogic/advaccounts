@@ -1,5 +1,4 @@
 <?php
-  namespace ADV\Controllers;
   /**
    * PHP version 5.4
    * @category  PHP
@@ -8,31 +7,20 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  use Orders;
   use ADV\App\Controller\Base;
-  use Form;
   use ADV\Core\View;
   use ADV\Core\Errors;
-  use Sales_Point;
-  use Sales_Order;
-  use DB_Company;
-  use Ref;
   use ADV\Core\Num;
-  use Validation;
   use ADV\Core\Dates;
-  use GL_UI;
-  use Reporting;
   use ADV\Core\Event;
-  use Item_Line;
-  use Sales_Branch;
-  use Item;
-  use Debtor;
-  use Display;
-  use Table;
-  use Forms;
   use ADV\Core\Input;
 
-  class SalesOrder extends Base {
+  /**
+
+   */
+  class SalesOrder extends Base
+  {
+
     protected $addTitles = array(
       ST_SALESQUOTE  => "New Sales Quotation Entry", //
       ST_SALESINVOICE=> "Direct Sales Invoice", //
@@ -40,8 +28,8 @@
       ST_SALESORDER  => "New Sales Order Entry"
     );
     protected $modifyTitles = array(
-      ST_SALESQUOTE  => "Modifying Sales Quotation # ", //
-      ST_SALESORDER  => "Modifying Sales Order # "
+      ST_SALESQUOTE => "Modifying Sales Quotation # ", //
+      ST_SALESORDER => "Modifying Sales Order # "
     );
     protected $typeSecurity = array(
       ST_SALESORDER          => SA_SALESORDER, //
@@ -87,7 +75,7 @@
         $this->order = $this->createOrder(ST_SALESORDER, 0);
       }
     }
-    public function index() {
+    protected function index() {
       Page::start($this->title, $this->security);
       $this->checkBranch();
       if (isset($_GET[REMOVED])) {
@@ -180,19 +168,19 @@
       $this->Session->setGlobal('debtor', null);
       Page::footer_exit();
     }
-    public function Refresh() {
+    protected function Refresh() {
       $this->Ajax->activate('items_table');
     }
     protected function add() {
     }
-    public function after() {
+    protected function after() {
       unset($_SESSION['order_no']);
     }
     /**
-     * @param        $order_no
-     * @param        $trans_type
-     * @param bool   $edit
-     * @param bool   $update
+     * @param      $order_no
+     * @param      $trans_type
+     * @param bool $edit
+     * @param bool $update
      *
      * @return void
      * @internal param string $trans_name
@@ -470,7 +458,7 @@
       }
       $this->order->finish();
       if ($trans_type == ST_SALESORDER) {
-        $jb = new      \Modules\Jobsboard([]);
+        $jb = new \Modules\Jobsboard([]);
         $jb->addjob($jobsboard_order);
       }
       $this->pageComplete($trans_no, $trans_type, true, $modified);

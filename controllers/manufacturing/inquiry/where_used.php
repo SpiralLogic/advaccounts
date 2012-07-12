@@ -43,9 +43,9 @@
   $cols         = array(
     _("Parent Item") => array('fun' => 'select_link'), _("Work Centre"), _("Location"), _("Quantity Required")
   );
-  $table        =& db_pager::new_db_pager('usage_table', $sql, $cols);
+  $table        = db_pager::new_db_pager('usage_table', $sql, $cols);
   $table->width = "80%";
-  DB_Pager::display($table);
+  $table->display($table);
   Forms::end();
   Page::end();
 

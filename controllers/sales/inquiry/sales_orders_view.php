@@ -156,7 +156,7 @@
     $sql .= " AND sorder.order_no LIKE " . DB::quote($number_like) . " GROUP BY sorder.order_no";
     $number_like = "%" . $_POST['OrderNumber'] . "%";
     $sql .= " OR sorder.reference LIKE " . DB::quote($number_like) . " GROUP BY sorder.order_no";
-  } elseif (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
+  } elseif (AJAX_REFERRER &&isset($searchArray) && !empty($_POST['ajaxsearch'])) {
     foreach ($searchArray as $ajaxsearch) {
       if (empty($ajaxsearch)) {
         continue;
@@ -212,7 +212,7 @@
       array('type' => 'skip'),
       _("Order #")                                                                   => array(
         'fun'    => function ($row, $order_no) {
-          return Debtor::trans_view($row['trans_type'], $order_no);
+          return Debtor::viewTrans($row['trans_type'], $order_no);
         }, 'ord' => ''
       ),
       _("Ref")                                                                       => array('ord' => ''),
@@ -231,7 +231,7 @@
       array('type' => 'skip'),
       _("Quote #")                                                                   => array(
         'fun'    => function ($row, $order_no) {
-          return Debtor::trans_view($row['trans_type'], $order_no);
+          return Debtor::viewTrans($row['trans_type'], $order_no);
         }, 'ord' => ''
       ),
       _("Ref")                                                                       => array('ord' => ''),
@@ -316,7 +316,7 @@
                          ));
     }
   }
-  $table = & db_pager::new_db_pager('orders_tbl', $sql, $cols, null, null, 0, 4);
+  $table =  db_pager::new_db_pager('orders_tbl', $sql, $cols, null, null, 0, 4);
   $table->set_marker(function ($row) {
     global $trans_type;
     if ($trans_type == ST_SALESQUOTE) {
@@ -326,7 +326,7 @@
     }
   }, _("Marked items are overdue."));
   $table->width = "80%";
-  DB_Pager::display($table);
+  $table->display($table);
   Forms::submitCenter('Update', _("Update"), true, '', null);
   Forms::end();
   Page::end();

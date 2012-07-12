@@ -78,7 +78,7 @@
   /*show a table of the orders returned by the sql */
   $cols = array(
     _("#")                                                                                                          => array(
-      'fun'                                                                   => function ($trans) { return GL_UI::trans_view(ST_PURCHORDER, $trans["order_no"]); },
+      'fun'                                                                   => function ($trans) { return GL_UI::viewTrans(ST_PURCHORDER, $trans["order_no"]); },
       'ord'                                                                   => ''
     ),
     _("Reference"),
@@ -112,10 +112,10 @@
   if (!$stock_location) {
     $cols[_("Location")] = 'skip';
   }
-  $table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
+  $table = db_pager::new_db_pager('orders_tbl', $sql, $cols);
   $table->set_marker(function ($row) { return $row['OverDue'] == 1; }, _("Marked orders have overdue items."));
   $table->width = "80%";
-  DB_Pager::display($table);
+  $table->display($table);
   Creditor::addInfoDialog('.pagerclick');
   Forms::end();
   Page::end();

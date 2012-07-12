@@ -140,11 +140,11 @@
       } else {
         Event::warning(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
         $_SESSION['voiding'] = $_POST['trans_no'] . $_POST['filterType'];
-        if ($_POST['filterType'] == ST_JOURNAL) // GL transaction are not included in get_trans_view_str
+        if ($_POST['filterType'] == ST_JOURNAL) // GL transaction are not included in get_viewTrans_str
         {
           $view_str = GL_UI::view($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
         } else {
-          $view_str = GL_UI::trans_view($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
+          $view_str = GL_UI::viewTrans($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
         }
         echo "<div class='center pad5'><span class='redborder  bold font15 pad10'>$view_str</span></div>";
         Display::br();

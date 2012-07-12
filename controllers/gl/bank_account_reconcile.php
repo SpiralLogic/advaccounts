@@ -18,7 +18,7 @@
       $this->JS->_footerFile('/js/reconcile.js');
       if ($this->Input->_post('reset')) {
         // GL_Account::reset_sql_for_reconcile($_POST['bank_account'], $this->Input->_post('reconcile_date'));
-        $this->update_data();
+        $this->updateData();
       }
       $groupid = Forms::findPostPrefix("_ungroup_");
       if ($groupid > 1) {
@@ -27,7 +27,7 @@
         $this->DB->_query($sql, "Couldn't ungroup group deposit");
         $sql = "UPDATE bank_trans SET ref=" . $this->DB->_quote('Removed group: ' . $group_refs) . ", amount=0, reconciled='" . Dates::dateToSql(Dates::today()) . "', undeposited=" . $groupid . " WHERE id=" . $groupid;
         $this->DB->_query($sql, "Couldn't update removed group deposit data");
-        $this->update_data();
+        $this->updateData();
       }
       if (!count($_POST)) {
         if ($this->Session->_getGlobal('bank_date')) {
@@ -37,23 +37,23 @@
         if ($this->Session->_getGlobal('bank_account')) {
           $_POST['bank_account'] = $this->Session->_getGlobal('bank_account');
         }
-        $this->update_data();
+        $this->updateData();
       }
       $_POST['reconcile_date'] = $this->Input->_post('reconcile_date', null, Dates::newDocDate());
       if (Forms::isListUpdated('bank_account')) {
         $this->Session->_setGlobal('bank_account', $_POST['bank_account']);
         $this->Ajax->_activate('bank_date');
-        $this->update_data();
+        $this->updateData();
       }
       if (Forms::isListUpdated('bank_date')) {
         $_POST['reconcile_date'] = $this->Input->_post('bank_date') == '' ? Dates::today() : Dates::sqlToDate($_POST['bank_date']);
         $this->Session->_setGlobal('bank_date', $_POST['bank_date']);
-        $this->update_data();
+        $this->updateData();
       }
       if ($this->Input->_post('_reconcile_date_changed')) {
         $_POST['bank_date'] = Dates::dateToSql($_POST['reconcile_date']);
         $this->Ajax->_activate('bank_date');
-        $this->update_data();
+        $this->updateData();
       }
       $id = Forms::findPostPrefix('_rec_');
       if ($id != -1) {
@@ -87,24 +87,24 @@
       $act                   = Bank_Account::get($_POST["bank_account"]);
       Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
       $cols         = array(
-        _("Type")        => array('fun' => array($this, 'systype_name'), 'ord' => ''), //
-        _("#")           => array('fun' => array($this, 'trans_view'), 'ord' => ''), //
+        _("Type")        => array('fun' => array($this, 'sysTypeName'), 'ord' => ''), //
+        _("#")           => array('fun' => array($this, 'viewTrans'), 'ord' => ''), //
         _("Reference")   => array(
           'fun'=> function($row) {
             return substr($row['ref'], 0, 6);
           }
         ), //
         _("Date")        => array('type'=> 'date', 'ord' => ''), //
-        _("Debit")       => array('align' => 'right', 'fun' => array($this, 'fmt_debit'), 'ord' => ''), //
-        _("Credit")      => array('align' => 'right', 'insert' => true, 'fun' => array($this, 'fmt_credit'), 'ord' => ''), //
-        _("Person/Item") => array('fun' => array($this, 'fmt_person')), //
-        array('insert' => true, 'fun' => array($this, 'gl_view')), //
-        "X"              => array('insert' => true, 'fun' => array($this, 'rec_checkbox')), //
+        _("Debit")       => array('align' => 'right', 'fun' => array($this, 'formatDebit'), 'ord' => ''), //
+        _("Credit")      => array('align' => 'right', 'insert' => true, 'fun' => array($this, 'formatCredit'), 'ord' => ''), //
+        _("Person/Item") => array('fun' => array($this, 'formatPerson')), //
+        array('insert' => true, 'fun' => array($this, 'viewGl')), //
+        "X"              => array('insert' => true, 'fun' => array($this, 'reconcileCheckbox')), //
         array('insert' => true, 'fun' => array($this, 'ungroup'))
       );
       $table        = db_pager::new_db_pager('trans_tbl', $sql, $cols);
       $table->width = "80";
-      DB_Pager::display($table);
+      $table->display($table);
       Display::br(1);
       Forms::submit('Reconcile', _("Reconcile"), true, 'Reconcile', null);
       Forms::end();
@@ -146,6 +146,9 @@
       Table::end();
       Display::div_end();
     }
+    /**
+     * @return int
+     */
     protected function getTotal() {$total=0;
       $result = GL_Account::get_max_reconciled($this->Input->_post('reconcile_date'), $_POST['bank_account']);
       if ($row = $this->DB->_fetch($result)) {
@@ -182,7 +185,7 @@
      *
      * @return string
      */
-    function rec_checkbox($row) {
+    function reconcileCheckbox($row) {
       $name   = "rec_" . $row['id'];
       $hidden = 'last[' . $row['id'] . ']';
       $value  = $row['reconciled'] != '';
@@ -206,7 +209,7 @@
      *
      * @return mixed
      */
-    function systype_name($dummy, $type) {
+    function sysTypeName($dummy, $type) {
       global $systypes_array;
       return $systypes_array[$type];
     }
@@ -215,15 +218,15 @@
      *
      * @return null|string
      */
-    function trans_view($trans) {
-      return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
+    function viewTrans($trans) {
+      return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
     }
     /**
      * @param $row
      *
      * @return string
      */
-    function gl_view($row) {
+    function viewGl($row) {
       return ($row['type'] != 15) ? GL_UI::view($row["type"], $row["trans_no"]) : '';
     }
     /**
@@ -231,7 +234,7 @@
      *
      * @return int|string
      */
-    function fmt_debit($row) {
+    function formatDebit($row) {
       $value = $row["amount"];
       if ($value < 0) {
         return '';
@@ -243,7 +246,7 @@
      *
      * @return int|string
      */
-    function fmt_credit($row) {
+    function formatCredit($row) {
       $value = -$row["amount"];
       if ($value <= 0) {
         return '';
@@ -255,7 +258,7 @@
      *
      * @return string
      */
-    function fmt_person($row) {
+    function formatPerson($row) {
       if ($row['type'] == ST_BANKTRANSFER) {
         return DB_Comments::get_string(ST_BANKTRANSFER, $row['trans_no']);
       } elseif ($row['type'] == ST_GROUPDEPOSIT) {
@@ -278,7 +281,7 @@
     /**
 
      */
-    function update_data() {
+    function updateData() {
       global $update_pager;
       unset($_POST["beg_balance"], $_POST["end_balance"]);
       $this->Ajax->_activate('summary');

@@ -71,7 +71,7 @@
       $dn_numbers[] = $del_row["trans_link"];
       $this_total   = $del_row["ov_freight"] + $del_row["ov_amount"] + $del_row["ov_freight_tax"] + $del_row["ov_gst"];
       $delivery_total += $this_total;
-      Cell::label(Debtor::trans_view($del_row["type"], $del_row["trans_no"]));
+      Cell::label(Debtor::viewTrans($del_row["type"], $del_row["trans_no"]));
       Cell::label($del_row["reference"]);
       Cell::label(Dates::sqlToDate($del_row["tran_date"]));
       Cell::amount($this_total);
@@ -95,7 +95,7 @@
         $this_total = $inv_row["ov_freight"] + $inv_row["ov_freight_tax"] + $inv_row["ov_gst"] + $inv_row["ov_amount"];
         $invoices_total += $this_total;
         $inv_numbers[] = $inv_row["trans_no"];
-        Cell::label(Debtor::trans_view($inv_row["type"], $inv_row["trans_no"]));
+        Cell::label(Debtor::viewTrans($inv_row["type"], $inv_row["trans_no"]));
         Cell::label($inv_row["reference"]);
         Cell::label(Dates::sqlToDate($inv_row["tran_date"]));
         Cell::amount($this_total);
@@ -118,7 +118,7 @@
 
         $this_total = $payment_row["amt"];
         $payments_total += $this_total;
-        Cell::label(Debtor::trans_view($payment_row["trans_type_from"], $payment_row["trans_no_from"]));
+        Cell::label(Debtor::viewTrans($payment_row["trans_type_from"], $payment_row["trans_no_from"]));
         Cell::label($payment_row["reference"]);
         Cell::label(Dates::sqlToDate($payment_row["date_alloc"]));
         Cell::amount($this_total);
@@ -143,7 +143,7 @@
 
         $this_total = $credits_row["ov_freight"] + $credits_row["ov_freight_tax"] + $credits_row["ov_gst"] + $credits_row["ov_amount"];
         $credits_total += $this_total;
-        Cell::label(Debtor::trans_view($credits_row["type"], $credits_row["trans_no"]));
+        Cell::label(Debtor::viewTrans($credits_row["type"], $credits_row["trans_no"]));
         Cell::label($credits_row["reference"]);
         Cell::label(Dates::sqlToDate($credits_row["tran_date"]));
         Cell::amount(-$this_total);

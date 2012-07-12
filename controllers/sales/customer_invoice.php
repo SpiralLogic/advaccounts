@@ -34,7 +34,7 @@
     Event::success(_("Invoice $reference has been entered."));
     $trans_type = ST_SALESINVOICE;
     Event::success(_("Selected deliveries has been processed"), true);
-    Display::note(Debtor::trans_view($trans_type, $invoice_no, _("&View This Invoice"), false, 'button'), 0, 1);
+    Display::note(Debtor::viewTrans($trans_type, $invoice_no, _("&View This Invoice"), false, 'button'), 0, 1);
     Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
     Reporting::email_link($invoice_no, _("Email This Invoice"), true, ST_SALESINVOICE, 'EmailLink', null, $emails, 1);
     Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"), '', true, 'class="button"');
@@ -47,7 +47,7 @@
     $emails     = $customer->getEmailAddresses();
     $invoice_no = $_GET[UPDATED_ID];
     Event::success(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));
-    Display::note(GL_UI::trans_view(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
+    Display::note(GL_UI::viewTrans(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
     echo '<br>';
     Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
     Reporting::email_link($invoice_no, _("Email This Invoice"), true, ST_SALESINVOICE, 'EmailLink', null, $emails, 1);
@@ -87,9 +87,7 @@
     Sales_Invoice::copyToPost($order);
   } elseif (isset($_GET[Orders::MODIFY_INVOICE]) && $_GET[Orders::MODIFY_INVOICE] > 0) {
     if (Debtor_Trans::get_parent(ST_SALESINVOICE, $_GET[Orders::MODIFY_INVOICE]) == 0) { // 1.xx compatibility hack
-      echo"<div class='center'><br><span class='bold'>" . _("There are no delivery notes for this invoice.<br>
-        Most likely this invoice was created in ADV Accounts version prior to 2.0
-        and therefore can not be modified.") . "</span></div>";
+      echo"<div class='center'><br><span class='bold'>" . _("There are no delivery notes for this invoice.") . "</span></div>";
       Page::footer_exit();
     }
     $order = new Sales_Order(ST_SALESINVOICE, $_GET[Orders::MODIFY_INVOICE]);
@@ -169,7 +167,7 @@
   } else {
     Cell::labels(_("Reference"), $order->reference, "class='tablerowhead'");
   }
-  Cell::labels(_("Delivery Notes:"), Debtor::trans_view(ST_CUSTDELIVERY, array_keys($order->src_docs)), "class='tablerowhead'");
+  Cell::labels(_("Delivery Notes:"), Debtor::viewTrans(ST_CUSTDELIVERY, array_keys($order->src_docs)), "class='tablerowhead'");
   Cell::labels(_("Sales Type"), $order->sales_type_name, "class='tablerowhead'");
   Row::end();
   Row::start();

@@ -112,14 +112,14 @@
     _("#")                                       => array(
       'fun' => function ($trans)
       {
-        return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
+        return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
       }
     ),
     _("Reference"),
     _("Order")                                   => array(
       'fun' => function ($row)
       {
-        return $row['order_'] > 0 ? Debtor::trans_view(ST_SALESORDER, $row['order_']) : "";
+        return $row['order_'] > 0 ? Debtor::viewTrans(ST_SALESORDER, $row['order_']) : "";
       }
     ),
     _("Date")                                    => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'asc'),
@@ -179,13 +179,13 @@
   if (!Input::get('frame')) {
     array_shift($cols);
   }
-  $table =& db_pager::new_db_pager('doc_tbl', $sql, $cols);
+  $table = db_pager::new_db_pager('doc_tbl', $sql, $cols);
   $table->set_marker(function ($row)
     {
       return ($row['OverDue'] == 1 && Num::priceFormat(abs($row["TotalAmount"]) - $row["Allocated"]) != 0);
     }, _("Marked items are overdue."));
   $table->width = "80%";
-  DB_Pager::display($table);
+  $table->display($table);
   Forms::end();
   $action
     = <<<JS

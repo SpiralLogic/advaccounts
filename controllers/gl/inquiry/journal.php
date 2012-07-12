@@ -111,7 +111,7 @@
     _("Date")             => array(
       'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'
     ),
-    _("Type")             => array('fun' => 'systype_name'),
+    _("Type")             => array('fun' => 'sysTypeName'),
     _("Trans #")          => array('fun' => 'view_link'),
     _("Reference"),
     _("Amount")           => array('type' => 'amount'),
@@ -127,9 +127,9 @@
   if (!Forms::hasPost('AlsoClosed')) {
     $cols[_("#")] = 'skip';
   }
-  $table        =& db_pager::new_db_pager('journal_tbl', $sql, $cols);
+  $table        = db_pager::new_db_pager('journal_tbl', $sql, $cols);
   $table->width = "80%";
-  DB_Pager::display($table);
+  $table->display($table);
   Forms::end();
   Page::end();
   /**
@@ -148,7 +148,7 @@
    *
    * @return mixed
    */
-  function systype_name($dummy, $type)
+  function sysTypeName($dummy, $type)
   {
     global $systypes_array;
 
@@ -162,7 +162,7 @@
    */
   function view_link($row)
   {
-    return GL_UI::trans_view($row["type"], $row["type_no"]);
+    return GL_UI::viewTrans($row["type"], $row["type_no"]);
   }
 
   /**

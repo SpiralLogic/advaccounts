@@ -87,7 +87,7 @@
     } else {
     }
     Cell::label($myrow["description"]);
-    Cell::label(Debtor::trans_view(30, $myrow["order_no"]));
+    Cell::label(Debtor::viewTrans(30, $myrow["order_no"]));
     if ($myrow["debtor_id"] == 0) {
       Cell::label("");
       Cell::label(Sales_Group::get_name($myrow["group_no"]));

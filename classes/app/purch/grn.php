@@ -289,7 +289,7 @@
       if (!Bank_Currency::is_company($po->curr_code)) {
         Cell::labels(_("Order Currency"), $po->curr_code, "class='label'");
       }
-      Cell::labels(_("For Purchase Order"), GL_UI::trans_view(ST_PURCHORDER, $po->order_no), "class='label'");
+      Cell::labels(_("For Purchase Order"), GL_UI::viewTrans(ST_PURCHORDER, $po->order_no), "class='label'");
       Cell::labels(_("Ordered On"), $po->orig_order_date, "class='label'");
       Cell::labels(_("Supplier's Reference"), $po->requisition_no, "class='label'");
       Row::end();
@@ -350,10 +350,10 @@
         if ($grn_already_on_invoice == false) {
           if (!isset($_SESSION['delivery_po']) || $myrow["purch_order_no"] == $_SESSION['delivery_po']) {
             $n = $myrow["id"];
-            Cell::label(GL_UI::trans_view(25, $myrow["grn_batch_id"]));
+            Cell::label(GL_UI::viewTrans(25, $myrow["grn_batch_id"]));
             Cell::label($myrow["id"] . Forms::hidden('qty_recd' . $n, $myrow["qty_recd"], false) . Forms::hidden('item_code' . $n, $myrow["item_code"], false) . Forms::hidden('description' . $n, $myrow["description"], false) . Forms::hidden('prev_quantity_inv' . $n, $myrow['quantity_inv'],
               false) . Forms::hidden('order_price' . $n, $myrow['unit_price'], false) . Forms::hidden('std_cost_unit' . $n, $myrow['std_cost_unit'], false) . Forms::hidden('po_detail_item' . $n, $myrow['po_detail_item'], false));
-            Cell::label(GL_UI::trans_view(ST_PURCHORDER, $myrow["purch_order_no"]));
+            Cell::label(GL_UI::viewTrans(ST_PURCHORDER, $myrow["purch_order_no"]));
             $sql1       = "SELECT supplier_description FROM purch_data WHERE supplier_id=" . DB::quote($creditor_trans->supplier_id) . " AND stock_id=" . DB::quote($myrow["item_code"]);
             $result1    = DB::query($sql1, 'Could not get suppliers item code');
             $result1    = DB::fetch($result1);
@@ -495,7 +495,7 @@
       if (count($creditor_trans->grn_items) > 0) {
         foreach ($creditor_trans->grn_items as $entered_grn) {
           $grn_batch = Purch_GRN::get_batch_for_item($entered_grn->id);
-          Cell::label(GL_UI::trans_view(ST_SUPPRECEIVE, $grn_batch));
+          Cell::label(GL_UI::viewTrans(ST_SUPPRECEIVE, $grn_batch));
           if ($mode == 1) {
             Cell::label($entered_grn->id);
             Cell::label(""); // PO

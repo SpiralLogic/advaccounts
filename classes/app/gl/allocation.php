@@ -246,7 +246,7 @@
         Table::header($th);
         foreach ($_SESSION['alloc']->allocs as $alloc_item) {
           Cell::label($systypes_array[$alloc_item->type]);
-          Cell::label(GL_UI::trans_view($alloc_item->type, $alloc_item->type_no));
+          Cell::label(GL_UI::viewTrans($alloc_item->type, $alloc_item->type_no));
           Cell::label($alloc_item->date_, "class='right'");
           Cell::label($alloc_item->due_date, "class='right'");
           Cell::amount($alloc_item->amount);
@@ -376,7 +376,7 @@
       $k = $total_allocated = 0;
       while ($alloc_row = DB::fetch($alloc_result)) {
         Cell::label($systypes_array[$alloc_row['type']]);
-        Cell::label(GL_UI::trans_view($alloc_row['type'], $alloc_row['trans_no']));
+        Cell::label(GL_UI::viewTrans($alloc_row['type'], $alloc_row['trans_no']));
         Cell::label(Dates::sqlToDate($alloc_row['tran_date']));
         $alloc_row['Total'] = Num::round($alloc_row['Total'], User::price_dec());
         $alloc_row['amt']   = Num::round($alloc_row['amt'], User::price_dec());

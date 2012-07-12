@@ -158,7 +158,7 @@
         Table::header($th);
         $k = 0; //row colour counter
         while ($myrow = DB::fetch($result)) {
-          Cell::label(GL_UI::trans_view(28, $myrow["issue_no"]));
+          Cell::label(GL_UI::viewTrans(28, $myrow["issue_no"]));
           Cell::label($myrow['reference']);
           Cell::label(Dates::sqlToDate($myrow["issue_date"]));
           Row::end();

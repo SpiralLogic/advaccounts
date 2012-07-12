@@ -37,7 +37,7 @@
    *
    * @return mixed
    */
-  function systype_name($dummy, $type)
+  function sysTypeName($dummy, $type)
   {
     global $systypes_array;
 
@@ -49,9 +49,9 @@
    *
    * @return null|string
    */
-  function trans_view($trans)
+  function viewTrans($trans)
   {
-    return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
+    return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
   }
 
   /**
@@ -96,8 +96,8 @@
 
   $sql  = Purch_Allocation::get_allocatable_sql($supplier_id, $settled);
   $cols = array(
-    _("Transaction Type") => array('fun' => 'systype_name'),
-    _("#")                => array('fun' => 'trans_view'),
+    _("Transaction Type") => array('fun' => 'sysTypeName'),
+    _("#")                => array('fun' => 'viewTrans'),
     _("Reference"),
     _("Date")             => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
     _("Supplier")         => array('ord' => ''),
@@ -110,10 +110,10 @@
     $cols[_("Supplier")] = 'skip';
     $cols[_("Currency")] = 'skip';
   }
-  $table =& db_pager::new_db_pager('alloc_tbl', $sql, $cols);
+  $table = db_pager::new_db_pager('alloc_tbl', $sql, $cols);
   $table->set_marker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
   $table->width = "80%";
-  DB_Pager::display($table);
+  $table->display($table);
   Forms::end();
   Page::end();
 

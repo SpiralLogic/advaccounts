@@ -11,7 +11,7 @@
   Page::start(_($help_context = "Issue Items to Work Order"), SA_MANUFISSUE);
   if (isset($_GET[ADDED_ID])) {
     Event::success(_("The work order issue has been entered."));
-    Display::note(GL_UI::trans_view(ST_WORKORDER, $_GET[ADDED_ID], _("View this Work Order")));
+    Display::note(GL_UI::viewTrans(ST_WORKORDER, $_GET[ADDED_ID], _("View this Work Order")));
     Display::link_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
     Page::footer_exit();
   }

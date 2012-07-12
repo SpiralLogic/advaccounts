@@ -13,20 +13,32 @@
   namespace ADV\Core;
   /**
    * Dates validation and parsing functions
-   *  These functions refer to the global variable defining the date format
+   * These functions refer to the global variable defining the date format
    * The date format is defined in config.php called dateformats
    * this can be a string either "d/m/Y" for UK/Australia/New Zealand dates or
    * "m/d/Y" for US/Canada format dates depending on setting in preferences.
-   * @category  PHP
-   * @package   Adv.accounts.core
-   * @method   __date()
-   * @method  dateToSql($date_)
-   * @method  today()
-   * @method  now()
+   * @category PHP
+   * @package  Adv.accounts.core
+   */
+   /**
+   * @method __date()
+   * @method dateToSql($date_)
+   * @method today()
+   * @method now()
    * @method isDate($date = null, $format = null)
    * @method isDateInFiscalYear($date, $convert = false)
+   * @method isGreaterThan($date1, $date2)
+   * @method newDocDate()
+   * @method addDays($date, $days)
+   * @method sqlToDate($date_)
+   * @method beginMonth($date)
+   * @method addMonths($date, $months)
+    * @method endFiscalYear()
+    * @method beginFiscalYear()
    */
-  class Dates {
+  class Dates
+  {
+
     use Traits\StaticAccess;
 
     protected $sep = null;
@@ -100,7 +112,7 @@
       }
     }
     /**
-     *  Retrieve and optionally set default date for new document.
+     * Retrieve and optionally set default date for new document.
      *
      * @param null $date
      *
@@ -250,7 +262,7 @@
     /**
      * @static
      *
-     * @param   $date_
+     * @param $date_
      *
      * @internal param bool $pad
      * @return int|string
@@ -319,8 +331,8 @@
      */
     public function _differenceBetween($date1, $date2, $period) {
       /* expects dates in the format specified in $DefaultDateFormat - period can be one of 'd','w','y','m'
-                                                            months are assumed to be 30 days and years 365.25 days This only works
-                                                            provided that both dates are after 1970. Also only works for dates up to the year 2035 ish */
+months are assumed to be 30 days and years 365.25 days This only works
+provided that both dates are after 1970. Also only works for dates up to the year 2035 ish */
       $date1 = $this->_dateToSql($date1);
       $date2 = $this->_dateToSql($date2);
       list($year1, $month1, $day1) = explode("-", $date1);
@@ -462,7 +474,6 @@
       for ($i = 0; $i < 11; $i++) {
         $months[$i] = date('F', strtotime("now - $i months"));
       }
-
       return \Forms::arraySelect($name, $month, $months);
     }
     /**

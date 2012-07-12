@@ -26,7 +26,7 @@
     } else {
       Event::success(_("Purchase Order: " . Session::i()['history'][ST_PURCHORDER] . " has been updated"));
     }
-    Display::note(GL_UI::trans_view($trans_type, $order_no, _("&View this order"), false, 'button'), 0, 1);
+    Display::note(GL_UI::viewTrans($trans_type, $order_no, _("&View this order"), false, 'button'), 0, 1);
     Display::note(Reporting::print_doc_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
     Display::submenu_button(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrder=$order_no");
     Reporting::email_link($order_no, _("Email This Order"), true, $trans_type, 'EmailLink', null, $supplier->getEmailAddresses(), 1);

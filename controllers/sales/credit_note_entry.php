@@ -36,7 +36,7 @@
     $credit_no  = $_GET[ADDED_ID];
     $trans_type = ST_CUSTCREDIT;
     Event::success(sprintf(_("Credit Note # %d has been processed"), $credit_no));
-    Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View this credit note")), 0, 1);
+    Display::note(Debtor::viewTrans($trans_type, $credit_no, _("&View this credit note")), 0, 1);
     Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT), 0, 1);
     Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1), 0, 1);
     Display::note(GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
@@ -52,7 +52,7 @@
   }
   $id = Forms::findPostPrefix(MODE_DELETE);
   if ($id != -1) {
-    $order->remove_from_order($line_no);
+    $order->remove_from_order($id);
     Item_Line::start_focus('_stock_id_edit');
   }
   if (isset($_POST[Orders::ADD_LINE]) && check_item_data()) {
@@ -161,7 +161,7 @@
   }
 
   /**
-   * @param $order
+   * @param Sales_Order $order
    *
    * @return bool
    */

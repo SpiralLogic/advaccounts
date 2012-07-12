@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
 
   Controler part of database table pager with column sort.
-  To display actual html object call DB_Pager::display($name) inside
+  To display actual html object call $table->display($name) inside
   any form.
 
    */
@@ -29,7 +29,7 @@
      *
      * @return DB_Pager
      */
-    static function &new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_len = 0, $sort = null) {
+    static function new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_len = 0, $sort = null) {
       if (!isset($_SESSION['pager'])) {
         $_SESSION['pager'] = array();
       }
@@ -58,26 +58,12 @@
      */
     public function __sleep() {
       foreach ($this->columns as &$column) {
-        if (isset($column['fun']) && is_callable($column['fun'] )) {
+        if (isset($column['fun']) && is_callable($column['fun'])) {
           unset($column['fun']);
         }
       }
       unset($this->marker);
       return array_keys((array) $this);
-    }
-    /**
-     * @static
-     *
-     * @param bool $table
-     * @param bool $feild
-     * @param bool $where
-     *
-     * @return int
-     */
-    public static function countFilter($table, $feild, $where) {
-      $sql    = "SELECT * FROM " . $table . " WHERE " . $feild . " LIKE " . DB::escape($where) . " LIMIT 1";
-      $result = DB::query($sql, 'Couldnt do shit');
-      return DB::numRows($result);
     }
     /**
      * @static
@@ -109,7 +95,7 @@
      *
      * @return string
      */
-    public static function navi($name, $value, $enabled = true, $icon = false) {
+    public function navi($name, $value, $enabled = true, $icon = false) {
       if (!static::$User) {
         static::$User = User::i();
       }
@@ -124,8 +110,8 @@
      * @param      $value
      * @param bool $enabled
      */
-    public static function navi_cell($name, $value, $enabled = true) {
-      Cell::label(static::navi($name, $value, $enabled));
+    public function navi_cell($name, $value, $enabled = true) {
+      Cell::label($this->navi($name, $value, $enabled));
     }
     /**
      * @static
@@ -134,17 +120,17 @@
      *
      * @return bool
      */
-    public static function display($pager) {
+    public function display() {
       if (!static::$dates) {
         static::$dates = Dates::i();
       }
       if (!static::$User) {
         static::$User = User::i();
       }
-      $pager->select_records();
-      Display::div_start("_{$pager->name}_span");
+      $this->select_records();
+      Display::div_start("_{$this->name}_span");
       $headers = array();
-      foreach ($pager->columns as $num_col => $col) {
+      foreach ($this->columns as $num_col => $col) {
         // record status control column is displayed only when control checkbox is on
         if (isset($col['head']) && ($col['type'] != 'inactive' || Input::post('show_inactive'))) {
           if (!isset($col['ord'])) {
@@ -157,20 +143,20 @@
             } else {
               $icon = false;
             }
-            $headers[] = static::navi($pager->name . '_sort_' . $num_col, $col['head'], true, $icon);
+            $headers[] = $this->navi($this->name . '_sort_' . $num_col, $col['head'], true, $icon);
           }
         }
       }
       /* show a table of records returned by the sql */
-      Table::start('tablestyle grid width' . $pager->width);
+      Table::start('tablestyle grid width' . $this->width);
       Table::header($headers);
-      if ($pager->header_fun) { // if set header handler
-        Row::start("class='{$pager->header_class}'");
-        $fun = $pager->header_fun;
-        if (method_exists($pager, $fun)) {
-          $h = $pager->$fun($pager);
+      if ($this->header_fun) { // if set header handler
+        Row::start("class='{$this->header_class}'");
+        $fun = $this->header_fun;
+        if (method_exists($this, $fun)) {
+          $h = $this->$fun($this);
         } elseif (is_callable($fun)) {
-          $h = call_user_func($fun, $pager);
+          $h = call_user_func($fun, $this);
         }
         foreach ($h as $c) { // draw header columns
           $pars = isset($c[1]) ? $c[1] : '';
@@ -179,22 +165,22 @@
         Row::end();
       }
       $cc = 0; //row colour counter
-      foreach ($pager->data as $line_no => $row) {
-        $marker = $pager->marker;
+      foreach ($this->data as $line_no => $row) {
+        $marker = $this->marker;
         if ($marker && call_user_func($marker, $row)) {
-          Row::start("class='$pager->marker_class'");
+          Row::start("class='$this->marker_class'");
         } else {
           echo "<tr>\n";
         }
-        foreach ($pager->columns as $k => $col) {
+        foreach ($this->columns as $k => $col) {
           $coltype = isset($col['type']) ? $col['type'] : '';
           $cell    = isset($col['name']) ? $row[$col['name']] : '';
           if (isset($col['fun'])) { // use data input function if defined
             $fun = $col['fun'];
             if (is_callable($fun)) {
               $cell = call_user_func($fun, $row, $cell);
-            } elseif (method_exists($pager, $fun)) {
-              $cell = $pager->$fun($row, $cell);
+            } elseif (method_exists($this, $fun)) {
+              $cell = $this->$fun($row, $cell);
             } else {
               $cell = '';
             }
@@ -237,7 +223,7 @@
               break;
             case 'inactive':
               if (Input::post('show_inactive')) {
-                $pager->inactive_control_cell($row);
+                $this->inactive_control_cell($row);
               }
               break;
             case 'id':
@@ -260,13 +246,13 @@
         Row::end();
       }
       //end of while loop
-      if ($pager->footer_fun) { // if set footer handler
-        Row::start("class='{$pager->footer_class}'");
-        $fun = $pager->footer_fun;
-        if (method_exists($pager, $fun)) {
-          $h = $pager->$fun($pager);
+      if ($this->footer_fun) { // if set footer handler
+        Row::start("class='{$this->footer_class}'");
+        $fun = $this->footer_fun;
+        if (method_exists($this, $fun)) {
+          $h = $this->$fun($this);
         } elseif (is_callable($fun)) {
-          $h = call_user_func($fun, $pager);
+          $h = call_user_func($fun, $this);
         }
         foreach ($h as $c) { // draw footer columns
           $pars = isset($c[1]) ? $c[1] : '';
@@ -275,29 +261,29 @@
         Row::end();
       }
       Row::start("class='navibar'");
-      $colspan = count($pager->columns);
-      $inact   = $pager->inactive_ctrl == true ?
+      $colspan = count($this->columns);
+      $inact   = $this->inactive_ctrl == true ?
         ' ' . Forms::checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
-      if ($pager->rec_count) {
+      if ($this->rec_count) {
         echo "<td colspan=$colspan class='navibar' >";
         echo "<table class='floatright'>";
-        $but_pref = $pager->name . '_page_';
+        $but_pref = $this->name . '_page_';
         Row::start();
-        if (@$pager->inactive_ctrl) {
+        if (@$this->inactive_ctrl) {
           Forms::submit('Update', _('Update'), true, '', null);
         } // inactive update
-        static::navi_cell($but_pref . 'first', _('First'), $pager->first_page);
-        static::navi_cell($but_pref . 'prev', _('Prev'), $pager->prev_page);
-        static::navi_cell($but_pref . 'next', _('Next'), $pager->next_page);
-        static::navi_cell($but_pref . 'last', _('Last'), $pager->last_page);
+        $this->navi_cell($but_pref . 'first', _('First'), $this->first_page);
+        $this->navi_cell($but_pref . 'prev', _('Prev'), $this->prev_page);
+        $this->navi_cell($but_pref . 'next', _('Next'), $this->next_page);
+        $this->navi_cell($but_pref . 'last', _('Last'), $this->last_page);
         Row::end();
         echo "</table>";
-        $from = ($pager->curr_page - 1) * $pager->page_len + 1;
-        $to   = $from + $pager->page_len - 1;
-        if ($to > $pager->rec_count) {
-          $to = $pager->rec_count;
+        $from = ($this->curr_page - 1) * $this->page_len + 1;
+        $to   = $from + $this->page_len - 1;
+        if ($to > $this->rec_count) {
+          $to = $this->rec_count;
         }
-        $all = $pager->rec_count;
+        $all = $this->rec_count;
         HTML::span(true, "Records $from-$to of $all");
         echo $inact;
         echo "</td>";
@@ -306,8 +292,8 @@
       }
       Row::end();
       Table::end();
-      if (isset($pager->marker_txt)) {
-        Event::warning($pager->marker_txt, 0, 1, "class='$pager->notice_class'");
+      if (isset($this->marker_txt)) {
+        Event::warning($this->marker_txt, 0, 1, "class='$this->notice_class'");
       }
       Display::div_end();
       return true;

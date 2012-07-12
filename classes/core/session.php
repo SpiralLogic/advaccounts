@@ -28,7 +28,8 @@
    * @method regenerate()
    * @method checkUserAgent()
    * @method setUserAgent()
-   *@method Session i()
+   * @method Session i()
+   * @property  string page_title
    */
   class Session implements \ArrayAccess
   {

@@ -67,7 +67,7 @@
   {
     $_SESSION['alloc'] = new Gl_Allocation(ST_CUSTREFUND, 0);
   }
-  if (count($customer->branches) == 0) {
+  if (isset($customer) && count($customer->branches) == 0) {
     Validation::check(Validation::BRANCHES, _("No Branches for Customer") . $_POST["customer_id"], $_POST['customer_id']);
   } elseif (!isset($_POST['branch_id'])) {
     Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true);

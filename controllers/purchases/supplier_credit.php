@@ -125,7 +125,7 @@ JS;
       $trans_type = ST_SUPPCREDIT;
       echo "<div class='center'>";
       Event::success(_("Supplier credit note has been processed."));
-      Display::note(GL_UI::trans_view($trans_type, $invoice_no, _("View this Credit Note")));
+      Display::note(GL_UI::viewTrans($trans_type, $invoice_no, _("View this Credit Note")));
       Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another Credit Note"), "New=1");
       Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");

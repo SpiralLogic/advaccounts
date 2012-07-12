@@ -169,7 +169,7 @@
       if ($suppress_view_link) {
         Cell::label($myrow["id"]);
       } else {
-        Cell::label(GL_UI::trans_view(ST_WORKORDER, $myrow["id"]));
+        Cell::label(GL_UI::viewTrans(ST_WORKORDER, $myrow["id"]));
       }
       Cell::label($myrow["wo_ref"]);
       Cell::label($wo_types_array[$myrow["type"]]);

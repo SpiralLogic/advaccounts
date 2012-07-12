@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::openWindow(800, 500);
   JS::footerFile('/js/reconcile.js');
   Page::start(_($help_context = "Undeposited Funds"), SA_RECONCILE, Input::request('frame'));
@@ -25,7 +24,7 @@
   $update_pager = false;
   if (Forms::isListUpdated('deposit_date')) {
     $_POST['deposit_date'] = Input::post('deposit_date') == '' ? Dates::today() : ($_POST['deposit_date']);
-    update_data();
+    updateData();
   }
   if (Input::post('_deposit_date_changed')) {
     $_POST['deposited']      = 0;
@@ -36,7 +35,7 @@
         unset($_POST[$rowid]);
       }
     }
-    update_data();
+    updateData();
   }
   $id = Forms::findPostPrefix('_dep_');
   if ($id != -1) {
@@ -120,22 +119,22 @@
         ORDER BY trans_date DESC,bank_trans.id ";
   $cols         = array(
     _("Type")                    => array(
-      'fun' => 'systype_name', 'ord' => ''
+      'fun' => 'sysTypeName', 'ord' => ''
     ), _("#")                    => array(
-      'fun' => 'trans_view', 'ord' => ''
-    ), _("Reference"), _("Date") => array('date', 'ord' => 'desc'), _("Debit") => array(
-      'align' => 'right', 'fun' => 'fmt_debit'
+      'fun' => 'viewTrans', 'ord' => ''
+    ), _("Reference"), _("Date") => array('type'=>'date', 'ord' => 'desc'), _("Debit") => array(
+      'align' => 'right', 'fun' => 'formatDebit'
     ), _("Credit")               => array(
-      'align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'
-    ), _("Person/Item")          => array('fun' => 'fmt_person'), array(
-      'insert' => true, 'fun' => 'gl_view'
+      'align' => 'right', 'insert' => true, 'fun' => 'formatCredit'
+    ), _("Person/Item")          => array('fun' => 'formatPerson'), array(
+      'insert' => true, 'fun' => 'viewGl'
     ), "X"                       => array(
-      'insert' => true, 'fun' => 'dep_checkbox'
+      'insert' => true, 'fun' => 'depositCheckbox'
     )
   );
-  $table        =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
+  $table        = db_pager::new_db_pager('trans_tbl', $sql, $cols);
   $table->width = "80%";
-  DB_Pager::display($table);
+  $table->display($table);
   Display::br(1);
   Forms::submitCenter('Deposit', _("Deposit"), true, '', false);
   Forms::end();
@@ -143,15 +142,12 @@
   /**
    * @return bool
    */
-  function check_date()
-  {
+  function check_date() {
     if (!Dates::isDate(Input::post('deposit_date'))) {
       Event::error(_("Invalid deposit date format"));
       JS::setFocus('deposit_date');
-
       return false;
     }
-
     return true;
   }
 
@@ -165,8 +161,7 @@
    *
    * @return string
    */
-  function dep_checkbox($row)
-  {
+  function depositCheckbox($row) {
     $name      = "dep_" . $row['id'];
     $hidden    = 'amount_' . $row['id'];
     $value     = $row['amount'];
@@ -181,10 +176,8 @@
    *
    * @return mixed
    */
-  function systype_name($dummy, $type)
-  {
+  function sysTypeName($dummy, $type) {
     global $systypes_array;
-
     return $systypes_array[$type];
   }
 
@@ -193,9 +186,8 @@
    *
    * @return null|string
    */
-  function trans_view($trans)
-  {
-    return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
+  function viewTrans($trans) {
+    return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
   }
 
   /**
@@ -203,8 +195,7 @@
    *
    * @return string
    */
-  function gl_view($row)
-  {
+  function viewGl($row) {
     return GL_UI::view($row["type"], $row["trans_no"]);
   }
 
@@ -213,10 +204,8 @@
    *
    * @return int|string
    */
-  function fmt_debit($row)
-  {
+  function formatDebit($row) {
     $value = $row["amount"];
-
     return $value >= 0 ? Num::priceFormat($value) : '';
   }
 
@@ -225,8 +214,7 @@
    *
    * @return int|string
    */
-  function fmt_credit($row)
-  {
+  function formatCredit($row) {
     $value = -$row["amount"];
     return $value > 0 ? Num::priceFormat($value) : '';
   }
@@ -236,13 +224,11 @@
    *
    * @return string
    */
-  function fmt_person($row)
-  {
+  function formatPerson($row) {
     return Bank::payment_person_name($row["person_type_id"], $row["person_id"]);
   }
 
-  function update_data()
-  {
+  function updateData() {
     global $update_pager;
     Ajax::activate('summary');
     $update_pager = true;
@@ -255,8 +241,7 @@
    *
    * @return bool
    */
-  function change_tpl_flag($deposit_id)
-  {
+  function change_tpl_flag($deposit_id) {
     if (!check_date() && Forms::hasPost("dep_" . $deposit_id)) // temporary fix
     {
       return false;
@@ -278,6 +263,5 @@
       unset($_SESSION['undeposited']["dep_" . $deposit_id]);
       $_POST['deposited'] = $_POST['to_deposit'] - Input::post('amount_' . $deposit_id);
     }
-
     return true;
   }

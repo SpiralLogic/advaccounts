@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::openWindow(900, 500);
   if (isset($_GET['id'])) {
     $_GET['customer_id'] = $_GET['id'];
@@ -154,29 +153,25 @@
   DB::query("set @bal:=0");
   $cols = array(
     _("Type")               => array(
-      'fun'    => function ($dummy, $type)
-      {
+      'fun'    => function ($dummy, $type) {
         global $systypes_array;
         return $systypes_array[$type];
       }, 'ord' => ''
     ),
     _("#")                  => array(
-      'fun'    => function ($trans)
-      {
-        return GL_UI::trans_view($trans["type"], $trans["trans_no"]);
+      'fun'    => function ($trans) {
+        return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
       }, 'ord' => ''
     ),
     _("Order")              => array(
-      'fun' => function ($row)
-      {
-        return $row['order_'] > 0 ? Debtor::trans_view(ST_SALESORDER, $row['order_']) : "";
+      'fun' => function ($row) {
+        return $row['order_'] > 0 ? Debtor::viewTrans(ST_SALESORDER, $row['order_']) : "";
       }
     ),
     _("Reference")          => array('ord' => ''),
     _("Date")               => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
     _("Due Date")           => array(
-      'type' => 'date', 'fun' => function ($row)
-      {
+      'type' => 'date', 'fun' => function ($row) {
         return $row["type"] == ST_SALESINVOICE ? $row["due_date"] : '';
       }
     ),
@@ -185,16 +180,14 @@
     _("Branch")             => array('ord' => ''),
     _("Currency")           => array('align' => 'center', 'type' => 'skip'),
     _("Debit")              => array(
-      'align' => 'right', 'fun' => function ($row)
-      {
+      'align' => 'right', 'fun' => function ($row) {
         $value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ?
           -$row["TotalAmount"] : $row["TotalAmount"];
         return $value >= 0 ? Num::priceFormat($value) : '';
       }
     ),
     _("Credit")             => array(
-      'align' => 'right', 'insert' => true, 'fun' => function ($row)
-      {
+      'align' => 'right', 'insert' => true, 'fun' => function ($row) {
         $value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_BANKDEPOSIT) ?
           -$row["TotalAmount"] : $row["TotalAmount"];
         return $value > 0 ? Num::priceFormat($value) : '';
@@ -203,28 +196,24 @@
     array('type' => 'skip'),
     _("RB")                 => array('align' => 'right', 'type' => 'amount'),
     array(
-      'insert' => true, 'fun' => function ($row)
-    {
+      'insert' => true, 'fun' => function ($row) {
       return GL_UI::view($row["type"], $row["trans_no"]);
     }
     ),
     array(
-      'insert' => true, 'align' => 'center', 'fun' => function ($row)
-    {
+      'insert' => true, 'align' => 'center', 'fun' => function ($row) {
       return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
         DB_Pager::link(_("Credit"), "/sales/customer_credit_invoice.php?InvoiceNumber=" . $row['trans_no'], ICON_CREDIT) : '';
     }
     ),
     array(
-      'insert' => true, 'align' => 'center', 'fun' => function ($row)
-    {
+      'insert' => true, 'align' => 'center', 'fun' => function ($row) {
       return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
         DB_Pager::link(_("Payment"), "/sales/customer_payments.php?customer_id=" . $row['debtor_id'], ICON_MONEY) : '';
     }
     ),
     array(
-      'insert' => true, 'align' => 'center', 'fun' => function ($row)
-    {
+      'insert' => true, 'align' => 'center', 'fun' => function ($row) {
       $str = '';
       switch ($row['type']) {
         case ST_SALESINVOICE:
@@ -261,22 +250,20 @@
     }
     ),
     array(
-      'insert' => true, 'align' => 'center', 'fun' => function ($row)
-    {
+      'insert' => true, 'align' => 'center', 'fun' => function ($row) {
       if ($row['type'] != ST_SALESINVOICE) {
         return;
       }
       HTML::setReturn(true);
       UI::button(false, 'Email', array(
-                                      'class'        => 'button email-button',
-                                      'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
-                                 ));
+        'class'        => 'button email-button',
+        'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
+      ));
       return HTML::setReturn(false);
     }
     ),
     array(
-      'insert' => true, 'align' => 'center', 'fun' => function ($row)
-    {
+      'insert' => true, 'align' => 'center', 'fun' => function ($row) {
       if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND && $row['type'] != ST_BANKDEPOSIT
       ) // customer payment or bank deposit printout not defined yet.
       {
@@ -294,14 +281,12 @@
   if (isset($_POST['filterType']) && $_POST['filterType'] == ALL_TEXT || !empty($_POST['ajaxsearch'])) {
     $cols[_("RB")] = 'skip';
   }
-  $table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
-  $table->set_marker(function ($row)
-  {
-
+  $table = db_pager::new_db_pager('trans_tbl', $sql, $cols);
+  $table->set_marker(function ($row) {
     return (isset($row['OverDue']) && $row['OverDue'] == 1) && (Num::round(abs($row["TotalAmount"]) - $row["Allocated"], 2) != 0);
   }, _("Marked items are overdue."));
   $table->width = "80%";
-  DB_Pager::display($table);
+  $table->display($table);
   UI::emailDialogue(CT_CUSTOMER);
   Forms::end();
   Page::end();

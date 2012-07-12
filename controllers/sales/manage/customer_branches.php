@@ -172,10 +172,10 @@
       if (!Input::request('frame')) {
         $cols[' '] = 'skip';
       }
-      $table = & db_pager::new_db_pager('branch_tbl', $sql, $cols, 'branches');
+      $table =  db_pager::new_db_pager('branch_tbl', $sql, $cols, 'branches');
       $table->set_inactive_ctrl('branches', 'branch_id');
       //$table->width = "85%";
-      DB_Pager::display($table);
+      $table->display($table);
     } else {
       Event::warning(_("The selected customer does not have any branches. Please create at least one branch."));
     }

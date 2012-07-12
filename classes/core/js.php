@@ -10,6 +10,11 @@
   namespace ADV\Core;
   /**
    * @method JS i
+   * @method JS openWindow($width, $height)
+   * @method JS setFocus($selector, $cached = false)
+   * @method JS headerFile($file)
+   * @method JS footerFile($file)
+   * @method JS addLiveEvent($selector, $type, $action, $delegate = false, $cached = false)
    */
   class JS {
     use Traits\StaticAccess;

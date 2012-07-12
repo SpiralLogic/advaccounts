@@ -12,7 +12,7 @@
   //
   JS::openWindow(900, 500);
   if (isset($_GET[Orders::MODIFY_CREDIT])) {
-    $_SESSION['page_title'] = sprintf(_("Modifying Credit Invoice # %d."), $_GET[Orders::MODIFY_CREDIT]);
+    $page_title =   $_SESSION['page_title'] = sprintf(_("Modifying Credit Invoice # %d."), $_GET[Orders::MODIFY_CREDIT]);
     $help_context           = "Modifying Credit Invoice";
   } elseif (isset($_GET['InvoiceNumber'])) {
     $page_title = _($help_context = "Credit all or part of an Invoice");
@@ -24,7 +24,7 @@
     $credit_no  = $_GET[ADDED_ID];
     $trans_type = ST_CUSTCREDIT;
     Event::success(_("Credit Note has been processed"));
-    Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
+    Display::note(Debtor::viewTrans($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
     Display::note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
     Display::note(GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
     Page::footer_exit();
@@ -32,7 +32,7 @@
     $credit_no  = $_GET[UPDATED_ID];
     $trans_type = ST_CUSTCREDIT;
     Event::success(_("Credit Note has been updated"));
-    Display::note(Debtor::trans_view($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
+    Display::note(Debtor::viewTrans($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
     Display::note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
     Display::note(GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
     Page::footer_exit();
@@ -213,7 +213,7 @@
     } else {
       Cell::labels(_("Reference"), Orders::session_get($_POST['order_id'])->reference, "class='tablerowhead'");
     }
-    Cell::labels(_("Crediting Invoice"), Debtor::trans_view(ST_SALESINVOICE, array_keys(Orders::session_get($_POST['order_id'])->src_docs)), "class='tablerowhead'");
+    Cell::labels(_("Crediting Invoice"), Debtor::viewTrans(ST_SALESINVOICE, array_keys(Orders::session_get($_POST['order_id'])->src_docs)), "class='tablerowhead'");
     if (!isset($_POST['ShipperID'])) {
       $_POST['ShipperID'] = Orders::session_get($_POST['order_id'])->ship_via;
     }

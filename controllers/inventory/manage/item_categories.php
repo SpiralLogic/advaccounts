@@ -117,9 +117,9 @@
    Row::end();
  }
   Forms::inactiveControlRow($th);*/
-  $table =& db_pager::new_db_pager('cat_tbl', $sql, $th);
+  $table = db_pager::new_db_pager('cat_tbl', $sql, $th);
   //$table->width = "92%";
-  DB_Pager::display($table);
+  $table->display($table);
   echo '<br>';
   Display::div_start('details');
   Table::start('tablestyle2');
