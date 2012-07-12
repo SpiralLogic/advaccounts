@@ -106,6 +106,11 @@
   Cell::amount($_POST['deposited'], false, '', "deposited");
   Forms::hidden("to_deposit", $_POST['to_deposit'], true);
   Row::end();
+  Row::start();
+  Row::end();
+    Table::header(_("Bank fees"));
+    Row::start();Cell::amount($_POST['bank_fees'], false, '', "bank_fees");
+  Row::end();
   Table::end();
   Forms::submitCenter('Deposit', _("Deposit"), true, '', false);
   Display::div_end();
@@ -122,7 +127,7 @@
       'fun' => 'sysTypeName', 'ord' => ''
     ), _("#")                    => array(
       'fun' => 'viewTrans', 'ord' => ''
-    ), _("Reference"), _("Date") => array('type'=>'date', 'ord' => 'desc'), _("Debit") => array(
+    ), _("Reference"), _("Date") => array('type'=> 'date', 'ord' => 'desc'), _("Debit") => array(
       'align' => 'right', 'fun' => 'formatDebit'
     ), _("Credit")               => array(
       'align' => 'right', 'insert' => true, 'fun' => 'formatCredit'

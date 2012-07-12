@@ -85,6 +85,7 @@
       $_POST['bank_account'] = $this->Input->_post('bank_account', Input::NUMERIC, '');
       $sql                   = GL_Account::get_sql_for_reconcile($_POST['bank_account'], $this->Input->_post('reconcile_date'));
       $act                   = Bank_Account::get($_POST["bank_account"]);
+      var_dump($sql);
       Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
       $cols         = array(
         _("Type")        => array('fun' => array($this, 'sysTypeName'), 'ord' => ''), //
