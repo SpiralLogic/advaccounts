@@ -90,7 +90,7 @@
   Session::i();
   Ajax::i();
   Config::i();
-  ob_start('adv_ob_flush_handler', 0);
+//  ob_start('adv_ob_flush_handler', 0);
   $app        = ADVAccounting::i();
   $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
   $index      = $controller == $_SERVER['SCRIPT_NAME'];

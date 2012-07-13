@@ -19,6 +19,7 @@
    * @method escape($value, $null = false)
    * @method fetch($result = null, $fetch_mode = \PDO::FETCH_BOTH)
    * @method fetchRow($result = null)
+   * @method fetchAll($fetch_type = \PDO::FETCH_ASSOC)
    * @method fetchAssoc()
    * @method numRows($sql = null)
    * @method begin()
@@ -657,7 +658,7 @@
         $this->conn->rollBack();
         $this->intransaction = false;
       }
-      if ($this->errorInfo[1] == 1062) {
+      if (isset($this->errorInfo[1]) && $this->errorInfo[1] == 1062) {
         throw new DBDuplicateException($this->errorInfo[2]);
       }
       if (!class_exists('Errors')) {
