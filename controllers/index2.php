@@ -1,5 +1,5 @@
 <?php
-  $_POST['bank_date']    = '31/08/2011';
+  $_POST['bank_date']    = '30/11/2011';
   $_POST['bank_account'] = '5';
   $begin                 = Dates::beginMonth(Input::post('bank_date'), null, Dates::now());
   $end                   = Dates::endMonth(Input::post('bank_date'), null, Dates::now());
@@ -19,7 +19,7 @@
   $emptyrec              = array_combine(array_keys($rec[0]), array_values(array_pad([], count($rec[0]), '')));
   $emptystate            = array_combine(array_keys($state[0]), array_values(array_pad([], count($state[0]), '')));
   while ($v = array_shift($state)) {
-    $amount = $v['state_amfount'];
+    $amount = $v['state_amount'];
     foreach ($rec as $p=> $q) {
       if ($q['amount'] == $amount) {
         $matched = $rec[$p] + $v;
@@ -47,9 +47,9 @@
     return Dates::isGreaterThan($a['state_date'], $b['state_date']);
   }
 
+  Page::start('jhjh');
   global $systypes_array;
   usort($recced, 'sortByOrder');
-  Page::start('tee');
   echo '<table class="grid">';
   echo "<thead><th>type</th><th>trans no</th><th>reference</th><th>date</th><th>debit</th><th>credit</th><th>info</th><th>gl</th><th>reconciled</th><th>bank date</th><th>bank amount</th><th>bank memo</th></thead>";
   foreach ($recced as $b) {
@@ -65,7 +65,7 @@
     foreach ($b as $d => $c) {
       switch ($d) {
         case 'type':
-          echo '<td>' . $systypes_array[$c] . '</td>';
+          if ($c) echo '<td>' . $systypes_array[$c] . '</td>';
           break;
         case 'trans_no':
           echo '<td>' . GL_UI::viewTrans($b["type"], $c) . '</td>';
@@ -73,9 +73,9 @@
         case 'id':
           break;
         case 'person_type_id':
-          $gl=($b['type'] != 15) ? GL_UI::view($b["type"], $b["trans_no"]) : '';
-        echo  '<td>' . $gl. '</td>';
-        break;
+          $gl = ($b['type'] != 15) ? GL_UI::view($b["type"], $b["trans_no"]) : '';
+          echo  '<td>' . $gl . '</td>';
+          break;
         case 'person_id':
           echo  '<td>' . formatPerson($b) . '</td>';
           break;
@@ -85,7 +85,6 @@
           $value  = $b['reconciled'] != '';
           echo  '<td>' . Forms::checkbox(null, $name, $value, true, _('Reconcile this transaction')) . Forms::hidden($hidden, $value, false) . '</td>';
           break;
-
         case 'ref':
           echo '<td>' . substr($b['ref'], 0, 6) . '</td>';
           break;
@@ -104,8 +103,8 @@
       return DB_Comments::get_string(ST_BANKTRANSFER, $row['trans_no']);
     } elseif ($row['type'] == ST_GROUPDEPOSIT) {
       $sql     = "SELECT bank_trans.ref,bank_trans.person_type_id,bank_trans.trans_no,bank_trans.person_id,bank_trans.amount,
-      			comments.memo_ FROM bank_trans LEFT JOIN comments ON (bank_trans.type=comments.type AND bank_trans.trans_no=comments.id)
-      			WHERE bank_trans.bank_act='" . 5 . "' AND bank_trans.type != " . ST_GROUPDEPOSIT . " AND bank_trans.undeposited>0 AND (undeposited = " . $row['id'] . ")";
+  comments.memo_ FROM bank_trans LEFT JOIN comments ON (bank_trans.type=comments.type AND bank_trans.trans_no=comments.id)
+  WHERE bank_trans.bank_act='" . 5 . "' AND bank_trans.type != " . ST_GROUPDEPOSIT . " AND bank_trans.undeposited>0 AND (undeposited = " . $row['id'] . ")";
       $result  = DB::query($sql, 'Couldn\'t get deposit references');
       $content = '';
       foreach ($result as $trans) {
@@ -116,4 +115,5 @@
     }
     return Bank::payment_person_name($row["person_type_id"], $row["person_id"], true, $row["trans_no"]);
   }
-Page::end();
+
+  Page::end();

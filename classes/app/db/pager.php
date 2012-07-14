@@ -12,9 +12,7 @@
   any form.
 
    */
-  class DB_Pager
-  {
-
+  class DB_Pager {
     static $User;
     /**
      * @static
@@ -99,9 +97,7 @@
       if (!static::$User) {
         static::$User = User::i();
       }
-      return "<button " . ($enabled ? '' :
-        'disabled') . " class=\"navibutton\" type=\"submit\"" . " name=\"$name\" id=\"$name\" value=\"$value\">" . ($icon ?
-        "<img src='/themes/" . static::$User->_theme() . "/images/" . $icon . "'>" : '') . "<span>$value</span></button>\n";
+      return "<button " . ($enabled ? '' : 'disabled') . " class=\"navibutton\" type=\"submit\"" . " name=\"$name\" id=\"$name\" value=\"$value\">" . ($icon ? "<img src='/themes/" . static::$User->_theme() . "/images/" . $icon . "'>" : '') . "<span>$value</span></button>\n";
     }
     /**
      * @static
@@ -150,6 +146,7 @@
       /* show a table of records returned by the sql */
       Table::start('tablestyle grid width' . $this->width);
       Table::header($headers);
+
       if ($this->header_fun) { // if set header handler
         Row::start("class='{$this->header_class}'");
         $fun = $this->header_fun;
@@ -164,6 +161,7 @@
         }
         Row::end();
       }
+
       $cc = 0; //row colour counter
       foreach ($this->data as $line_no => $row) {
         $marker = $this->marker;
@@ -262,8 +260,7 @@
       }
       Row::start("class='navibar'");
       $colspan = count($this->columns);
-      $inact   = $this->inactive_ctrl == true ?
-        ' ' . Forms::checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
+      $inact   = $this->inactive_ctrl == true ? ' ' . Forms::checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
       if ($this->rec_count) {
         echo "<td colspan=$colspan class='navibar' >";
         echo "<table class='floatright'>";
@@ -298,6 +295,8 @@
       Display::div_end();
       return true;
     }
+    const SQL = 1;
+    const ARR = 2;
     /**
      * @var
      */
@@ -332,7 +331,7 @@
      * @var string
      * table width (default '95%')
      */
-    public $width;
+    public $width = "80%";
     /**
      * @var
      * additional row between title and body
@@ -445,13 +444,19 @@
       if (!static::$User) {
         static::$User = User::i();
       }
-      $this->width = "80%";
+      $this->width;
       if ($page_len == 0) {
         $page_len = static::$User->_query_size();
       }
       $this->name     = $name;
       $this->page_len = $page_len;
-      $this->set_sql($sql);
+      if (!is_array($sql)) {
+        $this->type = self::SQL;
+        $this->set_sql($sql);
+      } else {
+        $this->type = self::ARR;
+        $this->data = $sql;
+      }
     }
     /**
      * @param null $page
@@ -501,35 +506,36 @@
      */
     public function query() {
       Ajax::activate("_{$this->name}_span");
-      $this->data = array();
       if (!$this->_init()) {
         return false;
       }
-      if ($this->rec_count == 0) {
-        return true;
-      }
-      $sql    = $this->_sql_gen(false);
-      $result = DB::query($sql, 'Error browsing database: ' . $sql);
-      if ($result) {
+      if ($this->type == self::SQL) {
+        $this->data = array();
+        if ($this->rec_count == 0) {
+          return true;
+        }
+        $sql    = $this->_sql_gen(false);
+        $result = DB::query($sql, 'Error browsing database: ' . $sql);
+        if (!$result) {
+          return false;
+        }
         // setting field names for subsequent queries
         // add result field names to column defs for
         // col value retrieve and sort purposes
         while ($row = DB::fetchAssoc($result)) {
           $this->data[] = $row;
         }
-        $dbfeild_names = array_keys($this->data[0]);
-        $cnt           = min(count($dbfeild_names), count($this->columns));
-        for ($c = $i = 0; $c < $cnt; $c++) {
-          if (!(isset($this->columns[$c]['insert']) && $this->columns[$c]['insert'])) {
-            //	if (!@($this->columns[$c]['type']=='skip'))
-            $this->columns[$c]['name'] = $dbfeild_names[$c];
-            if (isset($this->columns[$c]['type']) && !($this->columns[$c]['type'] == 'insert')) {
-              $i++;
-            }
+      }
+      $dbfeild_names = array_keys($this->data[0]);
+      $cnt           = min(count($dbfeild_names), count($this->columns));
+      for ($c = $i = 0; $c < $cnt; $c++) {
+        if (!(isset($this->columns[$c]['insert']) && $this->columns[$c]['insert'])) {
+          //	if (!@($this->columns[$c]['type']=='skip'))
+          $this->columns[$c]['name'] = $dbfeild_names[$c];
+          if (isset($this->columns[$c]['type']) && !($this->columns[$c]['type'] == 'insert')) {
+            $i++;
           }
         }
-      } else {
-        return false;
       }
       return true;
     }
@@ -745,6 +751,7 @@
      * in order asc->desc->none->asc
      */
     public function sort_table($col) {
+      if ($this->type==self::ARR) return true;
       if (is_null($col)) {
         return false;
       }
@@ -795,26 +802,19 @@
      * Initialization after changing record set
      */
     protected function _init() {
-      if ($this->ready == false) {
-        $sql    = $this->_sql_gen(true);
-        $result = DB::query($sql, 'Error reading record set');
-        if ($result == false) {
-          return false;
-        }
-        $row             = DB::fetchRow($result);
-        $this->rec_count = $row[0];
-        $this->max_page  = $this->page_len ? ceil($this->rec_count / $this->page_len) : 0;
-        if (Config::get('debug.enabled')) { // FIX - need column name parsing, but for now:
-          // check if field names are set explicite in col def
-          // for all initially ordered columns
-          foreach ($this->columns as $col) {
-            if (isset($col['ord']) && $col['ord'] != '' && !isset($col['name'])
-            ) {
-              //Event::warning("Result field names must be set
-              //for all intially ordered db_pager columns.");
-            }
+      if ($this->type == self::SQL) {
+        if ($this->ready == false) {
+          $sql    = $this->_sql_gen(true);
+          $result = DB::query($sql, 'Error reading record set');
+          if ($result == false) {
+            return false;
           }
+          $row             = DB::fetchRow($result);
+          $this->rec_count = $row[0];
+        } else {
+          $this->rec_count = count($this->data);
         }
+        $this->max_page = $this->page_len ? ceil($this->rec_count / $this->page_len) : 0;
         $this->set_page(1);
         $this->ready = true;
       }

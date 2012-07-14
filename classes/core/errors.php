@@ -73,7 +73,7 @@
     public static function init()
     {
       static::$useConfigClass = class_exists('Config', false);
-      error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
+   //   error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
       if (class_exists('\ADV\Core\Event')) {
         Event::registerShutdown(__CLASS__, 'sendDebugEmail');
       }
@@ -114,7 +114,7 @@
         error_log(date(DATE_RFC822) . ' ' . $error['type'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n", 3, DOCROOT . '../error_log');
       }
       if (!in_array($type, static::$user_errors) || ($type == E_USER_ERROR && $log)) {
-        $error['backtrace'] = static::prepareBacktrace(debug_backtrace());
+        $error['backtrace'] = static::prepareBacktrace(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
         static::$errors[]   = $error;
       }
 
