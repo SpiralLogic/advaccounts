@@ -1089,8 +1089,8 @@
    */
   define('CANCEL', 'CancelUpdate');
   /**
-
    */
+
   class Arr extends ADV\Core\Arr
   {
 
