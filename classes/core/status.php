@@ -33,7 +33,9 @@
      * @param null   $var
      */
     public function __construct($status = null, $process = null, $message = '', $var = null) {
-      $this->set($status, $process, $message, $var);
+      if (func_num_args() > 0 && $message) {
+        $this->set($status, $process, $message, $var);
+      }
     }
     /**
      * Adds new status entry
@@ -43,7 +45,7 @@
      * @param string   $message Friendly message to display
      * @param mixed    $var     The variable if any invovled in causeing the status
      *
-     * @return array
+     * @return bool
      */
     public function set($status = self::INFO, $process = null, $message = '', $var = null) {
       if ($status === true) {
