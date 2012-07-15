@@ -17,9 +17,7 @@
      * @var int
      */
     public $timeout;
-    /**
-     * @var
-     */
+    /** @var */
     public $queue;
     //
     //	Setting connection parameters
@@ -30,8 +28,7 @@
      * @param int    $port
      * @param int    $timeout
      */
-    public function __construct($queue, $host = '', $port = 515, $timeout = 20)
-    {
+    public function __construct($queue, $host = '', $port = 515, $timeout = 20) {
       if ($host == '') {
         $host = $_SERVER['REMOTE_ADDR'];
       } // default is user's host
@@ -48,8 +45,7 @@
      *
      * @return mixed|string
      */
-    public function print_file($fname)
-    {
+    public function print_file($fname) {
       $queue = $this->queue;
       //Private static function prints waiting jobs on the queue.
       $ret = $this->flush_queue($queue);
@@ -121,8 +117,7 @@
      *
      * @return bool|mixed|string
      */
-    public function flush_queue($queue)
-    {
+    public function flush_queue($queue) {
       $stream = fsockopen("tcp://" . $this->host, $this->port, $errNo, $errStr, $this->timeout);
       if (!$stream) {
         return _('Cannot flush printing queue');

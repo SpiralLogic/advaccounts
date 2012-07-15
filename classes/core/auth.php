@@ -13,24 +13,16 @@
    */
   class Auth
   {
-
-    /**
-     * @var
-     */
+    /** @var */
     protected $username;
-    /**
-     * @var
-     */
+    /** @var */
     protected $id;
-    /**
-     * @var
-     */
+    /** @var */
     private $password;
     /**
      * @param $username
      */
-    public function __construct($username)
-    {
+    public function __construct($username) {
       $this->username = $username;
       $this->password = $_POST['password'];
     }
@@ -38,8 +30,7 @@
      * @param $id
      * @param $password
      */
-    public function updatePassword($id, $password)
-    {
+    public function updatePassword($id, $password) {
       \DB::update('users')->value('password', $this->hashPassword($password))->value('user_id', $this->username)
         ->value('hash', $this->makeHash($password, $id))->value('change_password', 0)->where('id=', $id)->exec();
       session_regenerate_id();
@@ -48,8 +39,7 @@
      * @internal param $password
      * @return string
      */
-    public function hashPassword()
-    {
+    public function hashPassword() {
       $password = crypt($this->password, '$6$rounds=5000$' . Config::get('auth_salt') . '$');
 
       return $password;
@@ -61,8 +51,7 @@
      * @internal param $password
      * @return bool|mixed
      */
-    public function checkUserPassword($username)
-    {
+    public function checkUserPassword($username) {
       $username = $username ? : $this->username;
       $password = $this->hashPassword($this->password);
       $result   = \DB::select()->from('users')->where('user_id=', $username)->andWhere('inactive =', 0)
@@ -89,8 +78,7 @@
      *
      * @return array
      */
-    public static function checkPasswordStrength($password, $username = false)
-    {
+    public static function checkPasswordStrength($password, $username = false) {
       $returns = array(
         'strength' => 0, 'error' => 0, 'text' => ''
       );
@@ -152,8 +140,7 @@
     /**
      * @return bool
      */
-    public function isBruteForce()
-    {
+    public function isBruteForce() {
       $query = \DB::query('select COUNT(IP) FROM user_login_log WHERE success=0 AND timestamp>NOW() - INTERVAL 1 HOUR AND IP=' . \DB::escape(\Users::get_ip()));
 
       return (\DB::fetch($query)[0] > Config::get('max_login_attempts', 50));
@@ -166,8 +153,7 @@
      *
      * @return string
      */
-    public function makeHash($password, $user_id)
-    {
+    public function makeHash($password, $user_id) {
       return crypt($password, $user_id);
     }
   }

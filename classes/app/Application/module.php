@@ -10,10 +10,9 @@
   /**
 
    */
-  class Module {
-    /**
-     * @var
-     */
+  class Module
+  {
+    /** @var */
     public $name;
     /**
      * @var null
@@ -22,19 +21,19 @@
     /**
      * @var array
      */
-    public $leftAppFunctions=[];
+    public $leftAppFunctions = [];
     /**
      * @var array
      */
-    public $rightAppFunctions=[];
+    public $rightAppFunctions = [];
     /**
      * @param      $name
      * @param null $icon
      */
     public function module($name, $icon = null) {
-      $this->name          = $name;
-      $this->icon          = $icon;
-      $this->leftAppFunctions = array();
+      $this->name              = $name;
+      $this->icon              = $icon;
+      $this->leftAppFunctions  = array();
       $this->rightAppFunctions = array();
     }
     /**

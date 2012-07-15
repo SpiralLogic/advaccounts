@@ -15,16 +15,11 @@
      * @var array
      */
     public $customers = array();
-    /**
-
-     */
-    public function __construct()
-    {
+    public function __construct() {
       echo __NAMESPACE__;
       $this->status = new \ADV\Core\Status();
     }
-    public function process()
-    {
+    public function process() {
       $this->get();
       $this->insertCustomersToDB();
       $this->createCustomer();
@@ -33,8 +28,7 @@
      * Gets XML from website containing customer information and stores in in $this->customers
      * @return bool returns false if nothing was retrieved or true otherwise.
      */
-    public function get()
-    {
+    public function get() {
       $customersXML = $this->getXML();
       if (!$customersXML) {
         return $this->status->set(false, 'getXML', "Nothing retrieved from website");
@@ -50,8 +44,7 @@
      * @internal param $customers
      * @return array
      */
-    public function insertCustomersToDB()
-    {
+    public function insertCustomersToDB() {
       $customers = $this->customers;
       if (!$customers) {
         return $this->status->set(false, 'insertToDB', 'No Customers to add.');
@@ -65,8 +58,7 @@
     /**
      * @param $customer
      */
-    public function insertCustomerToDB($customer)
-    {
+    public function insertCustomerToDB($customer) {
       if (!empty($customer['CompanyName'])) {
         $name = $customer['CompanyName'];
       } elseif (!empty($customer['FirstName']) || !empty($customer['LastName'])) {
@@ -77,7 +69,8 @@
       try {
         DB::insert('WebCustomers')->values($customer)->exec();
         $this->status->set(true, 'insert', "Added Customer $name to website customer database! {$customer['CustomerID']} ");
-      } catch (DBDuplicateException $e) {
+      }
+      catch (DBDuplicateException $e) {
         DB::update('WebCustomers')->values($customer)->where('CustomerID=', $customer['CustomerID'])->exec();
         $this->status->set(false, 'insert', "Updated Customer $name ! {$customer['CustomerID']}");
       }
@@ -85,8 +78,7 @@
     /**
      * @return string
      */
-    public function getXML()
-    {
+    public function getXML() {
       $apiuser = \Config::get('modules.webstore')['apiuser'];
       $apikey  = \Config::get('modules.webstore')['apikey'];
       $url     = \Config::get('modules.webstore')['apiurl'];
@@ -103,8 +95,7 @@
     /**
      * @return array
      */
-    protected function createCustomer()
-    {
+    protected function createCustomer() {
       $result = DB::select()->from('WebCustomers')->where('extid=', 0)->fetch()->assoc()->all();
       if (!$result) {
         return $this->status->set(false, 'insert', "No new customers in database");
@@ -142,7 +133,8 @@
         $c->contact_name                              = $row["FirstName"] . ' ' . $row["LastName"];
         try {
           $c->save();
-        } catch (\ADV\Core\DB\DBDuplicateException $e) {
+        }
+        catch (\ADV\Core\DB\DBDuplicateException $e) {
           $this->status->set(true, 'Update ', "Customer {$c->name} could not be added or updated. {$c->webid}.<br>" . $result['address'] . ":" . $row["BillingAddress1"]);
           continue;
         }

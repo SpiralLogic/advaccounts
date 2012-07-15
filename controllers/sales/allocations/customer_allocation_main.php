@@ -60,7 +60,7 @@
     $cols[_("Currency")] = 'skip';
   }
   $table = db_pager::new_db_pager('alloc_tbl', $sql, $cols);
-  $table->set_marker('Sales_Allocation::check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
+  $table->setMarker('Sales_Allocation::check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
   $table->width = "75%";
   $table->display($table);
   Forms::end();

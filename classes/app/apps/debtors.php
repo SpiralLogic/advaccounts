@@ -13,12 +13,10 @@
   /**
 
    */
-  class Debtors extends Application {
+  class Debtors extends Application
+  {
     public $name = "Debtors";
     public $help_context = "&Customers";
-    /**
-
-     */
     public function buildMenu() {
       $this->direct = '/contacts/customers';
     }

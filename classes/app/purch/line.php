@@ -9,49 +9,27 @@
    **/
   class Purch_Line
   {
-    /**
-     * @var
-     */
+    /** @var */
     public $line_no;
-    /**
-     * @var
-     */
+    /** @var */
     public $po_detail_rec;
-    /**
-     * @var
-     */
+    /** @var */
     public $stock_id;
-    /**
-     * @var
-     */
+    /** @var */
     public $description;
-    /**
-     * @var
-     */
+    /** @var */
     public $quantity;
-    /**
-     * @var
-     */
+    /** @var */
     public $price;
-    /**
-     * @var
-     */
+    /** @var */
     public $units;
-    /**
-     * @var
-     */
+    /** @var */
     public $req_del_date;
-    /**
-     * @var
-     */
+    /** @var */
     public $qty_inv;
-    /**
-     * @var
-     */
+    /** @var */
     public $qty_received;
-    /**
-     * @var
-     */
+    /** @var */
     public $discount;
     /**
      * @var int
@@ -77,8 +55,7 @@
      * @param $qty_recd
      * @param $discount
      */
-    public function __construct($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, $qty_inv, $qty_recd, $discount)
-    {
+    public function __construct($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, $qty_inv, $qty_recd, $discount) {
       /* Constructor function to add a new LineDetail object with passed params */
       $this->line_no       = $line_no;
       $this->stock_id      = $stock_item;
@@ -114,8 +91,7 @@
      *
      * @return string
      */
-    public static function add_item($creditor_trans_type, $creditor_trans_no, $stock_id, $description, $gl_code, $unit_price, $unit_tax, $quantity, $grn_item_id, $po_detail_item_id, $memo_, $err_msg = "", $discount = 0, $exp_price = -1)
-    {
+    public static function add_item($creditor_trans_type, $creditor_trans_no, $stock_id, $description, $gl_code, $unit_price, $unit_tax, $quantity, $grn_item_id, $po_detail_item_id, $memo_, $err_msg = "", $discount = 0, $exp_price = -1) {
       $unit_price = ($discount == 100) ? 0 : $unit_price / (1 - $discount / 100);
       $sql
                   = "INSERT INTO creditor_trans_details (creditor_trans_type, creditor_trans_no, stock_id, description, gl_code, unit_price, unit_tax, quantity,
@@ -141,8 +117,7 @@
      *
      * @return string
      */
-    public static function add_gl_item($creditor_trans_type, $creditor_trans_no, $gl_code, $amount, $memo_, $err_msg = "")
-    {
+    public static function add_gl_item($creditor_trans_type, $creditor_trans_no, $gl_code, $amount, $memo_, $err_msg = "") {
       return Purch_Line::add_item($creditor_trans_type, $creditor_trans_no, "", "", $gl_code, $amount, 0, 0, /*$grn_item_id*/
                                   0, /*$po_detail_item_id*/
                                   0, $memo_, $err_msg);
@@ -155,8 +130,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_for_invoice($creditor_trans_type, $creditor_trans_no)
-    {
+    public static function get_for_invoice($creditor_trans_type, $creditor_trans_no) {
       $sql
         = "SELECT *, unit_price AS FullUnitPrice FROM creditor_trans_details
             WHERE creditor_trans_type = " . DB::escape($creditor_trans_type) . "
@@ -170,8 +144,7 @@
      * @param $type
      * @param $type_no
      */
-    public static function void_for_invoice($type, $type_no)
-    {
+    public static function void_for_invoice($type, $type_no) {
       $sql
         = "UPDATE creditor_trans_details SET quantity=0, unit_price=0
             WHERE creditor_trans_type = " . DB::escape($type) . " AND creditor_trans_no=" . DB::escape($type_no);

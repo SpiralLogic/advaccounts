@@ -14,25 +14,19 @@
    */
   class UploadHandler
   {
-
     /**
      * @var #Farray_replace_recursive|array|?
      */
     private $options;
-    /**
-     * @var
-     */
+    /** @var */
     private $order_no;
-    /**
-     * @var
-     */
+    /** @var */
     private static $inserted;
     /**
      * @param $order_no
      * @param $options
      */
-    public function __construct($order_no, $options)
-    {
+    public function __construct($order_no, $options) {
       $this->order_no = $order_no;
       error_reporting(E_ALL | E_STRICT);
       ini_set('post_max_size', '3M');
@@ -74,12 +68,140 @@
       }
     }
     /**
+     * @return mixed
+     */
+    public function get() {
+      $info      = array();
+      $upload_id = (isset($_REQUEST['id'])) ? stripslashes($_REQUEST['id']) : null;
+      if ($upload_id) {
+        $sql    = "SELECT content as content,type FROM upload WHERE `id` = {$upload_id}";
+        $result = DB::query($sql, 'Could not retrieve file');
+        $result = DB::fetchAssoc($result);
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Content-type: ' . $result['type']);
+        $content = $result['content'];
+        echo $content;
+      } else {
+        $sql    = "SELECT `id`,`filename` as name, `size` ,`type` FROM upload WHERE `order_no` = " . $this->order_no;
+        $result = DB::query($sql, 'Could not retrieve upload information');
+        if (DB::numRows($result) < 1) {
+          return;
+        } else {
+          /** @noinspection PhpAssignmentInConditionInspection */
+          while ($row = DB::fetchAssoc($result)) {
+            $info[] = $row;
+          }
+        }
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Content-type: application/json');
+        echo json_encode($info);
+      }
+    }
+    public function post() {
+      $upload = isset($_FILES[$this->options['param_name']]) ? $_FILES[$this->options['param_name']] : array(
+        'tmp_name' => null, 'name'     => null, 'size'     => null, 'type'     => null, 'error'    => null
+      );
+      $info   = array();
+      if (is_array($upload['tmp_name'])) {
+        /** @noinspection PhpUnusedLocalVariableInspection */
+        foreach ($upload['tmp_name'] as $index => $value) {
+          $info[] = $this->handle_file_upload($upload['tmp_name'][$index], isset($_SERVER['HTTP_X_FILE_NAME']) ?
+            $_SERVER['HTTP_X_FILE_NAME'] : $upload['name'][$index], isset($_SERVER['HTTP_X_FILE_SIZE']) ?
+            $_SERVER['HTTP_X_FILE_SIZE'] : $upload['size'][$index], isset($_SERVER['HTTP_X_FILE_TYPE']) ?
+            $_SERVER['HTTP_X_FILE_TYPE'] : $upload['type'][$index], $upload['error'][$index]);
+        }
+      } else {
+        $info[] = $this->handle_file_upload($upload['tmp_name'], isset($_SERVER['HTTP_X_FILE_NAME']) ?
+          $_SERVER['HTTP_X_FILE_NAME'] : $upload['name'], isset($_SERVER['HTTP_X_FILE_SIZE']) ? $_SERVER['HTTP_X_FILE_SIZE'] :
+          $upload['size'], isset($_SERVER['HTTP_X_FILE_TYPE']) ? $_SERVER['HTTP_X_FILE_TYPE'] :
+          $upload['type'], $upload['error']);
+      }
+      header('Vary: Accept');
+      if (isset($_SERVER['HTTP_ACCEPT']) && (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)
+      ) {
+        header('Content-type: application/json');
+      } else {
+        header('Content-type: text/plain');
+      }
+      echo json_encode($info);
+    }
+    /**
+     * @static
+     *
+     * @param $id
+     */
+    public static function insert($id) {
+      if (!self::$inserted) {
+        JS::footerFile(array(
+                            '/js/js2/jquery.fileupload.js', '/js/js2/jquery.fileupload-ui.js', '/js/js2/jquery.fileupload-app.js'
+                       ));
+        self::$inserted = true;
+      }
+      echo '
+    <div id="file_upload"><form id="file_upload_" action="/upload/upload.php" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" multiple>
+        <button type="submit">Upload</button>
+        <div class="js">Upload files</div>
+    </form>
+    <table id="files" data-order-id="' . $id . '">
+        <tr id="template_upload" style="display:none;">
+            <td class="file_upload_preview"></td>
+            <td class="file_upload_name"></td>
+            <td class="file_upload_progress">
+                <div></div>
+            </td>
+            <td class="file_upload_start">
+                <button class="ui-button ui-widget ui-state-default ui-corner-all" title="Start">
+                    <span class="ui-icon ui-icon-circle-arrow-e">Start</span>
+                </button>
+            </td>
+            <td class="file_upload_cancel">
+                <button class="ui-button ui-widget ui-state-default ui-corner-all" title="Cancel">
+                    <span class="ui-icon ui-icon-cancel">Cancel</span>
+                </button>
+            </td>
+        </tr>
+        <tr id="template_download" style="display:none;">
+            <td class="file_upload_preview"><img/></td>
+            <td class="file_upload_name"><a></a></td>
+            <td class="file_upload_delete" colspan="3">
+                <button class="ui-button ui-widget ui-state-default ui-corner-all" title="Delete">
+                    <span class="ui-icon ui-icon-trash">Delete</span>
+                </button>
+            </td>
+        </tr>
+    </table>
+    <div id="file_upload_progress" class="js file_upload_progress">
+        <div style="display:none;"></div>
+    </div>
+    <div class="js">
+
+        <button id="file_upload_delete" class="ui-button ui-state-default ui-corner-all ui-button-text-icon-primary">
+            <span class="ui-button-icon-primary ui-icon ui-icon-trash"></span>
+            <span class="ui-button-text">Delete All</span>
+        </button>
+    </div></div>
+';
+    }
+    public function delete() {
+      $name   = isset($_REQUEST['file']) ? ($_REQUEST['file']) : null;
+      $id     = isset($_REQUEST['id']) ? ($_REQUEST['id']) : null;
+      $sql    = "DELETE FROM upload WHERE `id` = {$id} AND `filename` = '{$name}'";
+      $result = DB::query($sql, 'Could not delete file');
+      header('Content-type: application/json');
+      echo json_encode($result);
+    }
+    private function make_dir() {
+      $old = umask(0);
+      //@mkdir($this->upload_dir, 0777);
+      umask($old);
+    }
+    /**
      * @param $file_name
      *
      * @return null|\stdClass
      */
-    private function get_file_object($file_name)
-    {
+    private function get_file_object($file_name) {
       $file_path = $this->options['upload_dir'] . $file_name;
       if (is_file($file_path) && $file_name[0] !== '.') {
         $file       = new \stdClass();
@@ -112,8 +234,7 @@
     /**
      * @return array
      */
-    private function get_file_objects()
-    {
+    private function get_file_objects() {
       return array_values(array_filter(array_map(array($this, 'get_file_object'), scandir($this->options['upload_dir']))));
     }
     /**
@@ -121,9 +242,9 @@
      * @param $options
      *
      * @return bool
+     * @return bool
      */
-    private function create_scaled_image($file_name, $options)
-    {
+    private function create_scaled_image($file_name, $options) {
       $file_path     = $this->options['upload_dir'] . $file_name;
       $new_file_path = $options['upload_dir'] . $file_name;
       list($img_width, $img_height) = @getimagesize($file_path);
@@ -172,8 +293,7 @@
      *
      * @return string
      */
-    private function has_error($uploaded_file, $file, $error)
-    {
+    private function has_error($uploaded_file, $file, $error) {
       if ($error) {
         return $error;
       }
@@ -190,7 +310,7 @@
         return 'maxFileSize';
       }
       if ($this->options['min_file_size'] && $file_size < $this->options['min_file_size']
-) {
+      ) {
         return 'minFileSize';
       }
       if (is_int($this->options['max_number_of_files']) && (count($this->get_file_objects()) >= $this->options['max_number_of_files'])
@@ -209,8 +329,7 @@
      *
      * @return \stdClass
      */
-    private function handle_file_upload($uploaded_file, $name, $size, $type, $error)
-    {
+    private function handle_file_upload($uploaded_file, $name, $size, $type, $error) {
       $file = new \stdClass();
       // Remove path information and dots around the filename, to prevent uploading
       // into different directories or replacing hidden system files.
@@ -261,154 +380,5 @@
                $file->id = $this->upload_id = $upload_id;*/
 
       return $file;
-    }
-    /**
-     * @return mixed
-     */
-    public function get()
-    {
-      $info      = array();
-      $upload_id = (isset($_REQUEST['id'])) ? stripslashes($_REQUEST['id']) : null;
-      if ($upload_id) {
-        $sql    = "SELECT content as content,type FROM upload WHERE `id` = {$upload_id}";
-        $result = DB::query($sql, 'Could not retrieve file');
-        $result = DB::fetchAssoc($result);
-        header('Cache-Control: no-cache, must-revalidate');
-        header('Content-type: ' . $result['type']);
-        $content = $result['content'];
-        echo $content;
-      } else {
-        $sql    = "SELECT `id`,`filename` as name, `size` ,`type` FROM upload WHERE `order_no` = " . $this->order_no;
-        $result = DB::query($sql, 'Could not retrieve upload information');
-        if (DB::numRows($result) < 1) {
-          return;
-        } else {
-          /** @noinspection PhpAssignmentInConditionInspection */
-          while ($row = DB::fetchAssoc($result)) {
-            $info[] = $row;
-          }
-        }
-        header('Cache-Control: no-cache, must-revalidate');
-        header('Content-type: application/json');
-        echo json_encode($info);
-      }
-    }
-    /**
-
-     */
-    public function post()
-    {
-      $upload = isset($_FILES[$this->options['param_name']]) ? $_FILES[$this->options['param_name']] : array(
-        'tmp_name' => null, 'name'     => null, 'size'     => null, 'type'     => null, 'error'    => null
-      );
-      $info   = array();
-      if (is_array($upload['tmp_name'])) {
-        /** @noinspection PhpUnusedLocalVariableInspection */
-        foreach ($upload['tmp_name'] as $index => $value) {
-          $info[] = $this->handle_file_upload($upload['tmp_name'][$index], isset($_SERVER['HTTP_X_FILE_NAME']) ?
-            $_SERVER['HTTP_X_FILE_NAME'] :
-            $upload['name'][$index], isset($_SERVER['HTTP_X_FILE_SIZE']) ?
-            $_SERVER['HTTP_X_FILE_SIZE'] :
-            $upload['size'][$index], isset($_SERVER['HTTP_X_FILE_TYPE']) ?
-            $_SERVER['HTTP_X_FILE_TYPE'] :
-            $upload['type'][$index], $upload['error'][$index]);
-        }
-      } else {
-        $info[] = $this->handle_file_upload($upload['tmp_name'], isset($_SERVER['HTTP_X_FILE_NAME']) ?
-          $_SERVER['HTTP_X_FILE_NAME'] :
-          $upload['name'], isset($_SERVER['HTTP_X_FILE_SIZE']) ?
-          $_SERVER['HTTP_X_FILE_SIZE'] :
-          $upload['size'], isset($_SERVER['HTTP_X_FILE_TYPE']) ?
-          $_SERVER['HTTP_X_FILE_TYPE'] :
-          $upload['type'], $upload['error']);
-      }
-      header('Vary: Accept');
-      if (isset($_SERVER['HTTP_ACCEPT']) && (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)
-      ) {
-        header('Content-type: application/json');
-      } else {
-        header('Content-type: text/plain');
-      }
-      echo json_encode($info);
-    }
-    /**
-     * @static
-     *
-     * @param $id
-     */
-    public static function insert($id)
-    {
-      if (!self::$inserted) {
-        JS::footerFile(array(
-          '/js/js2/jquery.fileupload.js', '/js/js2/jquery.fileupload-ui.js', '/js/js2/jquery.fileupload-app.js'
-        ));
-        self::$inserted = true;
-      }
-      echo '
-    <div id="file_upload"><form id="file_upload_" action="/upload/upload.php" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" multiple>
-        <button type="submit">Upload</button>
-        <div class="js">Upload files</div>
-    </form>
-    <table id="files" data-order-id="' . $id . '">
-        <tr id="template_upload" style="display:none;">
-            <td class="file_upload_preview"></td>
-            <td class="file_upload_name"></td>
-            <td class="file_upload_progress">
-                <div></div>
-            </td>
-            <td class="file_upload_start">
-                <button class="ui-button ui-widget ui-state-default ui-corner-all" title="Start">
-                    <span class="ui-icon ui-icon-circle-arrow-e">Start</span>
-                </button>
-            </td>
-            <td class="file_upload_cancel">
-                <button class="ui-button ui-widget ui-state-default ui-corner-all" title="Cancel">
-                    <span class="ui-icon ui-icon-cancel">Cancel</span>
-                </button>
-            </td>
-        </tr>
-        <tr id="template_download" style="display:none;">
-            <td class="file_upload_preview"><img/></td>
-            <td class="file_upload_name"><a></a></td>
-            <td class="file_upload_delete" colspan="3">
-                <button class="ui-button ui-widget ui-state-default ui-corner-all" title="Delete">
-                    <span class="ui-icon ui-icon-trash">Delete</span>
-                </button>
-            </td>
-        </tr>
-    </table>
-    <div id="file_upload_progress" class="js file_upload_progress">
-        <div style="display:none;"></div>
-    </div>
-    <div class="js">
-
-        <button id="file_upload_delete" class="ui-button ui-state-default ui-corner-all ui-button-text-icon-primary">
-            <span class="ui-button-icon-primary ui-icon ui-icon-trash"></span>
-            <span class="ui-button-text">Delete All</span>
-        </button>
-    </div></div>
-';
-    }
-    /**
-
-     */
-    private function make_dir()
-    {
-      $old = umask(0);
-      //@mkdir($this->upload_dir, 0777);
-      umask($old);
-    }
-    /**
-
-     */
-    public function delete()
-    {
-      $name   = isset($_REQUEST['file']) ? ($_REQUEST['file']) : null;
-      $id     = isset($_REQUEST['id']) ? ($_REQUEST['id']) : null;
-      $sql    = "DELETE FROM upload WHERE `id` = {$id} AND `filename` = '{$name}'";
-      $result = DB::query($sql, 'Could not delete file');
-      header('Content-type: application/json');
-      echo json_encode($result);
     }
   }

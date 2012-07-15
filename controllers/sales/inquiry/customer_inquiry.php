@@ -152,41 +152,41 @@
   }
   DB::query("set @bal:=0");
   $cols = array(
-    _("Type")               => array(
+    _("Type")                  => array(
       'fun'    => function ($dummy, $type) {
         global $systypes_array;
         return $systypes_array[$type];
       }, 'ord' => ''
     ),
-    _("#")                  => array(
+    _("#")                     => array(
       'fun'    => function ($trans) {
         return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
       }, 'ord' => ''
     ),
-    _("Order")              => array(
+    _("Order")                 => array(
       'fun' => function ($row) {
         return $row['order_'] > 0 ? Debtor::viewTrans(ST_SALESORDER, $row['order_']) : "";
       }
     ),
-    _("Reference")          => array('ord' => ''),
-    _("Date")               => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
-    _("Due Date")           => array(
+    _("Reference")             => array('ord' => ''),
+    _("Date")                  => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
+    _("Due Date")              => array(
       'type' => 'date', 'fun' => function ($row) {
         return $row["type"] == ST_SALESINVOICE ? $row["due_date"] : '';
       }
     ),
-    _("Customer")           => array('ord' => 'asc'),
+    _("Customer")              => array('ord' => 'asc'),
     array('type' => 'skip'),
-    _("Branch")             => array('ord' => ''),
-    _("Currency")           => array('align' => 'center', 'type' => 'skip'),
-    _("Debit")              => array(
+    _("Branch")                => array('ord' => ''),
+    _("Currency")              => array('align' => 'center', 'type' => 'skip'),
+    _("Debit")                 => array(
       'align' => 'right', 'fun' => function ($row) {
         $value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ?
           -$row["TotalAmount"] : $row["TotalAmount"];
         return $value >= 0 ? Num::priceFormat($value) : '';
       }
     ),
-    _("Credit")             => array(
+    _("Credit")                => array(
       'align' => 'right', 'insert' => true, 'fun' => function ($row) {
         $value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_BANKDEPOSIT) ?
           -$row["TotalAmount"] : $row["TotalAmount"];
@@ -194,7 +194,7 @@
       }
     ),
     array('type' => 'skip'),
-    _("RB")                 => array('align' => 'right', 'type' => 'amount'),
+    _("RB")                    => array('align' => 'right', 'type' => 'amount'),
     array(
       'insert' => true, 'fun' => function ($row) {
       return GL_UI::view($row["type"], $row["trans_no"]);
@@ -256,9 +256,9 @@
       }
       HTML::setReturn(true);
       UI::button(false, 'Email', array(
-        'class'        => 'button email-button',
-        'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
-      ));
+                                      'class'        => 'button email-button',
+                                      'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
+                                 ));
       return HTML::setReturn(false);
     }
     ),
@@ -282,7 +282,7 @@
     $cols[_("RB")] = 'skip';
   }
   $table = db_pager::new_db_pager('trans_tbl', $sql, $cols);
-  $table->set_marker(function ($row) {
+  $table->setMarker(function ($row) {
     return (isset($row['OverDue']) && $row['OverDue'] == 1) && (Num::round(abs($row["TotalAmount"]) - $row["Allocated"], 2) != 0);
   }, _("Marked items are overdue."));
   $table->width = "80%";

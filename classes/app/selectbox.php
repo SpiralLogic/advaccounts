@@ -13,9 +13,7 @@
      * @var array
      */
     protected $where = array(); // additional constraints
-    /**
-     * @var
-     */
+    /** @var */
     protected $order; // list sort order
     // special option parameters
     /**
@@ -116,25 +114,17 @@
      * @var string
      */
     protected $rel = ''; // false, or length of editable entry field
-    /**
-     * @var
-     */
+    /** @var */
     protected $name;
     /**
      * @var null
      */
     protected $selected_id;
-    /**
-     * @var
-     */
+    /** @var */
     protected $sql;
-    /**
-     * @var
-     */
+    /** @var */
     protected $valfield;
-    /**
-     * @var
-     */
+    /** @var */
     protected $namefield;
     /**
      * @param       $name
@@ -144,8 +134,7 @@
      * @param       $namefield
      * @param array $options
      */
-    public function __construct($name, $selected_id = null, $sql, $valfield, $namefield, $options = array())
-    {
+    public function __construct($name, $selected_id = null, $sql, $valfield, $namefield, $options = array()) {
       $this->name        = $name;
       $this->order       = $namefield;
       $this->selected_id = $selected_id;
@@ -167,8 +156,7 @@
     /**
      * @return string
      */
-    public function create()
-    {
+    public function create() {
       // ------ merge options with defaults ----------
       $search_box = $this->search_box === true ? '_' . $this->name . '_edit' : $this->search_box;
       // select content filtered by search field:
@@ -334,8 +322,7 @@
      * @param $search_button
      * @param $txt
      */
-    public function generateSQL($search_box, $search_button, $txt)
-    {
+    public function generateSQL($search_box, $search_button, $txt) {
       $limit = '';
       if ($search_box) {
         // search related sql modifications
@@ -395,8 +382,7 @@
     /**
      * @return null|PDOStatement
      */
-    private function executeSQL()
-    {
+    private function executeSQL() {
       return $this->DB->_query($this->sql);
     }
     /**
@@ -404,8 +390,7 @@
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    private function getNext($result)
-    {
+    private function getNext($result) {
       return $this->DB->_fetch($result);
     }
   }

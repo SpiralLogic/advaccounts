@@ -19,12 +19,10 @@
   /**
 
    */
-  class Language {
+  class Language
+  {
     use Traits\Singleton;
 
-    /**
-     * @var
-     */
     public $name;
     /**
      * @var string
@@ -41,13 +39,7 @@
      * Currently support for Left-to-Right (ltr) and Right-To-Left (rtl)
      */
     public $dir;
-    /**
-     * @var
-     */
     protected $installed_languages;
-    /**
-     * @var
-     */
     public $is_locale_file;
     /**
      * @param        $name

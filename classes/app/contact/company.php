@@ -17,33 +17,21 @@
      * @var string
      */
     public $name = '';
-    /**
-     * @var
-     */
+    /** @var */
     public $address;
-    /**
-     * @var
-     */
+    /** @var */
     public $city;
-    /**
-     * @var
-     */
+    /** @var */
     public $state;
-    /**
-     * @var
-     */
+    /** @var */
     public $postcode;
     /**
      * @var string
      */
     public $post_address = '';
-    /**
-     * @var
-     */
+    /** @var */
     public $tax_id;
-    /**
-     * @var
-     */
+    /** @var */
     public $contact_name;
     /**
      * @var int
@@ -82,8 +70,7 @@
      *
      * @return void
      */
-    protected function addEmailGroup($name, $emails, $trans, $type)
-    {
+    protected function addEmailGroup($name, $emails, $trans, $type) {
     }
     /**
      * @static
@@ -93,8 +80,7 @@
      *
      * @return void
      */
-    public static function addInfoDialog($selector, $id = false)
-    {
+    public static function addInfoDialog($selector, $id = false) {
       if ($id) {
         $company = new static($id);
       }
@@ -134,8 +120,7 @@ JS;
      *
      * @return bool|string
      */
-    public static function getEmailDialogue($emailid)
-    {
+    public static function getEmailDialogue($emailid) {
       list($id, $type, $trans) = explode('-', $emailid);
       $company = get_called_class();
       $company = new $company($id);
@@ -156,8 +141,7 @@ JS;
     /**
      * @return array
      */
-    public function jsonSerialize()
-    {
+    public function jsonSerialize() {
       return get_object_vars($this);
     }
   }

@@ -15,65 +15,168 @@
   class DB_Pager
   {
     static $User;
+    const SQL = 1;
+    const ARR = 2;
+    /** @var */
+    public $sql;
     /**
-     * @static
-     *
-     * @param      $name
-     * @param      $sql
-     * @param      $coldef
-     * @param null $table
-     * @param null $key
-     * @param int  $page_len
-     * @param null $sort
-     *
-     * @return DB_Pager
+     * @var
      */
-    static function new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_len = 0, $sort = null)
-    {
-      $id = $name;
-      if (is_array($name)) {
-        $id   = $name[1];
-        $name = $name[0];
-      }
-      unset($_SESSION['pager'][$name]); // kill pager if sql has changed
+    public $name;
+    /**
+     * @var
+     * column definitions (head, type, order)
+     */
+    public $columns;
+    /**
+     * @var
+     * marker check function
+     */
+    public $marker;
+    /**
+     * @var
+     */
+    public $marker_txt;
+    /**
+     * @var
+     */
+    public $marker_class;
+    /**
+     * @var
+     */
+    public $notice_class;
+    /**
+     * @var string
+     * table width (default '95%')
+     */
+    public $width = "80%";
+    /**
+     * @var
+     * additional row between title and body
+     */
+    public $header_fun;
+    /**
+     * @var
+     */
+    public $header_class;
+    /**
+     * @var
+     */
+    public $footer_fun;
+    /**
+     * @var
+     */
+    public $footer_class;
+    /**
+     * @var array
+     */
+    public $data = array();
+    /**
+     * @var
+     */
+    public $curr_page = 1;
+    /**
+     * @var
+     */
+    public $max_page = 1;
+    /**
+     * @var
+     */
+    public $last_page;
+    /**
+     * @var
+     */
+    public $prev_page;
+    /**
+     * @var
+     */
+    public $next_page;
+    /**
+     * @var
+     */
+    public $first_page;
+    /**
+     * @var #M#C\User.query_size|int|?
+     */
+    public $page_len = 1;
+    /**
+     * @var
+     */
+    public $rec_count = 0;
+    /**
+     * @var
+     */
+    public $select;
+    /**
+     * @var
+     */
+    public $where;
+    /**
+     * @var
+     */
+    public $from;
+    /**
+     * @var
+     */
+    public $group;
+    /**
+     * @var
+     */
+    public $order;
+    /**
+     * @var
+     */
+    public $extra_where;
+    /**
+     * @var bool
+     */
+    public $ready;
+    /**
+     * @var bool
+     * this var is false after change in sql before first
 
-      if (!isset($_SESSION['pager'])) {
-        $_SESSION['pager'] = array();
+    and before first query.
+     */
+    public $inactive_ctrl = false;
+    /**
+     * @var
+     */
+    public $main_tbl;
+    /**
+     * @var
+     * table and key field name for inactive ctrl and edit/delete links
+     * key field name
+     * db_pager constructor
+     * accepts $sql like 'SELECT ...[FROM ...][WHERE ...][GROUP ...][ORDER ...]'
+     * $name is base name for pager controls
+     */
+    public $key;
+    static $dates;
+    public $rowClass;
+    public $type;
+    public $id;
+    /**
+     * @param      $sql
+     * @param      $name
+     * @param null $table
+     * @param int  $page_len
+     */
+    public function __construct($sql, $name, $table = null, $page_len = 0) {
+      if (!static::$User) {
+        static::$User = User::i();
       }
-      if (isset($_SESSION['pager'][$name])) {
-        if (is_array($sql)) {
-          if ($id != $_SESSION['pager'][$name]->id) {
-            unset($_SESSION['pager'][$name]); // kill pager if sql has changed
-          } else {
-            $_SESSION['pager'][$name]->sql = $sql;
-          }
-        } elseif ($_SESSION['pager'][$name]->sql != $sql) {
-          unset($_SESSION['pager'][$name]); // kill pager if sql has changed
-        }
+      $this->width;
+      if ($page_len == 0) {
+        $page_len = static::$User->_query_size();
       }
-
-      if (!isset($_SESSION['pager'][$name])) {
-        $pager           = new static($sql, $name, $table, $page_len);
-        $pager->id       = $id;
-        $pager->main_tbl = $table;
-        $pager->key      = $key;
-        $pager->set_sql($sql);
-        $pager->set_columns($coldef);
-        $pager->sort_table($sort);
-        $_SESSION['pager'][$name] = $pager;
-      }
-      foreach ($_SESSION['pager'][$name]->columns as &$column) {
-        if (isset($column['funkey'])) {
-          $column['fun'] = $coldef[$column['funkey']]['fun'];
-        }
-      }
-      return $_SESSION['pager'][$name];
+      $this->name     = $name;
+      $this->page_len = $page_len;
+      $this->setSQL($sql);
     }
     /**
      * @return array
      */
-    public function __sleep()
-    {
+    public function __sleep() {
       foreach ($this->columns as &$column) {
         if (isset($column['fun']) && is_callable($column['fun'])) {
           unset($column['fun']);
@@ -93,8 +196,7 @@
      *
      * @return string
      */
-    public static function link($link_text, $url, $icon = false)
-    {
+    public static function link($link_text, $url, $icon = false) {
       if (!static::$User) {
         static::$User = User::i();
       }
@@ -115,8 +217,7 @@
      *
      * @return string
      */
-    public function navi($name, $value, $enabled = true, $icon = false)
-    {
+    public function navi($name, $value, $enabled = true, $icon = false) {
       if (!static::$User) {
         static::$User = User::i();
       }
@@ -131,8 +232,7 @@
      * @param      $value
      * @param bool $enabled
      */
-    public function navi_cell($name, $value, $enabled = true)
-    {
+    public function navi_cell($name, $value, $enabled = true) {
       Cell::label($this->navi($name, $value, $enabled));
     }
     /**
@@ -142,8 +242,7 @@
      *
      * @return bool
      */
-    public function display()
-    {
+    public function display() {
       if (!static::$dates) {
         static::$dates = Dates::i();
       }
@@ -300,10 +399,10 @@
         if (@$this->inactive_ctrl) {
           Forms::submit('Update', _('Update'), true, '', null);
         } // inactive update
-        $this->navi_cell($but_pref . 'first', _('First'), $this->first_page);
-        $this->navi_cell($but_pref . 'prev', _('Prev'), $this->prev_page);
-        $this->navi_cell($but_pref . 'next', _('Next'), $this->next_page);
-        $this->navi_cell($but_pref . 'last', _('Last'), $this->last_page);
+        $this->navi_cell($but_pref . 'first', 1, $this->first_page);
+        $this->navi_cell($but_pref . 'prev', $this->curr_page - 1, $this->prev_page);
+        $this->navi_cell($but_pref . 'next', $this->curr_page + 1, $this->next_page);
+        $this->navi_cell($but_pref . 'last', $this->max_page, $this->last_page);
         Row::end();
         echo "</table>";
         $from = ($this->curr_page - 1) * $this->page_len + 1;
@@ -326,167 +425,6 @@
       Display::div_end();
       return true;
     }
-    const SQL = 1;
-    const ARR = 2;
-    /**
-     * @var
-     */
-    public $sql;
-    /**
-     * @var
-     */
-    public $name;
-    /**
-     * @var
-     * column definitions (head, type, order)
-     */
-    public $columns;
-    /**
-     * @var
-     * marker check function
-     */
-    public $marker;
-    /**
-     * @var
-     */
-    public $marker_txt;
-    /**
-     * @var
-     */
-    public $marker_class;
-    /**
-     * @var
-     */
-    public $notice_class;
-    /**
-     * @var string
-     * table width (default '95%')
-     */
-    public $width = "80%";
-    /**
-     * @var
-     * additional row between title and body
-     */
-    public $header_fun;
-    /**
-     * @var
-     */
-    public $header_class;
-    /**
-     * @var
-     */
-    public $footer_fun;
-    /**
-     * @var
-     */
-    public $footer_class;
-    /**
-     * @var array
-     */
-    public $data = array();
-    /**
-     * @var
-     */
-    public $curr_page = 0;
-    /**
-     * @var
-     */
-    public $max_page;
-    /**
-     * @var
-     */
-    public $last_page;
-    /**
-     * @var
-     */
-    public $prev_page;
-    /**
-     * @var
-     */
-    public $next_page;
-    /**
-     * @var
-     */
-    public $first_page;
-    /**
-     * @var #M#C\User.query_size|int|?
-     */
-    public $page_len;
-    /**
-     * @var
-     */
-    public $rec_count;
-    /**
-     * @var
-     */
-    public $select;
-    /**
-     * @var
-     */
-    public $where;
-    /**
-     * @var
-     */
-    public $from;
-    /**
-     * @var
-     */
-    public $group;
-    /**
-     * @var
-     */
-    public $order;
-    /**
-     * @var
-     */
-    public $extra_where;
-    /**
-     * @var bool
-     */
-    public $ready = false;
-    /**
-     * @var bool
-     * this var is false after change in sql before first
-
-    and before first query.
-     */
-    public $inactive_ctrl = false;
-    /**
-     * @var
-     */
-    public $main_tbl;
-    /**
-     * @var
-     * table and key field name for inactive ctrl and edit/delete links
-     * key field name
-     * db_pager constructor
-     * accepts $sql like 'SELECT ...[FROM ...][WHERE ...][GROUP ...][ORDER ...]'
-     * $name is base name for pager controls
-     */
-    public $key;
-    static $dates;
-    public $rowClass;
-    public $type;
-    public $id;
-    /**
-     * @param      $sql
-     * @param      $name
-     * @param null $table
-     * @param int  $page_len
-     */
-    public function __construct($sql, $name, $table = null, $page_len = 0)
-    {
-      if (!static::$User) {
-        static::$User = User::i();
-      }
-      $this->width;
-      if ($page_len == 0) {
-        $page_len = static::$User->_query_size();
-      }
-      $this->name     = $name;
-      $this->page_len = $page_len;
-      $this->set_sql($sql);
-    }
     /**
      * @param null $page
      *
@@ -494,9 +432,8 @@
      * Set query result page
 
      */
-    public function change_page($page = null)
-    {
-      $this->set_page($page);
+    public function change_page($page = null) {
+      $this->setPage($page);
       $this->query();
       return true;
     }
@@ -507,8 +444,7 @@
      * Helper for display inactive control cells
 
      */
-    public function  inactive_control_cell(&$row)
-    {
+    public function  inactive_control_cell(&$row) {
       if ($this->inactive_ctrl) {
         //	return inactive_control_cell($row[$this->inactive_ctrl['key']],
         // $row['inactive'], $this->inactive_ctrl['table'],
@@ -535,8 +471,7 @@
      * Query database
 
      */
-    public function query()
-    {
+    public function query() {
       Ajax::activate("_{$this->name}_span");
       if (!$this->_init()) {
         return false;
@@ -558,7 +493,6 @@
           $this->data[] = $row;
         }
       } elseif ($this->type == self::ARR) {
-
         $offset     = ($this->curr_page - 1) * $this->page_len;
         $this->data = array_slice($this->sql, $offset, $this->page_len);
       }
@@ -602,22 +536,19 @@
      *              Force pager initialization.
 
      */
-    public function refresh_pager($name)
-    {
+    public function refresh_pager($name) {
       if (isset($_SESSION[$name])) {
         $_SESSION[$name]->ready = false;
       }
     }
     /**
      * Set current page in response to user control.
-
      */
-    public function select_records()
-    {
+    public function select_records() {
       $page = Forms::findPostPrefix($this->name . '_page_', false);
       $sort = Forms::findPostPrefix($this->name . '_sort_', true);
       if ($page) {
-        $this->change_page($page);
+        $this->change_page($_POST[$this->name . '_page_' . $page]);
         if ($page == 'next' && !$this->next_page || $page == 'last' && !$this->last_page
         ) {
           JS::setFocus($this->name . '_page_prev');
@@ -627,18 +558,18 @@
           JS::setFocus($this->name . '_page_next');
         }
       } elseif ($sort != -1) {
-        $this->sort_table($sort);
+        $this->sortTable($sort);
       } else {
         $this->query();
       }
     }
     /**
-     * @param $flds
      * Set column definitions
-     * $flds: array( fldname1, fldname2=>type,...)
+     * types: inactive|skip|insert
+     *
+     * @param array  $flds array( fldname1, fldname2=>type,...)
      */
-    public function set_columns($flds)
-    {
+    protected function setColumns($flds) {
       $this->columns = array();
       if (!is_array($flds)) {
         $flds = array($flds);
@@ -690,8 +621,7 @@
      * Return array of column contents.
 
      */
-    public function set_footer($func, $footercl = 'inquirybg')
-    {
+    public function setFooter($func, $footercl = 'inquirybg') {
       $this->footer_fun   = $func;
       $this->footer_class = $footercl;
     }
@@ -700,8 +630,7 @@
      * Calculates page numbers for html controls.
 
      */
-    public function set_page($to)
-    {
+    protected function setPage($to) {
       switch ($to) {
         case 'next':
           $page = $this->curr_page + 1;
@@ -738,14 +667,14 @@
      * @param $sql
      * Parse base sql select query.
      */
-    public function set_sql($sql)
-    {
+    protected function setSQL($sql) {
+      if (is_array($sql)) {
+        $this->type = self::ARR;
+        $this->sql  = $sql;
+        return;
+      }
       if ($sql != $this->sql) {
-        if (is_array($sql)) {
-          $this->type = self::ARR;
-          $this->sql  = $sql;
-          return;
-        }
+
         $this->sql   = $sql;
         $this->type  = self::SQL;
         $this->ready = false;
@@ -778,8 +707,7 @@
      * @return mixed
      * Set additional constraint on record set
      */
-    public function set_where($where = null)
-    {
+    protected function setWhere($where = null) {
       if ($where) {
         if (!is_array($where)) {
           $where = array($where);
@@ -799,20 +727,20 @@
      * Change sort column direction
      * in order asc->desc->none->asc
      */
-    public function sort_table($col)
-    {
+    protected function sortTable($col) {
       if ($this->type == self::ARR) {
         $this->query();
 
         return true;
       }
+      Event::notice($this->type);
       if (is_null($col)) {
         return false;
       }
       $ord                        = (!isset($this->columns[$col]['ord'])) ? '' : $this->columns[$col]['ord'];
       $ord                        = ($ord == '') ? 'asc' : (($ord == 'asc') ? 'desc' : '');
       $this->columns[$col]['ord'] = $ord;
-      $this->set_page(1);
+      $this->setPage(1);
       $this->query();
       return true;
     }
@@ -823,8 +751,7 @@
      * Return array of column contents.
 
      */
-    public function set_header($func, $headercl = 'inquirybg')
-    {
+    public function setHeader($func, $headercl = 'inquirybg') {
       $this->header_fun   = $func;
       $this->header_class = $headercl;
     }
@@ -834,8 +761,7 @@
      * Setter for table editors with inactive cell control.
 
      */
-    public function set_inactive_ctrl($table, $key)
-    {
+    public function setInactiveCtrl($table, $key) {
       $this->inactive_ctrl = array(
         'table' => $table, 'key'   => $key
       );
@@ -847,8 +773,7 @@
      * @param string $msgclass
      * Set check function to mark some rows.
      */
-    public function set_marker($func, $notice = '', $markercl = 'overduebg', $msgclass = 'overduefg')
-    {
+    public function setMarker($func, $notice = '', $markercl = 'overduebg', $msgclass = 'overduefg') {
       $this->marker       = $func;
       $this->marker_txt   = $notice;
       $this->marker_class = $markercl;
@@ -858,8 +783,7 @@
      * @return bool
      * Initialization after changing record set
      */
-    protected function _init()
-    {
+    protected function _init() {
       if ($this->ready == false) {
         if ($this->type == self::SQL) {
           $sql    = $this->_sql_gen(true);
@@ -869,11 +793,19 @@
           }
           $row             = DB::fetchRow($result);
           $this->rec_count = $row[0];
+          $this->max_page  = $this->page_len ? ceil($this->rec_count / $this->page_len) : 0;
+
+          $this->setPage(1);
         } elseif ($this->type == self::ARR) {
           $this->rec_count = count($this->sql);
+          $this->max_page  = $this->page_len ? ceil($this->rec_count / $this->page_len) : 0;
+
+          $this->curr_page  = $this->curr_page ? : 1;
+          $this->next_page  = ($this->curr_page < $this->max_page) ? $this->curr_page + 1 : null;
+          $this->prev_page  = ($this->curr_page > 1) ? ($this->curr_page - 1) : null;
+          $this->last_page  = ($this->curr_page < $this->max_page) ? $this->max_page : null;
+          $this->first_page = ($this->curr_page != 1) ? 1 : null;
         }
-        $this->max_page = $this->page_len ? ceil($this->rec_count / $this->page_len) : 0;
-        $this->set_page(1);
         $this->ready = true;
       }
       return true;
@@ -887,8 +819,7 @@
      * $count==true  - for total records count
 
      */
-    protected function _sql_gen($count = false)
-    {
+    protected function _sql_gen($count = false) {
       $select = $this->select;
       $from   = $this->from;
       $where  = $this->where;
@@ -927,5 +858,52 @@
       $offset   = ($this->curr_page - 1) * $page_len;
       $sql .= " LIMIT $offset, $page_len";
       return $sql;
+    }
+    /**
+     * @static
+     *
+     * @param      $name
+     * @param      $sql
+     * @param      $coldef
+     * @param null $table
+     * @param null $key
+     * @param int  $page_len
+     * @param null $sort
+     *
+     * @return DB_Pager
+     */
+    static function new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_len = 0, $sort = null) {
+      unset($_SESSION['pager'][$name]); // kill pager if sql has changed
+
+      if (!isset($_SESSION['pager'])) {
+        $_SESSION['pager'] = array();
+      }
+      if (isset($_SESSION['pager'][$name])) {
+        if (is_array($sql)) {
+          if (!$_SESSION['pager'][$name]->id) {
+            unset($_SESSION['pager'][$name]); // kill pager if sql has changed
+          } else {
+            $_SESSION['pager'][$name]->sql = $sql;
+          }
+        } elseif ($_SESSION['pager'][$name]->sql != $sql) {
+          unset($_SESSION['pager'][$name]); // kill pager if sql has changed
+        }
+      }
+
+      if (!isset($_SESSION['pager'][$name])) {
+        $pager           = new static($sql, $name, $table, $page_len);
+        $pager->main_tbl = $table;
+        $pager->key      = $key;
+        $pager->setSQL($sql);
+        $pager->setColumns($coldef);
+        $pager->sortTable($sort);
+        $_SESSION['pager'][$name] = $pager;
+      }
+      foreach ($_SESSION['pager'][$name]->columns as &$column) {
+        if (isset($column['funkey'])) {
+          $column['fun'] = $coldef[$column['funkey']]['fun'];
+        }
+      }
+      return $_SESSION['pager'][$name];
     }
   }

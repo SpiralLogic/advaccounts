@@ -16,8 +16,7 @@
      *
      * @return array|string
      */
-    public static function search($terms)
-    {
+    public static function search($terms) {
       $sql = "SELECT supplier_id as id, supp_ref as label, supp_ref as value FROM suppliers WHERE supp_ref LIKE '%" . $terms . "%' ";
       if (is_numeric($terms)) {
         $sql .= ' OR supplier_id LIKE  ' . DB::quote($terms . '%');
@@ -33,37 +32,19 @@
       }
       return $data;
     }
-    /**
-     * @var
-     */
-    /**
-     * @var
-     */
+    /** @var */
+    /** @var */
     public $id = 0, $supplier_id; //
-    /**
-     * @var
-     */
+    /** @var */
     public $name = 'New Supplier'; //
-    /**
-     * @var
-     */
-    /**
-     * @var
-     */
+    /** @var */
+    /** @var */
     public $tax_id, $gst_no; //
-    /**
-     * @var
-     */
-    /**
-     * @var
-     */
+    /** @var */
+    /** @var */
     public $contact_name, $contact; //
-    /**
-     * @var
-     */
-    /**
-     * @var
-     */
+    /** @var */
+    /** @var */
     public $post_address, $address; //
     /**
      * @var string
@@ -101,9 +82,7 @@
      * @var int
      */
     public $inactive = 0;
-    /**
-     * @var
-     */
+    /** @var */
     public $website;
     /**
      * @var string
@@ -116,25 +95,17 @@
      * @var string
      */
     public $account_no = '';
-    /**
-     * @var
-     */
+    /** @var */
     public $bank_account;
     /**
      * @var string
      */
     public $tax_group_id;
-    /**
-     * @var
-     */
+    /** @var */
     public $purchase_account;
-    /**
-     * @var
-     */
+    /** @var */
     public $payable_account;
-    /**
-     * @var
-     */
+    /** @var */
     public $payment_discount_account;
     /**
      * @var string
@@ -144,21 +115,13 @@
      * @var Contact[]
      */
     public $contacts = array();
-    /**
-     * @var
-     */
+    /** @var */
     public $defaultContact;
-    /**
-     * @var
-     */
+    /** @var */
     public $supp_city;
-    /**
-     * @var
-     */
+    /** @var */
     public $supp_state;
-    /**
-     * @var
-     */
+    /** @var */
     public $supp_postcode;
     /**
      * @var string
@@ -171,20 +134,18 @@
     /**
      * @param int|null $id
      */
-    public function __construct($id = null)
-    {
-      $this->gst_no  = &$this->tax_id;
-      $this->contact = &$this->contact_name;
-      $this->address = &$this->post_address;
-      $this->phone2  = &$this->supp_phone;
+    public function __construct($id = null) {
+      $this->gst_no   = &$this->tax_id;
+      $this->contact  = &$this->contact_name;
+      $this->address  = &$this->post_address;
+      $this->phone2   = &$this->supp_phone;
       $this->supp_ref = &$this->name;
       parent::__construct($id);
     }
     /**
      * @return array
      */
-    public function getEmailAddresses()
-    {
+    public function getEmailAddresses() {
       return $this->email ? array('Accounts' => array($this->id => array($this->name, $this->email))) : false;
     }
     /**
@@ -192,8 +153,7 @@
      *
      * @return array|bool|int|null|void
      */
-    public function save($changes = null)
-    {
+    public function save($changes = null) {
 
       if (!parent::save($changes)) {
         $this->_setDefaults();
@@ -207,8 +167,7 @@
       $this->_setDefaults();
       return true;
     }
-    public function delete()
-    {
+    public function delete() {
       // TODO: Implement delete() method.
     }
     /**
@@ -216,8 +175,7 @@
      *
      * @return array|null|void
      */
-    protected function setFromArray($changes = null)
-    {
+    protected function setFromArray($changes = null) {
       parent::setFromArray($changes);
       if (isset($changes['contacts']) && is_array($changes['contacts'])) {
         foreach ($changes['contacts'] as $contact) {
@@ -233,16 +191,14 @@
     /**
      * @return void
      */
-    protected function _setDefaults()
-    {
+    protected function _setDefaults() {
       $this->contacts[]     = new Contact(CT_SUPPLIER, array('parent_id' => $this->id));
       $this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
     }
     /**
      * @return bool
      */
-    protected function _canProcess()
-    {
+    protected function _canProcess() {
       if (empty($this->name)) {
         $this->_status(false, 'Processing', "The supplier name cannot be empty.", 'name');
         return false;
@@ -252,15 +208,13 @@
     /**
      * @return mixed|void
      */
-    protected function _countTransactions()
-    {
+    protected function _countTransactions() {
       // TODO: Implement _countTransactions() method.
     }
     /**
      * @return bool|Status
      */
-    protected function _defaults()
-    {
+    protected function _defaults() {
       $this->credit_limit             = Num::priceFormat(0);
       $company_record                 = DB_Company::get_prefs();
       $this->curr_code                = $company_record["curr_default"];
@@ -274,16 +228,14 @@
     /**
      * @return bool|Status
      */
-    protected function _new()
-    {
+    protected function _new() {
       $this->_defaults();
       return $this->_status(true, 'Initialize new supplier', 'Now working with a new supplier');
     }
     /**
      * @return void
      */
-    protected function _getContacts()
-    {
+    protected function _getContacts() {
       $this->contacts = [];
       \DB::select()->from('contacts')->where('parent_id=', $this->id)->andWhere('parent_type=', CT_SUPPLIER)
         ->orderby('name DESC');
@@ -299,8 +251,7 @@
      * @static
      * @return void
      */
-    public static function addEditDialog()
-    {
+    public static function addEditDialog() {
       $customerBox = new Dialog('Supplier Edit', 'supplierBox', '');
       $customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
       $customerBox->addBeforeClose('$("#supplier_id").trigger("change")');
@@ -325,8 +276,7 @@ JS;
      *
      * @return array|bool
      */
-    protected function _read($id = false, $extra = array())
-    {
+    protected function _read($id = false, $extra = array()) {
       if (!parent::_read($id)) {
         return $this->_status->get();
       }
@@ -344,8 +294,7 @@ JS;
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get_to_trans($supplier_id, $to = null)
-    {
+    public static function get_to_trans($supplier_id, $to = null) {
       if ($to == null) {
         $todate = date("Y-m-d");
       } else {
@@ -406,8 +355,7 @@ JS;
      *
      * @return mixed
      */
-    public static function get_oweing($supplier_id, $date_from, $date_to)
-    {
+    public static function get_oweing($supplier_id, $date_from, $date_to) {
       $date_from = Dates::dateToSql($date_from);
       $date_to   = Dates::dateToSql($date_to);
       // Sherifoz 22.06.03 Also get the description
@@ -435,8 +383,7 @@ JS;
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get($supplier_id)
-    {
+    public static function get($supplier_id) {
       $sql    = "SELECT * FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
       $result = DB::query($sql, "could not get supplier");
       return DB::fetch($result);
@@ -448,8 +395,7 @@ JS;
      *
      * @return mixed
      */
-    public static function get_name($supplier_id)
-    {
+    public static function get_name($supplier_id) {
       $sql    = "SELECT name AS name FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
       $result = DB::query($sql, "could not get supplier");
       $row    = DB::fetchRow($result);
@@ -462,8 +408,7 @@ JS;
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get_accounts_name($supplier_id)
-    {
+    public static function get_accounts_name($supplier_id) {
       $sql    = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
       $result = DB::query($sql, "could not get supplier");
       return DB::fetch($result);
@@ -476,8 +421,7 @@ JS;
      *
      * @return void
      */
-    public static function newselect($value = null, $options = array())
-    {
+    public static function newselect($value = null, $options = array()) {
       $o     = [
         'row'        => true, //
         'cell_params'=> [], //
@@ -537,8 +481,7 @@ JS;
      *
      * @return string
      */
-    public static function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $all = false, $editkey = false)
-    {
+    public static function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $all = false, $editkey = false) {
       $sql  = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
       $mode = DB_Company::get_pref('no_supplier_list');
       return Forms::selectBox($name, $selected_id, $sql, 'supplier_id', 'name', array(
@@ -570,8 +513,7 @@ JS;
      *
      * @return void
      */
-    public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false)
-    {
+    public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
       echo "<td class='label'>";
       if ($label != null) {
         echo "<label for='$name'>$label</label>";
@@ -592,8 +534,7 @@ JS;
      *
      * @return void
      */
-    public static function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false)
-    {
+    public static function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
       echo "<tr><td class='label'><label for='$name'>$label</label></td><td>";
       echo Creditor::select($name, $selected_id, $all_option, $submit_on_change, $all, $editkey);
       echo "</td></tr>\n";

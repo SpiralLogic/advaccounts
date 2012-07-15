@@ -16,7 +16,8 @@
    * @method JS footerFile($file)
    * @method JS addLiveEvent($selector, $type, $action, $delegate = false, $cached = false)
    */
-  class JS {
+  class JS
+  {
     use Traits\StaticAccess;
 
     /**
@@ -55,9 +56,6 @@
      * @var bool
      */
     private $_openWindow = false;
-    /**
-
-     */
     public function __construct(Config $config = null) {
       $this->Config = $config ? : Config::i();
       $this->_footerFile($this->Config->_get('assets.footer'));
@@ -106,7 +104,8 @@
       $apikey  = $this->Config->_get('js.maps_api_key');
       $js      = "Adv.maps = { api_key: '$apikey'}";
       $this->_beforeload($js);
-      $js = <<<JS
+      $js
+        = <<<JS
 var map = $("<div/>").gMap({
   address:"__address_",
   markers:[{ address:"__address_", html:"_address", popup:true}],
@@ -156,7 +155,8 @@ JS;
       extract(array_merge($defaults, $options));
       $content = "Adv.o.tabs.$id = $('#" . $id . "').tabs(";
       if ($hasLinks) {
-        $content .= <<<JSS
+        $content
+          .= <<<JSS
     {
     select: function(event, ui) {
     var \$tab = $(ui.tab);

@@ -13,12 +13,10 @@
   /**
 
    */
-  class Manufacturing extends Application {
+  class Manufacturing extends Application
+  {
     public $name = "Manufacturing";
     public $help_context = "&Manufacturing";
-    /**
-
-     */
     public function buildMenu() {
       $this->add_module(_("Transactions"));
       $this->addLeftFunction(0, _("Work &Order Entry"), "/manufacturing/work_order_entry?", SA_WORKORDERENTRY);

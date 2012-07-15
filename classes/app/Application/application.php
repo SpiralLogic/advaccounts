@@ -14,22 +14,17 @@
   /**
 
    */
-  abstract class Application {
-    /**
-     * @var
-     */
+  abstract class Application
+  {
+    /** @var */
     public $id;
-    /**
-     * @var
-     */
+    /** @var */
     public $name;
     /**
      * @var bool
      */
     public $direct = false;
-    /**
-     * @var
-     */
+    /** @var */
     public $help_context;
     /**
      * @var array
@@ -90,7 +85,8 @@
     protected function addExtensions() {
       foreach ($this->extensions as $mod) {
         if (@$mod['active'] && $mod['type'] == 'plugin' && $mod['tab'] == $this->id) {
-          $this->addRightFunction(2, $mod['title'], 'modules/' . $mod['path'] . '/' . $mod['filename'] . '?', isset($mod['access']) ? $mod['access'] : SA_OPEN);
+          $this->addRightFunction(2, $mod['title'], 'modules/' . $mod['path'] . '/' . $mod['filename'] . '?', isset($mod['access']) ?
+            $mod['access'] : SA_OPEN);
         }
       }
     }

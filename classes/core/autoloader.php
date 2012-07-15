@@ -39,18 +39,13 @@
     public $loaded = array();
     /** @var Cache */
     public $Cache;
-    /**
-
-     */
-    public function __construct()
-    {
+    public function __construct() {
       spl_autoload_register(array($this, 'load'), true);
     }
     /**
      * @param Cache $cache
      */
-    public function registerCache(Cache $cache)
-    {
+    public function registerCache(Cache $cache) {
       $this->Cache   = $cache;
       $cachedClasses = $cache->get('autoload', array());
       if ($cachedClasses) {
@@ -69,8 +64,7 @@
      * @param array $classes
      * @param       $type
      */
-    protected function addClasses(array $classes, $type)
-    {
+    protected function addClasses(array $classes, $type) {
       foreach ($classes as $dir => $class) {
         if (!is_string($dir)) {
           $dir = '';
@@ -82,15 +76,13 @@
      * @param $namespace
      * @param $classes
      */
-    protected function importNamespace($namespace, $classes)
-    {
+    protected function importNamespace($namespace, $classes) {
       $this->global_classes = array_merge($this->global_classes, array_fill_keys($classes, $namespace));
     }
     /**
      * @param array $namespaces
      */
-    protected function importNamespaces(array $namespaces)
-    {
+    protected function importNamespaces(array $namespaces) {
       foreach ($namespaces as $namespace => $classes) {
         $this->importNamespace($namespace, $classes);
       }
@@ -105,8 +97,7 @@
      * @internal param $path
      * @return string
      */
-    protected function tryPath($paths, $required_class)
-    {
+    protected function tryPath($paths, $required_class) {
       $paths = (array) $paths;
       while ($path = array_shift($paths)) {
         $filepath = realpath($path);
@@ -125,8 +116,7 @@
      * @internal param $class
      * @return bool
      */
-    protected function includeFile($filepath, $required_class)
-    {
+    protected function includeFile($filepath, $required_class) {
       if (empty($filepath)) {
         throw new Autoload_Exception('File for class ' . $required_class . ' cannot be found!');
       }
@@ -147,13 +137,13 @@
      *
      * @return bool|string
      */
-    public function loadFromCache($required_class)
-    {
+    public function loadFromCache($required_class) {
       $result = false;
       if (isset($this->loaded[$required_class])) {
         try {
           $result = $this->includeFile($this->loaded[$required_class], $required_class);
-        } catch (Autoload_Exception $e) {
+        }
+        catch (Autoload_Exception $e) {
           Event::registerShutdown($this);
         }
         if ($result && isset($this->global_classes[$required_class])) {
@@ -170,8 +160,7 @@
      * @internal param $required_class
      * @return bool|string
      */
-    public function load($requested_class)
-    {
+    public function load($requested_class) {
       $classname = ltrim($requested_class, '\\');
       $namespace = '';
       if ($lastNsPos = strripos($classname, '\\')) {
@@ -207,8 +196,7 @@
 
       return $result;
     }
-    public function _shutdown()
-    {
+    public function _shutdown() {
       if ($this->Cache) {
         $this->Cache->set('autoload', array(
                                            'classes'        => $this->classes, //

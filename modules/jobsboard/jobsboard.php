@@ -18,18 +18,11 @@
    */
   class Jobsboard extends Module\Base
   {
-
-    /**
-     * @var
-     */
+    /** @var */
     protected $currentJob;
-    /**
-     * @var
-     */
+    /** @var */
     protected $lines;
-    /**
-     * @var
-     */
+    /** @var */
     public $order_no;
     /** @var \DB */
     protected $jobsboardDB;
@@ -179,9 +172,6 @@
         $this->insertLines();
       }
     }
-    /**
-
-     */
     protected function insertLines() {
       $lines        = $this->lines;
       $this->lines  = array();

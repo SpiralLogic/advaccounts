@@ -11,12 +11,11 @@
           See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
           * ********************************************************************* */
   // first check is this is not start page call
-  if (Input::get('OutstandingOnly')||Input::post('order_view_mode')=='OutstandingOnly') {
+  if (Input::get('OutstandingOnly') || Input::post('order_view_mode') == 'OutstandingOnly') {
     $security = SA_SALESDELIVERY;
-  }
-  elseif (Input::get('InvoiceTemplates')||Input::post('order_view_mode')=='InvoiceTemplates') {
+  } elseif (Input::get('InvoiceTemplates') || Input::post('order_view_mode') == 'InvoiceTemplates') {
     $security = SA_SALESINVOICE;
-  }else {
+  } else {
     $security = SA_SALESAREA;
   }
   // then check session value
@@ -55,7 +54,7 @@
     $_POST['order_view_mode'] = "Quotations";
     Session::i()->page_title  = _($help_context = "Search All Sales Quotations");
   }
-  Page::start(Session::i()->page_title,$security);
+  Page::start(Session::i()->page_title, $security);
   $selected_customer = Input::getPost('customer_id', Input::NUMERIC, -1);
   if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
   ) {
@@ -117,10 +116,12 @@
   Forms::hidden('type', $trans_type);
   //	Orders inquiry table
   //
-  $sql = "SELECT
+  $sql
+    = "SELECT
 		sorder.trans_type,
 		sorder.order_no,
-		sorder.reference," . ($_POST['order_view_mode'] == 'InvoiceTemplates' || $_POST['order_view_mode'] == 'DeliveryTemplates' ? "sorder.comments, " : "sorder.customer_ref, ") . "
+		sorder.reference," . ($_POST['order_view_mode'] == 'InvoiceTemplates' || $_POST['order_view_mode'] == 'DeliveryTemplates' ?
+    "sorder.comments, " : "sorder.customer_ref, ") . "
 		sorder.ord_date,
 		sorder.delivery_date,
 		debtor.name,
@@ -144,7 +145,8 @@
   } else {
     $sql .= " AND sorder.trans_type = " . $trans_type;
   }
-  $sql .= " AND sorder.debtor_id = debtor.debtor_id
+  $sql
+    .= " AND sorder.debtor_id = debtor.debtor_id
 		AND sorder.branch_id = branch.branch_id
 		AND debtor.debtor_id = branch.debtor_id";
   if ($selected_customer != -1) {
@@ -156,18 +158,20 @@
     $sql .= " AND sorder.order_no LIKE " . DB::quote($number_like) . " GROUP BY sorder.order_no";
     $number_like = "%" . $_POST['OrderNumber'] . "%";
     $sql .= " OR sorder.reference LIKE " . DB::quote($number_like) . " GROUP BY sorder.order_no";
-  } elseif (AJAX_REFERRER &&isset($searchArray) && !empty($_POST['ajaxsearch'])) {
+  } elseif (AJAX_REFERRER && isset($searchArray) && !empty($_POST['ajaxsearch'])) {
     foreach ($searchArray as $ajaxsearch) {
       if (empty($ajaxsearch)) {
         continue;
       }
       $ajaxsearch = DB::quote("%" . trim($ajaxsearch) . "%");
-      $sql .= " AND ( debtor.debtor_id = $ajaxsearch OR debtor.name LIKE $ajaxsearch OR sorder.order_no LIKE $ajaxsearch
+      $sql
+        .= " AND ( debtor.debtor_id = $ajaxsearch OR debtor.name LIKE $ajaxsearch OR sorder.order_no LIKE $ajaxsearch
 			OR sorder.reference LIKE $ajaxsearch OR sorder.contact_name LIKE $ajaxsearch
 			OR sorder.customer_ref LIKE $ajaxsearch
 			 OR sorder.customer_ref LIKE $ajaxsearch OR branch.br_name LIKE $ajaxsearch)";
     }
-    $sql .= " GROUP BY sorder.ord_date,
+    $sql
+      .= " GROUP BY sorder.ord_date,
 				 sorder.order_no,
 				sorder.debtor_id,
 				sorder.branch_id,
@@ -198,7 +202,8 @@
     ) {
       $sql .= " AND sorder.type=1";
     }
-    $sql .= " GROUP BY sorder.ord_date,
+    $sql
+      .= " GROUP BY sorder.ord_date,
  sorder.order_no,
 				sorder.debtor_id,
 				sorder.branch_id,
@@ -210,39 +215,57 @@
     $ord  = "Order #";
     $cols = array(
       array('type' => 'skip'),
-      _("Order #")                                                                   => array(
+      _("Order #")                                                                                         => array(
         'fun'    => function ($row, $order_no) {
           return Debtor::viewTrans($row['trans_type'], $order_no);
         }, 'ord' => ''
       ),
-      _("Ref")                                                                       => array('ord' => ''),
-      _("PO#")                                                                       => array('ord' => ''),
-      _("Date")                                                                      => array('type' => 'date', 'ord' => 'asc'),
-      _("Required")                                                                  => array('type' => 'date', 'ord' => ''),
-      _("Customer")                                                                  => array('ord' => 'asc'),
+      _("Ref")                                                                                             => array('ord' => ''),
+      _("PO#")                                                                                             => array('ord' => ''),
+      _("Date")                                                                                            => array(
+        'type' => 'date',
+        'ord'  => 'asc'
+      ),
+      _("Required")                                                                                        => array(
+        'type' => 'date',
+        'ord'  => ''
+      ),
+      _("Customer")                                                                                        => array('ord' => 'asc'),
       array('type' => 'skip'),
-      _("Branch")                                                                    => array('ord' => ''),
+      _("Branch")                                                                                          => array('ord' => ''),
       _("Address"),
-      _("Total")                                                                     => array('type' => 'amount', 'ord' => ''),
+      _("Total")                                                                                           => array(
+        'type' => 'amount',
+        'ord'  => ''
+      ),
     );
   } else {
     $ord  = "Quote #";
     $cols = array(
       array('type' => 'skip'),
-      _("Quote #")                                                                   => array(
+      _("Quote #")                                                                                         => array(
         'fun'    => function ($row, $order_no) {
           return Debtor::viewTrans($row['trans_type'], $order_no);
         }, 'ord' => ''
       ),
-      _("Ref")                                                                       => array('ord' => ''),
-      _("PO#")                                                                       => array('type' => 'skip'),
-      _("Date")                                                                      => array('type' => 'date', 'ord' => 'desc'),
-      _("Valid until")                                                               => array('type' => 'date', 'ord' => ''),
-      _("Customer")                                                                  => array('ord' => 'asc'),
+      _("Ref")                                                                                             => array('ord' => ''),
+      _("PO#")                                                                                             => array('type' => 'skip'),
+      _("Date")                                                                                            => array(
+        'type' => 'date',
+        'ord'  => 'desc'
+      ),
+      _("Valid until")                                                                                     => array(
+        'type' => 'date',
+        'ord'  => ''
+      ),
+      _("Customer")                                                                                        => array('ord' => 'asc'),
       array('type' => 'skip'),
-      _("Branch")                                                                    => array('ord' => ''),
+      _("Branch")                                                                                          => array('ord' => ''),
       _("Delivery To"),
-      _("Total")                                                                     => array('type' => 'amount', 'ord' => ''),
+      _("Total")                                                                                           => array(
+        'type' => 'amount',
+        'ord'  => ''
+      ),
     );
   }
   if ($trans_type == ST_CUSTDELIVERY) {
@@ -306,7 +329,8 @@
           }
         ), array(
           'insert' => true, 'fun' => function ($row) {
-            return Reporting::print_doc_link($row['order_no'], _("Proforma"), true, ($row['trans_type'] == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), ICON_PRINT, 'button printlink');
+            return Reporting::print_doc_link($row['order_no'], _("Proforma"), true, ($row['trans_type'] == ST_SALESORDER ?
+              ST_PROFORMA : ST_PROFORMAQ), ICON_PRINT, 'button printlink');
           }
         ), array(
           'insert' => true, 'fun' => function ($row) {
@@ -316,8 +340,8 @@
                          ));
     }
   }
-  $table =  db_pager::new_db_pager('orders_tbl', $sql, $cols, null, null, 0, 4);
-  $table->set_marker(function ($row) {
+  $table = db_pager::new_db_pager('orders_tbl', $sql, $cols, null, null, 0, 4);
+  $table->setMarker(function ($row) {
     global $trans_type;
     if ($trans_type == ST_SALESQUOTE) {
       return (Dates::isGreaterThan(Dates::today(), Dates::sqlToDate($row['delivery_date'])));

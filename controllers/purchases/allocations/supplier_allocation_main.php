@@ -37,8 +37,7 @@
    *
    * @return mixed
    */
-  function sysTypeName($dummy, $type)
-  {
+  function sysTypeName($dummy, $type) {
     global $systypes_array;
 
     return $systypes_array[$type];
@@ -49,8 +48,7 @@
    *
    * @return null|string
    */
-  function viewTrans($trans)
-  {
+  function viewTrans($trans) {
     return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
   }
 
@@ -59,8 +57,7 @@
    *
    * @return string
    */
-  function alloc_link($row)
-  {
+  function alloc_link($row) {
     return DB_Pager::link(_("Allocate"), "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
   }
 
@@ -69,8 +66,7 @@
    *
    * @return int|string
    */
-  function amount_left($row)
-  {
+  function amount_left($row) {
     return Num::priceFormat(-$row["Total"] - $row["alloc"]);
   }
 
@@ -79,8 +75,7 @@
    *
    * @return int|string
    */
-  function amount_total($row)
-  {
+  function amount_total($row) {
     return Num::priceFormat(-$row["Total"]);
   }
 
@@ -89,8 +84,7 @@
    *
    * @return bool
    */
-  function check_settled($row)
-  {
+  function check_settled($row) {
     return $row['settled'] == 1;
   }
 
@@ -111,7 +105,7 @@
     $cols[_("Currency")] = 'skip';
   }
   $table = db_pager::new_db_pager('alloc_tbl', $sql, $cols);
-  $table->set_marker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
+  $table->setMarker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
   $table->width = "80%";
   $table->display($table);
   Forms::end();

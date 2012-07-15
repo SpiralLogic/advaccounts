@@ -131,7 +131,7 @@
   }
   /*show a table of the transactions returned by the sql */
   $table = db_pager::new_db_pager('trans_tbl', $sql, $cols);
-  $table->set_marker('checkOverdue', _("Marked items are overdue."));
+  $table->setMarker('checkOverdue', _("Marked items are overdue."));
   $table->width = "90";
   $table->display($table);
   Creditor::addInfoDialog('.pagerclick');
@@ -143,8 +143,7 @@
    *
    * @return mixed
    */
-  function sysTypeName($dummy, $type)
-  {
+  function sysTypeName($dummy, $type) {
     global $systypes_array;
     return $systypes_array[$type];
   }
@@ -154,8 +153,7 @@
    *
    * @return null|string
    */
-  function viewTrans($trans)
-  {
+  function viewTrans($trans) {
     return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
   }
 
@@ -164,8 +162,7 @@
    *
    * @return string
    */
-  function due_date($row)
-  {
+  function due_date($row) {
     return ($row["type"] == ST_SUPPINVOICE) || ($row["type"] == ST_SUPPCREDIT) ? $row["due_date"] : '';
   }
 
@@ -174,8 +171,7 @@
    *
    * @return string
    */
-  function viewGl($row)
-  {
+  function viewGl($row) {
     return GL_UI::view($row["type"], $row["trans_no"]);
   }
 
@@ -184,8 +180,7 @@
    *
    * @return string
    */
-  function creditLink($row)
-  {
+  function creditLink($row) {
     return $row['type'] == ST_SUPPINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
       DB_Pager::link(_("Credit"), "/purchases/supplier_credit.php?New=1&invoice_no=" . $row['trans_no'], ICON_CREDIT) : '';
   }
@@ -195,8 +190,7 @@
    *
    * @return int|string
    */
-  function formatDebit($row)
-  {
+  function formatDebit($row) {
     $value = $row["TotalAmount"];
     return $value >= 0 ? Num::priceFormat($value) : '';
   }
@@ -206,8 +200,7 @@
    *
    * @return int|string
    */
-  function formatCredit($row)
-  {
+  function formatCredit($row) {
     $value = -$row["TotalAmount"];
     return $value > 0 ? Num::priceFormat($value) : '';
   }
@@ -217,8 +210,7 @@
    *
    * @return string
    */
-  function printLink($row)
-  {
+  function printLink($row) {
     if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT || $row['type'] == ST_SUPPCREDIT) {
       return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Remittance"), true, ST_SUPPAYMENT, ICON_PRINT);
     }
@@ -229,16 +221,14 @@
    *
    * @return bool
    */
-  function checkOverdue($row)
-  {
+  function checkOverdue($row) {
     return $row['OverDue'] == 1 && (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
   }
 
   /**
    * @param $supplier_record
    */
-  function displaySupplierSummary($supplier_record)
-  {
+  function displaySupplierSummary($supplier_record) {
     $past_due1     = DB_Company::get_pref('past_due_days');
     $past_due2     = 2 * $past_due1;
     $txt_now_due   = "1-" . $past_due1 . " " . _('Days');

@@ -23,7 +23,8 @@
   use ADV\Core\Config;
   use User;
 
-  class Page {
+  class Page
+  {
     /**
      * @var
      */
@@ -120,12 +121,12 @@
      * @param      $title
      * @param bool $index
      */
-    public function __construct(User $user, Config $config, Ajax $ajax, JS $js,Dates $dates) {
+    public function __construct(User $user, Config $config, Ajax $ajax, JS $js, Dates $dates) {
       $this->User   = $user ? : User::i();
       $this->Config = $config ? : Config::i();
       $this->Ajax   = $ajax ? : Ajax::i();
       $this->JS     = $js ? : JS::i();
-      $this->Dates     = $dates ? : Dates::i();
+      $this->Dates  = $dates ? : Dates::i();
       $this->frame  = isset($_GET['frame']);
     }
     /**
@@ -161,15 +162,13 @@
         exit;
       }
       if ($this->title && !$this->isIndex && !$this->frame && !IS_JSON_REQUEST) {
-        echo "<div class='titletext'>$this->title" . ($this->User->_hints() ? "<span id='hints' class='floatright' style='display:none'></span>" : '') . "</div>";
+        echo "<div class='titletext'>$this->title" . ($this->User->_hints() ?
+          "<span id='hints' class='floatright' style='display:none'></span>" : '') . "</div>";
       }
       if (!IS_JSON_REQUEST) {
         Display::div_start('_page_body');
       }
     }
-    /**
-
-     */
     protected function header() {
       $this->header = true;
       $this->JS->_openWindow(900, 500);
@@ -189,9 +188,6 @@
       }
       $header->render();
     }
-    /**
-
-     */
     protected function menu_header() {
       $menu                = new View('menu_header');
       $menu['theme']       = $this->User->theme();
@@ -235,12 +231,11 @@
         $help_page_url = Display::access_string($help_page_url, true);
       }
       return $this->Config->_get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-                                                                                                 ' ' => '', '/' => '', '&' => 'And'
+                                                                                                 ' ' => '',
+                                                                                                 '/' => '',
+                                                                                                 '&' => 'And'
                                                                                             ))) . '&ctxhelp=1&lang=' . $country;
     }
-    /**
-
-     */
     protected function menu_footer() {
       $footer             = new View('footer');
       $footer['backlink'] = false;
@@ -268,12 +263,9 @@
       $footer->set('messages', (!AJAX_REFERRER ? Messages::show() : ''));
       $footer->render();
     }
-    /**
-
-     */
     protected function renderCSS() {
-      $this->css += $this->Config->_get('assets.css') ;
-      $path = THEME_PATH. $this->theme . DS;
+      $this->css += $this->Config->_get('assets.css');
+      $path = THEME_PATH . $this->theme . DS;
       $css  = implode(',', $this->css);
       return [$path . $css];
     }
@@ -299,7 +291,7 @@
      */
     public static function start($title, $security = SA_OPEN, $no_menu = false, $isIndex = false) {
       if (static::$i === null) {
-        static::$i = new static(User::i(), Config::i(), Ajax::i(), JS::i(),Dates::i());
+        static::$i = new static(User::i(), Config::i(), Ajax::i(), JS::i(), Dates::i());
       }
       static::$i->title    = $title;
       static::$i->isIndex  = $isIndex;

@@ -58,8 +58,7 @@
    *
    * @return bool
    */
-  function checkOverdue($row)
-  {
+  function checkOverdue($row) {
     return ($row['TotalAmount'] > $row['Allocated']) && $row['OverDue'] == 1;
   }
 
@@ -69,8 +68,7 @@
    *
    * @return mixed
    */
-  function sysTypeName($dummy, $type)
-  {
+  function sysTypeName($dummy, $type) {
     global $systypes_array;
 
     return $systypes_array[$type];
@@ -81,8 +79,7 @@
    *
    * @return null|string
    */
-  function view_link($trans)
-  {
+  function view_link($trans) {
     return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
   }
 
@@ -91,8 +88,7 @@
    *
    * @return string
    */
-  function due_date($row)
-  {
+  function due_date($row) {
     return (($row["type"] == ST_SUPPINVOICE) || ($row["type"] == ST_SUPPCREDIT)) ? $row["due_date"] : "";
   }
 
@@ -101,8 +97,7 @@
    *
    * @return mixed
    */
-  function fmt_balance($row)
-  {
+  function fmt_balance($row) {
     $value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) ?
       -$row["TotalAmount"] - $row["Allocated"] : $row["TotalAmount"] - $row["Allocated"];
 
@@ -114,8 +109,7 @@
    *
    * @return string
    */
-  function alloc_link($row)
-  {
+  function alloc_link($row) {
     $link = DB_Pager::link(_("Allocations"), "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
 
     return (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) && (-$row["TotalAmount"] - $row["Allocated"]) > 0) ?
@@ -127,8 +121,7 @@
    *
    * @return int|string
    */
-  function formatDebit($row)
-  {
+  function formatDebit($row) {
     $value = -$row["TotalAmount"];
 
     return $value >= 0 ? Num::priceFormat($value) : '';
@@ -139,8 +132,7 @@
    *
    * @return int|string
    */
-  function formatCredit($row)
-  {
+  function formatCredit($row) {
     $value = $row["TotalAmount"];
 
     return $value > 0 ? Num::priceFormat($value) : '';
@@ -214,7 +206,7 @@
     $cols[_("Currency")]    = 'skip';
   }
   $table = db_pager::new_db_pager('doc_tbl', $sql, $cols);
-  $table->set_marker('checkOverdue', _("Marked items are overdue."));
+  $table->setMarker('checkOverdue', _("Marked items are overdue."));
   $table->width = "90";
   $table->display($table);
   Creditor::addInfoDialog('.pagerclick');

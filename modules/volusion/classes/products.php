@@ -9,17 +9,12 @@
      * @var array
      */
     public $products = array();
-    /**
-
-     */
-    public function __construct()
-    {
+    public function __construct() {
     }
     /**
      * @return bool
      */
-    public function get()
-    {
+    public function get() {
       $productsXML = $this->getXML();
       if (!$productsXML) {
         return false;
@@ -31,8 +26,7 @@
     /**
      * @return string
      */
-    public function getXML()
-    {
+    public function getXML() {
       $apiuser = \Config::get('modules.webstore')['apiuser'];
       $apikey  = \Config::get('modules.webstore')['apikey'];
       $url     = \Config::get('modules.webstore')['apiurl'];

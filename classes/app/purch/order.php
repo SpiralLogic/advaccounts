@@ -14,50 +14,31 @@
   /**
 
    */
-  class Purch_Order {
-    /**
-     * @var
-     */
+  class Purch_Order
+  {
+    /** @var */
     public $supplier_id;
-    /**
-     * @var
-     */
+    /** @var */
     public $supplier_details;
     /**
      * @var array
      */
     public $line_items; /*array of objects of class Sales_Line using the product id as the pointer */
-    /**
-     * @var
-     */
+    /** @var */
     public $curr_code;
-    /**
-     * @var
-     */
+    /** @var */
     public $requisition_no;
-    /**
-     * @var
-     */
+    /** @var */
     public $delivery_address;
-    /**
-     * @var
-     */
+    /** @var */
     public $Comments;
-    /**
-     * @var
-     */
+    /** @var */
     public $location;
-    /**
-     * @var
-     */
+    /** @var */
     public $supplier_name;
-    /**
-     * @var
-     */
+    /** @var */
     public $orig_order_date;
-    /**
-     * @var
-     */
+    /** @var */
     public $trans_no;
     /**
      * @var int
@@ -75,17 +56,11 @@
      * @var string
      */
     public $order_id;
-    /**
-     * @var
-     */
+    /** @var */
     public $freight;
-    /**
-     * @var
-     */
+    /** @var */
     public $salesman;
-    /**
-     * @var
-     */
+    /** @var */
     public $reference;
     /**
      * @var int
@@ -189,9 +164,6 @@
       }
       return false;
     }
-    /**
-
-     */
     public function clear_items() {
       unset($this->line_items);
       $this->line_items     = array();
@@ -227,9 +199,6 @@
       }
       return 0;
     }
-    /**
-
-     */
     public function delete() {
       $sql = "DELETE FROM purch_orders WHERE order_no=" . DB::escape($this->order_no);
       DB::query($sql, "The order header could not be deleted");
@@ -295,7 +264,8 @@
       /*Now need to check that the order details are the same as they were when they were read into the Items array. If they've changed then someone else must have altered them */
       // Sherifoz 22.06.03 Compare against COMPLETED items only !!
       // Otherwise if you try to fullfill item quantities separately will give error.
-      $sql     = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
+      $sql
+               = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
               FROM purch_order_details
               WHERE order_no=" . DB::escape($this->order_no) . " ORDER BY po_detail_item";
       $result  = DB::query($sql, "could not query purch order details");
@@ -401,7 +371,8 @@
      * @return bool
      */
     public function get_header($order_no) {
-      $sql    = "SELECT purch_orders.*, suppliers.name,
+      $sql
+              = "SELECT purch_orders.*, suppliers.name,
              suppliers.curr_code, locations.location_name
             FROM purch_orders, suppliers, locations
             WHERE purch_orders.supplier_id = suppliers.supplier_id
@@ -434,7 +405,8 @@
      */
     public function get_items($order_no, $view = false) {
       /*now populate the line po array with the purchase order details records */
-      $sql = "SELECT purch_order_details.*, units
+      $sql
+        = "SELECT purch_order_details.*, units
             FROM purch_order_details
             LEFT JOIN stock_master
             ON purch_order_details.item_code=stock_master.stock_id
@@ -493,7 +465,8 @@
      * @param $supplier_id
      */
     public function supplier_to_order($supplier_id) {
-      $sql                    = "SELECT * FROM suppliers
+      $sql
+                              = "SELECT * FROM suppliers
             WHERE supplier_id = '$supplier_id'";
       $result                 = DB::query($sql, "The supplier details could not be retreived");
       $myrow                  = DB::fetchAssoc($result);
@@ -528,22 +501,17 @@
       }
       return $order ? : false;
     }
-    /**
-
-     */
     public function finish() {
       if (is_object($this) && Orders::session_exists($this)) {
         Orders::session_delete($this->order_id);
       }
     }
-    /**
-
-     */
     public function header() {
       $editable = ($this->order_no == 0);
       Table::start('tablestyle2 width90');
       Row::start();
-      $show_currencies = ($this->curr_code == Bank_Currency::for_company() && !Bank_Currency::is_company($this->curr_code)) ? 1 : 2;
+      $show_currencies = ($this->curr_code == Bank_Currency::for_company() && !Bank_Currency::is_company($this->curr_code)) ? 1 :
+        2;
       if ($editable) {
         if (!Input::post('supplier_id')) {
           $_POST['supplier_id'] = Session::getGlobal('creditor');
@@ -552,7 +520,10 @@
           Ajax::activate('_page_body');
         }
         Creditor::newselect(null, [
-                                  'cell_params' => ['colspan' => ($show_currencies + 1), 'rowspan'=> $show_currencies], 'rowspan'     => $show_currencies, 'row'         => false, 'cell_class'         => 'label'
+                                  'cell_params'        => ['colspan' => ($show_currencies + 1), 'rowspan'=> $show_currencies],
+                                  'rowspan'            => $show_currencies,
+                                  'row'                => false,
+                                  'cell_class'         => 'label'
                                   ]);
       } else {
         if (isset($_POST['supplier_id'])) {
@@ -623,7 +594,16 @@
       Display::div_start('items_table');
       Table::start('tablestyle grid width90');
       $th = array(
-        _("Item Code"), _("Description"), _("Quantity"), _("Received"), _("Unit"), _("Required Date"), _("Price"), _('Discount %'), _("Total"), ""
+        _("Item Code"),
+        _("Description"),
+        _("Quantity"),
+        _("Received"),
+        _("Unit"),
+        _("Required Date"),
+        _("Price"),
+        _('Discount %'),
+        _("Total"),
+        ""
       );
       if (count($this->line_items)) {
         $th[] = '';
@@ -782,7 +762,8 @@
      * @return Array|\ADV\Core\DB\Query\Result
      */
     public static function get_data($supplier_id, $stock_id) {
-      $sql    = "SELECT * FROM purch_data
+      $sql
+              = "SELECT * FROM purch_data
                 WHERE supplier_id = " . DB::escape($supplier_id) . "
                 AND stock_id = " . DB::escape($stock_id);
       $result = DB::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
@@ -804,7 +785,8 @@
       if ($data === false) {
         $supplier_code = $stock_id;
         try {
-          $sql = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
+          $sql
+            = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
                     conversion_factor, supplier_description) VALUES (" . DB::escape($supplier_id) . ", " . DB::escape($stock_id) . ", " . DB::escape($price) . ", " . DB::escape($uom) . ", 1, " . DB::escape($supplier_code) . ")";
           DB::query($sql, "The supplier purchasing details could not be added");
           return false;

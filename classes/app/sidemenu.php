@@ -13,15 +13,10 @@
     /**
      * @return string
      */
-    public  function render()
-    {
+    public function render() {
       return $this->menu->render(true);
     }
-    /**
-
-     */
-    public  function __construct(User $user)
-    {
+    public function __construct(User $user) {
       $this->menu         = new View('sidemenu');
       $this->menu['bank'] = $user->hasAccess(SS_GL);
     }

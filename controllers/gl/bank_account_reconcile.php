@@ -12,8 +12,7 @@
    */
   class Reconcile extends \ADV\App\Controller\Base
   {
-    protected function before()
-    {
+    protected function before() {
       $this->JS->_openWindow(800, 500);
       $this->JS->_footerFile('/js/reconcile.js');
       if ($this->Input->_post('reset')) {
@@ -68,8 +67,7 @@
         $this->Ajax->_activate('_page_body');
       }
     }
-    protected function index()
-    {
+    protected function index() {
       Page::start(_($help_context = "Reconcile Bank Account"), SA_RECONCILE);
       $update_pager = false;
       Forms::start();
@@ -87,8 +85,7 @@
       Forms::end();
       Page::end();
     }
-    protected function newWay()
-    {
+    protected function newWay() {
       $date  = $_POST['bank_date'];
       $begin = Dates::beginMonth($date);
       $end   = Dates::endMonth($date);
@@ -134,14 +131,13 @@
       Arr::append($recced, $rec);
       usort($recced, [$this, 'sortByOrder']);
 
-      $cols  = [
+      $cols      = [
         'Type'           => [
           'fun'=> array($this, 'sysTypeName')
         ], '#'           => [
           'align'=> 'center', 'fun'=> array($this, 'viewTrans')
         ], 'Ref'         => [
-          'fun'=> function($row)
-          {
+          'fun'=> function($row) {
             return substr($row['ref'], 0, 6);
           }
         ],
@@ -158,11 +154,10 @@
           'fun'=> array($this, 'reconcileCheckbox')
         ], 'Bank Date'   => ['type'=> 'date'], 'Amount'=> ['align'=> 'right', 'class'=> 'bold'], 'Info'
       ];
-      $id    = crc32($_POST['bank_date'] . $_POST['account']);
-      $table = DB_Pager::new_db_pager(['bank_rec', $id], $recced, $cols);
+      $table     = DB_Pager::new_db_pager('bank_rec', $recced, $cols);
+      $table->id = $table->id ? : crc32($_POST['bank_date'] . $_POST['bank_account']);
 
-      $table->rowClass = function($row)
-      {
+      $table->rowClass = function($row) {
         if (($row['trans_date'] && $row['reconciled'] && !$row['state_date']) || ($row['state_date'] && !$row['reconciled'])) {
           return "overduebg";
         } elseif ($row['reconciled']) {
@@ -172,8 +167,7 @@
 
       $table->display();
     }
-    protected function displaySummary()
-    {
+    protected function displaySummary() {
       $total = $this->getTotal();
       echo "<hr>";
       Display::div_start('summary');
@@ -210,8 +204,7 @@
     /**
      * @return int
      */
-    protected function getTotal()
-    {
+    protected function getTotal() {
       $total  = 0;
       $result = GL_Account::get_max_reconciled($this->Input->_post('reconcile_date'), $_POST['bank_account']);
       if ($row = $this->DB->_fetch($result)) {
@@ -235,8 +228,7 @@
     /**
      * @return bool
      */
-    function check_date()
-    {
+    function check_date() {
       if (!Dates::isDate($this->Input->_post('reconcile_date'))) {
         Event::error(_("Invalid reconcile date format"));
         $this->JS->_setFocus('reconcile_date');
@@ -249,8 +241,7 @@
      *
      * @return string
      */
-    function reconcileCheckbox($row)
-    {
+    function reconcileCheckbox($row) {
       if (!$row['amount']) {
         return '';
       }
@@ -264,8 +255,7 @@
      *
      * @return string
      */
-    function ungroupButton($row)
-    {
+    function ungroupButton($row) {
       if ($row['type'] != 15) {
         return '';
       }
@@ -279,8 +269,7 @@
      *
      * @return mixed
      */
-    function sysTypeName($dummy, $type)
-    {
+    function sysTypeName($dummy, $type) {
       global $systypes_array;
       if (!$type) {
         return '';
@@ -292,8 +281,7 @@
      *
      * @return null|string
      */
-    function viewTrans($row)
-    {
+    function viewTrans($row) {
       if (!$row['type']) {
         return '';
       } elseif ($row['type'] == ST_GROUPDEPOSIT) {
@@ -309,8 +297,7 @@
      *
      * @return string
      */
-    function viewGl($row)
-    {
+    function viewGl($row) {
       if (!$row['amount']) {
         return '';
       }
@@ -322,8 +309,7 @@
      *
      * @return int|string
      */
-    function formatDebit($row)
-    {
+    function formatDebit($row) {
       $value = $row["amount"];
       if ($value > 0) {
         return '<span class="bold">' . Num::priceFormat($value) . '</span>';
@@ -335,8 +321,7 @@
      *
      * @return int|string
      */
-    function formatCredit($row)
-    {
+    function formatCredit($row) {
       $value = -$row["amount"];
       if ($value <= 0) {
         return '';
@@ -348,8 +333,7 @@
      *
      * @return string
      */
-    function formatPerson($row)
-    {
+    function formatPerson($row) {
       if ($row['type'] == ST_BANKTRANSFER) {
         return DB_Comments::get_string(ST_BANKTRANSFER, $row['trans_no']);
       } elseif ($row['type'] == ST_GROUPDEPOSIT) {
@@ -369,11 +353,7 @@
       }
       return Bank::payment_person_name($row["person_type_id"], $row["person_id"], true, $row["trans_no"]);
     }
-    /**
-
-     */
-    function updateData()
-    {
+    function updateData() {
       global $update_pager;
       unset($_POST["beg_balance"], $_POST["end_balance"]);
       $this->Ajax->_activate('summary');
@@ -386,8 +366,7 @@
      *
      * @return bool
      */
-    function change_tpl_flag($reconcile_id)
-    {
+    function change_tpl_flag($reconcile_id) {
       if (!$this->check_date() && Forms::hasPost("rec_" . $reconcile_id)) // temporary fix
       {
         return false;
@@ -403,26 +382,22 @@
       $this->JS->_setFocus($reconcile_id);
       return true;
     }
-    protected function after()
-    {
+    protected function after() {
       // TODO: Implement after() method.
     }
     /**
      * @internal param $prefix
      * @return bool|mixed
      */
-    protected function runValidation()
-    {
+    protected function runValidation() {
       Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
     }
-    function sortByOrder($a, $b)
-    {
+    function sortByOrder($a, $b) {
       $date1 = $a['trans_date'] ? : $a['state_date'];
       $date2 = $b['trans_date'] ? : $b['state_date'];
       return Dates::differenceBetween($date1, $date2, 'd');
     }
-    private function oldWay()
-    {
+    private function oldWay() {
       $_POST['bank_account'] = $this->Input->_post('bank_account', Input::NUMERIC, '');
       $sql                   = GL_Account::get_sql_for_reconcile($_POST['bank_account'], $this->Input->_post('reconcile_date'));
       $act                   = Bank_Account::get($_POST["bank_account"]);
@@ -431,8 +406,7 @@
         _("Type")        => array('fun' => array($this, 'sysTypeName'), 'ord' => ''), //
         _("#")           => array('fun' => array($this, 'viewTrans'), 'ord' => ''), //
         _("Reference")   => array(
-          'fun'=> function($row)
-          {
+          'fun'=> function($row) {
             return substr($row['ref'], 0, 6);
           }
         ), //

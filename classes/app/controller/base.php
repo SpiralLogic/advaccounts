@@ -18,7 +18,8 @@
   /**
 
    */
-  abstract class Base {
+  abstract class Base
+  {
     protected $title;
     /*** @var \User */
     protected $User;
@@ -34,9 +35,6 @@
     protected $Input;
     protected $action;
     public $help_context;
-    /**
-
-     */
     function __construct() {
       $this->Ajax    = Ajax::i();
       $this->JS      = JS::i();

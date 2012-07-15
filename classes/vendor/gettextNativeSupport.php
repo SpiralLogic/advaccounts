@@ -30,21 +30,14 @@
      * @var array
      */
     public $_interpolation_vars = array();
-    /**
-
-     */
     const GETTEXT_NATIVE = 1;
-    /**
-
-     */
     const GETTEXT_PHP = 2;
     /**
      * @param $str
      *
      * @return int
      */
-    public function raise_error($str)
-    {
+    public function raise_error($str) {
       Event::error($str);
       return 1;
     }
@@ -53,8 +46,7 @@
      *
      * @return bool
      */
-    public function is_error($err)
-    {
+    public function is_error($err) {
       return $err > 0;
     }
     /***
@@ -64,8 +56,7 @@
      *
      * @return gettext_php_support|gettextNativeSupport
      */
-    public static function i($managerType = self::GETTEXT_NATIVE)
-    {
+    public static function i($managerType = self::GETTEXT_NATIVE) {
       if ($managerType == self::GETTEXT_NATIVE) {
         if (function_exists('gettext')) {
           return new static();
@@ -80,8 +71,7 @@
      *
      * @return int
      */
-    function setLanguage($lang_code, $encoding)
-    {
+    function setLanguage($lang_code, $encoding) {
       putenv("LANG=$lang_code");
       putenv("LC_ALL=$lang_code");
       putenv("LANGUAGE=$lang_code");
@@ -101,8 +91,7 @@
      * @param      $domain
      * @param bool $path
      */
-    function add_domain($domain, $path = false)
-    {
+    function add_domain($domain, $path = false) {
       if ($path === false) {
         bindtextdomain($domain, "./locale/");
       } else {
@@ -116,30 +105,26 @@
      *
      * @return string
      */
-    function _get_translation($key)
-    {
+    function _get_translation($key) {
       return gettext($key);
     }
     /**
      * Reset interpolation variables.
      */
-    function reset()
-    {
+    function reset() {
       $this->_interpolation_vars = array();
     }
     /**
      * @param $key
      * @param $value
      */
-    function set_var($key, $value)
-    {
+    function set_var($key, $value) {
       $this->_interpolation_vars[$key] = $value;
     }
     /**
      * @param $hash
      */
-    function set_vars($hash)
-    {
+    function set_vars($hash) {
       $this->_interpolation_vars = array_merge($this->_interpolation_vars, $hash);
     }
     /**
@@ -147,8 +132,7 @@
      *
      * @return int|mixed|string
      */
-    function gettext($key)
-    {
+    function gettext($key) {
       $value = $this->_get_translation($key);
       if ($value === false) {
         $str = sprintf('Unable to locate gettext key "%s"', $key);
@@ -176,8 +160,7 @@
      *
      * @return bool
      */
-    function _get_var($name)
-    {
+    function _get_var($name) {
       if (!array_key_exists($name, $this->_interpolation_vars)) {
         return false;
       }
@@ -223,8 +206,7 @@
      * @return int
      * @throws GetText_Error
      */
-    function setLanguage($lang_code, $encoding)
-    {
+    function setLanguage($lang_code, $encoding) {
       // if language already set, try to reload domains
       if ($this->_lang_code !== false and $this->_lang_code != $lang_code) {
         foreach ($this->_domains as $domain) {
@@ -258,8 +240,7 @@
      * @return int
      * @throws GetText_Error
      */
-    function add_domain($domain, $path = "./locale/")
-    {
+    function add_domain($domain, $path = "./locale/") {
       if (array_key_exists($domain, $this->_domains)) {
         return 0;
       }
@@ -286,8 +267,7 @@
      * @throws GetText_Error
      * @access private
      */
-    function _load_domain($domain, $path = "./locale")
-    {
+    function _load_domain($domain, $path = "./locale") {
       $src_domain = $path . "/$this->_lang_code/LC_MESSAGES/$domain.po";
       $php_domain = $path . "/$this->_lang_code/LC_MESSAGES/$domain.php";
       if (!file_exists($src_domain)) {
@@ -328,8 +308,7 @@
      *
      * @return mixed
      */
-    function _get_translation($key)
-    {
+    function _get_translation($key) {
       for ($i = $this->_end; $i >= 0; $i--) {
         /** @noinspection PhpUndefinedMethodInspection */
         if ($this->_domains[$i]->has_key($key)) {
@@ -348,13 +327,9 @@
    */
   class gettext_domain
   {
-    /**
-     * @var
-     */
+    /** @var */
     public $name;
-    /**
-     * @var
-     */
+    /** @var */
     public $path;
     /**
      * @var array
@@ -365,8 +340,7 @@
      *
      * @return bool
      */
-    function has_key($key)
-    {
+    function has_key($key) {
       return array_key_exists($key, $this->_keys);
     }
     /**
@@ -374,8 +348,7 @@
      *
      * @return mixed
      */
-    function get($key)
-    {
+    function get($key) {
       return $this->_keys[$key];
     }
   }
@@ -391,21 +364,16 @@
      * @var array
      */
     public $_hash = array();
-    /**
-     * @var
-     */
+    /** @var */
     public $_current_key;
-    /**
-     * @var
-     */
+    /** @var */
     public $_current_value;
     /**
      * @param $str
      *
      * @return int
      */
-    public function raise_error($str)
-    {
+    public function raise_error($str) {
       Event::error($str);
       return 1;
     }
@@ -417,8 +385,7 @@
      * @return hashtable
      * @throws GetText_Error
      */
-    function parse($file)
-    {
+    function parse($file) {
       $this->_hash          = array();
       $this->_current_key   = false;
       $this->_current_value = "";
@@ -444,8 +411,7 @@
      *
      * @return
      */
-    function _parse_line($line)
-    {
+    function _parse_line($line) {
       if (preg_match('/^\s*?#/', $line)) {
         return;
       }
@@ -467,8 +433,7 @@
      * Store last key/value pair into building hashtable.
      * @access private
      */
-    function _store_key()
-    {
+    function _store_key() {
       if ($this->_current_key === false) {
         return;
       }
@@ -495,8 +460,7 @@
      *
      * @return int
      */
-    public function raise_error($str)
-    {
+    public function raise_error($str) {
       Event::error($str);
       return 1;
     }
@@ -506,8 +470,7 @@
      *
      * @return int
      */
-    function compile(&$hash, $source_path)
-    {
+    function compile(&$hash, $source_path) {
       $dest_path = preg_replace('/\.po$/', '.php', $source_path);
       $fp        = @fopen($dest_path, "w");
       if (!$fp) {

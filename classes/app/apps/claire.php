@@ -13,13 +13,11 @@
   /**
 
    */
-  class Claire extends Application {
+  class Claire extends Application
+  {
     public $name = 'Claire';
     public $help_context = "&Claire";
     public $enabled = true;
-    /**
-
-     */
     public function buildMenu() {
     }
   }

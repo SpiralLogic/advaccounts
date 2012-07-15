@@ -11,7 +11,6 @@
    **/
   abstract class DB_Base
   {
-
     use \ADV\Core\Traits\SetFromArray;
     use \ADV\Core\Traits\Status;
 
@@ -19,13 +18,9 @@
      * @var int
      */
     public $id = 0;
-    /**
-     * @var
-     */
+    /** @var */
     protected $_table;
-    /**
-     * @var
-     */
+    /** @var */
     protected $_id_column;
     abstract public function delete();
     abstract protected function _canProcess();

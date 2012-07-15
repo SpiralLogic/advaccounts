@@ -54,8 +54,7 @@
    *
    * @return bool
    */
-  function checkOverdue($row)
-  {
+  function checkOverdue($row) {
     return (!$row["closed"] && Dates::differenceBetween(Dates::today(), Dates::sqlToDate($row["required_by"]), "d") > 0);
   }
 
@@ -65,8 +64,7 @@
    *
    * @return null|string
    */
-  function view_link($dummy, $order_no)
-  {
+  function view_link($dummy, $order_no) {
     return GL_UI::viewTrans(ST_WORKORDER, $order_no);
   }
 
@@ -75,8 +73,7 @@
    *
    * @return string
    */
-  function view_stock($row)
-  {
+  function view_stock($row) {
     return Item_UI::status($row["stock_id"], $row["description"], false);
   }
 
@@ -86,8 +83,7 @@
    *
    * @return mixed
    */
-  function wo_type_name($dummy, $type)
-  {
+  function wo_type_name($dummy, $type) {
     global $wo_types_array;
 
     return $wo_types_array[$type];
@@ -98,8 +94,7 @@
    *
    * @return string
    */
-  function edit_link($row)
-  {
+  function edit_link($row) {
     return $row['closed'] ? '<i>' . _('Closed') . '</i>' :
       DB_Pager::link(_("Edit"), "/manufacturing/work_order_entry.php?trans_no=" . $row["id"], ICON_EDIT);
   }
@@ -109,8 +104,7 @@
    *
    * @return string
    */
-  function release_link($row)
-  {
+  function release_link($row) {
     return $row["closed"] ? '' :
       ($row["released"] == 0 ? DB_Pager::link(_('Release'), "/manufacturing/work_order_release.php?trans_no=" . $row["id"]) :
         DB_Pager::link(_('Issue'), "/manufacturing/work_order_issue.php?trans_no=" . $row["id"]));
@@ -121,8 +115,7 @@
    *
    * @return string
    */
-  function produce_link($row)
-  {
+  function produce_link($row) {
     return $row["closed"] || !$row["released"] ? '' :
       DB_Pager::link(_('Produce'), "/manufacturing/work_order_add_finished.php?trans_no=" . $row["id"]);
   }
@@ -132,8 +125,7 @@
    *
    * @return string
    */
-  function costs_link($row)
-  {
+  function costs_link($row) {
     /*
 
                            return $row["closed"] || !$row["released"] ? '' :
@@ -151,8 +143,7 @@
    *
    * @return string
    */
-  function view_gl_link($row)
-  {
+  function view_gl_link($row) {
     if ($row['closed'] == 0) {
       return '';
     }
@@ -166,8 +157,7 @@
    *
    * @return int|string
    */
-  function dec_amount($row, $amount)
-  {
+  function dec_amount($row, $amount) {
     return Num::format($amount, $row['decimals']);
   }
 
@@ -241,7 +231,7 @@
     )
   );
   $table = db_pager::new_db_pager('orders_tbl', $sql, $cols);
-  $table->set_marker('checkOverdue', _("Marked orders are overdue."));
+  $table->setMarker('checkOverdue', _("Marked orders are overdue."));
   $table->width = "90%";
   $table->display($table);
   Forms::end();

@@ -10,14 +10,11 @@
   /**
 
    */
-  class Func {
-    /**
-     * @var
-     */
+  class Func
+  {
+    /** @var */
     public $label;
-    /**
-     * @var
-     */
+    /** @var */
     public $link;
     /**
      * @var string

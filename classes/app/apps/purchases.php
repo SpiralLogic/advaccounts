@@ -13,12 +13,10 @@
   /**
 
    */
-  class Purchases extends Application {
+  class Purchases extends Application
+  {
     public $name = 'Purchases';
     public $help_context = "&Purchases";
-    /**
-
-     */
     public function buildMenu() {
       $this->add_module(_("Purchases"));
       $this->addLeftFunction(0, _("Purchase &Order Entry"), "/purchases/po_entry_items?NewOrder=Yes", SA_PURCHASEORDER);

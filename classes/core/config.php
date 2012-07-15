@@ -8,9 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
-    /**
 
-     */
   /**
    * @method get($var, $default = false)
    * @method removeAll()
@@ -18,7 +16,6 @@
    */
   class Config
   {
-
     use Traits\StaticAccess;
 
     /***
@@ -34,8 +31,7 @@
      * @internal param string $group
      * @return mixed
      */
-    public function _set($var, $value)
-    {
+    public function _set($var, $value) {
       if (!strstr($var, '.')) {
         $var = 'config.' . $var;
       }
@@ -55,8 +51,7 @@
      * @internal param null $array_key
      * @return Array|mixed
      */
-    public function _get($var, $default = false)
-    {
+    public function _get($var, $default = false) {
       if (!strstr($var, '.')) {
         $var = 'config.' . $var;
       }
@@ -76,8 +71,7 @@
      * @param        $var
      * @param string $group
      */
-    public function _remove($var, $group = 'config')
-    {
+    public function _remove($var, $group = 'config') {
       if (array_key_exists($var, $this->_vars[$group])) {
         unset($this->_vars[$group][$var]);
       }
@@ -91,8 +85,7 @@
      * @return mixed
      * @return array
      */
-    public function _getAll($group = 'config', $default = array())
-    {
+    public function _getAll($group = 'config', $default = array()) {
       if (!isset($this->_vars[$group]) && $this->load($group) === false) {
         return $default;
       }
@@ -103,8 +96,7 @@
      * @static
 
      */
-    public function _removeAll()
-    {
+    public function _removeAll() {
       Cache::delete('config');
       $this->_vars = [];
     }
@@ -112,23 +104,17 @@
      * @static
 
      */
-    public function _reset()
-    {
+    public function _reset() {
       $this->_removeAll();
       $this->load();
     }
     /**
      * @return mixed
      */
-    public function _shutdown()
-    {
+    public function _shutdown() {
       return $this->Cache->_set('config', $this->_vars);
     }
-    /**
-
-     */
-    public function __construct(Cache $cache = null)
-    {
+    public function __construct(Cache $cache = null) {
       $this->Cache = $cache ? : Cache::i();
       if (isset($_GET['reload_config'])) {
         $this->Cache->delete('config');
@@ -148,8 +134,7 @@
      * @throws \RuntimeException
      * @return mixed
      */
-    protected function load($group = 'config')
-    {
+    protected function load($group = 'config') {
       if (is_array($group)) {
         $group_name = implode('.', $group);
         $group_file = array_pop($group) . '.php';

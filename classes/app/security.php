@@ -17,12 +17,8 @@
     public $areas;
     protected $sections;
     protected $Config;
-    /**
-
-     */
-    public function __construct( \ADV\Core\Config $config = null)
-    {
-      $this->Config = $config ? : Config::i();
+    public function __construct(\ADV\Core\Config $config = null) {
+      $this->Config   = $config ? : Config::i();
       $this->areas    = $this->Config->_get('access_levels.areas');
       $this->sections = $this->Config->_get('access_levels.sections');
     }
@@ -50,7 +46,6 @@
       // only first registered company has site admin privileges
       return $access && ($user->company == 'default' || (isset($code) && ($code & ~0xff) != SS_SADMIN));
     }
-
     /**
      * @static
      *
@@ -58,8 +53,7 @@
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public function get_role($id)
-    {
+    public function get_role($id) {
       $sql = "SELECT * FROM security_roles WHERE id='$id'";
       $ret = DB::query($sql, "could not retrieve security roles");
       $row = DB::fetch($ret);
@@ -77,8 +71,7 @@
      * @param $sections
      * @param $areas
      */
-    public static function add_role($name, $description, $sections, $areas)
-    {
+    public static function add_role($name, $description, $sections, $areas) {
       $sql = "INSERT INTO security_roles (role, description, sections, areas) VALUES (" . //
         DB::escape($name) . "," . //
         DB::escape($description) . "," . //
@@ -95,8 +88,7 @@
      * @param $sections
      * @param $areas
      */
-    public static function update_role($id, $name, $description, $sections, $areas)
-    {
+    public static function update_role($id, $name, $description, $sections, $areas) {
       $sql = "UPDATE security_roles SET" . //
         " role=" . DB::escape($name) . "," . //
         " description=" . DB::escape($description) . "," . //
@@ -110,8 +102,7 @@
      *
      * @param $id
      */
-    public static function delete($id)
-    {
+    public static function delete($id) {
       $sql = "DELETE FROM security_roles WHERE id=$id";
       DB::query($sql, "could not delete role");
     }
@@ -122,8 +113,7 @@
      *
      * @return mixed
      */
-    public static function check_role_used($id)
-    {
+    public static function check_role_used($id) {
       $sql = "SELECT count(*) FROM users WHERE role_id=$id";
       $ret = DB::query($sql, 'cannot check role usage');
       $row = DB::fetch($ret);
@@ -140,8 +130,7 @@
      *
      * @return string
      */
-    public static function roles($name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false)
-    {
+    public static function roles($name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false) {
       $sql = "SELECT id, role, inactive FROM security_roles";
       return Forms::selectBox($name, $selected_id, $sql, 'id', 'description', array(
                                                                                    'spec_option'                               => $new_item ?
@@ -161,8 +150,7 @@
      * @param bool $submit_on_change
      * @param bool $show_inactive
      */
-    public static function roles_cells($label, $name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false)
-    {
+    public static function roles_cells($label, $name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false) {
       if ($label != null) {
         echo "<td>$label</td>\n";
       }
@@ -180,8 +168,7 @@
      * @param bool $submit_on_change
      * @param bool $show_inactive
      */
-    public function roles_row($label, $name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false)
-    {
+    public function roles_row($label, $name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false) {
       echo "<tr><td class='label'>$label</td>";
       static::roles_cells(null, $name, $selected_id, $new_item, $submit_on_change, $show_inactive);
       echo "</tr>\n";
@@ -194,8 +181,7 @@
      * @return array|string
      * @throws RuntimeException
      */
-    public static function htmlentities($value)
-    {
+    public static function htmlentities($value) {
       static $already_cleaned = array();
       // Nothing to escape for non-string scalars, or for already processed values
       if (is_bool($value) or is_int($value) or is_float($value) or in_array($value, $already_cleaned, true)) {
@@ -238,8 +224,7 @@
      * <p>
      *       The return value will be casted to boolean if non-boolean was returned.
      */
-    public function offsetExists($offset)
-    {
+    public function offsetExists($offset) {
       // TODO: Implement offsetExists() method.
     }
     /**
@@ -253,8 +238,7 @@
      *
      * @return mixed Can return all value types.
      */
-    public function offsetGet($offset)
-    {
+    public function offsetGet($offset) {
       switch ($offset) {
         case 'areas':
           return $this->areas;
@@ -276,8 +260,7 @@
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
-    {
+    public function offsetSet($offset, $value) {
       return;
     }
     /**
@@ -291,8 +274,7 @@
      *
      * @return void
      */
-    public function offsetUnset($offset)
-    {
+    public function offsetUnset($offset) {
       // TODO: Implement offsetUnset() method.
     }
   }

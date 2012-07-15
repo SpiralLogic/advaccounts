@@ -11,41 +11,23 @@
   {
     /* Contains relavent information from the purch_order_details as well to provide in cached form,
 all the info to do the necessary entries without looking up ie additional queries of the database again */
-    /**
-     * @var
-     */
+    /** @var */
     public $id;
-    /**
-     * @var
-     */
+    /** @var */
     public $po_detail_item;
-    /**
-     * @var
-     */
+    /** @var */
     public $item_code;
-    /**
-     * @var
-     */
+    /** @var */
     public $description;
-    /**
-     * @var
-     */
+    /** @var */
     public $qty_recd;
-    /**
-     * @var
-     */
+    /** @var */
     public $prev_quantity_inv;
-    /**
-     * @var
-     */
+    /** @var */
     public $this_quantity_inv;
-    /**
-     * @var
-     */
+    /** @var */
     public $order_price;
-    /**
-     * @var
-     */
+    /** @var */
     public $chg_price;
     /**
      * @var null
@@ -55,21 +37,13 @@ all the info to do the necessary entries without looking up ie additional querie
      * @var int
      */
     public $discount;
-    /**
-     * @var
-     */
+    /** @var */
     public $Complete;
-    /**
-     * @var
-     */
+    /** @var */
     public $std_cost_unit;
-    /**
-     * @var
-     */
+    /** @var */
     public $gl_code;
-    /**
-     * @var
-     */
+    /** @var */
     public $freight;
     /**
      * @param      $id
@@ -87,8 +61,7 @@ all the info to do the necessary entries without looking up ie additional querie
      * @param int  $discount
      * @param null $exp_price
      */
-    public function __construct($id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = null)
-    {
+    public function __construct($id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = null) {
       $this->id                = $id;
       $this->po_detail_item    = $po_detail_item;
       $this->item_code         = $item_code;
@@ -107,8 +80,7 @@ all the info to do the necessary entries without looking up ie additional querie
     /**
      * @param $freight
      */
-    public function setFreight($freight)
-    {
+    public function setFreight($freight) {
       $this->freight = $freight;
     }
     /**
@@ -117,8 +89,7 @@ all the info to do the necessary entries without looking up ie additional querie
      *
      * @return int
      */
-    public function full_charge_price($tax_group_id, $tax_group = null)
-    {
+    public function full_charge_price($tax_group_id, $tax_group = null) {
       return Tax::full_price_for_item($this->item_code, $this->chg_price * (1 - $this->discount), $tax_group_id, 0, $tax_group);
     }
     /**
@@ -127,8 +98,7 @@ all the info to do the necessary entries without looking up ie additional querie
      *
      * @return float|int
      */
-    public function taxfree_charge_price($tax_group_id, $tax_group = null)
-    {
+    public function taxfree_charge_price($tax_group_id, $tax_group = null) {
       //		if ($tax_group_id==null)
       //			return $this->chg_price;
       return Tax::tax_free_price($this->item_code, $this->chg_price * (1 - $this->discount / 100), $tax_group_id, 0, $tax_group);
@@ -139,8 +109,7 @@ all the info to do the necessary entries without looking up ie additional querie
      * @param $creditor_trans
      * @param $k
      */
-    public static function display_controls($creditor_trans, $k)
-    {
+    public static function display_controls($creditor_trans, $k) {
       $accs             = Creditor::get_accounts_name($creditor_trans->supplier_id);
       $_POST['gl_code'] = $accs['purchase_account'];
 
@@ -172,8 +141,7 @@ all the info to do the necessary entries without looking up ie additional querie
      *
      * @return int
      */
-    public static function display_items($creditor_trans, $mode = 0)
-    {
+    public static function display_items($creditor_trans, $mode = 0) {
 
       // if displaying in form, and no items, exit
       if (($mode == 2 || $mode == 3) && count($creditor_trans->gl_codes) == 0) {
@@ -183,7 +151,8 @@ all the info to do the necessary entries without looking up ie additional querie
         $heading = _("GL Items for this Invoice");
       } else {
         $heading = _("GL Items for this Credit Note");
-      }      Display::heading($heading);
+      }
+      Display::heading($heading);
 
       if ($mode == 1) {
         $qes = GL_QuickEntry::has(QE_SUPPINV);
@@ -262,7 +231,7 @@ all the info to do the necessary entries without looking up ie additional querie
       }
       $colspan = ($dim == 2 ? 5 : ($dim == 1 ? 4 : 3));
       Row::label(_("Total"), Num::priceFormat($total_gl_value), "colspan=" . $colspan . " class='right bold'", "nowrap class='right bold'", ($mode == 1 ?
-          3 : 0));
+        3 : 0));
       Table::end(1);
       Display::div_end();
       return $total_gl_value;

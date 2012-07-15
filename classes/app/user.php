@@ -15,7 +15,8 @@
    * @method theme
    * @method User ii()
    */
-  class User {
+  class User
+  {
     use \ADV\Core\Traits\Hook;
     use StaticAccess {
     StaticAccess::i as ii;
@@ -30,45 +31,31 @@
      * @var string
      */
     public $loginname;
-    /**
-     * @var
-     */
+    /** @var */
     public $username;
-    /**
-     * @var
-     */
+    /** @var */
     public $name;
     /**
      * @var string
      */
     public $company;
-    /**
-     * @var
-     */
+    /** @var */
     public $pos;
     /**
      * @var bool
      */
     public $salesmanid = false;
-    /**
-     * @var
-     */
+    /** @var */
     public $access;
-    /**
-     * @var
-     */
+    /** @var */
     public $timeout;
-    /**
-     * @var
-     */
+    /** @var */
     public $last_act;
     /**
      * @var array
      */
-    protected  $role_set = array();
-    /**
-     * @var
-     */
+    protected $role_set = array();
+    /** @var */
     public $old_db;
     /**
      * @var bool
@@ -87,14 +74,10 @@
      */
     public $change_password = false;
     public $selectedApp;
-    /**
-     * @var
-     */
+    /** @var */
     protected $access_sections;
     protected $_hash;
-    /**
-     * @var
-     */
+    /** @var */
     public $last_record;
     protected $Session;
     /** @var Security */
@@ -121,15 +104,12 @@
      * @return User
      */
     public static function  i(Session $session = null, Config $config = null) {
-      $user    = null;
+      $user = null;
       if (isset($_SESSION['User'])) {
         $user = $_SESSION['User'];
       }
       return static::ii($user, $session, $config);
     }
-    /**
-
-     */
     public function __construct(Session $session = null, Config $config = null) {
       $this->Session = $session ? : Session::i();
       $this->Config  = $config ? : Config::i();
@@ -183,7 +163,7 @@
         $this->role_set = array();
         $this->access   = $myrow['role_id'];
         $this->_hash    = $myrow["hash"];
-        $this->Security = new Security( $this->Config);
+        $this->Security = new Security($this->Config);
         // store area codes available for current user role
         $role = $this->Security->get_role($myrow['role_id']);
         if (!$role) {
@@ -234,9 +214,6 @@
     public function _register_logout($object, $function, $arguments = array()) {
       $this->registerHook('logout', $object, $function, $arguments);
     }
-    /**
-
-     */
     public function timeout() {
       // skip timeout on logout page
       if ($this->logged) {
@@ -249,8 +226,8 @@
     }
     public function _addLog() {
       \DB::insert('user_login_log')->values(array(
-                                                'user'    => $this->username, 'IP'      => Users::get_ip(), 'success' => 2
-                                           ))->exec();
+                                                 'user'    => $this->username, 'IP'      => Users::get_ip(), 'success' => 2
+                                            ))->exec();
     }
     /**
      * @param $page_level
@@ -258,7 +235,7 @@
      * @return bool
      */
     public function hasAccess($page_level) {
-      return $this->Security->hasAccess($this,$page_level);
+      return $this->Security->hasAccess($this, $page_level);
     }
     /**
      * @param $section

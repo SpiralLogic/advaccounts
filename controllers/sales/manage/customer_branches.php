@@ -151,20 +151,17 @@
         _("Inactive") => 'inactive',
         //		array('fun'=>'inactive'),
         ' '           => array(
-          'insert' => true, 'fun' => function ($row)
-          {
+          'insert' => true, 'fun' => function ($row) {
             return Forms::button("Select" . $row["branch_id"], $row["branch_id"], '', ICON_ADD, 'selector');
           }
         ),
         array(
-          'insert' => true, 'fun' => function ($row)
-        {
+          'insert' => true, 'fun' => function ($row) {
           return Forms::button("Edit" . $row["branch_id"], _("Edit"), '', ICON_EDIT);
         }
         ),
         array(
-          'insert' => true, 'fun' => function ($row)
-        {
+          'insert' => true, 'fun' => function ($row) {
           return Forms::button("Delete" . $row["branch_id"], _("Delete"), '', ICON_DELETE);
         }
         )
@@ -172,8 +169,8 @@
       if (!Input::request('frame')) {
         $cols[' '] = 'skip';
       }
-      $table =  db_pager::new_db_pager('branch_tbl', $sql, $cols, 'branches');
-      $table->set_inactive_ctrl('branches', 'branch_id');
+      $table = db_pager::new_db_pager('branch_tbl', $sql, $cols, 'branches');
+      $table->setInactiveCtrl('branches', 'branch_id');
       //$table->width = "85%";
       $table->display($table);
     } else {

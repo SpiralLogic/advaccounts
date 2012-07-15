@@ -13,12 +13,10 @@
   /**
 
    */
-  class GL extends Application {
+  class GL extends Application
+  {
     public $name = 'GL';
     public $help_context = "&Banking";
-    /**
-
-     */
     public function buildMenu() {
       $this->add_module(_("Transactions"));
       $this->addLeftFunction(0, _("&Payments"), "/gl/gl_bank?NewPayment=Yes", SA_PAYMENT);

@@ -13,12 +13,10 @@
   /**
 
    */
-  class Inventory extends Application {
+  class Inventory extends Application
+  {
     public $name = "Inventory";
     public $help_context = "&Inventory";
-    /**
-
-     */
     public function buildMenu() {
       $this->add_module(_("Transactions"));
       $this->addLeftFunction(0, _("Inventory Location &Transfers"), "/inventory/transfers?NewTransfer=1", SA_LOCATIONTRANSFER);

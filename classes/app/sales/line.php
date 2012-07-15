@@ -13,37 +13,23 @@
      * @var int
      */
     public $id;
-    /**
-     * @var
-     */
+    /** @var */
     public $stock_id;
-    /**
-     * @var
-     */
+    /** @var */
     public $description;
-    /**
-     * @var
-     */
+    /** @var */
     public $units;
-    /**
-     * @var
-     */
+    /** @var */
     public $mb_flag;
-    /**
-     * @var
-     */
+    /** @var */
     public $tax_type;
-    /**
-     * @var
-     */
+    /** @var */
     public $tax_type_name;
     /**
      * @var int
      */
     public $src_no; // number of src doc for this line
-    /**
-     * @var
-     */
+    /** @var */
     public $src_id;
     /**
      * @var array|int
@@ -53,13 +39,9 @@
      * @var bool
      */
     public $price;
-    /**
-     * @var
-     */
+    /** @var */
     public $discount_percent;
-    /**
-     * @var
-     */
+    /** @var */
     public $qty_done; // quantity processed on child documents
     /**
      * @var array|int
@@ -69,9 +51,7 @@
      * @var int
      */
     public $qty_old = 0; // quantity dispatched before edition
-    /**
-     * @var
-     */
+    /** @var */
     public $standard_cost;
     /**
      * @param           $stock_id
@@ -84,8 +64,7 @@
      * @param int       $id
      * @param int       $src_no
      */
-    function __construct($stock_id, $qty, $prc, $disc_percent, $qty_done, $standard_cost, $description, $id = 0, $src_no = 0)
-    {
+    function __construct($stock_id, $qty, $prc, $disc_percent, $qty_done, $standard_cost, $description, $id = 0, $src_no = 0) {
       /* Constructor function to add a new LineDetail object with passed params */
       $this->id     = $id;
       $this->src_no = $src_no;
@@ -115,8 +94,7 @@
     /**
      * @return bool
      */
-    function line_price()
-    {
+    function line_price() {
       return $this->price;
     }
   }

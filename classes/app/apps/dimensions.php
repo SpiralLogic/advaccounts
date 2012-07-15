@@ -14,20 +14,15 @@
   /**
 
    */
-  class Dimensions extends Application {
+  class Dimensions extends Application
+  {
     public $name = "Dimensions";
     public $help_context = "&Dimensions";
     public $enabled = false;
-    /**
-
-     */
     public function __construct() {
       $this->enabled = DB_Company::get_pref('use_dimension');
       parent::__construct();
     }
-    /**
-
-     */
     public function buildMenu() {
       $this->add_module(_("Transactions"));
       $this->addLeftFunction(0, _("Dimension &Entry"), "/dimensions/dimension_entry?", SA_DIMENSION);

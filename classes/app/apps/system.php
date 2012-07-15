@@ -13,12 +13,10 @@
   /**
 
    */
-  class System extends Application {
+  class System extends Application
+  {
     public $name = "System";
     public $help_context = "&System";
-    /**
-
-     */
     public function buildMenu() {
       $this->add_module(_("Company Setup"));
       $this->addLeftFunction(0, _("&Company Setup"), "/system/company_preferences?", SA_SETUPCOMPANY);

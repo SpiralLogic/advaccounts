@@ -15,29 +15,21 @@
      * @var Array|mixed
      */
     public $language;
-    /**
-     * @var
-     */
+    /** @var */
     public $qty_dec;
     /**
      * @var int
      */
     public $price_dec = 2;
-    /**
-     * @var
-     */
+    /** @var */
     public $exrate_dec = 4;
     /**
      * @var int
      */
     public $percent_dec = 0;
-    /**
-     * @var
-     */
+    /** @var */
     public $show_gl;
-    /**
-     * @var
-     */
+    /** @var */
     public $show_codes;
     /**
      * @var Array|mixed
@@ -59,29 +51,17 @@
      * @var string
      */
     public $theme = 'default';
-    /**
-     * @var
-     */
+    /** @var */
     public $print_profile;
-    /**
-     * @var
-     */
+    /** @var */
     public $rep_popup;
-    /**
-     * @var
-     */
+    /** @var */
     public $page_size; // for printing
-    /**
-     * @var
-     */
+    /** @var */
     public $show_hints;
-    /**
-     * @var
-     */
+    /** @var */
     public $query_size; // table pager page length
-    /**
-     * @var
-     */
+    /** @var */
     public $graphic_links; // use graphic links
     /**
      * @var int
@@ -94,8 +74,7 @@
     /**
      * @param null $user
      */
-    public function __construct($user = null)
-    {
+    public function __construct($user = null) {
       if ($user == null) {
         // set default values, used before login
         $this->date_sep    = Config::get('date.ui_separator');
@@ -110,8 +89,7 @@
     /**
      * @return string
      */
-    public function date_display()
-    {
+    public function date_display() {
       $date_seps = Config::get('date.separators');
       $sep       = $date_seps[$this->date_sep];
       if ($this->date_format == 0) {
@@ -125,8 +103,7 @@
     /**
      * @return mixed
      */
-    public function tho_sep()
-    {
+    public function tho_sep() {
       $tho_seps = Config::get('separators_thousands');
 
       return $tho_seps [$this->tho_sep];
@@ -134,8 +111,7 @@
     /**
      * @return mixed
      */
-    public function dec_sep()
-    {
+    public function dec_sep() {
       $dec_seps = Config::get('separators_decimal');
 
       return $dec_seps [$this->dec_sep];

@@ -9,22 +9,15 @@
    **/
   class Reports_Box extends Report
   {
-    /**
-     * @var
-     */
+    /** @var */
     public $ar_classes;
     /**
      * @var array
      */
     public $ctrl_handlers = array();
-    /**
-
-     */
-    public function __construct()
-    {
+    public function __construct() {
     }
-    public function reportClasses()
-    {
+    public function reportClasses() {
       $this->ar_classes = array();
     }
     /**
@@ -32,8 +25,7 @@
      *
      * @return void
      */
-    public function addReportClass($class_name)
-    {
+    public function addReportClass($class_name) {
       $this->ar_classes[$class_name] = array();
     }
     /**
@@ -44,8 +36,7 @@
      *
      * @return void
      */
-    public function addReport($class_name, $id, $rep_name, $params = null)
-    {
+    public function addReport($class_name, $id, $rep_name, $params = null) {
       unset($this->ar_classes[$class_name][$id]); // unset std report if any
       $this->ar_classes[$class_name][$id] = new Report($id, $rep_name, $params);
     }
@@ -54,8 +45,7 @@
      *
      * @return string
      */
-    public function getDisplay($class = null)
-    {
+    public function getDisplay($class = null) {
       $Ajax          = Ajax::i();
       $temp          = array_values($this->ar_classes);
       $display_class = $class == null ? $temp[0] : $this->ar_classes[$class];
@@ -122,8 +112,7 @@
      * @return string
      * @throws Exception
      */
-    public function getOptions($controls)
-    {
+    public function getOptions($controls) {
       $st = '';
       if ($controls == null) {
         return "";
@@ -161,8 +150,7 @@
      *
      * @return void
      */
-    public function register_controls($handler)
-    {
+    public function register_controls($handler) {
       $this->ctrl_handlers[] = $handler;
     }
     //
@@ -174,8 +162,7 @@
      *
      * @return string
      */
-    public function get_ctrl($name, $type)
-    {
+    public function get_ctrl($name, $type) {
       $st = '';
       switch ($type) {
         case 'CURRENCY':
@@ -434,8 +421,7 @@
      *
      * @return string
      */
-    protected function gl_systypes_list($name, $value = null, $spec_opt = false)
-    {
+    protected function gl_systypes_list($name, $value = null, $spec_opt = false) {
       global $systypes_array;
       $types = $systypes_array;
       foreach (array(

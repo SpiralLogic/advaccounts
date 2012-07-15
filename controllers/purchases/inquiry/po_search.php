@@ -78,42 +78,45 @@
   /*show a table of the orders returned by the sql */
   $cols = array(
     _("#")                                                                                                          => array(
-      'fun'                                                                   => function ($trans) { return GL_UI::viewTrans(ST_PURCHORDER, $trans["order_no"]); },
-      'ord'                                                                   => ''
+      'fun'                                                                      => function ($trans) {
+        return GL_UI::viewTrans(ST_PURCHORDER, $trans["order_no"]);
+      }, 'ord'                                                                   => ''
     ),
     _("Reference"),
     _("Supplier")                                                                                                   => array(
-      'ord'  => '',
-      'type' => 'id'
+      'ord'  => '', 'type' => 'id'
     ),
     _("Supplier ID")                                                                                                => 'skip',
     _("Location"),
     _("Supplier's Reference"),
     _("Order Date")                                                                                                 => array(
-      'name' => 'ord_date',
-      'type' => 'date',
-      'ord'  => 'desc'
+      'name' => 'ord_date', 'type' => 'date', 'ord'  => 'desc'
     ),
     _("Currency")                                                                                                   => array('align' => 'center'),
     _("Order Total")                                                                                                => 'amount',
     array(
-      'insert' => true,
-      'fun'    => function ($row) { return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrder=" . $row["order_no"], ICON_EDIT); }
+      'insert' => true, 'fun'    => function ($row) {
+      return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrder=" . $row["order_no"], ICON_EDIT);
+    }
     ),
     array(
-      'insert' => true,
-      'fun'    => function ($row) { return Reporting::print_doc_link($row['order_no'], _("Print"), true, ST_PURCHORDER, ICON_PRINT, 'button printlink'); }
+      'insert' => true, 'fun'    => function ($row) {
+      return Reporting::print_doc_link($row['order_no'], _("Print"), true, ST_PURCHORDER, ICON_PRINT, 'button printlink');
+    }
     ),
     array(
-      'insert' => true,
-      'fun'    => function ($row) { return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE); }
+      'insert' => true, 'fun'    => function ($row) {
+      return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
+    }
     )
   );
   if (!$stock_location) {
     $cols[_("Location")] = 'skip';
   }
   $table = db_pager::new_db_pager('orders_tbl', $sql, $cols);
-  $table->set_marker(function ($row) { return $row['OverDue'] == 1; }, _("Marked orders have overdue items."));
+  $table->setMarker(function ($row) {
+    return $row['OverDue'] == 1;
+  }, _("Marked orders have overdue items."));
   $table->width = "80%";
   $table->display($table);
   Creditor::addInfoDialog('.pagerclick');

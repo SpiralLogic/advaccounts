@@ -16,9 +16,7 @@
 
   class Orders implements \Iterator, \Countable
   {
-    /**
-     * @var
-     */
+    /** @var */
     protected $data = array();
     /**
      * @var int
@@ -69,19 +67,11 @@
      * @var OrderDetails
      */
     public $details;
-    /**
-     * @var
-     */
+    /** @var */
     public $status;
-    /**
-     * @var
-     */
+    /** @var */
     public $XML;
-    /**
-
-     */
-    public function __construct()
-    {
+    public function __construct() {
       $this->_classname = str_replace(__NAMESPACE__ . '\\', '', __CLASS__);
       //echo 'Getting from Volusion<br>';
       $this->get();
@@ -90,8 +80,7 @@
     /**
      * @return string
      */
-    public function getXML()
-    {
+    public function getXML() {
       $apiuser = \Config::get('modules.Volusion')['apiuser'];
       $apikey  = \Config::get('modules.Volusion')['apikey'];
       $url     = \Config::get('modules.Volusion')['apiurl'];
@@ -109,8 +98,7 @@
     /**
      * @return bool
      */
-    public function get()
-    {
+    public function get() {
       $XML = $this->getXML();
       if (!$XML) {
         return false;
@@ -125,8 +113,7 @@
     /**
      * @return bool
      */
-    public function process()
-    {
+    public function process() {
       if (!$this->data) {
         $this->status = "No new web orders";
 
@@ -149,8 +136,7 @@
     /**
      * @return bool|string
      */
-    public function save()
-    {
+    public function save() {
       $current = $this->current();
       $exists  = $this->exists();
       if ($exists) {
@@ -186,19 +172,14 @@
     /**
      * @return bool
      */
-    public function exists()
-    {
+    public function exists() {
       $current = $this->current();
       $results = \DB::select($this->idcolumn)->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])
         ->fetch()->one();
 
       return (count($results) > 0) ? $results[$this->idcolumn] : false;
     }
-    /**
-
-     */
-    public function next()
-    {
+    public function next() {
       $this->current++;
       if (isset($this->data[$this->current]['OrderDetails'])) {
         $this->details = new OrderDetails($this->data[$this->current]['OrderDetails']);
@@ -211,8 +192,7 @@
      * @link http://php.net/manual/en/iterator.current.php
      * @return mixed Can return any type.
      */
-    public function current()
-    {
+    public function current() {
       if (!$this->valid()) {
         return false;
       }
@@ -225,8 +205,7 @@
      * @link http://php.net/manual/en/iterator.key.php
      * @return scalar scalar on success, integer
      */
-    public function key()
-    {
+    public function key() {
       return $this->data[$this->current]['OrderID'];
     }
     /**
@@ -236,8 +215,7 @@
      * @return boolean The return value will be casted to boolean and then evaluated.
      *       Returns true on success or false on failure.
      */
-    public function valid()
-    {
+    public function valid() {
       return isset($this->data[$this->current]) && $this->data[$this->current] && $this->current < count($this->data);
     }
     /**
@@ -246,8 +224,7 @@
      * @link http://php.net/manual/en/iterator.rewind.php
      * @return void Any returned value is ignored.
      */
-    public function rewind()
-    {
+    public function rewind() {
       $this->current = -1;
       $this->next();
     }
@@ -260,8 +237,7 @@
      * <p>
      *       The return value is cast to an integer.
      */
-    public function count()
-    {
+    public function count() {
       $this->data = $this->data ? : array();
 
       return count($this->data);
@@ -288,8 +264,7 @@
     /**
      * @param $data
      */
-    public function __construct($data)
-    {
+    public function __construct($data) {
       $this->_classname = str_replace(__NAMESPACE__ . '\\', '', __CLASS__);
       if (is_array($data)) {
         $this->data = (!is_array(reset($data))) ? array($data) : $data;
@@ -299,8 +274,7 @@
     /**
      * @return bool|void
      */
-    public function next()
-    {
+    public function next() {
       $this->current++;
       if (!$this->valid()) {
         return false;
@@ -316,8 +290,7 @@
     /**
      * @return mixed
      */
-    public function current()
-    {
+    public function current() {
       if (!$this->valid()) {
         return false;
       }
@@ -327,8 +300,7 @@
     /**
      * @return mixed
      */
-    public function key()
-    {
+    public function key() {
       return $this->data[$this->current]['OrderDetailID'];
     }
   }
@@ -349,8 +321,7 @@
     /**
      * @param $data
      */
-    public function __construct($data)
-    {
+    public function __construct($data) {
       $this->_classname = str_replace(__NAMESPACE__ . '\\', '', __CLASS__);
       if (is_array($data)) {
         $this->data = (!is_array(reset($data))) ? array($data) : $data;
@@ -360,8 +331,7 @@
     /**
      * @return bool
      */
-    public function exists()
-    {
+    public function exists() {
       $current = $this->current();
       $results = \DB::select()->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])
         ->andWhere('OrderDetailID=', $current['OrderDetailID'])->fetch()->all();
@@ -371,22 +341,19 @@
     /**
      * @return bool|void
      */
-    public function next()
-    {
+    public function next() {
       $this->current++;
     }
     /**
      * @return mixed
      */
-    public function current()
-    {
+    public function current() {
       return $this->data[$this->current];
     }
     /**
      * @return mixed
      */
-    public function key()
-    {
+    public function key() {
       return $this->data[$this->current]['OrderDetailID'];
     }
   }

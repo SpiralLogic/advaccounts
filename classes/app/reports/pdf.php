@@ -20,26 +20,19 @@
   use ADV\Core\Event;
   use Debtor;
 
-  class Pdf extends \Cpdf {
+  class Pdf extends \Cpdf
+  {
     /**
      * @var array
      */
     public $size;
-    /**
-     * @var
-     */
+    /** @var */
     public $company;
-    /**
-     * @var
-     */
+    /** @var */
     public $user;
-    /**
-     * @var
-     */
+    /** @var */
     public $host;
-    /**
-     * @var
-     */
+    /** @var */
     public $fiscal_year;
     /**
      * @var string
@@ -82,33 +75,19 @@
      */
     public $lineHeight;
     //public $rtl;
-    /**
-     * @var
-     */
+    /** @var */
     public $cols;
-    /**
-     * @var
-     */
+    /** @var */
     public $params;
-    /**
-     * @var
-     */
+    /** @var */
     public $headers;
-    /**
-     * @var
-     */
+    /** @var */
     public $aligns;
-    /**
-     * @var
-     */
+    /** @var */
     public $headers2;
-    /**
-     * @var
-     */
+    /** @var */
     public $aligns2;
-    /**
-     * @var
-     */
+    /** @var */
     public $cols2;
     /**
      * @var int
@@ -126,23 +105,17 @@
      * @var string
      */
     public $currency;
-    /**
-     * @var
-     */
+    /** @var */
     public $companyLogoEnable;
     // select whether to use a company logo graphic in some header templates
     /**
      * @var bool
      */
     public $scaleLogoWidth;
-    /**
-     * @var
-     */
+    /** @var */
     public $footerEnable;
     // select whether to print a page footer or not
-    /**
-     * @var
-     */
+    /** @var */
     public $footerText;
     // store user-generated footer text
     /**
@@ -158,7 +131,7 @@
      * @param null         $margins
      * @param null         $excelColWidthFactor
      */
-    public function __construct($title, $filename,$security_level, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = null, $excelColWidthFactor = null) {
+    public function __construct($title, $filename, $security_level, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = null, $excelColWidthFactor = null) {
       if (!User::i()->hasAccess($security_level)) {
         Event::error(_("The security settings on your account do not permit you to print this report"));
         Page::end();
@@ -1145,9 +1118,10 @@
           $fname = $dir . '/' . uniqid('') . '.pdf';
         }
         $this->Output($fname, 'F');
-        $doc_Dear_Sirs ='';
-                  $doc_AttachedFile ='';$doc_Payment_Link ='';
-        $doc_Kindest_regards ='';
+        $doc_Dear_Sirs       = '';
+        $doc_AttachedFile    = '';
+        $doc_Payment_Link    = '';
+        $doc_Kindest_regards = '';
         if ($email == 1) {
           $emailtype = true;
           if ($this->currency != $myrow['curr_code']) {

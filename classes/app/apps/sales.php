@@ -15,12 +15,10 @@
   use Orders;
   use ADV\App\Application;
 
-  class Sales extends Application {
+  class Sales extends Application
+  {
     public $name = 'Sales';
     public $help_context = '&Sales';
-    /**
-
-     */
     public function buildMenu() {
       $this->add_module(_('Quotations and Orders'));
       $this->addLeftFunction(0, '', '');

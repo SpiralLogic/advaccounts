@@ -1,5 +1,5 @@
 <?php
-namespace ADV\App\Reports;
+  namespace ADV\App\Reports;
   /**
    * PHP version 5.4
    * @category  PHP
@@ -29,25 +29,15 @@ namespace ADV\App\Reports;
      * @var string
      */
     public $size;
-    /**
-     * @var
-     */
+    /** @var */
     public $company;
-    /**
-     * @var
-     */
+    /** @var */
     public $user;
-    /**
-     * @var
-     */
+    /** @var */
     public $host;
-    /**
-     * @var
-     */
+    /** @var */
     public $fiscal_year;
-    /**
-     * @var
-     */
+    /** @var */
     public $title;
     /**
      * @var string
@@ -77,33 +67,19 @@ namespace ADV\App\Reports;
      * @var int
      */
     public $leftMargin = 0;
-    /**
-     * @var
-     */
+    /** @var */
     public $cols;
-    /**
-     * @var
-     */
+    /** @var */
     public $params;
-    /**
-     * @var
-     */
+    /** @var */
     public $headers;
-    /**
-     * @var
-     */
+    /** @var */
     public $aligns;
-    /**
-     * @var
-     */
+    /** @var */
     public $headers2;
-    /**
-     * @var
-     */
+    /** @var */
     public $aligns2;
-    /**
-     * @var
-     */
+    /** @var */
     public $cols2;
     /**
      * @var int
@@ -125,9 +101,7 @@ namespace ADV\App\Reports;
      * @var int
      */
     public $y;
-    /**
-     * @var
-     */
+    /** @var */
     public $numcols;
     /**
      * @var float
@@ -178,8 +152,7 @@ namespace ADV\App\Reports;
      * @param null   $margins
      * @param float  $excelColWidthFactor
      */
-    public function __construct($title, $filename ,$security_level,$size = 'A4', $fontsize = 9, $orientation = 'P', $margins = null, $excelColWidthFactor = 6.5)
-    {
+    public function __construct($title, $filename, $security_level, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = null, $excelColWidthFactor = 6.5) {
       if (!User::i()->hasAccess($security_level)) {
         Event::error(_("The security settings on your account do not permit you to print this report"));
         Page::end();
@@ -292,8 +265,7 @@ namespace ADV\App\Reports;
      *
      * @return mixed|string
      */
-    public function worksheetNameGenerator($name)
-    {
+    public function worksheetNameGenerator($name) {
       // First, strip out characters which aren't allowed
       $illegal_chars = array(':', '\\', '/', '?', '*', '[', ']');
       for ($i = 0; $i < count($illegal_chars); $i++) {
@@ -311,8 +283,7 @@ namespace ADV\App\Reports;
      *
      * @return mixed
      */
-    public function NumFormat($dec)
-    {
+    public function NumFormat($dec) {
       if (!isset($this->formatAmount[$dec])) {
         $dec    = (int) $dec;
         $tsep   = ',';
@@ -334,8 +305,7 @@ namespace ADV\App\Reports;
      *
      * @return void
      */
-    public function Font($fontname = '', $style = 'normal')
-    {
+    public function Font($fontname = '', $style = 'normal') {
     }
     /**
      * @param      $params
@@ -348,8 +318,7 @@ namespace ADV\App\Reports;
      *
      * @return void
      */
-    public function Info($params, $cols, $headers, $aligns, $cols2 = null, $headers2 = null, $aligns2 = null)
-    {
+    public function Info($params, $cols, $headers, $aligns, $cols2 = null, $headers2 = null, $aligns2 = null) {
       $this->company = DB_Company::get_prefs();
       $year          = DB_Company::get_current_fiscalyear();
       if ($year['closed'] == 0) {
@@ -376,8 +345,7 @@ namespace ADV\App\Reports;
         $this->sheet->setColumn($i, $i, $this->px2units($this->cols[$i + 1] - $this->cols[$i]));
       }
     }
-    public function Header()
-    {
+    public function Header() {
       $tcol = $this->numcols - 1;
       $this->sheet->setRow($this->y, 20);
       for ($i = 0; $i < $this->numcols; $i++) {
@@ -460,13 +428,11 @@ namespace ADV\App\Reports;
      *
      * @return mixed
      */
-    public function Header2($myrow, $branch, $sales_order, $bankaccount, $doctype)
-    {
+    public function Header2($myrow, $branch, $sales_order, $bankaccount, $doctype) {
       return;
     }
     // Alternate header style - primary differences are for PDFs
-    public function Header3()
-    {
+    public function Header3() {
       // Flag to make sure we only print the company name once
       $companyNamePrinted = false;
       $this->y            = 0;
@@ -596,8 +562,7 @@ namespace ADV\App\Reports;
      * @return int|string
      * @access public
      */
-    public function DatePrettyPrint($date, $input_format = 0, $output_format = 0)
-    {
+    public function DatePrettyPrint($date, $input_format = 0, $output_format = 0) {
       if ($date != '') {
         $date  = Dates::dateToSql($date);
         $year  = (int) (substr($date, 0, 4));
@@ -623,8 +588,7 @@ namespace ADV\App\Reports;
      *
      * @return mixed
      */
-    public function AddImage($logo, $x, $y, $w, $h)
-    {
+    public function AddImage($logo, $x, $y, $w, $h) {
       return;
     }
     /**
@@ -634,8 +598,7 @@ namespace ADV\App\Reports;
      *
      * @return mixed
      */
-    public function SetDrawColor($r, $g, $b)
-    {
+    public function SetDrawColor($r, $g, $b) {
       return;
     }
     /**
@@ -645,8 +608,7 @@ namespace ADV\App\Reports;
      *
      * @return mixed
      */
-    public function SetTextColor($r, $g, $b)
-    {
+    public function SetTextColor($r, $g, $b) {
       return;
     }
     /**
@@ -656,15 +618,13 @@ namespace ADV\App\Reports;
      *
      * @return mixed
      */
-    public function SetFillColor($r, $g, $b)
-    {
+    public function SetFillColor($r, $g, $b) {
       return;
     }
     /**
      * @return int
      */
-    public function GetCellPadding()
-    {
+    public function GetCellPadding() {
       return 0;
     }
     /**
@@ -672,8 +632,7 @@ namespace ADV\App\Reports;
      *
      * @return mixed
      */
-    public function SetCellPadding($pad)
-    {
+    public function SetCellPadding($pad) {
       return;
     }
     /**
@@ -690,8 +649,7 @@ namespace ADV\App\Reports;
      *
      * @return mixed
      */
-    public function Text($c, $txt, $n = 0, $corr = 0, $r = 0, $align = 'left', $border = 0, $fill = 0, $link = null, $stretch = 0)
-    {
+    public function Text($c, $txt, $n = 0, $corr = 0, $r = 0, $align = 'left', $border = 0, $fill = 0, $link = null, $stretch = 0) {
       return;
     }
     /**
@@ -707,8 +665,7 @@ namespace ADV\App\Reports;
      *
      * @return mixed
      */
-    public function TextWrap($xpos, $ypos, $len, $str, $align = 'left', $border = 0, $fill = 0, $link = null, $stretch = 0)
-    {
+    public function TextWrap($xpos, $ypos, $len, $str, $align = 'left', $border = 0, $fill = 0, $link = null, $stretch = 0) {
       return;
     }
     /**
@@ -724,8 +681,7 @@ namespace ADV\App\Reports;
      *
      * @return void
      */
-    public function TextCol($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0)
-    {
+    public function TextCol($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0) {
       $txt = html_entity_decode($txt);
       if ($this->aligns[$c] == 'right') {
         $this->sheet->writeString($this->y, $c, $txt, $this->formatRight);
@@ -751,8 +707,7 @@ namespace ADV\App\Reports;
      *
      * @return void
      */
-    public function AmountCol($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0, $color_red = false)
-    {
+    public function AmountCol($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0, $color_red = false) {
       if (!is_numeric($txt)) {
         $txt = 0;
       }
@@ -775,8 +730,7 @@ namespace ADV\App\Reports;
      *
      * @return void
      */
-    public function AmountCol2($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0, $color_red = false, $amount_locale = null, $amount_format = null)
-    {
+    public function AmountCol2($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0, $color_red = false, $amount_locale = null, $amount_format = null) {
       if (!is_numeric($txt)) {
         $txt = 0;
       }
@@ -796,8 +750,7 @@ namespace ADV\App\Reports;
      *
      * @return void
      */
-    public function DateCol($c, $n, $txt, $conv = false, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0)
-    {
+    public function DateCol($c, $n, $txt, $conv = false, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0) {
       if (!$conv) {
         $txt = Dates::dateToSql($txt);
       }
@@ -818,8 +771,7 @@ namespace ADV\App\Reports;
      *
      * @return void
      */
-    public function TextCol2($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0)
-    {
+    public function TextCol2($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0) {
       $txt = html_entity_decode($txt);
       $this->sheet->writeString($this->y, $c, $txt, $this->formatLeft);
       if ($n - $c > 1) {
@@ -839,8 +791,7 @@ namespace ADV\App\Reports;
      *
      * @return mixed
      */
-    public function TextColLines($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0)
-    {
+    public function TextColLines($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0) {
       return;
     }
     /**
@@ -855,8 +806,7 @@ namespace ADV\App\Reports;
      *
      * @return mixed
      */
-    public function TextWrapLines($c, $width, $txt, $align = 'left', $border = 0, $fill = 0, $link = null, $stretch = 0)
-    {
+    public function TextWrapLines($c, $width, $txt, $align = 'left', $border = 0, $fill = 0, $link = null, $stretch = 0) {
       return;
     }
     /**
@@ -868,8 +818,7 @@ namespace ADV\App\Reports;
      *
      * @return array
      */
-    public function TextWrapCalc($txt, $width, $spacebreak = false)
-    {
+    public function TextWrapCalc($txt, $width, $spacebreak = false) {
       // Assume an average character width
       $avg_char_width = 5;
       $ret            = "";
@@ -896,8 +845,7 @@ namespace ADV\App\Reports;
      *
      * @return mixed
      */
-    public function SetLineStyle($style)
-    {
+    public function SetLineStyle($style) {
       return;
     }
     /**
@@ -905,8 +853,7 @@ namespace ADV\App\Reports;
      *
      * @return mixed
      */
-    public function SetLineWidth($width)
-    {
+    public function SetLineWidth($width) {
       return;
     }
     /**
@@ -917,8 +864,7 @@ namespace ADV\App\Reports;
      *
      * @return mixed
      */
-    public function LineTo($from, $row, $to, $row2)
-    {
+    public function LineTo($from, $row, $to, $row2) {
       return;
     }
     /**
@@ -927,8 +873,7 @@ namespace ADV\App\Reports;
      *
      * @return mixed
      */
-    public function Line($row, $height = 0)
-    {
+    public function Line($row, $height = 0) {
       return;
     }
     /**
@@ -940,8 +885,7 @@ namespace ADV\App\Reports;
      *
      * @return mixed
      */
-    public function UnderlineCell($c, $r = 0, $type = 1, $linewidth = 0, $style = array())
-    {
+    public function UnderlineCell($c, $r = 0, $type = 1, $linewidth = 0, $style = array()) {
       return;
     }
     /**
@@ -951,8 +895,7 @@ namespace ADV\App\Reports;
      *
      * @return void
      */
-    public function NewLine($l = 1, $np = 0, $h = null)
-    {
+    public function NewLine($l = 1, $np = 0, $h = null) {
       $this->y += $l;
     }
     /**
@@ -1018,8 +961,7 @@ namespace ADV\App\Reports;
      *
      * @return void
      */
-    public function End($email = 0, $subject = null, $myrow = null, $doctype = 0)
-    {
+    public function End($email = 0, $subject = null, $myrow = null, $doctype = 0) {
       for ($i = 0; $i < $this->numcols; $i++) {
         $this->sheet->writeBlank($this->y, $i, $this->formatFooter);
       }

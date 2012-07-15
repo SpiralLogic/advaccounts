@@ -37,11 +37,7 @@
      * @var array
      */
     protected $triggers = array();
-    /**
-
-     */
-    public function __construct()
-    {
+    public function __construct() {
       $enc = (session_status() == PHP_SESSION_ACTIVE) ? $_SESSION['language']->encoding : 'UTF-8';
       parent::__construct($enc);
     }
@@ -53,8 +49,7 @@
      *
      * @return void
      */
-    public function _activate($trigname)
-    {
+    public function _activate($trigname) {
       ($this->_inAjax()) and $this->triggers[$trigname] = true;
     }
     /**
@@ -65,8 +60,7 @@
      *
      * @return void
      */
-    public function _redirect($url)
-    {
+    public function _redirect($url) {
       if ($this->_inAjax()) {
         $this->addCommand(true, array('n' => 'rd'), $this->_absoluteURL($url));
         $this->_run();
@@ -79,8 +73,7 @@
      *
      * @return void
      */
-    public function _popup($url)
-    {
+    public function _popup($url) {
       $this->addCommand(true, array('n' => 'pu'), $this->_absoluteURL($url));
     }
     /**
@@ -91,8 +84,7 @@
      *
      * @return Ajax
      */
-    public function _addScript($trigger, $sJS)
-    {
+    public function _addScript($trigger, $sJS) {
       $this->addCommand($trigger, array('n' => 'js'), $sJS);
 
       return $this;
@@ -107,8 +99,7 @@
      *
      * @return Ajax
      */
-    public function _addAssign($trigger, $sTarget, $sAttribute, $sData)
-    {
+    public function _addAssign($trigger, $sTarget, $sAttribute, $sData) {
       $this->addCommand($trigger, array(
                                        'n' => 'as', 't' => $sTarget, 'p' => $sAttribute
                                   ), $sData);
@@ -124,8 +115,7 @@
      *
      * @return Ajax
      */
-    public function _addUpdate($trigger, $sTarget, $sData)
-    {
+    public function _addUpdate($trigger, $sTarget, $sData) {
       $this->addCommand($trigger, array(
                                        'n' => 'up', 't' => $sTarget
                                   ), $sData);
@@ -141,8 +131,7 @@
      *
      * @return Ajax
      */
-    public function _addDisable($trigger, $sTarget, $sData = true)
-    {
+    public function _addDisable($trigger, $sTarget, $sData = true) {
       $this->addCommand($trigger, array(
                                        'n' => 'di', 't' => $sTarget
                                   ), $sData);
@@ -158,8 +147,7 @@
      *
      * @return Ajax
      */
-    public function _addEnable($trigger, $sTarget, $sData = true)
-    {
+    public function _addEnable($trigger, $sTarget, $sData = true) {
       $this->addCommand($trigger, array(
                                        'n' => 'di', 't' => $sTarget
                                   ), !$sData);
@@ -174,8 +162,7 @@
      *
      * @return Ajax
      */
-    public function _addFocus($trigger, $sTarget)
-    {
+    public function _addFocus($trigger, $sTarget) {
       $this->addCommand($trigger, array('n' => 'fc'), $sTarget);
 
       return $this;
@@ -189,8 +176,7 @@
      *
      * @return void
      */
-    protected function addCommand($trigger, $aAttributes, $mData)
-    {
+    protected function addCommand($trigger, $aAttributes, $mData) {
       if ($this->isActive() && ($trigger !== false)) {
         //		Event::error('adding '.$trigger.':'.htmlentities($mData));
         $aAttributes['why']  = $trigger;
@@ -201,8 +187,7 @@
     /**
      * @return mixed
      */
-    public function _run()
-    {
+    public function _run() {
       if (!$this->isActive()) {
         return;
       }
@@ -235,16 +220,14 @@
      * @static
      * @return bool
      */
-    public function _inAjax()
-    {
+    public function _inAjax() {
       return $this->isActive();
     }
     /**
      * @static
      * @return bool
      */
-    public function _flush()
-    {
+    public function _flush() {
       $this->aCommands = [];
     }
     /**
@@ -255,8 +238,7 @@
      *
      * @return string
      */
-    public function _absoluteURL($url)
-    {
+    public function _absoluteURL($url) {
       return strpos($url, '..') === 0 ? dirname($_SERVER['DOCUMENT_URI']) . '/' . $url : str_replace(WEBROOT, '/', $url);
     }
   }

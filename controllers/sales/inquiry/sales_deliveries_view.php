@@ -122,29 +122,27 @@
     $sql .= " GROUP BY trans.trans_no ";
   } //end no delivery number selected
   $cols = array(
-    _("Delivery #")                                                               => array(
-      'fun' => function ($trans, $trans_no)
-      {
+    _("Delivery #")                                                                                 => array(
+      'fun' => function ($trans, $trans_no) {
         return Debtor::viewTrans(ST_CUSTDELIVERY, $trans['trans_no']);
       }
     ),
     _("Customer"),
-    _("branch_id")                                                                => 'skip',
+    _("branch_id")                                                                                  => 'skip',
     _("Contact"),
     _("Address"),
     _("Reference"),
     _("Cust Ref"),
-    _("Delivery Date")                                                            => array(
+    _("Delivery Date")                                                                              => array(
       'type' => 'date', 'ord' => ''
     ),
-    _("Due By")                                                                   => array('type' => 'date'),
-    _("Delivery Total")                                                           => array(
+    _("Due By")                                                                                     => array('type' => 'date'),
+    _("Delivery Total")                                                                             => array(
       'type' => 'amount', 'ord' => ''
     ),
-    _("Currency")                                                                 => array('align' => 'center'),
-    Forms::submit(Orders::BATCH_INVOICE, _("Batch"), false, _("Batch Invoicing")) => array(
-      'insert'   => true, 'fun' => function ($row)
-      {
+    _("Currency")                                                                                   => array('align' => 'center'),
+    Forms::submit(Orders::BATCH_INVOICE, _("Batch"), false, _("Batch Invoicing"))                   => array(
+      'insert'   => true, 'fun' => function ($row) {
         $name = "Sel_" . $row['trans_no'];
         return $row['Done'] ? '' :
           "<input type='checkbox' name='$name' value='1' >" // add also trans_no => branch code for checking after 'Batch' submit
@@ -152,24 +150,21 @@
       }, 'align' => 'center'
     ),
     array(
-      'insert' => true, 'fun' => function ($row)
-    {
+      'insert' => true, 'fun' => function ($row) {
       return $row["Outstanding"] == 0 ? '' :
         DB_Pager::link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'], ICON_EDIT);
     }
 
     ),
     array(
-      'insert' => true, 'fun' => function ($row)
-    {
+      'insert' => true, 'fun' => function ($row) {
       return $row["Outstanding"] == 0 ? '' :
         DB_Pager::link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no'], ICON_DOC);
     }
 
     ),
     array(
-      'insert' => true, 'fun' => function ($row)
-    {
+      'insert' => true, 'fun' => function ($row) {
       return Reporting::print_doc_link($row['trans_no'], _("Print"), true, ST_CUSTDELIVERY, ICON_PRINT);
     }
 
@@ -182,10 +177,9 @@
     unset($_SESSION['Batch']);
   }
   $table = db_pager::new_db_pager('deliveries_tbl', $sql, $cols);
-  $table->set_marker(function ($row)
-    {
-      return Dates::isGreaterThan(Dates::today(), Dates::sqlToDate($row["due_date"])) && $row["Outstanding"] != 0;
-    }, _("Marked items are overdue."));
+  $table->setMarker(function ($row) {
+    return Dates::isGreaterThan(Dates::today(), Dates::sqlToDate($row["due_date"])) && $row["Outstanding"] != 0;
+  }, _("Marked items are overdue."));
   //$table->width = "92%";
   $table->display($table);
   Forms::end();

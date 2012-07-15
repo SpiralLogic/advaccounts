@@ -52,8 +52,7 @@
      * @param $type
      * @param $trans_no
      */
-    public function __construct($type, $trans_no)
-    {
+    public function __construct($type, $trans_no) {
       $this->allocs   = array();
       $this->trans_no = $trans_no;
       $this->type     = $type;
@@ -70,8 +69,7 @@
      *
      * @return bool
      */
-    public function add_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated)
-    {
+    public function add_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
       if ($amount > 0) {
         $this->allocs[count($this->allocs)] = new allocation_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated);
 
@@ -92,8 +90,7 @@
      *
      * @return bool
      */
-    public function update_item($index, $type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated)
-    {
+    public function update_item($index, $type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
       if ($amount > 0) {
         $this->allocs[$index] = new allocation_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated);
 
@@ -113,8 +110,7 @@
      *
      * @return bool
      */
-    public function add_or_update_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated)
-    {
+    public function add_or_update_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
       for ($i = 0; $i < count($this->allocs); $i++) {
         $item = $this->allocs[$i];
         if (($item->type == $type) && ($item->type_no == $type_no)) {
@@ -130,8 +126,7 @@
      *
      * @return mixed
      */
-    public function read($type = null, $trans_no = 0)
-    {
+    public function read($type = null, $trans_no = 0) {
       if ($type == null) { // re-read
         $type     = $this->type;
         $trans_no = $this->trans_no;
@@ -184,11 +179,7 @@
         $this->add_or_update_item($myrow["type"], $myrow["trans_no"], Dates::sqlToDate($myrow["tran_date"]), Dates::sqlToDate($myrow["due_date"]), $myrow["Total"], $myrow["alloc"] - $myrow["amt"], $myrow["amt"]);
       }
     }
-    /**
-
-     */
-    public function write()
-    {
+    public function write() {
       DB::begin();
       if ($this->person_type) {
         Purch_Allocation::clear($this->type, $this->trans_no, $this->date_);
@@ -225,8 +216,7 @@
      *
      * @param $show_totals
      */
-    public static function show_allocatable($show_totals)
-    {
+    public static function show_allocatable($show_totals) {
       global $systypes_array;
       $k = $counter = $total_allocated = 0;
       if (count($_SESSION['alloc']->allocs)) {
@@ -285,8 +275,7 @@
      * @static
      * @return bool
      */
-    public static function check()
-    {
+    public static function check() {
       $total_allocated = 0;
       for ($counter = 0; $counter < $_POST["TotalNumberOfAllocs"]; $counter++) {
         if (!Validation::post_num('amount' . $counter, 0)) {
@@ -329,8 +318,7 @@
      *
      * @return bool
      */
-    public static function create_miscorder(Debtor $customer, $branch_id, $date, $memo, $ref, $amount, $discount = 0)
-    {
+    public static function create_miscorder(Debtor $customer, $branch_id, $date, $memo, $ref, $amount, $discount = 0) {
       $type = ST_SALESINVOICE;
       if (!User::i()->salesmanid) {
         Event::error(_("You do not have a salesman id, this is needed to create an invoice."));
@@ -363,8 +351,7 @@
      *
      * @return mixed
      */
-    public static function display($alloc_result, $total)
-    {
+    public static function display($alloc_result, $total) {
       global $systypes_array;
       if (!$alloc_result || DB::numRows() == 0) {
         return;
@@ -409,8 +396,7 @@
      *
      * @return mixed
      */
-    public static function from($person_type, $person_id, $type, $type_no, $total)
-    {
+    public static function from($person_type, $person_id, $type, $type_no, $total) {
       switch ($person_type) {
         case PT_CUSTOMER :
           $alloc_result = Sales_Allocation::get_to_trans($person_id, $type_no, $type);
@@ -468,8 +454,7 @@
      * @param $amount_allocated
      * @param $current_allocated
      */
-    public function __construct($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated)
-    {
+    public function __construct($type, $type_no, $date_, $due_date, $amount, $amount_allocated, $current_allocated) {
       $this->type              = $type;
       $this->type_no           = $type_no;
       $this->date_             = $date_;
@@ -484,8 +469,7 @@
     /**
      * @param $order
      */
-    function copy_from_order($order)
-    {
+    function copy_from_order($order) {
       $_POST['Comments']         = $order->Comments;
       $_POST['OrderDate']        = $order->document_date;
       $_POST['delivery_date']    = $order->due_date;
