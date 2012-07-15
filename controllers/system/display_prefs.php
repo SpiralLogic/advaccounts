@@ -16,11 +16,11 @@
       JS::setFocus('query_size');
     } else {
       $chg_theme = User::theme() != $_POST['theme'];
-      $chg_lang  = $_SESSION['Language']->code != $_POST['language'];
+      $chg_lang  = $_SESSION['language']->code != $_POST['language'];
       User::i()
         ->update_prefs($_POST['prices'], $_POST['Quantities'], $_POST['Rates'], $_POST['Percent'], Forms::hasPost('show_gl'), Forms::hasPost('show_codes'), $_POST['date_format'], $_POST['date_sep'], $_POST['tho_sep'], $_POST['dec_sep'], $_POST['theme'], $_POST['page_size'], Forms::hasPost('show_hints'), $_POST['profile'], Forms::hasPost('rep_popup'), (int) ($_POST['query_size']), Forms::hasPost('graphic_links'), $_POST['language'], Forms::hasPost('sticky_doc_date'), $_POST['startup_tab']);
       if ($chg_lang) {
-        $_SESSION['Language']->setLanguage($_POST['language']);
+        $_SESSION['language']->setLanguage($_POST['language']);
       }
       // refresh main menu
       Files::flushDir(COMPANY_PATH . 'js_cache');
@@ -55,7 +55,7 @@
       possible separators can be added by modifying the array definition by editing that file */
   Forms::decSepsListRow(_("Decimal Separator:"), "dec_sep", User::prefs()->dec_sep);
   if (!isset($_POST['language'])) {
-    $_POST['language'] = $_SESSION['Language']->code;
+    $_POST['language'] = $_SESSION['language']->code;
   }
   Table::sectionTitle(_("Language"));
   Languages::row(_("Language:"), 'language', $_POST['language']);

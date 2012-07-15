@@ -125,6 +125,11 @@
   {
     Forms::start();
     Table::start('tablestyle2');
+    if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+      $_POST['trans_no']   = Input::get('trans_no');
+      $_POST['filterType'] = Input::get('type');
+      $_POST['memo_']      = Input::get('memo');
+    }
     SysTypes::row(_("Transaction Type:"), "filterType", null, true);
     Forms::textRow(_("Transaction #:"), 'trans_no', null, 12, 12);
     Forms::dateRow(_("Voiding Date:"), 'date_');

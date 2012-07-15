@@ -100,7 +100,7 @@
     $filename = LANG_PATH . $language . DS . 'LC_MESSAGES';
     if ($language == Config::get('default.language')) {
       // on delete set default to current.
-      Config::set('default.language', $_SESSION['Language']->code);
+      Config::set('default.language', $_SESSION['language']->code);
     }
     Config::remove('languages.installed', $id);
     if (!Files::saveToFile($filename, '')) {

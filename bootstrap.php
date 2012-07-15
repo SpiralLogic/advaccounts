@@ -18,8 +18,10 @@
     include $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
     include $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
     xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
-    register_shutdown_function(function() {
-      register_shutdown_function(function() {
+    register_shutdown_function(function()
+    {
+      register_shutdown_function(function()
+      {
         $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
         $xhprof_data        = xhprof_disable();
         $xhprof_runs        = new \XHProfRuns_Default();
@@ -45,11 +47,13 @@
   define('IS_JSON_REQUEST', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false));
   define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
   define('CRLF', chr(13) . chr(10));
-  set_error_handler(function ($severity, $message, $filepath, $line) {
+  set_error_handler(function ($severity, $message, $filepath, $line)
+  {
     class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'errors.php';
     return ADV\Core\Errors::handler($severity, $message, $filepath, $line);
   });
-  set_exception_handler(function (\Exception $e) {
+  set_exception_handler(function (\Exception $e)
+  {
     class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'errors.php';
     ADV\Core\Errors::exceptionHandler($e);
   });
@@ -64,11 +68,13 @@
      *
      * @return array|string
      */
-    function e($string) {
+    function e($string)
+    {
       return Security::htmlentities($string);
     }
   }
-  register_shutdown_function(function () {
+  register_shutdown_function(function ()
+  {
     ADV\Core\Event::shutdown();
   });
   if (!function_exists('adv_ob_flush_handler')) {
@@ -78,19 +84,21 @@
      * @return string
      * @noinspection PhpUnusedFunctionInspection
      */
-    function adv_ob_flush_handler($text) {
+    function adv_ob_flush_handler($text)
+    {
       return (Ajax::inAjax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
     }
   }
   $dic = new \ADV\Core\DIC();
-  $loader->registerCache(\ADV\Core\Cache::i()->_defineConstants($_SERVER['SERVER_NAME'] . '.defines', function() {
+  $loader->registerCache(\ADV\Core\Cache::i()->_defineConstants($_SERVER['SERVER_NAME'] . '.defines', function()
+  {
     return include(DOCROOT . 'config' . DS . 'defines.php');
   }));
   include(DOCROOT . 'config' . DS . 'types.php');
   Session::i();
   Ajax::i();
   Config::i();
-//  ob_start('adv_ob_flush_handler', 0);
+  ob_start('adv_ob_flush_handler', 0);
   $app        = ADVAccounting::i();
   $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
   $index      = $controller == $_SERVER['SCRIPT_NAME'];

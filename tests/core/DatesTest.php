@@ -16,7 +16,11 @@
     protected function setUp()
     {
       $company = $this->getMockBuilder('DB_Company')->disableOriginalConstructor()->getMock();
-      $company->expects($this->any())->method('_get_current_fiscalyear')->will($this->returnValue(['begin'=>'01/07/2012','end'=>'30/06/2013','closed'=>false]));
+      $company->expects($this->any())->method('_get_current_fiscalyear')->will($this->returnValue([
+                                                                                                  'begin' => '01/07/2012',
+                                                                                                  'end'   => '30/06/2013',
+                                                                                                  'closed'=> false
+                                                                                                  ]));
       $session = $this->getMockBuilder('ADV\\Core\\Session')->disableOriginalConstructor()->getMock();
       $session->expects($this->any())->method('_setGlobal')->will($this->returnArgument(1));
       $session->expects($this->any())->method('_getGlobal')->will($this->returnArgument(1));
@@ -25,8 +29,7 @@
       $map    = array(
         ['date.separators', false, ['-', '/', '.', ' ']], //
         ['date.formats', false, ["m/d/Y", "d/m/Y", "Y/m/d"]], //
-        ['date.ui_separator', false, 1],
-        ['use_fiscalyear', false, true],
+        ['date.ui_separator', false, 1], ['use_fiscalyear', false, true],
       );
       $config->expects($this->any())->method('_get')->will($this->returnValueMap($map));
 
@@ -96,13 +99,14 @@
       $this->assertFalse($result, '130/13/11 0');
     }
     /**
-      * @covers ADV\Core\Dates::_now
-      * @todo   Implement testNow().
-      */
-     public function testNow()
-     {
-       $this->assertEquals(date("H:i"), $this->dates->_now());
-     }  /**
+     * @covers ADV\Core\Dates::_now
+     * @todo   Implement testNow().
+     */
+    public function testNow()
+    {
+      $this->assertEquals(date("H:i"), $this->dates->_now());
+    }
+    /**
      * @covers ADV\Core\Dates::_today
      * @todo   Implement testToday().
      */
@@ -113,7 +117,6 @@
       $this->assertEquals($expected, $today);
       return $today;
     }
-
     /**
      * @covers  ADV\Core\Dates::_newDocDate
      */
@@ -130,8 +133,8 @@
     public function test_isDateInFiscalYear()
     {
       $expected = true;
-      $actual  = $this->dates->_isDateInFiscalYear('01/02/2013');
-      $this->assertEquals($expected,$actual);
+      $actual   = $this->dates->_isDateInFiscalYear('01/02/2013');
+      $this->assertEquals($expected, $actual);
     }
     /**
      * @covers ADV\Core\Dates::beginFiscalYear
@@ -273,10 +276,18 @@
      */
     public function testdifferenceBetween()
     {
-      $date2  = '01/01/2012';
+      $date1  = '01/01/2012';
+      $date2  = '15/01/2012';
+      $actual = $this->dates->_differenceBetween($date1, $date2, 'w');
+      $this->assertEquals(-2, $actual);
       $date1  = '15/01/2012';
+      $date2  = '01/01/2012';
       $actual = $this->dates->_differenceBetween($date1, $date2, 'w');
       $this->assertEquals(2, $actual);
+      $date1  = '02/01/2012';
+      $date2  = '01/01/2012';
+      $actual = $this->dates->_differenceBetween($date1, $date2, 'd');
+      $this->assertEquals(1, $actual);
     }
     /**
      * @covers ADV\Core\Dates::explode
