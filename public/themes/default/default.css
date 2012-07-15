@@ -68,15 +68,19 @@ select {
   height:     25px;
   border:     lightgray solid 1px;
 }
-.med{
-  max-width:15em;
+
+.med {
+  max-width: 15em;
 }
+
 input.big, textarea.big {
   width: 20em;
 }
-.auto{
-  width:auto;
+
+.auto {
+  width: auto;
 }
+
 input.small {
   width: 5em;
 }
@@ -741,8 +745,8 @@ div.formbox {
   color:         #555555;
 }
 
-.formbox input,.formbox textarea,.formbox select {
-width:50%;
+.formbox input, .formbox textarea, .formbox select {
+  width: 50%;
 }
 
 div.formbox label span:first-child {
@@ -1252,15 +1256,21 @@ body.lite {
   color: #f66;
 }
 
+.done {
+  background-color: #3FE;
+}
+
 .redfg {
   color:       red;
   font-weight: bold;
 }
+
 .redborder {
   border-width: 2px;
   border-style: solid;
-  border-color:red;
+  border-color: red;
 }
+
 .settledbg {
   background-color: #0b0;
 }

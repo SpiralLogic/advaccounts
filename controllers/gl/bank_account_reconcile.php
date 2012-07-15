@@ -155,13 +155,12 @@
         ], 'Bank Date'   => ['type'=> 'date'], 'Amount'=> ['align'=> 'right', 'class'=> 'bold'], 'Info'
       ];
       $table     = DB_Pager::new_db_pager('bank_rec', $recced, $cols);
-      $table->id = $table->id ? : crc32($_POST['bank_date'] . $_POST['bank_account']);
 
       $table->rowClass = function($row) {
         if (($row['trans_date'] && $row['reconciled'] && !$row['state_date']) || ($row['state_date'] && !$row['reconciled'])) {
           return "overduebg";
         } elseif ($row['reconciled']) {
-          return "lightblue";
+          return "done";
         }
       };
 

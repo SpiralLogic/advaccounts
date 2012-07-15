@@ -25,7 +25,7 @@
       $this->addRightFunction(0, _("&Journal Entry"), "/gl/gl_journal?NewJournal=Yes", SA_JOURNALENTRY);
       $this->addRightFunction(0, _("&Budget Entry"), "/gl/gl_budget?", SA_BUDGETENTRY);
       $this->addRightFunction(0, _("&Reconcile Bank Account"), "/gl/bank_account_reconcile?", SA_RECONCILE);
-      $this->addRightFunction(0, _("&Compare Reconcile to Bank Statement"), "/gl/inquiry/bankstatement?", SA_RECONCILE);
+/*      $this->addRightFunction(0, _("&Compare Reconcile to Bank Statement"), "/gl/inquiry/bankstatement?", SA_RECONCILE);*/
       $this->addRightFunction(0, _("Undepostied Funds"), "/gl/undeposited_funds?", SA_RECONCILE);
       $this->add_module(_("Inquiries and Reports"));
       $this->addLeftFunction(1, _("&Journal Inquiry"), "/gl/inquiry/journal?", SA_GLANALYTIC);
