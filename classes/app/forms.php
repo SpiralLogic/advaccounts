@@ -12,9 +12,7 @@
    * @param string $action
    * @param string $name
    */
-  class Forms
-  {
-
+  class Forms {
     /**
      * @static
      *
@@ -23,8 +21,9 @@
      * @param string $name
      */
     public static function start($multi = false, $action = "", $name = "") {
-      $multi = ($multi) ? "enctype='multipart/form-data'" : '';
-      $name  = $name ? "name='$name'" : '';
+      $multi  = ($multi) ? "enctype='multipart/form-data'" : '';
+      $name   = $name ? "name='$name'" : '';
+      $action = $action ? : $_SERVER['DOCUMENT_URI'];
       echo "<form $multi method='post' action='$action'  id='$name'>";
     }
     /**
@@ -74,7 +73,7 @@
      */
     public static function hidden($name, $value = null, $echo = true) {
       global $dic;
-      $value =e($value ?:Input::post($name));
+      $value = e($value ? : Input::post($name));
       $dic['Ajax']->_addUpdate($name, $name, $value);
       $ret = "<input type='hidden' id='$name' name='$name' value='$value'>";
       if (!$echo) {
@@ -785,8 +784,8 @@
       $items['0'] = strlen($name_no) ? $name_no : _("No");
       $items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
       return Forms::arraySelect($name, $selected_id, $items, array(
-        'select_submit' => $submit_on_change, 'async' => false
-      )); // FIX?
+                                                                  'select_submit' => $submit_on_change, 'async' => false
+                                                             )); // FIX?
     }
     /**
      * @param        $label
@@ -823,8 +822,8 @@
         $items[$i] = "$i";
       }
       return Forms::arraySelect($name, $selected, $items, array(
-        'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
-      ));
+                                                               'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
+                                                          ));
     }
     /**
      * @param      $label
