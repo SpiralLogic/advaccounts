@@ -848,6 +848,9 @@
       $sql .= " LIMIT $offset, $page_len";
       return $sql;
     }
+    public static function kill($name) {
+      unset($_SESSION['pager'][$name]);
+    }
     /**
      * @static
      *
@@ -868,7 +871,6 @@
       if (isset($_SESSION['pager'][$name])) {
         $pager = $_SESSION['pager'][$name];
         if (is_array($sql)) {
-
           $pager->sql = $sql;
           $pager->rec_count = count($pager->sql);
           $pager->max_page  = $pager->page_len ? ceil($pager->rec_count / $pager->page_len) : 0;

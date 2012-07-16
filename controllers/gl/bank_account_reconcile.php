@@ -10,8 +10,7 @@
   /**
 
    */
-  class Reconcile extends \ADV\App\Controller\Base
-  {
+  class Reconcile extends \ADV\App\Controller\Base {
     protected function before() {
       $this->JS->_openWindow(800, 500);
       $this->JS->_footerFile('/js/reconcile.js');
@@ -43,9 +42,9 @@
         $this->updateData();
       }
       if (Forms::isListUpdated('bank_date')) {
-        $_POST['reconcile_date'] = Dates::sqlToDate($this->Input->_post('bank_date') == '' ? Dates::today() :
-                                                      $_POST['bank_date']);
+        $_POST['reconcile_date'] = $this->Input->_post('bank_date') == '' ? Dates::today() : Dates::sqlToDate($_POST['bank_date']);
         $this->Session->_setGlobal('bank_date', $_POST['bank_date']);
+        $this->Ajax->_activate('bank_date');
         $this->updateData();
       }
       if ($this->Input->_post('_reconcile_date_changed')) {
@@ -69,7 +68,6 @@
     }
     protected function index() {
       Page::start(_($help_context = "Reconcile Bank Account"), SA_RECONCILE);
-      $update_pager = false;
       Forms::start();
       Table::start();
       Row::start();
@@ -86,23 +84,28 @@
       Page::end();
     }
     protected function newWay() {
-      $date  = $_POST['bank_date'];
-      $begin = Dates::beginMonth($date);
-      $end   = Dates::endMonth($date);
-      $sql
-              = "SELECT bt.type, bt.trans_no, bt.ref,  bt.trans_date,bt.id, IF( bt.trans_no IS null, SUM( g.amount ), bt.amount ) AS amount
+      $date = $_POST['bank_date'];
+      if ($date) {
+        $begin = Dates::dateToSql(Dates::beginMonth($date));
+        $end   = Dates::endMonth($date);
+      } else {
+        $begin = "(SELECT max(reconciled) from bank_trans)";
+        $end   = Dates::today();
+      }
+      $sql = "SELECT bt.type, bt.trans_no, bt.ref,  bt.trans_date,bt.id, IF( bt.trans_no IS null, SUM( g.amount ), bt.amount ) AS amount
                    , bt.person_id, bt.person_type_id , bt.reconciled FROM bank_trans bt LEFT OUTER JOIN bank_trans g ON g.undeposited = bt.id
                    WHERE bt.bank_act = " . DB::quote(Input::post('bank_account')) . "
-                   AND bt.trans_date <= '" . $_POST['bank_date'] . "'
+                   AND bt.trans_date <= '" . ($_POST['bank_date'] ? : Dates::dateToSql(Dates::today())) . "'
                    AND bt.undeposited=0
-                   AND (bt.reconciled IS null OR bt.reconciled='" . $_POST['bank_date'] . "')
-                   AND bt.amount!=0 GROUP BY bt.id ORDER BY trans_date DESC , amount ";
+                   AND (bt.reconciled IS null";
+      if ($_POST['bank_date']) {
+        $sql .= " OR bt.reconciled='" . $_POST['bank_date'] . "'";
+      }
+      $sql .= ") AND bt.amount!=0 GROUP BY bt.id ORDER BY trans_date DESC , amount ";
       $result = DB::query($sql);
       $rec    = DB::fetchAll();
-      $sql    = "SELECT date as state_date, amount as state_amount,memo FROM temprec WHERE date >='" . Dates::dateToSql($begin) . "' AND date <='" . Dates::dateToSql($end) . "' ORDER BY date DESC ,amount";
-
+      $sql    = "SELECT date as state_date, amount as state_amount,memo FROM temprec WHERE  date >= '$begin' AND  date <='" . Dates::dateToSql($end) . "' ORDER BY date DESC ,amount";
       $result = DB::query($sql);
-
       $state      = DB::fetchAll();
       $recced     = $unrecced = [];
       $emptyrec   = [
@@ -124,38 +127,31 @@
         Arr::append($newv, $v);
         $recced[] = $newv;
       }
-
       foreach ($rec as &$r) {
         Arr::append($r, $emptystate);
       }
       Arr::append($recced, $rec);
       usort($recced, [$this, 'sortByOrder']);
-
-      $cols      = [
-        'Type'           => [
+      $cols = [
+        'Type'              => [
           'fun'=> array($this, 'sysTypeName')
-        ], '#'           => [
+        ], '#'              => [
           'align'=> 'center', 'fun'=> array($this, 'viewTrans')
-        ], 'Ref'         => [
+        ], 'Ref'            => [
           'fun'=> function($row) {
             return substr($row['ref'], 0, 6);
           }
-        ],
-
-        'Date'           => ['type'=> 'date'], 'Debit'       => [
+        ], 'Date'           => ['type'=> 'date'], 'Debit'       => [
           'align'=> 'right', 'fun'=> array($this, 'formatDebit')
-        ], 'Credit'      => [
+        ], 'Credit'         => [
           'align'=> 'right', 'insert'=> true, 'fun'=> array($this, 'formatCredit')
-        ], 'Info'        => ['fun'=> array($this, 'formatPerson')], 'GL'          => [
+        ], 'Info'           => ['fun'=> array($this, 'formatPerson')], 'GL'          => [
           'fun'=> array($this, 'viewGl')
-        ],
-
-        ''               => [
+        ], ''               => [
           'fun'=> array($this, 'reconcileCheckbox')
-        ], 'Bank Date'   => ['type'=> 'date'], 'Amount'=> ['align'=> 'right', 'class'=> 'bold'], 'Info'
+        ], 'Bank Date'      => ['type'=> 'date'], 'Amount'=> ['align'=> 'right', 'class'=> 'bold'], 'Info'
       ];
-      $table     = DB_Pager::new_db_pager('bank_rec', $recced, $cols);
-
+      $table           = DB_Pager::new_db_pager('bank_rec', $recced, $cols);
       $table->rowClass = function($row) {
         if (($row['trans_date'] && $row['reconciled'] && !$row['state_date']) || ($row['state_date'] && !$row['reconciled'])) {
           return "overduebg";
@@ -163,7 +159,6 @@
           return "done";
         }
       };
-
       $table->display();
     }
     protected function displaySummary() {
@@ -300,7 +295,6 @@
       if (!$row['amount']) {
         return '';
       }
-
       return ($row['type'] != 15) ? GL_UI::view($row["type"], $row["trans_no"]) : '';
     }
     /**
@@ -336,8 +330,7 @@
       if ($row['type'] == ST_BANKTRANSFER) {
         return DB_Comments::get_string(ST_BANKTRANSFER, $row['trans_no']);
       } elseif ($row['type'] == ST_GROUPDEPOSIT) {
-        $sql
-                 = "SELECT bank_trans.ref,bank_trans.person_type_id,bank_trans.trans_no,bank_trans.person_id,bank_trans.amount,
+        $sql     = "SELECT bank_trans.ref,bank_trans.person_type_id,bank_trans.trans_no,bank_trans.person_id,bank_trans.amount,
 
     			comments.memo_ FROM bank_trans LEFT JOIN comments ON (bank_trans.type=comments.type AND bank_trans.trans_no=comments.id)
 
@@ -353,10 +346,9 @@
       return Bank::payment_person_name($row["person_type_id"], $row["person_id"], true, $row["trans_no"]);
     }
     function updateData() {
-      global $update_pager;
+      DB_Pager::kill('bank_rec');
       unset($_POST["beg_balance"], $_POST["end_balance"]);
       $this->Ajax->_activate('summary');
-      $update_pager = true;
     }
     // Update db record if respective checkbox value has changed.
     //

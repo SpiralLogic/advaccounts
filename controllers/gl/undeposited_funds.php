@@ -21,7 +21,6 @@
       $_POST[$rowid]             = 1;
     }
   }
-  $update_pager = false;
   if (Forms::isListUpdated('deposit_date')) {
     $_POST['deposit_date'] = Input::post('deposit_date') == '' ? Dates::today() : ($_POST['deposit_date']);
     updateData();
@@ -234,9 +233,8 @@
   }
 
   function updateData() {
-    global $update_pager;
+    $this->updateData=true;
     Ajax::activate('summary');
-    $update_pager = true;
   }
 
   // Update db record if respective checkbox value has changed.
