@@ -57,6 +57,7 @@
      * @return int|string
      */
     public function _priceFormat($number) {
+      $number = str_replace($this->tho_sep,'',$number);
       return $this->_format($this->_round($number, $this->price_dec + 2), $this->price_dec);
     }
     /**
