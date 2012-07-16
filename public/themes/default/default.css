@@ -1257,7 +1257,7 @@ body.lite {
 }
 
 .done {
-  background-color: #3FE;
+  background-color: #3FE !important;
 }
 
 .redfg {
