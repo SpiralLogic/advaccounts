@@ -9,9 +9,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class SupplierInvoice extends \ADV\App\Controller\Base
-  {
-
+  class SupplierInvoice extends \ADV\App\Controller\Base {
     /** @var Creditor_Trans */
     protected $trans;
     protected $supplier_id;
@@ -19,13 +17,16 @@
       $this->JS->_openWindow(900, 500);
       $this->trans             = Creditor_Trans::i();
       $this->trans->is_invoice = true;
-      if (isset($_POST['ClearFields'])) {
+      if (isset($_POST['ClearFields']) || isset($_GET['New'])) {
         $this->clearFields();
       }
       if (isset($_POST['Cancel'])) {
         $this->cancelInvoice();
       }
-      $this->supplier_id = $this->trans->supplier_id ? : Input::getPost('supplier_id', Input::NUMERIC, null);
+      $this->supplier_id = $this->trans->supplier_id ? : Input::post('supplier_id', Input::NUMERIC, null);
+      if (!$this->supplier_id) {
+        $this->supplier_id = $this->Session->_getGlobal('creditor');
+      }
       if (isset($_POST['AddGLCodeToTrans'])) {
         $this->addGlCodesToTrans();
       }
@@ -168,12 +169,10 @@
           DB::begin();
           $myrow = Purch_GRN::get_item($id2);
           $grn   = Purch_GRN::get_batch($myrow['grn_batch_id']);
-          $sql
-                 = "UPDATE purch_order_details
+          $sql   = "UPDATE purch_order_details
                   SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = " . $myrow["po_detail_item"];
           DB::query($sql, "The quantity invoiced of the purchase order line could not be updated");
-          $sql
-            = "UPDATE grn_items
+          $sql = "UPDATE grn_items
                SET qty_recd = quantity_inv WHERE id = " . $myrow["id"];
           DB::query($sql, "The quantity invoiced off the items received record could not be updated");
           Purch_GRN::update_average_material_cost($grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Dates::today());
@@ -218,6 +217,7 @@
     //
     function clearFields() {
       unset($_POST['gl_code'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_'], $_POST['AddGLCodeToTrans']);
+
       $this->Ajax->_activate('gl_items');
       $this->JS->_setFocus('gl_code');
     }
@@ -332,9 +332,8 @@
           $complete = false;
         }
         $_SESSION['err_over_charge'] = false;
-        $this->trans
-          ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('this_quantity_inv' . $n), $_POST['order_price' . $n], Validation::input_num('ChgPrice' . $n),
-          $complete, $_POST['std_cost_unit' . $n], "", Validation::input_num('ChgDiscount' . $n), Validation::input_num('ExpPrice' . $n));
+        $this->trans->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('this_quantity_inv' . $n), $_POST['order_price' . $n],
+          Validation::input_num('ChgPrice' . $n), $complete, $_POST['std_cost_unit' . $n], "", Validation::input_num('ChgDiscount' . $n), Validation::input_num('ExpPrice' . $n));
       }
       $this->Ajax->_activate('grn_items');
       $this->Ajax->_activate('inv_tot');
@@ -346,6 +345,7 @@
       unset($_POST['supplier_id']);
       unset($_POST['supplier']);
       Creditor_Trans::killInstance();
+      $this->Session->_removeGlobal('creditor');
       $this->trans = Creditor_Trans::i(true);
       $this->Ajax->_activate('_page_body');
     }
@@ -368,8 +368,7 @@
     }
     protected function addJS() {
       Item::addEditDialog();
-      $js
-        = <<<JS
+      $js = <<<JS
                    $("#wrapper").delegate('.amount','change',function() {
                var feild = $(this), ChgTax=$('[name="ChgTax"]'),ChgTotal=$('[name="ChgTotal"]'),invTotal=$('#invoiceTotal'), fields = $(this).parent().parent(), fv = {}, nodes = {
                qty: $('[name^="this_quantity"]',fields),

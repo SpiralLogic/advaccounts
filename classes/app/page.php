@@ -261,6 +261,10 @@
       $footer->set('sidemenu', ($this->header && $this->menu ? (new Sidemenu($this->User))->render() : ''));
       $footer->set('js', $this->JS->_render(true));
       $footer->set('messages', (!AJAX_REFERRER ? Messages::show() : ''));
+      $footer->set('page_body', Display::div_end(true));
+
+
+
       $footer->render();
     }
     protected function renderCSS() {

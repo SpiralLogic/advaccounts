@@ -61,7 +61,9 @@
         18 => "PayPal", //
         23 => "Direct Deposit", //
         24 => "Wait for Freight Quotation", //
-        26 => "Credit Card" //
+        26 => "Credit Card", //
+        28 => "Visa", //
+        31 => "Mastercard" //
       );
     /**
      * @var OrderDetails

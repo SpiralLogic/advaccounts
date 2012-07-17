@@ -14,7 +14,7 @@
     $trans_type = ST_SUPPRECEIVE;
     Event::success(_("Purchase Order Delivery has been processed"));
     Display::note(GL_UI::viewTrans($trans_type, $grn, _("&View this Delivery")));
-    Display::link_params("/purchases/supplier_invoice.php", _("Enter purchase &invoice for this receival"), "New=1");
+    Display::link_params("/purchases/supplier_invoice.php", _("Enter purchase &invoice for this receival"), "New=1&PONumber=" . $_GET[ADDED_ID]);
     Display::link_no_params("/purchases/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
     Page::footer_exit();
   }
@@ -50,6 +50,7 @@
     Ajax::activate('grn_items');
   }
   if (isset($_POST['ProcessGoodsReceived']) && $order->can_receive()) {
+    Session::setGlobal('creditor', $order->supplier_id);
     if ($order->has_changed()) {
       Event::error(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
       Display::link_no_params("/purchases/inquiry/po_search.php", _("Select a different purchase order for receiving goods against"));
@@ -58,7 +59,6 @@
       Ajax::activate('_page_body');
       Page::footer_exit();
     }
-    Session::setGlobal('creditor', $order->supplier_id);
     $grn                     = Purch_GRN::add($order, $_POST['DefaultReceivedDate'], $_POST['ref'], $_POST['location']);
     $_SESSION['delivery_po'] = $order->order_no;
     Dates::newDocDate($_POST['DefaultReceivedDate']);

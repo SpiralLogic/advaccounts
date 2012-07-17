@@ -16,8 +16,7 @@
   /**
    * Jobsboard
    */
-  class Jobsboard extends Module\Base
-  {
+  class Jobsboard extends Module\Base {
     /** @var */
     protected $currentJob;
     /** @var */
@@ -49,8 +48,7 @@
         $this->currentJob['order_ref']            = '';
         $this->currentJob['order_no']             = '';
         $this->currentJob['Priority_Level']       = 5;
-        $this->jobsboardDB->_update('Job_List')->values($this->currentJob)
-          ->where('Advanced_Job_No=', $this->currentJob['Advanced_Job_No'])->exec();
+        $this->jobsboardDB->_update('Job_List')->values($this->currentJob)->where('Advanced_Job_No=', $this->currentJob['Advanced_Job_No'])->exec();
         \Event::success('Order ' . $trans_no . ' has been removed from the Jobs Board!');
       } else {
         \Event::error('There is no current Order to remove from jobsboard');
@@ -78,11 +76,7 @@
          * @var \Sales_Line $line
          */
         $lines[$line['id']] = array(
-          'line_id'     => $line['id'],
-          'stock_code'  => $line['stk_code'],
-          'price'       => $line['unit_price'],
-          'description' => $line['description'],
-          'quantity'    => $line['quantity']
+          'line_id'     => $line['id'], 'stock_code'  => $line['stk_code'], 'price'       => $line['unit_price'], 'description' => $line['description'], 'quantity'    => $line['quantity']
         );
       }
       if ($exists) {
@@ -95,6 +89,10 @@
           $lines[$line['line_id']]             = $line;
           $lines[$line['line_id']]['quantity'] = 0;
           $lines[$line['line_id']]['description'] .= " DELETED!";
+        }
+        $new = array_diff_key($lines, $jobslines);
+        if (count($new)) {
+          $data['Priority_Level'] = 1;
         }
         $update                       = date('Y-m-d h:m:s', strtotime("now")) . ' ' . 'Job Updated from acounts by ' . $user_name . ' ' . chr(13) . chr(10) . $job['Updates'];
         $data['Next_Action_Required'] = '<div>Job has been updated from accounts ' . $user_name . '</div>' . $job['Next_Action_Required'];
@@ -166,8 +164,7 @@
      * @param array $data Data to update Jobsboard job
      */
     protected function updateJob($data) {
-      $result = $this->jobsboardDB->_update('Job_List')->values($data)
-        ->where('Advanced_Job_No=', $this->currentJob['Advanced_Job_No'])->exec();
+      $result = $this->jobsboardDB->_update('Job_List')->values($data)->where('Advanced_Job_No=', $this->currentJob['Advanced_Job_No'])->exec();
       if ($result) {
         $this->insertLines();
       }
@@ -197,15 +194,13 @@
      */
     protected function updateLine($line) {
       $line['job_id'] = $this->currentJob['Advanced_Job_No'];
-      $this->jobsboardDB->_update('JobListItems')->values($line)->where('line_id=', $line['line_id'])
-        ->andWhere('job_id=', $this->currentJob['Advanced_Job_No'])->exec();
+      $this->jobsboardDB->_update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->andWhere('job_id=', $this->currentJob['Advanced_Job_No'])->exec();
     }
     /**
      * @return array Get lines from jobsboard for current order
      */
     protected function getLines() {
-      $lines  = $this->jobsboardDB->_select()->from('JobListItems')->where('job_id=', $this->currentJob['Advanced_Job_No'])
-        ->fetch()->all();
+      $lines  = $this->jobsboardDB->_select()->from('JobListItems')->where('job_id=', $this->currentJob['Advanced_Job_No'])->fetch()->all();
       $result = array();
       foreach ($lines as $line) {
         $result[$line['line_id']] = $line;

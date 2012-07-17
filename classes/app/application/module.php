@@ -30,7 +30,8 @@
      * @param      $name
      * @param null $icon
      */
-    public function module($name, $icon = null) {
+    public function __contruct($name, $icon = null) {
+
       $this->name              = $name;
       $this->icon              = $icon;
       $this->leftAppFunctions  = array();

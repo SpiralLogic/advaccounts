@@ -229,6 +229,7 @@
               }
               break;
             case 'default':
+              $atype=true;
               if ($icon === false) {
                 $icon = ICON_SUBMIT;
               }
