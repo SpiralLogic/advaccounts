@@ -1223,8 +1223,9 @@
       }
       $dec = $dec ? : $dic['User']->_price_dec();
       if (!Input::post($name)) {
-        $init         = $init ? : 0;
-        $_POST[$name] = number_format($init, $dec);
+        $init = $init ? : 0;
+
+        $_POST[$name] = Num::priceFormat($init, $dec);
       }
       $input_attr['name']     = $name;
       $input_attr['value']    = $_POST[$name];

@@ -175,10 +175,7 @@
      */
     public function _beginMonth($date) {
       /** @noinspection PhpUnusedLocalVariableInspection */
-      if (!$date) {
-        $date = $this->_today();
-      }
-      list($day, $month, $year) = $this->_explode($date);
+      list($year,$month, $day) = $this->_explode($date);
       return $this->date($year, $month, 1);
     }
     /**
@@ -190,7 +187,7 @@
      */
     public function _endMonth($date) {
       /** @noinspection PhpUnusedLocalVariableInspection */
-      list($day, $month, $year) = $this->_explode($date);
+      list($year,$month, $day) = $this->_explode($date);
       $days_in_month = array(
         31, ((!($year % 4) && (($year % 100) || !($year % 400))) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
       );
@@ -205,7 +202,7 @@
      * @return string
      */
     public function _addDays($date, $days) {
-      list($day, $month, $year) = $this->_explode($date);
+      list($year,$month, $day) = $this->_explode($date);
       $timet = mktime(0, 0, 0, $month, $day + $days, $year);
       return date($this->User->_date_display(), $timet);
     }
@@ -218,7 +215,7 @@
      * @return string
      */
     public function _addMonths($date, $months) {
-      list($day, $month, $year) = $this->_explode($date);
+      list($year,$month, $day) = $this->_explode($date);
       $timet = mktime(0, 0, 0, $month + $months, $day, $year);
       return date($this->User->_date_display(), $timet);
     }
@@ -231,7 +228,7 @@
      * @return string
      */
     public function _addYears($date, $years) {
-      list($day, $month, $year) = $this->_explode($date);
+      list($year,$month, $day) = $this->_explode($date);
       $timet = mktime(0, 0, 0, $month, $day, $year + $years);
       return date($this->User->_date_display(), $timet);
     }
@@ -370,8 +367,7 @@ provided that both dates are after 1970. Also only works for dates up to the yea
      */
     protected function _explode($date) {
       $date = $this->_dateToSql($date);
-      list($year, $month, $day) = explode("-", $date);
-      return [$day, $month, $year];
+      return explode("-", $date);
     }
     /** Based on converter to and from Gregorian and Jalali calendars.
     Copyright (C) 2000 Roozbeh Pournader and Mohammad Toossi

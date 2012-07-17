@@ -300,7 +300,7 @@
       $method->setAccessible(true);
 
       $actual = $method->invokeArgs($this->dates, ['03/04/2012']);
-      $this->assertEquals(['03', '04', '2012'], $actual);
+      $this->assertEquals([ '2012','04','03' ], $actual);
     }
     /**
      * @covers ADV\Core\Dates::div

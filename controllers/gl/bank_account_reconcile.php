@@ -23,7 +23,7 @@
         $group_refs = $_POST['ungroup_' . $groupid];
         $sql        = "UPDATE bank_trans SET undeposited=1, reconciled=null WHERE undeposited =" . $this->DB->_escape($groupid);
         $this->DB->_query($sql, "Couldn't ungroup group deposit");
-        $sql = "UPDATE bank_trans SET ref=" . $this->DB->_quote('Removed group: ' . $group_refs) . ", amount=0, reconciled='" . Dates::dateToSql(Dates::today()) . "', undeposited=" . $groupid . " WHERE id=" . $groupid;
+        $sql = "UPDATE bank_trans SET ref=" . $this->DB->_quote('Removed group: ' . $group_refs) . ", amount=0, reconciled='" . Dates::today() . "', undeposited=" . $groupid . " WHERE id=" . $groupid;
         $this->DB->_query($sql, "Couldn't update removed group deposit data");
         $this->updateData();
       }
@@ -42,7 +42,7 @@
         $this->updateData();
       }
       if (Forms::isListUpdated('bank_date')) {
-        $_POST['reconcile_date'] = $this->Input->_post('bank_date') == '' ? Dates::today() : Dates::sqlToDate($_POST['bank_date']);
+        $_POST['reconcile_date'] = $this->Input->_post('bank_date') == '' ? Dates::today() : $_POST['bank_date'];
         $this->Session->_setGlobal('bank_date', $_POST['bank_date']);
         $this->Ajax->_activate('bank_date');
         $this->updateData();
@@ -87,7 +87,7 @@
       $date = $_POST['bank_date'];
       if ($date) {
         $begin = Dates::dateToSql(Dates::beginMonth($date));
-        $end   = Dates::endMonth($date);
+        $end   = Dates::dateToSql(Dates::endMonth($date));
       } else {
         $begin = "(SELECT max(reconciled) from bank_trans)";
         $end   = Dates::today();
@@ -95,16 +95,16 @@
       $sql = "SELECT bt.type, bt.trans_no, bt.ref,  bt.trans_date,bt.id, IF( bt.trans_no IS null, SUM( g.amount ), bt.amount ) AS amount
                    , bt.person_id, bt.person_type_id , bt.reconciled FROM bank_trans bt LEFT OUTER JOIN bank_trans g ON g.undeposited = bt.id
                    WHERE bt.bank_act = " . DB::quote(Input::post('bank_account')) . "
-                   AND bt.trans_date <= '" . ($_POST['bank_date'] ? : Dates::dateToSql(Dates::today())) . "'
+                   AND bt.trans_date <= '" . ($_POST['bank_date'] ? : Dates::today()) . "'
                    AND bt.undeposited=0
                    AND (bt.reconciled IS null";
       if ($_POST['bank_date']) {
         $sql .= " OR bt.reconciled='" . $_POST['bank_date'] . "'";
       }
-      $sql .= ") AND bt.amount!=0 GROUP BY bt.id ORDER BY trans_date DESC , amount ";
+      $sql .= ") AND bt.amount!=0 GROUP BY bt.id ORDER BY bt.reconciled DESC,trans_date  DESC, amount ";
       $result = DB::query($sql);
       $rec    = DB::fetchAll();
-      $sql    = "SELECT date as state_date, amount as state_amount,memo FROM temprec WHERE  date >= '$begin' AND  date <='" . Dates::dateToSql($end) . "' ORDER BY date DESC ,amount";
+      $sql    = "SELECT date as state_date, amount as state_amount,memo FROM temprec WHERE  date >= '$begin' AND  date <='" . $end . "' ORDER BY date DESC,amount";
       $result = DB::query($sql);
       $state      = DB::fetchAll();
       $recced     = $unrecced = [];
@@ -113,7 +113,7 @@
       ];
       $emptyrec   = array_combine(array_values($emptyrec), array_pad([], count($emptyrec), ''));
       $emptystate = array_combine(array_keys($state[0]), array_values(array_pad([], count($state[0]), '')));
-      while ($v = array_shift($state)) {
+      while ($v = array_pop($state)) {
         $amount = $v['state_amount'];
         foreach ($rec as $p=> $q) {
           if ($q['amount'] == $amount) {
@@ -168,6 +168,7 @@
       Table::start();
       Table::header(_("Reconcile Date"));
       Row::start();
+      $_POST['reconcile_date']=Dates::sqlToDate($_POST['reconcile_date']);
       Forms::dateCells("", "reconcile_date", _('Date of bank statement to reconcile'), $this->Input->_post('bank_date') == '', 0, 0, 0, null, true);
       Row::end();
       Table::header(_("Beginning Balance"));
@@ -384,8 +385,13 @@
       Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
     }
     function sortByOrder($a, $b) {
-      $date1 = $a['trans_date'] ? : $a['state_date'];
-      $date2 = $b['trans_date'] ? : $b['state_date'];
+      $date1 = $a['state_date'] ? : $a['trans_date'];
+            $date2 = $b['state_date'] ? : $b['trans_date'];
+      if ($date1==$date2) {
+        $amount1 = $a['state_amount'] ? : $a['amount'];
+              $amount2 = $b['state_amount'] ? : $b['amount'];
+        return $amount1-$amount2;
+      }
       return Dates::differenceBetween($date1, $date2, 'd');
     }
     private function oldWay() {

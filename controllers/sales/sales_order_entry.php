@@ -422,6 +422,7 @@
       } else {
         $doc = new Sales_Order($type, array($trans_no));
       }
+      $this->type = $type;
       return Sales_Order::copyToPost($doc);
     }
     protected function removed() {
