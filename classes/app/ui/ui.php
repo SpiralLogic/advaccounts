@@ -175,7 +175,7 @@
         'type'            => 'local',
         'kitsonly'        => false,
         'where'           => '',
-        'size'            => '15',
+        'size'            => null,
         'cell_class'      => false,
         'input_cell_params', null
       );

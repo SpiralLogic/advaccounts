@@ -377,6 +377,7 @@
       }
       echo Sales_UI::items($name, $selected_id, $all_option, $submit_on_change, '', array_merge(array(
                                                                                                      'cells'       => true,
+                                                                                                     'class'=>'med',
                                                                                                      'description' => ''
                                                                                                 ), $opts));
     }
