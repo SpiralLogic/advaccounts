@@ -283,7 +283,6 @@
                 $taxbase = $base / ($totrate + 100);
                 $first   = false;
               }
-              var_dump($qe_lines);
               if (substr($qe_line['action'], 0, 1) != 'T') {
                 $part = $taxbase;
               } else {

@@ -20,11 +20,11 @@
      * @param string $action
      * @param string $name
      */
-    public static function start($multi = false, $action = "", $name = "") {
-      $multi  = ($multi) ? "enctype='multipart/form-data'" : '';
-      $name   = $name ? "name='$name'" : '';
+    public static function start($multi = false, $action = '', $name = '') {
+      $multi  = $multi ? "enctype='multipart/form-data'" : '';
+      $name   = $name ? "id='$name' name='$name'" : '';
       $action = $action ? : $_SERVER['DOCUMENT_URI'];
-      echo "<form $multi method='post' action='$action'  id='$name'>";
+      echo "<form $multi method='post' action='$action'  $name>";
     }
     /**
      * @param int $breaks
@@ -73,7 +73,7 @@
      */
     public static function hidden($name, $value = null, $echo = true) {
       global $dic;
-      $value = e($value ? : Input::post($name));
+      $value =e($value!==null ? $value:  Input::post($name));
       $dic['Ajax']->_addUpdate($name, $name, $value);
       $ret = "<input type='hidden' id='$name' name='$name' value='$value'>";
       if (!$echo) {

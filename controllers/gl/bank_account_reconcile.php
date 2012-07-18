@@ -107,6 +107,7 @@
       $sql    = "SELECT date as state_date, amount as state_amount,memo FROM temprec WHERE  date >= '$begin' AND  date <='" . $end . "' ORDER BY date DESC,amount";
       $result = DB::query($sql);
       $state      = DB::fetchAll();
+      if (!$state) return $this->oldWay();
       $recced     = $unrecced = [];
       $emptyrec   = [
         'type', 'trans_no', 'ref', 'trans_date', 'id', 'amount', 'person_id', 'person_type_id', 'reconciled'
@@ -349,7 +350,7 @@
     function updateData() {
       DB_Pager::kill('bank_rec');
       unset($_POST["beg_balance"], $_POST["end_balance"]);
-      $this->Ajax->_activate('summary');
+      $this->Ajax->_activate('_page_body');
     }
     // Update db record if respective checkbox value has changed.
     //

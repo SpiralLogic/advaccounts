@@ -248,11 +248,11 @@
           echo "<div style='text-align:center;'><iframe style='margin:0 auto; border-width:0;' src='" . '/sales/customer_payments.php' . "?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
         }
       }
-      $this->JS->_setFocus('prtopt');      $this->Ajax->_activate('_page_body');
-
+      $this->JS->_setFocus('prtopt');
+      $this->Ajax->_addScript(true,"window.onpopstate=function(event) { window.location.href = '/sales/sales_order_entry?add=0&type=30';}; history.pushState({},'Order Complete','/sales/sales_order_entry');");
+      $this->Ajax->_activate('_page_body');
       //	UploadHandler::insert($order_no);
       Page::footer_exit();
-
     }
     /**
      * @internal param \Sales_Order $order

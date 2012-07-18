@@ -1243,6 +1243,9 @@ body.lite {
 .overduebg {
   background-color: #f68691 !important;
 }
+.lightblue {
+  background-color: #33CCFF!important;
+}
 
 .whitebg {
   background-color: white;

@@ -312,6 +312,7 @@
               Cell::label($cell, "width=40");
               break;
             case 'date':
+
               Cell::label(static::$dates->_sqlToDate($cell), ' class="center nowrap"');
               break;
             case 'dstamp': // time stamp displayed as date

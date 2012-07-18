@@ -183,18 +183,18 @@
     _("#")           => array('fun' => 'view_link', 'ord' => ''),
     _("Reference"),
     _("Supplier")    => array('ord' => '', 'type' => 'id'),
-    _("Supplier ID") => array('skip'),
+    _("Supplier ID") => array('type'=>'skip'),
     _("Supp Reference"),
     _("Date")        => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
-    _("Due Date")    => array('fun' => 'due_date'),
+    _("Due Date")    => array('fun' => 'due_date', 'type' => 'date'),
     _("Currency")    => array('align' => 'center'),
     _("Debit")       => array('align' => 'right', 'fun' => 'formatDebit'),
     _("Credit")      => array(
       'align' => 'right', 'insert' => true, 'fun' => 'formatCredit'
     ),
-    _("Allocated")   => 'amount',
+    _("Allocated")   => ['type'=>'amount'],
     _("Balance")     => array(
-      'type' => 'amount', 'insert' => true, 'fun' => 'fmt_balance'
+      'type' => 'amount',  'fun' => 'fmt_balance'
     ),
     array(
       'insert' => true, 'fun' => 'alloc_link'
