@@ -1293,8 +1293,10 @@
       return $customer_error;
     }
     /**
-     * @param $rowcounter
+     * @param $id
      * @param $line_no
+     *
+     * @internal param $rowcounter
      */
     public function item_controls($id, $line_no = -1) {
 

@@ -1133,7 +1133,7 @@
      *
      * @internal param null $labparams
      */
-    public static function  textCellsEx($label, $name, $size = null, $max = null, $init = null, $title = null, $params = null, $post_label = null, $submit_on_change = false) {
+    public static function  textCellsEx($label, $name, $size = null, $max = null, $init = null, $title = null, $params = null, $post_label = null, $submit_on_change = false, $inparams = "") {
       global $dic;
       $dic['JS']->defaultFocus($name);
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
@@ -1157,7 +1157,7 @@
         $size = " class='$size'";
       }
       $class = $submit_on_change ? 'class="searchbox"' : '';
-      echo "<input $class type=\"text\" name=\"$name\" id=\"$name\" $size maxlength=\"$max\" value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" : '') . " >";
+      echo "<input $class type=\"text\" name=\"$name\" id=\"$name\" $inparams $size maxlength=\"$max\" value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" : '') . " >";
       if ($post_label) {
         echo " " . $post_label;
       }
@@ -1185,7 +1185,7 @@
      * @param bool $submit_on_change
      */
     public static function  refCells($label, $name, $title = null, $init = null, $params = null, $submit_on_change = false) {
-      Forms::textCellsEx($label, $name, 'small', 18, $init, $title, $params, null, $submit_on_change);
+      Forms::textCellsEx($label, $name, 'small', 18, $init, $title, $params, null, $submit_on_change,' placeholder="Reference"');
     }
     /**
      * @param        $label
