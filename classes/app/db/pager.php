@@ -167,8 +167,9 @@
     public function __construct($sql, $name, $table = null, $page_len = 0) {
       if (!static::$User) {
         static::$User = User::i();
-      }if (!static::$DB) {
-        static::$DB= DB::i();
+      }
+      if (!static::$DB) {
+        static::$DB = DB::i();
       }
       $this->width;
       if ($page_len == 0) {
@@ -221,11 +222,11 @@
      *
      * @return string
      */
-    public function navi($name, $value, $enabled = true, $icon = false,$title=null) {
+    public function navi($name, $value, $enabled = true, $icon = false, $title = null) {
       if (!static::$User) {
         static::$User = User::i();
       }
-      $title=$title?:$value;
+      $title = $title ? : $value;
       return "<button " . ($enabled ? '' : 'disabled') . " class=\"navibutton\" type=\"submit\"" . " name=\"$name\" id=\"$name\" value=\"$value\">" . ($icon ? "<img src='/themes/" . static::$User->_theme() . "/images/" . $icon . "'>" : '') . "<span>$title</span></button>\n";
     }
     /**
@@ -235,8 +236,8 @@
      * @param      $value
      * @param bool $enabled
      */
-    public function navi_cell($name, $value, $enabled = true,$title=null) {
-      Cell::label($this->navi($name, $value, $enabled,false,$title));
+    public function navi_cell($name, $value, $enabled = true, $title = null) {
+      Cell::label($this->navi($name, $value, $enabled, false, $title));
     }
     /**
      * @static
@@ -321,7 +322,6 @@
               Cell::label($cell, "width=40");
               break;
             case 'date':
-
               Cell::label(static::$dates->_sqlToDate($cell), ' class="center nowrap"');
               break;
             case 'dstamp': // time stamp displayed as date
@@ -403,10 +403,10 @@
         if (@$this->inactive_ctrl) {
           Forms::submit('Update', _('Update'), true, '', null);
         } // inactive update
-        $this->navi_cell($but_pref . 'first', 1, $this->first_page,'First');
-        $this->navi_cell($but_pref . 'prev', $this->curr_page - 1, $this->prev_page,'Prev');
-        $this->navi_cell($but_pref . 'next', $this->curr_page + 1, $this->next_page,'Next');
-        $this->navi_cell($but_pref . 'last', $this->max_page, $this->last_page,'Last');
+        $this->navi_cell($but_pref . 'first', 1, $this->first_page, 'First');
+        $this->navi_cell($but_pref . 'prev', $this->curr_page - 1, $this->prev_page, 'Prev');
+        $this->navi_cell($but_pref . 'next', $this->curr_page + 1, $this->next_page, 'Next');
+        $this->navi_cell($but_pref . 'last', $this->max_page, $this->last_page, 'Last');
         Row::end();
         echo "</table>";
         $from = ($this->curr_page - 1) * $this->page_len + 1;
@@ -797,8 +797,8 @@
           $this->max_page  = $this->page_len ? ceil($this->rec_count / $this->page_len) : 0;
           $this->setPage(1);
         } elseif ($this->type == self::ARR) {
-          $this->rec_count = count($this->sql);
-          $this->max_page  = $this->page_len ? ceil($this->rec_count / $this->page_len) : 0;
+          $this->rec_count  = count($this->sql);
+          $this->max_page   = $this->page_len ? ceil($this->rec_count / $this->page_len) : 0;
           $this->curr_page  = $this->curr_page ? : 1;
           $this->next_page  = ($this->curr_page < $this->max_page) ? $this->curr_page + 1 : null;
           $this->prev_page  = ($this->curr_page > 1) ? ($this->curr_page - 1) : null;
@@ -881,10 +881,9 @@
       if (isset($_SESSION['pager'][$name])) {
         $pager = $_SESSION['pager'][$name];
         if (is_array($sql)) {
-          $pager->sql = $sql;
+          $pager->sql       = $sql;
           $pager->rec_count = count($pager->sql);
           $pager->max_page  = $pager->page_len ? ceil($pager->rec_count / $pager->page_len) : 0;
-
         } elseif ($pager->sql != $sql) {
           unset($_SESSION['pager'][$name]); // kill pager if sql has changed
         }

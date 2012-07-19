@@ -18,8 +18,7 @@
   /**
 
    */
-  abstract class Base
-  {
+  abstract class Base {
     protected $title;
     /*** @var \User */
     protected $User;

@@ -24,7 +24,7 @@
   if (Input::post('_deposit_date_changed')) {
     $_POST['deposited']      = 0;
     $_SESSION['undeposited'] = array();
-    $_POST['deposit_date']   = check_date() ? (Input::post('deposit_date')) : '';
+    $_POST['deposit_date']   = checkDate() ? (Input::post('deposit_date')) : '';
     foreach ($_POST as $rowid => $row) {
       if (substr($rowid, 0, 4) == 'dep_') {
         unset($_POST[$rowid]);
@@ -57,7 +57,7 @@
         $total_amount += $row['amount'];
         $ref[] = $row['ref'];
       }
-      $sql      = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (" . ST_GROUPDEPOSIT . ", 5, $total_amount," . DB::quote(implode($ref, ', ')) . ",'" . Dates::dateToSql($_POST['deposit_date']) . "', 6, '" . User::i()->user . "',0)";
+      $sql      = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (" . ST_GROUPDEPOSIT . ", 5, $total_amount," . DB::quote('Group Deposit') . ",'" . Dates::dateToSql($_POST['deposit_date']) . "', 6, '" . User::i()->user . "',0)";
       $query    = DB::query($sql, "Undeposited Cannot be Added");
       $order_no = DB::insertId($query);
       if (!isset($order_no) || !empty($order_no) || $order_no == 127) {
@@ -103,16 +103,16 @@
   Row::end();
   Row::start();
   Row::end();
-    Table::header(_("Bank fees"));
-    Row::start();Cell::amount($_POST['bank_fees'], false, '', "bank_fees");
+  Table::header(_("Bank fees"));
+  Row::start();
+  Cell::amount($_POST['bank_fees'], false, '', "bank_fees");
   Row::end();
   Table::end();
   Forms::submitCenter('Deposit', _("Deposit"), true, '', false);
   Display::div_end();
   echo "<hr>";
-  $date = Dates::addDays($_POST['deposit_date'], 10);
-  $sql
-                = "SELECT	type, trans_no, ref, trans_date,
+  $date         = Dates::addDays($_POST['deposit_date'], 10);
+  $sql          = "SELECT	type, trans_no, ref, trans_date,
                 amount,	person_id, person_type_id, reconciled, id
         FROM bank_trans
         WHERE undeposited=1 AND trans_date <= '" . Dates::dateToSql($date) . "' AND reconciled IS null AND amount<>0
@@ -142,7 +142,7 @@
   /**
    * @return bool
    */
-  function check_date() {
+  function checkDate() {
     if (!Dates::isDate(Input::post('deposit_date'))) {
       Event::error(_("Invalid deposit date format"));
       JS::setFocus('deposit_date');
@@ -166,7 +166,7 @@
     $amount    = 'amount_' . $row['id'];
     $dateid    = 'date_' . $row['id'];
     $value     = $row['amount'];
-    $date= $row['trans_date'];
+    $date      = $row['trans_date'];
     $chk_value = Forms::hasPost("dep_" . $row['id']);
     // save also in hidden field for testing during 'Reconcile'
     return Forms::checkbox(null, $name, $chk_value, true, _('Deposit this transaction')) . Forms::hidden($amount, $value, false) . Forms::hidden($dateid, Dates::sqlToDate($date), false);
@@ -231,7 +231,7 @@
   }
 
   function updateData() {
-    $this->updateData=true;
+    $this->updateData = true;
     Ajax::activate('summary');
   }
 
@@ -243,13 +243,13 @@
    * @return bool
    */
   function change_tpl_flag($deposit_id) {
-    if (!check_date() && Forms::hasPost("dep_" . $deposit_id)) // temporary fix
+    if (!checkDate() && Forms::hasPost("dep_" . $deposit_id)) // temporary fix
     {
       return false;
     }
-if (Input::post('deposit_date')==Dates::today())
-    $_POST['deposit_date'] = Input::post('date_' . $deposit_id);
-
+    if (Input::post('deposit_date') == Dates::today()) {
+      $_POST['deposit_date'] = Input::post('date_' . $deposit_id);
+    }
     // save last reconcilation status (date, end balance)
     if (Forms::hasPost("dep_" . $deposit_id)) {
       $_SESSION['undeposited']["dep_" . $deposit_id] = Input::post('amount_' . $deposit_id);
@@ -259,7 +259,7 @@ if (Input::post('deposit_date')==Dates::today())
       $_POST['deposited'] = $_POST['to_deposit'] - Input::post('amount_' . $deposit_id);
     }
     if (!count($_SESSION['undeposited'])) {
-      $_POST['deposit_date']=Dates::today();
+      $_POST['deposit_date'] = Dates::today();
     }
     return true;
   }
