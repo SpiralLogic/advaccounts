@@ -11,14 +11,14 @@
   /**
 
    */
-  class Autoload_Exception extends \Exception
+  class Load_Exception extends \Exception
   {
   }
 
   /**
 
    */
-  class Autoloader
+  class Loader
   {
     /**
      * @var int
@@ -39,6 +39,9 @@
     public $loaded = array();
     /** @var Cache */
     public $Cache;
+    /**
+
+     */
     public function __construct() {
       spl_autoload_register(array($this, 'load'), true);
     }
@@ -47,7 +50,7 @@
      */
     public function registerCache(Cache $cache) {
       $this->Cache   = $cache;
-      $cachedClasses = $cache->get('autoload', array());
+      $cachedClasses = $cache->get('Loader', array());
       if ($cachedClasses) {
         $this->global_classes = $cachedClasses['global_classes'];
         $this->classes        = $cachedClasses['classes'];
@@ -112,16 +115,16 @@
      * @param $filepath
      * @param $required_class
      *
-     * @throws Autoload_Exception
+     * @throws Load_Exception
      * @internal param $class
      * @return bool
      */
     protected function includeFile($filepath, $required_class) {
       if (empty($filepath)) {
-        throw new Autoload_Exception('File for class ' . $required_class . ' cannot be found!');
+        throw new Load_Exception('File for class ' . $required_class . ' cannot be found!');
       }
       if (!include_once($filepath)) {
-        throw new Autoload_Exception('File for class ' . $required_class . ' cannot be	loaded from : ' . $filepath);
+        throw new Load_Exception('File for class ' . $required_class . ' cannot be	loaded from : ' . $filepath);
       }
       if (!isset($this->loaded[$required_class])) {
         $this->loaded[$required_class] = $filepath;
@@ -143,7 +146,7 @@
         try {
           $result = $this->includeFile($this->loaded[$required_class], $required_class);
         }
-        catch (Autoload_Exception $e) {
+        catch (Load_Exception $e) {
           Event::registerShutdown($this);
         }
         if ($result && isset($this->global_classes[$required_class])) {
@@ -198,7 +201,7 @@
     }
     public function _shutdown() {
       if ($this->Cache) {
-        $this->Cache->set('autoload', array(
+        $this->Cache->set('Loader', array(
                                            'classes'        => $this->classes, //
                                            'global_classes' => $this->global_classes, //
                                            'paths'          => $this->loaded
@@ -207,4 +210,4 @@
     }
   }
 
-  return new Autoloader();
+  return new Loader();

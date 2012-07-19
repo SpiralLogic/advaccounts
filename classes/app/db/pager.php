@@ -13,7 +13,10 @@
 
    */
   class DB_Pager {
+    /** @var User */
     static $User;
+    /** @var DB */
+    static $DB;
     const SQL = 1;
     const ARR = 2;
     /** @var */
@@ -95,7 +98,7 @@
      */
     public $first_page;
     /**
-     * @var #M#C\User.query_size|int|?
+     * @var int|?
      */
     public $page_len = 1;
     /**
@@ -150,6 +153,7 @@
      * $name is base name for pager controls
      */
     public $key;
+    /** @var Dates */
     static $dates;
     public $rowClass;
     public $type;
@@ -163,6 +167,8 @@
     public function __construct($sql, $name, $table = null, $page_len = 0) {
       if (!static::$User) {
         static::$User = User::i();
+      }if (!static::$DB) {
+        static::$DB= DB::i();
       }
       $this->width;
       if ($page_len == 0) {
@@ -245,6 +251,9 @@
       }
       if (!static::$User) {
         static::$User = User::i();
+      }
+      if (!static::$DB) {
+        static::$DB = DB::i();
       }
       $this->select_records();
       Display::div_start("_{$this->name}_span");
@@ -342,7 +351,7 @@
               Cell::email($cell, isset($col['align']) ? "class='" . $col['align'] . "'" : null);
               break;
             case 'rate':
-              Cell::label(Num::format($cell, User::exrate_dec()), "class='center'");
+              Cell::label(Num::format($cell, static::$User->_exrate_dec()), "class='center'");
               break;
             case 'inactive':
               if (Input::post('show_inactive')) {
@@ -452,7 +461,7 @@
         if (Forms::hasPost('show_inactive')) {
           if (isset($_POST['LInact'][$id]) && (Input::post('_Inactive' . $id . '_update') || Input::post('Update')) && (Forms::hasPost('Inactive' . $id) != $value)
           ) {
-            DB::updateRecordStatus($id, !$value, $table, $key);
+            static::$DB->_updateRecordStatus($id, !$value, $table, $key);
             $value = !$value;
           }
           echo '<td class="center">' . Forms::checkbox(null, $name, $value, true, '', "class='center'") . Forms::hidden("LInact[$id]", $value, false) . '</td>';
@@ -477,14 +486,14 @@
           return true;
         }
         $sql    = $this->_sql_gen(false);
-        $result = DB::query($sql, 'Error browsing database: ' . $sql);
+        $result = static::$DB->_query($sql, 'Error browsing database: ' . $sql);
         if (!$result) {
           return false;
         }
         // setting field names for subsequent queries
         // add result field names to column defs for
         // col value retrieve and sort purposes
-        while ($row = DB::fetchAssoc($result)) {
+        while ($row = static::$DB->_fetchAssoc($result)) {
           $this->data[] = $row;
         }
       } elseif ($this->type == self::ARR) {
@@ -779,11 +788,11 @@
       if ($this->ready == false) {
         if ($this->type == self::SQL) {
           $sql    = $this->_sql_gen(true);
-          $result = DB::query($sql, 'Error reading record set');
+          $result = static::$DB->_query($sql, 'Error reading record set');
           if ($result == false) {
             return false;
           }
-          $row             = DB::fetchRow($result);
+          $row             = static::$DB->_fetchRow($result);
           $this->rec_count = $row[0];
           $this->max_page  = $this->page_len ? ceil($this->rec_count / $this->page_len) : 0;
           $this->setPage(1);

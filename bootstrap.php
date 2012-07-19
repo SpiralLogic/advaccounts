@@ -47,78 +47,21 @@
   define('IS_JSON_REQUEST', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false));
   define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
   define('CRLF', chr(13) . chr(10));
-  set_error_handler(function ($severity, $message, $filepath, $line)
-  {
-    class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'errors.php';
-    return ADV\Core\Errors::handler($severity, $message, $filepath, $line);
-  });
-  set_exception_handler(function (\Exception $e)
-  {
-    class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'errors.php';
-    ADV\Core\Errors::exceptionHandler($e);
-  });
-  $loader = require COREPATH . 'autoloader.php';
+  $loader = require COREPATH . 'loader.php';
   if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
     new \ADV\Core\Assets();
     exit;
   }
   if (!function_exists('e')) {
-    /**
-     * @param $string
-     *
-     * @return array|string
-     */
-    function e($string)
-    {
-      return Security::htmlentities($string);
-    }
-  }
-  register_shutdown_function(function ()
-  {
-    ADV\Core\Event::shutdown();
-  });
-  if (!function_exists('adv_ob_flush_handler')) {
-    /**
-     * @param $text
-     *
-     * @return string
-     * @noinspection PhpUnusedFunctionInspection
-     */
-    function adv_ob_flush_handler($text)
-    {
-      return (Ajax::inAjax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
-    }
-  }
-  $dic = new \ADV\Core\DIC();
-  $loader->registerCache(\ADV\Core\Cache::i()->_defineConstants($_SERVER['SERVER_NAME'] . '.defines', function()
-  {
-    return include(DOCROOT . 'config' . DS . 'defines.php');
-  }));
-  include(DOCROOT . 'config' . DS . 'types.php');
-  Session::i();
-  Ajax::i();
-  Config::i();
-  ob_start('adv_ob_flush_handler', 0);
-  $app        = ADVAccounting::i();
-  $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
-  $index      = $controller == $_SERVER['SCRIPT_NAME'];
-  $show404    = false;
-  if (!$index && $controller) {
-    $controller = ltrim($controller, '/');
-    // substr_compare returns 0 if true
-    $controller = (substr_compare($controller, '.php', -4, 4, true) === 0) ? $controller : $controller . '.php';
-    $controller = DOCROOT . 'controllers' . DS . $controller;
-    if (file_exists($controller)) {
-      include($controller);
-    } else {
-      $show404 = true;
-      header('HTTP/1.0 404 Not Found');
-      Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
-    }
-  }
-  if ($index || $show404) {
-    $app->display();
-  }
+          /**
+           * @param $string
+           *
+           * @return array|string
+           */
+          function e($string) {
+            return Security::htmlentities($string);
+          }
+        }
 
-
+  new ADVAccounting($loader);
 

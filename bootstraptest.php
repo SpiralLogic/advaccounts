@@ -19,7 +19,7 @@
   define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
   define('CRLF', chr(13) . chr(10));
 
-  require COREPATH . 'autoloader.php';
+  require COREPATH . 'loader.php';
   if (!function_exists('e')) {
     /**
      * @param $string

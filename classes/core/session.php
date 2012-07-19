@@ -76,9 +76,7 @@
       if (!isset($_SESSION['globals'])) {
         $this['globals'] = [];
       }
-      // Ajax communication object
-      (!class_exists('Ajax'))  or Ajax::i();
-    }
+      }
     /**
      * @static
      * @return bool

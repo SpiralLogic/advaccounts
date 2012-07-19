@@ -46,6 +46,7 @@
      */
     public $order;
     protected function before() {
+
       $this->order = Orders::session_get() ? : null;
       $this->JS->_openWindow(900, 500);
       if (Input::get('customer_id', Input::NUMERIC)) {
