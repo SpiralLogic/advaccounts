@@ -21,10 +21,6 @@
       $_POST[$rowid]             = 1;
     }
   }
-  if (Forms::isListUpdated('deposit_date')) {
-    $_POST['deposit_date'] = Input::post('deposit_date') == '' ? Dates::today() : ($_POST['deposit_date']);
-    updateData();
-  }
   if (Input::post('_deposit_date_changed')) {
     $_POST['deposited']      = 0;
     $_SESSION['undeposited'] = array();
@@ -167,11 +163,13 @@
    */
   function depositCheckbox($row) {
     $name      = "dep_" . $row['id'];
-    $hidden    = 'amount_' . $row['id'];
+    $amount    = 'amount_' . $row['id'];
+    $dateid    = 'date_' . $row['id'];
     $value     = $row['amount'];
+    $date= $row['trans_date'];
     $chk_value = Forms::hasPost("dep_" . $row['id']);
     // save also in hidden field for testing during 'Reconcile'
-    return Forms::checkbox(null, $name, $chk_value, true, _('Deposit this transaction')) . Forms::hidden($hidden, $value, false);
+    return Forms::checkbox(null, $name, $chk_value, true, _('Deposit this transaction')) . Forms::hidden($amount, $value, false) . Forms::hidden($dateid, Dates::sqlToDate($date), false);
   }
 
   /**
@@ -249,15 +247,9 @@
     {
       return false;
     }
-    if (Input::post('bank_date') == '') // new reconciliation
-    {
-      Ajax::activate('bank_date');
-    }
-    $_POST['bank_date'] = Dates::dateToSql(Input::post('deposited_date'));
-    /*	$sql = "UPDATE ".''."bank_trans SET undeposited=0"
-                         ." WHERE id=".DB::escape($deposit_id);
+if (Input::post('deposit_date')==Dates::today())
+    $_POST['deposit_date'] = Input::post('date_' . $deposit_id);
 
-                        DB::query($sql, "Can't change undeposited status");*/
     // save last reconcilation status (date, end balance)
     if (Forms::hasPost("dep_" . $deposit_id)) {
       $_SESSION['undeposited']["dep_" . $deposit_id] = Input::post('amount_' . $deposit_id);
@@ -265,6 +257,9 @@
     } else {
       unset($_SESSION['undeposited']["dep_" . $deposit_id]);
       $_POST['deposited'] = $_POST['to_deposit'] - Input::post('amount_' . $deposit_id);
+    }
+    if (!count($_SESSION['undeposited'])) {
+      $_POST['deposit_date']=Dates::today();
     }
     return true;
   }

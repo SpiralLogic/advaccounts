@@ -15,7 +15,7 @@
       'Arr', //
       'Assets', //
       'Auth', //
-      'Autoloader', //
+      'Loader', //
       'Cache', //
       'Config', //
       'DatePicker', //

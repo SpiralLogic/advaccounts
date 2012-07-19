@@ -67,7 +67,7 @@
   Forms::start();
   Table::startOuter('tablestyle2 width90 pad2');
   Table::section(1);
-  Debtor::newselect();
+  Debtor::newselect($_POST['customer_id']);
   if (!isset($_POST['bank_account'])) // first page call
   {
     $_SESSION['alloc'] = new Gl_Allocation(ST_CUSTPAYMENT, 0);

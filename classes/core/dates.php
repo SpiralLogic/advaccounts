@@ -25,6 +25,7 @@
    * @method dateToSql($date)
    * @method today()
    * @method now()
+   * @method Dates i()
    * @method isDate($date = null, $format = null)
    * @method isDateInFiscalYear($date, $convert = false)
    * @method isGreaterThan($date1, $date2)
