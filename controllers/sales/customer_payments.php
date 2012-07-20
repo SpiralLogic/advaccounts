@@ -13,7 +13,7 @@
   Page::start(_($help_context = "Customer Payment Entry"), SA_SALESPAYMNT, Input::request('frame'));
   Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-  $_POST['customer_id'] = Input::postGet('customer_id', false);
+  $_POST['customer_id'] = Input::postGet('customer_id', null);
   if (Forms::isListUpdated('branch_id') || !$_POST['customer_id']) {
     // when branch is selected via external editor also customer can change
     $br                   = Sales_Branch::get(Input::post('branch_id'));
@@ -67,7 +67,7 @@
   Forms::start();
   Table::startOuter('tablestyle2 width90 pad2');
   Table::section(1);
-  Debtor::newselect($_POST['customer_id']);
+  Debtor::newselect();
   if (!isset($_POST['bank_account'])) // first page call
   {
     $_SESSION['alloc'] = new Gl_Allocation(ST_CUSTPAYMENT, 0);

@@ -20,25 +20,27 @@
    */
   class SalesOrder extends Base
   {
-
-    protected $addTitles = array(
-      ST_SALESQUOTE  => "New Sales Quotation Entry", //
-      ST_SALESINVOICE=> "Direct Sales Invoice", //
-      ST_CUSTDELIVERY=> "Direct Sales Delivery", //
-      ST_SALESORDER  => "New Sales Order Entry"
-    );
-    protected $modifyTitles = array(
-      ST_SALESQUOTE => "Modifying Sales Quotation # ", //
-      ST_SALESORDER => "Modifying Sales Order # "
-    );
-    protected $typeSecurity = array(
-      ST_SALESORDER          => SA_SALESORDER, //
-      ST_SALESQUOTE          => SA_SALESQUOTE, ///
-      ST_CUSTDELIVERY        => SA_SALESDELIVERY, //
-      Orders::QUOTE_TO_ORDER => SA_SALESORDER, //
-      Orders::CLONE_ORDER    => SA_SALESORDER, //
-      ST_SALESINVOICE        => SA_SALESINVOICE
-    );
+    protected $addTitles
+      = array(
+        ST_SALESQUOTE  => "New Sales Quotation Entry", //
+        ST_SALESINVOICE=> "Direct Sales Invoice", //
+        ST_CUSTDELIVERY=> "Direct Sales Delivery", //
+        ST_SALESORDER  => "New Sales Order Entry"
+      );
+    protected $modifyTitles
+      = array(
+        ST_SALESQUOTE => "Modifying Sales Quotation # ", //
+        ST_SALESORDER => "Modifying Sales Order # "
+      );
+    protected $typeSecurity
+      = array(
+        ST_SALESORDER          => SA_SALESORDER, //
+        ST_SALESQUOTE          => SA_SALESQUOTE, ///
+        ST_CUSTDELIVERY        => SA_SALESDELIVERY, //
+        Orders::QUOTE_TO_ORDER => SA_SALESORDER, //
+        Orders::CLONE_ORDER    => SA_SALESORDER, //
+        ST_SALESINVOICE        => SA_SALESINVOICE
+      );
     protected $security;
     public $type;
     /***
@@ -78,6 +80,7 @@
     }
     protected function index() {
       Page::start($this->title, $this->security);
+      var_dump($this->order);
       $this->checkBranch();
       if (isset($_GET[REMOVED])) {
         $this->removed();
@@ -211,8 +214,10 @@
       Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
       Reporting::email_link($order_no, _("Email This $trans_name"), true, $trans_type, 'EmailLink', null, $emails, 1);
       if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
-        Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
-        Reporting::email_link($order_no, _("Email This Proforma Invoice"), true, ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), 'EmailLink', null, $emails, 1);
+        Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA :
+          ST_PROFORMAQ), $order_no, 'prtopt');
+        Reporting::email_link($order_no, _("Email This Proforma Invoice"), true, ($trans_type == ST_SALESORDER ? ST_PROFORMA :
+          ST_PROFORMAQ), 'EmailLink', null, $emails, 1);
       }
       if ($trans_type == ST_SALESORDER) {
         Display::submenu_option(_("Create PO from this order"), "/purchases/po_entry_items.php?NewOrder=Yes&UseOrder=" . $order_no . "'");
@@ -230,7 +235,9 @@
         Display::submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $order_no, 'prtopt', null, 1);
         Display::note(GL_UI::view(ST_CUSTDELIVERY, $order_no, _("View the GL Journal Entries for this Dispatch")), 0, 1);
         Display::submenu_option(_("Make &Invoice Against This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$order_no");
-        ((isset($_GET['Type']) && $_GET['Type'] == 1)) ? Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes") : Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?add=0&type=" . ST_CUSTDELIVERY);
+        ((isset($_GET['Type']) && $_GET['Type'] == 1)) ?
+          Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes") :
+          Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?add=0&type=" . ST_CUSTDELIVERY);
       } elseif ($trans_type == ST_SALESINVOICE) {
         $sql    = "SELECT trans_type_from, trans_no_from FROM debtor_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . $this->DB->escape($order_no);
         $result = $this->DB->query($sql, "could not retrieve customer allocation");
@@ -250,7 +257,7 @@
         }
       }
       $this->JS->_setFocus('prtopt');
-      $this->Ajax->_addScript(true,"window.onpopstate=function(event) { window.location.href = '/sales/sales_order_entry?add=0&type=30';}; history.pushState({},'Order Complete','/sales/sales_order_entry');");
+      $this->Ajax->_addScript(true, "window.onpopstate=function(event) { window.location.href = '/sales/sales_order_entry?add=0&type=30';}; history.pushState({},'Order Complete','/sales/sales_order_entry');");
       $this->Ajax->_activate('_page_body');
       //	UploadHandler::insert($order_no);
       Page::footer_exit();
