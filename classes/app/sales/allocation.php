@@ -98,7 +98,6 @@
         if ($date != "") {
           Bank::exchange_variation($type, $type_no, $row['trans_type_to'], $row['trans_no_to'], $date, $row['amt'], PT_CUSTOMER, true);
         }
-        //////////////////////
       }
       // remove any allocations for this transaction
       $sql

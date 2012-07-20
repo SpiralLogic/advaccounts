@@ -14,6 +14,7 @@
    * @method getPost($var, $type = null, $default = null)
    * @method Input i()
    * @method postGet($var, $type = null, $default = null)
+   * @method postGetGlobal($var, $type = null, $default = null)
    * @method request($var, $type = null, $default = null)
    * @method hasPost($vars)
    */
@@ -95,6 +96,23 @@
      */
     public function _getPostGlobal($var, $type, $default = null) {
       $result = $this->getThenPost($_GET, $_POST, $var, $type, false);
+      if ($result === false) {
+        $result = $this->getGlobal($var, $type, $default);
+      }
+
+      return $result;
+    }
+    /**
+     * @static
+     *
+     * @param      $var
+     * @param      $type
+     * @param null $default
+     *
+     * @return bool|int|null|string
+     */
+    public function _postGetGlobal($var, $type, $default = null) {
+      $result = $this->getThenPost($_POST, $_GET, $var, $type, false);
       if ($result === false) {
         $result = $this->getGlobal($var, $type, $default);
       }

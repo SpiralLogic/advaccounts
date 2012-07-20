@@ -80,7 +80,7 @@
     }
     protected function index() {
       Page::start($this->title, $this->security);
-      var_dump($this->order);
+
       $this->checkBranch();
       if (isset($_GET[REMOVED])) {
         $this->removed();
