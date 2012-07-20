@@ -24,7 +24,7 @@
   if (Input::post('_deposit_date_changed')) {
     $_POST['deposited']      = 0;
     $_SESSION['undeposited'] = array();
-    $_POST['deposit_date']   = checkDate() ? (Input::post('deposit_date')) : '';
+    $_POST['deposit_date']   = check_date() ? (Input::post('deposit_date')) : '';
     foreach ($_POST as $rowid => $row) {
       if (substr($rowid, 0, 4) == 'dep_') {
         unset($_POST[$rowid]);
@@ -142,7 +142,7 @@
   /**
    * @return bool
    */
-  function checkDate() {
+  function check_date() {
     if (!Dates::isDate(Input::post('deposit_date'))) {
       Event::error(_("Invalid deposit date format"));
       JS::setFocus('deposit_date');
@@ -243,7 +243,7 @@
    * @return bool
    */
   function change_tpl_flag($deposit_id) {
-    if (!checkDate() && Forms::hasPost("dep_" . $deposit_id)) // temporary fix
+    if (!check_date() && Forms::hasPost("dep_" . $deposit_id)) // temporary fix
     {
       return false;
     }
