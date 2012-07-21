@@ -1,5 +1,11 @@
 <?php
-  $_POST['bank_date']    = '31/01/2012';
-  $_POST['bank_account'] = '5';
+$test= new \ADV\Core\Input2\Input($_GET);
 
-  Page::end();
+
+echo $test['test'];
+ echo $test->get('test',null,'wawa');
+  echo $test['test'];
+  echo $test->get('test',null,'wawa');
+var_dump($test['wawa']);
+  $test['wawa']='eee';
+var_dump($test['wawa']);

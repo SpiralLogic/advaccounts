@@ -12,8 +12,8 @@
     public $date_banked;
     public $customer_id;
     protected function before() {
-      JS::openWindow(900, 500);
-      JS::footerFile('/js/payalloc.js');
+      $this->JS->_openWindow(900, 500);
+      $this->JS->_footerFile('/js/payalloc.js');
       $this->customer_id    = Input::postGetGlobal('customer_id');
       $_POST['customer_id'] =& $this->customer_id;
       if (Forms::isListUpdated('branch_id') || !$_POST['customer_id']) {
@@ -124,7 +124,7 @@ var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tb
  alloc_tbl.find('.amount').each(function() { if (this.value != 0) hasallocated = true});
  if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();
 JS;
-      JS::addLiveEvent('a, :input', 'click change', $js, 'wrapper', true);
+      $this->JS->_addLiveEvent('a, :input', 'click change', $js, 'wrapper', true);
     }
     protected function after() {
       // TODO: Implement after() method.

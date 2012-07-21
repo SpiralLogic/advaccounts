@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   return array(
     'ADV\\Core'           => array(
       'Exception', //
@@ -46,11 +45,10 @@
       'DBInsertException', //
       'DBSelectException', //
       'DBUpdateException', //
-    ),
-    'ADV\\Core\\Module'=> array(
+    ), 'ADV\\Core\\Module'=> array(
       'Base', //
       'Loadable', //
-    ), 'ADV\\App'=> array(
-          'Page', //
-        )
+    ), 'ADV\\App'         => array(
+      'Page', //
+    ), 'ADV\\Core\Input'  => ['Base'],
   );

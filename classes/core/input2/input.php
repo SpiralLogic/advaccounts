@@ -1,5 +1,5 @@
 <?php
-namespace ADV\Core\Input;
+  namespace ADV\Core\Input2;
   /**
    * Created by JetBrains PhpStorm.
    * User: Complex
@@ -7,7 +7,7 @@ namespace ADV\Core\Input;
    * Time: 4:57 PM
    * To change this template use File | Settings | File Templates.
    */
-  class base implements \ArrayAccess {
+  class Input implements \ArrayAccess {
     const NUMERIC = 1;
     const OBJECT  = 2;
     const STRING  = 3;
@@ -55,7 +55,7 @@ namespace ADV\Core\Input;
         $vars = func_get_args();
       }
       foreach ($vars as $var) {
-        if ($this->_hasSet($this->container, $var) === null) {
+        if ($this->hasSet($var) === null) {
           return false;
         }
       }
@@ -71,9 +71,9 @@ namespace ADV\Core\Input;
      *
      * @return bool|int|null|string
      */
-    protected function _hasSet($var, $type = null, $default = null) {
+    protected function hasSet($var, $type = null, $default = null) {
       //     if ($type!==null&&$default===null) $default=$type;
-      $value = (is_string($var) && isset($array[$var])) ? $this->container[$var] : $default; //chnage back to null if fuckoutz happen
+      $value = (is_string($var) && isset($this->container[$var])) ? $this->container[$var] : $default; //chnage back to null if fuckoutz happen
       switch ($type) {
         case self::NUMERIC:
           if ($value === null || !is_numeric($value)) {
@@ -116,7 +116,7 @@ namespace ADV\Core\Input;
      * @return mixed Can return all value types.
      */
     public function offsetGet($offset) {
-      return $this->container[$offset];
+      return $this->hasSet($offset);
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>

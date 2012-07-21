@@ -27,9 +27,9 @@
     protected $Config = null;
     /** @var Session */
     protected $Session = null;
+    protected $get_text= null;
     /** */
     public function __construct(\ADV\Core\Loader $loader) {
-      global $dic;
       set_error_handler(function ($severity, $message, $filepath, $line) {
         class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'errors.php';
         return ADV\Core\Errors::handler($severity, $message, $filepath, $line);
@@ -41,7 +41,6 @@
       register_shutdown_function(function () {
         \ADV\Core\Event::shutdown();
       });
-      $dic = new \ADV\Core\DIC();
       static::i($this);
       $this->Cache = \ADV\Core\Cache::i();
       $loader->registerCache($this->Cache);
@@ -51,11 +50,13 @@
       include(DOCROOT . 'config' . DS . 'types.php');
       $this->Config = Config::i();
       // Ajax communication object
-      $this->Ajax    = Ajax::i();      ob_start([$this, 'flush_handler'], 0);
-
+      $this->Ajax = Ajax::i();
+      ob_start([$this, 'flush_handler'], 0);
       $this->Session = Session::i();
-      $this->User    = User::i($this->Session);
-      $this->menu    = new Menu(_("Main Menu"));
+      $this->setTextSupport();
+      $this->Session['language'] = new Language();
+      $this->User = User::i($this->Session);
+      $this->menu = new Menu(_("Main Menu"));
       $this->menu->addItem(_("Main Menu"), "index.php");
       $this->menu->addItem(_("Logout"), "/account/access/logout.php");
       array_walk($_POST, function(&$v) {
@@ -319,6 +320,14 @@
       }
       $this->add_application(new \ADV\App\Apps\System());
       $this->Cache->_set('applications', $this->applications);
+    }
+    /**
+     * @return mixed
+     */
+    protected function setTextSupport() {
+      if (!isset($this->Session['get_text'])) {
+        $this->Session['get_text'] = \gettextNativeSupport::i();
+      }
     }
   }
 

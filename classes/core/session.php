@@ -71,9 +71,8 @@
         throw new SessionException('Could not start a Session!');
       }
       header("Cache-control: private");
-      $this->setTextSupport();
-      $this['language'] = new Language();
-      if (!isset($_SESSION['globals'])) {
+
+       if (!isset($_SESSION['globals'])) {
         $this['globals'] = [];
       }
       }
@@ -98,17 +97,6 @@
     protected function setUserAgent()
     {
       return ($this['HTTP_USER_AGENT'] = sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR'])));
-    }
-    /**
-     * @return mixed
-     */
-    protected function setTextSupport()
-    {
-      if (isset($this['get_text'])) {
-        $this->get_text = $this['get_text'];
-      } else {
-        $this->get_text = $this['get_text'] = \gettextNativeSupport::i();
-      }
     }
     /**
      * @param string $var
@@ -285,7 +273,6 @@
     public function _set($var, $value)
     {
       $_SESSION[$var] = $value;
-
       return $value;
     }
   }

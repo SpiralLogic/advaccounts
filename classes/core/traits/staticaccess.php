@@ -12,9 +12,7 @@
   /**
 
    */
-  trait StaticAccess
-  {
-
+  trait StaticAccess {
     /**
      * @static
      *
@@ -32,10 +30,12 @@
      *
      * @return mixed
      */
-    public static function __callStatic($func, $args)
-    {
-      if (method_exists(static::i(), '_' . $func)) {
+    public static function __callStatic($func, $args) {
+      try {
         return call_user_func_array(array(static::i(), '_' . $func), $args);
+      }
+      catch (\ADV\Core\Exception $e) {
+        \Event::error('Call to undefined static method ' . $func . ' in class ' . get_called_class());
       }
     }
     /**
@@ -44,10 +44,12 @@
      *
      * @return mixed
      */
-    public function __call($func, $args)
-    {
-      if (method_exists($this, '_' . $func)) {
-        return call_user_func_array(array($this, '_' . $func), $args);
+    public function __call($func, $args) {
+      try {
+        return call_user_func_array(array(static::i(), '_' . $func), $args);
+      }
+      catch (\ADV\Core\Exception $e) {
+        \Event::error('Call to undefined static method ' . $func . ' in class ' . get_called_class());
       }
     }
   }

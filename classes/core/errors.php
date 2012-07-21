@@ -208,7 +208,7 @@
         $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
         $headers .= "From: Accounts Errors <errors@advancedgroup.com.au>\r\n";
         $headers .= "Reply-To: errors@advancedgroup.com.au\r\n";
-        $headers .= "X-Mailer: " . BUILD_VERSION . "\r\n";
+        $headers .= "X-Mailer: \r\n";
         $success = mail($to, $subject, $text, $headers);
         if (!$success) {
           static::handler(E_ERROR, $success, __FILE__, __LINE__);

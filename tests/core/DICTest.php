@@ -26,6 +26,14 @@
       $this->container = null;
       parent::tearDown();
     }
+public function testGetInstance() {
+  $instance = DIC::getInstance();
+  $this->assertNotSame($this->container,$instance);
+  $instance2 = DIC::getInstance();
+  $this->assertSame($instance,$instance2);
+
+}
+
     public function testSetAndHas()
     {
       $c = $this->container;

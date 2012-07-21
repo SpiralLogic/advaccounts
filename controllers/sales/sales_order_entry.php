@@ -178,7 +178,7 @@
     protected function add() {
     }
     protected function after() {
-      unset($_SESSION['order_no']);
+      unset($this->Session['order_no']);
     }
     /**
      * @param      $order_no
