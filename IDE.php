@@ -1164,7 +1164,7 @@
   /**
 
    */
-  class Input extends ADV\Core\Input {
+  class Input extends ADV\Core\Input\Input {
     /**
      * @static
      */

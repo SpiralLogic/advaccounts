@@ -1,5 +1,5 @@
 <?php
-  namespace ADV\Core\Input2;
+  namespace ADV\Core\Input;
   /**
    * Created by JetBrains PhpStorm.
    * User: Complex
@@ -7,7 +7,7 @@
    * Time: 4:57 PM
    * To change this template use File | Settings | File Templates.
    */
-  class Input implements \ArrayAccess {
+  class Base implements \ArrayAccess {
     const NUMERIC = 1;
     const OBJECT  = 2;
     const STRING  = 3;
@@ -55,9 +55,11 @@
         $vars = func_get_args();
       }
       foreach ($vars as $var) {
-        if ($this->hasSet($var) === null) {
+
+        if (!array_key_exists($var, $this->container) || is_null($this->container[$var])) {
           return false;
         }
+
       }
       return true;
     }
@@ -73,7 +75,19 @@
      */
     protected function hasSet($var, $type = null, $default = null) {
       //     if ($type!==null&&$default===null) $default=$type;
-      $value = (is_string($var) && isset($this->container[$var])) ? $this->container[$var] : $default; //chnage back to null if fuckoutz happen
+      $array = $this->container;
+      if (is_array($var)) {
+        $keys = $var;
+        $var  = array_pop($keys);
+        foreach ($keys as $key) {
+          if (!array_key_exists($key, $array) || !is_array($array)) {
+            $array = [];
+            break;
+          }
+          $array = $array[$key];
+        }
+      }
+      $value = (is_string($var) && isset($array[$var])) ? $array[$var] : $default; //chnage back to null if fuckoutz happen
       switch ($type) {
         case self::NUMERIC:
           if ($value === null || !is_numeric($value)) {

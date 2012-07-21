@@ -26,7 +26,6 @@
       'Hook', //
       'HTML', //
       'HttpNotFoundException', //
-      'Input', //
       'JS', //
       'Language', //
       'Menu', //
@@ -46,9 +45,8 @@
       'DBSelectException', //
       'DBUpdateException', //
     ), 'ADV\\Core\\Module'=> array(
-      'Base', //
       'Loadable', //
     ), 'ADV\\App'         => array(
       'Page', //
-    ), 'ADV\\Core\Input'  => ['Base'],
+    ), 'ADV\\Core\\Input'  => ['Input'],
   );

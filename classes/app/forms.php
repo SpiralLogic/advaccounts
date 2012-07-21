@@ -1369,3 +1369,5 @@
       Forms::amountCellsEx($label, $name, null, 15, $init, $params, $post_label, $dec, null, null, true);
     }
   }
+
+  Forms::$dic = \ADV\Core\DIC::getInstance();

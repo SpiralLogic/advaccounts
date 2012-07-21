@@ -10,7 +10,7 @@
   use ADV\Core\Ajax;
   use ADV\Core\DB\DB;
   use ADV\Core\JS;
-  use ADV\Core\Input;
+  use ADV\Core\Input\Input;
   use ADV\Core\Config;
   use User;
   use ADV\Core\Session;
