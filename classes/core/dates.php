@@ -96,7 +96,11 @@
     /**
      * @return string User format of the days date.
      */
-    public function _today() {
+    public function _today($sql_format=false) {
+      if ($sql_format){
+        return date('Y-m-d');
+
+      }
       return $this->date(date("Y"), date("n"), date("j"));
     }
     /**
@@ -261,7 +265,7 @@
      */
     public function _dateToSql($date) {
       if (!$date) {
-        return $this->_dateToSql($this->_today());
+        return $this->_today(true);
       }
       if (strlen($date) > 10) {
         $date = substr($date, 0, 10);

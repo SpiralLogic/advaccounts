@@ -676,12 +676,17 @@ JS;
         'row'        => true, //
         'cell_params'=> '', //
         'rowspan'    => null, //
-        'label'      => 'Supplier:', //
+        'label'      => 'Customer:', //
         'cells'      => true, //
-        'cell_class' => null
+        'cell_class' => null,
+        'input_cell_params'=>[]
       ];
+
+
       $o = array_merge($o, $options);
-      echo "<tr><td id='customer_id_label' class='label pointer'>Customer: </td><td class='nowrap'>";
+      if ($o['row']) echo "<tr>";
+      if ($o['label']) echo "<td id='customer_id_label' class='label pointer'>Customer: </td>";
+      echo "<td class='nowrap'>";
       $focus = false;
       if (!$value && Input::post('customer')) {
         $value = $_POST['customer'];
@@ -698,9 +703,10 @@ JS;
       }
       Forms::hidden('customer_id');
       UI::search('customer', array(
-                                  'url'  => '/contacts/customers.php', 'name'  => 'customer', 'focus' => $focus, 'value' => $value
+                                  'url'  => '/contacts/customers.php', 'name'  => 'customer', 'focus' => $focus, 'value' => $value,['input_cell_params'=>$o['input_cell_params']]
                              ));
-      echo "</td>\n</tr>\n";
+      echo "</td>";
+      if ($o['row']) echo "\n</tr>\n";
       JS::beforeload("var Customer = function(data) {
             var id = document.getElementById('customer_id');
             id.value= data.id;

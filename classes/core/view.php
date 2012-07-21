@@ -63,6 +63,13 @@
       }
       echo ob_get_clean();
     }
+    /**
+     * @static
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
     protected static function compile_echos($value) {
       return preg_replace('/\{\{(.+?)\}\}/', '<?php echo $1; ?>', $value);
     }

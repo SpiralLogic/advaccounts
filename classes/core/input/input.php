@@ -15,6 +15,7 @@
    * @method Input i()
    * @method postGet($var, $type = null, $default = null)
    * @method postGetGlobal($var, $type = null, $default = null)
+   * @method getPostGlobal($var, $type = null, $default = null)
    * @method request($var, $type = null, $default = null)
    * @method hasPost($vars)
    */
