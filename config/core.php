@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   return array(
     'ADV\\Core'           => array(
       'Exception', //
@@ -27,7 +26,6 @@
       'Hook', //
       'HTML', //
       'HttpNotFoundException', //
-      'Input', //
       'JS', //
       'Language', //
       'Menu', //
@@ -46,11 +44,9 @@
       'DBInsertException', //
       'DBSelectException', //
       'DBUpdateException', //
-    ),
-    'ADV\\Core\\Module'=> array(
-      'Base', //
+    ), 'ADV\\Core\\Module'=> array(
       'Loadable', //
-    ), 'ADV\\App'=> array(
-          'Page', //
-        )
+    ), 'ADV\\App'         => array(
+      'Page', //
+    ), 'ADV\\Core\\Input'  => ['Input'],
   );

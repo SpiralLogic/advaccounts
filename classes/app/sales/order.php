@@ -32,7 +32,9 @@
      * @var int
      */
     public $so_type = 0; // for sales order: simple=0 template=1
-    /** @var */
+    /**
+     * @var
+     */
     public $order_id; // used to detect multi-tab edition conflits
     /**
      * @var array
@@ -42,85 +44,145 @@
      * @var array
      */
     public $src_docs = array(); // array of arrays(num1=>ver1,...) or 0 for no src
-    /** @var */
+    /**
+     * @var
+     */
     public $src_date; // src document date (for info only)
     /**
      * @var null
      */
     public $source_no = null;
-    /** @var */
+    /**
+     * @var
+     */
     public $document_date;
-    /** @var */
+    /**
+     * @var
+     */
     public $due_date;
-    /** @var */
+    /**
+     * @var
+     */
     public $salesman;
     /**
      * @var string
      */
     public $sales_type; // set to the customer's sales type
-    /** @var */
+    /**
+     * @var
+     */
     public $sales_type_name; // set to customer's sales type name
-    /** @var */
+    /**
+     * @var
+     */
     public $tax_included;
-    /** @var */
+    /**
+     * @var
+     */
     public $customer_currency; // set to the customer's currency
-    /** @var */
+    /**
+     * @var
+     */
     public $default_discount; // set to the customer's discount %
-    /** @var */
+    /**
+     * @var
+     */
     public $customer_name;
-    /** @var */
+    /**
+     * @var
+     */
     public $customer_id;
-    /** @var */
+    /**
+     * @var
+     */
     public $Branch;
-    /** @var */
+    /**
+     * @var
+     */
     public $email;
-    /** @var */
+    /**
+     * @var
+     */
     public $deliver_to;
-    /** @var */
+    /**
+     * @var
+     */
     public $delivery_address;
-    /** @var */
+    /**
+     * @var
+     */
     public $name;
-    /** @var */
+    /**
+     * @var
+     */
     public $phone;
-    /** @var */
+    /**
+     * @var
+     */
     public $cust_ref;
-    /** @var */
+    /**
+     * @var
+     */
     public $reference;
-    /** @var */
+    /**
+     * @var
+     */
     public $Comments;
-    /** @var */
+    /**
+     * @var
+     */
     public $location;
-    /** @var */
+    /**
+     * @var
+     */
     public $location_name;
-    /** @var */
+    /**
+     * @var
+     */
     public $order_no; // the original order number
     /**
      * @var int
      */
     public $trans_link = 0;
-    /** @var */
+    /**
+     * @var
+     */
     public $ship_via;
     /**
      * @var int
      */
     public $freight_cost = 0;
-    /** @var */
+    /**
+     * @var
+     */
     public $tax_group_id;
-    /** @var */
+    /**
+     * @var
+     */
     public $tax_group_name;
     /**
      * @var null
      */
     public $tax_group_array = null; // saves db queries
-    /** @var */
+    /**
+     * @var
+     */
     public $price_factor; // ditto for price calculations
-    /** @var */
+    /**
+     * @var
+     */
     public $pos; // user assigned POS
-    /** @var */
+    /**
+     * @var
+     */
     public $cash; // cash transaction
-    /** @var */
+    /**
+     * @var
+     */
     public $cash_account;
-    /** @var */
+    /**
+     * @var
+     */
     public $account_name;
     /**
      * @var int
@@ -130,13 +192,21 @@
      * @var int
      */
     public $dimension2_id;
-    /** @var */
+    /**
+     * @var
+     */
     public $payment;
-    /** @var */
+    /**
+     * @var
+     */
     public $payment_terms; // cached payment terms
-    /** @var */
+    /**
+     * @var
+     */
     public $credit;
-    /** @var */
+    /**
+     * @var
+     */
     protected $uniqueid;
     /**
      * @var bool
@@ -161,6 +231,9 @@
       $this->read($type, $trans_no);
       $this->generateID();
     }
+    /**
+
+     */
     protected function generateID() {
       $this->uniqueid = uniqid();
       $this->order_id = $this->trans_type . '.' . sha1($this->trans_type . serialize($this->trans_no));
@@ -476,6 +549,9 @@
     public function remove_from_order($line_no) {
       array_splice($this->line_items, $line_no, 1);
     }
+    /**
+
+     */
     public function clear_items() {
       unset($this->line_items);
       $this->line_items  = array();
@@ -790,9 +866,15 @@
         }
       }
     }
+    /**
+
+     */
     public function start() {
       Orders::session_start($this);
     }
+    /**
+
+     */
     public function finish() {
       if (is_object($this) && Orders::session_exists($this)) {
         Orders::session_delete($this->order_id);
@@ -1146,15 +1228,15 @@
       } else {
         //Debtor::row(_("Customer:"), 'customer_id', null, false, true, false, true);
         Debtor::newselect();
-        if ($this->customer_id != Input::post('customer_id', null, -1)) {
+        if (Input::post('_control') == 'customer') {
           // customer has changed
           Ajax::activate('_page_body');
         }
         Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true, true);
         if (($this->Branch != Input::post('branch_id', null, -1))) {
-          if (!isset($_POST['branch_id']) || $_POST['branch_id'] == "") {
+          if (!isset($_POST['branch_id']) || !$_POST['branch_id']) {
             // ignore errors on customer search box call
-            if ($_POST['customer_id'] == '') {
+            if (!$_POST['customer_id']) {
               $customer_error = _("No customer found for entered text.");
             } else {
               $customer_error = _("The selected customer does not have any branches. Please create at least one branch.");
@@ -1244,7 +1326,7 @@
       Row::label(_("Customer Discount:"), ($this->default_discount * 100) . "%");
       Table::section(4);
       if ($editable) {
-        if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "") {
+        if (!isset($_POST['OrderDate']) || !$_POST['OrderDate']) {
           $_POST['OrderDate'] = $this->document_date;
         }
         Forms::dateRow($date_text, 'OrderDate', null, $this->trans_no == 0, 0, 0, 0, null, true);
@@ -1354,6 +1436,9 @@
       }
       Row::end();
     }
+    /**
+
+     */
     public function display_delivery_details() {
       Display::div_start('delivery');
       if (Input::post('cash', null, 0)) { // Direct payment sale

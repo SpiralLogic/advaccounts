@@ -13,6 +13,7 @@
    * @param string $name
    */
   class Forms {
+    static $dic;
     /**
      * @static
      *
@@ -72,9 +73,8 @@
      * @return string
      */
     public static function hidden($name, $value = null, $echo = true) {
-      global $dic;
-      $value =e($value!==null ? $value:  Input::post($name));
-      $dic['Ajax']->_addUpdate($name, $name, $value);
+      $value = e($value !== null ? $value : Input::post($name));
+      static::$dic['Ajax']->_addUpdate($name, $name, $value);
       $ret = "<input type='hidden' id='$name' name='$name' value='$value'>";
       if (!$echo) {
         return $ret;
@@ -112,7 +112,6 @@
      * @return string
      */
     public static function arraySelect($name, $selected_id, $items, $options = array()) {
-      global $dic;
       $opts = array( // default options
         'spec_option'   => false, // option text or false
         'spec_id'       => 0, // option id
@@ -140,9 +139,9 @@
       } // code is generalized for multiple selection support
       if (isset($_POST['_' . $name . '_update'])) {
         if (!$opts['async']) {
-          $dic['Ajax']->_activate('_page_body');
+          static::$dic['Ajax']->_activate('_page_body');
         } else {
-          $dic['Ajax']->_activate($name);
+          static::$dic['Ajax']->_activate($name);
         }
       }
       // ------ make selector ----------
@@ -174,14 +173,14 @@
       }
       $_POST[$name] = $multi ? $selected_id : $selected_id[0];
       $selector     = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' : '') . "$disabled id='$name' name='$name" . ($multi ? '[]' : '') . "' class='combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
-      $dic['Ajax']->_addUpdate($name, "_{$name}_sel", $selector);
+      static::$dic['Ajax']->_addUpdate($name, "_{$name}_sel", $selector);
       $selector = "<div id='_{$name}_sel' class='combodiv'>" . $selector . "</div>\n";
       if ($select_submit != false) { // if submit on change is used - add select button
         $_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url
             (/themes/%s/images/button_ok.png) no-repeat;%s' data-aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
-        $selector .= sprintf($_select_button, $disabled, User::theme(), ($dic['User']->fallback() ? '' : 'display:none;'), '_' . $name . '_update') . "\n";
+        $selector .= sprintf($_select_button, $disabled, User::theme(), (static::$dic['User']->fallback() ? '' : 'display:none;'), '_' . $name . '_update') . "\n";
       }
-      $dic['JS']->_defaultFocus($name);
+      static::$dic['JS']->_defaultFocus($name);
       return $selector;
     }
     // SUBMITS //
@@ -210,10 +209,9 @@
      * @return string
      */
     public static function submit($name, $value, $echo = true, $title = false, $atype = false, $icon = false) {
-      global $dic;
       $aspect = '';
       if ($atype === null) {
-        $aspect = $dic['User']->_fallback() ? " data-aspect='fallback'" : " style='display:none;'";
+        $aspect = static::$dic['User']->_fallback() ? " data-aspect='fallback'" : " style='display:none;'";
       } elseif (!is_bool($atype)) { // necessary: switch uses '=='
         $aspect = " data-aspect='$atype' ";
         $types  = explode(' ', $atype);
@@ -395,13 +393,12 @@
      * @param $msg
      */
     public static function submitConfirm($name, $action, $msg = null) {
-      global $dic;
       if (!$msg) {
         $msg = $action;
       } else {
         $name = $action;
       }
-      $dic['JS']->_beforeload("_validate.$name=function(){ return confirm('" . strtr($msg, array("\n" => '\\n')) . "');};");
+      static::$dic['JS']->_beforeload("_validate.$name=function(){ return confirm('" . strtr($msg, array("\n" => '\\n')) . "');};");
     }
     /**
      * @param      $icon
@@ -410,8 +407,7 @@
      * @return string
      */
     public static function setIcon($icon, $title = false) {
-      global $dic;
-      return "<img src='/themes/" . $dic['User']->_theme() . "/images/$icon' style='width:12' height='12' " . ($title ? " title='$title'" : "") . " />\n";
+      return "<img src='/themes/" . static::$dic['User']->_theme() . "/images/$icon' style='width:12' height='12' " . ($title ? " title='$title'" : "") . " />\n";
     }
     /**
      * @param        $name
@@ -423,7 +419,6 @@
      * @return string
      */
     public static function button($name, $value, $title = false, $icon = false, $aspect = '') {
-      global $dic;
       // php silently changes dots,spaces,'[' and characters 128-159
       // to underscore in POST names, to maintain compatibility with register_globals
       $rel = '';
@@ -433,7 +428,7 @@
       }
       $caption = ($name == '_action') ? $title : $value;
       $name    = htmlentities(strtr($name, array('.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B')));
-      if ($dic['User']->_graphic_links() && $icon) {
+      if (static::$dic['User']->_graphic_links() && $icon) {
         if ($value == _("Delete")) // Helper during implementation
         {
           $icon = ICON_DELETE;
@@ -464,7 +459,6 @@
      * @return string
      */
     public static function checkbox($label, $name, $value = null, $submit_on_change = false, $title = false) {
-      global $dic;
       $str = '';
       if ($label) {
         $str .= $label . " ";
@@ -478,7 +472,7 @@
         $value = Input::post($name, null, 0);
       }
       $str .= "<input" . ($value == 1 ? ' checked' : '') . " type='checkbox' name='$name' id='$name' value='1'" . ($submit_on_change ? " onclick='$submit_on_change'" : '') . ($title ? " title='$title'" : '') . " >\n";
-      $dic['Ajax']->_addUpdate($name, $name, $value);
+      static::$dic['Ajax']->_addUpdate($name, $name, $value);
       return $str;
     }
     /**
@@ -663,11 +657,10 @@
      * @param string $inputparams
      */
     public static function percentRow($label, $name, $init = null, $cellparams = '', $inputparams = '') {
-      global $dic;
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         $_POST[$name] = ($init === null) ? '' : $init;
       }
-      Forms::SmallAmountRow($label, $name, $_POST[$name], null, "%", $dic['User']->_percent_dec(), 0, $inputparams);
+      Forms::SmallAmountRow($label, $name, $_POST[$name], null, "%", static::$dic['User']->_percent_dec(), 0, $inputparams);
     }
     /**
      * @param        $label
@@ -710,9 +703,8 @@
      * @param null $dec
      */
     public static function qtyRow($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
-      global $dic;
       if (!isset($dec)) {
-        $dec = $dic['User']->_qty_dec();
+        $dec = static::$dic['User']->_qty_dec();
       }
       echo "<tr>";
       Forms::amountCells($label, $name, $init, $params, $post_label, $dec);
@@ -727,9 +719,8 @@
      * @param null $dec
      */
     public static function qtyRowSmall($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
-      global $dic;
       if (!isset($dec)) {
-        $dec = $dic['User']->_qty_dec();
+        $dec = static::$dic['User']->_qty_dec();
       }
       echo "<tr>";
       Forms::amountCellsSmall($label, $name, $init, $params, $post_label, $dec, null, true);
@@ -905,8 +896,7 @@
      * @return string
      */
     public static function stockItemsFormat($row) {
-      global $dic;
-      return ($dic['User']->_show_codes() ? ($row[0] . "&nbsp;-&nbsp;") : "") . $row[1];
+      return (static::$dic['User']->_show_codes() ? ($row[0] . "&nbsp;-&nbsp;") : "") . $row[1];
     }
     /**
      * @param $row
@@ -1134,8 +1124,7 @@
      * @internal param null $labparams
      */
     public static function  textCellsEx($label, $name, $size = null, $max = null, $init = null, $title = null, $params = null, $post_label = null, $submit_on_change = false, $inparams = "") {
-      global $dic;
-      $dic['JS']->defaultFocus($name);
+      static::$dic['JS']->defaultFocus($name);
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         if ($init !== null) {
           $_POST[$name] = $init;
@@ -1185,7 +1174,7 @@
      * @param bool $submit_on_change
      */
     public static function  refCells($label, $name, $title = null, $init = null, $params = null, $submit_on_change = false) {
-      Forms::textCellsEx($label, $name, 'small', 18, $init, $title, $params, null, $submit_on_change,' placeholder="Reference"');
+      Forms::textCellsEx($label, $name, 'small', 18, $init, $title, $params, null, $submit_on_change, ' placeholder="Reference"');
     }
     /**
      * @param        $label
@@ -1194,11 +1183,10 @@
      * @param string $inputparams
      */
     public static function  percentCells($label, $name, $init = null, $inputparams = '') {
-      global $dic;
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         $_POST[$name] = ($init === null) ? '' : $init;
       }
-      Forms::amountCellsSmall($label, $name, null, null, "%", $dic['User']->_percent_dec(), $inputparams);
+      Forms::amountCellsSmall($label, $name, null, null, "%", static::$dic['User']->_percent_dec(), $inputparams);
     }
     /**
      * @param        $label
@@ -1214,7 +1202,6 @@
      * @param bool   $negatives
      */
     public static function amountCellsEx($label, $name, $size = 10, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null, $inputparams = '', $negatives = false) {
-      global $dic;
       if ($label) {
         $params = $params ? : " class='label'";
         Cell::label($label, $params);
@@ -1222,10 +1209,9 @@
       } else {
         echo "<td class='right nowrap' >";
       }
-      $dec = $dec ? : $dic['User']->_price_dec();
+      $dec = $dec ? : static::$dic['User']->_price_dec();
       if (!Input::post($name)) {
-        $init = $init ? : 0;
-
+        $init         = $init ? : 0;
         $_POST[$name] = Num::priceFormat($init, $dec);
       }
       $input_attr['name']     = $name;
@@ -1249,11 +1235,11 @@
       echo "<input  $inputparams>";
       if ($post_label) {
         echo "<span id='_{$name}_label'>$post_label</span>";
-        $dic['Ajax']->_addUpdate($name, '_' . $name . '_label', $post_label);
+        static::$dic['Ajax']->_addUpdate($name, '_' . $name . '_label', $post_label);
       }
       echo "</td>\n";
-      $dic['Ajax']->_addUpdate($name, $name, $_POST[$name]);
-      $dic['Ajax']->_addAssign($name, $name, 'data-dec', $dec);
+      static::$dic['Ajax']->_addUpdate($name, $name, $_POST[$name]);
+      static::$dic['Ajax']->_addAssign($name, $name, 'data-dec', $dec);
     }
     /**
      * @param        $label
@@ -1279,9 +1265,8 @@
      * @param null $dec
      */
     public static function unitAmountCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
-      global $dic;
       if (!isset($dec)) {
-        $dec = $dic['User']->_price_dec() + 2;
+        $dec = static::$dic['User']->_price_dec() + 2;
       }
       Forms::amountCellsEx($label, $name, null, 15, $init, $params, $post_label, $dec + 2);
     }
@@ -1307,9 +1292,8 @@
      * @param null $dec
      */
     public static function  qtyCellsSmall($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
-      global $dic;
       if (!isset($dec)) {
-        $dec = $dic['User']->_qty_dec();
+        $dec = static::$dic['User']->_qty_dec();
       }
       Forms::amountCellsEx($label, $name, 'small', 12, $init, $params, $post_label, $dec, null, null, true);
     }
@@ -1355,7 +1339,6 @@
      * @param string $params
      */
     public static function  textareaCells($label, $name, $value, $cols, $rows, $title = null, $params = "") {
-      global $dic;
       if ($label != null) {
         echo "<td $params>$label</td>\n";
         $params = '';
@@ -1369,7 +1352,7 @@
         $cols = "class='$cols'";
       }
       echo "<td $params><textarea id='$name' name='$name' $cols rows='$rows'" . ($title ? " title='$title'" : '') . ">$value</textarea></td>\n";
-      $dic['Ajax']->_addUpdate($name, $name, $value);
+      static::$dic['Ajax']->_addUpdate($name, $name, $value);
     }
     /**
      * @param      $label
@@ -1380,10 +1363,11 @@
      * @param null $dec
      */
     public static function  qtyCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
-      global $dic;
       if (!isset($dec)) {
-        $dec = $dic['User']->_qty_dec();
+        $dec = static::$dic['User']->_qty_dec();
       }
       Forms::amountCellsEx($label, $name, null, 15, $init, $params, $post_label, $dec, null, null, true);
     }
   }
+
+  Forms::$dic = \ADV\Core\DIC::getInstance();

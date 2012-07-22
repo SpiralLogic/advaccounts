@@ -194,7 +194,7 @@
     $sql .= " AND workorder.stock_id=" . DB::quote($_POST['SelectedStockItem']);
   }
   if (Forms::hasPost('OverdueOnly')) {
-    $Today = Dates::dateToSql(Dates::today());
+    $Today = Dates::today(true);
     $sql .= " AND workorder.required_by < '$Today' ";
   }
   $cols  = array(

@@ -185,7 +185,7 @@
       $sql .= " AND sorder.ord_date >= '$date_after' AND sorder.ord_date <= '$date_before'";
     }
     if ($trans_type == 32 && !Forms::hasPost('show_all')) {
-      $sql .= " AND sorder.delivery_date >= '" . Dates::dateToSql(Dates::today()) . "'";
+      $sql .= " AND sorder.delivery_date >= '" . Dates::today(true) . "'";
     }
     if ($selected_customer != -1) {
       $sql .= " AND sorder.debtor_id=" . DB::quote($selected_customer);
@@ -223,20 +223,17 @@
       _("Ref")                                                                                             => array('ord' => ''),
       _("PO#")                                                                                             => array('ord' => ''),
       _("Date")                                                                                            => array(
-        'type' => 'date',
-        'ord'  => 'asc'
+        'type' => 'date', 'ord'  => 'asc'
       ),
       _("Required")                                                                                        => array(
-        'type' => 'date',
-        'ord'  => ''
+        'type' => 'date', 'ord'  => ''
       ),
       _("Customer")                                                                                        => array('ord' => 'asc'),
       array('type' => 'skip'),
       _("Branch")                                                                                          => array('ord' => ''),
       _("Address"),
       _("Total")                                                                                           => array(
-        'type' => 'amount',
-        'ord'  => ''
+        'type' => 'amount', 'ord'  => ''
       ),
     );
   } else {
@@ -251,20 +248,17 @@
       _("Ref")                                                                                             => array('ord' => ''),
       _("PO#")                                                                                             => array('type' => 'skip'),
       _("Date")                                                                                            => array(
-        'type' => 'date',
-        'ord'  => 'desc'
+        'type' => 'date', 'ord'  => 'desc'
       ),
       _("Valid until")                                                                                     => array(
-        'type' => 'date',
-        'ord'  => ''
+        'type' => 'date', 'ord'  => ''
       ),
       _("Customer")                                                                                        => array('ord' => 'asc'),
       array('type' => 'skip'),
       _("Branch")                                                                                          => array('ord' => ''),
       _("Delivery To"),
       _("Total")                                                                                           => array(
-        'type' => 'amount',
-        'ord'  => ''
+        'type' => 'amount', 'ord'  => ''
       ),
     );
   }

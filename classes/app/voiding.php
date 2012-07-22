@@ -48,11 +48,11 @@
           if (!Debtor_Trans::exists($type, $type_no)) {
             return false;
           }
-          if ($type == 13) // added 04 Oct 2008 by Joe Hunt. If delivery note has a not voided invoice, then NO.
+          if ($type == ST_CUSTDELIVERY )
           {
             $delivery = Debtor_Trans::get($type_no, $type);
-            if ($delivery['trans_link'] != 0) {
-              if (static::get(10, $delivery['trans_link']) === false) {
+            if (!$delivery['trans_link'] ) {
+              if (static::get(ST_SALESINVOICE, $delivery['trans_link']) === false) {
                 return false;
               }
             }

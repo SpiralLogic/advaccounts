@@ -14,7 +14,7 @@
   use ADV\Core\Dates;
   use Messages;
   use Sidemenu;
-  use ADV\Core\Input;
+  use ADV\Core\Input\Input;
   use ADV\Core\View;
   use ADV\Core\JS;
   use Security;

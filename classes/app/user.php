@@ -110,6 +110,10 @@
       }
       return static::ii($user, $session, $config);
     }
+    /**
+     * @param ADV\Core\Session $session
+     * @param ADV\Core\Config  $config
+     */
     public function __construct(Session $session = null, Config $config = null) {
       $this->Session = $session ? : Session::i();
       $this->Config  = $config ? : Config::i();

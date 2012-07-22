@@ -10,6 +10,7 @@
   class View implements \ArrayAccess {
     protected $_viewdata = [];
     protected $_template = null;
+    protected $Cache;
     /**
      * @param $template
      */
@@ -19,6 +20,7 @@
         throw new \InvalidArgumentException("There is no view $template !");
       }
       $this->_template = $template;
+      $this->Cache     = Cache::i();
     }
     /**
      * @param bool $return
@@ -33,11 +35,15 @@
       // The contents of each view file is cached in an array for the
       // request since partial views may be rendered inside of for
       // loops which could incur performance penalties.
-      $__contents = file_get_contents($this->_template);
-      $__contents = $this->compile_structure_openings($__contents);
-      $__contents = $this->compile_else($__contents);
-      $__contents = $this->compile_structure_closings($__contents);
-      $__contents = $this->compile_echos($__contents);
+      $__contents = $this->Cache->get('template.' . $this->_template);
+      if (!$__contents) {
+        $__contents = file_get_contents($this->_template);
+        $__contents = $this->compile_structure_openings($__contents);
+        $__contents = $this->compile_else($__contents);
+        $__contents = $this->compile_structure_closings($__contents);
+        $__contents = $this->compile_echos($__contents);
+        $this->Cache->set('template.'.$this->_template,$__contents);
+      }
       ob_start() and extract($this->_viewdata, EXTR_SKIP);
       // We'll include the view contents for parsing within a catcher
       // so we can avoid any WSOD errors. If an exception occurs we
@@ -57,6 +63,13 @@
       }
       echo ob_get_clean();
     }
+    /**
+     * @static
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
     protected static function compile_echos($value) {
       return preg_replace('/\{\{(.+?)\}\}/', '<?php echo $1; ?>', $value);
     }
