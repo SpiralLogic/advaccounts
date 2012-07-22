@@ -20,6 +20,7 @@
      * @return
      */
     public static function i($class = null) {
+
       /** @var \ADV\Core\DIC $dic  */
       $dic = \ADV\Core\DIC::getInstance();
       if (!$dic instanceof \ADV\Core\DIC) {

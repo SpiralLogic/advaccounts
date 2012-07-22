@@ -27,7 +27,7 @@
     protected $Config = null;
     /** @var Session */
     protected $Session = null;
-    protected $get_text= null;
+    protected $get_text = null;
     /** */
     public function __construct(\ADV\Core\Loader $loader) {
       set_error_handler(function ($severity, $message, $filepath, $line) {
@@ -55,7 +55,7 @@
       $this->Session = Session::i();
       $this->setTextSupport();
       $this->Session['language'] = new Language();
-      $this->User = User::i($this->Session);
+      $this->User                = User::i($this->Session);
       $this->menu = new Menu(_("Main Menu"));
       $this->menu->addItem(_("Main Menu"), "index.php");
       $this->menu->addItem(_("Logout"), "/account/access/logout.php");

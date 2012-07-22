@@ -15,8 +15,7 @@
    * @method theme
    * @method User ii()
    */
-  class User
-  {
+  class User {
     use \ADV\Core\Traits\Hook;
     use StaticAccess {
     StaticAccess::i as ii;
@@ -120,6 +119,10 @@
       $this->company = $this->Config->_get('default.company') ? : 'default';
       $this->logged  = false;
       $this->prefs   = new userPrefs((array) $this);
+    }
+    public function __sleep() {
+      $this->Session = null;
+      return array_keys((array) $this);
     }
     /**
      * @param null $salesmanid

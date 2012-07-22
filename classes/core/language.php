@@ -76,8 +76,8 @@
         $this->is_locale_file = file_exists($locale);
       }
       $session = Session::i();
-      $session['get_text']->setLanguage($this->code, $this->encoding);
-      $session['get_text']->add_domain($this->code, DOCROOT . "lang");
+      //$session['get_text']->setLanguage($this->code, $this->encoding);
+      //$session['get_text']->add_domain($this->code, DOCROOT . "lang");
       // Necessary for ajax calls. Due to bug in php 4.3.10 for this
       // version set globally in php.ini
       ini_set('default_charset', $this->encoding);
