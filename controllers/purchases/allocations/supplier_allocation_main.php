@@ -100,7 +100,7 @@
     _("Left to Allocate") => array('align' => 'right', 'insert' => true, 'fun' => 'amount_left'),
     array('insert' => true, 'fun' => 'alloc_link')
   );
-  if (isset($_POST['customer_id'])) {
+  if (isset($_POST['debtor_id'])) {
     $cols[_("Supplier")] = 'skip';
     $cols[_("Currency")] = 'skip';
   }

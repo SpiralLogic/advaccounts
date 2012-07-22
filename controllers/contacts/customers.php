@@ -24,7 +24,7 @@
       } elseif ($this->Input->_request('id', Input::NUMERIC) > 0) {
         $data['company']     = $this->customer = new Debtor($this->Input->_request('id', Input::NUMERIC));
         $data['contact_log'] = Contact_Log::read($this->customer->id, CT_CUSTOMER);
-        $this->Session->_setGlobal('debtor', $this->customer->id);
+        $this->Session->_setGlobal('debtor_id', $this->customer->id);
       } else {
         $data['company'] = $this->customer = new Debtor();
       }
@@ -182,7 +182,7 @@
       Table::endOuter(1);
       $menu->endTab();
       $menu->startTab('Invoices', 'Invoices');
-      echo "<div id='invoiceFrame' data-src='" . BASE_URL . "sales/inquiry/customer_allocation_inquiry.php?customer_id=" . $this->customer->id . "' ></div> ";
+      echo "<div id='invoiceFrame' data-src='" . BASE_URL . "sales/inquiry/customer_allocation_inquiry.php?debtor_id=" . $this->customer->id . "' ></div> ";
       $menu->endTab()->render();
       Forms::hidden('frame', $this->Input->_request('frame'));
       HTML::div();
@@ -208,11 +208,11 @@
       if (!$this->Input->_get('frame')) {
         HTML::div('shortcuts', array('class' => 'width50 center'));
         $shortcuts = new MenuUI(array('noajax' => true));
-        $shortcuts->addLink('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?type=' . ST_SALESQUOTE . '&add=' . ST_SALESQUOTE . '&customer_id=', 'id');
-        $shortcuts->addLink('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?type=30&add=' . ST_SALESORDER . '&customer_id=', 'id');
+        $shortcuts->addLink('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?type=' . ST_SALESQUOTE . '&add=' . ST_SALESQUOTE . '&debtor_id=', 'id');
+        $shortcuts->addLink('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?type=30&add=' . ST_SALESORDER . '&debtor_id=', 'id');
         $shortcuts->addLink('Print Statement', 'Print Statement for this Customer!', '/reporting/prn_redirect.php?REP_ID=108&PARAM_2=0&PARAM_4=0&PARAM_5=0&PARAM_6=0&PARAM_0=', 'id', true);
         $shortcuts->addJSLink('Email Statement', 'Email Statement for this Customer!', 'emailTab', "Adv.o.tabs.tabs1.bind('tabsselect',function(e,o) {if (o.index!=3)return; return false;});");
-        $shortcuts->addLink('Customer Payment', 'Make customer payment!', '/sales/customer_payments.php?customer_id=', 'id');
+        $shortcuts->addLink('Customer Payment', 'Make customer payment!', '/sales/customer_payments.php?debtor_id=', 'id');
         $shortcuts->render();
         /** @noinspection PhpUndefinedMethodInspection */
         HTML::_div();

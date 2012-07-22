@@ -10,31 +10,31 @@
    **/
   class DebtorPayment extends \ADV\App\Controller\Base {
     public $date_banked;
-    public $customer_id;
+    public $debtor_id;
     protected function before() {
       $this->JS->_openWindow(900, 500);
       $this->JS->_footerFile('/js/payalloc.js');
-      $this->customer_id    = Input::postGetGlobal('customer_id');
-      $_POST['customer_id'] =& $this->customer_id;
-      if (Forms::isListUpdated('branch_id') || !$_POST['customer_id']) {
+      $this->debtor_id    = Input::postGetGlobal('debtor_id');
+      $_POST['debtor_id'] =& $this->debtor_id;
+      if (Forms::isListUpdated('branch_id') || !$_POST['debtor_id']) {
         $br                = Sales_Branch::get(Input::post('branch_id'));
-        $this->customer_id = $br['debtor_id'];
-        Ajax::activate('customer_id');
+        $this->debtor_id = $br['debtor_id'];
+        Ajax::activate('debtor_id');
       }
-      $this->Session->_setGlobal('debtor', $this->customer_id);
+      $this->Session->_setGlobal('debtor_id', $this->debtor_id);
       $this->date_banked = Input::post('DateBanked', null, Dates::newDocDate());
       if (!Dates::isDateInFiscalYear($this->date_banked)) {
         $this->date_banked = Dates::endFiscalYear();
       }
       $_POST['DateBanked'] = &$this->date_banked;
       // validate inputs
-      if (isset($_POST['_customer_id_button'])) {
+      if (isset($_POST['_debtor_id_button'])) {
         Ajax::activate('branch_id');
       }
       if (isset($_POST['_DateBanked_changed'])) {
         Ajax::activate('_ex_rate');
       }
-      if (Input::hasPost('customer_id') || Forms::isListUpdated('bank_account')) {
+      if (Input::hasPost('debtor_id') || Forms::isListUpdated('bank_account')) {
         Ajax::activate('_page_body');
       }
       if (!isset($_POST['bank_account'])) // first page call
@@ -42,11 +42,11 @@
         $_SESSION['alloc'] = new Gl_Allocation(ST_CUSTPAYMENT, 0);
       }
       if (!Forms::isListUpdated('bank_account')) {
-        $_POST['bank_account'] = Bank_Account::get_customer_default($this->customer_id);
+        $_POST['bank_account'] = Bank_Account::get_customer_default($this->debtor_id);
       }
     }
     protected function addPaymentItem() {
-      $cust_currency = Bank_Currency::for_debtor($this->customer_id);
+      $cust_currency = Bank_Currency::for_debtor($this->debtor_id);
       $bank_currency = Bank_Currency::for_company($_POST['bank_account']);
       $comp_currency = Bank_Currency::for_company();
       if ($comp_currency != $bank_currency && $bank_currency != $cust_currency) {
@@ -55,9 +55,9 @@
         $rate = Validation::input_num('_ex_rate');
       }
       if (Forms::hasPost('createinvoice')) {
-        Gl_Allocation::create_miscorder(new Debtor($this->customer_id), $_POST['branch_id'], $this->date_banked, $_POST['memo_'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'));
+        Gl_Allocation::create_miscorder(new Debtor($this->debtor_id), $_POST['branch_id'], $this->date_banked, $_POST['memo_'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'));
       }
-      $payment_no                  = Debtor_Payment::add(0, $this->customer_id, $_POST['branch_id'], $_POST['bank_account'], $this->date_banked, $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate, Validation::input_num('charge'));
+      $payment_no                  = Debtor_Payment::add(0, $this->debtor_id, $_POST['branch_id'], $_POST['bank_account'], $this->date_banked, $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate, Validation::input_num('charge'));
       $_SESSION['alloc']->trans_no = $payment_no;
       $_SESSION['alloc']->write();
       Event::success(_("The customer payment has been successfully entered."));
@@ -76,9 +76,9 @@
       Table::startOuter('tablestyle2 width90 pad2');
       Table::section(1);
       Debtor::newselect();
-      Debtor_Branch::row(_("Branch:"), $this->customer_id, 'branch_id', null, false, true, true);
-      Debtor_Payment::read_customer_data($this->customer_id);
-      Session::setGlobal('debtor', $this->customer_id);
+      Debtor_Branch::row(_("Branch:"), $this->debtor_id, 'branch_id', null, false, true, true);
+      Debtor_Payment::read_customer_data($this->debtor_id);
+      Session::setGlobal('debtor_id', $this->debtor_id);
       $display_discount_percent = Num::percentFormat($_POST['payment_discount'] * 100) . "%";
       Table::section(2);
       Bank_Account::row(_("Into Bank Account:"), 'bank_account', null, true);
@@ -86,7 +86,7 @@
       Table::section(3);
       Forms::dateRow(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
       $comp_currency = Bank_Currency::for_company();
-      $cust_currency = Bank_Currency::for_debtor($this->customer_id);
+      $cust_currency = Bank_Currency::for_debtor($this->debtor_id);
       $bank_currency = Bank_Currency::for_company($_POST['bank_account']);
       if ($cust_currency != $bank_currency) {
         GL_ExchangeRate::display($bank_currency, $cust_currency, $this->date_banked, ($bank_currency == $comp_currency));
@@ -136,8 +136,8 @@ JS;
     protected function runValidation() {
       Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
       Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-      if ($this->customer_id) {
-        Validation::check(Validation::BRANCHES, _("No Branches for Customer") . $this->customer_id, $this->customer_id);
+      if ($this->debtor_id) {
+        Validation::check(Validation::BRANCHES, _("No Branches for Customer") . $this->debtor_id, $this->debtor_id);
       }
     }
   }

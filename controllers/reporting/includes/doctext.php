@@ -16,7 +16,7 @@
   $txt_date = _("Date:");
   if (isset($header2type)) {
     $txt_cust_no = _("Cust no");
-    $doc_customer_id = "Customer ID";
+    $doc_debtor_id = "Customer ID";
     if ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) { // Purchase Order
       $doc_Charge_To = _("Order To");
       if ($doctype == ST_PURCHORDER) {
@@ -97,7 +97,7 @@
         $doc_Customers_Ref = ($doctype == ST_SALESQUOTE || $doctype == ST_STATEMENT) ? "" : "Purchase Order#";
         $doc_Our_Ref = "Contact";
         $doc_Payment_Terms = "Payment Terms";
-        $doc_customer_id = "Customer ID";
+        $doc_debtor_id = "Customer ID";
         $doc_Your_TAX_no = "Phone";
         $doc_Our_Order_No = "Fax";
       }

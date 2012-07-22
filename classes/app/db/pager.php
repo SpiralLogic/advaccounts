@@ -311,7 +311,7 @@
             $fun = $col['fun'];
             if (is_callable($fun)) {
               $cell = call_user_func($fun, $row, $cell);
-            } elseif (method_exists($this, $fun)) {
+            } elseif (is_callable([$this, $fun])) {
               $cell = $this->$fun($row, $cell);
             } else {
               $cell = '';

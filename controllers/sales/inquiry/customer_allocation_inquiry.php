@@ -10,27 +10,27 @@
 
   JS::openWindow(900, 500);
   Page::start(_($help_context = "Customer Allocation Inquiry"), SA_SALESALLOC);
-  if (isset($_GET['customer_id']) || isset($_GET['id'])) {
-    $_POST['customer_id'] = isset($_GET['id']) ? $_GET['id'] : $_GET['customer_id'];
+  if (isset($_GET['debtor_id']) || isset($_GET['id'])) {
+    $_POST['debtor_id'] = isset($_GET['id']) ? $_GET['id'] : $_GET['debtor_id'];
   }
-  if (!isset($_POST['customer_id'])) {
-    $_POST['customer_id'] = Session::getGlobal('debtor');
+  if (!isset($_POST['debtor_id'])) {
+    $_POST['debtor_id'] = Session::getGlobal('debtor_id');
   }
   if (isset($_GET['frame'])) {
     foreach ($_GET as $k => $v) {
       $_POST[$k] = $v;
     }
   }
-  if (Forms::isListUpdated('customer_id')) {
-    Ajax::activate('customer_id');
+  if (Forms::isListUpdated('debtor_id')) {
+    Ajax::activate('debtor_id');
   }
   Forms::start(false, '', 'invoiceForm');
   Table::start('tablestyle_noborder');
   Row::start();
   if (!Input::get('frame')) {
-    Debtor::cells(_("Select a customer: "), 'customer_id', null, true);
+    Debtor::cells(_("Select a customer: "), 'debtor_id', null, true);
   }
-  Session::setGlobal('debtor', $_POST['customer_id']);
+  Session::setGlobal('debtor_id', $_POST['debtor_id']);
   if (!isset($_POST['TransAfterDate']) && Session::getGlobal('TransAfterDate')) {
     $_POST['TransAfterDate'] = Session::getGlobal('TransAfterDate');
   } elseif (isset($_POST['TransAfterDate'])) {
@@ -72,8 +72,8 @@
 			AND round(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount,2) != 0
  		AND trans.tran_date >= '$data_after'
  		AND trans.tran_date <= '$date_to'";
-  if ($_POST['customer_id'] != ALL_TEXT) {
-    $sql .= " AND trans.debtor_id = " . DB::quote($_POST['customer_id']);
+  if ($_POST['debtor_id'] != ALL_TEXT) {
+    $sql .= " AND trans.debtor_id = " . DB::quote($_POST['debtor_id']);
   }
   if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
     if ($_POST['filterType'] == '1' || $_POST['filterType'] == '2') {
@@ -166,7 +166,7 @@
     }
     )
   );
-  if (Input::post('customer_id')) {
+  if (Input::post('debtor_id')) {
     $cols[_("Customer")] = 'skip';
   }
   if (!Input::get('frame')) {

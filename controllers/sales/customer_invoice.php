@@ -27,7 +27,7 @@
   $order = Orders::session_get() ? : null;
   if (isset($_GET[ADDED_ID])) {
     $order      = new Sales_Order(ST_SALESINVOICE, $_GET[ADDED_ID]);
-    $customer   = new Debtor($order->customer_id);
+    $customer   = new Debtor($order->debtor_id);
     $emails     = $customer->getEmailAddresses();
     $invoice_no = $_GET[ADDED_ID];
     $reference  = $order->reference;
@@ -43,7 +43,7 @@
     Page::footer_exit();
   } elseif (isset($_GET[UPDATED_ID])) {
     $order      = new Sales_Order(ST_SALESINVOICE, $_GET[UPDATED_ID]);
-    $customer   = new Debtor($order->customer_id);
+    $customer   = new Debtor($order->debtor_id);
     $emails     = $customer->getEmailAddresses();
     $invoice_no = $_GET[UPDATED_ID];
     Event::success(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));
@@ -83,7 +83,7 @@
     $order->src_docs   = $order->trans_no;
     $order->trans_no   = 0;
     $order->reference  = Ref::get_next(ST_SALESINVOICE);
-    $order->due_date   = Sales_Order::get_invoice_duedate($order->customer_id, $order->document_date);
+    $order->due_date   = Sales_Order::get_invoice_duedate($order->debtor_id, $order->document_date);
     Sales_Invoice::copyToPost($order);
   } elseif (isset($_GET[Orders::MODIFY_INVOICE]) && $_GET[Orders::MODIFY_INVOICE] > 0) {
     if (Debtor_Trans::get_parent(ST_SALESINVOICE, $_GET[Orders::MODIFY_INVOICE]) == 0) { // 1.xx compatibility hack
@@ -114,7 +114,7 @@
     Ajax::activate('Items');
   }
   if (isset($_POST['_InvoiceDate_changed'])) {
-    $_POST['due_date'] = Sales_Order::get_invoice_duedate($order->customer_id, $_POST['InvoiceDate']);
+    $_POST['due_date'] = Sales_Order::get_invoice_duedate($order->debtor_id, $_POST['InvoiceDate']);
     Ajax::activate('due_date');
   }
   if (isset($_POST['process_invoice']) && Sales_Invoice::check_data($order)) {
@@ -192,7 +192,7 @@
     Cell::labels(_('Invoice Date:'), $_POST['InvoiceDate']);
   }
   if (!isset($_POST['due_date']) || !Dates::isDate($_POST['due_date'])) {
-    $_POST['due_date'] = Sales_Order::get_invoice_duedate($order->customer_id, $_POST['InvoiceDate']);
+    $_POST['due_date'] = Sales_Order::get_invoice_duedate($order->debtor_id, $_POST['InvoiceDate']);
   }
   if (!$order->view_only) {
     Forms::dateCells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tablerowhead'");
@@ -201,7 +201,7 @@
   }
   Row::end();
   Table::end();
-  $row = Sales_Order::get_customer($order->customer_id);
+  $row = Sales_Order::get_customer($order->debtor_id);
   if ($row['dissallow_invoices'] == 1) {
     Event::error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
     Forms::end();

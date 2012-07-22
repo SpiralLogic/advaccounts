@@ -26,7 +26,7 @@
         $trans_no = key($trans_no);
       }
       DB::begin();
-      $customer             = Debtor::get($delivery->customer_id);
+      $customer             = Debtor::get($delivery->debtor_id);
       $delivery_items_total = $delivery->get_items_total_dispatch();
       $freight_tax          = $delivery->get_shipping_tax();
       // mark sales order for concurrency conflicts check
@@ -38,7 +38,7 @@
         $tax_total += $taxitem['Value'];
       }
       /* Insert/update the debtor_trans */
-      $delivery_no = Debtor_Trans::write(ST_CUSTDELIVERY, $trans_no, $delivery->customer_id, $delivery->Branch, $delivery->document_date, $delivery->reference, $delivery_items_total, 0, $delivery->tax_included ?
+      $delivery_no = Debtor_Trans::write(ST_CUSTDELIVERY, $trans_no, $delivery->debtor_id, $delivery->Branch, $delivery->document_date, $delivery->reference, $delivery_items_total, 0, $delivery->tax_included ?
         0 : $tax_total - $freight_tax, $delivery->freight_cost, $delivery->tax_included ? 0 :
         $freight_tax, $delivery->sales_type, $delivery->order_no, 0, $delivery->ship_via, $delivery->due_date, 0, 0, $delivery->dimension_id, $delivery->dimension2_id);
       if ($trans_no == 0) {
@@ -77,9 +77,9 @@
               ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]));
             $dim2 = ($delivery->dimension2_id != $customer['dimension2_id'] ? $delivery->dimension2_id :
               ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]));
-            GL_Trans::add_std_cost(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date, $stock_gl_code["cogs_account"], $dim, $dim2, "", $delivery_line->standard_cost * $delivery_line->qty_dispatched, PT_CUSTOMER, $delivery->customer_id, "The cost of sales GL posting could not be inserted");
+            GL_Trans::add_std_cost(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date, $stock_gl_code["cogs_account"], $dim, $dim2, "", $delivery_line->standard_cost * $delivery_line->qty_dispatched, PT_CUSTOMER, $delivery->debtor_id, "The cost of sales GL posting could not be inserted");
             /*now the stock entry*/
-            GL_Trans::add_std_cost(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date, $stock_gl_code["inventory_account"], 0, 0, "", (-$delivery_line->standard_cost * $delivery_line->qty_dispatched), PT_CUSTOMER, $delivery->customer_id, "The stock side of the cost of sales GL posting could not be inserted");
+            GL_Trans::add_std_cost(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date, $stock_gl_code["inventory_account"], 0, 0, "", (-$delivery_line->standard_cost * $delivery_line->qty_dispatched), PT_CUSTOMER, $delivery->debtor_id, "The stock side of the cost of sales GL posting could not be inserted");
           } /* end of if GL and stock integrated and standard cost !=0 */
         } /*quantity dispatched is more than 0 */
       } /*end of order_line loop */
@@ -90,7 +90,7 @@
       // taxes - this is for printing purposes
       foreach ($taxes as $taxitem) {
         if ($taxitem['Net'] != 0) {
-          $ex_rate = Bank_Currency::exchange_rate_from_home(Bank_Currency::for_debtor($delivery->customer_id), $delivery->document_date);
+          $ex_rate = Bank_Currency::exchange_rate_from_home(Bank_Currency::for_debtor($delivery->debtor_id), $delivery->document_date);
           GL_Trans::add_tax_details(ST_CUSTDELIVERY, $delivery_no, $taxitem['tax_type_id'], $taxitem['rate'], $delivery->tax_included, $taxitem['Value'], $taxitem['Net'], $ex_rate, $delivery->document_date, $delivery->reference);
         }
       }

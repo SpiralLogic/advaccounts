@@ -65,14 +65,14 @@
     /**
      * @static
      *
-     * @param $customer_id
+     * @param $debtor_id
      *
      * @return mixed
      */
-    public static function for_debtor($customer_id)
+    public static function for_debtor($debtor_id)
     {
-      $sql    = "SELECT curr_code FROM debtors WHERE debtor_id = '$customer_id'";
-      $result = DB::query($sql, "Retreive currency of customer $customer_id");
+      $sql    = "SELECT curr_code FROM debtors WHERE debtor_id = '$debtor_id'";
+      $result = DB::query($sql, "Retreive currency of customer $debtor_id");
       $myrow  = DB::fetchRow($result);
 
       return $myrow[0];

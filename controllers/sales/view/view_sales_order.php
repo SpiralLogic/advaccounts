@@ -29,8 +29,8 @@
   echo "<tr class='top'><td colspan=4>";
   Table::start('tablestyle width100');
   Row::start();
-  Cell::labels(_("Customer Name"), $_SESSION['View']->customer_name, "class='label pointer customer_id_label'", 'class="pointer" id="customer_id_label"');
-  Forms::hidden("customer_id", $_SESSION['View']->customer_id);
+  Cell::labels(_("Customer Name"), $_SESSION['View']->customer_name, "class='label pointer debtor_id_label'", 'class="pointer" id="debtor_id_label"');
+  Forms::hidden("debtor_id", $_SESSION['View']->debtor_id);
   Cell::labels(_("Deliver To Branch"), $_SESSION['View']->deliver_to, "class='label'");
   Cell::labels(_("Person Ordering"), nl2br($_SESSION['View']->name), "class='label'");
   Row::end();

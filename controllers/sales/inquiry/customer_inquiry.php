@@ -9,23 +9,28 @@
    **/
   class SalesInquirey extends \ADV\App\Controller\Base
   {
+
     public $isAjaxSearch;
     public $filterType;
-    public $customer_id;
+    public $debtor_id;
     const SEARCH_DELIVERY = 'd';
     const SEARCH_INVOICE  = 'i';
     const SEARCH_PAYMENT  = 'p';
     protected function before() {
       JS::openWindow(900, 500);
       if (isset($_GET['id'])) {
-        $_GET['customer_id'] = $_GET['id'];
+        $_GET['debtor_id'] = $_GET['id'];
       }
-      $this->customer_id  = Input::$post['customer_id'] = Input::postGetGlobal('customer_id', INPUT::NUMERIC, null);
+      if (Input::post('customer', Input::STRING) === '') {
+        $this->Session->_removeGlobal('debtor_id');
+        unset(Input::$post['debtor_id']);
+      }
+      $this->debtor_id    = Input::$post['debtor_id'] = Input::postGetGlobal('debtor_id', INPUT::NUMERIC, null);
       $this->filterType   = Input::$post['filterType'] = Input::post('filterType', Input::NUMERIC);
       $this->isAjaxSearch = (AJAX_REFERRER && isset($_POST['ajaxsearch']));
     }
     protected function index() {
-      Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, Input::$get->has('customer_id'));
+      Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, Input::$get->has('debtor_id'));
       Forms::start();
       Table::start('tablestyle_noborder');
       Row::start();
@@ -48,8 +53,8 @@
         $number_like = "%" . $_POST['reference'] . "%";
         $sql .= " AND trans.reference LIKE " . DB::quote($number_like);
       }
-      if ($this->customer_id) {
-        $sql .= " AND trans.debtor_id = " . DB::quote($this->customer_id);
+      if ($this->debtor_id) {
+        $sql .= " AND trans.debtor_id = " . DB::quote($this->debtor_id);
       }
       if ($this->filterType) {
         switch ($this->filterType) {
@@ -137,7 +142,7 @@
         array(
           'insert' => true, 'align' => 'center', 'fun' => function ($row) {
           return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
-            DB_Pager::link(_("Payment"), "/sales/customer_payments.php?customer_id=" . $row['debtor_id'], ICON_MONEY) : '';
+            DB_Pager::link(_("Payment"), "/sales/customer_payments.php?debtor_id=" . $row['debtor_id'], ICON_MONEY) : '';
         }
         ),
         array(
@@ -184,9 +189,9 @@
           }
           HTML::setReturn(true);
           UI::button(false, 'Email', array(
-                                          'class'        => 'button email-button',
-                                          'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
-                                     ));
+            'class'        => 'button email-button',
+            'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
+          ));
           return HTML::setReturn(false);
         }
         ),
@@ -201,7 +206,7 @@
         }
         )
       );
-      if ($this->customer_id) {
+      if ($this->debtor_id) {
         $cols[_("Customer")] = 'skip';
         $cols[_("Currency")] = 'skip';
       }
@@ -223,7 +228,7 @@
      *
      * @return null|string
      */
-    protected function viewTrans($trans) {
+    public function viewTrans($trans) {
       return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
     }
     /**
@@ -308,8 +313,8 @@
       return $sql;
     }
     protected function displaySummary() {
-      if ($this->customer_id && !$this->isAjaxSearch) {
-        $customer_record = Debtor::get_details($this->customer_id, $_POST['TransToDate']);
+      if ($this->debtor_id && !$this->isAjaxSearch) {
+        $customer_record = Debtor::get_details($this->debtor_id, $_POST['TransToDate']);
         Debtor::display_summary($customer_record);
         echo "<br>";
       }

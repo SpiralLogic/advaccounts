@@ -407,7 +407,7 @@
     public static function addEditDialog() {
       $customerBox = new Dialog('Customer Edit', 'customerBox', '');
       $customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
-      $customerBox->addBeforeClose('$("#customer_id").trigger("change")');
+      $customerBox->addBeforeClose('$("#debtor_id").trigger("change")');
       $customerBox->setOptions(array(
                                     'autoOpen'   => false,
                                     'modal'      => true,
@@ -418,10 +418,10 @@
       $customerBox->show();
       $js
         = <<<JS
-                            var val = $("#customer_id").val();
+                            var val = $("#debtor_id").val();
                             $("#customerBox").html("<iframe src='/contacts/customers.php?frame=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
-      JS::addLiveEvent('#customer_id_label', 'click', $js);
+      JS::addLiveEvent('#debtor_id_label', 'click', $js);
     }
     /**
      * @static
@@ -493,13 +493,13 @@ JS;
     /**
      * @static
      *
-     * @param      $customer_id
+     * @param      $debtor_id
      * @param null $to
      * @param bool $istimestamp
      *
      * @return Array|\ADV\Core\DB\Query\Result
      */
-    public static function get_details($customer_id, $to = null, $istimestamp = false) {
+    public static function get_details($debtor_id, $to = null, $istimestamp = false) {
       if ($to == null) {
         $todate = date("Y-m-d");
       } else {
@@ -509,7 +509,7 @@ JS;
       $customer_record["Due"]      = 0;
       $customer_record["Overdue1"] = 0;
       $customer_record["Overdue2"] = 0;
-      if ($customer_id == 0) {
+      if ($debtor_id == 0) {
         return $customer_record;
       }
       $past_due1 = DB_Company::get_pref('past_due_days');
@@ -532,7 +532,7 @@ JS;
             WHERE
                  debtors.payment_terms = payment_terms.terms_indicator
                  AND debtors.credit_status = credit_status.id
-                 AND debtors.debtor_id = " . DB::escape($customer_id) . "
+                 AND debtors.debtor_id = " . DB::escape($debtor_id) . "
                  AND debtor_trans.tran_date <= '$todate'
                  AND debtor_trans.type <> 13
                  AND debtors.debtor_id = debtor_trans.debtor_id
@@ -558,7 +558,7 @@ JS;
              WHERE
               debtors.payment_terms = payment_terms.terms_indicator
               AND debtors.credit_status = credit_status.id
-              AND debtors.debtor_id = " . DB::escape($customer_id);
+              AND debtors.debtor_id = " . DB::escape($debtor_id);
         $result      = DB::query($sql, "The customer details could not be retrieved");
       } else {
         $customer_record = DB::fetch($result);
@@ -569,12 +569,12 @@ JS;
     /**
      * @static
      *
-     * @param $customer_id
+     * @param $debtor_id
      *
      * @return Array|\ADV\Core\DB\Query\Result
      */
-    public static function get($customer_id) {
-      $sql    = "SELECT * FROM debtors WHERE debtor_id=" . DB::escape($customer_id);
+    public static function get($debtor_id) {
+      $sql    = "SELECT * FROM debtors WHERE debtor_id=" . DB::escape($debtor_id);
       $result = DB::query($sql, "could not get customer");
 
       return DB::fetch($result);
@@ -582,12 +582,12 @@ JS;
     /**
      * @static
      *
-     * @param $customer_id
+     * @param $debtor_id
      *
      * @return mixed
      */
-    public static function get_name($customer_id) {
-      $sql    = "SELECT name FROM debtors WHERE debtor_id=" . DB::escape($customer_id);
+    public static function get_name($debtor_id) {
+      $sql    = "SELECT name FROM debtors WHERE debtor_id=" . DB::escape($debtor_id);
       $result = DB::query($sql, "could not get customer");
       $row    = DB::fetchRow($result);
 
@@ -596,17 +596,17 @@ JS;
     /**
      * @static
      *
-     * @param $customer_id
+     * @param $debtor_id
      *
      * @return Array|\ADV\Core\DB\Query\Result
      */
-    public static function get_habit($customer_id) {
+    public static function get_habit($debtor_id) {
       $sql
               = "SELECT debtors.payment_discount,
                  credit_status.dissallow_invoices
                 FROM debtors, credit_status
                 WHERE debtors.credit_status = credit_status.id
-                    AND debtors.debtor_id = " . DB::escape($customer_id);
+                    AND debtors.debtor_id = " . DB::escape($debtor_id);
       $result = DB::query($sql, "could not query customers");
 
       return DB::fetch($result);
@@ -642,14 +642,14 @@ JS;
     /**
      * @static
      *
-     * @param $customer_id
+     * @param $debtor_id
      *
      * @return int
      */
-    public static function get_credit($customer_id) {
-      $custdet = Debtor::get_details($customer_id);
+    public static function get_credit($debtor_id) {
+      $custdet = Debtor::get_details($debtor_id);
 
-      return ($customer_id > 0 && isset ($custdet['credit_limit'])) ? $custdet['credit_limit'] - $custdet['Balance'] : 0;
+      return ($debtor_id > 0 && isset ($custdet['credit_limit'])) ? $custdet['credit_limit'] - $custdet['Balance'] : 0;
     }
     /**
      * @static
@@ -696,14 +696,14 @@ JS;
       } elseif (!$value) {
         $value = Session::getGlobal('debtor');
         if ($value) {
-          $_POST['customer_id'] = $value;
+          $_POST['debtor_id'] = $value;
           $value                = Debtor::get_name($value);
         } else {
           JS::setFocus('customer');
           $focus = true;
         }
       }
-      Forms::hidden('customer_id');
+      Forms::hidden('debtor_id');
       UI::search('customer', array(
                                   'url'        => '/contacts/customers.php',
                                   'name'       => 'customer',
@@ -716,7 +716,7 @@ JS;
         echo "\n</tr>\n";
       }
       JS::beforeload("var Customer = function(data) {
-            var id = document.getElementById('customer_id');
+            var id = document.getElementById('debtor_id');
             id.value= data.id;
             var customer = document.getElementById('customer');
             customer.value=data.value;

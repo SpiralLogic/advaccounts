@@ -147,20 +147,20 @@
     /**
      * @static
      *
-     * @param $customer_id
+     * @param $debtor_id
      * @param $settled
      *
      * @return string
      */
-    public static function get_allocatable_sql($customer_id, $settled)
+    public static function get_allocatable_sql($debtor_id, $settled)
     {
       $settled_sql = "";
       if (!$settled) {
         $settled_sql = " AND (round(ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc,2) > 0)";
       }
       $cust_sql = "";
-      if ($customer_id != null) {
-        $cust_sql = " AND trans.debtor_id = " . DB::quote($customer_id);
+      if ($debtor_id != null) {
+        $cust_sql = " AND trans.debtor_id = " . DB::quote($debtor_id);
       }
       $cust_sql .= ' and  trans.debtor_id<>4721 '; //TODO: REMOVE
 
@@ -171,20 +171,20 @@
     /**
      * @static
      *
-     * @param      $customer_id
+     * @param      $debtor_id
      * @param null $trans_no
      * @param null $type
      *
      * @return null|PDOStatement
      */
-    public static function get_to_trans($customer_id, $trans_no = null, $type = null)
+    public static function get_to_trans($debtor_id, $trans_no = null, $type = null)
     {
       if ($trans_no != null and $type != null) {
         $sql = Sales_Allocation::get_sql("amt", "trans.trans_no = alloc.trans_no_to
             AND trans.type = alloc.trans_type_to
             AND alloc.trans_no_from=$trans_no
             AND alloc.trans_type_from=$type
-            AND trans.debtor_id=" . DB::escape($customer_id), "debtor_allocations as alloc");
+            AND trans.debtor_id=" . DB::escape($debtor_id), "debtor_allocations as alloc");
       } else {
         $sql = Sales_Allocation::get_sql(null, "round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) > 0
             AND trans.type <> " . ST_CUSTPAYMENT . "
@@ -192,7 +192,7 @@
             AND trans.type <> " . ST_BANKDEPOSIT . "
             AND trans.type <> " . ST_CUSTCREDIT . "
             AND trans.type <> " . ST_CUSTDELIVERY . "
-            AND trans.debtor_id=" . DB::escape($customer_id));
+            AND trans.debtor_id=" . DB::escape($debtor_id));
       }
 
       return DB::query($sql . " ORDER BY trans_no", "Cannot retreive alloc to transactions");

@@ -50,10 +50,10 @@
     protected function before() {
       $this->order = Orders::session_get() ? : null;
       $this->JS->_openWindow(900, 500);
-      if (Input::get('customer_id', Input::NUMERIC)) {
+      if (Input::get('debtor_id', Input::NUMERIC)) {
         $this->action         = Orders::CANCEL_CHANGES;
-        $_POST['customer_id'] = $_GET['customer_id'];
-        $this->Ajax->activate('customer_id');
+        $_POST['debtor_id'] = $_GET['debtor_id'];
+        $this->Ajax->activate('debtor_id');
       }
       $this->type = Input::get('type');
       $this->setTitle("New Sales Order Entry");
@@ -73,7 +73,7 @@
         $this->order = $this->createOrder(ST_SALESORDER, Input::get(Orders::CLONE_ORDER));
       }
       $this->setSecurity();
-      if (!isset($this->order)) {
+      if (!$this->order) {
         $this->order = $this->createOrder(ST_SALESORDER, 0);
       }
     }
@@ -119,7 +119,7 @@
       }
       Forms::start();
       $customer_error = $this->order->header($idate);
-      if (!$customer_error) {
+      if ($customer_error != "") {
         $this->exitError($customer_error);
       }
       Forms::hidden('order_id', $_POST['order_id']);
@@ -155,8 +155,8 @@
       if (Forms::isListUpdated('branch_id')) {
         // when branch is selected via external editor also customer can change
         $br                   = Sales_Branch::get(Input::post('branch_id'));
-        $_POST['customer_id'] = $br['debtor_id'];
-        $this->Ajax->activate('customer_id');
+        $_POST['debtor_id'] = $br['debtor_id'];
+        $this->Ajax->activate('debtor_id');
       }
     }
     protected function cancelItem() {
@@ -167,7 +167,7 @@
      */
     protected function exitError($error) {
       Event::warning($error);
-      $this->Session->setGlobal('debtor', null);
+      $this->Session->setGlobal('debtor_id', null);
       Page::footer_exit();
     }
     protected function Refresh() {
@@ -202,7 +202,7 @@
         default:
           $trans_name = "Order";
       }
-      $customer = new Debtor($this->Session->getGlobal('debtor', 0));
+      $customer = new Debtor($this->Session->getGlobal('debtor_id', 0));
       $emails   = $customer->getEmailAddresses();
       Event::success(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
       Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
@@ -250,7 +250,7 @@
           Display::submenu_option(_("Enter a &New Direct Invoice"), "/sales/sales_order_entry.php?add=0&type=10");
         }
         Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"));
-        if (isset($_GET[ADDED_DI]) && $this->Session->getGlobal('debtor') && $row == false) {
+        if (isset($_GET[ADDED_DI]) && $this->Session->getGlobal('debtor_id') && $row == false) {
           echo "<div style='text-align:center;'><iframe style='margin:0 auto; border-width:0;' src='" . '/sales/customer_payments.php' . "?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
         }
       }
@@ -265,9 +265,9 @@
      * @return bool
      */
     protected function canProcess() {
-      if (!Input::post('customer_id')) {
+      if (!Input::post('debtor_id')) {
         Event::error(_("There is no customer selected."));
-        $this->JS->_setFocus('customer_id');
+        $this->JS->_setFocus('debtor_id');
         return false;
       }
       if (!Input::post('branch_id')) {
@@ -416,7 +416,7 @@
         $doc->trans_no      = 0;
         $doc->document_date = Dates::newDocDate();
         if ($type == ST_SALESINVOICE) {
-          $doc->due_date = Sales_Order::get_invoice_duedate($doc->customer_id, $doc->document_date);
+          $doc->due_date = Sales_Order::get_invoice_duedate($doc->debtor_id, $doc->document_date);
           $doc->pos      = $this->User->_pos();
           $pos           = Sales_Point::get($doc->pos);
           $doc->pos      = -1;
@@ -457,7 +457,7 @@
       $so_type    = $this->order->so_type;
       $trans_type = $this->order->trans_type;
       Dates::newDocDate($this->order->document_date);
-      $this->Session->setGlobal('debtor', $this->order->customer_id);
+      $this->Session->setGlobal('debtor_id', $this->order->debtor_id);
       $this->order->write(1);
       $jobsboard_order = clone ($this->order);
       $trans_no        = $jobsboard_order->trans_no = key($this->order->trans_no);

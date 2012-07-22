@@ -16,7 +16,7 @@
     $_POST['OutstandingOnly'] = false;
     Page::start(_($help_context = "Search All Deliveries"), SA_SALESINVOICE);
   }
-  $selected_customer = Input::getPost('customer_id', Input::NUMERIC, -1);
+  $selected_customer = Input::getPost('debtor_id', Input::NUMERIC, -1);
   if (isset($_POST[Orders::BATCH_INVOICE])) {
     // checking batch integrity
     $del_count = 0;
@@ -60,7 +60,7 @@
   Forms::start(false, $_SERVER['DOCUMENT_URI'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
   Table::start('tablestyle_noborder');
   Row::start();
-  Debtor::cells(_('Customer:'), 'customer_id', null, true);
+  Debtor::cells(_('Customer:'), 'debtor_id', null, true);
   Forms::refCells(_("#:"), 'DeliveryNumber', '', null, '', true);
   Forms::dateCells(_("from:"), 'DeliveryAfterDate', '', null, -30);
   Forms::dateCells(_("to:"), 'DeliveryToDate', '', null, 1);
