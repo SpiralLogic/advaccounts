@@ -1234,9 +1234,9 @@
         }
         Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true, true);
         if (($this->Branch != Input::post('branch_id', null, -1))) {
-          if (!isset($_POST['branch_id']) || $_POST['branch_id'] == "") {
+          if (!isset($_POST['branch_id']) || !$_POST['branch_id']) {
             // ignore errors on customer search box call
-            if ($_POST['customer_id'] == '') {
+            if (!$_POST['customer_id']) {
               $customer_error = _("No customer found for entered text.");
             } else {
               $customer_error = _("The selected customer does not have any branches. Please create at least one branch.");
@@ -1326,7 +1326,7 @@
       Row::label(_("Customer Discount:"), ($this->default_discount * 100) . "%");
       Table::section(4);
       if ($editable) {
-        if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "") {
+        if (!isset($_POST['OrderDate']) || !$_POST['OrderDate']) {
           $_POST['OrderDate'] = $this->document_date;
         }
         Forms::dateRow($date_text, 'OrderDate', null, $this->trans_no == 0, 0, 0, 0, null, true);
@@ -1375,8 +1375,10 @@
       return $customer_error;
     }
     /**
-     * @param $rowcounter
+     * @param $id
      * @param $line_no
+     *
+     * @internal param $rowcounter
      */
     public function item_controls($id, $line_no = -1) {
 

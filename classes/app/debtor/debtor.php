@@ -678,14 +678,16 @@ JS;
         'rowspan'    => null, //
         'label'      => 'Customer:', //
         'cells'      => true, //
-        'cell_class' => null,
-        'input_cell_params'=>[]
+        'cell_class' => null, 'placeholder'=> "Customer",
       ];
 
-
       $o = array_merge($o, $options);
-      if ($o['row']) echo "<tr>";
-      if ($o['label']) echo "<td id='customer_id_label' class='label pointer'>Customer: </td>";
+      if ($o['row']) {
+        echo "<tr>";
+      }
+      if ($o['label']) {
+        echo "<td id='customer_id_label' class='label pointer'>Customer: </td>";
+      }
       echo "<td class='nowrap'>";
       $focus = false;
       if (!$value && Input::post('customer')) {
@@ -703,10 +705,16 @@ JS;
       }
       Forms::hidden('customer_id');
       UI::search('customer', array(
-                                  'url'  => '/contacts/customers.php', 'name'  => 'customer', 'focus' => $focus, 'value' => $value,['input_cell_params'=>$o['input_cell_params']]
+                                  'url'        => '/contacts/customers.php',
+                                  'name'       => 'customer',
+                                  'focus'      => $focus,
+                                  'value'      => $value,
+                                  'placeholder'=> $o['placeholder']
                              ));
       echo "</td>";
-      if ($o['row']) echo "\n</tr>\n";
+      if ($o['row']) {
+        echo "\n</tr>\n";
+      }
       JS::beforeload("var Customer = function(data) {
             var id = document.getElementById('customer_id');
             id.value= data.id;

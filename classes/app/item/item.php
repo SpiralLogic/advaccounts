@@ -128,8 +128,7 @@
     /***
      * @param int $id
      */
-    public function __construct($id = 0)
-    {
+    public function __construct($id = 0) {
       parent::__construct($id);
       $this->uom  = &$this->units;
       $this->name = &$this->description;
@@ -139,8 +138,7 @@
      *
      * @return bool|void
      */
-    protected function _read($id = null, $extra = array())
-    {
+    protected function _read($id = null, $extra = array()) {
       $id = $id ? : 0;
       if (!is_numeric($id)) {
         $stockid = static::getStockID((string) $id);
@@ -153,22 +151,19 @@
     /**
      * @return bool
      */
-    protected function _canProcess()
-    {
+    protected function _canProcess() {
       return true;
     }
     /**
      * @return void
      */
-    protected function _countTransactions()
-    {
+    protected function _countTransactions() {
       // TODO: Implement _countTransactions() method.
     }
     /**
      * @return void
      */
-    protected function _defaults()
-    {
+    protected function _defaults() {
       $this->id                 = 0;
       $this->stock_id           = null;
       $this->tax_type_id        = 1;
@@ -185,8 +180,7 @@
     /**
      * @return array|null
      */
-    protected function _new()
-    {
+    protected function _new() {
       $this->_defaults();
 
       return $this->_status(true, 'Initialize new Item', 'Now working with a new Item');
@@ -194,8 +188,7 @@
     /**
      * @return array|bool|int|null
      */
-    protected function _saveNew()
-    {
+    protected function _saveNew() {
       //	DB::begin();
       $data = (array) $this;
       unset($data['id']);
@@ -210,8 +203,7 @@
     /**
      * @return void
      */
-    public function delete()
-    {
+    public function delete() {
       // TODO: Implement delete() method.
     }
     /**
@@ -219,8 +211,7 @@
      *
      * @return array|bool|int|null
      */
-    public function save($changes = null)
-    {
+    public function save($changes = null) {
       if (is_array($changes)) {
         $this->setFromArray($changes);
       }
@@ -249,8 +240,7 @@
     /**
      * @return void
      */
-    public function  getSalePrices()
-    {
+    public function  getSalePrices() {
       $sql    = "SELECT * FROM prices WHERE stockid = " . $this->id;
       $result = DB::query($sql, 'Could not get item pricing');
       while ($row = DB::fetchAssoc($result)) {
@@ -264,8 +254,7 @@
      *
      * @return array|mixed
      */
-    public function  getPurchPrices($option = array())
-    {
+    public function  getPurchPrices($option = array()) {
       $sql = "SELECT * FROM purch_data WHERE stockid = " . $this->id;
       if ($option['min']) {
         $sql .= " ORDER BY price LIMIT 1";
@@ -288,8 +277,7 @@
      *
      * @return array|bool|mixed
      */
-    public function  getStockLevels($location = null)
-    {
+    public function  getStockLevels($location = null) {
       if (!$this->id > 0) {
         return false;
       }
@@ -325,8 +313,7 @@
     /**
      * @return int
      */
-    public function getStockOnOrder()
-    {
+    public function getStockOnOrder() {
       $sql    = "SELECT SUM(sales_order_details.quantity - sales_order_details.qty_sent) AS demand , sales_orders.from_stk_loc AS loc_code FROM sales_order_details, sales_orders WHERE sales_order_details.order_no= sales_orders.order_no AND sales_orders.trans_type=30 AND sales_orders.trans_type=sales_order_details.trans_type AND sales_order_details.stockid = " . DB::escape($this->id) . "' GROUP BY sales_orders.from_stk_loc";
       $result = DB::query($sql, "No transactions were returned");
       $row    = DB::fetch($result);
@@ -340,8 +327,7 @@
      * @static
      * @return null|PDOStatement
      */
-    public static function getAll()
-    {
+    public static function getAll() {
       $sql = "SELECT * FROM stock_master";
 
       return DB::query($sql, "items could not be retreived");
@@ -354,8 +340,7 @@
      *
      * @return mixed
      */
-    public static function get_qoh_on_date($stock_id, $location = null, $date_ = null, $exclude = 0)
-    {
+    public static function get_qoh_on_date($stock_id, $location = null, $date_ = null, $exclude = 0) {
       if ($date_ == null) {
         $date_ = Dates::today();
       }
@@ -389,8 +374,7 @@
      *
      * @return Array|\ADV\Core\DB\Query\Result
      */
-    public static function get_edit_info($stock_id)
-    {
+    public static function get_edit_info($stock_id) {
       $sql
               = "SELECT material_cost + labour_cost + overhead_cost AS standard_cost, units, decimals
              FROM stock_master,item_units
@@ -412,8 +396,7 @@
      *
      * @return bool
      */
-    public static function is_inventory_item($stock_id)
-    {
+    public static function is_inventory_item($stock_id) {
       $sql
               = "SELECT stock_id FROM stock_master
              WHERE stock_id=" . DB::escape($stock_id) . " AND mb_flag <> 'D'";
@@ -429,8 +412,7 @@
      *
      * @return mixed
      */
-    public static function last_negative_stock_begin_date($stock_id, $to)
-    {
+    public static function last_negative_stock_begin_date($stock_id, $to) {
       $to  = Dates::dateToSql($to);
       $sql = "SET @q = 0";
       DB::query($sql);
@@ -456,8 +438,7 @@
      *
      * @return mixed
      */
-    public static function get_deliveries_between($stock_id, $from, $to)
-    {
+    public static function get_deliveries_between($stock_id, $from, $to) {
       $from = Dates::dateToSql($from);
       $to   = Dates::dateToSql($to);
       $sql
@@ -477,8 +458,7 @@
      *
      * @return mixed
      */
-    public static function adjust_deliveries($stock_id, $material_cost, $to)
-    {
+    public static function adjust_deliveries($stock_id, $material_cost, $to) {
       if (!Item::is_inventory_item($stock_id)) {
         return;
       }
@@ -513,8 +493,7 @@
      *
      * @return Array|\ADV\Core\DB\Query\Result
      */
-    public static function get_gl_code($stock_id)
-    {
+    public static function get_gl_code($stock_id) {
       /*Gets the GL Codes relevant to the item account */
       $sql
            = "SELECT inventory_account, cogs_account,
@@ -531,8 +510,7 @@
      *
      * @return string
      */
-    public static function img_name($stock_id)
-    {
+    public static function img_name($stock_id) {
       return strtr($stock_id, "><\\/:|*?", '________');
     }
     /**
@@ -542,8 +520,7 @@
      *
      * @return mixed
      */
-    public static function get_stockid($stock_id)
-    {
+    public static function get_stockid($stock_id) {
       $result = current(DB::select('id')->from('stock_master')->where('stock_id LIKE ', $stock_id)->fetch()->all());
 
       return $result['id'];
@@ -556,8 +533,7 @@
      *
      * @return int
      */
-    public static function get_demand($stock_id, $location)
-    {
+    public static function get_demand($stock_id, $location) {
       $sql = "SELECT SUM(sales_order_details.quantity - " . "sales_order_details.qty_sent) AS QtyDemand
                         FROM sales_order_details,
                                 sales_orders
@@ -582,9 +558,8 @@
      *
      * @return void
      */
-    protected static function load_stock_levels($location = '')
-    {
-      $date = Dates::dateToSql(Dates::today());
+    protected static function load_stock_levels($location = '') {
+      $date = Dates::today(true);
       $sql  = "SELECT stock_id, SUM(qty) FROM stock_moves WHERE tran_date <= '$date'";
       if ($location != '') {
         $sql .= " AND loc_code = " . DB::escape($location);
@@ -602,14 +577,12 @@
      *
      * @return array
      */
-    public static function search($term)
-    {
+    public static function search($term) {
       $term = DB::quote("%$term%");
       $sql  = "SELECT stock_id AS id, description AS label, stock_id AS value FROM stock_master WHERE stock_id LIKE $term OR description LIKE $term LIMIT 200";
       DB::query($sql, 'Couldn\'t Get Items');
       $data = DB::fetchAll();
-      array_walk_recursive($data, function(&$v)
-      {
+      array_walk_recursive($data, function(&$v) {
         $v = htmlspecialchars_decode($v, ENT_QUOTES);
       });
 
@@ -622,8 +595,7 @@
      *
      * @return void
      */
-    public static function searchSale($terms)
-    {
+    public static function searchSale($terms) {
       $terms      = explode(' ', trim($terms));
       $stockid    = array_shift($terms);
       $where      = 'OR (s.long_description LIKE ? ';
@@ -673,8 +645,7 @@ s.category_id, editable, 0 as kit,
      *
      * @return array|bool
      */
-    public static function searchOrder($term, $UniqueID)
-    {
+    public static function searchOrder($term, $UniqueID) {
       if (!isset($_SESSION['search'])) {
         $o = array(
           'url'      => false, //
@@ -749,8 +720,7 @@ s.category_id, editable, 0 as kit,
      *
      * @return void
      */
-    public static function addEditDialog($options = array())
-    {
+    public static function addEditDialog($options = array()) {
       $default  = array('page' => 0);
       $o        = array_merge($default, $options);
       $stockbox = new Dialog('Item Edit', 'stockbox', '');
@@ -795,8 +765,7 @@ JS;
      *
      * @return void
      */
-    public static function addSearchBox($id, $options = array())
-    {
+    public static function addSearchBox($id, $options = array()) {
       echo UI::searchLine($id, '/items/search.php', $options);
     }
     /**
@@ -806,8 +775,7 @@ JS;
      *
      * @return mixed
      */
-    public static function getStockID($stock_code)
-    {
+    public static function getStockID($stock_code) {
       return DB::select('id')->from('stock_master')->where('stock_id LIKE', $stock_code)->fetch()->one('id');
     }
     /**
@@ -831,8 +799,7 @@ JS;
      *
      * @return void
      */
-    public static function  update($stock_id, $description, $long_description, $category_id, $tax_type_id, $units = '', $mb_flag = '', $sales_account, $inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id, $no_sale)
-    {
+    public static function  update($stock_id, $description, $long_description, $category_id, $tax_type_id, $units = '', $mb_flag = '', $sales_account, $inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id, $no_sale) {
       $sql = "UPDATE stock_master SET long_description=" . DB::escape($long_description) . ",
                  description=" . DB::escape($description) . ",
                  category_id=" . DB::escape($category_id) . ",
@@ -876,8 +843,7 @@ JS;
      *
      * @return void
      */
-    public static function  add($stock_id, $description, $long_description, $category_id, $tax_type_id, $units, $mb_flag, $sales_account, $inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id, $no_sale)
-    {
+    public static function  add($stock_id, $description, $long_description, $category_id, $tax_type_id, $units, $mb_flag, $sales_account, $inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id, $no_sale) {
       $sql
         = "INSERT INTO stock_master (stock_id, description, long_description, category_id,
                  tax_type_id, units, mb_flag, sales_account, inventory_account, cogs_account,
@@ -899,8 +865,7 @@ JS;
      *
      * @return void
      */
-    public static function del($stock_id)
-    {
+    public static function del($stock_id) {
       $sql = "DELETE FROM stock_master WHERE stock_id=" . DB::escape($stock_id);
       DB::query($sql, "could not delete stock item");
       /*and cascade deletes in stock_location */
@@ -924,8 +889,7 @@ JS;
      *
      * @return Array|\ADV\Core\DB\Query\Result
      */
-    public static function get($stock_id)
-    {
+    public static function get($stock_id) {
       $sql
               = "SELECT stock_master.*,item_tax_types.name AS tax_type_name
                  FROM stock_master,item_tax_types
@@ -944,8 +908,7 @@ JS;
      *
      * @return int|string
      */
-    public static function  qty_format($number, $stock_id = null, &$dec)
-    {
+    public static function  qty_format($number, $stock_id = null, &$dec) {
       $dec = Item::qty_dec($stock_id);
 
       return Num::format($number, $dec);
@@ -957,8 +920,7 @@ JS;
      *
      * @return mixed
      */
-    public static function  qty_dec($stock_id = null)
-    {
+    public static function  qty_dec($stock_id = null) {
       if (is_null($stock_id)) {
         $dec = User::qty_dec();
       } else {
@@ -983,8 +945,7 @@ JS;
      *
      * @return string
      */
-    public static function select($name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts = array(), $editkey = false, $legacy = false)
-    {
+    public static function select($name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts = array(), $editkey = false, $legacy = false) {
       if (!$legacy) {
         Item::addSearchBox($name, array_merge(array(
                                                    'submitonselect' => $submit_on_change,
@@ -1037,8 +998,7 @@ JS;
      *
      * @return void
      */
-    public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false, $legacy = false)
-    {
+    public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false, $legacy = false) {
       echo Item::select($name, $selected_id, $all_option, $submit_on_change, array(
                                                                                   'submitonselect' => $submit_on_change,
                                                                                   'label'          => $label,
