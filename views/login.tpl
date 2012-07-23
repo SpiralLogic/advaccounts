@@ -13,7 +13,8 @@
 <input type='hidden' id='ui_mode' name='ui_mode' value='" . User::i()->ui_mode . "'/>
 <td class='center' colspan=2>
   <a target='_blank' href='" . POWERED_URL . "'><img width=440 height=64 src='/themes/$def_theme/images/logo_advaccounts.png' alt='ADVAccounts'/></a>
-  <span class='font5'>" . _('Authorization timeout') . "</span><br>You were idle for: " . (User::i()->last_act + User::i()->timeout - time());
+  <span class='font5'>" . _('Authorization timeout') . "</span><br>You were idle for: " . (User::i()->last_act +
+  User::i()->timeout - time());
 </td>
 <tr>
   <td class='label'><label for='login_company'>" . _("Company") . "</label></td>
@@ -29,7 +30,8 @@
 <div class='center'>
   echo $date = Dates::today() . " | " . Dates::now();
   echo $date = date("m/d/Y") . " | " . date("h.i am");
-  <br><a class='pad20' target='_blank' href='" . POWERED_URL . "' tabindex='-1'>" . APP_TITLE . ' ' . VERSION . " - " . _("Theme:") . "
+  <br><a class='pad20' target='_blank' href='" . POWERED_URL . "' tabindex='-1'>" . APP_TITLE . ' ' . VERSION . " - " .
+  _("Theme:") . "
   " . $def_theme . "</a>
   <br><br><a target='_blank' href='" . POWERED_URL . "' tabindex='-1'>" . POWERED_BY . "</a></div>
 <script>

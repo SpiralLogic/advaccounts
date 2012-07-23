@@ -7,7 +7,8 @@
    * To change this template use File | Settings | File Templates.
    */
   namespace ADV\Core;
-  class View implements \ArrayAccess {
+  class View implements \ArrayAccess
+  {
     protected $_viewdata = [];
     protected $_template = null;
     protected $Cache;
@@ -15,7 +16,7 @@
      * @param $template
      */
     public function __construct($template) {
-      $template = VIEWPATH . $template . '.php';
+      $template = VIEWPATH . $template . '.tpl';
       if (!file_exists($template)) {
         throw new \InvalidArgumentException("There is no view $template !");
       }
@@ -35,14 +36,14 @@
       // The contents of each view file is cached in an array for the
       // request since partial views may be rendered inside of for
       // loops which could incur performance penalties.
-      $__contents = $this->Cache->get('template.' . $this->_template);
+      $__contents = null; //$this->Cache->get('template.' . $this->_template);
       if (!$__contents) {
         $__contents = file_get_contents($this->_template);
         $__contents = $this->compile_structure_openings($__contents);
         $__contents = $this->compile_else($__contents);
         $__contents = $this->compile_structure_closings($__contents);
         $__contents = $this->compile_echos($__contents);
-        $this->Cache->set('template.'.$this->_template,$__contents);
+        $this->Cache->set('template.' . $this->_template, $__contents);
       }
       ob_start() and extract($this->_viewdata, EXTR_SKIP);
       // We'll include the view contents for parsing within a catcher
@@ -81,8 +82,8 @@
      * @return string
      */
     protected static function compile_structure_openings($value) {
-      $pattern = '/(\s*)@(if|elseif|foreach|for|while)(\s*\(.*\))@/';
-      return preg_replace($pattern, '$1<?php $2$3: ?>', $value);
+      $pattern = '/(\s*)\{\{#(if|elseif|foreach|for|while)(.*)\}\}(\s*)/';
+      return preg_replace($pattern, '$1<?php $2($3): ?>$4', $value);
     }
     /**
      * Rewrites Blade structure closings into PHP structure closings.
@@ -92,7 +93,7 @@
      * @return string
      */
     protected static function compile_structure_closings($value) {
-      $pattern = '/(\s*)@(endif|endforeach|endfor|endwhile)@(\s*)/';
+      $pattern = '/(\s*)\{\{#(endif|endforeach|endfor|endwhile) *?\}\}(\s*)/';
       return preg_replace($pattern, '$1<?php $2; ?>$3', $value);
     }
     /**
@@ -103,7 +104,7 @@
      * @return string
      */
     protected static function compile_else($value) {
-      return preg_replace('/(\s*)@(else)@(\s*)/', '$1<?php $2: ?>$3', $value);
+      return preg_replace('/(\s*)\{\{#(else) ?\}\}(\s*)/', '$1<?php $2: ?>$3', $value);
     }
     /**
      * @param      $offset

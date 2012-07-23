@@ -1,5 +1,6 @@
 <div id="sidemenu" class="ui-widget-shadow ui-corner-all">
   <h3><a href="#">Search</a></h3>
+
   <div id="search">
     <ul>
       <li id="orders" data-href="/sales/inquiry/sales_orders_view.php?type={{ ST_SALESORDER }}">Orders/Quotes</li>
@@ -9,6 +10,7 @@
     </ul>
   </div>
   <h3><a href="#">Create</a></h3>
+
   <div>
     <ul>
       <li><a href="/sales/sales_order_entry?add=0&amp;type={{ ST_SALESQUOTE }}">Quote</a></li>
@@ -17,8 +19,9 @@
       <li><a href="/purchases/po_entry_items?New=0">Purchase Order</a></li>
     </ul>
   </div>
-@if ($bank)@
+  @if ($bank)@
   <h3><a href="#">Banking</a></h3>
+
   <div>
     <ul>
       <li><a href="/gl/gl_bank?NewPayment=Yes">Payment</a></li>
@@ -27,12 +30,14 @@
       <li><a href="/gl/undeposited_funds?">Undeposited</a></li>
     </ul>
   </div>
-    @endif@
+  @endif@
   <h3><a href="#">Customer Search</a></h3>
+
   <div>
     <input size="14" id="quickCustomer"/>
   </div>
   <h3><a href="#">Supplier Search</a></h3>
+
   <div>
     <input size="14" id="quickSupplier"/>
   </div>

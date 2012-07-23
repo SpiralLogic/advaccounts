@@ -19,14 +19,12 @@
 @endif@
 <!-- end content div-->
 </div>
-  {{ $sidemenu  }}
-  {{ $messages  }}
+{{ $sidemenu  }}
+{{ $messages  }}
 @if (!AJAX_REFERRER)@
-
 @endif@
 <script>{{ $beforescripts }}
 </script>  {{ $js  }}
-
 @if (!AJAX_REFERRER)@
 </body>
 </html>
