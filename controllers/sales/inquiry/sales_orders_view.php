@@ -55,7 +55,7 @@
     Session::i()->page_title  = _($help_context = "Search All Sales Quotations");
   }
   Page::start(Session::i()->page_title, $security);
-  $selected_customer = Input::getPost('customer_id', Input::NUMERIC, -1);
+  $selected_customer = Input::getPost('debtor_id', Input::NUMERIC, -1);
   if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
   ) {
     $selected_stock_item = $_POST['SelectStockFromList'];
@@ -98,7 +98,7 @@
   Forms::start();
   Table::start('tablestyle_noborder');
   Row::start();
-  Debtor::cells(_(""), 'customer_id', $selected_customer, true);
+  Debtor::cells(_(""), 'debtor_id', $selected_customer, true);
   Forms::refCells(_("#:"), 'OrderNumber', '', null, '', true);
   if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
     Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);

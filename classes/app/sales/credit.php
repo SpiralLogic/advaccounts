@@ -63,7 +63,7 @@
       }
       /*Now insert the Credit Note into the debtor_trans table with the allocations as calculated above*/
       // all amounts in debtor's currency
-      $credit_no = Debtor_Trans::write(ST_CUSTCREDIT, $trans_no, $credit_note->customer_id, $credit_note->Branch, $credit_date, $credit_note->reference, $credit_note_total, 0, $items_added_tax, $credit_note->freight_cost, $freight_added_tax, $credit_note->sales_type, $credit_note->order_no, $credit_invoice, $credit_note->ship_via, null, $alloc, 0, $credit_note->dimension_id, $credit_note->dimension2_id);
+      $credit_no = Debtor_Trans::write(ST_CUSTCREDIT, $trans_no, $credit_note->debtor_id, $credit_note->Branch, $credit_date, $credit_note->reference, $credit_note_total, 0, $items_added_tax, $credit_note->freight_cost, $freight_added_tax, $credit_note->sales_type, $credit_note->order_no, $credit_invoice, $credit_note->ship_via, null, $alloc, 0, $credit_note->dimension_id, $credit_note->dimension2_id);
       // 2008-06-14 extra $alloc, 2008-11-12 dimension_id Joe Hunt
       if ($trans_no == 0) {
         $credit_note->trans_no = array($credit_no => 0);
@@ -107,20 +107,20 @@
       /*Post credit note transaction to GL credit debtors,
                                          debit freight re-charged and debit sales */
       if (($credit_note_total + $credit_note->freight_cost) != 0) {
-        $total += Debtor_TransDetail::add_gl_trans(ST_CUSTCREDIT, $credit_no, $credit_date, $branch_data["receivables_account"], 0, 0, -($credit_note_total + $credit_note->freight_cost + $items_added_tax + $freight_added_tax), $credit_note->customer_id, "The total debtor GL posting for the credit note could not be inserted");
+        $total += Debtor_TransDetail::add_gl_trans(ST_CUSTCREDIT, $credit_no, $credit_date, $branch_data["receivables_account"], 0, 0, -($credit_note_total + $credit_note->freight_cost + $items_added_tax + $freight_added_tax), $credit_note->debtor_id, "The total debtor GL posting for the credit note could not be inserted");
       }
       if ($credit_note->freight_cost != 0) {
-        $total += Debtor_TransDetail::add_gl_trans(ST_CUSTCREDIT, $credit_no, $credit_date, $company_data["freight_act"], 0, 0, $credit_note->get_tax_free_shipping(), $credit_note->customer_id, "The freight GL posting for this credit note could not be inserted");
+        $total += Debtor_TransDetail::add_gl_trans(ST_CUSTCREDIT, $credit_no, $credit_date, $company_data["freight_act"], 0, 0, $credit_note->get_tax_free_shipping(), $credit_note->debtor_id, "The freight GL posting for this credit note could not be inserted");
       }
       foreach ($taxes as $taxitem) {
         if ($taxitem['Net'] != 0) {
-          $ex_rate = Bank_Currency::exchange_rate_from_home(Bank_Currency::for_debtor($credit_note->customer_id), $credit_note->document_date);
+          $ex_rate = Bank_Currency::exchange_rate_from_home(Bank_Currency::for_debtor($credit_note->debtor_id), $credit_note->document_date);
           GL_Trans::add_tax_details(ST_CUSTCREDIT, $credit_no, $taxitem['tax_type_id'], $taxitem['rate'], $credit_note->tax_included, $taxitem['Value'], $taxitem['Net'], $ex_rate, $credit_note->document_date, $credit_note->reference);
-          $total += Debtor_TransDetail::add_gl_trans(ST_CUSTCREDIT, $credit_no, $credit_date, $taxitem['sales_gl_code'], 0, 0, $taxitem['Value'], $credit_note->customer_id, "A tax GL posting for this credit note could not be inserted");
+          $total += Debtor_TransDetail::add_gl_trans(ST_CUSTCREDIT, $credit_no, $credit_date, $taxitem['sales_gl_code'], 0, 0, $taxitem['Value'], $credit_note->debtor_id, "A tax GL posting for this credit note could not be inserted");
         }
       }
       /*Post a balance post if $total != 0 */
-      GL_Trans::add_balance(ST_CUSTCREDIT, $credit_no, $credit_date, -$total, PT_CUSTOMER, $credit_note->customer_id);
+      GL_Trans::add_balance(ST_CUSTCREDIT, $credit_no, $credit_date, -$total, PT_CUSTOMER, $credit_note->debtor_id);
       DB_Comments::add(ST_CUSTCREDIT, $credit_no, $credit_date, $credit_note->Comments);
       if ($trans_no == 0) {
         Ref::save(ST_CUSTCREDIT, $credit_note->reference);
@@ -172,7 +172,7 @@
     public static function add_gl_costs($order, $order_line, $credit_no, $date_, $credit_type, $write_off_gl_code, &$branch_data)
     {
       $stock_gl_codes = Item::get_gl_code($order_line->stock_id);
-      $customer       = Debtor::get($order->customer_id);
+      $customer       = Debtor::get($order->debtor_id);
       // 2008-08-01. If there is a Customer Dimension, then override with this,
       // else take the Item Dimension (if any)
       $dim   = ($order->dimension_id != $customer['dimension_id'] ? $order->dimension_id :
@@ -184,7 +184,7 @@
       $standard_cost = Item_Price::get_standard_cost($order_line->stock_id);
       if ($standard_cost != 0) {
         /*first the cost of sales entry*/
-        $total += GL_Trans::add_std_cost(ST_CUSTCREDIT, $credit_no, $date_, $stock_gl_codes["cogs_account"], $dim, $dim2, "", -($standard_cost * $order_line->qty_dispatched), PT_CUSTOMER, $order->customer_id, "The cost of sales GL posting could not be inserted");
+        $total += GL_Trans::add_std_cost(ST_CUSTCREDIT, $credit_no, $date_, $stock_gl_codes["cogs_account"], $dim, $dim2, "", -($standard_cost * $order_line->qty_dispatched), PT_CUSTOMER, $order->debtor_id, "The cost of sales GL posting could not be inserted");
         /*now the stock entry*/
         if ($credit_type == "WriteOff") {
           $stock_entry_account = $write_off_gl_code;
@@ -192,7 +192,7 @@
           $stock_gl_code       = Item::get_gl_code($order_line->stock_id);
           $stock_entry_account = $stock_gl_code["inventory_account"];
         }
-        $total += GL_Trans::add_std_cost(ST_CUSTCREDIT, $credit_no, $date_, $stock_entry_account, 0, 0, "", ($standard_cost * $order_line->qty_dispatched), PT_CUSTOMER, $order->customer_id, "The stock side (or write off) of the cost of sales GL posting could not be inserted");
+        $total += GL_Trans::add_std_cost(ST_CUSTCREDIT, $credit_no, $date_, $stock_entry_account, 0, 0, "", ($standard_cost * $order_line->qty_dispatched), PT_CUSTOMER, $order->debtor_id, "The stock side (or write off) of the cost of sales GL posting could not be inserted");
       } /* end of if GL and stock integrated and standard cost !=0 */
       if ($order_line->line_price() != 0) {
         $line_taxfree_price = Tax::tax_free_price($order_line->stock_id, $order_line->price, 0, $order->tax_included, $order->tax_group_array);
@@ -205,9 +205,9 @@
         } else {
           $sales_account = $stock_gl_codes['sales_account'];
         }
-        $total += Debtor_TransDetail::add_gl_trans(ST_CUSTCREDIT, $credit_no, $date_, $sales_account, $dim, $dim2, ($line_taxfree_price * $order_line->qty_dispatched), $order->customer_id, "The credit note GL posting could not be inserted");
+        $total += Debtor_TransDetail::add_gl_trans(ST_CUSTCREDIT, $credit_no, $date_, $sales_account, $dim, $dim2, ($line_taxfree_price * $order_line->qty_dispatched), $order->debtor_id, "The credit note GL posting could not be inserted");
         if ($order_line->discount_percent != 0) {
-          $total += Debtor_TransDetail::add_gl_trans(ST_CUSTCREDIT, $credit_no, $date_, $branch_data["sales_discount_account"], $dim, $dim2, -($line_taxfree_price * $order_line->qty_dispatched * $order_line->discount_percent), $order->customer_id, "The credit note discount GL posting could not be inserted");
+          $total += Debtor_TransDetail::add_gl_trans(ST_CUSTCREDIT, $credit_no, $date_, $branch_data["sales_discount_account"], $dim, $dim2, -($line_taxfree_price * $order_line->qty_dispatched * $order_line->discount_percent), $order->debtor_id, "The credit note discount GL posting could not be inserted");
         } /*end of if discount !=0 */
       } /*if line_price!=0 */
       return $total;
@@ -225,23 +225,23 @@
       Table::section(1);
       $customer_error = "";
       $change_prices  = 0;
-      if (!isset($_POST['customer_id']) && Session::getGlobal('debtor')) {
-        $_POST['customer_id'] = Session::getGlobal('debtor');
+      if (!isset($_POST['debtor_id']) && Session::getGlobal('debtor_id')) {
+        $_POST['debtor_id'] = Session::getGlobal('debtor_id');
       }
       Debtor::newselect();
-      if ($order->customer_id != $_POST['customer_id'] /*|| $order->sales_type != $_POST['sales_type_id']*/) {
+      if ($order->debtor_id != $_POST['debtor_id'] /*|| $order->sales_type != $_POST['sales_type_id']*/) {
         // customer has changed
         Ajax::activate('branch_id');
       }
-      Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true, true);
+      Debtor_Branch::row(_("Branch:"), $_POST['debtor_id'], 'branch_id', null, false, true, true, true);
       //if (($_SESSION['credit_items']->order_no == 0) ||
-      //	($order->customer_id != $_POST['customer_id']) ||
+      //	($order->debtor_id != $_POST['debtor_id']) ||
       //	($order->Branch != $_POST['branch_id']))
-      //	$customer_error = $order->customer_to_order($_POST['customer_id'], $_POST['branch_id']);
-      if (($order->customer_id != $_POST['customer_id']) || ($order->Branch != $_POST['branch_id'])
+      //	$customer_error = $order->customer_to_order($_POST['debtor_id'], $_POST['branch_id']);
+      if (($order->debtor_id != $_POST['debtor_id']) || ($order->Branch != $_POST['branch_id'])
       ) {
         $old_order                 = (PHP_VERSION < 5) ? $order : clone($order);
-        $customer_error            = $order->customer_to_order($_POST['customer_id'], $_POST['branch_id']);
+        $customer_error            = $order->customer_to_order($_POST['debtor_id'], $_POST['branch_id']);
         $_POST['location']         = $order->location;
         $_POST['deliver_to']       = $order->deliver_to;
         $_POST['delivery_address'] = $order->delivery_address;
@@ -271,7 +271,7 @@
         }
         unset($old_order);
       }
-      Session::setGlobal('debtor', $_POST['customer_id']);
+      Session::setGlobal('debtor_id', $_POST['debtor_id']);
       if (!isset($_POST['ref'])) {
         $_POST['ref'] = Ref::get_next(ST_CUSTCREDIT);
       }

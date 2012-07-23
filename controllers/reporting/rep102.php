@@ -11,12 +11,12 @@
    ***********************************************************************/
   print_aged_customer_analysis();
   /**
-   * @param $customer_id
+   * @param $debtor_id
    * @param $to
    *
    * @return null|PDOStatement
    */
-  function get_invoices($customer_id, $to)
+  function get_invoices($debtor_id, $to)
   {
     $todate    = Dates::dateToSql($to);
     $past_due1 = DB_Company::get_pref('past_due_days');
@@ -39,7 +39,7 @@
         WHERE debtor_trans.type <> " . ST_CUSTDELIVERY . "
             AND debtors.payment_terms = payment_terms.terms_indicator
             AND debtors.debtor_id = debtor_trans.debtor_id
-            AND debtor_trans.debtor_id = $customer_id
+            AND debtor_trans.debtor_id = $debtor_id
             AND debtor_trans.tran_date <= '$todate'
             AND ABS(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight + debtor_trans.ov_freight_tax + debtor_trans.ov_discount) > 0.004
             ORDER BY debtor_trans.tran_date";

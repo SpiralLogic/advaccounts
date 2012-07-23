@@ -107,18 +107,18 @@
      * @param        $dimension
      * @param        $dimension2
      * @param        $amount
-     * @param        $customer_id
+     * @param        $debtor_id
      * @param string $err_msg
      * @param int    $rate
      *
      * @return float
      */
-    public static function add_gl_trans($type, $type_no, $date_, $account, $dimension, $dimension2, $amount, $customer_id, $err_msg = "", $rate = 0)
+    public static function add_gl_trans($type, $type_no, $date_, $account, $dimension, $dimension2, $amount, $debtor_id, $err_msg = "", $rate = 0)
     {
       if ($err_msg == "") {
         $err_msg = "The customer GL transaction could not be inserted";
       }
 
-      return GL_Trans::add($type, $type_no, $date_, $account, $dimension, $dimension2, "", $amount, Bank_Currency::for_debtor($customer_id), PT_CUSTOMER, $customer_id, $err_msg, $rate);
+      return GL_Trans::add($type, $type_no, $date_, $account, $dimension, $dimension2, "", $amount, Bank_Currency::for_debtor($debtor_id), PT_CUSTOMER, $debtor_id, $err_msg, $rate);
     }
   }

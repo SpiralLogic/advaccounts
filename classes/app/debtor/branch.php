@@ -257,7 +257,7 @@
     /**
      * @static
      *
-     * @param      $customer_id
+     * @param      $debtor_id
      * @param      $name
      * @param null $selected_id
      * @param bool $spec_option
@@ -267,11 +267,11 @@
      *
      * @return string
      */
-    public static function select($customer_id, $name, $selected_id = null, $spec_option = true, $enabled = true, $submit_on_change = false, $editkey = false)
+    public static function select($debtor_id, $name, $selected_id = null, $spec_option = true, $enabled = true, $submit_on_change = false, $editkey = false)
     {
       $sql
              = "SELECT branch_id, branch_ref FROM branches
-            WHERE branch_ref <> 'accounts' AND inactive <> 1  AND debtor_id='" . $customer_id . "' ";
+            WHERE branch_ref <> 'accounts' AND inactive <> 1  AND debtor_id='" . $debtor_id . "' ";
       $where = $enabled ? array("disable_trans = 0") : array();
 
       return Forms::selectBox($name, $selected_id, $sql, 'branch_id', 'br_name', array(
@@ -288,7 +288,7 @@
      * @static
      *
      * @param      $label
-     * @param      $customer_id
+     * @param      $debtor_id
      * @param      $name
      * @param null $selected_id
      * @param bool $all_option
@@ -298,20 +298,20 @@
      *
      * @return void
      */
-    public static function cells($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false)
+    public static function cells($label, $debtor_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false)
     {
       if ($label != null) {
         echo "<td>$label</td>\n";
       }
       echo "<td>";
-      echo Debtor_Branch::select($customer_id, $name, $selected_id, $all_option, $enabled, $submit_on_change, $editkey);
+      echo Debtor_Branch::select($debtor_id, $name, $selected_id, $all_option, $enabled, $submit_on_change, $editkey);
       echo "</td>\n";
     }
     /**
      * @static
      *
      * @param      $label
-     * @param      $customer_id
+     * @param      $debtor_id
      * @param      $name
      * @param null $selected_id
      * @param bool $all_option
@@ -321,10 +321,10 @@
      *
      * @return void
      */
-    public static function row($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false)
+    public static function row($label, $debtor_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false)
     {
       echo "<tr><td class='label'>$label</td>";
-      Debtor_Branch::cells(null, $customer_id, $name, $selected_id, $all_option, $enabled, $submit_on_change, $editkey);
+      Debtor_Branch::cells(null, $debtor_id, $name, $selected_id, $all_option, $enabled, $submit_on_change, $editkey);
       echo "</tr>";
     }
   }

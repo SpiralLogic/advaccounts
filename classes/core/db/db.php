@@ -31,6 +31,7 @@
    */
   class DB
   {
+
     use \ADV\Core\Traits\StaticAccess;
 
     const SELECT = 0;
@@ -110,7 +111,6 @@
         if ($this->conn === false) {
           $this->conn = $conn;
         }
-
         return true;
       }
       catch (\PDOException $e) {
@@ -138,7 +138,6 @@
         $this->error($e, " (prepare) " . $err_msg);
       }
       $this->data = array();
-
       return $this->prepared;
     }
     /**
@@ -182,7 +181,6 @@
         $type = false;
       }
       $this->data[] = array($value, $type);
-
       return ' ? ';
     }
     /**
@@ -218,7 +216,6 @@
       }
       $this->data     = array();
       $this->prepared = $prepared;
-
       return $prepared;
     }
     /**
@@ -243,7 +240,6 @@
         $result = $this->error($e);
       }
       $this->data = array();
-
       return $result;
     }
     /**
@@ -262,7 +258,6 @@
       $this->prepared = null;
       $columns        = (is_string($columns)) ? func_get_args() : array();
       $this->query    = new Query\Select($columns, $this);
-
       return $this->query;
     }
     /**
@@ -275,7 +270,6 @@
     public function _update($into) {
       $this->prepared = null;
       $this->query    = new Query\Update($into, $this);
-
       return $this->query;
     }
     /**
@@ -286,18 +280,16 @@
     public function _insert($into) {
       $this->prepared = null;
       $this->query    = new Query\Insert($into, $this);
-
       return $this->query;
     }
     /**
      * @param $into
      *
-     * @return \ADV\Core\DB\Query|bool
+     * @return \ADV\Core\DB\Query\Query|bool
      */
     public function _delete($into) {
       $this->prepared = null;
       $this->query    = new Query\Delete($into, $this);
-
       return $this->query;
     }
     /***
@@ -314,13 +306,11 @@
         if ($this->prepared === null) {
           return $this->query->fetch($fetch_mode);
         }
-
         return $this->prepared->fetch($fetch_mode);
       }
       catch (\Exception $e) {
         $this->error($e);
       }
-
       return false;
     }
     /**
@@ -348,7 +338,6 @@
         $results = $this->prepared->fetchAll($fetch_type);
       }
       $this->results = false;
-
       return $results;
     }
     /**
@@ -357,7 +346,6 @@
      */
     public function _errorNo() {
       $info = $this->_errorInfo();
-
       return $info[1];
     }
     /**
@@ -371,7 +359,6 @@
       if ($this->prepared) {
         return $this->prepared->errorInfo();
       }
-
       return $this->conn->errorInfo();
     }
     /**
@@ -380,7 +367,6 @@
      */
     public function _errorMsg() {
       $info = $this->_errorInfo();
-
       return isset($info[2]) ? $info[2] : false;
     }
     /**
@@ -401,7 +387,6 @@
       $result         = ($this->prepared) ? $this->prepared->closeCursor() : false;
       $this->errorSql = $this->errorInfo = $this->prepared = null;
       $this->data     = array();
-
       return $result;
     }
     /**
@@ -426,7 +411,6 @@
       if ($this->cache) {
         $this->cache->set('sql.rowcount.' . md5($sql), $rows);
       }
-
       return $rows;
     }
     /**
@@ -574,7 +558,6 @@
         }
       }
       $this->data = array();
-
       return false;
     }
     /**
@@ -589,7 +572,6 @@
       foreach ($data as $k => $v) {
         $sql = str_replace(":$k", " '$v' ", $sql); // outputs '123def abcdef abcdef' str_replace(,,$sql);
       }
-
       return $sql;
     }
     /**
@@ -607,7 +589,6 @@
         }
         $sql = preg_replace('/\?/i', "'$v'", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
       }
-
       return $sql;
     }
     /**
@@ -648,8 +629,8 @@
      * @return array
      */
     public function __sleep() {
-      $this->conn = null;
-
+      $this->conn     = null;
+      $this->prepared = null;
       return array_keys((array) $this);
     }
   }

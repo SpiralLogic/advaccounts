@@ -91,7 +91,7 @@
     /**
      * @var
      */
-    public $customer_id;
+    public $debtor_id;
     /**
      * @var
      */
@@ -299,10 +299,10 @@
         $this->trans_no          = 0;
         $this->customer_currency = Bank_Currency::for_company();
         // set new sales document defaults here
-        if (Session::getGlobal('debtor')) {
-          $this->customer_id = Session::getGlobal('debtor');
+        if (Session::getGlobal('debtor_id')) {
+          $this->debtor_id = Session::getGlobal('debtor_id');
         } else {
-          $this->customer_id = '';
+          $this->debtor_id = '';
         }
         $this->document_date = Dates::newDocDate();
         if (!Dates::isDateInFiscalYear($this->document_date)) {
@@ -311,7 +311,7 @@
         $this->reference = Ref::get_next($this->trans_type);
         $this->set_salesman();
         if ($type == ST_SALESINVOICE) {
-          $this->due_date = Sales_Order::get_invoice_duedate($this->customer_id, $this->document_date);
+          $this->due_date = Sales_Order::get_invoice_duedate($this->debtor_id, $this->document_date);
           $this->pos      = User::pos();
           $pos            = Sales_Point::get($this->pos);
           $this->cash     = !$pos['credit_sale'];
@@ -334,7 +334,7 @@
       if ($this->trans_type == ST_SALESORDER) {
         $this->order_no = $trans_no[0];
       }
-      $this->credit = Debtor::get_credit($this->customer_id);
+      $this->credit = Debtor::get_credit($this->debtor_id);
     }
     /**
      * Writing new/modified sales document to database.
@@ -395,20 +395,20 @@
      * @return bool
      */
     public function check_cust_ref($cust_ref) {
-      $sql    = "SELECT customer_ref,type FROM sales_orders WHERE debtor_id=" . DB::escape($this->customer_id) . " AND customer_ref=" . DB::escape($cust_ref) . " AND type != " . $this->trans_type;
+      $sql    = "SELECT customer_ref,type FROM sales_orders WHERE debtor_id=" . DB::escape($this->debtor_id) . " AND customer_ref=" . DB::escape($cust_ref) . " AND type != " . $this->trans_type;
       $result = DB::query($sql);
       return (DB::numRows($result) > 0) ? true : false;
     }
     /**
-     * @param $customer_id
+     * @param $debtor_id
      * @param $customer_name
      * @param $currency
      * @param $discount
      * @param $payment
      */
-    public function set_customer($customer_id, $customer_name, $currency, $discount, $payment) {
+    public function set_customer($debtor_id, $customer_name, $currency, $discount, $payment) {
       $this->customer_name     = $customer_name;
-      $this->customer_id       = $customer_id;
+      $this->debtor_id       = $debtor_id;
       $this->default_discount  = $discount;
       $this->customer_currency = $currency;
       $this->payment           = $payment;
@@ -418,8 +418,8 @@
         $this->location      = $pos['pos_location'];
         $this->location_name = $pos['location_name'];
       }
-      if ($customer_id > 0) {
-        $this->credit = Debtor::get_credit($customer_id);
+      if ($debtor_id > 0) {
+        $this->credit = Debtor::get_credit($debtor_id);
       }
     }
     /**
@@ -557,7 +557,7 @@
       $this->line_items  = array();
       $this->sales_type  = "";
       $this->trans_no    = 0;
-      $this->customer_id = $this->order_no = 0;
+      $this->debtor_id = $this->order_no = 0;
     }
     /**
      * @return int
@@ -722,7 +722,7 @@
                   = "INSERT INTO sales_orders (order_no, type, debtor_id, trans_type, branch_id, customer_ref, reference, salesman, comments, source_no, ord_date,
             order_type, ship_via, deliver_to, delivery_address, contact_name, contact_phone,
             contact_email, freight_cost, from_stk_loc, delivery_date)
-            VALUES (" . DB::escape($order_no) . "," . DB::escape($order_type) . "," . DB::escape($this->customer_id) . ", " . DB::escape($this->trans_type) . "," . DB::escape($this->Branch) . ", " . DB::escape($this->cust_ref) . "," . DB::escape($this->reference) . "," . DB::escape($this->salesman) . "," . DB::escape($this->Comments) . "," . DB::escape($this->source_no) . ",'" . Dates::dateToSql($this->document_date) . "', " . DB::escape($this->sales_type) . ", " . DB::escape($this->ship_via) . "," . DB::escape($this->deliver_to) . "," . DB::escape($this->delivery_address) . ", " . DB::escape($this->name) . ", " . DB::escape($this->phone) . ", " . DB::escape($this->email) . ", " . DB::escape($this->freight_cost) . ", " . DB::escape($this->location) . ", " . DB::escape($del_date) . ")";
+            VALUES (" . DB::escape($order_no) . "," . DB::escape($order_type) . "," . DB::escape($this->debtor_id) . ", " . DB::escape($this->trans_type) . "," . DB::escape($this->Branch) . ", " . DB::escape($this->cust_ref) . "," . DB::escape($this->reference) . "," . DB::escape($this->salesman) . "," . DB::escape($this->Comments) . "," . DB::escape($this->source_no) . ",'" . Dates::dateToSql($this->document_date) . "', " . DB::escape($this->sales_type) . ", " . DB::escape($this->ship_via) . "," . DB::escape($this->deliver_to) . "," . DB::escape($this->delivery_address) . ", " . DB::escape($this->name) . ", " . DB::escape($this->phone) . ", " . DB::escape($this->email) . ", " . DB::escape($this->freight_cost) . ", " . DB::escape($this->location) . ", " . DB::escape($del_date) . ")";
       DB::query($sql, "order Cannot be Added");
       $this->trans_no = array($order_no => 0);
       $st_ids         = array();
@@ -905,7 +905,7 @@
       $version  = current($this->trans_no);
       DB::begin();
       $sql = "UPDATE sales_orders SET type =" . DB::escape($this->so_type) . " ,
-                    debtor_id = " . DB::escape($this->customer_id) . ",
+                    debtor_id = " . DB::escape($this->debtor_id) . ",
                     branch_id = " . DB::escape($this->Branch) . ",
                     customer_ref = " . DB::escape($this->cust_ref) . ",
                     source_no = " . DB::escape($this->source_no) . ",
@@ -1010,25 +1010,25 @@
       $mail->send();
     }
     /**
-     * @param $customer_id
+     * @param $debtor_id
      * @param $branch_id
      *
      * @return mixed|string
      */
-    public function customer_to_order($customer_id, $branch_id) {
+    public function customer_to_order($debtor_id, $branch_id) {
       $ret_error = "";
-      $myrow     = Sales_Order::get_customer($customer_id);
+      $myrow     = Sales_Order::get_customer($debtor_id);
       $name      = $myrow['name'];
       if ($myrow['dissallow_invoices'] == 1) {
         $ret_error = _("The selected customer account is currently on hold. Please contact the credit control personnel to discuss.");
       }
-      $this->set_customer($customer_id, $name, $myrow['curr_code'], $myrow['discount'], $myrow['payment_terms'], $myrow['payment_discount']); // the sales type determines the price list to be used by default
+      $this->set_customer($debtor_id, $name, $myrow['curr_code'], $myrow['discount'], $myrow['payment_terms'], $myrow['payment_discount']); // the sales type determines the price list to be used by default
       $this->set_sales_type($myrow['salestype'], $myrow['sales_type'], $myrow['tax_included'], $myrow['factor']);
       if ($this->trans_type != ST_SALESORDER && $this->trans_type != ST_SALESQUOTE) {
         $this->dimension_id  = $myrow['dimension_id'];
         $this->dimension2_id = $myrow['dimension2_id'];
       }
-      $result = Sales_Order::get_branch($customer_id, $branch_id);
+      $result = Sales_Order::get_branch($debtor_id, $branch_id);
       if (DB::numRows($result) == 0) {
         return _("The selected customer and branch are not valid, or the customer does not have any branches.");
       }
@@ -1047,7 +1047,7 @@
       }
       $this->set_delivery($myrow["default_ship_via"], $name, $address);
       if ($this->trans_type == ST_SALESINVOICE) {
-        $this->due_date = Sales_Order::get_invoice_duedate($customer_id, $this->document_date);
+        $this->due_date = Sales_Order::get_invoice_duedate($debtor_id, $this->document_date);
         if ($this->pos != -1) {
           $this->cash = Dates::differenceBetween($this->due_date, Dates::today(), 'd') < 2;
         }
@@ -1216,8 +1216,8 @@
         if (isset($this)) {
           // can't change the customer/branch if items already received on this order
           //echo $this->customer_name . " - " . $this->deliver_to;
-          Row::label(_('Customer:'), $this->customer_name . " - " . $this->deliver_to, "id='customer_id_label' class='label pointer'");
-          Forms::hidden('customer_id', $this->customer_id);
+          Row::label(_('Customer:'), $this->customer_name . " - " . $this->deliver_to, "id='debtor_id_label' class='label pointer'");
+          Forms::hidden('debtor_id', $this->debtor_id);
           Forms::hidden('branch_id', $this->Branch);
           Forms::hidden('sales_type', $this->sales_type);
           //		if ($this->trans_type != ST_SALESORDER && $this->trans_type != ST_SALESQUOTE) {
@@ -1226,17 +1226,17 @@
           //		}
         }
       } else {
-        //Debtor::row(_("Customer:"), 'customer_id', null, false, true, false, true);
+        //Debtor::row(_("Customer:"), 'debtor_id', null, false, true, false, true);
         Debtor::newselect();
         if (Input::post('_control') == 'customer') {
           // customer has changed
           Ajax::activate('_page_body');
         }
-        Debtor_Branch::row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true, true);
+        Debtor_Branch::row(_("Branch:"), $_POST['debtor_id'], 'branch_id', null, false, true, true, true);
         if (($this->Branch != Input::post('branch_id', null, -1))) {
           if (!isset($_POST['branch_id']) || !$_POST['branch_id']) {
             // ignore errors on customer search box call
-            if (!$_POST['customer_id']) {
+            if (!$_POST['debtor_id']) {
               $customer_error = _("No customer found for entered text.");
             } else {
               $customer_error = _("The selected customer does not have any branches. Please create at least one branch.");
@@ -1245,7 +1245,7 @@
             $this->Branch = 0;
           } else {
             $old_order                 = clone($this);
-            $customer_error            = $this->customer_to_order($_POST['customer_id'], $_POST['branch_id']);
+            $customer_error            = $this->customer_to_order($_POST['debtor_id'], $_POST['branch_id']);
             $_POST['location']         = $this->location;
             $_POST['deliver_to']       = $this->deliver_to;
             $_POST['delivery_address'] = $this->delivery_address;
@@ -1287,10 +1287,10 @@
             }
             unset($old_order);
           }
-          Session::setGlobal('debtor', $_POST['customer_id']);
+          Session::setGlobal('debtor_id', $_POST['debtor_id']);
         } // changed branch
         else {
-          $row = Sales_Order::get_customer($_POST['customer_id']);
+          $row = Sales_Order::get_customer($_POST['debtor_id']);
           if ($row['dissallow_invoices'] == 1) {
             $customer_error = _("The selected customer account is currently on hold. Please contact the credit control personnel to discuss.");
           }
@@ -1309,8 +1309,8 @@
           $_POST['OrderDate'] : $this->document_date));
       }
       Table::section(3);
-      if ($_POST['customer_id']) {
-        Debtor_Payment::credit_row($_POST['customer_id'], $this->credit);
+      if ($_POST['debtor_id']) {
+        Debtor_Payment::credit_row($_POST['debtor_id'], $this->credit);
       }
       if ($editable) {
         Sales_Type::row(_("Price List"), 'sales_type', null, true);
@@ -1336,7 +1336,7 @@
           }
           Ajax::activate('_ex_rate');
           if ($this->trans_type == ST_SALESINVOICE) {
-            $_POST['delivery_date'] = Sales_Order::get_invoice_duedate(Input::post('customer_id'), Input::post('OrderDate'));
+            $_POST['delivery_date'] = Sales_Order::get_invoice_duedate(Input::post('debtor_id'), Input::post('OrderDate'));
           } else {
             $_POST['delivery_date'] = Dates::addDays(Input::post('OrderDate'), DB_Company::get_pref('default_delivery_required'));
           }
@@ -1620,12 +1620,12 @@
     /**
      * @static
      *
-     * @param $customer_id
+     * @param $debtor_id
      *
      * @return \ADV\Core\DB\Query\Result
 
      */
-    public static function get_customer($customer_id) {
+    public static function get_customer($debtor_id) {
       // Now check to ensure this account is not on hold */
       $sql
               = "SELECT debtors.name,
@@ -1644,19 +1644,19 @@
             FROM debtors, credit_status, sales_types
             WHERE debtors.sales_type=sales_types.id
             AND debtors.credit_status=credit_status.id
-            AND debtors.debtor_id = " . DB::escape($customer_id);
+            AND debtors.debtor_id = " . DB::escape($debtor_id);
       $result = DB::query($sql, "Customer Record Retreive");
       return DB::fetch($result);
     }
     /**
      * @static
      *
-     * @param $customer_id
+     * @param $debtor_id
      * @param $branch_id
      *
      * @return null|PDOStatement
      */
-    public static function get_branch($customer_id, $branch_id) {
+    public static function get_branch($debtor_id, $branch_id) {
       // the branch was also selected from the customer selection so default the delivery details from the customer branches table branches. The order process will ask for branch details later anyway
       $sql
         = "SELECT branches.br_name,
@@ -1667,7 +1667,7 @@
                 WHERE branches.tax_group_id = tax_groups.id
                     AND locations.loc_code=default_location
                     AND branches.branch_id=" . DB::escape($branch_id) . "
-                    AND branches.debtor_id = " . DB::escape($customer_id);
+                    AND branches.debtor_id = " . DB::escape($debtor_id);
       return DB::query($sql, "Customer Branch Record Retreive");
     }
     /**
@@ -1744,7 +1744,7 @@
       $_POST['phone']            = $order->phone;
       $_POST['location']         = $order->location;
       $_POST['ship_via']         = $order->ship_via;
-      $_POST['customer_id']      = $order->customer_id;
+      $_POST['debtor_id']      = $order->debtor_id;
       $_POST['branch_id']        = $order->Branch;
       $_POST['sales_type']       = $order->sales_type;
       $_POST['salesman']         = $order->salesman;
@@ -1780,7 +1780,7 @@
       if (isset($_POST['salesman'])) {
         $order->salesman = $_POST['salesman'];
       }
-      $order->customer_id = $_POST['customer_id'];
+      $order->debtor_id = $_POST['debtor_id'];
       $order->Branch      = $_POST['branch_id'];
       $order->sales_type  = $_POST['sales_type'];
       // POS

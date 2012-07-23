@@ -12,20 +12,20 @@
   Page::start(_($help_context = "Customer Allocations"), SA_SALESALLOC);
   Forms::start();
   /* show all outstanding receipts and credits to be allocated */
-  if (!isset($_POST['customer_id'])) {
-    $_POST['customer_id'] = Session::getGlobal('debtor');
+  if (!isset($_POST['debtor_id'])) {
+    $_POST['debtor_id'] = Session::getGlobal('debtor_id');
   }
   echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
-  echo Debtor::select('customer_id', $_POST['customer_id'], true, true);
+  echo Debtor::select('debtor_id', $_POST['debtor_id'], true, true);
   echo "<br>";
   Forms::check(_("Show Settled Items:"), 'ShowSettled', null, true);
   echo "</div><br><br>";
-  Session::setGlobal('debtor', $_POST['customer_id']);
-  if (isset($_POST['customer_id']) && ($_POST['customer_id'] == ALL_TEXT)) {
-    unset($_POST['customer_id']);
+  Session::setGlobal('debtor_id', $_POST['debtor_id']);
+  if (isset($_POST['debtor_id']) && ($_POST['debtor_id'] == ALL_TEXT)) {
+    unset($_POST['debtor_id']);
   }
-  /*if (isset($_POST['customer_id'])) {
-           $custCurr = Bank_Currency::for_debtor($_POST['customer_id']);
+  /*if (isset($_POST['debtor_id'])) {
+           $custCurr = Bank_Currency::for_debtor($_POST['debtor_id']);
            if (!Bank_Currency::is_company($custCurr))
              echo _("Customer Currency:") . $custCurr;
          }*/
@@ -33,11 +33,11 @@
   if (Forms::hasPost('ShowSettled')) {
     $settled = true;
   }
-  $customer_id = null;
-  if (isset($_POST['customer_id'])) {
-    $customer_id = $_POST['customer_id'];
+  $debtor_id = null;
+  if (isset($_POST['debtor_id'])) {
+    $debtor_id = $_POST['debtor_id'];
   }
-  $sql  = Sales_Allocation::get_allocatable_sql($customer_id, $settled);
+  $sql  = Sales_Allocation::get_allocatable_sql($debtor_id, $settled);
   $cols = array(
     _("Transaction Type") => array('fun' => 'Sales_Allocation::sysTypeName'),
     _("#")                => array('fun' => 'Sales_Allocation::viewTrans'),
@@ -55,7 +55,7 @@
       'insert' => true, 'fun' => 'Sales_Allocation::alloc_link'
     )
   );
-  if (isset($_POST['customer_id'])) {
+  if (isset($_POST['debtor_id'])) {
     $cols[_("Customer")] = 'skip';
     $cols[_("Currency")] = 'skip';
   }

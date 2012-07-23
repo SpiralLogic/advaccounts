@@ -111,6 +111,7 @@
       $arguments[0]                = $this;
       $key                         = $this->_keyForArguments($arguments);
       $this->_objects[$name][$key] = call_user_func_array($this->_callbacks[$name], $arguments);
+
       return $this->_objects[$name][$key];
     }
     /**

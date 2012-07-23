@@ -28,7 +28,7 @@
     });
   }
   error_reporting(E_ALL & ~E_NOTICE);
-  ini_set('display_errors', 1);
+  ini_set('display_errors', 'On');
   ini_set("ignore_repeated_errors", "On");
   ini_set("log_errors", "On");
   define('E_SUCCESS', E_ALL << 1);
@@ -60,5 +60,6 @@
       return Security::htmlentities($string);
     }
   }
+
   new ADVAccounting($loader);
 

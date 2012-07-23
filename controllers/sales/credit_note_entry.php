@@ -29,8 +29,8 @@
   if (Forms::isListUpdated('branch_id')) {
     // when branch is selected via external editor also customer can change
     $br                   = Sales_Branch::get(Input::post('branch_id'));
-    $_POST['customer_id'] = $br['debtor_id'];
-    Ajax::activate('customer_id');
+    $_POST['debtor_id'] = $br['debtor_id'];
+    Ajax::activate('debtor_id');
   }
   if (isset($_GET[ADDED_ID])) {
     $credit_no  = $_GET[ADDED_ID];
@@ -129,7 +129,7 @@
   {
     $order                      = Sales_Order::check_edit_conflicts($order);
     $_POST['CreditText']        = $order->Comments;
-    $_POST['customer_id']       = $order->customer_id;
+    $_POST['debtor_id']       = $order->debtor_id;
     $_POST['branch_id']         = $order->Branch;
     $_POST['OrderDate']         = $order->document_date;
     $_POST['ChargeFreightCost'] = Num::priceFormat($order->freight_cost);

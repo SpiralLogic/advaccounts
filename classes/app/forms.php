@@ -1174,7 +1174,7 @@
      * @param bool $submit_on_change
      */
     public static function  refCells($label, $name, $title = null, $init = null, $params = null, $submit_on_change = false) {
-      Forms::textCellsEx($label, $name, 'small', 18, $init, $title, $params, null, $submit_on_change, ' placeholder="Reference"');
+      Forms::textCellsEx($label, $name, 'small', 18, $init, $title, $params, null, $submit_on_change, ' placeholder="Reference" disabled');
     }
     /**
      * @param        $label
