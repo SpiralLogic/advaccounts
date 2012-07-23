@@ -14,6 +14,8 @@
    */
   class Forms {
     static $dic;
+    /** @var \ADV\Core\DB\DB */
+    static $DB;
     /**
      * @static
      *

@@ -45,7 +45,6 @@
       outline:                rgb(255, 255, 255) none 0;
       -moz-box-shadow:        0 2px 3px 1px rgba(10, 10, 10, .5);
       box-shadow:             0 2px 3px 1px rgba(10, 10, 10, .5);
-      box-shadow:             0 2px 3px 1px rgba(10, 10, 10, .5);
     }
 
     .left {

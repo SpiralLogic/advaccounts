@@ -11,7 +11,7 @@
   {
     protected $_viewdata = [];
     protected $_template = null;
-    protected $Cache;
+     static $Cache;
     /**
      * @param $template
      */
@@ -21,7 +21,6 @@
         throw new \InvalidArgumentException("There is no view $template !");
       }
       $this->_template = $template;
-      $this->Cache     = Cache::i();
     }
     /**
      * @param bool $return
@@ -36,7 +35,7 @@
       // The contents of each view file is cached in an array for the
       // request since partial views may be rendered inside of for
       // loops which could incur performance penalties.
-      $__contents = $this->Cache->get('template.' . $this->_template);
+      $__contents = static::$Cache->_get('template.' . $this->_template);
       if (!$__contents) {
         $__contents = file_get_contents($this->_template);
         $__contents = $this->compile_nothings($__contents);
@@ -44,7 +43,7 @@
         $__contents = $this->compile_else($__contents);
         $__contents = $this->compile_structure_closings($__contents);
         $__contents = $this->compile_echos($__contents);
-        $this->Cache->set('template.' . $this->_template, $__contents);
+        static::$Cache->_set('template.' . $this->_template, $__contents);
       }
       ob_start() and extract($this->_viewdata, EXTR_SKIP);
       // We'll include the view contents for parsing within a catcher
@@ -197,3 +196,4 @@
       }
     }
   }
+  View::$Cache     = Cache::i();
