@@ -19,7 +19,7 @@
       <li><a href="/purchases/po_entry_items?New=0">Purchase Order</a></li>
     </ul>
   </div>
-  @if ($bank)@
+  {{#if $bank}}
   <h3><a href="#">Banking</a></h3>
 
   <div>
@@ -30,7 +30,7 @@
       <li><a href="/gl/undeposited_funds?">Undeposited</a></li>
     </ul>
   </div>
-  @endif@
+  {{#endif}}
   <h3><a href="#">Customer Search</a></h3>
 
   <div>

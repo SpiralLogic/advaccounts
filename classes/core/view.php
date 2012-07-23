@@ -36,9 +36,10 @@
       // The contents of each view file is cached in an array for the
       // request since partial views may be rendered inside of for
       // loops which could incur performance penalties.
-      $__contents = null; //$this->Cache->get('template.' . $this->_template);
+      $__contents = $this->Cache->get('template.' . $this->_template);
       if (!$__contents) {
         $__contents = file_get_contents($this->_template);
+        $__contents = $this->compile_nothings($__contents);
         $__contents = $this->compile_structure_openings($__contents);
         $__contents = $this->compile_else($__contents);
         $__contents = $this->compile_structure_closings($__contents);
@@ -49,6 +50,7 @@
       // We'll include the view contents for parsing within a catcher
       // so we can avoid any WSOD errors. If an exception occurs we
       // will throw it out to the exception handler.
+
       try {
         eval('?>' . $__contents);
       }
@@ -73,6 +75,17 @@
      */
     protected static function compile_echos($value) {
       return preg_replace('/\{\{(.+?)\}\}/', '<?php echo $1; ?>', $value);
+    }
+    /**
+     * @static
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
+    protected static function compile_nothings($value) {
+      $pattern = '/(\s*)\{\{(.+?)\?\}\}(.*)\{\{\/\2\?\}\}(\s*)/';
+      return preg_replace($pattern, '$1<?php if(isset($2) && $2): ?>$3<?php endif; ?>$4', $value);
     }
     /**
      * Rewrites Blade structure openings into PHP structure openings.
