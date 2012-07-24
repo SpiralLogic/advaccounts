@@ -23,7 +23,7 @@
   } elseif (Input::request('id', Input::NUMERIC) > 0) {
     $data['company']     = $supplier = new Creditor(Input::request('id', Input::NUMERIC));
     $data['contact_log'] = Contact_Log::read($supplier->id, CT_SUPPLIER);
-    Session::setGlobal('creditor', $supplier->id);
+    Session::setGlobal('creditor_id', $supplier->id);
   } else {
     $data['company'] = $supplier = new Creditor();
   }
@@ -151,7 +151,7 @@
   HTML::td()->tr->table->script->div->div;
 
   $menu->endTab()->startTab('Invoices', 'Invoices');
-  echo "<div id='invoiceFrame' data-src='" . BASE_URL . "purchases/inquiry/supplier_allocation_inquiry.php?supplier_id=" . $supplier->id . "' ></div> ";
+  echo "<div id='invoiceFrame' data-src='" . BASE_URL . "purchases/inquiry/supplier_allocation_inquiry.php?creditor_id=" . $supplier->id . "' ></div> ";
   $menu->endTab()->render();
   Forms::hidden('frame', Input::request('frame'));
   HTML::div();
@@ -183,8 +183,8 @@
   if (!Input::get('frame')) {
     HTML::div('shortcuts', array('class' => 'width50 center'));
     $shortcuts = new MenuUI(array('noajax' => true));
-    $shortcuts->addLink('Supplier Payment', 'Make supplier payment!', '/purchases/supplier_payment.php?supplier_id=', 'id');
-    $shortcuts->addLink('Supplier Invoice', 'Make supplier invoice!', '/purchases/supplier_invoice.php?New=1&supplier_id=', 'id');
+    $shortcuts->addLink('Supplier Payment', 'Make supplier payment!', '/purchases/supplier_payment.php?creditor_id=', 'id');
+    $shortcuts->addLink('Supplier Invoice', 'Make supplier invoice!', '/purchases/supplier_invoice.php?New=1&creditor_id=', 'id');
     $shortcuts->render();
     /** @noinspection PhpUndefinedMethodInspection */
     HTML::_div();

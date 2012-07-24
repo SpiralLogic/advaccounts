@@ -54,7 +54,7 @@
   $voided = Display::is_voided(ST_SUPPAYMENT, $trans_no, _("This payment has been voided."));
   // now display the allocations for this payment
   if (!$voided) {
-    GL_Allocation::from(PT_SUPPLIER, $receipt['supplier_id'], ST_SUPPAYMENT, $trans_no, -$receipt['Total']);
+    GL_Allocation::from(PT_SUPPLIER, $receipt['creditor_id'], ST_SUPPAYMENT, $trans_no, -$receipt['Total']);
   }
   if (Input::get('frame')) {
     return;

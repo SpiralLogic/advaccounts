@@ -80,9 +80,9 @@
       } else {
         $trans         = Creditor_Trans::get($trans_no, $type);
         $pyt_trans     = Creditor_Trans::get($pyt_no, $pyt_type);
-        $supplier_accs = Creditor::get_accounts_name($trans['supplier_id']);
+        $supplier_accs = Creditor::get_accounts_name($trans['creditor_id']);
         $ar_ap_act     = $supplier_accs['payable_account'];
-        $person_id     = $trans['supplier_id'];
+        $person_id     = $trans['creditor_id'];
         $curr          = $trans['SupplierCurrCode'];
         $date          = Dates::sqlToDate($trans['tran_date']);
       }

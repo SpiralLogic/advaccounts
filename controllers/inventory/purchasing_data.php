@@ -30,9 +30,9 @@
     if ($input_error == 0) {
       if ($Mode == ADD_ITEM) {
         $sql
-          = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
+          = "INSERT INTO purch_data (creditor_id, stock_id, price, suppliers_uom,
              conversion_factor, supplier_description) VALUES (";
-        $sql .= DB::escape($_POST['supplier_id']) . ", " . DB::escape($_POST['stock_id']) . ", " . Validation::input_num('price', 0) . ", " . DB::escape($_POST['suppliers_uom']) . ", " . Validation::input_num('conversion_factor') . ", " . DB::escape($_POST['supplier_description']) . ")";
+        $sql .= DB::escape($_POST['creditor_id']) . ", " . DB::escape($_POST['stock_id']) . ", " . Validation::input_num('price', 0) . ", " . DB::escape($_POST['suppliers_uom']) . ", " . Validation::input_num('conversion_factor') . ", " . DB::escape($_POST['supplier_description']) . ")";
         DB::query($sql, "The supplier purchasing details could not be added");
         Event::success(_("This supplier purchasing data has been added."));
       } else {
@@ -41,7 +41,7 @@
                 conversion_factor=" . Validation::input_num('conversion_factor') . ",
                 supplier_description=" . DB::escape($_POST['supplier_description']) . "
                 WHERE stock_id=" . DB::escape($_POST['stock_id']) . " AND
-                supplier_id=" . DB::escape($selected_id);
+                creditor_id=" . DB::escape($selected_id);
         DB::query($sql, "The supplier purchasing details could not be updated");
         Event::success(_("Supplier purchasing data has been updated."));
       }
@@ -49,7 +49,7 @@
     }
   }
   if ($Mode == MODE_DELETE) {
-    $sql = "DELETE FROM purch_data WHERE supplier_id=" . DB::escape($selected_id) . "
+    $sql = "DELETE FROM purch_data WHERE creditor_id=" . DB::escape($selected_id) . "
         AND stock_id=" . DB::escape($_POST['stock_id']);
     DB::query($sql, "could not delete purchasing data");
     Event::notice(_("The purchasing data item has been sucessfully deleted."));
@@ -91,7 +91,7 @@
   } else {
     $sql    = "SELECT purch_data.*,suppliers.name," . "suppliers.curr_code
         FROM purch_data INNER JOIN suppliers
-        ON purch_data.supplier_id=suppliers.supplier_id
+        ON purch_data.creditor_id=suppliers.creditor_id
         WHERE stock_id = " . DB::escape($_POST['stock_id']);
     $result = DB::query($sql, "The supplier purchasing details for the selected part could not be retrieved");
     Display::div_start('price_table');
@@ -117,8 +117,8 @@
         Cell::label($myrow["suppliers_uom"]);
         Cell::qty($myrow['conversion_factor'], false, User::exrate_dec());
         Cell::label($myrow["supplier_description"]);
-        Forms::buttonEditCell("Edit" . $myrow['supplier_id'], _("Edit"));
-        Forms::buttonDeleteCell("Delete" . $myrow['supplier_id'], _("Delete"));
+        Forms::buttonEditCell("Edit" . $myrow['creditor_id'], _("Edit"));
+        Forms::buttonDeleteCell("Delete" . $myrow['creditor_id'], _("Delete"));
         Row::end();
         $j++;
         If ($j == 12) {
@@ -134,8 +134,8 @@
   if ($Mode == MODE_EDIT) {
     $sql
                                    = "SELECT purch_data.*,suppliers.name FROM purch_data
-        INNER JOIN suppliers ON purch_data.supplier_id=suppliers.supplier_id
-        WHERE purch_data.supplier_id=" . DB::escape($selected_id) . "
+        INNER JOIN suppliers ON purch_data.creditor_id=suppliers.creditor_id
+        WHERE purch_data.creditor_id=" . DB::escape($selected_id) . "
         AND purch_data.stock_id=" . DB::escape($_POST['stock_id']);
     $result                        = DB::query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
     $myrow                         = DB::fetch($result);
@@ -149,10 +149,10 @@
   Forms::hidden('selected_id', $selected_id);
   Table::start('tableinfo');
   if ($Mode == MODE_EDIT) {
-    Forms::hidden('supplier_id');
+    Forms::hidden('creditor_id');
     Row::label(_("Supplier:"), $name);
   } else {
-    Creditor::row(_("Supplier:"), 'supplier_id', null, false, true);
+    Creditor::row(_("Supplier:"), 'creditor_id', null, false, true);
     $_POST['price'] = $_POST['suppliers_uom'] = $_POST['conversion_factor'] = $_POST['supplier_description'] = "";
   }
   Forms::AmountRow(_("Price:"), 'price', null, '', Bank_Currency::for_creditor($selected_id), $dec2);

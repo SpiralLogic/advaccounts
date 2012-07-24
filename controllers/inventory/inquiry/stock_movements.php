@@ -90,7 +90,7 @@
       }
     } elseif ($myrow["type"] == ST_SUPPRECEIVE || $myrow['type'] == ST_SUPPCREDIT) {
       // get the supplier name
-      $sql             = "SELECT name FROM suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";
+      $sql             = "SELECT name FROM suppliers WHERE creditor_id = '" . $myrow["person_id"] . "'";
       $supplier_result = DB::query($sql, "check failed");
       $supplier_row    = DB::fetch($supplier_result);
       if (strlen($supplier_row['name']) > 0) {

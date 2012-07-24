@@ -17,9 +17,9 @@
      * @return array|string
      */
     public static function search($terms) {
-      $sql = "SELECT supplier_id as id, supp_ref as label, supp_ref as value FROM suppliers WHERE supp_ref LIKE '%" . $terms . "%' ";
+      $sql = "SELECT creditor_id as id, supp_ref as label, supp_ref as value FROM suppliers WHERE supp_ref LIKE '%" . $terms . "%' ";
       if (is_numeric($terms)) {
-        $sql .= ' OR supplier_id LIKE  ' . DB::quote($terms . '%');
+        $sql .= ' OR creditor_id LIKE  ' . DB::quote($terms . '%');
       }
       $sql .= " LIMIT 20";
       $result = DB::query($sql, 'Couldn\'t Get Supplier');
@@ -34,7 +34,7 @@
     }
     /** @var */
     /** @var */
-    public $id = 0, $supplier_id; //
+    public $id = 0, $creditor_id; //
     /** @var */
     public $name = 'New Supplier'; //
     /** @var */
@@ -130,7 +130,7 @@
     /**
      * @var string
      */
-    protected $_id_column = 'supplier_id';
+    protected $_id_column = 'creditor_id';
     /**
      * @param int|null $id
      */
@@ -254,7 +254,7 @@
     public static function addEditDialog() {
       $customerBox = new Dialog('Supplier Edit', 'supplierBox', '');
       $customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
-      $customerBox->addBeforeClose('$("#supplier_id").trigger("change")');
+      $customerBox->addBeforeClose('$("#creditor_id").trigger("change")');
       $customerBox->setOptions(array(
                                     'autoOpen'   => false,
                                     'modal'      => true,
@@ -265,10 +265,10 @@
       $customerBox->show();
       $js
         = <<<JS
-                            var val = $("#supplier_id").val();
+                            var val = $("#creditor_id").val();
                             $("#supplierBox").html("<iframe src='/contacts/suppliers.php?frame=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
-      JS::addLiveEvent('#supplier_id_label', 'click', $js);
+      JS::addLiveEvent('#creditor_id_label', 'click', $js);
     }
     /**
      * @param bool|int|null $id
@@ -289,12 +289,12 @@ JS;
     /**
      * @static
      *
-     * @param      $supplier_id
+     * @param      $creditor_id
      * @param null $to
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get_to_trans($supplier_id, $to = null) {
+    public static function get_to_trans($creditor_id, $to = null) {
       if ($to == null) {
         $todate = date("Y-m-d");
       } else {
@@ -316,9 +316,9 @@ JS;
              creditor_trans
         WHERE
              suppliers.payment_terms = payment_terms.terms_indicator
-             AND suppliers.supplier_id = " . DB::quote($supplier_id) . "
+             AND suppliers.creditor_id = " . DB::quote($creditor_id) . "
              AND creditor_trans.tran_date <= '$todate'
-             AND suppliers.supplier_id = creditor_trans.supplier_id
+             AND suppliers.creditor_id = creditor_trans.creditor_id
         GROUP BY
              suppliers.name,
              payment_terms.terms,
@@ -329,10 +329,10 @@ JS;
         /*Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
         $nil_balance = true;
         $sql
-                     = "SELECT suppliers.name, suppliers.curr_code, suppliers.supplier_id, payment_terms.terms FROM suppliers,
+                     = "SELECT suppliers.name, suppliers.curr_code, suppliers.creditor_id, payment_terms.terms FROM suppliers,
                  payment_terms WHERE
                  suppliers.payment_terms = payment_terms.terms_indicator
-                 AND suppliers.supplier_id = " . DB::escape($supplier_id);
+                 AND suppliers.creditor_id = " . DB::escape($creditor_id);
         $result      = DB::query($sql, "The customer details could not be retrieved");
       } else {
         $nil_balance = false;
@@ -349,13 +349,13 @@ JS;
     /**
      *   Get how much we owe the supplier for the period
      *
-     * @param $supplier_id
+     * @param $creditor_id
      * @param $date_from
      * @param $date_to
      *
      * @return mixed
      */
-    public static function get_oweing($supplier_id, $date_from, $date_to) {
+    public static function get_oweing($creditor_id, $date_from, $date_to) {
       $date_from = Dates::dateToSql($date_from);
       $date_to   = Dates::dateToSql($date_to);
       // Sherifoz 22.06.03 Also get the description
@@ -370,7 +370,7 @@ JS;
      WHERE trans.ov_amount != 0
         AND trans . tran_date >= '$date_from'
         AND trans . tran_date <= '$date_to'
-        AND trans.supplier_id = " . DB::escape($supplier_id) . "
+        AND trans.creditor_id = " . DB::escape($creditor_id) . "
         AND trans.type = " . ST_SUPPINVOICE;
       $result  = DB::query($sql);
       $results = DB::fetch($result);
@@ -379,24 +379,24 @@ JS;
     /**
      * @static
      *
-     * @param $supplier_id
+     * @param $creditor_id
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get($supplier_id) {
-      $sql    = "SELECT * FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
+    public static function get($creditor_id) {
+      $sql    = "SELECT * FROM suppliers WHERE creditor_id=" . DB::escape($creditor_id);
       $result = DB::query($sql, "could not get supplier");
       return DB::fetch($result);
     }
     /**
      * @static
      *
-     * @param $supplier_id
+     * @param $creditor_id
      *
      * @return mixed
      */
-    public static function get_name($supplier_id) {
-      $sql    = "SELECT name AS name FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
+    public static function get_name($creditor_id) {
+      $sql    = "SELECT name AS name FROM suppliers WHERE creditor_id=" . DB::escape($creditor_id);
       $result = DB::query($sql, "could not get supplier");
       $row    = DB::fetchRow($result);
       return $row[0];
@@ -404,12 +404,12 @@ JS;
     /**
      * @static
      *
-     * @param $supplier_id
+     * @param $creditor_id
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get_accounts_name($supplier_id) {
-      $sql    = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
+    public static function get_accounts_name($creditor_id) {
+      $sql    = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE creditor_id=" . DB::escape($creditor_id);
       $result = DB::query($sql, "could not get supplier");
       return DB::fetch($result);
     }
@@ -436,9 +436,9 @@ JS;
         $value = $_POST['supplier'];
         JS::setFocus('stock_id');
       } elseif (!$value) {
-        $value = Session::getGlobal('creditor');
+        $value = Session::getGlobal('creditor_id');
         if ($value) {
-          $_POST['supplier_id'] = $value;
+          $_POST['creditor_id'] = $value;
           $value                = Creditor::get_name($value);
         } else {
           JS::setFocus('supplier');
@@ -448,7 +448,7 @@ JS;
       if ($o['row']) {
         echo '<tr>';
       }
-      Forms::hidden('supplier_id');
+      Forms::hidden('creditor_id');
       UI::search('supplier', array(
                                   'cells'            => true, //
                                   'url'              => '/contacts/suppliers.php', ///
@@ -463,7 +463,7 @@ JS;
         echo "</tr>\n";
       }
       JS::beforeload("var Supplier= function(data) {
-            var id = document.getElementById('supplier_id');
+            var id = document.getElementById('creditor_id');
             id.value= data.id;
             var supplier = document.getElementById('supplier');
             supplier.value=data.value;
@@ -482,9 +482,9 @@ JS;
      * @return string
      */
     public static function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $all = false, $editkey = false) {
-      $sql  = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
+      $sql  = "SELECT creditor_id, supp_ref, curr_code, inactive FROM suppliers ";
       $mode = DB_Company::get_pref('no_supplier_list');
-      return Forms::selectBox($name, $selected_id, $sql, 'supplier_id', 'name', array(
+      return Forms::selectBox($name, $selected_id, $sql, 'creditor_id', 'name', array(
                                                                                      'format'        => 'Forms::addCurrFormat',
                                                                                      'order'         => array('supp_ref'),
                                                                                      'search_box'    => $mode != 0,

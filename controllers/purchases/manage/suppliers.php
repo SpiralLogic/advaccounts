@@ -10,10 +10,10 @@
 
   Page::start(_($help_context = "Suppliers"), SA_SUPPLIER, Input::request('frame'));
   Validation::check(Validation::TAX_GROUP, _("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
-  if (isset($_GET['supplier_id'])) {
-    $_POST['supplier_id'] = $_GET['supplier_id'];
+  if (isset($_GET['creditor_id'])) {
+    $_POST['creditor_id'] = $_GET['creditor_id'];
   }
-  $new_supplier = Input::post('supplier_id') == '';
+  $new_supplier = Input::post('creditor_id') == '';
   if (isset($_POST['submit'])) {
     //initialise no input errors assumed initially before we test
     $input_error = 0;
@@ -54,10 +54,10 @@
 				purchase_account=" . DB::escape($_POST['purchase_account']) . ",
 				payment_discount_account=" . DB::escape($_POST['payment_discount_account']) . ",
  notes=" . DB::escape($_POST['notes']) . ",
-				tax_group_id=" . DB::escape($_POST['tax_group_id']) . " WHERE supplier_id = " . DB::escape($_POST['supplier_id']);
+				tax_group_id=" . DB::escape($_POST['tax_group_id']) . " WHERE creditor_id = " . DB::escape($_POST['creditor_id']);
         DB::query($sql, "The supplier could not be updated");
-        DB::updateRecordStatus($_POST['supplier_id'], $_POST['inactive'], 'suppliers', 'supplier_id');
-        Ajax::activate('supplier_id'); // in case of status change
+        DB::updateRecordStatus($_POST['creditor_id'], $_POST['inactive'], 'suppliers', 'creditor_id');
+        Ajax::activate('creditor_id'); // in case of status change
         Event::success(_("Supplier has been updated."));
       } else {
         $sql
@@ -66,7 +66,7 @@
 				payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
 				VALUES (" . DB::escape($_POST['name']) . ", " . DB::escape($_POST['ref']) . ", " . DB::escape($_POST['address']) . ", " . DB::escape($_POST['address']) . ", " . DB::escape($_POST['phone']) . ", " . DB::escape($_POST['phone2']) . ", " . DB::escape($_POST['fax']) . ", " . DB::escape($_POST['gst_no']) . ", " . DB::escape($_POST['email']) . ", " . DB::escape($_POST['website']) . ", " . DB::escape($_POST['contact']) . ", " . DB::escape($_POST['account_no']) . ", " . DB::escape($_POST['bank_account']) . ", " . Validation::input_num('credit_limit', 0) . ", " . DB::escape($_POST['dimension_id']) . ", " . DB::escape($_POST['dimension2_id']) . ", " . DB::escape($_POST['curr_code']) . ", " . DB::escape($_POST['payment_terms']) . ", " . DB::escape($_POST['payable_account']) . ", " . DB::escape($_POST['purchase_account']) . ", " . DB::escape($_POST['payment_discount_account']) . ", " . DB::escape($_POST['notes']) . ", " . DB::escape($_POST['tax_group_id']) . ")";
         DB::query($sql, "The supplier could not be added");
-        $_POST['supplier_id'] = DB::insertId();
+        $_POST['creditor_id'] = DB::insertId();
         $new_supplier         = false;
         Event::success(_("A new supplier has been added."));
         Ajax::activate('_page_body');
@@ -76,14 +76,14 @@
     //the link to delete a selected record was clicked instead of the submit button
     $cancel_delete = 0;
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'creditor_trans' , purch_orders
-    $sql    = "SELECT COUNT(*) FROM creditor_trans WHERE supplier_id=" . DB::escape($_POST['supplier_id']);
+    $sql    = "SELECT COUNT(*) FROM creditor_trans WHERE creditor_id=" . DB::escape($_POST['creditor_id']);
     $result = DB::query($sql, "check failed");
     $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       $cancel_delete = 1;
       Event::error(_("Cannot delete this supplier because there are transactions that refer to this supplier."));
     } else {
-      $sql    = "SELECT COUNT(*) FROM purch_orders WHERE supplier_id=" . DB::escape($_POST['supplier_id']);
+      $sql    = "SELECT COUNT(*) FROM purch_orders WHERE creditor_id=" . DB::escape($_POST['creditor_id']);
       $result = DB::query($sql, "check failed");
       $myrow  = DB::fetchRow($result);
       if ($myrow[0] > 0) {
@@ -92,9 +92,9 @@
       }
     }
     if ($cancel_delete == 0) {
-      $sql = "DELETE FROM suppliers WHERE supplier_id=" . DB::escape($_POST['supplier_id']);
+      $sql = "DELETE FROM suppliers WHERE creditor_id=" . DB::escape($_POST['creditor_id']);
       DB::query($sql, "check failed");
-      unset($_SESSION['supplier_id']);
+      unset($_SESSION['creditor_id']);
       $new_supplier = true;
       Ajax::activate('_page_body');
     } //end if Delete supplier
@@ -104,22 +104,22 @@
     Table::start('tablestyle_noborder pad3');
     //	Table::start('tablestyle_noborder');
     Row::start();
-    Creditor::cells(_("Select a supplier: "), 'supplier_id', null, _('New supplier'), true, Forms::hasPost('show_inactive'));
+    Creditor::cells(_("Select a supplier: "), 'creditor_id', null, _('New supplier'), true, Forms::hasPost('show_inactive'));
     Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
     Row::end();
     Table::end();
     if (Input::post('_show_inactive_update')) {
-      Ajax::activate('supplier_id');
-      JS::setFocus('supplier_id');
+      Ajax::activate('creditor_id');
+      JS::setFocus('creditor_id');
     }
   } else {
-    Forms::hidden('supplier_id', Input::post('supplier_id'));
+    Forms::hidden('creditor_id', Input::post('creditor_id'));
   }
   Table::startOuter('tablestyle2');
   Table::section(1);
   if (!$new_supplier) {
     //SupplierID exists - either passed when calling the form or from the form itself
-    $myrow                             = Creditor::get($_POST['supplier_id']);
+    $myrow                             = Creditor::get($_POST['creditor_id']);
     $_POST['name']                     = $myrow["name"];
     $_POST['ref']                      = $myrow["ref"];
     $_POST['address']                  = $myrow["address"];
@@ -211,7 +211,7 @@
   if (!$new_supplier) {
     Forms::submitCenterBegin('submit', _("Update Supplier"), _('Update supplier data'), Input::request('frame') ? true :
       'default');
-    Forms::submitReturn('select', Input::post('supplier_id'), _("Select this supplier and return to document entry."));
+    Forms::submitReturn('select', Input::post('creditor_id'), _("Select this supplier and return to document entry."));
     Forms::submitCenterEnd('delete', _("Delete Supplier"), _('Delete supplier data if have been never used'), true);
   } else {
     Forms::submitCenter('submit', _("Add New Supplier Details"), true, '', 'default');

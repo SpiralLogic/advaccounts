@@ -12,19 +12,19 @@
      * @static
      *
      * @param $creditor_trans
-     * @param $supplier_id
+     * @param $creditor_id
      */
-    public static function get_supplier_to_trans($creditor_trans, $supplier_id) {
+    public static function get_supplier_to_trans($creditor_trans, $creditor_id) {
       $sql                               = "SELECT suppliers.name, payment_terms.terms, " . "payment_terms.days_before_due,
         payment_terms.day_in_following_month,
         suppliers.tax_group_id, tax_groups.name As tax_group_name
         From suppliers, payment_terms, tax_groups
         WHERE suppliers.tax_group_id = tax_groups.id
         AND suppliers.payment_terms=payment_terms.terms_indicator
-        AND suppliers.supplier_id = " . DB::escape($supplier_id);
-      $result                            = DB::query($sql, "The supplier record selected: " . $supplier_id . " cannot be retrieved");
+        AND suppliers.creditor_id = " . DB::escape($creditor_id);
+      $result                            = DB::query($sql, "The supplier record selected: " . $creditor_id . " cannot be retrieved");
       $myrow                             = DB::fetch($result);
-      $creditor_trans->supplier_id       = $supplier_id;
+      $creditor_trans->creditor_id       = $creditor_id;
       $creditor_trans->supplier_name     = $myrow['name'];
       $creditor_trans->terms_description = $myrow['terms'];
       if ($myrow['days_before_due'] == 0) {
@@ -140,13 +140,13 @@
         $creditor_trans->ov_discount = -$creditor_trans->ov_discount; // this isn't used at all...
       }
       $date_   = $creditor_trans->tran_date;
-      $ex_rate = Bank_Currency::exchange_rate_from_home(Bank_Currency::for_creditor($creditor_trans->supplier_id), $date_);
+      $ex_rate = Bank_Currency::exchange_rate_from_home(Bank_Currency::for_creditor($creditor_trans->creditor_id), $date_);
       /*First insert the invoice into the creditor_trans table*/
-      $invoice_id = Creditor_Trans::add($trans_type, $creditor_trans->supplier_id, $date_, $creditor_trans->due_date, $creditor_trans->reference, $creditor_trans->supplier_reference, $invoice_items_total, $tax_total, $creditor_trans->ov_discount);
+      $invoice_id = Creditor_Trans::add($trans_type, $creditor_trans->creditor_id, $date_, $creditor_trans->due_date, $creditor_trans->reference, $creditor_trans->supplier_reference, $invoice_items_total, $tax_total, $creditor_trans->ov_discount);
       $total      = 0;
       /* Now the control account */
-      $supplier_accounts = Creditor::get_accounts_name($creditor_trans->supplier_id);
-      $total += Creditor_Trans::add_gl($trans_type, $invoice_id, $date_, $supplier_accounts["payable_account"], 0, 0, -($invoice_items_total + $tax_total + $creditor_trans->ov_discount), $creditor_trans->supplier_id, "The general ledger transaction for the control total could not be added");
+      $supplier_accounts = Creditor::get_accounts_name($creditor_trans->creditor_id);
+      $total += Creditor_Trans::add_gl($trans_type, $invoice_id, $date_, $supplier_accounts["payable_account"], 0, 0, -($invoice_items_total + $tax_total + $creditor_trans->ov_discount), $creditor_trans->creditor_id, "The general ledger transaction for the control total could not be added");
       /*Loop through the GL Entries and create a debit posting for each of the accounts entered */
       /*the postings here are a little tricky, the logic goes like this:
                                            if its a general ledger amount it goes straight to the account specified
@@ -164,7 +164,7 @@
           $entered_gl_code->amount = -$entered_gl_code->amount;
         }
         $memo_ = $entered_gl_code->memo_;
-        $total += Creditor_Trans::add_gl($trans_type, $invoice_id, $date_, $entered_gl_code->gl_code, $entered_gl_code->gl_dim, $entered_gl_code->gl_dim2, $entered_gl_code->amount, $creditor_trans->supplier_id, "", 0, $memo_);
+        $total += Creditor_Trans::add_gl($trans_type, $invoice_id, $date_, $entered_gl_code->gl_code, $entered_gl_code->gl_dim, $entered_gl_code->gl_dim2, $entered_gl_code->amount, $creditor_trans->creditor_id, "", 0, $memo_);
         Purch_Line::add_gl_item($trans_type, $invoice_id, $entered_gl_code->gl_code, $entered_gl_code->amount, $memo_);
         // store tax details if the gl account is a tax account
         if (!$creditor_trans->is_invoice) {
@@ -175,13 +175,13 @@
       foreach ($creditor_trans->grn_items as $entered_grn) {
         if (!$creditor_trans->is_invoice) {
           $entered_grn->this_quantity_inv = -$entered_grn->this_quantity_inv;
-          Purch_GRN::set_item_credited($entered_grn, $creditor_trans->supplier_id, $invoice_id, $date_);
+          Purch_GRN::set_item_credited($entered_grn, $creditor_trans->creditor_id, $invoice_id, $date_);
         }
         $line_taxfree  = $entered_grn->taxfree_charge_price($creditor_trans->tax_group_id);
         $line_tax      = $entered_grn->full_charge_price($creditor_trans->tax_group_id) - $line_taxfree;
         $stock_gl_code = Item::get_gl_code($entered_grn->item_code);
         $iv_act        = (Item::is_inventory_item($entered_grn->item_code) ? $stock_gl_code["inventory_account"] : $stock_gl_code["cogs_account"]);
-        $total += Creditor_Trans::add_gl($trans_type, $invoice_id, $date_, $iv_act, $stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $entered_grn->this_quantity_inv * $line_taxfree, $creditor_trans->supplier_id);
+        $total += Creditor_Trans::add_gl($trans_type, $invoice_id, $date_, $iv_act, $stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $entered_grn->this_quantity_inv * $line_taxfree, $creditor_trans->creditor_id);
         // -------------- if price changed since po received. 16 Aug 2008 Joe Hunt
         if ($creditor_trans->is_invoice) {
           $old = static::update_supplier_received($entered_grn->id, $entered_grn->po_detail_item, $entered_grn->this_quantity_inv, $entered_grn->chg_price);
@@ -197,14 +197,14 @@
           //{
           //$diff = $entered_grn->chg_price - $old_price;
           $old_date = Dates::sqlToDate($old[1]);
-          $diff     = static::get_diff_in_home_currency($creditor_trans->supplier_id, $old_date, $date_, $old_price, $entered_grn->chg_price);
+          $diff     = static::get_diff_in_home_currency($creditor_trans->creditor_id, $old_date, $date_, $old_price, $entered_grn->chg_price);
           // always return due to change in currency.
           $mat_cost = Purch_GRN::update_average_material_cost(null, $entered_grn->item_code, $diff, $entered_grn->this_quantity_inv, $old_date, true);
           // added 2008-12-08 Joe Hunt. Update the purchase data table
-          $current_purchase_price = Item_Price::getPriceBySupplier(Item::getStockID($entered_grn->item_code), $creditor_trans->supplier_id);
+          $current_purchase_price = Item_Price::getPriceBySupplier(Item::getStockID($entered_grn->item_code), $creditor_trans->creditor_id);
           $current_purchase_price = ($current_purchase_price) ? $current_purchase_price->price : 0;
           if ($current_purchase_price == 0 || $current_purchase_price > $entered_grn->chg_price) {
-            Purch_Order::add_or_update_data($creditor_trans->supplier_id, $entered_grn->item_code, $entered_grn->chg_price);
+            Purch_Order::add_or_update_data($creditor_trans->creditor_id, $entered_grn->item_code, $entered_grn->chg_price);
           }
           $deliveries = Item::get_deliveries_between($entered_grn->item_code, $old_date, Dates::today()); // extend the period, if invoice is before any deliveries.
           if ($deliveries[0] != 0) // have deliveries been done during the period?
@@ -217,7 +217,7 @@
             }
             Inv_Transfer::update_pid(ST_CUSTDELIVERY, $entered_grn->item_code, $old_date, $date_, 0, $mat_cost);
           }
-          Inv_Transfer::update_pid(ST_SUPPRECEIVE, $entered_grn->item_code, $old_date, $old_date, $creditor_trans->supplier_id, $mat_cost);
+          Inv_Transfer::update_pid(ST_SUPPRECEIVE, $entered_grn->item_code, $old_date, $old_date, $creditor_trans->creditor_id, $mat_cost);
           //}
         }
         // ----------------------------------------------------------------------
@@ -236,11 +236,11 @@
           if (!$creditor_trans->is_invoice) {
             $taxitem['Value'] = -$taxitem['Value'];
           }
-          $total += Creditor_Trans::add_gl($trans_type, $invoice_id, $date_, $taxitem['purchasing_gl_code'], 0, 0, $taxitem['Value'], $creditor_trans->supplier_id, "A general ledger transaction for the tax amount could not be added");
+          $total += Creditor_Trans::add_gl($trans_type, $invoice_id, $date_, $taxitem['purchasing_gl_code'], 0, 0, $taxitem['Value'], $creditor_trans->creditor_id, "A general ledger transaction for the tax amount could not be added");
         }
       }
       /*Post a balance post if $total != 0 */
-      GL_Trans::add_balance($trans_type, $invoice_id, $date_, -$total, PT_SUPPLIER, $creditor_trans->supplier_id);
+      GL_Trans::add_balance($trans_type, $invoice_id, $date_, -$total, PT_SUPPLIER, $creditor_trans->creditor_id);
       DB_Comments::add($trans_type, $invoice_id, $date_, $creditor_trans->Comments);
       Ref::save($trans_type, $creditor_trans->reference);
       if ($invoice_no != 0) {
@@ -278,7 +278,7 @@
         FROM creditor_trans, creditor_trans_details, " . "purch_order_details, purch_orders
         WHERE creditor_trans_details.creditor_trans_no = creditor_trans.trans_no
         AND creditor_trans_details.po_detail_item_id = purch_order_details.po_detail_item
-        AND purch_orders.supplier_id = creditor_trans.supplier_id
+        AND purch_orders.creditor_id = creditor_trans.creditor_id
         AND purch_order_details.order_no = " . DB::escape($po_number);
       return DB::query($sql, "The invoices/credits for the po $po_number could not be retreived");
     }
@@ -294,11 +294,11 @@
     public static function get($trans_no, $trans_type, $creditor_trans) {
       $sql    = "SELECT creditor_trans.*, name FROM creditor_trans,suppliers
         WHERE trans_no = " . DB::escape($trans_no) . " AND type = " . DB::escape($trans_type) . "
-        AND suppliers.supplier_id=creditor_trans.supplier_id";
+        AND suppliers.creditor_id=creditor_trans.creditor_id";
       $result = DB::query($sql, "Cannot retreive a supplier transaction");
       if (DB::numRows($result) == 1) {
         $trans_row                     = DB::fetch($result);
-        $creditor_trans->supplier_id   = $trans_row["supplier_id"];
+        $creditor_trans->creditor_id   = $trans_row["creditor_id"];
         $creditor_trans->supplier_name = $trans_row["name"];
         $creditor_trans->tran_date     = Dates::sqlToDate($trans_row["tran_date"]);
         $creditor_trans->due_date      = Dates::sqlToDate($trans_row["due_date"]);
@@ -371,9 +371,9 @@
             { // We must get the corresponding invoice item to check for price chg.
               $match = static::get_for_item($details_row["stock_id"], $details_row["po_detail_item_id"]);
               if ($match !== false) {
-                $mat_cost = Purch_GRN::update_average_material_cost($grn["supplier_id"], $details_row["stock_id"], $match["unit_price"], -$details_row["quantity"], Dates::sqlToDate($match['tran_date']), $match['tran_date'] !== $trans['tran_date']);
+                $mat_cost = Purch_GRN::update_average_material_cost($grn["creditor_id"], $details_row["stock_id"], $match["unit_price"], -$details_row["quantity"], Dates::sqlToDate($match['tran_date']), $match['tran_date'] !== $trans['tran_date']);
               } else {
-                $mat_cost = Purch_GRN::update_average_material_cost($grn["supplier_id"], $details_row["stock_id"], $details_row["FullUnitPrice"], -$details_row["quantity"], $old_date, $old[1] !== $trans['tran_date']);
+                $mat_cost = Purch_GRN::update_average_material_cost($grn["creditor_id"], $details_row["stock_id"], $details_row["FullUnitPrice"], -$details_row["quantity"], $old_date, $old[1] !== $trans['tran_date']);
               }
               $sql = "UPDATE purch_order_details
                  SET quantity_ordered = quantity_ordered + " . -$details_row["quantity"] . ", ";
@@ -387,7 +387,7 @@
                         WHERE id=" . $details_row["grn_item_id"];
               DB::query($sql);
             } else {
-              $diff = static::get_diff_in_home_currency($grn["supplier_id"], $old_date, Dates::sqlToDate($trans['tran_date']), $old[2], $details_row["FullUnitPrice"]);
+              $diff = static::get_diff_in_home_currency($grn["creditor_id"], $old_date, Dates::sqlToDate($trans['tran_date']), $old[2], $details_row["FullUnitPrice"]);
               // Only adjust the avg for the diff
               $mat_cost = Purch_GRN::update_average_material_cost(null, $details_row["stock_id"], $diff, -$details_row["quantity"], $old_date, true);
             }
@@ -396,7 +396,7 @@
             {
               Inv_Transfer::update_pid(ST_CUSTDELIVERY, $details_row["stock_id"], $old_date, $date_, 0, $mat_cost);
             }
-            Inv_Transfer::update_pid(ST_SUPPRECEIVE, $details_row["stock_id"], $old_date, $old_date, $grn['supplier_id'], $mat_cost);
+            Inv_Transfer::update_pid(ST_SUPPRECEIVE, $details_row["stock_id"], $old_date, $old_date, $grn['creditor_id'], $mat_cost);
           }
         }
       }
@@ -419,7 +419,7 @@
       $_POST['due_date']           = $creditor_trans->due_date;
       $_POST['supplier_reference'] = $creditor_trans->supplier_reference;
       $_POST['reference']          = $creditor_trans->reference;
-      $_POST['supplier_id']        = $creditor_trans->supplier_id;
+      $_POST['creditor_id']        = $creditor_trans->creditor_id;
       $_POST['ChgTax']             = $creditor_trans->tax_correction;
     }
     /**
@@ -498,19 +498,19 @@
       }
       if (isset($_POST['invoice_no'])) {
         $trans                = Creditor_Trans::get($_POST['invoice_no'], ST_SUPPINVOICE);
-        $_POST['supplier_id'] = $trans['supplier_id'];
+        $_POST['creditor_id'] = $trans['creditor_id'];
         $supp                 = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
-        Cell::labels('Supplier', $supp . Forms::hidden('supplier_id', $_POST['supplier_id'], false));
+        Cell::labels('Supplier', $supp . Forms::hidden('creditor_id', $_POST['creditor_id'], false));
       } else {
         Creditor::newselect($creditor_trans->supplier_name, array('row'=> false));
-        JS::setFocus('supplier_id');
+        JS::setFocus('creditor_id');
       }
-      if ($creditor_trans->supplier_id != $_POST['supplier_id']) {
+      if ($creditor_trans->creditor_id != $_POST['creditor_id']) {
         // supplier has changed
         // delete all the order items - drastic but necessary because of
         // change of currency, etc
         $creditor_trans->clear_items();
-        Purch_Invoice::get_supplier_to_trans($creditor_trans, $_POST['supplier_id']);
+        Purch_Invoice::get_supplier_to_trans($creditor_trans, $_POST['creditor_id']);
         Purch_Invoice::copy_from_trans($creditor_trans);
       }
       if ($creditor_trans->is_invoice) {
@@ -522,9 +522,9 @@
       if (!empty($creditor_trans->terms_description)) {
         Cell::labels(_("Terms:"), $creditor_trans->terms_description);
       }
-      $supplier_currency = Bank_Currency::for_creditor($creditor_trans->supplier_id);
+      $supplier_currency = Bank_Currency::for_creditor($creditor_trans->creditor_id);
       $company_currency  = Bank_Currency::for_company();
-      Session::setGlobal('creditor', $_POST['supplier_id']);
+      Session::setGlobal('creditor_id', $_POST['creditor_id']);
       if ($supplier_currency && $supplier_currency != $company_currency) {
         GL_ExchangeRate::display($supplier_currency, $company_currency, $_POST['tran_date']);
         if (!empty($creditor_trans->tax_description)) {

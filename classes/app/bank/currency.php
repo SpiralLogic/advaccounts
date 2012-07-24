@@ -80,14 +80,14 @@
     /**
      * @static
      *
-     * @param $supplier_id
+     * @param $creditor_id
      *
      * @return mixed
      */
-    public static function for_creditor($supplier_id)
+    public static function for_creditor($creditor_id)
     {
-      $sql    = "SELECT curr_code FROM suppliers WHERE supplier_id = '$supplier_id'";
-      $result = DB::query($sql, "Retreive currency of supplier $supplier_id");
+      $sql    = "SELECT curr_code FROM suppliers WHERE creditor_id = '$creditor_id'";
+      $result = DB::query($sql, "Retreive currency of supplier $creditor_id");
       $myrow  = DB::fetchRow($result);
 
       return $myrow[0];

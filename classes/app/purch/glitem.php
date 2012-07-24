@@ -110,7 +110,7 @@ all the info to do the necessary entries without looking up ie additional querie
      * @param $k
      */
     public static function display_controls($creditor_trans, $k) {
-      $accs             = Creditor::get_accounts_name($creditor_trans->supplier_id);
+      $accs             = Creditor::get_accounts_name($creditor_trans->creditor_id);
       $_POST['gl_code'] = $accs['purchase_account'];
 
       echo GL_UI::all('gl_code', null, true, true);

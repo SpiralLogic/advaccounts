@@ -25,7 +25,7 @@
          suppliers.curr_code, suppliers.payment_terms, suppliers.phone, suppliers.fax, locations.location_name,
          suppliers.email, suppliers.address,suppliers.city,suppliers.state,suppliers.postcode, suppliers.contact
         FROM purch_orders, suppliers, locations
-        WHERE purch_orders.supplier_id = suppliers.supplier_id
+        WHERE purch_orders.creditor_id = suppliers.creditor_id
         AND locations.loc_code = into_stock_location
         AND purch_orders.order_no = " . DB::escape($order_no);
     $result = DB::query($sql, "The order cannot be retrieved");
@@ -92,7 +92,7 @@
       $SubTotal = 0;
       while ($myrow2 = DB::fetch($result)) {
         if ($myrow2['item_code'] != 'freight' || $myrow['freight'] != $myrow2['unit_price']) {
-          $data = Purch_Order::get_data($myrow['supplier_id'], $myrow2['item_code']);
+          $data = Purch_Order::get_data($myrow['creditor_id'], $myrow2['item_code']);
           if ($data !== false) {
             if ($data['supplier_description'] != "") {
               $myrow2['item_code'] = $data['supplier_description'];

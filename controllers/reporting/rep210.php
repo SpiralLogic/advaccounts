@@ -24,7 +24,7 @@
  		suppliers.curr_code, suppliers.payment_terms, suppliers.gst_no AS tax_id,
  		suppliers.email, suppliers.address, suppliers.contact
 		FROM creditor_trans, suppliers
-		WHERE creditor_trans.supplier_id = suppliers.supplier_id
+		WHERE creditor_trans.creditor_id = suppliers.creditor_id
 		AND creditor_trans.type = " . DB::escape($type) . "
 		AND creditor_trans.trans_no = " . DB::escape($trans_no);
     $result = DB::query($sql, "The remittance cannot be retrieved");
@@ -35,18 +35,18 @@
   }
 
   /**
-   * @param $supplier_id
+   * @param $creditor_id
    * @param $type
    * @param $trans_no
    *
    * @return null|PDOStatement
    */
-  function get_allocations_for_remittance($supplier_id, $type, $trans_no) {
+  function get_allocations_for_remittance($creditor_id, $type, $trans_no) {
     $sql = Purch_Allocation::get_sql("amt, supplier_reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
 		AND trans.type = alloc.trans_type_to
 		AND alloc.trans_no_from=" . DB::escape($trans_no) . "
 		AND alloc.trans_type_from=" . DB::escape($type) . "
-		AND trans.supplier_id=" . DB::escape($supplier_id), "creditor_allocations as alloc");
+		AND trans.creditor_id=" . DB::escape($creditor_id), "creditor_allocations as alloc");
     $sql .= " ORDER BY trans_no";
     return DB::query($sql, "Cannot retreive alloc to transactions");
   }
@@ -104,7 +104,7 @@
           $rep->title = _('REMITTANCE');
         }
         $rep->Header2($myrow, null, $myrow, $baccount, ST_SUPPAYMENT);
-        $result   = get_allocations_for_remittance($myrow['supplier_id'], $myrow['type'], $myrow['trans_no']);
+        $result   = get_allocations_for_remittance($myrow['creditor_id'], $myrow['type'], $myrow['trans_no']);
         $linetype = true;
         $doctype  = ST_SUPPAYMENT;
         if ($rep->currency != $myrow['curr_code']) {

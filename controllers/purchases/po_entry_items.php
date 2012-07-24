@@ -19,7 +19,7 @@
   Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."), STOCK_PURCHASED);
   function pageComplete($order_no) {
       $trans_type = ST_PURCHORDER;
-      $supplier   = new Creditor(Session::getGlobal('creditor'));
+      $supplier   = new Creditor(Session::getGlobal('creditor_id'));
       if (!isset($_GET['Updated'])) {
         Event::success(_("Purchase Order: " . Session::i()['history'][ST_PURCHORDER] . " has been entered"));
       } else {
@@ -155,8 +155,8 @@
   Forms::end();
   Item::addEditDialog();
   UI::emailDialogue(CT_SUPPLIER);
-  if (isset($order->supplier_id)) {
-    Creditor::addInfoDialog("td[name=\"supplier_name\"]", $order->supplier_details['supplier_id']);
+  if (isset($order->creditor_id)) {
+    Creditor::addInfoDialog("td[name=\"supplier_name\"]", $order->supplier_details['creditor_id']);
   }
   Page::end(true);
   /**
@@ -177,10 +177,10 @@
       foreach ($sales_order->line_items as $line_item) {
         $stock[] = ' stock_id = ' . DB::escape($line_item->stock_id);
       }
-      $sql    = "SELECT AVG(price),supplier_id,COUNT(supplier_id) FROM purch_data WHERE " . implode(' OR ', $stock) . ' GROUP BY supplier_id ORDER BY AVG(price)';
+      $sql    = "SELECT AVG(price),creditor_id,COUNT(creditor_id) FROM purch_data WHERE " . implode(' OR ', $stock) . ' GROUP BY creditor_id ORDER BY AVG(price)';
       $result = DB::query($sql);
       $row    = DB::fetch($result);
-      $order->supplier_to_order($row['supplier_id']);
+      $order->supplier_to_order($row['creditor_id']);
       foreach ($sales_order->line_items as $line_no => $line_item) {
         $order->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->description, 0, $line_item->units, Dates::addDays(Dates::today(), 10), 0, 0, 0);
       }
@@ -248,9 +248,9 @@
       Event::error(_("You are not currently editing an order."));
       Page::footer_exit();
     }
-    if (!Input::post('supplier_id')) {
+    if (!Input::post('creditor_id')) {
       Event::error(_("There is no supplier selected."));
-      JS::setFocus('supplier_id');
+      JS::setFocus('creditor_id');
       return false;
     }
     if (!Dates::isDate($_POST['OrderDate'])) {

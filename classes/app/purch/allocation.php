@@ -137,7 +137,7 @@
 		ov_amount+ov_gst+ov_discount AS Total,
 		trans.alloc,
 		trans.due_date,
-		trans.supplier_id,
+		trans.creditor_id,
 		supplier.address";
       /*	$sql = "SELECT trans.*,
                              ov_amount+ov_gst+ov_discount AS Total,
@@ -151,7 +151,7 @@
       if ($extra_tables) {
         $sql .= " ,$extra_tables ";
       }
-      $sql .= " WHERE trans.supplier_id=supplier.supplier_id";
+      $sql .= " WHERE trans.creditor_id=supplier.creditor_id";
       if ($extra_conditions) {
         $sql .= " AND $extra_conditions";
       }
@@ -160,20 +160,20 @@
     /**
      * @static
      *
-     * @param $supplier_id
+     * @param $creditor_id
      * @param $settled
      *
      * @return string
      */
-    public static function get_allocatable_sql($supplier_id, $settled)
+    public static function get_allocatable_sql($creditor_id, $settled)
     {
       $settled_sql = "";
       if (!$settled) {
         $settled_sql = "AND round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) > 0";
       }
       $supplier_sql = "";
-      if ($supplier_id != null) {
-        $supplier_sql = " AND trans.supplier_id = " . DB::quote($supplier_id);
+      if ($creditor_id != null) {
+        $supplier_sql = " AND trans.creditor_id = " . DB::quote($creditor_id);
       }
       $sql = Purch_Allocation::get_sql("round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) <= 0 AS settled", "(type=" . ST_SUPPAYMENT . " OR type=" . ST_SUPPCREDIT . " OR type=" . ST_BANKPAYMENT . ") AND (ov_amount < 0) " . $settled_sql . $supplier_sql);
       return $sql;
@@ -181,24 +181,24 @@
     /**
      * @static
      *
-     * @param      $supplier_id
+     * @param      $creditor_id
      * @param null $trans_no
      * @param null $type
      *
      * @return null|PDOStatement
      */
-    public static function get_allocatable_to_trans($supplier_id, $trans_no = null, $type = null)
+    public static function get_allocatable_to_trans($creditor_id, $trans_no = null, $type = null)
     {
       if ($trans_no != null && $type != null) {
         $sql = Purch_Allocation::get_sql("amt, supplier_reference", "trans.trans_no = alloc.trans_no_to
 			AND trans.type = alloc.trans_type_to
 			AND alloc.trans_no_from=" . DB::escape($trans_no) . "
 			AND alloc.trans_type_from=" . DB::escape($type) . "
-			AND trans.supplier_id=" . DB::escape($supplier_id), "creditor_allocations as alloc");
+			AND trans.creditor_id=" . DB::escape($creditor_id), "creditor_allocations as alloc");
       } else {
         $sql = Purch_Allocation::get_sql(null, "round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) > 0
 			AND trans.type != " . ST_SUPPAYMENT . "
-			AND trans.supplier_id=" . DB::escape($supplier_id));
+			AND trans.creditor_id=" . DB::escape($creditor_id));
       }
       return DB::query($sql . " ORDER BY trans_no", "Cannot retreive alloc to transactions");
     }

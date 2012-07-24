@@ -14,6 +14,7 @@
   /**
    * @method theme
    * @method User ii()
+   * @method logout()
    */
   class User {
     use \ADV\Core\Traits\Hook;
@@ -78,6 +79,7 @@
     protected $_hash;
     /** @var */
     public $last_record;
+    /** @var Session */
     protected $Session;
     /** @var Security */
     public $Security;
@@ -528,7 +530,7 @@
       return \DB::select('salesman_code')->from('salesman')->where('user_id=', $this->user)->fetch()->one('salesman_code');
     }
     public function _logout() {
-      $this->Session->_kill();
+      Session::kill();
       $this->logged = false;
     }
     public function getHash() {

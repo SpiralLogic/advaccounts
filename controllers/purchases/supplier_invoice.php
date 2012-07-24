@@ -9,10 +9,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class SupplierInvoice extends \ADV\App\Controller\Base {
+  class SupplierInvoice extends \ADV\App\Controller\Base
+  {
+
     /** @var Creditor_Trans */
     protected $trans;
-    protected $supplier_id;
+    protected $creditor_id;
+    public $creditor_id;
     protected function before() {
       $this->JS->_openWindow(900, 500);
       $this->trans             = Creditor_Trans::i();
@@ -23,10 +26,13 @@
       if (isset($_POST['Cancel'])) {
         $this->cancelInvoice();
       }
-      $this->supplier_id = $this->trans->supplier_id ? : Input::post('supplier_id', Input::NUMERIC, null);
-      if (!$this->supplier_id) {
-        $this->supplier_id = $this->Session->_getGlobal('creditor');
+      $this->creditor_id = $this->trans->creditor_id ? : Input::post('creditor_id', Input::NUMERIC, null);
+      if (!$this->creditor_id) {
+        $this->creditor_id = $this->Session->_getGlobal('creditor');
       }
+      $this->creditor_id    = Input::postGetGlobal('creditor_id');
+      $_POST['creditor_id'] =& $this->creditor_id;
+      $this->Session->_setGlobal('creditor_id', $this->creditor_id);
       if (isset($_POST['AddGLCodeToTrans'])) {
         $this->addGlCodesToTrans();
       }
@@ -57,9 +63,9 @@
       Forms::start();
       Purch_Invoice::header($this->trans);
       if ($this->trans) {
-        $this->Session->_removeGlobal('creditor', 'delivery_po');
+        $this->Session->_removeGlobal('creditor_id', 'delivery_po');
       }
-      if (!$this->supplier_id) {
+      if (!$this->creditor_id) {
         Event::warning(_("There is no supplier selected."));
       } else {
         Purch_GRN::display_items($this->trans, 1);
@@ -175,8 +181,8 @@
           $sql = "UPDATE grn_items
                SET qty_recd = quantity_inv WHERE id = " . $myrow["id"];
           DB::query($sql, "The quantity invoiced off the items received record could not be updated");
-          Purch_GRN::update_average_material_cost($grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Dates::today());
-          Inv_Movement::add(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], Dates::sqlToDate($grn["delivery_date"]), "", -$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
+          Purch_GRN::update_average_material_cost($grn["creditor_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Dates::today());
+          Inv_Movement::add(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], Dates::sqlToDate($grn["delivery_date"]), "", -$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["creditor_id"], 1, $myrow['unit_price']);
           DB::commit();
           Event::notice(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
           $this->Ajax->_activate('grn_items');
@@ -207,7 +213,7 @@
       }
       $invoice_no                          = Purch_Invoice::add($this->trans);
       $_SESSION['history'][ST_SUPPINVOICE] = $this->trans->reference;
-      $this->Session->_setGlobal('creditor', $this->supplier_id, '');
+      $this->Session->_setGlobal('creditor', $this->creditor_id, '');
       $this->trans->clear_items();
       Creditor_Trans::killInstance();
       Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$invoice_no");
@@ -217,7 +223,6 @@
     //
     function clearFields() {
       unset($_POST['gl_code'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_'], $_POST['AddGLCodeToTrans']);
-
       $this->Ajax->_activate('gl_items');
       $this->JS->_setFocus('gl_code');
     }
@@ -266,7 +271,7 @@
         $this->JS->_setFocus('due_date');
         return false;
       }
-      $sql    = "SELECT Count(*) FROM creditor_trans WHERE supplier_id=" . DB::escape($this->trans->supplier_id) . " AND supplier_reference=" . DB::escape($_POST['supplier_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
+      $sql    = "SELECT Count(*) FROM creditor_trans WHERE creditor_id=" . DB::escape($this->trans->creditor_id) . " AND supplier_reference=" . DB::escape($_POST['supplier_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
       $result = DB::query($sql, "The sql to check for the previous entry of the same invoice failed");
       $myrow  = DB::fetchRow($result);
       if ($myrow[0] == 1) { /*Transaction reference already entered */
@@ -342,7 +347,7 @@
       $this->trans->clear_items();
       unset($_SESSION['delivery_po']);
       unset($_POST['PONumber']);
-      unset($_POST['supplier_id']);
+      unset($_POST['creditor_id']);
       unset($_POST['supplier']);
       Creditor_Trans::killInstance();
       $this->Session->_removeGlobal('creditor');

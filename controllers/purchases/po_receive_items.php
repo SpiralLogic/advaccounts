@@ -50,7 +50,7 @@
     Ajax::activate('grn_items');
   }
   if (isset($_POST['ProcessGoodsReceived']) && $order->can_receive()) {
-    Session::setGlobal('creditor', $order->supplier_id);
+    Session::setGlobal('creditor_id', $order->creditor_id);
     if ($order->has_changed()) {
       Event::error(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
       Display::link_no_params("/purchases/inquiry/po_search.php", _("Select a different purchase order for receiving goods against"));

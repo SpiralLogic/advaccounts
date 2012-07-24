@@ -28,7 +28,7 @@
   Row::start();
   Cell::labels(_("Invoice Date"), $creditor_trans->tran_date, "class='tablerowhead'");
   Cell::labels(_("Due Date"), $creditor_trans->due_date, "class='tablerowhead'");
-  Cell::labels(_("Currency"), Bank_Currency::for_creditor($creditor_trans->supplier_id), "class='tablerowhead'");
+  Cell::labels(_("Currency"), Bank_Currency::for_creditor($creditor_trans->creditor_id), "class='tablerowhead'");
   Row::end();
   DB_Comments::display_row(ST_SUPPCREDIT, $trans_no);
   Table::end(1);
@@ -44,7 +44,7 @@
   Table::end(1);
   $voided = Display::is_voided(ST_SUPPCREDIT, $trans_no, _("This credit note has been voided."));
   if (!$voided) {
-    GL_Allocation::from(PT_SUPPLIER, $creditor_trans->supplier_id, ST_SUPPCREDIT, $trans_no, -($creditor_trans->ov_amount + $creditor_trans->ov_gst));
+    GL_Allocation::from(PT_SUPPLIER, $creditor_trans->creditor_id, ST_SUPPCREDIT, $trans_no, -($creditor_trans->ov_amount + $creditor_trans->ov_gst));
   }
   Page::end(true);
 

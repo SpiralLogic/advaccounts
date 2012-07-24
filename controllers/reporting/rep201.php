@@ -12,13 +12,13 @@
 
   print_supplier_balances();
   /**
-   * @param $supplier_id
+   * @param $creditor_id
    * @param $to
    * @param $convert
    *
    * @return \ADV\Core\DB\Query\Result|Array
    */
-  function get_open_balance($supplier_id, $to, $convert)
+  function get_open_balance($creditor_id, $to, $convert)
   {
     $to  = Dates::dateToSql($to);
     $sql = "SELECT SUM(IF(creditor_trans.type = " . ST_SUPPINVOICE . ", (creditor_trans.ov_amount + creditor_trans.ov_gst +
@@ -50,20 +50,20 @@
       .= ") AS OutStanding
         FROM creditor_trans
      WHERE creditor_trans.tran_date < '$to'
-        AND creditor_trans.supplier_id = '$supplier_id' GROUP BY supplier_id";
+        AND creditor_trans.creditor_id = '$creditor_id' GROUP BY creditor_id";
     $result = DB::query($sql, "No transactions were returned");
 
     return DB::fetch($result);
   }
 
   /**
-   * @param $supplier_id
+   * @param $creditor_id
    * @param $from
    * @param $to
    *
    * @return null|PDOStatement
    */
-  function get_transactions($supplier_id, $from, $to)
+  function get_transactions($creditor_id, $from, $to)
   {
     $from = Dates::dateToSql($from);
     $to   = Dates::dateToSql($to);
@@ -75,7 +75,7 @@
                     AND creditor_trans.due_date < '$to') AS OverDue
              FROM creditor_trans
              WHERE creditor_trans.tran_date >= '$from' AND creditor_trans.tran_date <= '$to'
-             AND creditor_trans.supplier_id = '$supplier_id'
+             AND creditor_trans.creditor_id = '$creditor_id'
                  ORDER BY creditor_trans.tran_date";
     $trans_rows = DB::query($sql, "No transactions were returned");
 
@@ -144,9 +144,9 @@
     $rep->Header();
     $total      = array();
     $grandtotal = array(0, 0, 0, 0);
-    $sql        = "SELECT supplier_id, name, curr_code FROM suppliers";
+    $sql        = "SELECT creditor_id, name, curr_code FROM suppliers";
     if ($fromsupp != ALL_NUMERIC) {
-      $sql .= " WHERE supplier_id=" . DB::escape($fromsupp);
+      $sql .= " WHERE creditor_id=" . DB::escape($fromsupp);
     }
     $sql .= " ORDER BY name";
     $result = DB::query($sql, "The customers could not be retrieved");
@@ -154,7 +154,7 @@
       if (!$convert && $currency != $myrow['curr_code']) {
         continue;
       }
-      $bal     = get_open_balance($myrow['supplier_id'], $from, $convert);
+      $bal     = get_open_balance($myrow['creditor_id'], $from, $convert);
       $init[0] = $init[1] = 0.0;
       $init[0] = Num::round(abs($bal['charges']), $dec);
       $init[1] = Num::round(Abs($bal['credits']), $dec);
@@ -166,7 +166,7 @@
         $total[$i] += $init[$i];
         $grandtotal[$i] += $init[$i];
       }
-      $res = get_transactions($myrow['supplier_id'], $from, $to);
+      $res = get_transactions($myrow['creditor_id'], $from, $to);
       if ($no_zeros && DB::numRows($res) == 0) {
         continue;
       }

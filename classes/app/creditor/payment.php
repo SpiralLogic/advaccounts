@@ -12,7 +12,7 @@
     /**
      * @static
      *
-     * @param     $supplier_id
+     * @param     $creditor_id
      * @param     $date_
      * @param     $bank_account
      * @param     $amount
@@ -24,10 +24,10 @@
      *
      * @return int
      */
-    public static function add($supplier_id, $date_, $bank_account, $amount, $discount, $ref, $memo_, $rate = 0, $charge = 0)
+    public static function add($creditor_id, $date_, $bank_account, $amount, $discount, $ref, $memo_, $rate = 0, $charge = 0)
     {
       DB::begin();
-      $supplier_currency     = Bank_Currency::for_creditor($supplier_id);
+      $supplier_currency     = Bank_Currency::for_creditor($creditor_id);
       $bank_account_currency = Bank_Currency::for_company($bank_account);
       $bank_gl_account       = Bank_Account::get_gl($bank_account);
       if ($rate == 0) {
@@ -42,26 +42,26 @@
       // it's a supplier payment
       $trans_type = ST_SUPPAYMENT;
       /* Create a creditor_trans entry for the supplier payment */
-      $payment_id = Creditor_Trans::add($trans_type, $supplier_id, $date_, $date_, $ref, "", -$supplier_amount, 0, -$supplier_discount, "", $rate);
+      $payment_id = Creditor_Trans::add($trans_type, $creditor_id, $date_, $date_, $ref, "", -$supplier_amount, 0, -$supplier_discount, "", $rate);
       // Now debit creditors account with payment + discount
       $total             = 0;
-      $supplier_accounts = Creditor::get_accounts_name($supplier_id);
-      $total += Creditor_Trans::add_gl($trans_type, $payment_id, $date_, $supplier_accounts["payable_account"], 0, 0, $supplier_amount + $supplier_discount, $supplier_id, "", $rate);
+      $supplier_accounts = Creditor::get_accounts_name($creditor_id);
+      $total += Creditor_Trans::add_gl($trans_type, $payment_id, $date_, $supplier_accounts["payable_account"], 0, 0, $supplier_amount + $supplier_discount, $creditor_id, "", $rate);
       // Now credit discount received account with discounts
       if ($supplier_discount != 0) {
-        $total += Creditor_Trans::add_gl($trans_type, $payment_id, $date_, $supplier_accounts["payment_discount_account"], 0, 0, -$supplier_discount, $supplier_id, "", $rate);
+        $total += Creditor_Trans::add_gl($trans_type, $payment_id, $date_, $supplier_accounts["payment_discount_account"], 0, 0, -$supplier_discount, $creditor_id, "", $rate);
       }
       if ($supplier_charge != 0) {
         $charge_act = DB_Company::get_pref('bank_charge_act');
-        $total += Creditor_Trans::add_gl($trans_type, $payment_id, $date_, $charge_act, 0, 0, $supplier_charge, $supplier_id, "", $rate);
+        $total += Creditor_Trans::add_gl($trans_type, $payment_id, $date_, $charge_act, 0, 0, $supplier_charge, $creditor_id, "", $rate);
       }
       if ($supplier_amount != 0) {
-        $total += Creditor_Trans::add_gl($trans_type, $payment_id, $date_, $bank_gl_account, 0, 0, -($supplier_amount + $supplier_charge), $supplier_id, "", $rate);
+        $total += Creditor_Trans::add_gl($trans_type, $payment_id, $date_, $bank_gl_account, 0, 0, -($supplier_amount + $supplier_charge), $creditor_id, "", $rate);
       }
       /*Post a balance post if $total != 0 */
-      GL_Trans::add_balance($trans_type, $payment_id, $date_, -$total, PT_SUPPLIER, $supplier_id);
+      GL_Trans::add_balance($trans_type, $payment_id, $date_, -$total, PT_SUPPLIER, $creditor_id);
       /*now enter the bank_trans entry */
-      Bank_Trans::add($trans_type, $payment_id, $bank_account, $ref, $date_, -($amount + $supplier_charge), PT_SUPPLIER, $supplier_id, $bank_account_currency, "Could not add the supplier payment bank transaction");
+      Bank_Trans::add($trans_type, $payment_id, $bank_account, $ref, $date_, -($amount + $supplier_charge), PT_SUPPLIER, $creditor_id, $bank_account_currency, "Could not add the supplier payment bank transaction");
       DB_Comments::add($trans_type, $payment_id, $date_, $memo_);
       Ref::save($trans_type, $ref);
       DB::commit();
@@ -89,9 +89,9 @@
      */
     public static function    can_process()
     {
-      if (!Input::post('supplier_id')) {
+      if (!Input::post('creditor_id')) {
         Event::error(_("There is no supplier selected."));
-        JS::setFocus('supplier_id');
+        JS::setFocus('creditor_id');
 
         return false;
       }

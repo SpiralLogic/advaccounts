@@ -264,7 +264,7 @@
         return DB::fetchAssoc($result);
       }
       while ($row = DB::fetchAssoc($result)) {
-        $this->salePrices[$row['supplier_id']] = array(
+        $this->salePrices[$row['creditor_id']] = array(
           "code" => $row['supplier_description'], "price" => $row['price'], //					"suppliers_uom" => $row['uom'],
           "conv" => $row['conversion_factor']
         );
@@ -684,9 +684,9 @@ s.category_id, editable, 0 as kit,
         array_unshift($terms, $item_code);
         $weight = 'IF(s.item_code LIKE ?, 0,20) + IF(p.supplier_description LIKE ?, 0,15) + IF(s.item_code LIKE ?,0,5) as weight';
         $termswhere .= ' OR p.supplier_description LIKE ? ';
-        if (Input::session('supplier_id', Input::NUMERIC)) {
-          array_unshift($terms, $_SESSION['supplier_id']);
-          $weight = ' IF(p.supplier_id = ?,0,20) + ' . $weight;
+        if (Input::session('creditor_id', Input::NUMERIC)) {
+          array_unshift($terms, $_SESSION['creditor_id']);
+          $weight = ' IF(p.creditor_id = ?,0,20) + ' . $weight;
         }
         $stock_code = ' s.item_code as stock_id, p.supplier_description, MIN(p.price) as price, ';
         $prices     = " LEFT OUTER JOIN purch_data p ON i.id = p.stockid ";

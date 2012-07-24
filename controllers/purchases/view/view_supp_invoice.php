@@ -17,7 +17,7 @@
   $creditor_trans             = new Creditor_Trans();
   $creditor_trans->is_invoice = true;
   Purch_Invoice::get($trans_no, ST_SUPPINVOICE, $creditor_trans);
-  $supplier_curr_code = Bank_Currency::for_creditor($creditor_trans->supplier_id);
+  $supplier_curr_code = Bank_Currency::for_creditor($creditor_trans->creditor_id);
   Display::heading(_("SUPPLIER INVOICE") . " # " . $trans_no);
   echo "<br>";
   Table::start('tablestyle width95');
