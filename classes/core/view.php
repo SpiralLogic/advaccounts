@@ -7,14 +7,20 @@
    * To change this template use File | Settings | File Templates.
    */
   namespace ADV\Core;
+  /**
+
+   */
   class View implements \ArrayAccess
   {
 
     protected $_viewdata = [];
     protected $_template = null;
+    /** @var Cache */
     static $Cache;
     /**
      * @param $template
+     *
+     * @throws \InvalidArgumentException
      */
     public function __construct($template) {
       $template = VIEWPATH . $template . '.tpl';
@@ -26,8 +32,9 @@
     /**
      * @param bool $return
      *
-     * @return string
      * @throws \RuntimeException
+     * @throws \Exception
+     * @return string
      */
     public function render($return = false) {
       if (!$this->_template) {
@@ -36,7 +43,7 @@
       // The contents of each view file is cached in an array for the
       // request since partial views may be rendered inside of for
       // loops which could incur performance penalties.
-      $__contents = null; //static::$Cache->_get('template.' . $this->_template);
+      $__contents = static::$Cache->_get('template.' . $this->_template);
       if (!$__contents) {
         $__contents = file_get_contents($this->_template);
         $__contents = $this->compile_nothings($__contents);
@@ -123,6 +130,7 @@
      * @param      $offset
      * @param      $value
      * @param bool $escape
+     * @return \ADV\Core\View
      */
     public function set($offset, $value, $escape = false) {
       $value                    = $escape ? e($value) : $value;
