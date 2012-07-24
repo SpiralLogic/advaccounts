@@ -1178,8 +1178,7 @@
      * @param bool $submit_on_change
      */
     public static function  refCells($label, $name, $title = null, $init = null, $params = null, $submit_on_change = false) {
-      Forms::textCellsEx($label.      Forms::hidden($name,$init,false)
-      , null, 'small', 18, $init, $title, $params, null, $submit_on_change, ' disabled');
+      Forms::textCellsEx($label, null, 'small', 18, $init, $title, $params, Forms::hidden($name,$init,false), $submit_on_change, ' disabled');
     }
     /**
      * @param        $label
