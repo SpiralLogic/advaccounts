@@ -1148,7 +1148,9 @@
         $size = " class='$size'";
       }
       $class = $submit_on_change ? 'class="searchbox"' : '';
-      echo "<input $class type=\"text\" name=\"$name\" id=\"$name\" $inparams $size maxlength=\"$max\" value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" : '') . " >";
+      $id = $name ? 'id=\"$name\"':'';
+      $name = $name ? 'name=\"$name\"':'';
+      echo "<input $class type=\"text\" $name $id $inparams $size maxlength=\"$max\" value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" : '') . " >";
       if ($post_label) {
         echo " " . $post_label;
       }
@@ -1176,7 +1178,8 @@
      * @param bool $submit_on_change
      */
     public static function  refCells($label, $name, $title = null, $init = null, $params = null, $submit_on_change = false) {
-      Forms::textCellsEx($label, $name, 'small', 18, $init, $title, $params, null, $submit_on_change, ' disabled');
+      Forms::textCellsEx($label.      Forms::hidden($name,$init,false)
+      , null, 'small', 18, $init, $title, $params, null, $submit_on_change, ' disabled');
     }
     /**
      * @param        $label
