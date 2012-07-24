@@ -125,8 +125,8 @@
       return DB::fetch($result);
     }
     public static function set_item_credited(&$entered_grn, $supplier, $transno, $date) {
-      $mcost = static::update_average_material_cost($supplier, $entered_grn->item_code, $entered_grn->chg_price, $entered_grn->this_quantity_inv, $date);
-      $sql   = "SELECT grn_batch.*, grn_items.*
+      $mcost  = static::update_average_material_cost($supplier, $entered_grn->item_code, $entered_grn->chg_price, $entered_grn->this_quantity_inv, $date);
+      $sql    = "SELECT grn_batch.*, grn_items.*
      FROM grn_batch, grn_items
      WHERE grn_items.grn_batch_id=grn_batch.id
         AND grn_items.id=" . DB::escape($entered_grn->id) . "
