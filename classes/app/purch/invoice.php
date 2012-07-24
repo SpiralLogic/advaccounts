@@ -7,7 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Purch_Invoice {
+  class Purch_Invoice
+  {
     /**
      * @static
      *
@@ -57,13 +58,15 @@
      */
     public static function update_supplier_received($id, $po_detail_item, $qty_invoiced, $chg_price = null) {
       if ($chg_price != null) {
-        $sql        = "SELECT act_price, unit_price FROM purch_order_details WHERE
+        $sql
+                    = "SELECT act_price, unit_price FROM purch_order_details WHERE
             po_detail_item = " . DB::escape($po_detail_item);
         $result     = DB::query($sql, "The old actual price of the purchase order line could not be retrieved");
         $row        = DB::fetchRow($result);
         $ret        = $row[0];
         $unit_price = $row[1]; //Added by Rasmus
-        $sql        = "SELECT delivery_date FROM grn_batch,grn_items WHERE
+        $sql
+                    = "SELECT delivery_date FROM grn_batch,grn_items WHERE
             grn_batch.id = grn_items.grn_batch_id AND " . "grn_items.id=" . DB::escape($id);
         $result     = DB::query($sql, "The old delivery date from the received record cout not be retrieved");
         $row        = DB::fetchRow($result);
@@ -73,14 +76,16 @@
         $date       = "";
         $unit_price = 0; // Added by Rasmus
       }
-      $sql = "UPDATE purch_order_details
+      $sql
+        = "UPDATE purch_order_details
         SET qty_invoiced = qty_invoiced + " . DB::escape($qty_invoiced);
       if ($chg_price != null) {
         $sql .= " , act_price = " . DB::escape($chg_price);
       }
       $sql .= " WHERE po_detail_item = " . DB::escape($po_detail_item);
       DB::query($sql, "The quantity invoiced of the purchase order line could not be updated");
-      $sql = "UPDATE grn_items
+      $sql
+        = "UPDATE grn_items
  SET quantity_inv = quantity_inv + " . DB::escape($qty_invoiced) . "
  WHERE id = " . DB::escape($id);
       DB::query($sql, "The quantity invoiced off the items received record could not be updated");
@@ -180,7 +185,8 @@
         $line_taxfree  = $entered_grn->taxfree_charge_price($creditor_trans->tax_group_id);
         $line_tax      = $entered_grn->full_charge_price($creditor_trans->tax_group_id) - $line_taxfree;
         $stock_gl_code = Item::get_gl_code($entered_grn->item_code);
-        $iv_act        = (Item::is_inventory_item($entered_grn->item_code) ? $stock_gl_code["inventory_account"] : $stock_gl_code["cogs_account"]);
+        $iv_act        = (Item::is_inventory_item($entered_grn->item_code) ? $stock_gl_code["inventory_account"] :
+          $stock_gl_code["cogs_account"]);
         $total += Creditor_Trans::add_gl($trans_type, $invoice_id, $date_, $iv_act, $stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $entered_grn->this_quantity_inv * $line_taxfree, $creditor_trans->creditor_id);
         // -------------- if price changed since po received. 16 Aug 2008 Joe Hunt
         if ($creditor_trans->is_invoice) {
@@ -272,7 +278,8 @@
      * @return null|PDOStatement
      */
     public static function get_po_credits($po_number) {
-      $sql = "SELECT DISTINCT creditor_trans.trans_no, creditor_trans.type,
+      $sql
+        = "SELECT DISTINCT creditor_trans.trans_no, creditor_trans.type,
         ov_amount+ov_discount+ov_gst AS Total,
         creditor_trans.tran_date
         FROM creditor_trans, creditor_trans_details, " . "purch_order_details, purch_orders
@@ -292,7 +299,8 @@
      * @return void
      */
     public static function get($trans_no, $trans_type, $creditor_trans) {
-      $sql    = "SELECT creditor_trans.*, name FROM creditor_trans,suppliers
+      $sql
+              = "SELECT creditor_trans.*, name FROM creditor_trans,suppliers
         WHERE trans_no = " . DB::escape($trans_no) . " AND type = " . DB::escape($trans_type) . "
         AND suppliers.creditor_id=creditor_trans.creditor_id";
       $result = DB::query($sql, "Cannot retreive a supplier transaction");
@@ -335,7 +343,8 @@
      * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get_for_item($stock_id, $po_item_id) {
-      $sql    = "SELECT *, tran_date FROM creditor_trans_details, creditor_trans
+      $sql
+              = "SELECT *, tran_date FROM creditor_trans_details, creditor_trans
         WHERE creditor_trans_type = " . ST_SUPPINVOICE . " AND stock_id = " . DB::escape($stock_id) . " AND po_detail_item_id = " . DB::escape($po_item_id) . "
         AND creditor_trans_no = trans_no";
       $result = DB::query($sql, "Cannot retreive supplier transaction detail records");
@@ -375,7 +384,8 @@
               } else {
                 $mat_cost = Purch_GRN::update_average_material_cost($grn["creditor_id"], $details_row["stock_id"], $details_row["FullUnitPrice"], -$details_row["quantity"], $old_date, $old[1] !== $trans['tran_date']);
               }
-              $sql = "UPDATE purch_order_details
+              $sql
+                = "UPDATE purch_order_details
                  SET quantity_ordered = quantity_ordered + " . -$details_row["quantity"] . ", ";
               if ($match !== false) {
                 $sql .= "act_price=" . $match['unit_price'] . ", ";
@@ -492,8 +502,8 @@
       Table::start();
       Row::start();
 
-      if (Input::post('_control') == 'supplier') {
-        $creditor_trans->supplier_name = $_POST['supplier'];
+      if (Input::post('_control') == 'creditor') {
+        $creditor_trans->supplier_name = $_POST['creditor'];
         Ajax::i()->activate("_page_body");
       }
       if (isset($_POST['invoice_no'])) {
