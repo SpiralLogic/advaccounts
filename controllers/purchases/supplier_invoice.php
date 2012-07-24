@@ -15,7 +15,6 @@
     /** @var Creditor_Trans */
     protected $trans;
     protected $creditor_id;
-    public $creditor_id;
     protected function before() {
       $this->JS->_openWindow(900, 500);
       $this->trans             = Creditor_Trans::i();
