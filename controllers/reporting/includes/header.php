@@ -98,8 +98,8 @@
   if (!isset($companyto)) {
     if (isset($myrow['debtor_id'])) {
       $companyto = new Debtor($myrow['debtor_id']);
-    } elseif (isset($myrow['supplier_id'])) {
-      $companyto = new Creditor($myrow['supplier_id']);
+    } elseif (isset($myrow['creditor_id'])) {
+      $companyto = new Creditor($myrow['creditor_id']);
     }
   }
   if (isset($branch['branch_id'])) {

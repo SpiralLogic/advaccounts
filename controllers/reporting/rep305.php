@@ -22,7 +22,7 @@
     $from = Dates::dateToSql($from);
     $to   = Dates::dateToSql($to);
     $sql
-          = "SELECT DISTINCT grn_batch.supplier_id,
+          = "SELECT DISTINCT grn_batch.creditor_id,
  purch_order_details.*,
  stock_master.description, stock_master.inactive
  FROM stock_master,
@@ -83,7 +83,7 @@
         }
         $stock_id = $trans['item_code'];
       }
-      $curr = Bank_Currency::for_creditor($trans['supplier_id']);
+      $curr = Bank_Currency::for_creditor($trans['creditor_id']);
       $rate = Bank_Currency::exchange_rate_from_home($curr, Dates::sqlToDate($trans['delivery_date']));
       $trans['unit_price'] *= $rate;
       $trans['act_price'] *= $rate;

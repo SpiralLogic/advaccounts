@@ -24,7 +24,7 @@
   Forms::start();
   Table::start('tablestyle_noborder');
   Row::start();
-  Creditor::cells(_(""), 'supplier_id', Input::post('supplier_id'), true);
+  Creditor::cells(_(""), 'creditor_id', Input::post('creditor_id'), true);
   Forms::refCells(_("#:"), 'order_number');
   Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
   Forms::dateCells(_("To:"), 'OrdersToDate');
@@ -39,7 +39,7 @@
     porder.order_no,
     porder.reference,
     supplier.name,
-     supplier.supplier_id as id,
+     supplier.creditor_id as id,
     location.location_name,
     porder.requisition_no,
     porder.ord_date,
@@ -49,12 +49,12 @@
     AND (line.quantity_ordered > line.quantity_received)) As OverDue
     FROM purch_orders as porder, purch_order_details as line, suppliers as supplier, locations as location
     WHERE porder.order_no = line.order_no
-    AND porder.supplier_id = supplier.supplier_id
+    AND porder.creditor_id = supplier.creditor_id
     AND location.loc_code = porder.into_stock_location
     AND (line.quantity_ordered > line.quantity_received) ";
-  $supplier_id = Input::getPost('supplier_id', Input::NUMERIC, 0);
-  if ($supplier_id) {
-    $sql .= " AND supplier.supplier_id = " . DB::quote($supplier_id);
+  $creditor_id = Input::getPost('creditor_id', Input::NUMERIC, 0);
+  if ($creditor_id) {
+    $sql .= " AND supplier.creditor_id = " . DB::quote($creditor_id);
   }
   if ($order_number) {
     $sql .= " AND (porder.order_no LIKE " . DB::quote('%' . $order_number . '%');

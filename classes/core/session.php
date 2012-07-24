@@ -22,7 +22,6 @@
    * @property \ADVAccounting App
    * @method  getGlobal($var, $default = null)
    * @method setGlobal($var, $value = null)
-   * @method kill()
    * @method get()
    * @method set()
    * @method regenerate()
@@ -164,11 +163,10 @@
      * @static
      * @return void
      */
-    public function _kill()
+    public static function kill()
     {
       Config::removeAll();
       session_start();
-      $this->_regenerate();
       session_destroy();
     }
     /**

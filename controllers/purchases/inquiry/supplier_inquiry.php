@@ -9,7 +9,7 @@
    **/
   JS::openWindow(900, 500);
   Page::start(_($help_context = "Supplier Inquiry"), SA_SUPPTRANSVIEW);
-  $supplier_id = Input::getPost('supplier_id', INPUT::NUMERIC, -1);
+  $creditor_id = Input::getPost('creditor_id', INPUT::NUMERIC, -1);
   if (isset($_GET['FromDate'])) {
     $_POST['TransAfterDate'] = $_GET['FromDate'];
   }
@@ -17,12 +17,12 @@
     $_POST['TransToDate'] = $_GET['ToDate'];
   }
   Forms::start();
-  if (!$supplier_id) {
-    $_POST['supplier_id'] = $supplier_id = Session::getGlobal('creditor', -1);
+  if (!$creditor_id) {
+    $_POST['creditor_id'] = $creditor_id = Session::getGlobal('creditor_id', -1);
   }
   Table::start('tablestyle_noborder');
   Row::start();
-  Creditor::cells(_(''), 'supplier_id', null, true);
+  Creditor::cells(_(''), 'creditor_id', null, true);
   Forms::dateCells(_("From:"), 'TransAfterDate', '', null, -90);
   Forms::dateCells(_("To:"), 'TransToDate');
   Purch_Allocation::row("filterType", null);
@@ -30,10 +30,10 @@
   Row::end();
   Table::end();
   Display::div_start('totals_tbl');
-  if ($supplier_id > 0) {
-    $supplier_record = Creditor::get_to_trans($supplier_id);
+  if ($creditor_id > 0) {
+    $supplier_record = Creditor::get_to_trans($creditor_id);
     displaySupplierSummary($supplier_record);
-    Session::setGlobal('creditor', $supplier_id);
+    Session::setGlobal('creditor_id', $creditor_id);
   }
   Display::div_end();
   if (Input::post('RefreshInquiry')) {
@@ -41,7 +41,7 @@
   }
   if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
     $searchArray = explode(' ', $_POST['ajaxsearch']);
-    unset($_POST['supplier_id']);
+    unset($_POST['creditor_id']);
   }
   $date_after = Dates::dateToSql($_POST['TransAfterDate']);
   $date_to    = Dates::dateToSql($_POST['TransToDate']);
@@ -51,7 +51,7 @@
 		trans.trans_no,
 		trans.reference,
 		supplier.name,
-		supplier.supplier_id as id,
+		supplier.creditor_id as id,
 		trans.supplier_reference,
  	trans.tran_date,
 		trans.due_date,
@@ -61,7 +61,7 @@
 		((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::today(true) . "') AS OverDue,
  	(ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount - trans.alloc) <= 0.005) AS Settled
  	FROM creditor_trans as trans, suppliers as supplier
- 	WHERE supplier.supplier_id = trans.supplier_id
+ 	WHERE supplier.creditor_id = trans.creditor_id
  	AND trans.ov_amount != 0"; // exclude voided transactions
   if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
     foreach ($searchArray as $ajaxsearch) {
@@ -77,8 +77,8 @@
       .= " AND trans . tran_date >= '$date_after'
 	 AND trans . tran_date <= '$date_to'";
   }
-  if ($supplier_id > 0) {
-    $sql .= " AND trans.supplier_id = " . DB::quote($supplier_id);
+  if ($creditor_id > 0) {
+    $sql .= " AND trans.creditor_id = " . DB::quote($creditor_id);
   }
   if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
     if (($_POST['filterType'] == '1')) {
@@ -125,7 +125,7 @@
       'insert' => true, 'fun' => 'printLink'
     )
   );
-  if ($supplier_id > 0) {
+  if ($creditor_id > 0) {
     $cols[_("Supplier")] = 'skip';
     $cols[_("Currency")] = 'skip';
   }
@@ -254,7 +254,7 @@
     Cell::amount($supplier_record["Overdue1"] - $supplier_record["Overdue2"]);
     Cell::amount($supplier_record["Overdue2"]);
     Cell::amount($supplier_record["Balance"]);
-    Cell::amount(Creditor::get_oweing($_POST['supplier_id'], $_POST['TransAfterDate'], $_POST['TransToDate']));
+    Cell::amount(Creditor::get_oweing($_POST['creditor_id'], $_POST['TransAfterDate'], $_POST['TransToDate']));
     Row::end();
     Table::end(1);
   }

@@ -42,7 +42,7 @@
      */
     public $gl_codes; /*array of objects of class gl_codes using a counter as the pointer */
     /** @var */
-    public $supplier_id;
+    public $creditor_id;
     /** @var */
     public $supplier_name;
     /** @var */
@@ -143,7 +143,7 @@
     }
     public function clear_items() {
       unset($this->grn_items, $this->gl_codes);
-      $this->ov_amount = $this->ov_discount = $this->supplier_id = $this->tax_correction = $this->total_correction = 0;
+      $this->ov_amount = $this->ov_discount = $this->creditor_id = $this->tax_correction = $this->total_correction = 0;
       $this->grn_items = array();
       $this->gl_codes  = array();
     }
@@ -209,7 +209,7 @@
      * @static
      *
      * @param        $type
-     * @param        $supplier_id
+     * @param        $creditor_id
      * @param        $date_
      * @param        $due_date
      * @param        $reference
@@ -222,7 +222,7 @@
      *
      * @return int
      */
-    public static function add($type, $supplier_id, $date_, $due_date, $reference, $supplier_reference, $amount, $amount_tax, $discount, $err_msg = "", $rate = 0) {
+    public static function add($type, $creditor_id, $date_, $due_date, $reference, $supplier_reference, $amount, $amount_tax, $discount, $err_msg = "", $rate = 0) {
       $date = Dates::dateToSql($date_);
       if ($due_date == "") {
         $due_date = "0000-00-00";
@@ -230,14 +230,14 @@
         $due_date = Dates::dateToSql($due_date);
       }
       $trans_no = SysTypes::get_next_trans_no($type);
-      $curr     = Bank_Currency::for_creditor($supplier_id);
+      $curr     = Bank_Currency::for_creditor($creditor_id);
       if ($rate == 0) {
         $rate = Bank_Currency::exchange_rate_from_home($curr, $date_);
       }
       $sql
-        = "INSERT INTO creditor_trans (trans_no, type, supplier_id, tran_date, due_date,
+        = "INSERT INTO creditor_trans (trans_no, type, creditor_id, tran_date, due_date,
 				reference, supplier_reference, ov_amount, ov_gst, rate, ov_discount) ";
-      $sql .= "VALUES (" . DB::escape($trans_no) . ", " . DB::escape($type) . ", " . DB::escape($supplier_id) . ", '$date', '$due_date',
+      $sql .= "VALUES (" . DB::escape($trans_no) . ", " . DB::escape($type) . ", " . DB::escape($creditor_id) . ", '$date', '$due_date',
 				" . DB::escape($reference) . ", " . DB::escape($supplier_reference) . ", " . DB::escape($amount) . ", " . DB::escape($amount_tax) . ", " . DB::escape($rate) . ", " . DB::escape($discount) . ")";
       if ($err_msg == "") {
         $err_msg = "Cannot insert a supplier transaction record";
@@ -272,7 +272,7 @@
         $sql .= ", bank_trans, bank_accounts";
       }
       $sql .= " WHERE creditor_trans.trans_no=" . DB::escape($trans_no) . "
-				AND creditor_trans.supplier_id=suppliers.supplier_id";
+				AND creditor_trans.creditor_id=suppliers.creditor_id";
       if ($trans_type > 0) {
         $sql .= " AND creditor_trans.type=" . DB::escape($trans_type);
       }
@@ -359,31 +359,31 @@
      * @param        $dimension
      * @param        $dimension2
      * @param        $amount
-     * @param        $supplier_id
+     * @param        $creditor_id
      * @param string $err_msg
      * @param int    $rate
      * @param string $memo
      *
      * @return float
      */
-    public static function add_gl($type, $type_no, $date_, $account, $dimension, $dimension2, $amount, $supplier_id, $err_msg = "", $rate = 0, $memo = "") {
+    public static function add_gl($type, $type_no, $date_, $account, $dimension, $dimension2, $amount, $creditor_id, $err_msg = "", $rate = 0, $memo = "") {
       if ($err_msg == "") {
         $err_msg = "The supplier GL transaction could not be inserted";
       }
-      return GL_Trans::add($type, $type_no, $date_, $account, $dimension, $dimension2, $memo, $amount, Bank_Currency::for_creditor($supplier_id), PT_SUPPLIER, $supplier_id, $err_msg, $rate);
+      return GL_Trans::add($type, $type_no, $date_, $account, $dimension, $dimension2, $memo, $amount, Bank_Currency::for_creditor($creditor_id), PT_SUPPLIER, $creditor_id, $err_msg, $rate);
     }
     /**
      * @static
      *
-     * @param $supplier_id
+     * @param $creditor_id
      * @param $stock_id
      *
      * @return int
      */
-    public static function get_conversion_factor($supplier_id, $stock_id) {
+    public static function get_conversion_factor($creditor_id, $stock_id) {
       $sql
               = "SELECT conversion_factor FROM purch_data
-					WHERE supplier_id = " . DB::escape($supplier_id) . "
+					WHERE creditor_id = " . DB::escape($creditor_id) . "
 					AND stock_id = " . DB::escape($stock_id);
       $result = DB::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
       if (DB::numRows($result) == 1) {

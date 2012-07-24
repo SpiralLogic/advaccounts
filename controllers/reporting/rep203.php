@@ -31,7 +31,7 @@
             (ABS(creditor_trans.ov_amount) + ABS(creditor_trans.ov_gst) - creditor_trans.alloc) AS Balance,
             (ABS(creditor_trans.ov_amount) + ABS(creditor_trans.ov_gst) ) AS TranTotal
         FROM creditor_trans
-        WHERE creditor_trans.supplier_id = '" . $supplier . "'
+        WHERE creditor_trans.creditor_id = '" . $supplier . "'
         AND ROUND(ABS(creditor_trans.ov_amount),$dec) + ROUND(ABS(creditor_trans.ov_gst),$dec) -
         ROUND(creditor_trans.alloc,$dec) != 0
         AND creditor_trans.tran_date <='" . $date . "'
@@ -94,10 +94,10 @@
     $total      = array();
     $grandtotal = array(0, 0);
     $sql
-                = "SELECT supplier_id, name, curr_code, payment_terms.terms FROM suppliers, payment_terms
+                = "SELECT creditor_id, name, curr_code, payment_terms.terms FROM suppliers, payment_terms
         WHERE ";
     if ($fromsupp != ALL_NUMERIC) {
-      $sql .= "supplier_id=" . DB::escape($fromsupp) . " AND ";
+      $sql .= "creditor_id=" . DB::escape($fromsupp) . " AND ";
     }
     $sql
       .= "suppliers.payment_terms = payment_terms.terms_indicator
@@ -107,7 +107,7 @@
       if (!$convert && $currency != $myrow['curr_code']) {
         continue;
       }
-      $res = get_transactions($myrow['supplier_id'], $to);
+      $res = get_transactions($myrow['creditor_id'], $to);
       if ($no_zeros && DB::numRows($res) == 0) {
         continue;
       }

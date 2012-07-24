@@ -281,16 +281,16 @@
                                                                         ));
         case 'SUPPLIERS_NO_FILTER':
         case 'SUPPLIERS':
-          $sql = "SELECT supplier_id, name FROM suppliers";
+          $sql = "SELECT creditor_id, name FROM suppliers";
           if ($type == 'SUPPLIERS_NO_FILTER') {
-            return Forms::selectBox($name, '', $sql, 'supplier_id', 'name', array(
+            return Forms::selectBox($name, '', $sql, 'creditor_id', 'name', array(
                                                                                  'spec_option' => _("No Supplier Filter"),
                                                                                  'spec_id'     => ALL_NUMERIC
                                                                             ));
           } // FIX allitems numeric!
           //						return Creditor::select($name, null, _("No Supplier Filter"));
           else {
-            return Forms::selectBox($name, '', $sql, 'supplier_id', 'name', null);
+            return Forms::selectBox($name, '', $sql, 'creditor_id', 'name', null);
           }
         //						return Creditor::select($name);
         case 'INVOICE':
@@ -336,7 +336,7 @@
           $sql
                = "SELECT purch_orders.order_no, concat(purch_orders.$ref, '-',
                         suppliers.name) as IName
-                        FROM suppliers, purch_orders WHERE suppliers.supplier_id=purch_orders.supplier_id ORDER BY purch_orders.order_no DESC";
+                        FROM suppliers, purch_orders WHERE suppliers.creditor_id=purch_orders.creditor_id ORDER BY purch_orders.order_no DESC";
 
           return Forms::selectBox($name, '', $sql, 'order_no', 'IName', array('order' => false));
         case 'REMITTANCE':
@@ -347,7 +347,7 @@
           $sql
                = "SELECT concat(creditor_trans.trans_no, '-',
                         creditor_trans.type) AS TNO, concat(creditor_trans.$ref, if (type=" . ST_BANKPAYMENT . ", ' $BP ', if (type=" . ST_SUPPAYMENT . ", ' $SP ', ' $CN ')), suppliers.name) as IName
-                        FROM suppliers, creditor_trans WHERE (type=" . ST_BANKPAYMENT . " OR type=" . ST_SUPPAYMENT . " OR type=" . ST_SUPPCREDIT . ") AND suppliers.supplier_id=creditor_trans.supplier_id ORDER BY creditor_trans.trans_no DESC";
+                        FROM suppliers, creditor_trans WHERE (type=" . ST_BANKPAYMENT . " OR type=" . ST_SUPPAYMENT . " OR type=" . ST_SUPPCREDIT . ") AND suppliers.creditor_id=creditor_trans.creditor_id ORDER BY creditor_trans.trans_no DESC";
 
           return Forms::selectBox($name, '', $sql, 'TNO', 'IName', array('order' => false));
         case 'RECEIPT':

@@ -68,24 +68,24 @@
     }
     public static function add(&$order, $date_, $reference, $location) {
       DB::begin();
-      $grn = static::add_batch($order->order_no, $order->supplier_id, $reference, $location, $date_);
+      $grn = static::add_batch($order->order_no, $order->creditor_id, $reference, $location, $date_);
       foreach ($order->line_items as $order_line) {
         if ($order_line->receive_qty != 0 && $order_line->receive_qty != "" && isset($order_line->receive_qty)) {
           /*Update sales_order_details for the new quantity received and the standard cost used for postings to GL and recorded in the stock movements for FIFO/LIFO stocks valuations*/
           //------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
-          static::update_average_material_cost($order->supplier_id, $order_line->stock_id, $order_line->price, $order_line->receive_qty, $date_);
+          static::update_average_material_cost($order->creditor_id, $order_line->stock_id, $order_line->price, $order_line->receive_qty, $date_);
           if ($order_line->qty_received == 0) {
             /*This must be the first receipt of goods against this line */
             /*Need to get the standard cost as it is now so we can process GL jorunals later*/
             $order_line->standard_cost = Item_Price::get_standard_cost($order_line->stock_id);
           }
           if ($order_line->price <= $order_line->standard_cost) {
-            Purch_Order::add_or_update_data($order->supplier_id, $order_line->stock_id, $order_line->price);
+            Purch_Order::add_or_update_data($order->creditor_id, $order_line->stock_id, $order_line->price);
           }
           /*Need to insert a grn item */
           $grn_item = static::add_item($grn, $order_line->po_detail_rec, $order_line->stock_id, $order_line->description, $order_line->standard_cost, $order_line->receive_qty, $order_line->price, $order_line->discount);
           /* Update location stock records - NB a po cannot be entered for a service/kit parts */
-          Inv_Movement::add(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $location, $date_, "", $order_line->receive_qty, $order_line->standard_cost, $order->supplier_id, 1, $order_line->price);
+          Inv_Movement::add(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $location, $date_, "", $order_line->receive_qty, $order_line->standard_cost, $order->creditor_id, 1, $order_line->price);
         } /*quantity received is != 0 */
       } /*end of order_line loop */
       $grn_item = static::add_item($grn, $order->add_freight($date_), 'Freight', 'Freight Charges', 0, 1, $order->freight, 0);
@@ -94,11 +94,11 @@
       DB::commit();
       return $grn;
     }
-    public static function add_batch($po_number, $supplier_id, $reference, $location, $date_) {
+    public static function add_batch($po_number, $creditor_id, $reference, $location, $date_) {
       $date = Dates::dateToSql($date_);
       $sql
-            = "INSERT INTO grn_batch (purch_order_no, delivery_date, supplier_id, reference, loc_code)
-            VALUES (" . DB::escape($po_number) . ", " . DB::escape($date) . ", " . DB::escape($supplier_id) . ", " . DB::escape($reference) . ", " . DB::escape($location) . ")";
+            = "INSERT INTO grn_batch (purch_order_no, delivery_date, creditor_id, reference, loc_code)
+            VALUES (" . DB::escape($po_number) . ", " . DB::escape($date) . ", " . DB::escape($creditor_id) . ", " . DB::escape($reference) . ", " . DB::escape($location) . ")";
       DB::query($sql, "A grn batch record could not be inserted.");
       return DB::insertId();
     }
@@ -152,7 +152,7 @@
       DB::query($sql);
       Inv_Movement::add(ST_SUPPCREDIT, $entered_grn->item_code, $transno, $myrow['loc_code'], $date, "", $entered_grn->this_quantity_inv, $mcost, $supplier, 1, $entered_grn->chg_price);
     }
-    public static function get_items($grn_batch_id = 0, $supplier_id = "", $outstanding_only = false, $is_invoiced_only = false, $invoice_no = 0, $begin = "", $end = "") {
+    public static function get_items($grn_batch_id = 0, $creditor_id = "", $outstanding_only = false, $is_invoiced_only = false, $invoice_no = 0, $begin = "", $end = "") {
       $sql   = "SELECT  grn_batch.*,  grn_items.*,  purch_order_details.unit_price,  purch_order_details.std_cost_unit, units
       FROM  grn_batch,  grn_items,  purch_order_details,  stock_master ";
       $ponum = Input::post('PONumber');
@@ -185,8 +185,8 @@
       if ($outstanding_only) {
         $sql .= " AND grn_items.qty_recd - grn_items.quantity_inv > 0";
       }
-      if ($supplier_id != "") {
-        $sql .= " AND grn_batch.supplier_id =" . DB::escape($supplier_id);
+      if ($creditor_id != "") {
+        $sql .= " AND grn_batch.creditor_id =" . DB::escape($creditor_id);
       }
       $sql .= " ORDER BY grn_batch.delivery_date, grn_batch.id, grn_items.id";
       return DB::query($sql, "Could not retreive GRNS");
@@ -324,15 +324,15 @@
     //--------------
     public static function display_for_selection($creditor_trans, $k) {
       if ($creditor_trans->is_invoice) {
-        $result = Purch_GRN::get_items(0, $creditor_trans->supplier_id, true);
+        $result = Purch_GRN::get_items(0, $creditor_trans->creditor_id, true);
       } else {
         if (isset($_POST['receive_begin']) && isset($_POST['receive_end'])) {
-          $result = Purch_GRN::get_items(0, $creditor_trans->supplier_id, false, true, 0, $_POST['receive_begin'], $_POST['receive_end']);
+          $result = Purch_GRN::get_items(0, $creditor_trans->creditor_id, false, true, 0, $_POST['receive_begin'], $_POST['receive_end']);
         } else {
           if (isset($_POST['invoice_no'])) {
-            $result = Purch_GRN::get_items(0, $creditor_trans->supplier_id, false, true, $_POST['invoice_no']);
+            $result = Purch_GRN::get_items(0, $creditor_trans->creditor_id, false, true, $_POST['invoice_no']);
           } else {
-            $result = Purch_GRN::get_items(0, $creditor_trans->supplier_id, false, true);
+            $result = Purch_GRN::get_items(0, $creditor_trans->creditor_id, false, true);
           }
         }
       }
@@ -354,7 +354,7 @@
             Cell::label($myrow["id"] . Forms::hidden('qty_recd' . $n, $myrow["qty_recd"], false) . Forms::hidden('item_code' . $n, $myrow["item_code"], false) . Forms::hidden('description' . $n, $myrow["description"], false) . Forms::hidden('prev_quantity_inv' . $n, $myrow['quantity_inv'],
               false) . Forms::hidden('order_price' . $n, $myrow['unit_price'], false) . Forms::hidden('std_cost_unit' . $n, $myrow['std_cost_unit'], false) . Forms::hidden('po_detail_item' . $n, $myrow['po_detail_item'], false));
             Cell::label(GL_UI::viewTrans(ST_PURCHORDER, $myrow["purch_order_no"]));
-            $sql1       = "SELECT supplier_description FROM purch_data WHERE supplier_id=" . DB::quote($creditor_trans->supplier_id) . " AND stock_id=" . DB::quote($myrow["item_code"]);
+            $sql1       = "SELECT supplier_description FROM purch_data WHERE creditor_id=" . DB::quote($creditor_trans->creditor_id) . " AND stock_id=" . DB::quote($myrow["item_code"]);
             $result1    = DB::query($sql1, 'Could not get suppliers item code');
             $result1    = DB::fetch($result1);
             $stock_code = ($myrow["item_code"] != $result1[0]) ? $myrow["item_code"] . '<br>' . $result1[0] : $myrow["item_code"];

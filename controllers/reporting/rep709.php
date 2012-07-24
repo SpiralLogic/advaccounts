@@ -29,7 +29,7 @@
         FROM trans_tax_details taxrec
         LEFT JOIN creditor_trans strans
             ON taxrec.trans_no=strans.trans_no AND taxrec.trans_type=strans.type
-        LEFT JOIN suppliers as supp ON strans.supplier_id=supp.supplier_id
+        LEFT JOIN suppliers as supp ON strans.creditor_id=supp.creditor_id
         LEFT JOIN debtor_trans dtrans
             ON taxrec.trans_no=dtrans.trans_no AND taxrec.trans_type=dtrans.type
         LEFT JOIN debtors as debt ON dtrans.debtor_id=debt.debtor_id

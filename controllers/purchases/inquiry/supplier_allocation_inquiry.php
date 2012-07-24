@@ -9,11 +9,11 @@
    **/
   JS::openWindow(900, 500);
   Page::start(_($help_context = "Supplier Allocation Inquiry"), SA_SUPPLIERALLOC);
-  if (isset($_GET['supplier_id']) || isset($_GET['id'])) {
-    $_POST['supplier_id'] = isset($_GET['id']) ? $_GET['id'] : $_GET['supplier_id'];
+  if (isset($_GET['creditor_id']) || isset($_GET['id'])) {
+    $_POST['creditor_id'] = isset($_GET['id']) ? $_GET['id'] : $_GET['creditor_id'];
   }
-  if (isset($_GET['supplier_id'])) {
-    $_POST['supplier_id'] = $_GET['supplier_id'];
+  if (isset($_GET['creditor_id'])) {
+    $_POST['creditor_id'] = $_GET['creditor_id'];
   }
   if (isset($_GET['FromDate'])) {
     $_POST['TransAfterDate'] = $_GET['FromDate'];
@@ -27,8 +27,8 @@
     }
   }
   Forms::start(false, '', 'invoiceForm');
-  if (!isset($_POST['supplier_id'])) {
-    $_POST['supplier_id'] = Session::getGlobal('creditor');
+  if (!isset($_POST['creditor_id'])) {
+    $_POST['creditor_id'] = Session::getGlobal('creditor_id');
   }
   if (!isset($_POST['TransAfterDate']) && Session::getGlobal('TransAfterDate')) {
     $_POST['TransAfterDate'] = Session::getGlobal('TransAfterDate');
@@ -43,14 +43,14 @@
   Table::start('tablestyle_noborder');
   Row::start();
   if (!Input::get('frame')) {
-    Creditor::cells(_("Supplier: "), 'supplier_id', null, true);
+    Creditor::cells(_("Supplier: "), 'creditor_id', null, true);
   }
   Forms::dateCells(_("From:"), 'TransAfterDate', '', null, -90);
   Forms::dateCells(_("To:"), 'TransToDate', '', null, 1);
   Purch_Allocation::row("filterType", null);
   Forms::checkCells(_("Show settled:"), 'showSettled', null);
   Forms::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-  Session::setGlobal('creditor', $_POST['supplier_id']);
+  Session::setGlobal('creditor_id', $_POST['creditor_id']);
   Row::end();
   Table::end();
   /**
@@ -147,7 +147,7 @@
         trans.trans_no,
         trans.reference,
         supplier.name,
-        supplier.supplier_id as id,
+        supplier.creditor_id as id,
         trans.supplier_reference,
          trans.tran_date,
         trans.due_date,
@@ -156,11 +156,11 @@
         trans.alloc AS Allocated,
         ((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::today(true) . "') AS OverDue
      FROM creditor_trans as trans, suppliers as supplier
-     WHERE supplier.supplier_id = trans.supplier_id
+     WHERE supplier.creditor_id = trans.creditor_id
      AND trans.tran_date >= '$date_after'
      AND trans.tran_date <= '$date_to'";
-  if ($_POST['supplier_id'] != ALL_TEXT) {
-    $sql .= " AND trans.supplier_id = " . DB::quote($_POST['supplier_id']);
+  if ($_POST['creditor_id'] != ALL_TEXT) {
+    $sql .= " AND trans.creditor_id = " . DB::quote($_POST['creditor_id']);
   }
   if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
     if (($_POST['filterType'] == '1') || ($_POST['filterType'] == '2')) {
@@ -200,7 +200,7 @@
       'insert' => true, 'fun' => 'alloc_link'
     )
   );
-  if ($_POST['supplier_id'] != ALL_TEXT) {
+  if ($_POST['creditor_id'] != ALL_TEXT) {
     $cols[_("Supplier ID")] = 'skip';
     $cols[_("Supplier")]    = 'skip';
     $cols[_("Currency")]    = 'skip';

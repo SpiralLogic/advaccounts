@@ -17,7 +17,7 @@
   class Purch_Order
   {
     /** @var */
-    public $supplier_id;
+    public $creditor_id;
     /** @var */
     public $supplier_details;
     /**
@@ -73,7 +73,7 @@
     public function __construct($order_no = 0, $view = false) {
       /*Constructor function initialises a new purchase order object */
       $this->line_items     = array();
-      $this->lines_on_order = $this->supplier_id = 0;
+      $this->lines_on_order = $this->creditor_id = 0;
       $this->set_salesman();
       $this->location        = Config::get('default.location');
       $this->order_no        = $order_no;
@@ -296,8 +296,8 @@
         }
       }
       try {
-        $sql = "INSERT INTO purch_orders (supplier_id, Comments, ord_date, reference, requisition_no, into_stock_location, delivery_address, freight, salesman) VALUES(";
-        $sql .= DB::escape($this->supplier_id) . "," . DB::escape($this->Comments) . ",'" . Dates::dateToSql($this->orig_order_date) . "', " . DB::escape($this->reference) . ", " . DB::escape($this->requisition_no) . ", " . DB::escape($this->location) . ", " . DB::escape($this->delivery_address) . ", " . DB::escape($this->freight) . ", " . DB::escape($this->salesman) . ")";
+        $sql = "INSERT INTO purch_orders (creditor_id, Comments, ord_date, reference, requisition_no, into_stock_location, delivery_address, freight, salesman) VALUES(";
+        $sql .= DB::escape($this->creditor_id) . "," . DB::escape($this->Comments) . ",'" . Dates::dateToSql($this->orig_order_date) . "', " . DB::escape($this->reference) . ", " . DB::escape($this->requisition_no) . ", " . DB::escape($this->location) . ", " . DB::escape($this->delivery_address) . ", " . DB::escape($this->freight) . ", " . DB::escape($this->salesman) . ")";
         DB::query($sql, "The purchase order header record could not be inserted.");
       }
       catch (DBDuplicateException $e) {
@@ -375,14 +375,14 @@
               = "SELECT purch_orders.*, suppliers.name,
              suppliers.curr_code, locations.location_name
             FROM purch_orders, suppliers, locations
-            WHERE purch_orders.supplier_id = suppliers.supplier_id
+            WHERE purch_orders.creditor_id = suppliers.creditor_id
             AND locations.loc_code = into_stock_location
             AND purch_orders.order_no = " . DB::escape($order_no);
       $result = DB::query($sql, "The order cannot be retrieved");
       if (DB::numRows($result) == 1) {
         $myrow                  = DB::fetch($result);
         $this->order_no         = $order_no;
-        $this->supplier_id      = $myrow["supplier_id"];
+        $this->creditor_id      = $myrow["creditor_id"];
         $this->supplier_name    = $myrow["name"];
         $this->curr_code        = $myrow["curr_code"];
         $this->orig_order_date  = Dates::sqlToDate($myrow["ord_date"]);
@@ -418,7 +418,7 @@
       $result = DB::query($sql, "The lines on the purchase order cannot be retrieved");
       if (DB::numRows($result) > 0) {
         while ($myrow = DB::fetch($result)) {
-          $data = static::get_data($this->supplier_id, $myrow['item_code']);
+          $data = static::get_data($this->creditor_id, $myrow['item_code']);
           if ($data !== false) {
             if ($data['supplier_description'] != "") {
               $myrow['supplier_description'] = $data['supplier_description'];
@@ -462,18 +462,18 @@
       return DB::insertId();
     }
     /**
-     * @param $supplier_id
+     * @param $creditor_id
      */
-    public function supplier_to_order($supplier_id) {
+    public function supplier_to_order($creditor_id) {
       $sql
                               = "SELECT * FROM suppliers
-            WHERE supplier_id = '$supplier_id'";
+            WHERE creditor_id = '$creditor_id'";
       $result                 = DB::query($sql, "The supplier details could not be retreived");
       $myrow                  = DB::fetchAssoc($result);
       $this->supplier_details = $myrow;
       $this->curr_code        = $_POST['curr_code'] = $myrow["curr_code"];
       $this->supplier_name    = $_POST['supplier_name'] = $myrow["name"];
-      $this->supplier_id      = $_POST['supplier_id'] = $supplier_id;
+      $this->creditor_id      = $_POST['creditor_id'] = $creditor_id;
     }
     /*
        Check if the order was not destroyed during opening the edition page in
@@ -513,10 +513,10 @@
       $show_currencies = ($this->curr_code == Bank_Currency::for_company() && !Bank_Currency::is_company($this->curr_code)) ? 1 :
         2;
       if ($editable) {
-        if (!Input::post('supplier_id')) {
-          $_POST['supplier_id'] = Session::getGlobal('creditor');
+        if (!Input::post('creditor_id')) {
+          $_POST['creditor_id'] = Session::getGlobal('creditor_id');
         }
-        if ($_POST['supplier_id']) {
+        if ($_POST['creditor_id']) {
           Ajax::activate('_page_body');
         }
         Creditor::newselect(null, [
@@ -526,23 +526,23 @@
                                   'cell_class'         => 'label'
                                   ]);
       } else {
-        if (isset($_POST['supplier_id'])) {
-          $this->supplier_to_order($_POST['supplier_id']);
+        if (isset($_POST['creditor_id'])) {
+          $this->supplier_to_order($_POST['creditor_id']);
         }
-        Forms::hidden('supplier_id', $this->supplier_id);
+        Forms::hidden('creditor_id', $this->creditor_id);
         Cell::labels(_("Supplier:"), $this->supplier_name, 'rowspan=2 ', ' colspan=' . ($show_currencies + 2) . ' rowspan=2');
       }
-      if ($this->supplier_id != Input::post('supplier_id', null, -1)) {
-        $old_supp = $this->supplier_id;
-        $this->supplier_to_order($_POST['supplier_id']);
+      if ($this->creditor_id != Input::post('creditor_id', null, -1)) {
+        $old_supp = $this->creditor_id;
+        $this->supplier_to_order($_POST['creditor_id']);
         // supplier default price update
         foreach ($this->line_items as $line) {
-          $line->price    = Item_Price::get_purchase($this->supplier_id, $line->stock_id);
-          $line->quantity = $line->quantity / Creditor_Trans::get_conversion_factor($old_supp, $line->stock_id) * Creditor_Trans::get_conversion_factor($this->supplier_id, $line->stock_id);
+          $line->price    = Item_Price::get_purchase($this->creditor_id, $line->stock_id);
+          $line->quantity = $line->quantity / Creditor_Trans::get_conversion_factor($old_supp, $line->stock_id) * Creditor_Trans::get_conversion_factor($this->creditor_id, $line->stock_id);
         }
         Ajax::activate('items_table');
       }
-      Session::setGlobal('creditor', $_POST['supplier_id']);
+      Session::setGlobal('creditor_id', $_POST['creditor_id']);
       echo "<td class='label'><label for=\"location\">" . _('Receive Into:') . "</label></td>";
       echo "<td colspan=2>";
       echo Inv_Location::select('location', null, false, true);
@@ -730,8 +730,8 @@
         $_POST['units']        = $item_info["units"];
         $_POST['description']  = '';
         $dec                   = $item_info["decimals"];
-        $_POST['qty']          = Num::format(Creditor_Trans::get_conversion_factor($this->supplier_id, Input::post('stock_id')), $dec);
-        $_POST['price']        = Num::priceDecimal(Item_Price::get_purchase($this->supplier_id, Input::post('stock_id')), $dec2);
+        $_POST['qty']          = Num::format(Creditor_Trans::get_conversion_factor($this->creditor_id, Input::post('stock_id')), $dec);
+        $_POST['price']        = Num::priceDecimal(Item_Price::get_purchase($this->creditor_id, Input::post('stock_id')), $dec2);
         $_POST['req_del_date'] = Dates::addDays(Dates::today(), 10);
         $_POST['discount']     = Num::percentFormat(0);
         $qty_rcvd              = '';
@@ -756,15 +756,15 @@
     /**
      * @static
      *
-     * @param $supplier_id
+     * @param $creditor_id
      * @param $stock_id
      *
      * @return Array|\ADV\Core\DB\Query\Result
      */
-    public static function get_data($supplier_id, $stock_id) {
+    public static function get_data($creditor_id, $stock_id) {
       $sql
               = "SELECT * FROM purch_data
-                WHERE supplier_id = " . DB::escape($supplier_id) . "
+                WHERE creditor_id = " . DB::escape($creditor_id) . "
                 AND stock_id = " . DB::escape($stock_id);
       $result = DB::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
       return DB::fetch($result);
@@ -772,7 +772,7 @@
     /**
      * @static
      *
-     * @param        $supplier_id
+     * @param        $creditor_id
      * @param        $stock_id
      * @param        $price
      * @param string $supplier_code
@@ -780,14 +780,14 @@
      *
      * @return bool
      */
-    public static function add_or_update_data($supplier_id, $stock_id, $price, $supplier_code = "", $uom = "") {
-      $data = static::get_data($supplier_id, $stock_id);
+    public static function add_or_update_data($creditor_id, $stock_id, $price, $supplier_code = "", $uom = "") {
+      $data = static::get_data($creditor_id, $stock_id);
       if ($data === false) {
         $supplier_code = $stock_id;
         try {
           $sql
-            = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
-                    conversion_factor, supplier_description) VALUES (" . DB::escape($supplier_id) . ", " . DB::escape($stock_id) . ", " . DB::escape($price) . ", " . DB::escape($uom) . ", 1, " . DB::escape($supplier_code) . ")";
+            = "INSERT INTO purch_data (creditor_id, stock_id, price, suppliers_uom,
+                    conversion_factor, supplier_description) VALUES (" . DB::escape($creditor_id) . ", " . DB::escape($stock_id) . ", " . DB::escape($price) . ", " . DB::escape($uom) . ", 1, " . DB::escape($supplier_code) . ")";
           DB::query($sql, "The supplier purchasing details could not be added");
           return false;
         }
@@ -803,7 +803,7 @@
       if ($supplier_code != "") {
         $sql .= ",supplier_description=" . DB::escape($supplier_code);
       }
-      $sql .= " WHERE stock_id=" . DB::escape($stock_id) . " AND supplier_id=" . DB::escape($supplier_id);
+      $sql .= " WHERE stock_id=" . DB::escape($stock_id) . " AND creditor_id=" . DB::escape($creditor_id);
       DB::query($sql, "The supplier purchasing details could not be updated");
       return true;
     }
@@ -811,7 +811,7 @@
      * @param $order
      */
     public static function copyFromPost($order) {
-      $order->supplier_id      = Input::post('supplier_id', Input::NUMERIC, null);
+      $order->creditor_id      = Input::post('creditor_id', Input::NUMERIC, null);
       $order->orig_order_date  = $_POST['OrderDate'];
       $order->reference        = $_POST['ref'];
       $order->requisition_no   = $_POST['Requisition'];
@@ -830,7 +830,7 @@
       if (!Input::get('UseOrder')) {
         $order = Purch_Order::check_edit_conflicts($order);
       }
-      $_POST['supplier_id']      = $order->supplier_id;
+      $_POST['creditor_id']      = $order->creditor_id;
       $_POST['OrderDate']        = $order->orig_order_date;
       $_POST['Requisition']      = $order->requisition_no;
       $_POST['ref']              = $order->reference;

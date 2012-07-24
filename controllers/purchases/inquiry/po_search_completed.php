@@ -10,7 +10,7 @@
   JS::openWindow(900, 500);
   Page::start(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, Input::request('frame'));
   $order_number = Input::getPost('order_number', Input::STRING);
-  $supplier_id  = Input::postGet('supplier_id', Input::NUMERIC, -1);
+  $creditor_id  = Input::postGet('creditor_id', Input::NUMERIC, -1);
   if (Input::post('SearchOrders')) {
     Ajax::activate('orders_tbl');
   }
@@ -21,7 +21,7 @@
   }
   Ajax::activate('orders_tbl');
   if (Input::post('_control') != 'supplier' && !Input::post('supplier')) {
-    $_POST['supplier_id'] = Session::i()->setGlobal('creditor', '');
+    $_POST['creditor_id'] = Session::i()->setGlobal('creditor', '');
   }
   Forms::start();
   if (!Input::request('frame')) {
@@ -41,14 +41,14 @@
   $location = $stock_location='';
   if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
     $searchArray = explode(' ', $_POST['ajaxsearch']);
-    unset($_POST['supplier_id']);
+    unset($_POST['creditor_id']);
   }
   $sql
     = "SELECT
 	porder.order_no,
 	porder.reference,
 	supplier.name,
-	supplier.supplier_id as id,
+	supplier.creditor_id as id,
 	location.location_name,
 	porder.requisition_no,
 	porder.ord_date,
@@ -56,10 +56,10 @@
 	Sum(line.unit_price*line.quantity_ordered)+porder.freight AS OrderValue,
 	Sum(line.quantity_ordered - line.quantity_received) AS Received,
 	Sum(line.quantity_received - line.qty_invoiced) AS Invoiced,
-	porder.into_stock_location, supplier.supplier_id
+	porder.into_stock_location, supplier.creditor_id
 	FROM purch_orders as porder, purch_order_details as line, suppliers as supplier, locations as location
 	WHERE porder.order_no = line.order_no
-	AND porder.supplier_id = supplier.supplier_id
+	AND porder.creditor_id = supplier.creditor_id
 	AND location.loc_code = porder.into_stock_location ";
   if (AJAX_REFERRER && $searchArray && !empty($_POST['ajaxsearch'])) {
     foreach ($searchArray as $ajaxsearch) {
@@ -78,8 +78,8 @@
       $sql .= " AND (porder.order_no LIKE " . DB::quote('%' . $order_number . '%');
       $sql .= " OR porder.reference LIKE " . DB::quote('%' . $order_number . '%') . ') ';
     }
-    if ($supplier_id > -1) {
-      $sql .= " AND porder.supplier_id = " . DB::quote($supplier_id);
+    if ($creditor_id > -1) {
+      $sql .= " AND porder.creditor_id = " . DB::quote($creditor_id);
     }
     $stock_location = Input::post('StockLocation', Input::STRING);
     $location       = Input::get(LOC_NOT_FAXED_YET);
@@ -141,7 +141,7 @@
                               if ($row['Received'] > 0) {
                                 return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
                               } elseif ($row['Invoiced'] > 0) {
-                                return DB_Pager::link(_("Invoice"), "/purchases/supplier_invoice.php?New=1&supplier_id=" . $row['supplier_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
+                                return DB_Pager::link(_("Invoice"), "/purchases/supplier_invoice.php?New=1&creditor_id=" . $row['creditor_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
                               }
                               return '';
                             }

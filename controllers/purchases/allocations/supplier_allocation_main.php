@@ -11,25 +11,25 @@
   Page::start(_($help_context = "Supplier Allocations"), SA_SUPPLIERALLOC);
   Forms::start();
   /* show all outstanding receipts and credits to be allocated */
-  if (!isset($_POST['supplier_id'])) {
-    $_POST['supplier_id'] = Session::getGlobal('creditor');
+  if (!isset($_POST['creditor_id'])) {
+    $_POST['creditor_id'] = Session::getGlobal('creditor_id');
   }
   echo "<div class='center'>" . _("Select a Supplier: ") . "&nbsp;&nbsp;";
-  echo Creditor::select('supplier_id', $_POST['supplier_id'], true, true);
+  echo Creditor::select('creditor_id', $_POST['creditor_id'], true, true);
   echo "<br>";
   Forms::check(_("Show Settled Items:"), 'ShowSettled', null, true);
   echo "</div><br><br>";
-  Session::setGlobal('creditor', $_POST['supplier_id']);
-  if (isset($_POST['supplier_id']) && ($_POST['supplier_id'] == ALL_TEXT)) {
-    unset($_POST['supplier_id']);
+  Session::setGlobal('creditor_id', $_POST['creditor_id']);
+  if (isset($_POST['creditor_id']) && ($_POST['creditor_id'] == ALL_TEXT)) {
+    unset($_POST['creditor_id']);
   }
   $settled = false;
   if (Forms::hasPost('ShowSettled')) {
     $settled = true;
   }
-  $supplier_id = null;
-  if (isset($_POST['supplier_id'])) {
-    $supplier_id = $_POST['supplier_id'];
+  $creditor_id = null;
+  if (isset($_POST['creditor_id'])) {
+    $creditor_id = $_POST['creditor_id'];
   }
   /**
    * @param $dummy
@@ -88,7 +88,7 @@
     return $row['settled'] == 1;
   }
 
-  $sql  = Purch_Allocation::get_allocatable_sql($supplier_id, $settled);
+  $sql  = Purch_Allocation::get_allocatable_sql($creditor_id, $settled);
   $cols = array(
     _("Transaction Type") => array('fun' => 'sysTypeName'),
     _("#")                => array('fun' => 'viewTrans'),

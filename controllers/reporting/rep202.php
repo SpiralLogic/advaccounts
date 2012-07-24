@@ -12,12 +12,12 @@
 
   print_aged_supplier_analysis();
   /**
-   * @param $supplier_id
+   * @param $creditor_id
    * @param $to
    *
    * @return null|PDOStatement
    */
-  function get_invoices($supplier_id, $to)
+  function get_invoices($creditor_id, $to)
   {
     $todate    = Dates::dateToSql($to);
     $past_due1 = DB_Company::get_pref('past_due_days');
@@ -39,8 +39,8 @@
             creditor_trans
 
          WHERE suppliers.payment_terms = payment_terms.terms_indicator
-            AND suppliers.supplier_id = creditor_trans.supplier_id
-            AND creditor_trans.supplier_id = $supplier_id
+            AND suppliers.creditor_id = creditor_trans.creditor_id
+            AND creditor_trans.creditor_id = $creditor_id
             AND creditor_trans.tran_date <= '$todate'
             AND ABS(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount) > 0.004
             ORDER BY creditor_trans.tran_date";
@@ -129,9 +129,9 @@
     $txt_now_due   = "1-" . $past_due1 . " " . _('Days');
     $txt_past_due1 = $past_due1 + 1 . "-" . $past_due2 . " " . _('Days');
     $txt_past_due2 = _('Over') . " " . $past_due2 . " " . _('Days');
-    $sql           = "SELECT supplier_id, name AS name, curr_code FROM suppliers";
+    $sql           = "SELECT creditor_id, name AS name, curr_code FROM suppliers";
     if ($fromsupp != ALL_NUMERIC) {
-      $sql .= " WHERE supplier_id=" . DB::escape($fromsupp);
+      $sql .= " WHERE creditor_id=" . DB::escape($fromsupp);
     }
     $sql .= " ORDER BY name";
     $result = DB::query($sql, "The suppliers could not be retrieved");
@@ -144,7 +144,7 @@
       } else {
         $rate = 1.0;
       }
-      $supprec = Creditor::get_to_trans($myrow['supplier_id'], $to);
+      $supprec = Creditor::get_to_trans($myrow['creditor_id'], $to);
       foreach ($supprec as $i => $value) {
         $supprec[$i] *= $rate;
       }
@@ -174,7 +174,7 @@
       }
       $rep->NewLine(1, 2);
       if (!$summaryOnly) {
-        $res = get_invoices($myrow['supplier_id'], $to);
+        $res = get_invoices($myrow['creditor_id'], $to);
         if (DB::numRows($res) == 0) {
           continue;
         }

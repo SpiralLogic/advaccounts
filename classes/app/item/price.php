@@ -65,7 +65,7 @@
      */
     public static function getPriceBySupplier($stockid, $supplierid)
     {
-      $result = DB::select()->from('purch_data')->where('stockid=', $stockid)->andWhere('supplier_id=', $supplierid)->fetch()
+      $result = DB::select()->from('purch_data')->where('stockid=', $stockid)->andWhere('creditor_id=', $supplierid)->fetch()
         ->asClassLate('Item_Price', array(self::PURCHASE))->one();
       return $result;
     }
@@ -305,16 +305,16 @@
     /**
      * @static
      *
-     * @param $supplier_id
+     * @param $creditor_id
      * @param $stock_id
      *
      * @return float|int
      */
-    public static function get_purchase($supplier_id, $stock_id)
+    public static function get_purchase($creditor_id, $stock_id)
     {
       $sql
               = "SELECT price, conversion_factor FROM purch_data
-                WHERE supplier_id = " . DB::escape($supplier_id) . "
+                WHERE creditor_id = " . DB::escape($creditor_id) . "
                 AND stock_id = " . DB::escape($stock_id);
       $result = DB::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
       if (DB::numRows($result) == 1) {

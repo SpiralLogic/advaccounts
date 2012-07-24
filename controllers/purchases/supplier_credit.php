@@ -10,7 +10,7 @@
   class SupplierCredit extends ADV\App\Controller\Base {
     /** @var Creditor_trans */
     protected $trans;
-    protected $supplier_id;
+    protected $creditor_id;
     protected function before() {
       $this->JS->_openWindow(900, 500);
       Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
@@ -25,7 +25,7 @@
       if (isset($_GET['New']) && isset($_GET['invoice_no'])) {
         $this->trans->supplier_reference = $_POST['invoice_no'] = $_GET['invoice_no'];
       }
-      $this->supplier_id = $this->trans->supplier_id ? : Input::getPost('supplier_id', Input::NUMERIC, null);
+      $this->creditor_id = $this->trans->creditor_id ? : Input::getPost('creditor_id', Input::NUMERIC, null);
       if (isset($_POST['AddGLCodeToTrans'])) {
         $this->addGlCodeToTrans();
       }
@@ -64,7 +64,7 @@
       }
       Forms::start();
       Purch_Invoice::header($this->trans);
-      if ($this->supplier_id) {
+      if ($this->creditor_id) {
         $total_grn_value = Purch_GRN::display_items($this->trans, 1);
         $total_gl_value  = Purch_GLItem::display_items($this->trans, 1);
         Display::div_start('inv_tot');
@@ -277,7 +277,7 @@ JS;
       $this->trans->clear_items();
       unset($_SESSION['delivery_po']);
       unset($_POST['PONumber']);
-      unset($_POST['supplier_id']);
+      unset($_POST['creditor_id']);
       unset($_POST['supplier']);
       Creditor_Trans::killInstance();
       $this->trans = Creditor_Trans::i(true);

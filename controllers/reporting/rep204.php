@@ -20,7 +20,7 @@
   function get_transactions($fromsupp) {
     $sql = "SELECT grn_batch.id,
             order_no,
-            grn_batch.supplier_id,
+            grn_batch.creditor_id,
             suppliers.name,
             grn_items.item_code,
             grn_items.description,
@@ -33,14 +33,14 @@
             grn_batch,
             purch_order_details,
             suppliers
-        WHERE grn_batch.supplier_id=suppliers.supplier_id
+        WHERE grn_batch.creditor_id=suppliers.creditor_id
         AND grn_batch.id = grn_items.grn_batch_id
         AND grn_items.po_detail_item = purch_order_details.po_detail_item
         AND qty_recd-quantity_inv <>0 ";
     if ($fromsupp != ALL_NUMERIC) {
-      $sql .= "AND grn_batch.supplier_id =" . DB::escape($fromsupp) . " ";
+      $sql .= "AND grn_batch.creditor_id =" . DB::escape($fromsupp) . " ";
     }
-    $sql .= "ORDER BY grn_batch.supplier_id,
+    $sql .= "ORDER BY grn_batch.creditor_id,
             grn_batch.id";
     return DB::query($sql, "No transactions were returned");
   }
@@ -79,7 +79,7 @@
     $res         = get_transactions($fromsupp);
     While ($GRNs = DB::fetch($res)) {
       $dec2 = Item::qty_dec($GRNs['item_code']);
-      if ($Supplier != $GRNs['supplier_id']) {
+      if ($Supplier != $GRNs['creditor_id']) {
         if ($Supplier != '') {
           $rep->NewLine(2);
           $rep->TextCol(0, 7, _('Total'));
@@ -89,7 +89,7 @@
           $SuppTot_Val = 0;
         }
         $rep->TextCol(0, 6, $GRNs['name']);
-        $Supplier = $GRNs['supplier_id'];
+        $Supplier = $GRNs['creditor_id'];
       }
       $rep->NewLine();
       $rep->TextCol(0, 1, $GRNs['id']);

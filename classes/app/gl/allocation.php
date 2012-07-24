@@ -141,12 +141,12 @@
       $this->allocs = array();
       if ($trans_no) {
         $trans             = $this->person_type ? Creditor_Trans::get($trans_no, $type) : Debtor_Trans::get($trans_no, $type);
-        $this->person_id   = $trans[$this->person_type ? 'supplier_id' : 'debtor_id'];
+        $this->person_id   = $trans[$this->person_type ? 'creditor_id' : 'debtor_id'];
         $this->person_name = $trans[$this->person_type ? "supplier_name" : "DebtorName"];
         $this->amount      = $trans["Total"];
         $this->date_       = Dates::sqlToDate($trans["tran_date"]);
       } else {
-        $this->person_id = Input::post($this->person_type ? 'supplier_id' : 'debtor_id');
+        $this->person_id = Input::post($this->person_type ? 'creditor_id' : 'debtor_id');
         $this->date_     = Input::post($this->person_type ? 'DatePaid' : 'DateBanked', null, Dates::today());
       }
       /* Now populate the array of possible (and previous actual) allocations
