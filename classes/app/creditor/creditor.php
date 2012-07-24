@@ -432,8 +432,8 @@ JS;
       ];
       $o     = array_merge($o, $options);
       $focus = false;
-      if (!$value && Input::post('supplier')) {
-        $value = $_POST['supplier'];
+      if (!$value && Input::post('creditor')) {
+        $value = $_POST['creditor'];
         JS::setFocus('stock_id');
       } elseif (!$value) {
         $value = Session::getGlobal('creditor_id');
@@ -441,7 +441,7 @@ JS;
           $_POST['creditor_id'] = $value;
           $value                = Creditor::get_name($value);
         } else {
-          JS::setFocus('supplier');
+          JS::setFocus('creditor');
           $focus = true;
         }
       }
@@ -449,25 +449,32 @@ JS;
         echo '<tr>';
       }
       Forms::hidden('creditor_id');
-      UI::search('supplier', array(
-                                  'cells'            => true, //
-                                  'url'              => '/contacts/suppliers.php', ///
-                                  'label_cell_params'=> ['rowspan'=> $o['rowspan'], 'class'=> 'nowrap label ' . $o['cell_class']], //
-                                  'label'            => $o['label'], //
-                                  'name'             => 'supplier', //
-                                  'input_cell_params'=> $o['cell_params'], //
-                                  'focus'            => $focus, //
+      UI::search('creditor', array(
+                                  'cells'            => true,
+                                  //
+                                  'url'              => '/contacts/suppliers.php',
+                                  ///
+                                  'label_cell_params'=> ['rowspan'=> $o['rowspan'], 'class'=> 'nowrap label ' . $o['cell_class']],
+                                  //
+                                  'label'            => $o['label'],
+                                  //
+                                  'name'             => 'creditor',
+                                  //
+                                  'input_cell_params'=> $o['cell_params'],
+                                  //
+                                  'focus'            => $focus,
+                                  //
                                   'value'            => $value,
                              ));
       if ($o['row']) {
         echo "</tr>\n";
       }
-      JS::beforeload("var Supplier= function(data) {
+      JS::beforeload("var Creditor = function(data) {
             var id = document.getElementById('creditor_id');
             id.value= data.id;
-            var supplier = document.getElementById('supplier');
-            supplier.value=data.value;
-            JsHttpRequest.request(supplier)}");
+            var creditor = document.getElementById('creditor');
+            creditor.value=data.value;
+            JsHttpRequest.request(creditor)}");
     }
     /**
      * @static

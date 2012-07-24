@@ -9,7 +9,6 @@
    **/
   class SupplierPayment extends \ADV\App\Controller\Base
   {
-
     protected $supplier_currency;
     protected $bank_currency;
     protected $company_currency;
@@ -17,11 +16,9 @@
     protected function before() {
       JS::openWindow(900, 500);
       JS::footerFile('/js/payalloc.js');
-      $this->creditor_id  = Input::postGetGlobal('creditor_id');
+      $this->creditor_id    = Input::postGetGlobal('creditor_id');
       $_POST['creditor_id'] =& $this->creditor_id;
-      if ($_POST['_control']=='supplier') {
-        $this->Ajax->_activate('_page_body');
-      }
+
       if (!isset($_POST['DatePaid'])) {
         $_POST['DatePaid'] = Dates::newDocDate();
         if (!Dates::isDateInFiscalYear($_POST['DatePaid'])) {
@@ -31,13 +28,14 @@
       if (isset($_POST['_DatePaid_changed'])) {
         Ajax::activate('_ex_rate');
       }
-      if (Forms::isListUpdated('creditor_id') || Forms::isListUpdated('bank_account')) {
-        $_SESSION['alloc']->read();
-        Ajax::activate('alloc_tbl');
-      }
+
       if (!isset($_POST['bank_account'])) // first page call
       {
         $_SESSION['alloc'] = new Gl_Allocation(ST_SUPPAYMENT, 0);
+      }
+      if (Input::post('_control') == 'creditor' || Forms::isListUpdated('bank_account')) {
+        $_SESSION['alloc']->read();
+        Ajax::activate('alloc_tbl');
       }
       $this->company_currency  = Bank_Currency::for_company();
       $this->supplier_currency = Bank_Currency::for_creditor($_POST['creditor_id']);
@@ -62,11 +60,13 @@
       }
       Forms::AmountRow(_("Bank Charge:"), 'charge');
       Table::endOuter(1); // outer table
+      Display::div_start('alloc_tbl');
       if ($this->bank_currency == $this->supplier_currency) {
-        Display::div_start('alloc_tbl');
+        $_SESSION['alloc']->read();
+
         Gl_Allocation::show_allocatable(false);
-        Display::div_end();
       }
+      Display::div_end();
       Table::start('tablestyle width60');
       Forms::AmountRow(_("Amount of Discount:"), 'discount');
       Forms::AmountRow(_("Amount of Payment:"), 'amount');
@@ -108,4 +108,5 @@
       Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
     }
   }
-new SupplierPayment();
+
+  new SupplierPayment();
