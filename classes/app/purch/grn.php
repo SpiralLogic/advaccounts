@@ -136,6 +136,7 @@
      WHERE grn_items.grn_batch_id=grn_batch.id
         AND grn_items.id=" . DB::escape($entered_grn->id) . "
      AND grn_items.item_code=" . DB::escape($entered_grn->item_code);
+
       $result = DB::query($sql, "Could not retreive GRNS");
       $myrow  = DB::fetch($result);
       $sql
