@@ -29,7 +29,7 @@
     <td
     {{($row['Overdue2'] > 0 ? 'class="overduebg"' : '')}}>{{($row['Overdue2'] > 0 ? $row['Overdue2'] : 0)}}</td>
   </tr>
-  {{#endforeach}}
+  {{/foreach}}
   <tfoot class='bold pad5'>
   <tr>
     <td>Totals:</td>

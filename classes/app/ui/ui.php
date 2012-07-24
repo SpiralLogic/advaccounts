@@ -85,12 +85,13 @@
         'callback'         => false, //
         'cells'            => false, //
         'cell_class'       => null, //
-        'input_cell_params'=> []
+        'input_cell_params'=> [],
+        'label_cell_params'=> ['class'>'label pointer']
       );
       $o   = array_merge($o, $options);
       $url = $o['url'] ? : false;
       if (!$o['nodiv']) {
-        HTML::div(['class' => 'ui-widget pad5']);
+        HTML::div(['class' => 'ui-widget ']);
       }
       if ($o['cells']) {
         HTML::td(null, $o['label_cell_params']);

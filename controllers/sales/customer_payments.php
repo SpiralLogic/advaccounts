@@ -76,13 +76,13 @@
       Table::startOuter('tablestyle2 width90 pad2');
       Table::section(1);
       Debtor::newselect();
-      Debtor_Branch::row(_("Branch:"), $this->debtor_id, 'branch_id', null, false, true, true);
+      Forms::refRow(_("Reference:"), 'ref', null,Ref::get_next(ST_CUSTPAYMENT));
       Debtor_Payment::read_customer_data($this->debtor_id);
       Session::setGlobal('debtor_id', $this->debtor_id);
       $display_discount_percent = Num::percentFormat($_POST['payment_discount'] * 100) . "%";
       Table::section(2);
+      Debtor_Branch::row(_("Branch:"), $this->debtor_id, 'branch_id', null, false, true, true);
       Bank_Account::row(_("Into Bank Account:"), 'bank_account', null, true);
-      Forms::textRow(_("Reference:"), 'ref', null, 20, 40);
       Table::section(3);
       Forms::dateRow(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
       $comp_currency = Bank_Currency::for_company();
@@ -102,9 +102,9 @@
       Table::start('tablestyle width70');
       Row::label(_("Customer prompt payment discount :"), $display_discount_percent);
       Forms::AmountRow(_("Amount of Discount:"), 'discount', 0);
-      if (User::i()->hasAccess(SS_SALES) && !Input::post('TotalNumberOfAllocs')) {
+    //  if (User::i()->hasAccess(SS_SALES) && !Input::post('TotalNumberOfAllocs')) {
         Forms::checkRow(_("Create invoice and apply for this payment: "), 'createinvoice');
-      }
+    //  }
       Forms::AmountRow(_("Amount:"), 'amount');
       Forms::textareaRow(_("Memo:"), 'memo_', null, 22, 4);
       Table::end(1);

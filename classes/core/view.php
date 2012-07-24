@@ -9,9 +9,10 @@
   namespace ADV\Core;
   class View implements \ArrayAccess
   {
+
     protected $_viewdata = [];
     protected $_template = null;
-     static $Cache;
+    static $Cache;
     /**
      * @param $template
      */
@@ -35,7 +36,7 @@
       // The contents of each view file is cached in an array for the
       // request since partial views may be rendered inside of for
       // loops which could incur performance penalties.
-      $__contents = static::$Cache->_get('template.' . $this->_template);
+      $__contents = null; //static::$Cache->_get('template.' . $this->_template);
       if (!$__contents) {
         $__contents = file_get_contents($this->_template);
         $__contents = $this->compile_nothings($__contents);
@@ -49,7 +50,6 @@
       // We'll include the view contents for parsing within a catcher
       // so we can avoid any WSOD errors. If an exception occurs we
       // will throw it out to the exception handler.
-
       try {
         eval('?>' . $__contents);
       }
@@ -58,6 +58,7 @@
         // to the client and confuse the user with junk.
       catch (\Exception $e) {
         ob_get_clean();
+        Errors::log($_contents);
         throw $e;
       }
       if ($return) {
@@ -94,7 +95,7 @@
      * @return string
      */
     protected static function compile_structure_openings($value) {
-      $pattern = '/(\s*)\{\{#(if|elseif|foreach|for|while)(.*)\}\}(\s*)/';
+      $pattern = '/(\s*)\{\{#(if|elseif|foreach|for|while)(.*?)\}\}(\s*)/';
       return preg_replace($pattern, '$1<?php $2($3): ?>$4', $value);
     }
     /**
@@ -105,8 +106,8 @@
      * @return string
      */
     protected static function compile_structure_closings($value) {
-      $pattern = '/(\s*)\{\{#(endif|endforeach|endfor|endwhile) *?\}\}(\s*)/';
-      return preg_replace($pattern, '$1<?php $2; ?>$3', $value);
+      $pattern = '/(\s*)\{\{\/(if|foreach|for|while) *?\}\}(\s*)/';
+      return preg_replace($pattern, '$1<?php end$2; ?>$3', $value);
     }
     /**
      * Rewrites Blade else statements into PHP else statements.
@@ -196,4 +197,5 @@
       }
     }
   }
-  View::$Cache     = Cache::i();
+
+  View::$Cache = Cache::i();

@@ -17,8 +17,8 @@
               <li>{{ $mod['link'] }} </li>
               {{#else}}
               <li><span class='inactive'>{{$mod['anchor']}} </span></li>
-              {{#endif}}
-              {{#endforeach}}
+              {{/if}}
+              {{/foreach}}
             </ul>
           </td>
           {{#if $rmods}}
@@ -31,9 +31,9 @@
               <li>{{$mod['link']}} </li>
               {{#else}}
               <li><span class='inactive'>{{$mod['anchor']}} </span></li>
-              {{#endif}}
-              {{#endforeach}}
-              {{#endif}}
+              {{/if}}
+              {{/foreach}}
+              {{/if}}
             </ul>
           </td>
         </tr>

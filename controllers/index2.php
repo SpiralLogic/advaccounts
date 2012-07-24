@@ -1,2 +1,4 @@
 <?php
-phpinfo();
+$test = new View('test');
+$test['test']='wawa';
+  $test->render();

@@ -30,7 +30,7 @@
       <li><a href="/gl/undeposited_funds?">Undeposited</a></li>
     </ul>
   </div>
-  {{#endif}}
+  {{/if}}
   <h3><a href="#">Customer Search</a></h3>
 
   <div>

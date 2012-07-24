@@ -5,12 +5,12 @@
   <title>{{$title}}</title>
   <script>document.documentElement.className = document.documentElement.className + ' js'</script>
   <link rel='apple-touch-icon' href='/company/images/Advanced-Group-Logo.png'/>
-  {{#foreach $stylesheets as $css }}
+  {{#foreach $stylesheets as $css}}
   <link href='{{$css}}' rel='stylesheet'/>
-  {{#endforeach}}
-  {{#foreach $scripts as $script }}
-  <script src='{{ $script}}'></script>
-  {{#endforeach}}
+  {{/foreach}}
+  {{#foreach $scripts as $script}}
+  <script src='{{$script}}'></script>
+  {{/foreach}}
 </head>
 <body {{$class?}}class='{{$class}}'{{/$class?}}>
 <div id='content'>

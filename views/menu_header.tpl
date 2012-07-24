@@ -18,6 +18,6 @@
     <li class='{{ $m["class"] }}'>
       <a href='{{ $m["href"] }}' {{ $m['acc1'] }}>{{ $m['acc0'] }}</a>
     </li>
-    {{#endforeach}}
+    {{/foreach}}
   </ul>
 </div>

@@ -66,7 +66,8 @@ select {
   min-width:  8em;
   min-height: 25px;
   height:     25px;
-  border:     lightgray solid 1px;
+  border:     lightgray solid 1px;  margin-left:        3px;
+
 }
 
 .med {
@@ -736,7 +737,7 @@ div.formbox {
 }
 
 .combo {
-  width: 100%;
+  width: 95%;
 }
 
 .formbox label {
@@ -835,7 +836,7 @@ table.tablestyle {
 }
 
 table.tablestyle td {
-  padding:             5px;
+  padding:             3px;
   border-collapse:     collapse;
   border:              1px solid #e1e1e1;
   border-top-color:    #dcdcdc;
@@ -882,7 +883,9 @@ table.tablestyle_inner td {
   font-size:        12px;
   white-space:      nowrap;
 }
-
+.label label {
+  padding:0px;
+}
 td.tableheader3 {
   margin:        0 auto;
   text-align:    center;
