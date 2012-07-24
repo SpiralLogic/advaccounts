@@ -14,7 +14,7 @@
 		var $this = this, $wrapper = $("#wrapper"), previous;
 		this.menu = $("#sidemenu").accordion({autoHeight:false, active:false, event:"mouseenter"}).draggable().show();
 		this.sidemenuHide = function () {
-			$this.menu.clearQueue().animate({right:'-10em', opacity:'.75'}, 500).accordion({collapsible:false, active:false});
+			$this.menu.clearQueue().animate({right:' -10em', opacity:'.75'}, 500).accordion({collapsible:false, active:false});
 		};
 		this.sidemenuOn = function () {
 			$this.menu.animate({right:'-10em', opacity:1}, 300).accordion("enable").hover(function () {
@@ -68,6 +68,7 @@
 				searchInput.val('').detach();
 				$current.show();
 				$this.sidemenuOn();
+        menuTimeout = window.setTimeout($this.sidemenuHide, 1000);
 
 			}
 		});

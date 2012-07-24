@@ -22,15 +22,16 @@
      */
   /**
    * @method __date()
-   * @method dateToSql($date_)
+   * @method dateToSql($date)
    * @method today()
    * @method now()
+   * @method Dates i()
    * @method isDate($date = null, $format = null)
    * @method isDateInFiscalYear($date, $convert = false)
    * @method isGreaterThan($date1, $date2)
    * @method newDocDate()
    * @method addDays($date, $days)
-   * @method sqlToDate($date_)
+   * @method sqlToDate($date)
    * @method beginMonth($date)
    * @method addMonths($date, $months)
    * @method endFiscalYear()
@@ -47,14 +48,15 @@
     protected $Config = null;
     protected $Session = null;
     protected $Company = null;
-    public function __construct(Config $Config = null, \User $User = null, Session $Session = null, \DB_Company $Company = null) {
-      $this->Config     = $Config ? : Config::i();
-      $this->User       = $User ? : \User::i();
-      $this->Session    = $Session ? : Session::i();
-      $this->Company    = $Company ? : \DB_Company::i();
-      $this->formats    = $this->Config->_get('date.formats');
-      $this->separators = $this->Config->_get('date.separators');
-      $this->sep        = $this->separators[$this->Config->_get('date.ui_separator')];
+    public function __construct(Config $config = null, \User $User = null, Session $Session = null, \DB_Company $Company = null) {
+      $config               = $config ? : Config::i();
+      $this->User           = $User ? : \User::i();
+      $this->Session        = $Session ? : Session::i();
+      $this->Company        = $Company ? : \DB_Company::i();
+      $this->formats        = $config->_get('date.formats');
+      $this->separators     = $config->_get('date.separators');
+      $this->userFiscalYear = $config->_get('use_fiscalyear');
+      $this->sep            = $this->separators[$config->_get('date.ui_separator')];
     }
     /**
      * @static
@@ -62,8 +64,8 @@
      * @param null $date
      * @param null $format
      *
-     * @internal param $date_
-     * @return int
+     * @internal param $date
+     * @return bool
      */
     public function _isDate($date = null, $format = null) {
       if (!$date) {
@@ -92,13 +94,17 @@
       }
     }
     /**
-     * @return string
+     * @return string User format of the days date.
      */
-    public function _today() {
+    public function _today($sql_format=false) {
+      if ($sql_format){
+        return date('Y-m-d');
+
+      }
       return $this->date(date("Y"), date("n"), date("j"));
     }
     /**
-     * @return string
+     * @return string User format of the current time .
      */
     public function _now() {
       if ($this->User->_date_format() == 0) {
@@ -131,15 +137,15 @@
      * @param      $date
      * @param bool $convert
      *
-     * @return int
+     * @return bool
      */
     public function _isDateInFiscalYear($date, $convert = false) {
-      if (!$this->Config->_get('use_fiscalyear')) {
-        return 1;
+      if (!$this->userFiscalYear) {
+        return true;
       }
       $myrow = $this->Company->_get_current_fiscalyear();
       if ($myrow['closed'] == 1) {
-        return 0;
+        return false;
       }
       if ($convert) {
         $date2 = $this->_sqlToDate($date);
@@ -152,7 +158,7 @@
     }
     /**
      * @static
-     * @return string
+     * @return string Date in Users Format
      */
     public function _beginFiscalYear() {
       $myrow = \DB_Company::get_current_fiscalyear();
@@ -160,7 +166,7 @@
     }
     /**
      * @static
-     * @return string
+     * @return string Date in Users Format
      */
     public function _endFiscalYear() {
       $myrow = \DB_Company::get_current_fiscalyear();
@@ -171,11 +177,11 @@
      *
      * @param $date
      *
-     * @return string
+     * @return string Date in Users Format
      */
     public function _beginMonth($date) {
       /** @noinspection PhpUnusedLocalVariableInspection */
-      list($year,$month, $day) = $this->_explode($date);
+      list($year, $month, $day) = $this->_explode($date);
       return $this->date($year, $month, 1);
     }
     /**
@@ -183,11 +189,11 @@
      *
      * @param $date
      *
-     * @return string
+     * @return string Date in Users Format
      */
     public function _endMonth($date) {
       /** @noinspection PhpUnusedLocalVariableInspection */
-      list($year,$month, $day) = $this->_explode($date);
+      list($year, $month, $day) = $this->_explode($date);
       $days_in_month = array(
         31, ((!($year % 4) && (($year % 100) || !($year % 400))) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
       );
@@ -199,10 +205,10 @@
      * @param $date
      * @param $days
      *
-     * @return string
+     * @return string Date in Users Format
      */
     public function _addDays($date, $days) {
-      list($year,$month, $day) = $this->_explode($date);
+      list($year, $month, $day) = $this->_explode($date);
       $timet = mktime(0, 0, 0, $month, $day + $days, $year);
       return date($this->User->_date_display(), $timet);
     }
@@ -212,10 +218,10 @@
      * @param $date
      * @param $months
      *
-     * @return string
+     * @return string Date in Users Format
      */
     public function _addMonths($date, $months) {
-      list($year,$month, $day) = $this->_explode($date);
+      list($year, $month, $day) = $this->_explode($date);
       $timet = mktime(0, 0, 0, $month + $months, $day, $year);
       return date($this->User->_date_display(), $timet);
     }
@@ -225,70 +231,52 @@
      * @param $date
      * @param $years
      *
-     * @return string
+     * @return string Date in Users Format
      */
     public function _addYears($date, $years) {
-      list($year,$month, $day) = $this->_explode($date);
+      list($year, $month, $day) = $this->_explode($date);
       $timet = mktime(0, 0, 0, $month, $day, $year + $years);
       return date($this->User->_date_display(), $timet);
     }
     /**
      * @static
      *
-     * @param $date_
+     * @param $date
      *
-     * @return string
+     * @return string Date in Users Format
      */
-    public function _sqlToDate($date_) {
+    public function _sqlToDate($date) {
       //for MySQL dates are in the format YYYY-mm-dd
-      if ($date_ == null || strlen($date_) == 0) {
+      if ($date == null || strlen($date) == 0) {
         return "";
       }
-      $year = $month = $day = '';
-      if (strpos($date_, "/")) { // In MySQL it could be either / or -
-        list($year, $month, $day) = explode("/", $date_);
-      } elseif (strpos($date_, "-")) {
-        list($year, $month, $day) = explode("-", $date_);
-      }
-      if (!isset($date) && strlen($day) > 4) { /*chop off the time stuff */
-        $day = substr($day, 0, 2);
-      }
-      return $this->date($year, $month, $day);
+      $date = $this->_dateToSql($date);
+      $how  = $this->formats[$this->User->_date_format()];
+      $date = \DateTime::createFromFormat('Y-m-d', $date);
+      return $date->format($how);
     } // end static function sqlToDate
     /**
      * @static
      *
-     * @param $date_
+     * @param $date
      *
      * @internal param bool $pad
-     * @return int|string
+     * @return string Date in SQL ISO Format
      */
-    public function _dateToSql($date_) {
-      if (!$date_) {
-        return $this->_today();
+    public function _dateToSql($date) {
+      if (!$date) {
+        return $this->_today(true);
       }
-      $parts = explode('-', $date_);
+      if (strlen($date) > 10) {
+        $date = substr($date, 0, 10);
+      }
+      $parts = explode('-', $date);
       if (count($parts) == 3 && checkdate($parts[1], $parts[2], $parts[0])) {
-        return $date_;
+        return $date;
       }
-      $how   = $this->User->_date_format();
-      $sep   = $this->separators[$this->User->_date_sep()];
-      $date_ = trim($date_);
-      /** @noinspection PhpUnusedLocalVariableInspection */
-      $year = $month = $day = 0;
-      // Split up the date by the separator based on "how" to split it
-      if ($how == 0) { // MMDDYYYY
-        $date_ = str_replace($sep, '/', $date_);
-      } else {
-        $date_ = str_replace($sep, '-', $date_);
-      }
-      $date_ = date('Y-m-d', strtotime($date_));
-      list($year, $month, $day) = explode('-', $date_);
-      if (!checkdate($month, $day, $year)) {
-        Event::error('Incorrect date entered!');
-        return false;
-      }
-      return $date_;
+      $how  = $this->formats[$this->User->_date_format()];
+      $date = \DateTime::createFromFormat($how, $date);
+      return $date->format('Y-m-d');
     }
     /**
      * @static
@@ -296,29 +284,15 @@
      * @param $date1
      * @param $date2
      *
-     * @return int
+     * @return int|bool
      */
     public function _isGreaterThan($date1, $date2) {
       /* returns 1 true if date1 is greater than date_ 2 */
       if (!$date1 || !$date2) {
         return false;
       }
-      $date1 = $this->_dateToSql($date1);
-      $date2 = $this->_dateToSql($date2);
-      list($year1, $month1, $day1) = explode("-", $date1);
-      list($year2, $month2, $day2) = explode("-", $date2);
-      if ($year1 > $year2) {
-        return 1;
-      } elseif ($year1 == $year2) {
-        if ($month1 > $month2) {
-          return 1;
-        } elseif ($month1 == $month2) {
-          if ($day1 > $day2) {
-            return 1;
-          }
-        }
-      }
-      return 0;
+
+      return ($this->_differenceBetween($date1, $date2) >= 0);
     }
     /**
      * @static
@@ -329,31 +303,22 @@
      *
      * @return int
      */
-    public function _differenceBetween($date1, $date2, $period) {
+    public function _differenceBetween($date1, $date2, $period = 'd') {
       /* expects dates in the format specified in $DefaultDateFormat - period can be one of 'd','w','y','m'
 months are assumed to be 30 days and years 365.25 days This only works
 provided that both dates are after 1970. Also only works for dates up to the year 2035 ish */
-      $date1 = $this->_dateToSql($date1);
-      $date2 = $this->_dateToSql($date2);
-      list($year1, $month1, $day1) = explode("-", $date1);
-      list($year2, $month2, $day2) = explode("-", $date2);
-      $stamp1     = mktime(0, 0, 0, (int) $month1, (int) $day1, (int) $year1);
-      $stamp2     = mktime(0, 0, 0, (int) $month2, (int) $day2, (int) $year2);
-      $difference = $stamp1 - $stamp2;
-      /* difference is the number of seconds between each date negative if date_ 2 > date_ 1 */
+      $date1    = new \DateTime($this->_dateToSql($date1));
+      $date2    = new \DateTime($this->_dateToSql($date2));
+      $interval = $date2->diff($date1);
       switch ($period) {
-        case "d":
-          return (int) ($difference / (24 * 60 * 60));
-        case "w":
-          return (int) ($difference / (24 * 60 * 60 * 7));
-        case "m":
-          return (int) ($difference / (24 * 60 * 60 * 30));
-        case "s":
-          return $difference;
-        case "y":
-          return (int) ($difference / (24 * 60 * 60 * 365.25));
-        default:
-          Return 0;
+        case 'd':
+          return $interval->format('%r%d');
+        case 'w':
+          return floor($interval->format('%r%d') / 7);
+        case 'y':
+          return $interval->format('%r%y');
+        case 'm':
+          return $interval->format('%r%m');
       }
     }
     /**
@@ -362,8 +327,8 @@ provided that both dates are after 1970. Also only works for dates up to the yea
      * @param $date
      *
      * @throws \Exception
-     * @internal param $date_
-     * @return array
+     * @internal param $date
+     * @return array [year,month,day]
      */
     protected function _explode($date) {
       $date = $this->_dateToSql($date);

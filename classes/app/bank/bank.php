@@ -14,8 +14,7 @@
   //	because we have no way to select right bank account if
   //	there is more than one using given gl account.
   //
-  class Bank
-  {
+  class Bank {
     /**
      * @static
      *
@@ -25,8 +24,7 @@
      *
      * @return float
      */
-    public static function get_exchange_rate_from_to($from_curr_code, $to_curr_code, $date_)
-    {
+    public static function get_exchange_rate_from_to($from_curr_code, $to_curr_code, $date_) {
       //	echo "converting from $from_curr_code to $to_curr_code <BR>";
       if ($from_curr_code == $to_curr_code) {
         return 1.0000;
@@ -51,10 +49,8 @@
      *
      * @return float
      */
-    public static function exchange_from_to($amount, $from_curr_code, $to_curr_code, $date_)
-    {
+    public static function exchange_from_to($amount, $from_curr_code, $to_curr_code, $date_) {
       $ex_rate = static::get_exchange_rate_from_to($from_curr_code, $to_curr_code, $date_);
-
       return $amount / $ex_rate;
     }
     // Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
@@ -72,8 +68,7 @@
      *
      * @return mixed
      */
-    public static function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $amount, $person_type, $neg = false)
-    {
+    public static function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $amount, $person_type, $neg = false) {
       global $systypes_array;
       if ($person_type == PT_CUSTOMER) {
         $trans     = Debtor_Trans::get($trans_no, $type);
@@ -123,15 +118,13 @@
      *
      * @return bool|int|null
      */
-    public static function payment_person_has_items($type)
-    {
+    public static function payment_person_has_items($type) {
       switch ($type) {
         case PT_MISC :
           return true;
         case PT_QUICKENTRY :
           return Validation::check(Validation::QUICK_ENTRIES);
         case PT_WORKORDER : // 070305 changed to open workorders JH
-
           return Validation::check(Validation::OPEN_WORKORDERS);
         case PT_CUSTOMER :
           return Validation::check(Validation::CUSTOMERS);
@@ -139,7 +132,6 @@
           return Validation::check(Validation::SUPPLIERS);
         default :
           Errors::databaseError("Invalid type sent to has_items", "");
-
           return false;
       }
     }
@@ -153,8 +145,7 @@
      *
      * @return string
      */
-    public static function payment_person_name($type, $person_id, $full = true, $trans_no = null)
-    {
+    public static function payment_person_name($type, $person_id, $full = true, $trans_no = null) {
       global $payment_person_types;
       switch ($type) {
         case PT_MISC :
@@ -165,11 +156,9 @@
           if (!is_null($trans_no)) {
             $comment = "<br>" . DB_Comments::get_string(ST_BANKPAYMENT, $trans_no);
           }
-
           return ($full ? $payment_person_types[$type] . " " : "") . $qe["description"] . $comment;
         case PT_WORKORDER :
           global $wo_cost_types;
-
           return $wo_cost_types[$type];
         case PT_CUSTOMER :
           return ($full ? $payment_person_types[$type] . " " : "") . Debtor::get_name($person_id);

@@ -10,8 +10,7 @@
   /**
 
    */
-  trait Singleton
-  {
+  trait Singleton {
     /**
      * @var null
      */
@@ -20,14 +19,14 @@
      * @static
      * @return
      */
-    public static function i($class = null)
-    {
-      global $dic;
+    public static function i($class = null) {
+
+      /** @var \ADV\Core\DIC $dic  */
+      $dic = \ADV\Core\DIC::getInstance();
       if (!$dic instanceof \ADV\Core\DIC) {
         if (static::$i === null) {
           static::$i = new static;
         }
-
         return static::$i;
       }
       if (static::$i !== null) {
@@ -51,12 +50,10 @@
             return new $namespaced_class;
           }
           $ref = new \ReflectionClass($namespaced_class);
-
           return $ref->newInstanceArgs($args);
         });
         static::$i = $class_name;
       }
-
       return $dic->get(static::$i);
     }
   }

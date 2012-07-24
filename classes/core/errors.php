@@ -50,7 +50,7 @@
         E_SUCCESS         => 'Success!'
       );
     /** @var string  temporary container for output html data before error box */
-    public static $before_box = '';
+
     /** @var array Errors which terminate execution */
     protected static $fatal_levels = array(E_PARSE, E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR);
     /** @var array Errors which are user errors */
@@ -132,13 +132,7 @@
       $error['backtrace'] = static::prepareBacktrace($e->getTrace());
       static::$errors[]   = $error;
     }
-    /** @static */
-    public static function errorBox() {
-      printf("<div %s='msgbox'>", AJAX_REFERRER ? 'class' : 'id');
-      static::$before_box = ob_get_clean(); // save html content before error box
-      ob_start('adv_ob_flush_handler');
-      echo "</div>";
-    }
+
     /**
      * @static
      * @return string
@@ -214,7 +208,7 @@
         $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
         $headers .= "From: Accounts Errors <errors@advancedgroup.com.au>\r\n";
         $headers .= "Reply-To: errors@advancedgroup.com.au\r\n";
-        $headers .= "X-Mailer: " . BUILD_VERSION . "\r\n";
+        $headers .= "X-Mailer: \r\n";
         $success = mail($to, $subject, $text, $headers);
         if (!$success) {
           static::handler(E_ERROR, $success, __FILE__, __LINE__);

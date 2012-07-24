@@ -58,15 +58,15 @@
     exit;
   }
   Forms::start();
-  Table::startOuter('tablestyle2 width60 pad5');
+  Table::startOuter('tablestyle2 width80 pad5');
   Table::section(1);
-  Creditor::row(_("Payment To:"), 'supplier_id', null, false, true);
+  Creditor::newselect();
   if (!isset($_POST['bank_account'])) // first page call
   {
     $_SESSION['alloc'] = new Gl_Allocation(ST_SUPPAYMENT, 0);
   }
   Session::setGlobal('creditor', $_POST['supplier_id']);
-  Bank_Account::row(_("From Bank Account:"), 'bank_account', null, true);
+  Bank_Account::row(_("Bank Account:"), 'bank_account', null, true);
   Table::section(2);
   Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_SUPPAYMENT));
   Forms::dateRow(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);

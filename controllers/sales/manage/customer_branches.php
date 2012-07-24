@@ -18,12 +18,12 @@
   Validation::check(Validation::TAX_GROUP, _("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
   list($Mode, $selected_id) = Page::simple_mode(true);
   if (isset($_GET['debtor_id'])) {
-    $_POST['customer_id'] = strtoupper($_GET['debtor_id']);
+    $_POST['debtor_id'] = strtoupper($_GET['debtor_id']);
   }
   $_POST['branch_id'] = $selected_id;
   if (isset($_GET['SelectedBranch'])) {
     $br                   = Sales_Branch::get($_GET['SelectedBranch']);
-    $_POST['customer_id'] = $br['debtor_id'];
+    $_POST['debtor_id'] = $br['debtor_id'];
     $selected_id          = $_POST['branch_id'] = $br['branch_id'];
     $Mode                 = MODE_EDIT;
   }
@@ -66,7 +66,7 @@
       default_ship_via=" . DB::escape($_POST['default_ship_via']) . ",
  notes=" . DB::escape($_POST['notes']) . "
       WHERE branch_id =" . DB::escape($_POST['branch_id']) . "
-      AND debtor_id=" . DB::escape($_POST['customer_id']);
+      AND debtor_id=" . DB::escape($_POST['debtor_id']);
         $note = _('Selected customer branch has been updated');
       } else {
         /* Selected branch is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Customer Branches form */
@@ -75,7 +75,7 @@
                 salesman, phone, phone2, fax,
                 contact_name, area, email, tax_group_id, sales_account, receivables_account, payment_discount_account, sales_discount_account, default_location,
                 br_post_address, disable_trans, group_no, default_ship_via, notes)
-                VALUES (" . DB::escape($_POST['customer_id']) . "," . DB::escape($_POST['br_name']) . ", " . DB::escape($_POST['br_ref']) . ", " . DB::escape($_POST['br_address']) . ", " . DB::escape($_POST['salesman']) . ", " . DB::escape($_POST['phone']) . ", " . DB::escape($_POST['phone2']) . ", " . DB::escape($_POST['fax']) . "," . DB::escape($_POST['contact_name']) . ", " . DB::escape($_POST['area']) . "," . DB::escape($_POST['email']) . ", " . DB::escape($_POST['tax_group_id']) . ", " . DB::escape($_POST['sales_account']) . ", " . DB::escape($_POST['receivables_account']) . ", " . DB::escape($_POST['payment_discount_account']) . ", " . DB::escape($_POST['sales_discount_account']) . ", " . DB::escape($_POST['default_location']) . ", " . DB::escape($_POST['br_post_address']) . "," . DB::escape($_POST['disable_trans']) . ", " . DB::escape($_POST['group_no']) . ", " . DB::escape($_POST['default_ship_via']) . ", " . DB::escape($_POST['notes']) . ")";
+                VALUES (" . DB::escape($_POST['debtor_id']) . "," . DB::escape($_POST['br_name']) . ", " . DB::escape($_POST['br_ref']) . ", " . DB::escape($_POST['br_address']) . ", " . DB::escape($_POST['salesman']) . ", " . DB::escape($_POST['phone']) . ", " . DB::escape($_POST['phone2']) . ", " . DB::escape($_POST['fax']) . "," . DB::escape($_POST['contact_name']) . ", " . DB::escape($_POST['area']) . "," . DB::escape($_POST['email']) . ", " . DB::escape($_POST['tax_group_id']) . ", " . DB::escape($_POST['sales_account']) . ", " . DB::escape($_POST['receivables_account']) . ", " . DB::escape($_POST['payment_discount_account']) . ", " . DB::escape($_POST['sales_discount_account']) . ", " . DB::escape($_POST['default_location']) . ", " . DB::escape($_POST['br_post_address']) . "," . DB::escape($_POST['disable_trans']) . ", " . DB::escape($_POST['group_no']) . ", " . DB::escape($_POST['default_ship_via']) . ", " . DB::escape($_POST['notes']) . ")";
         $note = _('New customer branch has been added');
       }
       //run the sql from either of the above possibilites
@@ -89,41 +89,41 @@
   } elseif ($Mode == MODE_DELETE) {
     //the link to delete a selected record was clicked instead of the submit button
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
-    $sql    = "SELECT COUNT(*) FROM debtor_trans WHERE branch_id=" . DB::escape($_POST['branch_id']) . " AND debtor_id = " . DB::escape($_POST['customer_id']);
+    $sql    = "SELECT COUNT(*) FROM debtor_trans WHERE branch_id=" . DB::escape($_POST['branch_id']) . " AND debtor_id = " . DB::escape($_POST['debtor_id']);
     $result = DB::query($sql, "could not query debtortrans");
     $myrow  = DB::fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this branch because customer transactions have been created to this branch."));
     } else {
-      $sql    = "SELECT COUNT(*) FROM sales_orders WHERE branch_id=" . DB::escape($_POST['branch_id']) . " AND debtor_id = " . DB::escape($_POST['customer_id']);
+      $sql    = "SELECT COUNT(*) FROM sales_orders WHERE branch_id=" . DB::escape($_POST['branch_id']) . " AND debtor_id = " . DB::escape($_POST['debtor_id']);
       $result = DB::query($sql, "could not query sales orders");
       $myrow  = DB::fetchRow($result);
       if ($myrow[0] > 0) {
         Event::error(_("Cannot delete this branch because sales orders exist for it. Purge old sales orders first."));
       } else {
-        $sql = "DELETE FROM branches WHERE branch_id=" . DB::escape($_POST['branch_id']) . " AND debtor_id=" . DB::escape($_POST['customer_id']);
+        $sql = "DELETE FROM branches WHERE branch_id=" . DB::escape($_POST['branch_id']) . " AND debtor_id=" . DB::escape($_POST['debtor_id']);
         DB::query($sql, "could not delete branch");
         Event::notice(_('Selected customer branch has been deleted'));
       }
     } //end ifs to test if the branch can be deleted
     $Mode = MODE_RESET;
   }
-  if ($Mode == MODE_RESET || Input::post('_customer_id_update')) {
+  if ($Mode == MODE_RESET || Input::post('_debtor_id_update')) {
     $selected_id = -1;
-    $cust_id     = $_POST['customer_id'];
+    $cust_id     = $_POST['debtor_id'];
     $inact       = Input::post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $inact;
-    $_POST['customer_id']   = $cust_id;
+    $_POST['debtor_id']   = $cust_id;
     Ajax::activate('_page_body');
   }
   Forms::start();
   echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
-  echo Debtor::select('customer_id', null, false, true);
+  echo Debtor::select('debtor_id', null, false, true);
   echo "</div><br>";
   $num_branches = -0;
-  if (Input::post('customer_id') > 0) {
-    $num_branches = Validation::check(Validation::BRANCHES, '', Input::post('customer_id'));
+  if (Input::post('debtor_id') > 0) {
+    $num_branches = Validation::check(Validation::BRANCHES, '', Input::post('debtor_id'));
     $sql
                   = "SELECT b.branch_id, b.branch_ref, b.br_name, b.contact_name, s.salesman_name,
          a.description, b.phone, b.fax, b.email, t.name AS tax_group_name, b.inactive
@@ -132,7 +132,7 @@
         AND b.tax_group_id=t.id
         AND b.area=a.area_code
         AND b.salesman=s.salesman_code
-        AND b.debtor_id = " . DB::quote($_POST['customer_id']);
+        AND b.debtor_id = " . DB::quote($_POST['debtor_id']);
     if (!Input::post('show_inactive')) {
       $sql .= " AND !b.inactive";
     }
@@ -188,7 +188,7 @@
       $sql
               = "SELECT * FROM branches
             WHERE branch_id=" . DB::escape($_POST['branch_id']) . "
-            AND debtor_id=" . DB::escape($_POST['customer_id']);
+            AND debtor_id=" . DB::escape($_POST['debtor_id']);
       $result = DB::query($sql, "check failed");
       $myrow  = DB::fetch($result);
       JS::setFocus('br_name');
@@ -219,7 +219,7 @@
     if (!$num_branches) {
       $sql
                              = "SELECT name, address, email, debtor_ref
-            FROM debtors WHERE debtor_id = " . DB::escape($_POST['customer_id']);
+            FROM debtors WHERE debtor_id = " . DB::escape($_POST['debtor_id']);
       $result                = DB::query($sql, "check failed");
       $myrow                 = DB::fetch($result);
       $_POST['br_name']      = $myrow["name"];

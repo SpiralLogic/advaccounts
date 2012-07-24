@@ -38,6 +38,7 @@
     Table::end();
   }
   $searchArray = [];
+  $location = $stock_location='';
   if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
     $searchArray = explode(' ', $_POST['ajaxsearch']);
     unset($_POST['supplier_id']);

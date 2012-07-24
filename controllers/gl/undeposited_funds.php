@@ -21,10 +21,6 @@
       $_POST[$rowid]             = 1;
     }
   }
-  if (Forms::isListUpdated('deposit_date')) {
-    $_POST['deposit_date'] = Input::post('deposit_date') == '' ? Dates::today() : ($_POST['deposit_date']);
-    updateData();
-  }
   if (Input::post('_deposit_date_changed')) {
     $_POST['deposited']      = 0;
     $_SESSION['undeposited'] = array();
@@ -61,7 +57,7 @@
         $total_amount += $row['amount'];
         $ref[] = $row['ref'];
       }
-      $sql      = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (" . ST_GROUPDEPOSIT . ", 5, $total_amount," . DB::quote(implode($ref, ', ')) . ",'" . Dates::dateToSql($_POST['deposit_date']) . "', 6, '" . User::i()->user . "',0)";
+      $sql      = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (" . ST_GROUPDEPOSIT . ", 5, $total_amount," . DB::quote('Group Deposit') . ",'" . Dates::dateToSql($_POST['deposit_date']) . "', 6, '" . User::i()->user . "',0)";
       $query    = DB::query($sql, "Undeposited Cannot be Added");
       $order_no = DB::insertId($query);
       if (!isset($order_no) || !empty($order_no) || $order_no == 127) {
@@ -107,16 +103,16 @@
   Row::end();
   Row::start();
   Row::end();
-    Table::header(_("Bank fees"));
-    Row::start();Cell::amount($_POST['bank_fees'], false, '', "bank_fees");
+  Table::header(_("Bank fees"));
+  Row::start();
+  Cell::amount($_POST['bank_fees'], false, '', "bank_fees");
   Row::end();
   Table::end();
   Forms::submitCenter('Deposit', _("Deposit"), true, '', false);
   Display::div_end();
   echo "<hr>";
-  $date = Dates::addDays($_POST['deposit_date'], 10);
-  $sql
-                = "SELECT	type, trans_no, ref, trans_date,
+  $date         = Dates::addDays($_POST['deposit_date'], 10);
+  $sql          = "SELECT	type, trans_no, ref, trans_date,
                 amount,	person_id, person_type_id, reconciled, id
         FROM bank_trans
         WHERE undeposited=1 AND trans_date <= '" . Dates::dateToSql($date) . "' AND reconciled IS null AND amount<>0
@@ -167,11 +163,13 @@
    */
   function depositCheckbox($row) {
     $name      = "dep_" . $row['id'];
-    $hidden    = 'amount_' . $row['id'];
+    $amount    = 'amount_' . $row['id'];
+    $dateid    = 'date_' . $row['id'];
     $value     = $row['amount'];
+    $date      = $row['trans_date'];
     $chk_value = Forms::hasPost("dep_" . $row['id']);
     // save also in hidden field for testing during 'Reconcile'
-    return Forms::checkbox(null, $name, $chk_value, true, _('Deposit this transaction')) . Forms::hidden($hidden, $value, false);
+    return Forms::checkbox(null, $name, $chk_value, true, _('Deposit this transaction')) . Forms::hidden($amount, $value, false) . Forms::hidden($dateid, Dates::sqlToDate($date), false);
   }
 
   /**
@@ -233,7 +231,7 @@
   }
 
   function updateData() {
-    $this->updateData=true;
+    $this->updateData = true;
     Ajax::activate('summary');
   }
 
@@ -249,15 +247,9 @@
     {
       return false;
     }
-    if (Input::post('bank_date') == '') // new reconciliation
-    {
-      Ajax::activate('bank_date');
+    if (Input::post('deposit_date') == Dates::today()) {
+      $_POST['deposit_date'] = Input::post('date_' . $deposit_id);
     }
-    $_POST['bank_date'] = Dates::dateToSql(Input::post('deposited_date'));
-    /*	$sql = "UPDATE ".''."bank_trans SET undeposited=0"
-                         ." WHERE id=".DB::escape($deposit_id);
-
-                        DB::query($sql, "Can't change undeposited status");*/
     // save last reconcilation status (date, end balance)
     if (Forms::hasPost("dep_" . $deposit_id)) {
       $_SESSION['undeposited']["dep_" . $deposit_id] = Input::post('amount_' . $deposit_id);
@@ -265,6 +257,9 @@
     } else {
       unset($_SESSION['undeposited']["dep_" . $deposit_id]);
       $_POST['deposited'] = $_POST['to_deposit'] - Input::post('amount_' . $deposit_id);
+    }
+    if (!count($_SESSION['undeposited'])) {
+      $_POST['deposit_date'] = Dates::today();
     }
     return true;
   }

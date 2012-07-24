@@ -58,7 +58,7 @@
 		supplier.curr_code,
  	(trans.ov_amount + trans.ov_gst + trans.ov_discount) AS TotalAmount,
 		trans.alloc AS Allocated,
-		((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::dateToSql(Dates::today()) . "') AS OverDue,
+		((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::today(true) . "') AS OverDue,
  	(ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount - trans.alloc) <= 0.005) AS Settled
  	FROM creditor_trans as trans, suppliers as supplier
  	WHERE supplier.supplier_id = trans.supplier_id
@@ -93,7 +93,7 @@
       $sql .= " AND trans.type = " . ST_SUPPCREDIT . " ";
     }
     if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) {
-      $today = Dates::dateToSql(Dates::today());
+      $today = Dates::today(true);
       $sql .= " AND trans.due_date < '$today' ";
     }
   }

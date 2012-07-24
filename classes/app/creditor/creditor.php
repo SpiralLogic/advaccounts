@@ -452,7 +452,7 @@ JS;
       UI::search('supplier', array(
                                   'cells'            => true, //
                                   'url'              => '/contacts/suppliers.php', ///
-                                  'label_cell_params'=> ['rowspan'=> $o['rowspan'], 'class'=> 'nowrap ' . $o['cell_class']], //
+                                  'label_cell_params'=> ['rowspan'=> $o['rowspan'], 'class'=> 'nowrap label ' . $o['cell_class']], //
                                   'label'            => $o['label'], //
                                   'name'             => 'supplier', //
                                   'input_cell_params'=> $o['cell_params'], //

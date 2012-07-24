@@ -87,7 +87,7 @@
       $unique_name = $filename = $filetype = "";
       $filesize    = 0;
     }
-    $date = Dates::dateToSql(Dates::today());
+    $date = Dates::today(true);
     if ($Mode == ADD_ITEM) {
       $sql
         = "INSERT INTO attachments (type_no, trans_no, description, filename, unique_name,

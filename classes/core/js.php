@@ -84,7 +84,7 @@
      * @param bool  $url
      * @param array $options
      */
-    public function _autocomplete($id, $callback, $url = false, $options = array()) {
+    public function _autocomplete($id, $callback, $url = false) {
       if (!$url) {
         $url = $_SERVER['REQUEST_URI'];
       }

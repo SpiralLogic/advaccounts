@@ -7,9 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class UI extends HTML
-  {
-
+  class UI extends HTML {
     /**
      * @static
      *
@@ -19,8 +17,7 @@
      *
      * @return ADV\Core\HTML|null
      */
-    public static function button($id = false, $content = false, $attr = array())
-    {
+    public static function button($id = false, $content = false, $attr = array()) {
       if ($id) {
         $attr['id'] = $id;
       }
@@ -42,8 +39,7 @@
      *
      * @return ADV\Core\HTML|null
      */
-    public static function select($id = false, $options = array(), $params = array())
-    {
+    public static function select($id = false, $options = array(), $params = array()) {
       HTML::setReturn(true)->select($id, $params);
       foreach ((array) $options as $label => $option) {
         if (is_array($option)) {
@@ -76,42 +72,45 @@
      * options: Javascript function autocomplete options<br>
 
      */
-    public static function search($id, $attr = array(), $options = array())
-    {
+    public static function search($id, $options = array()) {
       $o   = array(
-        'url'             => false, //
-        'nodiv'           => false, //
-        'label'           => false, //
-        'name'            => null, //
-        'set'             => null, //
-        'class'           => 'width95 ', //
-        'value'           => null, //
-        'focus'           => null, //
-        'callback'        => false, //
-        'cells'           => false,
-        'cell_class'      => null,
-        'input_cell_params'=> []
+        'url'              => false, //
+        'nodiv'            => false, //
+        'label'            => false, //
+        'name'             => null, //
+        'set'              => null, //
+        'class'            => 'width95 ', //
+        'value'            => null, //
+        'focus'            => null, //
+        'callback'         => false, //
+        'cells'            => false, //
+        'cell_class'       => null, //
+        'input_cell_params'=> [],
+        'label_cell_params'=> ['class'>'label pointer']
       );
-      $o   = array_merge($o, $attr);
-      $url = ($o['url']) ? $o['url'] : false;
+      $o   = array_merge($o, $options);
+      $url = $o['url'] ? : false;
       if (!$o['nodiv']) {
-        HTML::div(array('class' => 'ui-widget pad5'));
+        HTML::div(['class' => 'ui-widget ']);
       }
       if ($o['cells']) {
         HTML::td(null, $o['label_cell_params']);
       }
       if (($o['label'])) {
-        HTML::label(null, $o['label'], array('for' => $id), false);
+        HTML::label(null, $o['label'], ['for' => $id], false);
       }
       if ($o['cells']) {
         HTML::_td();
       }
-      $input_attr['class']     = $o['class'];
-      $input_attr['name']      = $o['name'];
-      $input_attr['data-set']  = $o['set'];
-      $input_attr['value']     = htmlentities($o['value']);
-      $input_attr['autofocus'] = $o['focus'];
-      $input_attr['type']      = 'search';
+      $input_attr = [
+        'class'      => $o['class'], //
+        'name'       => $o['name'], //
+        'data-set'   => $o['set'], //
+        'value'      => htmlentities($o['value']), //
+        'autofocus'  => $o['focus'], //
+        'type'       => 'search', //
+        'placeholder'=> $o['placeholder']
+      ];
       if ($o['cells']) {
         HTML::td(null, $o['input_cell_params']);
       }
@@ -122,8 +121,8 @@
       if (!($o['nodiv'])) {
         HTML::div();
       }
-      $callback = (($o['callback'])) ? $o['callback'] : strtoupper($id[0]) . strtolower(substr($id, 1));
-      JS::autocomplete($id, $callback, $url, $options);
+      $callback = $o['callback'] ? : ucfirst($id);
+      JS::autocomplete($id, $callback, $url);
       return static::$_instance;
     }
     /**
@@ -153,31 +152,30 @@
      *
      * @return HTML|string
      */
-    public static function searchLine($id, $url = '#', $options = array())
-    {
+    public static function searchLine($id, $url = '#', $options = array()) {
       $defaults                      = array(
-        'description'     => false,
-        'disabled'        => false,
-        'editable'        => true,
-        'selected'        => '',
-        'label'           => null,
-        'cells'           => false,
-        'class'           => null,
-        'inactive'        => false,
-        'purchase'        => false,
-        'sale'            => false,
-        'js'              => '',
-        'selectjs'        => '',
-        'submitonselect'  => '',
-        'sales_type'      => 1,
-        'no_sale'         => false,
-        'select'          => false,
-        'type'            => 'local',
-        'kitsonly'        => false,
-        'where'           => '',
-        'size'            => null,
-        'cell_class'      => false,
-        'input_cell_params', null
+        'description'      => false,
+        'disabled'         => false,
+        'editable'         => true,
+        'selected'         => '',
+        'label'            => null,
+        'cells'            => false,
+        'class'            => null,
+        'inactive'         => false,
+        'purchase'         => false,
+        'sale'             => false,
+        'js'               => '',
+        'selectjs'         => '',
+        'submitonselect'   => '',
+        'sales_type'       => 1,
+        'no_sale'          => false,
+        'select'           => false,
+        'type'             => 'local',
+        'kitsonly'         => false,
+        'where'            => '',
+        'size'             => null,
+        'cell_class'       => false,
+        'input_cell_params'=> null
       );
       $o                             = array_merge($defaults, $options);
       $UniqueID                      = md5(serialize($o));
@@ -190,11 +188,11 @@
       if ($o['label']) {
         HTML::label(null, $o['label'], array('for' => $id), false);
       }
-      HTML::input($id, array('value' => $o['selected'], 'name' => $id, 'class'=> $o['class'], 'size' => $o['size']));
+      HTML::input($id, array('value' => $o['selected'], 'placeholder'=> $o['label'], 'name' => $id, 'class'=> $o['class'], 'size' => $o['size']));
       if ($o['editable']) {
         HTML::label('lineedit', 'edit', array(
-          'for' => $id, 'class' => 'stock button', 'style' => 'display:none'
-        ), false);
+                                             'for' => $id, 'class' => 'stock button', 'style' => 'display:none'
+                                        ), false);
         $desc_js .= '$("#lineedit").data("stock_id",value.stock_id).show().parent().css("white-space","nowrap"); ';
       }
       if ($o['cells']) {
@@ -205,8 +203,8 @@
         $selectjs = $o['selectjs'];
       } elseif ($o['description'] !== false) {
         HTML::textarea('description', $o['description'], array(
-          'name' => 'description', 'rows' => 1, 'class'=> 'width90'
-        ), false);
+                                                              'name' => 'description', 'rows' => 1, 'class'=> 'width90'
+                                                         ), false);
         $desc_js .= "$('#description').css('height','auto').attr('rows',4);";
       } elseif ($o['submitonselect']) {
         $selectjs = <<<JS
@@ -240,7 +238,6 @@ JS;
                             Adv.Events.onFocus("#stock_id",[0,Adv.o.stock_id.position().top]);
                                 $.each(value,function(k,v) {Adv.Forms.setFormValue(k,v);});
                                     $desc_js
-
                                         return false;
                                 }
                                         response($.map( data, function( item ) {
@@ -278,32 +275,26 @@ JS;
      *
      * @return mixed
      */
-    public static function emailDialogue($contactType)
-    {
+    public static function emailDialogue($contactType) {
       static $loaded = false;
       if ($loaded == true) {
         return;
       }
       $emailBox = new Dialog('Select Email Address:', 'emailBox', '');
       $emailBox->addButtons(array('Close' => '$(this).dialog("close");'));
-      $emailBox->setOptions(array(
-        'modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false
-      ));
+      $emailBox->setOptions(['modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false]);
       $emailBox->show();
       $action = <<<JS
      var emailID= $(this).data('emailid');
      $.post('/contacts/emails.php',{type: $contactType, id: emailID}, function(data) {
      \$emailBox.html(data).dialog('open');
-
      },'html');
-
      return false;
 JS;
       JS::addLiveEvent('.email-button', 'click', $action, 'wrapper', true);
       $loaded = true;
     }
-    public static function lineSortable()
-    {
+    public static function lineSortable() {
       $js = <<<JS
 $('.grid').find('tbody').sortable({
   items:'tr:not(.newline,.editline)',

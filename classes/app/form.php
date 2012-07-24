@@ -72,9 +72,8 @@
      * @return string
      */
     public function hidden($name, $value = null, $echo = true) {
-      global $dic;
       $value = e($value ? : Input::post($name));
-      $dic['Ajax']->_addUpdate($name, $name, $value);
+      \ADV\Core\DIC::getInstance()['Ajax']->_addUpdate($name, $name, $value);
       $ret = "<input type='hidden' id='$name' name='$name' value='$value'>";
       if (!$echo) {
         return $ret;
@@ -229,6 +228,7 @@
               }
               break;
             case 'default':
+              $atype=true;
               if ($icon === false) {
                 $icon = ICON_SUBMIT;
               }

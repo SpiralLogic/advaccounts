@@ -17,24 +17,25 @@
   }
   Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
   Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."), STOCK_PURCHASED);
-  if (isset($_GET[ADDED_ID])) {
-    $order_no   = $_GET[ADDED_ID];
-    $trans_type = ST_PURCHORDER;
-    $supplier   = new Creditor(Session::getGlobal('creditor'));
-    if (!isset($_GET['Updated'])) {
-      Event::success(_("Purchase Order: " . Session::i()['history'][ST_PURCHORDER] . " has been entered"));
-    } else {
-      Event::success(_("Purchase Order: " . Session::i()['history'][ST_PURCHORDER] . " has been updated"));
-    }
-    Display::note(GL_UI::viewTrans($trans_type, $order_no, _("&View this order"), false, 'button'), 0, 1);
-    Display::note(Reporting::print_doc_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
-    Display::submenu_button(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrder=$order_no");
-    Reporting::email_link($order_no, _("Email This Order"), true, $trans_type, 'EmailLink', null, $supplier->getEmailAddresses(), 1);
-    Display::link_button("/purchases/po_receive_items.php", _("&Receive Items on this PO"), "PONumber=$order_no");
-    Display::link_button($_SERVER['DOCUMENT_URI'], _("&New Purchase Order"), "NewOrder=yes");
-    Display::link_no_params("/purchases/inquiry/po_search.php", _("&Outstanding Purchase Orders"), true, true);
-    Page::footer_exit();
+  function pageComplete($order_no) {
+      $trans_type = ST_PURCHORDER;
+      $supplier   = new Creditor(Session::getGlobal('creditor'));
+      if (!isset($_GET['Updated'])) {
+        Event::success(_("Purchase Order: " . Session::i()['history'][ST_PURCHORDER] . " has been entered"));
+      } else {
+        Event::success(_("Purchase Order: " . Session::i()['history'][ST_PURCHORDER] . " has been updated"));
+      }
+      Display::note(GL_UI::viewTrans($trans_type, $order_no, _("&View this order"), false, 'button'), 0, 1);
+      Display::note(Reporting::print_doc_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
+      Display::submenu_button(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrder=$order_no");
+  echo  Reporting::emailDialogue($supplier->id, ST_PURCHORDER, $order_no);
+      Display::link_button("/purchases/po_receive_items.php", _("&Receive Items on this PO"), "PONumber=$order_no");
+      Display::link_button($_SERVER['DOCUMENT_URI'], _("&New Purchase Order"), "NewOrder=yes");
+      Display::link_no_params("/purchases/inquiry/po_search.php", _("&Outstanding Purchase Orders"), true, true);
+
+    Ajax::activate('_page_body'); Page::footer_exit();
   }
+
   $order = Orders::session_get() ? : null;
   if (isset($_POST[Orders::CANCEL_CHANGES])) {
     $order_no = $order->order_no;
@@ -58,7 +59,7 @@
       if ($order_no) {
         Dates::newDocDate($order->orig_order_date);
         Orders::session_delete($_POST['order_id']);
-        Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$order_no");
+       pageComplete($order_no);
       }
     }
   }
@@ -153,6 +154,7 @@
   Display::div_end();
   Forms::end();
   Item::addEditDialog();
+  UI::emailDialogue(CT_SUPPLIER);
   if (isset($order->supplier_id)) {
     Creditor::addInfoDialog("td[name=\"supplier_name\"]", $order->supplier_details['supplier_id']);
   }

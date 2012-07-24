@@ -15,8 +15,7 @@
    * @method theme
    * @method User ii()
    */
-  class User
-  {
+  class User {
     use \ADV\Core\Traits\Hook;
     use StaticAccess {
     StaticAccess::i as ii;
@@ -110,12 +109,20 @@
       }
       return static::ii($user, $session, $config);
     }
+    /**
+     * @param ADV\Core\Session $session
+     * @param ADV\Core\Config  $config
+     */
     public function __construct(Session $session = null, Config $config = null) {
       $this->Session = $session ? : Session::i();
       $this->Config  = $config ? : Config::i();
       $this->company = $this->Config->_get('default.company') ? : 'default';
       $this->logged  = false;
       $this->prefs   = new userPrefs((array) $this);
+    }
+    public function __sleep() {
+      $this->Session = null;
+      return array_keys((array) $this);
     }
     /**
      * @param null $salesmanid

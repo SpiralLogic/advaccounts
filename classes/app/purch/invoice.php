@@ -7,16 +7,14 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Purch_Invoice
-  {
+  class Purch_Invoice {
     /**
      * @static
      *
      * @param $creditor_trans
      * @param $supplier_id
      */
-    public static function get_supplier_to_trans($creditor_trans, $supplier_id)
-    {
+    public static function get_supplier_to_trans($creditor_trans, $supplier_id) {
       $sql                               = "SELECT suppliers.name, payment_terms.terms, " . "payment_terms.days_before_due,
         payment_terms.day_in_following_month,
         suppliers.tax_group_id, tax_groups.name As tax_group_name
@@ -57,18 +55,15 @@
      *
      * @return array
      */
-    public static function update_supplier_received($id, $po_detail_item, $qty_invoiced, $chg_price = null)
-    {
+    public static function update_supplier_received($id, $po_detail_item, $qty_invoiced, $chg_price = null) {
       if ($chg_price != null) {
-        $sql
-                    = "SELECT act_price, unit_price FROM purch_order_details WHERE
+        $sql        = "SELECT act_price, unit_price FROM purch_order_details WHERE
             po_detail_item = " . DB::escape($po_detail_item);
         $result     = DB::query($sql, "The old actual price of the purchase order line could not be retrieved");
         $row        = DB::fetchRow($result);
         $ret        = $row[0];
         $unit_price = $row[1]; //Added by Rasmus
-        $sql
-                    = "SELECT delivery_date FROM grn_batch,grn_items WHERE
+        $sql        = "SELECT delivery_date FROM grn_batch,grn_items WHERE
             grn_batch.id = grn_items.grn_batch_id AND " . "grn_items.id=" . DB::escape($id);
         $result     = DB::query($sql, "The old delivery date from the received record cout not be retrieved");
         $row        = DB::fetchRow($result);
@@ -78,20 +73,17 @@
         $date       = "";
         $unit_price = 0; // Added by Rasmus
       }
-      $sql
-        = "UPDATE purch_order_details
+      $sql = "UPDATE purch_order_details
         SET qty_invoiced = qty_invoiced + " . DB::escape($qty_invoiced);
       if ($chg_price != null) {
         $sql .= " , act_price = " . DB::escape($chg_price);
       }
       $sql .= " WHERE po_detail_item = " . DB::escape($po_detail_item);
       DB::query($sql, "The quantity invoiced of the purchase order line could not be updated");
-      $sql
-        = "UPDATE grn_items
+      $sql = "UPDATE grn_items
  SET quantity_inv = quantity_inv + " . DB::escape($qty_invoiced) . "
  WHERE id = " . DB::escape($id);
       DB::query($sql, "The quantity invoiced off the items received record could not be updated");
-
       return array($ret, $date, $unit_price);
     }
     /**
@@ -105,8 +97,7 @@
      *
      * @return float
      */
-    public static function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amount2)
-    {
+    public static function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amount2) {
       $dec = User::price_dec();
       Num::priceDecimal($amount2, $dec);
       $currency = Bank_Currency::for_creditor($supplier);
@@ -115,7 +106,6 @@
       $ex_rate  = Bank_Currency::exchange_rate_to_home($currency, $date);
       $amount2  = $amount2 / $ex_rate;
       $diff     = $amount2 - $amount1;
-
       return Num::round($diff, $dec);
     }
     /**
@@ -190,8 +180,7 @@
         $line_taxfree  = $entered_grn->taxfree_charge_price($creditor_trans->tax_group_id);
         $line_tax      = $entered_grn->full_charge_price($creditor_trans->tax_group_id) - $line_taxfree;
         $stock_gl_code = Item::get_gl_code($entered_grn->item_code);
-        $iv_act        = (Item::is_inventory_item($entered_grn->item_code) ? $stock_gl_code["inventory_account"] :
-          $stock_gl_code["cogs_account"]);
+        $iv_act        = (Item::is_inventory_item($entered_grn->item_code) ? $stock_gl_code["inventory_account"] : $stock_gl_code["cogs_account"]);
         $total += Creditor_Trans::add_gl($trans_type, $invoice_id, $date_, $iv_act, $stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $entered_grn->this_quantity_inv * $line_taxfree, $creditor_trans->supplier_id);
         // -------------- if price changed since po received. 16 Aug 2008 Joe Hunt
         if ($creditor_trans->is_invoice) {
@@ -272,7 +261,6 @@
         }
       }
       DB::commit();
-
       return $invoice_id;
     }
     // get all the invoices/credits for a given PO - quite long route to get there !
@@ -283,10 +271,8 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_po_credits($po_number)
-    {
-      $sql
-        = "SELECT DISTINCT creditor_trans.trans_no, creditor_trans.type,
+    public static function get_po_credits($po_number) {
+      $sql = "SELECT DISTINCT creditor_trans.trans_no, creditor_trans.type,
         ov_amount+ov_discount+ov_gst AS Total,
         creditor_trans.tran_date
         FROM creditor_trans, creditor_trans_details, " . "purch_order_details, purch_orders
@@ -294,7 +280,6 @@
         AND creditor_trans_details.po_detail_item_id = purch_order_details.po_detail_item
         AND purch_orders.supplier_id = creditor_trans.supplier_id
         AND purch_order_details.order_no = " . DB::escape($po_number);
-
       return DB::query($sql, "The invoices/credits for the po $po_number could not be retreived");
     }
     /**
@@ -306,10 +291,8 @@
      *
      * @return void
      */
-    public static function get($trans_no, $trans_type, $creditor_trans)
-    {
-      $sql
-              = "SELECT creditor_trans.*, name FROM creditor_trans,suppliers
+    public static function get($trans_no, $trans_type, $creditor_trans) {
+      $sql    = "SELECT creditor_trans.*, name FROM creditor_trans,suppliers
         WHERE trans_no = " . DB::escape($trans_no) . " AND type = " . DB::escape($trans_type) . "
         AND suppliers.supplier_id=creditor_trans.supplier_id";
       $result = DB::query($sql, "Cannot retreive a supplier transaction");
@@ -351,14 +334,11 @@
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get_for_item($stock_id, $po_item_id)
-    {
-      $sql
-              = "SELECT *, tran_date FROM creditor_trans_details, creditor_trans
+    public static function get_for_item($stock_id, $po_item_id) {
+      $sql    = "SELECT *, tran_date FROM creditor_trans_details, creditor_trans
         WHERE creditor_trans_type = " . ST_SUPPINVOICE . " AND stock_id = " . DB::escape($stock_id) . " AND po_detail_item_id = " . DB::escape($po_item_id) . "
         AND creditor_trans_no = trans_no";
       $result = DB::query($sql, "Cannot retreive supplier transaction detail records");
-
       return DB::fetch($result);
     }
     /**
@@ -367,8 +347,7 @@
      * @param $type
      * @param $type_no
      */
-    public static function void($type, $type_no)
-    {
+    public static function void($type, $type_no) {
       DB::begin();
       $trans = Creditor_Trans::get($type_no, $type);
       Bank_Trans::void($type, $type_no, true);
@@ -396,8 +375,7 @@
               } else {
                 $mat_cost = Purch_GRN::update_average_material_cost($grn["supplier_id"], $details_row["stock_id"], $details_row["FullUnitPrice"], -$details_row["quantity"], $old_date, $old[1] !== $trans['tran_date']);
               }
-              $sql
-                = "UPDATE purch_order_details
+              $sql = "UPDATE purch_order_details
                  SET quantity_ordered = quantity_ordered + " . -$details_row["quantity"] . ", ";
               if ($match !== false) {
                 $sql .= "act_price=" . $match['unit_price'] . ", ";
@@ -435,8 +413,7 @@
      *
      * @param $creditor_trans
      */
-    public static function copy_from_trans($creditor_trans)
-    {
+    public static function copy_from_trans($creditor_trans) {
       $_POST['Comments']           = $creditor_trans->Comments;
       $_POST['tran_date']          = $creditor_trans->tran_date;
       $_POST['due_date']           = $creditor_trans->due_date;
@@ -450,8 +427,7 @@
      *
      * @param $creditor_trans
      */
-    public static function copy_to_trans($creditor_trans)
-    {
+    public static function copy_to_trans($creditor_trans) {
       $creditor_trans->Comments           = Input::post('Comments');
       $creditor_trans->tran_date          = $_POST['tran_date'];
       $creditor_trans->due_date           = $_POST['due_date'];
@@ -478,8 +454,7 @@
      *
      * @param $creditor_trans
      */
-    public static function header($creditor_trans)
-    {
+    public static function header($creditor_trans) {
       // if vars have been lost, recopy
       if (!isset($_POST['tran_date'])) {
         Purch_Invoice::copy_from_trans($creditor_trans);
@@ -516,18 +491,19 @@
       Display::div_end();
       Table::start();
       Row::start();
+
+      if (Input::post('_control') == 'supplier') {
+        $creditor_trans->supplier_name = $_POST['supplier'];
+        Ajax::i()->activate("_page_body");
+      }
       if (isset($_POST['invoice_no'])) {
         $trans                = Creditor_Trans::get($_POST['invoice_no'], ST_SUPPINVOICE);
         $_POST['supplier_id'] = $trans['supplier_id'];
         $supp                 = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
         Cell::labels('Supplier', $supp . Forms::hidden('supplier_id', $_POST['supplier_id'], false));
       } else {
-        $_POST['supplier_id'] = Input::post('supplier_id', Input::NUMERIC, Session::getGlobal('creditor', ''));
-        Creditor::newselect($creditor_trans->supplier, array('row'=> false));
+        Creditor::newselect($creditor_trans->supplier_name, array('row'=> false));
         JS::setFocus('supplier_id');
-      }
-      if (Input::post('_control') == 'supplier') {$creditor_trans->supplier=$_POST['supplier'];
-        Ajax::i()->activate("_page_body");
       }
       if ($creditor_trans->supplier_id != $_POST['supplier_id']) {
         // supplier has changed
@@ -549,7 +525,6 @@
       $supplier_currency = Bank_Currency::for_creditor($creditor_trans->supplier_id);
       $company_currency  = Bank_Currency::for_company();
       Session::setGlobal('creditor', $_POST['supplier_id']);
-
       if ($supplier_currency && $supplier_currency != $company_currency) {
         GL_ExchangeRate::display($supplier_currency, $company_currency, $_POST['tran_date']);
         if (!empty($creditor_trans->tax_description)) {
@@ -567,8 +542,7 @@
      *
      * @param Creditor_Trans $creditor_trans
      */
-    public static function totals($creditor_trans)
-    {
+    public static function totals($creditor_trans) {
       Purch_Invoice::copy_to_trans($creditor_trans);
       $dim     = DB_Company::get_pref('use_dimension');
       $colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));

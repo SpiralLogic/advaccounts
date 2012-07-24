@@ -10,27 +10,27 @@
 
   JS::openWindow(900, 500);
   Page::start(_($help_context = "Customer Allocation Inquiry"), SA_SALESALLOC);
-  if (isset($_GET['customer_id']) || isset($_GET['id'])) {
-    $_POST['customer_id'] = isset($_GET['id']) ? $_GET['id'] : $_GET['customer_id'];
+  if (isset($_GET['debtor_id']) || isset($_GET['id'])) {
+    $_POST['debtor_id'] = isset($_GET['id']) ? $_GET['id'] : $_GET['debtor_id'];
   }
-  if (!isset($_POST['customer_id'])) {
-    $_POST['customer_id'] = Session::getGlobal('debtor');
+  if (!isset($_POST['debtor_id'])) {
+    $_POST['debtor_id'] = Session::getGlobal('debtor_id');
   }
   if (isset($_GET['frame'])) {
     foreach ($_GET as $k => $v) {
       $_POST[$k] = $v;
     }
   }
-  if (Forms::isListUpdated('customer_id')) {
-    Ajax::activate('customer_id');
+  if (Forms::isListUpdated('debtor_id')) {
+    Ajax::activate('debtor_id');
   }
   Forms::start(false, '', 'invoiceForm');
   Table::start('tablestyle_noborder');
   Row::start();
   if (!Input::get('frame')) {
-    Debtor::cells(_("Select a customer: "), 'customer_id', null, true);
+    Debtor::cells(_("Select a customer: "), 'debtor_id', null, true);
   }
-  Session::setGlobal('debtor', $_POST['customer_id']);
+  Session::setGlobal('debtor_id', $_POST['debtor_id']);
   if (!isset($_POST['TransAfterDate']) && Session::getGlobal('TransAfterDate')) {
     $_POST['TransAfterDate'] = Session::getGlobal('TransAfterDate');
   } elseif (isset($_POST['TransAfterDate'])) {
@@ -66,14 +66,14 @@
  	(trans.ov_amount + trans.ov_gst + trans.ov_freight			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount,
 	trans.alloc AS credit,
 	trans.alloc AS Allocated,
-		((trans.type = " . ST_SALESINVOICE . ") AND trans.due_date < '" . Dates::dateToSql(Dates::today()) . "') AS OverDue
+		((trans.type = " . ST_SALESINVOICE . ") AND trans.due_date < '" . Dates::today(true) . "') AS OverDue
  	FROM debtor_trans as trans, debtors as debtor
  	WHERE debtor.debtor_id = trans.debtor_id
 			AND round(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount,2) != 0
  		AND trans.tran_date >= '$data_after'
  		AND trans.tran_date <= '$date_to'";
-  if ($_POST['customer_id'] != ALL_TEXT) {
-    $sql .= " AND trans.debtor_id = " . DB::quote($_POST['customer_id']);
+  if ($_POST['debtor_id'] != ALL_TEXT) {
+    $sql .= " AND trans.debtor_id = " . DB::quote($_POST['debtor_id']);
   }
   if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
     if ($_POST['filterType'] == '1' || $_POST['filterType'] == '2') {
@@ -84,7 +84,7 @@
       $sql .= " AND trans.type = " . ST_CUSTCREDIT . " ";
     }
     if ($_POST['filterType'] == '2') {
-      $today = Dates::dateToSql(Dates::today());
+      $today = Dates::today(true);
       $sql
         .= " AND trans.due_date < '$today'
 				AND (round(abs(trans.ov_amount + " . "trans.ov_gst + trans.ov_freight + " . "trans.ov_freight_tax + trans.ov_discount) - trans.alloc,2) > 0) ";
@@ -96,57 +96,55 @@
     $sql .= " AND (round(abs(trans.ov_amount + trans.ov_gst + " . "trans.ov_freight + trans.ov_freight_tax + " . "trans.ov_discount) - trans.alloc,2) > 0) ";
   }
   $cols = array(
-    "<button id='emailInvoices'>Email</button> "                    => array(
+    "<button id='emailInvoices'>Email</button> "                                       => array(
       'fun'      => function ($row) {
         return ($row['type'] == ST_SALESINVOICE) ? Forms::checkbox(null, 'emailChk') : '';
       }, 'align' => 'center'
     ),
-    _("Type")                                                       => array(
+    _("Type")                                                                          => array(
       'fun' => function ($dummy, $type) {
         global $systypes_array;
         return $systypes_array[$type];
       }
     ),
-    _("#")                                                          => array(
+    _("#")                                                                             => array(
       'fun' => function ($trans) {
         return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
       }
     ),
     _("Reference"),
-    _("Order")                                                      => array(
+    _("Order")                                                                         => array(
       'fun' => function ($row) {
         return $row['order_'] > 0 ? Debtor::viewTrans(ST_SALESORDER, $row['order_']) : "";
       }
     ),
-    _("Date")                                                       => array(
-      'name' => 'tran_date',
-      'type' => 'date',
-      'ord'  => 'asc'
+    _("Date")                                                                          => array(
+      'name' => 'tran_date', 'type' => 'date', 'ord'  => 'asc'
     ),
-    _("Due Date")                                                   => array(
+    _("Due Date")                                                                      => array(
       'type' => 'date', 'fun' => function ($row) {
         return $row["type"] == 10 ? $row["due_date"] : '';
       }
     ),
-    _("Customer")                                                   => array(),
-    _("Currency")                                                   => array('align' => 'center'),
-    _("Debit")                                                      => array(
+    _("Customer")                                                                      => array(),
+    _("Currency")                                                                      => array('align' => 'center'),
+    _("Debit")                                                                         => array(
       'align' => 'right', 'fun' => function ($row) {
         $value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ?
           -$row["TotalAmount"] : $row["TotalAmount"];
         return $value >= 0 ? Num::priceFormat($value) : '';
       }
     ),
-    _("Credit")                                                     => array(
+    _("Credit")                                                                        => array(
       'align' => 'right', 'fun' => function ($row) {
         $value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT) ?
           -$row["TotalAmount"] : $row["TotalAmount"];
         return $value > 0 ? Num::priceFormat($value) : '';
       }
     ),
-    _("Allocated")                                                  => 'amount',
-    _("overdue")                                                    => array('type' => 'skip'),
-    _("Balance")                                                    => array(
+    _("Allocated")                                                                     => 'amount',
+    _("overdue")                                                                       => array('type' => 'skip'),
+    _("Balance")                                                                       => array(
       'type' => 'amount', 'insert' => true, 'fun' => function ($row) {
         return $row["TotalAmount"] - $row["Allocated"];
       }
@@ -168,7 +166,7 @@
     }
     )
   );
-  if (Input::post('customer_id')) {
+  if (Input::post('debtor_id')) {
     $cols[_("Customer")] = 'skip';
   }
   if (!Input::get('frame')) {

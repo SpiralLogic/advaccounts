@@ -146,7 +146,7 @@
         $this->amount      = $trans["Total"];
         $this->date_       = Dates::sqlToDate($trans["tran_date"]);
       } else {
-        $this->person_id = Input::post($this->person_type ? 'supplier_id' : 'customer_id');
+        $this->person_id = Input::post($this->person_type ? 'supplier_id' : 'debtor_id');
         $this->date_     = Input::post($this->person_type ? 'DatePaid' : 'DateBanked', null, Dates::today());
       }
       /* Now populate the array of possible (and previous actual) allocations

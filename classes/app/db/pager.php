@@ -13,7 +13,10 @@
 
    */
   class DB_Pager {
+    /** @var User */
     static $User;
+    /** @var DB */
+    static $DB;
     const SQL = 1;
     const ARR = 2;
     /** @var */
@@ -95,7 +98,7 @@
      */
     public $first_page;
     /**
-     * @var #M#C\User.query_size|int|?
+     * @var int|?
      */
     public $page_len = 1;
     /**
@@ -150,6 +153,7 @@
      * $name is base name for pager controls
      */
     public $key;
+    /** @var Dates */
     static $dates;
     public $rowClass;
     public $type;
@@ -163,6 +167,9 @@
     public function __construct($sql, $name, $table = null, $page_len = 0) {
       if (!static::$User) {
         static::$User = User::i();
+      }
+      if (!static::$DB) {
+        static::$DB = DB::i();
       }
       $this->width;
       if ($page_len == 0) {
@@ -215,11 +222,11 @@
      *
      * @return string
      */
-    public function navi($name, $value, $enabled = true, $icon = false,$title=null) {
+    public function navi($name, $value, $enabled = true, $icon = false, $title = null) {
       if (!static::$User) {
         static::$User = User::i();
       }
-      $title=$title?:$value;
+      $title = $title ? : $value;
       return "<button " . ($enabled ? '' : 'disabled') . " class=\"navibutton\" type=\"submit\"" . " name=\"$name\" id=\"$name\" value=\"$value\">" . ($icon ? "<img src='/themes/" . static::$User->_theme() . "/images/" . $icon . "'>" : '') . "<span>$title</span></button>\n";
     }
     /**
@@ -229,8 +236,8 @@
      * @param      $value
      * @param bool $enabled
      */
-    public function navi_cell($name, $value, $enabled = true,$title=null) {
-      Cell::label($this->navi($name, $value, $enabled,false,$title));
+    public function navi_cell($name, $value, $enabled = true, $title = null) {
+      Cell::label($this->navi($name, $value, $enabled, false, $title));
     }
     /**
      * @static
@@ -245,6 +252,9 @@
       }
       if (!static::$User) {
         static::$User = User::i();
+      }
+      if (!static::$DB) {
+        static::$DB = DB::i();
       }
       $this->select_records();
       Display::div_start("_{$this->name}_span");
@@ -301,7 +311,7 @@
             $fun = $col['fun'];
             if (is_callable($fun)) {
               $cell = call_user_func($fun, $row, $cell);
-            } elseif (method_exists($this, $fun)) {
+            } elseif (is_callable([$this, $fun])) {
               $cell = $this->$fun($row, $cell);
             } else {
               $cell = '';
@@ -341,7 +351,7 @@
               Cell::email($cell, isset($col['align']) ? "class='" . $col['align'] . "'" : null);
               break;
             case 'rate':
-              Cell::label(Num::format($cell, User::exrate_dec()), "class='center'");
+              Cell::label(Num::format($cell, static::$User->_exrate_dec()), "class='center'");
               break;
             case 'inactive':
               if (Input::post('show_inactive')) {
@@ -393,10 +403,10 @@
         if (@$this->inactive_ctrl) {
           Forms::submit('Update', _('Update'), true, '', null);
         } // inactive update
-        $this->navi_cell($but_pref . 'first', 1, $this->first_page,'First');
-        $this->navi_cell($but_pref . 'prev', $this->curr_page - 1, $this->prev_page,'Prev');
-        $this->navi_cell($but_pref . 'next', $this->curr_page + 1, $this->next_page,'Next');
-        $this->navi_cell($but_pref . 'last', $this->max_page, $this->last_page,'Last');
+        $this->navi_cell($but_pref . 'first', 1, $this->first_page, 'First');
+        $this->navi_cell($but_pref . 'prev', $this->curr_page - 1, $this->prev_page, 'Prev');
+        $this->navi_cell($but_pref . 'next', $this->curr_page + 1, $this->next_page, 'Next');
+        $this->navi_cell($but_pref . 'last', $this->max_page, $this->last_page, 'Last');
         Row::end();
         echo "</table>";
         $from = ($this->curr_page - 1) * $this->page_len + 1;
@@ -451,7 +461,7 @@
         if (Forms::hasPost('show_inactive')) {
           if (isset($_POST['LInact'][$id]) && (Input::post('_Inactive' . $id . '_update') || Input::post('Update')) && (Forms::hasPost('Inactive' . $id) != $value)
           ) {
-            DB::updateRecordStatus($id, !$value, $table, $key);
+            static::$DB->_updateRecordStatus($id, !$value, $table, $key);
             $value = !$value;
           }
           echo '<td class="center">' . Forms::checkbox(null, $name, $value, true, '', "class='center'") . Forms::hidden("LInact[$id]", $value, false) . '</td>';
@@ -476,14 +486,14 @@
           return true;
         }
         $sql    = $this->_sql_gen(false);
-        $result = DB::query($sql, 'Error browsing database: ' . $sql);
+        $result = static::$DB->_query($sql, 'Error browsing database: ' . $sql);
         if (!$result) {
           return false;
         }
         // setting field names for subsequent queries
         // add result field names to column defs for
         // col value retrieve and sort purposes
-        while ($row = DB::fetchAssoc($result)) {
+        while ($row = static::$DB->_fetchAssoc($result)) {
           $this->data[] = $row;
         }
       } elseif ($this->type == self::ARR) {
@@ -778,17 +788,17 @@
       if ($this->ready == false) {
         if ($this->type == self::SQL) {
           $sql    = $this->_sql_gen(true);
-          $result = DB::query($sql, 'Error reading record set');
+          $result = static::$DB->_query($sql, 'Error reading record set');
           if ($result == false) {
             return false;
           }
-          $row             = DB::fetchRow($result);
+          $row             = static::$DB->_fetchRow($result);
           $this->rec_count = $row[0];
           $this->max_page  = $this->page_len ? ceil($this->rec_count / $this->page_len) : 0;
           $this->setPage(1);
         } elseif ($this->type == self::ARR) {
-          $this->rec_count = count($this->sql);
-          $this->max_page  = $this->page_len ? ceil($this->rec_count / $this->page_len) : 0;
+          $this->rec_count  = count($this->sql);
+          $this->max_page   = $this->page_len ? ceil($this->rec_count / $this->page_len) : 0;
           $this->curr_page  = $this->curr_page ? : 1;
           $this->next_page  = ($this->curr_page < $this->max_page) ? $this->curr_page + 1 : null;
           $this->prev_page  = ($this->curr_page > 1) ? ($this->curr_page - 1) : null;
@@ -871,10 +881,9 @@
       if (isset($_SESSION['pager'][$name])) {
         $pager = $_SESSION['pager'][$name];
         if (is_array($sql)) {
-          $pager->sql = $sql;
+          $pager->sql       = $sql;
           $pager->rec_count = count($pager->sql);
           $pager->max_page  = $pager->page_len ? ceil($pager->rec_count / $pager->page_len) : 0;
-
         } elseif ($pager->sql != $sql) {
           unset($_SESSION['pager'][$name]); // kill pager if sql has changed
         }

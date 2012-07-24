@@ -55,7 +55,7 @@
     Session::i()->page_title  = _($help_context = "Search All Sales Quotations");
   }
   Page::start(Session::i()->page_title, $security);
-  $selected_customer = Input::getPost('customer_id', Input::NUMERIC, -1);
+  $selected_customer = Input::getPost('debtor_id', Input::NUMERIC, -1);
   if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
   ) {
     $selected_stock_item = $_POST['SelectStockFromList'];
@@ -98,7 +98,7 @@
   Forms::start();
   Table::start('tablestyle_noborder');
   Row::start();
-  Debtor::cells(_(""), 'customer_id', $selected_customer, true);
+  Debtor::cells(_(""), 'debtor_id', $selected_customer, true);
   Forms::refCells(_("#:"), 'OrderNumber', '', null, '', true);
   if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
     Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
@@ -185,7 +185,7 @@
       $sql .= " AND sorder.ord_date >= '$date_after' AND sorder.ord_date <= '$date_before'";
     }
     if ($trans_type == 32 && !Forms::hasPost('show_all')) {
-      $sql .= " AND sorder.delivery_date >= '" . Dates::dateToSql(Dates::today()) . "'";
+      $sql .= " AND sorder.delivery_date >= '" . Dates::today(true) . "'";
     }
     if ($selected_customer != -1) {
       $sql .= " AND sorder.debtor_id=" . DB::quote($selected_customer);
@@ -223,20 +223,17 @@
       _("Ref")                                                                                             => array('ord' => ''),
       _("PO#")                                                                                             => array('ord' => ''),
       _("Date")                                                                                            => array(
-        'type' => 'date',
-        'ord'  => 'asc'
+        'type' => 'date', 'ord'  => 'asc'
       ),
       _("Required")                                                                                        => array(
-        'type' => 'date',
-        'ord'  => ''
+        'type' => 'date', 'ord'  => ''
       ),
       _("Customer")                                                                                        => array('ord' => 'asc'),
       array('type' => 'skip'),
       _("Branch")                                                                                          => array('ord' => ''),
       _("Address"),
       _("Total")                                                                                           => array(
-        'type' => 'amount',
-        'ord'  => ''
+        'type' => 'amount', 'ord'  => ''
       ),
     );
   } else {
@@ -251,20 +248,17 @@
       _("Ref")                                                                                             => array('ord' => ''),
       _("PO#")                                                                                             => array('type' => 'skip'),
       _("Date")                                                                                            => array(
-        'type' => 'date',
-        'ord'  => 'desc'
+        'type' => 'date', 'ord'  => 'desc'
       ),
       _("Valid until")                                                                                     => array(
-        'type' => 'date',
-        'ord'  => ''
+        'type' => 'date', 'ord'  => ''
       ),
       _("Customer")                                                                                        => array('ord' => 'asc'),
       array('type' => 'skip'),
       _("Branch")                                                                                          => array('ord' => ''),
       _("Delivery To"),
       _("Total")                                                                                           => array(
-        'type' => 'amount',
-        'ord'  => ''
+        'type' => 'amount', 'ord'  => ''
       ),
     );
   }

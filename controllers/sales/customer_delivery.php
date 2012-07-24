@@ -147,7 +147,7 @@
   echo "</td><td>"; // outer table
   Table::start('tablestyle width90');
   if (!isset($_POST['due_date']) || !Dates::isDate($_POST['due_date'])) {
-    $_POST['due_date'] = $order->get_invoice_duedate($order->customer_id, $_POST['DispatchDate']);
+    $_POST['due_date'] = $order->get_invoice_duedate($order->debtor_id, $_POST['DispatchDate']);
   }
   Row::start();
   Forms::dateCells(_("Invoice Dead-line"), 'due_date', '', null, 0, 0, 0, "class='label'");
@@ -155,7 +155,7 @@
   Table::end();
   echo "</td></tr>";
   Table::end(1); // outer table
-  $row = Sales_Order::get_customer($order->customer_id);
+  $row = Sales_Order::get_customer($order->debtor_id);
   if ($row['dissallow_invoices'] == 1) {
     Event::error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
     Forms::end();

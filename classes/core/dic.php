@@ -6,8 +6,15 @@
   class DIC implements \ArrayAccess {
     protected $_objects = array();
     protected $_callbacks = array();
+    protected static $i;
+    public static function getInstance() {
+      if (!static::$i) {
+        static::$i = new static;
+      }
+      return static::$i;
+    }
     /**
-     * @param         $name
+     * @param          $name
      * @param \Closure $callable
      */
     public function set($name, \Closure $callable) {
@@ -104,6 +111,7 @@
       $arguments[0]                = $this;
       $key                         = $this->_keyForArguments($arguments);
       $this->_objects[$name][$key] = call_user_func_array($this->_callbacks[$name], $arguments);
+
       return $this->_objects[$name][$key];
     }
     /**

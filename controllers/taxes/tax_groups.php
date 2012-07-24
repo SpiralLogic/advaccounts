@@ -19,24 +19,7 @@
       Event::error(_("The tax group name cannot be empty."));
       JS::setFocus('name');
     }
-    /* Editable rate has been removed 090920 Joe Hunt
-             else
-             {
-               // make sure any entered rates are valid
-               for ($i = 0; $i < 5; $i++)
-               {
-                 if (isset($_POST['tax_type_id' . $i]) &&
-                   $_POST['tax_type_id' . $i] != ALL_NUMERIC	&&
-                   !Validation::post_num('rate' . $i, 0))
-                 {
-                 Event::error( _("An entered tax rate is invalid or less than zero."));
-                   $input_error = 1;
-                 JS::setFocus('rate');
-                 break;
-                 }
-               }
-             }
-             */
+
     if ($input_error != 1) {
       // create an array of the taxes and array of rates
       $taxes = array();

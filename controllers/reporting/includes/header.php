@@ -75,10 +75,9 @@
     $this->NewLine();
     $this->NewLine();
     $this->Font('bold');
-    if
-    (Dates::isGreaterThan($myrow['tran_date'], Dates::today())) {
-      $date = _("Current");
-      $myrow['tran_date']=Dates::dateToSql(Dates::today());
+    if (Dates::isGreaterThan($myrow['tran_date'], Dates::today())) {
+      $date               = _("Current");
+      $myrow['tran_date'] = Dates::today(true);
     } else {
       $date = date('F Y', strtotime($myrow['tran_date'] . '- 1 day'));
     }

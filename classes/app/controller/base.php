@@ -10,7 +10,7 @@
   use ADV\Core\Ajax;
   use ADV\Core\DB\DB;
   use ADV\Core\JS;
-  use ADV\Core\Input;
+  use ADV\Core\Input\Input;
   use ADV\Core\Config;
   use User;
   use ADV\Core\Session;
@@ -35,6 +35,9 @@
     protected $Input;
     protected $action;
     public $help_context;
+    /**
+
+     */
     function __construct() {
       $this->Ajax    = Ajax::i();
       $this->JS      = JS::i();
@@ -47,7 +50,8 @@
       $this->index();
       $this->after();
     }
-    abstract protected function before();
+    protected function before() {
+    }
     abstract protected function index();
     /**
      * @param $title
@@ -55,12 +59,14 @@
     protected function setTitle($title) {
       $this->title = _($this->help_context = $title);
     }
-    abstract protected function after();
+    protected function after() {
+    }
     /**
      * @internal param $prefix
      * @return bool|mixed
      */
-    abstract protected function runValidation();
+    protected function runValidation() {
+    }
     /**
      * @param $prefix
      *
