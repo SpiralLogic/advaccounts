@@ -19,7 +19,8 @@
    * @method request($var, $type = null, $default = null)
    * @method hasPost($vars)
    */
-  class Input {
+  class Input
+  {
     use \ADV\Core\Traits\StaticAccess;
 
     const NUMERIC = 1;
@@ -124,7 +125,7 @@
      *
      * @return bool|int|null|string
      */
-    public function _postGetGlobal($var, $type, $default = null) {
+    public function _postGetGlobal($var, $type = null, $default = null) {
       $result = $this->firstThenSecond(static::$post, static::$get, $var, $type, false);
       if ($result === false) {
         $result = $this->_global($var, $type, $default);

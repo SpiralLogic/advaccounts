@@ -10,9 +10,9 @@
 
   Page::start(_($help_context = "Display Setup"), SA_SETUPDISPLAY);
   if (isset($_POST['setprefs'])) {
-    if (!is_numeric($_POST['query_size']) || ($_POST['query_size'] < 1)) {
+    if (!is_numeric($_POST['query_size']) || ($_POST['query_size'] < 1)|| ($_POST['query_size'] > 100)) {
       Event::error($_POST['query_size']);
-      Event::error(_("Query size must be integer and greater than zero."));
+      Event::error(_("Query size must be integer and greater than zero and no bigger than 100."));
       JS::setFocus('query_size');
     } else {
       $chg_theme = User::theme() != $_POST['theme'];

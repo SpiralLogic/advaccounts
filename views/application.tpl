@@ -33,9 +33,9 @@
               <li><span class='inactive'>{{$mod['anchor']}} </span></li>
               {{/if}}
               {{/foreach}}
-              {{/if}}
             </ul>
           </td>
+          {{/if}}
         </tr>
       </table>
     </td>

@@ -12,7 +12,8 @@
   any form.
 
    */
-  class DB_Pager {
+  class DB_Pager
+  {
     /** @var User */
     static $User;
     /** @var DB */
@@ -227,7 +228,9 @@
         static::$User = User::i();
       }
       $title = $title ? : $value;
-      return "<button " . ($enabled ? '' : 'disabled') . " class=\"navibutton\" type=\"submit\"" . " name=\"$name\" id=\"$name\" value=\"$value\">" . ($icon ? "<img src='/themes/" . static::$User->_theme() . "/images/" . $icon . "'>" : '') . "<span>$title</span></button>\n";
+      return "<button " . ($enabled ? '' :
+        'disabled') . " class=\"navibutton\" type=\"submit\"" . " name=\"$name\" id=\"$name\" value=\"$value\">" . ($icon ?
+        "<img src='/themes/" . static::$User->_theme() . "/images/" . $icon . "'>" : '') . "<span>$title</span></button>\n";
     }
     /**
      * @static
@@ -394,7 +397,8 @@
       }
       Row::start("class='navibar'");
       $colspan = count($this->columns);
-      $inact   = $this->inactive_ctrl == true ? ' ' . Forms::checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
+      $inact   = $this->inactive_ctrl == true ?
+        ' ' . Forms::checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
       if ($this->rec_count) {
         echo "<td colspan=$colspan class='navibar' >";
         echo "<table class='floatright'>";
@@ -415,7 +419,7 @@
           $to = $this->rec_count;
         }
         $all = $this->rec_count;
-        HTML::span(true, "Records $from-$to of $all");
+        HTML::span(true, "Records $from-$to of $all", false);
         echo $inact;
         echo "</td>";
       } else {

@@ -218,7 +218,7 @@
      */
     public static function show_allocatable($show_totals) {
       global $systypes_array;
-      $k = $counter = $total_allocated = 0;
+      $counter = $total_allocated = 0;
       if (count($_SESSION['alloc']->allocs)) {
         Table::start('tablestyle grid width60');
         $th = array(

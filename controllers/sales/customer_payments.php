@@ -8,7 +8,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class DebtorPayment extends \ADV\App\Controller\Base {
+  class DebtorPayment extends \ADV\App\Controller\Base
+  {
     public $date_banked;
     public $debtor_id;
     protected function before() {
@@ -17,7 +18,7 @@
       $this->debtor_id    = Input::postGetGlobal('debtor_id');
       $_POST['debtor_id'] =& $this->debtor_id;
       if (Forms::isListUpdated('branch_id') || !$_POST['debtor_id']) {
-        $br                = Sales_Branch::get(Input::post('branch_id'));
+        $br              = Sales_Branch::get(Input::post('branch_id'));
         $this->debtor_id = $br['debtor_id'];
         Ajax::activate('debtor_id');
       }
@@ -76,7 +77,7 @@
       Table::startOuter('tablestyle2 width90 pad2');
       Table::section(1);
       Debtor::newselect();
-      Forms::refRow(_("Reference:"), 'ref', null,Ref::get_next(ST_CUSTPAYMENT));
+      Forms::refRow(_("Reference:"), 'ref', null, Ref::get_next(ST_CUSTPAYMENT));
       Debtor_Payment::read_customer_data($this->debtor_id);
       Session::setGlobal('debtor_id', $this->debtor_id);
       $display_discount_percent = Num::percentFormat($_POST['payment_discount'] * 100) . "%";
@@ -93,18 +94,18 @@
       }
       Forms::AmountRow(_("Bank Charge:"), 'charge', 0);
       Table::endOuter(1);
+      Display::div_start('alloc_tbl');
       if ($cust_currency == $bank_currency) {
-        Display::div_start('alloc_tbl');
         $_SESSION['alloc']->read();
         Gl_Allocation::show_allocatable(false);
-        Display::div_end();
       }
+      Display::div_end();
       Table::start('tablestyle width70');
       Row::label(_("Customer prompt payment discount :"), $display_discount_percent);
       Forms::AmountRow(_("Amount of Discount:"), 'discount', 0);
-    //  if (User::i()->hasAccess(SS_SALES) && !Input::post('TotalNumberOfAllocs')) {
-        Forms::checkRow(_("Create invoice and apply for this payment: "), 'createinvoice');
-    //  }
+      //  if (User::i()->hasAccess(SS_SALES) && !Input::post('TotalNumberOfAllocs')) {
+      Forms::checkRow(_("Create invoice and apply for this payment: "), 'createinvoice');
+      //  }
       Forms::AmountRow(_("Amount:"), 'amount');
       Forms::textareaRow(_("Memo:"), 'memo_', null, 22, 4);
       Table::end(1);
@@ -119,7 +120,8 @@
       Page::end(!Input::request('frame'));
     }
     protected function addJS() {
-      $js = <<<JS
+      $js
+        = <<<JS
 var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tbl'),hasallocated = false;
  alloc_tbl.find('.amount').each(function() { if (this.value != 0) hasallocated = true});
  if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();

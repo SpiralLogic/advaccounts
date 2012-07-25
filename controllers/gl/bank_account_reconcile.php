@@ -22,15 +22,14 @@
     protected $begin_date;
     protected $end_date;
     protected function before() {
-      $this->Dates                = Dates::i();
-      $this->Num                  = Num::i();
-      $_POST['bank_account']      = Input::postGlobal('bank_account', INPUT::NUMERIC, 5);
-      $this->bank_account         = &$_POST['bank_account'];
-      $_POST['reconcile_date']    = $this->Input->_post('reconcile_date', null, $this->Dates->_newDocDate());
-      $this->reconcile_date       = &$_POST['reconcile_date'];
-      $_POST['bank_date']         = Input::postGlobal('bank_date', null, $this->Dates->_today());
-      $this->bank_date            = &$_POST['bank_date'];
-      $_POST['_bank_date_update'] = $_POST['bank_date'];
+      $this->Dates             = Dates::i();
+      $this->Num               = Num::i();
+      $_POST['bank_account']   = Input::postGlobal('bank_account', INPUT::NUMERIC, 5);
+      $this->bank_account      = &$_POST['bank_account'];
+      $_POST['reconcile_date'] = $this->Input->_post('reconcile_date', null, $this->Dates->_newDocDate());
+      $this->reconcile_date    = &$_POST['reconcile_date'];
+      $_POST['bank_date']      = Input::postGlobal('bank_date', null, $this->Dates->_today());
+      $this->bank_date         = &$_POST['bank_date'];
       $this->JS->_openWindow(800, 500);
       $this->JS->_footerFile('/js/reconcile.js');
       if ($this->Input->_post('reset')) {
@@ -176,25 +175,25 @@
       echo "<hr>";
       Display::div_start('summary');
       Table::start();
-      Table::header(_("Reconcile Date"));
+      Table::sectionTitle(_("Reconcile Date"), 1);
       Row::start();
       Forms::dateCells("", "reconcile_date", _('Date of bank statement to reconcile'), $this->bank_date == '', 0, 0, 0, null, true);
       Row::end();
-      Table::header(_("Beginning Balance"));
+      Table::sectionTitle(_("Beginning Balance"), 1);
       Row::start();
       Forms::amountCellsEx("", "beg_balance", 15);
       Row::end();
-      Table::header(_("Ending Balance"));
+      Table::sectionTitle(_("Ending Balance"), 1);
       Row::start();
       Forms::amountCellsEx("", "end_balance", 15);
       $reconciled = Validation::input_num('reconciled');
       $difference = Validation::input_num("end_balance") - Validation::input_num("beg_balance") - $reconciled;
       Row::end();
-      Table::header(_("Reconciled Amount"));
+      Table::sectionTitle(_("Reconciled Amount"), 1);
       Row::start();
       Cell::amount($reconciled, false, '', "reconciled");
       Row::end();
-      Table::header(_("Difference"));
+      Table::sectionTitle(_("Difference"), 1);
       Row::start();
       Cell::amount($difference, false, '', "difference");
       Row::end();
@@ -268,7 +267,7 @@
       }
       return "<div class='center'><button value='" . $row['id'] . '\' onclick="JsHttpRequest.request(\'_ungroup_' . $row['id'] . '\',
       this.form)" name="_ungroup_' . $row['id'] . '" type="submit" title="Ungroup"
-     class="ajaxsubmit">Ungroup</button></div>' . Forms::hidden("ungroup_" . $row['id'], $row['ref'], true);
+     class="ajaxsubmit">Ungroup</button></div>' . Forms::hidden("ungroup_" . $row['id'], $row['ref'], false);
     }
     /**
      * @param $row
@@ -299,7 +298,7 @@
       }
       $content = GL_UI::viewTrans($row["type"], $row["trans_no"]);
       if (!$row['reconciled']) {
-        $content .= '<br><a href="' . e('/system/void_transaction?type=' . $row['type'] . '&trans_no=' . $row['trans_no'] . '&memo=Deleted during reconcile.') . '" target="_blank"
+        $content .= '<br><a href="' . e('/system/void_transaction?type=' . $row['type'] . '&trans_no=' . $row['trans_no'] . '&memo=Deleted%20during%20reconcile.') . '" target="_blank"
                                     class="button">void</a>';
       }
       return $content;
