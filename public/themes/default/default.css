@@ -66,8 +66,7 @@ select {
   min-width:  8em;
   min-height: 25px;
   height:     25px;
-  border:     lightgray solid 1px;  margin-left:        3px;
-
+  border:     lightgray solid 1px; margin-left: 3px;
 }
 
 .med {
@@ -89,7 +88,6 @@ input.small {
 select, input {
   max-width:   30em;
   font-family: Verdana, Arial, Helvetica, serif;
-
 }
 
 input {
@@ -99,6 +97,7 @@ input {
 input[type="checkbox"] {
   min-width: inherit;
   height:    auto;
+  width:     inherit;
 }
 
 label {
@@ -883,9 +882,11 @@ table.tablestyle_inner td {
   font-size:        12px;
   white-space:      nowrap;
 }
+
 .label label {
-  padding:0px;
+  padding: 0px;
 }
+
 td.tableheader3 {
   margin:        0 auto;
   text-align:    center;

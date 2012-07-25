@@ -104,7 +104,7 @@
       if (is_writable(DOCROOT . '../error_log')) {
         error_log(date(DATE_RFC822) . ' ' . $error['type'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n", 3, DOCROOT . '../error_log');
       }
-      if (!in_array($type, static::$user_errors) || ($type == E_USER_ERROR && $log)) {
+      if (!in_array($type, static::$user_errors) || $type == E_NOTICE || ($type == E_USER_ERROR && $log)) {
         $error['backtrace'] = static::prepareBacktrace(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
         static::$errors[]   = $error;
       }
@@ -132,7 +132,6 @@
       $error['backtrace'] = static::prepareBacktrace($e->getTrace());
       static::$errors[]   = $error;
     }
-
     /**
      * @static
      * @return string

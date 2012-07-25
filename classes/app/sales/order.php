@@ -408,7 +408,7 @@
      */
     public function set_customer($debtor_id, $customer_name, $currency, $discount, $payment) {
       $this->customer_name     = $customer_name;
-      $this->debtor_id       = $debtor_id;
+      $this->debtor_id         = $debtor_id;
       $this->default_discount  = $discount;
       $this->customer_currency = $currency;
       $this->payment           = $payment;
@@ -554,10 +554,10 @@
      */
     public function clear_items() {
       unset($this->line_items);
-      $this->line_items  = array();
-      $this->sales_type  = "";
-      $this->trans_no    = 0;
-      $this->debtor_id = $this->order_no = 0;
+      $this->line_items = array();
+      $this->sales_type = "";
+      $this->trans_no   = 0;
+      $this->debtor_id  = $this->order_no = 0;
     }
     /**
      * @return int
@@ -1297,7 +1297,7 @@
         }
       }
       if ($editable) {
-        Forms::refRow(_("Reference") . ':', 'ref', _('Reference number unique for this document type'), null, '');
+        Forms::refRow(_("Reference") . ':', 'ref', _('Reference number unique for this document type'), Ref::get_next($this->trans_type), '');
       } else {
         Forms::hidden('ref', $this->reference);
         Row::label(_("Reference:"), $this->reference);
@@ -1744,7 +1744,7 @@
       $_POST['phone']            = $order->phone;
       $_POST['location']         = $order->location;
       $_POST['ship_via']         = $order->ship_via;
-      $_POST['debtor_id']      = $order->debtor_id;
+      $_POST['debtor_id']        = $order->debtor_id;
       $_POST['branch_id']        = $order->Branch;
       $_POST['sales_type']       = $order->sales_type;
       $_POST['salesman']         = $order->salesman;
@@ -1780,9 +1780,9 @@
       if (isset($_POST['salesman'])) {
         $order->salesman = $_POST['salesman'];
       }
-      $order->debtor_id = $_POST['debtor_id'];
-      $order->Branch      = $_POST['branch_id'];
-      $order->sales_type  = $_POST['sales_type'];
+      $order->debtor_id  = $_POST['debtor_id'];
+      $order->Branch     = $_POST['branch_id'];
+      $order->sales_type = $_POST['sales_type'];
       // POS
       if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE) { // 2008-11-12 Joe Hunt
         $order->dimension_id  = $_POST['dimension_id'];
