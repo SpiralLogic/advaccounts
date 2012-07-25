@@ -686,13 +686,14 @@ s.category_id, editable, 0 as kit,
         $termswhere .= ' OR p.supplier_description LIKE ? ';
         if (Input::session('creditor_id', Input::NUMERIC)) {
           array_unshift($terms, $_SESSION['creditor_id']);
-          $weight = ' IF(p.creditor_id = ?,0,20) + ' . $weight;
+          array_unshift($terms, $_SESSION['creditor_id']);
+          $weight = ' IF(p.creditor_id = ?,0,20) +  if (poc.creditor_id= ?,10/poc.count,10) + ' . $weight;
         }
-        $stock_code = ' s.item_code as stock_id, p.supplier_description, MIN(p.price) as price, ';
-        $prices     = " LEFT OUTER JOIN purch_data p ON i.id = p.stockid ";
+        $stock_code = ' s.item_code as stock_id, p.supplier_description, MIN(p.price) as price, poc.count as count, ';
+        $prices     = "  LEFT OUTER JOIN purch_data p ON i.id = p.stockid LEFT OUTER JOIN purch_details_count_view poc on i.id=poc.stockid ";
       } elseif ($o['sale']) {
         $weight     = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
-        $stock_code = " s.item_code as stock_id, p.price,";
+        $stock_code = " , stock_master i , s.item_code as stock_id, p.price,";
         $prices     = ", prices p";
         $where .= " AND s.id = p.item_code_id ";
         if (isset($o['sales_type'])) {
@@ -704,13 +705,13 @@ s.category_id, editable, 0 as kit,
       $select = ($o['select']) ? $o['select'] : ' ';
       $sql
               = "SELECT $select $stock_code i.description as item_name, c.description as category, i.long_description as description , editable,
-                            $weight FROM stock_category c, item_codes s, stock_master i $prices
+                            $weight FROM stock_category c, item_codes s, stock_master i  $prices
                             WHERE (s.item_code LIKE ? $termswhere) $where
                             AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.item_code
                             ORDER BY weight, s.category_id, s.item_code LIMIT 30";
       DB::prepare($sql);
-      $result = DB::execute($terms);
 
+      $result = DB::execute($terms);
       return $result;
     }
     /**
