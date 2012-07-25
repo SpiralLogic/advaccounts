@@ -27,5 +27,3 @@
     }
     JS::renderJSON($data, JSON_NUMERIC_CHECK);
   }
-
-

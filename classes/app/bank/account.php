@@ -9,6 +9,12 @@
    **/
   class Bank_Account
   {
+    static $types= array(
+        BT_TRANSFER => "Savings Account", //
+        "Chequing Account", //
+        " Credit Account", //
+        " Cash Account"
+      );
     /**
      * @static
      *
@@ -219,7 +225,7 @@
      */
     public static function  type($name, $selected_id = null)
     {
-      global $bank_account_types;
+       $bank_account_types = Bank_Account::$types;
 
       return Forms::arraySelect($name, $selected_id, $bank_account_types);
     }

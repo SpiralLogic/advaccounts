@@ -604,13 +604,12 @@
         $where .= ' AND s.long_description LIKE ? ';
         $finalterms[] = '%' . trim($t) . '%';
       }
-      $sql
-                    = "SELECT p.price, c.description as category, s.* FROM ((SELECT s.stock_id, i.id, s.description, s.long_description ,
-s.category_id, editable, 0 as kit,
+      $sql = "SELECT p.price, c.description as category, s.* FROM ((SELECT s.stock_id, i.id, s.description, s.long_description ,
+                                        s.category_id, editable, 0 as kit,
                                         IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5) + 0 as weight FROM item_codes i,
                                         stock_master s
-                                        WHERE (s.stock_id LIKE ? $where)) AND s.inactive = 0 AND s.no_sale =0 AND i.item_code=i.stock_id AND i
-                                        .stockid=s.id
+                                        WHERE (s.stock_id LIKE ? $where)) AND s.inactive = 0 AND s.no_sale =0 AND i.item_code=i.stock_id
+                                        AND i .stockid=s.id
                                         AND !i.is_foreign ORDER BY weight
                                         LIMIT 20)";
       $where        = 'OR (i.description LIKE ? ';
@@ -800,7 +799,7 @@ JS;
      *
      * @return void
      */
-    public static function  update($stock_id, $description, $long_description, $category_id, $tax_type_id, $units = '', $mb_flag = '', $sales_account, $inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id, $no_sale) {
+    public static function update($stock_id, $description, $long_description, $category_id, $tax_type_id, $units = '', $mb_flag = '', $sales_account, $inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id, $no_sale) {
       $sql = "UPDATE stock_master SET long_description=" . DB::escape($long_description) . ",
                  description=" . DB::escape($description) . ",
                  category_id=" . DB::escape($category_id) . ",
@@ -844,7 +843,7 @@ JS;
      *
      * @return void
      */
-    public static function  add($stock_id, $description, $long_description, $category_id, $tax_type_id, $units, $mb_flag, $sales_account, $inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id, $no_sale) {
+    public static function add($stock_id, $description, $long_description, $category_id, $tax_type_id, $units, $mb_flag, $sales_account, $inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id, $no_sale) {
       $sql
         = "INSERT INTO stock_master (stock_id, description, long_description, category_id,
                  tax_type_id, units, mb_flag, sales_account, inventory_account, cogs_account,
@@ -909,7 +908,7 @@ JS;
      *
      * @return int|string
      */
-    public static function  qty_format($number, $stock_id = null, &$dec) {
+    public static function qty_format($number, $stock_id = null, &$dec) {
       $dec = Item::qty_dec($stock_id);
 
       return Num::format($number, $dec);
@@ -921,7 +920,7 @@ JS;
      *
      * @return mixed
      */
-    public static function  qty_dec($stock_id = null) {
+    public static function qty_dec($stock_id = null) {
       if (is_null($stock_id)) {
         $dec = User::qty_dec();
       } else {
