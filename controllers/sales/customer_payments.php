@@ -40,7 +40,7 @@
       }
       if (!isset($_POST['bank_account'])) // first page call
       {
-        $_SESSION['alloc'] = new Gl_Allocation(ST_CUSTPAYMENT, 0);
+        $_SESSION['alloc'] = new GL_Allocation(ST_CUSTPAYMENT, 0);
       }
       if (!Forms::isListUpdated('bank_account')) {
         $_POST['bank_account'] = Bank_Account::get_customer_default($this->debtor_id);
@@ -56,7 +56,7 @@
         $rate = Validation::input_num('_ex_rate');
       }
       if (Forms::hasPost('createinvoice')) {
-        Gl_Allocation::create_miscorder(new Debtor($this->debtor_id), $_POST['branch_id'], $this->date_banked, $_POST['memo_'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'));
+        GL_Allocation::create_miscorder(new Debtor($this->debtor_id), $_POST['branch_id'], $this->date_banked, $_POST['memo_'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'));
       }
       $payment_no                  = Debtor_Payment::add(0, $this->debtor_id, $_POST['branch_id'], $_POST['bank_account'], $this->date_banked, $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate, Validation::input_num('charge'));
       $_SESSION['alloc']->trans_no = $payment_no;
@@ -97,7 +97,7 @@
       Display::div_start('alloc_tbl');
       if ($cust_currency == $bank_currency) {
         $_SESSION['alloc']->read();
-        Gl_Allocation::show_allocatable(false);
+        GL_Allocation::show_allocatable(false);
       }
       Display::div_end();
       Table::start('tablestyle width70');

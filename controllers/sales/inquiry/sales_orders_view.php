@@ -334,7 +334,7 @@
                          ));
     }
   }
-  $table = db_pager::new_db_pager('orders_tbl', $sql, $cols, null, null, 0, 4);
+  $table = DB_Pager::new_DB_Pager('orders_tbl', $sql, $cols, null, null, 0, 4);
   $table->setMarker(function ($row) {
     global $trans_type;
     if ($trans_type == ST_SALESQUOTE) {

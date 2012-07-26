@@ -40,7 +40,9 @@
 	if (version_compare(PHP_VERSION, '5.0.0', '<')) {
 		exit("Sorry, this version of PHPMailer will only run on PHP version 5 or greater!\n");
 	}
-	class PHPMailer
+  /**
+
+   */class PHPMailer
 	{
 		/////////////////////////////////////////////////
 		// PROPERTIES, PUBLIC

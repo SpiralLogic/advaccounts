@@ -230,7 +230,7 @@
       'insert' => true, 'fun' => 'view_gl_link'
     )
   );
-  $table = db_pager::new_db_pager('orders_tbl', $sql, $cols);
+  $table = DB_Pager::new_DB_Pager('orders_tbl', $sql, $cols);
   $table->setMarker('checkOverdue', _("Marked orders are overdue."));
   $table->width = "90%";
   $table->display($table);

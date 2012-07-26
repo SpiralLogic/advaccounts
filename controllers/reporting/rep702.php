@@ -28,7 +28,7 @@
       $report_type = '\\ADV\\App\\Reports\\Excel';
 			} else {
 
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
 			}
 			$dec = User::price_dec();
 			$cols = array(0, 100, 240, 300, 400, 460, 520, 580);
@@ -39,7 +39,7 @@
 				0 => $comments, 1 => array(
 					'text' => _('Period'), 'from' => $from, 'to' => $to), 2 => array(
 					'text' => _('Type'), 'from' => $systype == -1 ? _('All') : $systypes_array[$systype], 'to' => ''));
-			/** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+			/** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep = new $report_type(_('List of Journal Entries'), "JournalEntries", SA_GLANALYTIC,User::page_size());
 			$rep->Font();
 			$rep->Info($params, $cols, $headers, $aligns);

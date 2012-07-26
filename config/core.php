@@ -36,7 +36,8 @@
       'UploadHandler', //
       'View', //
       'XMLParser', //
-    ), 'ADV\\Core\\DB'    => array(
+    ), //
+    'ADV\\Core\\DB'    => array(
       'DB', //
       'DBException', //
       'DBDuplicateException', //
@@ -48,5 +49,30 @@
       'Loadable', //
     ), 'ADV\\App'         => array(
       'Page', //
-    ), 'ADV\\Core\\Input'  => ['Input'],
+    ), //
+    'ADV\\App\\Debtor'         => array(
+      'Debtor', //
+    ), //
+    'ADV\\App\\Bank'         => array(
+      'Bank', //
+    ), //
+    'ADV\\App\\Contact'         => array(
+      'Contact', //
+    ), //
+    'ADV\\App\\Creditor'         => array(
+      'Creditor', //
+    ), // //
+    'ADV\\App\\Item'         => array(
+      'Item', //
+    ), //// //
+    'ADV\\App\\Tax'         => array(
+      'Tax', //
+    ), // //
+    'ADV\\App\\UI'         => array(
+      'UI', //
+    ), //// //
+    'ADV\\App\\WO'         => array(
+      'WO', //
+    ), //
+    'ADV\\Core\\Input'  => ['Input'],
   );

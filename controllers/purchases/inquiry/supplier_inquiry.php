@@ -130,7 +130,7 @@
     $cols[_("Currency")] = 'skip';
   }
   /*show a table of the transactions returned by the sql */
-  $table = db_pager::new_db_pager('trans_tbl', $sql, $cols);
+  $table = DB_Pager::new_DB_Pager('trans_tbl', $sql, $cols);
   $table->setMarker('checkOverdue', _("Marked items are overdue."));
   $table->width = "90";
   $table->display($table);

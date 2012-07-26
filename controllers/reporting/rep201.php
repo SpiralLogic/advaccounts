@@ -97,7 +97,7 @@
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
 
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     if ($fromsupp == ALL_NUMERIC) {
       $supp = _('All');
@@ -136,7 +136,7 @@
       3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
       4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => '')
     );
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep     = new $report_type(_('Supplier Balances'), "SupplierBalances",SA_SUPPLIERANALYTIC, User::page_size());
     $rep->Font();
     $rep->fontSize -= 2;

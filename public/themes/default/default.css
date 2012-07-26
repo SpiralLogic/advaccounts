@@ -739,6 +739,13 @@ div.formbox {
   width: 95%;
 }
 
+.combo_select {
+  border: 0; background: url(themes/default/images/button_ok.png) no-repeat;
+}
+
+.combo_submit {
+  border: 0; background: url(themes/default/images/locate.png) no-repeat; }
+
 .formbox label {
   display:       block;
   margin-bottom: 10px;

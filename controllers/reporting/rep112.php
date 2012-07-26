@@ -54,7 +54,7 @@
 
   function print_receipts() {
     global $systypes_array;
-    $report_type = '\\ADV\\App\\Reports\\Pdf';
+    $report_type = '\\ADV\\App\\Reports\\PDF';
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
     $currency    = $_POST['PARAM_2'];
@@ -73,7 +73,7 @@
     $aligns = array('left', 'left', 'left', 'left', 'right', 'right', 'right');
     $params = array('comments' => $comments);
     $cur    = DB_Company::get_pref('curr_default');
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep           = new $report_type(_('RECEIPT'), "ReceiptBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP,User::page_size());
     $rep->currency = $cur;
     $rep->Font();

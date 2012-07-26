@@ -41,7 +41,7 @@
     }
     if ($ret) { // re-read the prefs
       $user            = Users::get_by_login(User::i()->username);
-      User::i()->prefs = new userPrefs($user);
+      User::i()->prefs = new UserPrefs($user);
       Event::success(_('All companies data has been successfully updated'));
     }
     Ajax::activate('_page_body');

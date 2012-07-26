@@ -65,7 +65,7 @@
   Debtor::newselect();
   if (!isset($_POST['bank_account'])) // first page call
   {
-    $_SESSION['alloc'] = new Gl_Allocation(ST_CUSTREFUND, 0);
+    $_SESSION['alloc'] = new GL_Allocation(ST_CUSTREFUND, 0);
   }
   if (isset($customer) && count($customer->branches) == 0) {
     Validation::check(Validation::BRANCHES, _("No Branches for Customer") . $_POST["debtor_id"], $_POST['debtor_id']);
@@ -92,7 +92,7 @@
   Table::endOuter(1);
   if ($cust_currency == $bank_currency) {
     Display::div_start('alloc_tbl');
-    Gl_Allocation::show_allocatable(true);
+    GL_Allocation::show_allocatable(true);
     Display::div_end();
   }
   Table::start('tablestyle width60');

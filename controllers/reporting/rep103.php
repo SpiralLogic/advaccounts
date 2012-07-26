@@ -89,7 +89,7 @@
     if ($destination) {
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     $dec = 0;
     if ($area == ALL_NUMERIC) {
@@ -132,7 +132,7 @@
       3 => array('text' => _('Sales Folk'), 'from' => $salesfolk, 'to' => ''),
       4 => array('text' => _('Activity'), 'from' => $morestr, 'to' => $lessstr)
     );
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep     = new $report_type(_('Customer Details Listing'), "CustomerDetailsListing", SA_CUSTBULKREP,User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

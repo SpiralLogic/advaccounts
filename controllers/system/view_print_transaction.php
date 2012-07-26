@@ -131,7 +131,7 @@
       if (!$trans_ref) {
         Arr::remove($cols, 1);
       }
-      $table        =db_pager::new_db_pager('transactions', $sql, $cols);
+      $table        =DB_Pager::new_DB_Pager('transactions', $sql, $cols);
       $table->width = "40%";
       $table->display($table);
     }

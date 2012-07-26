@@ -31,7 +31,7 @@
 
       if (!isset($_POST['bank_account'])) // first page call
       {
-        $_SESSION['alloc'] = new Gl_Allocation(ST_SUPPAYMENT, 0);
+        $_SESSION['alloc'] = new GL_Allocation(ST_SUPPAYMENT, 0);
       }
       if (Input::post('_control') == 'creditor' || Forms::isListUpdated('bank_account')) {
         $_SESSION['alloc']->read();
@@ -64,7 +64,7 @@
       if ($this->bank_currency == $this->supplier_currency) {
         $_SESSION['alloc']->read();
 
-        Gl_Allocation::show_allocatable(false);
+        GL_Allocation::show_allocatable(false);
       }
       Display::div_end();
       Table::start('tablestyle width60');

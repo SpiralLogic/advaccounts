@@ -77,14 +77,14 @@
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
 
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     $dec     = 0;
     $cols    = array(0, 50, 300, 425, 500);
     $headers = array(_('Account'), _('Account Name'), _('Account Code'), _('Balance'));
     $aligns  = array('left', 'left', 'left', 'right');
     $params  = array(0 => $comments);
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep     = new $report_type(_('Chart of Accounts'), "ChartOfAccounts",SA_GLREP, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

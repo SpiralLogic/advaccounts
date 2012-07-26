@@ -132,7 +132,7 @@
       'insert' => true, 'fun' => 'depositCheckbox'
     )
   );
-  $table        = db_pager::new_db_pager('trans_tbl', $sql, $cols);
+  $table        = DB_Pager::new_DB_Pager('trans_tbl', $sql, $cols);
   $table->width = "80%";
   $table->display($table);
   Display::br(1);

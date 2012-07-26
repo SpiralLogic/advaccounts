@@ -90,7 +90,7 @@
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
 
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     if ($category == ALL_NUMERIC) {
       $category = 0;
@@ -127,7 +127,7 @@
         'text' => _('Location'), 'from' => $loc, 'to'   => ''
       )
     );
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep     = new $report_type(_('Inventory Planning Report'), "InventoryPlanning", SA_ITEMSANALYTIC,User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

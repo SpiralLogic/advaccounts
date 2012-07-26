@@ -9,16 +9,16 @@
    **/
   return array(
     'active'  => array(
-      'sales', //
-      'debtors', //
-      'purchases', //
-      'creditors', //
-      'inventory', //
-      'manufacturing', //
-      'dimensions', //
-      'gl', //
-      'advanced', //
-      'system'
+      'Sales', //
+      'Debtors', //
+      'Purchases', //
+      'Creditors', //
+      'Inventory', //
+      'Manufacturing', //
+      'Dimensions', //
+      'GL', //
+      'Advanced', //
+      'System'
     ), //
-    'default' => 'sales'
+    'default' => 'Sales'
   );

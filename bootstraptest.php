@@ -11,15 +11,15 @@
   define('E_SUCCESS', E_ALL << 1);
   define('DS', DIRECTORY_SEPARATOR);
   define('DOCROOT', __DIR__ . DS);
-  define('APPPATH', DOCROOT . 'classes' . DS . 'app' . DS);
-  define('COREPATH', DOCROOT . 'classes' . DS . 'core' . DS);
-  define('VENDORPATH', DOCROOT . 'classes' . DS . 'vendor' . DS);
+  define('APPPATH', DOCROOT . 'classes' . DS . 'App' . DS);
+  define('COREPATH', DOCROOT . 'classes' . DS . 'Core' . DS);
+  define('VENDORPATH', DOCROOT . 'classes' . DS . 'Vendor' . DS);
   define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
   define('IS_JSON_REQUEST', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false));
   define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
   define('CRLF', chr(13) . chr(10));
 
-  require COREPATH . 'loader.php';
+  require COREPATH . 'Loader.php';
   if (!function_exists('e')) {
     /**
      * @param $string
@@ -30,7 +30,7 @@
   }
   register_shutdown_function(function ()
   {
-    class_exists('Event', false) or  include(COREPATH . 'event.php');
+    class_exists('Event', false) or  include(COREPATH . 'Event.php');
     Event::shutdown();
   });
   if (!function_exists('adv_ob_flush_handler')) {

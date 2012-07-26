@@ -68,7 +68,7 @@
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
 
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     $detail = !$detail;
     $dec    = User::price_dec();
@@ -98,7 +98,7 @@
         'text' => _('Location'), 'from' => $loc, 'to'   => ''
       )
     );
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep     = new $report_type(_('Inventory Valuation Report'), "InventoryValReport",SA_ITEMSVALREP, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

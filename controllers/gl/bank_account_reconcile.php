@@ -158,7 +158,7 @@
         'Amount'            => ['align'=> 'right', 'class'=> 'bold'], //
         'Info'
       ];
-      $table           = DB_Pager::new_db_pager('bank_rec', $known_trans, $cols);
+      $table           = DB_Pager::new_DB_Pager('bank_rec', $known_trans, $cols);
       $table->rowClass = function($row) {
         if (($row['trans_date'] && $row['reconciled'] && !$row['state_date']) || ($row['state_date'] && !$row['reconciled'])) {
           return "overduebg";
@@ -442,7 +442,7 @@
         "X"              => array('insert' => true, 'fun' => array($this, 'reconcileCheckbox')), //
         array('insert' => true, 'fun' => array($this, 'ungroupButton'))
       );
-      $table        = db_pager::new_db_pager('trans_tbl', $sql, $cols);
+      $table        = DB_Pager::new_DB_Pager('trans_tbl', $sql, $cols);
       $table->width = "80";
       $table->display($table);
       return true;

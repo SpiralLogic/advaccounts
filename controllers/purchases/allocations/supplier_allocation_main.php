@@ -104,7 +104,7 @@
     $cols[_("Supplier")] = 'skip';
     $cols[_("Currency")] = 'skip';
   }
-  $table = db_pager::new_db_pager('alloc_tbl', $sql, $cols);
+  $table = DB_Pager::new_DB_Pager('alloc_tbl', $sql, $cols);
   $table->setMarker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
   $table->width = "80%";
   $table->display($table);

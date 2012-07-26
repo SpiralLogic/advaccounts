@@ -28,7 +28,7 @@
   }
   if (isset($_GET['trans_no']) && isset($_GET['trans_type'])) {
     Sales_Allocation::clear_allocations();
-    $_SESSION['alloc'] = new Gl_Allocation($_GET['trans_type'], $_GET['trans_no']);
+    $_SESSION['alloc'] = new GL_Allocation($_GET['trans_type'], $_GET['trans_no']);
   }
   if (Input::post('UpdateDisplay')) {
     $_SESSION['alloc']->read();

@@ -13,7 +13,7 @@
   print_sales_quotations();
   function print_sales_quotations() {
     global $print_as_quote;
-    $report_type = '\\ADV\\App\\Reports\\Pdf';
+    $report_type = '\\ADV\\App\\Reports\\PDF';
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
     $currency    = $_POST['PARAM_2'];
@@ -32,7 +32,7 @@
     $params = array('comments' => $comments);
     $cur    = DB_Company::get_pref('curr_default');
     if ($email == 0) {
-      /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+      /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
       $rep           = new $report_type(_("PROFORMA INVOICE"), "SalesQuotationBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size());
       $rep->currency = $cur;
       $rep->Font();
@@ -44,7 +44,7 @@
       $params['bankaccount'] = $baccount['id'];
       $branch                = Sales_Branch::get($myrow["branch_id"]);
       if ($email == 1) {
-        /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
         $rep           = new $report_type("PROFORMA INVOICE", "", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size());
         $rep->currency = $cur;
         $rep->Font();

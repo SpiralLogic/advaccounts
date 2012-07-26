@@ -52,7 +52,7 @@
     if ($destination) {
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     if ($fromsupp == ALL_NUMERIC) {
       $from = _('All');
@@ -68,7 +68,7 @@
     $params  = array(
       0 => $comments, 1 => array('text' => _('Supplier'), 'from' => $from, 'to' => '')
     );
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep = new $report_type(_('Outstanding GRNs Report'), "OutstandingGRN", SA_SUPPLIERANALYTIC,User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

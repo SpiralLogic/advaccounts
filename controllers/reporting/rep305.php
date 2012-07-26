@@ -49,7 +49,7 @@
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
 
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     $dec     = User::price_dec();
     $cols    = array(0, 75, 225, 275, 345, 390, 445, 515);
@@ -62,7 +62,7 @@
         'text' => _('Period'), 'from' => $from, 'to'   => $to
       )
     );
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep     = new $report_type(_('GRN Valuation Report'), "GRNValuationReport",SA_SUPPLIERANALYTIC, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

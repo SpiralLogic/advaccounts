@@ -172,7 +172,7 @@
   if (!Input::get('frame')) {
     array_shift($cols);
   }
-  $table = db_pager::new_db_pager('doc_tbl', $sql, $cols);
+  $table = DB_Pager::new_DB_Pager('doc_tbl', $sql, $cols);
   $table->setMarker(function ($row) {
     return ($row['OverDue'] == 1 && Num::priceFormat(abs($row["TotalAmount"]) - $row["Allocated"]) != 0);
   }, _("Marked items are overdue."));
