@@ -17,7 +17,6 @@
   use ADV\Core\Input\Input;
   use ADV\Core\View;
   use ADV\Core\JS;
-  use Security;
   use ADVAccounting;
   use ADV\Core\Ajax;
   use ADV\Core\Config;
@@ -71,7 +70,7 @@
     /** @var Page */
     protected static $i = null;
     /**
-     * @var Security
+     * @var \Security
      */
     protected $JS = null;
     /** @var Dates */

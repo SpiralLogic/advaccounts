@@ -14,6 +14,7 @@
   //	because we have no way to select right bank account if
   //	there is more than one using given gl account.
   //
+  namespace ADV\App\Bank;
   class Bank {
     /**
      * @static

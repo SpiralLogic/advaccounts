@@ -1368,11 +1368,11 @@
      * @param null $post_label
      * @param null $dec
      */
-    public static function  qtyCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
+    public static function  qtyCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null,$inputparams) {
       if (!isset($dec)) {
         $dec = static::$dic['User']->_qty_dec();
       }
-      Forms::amountCellsEx($label, $name, null, 15, $init, $params, $post_label, $dec, null, null, true);
+      Forms::amountCellsEx($label, $name, null, 15, $init, $params, $post_label, $dec, null, $inputparams, true);
     }
   }
 

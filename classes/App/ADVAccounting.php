@@ -31,12 +31,12 @@
     /** */
     public function __construct(\ADV\Core\Loader $loader) {
       set_error_handler(function ($severity, $message, $filepath, $line) {
-        class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'errors.php';
-        return ADV\Core\Errors::handler($severity, $message, $filepath, $line);
+        class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'Errors.php';
+        return \ADV\Core\Errors::handler($severity, $message, $filepath, $line);
       });
       set_exception_handler(function (\Exception $e) {
-        class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'errors.php';
-        ADV\Core\Errors::exceptionHandler($e);
+        class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'Errors.php';
+        \ADV\Core\Errors::exceptionHandler($e);
       });
       register_shutdown_function(function () {
         \ADV\Core\Event::shutdown();
@@ -75,7 +75,7 @@
       if (!strstr($_SERVER['DOCUMENT_URI'], 'logout.php')) {
         $this->checkLogin();
       }
-      Event::init();
+      \Event::init();
       $this->get_selected();
       $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
       $index      = $controller == $_SERVER['SCRIPT_NAME'];
@@ -90,7 +90,7 @@
         } else {
           $show404 = true;
           header('HTTP/1.0 404 Not Found');
-          Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
+          \Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
         }
       }
       if ($index || $show404) {
@@ -299,7 +299,7 @@
     protected function loadModules() {
       $modules = $this->Config->_getAll('modules', array());
       foreach ($modules as $module => $module_config) {
-        $module = '\\Modules\\' . $module;
+        $module = '\\Modules\\' . $module . '\\' . $module;
         new $module($module_config);
       }
     }

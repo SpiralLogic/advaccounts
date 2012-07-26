@@ -183,7 +183,7 @@
       } else {
         $dir = APPPATH ;
       }
-      $paths = [$dir.$class_file.'.php'];
+      $paths = [$dir.$class_file.'.php',$dir.$class_file.DS.$class_file.'.php'];
       $result     = $this->trypath($paths, $requested_class);
       if ($result && $alias) {
         $fullclass                = $this->global_classes[$classname] . '\\' . $classname;

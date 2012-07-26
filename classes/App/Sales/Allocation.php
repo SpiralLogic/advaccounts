@@ -223,7 +223,7 @@
       }
       Display::div_start('alloc_tbl');
       if (count($_SESSION['alloc']->allocs) > 0) {
-        Gl_Allocation::show_allocatable(true);
+        GL_Allocation::show_allocatable(true);
         Forms::submitCenterBegin('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), true);
         Forms::submit('Process', _("Process"), true, _('Process allocations'), 'default');
         Forms::submitCenterEnd('Cancel', _("Back to Allocations"), _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');

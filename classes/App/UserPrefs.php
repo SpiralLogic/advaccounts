@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class userPrefs
+  class UserPrefs
   {
     use \ADV\Core\Traits\SetFromArray;
 

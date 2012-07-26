@@ -7,6 +7,28 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\App\Creditor;
+  use Cell;
+  use ADV\App\UI\UI;
+  use ADV\Core\DB\DB;
+  use Row;
+  use Table;
+  use Display;
+  use ADV\Core\Session;
+  use ADV\Core\Input\Input;
+  use ADV\Core\Dates;
+  use ADV\Core\Dialog;
+  use DB_Company;
+  use ADV\Core\Num;
+  use Bank_Currency;
+  use ADV\Core\JS;
+  use Validation;
+  use ADV\App\Contact\Contact;
+  use User;
+  use Forms;
+  /**
+
+   */
   class Creditor extends \Contact_Company
   {
     /**
@@ -212,7 +234,7 @@
       // TODO: Implement _countTransactions() method.
     }
     /**
-     * @return bool|Status
+     * @return bool|\Status
      */
     protected function _defaults() {
       $this->credit_limit             = Num::priceFormat(0);
@@ -226,7 +248,7 @@
       $this->_setDefaults();
     }
     /**
-     * @return bool|Status
+     * @return bool|\Status
      */
     protected function _new() {
       $this->_defaults();

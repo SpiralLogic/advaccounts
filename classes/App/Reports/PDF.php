@@ -18,9 +18,9 @@
   use ADV\Core\Ajax;
   use Printer;
   use ADV\Core\Event;
-  use Debtor;
+  use ADV\App\Debtor\Debtor;
 
-  class Pdf extends \Cpdf
+  class PDF extends \Cpdf
   {
     /**
      * @var array

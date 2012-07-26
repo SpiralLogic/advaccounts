@@ -66,7 +66,7 @@
      */
     public $ui_mode = 0;
     /***
-     * @var \userPrefs
+     * @var \UserPrefs
      */
     public $prefs;
     /**
@@ -120,7 +120,7 @@
       $this->Config  = $config ? : Config::i();
       $this->company = $this->Config->_get('default.company') ? : 'default';
       $this->logged  = false;
-      $this->prefs   = new userPrefs((array) $this);
+      $this->prefs   = new UserPrefs((array) $this);
     }
     public function __sleep() {
       $this->Session = null;
@@ -162,6 +162,7 @@
      * @return bool
      */
     public function login($company, $loginname) {
+      $this->Session =  $this->Session ? : Session::i();
       $this->company = $company;
       $this->logged  = false;
       $myrow         = Users::get_for_login($loginname, $_POST['password']);
@@ -190,7 +191,7 @@
         $this->name            = $myrow['real_name'];
         $this->pos             = $myrow['pos'];
         $this->username        = $this->loginname = $loginname;
-        $this->prefs           = new userPrefs($myrow);
+        $this->prefs           = new UserPrefs($myrow);
         $this->user            = $myrow['id'];
         $this->last_act        = time();
         $this->timeout         = DB_Company::get_pref('login_tout');
@@ -310,11 +311,11 @@
       if (!$this->Config->_get('demo_mode')) {
         Users::update_display_prefs($this->user, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $show_gl, $show_codes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $page_size, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $language, $stickydate, $startup_tab);
       }
-      $this->prefs = new userPrefs(Users::get($this->user));
+      $this->prefs = new UserPrefs(Users::get($this->user));
     }
     /**
      * @static
-     * @return userPrefs
+     * @return UserPrefs
      */
     public function _prefs() {
       return $this->prefs;

@@ -14,7 +14,7 @@
   /**
 
    */
-  class Gl_Allocation
+  class GL_Allocation
   {
     /**
      * @var

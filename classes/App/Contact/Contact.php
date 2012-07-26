@@ -7,6 +7,12 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\App\Contact;
+  use DB_Base;
+
+  /**
+
+   */
   class Contact extends DB_Base
   {
     /**
@@ -93,7 +99,7 @@
       $this->id = (int) $this->id;
     }
     /**
-     * @return bool|Status
+     * @return bool|\Status
      */
     protected function _new()
     {

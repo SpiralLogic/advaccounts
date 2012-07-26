@@ -163,7 +163,7 @@
       }
       $_SESSION['alloc']->amount = -Validation::input_num('amount');
       if (isset($_POST["TotalNumberOfAllocs"])) {
-        return Gl_Allocation::check();
+        return GL_Allocation::check();
       } else {
         return true;
       }

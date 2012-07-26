@@ -9,7 +9,7 @@
    **/
   namespace ADV\App\Apps;
   use DB_Company;
-  use ADV\App\Application;
+  use ADV\App\Application\Application;
 
   /**
 

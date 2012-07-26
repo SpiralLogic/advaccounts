@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Apps;
-  use ADV\App\Application;
+  use ADV\App\Application\Application;
 
   /**
 

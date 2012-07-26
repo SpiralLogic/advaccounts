@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace Modules;
+  namespace Modules\Jobsboard;
   use \ADV\Core\Module;
   use \ADV\Core\Config;
   use \ADV\Core\DB;

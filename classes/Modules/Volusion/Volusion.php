@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace Modules;
+  namespace Modules\Volusion;
   use \ADV\Core\Module;
   use \Modules\Volusion\Orders as Orders;
   use \ADV\Core\DB\DB;

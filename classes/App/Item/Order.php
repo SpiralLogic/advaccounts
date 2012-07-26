@@ -168,7 +168,7 @@
     public function add_gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description = null)
     {
       if (isset($code_id) && $code_id != "" && isset($amount) && isset($dimension_id) && isset($dimension2_id)) {
-        $this->gl_items[] = new Item_Gl($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description);
+        $this->gl_items[] = new Item_GL($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description);
 
         return true;
       } else {

@@ -7,6 +7,30 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\App\Debtor;
+  use Debtor_Branch;
+  use ADV\App\UI\UI;
+  use Cell;
+  use Row;
+  use Table;
+  use Display;
+  use ADV\Core\Session;
+  use ADV\Core\Input\Input;
+  use ADV\Core\Dates;
+  use ADV\Core\Dialog;
+  use DB_Company;
+  use ADV\Core\Num;
+  use Bank_Currency;
+  use ADV\Core\JS;
+  use Validation;
+  use ADV\App\Contact\Contact;
+  use Debtor_Account;
+  use User;
+  use Forms;
+
+  /**
+
+   */
   class Debtor extends \Contact_Company
   {
     /**
@@ -42,15 +66,15 @@
      */
     public $defaultContact = 0;
     /**
-     * @var Debtor_Branch[]
+     * @var \Debtor_Branch[]
      */
     public $branches = array();
     /**
-     * @var Contact[]
+     * @var \ADV\App\Contact\Contact[]
      */
     public $contacts = array();
     /**
-     * @var Debtor_Account
+     * @var \Debtor_Account
      */
     public $accounts;
     /**
@@ -100,11 +124,11 @@
      */
     public function getStatus($string = false) {
       foreach ($this->branches as $branch) {
-        /** @var Debtor_Branch $branch */
+        /** @var \Debtor_Branch $branch */
         $this->_status->append($branch->getStatus());
       }
       foreach ($this->contacts as $contact) {
-        /** @var Contact $contact */
+        /** @var \ADV\App\Contact\Contact $contact */
         $this->_status->append($contact->getStatus());
       }
       $this->_status->append($this->accounts->getStatus());

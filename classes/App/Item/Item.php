@@ -7,6 +7,27 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\App\Item;
+  use DB_Base;
+  use Forms;
+  use Item_Unit;
+  use ADV\Core\Num;
+  use UI;
+  use ADV\Core\JS;
+  use Dialog;
+  use ADV\Core\Input\Input;
+  use DB_AuditTrail;
+  use GL_Trans;
+  use SysTypes;
+  use User;
+  use ADV\Core\Dates;
+  use Item_Code;
+  use DB_Company;
+  use ADV\Core\DB\DB;
+
+  /**
+
+   */
   class Item extends DB_Base
   {
     /**
@@ -325,7 +346,7 @@
     }
     /**
      * @static
-     * @return null|PDOStatement
+     * @return null|\PDOStatement
      */
     public static function getAll() {
       $sql = "SELECT * FROM stock_master";
@@ -342,7 +363,8 @@
      */
     public static function get_qoh_on_date($stock_id, $location = null, $date_ = null, $exclude = 0) {
       if ($date_ == null) {
-        $date_ = Dates::today();
+        $date_ =
+          Dates::today();
       }
       $date = Dates::dateToSql($date_);
       $sql

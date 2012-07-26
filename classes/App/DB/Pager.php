@@ -1,4 +1,4 @@
-<?php
+  <?php
   /**
    * PHP version 5.4
    * @category  PHP
@@ -149,7 +149,7 @@
      * @var
      * table and key field name for inactive ctrl and edit/delete links
      * key field name
-     * db_pager constructor
+     * DB_Pager constructor
      * accepts $sql like 'SELECT ...[FROM ...][WHERE ...][GROUP ...][ORDER ...]'
      * $name is base name for pager controls
      */
@@ -520,7 +520,7 @@
     /**
      * @param $name - base name for pager controls and $_SESSION object name
      * -----------------------------F------------------------------------------------
-     *              Creates new db_pager $_SESSION object on first page call.
+     *              Creates new DB_Pager $_SESSION object on first page call.
      *              Retrieves from $_SESSION var on subsequent $_POST calls
      * $sql  - base sql for data inquiry. Order of fields implies
      *              pager columns order.
@@ -537,7 +537,7 @@
      *              Column with name 'Another', formatted as date,
      *              sortable with ascending start order (available orders: asc,desc, '').
      * 'Another' => array('type'=>'date', 'ord'=>'asc')
-     *              All available column format types you will find in db_pager_view.php file.
+     *              All available column format types you will find in DB_Pager_view.php file.
      *              If query result has more fields than count($coldef), rest of data is ignored
      *              during display, but can be used in format handlers for 'spec' and 'insert'
      *              type columns.
@@ -878,7 +878,7 @@
      *
      * @return DB_Pager
      */
-    static function new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_len = 0, $sort = null) {
+    static function new_DB_Pager($name, $sql, $coldef, $table = null, $key = null, $page_len = 0, $sort = null) {
       if (!isset($_SESSION['pager'])) {
         $_SESSION['pager'] = array();
       }

@@ -10,7 +10,7 @@
   /**
 
    */
-  namespace ADV\App;
+  namespace ADV\App\Application;
   /**
 
    */
@@ -59,7 +59,7 @@
      * @return Application\Module
      */
     public function add_module($name, $icon = null) {
-      $module = new Application\Module($name, $icon);
+      $module = new Module($name, $icon);
       //array_push($this->modules,$module);
       $this->modules[] = $module;
       return $module;
@@ -71,7 +71,7 @@
      * @param string $access
      */
     public function addLeftFunction($level, $label, $link = "", $access = SA_OPEN) {
-      $this->modules[$level]->leftAppFunctions[] = new Application\Func($label, $link, $access);
+      $this->modules[$level]->leftAppFunctions[] = new Func($label, $link, $access);
     }
     /**
      * @param        $level
@@ -80,7 +80,7 @@
      * @param string $access
      */
     public function addRightFunction($level, $label, $link = "", $access = SA_OPEN) {
-      $this->modules[$level]->rightAppFunctions[] = new Application\Func($label, $link, $access);
+      $this->modules[$level]->rightAppFunctions[] = new Func($label, $link, $access);
     }
     protected function addExtensions() {
       foreach ($this->extensions as $mod) {

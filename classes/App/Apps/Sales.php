@@ -13,7 +13,7 @@
 
    */
   use Orders;
-  use ADV\App\Application;
+  use ADV\App\Application\Application;
 
   class Sales extends Application
   {
