@@ -227,7 +227,7 @@
             }
           }
           // show selected option even if inactive
-          if (( !$this->show_inactive) && isset($row['inactive']) && @$row['inactive'] && $sel === '') {
+          if ((!$this->show_inactive) && isset($row['inactive']) && @$row['inactive'] && $sel === '') {
             continue;
           } else {
             $optclass = (isset($row['inactive']) && $row['inactive']) ? "class='inactive'" : '';
@@ -292,23 +292,24 @@
       $selector = "<div id='_{$this->name}_sel' class='combodiv'>" . $selector . "</div>\n";
       // if selectable or editable list is used - add select button
       if ($select_submit != false || $search_button) {
-        $selector .= "<input $disabled type='submit' class='combo_select' style='".(User::fallback() ? '' :
-                  'display:none;')."data-aspect='fallback' name='_" . $this->name . "_update' value=' ' title='Select'> "; // button class                  selects form reload/ajax selector update
+        $selector .= "<input $disabled type='submit' class='combo_select' style='" . (User::fallback() ? '' :
+          'display:none;') . "' data-aspect='fallback' name='_" . $this->name . "_update' value=' ' title='Select'> ";
+        //button class selects form reload/ajax selector update
       }
       // ------ make combo ----------
       $edit_entry = '';
-      if ($search_box ) {
+      if ($search_box) {
         $edit_entry = "<input $disabled type='text' name='$search_box' id='$search_box' size='" . $this->size . "' maxlength='" . $this->max . "' value='$txt' class='$class' rel='$this->name' autocomplete='off' title='" . $this->box_hint . "'" . (!User::fallback() && !$by_id ?
           " style=display:none;" : '') . ">\n";
         if ($search_submit != false || $this->editable) {
-          $edit_entry .= "<input $disabled type='submit' class='combo_submit' style='".(User::fallback() ? '' :
-                      'display:none;')."' data-aspect='fallback' name='".($search_submit ? $search_submit : "_{$this->name}_button")."'
+          $edit_entry .= "<input $disabled type='submit' class='combo_submit' style='" . (User::fallback() ? '' :
+            'display:none;') . "' data-aspect='fallback' name='" . ($search_submit ? $search_submit : "_{$this->name}_button") . "'
           value=' ' title='" . _("Set filter") . "'> ";
         }
       }
       JS::defaultFocus(($search_box && $by_id) ? $search_box : $this->name);
       if ($search_box && $this->cells) {
-        $str = ($edit_entry? "<td>$edit_entry</td>" : '') . "<td>$selector</td>";
+        $str = ($edit_entry ? "<td>$edit_entry</td>" : '') . "<td>$selector</td>";
       } else {
         $str = $edit_entry . $selector;
       }

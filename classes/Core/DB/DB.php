@@ -87,7 +87,7 @@
      */
     public function __construct($name = 'default', \Config $config = null, $cache = null) {
       $this->config   = $config ? : \Config::i();
-      $this->useCache = class_exists('Cache');
+      $this->useCache = class_exists('ADV\\Core\\Cache',false);
       if (!$this->config) {
         throw new DBException('No database configuration provided');
       }

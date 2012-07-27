@@ -52,9 +52,9 @@
   }
   if (extension_loaded('newrelic')) {
     newrelic_set_appname ('ADVACCOUNTS');
+    newrelic_disable_autorum();
 
     if (AJAX_REFERRER) {
-      newrelic_disable_autorum();
     }
     newrelic_name_transaction($_SERVER['QUERY_STRING']);
   }

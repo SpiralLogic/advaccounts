@@ -7,6 +7,10 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\App\UI;
+  use ADV\Core\HTML;
+  use ADV\Core\JS;
+
   class UI extends HTML {
     /**
      * @static
@@ -15,7 +19,7 @@
      * @param bool  $content
      * @param array $attr
      *
-     * @return ADV\Core\HTML|null
+     * @return \ADV\Core\HTML|null
      */
     public static function button($id = false, $content = false, $attr = array()) {
       if ($id) {
@@ -37,7 +41,7 @@
      * @param array $options
      * @param array $params
      *
-     * @return ADV\Core\HTML|null
+     * @return \ADV\Core\HTML|null
      */
     public static function select($id = false, $options = array(), $params = array()) {
       HTML::setReturn(true)->select($id, $params);

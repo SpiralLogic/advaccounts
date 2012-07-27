@@ -15,6 +15,24 @@
   //	there is more than one using given gl account.
   //
   namespace ADV\App\Bank;
+  use Debtor_Trans;
+  use ADV\App\Debtor\Debtor;
+  use DB_Comments;
+  use GL_QuickEntry;
+  use ADV\Core\Errors;
+  use Validation;
+  use GL_Trans;
+  use DB_Company;
+  use User;
+  use ADV\Core\Num;
+  use Bank_Currency;
+  use ADV\App\Creditor\Creditor;
+  use Creditor_Trans;
+  use ADV\Core\Dates;
+
+  /**
+
+   */
   class Bank {
     /**
      * @static

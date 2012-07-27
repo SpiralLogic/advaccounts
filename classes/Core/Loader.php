@@ -119,16 +119,20 @@
      * @return bool
      */
     protected function includeFile($filepath, $required_class) {
+      static $loaded=array();
       if (empty($filepath)) {
         throw new Load_Exception('File for class ' . $required_class . ' cannot be found!');
       }
-      if (!include_once($filepath)) {
+      echo '<pre>';
+      if (array_search($required_class,$loaded)!==false){ var_dump(func_get_args()); debug_print_backtrace();
+      }if (!include_once($filepath)) {
         throw new Load_Exception('File for class ' . $required_class . ' cannot be	loaded from : ' . $filepath);
       }
+$loaded[]=$required_class;
       if (!isset($this->loaded[$required_class])) {
         $this->loaded[$required_class] = $filepath;
-        if (is_callable('ADV\\Core\\Event::registerShutdown')) {
-       //   Event::registerShutdown($this);
+        if (is_callable('ADV\\Core\\Event::registerHook')) {
+          \ADV\Core\Event::registerShutdown($this);
         }
       }
 
