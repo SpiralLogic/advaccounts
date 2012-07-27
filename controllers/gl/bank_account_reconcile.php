@@ -12,6 +12,7 @@
    */
   class Reconcile extends \ADV\App\Controller\Base
   {
+
     /** @var Num Num*/
     protected $Num;
     /** @var Dates Dates*/
@@ -24,7 +25,7 @@
     protected function before() {
       $this->Dates             = Dates::i();
       $this->Num               = Num::i();
-      $_POST['bank_account']   = Input::postGlobal('bank_account', INPUT::NUMERIC, 5);
+      $_POST['bank_account']   = Input::postGlobal('bank_account', INPUT::NUMERIC, Bank_Account::get_default(\DB_Company::get_pref('curr_default')) );
       $this->bank_account      = &$_POST['bank_account'];
       $_POST['reconcile_date'] = $this->Input->_post('reconcile_date', null, $this->Dates->_newDocDate());
       $this->reconcile_date    = &$_POST['reconcile_date'];
@@ -39,6 +40,10 @@
       $groupid = Forms::findPostPrefix("_ungroup_");
       if ($groupid > 1) {
         $this->ungroup($groupid);
+      }
+      $undepositid = Forms::findPostPrefix("_undeposit_");
+      if ($undepositid > 1) {
+        $this->undeposit($undepositid);
       }
       if (Forms::isListUpdated('bank_account')) {
         $this->Session->_setGlobal('bank_account', $this->bank_account);
@@ -79,6 +84,12 @@
       $this->DB->_query($sql, "Couldn't update removed group deposit data");
       $this->updateData();
     }
+    protected function undeposit($deposit) {
+      $deposit_id = $_POST['undeposit_' . $deposit];
+      $sql        = "UPDATE bank_trans SET undeposited=1, reconciled=null WHERE id=" . $deposit_id;
+      DB::query($sql, "Can't change undeposited status");
+      $this->updateData();
+    }
     protected function index() {
       Page::start(_($help_context = "Reconcile Bank Account"), SA_RECONCILE);
       Forms::start();
@@ -91,29 +102,37 @@
       Table::end();
       $this->displaySummary();
       echo "<hr>";
-      $this->bank_account == 5 ? $this->newWay() : $this->oldWay();
+      $this->bank_account == 5 ? $this->newWay() : $this->oldWay();  JS::i()->_addLive(<<<JS
+      $('#wrapper').on('click','.voidlink',function() {
+      var voidtrans,type,trans_no,url;
+      type = $(this).data('type');
+      trans_no = $(this).data('trans_no');
+      url ='/system/void_transaction?type='+type+'&trans_no='+trans_no+'&memo=Deleted%20during%20reconcile.';
+      if (!voidtrans) voidtrans = window.open(url,'_blank');
+      else voidtrans.location.href = url;})
+JS
+        );
       Forms::end();
       Page::end();
     }
     /**
      * @return bool
      */
-    protected function  newWay() {
-
+    protected function newWay() {
       $sql
-        = "SELECT bt.type, bt.trans_no, bt.ref,  bt.trans_date,bt.id, IF( bt.trans_no IS null, SUM( g.amount ), bt.amount ) AS amount
-                   , bt.person_id, bt.person_type_id , bt.reconciled FROM bank_trans bt LEFT OUTER JOIN bank_trans g ON g.undeposited = bt.id
-                   WHERE bt.bank_act = " . $this->DB->_quote($this->bank_account) . "
-                   AND bt.trans_date <= '" . ($this->bank_date ? : $this->Dates->_today()) . "'
-                   AND bt.undeposited=0
-                   AND (bt.reconciled IS null";
+        = "SELECT bt.type, bt.trans_no, bt.ref, bt.trans_date,bt.id, IF( bt.trans_no IS null, SUM( g.amount ), bt.amount ) AS amount
+ , bt.person_id, bt.person_type_id , bt.reconciled FROM bank_trans bt LEFT OUTER JOIN bank_trans g ON g.undeposited = bt.id
+ WHERE bt.bank_act = " . $this->DB->_quote($this->bank_account) . "
+ AND bt.trans_date <= '" . ($this->bank_date ? : $this->Dates->_today()) . "'
+ AND bt.undeposited=0
+ AND (bt.reconciled IS null";
       if ($this->bank_date) {
         $sql .= " OR bt.reconciled='" . $this->bank_date . "'";
       }
-      $sql .= ") AND bt.amount!=0 GROUP BY bt.id ORDER BY IF(bt.trans_date>='" . $this->begin_date . "' AND bt.trans_date<='" . $this->end_date . "',1,0) , bt.reconciled DESC    ,bt.trans_date  , amount ";
+      $sql .= ") AND bt.amount!=0 GROUP BY bt.id ORDER BY IF(bt.trans_date>='" . $this->begin_date . "' AND bt.trans_date<='" . $this->end_date . "',1,0) , bt.reconciled DESC ,bt.trans_date , amount ";
       $this->DB->_query($sql);
       $rec = $this->DB->_fetchAll();
-      $sql = "SELECT date as state_date, amount as state_amount,memo FROM temprec WHERE  date >= '" . $this->begin_date . "' AND  date <='" . $this->end_date . "' ORDER BY date  ,amount";
+      $sql = "SELECT date as state_date, amount as state_amount,memo FROM temprec WHERE date >= '" . $this->begin_date . "' AND date <='" . $this->end_date . "' ORDER BY date ,amount";
       $this->DB->_query($sql);
       $statement_trans = $this->DB->_fetchAll();
       if (!$statement_trans) {
@@ -145,17 +164,17 @@
       Arr::append($known_trans, $rec);
       usort($known_trans, [$this, 'sortByOrder']);
       $cols            = [
-        'Type'              => ['fun'=> array($this, 'sysTypeName')], //
-        '#'                 => ['align'=> 'center', 'fun'=> array($this, 'viewTrans')], //
-        'Ref'               => ['fun'=> 'formatReference'], //
-        'Date'              => ['type'=> 'date'], //
-        'Debit'             => ['align'=> 'right', 'fun'=> array($this, 'formatDebit')], //
-        'Credit'            => ['align'=> 'right', 'insert'=> true, 'fun'=> array($this, 'formatCredit')], //
-        'Info'              => ['fun'=> array($this, 'formatInfo')], //
-        'GL'                => ['fun'=> array($this, 'viewGl')], //
+        'Type'      => ['fun'=> array($this, 'sysTypeName')], //
+        '#'         => ['align'=> 'center', 'fun'=> array($this, 'viewTrans')], //
+        'Ref'       => ['fun'=> 'formatReference'], //
+        'Date'      => ['type'=> 'date'], //
+        'Debit'     => ['align'=> 'right', 'fun'=> array($this, 'formatDebit')], //
+        'Credit'    => ['align'=> 'right', 'insert'=> true, 'fun'=> array($this, 'formatCredit')], //
+        'Info'      => ['fun'=> array($this, 'formatInfo')], //
+        'GL'        => ['fun'=> array($this, 'viewGl')], //
         ['fun'=> array($this, 'reconcileCheckbox')], //
-        'Bank Date'         => ['type'=> 'date'], //
-        'Amount'            => ['align'=> 'right', 'class'=> 'bold'], //
+        'Bank Date' => ['type'=> 'date'], //
+        'Amount'    => ['align'=> 'right', 'class'=> 'bold'], //
         'Info'
       ];
       $table           = DB_Pager::new_DB_Pager('bank_rec', $known_trans, $cols);
@@ -205,7 +224,6 @@
      */
     protected function getTotal() {
       if ($this->bank_account == 5) {
-
         $sql                  = "(select (rb - amount) as amount from temprec where date>='" . $this->begin_date . "' and date<='" . $this->end_date . "' order by id desc limit 0,1) union (select rb as amount from temprec where date>='" . $this->begin_date . "' and date<='" . $this->end_date . "' order by id asc limit 0,1)";
         $result               = $this->DB->_query($sql);
         $beg_balance          = $this->DB->_fetch($result)['amount'];
@@ -266,8 +284,15 @@
         return '';
       }
       return "<div class='center'><button value='" . $row['id'] . '\' onclick="JsHttpRequest.request(\'_ungroup_' . $row['id'] . '\',
-      this.form)" name="_ungroup_' . $row['id'] . '" type="submit" title="Ungroup"
-     class="ajaxsubmit">Ungroup</button></div>' . Forms::hidden("ungroup_" . $row['id'], $row['ref'], false);
+ this.form)" name="_ungroup_' . $row['id'] . '" type="submit" title="Ungroup"
+ class="ajaxsubmit">Ungroup</button></div>' . Forms::hidden("ungroup_" . $row['id'], $row['ref'], false);
+    }
+    function undepositButton($row) {
+      if (!$row['reconciled']) {
+        return "<div class='center'><button value='" . $row['id'] . '\' onclick="JsHttpRequest.request(\'_undeposit_' . $row['id'] . '\',
+ this.form)" name="_undeposit_' . $row['id'] . '" type="submit" title="Undeposit"
+ class="ajaxsubmit">Undeposit</button></div>' . Forms::hidden("undeposit_" . $row['id'], $row['id'], false);
+      }
     }
     /**
      * @param $row
@@ -298,8 +323,9 @@
       }
       $content = GL_UI::viewTrans($row["type"], $row["trans_no"]);
       if (!$row['reconciled']) {
-        $content .= '<br><a href="' . e('/system/void_transaction?type=' . $row['type'] . '&trans_no=' . $row['trans_no'] . '&memo=Deleted%20during%20reconcile.') . '" target="_blank"
-                                    class="button">void</a>';
+        $content .= '<br><a class="button voidlink" data-type="' . $row["type"] . '" data-trans_no="' . $row["trans_no"] . '">void</a>';
+
+        $content .= $this->undepositButton($row);
       }
       return $content;
     }
@@ -349,8 +375,8 @@
       } elseif ($row['type'] == ST_GROUPDEPOSIT) {
         $sql
                  = "SELECT bank_trans.ref,bank_trans.person_type_id,bank_trans.trans_no,bank_trans.person_id,bank_trans.amount,
-    			comments.memo_ FROM bank_trans LEFT JOIN comments ON (bank_trans.type=comments.type AND bank_trans.trans_no=comments.id)
-    			WHERE bank_trans.bank_act='" . $this->bank_account . "' AND bank_trans.type != " . ST_GROUPDEPOSIT . " AND bank_trans.undeposited>0 AND (undeposited = " . $row['id'] . ")";
+ 			comments.memo_ FROM bank_trans LEFT JOIN comments ON (bank_trans.type=comments.type AND bank_trans.trans_no=comments.id)
+ 			WHERE bank_trans.bank_act='" . $this->bank_account . "' AND bank_trans.type != " . ST_GROUPDEPOSIT . " AND bank_trans.undeposited>0 AND (undeposited = " . $row['id'] . ")";
         $result  = $this->DB->_query($sql, 'Couldn\'t get deposit references');
         $content = '';
         foreach ($result as $trans) {
@@ -389,9 +415,7 @@
       $this->JS->_setFocus($reconcile_id);
       return true;
     }
-    protected function after() {
-      // TODO: Implement after() method.
-    }
+
     /**
      * @internal param $prefix
      * @return bool|mixed

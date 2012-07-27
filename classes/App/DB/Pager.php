@@ -1,4 +1,4 @@
-  <?php
+<?php
   /**
    * PHP version 5.4
    * @category  PHP
@@ -14,6 +14,7 @@
    */
   class DB_Pager
   {
+
     /** @var User */
     static $User;
     /** @var DB */
@@ -371,10 +372,22 @@
             default:
               //		 case 'text':
               if (isset($col['align'])) {
-                Cell::label($cell, "class='" . $col['align'] . "'");
+                switch ($col['align']) {
+                  case 'right':
+                    $alignclass = 'right';
+                    break;
+                  case 'center':
+                    $alignclass = 'center';
+                    break;
+                  case 'left':
+                  default:
+                    $alignclass = 'left';
+                }
+                Cell::label($cell, " class='" . $alignclass . "'");
               } else {
                 Cell::label($cell);
               }
+              break;
             case 'skip': // column not displayed
           }
         }

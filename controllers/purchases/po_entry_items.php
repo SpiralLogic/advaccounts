@@ -11,6 +11,9 @@
   //
   class PurchaseOrder extends \ADV\App\Controller\Base
   {
+
+    protected $iframe='';
+    /** @var Purch_Order */
     protected $order = null;
     protected function before() {
       JS::openWindow(900, 500);
@@ -97,14 +100,14 @@
       if (isset($_POST[CANCEL])) {
         unset($_POST['stock_id'], $_POST['qty'], $_POST['price'], $_POST['req_del_date']);
       }
-      if (isset($_GET[Orders::MODIFY_ORDER]) && $_GET[Orders::MODIFY_ORDER] != "") {
+      $this->iframe = "<div class='center'><iframe src='" . e('/purchases/inquiry/po_search_completed.php?' . LOC_NOT_FAXED_YET . '=1&frame=1') . "' class='width70' style='height:300px' ></iframe></div>";
+      if (!Input::get(Orders::MODIFY_ORDER)) {
         $this->order = $this->createOrder($_GET[Orders::MODIFY_ORDER]);
       } elseif (isset($_POST[CANCEL]) || isset($_POST[UPDATE_ITEM])) {
         Item_Line::start_focus('_stock_id_edit');
       } elseif (isset($_GET[Orders::NEW_ORDER]) || !isset($this->order)) {
         $this->order = $this->createOrder();
-        if ((!isset($_GET['UseOrder']) || !$_GET['UseOrder']) && count($this->order->line_items) == 0) {
-          echo "<div class='center'><iframe src='" . e('/purchases/inquiry/po_search_completed.php?' . LOC_NOT_FAXED_YET . '=1&frame=1') . "' class='width70' style='height:300px' ></iframe></div>";
+        if (Input::get('UseOrder') && !count($this->order->line_items)) {
         }
       }
     }
@@ -116,8 +119,10 @@
       }
       Forms::start();
       echo "<br>";
-      Forms::hidden('order_id');
+      Forms::hidden('order_id');          echo $this->iframe;
+
       $this->order->header();
+
       $this->order->display_items();
       Table::start('tablestyle2');
       Forms::textareaRow(_("Memo:"), 'Comments', null, 70, 4);

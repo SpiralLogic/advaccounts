@@ -120,9 +120,7 @@
   $cols         = array(
     _("Type")                    => array(
       'fun' => 'sysTypeName', 'ord' => ''
-    ), _("#")                    => array(
-      'fun' => 'viewTrans', 'ord' => ''
-    ), _("Reference"), _("Date") => array('type'=> 'date', 'ord' => 'desc'), _("Debit") => array(
+    ), _("#")                    => array('fun' => 'viewTrans', 'ord' => '', 'align'=> 'center'), _("Reference"), _("Date") => array('type'=> 'date', 'ord' => 'desc'), _("Debit") => array(
       'align' => 'right', 'fun' => 'formatDebit'
     ), _("Credit")               => array(
       'align' => 'right', 'insert' => true, 'fun' => 'formatCredit'
@@ -137,6 +135,18 @@
   $table->display($table);
   Display::br(1);
   Forms::submitCenter('Deposit', _("Deposit"), true, '', false);
+  JS::i()->_addLive(<<<JS
+  var voidTransWindow = function() {
+  var voidtrans,type,trans_no,url;
+  type = $(this).data('type');
+  trans_no = $(this).data('trans_no');
+  url ='/system/void_transaction?type='+type+'&trans_no='+trans_no+'&memo=Deleted%20during%20reconcile.';
+  if (!voidtrans) voidtrans = window.open(url,'_blank');
+  else voidtrans.location.href = url;
+  }
+$('#wrapper').on('click','.voidlink',voidTransWindow);
+JS
+  );
   Forms::end();
   Page::end();
   /**
@@ -188,8 +198,10 @@
    *
    * @return null|string
    */
-  function viewTrans($trans) {
-    return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
+  function viewTrans($row) {
+    $content = GL_UI::viewTrans($row["type"], $row["trans_no"]);
+    $content .= '<br><a class="button voidlink" data-type="' . $row["type"] . '" data-trans_no="' . $row["trans_no"] . '">void</a>';
+    return $content;
   }
 
   /**
