@@ -12,7 +12,6 @@
    */
   class Reconcile extends \ADV\App\Controller\Base
   {
-
     /** @var Num Num*/
     protected $Num;
     /** @var Dates Dates*/
@@ -25,12 +24,12 @@
     protected function before() {
       $this->Dates             = Dates::i();
       $this->Num               = Num::i();
-      $_POST['bank_account']   = Input::postGlobal('bank_account', INPUT::NUMERIC, Bank_Account::get_default(\DB_Company::get_pref('curr_default')) );
+      $_POST['bank_account']   = Input::postGlobal('bank_account', INPUT::NUMERIC, 5);
       $this->bank_account      = &$_POST['bank_account'];
-      $_POST['reconcile_date'] = $this->Input->_post('reconcile_date', null, $this->Dates->_newDocDate());
-      $this->reconcile_date    = &$_POST['reconcile_date'];
       $_POST['bank_date']      = Input::postGlobal('bank_date', null, $this->Dates->_today());
       $this->bank_date         = &$_POST['bank_date'];
+      $_POST['reconcile_date'] = $this->Input->_post('reconcile_date', null, $this->Dates->_sqlToDate($_POST['bank_date']));
+      $this->reconcile_date    = &$_POST['reconcile_date'];
       $this->JS->_openWindow(800, 500);
       $this->JS->_footerFile('/js/reconcile.js');
       if ($this->Input->_post('reset')) {
@@ -102,16 +101,10 @@
       Table::end();
       $this->displaySummary();
       echo "<hr>";
-      $this->bank_account == 5 ? $this->newWay() : $this->oldWay();  JS::i()->_addLive(<<<JS
-      $('#wrapper').on('click','.voidlink',function() {
-      var voidtrans,type,trans_no,url;
-      type = $(this).data('type');
-      trans_no = $(this).data('trans_no');
-      url ='/system/void_transaction?type='+type+'&trans_no='+trans_no+'&memo=Deleted%20during%20reconcile.';
-      if (!voidtrans) voidtrans = window.open(url,'_blank');
-      else voidtrans.location.href = url;})
-JS
-        );
+      $this->bank_account == 5 ? $this->newWay() : $this->oldWay();
+      JS::i()->_addLive(<<<JS
+
+JS);
       Forms::end();
       Page::end();
     }
@@ -177,7 +170,7 @@ JS
         'Amount'    => ['align'=> 'right', 'class'=> 'bold'], //
         'Info'
       ];
-      $table           = DB_Pager::new_DB_Pager('bank_rec', $known_trans, $cols);
+      $table           = DB_Pager::new_db_pager('bank_rec', $known_trans, $cols);
       $table->rowClass = function($row) {
         if (($row['trans_date'] && $row['reconciled'] && !$row['state_date']) || ($row['state_date'] && !$row['reconciled'])) {
           return "overduebg";
@@ -280,15 +273,19 @@ JS
      * @return string
      */
     function ungroupButton($row) {
-      if ($row['type'] != 15) {
-        return '';
+      if (!$row['reconciled'] && $row['type'] == ST_GROUPDEPOSIT) {
+        return "<div class='center'><button value='" . $row['id'] . '\' onclick="JsHttpRequest.request(\'_ungroup_' . $row['id'] . '\',
+      this.form)" name="_ungroup_' . $row['id'] . '" type="submit" title="Ungroup"
+     class="ajaxsubmit">Ungroup</button></div>' . Forms::hidden("ungroup_" . $row['id'], $row['ref'], true);
       }
-      return "<div class='center'><button value='" . $row['id'] . '\' onclick="JsHttpRequest.request(\'_ungroup_' . $row['id'] . '\',
- this.form)" name="_ungroup_' . $row['id'] . '" type="submit" title="Ungroup"
- class="ajaxsubmit">Ungroup</button></div>' . Forms::hidden("ungroup_" . $row['id'], $row['ref'], false);
     }
+    /**
+     * @param $row
+     *
+     * @return string
+     */
     function undepositButton($row) {
-      if (!$row['reconciled']) {
+      if (!$row['reconciled'] && in_array($row['type'], [ST_BANKDEPOSIT, ST_CUSTPAYMENT])) {
         return "<div class='center'><button value='" . $row['id'] . '\' onclick="JsHttpRequest.request(\'_undeposit_' . $row['id'] . '\',
  this.form)" name="_undeposit_' . $row['id'] . '" type="submit" title="Undeposit"
  class="ajaxsubmit">Undeposit</button></div>' . Forms::hidden("undeposit_" . $row['id'], $row['id'], false);
@@ -408,14 +405,13 @@ JS
       {
         $this->Ajax->_activate('bank_date');
       }
-      $this->bank_date = $this->Dates->_dateToSql($this->reconcile_date);
-      $reconcile_value = Forms::hasPost("rec_" . $reconcile_id) ? ("'" . $this->bank_date . "'") : 'null';
+      $reconcile_value = Forms::hasPost("rec_" . $reconcile_id) ? ("'" . $this->Dates->_dateToSql($this->reconcile_date) . "'") :
+        'null';
       GL_Account::update_reconciled_values($reconcile_id, $reconcile_value, $this->reconcile_date, Validation::input_num('end_balance'), $this->bank_account);
       $this->Ajax->_activate('_page_body');
       $this->JS->_setFocus($reconcile_id);
       return true;
     }
-
     /**
      * @internal param $prefix
      * @return bool|mixed
@@ -466,7 +462,7 @@ JS
         "X"              => array('insert' => true, 'fun' => array($this, 'reconcileCheckbox')), //
         array('insert' => true, 'fun' => array($this, 'ungroupButton'))
       );
-      $table        = DB_Pager::new_DB_Pager('trans_tbl', $sql, $cols);
+      $table        = db_pager::new_db_pager('trans_tbl', $sql, $cols);
       $table->width = "80";
       $table->display($table);
       return true;

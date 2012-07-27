@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Item_Gl
+  class Item_GL
   {
     /**
      * @var
@@ -41,8 +41,7 @@
      * @param      $reference
      * @param null $description
      */
-    public function __construct($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description = null)
-    {
+    public function __construct($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description = null) {
       //echo "adding $index, $code_id, $dimension_id, $amount, $reference<br>";
       if ($description == null) {
         $this->description = GL_Account::get_name($code_id);

@@ -8,35 +8,46 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-function focus_amount(i) {
-	save_focus(i);
-	i.setAttribute('_last', Adv.Forms.getAmount(i.name));
+function focus_amount(i)
+{
+  save_focus(i);
+  i.setAttribute('_last', Adv.Forms.getAmount(i.name));
 }
-
-function blur_amount(i) {
-	var change = Adv.Forms.getAmount(i.name);
-
-	Adv.Forms.priceFormat(i.name, change, user.pdec);
-	change = change - i.getAttribute('_last');
-	if (i.name == 'beg_balance') {
-		change = -change;
-	}
-
-	Adv.Forms.priceFormat('difference', Adv.Forms.getAmount('difference', 1, 1) + change, user.pdec);
+function blur_amount(i)
+{
+  var change = Adv.Forms.getAmount(i.name);
+  Adv.Forms.priceFormat(i.name, change, user.pdec);
+  change = change - i.getAttribute('_last');
+  if (i.name == 'beg_balance') {
+    change = -change;
+  }
+  Adv.Forms.priceFormat('difference', Adv.Forms.getAmount('difference', 1, 1) + change, user.pdec);
 }
-
 var balances = {
-	'.amount':function(e) {
-		e.onblur = function() {
-			blur_amount(this);
-		};
-		e.onfocus = function() {
-			focus_amount(this);
-		};
-	}
+  '.amount':function (e)
+  {
+    e.onblur = function ()
+    {
+      blur_amount(this);
+    };
+    e.onfocus = function ()
+    {
+      focus_amount(this);
+    };
+  }
 };
-
 Behaviour.register(balances);
-$(function() {
-$("#summary").draggable();
-});
+$(function ()
+  {
+    $("#summary").draggable();
+    $('#wrapper').on('click', '.voidlink', function ()
+    {
+      var voidtrans, type = $(this).data('type'), trans_no = $(this).data('trans_no'), url = '/system/void_transaction?type=' + type + '&trans_no=' + trans_no + '&memo=Deleted%20during%20reconcile.';
+      if (!voidtrans) {
+        voidtrans = window.open(url, '_blank');
+      }
+      else {
+        voidtrans.location.href = url;
+      }
+    })
+  });

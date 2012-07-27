@@ -377,7 +377,8 @@
      * @return void
      */
     protected function _getContacts() {
-      Forms::$DB->_select()->from('contacts')->where('parent_id=', $this->id)->andWhere('parent_type =', CT_CUSTOMER)->orderby('name ASC');
+      Forms::$DB->_select()->from('contacts')->where('parent_id=', $this->id)->andWhere('parent_type =', CT_CUSTOMER)
+        ->orderby('name ASC');
       $contacts = Forms::$DB->_fetch()->asClassLate('Contact', array(CT_CUSTOMER));
       if (count($contacts)) {
         foreach ($contacts as $contact) {
@@ -468,7 +469,8 @@ JS;
     public static function search($terms) {
       $data  = array();
       $terms = preg_replace("/[^a-zA-Z 0-9]+/", " ", $terms);
-      $sql   = Forms::$DB->_select('debtor_id as id', 'name as label', 'name as value', "IF(name LIKE " . Forms::$DB->_quote(trim($terms) . '%') . ",0,5) as weight")
+      $sql   = Forms::$DB
+        ->_select('debtor_id as id', 'name as label', 'name as value', "IF(name LIKE " . Forms::$DB->_quote(trim($terms) . '%') . ",0,5) as weight")
         ->from('debtors')->where('name LIKE ', trim($terms) . "%")->orWhere('name LIKE ', trim($terms))
         ->orWhere('name LIKE', '%' . str_replace(' ', '%', trim($terms)) . "%");
       if (is_numeric($terms)) {
@@ -718,10 +720,10 @@ JS;
         $value = $_POST['customer'];
         JS::setFocus('stock_id');
       } elseif (!$value) {
-        $value = Session::getGlobal('debtor');
+        $value = Session::getGlobal('debtor_id');
         if ($value) {
           $_POST['debtor_id'] = $value;
-          $value                = Debtor::get_name($value);
+          $value              = Debtor::get_name($value);
         } else {
           JS::setFocus('customer');
           $focus = true;

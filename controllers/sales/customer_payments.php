@@ -1,4 +1,5 @@
 <?php
+  use ADV\App\Debtor\Debtor;
 
   /**
    * PHP version 5.4
@@ -79,7 +80,6 @@
       Debtor::newselect();
       Forms::refRow(_("Reference:"), 'ref', null, Ref::get_next(ST_CUSTPAYMENT));
       Debtor_Payment::read_customer_data($this->debtor_id);
-      Session::setGlobal('debtor_id', $this->debtor_id);
       $display_discount_percent = Num::percentFormat($_POST['payment_discount'] * 100) . "%";
       Table::section(2);
       Debtor_Branch::row(_("Branch:"), $this->debtor_id, 'branch_id', null, false, true, true);

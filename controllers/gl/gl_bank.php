@@ -125,8 +125,7 @@
   /**
    * @return bool
    */
-  function check_item_data()
-  {
+  function check_item_data() {
     //if (!Validation::post_num('amount', 0))
     //{
     //	Event::error( _("The amount entered is not a valid number or is less than zero."));
@@ -134,26 +133,24 @@
     //	return false;
     //}
 
-    
     if ($_POST['code_id'] == $_POST['bank_account']) {
       Event::error(_("The source and destination accouts cannot be the same."));
       JS::setFocus('code_id');
       return false;
     }
-    if (Bank_Account::is($_POST['code_id']))
-    {
-    	if ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT)
-    		Event::error( _("You cannot make a payment to a bank account. Please use the transfer funds facility for this."));
-    	else
-    		Event::error( _("You cannot make a deposit from a bank account. Please use the transfer funds facility for this."));
-    	JS::setFocus('code_id') ;
-    	return false;
+    if (Bank_Account::is($_POST['code_id'])) {
+      if ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT) {
+        Event::error(_("You cannot make a payment to a bank account. Please use the transfer funds facility for this."));
+      } else {
+        Event::error(_("You cannot make a deposit from a bank account. Please use the transfer funds facility for this."));
+      }
+      JS::setFocus('code_id');
+      return false;
     }
     return true;
   }
 
-  function handle_update_item()
-  {
+  function handle_update_item() {
     $amount = ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? 1 : -1) * Validation::input_num('amount');
     if ($_POST['updateItem'] != "" && check_item_data()) {
       $_SESSION['pay_items']->update_gl_item($_POST['Index'], $_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
@@ -164,14 +161,12 @@
   /**
    * @param $id
    */
-  function handle_delete_item($id)
-  {
+  function handle_delete_item($id) {
     $_SESSION['pay_items']->remove_gl_item($id);
     Item_Line::start_focus('_code_id_edit');
   }
 
-  function handle_new_item()
-  {
+  function handle_new_item() {
     if (!check_item_data()) {
       return;
     }
@@ -183,8 +178,7 @@
   /**
    * @param $type
    */
-  function handle_new_order($type)
-  {
+  function handle_new_order($type) {
     if (isset($_SESSION['pay_items'])) {
       unset ($_SESSION['pay_items']);
     }

@@ -1,4 +1,6 @@
 <?php
+  use ADV\App\Creditor\Creditor;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -13,11 +15,14 @@
     protected $bank_currency;
     protected $company_currency;
     protected $creditor_id;
+    public $bank_account;
     protected function before() {
       JS::openWindow(900, 500);
       JS::footerFile('/js/payalloc.js');
-      $this->creditor_id    = Input::postGetGlobal('creditor_id');
-      $_POST['creditor_id'] =& $this->creditor_id;
+      $_POST['creditor_id']  = Input::postGetGlobal('creditor_id', null, -1);
+      $this->creditor_id     = &$_POST['creditor_id'];
+      $_POST['bank_account'] = Input::postGetGlobal('bank_account', null, -1);
+      $this->bank_account    = &$_POST['bank_account'];
 
       if (!isset($_POST['DatePaid'])) {
         $_POST['DatePaid'] = Dates::newDocDate();
@@ -29,7 +34,7 @@
         Ajax::activate('_ex_rate');
       }
 
-      if (!isset($_POST['bank_account'])) // first page call
+      if (!$this->bank_account) // first page call
       {
         $_SESSION['alloc'] = new GL_Allocation(ST_SUPPAYMENT, 0);
       }
@@ -38,7 +43,7 @@
         Ajax::activate('alloc_tbl');
       }
       $this->company_currency  = Bank_Currency::for_company();
-      $this->supplier_currency = Bank_Currency::for_creditor($_POST['creditor_id']);
+      $this->supplier_currency = Bank_Currency::for_creditor($this->creditor_id);
       $this->bank_currency     = Bank_Currency::for_company($_POST['bank_account']);
     }
     protected function index() {
@@ -73,7 +78,7 @@
       Forms::textareaRow(_("Memo:"), 'memo_', null, 22, 4);
       Table::end(1);
       if ($this->bank_currency != $this->supplier_currency) {
-        Event::warning(_("The amount and discount are in the bank account's currency."), 0, 1);
+        Event::warning("The amount and discount are in the bank account's currency.");
       }
       Forms::submitCenter('ProcessSuppPayment', _("Enter Payment"), true, '', 'default');
       Forms::end();
@@ -85,13 +90,13 @@
       } else {
         $rate = Validation::input_num('_ex_rate');
       }
-      $payment_id = Creditor_Payment::add($_POST['creditor_id'], $_POST['DatePaid'], $_POST['bank_account'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['ref'], $_POST['memo_'], $rate, Validation::input_num('charge'));
+      $payment_id = Creditor_Payment::add($this->creditor_id, $_POST['DatePaid'], $_POST['bank_account'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['ref'], $_POST['memo_'], $rate, Validation::input_num('charge'));
       Dates::newDocDate($_POST['DatePaid']);
       $_SESSION['alloc']->trans_no = $payment_id;
       $_SESSION['alloc']->write();
-      //unset($_POST['creditor_id']);
+      //unset($this->creditor_id);
       unset($_POST['bank_account'], $_POST['DatePaid'], $_POST['currency'], $_POST['memo_'], $_POST['amount'], $_POST['discount'], $_POST['ProcessSuppPayment']);
-      Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$payment_id&creditor_id=" . $_POST['creditor_id']);
+      Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$payment_id&creditor_id=" . $this->creditor_id);
       Event::success(_("Payment has been sucessfully entered"));
       Display::submenu_print(_("&Print This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, 'prtopt');
       Display::submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, null, 1);
@@ -99,7 +104,7 @@
       HTML::br();
       Display::note(GL_UI::view(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment"), false, 'button'));
       // Display::link_params($path_to_root . "/purchases/allocations/supplier_allocate.php", _("&Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
-      Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter another supplier &payment"), "creditor_id=" . $_POST['creditor_id'], true, 'class="button"');
+      Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter another supplier &payment"), "creditor_id=" . $this->creditor_id, true, 'class="button"');
       $this->Ajax->_activate('_page_body');
       Page::footer_exit();
     }
