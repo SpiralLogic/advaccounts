@@ -7,6 +7,20 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\App\Tax;
+  use Tax_Groups;
+  use ADV\Core\Input\Input;
+  use Forms;
+  use Cell;
+  use User;
+  use ADV\Core\Num;
+  use Row;
+  use ADV\Core\DB\DB;
+  use Tax_ItemType;
+
+  /**
+
+   */
   class Tax
   {
     /***
@@ -24,8 +38,7 @@
      * with applicable tax rates $tax_group_array or group id $tax_group
 
      */
-    public static function tax_free_price($stock_id, $price, $tax_group, $tax_included, $tax_group_array = null)
-    {
+    public static function tax_free_price($stock_id, $price, $tax_group, $tax_included, $tax_group_array = null) {
       // if price is zero, then can't be taxed !
       if ($price == 0) {
         return 0;
@@ -65,8 +78,7 @@
      * with tax rates $tax_group_array or applicable group $tax_group
 
      */
-    public static function for_item($stock_id, $price, $tax_group = false)
-    {
+    public static function for_item($stock_id, $price, $tax_group = false) {
       // if price is zero, then can't be taxed !
       if ($price == 0) {
         return 0;
@@ -100,8 +112,7 @@
      *
      * @return int
      */
-    public static function full_price_for_item($stock_id, $price, $tax_group, $tax_included, $tax_group_array = null)
-    {
+    public static function full_price_for_item($stock_id, $price, $tax_group, $tax_included, $tax_group_array = null) {
       // if price is zero, then can't be taxed !
       if ($price == 0) {
         return 0;
@@ -139,8 +150,7 @@
      * return an array of (tax_type_id, tax_type_name, sales_gl_code, purchasing_gl_code, rate)
      */
     //
-    public static function get_all_for_item($stock_id, $tax_group_items_array)
-    {
+    public static function get_all_for_item($stock_id, $tax_group_items_array) {
       $item_tax_type = Tax_ItemType::get_for_item($stock_id);
       // if the item is exempt from all taxes then return 0
       if ($item_tax_type["exempt"]) {
@@ -186,8 +196,7 @@
      * return an array of (tax_type_id, tax_type_name, sales_gl_code, purchasing_gl_code, rate, included_in_price, Value)
 
      */
-    public static function for_items($items, $prices, $shipping_cost, $tax_group, $tax_included = null, $tax_items_array = null)
-    {
+    public static function for_items($items, $prices, $shipping_cost, $tax_group, $tax_included = null, $tax_items_array = null) {
       // first create and set an array with all the tax types of the tax group
       if ($tax_items_array != null) {
         $ret_tax_array = $tax_items_array;
@@ -252,8 +261,7 @@
      *
      * @return bool
      */
-    public static function is_account($account_code)
-    {
+    public static function is_account($account_code) {
       $sql
               = "SELECT id FROM tax_types WHERE
         sales_gl_code=" . DB::escape($account_code) . " OR purchasing_gl_code=" . DB::escape($account_code);
@@ -277,8 +285,7 @@
      *
      * @return int|string
      */
-    public static function edit_items($taxes, $columns, $tax_included, $leftspan = 0, $tax_correcting = false)
-    {
+    public static function edit_items($taxes, $columns, $tax_included, $leftspan = 0, $tax_correcting = false) {
       $total = 0;
       foreach ($taxes as $taxitem) {
         if ($tax_included) {

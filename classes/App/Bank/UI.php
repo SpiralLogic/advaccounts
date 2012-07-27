@@ -1,4 +1,7 @@
 <?php
+  use ADV\App\Creditor\Creditor;
+  use ADV\App\Debtor\Debtor;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -14,8 +17,7 @@
      *
      * @param $order
      */
-    public static function header($order)
-    {
+    public static function header($order) {
       $payment = $order->trans_type == ST_BANKPAYMENT;
       Display::div_start('pmt_header');
       Table::startOuter('tablestyle2 width90'); // outer table
@@ -97,8 +99,7 @@
      * @param $title
      * @param $order
      */
-    public static function items($title, &$order)
-    {
+    public static function items($title, &$order) {
       $dim     = DB_Company::get_pref('use_dimension');
       $colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
       Display::heading($title);
@@ -165,8 +166,7 @@
      * @param      $dim
      * @param null $Index
      */
-    public static function item_controls($order, $dim, $Index = null)
-    {
+    public static function item_controls($order, $dim, $Index = null) {
       $payment = $order->trans_type == ST_BANKPAYMENT;
       Row::start();
       $id = Forms::findPostPrefix(MODE_EDIT);
@@ -230,8 +230,7 @@
       }
       Row::end();
     }
-    public static function option_controls()
-    {
+    public static function option_controls() {
       echo "<br><table class='center'>";
       Forms::textareaRow(_("Memo"), 'memo_', null, 50, 3);
       echo "</table>";
@@ -247,8 +246,7 @@
      *
      * @return string
      */
-    public static function  reconcile($account, $name, $selected_id = null, $submit_on_change = false, $special_option = false)
-    {
+    public static function  reconcile($account, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
       $sql
         = "SELECT reconciled FROM bank_trans
                             WHERE bank_act=" . DB::escape($account) . " AND reconciled IS NOT null AND amount!=0
@@ -272,8 +270,7 @@
      * @param bool $submit_on_change
      * @param bool $special_option
      */
-    public static function  reconcile_cells($label, $account, $name, $selected_id = null, $submit_on_change = false, $special_option = false)
-    {
+    public static function  reconcile_cells($label, $account, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
       if ($label != null) {
         echo "<td>$label</td>\n";
       }
@@ -287,8 +284,7 @@
      * @param        $bank_acc
      * @param string $parms
      */
-    public static function  balance_row($bank_acc, $parms = '')
-    {
+    public static function  balance_row($bank_acc, $parms = '') {
       $to  = Dates::addDays(Dates::today(), 1);
       $bal = get_balance_before_for_bank_account($bank_acc, $to);
       Row::label(_("Bank Balance:"), "<a target='_blank' " . ($bal < 0 ? 'class="redfg openWindow"' :
@@ -302,8 +298,7 @@
      * @param null $selected_id
      * @param bool $submit_on_change
      */
-    public static function  cash_accounts_row($label, $name, $selected_id = null, $submit_on_change = false)
-    {
+    public static function  cash_accounts_row($label, $name, $selected_id = null, $submit_on_change = false) {
       $sql
         = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
                         FROM bank_accounts
@@ -331,8 +326,7 @@
      *
      * @return null|string
      */
-    public static function  viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
-    {
+    public static function  viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
       if ($label == "") {
         $label = $trans_no;
       }

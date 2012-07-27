@@ -9,12 +9,12 @@
    **/
   namespace ADV\App\Item;
   use DB_Base;
+  use ADV\App\UI\UI;
+  use ADV\Core\Dialog;
   use Forms;
   use Item_Unit;
   use ADV\Core\Num;
-  use UI;
   use ADV\Core\JS;
-  use Dialog;
   use ADV\Core\Input\Input;
   use DB_AuditTrail;
   use GL_Trans;
@@ -363,8 +363,8 @@
      */
     public static function get_qoh_on_date($stock_id, $location = null, $date_ = null, $exclude = 0) {
       if ($date_ == null) {
-        $date_ =
-          Dates::today();
+        $date_
+          = Dates::today();
       }
       $date = Dates::dateToSql($date_);
       $sql
@@ -626,7 +626,8 @@
         $where .= ' AND s.long_description LIKE ? ';
         $finalterms[] = '%' . trim($t) . '%';
       }
-      $sql = "SELECT p.price, c.description as category, s.* FROM ((SELECT s.stock_id, i.id, s.description, s.long_description ,
+      $sql
+                    = "SELECT p.price, c.description as category, s.* FROM ((SELECT s.stock_id, i.id, s.description, s.long_description ,
                                         s.category_id, editable, 0 as kit,
                                         IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5) + 0 as weight FROM item_codes i,
                                         stock_master s
@@ -707,14 +708,13 @@
         $termswhere .= ' OR p.supplier_description LIKE ? ';
         if (Input::session('creditor_id', Input::NUMERIC)) {
           array_unshift($terms, $_SESSION['creditor_id']);
-          array_unshift($terms, $_SESSION['creditor_id']);
-          $weight = ' IF(p.creditor_id = ?,0,20) +  if (poc.creditor_id= ?,10/poc.count,10) + ' . $weight;
+          $weight = ' IF(p.creditor_id = ?,0,20) + ' . $weight;
         }
-        $stock_code = ' s.item_code as stock_id, p.supplier_description, MIN(p.price) as price, poc.count as count, ';
-        $prices     = "  LEFT OUTER JOIN purch_data p ON i.id = p.stockid LEFT OUTER JOIN purch_details_count_view poc on i.id=poc.stockid ";
+        $stock_code = ' s.item_code as stock_id, p.supplier_description, MIN(p.price) as price, ';
+        $prices     = " LEFT OUTER JOIN purch_data p ON i.id = p.stockid ";
       } elseif ($o['sale']) {
         $weight     = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
-        $stock_code = " , stock_master i , s.item_code as stock_id, p.price,";
+        $stock_code = " s.item_code as stock_id, p.price,";
         $prices     = ", prices p";
         $where .= " AND s.id = p.item_code_id ";
         if (isset($o['sales_type'])) {

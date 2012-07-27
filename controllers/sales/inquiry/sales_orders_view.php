@@ -1,4 +1,6 @@
 <?php
+  use ADV\App\Debtor\Debtor;
+  use ADV\App\Item\Item;
 
   /* * ********************************************************************
           Copyright (C) Advanced Group PTY LTD
@@ -20,8 +22,8 @@
   }
   // then check session value
   JS::openWindow(900, 600);
-  if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
-    $searchArray = explode(' ', $_POST['ajaxsearch']);
+  if (AJAX_REFERRER && !empty($_POST['q'])) {
+    $searchArray = explode(' ', $_POST['q']);
   }
   if (isset($searchArray) && $searchArray[0] == 'o') {
     $trans_type = ST_SALESORDER;
@@ -158,17 +160,17 @@
     $sql .= " AND sorder.order_no LIKE " . DB::quote($number_like) . " GROUP BY sorder.order_no";
     $number_like = "%" . $_POST['OrderNumber'] . "%";
     $sql .= " OR sorder.reference LIKE " . DB::quote($number_like) . " GROUP BY sorder.order_no";
-  } elseif (AJAX_REFERRER && isset($searchArray) && !empty($_POST['ajaxsearch'])) {
-    foreach ($searchArray as $ajaxsearch) {
-      if (empty($ajaxsearch)) {
+  } elseif (AJAX_REFERRER && isset($searchArray) && !empty($_POST['q'])) {
+    foreach ($searchArray as $quicksearch) {
+      if (empty($quicksearch)) {
         continue;
       }
-      $ajaxsearch = DB::quote("%" . trim($ajaxsearch) . "%");
+      $quicksearch = DB::quote("%" . trim($quicksearch) . "%");
       $sql
-        .= " AND ( debtor.debtor_id = $ajaxsearch OR debtor.name LIKE $ajaxsearch OR sorder.order_no LIKE $ajaxsearch
-			OR sorder.reference LIKE $ajaxsearch OR sorder.contact_name LIKE $ajaxsearch
-			OR sorder.customer_ref LIKE $ajaxsearch
-			 OR sorder.customer_ref LIKE $ajaxsearch OR branch.br_name LIKE $ajaxsearch)";
+        .= " AND ( debtor.debtor_id = $quicksearch OR debtor.name LIKE $quicksearch OR sorder.order_no LIKE $quicksearch
+			OR sorder.reference LIKE $quicksearch OR sorder.contact_name LIKE $quicksearch
+			OR sorder.customer_ref LIKE $quicksearch
+			 OR sorder.customer_ref LIKE $quicksearch OR branch.br_name LIKE $quicksearch)";
     }
     $sql
       .= " GROUP BY sorder.ord_date,
@@ -178,7 +180,7 @@
 				sorder.customer_ref,
 				sorder.deliver_to";
   } else { // ... or select inquiry constraints
-    if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates' && !isset($_POST['ajaxsearch'])
+    if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates' && !isset($_POST['q'])
     ) {
       $date_after  = Dates::dateToSql($_POST['OrdersAfterDate']);
       $date_before = Dates::dateToSql($_POST['OrdersToDate']);

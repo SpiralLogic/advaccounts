@@ -1,4 +1,6 @@
 <?php
+  use ADV\App\Debtor\Debtor;
+  use ADV\App\Item\Item;
 
   /**
    * PHP version 5.4

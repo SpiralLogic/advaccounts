@@ -8,15 +8,25 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\App;
   /**
    * @property Security i
    * @method Security i
    */
+  use ArrayAccess;
+  use Forms;
+  use ADV\Core\DB\DB;
+  use User;
+  use ADV\Core\Config;
+
   class Security implements ArrayAccess
   {
     public $areas;
     protected $sections;
     protected $Config;
+    /**
+     * @param \ADV\Core\Config $config
+     */
     public function __construct(\ADV\Core\Config $config = null) {
       $this->Config   = $config ? : Config::i();
       $this->areas    = $this->Config->_get('access_levels.areas');
@@ -178,8 +188,8 @@
      *
      * @param $value
      *
+     * @throws \RuntimeException
      * @return array|string
-     * @throws RuntimeException
      */
     public static function htmlentities($value) {
       static $already_cleaned = array();

@@ -1090,158 +1090,219 @@
   define('CANCEL', 'CancelUpdate');
   /**
    */
-  class Arr extends ADV\Core\Arr {
+  class Arr extends ADV\Core\Arr
+  {
   }
+
   /**
    * @property Ajax i
    */
-  class Ajax extends ADV\Core\Ajax {
+  class Ajax extends ADV\Core\Ajax
+  {
   }
+
   /**
 
    */
-  class Auth extends ADV\Core\Auth {
+  class Auth extends ADV\Core\Auth
+  {
   }
+
   /**
 
    */
-  class Assets extends ADV\Core\Assets {
+  class Assets extends ADV\Core\Assets
+  {
   }
+
   /**
 
    */
-  class Cache extends ADV\Core\Cache {
+  class Cache extends ADV\Core\Cache
+  {
   }
+
   /**
 
    */
-  class Config extends ADV\Core\Config {
+  class Config extends ADV\Core\Config
+  {
   }
+
   /**
 
    */
-  class Dates extends ADV\Core\Dates {
+  class Dates extends ADV\Core\Dates
+  {
   }
+
   /**
    */
-  class DB extends ADV\Core\DB\DB {
+  class DB extends ADV\Core\DB\DB
+  {
   }
+
   /**
 
    */
-  class Result extends ADV\Core\DB\Query\Result {
+  class Result extends ADV\Core\DB\Query\Result
+  {
   }
+
   /**
 
    */
-  class Dialog extends ADV\Core\Dialog {
+  class Dialog extends ADV\Core\Dialog
+  {
   }
+
   /**
 
    */
-  class Event extends ADV\Core\Event {
+  class Event extends ADV\Core\Event
+  {
   }
+
   /**
 
    */
-  class Errors extends ADV\Core\Errors {
+  class Errors extends ADV\Core\Errors
+  {
   }
+
   /**
 
    */
-  class Files extends ADV\Core\Files {
+  class Files extends ADV\Core\Files
+  {
   }
+
   /**
 
    */
-  class HTML extends ADV\Core\HTML {
+  class HTML extends ADV\Core\HTML
+  {
   }
+
   /**
 
    */
-  class Hook extends ADV\Core\Hook {
+  class Hook extends ADV\Core\Hook
+  {
   }
+
   /**
 
    */
-  class Input extends ADV\Core\Input\Input {
+  class Input extends ADV\Core\Input\Input
+  {
     /**
      * @static
      */
   }
+
   /**
 
    */
-  class JS extends ADV\Core\JS {
+  class JS extends ADV\Core\JS
+  {
   }
+
   /**
 
    */
-  class Language extends ADV\Core\Language {
+  class Language extends ADV\Core\Language
+  {
   }
+
   /**
 
    */
-  class Menu extends ADV\Core\Menu {
+  class Menu extends ADV\Core\Menu
+  {
   }
+
   /**
 
    */
-  class MenuUI extends ADV\Core\MenuUI {
+  class MenuUI extends ADV\Core\MenuUI
+  {
   }
+
   /**
 
    */
-  class Num extends ADV\Core\Num {
+  class Num extends ADV\Core\Num
+  {
   }
+
   /**
 
    */
-  class Page extends ADV\App\Page {
+  class Page extends ADV\App\Page
+  {
   }
+
   /**
    */
-  class Session extends ADV\Core\Session {
+  class Session extends ADV\Core\Session
+  {
   }
+
   /**
 
    */
-  class Status extends ADV\Core\Status {
+  class Status extends ADV\Core\Status
+  {
   }
+
   /**
 
    */
-  class UploadHandler extends ADV\Core\UploadHandler {
+  class UploadHandler extends ADV\Core\UploadHandler
+  {
   }
+
   /**
 
    */
-  class DBException extends ADV\Core\DB\DBException {
+  class DBException extends ADV\Core\DB\DBException
+  {
   }
+
   /**
 
    */
-  class DBSelectException extends ADV\Core\DB\DBException {
+  class DBSelectException extends ADV\Core\DB\DBException
+  {
   }
+
   /**
 
    */
-  class DBUpdateException extends ADV\Core\DB\DBException {
+  class DBUpdateException extends ADV\Core\DB\DBException
+  {
   }
+
   /**
 
    */
-  class DBDeleteException extends ADV\Core\DB\DBException {
+  class DBDeleteException extends ADV\Core\DB\DBException
+  {
   }
+
   /**
 
    */
-  class DBInsertException extends ADV\Core\DB\DBException {
+  class DBInsertException extends ADV\Core\DB\DBException
+  {
   }
+
   /**
 
    */
-  class View extends \ADV\Core\View implements \ArrayAccess {
+  class View extends \ADV\Core\View implements \ArrayAccess
+  {
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Whether a offset exists
@@ -1305,3 +1366,26 @@
       // TODO: Implement offsetUnset() method.
     }
   }
+
+  function xhprof_enable() {
+  }
+
+  function newrelic_set_appname() {
+  }
+
+  function newrelic_name_transaction() {
+  }
+
+  function newrelic_disable_autorum() {
+  }
+
+  function xhprof_disable() {
+    return '';
+  }
+
+  define('XHPROF_FLAGS_CPU', 0);
+  define('XHPROF_FLAGS_MEMORY', 0);
+  class XHProfRuns_Default
+  {
+  }
+

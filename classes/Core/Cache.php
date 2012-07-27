@@ -13,7 +13,8 @@
   /**
 
    */
-  interface Cachable {
+  interface Cachable
+  {
     /**
      * @abstract
      *
@@ -42,6 +43,7 @@
      */
     public function get($key, $default);
   }
+
   /**
    * @method get($key, $default = false)
    * @method set($key, $value, $expires = 86400)
@@ -49,7 +51,8 @@
    * @method delete($key)
    * @method Cache i()
    */
-  class Cache {
+  class Cache
+  {
     use Traits\StaticAccess;
 
     /**
@@ -171,8 +174,10 @@
     /**
      * @static
      *
-     * @param array|closure $constants
-     * @param null          $name
+     * @param array|\Closure $constants
+     * @param null           $name
+     *
+     * @return \ADV\Core\Cache
      */
     public function _defineConstants($name, $constants) {
       if (function_exists('apc_load_constants')) {

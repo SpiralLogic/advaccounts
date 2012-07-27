@@ -143,6 +143,9 @@
 
       return $filesmtime;
     }
+    /**
+
+     */
     public function __construct() {
       //  $this->setFromArray(Config::getAll('assets22'));
       list($query) = explode('?', urldecode($_SERVER['QUERY_STRING']));

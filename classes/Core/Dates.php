@@ -37,6 +37,9 @@
    * @method endFiscalYear()
    * @method beginFiscalYear()
    */
+  use User;
+  use DB_Company;
+
   class Dates
   {
     use Traits\StaticAccess;
@@ -48,11 +51,17 @@
     protected $Config = null;
     protected $Session = null;
     protected $Company = null;
+    /**
+     * @param Config      $config
+     * @param \User       $User
+     * @param Session     $Session
+     * @param \DB_Company $Company
+     */
     public function __construct(Config $config = null, \User $User = null, Session $Session = null, \DB_Company $Company = null) {
       $config               = $config ? : Config::i();
-      $this->User           = $User ? : \User::i();
+      $this->User           = $User ? : User::i();
       $this->Session        = $Session ? : Session::i();
-      $this->Company        = $Company ? : \DB_Company::i();
+      $this->Company        = $Company ? : DB_Company::i();
       $this->formats        = $config->_get('date.formats');
       $this->separators     = $config->_get('date.separators');
       $this->userFiscalYear = $config->_get('use_fiscalyear');
@@ -96,10 +105,9 @@
     /**
      * @return string User format of the days date.
      */
-    public function _today($sql_format=false) {
-      if ($sql_format){
+    public function _today($sql_format = false) {
+      if ($sql_format) {
         return date('Y-m-d');
-
       }
       return $this->date(date("Y"), date("n"), date("j"));
     }
@@ -274,8 +282,12 @@
       if (count($parts) == 3 && checkdate($parts[1], $parts[2], $parts[0])) {
         return $date;
       }
+
       $how  = $this->formats[$this->User->_date_format()];
       $date = \DateTime::createFromFormat($how, $date);
+      if (!$date) {
+        return $this->_today(true);
+      }
       return $date->format('Y-m-d');
     }
     /**
@@ -320,6 +332,7 @@ provided that both dates are after 1970. Also only works for dates up to the yea
         case 'm':
           return $interval->format('%r%m');
       }
+      return false;
     }
     /**
      * @static

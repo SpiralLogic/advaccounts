@@ -12,7 +12,6 @@
    */
   class View implements \ArrayAccess
   {
-
     protected $_viewdata = [];
     protected $_template = null;
     /** @var Cache */
@@ -44,14 +43,17 @@
       // request since partial views may be rendered inside of for
       // loops which could incur performance penalties.
       $__contents = static::$Cache->_get('template.' . $this->_template);
-      if (!$__contents) {
+      if (!$__contents || !is_array($__contents)) {
         $__contents = file_get_contents($this->_template);
         $__contents = $this->compile_nothings($__contents);
         $__contents = $this->compile_structure_openings($__contents);
         $__contents = $this->compile_else($__contents);
         $__contents = $this->compile_structure_closings($__contents);
         $__contents = $this->compile_echos($__contents);
-        static::$Cache->_set('template.' . $this->_template, $__contents);
+        static::$Cache->_set('template.' . $this->_template, [$__contents, filemtime($this->_template)]);
+      } else {
+        $__contents = $__contents[0];
+        Event::registerShutdown($this, 'checkCache', [$this->_template, $__contents[1]]);
       }
       ob_start() and extract($this->_viewdata, EXTR_SKIP);
       // We'll include the view contents for parsing within a catcher
@@ -72,6 +74,16 @@
         return ob_get_clean();
       }
       echo ob_get_clean();
+    }
+    /**
+     * @param $template
+     * @param $lastmodified
+     */
+    public function checkCache($template, $lastmodified) {
+
+      if ($lastmodified < filemtime($template)) {
+        static::$Cache->_delete('template.' . $this->_template);
+      }
     }
     /**
      * @static
@@ -130,6 +142,7 @@
      * @param      $offset
      * @param      $value
      * @param bool $escape
+     *
      * @return \ADV\Core\View
      */
     public function set($offset, $value, $escape = false) {

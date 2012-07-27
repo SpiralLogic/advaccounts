@@ -51,7 +51,7 @@
     exit;
   }
   if (extension_loaded('newrelic')) {
-    newrelic_set_appname ('ADVACCOUNTS');
+    newrelic_set_appname('ADVACCOUNTS');
     newrelic_disable_autorum();
 
     if (AJAX_REFERRER) {
@@ -65,7 +65,8 @@
      * @return array|string
      */
     function e($string) {
-      return Security::htmlentities($string);
+
+      return \ADV\App\Security::htmlentities($string);
     }
   }
   new ADVAccounting($loader);

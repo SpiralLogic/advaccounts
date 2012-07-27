@@ -14,6 +14,7 @@
   class Load_Exception extends \Exception
   {
   }
+
   /**
 
    */
@@ -96,7 +97,7 @@
      * @internal param $path
      * @return string
      */
-    protected function tryPath($paths, $required_class, $classname, $global) {
+    protected function tryPath($paths, $required_class, $classname, $global = false) {
       $paths = (array) $paths;
       while ($path = array_shift($paths)) {
         $filepath = realpath($path);
@@ -136,7 +137,7 @@
      */
     public function load($requested_class) {
       $classname = ltrim($requested_class, '\\');
-      $namespace = '';
+      $namespace = $global = '';
       if ($lastNsPos = strripos($classname, '\\')) {
         $namespace = substr($classname, 0, $lastNsPos);
         $classname = substr($classname, $lastNsPos + 1);

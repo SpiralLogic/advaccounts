@@ -38,9 +38,9 @@
     Table::end();
   }
   $searchArray = [];
-  $location = $stock_location='';
-  if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
-    $searchArray = explode(' ', $_POST['ajaxsearch']);
+  $location    = $stock_location = '';
+  if (AJAX_REFERRER && !empty($_POST['q'])) {
+    $searchArray = explode(' ', $_POST['q']);
     unset($_POST['creditor_id']);
   }
   $sql
@@ -61,17 +61,17 @@
 	WHERE porder.order_no = line.order_no
 	AND porder.creditor_id = supplier.creditor_id
 	AND location.loc_code = porder.into_stock_location ";
-  if (AJAX_REFERRER && $searchArray && !empty($_POST['ajaxsearch'])) {
-    foreach ($searchArray as $ajaxsearch) {
-      if (empty($ajaxsearch)) {
+  if (AJAX_REFERRER && $searchArray && !empty($_POST['q'])) {
+    foreach ($searchArray as $quicksearch) {
+      if (empty($quicksearch)) {
         continue;
       }
-      $ajaxsearch = DB::quote("%" . $ajaxsearch . "%");
+      $quicksearch = DB::quote("%" . $quicksearch . "%");
       $sql
-        .= " AND (supplier.name LIKE $ajaxsearch OR porder.order_no LIKE $ajaxsearch
-		 OR porder.reference LIKE $ajaxsearch
-		 OR porder.requisition_no LIKE $ajaxsearch
-		 OR location.location_name LIKE $ajaxsearch)";
+        .= " AND (supplier.name LIKE $quicksearch OR porder.order_no LIKE $quicksearch
+		 OR porder.reference LIKE $quicksearch
+		 OR porder.requisition_no LIKE $quicksearch
+		 OR location.location_name LIKE $quicksearch)";
     }
   } else {
     if ($order_number) {
@@ -101,7 +101,9 @@
   $cols = array(
     // Transaction link
     _("#")           => array(
-      'ord' => '', 'fun' => function ($trans) { return GL_UI::viewTrans(ST_PURCHORDER, $trans["order_no"]); }
+      'ord' => '', 'fun' => function ($trans) {
+        return GL_UI::viewTrans(ST_PURCHORDER, $trans["order_no"]);
+      }
     ), //
     _("Reference"), //
     _("Supplier")    => array('ord' => '', 'type' => 'id'), //
@@ -113,8 +115,9 @@
     _("Order Total") => 'amount', //
     // Edit link
     array(
-      'insert' => true,
-      'fun'    => function ($row) { return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . Orders::MODIFY_ORDER . "=" . $row["order_no"], ICON_EDIT); }
+      'insert' => true, 'fun'    => function ($row) {
+      return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?" . Orders::MODIFY_ORDER . "=" . $row["order_no"], ICON_EDIT);
+    }
     ) //
   );
   if ($stock_location) {
@@ -126,18 +129,19 @@
     Arr::append($cols, array(
                             // Email button
                             array(
-                              'insert' => true,
-                              'fun'    => function ($row) { return Reporting::emailDialogue($row['id'], ST_PURCHORDER, $row['order_no']); }
+                              'insert' => true, 'fun'    => function ($row) {
+                              return Reporting::emailDialogue($row['id'], ST_PURCHORDER, $row['order_no']);
+                            }
                             ), //
                             // Print button
                             array(
-                              'insert' => true,
-                              'fun'    => function ($row) { return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink'); }
+                              'insert' => true, 'fun'    => function ($row) {
+                              return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink');
+                            }
                             ), //
                             // Recieve/Invoice button
                             array(
-                              'insert' => true, 'fun' => function ($row)
-                            {
+                              'insert' => true, 'fun' => function ($row) {
                               if ($row['Received'] > 0) {
                                 return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
                               } elseif ($row['Invoiced'] > 0) {

@@ -102,6 +102,12 @@
       $expected = '2012-03-04';
       $actual   = $this->dates->_dateToSql('04/03/2012');
       $this->assertEquals($expected, $actual);
+      $expected = '2012-03-04';
+      $actual   = $this->dates->_dateToSql('2012-03-04');
+      $this->assertEquals($expected, $actual);
+      $expected = $this->dates->_today(true);
+      $actual   = $this->dates->_dateToSql('');
+      $this->assertEquals($expected, $actual);
     }
     /**
      * @covers ADV\Core\Dates::_now

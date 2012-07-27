@@ -1,4 +1,7 @@
 <?php
+  use ADV\App\Debtor\Debtor;
+  use ADV\App\UI\UI;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -9,8 +12,7 @@
    **/
   class SalesInquirey extends \ADV\App\Controller\Base
   {
-
-    public $isAjaxSearch;
+    public $isQuickSearch;
     public $filterType;
     public $debtor_id;
     const SEARCH_DELIVERY = 'd';
@@ -25,9 +27,9 @@
         $this->Session->_removeGlobal('debtor_id');
         unset(Input::$post['debtor_id']);
       }
-      $this->debtor_id    = Input::$post['debtor_id'] = Input::postGetGlobal('debtor_id', INPUT::NUMERIC, null);
-      $this->filterType   = Input::$post['filterType'] = Input::post('filterType', Input::NUMERIC);
-      $this->isAjaxSearch = (AJAX_REFERRER && isset($_POST['ajaxsearch']));
+      $this->debtor_id     = Input::$post['debtor_id'] = Input::postGetGlobal('debtor_id', INPUT::NUMERIC, null);
+      $this->filterType    = Input::$post['filterType'] = Input::post('filterType', Input::NUMERIC);
+      $this->isQuickSearch = (Input::postGet('q'));
     }
     protected function index() {
       Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, Input::$get->has('debtor_id'));
@@ -48,7 +50,7 @@
       if (Input::post('RefreshInquiry')) {
         Ajax::activate('totals_tbl');
       }
-      $sql = ($this->isAjaxSearch) ? $this->prepareAjaxSearch() : $this->prepareSearch();
+      $sql = ($this->isQuickSearch) ? $this->prepareQuickSearch() : $this->prepareSearch();
       if (Input::post('reference')) {
         $number_like = "%" . $_POST['reference'] . "%";
         $sql .= " AND trans.reference LIKE " . DB::quote($number_like);
@@ -80,46 +82,46 @@
             break;
         }
       }
-      if (!$this->isAjaxSearch) {
+      if (!$this->isQuickSearch) {
         $sql .= " GROUP BY trans.trans_no, trans.type";
       }
       DB::query("set @bal:=0");
       $cols = array(
-        _("Type")                                                    => array(
+        _("Type")                                                       => array(
           'fun'    => function ($dummy, $type) {
             global $systypes_array;
             return $systypes_array[$type];
           }, 'ord' => ''
         ),
-        _("#")                                                       => array(
+        _("#")                                                          => array(
           'fun'    => [$this, 'viewTrans'], 'ord' => ''
         ),
-        _("Order")                                                   => array(
+        _("Order")                                                      => array(
           'fun' => function ($row) {
             return $row['order_'] > 0 ? Debtor::viewTrans(ST_SALESORDER, $row['order_']) : "";
           }
         ),
-        _("Reference")                                               => array('ord' => ''),
-        _("Date")                                                    => array(
+        _("Reference")                                                  => array('ord' => ''),
+        _("Date")                                                       => array(
           'name' => 'tran_date', 'type' => 'date', 'ord'  => 'desc'
         ),
-        _("Due Date")                                                => array(
+        _("Due Date")                                                   => array(
           'type' => 'date', 'fun' => function ($row) {
             return $row["type"] == ST_SALESINVOICE ? $row["due_date"] : '';
           }
         ),
-        _("Customer")                                                => array('ord' => 'asc'),
+        _("Customer")                                                   => array('ord' => 'asc'),
         array('type' => 'skip'),
-        _("Branch")                                                  => array('ord' => ''),
-        _("Currency")                                                => array('align' => 'center', 'type' => 'skip'),
-        _("Debit")                                                   => array(
+        _("Branch")                                                     => array('ord' => ''),
+        _("Currency")                                                   => array('align' => 'center', 'type' => 'skip'),
+        _("Debit")                                                      => array(
           'align' => 'right', 'fun' => function ($row) {
             $value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ?
               -$row["TotalAmount"] : $row["TotalAmount"];
             return $value >= 0 ? Num::priceFormat($value) : '';
           }
         ),
-        _("Credit")                                                  => array(
+        _("Credit")                                                     => array(
           'align' => 'right', 'insert' => true, 'fun' => function ($row) {
             $value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_BANKDEPOSIT) ?
               -$row["TotalAmount"] : $row["TotalAmount"];
@@ -127,7 +129,7 @@
           }
         ),
         array('type' => 'skip'),
-        _("RB")                                                      => array('align' => 'right', 'type' => 'amount'),
+        _("RB")                                                         => array('align' => 'right', 'type' => 'amount'),
         array(
           'insert' => true, 'fun' => function ($row) {
           return GL_UI::view($row["type"], $row["trans_no"]);
@@ -176,7 +178,7 @@
               }
               break;
           }
-          if (!$str && (!DB_AuditTrail::is_closed_trans($row['type'], $row["trans_no"]) || $row['type'] == ST_SALESINVOICE)) {
+          if ($str && (!DB_AuditTrail::is_closed_trans($row['type'], $row["trans_no"]) || $row['type'] == ST_SALESINVOICE)) {
             return DB_Pager::link(_('Edit'), $str, ICON_EDIT);
           }
           return '';
@@ -189,9 +191,9 @@
           }
           HTML::setReturn(true);
           UI::button(false, 'Email', array(
-            'class'        => 'button email-button',
-            'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
-          ));
+                                          'class'        => 'button email-button',
+                                          'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
+                                     ));
           return HTML::setReturn(false);
         }
         ),
@@ -210,7 +212,7 @@
         $cols[_("Customer")] = 'skip';
         $cols[_("Currency")] = 'skip';
       }
-      if (!$this->filterType || !$this->isAjaxSearch) {
+      if (!$this->filterType || !$this->isQuickSearch) {
         $cols[_("RB")] = 'skip';
       }
       $table = DB_Pager::new_DB_Pager('trans_tbl', $sql, $cols);
@@ -270,8 +272,8 @@
     /**
      * @return string
      */
-    protected function prepareAjaxSearch() {
-      $searchArray = trim($_POST['ajaxsearch']);
+    protected function prepareQuickSearch() {
+      $searchArray = trim(Input::postGet('q'));
       $searchArray = explode(' ', $searchArray);
       if ($searchArray[0] == self::SEARCH_DELIVERY) {
         $filter = " AND type = " . ST_CUSTDELIVERY . " ";
@@ -281,28 +283,28 @@
         $filter = " AND (type = " . ST_CUSTPAYMENT . " OR type = " . ST_CUSTREFUND . " OR type = " . ST_BANKDEPOSIT . ") ";
       }
       $sql = "SELECT * FROM debtor_trans_view WHERE ";
-      foreach ($searchArray as $key => $ajaxsearch) {
-        if (empty($ajaxsearch)) {
+      foreach ($searchArray as $key => $quicksearch) {
+        if (empty($quicksearch)) {
           continue;
         }
         $sql .= ($key == 0) ? " (" : " AND (";
-        if ($ajaxsearch[0] == "$") {
-          if (substr($ajaxsearch, -1) == 0 && substr($ajaxsearch, -3, 1) == '.') {
-            $ajaxsearch = (substr($ajaxsearch, 0, -1));
+        if ($quicksearch[0] == "$") {
+          if (substr($quicksearch, -1) == 0 && substr($quicksearch, -3, 1) == '.') {
+            $quicksearch = (substr($quicksearch, 0, -1));
           }
-          $sql .= "TotalAmount LIKE " . DB::quote('%' . substr($ajaxsearch, 1) . '%') . ") ";
+          $sql .= "TotalAmount LIKE " . DB::quote('%' . substr($quicksearch, 1) . '%') . ") ";
           continue;
         }
-        if (stripos($ajaxsearch, $this->User->_date_sep()) > 0) {
-          $sql .= " tran_date LIKE '%" . Dates::dateToSql($ajaxsearch, false) . "%' OR";
+        if (stripos($quicksearch, $this->User->_date_sep()) > 0) {
+          $sql .= " tran_date LIKE '%" . Dates::dateToSql($quicksearch, false) . "%' OR";
           continue;
         }
-        if (is_numeric($ajaxsearch)) {
-          $sql .= " debtor_id = $ajaxsearch OR ";
+        if (is_numeric($quicksearch)) {
+          $sql .= " debtor_id = $quicksearch OR ";
         }
-        $search_value = DB::quote("%" . $ajaxsearch . "%");
+        $search_value = DB::quote("%" . $quicksearch . "%");
         $sql .= " name LIKE $search_value ";
-        if (is_numeric($ajaxsearch)) {
+        if (is_numeric($quicksearch)) {
           $sql .= " OR trans_no LIKE $search_value OR order_ LIKE $search_value ";
         }
         $sql .= " OR reference LIKE $search_value OR br_name LIKE $search_value) ";
@@ -313,7 +315,7 @@
       return $sql;
     }
     protected function displaySummary() {
-      if ($this->debtor_id && !$this->isAjaxSearch) {
+      if ($this->debtor_id && !$this->isQuickSearch) {
         $customer_record = Debtor::get_details($this->debtor_id, $_POST['TransToDate']);
         Debtor::display_summary($customer_record);
         echo "<br>";

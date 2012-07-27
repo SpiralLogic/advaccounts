@@ -7,6 +7,35 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\App\WO;
+  use ADV\Core\Dates;
+  use ADV\Core\Num;
+  use Item_UI;
+  use GL_UI;
+  use Item_Price;
+  use WO_Issue;
+  use WO_Produce;
+  use Inv_Movement;
+  use GL_Trans;
+  use ADV\Core\Errors;
+  use WO_Requirements;
+  use DB_AuditTrail;
+  use Ref;
+  use DB_Comments;
+  use WO_Cost;
+  use WO_Quick;
+  use User;
+  use Row;
+  use ADV\App\Item\Item;
+  use Cell;
+  use Table;
+  use Display;
+  use ADV\Core\Event;
+  use ADV\Core\DB\DB;
+
+  /**
+
+   */
   class WO
   {
     /**
@@ -227,7 +256,7 @@
      *
      * @param $item
      *
-     * @return null|PDOStatement
+     * @return null|\PDOStatement
      */
     public static function get_bom($item) {
       $sql

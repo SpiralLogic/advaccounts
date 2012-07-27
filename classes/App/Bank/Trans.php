@@ -1,4 +1,6 @@
 <?php
+  use ADV\App\Bank\Bank;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -27,8 +29,7 @@
      * @param string $err_msg
      * @param int    $rate
      */
-    public static function add($type, $trans_no, $bank_act, $ref, $date_, $amount, $person_type_id, $person_id, $currency = "", $err_msg = "", $rate = 0)
-    {
+    public static function add($type, $trans_no, $bank_act, $ref, $date_, $amount, $person_type_id, $person_id, $currency = "", $err_msg = "", $rate = 0) {
       $sqlDate = Dates::dateToSql($date_);
       // convert $amount to the bank's currency
       if ($currency != "") {
@@ -63,8 +64,7 @@
      *
      * @return bool
      */
-    public static function exists($type, $type_no)
-    {
+    public static function exists($type, $type_no) {
       $sql    = "SELECT trans_no FROM bank_trans WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
       $result = DB::query($sql, "Cannot retreive a bank transaction");
 
@@ -80,8 +80,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get($type, $trans_no = null, $person_type_id = null, $person_id = null)
-    {
+    public static function get($type, $trans_no = null, $person_type_id = null, $person_id = null) {
       $sql
         = "SELECT *, bank_account_name, account_code, bank_curr_code
         FROM bank_trans, bank_accounts
@@ -109,8 +108,7 @@
      * @param      $type_no
      * @param bool $nested
      */
-    public static function void($type, $type_no, $nested = false)
-    {
+    public static function void($type, $type_no, $nested = false) {
       if (!$nested) {
         DB::begin();
       }
