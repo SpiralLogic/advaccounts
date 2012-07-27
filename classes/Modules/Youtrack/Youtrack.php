@@ -6,7 +6,7 @@
    * Time: 4:28 PM
    * To change this template use File | Settings | File Templates.
    */
-  namespace Modules;
+  namespace Modules\Youtrack;
   use User;
   use ADV\Core\JS;
   use ADV\Core\Config;

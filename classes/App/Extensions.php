@@ -23,7 +23,7 @@
       $security_sections = $security_areas = array();
       if (isset($ext['acc_file'])) {
         /** @noinspection PhpIncludeInspection */
-        include(DOCROOT . ($ext['type'] == 'plugin' ? 'modules/' : DS) . $ext['path'] . DS . $ext['acc_file']);
+        include(DOCROOT . ($ext['type'] == 'plugin' ? 'classes/Modules/' : DS) . $ext['path'] . DS . $ext['acc_file']);
       }
 
       return array($security_areas, $security_sections);

@@ -14,7 +14,6 @@
   class Load_Exception extends \Exception
   {
   }
-
   /**
 
    */
@@ -42,6 +41,8 @@
 
      */
     public function __construct() {
+      $core = include(DOCROOT . 'config' . DS . 'core.php');
+      $this->importNamespaces((array) $core);
       spl_autoload_register(array($this, 'load'), true);
     }
     /**
@@ -51,16 +52,12 @@
       $this->Cache   = $cache;
       $cachedClasses = $cache->get('Loader', array());
       if ($cachedClasses) {
-        $this->global_classes = $cachedClasses['global_classes'];
-        $this->classes        = $cachedClasses['classes'];
-        $this->loaded         = $cachedClasses['paths'];
+        $this->classes = $cachedClasses['classes'];
+        $this->loaded  = $cachedClasses['paths'];
       } else {
-        $core = include(DOCROOT . 'config' . DS . 'core.php');
-        $this->importNamespaces((array) $core);
         $vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
         $this->addClasses((array) $vendor, VENDORPATH);
       }
-      spl_autoload_register(array($this, 'loadFromCache'), true, true);
     }
     /**
      * @param array $classes
@@ -99,15 +96,14 @@
      * @internal param $path
      * @return string
      */
-    protected function tryPath($paths, $required_class) {
+    protected function tryPath($paths, $required_class, $classname, $global) {
       $paths = (array) $paths;
       while ($path = array_shift($paths)) {
         $filepath = realpath($path);
         if (is_readable($filepath)) {
-          return $this->includeFile($filepath, $required_class);
+          return $this->includeFile($filepath, $required_class, $classname, $global);
         }
       }
-
       return false;
     }
     /**
@@ -118,46 +114,18 @@
      * @internal param $class
      * @return bool
      */
-    protected function includeFile($filepath, $required_class) {
-      static $loaded=array();
+    protected function includeFile($filepath, $requested_class, $classname, $global) {
       if (empty($filepath)) {
-        throw new Load_Exception('File for class ' . $required_class . ' cannot be found!');
+        throw new Load_Exception('File for class ' . $requested_class . ' cannot be found!');
       }
-      echo '<pre>';
-      if (array_search($required_class,$loaded)!==false){ var_dump(func_get_args()); debug_print_backtrace();
-      }if (!include_once($filepath)) {
-        throw new Load_Exception('File for class ' . $required_class . ' cannot be	loaded from : ' . $filepath);
+      if (!include($filepath)) {
+        throw new Load_Exception('File for class ' . $requested_class . ' cannot be	loaded from : ' . $filepath);
       }
-$loaded[]=$required_class;
-      if (!isset($this->loaded[$required_class])) {
-        $this->loaded[$required_class] = $filepath;
-        if (is_callable('ADV\\Core\\Event::registerHook')) {
-          \ADV\Core\Event::registerShutdown($this);
-        }
+      if ($global) {
+        $fullclass = $this->global_classes[$classname] . '\\' . $classname;
+        class_alias($fullclass, $classname);
       }
-
       return true;
-    }
-    /**
-     * @param $required_class
-     *
-     * @return bool|string
-     */
-    public function loadFromCache($required_class) {
-      $result = false;
-      if (isset($this->loaded[$required_class])) {
-        try {
-          $result = $this->includeFile($this->loaded[$required_class], $required_class);
-        }
-        catch (Load_Exception $e) {
-          Event::registerShutdown($this);
-        }
-        if ($result && isset($this->global_classes[$required_class])) {
-          class_alias($this->global_classes[$required_class] . '\\' . $required_class, '\\' . $required_class);
-        }
-      }
-
-      return $result;
     }
     /**
      * @param $requested_class
@@ -173,38 +141,29 @@ $loaded[]=$required_class;
         $namespace = substr($classname, 0, $lastNsPos);
         $classname = substr($classname, $lastNsPos + 1);
       }
-      $alias      = false;
       $class_file = str_replace('_', DS, $classname);
       if (isset($this->global_classes[$classname]) && (!$namespace || $this->global_classes[$classname] == $namespace)) {
         $namespace = $this->global_classes[$classname];
-        $alias     = true;
+        $global    = true;
       }
       if ($namespace) {
         $namespacepath = str_replace(['ADV\\', '\\'], ['', DS], $namespace);
-        $dir           = DOCROOT .'classes'.DS.$namespacepath.DS;
+        $dir           = DOCROOT . 'classes' . DS . $namespacepath . DS;
       } elseif (isset($this->classes[$classname])) {
         $dir = $this->classes[$classname];
       } else {
-        $dir = APPPATH ;
+        $dir = APPPATH;
       }
-      $paths = [$dir.$class_file.'.php',$dir.$class_file.DS.$class_file.'.php'];
-      $result     = $this->trypath($paths, $requested_class);
-      if ($result && $alias) {
-        $fullclass                = $this->global_classes[$classname] . '\\' . $classname;
-        $this->loaded[$fullclass] = $this->loaded[$requested_class];
-        $this->loaded[$classname] = $this->loaded[$requested_class];
-        class_alias($fullclass, $classname);
-      }
-
+      $paths  = [$dir . $class_file . '.php', $dir . $class_file . DS . $class_file . '.php'];
+      $result = $this->trypath($paths, $requested_class, $classname, $global);
       return $result;
     }
     public function _shutdown() {
       if ($this->Cache) {
         $this->Cache->set('Loader', array(
-                                           'classes'        => $this->classes, //
-                                           'global_classes' => $this->global_classes, //
-                                           'paths'          => $this->loaded
-                                      ));
+                                         'classes'        => $this->classes, //
+                                         'paths'          => $this->loaded
+                                    ));
       }
     }
   }

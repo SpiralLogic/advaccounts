@@ -20,7 +20,7 @@
     1 => array(
       'tab'      => 'system', //
       'name'     => 'Advanced', //
-      'path'     => 'advanced', //
+      'path'     => 'Advanced', //
       'title'    => 'Advanced', //
       'active'   => '1', //
       'type'     => 'plugin', //

@@ -7,4 +7,4 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  \Modules\Jobsboard::tasks();
+  \Modules\Jobsboard\Jobsboard::tasks();

@@ -38,7 +38,7 @@
     protected $get_text = null;
     /** */
     public function __construct(\ADV\Core\Loader $loader) {
-      set_error_handler(function ($severity, $message, $filepath, $line) {
+   /*   set_error_handler(function ($severity, $message, $filepath, $line) {
         class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'Errors.php';
         return \ADV\Core\Errors::handler($severity, $message, $filepath, $line);
       });
@@ -46,7 +46,7 @@
         class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'Errors.php';
         \ADV\Core\Errors::exceptionHandler($e);
       });
-      register_shutdown_function(function () {
+  */    register_shutdown_function(function () {
         \ADV\Core\Event::shutdown();
       });
       static::i($this);
@@ -59,7 +59,7 @@
       $this->Config = Config::i();
       // Ajax communication object
       $this->Ajax = Ajax::i();
-      ob_start([$this, 'flush_handler'], 0);
+      //ob_start([$this, 'flush_handler'], 0);
       $this->Session = Session::i();
       $this->setTextSupport();
       $this->Session['language'] = new Language();
