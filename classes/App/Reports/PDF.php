@@ -11,7 +11,7 @@
   use User;
   use ADV\Core\Config;
   use ADV\Core\Num;
-  use ADV\Core\Dates;
+  use ADV\App\Dates;
   use DB_Company;
   use ADV\App\Page;
   use Reports_Printer_Remote;

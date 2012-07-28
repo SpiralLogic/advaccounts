@@ -12,7 +12,7 @@
   use ADV\Core\View;
   use ADV\Core\Errors;
   use ADV\Core\Num;
-  use ADV\Core\Dates;
+  use ADV\App\Dates;
   use ADV\Core\Event;
   use ADV\Core\Input\Input;
 

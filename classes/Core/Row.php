@@ -6,6 +6,7 @@
    * Time: 2:42 PM
    * To change this template use File | Settings | File Templates.
    */
+  namespace ADV\Core;
 
   class Row
   {
@@ -17,8 +18,7 @@
      * @param int    $leftfill
      * @param null   $id
      */
-    public static function label($label, $value, $label_cell_params= "", $params2 = "", $leftfill = 0, $id = null)
-    {
+    public static function label($label, $value, $label_cell_params = "", $params2 = "", $leftfill = 0, $id = null) {
       echo "<tr>";
       if ($label_cell_params == "") {
         echo "<td class='label'>$label</td>";
@@ -33,22 +33,17 @@
       }
       echo "</tr>\n";
     }
-
-
     /**
      * @param string $param
      */
-    public static function start($param = "")
-    {
+    public static function start($param = "") {
       if ($param != "") {
         echo "<tr $param>\n";
       } else {
         echo "<tr>\n";
       }
     }
-
-    public static function end()
-    {
+    public static function end() {
       echo "</tr>\n";
     }
   }

@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\WO;
-  use ADV\Core\Dates;
+  use ADV\App\Dates;
   use ADV\Core\Num;
   use Item_UI;
   use GL_UI;

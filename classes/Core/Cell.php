@@ -14,6 +14,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\Core;
   class Cell
   {
     /**
@@ -21,8 +22,7 @@
      * @param string $params
      * @param null   $id
      */
-    public static function amountDecimal($label, $params = "", $id = null)
-    {
+    public static function amountDecimal($label, $params = "", $id = null) {
       $dec = 0;
       Cell::label(Num::priceDecimal($label, $dec), ' class="right nowrap"' . $params, $id);
     }
@@ -32,8 +32,7 @@
      * @param string $params
      * @param null   $id
      */
-    public static function amount($label, $bold = false, $params = "", $id = null)
-    {
+    public static function amount($label, $bold = false, $params = "", $id = null) {
       if ($bold) {
         Cell::label("<span class='bold'>" . Num::priceFormat($label) . "</span>", "class='amount'" . $params, $id);
       } else {
@@ -45,8 +44,7 @@
      * @param string $params
      * @param null   $id
      */
-    public static function description($label, $params = "", $id = null)
-    {
+    public static function description($label, $params = "", $id = null) {
       Cell::label($label, $params . " class='desc'", $id);
     }
     /**
@@ -54,8 +52,7 @@
      * @param string $params
      * @param null   $id
      */
-    public static function email($label, $params = "", $id = null)
-    {
+    public static function email($label, $params = "", $id = null) {
       Cell::label("<a href='mailto:$label'>$label</a>", $params, $id);
     }
     /**
@@ -65,8 +62,7 @@
      * @param string $params2
      * @param null   $id
      */
-    public static function labels($label, $value, $params = "", $params2 = "", $id = null)
-    {
+    public static function labels($label, $value, $params = "", $params2 = "", $id = null) {
       if ($label != null) {
         echo "<td class='label' {$params}>{$label}</td>\n";
       }
@@ -76,8 +72,7 @@
      * @param        $label
      * @param string $params
      */
-    public static function labelHeader($label, $params = "")
-    {
+    public static function labelHeader($label, $params = "") {
       echo "<th $params>$label</th>\n";
     }
     /**
@@ -87,8 +82,7 @@
      *
      * @return mixed
      */
-    public static function label($label, $params = "", $id = null)
-    {
+    public static function label($label, $params = "", $id = null) {
       if (!empty($id)) {
         $params .= " id='$id'";
         Ajax::addUpdate($id, $id, $label);
@@ -102,8 +96,7 @@
      * @param bool $bold
      * @param null $id
      */
-    public static function percent($label, $bold = false, $id = null)
-    {
+    public static function percent($label, $bold = false, $id = null) {
       if ($bold) {
         Cell::label("<span class='bold'>" . Num::percentFormat($label) . "</span>", ' class="right nowrap"', $id);
       } else {
@@ -116,8 +109,7 @@
      * @param null $dec
      * @param null $id
      */
-    public static function qty($label, $bold = false, $dec = null, $id = null)
-    {
+    public static function qty($label, $bold = false, $dec = null, $id = null) {
       if (!isset($dec)) {
         $dec = User::qty_dec();
       }
@@ -133,8 +125,7 @@
      * @param string $params
      * @param null   $id
      */
-    public static function unit_amount($label, $bold = false, $params = "", $id = null)
-    {
+    public static function unit_amount($label, $bold = false, $params = "", $id = null) {
       if ($bold) {
         Cell::label("<span class='bold'>" . Num::priceForamt($label) . "</span>", ' class="right nowrap"' . $params, $id);
       } else {
@@ -144,8 +135,7 @@
     /**
      * @param $value
      */
-    public static function debitOrCredit($value)
-    {
+    public static function debitOrCredit($value) {
       $value = Num::round($value, User::price_dec());
       if ($value >= 0) {
         Cell::amount($value);

@@ -1,4 +1,9 @@
 <?php
+  use ADV\App\Debtor\Debtor;
+  use ADV\Core\Row;
+  use ADV\App\UI\UI;
+  use ADV\Core\Table;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -9,7 +14,6 @@
    **/
   class Debtors extends \ADV\App\Controller\Base
   {
-
     /** @var Debtor */
     protected $customer;
     protected function before() {
@@ -57,31 +61,31 @@
       HTML::div('companyIDs');
       HTML::table(array("class" => "marginauto width80 bold"))->tr(true)->td(true);
       HTML::label(array(
-        'for' => 'name', 'content' => 'Customer name:'
-      ), false);
+                       'for' => 'name', 'content' => 'Customer name:'
+                  ), false);
       HTML::input('name', array(
-        'value' => $this->customer->name, 'name' => 'name', 'class'=> 'med'
-      ));
+                               'value' => $this->customer->name, 'name' => 'name', 'class'=> 'med'
+                          ));
       HTML::td()->td(array(
-        'content' => _("Customer ID: "),
-      ), false)->td(true);
+                          'content' => _("Customer ID: "),
+                     ), false)->td(true);
       HTML::input('id', array(
-        'value' => $this->customer->id, 'name' => 'id', 'class'=> 'small', 'maxlength' => '7'
-      ));
+                             'value' => $this->customer->id, 'name' => 'id', 'class'=> 'small', 'maxlength' => '7'
+                        ));
       HTML::td()->tr->table->div;
       Table::startOuter('tablestyle2');
       Table::section(1);
       Table::sectionTitle(_("Shipping Details"), 2);
       /** @noinspection PhpUndefinedMethodInspection */
       HTML::tr(true)->td('branchSelect', array(
-        'colspan' => 2, 'class' => "center"
-      ));
+                                              'colspan' => 2, 'class' => "center"
+                                         ));
       UI::select('branchList', array_map(function($v) {
         return $v->br_name;
       }, $this->customer->branches), array('class'=> 'med', 'name' => 'branchList'));
       UI::button('addBranch', 'Add new address', array(
-        'class' => 'invis', 'name' => 'addBranch'
-      ));
+                                                      'class' => 'invis', 'name' => 'addBranch'
+                                                 ));
       HTML::td()->tr;
       Forms::textRow(_("Contact:"), 'branch[contact_name]', $currentBranch->contact_name, null, 40);
       //Forms::hidden('br_contact_name', $this->customer->contact_name);
@@ -91,15 +95,17 @@
       Forms::emailRow(_("Email:"), 'branch[email]', $currentBranch->email, 35, 55);
       Forms::textareaRow(_("Street:"), 'branch[br_address]', $currentBranch->br_address, 35, 2);
       $branch_postcode = new Contact_Postcode(array(
-        'city'     => array('branch[city]', $currentBranch->city), 'state'    => array('branch[state]', $currentBranch->state), 'postcode' => array('branch[postcode]', $currentBranch->postcode)
-      ));
+                                                   'city'     => array('branch[city]', $currentBranch->city),
+                                                   'state'    => array('branch[state]', $currentBranch->state),
+                                                   'postcode' => array('branch[postcode]', $currentBranch->postcode)
+                                              ));
       $branch_postcode->render();
       Table::section(2);
       Table::sectionTitle(_("Accounts Details"), 2);
       /** @noinspection PhpUndefinedMethodInspection */
       HTML::tr(true)->td(array(
-        'class' => "center", 'colspan' => 2
-      ));
+                              'class' => "center", 'colspan' => 2
+                         ));
       UI::button('useShipAddress', _("Use shipping details"), array('name' => 'useShipAddress'));
       HTML::td(false)->_tr();
       Forms::textRow(_("Accounts Contact:"), 'accounts[contact_name]', $this->customer->accounts->contact_name, 35, 40);
@@ -109,8 +115,12 @@
       Forms::emailRow(_("E-mail:"), 'accounts[email]', $this->customer->accounts->email, 35, 55);
       Forms::textareaRow(_("Street:"), 'accounts[br_address]', $this->customer->accounts->br_address, 35, 2);
       $accounts_postcode = new Contact_Postcode(array(
-        'city'     => array('accounts[city]', $this->customer->accounts->city), 'state'    => array('accounts[state]', $this->customer->accounts->state), 'postcode' => array('accounts[postcode]', $this->customer->accounts->postcode)
-      ));
+                                                     'city'     => array('accounts[city]', $this->customer->accounts->city),
+                                                     'state'    => array('accounts[state]', $this->customer->accounts->state),
+                                                     'postcode' => array(
+                                                       'accounts[postcode]', $this->customer->accounts->postcode
+                                                     )
+                                                ));
       $accounts_postcode->render();
       Table::endOuter(1);
       $menu->endTab()->startTab('Accounts', 'Accounts');
@@ -118,9 +128,12 @@
       Table::startOuter('tablestyle2');
       Table::section(1);
       Table::sectionTitle(_("Accounts Details:"), 2);
-      Forms::percentRow(_("Discount Percent:"), 'discount', $this->customer->discount, (User::i()->hasAccess(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
-      Forms::percentRow(_("Prompt Payment Discount Percent:"), 'payment_discount', $this->customer->payment_discount, (User::i()->hasAccess(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
-      Forms::AmountRow(_("Credit Limit:"), 'credit_limit', $this->customer->credit_limit, null, null, 0, (User::i()->hasAccess(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
+      Forms::percentRow(_("Discount Percent:"), 'discount', $this->customer->discount, (User::i()
+        ->hasAccess(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
+      Forms::percentRow(_("Prompt Payment Discount Percent:"), 'payment_discount', $this->customer->payment_discount, (User::i()
+        ->hasAccess(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
+      Forms::AmountRow(_("Credit Limit:"), 'credit_limit', $this->customer->credit_limit, null, null, 0, (User::i()
+        ->hasAccess(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
       Forms::textRow(_("GSTNo:"), 'tax_id', $this->customer->tax_id, null, 40);
       Sales_Type::row(_("Sales Type/Price List:"), 'sales_type', $this->customer->sales_type);
       Forms::recordStatusListRow(_("Customer status:"), 'inactive');
@@ -136,9 +149,11 @@
       Table::sectionTitle(_("Contact log:"), 1);
       Row::start();
       HTML::td(array(
-        'class' => 'ui-widget-content center'
-      ));
-      UI::button('addLog', "Add log entry")->td->tr->tr(true)->td(null)->textarea('messageLog', array('cols' => 50, 'rows' => 20));
+                    'class' => 'ui-widget-content center'
+               ));
+      UI::button('addLog', "Add log entry")->td->tr->tr(true)->td(null)->textarea('messageLog', array(
+                                                                                                     'cols'  => 50, 'rows'  => 20
+                                                                                                ));
       Contact_Log::read($this->customer->id, CT_CUSTOMER);
       /** @noinspection PhpUndefinedMethodInspection */
       HTML::textarea()->td->tr;
@@ -159,11 +174,11 @@
       Tax_Groups::row(_("Tax Group:"), 'branch[tax_group_id]', $currentBranch->tax_group_id);
       Forms::yesnoListRow(_("Disable this Branch:"), 'branch[disable_trans]', $currentBranch->disable_trans);
       HTML::tr(true)->td(array(
-        'content' => _("Website ID: "), "class" => "label"
-      ), false)->td(true);
+                              'content' => _("Website ID: "), "class" => "label"
+                         ), false)->td(true);
       HTML::input('webid', array(
-        'value' => $this->customer->webid, 'disabled' => true, 'name' => 'webid', 'maxlength' => '7'
-      ));
+                                'value' => $this->customer->webid, 'disabled' => true, 'name' => 'webid', 'maxlength' => '7'
+                           ));
       HTML::td()->tr;
       Table::section(2);
       Table::sectionTitle(_("GL Accounts"));
@@ -182,8 +197,8 @@
       HTML::div();
       Forms::end();
       HTML::div('contactLog', array(
-        'title' => 'New contact log entry', 'class' => 'ui-widget-overlay', 'style' => 'display:none;'
-      ));
+                                   'title' => 'New contact log entry', 'class' => 'ui-widget-overlay', 'style' => 'display:none;'
+                              ));
       Forms::hidden('type', CT_CUSTOMER);
       Table::start();
       Row::label('Date:', date('Y-m-d H:i:s'));
@@ -192,11 +207,14 @@
       Table::end();
       HTML::_div()->div(array('class' => 'center width50'));
       UI::button('btnConfirm', ($this->customer->id) ? 'Update Customer' : 'New Customer', array(
-        'name'  => 'submit', 'type'  => 'submit', 'class' => 'ui-helper-hidden', 'style' => 'margin:10px;'
-      ));
+                                                                                                'name'  => 'submit',
+                                                                                                'type'  => 'submit',
+                                                                                                'class' => 'ui-helper-hidden',
+                                                                                                'style' => 'margin:10px;'
+                                                                                           ));
       UI::button('btnCancel', 'Cancel', array(
-        'name' => 'cancel', 'type' => 'submit', 'style' => 'margin:10px;'
-      ));
+                                             'name' => 'cancel', 'type' => 'submit', 'style' => 'margin:10px;'
+                                        ));
       /** @noinspection PhpUndefinedMethodInspection */
       HTML::_div();
       if (!$this->Input->_get('frame')) {

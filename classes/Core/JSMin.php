@@ -7,8 +7,9 @@
    *
    * @return string
    */
-  class JSMin {
-
+  namespace ADV\Core;
+  class JSMin
+  {
     protected $minified = '';
     protected $source;
     /**
@@ -21,10 +22,10 @@
      * @return string
      */
     public function minify() {
-      $str = $this->source;
-      $res = '';
-      $maybe_regex = true;
-      $i = 0;
+      $str          = $this->source;
+      $res          = '';
+      $maybe_regex  = true;
+      $i            = 0;
       $current_char = '';
       while ($i + 1 < strlen($str)) {
         if ($maybe_regex && $str[$i] == '/' && $str[$i + 1] != '/' && $str[$i + 1] != '*' && @$str[$i - 1] != '*') { //regex detected
@@ -34,8 +35,7 @@
           do {
             if ($str[$i] == '\\') {
               $res .= $str[$i++];
-            }
-            elseif ($str[$i] == '[') {
+            } elseif ($str[$i] == '[') {
               do {
                 if ($str[$i] == '\\') {
                   $res .= $str[$i++];
@@ -48,8 +48,7 @@
           $res .= $str[$i++];
           $maybe_regex = false;
           continue;
-        }
-        elseif ($str[$i] == '"' || $str[$i] == "'") { //quoted string detected
+        } elseif ($str[$i] == '"' || $str[$i] == "'") { //quoted string detected
           $quote = $str[$i];
           do {
             if ($str[$i] == '\\') {
@@ -59,20 +58,17 @@
           } while ($i < strlen($str) && $str[$i] != $quote);
           $res .= $str[$i++];
           continue;
-        }
-        elseif ($str[$i] . $str[$i + 1] == '/*' && @$str[$i + 2] != '@') { //multi-line comment detected
+        } elseif ($str[$i] . $str[$i + 1] == '/*' && @$str[$i + 2] != '@') { //multi-line comment detected
           $i += 3;
           while ($i < strlen($str) && $str[$i - 1] . $str[$i] != '*/') {
             $i++;
           }
           if ($current_char == "\n") {
             $str[$i] = "\n";
-          }
-          else {
+          } else {
             $str[$i] = ' ';
           }
-        }
-        elseif ($str[$i] . $str[$i + 1] == '//') { //single-line comment detected
+        } elseif ($str[$i] . $str[$i + 1] == '//') { //single-line comment detected
           $i += 2;
           while ($i < strlen($str) && $str[$i] != "\n" && $str[$i] != "\r") {
             $i++;
@@ -103,46 +99,33 @@
 
         if ($LF_needed) {
           $current_char = "\n";
-        }
-        elseif ($current_char == "\t") {
+        } elseif ($current_char == "\t") {
           $current_char = " ";
-        }
-        elseif ($current_char == "\r") {
+        } elseif ($current_char == "\r") {
           $current_char = "\n";
         }
 
         // detect unnecessary white spaces
         if ($current_char == " ") {
-          if (strlen($res) &&
-            (
-              preg_match('/^[^(){}[\]=+\-*\/%&|!><?:~^,;"\']{2}$/', $res[strlen($res) - 1] . $str[$i + 1]) ||
-                preg_match('/^(\+\+)|(--)$/', $res[strlen($res) - 1] . $str[$i + 1]) // for example i+ ++j;
-            )
+          if (strlen($res) && (preg_match('/^[^(){}[\]=+\-*\/%&|!><?:~^,;"\']{2}$/', $res[strlen($res) - 1] . $str[$i + 1]) || preg_match('/^(\+\+)|(--)$/', $res[strlen($res) - 1] . $str[$i + 1]) // for example i+ ++j;
+          )
           ) {
             $res .= $current_char;
           }
-        }
-        elseif ($current_char == "\n") {
-          if (strlen($res) &&
-            (
-              preg_match('/^[^({[=+\-*%&|!><?:~^,;\/][^)}\]=+\-*%&|><?:,;\/]$/', $res[strlen($res) - 1] . $str[$i + 1]) ||
-                (strlen($res) > 1 && preg_match('/^(\+\+)|(--)$/', $res[strlen($res) - 2] . $res[strlen($res) - 1])) ||
-                (strlen($str) > $i + 2 && preg_match('/^(\+\+)|(--)$/', $str[$i + 1] . $str[$i + 2])) ||
-                preg_match('/^(\+\+)|(--)$/', $res[strlen($res) - 1] . $str[$i + 1])// || // for example i+ ++j;
-            )
+        } elseif ($current_char == "\n") {
+          if (strlen($res) && (preg_match('/^[^({[=+\-*%&|!><?:~^,;\/][^)}\]=+\-*%&|><?:,;\/]$/', $res[strlen($res) - 1] . $str[$i + 1]) || (strlen($res) > 1 && preg_match('/^(\+\+)|(--)$/', $res[strlen($res) - 2] . $res[strlen($res) - 1])) || (strlen($str) > $i + 2 && preg_match('/^(\+\+)|(--)$/', $str[$i + 1] . $str[$i + 2])) || preg_match('/^(\+\+)|(--)$/', $res[strlen($res) - 1] . $str[$i + 1]) // || // for example i+ ++j;
+          )
           ) {
             $res .= $current_char;
           }
-        }
-        else {
+        } else {
           $res .= $current_char;
         }
 
         // if the next charachter be a slash, detects if it is a divide operator or start of a regex
         if (preg_match('/[({[=+\-*\/%&|!><?:~^,;]/', $current_char)) {
           $maybe_regex = true;
-        }
-        elseif (!preg_match('/[\n ]/', $current_char)) {
+        } elseif (!preg_match('/[\n ]/', $current_char)) {
           $maybe_regex = false;
         }
 

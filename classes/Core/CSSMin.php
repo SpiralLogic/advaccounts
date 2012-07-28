@@ -2,6 +2,8 @@
   /**
 
    */
+  namespace ADV\Core;
+
   class CSSMin
   {
     protected $minified = '';
@@ -23,8 +25,7 @@
      * @internal param $count
      * @return \CSSMin
      */
-    public function __construct($source, $options = array())
-    {
+    public function __construct($source, $options = array()) {
       if (isset($options['filedir'])) {
         $this->filedir = $options['filedir'];
       }
@@ -43,9 +44,8 @@
      *
      * @return string
      */
-    protected function convertUrl($url, $count)
-    {
-      $baseUrl = (strpos($url,'..')===0)?'':'/';
+    protected function convertUrl($url, $count) {
+      $baseUrl = (strpos($url, '..') === 0) ? '' : '/';
       $url     = trim($url);
       if (preg_match('@^[^/]+:@', $url)) {
         return $url;
@@ -88,8 +88,7 @@
      * @internal param $str
      * @return string
      */
-    public function minify()
-    {
+    public function minify() {
       $str          = $this->source;
       $res          = '';
       $i            = 0;
@@ -167,8 +166,7 @@
     /**
      * @return string
      */
-    public function __toString()
-    {
+    public function __toString() {
       return $this->minified;
     }
   }

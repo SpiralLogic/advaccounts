@@ -44,29 +44,10 @@
   {
     use Traits\StaticAccess;
 
-    protected $sep = null;
-    protected $formats = null;
-    protected $separators = null;
-    protected $User = null;
-    protected $Config = null;
-    protected $Session = null;
-    protected $Company = null;
-    /**
-     * @param Config      $config
-     * @param \User       $User
-     * @param Session     $Session
-     * @param \DB_Company $Company
-     */
-    public function __construct(Config $config = null, \User $User = null, Session $Session = null, \DB_Company $Company = null) {
-      $config               = $config ? : Config::i();
-      $this->User           = $User ? : User::i();
-      $this->Session        = $Session ? : Session::i();
-      $this->Company        = $Company ? : DB_Company::i();
-      $this->formats        = $config->_get('date.formats');
-      $this->separators     = $config->_get('date.separators');
-      $this->userFiscalYear = $config->_get('use_fiscalyear');
-      $this->sep            = $this->separators[$config->_get('date.ui_separator')];
-    }
+    protected $sep = '-';
+    protected $formats = array("m/d/Y", "d/m/Y", "Y/m/d");
+    protected $separators = array('/', ".", "-", " ");
+    protected $format;
     /**
      * @static
      *
@@ -80,7 +61,7 @@
       if (!$date) {
         return false;
       }
-      $how  = ($format !== null) ? $format : $this->User->_date_format();
+      $how  = ($format !== null) ? $format : $this->format;
       $date = str_replace($this->separators, '/', trim($date));
       if ($how == 0) {
         list($month, $day, $year) = explode('/', $date) + [0=> false, 1=> false, 2=> false];
@@ -115,70 +96,11 @@
      * @return string User format of the current time .
      */
     public function _now() {
-      if ($this->User->_date_format() == 0) {
+      if (!$this->format) {
         return date("h:i a");
       } else {
         return date("H:i");
       }
-    }
-    /**
-     * Retrieve and optionally set default date for new document.
-     *
-     * @param null $date
-     *
-     * @return mixed|null
-     */
-    public function _newDocDate($date = null) {
-      if (!$date) {
-        $this->Session->_setGlobal('date', $date);
-      } else {
-        $date = $this->Session->_getGlobal('date');
-      }
-      if (!$date || !$this->User->_sticky_doc_date()) {
-        $date = $this->Session->_setGlobal('date', $this->_today());
-      }
-      return $date;
-    }
-    /**
-     * @static
-     *
-     * @param      $date
-     * @param bool $convert
-     *
-     * @return bool
-     */
-    public function _isDateInFiscalYear($date, $convert = false) {
-      if (!$this->userFiscalYear) {
-        return true;
-      }
-      $myrow = $this->Company->_get_current_fiscalyear();
-      if ($myrow['closed'] == 1) {
-        return false;
-      }
-      if ($convert) {
-        $date2 = $this->_sqlToDate($date);
-      } else {
-        $date2 = $date;
-      }
-      $begin = $this->_sqlToDate($myrow['begin']);
-      $end   = $this->_sqlToDate($myrow['end']);
-      return ($this->_isGreaterThan($date2, $begin) || $this->_isGreaterThan($end, $date2));
-    }
-    /**
-     * @static
-     * @return string Date in Users Format
-     */
-    public function _beginFiscalYear() {
-      $myrow = \DB_Company::get_current_fiscalyear();
-      return $this->_sqlToDate($myrow['begin']);
-    }
-    /**
-     * @static
-     * @return string Date in Users Format
-     */
-    public function _endFiscalYear() {
-      $myrow = \DB_Company::get_current_fiscalyear();
-      return $this->_sqlToDate($myrow['end']);
     }
     /**
      * @static
@@ -218,7 +140,7 @@
     public function _addDays($date, $days) {
       list($year, $month, $day) = $this->_explode($date);
       $timet = mktime(0, 0, 0, $month, $day + $days, $year);
-      return date($this->User->_date_display(), $timet);
+      return date($this->date_display(), $timet);
     }
     /**
      * @static
@@ -231,7 +153,7 @@
     public function _addMonths($date, $months) {
       list($year, $month, $day) = $this->_explode($date);
       $timet = mktime(0, 0, 0, $month + $months, $day, $year);
-      return date($this->User->_date_display(), $timet);
+      return date($this->date_display(), $timet);
     }
     /**
      * @static
@@ -244,7 +166,7 @@
     public function _addYears($date, $years) {
       list($year, $month, $day) = $this->_explode($date);
       $timet = mktime(0, 0, 0, $month, $day, $year + $years);
-      return date($this->User->_date_display(), $timet);
+      return date($this->date_display(), $timet);
     }
     /**
      * @static
@@ -259,7 +181,7 @@
         return "";
       }
       $date = $this->_dateToSql($date);
-      $how  = $this->formats[$this->User->_date_format()];
+      $how  = $this->formats[$this->format];
       $date = \DateTime::createFromFormat('Y-m-d', $date);
       return $date->format($how);
     } // end static function sqlToDate
@@ -283,7 +205,7 @@
         return $date;
       }
 
-      $how  = $this->formats[$this->User->_date_format()];
+      $how  = $this->formats[$this->format];
       $date = \DateTime::createFromFormat($how, $date);
       if (!$date) {
         return $this->_today(true);
@@ -554,6 +476,19 @@ provided that both dates are after 1970. Also only works for dates up to the yea
       return (int) ($a / $b);
     }
     /**
+     * @return string
+     */
+    public function date_display() {
+      $sep = $this->sep;
+      if ($this->format == 0) {
+        return "m" . $sep . "d" . $sep . "Y";
+      } elseif ($this->format == 1) {
+        return "d" . $sep . "m" . $sep . "Y";
+      } else {
+        return "Y" . $sep . "m" . $sep . "d";
+      }
+    }
+    /**
      * @static
      *
      * @param      $year
@@ -564,7 +499,7 @@ provided that both dates are after 1970. Also only works for dates up to the yea
      * @return string
      */
     protected function date($year, $month, $day, $format = null) {
-      $how  = $this->formats [($format !== null) ? $format : $this->User->_date_format()];
+      $how  = $this->formats [($format !== null) ? $format : $this->format];
       $date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
       $how  = str_replace('/', $this->sep, $how);
       return date($how, $date);

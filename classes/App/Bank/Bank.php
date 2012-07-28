@@ -28,12 +28,13 @@
   use Bank_Currency;
   use ADV\App\Creditor\Creditor;
   use Creditor_Trans;
-  use ADV\Core\Dates;
+  use ADV\App\Dates;
 
   /**
 
    */
-  class Bank {
+  class Bank
+  {
     /**
      * @static
      *

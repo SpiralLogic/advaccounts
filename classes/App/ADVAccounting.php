@@ -1,6 +1,5 @@
 <?php
   use ADV\App\Page;
-  use ADV\Core\Input\Input;
   use ADV\Core\Config;
   use ADV\Core\Ajax;
   use ADV\Core\Session;

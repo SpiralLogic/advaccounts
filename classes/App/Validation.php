@@ -36,7 +36,7 @@
     const LOCATIONS         = "locations";
     const BANK_ACCOUNTS     = "bank_accounts";
     const CASH_ACCOUNTS     = "bank_accounts";
-    const  GL_ACCOUNTS      = "chart_master";
+    const GL_ACCOUNTS       = "chart_master";
     const GL_ACCOUNT_GROUPS = "chart_types";
     const QUICK_ENTRIES     = "quick_entries";
     const TAGS              = "FROM tags WHERE type=";
@@ -52,8 +52,7 @@
      * @return int|null
      * @throws Exception
      */
-    public static function check($validate, $msg = '', $extra = null, $default = null)
-    {
+    public static function check($validate, $msg = '', $extra = null, $default = null) {
       if ($extra === false) {
         return 0;
       }
@@ -95,8 +94,7 @@
      *
      * @return bool|int
      */
-    public static function is_int($postname, $min = null, $max = null)
-    {
+    public static function is_int($postname, $min = null, $max = null) {
       if (!isset($_POST) || !isset($_POST[$postname])) {
         return 0;
       }
@@ -126,8 +124,7 @@
      *
      * @return int
      */
-    public static function post_num($postname, $min = null, $max = null, $default = 0)
-    {
+    public static function post_num($postname, $min = null, $max = null, $default = 0) {
       if (!isset($_POST) || !isset($_POST[$postname])) {
         $_POST[$postname] = $default;
       }
@@ -144,8 +141,7 @@
      *
      * @return int
      */
-    public static function is_num($value, $min = null, $max = null, $default = 0)
-    {
+    public static function is_num($value, $min = null, $max = null, $default = 0) {
       $result = filter_var($value, FILTER_VALIDATE_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND);
       if ($min !== null && $result < $min) {
         $result = false;
@@ -167,8 +163,7 @@
      * @internal param int $dflt
      * @return bool|float|int|mixed|string
      */
-    public static function input_num($postname = null, $default = 0, $min = null, $max = null)
-    {
+    public static function input_num($postname = null, $default = 0, $min = null, $max = null) {
       if (!isset($_POST) || !isset($_POST[$postname])) {
         $_POST[$postname] = $default;
       }

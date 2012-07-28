@@ -20,7 +20,7 @@
   use GL_Trans;
   use SysTypes;
   use User;
-  use ADV\Core\Dates;
+  use ADV\App\Dates;
   use Item_Code;
   use DB_Company;
   use ADV\Core\DB\DB;

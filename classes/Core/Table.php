@@ -6,9 +6,12 @@
    * Time: 2:42 PM
    * To change this template use File | Settings | File Templates.
    */
+  namespace ADV\Core;
+  /**
 
-  class Table {
-
+   */
+  class Table
+  {
     /**
      * @param        $msg
      * @param int    $colspan
@@ -17,7 +20,6 @@
     static function sectionTitle($msg, $colspan = 2, $class = 'tablehead') {
       echo "<tr class='$class'><td colspan=$colspan class='$class'>$msg</td></tr>\n";
     }
-
     /**
      * @param        $labels
      * @param string $params
@@ -30,7 +32,6 @@
       }
       echo '</tr></thead>';
     }
-
     /**
      * @param string $class
      */
@@ -41,17 +42,17 @@
       }
       echo " >\n";
     }
-
     /**
      * @param int $breaks
      */
     static function end($breaks = 0) {
       echo "</table></div>\n";
       if ($breaks) {
-        Display::br($breaks);
+        for ($i = 0; $i < $breaks; $i++) {
+          echo "<br>";
+        }
       }
     }
-
     /**
      * @param string $class
      */

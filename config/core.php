@@ -16,9 +16,9 @@
       'Auth', //
       'Loader', //
       'Cache', //
+      'Cell', //
       'Config', //
       'DatePicker', //
-      'Dates', //
       'Dialog', //
       'Errors', //
       'Event', //
@@ -27,12 +27,16 @@
       'HTML', //
       'HttpNotFoundException', //
       'JS', //
+      'JSMin', //
       'Language', //
       'Menu', //
       'MenuUI', //
       'Num', //
+      'Row', //
+      'SelectBox', //
       'Session', //
       'Status', //
+      'Table', //
       'UploadHandler', //
       'View', //
       'XMLParser', //
@@ -50,6 +54,7 @@
     ), 'ADV\\App'                => array(
       'Page', //
       'Security', //
+      'Dates', //
     ), //
     'ADV\\App\\Debtor'           => array(
       'Debtor', //

@@ -83,18 +83,19 @@
      */
     public static function search($id, $options = array()) {
       $o   = array(
-        'url'              => false, //
-        'nodiv'            => false, //
-        'label'            => false, //
-        'name'             => null, //
-        'set'              => null, //
-        'class'            => 'width95 ', //
-        'value'            => null, //
-        'focus'            => null, //
-        'callback'         => false, //
-        'cells'            => false, //
-        'cell_class'       => null, //
-        'input_cell_params'=> [], 'label_cell_params'=> ['class' > 'label pointer']
+        'url'               => false, //
+        'nodiv'             => false, //
+        'label'             => false, //
+        'name'              => null, //
+        'set'               => null, //
+        'class'             => 'width95 ', //
+        'value'             => null, //
+        'focus'             => null, //
+        'callback'          => false, //
+        'cells'             => false, //
+        'cell_class'        => null, //
+        'placeholder'       => null, //
+        'input_cell_params' => [], 'label_cell_params'=> ['class' > 'label pointer']
       );
       $o   = array_merge($o, $options);
       $url = $o['url'] ? : false;
@@ -196,7 +197,8 @@
       if ($o['label']) {
         HTML::label(null, $o['label'], array('for' => $id), false);
       }
-      HTML::input($id, array('value'     => $o['selected'],
+      HTML::input($id, array(
+                            'value'      => $o['selected'],
                             'placeholder'=> $o['label'],
                             'name'       => $id,
                             'class'      => $o['class'],
