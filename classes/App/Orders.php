@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  abstract class Orders extends DB_Base
+  abstract class Orders extends \ADV\App\DB\Base
   {
     const NEW_ORDER           = 'NewOrder';
     const MODIFY_ORDER        = 'ModifyOrder';

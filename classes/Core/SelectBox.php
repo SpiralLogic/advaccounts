@@ -8,6 +8,8 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+  use ADV\Core\Input\Input;
+
   class SelectBox
   {
     /**

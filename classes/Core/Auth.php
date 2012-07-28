@@ -31,8 +31,7 @@
      * @param $password
      */
     public function updatePassword($id, $password) {
-      \DB::update('users')->value('password', $this->hashPassword($password))->value('user_id', $this->username)
-        ->value('hash', $this->makeHash($password, $id))->value('change_password', 0)->where('id=', $id)->exec();
+      \DB::update('users')->value('password', $this->hashPassword($password))->value('user_id', $this->username)->value('hash', $this->makeHash($password, $id))->value('change_password', 0)->where('id=', $id)->exec();
       session_regenerate_id();
     }
     /**
@@ -41,7 +40,6 @@
      */
     public function hashPassword() {
       $password = crypt($this->password, '$6$rounds=5000$' . Config::get('auth_salt') . '$');
-
       return $password;
     }
     /**
@@ -54,8 +52,7 @@
     public function checkUserPassword($username) {
       $username = $username ? : $this->username;
       $password = $this->hashPassword($this->password);
-      $result   = \DB::select()->from('users')->where('user_id=', $username)->andWhere('inactive =', 0)
-        ->andWhere('password=', $password)->fetch()->one();
+      $result   = \DB::select()->from('users')->where('user_id=', $username)->andWhere('inactive =', 0)->andWhere('password=', $password)->fetch()->one();
       if ($result['password'] != $password) {
         $result = false;
       } else {
@@ -65,9 +62,7 @@
         }
         unset($result['password']);
       }
-      \DB::insert('user_login_log')->values(array('user' => $username, 'IP' => \Users::get_ip(), 'success' => (bool) $result))
-        ->exec();
-
+      \DB::insert('user_login_log')->values(array('user' => $username, 'IP' => \Users::get_ip(), 'success' => (bool) $result))->exec();
       return $result;
     }
     /**
@@ -134,7 +129,6 @@
           }
         }
       }
-
       return $returns;
     }
     /**
@@ -142,7 +136,6 @@
      */
     public function isBruteForce() {
       $query = \DB::query('select COUNT(IP) FROM user_login_log WHERE success=0 AND timestamp>NOW() - INTERVAL 1 HOUR AND IP=' . \DB::escape(\Users::get_ip()));
-
       return (\DB::fetch($query)[0] > Config::get('max_login_attempts', 50));
     }
     /**

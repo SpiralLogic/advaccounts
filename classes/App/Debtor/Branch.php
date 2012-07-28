@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Debtor_Branch extends DB_Base
+  class Debtor_Branch extends \ADV\App\DB\Base
   {
     /**
      * @var string

@@ -26,7 +26,7 @@
         continue;
       }
       // create security backup
-      DB_Utils::backup($conn, 'no', 'Security backup before upgrade');
+      Utils::backup($conn, 'no', 'Security backup before upgrade');
       // apply all upgrade data
       foreach ($installers as $i => $inst) {
         $ret = upgrade_step($i, $conn);
@@ -172,7 +172,7 @@ You have to clean database manually to enable them, or try to perform forced upg
         }
         $sql = $inst->sql;
         if ($sql != '') {
-          $ret &= DB_Utils::import(DOCROOT . 'upgrade' . DS . 'sql' . DS . $sql, $conn, $force);
+          $ret &= Utils::import(DOCROOT . 'upgrade' . DS . 'sql' . DS . $sql, $conn, $force);
         }
         $ret &= $inst->install($force);
       } else {

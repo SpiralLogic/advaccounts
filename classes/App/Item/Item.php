@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Item;
-  use DB_Base;
+  use \ADV\App\DB\Base;
   use ADV\App\UI\UI;
   use ADV\Core\Dialog;
   use Forms;
@@ -28,7 +28,7 @@
   /**
 
    */
-  class Item extends DB_Base
+  class Item extends Base
   {
     /**
      * @var int

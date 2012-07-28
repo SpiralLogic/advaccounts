@@ -15,7 +15,7 @@
    * @method get_pref($pref_name)
    * @method get_current_fiscalyear()
    */
-  class DB_Company extends DB_Base
+  class DB_Company extends \ADV\App\DB\Base
   {
 
     use StaticAccess;

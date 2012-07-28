@@ -1,5 +1,11 @@
 <?php
+  namespace ADV\App\DB;
   use ADV\Core\DB\DBDuplicateException;
+  use ADV\Core\DB\DBInsertException;
+  use ADV\Core\DB\DBSelectException;
+  use ADV\Core\Status;
+  use ADV\Core\DB\DBUpdateException;
+  use ADV\Core\DB\DB;
 
   /**
    * PHP version 5.4
@@ -9,11 +15,10 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  abstract class DB_Base
+  abstract class Base
   {
     use \ADV\Core\Traits\SetFromArray;
     use \ADV\Core\Traits\Status;
-
     /**
      * @var int
      */

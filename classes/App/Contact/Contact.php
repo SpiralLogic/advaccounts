@@ -8,12 +8,12 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Contact;
-  use DB_Base;
+  use \ADV\App\DB\Base;
 
   /**
 
    */
-  class Contact extends DB_Base
+  class Contact extends Base
   {
     /**
      * @var int

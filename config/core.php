@@ -49,6 +49,7 @@
       'DBInsertException', //
       'DBSelectException', //
       'DBUpdateException', //
+      'Utils', //
     ), 'ADV\\Core\\Module'       => array(
       'Loadable', //
     ), 'ADV\\App'                => array(

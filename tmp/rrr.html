@@ -1,0 +1,1466 @@
+<!DOCTYPE HTML>
+<html class='debtors' dir='ltr'>
+<head>
+  <meta charset='utf-8'>
+  <title>Customers</title>
+  <script>document.documentElement.className = document.documentElement.className + ' js'</script>
+  <link rel='apple-touch-icon' href='/company/images/Advanced-Group-Logo.png'/>
+  <link href='/themes/default/default.css,jquery-ui.css,jquery.calc.css' rel='stylesheet'/>
+</head>
+<body class='debtors'>
+<div id='content'>
+<div class='ajaxmark'>
+  <img alt='Ajax Loading' width='25' height='25' id='ajaxmark' src='/themes/default/images/ajax_loader3.gif'>
+
+  <div id='top'><p>Advanced Group PTY LTD | advaccounts | Sol Jennings</p>
+    <ul>
+      <li><a href='/system/display_prefs.php?'>Preferences</a></li>
+      <li><a href='/system/change_current_user_password.php?selected_id=admin'>Change password</a>
+      </li>
+      <li><a target='_blank' class='openWindow' href=''>Help</a></li>
+      <li><a href='/access/logout.php?'>Logout</a></li>
+    </ul>
+  </div>
+</div>
+<div id='logo'><h1>Advanced Accounting<br><span class='slogan'>3.1908
+-SYEDESIGN</span></h1></div>
+<div id='_tabs2'>
+  <ul class="menu" id="topmenu">
+    <li class=''>
+      <a href='/index.php?application=sales' accesskey='S'><span class="u">S</span>ales</a>
+    </li>
+    <li class='active'>
+      <a href='/contacts/customers' accesskey='C'><span class="u">C</span>ustomers</a>
+    </li>
+    <li class=''>
+      <a href='/index.php?application=purchases' accesskey='P'><span class="u">P</span>urchases</a>
+    </li>
+    <li class=''>
+      <a href='/contacts/suppliers' accesskey='S'><span class="u">S</span>uppliers</a>
+    </li>
+    <li class=''>
+      <a href='/index.php?application=inventory' accesskey='I'><span class="u">I</span>nventory</a>
+    </li>
+    <li class=''>
+      <a href='/index.php?application=manufacturing' accesskey='M'><span class="u">M</span>anufacturing</a>
+    </li>
+    <li class=''>
+      <a href='/index.php?application=gl' accesskey='B'><span class="u">B</span>anking</a>
+    </li>
+    <li class=''>
+      <a href='/index.php?application=advanced' accesskey='A'><span class="u">A</span>dvanced</a>
+    </li>
+    <li class=''>
+      <a href='/index.php?application=system' accesskey='S'><span class="u">S</span>ystem</a>
+    </li>
+  </ul>
+</div>
+<div id='msgbox'></div>
+<div id='wrapper'>
+<div class='titletext'>Customers<span id='hints' class='floatright' style='display:none'></span></div>
+<div id='_page_body'>
+<div id='companysearch' class='center bold font13 pad20'>
+  <label for='customer'>Search Customer:&nbsp;<input name='customer' id='customer' type='text' autofocus></label>
+</div>
+<form method='post' action='/contacts/customers'>
+<div class='width90 center ui-tabs ui-widget ui-widget-content ui-corner-all tabs' id='tabs0'>
+<ul class='ui-tabs-nav
+            ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all'>
+
+  <li class='ui-state-default ui-corner-top'><a title='Details' href='#tabs0-0'><span>Details</span></a></li>
+  <li class='ui-state-default ui-corner-top'><a title='Accounts' href='#tabs0-1'><span>Accounts</span></a></li>
+  <li class='ui-state-default ui-corner-top'><a title='Customer Contacts' href='#tabs0-2'><span>Customer Contacts</span></a></li>
+  <li class='ui-state-default ui-corner-top'><a title='Extra Shipping Info' href='#tabs0-3'><span>Extra Shipping Info</span></a></li>
+  <li class='ui-state-default ui-corner-top'><a title='Invoices' href='#tabs0-4'><span>Invoices</span></a></li>
+</ul>
+<div id="tabs0-0" style="text-align:center">
+  <div id="companyIDs">
+    <table class="marginauto width80 bold">
+      <tr>
+        <td><label for="name">Customer name:</label><input id="name" name="name" class="med"></td>
+        <td>Customer ID:</td>
+        <td><input id="id" name="id" class="small" maxlength="7"></td>
+      </tr>
+    </table>
+  </div>
+  <div class='center'>
+    <table class='tablestyle2'>
+      <tr class='top'>
+        <td>
+          <table class='tablestyle_inner '>
+            <tr class='tablehead'>
+              <td colspan=2 class='tablehead'>Shipping Details</td>
+            </tr>
+            <tr>
+              <td id="branchSelect" colspan="2" class="center"><select id="branchList" class="med" name="branchList">
+                <option>New Address</option>
+              </select>
+                <button id="addBranch" class="invis" name="addBranch">Add new address</button>
+              </td>
+            </tr>
+            <tr>
+              <td class='label'><label for='branch[contact_name]'>Contact:</label></td>
+              <td><input type="text" name="branch[contact_name]" id="branch[contact_name]" maxlength="40" value=""></td>
+            </tr>
+            <tr>
+              <td class='label'><label for='branch[phone]'>Phone Number:</label></td>
+              <td><input type="text" name="branch[phone]" id="branch[phone]" size='35' maxlength="30" value=""></td>
+            </tr>
+            <tr>
+              <td class='label'><label for='branch[phone2]'>2nd Phone Number:</label></td>
+              <td><input type="text" name="branch[phone2]" id="branch[phone2]" size='35' maxlength="30" value=""></td>
+            </tr>
+            <tr>
+              <td class='label'><label for='branch[fax]'>Fax Number:</label></td>
+              <td><input type="text" name="branch[fax]" id="branch[fax]" size='35' maxlength="30" value=""></td>
+            </tr>
+            <tr>
+              <td class='label'><label for='branch[email]'>Email:</label></td>
+              <td><input type="text" name="branch[email]" id="branch[email]" size='35' maxlength="55" value=""></td>
+            </tr>
+            <tr>
+              <td class='label'><label for='branch[br_address]'>Street:</label></td>
+              <td><textarea id='branch[br_address]' name='branch[br_address]' cols='37' rows='2'></textarea></td>
+            </tr>
+            <tr>
+              <td class="label "><label for="branch[city]">City: </label></td>
+              <td><input id="branch[city]" class="width95 " name="branch[city]" data-set="1" type="search"></td>
+            </tr>
+            <tr>
+              <td class="label"><label for="branch[state]">State: </label></td>
+              <td><input id="branch[state]" maxlength="35" data-set="1" size="35" name="branch[state]"></td>
+            </tr>
+            <tr>
+              <td class="label"><label for="branch[postcode]">Postcode: </label></td>
+              <td><input id="branch[postcode]" class="width95 " name="branch[postcode]" data-set="1" type="search"></td>
+            </tr>
+          </table>
+        </td>
+        <td style='border-left:1px solid #cccccc; '>
+          <table class='tablestyle_inner '>
+            <tr class='tablehead'>
+              <td colspan=2 class='tablehead'>Accounts Details</td>
+            </tr>
+            <tr>
+              <td class="center" colspan="2">
+                <button id="useShipAddress" name="useShipAddress" class="button">Use shipping details</button>
+              <td></td>
+            </tr>
+            <tr>
+              <td class='label'><label for='accounts[contact_name]'>Accounts Contact:</label></td>
+              <td><input type="text" name="accounts[contact_name]" id="accounts[contact_name]" size='35' maxlength="40" value=""></td>
+            </tr>
+            <tr>
+              <td class='label'><label for='accounts[phone]'>Phone Number:</label></td>
+              <td><input type="text" name="accounts[phone]" id="accounts[phone]" size='35' maxlength="30" value=""></td>
+            </tr>
+            <tr>
+              <td class='label'><label for='accounts[phone2]'>Secondary Phone Number:</label></td>
+              <td><input type="text" name="accounts[phone2]" id="accounts[phone2]" size='35' maxlength="30" value=""></td>
+            </tr>
+            <tr>
+              <td class='label'><label for='accounts[fax]'>Fax Number:</label></td>
+              <td><input type="text" name="accounts[fax]" id="accounts[fax]" size='35' maxlength="30" value=""></td>
+            </tr>
+            <tr>
+              <td class='label'><label for='accounts[email]'>E-mail:</label></td>
+              <td><input type="text" name="accounts[email]" id="accounts[email]" size='35' maxlength="55" value=""></td>
+            </tr>
+            <tr>
+              <td class='label'><label for='accounts[br_address]'>Street:</label></td>
+              <td><textarea id='accounts[br_address]' name='accounts[br_address]' cols='37' rows='2'></textarea></td>
+            </tr>
+            <tr>
+              <td class="label "><label for="accounts[city]">City: </label></td>
+              <td><input id="accounts[city]" class="width95 " name="accounts[city]" data-set="3" type="search"></td>
+            </tr>
+            <tr>
+              <td class="label"><label for="accounts[state]">State: </label></td>
+              <td><input id="accounts[state]" maxlength="35" data-set="3" size="35" name="accounts[state]"></td>
+            </tr>
+            <tr>
+              <td class="label"><label for="accounts[postcode]">Postcode: </label></td>
+              <td><input id="accounts[postcode]" class="width95 " name="accounts[postcode]" data-set="3" type="search"></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <br></div>
+<div id="tabs0-1" class="ui-tabs-hide"><input type='hidden' id='accounts_id' name='accounts_id' value='0'>
+
+  <div class='center'>
+    <table class='tablestyle2'>
+      <tr class='top'>
+        <td>
+          <table class='tablestyle_inner '>
+            <tr class='tablehead'>
+              <td colspan=2 class='tablehead'>Accounts Details:</td>
+            </tr>
+            <tr>
+              <td class='label'>Discount Percent:</td>
+              <td><input name='discount' value='0.00' data-dec='2' class='amount small' maxlength='12' id='discount' type='text'><span id='_discount_label'>%</span></td>
+            </tr>
+            <tr>
+              <td class='label'>Prompt Payment Discount Percent:</td>
+              <td><input name='payment_discount' value='0.00' data-dec='2' class='amount small' maxlength='12' id='payment_discount' type='text'><span id='_payment_discount_label'>%</span></td>
+            </tr>
+            <tr>
+              <td class='label'>Credit Limit:</td>
+              <td><input name='credit_limit' value='0.00' data-dec='2' class='amount ' maxlength='15' id='credit_limit' type='text'></td>
+            </tr>
+            <tr>
+              <td class='label'><label for='tax_id'>GSTNo:</label></td>
+              <td><input type="text" name="tax_id" id="tax_id" maxlength="40" value=""></td>
+            </tr>
+            <tr>
+              <td class='label'>Sales Type/Price List:</td>
+              <td>
+                <div id='_sales_type_sel' class='combodiv'><select id='sales_type' name='sales_type' class='combo' title=''>
+                  <option selected value='1'>Retail</option>
+                  <option value='2'>Wholesale</option>
+                </select>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class='label'>Customer status:</td>
+              <td>
+                <div id='_inactive_sel' class='combodiv'><select id='inactive' name='inactive' class='combo' title=''>
+                  <option value='0'>Active</option>
+                  <option value='1'>Inactive</option>
+                </select>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class='label'>Customer's Currency:</td>
+              <td>
+                <div id='_curr_code_sel' class='combodiv'><select id='curr_code' name='curr_code' class='combo' title=''>
+                  <option selected value='AUD'>AU Dollars</option>
+                  <option value='GBP'>British Pounds</option>
+                  <option value='USD'>US Dollar</option>
+                </select>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class='label'>Payment Terms:</td>
+              <td>
+                <div id='_payment_terms_sel' class='combodiv'><select id='payment_terms' name='payment_terms' class='combo' title=''>
+                  <option value='0'>Payment Up Front</option>
+                  <option value='1'>Due 15th Of the Following Month</option>
+                  <option value='2'>Due By End Of The Following Month</option>
+                  <option value='5'>50% deposit, 50% 14 days job end</option>
+                  <option value='6'>14 days</option>
+                  <option value='7'>Old</option>
+                  <option value='8'>30 Days</option>
+                  <option value='9'>7 Days</option>
+                  <option value='10'>NO ACCOUNT - STRICTLY 7 DAYS</option>
+                  <option value='11'>Captial</option>
+                </select>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class='label'>Credit Status:</td>
+              <td>
+                <div id='_credit_status_sel' class='combodiv'><select id='credit_status' name='credit_status' class='combo' title=''>
+                  <option value='5'>BLACKLISTED</option>
+                  <option selected value='1'>Good History</option>
+                  <option value='4'>In liquidation</option>
+                  <option value='3'>No more work until payment received</option>
+                </select>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td style='border-left:1px solid #cccccc; '>
+          <table class='tablestyle_inner '>
+            <tr class='tablehead'>
+              <td colspan=1 class='tablehead'>Contact log:</td>
+            </tr>
+            <tr>
+              <td class="ui-widget-content center">
+                <button id="addLog" name="addLog" class="button">Add log entry</button>
+              </td>
+            </tr>
+            <tr>
+              <td><textarea id="messageLog" cols="50" rows="20"></textarea></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <br></div>
+<div id="tabs0-2" class="ui-tabs-hide">
+  <div class='center'>
+    <div id="Contacts" style='min-height:200px'>
+      <script id="contact_tmpl" type='text/x-jquery-tmpl'>
+        <table id="contact-${_k}" style="display:inline-block">
+          <tr>
+            <td class="tablehead" colspan="2">${name}</td>
+          </tr>
+          <tr>
+            <td class='label'><label for='contact[name-${_k}]'>Name:</label></td>
+            <td><input type="text" name="contact[name-${_k}]" id="contact[name-${_k}]" size='35' maxlength="40" value="${name}"></td>
+          </tr>
+          <tr>
+            <td class='label'><label for='contact[phone1-${_k}]'>Phone:</label></td>
+            <td><input type="text" name="contact[phone1-${_k}]" id="contact[phone1-${_k}]" size='35' maxlength="40" value="${phone1}"></td>
+          </tr>
+          <tr>
+            <td class='label'><label for='contact[phone2-${_k}]'>Phone2:</label></td>
+            <td><input type="text" name="contact[phone2-${_k}]" id="contact[phone2-${_k}]" size='35' maxlength="40" value="${phone2}"></td>
+          </tr>
+          <tr>
+            <td class='label'><label for='contact[email-${_k}]'>Email:</label></td>
+            <td><input type="text" name="contact[email-${_k}]" id="contact[email-${_k}]" size='35' maxlength="40" value="${email}"></td>
+          </tr>
+          <tr>
+            <td class='label'><label for='contact[department-${_k}]'>Dept:</label></td>
+            <td><input type="text" name="contact[department-${_k}]" id="contact[department-${_k}]" size='35' maxlength="40" value="${department}"></td>
+          </tr>
+        </table>
+      </script>
+    </div>
+  </div>
+</div>
+<div id="tabs0-3" class="ui-tabs-hide">
+<div class='center'>
+<table class='tablestyle2'>
+<tr class='top'>
+<td>
+  <input type='hidden' id='branch_id' name='branch_id' value='0'>
+  <table class='tablestyle_inner '>
+    <tr class='tablehead'>
+      <td colspan=2 class='tablehead'>Sales</td>
+    </tr>
+    <tr>
+      <td class='label'>Sales Person:</td>
+      <td>
+        <div id='_branch[salesman]_sel' class='combodiv'><select id='branch[salesman]' name='branch[salesman]' class='combo' title=''>
+          <option value='14'>Casey Raineri</option>
+          <option value='13'>Daniel Dobson</option>
+          <option value='3'>Mike Smith</option>
+          <option value='1'>Phil Whittle</option>
+          <option value='2'>Sam Jennings</option>
+          <option value='15'>Sherry Tang</option>
+          <option selected value='5'>Sol Jennings</option>
+          <option value='8'>Syed Mehdi</option>
+        </select>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class='label'>Sales Area:</td>
+      <td>
+        <div id='_branch[area]_sel' class='combodiv'><select id='branch[area]' name='branch[area]' class='combo' title=''>
+          <option selected value='1'>Australia</option>
+          <option value='2'>UK</option>
+        </select>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class='label'>Sales Group:</td>
+      <td>
+        <div id='_branch[group_no]_sel' class='combodiv'><select id='branch[group_no]' name='branch[group_no]' class='combo' title=''>
+          <option value='3'>Large</option>
+          <option value='2'>Medium</option>
+          <option selected value='1'>Small</option>
+        </select>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class='label'>Default Inventory Location:</td>
+      <td>
+        <div id='_branch[default_location]_sel' class='combodiv'><select id='branch[default_location]' name='branch[default_location]' class='combo' title=''>
+          <option value='MEL'>Camberwell</option>
+          <option value='DRP'>Drop Ship</option>
+          <option selected value='KEYS'>Keysborough</option>
+          <option value='NFY'>NOT FAXED YET</option>
+        </select>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class='label'>Default Shipping Company:</td>
+      <td>
+        <div id='_branch[default_ship_via]_sel' class='combodiv'><select id='branch[default_ship_via]' name='branch[default_ship_via]' class='combo' title=''>
+          <option value='12'>Consulting</option>
+          <option value='11'>Delivery</option>
+          <option selected class='inactive' value='1'>Hunter Express</option>
+          <option value='9'>Installation</option>
+          <option value='8'>Linemarking</option>
+          <option value='2'>Pickup</option>
+        </select>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class='label'>Tax Group:</td>
+      <td>
+        <div id='_branch[tax_group_id]_sel' class='combodiv'><select id='branch[tax_group_id]' name='branch[tax_group_id]' class='combo' title=''>
+          <option selected value='1'>GST</option>
+          <option value='2'>Tax free FRE</option>
+          <option value='4'>Tax free EXP</option>
+          <option value='5'>Taxed CAP</option>
+          <option value='6'>Tax free N-T</option>
+          <option value='7'>Taxed INP</option>
+        </select>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class='label'>Disable this Branch:</td>
+      <td>
+        <div id='_branch[disable_trans]_sel' class='combodiv'><select id='branch[disable_trans]' name='branch[disable_trans]' class='combo' title=''>
+          <option selected value='0'>No</option>
+          <option value='1'>Yes</option>
+        </select>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="label">Website ID:</td>
+      <td><input id="webid" disabled name="webid" maxlength="7"></td>
+    </tr>
+  </table>
+</td>
+<td style='border-left:1px solid #cccccc; '>
+<table class='tablestyle_inner '>
+<tr class='tablehead'>
+  <td colspan=2 class='tablehead'>GL Accounts</td>
+</tr>
+<tr>
+  <td class='label'>Sales Account:</td>
+  <td>
+    <div id='_branch[sales_account]_sel' class='combodiv'><select id='branch[sales_account]' name='branch[sales_account]' class='combo2' title=''>
+      <option selected value=''>Use Item Sales Accounts</option>
+      <optgroup label='Cash'>
+        <option value='1700'>1700&nbsp;&nbsp;&nbsp;&nbsp;Adv NAB Cheque Account</option>
+        <option value='1701'>1701&nbsp;&nbsp;&nbsp;&nbsp;MSH NAB Cheque Account</option>
+        <option value='1702'>1702&nbsp;&nbsp;&nbsp;&nbsp;Westpac Cheque Account</option>
+        <option value='1703'>1703&nbsp;&nbsp;&nbsp;&nbsp;Cash on Hand</option>
+        <option value='1705'>1705&nbsp;&nbsp;&nbsp;&nbsp;Petty Cash</option>
+        <option value='1706'>1706&nbsp;&nbsp;&nbsp;&nbsp;Mike&#039;s Wallet</option>
+        <option value='1707'>1707&nbsp;&nbsp;&nbsp;&nbsp;Paypal Account</option>
+        <option value='1708'>1708&nbsp;&nbsp;&nbsp;&nbsp;Undeposited Funds</option>
+        <option value='1709'>1709&nbsp;&nbsp;&nbsp;&nbsp;Sol's Wallet</option>
+        <option value='1711'>1711&nbsp;&nbsp;&nbsp;&nbsp;Sam's Wallet</option>
+      </optgroup>
+      <optgroup label='Receivables'>
+        <option value='1510'>1510&nbsp;&nbsp;&nbsp;&nbsp;Employee Advances</option>
+        <option value='1800'>1800&nbsp;&nbsp;&nbsp;&nbsp;Accounts receivable</option>
+      </optgroup>
+      <optgroup label='Prepayments'>
+        <option value='1900'>1900&nbsp;&nbsp;&nbsp;&nbsp;Deposits Paid</option>
+        <option value='1910'>1910&nbsp;&nbsp;&nbsp;&nbsp;Prepaid Insurance</option>
+        <option value='1920'>1920&nbsp;&nbsp;&nbsp;&nbsp;Prepaid Workcover</option>
+      </optgroup>
+      <optgroup label='Inventory'>
+        <option value='1200'>1200&nbsp;&nbsp;&nbsp;&nbsp;Inventory</option>
+        <option value='1205'>1205&nbsp;&nbsp;&nbsp;&nbsp;Inventory adjustment</option>
+      </optgroup>
+      <optgroup label='Fixed Assets'>
+        <option value='1010'>1010&nbsp;&nbsp;&nbsp;&nbsp;Furniture & Fixtures at Cost</option>
+        <option value='1011'>1011&nbsp;&nbsp;&nbsp;&nbsp;Furniture & Fixtures Accumulated Depreciation</option>
+        <option value='1020'>1020&nbsp;&nbsp;&nbsp;&nbsp;Office Equipment at Cost</option>
+        <option value='1021'>1021&nbsp;&nbsp;&nbsp;&nbsp;Office Equipment Accumulated Depreciation</option>
+        <option value='1030'>1030&nbsp;&nbsp;&nbsp;&nbsp;Motor Vehicles</option>
+        <option value='1031'>1031&nbsp;&nbsp;&nbsp;&nbsp;Motor Vehicles Accumulated Depreciation</option>
+        <option value='1040'>1040&nbsp;&nbsp;&nbsp;&nbsp;Property, plant, equip.</option>
+        <option value='1041'>1041&nbsp;&nbsp;&nbsp;&nbsp;Plant &amp; Equip Accumulated Depreciation</option>
+        <option value='1050'>1050&nbsp;&nbsp;&nbsp;&nbsp;Goodwill</option>
+      </optgroup>
+      <optgroup label='Credit Cards'>
+        <option value='2100'>2100&nbsp;&nbsp;&nbsp;&nbsp;NAB Mastercard</option>
+        <option value='2200'>2200&nbsp;&nbsp;&nbsp;&nbsp;NAB Visa</option>
+      </optgroup>
+      <optgroup label='Accounts payable'>
+        <option value='20000'>20000&nbsp;&nbsp;&nbsp;&nbsp;Accounts Payable</option>
+        <option value='2300'>2300&nbsp;&nbsp;&nbsp;&nbsp;Sundry Creditors</option>
+      </optgroup>
+      <optgroup label='Tax liabilities'>
+        <option value='2410'>2410&nbsp;&nbsp;&nbsp;&nbsp;PAYG Withheld</option>
+        <option value='2421'>2421&nbsp;&nbsp;&nbsp;&nbsp;GST Collected</option>
+        <option value='2422'>2422&nbsp;&nbsp;&nbsp;&nbsp;Other GST Collected</option>
+        <option value='2430'>2430&nbsp;&nbsp;&nbsp;&nbsp;GST Paid</option>
+        <option value='2431'>2431&nbsp;&nbsp;&nbsp;&nbsp;Other GST Paid</option>
+        <option value='2440'>2440&nbsp;&nbsp;&nbsp;&nbsp;BAS Clearing</option>
+      </optgroup>
+      <optgroup label='Other current liabilities'>
+        <option value='2510'>2510&nbsp;&nbsp;&nbsp;&nbsp;Accrued Superannuation</option>
+        <option value='2520'>2520&nbsp;&nbsp;&nbsp;&nbsp;Provision for Annual Leave</option>
+        <option value='2530'>2530&nbsp;&nbsp;&nbsp;&nbsp;Customer Deposits</option>
+        <option value='2540'>2540&nbsp;&nbsp;&nbsp;&nbsp;Wages Clearing Account</option>
+      </optgroup>
+      <optgroup label='Loans'>
+        <option value='2610'>2610&nbsp;&nbsp;&nbsp;&nbsp;Director&#039;s Loan Account</option>
+        <option value='2611'>2611&nbsp;&nbsp;&nbsp;&nbsp;Mike's Director's Loan</option>
+        <option value='2612'>2612&nbsp;&nbsp;&nbsp;&nbsp;Sam's Director's Loan</option>
+        <option value='2613'>2613&nbsp;&nbsp;&nbsp;&nbsp;Sol's Director's Loan</option>
+        <option value='2621'>2621&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s HSBC Visa</option>
+        <option value='2622'>2622&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s Line of Credit</option>
+        <option value='2623'>2623&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s ANZ Mastercard</option>
+        <option value='2624'>2624&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s CBA Mastercard</option>
+        <option value='2625'>2625&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s Personal Loan</option>
+        <option value='2700'>2700&nbsp;&nbsp;&nbsp;&nbsp;Van Loan</option>
+        <option value='2750'>2750&nbsp;&nbsp;&nbsp;&nbsp;Mortgage on Fiat Van</option>
+        <option value='2751'>2751&nbsp;&nbsp;&nbsp;&nbsp;Less: Unexpired Interest on Mortgage</option>
+        <option value='2800'>2800&nbsp;&nbsp;&nbsp;&nbsp;Establishment Loan</option>
+        <option value='2900'>2900&nbsp;&nbsp;&nbsp;&nbsp;Advanced Super Investments Pty Ltd</option>
+      </optgroup>
+      <optgroup label='Equity'>
+        <option value='3100'>3100&nbsp;&nbsp;&nbsp;&nbsp;Owners Capital</option>
+        <option value='3200'>3200&nbsp;&nbsp;&nbsp;&nbsp;Director&#039;s Drawings</option>
+        <option value='3210'>3210&nbsp;&nbsp;&nbsp;&nbsp;Mike's Drawings</option>
+        <option value='3300'>3300&nbsp;&nbsp;&nbsp;&nbsp;Current Year Profit/Loss</option>
+        <option value='3400'>3400&nbsp;&nbsp;&nbsp;&nbsp;Retained Earnings</option>
+        <option value='3500'>3500&nbsp;&nbsp;&nbsp;&nbsp;Historical Balancing</option>
+        <option value='3600'>3600&nbsp;&nbsp;&nbsp;&nbsp;Suspense</option>
+      </optgroup>
+      <optgroup label='Sales Income'>
+        <option value='4010'>4010&nbsp;&nbsp;&nbsp;&nbsp;Retail Sales</option>
+        <option value='4050'>4050&nbsp;&nbsp;&nbsp;&nbsp;Web Sales</option>
+        <option value='4110'>4110&nbsp;&nbsp;&nbsp;&nbsp;Export Sales</option>
+        <option value='4111'>4111&nbsp;&nbsp;&nbsp;&nbsp;Custom Sign Sales</option>
+        <option value='4112'>4112&nbsp;&nbsp;&nbsp;&nbsp;Installation Income</option>
+        <option value='4150'>4150&nbsp;&nbsp;&nbsp;&nbsp;Freight Collected</option>
+        <option value='4151'>4151&nbsp;&nbsp;&nbsp;&nbsp;Equipment Rental</option>
+        <option value='4152'>4152&nbsp;&nbsp;&nbsp;&nbsp;Line Marking</option>
+        <option value='4160'>4160&nbsp;&nbsp;&nbsp;&nbsp;Restocking Fees</option>
+        <option value='4170'>4170&nbsp;&nbsp;&nbsp;&nbsp;Sales - Motor Sprot Heaven</option>
+        <option value='4180'>4180&nbsp;&nbsp;&nbsp;&nbsp;Miscellaneous Income</option>
+        <option value='4190'>4190&nbsp;&nbsp;&nbsp;&nbsp;AMEX Fees Collected</option>
+      </optgroup>
+      <optgroup label='Other income'>
+        <option value='7010'>7010&nbsp;&nbsp;&nbsp;&nbsp;Interest Income</option>
+        <option value='7020'>7020&nbsp;&nbsp;&nbsp;&nbsp;Rental Income</option>
+        <option value='7030'>7030&nbsp;&nbsp;&nbsp;&nbsp;Other Income</option>
+        <option value='7040'>7040&nbsp;&nbsp;&nbsp;&nbsp;Government Payments</option>
+      </optgroup>
+      <optgroup label='Cost of Goods Sold'>
+        <option value='5040'>5040&nbsp;&nbsp;&nbsp;&nbsp;Materials &amp; Supplies</option>
+        <option value='5050'>5050&nbsp;&nbsp;&nbsp;&nbsp;Cost of Goods Sold</option>
+        <option value='5060'>5060&nbsp;&nbsp;&nbsp;&nbsp;Linemarking Subcontractors</option>
+        <option value='5070'>5070&nbsp;&nbsp;&nbsp;&nbsp;Installation Subcontractors</option>
+        <option value='5080'>5080&nbsp;&nbsp;&nbsp;&nbsp;Shipping</option>
+        <option value='5090'>5090&nbsp;&nbsp;&nbsp;&nbsp;Sales Discounts</option>
+        <option value='5110'>5110&nbsp;&nbsp;&nbsp;&nbsp;Assembly Costs</option>
+        <option value='6095'>6095&nbsp;&nbsp;&nbsp;&nbsp;Early payment discounts (sales)</option>
+      </optgroup>
+      <optgroup label='Expenses'>
+        <option value='6050'>6050&nbsp;&nbsp;&nbsp;&nbsp;Exchange variance</option>
+        <option value='6060'>6060&nbsp;&nbsp;&nbsp;&nbsp;Accounting Fees</option>
+        <option value='6070'>6070&nbsp;&nbsp;&nbsp;&nbsp;Advertising</option>
+        <option value='6080'>6080&nbsp;&nbsp;&nbsp;&nbsp;Bad Debts</option>
+        <option value='6120'>6120&nbsp;&nbsp;&nbsp;&nbsp;Bank Fees</option>
+        <option value='6125'>6125&nbsp;&nbsp;&nbsp;&nbsp;Books and Publications</option>
+        <option value='6130'>6130&nbsp;&nbsp;&nbsp;&nbsp;Bookkeeping</option>
+        <option value='6131'>6131&nbsp;&nbsp;&nbsp;&nbsp;Cleaning &amp; Waste Removal</option>
+        <option value='6132'>6132&nbsp;&nbsp;&nbsp;&nbsp;Computers - Maintenance and Supplies</option>
+        <option value='6133'>6133&nbsp;&nbsp;&nbsp;&nbsp;Debt Collection Costs</option>
+        <option value='6134'>6134&nbsp;&nbsp;&nbsp;&nbsp;Depreciation</option>
+        <option value='6140'>6140&nbsp;&nbsp;&nbsp;&nbsp;Donations</option>
+        <option value='6150'>6150&nbsp;&nbsp;&nbsp;&nbsp;Discounts Received</option>
+        <option value='6160'>6160&nbsp;&nbsp;&nbsp;&nbsp;Dues and Subscriptions</option>
+        <option value='6170'>6170&nbsp;&nbsp;&nbsp;&nbsp;Entertainment/Client Gifts</option>
+        <option value='6180'>6180&nbsp;&nbsp;&nbsp;&nbsp;Equipment Hire</option>
+        <option value='6190'>6190&nbsp;&nbsp;&nbsp;&nbsp;Filing Fees</option>
+        <option value='6200'>6200&nbsp;&nbsp;&nbsp;&nbsp;Fines &amp; Penalties</option>
+        <option value='6205'>6205&nbsp;&nbsp;&nbsp;&nbsp;Fines - not tax deductable</option>
+        <option value='6207'>6207&nbsp;&nbsp;&nbsp;&nbsp;Freight paid on Purchases</option>
+        <option value='6210'>6210&nbsp;&nbsp;&nbsp;&nbsp;Insurance (non-vehicle)</option>
+        <option value='6220'>6220&nbsp;&nbsp;&nbsp;&nbsp;Insurance - WorkCover</option>
+        <option value='6250'>6250&nbsp;&nbsp;&nbsp;&nbsp;Leases - Equipment</option>
+        <option value='6260'>6260&nbsp;&nbsp;&nbsp;&nbsp;Legal Fees</option>
+        <option value='6270'>6270&nbsp;&nbsp;&nbsp;&nbsp;Merchant Fees - General</option>
+        <option value='6280'>6280&nbsp;&nbsp;&nbsp;&nbsp;Merchant Fees - Ebay</option>
+        <option value='6550'>6550&nbsp;&nbsp;&nbsp;&nbsp;Office Supplies/Stationery</option>
+        <option value='6560'>6560&nbsp;&nbsp;&nbsp;&nbsp;Permits etc</option>
+        <option value='6570'>6570&nbsp;&nbsp;&nbsp;&nbsp;Postage</option>
+        <option value='6580'>6580&nbsp;&nbsp;&nbsp;&nbsp;Printing</option>
+        <option value='6590'>6590&nbsp;&nbsp;&nbsp;&nbsp;Professional Fees</option>
+        <option value='6600'>6600&nbsp;&nbsp;&nbsp;&nbsp;Recruitment</option>
+        <option value='6610'>6610&nbsp;&nbsp;&nbsp;&nbsp;Samples/Product Development</option>
+        <option value='6620'>6620&nbsp;&nbsp;&nbsp;&nbsp;Shop Set-Up</option>
+        <option value='6630'>6630&nbsp;&nbsp;&nbsp;&nbsp;Small Capital Items</option>
+        <option value='6640'>6640&nbsp;&nbsp;&nbsp;&nbsp;Staff Amenities/Medical</option>
+        <option value='6650'>6650&nbsp;&nbsp;&nbsp;&nbsp;Tool Replacements</option>
+        <option value='6660'>6660&nbsp;&nbsp;&nbsp;&nbsp;Website/Online Shop Expenses</option>
+      </optgroup>
+      <optgroup label='Occupancy Costs'>
+        <option value='6400'>6400&nbsp;&nbsp;&nbsp;&nbsp;Gas</option>
+        <option value='6401'>6401&nbsp;&nbsp;&nbsp;&nbsp;Cleaning &amp; Waste Removal</option>
+        <option value='6405'>6405&nbsp;&nbsp;&nbsp;&nbsp;Electricity</option>
+        <option value='6406'>6406&nbsp;&nbsp;&nbsp;&nbsp;Home Office Rent</option>
+        <option value='6407'>6407&nbsp;&nbsp;&nbsp;&nbsp;Rates &amp; Taxes</option>
+        <option value='6408'>6408&nbsp;&nbsp;&nbsp;&nbsp;Rent</option>
+        <option value='6409'>6409&nbsp;&nbsp;&nbsp;&nbsp;Repairs &amp; Maintenance</option>
+        <option value='6410'>6410&nbsp;&nbsp;&nbsp;&nbsp;Water</option>
+      </optgroup>
+      <optgroup label='Motor Vehicle'>
+        <option value='6710'>6710&nbsp;&nbsp;&nbsp;&nbsp;Gas/Petrol/Oil</option>
+        <option value='6720'>6720&nbsp;&nbsp;&nbsp;&nbsp;Registration &amp; Insurance</option>
+        <option value='6730'>6730&nbsp;&nbsp;&nbsp;&nbsp;Vehicle Maintenance/Servicing</option>
+      </optgroup>
+      <optgroup label='Telephone/Internet'>
+        <option value='6340'>6340&nbsp;&nbsp;&nbsp;&nbsp;Fax</option>
+        <option value='6341'>6341&nbsp;&nbsp;&nbsp;&nbsp;Telephone: Mobile</option>
+        <option value='6342'>6342&nbsp;&nbsp;&nbsp;&nbsp;Telephone: Office</option>
+        <option value='6343'>6343&nbsp;&nbsp;&nbsp;&nbsp;Telephone: VOIP</option>
+        <option value='6355'>6355&nbsp;&nbsp;&nbsp;&nbsp;Internet</option>
+      </optgroup>
+      <optgroup label='Rental Flat Costs'>
+        <option value='6810'>6810&nbsp;&nbsp;&nbsp;&nbsp;Rental Agent Commission</option>
+        <option value='6820'>6820&nbsp;&nbsp;&nbsp;&nbsp;Repairs &amp; Maint to Flat</option>
+      </optgroup>
+      <optgroup label='Travel Expenses'>
+        <option value='6830'>6830&nbsp;&nbsp;&nbsp;&nbsp;Parking</option>
+        <option value='6840'>6840&nbsp;&nbsp;&nbsp;&nbsp;Tolls</option>
+        <option value='6850'>6850&nbsp;&nbsp;&nbsp;&nbsp;Travel Allowances</option>
+      </optgroup>
+      <optgroup label='Other Expenses'>
+        <option value='8100'>8100&nbsp;&nbsp;&nbsp;&nbsp;Income Tax Expense</option>
+        <option value='8210'>8210&nbsp;&nbsp;&nbsp;&nbsp;Interest - Bank</option>
+        <option value='8220'>8220&nbsp;&nbsp;&nbsp;&nbsp;Interest - Credit Card</option>
+        <option value='8230'>8230&nbsp;&nbsp;&nbsp;&nbsp;Interest - ATO</option>
+        <option value='8240'>8240&nbsp;&nbsp;&nbsp;&nbsp;Interest - Chattel Mortgage</option>
+        <option value='8300'>8300&nbsp;&nbsp;&nbsp;&nbsp;Suspense</option>
+      </optgroup>
+      <optgroup label='Employee Expenses'>
+        <option value='0009'>0009&nbsp;&nbsp;&nbsp;&nbsp;Syed's car deduction</option>
+        <option value='6910'>6910&nbsp;&nbsp;&nbsp;&nbsp;Annual Leave</option>
+        <option value='6920'>6920&nbsp;&nbsp;&nbsp;&nbsp;Protective Clothing/Uniforms</option>
+        <option value='6930'>6930&nbsp;&nbsp;&nbsp;&nbsp;Salaries &amp; Wages</option>
+        <option value='6940'>6940&nbsp;&nbsp;&nbsp;&nbsp;Superannuation</option>
+        <option value='6950'>6950&nbsp;&nbsp;&nbsp;&nbsp;Training</option>
+        <option value='6960'>6960&nbsp;&nbsp;&nbsp;&nbsp;WorkCover</option>
+      </optgroup>
+    </select>
+    </div>
+  </td>
+</tr>
+<tr>
+  <td class='label'>Sales Discount Account:</td>
+  <td>
+    <div id='_branch[sales_discount_account]_sel' class='combodiv'><select id='branch[sales_discount_account]' name='branch[sales_discount_account]' class='combo2' title=''>
+      <optgroup label='Cash'>
+        <option value='1700'>1700&nbsp;&nbsp;&nbsp;&nbsp;Adv NAB Cheque Account</option>
+        <option value='1701'>1701&nbsp;&nbsp;&nbsp;&nbsp;MSH NAB Cheque Account</option>
+        <option value='1702'>1702&nbsp;&nbsp;&nbsp;&nbsp;Westpac Cheque Account</option>
+        <option value='1703'>1703&nbsp;&nbsp;&nbsp;&nbsp;Cash on Hand</option>
+        <option value='1705'>1705&nbsp;&nbsp;&nbsp;&nbsp;Petty Cash</option>
+        <option value='1706'>1706&nbsp;&nbsp;&nbsp;&nbsp;Mike&#039;s Wallet</option>
+        <option value='1707'>1707&nbsp;&nbsp;&nbsp;&nbsp;Paypal Account</option>
+        <option value='1708'>1708&nbsp;&nbsp;&nbsp;&nbsp;Undeposited Funds</option>
+        <option value='1709'>1709&nbsp;&nbsp;&nbsp;&nbsp;Sol's Wallet</option>
+        <option value='1711'>1711&nbsp;&nbsp;&nbsp;&nbsp;Sam's Wallet</option>
+      </optgroup>
+      <optgroup label='Receivables'>
+        <option value='1510'>1510&nbsp;&nbsp;&nbsp;&nbsp;Employee Advances</option>
+        <option value='1800'>1800&nbsp;&nbsp;&nbsp;&nbsp;Accounts receivable</option>
+      </optgroup>
+      <optgroup label='Prepayments'>
+        <option value='1900'>1900&nbsp;&nbsp;&nbsp;&nbsp;Deposits Paid</option>
+        <option value='1910'>1910&nbsp;&nbsp;&nbsp;&nbsp;Prepaid Insurance</option>
+        <option value='1920'>1920&nbsp;&nbsp;&nbsp;&nbsp;Prepaid Workcover</option>
+      </optgroup>
+      <optgroup label='Inventory'>
+        <option value='1200'>1200&nbsp;&nbsp;&nbsp;&nbsp;Inventory</option>
+        <option value='1205'>1205&nbsp;&nbsp;&nbsp;&nbsp;Inventory adjustment</option>
+      </optgroup>
+      <optgroup label='Fixed Assets'>
+        <option value='1010'>1010&nbsp;&nbsp;&nbsp;&nbsp;Furniture & Fixtures at Cost</option>
+        <option value='1011'>1011&nbsp;&nbsp;&nbsp;&nbsp;Furniture & Fixtures Accumulated Depreciation</option>
+        <option value='1020'>1020&nbsp;&nbsp;&nbsp;&nbsp;Office Equipment at Cost</option>
+        <option value='1021'>1021&nbsp;&nbsp;&nbsp;&nbsp;Office Equipment Accumulated Depreciation</option>
+        <option value='1030'>1030&nbsp;&nbsp;&nbsp;&nbsp;Motor Vehicles</option>
+        <option value='1031'>1031&nbsp;&nbsp;&nbsp;&nbsp;Motor Vehicles Accumulated Depreciation</option>
+        <option value='1040'>1040&nbsp;&nbsp;&nbsp;&nbsp;Property, plant, equip.</option>
+        <option value='1041'>1041&nbsp;&nbsp;&nbsp;&nbsp;Plant &amp; Equip Accumulated Depreciation</option>
+        <option value='1050'>1050&nbsp;&nbsp;&nbsp;&nbsp;Goodwill</option>
+      </optgroup>
+      <optgroup label='Credit Cards'>
+        <option value='2100'>2100&nbsp;&nbsp;&nbsp;&nbsp;NAB Mastercard</option>
+        <option value='2200'>2200&nbsp;&nbsp;&nbsp;&nbsp;NAB Visa</option>
+      </optgroup>
+      <optgroup label='Accounts payable'>
+        <option value='20000'>20000&nbsp;&nbsp;&nbsp;&nbsp;Accounts Payable</option>
+        <option value='2300'>2300&nbsp;&nbsp;&nbsp;&nbsp;Sundry Creditors</option>
+      </optgroup>
+      <optgroup label='Tax liabilities'>
+        <option value='2410'>2410&nbsp;&nbsp;&nbsp;&nbsp;PAYG Withheld</option>
+        <option value='2421'>2421&nbsp;&nbsp;&nbsp;&nbsp;GST Collected</option>
+        <option value='2422'>2422&nbsp;&nbsp;&nbsp;&nbsp;Other GST Collected</option>
+        <option value='2430'>2430&nbsp;&nbsp;&nbsp;&nbsp;GST Paid</option>
+        <option value='2431'>2431&nbsp;&nbsp;&nbsp;&nbsp;Other GST Paid</option>
+        <option value='2440'>2440&nbsp;&nbsp;&nbsp;&nbsp;BAS Clearing</option>
+      </optgroup>
+      <optgroup label='Other current liabilities'>
+        <option value='2510'>2510&nbsp;&nbsp;&nbsp;&nbsp;Accrued Superannuation</option>
+        <option value='2520'>2520&nbsp;&nbsp;&nbsp;&nbsp;Provision for Annual Leave</option>
+        <option value='2530'>2530&nbsp;&nbsp;&nbsp;&nbsp;Customer Deposits</option>
+        <option value='2540'>2540&nbsp;&nbsp;&nbsp;&nbsp;Wages Clearing Account</option>
+      </optgroup>
+      <optgroup label='Loans'>
+        <option value='2610'>2610&nbsp;&nbsp;&nbsp;&nbsp;Director&#039;s Loan Account</option>
+        <option value='2611'>2611&nbsp;&nbsp;&nbsp;&nbsp;Mike's Director's Loan</option>
+        <option value='2612'>2612&nbsp;&nbsp;&nbsp;&nbsp;Sam's Director's Loan</option>
+        <option value='2613'>2613&nbsp;&nbsp;&nbsp;&nbsp;Sol's Director's Loan</option>
+        <option value='2621'>2621&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s HSBC Visa</option>
+        <option value='2622'>2622&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s Line of Credit</option>
+        <option value='2623'>2623&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s ANZ Mastercard</option>
+        <option value='2624'>2624&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s CBA Mastercard</option>
+        <option value='2625'>2625&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s Personal Loan</option>
+        <option value='2700'>2700&nbsp;&nbsp;&nbsp;&nbsp;Van Loan</option>
+        <option value='2750'>2750&nbsp;&nbsp;&nbsp;&nbsp;Mortgage on Fiat Van</option>
+        <option value='2751'>2751&nbsp;&nbsp;&nbsp;&nbsp;Less: Unexpired Interest on Mortgage</option>
+        <option value='2800'>2800&nbsp;&nbsp;&nbsp;&nbsp;Establishment Loan</option>
+        <option value='2900'>2900&nbsp;&nbsp;&nbsp;&nbsp;Advanced Super Investments Pty Ltd</option>
+      </optgroup>
+      <optgroup label='Equity'>
+        <option value='3100'>3100&nbsp;&nbsp;&nbsp;&nbsp;Owners Capital</option>
+        <option value='3200'>3200&nbsp;&nbsp;&nbsp;&nbsp;Director&#039;s Drawings</option>
+        <option value='3210'>3210&nbsp;&nbsp;&nbsp;&nbsp;Mike's Drawings</option>
+        <option value='3300'>3300&nbsp;&nbsp;&nbsp;&nbsp;Current Year Profit/Loss</option>
+        <option value='3400'>3400&nbsp;&nbsp;&nbsp;&nbsp;Retained Earnings</option>
+        <option value='3500'>3500&nbsp;&nbsp;&nbsp;&nbsp;Historical Balancing</option>
+        <option value='3600'>3600&nbsp;&nbsp;&nbsp;&nbsp;Suspense</option>
+      </optgroup>
+      <optgroup label='Sales Income'>
+        <option value='4010'>4010&nbsp;&nbsp;&nbsp;&nbsp;Retail Sales</option>
+        <option value='4050'>4050&nbsp;&nbsp;&nbsp;&nbsp;Web Sales</option>
+        <option value='4110'>4110&nbsp;&nbsp;&nbsp;&nbsp;Export Sales</option>
+        <option value='4111'>4111&nbsp;&nbsp;&nbsp;&nbsp;Custom Sign Sales</option>
+        <option value='4112'>4112&nbsp;&nbsp;&nbsp;&nbsp;Installation Income</option>
+        <option value='4150'>4150&nbsp;&nbsp;&nbsp;&nbsp;Freight Collected</option>
+        <option value='4151'>4151&nbsp;&nbsp;&nbsp;&nbsp;Equipment Rental</option>
+        <option value='4152'>4152&nbsp;&nbsp;&nbsp;&nbsp;Line Marking</option>
+        <option value='4160'>4160&nbsp;&nbsp;&nbsp;&nbsp;Restocking Fees</option>
+        <option value='4170'>4170&nbsp;&nbsp;&nbsp;&nbsp;Sales - Motor Sprot Heaven</option>
+        <option value='4180'>4180&nbsp;&nbsp;&nbsp;&nbsp;Miscellaneous Income</option>
+        <option value='4190'>4190&nbsp;&nbsp;&nbsp;&nbsp;AMEX Fees Collected</option>
+      </optgroup>
+      <optgroup label='Other income'>
+        <option value='7010'>7010&nbsp;&nbsp;&nbsp;&nbsp;Interest Income</option>
+        <option value='7020'>7020&nbsp;&nbsp;&nbsp;&nbsp;Rental Income</option>
+        <option value='7030'>7030&nbsp;&nbsp;&nbsp;&nbsp;Other Income</option>
+        <option value='7040'>7040&nbsp;&nbsp;&nbsp;&nbsp;Government Payments</option>
+      </optgroup>
+      <optgroup label='Cost of Goods Sold'>
+        <option value='5040'>5040&nbsp;&nbsp;&nbsp;&nbsp;Materials &amp; Supplies</option>
+        <option value='5050'>5050&nbsp;&nbsp;&nbsp;&nbsp;Cost of Goods Sold</option>
+        <option value='5060'>5060&nbsp;&nbsp;&nbsp;&nbsp;Linemarking Subcontractors</option>
+        <option value='5070'>5070&nbsp;&nbsp;&nbsp;&nbsp;Installation Subcontractors</option>
+        <option value='5080'>5080&nbsp;&nbsp;&nbsp;&nbsp;Shipping</option>
+        <option selected value='5090'>5090&nbsp;&nbsp;&nbsp;&nbsp;Sales Discounts</option>
+        <option value='5110'>5110&nbsp;&nbsp;&nbsp;&nbsp;Assembly Costs</option>
+        <option value='6095'>6095&nbsp;&nbsp;&nbsp;&nbsp;Early payment discounts (sales)</option>
+      </optgroup>
+      <optgroup label='Expenses'>
+        <option value='6050'>6050&nbsp;&nbsp;&nbsp;&nbsp;Exchange variance</option>
+        <option value='6060'>6060&nbsp;&nbsp;&nbsp;&nbsp;Accounting Fees</option>
+        <option value='6070'>6070&nbsp;&nbsp;&nbsp;&nbsp;Advertising</option>
+        <option value='6080'>6080&nbsp;&nbsp;&nbsp;&nbsp;Bad Debts</option>
+        <option value='6120'>6120&nbsp;&nbsp;&nbsp;&nbsp;Bank Fees</option>
+        <option value='6125'>6125&nbsp;&nbsp;&nbsp;&nbsp;Books and Publications</option>
+        <option value='6130'>6130&nbsp;&nbsp;&nbsp;&nbsp;Bookkeeping</option>
+        <option value='6131'>6131&nbsp;&nbsp;&nbsp;&nbsp;Cleaning &amp; Waste Removal</option>
+        <option value='6132'>6132&nbsp;&nbsp;&nbsp;&nbsp;Computers - Maintenance and Supplies</option>
+        <option value='6133'>6133&nbsp;&nbsp;&nbsp;&nbsp;Debt Collection Costs</option>
+        <option value='6134'>6134&nbsp;&nbsp;&nbsp;&nbsp;Depreciation</option>
+        <option value='6140'>6140&nbsp;&nbsp;&nbsp;&nbsp;Donations</option>
+        <option value='6150'>6150&nbsp;&nbsp;&nbsp;&nbsp;Discounts Received</option>
+        <option value='6160'>6160&nbsp;&nbsp;&nbsp;&nbsp;Dues and Subscriptions</option>
+        <option value='6170'>6170&nbsp;&nbsp;&nbsp;&nbsp;Entertainment/Client Gifts</option>
+        <option value='6180'>6180&nbsp;&nbsp;&nbsp;&nbsp;Equipment Hire</option>
+        <option value='6190'>6190&nbsp;&nbsp;&nbsp;&nbsp;Filing Fees</option>
+        <option value='6200'>6200&nbsp;&nbsp;&nbsp;&nbsp;Fines &amp; Penalties</option>
+        <option value='6205'>6205&nbsp;&nbsp;&nbsp;&nbsp;Fines - not tax deductable</option>
+        <option value='6207'>6207&nbsp;&nbsp;&nbsp;&nbsp;Freight paid on Purchases</option>
+        <option value='6210'>6210&nbsp;&nbsp;&nbsp;&nbsp;Insurance (non-vehicle)</option>
+        <option value='6220'>6220&nbsp;&nbsp;&nbsp;&nbsp;Insurance - WorkCover</option>
+        <option value='6250'>6250&nbsp;&nbsp;&nbsp;&nbsp;Leases - Equipment</option>
+        <option value='6260'>6260&nbsp;&nbsp;&nbsp;&nbsp;Legal Fees</option>
+        <option value='6270'>6270&nbsp;&nbsp;&nbsp;&nbsp;Merchant Fees - General</option>
+        <option value='6280'>6280&nbsp;&nbsp;&nbsp;&nbsp;Merchant Fees - Ebay</option>
+        <option value='6550'>6550&nbsp;&nbsp;&nbsp;&nbsp;Office Supplies/Stationery</option>
+        <option value='6560'>6560&nbsp;&nbsp;&nbsp;&nbsp;Permits etc</option>
+        <option value='6570'>6570&nbsp;&nbsp;&nbsp;&nbsp;Postage</option>
+        <option value='6580'>6580&nbsp;&nbsp;&nbsp;&nbsp;Printing</option>
+        <option value='6590'>6590&nbsp;&nbsp;&nbsp;&nbsp;Professional Fees</option>
+        <option value='6600'>6600&nbsp;&nbsp;&nbsp;&nbsp;Recruitment</option>
+        <option value='6610'>6610&nbsp;&nbsp;&nbsp;&nbsp;Samples/Product Development</option>
+        <option value='6620'>6620&nbsp;&nbsp;&nbsp;&nbsp;Shop Set-Up</option>
+        <option value='6630'>6630&nbsp;&nbsp;&nbsp;&nbsp;Small Capital Items</option>
+        <option value='6640'>6640&nbsp;&nbsp;&nbsp;&nbsp;Staff Amenities/Medical</option>
+        <option value='6650'>6650&nbsp;&nbsp;&nbsp;&nbsp;Tool Replacements</option>
+        <option value='6660'>6660&nbsp;&nbsp;&nbsp;&nbsp;Website/Online Shop Expenses</option>
+      </optgroup>
+      <optgroup label='Occupancy Costs'>
+        <option value='6400'>6400&nbsp;&nbsp;&nbsp;&nbsp;Gas</option>
+        <option value='6401'>6401&nbsp;&nbsp;&nbsp;&nbsp;Cleaning &amp; Waste Removal</option>
+        <option value='6405'>6405&nbsp;&nbsp;&nbsp;&nbsp;Electricity</option>
+        <option value='6406'>6406&nbsp;&nbsp;&nbsp;&nbsp;Home Office Rent</option>
+        <option value='6407'>6407&nbsp;&nbsp;&nbsp;&nbsp;Rates &amp; Taxes</option>
+        <option value='6408'>6408&nbsp;&nbsp;&nbsp;&nbsp;Rent</option>
+        <option value='6409'>6409&nbsp;&nbsp;&nbsp;&nbsp;Repairs &amp; Maintenance</option>
+        <option value='6410'>6410&nbsp;&nbsp;&nbsp;&nbsp;Water</option>
+      </optgroup>
+      <optgroup label='Motor Vehicle'>
+        <option value='6710'>6710&nbsp;&nbsp;&nbsp;&nbsp;Gas/Petrol/Oil</option>
+        <option value='6720'>6720&nbsp;&nbsp;&nbsp;&nbsp;Registration &amp; Insurance</option>
+        <option value='6730'>6730&nbsp;&nbsp;&nbsp;&nbsp;Vehicle Maintenance/Servicing</option>
+      </optgroup>
+      <optgroup label='Telephone/Internet'>
+        <option value='6340'>6340&nbsp;&nbsp;&nbsp;&nbsp;Fax</option>
+        <option value='6341'>6341&nbsp;&nbsp;&nbsp;&nbsp;Telephone: Mobile</option>
+        <option value='6342'>6342&nbsp;&nbsp;&nbsp;&nbsp;Telephone: Office</option>
+        <option value='6343'>6343&nbsp;&nbsp;&nbsp;&nbsp;Telephone: VOIP</option>
+        <option value='6355'>6355&nbsp;&nbsp;&nbsp;&nbsp;Internet</option>
+      </optgroup>
+      <optgroup label='Rental Flat Costs'>
+        <option value='6810'>6810&nbsp;&nbsp;&nbsp;&nbsp;Rental Agent Commission</option>
+        <option value='6820'>6820&nbsp;&nbsp;&nbsp;&nbsp;Repairs &amp; Maint to Flat</option>
+      </optgroup>
+      <optgroup label='Travel Expenses'>
+        <option value='6830'>6830&nbsp;&nbsp;&nbsp;&nbsp;Parking</option>
+        <option value='6840'>6840&nbsp;&nbsp;&nbsp;&nbsp;Tolls</option>
+        <option value='6850'>6850&nbsp;&nbsp;&nbsp;&nbsp;Travel Allowances</option>
+      </optgroup>
+      <optgroup label='Other Expenses'>
+        <option value='8100'>8100&nbsp;&nbsp;&nbsp;&nbsp;Income Tax Expense</option>
+        <option value='8210'>8210&nbsp;&nbsp;&nbsp;&nbsp;Interest - Bank</option>
+        <option value='8220'>8220&nbsp;&nbsp;&nbsp;&nbsp;Interest - Credit Card</option>
+        <option value='8230'>8230&nbsp;&nbsp;&nbsp;&nbsp;Interest - ATO</option>
+        <option value='8240'>8240&nbsp;&nbsp;&nbsp;&nbsp;Interest - Chattel Mortgage</option>
+        <option value='8300'>8300&nbsp;&nbsp;&nbsp;&nbsp;Suspense</option>
+      </optgroup>
+      <optgroup label='Employee Expenses'>
+        <option value='0009'>0009&nbsp;&nbsp;&nbsp;&nbsp;Syed's car deduction</option>
+        <option value='6910'>6910&nbsp;&nbsp;&nbsp;&nbsp;Annual Leave</option>
+        <option value='6920'>6920&nbsp;&nbsp;&nbsp;&nbsp;Protective Clothing/Uniforms</option>
+        <option value='6930'>6930&nbsp;&nbsp;&nbsp;&nbsp;Salaries &amp; Wages</option>
+        <option value='6940'>6940&nbsp;&nbsp;&nbsp;&nbsp;Superannuation</option>
+        <option value='6950'>6950&nbsp;&nbsp;&nbsp;&nbsp;Training</option>
+        <option value='6960'>6960&nbsp;&nbsp;&nbsp;&nbsp;WorkCover</option>
+      </optgroup>
+    </select>
+    </div>
+  </td>
+</tr>
+<tr>
+  <td class='label'>Accounts Receivable Account:</td>
+  <td>
+    <div id='_branch[receivables_account]_sel' class='combodiv'><select id='branch[receivables_account]' name='branch[receivables_account]' class='combo2' title=''>
+      <optgroup label='Cash'>
+        <option value='1700'>1700&nbsp;&nbsp;&nbsp;&nbsp;Adv NAB Cheque Account</option>
+        <option value='1701'>1701&nbsp;&nbsp;&nbsp;&nbsp;MSH NAB Cheque Account</option>
+        <option value='1702'>1702&nbsp;&nbsp;&nbsp;&nbsp;Westpac Cheque Account</option>
+        <option value='1703'>1703&nbsp;&nbsp;&nbsp;&nbsp;Cash on Hand</option>
+        <option value='1705'>1705&nbsp;&nbsp;&nbsp;&nbsp;Petty Cash</option>
+        <option value='1706'>1706&nbsp;&nbsp;&nbsp;&nbsp;Mike&#039;s Wallet</option>
+        <option value='1707'>1707&nbsp;&nbsp;&nbsp;&nbsp;Paypal Account</option>
+        <option value='1708'>1708&nbsp;&nbsp;&nbsp;&nbsp;Undeposited Funds</option>
+        <option value='1709'>1709&nbsp;&nbsp;&nbsp;&nbsp;Sol's Wallet</option>
+        <option value='1711'>1711&nbsp;&nbsp;&nbsp;&nbsp;Sam's Wallet</option>
+      </optgroup>
+      <optgroup label='Receivables'>
+        <option value='1510'>1510&nbsp;&nbsp;&nbsp;&nbsp;Employee Advances</option>
+        <option selected value='1800'>1800&nbsp;&nbsp;&nbsp;&nbsp;Accounts receivable</option>
+      </optgroup>
+      <optgroup label='Prepayments'>
+        <option value='1900'>1900&nbsp;&nbsp;&nbsp;&nbsp;Deposits Paid</option>
+        <option value='1910'>1910&nbsp;&nbsp;&nbsp;&nbsp;Prepaid Insurance</option>
+        <option value='1920'>1920&nbsp;&nbsp;&nbsp;&nbsp;Prepaid Workcover</option>
+      </optgroup>
+      <optgroup label='Inventory'>
+        <option value='1200'>1200&nbsp;&nbsp;&nbsp;&nbsp;Inventory</option>
+        <option value='1205'>1205&nbsp;&nbsp;&nbsp;&nbsp;Inventory adjustment</option>
+      </optgroup>
+      <optgroup label='Fixed Assets'>
+        <option value='1010'>1010&nbsp;&nbsp;&nbsp;&nbsp;Furniture & Fixtures at Cost</option>
+        <option value='1011'>1011&nbsp;&nbsp;&nbsp;&nbsp;Furniture & Fixtures Accumulated Depreciation</option>
+        <option value='1020'>1020&nbsp;&nbsp;&nbsp;&nbsp;Office Equipment at Cost</option>
+        <option value='1021'>1021&nbsp;&nbsp;&nbsp;&nbsp;Office Equipment Accumulated Depreciation</option>
+        <option value='1030'>1030&nbsp;&nbsp;&nbsp;&nbsp;Motor Vehicles</option>
+        <option value='1031'>1031&nbsp;&nbsp;&nbsp;&nbsp;Motor Vehicles Accumulated Depreciation</option>
+        <option value='1040'>1040&nbsp;&nbsp;&nbsp;&nbsp;Property, plant, equip.</option>
+        <option value='1041'>1041&nbsp;&nbsp;&nbsp;&nbsp;Plant &amp; Equip Accumulated Depreciation</option>
+        <option value='1050'>1050&nbsp;&nbsp;&nbsp;&nbsp;Goodwill</option>
+      </optgroup>
+      <optgroup label='Credit Cards'>
+        <option value='2100'>2100&nbsp;&nbsp;&nbsp;&nbsp;NAB Mastercard</option>
+        <option value='2200'>2200&nbsp;&nbsp;&nbsp;&nbsp;NAB Visa</option>
+      </optgroup>
+      <optgroup label='Accounts payable'>
+        <option value='20000'>20000&nbsp;&nbsp;&nbsp;&nbsp;Accounts Payable</option>
+        <option value='2300'>2300&nbsp;&nbsp;&nbsp;&nbsp;Sundry Creditors</option>
+      </optgroup>
+      <optgroup label='Tax liabilities'>
+        <option value='2410'>2410&nbsp;&nbsp;&nbsp;&nbsp;PAYG Withheld</option>
+        <option value='2421'>2421&nbsp;&nbsp;&nbsp;&nbsp;GST Collected</option>
+        <option value='2422'>2422&nbsp;&nbsp;&nbsp;&nbsp;Other GST Collected</option>
+        <option value='2430'>2430&nbsp;&nbsp;&nbsp;&nbsp;GST Paid</option>
+        <option value='2431'>2431&nbsp;&nbsp;&nbsp;&nbsp;Other GST Paid</option>
+        <option value='2440'>2440&nbsp;&nbsp;&nbsp;&nbsp;BAS Clearing</option>
+      </optgroup>
+      <optgroup label='Other current liabilities'>
+        <option value='2510'>2510&nbsp;&nbsp;&nbsp;&nbsp;Accrued Superannuation</option>
+        <option value='2520'>2520&nbsp;&nbsp;&nbsp;&nbsp;Provision for Annual Leave</option>
+        <option value='2530'>2530&nbsp;&nbsp;&nbsp;&nbsp;Customer Deposits</option>
+        <option value='2540'>2540&nbsp;&nbsp;&nbsp;&nbsp;Wages Clearing Account</option>
+      </optgroup>
+      <optgroup label='Loans'>
+        <option value='2610'>2610&nbsp;&nbsp;&nbsp;&nbsp;Director&#039;s Loan Account</option>
+        <option value='2611'>2611&nbsp;&nbsp;&nbsp;&nbsp;Mike's Director's Loan</option>
+        <option value='2612'>2612&nbsp;&nbsp;&nbsp;&nbsp;Sam's Director's Loan</option>
+        <option value='2613'>2613&nbsp;&nbsp;&nbsp;&nbsp;Sol's Director's Loan</option>
+        <option value='2621'>2621&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s HSBC Visa</option>
+        <option value='2622'>2622&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s Line of Credit</option>
+        <option value='2623'>2623&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s ANZ Mastercard</option>
+        <option value='2624'>2624&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s CBA Mastercard</option>
+        <option value='2625'>2625&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s Personal Loan</option>
+        <option value='2700'>2700&nbsp;&nbsp;&nbsp;&nbsp;Van Loan</option>
+        <option value='2750'>2750&nbsp;&nbsp;&nbsp;&nbsp;Mortgage on Fiat Van</option>
+        <option value='2751'>2751&nbsp;&nbsp;&nbsp;&nbsp;Less: Unexpired Interest on Mortgage</option>
+        <option value='2800'>2800&nbsp;&nbsp;&nbsp;&nbsp;Establishment Loan</option>
+        <option value='2900'>2900&nbsp;&nbsp;&nbsp;&nbsp;Advanced Super Investments Pty Ltd</option>
+      </optgroup>
+      <optgroup label='Equity'>
+        <option value='3100'>3100&nbsp;&nbsp;&nbsp;&nbsp;Owners Capital</option>
+        <option value='3200'>3200&nbsp;&nbsp;&nbsp;&nbsp;Director&#039;s Drawings</option>
+        <option value='3210'>3210&nbsp;&nbsp;&nbsp;&nbsp;Mike's Drawings</option>
+        <option value='3300'>3300&nbsp;&nbsp;&nbsp;&nbsp;Current Year Profit/Loss</option>
+        <option value='3400'>3400&nbsp;&nbsp;&nbsp;&nbsp;Retained Earnings</option>
+        <option value='3500'>3500&nbsp;&nbsp;&nbsp;&nbsp;Historical Balancing</option>
+        <option value='3600'>3600&nbsp;&nbsp;&nbsp;&nbsp;Suspense</option>
+      </optgroup>
+      <optgroup label='Sales Income'>
+        <option value='4010'>4010&nbsp;&nbsp;&nbsp;&nbsp;Retail Sales</option>
+        <option value='4050'>4050&nbsp;&nbsp;&nbsp;&nbsp;Web Sales</option>
+        <option value='4110'>4110&nbsp;&nbsp;&nbsp;&nbsp;Export Sales</option>
+        <option value='4111'>4111&nbsp;&nbsp;&nbsp;&nbsp;Custom Sign Sales</option>
+        <option value='4112'>4112&nbsp;&nbsp;&nbsp;&nbsp;Installation Income</option>
+        <option value='4150'>4150&nbsp;&nbsp;&nbsp;&nbsp;Freight Collected</option>
+        <option value='4151'>4151&nbsp;&nbsp;&nbsp;&nbsp;Equipment Rental</option>
+        <option value='4152'>4152&nbsp;&nbsp;&nbsp;&nbsp;Line Marking</option>
+        <option value='4160'>4160&nbsp;&nbsp;&nbsp;&nbsp;Restocking Fees</option>
+        <option value='4170'>4170&nbsp;&nbsp;&nbsp;&nbsp;Sales - Motor Sprot Heaven</option>
+        <option value='4180'>4180&nbsp;&nbsp;&nbsp;&nbsp;Miscellaneous Income</option>
+        <option value='4190'>4190&nbsp;&nbsp;&nbsp;&nbsp;AMEX Fees Collected</option>
+      </optgroup>
+      <optgroup label='Other income'>
+        <option value='7010'>7010&nbsp;&nbsp;&nbsp;&nbsp;Interest Income</option>
+        <option value='7020'>7020&nbsp;&nbsp;&nbsp;&nbsp;Rental Income</option>
+        <option value='7030'>7030&nbsp;&nbsp;&nbsp;&nbsp;Other Income</option>
+        <option value='7040'>7040&nbsp;&nbsp;&nbsp;&nbsp;Government Payments</option>
+      </optgroup>
+      <optgroup label='Cost of Goods Sold'>
+        <option value='5040'>5040&nbsp;&nbsp;&nbsp;&nbsp;Materials &amp; Supplies</option>
+        <option value='5050'>5050&nbsp;&nbsp;&nbsp;&nbsp;Cost of Goods Sold</option>
+        <option value='5060'>5060&nbsp;&nbsp;&nbsp;&nbsp;Linemarking Subcontractors</option>
+        <option value='5070'>5070&nbsp;&nbsp;&nbsp;&nbsp;Installation Subcontractors</option>
+        <option value='5080'>5080&nbsp;&nbsp;&nbsp;&nbsp;Shipping</option>
+        <option value='5090'>5090&nbsp;&nbsp;&nbsp;&nbsp;Sales Discounts</option>
+        <option value='5110'>5110&nbsp;&nbsp;&nbsp;&nbsp;Assembly Costs</option>
+        <option value='6095'>6095&nbsp;&nbsp;&nbsp;&nbsp;Early payment discounts (sales)</option>
+      </optgroup>
+      <optgroup label='Expenses'>
+        <option value='6050'>6050&nbsp;&nbsp;&nbsp;&nbsp;Exchange variance</option>
+        <option value='6060'>6060&nbsp;&nbsp;&nbsp;&nbsp;Accounting Fees</option>
+        <option value='6070'>6070&nbsp;&nbsp;&nbsp;&nbsp;Advertising</option>
+        <option value='6080'>6080&nbsp;&nbsp;&nbsp;&nbsp;Bad Debts</option>
+        <option value='6120'>6120&nbsp;&nbsp;&nbsp;&nbsp;Bank Fees</option>
+        <option value='6125'>6125&nbsp;&nbsp;&nbsp;&nbsp;Books and Publications</option>
+        <option value='6130'>6130&nbsp;&nbsp;&nbsp;&nbsp;Bookkeeping</option>
+        <option value='6131'>6131&nbsp;&nbsp;&nbsp;&nbsp;Cleaning &amp; Waste Removal</option>
+        <option value='6132'>6132&nbsp;&nbsp;&nbsp;&nbsp;Computers - Maintenance and Supplies</option>
+        <option value='6133'>6133&nbsp;&nbsp;&nbsp;&nbsp;Debt Collection Costs</option>
+        <option value='6134'>6134&nbsp;&nbsp;&nbsp;&nbsp;Depreciation</option>
+        <option value='6140'>6140&nbsp;&nbsp;&nbsp;&nbsp;Donations</option>
+        <option value='6150'>6150&nbsp;&nbsp;&nbsp;&nbsp;Discounts Received</option>
+        <option value='6160'>6160&nbsp;&nbsp;&nbsp;&nbsp;Dues and Subscriptions</option>
+        <option value='6170'>6170&nbsp;&nbsp;&nbsp;&nbsp;Entertainment/Client Gifts</option>
+        <option value='6180'>6180&nbsp;&nbsp;&nbsp;&nbsp;Equipment Hire</option>
+        <option value='6190'>6190&nbsp;&nbsp;&nbsp;&nbsp;Filing Fees</option>
+        <option value='6200'>6200&nbsp;&nbsp;&nbsp;&nbsp;Fines &amp; Penalties</option>
+        <option value='6205'>6205&nbsp;&nbsp;&nbsp;&nbsp;Fines - not tax deductable</option>
+        <option value='6207'>6207&nbsp;&nbsp;&nbsp;&nbsp;Freight paid on Purchases</option>
+        <option value='6210'>6210&nbsp;&nbsp;&nbsp;&nbsp;Insurance (non-vehicle)</option>
+        <option value='6220'>6220&nbsp;&nbsp;&nbsp;&nbsp;Insurance - WorkCover</option>
+        <option value='6250'>6250&nbsp;&nbsp;&nbsp;&nbsp;Leases - Equipment</option>
+        <option value='6260'>6260&nbsp;&nbsp;&nbsp;&nbsp;Legal Fees</option>
+        <option value='6270'>6270&nbsp;&nbsp;&nbsp;&nbsp;Merchant Fees - General</option>
+        <option value='6280'>6280&nbsp;&nbsp;&nbsp;&nbsp;Merchant Fees - Ebay</option>
+        <option value='6550'>6550&nbsp;&nbsp;&nbsp;&nbsp;Office Supplies/Stationery</option>
+        <option value='6560'>6560&nbsp;&nbsp;&nbsp;&nbsp;Permits etc</option>
+        <option value='6570'>6570&nbsp;&nbsp;&nbsp;&nbsp;Postage</option>
+        <option value='6580'>6580&nbsp;&nbsp;&nbsp;&nbsp;Printing</option>
+        <option value='6590'>6590&nbsp;&nbsp;&nbsp;&nbsp;Professional Fees</option>
+        <option value='6600'>6600&nbsp;&nbsp;&nbsp;&nbsp;Recruitment</option>
+        <option value='6610'>6610&nbsp;&nbsp;&nbsp;&nbsp;Samples/Product Development</option>
+        <option value='6620'>6620&nbsp;&nbsp;&nbsp;&nbsp;Shop Set-Up</option>
+        <option value='6630'>6630&nbsp;&nbsp;&nbsp;&nbsp;Small Capital Items</option>
+        <option value='6640'>6640&nbsp;&nbsp;&nbsp;&nbsp;Staff Amenities/Medical</option>
+        <option value='6650'>6650&nbsp;&nbsp;&nbsp;&nbsp;Tool Replacements</option>
+        <option value='6660'>6660&nbsp;&nbsp;&nbsp;&nbsp;Website/Online Shop Expenses</option>
+      </optgroup>
+      <optgroup label='Occupancy Costs'>
+        <option value='6400'>6400&nbsp;&nbsp;&nbsp;&nbsp;Gas</option>
+        <option value='6401'>6401&nbsp;&nbsp;&nbsp;&nbsp;Cleaning &amp; Waste Removal</option>
+        <option value='6405'>6405&nbsp;&nbsp;&nbsp;&nbsp;Electricity</option>
+        <option value='6406'>6406&nbsp;&nbsp;&nbsp;&nbsp;Home Office Rent</option>
+        <option value='6407'>6407&nbsp;&nbsp;&nbsp;&nbsp;Rates &amp; Taxes</option>
+        <option value='6408'>6408&nbsp;&nbsp;&nbsp;&nbsp;Rent</option>
+        <option value='6409'>6409&nbsp;&nbsp;&nbsp;&nbsp;Repairs &amp; Maintenance</option>
+        <option value='6410'>6410&nbsp;&nbsp;&nbsp;&nbsp;Water</option>
+      </optgroup>
+      <optgroup label='Motor Vehicle'>
+        <option value='6710'>6710&nbsp;&nbsp;&nbsp;&nbsp;Gas/Petrol/Oil</option>
+        <option value='6720'>6720&nbsp;&nbsp;&nbsp;&nbsp;Registration &amp; Insurance</option>
+        <option value='6730'>6730&nbsp;&nbsp;&nbsp;&nbsp;Vehicle Maintenance/Servicing</option>
+      </optgroup>
+      <optgroup label='Telephone/Internet'>
+        <option value='6340'>6340&nbsp;&nbsp;&nbsp;&nbsp;Fax</option>
+        <option value='6341'>6341&nbsp;&nbsp;&nbsp;&nbsp;Telephone: Mobile</option>
+        <option value='6342'>6342&nbsp;&nbsp;&nbsp;&nbsp;Telephone: Office</option>
+        <option value='6343'>6343&nbsp;&nbsp;&nbsp;&nbsp;Telephone: VOIP</option>
+        <option value='6355'>6355&nbsp;&nbsp;&nbsp;&nbsp;Internet</option>
+      </optgroup>
+      <optgroup label='Rental Flat Costs'>
+        <option value='6810'>6810&nbsp;&nbsp;&nbsp;&nbsp;Rental Agent Commission</option>
+        <option value='6820'>6820&nbsp;&nbsp;&nbsp;&nbsp;Repairs &amp; Maint to Flat</option>
+      </optgroup>
+      <optgroup label='Travel Expenses'>
+        <option value='6830'>6830&nbsp;&nbsp;&nbsp;&nbsp;Parking</option>
+        <option value='6840'>6840&nbsp;&nbsp;&nbsp;&nbsp;Tolls</option>
+        <option value='6850'>6850&nbsp;&nbsp;&nbsp;&nbsp;Travel Allowances</option>
+      </optgroup>
+      <optgroup label='Other Expenses'>
+        <option value='8100'>8100&nbsp;&nbsp;&nbsp;&nbsp;Income Tax Expense</option>
+        <option value='8210'>8210&nbsp;&nbsp;&nbsp;&nbsp;Interest - Bank</option>
+        <option value='8220'>8220&nbsp;&nbsp;&nbsp;&nbsp;Interest - Credit Card</option>
+        <option value='8230'>8230&nbsp;&nbsp;&nbsp;&nbsp;Interest - ATO</option>
+        <option value='8240'>8240&nbsp;&nbsp;&nbsp;&nbsp;Interest - Chattel Mortgage</option>
+        <option value='8300'>8300&nbsp;&nbsp;&nbsp;&nbsp;Suspense</option>
+      </optgroup>
+      <optgroup label='Employee Expenses'>
+        <option value='0009'>0009&nbsp;&nbsp;&nbsp;&nbsp;Syed's car deduction</option>
+        <option value='6910'>6910&nbsp;&nbsp;&nbsp;&nbsp;Annual Leave</option>
+        <option value='6920'>6920&nbsp;&nbsp;&nbsp;&nbsp;Protective Clothing/Uniforms</option>
+        <option value='6930'>6930&nbsp;&nbsp;&nbsp;&nbsp;Salaries &amp; Wages</option>
+        <option value='6940'>6940&nbsp;&nbsp;&nbsp;&nbsp;Superannuation</option>
+        <option value='6950'>6950&nbsp;&nbsp;&nbsp;&nbsp;Training</option>
+        <option value='6960'>6960&nbsp;&nbsp;&nbsp;&nbsp;WorkCover</option>
+      </optgroup>
+    </select>
+    </div>
+  </td>
+</tr>
+<tr>
+  <td class='label'>Prompt Payment Discount Account:</td>
+  <td>
+    <div id='_branch[payment_discount_account]_sel' class='combodiv'><select id='branch[payment_discount_account]' name='branch[payment_discount_account]' class='combo2' title=''>
+      <optgroup label='Cash'>
+        <option value='1700'>1700&nbsp;&nbsp;&nbsp;&nbsp;Adv NAB Cheque Account</option>
+        <option value='1701'>1701&nbsp;&nbsp;&nbsp;&nbsp;MSH NAB Cheque Account</option>
+        <option value='1702'>1702&nbsp;&nbsp;&nbsp;&nbsp;Westpac Cheque Account</option>
+        <option value='1703'>1703&nbsp;&nbsp;&nbsp;&nbsp;Cash on Hand</option>
+        <option value='1705'>1705&nbsp;&nbsp;&nbsp;&nbsp;Petty Cash</option>
+        <option value='1706'>1706&nbsp;&nbsp;&nbsp;&nbsp;Mike&#039;s Wallet</option>
+        <option value='1707'>1707&nbsp;&nbsp;&nbsp;&nbsp;Paypal Account</option>
+        <option value='1708'>1708&nbsp;&nbsp;&nbsp;&nbsp;Undeposited Funds</option>
+        <option value='1709'>1709&nbsp;&nbsp;&nbsp;&nbsp;Sol's Wallet</option>
+        <option value='1711'>1711&nbsp;&nbsp;&nbsp;&nbsp;Sam's Wallet</option>
+      </optgroup>
+      <optgroup label='Receivables'>
+        <option value='1510'>1510&nbsp;&nbsp;&nbsp;&nbsp;Employee Advances</option>
+        <option value='1800'>1800&nbsp;&nbsp;&nbsp;&nbsp;Accounts receivable</option>
+      </optgroup>
+      <optgroup label='Prepayments'>
+        <option value='1900'>1900&nbsp;&nbsp;&nbsp;&nbsp;Deposits Paid</option>
+        <option value='1910'>1910&nbsp;&nbsp;&nbsp;&nbsp;Prepaid Insurance</option>
+        <option value='1920'>1920&nbsp;&nbsp;&nbsp;&nbsp;Prepaid Workcover</option>
+      </optgroup>
+      <optgroup label='Inventory'>
+        <option value='1200'>1200&nbsp;&nbsp;&nbsp;&nbsp;Inventory</option>
+        <option value='1205'>1205&nbsp;&nbsp;&nbsp;&nbsp;Inventory adjustment</option>
+      </optgroup>
+      <optgroup label='Fixed Assets'>
+        <option value='1010'>1010&nbsp;&nbsp;&nbsp;&nbsp;Furniture & Fixtures at Cost</option>
+        <option value='1011'>1011&nbsp;&nbsp;&nbsp;&nbsp;Furniture & Fixtures Accumulated Depreciation</option>
+        <option value='1020'>1020&nbsp;&nbsp;&nbsp;&nbsp;Office Equipment at Cost</option>
+        <option value='1021'>1021&nbsp;&nbsp;&nbsp;&nbsp;Office Equipment Accumulated Depreciation</option>
+        <option value='1030'>1030&nbsp;&nbsp;&nbsp;&nbsp;Motor Vehicles</option>
+        <option value='1031'>1031&nbsp;&nbsp;&nbsp;&nbsp;Motor Vehicles Accumulated Depreciation</option>
+        <option value='1040'>1040&nbsp;&nbsp;&nbsp;&nbsp;Property, plant, equip.</option>
+        <option value='1041'>1041&nbsp;&nbsp;&nbsp;&nbsp;Plant &amp; Equip Accumulated Depreciation</option>
+        <option value='1050'>1050&nbsp;&nbsp;&nbsp;&nbsp;Goodwill</option>
+      </optgroup>
+      <optgroup label='Credit Cards'>
+        <option value='2100'>2100&nbsp;&nbsp;&nbsp;&nbsp;NAB Mastercard</option>
+        <option value='2200'>2200&nbsp;&nbsp;&nbsp;&nbsp;NAB Visa</option>
+      </optgroup>
+      <optgroup label='Accounts payable'>
+        <option value='20000'>20000&nbsp;&nbsp;&nbsp;&nbsp;Accounts Payable</option>
+        <option value='2300'>2300&nbsp;&nbsp;&nbsp;&nbsp;Sundry Creditors</option>
+      </optgroup>
+      <optgroup label='Tax liabilities'>
+        <option value='2410'>2410&nbsp;&nbsp;&nbsp;&nbsp;PAYG Withheld</option>
+        <option value='2421'>2421&nbsp;&nbsp;&nbsp;&nbsp;GST Collected</option>
+        <option value='2422'>2422&nbsp;&nbsp;&nbsp;&nbsp;Other GST Collected</option>
+        <option value='2430'>2430&nbsp;&nbsp;&nbsp;&nbsp;GST Paid</option>
+        <option value='2431'>2431&nbsp;&nbsp;&nbsp;&nbsp;Other GST Paid</option>
+        <option value='2440'>2440&nbsp;&nbsp;&nbsp;&nbsp;BAS Clearing</option>
+      </optgroup>
+      <optgroup label='Other current liabilities'>
+        <option value='2510'>2510&nbsp;&nbsp;&nbsp;&nbsp;Accrued Superannuation</option>
+        <option value='2520'>2520&nbsp;&nbsp;&nbsp;&nbsp;Provision for Annual Leave</option>
+        <option value='2530'>2530&nbsp;&nbsp;&nbsp;&nbsp;Customer Deposits</option>
+        <option value='2540'>2540&nbsp;&nbsp;&nbsp;&nbsp;Wages Clearing Account</option>
+      </optgroup>
+      <optgroup label='Loans'>
+        <option value='2610'>2610&nbsp;&nbsp;&nbsp;&nbsp;Director&#039;s Loan Account</option>
+        <option value='2611'>2611&nbsp;&nbsp;&nbsp;&nbsp;Mike's Director's Loan</option>
+        <option value='2612'>2612&nbsp;&nbsp;&nbsp;&nbsp;Sam's Director's Loan</option>
+        <option value='2613'>2613&nbsp;&nbsp;&nbsp;&nbsp;Sol's Director's Loan</option>
+        <option value='2621'>2621&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s HSBC Visa</option>
+        <option value='2622'>2622&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s Line of Credit</option>
+        <option value='2623'>2623&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s ANZ Mastercard</option>
+        <option value='2624'>2624&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s CBA Mastercard</option>
+        <option value='2625'>2625&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s Personal Loan</option>
+        <option value='2700'>2700&nbsp;&nbsp;&nbsp;&nbsp;Van Loan</option>
+        <option value='2750'>2750&nbsp;&nbsp;&nbsp;&nbsp;Mortgage on Fiat Van</option>
+        <option value='2751'>2751&nbsp;&nbsp;&nbsp;&nbsp;Less: Unexpired Interest on Mortgage</option>
+        <option value='2800'>2800&nbsp;&nbsp;&nbsp;&nbsp;Establishment Loan</option>
+        <option value='2900'>2900&nbsp;&nbsp;&nbsp;&nbsp;Advanced Super Investments Pty Ltd</option>
+      </optgroup>
+      <optgroup label='Equity'>
+        <option value='3100'>3100&nbsp;&nbsp;&nbsp;&nbsp;Owners Capital</option>
+        <option value='3200'>3200&nbsp;&nbsp;&nbsp;&nbsp;Director&#039;s Drawings</option>
+        <option value='3210'>3210&nbsp;&nbsp;&nbsp;&nbsp;Mike's Drawings</option>
+        <option value='3300'>3300&nbsp;&nbsp;&nbsp;&nbsp;Current Year Profit/Loss</option>
+        <option value='3400'>3400&nbsp;&nbsp;&nbsp;&nbsp;Retained Earnings</option>
+        <option value='3500'>3500&nbsp;&nbsp;&nbsp;&nbsp;Historical Balancing</option>
+        <option value='3600'>3600&nbsp;&nbsp;&nbsp;&nbsp;Suspense</option>
+      </optgroup>
+      <optgroup label='Sales Income'>
+        <option value='4010'>4010&nbsp;&nbsp;&nbsp;&nbsp;Retail Sales</option>
+        <option value='4050'>4050&nbsp;&nbsp;&nbsp;&nbsp;Web Sales</option>
+        <option value='4110'>4110&nbsp;&nbsp;&nbsp;&nbsp;Export Sales</option>
+        <option value='4111'>4111&nbsp;&nbsp;&nbsp;&nbsp;Custom Sign Sales</option>
+        <option value='4112'>4112&nbsp;&nbsp;&nbsp;&nbsp;Installation Income</option>
+        <option value='4150'>4150&nbsp;&nbsp;&nbsp;&nbsp;Freight Collected</option>
+        <option value='4151'>4151&nbsp;&nbsp;&nbsp;&nbsp;Equipment Rental</option>
+        <option value='4152'>4152&nbsp;&nbsp;&nbsp;&nbsp;Line Marking</option>
+        <option value='4160'>4160&nbsp;&nbsp;&nbsp;&nbsp;Restocking Fees</option>
+        <option value='4170'>4170&nbsp;&nbsp;&nbsp;&nbsp;Sales - Motor Sprot Heaven</option>
+        <option value='4180'>4180&nbsp;&nbsp;&nbsp;&nbsp;Miscellaneous Income</option>
+        <option value='4190'>4190&nbsp;&nbsp;&nbsp;&nbsp;AMEX Fees Collected</option>
+      </optgroup>
+      <optgroup label='Other income'>
+        <option value='7010'>7010&nbsp;&nbsp;&nbsp;&nbsp;Interest Income</option>
+        <option value='7020'>7020&nbsp;&nbsp;&nbsp;&nbsp;Rental Income</option>
+        <option value='7030'>7030&nbsp;&nbsp;&nbsp;&nbsp;Other Income</option>
+        <option value='7040'>7040&nbsp;&nbsp;&nbsp;&nbsp;Government Payments</option>
+      </optgroup>
+      <optgroup label='Cost of Goods Sold'>
+        <option value='5040'>5040&nbsp;&nbsp;&nbsp;&nbsp;Materials &amp; Supplies</option>
+        <option value='5050'>5050&nbsp;&nbsp;&nbsp;&nbsp;Cost of Goods Sold</option>
+        <option value='5060'>5060&nbsp;&nbsp;&nbsp;&nbsp;Linemarking Subcontractors</option>
+        <option value='5070'>5070&nbsp;&nbsp;&nbsp;&nbsp;Installation Subcontractors</option>
+        <option value='5080'>5080&nbsp;&nbsp;&nbsp;&nbsp;Shipping</option>
+        <option value='5090'>5090&nbsp;&nbsp;&nbsp;&nbsp;Sales Discounts</option>
+        <option value='5110'>5110&nbsp;&nbsp;&nbsp;&nbsp;Assembly Costs</option>
+        <option selected value='6095'>6095&nbsp;&nbsp;&nbsp;&nbsp;Early payment discounts (sales)</option>
+      </optgroup>
+      <optgroup label='Expenses'>
+        <option value='6050'>6050&nbsp;&nbsp;&nbsp;&nbsp;Exchange variance</option>
+        <option value='6060'>6060&nbsp;&nbsp;&nbsp;&nbsp;Accounting Fees</option>
+        <option value='6070'>6070&nbsp;&nbsp;&nbsp;&nbsp;Advertising</option>
+        <option value='6080'>6080&nbsp;&nbsp;&nbsp;&nbsp;Bad Debts</option>
+        <option value='6120'>6120&nbsp;&nbsp;&nbsp;&nbsp;Bank Fees</option>
+        <option value='6125'>6125&nbsp;&nbsp;&nbsp;&nbsp;Books and Publications</option>
+        <option value='6130'>6130&nbsp;&nbsp;&nbsp;&nbsp;Bookkeeping</option>
+        <option value='6131'>6131&nbsp;&nbsp;&nbsp;&nbsp;Cleaning &amp; Waste Removal</option>
+        <option value='6132'>6132&nbsp;&nbsp;&nbsp;&nbsp;Computers - Maintenance and Supplies</option>
+        <option value='6133'>6133&nbsp;&nbsp;&nbsp;&nbsp;Debt Collection Costs</option>
+        <option value='6134'>6134&nbsp;&nbsp;&nbsp;&nbsp;Depreciation</option>
+        <option value='6140'>6140&nbsp;&nbsp;&nbsp;&nbsp;Donations</option>
+        <option value='6150'>6150&nbsp;&nbsp;&nbsp;&nbsp;Discounts Received</option>
+        <option value='6160'>6160&nbsp;&nbsp;&nbsp;&nbsp;Dues and Subscriptions</option>
+        <option value='6170'>6170&nbsp;&nbsp;&nbsp;&nbsp;Entertainment/Client Gifts</option>
+        <option value='6180'>6180&nbsp;&nbsp;&nbsp;&nbsp;Equipment Hire</option>
+        <option value='6190'>6190&nbsp;&nbsp;&nbsp;&nbsp;Filing Fees</option>
+        <option value='6200'>6200&nbsp;&nbsp;&nbsp;&nbsp;Fines &amp; Penalties</option>
+        <option value='6205'>6205&nbsp;&nbsp;&nbsp;&nbsp;Fines - not tax deductable</option>
+        <option value='6207'>6207&nbsp;&nbsp;&nbsp;&nbsp;Freight paid on Purchases</option>
+        <option value='6210'>6210&nbsp;&nbsp;&nbsp;&nbsp;Insurance (non-vehicle)</option>
+        <option value='6220'>6220&nbsp;&nbsp;&nbsp;&nbsp;Insurance - WorkCover</option>
+        <option value='6250'>6250&nbsp;&nbsp;&nbsp;&nbsp;Leases - Equipment</option>
+        <option value='6260'>6260&nbsp;&nbsp;&nbsp;&nbsp;Legal Fees</option>
+        <option value='6270'>6270&nbsp;&nbsp;&nbsp;&nbsp;Merchant Fees - General</option>
+        <option value='6280'>6280&nbsp;&nbsp;&nbsp;&nbsp;Merchant Fees - Ebay</option>
+        <option value='6550'>6550&nbsp;&nbsp;&nbsp;&nbsp;Office Supplies/Stationery</option>
+        <option value='6560'>6560&nbsp;&nbsp;&nbsp;&nbsp;Permits etc</option>
+        <option value='6570'>6570&nbsp;&nbsp;&nbsp;&nbsp;Postage</option>
+        <option value='6580'>6580&nbsp;&nbsp;&nbsp;&nbsp;Printing</option>
+        <option value='6590'>6590&nbsp;&nbsp;&nbsp;&nbsp;Professional Fees</option>
+        <option value='6600'>6600&nbsp;&nbsp;&nbsp;&nbsp;Recruitment</option>
+        <option value='6610'>6610&nbsp;&nbsp;&nbsp;&nbsp;Samples/Product Development</option>
+        <option value='6620'>6620&nbsp;&nbsp;&nbsp;&nbsp;Shop Set-Up</option>
+        <option value='6630'>6630&nbsp;&nbsp;&nbsp;&nbsp;Small Capital Items</option>
+        <option value='6640'>6640&nbsp;&nbsp;&nbsp;&nbsp;Staff Amenities/Medical</option>
+        <option value='6650'>6650&nbsp;&nbsp;&nbsp;&nbsp;Tool Replacements</option>
+        <option value='6660'>6660&nbsp;&nbsp;&nbsp;&nbsp;Website/Online Shop Expenses</option>
+      </optgroup>
+      <optgroup label='Occupancy Costs'>
+        <option value='6400'>6400&nbsp;&nbsp;&nbsp;&nbsp;Gas</option>
+        <option value='6401'>6401&nbsp;&nbsp;&nbsp;&nbsp;Cleaning &amp; Waste Removal</option>
+        <option value='6405'>6405&nbsp;&nbsp;&nbsp;&nbsp;Electricity</option>
+        <option value='6406'>6406&nbsp;&nbsp;&nbsp;&nbsp;Home Office Rent</option>
+        <option value='6407'>6407&nbsp;&nbsp;&nbsp;&nbsp;Rates &amp; Taxes</option>
+        <option value='6408'>6408&nbsp;&nbsp;&nbsp;&nbsp;Rent</option>
+        <option value='6409'>6409&nbsp;&nbsp;&nbsp;&nbsp;Repairs &amp; Maintenance</option>
+        <option value='6410'>6410&nbsp;&nbsp;&nbsp;&nbsp;Water</option>
+      </optgroup>
+      <optgroup label='Motor Vehicle'>
+        <option value='6710'>6710&nbsp;&nbsp;&nbsp;&nbsp;Gas/Petrol/Oil</option>
+        <option value='6720'>6720&nbsp;&nbsp;&nbsp;&nbsp;Registration &amp; Insurance</option>
+        <option value='6730'>6730&nbsp;&nbsp;&nbsp;&nbsp;Vehicle Maintenance/Servicing</option>
+      </optgroup>
+      <optgroup label='Telephone/Internet'>
+        <option value='6340'>6340&nbsp;&nbsp;&nbsp;&nbsp;Fax</option>
+        <option value='6341'>6341&nbsp;&nbsp;&nbsp;&nbsp;Telephone: Mobile</option>
+        <option value='6342'>6342&nbsp;&nbsp;&nbsp;&nbsp;Telephone: Office</option>
+        <option value='6343'>6343&nbsp;&nbsp;&nbsp;&nbsp;Telephone: VOIP</option>
+        <option value='6355'>6355&nbsp;&nbsp;&nbsp;&nbsp;Internet</option>
+      </optgroup>
+      <optgroup label='Rental Flat Costs'>
+        <option value='6810'>6810&nbsp;&nbsp;&nbsp;&nbsp;Rental Agent Commission</option>
+        <option value='6820'>6820&nbsp;&nbsp;&nbsp;&nbsp;Repairs &amp; Maint to Flat</option>
+      </optgroup>
+      <optgroup label='Travel Expenses'>
+        <option value='6830'>6830&nbsp;&nbsp;&nbsp;&nbsp;Parking</option>
+        <option value='6840'>6840&nbsp;&nbsp;&nbsp;&nbsp;Tolls</option>
+        <option value='6850'>6850&nbsp;&nbsp;&nbsp;&nbsp;Travel Allowances</option>
+      </optgroup>
+      <optgroup label='Other Expenses'>
+        <option value='8100'>8100&nbsp;&nbsp;&nbsp;&nbsp;Income Tax Expense</option>
+        <option value='8210'>8210&nbsp;&nbsp;&nbsp;&nbsp;Interest - Bank</option>
+        <option value='8220'>8220&nbsp;&nbsp;&nbsp;&nbsp;Interest - Credit Card</option>
+        <option value='8230'>8230&nbsp;&nbsp;&nbsp;&nbsp;Interest - ATO</option>
+        <option value='8240'>8240&nbsp;&nbsp;&nbsp;&nbsp;Interest - Chattel Mortgage</option>
+        <option value='8300'>8300&nbsp;&nbsp;&nbsp;&nbsp;Suspense</option>
+      </optgroup>
+      <optgroup label='Employee Expenses'>
+        <option value='0009'>0009&nbsp;&nbsp;&nbsp;&nbsp;Syed's car deduction</option>
+        <option value='6910'>6910&nbsp;&nbsp;&nbsp;&nbsp;Annual Leave</option>
+        <option value='6920'>6920&nbsp;&nbsp;&nbsp;&nbsp;Protective Clothing/Uniforms</option>
+        <option value='6930'>6930&nbsp;&nbsp;&nbsp;&nbsp;Salaries &amp; Wages</option>
+        <option value='6940'>6940&nbsp;&nbsp;&nbsp;&nbsp;Superannuation</option>
+        <option value='6950'>6950&nbsp;&nbsp;&nbsp;&nbsp;Training</option>
+        <option value='6960'>6960&nbsp;&nbsp;&nbsp;&nbsp;WorkCover</option>
+      </optgroup>
+    </select>
+    </div>
+  </td>
+</tr>
+<tr class='tablehead'>
+  <td colspan=2 class='tablehead'>Notes</td>
+</tr>
+<tr>
+  <td class='label'><label for='branch[notes]'>General Notes:</label></td>
+  <td><textarea id='branch[notes]' name='branch[notes]' cols='37' rows='4'></textarea></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</div>
+<br></div>
+<div id="tabs0-4" class="ui-tabs-hide">
+  <div id='invoiceFrame' data-src='/sales/inquiry/customer_allocation_inquiry.php?debtor_id=0'></div>
+</div>
+<input type='hidden' id='frame' name='frame' value=''></div>
+<input type='hidden' name='_focus' value='sales_type'></form>
+<div id="contactLog" title="New contact log entry" class="ui-widget-overlay" style="display:none;"><input type='hidden' id='type' name='type' value='1'>
+
+  <div class='center'>
+    <table>
+      <tr>
+        <td class='label'>Date:</td>
+        <td>2012-07-29 02:21:21</td>
+      </tr>
+      <tr>
+        <td class='label'><label for='contact_name'>Contact:</label></td>
+        <td><input type="text" name="contact_name" id="contact_name" size='35' maxlength="40" value=""></td>
+      </tr>
+      <tr>
+        <td class='label'><label for='message'>Entry:</label></td>
+        <td><textarea id='message' name='message' cols='102' rows='10'></textarea></td>
+      </tr>
+    </table>
+  </div>
+</div>
+<div class="center width50">
+  <button id="btnConfirm" name="submit" type="submit" class="ui-helper-hidden" style="margin:10px;">New Customer</button>
+  <button id="btnCancel" name="cancel" type="submit" style="margin:10px;" class="button">Cancel</button>
+</div>
+<div id="shortcuts" class="width50 center">
+  <div class='width90 center ui-tabs ui-widget ui-widget-content ui-corner-all tabs' id='tabs1'>
+    <ul class='ui-tabs-nav
+            ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all'>
+
+      <li class='ui-state-default ui-corner-top'><a title='Create Quote' href="/sales/sales_order_entry.php?type=32&amp;add=32&amp;debtor_id=" data-paramel="id"><span>Create Quote</span></a></li>
+      <li class='ui-state-default ui-corner-top'><a title='Create Order' href="/sales/sales_order_entry.php?type=30&amp;add=30&amp;debtor_id=" data-paramel="id"><span>Create Order</span></a></li>
+      <li class='ui-state-default ui-corner-top'><a title='Print Statement' href="/reporting/prn_redirect.php?REP_ID=108&amp;PARAM_2=0&amp;PARAM_4=0&amp;PARAM_5=0&amp;PARAM_6=0&amp;PARAM_0=" data-paramel="id" data-target="1"><span>Print Statement</span></a></li>
+      <li class='ui-state-default ui-corner-top'><a title='Email Statement' href="#emailTab"><span>Email Statement</span></a></li>
+      <li class='ui-state-default ui-corner-top'><a title='Customer Payment' href="/sales/customer_payments.php?debtor_id=" data-paramel="id"><span>Customer Payment</span></a></li>
+    </ul>
+  </div>
+</div>
+<!-- end page body div -->
+</div>
+<!-- end wrapper div-->
+</div>
+<div id='footer'>
+  <span class='power'><a target='_blank' href='http://www.advancedgroup.com.au'>Advanced Accounting</a></span>
+  <span class='date'>29/07/2012 | 02:21</span>
+  <span> </span>| <span>mem/peak: 3.75 mb/3.75 mb </span><span>|</span><span> load time: 0.053 ms</span>
+  <!-- end footer div-->
+</div>
+<!-- end content div-->
+</div>
+<div id="sidemenu" class="ui-widget-shadow ui-corner-all">
+  <h3><a href="#">Search</a></h3>
+
+  <div id="search">
+    <ul>
+      <li id="orders" data-href="/sales/inquiry/sales_orders_view.php?type=30">Orders/Quotes</li>
+      <li id="invoices" data-href="/sales/inquiry/customer_inquiry.php?">Invoice/Delivery</li>
+      <li id="purchaseOrders" data-href="/purchases/inquiry/po_search_completed.php?">Purchase Order</li>
+      <li id="supplierInvoices" data-href="/purchases/inquiry/supplier_inquiry.php?">Supplier Invoices</li>
+    </ul>
+  </div>
+  <h3><a href="#">Create</a></h3>
+
+  <div>
+    <ul>
+      <li><a href="/sales/sales_order_entry?add=0&amp;type=32">Quote</a></li>
+      <li><a href="/sales/sales_order_entry?add=0&amp;type=30">Order</a></li>
+      <li><a href="/sales/sales_order_entry?add=0&amp;type=10">Direct Invoice</a></li>
+      <li><a href="/purchases/po_entry_items?New=0">Purchase Order</a></li>
+    </ul>
+  </div>
+  <h3><a href="#">Banking</a></h3>
+
+  <div>
+    <ul>
+      <li><a href="/gl/gl_bank?NewPayment=Yes">Payment</a></li>
+      <li><a href="/gl/gl_bank?NewDeposit=Yes">Deposit</a></li>
+      <li><a href="/gl/bank_account_reconcile?">Reconcile</a></li>
+      <li><a href="/gl/undeposited_funds?">Undeposited</a></li>
+    </ul>
+  </div>
+  <h3><a href="#">Customer Search</a></h3>
+
+  <div>
+    <input size="14" id="quickCustomer"/>
+  </div>
+  <h3><a href="#">Supplier Search</a></h3>
+
+  <div>
+    <input size="14" id="quickSupplier"/>
+  </div>
+  <!-- end sidemenu div-->
+</div>
+<script>_focus = 'sales_type';
+_validate = [];</script>
+<script src="/js/libs/JsHttpRequest.js,jquery.min.js,jquery-ui.min.js,jquery-tmpl.min.js,jquery.calc.js"></script>
+<script src="/js/advanced.js,behaviour.js,inserts.js,calc.js,sidemenu.js,company.js"></script>
+<script>var user = {theme:'/themes/default/', loadtxt:'Requesting data...', date:'29/07/2012', datefmt:1, datesep:'1', ts:',', ds:'.', pdec:2};
+$emailBox = $('<div id="emailBox" title="Select Email Address:"></div>)');
+Adv.extend({postcode:(function () {
+  var sets = [];
+  return{add:function (set, city, state, code) {sets[set] = {city:$(document.getElementsByName(city)), state:$(document.getElementsByName(state)), postcode:$(document.getElementsByName(code))}}, fetch:function (data, item, ui) {
+    var set = $(ui).data("set");
+    data = data.value.split('|');
+    sets[set].city.val(data[0]).trigger('change');
+    sets[set].state.val(data[1]).trigger('change');
+    sets[set].postcode.val(data[2]).trigger('change');
+    return false;
+  }}
+}())});
+$(function () {
+  Adv.Events.onload(function () {
+    $emailBox.dialog({"autoOpen":false, "modal":true, "width":500, "resizable":true, "closeOnEscape":true, "height":350, "resizeable":false}).dialog("option", "buttons", [
+      { "text":"Close", click:function () { $(this).dialog("close");}},
+    ]);
+    Adv.Forms.autocomplete('accounts[postcode]', '/contacts/postcode.php?postcode=1', Adv.postcode.fetch);
+    Adv.Forms.autocomplete('accounts[city]', '/contacts/postcode.php?city=1', Adv.postcode.fetch);
+    Adv.Forms.autocomplete('branch[postcode]', '/contacts/postcode.php?postcode=1', Adv.postcode.fetch);
+    Adv.Forms.autocomplete('branch[city]', '/contacts/postcode.php?city=1', Adv.postcode.fetch);
+    Adv.Forms.autocomplete('customer', '/contacts/customers', Company.fetch);
+  }, function () {
+    Adv.o.autocomplete['accounts[postcode]'].autocomplete('destroy');
+    Adv.o.autocomplete['accounts[city]'].autocomplete('destroy');
+    Adv.o.autocomplete['branch[postcode]'].autocomplete('destroy');
+    Adv.o.autocomplete['branch[city]'].autocomplete('destroy');
+    Adv.o.autocomplete['customer'].autocomplete('destroy');
+  });
+  Adv.o.wrapper.delegate('.email-button', 'click', function (e) {
+    var emailID = $(this).data('emailid');
+    $.post('/contacts/emails.php', {type:1, id:emailID}, function (data) {
+      $emailBox.html(data).dialog('open');
+    }, 'html');
+    return false;
+  });
+  Adv.o.tabs.tabs1 = $('#tabs1').tabs({
+    select:function (event, ui) {
+      var $tab = $(ui.tab);
+
+      var param = $('#' + $tab.data('paramel')).val();
+      var url = $.data(ui.tab, 'load.tabs') + param;
+      var target = $tab.data('target');
+      if (url) {
+        if (target) {
+          Adv.openWindow(url, 'Test');
+        } else {
+          location.href = url;
+        }
+
+        return false;
+      }
+
+      return true;
+    }
+  }).toggleClass('tabs');
+  Adv.o.tabs.tabs1.bind('tabsselect', function (e, o) {
+    if (o.index != 3) {
+      return;
+    }
+    return false;
+  });
+  Adv.o.tabs.tabs0 = $('#tabs0').tabs().toggleClass('tabs');
+  Adv.postcode.add('3', 'accounts[city]', 'accounts[state]', 'accounts[postcode]');
+  Adv.postcode.add('1', 'branch[city]', 'branch[state]', 'branch[postcode]');
+  Adv.hoverWindow.init(900, 500);
+  Company.setValues({"company":{"id":0, "name":"", "sales_type":1, "debtor_ref":false, "credit_status":1, "payment_discount":"0", "defaultBranch":0, "defaultContact":0, "branches":[
+    {"post_address":null, "branch_id":0, "br_name":"New Address", "br_address":"", "city":"", "state":"", "postcode":"", "area":1, "br_post_address":null, "debtor_id":0, "branch_ref":"New", "contact_name":"", "default_location":"KEYS", "default_ship_via":1, "disable_trans":0, "phone":"", "phone2":"", "fax":"", "website":"", "email":"", "inactive":0, "notes":"", "group_no":1, "payment_discount_account":"6095", "receivables_account":"1800", "sales_account":"", "sales_discount_account":"5090", "salesman":"5", "tax_group_id":1, "id":0, "name":"New Address", "address":""}
+  ], "contacts":[
+    {"id":0, "contact_id":0, "parent_id":"0", "parent_type":1, "name":"New Contact", "phone1":"", "phone2":"", "email":"", "department":""}
+  ], "accounts":{"accounts_id":0, "br_name":"Accounts Department", "branch_ref":"accounts", "post_address":null, "branch_id":0, "br_address":"", "city":"", "state":"", "postcode":"", "area":1, "br_post_address":null, "debtor_id":0, "contact_name":"", "default_location":"KEYS", "default_ship_via":1, "disable_trans":0, "phone":"", "phone2":"", "fax":"", "website":"", "email":"", "inactive":0, "notes":"", "group_no":1, "payment_discount_account":"6095", "receivables_account":"1800", "sales_account":"", "sales_discount_account":"5090", "salesman":"5", "tax_group_id":1, "id":0, "name":"Accounts Department", "address":""}, "transactions":null, "webid":null, "email":"", "inactive":0, "debtor_id":0, "notes":"", "discount":"0", "address":"", "city":null, "state":null, "postcode":null, "post_address":"", "tax_id":"", "contact_name":null, "credit_limit":"0.00", "dimension_id":0, "dimension2_id":0, "payment_terms":0, "curr_code":"AUD", "emailAddresses":
+    []}});
+  $('sales_type').focus();
+});</script>
+</body>
+</html>

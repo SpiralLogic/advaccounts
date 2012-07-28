@@ -53,14 +53,9 @@
   $data['item']        = $item = new Item($id);
   $data['stockLevels'] = $item->getStockLevels();
   $data                = json_encode($data, JSON_NUMERIC_CHECK);
-  $js                  = <<<JS
-	Items.onload($data);
-JS;
-  JS::onload($js);
+  JS::onload("Items.onload($data);");
   $menu = new MenuUI();
-  if (isset($_GET['page'])) {
-    $menu->firstPage = $_GET['page'];
-  }
+    $menu->firstPage = Input::get('page',null,null);
   $menu->startTab("Items", "Items");
   $view->render();
   $menu->endTab();

@@ -78,13 +78,13 @@
     }
     if (isset($_GET['ul']) && $_GET['ul'] == 1) {
       $conn = Config::get('db.' . $id);
-      if (($db = DB_Utils::create($conn)) == 0) {
+      if (($db = Utils::create($conn)) == 0) {
         Event::error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
         $error = true;
       } else {
         $filename = $_FILES['uploadfile']['tmp_name'];
         if (is_uploaded_file($filename)) {
-          if (!DB_Utils::import($filename, $conn, $id)) {
+          if (!Utils::import($filename, $conn, $id)) {
             Event::error(_('Cannot create new company due to bugs in sql file.'));
             $error = true;
           } else {
@@ -105,7 +105,7 @@
     } else {
       if ($_GET['c'] = 'u') {
         $conn = Config::get('db.' . $id);
-        if (($db = DB_Utils::create($conn)) == 0) {
+        if (($db = Utils::create($conn)) == 0) {
           Event::error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
         } elseif ($_POST['admpassword'] != "") {
           DB::query("UPDATE users set password = '" . md5($_POST['admpassword']) . "' WHERE user_id = 'admin'");

@@ -7,7 +7,11 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class DB_Utils extends DB
+  namespace ADV\Core\DB;
+  /**
+
+   */
+  class Utils extends DB
   {
     /**
      * @static
@@ -63,9 +67,9 @@
       DB::query("SET foreign_key_checks=0");
       // uncrompress gziped backup files
       if (strpos($filename, ".gz") || strpos($filename, ".GZ")) {
-        $lines = DB_Utils::ungzip("lines", $filename);
+        $lines = Utils::ungzip("lines", $filename);
       } elseif (strpos($filename, ".zip") || strpos($filename, ".ZIP")) {
-        $lines = DB_Utils::unzip("lines", $filename);
+        $lines = Utils::unzip("lines", $filename);
       } else {
         $lines = file("" . $filename);
       }
@@ -220,7 +224,7 @@
     {
       $filename = $conn['dbname'] . "_" . date("Ymd_Hi") . ".sql";
 
-      return DB_Utils::export($conn, $filename, $ext, $comm);
+      return Utils::export($conn, $filename, $ext, $comm);
     }
     /**
      * @static
@@ -296,7 +300,7 @@
         }
       }
       // order $all_tables
-      $all_tables = DB_Utils::order_sql_tables($all_tables, $fks);
+      $all_tables = Utils::order_sql_tables($all_tables, $fks);
       // as long as no error occurred
       if (!$error) {
         //while($row=mysql_fetch_array($res))

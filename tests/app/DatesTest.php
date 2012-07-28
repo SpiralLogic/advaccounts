@@ -35,7 +35,7 @@
       $user = $this->getMockBuilder('\\User')->disableOriginalConstructor()->getMock();
       $user->expects($this->any())->method('_date_format')->will($this->returnValue(1));
       $user->expects($this->any())->method('_date_display')->will($this->returnValue('d/m/Y'));
-      $user->expects($this->any())->method('_date_sep')->will($this->returnValue(1));
+      $user->expects($this->any())->method('_date_sep')->will($this->returnValue(0));
       $user->expects($this->any())->method('_sticky_doc_date')->will($this->returnValue(false));
 
       $this->dates = new Dates($config, $user, $session, $company);
@@ -50,7 +50,7 @@
      * @covers ADV\Core\Dates::date
      */
     public function testdate() {
-      $class  = new \ReflectionClass('ADV\\Core\\Dates');
+      $class  = new \ReflectionClass('ADV\\App\\Dates');
       $method = $class->getMethod('date');
       $method->setAccessible(true);
       $expected = '01/13/2011';
