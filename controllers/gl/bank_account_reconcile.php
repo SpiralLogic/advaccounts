@@ -102,9 +102,7 @@
       $this->displaySummary();
       echo "<hr>";
       $this->bank_account == 5 ? $this->newWay() : $this->oldWay();
-      JS::i()->_addLive(<<<JS
 
-JS);
       Forms::end();
       Page::end();
     }

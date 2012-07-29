@@ -15,8 +15,8 @@
 <div id='_tabs2'>
   <ul class="menu" id="topmenu">
     {{#foreach $menu as $m }}
-    <li class='{{ $m["class"] }}'>
-      <a href='{{ $m["href"] }}' {{ $m['acc1'] }}>{{ $m['acc0'] }}</a>
+    <li class='{{ $m.class }}'>
+      <a href='{{ $m.href }}' {{ $m.acc1 }}>{{ $m.acc0 }}</a>
     </li>
     {{/foreach}}
   </ul>

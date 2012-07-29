@@ -10,4 +10,10 @@
       {{/if}}</li>
     {{/foreach}}
   </ul>
+  {{#foreach $tabs as $tab}}
+  <div id="{{$tab.id}}" {{$tab.class?}}class="{{$tab.class}}"{{/$tab.class?}}
+       {{$tab.style?}}style="{{$tab.style}}"{{/$tab.style?}}>
+    {{$tab.contents}}
+  </div>
+  {{/foreach}}
 </div>

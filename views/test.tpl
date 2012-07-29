@@ -1,1 +1,3 @@
-<div>{{HTML::span('goat','goat',false)}}</div>
+{{$test.wawa.wawa}}
+lklkjhlkj
+kjhdljkdhglkjdnkddndndmn

@@ -25,7 +25,7 @@
      * @var int
      */
     public static $menuCount = 0;
-    public $tabs=[];
+    public $tabs = [];
     /** @var View */
     public $current_tab;
     /**
@@ -84,7 +84,6 @@
     public function startTab($title, $tooltip, $link = '#', $style = '') {
       $count = count($this->items);
       $this->addTab($title, $tooltip, $link);
-      $this->current_tab          = new View('ui/tabmenu');
       $this->current_tab['id']    = 'tabs' . MenuUI::$menuCount . '-' . $count;
       $this->current_tab['class'] = ($count > 0 || $this->firstPage != $count) ? 'ui-tabs-hide' : '';
       $this->current_tab['style'] = $style;
@@ -95,8 +94,9 @@
      * @return MenuUI
      */
     public function endTab() {
-      $this->current_tab->set('contents', ob_get_clean());
-      $this->tabs[] = $this->current_tab->render(true);
+      $this->current_tab['contents'] = ob_get_clean();
+      $this->tabs[]                  = $this->current_tab;
+      $this->current_tab             = [];
       return $this;
     }
     /**
@@ -106,14 +106,13 @@
       $menu              = new View('ui/menu');
       $menu['menuCount'] = MenuUI::$menuCount;
       $menu->set('items', $this->items);
+      $menu->set('tabs', $this->tabs);
       $menu->render();
-      foreach ($this->tabs as $tab) {
-        echo $tab;
-      }
       JS::tabs('tabs' . MenuUI::$menuCount, $this->options, $this->firstPage);
       MenuUI::$menuCount++;
     }
   }
+
   /**
 
    */
