@@ -19,11 +19,15 @@
     protected function before() {
       JS::openWindow(900, 500);
       JS::footerFile('/js/payalloc.js');
-      $_POST['creditor_id']  = Input::postGetGlobal('creditor_id', null, -1);
-      $this->creditor_id     = &$_POST['creditor_id'];
+      $_POST['creditor_id'] = Input::postGetGlobal('creditor_id', null, -1);
+      $this->creditor_id    = &$_POST['creditor_id'];
+      $this->Session->_setGlobal('creditor_id', $this->creditor_id);
+      if (!$this->bank_account) // first page call
+      {
+        $_SESSION['alloc'] = new GL_Allocation(ST_SUPPAYMENT, 0);
+      }
       $_POST['bank_account'] = Input::postGetGlobal('bank_account', null, -1);
       $this->bank_account    = &$_POST['bank_account'];
-
       if (!isset($_POST['DatePaid'])) {
         $_POST['DatePaid'] = Dates::newDocDate();
         if (!Dates::isDateInFiscalYear($_POST['DatePaid'])) {
@@ -32,11 +36,6 @@
       }
       if (isset($_POST['_DatePaid_changed'])) {
         Ajax::activate('_ex_rate');
-      }
-
-      if (!$this->bank_account) // first page call
-      {
-        $_SESSION['alloc'] = new GL_Allocation(ST_SUPPAYMENT, 0);
       }
       if (Input::post('_control') == 'creditor' || Forms::isListUpdated('bank_account')) {
         $_SESSION['alloc']->read();
@@ -68,7 +67,6 @@
       Display::div_start('alloc_tbl');
       if ($this->bank_currency == $this->supplier_currency) {
         $_SESSION['alloc']->read();
-
         GL_Allocation::show_allocatable(false);
       }
       Display::div_end();

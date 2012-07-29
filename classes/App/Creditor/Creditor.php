@@ -8,11 +8,8 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Creditor;
-  use Cell;
   use ADV\App\UI\UI;
   use ADV\Core\DB\DB;
-  use Row;
-  use Table;
   use Display;
   use ADV\Core\Session;
   use ADV\Core\Input\Input;

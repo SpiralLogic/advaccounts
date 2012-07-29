@@ -136,7 +136,7 @@
      * @param $value
      */
     public static function debitOrCredit($value) {
-      $value = Num::round($value, User::price_dec());
+      $value = Num::priceFormat($value);
       if ($value >= 0) {
         Cell::amount($value);
         Cell::label("");

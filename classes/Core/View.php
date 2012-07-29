@@ -12,6 +12,7 @@
    */
   class View implements \ArrayAccess
   {
+    static $count;
     protected $_viewdata = [];
     protected $_template = null;
     /** @var Cache */
@@ -42,8 +43,8 @@
       // The contents of each view file is cached in an array for the
       // request since partial views may be rendered inside of for
       // loops which could incur performance penalties.
-      //  $__contents = null; // static::$Cache->_get('template.' . $this->_template);
-      $__contents = static::$Cache->_get('template.' . $this->_template);
+      $__contents = null; // static::$Cache->_get('template.' . $this->_template);
+      // $__contents = static::$Cache->_get('template.' . $this->_template);
       if (!$__contents || !is_array($__contents)) {
         $__contents = file_get_contents($this->_template);
         $__contents = $this->compile_nothings($__contents);
@@ -58,7 +59,7 @@
         $this->checkCache($this->_template, $__contents[1]);
         $__contents = $__contents[0];
       }
-
+      static::$count++;
       ob_start() and extract($this->_viewdata, EXTR_SKIP);
       // We'll include the view contents for parsing within a catcher
       // so we can avoid any WSOD errors. If an exception occurs we
@@ -106,7 +107,7 @@
      * @return mixed
      */
     protected static function compile_dot_notation($value) {
-      return preg_replace('/\.(\${0,1}[a-zA-Z_0-9]*)/', '["$1"]', $value);
+      return preg_replace('/(\$[a-zA-Z_0-9]*?)\.([a-zA-Z_0-9]+)/', '$1["$2"]', $value);
     }
     /**
      * @static

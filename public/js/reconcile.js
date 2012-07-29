@@ -42,12 +42,11 @@ $(function ()
     $("#summary").draggable();
     $('#wrapper').on('click', '.voidlink', function ()
     {
-      var voidtrans, type = $(this).data('type'), trans_no = $(this).data('trans_no'), url = '/system/void_transaction?type=' + type + '&trans_no=' + trans_no + '&memo=Deleted%20during%20reconcile.';
-      if (!voidtrans) {
-        voidtrans = window.open(url, '_blank');
-      }
-      else {
+      var voidtrans=false, type = $(this).data('type'), trans_no = $(this).data('trans_no'), url = '/system/void_transaction?type=' + type + '&trans_no=' + trans_no + '&memo=Deleted%20during%20reconcile.';
+      if (voidtrans) {
         voidtrans.location.href = url;
+      } else {
+        voidtrans = window.open(url, '_blank');
       }
     })
   });
