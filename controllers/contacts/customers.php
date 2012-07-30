@@ -53,30 +53,30 @@
       $form = new Form();
       echo $form->start();
       $menu = new MenuUI();
-      $menu->startTab('Details', 'Customer Details', '#', 'text-align:center');
       $view          = new View('contacts/customers');
       $view['frame'] = $this->Input->_get('frame') || $this->Input->_get('id');
+      $view->set('menu',$menu);
       $view->set('branchlist', UI::select('branchList', array_map(function($v) {
         return $v->br_name;
       }, $this->customer->branches), array('class'=> 'med', 'name' => 'branchList'), true));
-      $form->text('Contact:', 'branch[contact_name]', $currentBranch->contact_name, 40);
-      $form->text('Phone Number:', 'branch[phone]', $currentBranch->phone, 35);
-      $form->text("2nd Phone Number:", 'branch[phone2]', $currentBranch->phone2, 35, 30);
-      $form->text("Fax Number:", 'branch[fax]', $currentBranch->fax, 35, 30);
-      $form->text("Email:", 'branch[email]', $currentBranch->email, 35, 55);
-      $form->textarea('Street:', 'branch[br_address]', $currentBranch->br_address, 35, 2);
+      $form->text('Contact:', 'branch[contact_name]', $currentBranch->contact_name);
+      $form->text('Phone Number:', 'branch[phone]', $currentBranch->phone);
+      $form->text("2nd Phone Number:", 'branch[phone2]', $currentBranch->phone2);
+      $form->text("Fax Number:", 'branch[fax]', $currentBranch->fax);
+      $form->text("Email:", 'branch[email]', $currentBranch->email);
+      $form->textarea('Street:', 'branch[br_address]', $currentBranch->br_address,37,4);
       $branch_postcode = new Contact_Postcode(array(
                                                    'city'     => ['branch[city]', $currentBranch->city], //
                                                    'state'    => ['branch[state]', $currentBranch->state], //
                                                    'postcode' => ['branch[postcode]', $currentBranch->postcode]
                                               ));
       $view->set('branch_postcode', $branch_postcode);
-      $form->text('Accounts Contact:', 'accounts[contact_name]', $this->customer->accounts->contact_name, 35, 40);
-      $form->text('Phone Number:', 'accounts[phone]', $this->customer->accounts->phone, 35, 30);
-      $form->text('Secondary Phone Number:', 'accounts[phone2]', $this->customer->accounts->phone2, 35, 30);
-      $form->text('Fax Number:', 'accounts[fax]', $this->customer->accounts->fax, 35, 30);
-      $form->text('E-mail:', 'accounts[email]', $this->customer->accounts->email, 35, 55);
-      $form->text('Street:', 'accounts[br_address]', $this->customer->accounts->br_address, 35, 2);
+      $form->text('Accounts Contact:', 'accounts[contact_name]', $this->customer->accounts->contact_name);
+      $form->text('Phone Number:', 'accounts[phone]', $this->customer->accounts->phone);
+      $form->text('Secondary Phone Number:', 'accounts[phone2]', $this->customer->accounts->phone2);
+      $form->text('Fax Number:', 'accounts[fax]', $this->customer->accounts->fax);
+      $form->text('E-mail:', 'accounts[email]', $this->customer->accounts->email);
+      $form->text('Street:', 'accounts[br_address]', $this->customer->accounts->br_address);
       $accounts_postcode = new Contact_Postcode(array(
                                                      'city'     => array('accounts[city]', $this->customer->accounts->city), 'state'    => array('accounts[state]', $this->customer->accounts->state), 'postcode' => array(
           'accounts[postcode]', $this->customer->accounts->postcode
@@ -84,18 +84,16 @@
                                                 ));
       $view->set('accounts_postcode', $accounts_postcode);
       $view->set('form', $form);
-      $view->render();
       $menu->endTab()->startTab('Accounts', 'Accounts');
-      Forms::hidden('accounts_id', $this->customer->accounts->accounts_id);
-      Table::startOuter('tablestyle2');
-      Table::section(1);
-      Table::sectionTitle(_("Accounts Details:"), 2);
-      Forms::percentRow(_("Discount Percent:"), 'discount', $this->customer->discount, (User::i()->hasAccess(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
-      Forms::percentRow(_("Prompt Payment Discount Percent:"), 'payment_discount', $this->customer->payment_discount, (User::i()->hasAccess(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
-      Forms::AmountRow(_("Credit Limit:"), 'credit_limit', $this->customer->credit_limit, null, null, 0, (User::i()->hasAccess(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
-      Forms::textRow(_("GSTNo:"), 'tax_id', $this->customer->tax_id, null, 40);
-      Sales_Type::row(_("Sales Type/Price List:"), 'sales_type', $this->customer->sales_type);
-      Forms::recordStatusListRow(_("Customer status:"), 'inactive');
+      $form->hidden('accounts_id', $this->customer->accounts->accounts_id);
+      $form->percent("Discount Percent:", 'discount', $this->customer->discount, ["disabled"=>User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
+      $form->percent("Prompt Payment Discount Percent:", 'payment_discount', $this->customer->payment_discount,  ["disabled"=>User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
+      $form->number("Credit Limit:", 'credit_limit', $this->customer->credit_limit, null, null, null,null, ["disabled"=>User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
+      $form->text("GSTNo:", 'tax_id', $this->customer->tax_id);
+      $view->set('sales_type',Sales_Type::select('sales_type', $this->customer->sales_type));
+      Form::recordStatusListRow(_("Customer status:"), 'inactive');
+      $view->set('inactive', UI::select('inactive', ['Yes','No'],array('name' => 'inactive'), true));      $view->render();
+
       if (!$this->customer->id) {
         GL_Currency::row(_("Customer's Currency:"), 'curr_code', $this->customer->curr_code);
       } else {

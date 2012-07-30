@@ -105,7 +105,6 @@
     public static function  select($name, $selected_id = null, $submit_on_change = false, $special_option = false)
     {
       $sql = "SELECT id, sales_type, inactive FROM sales_types";
-
       return Forms::selectBox($name, $selected_id, $sql, 'id', 'sales_type', array(
                                                                                   'spec_option'                => $special_option === true ?
                                                                                     _("All Sales Types") : $special_option,

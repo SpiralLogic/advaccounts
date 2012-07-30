@@ -12,6 +12,7 @@
     </tr>
   </table>
 </div>
+{#$menu->startTab('Details', 'Customer Details', '#', 'text-align:center')#}
 <div class='center'>
   <table class='tablestyle2'>
     <tr class='top'>
@@ -32,41 +33,21 @@
 
         </div>
       </td>
-      <td style='border-left:1px solid #cccccc; '>
-        <table class='tablestyle_inner '>
-          <tr class='tablehead'>
-            <td colspan=2 class='tablehead'>Accounts Details</td>
-          </tr>
-          <tr>
-            <td class="center" colspan="2">
-              <button id="useShipAddress" name="useShipAddress" class="button">Use shipping details</button>
-            <td></td>
-          </tr>
-          <tr>
-            <td class='label'><label for='accounts[contact_name]'>Accounts Contact:</label></td>
-            <td><input type="text" name="accounts[contact_name]" id="accounts[contact_name]" size='35' maxlength="40" value=""></td>
-          </tr>
-          <tr>
-            <td class='label'><label for='accounts[phone]'>Phone Number:</label></td>
-            <td><input type="text" name="accounts[phone]" id="accounts[phone]" size='35' maxlength="30" value=""></td>
-          </tr>
-          <tr>
-            <td class='label'><label for='accounts[phone2]'>Secondary Phone Number:</label></td>
-            <td><input type="text" name="accounts[phone2]" id="accounts[phone2]" size='35' maxlength="30" value=""></td>
-          </tr>
-          <tr>
-            <td class='label'><label for='accounts[fax]'>Fax Number:</label></td>
-            <td><input type="text" name="accounts[fax]" id="accounts[fax]" size='35' maxlength="30" value=""></td>
-          </tr>
-          <tr>
-            <td class='label'><label for='accounts[email]'>E-mail:</label></td>
-            <td><input type="text" name="accounts[email]" id="accounts[email]" size='35' maxlength="55" value=""></td>
-          </tr>
-          <tr>
-            <td class='label'><label for='accounts[br_address]'>Street:</label></td>
-            <td><textarea id='accounts[br_address]' name='accounts[br_address]' cols='37' rows='2'></textarea></td>
-          </tr>
-          {{$accounts_postcode->render()}}        </table>
+      <td style='width:50%'>
+        <div class='formbox'>
+          <div class='tablehead'>
+            Accounts Details
+          </div>
+          <div class='center'>
+            <button id="useShipAddress" name="useShipAddress" class="button">Use shipping details</button>
+          </div>
+          {{$form['accounts.contact_name']}}
+          {{$form['accounts.phone']}}
+          {{$form['accounts.phone2']}}
+          {{$form['accounts.fax']}}
+          {{$form['accounts.email']}}
+          {{$form['accounts.br_address']}}</div>
+
       </td>
     </tr>
   </table>

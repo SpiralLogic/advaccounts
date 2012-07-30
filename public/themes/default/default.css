@@ -48,7 +48,6 @@ input, textarea {
   min-width:          8em;
   border:             none;
   -moz-border-radius: 4px;
-  margin-left:        3px;
 }
 
 input[type="search"] {
@@ -751,7 +750,7 @@ div.formbox {
 
 .formbox label {
   display:       block;
-  margin-bottom: 10px;
+  margin-bottom: 1px;
   color:         #555555;
 }
 
@@ -763,7 +762,6 @@ div.formbox label span:first-child {
   display:          block;
   float:            left;
   margin-right:     5px;
-  padding:          5px;
   width:            130px;
   height:           inherit;
   font-weight:      bold;

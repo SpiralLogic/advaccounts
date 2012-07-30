@@ -780,7 +780,7 @@
       $items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
       return Forms::arraySelect($name, $selected_id, $items, array(
                                                                   'select_submit' => $submit_on_change, 'async' => false
-                                                             )); // FIX?
+                                                             ));
     }
     /**
      * @param        $label
