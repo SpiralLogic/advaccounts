@@ -24,7 +24,7 @@
     /**
      * @var array
      */
-    protected $hooks = array();
+    protected $hooks = [];
     /**
      * @param       $name
      * @param       $callback
@@ -32,7 +32,7 @@
      *
      * @return bool
      */
-    public function add($name, $callback, $arguments = array())
+    public function add($name, $callback, $arguments = [])
     {
       $callback_id = (is_string($callback)) ? $callback : count($this->hooks);
       if (!isset($this->hooks[$name][$callback_id])) {
@@ -48,7 +48,7 @@
      */
     public function getCallbacks($name)
     {
-      return isset($this->hooks[$name]) ? $this->hooks[$name] : array();
+      return isset($this->hooks[$name]) ? $this->hooks[$name] : [];
     }
     /**
      * @param $name

@@ -26,17 +26,17 @@
     /**
      * @var array
      */
-    protected $classes = array();
+    protected $classes = [];
     /**
      * @var array
      */
-    protected $global_classes = array();
+    protected $global_classes = [];
     /** @var Cache */
     protected $Cache = null;
     /**
      * @var array
      */
-    public $loaded = array();
+    public $loaded = [];
     /**
 
      */
@@ -50,7 +50,7 @@
      */
     public function registerCache(Cache $cache) {
       $this->Cache   = $cache;
-      $cachedClasses = $cache->get('Loader', array());
+      $cachedClasses = $cache->get('Loader', []);
       if ($cachedClasses) {
         $this->classes = $cachedClasses['classes'];
         $this->loaded  = $cachedClasses['paths'];
@@ -135,12 +135,10 @@
      * @return bool|string
      */
     public function load($requested_class) {
-      $classname = ltrim($requested_class, '\\');
-      $namespace = $global = '';
-      if ($lastNsPos = strripos($classname, '\\')) {
-        $namespace = substr($classname, 0, $lastNsPos);
-        $classname = substr($classname, $lastNsPos + 1);
-      }
+      $classpieces  = explode('\\', ltrim($requested_class, '\\'));
+      $global     = '';
+      $classname  = array_pop($classpieces);
+      $namespace  = implode('\\', $classpieces);
       $class_file = str_replace('_', DS, $classname);
       if (isset($this->global_classes[$classname]) && (!$namespace || $this->global_classes[$classname] == $namespace)) {
         $namespace = $this->global_classes[$classname];

@@ -41,7 +41,7 @@
     /**
      * @var array
      */
-    public static $bom_list = array();
+    public static $bom_list = [];
     /**
      * @var null
      */
@@ -83,7 +83,7 @@
       }
       // Load all stock levels (stock moves) into static::$qoh_stock
       if (static::$qoh_stock == null) {
-        static::$qoh_stock = array();
+        static::$qoh_stock = [];
         static::load_stock_levels($location);
       }
       if (empty(static::$qoh_stock[$stock_id])) {
@@ -100,7 +100,7 @@
           $sql .= " AND loc_code = " . DB::escape($location);
         }
         $result = DB::query($sql, "Could not search bom");
-        $bom    = array();
+        $bom    = [];
         // Even if we get no results, remember that fact
         $bom[] = array($stock_id, '', 0);
         while ($row = DB::fetchRow($result)) {

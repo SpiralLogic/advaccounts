@@ -74,8 +74,8 @@
       }
     }
     if ($input_error == 0) {
-      $sections = array();
-      $areas    = array();
+      $sections = [];
+      $areas    = [];
       foreach ($_POST as $p => $val) {
         if (substr($p, 0, 4) == 'Area') {
           $a = substr($p, 4);
@@ -133,7 +133,7 @@
     } else {
       $_POST['description'] = $_POST['name'] = '';
       unset($_POST['inactive']);
-      $access = $sections = array();
+      $access = $sections = [];
     }
     foreach ($access as $a) {
       $_POST['Area' . $a] = 1;

@@ -1035,7 +1035,7 @@
      * @access     public
      * @see        SetLineWidth(), SetDrawColor(), SetLineStyle()
      */
-    public function UnderlineCell($c, $r = 0, $type = 1, $linewidth = 0, $style = array()) {
+    public function UnderlineCell($c, $r = 0, $type = 1, $linewidth = 0, $style = []) {
       // If line width was specified, save current setting so we can reset it
       if ($linewidth != 0) {
         $oldLineWidth = $this->GetLineWidth();

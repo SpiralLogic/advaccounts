@@ -32,11 +32,11 @@
     /**
      * @var array
      */
-    protected $aCommands = array();
+    protected $aCommands = [];
     /**
      * @var array
      */
-    protected $triggers = array();
+    protected $triggers = [];
     public function __construct() {
       $enc = (session_status() == PHP_SESSION_ACTIVE) ? $_SESSION['language']->encoding : 'UTF-8';
       parent::__construct($enc);

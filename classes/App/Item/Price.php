@@ -226,7 +226,7 @@
       $num_rows = DB::numRows($result);
       $rate     = Num::round(Bank_Currency::exchange_rate_from_home($currency, $date), User::exrate_dec());
       $round_to = DB_Company::get_pref('round_to');
-      $prices   = array();
+      $prices   = [];
       while ($myrow = DB::fetch($result)) {
         $prices[$myrow['sales_type_id']][$myrow['curr_abrev']] = $myrow['price'];
       }

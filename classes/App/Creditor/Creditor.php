@@ -134,7 +134,7 @@
     /**
      * @var Contact[]
      */
-    public $contacts = array();
+    public $contacts = [];
     /** @var */
     public $defaultContact;
     /** @var */
@@ -296,7 +296,7 @@ JS;
      *
      * @return array|bool
      */
-    protected function _read($id = false, $extra = array()) {
+    protected function _read($id = false, $extra = []) {
       if (!parent::_read($id)) {
         return $this->_status->get();
       }
@@ -441,7 +441,7 @@ JS;
      *
      * @return void
      */
-    public static function newselect($value = null, $options = array()) {
+    public static function newselect($value = null, $options = []) {
       $o     = [
         'row'        => true, //
         'cell_params'=> [], //

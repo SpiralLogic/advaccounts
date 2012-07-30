@@ -12,7 +12,6 @@
    */
   class Arr
   {
-
     /**
      * @static
      *
@@ -24,12 +23,10 @@
      *
      * @return bool
      */
-    public static function insert(&$array, $index, $elements)
-    {
+    public static function insert(&$array, $index, $elements) {
       $elements = (array) ($elements);
       $head     = array_splice($array, 0, $index);
       $array    = array_merge($head, $elements, $array);
-
       return true;
     }
     /**
@@ -41,10 +38,8 @@
      *
      * @return bool
      */
-    public static function remove(&$array, $index, $len = 1)
-    {
+    public static function remove(&$array, $index, $len = 1) {
       array_splice($array, $index, $len);
-
       return true;
     }
     /**
@@ -56,8 +51,7 @@
      *
      * @return mixed null
      */
-    public static function get(array $array, $key, $default = null)
-    {
+    public static function get(array $array, $key, $default = null) {
       return (isset($array[$key])) ? $array[$key] : $default;
     }
     /**
@@ -70,11 +64,9 @@
      *
      * @return bool
      */
-    public static function substitute(&$array, $index, $len, $elements)
-    {
+    public static function substitute(&$array, $index, $len, $elements) {
       array_splice($array, $index, $len);
       Arr::insert($array, $index, $elements);
-
       return true;
     }
     /**
@@ -83,8 +75,7 @@
      * @param             &$array
      * @param array|mixed $elements elements to append,
      */
-    public static function append(&$array, $elements = array())
-    {
+    public static function append(&$array, $elements = []) {
       $elements = (array) $elements;
       foreach ($elements as $key => $el) {
         if (is_int($key)) {
@@ -103,8 +94,7 @@
      *
      * @return int|null
      */
-    public static function searchValue($needle, $haystack, $valuekey = null)
-    {
+    public static function searchValue($needle, $haystack, $valuekey = null) {
       foreach ($haystack as $value) {
         if ($valuekey === null) {
           $val = $value;
@@ -117,7 +107,6 @@
           return $value;
         }
       }
-
       return null;
     }
     /**
@@ -129,15 +118,13 @@
      *
      * @return int|null|string
      */
-    public static function searchKey($needle, $haystack, $valuekey = null)
-    {
+    public static function searchKey($needle, $haystack, $valuekey = null) {
       foreach ($haystack as $key => $value) {
         $val = isset($valuekey) ? $value[$valuekey] : $value;
         if ($needle == $val) {
           return $key;
         }
       }
-
       return null;
     }
   }

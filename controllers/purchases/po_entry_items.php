@@ -16,7 +16,7 @@
     /** @var Purch_Order */
     protected $order = null;
     protected function before() {
-      JS::openWindow(900, 500);
+      JS::openWindow(950, 500);
       $this->order = Orders::session_get() ? : null;
       if (isset($_POST[Orders::CANCEL_CHANGES])) {
         $order_no = $this->order->order_no;
@@ -193,7 +193,7 @@
           $sales_order = new Sales_Order(ST_SALESORDER, array($_GET['UseOrder']));
         }
         $this->order = new Purch_Order($order_no);
-        $stock       = $myrow = array();
+        $stock       = $myrow = [];
         foreach ($sales_order->line_items as $line_item) {
           $stock[] = ' stock_id = ' . DB::escape($line_item->stock_id);
         }

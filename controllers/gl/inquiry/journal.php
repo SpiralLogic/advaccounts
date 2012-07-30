@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(800, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Journal Inquiry"), SA_GLANALYTIC);
   // Ajax updates
   //

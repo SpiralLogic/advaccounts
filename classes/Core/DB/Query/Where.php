@@ -18,22 +18,22 @@
     /**
      * @var array
      */
-    public $data = array();
+    public $data = [];
     /**
      * @var array
      */
-    protected $where = array();
+    protected $where = [];
     /**
      * @var array
      */
-    private $wheredata = array();
+    private $wheredata = [];
     /**
      * @var int
      */
     protected $count = 0;
     protected function resetWhere()
     {
-      $this->wheredata = $this->where = array();
+      $this->wheredata = $this->where = [];
       $this->count     = 0;
     }
     /***

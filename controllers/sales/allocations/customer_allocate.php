@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   JS::footerFile('/js/allocate.js');
   Page::start(_($help_context = "Allocate Customer Payment or Credit Note"), SA_SALESALLOC);
 

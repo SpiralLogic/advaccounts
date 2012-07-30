@@ -96,7 +96,7 @@
      */
     private static function bitStringTo2DArray($digit)
     {
-      $d   = array();
+      $d   = [];
       $len = strlen($digit);
       for ($i = 0; $i < $len; $i++) {
         $d[$i] = $digit[$i];
@@ -753,7 +753,7 @@
      */
     private static function encodeDataCodeWordsASCII($text)
     {
-      $dataCodeWords = array();
+      $dataCodeWords = [];
       $n             = 0;
       $len           = strlen($text);
       for ($i = 0; $i < $len; $i++) {
@@ -833,7 +833,7 @@
     { // Add the Reed Solomon codewords
       $temp         = 0;
       $errorBlocks  = $nSolomonCW / $blocks;
-      $correctionCW = array();
+      $correctionCW = [];
       for ($k = 0; $k < $blocks; $k++) {
         for ($i = 0; $i < $errorBlocks; $i++) {
           $correctionCW[$i] = 0;
@@ -870,7 +870,7 @@
      */
     private static function getBits($entier)
     { // Transform integer to tab of bits
-      $bits = array();
+      $bits = [];
       for ($i = 0; $i < 8; $i++) {
         $bits[$i] = $entier & (128 >> $i) ? 1 : 0;
       }
@@ -1080,10 +1080,10 @@
     { // Add the finder pattern
       $totalRowsCW       = ($rowsRegionCW + 2) * $rowsRegion;
       $totalColsCW       = ($colsRegionCW + 2) * $colsRegion;
-      $datamatrixTemp    = array();
+      $datamatrixTemp    = [];
       $datamatrixTemp[0] = array_fill(0, $totalColsCW + 2, 0);
       for ($i = 0; $i < $totalRowsCW; $i++) {
-        $datamatrixTemp[$i + 1]                   = array();
+        $datamatrixTemp[$i + 1]                   = [];
         $datamatrixTemp[$i + 1][0]                = 0;
         $datamatrixTemp[$i + 1][$totalColsCW + 1] = 0;
         for ($j = 0; $j < $totalColsCW; $j++) {
@@ -1115,7 +1115,7 @@
           }
         }
       }
-      $datamatrixTemp[$totalRowsCW + 1] = array();
+      $datamatrixTemp[$totalRowsCW + 1] = [];
       for ($j = 0; $j < $totalColsCW + 2; $j++) {
         $datamatrixTemp[$totalRowsCW + 1][$j] = 0;
       }
@@ -1152,12 +1152,12 @@
       self::addPadCW($dataCodeWords, $dataCWCount, $totalDataCWCount); // Add codewords pads
       $g = self::calculSolFactorTable($errorBlocks); // Calculate correction coefficients
       self::addReedSolomonCW($solomonCWCount, $g, $totalDataCWCount, $dataCodeWords, $blocks); // Add Reed Solomon codewords
-      $codeWordsBits = array(); // Calculte bits from codewords
+      $codeWordsBits = []; // Calculte bits from codewords
       for ($i = 0; $i < $totalCWCount; $i++) {
         $codeWordsBits[$i] = self::getBits($dataCodeWords[$i]);
       }
-      $datamatrix = array_fill(0, $colsLengthMatrice, array());
-      $assigned   = array_fill(0, $colsLengthMatrice, array());
+      $datamatrix = array_fill(0, $colsLengthMatrice, []);
+      $assigned   = array_fill(0, $colsLengthMatrice, []);
       // Add the bottom-right corner if needed
       if ((($rowsLengthMatrice * $colsLengthMatrice) % 8) == 4) {
         $datamatrix[$rowsLengthMatrice - 2][$colsLengthMatrice - 2] = 1;

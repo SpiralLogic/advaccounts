@@ -59,10 +59,10 @@
         '1062', // duplicate key entry
         '1091' // can't drop key/column check if exists
       );
-      $data_queries         = array();
-      $drop_queries         = array();
-      $table_queries        = array();
-      $sql_errors           = array();
+      $data_queries         = [];
+      $drop_queries         = [];
+      $table_queries        = [];
+      $sql_errors           = [];
       ini_set("max_execution_time", "180");
       DB::query("SET foreign_key_checks=0");
       // uncrompress gziped backup files
@@ -276,7 +276,7 @@
       //$out.="use ".$db.";\n"; we don't use this option.
       // get auto_increment values and names of all tables
       $res        = DB::query("show table status");
-      $all_tables = array();
+      $all_tables = [];
       while ($row = DB::fetch($res)) {
         $all_tables[] = $row;
       }
@@ -287,7 +287,7 @@
         $table_sql[$table['Name']] = $tmp["Create Table"];
       }
       // find foreign keys
-      $fks = array();
+      $fks = [];
       if (isset($table_sql)) {
         foreach ($table_sql as $tablenme => $table) {
           $tmp_table = $table;
@@ -326,7 +326,7 @@
             $out .= "### Data of table `" . $tablename . "` ###\n\n";
             // check if field types are null or NOT null
             $res3       = DB::query("SHOW COLUMNS FROM `" . $tablename . "`");
-            $field_null = array();
+            $field_null = [];
             for ($j = 0; $j < DB::numRows($res3); $j++) {
               $row3         = DB::fetch($res3);
               $field_null[] = $row3[2] == 'YES' && $row3[4] === null;
@@ -403,8 +403,8 @@
         return $tables;
       }
       // order
-      $new_tables = array();
-      $existing   = array();
+      $new_tables = [];
+      $existing   = [];
       $modified   = true;
       while (count($tables) && $modified == true) {
         $modified = false;

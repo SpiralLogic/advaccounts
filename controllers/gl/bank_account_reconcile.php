@@ -30,7 +30,7 @@
       $this->bank_date         = &$_POST['bank_date'];
       $_POST['reconcile_date'] = $this->Input->_post('reconcile_date', null, $this->Dates->_sqlToDate($_POST['bank_date']));
       $this->reconcile_date    = &$_POST['reconcile_date'];
-      $this->JS->_openWindow(800, 500);
+      $this->JS->_openWindow(950, 500);
       $this->JS->_footerFile('/js/reconcile.js');
       if ($this->Input->_post('reset')) {
         // GL_Account::reset_sql_for_reconcile($this->bank_account, $this->reconcile_date);

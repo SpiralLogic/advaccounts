@@ -4,8 +4,8 @@
 
    */
   class DIC implements \ArrayAccess {
-    protected $_objects = array();
-    protected $_callbacks = array();
+    protected $_objects = [];
+    protected $_callbacks = [];
     protected static $i;
     public static function getInstance() {
       if (!static::$i) {

@@ -85,7 +85,7 @@
      * @return mixed
      * @return array
      */
-    public function _getAll($group = 'config', $default = array()) {
+    public function _getAll($group = 'config', $default = []) {
       if (!isset($this->_vars[$group]) && $this->load($group) === false) {
         return $default;
       }

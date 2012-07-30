@@ -38,7 +38,7 @@
     }
     if (move_uploaded_file($_FILES['csvitems']['tmp_name'], $file)) {
       ini_set('auto_detect_line_endings', 1);
-      $csvitems = array();
+      $csvitems = [];
       $file     = fopen($file, 'r');
       while (($item = fgetcsv($file, 1000, ',')) !== false) {
         if (isset($item[5]) && strlen($item[5] > $item[3])) {

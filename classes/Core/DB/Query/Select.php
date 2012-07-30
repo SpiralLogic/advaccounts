@@ -19,31 +19,31 @@
     /**
      * @var array
      */
-    protected $select = array();
+    protected $select = [];
     /**
      * @var array
      */
-    protected $from = array();
+    protected $from = [];
     /**
      * @var array
      */
-    protected $limit = array();
+    protected $limit = [];
     /**
      * @var array
      */
-    protected $orderby = array();
+    protected $orderby = [];
     /**
      * @var array
      */
-    protected $groupby = array();
+    protected $groupby = [];
     /**
      * @var array
      */
-    protected $union = array();
+    protected $union = [];
     /**
      * @var array
      */
-    protected $union_or = array();
+    protected $union_or = [];
     /***
      * @param string $columns,... Database columns to select
      * @param        DB_C
@@ -131,7 +131,7 @@
     public function union()
     {
       $this->union[] = '(' . $this->_buildQuery() . ')';
-      $this->select  = $this->from = $this->orderby = $this->groupby = array();
+      $this->select  = $this->from = $this->orderby = $this->groupby = [];
       $this->limit   = '';
       $this->resetWhere();
 
@@ -169,7 +169,7 @@
       $sql .= parent::_buildWhere();
       if (!empty($this->union_or)) {
         //$data = $this->data;
-        $finalsql = array();
+        $finalsql = [];
         foreach ($this->union_or as $k => $v) {
           $finalsql[] = $sql . ' AND ' . $k . ' ' . $v;
         }

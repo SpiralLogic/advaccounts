@@ -257,9 +257,9 @@
     public function clear_items()
     {
       unset($this->line_items);
-      $this->line_items = array();
+      $this->line_items = [];
       unset($this->gl_items);
-      $this->gl_items = array();
+      $this->gl_items = [];
     }
     /**
      * @static

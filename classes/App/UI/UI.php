@@ -26,7 +26,7 @@
      *
      * @return \ADV\Core\HTML|null
      */
-    public static function button($id = false, $content = false, $attr = array()) {
+    public static function button($id = false, $content = false, $attr = []) {
       if ($id) {
         $attr['id'] = $id;
       }
@@ -48,7 +48,7 @@
      *
      * @return \ADV\Core\HTML|null
      */
-    public static function select($id = false, $options = array(), $params = array()) {
+    public static function select($id = false, $options = [], $params = []) {
       HTML::setReturn(true)->select($id, $params);
       foreach ((array) $options as $label => $option) {
         if (is_array($option)) {
@@ -81,7 +81,7 @@
      * options: Javascript function autocomplete options<br>
 
      */
-    public static function search($id, $options = array()) {
+    public static function search($id, $options = []) {
       $o   = array(
         'url'               => false, //
         'nodiv'             => false, //
@@ -161,7 +161,7 @@
      *
      * @return HTML|string
      */
-    public static function searchLine($id, $url = '#', $options = array()) {
+    public static function searchLine($id, $url = '#', $options = []) {
       $defaults                      = array(
         'description'      => false,
         'disabled'         => false,

@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Search Outstanding Purchase Orders"), SA_SUPPTRANSVIEW);
   $order_number = $_POST['order_number'] = Input::getPost('order_number', Input::NUMERIC);
   // Ajax updates

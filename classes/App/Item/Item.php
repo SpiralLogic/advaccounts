@@ -133,15 +133,15 @@
     /**
      * @var array
      */
-    public $salePrices = array();
+    public $salePrices = [];
     /**
      * @var array
      */
-    public $purchPrices = array();
+    public $purchPrices = [];
     /**
      * @var array
      */
-    protected $stockLevels = array();
+    protected $stockLevels = [];
     /**
      * @var
      */
@@ -159,7 +159,7 @@
      *
      * @return bool|void
      */
-    protected function _read($id = null, $extra = array()) {
+    protected function _read($id = null, $extra = []) {
       $id = $id ? : 0;
       if (!is_numeric($id)) {
         $stockid = static::getStockID((string) $id);
@@ -275,7 +275,7 @@
      *
      * @return array|mixed
      */
-    public function  getPurchPrices($option = array()) {
+    public function  getPurchPrices($option = []) {
       $sql = "SELECT * FROM purch_data WHERE stockid = " . $this->id;
       if ($option['min']) {
         $sql .= " ORDER BY price LIMIT 1";
@@ -742,7 +742,7 @@
      *
      * @return void
      */
-    public static function addEditDialog($options = array()) {
+    public static function addEditDialog($options = []) {
       $default  = array('page' => 0);
       $o        = array_merge($default, $options);
       $stockbox = new Dialog('Item Edit', 'stockbox', '');
@@ -787,7 +787,7 @@ JS;
      *
      * @return void
      */
-    public static function addSearchBox($id, $options = array()) {
+    public static function addSearchBox($id, $options = []) {
       echo UI::searchLine($id, '/items/search.php', $options);
     }
     /**
@@ -967,7 +967,7 @@ JS;
      *
      * @return string
      */
-    public static function select($name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts = array(), $editkey = false, $legacy = false) {
+    public static function select($name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts = [], $editkey = false, $legacy = false) {
       if (!$legacy) {
         Item::addSearchBox($name, array_merge(array(
                                                    'submitonselect' => $submit_on_change,

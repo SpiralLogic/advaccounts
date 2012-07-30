@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "View Work Order Production"), SA_MANUFTRANSVIEW, true);
   if ($_GET['trans_no'] != "") {
     $wo_production = $_GET['trans_no'];

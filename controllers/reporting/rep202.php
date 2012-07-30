@@ -122,7 +122,7 @@
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
-    $total         = array();
+    $total         = [];
     $total[0]      = $total[1] = $total[2] = $total[3] = $total[4] = 0.0;
     $past_due1     = DB_Company::get_pref('past_due_days');
     $past_due2     = 2 * $past_due1;

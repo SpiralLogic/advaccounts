@@ -56,7 +56,7 @@
     $per_balance_total = 0;
     $acc_balance_total = 0;
     unset($totals_arr);
-    $totals_arr = array();
+    $totals_arr = [];
     //Get Accounts directly under this group/type
     $result = GL_Account::getAll(null, null, $type);
     while ($account = DB::fetch($result)) {

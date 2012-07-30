@@ -223,7 +223,7 @@
         $shortcuts->addLink('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?type=' . ST_SALESQUOTE . '&add=' . ST_SALESQUOTE . '&debtor_id=', 'id');
         $shortcuts->addLink('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?type=30&add=' . ST_SALESORDER . '&debtor_id=', 'id');
         $shortcuts->addLink('Print Statement', 'Print Statement for this Customer!', '/reporting/prn_redirect.php?REP_ID=108&PARAM_2=0&PARAM_4=0&PARAM_5=0&PARAM_6=0&PARAM_0=', 'id', true);
-        $shortcuts->addJSLink('Email Statement', 'Email Statement for this Customer!', 'emailTab', "Adv.o.tabs.tabs1.bind('tabsselect',function(e,o) {if (o.index!=3)return; return false;});");
+        $shortcuts->addJSLink('Email Statement', 'Email Statement for this Customer!', 'emailTab', "Adv.o.tabs[1].bind('tabsselect',function(e,o) {if (o.index!=3)return; return false;});");
         $shortcuts->addLink('Customer Payment', 'Make customer payment!', '/sales/customer_payments.php?debtor_id=', 'id');
         $shortcuts->render();
         /** @noinspection PhpUndefinedMethodInspection */

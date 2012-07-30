@@ -156,7 +156,7 @@
     public static function select($name, $value = null, $enabled = true)
     {
       $result = Item_Unit::getAll();
-      $units  = array();
+      $units  = [];
       while ($unit = DB::fetch($result)) {
         $units[$unit['abbr']] = $unit['name'];
       }

@@ -29,22 +29,21 @@
   }
   JS::footerFile("/js/quickitems.js");
   Page::start(_($help_context = "Items"), SA_CUSTOMER, isset($_GET['frame']));
-  $view               = new View('items/quickitems');
-  $view->set('stock_cats',Item_Category::select('category_id'));
-  $view->set('units',Item_Unit::select('uom'));
-  $tax_itemtype       = Tax_ItemType::select('tax_type_id');
-  $stock_type         = Item_UI::type('mb_flag');
-  $sales_account      = GL_UI::all('sales_account');
-  $inventory_account  = GL_UI::all('inventory_account');
-  $cogs_account       = GL_UI::all('cogs_account');
-  $adjustment_account = GL_UI::all('adjustment_account');
-  $assembly_account   = GL_UI::all('assembly_account');
+  $view = new View('items/quickitems');
+  $view->set('stock_cats', Item_Category::select('category_id'));
+  $view->set('units', Item_Unit::select('uom'));
+  $view->set('tax_itemtype', Tax_ItemType::select('tax_type_id'));
+  $view->set('stock_type', Item_UI::type('mb_flag'));
+  $view->set('sales_account', GL_UI::all('sales_account'));
+  $view->set('inventory_account', GL_UI::all('inventory_account'));
+  $view->set('cogs_account', GL_UI::all('cogs_account'));
+  $view->set('adjustment_account', GL_UI::all('adjustment_account'));
+  $view->set('assembly_account', GL_UI::all('assembly_account'));
   if (!isset($_GET['stock_id'])) {
     HTML::div('itemSearch', array('class' => 'bold pad10 center'));
     Item::addSearchBox('itemSearchId', array(
-      'label'    => 'Item:', 'size' => '50px',
-      'selectjs' => '$("#itemSearchId").val("");Items.fetch(value.stock_id);return false;'
-    ));
+                                            'label'    => 'Item:', 'size' => '50px', 'selectjs' => '$("#itemSearchId").val("");Items.fetch(value.stock_id);return false;'
+                                       ));
     HTML::div();
     $id = 0;
   } else {
@@ -53,39 +52,8 @@
   $data['item']        = $item = new Item($id);
   $data['stockLevels'] = $item->getStockLevels();
   $data                = json_encode($data, JSON_NUMERIC_CHECK);
-  JS::onload("Items.onload($data);");
-  $menu = new MenuUI();
-    $menu->firstPage = Input::get('page',null,null);
-  $menu->startTab("Items", "Items");
+  $view->set('firstPage', Input::get('page', null, null));
   $view->render();
-  $menu->endTab();
-  $menu->startTab("Accounts", "Accounts");
-  echo <<<HTML
-	<div id="Accounts" class="left formbox">
-	<label for="tax_type_id"><span>Item Tax Type:</span>$tax_itemtype</label>
-		<label for="mb_flag"><span>Item Type:</span>$stock_type</label>
-	{{if sales_account}}	<label for="sales_account"><span>Sales Account:</span>$sales_account</label>{{/if}}
-	{{if inventory_account}}		<label for="inventory_account"><span>Inventory Account:</span>$inventory_account</label>{{/if}}
-	<label for="cogs_account"><span>COGS Account:</span>$cogs_account</label>
-	{{if adjustment_account}} <label for="adjustment_account"><span>Adjustments&nbsp;Account:</span>$adjustment_account</label> {{/if}}
-	{{if assembly_account}} <label for="assembly_account"><span>Assembly Account:</span>$assembly_account</label>{{/if}}</div>
-HTML;
-  $menu->endTab();
-  $menu->startTab("Selling", "Sales Prices");
-  echo "<iframe id='sellFrame' data-src='" . BASE_URL . "inventory/prices.php?frame=1&stock_id=" . $item->stock_id . "' style='width:95%' height='500' frameborder='0'></iframe> ";
-  $menu->endTab();
-  $menu->startTab("Purchasing", "Purchasing Prices");
-  echo "<iframe id='buyFrame' data-src='" . BASE_URL . "inventory/purchasing_data.php?frame=1&stock_id=" . $item->stock_id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
-  $menu->endTab();
-  $menu->startTab("Locations", "Stock Locations");
-  echo "<iframe id='locationFrame' data-src='" . BASE_URL . "inventory/reorder_level.php?frame=1&stock_id=" . $item->stock_id . "' style='width:100%' height='500' frameborder='0'></iframe> ";
-  $menu->endTab();
-  $menu->startTab("Website", "Website page for product");
-  echo "<iframe id='webFrame' data-srcpre='" . Config::get('modules.webstore')['product_url'] . "' data-srcpost='" . Config::get('modules.webstore')['url_extension'] . "'
-	style='width:100%'
-	height='500' frameborder='0'></iframe> ";
-  $menu->endTab();
-  $menu->render();
-  UI::button('btnCancel', 'Cancel', array("style" => "display:none"));
-  UI::button('btnSave', 'Save', array("style" => "display:none"));
+  JS::tabs('tabs' . MenuUI::$menuCount, [], 1);
+  JS::onload("Items.onload($data);");
   Page::end(true);

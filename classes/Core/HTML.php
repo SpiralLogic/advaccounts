@@ -86,7 +86,7 @@
      *
      * @return null
      */
-    public static function __callStatic($func, $args = array())
+    public static function __callStatic($func, $args = [])
     {
       if (static::$_instance === null) {
         static::$_instance = new static;
@@ -100,7 +100,7 @@
      * @param array  $attr
      * @param string $content
      */
-    protected function _openTag($type, $attr = array(), $content = '')
+    protected function _openTag($type, $attr = [], $content = '')
     {
       $attrs = '';
       foreach ($attr as $key => $value) {
@@ -131,7 +131,7 @@
      * @param array  $attr
      * @param string $content
      */
-    protected function _Builder($func, $args, $attr = array(), $content = '')
+    protected function _Builder($func, $args, $attr = [], $content = '')
     {
       $open = (is_bool(end($args))) ? array_pop($args) : true;
       foreach ($args as $key => $val) {

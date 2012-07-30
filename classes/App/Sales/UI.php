@@ -72,7 +72,7 @@
     {
       $sql = "SELECT area_code, description, inactive FROM areas";
 
-      return Forms::selectBox($name, $selected_id, $sql, 'area_code', 'description', array());
+      return Forms::selectBox($name, $selected_id, $sql, 'area_code', 'description', []);
     }
     /**
      * @static
@@ -315,7 +315,7 @@
      *
      * @return string|void
      */
-    public static function items($name, $selected_id = null, $all_option = false, $submit_on_change = false, $type = '', $opts = array(), $legacy = false)
+    public static function items($name, $selected_id = null, $all_option = false, $submit_on_change = false, $type = '', $opts = [], $legacy = false)
     {
       // all sales codes
       if (!$legacy) {

@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Inventory Item Cost Update"), SA_STANDARDCOST);
   Validation::check(Validation::COST_ITEMS, _("There are no costable inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);
   if (isset($_GET['stock_id'])) {

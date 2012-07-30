@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  $GLOBALS['ajax_divs'] = array();
+  $GLOBALS['ajax_divs'] = [];
   /**
 
    */
@@ -31,7 +31,7 @@
      */
     public static function access_string($label, $clean = false) {
       $access = '';
-      $slices = array();
+      $slices = [];
       if (preg_match('/(.*)&([a-zA-Z0-9])(.*)/', $label, $slices)) {
         $label  = $clean ? $slices[1] . $slices[2] . $slices[3] : $slices[1] . '<span class="u">' . $slices[2] . '</span>' . $slices[3];
         $access = " accesskey='" . strtoupper($slices[2]) . "'";

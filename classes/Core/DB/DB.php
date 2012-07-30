@@ -39,11 +39,11 @@
     const UPDATE = 2;
     const DELETE = 4;
     /** @var array */
-    protected static $connections = array();
+    protected static $connections = [];
     /** @var array */
-    protected $data = array();
+    protected $data = [];
     /*** @var string */
-    public $queryString = array();
+    public $queryString = [];
     /*** @var \PDOStatement */
     protected $prepared = null;
     /**   @var null */
@@ -137,7 +137,7 @@
       catch (\PDOException $e) {
         $this->error($e, " (prepare) " . $err_msg);
       }
-      $this->data = array();
+      $this->data = [];
       return $this->prepared;
     }
     /**
@@ -214,7 +214,7 @@
       if ($debug) {
         $this->queryString = $sql;
       }
-      $this->data     = array();
+      $this->data     = [];
       $this->prepared = $prepared;
       return $prepared;
     }
@@ -239,7 +239,7 @@
       catch (\PDOException $e) {
         $result = $this->error($e);
       }
-      $this->data = array();
+      $this->data = [];
       return $result;
     }
     /**
@@ -256,7 +256,7 @@
      */
     public function _select($columns = null) {
       $this->prepared = null;
-      $columns        = (is_string($columns)) ? func_get_args() : array();
+      $columns        = (is_string($columns)) ? func_get_args() : [];
       $this->query    = new Query\Select($columns, $this);
       return $this->query;
     }
@@ -386,7 +386,7 @@
     public function _freeResult() {
       $result         = ($this->prepared) ? $this->prepared->closeCursor() : false;
       $this->errorSql = $this->errorInfo = $this->prepared = null;
-      $this->data     = array();
+      $this->data     = [];
       return $result;
     }
     /**
@@ -467,7 +467,7 @@
           $this->error($e);
         }
       }
-      $this->data = array();
+      $this->data = [];
     }
     /**
      * @static
@@ -518,7 +518,7 @@
      * @throws \ADV\Core\DB\DBSelectException
      * @return Query\Result|int
      */
-    public function exec($sql, $type, $data = array()) {
+    public function exec($sql, $type, $data = []) {
       $this->errorInfo = false;
       $this->errorSql  = $sql;
       $this->data      = $data;
@@ -557,7 +557,7 @@
             break;
         }
       }
-      $this->data = array();
+      $this->data = [];
       return false;
     }
     /**
@@ -602,7 +602,7 @@
      */
     protected function error(\Exception $e, $msg = false) {
       $data       = $this->data;
-      $this->data = array();
+      $this->data = [];
       if ($data && is_array(reset($data))) {
         $this->errorSql = $this->placeholderValues($this->errorSql, $data);
       } elseif ($data) {

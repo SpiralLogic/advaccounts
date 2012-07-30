@@ -56,7 +56,7 @@
     /**
      * @var array
      */
-    public $emailAddresses = array();
+    public $emailAddresses = [];
     /**
      * @abstract
      * @return mixed

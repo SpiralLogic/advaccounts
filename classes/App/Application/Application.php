@@ -44,7 +44,7 @@
       $this->id           = strtolower($this->name);
       $this->name         = $this->help_context ? : $this->name;
       $this->help_context = _($this->name);
-      $this->modules      = array();
+      $this->modules      = [];
       $this->extensions   = $installed_extensions;
       $this->buildMenu();
       if (count($this->extensions) > 0) {

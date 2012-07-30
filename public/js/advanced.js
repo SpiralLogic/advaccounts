@@ -186,7 +186,7 @@ Adv.extend({
     },
     loaded:function () {
       Adv.o.popupWindow.show();
-      var height = Adv.o.popupWindow[0].contentWindow.document.body.clientHeight;
+      var height = Adv.o.popupWindow[0].contentWindow.document.body.clientHeight + 10;
       var top = ($(window).height() / 2 - (height / 2));
       if (height > Adv.hoverWindow.height) {
         top = 20;
@@ -210,8 +210,39 @@ Adv.extend({
       id:'iframePopup',
       width:100,
       height:100}).html(Adv.o.popupWindow).on('mouseleave',function () { $(this).remove(); }).appendTo(Adv.o.wrapper).position({my:"center center", at:"center center", of:document.body});
-  }
-});
+  },
+  tabmenu:{init:function (id, ajax, links, page) {
+    Adv.o.tabs[id] = $('#' + id);
+    if (links) {
+      Adv.o.tabs[id].tabs({
+        select:function (event, ui) {
+          var $tab = $(ui.tab),
+            param = $('#' + $tab.data('paramel')).val(),
+            url = $.data(ui.tab, 'load.tabs') + param,
+            target = $tab.data('target');
+          if (url) {
+            if (target) {
+              Adv.openWindow(url, 'Test');
+            } else {
+              location.href = url;
+            }
+            return false;
+          }
+          return true;
+        }
+      })
+    } else {
+      Adv.o.tabs[id].tabs();
+    }
+    Adv.o.tabs[id].toggleClass('tabs');
+    if (page) {
+      Adv.tabmenu.page(id, page);
+    }
+  }, page:function (id, page) {
+    if (page) {
+      Adv.o.tabs[id].tabs('select', page);
+    }
+  }}});
 Adv.extend({Forms:(function () {
 //	var i = document.createElement("input");
   //i.setAttribute("type", "date");

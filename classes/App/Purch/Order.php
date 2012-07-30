@@ -72,7 +72,7 @@
      */
     public function __construct($order_no = 0, $view = false) {
       /*Constructor function initialises a new purchase order object */
-      $this->line_items     = array();
+      $this->line_items     = [];
       $this->lines_on_order = $this->creditor_id = 0;
       $this->set_salesman();
       $this->location        = Config::get('default.location');
@@ -166,7 +166,7 @@
     }
     public function clear_items() {
       unset($this->line_items);
-      $this->line_items     = array();
+      $this->line_items     = [];
       $this->lines_on_order = 0;
       $this->order_no       = 0;
     }

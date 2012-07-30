@@ -29,7 +29,7 @@
         stock_master.units
         FROM debtor_trans_details,stock_master
         WHERE (";
-      $tr = array();
+      $tr = [];
       foreach ($debtor_trans_no as $trans_no) {
         $tr[] = 'debtor_trans_no=' . $trans_no;
       }

@@ -10,7 +10,7 @@
   //
   //	Entry/Modify Credit Note for selected Sales Invoice
   //
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   if (isset($_GET[Orders::MODIFY_CREDIT])) {
     $page_title =   $_SESSION['page_title'] = sprintf(_("Modifying Credit Invoice # %d."), $_GET[Orders::MODIFY_CREDIT]);
     $help_context           = "Modifying Credit Invoice";

@@ -53,7 +53,7 @@
      * @param $trans_no
      */
     public function __construct($type, $trans_no) {
-      $this->allocs   = array();
+      $this->allocs   = [];
       $this->trans_no = $trans_no;
       $this->type     = $type;
       $this->read(); // read payment or credit
@@ -138,7 +138,7 @@
       } else {
         $this->person_type = $type == ST_SUPPCREDIT || $type == ST_SUPPAYMENT;
       }
-      $this->allocs = array();
+      $this->allocs = [];
       if ($trans_no) {
         $trans             = $this->person_type ? Creditor_Trans::get($trans_no, $type) : Debtor_Trans::get($trans_no, $type);
         $this->person_id   = $trans[$this->person_type ? 'creditor_id' : 'debtor_id'];

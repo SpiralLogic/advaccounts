@@ -169,7 +169,7 @@
      *
      * @return bool|int|string|object
      */
-    public function _session($var = array(), $type = null, $default = null) {
+    public function _session($var = [], $type = null, $default = null) {
       return (session_status() === PHP_SESSION_NONE) ? false : static::$session->get($var, $type, $default);
     }
     /***

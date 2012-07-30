@@ -208,7 +208,7 @@
         }
         $result   = GL_QuickEntry::get_lines($id);
         $totrate  = 0;
-        $qe_lines = array();
+        $qe_lines = [];
         while ($row = DB::fetch($result)) {
           $qe_lines[] = $row;
           switch (strtolower($row['action'])) {

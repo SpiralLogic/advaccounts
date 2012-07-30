@@ -130,7 +130,7 @@
      *
      * @return bool|void
      */
-    protected function _read($id = null, $extra = array()) {
+    protected function _read($id = null, $extra = []) {
       $id = $id ? : 0;
       DB::select()->from('company')->where('coy_code=', $id)->fetch()->intoObject($this);
     }
@@ -231,7 +231,7 @@
      */
     public function _get_company_extensions($id = -1) {
       $file                 = BASE_URL . ($id == -1 ? '' : 'company/' . $id) . '/installed_extensions.php';
-      $installed_extensions = array();
+      $installed_extensions = [];
       if (is_file($file)) {
         include($file);
       }
@@ -351,7 +351,7 @@
       if (!is_array($tables)) {
         $tables = array($tables);
       }
-      $sqls = array();
+      $sqls = [];
       foreach ($tables as $tbl => $key) {
         if (is_numeric($tbl)) {
           $tbl = $key;

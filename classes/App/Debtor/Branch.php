@@ -231,7 +231,7 @@
      *
      * @return array|bool|null
      */
-    protected function _read($id = null, $extra = array())
+    protected function _read($id = null, $extra = [])
     {
       if (!$id) {
         return $this->_status(false, 'read', 'No Branch parameters provided');
@@ -272,7 +272,7 @@
       $sql
              = "SELECT branch_id, branch_ref FROM branches
             WHERE branch_ref <> 'accounts' AND inactive <> 1  AND debtor_id='" . $debtor_id . "' ";
-      $where = $enabled ? array("disable_trans = 0") : array();
+      $where = $enabled ? array("disable_trans = 0") : [];
 
       return Forms::selectBox($name, $selected_id, $sql, 'branch_id', 'br_name', array(
                                                                                      'where'         => $where,

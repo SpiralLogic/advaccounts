@@ -847,7 +847,7 @@
    * @param bool  $submit_on_change
    * @param array $options
    */
-  function date_cells($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false, $options = array())
+  function date_cells($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false, $options = [])
   {
     if (!isset($_POST[$name]) || $_POST[$name] == "") {
       if ($inc_years == 1001) {
@@ -1305,7 +1305,7 @@
    */
   function yesno_list($name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false)
   {
-    $items      = array();
+    $items      = [];
     $items['0'] = strlen($name_no) ? $name_no : _("No");
     $items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
 
@@ -1367,7 +1367,7 @@
    */
   function number_list($name, $selected, $from, $to, $no_option = false)
   {
-    $items = array();
+    $items = [];
     for ($i = $from; $i <= $to; $i++) {
       $items[$i] = "$i";
     }

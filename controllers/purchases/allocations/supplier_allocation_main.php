@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Supplier Allocations"), SA_SUPPLIERALLOC);
   Forms::start();
   /* show all outstanding receipts and credits to be allocated */

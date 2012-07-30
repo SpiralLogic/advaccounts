@@ -159,11 +159,11 @@
       // get the exemptions for this item tax type
       $item_tax_type_exemptions_db = Tax_ItemType::get_exemptions($item_tax_type["id"]);
       // read them all into an array to minimize db querying
-      $item_tax_type_exemptions = array();
+      $item_tax_type_exemptions = [];
       while ($item_tax_type_exemp = DB::fetch($item_tax_type_exemptions_db)) {
         $item_tax_type_exemptions[] = $item_tax_type_exemp["tax_type_id"];
       }
-      $ret_tax_array = array();
+      $ret_tax_array = [];
       // if any of the taxes of the tax group are inget_tax_for_items the exemptions, then skip
       foreach ($tax_group_items_array as $tax_group_item) {
         $skip = false;
@@ -225,7 +225,7 @@
       }
       // add the shipping taxes, only if non-zero, and only if tax group taxes shipping
       if ($shipping_cost != 0) {
-        $item_taxes = Tax_Groups::for_shipping_as_array();
+        $item_taxes = Tax_Groups::for_shipping_as_[];
         if ($item_taxes != null) {
           if ($tax_included == 1) {
             $tax_rate = 0;

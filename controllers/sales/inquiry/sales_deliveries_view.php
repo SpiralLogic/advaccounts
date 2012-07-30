@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(900, 600);
+  JS::openWindow(950, 600);
   if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true)) {
     $_POST['OutstandingOnly'] = true;
     Page::start(_($help_context = "Search Not Invoiced Deliveries"), SA_SALESINVOICE);

@@ -54,7 +54,7 @@
     /**
      * @var array
      */
-    protected $role_set = array();
+    protected $role_set = [];
     /** @var */
     public $old_db;
     /**
@@ -170,7 +170,7 @@
         if ($myrow["inactive"]) {
           return false;
         }
-        $this->role_set = array();
+        $this->role_set = [];
         $this->access   = $myrow['role_id'];
         $this->_hash    = $myrow["hash"];
         $this->Security = new Security($this->Config);
@@ -211,7 +211,7 @@
      * @param       $function
      * @param array $arguments
      */
-    public function _register_login($object, $function = null, $arguments = array()) {
+    public function _register_login($object, $function = null, $arguments = []) {
       $this->registerHook('login', $object, $function, $arguments);
     }
     /**
@@ -221,7 +221,7 @@
      * @param       $function
      * @param array $arguments
      */
-    public function _register_logout($object, $function, $arguments = array()) {
+    public function _register_logout($object, $function, $arguments = []) {
       $this->registerHook('logout', $object, $function, $arguments);
     }
     public function timeout() {

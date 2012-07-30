@@ -21,7 +21,7 @@
     public static function print_profiles_row($label, $name, $selected_id = null, $spec_opt = false, $submit_on_change = true) {
       $sql      = "SELECT profile FROM print_profiles GROUP BY profile";
       $result   = DB::query($sql, 'cannot get all profile names');
-      $profiles = array();
+      $profiles = [];
       while ($myrow = DB::fetch($result)) {
         $profiles[$myrow['profile']] = $myrow['profile'];
       }
@@ -50,7 +50,7 @@
       if (!$printers) {
         $sql      = "SELECT id, name, description FROM printers";
         $result   = DB::query($sql, 'cannot get all printers');
-        $printers = array();
+        $printers = [];
         while ($myrow = DB::fetch($result)) {
           $printers[$myrow['id']] = $myrow['name'] . '&nbsp;-&nbsp;' . $myrow['description'];
         }
@@ -67,7 +67,7 @@
      * @param null $value
      */
     public static function pagesizes_row($label, $name, $value = null) {
-      $items = array();
+      $items = [];
       foreach (Config::get('print_paper_sizes') as $pz) {
         $items[$pz] = $pz;
       }

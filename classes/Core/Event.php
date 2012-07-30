@@ -20,7 +20,7 @@
     /**
      * @var array all objects with methods to be run on shutdown
      */
-    protected static $shutdown_objects = array();
+    protected static $shutdown_objects = [];
     /**
      * @var bool Whether the request from the browser has finsihed
      */
@@ -28,7 +28,7 @@
     /**
      * @var array Events which occur after browser dissconnect which will be shown on next request
      */
-    protected static $shutdown_events = array();
+    protected static $shutdown_events = [];
     /**
      * @var string id for cache handler to store shutdown events
      */
@@ -122,7 +122,7 @@
      * @param string $function
      * @param array  $arguments
      */
-    public static function registerShutdown($object, $function = '_shutdown', $arguments = array()) {
+    public static function registerShutdown($object, $function = '_shutdown', $arguments = []) {
       Event::registerHook('shutdown', $object, $function, $arguments);
     }
     /**
@@ -132,7 +132,7 @@
      * @param string $function
      * @param array  $arguments
      */
-    public static function registerPreShutdown($object, $function = '_shutdown', $arguments = array()) {
+    public static function registerPreShutdown($object, $function = '_shutdown', $arguments = []) {
       Event::registerHook('pre_shutdown', $object, $function, $arguments);
     }
     /*** @static Shutdown handler */

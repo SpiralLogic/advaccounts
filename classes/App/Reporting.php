@@ -53,7 +53,7 @@
      */
     public static function print_option_array($type_no, $doc_no, $email = 0, $extra = 0)
     {
-      $ar  = array();
+      $ar  = [];
       $rep = '';
       switch ($type_no) {
         case ST_SALESQUOTE :
@@ -133,7 +133,7 @@
             'PARAM_0' => $doc_no, 'PARAM_1' => $doc_no, 'PARAM_2' => '', 'PARAM_3' => $email, 'PARAM_4' => ''
           );
           break;
-        //		default: $ar = array();
+        //		default: $ar = [];
       }
       return array($ar, $rep);
     }
@@ -152,7 +152,7 @@
      *
      * @return bool|string
      */
-    public static function email_link($doc_no, $link_text, $link = true, $type_no, $class = 'EmailLink', $id = '', $emails = array(), $extra = 0, $return = false)
+    public static function email_link($doc_no, $link_text, $link = true, $type_no, $class = 'EmailLink', $id = '', $emails = [], $extra = 0, $return = false)
     {
       if (empty($emails)) {
         return false;
@@ -218,7 +218,7 @@ JS;
      *
      * @return string
      */
-    public static function print_link($link_text, $rep, $pars = array(), $dir = '', $icon = false, $class = 'printlink', $id = '')
+    public static function print_link($link_text, $rep, $pars = [], $dir = '', $icon = false, $class = 'printlink', $id = '')
     {
       if (!static::$User) {
         static::$User = User::i();

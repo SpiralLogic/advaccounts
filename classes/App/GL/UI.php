@@ -237,7 +237,7 @@
      */
     public static function payment_person_type($name, $selected_id = null, $submit_on_change = false) {
       global $payment_person_types;
-      $items = array();
+      $items = [];
       foreach ($payment_person_types as $key => $type) {
         if ($key != PT_WORKORDER) {
           $items[$key] = $type;

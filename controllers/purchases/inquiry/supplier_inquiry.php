@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Supplier Inquiry"), SA_SUPPTRANSVIEW);
   $creditor_id = Input::getPost('creditor_id', INPUT::NUMERIC, -1);
   if (isset($_GET['FromDate'])) {

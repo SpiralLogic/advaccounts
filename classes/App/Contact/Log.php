@@ -51,7 +51,7 @@
       }
       $sql     = "SELECT * FROM " . self::$_table . " WHERE parent_id=" . $parent_id . " AND parent_type=" . DB::escape($type) . " ORDER BY date DESC";
       $result  = DB::query($sql, "Couldn't get contact log entries");
-      $results = array();
+      $results = [];
       while ($row = DB::fetchAssoc($result)) {
         $results[] = $row;
       }

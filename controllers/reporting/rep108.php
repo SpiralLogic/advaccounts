@@ -107,7 +107,7 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
       if ((DB::numRows($trans_rows) == 0)) {
         continue;
       }
-      $transactions = array();
+      $transactions = [];
       $branch       = $openingbalance = $balance = 0;
       while ($transaction = DB::fetchAssoc($trans_rows)) {
         $balance += $transaction['TotalAmount'] - $transaction['Allocated'];

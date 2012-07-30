@@ -569,7 +569,7 @@
       Validation::check(Validation::BRANCHES_ACTIVE, _("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
     }
     protected function setLineOrder() {
-      $line_map = Input::getPost('lineMap', array());
+      $line_map = Input::getPost('lineMap', []);
       $this->order->setLineOrder($line_map);
       $data = ['lineMap'=> $this->order, 'status'=> true];
       $this->JS->_renderJSON($data);

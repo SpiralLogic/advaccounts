@@ -22,7 +22,7 @@
   {
     use \ADV\Core\Traits\Singleton;
 
-    public $applications = array();
+    public $applications = [];
     /** var Application*/
     public $selected;
     /** @var \Menu */
@@ -38,9 +38,10 @@
     /** */
     public function __construct(\ADV\Core\Loader $loader) {
       set_error_handler(function ($severity, $message, $filepath, $line) {
+        if ($filepath==COREPATH . 'Errors.php') {while(ob_get_level()) ob_end_clean();die($message);}
         class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'Errors.php';
         return \ADV\Core\Errors::handler($severity, $message, $filepath, $line);
-      });
+      },E_ALL & ~E_STRICT & ~E_NOTICE);
       set_exception_handler(function (\Exception $e) {
         class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'Errors.php';
         \ADV\Core\Errors::exceptionHandler($e);
@@ -58,7 +59,7 @@
       $this->Config = Config::i();
       // Ajax communication object
       $this->Ajax = Ajax::i();
-      ob_start([$this, 'flush_handler'], 0);
+   //   ob_start([$this, 'flush_handler'], 0);
       $this->Session = Session::i();
       $this->setTextSupport();
       $this->Session['language'] = new Language();
@@ -306,7 +307,7 @@
       exit();
     }
     protected function loadModules() {
-      $modules = $this->Config->_getAll('modules', array());
+      $modules = $this->Config->_getAll('modules', []);
       foreach ($modules as $module => $module_config) {
         $module = '\\Modules\\' . $module . '\\' . $module;
         new $module($module_config);

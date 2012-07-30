@@ -74,7 +74,7 @@
     /**
      * @var array
      */
-    public $data = array();
+    public $data = [];
     /**
      * @var
      */
@@ -262,7 +262,7 @@
       }
       $this->select_records();
       Display::div_start("_{$this->name}_span");
-      $headers = array();
+      $headers = [];
       foreach ($this->columns as $num_col => $col) {
         // record status control column is displayed only when control checkbox is on
         if (isset($col['head']) && ($col['type'] != 'inactive' || Input::post('show_inactive'))) {
@@ -498,7 +498,7 @@
         return false;
       }
       if ($this->type == self::SQL) {
-        $this->data = array();
+        $this->data = [];
         if ($this->rec_count == 0) {
           return true;
         }
@@ -591,7 +591,7 @@
      * @param array  $flds array( fldname1, fldname2=>type,...)
      */
     protected function setColumns($flds) {
-      $this->columns = array();
+      $this->columns = [];
       if (!is_array($flds)) {
         $flds = array($flds);
       }
@@ -855,7 +855,7 @@
       if ($group) {
         $sql .= " GROUP BY $group";
       }
-      $ord = array();
+      $ord = [];
       foreach ($this->columns as $col) {
         if (isset($col['ord'])) {
           if ($col['ord'] != '' && isset($col['name'])) {
@@ -893,7 +893,7 @@
      */
     static function new_DB_Pager($name, $sql, $coldef, $table = null, $key = null, $page_len = 0, $sort = null) {
       if (!isset($_SESSION['pager'])) {
-        $_SESSION['pager'] = array();
+        $_SESSION['pager'] = [];
       }
       if (isset($_SESSION['pager'][$name])) {
         $pager = $_SESSION['pager'][$name];

@@ -24,15 +24,15 @@
     /**
      * @public array
      */
-    public $valueArray = array();
+    public $valueArray = [];
     /**
      * @public array
      */
-    public $keyArray = array();
+    public $keyArray = [];
     /**
      * @public array
      */
-    public $parsed = array();
+    public $parsed = [];
     /**
      * @public int
      */
@@ -93,8 +93,8 @@
      */
     public function parseRecurse()
     {
-      $found    = array();
-      $tagCount = array();
+      $found    = [];
+      $tagCount = [];
       while (isset($this->valueArray[$this->index])) {
         $tag = $this->valueArray[$this->index];
         $this->index++;

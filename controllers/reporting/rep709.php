@@ -90,7 +90,7 @@
       $summary = _('Detailed Report');
     }
     $res   = getTaxTypes();
-    $taxes = array();
+    $taxes = [];
     while ($tax = DB::fetch($res)) {
       $taxes[$tax['id']] = array('in' => 0, 'out' => 0, 'taxin' => 0, 'taxout' => 0);
     }

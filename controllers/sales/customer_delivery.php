@@ -10,7 +10,7 @@
   //
   //	Entry/Modify Delivery Note against Sales Order
   //
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   $page_title = _($help_context = "Deliver Items for a Sales Order");
   if (isset($_GET[Orders::MODIFY_DELIVERY])) {
     $page_title   = sprintf(_("Modifying Delivery Note # %d."), $_GET[Orders::MODIFY_DELIVERY]);

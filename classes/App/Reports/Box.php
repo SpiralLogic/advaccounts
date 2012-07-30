@@ -14,11 +14,11 @@
     /**
      * @var array
      */
-    public $ctrl_handlers = array();
+    public $ctrl_handlers = [];
     public function __construct() {
     }
     public function reportClasses() {
-      $this->ar_classes = array();
+      $this->ar_classes = [];
     }
     /**
      * @param $class_name
@@ -26,7 +26,7 @@
      * @return void
      */
     public function addReportClass($class_name) {
-      $this->ar_classes[$class_name] = array();
+      $this->ar_classes[$class_name] = [];
     }
     /**
      * @param      $class_name

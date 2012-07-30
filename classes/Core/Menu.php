@@ -37,7 +37,7 @@
     /**
      * @var array
      */
-    public $items = array();
+    public $items = [];
     /**
      * @param $title
      */

@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Supplier Allocation Inquiry"), SA_SUPPLIERALLOC);
   if (isset($_GET['creditor_id']) || isset($_GET['id'])) {
     $_POST['creditor_id'] = isset($_GET['id']) ? $_GET['id'] : $_GET['creditor_id'];

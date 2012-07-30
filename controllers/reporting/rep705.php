@@ -78,7 +78,7 @@
   {
     $ctotal     = array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     $total      = array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    $totals_arr = array();
+    $totals_arr = [];
     $printtitle = 0; //Flag for printing type name
     //Get Accounts directly under this group/type
     $result = GL_Account::getAll(null, null, $type);

@@ -16,7 +16,7 @@
     /**
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
     /**
      * @var bool
      */
@@ -28,10 +28,11 @@
     public $tabs = [];
     /** @var View */
     public $current_tab;
+    protected  $jslinks=[];
     /**
      * @param array $options
      */
-    public function __construct($options = array()) {
+    public function __construct($options = []) {
       $this->options = $options;
     }
     /**
@@ -70,7 +71,7 @@
     public function addJSLink($title, $tooltip = '', $name, $onselect) {
       $this->items[]             = new MenuUI_item($title, $tooltip, '#' . $name);
       $this->options['hasLinks'] = true;
-      JS::onload($onselect);
+     $this->jslinks[]=$onselect;
       return $this;
     }
     /**
@@ -109,6 +110,9 @@
       $menu->set('tabs', $this->tabs);
       $menu->render();
       JS::tabs('tabs' . MenuUI::$menuCount, $this->options, $this->firstPage);
+      foreach ($this->jslinks as $js) {
+        JS::onload($js);
+      }
       MenuUI::$menuCount++;
     }
   }

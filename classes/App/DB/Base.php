@@ -53,7 +53,7 @@
       }
       catch (DBUpdateException $e) {
         DB::cancel();
-        return $this->_status(Status::ERROR, 'write', "Could not update " . get_class($this));
+        return $this->_status(Status::ERROR, 'write', "Could not update " .  end(explode('\\',get_class($this))));
       }
       if (property_exists($this, 'inactive')) {
         try {
@@ -62,17 +62,17 @@
         }
         catch (DBUpdateException $e) {
           DB::cancel();
-          return $this->_status(Status::ERROR, 'write', "Could not update active status of " . get_class($this));
+          return $this->_status(Status::ERROR, 'write', "Could not update active status of " .  end(explode('\\',get_class($this))));
         }
       }
       DB::commit();
-      return $this->_status(Status::SUCCESS, 'write', get_class($this) . ' changes saved to database.');
+      return $this->_status(Status::SUCCESS, 'write',  end(explode('\\',get_class($this))) . ' changes saved to database.');
     }
     /**
      * @param int   $id    Id to read from database, or an array of changes which can include the id to load before applying changes or 0 for a new object
      * @param array $extra
      */
-    protected function __construct($id = 0, $extra = array()) {
+    protected function __construct($id = 0, $extra = []) {
       $_id_column = $this->_id_column;
       if ($_id_column && $_id_column != 'id') {
         $this->id = &$this->$_id_column;
@@ -80,7 +80,7 @@
       if (is_numeric($id) && $id > 0) {
         $this->id = $id;
         $this->_read($id, $extra);
-        return $this->_status(true, 'initalise', get_class($this) . " details loaded from DB!");
+        return $this->_status(true, 'initalise', end(explode('\\',get_class($this)))  . " details loaded from DB!");
       } elseif (is_array($id)) {
         $this->_defaults();
         if (isset($id['id']) && $id['id']) {
@@ -89,7 +89,7 @@
           $this->_new();
         }
         $this->setFromArray($id);
-        return $this->_status(true, 'initalise', get_class($this) . " details constructed!");
+        return $this->_status(true, 'initalise', end(explode('\\',get_class($this)))  . " details constructed!");
       }
       return $this->_new();
     }
@@ -99,9 +99,9 @@
      *
      * @return bool
      */
-    protected function _read($id = null, $extra = array()) {
+    protected function _read($id = null, $extra = []) {
       if ($id === null) {
-        return $this->_status(false, 'read', 'No ' . get_class($this), ' ID to read');
+        return $this->_status(false, 'read', 'No ' .  end(explode('\\',get_class($this))), ' ID to read');
       }
       $this->_defaults();
       try {
@@ -112,9 +112,9 @@
         DB::fetch()->intoClass($this);
       }
       catch (DBSelectException $e) {
-        return $this->_status(false, 'read', 'Could not read ' . get_class($this), (string) $id);
+        return $this->_status(false, 'read', 'Could not read ' . end(explode('\\',get_class($this))), (string) $id);
       }
-      return $this->_status(true, 'read', 'Successfully read ' . get_class($this), $id);
+      return $this->_status(true, 'read', 'Successfully read ' . end(explode('\\',get_class($this))), $id);
     }
     /**
      * @return int|bool Id assigned to new database row or false if entry failed
@@ -124,12 +124,12 @@
         $this->id = DB::insert($this->_table)->values((array) $this)->exec();
       }
       catch (DBInsertException $e) {
-        return $this->_status(false, 'write', 'Could not add to databse: ' . get_class($this));
+        return $this->_status(false, 'write', 'Could not add to databse: ' .  end(explode('\\',get_class($this))));
       }
       catch (DBDuplicateException $e) {
         return $this->_status(false, 'write', $e->getMessage() . '. The entered information is a duplicate. Please modify the existing record or use different values.');
       }
-      return $this->_status(true, 'write', 'Added to databse: ' . get_class($this));
+      return $this->_status(true, 'write', 'Added to databse: ' .  end(explode('\\',get_class($this))));
     }
   }
 

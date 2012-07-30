@@ -26,7 +26,7 @@
      *
      * @return bool
      */
-    public static function registerHook($hook, $object, $function = null, $arguments = array())
+    public static function registerHook($hook, $object, $function = null, $arguments = [])
     {
       if (static::$hooks === null) {
         static::$hooks = new \ADV\Core\Hook();

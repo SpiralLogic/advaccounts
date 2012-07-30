@@ -91,7 +91,7 @@
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
-    $total      = array();
+    $total      = [];
     $grandtotal = array(0, 0);
     $sql
                 = "SELECT creditor_id, name, curr_code, payment_terms.terms FROM suppliers, payment_terms

@@ -110,7 +110,7 @@
      *
      * @return string
      */
-    public function arraySelect($name, $selected_id, $items, $options = array()) {
+    public function arraySelect($name, $selected_id, $items, $options = []) {
       $opts = array( // default options
         'spec_option'   => false, // option text or false
         'spec_id'       => 0, // option id
@@ -675,7 +675,7 @@
      * @return string
      */
     public function  yesnoList($name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false) {
-      $items      = array();
+      $items      = [];
       $items['0'] = strlen($name_no) ? $name_no : _("No");
       $items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
       return Forms::arraySelect($name, $selected_id, $items, array(
@@ -712,7 +712,7 @@
      * @return string
      */
     public function numberList($name, $selected, $from, $to, $no_option = false) {
-      $items = array();
+      $items = [];
       for ($i = $from; $i <= $to; $i++) {
         $items[$i] = "$i";
       }
@@ -949,7 +949,7 @@
      * @param bool  $submit_on_change
      * @param array $options
      */
-    public function dateCells($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false, $options = array()) {
+    public function dateCells($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false, $options = []) {
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         if ($inc_years == 1001) {
           $_POST[$name] = null;

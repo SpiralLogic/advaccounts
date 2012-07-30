@@ -17,11 +17,11 @@
     /**
      * @var array
      */
-    protected $_status = array();
+    protected $_status = [];
     /**
      * @var array
      */
-    protected $_errors = array();
+    protected $_errors = [];
     const SUCCESS = E_SUCCESS;
     const INFO    = E_USER_NOTICE;
     const WARNING = E_USER_WARNING;

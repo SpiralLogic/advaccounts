@@ -138,7 +138,7 @@
     /**
      * @var array
      */
-    public $formatAmount = array();
+    public $formatAmount = [];
     /**
      * @var mixed
      */
@@ -885,7 +885,7 @@
      *
      * @return mixed
      */
-    public function UnderlineCell($c, $r = 0, $type = 1, $linewidth = 0, $style = array()) {
+    public function UnderlineCell($c, $r = 0, $type = 1, $linewidth = 0, $style = []) {
       return;
     }
     /**

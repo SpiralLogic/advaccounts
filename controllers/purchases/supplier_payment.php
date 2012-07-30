@@ -17,7 +17,7 @@
     protected $creditor_id;
     public $bank_account;
     protected function before() {
-      JS::openWindow(900, 500);
+      JS::openWindow(950, 500);
       JS::footerFile('/js/payalloc.js');
       $_POST['creditor_id'] = Input::postGetGlobal('creditor_id', null, -1);
       $this->creditor_id    = &$_POST['creditor_id'];

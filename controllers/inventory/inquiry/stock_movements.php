@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(800, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Inventory Item Movement"), SA_ITEMSTRANSVIEW);
   Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
   if (Input::post('ShowMoves')) {

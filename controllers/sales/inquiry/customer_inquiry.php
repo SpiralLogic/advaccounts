@@ -19,7 +19,7 @@
     const SEARCH_INVOICE  = 'i';
     const SEARCH_PAYMENT  = 'p';
     protected function before() {
-      JS::openWindow(900, 500);
+      JS::openWindow(950, 500);
       if (isset($_GET['id'])) {
         $_GET['debtor_id'] = $_GET['id'];
       }

@@ -23,27 +23,27 @@
     /**
      * @var array
      */
-    private $_beforeload = array();
+    private $_beforeload = [];
     /**
      * @var array
      */
-    private $_onload = array();
+    private $_onload = [];
     /**
      * @var array
      */
-    private $_onlive = array();
+    private $_onlive = [];
     /**
      * @var array
      */
-    private $_toclean = array();
+    private $_toclean = [];
     /**
      * @var array
      */
-    private $_headerFiles = array();
+    private $_headerFiles = [];
     /**
      * @var array
      */
-    private $_footerFiles = array();
+    private $_footerFiles = [];
     /**
      * @var bool
      */
@@ -104,8 +104,7 @@
       $apikey  = $this->Config->_get('js.maps_api_key');
       $js      = "Adv.maps = { api_key: '$apikey'}";
       $this->_beforeload($js);
-      $js
-        = <<<JS
+      $js = <<<JS
 var map = $("<div/>").gMap({
   address:"__address_",
   markers:[{ address:"__address_", html:"_address", popup:true}],
@@ -149,42 +148,12 @@ JS;
      * @param array $options
      * @param       $page
      */
-    public function _tabs($id, $options = array(), $page = null) {
-      $defaults = array('noajax' => false, 'hasLinks' => false);
-      $hasLinks = false;
-      extract(array_merge($defaults, $options));
-      $content = "Adv.o.tabs.$id = $('#" . $id . "').tabs(";
-      if ($hasLinks) {
-        $content
-          .= <<<JSS
-    {
-    select: function(event, ui) {
-    var \$tab = $(ui.tab);
-
-        var param = $('#'+\$tab.data('paramel')).val();
-        var url = $.data(ui.tab, 'load.tabs')+param;
-        var target = \$tab.data('target');
-        if (url) {
-            if (target) {
-            Adv.openWindow(url,'Test');
-            } else {
-            location.href = url;
-            }
-
-            return false;
-        }
-
-        return true;
-    }
-    }
-JSS;
-      }
-      $content .= ").toggleClass('tabs')";
-      if ($page) {
-        $content .= ".tabs('select'," . $page . ")";
-      }
-      $content .= ";";
-      $this->_onload($content);
+    public function _tabs($id, $options = [], $page = null) {
+      $defaults = ['noajax'=>false,'haslinks'=>false];
+      $options = array_merge($defaults,$options);
+      $noajax   = $options['noajax'] ?'true':'false';
+      $haslinks = $options['haslinks']?'true':'false';
+      $this->_onload("Adv.tabmenu.init('$id',$noajax,$haslinks,$page)");
     }
     /**
      * @static
@@ -215,7 +184,7 @@ JSS;
         echo $files;
       } else {
         $this->_beforeload = array_merge($this->_beforeload, $this->_onlive, $this->_onload);
-        $this->_onlive     = $this->_onload = array();
+        $this->_onlive     = $this->_onload = [];
       }
       if ($this->_beforeload) {
         $content .= implode("", $this->_beforeload);
@@ -282,7 +251,7 @@ JSS;
      * @return string
      * @return array|mixed|string
      */
-    public function _arrayToOptions($options = array(), $funcs = array(), $level = 0) {
+    public function _arrayToOptions($options = [], $funcs = [], $level = 0) {
       foreach ($options as $key => $value) {
         if (is_array($value)) {
           $ret           = $this->_arrayToOptions($value, $funcs, 1);
@@ -350,7 +319,7 @@ JSS;
      *
      * @param array $events
      */
-    public function _addEvents($events = array()) {
+    public function _addEvents($events = []) {
       if (is_array($events)) {
         foreach ($events as $event) {
           if (count($event == 3)) {
@@ -408,7 +377,7 @@ JSS;
         }
       } else {
         $js = rtrim($js, ';') . ';';
-        array_unshift($var, str_replace(array('<script>', '</script>'), '', $js));
+        array_push($var, str_replace(array('<script>', '</script>'), '', $js));
       }
     }
     /**
@@ -425,7 +394,7 @@ JSS;
       } else {
         $dir  = dirname($file);
         $file = basename($file);
-        isset($var[$dir]) or $var[$dir] = array();
+        isset($var[$dir]) or $var[$dir] = [];
         $var[$dir][$file] = $file;
       }
     }

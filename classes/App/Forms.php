@@ -28,7 +28,7 @@
       $multi  = $multi ? "enctype='multipart/form-data'" : '';
       $name   = $name ? "id='$name' name='$name'" : '';
       $action = $action ? : $_SERVER['DOCUMENT_URI'];
-      echo "<form $multi method='post' action='$action'  $name>";
+      echo "<form $multi method='post' action='$action' $name>";
     }
     /**
      * @param int $breaks
@@ -58,8 +58,8 @@
       return $numeric ? -1 : null;
     }
     /**
-     *  Helper function.
-     *  Returns true if selector $name is subject to update.
+     * Helper function.
+     * Returns true if selector $name is subject to update.
      *
      * @param $name
      *
@@ -89,12 +89,12 @@
      * $sql must return selector values and selector texts in columns 0 & 1
      * Options are merged with default.
      *
-     * @param          $name
-     * @param          $selected_id
-     * @param          $sql
-     * @param          $valfield
-     * @param          $namefield
-     * @param null     $options
+     * @param      $name
+     * @param      $selected_id
+     * @param      $sql
+     * @param      $valfield
+     * @param      $namefield
+     * @param null $options
      *
      * @return string
      */
@@ -103,9 +103,9 @@
       return $box->create();
     }
     /**
-     *  Universal array combo generator
-     *  $items is array of options 'value' => 'description'
-     *  Options is reduced set of combo_selector options and is merged with defaults.
+     * Universal array combo generator
+     * $items is array of options 'value' => 'description'
+     * Options is reduced set of combo_selector options and is merged with defaults.
      *
      * @param      $name
      * @param      $selected_id
@@ -114,7 +114,7 @@
      *
      * @return string
      */
-    public static function arraySelect($name, $selected_id, $items, $options = array()) {
+    public static function arraySelect($name, $selected_id, $items, $options = []) {
       $opts = array( // default options
         'spec_option'   => false, // option text or false
         'spec_id'       => 0, // option id
@@ -180,7 +180,7 @@
       $selector = "<div id='_{$name}_sel' class='combodiv'>" . $selector . "</div>\n";
       if ($select_submit != false) { // if submit on change is used - add select button
         $_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url
-            (/themes/%s/images/button_ok.png) no-repeat;%s' data-aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
+ (/themes/%s/images/button_ok.png) no-repeat;%s' data-aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
         $selector .= sprintf($_select_button, $disabled, User::theme(), (static::$dic['User']->fallback() ? '' : 'display:none;'), '_' . $name . '_update') . "\n";
       }
       static::$dic['JS']->_defaultFocus($name);
@@ -190,15 +190,15 @@
     /**
      * Universal submit form button.
      * $atype - type of submit:
-     *  Normal submit:
-     *   false - normal button; optional icon
-     *   null  - button visible only in fallback mode; optional icon
-     *  Ajax submit:
-     *   true    - standard button; optional icon
-     *   'default' - default form submit on Ctrl-Enter press; dflt ICON_OK icon
-     *   'selector' - ditto with closing current popup editor window
-     *   'cancel'  - cancel form entry on Escape press; dflt ICON_CANCEL
-     *   'process' - displays progress bar during call; optional icon
+     * Normal submit:
+     * false - normal button; optional icon
+     * null - button visible only in fallback mode; optional icon
+     * Ajax submit:
+     * true - standard button; optional icon
+     * 'default' - default form submit on Ctrl-Enter press; dflt ICON_OK icon
+     * 'selector' - ditto with closing current popup editor window
+     * 'cancel' - cancel form entry on Escape press; dflt ICON_CANCEL
+     * 'process' - displays progress bar during call; optional icon
      * $atype can contain also multiply type selectors separated by space,
      * however make sense only combination of 'process' and one of defualt/selector/cancel
      *
@@ -243,7 +243,7 @@
       }
       $caption    = ($name == '_action') ? $title : $value;
       $id         = ($name == '_action') ? '' : "id=\"$name\"";
-      $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') : $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\"  value=\"$value\"" . ($title ? " title='$title'" : '') . ">" . ($icon ? "<img alt='$value' src='/themes/" . User::theme() . "/images/$icon' height='12'>" : '') . "<span>$caption</span>" . "</button>\n";
+      $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') : $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\" value=\"$value\"" . ($title ? " title='$title'" : '') . ">" . ($icon ? "<img alt='$value' src='/themes/" . User::theme() . "/images/$icon' height='12'>" : '') . "<span>$caption</span>" . "</button>\n";
       if ($echo) {
         echo $submit_str;
       } else {
@@ -495,7 +495,7 @@
      * @param bool $submit_on_change
      * @param bool $title
      */
-    public static function  checkRow($label, $name, $value = null, $submit_on_change = false, $title = false) {
+    public static function checkRow($label, $name, $value = null, $submit_on_change = false, $title = false) {
       echo "<tr><td class='label'>$label</td>";
       Forms::checkCells(null, $name, $value, $submit_on_change, $title);
       echo "</tr>\n";
@@ -510,7 +510,7 @@
      * @param string $params
      * @param string $post_label
      */
-    public static function  textRow($label, $name, $value, $size = null, $max, $title = null, $params = "", $post_label = "") {
+    public static function textRow($label, $name, $value, $size = null, $max, $title = null, $params = "", $post_label = "") {
       echo "<tr><td class='label'><label for='$name'>$label</label></td>";
       Forms::textCells(null, $name, $value, $size, $max, $title, $params, $post_label);
       echo "</tr>\n";
@@ -527,7 +527,7 @@
      * @param string $params2
      * @param bool   $submit_on_change
      */
-    public static function  textRowEx($label, $name, $size, $max = null, $title = null, $value = null, $rowparams = null, $post_label = null, $label_cell_params = '', $submit_on_change = false) {
+    public static function textRowEx($label, $name, $size, $max = null, $title = null, $value = null, $rowparams = null, $post_label = null, $label_cell_params = '', $submit_on_change = false) {
       echo "<tr {$rowparams}><td class='label' {$label_cell_params}><label for='$name'>$label</label></td>";
       Forms::textCellsEx(null, $name, $size, $max, $value, $title, $rowparams, $post_label, $submit_on_change);
       echo "</tr>\n";
@@ -615,7 +615,7 @@
      * @param null $params
      * @param bool $submit_on_change
      */
-    public static function  dateRow($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false) {
+    public static function dateRow($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false) {
       echo "<tr><td class='label'><label for='$name'> $label</label></td>";
       Forms::dateCells(null, $name, $title, $check, $inc_days, $inc_months, $inc_years, $params, $submit_on_change);
       echo "</tr>\n";
@@ -627,7 +627,7 @@
      */
     public static function passwordRow($label, $name, $value) {
       echo "<tr><td class='label'><label for='$name'>$label</label></td>";
-      Cell::label("<input type='password' class='med'  name='$name' id='$name' value='$value' />");
+      Cell::label("<input type='password' class='med' name='$name' id='$name' value='$value' />");
       echo "</tr>\n";
     }
     /**
@@ -647,7 +647,7 @@
      * @param null $init
      * @param bool $submit_on_change
      */
-    public static function  refRow($label, $name, $title = null, $init = null, $submit_on_change = false) {
+    public static function refRow($label, $name, $title = null, $init = null, $submit_on_change = false) {
       echo "<tr><td class='label'><label for='$name'> $label</label></td>";
       Forms::refCells(null, $name, $title, $init, null, $submit_on_change);
       echo "</tr>\n";
@@ -674,7 +674,7 @@
      * @param null   $dec
      * @param string $inputparams
      */
-    public static function  AmountRow($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '') {
+    public static function AmountRow($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '') {
       echo "<tr>";
       Forms::amountCells($label, $name, $init, $params, $post_label, $dec, $inputparams);
       echo "</tr>\n";
@@ -689,7 +689,7 @@
      * @param int    $leftfill
      * @param string $inputparams
      */
-    public static function  SmallAmountRow($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $leftfill = 0, $inputparams = '') {
+    public static function SmallAmountRow($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $leftfill = 0, $inputparams = '') {
       echo "<tr>";
       Forms::amountCellsSmall($label, $name, $init, $params, $post_label, $dec, $inputparams);
       if ($leftfill != 0) {
@@ -739,21 +739,21 @@
      * @param string $params
      * @param string $labelparams
      */
-    public static function  textareaRow($label, $name, $value, $cols, $rows, $title = null, $params = "", $labelparams = "") {
+    public static function textareaRow($label, $name, $value, $cols, $rows, $title = null, $params = "", $labelparams = "") {
       echo "<tr><td class='label' $labelparams><label for='$name'>$label</label></td>";
       Forms::textareaCells(null, $name, $value, $cols, $rows, $title, $params);
       echo "</tr>\n";
     }
     /**
-     *   Displays controls for optional display of inactive records
+     * Displays controls for optional display of inactive records
      *
      * @param $th
      */
-    public static function  inactiveControlRow($th) {
-      echo  "<tr><td colspan=" . (count($th)) . ">" . "<div style='float:left;'>" . Forms::checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") . "</div><div style='float:right;'>" . Forms::submit('Update', _('Update'), false, '', null) . "</div></td></tr>";
+    public static function inactiveControlRow($th) {
+      echo "<tr><td colspan=" . (count($th)) . ">" . "<div style='float:left;'>" . Forms::checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") . "</div><div style='float:right;'>" . Forms::submit('Update', _('Update'), false, '', null) . "</div></td></tr>";
     }
     /**
-     *   Inserts additional column header when display of inactive records is on.
+     * Inserts additional column header when display of inactive records is on.
      *
      * @param $th
      */
@@ -774,8 +774,8 @@
      *
      * @return string
      */
-    public static function  yesnoList($name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false) {
-      $items      = array();
+    public static function yesnoList($name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false) {
+      $items      = [];
       $items['0'] = strlen($name_no) ? $name_no : _("No");
       $items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
       return Forms::arraySelect($name, $selected_id, $items, array(
@@ -790,7 +790,7 @@
      * @param string $name_no
      * @param bool   $submit_on_change
      */
-    public static function  yesnoListRow($label, $name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false) {
+    public static function yesnoListRow($label, $name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false) {
       echo "<tr><td class='label'>$label</td>";
       Forms::yesnoListCells(null, $name, $selected_id, $name_yes, $name_no, $submit_on_change);
       echo "</tr>\n";
@@ -799,7 +799,7 @@
      * @param $label
      * @param $name
      */
-    public static function  recordStatusListRow($label, $name) {
+    public static function recordStatusListRow($label, $name) {
       Forms::yesnoListRow($label, $name, null, _('Inactive'), _('Active'));
     }
     /**
@@ -812,7 +812,7 @@
      * @return string
      */
     public static function numberList($name, $selected, $from, $to, $no_option = false) {
-      $items = array();
+      $items = [];
       for ($i = $from; $i <= $to; $i++) {
         $items[$i] = "$i";
       }
@@ -929,7 +929,7 @@
      * Prep Value
      * Prepares the value for display in the form
      *
-     * @param   string
+     * @param string
      *
      * @return string
      */
@@ -946,7 +946,7 @@
      * @param bool   $title
      * @param string $params
      */
-    public static function  checkCells($label, $name, $value = null, $submit_on_change = false, $title = false, $params = '') {
+    public static function checkCells($label, $name, $value = null, $submit_on_change = false, $title = false, $params = '') {
       echo "<td $params>";
       if ($label != null) {
         echo "<label for=\"$name\"> $label</label>";
@@ -955,16 +955,16 @@
       echo "</td>";
     }
     /**
-     *   When show_inactive page option is set
-     *   displays value of inactive field as checkbox cell.
-     *   Also updates database record after status change.
+     * When show_inactive page option is set
+     * displays value of inactive field as checkbox cell.
+     * Also updates database record after status change.
      *
      * @param $id
      * @param $value
      * @param $table
      * @param $key
      */
-    public static function  inactiveControlCell($id, $value, $table, $key) {
+    public static function inactiveControlCell($id, $value, $table, $key) {
       $name  = "Inactive" . $id;
       $value = $value ? 1 : 0;
       if (Forms::hasPost('show_inactive')) {
@@ -1033,9 +1033,9 @@
       Cell::labels($label, "<input type='file' name='$name' $id />");
     }
     /**
-     *   Since ADV 2.2  $init parameter is superseded by $check.
-     *   When $check!=null current date is displayed in red when set to other
-     *   than current date.
+     * Since ADV 2.2 $init parameter is superseded by $check.
+     * When $check!=null current date is displayed in red when set to other
+     * than current date.
      *
      * @param       $label
      * @param       $name
@@ -1048,7 +1048,7 @@
      * @param bool  $submit_on_change
      * @param array $options
      */
-    public static function dateCells($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false, $options = array()) {
+    public static function dateCells($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false, $options = []) {
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         if ($inc_years == 1001) {
           $_POST[$name] = null;
@@ -1076,7 +1076,7 @@
       if ($check && (Input::post($name) != Dates::today())) {
         $aspect .= ' style="color:#FF0000"';
       }
-      echo "<input id='$name' type='text' name='$name' class='$class' $aspect  maxlength='10' value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" : '') . " > $post_label";
+      echo "<input id='$name' type='text' name='$name' class='$class' $aspect maxlength='10' value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" : '') . " > $post_label";
       echo "</td>\n";
       Ajax::addUpdate($name, $name, $_POST[$name]);
     }
@@ -1091,7 +1091,7 @@
      * @param string $post_label
      * @param string $inparams
      */
-    public static function  textCells($label, $name, $value = null, $size = "", $max = "", $title = false, $labparams = "", $post_label = "", $inparams = "") {
+    public static function textCells($label, $name, $value = null, $size = "", $max = "", $title = false, $labparams = "", $post_label = "", $inparams = "") {
       $placeholder = '';
       if ($label != null) {
         echo "<td class='label'><label for=\"$name\"> $label</label></td>";
@@ -1126,7 +1126,7 @@
      *
      * @internal param null $labparams
      */
-    public static function  textCellsEx($label, $name, $size = null, $max = null, $init = null, $title = null, $params = null, $post_label = null, $submit_on_change = false, $inparams = "") {
+    public static function textCellsEx($label, $name, $size = null, $max = null, $init = null, $title = null, $params = null, $post_label = null, $submit_on_change = false, $inparams = "") {
       static::$dic['JS']->defaultFocus($name);
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         if ($init !== null) {
@@ -1138,7 +1138,7 @@
       if ($label != null) {
         echo "<td class='label' $params> <label for=\"$name\"> $label</label></td><td>";
       } else {
-        echo   "<td>";
+        echo "<td>";
       }
       if (!isset($max)) {
         $max = $size;
@@ -1179,7 +1179,7 @@
      * @param null $params
      * @param bool $submit_on_change
      */
-    public static function  refCells($label, $name, $title = null, $init = null, $params = null, $submit_on_change = false) {
+    public static function refCells($label, $name, $title = null, $init = null, $params = null, $submit_on_change = false) {
       Forms::textCellsEx($label, null, 'small', 18, $init, $title, $params, Forms::hidden($name, $init, false), $submit_on_change, ' disabled');
     }
     /**
@@ -1188,7 +1188,7 @@
      * @param null   $init
      * @param string $inputparams
      */
-    public static function  percentCells($label, $name, $init = null, $inputparams = '') {
+    public static function percentCells($label, $name, $init = null, $inputparams = '') {
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         $_POST[$name] = ($init === null) ? '' : $init;
       }
@@ -1211,7 +1211,7 @@
       if ($label) {
         $params = $params ? : " class='label'";
         Cell::label($label, $params);
-        echo  "<td>";
+        echo "<td>";
       } else {
         echo "<td class='right nowrap' >";
       }
@@ -1238,7 +1238,7 @@
         }
         $inputparams .= " $k='$v'";
       }
-      echo "<input  $inputparams>";
+      echo "<input $inputparams>";
       if ($post_label) {
         echo "<span id='_{$name}_label'>$post_label</span>";
         static::$dic['Ajax']->_addUpdate($name, '_' . $name . '_label', $post_label);
@@ -1257,11 +1257,11 @@
      * @param null   $id
      * @param string $inputparams
      */
-    public static function  amountCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $id = null, $inputparams = '') {
+    public static function amountCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $id = null, $inputparams = '') {
       Forms::amountCellsEx($label, $name, null, 15, $init, $params, $post_label, $dec, $id, $inputparams);
     }
     /**
-     *   JAM  Allow entered unit prices to be fractional
+     * JAM Allow entered unit prices to be fractional
      *
      * @param      $label
      * @param      $name
@@ -1286,7 +1286,7 @@
      * @param string $inputparams
      * @param bool   $negatives
      */
-    public static function  amountCellsSmall($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '', $negatives = false) {
+    public static function amountCellsSmall($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '', $negatives = false) {
       Forms::amountCellsEx($label, $name, 'small', 12, $init, $params, $post_label, $dec, null, $inputparams, $negatives);
     }
     /**
@@ -1297,7 +1297,7 @@
      * @param null $post_label
      * @param null $dec
      */
-    public static function  qtyCellsSmall($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
+    public static function qtyCellsSmall($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
       if (!isset($dec)) {
         $dec = static::$dic['User']->_qty_dec();
       }
@@ -1316,7 +1316,7 @@
         Cell::label($label);
       }
       echo "<td>\n";
-      echo  Forms::numberList($name, $selected, $from, $to, $no_option);
+      echo Forms::numberList($name, $selected, $from, $to, $no_option);
       echo "</td>\n";
     }
     /**
@@ -1332,7 +1332,7 @@
         echo "<td>$label</td>\n";
       }
       echo "<td>";
-      echo  Forms::yesnoList($name, $selected_id, $name_yes, $name_no, $submit_on_change);
+      echo Forms::yesnoList($name, $selected_id, $name_yes, $name_no, $submit_on_change);
       echo "</td>\n";
     }
     /**
@@ -1344,7 +1344,7 @@
      * @param null   $title
      * @param string $params
      */
-    public static function  textareaCells($label, $name, $value, $cols, $rows, $title = null, $params = "") {
+    public static function textareaCells($label, $name, $value, $cols, $rows, $title = null, $params = "") {
       if ($label != null) {
         echo "<td $params>$label</td>\n";
         $params = '';
@@ -1368,11 +1368,11 @@
      * @param null $post_label
      * @param null $dec
      */
-    public static function  qtyCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null,$inputparams) {
+    public static function qtyCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '') {
       if (!isset($dec)) {
         $dec = static::$dic['User']->_qty_dec();
       }
-      Forms::amountCellsEx($label, $name, null, 15, $init, $params, $post_label, $dec, null, $inputparams, true);
+      Forms::amountCellsEx($label, $name, null, 15, $init, $params, $post_label, $dec, null, $inputparams = '', true);
     }
   }
 

@@ -98,7 +98,7 @@
       if (!isset($_POST) || !isset($_POST[$postname])) {
         return 0;
       }
-      $options = array();
+      $options = [];
       if ($min !== null) {
         $options['min_range'] = $min;
       }

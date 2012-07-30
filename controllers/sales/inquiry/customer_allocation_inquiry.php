@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Customer Allocation Inquiry"), SA_SALESALLOC);
   if (isset($_GET['debtor_id']) || isset($_GET['id'])) {
     $_POST['debtor_id'] = isset($_GET['id']) ? $_GET['id'] : $_GET['debtor_id'];
@@ -126,7 +126,7 @@
         return $row["type"] == 10 ? $row["due_date"] : '';
       }
     ),
-    _("Customer")                                                                      => array(),
+    _("Customer")                                                                      => [],
     _("Currency")                                                                      => array('align' => 'center'),
     _("Debit")                                                                         => array(
       'align' => 'right', 'fun' => function ($row) {

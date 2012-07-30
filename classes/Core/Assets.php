@@ -31,17 +31,17 @@
     protected $cachePrefix = 'so_';
     protected $clientCache = true;
     protected $clientCacheCheck = true;
-    protected $file = array();
+    protected $file = [];
     protected $minifyTypes
       = array(
         'js'  => array(
           'minify'   => true, //
-          'minifier' => 'JSMin', //
-          'settings' => array() //
+          'minifier' => '\\ADV\\Core\\JSMin', //
+          'settings' => [] //
         ), //
         'css' => array( //
           'minify'   => true, //
-          'minifier' => 'CSSMin', //
+          'minifier' => '\\ADV\\Core\\CSSMin', //
           'settings' => array( //
             'embed'           => true, //
             'embedMaxSize'    => 5120, //
@@ -215,7 +215,7 @@
           $this->headerNoCache();
         }
         if ($generateContent) {
-          $content = array();
+          $content = [];
           foreach ($this->files as $file) {
             (($content[] = file_get_contents($file)) !== false) || $this->debugExit("File not found ($file).");
           }
@@ -227,7 +227,7 @@
                 $this->debugExit("Minifier not set for type " . $this->fileType);
               }
               $minifier_class                   = $minify_type_settings['minifier'];
-              $minify_type_settings['settings'] = $minify_type_settings['settings'] ? : array();
+              $minify_type_settings['settings'] = $minify_type_settings['settings'] ? : [];
               $minifier                         = new $minifier_class($content, array(
                                                                                      'fileDir'             => $fileDir,
                                                                                      'minify_type_settings'=> $minify_type_settings['settings'],

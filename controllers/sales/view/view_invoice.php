@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(900, 600);
+  JS::openWindow(950, 600);
   Page::start(_($help_context = "View Sales Invoice"), SA_SALESTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {
     $trans_id = $_GET["trans_no"];

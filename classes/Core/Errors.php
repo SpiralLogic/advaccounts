@@ -16,13 +16,13 @@
   {
     const DB_DUPLICATE_ERROR_CODE = 1062;
     /** @var array Container for the system messages */
-    public static $messages = array();
+    public static $messages = [];
     /** @var array Container for the system errors */
-    public static $errors = array();
+    public static $errors = [];
     /** @var array */
-    protected static $debugLog = array();
+    protected static $debugLog = [];
     /** @var array Container for DB errors */
-    public static $dberrors = array();
+    public static $dberrors = [];
     /*** @var bool  Wether the json error status has been sent */
     protected static $jsonerrorsent = false;
     /*** @var int */
@@ -58,7 +58,7 @@
     /** @var array Errors where execution can continue */
     protected static $continue_on = array(E_SUCCESS, E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
     /** @var array Errors to ignore comeletely */
-    protected static $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT);
+    protected static $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT, E_NOTICE);
     /** @var */
     protected static $useConfigClass;
     protected static $admin = false;
@@ -84,7 +84,7 @@
      */
     public static function handler($type, $message, $file = null, $line = null, $log = true) {
       if (in_array($type, static::$ignore)) {
-        return true;
+        return false;
       }
       if (count(static::$errors) > 10 || (static::$useConfigClass && count(static::$errors) > Config::get('debug.throttling'))) {
         static::fatal();
@@ -109,7 +109,7 @@
         static::$errors[]   = $error;
       }
 
-      return true;
+      return false;
     }
     /**
      * @static
@@ -167,7 +167,7 @@
     public static function sendDebugEmail() {
       if (static::$current_severity == -1 || static::$errors || static::$dberrors || static::$debugLog) {
         $text            = '';
-        $with_back_trace = array();
+        $with_back_trace = [];
         $text .= count(static::$debugLog) ? "<div><pre><h3>Debug Values: </h3>" . var_export(static::$debugLog, true) . "\n\n" :
           '';
         if (static::$errors) {
@@ -238,7 +238,7 @@
     public static function process() {
       $last_error = error_get_last();
       /** @noinspection PhpUndefinedFunctionInspection */
-      static::$session = (session_status() == PHP_SESSION_ACTIVE) ? $_SESSION : array();
+      static::$session = (session_status() == PHP_SESSION_ACTIVE) ? $_SESSION : [];
       // Only show valid fatal errors
       if ($last_error && in_array($last_error['type'], static::$fatal_levels)) {
         if (class_exists('Ajax', false)) {
@@ -342,7 +342,7 @@
      * @internal param null $sql_statement
      * @internal param bool $exit
      */
-    public static function databaseError($error, $sql = null, $data = array()) {
+    public static function databaseError($error, $sql = null, $data = []) {
       $errorCode        = DB\DB::errorNo();
       $error['message'] = _("DATABASE ERROR $errorCode:") . $error['message'];
       if ($errorCode == static::DB_DUPLICATE_ERROR_CODE) {
@@ -369,7 +369,7 @@
     public static function log() {
       $source  = reset(debug_backtrace());
       $args    = func_get_args();
-      $content = array();
+      $content = [];
       foreach ($args as $arg) {
         $content[] = var_export($arg, true);
       }

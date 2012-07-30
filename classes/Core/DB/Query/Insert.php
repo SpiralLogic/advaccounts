@@ -22,19 +22,19 @@
     /**
      * @var array
      */
-    protected $values = array();
+    protected $values = [];
     /**
      * @var array
      */
-    protected $fields = array();
+    protected $fields = [];
     /**
      * @var array
      */
-    protected $hasfields = array();
+    protected $hasfields = [];
     /**
      * @var array
      */
-    public $data = array();
+    public $data = [];
     /**
      * @param bool $table
      * @param      $db

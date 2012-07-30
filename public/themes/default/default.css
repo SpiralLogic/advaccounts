@@ -62,11 +62,12 @@ textarea {
 }
 
 select {
-  padding:    1px 2px;
-  min-width:  8em;
-  min-height: 25px;
-  height:     25px;
-  border:     lightgray solid 1px; margin-left: 3px;
+  padding:     1px 2px;
+  min-width:   8em;
+  min-height:  25px;
+  height:      25px;
+  border:      lightgray solid 1px;
+  margin-left: 3px;
 }
 
 .med {
@@ -333,11 +334,11 @@ img {
   border-radius:      5px;
   -moz-border-radius: 5px;
   border-radius:      5px;
-  box-shadow:         3px 6px 20px 5px rgba(3, 3, 3, .25);
-  -moz-box-shadow:    3px 6px 20px 5px rgba(3, 3, 3, .25);
-  box-shadow:         3px 6px 20px 5px rgba(3, 3, 3, .25);
-  width:              130px;
-  padding:            3px 3px;
+  border-color:       rgba(20, 20, 20, 0.2);
+  -moz-box-shadow:    0 0 4px 4px rgb(10, 10, 10);
+  -webkit-box-shadow: 0 0 4px 4px rgb(10, 10, 10);
+  box-shadow:         0 0 5px 5px rgba(10, 10, 10, .5);
+  padding:            3px;
   top:                170px;
 }
 
@@ -349,17 +350,10 @@ img {
   border:             none;
   margin-top:         3px;
   background:         white;
-  padding:            6px 6px;
+  padding:            0;
   border-radius:      4px;
   -moz-border-radius: 4px;
   border-radius:      4px;
-  width:              125px;
-}
-
-#summary th {
-  text-align: center;
-  padding:    2px 12px;
-  font-size:  1em;
 }
 
 #summary tr {
@@ -376,8 +370,14 @@ img {
 
 #summary td {
   margin:     12px;
-  padding:    12px;
   text-align: center;
+}
+
+#summary th, #summary .tablehead {
+  padding:    4px;
+  font-size:  14px;
+  text-align: center;
+
 }
 
 /*--------------------------------- END SUMMARY -----------------------------------------------------------------*/
@@ -740,11 +740,14 @@ div.formbox {
 }
 
 .combo_select {
-  border: 0; background: url(themes/default/images/button_ok.png) no-repeat;
+  border:     0;
+  background: url(themes/default/images/button_ok.png) no-repeat;
 }
 
 .combo_submit {
-  border: 0; background: url(themes/default/images/locate.png) no-repeat; }
+  border:     0;
+  background: url(themes/default/images/locate.png) no-repeat;
+}
 
 .formbox label {
   display:       block;

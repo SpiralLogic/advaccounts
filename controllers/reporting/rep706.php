@@ -32,7 +32,7 @@
     $open_balance_total   = 0;
     $period_balance_total = 0;
     unset($totals_arr);
-    $totals_arr = array();
+    $totals_arr = [];
     $printtitle = 0; //Flag for printing type name
     //Get Accounts directly under this group/type
     $result = GL_Account::getAll(null, null, $type);

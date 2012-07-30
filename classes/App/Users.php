@@ -290,7 +290,7 @@
     public static function tabs_row($label, $name, $selected_id = null, $all = false)
     {
       global $installed_extensions;
-      $tabs = array();
+      $tabs = [];
       foreach (ADVAccounting::i()->applications as $app) {
         $tabs[$app->id] = Display::access_string($app->name, true);
       }

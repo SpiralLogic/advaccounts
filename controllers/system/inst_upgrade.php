@@ -129,7 +129,7 @@ You have to clean database manually to enable them, or try to perform forced upg
   function get_installers()
   {
     $patchdir = DOCROOT . "sql/";
-    $upgrades = array();
+    $upgrades = [];
     $datadir  = @opendir($patchdir);
     if ($datadir) {
       while (false !== ($fname = readdir($datadir))) { // check all php files but index.php

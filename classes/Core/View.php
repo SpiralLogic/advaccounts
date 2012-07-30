@@ -48,6 +48,7 @@
       if (!$__contents || !is_array($__contents)) {
         $__contents = file_get_contents($this->_template);
         $__contents = $this->compile_nothings($__contents);
+        $__contents = $this->compile_functions($__contents);
         $__contents = $this->compile_structure_openings($__contents);
         $__contents = $this->compile_else($__contents);
         $__contents = $this->compile_structure_closings($__contents);
@@ -59,6 +60,7 @@
         $this->checkCache($this->_template, $__contents[1]);
         $__contents = $__contents[0];
       }
+
       static::$count++;
       ob_start() and extract($this->_viewdata, EXTR_SKIP);
       // We'll include the view contents for parsing within a catcher
@@ -108,6 +110,16 @@
      */
     protected static function compile_dot_notation($value) {
       return preg_replace('/(\$[a-zA-Z_0-9]*?)\.([a-zA-Z_0-9]+)/', '$1["$2"]', $value);
+    }
+    /**
+     * @static
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
+    protected static function compile_functions($value) {
+      return preg_replace('/\{#(.+?)#\}/', '<?php $1; ?>', $value);
     }
     /**
      * @static

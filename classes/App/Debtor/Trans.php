@@ -32,7 +32,7 @@
       // invoice: find batch invoice parent trans.
       $sql      = 'SELECT trans_no FROM ' . 'debtor_trans WHERE (trans_link=' . DB::escape($trans_no) . ' AND type=' . Debtor_Trans::get_parent_type($trans_type) . ')';
       $result   = DB::query($sql, 'Delivery links cannot be retrieved');
-      $delivery = array();
+      $delivery = [];
       if (DB::numRows($result) > 0) {
         while ($link = DB::fetch($result)) {
           $delivery[] = $link['trans_no'];
@@ -135,7 +135,7 @@
       }
       $sql .= implode(' OR ', $trans_no) . ')';
       $res  = DB::query($sql, 'document version retreival');
-      $vers = array();
+      $vers = [];
       while ($mysql = DB::fetch($res)) {
         $vers[$mysql['trans_no']] = $mysql['version'];
       }

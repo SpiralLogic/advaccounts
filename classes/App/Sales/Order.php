@@ -27,7 +27,7 @@
     /**
      * @var array
      */
-    public $trans_no = array(); // array (num1=>ver1,..) or 0 for new
+    public $trans_no = []; // array (num1=>ver1,..) or 0 for new
     /**
      * @var int
      */
@@ -43,7 +43,7 @@
     /**
      * @var array
      */
-    public $src_docs = array(); // array of arrays(num1=>ver1,...) or 0 for no src
+    public $src_docs = []; // array of arrays(num1=>ver1,...) or 0 for no src
     /**
      * @var
      */
@@ -224,7 +224,7 @@
      */
     public function __construct($type, $trans_no = 0, $view = false) {
       /*Constructor function initialises a new shopping order */
-      $this->line_items = array();
+      $this->line_items = [];
       $this->sales_type = "";
       $this->view_only  = $view;
       $this->trans_type = ($type == ST_SALESQUOTE) ? ST_SALESQUOTE : ST_SALESORDER;
@@ -554,7 +554,7 @@
      */
     public function clear_items() {
       unset($this->line_items);
-      $this->line_items = array();
+      $this->line_items = [];
       $this->sales_type = "";
       $this->trans_no   = 0;
       $this->debtor_id  = $this->order_no = 0;
@@ -636,8 +636,8 @@
      * @return array|null
      */
     public function get_taxes_for_order($shipping_cost = null) {
-      $items  = array();
-      $prices = array();
+      $items  = [];
+      $prices = [];
       if ($shipping_cost == null) {
         $shipping_cost = $this->freight_cost;
       }
@@ -661,8 +661,8 @@
      * @return array|null
      */
     public function get_taxes($shipping_cost = null) {
-      $items  = array();
-      $prices = array();
+      $items  = [];
+      $prices = [];
       if ($shipping_cost == null) {
         $shipping_cost = $this->freight_cost;
       }
@@ -694,7 +694,7 @@
      * @return float
      */
     public function get_shipping_tax() {
-      $tax_items = Tax_Groups::for_shipping_as_array();
+      $tax_items = Tax_Groups::for_shipping_as_[];
       $tax_rate  = 0;
       if ($tax_items != null) {
         foreach ($tax_items as $item_tax) {
@@ -725,11 +725,11 @@
             VALUES (" . DB::escape($order_no) . "," . DB::escape($order_type) . "," . DB::escape($this->debtor_id) . ", " . DB::escape($this->trans_type) . "," . DB::escape($this->Branch) . ", " . DB::escape($this->cust_ref) . "," . DB::escape($this->reference) . "," . DB::escape($this->salesman) . "," . DB::escape($this->Comments) . "," . DB::escape($this->source_no) . ",'" . Dates::dateToSql($this->document_date) . "', " . DB::escape($this->sales_type) . ", " . DB::escape($this->ship_via) . "," . DB::escape($this->deliver_to) . "," . DB::escape($this->delivery_address) . ", " . DB::escape($this->name) . ", " . DB::escape($this->phone) . ", " . DB::escape($this->email) . ", " . DB::escape($this->freight_cost) . ", " . DB::escape($this->location) . ", " . DB::escape($del_date) . ")";
       DB::query($sql, "order Cannot be Added");
       $this->trans_no = array($order_no => 0);
-      $st_ids         = array();
+      $st_ids         = [];
       if (Config::get('accounts.stock_emailnotify') == 1) {
-        $st_names   = array();
-        $st_num     = array();
-        $st_reorder = array();
+        $st_names   = [];
+        $st_num     = [];
+        $st_reorder = [];
       }
       foreach ($this->line_items as $position => $line) {
         if (Config::get('accounts.stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
@@ -930,10 +930,10 @@
       $sql = "DELETE FROM sales_order_details WHERE order_no =" . $order_no . " AND trans_type=" . $this->trans_type;
       DB::query($sql, "Old order Cannot be Deleted");
       if (Config::get('accounts.stock_emailnotify') == 1) {
-        $st_ids     = array();
-        $st_names   = array();
-        $st_num     = array();
-        $st_reorder = array();
+        $st_ids     = [];
+        $st_names   = [];
+        $st_num     = [];
+        $st_reorder = [];
       }
       foreach ($this->line_items as $position => $line) {
         if (Config::get('accounts.stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
@@ -1075,7 +1075,7 @@
         return false;
       }
       $current_lines    = $this->line_items;
-      $this->line_items = array();
+      $this->line_items = [];
       foreach ($current_lines as $line_no => $line) {
         $this->line_items[$order_map[$line_no]] = $line;
       }

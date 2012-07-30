@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(900, 600);
+  JS::openWindow(950, 600);
   $trans_type = $_GET['trans_type'];
   Page::start("", SA_SALESTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {

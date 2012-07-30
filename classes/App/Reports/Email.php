@@ -18,19 +18,19 @@
     /**
      * @var array
      */
-    public $to = array();
+    public $to = [];
     /**
      * @var array
      */
-    public $cc = array();
+    public $cc = [];
     /**
      * @var array
      */
-    public $bcc = array();
+    public $bcc = [];
     /**
      * @var array
      */
-    public $attachment = array();
+    public $attachment = [];
     /**
      * @var string
      */

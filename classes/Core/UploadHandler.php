@@ -71,7 +71,7 @@
      * @return mixed
      */
     public function get() {
-      $info      = array();
+      $info      = [];
       $upload_id = (isset($_REQUEST['id'])) ? stripslashes($_REQUEST['id']) : null;
       if ($upload_id) {
         $sql    = "SELECT content as content,type FROM upload WHERE `id` = {$upload_id}";
@@ -101,7 +101,7 @@
       $upload = isset($_FILES[$this->options['param_name']]) ? $_FILES[$this->options['param_name']] : array(
         'tmp_name' => null, 'name'     => null, 'size'     => null, 'type'     => null, 'error'    => null
       );
-      $info   = array();
+      $info   = [];
       if (is_array($upload['tmp_name'])) {
         /** @noinspection PhpUnusedLocalVariableInspection */
         foreach ($upload['tmp_name'] as $index => $value) {

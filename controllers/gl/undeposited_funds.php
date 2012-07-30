@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(800, 500);
+  JS::openWindow(950, 500);
   JS::footerFile('/js/reconcile.js');
   Page::start(_($help_context = "Undeposited Funds"), SA_RECONCILE, Input::request('frame'));
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
@@ -23,7 +23,7 @@
   }
   if (Input::post('_deposit_date_changed')) {
     $_POST['deposited']      = 0;
-    $_SESSION['undeposited'] = array();
+    $_SESSION['undeposited'] = [];
     $_POST['deposit_date']   = check_date() ? (Input::post('deposit_date')) : '';
     foreach ($_POST as $rowid => $row) {
       if (substr($rowid, 0, 4) == 'dep_') {
@@ -39,11 +39,11 @@
   if (isset($_POST['Deposit'])) {
     $sql         = "SELECT * FROM bank_trans WHERE undeposited=1 AND reconciled IS null";
     $query       = DB::query($sql);
-    $undeposited = array();
+    $undeposited = [];
     while ($row = DB::fetch($query)) {
       $undeposited[$row['id']] = $row;
     }
-    $togroup = array();
+    $togroup = [];
     foreach ($_POST as $key => $value) {
       $key = explode('_', $key);
       if ($key[0] == 'dep') {
@@ -52,7 +52,7 @@
     }
     if (count($togroup) > 1) {
       $total_amount = 0;
-      $ref          = array();
+      $ref          = [];
       foreach ($togroup as $row) {
         $total_amount += $row['amount'];
         $ref[] = $row['ref'];

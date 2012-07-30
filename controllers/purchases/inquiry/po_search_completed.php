@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, Input::request('frame'));
   $order_number = Input::getPost('order_number', Input::STRING);
   $creditor_id  = Input::postGet('creditor_id', Input::NUMERIC, -1);

@@ -130,7 +130,7 @@
         $result = ($this->connection->getResultCode() === Memcached::RES_NOTFOUND) ? $default : $result;
       } elseif (class_exists('Session', false)) {
         if (!isset($_SESSION['cache'])) {
-          $_SESSION['cache'] = array();
+          $_SESSION['cache'] = [];
         }
         $result = (!isset($_SESSION['cache'][$key])) ? $default : $_SESSION['cache'][$key];
       } else {
@@ -168,7 +168,7 @@
       if ($this->connection) {
         $this->connection->flush($time);
       } else {
-        $_SESSION['cache'] = array();
+        $_SESSION['cache'] = [];
       }
     }
     /**

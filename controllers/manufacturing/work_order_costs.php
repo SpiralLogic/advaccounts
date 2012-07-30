@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Work Order Additional Costs"), SA_WORKORDERCOST);
   if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
     $_POST['selected_id'] = $_GET['trans_no'];

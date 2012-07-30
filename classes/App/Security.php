@@ -192,7 +192,7 @@
      * @return array|string
      */
     public static function htmlentities($value) {
-      static $already_cleaned = array();
+      static $already_cleaned = [];
       // Nothing to escape for non-string scalars, or for already processed values
       if (is_bool($value) or is_int($value) or is_float($value) or in_array($value, $already_cleaned, true)) {
         return $value;

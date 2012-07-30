@@ -81,10 +81,10 @@
     {
 
       if (!isset($_SESSION['orders'])) {
-        $_SESSION['orders'] = array();
+        $_SESSION['orders'] = [];
       }
       if (!isset($_SESSION['orders'][$type])) {
-        $_SESSION['orders'][$type] = array();
+        $_SESSION['orders'][$type] = [];
       }
     }
     /**

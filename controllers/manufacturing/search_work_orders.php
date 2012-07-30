@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(800, 500);
+  JS::openWindow(950, 500);
   if (isset($_GET['outstanding_only']) && ($_GET['outstanding_only'] == true)) {
     // curently outstanding simply means not closed
     $outstanding_only = 1;

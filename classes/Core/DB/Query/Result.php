@@ -90,7 +90,7 @@
      *
      * @return Result
      */
-    public function asClassLate($class, $construct = array()) {
+    public function asClassLate($class, $construct = []) {
       $this->prepared->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $class, $construct);
 
       return $this;
@@ -101,7 +101,7 @@
      *
      * @return Result
      */
-    public function asClass($class, $construct = array()) {
+    public function asClass($class, $construct = []) {
       $this->prepared->setFetchMode(\PDO::FETCH_CLASS, $class, $construct);
 
       return $this;

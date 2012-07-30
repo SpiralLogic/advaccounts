@@ -8,7 +8,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   JS::headerFile('/js/payalloc.js');
   Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::request('frame'));
   Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));

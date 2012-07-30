@@ -16,7 +16,7 @@
     /**
      * @var array
      */
-    protected $where = array(); // additional constraints
+    protected $where = []; // additional constraints
     /** @var */
     protected $order; // list sort order
     // special option parameters
@@ -89,7 +89,7 @@
     /**
      * @var array
      */
-    protected $search = array(); // sql field names to search
+    protected $search = []; // sql field names to search
     /**
      * @var Callable
      */
@@ -138,7 +138,7 @@
      * @param       $namefield
      * @param array $options
      */
-    public function __construct($name, $selected_id = null, $sql, $valfield, $namefield, $options = array()) {
+    public function __construct($name, $selected_id = null, $sql, $valfield, $namefield, $options = []) {
       $this->name        = $name;
       $this->order       = $namefield;
       $this->selected_id = $selected_id;
@@ -332,7 +332,7 @@
         $this->rel = "rel='$search_box'"; // set relation to list
         if ($this->search_submit) {
           if (isset($_POST[$search_button])) {
-            $this->selected_id = array(); // ignore selected_id while search
+            $this->selected_id = []; // ignore selected_id while search
             if (!$this->async) {
               Ajax::activate('_page_body');
             } else {
@@ -340,7 +340,7 @@
             }
           }
           if ($txt == '') {
-            if ($this->spec_option === false && $this->selected_id == array()) {
+            if ($this->spec_option === false && $this->selected_id == []) {
               $limit = ' LIMIT 1';
             } else {
               $this->where[] = $this->valfield . "='" . Input::post($this->name, null, $this->spec_id) . "'";

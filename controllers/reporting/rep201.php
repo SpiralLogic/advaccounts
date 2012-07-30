@@ -142,7 +142,7 @@
     $rep->fontSize -= 2;
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
-    $total      = array();
+    $total      = [];
     $grandtotal = array(0, 0, 0, 0);
     $sql        = "SELECT creditor_id, name, curr_code FROM suppliers";
     if ($fromsupp != ALL_NUMERIC) {

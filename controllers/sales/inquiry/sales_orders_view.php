@@ -21,7 +21,7 @@
     $security = SA_SALESAREA;
   }
   // then check session value
-  JS::openWindow(900, 600);
+  JS::openWindow(950, 600);
   if (AJAX_REFERRER && !empty($_POST['q'])) {
     $searchArray = explode(' ', $_POST['q']);
   }

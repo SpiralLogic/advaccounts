@@ -1424,7 +1424,7 @@ $(function () {
     }, 'html');
     return false;
   });
-  Adv.o.tabs.tabs1 = $('#tabs1').tabs({
+  Adv.o.tabs[1] = $('#tabs1').tabs({
     select:function (event, ui) {
       var $tab = $(ui.tab);
 
@@ -1444,13 +1444,13 @@ $(function () {
       return true;
     }
   }).toggleClass('tabs');
-  Adv.o.tabs.tabs1.bind('tabsselect', function (e, o) {
+  Adv.o.tabs[1].bind('tabsselect', function (e, o) {
     if (o.index != 3) {
       return;
     }
     return false;
   });
-  Adv.o.tabs.tabs0 = $('#tabs0').tabs().toggleClass('tabs');
+  Adv.o.tabs[0] = $('#tabs0').tabs().toggleClass('tabs');
   Adv.postcode.add('3', 'accounts[city]', 'accounts[state]', 'accounts[postcode]');
   Adv.postcode.add('1', 'branch[city]', 'branch[state]', 'branch[postcode]');
   Adv.hoverWindow.init(900, 500);

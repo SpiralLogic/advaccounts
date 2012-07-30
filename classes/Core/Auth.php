@@ -66,6 +66,24 @@
       return $result;
     }
     /**
+     * @return bool
+     */
+    public function isBruteForce() {
+      $query = \DB::query('select COUNT(IP) FROM user_login_log WHERE success=0 AND timestamp>NOW() - INTERVAL 1 HOUR AND IP=' . \DB::escape(\Users::get_ip()));
+      return (\DB::fetch($query)[0] > Config::get('max_login_attempts', 50));
+    }
+    /**
+     * @static
+     *
+     * @param $password
+     * @param $user_id
+     *
+     * @return string
+     */
+    public function makeHash($password, $user_id) {
+      return crypt($password, $user_id);
+    }
+    /**
      * @static
      *
      * @param      $password
@@ -130,23 +148,5 @@
         }
       }
       return $returns;
-    }
-    /**
-     * @return bool
-     */
-    public function isBruteForce() {
-      $query = \DB::query('select COUNT(IP) FROM user_login_log WHERE success=0 AND timestamp>NOW() - INTERVAL 1 HOUR AND IP=' . \DB::escape(\Users::get_ip()));
-      return (\DB::fetch($query)[0] > Config::get('max_login_attempts', 50));
-    }
-    /**
-     * @static
-     *
-     * @param $password
-     * @param $user_id
-     *
-     * @return string
-     */
-    public function makeHash($password, $user_id) {
-      return crypt($password, $user_id);
     }
   }

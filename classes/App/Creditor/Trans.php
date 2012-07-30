@@ -83,8 +83,8 @@
     public $gl_codes_counter = 0;
     public function __construct() {
       /*Constructor function initialises a new Supplier Transaction object */
-      $this->grn_items = array();
-      $this->gl_codes  = array();
+      $this->grn_items = [];
+      $this->gl_codes  = [];
     }
     /**
      * @param      $grn_item_id
@@ -144,8 +144,8 @@
     public function clear_items() {
       unset($this->grn_items, $this->gl_codes);
       $this->ov_amount = $this->ov_discount = $this->creditor_id = $this->tax_correction = $this->total_correction = 0;
-      $this->grn_items = array();
-      $this->gl_codes  = array();
+      $this->grn_items = [];
+      $this->gl_codes  = [];
     }
     /**
      * @param null $tax_group_id
@@ -155,8 +155,8 @@
      * @return array|null
      */
     public function get_taxes($tax_group_id = null, $shipping_cost = 0, $gl_codes = true) {
-      $items  = array();
-      $prices = array();
+      $items  = [];
+      $prices = [];
       if ($tax_group_id == null) {
         $tax_group_id = $this->tax_group_id;
       }

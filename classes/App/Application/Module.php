@@ -34,8 +34,8 @@
 
       $this->name              = $name;
       $this->icon              = $icon;
-      $this->leftAppFunctions  = array();
-      $this->rightAppFunctions = array();
+      $this->leftAppFunctions  = [];
+      $this->rightAppFunctions = [];
     }
     /**
      * @param        $label

@@ -79,7 +79,7 @@
                 vertical-align: middle;
             }
             </style></head><body>';
-    $csvitems = array();
+    $csvitems = [];
     $file     = fopen($file, 'r');
     $result   = DB::select('s.stock_id', 's.description')->from('stock_master s');
     while (($item = fgetcsv($file, 1000, ',')) !== false) {

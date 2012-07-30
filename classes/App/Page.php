@@ -55,7 +55,7 @@
     /**
      * @var array
      */
-    protected $css = array();
+    protected $css = [];
     /**
      * @var bool
      */
@@ -254,7 +254,7 @@
      * @return mixed
      */
     protected function footer() {
-      $validate = array();
+      $validate = [];
       $footer   = $this->menu_footer();
       $footer->set('beforescripts', "_focus = '" . Input::post('_focus') . "';_validate = " . $this->Ajax->php2js($validate) . ";");
       $this->User->_add_js_data();

@@ -20,7 +20,7 @@
     {
       global $installed_extensions;
       $ext               = $installed_extensions[$id];
-      $security_sections = $security_areas = array();
+      $security_sections = $security_areas = [];
       if (isset($ext['acc_file'])) {
         /** @noinspection PhpIncludeInspection */
         include(DOCROOT . ($ext['type'] == 'plugin' ? 'classes/Modules/' : DS) . $ext['path'] . DS . $ext['acc_file']);
@@ -43,7 +43,7 @@
         $extsections = $accext[1];
         $extareas    = $accext[0];
         $extcode     = $extid << 16;
-        $trans       = array();
+        $trans       = [];
         foreach ($extsections as $code => $name) {
           $trans[$code] = $scode << 8;
           // reassign section codes
@@ -77,7 +77,7 @@
      */
     public static function view($name, $value = null, $submit_on_change = false)
     {
-      $items = array();
+      $items = [];
       foreach (Config::getAll('db') as $comp) {
         $items[] = sprintf(_("Activated for '%s'"), $comp['name']);
       }

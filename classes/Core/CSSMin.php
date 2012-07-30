@@ -11,7 +11,7 @@
       = array(
         'embed'           => true, 'embedMaxSize'    => 5120, 'embedExceptions' => array('htc')
       );
-    protected $mimeTypes = array();
+    protected $mimeTypes = [];
     protected $filedir = '.';
     protected $source;
     /**
@@ -25,7 +25,7 @@
      * @internal param $count
      * @return \CSSMin
      */
-    public function __construct($source, $options = array()) {
+    public function __construct($source, $options = []) {
       if (isset($options['filedir'])) {
         $this->filedir = $options['filedir'];
       }

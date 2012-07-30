@@ -68,11 +68,11 @@
     /**
      * @var \Debtor_Branch[]
      */
-    public $branches = array();
+    public $branches = [];
     /**
      * @var \ADV\App\Contact\Contact[]
      */
-    public $contacts = array();
+    public $contacts = [];
     /**
      * @var \Debtor_Account
      */
@@ -173,7 +173,7 @@
      * @return array|bool
      */
     public function getEmailAddresses() {
-      $emails = array();
+      $emails = [];
       if (!empty($this->accounts->email)) {
         $emails['Accounts'][$this->accounts->id] = array('Accounts', $this->accounts->email);
       }
@@ -195,7 +195,7 @@
      */
     public function getTransactions() {
       if ($this->id == 0) {
-        return array();
+        return [];
       }
       $sql
                = "SELECT debtor_trans.*, sales_orders.customer_ref,
@@ -210,7 +210,7 @@
                         debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0
                          ORDER BY debtor_trans.branch_id, debtor_trans.tran_date";
       $result  = Forms::$DB->_query($sql);
-      $results = array();
+      $results = [];
       while ($row = Forms::$DB->_fetchAssoc($result)) {
         $results[] = $row;
       }
@@ -405,7 +405,7 @@
      *
      * @return array|bool
      */
-    protected function _read($id = null, $extra = array()) {
+    protected function _read($id = null, $extra = []) {
       if (!parent::_read($id)) {
         return $this->_status->get();
       }
@@ -456,7 +456,7 @@ JS;
      *
      * @return void
      */
-    public static function addSearchBox($id, $options = array()) {
+    public static function addSearchBox($id, $options = []) {
       echo UI::searchLine($id, '/contacts/search.php', $options);
     }
     /**
@@ -467,7 +467,7 @@ JS;
      * @return array
      */
     public static function search($terms) {
-      $data  = array();
+      $data  = [];
       $terms = preg_replace("/[^a-zA-Z 0-9]+/", " ", $terms);
       $sql   = Forms::$DB
         ->_select('debtor_id as id', 'name as label', 'name as value', "IF(name LIKE " . Forms::$DB->_quote(trim($terms) . '%') . ",0,5) as weight")
@@ -492,7 +492,7 @@ JS;
      *
      * @return array|string
      */
-    public static function searchOrder($term, $options = array()) {
+    public static function searchOrder($term, $options = []) {
       $defaults = array('inactive' => false, 'selected' => '');
       $o        = array_merge($defaults, $options);
       $term     = explode(' ', $term);
@@ -696,7 +696,7 @@ JS;
      *
      * @return void
      */
-    public static function newselect($value = null, $options = array()) {
+    public static function newselect($value = null, $options = []) {
 
       $o = [
         'row'        => true, //

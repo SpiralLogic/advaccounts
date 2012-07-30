@@ -16,7 +16,7 @@
     /**
      * @var array
      */
-    protected $buttons = array();
+    protected $buttons = [];
     /**
      * @var bool
      */
@@ -28,7 +28,7 @@
     /**
      * @var array
      */
-    protected $events = array();
+    protected $events = [];
     /**
      * @var bool
      */
@@ -36,7 +36,7 @@
     /**
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
     /**
      * @var bool
      */
@@ -47,7 +47,7 @@
      * @param bool  $contents
      * @param array $options
      */
-    public function __construct($title, $name = false, $contents = false, $options = array()) {
+    public function __construct($title, $name = false, $contents = false, $options = []) {
       $this->name  = $name;
       $this->title = ($title) ? $title : "Message Box";
       if ($contents) {
@@ -103,7 +103,7 @@
     /**
      * @param array $buttons
      */
-    public function addButtons($buttons = array()) {
+    public function addButtons($buttons = []) {
       foreach ($buttons as $button => $action) {
         $this->addButton($button, $action);
       }
@@ -118,7 +118,7 @@
     /**
      * @param array $options
      */
-    public function setOptions($options = array()) {
+    public function setOptions($options = []) {
       if (is_array($options) && count($options) > 0) {
         $this->options = array_merge($this->options, $options);
       }
