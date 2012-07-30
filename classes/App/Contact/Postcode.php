@@ -26,7 +26,10 @@
     {
       static::$count++;
       $this->setFromArray($options);
-    }
+
+      if (static::$count == 1) {
+        static::initjs();
+      }    }
     /**
      * @static
      * @internal param $city
@@ -83,9 +86,6 @@
      */
     public function registerJS()
     {
-      if (static::$count == 1) {
-        static::initjs();
-      }
       $set      = static::$count;
       $city     = $this->city[0];
       $state    = $this->state[0];
@@ -150,7 +150,7 @@ JS;
 						 }())
 						})
 JS;
-        $jsmin = new JSMin($js);
+        $jsmin = new \ADV\Core\JSMin($js);
         $js    = $jsmin->minify();
         Cache::set('js.postcode', $js);
       }

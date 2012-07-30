@@ -360,7 +360,7 @@ $(function ()
                                                          }),
                  ContactLog:   $("#contactLog").hide(),
                });
-    Adv.o.tabs[1]=        $("#tabs1").tabs({ select:function (event, ui)
+    Adv.o.tabs[0]=$("#tabs0");Adv.o.tabs[1]=        $("#tabs1").tabs({ select:function (event, ui)
     {
       var url = $.data(ui.tab, 'load.tabs');
       if (url) {
@@ -431,13 +431,13 @@ $(function ()
                                    });
     $("#messageLog").prop('disabled', true).css('background', 'white');
     $("[name='messageLog']").keypress(function (event)
-                                      {
+                                        {
                                         return false;
                                       });
-    Adv.o.tabs[1].delegate("input, textarea,select", "change keyup", function ()
+    Adv.o.tabs[0].delegate("input, textarea,select", "change keyup", function ()
     {
       var $this = $(this), $thisname = $this.attr('name'), buttontext;
-      if ($thisname === 'messageLog' || $thisname === 'branchList' || Adv.o.tabs[1].tabs('option', 'selected') == 4) {
+      if ($thisname === 'messageLog' || $thisname === 'branchList' || Adv.o.tabs[0].tabs('option', 'selected') == 4) {
         return;
       }
       Adv.Forms.stateModified($this);

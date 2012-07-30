@@ -694,7 +694,7 @@
      * @return float
      */
     public function get_shipping_tax() {
-      $tax_items = Tax_Groups::for_shipping_as_[];
+      $tax_items = Tax_Groups::for_shipping_as_array();
       $tax_rate  = 0;
       if ($tax_items != null) {
         foreach ($tax_items as $item_tax) {

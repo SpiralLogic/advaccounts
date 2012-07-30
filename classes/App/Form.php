@@ -12,9 +12,11 @@
    * @param string $action
    * @param string $name
    */
-  class Form
+  class Form implements \ArrayAccess
   {
-
+    protected $fields = [];
+    protected $start;
+    protected $end;
     /**
      * @static
      *
@@ -22,17 +24,21 @@
      * @param string $action
      * @param string $name
      */
-    public function start($multi = false, $action = "", $name = "") {
-      $multi = ($multi) ? "enctype='multipart/form-data'" : '';
-      $name  = $name ? "name='$name'" : '';
-      echo "<form $multi method='post' action='$action'  id='$name'>";
+    public function start($name = '', $action = '', $multi = null, $input_attr=[]) {
+      $attr['enctype'] = $multi ? 'multipart/form-data' : null;
+      $attr['name']    = $name;
+      $attr['method']  = 'post';
+      $attr['action']  = $action;
+      array_merge($attr, $input_attr);
+      $this->start = HTML::setReturn(true)->form($name, $attr)->setReturn(false);
+      return $this->start;
     }
     /**
      * @param int $breaks
      */
-    public function end($breaks = 0) {
-      $focus = e(Input::post('_focus'));
-      echo "<input type='hidden' name='_focus' value='$focus'></form>";
+    public function end() {
+      $this->end = HTML::setReturn(true)->input('_focus', ['name'=> '_focus', 'type'=> 'hidden', 'value'=> e(Input::post('_focus'))])->form->setReturn(false);
+      return $this->end;
     }
     /**
      * Seek for _POST variable with $prefix.
@@ -171,17 +177,13 @@
         $selected_id = array($first_id);
       }
       $_POST[$name] = $multi ? $selected_id : $selected_id[0];
-      $selector     = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' :
-        '') . "$disabled id='$name' name='$name" . ($multi ? '[]' :
-        '') . "' class='combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
+      $selector     = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' : '') . "$disabled id='$name' name='$name" . ($multi ? '[]' : '') . "' class='combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
       Ajax::addUpdate($name, "_{$name}_sel", $selector);
       $selector = "<div id='_{$name}_sel' class='combodiv'>" . $selector . "</div>\n";
       if ($select_submit != false) { // if submit on change is used - add select button
-        $_select_button
-          = "<input %s type='submit' class='combo_select' style='border:0;background:url
+        $_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url
             (/themes/%s/images/button_ok.png) no-repeat;%s' data-aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
-        $selector .= sprintf($_select_button, $disabled, User::theme(), (User::fallback() ? '' :
-          'display:none;'), '_' . $name . '_update') . "\n";
+        $selector .= sprintf($_select_button, $disabled, User::theme(), (User::fallback() ? '' : 'display:none;'), '_' . $name . '_update') . "\n";
       }
       JS::defaultFocus($name);
       return $selector;
@@ -228,7 +230,7 @@
               }
               break;
             case 'default':
-              $atype=true;
+              $atype = true;
               if ($icon === false) {
                 $icon = ICON_SUBMIT;
               }
@@ -243,10 +245,7 @@
       }
       $caption    = ($name == '_action') ? $title : $value;
       $id         = ($name == '_action') ? '' : "id=\"$name\"";
-      $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') :
-        $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\"  value=\"$value\"" . ($title ? " title='$title'" :
-        '') . ">" . ($icon ? "<img alt='$value' src='/themes/" . User::theme() . "/images/$icon' height='12'>" :
-        '') . "<span>$caption</span>" . "</button>\n";
+      $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') : $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\"  value=\"$value\"" . ($title ? " title='$title'" : '') . ">" . ($icon ? "<img alt='$value' src='/themes/" . User::theme() . "/images/$icon' height='12'>" : '') . "<span>$caption</span>" . "</button>\n";
       if ($echo) {
         echo $submit_str;
       } else {
@@ -303,8 +302,8 @@
      * @return string
      */
     public function setIcon($icon, $title = '') {
-      $path = THEME_PATH. User::theme() ;
-      $title =$title ? " title='$title'" :'';
+      $path  = THEME_PATH . User::theme();
+      $title = $title ? " title='$title'" : '';
       return "<img src='$path/images/$icon' style='width:12px; height=12px' $title />";
     }
     /**
@@ -331,12 +330,9 @@
         {
           $icon = ICON_DELETE;
         }
-        return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='1'" . ($title ?
-          " title='$title'" : " title='$value'") . ($aspect ? " data-aspect='$aspect'" :
-          '') . $rel . " />" . Forms::setIcon($icon) . "</button>\n";
+        return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='1'" . ($title ? " title='$title'" : " title='$value'") . ($aspect ? " data-aspect='$aspect'" : '') . $rel . " />" . Forms::setIcon($icon) . "</button>\n";
       } else {
-        return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='$value'" . ($title ?
-          " title='$title'" : '') . ($aspect ? " data-aspect='$aspect'" : '') . $rel . " >$caption</button>\n";
+        return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='$value'" . ($title ? " title='$title'" : '') . ($aspect ? " data-aspect='$aspect'" : '') . $rel . " >$caption</button>\n";
       }
     }
     /**
@@ -372,9 +368,7 @@
       if ($value === null) {
         $value = Input::post($name, null, 0);
       }
-      $str .= "<input" . ($value == 1 ? ' checked' :
-        '') . " type='checkbox' name='$name' id='$name' value='1'" . ($submit_on_change ? " onclick='$submit_on_change'" :
-        '') . ($title ? " title='$title'" : '') . " >\n";
+      $str .= "<input" . ($value == 1 ? ' checked' : '') . " type='checkbox' name='$name' id='$name' value='1'" . ($submit_on_change ? " onclick='$submit_on_change'" : '') . ($title ? " title='$title'" : '') . " >\n";
       Ajax::addUpdate($name, $name, $value);
       return $str;
     }
@@ -401,19 +395,37 @@
       echo "</tr>\n";
     }
     /**
-     * @param        $label
-     * @param        $name
-     * @param        $value
-     * @param bool   $size
-     * @param        $max
-     * @param null   $title
-     * @param string $params
-     * @param string $post_label
+     * @param            $label
+     * @param            $name
+     * @param null       $value
+     * @param int        $max
+     * @param int|string $size
+     * @param string     $title
+     * @param array      $input_attr
      */
-    public function  textRow($label, $name, $value, $size = null, $max, $title = null, $params = "", $post_label = "") {
-      echo "<tr><td class='label'><label for='$name'>$label</label></td>";
-      Forms::textCells(null, $name, $value, $size, $max, $title, $params, $post_label);
-      echo "</tr>\n";
+    public function text($label, $name, $value = null, $max = null, $size = null, $title = null, $input_attr = []) {
+      $content = '';
+      if ($label) {
+        $content             = "<label for='$name'><span>$label</span>";
+        $attr['placeholder'] = $label;
+      }
+      if ($value === null) {
+        $attr['value'] = Input::post($name);
+      }
+      if ($size && is_numeric($size)) {
+        $attr['size'] = $size;
+      } elseif (is_string($size)) {
+        $attr['class'] = $size;
+      }
+      $attr['title']     = $title;
+      $attr['maxlength'] = $max;
+      $attr['type']      = 'text';
+      $attr['name']      = $name;
+      array_merge($attr, $input_attr);
+      $attr['id']= str_replace(['[',']'],['.',''],$name);
+      $content .= HTML::setReturn(true)->input($name, $attr)->setReturn(false);
+      Ajax::addUpdate($name, $name, $value);
+      $this->fields[$attr['id']] = $content . '</label>';
     }
     /**
      * @param        $label
@@ -679,8 +691,8 @@
       $items['0'] = strlen($name_no) ? $name_no : _("No");
       $items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
       return Forms::arraySelect($name, $selected_id, $items, array(
-        'select_submit' => $submit_on_change, 'async' => false
-      )); // FIX?
+                                                                  'select_submit' => $submit_on_change, 'async' => false
+                                                             )); // FIX?
     }
     /**
      * @param        $label
@@ -717,8 +729,8 @@
         $items[$i] = "$i";
       }
       return Forms::arraySelect($name, $selected, $items, array(
-        'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
-      ));
+                                                               'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
+                                                          ));
     }
     /**
      * @param      $label
@@ -815,8 +827,7 @@
      * @return string
      */
     public function fiscalYearFormat($row) {
-      return Dates::sqlToDate($row[1]) . "&nbsp;-&nbsp;" . Dates::sqlToDate($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') :
-        _('Active')) . "</option>\n";
+      return Dates::sqlToDate($row[1]) . "&nbsp;-&nbsp;" . Dates::sqlToDate($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') : _('Active')) . "</option>\n";
     }
     /**
      * @param $row
@@ -977,8 +988,7 @@
       if ($check && (Input::post($name) != Dates::today())) {
         $aspect .= ' style="color:#FF0000"';
       }
-      echo "<input id='$name' type='text' name='$name' class='$class' $aspect  maxlength='10' value=\"" . $_POST[$name] . "\"" . ($title ?
-        " title='$title'" : '') . " > $post_label";
+      echo "<input id='$name' type='text' name='$name' class='$class' $aspect  maxlength='10' value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" : '') . " > $post_label";
       echo "</td>\n";
       Ajax::addUpdate($name, $name, $_POST[$name]);
     }
@@ -1006,8 +1016,7 @@
       } elseif (is_string($size)) {
         $size = " class='$size'";
       }
-      echo "<input $inparams type=\"text\" name=\"$name\" id=\"$name\" $size maxlength=\"$max\" value=\"$value\"" . ($title ?
-        " title='$title'" : '') . ">";
+      echo "<input $inparams type=\"text\" name=\"$name\" id=\"$name\" $size maxlength=\"$max\" value=\"$value\"" . ($title ? " title='$title'" : '') . ">";
       if ($post_label != "") {
         echo " " . $post_label;
       }
@@ -1050,8 +1059,7 @@
         $size = " class='$size'";
       }
       $class = $submit_on_change ? 'class="searchbox"' : '';
-      echo "<input $class type=\"text\" name=\"$name\" id=\"$name\" $size maxlength=\"$max\" value=\"" . $_POST[$name] . "\"" . ($title ?
-        " title='$title'" : '') . " >";
+      echo "<input $class type=\"text\" name=\"$name\" id=\"$name\" $size maxlength=\"$max\" value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" : '') . " >";
       if ($post_label) {
         echo " " . $post_label;
       }
@@ -1243,22 +1251,27 @@
      * @param null   $title
      * @param string $params
      */
-    public function  textareaCells($label, $name, $value, $cols, $rows, $title = null, $params = "") {
-      if ($label != null) {
-        echo "<td $params>$label</td>\n";
-        $params = '';
+    public function  textarea($label, $name, $value, $cols, $rows, $title = null, $input_attr = []) {
+      $content = '';
+      if ($label) {
+        $content = "<label for='$name'><span>$label</span>";
       }
       if ($value === null) {
-        $value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
+        $attr['value'] = Input::post($name, null, '');
       }
       if ($cols && is_numeric($cols)) {
-        $cols = "cols='" . ($cols + 2) . "'";
+        $attr['cols'] = $cols + 2;
       } elseif (is_string($cols)) {
-        $cols = "class='$cols'";
+        $attr['class'] = $cols;
       }
-      echo "<td $params><textarea id='$name' name='$name' $cols rows='$rows'" . ($title ? " title='$title'" :
-        '') . ">$value</textarea></td>\n";
+      $attr['name']  = $name;
+      $attr['rows']  = $rows;
+      $attr['title'] = $title;
+      array_merge($attr, $input_attr);
+      $attr['id']= str_replace(['[',']'],['.',''],$name);
+      $content .= HTML::setReturn(true)->textarea($name, $value, $attr, false)->setReturn(false);
       Ajax::addUpdate($name, $name, $value);
+      $this->fields[$attr['id']] = $content.'</label>';
     }
     /**
      * @param      $label
@@ -1273,5 +1286,67 @@
         $dec = User::qty_dec();
       }
       Forms::amountCellsEx($label, $name, null, 15, $init, $params, $post_label, $dec, null, null, true);
+    }
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Whether a offset exists
+     * @link http://php.net/manual/en/arrayaccess.offsetexists.php
+     *
+     * @param mixed $offset <p>
+     *                      An offset to check for.
+     * </p>
+     *
+     * @return boolean true on success or false on failure.
+     * </p>
+     * <p>
+     *       The return value will be casted to boolean if non-boolean was returned.
+     */
+    public function offsetExists($offset) {
+      return array_key_exists($offset, $this->fields);
+    }
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Offset to retrieve
+     * @link http://php.net/manual/en/arrayaccess.offsetget.php
+     *
+     * @param mixed $offset <p>
+     *                      The offset to retrieve.
+     * </p>
+     *
+     * @return mixed Can return all value types.
+     */
+    public function offsetGet($offset) {
+      return $this->fields[$offset];
+    }
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Offset to set
+     * @link http://php.net/manual/en/arrayaccess.offsetset.php
+     *
+     * @param mixed $offset <p>
+     *                      The offset to assign the value to.
+     * </p>
+     * @param mixed $value  <p>
+     *                      The value to set.
+     * </p>
+     *
+     * @return void
+     */
+    public function offsetSet($offset, $value) {
+      $this->fields[$offset] = $value;
+    }
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Offset to unset
+     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
+     *
+     * @param mixed $offset <p>
+     *                      The offset to unset.
+     * </p>
+     *
+     * @return void
+     */
+    public function offsetUnset($offset) {
+      unset($this->fields[$offset]);
     }
   }

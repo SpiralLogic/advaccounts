@@ -191,7 +191,7 @@
      * @static
      * @return array
      */
-    public static function for_shipping_as_[]
+    public static function for_shipping_as_array()
     {
       $ret_tax_array   = [];
       $tax_group_items = static::get_shipping_items();

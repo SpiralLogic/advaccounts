@@ -225,7 +225,7 @@
       }
       // add the shipping taxes, only if non-zero, and only if tax group taxes shipping
       if ($shipping_cost != 0) {
-        $item_taxes = Tax_Groups::for_shipping_as_[];
+        $item_taxes = Tax_Groups::for_shipping_as_array();
         if ($item_taxes != null) {
           if ($tax_included == 1) {
             $tax_rate = 0;

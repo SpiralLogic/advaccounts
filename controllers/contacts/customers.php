@@ -46,94 +46,53 @@
       $currentContact = $this->customer->contacts[$this->customer->defaultContact];
       $currentBranch  = $this->customer->branches[$this->customer->defaultBranch];
       if (isset($_POST['delete'])) {
-        $this->customer->delete();
-        $status = $this->customer->getStatus();
-        Event::notice($status['message']);
+        $this->delete();
       }
       /** @noinspection PhpUndefinedMethodInspection */
       JS::autocomplete('customer', 'Company.fetch');
-      $view          = new View('contacts/customers');
-      $view['frame'] = $this->Input->_get('frame') || $this->Input->_get('id');
-      $view->render();
-      Forms::start();
+      $form = new Form();
+      echo $form->start();
       $menu = new MenuUI();
       $menu->startTab('Details', 'Customer Details', '#', 'text-align:center');
-      HTML::div('companyIDs');
-      HTML::table(array("class" => "marginauto width80 bold"))->tr(true)->td(true);
-      HTML::label(array(
-                       'for' => 'name', 'content' => 'Customer name:'
-                  ), false);
-      HTML::input('name', array(
-                               'value' => $this->customer->name, 'name' => 'name', 'class'=> 'med'
-                          ));
-      HTML::td()->td(array(
-                          'content' => _("Customer ID: "),
-                     ), false)->td(true);
-      HTML::input('id', array(
-                             'value' => $this->customer->id, 'name' => 'id', 'class'=> 'small', 'maxlength' => '7'
-                        ));
-      HTML::td()->tr->table->div;
-      Table::startOuter('tablestyle2');
-      Table::section(1);
-      Table::sectionTitle(_("Shipping Details"), 2);
-      /** @noinspection PhpUndefinedMethodInspection */
-      HTML::tr(true)->td('branchSelect', array(
-                                              'colspan' => 2, 'class' => "center"
-                                         ));
-      UI::select('branchList', array_map(function($v) {
+      $view          = new View('contacts/customers');
+      $view['frame'] = $this->Input->_get('frame') || $this->Input->_get('id');
+      $view->set('branchlist', UI::select('branchList', array_map(function($v) {
         return $v->br_name;
-      }, $this->customer->branches), array('class'=> 'med', 'name' => 'branchList'));
-      UI::button('addBranch', 'Add new address', array(
-                                                      'class' => 'invis', 'name' => 'addBranch'
-                                                 ));
-      HTML::td()->tr;
-      Forms::textRow(_("Contact:"), 'branch[contact_name]', $currentBranch->contact_name, null, 40);
-      //Forms::hidden('br_contact_name', $this->customer->contact_name);
-      Forms::textRow(_("Phone Number:"), 'branch[phone]', $currentBranch->phone, 35, 30);
-      Forms::textRow(_("2nd Phone Number:"), 'branch[phone2]', $currentBranch->phone2, 35, 30);
-      Forms::textRow(_("Fax Number:"), 'branch[fax]', $currentBranch->fax, 35, 30);
-      Forms::emailRow(_("Email:"), 'branch[email]', $currentBranch->email, 35, 55);
-      Forms::textareaRow(_("Street:"), 'branch[br_address]', $currentBranch->br_address, 35, 2);
+      }, $this->customer->branches), array('class'=> 'med', 'name' => 'branchList'), true));
+      $form->text('Contact:', 'branch[contact_name]', $currentBranch->contact_name, 40);
+      $form->text('Phone Number:', 'branch[phone]', $currentBranch->phone, 35);
+      $form->text("2nd Phone Number:", 'branch[phone2]', $currentBranch->phone2, 35, 30);
+      $form->text("Fax Number:", 'branch[fax]', $currentBranch->fax, 35, 30);
+      $form->text("Email:", 'branch[email]', $currentBranch->email, 35, 55);
+      $form->textarea('Street:', 'branch[br_address]', $currentBranch->br_address, 35, 2);
       $branch_postcode = new Contact_Postcode(array(
-                                                   'city'     => array('branch[city]', $currentBranch->city),
-                                                   'state'    => array('branch[state]', $currentBranch->state),
-                                                   'postcode' => array('branch[postcode]', $currentBranch->postcode)
+                                                   'city'     => ['branch[city]', $currentBranch->city], //
+                                                   'state'    => ['branch[state]', $currentBranch->state], //
+                                                   'postcode' => ['branch[postcode]', $currentBranch->postcode]
                                               ));
-      $branch_postcode->render();
-      Table::section(2);
-      Table::sectionTitle(_("Accounts Details"), 2);
-      /** @noinspection PhpUndefinedMethodInspection */
-      HTML::tr(true)->td(array(
-                              'class' => "center", 'colspan' => 2
-                         ));
-      UI::button('useShipAddress', _("Use shipping details"), array('name' => 'useShipAddress'));
-      HTML::td(false)->_tr();
-      Forms::textRow(_("Accounts Contact:"), 'accounts[contact_name]', $this->customer->accounts->contact_name, 35, 40);
-      Forms::textRow(_("Phone Number:"), 'accounts[phone]', $this->customer->accounts->phone, 35, 30);
-      Forms::textRow(_("Secondary Phone Number:"), 'accounts[phone2]', $this->customer->accounts->phone2, 35, 30);
-      Forms::textRow(_("Fax Number:"), 'accounts[fax]', $this->customer->accounts->fax, 35, 30);
-      Forms::emailRow(_("E-mail:"), 'accounts[email]', $this->customer->accounts->email, 35, 55);
-      Forms::textareaRow(_("Street:"), 'accounts[br_address]', $this->customer->accounts->br_address, 35, 2);
+      $view->set('branch_postcode', $branch_postcode);
+      $form->text('Accounts Contact:', 'accounts[contact_name]', $this->customer->accounts->contact_name, 35, 40);
+      $form->text('Phone Number:', 'accounts[phone]', $this->customer->accounts->phone, 35, 30);
+      $form->text('Secondary Phone Number:', 'accounts[phone2]', $this->customer->accounts->phone2, 35, 30);
+      $form->text('Fax Number:', 'accounts[fax]', $this->customer->accounts->fax, 35, 30);
+      $form->text('E-mail:', 'accounts[email]', $this->customer->accounts->email, 35, 55);
+      $form->text('Street:', 'accounts[br_address]', $this->customer->accounts->br_address, 35, 2);
       $accounts_postcode = new Contact_Postcode(array(
-                                                     'city'     => array('accounts[city]', $this->customer->accounts->city),
-                                                     'state'    => array('accounts[state]', $this->customer->accounts->state),
-                                                     'postcode' => array(
-                                                       'accounts[postcode]', $this->customer->accounts->postcode
-                                                     )
+                                                     'city'     => array('accounts[city]', $this->customer->accounts->city), 'state'    => array('accounts[state]', $this->customer->accounts->state), 'postcode' => array(
+          'accounts[postcode]', $this->customer->accounts->postcode
+        )
                                                 ));
-      $accounts_postcode->render();
-      Table::endOuter(1);
+      $view->set('accounts_postcode', $accounts_postcode);
+      $view->set('form', $form);
+      $view->render();
       $menu->endTab()->startTab('Accounts', 'Accounts');
       Forms::hidden('accounts_id', $this->customer->accounts->accounts_id);
       Table::startOuter('tablestyle2');
       Table::section(1);
       Table::sectionTitle(_("Accounts Details:"), 2);
-      Forms::percentRow(_("Discount Percent:"), 'discount', $this->customer->discount, (User::i()
-        ->hasAccess(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
-      Forms::percentRow(_("Prompt Payment Discount Percent:"), 'payment_discount', $this->customer->payment_discount, (User::i()
-        ->hasAccess(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
-      Forms::AmountRow(_("Credit Limit:"), 'credit_limit', $this->customer->credit_limit, null, null, 0, (User::i()
-        ->hasAccess(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
+      Forms::percentRow(_("Discount Percent:"), 'discount', $this->customer->discount, (User::i()->hasAccess(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
+      Forms::percentRow(_("Prompt Payment Discount Percent:"), 'payment_discount', $this->customer->payment_discount, (User::i()->hasAccess(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
+      Forms::AmountRow(_("Credit Limit:"), 'credit_limit', $this->customer->credit_limit, null, null, 0, (User::i()->hasAccess(SA_CUSTOMER_CREDIT)) ? "" : " disabled");
       Forms::textRow(_("GSTNo:"), 'tax_id', $this->customer->tax_id, null, 40);
       Sales_Type::row(_("Sales Type/Price List:"), 'sales_type', $this->customer->sales_type);
       Forms::recordStatusListRow(_("Customer status:"), 'inactive');
@@ -207,10 +166,7 @@
       Table::end();
       HTML::_div()->div(array('class' => 'center width50'));
       UI::button('btnConfirm', ($this->customer->id) ? 'Update Customer' : 'New Customer', array(
-                                                                                                'name'  => 'submit',
-                                                                                                'type'  => 'submit',
-                                                                                                'class' => 'ui-helper-hidden',
-                                                                                                'style' => 'margin:10px;'
+                                                                                                'name'  => 'submit', 'type'  => 'submit', 'class' => 'ui-helper-hidden', 'style' => 'margin:10px;'
                                                                                            ));
       UI::button('btnCancel', 'Cancel', array(
                                              'name' => 'cancel', 'type' => 'submit', 'style' => 'margin:10px;'
@@ -232,6 +188,11 @@
       }
       HTML::_div();
       Page::end(true);
+    }
+    protected function delete() {
+      $this->customer->delete();
+      $status = $this->customer->getStatus();
+      Event::notice($status['message']);
     }
     protected function after() {
       // TODO: Implement after() method.

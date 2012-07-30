@@ -149,10 +149,10 @@ JS;
      * @param       $page
      */
     public function _tabs($id, $options = [], $page = null) {
-      $defaults = ['noajax'=>false,'haslinks'=>false];
-      $options = array_merge($defaults,$options);
-      $noajax   = $options['noajax'] ?'true':'false';
-      $haslinks = $options['haslinks']?'true':'false';
+      $defaults = ['noajax'=> false, 'haslinks'=> false];
+      $options  = array_merge($defaults, $options);
+      $noajax   = $options['noajax'] ? 'true' : 'false';
+      $haslinks = $options['haslinks'] ? 'true' : 'false';
       $this->_onload("Adv.tabmenu.init('$id',$noajax,$haslinks,$page)");
     }
     /**
@@ -367,6 +367,26 @@ JS;
     /**
      * @static
      *
+     * @param bool $message
+     */
+    public function _onUnload($message = false) {
+      if ($message) {
+        $this->_addLiveEvent(':input', 'change', "Adv.Events.onLeave('$message')", 'wrapper', true);
+        $this->_addLiveEvent('form', 'submit', "Adv.Events.onLeave()", 'wrapper', true);
+      }
+    }
+    /**
+     * @static
+     *
+     * @param $url
+     */
+    public function _redirect($url) {
+      $data['status'] = array('status' => 'redirect', 'message' => $url);
+      $this->_renderJSON($data);
+    }
+    /**
+     * @static
+     *
      * @param array|bool $js
      * @param            $var
      */
@@ -397,26 +417,6 @@ JS;
         isset($var[$dir]) or $var[$dir] = [];
         $var[$dir][$file] = $file;
       }
-    }
-    /**
-     * @static
-     *
-     * @param bool $message
-     */
-    public function _onUnload($message = false) {
-      if ($message) {
-        $this->_addLiveEvent(':input', 'change', "Adv.Events.onLeave('$message')", 'wrapper', true);
-        $this->_addLiveEvent('form', 'submit', "Adv.Events.onLeave()", 'wrapper', true);
-      }
-    }
-    /**
-     * @static
-     *
-     * @param $url
-     */
-    public function _redirect($url) {
-      $data['status'] = array('status' => 'redirect', 'message' => $url);
-      $this->_renderJSON($data);
     }
   }
 

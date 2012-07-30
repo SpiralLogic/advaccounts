@@ -48,7 +48,7 @@
      *
      * @return \ADV\Core\HTML|null
      */
-    public static function select($id = false, $options = [], $params = []) {
+    public static function select($id = false, $options = [], $params = [], $return = false) {
       HTML::setReturn(true)->select($id, $params);
       foreach ((array) $options as $label => $option) {
         if (is_array($option)) {
@@ -61,7 +61,11 @@
           HTML::option(null, $option, array('value' => $label), false);
         }
       }
-      echo HTML::_select()->setReturn(false);
+      $select = HTML::_select()->setReturn(false);
+      if ($return) {
+        return $select;
+      }
+      echo $select;
       return static::$_instance;
     }
     /***
@@ -198,11 +202,7 @@
         HTML::label(null, $o['label'], array('for' => $id), false);
       }
       HTML::input($id, array(
-                            'value'      => $o['selected'],
-                            'placeholder'=> $o['label'],
-                            'name'       => $id,
-                            'class'      => $o['class'],
-                            'size'       => $o['size']
+                            'value'      => $o['selected'], 'placeholder'=> $o['label'], 'name'       => $id, 'class'      => $o['class'], 'size'       => $o['size']
                        ));
       if ($o['editable']) {
         HTML::label('lineedit', 'edit', array(
@@ -222,22 +222,19 @@
                                                          ), false);
         $desc_js .= "$('#description').css('height','auto').attr('rows',4);";
       } elseif ($o['submitonselect']) {
-        $selectjs
-          = <<<JS
+        $selectjs = <<<JS
                 $(this).val(value.stock_id);
                 $('form').trigger('submit'); return false;
 JS;
       } else {
-        $selectjs
-          = <<<JS
+        $selectjs = <<<JS
                 $(this).val(value.stock_id);return false;
 JS;
       }
       if ($o['cells']) {
         HTML::td();
       }
-      $js
-             = <<<JS
+      $js    = <<<JS
     Adv.o.stock_id = \$$id = $("#$id").catcomplete({
                 delay: 0,
                 autoFocus: true,
@@ -302,8 +299,7 @@ JS;
       $emailBox->addButtons(array('Close' => '$(this).dialog("close");'));
       $emailBox->setOptions(['modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false]);
       $emailBox->show();
-      $action
-        = <<<JS
+      $action = <<<JS
      var emailID= $(this).data('emailid');
      $.post('/contacts/emails.php',{type: $contactType, id: emailID}, function(data) {
      \$emailBox.html(data).dialog('open');
@@ -314,8 +310,7 @@ JS;
       $loaded = true;
     }
     public static function lineSortable() {
-      $js
-        = <<<JS
+      $js = <<<JS
 $('.grid').find('tbody').sortable({
   items:'tr:not(.newline,.editline)',
   stop:function (e, ui) {
