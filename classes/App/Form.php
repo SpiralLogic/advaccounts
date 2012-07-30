@@ -148,11 +148,11 @@
         $selected_id = array($selected_id);
       } // code is generalized for multiple selection support
       if (Input::post("_{$name}_update")) {
-        $opts['async']?Ajax::activate($name):Ajax::activate('_page_body');
-        }
+        $opts['async'] ? Ajax::activate($name) : Ajax::activate('_page_body');
+      }
       // ------ make selector ----------
-      $sel = $selector = $first_opt = '';
-      $first_id = false= false;
+      $sel      = $selector = $first_opt = '';
+      $first_id = $found = false;
       //if($name=='SelectStockFromList') Event::error($sql);
       foreach ($items as $value => $descr) {
         if (in_array((string) $value, $selected_id)) {
@@ -1100,7 +1100,7 @@
      * @internal param null $init
      */
     public function  percent($label, $name, $value = null, $inputparams = []) {
-      $this->number($label, $name, $value, User::percent_dec(), 5, null, '%' . $inputparams);
+      $this->number($label, $name, $value, User::percent_dec(), 5, null, '%', $inputparams);
     }
     /**
      * @param        $label

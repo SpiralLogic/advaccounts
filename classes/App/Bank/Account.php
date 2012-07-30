@@ -113,7 +113,7 @@
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get_default($curr)
+    public static function get_default($curr=null)
     {
       /* default bank account is selected as first found account from:
                          . default account in $curr if any
@@ -121,7 +121,9 @@
                          . default account in home currency
                          . first defined account in home currency
                        */
+
       $home_curr = DB_Company::get_pref('curr_default');
+      if (!$curr) $curr= $home_curr;
       $sql       = "SELECT b.*, b.bank_curr_code='$home_curr' as fall_back FROM " . "bank_accounts b" . " WHERE b.bank_curr_code=" . DB::escape($curr) . " OR b.bank_curr_code='$home_curr'
         ORDER BY fall_back, dflt_curr_act desc";
       $result    = DB::query($sql, "could not retreive default bank account");
@@ -143,6 +145,11 @@
       $ba     = static::get_default($row[0]);
 
       return $ba['id'];
+    }
+    public static function hasStatements($id=null){
+      $id = $id?: static::get_default()['id'];
+      $result = DB::select('count(*) as count')->from('temprec')->where('bank_account_id=',$id)->fetch()->one();
+      return $result['count'];
     }
     /**
      * @static
@@ -258,4 +265,5 @@
       Bank_Account::type_cells(null, $name, $selected_id);
       echo "</tr>\n";
     }
+
   }

@@ -84,45 +84,30 @@
                                                 ));
       $view->set('accounts_postcode', $accounts_postcode);
       $view->set('form', $form);
-      $menu->endTab()->startTab('Accounts', 'Accounts');
       $form->hidden('accounts_id', $this->customer->accounts->accounts_id);
       $form->percent("Discount Percent:", 'discount', $this->customer->discount, ["disabled"=>User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
       $form->percent("Prompt Payment Discount Percent:", 'payment_discount', $this->customer->payment_discount,  ["disabled"=>User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
       $form->number("Credit Limit:", 'credit_limit', $this->customer->credit_limit, null, null, null,null, ["disabled"=>User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
       $form->text("GSTNo:", 'tax_id', $this->customer->tax_id);
       $view->set('sales_type',Sales_Type::select('sales_type', $this->customer->sales_type));
-      Form::recordStatusListRow(_("Customer status:"), 'inactive');
-      $view->set('inactive', UI::select('inactive', ['Yes','No'],array('name' => 'inactive'), true));      $view->render();
+      //Form::recordStatusListRow(_("Customer status:"), 'inactive');
+      $view->set('inactive', UI::select('inactive', ['Yes','No'],array('name' => 'inactive'), true));
 
       if (!$this->customer->id) {
-        GL_Currency::row(_("Customer's Currency:"), 'curr_code', $this->customer->curr_code);
+        $view->set('curr_code', GL_Currency::select('inactive',$this->customer->curr_code));
       } else {
-        Row::label(_("Customer's Currency:"), $this->customer->curr_code);
-        Forms::hidden('curr_code', $this->customer->curr_code);
+        $view->set('curr_code',$this->customer->curr_code);
+        $form->hidden('curr_code',$this->customer->curr_code);
+
       }
-      GL_UI::payment_terms_row(_("Payment Terms:"), 'payment_terms', $this->customer->payment_terms);
-      Sales_CreditStatus::row(_("Credit Status:"), 'credit_status', $this->customer->credit_status);
-      Table::section(2);
-      Table::sectionTitle(_("Contact log:"), 1);
-      Row::start();
-      HTML::td(array(
-                    'class' => 'ui-widget-content center'
-               ));
-      UI::button('addLog', "Add log entry")->td->tr->tr(true)->td(null)->textarea('messageLog', array(
-                                                                                                     'cols'  => 50, 'rows'  => 20
-                                                                                                ));
-      Contact_Log::read($this->customer->id, CT_CUSTOMER);
+      $view->set('payment_terms',GL_UI::payment_terms('payment_terms', $this->customer->payment_terms));
+      $view->set('credit_status',GL_UI::payment_terms('credit_status', $this->customer->credit_status));
+      $form->textarea('Message Log:','messageLog', Contact_Log::read($this->customer->id, CT_CUSTOMER),50,20);
       /** @noinspection PhpUndefinedMethodInspection */
-      HTML::textarea()->td->tr;
-      Table::endOuter(1);
-      $menu->endTab()->startTab('Customer Contacts', 'Customer Contacts');
       $contacts = new View('contacts/contact');
-      $contacts->render();
-      $menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info');
-      Table::startOuter('tablestyle2');
-      Forms::hidden('branch_id', $currentBranch->branch_id);
-      Table::section(1);
-      Table::sectionTitle(_("Sales"));
+      $view->set('contacts',$contacts->render(true));
+
+      $form->hidden('branch_id', $currentBranch->branch_id); $view->render();
       Sales_UI::persons_row(_("Sales Person:"), 'branch[salesman]', $currentBranch->salesman);
       Sales_UI::areas_row(_("Sales Area:"), 'branch[area]', $currentBranch->area);
       Sales_UI::groups_row(_("Sales Group:"), 'branch[group_no]', $currentBranch->group_no);

@@ -21,10 +21,12 @@
     protected $reconcile_date;
     protected $begin_date;
     protected $end_date;
+    public $accountHasStatements=false;
     protected function before() {
       $this->Dates             = Dates::i();
       $this->Num               = Num::i();
-      $_POST['bank_account']   = Input::postGlobal('bank_account', INPUT::NUMERIC, 5);
+
+      $_POST['bank_account']   = Input::postGlobal('bank_account', INPUT::NUMERIC, Bank_Account::get_default()['id']);
       $this->bank_account      = &$_POST['bank_account'];
       $_POST['bank_date']      = Input::postGlobal('bank_date', null, $this->Dates->_today());
       $this->bank_date         = &$_POST['bank_date'];
@@ -49,6 +51,7 @@
         $this->Ajax->_activate('bank_date');
         $this->updateData();
       }
+      $this->accountHasStatements = Bank_Account::hasStatements($this->bank_account);
       if (Forms::isListUpdated('bank_date')) {
         $this->reconcile_date = $this->Dates->_sqlToDate($this->bank_date);
         $this->Session->_setGlobal('bank_date', $this->bank_date);
@@ -60,10 +63,10 @@
         $this->Ajax->_activate('bank_date');
         $this->updateData();
       }
-      if ($this->bank_account == 5 && $this->bank_date) {
+      if ($this->accountHasStatements && $this->bank_date) {
         $this->begin_date = $this->Dates->_dateToSql($this->Dates->_beginMonth($this->bank_date));
         $this->end_date   = $this->Dates->_dateToSql($this->Dates->_endMonth($this->bank_date));
-      } elseif ($this->bank_account == 5) {
+      } elseif($this->accountHasStatements){
         $this->begin_date = "(SELECT max(reconciled) from bank_trans)";
         $this->end_date   = $this->Dates->_today();
       }
@@ -101,7 +104,8 @@
       Table::end();
       $this->displaySummary();
       echo "<hr>";
-      $this->bank_account == 5 ? $this->newWay() : $this->oldWay();
+
+      $this->accountHasStatements ? $this->newWay() : $this->oldWay();
 
       Forms::end();
       Page::end();
@@ -123,7 +127,7 @@
       $sql .= ") AND bt.amount!=0 GROUP BY bt.id ORDER BY IF(bt.trans_date>='" . $this->begin_date . "' AND bt.trans_date<='" . $this->end_date . "',1,0) , bt.reconciled DESC ,bt.trans_date , amount ";
       $this->DB->_query($sql);
       $rec = $this->DB->_fetchAll();
-      $sql = "SELECT date as state_date, amount as state_amount,memo FROM temprec WHERE date >= '" . $this->begin_date . "' AND date <='" . $this->end_date . "' ORDER BY date ,amount";
+      $sql = "SELECT date as state_date, amount as state_amount,memo FROM temprec WHERE date >= '" . $this->begin_date . "' AND date <='" . $this->end_date . "' and bank_account_id=".$this->DB->_quote($this->bank_account)." ORDER BY date ,amount";
       $this->DB->_query($sql);
       $statement_trans = $this->DB->_fetchAll();
       if (!$statement_trans) {
@@ -214,8 +218,9 @@
      * @return int
      */
     protected function getTotal() {
-      if ($this->bank_account == 5) {
-        $sql                  = "(select (rb - amount) as amount from temprec where date>='" . $this->begin_date . "' and date<='" . $this->end_date . "' order by id desc limit 0,1) union (select rb as amount from temprec where date>='" . $this->begin_date . "' and date<='" . $this->end_date . "' order by id asc limit 0,1)";
+      if ($this->accountHasStatements) {
+        $sql                  = "(select (rb - amount) as amount from temprec where date>='" . $this->begin_date . "' and date<='" . $this->end_date . "' and bank_account_id=".$this->DB->_quote($this->bank_account)." order by id desc limit 0,1) union (select rb as amount from temprec where date>='" . $this->begin_date . "' and date<='" . $this->end_date .
+          "' and bank_account_id=".$this->DB->_quote($this->bank_account)." order by id asc limit 0,1)";
         $result               = $this->DB->_query($sql);
         $beg_balance          = $this->DB->_fetch($result)['amount'];
         $end_balance          = $this->DB->_fetch($result)['amount'];
@@ -333,7 +338,7 @@
       if (!$row['amount']) {
         return '';
       }
-      return ($row['type'] != 15) ? GL_UI::view($row["type"], $row["trans_no"]) : '';
+      return ($row['type'] != ST_GROUPDEPOSIT) ? GL_UI::view($row["type"], $row["trans_no"]) : '';
     }
     /**
      * @param $row
