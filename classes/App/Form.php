@@ -85,6 +85,9 @@
       return str_replace(['[', ']'], ['.', ''], $name);
     }
     public function label($label, $name, $control = null) {
+      if ($label === null) {
+        return;
+      }
       $id = $this->nameToId($name);
       if (!$control && isset($this->fields[$id])) {
         $control = $this->fields[$id];
@@ -1356,5 +1359,8 @@
      */
     public function offsetUnset($offset) {
       unset($this->fields[$offset]);
+    }
+    public function getFields() {
+      return $this->fields;
     }
   }

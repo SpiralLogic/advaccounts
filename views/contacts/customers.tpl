@@ -13,8 +13,9 @@
   </table>
 </div>
 <div>{{$form->start()}}
-{#$menu->startTab('Details', 'Customer Details', '#', 'text-align:center')#}
-<div class='formbox width35'>
+  {#$menu->startTab('Details', 'Customer Details', '#', 'text-align:center')#}
+
+  <div class='formbox width35'>
   <div class='tablehead'>
     Shipping Details
   </div>
@@ -27,22 +28,26 @@
   {{$form['branch.fax']}}
   {{$form['branch.email']}}
   {{$form['branch.br_address']}}
-</div>
-<div class='formbox width35'>
-  <div class='tablehead'>
-    Accounts Details
+  {{$branch_postcode->render()}}
   </div>
-  <div class='center'>
-    <button id="useShipAddress" name="useShipAddress" class="button">Use shipping details</button>
+  <div class='formbox width35'>
+    <div class='tablehead'>
+      Accounts Details
+    </div>
+    <div class='center'>
+      <button id="useShipAddress" name="useShipAddress" class="button">Use shipping details</button>
+    </div>
+    {{$form['accounts.contact_name']}}
+    {{$form['accounts.phone']}}
+    {{$form['accounts.phone2']}}
+    {{$form['accounts.fax']}}
+    {{$form['accounts.email']}}
+    {{$form['accounts.br_address']}}
+    {{$accounts_postcode->render()}}
   </div>
-  {{$form['accounts.contact_name']}}
-  {{$form['accounts.phone']}}
-  {{$form['accounts.phone2']}}
-  {{$form['accounts.fax']}}
-  {{$form['accounts.email']}}
-  {{$form['accounts.br_address']}}</div>
-{#$menu->endTab()->startTab('Accounts', 'Accounts')#}
-<div class='formbox width35'>
+  {#$menu->endTab()->startTab('Accounts', 'Accounts')#}
+
+  <div class='formbox width35'>
   <div class='tablehead'>
     Accounts Details
     {{$form['accounts_id']}}
@@ -50,23 +55,26 @@
   {{$form['discount']}}
   {{$form['payment_discount']}}
   {{$form['credit_limit']}}
-  {{$form['tax_id']}}  </div>
-<div class='formbox width35'>
-  <div class='tablehead'>
-    Sales Type/Price List:
+  {{$form['tax_id']}}
+  {{$form['sales_type']}}
+  {{$form['inactive']}}
+  {{$form['curr_code']}}
+  {{$form['payment_terms']}}
+  {{$form['credit_status']}}
+
   </div>
-  {{$form['payment_discount']}}
-  {{$form['credit_limit']}}
-  {{$sales_type}}
-  {{$inactive}}
-  {{$curr_code}}
-  {{$payment_terms}}
-  {{$credit_status}}
-  {{$form['messageLog']}}
-  <button id="addLog" name="addLog" class="button">Add log entry</button>
-</div>
-{#$menu->endTab()->startTab('Customer Contacts', 'Customer Contacts')#}
-<div class='center'>
+  <div class='formbox width35'>
+    <div class='tablehead'>
+      Contact Log:
+    </div>
+    <div class='center'>
+      <button id="addLog" name="addLog" class="button">Add log entry</button>
+    </div>
+    {{$form['messageLog']}}
+  </div>
+  {#$menu->endTab()->startTab('Customer Contacts', 'Customer Contacts')#}
+
+  <div class='center'>
   <div id="Contacts" style='min-height:200px'>
     <script id="contact_tmpl" type='text/x-jquery-tmpl'>
       <table id="contact-${_k}" style="display:inline-block">
@@ -96,9 +104,10 @@
       </table>
     </script>
   </div>
-</div>
-{#$menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info')#}
-<div class='formbox  width35'>
+  </div>
+  {#$menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info')#}
+
+  <div class='formbox  width35'>
   <div class='tablehead'>
     Accounts Details
     {{$form['branch_id']}}
@@ -113,20 +122,26 @@
   {{$form['webid']}}
 
   </div>
-<div class='formbox width35'>
-  <div class='tablehead'>
+  <div class='formbox width35'>
+    <div class='tablehead'>
       GL Accounts
-    </div>{{$form['branch.sales_account']}}
-  {{$form['branch.sales_discount_account']}}
-  {{$form['branch.receivables_account']}}
-  {{$form['branch.payment_discount_account']}}
-  {{$form['branch_notes']}}
+    </div>
+    {{$form['branch.sales_account']}}
+    {{$form['branch.sales_discount_account']}}
+    {{$form['branch.receivables_account']}}
+    {{$form['branch.payment_discount_account']}}
+    {{$form['branch_notes']}}
+  </div>
+  {#$menu->endTab()->startTab('Invoices', 'Invoices')#}
+
+  <div id='invoiceFrame' data-src='/sales/inquiry/customer_allocation_inquiry.php?debtor_id={{$debtor_id}}'></div>
+  {{$form['frame']}}
+  {{$form['_focus']}}
+  {{$form->end()}}
+  {#$menu->endTab()->render()#}
 </div>
-{#$menu->endTab()->startTab('Invoices', 'Invoices')#}
-<div id='invoiceFrame' data-src='/sales/inquiry/customer_allocation_inquiry.php?debtor_id={{$debtor_id}}'></div>
-{{$form['frame']}}
-{{$form['_focus']}}
-{{$form->end()}}
-{#$menu->endTab()->render()#}
-</div><div class='center clearleft'><button id="btnConfirm" name="submit" type="submit" class="button ui-helper-hidden">New Customer</button><button id="btnCancel" name="new" type="submit" class="button">New</button>
-{{$shortcuts->render()}}</div>
+<div class='center clearleft'>
+  <button id="btnConfirm" name="submit" type="submit" class="button ui-helper-hidden">New Customer</button>
+  <button id="btnCancel" name="new" type="submit" class="button">New</button>
+  {{$shortcuts->render()}}
+</div>

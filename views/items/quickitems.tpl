@@ -21,8 +21,7 @@
     </li>
   </ul>
   <div id="tabs0-0">
-
-    <div id="Items" class="left formbox" style='display:none'>
+    <div id="Items" class="width40 formbox" style='display:none'>
       <input type="hidden" value="${id}" id="id">
       <label for="stock_id"><span>Code:</span><input name="stock_id" id="stock_id" type="text" value="${stock_id}" maxlength="20"></label>
       <label for="name"><span>Name:</span><input id="name" type="text" value="${name}" maxlength="200"></label>
@@ -62,12 +61,12 @@
     </div>
   </div>
   <div id="tabs0-1" class="ui-tabs-hide">
-    <div id="Accounts" class="left formbox">
+    <div id="Accounts" class="formbox width40">
       <label for="tax_type_id"><span>Item Tax Type:</span>{{$tax_itemtype}}</label>
       <label for="mb_flag"><span>Item Type:</span>{{$stock_type}}</label>
       {{$sales_account?}} <label for="sales_account"><span>Sales Account:</span>{{$sales_account}}</label>{{/$sales_account?}}
       {{$inventory_account?}} <label for="inventory_account"><span>Inventory Account:</span>{{$inventory_account}}</label>{{/$inventory_account?}}
-      <label for="cogs_account"><span>COGS Account:</span>$cogs_account</label>
+      <label for="cogs_account"><span>COGS Account:</span>{{$cogs_account}}</label>
       {{$adjustment_account?}} <label for="adjustment_account"><span>Adjustments&nbsp;Account:</span>{{$adjustment_account}}</label> {{/$adjustment_account?}}
       {{$assembly_account?}} <label for="assembly_account"><span>Assembly Account:</span>{{$assembly_account}}</label>{{/$assembly_account?}}</div>
 

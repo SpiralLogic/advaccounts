@@ -98,7 +98,7 @@
       }
       $form->label('Payment Terms:','payment_terms', GL_UI::payment_terms('payment_terms', $this->customer->payment_terms));
       $form->label('Credit Status:','credit_status', GL_UI::payment_terms('credit_status', $this->customer->credit_status));
-      $form->textarea('Message Log:', 'messageLog', Contact_Log::read($this->customer->id, CT_CUSTOMER), 50, 20);
+      $form->textarea(null, 'messageLog', Contact_Log::read($this->customer->id, CT_CUSTOMER), 'width95', 20);
       /** @noinspection PhpUndefinedMethodInspection */
       $contacts = new View('contacts/contact');
       $view->set('contacts', $contacts->render(true));

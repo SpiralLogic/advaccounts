@@ -756,12 +756,19 @@ div.formbox {
   display: table-row;
   margin:  5px 2px;
 }
-
-.formbox input, .formbox textarea, .formbox select {
-  width:  20em;
+.formbox select,.formbox button {
+  margin:8px;
+  height:25px;
+}
+.formbox input, .formbox textarea {
+  width:  22em;
   margin: 5px 5px 0 5px;
 }
+.formbox label select {
+  width:  18em;
+  margin: 5px 0 0 5px;
 
+}
 div.formbox label span:first-child {
   display:          table-cell;
    width:            180px;

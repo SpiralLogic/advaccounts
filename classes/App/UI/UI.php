@@ -85,7 +85,7 @@
      * options: Javascript function autocomplete options<br>
 
      */
-    public static function search($id, $options = []) {
+    public static function search($id, $options = [],$return=false) {
       $o   = array(
         'url'               => false, //
         'nodiv'             => false, //
@@ -103,6 +103,7 @@
       );
       $o   = array_merge($o, $options);
       $url = $o['url'] ? : false;
+      HTML::setReturn(true);
       if (!$o['nodiv']) {
         HTML::div(['class' => 'ui-widget ']);
       }
@@ -136,6 +137,12 @@
       }
       $callback = $o['callback'] ? : ucfirst($id);
       JS::autocomplete($id, $callback, $url);
+
+      $search = HTML::setReturn(false);
+      if ($return) {
+        return $search;
+      }
+      echo $search;
       return static::$_instance;
     }
     /**
