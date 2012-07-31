@@ -15,6 +15,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
   class Cell
   {
     /**
@@ -111,7 +112,7 @@
      */
     public static function qty($label, $bold = false, $dec = null, $id = null) {
       if (!isset($dec)) {
-        $dec = User::qty_dec();
+        $dec = \User::qty_dec();
       }
       if ($bold) {
         Cell::label("<span class='bold'>" . Num::format($label, $dec) . "</span>", ' class="right nowrap"', $id);

@@ -1151,13 +1151,13 @@
       $class = $submit_on_change ? 'class="searchbox"' : '';
       $id    = $name ? "id=\"$name\"" : '';
       $value = 'value="' . $_POST[$name] . '"';
+      Ajax::addUpdate($name, $name, $_POST[$name]);
       $name  = $name ? "name=\"$name\"" : '';
       echo "<input $class type=\"text\" $name $id $inparams $size maxlength=\"$max\" $value " . ($title ? " title='$title'" : '') . " >";
       if ($post_label) {
         echo " " . $post_label;
       }
       echo "</td>\n";
-      Ajax::addUpdate($name, $name, $_POST[$name]);
     }
     /**
      * @param        $name

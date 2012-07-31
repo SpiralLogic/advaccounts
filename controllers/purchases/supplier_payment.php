@@ -94,7 +94,6 @@
       $_SESSION['alloc']->write();
       //unset($this->creditor_id);
       unset($_POST['bank_account'], $_POST['DatePaid'], $_POST['currency'], $_POST['memo_'], $_POST['amount'], $_POST['discount'], $_POST['ProcessSuppPayment']);
-      Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$payment_id&creditor_id=" . $this->creditor_id);
       Event::success(_("Payment has been sucessfully entered"));
       Display::submenu_print(_("&Print This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, 'prtopt');
       Display::submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, null, 1);
