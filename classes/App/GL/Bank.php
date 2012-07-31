@@ -141,7 +141,7 @@
     public static function add_bank_transaction($trans_type, $from_account, $items, $date_, $person_type_id, $person_id, $person_detail_id, $ref, $memo_, $use_transaction = true) {
       // we can only handle type 1 (payment)and type 2 (deposit)
       if ($trans_type != ST_BANKPAYMENT && $trans_type != ST_BANKDEPOSIT) {
-        Errors::databaseError("Invalid type ($trans_type) sent to add_bank_transaction");
+        Event::error("Invalid type ($trans_type) sent to add_bank_transaction");
       }
       $do_exchange_variance = false;
       if ($use_transaction) {
@@ -176,7 +176,7 @@
         $is_bank_to = Bank_Account::is($gl_item->code_id);
         if ($trans_type == ST_BANKPAYMENT AND $is_bank_to) {
           // we don't allow payments to go to a bank account. use transfer for this !
-          Errors::databaseError("invalid payment entered. Cannot pay to another bank account", "");
+          Event::error("invalid payment entered. Cannot pay to another bank account", "");
         }
         // do the destination account postings
         $total += GL_Trans::add($trans_type, $trans_no, $date_, $gl_item->code_id, $gl_item->dimension_id, $gl_item->dimension2_id, $gl_item->reference, $gl_item->amount, $currency, $person_type_id, $person_id);

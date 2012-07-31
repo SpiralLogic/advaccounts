@@ -85,7 +85,7 @@
       $sql    = "SELECT * FROM dimensions	WHERE id=" . DB::escape($id);
       $result = DB::query($sql, "The dimension could not be retrieved");
       if (!$allow_null && DB::numRows($result) == 0) {
-        Errors::databaseError("Could not find dimension $id", $sql);
+        Event::error("Could not find dimension $id", $sql);
       }
       return DB::fetch($result);
     }

@@ -104,7 +104,7 @@
         case   ST_COSTUPDATE   :
           return array("gl_trans", "type", "type_no", null, "tran_date");
       }
-      Errors::databaseError("invalid type ($type) sent to get_systype_db_info", "", true);
+      Event::error("invalid type ($type) sent to get_systype_db_info", "", true);
     }
     /**
      * @static

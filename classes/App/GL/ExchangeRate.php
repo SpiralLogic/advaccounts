@@ -55,7 +55,7 @@
     public static function update($curr_code, $date_, $buy_rate, $sell_rate)
     {
       if (Bank_Currency::is_company($curr_code)) {
-        Errors::databaseError("Exchange rates cannot be set for company currency", "", true);
+        Event::error("Exchange rates cannot be set for company currency", "", true);
       }
       $date = Dates::dateToSql($date_);
       $sql  = "UPDATE exchange_rates SET rate_buy=$buy_rate, rate_sell=" . DB::escape($sell_rate) . " WHERE curr_code=" . DB::escape($curr_code) . " AND date_='$date'";
@@ -72,7 +72,7 @@
     public static function add($curr_code, $date_, $buy_rate, $sell_rate)
     {
       if (Bank_Currency::is_company($curr_code)) {
-        Errors::databaseError("Exchange rates cannot be set for company currency", "", true);
+        Event::error("Exchange rates cannot be set for company currency", "", true);
       }
       $date = Dates::dateToSql($date_);
       $sql

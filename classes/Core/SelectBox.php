@@ -268,7 +268,7 @@
         $this->selected_id = array($first_id);
       }
       $_POST[$this->name] = $multi ? $this->selected_id : $this->selected_id[0];
-      $selector           = "<select id='$this->name' " . ($multi ? "multiple" : '') . ($this->height !== false ?
+      $selector           = "<select id='".str_replace(['[', ']'], ['.', ''], $this->name)."' " . ($multi ? "multiple" : '') . ($this->height !== false ?
         ' size="' . $this->height . '"' : '') . "$disabled name='$this->name" . ($multi ? '[]' :
         '') . "' class='$class' title='" . $this->sel_hint . "' " . $this->rel . ">" . $selector . "</select>\n";
       if ($by_id && ($search_box != false || $this->editable)) {
@@ -276,7 +276,7 @@
         if (isset($_POST[$search_box]) && $this->editable && $edit) {
           $selector = "<input type='hidden' name='$this->name' value='" . $_POST[$this->name] . "'>";
           if (isset($row['long_description'])) {
-            $selector .= "<textarea name='{$this->name}_text' cols='{$this->max}' id='{$this->name}_text' " . $this->rel . " rows='2'>{$row['long_description']}</textarea></td>\n";
+            $selector .= "<textarea name='{$this->name}_text' cols='{$this->max}' id='".str_replace(['[', ']'], ['.', ''], $this->name)."' " . $this->rel . " rows='2'>{$row['long_description']}</textarea></td>\n";
           } else {
             $selector .= "<input type='text' $disabled name='{$this->name}_text' id='{$this->name}_text' size='" . $this->editable . "' maxlength='" . $this->max . "' " . $this->rel . " value='$edit'>\n";
           }

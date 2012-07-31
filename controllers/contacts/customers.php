@@ -50,21 +50,20 @@
       }
       /** @noinspection PhpUndefinedMethodInspection */
       JS::autocomplete('customer', 'Company.fetch');
-      $form = new Form();
-      echo $form->start();
-      $menu = new MenuUI();
+      $form          = new Form();
+      $menu          = new MenuUI();
       $view          = new View('contacts/customers');
       $view['frame'] = $this->Input->_get('frame') || $this->Input->_get('id');
-      $view->set('menu',$menu);
+      $view->set('menu', $menu);
       $view->set('branchlist', UI::select('branchList', array_map(function($v) {
         return $v->br_name;
       }, $this->customer->branches), array('class'=> 'med', 'name' => 'branchList'), true));
       $form->text('Contact:', 'branch[contact_name]', $currentBranch->contact_name);
       $form->text('Phone Number:', 'branch[phone]', $currentBranch->phone);
-      $form->text("2nd Phone Number:", 'branch[phone2]', $currentBranch->phone2);
+      $form->text("Alt Phone Number:", 'branch[phone2]', $currentBranch->phone2);
       $form->text("Fax Number:", 'branch[fax]', $currentBranch->fax);
       $form->text("Email:", 'branch[email]', $currentBranch->email);
-      $form->textarea('Street:', 'branch[br_address]', $currentBranch->br_address,37,4);
+      $form->textarea('Street:', 'branch[br_address]', $currentBranch->br_address, 37, 4);
       $branch_postcode = new Contact_Postcode(array(
                                                    'city'     => ['branch[city]', $currentBranch->city], //
                                                    'state'    => ['branch[state]', $currentBranch->state], //
@@ -73,7 +72,7 @@
       $view->set('branch_postcode', $branch_postcode);
       $form->text('Accounts Contact:', 'accounts[contact_name]', $this->customer->accounts->contact_name);
       $form->text('Phone Number:', 'accounts[phone]', $this->customer->accounts->phone);
-      $form->text('Secondary Phone Number:', 'accounts[phone2]', $this->customer->accounts->phone2);
+      $form->text('Alt Phone Number:', 'accounts[phone2]', $this->customer->accounts->phone2);
       $form->text('Fax Number:', 'accounts[fax]', $this->customer->accounts->fax);
       $form->text('E-mail:', 'accounts[email]', $this->customer->accounts->email);
       $form->text('Street:', 'accounts[br_address]', $this->customer->accounts->br_address);
@@ -83,93 +82,58 @@
         )
                                                 ));
       $view->set('accounts_postcode', $accounts_postcode);
-      $view->set('form', $form);
       $form->hidden('accounts_id', $this->customer->accounts->accounts_id);
-      $form->percent("Discount Percent:", 'discount', $this->customer->discount, ["disabled"=>User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
-      $form->percent("Prompt Payment Discount Percent:", 'payment_discount', $this->customer->payment_discount,  ["disabled"=>User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
-      $form->number("Credit Limit:", 'credit_limit', $this->customer->credit_limit, null, null, null,null, ["disabled"=>User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
+      $form->percent("Discount Percent:", 'discount', $this->customer->discount, ["disabled"=> User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
+      $form->percent("Prompt Payment Discount:", 'payment_discount', $this->customer->payment_discount, ["disabled"=> User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
+      $form->number("Credit Limit:", 'credit_limit', $this->customer->credit_limit, null, null, null, null, ["disabled"=> User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
       $form->text("GSTNo:", 'tax_id', $this->customer->tax_id);
-      $view->set('sales_type',Sales_Type::select('sales_type', $this->customer->sales_type));
+      $form->label('Sales Type:','sales_type', Sales_Type::select('sales_type', $this->customer->sales_type));
       //Form::recordStatusListRow(_("Customer status:"), 'inactive');
-      $view->set('inactive', UI::select('inactive', ['Yes','No'],array('name' => 'inactive'), true));
-
+      $form->label('Inactive:','inactive', UI::select('inactive', ['Yes', 'No'], ['name' => 'inactive'], true));
       if (!$this->customer->id) {
-        $view->set('curr_code', GL_Currency::select('inactive',$this->customer->curr_code));
+        $form->label('Currency Code:','curr_code', GL_Currency::select('inactive', $this->customer->curr_code));
       } else {
-        $view->set('curr_code',$this->customer->curr_code);
-        $form->hidden('curr_code',$this->customer->curr_code);
-
+        $form->label('Currency Code:','curr_code', $this->customer->curr_code);
+        $form->hidden('curr_code', $this->customer->curr_code);
       }
-      $view->set('payment_terms',GL_UI::payment_terms('payment_terms', $this->customer->payment_terms));
-      $view->set('credit_status',GL_UI::payment_terms('credit_status', $this->customer->credit_status));
-      $form->textarea('Message Log:','messageLog', Contact_Log::read($this->customer->id, CT_CUSTOMER),50,20);
+      $form->label('Payment Terms:','payment_terms', GL_UI::payment_terms('payment_terms', $this->customer->payment_terms));
+      $form->label('Credit Status:','credit_status', GL_UI::payment_terms('credit_status', $this->customer->credit_status));
+      $form->textarea('Message Log:', 'messageLog', Contact_Log::read($this->customer->id, CT_CUSTOMER), 50, 20);
       /** @noinspection PhpUndefinedMethodInspection */
       $contacts = new View('contacts/contact');
-      $view->set('contacts',$contacts->render(true));
-
-      $form->hidden('branch_id', $currentBranch->branch_id); $view->render();
-      Sales_UI::persons_row(_("Sales Person:"), 'branch[salesman]', $currentBranch->salesman);
-      Sales_UI::areas_row(_("Sales Area:"), 'branch[area]', $currentBranch->area);
-      Sales_UI::groups_row(_("Sales Group:"), 'branch[group_no]', $currentBranch->group_no);
-      Inv_Location::row(_("Default Inventory Location:"), 'branch[default_location]', $currentBranch->default_location);
-      Sales_UI::shippers_row(_("Default Shipping Company:"), 'branch[default_ship_via]', $currentBranch->default_ship_via);
-      Tax_Groups::row(_("Tax Group:"), 'branch[tax_group_id]', $currentBranch->tax_group_id);
-      Forms::yesnoListRow(_("Disable this Branch:"), 'branch[disable_trans]', $currentBranch->disable_trans);
-      HTML::tr(true)->td(array(
-                              'content' => _("Website ID: "), "class" => "label"
-                         ), false)->td(true);
-      HTML::input('webid', array(
-                                'value' => $this->customer->webid, 'disabled' => true, 'name' => 'webid', 'maxlength' => '7'
-                           ));
-      HTML::td()->tr;
-      Table::section(2);
-      Table::sectionTitle(_("GL Accounts"));
-      GL_UI::all_row(_("Sales Account:"), 'branch[sales_account]', $currentBranch->sales_account, false, false, true);
-      GL_UI::all_row(_("Sales Discount Account:"), 'branch[sales_discount_account]', $currentBranch->sales_discount_account);
-      GL_UI::all_row(_("Accounts Receivable Account:"), 'branch[receivables_account]', $currentBranch->receivables_account);
-      GL_UI::all_row(_("Prompt Payment Discount Account:"), 'branch[payment_discount_account]', $currentBranch->payment_discount_account);
-      Table::sectionTitle(_("Notes"));
-      Forms::textareaRow(_("General Notes:"), 'branch[notes]', $currentBranch->notes, 35, 4);
-      Table::endOuter(1);
-      $menu->endTab();
-      $menu->startTab('Invoices', 'Invoices');
-      echo "<div id='invoiceFrame' data-src='" . BASE_URL . "sales/inquiry/customer_allocation_inquiry.php?debtor_id=" . $this->customer->id . "' ></div> ";
-      $menu->endTab()->render();
-      Forms::hidden('frame', $this->Input->_request('frame'));
-      HTML::div();
-      Forms::end();
-      HTML::div('contactLog', array(
-                                   'title' => 'New contact log entry', 'class' => 'ui-widget-overlay', 'style' => 'display:none;'
-                              ));
-      Forms::hidden('type', CT_CUSTOMER);
-      Table::start();
-      Row::label('Date:', date('Y-m-d H:i:s'));
-      Forms::textRow('Contact:', 'contact_name', $this->customer->accounts->contact_name, 35, 40);
-      Forms::textareaRow('Entry:', 'message', '', 100, 10);
-      Table::end();
-      HTML::_div()->div(array('class' => 'center width50'));
-      UI::button('btnConfirm', ($this->customer->id) ? 'Update Customer' : 'New Customer', array(
-                                                                                                'name'  => 'submit', 'type'  => 'submit', 'class' => 'ui-helper-hidden', 'style' => 'margin:10px;'
-                                                                                           ));
-      UI::button('btnCancel', 'Cancel', array(
-                                             'name' => 'cancel', 'type' => 'submit', 'style' => 'margin:10px;'
-                                        ));
-      /** @noinspection PhpUndefinedMethodInspection */
-      HTML::_div();
+      $view->set('contacts', $contacts->render(true));
+      $form->hidden('branch_id', $currentBranch->branch_id);
+      $form->label('Salesman:','branch[salesman]', Sales_UI::persons('branch[salesman]', $currentBranch->salesman));
+      $form->label('Sales Area:','branch[area]', Sales_UI::areas('branch[area]', $currentBranch->area));
+      $form->label('Sales Group:','branch[group_no]', Sales_UI::groups('branch[group_no]', $currentBranch->group_no));
+      $form->label('Dispatch Location:','branch[default_location]', Inv_Location::select('branch[default_location]', $currentBranch->default_location));
+      $form->label('Default Shipper:','branch[default_ship_via]', Sales_UI::shippers('branch[default_ship_via]', $currentBranch->default_ship_via));
+      $form->label('Tax Group:','branch[tax_group_id]', Tax_Groups::select('branch[tax_group_id]', $currentBranch->tax_group_id));
+      $form->label('Disabled:','branch[disable_trans]', UI::select('branch.disable_trans', ['Yes', 'No'], ['name' => 'branch[disable_trans]'], true));
+      $form->text("Websale ID", 'webid', $this->customer->webid, null, null, null, ['disbaled'=> true]);
+      $form->label('Sales Account:','branch[sales_account]', GL_UI::all('branch[sales_account]', $currentBranch->sales_account, false, false, true));
+      $form->label('Receivables Account:','branch[receivables_account]', GL_UI::all('branch[receivables_account]', $currentBranch->receivables_account, false, false, true));
+      $form->label('Discount Account:','branch[sales_discount_account]', GL_UI::all('branch[sales_discount_account]', $currentBranch->sales_account, false, false, true));
+      $form->label('Prompt Payment Account:','branch[payment_discount_account]', GL_UI::all('branch[payment_discount_account]', $currentBranch->sales_account, false, false, true));
+      $form->textarea('General Notes:', 'branch[notes]', $currentBranch->notes, 35, 4);
+      $view['debtor_id'] = $this->customer->id;
+      $form->hidden('frame', $this->Input->_request('frame'));
+      $view->set('form', $form);
+      $form->hidden('type', CT_CUSTOMER);
+      $view['date'] = date('Y-m-d H:i:s');
+      $form->text('Contact:', 'contact_name', $this->customer->accounts->contact_name);
+      $form->textarea('Entry:', 'message', '', 100, 10);
       if (!$this->Input->_get('frame')) {
-        HTML::div('shortcuts', array('class' => 'width50 center'));
         $shortcuts = new MenuUI(array('noajax' => true));
         $shortcuts->addLink('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?type=' . ST_SALESQUOTE . '&add=' . ST_SALESQUOTE . '&debtor_id=', 'id');
         $shortcuts->addLink('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?type=30&add=' . ST_SALESORDER . '&debtor_id=', 'id');
         $shortcuts->addLink('Print Statement', 'Print Statement for this Customer!', '/reporting/prn_redirect.php?REP_ID=108&PARAM_2=0&PARAM_4=0&PARAM_5=0&PARAM_6=0&PARAM_0=', 'id', true);
         $shortcuts->addJSLink('Email Statement', 'Email Statement for this Customer!', 'emailTab', "Adv.o.tabs[1].bind('tabsselect',function(e,o) {if (o.index!=3)return; return false;});");
         $shortcuts->addLink('Customer Payment', 'Make customer payment!', '/sales/customer_payments.php?debtor_id=', 'id');
-        $shortcuts->render();
-        /** @noinspection PhpUndefinedMethodInspection */
-        HTML::_div();
+        $view->set('shortcuts', $shortcuts);
         UI::emailDialogue(CT_CUSTOMER);
       }
-      HTML::_div();
+      $view->render();
       Page::end(true);
     }
     protected function delete() {

@@ -466,7 +466,7 @@
                 GROUP BY workorders.id";
       $result = DB::query($sql, "The work order issues could not be retrieved");
       if (!$allow_null && DB::numRows($result) == 0) {
-        Errors::databaseError("Could not find work order $woid", $sql);
+        Event::error("Could not find work order $woid", $sql);
       }
 
       return DB::fetch($result);

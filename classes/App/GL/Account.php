@@ -210,7 +210,7 @@
 
         return $row[0];
       }
-      Errors::databaseError("could not retreive the account name for $code", $sql);
+      Event::error("could not retreive the account name for $code", $sql);
       return false;
     }
   }

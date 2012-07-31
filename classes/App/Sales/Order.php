@@ -508,7 +508,7 @@
         return 1;
       } else {
         // shouldn't come here under normal circumstances
-        Errors::databaseError("unexpected - adding an invalid item or null quantity", "", true);
+        Event::error("unexpected - adding an invalid item or null quantity", "", true);
       }
       return 0;
     }

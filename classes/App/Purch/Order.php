@@ -395,7 +395,7 @@
         $this->salesman         = $myrow['salesman'];
         return true;
       } elseif (DB::numRows($result) > 1) {
-        Errors::databaseError("FATAL : duplicate purchase order found", "", true);
+        Event::error("FATAL : duplicate purchase order found", "", true);
       }
       return false;
     }

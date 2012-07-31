@@ -285,12 +285,12 @@
       $result = DB::query($sql, "Cannot retreive a supplier transaction");
       if (DB::numRows($result) == 0) {
         // can't return nothing
-        Errors::databaseError("no supplier trans found for given params", $sql, true);
+        Event::error("no supplier trans found for given params", $sql, true);
         exit;
       }
       if (DB::numRows($result) > 1) {
         // can't return multiple
-        Errors::databaseError("duplicate supplier transactions found for given params", $sql, true);
+        Event::error("duplicate supplier transactions found for given params", $sql, true);
         exit;
       }
       return DB::fetch($result);

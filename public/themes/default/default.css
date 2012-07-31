@@ -726,7 +726,12 @@ div.warn_msg {
 /*--------------------------------- FORMS -----------------------------------------------------------------*/
 
 div.formbox {
-  margin:  0 auto;
+  margin:         0 auto;
+  display:        inline-block;
+  padding:        5px;
+  text-align:     left;
+  position:       relative;
+  vertical-align: top;
 }
 
 .combodiv {
@@ -748,23 +753,24 @@ div.formbox {
 }
 
 .formbox label {
-  display:       block;
-  margin-bottom: 1px;
-  color:         #555555;
+  display: table-row;
+  margin:  5px 2px;
 }
 
 .formbox input, .formbox textarea, .formbox select {
-  width: 50%;
+  width:  20em;
+  margin: 5px 5px 0 5px;
 }
 
 div.formbox label span:first-child {
-  display:          block;
-  float:            left;
-  margin-right:     5px;
-  width:            130px;
+  display:          table-cell;
+   width:            180px;
   height:           inherit;
+  padding:          3px;
   font-weight:      bold;
   background-color: #D4E6F6;
+  vertical-align:   top;
+  border:           white 1px solid;
 }
 
 .amount {
@@ -1382,6 +1388,10 @@ body.lite {
   width: 30%
 }
 
+.width35 {
+  width: 35%
+}
+
 .width40 {
   width: 40%
 }
@@ -1506,6 +1516,10 @@ body.lite {
 
 .floatclear {
   clear: both;
+}
+
+.clearleft {
+  clear: left;
 }
 
 .floatleft {

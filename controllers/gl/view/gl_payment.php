@@ -15,7 +15,7 @@
   // get the pay-from bank payment info
   $result = Bank_Trans::get(ST_BANKPAYMENT, $trans_no);
   if (DB::numRows($result) != 1) {
-    Errors::databaseError("duplicate payment bank transaction found", "");
+    Event::error("duplicate payment bank transaction found");
   }
   $from_trans       = DB::fetch($result);
   $company_currency = Bank_Currency::for_company();

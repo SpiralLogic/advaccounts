@@ -66,7 +66,7 @@
     {
       $result = Inv_Transfer::get_items($trans_no);
       if (DB::numRows($result) < 2) {
-        Errors::databaseError("transfer with less than 2 items : $trans_no", "");
+        Event::error("transfer with less than 2 items : $trans_no", "");
       }
       // this public static function is very bad that it assumes that 1st record and 2nd record contain the
       // from and to locations - if get_stock_moves uses a different ordering than trans_no then

@@ -338,7 +338,7 @@
     public static function update_cost($stock_id, $material_cost, $labour_cost, $overhead_cost, $last_cost)
     {
       if (Input::post('mb_flag') == STOCK_SERVICE) {
-        Errors::databaseError("Cannot do cost update for Service item : $stock_id", "");
+        Event::error("Cannot do cost update for Service item : $stock_id", "");
       }
       $update_no = -1;
       DB::begin();

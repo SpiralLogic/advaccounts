@@ -14,7 +14,6 @@
    */
   class Form implements \ArrayAccess
   {
-
     protected $fields = [];
     protected $start;
     protected $end;
@@ -78,6 +77,22 @@
       return isset($_POST['_' . $name . '_update']) || isset($_POST['_' . $name . '_button']);
     }
     /**
+     * @param $name
+     *
+     * @return mixed
+     */
+    protected function nameToId($name) {
+      return str_replace(['[', ']'], ['.', ''], $name);
+    }
+    public function label($label, $name, $control = null) {
+      $id = $this->nameToId($name);
+      if (!$control && isset($this->fields[$id])) {
+        $control = $this->fields[$id];
+      }
+      $content           = "<label for='$name'><span>$label</span>$control</label>";
+      $this->fields[$id] = $content;
+    }
+    /**
      * @param      $name
      * @param null $value
      *
@@ -90,6 +105,66 @@
       $attr['type']  = 'hidden';
       $this->Ajax->_addUpdate($name, $name, $value);
       $this->fields[$attr['id']] = HTML::setReturn(true)->input($attr['id'], $attr, false)->setReturn(false);
+    }
+    /**
+     * @param        $label
+     * @param        $name
+     * @param        $value
+     * @param        $cols
+     * @param        $rows
+     * @param null   $title
+     * @param string $params
+     */
+    public function  textarea($label, $name, $value, $cols, $rows, $title = null, $input_attr = []) {
+      if ($value === null) {
+        $attr['value'] = Input::post($name, null, '');
+      }
+      if ($cols && is_numeric($cols)) {
+        $attr['cols'] = $cols + 2;
+      } elseif (is_string($cols)) {
+        $attr['class'] = $cols;
+      }
+      $attr['name']  = $name;
+      $attr['rows']  = $rows;
+      $attr['title'] = $title;
+      array_merge($attr, $input_attr);
+      $attr['id'] = str_replace(['[', ']'], ['.', ''], $name);
+      $content    = HTML::setReturn(true)->textarea($name, $value, $attr, false)->setReturn(false);
+      Ajax::addUpdate($name, $name, $value);
+      $this->fields[$attr['id']] = $content;
+      $this->label($label, $name);
+    }
+    /**
+     * @param            $label
+     * @param            $name
+     * @param null       $value
+     * @param int        $max
+     * @param int|string $size
+     * @param string     $title
+     * @param array      $input_attr
+     */
+    public function text($label, $name, $value = null, $max = null, $size = null, $title = null, $input_attr = []) {
+      if ($label) {
+        $attr['placeholder'] = $label;
+      }
+      if ($value === null) {
+        $attr['value'] = Input::post($name);
+      }
+      if ($size && is_numeric($size)) {
+        $attr['size'] = $size;
+      } elseif (is_string($size)) {
+        $attr['class'] = $size;
+      }
+      $attr['title']     = $title;
+      $attr['maxlength'] = $max;
+      $attr['type']      = 'text';
+      $attr['name']      = $name;
+      array_merge($attr, $input_attr);
+      $attr['id'] = $this->nameToId($name);
+      $content    = HTML::setReturn(true)->input($name, $attr)->setReturn(false);
+      Ajax::addUpdate($name, $name, $value);
+      $this->fields[$attr['id']] = $content;
+      $this->label($label, $name);
     }
     /**
      * Universal sql combo generator
@@ -394,42 +469,6 @@
       echo "</tr>\n";
     }
     /**
-     * @param            $label
-     * @param            $name
-     * @param null       $value
-     * @param int        $max
-     * @param int|string $size
-     * @param string     $title
-     * @param array      $input_attr
-     */
-    public function text($label, $name, $value = null, $max = null, $size = null, $title = null, $input_attr = []) {
-      $content = '';
-      if ($label) {
-        $content             = "<label for='$name'><span>$label</span>";
-        $attr['placeholder'] = $label;
-      }
-      if ($value === null) {
-        $attr['value'] = Input::post($name);
-      }
-      if ($size && is_numeric($size)) {
-        $attr['size'] = $size;
-      } elseif (is_string($size)) {
-        $attr['class'] = $size;
-      }
-      $attr['title']     = $title;
-      $attr['maxlength'] = $max;
-      $attr['type']      = 'text';
-      $attr['name']      = $name;
-      array_merge($attr, $input_attr);
-      $attr['id'] = $this->nameToId($name);
-      $content .= HTML::setReturn(true)->input($name, $attr)->setReturn(false);
-      Ajax::addUpdate($name, $name, $value);
-      if ($label) {
-        $content .= '</label>';
-      }
-      $this->fields[$attr['id']] = $content;
-    }
-    /**
      * @param        $label
      * @param        $name
      * @param        $size
@@ -730,8 +769,8 @@
         $items[$i] = "$i";
       }
       return Forms::arraySelect($name, $selected, $items, array(
-        'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
-      ));
+                                                               'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
+                                                          ));
     }
     /**
      * @param      $label
@@ -1120,9 +1159,7 @@
      * @internal param bool $negatives
      */
     public function number($label, $name, $value = null, $dec = null, $max = null, $size = null, $post_label = null, $input_attr = []) {
-      $content = '';
       if ($label) {
-        $content             = "<label for='$name'><span>$label</span>";
         $attr['placeholder'] = $label;
       }
       $dec = $dec ? : User::price_dec();
@@ -1145,16 +1182,14 @@
       $attr['id']        = $this->nameToId($name);
       $attr['type']      = 'text';
       array_merge($attr, $input_attr);
-      $content .= HTML::setReturn(true)->input($name, $attr)->setReturn(false);
+      $content = HTML::setReturn(true)->input($name, $attr)->setReturn(false);
       Ajax::addUpdate($name, $name, $value);
       if ($post_label) {
         $content .= "<span id='_{$name}_label'>$post_label</span>";
         Ajax::addUpdate($name, '_' . $name . '_label', $post_label);
       }
-      if ($label) {
-        $content .= '</label>';
-      }
       $this->fields[$attr['id']] = $content;
+      $this->label($label, $name);
       Ajax::addUpdate($name, $name, $value);
       Ajax::addAssign($name, $name, 'data-dec', $dec);
     }
@@ -1247,40 +1282,6 @@
       echo "</td>\n";
     }
     /**
-     * @param        $label
-     * @param        $name
-     * @param        $value
-     * @param        $cols
-     * @param        $rows
-     * @param null   $title
-     * @param string $params
-     */
-    public function  textarea($label, $name, $value, $cols, $rows, $title = null, $input_attr = []) {
-      $content = '';
-      if ($label) {
-        $content = "<label for='$name'><span>$label</span>";
-      }
-      if ($value === null) {
-        $attr['value'] = Input::post($name, null, '');
-      }
-      if ($cols && is_numeric($cols)) {
-        $attr['cols'] = $cols + 2;
-      } elseif (is_string($cols)) {
-        $attr['class'] = $cols;
-      }
-      $attr['name']  = $name;
-      $attr['rows']  = $rows;
-      $attr['title'] = $title;
-      array_merge($attr, $input_attr);
-      $attr['id'] = str_replace(['[', ']'], ['.', ''], $name);
-      $content .= HTML::setReturn(true)->textarea($name, $value, $attr, false)->setReturn(false);
-      if ($label) {
-        $content .= '</label>';
-      }
-      Ajax::addUpdate($name, $name, $value);
-      $this->fields[$attr['id']] = $content;
-    }
-    /**
      * @param      $label
      * @param      $name
      * @param null $init
@@ -1355,13 +1356,5 @@
      */
     public function offsetUnset($offset) {
       unset($this->fields[$offset]);
-    }
-    /**
-     * @param $name
-     *
-     * @return mixed
-     */
-    protected function nameToId($name) {
-      return str_replace(['[', ']'], ['.', ''], $name);
     }
   }

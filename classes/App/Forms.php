@@ -99,7 +99,7 @@
      * @return string
      */
     public static function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = null) {
-      $box = new SelectBox($name, $selected_id, $sql, $valfield, $namefield, $options);
+      $box = new SelectBox ($name, $selected_id, $sql, $valfield, $namefield, $options);
       return $box->create();
     }
     /**

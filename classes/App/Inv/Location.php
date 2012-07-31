@@ -136,7 +136,7 @@
 
         return $row[0];
       }
-      Errors::databaseError("could not retreive the location name for $loc_code", $sql, true);
+      Event::error("could not retreive the location name for $loc_code", $sql, true);
     }
     /***
      * @static
