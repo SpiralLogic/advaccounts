@@ -60,7 +60,6 @@
         $this->checkCache($this->_template, $__contents[1]);
         $__contents = $__contents[0];
       }
-
       static::$count++;
       ob_start() and extract($this->_viewdata, EXTR_SKIP);
       // We'll include the view contents for parsing within a catcher
@@ -109,7 +108,7 @@
      * @return mixed
      */
     protected static function compile_dot_notation($value) {
-      return preg_replace('/(\$[a-zA-Z_0-9]*?)\.([a-zA-Z_0-9]+)/', '$1["$2"]', $value);
+      return preg_replace('/(\$[a-zA-Z_0-9]*?)\.([a-zA-Z_0-9-]+)/', '$1["$2"]', $value);
     }
     /**
      * @static

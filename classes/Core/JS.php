@@ -14,6 +14,9 @@
    * @method JS setFocus($selector, $cached = false)
    * @method JS headerFile($file)
    * @method JS footerFile($file)
+   * @method JS onload()
+   * @method JS renderJSON()
+* @method JS autocomplete()
    * @method JS addLiveEvent($selector, $type, $action, $delegate = false, $cached = false)
    */
   class JS

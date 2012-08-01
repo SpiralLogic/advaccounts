@@ -82,7 +82,7 @@
      * @return mixed
      */
     protected function nameToId($name) {
-      return str_replace(['[', ']'], ['.', ''], $name);
+      return str_replace(['[', ']'], ['-', ''], $name);
     }
     public function label($label, $name, $control = null) {
       if ($label === null) {
@@ -122,17 +122,10 @@
       if ($value === null) {
         $attr['value'] = Input::post($name, null, '');
       }
-      if ($cols && is_numeric($cols)) {
-        $attr['cols'] = $cols + 2;
-      } elseif (is_string($cols)) {
-        $attr['class'] = $cols;
-      }
       $attr['name']  = $name;
-      $attr['rows']  = $rows;
-      $attr['title'] = $title;
       array_merge($attr, $input_attr);
-      $attr['id'] = str_replace(['[', ']'], ['.', ''], $name);
-      $content    = HTML::setReturn(true)->textarea($name, $value, $attr, false)->setReturn(false);
+      $attr['id'] = $this->nameToId($name);
+      $content    = HTML::setReturn(true)->textarea($attr['id'], $value, $attr, false)->setReturn(false);
       Ajax::addUpdate($name, $name, $value);
       $this->fields[$attr['id']] = $content;
       $this->label($label, $name);
@@ -153,18 +146,11 @@
       if ($value === null) {
         $attr['value'] = Input::post($name);
       }
-      if ($size && is_numeric($size)) {
-        $attr['size'] = $size;
-      } elseif (is_string($size)) {
-        $attr['class'] = $size;
-      }
-      $attr['title']     = $title;
-      $attr['maxlength'] = $max;
       $attr['type']      = 'text';
       $attr['name']      = $name;
       array_merge($attr, $input_attr);
       $attr['id'] = $this->nameToId($name);
-      $content    = HTML::setReturn(true)->input($name, $attr)->setReturn(false);
+      $content    = HTML::setReturn(true)->input($attr['id'], $attr)->setReturn(false);
       Ajax::addUpdate($name, $name, $value);
       $this->fields[$attr['id']] = $content;
       $this->label($label, $name);
@@ -209,13 +195,14 @@
           if ($value === null) {
             $attr['value'] = Input::post($name);
           }
+          $size = &$input_attr['size'];
           if ($size && is_numeric($size)) {
             $attr['size'] = $size;
           } elseif (is_string($size)) {
             $attr['class'] .= ($name == 'freight') ? ' freight ' : ' amount ';
           }
           $attr['data-dec']  = $dec;
-          $attr['maxlength'] = $max;
+          $attr['maxlength'] = $input_attr['max'];
           $attr['type']      = 'text';
           $attr['name']      = $name;
           $attr['id']        = $this->nameToId($name);

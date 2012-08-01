@@ -26,6 +26,8 @@
       $host = 'advanced.advancedgroup.com.au/modules/youtrack';
       if (strpos($_SERVER['HTTP_HOST'], 'dev') !== false) {
         $host = 'dev.' . $host;
+      }elseif (strpos($_SERVER['HTTP_HOST'], 'backup') !== false){
+        $host = 'backup.' . $host;
       }
       $js
         = <<<JS
