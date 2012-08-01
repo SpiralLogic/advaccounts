@@ -891,7 +891,7 @@
      *
      * @return DB_Pager
      */
-    static function new_DB_Pager($name, $sql, $coldef, $table = null, $key = null, $page_len = 0, $sort = null) {
+    static function new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_len = 0, $sort = null) {
       if (!isset($_SESSION['pager'])) {
         $_SESSION['pager'] = [];
       }

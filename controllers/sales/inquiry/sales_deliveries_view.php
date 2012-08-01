@@ -176,7 +176,7 @@
     }
     unset($_SESSION['Batch']);
   }
-  $table = DB_Pager::new_DB_Pager('deliveries_tbl', $sql, $cols);
+  $table = DB_Pager::new_db_pager('deliveries_tbl', $sql, $cols);
   $table->setMarker(function ($row) {
     return Dates::isGreaterThan(Dates::today(), Dates::sqlToDate($row["due_date"])) && $row["Outstanding"] != 0;
   }, _("Marked items are overdue."));

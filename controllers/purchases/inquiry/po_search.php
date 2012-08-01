@@ -113,7 +113,7 @@
   if (!$stock_location) {
     $cols[_("Location")] = 'skip';
   }
-  $table = DB_Pager::new_DB_Pager('orders_tbl', $sql, $cols);
+  $table = DB_Pager::new_db_pager('orders_tbl', $sql, $cols);
   $table->setMarker(function ($row) {
     return $row['OverDue'] == 1;
   }, _("Marked orders have overdue items."));

@@ -127,7 +127,7 @@
   if (!Forms::hasPost('AlsoClosed')) {
     $cols[_("#")] = 'skip';
   }
-  $table        = DB_Pager::new_DB_Pager('journal_tbl', $sql, $cols);
+  $table        = DB_Pager::new_db_pager('journal_tbl', $sql, $cols);
   $table->width = "80%";
   $table->display($table);
   Forms::end();

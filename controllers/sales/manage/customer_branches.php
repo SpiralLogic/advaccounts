@@ -169,7 +169,7 @@
       if (!Input::request('frame')) {
         $cols[' '] = 'skip';
       }
-      $table = DB_Pager::new_DB_Pager('branch_tbl', $sql, $cols, 'branches');
+      $table = DB_Pager::new_db_pager('branch_tbl', $sql, $cols, 'branches');
       $table->setInactiveCtrl('branches', 'branch_id');
       //$table->width = "85%";
       $table->display($table);

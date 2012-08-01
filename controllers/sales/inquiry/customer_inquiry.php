@@ -215,7 +215,7 @@
       if (!$this->filterType || !$this->isQuickSearch) {
         $cols[_("RB")] = 'skip';
       }
-      $table = DB_Pager::new_DB_Pager('trans_tbl', $sql, $cols);
+      $table = DB_Pager::new_db_pager('trans_tbl', $sql, $cols);
       $table->setMarker(function ($row) {
         return (isset($row['OverDue']) && $row['OverDue'] == 1) && (Num::round(abs($row["TotalAmount"]) - $row["Allocated"], 2) != 0);
       }, _("Marked items are overdue."));

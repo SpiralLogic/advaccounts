@@ -465,7 +465,7 @@
         "X"              => array('insert' => true, 'fun' => array($this, 'reconcileCheckbox')), //
         array('insert' => true, 'fun' => array($this, 'ungroupButton'))
       );
-      $table        = db_pager::new_db_pager('trans_tbl', $sql, $cols);
+      $table        = DB_Pager::new_db_pager('trans_tbl', $sql, $cols);
       $table->width = "80";
       $table->display($table);
       return true;

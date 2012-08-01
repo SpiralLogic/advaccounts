@@ -205,7 +205,7 @@
     $cols[_("Supplier")]    = 'skip';
     $cols[_("Currency")]    = 'skip';
   }
-  $table = DB_Pager::new_DB_Pager('doc_tbl', $sql, $cols);
+  $table = DB_Pager::new_db_pager('doc_tbl', $sql, $cols);
   $table->setMarker('checkOverdue', _("Marked items are overdue."));
   $table->width = "90";
   $table->display($table);

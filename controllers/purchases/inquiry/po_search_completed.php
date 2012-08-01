@@ -153,7 +153,7 @@
                        )//
     );
   }
-  $table        = DB_Pager::new_DB_Pager('orders_tbl', $sql, $cols);
+  $table        = DB_Pager::new_db_pager('orders_tbl', $sql, $cols);
   $table->width = (Input::request('frame')) ? '100' : "90";
   $table->display($table);
   Creditor::addInfoDialog('.pagerclick');

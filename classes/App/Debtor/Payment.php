@@ -80,7 +80,6 @@
       DB_Comments::add(ST_CUSTPAYMENT, $payment_no, $date_, $memo_);
       Ref::save(ST_CUSTPAYMENT, $ref);
       DB::commit();
-
       return $payment_no;
     }
     /**

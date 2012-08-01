@@ -43,7 +43,7 @@
   $cols         = array(
     _("Parent Item") => array('fun' => 'select_link'), _("Work Centre"), _("Location"), _("Quantity Required")
   );
-  $table        = DB_Pager::new_DB_Pager('usage_table', $sql, $cols);
+  $table        = DB_Pager::new_db_pager('usage_table', $sql, $cols);
   $table->width = "80%";
   $table->display($table);
   Forms::end();

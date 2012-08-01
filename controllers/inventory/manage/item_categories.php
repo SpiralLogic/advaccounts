@@ -117,7 +117,7 @@
    Row::end();
  }
   Forms::inactiveControlRow($th);*/
-  $table = DB_Pager::new_DB_Pager('cat_tbl', $sql, $th);
+  $table = DB_Pager::new_db_pager('cat_tbl', $sql, $th);
   //$table->width = "92%";
   $table->display($table);
   echo '<br>';

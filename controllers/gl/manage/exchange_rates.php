@@ -39,7 +39,7 @@
       'insert' => true, 'fun' => 'del_link'
     ),
   );
-  $table = DB_Pager::new_DB_Pager('orders_tbl', $sql, $cols);
+  $table = DB_Pager::new_db_pager('orders_tbl', $sql, $cols);
   if (Bank_Currency::is_company($_POST['curr_abrev'])) {
     Event::warning(_("The selected currency is the company currency."), 2);
     Event::warning(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
