@@ -86,7 +86,6 @@ input[type="color"]:focus,
   outline:            0;
   outline:            thin dotted \9;
   /* IE6-9 */
-
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
   -moz-box-shadow:    inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
   box-shadow:         inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
@@ -142,7 +141,7 @@ input.small {
 }
 
 select, input {
-  max-width:   30em;
+  max-width: 30em;
 }
 
 input {
@@ -253,9 +252,8 @@ input[type="search"],
 input[type="tel"],
 input[type="color"],
 .uneditable-input {
-  display:       inline-block;
-
-  color:         #555555;
+  display: inline-block;
+  color:   #555555;
 }
 
 input,
@@ -318,7 +316,6 @@ input[type="color"]:focus,
   outline:            0;
   outline:            thin dotted \9;
   /* IE6-9 */
-
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
   -moz-box-shadow:    inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
   box-shadow:         inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
@@ -329,7 +326,6 @@ input[type="checkbox"] {
   margin:      3px 0;
   *margin-top: 0;
   /* IE7 */
-
   line-height: normal;
   cursor:      pointer;
 }
@@ -351,10 +347,8 @@ select,
 input[type="file"] {
   height:      28px;
   /* In IE7, the height of the select element cannot be changed by height, only font-size */
-
   *margin-top: 4px;
   /* For IE7, add top margin to align select with labels */
-
   line-height: 28px;
 }
 
@@ -695,15 +689,13 @@ select:focus:required:invalid:focus {
   display:        inline-block;
   *display:       inline;
   /* IE7 inline-block hack */
-
   *zoom:          1;
   vertical-align: middle;
   padding-left:   5px;
 }
 
-
 .input-append {
-margin-right:-1px;
+  margin-right: -1px;
 }
 
 .input-prepend input,
@@ -753,11 +745,11 @@ margin-right:-1px;
 .input-append .add-on,
 .input-prepend .btn,
 .input-append .btn {
-  margin: 5px 0 0 -6px;
+  margin:                5px 0 0 -6px;
   -webkit-border-radius: 0;
   -moz-border-radius:    0;
   border-radius:         0;
-  line-height: 15px;
+  line-height:           15px;
 }
 
 .input-prepend .active,
@@ -828,7 +820,6 @@ margin-right:-1px;
   padding-left:          14px;
   padding-left:          4px \9;
   /* IE7-8 doesn't have border-radius, so don't indent the padding */
-
   margin-bottom:         0;
   -webkit-border-radius: 14px;
   -moz-border-radius:    14px;
@@ -859,7 +850,6 @@ margin-right:-1px;
   display:       inline-block;
   *display:      inline;
   /* IE7 inline-block hack */
-
   *zoom:         1;
   margin-bottom: 0;
 }
@@ -1227,7 +1217,6 @@ img {
   padding:    4px;
   font-size:  14px;
   text-align: center;
-
 }
 
 /*--------------------------------- END SUMMARY -----------------------------------------------------------------*/
@@ -1488,7 +1477,6 @@ div.err_msg, div.warn_msg, div.info_msg, div.success_msg {
   border-color:           rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color:      #bd362f;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter:                 progid:DXImageTransform.Microsoft.gradient(enabled = false);
   -moz-background-origin: padding-box;
   -background-origin:     padding-box;
@@ -1518,7 +1506,6 @@ div.info_msg {
   border-color:      rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #0055cc;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter:            progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 
@@ -1551,7 +1538,6 @@ div.warn_msg {
   *background-color: #f89406;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
   color:             rgb(60, 60, 60);
-
   filter:            progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 
@@ -1631,17 +1617,19 @@ div.formbox {
 }
 
 .formbox input, .formbox textarea {
-  width:  22em;
+  width:  180px;
   margin: 5px 5px 0 5px;
 }
 
 .formbox label select {
-  width:  18em;
+  width:  180px;
   margin: 5px 0 0 5px;
 }
+
 .formbox .input-append input {
-  width: 20em;
+  width: 160px;
 }
+
 div.formbox label span:first-child {
   display:          table-cell;
   width:            180px;

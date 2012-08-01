@@ -1,18 +1,25 @@
 {{#if !$frame}}
 <div id='companysearch' class='center bold font13 pad20'>
-  <label for='customer'>Search Customer:&nbsp;<input name='customer' id='customer' type='text' autofocus></label>
+  <label for='supplier'>Search Supplier:&nbsp;<input name='supplier' id='supplier' type='text' autofocus></label>
 </div>
 {{/if}}
 <div>{{$form->start()}}
-  {#$menu->startTab('Details', 'Customer Details', '#', 'text-align:center')#}
+  {#$menu->startTab('Details', 'Supplier Details', '#', 'text-align:center')#}
   <div id="companyIDs">
-    <label for="name">Customer name:</label><input id="name" name="name" class="big">
-    <label for="id">Customer ID:</label><input id="id" name="id" class="small" maxlength="7">
+    <label for="name">Supplier name:</label><input id="name" name="name" class="big">
+    <label for="id">Supplier ID:</label><input id="id" name="id" class="small" maxlength="7">
   </div>
   <div class='formbox width35'>
     <div class='tablehead'>
       Shipping Details
     </div>
+    {{$form.contact}}
+    {{$form.phone}}
+    {{$form.fax}}
+    {{$form.email}}
+    {{$form.address}}
+    {{$form.fax}}
+    {{$postcode->render()}}    </div>
   <div class='formbox width35'>
     <div class='tablehead'>
       Accounts Details
@@ -20,12 +27,24 @@
     <div class='center'>
       <button id="useShipAddress" name="useShipAddress" class="button">Use shipping details</button>
     </div>
+    {{$form.supp_phone}}
+    {{$form.supp_address}}
+    {{$supp_postcode->render()}}
   </div>
   {#$menu->endTab()->startTab('Accounts', 'Accounts')#}
   <div class='formbox width35'>
     <div class='tablehead'>
       Accounts Details
     </div>
+    {{$form.payment_discount}}
+    {{$form.credit_limit}}
+    {{$form.tax_id}}
+    {{$form.tax_group_id}}
+    {{$form.inactive}}
+    {{$form.curr_code}}
+    {{$form.payment_terms}}
+    {{$form.payable_account}}
+    {{$form.payment_discount_account}}
   </div>
   <div class='formbox width35'>
     <div class='tablehead'>
@@ -34,8 +53,9 @@
     <div class='center'>
       <button id="addLog" name="addLog" class="button">Add log entry</button>
     </div>
+    {{$form.messageLog}}
   </div>
-  {#$menu->endTab()->startTab('Customer Contacts', 'Customer Contacts')#}
+  {#$menu->endTab()->startTab('Supplier Contacts', 'Supplier Contacts')#}
   <div class='center'>
     <div id="Contacts" style='min-height:200px'>
       <script id="contact_tmpl" type='text/x-jquery-tmpl'>
@@ -67,20 +87,10 @@
       </script>
     </div>
   </div>
-  {#$menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info')#}
-  <div class='formbox  width35'>
-    <div class='tablehead'>
-      Accounts Details
-    </div>
-  </div>
-  <div class='formbox width35'>
-    <div class='tablehead'>
-      GL Accounts
-    </div>
-  </div>
   {#$menu->endTab()->startTab('Invoices', 'Invoices')#}
-  <div id='invoiceFrame' data-src='/sales/inquiry/customer_allocation_inquiry.php?debtor_id={{$creditor_id}}'></div>
-  {{$form->end()}}
+  <div id='invoiceFrame' data-src='purchases/inquiry/supplier_allocation_inquiry.php?creditor_id={{$creditor_id}}'></div>
+  {{$form.frame}}
+  {{$form._focus}} {{$form->end()}}
   {#$menu->endTab()->render()#}
 </div>
 <div class='center clearleft'>
