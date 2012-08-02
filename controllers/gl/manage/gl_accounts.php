@@ -76,7 +76,7 @@
   if (Validation::check(Validation::GL_ACCOUNTS)) {
     Table::start('tablestyle_noborder');
     Row::start();
-    GL_UI::all_cells(null, 'AccountList', null, false, false, _('New account'), true, Forms::hasPost('show_inactive'));
+    GL_UI::all_cells(null, 'AccountList', null, false, false, _('New account'), true, Input::hasPost('show_inactive'));
     Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
     Row::end();
     Table::end();

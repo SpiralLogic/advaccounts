@@ -56,7 +56,7 @@
     }
   }
   $sql = "SELECT * FROM groups";
-  if (!Forms::hasPost('show_inactive')) {
+  if (!Input::hasPost('show_inactive')) {
     $sql .= " WHERE !inactive";
   }
   $sql .= " ORDER BY description";

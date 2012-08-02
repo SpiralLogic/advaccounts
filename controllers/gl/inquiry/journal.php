@@ -65,7 +65,7 @@
   if (Input::post('filterType') != -1) {
     $sql .= " AND gl.type=".Input::post('filterType');
   }
-  if (!Forms::hasPost('AlsoClosed')) {
+  if (!Input::hasPost('AlsoClosed')) {
     $sql .= " AND gl_seq=0";
   }
   $sql .= " GROUP BY gl.type, gl.type_no";
@@ -100,7 +100,7 @@
   if (Input::post('filterType') != -1) {
     $sql .= " AND gl.type=" . Input::post('filterType');
   }
-  if (!Forms::hasPost('AlsoClosed')) {
+  if (!Input::hasPost('AlsoClosed')) {
     $sql .= " AND gl_seq=0";
   }
   $sql .= " GROUP BY gl.type, gl.type_no";
@@ -124,7 +124,7 @@
       'insert' => true, 'fun' => 'edit_link'
     )
   );
-  if (!Forms::hasPost('AlsoClosed')) {
+  if (!Input::hasPost('AlsoClosed')) {
     $cols[_("#")] = 'skip';
   }
   $table        = DB_Pager::new_db_pager('journal_tbl', $sql, $cols);

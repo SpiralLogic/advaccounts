@@ -175,7 +175,7 @@
       $sql .= " AND trans.due_date < '$today' ";
     }
   }
-  if (!Forms::hasPost('showSettled')) {
+  if (!Input::hasPost('showSettled')) {
     $sql .= " AND (round(abs(ov_amount + ov_gst + ov_discount) - alloc,6) != 0) ";
   }
   $cols = array(

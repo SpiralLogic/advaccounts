@@ -18,7 +18,7 @@
       $chg_theme = User::theme() != $_POST['theme'];
       $chg_lang  = $_SESSION['language']->code != $_POST['language'];
       User::i()
-        ->update_prefs($_POST['prices'], $_POST['Quantities'], $_POST['Rates'], $_POST['Percent'], Forms::hasPost('show_gl'), Forms::hasPost('show_codes'), $_POST['date_format'], $_POST['date_sep'], $_POST['tho_sep'], $_POST['dec_sep'], $_POST['theme'], $_POST['page_size'], Forms::hasPost('show_hints'), $_POST['profile'], Forms::hasPost('rep_popup'), (int) ($_POST['query_size']), Forms::hasPost('graphic_links'), $_POST['language'], Forms::hasPost('sticky_doc_date'), $_POST['startup_tab']);
+        ->update_prefs($_POST['prices'], $_POST['Quantities'], $_POST['Rates'], $_POST['Percent'], Input::hasPost('show_gl'), Input::hasPost('show_codes'), $_POST['date_format'], $_POST['date_sep'], $_POST['tho_sep'], $_POST['dec_sep'], $_POST['theme'], $_POST['page_size'], Input::hasPost('show_hints'), $_POST['profile'], Input::hasPost('rep_popup'), (int) ($_POST['query_size']), Input::hasPost('graphic_links'), $_POST['language'], Input::hasPost('sticky_doc_date'), $_POST['startup_tab']);
       if ($chg_lang) {
         $_SESSION['language']->setLanguage($_POST['language']);
       }

@@ -137,7 +137,7 @@
 
         return false;
       }
-      if (!Forms::hasPost('cash') && !Forms::hasPost('credit')) {
+      if (!Input::hasPost('cash') && !Input::hasPost('credit')) {
         Event::error(_("You must allow cash or credit sale."));
         JS::setFocus('credit');
 

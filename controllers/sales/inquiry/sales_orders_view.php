@@ -72,7 +72,7 @@
   }
   if (isset($_POST['Update']) && isset($_POST['last'])) {
     foreach ($_POST['last'] as $id => $value) {
-      if ($value != Forms::hasPost('chgtpl' . $id)) {
+      if ($value != Input::hasPost('chgtpl' . $id)) {
         $sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
         DB::query($sql, "Can't change sales order type");
         Ajax::activate('orders_tbl');
@@ -186,7 +186,7 @@
       $date_before = Dates::dateToSql($_POST['OrdersToDate']);
       $sql .= " AND sorder.ord_date >= '$date_after' AND sorder.ord_date <= '$date_before'";
     }
-    if ($trans_type == 32 && !Forms::hasPost('show_all')) {
+    if ($trans_type == 32 && !Input::hasPost('show_all')) {
       $sql .= " AND sorder.delivery_date >= '" . Dates::today(true) . "'";
     }
     if ($selected_customer != -1) {

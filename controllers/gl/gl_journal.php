@@ -84,7 +84,7 @@
     $order->reference = $_POST['ref'];
     $order->memo_     = $_POST['memo_'];
     $order->tran_date = $_POST['date_'];
-    $trans_no         = GL_Journal::write($order, Forms::hasPost('Reverse'));
+    $trans_no         = GL_Journal::write($order, Input::hasPost('Reverse'));
     $order->clear_items();
     Dates::newDocDate($_POST['date_']);
     unset($_SESSION['journal_items']);

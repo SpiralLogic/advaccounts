@@ -20,10 +20,10 @@
     }
     if ($input_error != 1) {
       if ($selected_id != -1) {
-        Item_Category::update($selected_id, $_POST['description'], $_POST['tax_type_id'], $_POST['sales_account'], $_POST['cogs_account'], $_POST['inventory_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'], Forms::hasPost('no_sale'));
+        Item_Category::update($selected_id, $_POST['description'], $_POST['tax_type_id'], $_POST['sales_account'], $_POST['cogs_account'], $_POST['inventory_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'], Input::hasPost('no_sale'));
         Event::success(_('Selected item category has been updated'));
       } else {
-        Item_Category::add($_POST['description'], $_POST['tax_type_id'], $_POST['sales_account'], $_POST['cogs_account'], $_POST['inventory_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'], Forms::hasPost('no_sale'));
+        Item_Category::add($_POST['description'], $_POST['tax_type_id'], $_POST['sales_account'], $_POST['cogs_account'], $_POST['inventory_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'], Input::hasPost('no_sale'));
         Event::success(_('New item category has been added'));
       }
       $Mode = MODE_RESET;
@@ -72,7 +72,7 @@
     Ajax::activate('details');
   }
   $sql = "SELECT c.*, t.name as tax_name FROM stock_category c, item_tax_types t WHERE c.dflt_tax_type=t.id";
-  if (!Forms::hasPost('show_inactive')) {
+  if (!Input::hasPost('show_inactive')) {
     $sql .= " AND !c.inactive";
   }
   /*$result = DB::query($sql, "could not get stock categories");

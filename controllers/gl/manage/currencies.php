@@ -68,10 +68,10 @@
       return false;
     }
     if ($selected_id != "") {
-      GL_Currency::update($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], $_POST['country'], $_POST['hundreds_name'], Forms::hasPost('auto_update'));
+      GL_Currency::update($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], $_POST['country'], $_POST['hundreds_name'], Input::hasPost('auto_update'));
       Event::success(_('Selected currency settings has been updated'));
     } else {
-      GL_Currency::add($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], $_POST['country'], $_POST['hundreds_name'], Forms::hasPost('auto_update'));
+      GL_Currency::add($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], $_POST['country'], $_POST['hundreds_name'], Input::hasPost('auto_update'));
       Event::success(_('New currency has been added'));
     }
     $Mode = MODE_RESET;
@@ -143,7 +143,7 @@
   function display_currencies()
   {
     $company_currency = Bank_Currency::for_company();
-    $result           = GL_Currency::getAll(Forms::hasPost('show_inactive'));
+    $result           = GL_Currency::getAll(Input::hasPost('show_inactive'));
     Table::start('tablestyle grid');
     $th = array(
       _("Abbreviation"), _("Symbol"), _("Currency Name"), _("Hundredths name"), _("Country"), _("Auto update"), "", ""

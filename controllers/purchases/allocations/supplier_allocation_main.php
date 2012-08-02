@@ -24,7 +24,7 @@
     unset($_POST['creditor_id']);
   }
   $settled = false;
-  if (Forms::hasPost('ShowSettled')) {
+  if (Input::hasPost('ShowSettled')) {
     $settled = true;
   }
   $creditor_id = null;

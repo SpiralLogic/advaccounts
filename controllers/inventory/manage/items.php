@@ -95,20 +95,20 @@
       JS::setFocus('NewStockID');
     }
     if ($input_error != 1) {
-      if (Forms::hasPost('del_image')) {
+      if (Input::hasPost('del_image')) {
         $filename = COMPANY_PATH . "$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg";
         if (file_exists($filename)) {
           unlink($filename);
         }
       }
       if (!$new_item) { /*so its an existing one */
-        Item::update($_POST['NewStockID'], $_POST['description'], $_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'], Input::post('units'), Input::post('mb_flag'), $_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['dimension_id'], $_POST['dimension2_id'], Forms::hasPost('no_sale'), Forms::hasPost('editable'));
+        Item::update($_POST['NewStockID'], $_POST['description'], $_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'], Input::post('units'), Input::post('mb_flag'), $_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['dimension_id'], $_POST['dimension2_id'], Input::hasPost('no_sale'), Input::hasPost('editable'));
         DB::updateRecordStatus($_POST['NewStockID'], $_POST['inactive'], 'stock_master', 'stock_id');
         DB::updateRecordStatus($_POST['NewStockID'], $_POST['inactive'], 'item_codes', 'item_code');
         Ajax::activate('stock_id'); // in case of status change
         Event::success(_("Item has been updated."));
       } else { //it is a NEW part
-        Item::add($_POST['NewStockID'], $_POST['description'], $_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'], $_POST['units'], $_POST['mb_flag'], $_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['dimension_id'], $_POST['dimension2_id'], Forms::hasPost('no_sale'), Forms::hasPost('editable'));
+        Item::add($_POST['NewStockID'], $_POST['description'], $_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'], $_POST['units'], $_POST['mb_flag'], $_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['dimension_id'], $_POST['dimension2_id'], Input::hasPost('no_sale'), Input::hasPost('editable'));
         Event::success(_("A new item has been added."));
         JS::setFocus('NewStockID');
       }
@@ -195,7 +195,7 @@
     Table::start('tablestyle_noborder');
     Row::start();
     if ($new_item) {
-      Item::cells(_("Select an item:"), 'stock_id', null, _('New item'), true, Forms::hasPost('show_inactive'), false);
+      Item::cells(_("Select an item:"), 'stock_id', null, _('New item'), true, Input::hasPost('show_inactive'), false);
       Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
     } else {
       Forms::hidden('stock_id', $_POST['stock_id']);
@@ -204,7 +204,7 @@
     Row::end();
     Table::end();
     if (Input::post('_show_inactive_update')) {
-      $_SESSION['options']['stock_id']['inactive'] = Forms::hasPost('show_inactive');
+      $_SESSION['options']['stock_id']['inactive'] = Input::hasPost('show_inactive');
       Ajax::activate('stock_id');
     }
   }

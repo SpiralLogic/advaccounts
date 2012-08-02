@@ -66,7 +66,7 @@
     $selected_id   = -1;
     $_POST['name'] = $_POST['description'] = '';
   }
-  $result = Tags::getAll(Input::post('type'), Forms::hasPost('show_inactive'));
+  $result = Tags::getAll(Input::post('type'), Input::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("Tag Name"), _("Tag Description"), "", "");

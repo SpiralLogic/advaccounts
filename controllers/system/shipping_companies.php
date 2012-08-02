@@ -59,7 +59,7 @@
     $_POST['show_inactive'] = $sav;
   }
   $sql = "SELECT * FROM shippers";
-  if (!Forms::hasPost('show_inactive')) {
+  if (!Input::hasPost('show_inactive')) {
     $sql .= " WHERE !inactive";
   }
   $sql .= " ORDER BY shipper_id";

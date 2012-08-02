@@ -23,7 +23,7 @@
       $tax_types   = Tax_Types::get_all_simple();
       $i           = 0;
       while ($myrow = DB::fetch($tax_types)) {
-        if (Forms::hasPost('ExemptTax' . $myrow["id"])) {
+        if (Input::hasPost('ExemptTax' . $myrow["id"])) {
           $exempt_from[$i] = $myrow["id"];
           $i++;
         }
@@ -48,7 +48,7 @@
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result2 = $result = Tax_ItemType::getAll(Forms::hasPost('show_inactive'));
+  $result2 = $result = Tax_ItemType::getAll(Input::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid width30');
   $th = array(_("Name"), _("Tax exempt"), '', '');

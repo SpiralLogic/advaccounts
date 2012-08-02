@@ -54,7 +54,7 @@
         }
       }
     }
-    if (Forms::hasPost('del_coy_logo')) {
+    if (Input::hasPost('del_coy_logo')) {
       $filename = COMPANY_PATH . "images/" . $_POST['coy_logo'];
       if (file_exists($filename)) {
         $result = unlink($filename);

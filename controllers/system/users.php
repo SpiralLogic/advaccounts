@@ -15,11 +15,11 @@
 
     if (can_process($auth)) {
       if ($Mode == UPDATE_ITEM) {
-        Users::update($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], Forms::hasPost('rep_popup'), $_POST['pos']);
+        Users::update($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], Input::hasPost('rep_popup'), $_POST['pos']);
         Event::success(_("The selected user has been updated."));
       } else {
-        Users::add($_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], Forms::hasPost('rep_popup'), $_POST['pos']);
-        Users::update_display_prefs(DB::insertId(), User::price_dec(), User::qty_dec(), User::exrate_dec(), User::percent_dec(), User::show_gl(), User::show_codes(), User::date_format(), User::date_sep(), User::prefs()->tho_sep, User::prefs()->dec_sep, User::theme(), User::page_size(), User::hints(), $_POST['profile'], Forms::hasPost('rep_popup'), User::query_size(), User::graphic_links(), $_POST['language'], User::sticky_doc_date(), User::startup_tab());
+        Users::add($_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], Input::hasPost('rep_popup'), $_POST['pos']);
+        Users::update_display_prefs(DB::insertId(), User::price_dec(), User::qty_dec(), User::exrate_dec(), User::percent_dec(), User::show_gl(), User::show_codes(), User::date_format(), User::date_sep(), User::prefs()->tho_sep, User::prefs()->dec_sep, User::theme(), User::page_size(), User::hints(), $_POST['profile'], Input::hasPost('rep_popup'), User::query_size(), User::graphic_links(), $_POST['language'], User::sticky_doc_date(), User::startup_tab());
         Event::success(_("A new user has been added."));
       }
       $Mode = MODE_RESET;
@@ -36,7 +36,7 @@
     unset($_POST); // clean all input fields
     $_POST['show_inactive'] = $sav;
   }
-  $result = Users::getAll(Forms::hasPost('show_inactive'));
+  $result = Users::getAll(Input::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid');
   $th = array(
@@ -57,7 +57,7 @@
     Cell::label($myrow["role"]);
     if ($not_me) {
       Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'users', 'id');
-    } elseif (Forms::hasPost('show_inactive')) {
+    } elseif (Input::hasPost('show_inactive')) {
       Cell::label('');
     }
     Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));

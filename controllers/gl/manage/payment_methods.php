@@ -62,7 +62,7 @@
   Forms::start();
   Table::start('tablestyle grid width80');
   $sql = "SELECT * FROM payment_methods";
-  if (!Forms::hasPost('show_inactive')) {
+  if (!Input::hasPost('show_inactive')) {
     $sql .= " AND !inactive";
   }
   $sql .= " ORDER BY name";

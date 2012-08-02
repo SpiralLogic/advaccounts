@@ -92,7 +92,7 @@
   } else {
     $sql .= " AND trans.type <> " . ST_CUSTDELIVERY . " ";
   }
-  if (!Forms::hasPost('showSettled')) {
+  if (!Input::hasPost('showSettled')) {
     $sql .= " AND (round(abs(trans.ov_amount + trans.ov_gst + " . "trans.ov_freight + trans.ov_freight_tax + " . "trans.ov_discount) - trans.alloc,2) > 0) ";
   }
   $cols = array(

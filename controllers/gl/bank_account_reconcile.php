@@ -340,54 +340,7 @@
       }
       return ($row['type'] != ST_GROUPDEPOSIT) ? GL_UI::view($row["type"], $row["trans_no"]) : '';
     }
-    /**
-     * @param $row
-     *
-     * @return int|string
-     */
-    function formatDebit($row) {
-      $value = $row["amount"];
-      if ($value > 0) {
-        return '<span class="bold">' . $this->Num->_priceFormat($value) . '</span>';
-      }
-      return '';
-    }
-    /**
-     * @param $row
-     *
-     * @return int|string
-     */
-    function formatCredit($row) {
-      $value = -$row["amount"];
-      if ($value <= 0) {
-        return '';
-      }
-      return '<span class="bold">' . $this->Num->_priceFormat($value) . '</span>';
-    }
-    /**
-     * @param $row
-     *
-     * @return string
-     */
-    function formatInfo($row) {
-      if ($row['type'] == ST_BANKTRANSFER) {
-        return DB_Comments::get_string(ST_BANKTRANSFER, $row['trans_no']);
-      } elseif ($row['type'] == ST_GROUPDEPOSIT) {
-        $sql
-                 = "SELECT bank_trans.ref,bank_trans.person_type_id,bank_trans.trans_no,bank_trans.person_id,bank_trans.amount,
- 			comments.memo_ FROM bank_trans LEFT JOIN comments ON (bank_trans.type=comments.type AND bank_trans.trans_no=comments.id)
- 			WHERE bank_trans.bank_act='" . $this->bank_account . "' AND bank_trans.type != " . ST_GROUPDEPOSIT . " AND bank_trans.undeposited>0 AND (undeposited = " . $row['id'] . ")";
-        $result  = $this->DB->_query($sql, 'Couldn\'t get deposit references');
-        $content = '';
-        foreach ($result as $trans) {
-          $name = Bank::payment_person_name($trans["person_type_id"], $trans["person_id"], true, $trans["trans_no"]);
-          $content .= $trans['ref'] . ' <span class="u">' . $name . ' ($' . $this->Num->_priceFormat($trans['amount']) . ')</span>: ' . $trans['memo_'] . '<br>';
-        }
-        return $content;
-      }
-      return Bank::payment_person_name($row["person_type_id"], $row["person_id"], true, $row["trans_no"]);
-    }
-    function updateData() {
+    /**5ateData() {
       DB_Pager::kill('bank_rec');
       unset($_POST["beg_balance"], $_POST["end_balance"]);
       $this->Ajax->_activate('_page_body');
@@ -400,7 +353,7 @@
      * @return bool
      */
     function change_tpl_flag($reconcile_id) {
-      if (!$this->checkDate() && Forms::hasPost("rec_" . $reconcile_id)) // temporary fix
+      if (!$this->checkDate() && Input::hasPost("rec_" . $reconcile_id)) // temporary fix
       {
         return false;
       }
@@ -408,7 +361,7 @@
       {
         $this->Ajax->_activate('bank_date');
       }
-      $reconcile_value = Forms::hasPost("rec_" . $reconcile_id) ? ("'" . $this->Dates->_dateToSql($this->reconcile_date) . "'") :
+      $reconcile_value = Input::hasPost("rec_" . $reconcile_id) ? ("'" . $this->Dates->_dateToSql($this->reconcile_date) . "'") :
         'null';
       GL_Account::update_reconciled_values($reconcile_id, $reconcile_value, $this->reconcile_date, Validation::input_num('end_balance'), $this->bank_account);
       $this->Ajax->_activate('_page_body');

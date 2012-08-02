@@ -27,7 +27,7 @@
   if (Input::post('Update')) {
     $exts = DB_Company::get_company_extensions();
     foreach ($exts as $i => $ext) {
-      $exts[$i]['active'] = Forms::hasPost('Active' . $i);
+      $exts[$i]['active'] = Input::hasPost('Active' . $i);
     }
     advaccounting::write_extensions($exts, Input::post('extset'));
     $installed_extensions = $exts;
@@ -147,7 +147,7 @@
     $extensions[$id]['name']   = $_POST['name'];
     $extensions[$id]['path']   = $_POST['path'];
     $extensions[$id]['title']  = $_POST['title'];
-    $extensions[$id]['active'] = Forms::hasPost('active');
+    $extensions[$id]['active'] = Input::hasPost('active');
     // Currently we support only plugin extensions here.
     $extensions[$id]['type'] = 'plugin';
     $directory               = DOCROOT . "modules/" . $_POST['path'];

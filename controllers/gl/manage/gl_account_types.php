@@ -35,7 +35,7 @@
     $_POST['id'] = $_POST['name'] = '';
     unset($_POST['parent'], $_POST['class_id']);
   }
-  $result = GL_Type::getAll(Forms::hasPost('show_inactive'));
+  $result = GL_Type::getAll(Input::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("ID"), _("Name"), _("Subgroup Of"), _("Class Type"), "", "");
