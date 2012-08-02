@@ -63,7 +63,7 @@
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
 
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     if ($graphics) {
       $pg = new Reports_Graph();
@@ -115,7 +115,7 @@
     );
     if ($convert) {
       $headers[2] = _('Currency');
-    }    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    }    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep = new $report_type(_('Aged Customer Analysis'), "AgedCustomerAnalysis",SA_CUSTPAYMREP, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

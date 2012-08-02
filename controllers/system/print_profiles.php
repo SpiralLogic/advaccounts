@@ -57,7 +57,7 @@
   }
   Table::end(1);
   $result = Printer::get_profile(Input::post('profile_id'));
-  $prints = array();
+  $prints = [];
   while ($myrow = DB::fetch($result)) {
     $prints[$myrow['report']] = $myrow['printer'];
   }

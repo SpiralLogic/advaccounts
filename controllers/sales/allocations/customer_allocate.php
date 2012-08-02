@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   JS::footerFile('/js/allocate.js');
   Page::start(_($help_context = "Allocate Customer Payment or Credit Note"), SA_SALESALLOC);
 
@@ -28,7 +28,7 @@
   }
   if (isset($_GET['trans_no']) && isset($_GET['trans_type'])) {
     Sales_Allocation::clear_allocations();
-    $_SESSION['alloc'] = new Gl_Allocation($_GET['trans_type'], $_GET['trans_no']);
+    $_SESSION['alloc'] = new GL_Allocation($_GET['trans_type'], $_GET['trans_no']);
   }
   if (Input::post('UpdateDisplay')) {
     $_SESSION['alloc']->read();

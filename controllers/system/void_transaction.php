@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(800, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Void a Transaction"), SA_VOIDTRANSACTION);
   if (!isset($_POST['date_'])) {
     $_POST['date_'] = Dates::today();

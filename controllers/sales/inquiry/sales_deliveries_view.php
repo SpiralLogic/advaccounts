@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(900, 600);
+  JS::openWindow(950, 600);
   if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true)) {
     $_POST['OutstandingOnly'] = true;
     Page::start(_($help_context = "Search Not Invoiced Deliveries"), SA_SALESINVOICE);
@@ -176,7 +176,7 @@
     }
     unset($_SESSION['Batch']);
   }
-  $table = db_pager::new_db_pager('deliveries_tbl', $sql, $cols);
+  $table = DB_Pager::new_db_pager('deliveries_tbl', $sql, $cols);
   $table->setMarker(function ($row) {
     return Dates::isGreaterThan(Dates::today(), Dates::sqlToDate($row["due_date"])) && $row["Outstanding"] != 0;
   }, _("Marked items are overdue."));

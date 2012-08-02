@@ -6,4 +6,4 @@
    * Time: 4:57 PM
    * To change this template use File | Settings | File Templates.
    */
-  \Modules\Youtrack::youtrack();
+  \Modules\Youtrack\Youtrack::youtrack();

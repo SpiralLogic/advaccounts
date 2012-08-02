@@ -9,7 +9,7 @@
    **/
 
   JS::setFocus('account');
-  JS::openWindow(800, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Tax Inquiry"), SA_TAXREP);
   // Ajax updates
   //

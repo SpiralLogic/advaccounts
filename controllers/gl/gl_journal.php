@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(800, 500);
+  JS::openWindow(950, 500);
   if (isset($_GET['ModifyGL'])) {
     $_SESSION['page_title'] = sprintf(_("Modifying Journal Transaction # %d."), $_GET['trans_no']);
     $help_context           = "Modifying Journal Entry";

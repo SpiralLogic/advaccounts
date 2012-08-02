@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(800, 500);
+  JS::openWindow(950, 500);
   JS::footerFile('/js/reconcile.js');
   Page::start(_($help_context = "Undeposited Funds"), SA_RECONCILE, Input::request('frame'));
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
@@ -23,7 +23,7 @@
   }
   if (Input::post('_deposit_date_changed')) {
     $_POST['deposited']      = 0;
-    $_SESSION['undeposited'] = array();
+    $_SESSION['undeposited'] = [];
     $_POST['deposit_date']   = check_date() ? (Input::post('deposit_date')) : '';
     foreach ($_POST as $rowid => $row) {
       if (substr($rowid, 0, 4) == 'dep_') {
@@ -39,11 +39,11 @@
   if (isset($_POST['Deposit'])) {
     $sql         = "SELECT * FROM bank_trans WHERE undeposited=1 AND reconciled IS null";
     $query       = DB::query($sql);
-    $undeposited = array();
+    $undeposited = [];
     while ($row = DB::fetch($query)) {
       $undeposited[$row['id']] = $row;
     }
-    $togroup = array();
+    $togroup = [];
     foreach ($_POST as $key => $value) {
       $key = explode('_', $key);
       if ($key[0] == 'dep') {
@@ -52,7 +52,7 @@
     }
     if (count($togroup) > 1) {
       $total_amount = 0;
-      $ref          = array();
+      $ref          = [];
       foreach ($togroup as $row) {
         $total_amount += $row['amount'];
         $ref[] = $row['ref'];
@@ -120,9 +120,7 @@
   $cols         = array(
     _("Type")                    => array(
       'fun' => 'sysTypeName', 'ord' => ''
-    ), _("#")                    => array(
-      'fun' => 'viewTrans', 'ord' => ''
-    ), _("Reference"), _("Date") => array('type'=> 'date', 'ord' => 'desc'), _("Debit") => array(
+    ), _("#")                    => array('fun' => 'viewTrans', 'ord' => '', 'align'=> 'center'), _("Reference"), _("Date") => array('type'=> 'date', 'ord' => 'desc'), _("Debit") => array(
       'align' => 'right', 'fun' => 'formatDebit'
     ), _("Credit")               => array(
       'align' => 'right', 'insert' => true, 'fun' => 'formatCredit'
@@ -132,11 +130,23 @@
       'insert' => true, 'fun' => 'depositCheckbox'
     )
   );
-  $table        = db_pager::new_db_pager('trans_tbl', $sql, $cols);
+  $table        = DB_Pager::new_db_pager('trans_tbl', $sql, $cols);
   $table->width = "80%";
   $table->display($table);
   Display::br(1);
   Forms::submitCenter('Deposit', _("Deposit"), true, '', false);
+  JS::i()->_addLive(<<<JS
+  var voidTransWindow = function() {
+  var voidtrans,type,trans_no,url;
+  type = $(this).data('type');
+  trans_no = $(this).data('trans_no');
+  url ='/system/void_transaction?type='+type+'&trans_no='+trans_no+'&memo=Deleted%20during%20reconcile.';
+  if (!voidtrans) voidtrans = window.open(url,'_blank');
+  else voidtrans.location.href = url;
+  }
+$('#wrapper').on('click','.voidlink',voidTransWindow);
+JS
+  );
   Forms::end();
   Page::end();
   /**
@@ -188,8 +198,10 @@
    *
    * @return null|string
    */
-  function viewTrans($trans) {
-    return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
+  function viewTrans($row) {
+    $content = GL_UI::viewTrans($row["type"], $row["trans_no"]);
+    $content .= '<br><a class="button voidlink" data-type="' . $row["type"] . '" data-trans_no="' . $row["trans_no"] . '">void</a>';
+    return $content;
   }
 
   /**

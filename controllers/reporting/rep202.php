@@ -64,7 +64,7 @@
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
 
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     if ($graphics) {
       $pg = new Reports_Graph();
@@ -117,12 +117,12 @@
     if ($convert) {
       $headers[2] = _('currency');
     }
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep = new $report_type(_('Aged Supplier Analysis'), "AgedSupplierAnalysis",SA_SUPPLIERANALYTIC, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
-    $total         = array();
+    $total         = [];
     $total[0]      = $total[1] = $total[2] = $total[3] = $total[4] = 0.0;
     $past_due1     = DB_Company::get_pref('past_due_days');
     $past_due2     = 2 * $past_due1;

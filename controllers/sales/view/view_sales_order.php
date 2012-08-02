@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(900, 600);
+  JS::openWindow(950, 600);
   if ($_GET['trans_type'] == ST_SALESQUOTE) {
     Page::start(_($help_context = "View Sales Quotation"), SA_SALESTRANSVIEW, true);
   } else {
@@ -65,7 +65,7 @@
     $result         = DB::query($sql, "The related delivery notes could not be retreived");
     $delivery_total = 0;
     $k              = 0;
-    $dn_numbers     = array();
+    $dn_numbers     = [];
     while ($del_row = DB::fetch($result)) {
 
       $dn_numbers[] = $del_row["trans_link"];
@@ -84,7 +84,7 @@
     Display::heading(_("Sales Invoices"));
     $th = array(_("#"), _("Ref"), _("Date"), _("Total"));
     Table::header($th);
-    $inv_numbers    = array();
+    $inv_numbers    = [];
     $invoices_total = 0;
     if (count($dn_numbers)) {
       $sql    = "SELECT * FROM debtor_trans WHERE type=" . ST_SALESINVOICE . " AND trans_no IN(" . implode(',', array_values($dn_numbers)) . ")";

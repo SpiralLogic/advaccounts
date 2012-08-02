@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(800, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Work Order Release to Manufacturing"), SA_MANUFRELEASE);
   if (isset($_GET["trans_no"])) {
     $selected_id = $_GET["trans_no"];

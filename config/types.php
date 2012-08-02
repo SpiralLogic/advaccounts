@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  global $bank_account_types, //
+  global
          $bank_transfer_types, //
          $class_types, //
          $payment_person_types, //
@@ -20,12 +20,7 @@
          $wo_cost_types, //
          $wo_types_array, $sales_type_names;
   //
-  $bank_account_types   = array(
-    BT_TRANSFER => "Savings Account", //
-    "Chequing Account", //
-    " Credit Account", //
-    " Cash Account"
-  );
+
   $bank_transfer_types  = array(
     BT_TRANSFER => "Transfer", //
     "Cheque", //

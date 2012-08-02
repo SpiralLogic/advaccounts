@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Customer Allocations"), SA_SALESALLOC);
   Forms::start();
   /* show all outstanding receipts and credits to be allocated */
@@ -59,7 +59,7 @@
     $cols[_("Customer")] = 'skip';
     $cols[_("Currency")] = 'skip';
   }
-  $table = db_pager::new_db_pager('alloc_tbl', $sql, $cols);
+  $table = DB_Pager::new_db_pager('alloc_tbl', $sql, $cols);
   $table->setMarker('Sales_Allocation::check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
   $table->width = "75%";
   $table->display($table);

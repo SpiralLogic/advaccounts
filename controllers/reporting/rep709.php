@@ -79,10 +79,10 @@
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
 
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     $dec = User::price_dec();
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep = new $report_type(_('Tax Report'), "TaxReport", SA_TAXREP,User::page_size());
     if ($summaryOnly == 1) {
       $summary = _('Summary Only');
@@ -90,7 +90,7 @@
       $summary = _('Detailed Report');
     }
     $res   = getTaxTypes();
-    $taxes = array();
+    $taxes = [];
     while ($tax = DB::fetch($res)) {
       $taxes[$tax['id']] = array('in' => 0, 'out' => 0, 'taxin' => 0, 'taxout' => 0);
     }

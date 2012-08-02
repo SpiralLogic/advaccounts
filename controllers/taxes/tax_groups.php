@@ -22,8 +22,8 @@
 
     if ($input_error != 1) {
       // create an array of the taxes and array of rates
-      $taxes = array();
-      $rates = array();
+      $taxes = [];
+      $rates = [];
       for ($i = 0; $i < 5; $i++) {
         if (isset($_POST['tax_type_id' . $i]) && $_POST['tax_type_id' . $i] != ANY_NUMERIC
         ) {

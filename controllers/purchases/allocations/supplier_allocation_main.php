@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Supplier Allocations"), SA_SUPPLIERALLOC);
   Forms::start();
   /* show all outstanding receipts and credits to be allocated */
@@ -104,7 +104,7 @@
     $cols[_("Supplier")] = 'skip';
     $cols[_("Currency")] = 'skip';
   }
-  $table = db_pager::new_db_pager('alloc_tbl', $sql, $cols);
+  $table = DB_Pager::new_db_pager('alloc_tbl', $sql, $cols);
   $table->setMarker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
   $table->width = "80%";
   $table->display($table);

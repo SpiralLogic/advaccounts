@@ -54,7 +54,7 @@
     if ($destination) {
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     $dec     = User::price_dec();
     $cols    = array(0, 60, 120, 180, 240, 340, 400, 460, 520);
@@ -73,7 +73,7 @@
         'text' => _('User'), 'from' => ($user != -1 ? $user_id : _('All')), 'to' => ''
       )
     );
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep = new $report_type(_('Audit Trail'), "AuditTrail", SA_GLANALYTIC,User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

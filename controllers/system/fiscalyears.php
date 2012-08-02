@@ -237,7 +237,7 @@
    */
   function delete_this_fiscalyear($selected_id)
   {
-    DB_Utils::backup(Config::get('db.' . User::i()->company), 'Security backup before Fiscal Year Removal');
+    Utils::backup(Config::get('db.' . User::i()->company), 'Security backup before Fiscal Year Removal');
     DB::begin();
     $ref    = _("Open Balance");
     $myrow  = DB_Company::get_fiscalyear($selected_id);

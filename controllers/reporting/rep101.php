@@ -104,7 +104,7 @@
     if ($destination) {
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     if ($fromcust == ALL_NUMERIC) {
       $cust = _('All');
@@ -135,7 +135,7 @@
       3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
       4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => '')
     );
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep     = new $report_type(_('Customer Balances'), "CustomerBalances", SA_CUSTPAYMREP,User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

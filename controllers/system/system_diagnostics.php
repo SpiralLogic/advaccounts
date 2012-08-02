@@ -273,9 +273,9 @@
     $test['descr']    = _('Language configuration consistency');
     $test['type']     = 3;
     $test['result']   = true;
-    $test['comments'] = array();
+    $test['comments'] = [];
     $old              = setlocale(LC_MESSAGES, '0');
-    $langs            = array();
+    $langs            = [];
     foreach (Config::get('languages.installed') as $language) {
       $langs[] = $language['code'];
       if ($language['code'] == 'en_AU') {

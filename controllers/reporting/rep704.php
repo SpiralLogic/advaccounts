@@ -43,9 +43,9 @@
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
 
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
     }
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep = new $report_type(_('GL Account Transactions'), "GLAccountTransactions",SA_GLREP, User::page_size());
     $dec = User::price_dec();
     //$cols = array(0, 80, 100, 150, 210, 280, 340, 400, 450, 510, 570);

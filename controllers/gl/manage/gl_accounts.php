@@ -40,7 +40,7 @@
         $_POST['account_code'] = strtoupper($_POST['account_code']);
       }
       if (!isset($_POST['account_tags'])) {
-        $_POST['account_tags'] = array();
+        $_POST['account_tags'] = [];
       }
       if ($selected_account) {
         if (GL_Account::update($_POST['account_code'], $_POST['account_name'], $_POST['account_type'], $_POST['account_code2'])
@@ -96,7 +96,7 @@
     $_POST['account_type']  = $myrow["account_type"];
     $_POST['inactive']      = $myrow["inactive"];
     $tags_result            = Tags::get_all_associated_with_record(TAG_ACCOUNT, $selected_account);
-    $tagids                 = array();
+    $tagids                 = [];
     while ($tag = DB::fetch($tags_result)) {
       $tagids[] = $tag['id'];
     }
@@ -106,7 +106,7 @@
     Row::label(_("Account Code:"), $_POST['account_code']);
   } else {
     if (!isset($_POST['account_code'])) {
-      $_POST['account_tags'] = array();
+      $_POST['account_tags'] = [];
       $_POST['account_code'] = $_POST['account_code2'] = '';
       $_POST['account_name'] = $_POST['account_type'] = '';
       $_POST['inactive']     = 0;

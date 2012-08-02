@@ -8,10 +8,11 @@
    * @link      http://www.advancedgroup.com.au
    **/
   use ADV\App\Controller\Base;
+  use ADV\App\Debtor\Debtor;
   use ADV\Core\View;
   use ADV\Core\Errors;
   use ADV\Core\Num;
-  use ADV\Core\Dates;
+  use ADV\App\Dates;
   use ADV\Core\Event;
   use ADV\Core\Input\Input;
 
@@ -51,7 +52,7 @@
       $this->order = Orders::session_get() ? : null;
       $this->JS->_openWindow(900, 500);
       if (Input::get('debtor_id', Input::NUMERIC)) {
-        $this->action         = Orders::CANCEL_CHANGES;
+        $this->action       = Orders::CANCEL_CHANGES;
         $_POST['debtor_id'] = $_GET['debtor_id'];
         $this->Ajax->activate('debtor_id');
       }
@@ -149,12 +150,13 @@
       Forms::end();
       Debtor::addEditDialog();
       Item::addEditDialog();
+      UI::emailDialogue(CT_CUSTOMER);
       Page::end(true);
     }
     protected function checkBranch() {
       if (Forms::isListUpdated('branch_id')) {
         // when branch is selected via external editor also customer can change
-        $br                   = Sales_Branch::get(Input::post('branch_id'));
+        $br                 = Sales_Branch::get(Input::post('branch_id'));
         $_POST['debtor_id'] = $br['debtor_id'];
         $this->Ajax->activate('debtor_id');
       }
@@ -203,19 +205,16 @@
           $trans_name = "Order";
       }
       $customer = new Debtor($this->Session->getGlobal('debtor_id', 0));
-      $emails   = $customer->getEmailAddresses();
       Event::success(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
       Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
       if ($edit) {
         Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?update=$order_no&type=" . $trans_type);
       }
       Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
-      Reporting::email_link($order_no, _("Email This $trans_name"), true, $trans_type, 'EmailLink', null, $emails, 1);
+      echo Reporting::emailDialogue($customer->id, $trans_type, $order_no);
       if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
         Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA :
           ST_PROFORMAQ), $order_no, 'prtopt');
-        Reporting::email_link($order_no, _("Email This Proforma Invoice"), true, ($trans_type == ST_SALESORDER ? ST_PROFORMA :
-          ST_PROFORMAQ), 'EmailLink', null, $emails, 1);
       }
       if ($trans_type == ST_SALESORDER) {
         Display::submenu_option(_("Create PO from this order"), "/purchases/po_entry_items.php?NewOrder=Yes&UseOrder=" . $order_no . "'");
@@ -467,7 +466,7 @@
       }
       $this->order->finish();
       if ($trans_type == ST_SALESORDER) {
-        $jb = new \Modules\Jobsboard([]);
+        $jb = new \Modules\Jobsboard\Jobsboard([]);
         $jb->addjob($jobsboard_order);
       }
       $this->pageComplete($trans_no, $trans_type, true, $modified);
@@ -570,7 +569,7 @@
       Validation::check(Validation::BRANCHES_ACTIVE, _("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
     }
     protected function setLineOrder() {
-      $line_map = Input::getPost('lineMap', array());
+      $line_map = Input::getPost('lineMap', []);
       $this->order->setLineOrder($line_map);
       $data = ['lineMap'=> $this->order, 'status'=> true];
       $this->JS->_renderJSON($data);

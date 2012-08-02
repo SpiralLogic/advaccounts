@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Receive Purchase Order Items"), SA_GRN);
   if (isset($_GET[ADDED_ID])) {
     $grn        = $_GET[ADDED_ID];

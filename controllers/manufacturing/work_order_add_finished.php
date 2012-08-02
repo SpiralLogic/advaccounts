@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Produce or Unassemble Finished Items From Work Order"), SA_MANUFRECEIVE);
   if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
     $_POST['selected_id'] = $_GET['trans_no'];

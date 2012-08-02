@@ -9,7 +9,7 @@
    **/
 
   JS::setFocus('account');
-  JS::openWindow(800, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "General Ledger Inquiry"), SA_GLTRANSVIEW);
   // Ajax updates
   //
@@ -106,7 +106,7 @@
     if ($_POST["account"] == null) {
       $account_col = array(_("Account"));
     } else {
-      $account_col = array();
+      $account_col = [];
     }
     if ($dim == 2) {
       $dim_cols = array(_("Dimension") . " 1", _("Dimension") . " 2");
@@ -114,7 +114,7 @@
       if ($dim == 1) {
         $dim_cols = array(_("Dimension"));
       } else {
-        $dim_cols = array();
+        $dim_cols = [];
       }
     }
     if ($show_balances) {

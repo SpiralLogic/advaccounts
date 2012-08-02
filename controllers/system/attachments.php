@@ -52,7 +52,7 @@
       }
     }
   }
-  JS::openWindow(800, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Attach Documents"), SA_ATTACHDOCUMENT);
   list($Mode, $selected_id) = Page::simple_mode(true);
   if (isset($_GET['filterType'])) // catch up external links

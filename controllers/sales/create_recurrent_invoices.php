@@ -8,12 +8,12 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(900, 600);
+  JS::openWindow(950, 600);
   Page::start(_($help_context = "Create and Print Recurrent Invoices"), SA_SALESINVOICE);
   if (isset($_GET['recurrent'])) {
     $date = Dates::today();
     if (Dates::isDateInFiscalYear($date)) {
-      $invs   = array();
+      $invs   = [];
       $sql    = "SELECT * FROM recurrent_invoices WHERE id=" . DB::escape($_GET['recurrent']);
       $result = DB::query($sql, "could not get recurrent invoice");
       $myrow  = DB::fetch($result);

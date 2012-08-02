@@ -73,7 +73,7 @@
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
 
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     $dec       = User::price_dec();
     $home_curr = DB_Company::get_pref('curr_default');
@@ -117,7 +117,7 @@
         'text' => _('Show GP %'), 'from' => $GP, 'to'   => ''
       )
     );
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep     = new $report_type(_('Price Listing'), "PriceListing",SA_PRICEREP, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

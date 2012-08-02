@@ -32,7 +32,7 @@
     $open_balance_total   = 0;
     $period_balance_total = 0;
     unset($totals_arr);
-    $totals_arr = array();
+    $totals_arr = [];
     $printtitle = 0; //Flag for printing type name
     //Get Accounts directly under this group/type
     $result = GL_Account::getAll(null, null, $type);
@@ -131,7 +131,7 @@
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
 
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     if ($graphics) {
       $pg = new Reports_Graph();
@@ -174,7 +174,7 @@
         );
       }
     }
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep = new $report_type(_('Balance Sheet'), "BalanceSheet", SA_GLANALYTIC,User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

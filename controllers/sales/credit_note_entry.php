@@ -11,7 +11,7 @@
   //	Entry/Modify free hand Credit Note
   //
 
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   $order = Orders::session_get() ? : null;
   if (isset($_GET[Orders::NEW_CREDIT])) {
     $_SESSION['page_title'] = _($help_context = "Customer Credit Note");

@@ -26,7 +26,7 @@
         continue;
       }
       // create security backup
-      DB_Utils::backup($conn, 'no', 'Security backup before upgrade');
+      Utils::backup($conn, 'no', 'Security backup before upgrade');
       // apply all upgrade data
       foreach ($installers as $i => $inst) {
         $ret = upgrade_step($i, $conn);
@@ -41,7 +41,7 @@
     }
     if ($ret) { // re-read the prefs
       $user            = Users::get_by_login(User::i()->username);
-      User::i()->prefs = new userPrefs($user);
+      User::i()->prefs = new UserPrefs($user);
       Event::success(_('All companies data has been successfully updated'));
     }
     Ajax::activate('_page_body');
@@ -129,7 +129,7 @@ You have to clean database manually to enable them, or try to perform forced upg
   function get_installers()
   {
     $patchdir = DOCROOT . "sql/";
-    $upgrades = array();
+    $upgrades = [];
     $datadir  = @opendir($patchdir);
     if ($datadir) {
       while (false !== ($fname = readdir($datadir))) { // check all php files but index.php
@@ -172,7 +172,7 @@ You have to clean database manually to enable them, or try to perform forced upg
         }
         $sql = $inst->sql;
         if ($sql != '') {
-          $ret &= DB_Utils::import(DOCROOT . 'upgrade' . DS . 'sql' . DS . $sql, $conn, $force);
+          $ret &= Utils::import(DOCROOT . 'upgrade' . DS . 'sql' . DS . $sql, $conn, $force);
         }
         $ret &= $inst->install($force);
       } else {

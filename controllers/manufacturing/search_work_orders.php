@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(800, 500);
+  JS::openWindow(950, 500);
   if (isset($_GET['outstanding_only']) && ($_GET['outstanding_only'] == true)) {
     // curently outstanding simply means not closed
     $outstanding_only = 1;
@@ -230,7 +230,7 @@
       'insert' => true, 'fun' => 'view_gl_link'
     )
   );
-  $table = db_pager::new_db_pager('orders_tbl', $sql, $cols);
+  $table = DB_Pager::new_db_pager('orders_tbl', $sql, $cols);
   $table->setMarker('checkOverdue', _("Marked orders are overdue."));
   $table->width = "90%";
   $table->display($table);

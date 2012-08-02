@@ -59,8 +59,7 @@
     $_POST['bank_account_number'] = $_POST['bank_address'] = '';
   }
   /* Always show the list of accounts */
-  $sql
-    = "SELECT account.*, gl_account.account_name
+  $sql = "SELECT account.*, gl_account.account_name
     FROM bank_accounts account, chart_master gl_account
     WHERE account.account_code = gl_account.account_code";
   if (!Forms::hasPost('show_inactive')) {
@@ -75,8 +74,8 @@
   );
   Forms::inactiveControlCol($th);
   Table::header($th);
-  $k = 0;
-  global $bank_account_types;
+  $k                  = 0;
+  $bank_account_types = Bank_Account::$types;
   while ($myrow = DB::fetch($result)) {
     Cell::label($myrow["bank_account_name"], ' class="nowrap"');
     Cell::label($bank_account_types[$myrow["account_type"]], ' class="nowrap"');
@@ -119,7 +118,7 @@
   }
   Forms::textRow(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
   if ($is_editing) {
-    global $bank_account_types;
+    $bank_account_types = Bank_Account::$types;
     Row::label(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
   } else {
     Bank_Account::type_row(_("Account Type:"), 'account_type', null);

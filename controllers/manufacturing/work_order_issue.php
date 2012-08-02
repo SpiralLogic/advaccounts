@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(800, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Issue Items to Work Order"), SA_MANUFISSUE);
   if (isset($_GET[ADDED_ID])) {
     Event::success(_("The work order issue has been entered."));

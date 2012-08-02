@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(800, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Journal Inquiry"), SA_GLANALYTIC);
   // Ajax updates
   //
@@ -127,7 +127,7 @@
   if (!Forms::hasPost('AlsoClosed')) {
     $cols[_("#")] = 'skip';
   }
-  $table        = db_pager::new_db_pager('journal_tbl', $sql, $cols);
+  $table        = DB_Pager::new_db_pager('journal_tbl', $sql, $cols);
   $table->width = "80%";
   $table->display($table);
   Forms::end();

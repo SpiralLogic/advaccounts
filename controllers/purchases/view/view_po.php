@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "View Purchase Order"), SA_SUPPTRANSVIEW, true);
   if (!isset($_GET['trans_no'])) {
     die ("<br>" . _("This page must be called with a purchase order number to review."));

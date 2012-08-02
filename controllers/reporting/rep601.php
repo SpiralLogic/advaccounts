@@ -63,9 +63,9 @@
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
 
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
     }
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep     = new $report_type(_('Bank Statement'), "BankStatement",SA_BANKREP, User::page_size());
     $dec     = User::price_dec();
     $cols    = array(0, 90, 110, 170, 225, 350, 400, 460, 520);

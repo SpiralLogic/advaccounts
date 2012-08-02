@@ -70,7 +70,7 @@
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
 
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     $cols    = array(0, 50, 210, 250, 320, 395, 465, 515);
     $headers = array(_('Reference'), _('Name'), _('Type'), _('Date'), _('Due Date'), _('Closed'), _('YTD'));
@@ -78,7 +78,7 @@
     $params  = array(
       0 => $comments, 1 => array('text' => _('Dimension'), 'from' => $fromdim, 'to' => $todim)
     );
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep     = new $report_type(_('Dimension Summary'), "DimensionSummary", SA_DIMENSIONREP,User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

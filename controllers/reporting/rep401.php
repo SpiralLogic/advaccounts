@@ -50,7 +50,7 @@
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
 
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     $cols    = array(0, 50, 305, 375, 445, 515);
     $headers = array(_('Component'), _('Description'), _('Loc'), _('Wrk Ctr'), _('Quantity'));
@@ -60,7 +60,7 @@
         'text' => _('Component'), 'from' => $frompart, 'to' => $topart
       )
     );
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep     = new $report_type(_('Bill of Material Listing'), "BillOfMaterial",SA_BOMREP, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

@@ -12,7 +12,7 @@
           * ********************************************************************* */
   print_invoices();
   function print_invoices() {
-    $report_type = '\\ADV\\App\\Reports\\Pdf';
+    $report_type = '\\ADV\\App\\Reports\\PDF';
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
     $currency    = $_POST['PARAM_2'];
@@ -35,7 +35,7 @@
     $params = array('comments' => $comments);
     $cur    = DB_Company::get_pref('curr_default');
     if ($email == 0) {
-      /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+      /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
       $rep           = new $report_type(_('TAX INVOICE'), "InvoiceBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size());
       $rep->currency = $cur;
       $rep->Font();

@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "View Supplier Invoice"), SA_SUPPTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {
     $trans_no = $_GET["trans_no"];

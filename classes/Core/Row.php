@@ -1,0 +1,49 @@
+<?php
+  /**
+   * Created by JetBrains PhpStorm.
+   * User: advanced
+   * Date: 9/05/12
+   * Time: 2:42 PM
+   * To change this template use File | Settings | File Templates.
+   */
+  namespace ADV\Core;
+
+  class Row
+  {
+    /**
+     * @param        $label
+     * @param        $value
+     * @param string $params
+     * @param string $params2
+     * @param int    $leftfill
+     * @param null   $id
+     */
+    public static function label($label, $value, $label_cell_params = "", $params2 = "", $leftfill = 0, $id = null) {
+      echo "<tr>";
+      if ($label_cell_params == "") {
+        echo "<td class='label'>$label</td>";
+        $label = null;
+      } elseif (stristr($label_cell_params, 'class')) {
+        echo "<td $label_cell_params>$label</td>";
+        $label = null;
+      }
+      Cell::labels($label, $value, $label_cell_params, $params2, $id);
+      if ($leftfill != 0) {
+        echo "<td colspan=$leftfill></td>";
+      }
+      echo "</tr>\n";
+    }
+    /**
+     * @param string $param
+     */
+    public static function start($param = "") {
+      if ($param != "") {
+        echo "<tr $param>\n";
+      } else {
+        echo "<tr>\n";
+      }
+    }
+    public static function end() {
+      echo "</tr>\n";
+    }
+  }

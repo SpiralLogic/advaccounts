@@ -74,7 +74,7 @@
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
 
-      $report_type = '\\ADV\\App\\Reports\\Pdf';
+      $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     if ($category == ALL_NUMERIC) {
       $category = 0;
@@ -118,7 +118,7 @@
     );
     $cols2    = $cols;
     $aligns2  = $aligns;
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep      = new $report_type(_('Order Status Listing'), "OrderStatusListing",SA_SALESBULKREP, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);

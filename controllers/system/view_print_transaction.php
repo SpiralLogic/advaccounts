@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(800, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "View or Print Transactions"), SA_VIEWPRINTTRANSACTION);
   if (isset($_POST['ProcessSearch'])) {
     if (!check_valid_entries()) {
@@ -131,7 +131,7 @@
       if (!$trans_ref) {
         Arr::remove($cols, 1);
       }
-      $table        =db_pager::new_db_pager('transactions', $sql, $cols);
+      $table        =DB_Pager::new_db_pager('transactions', $sql, $cols);
       $table->width = "40%";
       $table->display($table);
     }

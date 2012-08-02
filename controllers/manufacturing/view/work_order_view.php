@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(800, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "View Work Order"), SA_MANUFTRANSVIEW, true);
   $woid = 0;
   if ($_GET['trans_no'] != "") {

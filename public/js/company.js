@@ -241,7 +241,7 @@ var Company = function ()
       company = content.company;
       var data = company;
       var activetabs = (!company.id) ? [0, 1, 2, 3, 4] : [];
-      Adv.tabs1.tabs('option', 'disabled', activetabs);
+      Adv.o.tabs[1].tabs('option', 'disabled', activetabs);
       if (content.contact_log !== undefined) {
         Adv.setContactLog(content.contact_log);
       }
@@ -346,7 +346,6 @@ var Company = function ()
 $(function ()
   {
     Adv.extend({
-                 tabs:         $("#tabs0"),
                  accFields:    $("[name^='accounts']"),
                  fieldsChanged:0,
                  btnConfirm:   $("#btnConfirm").mousedown(function ()
@@ -360,15 +359,15 @@ $(function ()
                                                            return false;
                                                          }),
                  ContactLog:   $("#contactLog").hide(),
-                 tabs1:        $("#tabs1").tabs({ select:function (event, ui)
-                 {
-                   var url = $.data(ui.tab, 'load.tabs');
-                   if (url) {
-                     location.href = url + Company.get().id;
-                   }
-                   return false;
-                 }, selected:                            -1 })
                });
+    Adv.o.tabs[0]=$("#tabs0");Adv.o.tabs[1]=        $("#tabs1").tabs({ select:function (event, ui)
+    {
+      var url = $.data(ui.tab, 'load.tabs');
+      if (url) {
+        location.href = url + Company.get().id;
+      }
+      return false;
+    }, selected:                            -1 })
     $("#useShipAddress").click(function ()
                                {
                                  Adv.accFields.each(function ()
@@ -432,13 +431,13 @@ $(function ()
                                    });
     $("#messageLog").prop('disabled', true).css('background', 'white');
     $("[name='messageLog']").keypress(function (event)
-                                      {
+                                        {
                                         return false;
                                       });
-    Adv.tabs.delegate("input, textarea,select", "change keyup", function ()
+    Adv.o.tabs[0].delegate("input, textarea,select", "change keyup", function ()
     {
       var $this = $(this), $thisname = $this.attr('name'), buttontext;
-      if ($thisname === 'messageLog' || $thisname === 'branchList' || Adv.tabs.tabs('option', 'selected') == 4) {
+      if ($thisname === 'messageLog' || $thisname === 'branchList' || Adv.o.tabs[0].tabs('option', 'selected') == 4) {
         return;
       }
       Adv.Forms.stateModified($this);

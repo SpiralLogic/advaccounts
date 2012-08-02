@@ -52,7 +52,7 @@
 
   function print_statements() {
     global $systypes_array, $systypes_array_short;
-    $report_type         = '\\ADV\\App\\Reports\\Pdf';
+    $report_type         = '\\ADV\\App\\Reports\\PDF';
     $txt_statement       = "Statement";
     $txt_opening_balance = 'Opening Balance';
     $doc_as_of           = "as of";
@@ -74,7 +74,7 @@
     $past_due1           = DB_Company::get_pref('past_due_days');
     $past_due2           = 2 * $past_due1;
     if ($email == 0) {
-      /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+      /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
       $rep           = new $report_type(_('STATEMENT'), "StatementBulk", SA_CUSTSTATREP, User::page_size());
       $rep->currency = $cur;
       $rep->Font();
@@ -107,7 +107,7 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
       if ((DB::numRows($trans_rows) == 0)) {
         continue;
       }
-      $transactions = array();
+      $transactions = [];
       $branch       = $openingbalance = $balance = 0;
       while ($transaction = DB::fetchAssoc($trans_rows)) {
         $balance += $transaction['TotalAmount'] - $transaction['Allocated'];

@@ -51,7 +51,7 @@
     if ($destination) {
       $report_type = 'Excel';
     } else {
-      $report_type = 'Pdf';
+      $report_type = 'PDF';
     }
     if ($summary == 0) {
       $sum = _("No");
@@ -76,7 +76,7 @@
     );
     $cols2    = $cols;
     $aligns2  = $aligns;
-    /** @var \ADV\App\Reports\Pdf|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep      = new ADVReport(_('Salesman Listing'), "SalesmanListing",SA_SALESMANREP, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);

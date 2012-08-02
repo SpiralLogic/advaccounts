@@ -22,7 +22,7 @@
       ), //
       'css' => array( //
         'minify'   => true, //
-        'minifier' => 'JSMin', //
+        'minifier' => '\\ADV\\Core\\CSSMin', //
         'settings' => array( //
           //specifies whether to emebed files included in css files using the data URI scheme or not
           'embed'           => true, //

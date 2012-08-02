@@ -1,4 +1,6 @@
 <?php
+  use ADV\App\Debtor\Debtor;
+  use ADV\App\Item\Item;
 
   /**
    * PHP version 5.4
@@ -11,7 +13,7 @@
   //	Entry/Modify Sales Invoice against single delivery
   //	Entry/Modify Batch Sales Invoice against batch of deliveries
   //
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   $page_title = 'Sales Invoice Complete';
   if (isset($_GET[Orders::MODIFY_INVOICE])) {
     $page_title   = sprintf(_("Modifying Sales Invoice # %d."), $_GET[Orders::MODIFY_INVOICE]);
@@ -132,7 +134,7 @@
     }
   }
   // find delivery spans for batch invoice display
-  $dspans  = array();
+  $dspans  = [];
   $lastdn  = '';
   $spanlen = 1;
   for ($line_no = 0; $line_no < count($order->line_items); $line_no++) {

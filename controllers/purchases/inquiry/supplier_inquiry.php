@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(900, 500);
+  JS::openWindow(950, 500);
   Page::start(_($help_context = "Supplier Inquiry"), SA_SUPPTRANSVIEW);
   $creditor_id = Input::getPost('creditor_id', INPUT::NUMERIC, -1);
   if (isset($_GET['FromDate'])) {
@@ -39,8 +39,8 @@
   if (Input::post('RefreshInquiry')) {
     Ajax::activate('totals_tbl');
   }
-  if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
-    $searchArray = explode(' ', $_POST['ajaxsearch']);
+  if (AJAX_REFERRER && !empty($_POST['q'])) {
+    $searchArray = explode(' ', $_POST['q']);
     unset($_POST['creditor_id']);
   }
   $date_after = Dates::dateToSql($_POST['TransAfterDate']);
@@ -63,14 +63,14 @@
  	FROM creditor_trans as trans, suppliers as supplier
  	WHERE supplier.creditor_id = trans.creditor_id
  	AND trans.ov_amount != 0"; // exclude voided transactions
-  if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
-    foreach ($searchArray as $ajaxsearch) {
-      if (empty($ajaxsearch)) {
+  if (AJAX_REFERRER && !empty($_POST['q'])) {
+    foreach ($searchArray as $quicksearch) {
+      if (empty($quicksearch)) {
         continue;
       }
-      $ajaxsearch = "%" . $ajaxsearch . "%";
+      $quicksearch = "%" . $quicksearch . "%";
       $sql .= " AND (";
-      $sql .= " supplier.name LIKE " . DB::quote($ajaxsearch) . " OR trans.trans_no LIKE " . DB::quote($ajaxsearch) . " OR trans.reference LIKE " . DB::quote($ajaxsearch) . " OR trans.supplier_reference LIKE " . DB::quote($ajaxsearch) . ")";
+      $sql .= " supplier.name LIKE " . DB::quote($quicksearch) . " OR trans.trans_no LIKE " . DB::quote($quicksearch) . " OR trans.reference LIKE " . DB::quote($quicksearch) . " OR trans.supplier_reference LIKE " . DB::quote($quicksearch) . ")";
     }
   } else {
     $sql
@@ -130,7 +130,7 @@
     $cols[_("Currency")] = 'skip';
   }
   /*show a table of the transactions returned by the sql */
-  $table = db_pager::new_db_pager('trans_tbl', $sql, $cols);
+  $table = DB_Pager::new_db_pager('trans_tbl', $sql, $cols);
   $table->setMarker('checkOverdue', _("Marked items are overdue."));
   $table->width = "90";
   $table->display($table);

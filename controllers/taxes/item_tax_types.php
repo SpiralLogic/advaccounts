@@ -19,7 +19,7 @@
     }
     if ($input_error != 1) {
       // create an array of the exemptions
-      $exempt_from = array();
+      $exempt_from = [];
       $tax_types   = Tax_Types::get_all_simple();
       $i           = 0;
       while ($myrow = DB::fetch($tax_types)) {

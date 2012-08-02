@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   return array(
-    'ADV\\Core'           => array(
+    'ADV\\Core'                  => array(
       'Exception', //
       'Ajax', //
       'Arr', //
@@ -16,9 +16,9 @@
       'Auth', //
       'Loader', //
       'Cache', //
+      'Cell', //
       'Config', //
       'DatePicker', //
-      'Dates', //
       'Dialog', //
       'Errors', //
       'Event', //
@@ -27,16 +27,21 @@
       'HTML', //
       'HttpNotFoundException', //
       'JS', //
+      'JSMin', //
       'Language', //
       'Menu', //
       'MenuUI', //
       'Num', //
+      'Row', //
+      'SelectBox', //
       'Session', //
       'Status', //
+      'Table', //
       'UploadHandler', //
       'View', //
       'XMLParser', //
-    ), 'ADV\\Core\\DB'    => array(
+    ), //
+    'ADV\\Core\\DB'              => array(
       'DB', //
       'DBException', //
       'DBDuplicateException', //
@@ -44,9 +49,37 @@
       'DBInsertException', //
       'DBSelectException', //
       'DBUpdateException', //
-    ), 'ADV\\Core\\Module'=> array(
+      'Utils', //
+    ), 'ADV\\Core\\Module'       => array(
       'Loadable', //
-    ), 'ADV\\App'         => array(
+    ), 'ADV\\App'                => array(
       'Page', //
-    ), 'ADV\\Core\\Input'  => ['Input'],
+      'Security', //
+      'Dates', //
+    ), //
+    'ADV\\App\\Debtor'           => array(
+      'Debtor', //
+    ), //
+    'ADV\\App\\Bank'             => array(
+      'Bank', //
+    ), //
+    'ADV\\App\\Contact'          => array(
+      'Contact', //
+    ), //
+    'ADV\\App\\Creditor'         => array(
+      'Creditor', //
+    ), // //
+    'ADV\\App\\Item'             => array(
+      'Item', //
+    ), //// //
+    'ADV\\App\\Tax'              => array(
+      'Tax', //
+    ), // //
+    'ADV\\App\\UI'               => array(
+      'UI', //
+    ), //// //
+    'ADV\\App\\WO'               => array(
+      'WO', //
+    ), //
+    'ADV\\Core\\Input'           => ['Input'],
   );

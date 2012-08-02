@@ -173,7 +173,7 @@
       }
       move_uploaded_file($file1, $file2);
       $db_name = User::i()->company;
-      DB_Utils::import($file2, Config::get('db.' . $db_name));
+      Utils::import($file2, Config::get('db.' . $db_name));
     }
     if (is_uploaded_file($_FILES['uploadfile3']['tmp_name'])) {
       $extensions[$id]['acc_file'] = $_FILES['uploadfile3']['name'];

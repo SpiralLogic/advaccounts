@@ -1,4 +1,6 @@
 <?php
+  use ADV\Core\DB\Utils;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -40,7 +42,7 @@
   }
   ;
   if (Input::post('restore')) {
-    if (DB_Utils::import(BACKUP_PATH . Input::post('backups'), $conn)) {
+    if (Utils::import(BACKUP_PATH . Input::post('backups'), $conn)) {
       Event::success(_("Restore backup completed."));
     }
   }
