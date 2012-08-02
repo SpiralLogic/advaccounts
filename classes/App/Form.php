@@ -118,9 +118,9 @@
      * @param null   $title
      * @param string $params
      */
-    public function  textarea($label, $name, $value, $input_attr = []) {
+    public function  textarea($label, $name, $value=null, $input_attr = []) {
       if ($value === null) {
-        $attr['value'] = Input::post($name, null, '');
+        $value =$attr['value'] = Input::post($name, null, '');
       }
       $attr['name'] = $name;
       array_merge($attr, $input_attr);
@@ -188,7 +188,7 @@
      */
     public function number($label, $name, $value = null, $dec = null, $post_label = null, $input_attr = []) {
       $attr['placeholder'] = $label;
-      $dec                 = $dec ? : User::price_dec();
+      $attr['data-dec']  =  $dec ? : User::price_dec();
       if (!Input::post($name)) {
         $value        = $value ? : 0;
         $_POST[$name] = number_format($value, $dec);
@@ -202,9 +202,8 @@
       } elseif (is_string($size)) {
         $attr['class'] .= ($name == 'freight') ? ' freight ' : ' amount ';
       }
-      $attr['data-dec']  = $dec;
+
       $attr['maxlength'] = $input_attr['max'];
-      $attr['type']      = 'text';
       $attr['name']      = $name;
       $attr['id']        = $this->nameToId($name);
       $attr['type']      = 'text';
