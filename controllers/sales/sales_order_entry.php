@@ -332,7 +332,7 @@
         return false;
       }
       //if (Dates::isGreaterThan($this->order->document_date, $_POST['delivery_date'])) {
-      if (Dates::isGreaterThan($_POST['OrderDate'], $_POST['delivery_date'])) {
+      if (Dates::differenceBetween($_POST['OrderDate'], $_POST['delivery_date'])<0) {
         if ($this->order->trans_type == ST_SALESQUOTE) {
           Event::error(_("The requested valid date is before the date of the quotation."));
         } else {
