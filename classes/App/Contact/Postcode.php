@@ -40,13 +40,13 @@
      */
     public function render() {
       $form = new Form();
-      $form->label('City: ', $this->city[0], UI::search($this->city[0], array(
+      $form->label('City: ', $this->city[0], UI::search($this->city[0], array('placeholder'       =>'City',
                                                                              'url'      => $this->url . '?city=1', 'nodiv'    => true, 'set'      => static::$count, 'name'     => $this->city[0], 'size'     => 35, 'max'      => 40, 'callback' => 'Adv.postcode.fetch'
                                                                         ),true));
-      $form->text('State: ', $this->state[0], $this->state[0], 35, 35, null, [
+      $form->text('State: ', $this->state[0], $this->state[0], 35, 35, null, ['placeholder'       =>'State',
                                                                              'maxlength'  => 35, 'data-set'   => static::$count, 'size'       => 35, 'value'      => $this->state[1], 'name'       => $this->state[0]
                                                                              ]);
-      $form->label('Postcode: ', $this->postcode[0], UI::search($this->postcode[0], [
+      $form->label('Postcode: ', $this->postcode[0], UI::search($this->postcode[0], ['placeholder'       =>'Postcode',
                                                                                     'url'      => $this->url . '?postcode=1', 'nodiv'    => true, 'set'      => static::$count, 'name'     => $this->postcode[0], 'size'     => 35, 'max'      => 40, 'callback' => 'Adv.postcode.fetch'
                                                                                     ],true));
       $this->registerJS();

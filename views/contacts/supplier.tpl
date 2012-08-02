@@ -51,9 +51,9 @@
       Contact Log:
     </div>
     <div class='center'>
-      <button id="addLog" name="addLog" class="button">Add log entry</button>
+      <button id="addLog" name="addLog" class="button">Add log entry</button>  <br>  {{$form.messageLog}}
+
     </div>
-    {{$form.messageLog}}
   </div>
   {#$menu->endTab()->startTab('Supplier Contacts', 'Supplier Contacts')#}
   <div class='center'>
@@ -88,7 +88,7 @@
     </div>
   </div>
   {#$menu->endTab()->startTab('Invoices', 'Invoices')#}
-  <div id='invoiceFrame' data-src='purchases/inquiry/supplier_allocation_inquiry.php?creditor_id={{$creditor_id}}'></div>
+  <div id='invoiceFrame' data-src='/purchases/inquiry/supplier_allocation_inquiry.php?creditor_id={{$creditor_id}}'></div>
   {{$form.frame}}
   {{$form._focus}} {{$form->end()}}
   {#$menu->endTab()->render()#}

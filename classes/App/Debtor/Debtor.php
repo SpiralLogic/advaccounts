@@ -92,7 +92,7 @@
     /**
      * @var
      */
-    public $inactive;
+    public $inactive=0;
     /**
      * @var
      */

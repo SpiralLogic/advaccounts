@@ -114,7 +114,7 @@
         if ($key == 'input') {
           $value = \Forms::prep_value($value);
         }
-        $attrs .= (empty($value) || $key == 'content') ? '' : ' ' . $key . '="' . $value . '"';
+        $attrs .= ((empty($value)&&$key!=='value') || $key == 'content') ? '' : ' ' . $key . '="' . $value . '"';
       }
       echo  '<' . $type . ' ' . $attrs . '>' . (isset($attr['content']) ? $attr['content'] : $content);
     }

@@ -1,12 +1,12 @@
 {{#if !$frame}}
 <div id='companysearch' class='center bold font13 pad20'>
-  <label for='customer'>Search Customer:&nbsp;<input name='customer' id='customer' type='text' autofocus></label>
+  <label for='customer'>Search Customer:&nbsp;<input name='customer' placeholder='Customer' id='customer' type='text' autofocus></label>
 </div>
 {{/if}}
 <div>{{$form->start()}}
   {#$menu->startTab('Details', 'Customer Details', '#', 'text-align:center')#}
   <div id="companyIDs">
-    <label for="name">Customer name:</label><input id="name" name="name" class="big">
+    <label for="name">Customer name:</label><input id="name" placeholder='Customer'  name="name" class="big">
     <label for="id">Customer ID:</label><input id="id" name="id" class="small" maxlength="7">
   </div>
   <div class='formbox width35'>

@@ -67,7 +67,7 @@
                         },
                         $this->customer->branches
                     ),
-                    array('class'=> 'med', 'name' => 'branchList'),
+                    array('class'=> 'med', 'name' => 'branchList'),null,
                     true
                 )
             );
@@ -105,9 +105,9 @@
             $form->text("GSTNo:", 'tax_id', $this->customer->tax_id);
             $form->label('Sales Type:', 'sales_type', Sales_Type::select('sales_type', $this->customer->sales_type));
             //Form::recordStatusListRow(_("Customer status:"), 'inactive');
-            $form->label('Inactive:', 'inactive', UI::select('inactive', ['Yes', 'No'], ['name' => 'inactive'], true));
+            $form->label('Inactive:', 'inactive', UI::select('inactive', [ 'No','Yes'], ['name' => 'inactive'], $this->customer->inactive, true));
             if (!$this->customer->id) {
-                $form->label('Currency Code:', 'curr_code', GL_Currency::select('inactive', $this->customer->curr_code));
+                $form->label('Currency Code:', 'curr_code', GL_Currency::select('curr_code', $this->customer->curr_code));
             } else {
                 $form->label('Currency Code:', 'curr_code', $this->customer->curr_code);
                 $form->hidden('curr_code', $this->customer->curr_code);
@@ -125,11 +125,11 @@
             $form->label('Dispatch Location:', 'branch[default_location]', Inv_Location::select('branch[default_location]', $currentBranch->default_location));
             $form->label('Default Shipper:', 'branch[default_ship_via]', Sales_UI::shippers('branch[default_ship_via]', $currentBranch->default_ship_via));
             $form->label('Tax Group:', 'branch[tax_group_id]', Tax_Groups::select('branch[tax_group_id]', $currentBranch->tax_group_id));
-            $form->label('Disabled:', 'branch[disable_trans]', UI::select('branch.disable_trans', ['Yes', 'No'], ['name' => 'branch[disable_trans]'], true));
+            $form->label('Disabled:', 'branch[disable_trans]', UI::select('branch.disable_trans', ['Yes', 'No'], ['name' => 'branch[disable_trans]'],$currentBranch->disable_trans, true));
             $form->text("Websale ID", 'webid', $this->customer->webid, ['disbaled'=> true]);
-            $form->label('Sales Account:', 'branch[sales_account]', GL_UI::all('branch[sales_account]', $currentBranch->sales_account, false, false, true));
-            $form->label('Receivables Account:', 'branch[receivables_account]', GL_UI::all('branch[receivables_account]', $currentBranch->receivables_account, false, false, true));
-            $form->label(
+            $form->label('Sales Account:', 'branch[sales_account]', GL_UI::all('branch[sales_account]', $currentBranch->sales_account, true, false, true));
+            $form->label('Receivables Account:', 'branch[receivables_account]', GL_UI::all('branch[receivables_account]', $currentBranch->receivables_account, true, false, false));
+          $form->label(
                 'Discount Account:',
                 'branch[sales_discount_account]',
                 GL_UI::all('branch[sales_discount_account]', $currentBranch->sales_discount_account, false, false, true)

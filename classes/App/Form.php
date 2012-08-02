@@ -122,7 +122,7 @@
       if ($value === null) {
         $attr['value'] = Input::post($name, null, '');
       }
-      $attr['name']  = $name;
+      $attr['name'] = $name;
       array_merge($attr, $input_attr);
       $attr['id'] = $this->nameToId($name);
       $content    = HTML::setReturn(true)->textarea($attr['id'], $value, $attr, false)->setReturn(false);
@@ -139,86 +139,87 @@
      * @param string     $title
      * @param array      $input_attr
      */
-    public function text($label, $name, $value = null,  $input_attr = []) {
+    public function text($label, $name, $value = null, $input_attr = []) {
       if ($label) {
         $attr['placeholder'] = $label;
       }
       if ($value === null) {
         $attr['value'] = Input::post($name);
       }
-      $attr['type']      = 'text';
-      $attr['name']      = $name;
+      $attr['type'] = 'text';
+      $attr['name'] = $name;
       array_merge($attr, $input_attr);
       $attr['id'] = $this->nameToId($name);
       $content    = HTML::setReturn(true)->input($attr['id'], $attr)->setReturn(false);
       Ajax::addUpdate($name, $name, $value);
       $this->fields[$attr['id']] = $content;
       $this->label($label, $name);
-    }   /**
-         * @param              $label
-         * @param              $name
-         * @param null         $value
-         * @param array|string $inputparams
-         *
-         * @return void
-         * @internal param null $init
-         */
-        public function  percent($label, $name, $value = null, $inputparams = []) {
-          $attr['class'] = 'percent';
-          array_merge($attr, $inputparams);
-          $this->number($label, $name, $value, User::percent_dec(), '%', $inputparams);
-        }
-        /**
-         * @param        $label
-         * @param        $name
-         * @param null   $value
-         * @param null   $dec
-         * @param null   $max
-         * @param        $size
-         * @param null   $post_label
-         * @param array  $input_attr
-         *
-         * @return void
-         * @internal param null $init
-         * @internal param null $params
-         * @internal param null $id
-         * @internal param string $inputparams
-         * @internal param bool $negatives
-         */
-        public function number($label, $name, $value = null, $dec = null, $post_label = null, $input_attr = []) {
-          $attr['placeholder'] = $label;
-          $dec                 = $dec ? : User::price_dec();
-          if (!Input::post($name)) {
-            $value        = $value ? : 0;
-            $_POST[$name] = number_format($value, $dec);
-          }
-          if ($value === null) {
-            $attr['value'] = Input::post($name);
-          }
-          $size = &$input_attr['size'];
-          if ($size && is_numeric($size)) {
-            $attr['size'] = $size;
-          } elseif (is_string($size)) {
-            $attr['class'] .= ($name == 'freight') ? ' freight ' : ' amount ';
-          }
-          $attr['data-dec']  = $dec;
-          $attr['maxlength'] = $input_attr['max'];
-          $attr['type']      = 'text';
-          $attr['name']      = $name;
-          $attr['id']        = $this->nameToId($name);
-          $attr['type']      = 'text';
-          array_merge($attr, $input_attr);
-          $content = HTML::setReturn(true)->input($name, $attr)->setReturn(false);
-          Ajax::addUpdate($name, $name, $value);
-          if ($post_label) {
-            $content = "<div class='input-append'>$content<span class='add-on' id='_{$name}_label'>$post_label</span></div>";
-            Ajax::addUpdate($name, '_' . $name . '_label', $post_label);
-          }
-          $this->fields[$attr['id']] = $content;
-          $this->label($label, $name);
-          Ajax::addUpdate($name, $name, $value);
-          Ajax::addAssign($name, $name, 'data-dec', $dec);
-        }
+    }
+    /**
+     * @param              $label
+     * @param              $name
+     * @param null         $value
+     * @param array|string $inputparams
+     *
+     * @return void
+     * @internal param null $init
+     */
+    public function  percent($label, $name, $value = null, $inputparams = []) {
+      $attr['class'] = 'percent';
+      array_merge($attr, $inputparams);
+      $this->number($label, $name, $value, User::percent_dec(), '%', $inputparams);
+    }
+    /**
+     * @param        $label
+     * @param        $name
+     * @param null   $value
+     * @param null   $dec
+     * @param null   $max
+     * @param        $size
+     * @param null   $post_label
+     * @param array  $input_attr
+     *
+     * @return void
+     * @internal param null $init
+     * @internal param null $params
+     * @internal param null $id
+     * @internal param string $inputparams
+     * @internal param bool $negatives
+     */
+    public function number($label, $name, $value = null, $dec = null, $post_label = null, $input_attr = []) {
+      $attr['placeholder'] = $label;
+      $dec                 = $dec ? : User::price_dec();
+      if (!Input::post($name)) {
+        $value        = $value ? : 0;
+        $_POST[$name] = number_format($value, $dec);
+      }
+      if ($value === null) {
+        $attr['value'] = Input::post($name);
+      }
+      $size = &$input_attr['size'];
+      if ($size && is_numeric($size)) {
+        $attr['size'] = $size;
+      } elseif (is_string($size)) {
+        $attr['class'] .= ($name == 'freight') ? ' freight ' : ' amount ';
+      }
+      $attr['data-dec']  = $dec;
+      $attr['maxlength'] = $input_attr['max'];
+      $attr['type']      = 'text';
+      $attr['name']      = $name;
+      $attr['id']        = $this->nameToId($name);
+      $attr['type']      = 'text';
+      array_merge($attr, $input_attr);
+      $content = HTML::setReturn(true)->input($name, $attr)->setReturn(false);
+      Ajax::addUpdate($name, $name, $value);
+      if ($post_label) {
+        $content = "<div class='input-append'>$content<span class='add-on' id='_{$name}_label'>$post_label</span></div>";
+        Ajax::addUpdate($name, '_' . $name . '_label', $post_label);
+      }
+      $this->fields[$attr['id']] = $content;
+      $this->label($label, $name);
+      Ajax::addUpdate($name, $name, $value);
+      Ajax::addAssign($name, $name, 'data-dec', $dec);
+    }
     /**
      * Universal sql combo generator
      * $sql must return selector values and selector texts in columns 0 & 1
@@ -1182,7 +1183,6 @@
     public function  refCells($label, $name, $title = null, $init = null, $params = null, $submit_on_change = false) {
       Forms::textCellsEx($label, $name, 'small', 18, $init, $title, $params, null, $submit_on_change);
     }
-
     /**
      * @param        $label
      * @param        $name

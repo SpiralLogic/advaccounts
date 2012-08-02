@@ -1619,6 +1619,8 @@ div.formbox {
 .formbox input, .formbox textarea {
   width:  180px;
   margin: 5px 5px 0 5px;
+}.formbox textarea.big {
+  width:  95%;
 }
 
 .formbox label select {

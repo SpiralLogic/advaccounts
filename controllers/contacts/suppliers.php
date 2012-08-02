@@ -80,9 +80,9 @@
             $form->text('Email:', 'email', $this->creditor->email);
             $form->textarea('Street:', 'address', $this->creditor->address, ['cols'=> 37, 'rows'=> 4]);
             $postcode = new Contact_Postcode(array(
-                                                  'city'     => array('supp_city', $this->creditor->city),
-                                                  'state'    => array('supp_state', $this->creditor->state),
-                                                  'postcode' => array('supp_postcode', $this->creditor->postcode)
+                                                  'city'     => array('city', $this->creditor->city),
+                                                  'state'    => array('state', $this->creditor->state),
+                                                  'postcode' => array('postcode', $this->creditor->postcode)
                                              ));
             $view->set('postcode', $postcode);
             $form->text('Phone Number:', 'supp_phone', $this->creditor->phone2, 35, 30);
@@ -98,9 +98,9 @@
             $form->text("GSTNo:", 'tax_id', $this->creditor->tax_id);
             $form->label('Tax Group:', 'tax_group_id', Tax_Groups::select('tax_group_id', $this->creditor->tax_group_id));
             $form->textarea('General Notes:', 'notes', $this->creditor->notes);
-            $form->label('Inactive:', 'inactive', UI::select('inactive', ['Yes', 'No'], ['name' => 'inactive'], true));
+            $form->label('Inactive:', 'inactive', UI::select('inactive', ['0'=> 'No','1'=>'Yes'], ['name' => 'inactive'],$this->creditor->inactive, true));
             if (!$this->creditor->id) {
-                $form->label('Currency Code:', 'curr_code', GL_Currency::select('inactive', $this->creditor->curr_code));
+                $form->label('Currency Code:', 'curr_code', GL_Currency::select('curr_code', $this->creditor->curr_code));
             } else {
                 $form->label('Currency Code:', 'curr_code', $this->creditor->curr_code);
                 $form->hidden('curr_code', $this->creditor->curr_code);
@@ -115,8 +115,7 @@
             $form->hidden('type', CT_SUPPLIER);
             $view['date'] = date('Y-m-d H:i:s');
             $form->text('Contact:', 'contact_name', $this->creditor->contact_name);
-            $form->textarea(null, 'messageLog', Contact_Log::read($this->customer->id, CT_CUSTOMER), ['class'=> 'width95', 'cols'=> 20]);
-            $form->textarea(null, 'messageLog', Contact_Log::read($this->creditor->id, CT_SUPPLIER), ['class'=> 'width95', 'cols'=> 20]);
+            $form->textarea(null, 'messageLog', '', ['class'=> 'big', 'cols'=> 40]);
 
             $form->textarea('Entry:', 'message', '', ['cols'=> 100, 'rows'=> 10]);
             $view->render();

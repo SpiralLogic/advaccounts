@@ -48,17 +48,19 @@
      *
      * @return \ADV\Core\HTML|null
      */
-    public static function select($id = false, $options = [], $params = [], $return = false) {
+    public static function select($id = false, $options = [], $params = [], $selected=null,$return = false) {
       HTML::setReturn(true)->select($id, $params);
-      foreach ((array) $options as $label => $option) {
-        if (is_array($option)) {
-          HTML::optgroup(array('label' => $label));
-          foreach ($option as $data) {
-            HTML::option(null, $data[0] . ' (' . $data[1] . ')', array('value' => $data[1]), false);
+      foreach ((array) $options as $value => $name) {
+        if (is_array($name)) {
+          HTML::optgroup(array('label' => $value));
+          foreach ($name as $value) {
+            $selected=($selected==$value[1])?null:true;
+            HTML::option(null, $value[0] . ' (' . $value[1] . ')', array('selected'=>$selected,'value' => $value[1]), false);
           }
           HTML::optgroup();
         } else {
-          HTML::option(null, $option, array('value' => $label), false);
+          $selected=($selected===$value)?null:true;
+          HTML::option(null, $name, array('value' => $value,'selected'=>$selected), false);
         }
       }
       $select = HTML::_select()->setReturn(false);
@@ -123,7 +125,7 @@
         'value'      => htmlentities($o['value']), //
         'autofocus'  => $o['focus'], //
         'type'       => 'search', //
-        'placeholder'=> $o['placeholder']
+        'placeholder'=> $o['placeholder']?:$o['label'],
       ];
       if ($o['cells']) {
         HTML::td(null, $o['input_cell_params']);
