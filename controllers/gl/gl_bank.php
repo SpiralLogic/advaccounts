@@ -57,11 +57,7 @@
       JS::setFocus('code_id');
       $input_error = 1;
     }
-    if (!Ref::is_valid($_POST['ref'])) {
-      Event::error(_("You must enter a reference."));
-      JS::setFocus('ref');
-      $input_error = 1;
-    } elseif (!Ref::is_new($_POST['ref'], $_SESSION['pay_items']->trans_type)) {
+  if (!Ref::is_new($_POST['ref'], $_SESSION['pay_items']->trans_type)) {
       $_POST['ref'] = Ref::get_next($_SESSION['pay_items']->trans_type);
     }
     if (!Dates::isDate($_POST['date_'])) {

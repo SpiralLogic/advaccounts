@@ -20,6 +20,8 @@
      * @category PHP
      * @package  Adv.accounts.core
      */
+  use User;
+  use DB_Company;
   /**
    * @method __date()
    * @method dateToSql($date)
@@ -37,8 +39,6 @@
    * @method endFiscalYear()
    * @method beginFiscalYear()
    */
-  use User;
-  use DB_Company;
 
   class Dates
   {

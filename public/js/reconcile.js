@@ -8,45 +8,31 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-function focus_amount(i)
-{
-  save_focus(i);
-  i.setAttribute('_last', Adv.Forms.getAmount(i.name));
-}
-function blur_amount(i)
-{
-  var change = Adv.Forms.getAmount(i.name);
-  Adv.Forms.priceFormat(i.name, change, user.pdec);
-  change = change - i.getAttribute('_last');
-  if (i.name == 'beg_balance') {
-    change = -change;
-  }
-  Adv.Forms.priceFormat('difference', Adv.Forms.getAmount('difference', 1, 1) + change, user.pdec);
-}
-var balances = {
-  '.amount':function (e)
-  {
-    e.onblur = function ()
-    {
-      blur_amount(this);
-    };
-    e.onfocus = function ()
-    {
-      focus_amount(this);
-    };
-  }
-};
-Behaviour.register(balances);
-$(function ()
-  {
-    $("#summary").draggable();
-    $('#wrapper').on('click', '.voidlink', function ()
-    {
-      var voidtrans=false, type = $(this).data('type'), trans_no = $(this).data('trans_no'), url = '/system/void_transaction?type=' + type + '&trans_no=' + trans_no + '&memo=Deleted%20during%20reconcile.';
-      if (voidtrans) {
-        voidtrans.location.href = url;
-      } else {
-        voidtrans = window.open(url, '_blank');
-      }
-    })
+
+Adv.extend({Reconcile:{group:{}, total:0,
+  groupSelect:function () {
+    var self = Adv.Reconcile, data = $(this).data();
+    if (this.checked) {
+      self.group[data.id] = data;
+      self.total += data.amount;
+    } else {
+      self.total -= data.amount;
+      delete     self.group[data.id];
+    }
+    Adv.Forms.priceFormat('deposited',Adv.Reconcile.total,2,true);
+  },
+  getGrouped:function () {console.log(Adv.Reconcile.group, Adv.Reconcile.total);}
+}});
+$(function () {
+  $("#summary").draggable();
+  $('#wrapper').on('click', '.voidlink', function () {
+    var voidtrans = false, type = $(this).data('type'), trans_no = $(this).data('trans_no'), url = '/system/void_transaction?type=' + type + '&trans_no=' + trans_no + '&memo=Deleted%20during%20reconcile.';
+    if (voidtrans) {
+      voidtrans.location.href = url;
+    } else {
+      voidtrans = window.open(url, '_blank');
+    }
   });
+  $('#wrapper').on('change', ':checkbox', Adv.Reconcile.groupSelect)
+
+});

@@ -5,9 +5,9 @@
 {{/if}}
 <div>{{$form->start()}}
   {#$menu->startTab('Details', 'Customer Details', '#', 'text-align:center')#}
-  <div id="companyIDs">
+  <div id="companyIDs" class='pad5'>
     <label for="name">Customer name:</label><input id="name" placeholder='Customer'  name="name" class="big">
-    <label for="id">Customer ID:</label><input id="id" name="id" class="small" maxlength="7">
+    <label>Customer ID:</label><input id="id" name='id' disabled class="small" maxlength="7"><input type='hidden' value='{{$debtor_id}}' name='id' class="small" maxlength="7">
   </div>
   <div class='formbox width35'>
     <div class='tablehead'>

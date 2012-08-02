@@ -217,8 +217,9 @@
      */
     protected function getTotal() {
       if ($this->accountHasStatements) {
-        $sql                  = "(select (rb - amount) as amount from temprec where date>='" . $this->begin_date . "' and date<='" . $this->end_date . "' and bank_account_id=" . $this->DB->_quote($this->bank_account) . " order by id desc limit 0,1) union (select rb as amount from temprec where date>='" . $this->begin_date . "' and date<='" . $this->end_date .
-          "' and bank_account_id=" . $this->DB->_quote($this->bank_account) . " order by id asc limit 0,1)";
+        $sql                  = "(select (rb - amount) as amount from temprec where date>='" . $this->begin_date . "' and date<='" . $this->end_date . "' and bank_account_id=" . $this->DB->_quote($this->bank_account) . " order by date, id desc limit 0,
+        1) union (select rb as amount from temprec where date>='" . $this->begin_date . "' and date<='" . $this->end_date .
+          "' and bank_account_id=" . $this->DB->_quote($this->bank_account) . " order by date desc, id asc limit 0,1)";
         $result               = $this->DB->_query($sql);
         $beg_balance          = $this->DB->_fetch($result)['amount'];
         $end_balance          = $this->DB->_fetch($result)['amount'];

@@ -11,6 +11,7 @@
   /**
    * @method post($var, $type = null, $default = null)
    * @method get($var, $type = null, $default = null)
+   * @method session($var, $type = null, $default = null)
    * @method getPost($var, $type = null, $default = null)
    * @method Input i()
    * @method postGet($var, $type = null, $default = null)
