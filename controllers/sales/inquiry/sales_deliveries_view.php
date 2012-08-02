@@ -22,7 +22,7 @@
     $del_count = 0;
     foreach ($_POST['Sel_'] as $delivery => $branch) {
       $checkbox = 'Sel_' . $delivery;
-      if (Forms::hasPost($checkbox)) {
+      if (Input::hasPost($checkbox)) {
         if (!$del_count) {
           $del_branch = $branch;
         } else {

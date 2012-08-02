@@ -11,13 +11,17 @@
   //
   class PurchaseOrder extends \ADV\App\Controller\Base
   {
-
-    protected $iframe='';
+    protected $iframe = '';
     /** @var Purch_Order */
     protected $order = null;
     protected function before() {
       JS::openWindow(950, 500);
       $this->order = Orders::session_get() ? : null;
+      if (Input::get('creditor_id', Input::NUMERIC)) {
+              $this->action       = Orders::CANCEL_CHANGES;
+              $_POST['creditor_id'] = $_GET['creditor_id'];
+              $this->Ajax->activate('creditor_id');
+            }
       if (isset($_POST[Orders::CANCEL_CHANGES])) {
         $order_no = $this->order->order_no;
         Orders::session_delete($_POST['order_id']);
@@ -58,8 +62,7 @@
         $allow_update = $this->checkData();
         if ($allow_update == true) {
           if ($allow_update == true) {
-            $sql
-                    = "SELECT long_description as description , units, mb_flag
+            $sql    = "SELECT long_description as description , units, mb_flag
   				FROM stock_master WHERE stock_id = " . DB::escape($_POST['stock_id']);
             $result = DB::query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
             if (DB::numRows($result) == 0) {
@@ -101,7 +104,7 @@
         unset($_POST['stock_id'], $_POST['qty'], $_POST['price'], $_POST['req_del_date']);
       }
       $this->iframe = "<div class='center'><iframe src='" . e('/purchases/inquiry/po_search_completed.php?' . LOC_NOT_FAXED_YET . '=1&frame=1') . "' class='width70' style='height:300px' ></iframe></div>";
-      if (!Input::get(Orders::MODIFY_ORDER)) {
+      if (Input::get(Orders::MODIFY_ORDER)) {
         $this->order = $this->createOrder($_GET[Orders::MODIFY_ORDER]);
       } elseif (isset($_POST[CANCEL]) || isset($_POST[UPDATE_ITEM])) {
         Item_Line::start_focus('_stock_id_edit');
@@ -119,10 +122,11 @@
       }
       Forms::start();
       echo "<br>";
-      Forms::hidden('order_id');          echo $this->iframe;
-
+      Forms::hidden('order_id');
+      if ($this->order->creditor_id == 0) {
+        echo $this->iframe;
+      }
       $this->order->header();
-
       $this->order->display_items();
       Table::start('tablestyle2');
       Forms::textareaRow(_("Memo:"), 'Comments', null, 70, 4);
@@ -159,7 +163,6 @@
      */
     function pageComplete($order_no) {
       Page::start(_($help_context = "Purchase Order Entry"), SA_PURCHASEORDER);
-
       $trans_type = ST_PURCHORDER;
       $supplier   = new Creditor(Session::getGlobal('creditor_id'));
       if (!isset($_GET['Updated'])) {
@@ -168,10 +171,10 @@
         Event::success(_("Purchase Order: " . Session::i()['history'][ST_PURCHORDER] . " has been updated"));
       }
       $view                 = new View('purchases/purchase_order');
-      $view['viewtrans']    = GL_UI::viewTrans($trans_type, $order_no, _("&View this order"), false, 'button');
-      $view['printtrans']   = Reporting::print_doc_link($order_no, _("&Print This Order"), true, $trans_type);
-      $view['modifytrans']  = Display::menu_button(BASE_URL . "purchases/po_entry_items.php?ModifyOrder=$order_no", _("&Edit This Order"));
-      $view['emailtrans']   = Reporting::emailDialogue($supplier->id, ST_PURCHORDER, $order_no);
+      $view->set('viewtrans',GL_UI::viewTrans($trans_type, $order_no, _("&View this order"), false, 'button'));
+      $view->set('printtrans',Reporting::print_doc_link($order_no, _("&Print This Order"), true, $trans_type));
+      $view->set('modifytrans',Display::menu_button(BASE_URL . "purchases/po_entry_items.php?ModifyOrder=$order_no", _("&Edit This Order")));
+      $view->set('emailtrans',Reporting::emailDialogue($supplier->id, ST_PURCHORDER, $order_no));
       $view['recievetrans'] = "/purchases/po_receive_items.php?PONumber=$order_no";
       $view['neworder']     = "/purchases/po_receive_items.php?NewOrder=yes";
       $view['neworder']     = "/purchases/inquiry/po_search.php";

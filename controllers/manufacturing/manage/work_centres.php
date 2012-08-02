@@ -68,7 +68,7 @@
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = WO_WorkCentre::getAll(Forms::hasPost('show_inactive'));
+  $result = WO_WorkCentre::getAll(Input::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid width50');
   $th = array(_("Name"), _("description"), "", "");

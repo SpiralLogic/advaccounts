@@ -758,7 +758,7 @@
      * @param $th
      */
     public static function inactiveControlCol(&$th) {
-      if (Forms::hasPost('show_inactive')) {
+      if (Input::hasPost('show_inactive')) {
         Arr::insert($th, count($th) - 2, _("Inactive"));
       }
       if (Input::post('_show_inactive_update')) {
@@ -967,8 +967,8 @@
     public static function inactiveControlCell($id, $value, $table, $key) {
       $name  = "Inactive" . $id;
       $value = $value ? 1 : 0;
-      if (Forms::hasPost('show_inactive')) {
-        if (isset($_POST['LInact'][$id]) && (Input::post('_Inactive' . $id . '_update') || Input::post('Update')) && (Forms::hasPost('Inactive' . $id) != $value)
+      if (Input::hasPost('show_inactive')) {
+        if (isset($_POST['LInact'][$id]) && (Input::post('_Inactive' . $id . '_update') || Input::post('Update')) && (Input::hasPost('Inactive' . $id) != $value)
         ) {
           DB::updateRecordStatus($id, !$value, $table, $key);
         }

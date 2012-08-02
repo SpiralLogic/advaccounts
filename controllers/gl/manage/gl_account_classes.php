@@ -34,7 +34,7 @@
     $selected_id = -1;
     $_POST['id'] = $_POST['name'] = $_POST['ctype'] = '';
   }
-  $result = GL_Class::getAll(Forms::hasPost('show_inactive'));
+  $result = GL_Class::getAll(Input::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("class ID"), _("class Name"), _("class Type"), "", "");

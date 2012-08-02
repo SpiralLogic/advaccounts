@@ -54,7 +54,7 @@
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Tax_Groups::getAll(Forms::hasPost('show_inactive'));
+  $result = Tax_Groups::getAll(Input::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("Description"), _("Shipping Tax"), "", "");

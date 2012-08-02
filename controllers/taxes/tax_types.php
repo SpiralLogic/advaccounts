@@ -30,7 +30,7 @@
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Tax_Types::getAll(Forms::hasPost('show_inactive'));
+  $result = Tax_Types::getAll(Input::hasPost('show_inactive'));
   Forms::start();
   Event::warning(_("To avoid problems with manual journal entry all tax types should have unique Sales/Purchasing GL accounts."));
   Table::start('tablestyle grid');

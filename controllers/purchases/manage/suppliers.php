@@ -104,7 +104,7 @@
     Table::start('tablestyle_noborder pad3');
     //	Table::start('tablestyle_noborder');
     Row::start();
-    Creditor::cells(_("Select a supplier: "), 'creditor_id', null, _('New supplier'), true, Forms::hasPost('show_inactive'));
+    Creditor::cells(_("Select a supplier: "), 'creditor_id', null, _('New supplier'), true, Input::hasPost('show_inactive'));
     Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
     Row::end();
     Table::end();

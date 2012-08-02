@@ -61,7 +61,7 @@
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Inv_Movement::get_all_types(Forms::hasPost('show_inactive'));
+  $result = Inv_Movement::get_all_types(Input::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid width30');
   $th = array(_("Description"), "", "");

@@ -475,8 +475,8 @@
         $table = $this->main_tbl;
         $name  = "Inactive" . $id;
         $value = $row['inactive'] ? 1 : 0;
-        if (Forms::hasPost('show_inactive')) {
-          if (isset($_POST['LInact'][$id]) && (Input::post('_Inactive' . $id . '_update') || Input::post('Update')) && (Forms::hasPost('Inactive' . $id) != $value)
+        if (Input::hasPost('show_inactive')) {
+          if (isset($_POST['LInact'][$id]) && (Input::post('_Inactive' . $id . '_update') || Input::post('Update')) && (Input::hasPost('Inactive' . $id) != $value)
           ) {
             static::$DB->_updateRecordStatus($id, !$value, $table, $key);
             $value = !$value;

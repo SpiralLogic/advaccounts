@@ -177,7 +177,7 @@ JS
     $dateid    = 'date_' . $row['id'];
     $value     = $row['amount'];
     $date      = $row['trans_date'];
-    $chk_value = Forms::hasPost("dep_" . $row['id']);
+    $chk_value = Input::hasPost("dep_" . $row['id']);
     // save also in hidden field for testing during 'Reconcile'
     return Forms::checkbox(null, $name, $chk_value, true, _('Deposit this transaction')) . Forms::hidden($amount, $value, false) . Forms::hidden($dateid, Dates::sqlToDate($date), false);
   }
@@ -255,7 +255,7 @@ JS
    * @return bool
    */
   function change_tpl_flag($deposit_id) {
-    if (!check_date() && Forms::hasPost("dep_" . $deposit_id)) // temporary fix
+    if (!check_date() && Input::hasPost("dep_" . $deposit_id)) // temporary fix
     {
       return false;
     }
@@ -263,7 +263,7 @@ JS
       $_POST['deposit_date'] = Input::post('date_' . $deposit_id);
     }
     // save last reconcilation status (date, end balance)
-    if (Forms::hasPost("dep_" . $deposit_id)) {
+    if (Input::hasPost("dep_" . $deposit_id)) {
       $_SESSION['undeposited']["dep_" . $deposit_id] = Input::post('amount_' . $deposit_id);
       $_POST['deposited']                            = $_POST['to_deposit'] + Input::post('amount_' . $deposit_id);
     } else {

@@ -54,7 +54,7 @@
     $_POST['show_inactive'] = $sav;
   }
   $sql = "SELECT * FROM areas";
-  if (!Forms::hasPost('show_inactive')) {
+  if (!Input::hasPost('show_inactive')) {
     $sql .= " WHERE !inactive";
   }
   $result = DB::query($sql, "could not get areas");

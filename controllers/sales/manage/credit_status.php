@@ -35,7 +35,7 @@
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Sales_CreditStatus::getAll(Forms::hasPost('show_inactive'));
+  $result = Sales_CreditStatus::getAll(Input::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid width40');
   $th = array(_("Description"), _("Dissallow Invoices"), '', '');

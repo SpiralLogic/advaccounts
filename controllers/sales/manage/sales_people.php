@@ -80,7 +80,7 @@
     $_POST['show_inactive'] = $sav;
   }
   $sql = "SELECT s.*,u.user_id,u.id FROM salesman s, users u WHERE s.user_id=u.id";
-  if (!Forms::hasPost('show_inactive')) {
+  if (!Input::hasPost('show_inactive')) {
     $sql .= " AND !s.inactive";
   }
   $result = DB::query($sql, "could not get sales persons");

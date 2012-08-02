@@ -122,7 +122,7 @@
   if (Validation::check(Validation::CUSTOMERS, _('There are no customers.'))) {
     Table::start('tablestyle_noborder');
     Row::start();
-    Debtor::cells(_("Select a customer: "), 'debtor_id', null, _('New customer'), true, Forms::hasPost('show_inactive'));
+    Debtor::cells(_("Select a customer: "), 'debtor_id', null, _('New customer'), true, Input::hasPost('show_inactive'));
     Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
     Row::end();
     Table::end();

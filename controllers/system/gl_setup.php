@@ -11,10 +11,10 @@
   Page::start(_($help_context = "System and General GL Setup"), SA_GLSETUP);
 
   if (isset($_POST['submit']) && can_process()) {
-    $_POST['allow_negative_stock'] = Forms::hasPost('allow_negative_stock');
+    $_POST['allow_negative_stock'] = Input::hasPost('allow_negative_stock');
     $_POST['po_over_receive']      = Validation::input_num('po_over_receive');
     $_POST['po_over_charge']       = Validation::input_num('po_over_charge');
-    $_POST['accumulate_shipping']  = Forms::hasPost('accumulate_shipping');
+    $_POST['accumulate_shipping']  = Input::hasPost('accumulate_shipping');
     DB_Company::update_gl_setup($_POST);
     Event::success(_("The general GL setup has been updated."));
   } /* end of if submit */

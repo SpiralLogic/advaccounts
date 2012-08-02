@@ -54,7 +54,7 @@
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Item_Unit::getAll(Forms::hasPost('show_inactive'));
+  $result = Item_Unit::getAll(Input::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid width40');
   $th = array(_('Unit'), _('Description'), _('Decimals'), "", "");

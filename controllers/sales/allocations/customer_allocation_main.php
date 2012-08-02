@@ -30,7 +30,7 @@
              echo _("Customer Currency:") . $custCurr;
          }*/
   $settled = false;
-  if (Forms::hasPost('ShowSettled')) {
+  if (Input::hasPost('ShowSettled')) {
     $settled = true;
   }
   $debtor_id = null;

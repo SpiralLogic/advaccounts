@@ -151,7 +151,7 @@
   Forms::start();
   Table::start('tablestyle_noborder');
   Row::start();
-  Security::roles_cells(_("Role:") . "&nbsp;", 'role', null, true, true, Forms::hasPost('show_inactive'));
+  Security::roles_cells(_("Role:") . "&nbsp;", 'role', null, true, true, Input::hasPost('show_inactive'));
   $new_role = Input::post('role') == '';
   Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
   Row::end();
@@ -189,7 +189,7 @@
       //			 Event::error(sprintf("Bad section %X:", $m));
       Row::label(User::i()->Security['sections'][$m] . ':', Forms::checkbox(null, 'Section' . $m, null, true, _("On/off set of features")), "class='left tablehead'", "class='tablehead'");
     }
-    if (Forms::hasPost('Section' . $m)) {
+    if (Input::hasPost('Section' . $m)) {
       Forms::checkRow($parms[1], 'Area' . $parms[0], null, false, '', "class='center'");
       Row::end();
     } else {

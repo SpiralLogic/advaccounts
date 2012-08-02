@@ -181,7 +181,7 @@
     WHERE workorder.stock_id=item.stock_id
         AND workorder.loc_code=location.loc_code
         AND item.units=unit.abbr";
-  if (Forms::hasPost('OpenOnly') || $outstanding_only != 0) {
+  if (Input::hasPost('OpenOnly') || $outstanding_only != 0) {
     $sql .= " AND workorder.closed=0";
   }
   if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
@@ -193,7 +193,7 @@
   if (isset($_POST['SelectedStockItem']) && $_POST['SelectedStockItem'] != ALL_TEXT) {
     $sql .= " AND workorder.stock_id=" . DB::quote($_POST['SelectedStockItem']);
   }
-  if (Forms::hasPost('OverdueOnly')) {
+  if (Input::hasPost('OverdueOnly')) {
     $Today = Dates::today(true);
     $sql .= " AND workorder.required_by < '$Today' ";
   }

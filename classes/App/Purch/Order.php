@@ -264,8 +264,7 @@
       /*Now need to check that the order details are the same as they were when they were read into the Items array. If they've changed then someone else must have altered them */
       // Sherifoz 22.06.03 Compare against COMPLETED items only !!
       // Otherwise if you try to fullfill item quantities separately will give error.
-      $sql
-               = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
+      $sql     = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
               FROM purch_order_details
               WHERE order_no=" . DB::escape($this->order_no) . " ORDER BY po_detail_item";
       $result  = DB::query($sql, "could not query purch order details");
@@ -371,8 +370,7 @@
      * @return bool
      */
     public function get_header($order_no) {
-      $sql
-              = "SELECT purch_orders.*, suppliers.name,
+      $sql    = "SELECT purch_orders.*, suppliers.name,
              suppliers.curr_code, locations.location_name
             FROM purch_orders, suppliers, locations
             WHERE purch_orders.creditor_id = suppliers.creditor_id
@@ -405,8 +403,7 @@
      */
     public function get_items($order_no, $view = false) {
       /*now populate the line po array with the purchase order details records */
-      $sql
-        = "SELECT purch_order_details.*, units
+      $sql = "SELECT purch_order_details.*, units
             FROM purch_order_details
             LEFT JOIN stock_master
             ON purch_order_details.item_code=stock_master.stock_id
@@ -465,8 +462,7 @@
      * @param $creditor_id
      */
     public function supplier_to_order($creditor_id) {
-      $sql
-                              = "SELECT * FROM suppliers
+      $sql                    = "SELECT * FROM suppliers
             WHERE creditor_id = '$creditor_id'";
       $result                 = DB::query($sql, "The supplier details could not be retreived");
       $myrow                  = DB::fetchAssoc($result);
@@ -510,21 +506,19 @@
       $editable = ($this->order_no == 0);
       Table::start('tablestyle2 width90');
       Row::start();
-      $show_currencies = ($this->curr_code == Bank_Currency::for_company() && !Bank_Currency::is_company($this->curr_code)) ? 1 :
-        2;
+      $show_currencies = ($this->curr_code == Bank_Currency::for_company() && !Bank_Currency::is_company($this->curr_code)) ? 1 : 2;
       if ($editable) {
         if (!Input::post('creditor_id')) {
           $_POST['creditor_id'] = Session::getGlobal('creditor_id');
         }
-        if ($_POST['creditor_id']) {
+        Creditor::newselect(null, [
+                                  'cell_params'        => ['colspan' => ($show_currencies + 1), 'rowspan'=> $show_currencies], 'rowspan'            => $show_currencies, 'row'                => false, 'cell_class'         => 'label'
+                                  ]);
+        if (Input::post('_control') == 'customer') {
+          $this->supplier_to_order($_POST['creditor_id']);
+          // customer has changed
           Ajax::activate('_page_body');
         }
-        Creditor::newselect(null, [
-                                  'cell_params'        => ['colspan' => ($show_currencies + 1), 'rowspan'=> $show_currencies],
-                                  'rowspan'            => $show_currencies,
-                                  'row'                => false,
-                                  'cell_class'         => 'label'
-                                  ]);
       } else {
         if (isset($_POST['creditor_id'])) {
           $this->supplier_to_order($_POST['creditor_id']);
@@ -547,8 +541,8 @@
       echo "<td colspan=2>";
       echo Inv_Location::select('location', null, false, true);
       echo "</td>\n";
-      row::end();
-      row::start();
+      Row::end();
+      Row::start();
       if ($show_currencies == 1) {
         Cell::labels(_("Supplier Currency:"), $this->curr_code);
         GL_ExchangeRate::display($this->curr_code, Bank_Currency::for_company(), $_POST['OrderDate']);
@@ -567,8 +561,8 @@
         }
       }
       Forms::textareaCells(null, 'delivery_address', $_POST['delivery_address'], 'width95', 4, null, 'colspan=' . (5 - $show_currencies) . ' rowspan=' . (5 - $show_currencies));
-      row::end();
-      row::start();
+      Row::end();
+      Row::start();
       if ($editable) {
         Forms::refCells(_("Purchase Order #:"), 'ref', '', Ref::get_next(ST_PURCHORDER));
       } else {
@@ -579,11 +573,11 @@
       if (isset($_POST['_OrderDate_changed'])) {
         Ajax::activate('_ex_rate');
       }
-      row::end();
-      row::start();
+      Row::end();
+      Row::start();
       Forms::textCells(_("Supplier's Order #:"), 'Requisition', null, 'small', 15);
       Forms::dateCells(_("Order Date:"), 'OrderDate', '', true, 0, 0, 0, null, true);
-      row::end();
+      Row::end();
       Table::end(); // outer table
     }
     /**
@@ -594,16 +588,7 @@
       Display::div_start('items_table');
       Table::start('tablestyle grid width90');
       $th = array(
-        _("Item Code"),
-        _("Description"),
-        _("Quantity"),
-        _("Received"),
-        _("Unit"),
-        _("Required Date"),
-        _("Price"),
-        _('Discount %'),
-        _("Total"),
-        ""
+        _("Item Code"), _("Description"), _("Quantity"), _("Received"), _("Unit"), _("Required Date"), _("Price"), _('Discount %'), _("Total"), ""
       );
       if (count($this->line_items)) {
         $th[] = '';
@@ -762,8 +747,7 @@
      * @return Array|\ADV\Core\DB\Query\Result
      */
     public static function get_data($creditor_id, $stock_id) {
-      $sql
-              = "SELECT * FROM purch_data
+      $sql    = "SELECT * FROM purch_data
                 WHERE creditor_id = " . DB::escape($creditor_id) . "
                 AND stock_id = " . DB::escape($stock_id);
       $result = DB::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
@@ -785,8 +769,7 @@
       if ($data === false) {
         $supplier_code = $stock_id;
         try {
-          $sql
-            = "INSERT INTO purch_data (creditor_id, stock_id, price, suppliers_uom,
+          $sql = "INSERT INTO purch_data (creditor_id, stock_id, price, suppliers_uom,
                     conversion_factor, supplier_description) VALUES (" . DB::escape($creditor_id) . ", " . DB::escape($stock_id) . ", " . DB::escape($price) . ", " . DB::escape($uom) . ", 1, " . DB::escape($supplier_code) . ")";
           DB::query($sql, "The supplier purchasing details could not be added");
           return false;

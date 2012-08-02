@@ -46,7 +46,7 @@
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Sales_Type::getAll(Forms::hasPost('show_inactive'));
+  $result = Sales_Type::getAll(Input::hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid width30');
   $th = array(_('Type Name'), _('Factor'), _('Tax Incl'), '', '');

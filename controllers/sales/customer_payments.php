@@ -56,7 +56,7 @@
       } else {
         $rate = Validation::input_num('_ex_rate');
       }
-      if (Forms::hasPost('createinvoice')) {
+      if (Input::hasPost('createinvoice')) {
         GL_Allocation::create_miscorder(new Debtor($this->debtor_id), $_POST['branch_id'], $this->date_banked, $_POST['memo_'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'));
       }
       $payment_no                  = Debtor_Payment::add(0, $this->debtor_id, $_POST['branch_id'], $_POST['bank_account'], $this->date_banked, $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate, Validation::input_num('charge'));

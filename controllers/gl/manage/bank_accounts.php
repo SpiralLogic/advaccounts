@@ -62,7 +62,7 @@
   $sql = "SELECT account.*, gl_account.account_name
     FROM bank_accounts account, chart_master gl_account
     WHERE account.account_code = gl_account.account_code";
-  if (!Forms::hasPost('show_inactive')) {
+  if (!Input::hasPost('show_inactive')) {
     $sql .= " AND !account.inactive";
   }
   $sql .= " ORDER BY account_code, bank_curr_code";

@@ -26,7 +26,7 @@
     }
     if ($inpug_error != 1) {
       if ($selected_id != -1) {
-        if (Forms::hasPost('DaysOrFoll')) {
+        if (Input::hasPost('DaysOrFoll')) {
           $sql = "UPDATE payment_terms SET terms=" . DB::escape($_POST['terms']) . ",
 					day_in_following_month=0,
 					days_before_due=" . DB::escape($_POST['DayNumber']) . "
@@ -39,7 +39,7 @@
         }
         $note = _('Selected payment terms have been updated');
       } else {
-        if (Forms::hasPost('DaysOrFoll')) {
+        if (Input::hasPost('DaysOrFoll')) {
           $sql
             = "INSERT INTO payment_terms (terms,
 					days_before_due, day_in_following_month)
@@ -89,7 +89,7 @@
     $_POST['show_inactive'] = $sav;
   }
   $sql = "SELECT * FROM payment_terms";
-  if (!Forms::hasPost('show_inactive')) {
+  if (!Input::hasPost('show_inactive')) {
     $sql .= " WHERE !inactive";
   }
   $result = DB::query($sql, "could not get payment terms");
