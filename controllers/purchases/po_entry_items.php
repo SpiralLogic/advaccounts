@@ -11,13 +11,17 @@
   //
   class PurchaseOrder extends \ADV\App\Controller\Base
   {
-
-    protected $iframe='';
+    protected $iframe = '';
     /** @var Purch_Order */
     protected $order = null;
     protected function before() {
       JS::openWindow(950, 500);
       $this->order = Orders::session_get() ? : null;
+      if (Input::get('creditor_id', Input::NUMERIC)) {
+              $this->action       = Orders::CANCEL_CHANGES;
+              $_POST['creditor_id'] = $_GET['creditor_id'];
+              $this->Ajax->activate('creditor_id');
+            }
       if (isset($_POST[Orders::CANCEL_CHANGES])) {
         $order_no = $this->order->order_no;
         Orders::session_delete($_POST['order_id']);
@@ -58,8 +62,7 @@
         $allow_update = $this->checkData();
         if ($allow_update == true) {
           if ($allow_update == true) {
-            $sql
-                    = "SELECT long_description as description , units, mb_flag
+            $sql    = "SELECT long_description as description , units, mb_flag
   				FROM stock_master WHERE stock_id = " . DB::escape($_POST['stock_id']);
             $result = DB::query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
             if (DB::numRows($result) == 0) {
@@ -119,10 +122,11 @@
       }
       Forms::start();
       echo "<br>";
-      Forms::hidden('order_id');          echo $this->iframe;
-
+      Forms::hidden('order_id');
+      if ($this->order->creditor_id == 0) {
+        echo $this->iframe;
+      }
       $this->order->header();
-
       $this->order->display_items();
       Table::start('tablestyle2');
       Forms::textareaRow(_("Memo:"), 'Comments', null, 70, 4);
@@ -159,7 +163,6 @@
      */
     function pageComplete($order_no) {
       Page::start(_($help_context = "Purchase Order Entry"), SA_PURCHASEORDER);
-
       $trans_type = ST_PURCHORDER;
       $supplier   = new Creditor(Session::getGlobal('creditor_id'));
       if (!isset($_GET['Updated'])) {
