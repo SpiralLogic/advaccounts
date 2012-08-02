@@ -79,7 +79,7 @@
       return -1;
     }
     protected function runAction() {
-      if ($this->action) {
+      if ($this->action && is_callable(array($this, $this->action))) {
         call_user_func(array($this, $this->action));
       }
     }
