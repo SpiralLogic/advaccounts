@@ -188,8 +188,7 @@
         public static function  select($name, $selected_id = null, $submit_on_change = false)
         {
             $sql
-              = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
-                                                FROM bank_accounts";
+              = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive FROM bank_accounts";
 
             return Forms::selectBox(
                 $name,

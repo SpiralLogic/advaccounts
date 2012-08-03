@@ -48,6 +48,9 @@
     public static $session;
     /** @var Base */
     public static $request;
+    /**
+
+     */
     public function __construct() {
       static::$post    = new Base($_POST);
       static::$get     = new Base($_GET);
@@ -59,7 +62,7 @@
      * @param Input|int $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
      * @param null      $default Default value if there is no current variable
      *
-     * @return bool|int|string|object
+     * @return bool|int|string
      */
     public function _post($var, $type = null, $default = null) {
       return static::$post->get($var, $type, $default);
@@ -72,7 +75,7 @@
      * @param mixed     $default    Default value if there is no current variable
      *
      * @internal param mixed $public $_GET variable to return
-     * @return bool|int|string|object
+     * @return bool|int|string
      */
     public function _get($var, $type = null, $default = null) {
       return static::$get->get($var, $type, $default);
@@ -84,7 +87,7 @@
      * @param Input|int $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
      * @param null      $default Default value if there is no current variable
      *
-     * @return bool|int|string|object
+     * @return bool|int|string
      */
     public function _request($var, $type = null, $default = null) {
       return static::$request->get($var, $type, $default);
@@ -96,7 +99,7 @@
      * @param Input|int $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
      * @param null      $default Default value if there is no current variable
      *
-     * @return bool|int|string|object
+     * @return bool|int|string
      */
     public function _getPost($var, $type = null, $default = null) {
       return $this->firstThenSecond(static::$get, static::$post, $var, $type, $default);
@@ -134,8 +137,6 @@
       return $result;
     }
     /**
-     * @static
-     *
      * @param      $var
      * @param      $type
      * @param null $default
@@ -156,7 +157,7 @@
      * @param int|Input $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
      * @param null      $default Default value if there is no current variable
      *
-     * @return bool|int|string|object
+     * @return bool|int|string
      */
     public function _postGet($var, $type = null, $default = null) {
       return $this->firstThenSecond(static::$post, static::$get, $var, $type, $default);
@@ -168,7 +169,7 @@
      * @param Input $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
      * @param null  $default Default value if there is no current variable
      *
-     * @return bool|int|string|object
+     * @return bool|int|string
      */
     public function _session($var = [], $type = null, $default = null) {
       return (session_status() === PHP_SESSION_NONE) ? false : static::$session->get($var, $type, $default);

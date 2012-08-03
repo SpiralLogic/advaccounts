@@ -14,9 +14,9 @@
     /**
      * @method DB i()
      * @method \PDOStatement query($sql, $err_msg = null)
-     * @method Query\Select select($columns = null)
-     * @method Query\Insert insert($into)
-     * @method Query\Update update($into)
+     * @method \ADV\Core\DB\Query\Select select($columns = null)
+     * @method \ADV\Core\DB\Query\Insert insert($into)
+     * @method \ADV\Core\DB\Query\Update update($into)
      * @method escape($value, $null = false)
      * @method fetch($result = null, $fetch_mode = \PDO::FETCH_BOTH)
      * @method fetchRow($result = null)
@@ -25,6 +25,7 @@
      * @method numRows($sql = null)
      * @method DB begin()
      * @method commit()
+     * @method cancel()
      * @method errorNo()
      * @method quote($value, $type = null)
      * @method \ADV\Core\DB\Query\Select select($columns = null)
@@ -50,7 +51,7 @@
         protected $debug = null;
         /** @var bool */
         protected $nested = false;
-        /** @var Query */
+        /** @var Query\Query */
         protected $query = false;
         /**
          * @var bool

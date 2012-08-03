@@ -16,7 +16,7 @@
   abstract class Query extends Where
   {
     /**
-     * @var Query
+     * @var \ADV\Core\DB\Query\Query
      */
     protected static $query = null;
     /**
@@ -26,7 +26,7 @@
     /** @var */
     protected $type;
     /**
-     * @var \DB
+     * @var \ADV\Core\DB\DB
      */
     protected $conn;
     /**
@@ -56,7 +56,7 @@
     /***
      * @param null $data
      *
-     * @return Query\Result|int|bool
+     * @return \ADV\Core\DB\Query\Result|int|bool
      */
     public function exec($data = null) {
       $result = $this->conn->exec($this->getQuery($data), $this->type, $this->data);
@@ -64,7 +64,7 @@
       return $result;
     }
     /***
-     * @return Query\Result
+     * @return \ADV\Core\DB\Query\Result
      */
     public function fetch() {
       return $this->exec(null);
