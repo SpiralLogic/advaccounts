@@ -10,29 +10,46 @@
  ***********************************************************************/
 
 Adv.extend({Reconcile:{group:{}, total:0,
-  groupSelect:function () {
-    var self = Adv.Reconcile, data = $(this).data();
-    if (this.checked) {
-      self.group[data.id] = data;
-      self.total += data.amount;
-    } else {
-      self.total -= data.amount;
-      delete     self.group[data.id];
-    }
-    Adv.Forms.priceFormat('deposited',Adv.Reconcile.total,2,true);
+  groupSelect:               function (e, ui)
+  {
+    var self = Adv.Reconcile, data1 = $(this).data(), data2 = $(ui.draggable).data();
+    self.group[data1.id] = {id:data1.id, date:data1.date, amount:data1.amount};
+    self.group[data2.id] = {id:data2.id, date:data2.date, amount:data2.amount};
   },
-  getGrouped:function () {console.log(Adv.Reconcile.group, Adv.Reconcile.total);}
+  getGrouped:                function () {console.log(Adv.Reconcile.group, Adv.Reconcile.total);},
+  postGroup:                 function ()
+  {
+    $.post('#', {Deposit:true, date:$('#deposit_date').value(), toDeposit:Adv.Reconcile.group}, function (data) {$.globalEval(data)}, 'json');
+    return false
+  }
 }});
-$(function () {
-  $("#summary").draggable();
-  $('#wrapper').on('click', '.voidlink', function () {
-    var voidtrans = false, type = $(this).data('type'), trans_no = $(this).data('trans_no'), url = '/system/void_transaction?type=' + type + '&trans_no=' + trans_no + '&memo=Deleted%20during%20reconcile.';
-    if (voidtrans) {
-      voidtrans.location.href = url;
-    } else {
-      voidtrans = window.open(url, '_blank');
-    }
+$(function ()
+  {
+    $("#summary").draggable();
+    $('#wrapper').on('click', '.voidlink', function ()
+    {
+      var voidtrans = false, type = $(this).data('type'), trans_no = $(this).data('trans_no'), url = '/system/void_transaction?type=' + type + '&trans_no=' + trans_no + '&memo=Deleted%20during%20reconcile.';
+      if (voidtrans) {
+        voidtrans.location.href = url;
+      }
+      else {
+        voidtrans = window.open(url, '_blank');
+      }
+    });
+    $('#wrapper').on('click', '#deposit', Adv.Reconcile.postGroup);
+    $('.grid').find('tbody').sortable({
+                                        items: '.cangroup',
+                                        stop:  function (e, ui)
+                                        {
+                                          var self = $(this), lines = {};
+                                        },
+                                        helper:function (e, ui)
+                                        {
+                                          ui.children().each(function ()
+                                                             {
+                                                               $(this).width($(this).width());
+                                                             });
+                                          return ui;
+                                        }});
+    $('.grid').find('.cangroup').droppable({drop:Adv.Reconcile.groupSelect  })
   });
-  $('#wrapper').on('change', ':checkbox', Adv.Reconcile.groupSelect)
-
-});
