@@ -12,7 +12,7 @@
   } elseif (strpos($_SERVER['HTTP_HOST'], 'advaccounts') !== false) {
     header('Location: http://advanced.advancedgroup.com.au' . $_SERVER['REQUEST_URI']);
   }
-  if ($_SERVER['DOCUMENT_URI'] !== '/assets.php' && (isset($_SERVER['QUERY_STRING']) && strlen($_SERVER['QUERY_STRING']) && substr_compare($_SERVER['QUERY_STRING'], '/profile/', 0, 9, true) !== 0) && extension_loaded('xhprof')) {
+  if ($_SERVER['DOCUMENT_URI'] !== '/assets.php' &&  (!isset($_SERVER['QUERY_STRING'])||(strlen($_SERVER['QUERY_STRING']) && substr_compare($_SERVER['QUERY_STRING'], '/profile/', 0, 9, true)) !== 0) && extension_loaded('xhprof')) {
     $XHPROF_ROOT = realpath(dirname(__FILE__) . '/xhprof');
     include $XHPROF_ROOT . "/xhprof_lib/config.php";
     include $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";

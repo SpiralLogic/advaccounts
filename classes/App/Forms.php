@@ -17,6 +17,7 @@
     static $dic;
     /** @var \ADV\Core\DB\DB */
     static $DB;
+    static $Ajax;
     /**
      * @static
      *
@@ -77,7 +78,7 @@
      */
     public static function hidden($name, $value = null, $echo = true) {
       $value = e($value !== null ? $value : Input::post($name));
-      static::$dic['Ajax']->_addUpdate($name, $name, $value);
+      static::$Ajax->_addUpdate($name, $name, $value);
       $ret = "<input type='hidden' id='$name' name='$name' value='$value'>";
       if (!$echo) {
         return $ret;
@@ -142,9 +143,9 @@
       } // code is generalized for multiple selection support
       if (isset($_POST['_' . $name . '_update'])) {
         if (!$opts['async']) {
-          static::$dic['Ajax']->_activate('_page_body');
+          static::$Ajax->_activate('_page_body');
         } else {
-          static::$dic['Ajax']->_activate($name);
+          static::$Ajax->_activate($name);
         }
       }
       // ------ make selector ----------
@@ -176,7 +177,7 @@
       }
       $_POST[$name] = $multi ? $selected_id : $selected_id[0];
       $selector     = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' : '') . "$disabled id='$name' name='$name" . ($multi ? '[]' : '') . "' class='combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
-      static::$dic['Ajax']->_addUpdate($name, "_{$name}_sel", $selector);
+      static::$Ajax->_addUpdate($name, "_{$name}_sel", $selector);
       $selector = "<div id='_{$name}_sel' class='combodiv'>" . $selector . "</div>\n";
       if ($select_submit != false) { // if submit on change is used - add select button
         $_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url
@@ -475,7 +476,7 @@
         $value = Input::post($name, null, 0);
       }
       $str .= "<input" . ($value == 1 ? ' checked' : '') . " type='checkbox' name='$name' id='$name' value='1'" . ($submit_on_change ? " onclick='$submit_on_change'" : '') . ($title ? " title='$title'" : '') . " >\n";
-      static::$dic['Ajax']->_addUpdate($name, $name, $value);
+      static::$Ajax->_addUpdate($name, $name, $value);
       return $str;
     }
     /**
@@ -1241,11 +1242,11 @@
       echo "<input $inputparams>";
       if ($post_label) {
         echo "<span id='_{$name}_label'>$post_label</span>";
-        static::$dic['Ajax']->_addUpdate($name, '_' . $name . '_label', $post_label);
+        static::$Ajax->_addUpdate($name, '_' . $name . '_label', $post_label);
       }
       echo "</td>\n";
-      static::$dic['Ajax']->_addUpdate($name, $name, $_POST[$name]);
-      static::$dic['Ajax']->_addAssign($name, $name, 'data-dec', $dec);
+      static::$Ajax->_addUpdate($name, $name, $_POST[$name]);
+      static::$Ajax->_addAssign($name, $name, 'data-dec', $dec);
     }
     /**
      * @param        $label
@@ -1358,7 +1359,7 @@
         $cols = "class='$cols'";
       }
       echo "<td $params><textarea id='$name' name='$name' $cols rows='$rows'" . ($title ? " title='$title'" : '') . ">$value</textarea></td>\n";
-      static::$dic['Ajax']->_addUpdate($name, $name, $value);
+      static::$Ajax->_addUpdate($name, $name, $value);
     }
     /**
      * @param      $label
@@ -1377,3 +1378,5 @@
   }
 
   Forms::$dic = \ADV\Core\DIC::getInstance();
+  Forms::$Ajax = Ajax::i();
+  Forms::$DB = \ADV\Core\DB\DB::i();

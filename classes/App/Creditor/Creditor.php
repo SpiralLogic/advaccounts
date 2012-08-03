@@ -39,12 +39,12 @@
     public static function search($terms) {
       $sql = "SELECT creditor_id as id, supp_ref as label, supp_ref as value FROM suppliers WHERE supp_ref LIKE '%" . $terms . "%' ";
       if (is_numeric($terms)) {
-        $sql .= ' OR creditor_id LIKE  ' . DB::quote($terms . '%');
+        $sql .= ' OR creditor_id LIKE  ' . static::$DB->_quote($terms . '%');
       }
       $sql .= " LIMIT 20";
-      $result = DB::query($sql, 'Couldn\'t Get Supplier');
+      $result = static::$DB->_query($sql, 'Couldn\'t Get Supplier');
       $data   = '';
-      while ($row = DB::fetchAssoc($result)) {
+      while ($row = static::$DB->_fetchAssoc($result)) {
         foreach ($row as &$value) {
           $value = htmlspecialchars_decode($value);
         }
@@ -151,6 +151,8 @@
      * @var string
      */
     protected $_id_column = 'creditor_id';
+    /** @var DB */
+    static $DB;
     /**
      * @param int|null $id
      */
@@ -257,9 +259,9 @@
      */
     protected function _getContacts() {
       $this->contacts = [];
-      \DB::select()->from('contacts')->where('parent_id=', $this->id)->andWhere('parent_type=', CT_SUPPLIER)
+      static::$DB->_select()->from('contacts')->where('parent_id=', $this->id)->andWhere('parent_type=', CT_SUPPLIER)
         ->orderby('name DESC');
-      $contacts = DB::fetch()->asClassLate('Contact', array(CT_SUPPLIER));
+      $contacts = static::$DB->_fetch()->asClassLate('Contact', array(CT_SUPPLIER));
       if (count($contacts)) {
         foreach ($contacts as $contact) {
           $this->contacts[] = $contact;
@@ -336,7 +338,7 @@ JS;
              creditor_trans
         WHERE
              suppliers.payment_terms = payment_terms.terms_indicator
-             AND suppliers.creditor_id = " . DB::quote($creditor_id) . "
+             AND suppliers.creditor_id = " . static::$DB->_quote($creditor_id) . "
              AND creditor_trans.tran_date <= '$todate'
              AND suppliers.creditor_id = creditor_trans.creditor_id
         GROUP BY
@@ -344,20 +346,20 @@ JS;
              payment_terms.terms,
              payment_terms.days_before_due,
              payment_terms.day_in_following_month";
-      $result = DB::query($sql, "The supplier details could not be retrieved");
-      if (DB::numRows($result) == 0) {
+      $result = static::$DB->_query($sql, "The supplier details could not be retrieved");
+      if (static::$DB->_numRows($result) == 0) {
         /*Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
         $nil_balance = true;
         $sql
                      = "SELECT suppliers.name, suppliers.curr_code, suppliers.creditor_id, payment_terms.terms FROM suppliers,
                  payment_terms WHERE
                  suppliers.payment_terms = payment_terms.terms_indicator
-                 AND suppliers.creditor_id = " . DB::escape($creditor_id);
-        $result      = DB::query($sql, "The customer details could not be retrieved");
+                 AND suppliers.creditor_id = " . static::$DB->_escape($creditor_id);
+        $result      = static::$DB->_query($sql, "The customer details could not be retrieved");
       } else {
         $nil_balance = false;
       }
-      $supp = DB::fetch($result);
+      $supp = static::$DB->_fetch($result);
       if ($nil_balance == true) {
         $supp["Balance"]  = 0;
         $supp["Due"]      = 0;
@@ -390,10 +392,10 @@ JS;
      WHERE trans.ov_amount != 0
         AND trans . tran_date >= '$date_from'
         AND trans . tran_date <= '$date_to'
-        AND trans.creditor_id = " . DB::escape($creditor_id) . "
+        AND trans.creditor_id = " . static::$DB->_escape($creditor_id) . "
         AND trans.type = " . ST_SUPPINVOICE;
-      $result  = DB::query($sql);
-      $results = DB::fetch($result);
+      $result  = static::$DB->_query($sql);
+      $results = static::$DB->_fetch($result);
       return $results['Total'];
     }
     /**
@@ -404,9 +406,9 @@ JS;
      * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($creditor_id) {
-      $sql    = "SELECT * FROM suppliers WHERE creditor_id=" . DB::escape($creditor_id);
-      $result = DB::query($sql, "could not get supplier");
-      return DB::fetch($result);
+      $sql    = "SELECT * FROM suppliers WHERE creditor_id=" . static::$DB->_escape($creditor_id);
+      $result = static::$DB->_query($sql, "could not get supplier");
+      return static::$DB->_fetch($result);
     }
     /**
      * @static
@@ -416,9 +418,9 @@ JS;
      * @return mixed
      */
     public static function get_name($creditor_id) {
-      $sql    = "SELECT name AS name FROM suppliers WHERE creditor_id=" . DB::escape($creditor_id);
-      $result = DB::query($sql, "could not get supplier");
-      $row    = DB::fetchRow($result);
+      $sql    = "SELECT name AS name FROM suppliers WHERE creditor_id=" . static::$DB->_escape($creditor_id);
+      $result = static::$DB->_query($sql, "could not get supplier");
+      $row    = static::$DB->_fetchRow($result);
       return $row[0];
     }
     /**
@@ -429,9 +431,9 @@ JS;
      * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get_accounts_name($creditor_id) {
-      $sql    = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE creditor_id=" . DB::escape($creditor_id);
-      $result = DB::query($sql, "could not get supplier");
-      return DB::fetch($result);
+      $sql    = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE creditor_id=" . static::$DB->_escape($creditor_id);
+      $result = static::$DB->_query($sql, "could not get supplier");
+      return static::$DB->_fetch($result);
     }
     /**
      * @static
@@ -567,3 +569,5 @@ JS;
       echo "</td></tr>\n";
     }
   }
+
+  Creditor::$DB = \ADV\Core\DB\DB::i();
