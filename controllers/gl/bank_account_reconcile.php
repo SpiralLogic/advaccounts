@@ -98,8 +98,49 @@
             DB::query($sql, "Can't change undeposited status");
             $this->updateData();
         }
+        protected function changeDate()
+        {
+            $date   = Dates::isDate($_POST['date']);
+            $data   = ['newdate'=> null];
+            $status = new \ADV\Core\Status();
+            if (!$date) {
+                $status->set(\ADV\Core\Status::ERROR, 'chnage date', 'Incorrect date format');
+            } else {
+                $sqldate        = $this->Dates->_dateToSql($date);
+                $row            = DB::select('*')->from('bank_trans')->where(
+                    'id=',
+                    Input::post(
+                        'id',
+                        Input::NUMERIC,
+                        -1
+                    )
+                )->fetch()->one();
+                $data['result'] = $row;
+                switch ($row['type']) {
+                    case ST_CUSTPAYMENT:
+                    case ST_BANKDEPOSIT:
+                        {
+                        $result = DB::update('debtor_trans')->value('tran_date', $sqldate)->where('trans_no=', $row['trans_no'])->andWhere('type=', $row['type'])->exec();
+                        }
+                        break;
+                    default:
+                        {
+                        $result = $status->set(\ADV\Core\Status::ERROR, 'chnage date', 'Cannot change date for this transaction');
+                        }
+                }
+                if ($result) {
+                    DB::update('bank_trans')->value('trans_date', $sqldate)->where('id=', $row['id'])->exec();
+                    DB::update('gl_trans')->value('tran_date', $sqldate)->where('type_no=', $row['trans_no'])->andWhere('type=', $row['type'])->exec();
+                    $data = ['newdate'=> $date];
+                    $status->set(\ADV\Core\Status::SUCCESS, 'chnage date', 'Successfully change date');
+                }
+            }
+            $data['status'] = $status->get();
+            JS::renderJSON($data);
+        }
         protected function index()
         {
+            $this->runAction();
             Page::start(_($help_context = "Reconcile Bank Account"), SA_RECONCILE);
             Forms::start();
             Table::start();
@@ -113,6 +154,14 @@
             echo "<hr>";
             $this->accountHasStatements ? $this->newWay() : $this->oldWay();
             Forms::end();
+            if (!$this->Ajax->_inAjax() || AJAX_REFERRER) {
+                $date_dialog  = new View('ui/date_dialog');
+                $date_changer = new \ADV\Core\Dialog('Change Date', 'dateChanger', $date_dialog->render(true), ['resizeable'=> false, 'modal'=> true]);
+                $date_changer->addButton('Save', 'Adv.Reconcile.changeDate(this)');
+                $date_changer->addButton('Cancel', '$(this).dialog("close")');
+                $date_changer->setTemplateData(['id'=> '', 'date'=> $this->begin_date]);
+                $date_changer->show();
+            }
             Page::end();
         }
         /**
@@ -178,7 +227,7 @@
                 'Type'      => ['fun'=> array($this, 'sysTypeName')], //
                 '#'         => ['align'=> 'center', 'fun'=> array($this, 'viewTrans')], //
                 'Ref'       => ['fun'=> 'formatReference'], //
-                'Date'      => ['type'=> 'date'], //
+                'Date'      => ['align'=> 'center', 'fun'=> [$this, 'formatDate']], //
                 'Debit'     => ['align'=> 'right', 'fun'=> array($this, 'formatDebit')], //
                 'Credit'    => ['align'=> 'right', 'insert'=> true, 'fun'=> array($this, 'formatCredit')], //
                 'Info'      => ['fun'=> array($this, 'formatInfo')], //
@@ -224,6 +273,15 @@
             Row::end();
             Table::end();
             Display::div_end();
+        }
+        public function formatDate($row)
+        {
+            $id   = $row['id'];
+            $date = $this->Dates->_sqlToDate($row['trans_date']);
+            if ($row['reconciled'] || !$row['trans_date']) {
+                return $date;
+            }
+            return '<span data-id="' . $id . '" class="date">' . $date . '</span>';
         }
         /**
          * @return int

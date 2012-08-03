@@ -12,7 +12,7 @@
 Adv.extend({Reconcile:{group:{}, total:0,
   groupSelect:               function (e, ui)
   {
-    var self = Adv.Reconcile, data1 = $(this).data(), data2 = $(ui.draggable).data();
+    var self = Adv.Reconcile, dateToChange, data1 = $(this).data(), data2 = $(ui.draggable).data();
     self.group[data1.id] = {id:data1.id, date:data1.date, amount:data1.amount};
     self.group[data2.id] = {id:data2.id, date:data2.date, amount:data2.amount};
   },
@@ -21,12 +21,30 @@ Adv.extend({Reconcile:{group:{}, total:0,
   {
     $.post('#', {Deposit:true, date:$('#deposit_date').value(), toDeposit:Adv.Reconcile.group}, function (data) {$.globalEval(data)}, 'json');
     return false
+  },
+  changeDate:                function (el)
+  {
+    var data = {_action:'changeDate'};
+    $(el).find('input').each(function ()
+                             {
+                               var $this = $(this);
+                               data[$this.attr('name')] = $this.val();
+                             });
+    $.post('#', data, function (data)
+    {
+      console.log(data);
+      if (data.newdate) {
+        Adv.Reconcile.dateToChange.text(data.newdate)
+      }
+    }, 'json');
+    $dateChanger.dialog('close');
   }
+
 }});
 $(function ()
   {
     $("#summary").draggable();
-    $('#wrapper').on('click', '.voidlink', function ()
+    Adv.o.wrapper.on('click', '.voidlink', function ()
     {
       var voidtrans = false, type = $(this).data('type'), trans_no = $(this).data('trans_no'), url = '/system/void_transaction?type=' + type + '&trans_no=' + trans_no + '&memo=Deleted%20during%20reconcile.';
       if (voidtrans) {
@@ -36,20 +54,26 @@ $(function ()
         voidtrans = window.open(url, '_blank');
       }
     });
-    $('#wrapper').on('click', '#deposit', Adv.Reconcile.postGroup);
-    $('.grid').find('tbody').sortable({
-                                        items: '.cangroup',
-                                        stop:  function (e, ui)
-                                        {
-                                          var self = $(this), lines = {};
-                                        },
-                                        helper:function (e, ui)
-                                        {
-                                          ui.children().each(function ()
-                                                             {
-                                                               $(this).width($(this).width());
-                                                             });
-                                          return ui;
-                                        }});
-    $('.grid').find('.cangroup').droppable({drop:Adv.Reconcile.groupSelect  })
+    Adv.o.wrapper.on('click', '#deposit', Adv.Reconcile.postGroup);
+    $('.grid').find('.cangroup').droppable({drop:Adv.Reconcile.groupSelect  }).end().find('tbody').sortable({
+                                                                                                              items: '.cangroup',
+                                                                                                              stop:  function (e, ui)
+                                                                                                              {
+                                                                                                                var self = $(this), lines = {};
+                                                                                                              },
+                                                                                                              helper:function (e, ui)
+                                                                                                              {
+                                                                                                                ui.children().each(function ()
+                                                                                                                                   {
+                                                                                                                                     $(this).width($(this).width());
+                                                                                                                                   });
+                                                                                                                return ui;
+                                                                                                              }});
+    Adv.o.wrapper.on('dblclick', '.date', function ()
+    {
+      var $this = $(this);
+      Adv.Reconcile.dateToChange = $this;
+      Adv.o.dateChanger.render({id:$this.data('id'), date:$this.text()});
+      $dateChanger.dialog('open').find('.datepicker').datepicker({dateFormat:'dd/mm/yy'}).datepicker('show')
+    });
   });
