@@ -46,16 +46,7 @@
                 // GL_Account::reset_sql_for_reconcile($this->bank_account, $this->reconcile_date);
                 $this->updateData();
             }
-            $groupid = Forms::findPostPrefix("_ungroup_");
-            if ($groupid > 1) {
-                Bank_Undeposited::ungroup($groupid);
-                $this->updateData();
-            }
-            $undepositid = Forms::findPostPrefix("_undeposit_");
-            if ($undepositid > 1) {
-                $this->undeposit($undepositid);
-                $this->updateData();
-            }
+
             if (Forms::isListUpdated('bank_account')) {
                 $this->Session->_setGlobal('bank_account', $this->bank_account);
                 $this->Ajax->_activate('bank_date');
@@ -84,6 +75,20 @@
             if ($id != -1) {
                 $this->updateCheckbox($id);
             }
+        }
+        protected function unDeposit()
+        {
+            $id = Input::post('depositid', Input::NUMERIC);
+            if ($id > 0) {
+                Bank_Undeposited::undeposit($id);
+                $this->updateData();
+            }
+            JS::renderJSON(['success'=> ($id > 0)]);
+        }
+        protected function unGroup($groupid)
+        {
+            Bank_Undeposited::ungroup($groupid);
+            $this->updateData();
         }
         protected function changeDate()
         {
@@ -181,7 +186,6 @@
             $cols               = [
                 'Type'      => ['fun'=> array($this, 'formatType')], //
                 '#'         => ['align'=> 'center', 'fun'=> array($this, 'formatTrans')], //
-                ['type'=> 'skip'], //
                 ['type'=> 'skip'], //
                 'Date'      => ['type'=> 'date'], //
                 'Debit'     => ['align'=> 'right', 'fun'=> array($this, 'formatDebit')], //
@@ -306,8 +310,6 @@
             $class  = "class='cangroup'";
             if ($row['reconciled']) {
                 return "<tr class='done'>";
-            } elseif ($row['reconciled']) {
-                return "<tr class='done'>";
             } elseif (!$row['trans_date'] && !$row['reconciled'] && $row['state_date']) {
                 $class = "class='overduebg'";
             } elseif (($row['trans_date'] && $row['reconciled'] && !$row['state_date']) || ($row['state_date'] && !$row['transdate'])
@@ -355,14 +357,20 @@
          */
         public function formatDropdown($row)
         {
-            $items[] = ['class'=> 'voidTrans', 'label'=> 'Void Trans', 'data'=> ['type'=> $row['type'], 'trans_no'=> $row['trans_no']]];
-            $items[] = ['class'=> 'changeBank', 'label'=> 'Move Bank', 'data'=> ['id'=> $row['id']]];
-            $items[] = ['class'=> 'changeDate', 'label'=> 'Change Date', 'data'=> ['id'=> $row['id'], 'date'=> $this->Dates->_sqlToDate($row['trans_date'])]];
-            if (!$row['reconciled'] && $row['type'] == ST_GROUPDEPOSIT) {
-                $items[] = ['class'=> 'unGroup', 'label'=> 'Ungroup', 'data'=> ['id'=> $row['id']]];
+            if ($row['reconciled'] || !$row['id']) {
+                return '';
             }
-            if (!$row['reconciled'] && in_array($row['type'], [ST_BANKDEPOSIT, ST_CUSTPAYMENT])) {
-                $items[] = ['class'=> 'unDeposit', 'label'=> 'Undeposit', 'data'=> ['id'=> $row['id']]];
+            switch ($row['type']) {
+                case ST_GROUPDEPOSIT:
+                    $items[] = ['class'=> 'unGroup', 'label'=> 'Ungroup'];
+                    break;
+                case ST_BANKDEPOSIT:
+                case ST_CUSTPAYMENT:
+                    $items[] = ['class'=> 'unDeposit', 'label'=> 'Undeposit'];
+                default:
+                    $items[] = ['class'=> 'voidTrans', 'label'=> 'Void Trans', 'data'=> ['type'=> $row['type'], 'trans_no'=> $row['trans_no']]];
+                    $items[] = ['class'=> 'changeBank', 'label'=> 'Move Bank'];
+                    $items[] = ['class'=> 'changeDate', 'label'=> 'Change Date'];
             }
             $dropdown = new View('ui/dropdown');
             $title    = ($row['type'] == ST_GROUPDEPOSIT) ? 'Group' : substr($row['ref'], 0, 7);
@@ -485,14 +493,6 @@
                 return $amount1 - $amount2;
             }
             return strcmp($date1, $date2);
-        }
-        /**
-         * @param $row
-         *
-         * @return string
-         */
-        public function formatReference($row)
-        {
         }
         /**
          * @return bool

@@ -9,7 +9,7 @@
  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
 
-Adv.extend({Reconcile:{group:{}, total:0,
+Adv.extend({Reconcile:{group:{}, toChange:{}, total:0,
   groupSelect:               function (e, ui)
   {
     var self = Adv.Reconcile, dateToChange, data1 = $(this).data(), data2 = $(ui.draggable).data();
@@ -32,34 +32,32 @@ Adv.extend({Reconcile:{group:{}, total:0,
                              });
     $.post('#', data, function (data)
     {
-      console.log(data);
       if (data.newdate) {
-        Adv.Reconcile.dateToChange.text(data.newdate)
+        Adv.Reconcile.toChange.find('td').eq(2).text(data.newdate);
       }
     }, 'json');
     $dateChanger.dialog('close');
   },
-  changeBank:                function (el)
+  changeBank:                function ()
   {
     var data = {_action:'changeBank', newbank:$('#changeBank').val()};
     console.log(data);
     $(this).dialog('close')
+  },
+  unDeposit:                 function ()
+  {
+    var $row = $(this).closest('tr'), data = {_action:'unDeposit', depositid:$row.data('id')};
+    $.post('#', data, function (data)
+    {
+      if (data.success) {
+        $row.remove()
+      }
+    });
   }
-
 }});
 $(function ()
   {
     $("#summary").draggable();
-    Adv.o.wrapper.on('click', '.voidTrans', function ()
-    {
-      var voidtrans = false, type = $(this).data('type'), trans_no = $(this).data('trans_no'), url = '/system/void_transaction?type=' + type + '&trans_no=' + trans_no + '&memo=Deleted%20during%20reconcile.';
-      if (voidtrans) {
-        voidtrans.location.href = url;
-      }
-      else {
-        voidtrans = window.open(url, '_blank');
-      }
-    });
     Adv.o.wrapper.on('click', '#deposit', Adv.Reconcile.postGroup);
     $('.grid').find('.cangroup').droppable({drop:Adv.Reconcile.groupSelect  }).end().find('tbody').sortable({
                                                                                                               items: '.cangroup',
@@ -77,16 +75,27 @@ $(function ()
                                                                                                               }});
     Adv.o.wrapper.on('click', '.changeDate', function ()
     {
-      var $this = $(this);
-      Adv.Reconcile.dateToChange = $this;
-      Adv.o.dateChanger.render({id:$this.data('id'), date:$this.data('date')});
+      var $row = $(this).closest('tr');
+      Adv.Reconcile.toChange = $row;
+      Adv.o.dateChanger.render({id:$row.data('id'), date:$row.data('date')});
       $dateChanger.dialog('open').find('.datepicker').datepicker({dateFormat:'dd/mm/yy'}).datepicker('show')
     });
     Adv.o.wrapper.on('click', '.changeBank', function ()
     {
-      Adv.Reconcile.idToChange = $(this).data('id');
-      $("#bankChanger").dialog('open')
+      Adv.Reconcile.toChange = $(this).closest('tr');
+      $("#bankChanger").dialog('open');
     });
+    Adv.o.wrapper.on('click', '.voidTrans', function ()
+    {
+      var voidtrans = false, type = $(this).data('type'), trans_no = $(this).data('trans_no'), url = '/system/void_transaction?type=' + type + '&trans_no=' + trans_no + '&memo=Deleted%20during%20reconcile.';
+      if (voidtrans) {
+        voidtrans.location.href = url;
+      }
+      else {
+        voidtrans = window.open(url, '_blank');
+      }
+    });
+    Adv.o.wrapper.on('click', '.unDeposit', Adv.Reconcile.unDeposit);
     var bankButtons = {'Cancel':function () {$(this).dialog('close');}, 'Save':Adv.Reconcile.changeBank};
     Adv.Forms.setFormValue('changeBank', $('#bank_account').val());
     $("#bankChanger").dialog({autoOpen:false, modal:true, buttons:bankButtons});
