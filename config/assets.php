@@ -65,7 +65,7 @@
             '/js/inserts.js',
             '/js/libs/jquery-tmpl.min.js',
             '/js/libs/jquery.calc.js',
-            '/js/libs/bootstrap.js',
+            '/js/libs/bootstrap.min.js',
             '/js/calc.js',
             '/js/sidemenu.js',
         ),

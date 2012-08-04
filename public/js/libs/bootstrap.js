@@ -69,7 +69,7 @@
    * ====================== */
   var Modal = function (content, options)
   {
-    this.options = options
+    this.options = options;
     this.$element = $(content).delegate('[data-dismiss="modal"]', 'click.dismiss.modal', $.proxy(this.hide, this))
   }
   Modal.prototype = {
@@ -310,7 +310,7 @@
   $(function ()
     {
       $('html').on('click.dropdown.data-api', clearMenus)
-      $('body').on('click.dropdown', '.dropdown form', function (e) { e.stopPropagation() }).on('click.dropdown.data-api', toggle, Dropdown.prototype.toggle)
+      $('body').on('click.dropdown', '.dropdown form',function (e) { e.stopPropagation() }).on('click.dropdown.data-api', toggle, Dropdown.prototype.toggle)
     })
 }(window.jQuery);
 /* =============================================================

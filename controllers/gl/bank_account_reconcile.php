@@ -181,16 +181,19 @@
             $cols               = [
                 'Type'      => ['fun'=> array($this, 'formatType')], //
                 '#'         => ['align'=> 'center', 'fun'=> array($this, 'formatTrans')], //
-                'Ref'       => ['fun'=> 'formatReference'], //
+                ['type'=> 'skip'], //
+                ['type'=> 'skip'], //
                 'Date'      => ['type'=> 'date'], //
                 'Debit'     => ['align'=> 'right', 'fun'=> array($this, 'formatDebit')], //
                 'Credit'    => ['align'=> 'right', 'insert'=> true, 'fun'=> array($this, 'formatCredit')], //
                 'Info'      => ['fun'=> array($this, 'formatInfo')], //
                 'GL'        => ['fun'=> array($this, 'formatGL')], //
                 ['fun'=> array($this, 'formatCheckbox')], //
-                'Bank Date' => ['type'=> 'date'], //
+                'Banked'    => ['type'=> 'date'], //
                 'Amount'    => ['align'=> 'right', 'class'=> 'bold'], //
-                'Info'
+                'Info',
+                ['insert'=> true, 'fun'=> array($this, 'formatDropdown')], //
+
             ];
             $table              = DB_Pager::new_db_pager('bank_rec', $known_trans, $cols);
             $table->rowFunction = [$this, 'formatRow'];
@@ -200,7 +203,6 @@
         protected function displaySummary()
         {
             $this->getTotal();
-            echo "<hr>";
             Display::div_start('summary');
             Table::start();
             Table::sectionTitle(_("Reconcile Date"), 1);
@@ -227,14 +229,6 @@
             Row::end();
             Table::end();
             Display::div_end();
-        }
-        /**
-         * @param $row
-         *
-         * @return string
-         */
-        public function formatDate($row)
-        {
         }
         /**
          * @return int
@@ -326,36 +320,6 @@
         /**
          * @param $row
          *
-         * @return string
-         */
-        public function ungroupButton($row)
-        {
-            if (!$row['reconciled'] && $row['type'] == ST_GROUPDEPOSIT) {
-                return "<button value='" . $row['id'] . '\' onclick="JsHttpRequest.request(\'_ungroup_' . $row['id'] . '\',
-      this.form)" name="_ungroup_' . $row['id'] . '" type="submit" title="Ungroup"
-     class="ajaxsubmit">Ungroup</button>' . Forms::hidden("ungroup_" . $row['id'], $row['ref'], true);
-            } else {
-                return '';
-            }
-        }
-        /**
-         * @param $row
-         *
-         * @return string
-         */
-        public function undepositButton($row)
-        {
-            if (!$row['reconciled'] && in_array($row['type'], [ST_BANKDEPOSIT, ST_CUSTPAYMENT])) {
-                return "<button value='" . $row['id'] . '\' onclick="JsHttpRequest.request(\'_undeposit_' . $row['id'] . '\',
- this.form)" name="_undeposit_' . $row['id'] . '" type="submit" title="Undeposit"
- class="ajaxsubmit">Undeposit</button>' . Forms::hidden("undeposit_" . $row['id'], $row['id'], false);
-            } else {
-                return '';
-            }
-        }
-        /**
-         * @param $row
-         *
          * @internal param $dummy
          * @internal param $type
          * @return mixed
@@ -377,21 +341,34 @@
          */
         public function formatTrans($row)
         {
-            $content = "<div class='center'>";
-            if (!$row['type']) {
-                return '';
-            } elseif ($row['type'] == ST_GROUPDEPOSIT) {
-                return $content . $this->ungroupButton($row) . '</div>';
+            $content = '';
+            if ($row['type'] != ST_GROUPDEPOSIT) {
+                $content = GL_UI::viewTrans($row["type"], $row["trans_no"]);
             }
-            $content .= GL_UI::viewTrans($row["type"], $row["trans_no"]);
-            $items[]  = ['class'=> 'voidTrans', 'label'=> 'Void Trans', 'data'=> ['type'=> $row['type'], 'trans_no'=> $row['trans_no']]];
-            $items[]  = ['class'=> 'changeBank', 'label'=> 'Move Bank', 'data'=> ['id'=> $row['id']]];
-            $items[]  = ['class'=> 'changeDate', 'label'=> 'Change Date', 'data'=> ['id'=> $row['id'], 'date'=> $this->Dates->_sqlToDate($row['trans_date'])]];
+
+            return $content;
+        }
+        /**
+         * @param $row
+         *
+         * @return string
+         */
+        public function formatDropdown($row)
+        {
+            $items[] = ['class'=> 'voidTrans', 'label'=> 'Void Trans', 'data'=> ['type'=> $row['type'], 'trans_no'=> $row['trans_no']]];
+            $items[] = ['class'=> 'changeBank', 'label'=> 'Move Bank', 'data'=> ['id'=> $row['id']]];
+            $items[] = ['class'=> 'changeDate', 'label'=> 'Change Date', 'data'=> ['id'=> $row['id'], 'date'=> $this->Dates->_sqlToDate($row['trans_date'])]];
+            if (!$row['reconciled'] && $row['type'] == ST_GROUPDEPOSIT) {
+                $items[] = ['class'=> 'unGroup', 'label'=> 'Ungroup', 'data'=> ['id'=> $row['id']]];
+            }
+            if (!$row['reconciled'] && in_array($row['type'], [ST_BANKDEPOSIT, ST_CUSTPAYMENT])) {
+                $items[] = ['class'=> 'unDeposit', 'label'=> 'Undeposit', 'data'=> ['id'=> $row['id']]];
+            }
             $dropdown = new View('ui/dropdown');
-            $menus[]  = ['title'=> 'Actions', 'items'=> $items];
+            $title    = ($row['type'] == ST_GROUPDEPOSIT) ? 'Group' : substr($row['ref'], 0, 7);
+            $menus[]  = ['title'=> $title, 'items'=> $items];
             $dropdown->set('menus', $menus);
-            $content .= $dropdown->render(true);
-            return $content . '</div>';
+            return $dropdown->render(true);
         }
         /**
          * @param $row
@@ -516,7 +493,6 @@
          */
         public function formatReference($row)
         {
-            return substr($row['ref'], 0, 7);
         }
         /**
          * @return bool
@@ -536,7 +512,6 @@
                 _("Person/Item") => array('fun' => array($this, 'formatInfo')), //
                 array('insert' => true, 'fun' => array($this, 'formatGL')), //
                 "X"              => array('insert' => true, 'fun' => array($this, 'formatCheckbox')), //
-                array('insert' => true, 'fun' => array($this, 'ungroupButton'))
             );
             $table        = DB_Pager::new_db_pager('trans_tbl', $sql, $cols);
             $table->width = "80";
