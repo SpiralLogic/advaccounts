@@ -16,6 +16,10 @@
     // add a bank transaction
     // $amount is in $currency
     // $date_ is display date (non-sql)
+    /** @var \ADV\Core\DB\DB */
+    static $DB;
+    /** @var Dates */
+    static $Dates;
     /**
      * @static
      *
@@ -32,7 +36,7 @@
      * @param int    $rate
      */
     public static function add($type, $trans_no, $bank_act, $ref, $date_, $amount, $person_type_id, $person_id, $currency = "", $err_msg = "", $rate = 0) {
-      $sqlDate = Dates::dateToSql($date_);
+      $sqlDate = static::$Dates->_dateToSql($date_);
       // convert $amount to the bank's currency
       if ($currency != "") {
         $bank_account_currency = Bank_Currency::for_company($bank_act);
@@ -47,15 +51,14 @@
       }
       // Also store the rate to the home
       //$BankToHomeCurrencyRate = Bank_Currency::exchange_rate_to_home($bank_account_currency, $date_);
-      $sql         = "INSERT INTO bank_trans (type, trans_no, bank_act, ref,
-        trans_date, amount, person_type_id, person_id, undeposited) ";
+      $sql         = "INSERT INTO bank_trans (type, trans_no, bank_act, ref,         trans_date, amount, person_type_id, person_id, undeposited) ";
       $undeposited = ($bank_act == 5 && $type == 12) ? 1 : 0;
-      $sql .= "VALUES ($type, $trans_no, '$bank_act', " . DB::escape($ref) . ", '$sqlDate',
-        " . DB::escape($amount_bank) . ", " . DB::escape($person_type_id) . ", " . DB::escape($person_id) . ", " . DB::escape($undeposited) . ")";
+      $sql .= "VALUES ($type, $trans_no, '$bank_act', " . static::$DB->_escape($ref) . ", '$sqlDate',
+        " . static::$DB->_escape($amount_bank) . ", " . static::$DB->_escape($person_type_id) . ", " . static::$DB->_escape($person_id) . ", " . static::$DB->_escape($undeposited) . ")";
       if ($err_msg == "") {
         $err_msg = "The bank transaction could not be inserted";
       }
-      DB::query($sql, $err_msg);
+      static::$DB->_query($sql, $err_msg);
     }
     /**
      * @static
@@ -66,9 +69,9 @@
      * @return bool
      */
     public static function exists($type, $type_no) {
-      $sql    = "SELECT trans_no FROM bank_trans WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
-      $result = DB::query($sql, "Cannot retreive a bank transaction");
-      return (DB::numRows($result) > 0);
+      $sql    = "SELECT trans_no FROM bank_trans WHERE type=" . static::$DB->_escape($type) . " AND trans_no=" . static::$DB->_escape($type_no);
+      $result = static::$DB->_query($sql, "Cannot retreive a bank transaction");
+      return (static::$DB->_numRows($result) > 0);
     }
     /**
      * @static
@@ -81,23 +84,44 @@
      * @return null|PDOStatement
      */
     public static function get($type, $trans_no = null, $person_type_id = null, $person_id = null) {
-      $sql = "SELECT *, bank_account_name, account_code, bank_curr_code
-        FROM bank_trans, bank_accounts
-        WHERE bank_accounts.id=bank_trans.bank_act ";
+      $sql = "SELECT *, bank_account_name, account_code, bank_curr_code         FROM bank_trans, bank_accounts         WHERE bank_accounts.id=bank_trans.bank_act ";
       if ($type != null) {
-        $sql .= " AND type=" . DB::escape($type);
+        $sql .= " AND type=" . static::$DB->_escape($type);
       }
       if ($trans_no != null) {
-        $sql .= " AND bank_trans.trans_no = " . DB::escape($trans_no);
+        $sql .= " AND bank_trans.trans_no = " . static::$DB->_escape($trans_no);
       }
       if ($person_type_id != null) {
-        $sql .= " AND bank_trans.person_type_id = " . DB::escape($person_type_id);
+        $sql .= " AND bank_trans.person_type_id = " . static::$DB->_escape($person_type_id);
       }
       if ($person_id != null) {
-        $sql .= " AND bank_trans.person_id = " . DB::escape($person_id);
+        $sql .= " AND bank_trans.person_id = " . static::$DB->_escape($person_id);
       }
       $sql .= " ORDER BY trans_date, bank_trans.id";
-      return DB::query($sql, "query for bank transaction");
+      return static::$DB->_query($sql, "query for bank transaction");
+    }
+    /**
+     * @static
+     *
+     * @param      $bank_account
+     * @param      $from
+     * @param null $to
+     *
+     * @return array|bool
+     */
+    public static function getPeriod($bank_account, $from, $to = null) {
+      $sql = "SELECT bt.type, bt.trans_no, bt.ref, bt.trans_date,bt.id, IF( bt.trans_no IS null, SUM( g.amount ), bt.amount ) AS amount
+       , bt.person_id, bt.person_type_id , bt.reconciled FROM bank_trans bt LEFT OUTER JOIN bank_trans g ON g.undeposited = bt.id
+       WHERE bt.bank_act = " . static::$DB->_quote($bank_account) . "
+       AND bt.trans_date <= '" . ($to ? : static::$Dates->_today()) . "'
+       AND bt.undeposited=0
+       AND (bt.reconciled IS null";
+      if ($to) {
+        $sql .= " OR bt.reconciled='" . $to . "'";
+      }
+      $sql .= ") AND bt.amount!=0 GROUP BY bt.id ORDER BY IF(bt.trans_date>='" . $from . "' AND bt.trans_date<='" . $to . "',1,0) , bt.reconciled DESC ,bt.trans_date , amount ";
+      static::$DB->_query($sql);
+      return static::$DB->_fetchAll();
     }
     /**
      * @static
@@ -108,11 +132,11 @@
      */
     public static function void($type, $type_no, $nested = false) {
       if (!$nested) {
-        DB::begin();
+        static::$DB->_begin();
       }
       $sql = "UPDATE bank_trans SET amount=0
-        WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
-      DB::query($sql, "could not void bank transactions for type=$type and trans_no=$type_no");
+        WHERE type=" . static::$DB->_escape($type) . " AND trans_no=" . static::$DB->_escape($type_no);
+      static::$DB->_query($sql, "could not void bank transactions for type=$type and trans_no=$type_no");
       GL_Trans::void($type, $type_no, true);
       // in case it's a customer trans - probably better to check first
       Sales_Allocation::void($type, $type_no);
@@ -122,7 +146,7 @@
       Creditor_Trans::void($type, $type_no);
       GL_Trans::void_tax_details($type, $type_no);
       if (!$nested) {
-        DB::commit();
+        static::$DB->_commit();
       }
     }
     /**
@@ -141,10 +165,10 @@
       if (!$togl || !$fromgl) {
         return false;
       }
-      DB::begin();
-      DB::update('bank_trans')->value('bank_act', $to)->where('type=', $type)->andWhere('trans_no=', $trans_no)->andwhere('bank_act=', $from)->exec();
-      DB::update('gl_trans')->value('account', $togl)->where('type=', $type)->andWhere('type_no=', $trans_no)->andWhere('account=', $fromgl)->exec();
-      DB::commit();
+      static::$DB->_begin();
+      static::$DB->_update('bank_trans')->value('bank_act', $to)->where('type=', $type)->andWhere('trans_no=', $trans_no)->andwhere('bank_act=', $from)->exec();
+      static::$DB->_update('gl_trans')->value('account', $togl)->where('type=', $type)->andWhere('type_no=', $trans_no)->andWhere('account=', $fromgl)->exec();
+      static::$DB->_commit();
       return true;
     }
     /**
@@ -157,19 +181,19 @@
      * @return bool
      */
     public static function changeDate($bank_trans_id, $newdate, &$status = null) {
-      $date   = Dates::isDate($newdate);
+      $date   = static::$Dates->_isDate($newdate);
       $status = new \ADV\Core\Status();
       if (!$date) {
         return $status->set(\ADV\Core\Status::ERROR, 'chnage date', 'Incorrect date format');
       }
-      $sqldate = Dates::dateToSql($date);
-      $row     = DB::select('*')->from('bank_trans')->where('id=', $bank_trans_id)->fetch()->one();
-      DB::begin();
+      $sqldate = static::$Dates->_dateToSql($date);
+      $row     = static::$DB->_select('*')->from('bank_trans')->where('id=', $bank_trans_id)->fetch()->one();
+      static::$DB->_begin();
       switch ($row['type']) {
         case ST_CUSTPAYMENT:
         case ST_BANKDEPOSIT:
           {
-          $result = DB::update('debtor_trans')->value('tran_date', $sqldate)->where('trans_no=', $row['trans_no'])->andWhere('type=', $row['type'])->exec();
+          $result = static::$DB->_update('debtor_trans')->value('tran_date', $sqldate)->where('trans_no=', $row['trans_no'])->andWhere('type=', $row['type'])->exec();
           }
           break;
         default:
@@ -178,14 +202,17 @@
           }
       }
       if ($result) {
-        DB::update('bank_trans')->value('trans_date', $sqldate)->where('id=', $row['id'])->exec();
-        DB::update('gl_trans')->value('tran_date', $sqldate)->where('type_no=', $row['trans_no'])->andWhere('type=', $row['type'])->exec();
-        DB::commit();
+        static::$DB->_update('bank_trans')->value('trans_date', $sqldate)->where('id=', $row['id'])->exec();
+        static::$DB->_update('gl_trans')->value('tran_date', $sqldate)->where('type_no=', $row['trans_no'])->andWhere('type=', $row['type'])->exec();
+        static::$DB->_commit();
         $status->set(\ADV\Core\Status::SUCCESS, 'change date', 'Successfully changed date');
       } else {
-        DB::cancel();
+        static::$DB->_cancel();
         $status->set(\ADV\Core\Status::ERROR, 'change date', 'Failed to change date');
       }
       return $result;
     }
   }
+
+  Bank_Trans::$DB    = DB::i();
+  Bank_Trans::$Dates = Dates::i();
