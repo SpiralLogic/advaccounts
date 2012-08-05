@@ -125,8 +125,7 @@
         SUM(IF(reconciled<'$date', amount, 0)) as beg_balance,
         SUM(amount) as total
         FROM bank_trans trans
-        WHERE undeposited=0 AND bank_act=" . DB::escape($bank_account);
-      //	." AND trans.reconciled IS NOT null";
+        WHERE undeposited=0 AND bank_act=" . DB::escape($bank_account)	." AND trans.reconciled IS NOT null";
       return DB::query($sql, "Cannot retrieve reconciliation data");
     }
     /**

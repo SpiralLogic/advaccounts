@@ -119,5 +119,5 @@
                                            $_POST['ref'], //
                                            $_POST['memo_'], //
                                            Validation::input_num('charge'));
-    Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID = $trans_no");
+    Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$trans_no");
   }

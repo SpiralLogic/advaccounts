@@ -118,7 +118,7 @@
       if (empty($filepath)) {
         throw new Load_Exception('File for class ' . $requested_class . ' cannot be found!');
       }
-      if (!include($filepath)) {
+      if (!include_once($filepath)) {
         throw new Load_Exception('File for class ' . $requested_class . ' cannot be	loaded from : ' . $filepath);
       }
       if ($global) {
