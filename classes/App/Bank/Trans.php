@@ -212,6 +212,18 @@
       }
       return $result;
     }
+    /**
+     * @param $bank_account
+     * @param $groupid
+     *
+     * @return null|PDOStatement
+     */
+    public static function getGroupDeposit($bank_account,$groupid) {
+          $sql    = "SELECT bank_trans.ref,bank_trans.person_type_id,bank_trans.trans_no,bank_trans.person_id,bank_trans.amount,
+     			comments.memo_ FROM bank_trans LEFT JOIN comments ON (bank_trans.type=comments.type AND bank_trans.trans_no=comments.id)
+     			WHERE bank_trans.bank_act=" .static::$DB->_quote($bank_account)  . " AND bank_trans.type != " . ST_GROUPDEPOSIT . " AND bank_trans.undeposited>0 AND (undeposited = " . static::$DB->_quote($groupid) . ")";
+      return static::$DB->_query($sql, 'Couldn\'t get deposit references');
+        }
   }
 
   Bank_Trans::$DB    = DB::i();

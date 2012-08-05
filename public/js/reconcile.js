@@ -14,6 +14,7 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0,
     var self = Adv.Reconcile, dateToChange, data1 = $(this).data(), data2 = $(ui.draggable).data();
     self.group[data1.id] = {id:data1.id, date:data1.date, amount:data1.amount};
     self.group[data2.id] = {id:data2.id, date:data2.date, amount:data2.amount};
+    self.getGrouped();
   },
   getGrouped:function () {console.log(Adv.Reconcile.group, Adv.Reconcile.total);},
   postGroup:function () {
@@ -27,8 +28,8 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0,
       data[$this.attr('name')] = $this.val();
     });
     $.post('#', data, function (data) {
-      if (data.newdate) {
-        Adv.Reconcile.toChange.find('td').eq(2).text(data.newdate);
+      if (data.grid) {
+        $("#_bank_rec_span").html($('#_bank_rec_span', data.grid).html());
       }
     }, 'json');
     $dateChanger.dialog('close');
@@ -36,8 +37,8 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0,
   changeBank:function () {
     var data = {_action:'changeBank', newbank:$('#changeBank').val(), type:Adv.Reconcile.toChange.data('type'), trans_no:Adv.Reconcile.toChange.data('transno')};
     $.post('#', data, function (data) {
-      if (data.success) {
-        Adv.Reconcile.toChange.remove();
+      if (data.grid) {
+        $("#_bank_rec_span").html($('#_bank_rec_span', data.grid).html());
       }
     }, 'json');
     $(this).dialog('close')

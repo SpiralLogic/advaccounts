@@ -66,7 +66,7 @@
         $this->begin_date = $this->Dates->_dateToSql($this->Dates->_beginMonth($this->bank_date));
         $this->end_date   = $this->Dates->_dateToSql($this->Dates->_endMonth($this->bank_date));
       } elseif ($this->accountHasStatements) {
-        $this->begin_date = "(SELECT max(reconciled) from bank_trans)";
+        $this->begin_date = null;
         $this->end_date   = $this->Dates->_today();
       }
       $id = Forms::findPostPrefix('_rec_');
@@ -93,14 +93,14 @@
       JS::renderJSON(['success'=> ($groupid > 0)]);
     }
     protected function changeDate() {
-      $data           = ['newdate'=> null];
-      $bank_trans_id  = Input::post('id', Input::NUMERIC, -1);
-      $newdate        = Input::post('date');
-      $result         = Bank_Trans::changeDate($bank_trans_id, $newdate, $status);
-      $data['status'] = $status->get();
+      $data          = ['newdate'=> null];
+      $bank_trans_id = Input::post('id', Input::NUMERIC, -1);
+      $newdate       = Input::post('date');
+      $result        = Bank_Trans::changeDate($bank_trans_id, $newdate);
       if ($result) {
         $data['newdate'] = $newdate;
       }
+      $data['grid'] = $this->render();
       JS::renderJSON($data);
     }
     protected function index() {
@@ -116,12 +116,20 @@
       Table::end();
       $this->displaySummary();
       echo "<hr>";
-      $this->accountHasStatements ? $this->statementLayout() : $this->simpleLayout();
+      echo $this->render();
       Forms::end();
       if (!$this->Ajax->_inAjax() || AJAX_REFERRER) {
         $this->addDialogs();
       }
       Page::end();
+    }
+    /**
+     * @return string
+     */
+    protected function render() {
+      ob_start();
+      $this->accountHasStatements ? $this->statementLayout() : $this->simpleLayout();
+      return '<div id="newgrid">' . ob_get_clean() . '</div>';
     }
     protected function addDialogs() {
       $date_dialog  = new View('ui/date_dialog');
@@ -139,10 +147,8 @@
      * @return bool
      */
     protected function statementLayout() {
-      $rec = Bank_Trans::getPeriod($this->bank_account, $this->begin_date, $this->end_date);
-      $sql = "SELECT date as state_date, amount as state_amount,memo FROM temprec WHERE date >= '" . $this->begin_date . "' AND date <='" . $this->end_date . "' and bank_account_id=" . $this->DB->_quote($this->bank_account) . " ORDER BY date ,amount";
-      $this->DB->_query($sql);
-      $statement_trans = $this->DB->_fetchAll();
+      $rec             = Bank_Trans::getPeriod($this->bank_account, $this->begin_date, $this->end_date);
+      $statement_trans = Bank_Account::getStatement($this->bank_account, $this->begin_date, $this->end_date);
       if (!$statement_trans) {
         return $this->simpleLayout();
       }
@@ -183,7 +189,8 @@
         ['fun'=> array($this, 'formatCheckbox')], //
         'Banked'    => ['type'=> 'date'], //
         'Amount'    => ['align'=> 'right', 'class'=> 'bold'], //
-        'Info', ['insert'=> true, 'fun'=> array($this, 'formatDropdown')], //
+        'Info', //
+        ['insert'=> true, 'fun'=> array($this, 'formatDropdown')], //
       ];
       $table              = DB_Pager::new_db_pager('bank_rec', $known_trans, $cols);
       $table->rowFunction = [$this, 'formatRow'];
@@ -224,12 +231,7 @@
      */
     protected function getTotal() {
       if ($this->accountHasStatements) {
-        $sql = "(select (rb - amount) as amount from temprec where date>='" . $this->begin_date . "' and date<='" . $this->end_date . "' and bank_account_id=" . $this->DB->_quote($this->bank_account) . " order by date, id desc limit 0,
-        1) union (select rb as amount from temprec where date>='" . $this->begin_date . "' and date<='" . $this->end_date . "' and bank_account_id=" . $this->DB->_quote($this->bank_account) . " order by date desc, id asc limit 0,1)";
-        var_dump($sql);
-        $result               = $this->DB->_query($sql);
-        $beg_balance          = $this->DB->_fetch($result)['amount'];
-        $end_balance          = $this->DB->_fetch($result)['amount'];
+        list($beg_balance, $end_balance) = Bank_Account::getBalances($this->bank_account, $this->begin_date, $this->end_date);
         $_POST["beg_balance"] = $this->Num->_priceFormat($beg_balance);
         $_POST["end_balance"] = $this->Num->_priceFormat($end_balance);
         $_POST["reconciled"]  = $this->Num->_priceFormat($end_balance - $beg_balance);
@@ -278,14 +280,14 @@
       return Forms::checkbox(null, $name, $value, true, _('Reconcile this transaction')) . Forms::hidden($hidden, $value, false);
     }
     protected function changeBank() {
-      $result   = false;
       $newbank  = Input::post('newbank', Input::NUMERIC);
       $trans_no = Input::post('trans_no', Input::NUMERIC);
       $type     = Input::post('type', Input::NUMERIC);
       if ($newbank && $type && $trans_no) {
-        $result = Bank_Trans::changeBankAccount($trans_no, $type, $this->bank_account, $newbank);
+        Bank_Trans::changeBankAccount($trans_no, $type, $this->bank_account, $newbank);
       }
-      JS::renderJSON(['success'=> $result]);
+      $data['grid'] = $this->render();
+      JS::renderJSON($data);
     }
     /**
      * @param $row
@@ -301,6 +303,8 @@
       $class    = "class='cangroup'";
       if ($row['reconciled']) {
         return "<tr class='done'>";
+      } elseif (!isset($row['state_date'])) {
+        $class = "class='cangroup'";
       } elseif (!$row['trans_date'] && !$row['reconciled'] && $row['state_date']) {
         $class = "class='overduebg'";
       } elseif (($row['trans_date'] && $row['reconciled'] && !$row['state_date']) || ($row['state_date'] && !$row['transdate'])
@@ -409,10 +413,7 @@
       if ($row['type'] == ST_BANKTRANSFER) {
         return DB_Comments::get_string(ST_BANKTRANSFER, $row['trans_no']);
       } elseif ($row['type'] == ST_GROUPDEPOSIT) {
-        $sql     = "SELECT bank_trans.ref,bank_trans.person_type_id,bank_trans.trans_no,bank_trans.person_id,bank_trans.amount,
- 			comments.memo_ FROM bank_trans LEFT JOIN comments ON (bank_trans.type=comments.type AND bank_trans.trans_no=comments.id)
- 			WHERE bank_trans.bank_act='" . $this->bank_account . "' AND bank_trans.type != " . ST_GROUPDEPOSIT . " AND bank_trans.undeposited>0 AND (undeposited = " . $row['id'] . ")";
-        $result  = $this->DB->_query($sql, 'Couldn\'t get deposit references');
+        $result  = Bank_Trans::getGroupDeposit($this->bank_account, $row['id']);
         $content = '';
         foreach ($result as $trans) {
           $name = Bank::payment_person_name($trans["person_type_id"], $trans["person_id"], true, $trans["trans_no"]);
@@ -479,7 +480,7 @@
       $sql = GL_Account::get_sql_for_reconcile($this->bank_account, $this->reconcile_date);
       $act = Bank_Account::get($_POST["bank_account"]);
       Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
-      $cols         = array(
+      $cols               = array(
         _("Type")        => array('fun' => array($this, 'formatType'), 'ord' => ''), //
         _("#")           => array('fun' => array($this, 'formatTrans'), 'ord' => ''), //
         _("Reference")   => array('fun'=> [$this, 'formatReference']), //
@@ -489,9 +490,11 @@
         _("Person/Item") => array('fun' => array($this, 'formatInfo')), //
         array('insert' => true, 'fun' => array($this, 'formatGL')), //
         "X"              => array('insert' => true, 'fun' => array($this, 'formatCheckbox')), //
+        ['insert'=> true, 'fun'=> array($this, 'formatDropdown')], ////
       );
-      $table        = DB_Pager::new_db_pager('trans_tbl', $sql, $cols);
-      $table->width = "80";
+      $table              = DB_Pager::new_db_pager('bank_rec', $sql, $cols);
+      $table->width       = "80";
+      $table->rowFunction = [$this, 'formatRow'];
       $table->display($table);
       return true;
     }
