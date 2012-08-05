@@ -11,7 +11,7 @@
 
 Adv.extend({Reconcile:{group:{}, toChange:{}, total:0,
   groupSelect:function (e, ui) {
-    var self = Adv.Reconcile, dateToChange, data1 = $(this).data(), data2 = $(ui.draggable).data();
+    var self = Adv.Reconcile,  data1 = $(this).data(), data2 = $(ui.draggable).data();
     self.group[data1.id] = {id:data1.id, date:data1.date, amount:data1.amount};
     self.group[data2.id] = {id:data2.id, date:data2.date, amount:data2.amount};
     self.getGrouped();
