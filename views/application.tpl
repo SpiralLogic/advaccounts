@@ -3,39 +3,46 @@
     <td class='menu_group top'>
       <table class='width100'>
         <tr>
-          <td class='menu_group' colspan={{ $colspan }}>
-            {{ $name }}
+          <td class='menu_group' colspan={{colspan}}>
+            {{name}}
           </td>
         </tr>
         <tr>
           <td class='width50 menu_group_items'>
             <ul>
-              {{#foreach $lmods as $mod}}
-              {{#if !$mod['label']}}
+              {{#lmods}}
+              {{^label}}
               <li class='empty'>&nbsp;</li>
-              {{#elseif ($mod['access'])}}
-              <li>{{ $mod['link'] }} </li>
-              {{#else}}
-              <li><span class='inactive'>{{$mod['anchor']}} </span></li>
-              {{/if}}
-              {{/foreach}}
+              {{/label}}
+              {{#label?}}
+              <li class='empty'{{label}}</li>
+              {{/label?}}
+              {{#access?}}
+              <li>{{link}} </li>
+              {{/access?}}
+              {{^access}}
+              <li><span class='inactive'>{{anchor}} </span></li>
+              {{/access}}
+              {{/lmods}}
             </ul>
           </td>
-          {{#if $rmods}}
+          {{#rmods?}}
           <td class='width50 menu_group_items'>
             <ul>
-              {{#foreach $rmods as $mod}}
-              {{#if !$mod['label']}}
+              {{#rmods}}
+              {{^label}}
               <li class='empty'>&nbsp;</li>
-              {{#elseif $mod['access']}}
-              <li>{{$mod['link']}} </li>
-              {{#else}}
-              <li><span class='inactive'>{{$mod['anchor']}} </span></li>
-              {{/if}}
-              {{/foreach}}
+              {{/label}}
+              {{#access?}}
+              <li>{{link}} </li>
+              {{/access?}}
+              {{^access}}
+              <li><span class='inactive'>{{anchor}} </span></li>
+              {{/access}}
+              {{/rmods}}
             </ul>
           </td>
-          {{/if}}
+          {{/rmods?}}
         </tr>
       </table>
     </td>

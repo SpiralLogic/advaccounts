@@ -3,7 +3,7 @@
 
   <div id="search">
     <ul>
-      <li id="orders" data-href="/sales/inquiry/sales_orders_view?type={{ ST_SALESORDER }}">Orders/Quotes</li>
+      <li id="orders" data-href="/sales/inquiry/sales_orders_view?type={{ST_SALESORDER}}">Orders/Quotes</li>
       <li id="invoices" data-href="/sales/inquiry/customer_inquiry?">Invoice/Delivery</li>
       <li id="purchaseOrders" data-href="/purchases/inquiry/po_search_completed?">Purchase Order</li>
       <li id="supplierInvoices" data-href="/purchases/inquiry/supplier_inquiry?">Supplier Invoices</li>
@@ -13,13 +13,13 @@
 
   <div>
     <ul>
-      <li><a href="/sales/sales_order_entry?add=0&amp;type={{ ST_SALESQUOTE }}">Quote</a></li>
-      <li><a href="/sales/sales_order_entry?add=0&amp;type={{ ST_SALESORDER }}">Order</a></li>
-      <li><a href="/sales/sales_order_entry?add=0&amp;type={{ ST_SALESINVOICE }}">Direct Invoice</a></li>
+      <li><a href="/sales/sales_order_entry?add=0&amp;type={{ST_SALESQUOTE}}">Quote</a></li>
+      <li><a href="/sales/sales_order_entry?add=0&amp;type={{ST_SALESORDER}}">Order</a></li>
+      <li><a href="/sales/sales_order_entry?add=0&amp;type={{ST_SALESINVOICE}}">Direct Invoice</a></li>
       <li><a href="/purchases/po_entry_items?New=0">Purchase Order</a></li>
     </ul>
   </div>
-  {{#if $bank}}
+  {{#bank?}}
   <h3><a href="#">Banking</a></h3>
 
   <div>
@@ -30,7 +30,7 @@
       <li><a href="/gl/undeposited_funds?">Undeposited</a></li>
     </ul>
   </div>
-  {{/if}}
+  {{/bank?}}
   <h3><a href="#">Customer Search</a></h3>
 
   <div>
