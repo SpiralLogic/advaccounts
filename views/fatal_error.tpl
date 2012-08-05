@@ -60,8 +60,8 @@
 <body>
 <div id='content'>
   <div id='msgbox'>
-    <div class="err_msg">{{message}}</div>
-    <pre class="left bold">{{debug}}</pre>
+    <div class="err_msg">{{$message}}</div>
+    <pre class="left bold">{{$debug}}</pre>
   </div>
 </div>
 </body>
