@@ -94,6 +94,7 @@
             if (!$this->Ajax->_inAjax() || AJAX_REFERRER) {
                 $this->addDialogs();
             }
+          JS::addLive("Adv.Reconcile.setUpGrid();");
             Page::end();
         }
         protected function addDialogs()
