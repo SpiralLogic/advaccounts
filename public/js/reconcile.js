@@ -54,7 +54,7 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
   },
   sendAction:function (data)
   {
-    var overlay = $("<div class='black_overlay'></div>").css('display', 'block').appendTo("#_bank_rec_span");
+    var overlay = $("<div class='black_overlay'></div>").css('display', 'block').appendTo("#_bank_rec_span tbody");
     $("<div></div>").attr('id', 'loading').appendTo(overlay);
     $.post('#', data, function (data)
     {
@@ -69,18 +69,19 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
   {
     $('.recgrid').find('.cangroup').droppable({drop:        Adv.Reconcile.groupSelect,
                                                 hoverClass: 'hoverclass',
+   placeholder:'placeholder',
                                                 activeClass:'activeclass'}).end().find('tbody').sortable({
-                                                                                                           placeholder:         "ui-state-highlight",
-                                                                                                           forcePlaceholderSize:true,
+                                                                                                          tolerance:'pointer',
                                                                                                            axis:                'y',
                                                                                                            items:               '.cangroup',
-                                                                                                           cursor:              'move', opacity:0.8,
+                                                                                                           cursor:              'move',revert:true,
+        beforestop:function(e,ui){$(this).sortable('cancel');},
                                                                                                            helper:              function (e, ui)
                                                                                                            {
                                                                                                              ui.children().each(function ()
                                                                                                                                 {
-                                                                                                                                  $(this).width($(this).width());
-                                                                                                                                  $(this).height($(this).height());
+                                                                                                                                  $(this).width($(this).width()+6);
+                                                                                                                                  $(this).height($(this).height()+2);
                                                                                                                                 });
                                                                                                              return ui;
                                                                                                            }});

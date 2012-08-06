@@ -3142,16 +3142,6 @@ table .headingtext {
   border-left: 1px solid #444466;
 }
 
-.activeclass {
-  border:          2px dashed #1e90ff;
-  border-collapse: separate;
-}
-
-.hoverclass {
-  border:          4px solid #7cfc00;
-  border-collapse: separate;
-}
-
 table.tablestyle {
   border-collapse: collapse;
   border:          2px solid #e1e1e1;
@@ -3263,12 +3253,32 @@ td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid 
 }
 
 .recgrid {
-  border-collapse: collapse;
-  margin:          10px 50px 0;
+  border-collapse:collapse;
+  margin:         10px auto 0;
+  width:          90%;
+}
+.recgrid tr {
+  background: white;
+  border:     1px solid #333;
+  min-height: 35px;
+}
+.recgrid tr:nth-child(2n) {
+  background-color: #d7ccfb;
+}
+.recgrid td {
+  border: 1px #E1E1E1 solid;
 }
 
-.recgrid td {
-  border: 2px #E1E1E1 solid;
+.recgrid tr.activeclass {
+  background-color: rgba(30, 144, 255, .4);
+}
+
+.recgrid tr.hoverclass {
+  background-color: rgba(124, 252, 0, .4);
+}
+
+.recgrid .placeholder {
+  height: 1px !important;
 }
 
 .tableinfo input, .tableinfo textarea, .tableinfo select {

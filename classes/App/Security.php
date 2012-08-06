@@ -180,7 +180,7 @@
      */
     public function roles_row($label, $name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false) {
       echo "<tr><td class='label'>$label</td>";
-      static::roles_cells(null, $name, $selected_id, $new_item, $submit_on_change, $show_inactive);
+      Security::roles_cells(null, $name, $selected_id, $new_item, $submit_on_change, $show_inactive);
       echo "</tr>\n";
     }
     /**
