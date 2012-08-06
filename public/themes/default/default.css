@@ -2573,6 +2573,32 @@ img {
   padding:         0 0 0 16px;
 }
 
+.black_overlay {
+  display:          none;
+  position:         absolute;
+  top:              0%;
+  left:             0%;
+  width:            100%;
+  height:           100%;
+  background-color: black;
+  z-index:          1001;
+  -moz-opacity:     0.8;
+  opacity:          .80;
+  filter:           alpha(opacity = 80);
+}
+
+#loading {
+  position:          fixed;
+  top:               30%;
+  left:              40%;
+  padding:           16px;
+  width:             250px;
+  z-index:           1002;
+  overflow:          auto;
+  background-image:  url(themes/default/images/ajax_loader.gif);
+  background-repeat: no-repeat
+}
+
 /*--------------------------------- END TOP -----------------------------------------------------------------*/
 
 /*--------------------------------- SUMMARY -----------------------------------------------------------------*/
@@ -3117,6 +3143,16 @@ table .headingtext {
   border-left: 1px solid #444466;
 }
 
+.activeclass {
+  border:          2px dashed #1e90ff;
+  border-collapse: separate;
+}
+
+.hoverclass {
+  border:          4px solid #7cfc00;
+  border-collapse: separate;
+}
+
 table.tablestyle {
   border-collapse: collapse;
   border:          2px solid #e1e1e1;
@@ -3225,6 +3261,15 @@ td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid 
 
 .grid tfoot td, .grid tfoot td.label {
   border: 1px solid #E1E1E1;
+}
+
+.recgrid {
+  border-collapse: collapse;
+  margin:          10px 50px 0;
+}
+
+.recgrid td {
+  border: 2px #E1E1E1 solid;
 }
 
 .tableinfo input, .tableinfo textarea, .tableinfo select {

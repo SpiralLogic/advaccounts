@@ -554,9 +554,11 @@
                     case DB::INSERT:
                         $prepared->execute($data);
                         return $this->conn->lastInsertId();
-                    case DB::UPDATE or DB::DELETE:
-                        $prepared->execute($data);
-                        return true;
+                    case DB::UPDATE:
+                    case DB::DELETE:
+                        return $prepared->execute($data);
+                    default:
+                        return false;
                 }
             } catch (\PDOException $e) {
                 $this->error($e);
