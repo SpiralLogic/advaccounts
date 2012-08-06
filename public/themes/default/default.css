@@ -2959,21 +2959,20 @@ div.success_msg {
 }
 
 div.warn_msg {
-  background-color:  #faa732;
-  background-image:  -moz-linear-gradient(top, #fbb450, #f89406);
-  background-image:  -ms-linear-gradient(top, #fbb450, #f89406);
-  background-image:  -webkit-gradient(linear, 0 0, 0 100%, from(#fbb450), to(#f89406));
-  background-image:  -webkit-linear-gradient(top, #fbb450, #f89406);
-  background-image:  -o-linear-gradient(top, #fbb450, #f89406);
-  background-image:  linear-gradient(top, #fbb450, #f89406);
-  background-repeat: repeat-x;
-  filter:            progid:DXImageTransform.Microsoft.gradient(startColorstr = '#fbb450', endColorstr = '#f89406', GradientType = 0);
-  border-color:      #f89406 #f89406 #ad6704;
-  border-color:      rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  *background-color: #f89406;
-  /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-  color:             rgb(60, 60, 60);
-  filter:            progid:DXImageTransform.Microsoft.gradient(enabled = false);
+  background-color:       hsl(45, 100%, 51%) !important;
+  background-repeat:      repeat-x;
+  filter:                 progid:DXImageTransform.Microsoft.gradient(startColorstr = "#fffbef", endColorstr = "#ffc005");
+  background-image:       -khtml-gradient(linear, left top, left bottom, from(#fffbef), to(#ffc005));
+  background-image:       -moz-linear-gradient(top, #fffbef, #ffc005);
+  background-image:       -ms-linear-gradient(top, #fffbef, #ffc005);
+  background-image:       -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fffbef), color-stop(100%, #ffc005));
+  background-image:       -webkit-linear-gradient(top, #fffbef, #ffc005);
+  background-image:       -o-linear-gradient(top, #fffbef, #ffc005);
+  background-image:       linear-gradient(#fffbef, #ffc005);
+  border-color:           #ffc005 #ffc005 hsl(45, 100%, 39.5%);
+  color:                  #333 !important;
+  text-shadow:            0 1px 1px rgba(255, 255, 255, 0.75);
+  -webkit-font-smoothing: antialiased;
 }
 
 /*--------------------------------- END MSGBOX -----------------------------------------------------------------*/

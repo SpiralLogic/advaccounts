@@ -199,13 +199,14 @@
                 ['fun'=> array($this, 'formatCheckbox')], //
                 'Banked'    => ['type'=> 'date'], //
                 'Amount'    => ['align'=> 'right', 'class'=> 'bold'], //
-                'Info', //
+                'Memo'      => ['class'=> 'state_memo'], //
                 ['insert'=> true, 'fun'=> array($this, 'formatDropdown')], //
             ];
             $table              = DB_Pager::new_db_pager('bank_rec', $known_trans, $cols);
             $table->class       = 'recgrid';
             $table->rowFunction = [$this, 'formatRow'];
             $table->display();
+            JS::addLive('Adv.Reconcile.setUpGrid();');
             return true;
         }
         protected function displaySummary()
@@ -325,16 +326,6 @@
             $this->JS->_setFocus($reconcile_id);
             return true;
         }
-        protected function unDeposit()
-        {
-            $id = Input::post('depositid', Input::NUMERIC);
-            if ($id > 0) {
-                Bank_Undeposited::undeposit($id);
-                $this->updateData();
-            }
-            $this->updateData();
-            JS::renderJSON(['success'=> ($id > 0)]);
-        }
         protected function unGroup()
         {
             $groupid = Input::post('groupid', Input::NUMERIC);
@@ -386,6 +377,13 @@
          */
         public function formatRow($row)
         {
+            if (!$row['trans_date'] && !$row['reconciled'] && $row['state_date']) {
+                $class  = "class='overduebg'";
+                $amount = e($row['state_amount']);
+                $date   = e($this->Dates->_sqlToDate($row['state_date']));
+
+                return "<tr  $class  data-date='$date' data-amount='$amount'> ";
+            }
             $name     = $row['id'];
             $amount   = $row['amount'];
             $date     = $this->Dates->_sqlToDate($row['trans_date']);
@@ -396,14 +394,12 @@
                 return "<tr class='done'>";
             } elseif (!isset($row['state_date'])) {
                 $class = "class='cangroup'";
-            } elseif (!$row['trans_date'] && !$row['reconciled'] && $row['state_date']) {
-                $class = "class='overduebg'";
             } elseif (($row['trans_date'] && $row['reconciled'] && !$row['state_date']) || ($row['state_date'] && !$row['transdate'])
             ) {
                 $class = "class='cangroup overduebg'";
             }
             // save also in hidden field for testing during 'Reconcile'
-            return "<tr  $class data-id='$name' title='Deposit this transaction' data-date='$date' data-type='$type' data-transno='$trans_no' data-amount='$amount'> ";
+            return "<tr  $class data-id='$name' data-date='$date' data-type='$type' data-transno='$trans_no' data-amount='$amount'> ";
         }
         /**
          * @param $row
@@ -442,25 +438,38 @@
          */
         public function formatDropdown($row)
         {
-            if ($row['reconciled'] || !$row['id']) {
+            if ($row['reconciled']) {
                 return '';
             }
-            switch ($row['type']) {
-                case ST_GROUPDEPOSIT:
-                    $items[] = ['class'=> 'unGroup', 'label'=> 'Ungroup'];
-                    break;
-                case ST_BANKDEPOSIT:
-                case ST_CUSTPAYMENT:
-                    $items[] = ['class'=> 'unDeposit', 'label'=> 'Undeposit'];
-                default:
-                    $items[] = ['class'=> 'voidTrans', 'label'=> 'Void Trans', 'data'=> ['type'=> $row['type'], 'trans_no'=> $row['trans_no']]];
-                    $items[] = ['class'=> 'changeBank', 'label'=> 'Move Bank'];
-            }
-            $items[] = ['class'=> 'changeDate', 'label'=> 'Change Date'];
-
             $dropdown = new View('ui/dropdown');
-            $title    = ($row['type'] == ST_GROUPDEPOSIT) ? 'Group' : substr($row['ref'], 0, 7);
-            $menus[]  = ['title'=> $title, 'items'=> $items];
+
+            if (!$row['id'] && $row['state_amount']) {
+                if ($row['state_amount'] > 0) {
+                    $items[] = ['class'=> 'createDP', 'label'=> 'Debtor Payment', 'href'=> '/sales/customer_payments'];
+                    $items[] = ['class'=> 'createBD', 'label'=> 'Bank Deposit', 'href'=> '/gl/gl_bank?NewDeposit=Yes'];
+                } else {
+                    $items[] = ['class'=> 'createCP', 'label'=> 'Creditor Payment', 'href'=> '/purchases/supplier_payment'];
+                    $items[] = ['class'=> 'createBP', 'label'=> 'Bank Payment', 'href'=> '/gl/gl_bank?NewPayment=Yes'];
+                }
+                $items[] = ['class'=> 'createFT', 'label'=> 'Funds Transfer', 'href'=> '/gl/bank_transfer'];
+
+                $title = 'Create';
+            } else {
+                $items[] = ['class'=> 'changeDate', 'label'=> 'Change Date'];
+                switch ($row['type']) {
+                    case ST_GROUPDEPOSIT:
+                        $items[] = ['class'=> 'unGroup', 'label'=> 'Ungroup'];
+                        break;
+                    case ST_BANKDEPOSIT:
+                    case ST_CUSTPAYMENT:
+                    default:
+                        $items[] = ['class'=> 'changeBank', 'label'=> 'Move Bank'];
+                        $items[] = ['class'=> 'voidTrans', 'label'=> 'Void Trans', 'data'=> ['type'=> $row['type'], 'trans_no'=> $row['trans_no']]];
+                }
+
+                $title = ($row['type'] == ST_GROUPDEPOSIT) ? 'Group' : substr($row['ref'], 0, 7);
+            }
+            $menus[] = ['title'=> $title, 'items'=> $items];
             $dropdown->set('menus', $menus);
             return $dropdown->render(true);
         }

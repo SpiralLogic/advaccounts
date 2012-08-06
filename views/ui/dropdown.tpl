@@ -7,10 +7,10 @@
     <li class="divider"></li>
     {{#else}}
     <li>
-      <a class="{{$item.class}}" href="#" {{$item.data?}}{{#foreach $item.data as $name=>$value}} data-{{$name}}="{{$value}}"{{/foreach}}{{/$item.data?}}>{{$item.label}}</a></li>
+      <a class="{{$item.class}}" href="{{$item.href?:'#'}}" {{$item.data?}}{{#foreach $item.data as $name=>$value}} data-{{$name}}="{{$value}}"{{/foreach}}{{/$item.data?}}>{{$item.label}}</a></li>
     {{/if}}
     {{/foreach}}
   </ul>
-  </li>
+
   {{/foreach}}
 </div>

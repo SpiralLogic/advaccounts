@@ -306,18 +306,19 @@
                         $cell = '';
                     }
                 }
+                $class = isset($col['class']) ? $col['class'] : null;
                 switch ($coltype) { // format column
                     case 'time':
-                        Cell::label($cell, "width=40");
+                        Cell::label($cell, " class='$class width40'");
                         break;
                     case 'date':
-                        Cell::label(static::$dates->_sqlToDate($cell), ' class="center nowrap"');
+                        Cell::label(static::$dates->_sqlToDate($cell), " class='$class center nowrap'");
                         break;
                     case 'dstamp': // time stamp displayed as date
-                        Cell::label(static::$dates->_sqlToDate(substr($cell, 0, 10)), ' class="center nowrap"');
+                        Cell::label(static::$dates->_sqlToDate(substr($cell, 0, 10)), " class='$class center nowrap'");
                         break;
                     case 'tstamp': // time stamp - FIX user format
-                        Cell::label(static::$dates->_sqlToDate(substr($cell, 0, 10)) . ' ' . substr($cell, 10), "class='center'");
+                        Cell::label(static::$dates->_sqlToDate(substr($cell, 0, 10)) . ' ' . substr($cell, 10), "class='$class center'");
                         break;
                     case 'percent':
                         Cell::percent($cell);
@@ -329,10 +330,10 @@
                         ($cell == '') ? Cell::label('') : Cell::qty($cell, false, isset($col['dec']) ? $col['dec'] : null);
                         break;
                     case 'email':
-                        Cell::email($cell, isset($col['align']) ? "class='" . $col['align'] . "'" : null);
+                        Cell::email($cell, isset($col['align']) ? "class='$class " . $col['align'] . "'" : null);
                         break;
                     case 'rate':
-                        Cell::label(Num::format($cell, static::$User->_exrate_dec()), "class='center'");
+                        Cell::label(Num::format($cell, static::$User->_exrate_dec()), "class='$class center'");
                         break;
                     case 'inactive':
                         if (Input::post('show_inactive')) {
@@ -341,13 +342,13 @@
                         break;
                     case 'id':
                         if (isset($col['align'])) {
-                            Cell::label($cell, " class='pagerclick' data-id='" . $row['id'] . "' class='" . $col['align'] . "'");
+                            Cell::label($cell, " class='$class " . $col['align'] . " pagerclick' data-id='" . $row['id'] . "'");
                         } else {
-                            Cell::label($cell, " class='pagerclick' data-id='" . $row['id'] . "'");
+                            Cell::label($cell, " class='$class pagerclick' data-id='" . $row['id'] . "'");
                         }
                         break;
                     default:
-                        $alignclass = isset($col['align']) ? " class='" . $col['align'] . "'" : '';
+                        $alignclass = isset($col['align']) ? " class='$class " . $col['align'] . "'" : ($class ? "class='$class'" : "");
                         Cell::label($cell, $alignclass);
                         break;
                     case 'skip': // column not displayed
