@@ -94,7 +94,7 @@
             if (!$this->Ajax->_inAjax() || AJAX_REFERRER) {
                 $this->addDialogs();
             }
-          JS::addLive("Adv.Reconcile.setUpGrid();");
+            JS::addLive("Adv.Reconcile.setUpGrid();");
             Page::end();
         }
         protected function addDialogs()
@@ -207,7 +207,6 @@
             $table->class       = 'recgrid';
             $table->rowFunction = [$this, 'formatRow'];
             $table->display();
-            JS::addLive('Adv.Reconcile.setUpGrid();');
             return true;
         }
         protected function displaySummary()
