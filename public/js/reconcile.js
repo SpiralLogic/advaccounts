@@ -25,20 +25,24 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
     Adv.Reconcile.sendAction(data);
     $dateChanger.dialog('close');
   },
-  changeBank:function ()
+  changeBank:                function ()
   {
     var data = {_action:'changeBank', newbank:$('#changeBank').val(), type:Adv.Reconcile.toChange.data('type'), trans_no:Adv.Reconcile.toChange.data('transno')};
     Adv.Reconcile.sendAction(data);
     $(this).dialog('close')
   },
-  createLink:function ()
+  createLink:                function ()
   {
-    var self = $(this), url = self.attr('href'), $row = $(this).closest('tr'), date = $row.data('date'), amount = $row.data('amount'), memo = $row.find('.state_memo').text();
-    url = encodeURI(url + '?date=' + date + '&account=' + $('#bank_account').val() + '&amount=' + amount + '&memo=' + memo);
+    var self = $(this), fee = '', url = self.attr('href'), $row = $(this).closest('tr'), date = $row.data('date'), amount = $row.data('amount'), memo = $row.find('.state_memo').text();
+    if (self.data('fee')) {
+      fee = '&fee=' + self.data('fee');
+      amount = self.data('amount');
+    }
+    url = encodeURI(url + '?date=' + date + '&account=' + $('#bank_account').val() + '&amount=' + amount + fee + '&memo=' + memo);
     Adv.Reconcile.openLink(url);
     return false;
   },
-  openLink:  function (url)
+  openLink:                  function (url)
   {
     if (Adv.Reconcile.voidtrans && Adv.Reconcile.voidtrans.location) {
       Adv.Reconcile.voidtrans.location.href = url;
@@ -48,11 +52,11 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
       Adv.Reconcile.voidtrans = window.open(url, '_blank');
     }
   },
-  unGroup:   function ()
+  unGroup:                   function ()
   {
     return Adv.Reconcile.sendAction({_action:'unGroup', groupid:$(this).closest('tr').data('id')});
   },
-  sendAction:function (data)
+  sendAction:                function (data)
   {
     var overlay = $("<div class='black_overlay'></div>").css('display', 'block').appendTo("#_bank_rec_span tbody");
     $("<div></div>").attr('id', 'loading').appendTo(overlay);
@@ -65,23 +69,23 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
     }, 'json');
     return false;
   },
-  setUpGrid: function ()
+  setUpGrid:                 function ()
   {
     $('.recgrid').find('.cangroup').droppable({drop:        Adv.Reconcile.groupSelect,
                                                 hoverClass: 'hoverclass',
-   placeholder:'placeholder',
+                                                placeholder:'placeholder',
                                                 activeClass:'activeclass'}).end().find('tbody').sortable({
-                                                                                                          tolerance:'pointer',
-                                                                                                           axis:                'y',
-                                                                                                           items:               '.cangroup',
-                                                                                                           cursor:              'move',revert:true,
-        beforestop:function(e,ui){$(this).sortable('cancel');},
-                                                                                                           helper:              function (e, ui)
+                                                                                                           tolerance: 'pointer',
+                                                                                                           axis:      'y',
+                                                                                                           items:     '.cangroup',
+                                                                                                           cursor:    'move', revert:true,
+                                                                                                           beforestop:function (e, ui) {$(this).sortable('cancel');},
+                                                                                                           helper:    function (e, ui)
                                                                                                            {
                                                                                                              ui.children().each(function ()
                                                                                                                                 {
-                                                                                                                                  $(this).width($(this).width()+6);
-                                                                                                                                  $(this).height($(this).height()+2);
+                                                                                                                                  $(this).width($(this).width() + 6);
+                                                                                                                                  $(this).height($(this).height() + 2);
                                                                                                                                 });
                                                                                                              return ui;
                                                                                                            }});
@@ -111,7 +115,6 @@ $(function ()
       Adv.Reconcile.openLink(url);
       return false;
     });
-    Adv.o.wrapper.on('click', '.unDeposit', Adv.Reconcile.unDeposit);
     Adv.o.wrapper.on('click', '.unGroup', Adv.Reconcile.unGroup);
     Adv.o.wrapper.on('click', '[class^="create"]', Adv.Reconcile.createLink);
     var bankButtons = {'Cancel':function () {$(this).dialog('close');}, 'Save':Adv.Reconcile.changeBank};

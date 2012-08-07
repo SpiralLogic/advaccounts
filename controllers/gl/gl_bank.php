@@ -156,6 +156,11 @@
      */
     function check_item_data()
     {
+        if (Input::post('PayType') == PT_QUICKENTRY && $_SESSION['pay_items']->count_gl_items() < 1) {
+            Event::error('You must select and add quick entry before adding extra lines!');
+            JS::setFocus('total_amount');
+            return false;
+        }
         //if (!Validation::post_num('amount', 0))
         //{
         //	Event::error( _("The amount entered is not a valid number or is less than zero."));

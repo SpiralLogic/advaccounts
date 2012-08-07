@@ -390,7 +390,7 @@
             $type     = $row['type'];
             $trans_no = $row['trans_no'];
             $class    = "class='cangroup'";
-            if ($row['reconciled']) {
+            if ($row['reconciled'] && $row['state_date']) {
                 return "<tr class='done'>";
             } elseif (!isset($row['state_date'])) {
                 $class = "class='cangroup'";
@@ -445,7 +445,13 @@
 
             if (!$row['id'] && $row['state_amount']) {
                 if ($row['state_amount'] > 0) {
-                    $items[] = ['class'=> 'createDP', 'label'=> 'Debtor Payment', 'href'=> '/sales/customer_payments'];
+                    if (stripos($row['memo'], 'AMEX')) {
+                        preg_match('/([0-9]+\.[0-9]+)/', $row['memo'], $beforefee);
+                        $fee     = $beforefee[1] - $row['state_amount'];
+                        $items[] = ['class'=> 'createDP', 'label'=> 'Debtor Payment', 'href'=> '/sales/customer_payments', 'data'=> ['fee'=> $fee, 'amount'=> $beforefee[1]]];
+                    } else {
+                        $items[] = ['class'=> 'createDP', 'label'=> 'Debtor Payment', 'href'=> '/sales/customer_payments'];
+                    }
                     $items[] = ['class'=> 'createBD', 'label'=> 'Bank Deposit', 'href'=> '/gl/gl_bank?NewDeposit=Yes'];
                 } else {
                     $items[] = ['class'=> 'createCP', 'label'=> 'Creditor Payment', 'href'=> '/purchases/supplier_payment'];

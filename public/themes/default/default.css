@@ -2582,9 +2582,9 @@ img {
   height:           100%;
   background-color: black;
   z-index:          1001;
-  -moz-opacity:     0.8;
-  opacity:          .80;
-  filter:           alpha(opacity = 80);
+  -moz-opacity:     0.7;
+  opacity:          .70;
+  filter:           alpha(opacity = 70);
 }
 
 #loading {
@@ -3253,18 +3253,21 @@ td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid 
 }
 
 .recgrid {
-  border-collapse:collapse;
-  margin:         10px auto 0;
-  width:          90%;
+  border-collapse: collapse;
+  margin:          10px auto 0;
+  width:           90%;
 }
+
 .recgrid tr {
-  background: white;
-  border:     1px solid #333;
-  min-height: 35px;
+  background-color: white;
+  border:           1px solid #333;
+  min-height:       35px;
 }
+
 .recgrid tr:nth-child(2n) {
   background-color: #d7ccfb;
 }
+
 .recgrid td {
   border: 1px #E1E1E1 solid;
 }

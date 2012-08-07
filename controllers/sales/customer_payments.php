@@ -28,6 +28,9 @@
                 if (Input::get('date')) {
                     $_POST['DateBanked'] = Input::get('date');
                 }
+                if (Input::get('fee')) {
+                    $_POST['charge'] = Input::get('fee');
+                }
             }
             $this->JS->_openWindow(900, 500);
             $this->JS->_footerFile('/js/payalloc.js');
