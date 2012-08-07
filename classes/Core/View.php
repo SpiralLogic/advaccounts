@@ -17,6 +17,7 @@
         protected $_template = null;
         /** @var Cache */
         static $Cache;
+    static $count = 0;
         /**
          * @param $template
          *
@@ -66,6 +67,11 @@
             // We'll include the view contents for parsing within a catcher
             // so we can avoid any WSOD errors. If an exception occurs we
             // will throw it out to the exception handler.
+  /*    static::$count++;
+      if (static::$count ==5) {
+        var_dump($__contents,$this->_template);
+        exit;
+      }*/
             try {
                 eval('?>' . $__contents);
             } // If we caught an exception, we'll silently flush the output
