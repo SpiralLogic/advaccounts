@@ -113,7 +113,7 @@
       $form->label('Receivables Account:', 'branch[receivables_account]', GL_UI::all('branch[receivables_account]', $currentBranch->receivables_account, true, false, false));
       $form->label('Discount Account:', 'branch[sales_discount_account]', GL_UI::all('branch[sales_discount_account]', $currentBranch->sales_discount_account, false, false, true));
       $form->label('Prompt Payment Account:', 'branch[payment_discount_account]', GL_UI::all('branch[payment_discount_account]', $currentBranch->payment_discount_account, false, false, true));
-      $form->textarea('General Notes:', 'branch[notes]', $currentBranch->notes, 35, 4);
+      $form->textarea('General Notes:', 'branch[notes]', $currentBranch->notes, ['cols'=> 100, 'rows'=> 10]);
       $view['debtor_id'] = $this->customer->id;
       $form->hidden('frame', $this->Input->_request('frame'));
       $view->set('form', $form);
