@@ -1,6 +1,0 @@
-1: ErrorException Class 'ADV\Core\Pimple' not found in file: C:\dev\accounts\tests\core\DICTest.php on line:59
-1: ErrorException Class 'ADV\Core\Pimple' not found in file: C:\dev\accounts\tests\core\DICTest.php on line:59
-1: ErrorException Class 'ADV\Core\Pimple' not found in file: C:\dev\accounts\tests\core\DICTest.php on line:59
-1: ErrorException Class 'ADV\Core\Pimple' not found in file: C:\dev\accounts\tests\core\DICTest.php on line:59
-1: ErrorException Nesting level too deep - recursive dependency? in file: C:\dev\accounts\classes\core\errors.php on line:308
-1: ErrorException Nesting level too deep - recursive dependency? in file: C:\dev\accounts\classes\core\errors.php on line:308
