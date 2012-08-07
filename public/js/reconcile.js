@@ -58,11 +58,11 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
   },
   sendAction:                function (data)
   {
-    var overlay = $("<div class='black_overlay'></div>").css('display', 'block').appendTo("#_bank_rec_span tbody");
-    $("<div></div>").attr('id', 'loading').appendTo(overlay);
+    var overlay=  $("<div id='loading' </div>").modal('show');
     $.post('#', data, function (data)
     {
       if (data.grid) {
+        overlay.modal('hide');
         $("#_bank_rec_span").html($('#_bank_rec_span', data.grid).html());
         Adv.Reconcile.setUpGrid();
       }
