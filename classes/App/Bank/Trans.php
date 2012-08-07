@@ -181,6 +181,10 @@
             static::$DB->_begin();
             static::$DB->_update('bank_trans')->value('bank_act', $to)->where('type=', $type)->andWhere('trans_no=', $trans_no)->andwhere('bank_act=', $from)->exec();
             static::$DB->_update('gl_trans')->value('account', $togl)->where('type=', $type)->andWhere('type_no=', $trans_no)->andWhere('account=', $fromgl)->exec();
+            $sql = "UPDATE comments SET memo_ = CONCAT(memo_," . DB::quote(
+                ' <br>Bank changed from ' . $from . ' to ' . $to . ' by ' . User::i()->username
+            ) . ") WHERE id=" . DB::quote($trans_no) . " AND type=" . DB::quote($type);
+            DB::query($sql);
             static::$DB->_commit();
             return true;
         }
@@ -203,30 +207,43 @@
             $sqldate = static::$Dates->_dateToSql($date);
             $row     = static::$DB->_select('*')->from('bank_trans')->where('id=', $bank_trans_id)->fetch()->one();
             static::$DB->_begin();
-            switch ($row['type']) {
-                case ST_CUSTPAYMENT:
-                case ST_BANKDEPOSIT:
-                    {
-                    $result = static::$DB->_update('debtor_trans')->value('tran_date', $sqldate)->where('trans_no=', $row['trans_no'])->andWhere('type=', $row['type'])->exec();
-                    }
-                    break;
-                case ST_GROUPDEPOSIT:
-                    $result = static::$DB->_update('bank_trans')->value('trans_date', $sqldate)->where('id=', $row['id'])->exec();
-                    static::$DB->_commit();
-                    return $result;
-                default:
-                    {
-                    static::$DB->_cancel();
-                    $result = $status->set(\ADV\Core\Status::ERROR, 'chnage date', $bank_trans_id . 'Cannot change date for this transaction');
-                    }
+            try {
+                switch ($row['type']) {
+                    case ST_CUSTPAYMENT:
+                    case ST_BANKDEPOSIT:
+                        static::$DB->_update('debtor_trans')->value('tran_date', $sqldate)->where('trans_no=', $row['trans_no'])->andWhere('type=', $row['type'])->exec();
+                        static::$DB->_update('bank_trans')->value('trans_date', $sqldate)->where('id=', $row['id'])->exec();
+                        static::$DB->_update('gl_trans')->value('tran_date', $sqldate)->where('type_no=', $row['trans_no'])->andWhere('type=', $row['type'])->exec();
+                        break;
+                    case ST_SUPPAYMENT:
+                    case ST_BANKPAYMENT:
+                        static::$DB->_update('creditor_trans')->value('tran_date', $sqldate)->where('trans_no=', $row['trans_no'])->andWhere('type=', $row['type'])->exec();
+                        static::$DB->_update('bank_trans')->value('trans_date', $sqldate)->where('id=', $row['id'])->exec();
+                        static::$DB->_update('gl_trans')->value('tran_date', $sqldate)->where('type_no=', $row['trans_no'])->andWhere('type=', $row['type'])->exec();
+                        break;
+                    case ST_GROUPDEPOSIT:
+                        static::$DB->_update('bank_trans')->value('trans_date', $sqldate)->where('id=', $row['id'])->exec();
+                        break;
+                    case ST_BANKTRANSFER:
+                        static::$DB->_update('bank_trans')->value('trans_date', $sqldate)->where('trans_no=', $row['trans_no'])->andWhere('type=', $row['type'])->exec();
+                        static::$DB->_update('gl_trans')->value('tran_date', $sqldate)->where('type_no=', $row['trans_no'])->andWhere('type=', $row['type'])->exec();
+                        break;
+                    default:
+                        {
+                        static::$DB->_cancel();
+                        $status->set(\ADV\Core\Status::ERROR, 'chnage date', $bank_trans_id . 'Cannot change date for this transaction');
+                        }
+                        $sql = "UPDATE comments SET memo_ = CONCAT(memo_,'" . ' <br>Date changed from ' . $row['trans_date'] . ' to ' . $sqldate . ' by ' . User::i(
+                        )->username . "') WHERE id=" . DB::quote($row["trans_no"]) . " AND type=" . DB::quote($row['type']);
+                        DB::query($sql);
+                        static::$DB->_commit();
+                        return true;
+                }
+            } catch (\ADV\Core\DB\DBException $e) {
+                static::$DB->_cancel();
+                $status->set(\ADV\Core\Status::ERROR, 'change date', 'Database error: ' . $e->getMessage());
             }
-            if ($result) {
-                static::$DB->_update('bank_trans')->value('trans_date', $sqldate)->where('id=', $row['id'])->exec();
-                static::$DB->_update('gl_trans')->value('tran_date', $sqldate)->where('type_no=', $row['trans_no'])->andWhere('type=', $row['type'])->exec();
-                static::$DB->_commit();
-                //    $status->set(\ADV\Core\Status::SUCCESS, 'change date', 'Successfully changed date');
-            }
-            return $result;
+            return false;
         }
         /**
          * @param $bank_account

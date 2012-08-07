@@ -272,12 +272,18 @@
             $this->select_records();
             Display::div_start("_{$this->name}_span");
             $headers = $this->makeHeaders();
+            $class   = $this->class ? : 'tablestyle grid width' . rtrim($this->width, '%');
+            Table::start($class);
             $this->displayHeaders($headers);
+            $this->displayNavigation();
+
             foreach ($this->data as $row) {
                 $this->displayRow($row);
             }
             $this->displayFooter();
             $this->displayNavigation();
+            Table::end();
+
             Display::div_end();
             return true;
         }
@@ -389,7 +395,6 @@
                 Cell::label(_('No records') . $inact, "colspan=$colspan class='navibar'");
             }
             Row::end();
-            Table::end();
             if (isset($this->marker_txt)) {
                 Event::warning($this->marker_txt, 0, 1, "class='$this->notice_class'");
             }
@@ -413,8 +418,6 @@
         }
         protected function displayHeaders($headers)
         {
-            $class = $this->class ? : 'tablestyle grid width' . rtrim($this->width, '%');
-            Table::start($class);
             Table::header($headers);
             if ($this->header_fun) { // if set header handler
                 Row::start("class='{$this->header_class}'");

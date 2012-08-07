@@ -171,6 +171,16 @@
             $statement_transment_headers = array_combine(array_keys($statement_trans[0]), array_values(array_pad([], count($statement_trans[0]), '')));
             while ($v = array_shift($statement_trans)) {
                 $amount = $v['state_amount'];
+                if ($v['reconciled_to_id']) {
+                    foreach ($rec as $p=> $q) {
+                        if ($q['id'] == $v['reconciled_to_id']) {
+                            $matched = $rec[$p] + $v;
+                            unset($rec[$p]);
+                            $known_trans[] = $matched;
+                            continue 2;
+                        }
+                    }
+                }
                 foreach ($rec as $p=> $q) {
                     if ($q['amount'] == $amount) {
                         $matched = $rec[$p] + $v;
@@ -201,7 +211,7 @@
                 'Banked'    => ['type'=> 'date'], //
                 'Amount'    => ['align'=> 'right', 'class'=> 'bold'], //
                 'Memo'      => ['class'=> 'state_memo'], //
-                ['insert'=> true, 'fun'=> array($this, 'formatDropdown')], //
+                ['fun'=> array($this, 'formatDropdown')], //
             ];
             $table              = DB_Pager::new_db_pager('bank_rec', $known_trans, $cols);
             $table->class       = 'recgrid';
@@ -321,7 +331,14 @@
                 $this->Ajax->_activate('bank_date');
             }
             $reconcile_value = Input::hasPost("rec_" . $reconcile_id) ? ("'" . $this->Dates->_dateToSql($this->reconcile_date) . "'") : 'null';
-            GL_Account::update_reconciled_values($reconcile_id, $reconcile_value, $this->reconcile_date, Validation::input_num('end_balance'), $this->bank_account);
+            GL_Account::update_reconciled_values(
+                $reconcile_id,
+                $reconcile_value,
+                $this->reconcile_date,
+                Validation::input_num('end_balance'),
+                $this->bank_account,
+                Input::post('state_' . $reconcile_id, Input::NUMERIC, -1)
+            );
             $this->Ajax->_activate('_page_body');
             $this->JS->_setFocus($reconcile_id);
             return true;
@@ -365,10 +382,15 @@
             if (!$row['amount']) {
                 return '';
             }
-            $name   = "rec_" . $row['id'];
-            $hidden = 'last[' . $row['id'] . ']';
-            $value  = $row['reconciled'] != '';
-            return Forms::checkbox(null, $name, $value, true, _('Reconcile this transaction')) . Forms::hidden($hidden, $value, false);
+            $name     = "rec_" . $row['id'];
+            $state_id = $row['state_id'];
+            $hidden   = 'last[' . $row['id'] . ']';
+            $value    = $row['reconciled'] != '';
+            return Forms::checkbox(null, $name, $value, true, _('Reconcile this transaction')) . Forms::hidden($hidden, $value, false) . Forms::hidden(
+                'state_' . $row['id'],
+                $state_id,
+                false
+            );
         }
         /**
          * @param $row

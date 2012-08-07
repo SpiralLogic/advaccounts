@@ -100,15 +100,20 @@
         /**
          * @static
          *
-         * @param $reconcile_id
-         * @param $reconcile_value
-         * @param $reconcile_date
-         * @param $end_balance
-         * @param $bank_account
+         * @param      $reconcile_id
+         * @param      $reconcile_value
+         * @param      $reconcile_date
+         * @param      $end_balance
+         * @param      $bank_account
+         * @param null $state_id
          */
-        public static function update_reconciled_values($reconcile_id, $reconcile_value, $reconcile_date, $end_balance, $bank_account)
+        public static function update_reconciled_values($reconcile_id, $reconcile_value, $reconcile_date, $end_balance, $bank_account, $state_id = null)
         {
             $sql = "UPDATE bank_trans SET reconciled=$reconcile_value WHERE id=" . DB::quote($reconcile_id);
+            if ($state_id > -1) {
+                $sql .= "; UPDATE temprec SET reconciled_to_id=" . ($reconcile_value != 'null' ? DB::quote($reconcile_id) : 'null') . " WHERE id=" . DB::quote($state_id);
+            }
+
             DB::query($sql, "Can't change reconciliation status");
             // save last reconcilation status (date, end balance)
             $sql2 = "UPDATE bank_accounts SET last_reconciled_date='" . Dates::dateToSql($reconcile_date) . "', ending_reconcile_balance=$end_balance WHERE id=" . DB::quote(
