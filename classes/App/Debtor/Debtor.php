@@ -109,6 +109,8 @@
      * @var string
      */
     protected $_id_column = 'debtor_id';
+    /** @var \ADV\Core\DB\DB DB */
+    static $DB;
     /**
      * @param int|null $id
      */
@@ -163,7 +165,7 @@
         return $this->_status(false, 'delete', "Cannot delete this customer because there are contact records set up against it.");
       }
       $sql = "DELETE FROM debtors WHERE debtor_id=" . $this->id;
-      Forms::$DB->_query($sql, "cannot delete customer");
+      static::$DB->_query($sql, "cannot delete customer");
       unset($this->id);
       $this->_new();
 
@@ -203,15 +205,15 @@
                         debtor_trans.ov_freight_tax + debtor_trans.ov_discount)
                         AS TotalAmount, debtor_trans.alloc AS Allocated
                         FROM debtor_trans LEFT OUTER JOIN sales_orders ON debtor_trans.order_ = sales_orders.order_no
-                     WHERE debtor_trans.debtor_id = " . Forms::$DB->_escape($this->id) . "
-                      AND sales_orders.debtor_id = " . Forms::$DB->_escape($this->id) . "
+                     WHERE debtor_trans.debtor_id = " . static::$DB->_escape($this->id) . "
+                      AND sales_orders.debtor_id = " . static::$DB->_escape($this->id) . "
                          AND debtor_trans.type <> " . ST_CUSTDELIVERY . "
                          AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
                         debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0
                          ORDER BY debtor_trans.branch_id, debtor_trans.tran_date";
-      $result  = Forms::$DB->_query($sql);
+      $result  = static::$DB->_query($sql);
       $results = [];
-      while ($row = Forms::$DB->_fetchAssoc($result)) {
+      while ($row = static::$DB->_fetchAssoc($result)) {
         $results[] = $row;
       }
 
@@ -317,33 +319,33 @@
      * @return int
      */
     protected function _countBranches() {
-      Forms::$DB->_select('COUNT(*)')->from('branches')->where('debtor_id=', $this->id);
+      static::$DB->_select('COUNT(*)')->from('branches')->where('debtor_id=', $this->id);
 
-      return Forms::$DB->_numRows();
+      return static::$DB->_numRows();
     }
     /**
      * @return int
      */
     protected function _countContacts() {
-      Forms::$DB->_select('COUNT(*)')->from('contacts')->where('debtor_id=', $this->id);
+      static::$DB->_select('COUNT(*)')->from('contacts')->where('debtor_id=', $this->id);
 
-      return Forms::$DB->_numRows();
+      return static::$DB->_numRows();
     }
     /**
      * @return int
      */
     protected function _countOrders() {
-      Forms::$DB->_select('COUNT(*)')->from('sales_orders')->where('debtor_id=', $this->id);
+      static::$DB->_select('COUNT(*)')->from('sales_orders')->where('debtor_id=', $this->id);
 
-      return Forms::$DB->_numRows();
+      return static::$DB->_numRows();
     }
     /**
      * @return int|mixed
      */
     protected function _countTransactions() {
-      Forms::$DB->_select('COUNT(*)')->from('debtor_trans')->where('debtor_id=', $this->id);
+      static::$DB->_select('COUNT(*)')->from('debtor_trans')->where('debtor_id=', $this->id);
 
-      return (int) Forms::$DB->_numRows();
+      return (int) static::$DB->_numRows();
     }
     /**
      * @return void
@@ -357,8 +359,8 @@
       $this->credit_limit  = Num::priceFormat(DB_Company::get_pref('default_credit_limit'));
     }
     protected function _getAccounts() {
-      Forms::$DB->_select()->from('branches')->where('debtor_id=', $this->debtor_id)->andWhere('branch_ref=', 'accounts');
-      $this->accounts = Forms::$DB->_fetch()->asClassLate('Debtor_Account')->one();
+      static::$DB->_select()->from('branches')->where('debtor_id=', $this->debtor_id)->andWhere('branch_ref=', 'accounts');
+      $this->accounts = static::$DB->_fetch()->asClassLate('Debtor_Account')->one();
       if (!$this->accounts && $this->id > 0 && $this->defaultBranch > 0) {
         $this->accounts          = clone($this->branches[$this->defaultBranch]);
         $this->accounts->br_name = 'Accounts Department';
@@ -366,8 +368,8 @@
       }
     }
     protected function _getBranches() {
-      Forms::$DB->_select()->from('branches')->where('debtor_id=', $this->debtor_id)->where('branch_ref !=', 'accounts');
-      $branches = Forms::$DB->_fetch()->asClassLate('Debtor_Branch');
+      static::$DB->_select()->from('branches')->where('debtor_id=', $this->debtor_id)->where('branch_ref !=', 'accounts');
+      $branches = static::$DB->_fetch()->asClassLate('Debtor_Branch');
       foreach ($branches as $branch) {
         $this->branches[$branch->branch_id] = $branch;
       }
@@ -377,9 +379,9 @@
      * @return void
      */
     protected function _getContacts() {
-      Forms::$DB->_select()->from('contacts')->where('parent_id=', $this->id)->andWhere('parent_type =', CT_CUSTOMER)
+      static::$DB->_select()->from('contacts')->where('parent_id=', $this->id)->andWhere('parent_type =', CT_CUSTOMER)
         ->orderby('name ASC');
-      $contacts = Forms::$DB->_fetch()->asClassLate('Contact', array(CT_CUSTOMER));
+      $contacts = static::$DB->_fetch()->asClassLate('Contact', array(CT_CUSTOMER));
       if (count($contacts)) {
         foreach ($contacts as $contact) {
           $this->contacts[] = $contact;
@@ -469,15 +471,15 @@ JS;
     public static function search($terms) {
       $data  = [];
       $terms = preg_replace("/[^a-zA-Z 0-9]+/", " ", $terms);
-      $sql   = Forms::$DB
-        ->_select('debtor_id as id', 'name as label', 'name as value', "IF(name LIKE " . Forms::$DB->_quote(trim($terms) . '%') . ",0,5) as weight")
+      $sql   = static::$DB
+        ->_select('debtor_id as id', 'name as label', 'name as value', "IF(name LIKE " . static::$DB->_quote(trim($terms) . '%') . ",0,5) as weight")
         ->from('debtors')->where('name LIKE ', trim($terms) . "%")->orWhere('name LIKE ', trim($terms))
         ->orWhere('name LIKE', '%' . str_replace(' ', '%', trim($terms)) . "%");
       if (is_numeric($terms)) {
         $sql->orWhere('debtor_id LIKE', "$terms%");
       }
       $sql->orderby('weight,name')->limit(20);
-      $results = Forms::$DB->_fetch();
+      $results = static::$DB->_fetch();
       foreach ($results as $result) {
         $data[] = @array_map('htmlspecialchars_decode', $result);
       }
@@ -496,8 +498,8 @@ JS;
       $defaults = array('inactive' => false, 'selected' => '');
       $o        = array_merge($defaults, $options);
       $term     = explode(' ', $term);
-      $term1    = Forms::$DB->_escape(trim($term[0]) . '%');
-      $term2    = Forms::$DB->_escape('%' . implode(' AND name LIKE ', array_map(function($v) {
+      $term1    = static::$DB->_escape(trim($term[0]) . '%');
+      $term2    = static::$DB->_escape('%' . implode(' AND name LIKE ', array_map(function($v) {
         return trim($v);
       }, $term)) . '%');
       $where    = ($o['inactive'] ? '' : ' AND inactive = 0 ');
@@ -505,9 +507,9 @@ JS;
                 = "(SELECT debtor_id as id, name as label, debtor_id as value, name as description FROM debtors WHERE name LIKE $term1 $where ORDER BY name LIMIT 20)
                                     UNION (SELECT debtor_id as id, name as label, debtor_id as value, name as description FROM debtors
                                     WHERE debtor_ref LIKE $term1 OR name LIKE $term2 OR debtor_id LIKE $term1 $where ORDER BY debtor_id, name LIMIT 20)";
-      $result   = Forms::$DB->_query($sql, 'Couldn\'t Get Customers');
+      $result   = static::$DB->_query($sql, 'Couldn\'t Get Customers');
       $data     = '';
-      while ($row = Forms::$DB->_fetchAssoc($result)) {
+      while ($row = static::$DB->_fetchAssoc($result)) {
         foreach ($row as &$value) {
           $value = htmlspecialchars_decode($value);
         }
@@ -558,7 +560,7 @@ JS;
             WHERE
                  debtors.payment_terms = payment_terms.terms_indicator
                  AND debtors.credit_status = credit_status.id
-                 AND debtors.debtor_id = " . Forms::$DB->_escape($debtor_id) . "
+                 AND debtors.debtor_id = " . static::$DB->_escape($debtor_id) . "
                  AND debtor_trans.tran_date <= '$todate'
                  AND debtor_trans.type <> 13
                  AND debtors.debtor_id = debtor_trans.debtor_id
@@ -570,8 +572,8 @@ JS;
                  debtors.credit_limit,
                  credit_status.dissallow_invoices,
                  credit_status.reason_description";
-      $result = Forms::$DB->_query($sql, "The customer details could not be retrieved");
-      if (Forms::$DB->_numRows($result) == 0) {
+      $result = static::$DB->_query($sql, "The customer details could not be retrieved");
+      if (static::$DB->_numRows($result) == 0) {
         /* Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
         $nil_balance = true;
         $sql
@@ -584,10 +586,10 @@ JS;
              WHERE
               debtors.payment_terms = payment_terms.terms_indicator
               AND debtors.credit_status = credit_status.id
-              AND debtors.debtor_id = " . Forms::$DB->_escape($debtor_id);
-        $result      = Forms::$DB->_query($sql, "The customer details could not be retrieved");
+              AND debtors.debtor_id = " . static::$DB->_escape($debtor_id);
+        $result      = static::$DB->_query($sql, "The customer details could not be retrieved");
       } else {
-        $customer_record = Forms::$DB->_fetch($result);
+        $customer_record = static::$DB->_fetch($result);
       }
 
       return $customer_record;
@@ -600,10 +602,10 @@ JS;
      * @return Array|\ADV\Core\DB\Query\Result
      */
     public static function get($debtor_id) {
-      $sql    = "SELECT * FROM debtors WHERE debtor_id=" . Forms::$DB->_escape($debtor_id);
-      $result = Forms::$DB->_query($sql, "could not get customer");
+      $sql    = "SELECT * FROM debtors WHERE debtor_id=" . static::$DB->_escape($debtor_id);
+      $result = static::$DB->_query($sql, "could not get customer");
 
-      return Forms::$DB->_fetch($result);
+      return static::$DB->_fetch($result);
     }
     /**
      * @static
@@ -613,9 +615,10 @@ JS;
      * @return mixed
      */
     public static function get_name($debtor_id) {
-      $sql    = "SELECT name FROM debtors WHERE debtor_id=" . Forms::$DB->_escape($debtor_id);
-      $result = Forms::$DB->_query($sql, "could not get customer");
-      $row    = Forms::$DB->_fetchRow($result);
+      static::$DB->_select('name')->from('debtors')->where('debtor_id=',$debtor_id)->fetch()->one();
+      $sql    = "SELECT name FROM debtors WHERE debtor_id=" . static::$DB->_escape($debtor_id);
+      $result = static::$DB->_query($sql, "could not get customer");
+      $row    = static::$DB->_fetchRow($result);
 
       return $row[0];
     }
@@ -632,10 +635,10 @@ JS;
                  credit_status.dissallow_invoices
                 FROM debtors, credit_status
                 WHERE debtors.credit_status = credit_status.id
-                    AND debtors.debtor_id = " . Forms::$DB->_escape($debtor_id);
-      $result = Forms::$DB->_query($sql, "could not query customers");
+                    AND debtors.debtor_id = " . static::$DB->_escape($debtor_id);
+      $result = static::$DB->_query($sql, "could not query customers");
 
-      return Forms::$DB->_fetch($result);
+      return static::$DB->_fetch($result);
     }
     /**
      * @static
@@ -645,9 +648,9 @@ JS;
      * @return mixed
      */
     public static function get_area($id) {
-      $sql    = "SELECT description FROM areas WHERE area_code=" . Forms::$DB->_escape($id);
-      $result = Forms::$DB->_query($sql, "could not get sales type");
-      $row    = Forms::$DB->_fetchRow($result);
+      $sql    = "SELECT description FROM areas WHERE area_code=" . static::$DB->_escape($id);
+      $result = static::$DB->_query($sql, "could not get sales type");
+      $row    = static::$DB->_fetchRow($result);
 
       return $row[0];
     }
@@ -659,9 +662,9 @@ JS;
      * @return mixed
      */
     public static function get_salesman_name($id) {
-      $sql    = "SELECT salesman_name FROM salesman WHERE salesman_code=" . Forms::$DB->_escape($id);
-      $result = Forms::$DB->_query($sql, "could not get sales type");
-      $row    = Forms::$DB->_fetchRow($result);
+      $sql    = "SELECT salesman_name FROM salesman WHERE salesman_code=" . static::$DB->_escape($id);
+      $result = static::$DB->_query($sql, "could not get sales type");
+      $row    = static::$DB->_fetchRow($result);
 
       return $row[0];
     }
@@ -914,4 +917,4 @@ JS;
     }
   }
 
-  Forms::$DB = \ADV\Core\DB\DB::i();
+Debtor::$DB = \ADV\Core\DB\DB::i();

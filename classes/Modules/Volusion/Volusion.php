@@ -87,7 +87,6 @@
       }
       $success = 0;
       foreach ($neworders as $neworder) {
-
         $job = $this->insertJob($neworder['OrderID']);
         if ($job) {
           \Event::success("Websale " . $neworder['OrderID'] . " successfully added to Jobs Board with Job Number $job!");
@@ -128,6 +127,7 @@
           'Advanced_Job_No' => $jobsboard_no, 'websaleid'       => $id, 'Detail'          => $detail,
         );
         $this->jobsboardDB->_update('Job_List')->values($newJob)->where('Advanced_Job_No=', $jobsboard_no)->exec();
+        DB::update('WebOrders')->value('ison_jobsboard',$jobsboard_no)->where('OrderID=', $id)->exec();
         $this->insertJobsboardlines($lineitems, $jobsboard_no);
         return $jobsboard_no;
       }

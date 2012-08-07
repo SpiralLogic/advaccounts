@@ -88,7 +88,7 @@
       if (!strstr($_SERVER['DOCUMENT_URI'], 'logout.php')) {
         $this->checkLogin();
       }
-      \Event::init();
+      \ADV\Core\Event::init();
       $this->get_selected();
       $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
       $index      = $controller == $_SERVER['SCRIPT_NAME'];

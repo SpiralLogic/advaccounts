@@ -7,7 +7,10 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class DB_Comments {
+  class DB_Comments
+  {
+    /** @var \ADV\Core\DB\DB */
+    static $DB;
     /**
      * @static
      *
@@ -20,8 +23,8 @@
       if ($memo_ != null && $memo_ != "") {
         $date = Dates::dateToSql($date_);
         $sql  = "INSERT INTO comments (type, id, date_, memo_)
-                 VALUES (" . DB::escape($type) . ", " . DB::escape($type_no) . ", '$date', " . DB::escape($memo_) . ")";
-        DB::query($sql, "could not add comments transaction entry");
+                 VALUES (" . static::$DB->_escape($type) . ", " . static::$DB->_escape($type_no) . ", '$date', " . static::$DB->_escape($memo_) . ")";
+        static::$DB->_query($sql, "could not add comments transaction entry");
       }
     }
     /**
@@ -31,8 +34,8 @@
      * @param $type_no
      */
     public static function delete($type, $type_no) {
-      $sql = "DELETE FROM comments WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($type_no);
-      DB::query($sql, "could not delete from comments transaction table");
+      $sql = "DELETE FROM comments WHERE type=" . static::$DB->_escape($type) . " AND id=" . static::$DB->_escape($type_no);
+      static::$DB->_query($sql, "could not delete from comments transaction table");
     }
     /**
      * @static
@@ -42,9 +45,9 @@
      */
     public static function display_row($type, $id) {
       $comments = DB_Comments::get($type, $id);
-      if ($comments and DB::numRows($comments)) {
+      if ($comments and static::$DB->_numRows($comments)) {
         echo "<tr><td class='label'>Comments</td><td colspan=15>";
-        while ($comment = DB::fetch($comments)) {
+        while ($comment = static::$DB->_fetch($comments)) {
           echo $comment["memo_"] . "<br>";
         }
         echo "</td></tr>";
@@ -59,8 +62,8 @@
      * @return null|PDOStatement
      */
     public static function get($type, $type_no) {
-      $sql = "SELECT * FROM comments WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($type_no);
-      return DB::query($sql, "could not query comments transaction table");
+      $sql = "SELECT * FROM comments WHERE type=" . static::$DB->_escape($type) . " AND id=" . static::$DB->_escape($type_no);
+      return static::$DB->_query($sql, "could not query comments transaction table");
     }
     /**
      * @static
@@ -73,7 +76,7 @@
     public static function get_string($type, $type_no) {
       $str_return = "";
       $result     = DB_Comments::get($type, $type_no);
-      while ($comment = DB::fetch($result)) {
+      while ($comment = static::$DB->_fetch($result)) {
         if (strlen($str_return)) {
           $str_return = $str_return . " \n";
         }
@@ -95,8 +98,10 @@
         DB_Comments::add($type, $id, Dates::today(), $memo_);
       } else {
         $date = Dates::dateToSql($date_);
-        $sql  = "UPDATE comments SET memo_=" . DB::escape($memo_) . " WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($id) . " AND date_='$date'";
-        DB::query($sql, "could not update comments");
+        $sql  = "UPDATE comments SET memo_=" . static::$DB->_escape($memo_) . " WHERE type=" . static::$DB->_escape($type) . " AND id=" . static::$DB->_escape($id) . " AND date_='$date'";
+        static::$DB->_query($sql, "could not update comments");
       }
     }
   }
+
+  DB_Comments::$DB = \ADV\Core\DB\DB::i();

@@ -85,11 +85,7 @@
       $bank_currency   = Bank_Currency::for_company($_POST['bank_account']);
       GL_ExchangeRate::display($bank_currency, $person_currency, $_POST['date_']);
       Table::section(3, "33%");
-      if (isset($_GET['NewPayment'])) {
-        Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_BANKPAYMENT));
-      } else {
-        Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_BANKDEPOSIT));
-      }
+        Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next($order->trans_type));
       Table::endOuter(1); // outer table
       Display::div_end();
     }

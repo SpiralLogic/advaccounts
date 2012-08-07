@@ -1,1466 +1,2885 @@
-<!DOCTYPE HTML>
-<html class='debtors' dir='ltr'>
-<head>
-  <meta charset='utf-8'>
-  <title>Customers</title>
-  <script>document.documentElement.className = document.documentElement.className + ' js'</script>
-  <link rel='apple-touch-icon' href='/company/images/Advanced-Group-Logo.png'/>
-  <link href='/themes/default/default.css,jquery-ui.css,jquery.calc.css' rel='stylesheet'/>
-</head>
-<body class='debtors'>
-<div id='content'>
-<div class='ajaxmark'>
-  <img alt='Ajax Loading' width='25' height='25' id='ajaxmark' src='/themes/default/images/ajax_loader3.gif'>
-
-  <div id='top'><p>Advanced Group PTY LTD | advaccounts | Sol Jennings</p>
-    <ul>
-      <li><a href='/system/display_prefs.php?'>Preferences</a></li>
-      <li><a href='/system/change_current_user_password.php?selected_id=admin'>Change password</a>
-      </li>
-      <li><a target='_blank' class='openWindow' href=''>Help</a></li>
-      <li><a href='/access/logout.php?'>Logout</a></li>
-    </ul>
-  </div>
-</div>
-<div id='logo'><h1>Advanced Accounting<br><span class='slogan'>3.1908
--SYEDESIGN</span></h1></div>
-<div id='_tabs2'>
-  <ul class="menu" id="topmenu">
-    <li class=''>
-      <a href='/index.php?application=sales' accesskey='S'><span class="u">S</span>ales</a>
-    </li>
-    <li class='active'>
-      <a href='/contacts/customers' accesskey='C'><span class="u">C</span>ustomers</a>
-    </li>
-    <li class=''>
-      <a href='/index.php?application=purchases' accesskey='P'><span class="u">P</span>urchases</a>
-    </li>
-    <li class=''>
-      <a href='/contacts/suppliers' accesskey='S'><span class="u">S</span>uppliers</a>
-    </li>
-    <li class=''>
-      <a href='/index.php?application=inventory' accesskey='I'><span class="u">I</span>nventory</a>
-    </li>
-    <li class=''>
-      <a href='/index.php?application=manufacturing' accesskey='M'><span class="u">M</span>anufacturing</a>
-    </li>
-    <li class=''>
-      <a href='/index.php?application=gl' accesskey='B'><span class="u">B</span>anking</a>
-    </li>
-    <li class=''>
-      <a href='/index.php?application=advanced' accesskey='A'><span class="u">A</span>dvanced</a>
-    </li>
-    <li class=''>
-      <a href='/index.php?application=system' accesskey='S'><span class="u">S</span>ystem</a>
-    </li>
-  </ul>
-</div>
-<div id='msgbox'></div>
-<div id='wrapper'>
-<div class='titletext'>Customers<span id='hints' class='floatright' style='display:none'></span></div>
-<div id='_page_body'>
-<div id='companysearch' class='center bold font13 pad20'>
-  <label for='customer'>Search Customer:&nbsp;<input name='customer' id='customer' type='text' autofocus></label>
-</div>
-<form method='post' action='/contacts/customers'>
-<div class='width90 center ui-tabs ui-widget ui-widget-content ui-corner-all tabs' id='tabs0'>
-<ul class='ui-tabs-nav
-            ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all'>
-
-  <li class='ui-state-default ui-corner-top'><a title='Details' href='#tabs0-0'><span>Details</span></a></li>
-  <li class='ui-state-default ui-corner-top'><a title='Accounts' href='#tabs0-1'><span>Accounts</span></a></li>
-  <li class='ui-state-default ui-corner-top'><a title='Customer Contacts' href='#tabs0-2'><span>Customer Contacts</span></a></li>
-  <li class='ui-state-default ui-corner-top'><a title='Extra Shipping Info' href='#tabs0-3'><span>Extra Shipping Info</span></a></li>
-  <li class='ui-state-default ui-corner-top'><a title='Invoices' href='#tabs0-4'><span>Invoices</span></a></li>
-</ul>
-<div id="tabs0-0" style="text-align:center">
-  <div id="companyIDs">
-    <table class="marginauto width80 bold">
-      <tr>
-        <td><label for="name">Customer name:</label><input id="name" name="name" class="med"></td>
-        <td>Customer ID:</td>
-        <td><input id="id" name="id" class="small" maxlength="7"></td>
-      </tr>
-    </table>
-  </div>
+<div id='_bank_rec_span'>
   <div class='center'>
-    <table class='tablestyle2'>
-      <tr class='top'>
+    <table class='tablestyle grid width80'>↵
+      <thead>
+      <tr>
+        <th>Type</th>
+        ↵
+        <th>#</th>
+        ↵
+        <th>Date</th>
+        ↵
+        <th>Debit</th>
+        ↵
+        <th>Credit</th>
+        ↵
+        <th>Info</th>
+        ↵
+        <th>GL</th>
+        ↵
+        <th></th>
+        ↵
+        <th>Banked</th>
+        ↵
+        <th>Amount</th>
+        ↵
+        <th>Info</th>
+        ↵
+        <th></th>
+        ↵
+      </tr>
+      </thead>
+      <tr class='cangroup' data-id='8752' title='Deposit this transaction' data-date='21/03/2012' data-type='12' data-transno='3914' data-amount='518.4900'>
+        <td>Debtor Payment</td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/sales/view/view_receipt?trans_no=3914&amp;trans_type=12'>3914</a></td>
+        ↵
+        <td class="center nowrap">21/03/2012</td>
+        ↵
+        <td class='right'><span class="bold">518.49</span></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td>Debtor Alpha Gate Automation</td>
+        ↵
+        <td><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=12&amp;trans_no=3914'>GL</a></td>
+        ↵
+        <td><input type='checkbox' name='rec_8752' id='rec_8752' value='1' onclick='JsHttpRequest.request("_rec_8752_update", this.form);' title='Reconcile this transaction'>↵<input type='hidden' id='last[8752]' name='last[8752]' value=''></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
         <td>
-          <table class='tablestyle_inner '>
-            <tr class='tablehead'>
-              <td colspan=2 class='tablehead'>Shipping Details</td>
-            </tr>
-            <tr>
-              <td id="branchSelect" colspan="2" class="center"><select id="branchList" class="med" name="branchList">
-                <option>New Address</option>
-              </select>
-                <button id="addBranch" class="invis" name="addBranch">Add new address</button>
-              </td>
-            </tr>
-            <tr>
-              <td class='label'><label for='branch[contact_name]'>Contact:</label></td>
-              <td><input type="text" name="branch[contact_name]" id="branch[contact_name]" maxlength="40" value=""></td>
-            </tr>
-            <tr>
-              <td class='label'><label for='branch[phone]'>Phone Number:</label></td>
-              <td><input type="text" name="branch[phone]" id="branch[phone]" size='35' maxlength="30" value=""></td>
-            </tr>
-            <tr>
-              <td class='label'><label for='branch[phone2]'>2nd Phone Number:</label></td>
-              <td><input type="text" name="branch[phone2]" id="branch[phone2]" size='35' maxlength="30" value=""></td>
-            </tr>
-            <tr>
-              <td class='label'><label for='branch[fax]'>Fax Number:</label></td>
-              <td><input type="text" name="branch[fax]" id="branch[fax]" size='35' maxlength="30" value=""></td>
-            </tr>
-            <tr>
-              <td class='label'><label for='branch[email]'>Email:</label></td>
-              <td><input type="text" name="branch[email]" id="branch[email]" size='35' maxlength="55" value=""></td>
-            </tr>
-            <tr>
-              <td class='label'><label for='branch[br_address]'>Street:</label></td>
-              <td><textarea id='branch[br_address]' name='branch[br_address]' cols='37' rows='2'></textarea></td>
-            </tr>
-            <tr>
-              <td class="label "><label for="branch[city]">City: </label></td>
-              <td><input id="branch[city]" class="width95 " name="branch[city]" data-set="1" type="search"></td>
-            </tr>
-            <tr>
-              <td class="label"><label for="branch[state]">State: </label></td>
-              <td><input id="branch[state]" maxlength="35" data-set="1" size="35" name="branch[state]"></td>
-            </tr>
-            <tr>
-              <td class="label"><label for="branch[postcode]">Postcode: </label></td>
-              <td><input id="branch[postcode]" class="width95 " name="branch[postcode]" data-set="1" type="search"></td>
-            </tr>
-          </table>
+          <div class="btn-group">↵
+            <button class="btn btn-mini btn-primary dropdown-toggle" data-toggle="dropdown">CP3913 <span class="caret"></span></button>
+            ↵
+            <ul class="dropdown-menu">↵
+              <li>↵ <a class="unDeposit" href="#">Undeposit</a></li>
+              ↵
+              <li>↵ <a class="voidTrans" href="#" data-type="12" data-trans_no="3914">Void Trans</a></li>
+              ↵
+              <li>↵ <a class="changeBank" href="#">Move Bank</a></li>
+              ↵
+              <li>↵ <a class="changeDate" href="#">Change Date</a></li>
+              ↵
+            </ul>
+            ↵  </li>↵
+          </div>
+          ↵
         </td>
-        <td style='border-left:1px solid #cccccc; '>
-          <table class='tablestyle_inner '>
-            <tr class='tablehead'>
-              <td colspan=2 class='tablehead'>Accounts Details</td>
-            </tr>
-            <tr>
-              <td class="center" colspan="2">
-                <button id="useShipAddress" name="useShipAddress" class="button">Use shipping details</button>
-              <td></td>
-            </tr>
-            <tr>
-              <td class='label'><label for='accounts[contact_name]'>Accounts Contact:</label></td>
-              <td><input type="text" name="accounts[contact_name]" id="accounts[contact_name]" size='35' maxlength="40" value=""></td>
-            </tr>
-            <tr>
-              <td class='label'><label for='accounts[phone]'>Phone Number:</label></td>
-              <td><input type="text" name="accounts[phone]" id="accounts[phone]" size='35' maxlength="30" value=""></td>
-            </tr>
-            <tr>
-              <td class='label'><label for='accounts[phone2]'>Secondary Phone Number:</label></td>
-              <td><input type="text" name="accounts[phone2]" id="accounts[phone2]" size='35' maxlength="30" value=""></td>
-            </tr>
-            <tr>
-              <td class='label'><label for='accounts[fax]'>Fax Number:</label></td>
-              <td><input type="text" name="accounts[fax]" id="accounts[fax]" size='35' maxlength="30" value=""></td>
-            </tr>
-            <tr>
-              <td class='label'><label for='accounts[email]'>E-mail:</label></td>
-              <td><input type="text" name="accounts[email]" id="accounts[email]" size='35' maxlength="55" value=""></td>
-            </tr>
-            <tr>
-              <td class='label'><label for='accounts[br_address]'>Street:</label></td>
-              <td><textarea id='accounts[br_address]' name='accounts[br_address]' cols='37' rows='2'></textarea></td>
-            </tr>
-            <tr>
-              <td class="label "><label for="accounts[city]">City: </label></td>
-              <td><input id="accounts[city]" class="width95 " name="accounts[city]" data-set="3" type="search"></td>
-            </tr>
-            <tr>
-              <td class="label"><label for="accounts[state]">State: </label></td>
-              <td><input id="accounts[state]" maxlength="35" data-set="3" size="35" name="accounts[state]"></td>
-            </tr>
-            <tr>
-              <td class="label"><label for="accounts[postcode]">Postcode: </label></td>
-              <td><input id="accounts[postcode]" class="width95 " name="accounts[postcode]" data-set="3" type="search"></td>
-            </tr>
-          </table>
-        </td>
+        ↵
       </tr>
-    </table>
-  </div>
-  <br></div>
-<div id="tabs0-1" class="ui-tabs-hide"><input type='hidden' id='accounts_id' name='accounts_id' value='0'>
-
-  <div class='center'>
-    <table class='tablestyle2'>
-      <tr class='top'>
+      ↵
+      <tr class='cangroup' data-id='8924' title='Deposit this transaction' data-date='26/03/2012' data-type='22' data-transno='976' data-amount='-216.9900'>
+        <td>Creditor Payment</td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/purchases/view/view_supp_payment.php?trans_no=976'>976</a></td>
+        ↵
+        <td class="center nowrap">26/03/2012</td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'><span class="bold">216.99</span></td>
+        ↵
+        <td>Creditor Vision Safe</td>
+        ↵
+        <td><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=22&amp;trans_no=976'>GL</a></td>
+        ↵
+        <td><input type='checkbox' name='rec_8924' id='rec_8924' value='1' onclick='JsHttpRequest.request("_rec_8924_update", this.form);' title='Reconcile this transaction'>↵<input type='hidden' id='last[8924]' name='last[8924]' value=''></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
         <td>
-          <table class='tablestyle_inner '>
-            <tr class='tablehead'>
-              <td colspan=2 class='tablehead'>Accounts Details:</td>
-            </tr>
-            <tr>
-              <td class='label'>Discount Percent:</td>
-              <td><input name='discount' value='0.00' data-dec='2' class='amount small' maxlength='12' id='discount' type='text'><span id='_discount_label'>%</span></td>
-            </tr>
-            <tr>
-              <td class='label'>Prompt Payment Discount Percent:</td>
-              <td><input name='payment_discount' value='0.00' data-dec='2' class='amount small' maxlength='12' id='payment_discount' type='text'><span id='_payment_discount_label'>%</span></td>
-            </tr>
-            <tr>
-              <td class='label'>Credit Limit:</td>
-              <td><input name='credit_limit' value='0.00' data-dec='2' class='amount ' maxlength='15' id='credit_limit' type='text'></td>
-            </tr>
-            <tr>
-              <td class='label'><label for='tax_id'>GSTNo:</label></td>
-              <td><input type="text" name="tax_id" id="tax_id" maxlength="40" value=""></td>
-            </tr>
-            <tr>
-              <td class='label'>Sales Type/Price List:</td>
-              <td>
-                <div id='_sales_type_sel' class='combodiv'><select id='sales_type' name='sales_type' class='combo' title=''>
-                  <option selected value='1'>Retail</option>
-                  <option value='2'>Wholesale</option>
-                </select>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td class='label'>Customer status:</td>
-              <td>
-                <div id='_inactive_sel' class='combodiv'><select id='inactive' name='inactive' class='combo' title=''>
-                  <option value='0'>Active</option>
-                  <option value='1'>Inactive</option>
-                </select>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td class='label'>Customer's Currency:</td>
-              <td>
-                <div id='_curr_code_sel' class='combodiv'><select id='curr_code' name='curr_code' class='combo' title=''>
-                  <option selected value='AUD'>AU Dollars</option>
-                  <option value='GBP'>British Pounds</option>
-                  <option value='USD'>US Dollar</option>
-                </select>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td class='label'>Payment Terms:</td>
-              <td>
-                <div id='_payment_terms_sel' class='combodiv'><select id='payment_terms' name='payment_terms' class='combo' title=''>
-                  <option value='0'>Payment Up Front</option>
-                  <option value='1'>Due 15th Of the Following Month</option>
-                  <option value='2'>Due By End Of The Following Month</option>
-                  <option value='5'>50% deposit, 50% 14 days job end</option>
-                  <option value='6'>14 days</option>
-                  <option value='7'>Old</option>
-                  <option value='8'>30 Days</option>
-                  <option value='9'>7 Days</option>
-                  <option value='10'>NO ACCOUNT - STRICTLY 7 DAYS</option>
-                  <option value='11'>Captial</option>
-                </select>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td class='label'>Credit Status:</td>
-              <td>
-                <div id='_credit_status_sel' class='combodiv'><select id='credit_status' name='credit_status' class='combo' title=''>
-                  <option value='5'>BLACKLISTED</option>
-                  <option selected value='1'>Good History</option>
-                  <option value='4'>In liquidation</option>
-                  <option value='3'>No more work until payment received</option>
-                </select>
-                </div>
-              </td>
-            </tr>
-          </table>
+          <div class="btn-group">↵
+            <button class="btn btn-mini btn-primary dropdown-toggle" data-toggle="dropdown">SP967 <span class="caret"></span></button>
+            ↵
+            <ul class="dropdown-menu">↵
+              <li>↵ <a class="voidTrans" href="#" data-type="22" data-trans_no="976">Void Trans</a></li>
+              ↵
+              <li>↵ <a class="changeBank" href="#">Move Bank</a></li>
+              ↵
+              <li>↵ <a class="changeDate" href="#">Change Date</a></li>
+              ↵
+            </ul>
+            ↵  </li>↵
+          </div>
+          ↵
         </td>
-        <td style='border-left:1px solid #cccccc; '>
-          <table class='tablestyle_inner '>
-            <tr class='tablehead'>
-              <td colspan=1 class='tablehead'>Contact log:</td>
-            </tr>
-            <tr>
-              <td class="ui-widget-content center">
-                <button id="addLog" name="addLog" class="button">Add log entry</button>
-              </td>
-            </tr>
-            <tr>
-              <td><textarea id="messageLog" cols="50" rows="20"></textarea></td>
-            </tr>
-          </table>
-        </td>
+        ↵
       </tr>
+      ↵
+      <tr class='cangroup' data-id='10144' title='Deposit this transaction' data-date='19/05/2012' data-type='22' data-transno='1521' data-amount='-880.0000'>
+        <td>Creditor Payment</td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/purchases/view/view_supp_payment.php?trans_no=1521'>1521</a></td>
+        ↵
+        <td class="center nowrap">19/05/2012</td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'><span class="bold">880.00</span></td>
+        ↵
+        <td>Creditor Tony's Muffler</td>
+        ↵
+        <td><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=22&amp;trans_no=1521'>GL</a></td>
+        ↵
+        <td><input type='checkbox' name='rec_10144' id='rec_10144' value='1' onclick='JsHttpRequest.request("_rec_10144_update", this.form);' title='Reconcile this transaction'>↵<input type='hidden' id='last[10144]' name='last[10144]' value=''></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td>
+          <div class="btn-group">↵
+            <button class="btn btn-mini btn-primary dropdown-toggle" data-toggle="dropdown">SP1512 <span class="caret"></span></button>
+            ↵
+            <ul class="dropdown-menu">↵
+              <li>↵ <a class="voidTrans" href="#" data-type="22" data-trans_no="1521">Void Trans</a></li>
+              ↵
+              <li>↵ <a class="changeBank" href="#">Move Bank</a></li>
+              ↵
+              <li>↵ <a class="changeDate" href="#">Change Date</a></li>
+              ↵
+            </ul>
+            ↵  </li>↵
+          </div>
+          ↵
+        </td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">01/06/2012</td>
+        ↵
+        <td class='right'>-460.3600</td>
+        ↵
+        <td>AUTOMATIC DRAWING - MERCH FEE003059910 ADVANCED GROUP P ADVANCED GROUP P</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='done'>
+        <td>Bank Payment</td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_payment.php?trans_no=1599'>1599</a></td>
+        ↵
+        <td class="center nowrap">31/05/2012</td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'><span class="bold">97.29</span></td>
+        ↵
+        <td>Quick Entry <br></td>
+        ↵
+        <td><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=1&amp;trans_no=1599'>GL</a></td>
+        ↵
+        <td><input checked type='checkbox' name='rec_10306' id='rec_10306' value='1' onclick='JsHttpRequest.request("_rec_10306_update", this.form);' title='Reconcile this transaction'>↵<input type='hidden' id='last[10306]' name='last[10306]' value='1'></td>
+        ↵
+        <td class="center nowrap">01/06/2012</td>
+        ↵
+        <td class='right'>-97.2900</td>
+        ↵
+        <td>EFTPOS DEBIT - EFTPOS 31/05 07:43 BUNNINGS SANDOWN 6065 REG 07</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">01/06/2012</td>
+        ↵
+        <td class='right'>6572.8600</td>
+        ↵
+        <td>EFTPOS TRANSACTION - FLEXIPAY 01/06 13:55 ADVANCED GRO 1126 TOORAK ROAD</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">04/06/2012</td>
+        ↵
+        <td class='right'>-3500.0000</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER BARRIERSECPROD ADV GP ADVRDSGNS</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">04/06/2012</td>
+        ↵
+        <td class='right'>-403.3300</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER TONYS MUFFLERS 142</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">04/06/2012</td>
+        ↵
+        <td class='right'>-330.0000</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER CTA Cobbletac ADVGP ADVRDSGNS</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='cangroup overduebg' data-id='10844' title='Deposit this transaction' data-date='19/06/2012' data-type='1' data-transno='1758' data-amount='-20.0000'>
+        <td>Bank Payment</td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_payment.php?trans_no=1758'>1758</a></td>
+        ↵
+        <td class="center nowrap">19/06/2012</td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'><span class="bold">20.00</span></td>
+        ↵
+        <td>Quick Entry Freight<br>mike - Auspro Logistics</td>
+        ↵
+        <td><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=1&amp;trans_no=1758'>GL</a></td>
+        ↵
+        <td><input type='checkbox' name='rec_10844' id='rec_10844' value='1' onclick='JsHttpRequest.request("_rec_10844_update", this.form);' title='Reconcile this transaction'>↵<input type='hidden' id='last[10844]' name='last[10844]' value=''></td>
+        ↵
+        <td class="center nowrap">04/06/2012</td>
+        ↵
+        <td class='right'>-20.0000</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER Mikes Drawings ADVGP ADVRDSGNS</td>
+        ↵
+        <td>
+          <div class="btn-group">↵
+            <button class="btn btn-mini btn-primary dropdown-toggle" data-toggle="dropdown">BPBD150 <span class="caret"></span></button>
+            ↵
+            <ul class="dropdown-menu">↵
+              <li>↵ <a class="voidTrans" href="#" data-type="1" data-trans_no="1758">Void Trans</a></li>
+              ↵
+              <li>↵ <a class="changeBank" href="#">Move Bank</a></li>
+              ↵
+              <li>↵ <a class="changeDate" href="#">Change Date</a></li>
+              ↵
+            </ul>
+            ↵  </li>↵
+          </div>
+          ↵
+        </td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">04/06/2012</td>
+        ↵
+        <td class='right'>-11.8000</td>
+        ↵
+        <td>EFTPOS DEBIT - EFTPOS 03/06 17:51 LEOS FINE FOOD & WIN GLEN IRIS VIC10</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='done'>
+        <td>Bank Payment</td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_payment.php?trans_no=1598'>1598</a></td>
+        ↵
+        <td class="center nowrap">04/06/2012</td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'><span class="bold">3.00</span></td>
+        ↵
+        <td>Quick Entry <br></td>
+        ↵
+        <td><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=1&amp;trans_no=1598'>GL</a></td>
+        ↵
+        <td><input checked type='checkbox' name='rec_10305' id='rec_10305' value='1' onclick='JsHttpRequest.request("_rec_10305_update", this.form);' title='Reconcile this transaction'>↵<input type='hidden' id='last[10305]' name='last[10305]' value='1'></td>
+        ↵
+        <td class="center nowrap">04/06/2012</td>
+        ↵
+        <td class='right'>-3.0000</td>
+        ↵
+        <td>EFTPOS DEBIT - EFTPOS 04/06 11:30 AUST POST KEYSBOROU GH 6 VIC 335740</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">04/06/2012</td>
+        ↵
+        <td class='right'>265.1000</td>
+        ↵
+        <td>EFTPOS TRANSACTION - FLEXIPAY 04/06 11:06 ADVANCED GRO 1126 TOORAK ROAD</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">04/06/2012</td>
+        ↵
+        <td class='right'>1958.0000</td>
+        ↵
+        <td>INTER-BANK CREDIT - 692709 ATMS ADVANCED GROUP</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">05/06/2012</td>
+        ↵
+        <td class='right'>-701.8000</td>
+        ↵
+        <td>AUTOMATIC DRAWING - 30159327 CAPITAL 30159327 ADVANCED GROUP P</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='done'>
+        <td>Bank Payment</td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_payment.php?trans_no=1616'>1616</a></td>
+        ↵
+        <td class="center nowrap">05/06/2012</td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'><span class="bold">684.52</span></td>
+        ↵
+        <td>Creditor Errand Transport Acct Code: ADVANR</td>
+        ↵
+        <td><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=1&amp;trans_no=1616'>GL</a></td>
+        ↵
+        <td><input checked type='checkbox' name='rec_10404' id='rec_10404' value='1' onclick='JsHttpRequest.request("_rec_10404_update", this.form);' title='Reconcile this transaction'>↵<input type='hidden' id='last[10404]' name='last[10404]' value='1'></td>
+        ↵
+        <td class="center nowrap">05/06/2012</td>
+        ↵
+        <td class='right'>-684.5200</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER ERRAND Apr STMNT</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">05/06/2012</td>
+        ↵
+        <td class='right'>-318.3500</td>
+        ↵
+        <td>AUTOMATIC DRAWING - 0000000570081562 PERSONAL LOAN MICHAEL STUART S</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">05/06/2012</td>
+        ↵
+        <td class='right'>-308.2200</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER UES PROMURA</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='done'>
+        <td>Bank Payment</td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_payment.php?trans_no=1757'>1757</a></td>
+        ↵
+        <td class="center nowrap">05/06/2012</td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'><span class="bold">290.07</span></td>
+        ↵
+        <td>Quick Entry Freight<br>CHEQUE - CHEQUE 0000322</td>
+        ↵
+        <td><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=1&amp;trans_no=1757'>GL</a></td>
+        ↵
+        <td><input checked type='checkbox' name='rec_10843' id='rec_10843' value='1' onclick='JsHttpRequest.request("_rec_10843_update", this.form);' title='Reconcile this transaction'>↵<input type='hidden' id='last[10843]' name='last[10843]' value='1'></td>
+        ↵
+        <td class="center nowrap">05/06/2012</td>
+        ↵
+        <td class='right'>-290.0700</td>
+        ↵
+        <td>CHEQUE - CHEQUE 0000322</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">05/06/2012</td>
+        ↵
+        <td class='right'>-250.0000</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET BPAY CAPITAL FINANCE 4329382</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">05/06/2012</td>
+        ↵
+        <td class='right'>-170.5800</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET BPAY TELSTRA BILL PAYMENT 15759247007</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">05/06/2012</td>
+        ↵
+        <td class='right'>-128.7600</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET BPAY ORIGIN ENERGY - VIC 77997172</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">05/06/2012</td>
+        ↵
+        <td class='right'>606.5400</td>
+        ↵
+        <td>EFTPOS TRANSACTION - FLEXIPAY 05/06 12:21 ADVANCED GRO 1126 TOORAK ROAD</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">05/06/2012</td>
+        ↵
+        <td class='right'>1544.4000</td>
+        ↵
+        <td>INTER-BANK CREDIT - 123970 MARRIOTT SS ADVANCED GROUP</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">06/06/2012</td>
+        ↵
+        <td class='right'>-5547.3000</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER BARRIERSECPROD Mar ADV GP ADVRDSGNS</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">06/06/2012</td>
+        ↵
+        <td class='right'>-716.8800</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER JOES WAGES</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">06/06/2012</td>
+        ↵
+        <td class='right'>-573.7500</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER SYEDS WAGES</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">06/06/2012</td>
+        ↵
+        <td class='right'>-132.0000</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER RtrnOvrpymntFisher</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">06/06/2012</td>
+        ↵
+        <td class='right'>-84.7700</td>
+        ↵
+        <td>AUTOMATIC DRAWING - 125897595 3 MOBILE ADVANCED GROUP</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">06/06/2012</td>
+        ↵
+        <td class='right'>-10.0000</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER Mikes drawings Adv grp</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">07/06/2012</td>
+        ↵
+        <td class='right'>-600.0000</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER Mikes wages Adv grp</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='done'>
+        <td>Bank Payment</td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_payment.php?trans_no=1755'>1755</a></td>
+        ↵
+        <td class="center nowrap">06/06/2012</td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'><span class="bold">86.04</span></td>
+        ↵
+        <td>Quick Entry Shop set up<br>EFTPOS DEBIT - EFTPOS 06/06 17:57 BUNNINGS SANDOWN 6065 REG 03</td>
+        ↵
+        <td><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=1&amp;trans_no=1755'>GL</a></td>
+        ↵
+        <td><input checked type='checkbox' name='rec_10841' id='rec_10841' value='1' onclick='JsHttpRequest.request("_rec_10841_update", this.form);' title='Reconcile this transaction'>↵<input type='hidden' id='last[10841]' name='last[10841]' value='1'></td>
+        ↵
+        <td class="center nowrap">07/06/2012</td>
+        ↵
+        <td class='right'>-86.0400</td>
+        ↵
+        <td>EFTPOS DEBIT - EFTPOS 06/06 17:57 BUNNINGS SANDOWN 6065 REG 03</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='done'>
+        <td>Bank Payment</td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_payment.php?trans_no=1756'>1756</a></td>
+        ↵
+        <td class="center nowrap">06/06/2012</td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'><span class="bold">24.36</span></td>
+        ↵
+        <td>Quick Entry Shop set up<br>EFTPOS DEBIT - EFTPOS 06/06 18:11 BUNNINGS SANDOWN 6065 REG 07</td>
+        ↵
+        <td><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=1&amp;trans_no=1756'>GL</a></td>
+        ↵
+        <td><input checked type='checkbox' name='rec_10842' id='rec_10842' value='1' onclick='JsHttpRequest.request("_rec_10842_update", this.form);' title='Reconcile this transaction'>↵<input type='hidden' id='last[10842]' name='last[10842]' value='1'></td>
+        ↵
+        <td class="center nowrap">07/06/2012</td>
+        ↵
+        <td class='right'>-24.3600</td>
+        ↵
+        <td>EFTPOS DEBIT - EFTPOS 06/06 18:11 BUNNINGS SANDOWN 6065 REG 07</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">07/06/2012</td>
+        ↵
+        <td class='right'>898.9200</td>
+        ↵
+        <td>TRANSFER CREDIT - INTERNET TRANSFER 024965AdvancedGrou VEGAGROUP Hayat</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">07/06/2012</td>
+        ↵
+        <td class='right'>1100.0000</td>
+        ↵
+        <td>INTER-BANK CREDIT - 5EW225XEBBWHJ PAYPAL AUSTRALIA ADV GP T AS ADVA</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">07/06/2012</td>
+        ↵
+        <td class='right'>1185.3000</td>
+        ↵
+        <td>MISCELLANEOUS CREDIT - REF- ICP 3039/593958 PROCEEDS OF OVERSEAS INWARD TRANSFER</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">08/06/2012</td>
+        ↵
+        <td class='right'>181.5000</td>
+        ↵
+        <td>INTER-BANK CREDIT - VCON INV#123990 VCON PTY LTD ADVANCED GROUP P</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">08/06/2012</td>
+        ↵
+        <td class='right'>229.9100</td>
+        ↵
+        <td>INTER-BANK CREDIT - Excel OS Excel Advanced Group P</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">08/06/2012</td>
+        ↵
+        <td class='right'>349.8000</td>
+        ↵
+        <td>INTER-BANK CREDIT - EFIVE INV#123989 ELEMENT FIVE PTY ADVANCED GROUP P</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">08/06/2012</td>
+        ↵
+        <td class='right'>353.1200</td>
+        ↵
+        <td>EFTPOS TRANSACTION - FLEXIPAY 08/06 15:57 ADVANCED GRO 1126 TOORAK ROAD</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">11/06/2012</td>
+        ↵
+        <td class='right'>-18.0000</td>
+        ↵
+        <td>EFTPOS DEBIT - EFTPOS 09/06 11:57 JB HI FI CAMBERWELL VI</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">11/06/2012</td>
+        ↵
+        <td class='right'>3200.0000</td>
+        ↵
+        <td>INTER-BANK CREDIT - 5EW225XS5EVSS PAYPAL AUSTRALIA ADV GP T AS ADVA</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">12/06/2012</td>
+        ↵
+        <td class='right'>-6000.0000</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER BRADY Australia</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">12/06/2012</td>
+        ↵
+        <td class='right'>-553.9200</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER REFLECTIVEFAB Aprl</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">12/06/2012</td>
+        ↵
+        <td class='right'>-250.0000</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET BPAY CAPITAL FINANCE 4329382</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">12/06/2012</td>
+        ↵
+        <td class='right'>10.0000</td>
+        ↵
+        <td>TRANSFER CREDIT - INTERNET TRANSFER Owners Capital Michael Smith</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">12/06/2012</td>
+        ↵
+        <td class='right'>161.1500</td>
+        ↵
+        <td>EFTPOS TRANSACTION - FLEXIPAY 12/06 08:44 ADVANCED GRO 1126 TOORAK ROAD</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">12/06/2012</td>
+        ↵
+        <td class='right'>4643.6500</td>
+        ↵
+        <td>DEPOSIT - CASH AND/OR CHEQUES</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">13/06/2012</td>
+        ↵
+        <td class='right'>-5900.0000</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET BPAY TAX OFFICE PAYMENTS 701027481211160</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">13/06/2012</td>
+        ↵
+        <td class='right'>-1905.0500</td>
+        ↵
+        <td>AUTOMATIC DRAWING - 000008378840 Sensis Advanced Road Si</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">13/06/2012</td>
+        ↵
+        <td class='right'>-699.2500</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER JOES WAGES</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">13/06/2012</td>
+        ↵
+        <td class='right'>-582.7500</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER SYEDS WAGES</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">13/06/2012</td>
+        ↵
+        <td class='right'>-100.0000</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER SYEDS WAGES</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">13/06/2012</td>
+        ↵
+        <td class='right'>-15.0000</td>
+        ↵
+        <td>FEES - STOP PAYMENT FEE</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">13/06/2012</td>
+        ↵
+        <td class='right'>1917.6300</td>
+        ↵
+        <td>EFTPOS TRANSACTION - FLEXIPAY 13/06 15:08 ADVANCED GRO 1126 TOORAK ROAD</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">13/06/2012</td>
+        ↵
+        <td class='right'>10508.3000</td>
+        ↵
+        <td>INTER-BANK CREDIT - I23899 DEPT OF DEFENCE ADVANCED GROUP</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">14/06/2012</td>
+        ↵
+        <td class='right'>-10485.8000</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER BRADY Australia</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">14/06/2012</td>
+        ↵
+        <td class='right'>-700.0000</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER Mikes Wages AdvGp</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">14/06/2012</td>
+        ↵
+        <td class='right'>-297.8800</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER SAS Sign Accessori</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">14/06/2012</td>
+        ↵
+        <td class='right'>130.3500</td>
+        ↵
+        <td>INTER-BANK CREDIT - 051992 Cerebral Palsy A Advanced Group P</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">14/06/2012</td>
+        ↵
+        <td class='right'>645.7000</td>
+        ↵
+        <td>EFTPOS TRANSACTION - FLEXIPAY 14/06 16:03 ADVANCED GRO 1126 TOORAK ROAD</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">14/06/2012</td>
+        ↵
+        <td class='right'>4458.6100</td>
+        ↵
+        <td>MISCELLANEOUS CREDIT - REF- ICP 3039/617028 PROCEEDS OF OVERSEAS INWARD TRANSFER</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">15/06/2012</td>
+        ↵
+        <td class='right'>190.8500</td>
+        ↵
+        <td>EFTPOS TRANSACTION - FLEXIPAY 15/06 10:51 ADVANCED GRO 1126 TOORAK ROAD</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">15/06/2012</td>
+        ↵
+        <td class='right'>311.0000</td>
+        ↵
+        <td>INTER-BANK CREDIT - RTGS (WBC-003568) 0064638700/026577 UBAY SUVA</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">15/06/2012</td>
+        ↵
+        <td class='right'>3834.4900</td>
+        ↵
+        <td>INTER-BANK CREDIT - I23979 OEH-DE-CREDITORS ADVANCED GROUP P</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='done'>
+        <td>Creditor Payment</td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/purchases/view/view_supp_payment.php?trans_no=1530'>1530</a></td>
+        ↵
+        <td class="center nowrap">29/05/2012</td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'><span class="bold">2,007.50</span></td>
+        ↵
+        <td>Creditor Premier Workplace Solutions</td>
+        ↵
+        <td><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=22&amp;trans_no=1530'>GL</a></td>
+        ↵
+        <td><input checked type='checkbox' name='rec_10188' id='rec_10188' value='1' onclick='JsHttpRequest.request("_rec_10188_update", this.form);' title='Reconcile this transaction'>↵<input type='hidden' id='last[10188]' name='last[10188]' value='1'></td>
+        ↵
+        <td class="center nowrap">18/06/2012</td>
+        ↵
+        <td class='right'>-2007.5000</td>
+        ↵
+        <td>CHEQUE - CHEQUE 0000324</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">18/06/2012</td>
+        ↵
+        <td class='right'>-1229.5000</td>
+        ↵
+        <td>CHEQUE - CHEQUE 0000323</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">18/06/2012</td>
+        ↵
+        <td class='right'>-468.9000</td>
+        ↵
+        <td>AUTOMATIC DRAWING - 1EVA815860BPK Elders Insurance MICHAEL S SMITH</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">18/06/2012</td>
+        ↵
+        <td class='right'>-330.0000</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER EmbroidryTme Depst</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">18/06/2012</td>
+        ↵
+        <td class='right'>-128.7600</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET BPAY ORIGIN ENERGY - VIC 77997172</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">18/06/2012</td>
+        ↵
+        <td class='right'>-68.6400</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER POWER DC 117349</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">18/06/2012</td>
+        ↵
+        <td class='right'>-65.8700</td>
+        ↵
+        <td>AUTOMATIC DRAWING - 1EVA498663MVA Elders Insurance MICHAEL S SMITH</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">18/06/2012</td>
+        ↵
+        <td class='right'>82.5000</td>
+        ↵
+        <td>INTER-BANK CREDIT - inv 124004 Donnellons Kew Advanced Group</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">18/06/2012</td>
+        ↵
+        <td class='right'>300.0000</td>
+        ↵
+        <td>INTER-BANK CREDIT - 5EW225YCJMMDE PAYPAL AUSTRALIA ADV GP T AS ADVA</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">18/06/2012</td>
+        ↵
+        <td class='right'>2248.6200</td>
+        ↵
+        <td>EFTPOS TRANSACTION - FLEXIPAY 18/06 16:38 ADVANCED GRO 1126 TOORAK ROAD</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">19/06/2012</td>
+        ↵
+        <td class='right'>-7869.2000</td>
+        ↵
+        <td>CHEQUE - CHEQUE 0000325</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">19/06/2012</td>
+        ↵
+        <td class='right'>-250.0000</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET BPAY CAPITAL FINANCE 4329382</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='cangroup overduebg' data-id='10299' title='Deposit this transaction' data-date='19/06/2012' data-type='1' data-transno='1594' data-amount='-90.2000'>
+        <td>Bank Payment</td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_payment.php?trans_no=1594'>1594</a></td>
+        ↵
+        <td class="center nowrap">19/06/2012</td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'><span class="bold">90.20</span></td>
+        ↵
+        <td>Quick Entry <br></td>
+        ↵
+        <td><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=1&amp;trans_no=1594'>GL</a></td>
+        ↵
+        <td><input type='checkbox' name='rec_10299' id='rec_10299' value='1' onclick='JsHttpRequest.request("_rec_10299_update", this.form);' title='Reconcile this transaction'>↵<input type='hidden' id='last[10299]' name='last[10299]' value=''></td>
+        ↵
+        <td class="center nowrap">19/06/2012</td>
+        ↵
+        <td class='right'>-90.2000</td>
+        ↵
+        <td>EFTPOS DEBIT - EFTPOS 19/06 14:36 AUST POST KEYSBOROU GH 5 VIC 335740</td>
+        ↵
+        <td>
+          <div class="btn-group">↵
+            <button class="btn btn-mini btn-primary dropdown-toggle" data-toggle="dropdown">BP1419 <span class="caret"></span></button>
+            ↵
+            <ul class="dropdown-menu">↵
+              <li>↵ <a class="voidTrans" href="#" data-type="1" data-trans_no="1594">Void Trans</a></li>
+              ↵
+              <li>↵ <a class="changeBank" href="#">Move Bank</a></li>
+              ↵
+              <li>↵ <a class="changeDate" href="#">Change Date</a></li>
+              ↵
+            </ul>
+            ↵  </li>↵
+          </div>
+          ↵
+        </td>
+        ↵
+      </tr>
+      ↵
+      <tr class='cangroup overduebg' data-id='10301' title='Deposit this transaction' data-date='18/06/2012' data-type='1' data-transno='1596' data-amount='-25.7400'>
+        <td>Bank Payment</td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_payment.php?trans_no=1596'>1596</a></td>
+        ↵
+        <td class="center nowrap">18/06/2012</td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'><span class="bold">25.74</span></td>
+        ↵
+        <td>Quick Entry <br></td>
+        ↵
+        <td><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=1&amp;trans_no=1596'>GL</a></td>
+        ↵
+        <td><input type='checkbox' name='rec_10301' id='rec_10301' value='1' onclick='JsHttpRequest.request("_rec_10301_update", this.form);' title='Reconcile this transaction'>↵<input type='hidden' id='last[10301]' name='last[10301]' value=''></td>
+        ↵
+        <td class="center nowrap">19/06/2012</td>
+        ↵
+        <td class='right'>-25.7400</td>
+        ↵
+        <td>EFTPOS DEBIT - EFTPOS 18/06 19:06 BUNNINGS KEYSBOROUGH 6240 REG 03</td>
+        ↵
+        <td>
+          <div class="btn-group">↵
+            <button class="btn btn-mini btn-primary dropdown-toggle" data-toggle="dropdown">BP1421 <span class="caret"></span></button>
+            ↵
+            <ul class="dropdown-menu">↵
+              <li>↵ <a class="voidTrans" href="#" data-type="1" data-trans_no="1596">Void Trans</a></li>
+              ↵
+              <li>↵ <a class="changeBank" href="#">Move Bank</a></li>
+              ↵
+              <li>↵ <a class="changeDate" href="#">Change Date</a></li>
+              ↵
+            </ul>
+            ↵  </li>↵
+          </div>
+          ↵
+        </td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">19/06/2012</td>
+        ↵
+        <td class='right'>137.3900</td>
+        ↵
+        <td>INTER-BANK CREDIT - BERWICK NISSAN KIA BERWICK NISSAN K ADVANCED GROUP P</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">19/06/2012</td>
+        ↵
+        <td class='right'>148.1900</td>
+        ↵
+        <td>INTER-BANK CREDIT - AGL ENERGY LTD ADVANCED GROUP P</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">19/06/2012</td>
+        ↵
+        <td class='right'>200.0000</td>
+        ↵
+        <td>INTER-BANK CREDIT - 5EW225YL8JKVU PAYPAL AUSTRALIA ADV GP T AS ADVA</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">19/06/2012</td>
+        ↵
+        <td class='right'>277.6500</td>
+        ↵
+        <td>INTER-BANK CREDIT - RTGS (CBA-001006) MCKECHNIE ALUMINIUM NEW PLYMOUTH 4342 43</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='done'>
+        <td>Group Deposit</td>
+        ↵
+        <td class='center'></td>
+        ↵
+        <td class="center nowrap">19/06/2012</td>
+        ↵
+        <td class='right'><span class="bold">2,147.20</span></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td>CP4338 <span class="u">Debtor CASH SALE ($106.15)</span>: cc instore<br>CP4339 <span class="u">Debtor Integral Facility Services ($145.75)</span>: cc instore<br>CP4341 <span class="u">Debtor CASH SALE ($129.80)</span>: cc instore<br>CP4342
+          <span class="u">Debtor CASH SALE ($278.85)</span>: cc over phone<br>CP4343 <span class="u">Debtor Specialised Tree lopping ($215.60)</span>: cc over phone<br>CP4344 <span class="u">Debtor Billabong Shade ($241.45)</span>: eft chq a/c instore<br>CP4345 <span class="u">Debtor Active Display Group ($682.00)</span>:
+          cc instore<br>CP4409 <span class="u">Debtor Websale ($347.60)</span>: FOR WEBSALE 4945<br></td>
+        ↵
+        <td></td>
+        ↵
+        <td><input checked type='checkbox' name='rec_10382' id='rec_10382' value='1' onclick='JsHttpRequest.request("_rec_10382_update", this.form);' title='Reconcile this transaction'>↵<input type='hidden' id='last[10382]' name='last[10382]' value='1'></td>
+        ↵
+        <td class="center nowrap">19/06/2012</td>
+        ↵
+        <td class='right'>2147.2000</td>
+        ↵
+        <td>EFTPOS TRANSACTION - FLEXIPAY 19/06 15:18 ADVANCED GRO 1126 TOORAK ROAD</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='cangroup' data-id='10295' title='Deposit this transaction' data-date='20/06/2012' data-type='4' data-transno='413' data-amount='150.0000'>
+        <td>Funds Transfer</td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/bank_transfer.php?trans_no=413'>413</a></td>
+        ↵
+        <td class="center nowrap">20/06/2012</td>
+        ↵
+        <td class='right'><span class="bold">150.00</span></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=4&amp;trans_no=413'>GL</a></td>
+        ↵
+        <td><input type='checkbox' name='rec_10295' id='rec_10295' value='1' onclick='JsHttpRequest.request("_rec_10295_update", this.form);' title='Reconcile this transaction'>↵<input type='hidden' id='last[10295]' name='last[10295]' value=''></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td>
+          <div class="btn-group">↵
+            <button class="btn btn-mini btn-primary dropdown-toggle" data-toggle="dropdown">FT417 <span class="caret"></span></button>
+            ↵
+            <ul class="dropdown-menu">↵
+              <li>↵ <a class="voidTrans" href="#" data-type="4" data-trans_no="413">Void Trans</a></li>
+              ↵
+              <li>↵ <a class="changeBank" href="#">Move Bank</a></li>
+              ↵
+              <li>↵ <a class="changeDate" href="#">Change Date</a></li>
+              ↵
+            </ul>
+            ↵  </li>↵
+          </div>
+          ↵
+        </td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">20/06/2012</td>
+        ↵
+        <td class='right'>605.2900</td>
+        ↵
+        <td>DEPOSIT - CASH AND/OR CHEQUES</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='cangroup overduebg' data-id='10381' title='Deposit this transaction' data-date='20/06/2012' data-type='15' data-transno='' data-amount='854.0400'>
+        <td>Group Deposit</td>
+        ↵
+        <td class='center'></td>
+        ↵
+        <td class="center nowrap">20/06/2012</td>
+        ↵
+        <td class='right'><span class="bold">854.04</span></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td>CP4349 <span class="u">Debtor Snorkel ($205.70)</span>: cc over phone<br>CP4350 <span class="u">Debtor CASH SALE ($648.34)</span>: cc over phone<br></td>
+        ↵
+        <td></td>
+        ↵
+        <td><input type='checkbox' name='rec_10381' id='rec_10381' value='1' onclick='JsHttpRequest.request("_rec_10381_update", this.form);' title='Reconcile this transaction'>↵<input type='hidden' id='last[10381]' name='last[10381]' value=''></td>
+        ↵
+        <td class="center nowrap">20/06/2012</td>
+        ↵
+        <td class='right'>854.0400</td>
+        ↵
+        <td>EFTPOS TRANSACTION - FLEXIPAY 20/06 17:23 ADVANCED GRO 1126 TOORAK ROAD</td>
+        ↵
+        <td>
+          <div class="btn-group">↵
+            <button class="btn btn-mini btn-primary dropdown-toggle" data-toggle="dropdown">Group <span class="caret"></span></button>
+            ↵
+            <ul class="dropdown-menu">↵
+              <li>↵ <a class="unGroup" href="#">Ungroup</a></li>
+              ↵
+            </ul>
+            ↵  </li>↵
+          </div>
+          ↵
+        </td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">20/06/2012</td>
+        ↵
+        <td class='right'>1147.3000</td>
+        ↵
+        <td>INTER-BANK CREDIT - Neometro in25007 NEOCON 4 PTY LTD Advanced Group</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">21/06/2012</td>
+        ↵
+        <td class='right'>-3636.6000</td>
+        ↵
+        <td>CHEQUE - CHEQUE 0000326</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">21/06/2012</td>
+        ↵
+        <td class='right'>-692.0000</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER JOES WAGES</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">21/06/2012</td>
+        ↵
+        <td class='right'>-500.0000</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER Mikes Wages ADVGP ADVRDSGNS</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">21/06/2012</td>
+        ↵
+        <td class='right'>-419.7500</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER SYEDS WAGES</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">21/06/2012</td>
+        ↵
+        <td class='right'>-262.2500</td>
+        ↵
+        <td>AUTOMATIC DRAWING - AR5020594120408636 BP AUSTRALIA LTD ADVANCED GROUP P</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">21/06/2012</td>
+        ↵
+        <td class='right'>-187.8900</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER SIGNET April</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">21/06/2012</td>
+        ↵
+        <td class='right'>-100.0000</td>
+        ↵
+        <td>TRANSFER DEBIT - INTERNET TRANSFER SYEDS WAGES</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">21/06/2012</td>
+        ↵
+        <td class='right'>181.5000</td>
+        ↵
+        <td>INTER-BANK CREDIT - Inv: I24008 STOCKLAND ADVANCED GROUP</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">21/06/2012</td>
+        ↵
+        <td class='right'>436.9000</td>
+        ↵
+        <td>INTER-BANK CREDIT - Outstanding Inv RMS Line Marking Advanced Group</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">21/06/2012</td>
+        ↵
+        <td class='right'>446.6000</td>
+        ↵
+        <td>INTER-BANK CREDIT - 48909-42039 THE PENINSULA SC Advanced Group</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">21/06/2012</td>
+        ↵
+        <td class='right'>740.8000</td>
+        ↵
+        <td>MISCELLANEOUS CREDIT - REF- ICP 3039/640332 PROCEEDS OF OVERSEAS INWARD TRANSFER</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='overduebg' data-id='' title='Deposit this transaction' data-date='' data-type='' data-transno='' data-amount=''>
+        <td></td>
+        ↵
+        <td class='center'><a target='_blank' class=' openWindow' href='/gl/view/gl_trans.php?type_id=&amp;trans_no='></a></td>
+        ↵
+        <td class="center nowrap"></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td class='right'></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td></td>
+        ↵
+        <td class="center nowrap">21/06/2012</td>
+        ↵
+        <td class='right'>1856.2700</td>
+        ↵
+        <td>EFTPOS TRANSACTION - FLEXIPAY 21/06 16:04 ADVANCED GRO 1126 TOORAK ROAD</td>
+        ↵
+        <td></td>
+        ↵
+      </tr>
+      ↵
+      <tr class='navibar'>↵
+        <td colspan=13 class='navibar'>
+          <table class='floatright'>
+            <tr>↵
+              <td>
+                <button disabled class="navibutton" type="submit" name="bank_rec_page_first" id="bank_rec_page_first" value="1"><span>First</span></button>
+                ↵
+              </td>
+              ↵
+              <td>
+                <button disabled class="navibutton" type="submit" name="bank_rec_page_prev" id="bank_rec_page_prev" value="0"><span>Prev</span></button>
+                ↵
+              </td>
+              ↵
+              <td>
+                <button class="navibutton" type="submit" name="bank_rec_page_next" id="bank_rec_page_next" value="2"><span>Next</span></button>
+                ↵
+              </td>
+              ↵
+              <td>
+                <button class="navibutton" type="submit" name="bank_rec_page_last" id="bank_rec_page_last" value="2"><span>Last</span></button>
+                ↵
+              </td>
+              ↵
+            </tr>
+            ↵
+          </table>
+          <span>Records 1-100 of 155</span></td>
+      </tr>
+      ↵
     </table>
   </div>
-  <br></div>
-<div id="tabs0-2" class="ui-tabs-hide">
-  <div class='center'>
-    <div id="Contacts" style='min-height:200px'>
-      <script id="contact_tmpl" type='text/x-jquery-tmpl'>
-        <table id="contact-${_k}" style="display:inline-block">
-          <tr>
-            <td class="tablehead" colspan="2">${name}</td>
-          </tr>
-          <tr>
-            <td class='label'><label for='contact[name-${_k}]'>Name:</label></td>
-            <td><input type="text" name="contact[name-${_k}]" id="contact[name-${_k}]" size='35' maxlength="40" value="${name}"></td>
-          </tr>
-          <tr>
-            <td class='label'><label for='contact[phone1-${_k}]'>Phone:</label></td>
-            <td><input type="text" name="contact[phone1-${_k}]" id="contact[phone1-${_k}]" size='35' maxlength="40" value="${phone1}"></td>
-          </tr>
-          <tr>
-            <td class='label'><label for='contact[phone2-${_k}]'>Phone2:</label></td>
-            <td><input type="text" name="contact[phone2-${_k}]" id="contact[phone2-${_k}]" size='35' maxlength="40" value="${phone2}"></td>
-          </tr>
-          <tr>
-            <td class='label'><label for='contact[email-${_k}]'>Email:</label></td>
-            <td><input type="text" name="contact[email-${_k}]" id="contact[email-${_k}]" size='35' maxlength="40" value="${email}"></td>
-          </tr>
-          <tr>
-            <td class='label'><label for='contact[department-${_k}]'>Dept:</label></td>
-            <td><input type="text" name="contact[department-${_k}]" id="contact[department-${_k}]" size='35' maxlength="40" value="${department}"></td>
-          </tr>
-        </table>
-      </script>
-    </div>
-  </div>
+  ↵
 </div>
-<div id="tabs0-3" class="ui-tabs-hide">
-<div class='center'>
-<table class='tablestyle2'>
-<tr class='top'>
-<td>
-  <input type='hidden' id='branch_id' name='branch_id' value='0'>
-  <table class='tablestyle_inner '>
-    <tr class='tablehead'>
-      <td colspan=2 class='tablehead'>Sales</td>
-    </tr>
-    <tr>
-      <td class='label'>Sales Person:</td>
-      <td>
-        <div id='_branch[salesman]_sel' class='combodiv'><select id='branch[salesman]' name='branch[salesman]' class='combo' title=''>
-          <option value='14'>Casey Raineri</option>
-          <option value='13'>Daniel Dobson</option>
-          <option value='3'>Mike Smith</option>
-          <option value='1'>Phil Whittle</option>
-          <option value='2'>Sam Jennings</option>
-          <option value='15'>Sherry Tang</option>
-          <option selected value='5'>Sol Jennings</option>
-          <option value='8'>Syed Mehdi</option>
-        </select>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td class='label'>Sales Area:</td>
-      <td>
-        <div id='_branch[area]_sel' class='combodiv'><select id='branch[area]' name='branch[area]' class='combo' title=''>
-          <option selected value='1'>Australia</option>
-          <option value='2'>UK</option>
-        </select>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td class='label'>Sales Group:</td>
-      <td>
-        <div id='_branch[group_no]_sel' class='combodiv'><select id='branch[group_no]' name='branch[group_no]' class='combo' title=''>
-          <option value='3'>Large</option>
-          <option value='2'>Medium</option>
-          <option selected value='1'>Small</option>
-        </select>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td class='label'>Default Inventory Location:</td>
-      <td>
-        <div id='_branch[default_location]_sel' class='combodiv'><select id='branch[default_location]' name='branch[default_location]' class='combo' title=''>
-          <option value='MEL'>Camberwell</option>
-          <option value='DRP'>Drop Ship</option>
-          <option selected value='KEYS'>Keysborough</option>
-          <option value='NFY'>NOT FAXED YET</option>
-        </select>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td class='label'>Default Shipping Company:</td>
-      <td>
-        <div id='_branch[default_ship_via]_sel' class='combodiv'><select id='branch[default_ship_via]' name='branch[default_ship_via]' class='combo' title=''>
-          <option value='12'>Consulting</option>
-          <option value='11'>Delivery</option>
-          <option selected class='inactive' value='1'>Hunter Express</option>
-          <option value='9'>Installation</option>
-          <option value='8'>Linemarking</option>
-          <option value='2'>Pickup</option>
-        </select>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td class='label'>Tax Group:</td>
-      <td>
-        <div id='_branch[tax_group_id]_sel' class='combodiv'><select id='branch[tax_group_id]' name='branch[tax_group_id]' class='combo' title=''>
-          <option selected value='1'>GST</option>
-          <option value='2'>Tax free FRE</option>
-          <option value='4'>Tax free EXP</option>
-          <option value='5'>Taxed CAP</option>
-          <option value='6'>Tax free N-T</option>
-          <option value='7'>Taxed INP</option>
-        </select>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td class='label'>Disable this Branch:</td>
-      <td>
-        <div id='_branch[disable_trans]_sel' class='combodiv'><select id='branch[disable_trans]' name='branch[disable_trans]' class='combo' title=''>
-          <option selected value='0'>No</option>
-          <option value='1'>Yes</option>
-        </select>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td class="label">Website ID:</td>
-      <td><input id="webid" disabled name="webid" maxlength="7"></td>
-    </tr>
-  </table>
-</td>
-<td style='border-left:1px solid #cccccc; '>
-<table class='tablestyle_inner '>
-<tr class='tablehead'>
-  <td colspan=2 class='tablehead'>GL Accounts</td>
-</tr>
-<tr>
-  <td class='label'>Sales Account:</td>
-  <td>
-    <div id='_branch[sales_account]_sel' class='combodiv'><select id='branch[sales_account]' name='branch[sales_account]' class='combo2' title=''>
-      <option selected value=''>Use Item Sales Accounts</option>
-      <optgroup label='Cash'>
-        <option value='1700'>1700&nbsp;&nbsp;&nbsp;&nbsp;Adv NAB Cheque Account</option>
-        <option value='1701'>1701&nbsp;&nbsp;&nbsp;&nbsp;MSH NAB Cheque Account</option>
-        <option value='1702'>1702&nbsp;&nbsp;&nbsp;&nbsp;Westpac Cheque Account</option>
-        <option value='1703'>1703&nbsp;&nbsp;&nbsp;&nbsp;Cash on Hand</option>
-        <option value='1705'>1705&nbsp;&nbsp;&nbsp;&nbsp;Petty Cash</option>
-        <option value='1706'>1706&nbsp;&nbsp;&nbsp;&nbsp;Mike&#039;s Wallet</option>
-        <option value='1707'>1707&nbsp;&nbsp;&nbsp;&nbsp;Paypal Account</option>
-        <option value='1708'>1708&nbsp;&nbsp;&nbsp;&nbsp;Undeposited Funds</option>
-        <option value='1709'>1709&nbsp;&nbsp;&nbsp;&nbsp;Sol's Wallet</option>
-        <option value='1711'>1711&nbsp;&nbsp;&nbsp;&nbsp;Sam's Wallet</option>
-      </optgroup>
-      <optgroup label='Receivables'>
-        <option value='1510'>1510&nbsp;&nbsp;&nbsp;&nbsp;Employee Advances</option>
-        <option value='1800'>1800&nbsp;&nbsp;&nbsp;&nbsp;Accounts receivable</option>
-      </optgroup>
-      <optgroup label='Prepayments'>
-        <option value='1900'>1900&nbsp;&nbsp;&nbsp;&nbsp;Deposits Paid</option>
-        <option value='1910'>1910&nbsp;&nbsp;&nbsp;&nbsp;Prepaid Insurance</option>
-        <option value='1920'>1920&nbsp;&nbsp;&nbsp;&nbsp;Prepaid Workcover</option>
-      </optgroup>
-      <optgroup label='Inventory'>
-        <option value='1200'>1200&nbsp;&nbsp;&nbsp;&nbsp;Inventory</option>
-        <option value='1205'>1205&nbsp;&nbsp;&nbsp;&nbsp;Inventory adjustment</option>
-      </optgroup>
-      <optgroup label='Fixed Assets'>
-        <option value='1010'>1010&nbsp;&nbsp;&nbsp;&nbsp;Furniture & Fixtures at Cost</option>
-        <option value='1011'>1011&nbsp;&nbsp;&nbsp;&nbsp;Furniture & Fixtures Accumulated Depreciation</option>
-        <option value='1020'>1020&nbsp;&nbsp;&nbsp;&nbsp;Office Equipment at Cost</option>
-        <option value='1021'>1021&nbsp;&nbsp;&nbsp;&nbsp;Office Equipment Accumulated Depreciation</option>
-        <option value='1030'>1030&nbsp;&nbsp;&nbsp;&nbsp;Motor Vehicles</option>
-        <option value='1031'>1031&nbsp;&nbsp;&nbsp;&nbsp;Motor Vehicles Accumulated Depreciation</option>
-        <option value='1040'>1040&nbsp;&nbsp;&nbsp;&nbsp;Property, plant, equip.</option>
-        <option value='1041'>1041&nbsp;&nbsp;&nbsp;&nbsp;Plant &amp; Equip Accumulated Depreciation</option>
-        <option value='1050'>1050&nbsp;&nbsp;&nbsp;&nbsp;Goodwill</option>
-      </optgroup>
-      <optgroup label='Credit Cards'>
-        <option value='2100'>2100&nbsp;&nbsp;&nbsp;&nbsp;NAB Mastercard</option>
-        <option value='2200'>2200&nbsp;&nbsp;&nbsp;&nbsp;NAB Visa</option>
-      </optgroup>
-      <optgroup label='Accounts payable'>
-        <option value='20000'>20000&nbsp;&nbsp;&nbsp;&nbsp;Accounts Payable</option>
-        <option value='2300'>2300&nbsp;&nbsp;&nbsp;&nbsp;Sundry Creditors</option>
-      </optgroup>
-      <optgroup label='Tax liabilities'>
-        <option value='2410'>2410&nbsp;&nbsp;&nbsp;&nbsp;PAYG Withheld</option>
-        <option value='2421'>2421&nbsp;&nbsp;&nbsp;&nbsp;GST Collected</option>
-        <option value='2422'>2422&nbsp;&nbsp;&nbsp;&nbsp;Other GST Collected</option>
-        <option value='2430'>2430&nbsp;&nbsp;&nbsp;&nbsp;GST Paid</option>
-        <option value='2431'>2431&nbsp;&nbsp;&nbsp;&nbsp;Other GST Paid</option>
-        <option value='2440'>2440&nbsp;&nbsp;&nbsp;&nbsp;BAS Clearing</option>
-      </optgroup>
-      <optgroup label='Other current liabilities'>
-        <option value='2510'>2510&nbsp;&nbsp;&nbsp;&nbsp;Accrued Superannuation</option>
-        <option value='2520'>2520&nbsp;&nbsp;&nbsp;&nbsp;Provision for Annual Leave</option>
-        <option value='2530'>2530&nbsp;&nbsp;&nbsp;&nbsp;Customer Deposits</option>
-        <option value='2540'>2540&nbsp;&nbsp;&nbsp;&nbsp;Wages Clearing Account</option>
-      </optgroup>
-      <optgroup label='Loans'>
-        <option value='2610'>2610&nbsp;&nbsp;&nbsp;&nbsp;Director&#039;s Loan Account</option>
-        <option value='2611'>2611&nbsp;&nbsp;&nbsp;&nbsp;Mike's Director's Loan</option>
-        <option value='2612'>2612&nbsp;&nbsp;&nbsp;&nbsp;Sam's Director's Loan</option>
-        <option value='2613'>2613&nbsp;&nbsp;&nbsp;&nbsp;Sol's Director's Loan</option>
-        <option value='2621'>2621&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s HSBC Visa</option>
-        <option value='2622'>2622&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s Line of Credit</option>
-        <option value='2623'>2623&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s ANZ Mastercard</option>
-        <option value='2624'>2624&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s CBA Mastercard</option>
-        <option value='2625'>2625&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s Personal Loan</option>
-        <option value='2700'>2700&nbsp;&nbsp;&nbsp;&nbsp;Van Loan</option>
-        <option value='2750'>2750&nbsp;&nbsp;&nbsp;&nbsp;Mortgage on Fiat Van</option>
-        <option value='2751'>2751&nbsp;&nbsp;&nbsp;&nbsp;Less: Unexpired Interest on Mortgage</option>
-        <option value='2800'>2800&nbsp;&nbsp;&nbsp;&nbsp;Establishment Loan</option>
-        <option value='2900'>2900&nbsp;&nbsp;&nbsp;&nbsp;Advanced Super Investments Pty Ltd</option>
-      </optgroup>
-      <optgroup label='Equity'>
-        <option value='3100'>3100&nbsp;&nbsp;&nbsp;&nbsp;Owners Capital</option>
-        <option value='3200'>3200&nbsp;&nbsp;&nbsp;&nbsp;Director&#039;s Drawings</option>
-        <option value='3210'>3210&nbsp;&nbsp;&nbsp;&nbsp;Mike's Drawings</option>
-        <option value='3300'>3300&nbsp;&nbsp;&nbsp;&nbsp;Current Year Profit/Loss</option>
-        <option value='3400'>3400&nbsp;&nbsp;&nbsp;&nbsp;Retained Earnings</option>
-        <option value='3500'>3500&nbsp;&nbsp;&nbsp;&nbsp;Historical Balancing</option>
-        <option value='3600'>3600&nbsp;&nbsp;&nbsp;&nbsp;Suspense</option>
-      </optgroup>
-      <optgroup label='Sales Income'>
-        <option value='4010'>4010&nbsp;&nbsp;&nbsp;&nbsp;Retail Sales</option>
-        <option value='4050'>4050&nbsp;&nbsp;&nbsp;&nbsp;Web Sales</option>
-        <option value='4110'>4110&nbsp;&nbsp;&nbsp;&nbsp;Export Sales</option>
-        <option value='4111'>4111&nbsp;&nbsp;&nbsp;&nbsp;Custom Sign Sales</option>
-        <option value='4112'>4112&nbsp;&nbsp;&nbsp;&nbsp;Installation Income</option>
-        <option value='4150'>4150&nbsp;&nbsp;&nbsp;&nbsp;Freight Collected</option>
-        <option value='4151'>4151&nbsp;&nbsp;&nbsp;&nbsp;Equipment Rental</option>
-        <option value='4152'>4152&nbsp;&nbsp;&nbsp;&nbsp;Line Marking</option>
-        <option value='4160'>4160&nbsp;&nbsp;&nbsp;&nbsp;Restocking Fees</option>
-        <option value='4170'>4170&nbsp;&nbsp;&nbsp;&nbsp;Sales - Motor Sprot Heaven</option>
-        <option value='4180'>4180&nbsp;&nbsp;&nbsp;&nbsp;Miscellaneous Income</option>
-        <option value='4190'>4190&nbsp;&nbsp;&nbsp;&nbsp;AMEX Fees Collected</option>
-      </optgroup>
-      <optgroup label='Other income'>
-        <option value='7010'>7010&nbsp;&nbsp;&nbsp;&nbsp;Interest Income</option>
-        <option value='7020'>7020&nbsp;&nbsp;&nbsp;&nbsp;Rental Income</option>
-        <option value='7030'>7030&nbsp;&nbsp;&nbsp;&nbsp;Other Income</option>
-        <option value='7040'>7040&nbsp;&nbsp;&nbsp;&nbsp;Government Payments</option>
-      </optgroup>
-      <optgroup label='Cost of Goods Sold'>
-        <option value='5040'>5040&nbsp;&nbsp;&nbsp;&nbsp;Materials &amp; Supplies</option>
-        <option value='5050'>5050&nbsp;&nbsp;&nbsp;&nbsp;Cost of Goods Sold</option>
-        <option value='5060'>5060&nbsp;&nbsp;&nbsp;&nbsp;Linemarking Subcontractors</option>
-        <option value='5070'>5070&nbsp;&nbsp;&nbsp;&nbsp;Installation Subcontractors</option>
-        <option value='5080'>5080&nbsp;&nbsp;&nbsp;&nbsp;Shipping</option>
-        <option value='5090'>5090&nbsp;&nbsp;&nbsp;&nbsp;Sales Discounts</option>
-        <option value='5110'>5110&nbsp;&nbsp;&nbsp;&nbsp;Assembly Costs</option>
-        <option value='6095'>6095&nbsp;&nbsp;&nbsp;&nbsp;Early payment discounts (sales)</option>
-      </optgroup>
-      <optgroup label='Expenses'>
-        <option value='6050'>6050&nbsp;&nbsp;&nbsp;&nbsp;Exchange variance</option>
-        <option value='6060'>6060&nbsp;&nbsp;&nbsp;&nbsp;Accounting Fees</option>
-        <option value='6070'>6070&nbsp;&nbsp;&nbsp;&nbsp;Advertising</option>
-        <option value='6080'>6080&nbsp;&nbsp;&nbsp;&nbsp;Bad Debts</option>
-        <option value='6120'>6120&nbsp;&nbsp;&nbsp;&nbsp;Bank Fees</option>
-        <option value='6125'>6125&nbsp;&nbsp;&nbsp;&nbsp;Books and Publications</option>
-        <option value='6130'>6130&nbsp;&nbsp;&nbsp;&nbsp;Bookkeeping</option>
-        <option value='6131'>6131&nbsp;&nbsp;&nbsp;&nbsp;Cleaning &amp; Waste Removal</option>
-        <option value='6132'>6132&nbsp;&nbsp;&nbsp;&nbsp;Computers - Maintenance and Supplies</option>
-        <option value='6133'>6133&nbsp;&nbsp;&nbsp;&nbsp;Debt Collection Costs</option>
-        <option value='6134'>6134&nbsp;&nbsp;&nbsp;&nbsp;Depreciation</option>
-        <option value='6140'>6140&nbsp;&nbsp;&nbsp;&nbsp;Donations</option>
-        <option value='6150'>6150&nbsp;&nbsp;&nbsp;&nbsp;Discounts Received</option>
-        <option value='6160'>6160&nbsp;&nbsp;&nbsp;&nbsp;Dues and Subscriptions</option>
-        <option value='6170'>6170&nbsp;&nbsp;&nbsp;&nbsp;Entertainment/Client Gifts</option>
-        <option value='6180'>6180&nbsp;&nbsp;&nbsp;&nbsp;Equipment Hire</option>
-        <option value='6190'>6190&nbsp;&nbsp;&nbsp;&nbsp;Filing Fees</option>
-        <option value='6200'>6200&nbsp;&nbsp;&nbsp;&nbsp;Fines &amp; Penalties</option>
-        <option value='6205'>6205&nbsp;&nbsp;&nbsp;&nbsp;Fines - not tax deductable</option>
-        <option value='6207'>6207&nbsp;&nbsp;&nbsp;&nbsp;Freight paid on Purchases</option>
-        <option value='6210'>6210&nbsp;&nbsp;&nbsp;&nbsp;Insurance (non-vehicle)</option>
-        <option value='6220'>6220&nbsp;&nbsp;&nbsp;&nbsp;Insurance - WorkCover</option>
-        <option value='6250'>6250&nbsp;&nbsp;&nbsp;&nbsp;Leases - Equipment</option>
-        <option value='6260'>6260&nbsp;&nbsp;&nbsp;&nbsp;Legal Fees</option>
-        <option value='6270'>6270&nbsp;&nbsp;&nbsp;&nbsp;Merchant Fees - General</option>
-        <option value='6280'>6280&nbsp;&nbsp;&nbsp;&nbsp;Merchant Fees - Ebay</option>
-        <option value='6550'>6550&nbsp;&nbsp;&nbsp;&nbsp;Office Supplies/Stationery</option>
-        <option value='6560'>6560&nbsp;&nbsp;&nbsp;&nbsp;Permits etc</option>
-        <option value='6570'>6570&nbsp;&nbsp;&nbsp;&nbsp;Postage</option>
-        <option value='6580'>6580&nbsp;&nbsp;&nbsp;&nbsp;Printing</option>
-        <option value='6590'>6590&nbsp;&nbsp;&nbsp;&nbsp;Professional Fees</option>
-        <option value='6600'>6600&nbsp;&nbsp;&nbsp;&nbsp;Recruitment</option>
-        <option value='6610'>6610&nbsp;&nbsp;&nbsp;&nbsp;Samples/Product Development</option>
-        <option value='6620'>6620&nbsp;&nbsp;&nbsp;&nbsp;Shop Set-Up</option>
-        <option value='6630'>6630&nbsp;&nbsp;&nbsp;&nbsp;Small Capital Items</option>
-        <option value='6640'>6640&nbsp;&nbsp;&nbsp;&nbsp;Staff Amenities/Medical</option>
-        <option value='6650'>6650&nbsp;&nbsp;&nbsp;&nbsp;Tool Replacements</option>
-        <option value='6660'>6660&nbsp;&nbsp;&nbsp;&nbsp;Website/Online Shop Expenses</option>
-      </optgroup>
-      <optgroup label='Occupancy Costs'>
-        <option value='6400'>6400&nbsp;&nbsp;&nbsp;&nbsp;Gas</option>
-        <option value='6401'>6401&nbsp;&nbsp;&nbsp;&nbsp;Cleaning &amp; Waste Removal</option>
-        <option value='6405'>6405&nbsp;&nbsp;&nbsp;&nbsp;Electricity</option>
-        <option value='6406'>6406&nbsp;&nbsp;&nbsp;&nbsp;Home Office Rent</option>
-        <option value='6407'>6407&nbsp;&nbsp;&nbsp;&nbsp;Rates &amp; Taxes</option>
-        <option value='6408'>6408&nbsp;&nbsp;&nbsp;&nbsp;Rent</option>
-        <option value='6409'>6409&nbsp;&nbsp;&nbsp;&nbsp;Repairs &amp; Maintenance</option>
-        <option value='6410'>6410&nbsp;&nbsp;&nbsp;&nbsp;Water</option>
-      </optgroup>
-      <optgroup label='Motor Vehicle'>
-        <option value='6710'>6710&nbsp;&nbsp;&nbsp;&nbsp;Gas/Petrol/Oil</option>
-        <option value='6720'>6720&nbsp;&nbsp;&nbsp;&nbsp;Registration &amp; Insurance</option>
-        <option value='6730'>6730&nbsp;&nbsp;&nbsp;&nbsp;Vehicle Maintenance/Servicing</option>
-      </optgroup>
-      <optgroup label='Telephone/Internet'>
-        <option value='6340'>6340&nbsp;&nbsp;&nbsp;&nbsp;Fax</option>
-        <option value='6341'>6341&nbsp;&nbsp;&nbsp;&nbsp;Telephone: Mobile</option>
-        <option value='6342'>6342&nbsp;&nbsp;&nbsp;&nbsp;Telephone: Office</option>
-        <option value='6343'>6343&nbsp;&nbsp;&nbsp;&nbsp;Telephone: VOIP</option>
-        <option value='6355'>6355&nbsp;&nbsp;&nbsp;&nbsp;Internet</option>
-      </optgroup>
-      <optgroup label='Rental Flat Costs'>
-        <option value='6810'>6810&nbsp;&nbsp;&nbsp;&nbsp;Rental Agent Commission</option>
-        <option value='6820'>6820&nbsp;&nbsp;&nbsp;&nbsp;Repairs &amp; Maint to Flat</option>
-      </optgroup>
-      <optgroup label='Travel Expenses'>
-        <option value='6830'>6830&nbsp;&nbsp;&nbsp;&nbsp;Parking</option>
-        <option value='6840'>6840&nbsp;&nbsp;&nbsp;&nbsp;Tolls</option>
-        <option value='6850'>6850&nbsp;&nbsp;&nbsp;&nbsp;Travel Allowances</option>
-      </optgroup>
-      <optgroup label='Other Expenses'>
-        <option value='8100'>8100&nbsp;&nbsp;&nbsp;&nbsp;Income Tax Expense</option>
-        <option value='8210'>8210&nbsp;&nbsp;&nbsp;&nbsp;Interest - Bank</option>
-        <option value='8220'>8220&nbsp;&nbsp;&nbsp;&nbsp;Interest - Credit Card</option>
-        <option value='8230'>8230&nbsp;&nbsp;&nbsp;&nbsp;Interest - ATO</option>
-        <option value='8240'>8240&nbsp;&nbsp;&nbsp;&nbsp;Interest - Chattel Mortgage</option>
-        <option value='8300'>8300&nbsp;&nbsp;&nbsp;&nbsp;Suspense</option>
-      </optgroup>
-      <optgroup label='Employee Expenses'>
-        <option value='0009'>0009&nbsp;&nbsp;&nbsp;&nbsp;Syed's car deduction</option>
-        <option value='6910'>6910&nbsp;&nbsp;&nbsp;&nbsp;Annual Leave</option>
-        <option value='6920'>6920&nbsp;&nbsp;&nbsp;&nbsp;Protective Clothing/Uniforms</option>
-        <option value='6930'>6930&nbsp;&nbsp;&nbsp;&nbsp;Salaries &amp; Wages</option>
-        <option value='6940'>6940&nbsp;&nbsp;&nbsp;&nbsp;Superannuation</option>
-        <option value='6950'>6950&nbsp;&nbsp;&nbsp;&nbsp;Training</option>
-        <option value='6960'>6960&nbsp;&nbsp;&nbsp;&nbsp;WorkCover</option>
-      </optgroup>
-    </select>
-    </div>
-  </td>
-</tr>
-<tr>
-  <td class='label'>Sales Discount Account:</td>
-  <td>
-    <div id='_branch[sales_discount_account]_sel' class='combodiv'><select id='branch[sales_discount_account]' name='branch[sales_discount_account]' class='combo2' title=''>
-      <optgroup label='Cash'>
-        <option value='1700'>1700&nbsp;&nbsp;&nbsp;&nbsp;Adv NAB Cheque Account</option>
-        <option value='1701'>1701&nbsp;&nbsp;&nbsp;&nbsp;MSH NAB Cheque Account</option>
-        <option value='1702'>1702&nbsp;&nbsp;&nbsp;&nbsp;Westpac Cheque Account</option>
-        <option value='1703'>1703&nbsp;&nbsp;&nbsp;&nbsp;Cash on Hand</option>
-        <option value='1705'>1705&nbsp;&nbsp;&nbsp;&nbsp;Petty Cash</option>
-        <option value='1706'>1706&nbsp;&nbsp;&nbsp;&nbsp;Mike&#039;s Wallet</option>
-        <option value='1707'>1707&nbsp;&nbsp;&nbsp;&nbsp;Paypal Account</option>
-        <option value='1708'>1708&nbsp;&nbsp;&nbsp;&nbsp;Undeposited Funds</option>
-        <option value='1709'>1709&nbsp;&nbsp;&nbsp;&nbsp;Sol's Wallet</option>
-        <option value='1711'>1711&nbsp;&nbsp;&nbsp;&nbsp;Sam's Wallet</option>
-      </optgroup>
-      <optgroup label='Receivables'>
-        <option value='1510'>1510&nbsp;&nbsp;&nbsp;&nbsp;Employee Advances</option>
-        <option value='1800'>1800&nbsp;&nbsp;&nbsp;&nbsp;Accounts receivable</option>
-      </optgroup>
-      <optgroup label='Prepayments'>
-        <option value='1900'>1900&nbsp;&nbsp;&nbsp;&nbsp;Deposits Paid</option>
-        <option value='1910'>1910&nbsp;&nbsp;&nbsp;&nbsp;Prepaid Insurance</option>
-        <option value='1920'>1920&nbsp;&nbsp;&nbsp;&nbsp;Prepaid Workcover</option>
-      </optgroup>
-      <optgroup label='Inventory'>
-        <option value='1200'>1200&nbsp;&nbsp;&nbsp;&nbsp;Inventory</option>
-        <option value='1205'>1205&nbsp;&nbsp;&nbsp;&nbsp;Inventory adjustment</option>
-      </optgroup>
-      <optgroup label='Fixed Assets'>
-        <option value='1010'>1010&nbsp;&nbsp;&nbsp;&nbsp;Furniture & Fixtures at Cost</option>
-        <option value='1011'>1011&nbsp;&nbsp;&nbsp;&nbsp;Furniture & Fixtures Accumulated Depreciation</option>
-        <option value='1020'>1020&nbsp;&nbsp;&nbsp;&nbsp;Office Equipment at Cost</option>
-        <option value='1021'>1021&nbsp;&nbsp;&nbsp;&nbsp;Office Equipment Accumulated Depreciation</option>
-        <option value='1030'>1030&nbsp;&nbsp;&nbsp;&nbsp;Motor Vehicles</option>
-        <option value='1031'>1031&nbsp;&nbsp;&nbsp;&nbsp;Motor Vehicles Accumulated Depreciation</option>
-        <option value='1040'>1040&nbsp;&nbsp;&nbsp;&nbsp;Property, plant, equip.</option>
-        <option value='1041'>1041&nbsp;&nbsp;&nbsp;&nbsp;Plant &amp; Equip Accumulated Depreciation</option>
-        <option value='1050'>1050&nbsp;&nbsp;&nbsp;&nbsp;Goodwill</option>
-      </optgroup>
-      <optgroup label='Credit Cards'>
-        <option value='2100'>2100&nbsp;&nbsp;&nbsp;&nbsp;NAB Mastercard</option>
-        <option value='2200'>2200&nbsp;&nbsp;&nbsp;&nbsp;NAB Visa</option>
-      </optgroup>
-      <optgroup label='Accounts payable'>
-        <option value='20000'>20000&nbsp;&nbsp;&nbsp;&nbsp;Accounts Payable</option>
-        <option value='2300'>2300&nbsp;&nbsp;&nbsp;&nbsp;Sundry Creditors</option>
-      </optgroup>
-      <optgroup label='Tax liabilities'>
-        <option value='2410'>2410&nbsp;&nbsp;&nbsp;&nbsp;PAYG Withheld</option>
-        <option value='2421'>2421&nbsp;&nbsp;&nbsp;&nbsp;GST Collected</option>
-        <option value='2422'>2422&nbsp;&nbsp;&nbsp;&nbsp;Other GST Collected</option>
-        <option value='2430'>2430&nbsp;&nbsp;&nbsp;&nbsp;GST Paid</option>
-        <option value='2431'>2431&nbsp;&nbsp;&nbsp;&nbsp;Other GST Paid</option>
-        <option value='2440'>2440&nbsp;&nbsp;&nbsp;&nbsp;BAS Clearing</option>
-      </optgroup>
-      <optgroup label='Other current liabilities'>
-        <option value='2510'>2510&nbsp;&nbsp;&nbsp;&nbsp;Accrued Superannuation</option>
-        <option value='2520'>2520&nbsp;&nbsp;&nbsp;&nbsp;Provision for Annual Leave</option>
-        <option value='2530'>2530&nbsp;&nbsp;&nbsp;&nbsp;Customer Deposits</option>
-        <option value='2540'>2540&nbsp;&nbsp;&nbsp;&nbsp;Wages Clearing Account</option>
-      </optgroup>
-      <optgroup label='Loans'>
-        <option value='2610'>2610&nbsp;&nbsp;&nbsp;&nbsp;Director&#039;s Loan Account</option>
-        <option value='2611'>2611&nbsp;&nbsp;&nbsp;&nbsp;Mike's Director's Loan</option>
-        <option value='2612'>2612&nbsp;&nbsp;&nbsp;&nbsp;Sam's Director's Loan</option>
-        <option value='2613'>2613&nbsp;&nbsp;&nbsp;&nbsp;Sol's Director's Loan</option>
-        <option value='2621'>2621&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s HSBC Visa</option>
-        <option value='2622'>2622&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s Line of Credit</option>
-        <option value='2623'>2623&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s ANZ Mastercard</option>
-        <option value='2624'>2624&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s CBA Mastercard</option>
-        <option value='2625'>2625&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s Personal Loan</option>
-        <option value='2700'>2700&nbsp;&nbsp;&nbsp;&nbsp;Van Loan</option>
-        <option value='2750'>2750&nbsp;&nbsp;&nbsp;&nbsp;Mortgage on Fiat Van</option>
-        <option value='2751'>2751&nbsp;&nbsp;&nbsp;&nbsp;Less: Unexpired Interest on Mortgage</option>
-        <option value='2800'>2800&nbsp;&nbsp;&nbsp;&nbsp;Establishment Loan</option>
-        <option value='2900'>2900&nbsp;&nbsp;&nbsp;&nbsp;Advanced Super Investments Pty Ltd</option>
-      </optgroup>
-      <optgroup label='Equity'>
-        <option value='3100'>3100&nbsp;&nbsp;&nbsp;&nbsp;Owners Capital</option>
-        <option value='3200'>3200&nbsp;&nbsp;&nbsp;&nbsp;Director&#039;s Drawings</option>
-        <option value='3210'>3210&nbsp;&nbsp;&nbsp;&nbsp;Mike's Drawings</option>
-        <option value='3300'>3300&nbsp;&nbsp;&nbsp;&nbsp;Current Year Profit/Loss</option>
-        <option value='3400'>3400&nbsp;&nbsp;&nbsp;&nbsp;Retained Earnings</option>
-        <option value='3500'>3500&nbsp;&nbsp;&nbsp;&nbsp;Historical Balancing</option>
-        <option value='3600'>3600&nbsp;&nbsp;&nbsp;&nbsp;Suspense</option>
-      </optgroup>
-      <optgroup label='Sales Income'>
-        <option value='4010'>4010&nbsp;&nbsp;&nbsp;&nbsp;Retail Sales</option>
-        <option value='4050'>4050&nbsp;&nbsp;&nbsp;&nbsp;Web Sales</option>
-        <option value='4110'>4110&nbsp;&nbsp;&nbsp;&nbsp;Export Sales</option>
-        <option value='4111'>4111&nbsp;&nbsp;&nbsp;&nbsp;Custom Sign Sales</option>
-        <option value='4112'>4112&nbsp;&nbsp;&nbsp;&nbsp;Installation Income</option>
-        <option value='4150'>4150&nbsp;&nbsp;&nbsp;&nbsp;Freight Collected</option>
-        <option value='4151'>4151&nbsp;&nbsp;&nbsp;&nbsp;Equipment Rental</option>
-        <option value='4152'>4152&nbsp;&nbsp;&nbsp;&nbsp;Line Marking</option>
-        <option value='4160'>4160&nbsp;&nbsp;&nbsp;&nbsp;Restocking Fees</option>
-        <option value='4170'>4170&nbsp;&nbsp;&nbsp;&nbsp;Sales - Motor Sprot Heaven</option>
-        <option value='4180'>4180&nbsp;&nbsp;&nbsp;&nbsp;Miscellaneous Income</option>
-        <option value='4190'>4190&nbsp;&nbsp;&nbsp;&nbsp;AMEX Fees Collected</option>
-      </optgroup>
-      <optgroup label='Other income'>
-        <option value='7010'>7010&nbsp;&nbsp;&nbsp;&nbsp;Interest Income</option>
-        <option value='7020'>7020&nbsp;&nbsp;&nbsp;&nbsp;Rental Income</option>
-        <option value='7030'>7030&nbsp;&nbsp;&nbsp;&nbsp;Other Income</option>
-        <option value='7040'>7040&nbsp;&nbsp;&nbsp;&nbsp;Government Payments</option>
-      </optgroup>
-      <optgroup label='Cost of Goods Sold'>
-        <option value='5040'>5040&nbsp;&nbsp;&nbsp;&nbsp;Materials &amp; Supplies</option>
-        <option value='5050'>5050&nbsp;&nbsp;&nbsp;&nbsp;Cost of Goods Sold</option>
-        <option value='5060'>5060&nbsp;&nbsp;&nbsp;&nbsp;Linemarking Subcontractors</option>
-        <option value='5070'>5070&nbsp;&nbsp;&nbsp;&nbsp;Installation Subcontractors</option>
-        <option value='5080'>5080&nbsp;&nbsp;&nbsp;&nbsp;Shipping</option>
-        <option selected value='5090'>5090&nbsp;&nbsp;&nbsp;&nbsp;Sales Discounts</option>
-        <option value='5110'>5110&nbsp;&nbsp;&nbsp;&nbsp;Assembly Costs</option>
-        <option value='6095'>6095&nbsp;&nbsp;&nbsp;&nbsp;Early payment discounts (sales)</option>
-      </optgroup>
-      <optgroup label='Expenses'>
-        <option value='6050'>6050&nbsp;&nbsp;&nbsp;&nbsp;Exchange variance</option>
-        <option value='6060'>6060&nbsp;&nbsp;&nbsp;&nbsp;Accounting Fees</option>
-        <option value='6070'>6070&nbsp;&nbsp;&nbsp;&nbsp;Advertising</option>
-        <option value='6080'>6080&nbsp;&nbsp;&nbsp;&nbsp;Bad Debts</option>
-        <option value='6120'>6120&nbsp;&nbsp;&nbsp;&nbsp;Bank Fees</option>
-        <option value='6125'>6125&nbsp;&nbsp;&nbsp;&nbsp;Books and Publications</option>
-        <option value='6130'>6130&nbsp;&nbsp;&nbsp;&nbsp;Bookkeeping</option>
-        <option value='6131'>6131&nbsp;&nbsp;&nbsp;&nbsp;Cleaning &amp; Waste Removal</option>
-        <option value='6132'>6132&nbsp;&nbsp;&nbsp;&nbsp;Computers - Maintenance and Supplies</option>
-        <option value='6133'>6133&nbsp;&nbsp;&nbsp;&nbsp;Debt Collection Costs</option>
-        <option value='6134'>6134&nbsp;&nbsp;&nbsp;&nbsp;Depreciation</option>
-        <option value='6140'>6140&nbsp;&nbsp;&nbsp;&nbsp;Donations</option>
-        <option value='6150'>6150&nbsp;&nbsp;&nbsp;&nbsp;Discounts Received</option>
-        <option value='6160'>6160&nbsp;&nbsp;&nbsp;&nbsp;Dues and Subscriptions</option>
-        <option value='6170'>6170&nbsp;&nbsp;&nbsp;&nbsp;Entertainment/Client Gifts</option>
-        <option value='6180'>6180&nbsp;&nbsp;&nbsp;&nbsp;Equipment Hire</option>
-        <option value='6190'>6190&nbsp;&nbsp;&nbsp;&nbsp;Filing Fees</option>
-        <option value='6200'>6200&nbsp;&nbsp;&nbsp;&nbsp;Fines &amp; Penalties</option>
-        <option value='6205'>6205&nbsp;&nbsp;&nbsp;&nbsp;Fines - not tax deductable</option>
-        <option value='6207'>6207&nbsp;&nbsp;&nbsp;&nbsp;Freight paid on Purchases</option>
-        <option value='6210'>6210&nbsp;&nbsp;&nbsp;&nbsp;Insurance (non-vehicle)</option>
-        <option value='6220'>6220&nbsp;&nbsp;&nbsp;&nbsp;Insurance - WorkCover</option>
-        <option value='6250'>6250&nbsp;&nbsp;&nbsp;&nbsp;Leases - Equipment</option>
-        <option value='6260'>6260&nbsp;&nbsp;&nbsp;&nbsp;Legal Fees</option>
-        <option value='6270'>6270&nbsp;&nbsp;&nbsp;&nbsp;Merchant Fees - General</option>
-        <option value='6280'>6280&nbsp;&nbsp;&nbsp;&nbsp;Merchant Fees - Ebay</option>
-        <option value='6550'>6550&nbsp;&nbsp;&nbsp;&nbsp;Office Supplies/Stationery</option>
-        <option value='6560'>6560&nbsp;&nbsp;&nbsp;&nbsp;Permits etc</option>
-        <option value='6570'>6570&nbsp;&nbsp;&nbsp;&nbsp;Postage</option>
-        <option value='6580'>6580&nbsp;&nbsp;&nbsp;&nbsp;Printing</option>
-        <option value='6590'>6590&nbsp;&nbsp;&nbsp;&nbsp;Professional Fees</option>
-        <option value='6600'>6600&nbsp;&nbsp;&nbsp;&nbsp;Recruitment</option>
-        <option value='6610'>6610&nbsp;&nbsp;&nbsp;&nbsp;Samples/Product Development</option>
-        <option value='6620'>6620&nbsp;&nbsp;&nbsp;&nbsp;Shop Set-Up</option>
-        <option value='6630'>6630&nbsp;&nbsp;&nbsp;&nbsp;Small Capital Items</option>
-        <option value='6640'>6640&nbsp;&nbsp;&nbsp;&nbsp;Staff Amenities/Medical</option>
-        <option value='6650'>6650&nbsp;&nbsp;&nbsp;&nbsp;Tool Replacements</option>
-        <option value='6660'>6660&nbsp;&nbsp;&nbsp;&nbsp;Website/Online Shop Expenses</option>
-      </optgroup>
-      <optgroup label='Occupancy Costs'>
-        <option value='6400'>6400&nbsp;&nbsp;&nbsp;&nbsp;Gas</option>
-        <option value='6401'>6401&nbsp;&nbsp;&nbsp;&nbsp;Cleaning &amp; Waste Removal</option>
-        <option value='6405'>6405&nbsp;&nbsp;&nbsp;&nbsp;Electricity</option>
-        <option value='6406'>6406&nbsp;&nbsp;&nbsp;&nbsp;Home Office Rent</option>
-        <option value='6407'>6407&nbsp;&nbsp;&nbsp;&nbsp;Rates &amp; Taxes</option>
-        <option value='6408'>6408&nbsp;&nbsp;&nbsp;&nbsp;Rent</option>
-        <option value='6409'>6409&nbsp;&nbsp;&nbsp;&nbsp;Repairs &amp; Maintenance</option>
-        <option value='6410'>6410&nbsp;&nbsp;&nbsp;&nbsp;Water</option>
-      </optgroup>
-      <optgroup label='Motor Vehicle'>
-        <option value='6710'>6710&nbsp;&nbsp;&nbsp;&nbsp;Gas/Petrol/Oil</option>
-        <option value='6720'>6720&nbsp;&nbsp;&nbsp;&nbsp;Registration &amp; Insurance</option>
-        <option value='6730'>6730&nbsp;&nbsp;&nbsp;&nbsp;Vehicle Maintenance/Servicing</option>
-      </optgroup>
-      <optgroup label='Telephone/Internet'>
-        <option value='6340'>6340&nbsp;&nbsp;&nbsp;&nbsp;Fax</option>
-        <option value='6341'>6341&nbsp;&nbsp;&nbsp;&nbsp;Telephone: Mobile</option>
-        <option value='6342'>6342&nbsp;&nbsp;&nbsp;&nbsp;Telephone: Office</option>
-        <option value='6343'>6343&nbsp;&nbsp;&nbsp;&nbsp;Telephone: VOIP</option>
-        <option value='6355'>6355&nbsp;&nbsp;&nbsp;&nbsp;Internet</option>
-      </optgroup>
-      <optgroup label='Rental Flat Costs'>
-        <option value='6810'>6810&nbsp;&nbsp;&nbsp;&nbsp;Rental Agent Commission</option>
-        <option value='6820'>6820&nbsp;&nbsp;&nbsp;&nbsp;Repairs &amp; Maint to Flat</option>
-      </optgroup>
-      <optgroup label='Travel Expenses'>
-        <option value='6830'>6830&nbsp;&nbsp;&nbsp;&nbsp;Parking</option>
-        <option value='6840'>6840&nbsp;&nbsp;&nbsp;&nbsp;Tolls</option>
-        <option value='6850'>6850&nbsp;&nbsp;&nbsp;&nbsp;Travel Allowances</option>
-      </optgroup>
-      <optgroup label='Other Expenses'>
-        <option value='8100'>8100&nbsp;&nbsp;&nbsp;&nbsp;Income Tax Expense</option>
-        <option value='8210'>8210&nbsp;&nbsp;&nbsp;&nbsp;Interest - Bank</option>
-        <option value='8220'>8220&nbsp;&nbsp;&nbsp;&nbsp;Interest - Credit Card</option>
-        <option value='8230'>8230&nbsp;&nbsp;&nbsp;&nbsp;Interest - ATO</option>
-        <option value='8240'>8240&nbsp;&nbsp;&nbsp;&nbsp;Interest - Chattel Mortgage</option>
-        <option value='8300'>8300&nbsp;&nbsp;&nbsp;&nbsp;Suspense</option>
-      </optgroup>
-      <optgroup label='Employee Expenses'>
-        <option value='0009'>0009&nbsp;&nbsp;&nbsp;&nbsp;Syed's car deduction</option>
-        <option value='6910'>6910&nbsp;&nbsp;&nbsp;&nbsp;Annual Leave</option>
-        <option value='6920'>6920&nbsp;&nbsp;&nbsp;&nbsp;Protective Clothing/Uniforms</option>
-        <option value='6930'>6930&nbsp;&nbsp;&nbsp;&nbsp;Salaries &amp; Wages</option>
-        <option value='6940'>6940&nbsp;&nbsp;&nbsp;&nbsp;Superannuation</option>
-        <option value='6950'>6950&nbsp;&nbsp;&nbsp;&nbsp;Training</option>
-        <option value='6960'>6960&nbsp;&nbsp;&nbsp;&nbsp;WorkCover</option>
-      </optgroup>
-    </select>
-    </div>
-  </td>
-</tr>
-<tr>
-  <td class='label'>Accounts Receivable Account:</td>
-  <td>
-    <div id='_branch[receivables_account]_sel' class='combodiv'><select id='branch[receivables_account]' name='branch[receivables_account]' class='combo2' title=''>
-      <optgroup label='Cash'>
-        <option value='1700'>1700&nbsp;&nbsp;&nbsp;&nbsp;Adv NAB Cheque Account</option>
-        <option value='1701'>1701&nbsp;&nbsp;&nbsp;&nbsp;MSH NAB Cheque Account</option>
-        <option value='1702'>1702&nbsp;&nbsp;&nbsp;&nbsp;Westpac Cheque Account</option>
-        <option value='1703'>1703&nbsp;&nbsp;&nbsp;&nbsp;Cash on Hand</option>
-        <option value='1705'>1705&nbsp;&nbsp;&nbsp;&nbsp;Petty Cash</option>
-        <option value='1706'>1706&nbsp;&nbsp;&nbsp;&nbsp;Mike&#039;s Wallet</option>
-        <option value='1707'>1707&nbsp;&nbsp;&nbsp;&nbsp;Paypal Account</option>
-        <option value='1708'>1708&nbsp;&nbsp;&nbsp;&nbsp;Undeposited Funds</option>
-        <option value='1709'>1709&nbsp;&nbsp;&nbsp;&nbsp;Sol's Wallet</option>
-        <option value='1711'>1711&nbsp;&nbsp;&nbsp;&nbsp;Sam's Wallet</option>
-      </optgroup>
-      <optgroup label='Receivables'>
-        <option value='1510'>1510&nbsp;&nbsp;&nbsp;&nbsp;Employee Advances</option>
-        <option selected value='1800'>1800&nbsp;&nbsp;&nbsp;&nbsp;Accounts receivable</option>
-      </optgroup>
-      <optgroup label='Prepayments'>
-        <option value='1900'>1900&nbsp;&nbsp;&nbsp;&nbsp;Deposits Paid</option>
-        <option value='1910'>1910&nbsp;&nbsp;&nbsp;&nbsp;Prepaid Insurance</option>
-        <option value='1920'>1920&nbsp;&nbsp;&nbsp;&nbsp;Prepaid Workcover</option>
-      </optgroup>
-      <optgroup label='Inventory'>
-        <option value='1200'>1200&nbsp;&nbsp;&nbsp;&nbsp;Inventory</option>
-        <option value='1205'>1205&nbsp;&nbsp;&nbsp;&nbsp;Inventory adjustment</option>
-      </optgroup>
-      <optgroup label='Fixed Assets'>
-        <option value='1010'>1010&nbsp;&nbsp;&nbsp;&nbsp;Furniture & Fixtures at Cost</option>
-        <option value='1011'>1011&nbsp;&nbsp;&nbsp;&nbsp;Furniture & Fixtures Accumulated Depreciation</option>
-        <option value='1020'>1020&nbsp;&nbsp;&nbsp;&nbsp;Office Equipment at Cost</option>
-        <option value='1021'>1021&nbsp;&nbsp;&nbsp;&nbsp;Office Equipment Accumulated Depreciation</option>
-        <option value='1030'>1030&nbsp;&nbsp;&nbsp;&nbsp;Motor Vehicles</option>
-        <option value='1031'>1031&nbsp;&nbsp;&nbsp;&nbsp;Motor Vehicles Accumulated Depreciation</option>
-        <option value='1040'>1040&nbsp;&nbsp;&nbsp;&nbsp;Property, plant, equip.</option>
-        <option value='1041'>1041&nbsp;&nbsp;&nbsp;&nbsp;Plant &amp; Equip Accumulated Depreciation</option>
-        <option value='1050'>1050&nbsp;&nbsp;&nbsp;&nbsp;Goodwill</option>
-      </optgroup>
-      <optgroup label='Credit Cards'>
-        <option value='2100'>2100&nbsp;&nbsp;&nbsp;&nbsp;NAB Mastercard</option>
-        <option value='2200'>2200&nbsp;&nbsp;&nbsp;&nbsp;NAB Visa</option>
-      </optgroup>
-      <optgroup label='Accounts payable'>
-        <option value='20000'>20000&nbsp;&nbsp;&nbsp;&nbsp;Accounts Payable</option>
-        <option value='2300'>2300&nbsp;&nbsp;&nbsp;&nbsp;Sundry Creditors</option>
-      </optgroup>
-      <optgroup label='Tax liabilities'>
-        <option value='2410'>2410&nbsp;&nbsp;&nbsp;&nbsp;PAYG Withheld</option>
-        <option value='2421'>2421&nbsp;&nbsp;&nbsp;&nbsp;GST Collected</option>
-        <option value='2422'>2422&nbsp;&nbsp;&nbsp;&nbsp;Other GST Collected</option>
-        <option value='2430'>2430&nbsp;&nbsp;&nbsp;&nbsp;GST Paid</option>
-        <option value='2431'>2431&nbsp;&nbsp;&nbsp;&nbsp;Other GST Paid</option>
-        <option value='2440'>2440&nbsp;&nbsp;&nbsp;&nbsp;BAS Clearing</option>
-      </optgroup>
-      <optgroup label='Other current liabilities'>
-        <option value='2510'>2510&nbsp;&nbsp;&nbsp;&nbsp;Accrued Superannuation</option>
-        <option value='2520'>2520&nbsp;&nbsp;&nbsp;&nbsp;Provision for Annual Leave</option>
-        <option value='2530'>2530&nbsp;&nbsp;&nbsp;&nbsp;Customer Deposits</option>
-        <option value='2540'>2540&nbsp;&nbsp;&nbsp;&nbsp;Wages Clearing Account</option>
-      </optgroup>
-      <optgroup label='Loans'>
-        <option value='2610'>2610&nbsp;&nbsp;&nbsp;&nbsp;Director&#039;s Loan Account</option>
-        <option value='2611'>2611&nbsp;&nbsp;&nbsp;&nbsp;Mike's Director's Loan</option>
-        <option value='2612'>2612&nbsp;&nbsp;&nbsp;&nbsp;Sam's Director's Loan</option>
-        <option value='2613'>2613&nbsp;&nbsp;&nbsp;&nbsp;Sol's Director's Loan</option>
-        <option value='2621'>2621&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s HSBC Visa</option>
-        <option value='2622'>2622&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s Line of Credit</option>
-        <option value='2623'>2623&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s ANZ Mastercard</option>
-        <option value='2624'>2624&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s CBA Mastercard</option>
-        <option value='2625'>2625&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s Personal Loan</option>
-        <option value='2700'>2700&nbsp;&nbsp;&nbsp;&nbsp;Van Loan</option>
-        <option value='2750'>2750&nbsp;&nbsp;&nbsp;&nbsp;Mortgage on Fiat Van</option>
-        <option value='2751'>2751&nbsp;&nbsp;&nbsp;&nbsp;Less: Unexpired Interest on Mortgage</option>
-        <option value='2800'>2800&nbsp;&nbsp;&nbsp;&nbsp;Establishment Loan</option>
-        <option value='2900'>2900&nbsp;&nbsp;&nbsp;&nbsp;Advanced Super Investments Pty Ltd</option>
-      </optgroup>
-      <optgroup label='Equity'>
-        <option value='3100'>3100&nbsp;&nbsp;&nbsp;&nbsp;Owners Capital</option>
-        <option value='3200'>3200&nbsp;&nbsp;&nbsp;&nbsp;Director&#039;s Drawings</option>
-        <option value='3210'>3210&nbsp;&nbsp;&nbsp;&nbsp;Mike's Drawings</option>
-        <option value='3300'>3300&nbsp;&nbsp;&nbsp;&nbsp;Current Year Profit/Loss</option>
-        <option value='3400'>3400&nbsp;&nbsp;&nbsp;&nbsp;Retained Earnings</option>
-        <option value='3500'>3500&nbsp;&nbsp;&nbsp;&nbsp;Historical Balancing</option>
-        <option value='3600'>3600&nbsp;&nbsp;&nbsp;&nbsp;Suspense</option>
-      </optgroup>
-      <optgroup label='Sales Income'>
-        <option value='4010'>4010&nbsp;&nbsp;&nbsp;&nbsp;Retail Sales</option>
-        <option value='4050'>4050&nbsp;&nbsp;&nbsp;&nbsp;Web Sales</option>
-        <option value='4110'>4110&nbsp;&nbsp;&nbsp;&nbsp;Export Sales</option>
-        <option value='4111'>4111&nbsp;&nbsp;&nbsp;&nbsp;Custom Sign Sales</option>
-        <option value='4112'>4112&nbsp;&nbsp;&nbsp;&nbsp;Installation Income</option>
-        <option value='4150'>4150&nbsp;&nbsp;&nbsp;&nbsp;Freight Collected</option>
-        <option value='4151'>4151&nbsp;&nbsp;&nbsp;&nbsp;Equipment Rental</option>
-        <option value='4152'>4152&nbsp;&nbsp;&nbsp;&nbsp;Line Marking</option>
-        <option value='4160'>4160&nbsp;&nbsp;&nbsp;&nbsp;Restocking Fees</option>
-        <option value='4170'>4170&nbsp;&nbsp;&nbsp;&nbsp;Sales - Motor Sprot Heaven</option>
-        <option value='4180'>4180&nbsp;&nbsp;&nbsp;&nbsp;Miscellaneous Income</option>
-        <option value='4190'>4190&nbsp;&nbsp;&nbsp;&nbsp;AMEX Fees Collected</option>
-      </optgroup>
-      <optgroup label='Other income'>
-        <option value='7010'>7010&nbsp;&nbsp;&nbsp;&nbsp;Interest Income</option>
-        <option value='7020'>7020&nbsp;&nbsp;&nbsp;&nbsp;Rental Income</option>
-        <option value='7030'>7030&nbsp;&nbsp;&nbsp;&nbsp;Other Income</option>
-        <option value='7040'>7040&nbsp;&nbsp;&nbsp;&nbsp;Government Payments</option>
-      </optgroup>
-      <optgroup label='Cost of Goods Sold'>
-        <option value='5040'>5040&nbsp;&nbsp;&nbsp;&nbsp;Materials &amp; Supplies</option>
-        <option value='5050'>5050&nbsp;&nbsp;&nbsp;&nbsp;Cost of Goods Sold</option>
-        <option value='5060'>5060&nbsp;&nbsp;&nbsp;&nbsp;Linemarking Subcontractors</option>
-        <option value='5070'>5070&nbsp;&nbsp;&nbsp;&nbsp;Installation Subcontractors</option>
-        <option value='5080'>5080&nbsp;&nbsp;&nbsp;&nbsp;Shipping</option>
-        <option value='5090'>5090&nbsp;&nbsp;&nbsp;&nbsp;Sales Discounts</option>
-        <option value='5110'>5110&nbsp;&nbsp;&nbsp;&nbsp;Assembly Costs</option>
-        <option value='6095'>6095&nbsp;&nbsp;&nbsp;&nbsp;Early payment discounts (sales)</option>
-      </optgroup>
-      <optgroup label='Expenses'>
-        <option value='6050'>6050&nbsp;&nbsp;&nbsp;&nbsp;Exchange variance</option>
-        <option value='6060'>6060&nbsp;&nbsp;&nbsp;&nbsp;Accounting Fees</option>
-        <option value='6070'>6070&nbsp;&nbsp;&nbsp;&nbsp;Advertising</option>
-        <option value='6080'>6080&nbsp;&nbsp;&nbsp;&nbsp;Bad Debts</option>
-        <option value='6120'>6120&nbsp;&nbsp;&nbsp;&nbsp;Bank Fees</option>
-        <option value='6125'>6125&nbsp;&nbsp;&nbsp;&nbsp;Books and Publications</option>
-        <option value='6130'>6130&nbsp;&nbsp;&nbsp;&nbsp;Bookkeeping</option>
-        <option value='6131'>6131&nbsp;&nbsp;&nbsp;&nbsp;Cleaning &amp; Waste Removal</option>
-        <option value='6132'>6132&nbsp;&nbsp;&nbsp;&nbsp;Computers - Maintenance and Supplies</option>
-        <option value='6133'>6133&nbsp;&nbsp;&nbsp;&nbsp;Debt Collection Costs</option>
-        <option value='6134'>6134&nbsp;&nbsp;&nbsp;&nbsp;Depreciation</option>
-        <option value='6140'>6140&nbsp;&nbsp;&nbsp;&nbsp;Donations</option>
-        <option value='6150'>6150&nbsp;&nbsp;&nbsp;&nbsp;Discounts Received</option>
-        <option value='6160'>6160&nbsp;&nbsp;&nbsp;&nbsp;Dues and Subscriptions</option>
-        <option value='6170'>6170&nbsp;&nbsp;&nbsp;&nbsp;Entertainment/Client Gifts</option>
-        <option value='6180'>6180&nbsp;&nbsp;&nbsp;&nbsp;Equipment Hire</option>
-        <option value='6190'>6190&nbsp;&nbsp;&nbsp;&nbsp;Filing Fees</option>
-        <option value='6200'>6200&nbsp;&nbsp;&nbsp;&nbsp;Fines &amp; Penalties</option>
-        <option value='6205'>6205&nbsp;&nbsp;&nbsp;&nbsp;Fines - not tax deductable</option>
-        <option value='6207'>6207&nbsp;&nbsp;&nbsp;&nbsp;Freight paid on Purchases</option>
-        <option value='6210'>6210&nbsp;&nbsp;&nbsp;&nbsp;Insurance (non-vehicle)</option>
-        <option value='6220'>6220&nbsp;&nbsp;&nbsp;&nbsp;Insurance - WorkCover</option>
-        <option value='6250'>6250&nbsp;&nbsp;&nbsp;&nbsp;Leases - Equipment</option>
-        <option value='6260'>6260&nbsp;&nbsp;&nbsp;&nbsp;Legal Fees</option>
-        <option value='6270'>6270&nbsp;&nbsp;&nbsp;&nbsp;Merchant Fees - General</option>
-        <option value='6280'>6280&nbsp;&nbsp;&nbsp;&nbsp;Merchant Fees - Ebay</option>
-        <option value='6550'>6550&nbsp;&nbsp;&nbsp;&nbsp;Office Supplies/Stationery</option>
-        <option value='6560'>6560&nbsp;&nbsp;&nbsp;&nbsp;Permits etc</option>
-        <option value='6570'>6570&nbsp;&nbsp;&nbsp;&nbsp;Postage</option>
-        <option value='6580'>6580&nbsp;&nbsp;&nbsp;&nbsp;Printing</option>
-        <option value='6590'>6590&nbsp;&nbsp;&nbsp;&nbsp;Professional Fees</option>
-        <option value='6600'>6600&nbsp;&nbsp;&nbsp;&nbsp;Recruitment</option>
-        <option value='6610'>6610&nbsp;&nbsp;&nbsp;&nbsp;Samples/Product Development</option>
-        <option value='6620'>6620&nbsp;&nbsp;&nbsp;&nbsp;Shop Set-Up</option>
-        <option value='6630'>6630&nbsp;&nbsp;&nbsp;&nbsp;Small Capital Items</option>
-        <option value='6640'>6640&nbsp;&nbsp;&nbsp;&nbsp;Staff Amenities/Medical</option>
-        <option value='6650'>6650&nbsp;&nbsp;&nbsp;&nbsp;Tool Replacements</option>
-        <option value='6660'>6660&nbsp;&nbsp;&nbsp;&nbsp;Website/Online Shop Expenses</option>
-      </optgroup>
-      <optgroup label='Occupancy Costs'>
-        <option value='6400'>6400&nbsp;&nbsp;&nbsp;&nbsp;Gas</option>
-        <option value='6401'>6401&nbsp;&nbsp;&nbsp;&nbsp;Cleaning &amp; Waste Removal</option>
-        <option value='6405'>6405&nbsp;&nbsp;&nbsp;&nbsp;Electricity</option>
-        <option value='6406'>6406&nbsp;&nbsp;&nbsp;&nbsp;Home Office Rent</option>
-        <option value='6407'>6407&nbsp;&nbsp;&nbsp;&nbsp;Rates &amp; Taxes</option>
-        <option value='6408'>6408&nbsp;&nbsp;&nbsp;&nbsp;Rent</option>
-        <option value='6409'>6409&nbsp;&nbsp;&nbsp;&nbsp;Repairs &amp; Maintenance</option>
-        <option value='6410'>6410&nbsp;&nbsp;&nbsp;&nbsp;Water</option>
-      </optgroup>
-      <optgroup label='Motor Vehicle'>
-        <option value='6710'>6710&nbsp;&nbsp;&nbsp;&nbsp;Gas/Petrol/Oil</option>
-        <option value='6720'>6720&nbsp;&nbsp;&nbsp;&nbsp;Registration &amp; Insurance</option>
-        <option value='6730'>6730&nbsp;&nbsp;&nbsp;&nbsp;Vehicle Maintenance/Servicing</option>
-      </optgroup>
-      <optgroup label='Telephone/Internet'>
-        <option value='6340'>6340&nbsp;&nbsp;&nbsp;&nbsp;Fax</option>
-        <option value='6341'>6341&nbsp;&nbsp;&nbsp;&nbsp;Telephone: Mobile</option>
-        <option value='6342'>6342&nbsp;&nbsp;&nbsp;&nbsp;Telephone: Office</option>
-        <option value='6343'>6343&nbsp;&nbsp;&nbsp;&nbsp;Telephone: VOIP</option>
-        <option value='6355'>6355&nbsp;&nbsp;&nbsp;&nbsp;Internet</option>
-      </optgroup>
-      <optgroup label='Rental Flat Costs'>
-        <option value='6810'>6810&nbsp;&nbsp;&nbsp;&nbsp;Rental Agent Commission</option>
-        <option value='6820'>6820&nbsp;&nbsp;&nbsp;&nbsp;Repairs &amp; Maint to Flat</option>
-      </optgroup>
-      <optgroup label='Travel Expenses'>
-        <option value='6830'>6830&nbsp;&nbsp;&nbsp;&nbsp;Parking</option>
-        <option value='6840'>6840&nbsp;&nbsp;&nbsp;&nbsp;Tolls</option>
-        <option value='6850'>6850&nbsp;&nbsp;&nbsp;&nbsp;Travel Allowances</option>
-      </optgroup>
-      <optgroup label='Other Expenses'>
-        <option value='8100'>8100&nbsp;&nbsp;&nbsp;&nbsp;Income Tax Expense</option>
-        <option value='8210'>8210&nbsp;&nbsp;&nbsp;&nbsp;Interest - Bank</option>
-        <option value='8220'>8220&nbsp;&nbsp;&nbsp;&nbsp;Interest - Credit Card</option>
-        <option value='8230'>8230&nbsp;&nbsp;&nbsp;&nbsp;Interest - ATO</option>
-        <option value='8240'>8240&nbsp;&nbsp;&nbsp;&nbsp;Interest - Chattel Mortgage</option>
-        <option value='8300'>8300&nbsp;&nbsp;&nbsp;&nbsp;Suspense</option>
-      </optgroup>
-      <optgroup label='Employee Expenses'>
-        <option value='0009'>0009&nbsp;&nbsp;&nbsp;&nbsp;Syed's car deduction</option>
-        <option value='6910'>6910&nbsp;&nbsp;&nbsp;&nbsp;Annual Leave</option>
-        <option value='6920'>6920&nbsp;&nbsp;&nbsp;&nbsp;Protective Clothing/Uniforms</option>
-        <option value='6930'>6930&nbsp;&nbsp;&nbsp;&nbsp;Salaries &amp; Wages</option>
-        <option value='6940'>6940&nbsp;&nbsp;&nbsp;&nbsp;Superannuation</option>
-        <option value='6950'>6950&nbsp;&nbsp;&nbsp;&nbsp;Training</option>
-        <option value='6960'>6960&nbsp;&nbsp;&nbsp;&nbsp;WorkCover</option>
-      </optgroup>
-    </select>
-    </div>
-  </td>
-</tr>
-<tr>
-  <td class='label'>Prompt Payment Discount Account:</td>
-  <td>
-    <div id='_branch[payment_discount_account]_sel' class='combodiv'><select id='branch[payment_discount_account]' name='branch[payment_discount_account]' class='combo2' title=''>
-      <optgroup label='Cash'>
-        <option value='1700'>1700&nbsp;&nbsp;&nbsp;&nbsp;Adv NAB Cheque Account</option>
-        <option value='1701'>1701&nbsp;&nbsp;&nbsp;&nbsp;MSH NAB Cheque Account</option>
-        <option value='1702'>1702&nbsp;&nbsp;&nbsp;&nbsp;Westpac Cheque Account</option>
-        <option value='1703'>1703&nbsp;&nbsp;&nbsp;&nbsp;Cash on Hand</option>
-        <option value='1705'>1705&nbsp;&nbsp;&nbsp;&nbsp;Petty Cash</option>
-        <option value='1706'>1706&nbsp;&nbsp;&nbsp;&nbsp;Mike&#039;s Wallet</option>
-        <option value='1707'>1707&nbsp;&nbsp;&nbsp;&nbsp;Paypal Account</option>
-        <option value='1708'>1708&nbsp;&nbsp;&nbsp;&nbsp;Undeposited Funds</option>
-        <option value='1709'>1709&nbsp;&nbsp;&nbsp;&nbsp;Sol's Wallet</option>
-        <option value='1711'>1711&nbsp;&nbsp;&nbsp;&nbsp;Sam's Wallet</option>
-      </optgroup>
-      <optgroup label='Receivables'>
-        <option value='1510'>1510&nbsp;&nbsp;&nbsp;&nbsp;Employee Advances</option>
-        <option value='1800'>1800&nbsp;&nbsp;&nbsp;&nbsp;Accounts receivable</option>
-      </optgroup>
-      <optgroup label='Prepayments'>
-        <option value='1900'>1900&nbsp;&nbsp;&nbsp;&nbsp;Deposits Paid</option>
-        <option value='1910'>1910&nbsp;&nbsp;&nbsp;&nbsp;Prepaid Insurance</option>
-        <option value='1920'>1920&nbsp;&nbsp;&nbsp;&nbsp;Prepaid Workcover</option>
-      </optgroup>
-      <optgroup label='Inventory'>
-        <option value='1200'>1200&nbsp;&nbsp;&nbsp;&nbsp;Inventory</option>
-        <option value='1205'>1205&nbsp;&nbsp;&nbsp;&nbsp;Inventory adjustment</option>
-      </optgroup>
-      <optgroup label='Fixed Assets'>
-        <option value='1010'>1010&nbsp;&nbsp;&nbsp;&nbsp;Furniture & Fixtures at Cost</option>
-        <option value='1011'>1011&nbsp;&nbsp;&nbsp;&nbsp;Furniture & Fixtures Accumulated Depreciation</option>
-        <option value='1020'>1020&nbsp;&nbsp;&nbsp;&nbsp;Office Equipment at Cost</option>
-        <option value='1021'>1021&nbsp;&nbsp;&nbsp;&nbsp;Office Equipment Accumulated Depreciation</option>
-        <option value='1030'>1030&nbsp;&nbsp;&nbsp;&nbsp;Motor Vehicles</option>
-        <option value='1031'>1031&nbsp;&nbsp;&nbsp;&nbsp;Motor Vehicles Accumulated Depreciation</option>
-        <option value='1040'>1040&nbsp;&nbsp;&nbsp;&nbsp;Property, plant, equip.</option>
-        <option value='1041'>1041&nbsp;&nbsp;&nbsp;&nbsp;Plant &amp; Equip Accumulated Depreciation</option>
-        <option value='1050'>1050&nbsp;&nbsp;&nbsp;&nbsp;Goodwill</option>
-      </optgroup>
-      <optgroup label='Credit Cards'>
-        <option value='2100'>2100&nbsp;&nbsp;&nbsp;&nbsp;NAB Mastercard</option>
-        <option value='2200'>2200&nbsp;&nbsp;&nbsp;&nbsp;NAB Visa</option>
-      </optgroup>
-      <optgroup label='Accounts payable'>
-        <option value='20000'>20000&nbsp;&nbsp;&nbsp;&nbsp;Accounts Payable</option>
-        <option value='2300'>2300&nbsp;&nbsp;&nbsp;&nbsp;Sundry Creditors</option>
-      </optgroup>
-      <optgroup label='Tax liabilities'>
-        <option value='2410'>2410&nbsp;&nbsp;&nbsp;&nbsp;PAYG Withheld</option>
-        <option value='2421'>2421&nbsp;&nbsp;&nbsp;&nbsp;GST Collected</option>
-        <option value='2422'>2422&nbsp;&nbsp;&nbsp;&nbsp;Other GST Collected</option>
-        <option value='2430'>2430&nbsp;&nbsp;&nbsp;&nbsp;GST Paid</option>
-        <option value='2431'>2431&nbsp;&nbsp;&nbsp;&nbsp;Other GST Paid</option>
-        <option value='2440'>2440&nbsp;&nbsp;&nbsp;&nbsp;BAS Clearing</option>
-      </optgroup>
-      <optgroup label='Other current liabilities'>
-        <option value='2510'>2510&nbsp;&nbsp;&nbsp;&nbsp;Accrued Superannuation</option>
-        <option value='2520'>2520&nbsp;&nbsp;&nbsp;&nbsp;Provision for Annual Leave</option>
-        <option value='2530'>2530&nbsp;&nbsp;&nbsp;&nbsp;Customer Deposits</option>
-        <option value='2540'>2540&nbsp;&nbsp;&nbsp;&nbsp;Wages Clearing Account</option>
-      </optgroup>
-      <optgroup label='Loans'>
-        <option value='2610'>2610&nbsp;&nbsp;&nbsp;&nbsp;Director&#039;s Loan Account</option>
-        <option value='2611'>2611&nbsp;&nbsp;&nbsp;&nbsp;Mike's Director's Loan</option>
-        <option value='2612'>2612&nbsp;&nbsp;&nbsp;&nbsp;Sam's Director's Loan</option>
-        <option value='2613'>2613&nbsp;&nbsp;&nbsp;&nbsp;Sol's Director's Loan</option>
-        <option value='2621'>2621&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s HSBC Visa</option>
-        <option value='2622'>2622&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s Line of Credit</option>
-        <option value='2623'>2623&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s ANZ Mastercard</option>
-        <option value='2624'>2624&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s CBA Mastercard</option>
-        <option value='2625'>2625&nbsp;&nbsp;&nbsp;&nbsp;Katie&#039;s Personal Loan</option>
-        <option value='2700'>2700&nbsp;&nbsp;&nbsp;&nbsp;Van Loan</option>
-        <option value='2750'>2750&nbsp;&nbsp;&nbsp;&nbsp;Mortgage on Fiat Van</option>
-        <option value='2751'>2751&nbsp;&nbsp;&nbsp;&nbsp;Less: Unexpired Interest on Mortgage</option>
-        <option value='2800'>2800&nbsp;&nbsp;&nbsp;&nbsp;Establishment Loan</option>
-        <option value='2900'>2900&nbsp;&nbsp;&nbsp;&nbsp;Advanced Super Investments Pty Ltd</option>
-      </optgroup>
-      <optgroup label='Equity'>
-        <option value='3100'>3100&nbsp;&nbsp;&nbsp;&nbsp;Owners Capital</option>
-        <option value='3200'>3200&nbsp;&nbsp;&nbsp;&nbsp;Director&#039;s Drawings</option>
-        <option value='3210'>3210&nbsp;&nbsp;&nbsp;&nbsp;Mike's Drawings</option>
-        <option value='3300'>3300&nbsp;&nbsp;&nbsp;&nbsp;Current Year Profit/Loss</option>
-        <option value='3400'>3400&nbsp;&nbsp;&nbsp;&nbsp;Retained Earnings</option>
-        <option value='3500'>3500&nbsp;&nbsp;&nbsp;&nbsp;Historical Balancing</option>
-        <option value='3600'>3600&nbsp;&nbsp;&nbsp;&nbsp;Suspense</option>
-      </optgroup>
-      <optgroup label='Sales Income'>
-        <option value='4010'>4010&nbsp;&nbsp;&nbsp;&nbsp;Retail Sales</option>
-        <option value='4050'>4050&nbsp;&nbsp;&nbsp;&nbsp;Web Sales</option>
-        <option value='4110'>4110&nbsp;&nbsp;&nbsp;&nbsp;Export Sales</option>
-        <option value='4111'>4111&nbsp;&nbsp;&nbsp;&nbsp;Custom Sign Sales</option>
-        <option value='4112'>4112&nbsp;&nbsp;&nbsp;&nbsp;Installation Income</option>
-        <option value='4150'>4150&nbsp;&nbsp;&nbsp;&nbsp;Freight Collected</option>
-        <option value='4151'>4151&nbsp;&nbsp;&nbsp;&nbsp;Equipment Rental</option>
-        <option value='4152'>4152&nbsp;&nbsp;&nbsp;&nbsp;Line Marking</option>
-        <option value='4160'>4160&nbsp;&nbsp;&nbsp;&nbsp;Restocking Fees</option>
-        <option value='4170'>4170&nbsp;&nbsp;&nbsp;&nbsp;Sales - Motor Sprot Heaven</option>
-        <option value='4180'>4180&nbsp;&nbsp;&nbsp;&nbsp;Miscellaneous Income</option>
-        <option value='4190'>4190&nbsp;&nbsp;&nbsp;&nbsp;AMEX Fees Collected</option>
-      </optgroup>
-      <optgroup label='Other income'>
-        <option value='7010'>7010&nbsp;&nbsp;&nbsp;&nbsp;Interest Income</option>
-        <option value='7020'>7020&nbsp;&nbsp;&nbsp;&nbsp;Rental Income</option>
-        <option value='7030'>7030&nbsp;&nbsp;&nbsp;&nbsp;Other Income</option>
-        <option value='7040'>7040&nbsp;&nbsp;&nbsp;&nbsp;Government Payments</option>
-      </optgroup>
-      <optgroup label='Cost of Goods Sold'>
-        <option value='5040'>5040&nbsp;&nbsp;&nbsp;&nbsp;Materials &amp; Supplies</option>
-        <option value='5050'>5050&nbsp;&nbsp;&nbsp;&nbsp;Cost of Goods Sold</option>
-        <option value='5060'>5060&nbsp;&nbsp;&nbsp;&nbsp;Linemarking Subcontractors</option>
-        <option value='5070'>5070&nbsp;&nbsp;&nbsp;&nbsp;Installation Subcontractors</option>
-        <option value='5080'>5080&nbsp;&nbsp;&nbsp;&nbsp;Shipping</option>
-        <option value='5090'>5090&nbsp;&nbsp;&nbsp;&nbsp;Sales Discounts</option>
-        <option value='5110'>5110&nbsp;&nbsp;&nbsp;&nbsp;Assembly Costs</option>
-        <option selected value='6095'>6095&nbsp;&nbsp;&nbsp;&nbsp;Early payment discounts (sales)</option>
-      </optgroup>
-      <optgroup label='Expenses'>
-        <option value='6050'>6050&nbsp;&nbsp;&nbsp;&nbsp;Exchange variance</option>
-        <option value='6060'>6060&nbsp;&nbsp;&nbsp;&nbsp;Accounting Fees</option>
-        <option value='6070'>6070&nbsp;&nbsp;&nbsp;&nbsp;Advertising</option>
-        <option value='6080'>6080&nbsp;&nbsp;&nbsp;&nbsp;Bad Debts</option>
-        <option value='6120'>6120&nbsp;&nbsp;&nbsp;&nbsp;Bank Fees</option>
-        <option value='6125'>6125&nbsp;&nbsp;&nbsp;&nbsp;Books and Publications</option>
-        <option value='6130'>6130&nbsp;&nbsp;&nbsp;&nbsp;Bookkeeping</option>
-        <option value='6131'>6131&nbsp;&nbsp;&nbsp;&nbsp;Cleaning &amp; Waste Removal</option>
-        <option value='6132'>6132&nbsp;&nbsp;&nbsp;&nbsp;Computers - Maintenance and Supplies</option>
-        <option value='6133'>6133&nbsp;&nbsp;&nbsp;&nbsp;Debt Collection Costs</option>
-        <option value='6134'>6134&nbsp;&nbsp;&nbsp;&nbsp;Depreciation</option>
-        <option value='6140'>6140&nbsp;&nbsp;&nbsp;&nbsp;Donations</option>
-        <option value='6150'>6150&nbsp;&nbsp;&nbsp;&nbsp;Discounts Received</option>
-        <option value='6160'>6160&nbsp;&nbsp;&nbsp;&nbsp;Dues and Subscriptions</option>
-        <option value='6170'>6170&nbsp;&nbsp;&nbsp;&nbsp;Entertainment/Client Gifts</option>
-        <option value='6180'>6180&nbsp;&nbsp;&nbsp;&nbsp;Equipment Hire</option>
-        <option value='6190'>6190&nbsp;&nbsp;&nbsp;&nbsp;Filing Fees</option>
-        <option value='6200'>6200&nbsp;&nbsp;&nbsp;&nbsp;Fines &amp; Penalties</option>
-        <option value='6205'>6205&nbsp;&nbsp;&nbsp;&nbsp;Fines - not tax deductable</option>
-        <option value='6207'>6207&nbsp;&nbsp;&nbsp;&nbsp;Freight paid on Purchases</option>
-        <option value='6210'>6210&nbsp;&nbsp;&nbsp;&nbsp;Insurance (non-vehicle)</option>
-        <option value='6220'>6220&nbsp;&nbsp;&nbsp;&nbsp;Insurance - WorkCover</option>
-        <option value='6250'>6250&nbsp;&nbsp;&nbsp;&nbsp;Leases - Equipment</option>
-        <option value='6260'>6260&nbsp;&nbsp;&nbsp;&nbsp;Legal Fees</option>
-        <option value='6270'>6270&nbsp;&nbsp;&nbsp;&nbsp;Merchant Fees - General</option>
-        <option value='6280'>6280&nbsp;&nbsp;&nbsp;&nbsp;Merchant Fees - Ebay</option>
-        <option value='6550'>6550&nbsp;&nbsp;&nbsp;&nbsp;Office Supplies/Stationery</option>
-        <option value='6560'>6560&nbsp;&nbsp;&nbsp;&nbsp;Permits etc</option>
-        <option value='6570'>6570&nbsp;&nbsp;&nbsp;&nbsp;Postage</option>
-        <option value='6580'>6580&nbsp;&nbsp;&nbsp;&nbsp;Printing</option>
-        <option value='6590'>6590&nbsp;&nbsp;&nbsp;&nbsp;Professional Fees</option>
-        <option value='6600'>6600&nbsp;&nbsp;&nbsp;&nbsp;Recruitment</option>
-        <option value='6610'>6610&nbsp;&nbsp;&nbsp;&nbsp;Samples/Product Development</option>
-        <option value='6620'>6620&nbsp;&nbsp;&nbsp;&nbsp;Shop Set-Up</option>
-        <option value='6630'>6630&nbsp;&nbsp;&nbsp;&nbsp;Small Capital Items</option>
-        <option value='6640'>6640&nbsp;&nbsp;&nbsp;&nbsp;Staff Amenities/Medical</option>
-        <option value='6650'>6650&nbsp;&nbsp;&nbsp;&nbsp;Tool Replacements</option>
-        <option value='6660'>6660&nbsp;&nbsp;&nbsp;&nbsp;Website/Online Shop Expenses</option>
-      </optgroup>
-      <optgroup label='Occupancy Costs'>
-        <option value='6400'>6400&nbsp;&nbsp;&nbsp;&nbsp;Gas</option>
-        <option value='6401'>6401&nbsp;&nbsp;&nbsp;&nbsp;Cleaning &amp; Waste Removal</option>
-        <option value='6405'>6405&nbsp;&nbsp;&nbsp;&nbsp;Electricity</option>
-        <option value='6406'>6406&nbsp;&nbsp;&nbsp;&nbsp;Home Office Rent</option>
-        <option value='6407'>6407&nbsp;&nbsp;&nbsp;&nbsp;Rates &amp; Taxes</option>
-        <option value='6408'>6408&nbsp;&nbsp;&nbsp;&nbsp;Rent</option>
-        <option value='6409'>6409&nbsp;&nbsp;&nbsp;&nbsp;Repairs &amp; Maintenance</option>
-        <option value='6410'>6410&nbsp;&nbsp;&nbsp;&nbsp;Water</option>
-      </optgroup>
-      <optgroup label='Motor Vehicle'>
-        <option value='6710'>6710&nbsp;&nbsp;&nbsp;&nbsp;Gas/Petrol/Oil</option>
-        <option value='6720'>6720&nbsp;&nbsp;&nbsp;&nbsp;Registration &amp; Insurance</option>
-        <option value='6730'>6730&nbsp;&nbsp;&nbsp;&nbsp;Vehicle Maintenance/Servicing</option>
-      </optgroup>
-      <optgroup label='Telephone/Internet'>
-        <option value='6340'>6340&nbsp;&nbsp;&nbsp;&nbsp;Fax</option>
-        <option value='6341'>6341&nbsp;&nbsp;&nbsp;&nbsp;Telephone: Mobile</option>
-        <option value='6342'>6342&nbsp;&nbsp;&nbsp;&nbsp;Telephone: Office</option>
-        <option value='6343'>6343&nbsp;&nbsp;&nbsp;&nbsp;Telephone: VOIP</option>
-        <option value='6355'>6355&nbsp;&nbsp;&nbsp;&nbsp;Internet</option>
-      </optgroup>
-      <optgroup label='Rental Flat Costs'>
-        <option value='6810'>6810&nbsp;&nbsp;&nbsp;&nbsp;Rental Agent Commission</option>
-        <option value='6820'>6820&nbsp;&nbsp;&nbsp;&nbsp;Repairs &amp; Maint to Flat</option>
-      </optgroup>
-      <optgroup label='Travel Expenses'>
-        <option value='6830'>6830&nbsp;&nbsp;&nbsp;&nbsp;Parking</option>
-        <option value='6840'>6840&nbsp;&nbsp;&nbsp;&nbsp;Tolls</option>
-        <option value='6850'>6850&nbsp;&nbsp;&nbsp;&nbsp;Travel Allowances</option>
-      </optgroup>
-      <optgroup label='Other Expenses'>
-        <option value='8100'>8100&nbsp;&nbsp;&nbsp;&nbsp;Income Tax Expense</option>
-        <option value='8210'>8210&nbsp;&nbsp;&nbsp;&nbsp;Interest - Bank</option>
-        <option value='8220'>8220&nbsp;&nbsp;&nbsp;&nbsp;Interest - Credit Card</option>
-        <option value='8230'>8230&nbsp;&nbsp;&nbsp;&nbsp;Interest - ATO</option>
-        <option value='8240'>8240&nbsp;&nbsp;&nbsp;&nbsp;Interest - Chattel Mortgage</option>
-        <option value='8300'>8300&nbsp;&nbsp;&nbsp;&nbsp;Suspense</option>
-      </optgroup>
-      <optgroup label='Employee Expenses'>
-        <option value='0009'>0009&nbsp;&nbsp;&nbsp;&nbsp;Syed's car deduction</option>
-        <option value='6910'>6910&nbsp;&nbsp;&nbsp;&nbsp;Annual Leave</option>
-        <option value='6920'>6920&nbsp;&nbsp;&nbsp;&nbsp;Protective Clothing/Uniforms</option>
-        <option value='6930'>6930&nbsp;&nbsp;&nbsp;&nbsp;Salaries &amp; Wages</option>
-        <option value='6940'>6940&nbsp;&nbsp;&nbsp;&nbsp;Superannuation</option>
-        <option value='6950'>6950&nbsp;&nbsp;&nbsp;&nbsp;Training</option>
-        <option value='6960'>6960&nbsp;&nbsp;&nbsp;&nbsp;WorkCover</option>
-      </optgroup>
-    </select>
-    </div>
-  </td>
-</tr>
-<tr class='tablehead'>
-  <td colspan=2 class='tablehead'>Notes</td>
-</tr>
-<tr>
-  <td class='label'><label for='branch[notes]'>General Notes:</label></td>
-  <td><textarea id='branch[notes]' name='branch[notes]' cols='37' rows='4'></textarea></td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-</div>
-<br></div>
-<div id="tabs0-4" class="ui-tabs-hide">
-  <div id='invoiceFrame' data-src='/sales/inquiry/customer_allocation_inquiry.php?debtor_id=0'></div>
-</div>
-<input type='hidden' id='frame' name='frame' value=''></div>
-<input type='hidden' name='_focus' value='sales_type'></form>
-<div id="contactLog" title="New contact log entry" class="ui-widget-overlay" style="display:none;"><input type='hidden' id='type' name='type' value='1'>
-
-  <div class='center'>
-    <table>
-      <tr>
-        <td class='label'>Date:</td>
-        <td>2012-07-29 02:21:21</td>
-      </tr>
-      <tr>
-        <td class='label'><label for='contact_name'>Contact:</label></td>
-        <td><input type="text" name="contact_name" id="contact_name" size='35' maxlength="40" value=""></td>
-      </tr>
-      <tr>
-        <td class='label'><label for='message'>Entry:</label></td>
-        <td><textarea id='message' name='message' cols='102' rows='10'></textarea></td>
-      </tr>
-    </table>
-  </div>
-</div>
-<div class="center width50">
-  <button id="btnConfirm" name="submit" type="submit" class="ui-helper-hidden" style="margin:10px;">New Customer</button>
-  <button id="btnCancel" name="cancel" type="submit" style="margin:10px;" class="button">Cancel</button>
-</div>
-<div id="shortcuts" class="width50 center">
-  <div class='width90 center ui-tabs ui-widget ui-widget-content ui-corner-all tabs' id='tabs1'>
-    <ul class='ui-tabs-nav
-            ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all'>
-
-      <li class='ui-state-default ui-corner-top'><a title='Create Quote' href="/sales/sales_order_entry.php?type=32&amp;add=32&amp;debtor_id=" data-paramel="id"><span>Create Quote</span></a></li>
-      <li class='ui-state-default ui-corner-top'><a title='Create Order' href="/sales/sales_order_entry.php?type=30&amp;add=30&amp;debtor_id=" data-paramel="id"><span>Create Order</span></a></li>
-      <li class='ui-state-default ui-corner-top'><a title='Print Statement' href="/reporting/prn_redirect.php?REP_ID=108&amp;PARAM_2=0&amp;PARAM_4=0&amp;PARAM_5=0&amp;PARAM_6=0&amp;PARAM_0=" data-paramel="id" data-target="1"><span>Print Statement</span></a></li>
-      <li class='ui-state-default ui-corner-top'><a title='Email Statement' href="#emailTab"><span>Email Statement</span></a></li>
-      <li class='ui-state-default ui-corner-top'><a title='Customer Payment' href="/sales/customer_payments.php?debtor_id=" data-paramel="id"><span>Customer Payment</span></a></li>
-    </ul>
-  </div>
-</div>
-<!-- end page body div -->
-</div>
-<!-- end wrapper div-->
-</div>
-<div id='footer'>
-  <span class='power'><a target='_blank' href='http://www.advancedgroup.com.au'>Advanced Accounting</a></span>
-  <span class='date'>29/07/2012 | 02:21</span>
-  <span> </span>| <span>mem/peak: 3.75 mb/3.75 mb </span><span>|</span><span> load time: 0.053 ms</span>
-  <!-- end footer div-->
-</div>
-<!-- end content div-->
-</div>
-<div id="sidemenu" class="ui-widget-shadow ui-corner-all">
-  <h3><a href="#">Search</a></h3>
-
-  <div id="search">
-    <ul>
-      <li id="orders" data-href="/sales/inquiry/sales_orders_view.php?type=30">Orders/Quotes</li>
-      <li id="invoices" data-href="/sales/inquiry/customer_inquiry.php?">Invoice/Delivery</li>
-      <li id="purchaseOrders" data-href="/purchases/inquiry/po_search_completed.php?">Purchase Order</li>
-      <li id="supplierInvoices" data-href="/purchases/inquiry/supplier_inquiry.php?">Supplier Invoices</li>
-    </ul>
-  </div>
-  <h3><a href="#">Create</a></h3>
-
-  <div>
-    <ul>
-      <li><a href="/sales/sales_order_entry?add=0&amp;type=32">Quote</a></li>
-      <li><a href="/sales/sales_order_entry?add=0&amp;type=30">Order</a></li>
-      <li><a href="/sales/sales_order_entry?add=0&amp;type=10">Direct Invoice</a></li>
-      <li><a href="/purchases/po_entry_items?New=0">Purchase Order</a></li>
-    </ul>
-  </div>
-  <h3><a href="#">Banking</a></h3>
-
-  <div>
-    <ul>
-      <li><a href="/gl/gl_bank?NewPayment=Yes">Payment</a></li>
-      <li><a href="/gl/gl_bank?NewDeposit=Yes">Deposit</a></li>
-      <li><a href="/gl/bank_account_reconcile?">Reconcile</a></li>
-      <li><a href="/gl/undeposited_funds?">Undeposited</a></li>
-    </ul>
-  </div>
-  <h3><a href="#">Customer Search</a></h3>
-
-  <div>
-    <input size="14" id="quickCustomer"/>
-  </div>
-  <h3><a href="#">Supplier Search</a></h3>
-
-  <div>
-    <input size="14" id="quickSupplier"/>
-  </div>
-  <!-- end sidemenu div-->
-</div>
-<script>_focus = 'sales_type';
-_validate = [];</script>
-<script src="/js/libs/JsHttpRequest.js,jquery.min.js,jquery-ui.min.js,jquery-tmpl.min.js,jquery.calc.js"></script>
-<script src="/js/advanced.js,behaviour.js,inserts.js,calc.js,sidemenu.js,company.js"></script>
-<script>var user = {theme:'/themes/default/', loadtxt:'Requesting data...', date:'29/07/2012', datefmt:1, datesep:'1', ts:',', ds:'.', pdec:2};
-$emailBox = $('<div id="emailBox" title="Select Email Address:"></div>)');
-Adv.extend({postcode:(function () {
-  var sets = [];
-  return{add:function (set, city, state, code) {sets[set] = {city:$(document.getElementsByName(city)), state:$(document.getElementsByName(state)), postcode:$(document.getElementsByName(code))}}, fetch:function (data, item, ui) {
-    var set = $(ui).data("set");
-    data = data.value.split('|');
-    sets[set].city.val(data[0]).trigger('change');
-    sets[set].state.val(data[1]).trigger('change');
-    sets[set].postcode.val(data[2]).trigger('change');
-    return false;
-  }}
-}())});
-$(function () {
-  Adv.Events.onload(function () {
-    $emailBox.dialog({"autoOpen":false, "modal":true, "width":500, "resizable":true, "closeOnEscape":true, "height":350, "resizeable":false}).dialog("option", "buttons", [
-      { "text":"Close", click:function () { $(this).dialog("close");}},
-    ]);
-    Adv.Forms.autocomplete('accounts[postcode]', '/contacts/postcode.php?postcode=1', Adv.postcode.fetch);
-    Adv.Forms.autocomplete('accounts[city]', '/contacts/postcode.php?city=1', Adv.postcode.fetch);
-    Adv.Forms.autocomplete('branch[postcode]', '/contacts/postcode.php?postcode=1', Adv.postcode.fetch);
-    Adv.Forms.autocomplete('branch[city]', '/contacts/postcode.php?city=1', Adv.postcode.fetch);
-    Adv.Forms.autocomplete('customer', '/contacts/customers', Company.fetch);
-  }, function () {
-    Adv.o.autocomplete['accounts[postcode]'].autocomplete('destroy');
-    Adv.o.autocomplete['accounts[city]'].autocomplete('destroy');
-    Adv.o.autocomplete['branch[postcode]'].autocomplete('destroy');
-    Adv.o.autocomplete['branch[city]'].autocomplete('destroy');
-    Adv.o.autocomplete['customer'].autocomplete('destroy');
-  });
-  Adv.o.wrapper.delegate('.email-button', 'click', function (e) {
-    var emailID = $(this).data('emailid');
-    $.post('/contacts/emails.php', {type:1, id:emailID}, function (data) {
-      $emailBox.html(data).dialog('open');
-    }, 'html');
-    return false;
-  });
-  Adv.o.tabs[1] = $('#tabs1').tabs({
-    select:function (event, ui) {
-      var $tab = $(ui.tab);
-
-      var param = $('#' + $tab.data('paramel')).val();
-      var url = $.data(ui.tab, 'load.tabs') + param;
-      var target = $tab.data('target');
-      if (url) {
-        if (target) {
-          Adv.openWindow(url, 'Test');
-        } else {
-          location.href = url;
-        }
-
-        return false;
-      }
-
-      return true;
-    }
-  }).toggleClass('tabs');
-  Adv.o.tabs[1].bind('tabsselect', function (e, o) {
-    if (o.index != 3) {
-      return;
-    }
-    return false;
-  });
-  Adv.o.tabs[0] = $('#tabs0').tabs().toggleClass('tabs');
-  Adv.postcode.add('3', 'accounts[city]', 'accounts[state]', 'accounts[postcode]');
-  Adv.postcode.add('1', 'branch[city]', 'branch[state]', 'branch[postcode]');
-  Adv.hoverWindow.init(900, 500);
-  Company.setValues({"company":{"id":0, "name":"", "sales_type":1, "debtor_ref":false, "credit_status":1, "payment_discount":"0", "defaultBranch":0, "defaultContact":0, "branches":[
-    {"post_address":null, "branch_id":0, "br_name":"New Address", "br_address":"", "city":"", "state":"", "postcode":"", "area":1, "br_post_address":null, "debtor_id":0, "branch_ref":"New", "contact_name":"", "default_location":"KEYS", "default_ship_via":1, "disable_trans":0, "phone":"", "phone2":"", "fax":"", "website":"", "email":"", "inactive":0, "notes":"", "group_no":1, "payment_discount_account":"6095", "receivables_account":"1800", "sales_account":"", "sales_discount_account":"5090", "salesman":"5", "tax_group_id":1, "id":0, "name":"New Address", "address":""}
-  ], "contacts":[
-    {"id":0, "contact_id":0, "parent_id":"0", "parent_type":1, "name":"New Contact", "phone1":"", "phone2":"", "email":"", "department":""}
-  ], "accounts":{"accounts_id":0, "br_name":"Accounts Department", "branch_ref":"accounts", "post_address":null, "branch_id":0, "br_address":"", "city":"", "state":"", "postcode":"", "area":1, "br_post_address":null, "debtor_id":0, "contact_name":"", "default_location":"KEYS", "default_ship_via":1, "disable_trans":0, "phone":"", "phone2":"", "fax":"", "website":"", "email":"", "inactive":0, "notes":"", "group_no":1, "payment_discount_account":"6095", "receivables_account":"1800", "sales_account":"", "sales_discount_account":"5090", "salesman":"5", "tax_group_id":1, "id":0, "name":"Accounts Department", "address":""}, "transactions":null, "webid":null, "email":"", "inactive":0, "debtor_id":0, "notes":"", "discount":"0", "address":"", "city":null, "state":null, "postcode":null, "post_address":"", "tax_id":"", "contact_name":null, "credit_limit":"0.00", "dimension_id":0, "dimension2_id":0, "payment_terms":0, "curr_code":"AUD", "emailAddresses":
-    []}});
-  $('sales_type').focus();
-});</script>
-</body>
-</html>

@@ -27,7 +27,7 @@
     protected $Ajax;
     /*** @var Session */
     protected $Session;
-    /*** @var \DB */
+    /*** @var \ADV\Core\DB\DB */
     protected $DB;
     /*** @var \JS */
     protected $JS;

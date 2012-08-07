@@ -16,6 +16,7 @@
 
   class Orders implements \Iterator, \Countable
   {
+
     /** @var */
     protected $data = array();
     /**
@@ -94,7 +95,6 @@
         \Event::warning('Could not retrieve web orders');
       }
       $this->XML = $result;
-
       return $result;
     }
     /**
@@ -109,7 +109,6 @@
       if (isset($this->data[$this->idcolumn])) {
         $this->data = array($this->data);
       }
-
       return true;
     }
     /**
@@ -118,7 +117,6 @@
     public function process() {
       if (!$this->data) {
         $this->status = "No new web orders";
-
         return false;
       }
       $this->save();
@@ -132,7 +130,6 @@
           }
         }
       }
-
       return true;
     }
     /**
@@ -144,8 +141,8 @@
       if ($exists) {
         //			echo $this->_classname . ' already exists, updating changes<br>';
         try {
+          $current['ison_jobsboard'] = null;
           \DB::update($this->table)->values($current)->where($this->idcolumn . '=', $current[$this->idcolumn])->exec();
-
           return 'Updated ' . $this->_classname . ' ' . $current[$this->idcolumn];
         }
         catch (\DBUpdateException $e) {
@@ -158,17 +155,15 @@
         echo $this->_classname . ' doesn\'t exist, adding<br>';
         try {
           \DB::insert($this->table)->values($current)->exec();
-
           return 'Inserted ' . $this->_classname . ' ' . $current[$this->idcolumn];
         }
         catch (\DBInsertException $e) {
           return 'Could not insert ' . $this->_classname;
         }
-        catch (\DBDuplicateException $e) {
+        catch (DBDuplicateException $e) {
           return 'Could not insert ' . $this->_classname . ' ' . $current[$this->idcolumn] . ' it already exists!';
         }
       }
-
       return false;
     }
     /**
@@ -178,7 +173,6 @@
       $current = $this->current();
       $results = \DB::select($this->idcolumn)->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])
         ->fetch()->one();
-
       return (count($results) > 0) ? $results[$this->idcolumn] : false;
     }
     public function next() {
@@ -198,7 +192,6 @@
       if (!$this->valid()) {
         return false;
       }
-
       return $this->data[$this->current];
     }
     /**
@@ -241,7 +234,6 @@
      */
     public function count() {
       $this->data = $this->data ? : array();
-
       return count($this->data);
     }
   }
@@ -251,6 +243,7 @@
    */
   class OrderDetails extends Orders implements \Iterator, \Countable
   {
+
     /**
      * @var OrderOptions
      */
@@ -296,7 +289,6 @@
       if (!$this->valid()) {
         return false;
       }
-
       return $this->data[$this->current];
     }
     /**
@@ -312,6 +304,7 @@
    */
   class OrderOptions extends OrderDetails implements \Iterator, \Countable
   {
+
     /**
      * @var string
      */
@@ -337,7 +330,6 @@
       $current = $this->current();
       $results = \DB::select()->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])
         ->andWhere('OrderDetailID=', $current['OrderDetailID'])->fetch()->all();
-
       return (count($results) > 0);
     }
     /**

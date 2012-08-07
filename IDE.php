@@ -1136,11 +1136,6 @@
   {
   }
 
-  /**
-   */
-  class DB extends ADV\Core\DB\DB
-  {
-  }
 
   /**
 
@@ -1191,15 +1186,6 @@
   {
   }
 
-  /**
-
-   */
-  class Input extends ADV\Core\Input\Input
-  {
-    /**
-     * @static
-     */
-  }
 
   /**
 
@@ -1230,7 +1216,7 @@
   }
 
   /**
-
+   * @method \Adv\Core\Num i()
    */
   class Num extends ADV\Core\Num
   {
