@@ -19,7 +19,7 @@
             $_POST['memo_'] = Input::get('memo');
         }
         if (Input::get('date')) {
-            $_POST['DatePaid'] = Input::get('date');
+            $_POST['date_'] = Input::get('date');
         }
     }
     JS::openWindow(950, 500);
@@ -33,7 +33,7 @@
         Display::link_no_params($_SERVER['DOCUMENT_URI'], _("Enter & Another Transfer"));
         Page::footer_exit();
     }
-    if (isset($_POST['_DatePaid_changed'])) {
+    if (isset($_POST['_date__changed'])) {
         Ajax::activate('_ex_rate');
     }
     if (isset($_POST['AddPayment'])) {
@@ -51,13 +51,13 @@
         Table::section(1);
         Bank_Account::row(_("From Account:"), 'FromBankAccount', null, true);
         Bank_Account::row(_("To Account:"), 'ToBankAccount', null, true);
-        Forms::dateRow(_("Transfer Date:"), 'DatePaid', '', null, 0, 0, 0, null, true);
+        Forms::dateRow(_("Transfer Date:"), 'date_', '', null, 0, 0, 0, null, true);
         $from_currency = Bank_Currency::for_company($_POST['FromBankAccount']);
         $to_currency   = Bank_Currency::for_company($_POST['ToBankAccount']);
         if ($from_currency != "" && $to_currency != "" && $from_currency != $to_currency) {
             Forms::AmountRow(_("Amount:"), 'amount', null, null, $from_currency);
             Forms::AmountRow(_("Bank Charge:"), 'charge', null, null, $from_currency);
-            GL_ExchangeRate::display($from_currency, $to_currency, $_POST['DatePaid']);
+            GL_ExchangeRate::display($from_currency, $to_currency, $_POST['date_']);
         } else {
             Forms::AmountRow(_("Amount:"), 'amount');
             Forms::AmountRow(_("Bank Charge:"), 'charge');
@@ -75,15 +75,15 @@
      */
     function check_valid_entries()
     {
-        if (!Dates::isDate($_POST['DatePaid'])) {
+        if (!Dates::isDate($_POST['date_'])) {
             Event::error(_("The entered date is invalid ."));
-            JS::setFocus('DatePaid');
+            JS::setFocus('date_');
 
             return false;
         }
-        if (!Dates::isDateInFiscalYear($_POST['DatePaid'])) {
+        if (!Dates::isDateInFiscalYear($_POST['date_'])) {
             Event::error(_("The entered date is not in fiscal year . "));
-            JS::setFocus('DatePaid');
+            JS::setFocus('date_');
 
             return false;
         }
@@ -129,7 +129,7 @@
         $trans_no = GL_Bank::add_bank_transfer(
             $_POST['FromBankAccount'], //
             $_POST['ToBankAccount'], //
-            $_POST['DatePaid'], //
+            $_POST['date_'], //
             Validation::input_num('amount'), //
             $_POST['ref'], //
             $_POST['memo_'], //

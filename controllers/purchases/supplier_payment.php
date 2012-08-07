@@ -25,13 +25,13 @@
                     $_POST['bank_acount'] = Input::get('account');
                 }
                 if (Input::get('amount')) {
-                    $_POST['amount'] = Input::get('amount');
+                    $_POST['amount'] = abs(Input::get('amount'));
                 }
                 if (Input::get('memo')) {
                     $_POST['memo_'] = Input::get('memo');
                 }
                 if (Input::get('date')) {
-                    $_POST['DatePaid'] = Input::get('date');
+                    $_POST['date_'] = Input::get('date');
                 }
             }
             $_POST['creditor_id'] = Input::postGetGlobal('creditor_id', null, -1);
@@ -43,22 +43,22 @@
             }
             $_POST['bank_account'] = Input::postGetGlobal('bank_account', null, -1);
             $this->bank_account    = &$_POST['bank_account'];
-            if (!isset($_POST['DatePaid'])) {
-                $_POST['DatePaid'] = Dates::newDocDate();
-                if (!Dates::isDateInFiscalYear($_POST['DatePaid'])) {
-                    $_POST['DatePaid'] = Dates::endFiscalYear();
+            if (!isset($_POST['date_'])) {
+                $_POST['date_'] = Dates::newDocDate();
+                if (!Dates::isDateInFiscalYear($_POST['date_'])) {
+                    $_POST['date_'] = Dates::endFiscalYear();
                 }
             }
-            if (isset($_POST['_DatePaid_changed'])) {
+            if (isset($_POST['_date__changed'])) {
                 Ajax::activate('_ex_rate');
             }
             if (Input::post('_control') == 'creditor' || Forms::isListUpdated('bank_account')) {
                 $_SESSION['alloc']->read();
                 Ajax::activate('alloc_tbl');
             }
-            $this->company_currency = Bank_Currency::for_company();
+            $this->company_currency  = Bank_Currency::for_company();
             $this->supplier_currency = Bank_Currency::for_creditor($this->creditor_id);
-            $this->bank_currency = Bank_Currency::for_company($_POST['bank_account']);
+            $this->bank_currency     = Bank_Currency::for_company($_POST['bank_account']);
         }
         protected function index()
         {
@@ -73,10 +73,10 @@
             Bank_Account::row(_("Bank Account:"), 'bank_account', null, true);
             Table::section(2);
             Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_SUPPAYMENT));
-            Forms::dateRow(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
+            Forms::dateRow(_("Date Paid") . ":", 'date_', '', true, 0, 0, 0, null, true);
             Table::section(3);
             if ($this->bank_currency != $this->supplier_currency) {
-                GL_ExchangeRate::display($this->bank_currency, $this->supplier_currency, $_POST['DatePaid'], true);
+                GL_ExchangeRate::display($this->bank_currency, $this->supplier_currency, $_POST['date_'], true);
             }
             Forms::AmountRow(_("Bank Charge:"), 'charge');
             Table::endOuter(1); // outer table
@@ -107,7 +107,7 @@
             }
             $payment_id = Creditor_Payment::add(
                 $this->creditor_id,
-                $_POST['DatePaid'],
+                $_POST['date_'],
                 $_POST['bank_account'],
                 Validation::input_num('amount'),
                 Validation::input_num('discount'),
@@ -116,11 +116,11 @@
                 $rate,
                 Validation::input_num('charge')
             );
-            Dates::newDocDate($_POST['DatePaid']);
+            Dates::newDocDate($_POST['date_']);
             $_SESSION['alloc']->trans_no = $payment_id;
             $_SESSION['alloc']->write();
             //unset($this->creditor_id);
-            unset($_POST['bank_account'], $_POST['DatePaid'], $_POST['currency'], $_POST['memo_'], $_POST['amount'], $_POST['discount'], $_POST['ProcessSuppPayment']);
+            unset($_POST['bank_account'], $_POST['date_'], $_POST['currency'], $_POST['memo_'], $_POST['amount'], $_POST['discount'], $_POST['ProcessSuppPayment']);
             Event::success(_("Payment has been sucessfully entered"));
             Display::submenu_print(_("&Print This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, 'prtopt');
             Display::submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, null, 1);

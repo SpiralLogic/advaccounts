@@ -20,7 +20,7 @@
             $_POST['memo_'] = Input::get('memo');
         }
         if (Input::get('date')) {
-            $_POST['DatePaid'] = Input::get('date');
+            $_POST['date_'] = Input::get('date');
         }
     }
     if (isset($_GET['NewPayment'])) {

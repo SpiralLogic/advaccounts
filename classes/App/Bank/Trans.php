@@ -229,16 +229,14 @@
                         static::$DB->_update('gl_trans')->value('tran_date', $sqldate)->where('type_no=', $row['trans_no'])->andWhere('type=', $row['type'])->exec();
                         break;
                     default:
-                        {
                         static::$DB->_cancel();
                         $status->set(\ADV\Core\Status::ERROR, 'chnage date', $bank_trans_id . 'Cannot change date for this transaction');
-                        }
-                        $sql = "UPDATE comments SET memo_ = CONCAT(memo_,'" . ' <br>Date changed from ' . $row['trans_date'] . ' to ' . $sqldate . ' by ' . User::i(
-                        )->username . "') WHERE id=" . DB::quote($row["trans_no"]) . " AND type=" . DB::quote($row['type']);
-                        DB::query($sql);
-                        static::$DB->_commit();
-                        return true;
                 }
+                $sql = "UPDATE comments SET memo_ = CONCAT(memo_,'" . ' <br>Date changed from ' . $row['trans_date'] . ' to ' . $sqldate . ' by ' . User::i(
+                )->username . "') WHERE id=" . DB::quote($row["trans_no"]) . " AND type=" . DB::quote($row['type']);
+                DB::query($sql);
+                static::$DB->_commit();
+                return true;
             } catch (\ADV\Core\DB\DBException $e) {
                 static::$DB->_cancel();
                 $status->set(\ADV\Core\Status::ERROR, 'change date', 'Database error: ' . $e->getMessage());
