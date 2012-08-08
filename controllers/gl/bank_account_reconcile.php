@@ -41,6 +41,7 @@
             $_POST['reconcile_date'] = $this->Input->_post('reconcile_date', null, $this->Dates->_sqlToDate($_POST['bank_date']));
             $this->reconcile_date    = &$_POST['reconcile_date'];
             $this->JS->_openWindow(950, 500);
+            $this->JS->_footerFile('/js/libs/redips-drag-min.js');
             $this->JS->_footerFile('/js/reconcile.js');
             if ($this->Input->_post('reset')) {
                 // GL_Account::reset_sql_for_reconcile($this->bank_account, $this->reconcile_date);
@@ -88,13 +89,15 @@
             Row::end();
             Table::end();
             $this->displaySummary();
-            echo "<hr>";
+            echo "<hr><div id='drag'>";
+
             echo $this->render();
+            echo '</div>';
             Forms::end();
             if (!$this->Ajax->_inAjax() || AJAX_REFERRER) {
                 $this->addDialogs();
             }
-            JS::addLive("Adv.Reconcile.setUpGrid();");
+            //JS::addLive("Adv.Reconcile.setUpGrid();");
             Page::end();
         }
         protected function addDialogs()
@@ -205,7 +208,7 @@
                 'Date'      => ['type'=> 'date'], //
                 'Debit'     => ['align'=> 'right', 'fun'=> array($this, 'formatDebit')], //
                 'Credit'    => ['align'=> 'right', 'insert'=> true, 'fun'=> array($this, 'formatCredit')], //
-                'Info'      => ['fun'=> array($this, 'formatInfo')], //
+                'Info'      => ['class'=> 'mark', 'fun'=> array($this, 'formatInfo')], //
                 'GL'        => ['fun'=> array($this, 'formatGL')], //
                 ['fun'=> array($this, 'formatCheckbox')], //
                 'Banked'    => ['type'=> 'date'], //
@@ -400,7 +403,7 @@
         public function formatRow($row)
         {
             if (!$row['trans_date'] && !$row['reconciled'] && $row['state_date']) {
-                $class  = "class='overduebg'";
+                $class  = "class='overduebg deny mark'";
                 $amount = e($row['state_amount']);
                 $date   = e($this->Dates->_sqlToDate($row['state_date']));
 
@@ -413,7 +416,7 @@
             $trans_no = $row['trans_no'];
             $class    = "class='cangroup'";
             if ($row['reconciled'] && $row['state_date']) {
-                return "<tr class='done'>";
+                return "<tr class='done deny'>";
             } elseif (!isset($row['state_date'])) {
                 $class = "class='cangroup'";
             } elseif (($row['trans_date'] && $row['reconciled'] && !$row['state_date']) || ($row['state_date'] && !$row['transdate'])
@@ -546,18 +549,22 @@
          */
         public function formatInfo($row)
         {
+            $content = '';
             if ($row['type'] == ST_BANKTRANSFER) {
-                return DB_Comments::get_string(ST_BANKTRANSFER, $row['trans_no']);
+                $content = DB_Comments::get_string(ST_BANKTRANSFER, $row['trans_no']);
             } elseif ($row['type'] == ST_GROUPDEPOSIT) {
-                $result  = Bank_Trans::getGroupDeposit($this->bank_account, $row['id']);
-                $content = '';
+                $result = Bank_Trans::getGroupDeposit($this->bank_account, $row['id']);
                 foreach ($result as $trans) {
                     $name = Bank::payment_person_name($trans["person_type_id"], $trans["person_id"], true, $trans["trans_no"]);
                     $content .= $trans['ref'] . ' <span class="u">' . $name . ' ($' . $this->Num->_priceFormat($trans['amount']) . ')</span>: ' . $trans['memo_'] . '<br>';
                 }
-                return $content;
+            } else {
+                $content = Bank::payment_person_name($row["person_type_id"], $row["person_id"], true, $row["trans_no"]);
             }
-            return Bank::payment_person_name($row["person_type_id"], $row["person_id"], true, $row["trans_no"]);
+            if (!$row['reconciled'] && $row['trans_no']) {
+                return '<div class="drag row">' . $content . '</div>';
+            }
+            return '<div class="deny row">' . $content . '</div>';
         }
         /**
          * @internal param $prefix
