@@ -97,7 +97,7 @@
             if (!$this->Ajax->_inAjax() || AJAX_REFERRER) {
                 $this->addDialogs();
             }
-            //JS::addLive("Adv.Reconcile.setUpGrid();");
+            JS::addLive("Adv.Reconcile.setUpGrid();");
             Page::end();
         }
         protected function addDialogs()
@@ -208,7 +208,7 @@
                 'Date'      => ['type'=> 'date'], //
                 'Debit'     => ['align'=> 'right', 'fun'=> array($this, 'formatDebit')], //
                 'Credit'    => ['align'=> 'right', 'insert'=> true, 'fun'=> array($this, 'formatCredit')], //
-                'Info'      => ['class'=> 'mark', 'fun'=> array($this, 'formatInfo')], //
+                'Info'      => ['fun'=> array($this, 'formatInfo')], //
                 'GL'        => ['fun'=> array($this, 'formatGL')], //
                 ['fun'=> array($this, 'formatCheckbox')], //
                 'Banked'    => ['type'=> 'date'], //

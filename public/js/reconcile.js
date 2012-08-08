@@ -10,29 +10,24 @@
  ***********************************************************************/
 
 Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
-  groupSelect:               function (e, ui)
-  {
+  groupSelect:function (e, ui) {
     var source = $(this.obj_old).closest('tr'), target = $(this.target_cell).closest('tr'), data = {_action:'deposit', trans1:source.data('id'), trans2:target.data('id')};
     return Adv.Reconcile.sendAction(data);
   },
-  changeDate:                function (el)
-  {
+  changeDate:function (el) {
     var data = {_action:'changeDate', trans_id:Adv.Reconcile.toChange.data('id')};
-    $(el).find('[name="date"]').each(function ()
-                                     {
-                                       data['date'] = $(this).val();
-                                     });
+    $(el).find('[name="date"]').each(function () {
+      data['date'] = $(this).val();
+    });
     Adv.Reconcile.sendAction(data);
     $dateChanger.dialog('close');
   },
-  changeBank:                function ()
-  {
+  changeBank:function () {
     var data = {_action:'changeBank', newbank:$('#changeBank').val(), type:Adv.Reconcile.toChange.data('type'), trans_no:Adv.Reconcile.toChange.data('transno')};
     Adv.Reconcile.sendAction(data);
     $(this).dialog('close')
   },
-  createLink:                function ()
-  {
+  createLink:function () {
     var self = $(this), fee = '', url = self.attr('href'), $row = $(this).closest('tr'), date = $row.data('date'), amount = $row.data('amount'), memo = $row.find('.state_memo').text();
     if (self.data('fee')) {
       fee = '&fee=' + self.data('fee');
@@ -42,8 +37,7 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
     Adv.Reconcile.openLink(url);
     return false;
   },
-  openLink:                  function (url)
-  {
+  openLink:function (url) {
     if (Adv.Reconcile.voidtrans && Adv.Reconcile.voidtrans.location) {
       Adv.Reconcile.voidtrans.location.href = url;
       Adv.Reconcile.voidtrans.focus();
@@ -52,129 +46,95 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
       Adv.Reconcile.voidtrans = window.open(url, '_blank');
     }
   },
-  unGroup:                   function ()
-  {
+  unGroup:function () {
     return Adv.Reconcile.sendAction({_action:'unGroup', groupid:$(this).closest('tr').data('id')});
   },
-  sendAction:                function (data)
-  {
+  sendAction:function (data) {
     var overlay = $("<div id='loading' </div>").modal('show');
-    $.post('#', data, function (data)
-    {
+    $.post('#', data, function (data) {
       if (data.grid) {
         overlay.modal('hide');
         $("#_bank_rec_span").html($('#_bank_rec_span', data.grid).html());
-        //   Adv.Reconcile.setUpGrid();
+          Adv.Reconcile.setUpGrid();
       }
     }, 'json');
     return false;
   },
-  setUpGrid:                 function ()
-  {
-    $('.recgrid').find('.cangroup').droppable({drop:        Adv.Reconcile.groupSelect,
-                                                hoverClass: 'hoverclass',
-                                                placeholder:'placeholder',
-                                                activeClass:'activeclass'}).end().find('tbody').sortable({
-                                                                                                           tolerance: 'pointer',
-                                                                                                           axis:      'y',
-                                                                                                           items:     '.cangroup',
-                                                                                                           cursor:    'move', revert:true,
-                                                                                                           beforestop:function (e, ui) {$(this).sortable('cancel');},
-                                                                                                           helper:    function (e, ui)
-                                                                                                           {
-                                                                                                             ui.children().each(function ()
-                                                                                                                                {
-                                                                                                                                  $(this).width($(this).width() + 6);
-                                                                                                                                  $(this).height($(this).height() + 2);
-                                                                                                                                });
-                                                                                                             return ui;
-                                                                                                           }});
+  setUpGrid:function () {
+    // reference to the REDIPS.drag library and message line
+    var rd = REDIPS.drag;
+    // initialization
+    rd.init();
+    // set hover color for TD and TR
+    // set hover border for current TD and TR
+    rd.hover.color_tr = 'rgb(182, 255, 116)';
+    // drop row after highlighted row (if row is dropped to other tables)
+    // possible values are "before" and "after"
+    rd.row_position = 'after';
+    rd.myhandler_row_moved = function () {
+      // set opacity for moved row
+      // rd.obj is reference of cloned row (mini table)
+      rd.row_opacity(rd.obj, 85);
+      // set opacity for source row and change source row background color
+      // obj.obj_old is reference of source row
+      rd.row_opacity(rd.obj_old, 20, 'White');
+      $('.cangroup').addClass('activeclass');
+      // display message
+    };
+    // row was dropped to the source - event handler
+    // mini table (cloned row) will be removed and source row should return to original state
+    rd.myhandler_row_dropped_source = function () {
+      // make source row completely visible (no opacity)
+      rd.row_opacity(rd.obj_old, 100);
+      $('.cangroup').removeClass('activeclass');
+      // display message
+      return false;
+    };
+    rd.myhandler_row_dropped_before = function () {
+      // return source row to its original state
+      rd.row_opacity(rd.obj_old, 100);
+      $('.cangroup').removeClass('activeclass');
+      if ($(rd.target_cell).closest('tr').hasClass('cangroup')) {
+        Adv.Reconcile.groupSelect.call(rd);
+      }
+      // cancel row drop
+      return false;
+    }
   }
 }});
-$(function ()
-  {
-    $("#summary").draggable();
-    Adv.o.wrapper.on('click', '.changeDate', function ()
-    {
-      var $row = $(this).closest('tr');
-      Adv.Reconcile.toChange = $row;
-      Adv.o.dateChanger.render({id:$row.data('id'), date:$row.data('date')});
-      $dateChanger.dialog('open').find('.datepicker').datepicker({dateFormat:'dd/mm/yy'}).datepicker('show');
-      return false;
-    });
-    Adv.o.wrapper.on('click', '.changeBank', function ()
-    {
-      Adv.Reconcile.toChange = $(this).closest('tr');
-      Adv.Forms.setFormValue('changeBank', $('#bank_account').val());
-      $("#bankChanger").dialog('open');
-      return false;
-    });
-    Adv.o.wrapper.on('click', '.voidTrans', function ()
-    {
-      var $this = $(this), url = '/system/void_transaction?type=' + $this.data('type') + '&trans_no=' + $this.data('trans_no') + '&memo=Deleted%20during%20reconcile.';
-      Adv.Reconcile.openLink(url);
-      return false;
-    });
-    Adv.o.wrapper.on('click', '.unGroup', Adv.Reconcile.unGroup);
-    Adv.o.wrapper.on('click', '[class^="create"]', Adv.Reconcile.createLink);
-    var bankButtons = {'Cancel':function () {$(this).dialog('close');}, 'Save':Adv.Reconcile.changeBank};
-    $("#bankChanger").dialog({autoOpen:false, modal:true, buttons:bankButtons});
+$(function () {
+  $("#summary").draggable();
+  Adv.o.wrapper.on('click', '.changeDate', function () {
+    var $row = $(this).closest('tr');
+    Adv.Reconcile.toChange = $row;
+    Adv.o.dateChanger.render({id:$row.data('id'), date:$row.data('date')});
+    $dateChanger.dialog('open').find('.datepicker').datepicker({dateFormat:'dd/mm/yy'}).datepicker('show');
+    return false;
   });
+  Adv.o.wrapper.on('click', '.changeBank', function () {
+    Adv.Reconcile.toChange = $(this).closest('tr');
+    Adv.Forms.setFormValue('changeBank', $('#bank_account').val());
+    $("#bankChanger").dialog('open');
+    return false;
+  });
+  Adv.o.wrapper.on('click', '.voidTrans', function () {
+    var $this = $(this), url = '/system/void_transaction?type=' + $this.data('type') + '&trans_no=' + $this.data('trans_no') + '&memo=Deleted%20during%20reconcile.';
+    Adv.Reconcile.openLink(url);
+    return false;
+  });
+  Adv.o.wrapper.on('click', '.unGroup', Adv.Reconcile.unGroup);
+  Adv.o.wrapper.on('click', '[class^="create"]', Adv.Reconcile.createLink);
+  var bankButtons = {'Cancel':function () {$(this).dialog('close');}, 'Save':Adv.Reconcile.changeBank};
+  $("#bankChanger").dialog({autoOpen:false, modal:true, buttons:bankButtons});
+});
 "use strict";
 // redips initialization
-var redips_init = function ()
-{
-  // reference to the REDIPS.drag library and message line
-  var rd = REDIPS.drag;
-  // initialization
-  rd.init();
-  // set hover color for TD and TR
-  // set hover border for current TD and TR
-  rd.hover.border_td = '2px solid blue';
-  rd.hover.border_tr = '2px solid blue';
-  // drop row after highlighted row (if row is dropped to other tables)
-  // possible values are "before" and "after"
-  rd.row_position = 'after';
-  rd.myhandler_row_moved = function ()
-  {
-    // set opacity for moved row
-    // rd.obj is reference of cloned row (mini table)
-    rd.row_opacity(rd.obj, 85);
-    // set opacity for source row and change source row background color
-    // obj.obj_old is reference of source row
-    rd.row_opacity(rd.obj_old, 20, 'White');
-    // display message
-  };
-  rd.myhandler_row_changed = function (el)
-  {
-    $(rd.target_cell).closest('tr').css('background', 'black');
-    $(rd.previous_cell).closest('tr').css('background', 'green');
-    // display message
-  };	// row was dropped to the source - event handler
-  // mini table (cloned row) will be removed and source row should return to original state
-  rd.myhandler_row_dropped_source = function ()
-  {
-    // make source row completely visible (no opacity)
-    rd.row_opacity(rd.obj_old, 100);
-    // display message
-    return false;
-  };
-  rd.myhandler_row_dropped_before = function ()
-  {
-    //
-    // JS logic
-    //
-    // return source row to its original state
-    rd.row_opacity(rd.obj_old, 100);
-    Adv.Reconcile.groupSelect.apply(rd, []);
-    // cancel row drop
-    return false;
-  }
-};
 // add onload event listener
 if (window.addEventListener) {
-  window.addEventListener('load', redips_init, false);
+  window.addEventListener('load',  Adv.Reconcile.setUpGrid, false);
 }
-else if (window.attachEvent) {
-  window.attachEvent('onload', redips_init);
+else {
+  if (window.attachEvent) {
+    window.attachEvent('onload',  Adv.Reconcile.setUpGrid);
+  }
 }
