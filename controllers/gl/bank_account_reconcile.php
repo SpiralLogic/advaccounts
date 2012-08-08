@@ -155,9 +155,7 @@
         {
             $rec             = Bank_Trans::getPeriod($this->bank_account, $this->begin_date, $this->end_date);
             $statement_trans = Bank_Account::getStatement($this->bank_account, $this->begin_date, $this->end_date);
-            if (!$statement_trans) {
-                return $this->simpleLayout();
-            }
+
             $known_trans                 = [];
             $known_headers               = [
                 'type',

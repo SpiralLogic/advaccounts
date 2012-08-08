@@ -11,7 +11,7 @@
 
 Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
   groupSelect:function (e, ui) {
-    var source = $(this.obj_old).closest('tr'), target = $(this.target_cell).closest('tr'), data = {_action:'deposit', trans1:source.data('id'), trans2:target.data('id')};
+    var  target= $(this.obj_old).closest('tr'),  source= $(this.target_cell).closest('tr'), data = {_action:'deposit', trans1:source.data('id'), trans2:target.data('id')};
     return Adv.Reconcile.sendAction(data);
   },
   changeDate:function (el) {
