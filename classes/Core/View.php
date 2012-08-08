@@ -78,10 +78,11 @@
                 Errors::log($_contents);
                 throw $e;
             }
-            if ($return) {
-                return ob_get_clean();
-            }
+            if (!$return) {
             echo ob_get_clean();
+
+            }
+          return ob_get_clean();
         }
         /**
          * @param $template

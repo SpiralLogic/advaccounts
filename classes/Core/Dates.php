@@ -86,9 +86,11 @@
                 return false;
             }
         }
-        /**
-         * @return string User format of the days date.
-         */
+      /**
+       * @param bool $sql_format
+       *
+       * @return string User format of the days date.
+       */
         public function _today($sql_format = false)
         {
             if ($sql_format) {

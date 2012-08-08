@@ -17,6 +17,7 @@
    * @method JS onload()
    * @method JS renderJSON()
 * @method JS autocomplete()
+* @method JS beforeload($js = false)
    * @method JS addLiveEvent($selector, $type, $action, $delegate = false, $cached = false)
    */
   class JS
