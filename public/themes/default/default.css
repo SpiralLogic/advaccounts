@@ -3372,7 +3372,6 @@ td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid 
   border:           1px solid #333;
   min-height:       35px;
 }
-
 .recgrid tr:nth-child(2n) {
   background-color: #d7ccfb;
 }
@@ -3382,13 +3381,11 @@ td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid 
 }
 
 .recgrid tr.activeclass {
-  background-color: rgba(30, 144, 255, .4);
+  background-color: rgb(159, 222, 255);
 }
-
-.recgrid tr.hoverclass {
-  background-color: rgba(124, 252, 0, .4);
+.drag {
+  border-style:none !important;
 }
-
 .recgrid .placeholder {
   height: 1px !important;
 }
