@@ -94,7 +94,6 @@
         {
             if ($lastmodified < filemtime($template)) {
                 static::$Cache->_delete('template.' . $this->_template);
-                \Event::notice("cleared $template");
             }
         }
         /**
