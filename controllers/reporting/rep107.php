@@ -154,7 +154,7 @@
         if ($myrow['type'] == ST_SALESINVOICE) {
           $rep->NewLine();
           $rep->NewLine();
-          $invBalance = Num::priceFormat(Sales_Allocation::get_balance($myrow['type'], $myrow['trans_no']));
+          $invBalance = Sales_Allocation::get_balance($myrow['type'], $myrow['trans_no']);
           $rep->TextCol(3, 7, 'Total Received', -2);
           $rep->AmountCol(7, 8, $myrow['Total'] - $invBalance, $dec, -2);
           $rep->NewLine();

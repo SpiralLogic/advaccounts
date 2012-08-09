@@ -54,7 +54,6 @@
             // Also store the rate to the home
             //$BankToHomeCurrencyRate = Bank_Currency::exchange_rate_to_home($bank_account_currency, $date_);
             $sql         = "INSERT INTO bank_trans (type, trans_no, bank_act, ref,         trans_date, amount, person_type_id, person_id, undeposited) ";
-            $undeposited = ($bank_act == 5 && $type == 12) ? 1 : 0;
             $sql .= "VALUES ($type, $trans_no, '$bank_act', " . static::$DB->_escape($ref) . ", '$sqlDate',
         " . static::$DB->_escape($amount_bank) . ", " . static::$DB->_escape($person_type_id) . ", " . static::$DB->_escape($person_id) . ",0)";
             if ($err_msg == "") {
