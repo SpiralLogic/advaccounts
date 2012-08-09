@@ -670,3 +670,21 @@ Adv.extend({Events:(function ()
 }())
            });
 
+Adv.extend({
+						 postcode: (function() {
+						 var sets= [];
+						 return {
+												add: function(set,city,state,code) {
+													sets[set] = {city:$(document.getElementsByName(city)),state:$(document.getElementsByName(state)),postcode:$(document.getElementsByName(code))}
+												},
+						 fetch: function(data,item,ui) {
+						 		var set=$(ui).data("set");
+						 data = data.value.split('|');
+							sets[set].city.val(data[0]).trigger('change');
+						 sets[set].state.val(data[1]).trigger('change');
+						 sets[set].postcode.val(data[2]).trigger('change');
+						 return false;
+						 }
+						 }
+						 }())
+						})

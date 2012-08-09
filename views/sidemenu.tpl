@@ -27,7 +27,6 @@
       <li><a href="/gl/gl_bank?NewPayment=Yes">Payment</a></li>
       <li><a href="/gl/gl_bank?NewDeposit=Yes">Deposit</a></li>
       <li><a href="/gl/bank_account_reconcile?">Reconcile</a></li>
-      <li><a href="/gl/undeposited_funds?">Undeposited</a></li>
     </ul>
   </div>
   {{/if}}

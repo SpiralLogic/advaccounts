@@ -155,9 +155,7 @@
         {
             $rec             = Bank_Trans::getPeriod($this->bank_account, $this->begin_date, $this->end_date);
             $statement_trans = Bank_Account::getStatement($this->bank_account, $this->begin_date, $this->end_date);
-            if (!$statement_trans) {
-                return $this->simpleLayout();
-            }
+
             $known_trans                 = [];
             $known_headers               = [
                 'type',
@@ -561,7 +559,7 @@
             } else {
                 $content = Bank::payment_person_name($row["person_type_id"], $row["person_id"], true, $row["trans_no"]);
             }
-            if (!$row['reconciled'] && $row['trans_no']) {
+            if (!$row['reconciled'] && ($row['trans_no']||$row['type']==ST_GROUPDEPOSIT)) {
                 return '<div class="drag row">' . $content . '</div>';
             }
             return '<div class="deny row">' . $content . '</div>';

@@ -274,6 +274,9 @@
             $headers = $this->makeHeaders();
             $class   = $this->class ? : 'tablestyle grid width' . rtrim($this->width, '%');
             Table::start($class);
+            if (isset($this->marker_txt)) {
+                Event::warning($this->marker_txt, 0, 1, "class='$this->notice_class'");
+            }
             $this->displayHeaders($headers);
             $this->displayNavigation();
 
@@ -395,9 +398,6 @@
                 Cell::label(_('No records') . $inact, "colspan=$colspan class='navibar'");
             }
             Row::end();
-            if (isset($this->marker_txt)) {
-                Event::warning($this->marker_txt, 0, 1, "class='$this->notice_class'");
-            }
         }
         protected function displayFooter()
         {

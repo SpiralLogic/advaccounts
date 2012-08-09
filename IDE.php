@@ -1187,12 +1187,6 @@
   }
 
 
-  /**
-
-   */
-  class JS extends ADV\Core\JS
-  {
-  }
 
   /**
 

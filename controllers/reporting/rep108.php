@@ -199,12 +199,12 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
       $txt_now_due   = "1-" . $past_due1 . " " . $txt_days;
       $txt_past_due1 = $past_due1 + 1 . "-" . $past_due2 . " " . $txt_days;
       $txt_past_due2 = $txt_over . " " . $past_due2 . " " . $txt_days;
-      $str           = array($txt_current, $txt_now_due, $txt_past_due1, $txt_past_due2, $txt_total_balance);
+      $str           = array($txt_past_due2, $txt_past_due1, $txt_now_due, $txt_current, $txt_total_balance);
       $str2          = array(
-        Num::format(($customer_record["Due"] - $customer_record["Overdue1"]), $dec),
-        Num::format(($customer_record["Overdue1"] - $customer_record["Overdue2"]), $dec),
-        Num::format($customer_record["Overdue2"], $dec),
         Num::format(($balance - $customer_record["Due"]), $dec),
+        Num::format($customer_record["Overdue2"], $dec),
+        Num::format(($customer_record["Overdue1"] - $customer_record["Overdue2"]), $dec),
+        Num::format(($customer_record["Due"] - $customer_record["Overdue1"]), $dec),
         $display_balance
       );
       $col           = array(

@@ -125,7 +125,7 @@
         $begin = Dates::addDays($begin, -1);
       }
       $prev_balance = GL_Trans::get_balance_from_to($begin, $from, $account["account_code"], $dimension, $dimension2);
-      $trans        = GL_Trans::get($from, $to, -1, $account['account_code'], $dimension, $dimension2);
+      $trans        = GL_Trans::get($from, $to, -1, $account['account_code'], $dimension, $dimension2,null,0);
       $rows         = DB::numRows($trans);
       if ($prev_balance == 0.0 && $rows == 0) {
         continue;

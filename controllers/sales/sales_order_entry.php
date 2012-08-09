@@ -500,7 +500,7 @@
             $trans_type = $this->order->trans_type;
             if (!isset($_GET[REMOVED_ID])) {
               $this->order->delete($trans_no, $trans_type);
-              $jb = new \Modules\Jobsboard([]);
+              $jb = new \Modules\Jobsboard\Jobsboard([]);
               $jb->removejob($trans_no);
               Event::notice(_("Sales order has been cancelled as requested."), 1);
             }

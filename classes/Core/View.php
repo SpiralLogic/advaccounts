@@ -17,7 +17,7 @@
         protected $_template = null;
         /** @var Cache */
         static $Cache;
-    static $count = 0;
+        static $count = 0;
         /**
          * @param $template
          *
@@ -25,11 +25,14 @@
          */
         public function __construct($template)
         {
-            $template = VIEWPATH . $template . '.tpl';
-            if (!file_exists($template)) {
+            $this->_template = VIEWPATH . $template . '.tpl';
+            $this->_js       = 'js' . DS . $template . '.js';
+            if (!file_exists($this->_template)) {
                 throw new \InvalidArgumentException("There is no view $template !");
             }
-            $this->_template = $template;
+            if (file_exists(WEBROOT . $this->_js)) {
+                JS::footerFile(BASE_URL . $this->_js);
+            }
         }
         /**
          * @param bool $return
@@ -46,8 +49,8 @@
             // The contents of each view file is cached in an array for the
             // request since partial views may be rendered inside of for
             // loops which could incur performance penalties.
-           // $__contents = null; // static::$Cache->_get('template.' . $this->_template);
-             $__contents = static::$Cache->_get('template.' . $this->_template);
+            //  $__contents = null; // static::$Cache->_get('template.' . $this->_template);
+            $__contents = static::$Cache->_get('template.' . $this->_template);
             if (!$__contents || !is_array($__contents)) {
                 $__contents = file_get_contents($this->_template);
                 $__contents = $this->compile_nothings($__contents);
@@ -67,11 +70,7 @@
             // We'll include the view contents for parsing within a catcher
             // so we can avoid any WSOD errors. If an exception occurs we
             // will throw it out to the exception handler.
-  /*    static::$count++;
-      if (static::$count ==5) {
-        var_dump($__contents,$this->_template);
-        exit;
-      }*/
+
             try {
                 eval('?>' . $__contents);
             } // If we caught an exception, we'll silently flush the output
@@ -95,6 +94,7 @@
         {
             if ($lastmodified < filemtime($template)) {
                 static::$Cache->_delete('template.' . $this->_template);
+                \Event::notice("cleared $template");
             }
         }
         /**

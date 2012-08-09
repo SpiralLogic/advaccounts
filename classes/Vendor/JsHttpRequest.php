@@ -59,7 +59,7 @@
             // To be on a safe side - do not allow to drop reference counter on ob processing.
             $GLOBALS['_RESULT'] =& $this->RESULT;
             // Parse QUERY_STRING.
-            if (preg_match('/^(.*)(?:&|^)JsHttpRequest=(?:(\d+)-)?([^&]+)((?:&|$).*)$/s', @$_SERVER['QUERY_STRING'], $m) || isset($_POST['deposit'])) {
+            if (preg_match('/^(.*)(?:&|^)JsHttpRequest=(?:(\d+)-)?([^&]+)((?:&|$).*)$/s', @$_SERVER['QUERY_STRING'], $m)) {
                 $this->ID                = $m[2];
                 $this->LOADER            = strtolower($m[3]);
                 $_SERVER['QUERY_STRING'] = preg_replace(
