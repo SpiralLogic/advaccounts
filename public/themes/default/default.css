@@ -3399,11 +3399,11 @@ td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid 
 }
 
 .recgrid tr.activeclass {
-  background-color: rgba(30, 144, 255, .4);
+  background-color: rgb(159, 222, 255);
 }
 
-.recgrid tr.hoverclass {
-  background-color: rgba(124, 252, 0, .4);
+.drag {
+  border-style: none !important;
 }
 
 .recgrid .placeholder {
