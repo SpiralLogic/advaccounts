@@ -56,9 +56,7 @@
             $sql         = "INSERT INTO bank_trans (type, trans_no, bank_act, ref,         trans_date, amount, person_type_id, person_id, undeposited) ";
             $undeposited = ($bank_act == 5 && $type == 12) ? 1 : 0;
             $sql .= "VALUES ($type, $trans_no, '$bank_act', " . static::$DB->_escape($ref) . ", '$sqlDate',
-        " . static::$DB->_escape($amount_bank) . ", " . static::$DB->_escape($person_type_id) . ", " . static::$DB->_escape($person_id) . ", " . static::$DB->_escape(
-                $undeposited
-            ) . ")";
+        " . static::$DB->_escape($amount_bank) . ", " . static::$DB->_escape($person_type_id) . ", " . static::$DB->_escape($person_id) . ",0)";
             if ($err_msg == "") {
                 $err_msg = "The bank transaction could not be inserted";
             }

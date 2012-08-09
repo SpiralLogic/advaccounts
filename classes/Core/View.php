@@ -17,7 +17,7 @@
         protected $_template = null;
         /** @var Cache */
         static $Cache;
-    static $count = 0;
+        static $count = 0;
         /**
          * @param $template
          *
@@ -46,8 +46,8 @@
             // The contents of each view file is cached in an array for the
             // request since partial views may be rendered inside of for
             // loops which could incur performance penalties.
-           // $__contents = null; // static::$Cache->_get('template.' . $this->_template);
-             $__contents = static::$Cache->_get('template.' . $this->_template);
+            $__contents = null; // static::$Cache->_get('template.' . $this->_template);
+            //  $__contents = static::$Cache->_get('template.' . $this->_template);
             if (!$__contents || !is_array($__contents)) {
                 $__contents = file_get_contents($this->_template);
                 $__contents = $this->compile_nothings($__contents);
@@ -78,11 +78,10 @@
                 Errors::log($_contents);
                 throw $e;
             }
-            if (!$return) {
-            echo ob_get_clean();
-
+            if ($return) {
+                return ob_get_clean();
             }
-          return ob_get_clean();
+            echo ob_get_clean();
         }
         /**
          * @param $template
@@ -92,7 +91,7 @@
         {
             if ($lastmodified < filemtime($template)) {
                 static::$Cache->_delete('template.' . $this->_template);
-              \Event::notice("cleared $template");
+                \Event::notice("cleared $template");
             }
         }
         /**

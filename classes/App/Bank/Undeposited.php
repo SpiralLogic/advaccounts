@@ -70,20 +70,19 @@
                 return false;
             }
             if ($type1 == ST_GROUPDEPOSIT) {
-                $group  = $togroup;
-                $sql    = "UPDATE bank_trans SET undeposited=" . $trans_id . " WHERE id=" . static::$DB->_quote($togroup) . " AND bank_act = " . static::$DB->_quote($account);
-                $amount = $amount2;
+                $group = $trans_id;
+                $sql   = "UPDATE bank_trans SET undeposited=" . $trans_id . " WHERE id=" . static::$DB->_quote($togroup) . " AND bank_act = " . static::$DB->_quote($account);
             } elseif ($type2 == ST_GROUPDEPOSIT) {
-                $group  = $trans_id;
-                $sql    = "UPDATE bank_trans SET undeposited=" . $togroup . " WHERE id=" . static::$DB->_quote($trans_id) . " AND bank_act = " . static::$DB->_quote($account);
-                $amount = $amount1;
+                $group = $togroup;
+                $sql   = "UPDATE bank_trans SET undeposited=" . $togroup . " WHERE id=" . static::$DB->_quote($trans_id) . " AND bank_act = " . static::$DB->_quote($account);
             } else {
                 $group = static::createGroup($account, $date1);
                 $sql   = "UPDATE bank_trans SET undeposited=" . $group . " WHERE id=" . static::$DB->_quote($trans_id) . " AND bank_act = " . static::$DB->_quote($account);
                 $sql .= "; UPDATE bank_trans SET undeposited=" . $group . " WHERE id=" . static::$DB->_quote($togroup) . " AND bank_act = " . static::$DB->_quote($account);
-                $amount = $amount1 + $amount2;
             }
-            $sql .= "; UPDATE bank_trans SET amount=amount + $amount WHERE id = " . static::$DB->_quote(
+            $amount = $amount1 + $amount2;
+
+            $sql .= "; UPDATE bank_trans SET amount=$amount WHERE id = " . static::$DB->_quote(
                 $group
             ) . " AND type= " . ST_GROUPDEPOSIT . " AND bank_act = " . static::$DB->_quote($account);
             static::$DB->_query($sql, "Can't change undeposited status");
