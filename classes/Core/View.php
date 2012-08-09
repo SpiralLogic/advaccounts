@@ -25,11 +25,14 @@
          */
         public function __construct($template)
         {
-            $template = VIEWPATH . $template . '.tpl';
-            if (!file_exists($template)) {
+            $this->_template = VIEWPATH . $template . '.tpl';
+            $this->_js       = 'js' . DS . $template . '.js';
+            if (!file_exists($this->_template)) {
                 throw new \InvalidArgumentException("There is no view $template !");
             }
-            $this->_template = $template;
+            if (file_exists(WEBROOT . $this->_js)) {
+                JS::footerFile(BASE_URL . $this->_js);
+            }
         }
         /**
          * @param bool $return

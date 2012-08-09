@@ -68,7 +68,6 @@
             '/js/libs/bootstrap.min.js',
             '/js/libs/jquery.scrollTo-min.js',
             '/js/calc.js',
-            '/js/sidemenu.js',
         ),
         //
         'maps_api_key'     => 'ABQIAAAAi6QUBXugcwuPqyTcPMoi7BRpI0TaLspvsTOnOMM4T78mt8FLYBQC5z4qKk3rJIKFVEWI7RCzzewJLQ',

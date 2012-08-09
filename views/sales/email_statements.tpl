@@ -10,36 +10,32 @@
     <th>Overdue1</th>
     <th>Overdue2</th>
   </tr>
-  {{# $balance = $due = $overdue1 = $overdue2 = 0;
-  foreach ($rows as $row): $balance += $row['Balance'];
-  $due += $row['Due'];
-  $overdue1 += $row['Overdue1'];
-  $overdue2 += $row['Overdue2'];
-  ?>
+  {{#foreach $rows as $row}}
   <tr>
-    <td class='aligncenter'><input class='email' type='checkbox' value='{{$row[' debtor_id']}}' checked/></td>
-    <td class='left'><span class='bold'>{{$row['name']}}</span>({{$row['email']}})
+    <td class='aligncenter'><input class='email' type='checkbox' value='{{$row.debtor}}' checked/></td>
+    <td class='left'><span class='bold'>{{$row.name}}</span>({{$row.email}})
     </td>
-    <td>{{$row['phone']}}</td>
-    <td>{{$row['Balance']}}</td>
+    <td>{{$row.phone}}</td>
+    <td>{{$row.Balance}}</td>
     <td
-    {{#if ($row['Due'] > 0 ? 'class="currentfg"' : '')}}>{{($row['Due'] > 0 ? $row['Due'] : 0)}}</td>
+      {{$row.Due?}}class="currentfg"{{/$row.Due?}}>{{$row.Due}}</td>
     <td
-    {{($row['Overdue1'] > 0 ? 'class="overduebg"' : '')}}>{{($row['Overdue1'] > 0 ? $row['Overdue1'] : 0)}}</td>
+      {{$row.Overdue1?}}class="overduebg"{{/$row.Overdue1?}}>{{$row.Overdue1}}</td>
     <td
-    {{($row['Overdue2'] > 0 ? 'class="overduebg"' : '')}}>{{($row['Overdue2'] > 0 ? $row['Overdue2'] : 0)}}</td>
+      {{$row.Overdue2?}}class="overduebg"{{/$row.Overdue2?}}>{{$row.Overdue2}}</td>
   </tr>
   {{/foreach}}
   <tfoot class='bold pad5'>
   <tr>
     <td>Totals:</td>
     <td colspan=2></td>
-    <td>{{$balance}}</td>
-    <td>{{$due}}</td>
-    <td>{{$overdue1}}</td>
-    <td>{{$overdue2}}</td>
+    <td>{{$totals.balance}}</td>
+    <td>{{$totals.due}}</td>
+    <td>{{$totals.overdue1}}</td>
+    <td>{{$totals.overdue2}}</td>
   </tr>
   </tfoot>
 </table><div class='center'>
   <button id='send'>Send Emails</button>
 </div>
+

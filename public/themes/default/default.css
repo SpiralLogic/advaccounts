@@ -2911,7 +2911,7 @@ img {
 }
 
 .menu_group_items {
-  background-color: #f3f9fe;
+  background-color: #f7f5fc;
   font-weight:      normal;
   padding:          9px;
   border:           1px solid #8cacbb;
@@ -3499,7 +3499,15 @@ button img {
   display: none;
 }
 
-button.navibutton {
+.navibar table tr {
+  background: none !important;
+}
+
+.navibar table tr td {
+  border: none !important;
+}
+
+.navibutton {
   font-family:  Tahoma, Arial, sans-serif;
   font-weight:  bold;
   color:        #333;
@@ -3509,7 +3517,7 @@ button.navibutton {
   box-shadow:   none;
 }
 
-button.navibutton:hover {
+.navibutton:hover {
   text-shadow: #111111 inset;
 }
 
@@ -3532,8 +3540,8 @@ th:hover span {
 }
 
 .navibar {
-  font-size:       14px;
-  padding:         0 3px;
+  font-size:       12px;
+  padding:         0;
   color:           #333;
   border-collapse: collapse;
   background:      #ededed;
@@ -3551,7 +3559,11 @@ th:hover span {
 .navibar span {
   display:     inline-block;
   font-weight: 500;
-  padding-top: 7px;
+  padding-top: 3px;
+}
+
+table.tablestyle .navibar td {
+  padding: 0;
 }
 
 /*--------------------------------- END BUTTONS -----------------------------------------------------------------*/
