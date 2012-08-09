@@ -46,8 +46,8 @@
             // The contents of each view file is cached in an array for the
             // request since partial views may be rendered inside of for
             // loops which could incur performance penalties.
-            $__contents = null; // static::$Cache->_get('template.' . $this->_template);
-            //  $__contents = static::$Cache->_get('template.' . $this->_template);
+            //  $__contents = null; // static::$Cache->_get('template.' . $this->_template);
+            $__contents = static::$Cache->_get('template.' . $this->_template);
             if (!$__contents || !is_array($__contents)) {
                 $__contents = file_get_contents($this->_template);
                 $__contents = $this->compile_nothings($__contents);
