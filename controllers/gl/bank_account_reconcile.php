@@ -559,7 +559,7 @@
             } else {
                 $content = Bank::payment_person_name($row["person_type_id"], $row["person_id"], true, $row["trans_no"]);
             }
-            if (!$row['reconciled'] && $row['trans_no']) {
+            if (!$row['reconciled'] && ($row['trans_no']||$row['type']==ST_GROUPDEPOSIT)) {
                 return '<div class="drag row">' . $content . '</div>';
             }
             return '<div class="deny row">' . $content . '</div>';
