@@ -143,9 +143,9 @@
             Table::start('tablestyle width70');
             Row::label(_("Customer prompt payment discount :"), $display_discount_percent);
             Forms::AmountRow(_("Amount of Discount:"), 'discount', 0);
-            //  if (User::i()->hasAccess(SS_SALES) && !Input::post('TotalNumberOfAllocs')) {
-            Forms::checkRow(_("Create invoice and apply for this payment: "), 'createinvoice');
-            //  }
+          if (User::i()->hasAccess(SS_SALES) && !Input::post('TotalNumberOfAllocs')) {
+        //    Forms::checkRow(_("Create invoice and apply for this payment: "), 'createinvoice');
+         }
             Forms::AmountRow(_("Amount:"), 'amount');
             Forms::textareaRow(_("Memo:"), 'memo_', null, 22, 4);
             Table::end(1);
