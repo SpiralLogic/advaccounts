@@ -86,7 +86,7 @@
     <iframe id='webFrame' data-srcpre='{{Config::get('modules.webstore')['product_url']}}' data-srcpost='{{Config::get('modules.webstore')['url_extension']}}'
             style='width:100%'
             height='500' frameborder='0'></iframe>
-  </div>
+  </div><button name='btnCancel' >Cancel</button>
+  <button name='btnSave' >Save</button>
+
 </div>
-<button name='btnCancel' style="display:none">Cancel</button>
-<button name='btnSave' style="display:none">Save</button>
