@@ -38,57 +38,61 @@ Adv.extend({
                logbox.val(str);
              }
            });
-var Contacts = function ()
-{
-  var blank, count = 0, adding = false, $Contacts = $("#Contacts");
-  $('#contact_tmpl').template('contact');
-  return {
-    list:   function ()
-    {
-      return list;
-    },
-    empty:  function ()
-    {
-      count = 0;
-      adding = false;
-      $Contacts.empty();
-      return this;
-    },
-    init:   function (data)
-    {
-      Contacts.empty();
-      Contacts.addMany(data);
-    },
-    add:    function (data)
-    {
-      Contacts.addMany(data);
-    },
-    addMany:function (data)
-    {
-      var contacts = [];
-      $.each(data, function ($k, $v)
+(function (window,$,undefined){
+  var Contacts = {};
+  (function (){
+    var self = this, blank, count = 0, adding = false, $Contacts = $("#Contacts");
+    $('#contact_tmpl').template('contact');
+
+    this.list=   function ()
       {
-        if (!blank && $v.id === 0) {
-          blank = $v;
-        }
-        $v._k = $k;
-        contacts[contacts.length] = $v;
-      });
-      $.tmpl('contact', contacts).appendTo($Contacts);
-    },
-    setval: function (key, value)
-    {
-      key = key.split('-');
-      if (value !== undefined) {
-        Company.get().contacts[key[1]][key[0]] = value;
+        return list;
+      };
+      this.empty=  function ()
+      {
+        count = 0;
+        adding = false;
+        $Contacts.empty();
+        return this;
+      };
+    this.init=function (data)
+      {
+        self.empty();
+        self.addMany(data);
+      };
+    this.add=    function (data)
+      {
+        self.addMany(data);
+      };
+    this.addMany=function (data)
+      {
+        var contacts = [];
+        $.each(data, function ($k, $v)
+        {
+          if (!blank && $v.id === 0) {
+            blank = $v;
+          }
+          $v._k = $k;
+          contacts[contacts.length] = $v;
+        });
+        $.tmpl('contact', contacts).appendTo($Contacts);
+      };
+    this.setval= function (key, value)
+      {
+        key = key.split('-');
+        if (value !== undefined) {
+          Company.get().contacts[key[1]][key[0]] = value;
+                }
+      };
+    this.New=    function ()
+      {
+        $.tmpl('contact', blank).appendTo($Contacts);
       }
-    },
-    New:    function ()
-    {
-      $.tmpl('contact', blank).appendTo($Contacts);
-    }
-  };
-}();
+
+  }).apply(Contacts);
+  window.Contacts = Contacts
+})(window,jQuery);
+
 var Branches = function ()
 {
   var current = {}, list = $("#branchList"), btn = $("#addBranch");
