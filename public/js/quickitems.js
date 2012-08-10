@@ -87,10 +87,10 @@ $(function () {
   Adv.extend({btnCancel:$("#btnCancel").button().click(function () {
     (Adv.fieldsChanged > 0) ? Adv.revertState() : Adv.resetState();
     return false;
-  }), btnSave:$("#btnSave").button().click(function () {
+  }).hide(), btnSave:$("#btnSave").button().click(function () {
     Items.save();
     return false;
-  })});
+  }).hide()});
   Adv.o.tabs[0] = $("#tabs0");
   Adv.o.tabs[0].delegate("input,textarea,select", "change keypress", function (event) {
     var $this = $(this), $thisname = $this.attr('name'), value;
