@@ -72,13 +72,15 @@
             // will throw it out to the exception handler.
 
             try {
-                eval('?>' . $__contents);
+             $exception   =eval('?>' . $__contents);
+              if ($exception!==null) {
+                Errors::handler(E_ERROR, 'template '.$this->_template." failed to render!<br>");
+              }
             } // If we caught an exception, we'll silently flush the output
                 // buffer so that no partially rendered views get thrown out
                 // to the client and confuse the user with junk.
             catch (\Exception $e) {
                 ob_get_clean();
-                Errors::log($_contents);
                 throw $e;
             }
             if ($return) {

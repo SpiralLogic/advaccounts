@@ -56,9 +56,11 @@
      * @param      $name
      * @param null $icon
      *
-     * @return Application\Module
+     * @return Module
      */
     public function add_module($name, $icon = null) {
+
+
       $module = new Module($name, $icon);
       //array_push($this->modules,$module);
       $this->modules[] = $module;
@@ -70,23 +72,23 @@
      * @param string $link
      * @param string $access
      */
-    public function addLeftFunction($level, $label, $link = "", $access = SA_OPEN) {
-      $this->modules[$level]->leftAppFunctions[] = new Func($label, $link, $access);
-    }
+   // public function addLeftFunction($level, $label, $link = "", $access = SA_OPEN) {
+    //  $this->modules[$level]->leftAppFunctions[] = new Func($label, $link, $access);
+   // }
     /**
      * @param        $level
      * @param        $label
      * @param string $link
      * @param string $access
      */
-    public function addRightFunction($level, $label, $link = "", $access = SA_OPEN) {
-      $this->modules[$level]->rightAppFunctions[] = new Func($label, $link, $access);
-    }
+   // public function addRightFunction($level, $label, $link = "", $access = SA_OPEN) {
+    //  $this->modules[$level]->rightAppFunctions[] = new Func($label, $link, $access);
+   // }
     protected function addExtensions() {
       foreach ($this->extensions as $mod) {
         if (@$mod['active'] && $mod['type'] == 'plugin' && $mod['tab'] == $this->id) {
-          $this->addRightFunction(2, $mod['title'], 'modules/' . $mod['path'] . '/' . $mod['filename'] . '?', isset($mod['access']) ?
-            $mod['access'] : SA_OPEN);
+       //   $this->addRightFunction(2, $mod['title'], 'modules/' . $mod['path'] . '/' . $mod['filename'] . '?', isset($mod['access']) ?
+         //   $mod['access'] : SA_OPEN);
         }
       }
     }

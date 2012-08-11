@@ -37,10 +37,15 @@
           $rb   = (is_numeric($item[4])) ? $item[4] : 0;
         }
         $amount = $item[1];
-        $date   = Dates::dateToSql($item[0]);
-        $result = DB::select('COUNT(*) as count')->from('temprec')->where('date=', $date)->andWhere('amount=', $amount)->andWhere('rb=', $rb)->fetch()->one();
+        $date   = strtotime($item[0]);
+        $date   = date('Y-m-d',$date);
+      try{
+       $result = DB::select('COUNT(*) as count')->from('temprec')->where('date=', $date)->andWhere('amount=', $amount)->andWhere('rb=', $rb)->fetch()->one();
+      }catch(DBSelectException $e) {
+        var_dump(\ADV\Core\DB\DB::i()->queryString);
+      }
         if ($result['count'] == 0) {
-          DB::insert('temprec')->values(['date'=> $date, 'amount'=> $amount, 'memo'=> $memo, 'rb'=> $rb, 'bank_account_id'=> $_POST['bank_account']])->exec();
+         DB::insert('temprec')->values(['date'=> $date, 'amount'=> $amount, 'memo'=> $memo, 'rb'=> $rb, 'bank_account_id'=> $_POST['bank_account']])->exec();
         }
       }
     }

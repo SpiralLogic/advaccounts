@@ -67,6 +67,9 @@
         }
         protected function addPaymentItem()
         {
+            if (!Debtor_Payment::can_process(ST_CUSTPAYMENT)){
+                return false;
+            }
             $cust_currency = Bank_Currency::for_debtor($this->debtor_id);
             $bank_currency = Bank_Currency::for_company($_POST['bank_account']);
             $comp_currency = Bank_Currency::for_company();

@@ -246,7 +246,6 @@
       if ($type == ST_CUSTPAYMENT && Validation::input_num('amount', 0, 0) <= 0) {
         Event::error(_("The balance of the amount and discount is zero or negative. Please enter valid amounts."));
         JS::setFocus('discount');
-
         return false;
       }
       if ($type == ST_CUSTREFUND && Validation::input_num('amount') >= 0) {
