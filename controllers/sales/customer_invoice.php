@@ -298,6 +298,7 @@
     Sales_Invoice::set_delivery_shipping_sum(array_keys($order->src_docs));
   }
   $colspan = 9;
+  Table::foot();
   Row::start();
   Cell::label(_("Shipping Cost"), "colspan=$colspan class='right bold'");
   if (!$order->view_only) {
@@ -317,7 +318,8 @@
   $tax_total     = Tax::edit_items($taxes, $colspan, $order->tax_included, $is_batch_invoice ? 2 : 0);
   $display_total = Num::priceFormat(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
   Row::label(_("Invoice Total"), $display_total, "colspan=$colspan class='right bold'", "class='right'", $is_batch_invoice ? 2 :
-    0);
+    0);Table::footEnd();
+
   Table::end(1);
   Display::div_end();
   Table::start('tablestyle2');
