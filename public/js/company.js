@@ -362,7 +362,7 @@ $(function ()
                                                            ($(this).attr('name') == 'new') ? Adv.resetState() : Adv.revertState();
                                                            return false;
                                                          }),
-                 ContactLog:   $("#contactLog").hide(),
+                 ContactLog:   $("#contactLog").hide()
                });
     Adv.o.tabs[0]=$("#tabs0");Adv.o.tabs[1]=        $("#tabs1").tabs({ select:function (event, ui)
     {
