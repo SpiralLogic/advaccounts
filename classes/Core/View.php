@@ -49,8 +49,8 @@
             // The contents of each view file is cached in an array for the
             // request since partial views may be rendered inside of for
             // loops which could incur performance penalties.
-            //  $__contents = null; // static::$Cache->_get('template.' . $this->_template);
-            $__contents = static::$Cache->_get('template.' . $this->_template);
+            $__contents = null; // static::$Cache->_get('template.' . $this->_template);
+            // $__contents = static::$Cache->_get('template.' . $this->_template);
             if (!$__contents || !is_array($__contents)) {
                 $__contents = file_get_contents($this->_template);
                 $__contents = $this->compile_nothings($__contents);
@@ -72,10 +72,10 @@
             // will throw it out to the exception handler.
 
             try {
-             $exception   =eval('?>' . $__contents);
-              if ($exception!==null) {
-                Errors::handler(E_ERROR, 'template '.$this->_template." failed to render!<br>");
-              }
+                $exception = eval('?>' . $__contents);
+                if ($exception !== null) {
+                    Errors::handler(E_ERROR, 'template ' . $this->_template . " failed to render!<br>");
+                }
             } // If we caught an exception, we'll silently flush the output
                 // buffer so that no partially rendered views get thrown out
                 // to the client and confuse the user with junk.
