@@ -90,6 +90,7 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
       // obj.obj_old is reference of source row
       rd.row_opacity(rd.obj_old, 20, 'White');
       $('.cangroup').addClass('activeclass');
+      $('.done,.deny').css('opacity','.3');
       // display message
     };
     // row was dropped to the source - event handler
@@ -107,6 +108,7 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
       // return source row to its original state
       rd.row_opacity(rd.obj_old, 100);
       $('.cangroup').removeClass('activeclass');
+      $('.done, .deny').css('opacity','1');
       if ($(rd.target_cell).closest('tr').hasClass('cangroup')) {
         Adv.Reconcile.groupSelect.call(rd);
       }
