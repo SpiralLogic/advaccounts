@@ -1790,7 +1790,7 @@ button.ui-button::-moz-focus-inner {
 }
 
 .ui-tabs .ui-tabs-panel {
-  background:            #FFF;
+  background:            #F3F9FE;
   -moz-border-radius:    0;
   -webkit-border-radius: 0;
   border-radius:         0;

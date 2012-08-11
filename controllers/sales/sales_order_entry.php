@@ -21,6 +21,7 @@
    */
   class SalesOrder extends Base
   {
+
     protected $addTitles
       = array(
         ST_SALESQUOTE  => "New Sales Quotation Entry", //
@@ -190,12 +191,14 @@
      * @internal param string $trans_name
      */
     protected function pageComplete($order_no, $trans_type, $edit = false, $update = false) {
+      $edit_trans = '';
       switch ($trans_type) {
         case ST_SALESINVOICE:
           $trans_name = "Invoice";
           break;
         case ST_SALESQUOTE:
           $trans_name = "Quote";
+          $edit_trans = "/sales/sales_order_entry.php?update=$order_no&type=" . $trans_type;
           break;
         case ST_CUSTDELIVERY:
           $trans_name = "Delivery";
@@ -203,12 +206,14 @@
         case ST_SALESORDER:
         default:
           $trans_name = "Order";
+          $edit_trans = "/sales/sales_order_entry.php?update=$order_no&type=" . $trans_type;
       }
+      $new_trans = "/sales/sales_order_entry.php?add=0&type=" . $trans_type;
       $customer = new Debtor($this->Session->getGlobal('debtor_id', 0));
       Event::success(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
       Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
       if ($edit) {
-        Display::submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?update=$order_no&type=" . $trans_type);
+        Display::submenu_option(_("&Edit This " . $trans_name), $edit_trans);
       }
       Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
       echo Reporting::emailDialogue($customer->id, $trans_type, $order_no);
@@ -221,11 +226,11 @@
         Display::submenu_option(_("Dropship this order"), "/purchases/po_entry_items.php?NewOrder=Yes&UseOrder=" . $order_no . "&DRP=1' ");
         Display::submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
         Display::submenu_option(_("Show outstanding &Orders"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
-        Display::submenu_option(_("Enter a New &Order"), "/sales/sales_order_entry.php?add=0&type=" . ST_SALESORDER);
+        Display::submenu_option(_("Enter a New &Order"), $new_trans);
         Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
       } elseif ($trans_type == ST_SALESQUOTE) {
         Display::submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?" . Orders::QUOTE_TO_ORDER . "=$order_no");
-        Display::submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?add=0&type=" . ST_SALESQUOTE);
+        Display::submenu_option(_("Enter a New &Quotation"), $new_trans);
         Display::submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
       } elseif ($trans_type == ST_CUSTDELIVERY) {
         Display::submenu_print(_("&Print Delivery Note"), ST_CUSTDELIVERY, $order_no, 'prtopt');
@@ -234,7 +239,7 @@
         Display::submenu_option(_("Make &Invoice Against This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$order_no");
         ((isset($_GET['Type']) && $_GET['Type'] == 1)) ?
           Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes") :
-          Display::submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?add=0&type=" . ST_CUSTDELIVERY);
+          Display::submenu_option(_("Enter a &New Delivery"), $new_trans);
       } elseif ($trans_type == ST_SALESINVOICE) {
         $sql    = "SELECT trans_type_from, trans_no_from FROM debtor_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . $this->DB->escape($order_no);
         $result = $this->DB->query($sql, "could not retrieve customer allocation");
@@ -246,7 +251,7 @@
         if ((isset($_GET['Type']) && $_GET['Type'] == 1)) {
           Display::submenu_option(_("Enter a &New Template Invoice"), "/sales/inquiry/sales_orders_view.php?InvoiceTemplates=Yes");
         } else {
-          Display::submenu_option(_("Enter a &New Direct Invoice"), "/sales/sales_order_entry.php?add=0&type=10");
+          Display::submenu_option(_("Enter a &New Direct Invoice"), $new_trans);
         }
         Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"));
         if (isset($_GET[ADDED_DI]) && $this->Session->getGlobal('debtor_id') && $row == false) {
@@ -254,8 +259,7 @@
         }
       }
       $this->JS->_setFocus('prtopt');
-      $this->Ajax->_addScript(true, "window.onpopstate=function(event) { window.location.href = '/sales/sales_order_entry?add=0&type=30';}; history.pushState({},'Order Complete','/sales/sales_order_entry');");
-      $this->Ajax->_activate('_page_body');
+      $this->Ajax->_activate('_page_body', $new_trans, $edit_trans ,$this->addTitles[$trans_type]);
       //	UploadHandler::insert($order_no);
       Page::footer_exit();
     }
@@ -332,7 +336,7 @@
         return false;
       }
       //if (Dates::isGreaterThan($this->order->document_date, $_POST['delivery_date'])) {
-      if (Dates::differenceBetween( $_POST['delivery_date'],$_POST['OrderDate'])<0) {
+      if (Dates::differenceBetween($_POST['delivery_date'], $_POST['OrderDate']) < 0) {
         if ($this->order->trans_type == ST_SALESQUOTE) {
           Event::error(_("The requested valid date is before the date of the quotation."));
         } else {

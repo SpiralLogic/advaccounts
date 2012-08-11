@@ -1,6 +1,6 @@
-<div class="btn-group">
+<div class="btn-group  auto">
   {{#foreach $menus as $menu}}
-  <button class="btn btn-mini btn-primary dropdown-toggle" data-toggle="dropdown">{{$menu.title}} <span class="caret"></span></button>
+  <button class="btn btn-mini btn-primary dropdown-toggle auto" data-toggle="dropdown">{{$menu.title}} <span class="caret"></span></button>
   <ul class="dropdown-menu">
     {{#foreach $menu.items as $item}}
     {{#if $item=='divider'}}

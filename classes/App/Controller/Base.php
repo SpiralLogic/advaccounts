@@ -23,13 +23,13 @@
     protected $title;
     /*** @var \User */
     protected $User;
-    /*** @var \Ajax */
+    /*** @var ADV\Core\Ajax */
     protected $Ajax;
     /*** @var Session */
     protected $Session;
     /*** @var \ADV\Core\DB\DB */
     protected $DB;
-    /*** @var \JS */
+    /*** @var JS */
     protected $JS;
     /** @var Input */
     protected $Input;

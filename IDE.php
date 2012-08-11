@@ -1094,12 +1094,6 @@
   {
   }
 
-  /**
-   * @property Ajax i
-   */
-  class Ajax extends ADV\Core\Ajax
-  {
-  }
 
   /**
 

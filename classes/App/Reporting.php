@@ -33,13 +33,13 @@
      *
      * @return string
      */
-    public static function print_doc_link($doc_no, $link_text, $link = true, $type_no, $icon = false, $class = 'button printlink', $id = '', $email = 0, $extra = 0)
+    public static function print_doc_link($doc_no, $link_text, $link = true, $type_no, $icon = false, $class = 'button printlink', $id = '', $email = 0, $extra = 0,$raw=false)
     {
       $url     = '/reporting/prn_redirect.php?';
       $options = static::print_option_array($type_no, $doc_no, $email, $extra);
       $ar      = $options[0];
       $rep     = $options[1];
-      return static::print_link($link_text, $rep, $ar, "", $icon, $class, $id);
+      return static::print_link($link_text, $rep, $ar, "", $icon, $class, $id,$raw);
     }
     /**
      * @static
@@ -218,7 +218,7 @@ JS;
      *
      * @return string
      */
-    public static function print_link($link_text, $rep, $pars = [], $dir = '', $icon = false, $class = 'printlink', $id = '')
+    public static function print_link($link_text, $rep, $pars = [], $dir = '', $icon = false, $class = 'printlink', $id = '',$raw=false)
     {
       if (!static::$User) {
         static::$User = User::i();
@@ -246,6 +246,8 @@ JS;
       if (static::$User->_graphic_links() && $icon) {
         $pars[0] = Forms::setIcon($icon, $pars[0]);
       }
+      if ($raw)return $url;
+
       return "<a target='_blank' href='" . e($url) . "' $id $class $pars[1]>$pars[0]</a>";
     }
     /**

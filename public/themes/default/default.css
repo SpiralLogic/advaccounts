@@ -32,7 +32,7 @@ table {
   text-align: left;
   margin:     0 auto;
 }
-
+/*<editor-fold desc="Form Inputs">*/
 /*--------------------------------------------------\
 | BOOTSTRAP FORMS 									|
 \--------------------------------------------------*/
@@ -944,16 +944,8 @@ legend + .control-group {
 .form-horizontal .form-actions {
   padding-left: 160px;
 }
-
-/*!
-* Bootstrap v2.0.4
-*
-* Copyright 2012 Twitter, Inc
-* Licensed under the Apache License v2.0
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Designed and built with all the love in the world @twitter by @mdo and @fat.
-*/
+/*</editor-fold>*/
+/*<editor-fold desc="Buttons">*/
 .btn {
   display:               inline-block;
   *display:              inline;
@@ -1713,7 +1705,8 @@ input[type="submit"].btn.btn-mini {
   border-right-width: 5px;
   border-top-width:   5px;
 }
-
+/*</editor-fold>*/
+/*<editor-fold desc="Modal">*/
 .modal-open .dropdown-menu {
   z-index: 2050;
 }
@@ -1856,7 +1849,8 @@ input[type="submit"].btn.btn-mini {
   opacity:             0.75;
   filter:              alpha(opacity = 75);
 }
-
+/*</editor-fold>*/
+/*<editor-fold desc="Tooltip">*/
 .tooltip {
   position:   absolute;
   z-index:    1020;
@@ -1942,7 +1936,8 @@ input[type="submit"].btn.btn-mini {
   width:    0;
   height:   0;
 }
-
+/*</editor-fold>*/
+/*<editor-fold desc="Drop Downs">*/
 .dropup,
 .dropdown {
   position: relative;
@@ -2102,7 +2097,8 @@ input[type="submit"].btn.btn-mini {
 .collapse.in {
   height: auto;
 }
-
+/*</editor-fold>*/
+/*<editor-fold desc="Navigation">*/
 .nav {
   margin-left:   0;
   margin-bottom: 18px;
@@ -2350,7 +2346,8 @@ input[type="submit"].btn.btn-mini {
   opacity:             1;
   filter:              alpha(opacity = 100);
 }
-
+/*</editor-fold>*/
+/*<editor-fold desc="Tabs">*/
 .tabs-stacked .open > a:hover {
   border-color: #999999;
 }
@@ -2475,7 +2472,7 @@ input[type="submit"].btn.btn-mini {
 /*--------------------------------------------------\
 | END BOOTSTRAP FORMS 									|
 \--------------------------------------------------*/
-
+/*</editor-fold>*/
 label {
   padding: 2px 5px;
 }
@@ -2613,7 +2610,7 @@ img {
 .js input.combo2, .js *[data-aspect=fallback] {
   display: none;
 }
-
+/*<editor-fold desc="Sidemnu">*/
 /*--------------------------------- SIDEMENU -----------------------------------------------------------------*/
 #sidemenu {
   margin:      0;
@@ -2668,7 +2665,8 @@ img {
 }
 
 /*--------------------------------- END SIDEMENU -----------------------------------------------------------------*/
-
+/*</editor-fold>*/
+/*<editor-fold desc="Top">*/
 /*--------------------------------- TOP -----------------------------------------------------------------*/
 
 #top {
@@ -2726,7 +2724,8 @@ img {
 }
 
 /*--------------------------------- END TOP -----------------------------------------------------------------*/
-
+/*</editor-fold>*/
+/*<editor-fold desc="Summary">*/
 /*--------------------------------- SUMMARY -----------------------------------------------------------------*/
 #summary {
   position:           fixed;
@@ -2781,19 +2780,8 @@ img {
 }
 
 /*--------------------------------- END SUMMARY -----------------------------------------------------------------*/
-/*--------------------------------- AUTOLOADED -----------------------------------------------------------------*/
-#autoloaded {
-  margin: 10px auto;
-  width:  75%;
-}
-
-#autoloaded td {
-  margin:      0 30px;
-  line-height: 11px;
-}
-
-/*--------------------------------- END AUTOLOADED -----------------------------------------------------------------*/
-
+/*</editor-fold>*/
+/*<editor-fold desc="Top Menu">*/
 /*--------------------------------- TOP MENU -----------------------------------------------------------------*/
 #topmenu {
   text-align:     left;
@@ -2897,6 +2885,8 @@ img {
 }
 
 /*--------------------------------- END TOP MENU -----------------------------------------------------------------*/
+/*</editor-fold>*/
+/*<editor-fold desc="Menu Groups">*/
 /*--------------------------------- MENU GROUPS -----------------------------------------------------------------*/
 .menu_group {
   font-size:        13px;
@@ -2944,9 +2934,9 @@ img {
   background: -o-linear-gradient(top, #ffe08c 0%, #febf04 100%);
   background: -ms-linear-gradient(top, #ffe08c 0%, #febf04 100%);
 }
-
+/*</editor-fold>*/
 /*--------------------------------- MENU GROUPS -----------------------------------------------------------------*/
-
+/*<editor-fold desc="Wrapper">*/
 /*--------------------------------- WRAPPER -----------------------------------------------------------------*/
 #wrapper {
   clear:   left;
@@ -3009,7 +2999,7 @@ img {
   background: linear-gradient(top, #db4a4a 0, #fffefe 150px);
   filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#db4a4a', endColorstr = '#fffefe', GradientType = 0);
 }
-
+/*</editor-fold>*/
 /*--------------------------------- END WRAPPER -----------------------------------------------------------------*/
 /*--------------------------------- MSGBOX -----------------------------------------------------------------*/
 
@@ -3288,6 +3278,7 @@ table.tablestyle td {
   border:              1px solid #e1e1e1;
   border-top-color:    #dcdcdc;
   border-bottom-color: #dcdcdc;
+  vertical-align: top;
 }
 
 table.tablestyle2 {

@@ -27,7 +27,7 @@
          * @var array
          */
         public $rightAppFunctions = [];
-        /**
+      /**
          * @param      $name
          * @param null $icon
          */
@@ -64,4 +64,5 @@
             $this->rightAppFunctions[] = $appfunction;
             return $appfunction;
         }
+
     }

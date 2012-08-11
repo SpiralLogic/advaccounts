@@ -27,6 +27,7 @@
    */
   class Ajax extends \JsHttpRequest
   {
+
     use Traits\StaticAccess;
 
     /**
@@ -37,6 +38,9 @@
      * @var array
      */
     protected $triggers = [];
+    /**
+
+     */
     public function __construct() {
       $enc = (session_status() == PHP_SESSION_ACTIVE) ? $_SESSION['language']->encoding : 'UTF-8';
       parent::__construct($enc);
@@ -45,12 +49,21 @@
      *   This function is used in ctrl routines to activate
      *   update of ajaxified html element selected by given name/id.
      *
-     * @param $trigname
+     * @param      $trigname
+     * @param null $newurl
+     * @param null $historyurl
+     * @param      $title
      *
      * @return void
      */
-    public function _activate($trigname) {
-      ($this->_inAjax()) and $this->triggers[$trigname] = true;
+    public function _activate($trigname,$newurl=null,$historyurl=null,$title=null) {
+      if ($this->_inAjax()) {
+        $this->triggers[$trigname] = true;
+        if ($historyurl){
+                $this->_addScript(true,"window.onpopstate=function(event) { window.location.href = '$historyurl';};history.pushState({},'" . $title . "','" . $newurl. "');");
+              }
+      }
+
     }
     /**
      *   Javascript clientside redirection.
@@ -61,7 +74,7 @@
      * @return void
      */
     public function _redirect($url) {
-      if ($this->_inAjax()) {
+      if ($this->isActive()) {
         $this->addCommand(true, array('n' => 'rd'), $this->_absoluteURL($url));
         $this->_run();
       }
@@ -85,8 +98,7 @@
      * @return Ajax
      */
     public function _addScript($trigger, $sJS) {
-      $this->addCommand($trigger, array('n' => 'js'), $sJS);
-
+      $this->addCommand($trigger, array('n' => 'js'), $sJS, 'js');
       return $this;
     }
     /**
@@ -101,9 +113,8 @@
      */
     public function _addAssign($trigger, $sTarget, $sAttribute, $sData) {
       $this->addCommand($trigger, array(
-                                       'n' => 'as', 't' => $sTarget, 'p' => $sAttribute
-                                  ), $sData);
-
+        'n' => 'as', 't' => $sTarget, 'p' => $sAttribute
+      ), $sData);
       return $this;
     }
     /**
@@ -117,9 +128,8 @@
      */
     public function _addUpdate($trigger, $sTarget, $sData) {
       $this->addCommand($trigger, array(
-                                       'n' => 'up', 't' => $sTarget
-                                  ), $sData);
-
+        'n' => 'up', 't' => $sTarget
+      ), $sData);
       return $this;
     }
     /**
@@ -133,9 +143,8 @@
      */
     public function _addDisable($trigger, $sTarget, $sData = true) {
       $this->addCommand($trigger, array(
-                                       'n' => 'di', 't' => $sTarget
-                                  ), $sData);
-
+        'n' => 'di', 't' => $sTarget
+      ), $sData);
       return $this;
     }
     /**
@@ -149,9 +158,8 @@
      */
     public function _addEnable($trigger, $sTarget, $sData = true) {
       $this->addCommand($trigger, array(
-                                       'n' => 'di', 't' => $sTarget
-                                  ), !$sData);
-
+        'n' => 'di', 't' => $sTarget
+      ), !$sData);
       return $this;
     }
     /**
@@ -163,8 +171,7 @@
      * @return Ajax
      */
     public function _addFocus($trigger, $sTarget) {
-      $this->addCommand($trigger, array('n' => 'fc'), $sTarget);
-
+      $this->addCommand($trigger, array('n' => 'fc'), $sTarget, 'fc');
       return $this;
     }
     /**
@@ -176,12 +183,15 @@
      *
      * @return void
      */
-    protected function addCommand($trigger, $aAttributes, $mData) {
+    protected function addCommand($trigger, $aAttributes, $mData, $special = null) {
       if ($this->isActive() && ($trigger !== false)) {
         //		Event::error('adding '.$trigger.':'.htmlentities($mData));
         $aAttributes['why']  = $trigger;
         $aAttributes['data'] = $mData;
-        $this->aCommands[]   = $aAttributes;
+        if ($special) {
+          $this->aCommands[$special] = $aAttributes;
+        }
+        $this->aCommands[] = $aAttributes;
       }
     }
     /**
@@ -201,12 +211,10 @@
         } else {
           if ($com['n'] == 'up' && $com['t'] == '_page_body') {
             $cmds = array($com);
-            foreach ($this->aCommands as $cmd) {
-              if ($cmd['n'] == 'fc') { // save focus
-                $cmds[] = $cmd;
-                break;
-              }
+            if ($this->aCommands['fc']) {
+              $cmds[] = $this->aCommands['fc'];
             }
+            if ($this->aCommands['js']) $cmds[] = $this->aCommands['js'];
             $this->aCommands = $cmds;
             break;
           }

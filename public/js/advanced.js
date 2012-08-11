@@ -268,6 +268,7 @@ Adv.extend({
              }}});
 Adv.extend({Forms:(function ()
 {
+  Adv.o.wrapper.on('mouseenter mouseleave','.btn-group.auto',function(e){var $this = $(this),closetimer;window.clearTimeout(closetimer);if (e.type==='mouseenter') $this.find('ul').css('display','block');if (e.type==='mouseleave') closetimer = window.setTimeout(function(){$this.find('ul').css('display','none')},300);})
 //	var i = document.createElement("input");
   //i.setAttribute("type", "date");
   //if (i.type == "text") {
@@ -349,7 +350,7 @@ Adv.extend({Forms:(function ()
     autocomplete:   function (id, url, callback)
     {
       var $this, els = Adv.Forms.findInputEl(id);
-      Adv.Forms.findInputEl(id);
+if (!els.legnth) return;
       Adv.o.autocomplete[id] = $this = $(els).autocomplete({
                                                              minLength:2,
                                                              delay:    400,

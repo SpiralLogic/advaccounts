@@ -45,7 +45,7 @@
             $module = $this->add_module(_('Payments and Customers'));
             $module->addLeftFunction('', '');
             $module->addLeftFunction(_('New Customer &Payment'), '/sales/customer_payments?', SA_SALESPAYMNT);
-            $module->addLeftFunction(_('New Customer &Refund'), '/sales/customer_refunds?', SA_SALESREFUND);
+          //  $module->addLeftFunction(_('New Customer &Refund'), '/sales/customer_refunds?', SA_SALESREFUND);
             $module->addLeftFunction(_('New Customer &Credit'), '/sales/credit_note_entry?NewCredit=Yes', SA_SALESCREDIT);
             $module->addLeftFunction(_('&Allocate Customer Payments or Credits'), '/sales/allocations/customer_allocation_main?', SA_SALESALLOC);
             $module->addLeftFunction(_('Search Customer A&llocations'), '/sales/inquiry/customer_allocation_inquiry?', SA_SALESALLOC);
