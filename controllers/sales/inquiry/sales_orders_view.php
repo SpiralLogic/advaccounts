@@ -16,7 +16,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   // first check is this is not start page call
   class SalesOrderInquiry extends \ADV\App\Controller\Base
   {
-
     protected $security;
     protected $trans_type;
     protected $debtor_id;
@@ -137,12 +136,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
     }
     protected function displayTable() { //	Orders inquiry table
       //
-      $sql
-        = "SELECT
+      $sql = "SELECT
  		sorder.trans_type,
  		sorder.order_no,
- 		sorder.reference," . ($_POST['order_view_mode'] == 'InvoiceTemplates' || $_POST['order_view_mode'] == 'DeliveryTemplates' ?
-        "sorder.comments, " : "sorder.customer_ref, ") . "
+ 		sorder.reference," . ($_POST['order_view_mode'] == 'InvoiceTemplates' || $_POST['order_view_mode'] == 'DeliveryTemplates' ? "sorder.comments, " : "sorder.customer_ref, ") . "
  		sorder.ord_date,
  		sorder.delivery_date,
  		debtor.name,
@@ -166,8 +163,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       } else {
         $sql .= " AND sorder.trans_type = " . $this->trans_type;
       }
-      $sql
-        .= " AND sorder.debtor_id = debtor.debtor_id
+      $sql .= " AND sorder.debtor_id = debtor.debtor_id
  		AND sorder.branch_id = branch.branch_id
  		AND debtor.debtor_id = branch.debtor_id";
       if ($this->debtor_id != -1) {
@@ -185,14 +181,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
             continue;
           }
           $quicksearch = DB::quote("%" . trim($quicksearch) . "%");
-          $sql
-            .= " AND ( debtor.debtor_id = $quicksearch OR debtor.name LIKE $quicksearch OR sorder.order_no LIKE $quicksearch
+          $sql .= " AND ( debtor.debtor_id = $quicksearch OR debtor.name LIKE $quicksearch OR sorder.order_no LIKE $quicksearch
  			OR sorder.reference LIKE $quicksearch OR sorder.contact_name LIKE $quicksearch
  			OR sorder.customer_ref LIKE $quicksearch
  			 OR sorder.customer_ref LIKE $quicksearch OR branch.br_name LIKE $quicksearch)";
         }
-        $sql
-          .= " GROUP BY sorder.ord_date,
+        $sql .= " GROUP BY sorder.ord_date,
  				 sorder.order_no,
  				sorder.debtor_id,
  				sorder.branch_id,
@@ -223,8 +217,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
         ) {
           $sql .= " AND sorder.type=1";
         }
-        $sql
-          .= " GROUP BY sorder.ord_date,
+        $sql .= " GROUP BY sorder.ord_date,
  sorder.order_no,
  				sorder.debtor_id,
  				sorder.branch_id,
@@ -235,17 +228,14 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       if ($this->trans_type == ST_SALESORDER) {
         $ord  = "Order #";
         $cols = array(
-          array('type' => 'skip'),
-          _("Order #")  => array('fun' => [$this, 'formatRef'], 'ord' => ''), //
-          _("Ref")      => array('ord' => ''), //
-          _("PO#")      => array('ord' => ''), //
-          _("Date")     => array('type' => 'date', 'ord' => 'asc'), //
-          _("Required") => array('type' => 'date', 'ord' => ''), //
-          _("Customer") => array('ord' => 'asc'), //
-          array('type' => 'skip'),
-          _("Branch")   => array('ord' => ''), //
-          _("Address"),
-          _("Total")    => array('type' => 'amount', 'ord' => ''),
+          array('type' => 'skip'), _("Order #")  => array('fun' => [$this, 'formatRef'], 'ord' => ''), //
+          _("Ref")                               => array('ord' => ''), //
+          _("PO#")                               => array('ord' => ''), //
+          _("Date")                              => array('type' => 'date', 'ord' => 'asc'), //
+          _("Required")                          => array('type' => 'date', 'ord' => ''), //
+          _("Customer")                          => array('ord' => 'asc'), //
+          array('type' => 'skip'), _("Branch")   => array('ord' => ''), //
+          _("Address"), _("Total")               => array('type' => 'amount', 'ord' => ''),
         );
       } else {
         $ord  = "Quote #";
@@ -256,8 +246,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
           _("PO#")         => array('type' => 'skip'), //
           _("Date")        => array('type' => 'date', 'ord' => 'desc'), //
           _("Valid until") => array('type' => 'date', 'ord' => ''), //
-          _("Customer")    => array('ord' => 'asc'),
-          array('type' => 'skip'), //
+          _("Customer")    => array('ord' => 'asc'), array('type' => 'skip'), //
           _("Branch")      => array('ord' => ''), //
           _("Delivery To"), //
           _("Total")       => array('type' => 'amount', 'ord' => ''), //
@@ -274,9 +263,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
           Arr::append($cols, array(array('insert' => true, 'fun' => [$this, 'formatDeliveryBtn2'])));
         } elseif ($this->trans_type == ST_SALESQUOTE || $this->trans_type == ST_SALESORDER) {
           Arr::append($cols, array(
-            array('insert' => true, 'fun' => [$this, 'formatOrderBtn']), //
-            array('insert' => true, 'fun' => [$this, 'formatDropdown']) //
-          ));
+                                  array('insert' => true, 'fun' => [$this, 'formatDropdown']) //
+                             ));
         }
       }
       $table = DB_Pager::new_db_pager('orders_tbl', $sql, $cols, null, null, 0, 4);
@@ -343,9 +331,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
      * @return string
      */
     function formatOrderBtn($row) {
-      if ($row['trans_type'] == ST_SALESQUOTE) {
-        return DB_Pager::link(_("Create Order"), "/sales/sales_order_entry?QuoteToOrder=" . $row['order_no'], ICON_DOC);
-      }
       $name  = "chgtpl" . $row['order_no'];
       $value = $row['type'] ? 1 : 0;
       // save also in hidden field for testing during 'Update'
@@ -374,11 +359,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
      * @return string
      */
     function formatProformaBtn($row) {
-      return Reporting::print_doc_link($row['order_no'], _("Proforma"), true, ($row['trans_type'] == ST_SALESORDER ?
-        ST_PROFORMA : ST_PROFORMAQ), ICON_PRINT, 'button printlink');
+      return Reporting::print_doc_link($row['order_no'], _("Proforma"), true, ($row['trans_type'] == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), ICON_PRINT, 'button printlink');
     }
     /**
-     *
      * @param $row
      *
      * @return string
@@ -390,12 +373,15 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       $dropdown = new View('ui/dropdown');
       $title    = 'Menu';
       $items[]  = ['label'=> 'Edit', 'href'=> '/sales/sales_order_entry?update=' . $row['order_no'] . "&type=" . $row['trans_type']];
-      $items[]  = ['class'=> 'email-button', 'label'=> 'Email', 'href'=> '#', 'data'=> ['emailid' => $row['debtor_id'] . '-' . $row['trans_type'] . '-' . $row['order_no']]];
-      $href = Reporting::print_doc_link($row['order_no'], _("Proforma"), true, ($row['trans_type'] == ST_SALESORDER ?ST_PROFORMA : ST_PROFORMAQ), ICON_PRINT, 'button printlink','',0,0,true);
-      $items[]  = ['class'=> 'printlink', 'label'=> 'Proforma', 'href'=> $href];
-      $href = Reporting::print_doc_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT, 'button printlink','',0,0,true);
-      $items[]  = ['class'=> 'printlink', 'label'=> 'Print', 'href'=> $href];
-      $menus[] = ['title'=> $title, 'items'=> $items];
+      if ($row['trans_type'] == ST_SALESQUOTE) {
+        $items[] = ['label'=> "Create Order", "/sales/sales_order_entry?QuoteToOrder=" . $row['order_no']];
+      }
+      $items[] = ['class'=> 'email-button', 'label'=> 'Email', 'href'=> '#', 'data'=> ['emailid' => $row['debtor_id'] . '-' . $row['trans_type'] . '-' . $row['order_no']]];
+      $href    = Reporting::print_doc_link($row['order_no'], _("Proforma"), true, ($row['trans_type'] == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), ICON_PRINT, 'button printlink', '', 0, 0, true);
+      $items[] = ['class'=> 'printlink', 'label'=> 'Print Proforma', 'href'=> $href];
+      $href    = Reporting::print_doc_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT, 'button printlink', '', 0, 0, true);
+      $items[] = ['class'=> 'printlink', 'label'=> 'Print', 'href'=> $href];
+      $menus[] = ['title'=> $items[0]['label'], 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
       $dropdown->set('menus', $menus);
       return $dropdown->render(true);
     }

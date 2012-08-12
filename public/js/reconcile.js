@@ -99,6 +99,7 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
     {
       // make source row completely visible (no opacity)
       rd.row_opacity(rd.obj_old, 100);
+      $('.done, .deny').css('opacity','1');
       $('.cangroup').removeClass('activeclass');
       // display message
       return false;

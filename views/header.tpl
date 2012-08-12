@@ -12,5 +12,5 @@
   <script src='{{$script}}'></script>
   {{/foreach}}
 </head>
-<body {{$class?}}class='{{$class}}'{{/$class?}}>
+<body {{$body_class?}}class='{{$body_class}}'{{/$body_class?}}>
 <div id='content'>

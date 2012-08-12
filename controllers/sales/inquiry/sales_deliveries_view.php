@@ -61,7 +61,7 @@
   Table::start('tablestyle_noborder');
   Row::start();
   Debtor::cells(_('Customer:'), 'debtor_id', null, true);
-  Forms::refCells(_("#:"), 'DeliveryNumber', '', null, '', true);
+  Forms::refCellsSearch(_("#:"), 'DeliveryNumber', '', null, '', true);
   Forms::dateCells(_("from:"), 'DeliveryAfterDate', '', null, -30);
   Forms::dateCells(_("to:"), 'DeliveryToDate', '', null, 1);
   Inv_Location::cells(_("Location:"), 'StockLocation', null, true);
