@@ -24,8 +24,8 @@
      * @param        $labels
      * @param string $params
      */
-    static function header($labels, $params = '') {
-      echo '<thead><tr>';
+    static function header($labels, $params = '',$extra=null) {
+      echo '<thead><tr>'.$extra;
       $labels = (array) $labels;
       foreach ($labels as $label) {
         Cell::labelHeader($label, $params);

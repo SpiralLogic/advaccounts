@@ -252,21 +252,16 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
           _("Total")       => array('type' => 'amount', 'ord' => ''), //
         );
       }
-      if ($_POST['order_view_mode'] == 'OutstandingOnly') {
-        Arr::append($cols, array(['type' => 'skip'], array('fun' => [$this, 'formatDeliveryBtn'])));
-      } elseif ($_POST['order_view_mode'] == 'InvoiceTemplates') {
+      if ($_POST['order_view_mode'] == 'InvoiceTemplates') {
         Arr::substitute($cols, 3, 1, _("Description"));
         Arr::append($cols, array(array('insert' => true, 'fun' => [$this, 'formatInvoiceBtn'])));
       } else {
         if ($_POST['order_view_mode'] == 'DeliveryTemplates') {
           Arr::substitute($cols, 3, 1, _("Description"));
           Arr::append($cols, array(array('insert' => true, 'fun' => [$this, 'formatDeliveryBtn2'])));
-        } elseif ($this->trans_type == ST_SALESQUOTE || $this->trans_type == ST_SALESORDER) {
-          Arr::append($cols, array(
-                                  array('insert' => true, 'fun' => [$this, 'formatDropdown']) //
-                             ));
         }
       }
+      Arr::append($cols, [['insert' => true, 'fun' => [$this, 'formatDropdown']]]);
       $table = DB_Pager::new_db_pager('orders_tbl', $sql, $cols, null, null, 0, 4);
       $table->setMarker([$this, 'formatMarker'], _("Marked items are overdue."));
       $table->width = "80%";
@@ -300,30 +295,28 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
      */
     function formatDeliveryBtn($row) {
       if ($row['trans_type'] == ST_SALESORDER) {
-        return DB_Pager::link(_("Dispatch"), "/sales/customer_delivery.php?OrderNumber=" . $row['order_no'], ICON_DOC);
-      } else {
-        return DB_Pager::link(_("Sales Order"), "/sales/sales_order_entry.php?OrderNumber=" . $row['order_no'], ICON_DOC);
+        return ['label'=> _("Dispatch"), 'href'=> "/sales/customer_delivery.php?OrderNumber=" . $row['order_no']];
       }
+      return ['label'=> _("Sales Order"), 'href'=> "/sales/sales_order_entry.php?OrderNumber=" . $row['order_no']];
     }
     /**
      * @param $row
      *
      * @return string
      */
-    function formatInvoiceBtn($row) {
+    function formatInvoiceTemplateBtn($row) {
       if ($row['trans_type'] == ST_SALESORDER) {
-        return DB_Pager::link(_("Invoice"), "/sales/sales_order_entry.php?NewInvoice=" . $row["order_no"], ICON_DOC);
-      } else {
-        return '';
+        return ['label'=> _("Invoice"), 'href'=> "/sales/sales_order_entry.php?NewInvoice=" . $row['order_no']];
       }
+      return '';
     }
     /**
      * @param $row
      *
      * @return string
      */
-    function formatDeliveryVBtn2($row) {
-      return DB_Pager::link(_("Delivery"), "/sales/sales_order_entry.php?NewDelivery=" . $row['order_no'], ICON_DOC);
+    function formatDeliveryTemplateBtn($row) {
+      return ['label'=> _("Delivery"), 'href'=> "/sales/sales_order_entry.php?NewDelivery=" . $row['order_no']];
     }
     /**
      * @param $row
@@ -353,14 +346,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
     function formatEmailBtn($row) {
       return Reporting::emailDialogue($row['debtor_id'], $row['trans_type'], $row['order_no']);
     }
-    /**
-     * @param $row
-     *
-     * @return string
-     */
-    function formatProformaBtn($row) {
-      return Reporting::print_doc_link($row['order_no'], _("Proforma"), true, ($row['trans_type'] == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), ICON_PRINT, 'button printlink');
-    }
+
     /**
      * @param $row
      *
@@ -371,16 +357,27 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
     }
     function formatDropdown($row) {
       $dropdown = new View('ui/dropdown');
-      $title    = 'Menu';
-      $items[]  = ['label'=> 'Edit', 'href'=> '/sales/sales_order_entry?update=' . $row['order_no'] . "&type=" . $row['trans_type']];
-      if ($row['trans_type'] == ST_SALESQUOTE) {
-        $items[] = ['label'=> "Create Order", "/sales/sales_order_entry?QuoteToOrder=" . $row['order_no']];
+      switch ($_POST['order_view_mode']) {
+        case 'OutstandingOnly':
+          $items[] = $this->formatDeliveryBtn($row);
+          break;
+        case 'InvoiceTemplates':
+          $items[] = $this->formatInvoiceTemplateBtn($row);
+          break;
+        case 'DeliveryTemplates':
+          $items[] = $this->formatDeliveryTemplateBtn($row);
+          break;
+        default:
+          $items[] = ['label'=> 'Edit', 'href'=> '/sales/sales_order_entry?update=' . $row['order_no'] . "&type=" . $row['trans_type']];
+          if ($row['trans_type'] == ST_SALESQUOTE) {
+            $items[] = ['label'=> "Create Order", "/sales/sales_order_entry?QuoteToOrder=" . $row['order_no']];
+          }
+          $items[] = ['class'=> 'email-button', 'label'=> 'Email', 'href'=> '#', 'data'=> ['emailid' => $row['debtor_id'] . '-' . $row['trans_type'] . '-' . $row['order_no']]];
+          $href    = Reporting::print_doc_link($row['order_no'], _("Proforma"), true, ($row['trans_type'] == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), ICON_PRINT, 'button printlink', '', 0, 0, true);
+          $items[] = ['class'=> 'printlink', 'label'=> 'Print Proforma', 'href'=> $href];
+          $href    = Reporting::print_doc_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT, 'button printlink', '', 0, 0, true);
+          $items[] = ['class'=> 'printlink', 'label'=> 'Print', 'href'=> $href];
       }
-      $items[] = ['class'=> 'email-button', 'label'=> 'Email', 'href'=> '#', 'data'=> ['emailid' => $row['debtor_id'] . '-' . $row['trans_type'] . '-' . $row['order_no']]];
-      $href    = Reporting::print_doc_link($row['order_no'], _("Proforma"), true, ($row['trans_type'] == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), ICON_PRINT, 'button printlink', '', 0, 0, true);
-      $items[] = ['class'=> 'printlink', 'label'=> 'Print Proforma', 'href'=> $href];
-      $href    = Reporting::print_doc_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT, 'button printlink', '', 0, 0, true);
-      $items[] = ['class'=> 'printlink', 'label'=> 'Print', 'href'=> $href];
       $menus[] = ['title'=> $items[0]['label'], 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
       $dropdown->set('menus', $menus);
       return $dropdown->render(true);

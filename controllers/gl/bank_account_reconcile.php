@@ -472,7 +472,7 @@
         }
         $title = ($row['type'] == ST_GROUPDEPOSIT) ? 'Group' : substr($row['ref'], 0, 7);
       }
-      $menus[] = ['title'=> $title, 'items'=> $items];
+      $menus[] = ['title'=> $title,'auto'=>'auto', 'items'=> $items];
       $dropdown->set('menus', $menus);
       return $dropdown->render(true);
     }

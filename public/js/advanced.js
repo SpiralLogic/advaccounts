@@ -248,11 +248,11 @@ Adv.extend({Forms:(function () {
     closetimer:null,
     open:function (el) {
       menu.close();
-      menu.current = el.find('ul').css('display', 'block');
+      menu.current = el.find('ul').stop(true,true).show('');
     },
     close:function () {
       if (menu.current !== null) {
-        menu.current.css('display', 'none');
+        menu.current.stop(true,true).hide('');
       }
       menu.current = null;
     }

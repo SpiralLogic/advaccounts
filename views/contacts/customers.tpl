@@ -1,4 +1,4 @@
-{{#if !$frame}}
+{{#if !$frame }}
 <div id='companysearch' class='center bold font13 pad20'>
   <label for='customer'>Search Customer:&nbsp;<input name='customer' placeholder='Customer' id='customer' type='text' autofocus></label>
 </div>

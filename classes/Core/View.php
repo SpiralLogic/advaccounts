@@ -49,8 +49,8 @@
             // The contents of each view file is cached in an array for the
             // request since partial views may be rendered inside of for
             // loops which could incur performance penalties.
-            $__contents = null; // static::$Cache->_get('template.' . $this->_template);
-            // $__contents = static::$Cache->_get('template.' . $this->_template);
+            // $__contents = null; // static::$Cache->_get('template.' . $this->_template);
+            $__contents = static::$Cache->_get('template.' . $this->_template);
             if (!$__contents || !is_array($__contents)) {
                 $__contents = file_get_contents($this->_template);
                 $__contents = $this->compile_nothings($__contents);
@@ -74,7 +74,10 @@
             try {
                 $exception = eval('?>' . $__contents);
                 if ($exception !== null) {
-                    Errors::handler(E_ERROR, 'template ' . $this->_template . " failed to render!<br>");
+                  ob_start();
+                  var_dump($__contents);
+                  $contents=ob_get_clean();
+                    Errors::handler(E_ERROR, 'template ' . $this->_template . " failed to render!<pre>".$contents);
                 }
             } // If we caught an exception, we'll silently flush the output
                 // buffer so that no partially rendered views get thrown out
@@ -118,7 +121,7 @@
          */
         protected static function compile_dot_notation($value)
         {
-            return preg_replace('/(\$[a-zA-Z_0-9]*?)\.([a-zA-Z_0-9-]+)/', '$1["$2"]', $value);
+            return preg_replace('/(\$[a-zA-Z_0-9]+?)\.([a-zA-Z_0-9-]+)/', '$1["$2"]', $value);
         }
         /**
          * @static
@@ -129,7 +132,7 @@
          */
         protected static function compile_functions($value)
         {
-            return preg_replace('/\{#(.+?)#\}/', '<?php $1; ?>', $value);
+            return preg_replace('/([^{])\{#(.+?)#\}([^}])/', '$1<?php $2; ?>$3', $value);
         }
         /**
          * @static
@@ -140,8 +143,8 @@
          */
         protected static function compile_nothings($value)
         {
-            $pattern = '/(\s*)\{\{(.+?)\?\}\}(.*)\{\{\/\2\?\}\}(\s*)/';
-            return preg_replace($pattern, '$1<?php if(isset($2) && $2): ?>$3<?php endif; ?>$4', $value);
+            $pattern = '/\{\{(.+?)\?\}\}(.+)\{\{\/\1\?\}\}/s';
+            return preg_replace($pattern, '<?php if(isset($1) && $1): ?>$2<?php endif; ?>', $value);
         }
         /**
          * Rewrites Blade structure openings into PHP structure openings.
@@ -152,8 +155,8 @@
          */
         protected static function compile_structure_openings($value)
         {
-            $pattern = '/(\s*)\{\{#(if|elseif|foreach|for|while)(.*?)\}\}(\s*)/';
-            return preg_replace($pattern, '$1<?php $2($3): ?>$4', $value);
+            $pattern = '/\{\{#(if|elseif|foreach|for|while)(.*?)\}\}/';
+            return preg_replace($pattern, '<?php $1($2): ?>', $value);
         }
         /**
          * Rewrites Blade structure closings into PHP structure closings.
@@ -164,8 +167,8 @@
          */
         protected static function compile_structure_closings($value)
         {
-            $pattern = '/(\s*)\{\{\/(if|foreach|for|while) *?\}\}(\s*)/';
-            return preg_replace($pattern, '$1<?php end$2; ?>$3', $value);
+            $pattern = '/\{\{\/(if|foreach|for|while)\}\}/';
+            return preg_replace($pattern, '<?php end$1; ?>', $value);
         }
         /**
          * Rewrites Blade else statements into PHP else statements.
@@ -176,7 +179,7 @@
          */
         protected static function compile_else($value)
         {
-            return preg_replace('/(\s*)\{\{#(else) ?\}\}(\s*)/', '$1<?php $2: ?>$3', $value);
+            return preg_replace('/\{\{#(else)\}\}/', '<?php $1: ?>', $value);
         }
         /**
          * @param      $offset

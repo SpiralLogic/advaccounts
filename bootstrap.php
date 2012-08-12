@@ -17,7 +17,7 @@
     include $XHPROF_ROOT . "/xhprof_lib/config.php";
     include $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
     include $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
-    xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
+    xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY + XHPROF_FLAGS_NO_BUILTINS );
     register_shutdown_function(function() {
       register_shutdown_function(function() {
         $profiler_namespace = $_SERVER["SERVER_NAME"]; // namespace for your application
