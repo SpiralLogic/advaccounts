@@ -48,7 +48,8 @@ jQuery.extend(jQuery.easing, {
     this.o.wrapper = $("#wrapper");
     this.o.autocomplete = {};
     $(this.loader).ajaxStart(function () {
-      Adv.loader.on();
+      Adv.loader.on();  loadScroll=[window.scrollX,window.scrollY];
+
       if (Adv.debug.ajax) {
         console.time('ajax')
       }
@@ -248,11 +249,11 @@ Adv.extend({Forms:(function () {
     closetimer:null,
     open:function (el) {
       menu.close();
-      menu.current = el.find('ul').stop(true,true).show('');
+      menu.current = el.find('ul').stop(true, true).show('');
     },
     close:function () {
       if (menu.current !== null) {
-        menu.current.stop(true,true).hide('');
+        menu.current.stop(true, true).hide('');
       }
       menu.current = null;
     }
@@ -261,15 +262,16 @@ Adv.extend({Forms:(function () {
     if (menu.closetimer) {
       window.clearTimeout(menu.closetimer);
     }
-      menu.open($(this).parent());
+    menu.open($(this).parent());
   });
   Adv.o.wrapper.on('mouseleave', '.btn-group', function (e) {
-      menu.closetimer = window.setTimeout(menu.close, 300);
+    menu.closetimer = window.setTimeout(menu.close, 300);
   });
 
   Adv.o.wrapper.on('click', '.btn-split', function () {
-    var  url = $(this).parent().find('a').eq(0).attr('href');
-    window.open(url,'_blank');return false;
+    var url = $(this).parent().find('a').eq(0).attr('href');
+    window.open(url, '_blank');
+    return false;
   });
 
 //	var i = document.createElement("input");
@@ -467,7 +469,10 @@ Adv.extend({Forms:(function () {
       return isNaN(val) ? 0 : val;
     },
     setFocus:function (name, byId) {
-      var el;
+      var el,scrollMaxY=document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      if ((loadScroll[1] !== window.scrollY && loadScroll[1]<=scrollMaxY) || loadScroll[0] !== window.scrollX) {
+        return;
+      }
       if (typeof(name) == 'object') {
         el = name;
       }
@@ -493,7 +498,7 @@ Adv.extend({Forms:(function () {
         // The timeout is needed to prevent unpredictable behaviour on IE & Gecko.
         // Using tmp var prevents crash on IE5
         var tmp = function () {
-          $.scrollTo(el, 300, {easing:'easeInSine', offset:-100});
+          $.scrollTo(el, 300, {onlyIfOutside: true,easing:'easeInSine', offset:-100});
           if (el.select) {
             el.select();
           }

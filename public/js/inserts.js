@@ -14,7 +14,7 @@ var _hotkeys = {
   'focus':-1    // currently selected indeks of document.links
 };
 function save_focus(e) {
-  _focus = e.name || e.id;
+ _focus = e.name || e.id;
   var h = document.getElementById('hints');
   if (h) {
     h.style.display = e.title && e.title.length ? 'inline' : 'none';

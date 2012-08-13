@@ -593,7 +593,6 @@
         Input::post('state_' . $reconcile_id, Input::NUMERIC, -1)
       );
       $this->Ajax->_activate('_page_body');
-      $this->JS->_setFocus($reconcile_id);
       return true;
     }
   }
