@@ -69,6 +69,13 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
     }, 'json');
     return false;
   },
+  changeFlag:                function ()
+  {
+    _focus =$(this).position();
+    window.__element = this;
+    JsHttpRequest.request('_'+$(this).attr('name')+'_update',this.form);
+    return false;
+  },
   setUpGrid:                 function ()
   {
     // reference to the REDIPS.drag library and message line
@@ -143,6 +150,7 @@ $(function ()
       return false;
     });
     Adv.o.wrapper.on('click', '.unGroup', Adv.Reconcile.unGroup);
+    Adv.o.wrapper.on('click', 'input["name^=\'rec_\'"]', Adv.Reconcile.changeFlag);
     Adv.o.wrapper.on('click', '[class^="create"]', Adv.Reconcile.createLink);
     var bankButtons = {'Cancel':function () {$(this).dialog('close');}, 'Save':Adv.Reconcile.changeBank};
     $("#bankChanger").dialog({autoOpen:false, modal:true, buttons:bankButtons});

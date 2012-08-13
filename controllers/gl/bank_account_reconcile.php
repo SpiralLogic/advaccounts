@@ -368,7 +368,7 @@
       $state_id = $row['state_id'];
       $hidden   = 'last[' . $row['id'] . ']';
       $value    = $row['reconciled'] != '';
-      return Forms::checkbox(null, $name, $value, true, _('Reconcile this transaction')) . Forms::hidden($hidden, $value, false) . Forms::hidden(
+      return Forms::checkbox(null, $name, $value, false, _('Reconcile this transaction')) . Forms::hidden($hidden, $value, false) . Forms::hidden(
         'state_' . $row['id'],
         $state_id,
         false
