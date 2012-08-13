@@ -21,17 +21,6 @@ function save_focus(e) {
     h.innerHTML = e.title ? e.title : '';
   }
 }
-function _expand(tabobj) {
-  var ul = tabobj.parentNode.parentNode;
-  var alltabs = ul.getElementsByTagName("input");
-  if (ul.getAttribute("rel")) {
-    for (var i = 0; i < alltabs.length; i++) {
-      alltabs[i].className = "ajaxbutton"  //deselect all tabs
-    }
-    tabobj.className = "current";
-    JsHttpRequest.request(tabobj)
-  }
-}
 function _set_combo_input(e) {
   e.setAttribute('_last', e.value);
   e.onblur = function () {
@@ -133,18 +122,6 @@ function _set_combo_select(e) {
   }
 }
 var _w;
-function callEditor(key) {
-  var el = document.getElementsByName(editors[key][1])[0];
-  if (_w) {
-    _w.close();
-  } // this is really necessary to have window on top in FF2 :/
-  _w = open(editors[key][0] + el.value + '&popup=1', "edit", "Scrollbars=0,resizable=0,width=800,height=600");
-  if (_w.opener === null) {
-    _w.opener = self;
-  }
-  editors._call = key; // store call point for passBack
-  _w.focus();
-}
 function passBack(value) {
   var o = opener;
   if (!value) {
@@ -299,118 +276,5 @@ var inserts = {
   }
 
 };
-function stopEv(ev) {
-  if (ev.preventDefault) {
-    ev.preventDefault();
-    ev.stopPropagation();
-  } else {
-    ev.returnValue = false;
-    ev.cancelBubble = true;
-    window.keycode = 0;
-  }
-  return false;
-}
-/*
- Modified accesskey system. While Alt key is pressed letter keys moves
- focus to next marked link. Alt key release activates focused link.
- *//*
- function setHotKeys() {
- document.onkeydown = function (ev) {
- ev = ev || window.event;
- key = ev.keyCode || ev.which;
- if (key == 18 && key != 68 && !ev.ctrlKey) {	// start selection, skip Win AltGr
- _hotkeys.alt = true;
- _hotkeys.focus = -1;
- return stopEv(ev);
- } else {
- if (ev.altKey && !ev.ctrlKey && key != 68 && ((key > 47 && key < 58) || (key > 64 && key < 91))) {
- var n = _hotkeys.focus;
- var l = document.links;
- var cnt = l.length;
- key = String.fromCharCode(key);
- for (var i = 0; i < cnt; i++) {
- n = (n + 1) % cnt;
- // check also if the link is visible
- if (l[n].accessKey == key && l[n].scrollWidth) {
- _hotkeys.focus = n;
- // The timeout is needed to prevent unpredictable behaviour on IE.
- var tmp = function () {
- document.links[_hotkeys.focus].focus();
- };
- setTimeout(tmp, 0);
- break;
- }
- }
- return stopEv(ev);
- }
- }
- if ((ev.ctrlKey && key == 13) || key == 27) {
- _hotkeys.alt = false; // cancel link selection
- _hotkeys.focus = -1;
- ev.cancelBubble = true;
- if (ev.stopPropagation) {
- ev.stopPropagation();
- }
- // activate submit/escape form
- for (var j = 0; j < this.forms.length; j++) {
- var form = this.forms[j];
- for (var i = 0; i < form.elements.length; i++) {
- var el = form.elements[i];
- var asp = el.getAttribute('data-aspect');
-
- if (el.className != 'editbutton' && (asp && asp.indexOf('selector') !== -1) && (key == 13 || key == 27)) {
- passBack(key == 13 ? el.getAttribute('rel') : false);
- ev.returnValue = false;
- return false;
- }
- if (((asp && asp.indexOf('default') !== -1) && key == 13) || ((asp && asp.indexOf('cancel') !== -1) && key == 27)) {
-
- if (asp.indexOf('process') !== -1) {
- JsHttpRequest.request(el, null, 60000);
- } else {
- JsHttpRequest.request(el);
- }
- ev.returnValue = false;
- return false;
- }
- }
- }
- ev.returnValue = false;
- return false;
- }
- if (editors && editors[key]) {
- callEditor(key);
- return stopEv(ev); // prevent default binding
- }
- return true;
- };
- document.onkeyup = function (ev) {
- ev = ev || window.event;
- key = ev.keyCode || ev.which;
-
- if (_hotkeys.alt == true) {
- if (key == 18) {
- _hotkeys.alt = false;
- if (_hotkeys.focus >= 0) {
- var link = document.links[_hotkeys.focus];
- if (link.onclick) {
- link.onclick();
- } else {
- if (link.target == '_blank') {
- window.open(link.href, '', 'toolbar=no,scrollbar=no,resizable=yes,menubar=no,width=900,height=500');
- openWindow(link.href, '_blank');
- } else {
- window.location = link.href;
- }
- }
- }
- return stopEv(ev);
- }
- }
- return true;
- }
- }
- */
 Behaviour.register(inserts);
 Behaviour.addLoadEvent(Adv.Forms.setFocus);
-//Behaviour.addLoadEvent(setHotKeys);
