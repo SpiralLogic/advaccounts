@@ -463,12 +463,17 @@ Adv.extend({Forms:(function () {
       var el,scrollMaxY=document.documentElement.scrollHeight - document.documentElement.clientHeight;
       if (typeof(_focus)=='number' && __element!==undefined) {
         var pos = $(document.getElementsByName(__element)[0]).position().top;
-        $.scrollTo(pos-_focus);
+        $.scrollTo(pos - _focus);
         _focus=__element=undefined;
         return;
       }
 
-      if ((loadScroll[1] !== window.scrollY && loadScroll[1]<=scrollMaxY) || loadScroll[0] !== window.scrollX) {
+      if ((loadScroll[1] > -1 && loadScroll[1] !== window.scrollY && loadScroll[1] <= scrollMaxY)) {
+        loadScroll=[-1,-1];
+        return;
+      }
+      if ((loadScroll[0] > -1 && loadScroll[0] !== window.scrollX)) {
+        loadScroll=[-1,-1];
         return;
       }
 

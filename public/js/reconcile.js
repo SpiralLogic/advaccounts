@@ -71,8 +71,7 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
   },
   changeFlag:                function ()
   {
-    var pos = $(this).position();
-    _focus =pos.top - window.scrollY;
+    _focus =$(this).position().top-scrollY;
     window.__element = $(this).attr('name');
     JsHttpRequest.request('_'+$(this).attr('name')+'_update',this.form);
   },
