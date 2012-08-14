@@ -136,11 +136,11 @@
         {
             $buttons = '';
             if (count($this->buttons > 0)) {
-                $buttons = '.dialog("option","buttons", [';
+                $buttons = '.dialog("option","buttons", {';
                 foreach ($this->buttons as $button => $action) {
-                    $buttons .= '{ "text":"' . $button . '", click: function() { ' . $action . '}}, ';
+                    $buttons .= '"' . $button . '": function() { ' . $action . '}, ';
                 }
-                $buttons .= ']);';
+                $buttons .= '});' . '$' . $this->name . '.parent().find("button").each(function(){var $this=$(this);$this.text($this.attr("text"));});';
             }
             if ($this->_template) {
                 $this->contents = '<script id="' . $this->name . '_template" type="text/x-jquery-tmpl">' . $this->contents . '</script>';

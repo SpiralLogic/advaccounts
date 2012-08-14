@@ -160,6 +160,11 @@
             $ba     = static::get_default($row[0]);
             return $ba['id'];
         }
+        /**
+         * @param null $id
+         *
+         * @return mixed
+         */
         public static function hasStatements($id = null)
         {
             $id     = $id ? : static::get_default()['id'];

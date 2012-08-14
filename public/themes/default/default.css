@@ -3722,10 +3722,6 @@ table.tablestyle_inner td {
   white-space:      nowrap;
 }
 
-.label label {
-  padding: 0px;
-}
-
 td.tableheader3 {
   margin:        0 auto;
   text-align:    center;

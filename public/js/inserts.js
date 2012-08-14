@@ -8,13 +8,12 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-var _focus;
 var _hotkeys = {
-  'alt':false, // whether is the Alt key pressed
+  'alt':  false, // whether is the Alt key pressed
   'focus':-1    // currently selected indeks of document.links
 };
 function save_focus(e) {
- _focus = e.name || e.id;
+  Adv.Scroll.focus = e.name || e.id;
   var h = document.getElementById('hints');
   if (h) {
     h.style.display = e.title && e.title.length ? 'inline' : 'none';
@@ -32,7 +31,8 @@ function _set_combo_input(e) {
 // search field has changed.
     if (button && (this.value != this.getAttribute('_last'))) {
       JsHttpRequest.request(button);
-    } else {
+    }
+    else {
       if (this.className == 'combo2') {
         this.style.display = 'none';
         select.style.display = 'inline';
@@ -143,7 +143,7 @@ function passBack(value) {
  Behaviour definitions
  */
 var inserts = {
-  'input':function (e) {
+  'input':                                                                                  function (e) {
     if (e.onfocus == undefined) {
       e.onfocus = function () {
         save_focus(this);
@@ -154,7 +154,8 @@ var inserts = {
     }
     if (e.className == 'combo' || e.className == 'combo2') {
       _set_combo_input(e);
-    } else {
+    }
+    else {
       if (e.type == 'text') {
         e.onkeydown = function (ev) {
           ev = ev || window.event;
@@ -170,11 +171,11 @@ var inserts = {
       }
     }
   },
-  'input.combo2,input[data-aspect="fallback"]':function (e) {
+  'input.combo2,input[data-aspect="fallback"]':                                             function (e) {
     // this hides search button for js enabled browsers
     e.style.display = 'none';
   },
-  'div.js_only':function (e) {
+  'div.js_only':                                                                            function (e) {
     // this shows divs for js enabled browsers only
     e.style.display = 'block';
   },
@@ -185,25 +186,28 @@ var inserts = {
       var asp = e.getAttribute('data-aspect');
       if (asp && asp.indexOf('process') !== -1) {
         JsHttpRequest.request(this, null, 60000);
-      } else {
+      }
+      else {
         JsHttpRequest.request(this);
       }
       return false;
     }
   },
-  'button':function (e) {
+  'button':                                                                                 function (e) {
     if (e.name) {
       var func = (e.name == '_action') ? _validate[e.value] : _validate[e.name];
       var old = e.onclick;
       if (func) {
         if (typeof old != 'function' || old == func) { // prevent multiply binding on ajax update
           e.onclick = func;
-        } else {
+        }
+        else {
           e.onclick = function () {
             if (func()) {
               old();
               return true;
-            } else {
+            }
+            else {
               return false;
             }
           }
@@ -211,7 +215,7 @@ var inserts = {
       }
     }
   },
-  '.amount':function (e) {
+  '.amount':                                                                                function (e) {
     if (e.onblur == undefined) {
       e.onblur = function () {
         var dec = this.getAttribute("data-dec");
@@ -219,7 +223,7 @@ var inserts = {
       };
     }
   },
-  '.freight':function (e) {
+  '.freight':                                                                               function (e) {
     if (e.onblur == undefined) {
       e.onblur = function () {
         var dec = this.getAttribute("data-dec");
@@ -228,24 +232,24 @@ var inserts = {
     }
   },
   '.searchbox':// emulated onchange event handling for text inputs
-    function (e) {
-      e.setAttribute('_last_val', e.value);
-      e.setAttribute('autocomplete', 'off'); //must be off when calling onblur
-      e.onblur = function () {
-        var val = this.getAttribute('_last_val');
-        if (val != this.value) {
-          this.setAttribute('_last_val', this.value);
-          JsHttpRequest.request('_' + this.name + '_changed', this.form);
-        }
-      }
-    },
-  'button[data-aspect="selector"], input[data-aspect="selector"]':function (e) {
+                                                                                            function (e) {
+                                                                                              e.setAttribute('_last_val', e.value);
+                                                                                              e.setAttribute('autocomplete', 'off'); //must be off when calling onblur
+                                                                                              e.onblur = function () {
+                                                                                                var val = this.getAttribute('_last_val');
+                                                                                                if (val != this.value) {
+                                                                                                  this.setAttribute('_last_val', this.value);
+                                                                                                  JsHttpRequest.request('_' + this.name + '_changed', this.form);
+                                                                                                }
+                                                                                              }
+                                                                                            },
+  'button[data-aspect="selector"], input[data-aspect="selector"]':                          function (e) {
     e.onclick = function () {
       passBack(this.getAttribute('rel'));
       return false;
     }
   },
-  'select':function (e) {
+  'select':                                                                                 function (e) {
     if (e.onfocus == undefined) {
       e.onfocus = function () {
         save_focus(this);
@@ -256,14 +260,14 @@ var inserts = {
       }
     }
   },
-  'a.printlink,button.printlink':function (e) {
+  'a.printlink,button.printlink':                                                           function (e) {
     e.onclick = function () {
       save_focus(this);
       JsHttpRequest.request(this, null, 60000);
       return false;
     }
   },
-  'a':function (e) { // traverse menu
+  'a':                                                                                      function (e) { // traverse menu
     e.onkeydown = function (ev) {
       ev = ev || window.event;
       key = ev.keyCode || ev.which;
