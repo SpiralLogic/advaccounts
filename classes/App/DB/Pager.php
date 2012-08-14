@@ -164,6 +164,7 @@
     public $id;
     public $rowFunction;
     public $class;
+    protected $hasBar=false;
     /**
      * @param      $sql
      * @param      $name
@@ -233,8 +234,10 @@
       if (!static::$User) {
         static::$User = User::i();
       }
+      $id= $this->hasBar?" id='$name' ":'';
       $title = $title ? : $value;
-      return "<button " . ($enabled ? '' : 'disabled') . " class=\"navibutton\" type=\"submit\"" . " name=\"$name\" id=\"$name\" value=\"$value\">" . ($icon ? "<img src='/themes/" . static::$User->_theme() . "/images/" . $icon . "'>" : '') . "<span>$title</span></button>\n";
+      $this->hasBar =true;
+      return "<button " . ($enabled ? '' : 'disabled') . " class=\"navibutton\" type=\"submit\"  name=\"$name\"  \"$id\" value=\"$value\">" . ($icon ? "<img src='/themes/" . static::$User->_theme() . "/images/" . $icon . "'>" : '') . "<span>$title</span></button>\n";
     }
     /**
      * @static
