@@ -341,9 +341,7 @@ Adv.extend({Forms:(function () {
     },
     autocomplete:function (id, url, callback) {
       var $this, els = Adv.Forms.findInputEl(id);
-      if (!els.legnth) {
-        return;
-      }
+      Adv.Forms.findInputEl(id);
       Adv.o.autocomplete[id] = $this = $(els).autocomplete({
         minLength:2,
         delay:400,
