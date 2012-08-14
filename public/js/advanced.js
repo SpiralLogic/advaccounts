@@ -35,7 +35,6 @@ jQuery.extend(jQuery.easing, {
   }
 });
 (function (window, $, undefined) {
-  //noinspection LocalVariableNamingConventionJS
   var Adv = {
     loader:document.getElementById('ajaxmark'),
     fieldsChanged:0,
@@ -267,23 +266,17 @@ Adv.extend({Forms:(function () {
   Adv.o.wrapper.on('mouseleave', '.btn-group', function (e) {
     menu.closetimer = window.setTimeout(menu.close, 300);
   });
-
   Adv.o.wrapper.on('click', '.btn-split', function () {
     var url = $(this).parent().find('a').eq(0).attr('href');
     window.open(url, '_blank');
     return false;
   });
-
-//	var i = document.createElement("input");
-  //i.setAttribute("type", "date");
-  //if (i.type == "text") {
   Adv.o.wrapper.on('focus.datepicker', ".datepicker", function () {
     $(this).datepicker({numberOfMonths:3,
       showButtonPanel:true,
       showCurrentAtPos:2,
       dateFormat:'dd/mm/yy'}).off('focus.datepicker');
   });
-//	}
   var _setFormValue = function (el, value, disabled, isdefault) {
     if (!el) {
       return;
@@ -664,6 +657,6 @@ Adv.extend({
         sets[set].postcode.val(data[2]).trigger('change');
         return false;
       }
-    }
+    };
   }())
 })

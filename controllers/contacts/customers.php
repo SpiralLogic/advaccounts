@@ -50,7 +50,7 @@
                 $this->delete();
             }
             /** @noinspection PhpUndefinedMethodInspection */
-            JS::autocomplete('customer', 'Company.fetch');
+          $this->JS->_autocomplete('customer', 'Company.fetch');
             $form          = new Form();
             $menu          = new MenuUI();
             $view          = new View('contacts/customers');

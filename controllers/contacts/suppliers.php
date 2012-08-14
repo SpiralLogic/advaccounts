@@ -53,11 +53,10 @@
         protected function index()
         {
             Page::start(_($help_context = "Suppliers"), SA_SUPPLIER, Input::request('frame'));
-            $currentContact = $this->creditor->contacts[$this->creditor->defaultContact];
             if (isset($_POST['delete'])) {
                 $this->delete();
             }
-            JS::autocomplete('supplier', 'Company.fetch');
+          $this->JS->_autocomplete('supplier', 'Company.fetch');
             $form          = new Form();
             $menu          = new MenuUI();
             $view          = new View('contacts/supplier');
