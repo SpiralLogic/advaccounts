@@ -1362,7 +1362,7 @@
                 Cell::label($label, $params);
                 echo "<td>";
             } else {
-                echo "<td class='right nowrap' >";
+                echo "<td class='alignright nowrap' >";
             }
             $dec = $dec ? : static::$dic['User']->_price_dec();
             if (!Input::post($name)) {

@@ -265,8 +265,8 @@
                 foreach ($_SESSION['alloc']->allocs as $alloc_item) {
                     Cell::label($systypes_array[$alloc_item->type]);
                     Cell::label(GL_UI::viewTrans($alloc_item->type, $alloc_item->type_no));
-                    Cell::label($alloc_item->date_, "class='right'");
-                    Cell::label($alloc_item->due_date, "class='right'");
+                    Cell::label($alloc_item->date_, "class='alignright'");
+                    Cell::label($alloc_item->due_date, "class='alignright'");
                     Cell::amount($alloc_item->amount);
                     Cell::amount($alloc_item->amount_allocated);
                     $_POST['amount' . $counter] = Num::priceFormat($alloc_item->current_allocated + Input::post('amount' . $counter, Input::NUMERIC));
@@ -286,7 +286,7 @@
                     $counter++;
                 }
                 if ($show_totals) {
-                    Row::label(_("Total Allocated"), Num::priceFormat($total_allocated), "colspan=6 class='right'", "class=right id='total_allocated'", 3);
+                    Row::label(_("Total Allocated"), Num::priceFormat($total_allocated), "colspan=6 class='alignright'", "class='alignright' id='total_allocated'", 3);
                     $amount = $_SESSION['alloc']->amount;
                     if ($_SESSION['alloc']->type == ST_SUPPCREDIT || $_SESSION['alloc']->type == ST_SUPPAYMENT || $_SESSION['alloc']->type == ST_BANKPAYMENT
                     ) {
@@ -299,7 +299,7 @@
                         $font1 = $font2 = "";
                     }
                     $left_to_allocate = Num::priceFormat($amount - $total_allocated);
-                    Row::label(_("Left to Allocate"), $font1 . $left_to_allocate . $font2, "colspan=6 class='right'", " class='right nowrap' id='left_to_allocate'", 3);
+                    Row::label(_("Left to Allocate"), $font1 . $left_to_allocate . $font2, "colspan=6 class='alignright'", " class='alignright nowrap' id='left_to_allocate'", 3);
                 }
                 Table::end(1);
             }
@@ -412,11 +412,11 @@
                 $total_allocated += $alloc_row['amt'];
             }
             Row::start();
-            Cell::label(_("Total Allocated:"), "class=right colspan=5");
+            Cell::label(_("Total Allocated:"), "class='alignright' colspan=5");
             Cell::amount($total_allocated);
             Row::end();
             Row::start();
-            Cell::label(_("Left to Allocate:"), "class=right colspan=5");
+            Cell::label(_("Left to Allocate:"), "class='alignright' colspan=5");
             $total = Num::round($total, User::price_dec());
             Cell::amount($total - $total_allocated);
             Row::end();

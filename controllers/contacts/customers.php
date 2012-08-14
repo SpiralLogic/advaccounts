@@ -50,7 +50,7 @@
                 $this->delete();
             }
             /** @noinspection PhpUndefinedMethodInspection */
-          $this->JS->_autocomplete('customer', 'Company.fetch');
+            $this->JS->_autocomplete('customer', 'Company.fetch');
             $form          = new Form();
             $menu          = new MenuUI();
             $view          = new View('contacts/customers');
@@ -110,7 +110,7 @@
             }
             $form->label('Payment Terms:', 'payment_terms', GL_UI::payment_terms('payment_terms', $this->customer->payment_terms));
             $form->label('Credit Status:', 'credit_status', Sales_CreditStatus::select('credit_status', $this->customer->credit_status));
-            $form->textarea(null, 'messageLog', Contact_Log::read($this->customer->id, CT_CUSTOMER), ['class'=> 'width95', 'cols'=> 20]);
+            $form->textarea(null, 'messageLog', Contact_Log::read($this->customer->id, CT_CUSTOMER), ['class'=> 'width95', 'cols'=> 100]);
             /** @noinspection PhpUndefinedMethodInspection */
             $contacts = new View('contacts/contact');
             $view->set('contacts', $contacts->render(true));

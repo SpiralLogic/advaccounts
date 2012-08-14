@@ -174,7 +174,7 @@
                 Bank_UI::item_controls($order, $dim);
             }
             if ($order->count_gl_items()) {
-                Row::label(_("Total"), Num::format(abs($order->gl_items_total()), User::price_dec()), "colspan=" . $colspan . " class='right'", "class='right'", 3);
+                Row::label(_("Total"), Num::format(abs($order->gl_items_total()), User::price_dec()), "colspan=" . $colspan . " class='alignright'", "class='alignright'", 3);
             }
             Table::end();
             Display::div_end();
