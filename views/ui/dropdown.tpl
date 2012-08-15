@@ -11,7 +11,7 @@
     <li class="divider"></li>
     {{#else}}
     <li>
-      <a class="{{$.class}}" href="{{$.href?:'#'}}" {{#$item.data}} data-{{!}}="{{.}}"{{/$item.data}}>{{$.label}}</a></li>
+      <a class="{{$.class}}" href="{{$.href?:'#'}}" {{#$.data}} data-{{!}}="{{.}}"{{/$.data}}>{{$.label}}</a></li>
     {{/if}}
     {{/$.items}}
   </ul>

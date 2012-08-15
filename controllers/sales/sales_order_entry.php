@@ -8,7 +8,9 @@
      * @link      http://www.advancedgroup.com.au
      **/
     use ADV\App\Controller\Base;
-    use ADV\App\Debtor\Debtor;
+  use ADV\App\Item\Item;
+  use ADV\App\UI\UI;
+  use ADV\App\Debtor\Debtor;
     use ADV\Core\View;
     use ADV\Core\Errors;
     use ADV\Core\Num;

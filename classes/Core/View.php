@@ -183,8 +183,8 @@
       } else {*/
         $tempvar = uniqid();
         $return = '<?php if (isset($' . $var . ') && is_array($' . $var . ')): foreach($' . $var . ' as $_' . $tempvar . '_name => $_' . $tempvar . '_val): ?>';
+        $contents= $this->compile($contents,true);
         $contents=str_replace(['{{!}}','{{.}}'], ['{{$_' . $tempvar . '_name}}','{{$_' . $tempvar . '_val}}'], $contents);
-        $contents= $this->compile($contents);
         $return.=str_replace('$.', '$_' . $tempvar . '_val.', $contents);
 
         //$implicit = $this->compile_context($contents, '_' . $var);
@@ -196,7 +196,7 @@
     }
     private function compile($__contents, $context = null) {
       if ($context) {
-        $__contents = $this->compile_context($__contents, $context);
+   //     $__contents = $this->compile_context($__contents, $context);
       }
       $__contents = $this->compile_functions($__contents);
       $__contents = $this->compile_nothings($__contents);
