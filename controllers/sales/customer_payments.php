@@ -62,7 +62,7 @@
       {
         $_SESSION['alloc'] = new GL_Allocation(ST_CUSTPAYMENT, 0);
       }
-      if (!Forms::isListUpdated('bank_account')) {
+      if (!Forms::isListUpdated('bank_account')&&!isset($_POST['bank_account'])) {
         $_POST['bank_account'] = Bank_Account::get_customer_default($this->debtor_id);
       }
     }
