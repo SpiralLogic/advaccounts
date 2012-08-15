@@ -1178,7 +1178,7 @@
             }
             Display::div_start('items_table');
 
-            Table::start('tablestyle grid');
+            Table::start('tablestyle width90 grid');
             $th = array(
                 _("Item Code"),
                 _("Item Description"),

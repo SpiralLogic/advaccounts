@@ -88,8 +88,9 @@
                 $this->updateData();
             }
             if ($this->accountHasStatements && $this->bank_date) {
-                $this->begin_date = $this->Dates->_dateToSql($this->Dates->_addMonths($this->bank_date, -1));
                 $this->end_date   = $this->Dates->_dateToSql($this->bank_date);
+              $this->begin_date = GL_Account::get_reconcile_start($this->bank_account,$this->end_date);
+
             } elseif ($this->accountHasStatements) {
                 $this->begin_date = null;
                 $this->end_date   = $this->Dates->_today();
@@ -346,7 +347,6 @@
                 Bank_Undeposited::ungroup($groupid);
                 $this->updateData();
             }
-            $this->updateData();
             $data['grid'] = $this->render();
             JS::renderJSON($data);
         }

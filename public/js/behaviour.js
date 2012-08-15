@@ -99,8 +99,11 @@ document.getElementsBySelector = jQuery;
 //
 JsHttpRequest.request = function (trigger, form, tout) {
   tout = (tout) ? tout : 15000;
-  try {Adv.loader.on(tout);}
-  catch (e) {}
+  try {
+    Adv.loader.on(tout);
+  }
+  catch (e) {
+  }
   Adv.Scroll.atLoad = true;
   JsHttpRequest._request(trigger, form, tout, 0);
 }
@@ -109,7 +112,9 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
     var content = {};
     var upload = 0;
     var url = trigger.href;
-    if (trigger.id) {content[trigger.id] = 1;}
+    if (trigger.id) {
+      content[trigger.id] = 1;
+    }
   }
   else {
     var submitObj = typeof(trigger) == "string" ? document.getElementsByName(trigger)[0] : trigger;
@@ -117,7 +122,9 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
     upload = form && form.enctype == 'multipart/form-data';
     url = form ? form.action : window.location.toString();
     content = this.formInputs(trigger, form, upload);
-    if (!form) {url = url.substring(0, url.indexOf('?'));}
+    if (!form) {
+      url = url.substring(0, url.indexOf('?'));
+    }
     if (!submitObj) {
       content[trigger] = 1;
     }
@@ -129,99 +136,102 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
   }
   content['_control'] = trigger.id;
   var tcheck = setTimeout(function () {
-                            for (var id in JsHttpRequest.PENDING) {
-                              var call = JsHttpRequest.PENDING[id];
-                              if (call != false) {
-                                if (call._ldObj.xr) // needed for gecko
-                                {
-                                  call._ldObj.xr.onreadystatechange = function () {
-                                  };
-                                }
-                                call.abort(); // why this doesn't kill request in firebug?
+    for (var id in JsHttpRequest.PENDING) {
+      var call = JsHttpRequest.PENDING[id];
+      if (call != false) {
+        if (call._ldObj.xr) // needed for gecko
+        {
+          call._ldObj.xr.onreadystatechange = function () {
+          };
+        }
+        call.abort(); // why this doesn't kill request in firebug?
 //						call._ldObj.xr.abort();
-                                delete JsHttpRequest.PENDING[id];
-                              }
-                            }
-                            retry ? Adv.loader.on(tout) : Adv.loader.off('warning.png');
-                            if (retry) {
-                              JsHttpRequest._request(trigger, form, tout, retry - 1);
-                            }
-                          }, tout);
+        delete JsHttpRequest.PENDING[id];
+      }
+    }
+    retry ? Adv.loader.on(tout) : Adv.loader.off('warning.png');
+    if (retry) {
+      JsHttpRequest._request(trigger, form, tout, retry - 1);
+    }
+  }, tout);
   JsHttpRequest.query((upload ? "form." : "") + "POST " + url, // force form loader
-                      content, // Function is called when an answer arrives.
-                      function (result, errors) {
-                        // Write the answer.
-                        var newwin = 0, repwin;
-                        if (result) {
-                          for (var i in result) {
-                            atom = result[i];
-                            cmd = atom['n'];
-                            property = atom['p'];
-                            type = atom['c'];
-                            id = atom['t'];
-                            data = atom['data'];
+    content, // Function is called when an answer arrives.
+    function (result, errors) {
+      // Write the answer.
+      var newwin = 0, repwin;
+      if (result) {
+        for (var i in result) {
+          atom = result[i];
+          cmd = atom['n'];
+          property = atom['p'];
+          type = atom['c'];
+          id = atom['t'];
+          data = atom['data'];
 //				debug(cmd+':'+property+':'+type+':'+id);
-                            // seek element by id if there is no elemnt with given name
-                            objElement = document.getElementsByName(id)[0] || document.getElementById(id);
-                            if (cmd == 'as') {
-                              eval("objElement.setAttribute('" + property + "'," + data + ");");
-                            }
-                            else {
-                              if (cmd == 'up') {
+          // seek element by id if there is no elemnt with given name
+          objElement = document.getElementsByName(id)[0] || document.getElementById(id);
+          if (cmd == 'as') {
+            eval("objElement.setAttribute('" + property + "'," + data + ");");
+          }
+          else {
+            if (cmd == 'up') {
 //				if(!objElement) alert('No element "'+id+'"');
-                                if (objElement) {
-                                  if (objElement.tagName == 'INPUT' || objElement.tagName == 'TEXTAREA') {
-                                    objElement.value = data;
-                                  }
-                                  else {
-                                    objElement.innerHTML = data;
-                                  } // selector, div, span etc
-                                }
-                              }
-                              else {
-                                switch (cmd) {
-                                  case 'di':
-                                    objElement.disabled = data;
-                                    break;
-                                  case 'fc':
-                                    Adv.Scroll.focus = data;
-                                    break;
-                                  case 'js':
-                                    eval(data);
-                                    break;
-                                  case 'rd':
-                                    window.location = data;
-                                    break;
-                                  case 'pu':
-                                    newwin = 1;
-                                    window.open(data, undefined, 'toolbar=no,scrollbar=no,resizable=yes,menubar=no');
-                                    break;
-                                  default:
-                                    errors = errors + '<br>Unknown ajax function: ' + cmd;
-                                }
-                              }
-                            }
-                          }
-                          if (tcheck) {
-                            JsHttpRequest.clearTimeout(tcheck);
-                          }
-                          // Write errors to the debug div.
-                          if (errors) {Adv.showStatus({html:errors});}
-                          if (Adv.loader) {
-                            Adv.loader.off();
-                          }
-                          Behaviour.apply();
-                          if (errors.length > 0) {
-                            window.scrollTo(0, 0);
-                          }
-                          //document.getElementById('msgbox').scrollIntoView(true);
-                          // Restore focus if we've just lost focus because of DOM element refresh
-                          if (!newwin) {
-                            Adv.Forms.setFocus();
-                          }
-                          Adv.Events.rebind();
-                        }
-                      }, false  // do not disable caching);
+              if (objElement) {
+                if (objElement.tagName == 'INPUT' || objElement.tagName == 'TEXTAREA') {
+                  objElement.value = data;
+                }
+                else {
+                  objElement.innerHTML = data;
+                } // selector, div, span etc
+              }
+            }
+            else {
+              switch (cmd) {
+                case 'di':
+                  objElement.disabled = data;
+                  break;
+                case 'fc':
+                  Adv.Scroll.focus = data;
+                  break;
+                case 'js':
+                  eval(data);
+                  break;
+                case 'rd':
+                  window.location = data;
+                  break;
+                case 'pu':
+                  newwin = 1;
+                  window.open(data, undefined, 'toolbar=no,scrollbar=no,resizable=yes,menubar=no');
+                  break;
+                default:
+                  errors = errors + '<br>Unknown ajax function: ' + cmd;
+              }
+            }
+          }
+        }
+        if (tcheck) {
+          JsHttpRequest.clearTimeout(tcheck);
+        }
+        // Write errors to the debug div.
+        if (errors) {
+          Adv.showStatus({html:errors});
+        }
+        if (Adv.loader) {
+          Adv.loader.off();
+        }
+        Behaviour.apply();
+        if (errors.length > 0) {
+          window.scrollTo(0, 0);
+        }
+        //document.getElementById('msgbox').scrollIntoView(true);
+        // Restore focus if we've just lost focus because of DOM element refresh
+        if (!newwin) {
+          Adv.Forms.setFocus();
+        }
+        Adv.Events.rebind();
+      }
+    }, false
+  );
 }
 // collect all form input values plus inp trigger value
 JsHttpRequest.formInputs = function (inp, objForm, upload) {

@@ -264,7 +264,7 @@ Adv.extend({Forms:(function () {
     menu.open($(this).parent());
   });
   Adv.o.wrapper.on('mouseleave', '.btn-group', function () {
-    menu.closetimer = window.setTimeout(menu.close, 300);
+    menu.closetimer = window.setTimeout(menu.close, 700);
   });
   Adv.o.wrapper.on('click', '.btn-split', function () {
     var url = $(this).parent().find('a').eq(0).attr('href');

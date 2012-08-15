@@ -224,3 +224,4 @@ class AllocationInquiry extends \ADV\App\Controller\Base {
 
 
 }
+new AllocationInquiry();

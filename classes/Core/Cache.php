@@ -65,7 +65,7 @@
      * @return \ADV\Core\Cache
      */
     public function __construct() {
-      if (class_exists('\\Memcached', false)) {
+      /*if (class_exists('\\Memcached', false)) {
         $i = new Memcached($_SERVER["SERVER_NAME"] . '.');
         if (!count($i->getServerList())) {
           $i->setOption(Memcached::OPT_RECV_TIMEOUT, 1000);
@@ -76,15 +76,16 @@
           (Memcached::HAVE_IGBINARY) and $i->setOption(Memcached::SERIALIZER_IGBINARY, true);
           $i->addServer('127.0.0.1', 11211);
         }
-        $this->connected = ($i->getVersion() !== false);
-        if ($this->connected && isset($_GET['reload_cache'])) {
-          $i->flush(0);
+        $this->connected = ($i->getVersion() !== false);*/
+       //if ($this->connected && isset($_GET['reload_cache'])) {
+       if (isset($_GET['reload_cache'])) {
+        //  $i->flush(0);
           if (function_exists('apc_clear_cache')) {
             apc_clear_cache('user');
           }
           header('Location: ' . BASE_URL);
-        }
-        $this->connection = $i;
+      // }
+      //  $this->connection = $i;
       }
     }
     /**
@@ -97,11 +98,12 @@
      * @return mixed
      */
     public function _set($key, $value, $expires = 86400) {
-      if ($this->connection !== false) {
+      /*if ($this->connection !== false) {
         $this->connection->set($key, $value, time() + $expires);
       } elseif (class_exists('Session', false)) {
         $_SESSION['cache'][$key] = $value;
-      }
+      }*/
+      apc_Store($key,$value,$expires);
       return $value;
     }
     /**
@@ -109,12 +111,13 @@
      *
      * @param $key
      */
-    public function _delete($key) {
+    public function _delete($key) {/*
       if ($this->connection !== false) {
         $this->connection->delete($key);
       } elseif (class_exists('Session', false)) {
         unset($_SESSION['cache'][$key]);
-      }
+      }*/
+      apc_delete($key);
     }
     /**
      * @static
@@ -125,7 +128,7 @@
      * @return mixed
      */
     public function _get($key, $default = false) {
-      if ($this->connection !== false) {
+      /*if ($this->connection !== false) {
         $result = $this->connection->get($key);
         $result = ($this->connection->getResultCode() === Memcached::RES_NOTFOUND) ? $default : $result;
       } elseif (class_exists('Session', false)) {
@@ -135,7 +138,9 @@
         $result = (!isset($_SESSION['cache'][$key])) ? $default : $_SESSION['cache'][$key];
       } else {
         $result = $default;
-      }
+      }*/
+      $result = apc_fetch($key,$success);
+      if (!$success) $result=$default;
       return $result;
     }
     /**

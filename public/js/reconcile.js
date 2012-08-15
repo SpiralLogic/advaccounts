@@ -126,7 +126,7 @@ $(function () {
     return false;
   });
   Adv.o.wrapper.on('click', '.voidTrans', function () {
-    var $this = $(this), url = '/system/void_transaction?type=' + $this.data('type') + '&trans_no=' + $this.data('trans_no') + '&memo=Deleted%20during%20reconcile.';
+    var $this = $(this).closest('tr'), url = '/system/void_transaction?type=' + $this.data('type') + '&trans_no=' + $this.data('transno') + '&memo=Deleted%20during%20reconcile.';
     Adv.Reconcile.openLink(url);
     return false;
   });
