@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
   /**
    * @method priceFormat($number)
    * @method format($number, $decimals = 0)
@@ -57,7 +58,8 @@
      * @return int|string
      */
     public function _priceFormat($number) {
-      $number = str_replace($this->tho_sep,'',$number);
+      $number = str_replace($this->tho_sep, '', $number);
+
       return $this->_format($this->_round($number, $this->price_dec + 2), $this->price_dec);
     }
     /**
@@ -69,7 +71,7 @@
      * @return int|string
      */
     public function _priceDecimal($number, $dec = null) {
-      $dec = $dec ? : $this->price_dec;
+      $dec = $dec !== null ? $dec : $this->price_dec;
       $str = strval($number);
       $pos = strpos($str, '.');
       if ($pos !== false) {

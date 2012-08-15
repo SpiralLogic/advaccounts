@@ -29,18 +29,18 @@ jQuery.fn.quickEach = (function () {
 }());
 jQuery.easing['jswing'] = jQuery.easing['swing'];
 jQuery.extend(jQuery.easing, {
-  def:'easeOutExpo',
+  def:        'easeOutExpo',
   easeOutExpo:function (x, t, b, c, d) {
     return (t == d) ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
   }
 });
 (function (window, $, undefined) {
   var Adv = {
-    loader:document.getElementById('ajaxmark'),
+    loader:       document.getElementById('ajaxmark'),
     fieldsChanged:0,
-    debug:{ ajax:true},
-    lastXhr:'',
-    o:{$content:$("#content"), tabs:{}}
+    debug:        { ajax:true},
+    lastXhr:      '',
+    o:            {$content:$("#content"), tabs:{}}
   };
   (function () {
     var extender = jQuery.extend;
@@ -53,11 +53,11 @@ jQuery.extend(jQuery.easing, {
         console.time('ajax')
       }
     }).ajaxStop(function () {
-        Adv.loader.off();
-        if (Adv.debug.ajax) {
-          console.timeEnd('ajax');
-        }
-      });
+                  Adv.loader.off();
+                  if (Adv.debug.ajax) {
+                    console.timeEnd('ajax');
+                  }
+                });
     this.extend = function (object) {extender(Adv, object)};
     extender(Adv.loader, {
       off:function (img) {
@@ -69,7 +69,7 @@ jQuery.extend(jQuery.easing, {
           Adv.loader.style.visibility = 'hidden';
         }
       },
-      on:function (tout) {
+      on: function (tout) {
         var img = tout > 50000 ? 'progressbar.gif' : 'ajax-loader.gif';
         Adv.loader.off(img);
       }
@@ -78,179 +78,179 @@ jQuery.extend(jQuery.easing, {
   window.Adv = Adv;
 })(window, jQuery);
 Adv.extend({
-  msgbox:$('#msgbox').ajaxError(function (event, request, settings) {
-    if (request.statusText == "abort") {
-      return;
-    }
-    var status = {
-      status:256,
-      message:"Request failed: " + settings.url + "<br>"
-    };
-    Adv.showStatus(status);
-  }).ajaxComplete(function (event, request) {
-      Behaviour.apply();
-      try {
-        var data = $.parseJSON(request.responseText);
-        if (data && data.status) {
-          Adv.showStatus(data.status);
-        }
-      }
-      catch (e) {
-        return false
-      }
-    }),
-  showStatus:function (status) {
-    var text = '', closeTime;
-    status = status || {status:null, message:''};
-    if (status.status === 'redirect') {
-      window.onunload = null;
-      return window.location.href = status.message;
-    }
-    if (status.html) {
-      text = status.html;
-    }
-    else {
-      if (status.message) {
-        switch (status.status) {
-          case 1024:
-            status.class = 'info_msg';
-            break;
-          case 512:
-            status.class = 'warn_msg';
-            break;
-          case 256:
-          case 8:
-          case -1:
-            status.class = 'err_msg';
-            break;
-          case 61438:
-          default:
-            status.class = 'success_msg';
-            break;
-        }
-        text = '<div class="' + status.class + '">' + status.message + '</div>';
-      }
-    }
-    if (text) {
-      Adv.msgbox.html(text);
-    }
-    window.clearTimeout(closeTime);
-    Adv.msgbox.stop(true, true).animate({ height:'show', opacity:1 }, 1000, 'easeOutExpo', function () {
-      closeTime = window.setTimeout(Adv.hideStatus, 15000);
-    });
-    try {
-      var y = Adv.Forms.elementPos(Adv.msgbox[0]).y - 40;
-    }
-    catch (e) {
-    } finally {
-      if (text && $.isNumeric(y)) {
-        scrollTo(0, y);
-      }
-    }
-  },
-  hideStatus:function () {
-    Adv.msgbox.stop(true, true).animate({ height:'hide', opacity:0 }, 2000, 'easeOutExpo');
-  },
-  openWindow:function (url, title, width, height) {
-    width = width || 900;
-    height = height || 600;
-    var left = (screen.width - width) / 2;
-    var top = (screen.height - height) / 2;
-    return window.open(url, title, 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
-  },
-  hoverWindow:{
-    _init:false, init:function (width, height) {
-      Adv.hoverWindow.width = width || 600;
-      Adv.hoverWindow.height = height || 600;
-      if (Adv.hoverWindow._init) {
-        return;
-      }
-      Adv.hoverWindow._init = true;
-      Adv.o.$content.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open', 'div .openWindow,td .openWindow', function (e) {
-        if (e.type == 'click') {
-          Adv.openWindow(this.href, this.target, Adv.hoverWindow.width, Adv.hoverWindow.height);
-          return false;
-        }
-        if (e.type == 'mouseenter') {
-          if (Adv.o.popupCurrent) {
-            window.clearTimeout(Adv.o.popupCurrent);
-          }
-          Adv.o.popupEl = this;
-          Adv.o.popupParent = $(this).parent();
-          Adv.o.popupCurrent = window.setTimeout(Adv.popupWindow, 750);
-        }
-        if (e.type == 'mouseleave') {
-          window.clearTimeout(Adv.o.popupCurrent);
-        }
-      })
-    },
-    loaded:function () {
-      Adv.o.popupWindow.show();
-      var height = Adv.o.popupWindow[0].contentWindow.document.body.clientHeight + 10;
-      var top = ($(window).height() / 2 - (height / 2));
-      if (height > Adv.hoverWindow.height) {
-        top = 20;
-        height = Adv.hoverWindow.height
-      }
-      var left = ($(window).width() / 2 - Adv.hoverWindow.width / 2);
-      Adv.o.popupWindow.css('height', height);
-      Adv.o.popupDiv.css({width:Adv.hoverWindow.width, 'height':height, 'left':left, 'top':top});
-    }},
-  popupWindow:function () {
-    if (Adv.o.popupWindow) {
-      Adv.o.popupWindow.parent().remove();
-    }
-    console.log(Adv.o.popupEl.href);
-    Adv.o.popupWindow = $("<iframe>", {
-      src:Adv.o.popupEl.href + '&frame=1',
-      width:Adv.hoverWindow.width,
-      onload:'Adv.hoverWindow.loaded()'
-    }).css({background:'white'}).hide();
-    Adv.o.popupDiv = $('<div>', {
-      id:'iframePopup',
-      width:100,
-      height:100}).html(Adv.o.popupWindow).on('mouseleave',function () { $(this).remove(); }).appendTo(Adv.o.wrapper).position({my:"center center", at:"center center", of:document.body});
-  },
-  tabmenu:{init:function (id, ajax, links, page) {
-    Adv.o.tabs[id] = $('#' + id);
-    if (links) {
-      Adv.o.tabs[id].tabs({
-        select:function (event, ui) {
-          var $tab = $(ui.tab), param = $('#' + $tab.data('paramel')).val(), url = $.data(ui.tab, 'load.tabs') + param, target = $tab.data('target');
-          if (url) {
-            if (target) {
-              Adv.openWindow(url, 'Test');
-            }
-            else {
-              location.href = url;
-            }
-            return false;
-          }
-          return true;
-        }
-      })
-    }
-    else {
-      Adv.o.tabs[id].tabs();
-    }
-    Adv.o.tabs[id].toggleClass('tabs');
-    if (page) {
-      Adv.tabmenu.page(id, page);
-    }
-  }, page:function (id, page) {
-    if (page) {
-      Adv.o.tabs[id].tabs('select', page);
-    }
-  }}});
+             msgbox:     $('#msgbox').ajaxError(function (event, request, settings) {
+               if (request.statusText == "abort") {
+                 return;
+               }
+               var status = {
+                 status: 256,
+                 message:"Request failed: " + settings.url + "<br>"
+               };
+               Adv.showStatus(status);
+             }).ajaxComplete(function (event, request) {
+                               Behaviour.apply();
+                               try {
+                                 var data = $.parseJSON(request.responseText);
+                                 if (data && data.status) {
+                                   Adv.showStatus(data.status);
+                                 }
+                               }
+                               catch (e) {
+                                 return false
+                               }
+                             }),
+             showStatus: function (status) {
+               var text = '', closeTime;
+               status = status || {status:null, message:''};
+               if (status.status === 'redirect') {
+                 window.onunload = null;
+                 return window.location.href = status.message;
+               }
+               if (status.html) {
+                 text = status.html;
+               }
+               else {
+                 if (status.message) {
+                   switch (status.status) {
+                     case 1024:
+                       status.class = 'info_msg';
+                       break;
+                     case 512:
+                       status.class = 'warn_msg';
+                       break;
+                     case 256:
+                     case 8:
+                     case -1:
+                       status.class = 'err_msg';
+                       break;
+                     case 61438:
+                     default:
+                       status.class = 'success_msg';
+                       break;
+                   }
+                   text = '<div class="' + status.class + '">' + status.message + '</div>';
+                 }
+               }
+               if (text) {
+                 Adv.msgbox.html(text);
+               }
+               window.clearTimeout(closeTime);
+               Adv.msgbox.stop(true, true).animate({ height:'show', opacity:1 }, 1000, 'easeOutExpo', function () {
+                 closeTime = window.setTimeout(Adv.hideStatus, 15000);
+               });
+               try {
+                 var y = Adv.Forms.elementPos(Adv.msgbox[0]).y - 40;
+               }
+               catch (e) {
+               } finally {
+                 if (text && $.isNumeric(y)) {
+                   scrollTo(0, y);
+                 }
+               }
+             },
+             hideStatus: function () {
+               Adv.msgbox.stop(true, true).animate({ height:'hide', opacity:0 }, 2000, 'easeOutExpo');
+             },
+             openWindow: function (url, title, width, height) {
+               width = width || 900;
+               height = height || 600;
+               var left = (screen.width - width) / 2;
+               var top = (screen.height - height) / 2;
+               return window.open(url, title, 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
+             },
+             hoverWindow:{
+               _init: false, init:function (width, height) {
+                 Adv.hoverWindow.width = width || 600;
+                 Adv.hoverWindow.height = height || 600;
+                 if (Adv.hoverWindow._init) {
+                   return;
+                 }
+                 Adv.hoverWindow._init = true;
+                 Adv.o.$content.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open', 'div .openWindow,td .openWindow', function (e) {
+                   if (e.type == 'click') {
+                     Adv.openWindow(this.href, this.target, Adv.hoverWindow.width, Adv.hoverWindow.height);
+                     return false;
+                   }
+                   if (e.type == 'mouseenter') {
+                     if (Adv.o.popupCurrent) {
+                       window.clearTimeout(Adv.o.popupCurrent);
+                     }
+                     Adv.o.popupEl = this;
+                     Adv.o.popupParent = $(this).parent();
+                     Adv.o.popupCurrent = window.setTimeout(Adv.popupWindow, 750);
+                   }
+                   if (e.type == 'mouseleave') {
+                     window.clearTimeout(Adv.o.popupCurrent);
+                   }
+                 })
+               },
+               loaded:function () {
+                 Adv.o.popupWindow.show();
+                 var height = Adv.o.popupWindow[0].contentWindow.document.body.clientHeight + 10;
+                 var top = ($(window).height() / 2 - (height / 2));
+                 if (height > Adv.hoverWindow.height) {
+                   top = 20;
+                   height = Adv.hoverWindow.height
+                 }
+                 var left = ($(window).width() / 2 - Adv.hoverWindow.width / 2);
+                 Adv.o.popupWindow.css('height', height);
+                 Adv.o.popupDiv.css({width:Adv.hoverWindow.width, 'height':height, 'left':left, 'top':top});
+               }},
+             popupWindow:function () {
+               if (Adv.o.popupWindow) {
+                 Adv.o.popupWindow.parent().remove();
+               }
+               console.log(Adv.o.popupEl.href);
+               Adv.o.popupWindow = $("<iframe>", {
+                 src:   Adv.o.popupEl.href + '&frame=1',
+                 width: Adv.hoverWindow.width,
+                 onload:'Adv.hoverWindow.loaded()'
+               }).css({background:'white'}).hide();
+               Adv.o.popupDiv = $('<div>', {
+                 id:    'iframePopup',
+                 width: 100,
+                 height:100}).html(Adv.o.popupWindow).on('mouseleave',function () { $(this).remove(); }).appendTo(Adv.o.wrapper).position({my:"center center", at:"center center", of:document.body});
+             },
+             tabmenu:    {init:function (id, ajax, links, page) {
+               Adv.o.tabs[id] = $('#' + id);
+               if (links) {
+                 Adv.o.tabs[id].tabs({
+                                       select:function (event, ui) {
+                                         var $tab = $(ui.tab), param = $('#' + $tab.data('paramel')).val(), url = $.data(ui.tab, 'load.tabs') + param, target = $tab.data('target');
+                                         if (url) {
+                                           if (target) {
+                                             Adv.openWindow(url, 'Test');
+                                           }
+                                           else {
+                                             location.href = url;
+                                           }
+                                           return false;
+                                         }
+                                         return true;
+                                       }
+                                     })
+               }
+               else {
+                 Adv.o.tabs[id].tabs();
+               }
+               Adv.o.tabs[id].toggleClass('tabs');
+               if (page) {
+                 Adv.tabmenu.page(id, page);
+               }
+             }, page:          function (id, page) {
+               if (page) {
+                 Adv.o.tabs[id].tabs('select', page);
+               }
+             }}});
 Adv.extend({Forms:(function () {
   var menu = {
-    current:null,
+    current:   null,
     closetimer:null,
-    open:function (el) {
+    open:      function (el) {
       menu.close();
       menu.current = el.find('ul').stop(true, true).show('');
     },
-    close:function () {
+    close:     function () {
       if (menu.current !== null) {
         menu.current.stop(true, true).hide('');
       }
@@ -260,13 +260,14 @@ Adv.extend({Forms:(function () {
   Adv.o.wrapper.on('mouseenter', '.dropdown-toggle.auto, .btn-group', function (e) {
     if (menu.closetimer) {
       window.clearTimeout(menu.closetimer);
-      menu.closetimer=null;
-    } else {
+      menu.closetimer = null;
+    }
+    else {
       menu.open($(this).parent());
     }
   });
   Adv.o.wrapper.on('mouseleave', '.btn-group', function () {
-    menu.closetimer = window.setTimeout(menu.close,300);
+    menu.closetimer = window.setTimeout(menu.close, 300);
   });
   Adv.o.wrapper.on('click', '.btn-split', function () {
     var url = $(this).parent().find('a').eq(0).attr('href');
@@ -274,10 +275,10 @@ Adv.extend({Forms:(function () {
     return false;
   });
   Adv.o.wrapper.on('focus.datepicker', ".datepicker", function () {
-    $(this).datepicker({numberOfMonths:3,
-      showButtonPanel:true,
-      showCurrentAtPos:2,
-      dateFormat:'dd/mm/yy'}).off('focus.datepicker');
+    $(this).datepicker({numberOfMonths:   3,
+                         showButtonPanel: true,
+                         showCurrentAtPos:2,
+                         dateFormat:      'dd/mm/yy'}).off('focus.datepicker');
   });
   var _setFormValue = function (el, value, disabled, isdefault) {
     if (!el) {
@@ -324,14 +325,14 @@ Adv.extend({Forms:(function () {
   };
   return {
 
-    findInputEl:function (id) {
+    findInputEl:    function (id) {
       var els = document.getElementsByName ? document.getElementsByName(id) : $("[name='" + id + "'");
       if (!els.length) {
         els = [document.getElementById(id)];
       }
       return els;
     },
-    setFormValue:function (id, value, disabled) {
+    setFormValue:   function (id, value, disabled) {
       var isdefault, els = Adv.Forms.findInputEl(id);
       isdefault = !!arguments[3];
       $.each(els, function (k, el) {
@@ -342,62 +343,62 @@ Adv.extend({Forms:(function () {
     setFormDefaults:function (id, value, disabled) {
       this.setFormValue(id, value, disabled, true);
     },
-    autocomplete:function (id, url, callback) {
+    autocomplete:   function (id, url, callback) {
       var $this, els = Adv.Forms.findInputEl(id);
       Adv.Forms.findInputEl(id);
       Adv.o.autocomplete[id] = $this = $(els).autocomplete({
-        minLength:2,
-        delay:400,
-        autoFocus:true,
-        source:function (request, response) {
-          var $this = Adv.o.autocomplete[id];
-          $this.off('change.autocomplete');
-          $this.data('default', null);
-          if ($this.data().autocomplete.previous == $this.val()) {
-            return false;
-          }
-          Adv.loader.off();
-          Adv.lastXhr = $.getJSON(url, request, function (data, status, xhr) {
-            Adv.loader.on();
-            if (!$this.data('active')) {
-              if (data.length === 0) {
-                data = [
-                  {id:0, value:''}
-                ]
-              }
-              callback(data[0]);
-              return false;
-            }
-            $this.data('default', data[0]);
-            response(data);
-          });
-        },
-        select:function (event, ui) {
-          $this.data('default', null);
-          if (callback(ui.item, event, this) === false) {
-            return false;
-          }
-        },
-        focus:function () {return false;}}).blur(function () {$(this).data('active', false); }).bind('autocompleteclose',function () {
-          if (this.value.length > 1 && $this.data().autocomplete.selectedItem === null && $this.data()['default'] !== null) {
-            if (callback($this.data()['default'], event, this) !== false) {
-              $this.val($this.data()['default'].label);
-            }
-          }
-          $this.data('default', null)
-        }).focus(function () {
-          $(this).data('active', true).on('change.autocomplete', function () {
-            $(this).autocomplete('search', $this.val());
-          })
-        }).on('paste',function () {
-          var $this = $(this);
-          window.setTimeout(function () {$this.autocomplete('search', $this.val())}, 1)
-        }).css({'z-index':'2'});
+                                                             minLength:2,
+                                                             delay:    400,
+                                                             autoFocus:true,
+                                                             source:   function (request, response) {
+                                                               var $this = Adv.o.autocomplete[id];
+                                                               $this.off('change.autocomplete');
+                                                               $this.data('default', null);
+                                                               if ($this.data().autocomplete.previous == $this.val()) {
+                                                                 return false;
+                                                               }
+                                                               Adv.loader.off();
+                                                               Adv.lastXhr = $.getJSON(url, request, function (data, status, xhr) {
+                                                                 Adv.loader.on();
+                                                                 if (!$this.data('active')) {
+                                                                   if (data.length === 0) {
+                                                                     data = [
+                                                                       {id:0, value:''}
+                                                                     ]
+                                                                   }
+                                                                   callback(data[0]);
+                                                                   return false;
+                                                                 }
+                                                                 $this.data('default', data[0]);
+                                                                 response(data);
+                                                               });
+                                                             },
+                                                             select:   function (event, ui) {
+                                                               $this.data('default', null);
+                                                               if (callback(ui.item, event, this) === false) {
+                                                                 return false;
+                                                               }
+                                                             },
+                                                             focus:    function () {return false;}}).blur(function () {$(this).data('active', false); }).bind('autocompleteclose',function () {
+                                                                                                                                                                if (this.value.length > 1 && $this.data().autocomplete.selectedItem === null && $this.data()['default'] !== null) {
+                                                                                                                                                                  if (callback($this.data()['default'], event, this) !== false) {
+                                                                                                                                                                    $this.val($this.data()['default'].label);
+                                                                                                                                                                  }
+                                                                                                                                                                }
+                                                                                                                                                                $this.data('default', null)
+                                                                                                                                                              }).focus(function () {
+                                                                                                                                                                         $(this).data('active', true).on('change.autocomplete', function () {
+                                                                                                                                                                           $(this).autocomplete('search', $this.val());
+                                                                                                                                                                         })
+                                                                                                                                                                       }).on('paste',function () {
+                                                                                                                                                                               var $this = $(this);
+                                                                                                                                                                               window.setTimeout(function () {$this.autocomplete('search', $this.val())}, 1)
+                                                                                                                                                                             }).css({'z-index':'2'});
       if (document.activeElement === $this[0]) {
         $this.data('active', true);
       }
     },
-    moveFocus:function (dir, e0, neighbours) {
+    moveFocus:      function (dir, e0, neighbours) {
       var p0 = Adv.Forms.elementPos(e0), t, l = 0;
       for (var i = 0; i < neighbours.length; i++) {
         var e = neighbours[i], p = Adv.Forms.elementPos(e);
@@ -416,7 +417,7 @@ Adv.extend({Forms:(function () {
       }
       return t;
     },
-    priceFormat:function (post, num, dec, label, color) {
+    priceFormat:    function (post, num, dec, label, color) {
       var sign, decsize, cents, el = label ? document.getElementById(post) : document.getElementsByName(post)[0];
       //num = num.toString().replace(/\$|\,/g,'');
       if (isNaN(num)) {
@@ -450,7 +451,7 @@ Adv.extend({Forms:(function () {
         el.style.color = (sign) ? '' : '#FF0000';
       }
     },
-    getAmount:function (doc, label) {
+    getAmount:      function (doc, label) {
       var val;
       if (label) {
         val = document.getElementById(doc).innerHTML;
@@ -462,7 +463,7 @@ Adv.extend({Forms:(function () {
       val = +val.replace(new RegExp('\\' + user.ds, 'g'), '.');
       return isNaN(val) ? 0 : val;
     },
-    setFocus:function (name, byId) {
+    setFocus:       function (name, byId) {
       var el, scrollMaxY = document.documentElement.scrollHeight - document.documentElement.clientHeight;
       if (typeof(Adv.Scroll.focus) == 'number' && typeof Adv.Scroll.element == 'string') {
         var pos = $(document.getElementsByName(Adv.Scroll.element)[0]).position().top;
@@ -487,7 +488,7 @@ Adv.extend({Forms:(function () {
               if (cur) {
                 name = cur.value;
               }
-            }w
+            }
           }
         }
         if (byId || !(el = document.getElementsByName(name)[0])) {
@@ -505,7 +506,7 @@ Adv.extend({Forms:(function () {
       }
     },
     //returns the absolute position of some element within document
-    elementPos:function (e) {
+    elementPos:     function (e) {
       var res = new Object();
       res.x = 0;
       res.y = 0;
@@ -545,7 +546,7 @@ Adv.extend({Forms:(function () {
       Adv.fieldsChanged = 0;
       Adv.Events.onLeave();
     },
-    stateModified:function (feild) {
+    stateModified:  function (feild) {
       var value, defaultValue;
       if (feild.is(':checkbox')) {
         value = feild.prop('checked');
@@ -586,12 +587,12 @@ Adv.extend({Forms:(function () {
       return Adv.fieldsChanged;
     }
   }
-})(), Scroll:(function () {
+})(), Scroll:     (function () {
   return{
-    atLoad:true,
-    focus:null,
-    elementName:null,
-    to:function (position, duration) {
+    atLoad:      true,
+    focus:       null,
+    elementName: null,
+    to:          function (position, duration) {
       if (duration === undefined) {
         $(window).scrollTop(position);
         return;
@@ -611,11 +612,11 @@ Adv.extend({Events:(function () {
     $(s).bind(t, a);
   };
   return {
-    bind:function (selector, types, action) {
+    bind:   function (selector, types, action) {
       events[events.length] = {s:selector, t:types, a:action};
       firstBind(selector, types, action);
     },
-    onload:function (actions, clean) {
+    onload: function (actions, clean) {
       var c = !!onload;
       onload = actions;
       if (c) {
@@ -626,7 +627,7 @@ Adv.extend({Events:(function () {
         toClean = clean;
       }
     },
-    rebind:function () {
+    rebind: function () {
       if (toClean) {
         toClean();
       }
@@ -664,23 +665,23 @@ Adv.extend({Events:(function () {
     }
   }
 }())
-});
+           });
 Adv.extend({
-  postcode:(function () {
-    var sets = [];
-    return {
-      add:function (set, city, state, code) {
-        sets[set] = {city:$(document.getElementsByName(city)), state:$(document.getElementsByName(state)), postcode:$(document.getElementsByName(code))}
-      },
-      fetch:function (data, item, ui) {
-        var set = $(ui).data("set");
-        data = data.value.split('|');
-        sets[set].city.val(data[0]).trigger('change');
-        sets[set].state.val(data[1]).trigger('change');
-        sets[set].postcode.val(data[2]).trigger('change');
-        return false;
-      }
-    };
-  }())
-});
+             postcode:(function () {
+               var sets = [];
+               return {
+                 add:  function (set, city, state, code) {
+                   sets[set] = {city:$(document.getElementsByName(city)), state:$(document.getElementsByName(state)), postcode:$(document.getElementsByName(code))}
+                 },
+                 fetch:function (data, item, ui) {
+                   var set = $(ui).data("set");
+                   data = data.value.split('|');
+                   sets[set].city.val(data[0]).trigger('change');
+                   sets[set].state.val(data[1]).trigger('change');
+                   sets[set].postcode.val(data[2]).trigger('change');
+                   return false;
+                 }
+               };
+             }())
+           });
 

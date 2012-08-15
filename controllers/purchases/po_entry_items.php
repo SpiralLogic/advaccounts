@@ -1,4 +1,13 @@
 <?php
+  use ADV\App\Creditor\Creditor;
+  use ADV\Core\Ajax;
+  use ADV\App\UI\UI;
+  use ADV\App\Item\Item;
+  use ADV\Core\Table;
+  use ADV\Core\DB\DB;
+  use ADV\Core\Input\Input;
+  use ADV\Core\JS;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -18,10 +27,10 @@
       JS::openWindow(950, 500);
       $this->order = Orders::session_get() ? : null;
       if (Input::get('creditor_id', Input::NUMERIC)) {
-              $this->action       = Orders::CANCEL_CHANGES;
-              $_POST['creditor_id'] = $_GET['creditor_id'];
-              $this->Ajax->activate('creditor_id');
-            }
+        $this->action         = Orders::CANCEL_CHANGES;
+        $_POST['creditor_id'] = $_GET['creditor_id'];
+        $this->Ajax->activate('creditor_id');
+      }
       if (isset($_POST[Orders::CANCEL_CHANGES])) {
         $order_no = $this->order->order_no;
         Orders::session_delete($_POST['order_id']);
@@ -49,11 +58,25 @@
         }
       }
       if (isset($_POST[UPDATE_ITEM]) && $this->checkData()) {
-        if ($this->order->line_items[$_POST['line_no']]->qty_inv > Validation::input_num('qty') || $this->order->line_items[$_POST['line_no']]->qty_received > Validation::input_num('qty')) {
-          Event::error(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received. This is prohibited.") . "<br>" . _("The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."));
+        if ($this->order->line_items[$_POST['line_no']]->qty_inv > Validation::input_num(
+          'qty'
+        ) || $this->order->line_items[$_POST['line_no']]->qty_received > Validation::input_num('qty')
+        ) {
+          Event::error(
+            _("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received. This is prohibited.") . "<br>" . _(
+              "The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."
+            )
+          );
           JS::setFocus('qty');
         } else {
-          $this->order->update_order_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), $_POST['req_del_date'], $_POST['description'], $_POST['discount'] / 100);
+          $this->order->update_order_item(
+            $_POST['line_no'],
+            Validation::input_num('qty'),
+            Validation::input_num('price'),
+            $_POST['req_del_date'],
+            $_POST['description'],
+            $_POST['discount'] / 100
+          );
           unset($_POST['stock_id'], $_POST['qty'], $_POST['price'], $_POST['req_del_date']);
           Item_Line::start_focus('_stock_id_edit');
         }
@@ -62,7 +85,8 @@
         $allow_update = $this->checkData();
         if ($allow_update == true) {
           if ($allow_update == true) {
-            $sql    = "SELECT long_description as description , units, mb_flag
+            $sql
+                    = "SELECT long_description as description , units, mb_flag
   				FROM stock_master WHERE stock_id = " . DB::escape($_POST['stock_id']);
             $result = DB::query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
             if (DB::numRows($result) == 0) {
@@ -70,7 +94,18 @@
             }
             if ($allow_update) {
               $myrow = DB::fetch($result);
-              $this->order->add_to_order($_POST['line_no'], $_POST['stock_id'], Validation::input_num('qty'), $_POST['description'], Validation::input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0, $_POST['discount'] / 100);
+              $this->order->add_to_order(
+                $_POST['line_no'],
+                $_POST['stock_id'],
+                Validation::input_num('qty'),
+                $_POST['description'],
+                Validation::input_num('price'),
+                $myrow["units"],
+                $_POST['req_del_date'],
+                0,
+                0,
+                $_POST['discount'] / 100
+              );
               unset($_POST['stock_id'], $_POST['qty'], $_POST['price'], $_POST['req_del_date']);
               $_POST['stock_id'] = "";
             } else {
@@ -86,7 +121,11 @@
         }
         //need to check that not already dispatched or invoiced by the supplier
         if (($this->order->order_no != 0) && $this->order->any_already_received() == 1) {
-          Event::error(_("This order cannot be cancelled because some of it has already been received.") . "<br>" . _("The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."));
+          Event::error(
+            _("This order cannot be cancelled because some of it has already been received.") . "<br>" . _(
+              "The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."
+            )
+          );
         } else {
           Orders::session_delete($this->order->order_id);
           if ($this->order->order_no != 0) {
@@ -103,7 +142,9 @@
       if (isset($_POST[CANCEL])) {
         unset($_POST['stock_id'], $_POST['qty'], $_POST['price'], $_POST['req_del_date']);
       }
-      $this->iframe = "<div class='center'><iframe src='" . e('/purchases/inquiry/po_search_completed.php?' . LOC_NOT_FAXED_YET . '=1&frame=1') . "' class='width70' style='height:300px' ></iframe></div>";
+      $this->iframe = "<div class='center'><iframe src='" . e(
+        '/purchases/inquiry/po_search_completed.php?' . LOC_NOT_FAXED_YET . '=1&frame=1'
+      ) . "' class='width70' style='height:300px' ></iframe></div>";
       if (Input::get(Orders::MODIFY_ORDER)) {
         $this->order = $this->createOrder($_GET[Orders::MODIFY_ORDER]);
       } elseif (isset($_POST[CANCEL]) || isset($_POST[UPDATE_ITEM])) {
@@ -161,24 +202,22 @@
     /**
      * @param $order_no
      */
-    function pageComplete($order_no) {
+    protected function pageComplete($order_no) {
       Page::start(_($help_context = "Purchase Order Entry"), SA_PURCHASEORDER);
       $trans_type = ST_PURCHORDER;
       $supplier   = new Creditor(Session::getGlobal('creditor_id'));
-      if (!isset($_GET['Updated'])) {
-        Event::success(_("Purchase Order: " . Session::i()['history'][ST_PURCHORDER] . " has been entered"));
-      } else {
-        Event::success(_("Purchase Order: " . Session::i()['history'][ST_PURCHORDER] . " has been updated"));
-      }
-      $view                 = new View('purchases/purchase_order');
-      $view->set('viewtrans',GL_UI::viewTrans($trans_type, $order_no, _("&View this order"), false, 'button'));
-      $view->set('printtrans',Reporting::print_doc_link($order_no, _("&Print This Order"), true, $trans_type));
-      $view->set('modifytrans',Display::menu_button(BASE_URL . "purchases/po_entry_items.php?ModifyOrder=$order_no", _("&Edit This Order")));
-      $view->set('emailtrans',Reporting::emailDialogue($supplier->id, ST_PURCHORDER, $order_no));
+
+      $view = new View('purchases/purchase_order');
+      $view->set('viewtrans', GL_UI::viewTrans($trans_type, $order_no, _("&View this order"), false, 'button'));
+      $view->set('printtrans', Reporting::print_doc_link($order_no, _("&Print This Order"), true, $trans_type));
+      $edit_trans = $view->set('modifytrans', Display::menu_button(BASE_URL . "purchases/po_entry_items.php?ModifyOrder=$order_no", _("&Edit This Order")));
+      $view->set('emailtrans', Reporting::emailDialogue($supplier->id, ST_PURCHORDER, $order_no));
       $view['recievetrans'] = "/purchases/po_receive_items.php?PONumber=$order_no";
-      $view['neworder']     = "/purchases/po_receive_items.php?NewOrder=yes";
+      $new_trans            = $view['neworder'] = "/purchases/po_receive_items.php?NewOrder=yes";
       $view['neworder']     = "/purchases/inquiry/po_search.php";
       $view->render();
+      $this->Ajax->_activate('_page_body', $new_trans, $edit_trans, $help_context);
+      Page::footer_exit();
       Ajax::activate('_page_body');
       Page::footer_exit();
     }
@@ -187,7 +226,7 @@
      *
      * @return \Purch_Order|\Sales_Order
      */
-    function createOrder($order_no = 0) {
+    protected function createOrder($order_no = 0) {
       $getUuseOrder = Input::get('UseOrder');
       if ($getUuseOrder) {
         if (isset(Orders::session_get($getUuseOrder)->line_items)) {
@@ -205,7 +244,18 @@
         $row    = DB::fetch($result);
         $this->order->supplier_to_order($row['creditor_id']);
         foreach ($sales_order->line_items as $line_no => $line_item) {
-          $this->order->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->description, 0, $line_item->units, Dates::addDays(Dates::today(), 10), 0, 0, 0);
+          $this->order->add_to_order(
+            $line_no,
+            $line_item->stock_id,
+            $line_item->quantity,
+            $line_item->description,
+            0,
+            $line_item->units,
+            Dates::addDays(Dates::today(), 10),
+            0,
+            0,
+            0
+          );
         }
         if (isset($_GET[LOC_DROP_SHIP])) {
           $item_info         = Item::get('DS');
@@ -228,42 +278,48 @@
         $this->order = new Purch_Order($order_no);
       }
       $this->order = Purch_Order::copyToPost($this->order);
+
       return $this->order;
     }
     /**
      * @return bool
      */
-    function checkData() {
+    protected function checkData() {
       $dec = Item::qty_dec($_POST['stock_id']);
       $min = 1 / pow(10, $dec);
       if (!Validation::post_num('qty', $min)) {
         $min = Num::format($min, $dec);
         Event::error(_("The quantity of the order item must be numeric and not less than ") . $min);
         JS::setFocus('qty');
+
         return false;
       }
       if (!Validation::post_num('price', 0)) {
         Event::error(_("The price entered must be numeric and not less than zero."));
         JS::setFocus('price');
+
         return false;
       }
       if (!Validation::post_num('discount', 0, 100)) {
         Event::error(_("Discount percent can not be less than 0 or more than 100."));
         JS::setFocus('discount');
+
         return false;
       }
       if (!Dates::isDate($_POST['req_del_date'])) {
         Event::error(_("The date entered is in an invalid format."));
         JS::setFocus('req_del_date');
+
         return false;
       }
+
       return true;
     }
     /**
      * @internal param \Purch_Order $this ->order
      * @return bool
      */
-    function canCommit() {
+    protected function canCommit() {
       if (!$this->order) {
         Event::error(_("You are not currently editing an order."));
         Page::footer_exit();
@@ -271,42 +327,50 @@
       if (!Input::post('creditor_id')) {
         Event::error(_("There is no supplier selected."));
         JS::setFocus('creditor_id');
+
         return false;
       }
       if (!Dates::isDate($_POST['OrderDate'])) {
         Event::error(_("The entered order date is invalid."));
         JS::setFocus('OrderDate');
+
         return false;
       }
       if (Input::post('delivery_address') == '') {
         Event::error(_("There is no delivery address specified."));
         JS::setFocus('delivery_address');
+
         return false;
       }
       if (!Validation::post_num('freight', 0)) {
         Event::error(_("The freight entered must be numeric and not less than zero."));
         JS::setFocus('freight');
+
         return false;
       }
       if (Input::post('location') == '') {
         Event::error(_("There is no location specified to move any items into."));
         JS::setFocus('location');
+
         return false;
       }
       if ($this->order->order_has_items() == false) {
         Event::error(_("The order cannot be placed because there are no lines entered on this order."));
+
         return false;
       }
       if (!$this->order->order_no) {
         if (!Ref::is_valid(Input::post('ref'))) {
           Event::error(_("There is no reference entered for this purchase order."));
           JS::setFocus('ref');
+
           return false;
         }
         if (!Ref::is_new($_POST['ref'], ST_PURCHORDER)) {
           $_POST['ref'] = Ref::get_next(ST_PURCHORDER);
         }
       }
+
       return true;
     }
   }
