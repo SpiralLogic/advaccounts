@@ -1,5 +1,6 @@
 <?php
     use ADV\Core\Input\Input;
+    use ADV\Core\JS;
     use ADV\App\UI\UI;
     use ADV\App\Bank\Bank;
     use ADV\Core\Cell;
@@ -24,19 +25,40 @@
         protected $Num;
         /** @var Dates Dates*/
         protected $Dates;
+        /**
+         * @var
+         */
         protected $bank_account;
+        /**
+         * @var
+         */
         protected $bank_date;
+        /**
+         * @var
+         */
         protected $reconcile_date;
+        /**
+         * @var
+         */
         protected $begin_date;
+        /**
+         * @var
+         */
         protected $end_date;
+        /**
+         * @var bool
+         */
         protected $accountHasStatements = false;
+        /**
+
+         */
         protected function before()
         {
             $this->Dates             = Dates::i();
             $this->Num               = Num::i();
             $_POST['bank_account']   = $this->Input->_postGlobal('bank_account', INPUT::NUMERIC, Bank_Account::get_default()['id']);
             $this->bank_account      = &$_POST['bank_account'];
-            $_POST['bank_date']      = $this->Input->_postGlobal('bank_date', null, $this->Dates->_today());
+            $_POST['bank_date']      = $this->Input->_postGlobal('bank_date', [$this, 'checkDate'], $this->Dates->_today());
             $this->bank_date         = &$_POST['bank_date'];
             $_POST['reconcile_date'] = $this->Input->_post('reconcile_date', null, $this->Dates->_sqlToDate($_POST['bank_date']));
             $this->reconcile_date    = &$_POST['reconcile_date'];
@@ -52,6 +74,7 @@
                 $this->Ajax->_activate('bank_date');
                 $this->updateData();
             }
+
             $this->accountHasStatements = Bank_Account::hasStatements($this->bank_account);
             if (Forms::isListUpdated('bank_date')) {
                 $this->reconcile_date = $this->Dates->_sqlToDate($this->bank_date);
@@ -65,8 +88,9 @@
                 $this->updateData();
             }
             if ($this->accountHasStatements && $this->bank_date) {
-                $this->begin_date = $this->Dates->_dateToSql($this->Dates->_beginMonth($this->bank_date));
-                $this->end_date   = $this->Dates->_dateToSql($this->Dates->_endMonth($this->bank_date));
+                $this->end_date   = $this->Dates->_dateToSql($this->bank_date);
+              $this->begin_date = GL_Account::get_reconcile_start($this->bank_account,$this->end_date);
+
             } elseif ($this->accountHasStatements) {
                 $this->begin_date = null;
                 $this->end_date   = $this->Dates->_today();
@@ -76,6 +100,9 @@
                 $this->updateCheckbox($id);
             }
         }
+        /**
+
+         */
         protected function index()
         {
             $this->runAction();
@@ -90,7 +117,6 @@
             Table::end();
             $this->displaySummary();
             echo "<hr><div id='drag'>";
-
             echo $this->render();
             echo '</div>';
             Forms::end();
@@ -100,6 +126,9 @@
             JS::addLive("Adv.Reconcile.setUpGrid();");
             Page::end();
         }
+        /**
+
+         */
         protected function addDialogs()
         {
             $date_dialog  = new View('ui/date_dialog');
@@ -153,9 +182,8 @@
          */
         protected function statementLayout()
         {
-            $rec             = Bank_Trans::getPeriod($this->bank_account, $this->begin_date, $this->end_date);
-            $statement_trans = Bank_Account::getStatement($this->bank_account, $this->begin_date, $this->end_date);
-
+            $rec                         = Bank_Trans::getPeriod($this->bank_account, $this->begin_date, $this->end_date);
+            $statement_trans             = Bank_Account::getStatement($this->bank_account, $this->begin_date, $this->end_date);
             $known_trans                 = [];
             $known_headers               = [
                 'type',
@@ -220,6 +248,9 @@
             $table->display();
             return true;
         }
+        /**
+
+         */
         protected function displaySummary()
         {
             $this->getTotal();
@@ -279,6 +310,9 @@
             }
             return;
         }
+        /**
+
+         */
         protected function changeDate()
         {
             $bank_trans_id = Input::post('trans_id', Input::NUMERIC, -1);
@@ -289,8 +323,7 @@
             JS::renderJSON($data);
         }
         /**
-         * @param $row
-         *
+         * @internal param $row
          * @return string
          */
         protected function changeBank()
@@ -305,45 +338,8 @@
             JS::renderJSON($data);
         }
         /**
-         * @return bool
+
          */
-        public function checkDate()
-        {
-            if (!$this->Dates->_isDate($this->reconcile_date)) {
-                Event::error(_("Invalid reconcile date format"));
-                $this->JS->_setFocus('reconcile_date');
-                return false;
-            }
-            return true;
-        }
-        /**
-         * @param $reconcile_id
-         *
-         * @return bool
-         */
-        public function updateCheckbox($reconcile_id)
-        {
-            if (!$this->checkDate() && Input::hasPost("rec_" . $reconcile_id)) // temporary fix
-            {
-                return false;
-            }
-            if ($this->bank_date == '') // new reconciliation
-            {
-                $this->Ajax->_activate('bank_date');
-            }
-            $reconcile_value = Input::hasPost("rec_" . $reconcile_id) ? ("'" . $this->Dates->_dateToSql($this->reconcile_date) . "'") : 'null';
-            GL_Account::update_reconciled_values(
-                $reconcile_id,
-                $reconcile_value,
-                $this->reconcile_date,
-                Validation::input_num('end_balance'),
-                $this->bank_account,
-                Input::post('state_' . $reconcile_id, Input::NUMERIC, -1)
-            );
-            $this->Ajax->_activate('_page_body');
-            $this->JS->_setFocus($reconcile_id);
-            return true;
-        }
         protected function unGroup()
         {
             $groupid = Input::post('groupid', Input::NUMERIC);
@@ -351,15 +347,8 @@
                 Bank_Undeposited::ungroup($groupid);
                 $this->updateData();
             }
-            $this->updateData();
             $data['grid'] = $this->render();
             JS::renderJSON($data);
-        }
-        public function updateData()
-        {
-            DB_Pager::kill('bank_rec');
-            unset($_POST["beg_balance"], $_POST["end_balance"]);
-            $this->Ajax->_activate('_page_body');
         }
         /**
          * @return mixed
@@ -369,9 +358,16 @@
             $trans1 = Input::post('trans1', INPUT::NUMERIC);
             $trans2 = Input::post('trans2', INPUT::NUMERIC);
             Bank_Undeposited::addToGroup($trans1, $this->bank_account, $trans2);
-
             $data['grid'] = $this->render();
             JS::renderJSON($data);
+        }
+        /**
+         * @internal param $prefix
+         * @return bool|mixed
+         */
+        protected function runValidation()
+        {
+            Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
         }
         /**
          * @param $row
@@ -387,7 +383,7 @@
             $state_id = $row['state_id'];
             $hidden   = 'last[' . $row['id'] . ']';
             $value    = $row['reconciled'] != '';
-            return Forms::checkbox(null, $name, $value, true, _('Reconcile this transaction')) . Forms::hidden($hidden, $value, false) . Forms::hidden(
+            return Forms::checkbox(null, $name, $value, false, _('Reconcile this transaction')) . Forms::hidden($hidden, $value, false) . Forms::hidden(
                 'state_' . $row['id'],
                 $state_id,
                 false
@@ -404,7 +400,6 @@
                 $class  = "class='overduebg deny mark'";
                 $amount = e($row['state_amount']);
                 $date   = e($this->Dates->_sqlToDate($row['state_date']));
-
                 return "<tr  $class  data-date='$date' data-amount='$amount'> ";
             }
             $name     = $row['id'];
@@ -465,24 +460,22 @@
                 return '';
             }
             $dropdown = new View('ui/dropdown');
-
-            if (!$row['id'] && $row['state_amount']) {
+            if (!$row['id']) {
+                $title = 'Create';
                 if ($row['state_amount'] > 0) {
+                    $data = [];
                     if (stripos($row['memo'], 'AMEX')) {
                         preg_match('/([0-9]+\.[0-9]+)/', $row['memo'], $beforefee);
-                        $fee     = $beforefee[1] - $row['state_amount'];
-                        $items[] = ['class'=> 'createDP', 'label'=> 'Debtor Payment', 'href'=> '/sales/customer_payments', 'data'=> ['fee'=> $fee, 'amount'=> $beforefee[1]]];
-                    } else {
-                        $items[] = ['class'=> 'createDP', 'label'=> 'Debtor Payment', 'href'=> '/sales/customer_payments'];
+                        $fee  = $beforefee[1] - $row['state_amount'];
+                        $data = ['fee'=> $fee, 'amount'=> $beforefee[1]];
                     }
+                    $items[] = ['class'=> 'createDP', 'label'=> 'Debtor Payment', 'href'=> '/sales/customer_payments', 'data'=> $data];
                     $items[] = ['class'=> 'createBD', 'label'=> 'Bank Deposit', 'href'=> '/gl/gl_bank?NewDeposit=Yes'];
                 } else {
                     $items[] = ['class'=> 'createCP', 'label'=> 'Creditor Payment', 'href'=> '/purchases/supplier_payment'];
                     $items[] = ['class'=> 'createBP', 'label'=> 'Bank Payment', 'href'=> '/gl/gl_bank?NewPayment=Yes'];
                 }
                 $items[] = ['class'=> 'createFT', 'label'=> 'Funds Transfer', 'href'=> '/gl/bank_transfer'];
-
-                $title = 'Create';
             } else {
                 $items[] = ['class'=> 'changeDate', 'label'=> 'Change Date'];
                 switch ($row['type']) {
@@ -495,10 +488,9 @@
                         $items[] = ['class'=> 'changeBank', 'label'=> 'Move Bank'];
                         $items[] = ['class'=> 'voidTrans', 'label'=> 'Void Trans', 'data'=> ['type'=> $row['type'], 'trans_no'=> $row['trans_no']]];
                 }
-
                 $title = ($row['type'] == ST_GROUPDEPOSIT) ? 'Group' : substr($row['ref'], 0, 7);
             }
-            $menus[] = ['title'=> $title, 'items'=> $items];
+            $menus[] = ['title'=> $title, 'auto'=> 'auto', 'items'=> $items];
             $dropdown->set('menus', $menus);
             return $dropdown->render(true);
         }
@@ -559,18 +551,10 @@
             } else {
                 $content = Bank::payment_person_name($row["person_type_id"], $row["person_id"], true, $row["trans_no"]);
             }
-            if (!$row['reconciled'] && ($row['trans_no']||$row['type']==ST_GROUPDEPOSIT)) {
+            if (!$row['reconciled'] && ($row['trans_no'] || $row['type'] == ST_GROUPDEPOSIT)) {
                 return '<div class="drag row">' . $content . '</div>';
             }
             return '<div class="deny row">' . $content . '</div>';
-        }
-        /**
-         * @internal param $prefix
-         * @return bool|mixed
-         */
-        protected function runValidation()
-        {
-            Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
         }
         /**
          * @param $a
@@ -588,6 +572,55 @@
                 return $amount1 - $amount2;
             }
             return strcmp($date1, $date2);
+        }
+        /**
+
+         */
+        public function updateData()
+        {
+            DB_Pager::kill('bank_rec');
+            unset($_POST["beg_balance"], $_POST["end_balance"]);
+            $this->Ajax->_activate('_page_body');
+        }
+        /**
+         * @param $date
+         *
+         * @return bool
+         */
+        public function checkDate($date)
+        {
+            $date = $this->Dates->_sqlToDate($date);
+            return $this->Dates->_isDate($date);
+        }
+        /**
+         * @param $reconcile_id
+         *
+         * @return bool
+         */
+        public function updateCheckbox($reconcile_id)
+        {
+            if (!$this->Dates->_isDate($this->reconcile_date) && Input::hasPost("rec_" . $reconcile_id)) // temporary fix
+            {
+                Event::error(_("Invalid reconcile date format"));
+                $this->JS->_setFocus('reconcile_date');
+
+                return false;
+            }
+            if ($this->bank_date == '') // new reconciliation
+            {
+                $this->Ajax->_activate('bank_date');
+            }
+            $reconcile_value = Input::hasPost("rec_" . $reconcile_id) ? ("'" . $this->Dates->_dateToSql($this->reconcile_date) . "'") : 'null';
+            GL_Account::update_reconciled_values(
+                $reconcile_id,
+                $reconcile_value,
+                $this->reconcile_date,
+                Validation::input_num('end_balance'),
+                $this->bank_account,
+                Input::post('state_' . $reconcile_id, Input::NUMERIC, -1)
+            );
+            $this->Ajax->_activate('_page_body');
+            return true;
         }
     }
 

@@ -24,14 +24,14 @@
       parent::__construct();
     }
     public function buildMenu() {
-      $this->add_module(_("Transactions"));
-      $this->addLeftFunction(0, _("Dimension &Entry"), "/dimensions/dimension_entry?", SA_DIMENSION);
-      $this->addLeftFunction(0, _("&Outstanding Dimensions"), "/dimensions/inquiry/search_dimensions?outstanding_only=1", SA_DIMTRANSVIEW);
-      $this->add_module(_("Inquiries and Reports"));
-      $this->addLeftFunction(1, _("Dimension &Inquiry"), "/dimensions/inquiry/search_dimensions?", SA_DIMTRANSVIEW);
-      $this->addRightFunction(1, _("Dimension &Reports"), "reporting/reports_main?Class=4", SA_DIMENSIONREP);
-      $this->add_module(_("Maintenance"));
-      $this->addLeftFunction(2, _("Dimension &Tags"), "system/tags?type=dimension", SA_DIMTAGS);
+      $module=$this->add_module(_("Transactions"));
+      $module->addLeftFunction(_("Dimension &Entry"), "/dimensions/dimension_entry?", SA_DIMENSION);
+      $module->addLeftFunction(_("&Outstanding Dimensions"), "/dimensions/inquiry/search_dimensions?outstanding_only=1", SA_DIMTRANSVIEW);
+      $module=$this->add_module(_("Inquiries and Reports"));
+      $module->addLeftFunction(_("Dimension &Inquiry"), "/dimensions/inquiry/search_dimensions?", SA_DIMTRANSVIEW);
+      $module->addRightFunction(_("Dimension &Reports"), "reporting/reports_main?Class=4", SA_DIMENSIONREP);
+      $module=$this->add_module(_("Maintenance"));
+      $module->addLeftFunction(_("Dimension &Tags"), "system/tags?type=dimension", SA_DIMTAGS);
     }
   }
 

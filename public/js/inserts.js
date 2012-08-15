@@ -8,28 +8,16 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-var _focus;
 var _hotkeys = {
-  'alt':false, // whether is the Alt key pressed
+  'alt':  false, // whether is the Alt key pressed
   'focus':-1    // currently selected indeks of document.links
 };
 function save_focus(e) {
-  _focus = e.name || e.id;
+  Adv.Scroll.focus = e.name || e.id;
   var h = document.getElementById('hints');
   if (h) {
     h.style.display = e.title && e.title.length ? 'inline' : 'none';
     h.innerHTML = e.title ? e.title : '';
-  }
-}
-function _expand(tabobj) {
-  var ul = tabobj.parentNode.parentNode;
-  var alltabs = ul.getElementsByTagName("input");
-  if (ul.getAttribute("rel")) {
-    for (var i = 0; i < alltabs.length; i++) {
-      alltabs[i].className = "ajaxbutton"  //deselect all tabs
-    }
-    tabobj.className = "current";
-    JsHttpRequest.request(tabobj)
   }
 }
 function _set_combo_input(e) {
@@ -43,7 +31,8 @@ function _set_combo_input(e) {
 // search field has changed.
     if (button && (this.value != this.getAttribute('_last'))) {
       JsHttpRequest.request(button);
-    } else {
+    }
+    else {
       if (this.className == 'combo2') {
         this.style.display = 'none';
         select.style.display = 'inline';
@@ -133,18 +122,6 @@ function _set_combo_select(e) {
   }
 }
 var _w;
-function callEditor(key) {
-  var el = document.getElementsByName(editors[key][1])[0];
-  if (_w) {
-    _w.close();
-  } // this is really necessary to have window on top in FF2 :/
-  _w = open(editors[key][0] + el.value + '&popup=1', "edit", "Scrollbars=0,resizable=0,width=800,height=600");
-  if (_w.opener === null) {
-    _w.opener = self;
-  }
-  editors._call = key; // store call point for passBack
-  _w.focus();
-}
 function passBack(value) {
   var o = opener;
   if (!value) {
@@ -166,7 +143,7 @@ function passBack(value) {
  Behaviour definitions
  */
 var inserts = {
-  'input':function (e) {
+  'input':                                                                                  function (e) {
     if (e.onfocus == undefined) {
       e.onfocus = function () {
         save_focus(this);
@@ -177,7 +154,8 @@ var inserts = {
     }
     if (e.className == 'combo' || e.className == 'combo2') {
       _set_combo_input(e);
-    } else {
+    }
+    else {
       if (e.type == 'text') {
         e.onkeydown = function (ev) {
           ev = ev || window.event;
@@ -193,11 +171,11 @@ var inserts = {
       }
     }
   },
-  'input.combo2,input[data-aspect="fallback"]':function (e) {
+  'input.combo2,input[data-aspect="fallback"]':                                             function (e) {
     // this hides search button for js enabled browsers
     e.style.display = 'none';
   },
-  'div.js_only':function (e) {
+  'div.js_only':                                                                            function (e) {
     // this shows divs for js enabled browsers only
     e.style.display = 'block';
   },
@@ -208,25 +186,28 @@ var inserts = {
       var asp = e.getAttribute('data-aspect');
       if (asp && asp.indexOf('process') !== -1) {
         JsHttpRequest.request(this, null, 60000);
-      } else {
+      }
+      else {
         JsHttpRequest.request(this);
       }
       return false;
     }
   },
-  'button':function (e) {
+  'button':                                                                                 function (e) {
     if (e.name) {
       var func = (e.name == '_action') ? _validate[e.value] : _validate[e.name];
       var old = e.onclick;
       if (func) {
         if (typeof old != 'function' || old == func) { // prevent multiply binding on ajax update
           e.onclick = func;
-        } else {
+        }
+        else {
           e.onclick = function () {
             if (func()) {
               old();
               return true;
-            } else {
+            }
+            else {
               return false;
             }
           }
@@ -234,7 +215,7 @@ var inserts = {
       }
     }
   },
-  '.amount':function (e) {
+  '.amount':                                                                                function (e) {
     if (e.onblur == undefined) {
       e.onblur = function () {
         var dec = this.getAttribute("data-dec");
@@ -242,7 +223,7 @@ var inserts = {
       };
     }
   },
-  '.freight':function (e) {
+  '.freight':                                                                               function (e) {
     if (e.onblur == undefined) {
       e.onblur = function () {
         var dec = this.getAttribute("data-dec");
@@ -251,24 +232,24 @@ var inserts = {
     }
   },
   '.searchbox':// emulated onchange event handling for text inputs
-    function (e) {
-      e.setAttribute('_last_val', e.value);
-      e.setAttribute('autocomplete', 'off'); //must be off when calling onblur
-      e.onblur = function () {
-        var val = this.getAttribute('_last_val');
-        if (val != this.value) {
-          this.setAttribute('_last_val', this.value);
-          JsHttpRequest.request('_' + this.name + '_changed', this.form);
-        }
-      }
-    },
-  'button[data-aspect="selector"], input[data-aspect="selector"]':function (e) {
+                                                                                            function (e) {
+                                                                                              e.setAttribute('_last_val', e.value);
+                                                                                              e.setAttribute('autocomplete', 'off'); //must be off when calling onblur
+                                                                                              e.onblur = function () {
+                                                                                                var val = this.getAttribute('_last_val');
+                                                                                                if (val != this.value) {
+                                                                                                  this.setAttribute('_last_val', this.value);
+                                                                                                  JsHttpRequest.request('_' + this.name + '_changed', this.form);
+                                                                                                }
+                                                                                              }
+                                                                                            },
+  'button[data-aspect="selector"], input[data-aspect="selector"]':                          function (e) {
     e.onclick = function () {
       passBack(this.getAttribute('rel'));
       return false;
     }
   },
-  'select':function (e) {
+  'select':                                                                                 function (e) {
     if (e.onfocus == undefined) {
       e.onfocus = function () {
         save_focus(this);
@@ -279,14 +260,14 @@ var inserts = {
       }
     }
   },
-  'a.printlink,button.printlink':function (e) {
+  'a.printlink,button.printlink':                                                           function (e) {
     e.onclick = function () {
       save_focus(this);
       JsHttpRequest.request(this, null, 60000);
       return false;
     }
   },
-  'a':function (e) { // traverse menu
+  'a':                                                                                      function (e) { // traverse menu
     e.onkeydown = function (ev) {
       ev = ev || window.event;
       key = ev.keyCode || ev.which;
@@ -299,118 +280,5 @@ var inserts = {
   }
 
 };
-function stopEv(ev) {
-  if (ev.preventDefault) {
-    ev.preventDefault();
-    ev.stopPropagation();
-  } else {
-    ev.returnValue = false;
-    ev.cancelBubble = true;
-    window.keycode = 0;
-  }
-  return false;
-}
-/*
- Modified accesskey system. While Alt key is pressed letter keys moves
- focus to next marked link. Alt key release activates focused link.
- *//*
- function setHotKeys() {
- document.onkeydown = function (ev) {
- ev = ev || window.event;
- key = ev.keyCode || ev.which;
- if (key == 18 && key != 68 && !ev.ctrlKey) {	// start selection, skip Win AltGr
- _hotkeys.alt = true;
- _hotkeys.focus = -1;
- return stopEv(ev);
- } else {
- if (ev.altKey && !ev.ctrlKey && key != 68 && ((key > 47 && key < 58) || (key > 64 && key < 91))) {
- var n = _hotkeys.focus;
- var l = document.links;
- var cnt = l.length;
- key = String.fromCharCode(key);
- for (var i = 0; i < cnt; i++) {
- n = (n + 1) % cnt;
- // check also if the link is visible
- if (l[n].accessKey == key && l[n].scrollWidth) {
- _hotkeys.focus = n;
- // The timeout is needed to prevent unpredictable behaviour on IE.
- var tmp = function () {
- document.links[_hotkeys.focus].focus();
- };
- setTimeout(tmp, 0);
- break;
- }
- }
- return stopEv(ev);
- }
- }
- if ((ev.ctrlKey && key == 13) || key == 27) {
- _hotkeys.alt = false; // cancel link selection
- _hotkeys.focus = -1;
- ev.cancelBubble = true;
- if (ev.stopPropagation) {
- ev.stopPropagation();
- }
- // activate submit/escape form
- for (var j = 0; j < this.forms.length; j++) {
- var form = this.forms[j];
- for (var i = 0; i < form.elements.length; i++) {
- var el = form.elements[i];
- var asp = el.getAttribute('data-aspect');
-
- if (el.className != 'editbutton' && (asp && asp.indexOf('selector') !== -1) && (key == 13 || key == 27)) {
- passBack(key == 13 ? el.getAttribute('rel') : false);
- ev.returnValue = false;
- return false;
- }
- if (((asp && asp.indexOf('default') !== -1) && key == 13) || ((asp && asp.indexOf('cancel') !== -1) && key == 27)) {
-
- if (asp.indexOf('process') !== -1) {
- JsHttpRequest.request(el, null, 60000);
- } else {
- JsHttpRequest.request(el);
- }
- ev.returnValue = false;
- return false;
- }
- }
- }
- ev.returnValue = false;
- return false;
- }
- if (editors && editors[key]) {
- callEditor(key);
- return stopEv(ev); // prevent default binding
- }
- return true;
- };
- document.onkeyup = function (ev) {
- ev = ev || window.event;
- key = ev.keyCode || ev.which;
-
- if (_hotkeys.alt == true) {
- if (key == 18) {
- _hotkeys.alt = false;
- if (_hotkeys.focus >= 0) {
- var link = document.links[_hotkeys.focus];
- if (link.onclick) {
- link.onclick();
- } else {
- if (link.target == '_blank') {
- window.open(link.href, '', 'toolbar=no,scrollbar=no,resizable=yes,menubar=no,width=900,height=500');
- openWindow(link.href, '_blank');
- } else {
- window.location = link.href;
- }
- }
- }
- return stopEv(ev);
- }
- }
- return true;
- }
- }
- */
 Behaviour.register(inserts);
 Behaviour.addLoadEvent(Adv.Forms.setFocus);
-//Behaviour.addLoadEvent(setHotKeys);

@@ -160,6 +160,11 @@
             $ba     = static::get_default($row[0]);
             return $ba['id'];
         }
+        /**
+         * @param null $id
+         *
+         * @return mixed
+         */
         public static function hasStatements($id = null)
         {
             $id     = $id ? : static::get_default()['id'];
@@ -294,10 +299,10 @@
         public static function getBalances($bank_account, $begin_date, $end_date)
         {
             $begin_date    = static::checkBeginDate($begin_date);
-            $sql           = "(select (rb - amount) as amount from temprec where date>=" . DB::quote($begin_date) . " and date<=" . DB::quote(
+            $sql           = "(select (rb - amount) as amount from temprec where date>" . DB::quote($begin_date) . " and date<=" . DB::quote(
                 $end_date
             ) . " and bank_account_id=" . DB::quote($bank_account) . " order by date, id desc limit 0,
-          1) union (select rb as amount from temprec where date>=" . DB::quote($begin_date) . " and date<=" . DB::quote($end_date) . " and bank_account_id=" . DB::quote(
+          1) union (select rb as amount from temprec where date>" . DB::quote($begin_date) . " and date<=" . DB::quote($end_date) . " and bank_account_id=" . DB::quote(
                 $bank_account
             ) . " order by date desc, id asc limit 0,1)";
             $result        = DB::query($sql);
@@ -326,7 +331,7 @@
         public static function getStatement($bank_account, $begin_date, $end_date)
         {
             $begin_date = static::checkBeginDate($begin_date);
-            $sql        = "SELECT date as state_date, amount as state_amount,memo,id as state_id, reconciled_to_id FROM temprec WHERE date >= " . DB::quote(
+            $sql        = "SELECT date as state_date, amount as state_amount,memo,id as state_id, reconciled_to_id FROM temprec WHERE date > " . DB::quote(
                 $begin_date
             ) . " AND date <=" . DB::quote($end_date) . " and bank_account_id=" . DB::quote($bank_account) . " ORDER BY reconciled_to_id DESC, date ,amount";
             DB::query($sql);

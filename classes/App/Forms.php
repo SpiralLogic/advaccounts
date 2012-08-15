@@ -7,6 +7,12 @@
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
      **/
+    use ADV\Core\Input\Input;
+    use ADV\Core\DB\DB;
+    use ADV\Core\Ajax;
+    use ADV\Core\Cell;
+    use ADV\Core\SelectBox;
+
     /**
      * @param bool   $multi
      * @param string $action
@@ -89,6 +95,7 @@
                 return $ret;
             }
             echo $ret;
+            return true;
         }
         /**
          * Universal sql combo generator
@@ -259,6 +266,7 @@
               "<img alt='$value' src='/themes/" . User::theme() . "/images/$icon' height='12'>" : '') . "<span>$caption</span>" . "</button>\n";
             if ($echo) {
                 echo $submit_str;
+                return true;
             } else {
                 return $submit_str;
             }
@@ -1362,7 +1370,7 @@
                 Cell::label($label, $params);
                 echo "<td>";
             } else {
-                echo "<td class='right nowrap' >";
+                echo "<td class='alignright nowrap' >";
             }
             $dec = $dec ? : static::$dic['User']->_price_dec();
             if (!Input::post($name)) {

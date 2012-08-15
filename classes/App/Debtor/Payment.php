@@ -8,8 +8,8 @@
    * @link      http://www.advancedgroup.com.au
    **/
   /*
-         Write/update customer payment.
-       */
+    Write/update customer payment.
+  */
   /**
 
    */
@@ -33,8 +33,13 @@
      *
      * @return int
      */
-    public static function add($trans_no, $debtor_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0, $tax = 0)
-    {
+    public static function add($trans_no, $debtor_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0, $tax = 0) {
+      $result = DB::select('trans_no')->from('debtor_trans')->where('debtor_id=', $debtor_id)->andWhere('branch_id=', $branch_id)->andWhere('tran_date=', Dates::dateToSql($date_))->andWhere('type=', ST_CUSTPAYMENT)->andWhere('ov_amount=', $amount)->fetch()->one();
+      if ($result && $result['trans_no']!==Session::getFlash('customer_payment')) {
+        Session::setFlash('customer_payment', $result['trans_no']);
+        Event::warning('A payment for same amount and date already exists for this customer, do you want to process anyway?');
+        return false;
+      }
       DB::begin();
       $company_record  = DB_Company::get_prefs();
       $payment_no      = Debtor_Trans::write(ST_CUSTPAYMENT, $trans_no, $debtor_id, $branch_id, $date_, $ref, $amount, $discount, $tax, 0, 0, 0, 0, 0, 0, $date_, 0, $rate);
@@ -88,8 +93,7 @@
      * @param $type
      * @param $type_no
      */
-    public static function void($type, $type_no)
-    {
+    public static function void($type, $type_no) {
       DB::begin();
       Bank_Trans::void($type, $type_no, true);
       GL_Trans::void($type, $type_no, true);
@@ -104,10 +108,8 @@
      * @param        $credit
      * @param string $parms
      */
-    public static function credit_row($customer, $credit, $parms = '')
-    {
-      Row::label(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? ' class="redfg openWindow"' :
-        '') . " href='" . e('/sales/inquiry/customer_inquiry.php?frame=1&debtor_id=' . $customer) . "'>" . Num::priceFormat($credit) . "</a>", $parms);
+    public static function credit_row($customer, $credit, $parms = '') {
+      Row::label(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? ' class="redfg openWindow"' : '') . " href='" . e('/sales/inquiry/customer_inquiry.php?frame=1&debtor_id=' . $customer) . "'>" . Num::priceFormat($credit) . "</a>", $parms);
     }
     /**
      * @static
@@ -116,20 +118,13 @@
      * @param      $name
      * @param null $selected
      */
-    public static function allocations_select($label, $name, $selected = null)
-    {
+    public static function allocations_select($label, $name, $selected = null) {
       if ($label != null) {
         Cell::label($label);
       }
       echo "<td>\n";
       $allocs = array(
-        ALL_TEXT => _("All Types"),
-        '1'      => _("Sales Invoices"),
-        '2'      => _("Overdue Invoices"),
-        '3'      => _("Payments"),
-        '4'      => _("Credit Notes"),
-        '5'      => _("Delivery Notes"),
-        '6'      => _("Invoices Only")
+        ALL_TEXT => _("All Types"), '1'      => _("Sales Invoices"), '2'      => _("Overdue Invoices"), '3'      => _("Payments"), '4'      => _("Credit Notes"), '5'      => _("Delivery Notes"), '6'      => _("Invoices Only")
       );
       echo Forms::arraySelect($name, $selected, $allocs);
       echo "</td>\n";
@@ -140,14 +135,12 @@
      * @param      $debtor_id
      * @param bool $refund
      */
-    public static function read_customer_data($debtor_id, $refund = false)
-    {
+    public static function read_customer_data($debtor_id, $refund = false) {
       if ($refund == false) {
         $myrow = Debtor::get_habit($debtor_id);
         $type  = ST_CUSTPAYMENT;
       } else {
-        $sql
-                = "SELECT debtors.payment_discount,
+        $sql    = "SELECT debtors.payment_discount,
                   credit_status.dissallow_invoices
                   FROM debtors, credit_status
                   WHERE debtors.credit_status = credit_status.id
@@ -167,99 +160,4 @@
      *
      * @return bool
      */
-    public static function can_process($type)
-    {
-      if (!Input::post('debtor_id')) {
-        Event::error(_("There is no customer selected."));
-        JS::setFocus('debtor_id');
-
-        return false;
-      }
-      if (!Input::post('branch_id')) {
-        Event::error(_("This customer has no branch defined."));
-        JS::setFocus('branch_id');
-
-        return false;
-      }
-      if (!isset($_POST['DateBanked']) || !Dates::isDate($_POST['DateBanked'])) {
-        Event::error(_("The entered date is invalid. Please enter a valid date for the payment."));
-        JS::setFocus('DateBanked');
-
-        return false;
-      } elseif (!Dates::isDateInFiscalYear($_POST['DateBanked'])) {
-        Event::error(_("The entered date is not in fiscal year."));
-        JS::setFocus('DateBanked');
-
-        return false;
-      }
-      if (!Ref::is_valid($_POST['ref'])) {
-        Event::error(_("You must enter a reference."));
-        JS::setFocus('ref');
-
-        return false;
-      }
-      if (!Ref::is_new($_POST['ref'], $type)) {
-        $_POST['ref'] = Ref::get_next($type);
-      }
-      if (!Validation::post_num('amount', 0)) {
-        Event::error(_("The entered amount is invalid or negative and cannot be processed."));
-        JS::setFocus('amount');
-
-        return false;
-      }
-      if (isset($_POST['charge']) && !Validation::post_num('charge', 0)) {
-        Event::error(_("The entered amount is invalid or negative and cannot be processed."));
-        JS::setFocus('charge');
-
-        return false;
-      }
-      if (isset($_POST['charge']) && Validation::input_num('charge') > 0) {
-        $charge_acct = DB_Company::get_pref('bank_charge_act');
-        if (GL_Account::get($charge_acct) == false) {
-          Event::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
-          JS::setFocus('charge');
-
-          return false;
-        }
-      }
-      if (isset($_POST['_ex_rate']) && !Validation::post_num('_ex_rate', 0.000001)) {
-        Event::error(_("The exchange rate must be numeric and greater than zero."));
-        JS::setFocus('_ex_rate');
-
-        return false;
-      }
-      if ($_POST['discount'] == "") {
-        $_POST['discount'] = 0;
-      }
-      if (!Validation::post_num('discount')) {
-        Event::error(_("The entered discount is not a valid number."));
-        JS::setFocus('discount');
-
-        return false;
-      }
-      if ($type == ST_CUSTPAYMENT && !User::i()->salesmanid) {
-        Event::error(_("You do not have a salesman id, this is needed to create an invoice."));
-
-        return false;
-      }
-      //if ((Validation::input_num('amount') - Validation::input_num('discount') <= 0)) {
-      if ($type == ST_CUSTPAYMENT && Validation::input_num('amount', 0, 0) <= 0) {
-        Event::error(_("The balance of the amount and discount is zero or negative. Please enter valid amounts."));
-        JS::setFocus('discount');
-
-        return false;
-      }
-      if ($type == ST_CUSTREFUND && Validation::input_num('amount') >= 0) {
-        Event::error(_("The balance of the amount and discount is zero or positive. Please enter valid amounts."));
-        JS::setfocus('[name="amount"]');
-
-        return false;
-      }
-      $_SESSION['alloc']->amount = Validation::input_num('amount');
-      if (isset($_POST["TotalNumberOfAllocs"])) {
-        return GL_Allocation::check();
-      } else {
-        return true;
-      }
-    }
   }

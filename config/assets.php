@@ -66,7 +66,6 @@
             '/js/libs/jquery-tmpl.min.js',
             '/js/libs/jquery.calc.js',
             '/js/libs/bootstrap.min.js',
-            '/js/libs/jquery.scrollTo-min.js',
             '/js/calc.js',
         ),
         //

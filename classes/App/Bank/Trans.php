@@ -126,7 +126,7 @@
             if ($to) {
                 $sql .= " OR bt.reconciled='" . $to . "'";
             }
-            $sql .= ") AND bt.amount!=0 GROUP BY bt.id ORDER BY IF(bt.trans_date>='" . $from . "' AND bt.trans_date<='" . $to . "',1,0) , bt.reconciled DESC ,bt.trans_date , amount ";
+            $sql .= ") AND bt.amount!=0 GROUP BY bt.id ORDER BY IF(bt.trans_date>'" . $from . "' AND bt.trans_date<='" . $to . "',1,0) , bt.reconciled DESC ,bt.trans_date , amount ";
             static::$DB->_query($sql);
             return static::$DB->_fetchAll();
         }

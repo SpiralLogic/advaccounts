@@ -1,4 +1,4 @@
-{{#if !$frame}}
+{{#if !$frame }}
 <div id='companysearch' class='center bold font13 pad20'>
   <label for='customer'>Search Customer:&nbsp;<input name='customer' placeholder='Customer' id='customer' type='text' autofocus></label>
 </div>
@@ -9,7 +9,7 @@
     <label for="name">Customer name:</label><input id="name" placeholder='Customer'  name="name" class="big">
     <label>Customer ID:</label><input id="id" name='id' disabled class="small" maxlength="7"><input type='hidden' value='{{$debtor_id}}' name='id' class="small" maxlength="7">
   </div>
-  <div class='formbox width35'>
+  <div class='formbox'>
     <div class='tablehead'>
       Shipping Details
     </div>
@@ -24,7 +24,7 @@
     {{$form.branch-br_address}}
     {{$branch_postcode->render()}}
   </div>
-  <div class='formbox width35'>
+  <div class='formbox'>
     <div class='tablehead'>
       Accounts Details
     </div>
@@ -41,7 +41,7 @@
   </div>
   {#$menu->endTab()->startTab('Accounts', 'Accounts')#}
 
-  <div class='formbox width35'>
+  <div class='formbox'>
     <div class='tablehead'>
       Accounts Details
       {{$form.accounts_id}}

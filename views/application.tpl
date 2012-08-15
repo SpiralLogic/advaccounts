@@ -4,7 +4,7 @@
       <table class='width100'>
         <tr>
           <td class='menu_group' colspan={{ $colspan }}>
-            {{ $name }}
+            {{$name}}
           </td>
         </tr>
         <tr>

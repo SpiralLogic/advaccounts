@@ -114,6 +114,7 @@
           }
           $app->set((!$app['lmods']) ? 'lmods' : 'rmods', $mods);
         }
+
         $app->render();
       }
     }

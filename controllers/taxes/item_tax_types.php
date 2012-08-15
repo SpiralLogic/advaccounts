@@ -1,114 +1,114 @@
 <?php
-  /**
-   * PHP version 5.4
-   * @category  PHP
-   * @package   ADVAccounts
-   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-   * @copyright 2010 - 2012
-   * @link      http://www.advancedgroup.com.au
-   **/
+    /**
+     * PHP version 5.4
+     * @category  PHP
+     * @package   ADVAccounts
+     * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+     * @copyright 2010 - 2012
+     * @link      http://www.advancedgroup.com.au
+     **/
 
-  Page::start(_($help_context = "Item Tax Types"), SA_ITEMTAXTYPE);
-  list($Mode, $selected_id) = Page::simple_mode(true);
-  if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
-    $input_error = 0;
-    if (strlen($_POST['name']) == 0) {
-      $input_error = 1;
-      Event::error(_("The item tax type description cannot be empty."));
-      JS::setFocus('name');
-    }
-    if ($input_error != 1) {
-      // create an array of the exemptions
-      $exempt_from = [];
-      $tax_types   = Tax_Types::get_all_simple();
-      $i           = 0;
-      while ($myrow = DB::fetch($tax_types)) {
-        if (Input::hasPost('ExemptTax' . $myrow["id"])) {
-          $exempt_from[$i] = $myrow["id"];
-          $i++;
+    Page::start(_($help_context = "Item Tax Types"), SA_ITEMTAXTYPE);
+    list($Mode, $selected_id) = Page::simple_mode(true);
+    if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
+        $input_error = 0;
+        if (strlen($_POST['name']) == 0) {
+            $input_error = 1;
+            Event::error(_("The item tax type description cannot be empty."));
+            JS::setFocus('name');
         }
-      }
-      if ($selected_id != -1) {
-        Tax_ItemType::update($selected_id, $_POST['name'], $_POST['exempt'], $exempt_from);
-        Event::success(_('Selected item tax type has been updated'));
-      } else {
-        Tax_ItemType::add($_POST['name'], $_POST['exempt'], $exempt_from);
-        Event::success(_('New item tax type has been added'));
-      }
-      $Mode = MODE_RESET;
-    }
-  }
-  if ($Mode == MODE_DELETE) {
-    Tax_ItemType::delete($selected_id);
-    $Mode = MODE_RESET;
-  }
-  if ($Mode == MODE_RESET) {
-    $selected_id = -1;
-    $sav         = Input::post('show_inactive');
-    unset($_POST);
-    $_POST['show_inactive'] = $sav;
-  }
-  $result2 = $result = Tax_ItemType::getAll(Input::hasPost('show_inactive'));
-  Forms::start();
-  Table::start('tablestyle grid width30');
-  $th = array(_("Name"), _("Tax exempt"), '', '');
-  Forms::inactiveControlCol($th);
-  Table::header($th);
-  $k = 0;
-  while ($myrow = DB::fetch($result2)) {
-
-    if ($myrow["exempt"] == 0) {
-      $disallow_text = _("No");
-    } else {
-      $disallow_text = _("Yes");
-    }
-    Cell::label($myrow["name"]);
-    Cell::label($disallow_text);
-    Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'item_tax_types', 'id');
-    Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
-    Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
-    Row::end();
-  }
-  Forms::inactiveControlRow($th);
-  Table::end(1);
-  Table::start('tablestyle2');
-  if ($selected_id != -1) {
-    if ($Mode == MODE_EDIT) {
-      $myrow = Tax_ItemType::get($selected_id);
-      unset($_POST); // clear exemption checkboxes
-      $_POST['name']   = $myrow["name"];
-      $_POST['exempt'] = $myrow["exempt"];
-      // read the exemptions and check the ones that are on
-      $exemptions = Tax_ItemType::get_exemptions($selected_id);
-      if (DB::numRows($exemptions) > 0) {
-        while ($exmp = DB::fetch($exemptions)) {
-          $_POST['ExemptTax' . $exmp["tax_type_id"]] = 1;
+        if ($input_error != 1) {
+            // create an array of the exemptions
+            $exempt_from = [];
+            $tax_types   = Tax_Types::get_all_simple();
+            $i           = 0;
+            while ($myrow = DB::fetch($tax_types)) {
+                if (Input::hasPost('ExemptTax' . $myrow["id"])) {
+                    $exempt_from[$i] = $myrow["id"];
+                    $i++;
+                }
+            }
+            if ($selected_id != -1) {
+                Tax_ItemType::update($selected_id, $_POST['name'], $_POST['exempt'], $exempt_from);
+                Event::success(_('Selected item tax type has been updated'));
+            } else {
+                Tax_ItemType::add($_POST['name'], $_POST['exempt'], $exempt_from);
+                Event::success(_('New item tax type has been added'));
+            }
+            $Mode = MODE_RESET;
         }
-      }
     }
-    Forms::hidden('selected_id', $selected_id);
-  }
-  Forms::textRowEx(_("Description:"), 'name', 50);
-  Forms::yesnoListRow(_("Is Fully Tax-exempt:"), 'exempt', null, "", "", true);
-  Table::end(1);
-  if (!isset($_POST['exempt']) || $_POST['exempt'] == 0) {
-    Event::warning(_("Select which taxes this item tax type is exempt from."), 0, 1);
-    Table::start('tablestyle2 grid');
-    $th = array(_("Tax Name"), _("Rate"), _("Is exempt"));
+    if ($Mode == MODE_DELETE) {
+        Tax_ItemType::delete($selected_id);
+        $Mode = MODE_RESET;
+    }
+    if ($Mode == MODE_RESET) {
+        $selected_id = -1;
+        $sav         = Input::post('show_inactive');
+        unset($_POST);
+        $_POST['show_inactive'] = $sav;
+    }
+    $result2 = $result = Tax_ItemType::getAll(Input::hasPost('show_inactive'));
+    Forms::start();
+    Table::start('tablestyle grid width30');
+    $th = array(_("Name"), _("Tax exempt"), '', '');
+    Forms::inactiveControlCol($th);
     Table::header($th);
-    $tax_types = Tax_Types::get_all_simple();
-    while ($myrow = DB::fetch($tax_types)) {
+    $k = 0;
+    while ($myrow = DB::fetch($result2)) {
 
-      Cell::label($myrow["name"]);
-      Cell::label(Num::percentFormat($myrow["rate"]) . " %", ' class="right nowrap"');
-      Forms::checkCells("", 'ExemptTax' . $myrow["id"], null);
-      Row::end();
+        if ($myrow["exempt"] == 0) {
+            $disallow_text = _("No");
+        } else {
+            $disallow_text = _("Yes");
+        }
+        Cell::label($myrow["name"]);
+        Cell::label($disallow_text);
+        Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'item_tax_types', 'id');
+        Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
+        Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
+        Row::end();
     }
+    Forms::inactiveControlRow($th);
     Table::end(1);
-  }
-  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Forms::end();
-  Page::end();
+    Table::start('tablestyle2');
+    if ($selected_id != -1) {
+        if ($Mode == MODE_EDIT) {
+            $myrow = Tax_ItemType::get($selected_id);
+            unset($_POST); // clear exemption checkboxes
+            $_POST['name']   = $myrow["name"];
+            $_POST['exempt'] = $myrow["exempt"];
+            // read the exemptions and check the ones that are on
+            $exemptions = Tax_ItemType::get_exemptions($selected_id);
+            if (DB::numRows($exemptions) > 0) {
+                while ($exmp = DB::fetch($exemptions)) {
+                    $_POST['ExemptTax' . $exmp["tax_type_id"]] = 1;
+                }
+            }
+        }
+        Forms::hidden('selected_id', $selected_id);
+    }
+    Forms::textRowEx(_("Description:"), 'name', 50);
+    Forms::yesnoListRow(_("Is Fully Tax-exempt:"), 'exempt', null, "", "", true);
+    Table::end(1);
+    if (!isset($_POST['exempt']) || $_POST['exempt'] == 0) {
+        Event::warning(_("Select which taxes this item tax type is exempt from."), 0, 1);
+        Table::start('tablestyle2 grid');
+        $th = array(_("Tax Name"), _("Rate"), _("Is exempt"));
+        Table::header($th);
+        $tax_types = Tax_Types::get_all_simple();
+        while ($myrow = DB::fetch($tax_types)) {
+
+            Cell::label($myrow["name"]);
+            Cell::label(Num::percentFormat($myrow["rate"]) . " %", ' class="alignright nowrap"');
+            Forms::checkCells("", 'ExemptTax' . $myrow["id"], null);
+            Row::end();
+        }
+        Table::end(1);
+    }
+    Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
+    Forms::end();
+    Page::end();
 /**
  * @param $selected_id
  *
