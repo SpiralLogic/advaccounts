@@ -266,7 +266,7 @@ Adv.extend({Forms:(function () {
     }
   });
   Adv.o.wrapper.on('mouseleave', '.btn-group', function () {
-    menu.closetimer = window.setTimeout(menu.close, 700);
+    menu.closetimer = window.setTimeout(menu.close,300);
   });
   Adv.o.wrapper.on('click', '.btn-split', function () {
     var url = $(this).parent().find('a').eq(0).attr('href');
@@ -487,7 +487,7 @@ Adv.extend({Forms:(function () {
               if (cur) {
                 name = cur.value;
               }
-            }
+            }w
           }
         }
         if (byId || !(el = document.getElementsByName(name)[0])) {

@@ -312,7 +312,7 @@
         }
         function formatMarker($row)
         {
-            return (isset($row['OverDue']) && $row['OverDue'] == 1) && (Num::round(abs($row["TotalAmount"]) - $row["Allocated"], 2) != 0);
+            return (isset($row['OverDue']) && $row['OverDue'] == 1) && (Num::round($row["TotalAmount"] - $row["Allocated"], 2) != 0);
         }
         function formatDropdown($row)
         {
