@@ -6,9 +6,10 @@
     <th>Name</th>
     <th>Phone</th>
     <th>Balance</th>
-    <th>Due</th>
-    <th>Overdue1</th>
-    <th>Overdue2</th>
+    <th>1-30</th>
+    <th>31-60</th>
+    <th>61-90</th>
+    <th>90+</th>
   </tr>
   {{#foreach $rows as $row}}
   <tr>
@@ -17,12 +18,12 @@
     </td>
     <td>{{$row.phone}}</td>
     <td>{{$row.Balance}}</td>
-    <td
-      {{$row.Due?}}class="currentfg"{{/$row.Due?}}>{{$row.Due}}</td>
-    <td
-      {{$row.Overdue1?}}class="overduebg"{{/$row.Overdue1?}}>{{$row.Overdue1}}</td>
-    <td
-      {{$row.Overdue2?}}class="overduebg"{{/$row.Overdue2?}}>{{$row.Overdue2}}</td>
+    <td {{#if $row.Balance - $row.Due >0}}class="overduebg"{{/if}}>{{$row.Balance - $row.Due}}</td>
+    <td {{#if $row.Due - $row.Overdue1 >0}}class="overduebg"{{/if}}>{{$row.Due - $row.Overdue1}}</td>
+    <td {{#if $row.Overdue1 - $row.Overdue2 >0}}class="overduebg"{{/if}}>{{$row.Overdue1 - $row.Overdue2}}</td>
+    <td {{#if $row.Overdue2 > 0}}class="overduebg"{{/if}}>{{$row.Overdue2}}</td>
+
+
   </tr>
   {{/foreach}}
   <tfoot class='bold pad5'>
@@ -33,6 +34,7 @@
     <td>{{$totals.due}}</td>
     <td>{{$totals.overdue1}}</td>
     <td>{{$totals.overdue2}}</td>
+    <td>{{$totals.overdue3}}</td>
   </tr>
   </tfoot>
 </table><div class='center'>

@@ -42,7 +42,8 @@
     /**
      * @param \User $user
      */
-    public function __construct(\User $user = null) {
+    public function __construct(\User $user = null)
+    {
       $this->user        = $user ? : \User::i();
       $this->price_dec   = $this->user->_price_dec();
       $this->tho_sep     = $this->user->_tho_sep();
@@ -57,9 +58,9 @@
      *
      * @return int|string
      */
-    public function _priceFormat($number) {
+    public function _priceFormat($number)
+    {
       $number = str_replace($this->tho_sep, '', $number);
-
       return $this->_format($this->_round($number, $this->price_dec + 2), $this->price_dec);
     }
     /**
@@ -70,7 +71,8 @@
      *
      * @return int|string
      */
-    public function _priceDecimal($number, $dec = null) {
+    public function _priceDecimal($number, $dec = null)
+    {
       $dec = $dec !== null ? $dec : $this->price_dec;
       $str = strval($number);
       $pos = strpos($str, '.');
@@ -80,7 +82,6 @@
           $dec = $len;
         }
       }
-
       return $this->_format($number, $dec);
     }
     /**
@@ -91,7 +92,8 @@
      *
      * @return float
      */
-    public function _round($number, $decimals = 0) {
+    public function _round($number, $decimals = 0)
+    {
       return round($number, $decimals, PHP_ROUND_HALF_EVEN);
     }
     /**
@@ -102,13 +104,16 @@
      *
      * @return int|string
      */
-    public function _format($number, $decimals = 0) {
+    public function _format($number, $decimals = 0)
+    {
       $tsep = $this->tho_sep;
       $dsep = $this->dec_sep;
       //return number_format($number, $decimals, $dsep,	$tsep);
-      $delta  = ($number < 0 ? -.0000000001 : .0000000001);
-      $number = number_format(($number == -0 ? 0 : $number) + $delta, $decimals, $dsep, $tsep);
-
+      $delta = ($number < 0 ? -.0000000001 : .0000000001);
+      $number = number_format($number + $delta, $decimals, $dsep, $tsep);
+      if ($number == 0) {
+      $number=  ltrim($number, '-');
+      }
       return $number;
     }
     /**
@@ -118,7 +123,8 @@
      *
      * @return int|string
      */
-    public function _exrateFormat($number) {
+    public function _exrateFormat($number)
+    {
       return $this->_format($number, $this->exrate_dec);
     }
     /**
@@ -128,7 +134,8 @@
      *
      * @return int|string
      */
-    public function _percentFormat($number) {
+    public function _percentFormat($number)
+    {
       return $this->_format($number, $this->percent_dec);
     }
     /**
@@ -139,7 +146,8 @@
      *
      * @return float|int
      */
-    public function _toNearestCents($price, $round_to) {
+    public function _toNearestCents($price, $round_to)
+    {
       if ($price == 0) {
         return 0;
       }
@@ -154,7 +162,6 @@
       } else {
         $price = ceil($price * ($pow / $round_to)) / ($pow / $round_to);
       }
-
       return $price;
     }
     /**
@@ -166,7 +173,8 @@
      * Simple English version of number to words conversion.
 
      */
-    public function _toWords($number) {
+    public function _toWords($number)
+    {
       $Bn = floor($number / 1000000000); /* Billions (giga) */
       $number -= $Bn * 1000000000;
       $Gn = floor($number / 1000000); /* Millions (mega) */
@@ -229,7 +237,6 @@
       if (empty($res)) {
         $res = "zero";
       }
-
       return $res;
     }
   }

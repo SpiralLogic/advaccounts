@@ -7,6 +7,7 @@
    * To change this template use File | Settings | File Templates.
    */
   namespace ADV\Core;
+
   /**
 
    */
@@ -15,14 +16,15 @@
     protected $_viewdata = [];
     protected $_template = null;
     /** @var Cache */
-    static $Cache;
-    static $count = 0;
+    public static $Cache;
+    protected static $count = 0;
     /**
      * @param $template
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($template) {
+    public function __construct($template)
+    {
       $this->_template = VIEWPATH . $template . '.tpl';
       $this->_js       = 'js' . DS . $template . '.js';
       if (!file_exists($this->_template)) {
@@ -39,15 +41,16 @@
      * @throws \Exception
      * @return string
      */
-    public function render($return = false) {
+    public function render($return = false)
+    {
       if (!$this->_template) {
         throw new \RuntimeException("There is nothing to render!");
       }
       // The contents of each view file is cached in an array for the
       // request since partial views may be rendered inside of for
       // loops which could incur performance penalties.
-  //    $__contents = null; // static::$Cache->_get('template.' . $this->_template);
-        $__contents = static::$Cache->_get('template.' . $this->_template);
+      //    $__contents = null; // static::$Cache->_get('template.' . $this->_template);
+      $__contents = static::$Cache->_get('template.' . $this->_template);
       if (!$__contents || !is_array($__contents)) {
         $__contents = file_get_contents($this->_template);
         $__contents = $this->compile($__contents);
@@ -69,10 +72,10 @@
           $contents = ob_get_clean();
           Errors::handler(E_ERROR, 'template ' . $this->_template . " failed to render!<pre>" . $contents);
         }
-      } // If we caught an exception, we'll silently flush the output
+      } catch (\Exception $e) {
+        // If we caught an exception, we'll silently flush the output
         // buffer so that no partially rendered views get thrown out
         // to the client and confuse the user with junk.
-      catch (\Exception $e) {
         ob_get_clean();
         throw $e;
       }
@@ -80,12 +83,14 @@
         return ob_get_clean();
       }
       echo ob_get_clean();
+      return true;
     }
     /**
      * @param $template
      * @param $lastmodified
      */
-    public function checkCache($template, $lastmodified) {
+    public function checkCache($template, $lastmodified)
+    {
       if ($lastmodified < filemtime($template)) {
         static::$Cache->_delete('template.' . $this->_template);
       }
@@ -97,7 +102,8 @@
      *
      * @return mixed
      */
-    protected static function compile_echos($value) {
+    protected static function compileEchos($value)
+    {
       return preg_replace('/\{\{([^!.].*?)\}\}/', '<?php echo $1; ?>', $value);
     }
     /**
@@ -107,7 +113,8 @@
      *
      * @return mixed
      */
-    protected static function compile_dot_notation($value) {
+    protected static function compileDotNotation($value)
+    {
       return preg_replace('/(\$[a-zA-Z_0-9]+?)\.([a-zA-Z_0-9-]+)/', '$1["$2"]', $value);
     }
     /**
@@ -117,7 +124,8 @@
      *
      * @return mixed
      */
-    protected static function compile_functions($value) {
+    protected static function compileFunctions($value)
+    {
       return preg_replace('/([^{])\{#(.+?)#\}([^}])/', '$1<?php $2; ?>$3', $value);
     }
     /**
@@ -127,8 +135,9 @@
      *
      * @return mixed
      */
-    protected static function compile_nothings($value) {
-      $pattern = '/\{\{(.+?)\?\}\}(.+)\{\{\/\1\?\}\}/s';
+    protected static function compileNothings($value)
+    {
+      $pattern = '/\{\{(.+?)\?\}\}(.+?)\{\{\/\1\?\}\}/s';
       return preg_replace($pattern, '<?php if(isset($1) && $1): ?>$2<?php endif; ?>', $value);
     }
     /**
@@ -138,7 +147,8 @@
      *
      * @return string
      */
-    protected static function compile_structure_openings($value) {
+    protected static function compileStructureOpenings($value)
+    {
       $pattern = '/\{\{#(if|elseif|foreach|for|while)(.*?)\}\}/';
       return preg_replace($pattern, '<?php $1($2): ?>', $value);
     }
@@ -149,7 +159,8 @@
      *
      * @return string
      */
-    protected static function compile_structure_closings($value) {
+    protected static function compileStructureClosings($value)
+    {
       $pattern = '/\{\{\/(if|foreach|for|while)\}\}/';
       return preg_replace($pattern, '<?php end$1; ?>', $value);
     }
@@ -160,7 +171,8 @@
      *
      * @return string
      */
-    protected static function compile_else($value) {
+    protected static function compileElse($value)
+    {
       return preg_replace('/\{\{#(else)\}\}/', '<?php $1: ?>', $value);
     }
     /**
@@ -170,62 +182,55 @@
      *
      * @return string
      */
-    protected function complie_hashes($value) {
+    protected function compileHashes($value)
+    {
       $pattern = '/\{\{#([^?]+?)\}\}(.*?)\{\{\/\1}\}/s';
-      $return  = preg_replace_callback($pattern, function($input) {
-        $var      = ltrim($input[1], '$');
-        $contents = $input[2];
-        /*        if (strpos($contents, '{{.}}') !== false) {
-        $return   = '<?php if (isset($' . $var . ') && is_array($' . $var . ') && isset($' . $var . '[0])): foreach($' . $var . ' as $_' . $var . '): ?>';
-        //$implicit = $this->compile_implicit($contents, $var);
-        $return .= $this->compile($contents);
-        $return .= '<?php endforeach; endif; ?>';
-      } else {*/
-        $tempvar = uniqid();
-        $return = '<?php if (isset($' . $var . ') && is_array($' . $var . ')): foreach($' . $var . ' as $_' . $tempvar . '_name => $_' . $tempvar . '_val): ?>';
-        $contents= $this->compile($contents,true);
-        $contents=str_replace(['{{!}}','{{.}}'], ['{{$_' . $tempvar . '_name}}','{{$_' . $tempvar . '_val}}'], $contents);
-        $return.=str_replace('$.', '$_' . $tempvar . '_val.', $contents);
-
-        //$implicit = $this->compile_context($contents, '_' . $var);
-        $return .= '<?php endforeach; endif; ?>';
+      $return  = preg_replace_callback(
+        $pattern,
+        function ($input) {
+          $var      = ltrim($input[1], '$');
+          $contents = $input[2];
+          /*        if (strpos($contents, '{{.}}') !== false) {
+          $return   = '<?php if (isset($' . $var . ') && is_array($' . $var . ') && isset($' . $var . '[0])): foreach($' . $var . ' as $_' . $var . '): ?>';
+          //$implicit = $this->compile_implicit($contents, $var);
+          $return .= $this->compile($contents);
+          $return .= '<?php endforeach; endif; ?>';
+        } else {*/
+          $tempvar  = uniqid();
+          $return   = '<?php if (isset($' . $var . ') && is_array($' . $var . ')): foreach($' . $var . ' as $_' . $tempvar . '_name => $_' . $tempvar . '_val): ?>';
+          $contents = $this->compile($contents, true);
+          $contents = str_replace(['{{!}}', '{{.}}'], ['{{$_' . $tempvar . '_name}}', '{{$_' . $tempvar . '_val}}'], $contents);
+          $return .= str_replace('$.', '$_' . $tempvar . '_val.', $contents);
+          //$implicit = $this->compileContext($contents, '_' . $var);
+          $return .= '<?php endforeach; endif; ?>';
 //        }
-        return $return;
-      }, $value);
+          return $return;
+        },
+        $value
+      );
       return $return;
     }
-    private function compile($__contents, $context = null) {
+    /**
+     * @param      $__contents
+     * @param null $context
+     *
+     * @return mixed
+     */
+    private function compile($__contents, $context = null)
+    {
       if ($context) {
-   //     $__contents = $this->compile_context($__contents, $context);
+        //     $__contents = $this->compileContext($__contents, $context);
       }
-      $__contents = $this->compile_functions($__contents);
-      $__contents = $this->compile_nothings($__contents);
-      $__contents = $this->compile_structure_openings($__contents);
-      $__contents = $this->compile_else($__contents);
-      $__contents = $this->compile_structure_closings($__contents);
-      $__contents = $this->complie_hashes($__contents);
-      $__contents = $this->compile_echos($__contents, $context);
-      $__contents = $this->compile_dot_notation($__contents);
+      $__contents = $this->compileFunctions($__contents);
+      $__contents = $this->compileNothings($__contents);
+      $__contents = $this->compileStructureOpenings($__contents);
+      $__contents = $this->compileElse($__contents);
+      $__contents = $this->compileStructureClosings($__contents);
+      $__contents = $this->compileHashes($__contents);
+      $__contents = $this->compileEchos($__contents, $context);
+      $__contents = $this->compileDotNotation($__contents);
       static::$Cache->_set('template.' . $this->_template, [$__contents, filemtime($this->_template)]);
       return $__contents;
-    }
-    /**
-     * @param $__contents
-     * @param $context
-     *
-     * @return mixed
-     */
-    private function compile_context($__contents, $context) {
-      return preg_replace('/\{\{([#!^\/]?)([a-zA-Z_0-9]*?)/', '{{$1' . $context . '.$2', $__contents);
-    }
-    /**
-     * @param $contents
-     * @param $var
-     *
-     * @return mixed
-     */
-    private function compile_implicit($__contents, $var) {
-      return preg_replace('/\{\{\.\}\}/', '<?php echo \$_' . $var . '; ?>', $__contents);
     }
     /**
      * @param      $offset
@@ -234,7 +239,8 @@
      *
      * @return \ADV\Core\View
      */
-    public function set($offset, $value, $escape = false) {
+    public function set($offset, $value, $escape = false)
+    {
       $value                    = $escape ? e($value) : $value;
       $this->_viewdata[$offset] = $value;
       return $this;
@@ -253,7 +259,8 @@
      * <p>
      *       The return value will be casted to boolean if non-boolean was returned.
      */
-    public function offsetExists($offset) {
+    public function offsetExists($offset)
+    {
       return (array_key_exists($offset, $this->_viewdata));
     }
     /**
@@ -267,7 +274,8 @@
      *
      * @return mixed Can return all value types.
      */
-    public function offsetGet($offset) {
+    public function offsetGet($offset)
+    {
       if (!array_key_exists($offset, $this->_viewdata)) {
         return null;
       }
@@ -287,7 +295,8 @@
      *
      * @return void
      */
-    public function offsetSet($offset, $value) {
+    public function offsetSet($offset, $value)
+    {
       $this->set($offset, $value, true);
     }
     /**
@@ -301,7 +310,8 @@
      *
      * @return void
      */
-    public function offsetUnset($offset) {
+    public function offsetUnset($offset)
+    {
       if ($this->offsetExists($offset)) {
         unset($this->_viewdata[$offset]);
       }
@@ -309,3 +319,4 @@
   }
 
   View::$Cache = Cache::i();
+

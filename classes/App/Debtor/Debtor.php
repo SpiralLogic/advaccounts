@@ -960,11 +960,8 @@ JS;
             if (isset($customer_record["dissallow_invoices"]) && $customer_record["dissallow_invoices"] != 0) {
                 echo "<div class='center red font4 bold'>" . _("CUSTOMER ACCOUNT IS ON HOLD") . "</div>";
             }
-            $txt_now_due   = "1-" . $past_due1 . " " . _('Days');
-            $txt_past_due1 = $past_due1 + 1 . "-" . $past_due2 . " " . _('Days');
-            $txt_past_due2 = _('Over') . " " . $past_due2 . " " . _('Days');
             Table::start('tablestyle width90');
-            $th = array(_("Currency"), _("Terms"), _("Current"), $txt_now_due, $txt_past_due1, $txt_past_due2, _("Total Balance"));
+            $th = array(_("1-30 Days"), _("Terms"), "1-30 Days", "31-60 Days", "61-90 Days", "90+ Days", _("Total Balance"));
             Table::header($th);
             Row::start();
             if (isset($customer_record["curr_code"])) {
