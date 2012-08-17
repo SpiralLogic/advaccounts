@@ -1,4 +1,8 @@
 <?php
+  use ADV\Core\Input\Input;
+  use ADV\Core\DB\DB;
+  use ADV\Core\Ajax;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -7,7 +11,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class SupplierCredit extends ADV\App\Controller\Base {
+  class SupplierCredit extends ADV\App\Controller\Base
+  {
     /** @var Creditor_trans */
     protected $trans;
     protected $creditor_id;
@@ -83,7 +88,8 @@
       Page::end();
     }
     protected function addJS() {
-      $js = <<<JS
+      $js
+        = <<<JS
              $("#wrapper").delegate('.amount','change',function() {
          var feild = $(this), ChgTax=$('[name="ChgTax"]'),ChgTotal=$('[name="ChgTotal"]'),invTotal=$('#invoiceTotal'), fields = $(this).parent().parent(), fv = {}, nodes = {
          qty: $('[name^="this_quantity"]',fields),
@@ -219,11 +225,13 @@ JS;
       if (!$this->trans->is_valid_trans_to_post()) {
         Event::error(_("The credit note cannot be processed because the there are no items or values on the invoice. Credit notes are expected to have a charge."));
         $this->JS->_setFocus('');
+
         return false;
       }
       if (!Ref::is_valid($this->trans->reference)) {
         Event::error(_("You must enter an credit note reference."));
         $this->JS->_setFocus('reference');
+
         return false;
       }
       if (!Ref::is_new($this->trans->reference, ST_SUPPCREDIT)) {
@@ -232,26 +240,36 @@ JS;
       if (!Ref::is_valid($this->trans->supplier_reference)) {
         Event::error(_("You must enter a supplier's credit note reference."));
         $this->JS->_setFocus('supplier_reference');
+
         return false;
       }
       if (!Dates::isDate($this->trans->tran_date)) {
         Event::error(_("The credit note as entered cannot be processed because the date entered is not valid."));
         $this->JS->_setFocus('tran_date');
+
         return false;
       } elseif (!Dates::isDateInFiscalYear($this->trans->tran_date)) {
         Event::error(_("The entered date is not in fiscal year."));
         $this->JS->_setFocus('tran_date');
+
         return false;
       }
       if (!Dates::isDate($this->trans->due_date)) {
         Event::error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
         $this->JS->_setFocus('due_date');
+
         return false;
       }
       if ($this->trans->ov_amount < ($total_gl_value + $total_grn_value)) {
-        Event::error(_("The credit note total as entered is less than the sum of the the general ledger entires (if any) and the charges for goods received. There must be a mistake somewhere, the credit note as entered will not be processed."));
+        Event::error(
+          _(
+            "The credit note total as entered is less than the sum of the the general ledger entires (if any) and the charges for goods received. There must be a mistake somewhere, the credit note as entered will not be processed."
+          )
+        );
+
         return false;
       }
+
       return true;
     }
     /**S
@@ -264,13 +282,16 @@ JS;
       if (!Validation::post_num('this_quantityCredited' . $n, 0)) {
         Event::error(_("The quantity to credit must be numeric and greater than zero."));
         $this->JS->_setFocus('this_quantityCredited' . $n);
+
         return false;
       }
       if (!Validation::post_num('ChgPrice' . $n, 0)) {
         Event::error(_("The price is either not numeric or negative."));
         $this->JS->_setFocus('ChgPrice' . $n);
+
         return false;
       }
+
       return true;
     }
     protected function cancelCredit() {
@@ -289,8 +310,20 @@ JS;
     protected function commitItemData($n) {
       if ($this->checkItemData($n)) {
         $complete = false;
-        $this->trans->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('this_quantityCredited' . $n), $_POST['order_price' . $n],
-          Validation::input_num('ChgPrice' . $n), $complete, $_POST['std_cost_unit' . $n], "");
+        $this->trans->add_grn_to_trans(
+          $n,
+          $_POST['po_detail_item' . $n],
+          $_POST['item_code' . $n],
+          $_POST['description' . $n],
+          $_POST['qty_recd' . $n],
+          $_POST['prev_quantity_inv' . $n],
+          Validation::input_num('this_quantityCredited' . $n),
+          $_POST['order_price' . $n],
+          Validation::input_num('ChgPrice' . $n),
+          $complete,
+          $_POST['std_cost_unit' . $n],
+          ""
+        );
       }
     }
     protected function after() {

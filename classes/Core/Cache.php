@@ -45,7 +45,7 @@
   }
 
   /**
-   * @method get($key, $default = false)
+   * @method mixed get($key, $default = false)
    * @method set($key, $value, $expires = 86400)
    * @method defineConstants($name, $constants)
    * @method delete($key)
@@ -103,7 +103,7 @@
       } elseif (class_exists('Session', false)) {
         $_SESSION['cache'][$key] = $value;
       }*/
-      apc_Store($key,$value,$expires);
+      apc_Store($_SERVER["SERVER_NAME"] . '.'.$key,$value,$expires);
       return $value;
     }
     /**
@@ -117,13 +117,13 @@
       } elseif (class_exists('Session', false)) {
         unset($_SESSION['cache'][$key]);
       }*/
-      apc_delete($key);
+      apc_delete($_SERVER["SERVER_NAME"] . '.'.$key);
     }
     /**
      * @static
      *
      * @param      $key
-     * @param bool $default
+     * @param mixed $default
      *
      * @return mixed
      */
@@ -139,7 +139,7 @@
       } else {
         $result = $default;
       }*/
-      $result = apc_fetch($key,$success);
+      $result = apc_fetch($_SERVER["SERVER_NAME"] . '.'.$key,$success);
       if (!$success) $result=$default;
       return $result;
     }
@@ -175,6 +175,7 @@
       } else {
         $_SESSION['cache'] = [];
       }
+    apc_clear_cache();
     }
     /**
      * @static

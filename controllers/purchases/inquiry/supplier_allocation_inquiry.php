@@ -1,5 +1,11 @@
-
 <?php
+  use ADV\Core\JS;
+  use ADV\Core\DB\DB;
+  use ADV\App\Creditor\Creditor;
+  use ADV\Core\Input\Input;
+  use ADV\Core\Row;
+  use ADV\Core\Table;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -8,43 +14,42 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-class AllocationInquiry extends \ADV\App\Controller\Base {
-  protected  function before() {
-    JS::openWindow(950, 500);
-    if (isset($_GET['creditor_id']) || isset($_GET['id'])) {
-      $_POST['creditor_id'] = isset($_GET['id']) ? $_GET['id'] : $_GET['creditor_id'];
-    }
-    if (isset($_GET['creditor_id'])) {
-      $_POST['creditor_id'] = $_GET['creditor_id'];
-    }
-    if (isset($_GET['FromDate'])) {
-      $_POST['TransAfterDate'] = $_GET['FromDate'];
-    }
-    if (isset($_GET['ToDate'])) {
-      $_POST['TransToDate'] = $_GET['ToDate'];
-    }
-    if (isset($_GET['frame'])) {
-      foreach ($_GET as $k => $v) {
-        $_POST[$k] = $v;
+  class AllocationInquiry extends \ADV\App\Controller\Base
+  {
+    protected function before() {
+      JS::openWindow(950, 500);
+      if (isset($_GET['creditor_id']) || isset($_GET['id'])) {
+        $_POST['creditor_id'] = isset($_GET['id']) ? $_GET['id'] : $_GET['creditor_id'];
+      }
+      if (isset($_GET['creditor_id'])) {
+        $_POST['creditor_id'] = $_GET['creditor_id'];
+      }
+      if (isset($_GET['FromDate'])) {
+        $_POST['TransAfterDate'] = $_GET['FromDate'];
+      }
+      if (isset($_GET['ToDate'])) {
+        $_POST['TransToDate'] = $_GET['ToDate'];
+      }
+      if (isset($_GET['frame'])) {
+        foreach ($_GET as $k => $v) {
+          $_POST[$k] = $v;
+        }
+      }
+      if (!isset($_POST['creditor_id'])) {
+        $_POST['creditor_id'] = Session::getGlobal('creditor_id');
+      }
+      if (!isset($_POST['TransAfterDate']) && Session::getGlobal('TransAfterDate')) {
+        $_POST['TransAfterDate'] = Session::getGlobal('TransAfterDate');
+      } elseif (isset($_POST['TransAfterDate'])) {
+        Session::setGlobal('TransAfterDate', $_POST['TransAfterDate']);
+      }
+      if (!isset($_POST['TransToDate']) && Session::getGlobal('TransToDate')) {
+        $_POST['TransToDate'] = Session::getGlobal('TransToDate');
+      } elseif (isset($_POST['TransToDate'])) {
+        Session::setGlobal('TransToDate', $_POST['TransToDate']);
       }
     }
-    if (!isset($_POST['creditor_id'])) {
-      $_POST['creditor_id'] = Session::getGlobal('creditor_id');
-    }
-    if (!isset($_POST['TransAfterDate']) && Session::getGlobal('TransAfterDate')) {
-      $_POST['TransAfterDate'] = Session::getGlobal('TransAfterDate');
-    } elseif (isset($_POST['TransAfterDate'])) {
-      Session::setGlobal('TransAfterDate', $_POST['TransAfterDate']);
-    }
-    if (!isset($_POST['TransToDate']) && Session::getGlobal('TransToDate')) {
-      $_POST['TransToDate'] = Session::getGlobal('TransToDate');
-    } elseif (isset($_POST['TransToDate'])) {
-      Session::setGlobal('TransToDate', $_POST['TransToDate']);
-    }
-  }
-
-  protected function index()
-  {
+    protected function index() {
       Page::start(_($help_context = "Supplier Allocation Inquiry"), SA_SUPPLIERALLOC);
       Forms::start(false, '', 'invoiceForm');
       Table::start('tablestyle_noborder');
@@ -60,17 +65,17 @@ class AllocationInquiry extends \ADV\App\Controller\Base {
       Session::setGlobal('creditor_id', $_POST['creditor_id']);
       Row::end();
       Table::end();
-    $this->displayTable();
+      $this->displayTable();
       Creditor::addInfoDialog('.pagerclick');
       Forms::end();
       Page::end();
-
-  }
-  protected function displayTable() {
-    $date_after = Dates::dateToSql($_POST['TransAfterDate']);
-    $date_to    = Dates::dateToSql($_POST['TransToDate']);
-    // Sherifoz 22.06.03 Also get the description
-    $sql = "SELECT
+    }
+    protected function displayTable() {
+      $date_after = Dates::dateToSql($_POST['TransAfterDate']);
+      $date_to    = Dates::dateToSql($_POST['TransToDate']);
+      // Sherifoz 22.06.03 Also get the description
+      $sql
+        = "SELECT
             trans.type,
             trans.trans_no,
             trans.reference,
@@ -87,141 +92,137 @@ class AllocationInquiry extends \ADV\App\Controller\Base {
          WHERE supplier.creditor_id = trans.creditor_id
          AND trans.tran_date >= '$date_after'
          AND trans.tran_date <= '$date_to'";
-    if ($_POST['creditor_id'] != ALL_TEXT) {
-      $sql .= " AND trans.creditor_id = " . DB::quote($_POST['creditor_id']);
-    }
-    if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
-      if (($_POST['filterType'] == '1') || ($_POST['filterType'] == '2')) {
-        $sql .= " AND trans.type = " . ST_SUPPINVOICE . " ";
-      } elseif ($_POST['filterType'] == '3') {
-        $sql .= " AND trans.type = " . ST_SUPPAYMENT . " ";
-      } elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5')) {
-        $sql .= " AND trans.type = " . ST_SUPPCREDIT . " ";
+      if ($_POST['creditor_id'] != ALL_TEXT) {
+        $sql .= " AND trans.creditor_id = " . DB::quote($_POST['creditor_id']);
       }
-      if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) {
-        $today = Dates::today(true);
-        $sql .= " AND trans.due_date < '$today' ";
+      if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
+        if (($_POST['filterType'] == '1') || ($_POST['filterType'] == '2')) {
+          $sql .= " AND trans.type = " . ST_SUPPINVOICE . " ";
+        } elseif ($_POST['filterType'] == '3') {
+          $sql .= " AND trans.type = " . ST_SUPPAYMENT . " ";
+        } elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5')) {
+          $sql .= " AND trans.type = " . ST_SUPPCREDIT . " ";
+        }
+        if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) {
+          $today = Dates::today(true);
+          $sql .= " AND trans.due_date < '$today' ";
+        }
       }
+      if (!Input::hasPost('showSettled')) {
+        $sql .= " AND (round(abs(ov_amount + ov_gst + ov_discount) - alloc,6) != 0) ";
+      }
+      $cols = array(
+        _("Type")        => array('fun' => [$this, 'formatType']),
+        _("#")           => array('fun' => [$this, 'formatViewLink'], 'ord' => ''),
+        _("Reference"),
+        _("Supplier")    => array('ord' => '', 'type' => 'id'),
+        _("Supplier ID") => array('type'=> 'skip'),
+        _("Supp Reference"),
+        _("Date")        => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
+        _("Due Date")    => array('fun' => [$this, 'formatDueDate'], 'type' => 'date'),
+        _("Currency")    => array('align' => 'center'),
+        _("Debit")       => array('align' => 'right', 'fun' => [$this, 'formatDebit']),
+        _("Credit")      => array(
+          'align'  => 'right',
+          'insert' => true,
+          'fun'    => [$this, 'formatCredit']
+        ),
+        _("Allocated")   => ['type'=> 'amount'],
+        _("Balance")     => array(
+          'type' => 'amount',
+          'fun'  => [$this, 'formatBalance']
+        ),
+        array(
+          'insert' => true,
+          'fun'    => [$this, 'formatAllocLink']
+        )
+      );
+      if ($_POST['creditor_id'] != ALL_TEXT) {
+        $cols[_("Supplier ID")] = 'skip';
+        $cols[_("Supplier")]    = 'skip';
+        $cols[_("Currency")]    = 'skip';
+      }
+      $table = DB_Pager::new_db_pager('doc_tbl', $sql, $cols);
+      $table->setMarker([$this, 'formatMarker'], _("Marked items are overdue."));
+      $table->width = "90";
+      $table->display($table);
     }
-    if (!Input::hasPost('showSettled')) {
-      $sql .= " AND (round(abs(ov_amount + ov_gst + ov_discount) - alloc,6) != 0) ";
+    /**
+     * @param $row
+     *
+     * @return bool
+     */
+    public function formatMarker($row) {
+      return ($row['TotalAmount'] > $row['Allocated']) && $row['OverDue'] == 1;
     }
-    $cols = array(
-      _("Type")        => array('fun' => [$this,'sysTypeName']),
-      _("#")           => array('fun' => [$this,'view_link'], 'ord' => ''),
-      _("Reference"),
-      _("Supplier")    => array('ord' => '', 'type' => 'id'),
-      _("Supplier ID") => array('type'=> 'skip'),
-      _("Supp Reference"),
-      _("Date")        => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
-      _("Due Date")    => array('fun' => [$this,'due_date'], 'type' => 'date'),
-      _("Currency")    => array('align' => 'center'),
-      _("Debit")       => array('align' => 'right', 'fun' => [$this,'formatDebit']),
-      _("Credit")      => array(
-        'align' => 'right', 'insert' => true, 'fun' => [$this,'formatCredit']
-      ),
-      _("Allocated")   => ['type'=> 'amount'],
-      _("Balance")     => array(
-        'type' => 'amount', 'fun' => [$this,'fmt_balance']
-      ),
-      array(
-        'insert' => true, 'fun' => [$this,'alloc_link']
-      )
-    );
-    if ($_POST['creditor_id'] != ALL_TEXT) {
-      $cols[_("Supplier ID")] = 'skip';
-      $cols[_("Supplier")]    = 'skip';
-      $cols[_("Currency")]    = 'skip';
+    /**
+     * @param $dummy
+     * @param $type
+     *
+     * @return mixed
+     */
+    public function formatType($dummy, $type) {
+      global $systypes_array;
+
+      return $systypes_array[$type];
     }
-    $table = DB_Pager::new_db_pager('doc_tbl', $sql, $cols);
-    $table->setMarker([$this,'checkOverdue'], _("Marked items are overdue."));
-    $table->width = "90";
-    $table->display($table);
-  }
-  /**
-   * @param $row
-   *
-   * @return bool
-   */
-  function checkOverdue($row) {
-    return ($row['TotalAmount'] > $row['Allocated']) && $row['OverDue'] == 1;
-  }
+    /**
+     * @param $trans
+     *
+     * @return null|string
+     */
+    public function formatViewLink($trans) {
+      return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
+    }
+    /**
+     * @param $row
+     *
+     * @return string
+     */
+    public function formatDueDate($row) {
+      return (($row["type"] == ST_SUPPINVOICE) || ($row["type"] == ST_SUPPCREDIT)) ? $row["due_date"] : "";
+    }
+    /**
+     * @param $row
+     *
+     * @return mixed
+     */
+    public function formatBalance($row) {
+      $value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) ? -$row["TotalAmount"] - $row["Allocated"] :
+        $row["TotalAmount"] - $row["Allocated"];
 
-  /**
-   * @param $dummy
-   * @param $type
-   *
-   * @return mixed
-   */
-  function sysTypeName($dummy, $type) {
-    global $systypes_array;
-    return $systypes_array[$type];
-  }
+      return $value;
+    }
+    /**
+     * @param $row
+     *
+     * @return string
+     */
+    public function formatAllocLink($row) {
+      $link = DB_Pager::link(_("Allocations"), "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
 
-  /**
-   * @param $trans
-   *
-   * @return null|string
-   */
-  function view_link($trans) {
-    return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
-  }
+      return (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) && (-$row["TotalAmount"] - $row["Allocated"]) > 0) ? $link : '';
+    }
+    /**
+     * @param $row
+     *
+     * @return int|string
+     */
+    public function formatDebit($row) {
+      $value = -$row["TotalAmount"];
 
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function due_date($row) {
-    return (($row["type"] == ST_SUPPINVOICE) || ($row["type"] == ST_SUPPCREDIT)) ? $row["due_date"] : "";
-  }
+      return $value >= 0 ? Num::priceFormat($value) : '';
+    }
+    /**
+     * @param $row
+     *
+     * @return int|string
+     */
+    public function formatCredit($row) {
+      $value = $row["TotalAmount"];
 
-  /**
-   * @param $row
-   *
-   * @return mixed
-   */
-  function fmt_balance($row) {
-    $value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) ?
-      -$row["TotalAmount"] - $row["Allocated"] : $row["TotalAmount"] - $row["Allocated"];
-
-    return $value;
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  function alloc_link($row) {
-    $link = DB_Pager::link(_("Allocations"), "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
-
-    return (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) && (-$row["TotalAmount"] - $row["Allocated"]) > 0) ?
-      $link : '';
+      return $value > 0 ? Num::priceFormat($value) : '';
+    }
   }
 
-  /**
-   * @param $row
-   *
-   * @return int|string
-   */
-  function formatDebit($row) {
-    $value = -$row["TotalAmount"];
-
-    return $value >= 0 ? Num::priceFormat($value) : '';
-  }
-
-  /**
-   * @param $row
-   *
-   * @return int|string
-   */
-  function formatCredit($row) {
-    $value = $row["TotalAmount"];
-
-    return $value > 0 ? Num::priceFormat($value) : '';
-  }
-
-
-}
-new AllocationInquiry();
+  new AllocationInquiry();

@@ -19,8 +19,8 @@
   {
     protected $order_no;
     protected $creditor_id;
-    public $selected_stock_item;
-    public $stock_location;
+    protected $selected_stock_item;
+    protected $stock_location;
     protected function before() {
       JS::openWindow(950, 500);
       $_POST['order_number']     = Input::getPost('order_number', Input::NUMERIC);
@@ -60,7 +60,8 @@
       Page::end();
     }
     protected function makeTable() { //figure out the sql required from the inputs available
-      $sql = "SELECT
+      $sql
+        = "SELECT
  porder.order_no,
  porder.reference,
  supplier.name,
@@ -122,34 +123,45 @@
       $table->display($table);
     }
     /**
+     * @param $row
+     *
      * @return callable
      */
     public function formatMarker($row) {
-        return $row['OverDue'] == 1;
+      return $row['OverDue'] == 1;
     }
     /**
+     * @param $row
+     *
      * @return callable
      */
     public function formatProcessBtn($row) {
-        return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
+      return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
     }
     /**
+     * @param $row
+     *
      * @return callable
      */
-    protected function formatPrintBtn($row) {
-        return Reporting::print_doc_link($row['order_no'], _("Print"), true, ST_PURCHORDER, ICON_PRINT, 'button printlink');
+    public function formatPrintBtn($row) {
+      return Reporting::print_doc_link($row['order_no'], _("Print"), true, ST_PURCHORDER, ICON_PRINT, 'button printlink');
     }
     /**
+     * @param $row
+     *
      * @return callable
      */
     public function formatEditBtn($row) {
-        return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrder=" . $row["order_no"], ICON_EDIT);
+      return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrder=" . $row["order_no"], ICON_EDIT);
     }
     /**
+     * @param $row
+     *
      * @return callable
      */
     public function formatTrans($row) {
-        return GL_UI::viewTrans(ST_PURCHORDER, $row["order_no"]);
+      return GL_UI::viewTrans(ST_PURCHORDER, $row["order_no"]);
     }
   }
-new POSearch();
+
+  new POSearch();

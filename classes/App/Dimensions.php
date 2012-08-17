@@ -25,13 +25,15 @@
       DB::begin();
       $date    = Dates::dateToSql($date_);
       $duedate = Dates::dateToSql($due_date);
-      $sql     = "INSERT INTO dimensions (reference, name, type_, date_, due_date)
+      $sql
+               = "INSERT INTO dimensions (reference, name, type_, date_, due_date)
 		VALUES (" . DB::escape($reference) . ", " . DB::escape($name) . ", " . DB::escape($type_) . ", '$date', '$duedate')";
       DB::query($sql, "could not add dimension");
       $id = DB::insertId();
       DB_Comments::add(ST_DIMENSION, $id, $date_, $memo_);
       Ref::save(ST_DIMENSION, $id, $reference);
       DB::commit();
+
       return $id;
     }
     /**
@@ -58,6 +60,7 @@
       DB::query($sql, "could not update dimension");
       DB_Comments::update(ST_DIMENSION, $id, null, $memo_);
       DB::commit();
+
       return $id;
     }
     /**
@@ -87,6 +90,7 @@
       if (!$allow_null && DB::numRows($result) == 0) {
         Event::error("Could not find dimension $id", $sql);
       }
+
       return DB::fetch($result);
     }
     /**
@@ -109,6 +113,7 @@
         $row = Dimensions::get($id, true);
         $dim = $row['reference'] . $space . $row['name'];
       }
+
       return $dim;
     }
     /**
@@ -117,6 +122,7 @@
      */
     public static function getAll() {
       $sql = "SELECT * FROM dimensions ORDER BY date_";
+
       return DB::query($sql, "The dimensions could not be retrieved");
     }
     /**
@@ -140,6 +146,7 @@
       $sql = "SELECT SUM(amount) FROM gl_trans WHERE dimension_id = " . DB::escape($id);
       $res = DB::query($sql, "Transactions could not be calculated");
       $row = DB::fetchRow($res);
+
       return ($row[0] != 0.0);
     }
     /**
@@ -151,6 +158,7 @@
      */
     public static function is_closed($id) {
       $result = Dimensions::get($id);
+
       return ($result['closed'] == '1');
     }
     /**
@@ -179,9 +187,10 @@
      * @param $to
      */
     public static function display_balance($id, $from, $to) {
-      $from   = Dates::dateToSql($from);
-      $to     = Dates::dateToSql($to);
-      $sql    = "SELECT account, chart_master.account_name, sum(amount) AS amt FROM
+      $from = Dates::dateToSql($from);
+      $to   = Dates::dateToSql($to);
+      $sql
+              = "SELECT account, chart_master.account_name, sum(amount) AS amt FROM
 			gl_trans,chart_master WHERE
 			gl_trans.account = chart_master.account_code AND
 			(dimension_id = $id OR dimension2_id = $id) AND
@@ -232,7 +241,11 @@
     public static function select($name, $selected_id = null, $no_option = false, $showname = ' ', $submit_on_change = false, $showclosed = false, $showtype = 1) {
       $sql     = "SELECT id, CONCAT(reference,' ',name) as ref FROM dimensions";
       $options = array(
-        'order'            => 'reference', 'spec_option'      => $no_option ? $showname : false, 'spec_id'          => 0, 'select_submit'    => $submit_on_change, 'async'            => false
+        'order'            => 'reference',
+        'spec_option'      => $no_option ? $showname : false,
+        'spec_id'          => 0,
+        'select_submit'    => $submit_on_change,
+        'async'            => false
       );
       if (!$showclosed) {
         $options['where'][] = "closed=0";
@@ -240,6 +253,7 @@
       if ($showtype) {
         $options['where'][] = "type_=$showtype";
       }
+
       return Forms::selectBox($name, $selected_id, $sql, 'id', 'ref', $options);
     }
     /**
@@ -288,18 +302,23 @@
      * @param bool   $icon
      * @param string $class
      * @param string $id
+     * @param bool   $raw
      *
      * @return null|string
      */
-    public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+    public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '', $raw = false) {
       if ($type == ST_DIMENSION) {
         $viewer = "dimensions/view/view_dimension.php?trans_no=$trans_no";
       } else {
         return null;
       }
+      if ($raw) {
+        return $viewer;
+      }
       if ($label == "") {
         $label = $trans_no;
       }
+
       return Display::viewer_link($label, $viewer, $class, $id, $icon);
     }
   }

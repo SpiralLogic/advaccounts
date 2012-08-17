@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
   /**
 
    */
@@ -40,7 +41,8 @@
     /**
 
      */
-    public function __construct() {
+    public function __construct()
+    {
       $core = include(DOCROOT . 'config' . DS . 'core.php');
       $this->importNamespaces((array) $core);
       spl_autoload_register(array($this, 'load'), true);
@@ -48,9 +50,10 @@
     /**
      * @param Cache $cache
      */
-    public function registerCache(Cache $cache) {
+    public function registerCache(Cache $cache)
+    {
       $this->Cache   = $cache;
-      $cachedClasses = $cache->get('Loader', []);
+      $cachedClasses = $cache->_get('Loader', []);
       if ($cachedClasses) {
         $this->classes = $cachedClasses['classes'];
         $this->loaded  = $cachedClasses['paths'];
@@ -63,7 +66,8 @@
      * @param array $classes
      * @param       $type
      */
-    protected function addClasses(array $classes, $type) {
+    protected function addClasses(array $classes, $type)
+    {
       foreach ($classes as $dir => $class) {
         if (!is_string($dir)) {
           $dir = '';
@@ -75,13 +79,15 @@
      * @param $namespace
      * @param $classes
      */
-    protected function importNamespace($namespace, $classes) {
+    protected function importNamespace($namespace, $classes)
+    {
       $this->global_classes = array_merge($this->global_classes, array_fill_keys($classes, $namespace));
     }
     /**
      * @param array $namespaces
      */
-    protected function importNamespaces(array $namespaces) {
+    protected function importNamespaces(array $namespaces)
+    {
       foreach ($namespaces as $namespace => $classes) {
         $this->importNamespace($namespace, $classes);
       }
@@ -89,14 +95,17 @@
     /**
      * @static
      *
-     * @param $paths
-     * @param $required_class
+     * @param      $paths
+     * @param      $required_class
+     * @param      $classname
+     * @param bool $global
      *
      * @internal param $classname
      * @internal param $path
      * @return string
      */
-    protected function tryPath($paths, $required_class, $classname, $global = false) {
+    protected function tryPath($paths, $required_class, $classname, $global = false)
+    {
       $paths = (array) $paths;
       while ($path = array_shift($paths)) {
         $filepath = realpath($path);
@@ -108,13 +117,17 @@
     }
     /**
      * @param $filepath
-     * @param $required_class
+     * @param $requested_class
+     * @param $classname
+     * @param $global
      *
      * @throws Load_Exception
+     * @internal param $required_class
      * @internal param $class
      * @return bool
      */
-    protected function includeFile($filepath, $requested_class, $classname, $global) {
+    protected function includeFile($filepath, $requested_class, $classname, $global)
+    {
       if (empty($filepath)) {
         throw new Load_Exception('File for class ' . $requested_class . ' cannot be found!');
       }
@@ -134,12 +147,13 @@
      * @internal param $required_class
      * @return bool|string
      */
-    public function load($requested_class) {
-      $classpieces  = explode('\\', ltrim($requested_class, '\\'));
-      $global     = '';
-      $classname  = array_pop($classpieces);
-      $namespace  = implode('\\', $classpieces);
-      $class_file = str_replace('_', DS, $classname);
+    public function load($requested_class)
+    {
+      $classpieces = explode('\\', ltrim($requested_class, '\\'));
+      $global      = '';
+      $classname   = array_pop($classpieces);
+      $namespace   = implode('\\', $classpieces);
+      $class_file  = str_replace('_', DS, $classname);
       if (isset($this->global_classes[$classname]) && (!$namespace || $this->global_classes[$classname] == $namespace)) {
         $namespace = $this->global_classes[$classname];
         $global    = true;
@@ -156,14 +170,7 @@
       $result = $this->trypath($paths, $requested_class, $classname, $global);
       return $result;
     }
-    public function _shutdown() {
-      if ($this->Cache) {
-        $this->Cache->set('Loader', array(
-                                         'classes'        => $this->classes, //
-                                         'paths'          => $this->loaded
-                                    ));
-      }
-    }
   }
 
   return new Loader();
+

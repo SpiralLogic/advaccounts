@@ -74,7 +74,6 @@
                 $this->Ajax->_activate('bank_date');
                 $this->updateData();
             }
-
             $this->accountHasStatements = Bank_Account::hasStatements($this->bank_account);
             if (Forms::isListUpdated('bank_date')) {
                 $this->reconcile_date = $this->Dates->_sqlToDate($this->bank_date);
@@ -89,8 +88,7 @@
             }
             if ($this->accountHasStatements && $this->bank_date) {
                 $this->end_date   = $this->Dates->_dateToSql($this->bank_date);
-              $this->begin_date = GL_Account::get_reconcile_start($this->bank_account,$this->end_date);
-
+                $this->begin_date = GL_Account::get_reconcile_start($this->bank_account, $this->end_date);
             } elseif ($this->accountHasStatements) {
                 $this->begin_date = null;
                 $this->end_date   = $this->Dates->_today();
@@ -295,7 +293,7 @@
             $result = GL_Account::get_max_reconciled($this->reconcile_date, $this->bank_account);
             if ($row = $this->DB->_fetch($result)) {
                 $_POST["reconciled"] = $this->Num->_priceFormat($row["end_balance"] - $row["beg_balance"]);
-                if (!isset($_POST["beg_balance"])) { // new selected account/statement
+                if (!isset($_POST["beg_balance"])) {
                     $_POST["last_date"]   = $this->Dates->_sqlToDate($row["last_date"]);
                     $_POST["beg_balance"] = $this->Num->_priceFormat($row["beg_balance"]);
                     $_POST["end_balance"] = $this->Num->_priceFormat($row["end_balance"]);
@@ -603,7 +601,6 @@
             {
                 Event::error(_("Invalid reconcile date format"));
                 $this->JS->_setFocus('reconcile_date');
-
                 return false;
             }
             if ($this->bank_date == '') // new reconciliation
