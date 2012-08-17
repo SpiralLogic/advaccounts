@@ -96,7 +96,7 @@
         $ar_ap_act = $trans['receivables_account'];
         $person_id = $trans['debtor_id'];
         $curr      = $trans['curr_code'];
-        $date      = Dates::sqlToDate($trans['tran_date']);
+        $date      = Dates::_sqlToDate($trans['tran_date']);
       } else {
         $trans         = Creditor_Trans::get($trans_no, $type);
         $pyt_trans     = Creditor_Trans::get($pyt_no, $pyt_type);
@@ -104,13 +104,13 @@
         $ar_ap_act     = $supplier_accs['payable_account'];
         $person_id     = $trans['creditor_id'];
         $curr          = $trans['SupplierCurrCode'];
-        $date          = Dates::sqlToDate($trans['tran_date']);
+        $date          = Dates::_sqlToDate($trans['tran_date']);
       }
       if (Bank_Currency::is_company($curr)) {
         return;
       }
-      $inv_amt = Num::round($amount * $trans['rate'], User::price_dec());
-      $pay_amt = Num::round($amount * $pyt_trans['rate'], User::price_dec());
+      $inv_amt = Num::_round($amount * $trans['rate'], User::price_dec());
+      $pay_amt = Num::_round($amount * $pyt_trans['rate'], User::price_dec());
       if ($inv_amt != $pay_amt) {
         $diff = $inv_amt - $pay_amt;
         if ($person_type == PT_SUPPLIER) {
@@ -120,7 +120,7 @@
           $diff = -$diff;
         }
         $exc_var_act = DB_Company::get_pref('exchange_diff_act');
-        if (Dates::isGreaterThan($date, $pyt_date)) {
+        if (Dates::_isGreaterThan($date, $pyt_date)) {
           $memo = $systypes_array[$pyt_type] . " " . $pyt_no;
           GL_Trans::add($type, $trans_no, $date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
           GL_Trans::add($type, $trans_no, $date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);

@@ -9,26 +9,26 @@
    **/
   // For tag constants
   // Set up page security based on what type of tags we're working with
-  if (Input::get('type') == "account" || Input::post('type') == TAG_ACCOUNT) {
+  if (Input::_get('type') == "account" || Input::_post('type') == TAG_ACCOUNT) {
     $security = SA_GLACCOUNTTAGS;
-  } elseif (Input::get('type') == "dimension" || Input::post('type') == TAG_DIMENSION) {
+  } elseif (Input::_get('type') == "dimension" || Input::_post('type') == TAG_DIMENSION) {
     $security = SA_DIMTAGS;
   }else {
     $security=SA_DENIED;
   }
-  // We use Input::post('type') throughout this script, so convert $_GET vars
-  // if Input::post('type') is not set.
-  if (!Input::post('type')) {
-    if (Input::get('type') == "account") {
+  // We use Input::_post('type') throughout this script, so convert $_GET vars
+  // if Input::_post('type') is not set.
+  if (!Input::_post('type')) {
+    if (Input::_get('type') == "account") {
       $_POST['type'] = TAG_ACCOUNT;
-    } elseif (Input::get('type') == "dimension") {
+    } elseif (Input::_get('type') == "dimension") {
       $_POST['type'] = TAG_DIMENSION;
     } else {
       die(_("Unspecified tag type"));
     }
   }
   // Set up page based on what type of tags we're working with
-  switch (Input::post('type')) {
+  switch (Input::_post('type')) {
     case TAG_ACCOUNT:
       // Account tags
       $_SESSION['page_title'] = _($help_context = "Account Tags");
@@ -46,7 +46,7 @@
           Event::success(_('Selected tag settings have been updated'));
         }
       } else {
-        if ($ret = Tags::add(Input::post('type'), $_POST['name'], $_POST['description'])) {
+        if ($ret = Tags::add(Input::_post('type'), $_POST['name'], $_POST['description'])) {
           Event::success(_('New tag has been added'));
         }
       }
@@ -66,14 +66,14 @@
     $selected_id   = -1;
     $_POST['name'] = $_POST['description'] = '';
   }
-  $result = Tags::getAll(Input::post('type'), Input::hasPost('show_inactive'));
+  $result = Tags::getAll(Input::_post('type'), Input::_hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("Tag Name"), _("Tag Description"), "", "");
   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
-  while ($myrow = DB::fetch($result)) {
+  while ($myrow = DB::_fetch($result)) {
     Cell::label($myrow['name']);
     Cell::label($myrow['description']);
     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'tags', 'id');
@@ -108,7 +108,7 @@
   function can_process() {
     if (strlen($_POST['name']) == 0) {
       Event::error(_("The tag name cannot be empty."));
-      JS::setFocus('name');
+      JS::_setFocus('name');
       return false;
     }
     return true;
@@ -124,7 +124,7 @@
       return false;
     }
     $result = Tags::get_associated_records($selected_id);
-    if (DB::numRows($result) > 0) {
+    if (DB::_numRows($result) > 0) {
       Event::error(_("Cannot delete this tag because records have been created referring to it."));
       return false;
     }

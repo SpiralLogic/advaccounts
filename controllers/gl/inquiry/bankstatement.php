@@ -5,15 +5,15 @@
   Page::start(_($help_context = "Reconcile TO Bank Statement Compare"), SA_RECONCILE);
   if (!count($_POST)) {
 
-    if (Session::getGlobal('bank_account')) {
-      $_POST['bank_account'] = Session::getGlobal('bank_account');
+    if (Session::_getGlobal('bank_account')) {
+      $_POST['bank_account'] = Session::_getGlobal('bank_account');
     }
   }
   if (Forms::isListUpdated('bank_account')) {
-    Session::setGlobal('bank_account', $_POST['bank_account']);
+    Session::_setGlobal('bank_account', $_POST['bank_account']);
   }
 
-  Ajax::activate('trans');
+  Ajax::_activate('trans');
   Display::div_start('trans');
   Forms::start(true);
   echo "<div class='center'><input
@@ -40,12 +40,12 @@
         $date   = strtotime($item[0]);
         $date   = date('Y-m-d',$date);
       try{
-       $result = DB::select('COUNT(*) as count')->from('temprec')->where('date=', $date)->andWhere('amount=', $amount)->andWhere('rb=', $rb)->fetch()->one();
+       $result = DB::_select('COUNT(*) as count')->from('temprec')->where('date=', $date)->andWhere('amount=', $amount)->andWhere('rb=', $rb)->fetch()->one();
       }catch(DBSelectException $e) {
         var_dump(\ADV\Core\DB\DB::i()->queryString);
       }
         if ($result['count'] == 0) {
-         DB::insert('temprec')->values(['date'=> $date, 'amount'=> $amount, 'memo'=> $memo, 'rb'=> $rb, 'bank_account_id'=> $_POST['bank_account']])->exec();
+         DB::_insert('temprec')->values(['date'=> $date, 'amount'=> $amount, 'memo'=> $memo, 'rb'=> $rb, 'bank_account_id'=> $_POST['bank_account']])->exec();
         }
       }
     }

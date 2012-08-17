@@ -111,7 +111,7 @@
       $attr['value'] = e($value ? : $this->Input->post($name));
       $attr['id']    = $this->nameToId($name);
       $attr['type']  = 'hidden';
-      $this->Ajax->_addUpdate($name, $name, $value);
+      $this->Ajax->addUpdate($name, $name, $value);
       $this->fields[$attr['id']] = HTML::setReturn(true)->input($attr['id'], $attr, false)->setReturn(false);
     }
     /**
@@ -317,7 +317,7 @@
             (/themes/%s/images/button_ok.png) no-repeat;%s' data-aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
         $selector .= sprintf($_select_button, $disabled, User::theme(), (User::fallback() ? '' : 'display:none;'), '_' . $name . '_update') . "\n";
       }
-      JS::defaultFocus($name);
+      JS::_defaultFocus($name);
       return $selector;
     }
     // SUBMITS //
@@ -425,7 +425,7 @@
       } else {
         $msg = $action;
       }
-      JS::beforeload("_validate.$name=function(){ return confirm('" . strtr($msg, array("\n" => '\\n')) . "');};");
+      JS::_beforeload("_validate.$name=function(){ return confirm('" . strtr($msg, array("\n" => '\\n')) . "');};");
     }
     /**
      * @param             $icon
@@ -839,7 +839,7 @@
      */
     public function dateFormatsListRow($label, $name, $value = null) {
       echo "<tr><td class='label'>$label</td>\n<td>";
-      echo $this->arraySelect($name, $value, Config::get('date.formats'));
+      echo $this->arraySelect($name, $value, Config::_get('date.formats'));
       echo "</td></tr>\n";
     }
     /**
@@ -849,7 +849,7 @@
      */
     public function dateSepsListRow($label, $name, $value = null) {
       echo "<tr><td class='label'>$label</td>\n<td>";
-      echo $this->arraySelect($name, $value, Config::get('date.separators'));
+      echo $this->arraySelect($name, $value, Config::_get('date.separators'));
       echo "</td></tr>\n";
     }
     /**
@@ -859,7 +859,7 @@
      */
     public function thoSepsListRow($label, $name, $value = null) {
       echo "<tr><td class='label'>$label</td>\n<td>";
-      echo $this->arraySelect($name, $value, Config::get('separators_thousands'));
+      echo $this->arraySelect($name, $value, Config::_get('separators_thousands'));
       echo "</td></tr>\n";
     }
     /**
@@ -869,7 +869,7 @@
      */
     public function decSepsListRow($label, $name, $value = null) {
       echo "<tr><td class='label'>$label</td>\n<td>";
-      echo $this->arraySelect($name, $value, Config::get('separators_decimal'));
+      echo $this->arraySelect($name, $value, Config::_get('separators_decimal'));
       echo "</td></tr>\n";
     }
     /**
@@ -878,7 +878,7 @@
      * @return string
      */
     public function dateFormat($row) {
-      return Dates::sqlToDate($row['reconciled']);
+      return Dates::_sqlToDate($row['reconciled']);
     }
     /**
      * @param $row
@@ -914,7 +914,7 @@
      * @return string
      */
     public function fiscalYearFormat($row) {
-      return Dates::sqlToDate($row[1]) . "&nbsp;-&nbsp;" . Dates::sqlToDate($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') : _('Active')) . "</option>\n";
+      return Dates::_sqlToDate($row[1]) . "&nbsp;-&nbsp;" . Dates::_sqlToDate($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') : _('Active')) . "</option>\n";
     }
     /**
      * @param $row
@@ -969,7 +969,7 @@
       if ($this->Input->hasPost('show_inactive')) {
         if (isset($_POST['LInact'][$id]) && ($this->Input->post('_Inactive' . $id . '_update') || $this->Input->post('Update')) && ($this->Input->hasPost('Inactive' . $id) != $value)
         ) {
-          DB::updateRecordStatus($id, !$value, $table, $key);
+          DB::_updateRecordStatus($id, !$value, $table, $key);
         }
         echo "<td class='center'>";
         echo $this->checkbox(null, $name, $value, true, '', "class='center'") . $this->hidden("LInact[$id]", $value, false);
@@ -1052,15 +1052,15 @@
         if ($inc_years == 1001) {
           $_POST[$name] = null;
         } else {
-          $dd = Dates::today();
+          $dd = Dates::_today();
           if ($inc_days != 0) {
-            $dd = Dates::addDays($dd, $inc_days);
+            $dd = Dates::_addDays($dd, $inc_days);
           }
           if ($inc_months != 0) {
-            $dd = Dates::addMonths($dd, $inc_months);
+            $dd = Dates::_addMonths($dd, $inc_months);
           }
           if ($inc_years != 0) {
-            $dd = Dates::addYears($dd, $inc_years);
+            $dd = Dates::_addYears($dd, $inc_years);
           }
           $_POST[$name] = $dd;
         }
@@ -1072,7 +1072,7 @@
       echo "<td >";
       $class  = $submit_on_change ? 'searchbox datepicker' : 'datepicker';
       $aspect = $check ? ' data-aspect="cdate"' : '';
-      if ($check && ($this->Input->post($name) != Dates::today())) {
+      if ($check && ($this->Input->post($name) != Dates::_today())) {
         $aspect .= ' style="color:#FF0000"';
       }
       echo "<input id='$name' type='text' name='$name' class='$class' $aspect  maxlength='10' value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" : '') . " > $post_label";

@@ -147,7 +147,7 @@
 
      */
     public function __construct() {
-      //  $this->setFromArray(Config::getAll('assets22'));
+      //  $this->setFromArray(Config::_getAll('assets22'));
       list($query) = explode('?', urldecode($_SERVER['QUERY_STRING']));
       if (preg_match('/^\/?(.+\/)?(.+)$/', $query, $matchResult)) {
         $fileNames = $matchResult[2];

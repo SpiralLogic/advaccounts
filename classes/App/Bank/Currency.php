@@ -27,7 +27,7 @@
     public static function for_company()
     {
       try {
-        $result = DB::select('curr_default')->from('company')->fetch()->one();
+        $result = DB::_select('curr_default')->from('company')->fetch()->one();
 
         return $result['curr_default'];
       }
@@ -44,8 +44,8 @@
      */
     public static function clear_default($curr_code)
     {
-      $sql = "UPDATE bank_accounts SET dflt_curr_act=0 WHERE bank_curr_code=" . DB::escape($curr_code);
-      DB::query($sql, "could not update default currency account");
+      $sql = "UPDATE bank_accounts SET dflt_curr_act=0 WHERE bank_curr_code=" . DB::_escape($curr_code);
+      DB::_query($sql, "could not update default currency account");
     }
     /**
      * @static
@@ -57,8 +57,8 @@
     public static function for_bank_account($id)
     {
       $sql    = "SELECT bank_curr_code FROM bank_accounts WHERE id='$id'";
-      $result = DB::query($sql, "retreive bank account currency");
-      $myrow  = DB::fetchRow($result);
+      $result = DB::_query($sql, "retreive bank account currency");
+      $myrow  = DB::_fetchRow($result);
 
       return $myrow[0];
     }
@@ -72,8 +72,8 @@
     public static function for_debtor($debtor_id)
     {
       $sql    = "SELECT curr_code FROM debtors WHERE debtor_id = '$debtor_id'";
-      $result = DB::query($sql, "Retreive currency of customer $debtor_id");
-      $myrow  = DB::fetchRow($result);
+      $result = DB::_query($sql, "Retreive currency of customer $debtor_id");
+      $myrow  = DB::_fetchRow($result);
 
       return $myrow[0];
     }
@@ -87,8 +87,8 @@
     public static function for_creditor($creditor_id)
     {
       $sql    = "SELECT curr_code FROM suppliers WHERE creditor_id = '$creditor_id'";
-      $result = DB::query($sql, "Retreive currency of supplier $creditor_id");
-      $myrow  = DB::fetchRow($result);
+      $result = DB::_query($sql, "Retreive currency of supplier $creditor_id");
+      $myrow  = DB::_fetchRow($result);
 
       return $myrow[0];
     }
@@ -128,18 +128,18 @@
       if ($currency_code == static::for_company() || $currency_code == null) {
         return 1.0000;
       }
-      $date = Dates::dateToSql($date_);
+      $date = Dates::_dateToSql($date_);
       $sql
               = "SELECT rate_buy, max(date_) as date_ FROM exchange_rates WHERE curr_code = '$currency_code'
                         AND date_ <= '$date' GROUP BY rate_buy ORDER BY date_ Desc LIMIT 1";
-      $result = DB::query($sql, "could not query exchange rates");
-      if (DB::numRows($result) == 0) {
+      $result = DB::_query($sql, "could not query exchange rates");
+      if (DB::_numRows($result) == 0) {
         // no stored exchange rate, just return 1
         Event::error(sprintf(_("Cannot retrieve exchange rate for currency %s as of %s. Please add exchange rate manually on Exchange Rates page."), $currency_code, $date_));
 
         return 1.000;
       }
-      $myrow = DB::fetchRow($result);
+      $myrow = DB::_fetchRow($result);
 
       return $myrow[0];
     }
@@ -168,6 +168,6 @@
     {
       $ex_rate = static::exchange_rate_to_home($currency_code, $date_);
 
-      return Num::round($amount / $ex_rate, User::price_dec());
+      return Num::_round($amount / $ex_rate, User::price_dec());
     }
   }

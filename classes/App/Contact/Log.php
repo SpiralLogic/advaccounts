@@ -30,10 +30,10 @@
         return false;
       }
       $sql = "INSERT INTO " . self::$_table . " (parent_id, contact_name, parent_type,
- message) VALUES (" . DB::escape($parent_id) . "," . DB::escape($contact_name) . "," . DB::escape($type) . ",
- " . DB::escape($message) . ")";
-      DB::query($sql, "Couldn't insert contact log");
-      return DB::insertId();
+ message) VALUES (" . DB::_escape($parent_id) . "," . DB::_escape($contact_name) . "," . DB::_escape($type) . ",
+ " . DB::_escape($message) . ")";
+      DB::_query($sql, "Couldn't insert contact log");
+      return DB::_insertId();
     }
     /**
      * @static
@@ -49,10 +49,10 @@
       if (!isset($parent_id, $type) || !$parent_id) {
         return false;
       }
-      $sql     = "SELECT * FROM " . self::$_table . " WHERE parent_id=" . $parent_id . " AND parent_type=" . DB::escape($type) . " ORDER BY date DESC";
-      $result  = DB::query($sql, "Couldn't get contact log entries");
+      $sql     = "SELECT * FROM " . self::$_table . " WHERE parent_id=" . $parent_id . " AND parent_type=" . DB::_escape($type) . " ORDER BY date DESC";
+      $result  = DB::_query($sql, "Couldn't get contact log entries");
       $results = [];
-      while ($row = DB::fetchAssoc($result)) {
+      while ($row = DB::_fetchAssoc($result)) {
         $results[] = $row;
       }
       return $results;

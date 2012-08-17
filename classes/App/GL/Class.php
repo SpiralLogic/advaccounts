@@ -22,9 +22,9 @@
     {
       $sql
         = "INSERT INTO chart_class (cid, class_name, ctype)
-        VALUES (" . DB::escape($id) . ", " . DB::escape($name) . ", " . DB::escape($ctype) . ")";
+        VALUES (" . DB::_escape($id) . ", " . DB::_escape($name) . ", " . DB::_escape($ctype) . ")";
 
-      return DB::query($sql);
+      return DB::_query($sql);
     }
     /**
      * @static
@@ -37,10 +37,10 @@
      */
     public static function update($id, $name, $ctype)
     {
-      $sql = "UPDATE chart_class SET class_name=" . DB::escape($name) . ",
-        ctype=" . DB::escape($ctype) . " WHERE cid = " . DB::escape($id);
+      $sql = "UPDATE chart_class SET class_name=" . DB::_escape($name) . ",
+        ctype=" . DB::_escape($ctype) . " WHERE cid = " . DB::_escape($id);
 
-      return DB::query($sql);
+      return DB::_query($sql);
     }
     /**
      * @static
@@ -63,7 +63,7 @@
       }
       $sql .= " ORDER BY cid";
 
-      return DB::query($sql, "could not get account classes");
+      return DB::_query($sql, "could not get account classes");
     }
     /**
      * @static
@@ -74,10 +74,10 @@
      */
     public static function get($id)
     {
-      $sql    = "SELECT * FROM chart_class WHERE cid = " . DB::escape($id);
-      $result = DB::query($sql, "could not get account type");
+      $sql    = "SELECT * FROM chart_class WHERE cid = " . DB::_escape($id);
+      $result = DB::_query($sql, "could not get account type");
 
-      return DB::fetch($result);
+      return DB::_fetch($result);
     }
     /**
      * @static
@@ -88,9 +88,9 @@
      */
     public static function get_name($id)
     {
-      $sql    = "SELECT class_name FROM chart_class WHERE cid =" . DB::escape($id);
-      $result = DB::query($sql, "could not get account type");
-      $row    = DB::fetchRow($result);
+      $sql    = "SELECT class_name FROM chart_class WHERE cid =" . DB::_escape($id);
+      $result = DB::_query($sql, "could not get account type");
+      $row    = DB::_fetchRow($result);
 
       return $row[0];
     }
@@ -101,8 +101,8 @@
      */
     public static function delete($id)
     {
-      $sql = "DELETE FROM chart_class WHERE cid = " . DB::escape($id);
-      DB::query($sql, "could not delete account type");
+      $sql = "DELETE FROM chart_class WHERE cid = " . DB::_escape($id);
+      DB::_query($sql, "could not delete account type");
     }
     /**
      * @static

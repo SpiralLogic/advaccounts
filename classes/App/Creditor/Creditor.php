@@ -222,7 +222,7 @@
      */
     protected function _canProcess() {
       if (empty($this->name)) {
-        $this->_status(false, 'Processing', "The supplier name cannot be empty.", 'name');
+        $this->status(false, 'Processing', "The supplier name cannot be empty.", 'name');
         return false;
       }
       return true;
@@ -237,7 +237,7 @@
      * @return bool|\Status
      */
     protected function _defaults() {
-      $this->credit_limit             = Num::priceFormat(0);
+      $this->credit_limit             = Num::_priceFormat(0);
       $company_record                 = DB_Company::get_prefs();
       $this->curr_code                = $company_record["curr_default"];
       $this->payable_account          = $company_record["creditors_act"];
@@ -252,7 +252,7 @@
      */
     protected function _new() {
       $this->_defaults();
-      return $this->_status(true, 'Initialize new supplier', 'Now working with a new supplier');
+      return $this->status(true, 'Initialize new supplier', 'Now working with a new supplier');
     }
     /**
      * @return void
@@ -290,7 +290,7 @@
                             var val = $("#creditor_id").val();
                             $("#supplierBox").html("<iframe src='/contacts/suppliers.php?frame=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
-      JS::addLiveEvent('#creditor_id_label', 'click', $js);
+      JS::_addLiveEvent('#creditor_id_label', 'click', $js);
     }
     /**
      * @param bool|int|null $id
@@ -300,11 +300,11 @@ JS;
      */
     protected function _read($id = false, $extra = []) {
       if (!parent::_read($id)) {
-        return $this->_status->get();
+        return $this->status->get();
       }
       $this->_getContacts();
       $this->discount     = $this->discount * 100;
-      $this->credit_limit = Num::priceFormat($this->credit_limit);
+      $this->credit_limit = Num::_priceFormat($this->credit_limit);
       $this->_setDefaults();
       return $this;
     }
@@ -320,7 +320,7 @@ JS;
       if ($to == null) {
         $todate = date("Y-m-d");
       } else {
-        $todate = Dates::dateToSql($to);
+        $todate = Dates::_dateToSql($to);
       }
       $past_due1 = DB_Company::get_pref('past_due_days') ? : 30;
       $past_due2 = 2 * $past_due1;
@@ -378,8 +378,8 @@ JS;
      * @return mixed
      */
     public static function get_oweing($creditor_id, $date_from, $date_to) {
-      $date_from = Dates::dateToSql($date_from);
-      $date_to   = Dates::dateToSql($date_to);
+      $date_from = Dates::_dateToSql($date_from);
+      $date_to   = Dates::_dateToSql($date_to);
       // Sherifoz 22.06.03 Also get the description
       $sql
                = "SELECT
@@ -454,16 +454,16 @@ JS;
       ];
       $o     = array_merge($o, $options);
       $focus = false;
-      if (!$value && Input::post('creditor')) {
+      if (!$value && Input::_post('creditor')) {
         $value = $_POST['creditor'];
-        JS::setFocus('stock_id');
+        JS::_setFocus('stock_id');
       } elseif (!$value) {
-        $value = Session::getGlobal('creditor_id');
+        $value = Session::_getGlobal('creditor_id');
         if ($value) {
           $_POST['creditor_id'] = $value;
           $value                = Creditor::get_name($value);
         } else {
-          JS::setFocus('creditor');
+          JS::_setFocus('creditor');
           $focus = true;
         }
       }
@@ -491,7 +491,7 @@ JS;
       if ($o['row']) {
         echo "</tr>\n";
       }
-      JS::beforeload("var Creditor = function(data) {
+      JS::_beforeload("var Creditor = function(data) {
             var id = document.getElementById('creditor_id');
             id.value= data.id;
             var creditor = document.getElementById('creditor');

@@ -27,10 +27,10 @@
                 $data['company'] = $this->creditor = new Creditor();
                 unset($_POST['supp_ref']);
                 $data['company']->save($_POST);
-            } elseif (Input::request('id', Input::NUMERIC) > 0) {
-                $data['company']     = $this->creditor = new Creditor(Input::request('id', Input::NUMERIC));
+            } elseif (Input::_request('id', Input::NUMERIC) > 0) {
+                $data['company']     = $this->creditor = new Creditor(Input::_request('id', Input::NUMERIC));
                 $data['contact_log'] = Contact_Log::read($this->creditor->id, CT_SUPPLIER);
-                Session::setGlobal('creditor_id', $this->creditor->id);
+                Session::_setGlobal('creditor_id', $this->creditor->id);
             } else {
                 $data['company'] = $this->creditor = new Creditor();
             }
@@ -38,35 +38,35 @@
                 /** @noinspection PhpUndefinedMethodInspection */
                 $data['status'] = $this->creditor->getStatus();
                 /** @noinspection PhpUndefinedMethodInspection */
-                JS::renderJSON($data);
+                JS::_renderJSON($data);
             }
-            JS::footerFile("/js/company.js");
-            JS::onload("Company.setValues(" . json_encode($data) . ");");
+            JS::_footerFile("/js/company.js");
+            JS::_onload("Company.setValues(" . json_encode($data) . ");");
         }
         protected function search()
         {
             if (isset($_GET['term'])) {
                 $data = Creditor::search($_GET['term']);
-                JS::renderJSON($data);
+                JS::_renderJSON($data);
             }
         }
         protected function index()
         {
-            Page::start(_($help_context = "Suppliers"), SA_SUPPLIER, Input::request('frame'));
+            Page::start(_($help_context = "Suppliers"), SA_SUPPLIER, Input::_request('frame'));
             if (isset($_POST['delete'])) {
                 $this->delete();
             }
-          $this->JS->_autocomplete('supplier', 'Company.fetch');
+          $this->JS->autocomplete('supplier', 'Company.fetch');
             $form          = new Form();
             $menu          = new MenuUI();
             $view          = new View('contacts/supplier');
-            $view['frame'] = $this->Input->_get('frame') || $this->Input->_get('id');
+            $view['frame'] = $this->Input->get('frame') || $this->Input->get('id');
             $view->set('menu', $menu);
             $form->text('Supplier Name:', 'name', $this->creditor->name, ['class' => 'width60']);
             $form->text('Supplier ID:', 'id', $this->creditor->id, ['class' => 'small', 'maxlength' => 7]);
             $view->set('form', $form);
             $view->set('creditor_id', $this->creditor->id);
-            if (!Input::get('frame')) {
+            if (!Input::_get('frame')) {
                 $shortcuts = new MenuUI(array('noajax' => true));
                 $shortcuts->addLink('Supplier Payment', 'Make supplier payment!', '/purchases/supplier_payment.php?creditor_id=', 'id');
                 $shortcuts->addLink('Supplier Invoice', 'Make supplier invoice!', '/purchases/supplier_invoice.php?New=1&creditor_id=', 'id');

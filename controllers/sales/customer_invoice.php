@@ -13,7 +13,7 @@
     //	Entry/Modify Sales Invoice against single delivery
     //	Entry/Modify Batch Sales Invoice against batch of deliveries
     //
-    JS::openWindow(950, 500);
+    JS::_openWindow(950, 500);
     $page_title = 'Sales Invoice Complete';
     if (isset($_GET[Orders::MODIFY_INVOICE])) {
         $page_title   = sprintf(_("Modifying Sales Invoice # %d."), $_GET[Orders::MODIFY_INVOICE]);
@@ -115,17 +115,17 @@
         Event::error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
     }
     if (isset($_POST['Update'])) {
-        Ajax::activate('Items');
+        Ajax::_activate('Items');
     }
     if (isset($_POST['_InvoiceDate_changed'])) {
         $_POST['due_date'] = Sales_Order::get_invoice_duedate($order->debtor_id, $_POST['InvoiceDate']);
-        Ajax::activate('due_date');
+        Ajax::_activate('due_date');
     }
     if (isset($_POST['process_invoice']) && Sales_Invoice::check_data($order)) {
         $newinvoice = $order->trans_no == 0;
         Sales_Invoice::copyFromPost($order);
         if ($newinvoice) {
-            Dates::newDocDate($order->document_date);
+            Dates::_newDocDate($order->document_date);
         }
         $invoice_no = $order->write();
         $order->finish();
@@ -184,10 +184,10 @@
     } else {
         Cell::label($order->ship_via);
     }
-    if (!isset($_POST['InvoiceDate']) || !Dates::isDate($_POST['InvoiceDate'])) {
-        $_POST['InvoiceDate'] = Dates::newDocDate();
-        if (!Dates::isDateInFiscalYear($_POST['InvoiceDate'])) {
-            $_POST['InvoiceDate'] = Dates::endFiscalYear();
+    if (!isset($_POST['InvoiceDate']) || !Dates::_isDate($_POST['InvoiceDate'])) {
+        $_POST['InvoiceDate'] = Dates::_newDocDate();
+        if (!Dates::_isDateInFiscalYear($_POST['InvoiceDate'])) {
+            $_POST['InvoiceDate'] = Dates::_endFiscalYear();
         }
     }
     if (!$order->view_only) {
@@ -195,7 +195,7 @@
     } else {
         Cell::labels(_('Invoice Date:'), $_POST['InvoiceDate']);
     }
-    if (!isset($_POST['due_date']) || !Dates::isDate($_POST['due_date'])) {
+    if (!isset($_POST['due_date']) || !Dates::_isDate($_POST['due_date'])) {
         $_POST['due_date'] = Sales_Order::get_invoice_duedate($order->debtor_id, $_POST['InvoiceDate']);
     }
     if (!$order->view_only) {
@@ -257,14 +257,14 @@
             // for batch invoices we can only remove whole deliveries
             echo '<td class="alignright nowrap">';
             Forms::hidden('Line' . $line_no, $line->qty_dispatched);
-            echo Num::format($line->qty_dispatched, $dec) . '</td>';
+            echo Num::_format($line->qty_dispatched, $dec) . '</td>';
         } elseif ($order->view_only) {
             Forms::hidden('viewing');
             Cell::qty($line->quantity, false, $dec);
         } else {
             Forms::qtyCellsSmall(null, 'Line' . $line_no, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), null, null, $dec);
         }
-        $display_discount_percent = Num::percentFormat($line->discount_percent * 100) . " %";
+        $display_discount_percent = Num::_percentFormat($line->discount_percent * 100) . " %";
         $line_total               = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
         Cell::amount($line->price);
         Cell::label($line->tax_type_name);
@@ -287,12 +287,12 @@ It seems unfair to charge the customer twice for freight if the order
 was not fully delivered the first time ?? */
     if (!isset($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] == "") {
         if ($order->any_already_delivered() == 1) {
-            $_POST['ChargeFreightCost'] = Num::priceFormat(0);
+            $_POST['ChargeFreightCost'] = Num::_priceFormat(0);
         } else {
-            $_POST['ChargeFreightCost'] = Num::priceFormat($order->freight_cost);
+            $_POST['ChargeFreightCost'] = Num::_priceFormat($order->freight_cost);
         }
         if (!Validation::post_num('ChargeFreightCost')) {
-            $_POST['ChargeFreightCost'] = Num::priceFormat(0);
+            $_POST['ChargeFreightCost'] = Num::_priceFormat(0);
         }
     }
     $accumulate_shipping = DB_Company::get_pref('accumulate_shipping');
@@ -313,7 +313,7 @@ was not fully delivered the first time ?? */
     }
     Row::end();
     $inv_items_total   = $order->get_items_total_dispatch();
-    $display_sub_total = Num::priceFormat($inv_items_total + Validation::input_num('ChargeFreightCost'));
+    $display_sub_total = Num::_priceFormat($inv_items_total + Validation::input_num('ChargeFreightCost'));
     Row::label(
         _("Sub-total"),
         $display_sub_total,
@@ -323,7 +323,7 @@ was not fully delivered the first time ?? */
     );
     $taxes         = $order->get_taxes(Validation::input_num('ChargeFreightCost'));
     $tax_total     = Tax::edit_items($taxes, $colspan, $order->tax_included, $is_batch_invoice ? 2 : 0);
-    $display_total = Num::priceFormat(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
+    $display_total = Num::_priceFormat(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
     Row::label(
         _("Invoice Total"),
         $display_total,

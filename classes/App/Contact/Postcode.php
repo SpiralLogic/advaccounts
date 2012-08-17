@@ -84,7 +84,7 @@
       $js       = <<<JS
 				Adv.postcode.add('$set','$city','$state','$postcode');
 JS;
-      JS::onload($js);
+      JS::_onload($js);
       static::$count++;
     }
     /**
@@ -105,7 +105,7 @@ JS;
      * @return mixed
      */
     public static function search($term, $type = 'Locality') {
-      $result = DB::select('id', "CONCAT(Locality,', ',State,', ',Pcode) as label", "CONCAT(Locality,'|',State,'|',Pcode) as value")->from('postcodes')->where($type . ' LIKE', $term . '%')->orderBy('Pcode')->limit(20)->fetch()->all();
+      $result = DB::_select('id', "CONCAT(Locality,', ',State,', ',Pcode) as label", "CONCAT(Locality,'|',State,'|',Pcode) as value")->from('postcodes')->where($type . ' LIKE', $term . '%')->orderBy('Pcode')->limit(20)->fetch()->all();
       return $result;
     }
     /**

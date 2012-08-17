@@ -11,6 +11,9 @@
   use User;
   use ADV\Core\Input\Input;
 
+  /**
+
+   */
   class SelectBox
   {
     /**
@@ -183,27 +186,27 @@
           '';
       }
       if ($this->selected_id == null) {
-        $this->selected_id = Input::post($this->name, null, (string) $this->default);
+        $this->selected_id = Input::_post($this->name, null, (string) $this->default);
       }
       if (!is_array($this->selected_id)) {
         $this->selected_id = array((string) $this->selected_id);
       } // code is generalized for multiple selection support
-      $txt = Input::post($search_box);
+      $txt = Input::_post($search_box);
       if (isset($_POST['_' . $this->name . '_update'])) { // select list or search box change
         if ($by_id) {
           $txt = $_POST[$this->name];
         }
         if (!$this->async) {
-          Ajax::activate('_page_body');
+          Ajax::_activate('_page_body');
         } else {
-          Ajax::activate($this->name);
+          Ajax::_activate($this->name);
         }
       }
       if (isset($_POST[$search_button])) {
         if (!$this->async) {
-          Ajax::activate('_page_body');
+          Ajax::_activate('_page_body');
         } else {
-          Ajax::activate($this->name);
+          Ajax::_activate($this->name);
         }
       }
       $this->generateSQL($search_box, $search_button, $txt);
@@ -218,13 +221,13 @@
           $value = $row[0];
           $descr = $this->format == null ? $row[1] : call_user_func($this->format, $row);
           $sel   = '';
-          if (Input::post($search_button) && ($txt == $value)) {
+          if (Input::_post($search_button) && ($txt == $value)) {
             $this->selected_id[] = $value;
           }
           if (in_array((string) $value, $this->selected_id, true)) {
             $sel   = 'selected';
             $found = $value;
-            $edit  = $this->editable && $row['editable'] && (Input::post($search_box) == $value) ? $row[1] :
+            $edit  = $this->editable && $row['editable'] && (Input::_post($search_box) == $value) ? $row[1] :
               false; // get non-formatted description
             if ($edit) {
               break; // selected field is editable - abandon list construction
@@ -280,18 +283,18 @@
           } else {
             $selector .= "<input type='text' $disabled name='{$this->name}_text' id='{$this->name}_text' size='" . $this->editable . "' maxlength='" . $this->max . "' " . $this->rel . " value='$edit'>\n";
           }
-          JS::setFocus($this->name . '_text'); // prevent lost focus
+          JS::_setFocus($this->name . '_text'); // prevent lost focus
         } else {
-          if (Input::post($search_submit ? $search_submit : "_{$this->name}_button")) {
-            JS::setFocus($this->name);
+          if (Input::_post($search_submit ? $search_submit : "_{$this->name}_button")) {
+            JS::_setFocus($this->name);
           }
         } // prevent lost focus
         if (!$this->editable) {
           $txt = $found;
         }
-        Ajax::addUpdate($this->name, $search_box, $txt ? $txt : '');
+        Ajax::_addUpdate($this->name, $search_box, $txt ? $txt : '');
       }
-      Ajax::addUpdate($this->name, "_{$this->name}_sel", $selector);
+      Ajax::_addUpdate($this->name, "_{$this->name}_sel", $selector);
       // span for select list/input field update
       $selector = "<div id='_{$this->name}_sel' class='combodiv'>" . $selector . "</div>\n";
       // if selectable or editable list is used - add select button
@@ -311,7 +314,7 @@
           value=' ' title='" . _("Set filter") . "'> ";
         }
       }
-      JS::defaultFocus(($search_box && $by_id) ? $search_box : $this->name);
+      JS::_defaultFocus(($search_box && $by_id) ? $search_box : $this->name);
       if ($search_box && $this->cells) {
         $str = ($edit_entry ? "<td>$edit_entry</td>" : '') . "<td>$selector</td>";
       } else {
@@ -334,16 +337,16 @@
           if (isset($_POST[$search_button])) {
             $this->selected_id = []; // ignore selected_id while search
             if (!$this->async) {
-              Ajax::activate('_page_body');
+              Ajax::_activate('_page_body');
             } else {
-              Ajax::activate($this->name);
+              Ajax::_activate($this->name);
             }
           }
           if ($txt == '') {
             if ($this->spec_option === false && $this->selected_id == []) {
               $limit = ' LIMIT 1';
             } else {
-              $this->where[] = $this->valfield . "='" . Input::post($this->name, null, $this->spec_id) . "'";
+              $this->where[] = $this->valfield . "='" . Input::_post($this->name, null, $this->spec_id) . "'";
             }
           } else {
             if ($txt != '*') {

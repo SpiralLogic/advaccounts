@@ -83,7 +83,7 @@
   </div>
   <div id="tabs0-5" class="ui-tabs-hide">
 
-    <iframe id='webFrame' data-srcpre='{{Config::get('modules.webstore')['product_url']}}' data-srcpost='{{Config::get('modules.webstore')['url_extension']}}'
+    <iframe id='webFrame' data-srcpre='{{Config::_get('modules.webstore')['product_url']}}' data-srcpost='{{Config::_get('modules.webstore')['url_extension']}}'
             style='width:100%'
             height='500' frameborder='0'></iframe>
   </div><button name='btnCancel' >Cancel</button>

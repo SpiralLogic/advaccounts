@@ -8,19 +8,19 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(950, 500);
+  JS::_openWindow(950, 500);
   Page::start(_($help_context = "Customer Allocations"), SA_SALESALLOC);
   Forms::start();
   /* show all outstanding receipts and credits to be allocated */
   if (!isset($_POST['debtor_id'])) {
-    $_POST['debtor_id'] = Session::getGlobal('debtor_id');
+    $_POST['debtor_id'] = Session::_getGlobal('debtor_id');
   }
   echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
   echo Debtor::select('debtor_id', $_POST['debtor_id'], true, true);
   echo "<br>";
   Forms::check(_("Show Settled Items:"), 'ShowSettled', null, true);
   echo "</div><br><br>";
-  Session::setGlobal('debtor_id', $_POST['debtor_id']);
+  Session::_setGlobal('debtor_id', $_POST['debtor_id']);
   if (isset($_POST['debtor_id']) && ($_POST['debtor_id'] == ALL_TEXT)) {
     unset($_POST['debtor_id']);
   }
@@ -30,7 +30,7 @@
              echo _("Customer Currency:") . $custCurr;
          }*/
   $settled = false;
-  if (Input::hasPost('ShowSettled')) {
+  if (Input::_hasPost('ShowSettled')) {
     $settled = true;
   }
   $debtor_id = null;

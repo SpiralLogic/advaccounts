@@ -42,10 +42,10 @@
       }
       if (isset($_POST['_PayType_update'])) {
         $_POST['person_id'] = '';
-        Ajax::activate('pmt_header');
-        Ajax::activate('code_id');
-        Ajax::activate('pagehelp');
-        Ajax::activate('editors');
+        Ajax::_activate('pmt_header');
+        Ajax::_activate('code_id');
+        Ajax::_activate('pagehelp');
+        Ajax::_activate('editors');
       }
       GL_UI::payment_person_type_row($payment ? _("Pay To:") : _("From:"), 'PayType', $_POST['PayType'], true);
       switch ($_POST['PayType']) {
@@ -60,7 +60,7 @@
           break;
         case PT_CUSTOMER :
           Debtor::row(_("Customer:"), 'person_id', null, false, true, false, true);
-          if (Input::post('person_id') && Validation::check(Validation::BRANCHES, _("No Branches for Customer"), $_POST['person_id'])
+          if (Input::_post('person_id') && Validation::check(Validation::BRANCHES, _("No Branches for Customer"), $_POST['person_id'])
           ) {
             Debtor_Branch::row(_("Branch:"), $_POST['person_id'], 'PersonDetailID', null, false, true, true, true);
           } else {
@@ -70,15 +70,15 @@
           break;
         case PT_QUICKENTRY :
           GL_QuickEntry::row(_("Type") . ":", 'person_id', null, ($payment ? QE_PAYMENT : QE_DEPOSIT), true);
-          $qid = GL_QuickEntry::get(Input::post('person_id'));
+          $qid = GL_QuickEntry::get(Input::_post('person_id'));
           if (Forms::isListUpdated('person_id')) {
             unset($_POST['total_amount']); // enable default
-            Ajax::activate('total_amount');
+            Ajax::_activate('total_amount');
           }
           Forms::AmountRow(
             $qid['base_desc'] . ":",
             'total_amount',
-            Num::priceFormat($qid['base_amount']),
+            Num::_priceFormat($qid['base_amount']),
             null,
             "&nbsp;&nbsp;" . Forms::submit('go', _("Go"), false, false, true)
           );
@@ -172,7 +172,7 @@
         Bank_UI::item_controls($order, $dim);
       }
       if ($order->count_gl_items()) {
-        Row::label(_("Total"), Num::format(abs($order->gl_items_total()), User::price_dec()), "colspan=" . $colspan . " class='alignright'", "class='alignright'", 3);
+        Row::label(_("Total"), Num::_format(abs($order->gl_items_total()), User::price_dec()), "colspan=" . $colspan . " class='alignright'", "class='alignright'", 3);
       }
       Table::end();
       Display::div_end();
@@ -193,7 +193,7 @@
         $_POST['code_id']       = $item->code_id;
         $_POST['dimension_id']  = $item->dimension_id;
         $_POST['dimension2_id'] = $item->dimension2_id;
-        $_POST['amount']        = Num::priceFormat(abs($item->amount));
+        $_POST['amount']        = Num::_priceFormat(abs($item->amount));
         $_POST['description']   = $item->description;
         $_POST['LineMemo']      = $item->reference;
         Forms::hidden('Index', $id);
@@ -204,18 +204,18 @@
         if ($dim > 1) {
           Dimensions::cells(null, 'dimension2_id', null, true, " ", false, 2);
         }
-        Ajax::activate('items_table');
+        Ajax::_activate('items_table');
       } else {
-        if ($_SERVER['REQUEST_METHOD'] == 'GET' && !count($order->gl_items) && Input::get('amount', Input::NUMERIC)) {
+        if ($_SERVER['REQUEST_METHOD'] == 'GET' && !count($order->gl_items) && Input::_get('amount', Input::NUMERIC)) {
 
           $_POST['amount'] = $_GET['amount'];
         } else {
-          $_POST['amount'] = Num::priceFormat(0);
+          $_POST['amount'] = Num::_priceFormat(0);
         }
         $_POST['dimension_id']  = 0;
         $_POST['dimension2_id'] = 0;
         if (isset($_POST['_code_id_update'])) {
-          Ajax::activate('code_id');
+          Ajax::_activate('code_id');
         }
         if ($_POST['PayType'] == PT_CUSTOMER) {
           $acc              = Sales_Branch::get_accounts($_POST['PersonDetailID']);
@@ -247,7 +247,7 @@
       if ($id != -1) {
         Forms::buttonCell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
         Forms::buttonCell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
-        JS::setFocus('amount');
+        JS::_setFocus('amount');
       } else {
         Forms::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
       }
@@ -272,7 +272,7 @@
     public static function  reconcile($account, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
       $sql
         = "SELECT reconciled FROM bank_trans
-                            WHERE bank_act=" . DB::escape($account) . " AND reconciled IS NOT null AND amount!=0
+                            WHERE bank_act=" . DB::_escape($account) . " AND reconciled IS NOT null AND amount!=0
                             GROUP BY reconciled";
 
       return Forms::selectBox(
@@ -315,11 +315,11 @@
      * @param string $parms
      */
     public static function  balance_row($bank_acc, $parms = '') {
-      $to  = Dates::addDays(Dates::today(), 1);
+      $to  = Dates::_addDays(Dates::_today(), 1);
       $bal = get_balance_before_for_bank_account($bank_acc, $to);
       Row::label(
         _("Bank Balance:"),
-        "<a target='_blank' " . ($bal < 0 ? 'class="redfg openWindow"' : '') . "href='/gl/inquiry/bank.php?bank_account=" . $bank_acc . "'" . " >&nbsp;" . Num::priceFormat(
+        "<a target='_blank' " . ($bal < 0 ? 'class="redfg openWindow"' : '') . "href='/gl/inquiry/bank.php?bank_account=" . $bank_acc . "'" . " >&nbsp;" . Num::_priceFormat(
           $bal
         ) . "</a>",
         $parms

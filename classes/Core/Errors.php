@@ -83,7 +83,7 @@
       if (in_array($type, static::$ignore)) {
         return true;
       }
-      if (count(static::$errors) > 10 || (static::$useConfigClass && count(static::$errors) > Config::get('debug.throttling'))) {
+      if (count(static::$errors) > 10 || (static::$useConfigClass && count(static::$errors) > Config::_get('debug.throttling'))) {
         static::fatal();
       }
       if (static::$current_severity > $type) {
@@ -142,7 +142,7 @@
       }
       if (static::$current_severity > -1) {
         if (class_exists('JS', false)) {
-          JS::beforeload("Adv.showStatus();");
+          JS::_beforeload("Adv.showStatus();");
         }
       }
       return $content;
@@ -225,14 +225,14 @@
       // Only show valid fatal errors
       if ($last_error && in_array($last_error['type'], static::$fatal_levels)) {
         if (class_exists('Ajax', false)) {
-          Ajax::flush();
+          Ajax::_flush();
         }
         static::$current_severity = -1;
         $error                    = new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']);
         static::exceptionHandler($error);
       }
-      if (class_exists('Ajax', false) && Ajax::inAjax()) {
-        Ajax::run();
+      if (class_exists('Ajax', false) && Ajax::_inAjax()) {
+        Ajax::_run();
       } elseif (AJAX_REFERRER && IS_JSON_REQUEST && !static::$jsonerrorsent) {
         ob_end_clean();
         echo static::getJSONError();
@@ -298,7 +298,7 @@
         $message           = end(static::$messages);
         $status['status']  = $message['type'];
         $status['message'] = $message['message'];
-        if (static::$useConfigClass && Config::get('debug.enabled')) {
+        if (static::$useConfigClass && Config::_get('debug.enabled')) {
           $status['var'] = 'file: ' . basename($message['file']) . ' line: ' . $message['line'];
         }
         $status['process'] = '';
@@ -325,7 +325,7 @@
      * @internal param bool $exit
      */
     public static function databaseError($error, $sql = null, $data = []) {
-      $errorCode        = DB\DB::errorNo();
+      $errorCode        = DB\DB::_errorNo();
       $error['message'] = _("DATABASE ERROR $errorCode:") . $error['message'];
       if ($errorCode == static::DB_DUPLICATE_ERROR_CODE) {
         $error['message'] .= _("The entered information is a duplicate. Please go back and enter different values.");

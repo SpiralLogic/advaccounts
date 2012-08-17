@@ -34,14 +34,14 @@
     $selected_id = -1;
     $_POST['id'] = $_POST['name'] = $_POST['ctype'] = '';
   }
-  $result = GL_Class::getAll(Input::hasPost('show_inactive'));
+  $result = GL_Class::getAll(Input::_hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("class ID"), _("class Name"), _("class Type"), "", "");
   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
-  while ($myrow = DB::fetch($result)) {
+  while ($myrow = DB::_fetch($result)) {
     Cell::label($myrow["cid"]);
     Cell::label($myrow['class_name']);
     Cell::label($class_types[$myrow["ctype"]]);
@@ -80,13 +80,13 @@
   {
     if (!is_numeric($_POST['id'])) {
       Event::error(_("The account class ID must be numeric."));
-      JS::setFocus('id');
+      JS::_setFocus('id');
 
       return false;
     }
     if (strlen($_POST['name']) == 0) {
       Event::error(_("The account class name cannot be empty."));
-      JS::setFocus('name');
+      JS::_setFocus('name');
 
       return false;
     }
@@ -107,8 +107,8 @@
     $sql
             = "SELECT COUNT(*) FROM chart_types
         WHERE class_id=$selected_id";
-    $result = DB::query($sql, "could not query chart master");
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql, "could not query chart master");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account class because GL account types have been created referring to it."));
 

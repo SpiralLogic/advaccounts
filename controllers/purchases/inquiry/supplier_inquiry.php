@@ -20,20 +20,20 @@
   {
     public $creditor_id;
     protected function before() {
-      JS::openWindow(950, 500);
+      JS::_openWindow(950, 500);
       if (isset($_GET['FromDate'])) {
         $_POST['TransAfterDate'] = $_GET['FromDate'];
       }
       if (isset($_GET['ToDate'])) {
         $_POST['TransToDate'] = $_GET['ToDate'];
       }
-      $this->creditor_id = Input::getPost('creditor_id', INPUT::NUMERIC, -1);
+      $this->creditor_id = Input::_getPost('creditor_id', INPUT::NUMERIC, -1);
       if (!$this->creditor_id) {
-        $_POST['creditor_id'] = $this->creditor_id = Session::getGlobal('creditor_id', -1);
-        Session::setGlobal('creditor_id', $this->creditor_id);
+        $_POST['creditor_id'] = $this->creditor_id = Session::_getGlobal('creditor_id', -1);
+        Session::_setGlobal('creditor_id', $this->creditor_id);
       }
-      if (Input::post('RefreshInquiry')) {
-        Ajax::activate('totals_tbl');
+      if (Input::_post('RefreshInquiry')) {
+        Ajax::_activate('totals_tbl');
       }
     }
     protected function index() {
@@ -64,8 +64,8 @@
         $searchArray = explode(' ', $_POST['q']);
         unset($_POST['creditor_id']);
       }
-      $date_after = Dates::dateToSql($_POST['TransAfterDate']);
-      $date_to    = Dates::dateToSql($_POST['TransToDate']);
+      $date_after = Dates::_dateToSql($_POST['TransAfterDate']);
+      $date_to    = Dates::_dateToSql($_POST['TransToDate']);
       // Sherifoz 22.06.03 Also get the description
       $sql
         = "SELECT trans.type,
@@ -79,7 +79,7 @@
     		supplier.curr_code,
      	(trans.ov_amount + trans.ov_gst + trans.ov_discount) AS TotalAmount,
     		trans.alloc AS Allocated,
-    		((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::today(true) . "') AS OverDue,
+    		((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::_today(true) . "') AS OverDue,
      	(ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount - trans.alloc) <= 0.005) AS Settled
      	FROM creditor_trans as trans, suppliers as supplier
      	WHERE supplier.creditor_id = trans.creditor_id
@@ -91,9 +91,9 @@
           }
           $quicksearch = "%" . $quicksearch . "%";
           $sql .= " AND (";
-          $sql .= " supplier.name LIKE " . DB::quote($quicksearch) . " OR trans.trans_no LIKE " . DB::quote($quicksearch) . " OR trans.reference LIKE " . DB::quote(
+          $sql .= " supplier.name LIKE " . DB::_quote($quicksearch) . " OR trans.trans_no LIKE " . DB::_quote($quicksearch) . " OR trans.reference LIKE " . DB::_quote(
             $quicksearch
-          ) . " OR trans.supplier_reference LIKE " . DB::quote($quicksearch) . ")";
+          ) . " OR trans.supplier_reference LIKE " . DB::_quote($quicksearch) . ")";
         }
       } else {
         $sql
@@ -101,7 +101,7 @@
     	 AND trans . tran_date <= '$date_to'";
       }
       if ($this->creditor_id > 0) {
-        $sql .= " AND trans.creditor_id = " . DB::quote($this->creditor_id);
+        $sql .= " AND trans.creditor_id = " . DB::_quote($this->creditor_id);
       }
       if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
         if (($_POST['filterType'] == '1')) {
@@ -116,7 +116,7 @@
           $sql .= " AND trans.type = " . ST_SUPPCREDIT . " ";
         }
         if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) {
-          $today = Dates::today(true);
+          $today = Dates::_today(true);
           $sql .= " AND trans.due_date < '$today' ";
         }
       }
@@ -188,7 +188,7 @@
     public function formatDebit($row) {
       $value = $row["TotalAmount"];
 
-      return $value >= 0 ? Num::priceFormat($value) : '';
+      return $value >= 0 ? Num::_priceFormat($value) : '';
     }
     /**
      * @param $row
@@ -198,7 +198,7 @@
     public function formatCredit($row) {
       $value = -$row["TotalAmount"];
 
-      return $value > 0 ? Num::priceFormat($value) : '';
+      return $value > 0 ? Num::_priceFormat($value) : '';
     }
     /**
      * @param $row

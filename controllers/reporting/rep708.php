@@ -85,12 +85,12 @@
     $rep->Header();
     $accounts = GL_Account::getAll();
     $pdeb     = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
-    $begin    = Dates::beginFiscalYear();
-    if (Dates::isGreaterThan($begin, $from)) {
+    $begin    = Dates::_beginFiscalYear();
+    if (Dates::_isGreaterThan($begin, $from)) {
       $begin = $from;
     }
-    $begin = Dates::addDays($begin, -1);
-    while ($account = DB::fetch($accounts)) {
+    $begin = Dates::_addDays($begin, -1);
+    while ($account = DB::_fetch($accounts)) {
       $prev = GL_Trans::get_balance($account["account_code"], $dimension, $dimension2, $begin, $from, false, false);
       $curr = GL_Trans::get_balance($account["account_code"], $dimension, $dimension2, $from, $to, true, true);
       $tot  = GL_Trans::get_balance($account["account_code"], $dimension, $dimension2, $begin, $to, false, true);

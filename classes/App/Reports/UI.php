@@ -20,9 +20,9 @@
      */
     public static function print_profiles_row($label, $name, $selected_id = null, $spec_opt = false, $submit_on_change = true) {
       $sql      = "SELECT profile FROM print_profiles GROUP BY profile";
-      $result   = DB::query($sql, 'cannot get all profile names');
+      $result   = DB::_query($sql, 'cannot get all profile names');
       $profiles = [];
-      while ($myrow = DB::fetch($result)) {
+      while ($myrow = DB::_fetch($result)) {
         $profiles[$myrow['profile']] = $myrow['profile'];
       }
       echo "<tr>";
@@ -49,9 +49,9 @@
       static $printers; // query only once for page display
       if (!$printers) {
         $sql      = "SELECT id, name, description FROM printers";
-        $result   = DB::query($sql, 'cannot get all printers');
+        $result   = DB::_query($sql, 'cannot get all printers');
         $printers = [];
-        while ($myrow = DB::fetch($result)) {
+        while ($myrow = DB::_fetch($result)) {
           $printers[$myrow['id']] = $myrow['name'] . '&nbsp;-&nbsp;' . $myrow['description'];
         }
       }
@@ -68,7 +68,7 @@
      */
     public static function pagesizes_row($label, $name, $value = null) {
       $items = [];
-      foreach (Config::get('print_paper_sizes') as $pz) {
+      foreach (Config::_get('print_paper_sizes') as $pz) {
         $items[$pz] = $pz;
       }
       echo "<tr><td class='label'>$label</td>\n<td>";

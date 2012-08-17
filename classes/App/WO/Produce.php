@@ -21,7 +21,7 @@
          */
         public static function add($woid, $ref, $quantity, $date_, $memo_, $close_wo)
         {
-            DB::begin();
+            DB::_begin();
             $details = WO::get($woid);
             if (strlen($details[0]) == 0) {
                 echo _("The order number sent is not valid.");
@@ -29,15 +29,15 @@
             }
             if (WO::is_closed($woid)) {
                 Event::error("UNEXPECTED : Producing Items for a closed Work Order");
-                DB::cancel();
+                DB::_cancel();
                 exit;
             }
-            $date = Dates::dateToSql($date_);
+            $date = Dates::_dateToSql($date_);
             $sql
                   = "INSERT INTO wo_manufacture (workorder_id, reference, quantity, date_)
-        VALUES (" . DB::escape($woid) . ", " . DB::escape($ref) . ", " . DB::escape($quantity) . ", '$date')";
-            DB::query($sql, "A work order manufacture could not be added");
-            $id = DB::insertId();
+        VALUES (" . DB::_escape($woid) . ", " . DB::_escape($ref) . ", " . DB::_escape($quantity) . ", '$date')";
+            DB::_query($sql, "A work order manufacture could not be added");
+            $id = DB::_insertId();
             // -------------------------------------------------------------------------
             WO_Quick::costs($woid, $details["stock_id"], $quantity, $date_, $id);
             // -------------------------------------------------------------------------
@@ -51,7 +51,7 @@
             }
             Ref::save(ST_MANURECEIVE, $ref);
             DB_AuditTrail::add(ST_MANURECEIVE, $id, $date_, _("Production."));
-            DB::commit();
+            DB::_commit();
         }
         /**
          * @static
@@ -66,10 +66,10 @@
         FROM wo_manufacture, workorders, stock_master
         WHERE wo_manufacture.workorder_id=workorders.id
         AND stock_master.stock_id=workorders.stock_id
-        AND wo_manufacture.id=" . DB::escape($id);
-            $result = DB::query($sql, "The work order production could not be retrieved");
+        AND wo_manufacture.id=" . DB::_escape($id);
+            $result = DB::_query($sql, "The work order production could not be retrieved");
 
-            return DB::fetch($result);
+            return DB::_fetch($result);
         }
         /**
          * @static
@@ -80,9 +80,9 @@
          */
         public static function getAll($woid)
         {
-            $sql = "SELECT * FROM wo_manufacture WHERE workorder_id=" . DB::escape($woid) . " ORDER BY id";
+            $sql = "SELECT * FROM wo_manufacture WHERE workorder_id=" . DB::_escape($woid) . " ORDER BY id";
 
-            return DB::query($sql, "The work order issues could not be retrieved");
+            return DB::_query($sql, "The work order issues could not be retrieved");
         }
         /**
          * @static
@@ -93,10 +93,10 @@
          */
         public static function exists($id)
         {
-            $sql    = "SELECT id FROM wo_manufacture WHERE id=" . DB::escape($id);
-            $result = DB::query($sql, "Cannot retreive a wo production");
+            $sql    = "SELECT id FROM wo_manufacture WHERE id=" . DB::_escape($id);
+            $result = DB::_query($sql, "Cannot retreive a wo production");
 
-            return (DB::numRows($result) > 0);
+            return (DB::_numRows($result) > 0);
         }
         /**
          * @static
@@ -109,19 +109,19 @@
             if ($type != ST_MANURECEIVE) {
                 $type = ST_MANURECEIVE;
             }
-            DB::begin();
+            DB::_begin();
             $row = WO_Produce::get($type_no);
             // deduct the quantity of this production from the parent work order
             WO::update_finished_quantity($row["workorder_id"], -$row["quantity"]);
-            WO_Quick::costs($row['workorder_id'], $row['stock_id'], -$row['quantity'], Dates::sqlToDate($row['date_']), $type_no);
+            WO_Quick::costs($row['workorder_id'], $row['stock_id'], -$row['quantity'], Dates::_sqlToDate($row['date_']), $type_no);
             // clear the production record
-            $sql = "UPDATE wo_manufacture SET quantity=0 WHERE id=" . DB::escape($type_no);
-            DB::query($sql, "Cannot void a wo production");
+            $sql = "UPDATE wo_manufacture SET quantity=0 WHERE id=" . DB::_escape($type_no);
+            DB::_query($sql, "Cannot void a wo production");
             // void all related stock moves
             Inv_Movement::void($type, $type_no);
             // void any related gl trans
             GL_Trans::void($type, $type_no, true);
-            DB::commit();
+            DB::_commit();
         }
         /**
          * @static
@@ -131,7 +131,7 @@
         public static function display($woid)
         {
             $result = WO_Produce::getAll($woid);
-            if (DB::numRows($result) == 0) {
+            if (DB::_numRows($result) == 0) {
                 Display::note(_("There are no Productions for this Order."), 1, 1);
             } else {
                 Table::start('tablestyle grid');
@@ -139,16 +139,16 @@
                 Table::header($th);
                 $k         = 0; //row colour counter
                 $total_qty = 0;
-                while ($myrow = DB::fetch($result)) {
+                while ($myrow = DB::_fetch($result)) {
                     $total_qty += $myrow['quantity'];
                     Cell::label(GL_UI::viewTrans(29, $myrow["id"]));
                     Cell::label($myrow['reference']);
-                    Cell::label(Dates::sqlToDate($myrow["date_"]));
+                    Cell::label(Dates::_sqlToDate($myrow["date_"]));
                     Cell::qty($myrow['quantity'], false, Item::qty_dec($myrow['reference']));
                     Row::end();
                 }
                 //end of while
-                Row::label(_("Total"), Num::format($total_qty, User::qty_dec()), "colspan=3", ' class="alignright nowrap"');
+                Row::label(_("Total"), Num::_format($total_qty, User::qty_dec()), "colspan=3", ' class="alignright nowrap"');
                 Table::end();
             }
         }

@@ -8,21 +8,21 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::setFocus('account');
-  JS::openWindow(950, 500);
+  JS::_setFocus('account');
+  JS::_openWindow(950, 500);
   Page::start(_($help_context = "Tax Inquiry"), SA_TAXREP);
   // Ajax updates
   //
-  if (Input::post('Show')) {
-    Ajax::activate('trans_tbl');
+  if (Input::_post('Show')) {
+    Ajax::_activate('trans_tbl');
   }
-  if (Input::post('TransFromDate') == "" && Input::post('TransToDate') == "") {
-    $date                   = Dates::today();
+  if (Input::_post('TransFromDate') == "" && Input::_post('TransToDate') == "") {
+    $date                   = Dates::_today();
     $row                    = DB_Company::get_prefs();
-    $edate                  = Dates::addMonths($date, -$row['tax_last']);
-    $edate                  = Dates::endMonth($edate);
-    $bdate                  = Dates::beginMonth($edate);
-    $bdate                  = Dates::addMonths($bdate, -$row['tax_prd'] + 1);
+    $edate                  = Dates::_addMonths($date, -$row['tax_last']);
+    $edate                  = Dates::_endMonth($edate);
+    $bdate                  = Dates::_beginMonth($edate);
+    $bdate                  = Dates::_addMonths($bdate, -$row['tax_prd'] + 1);
     $_POST["TransFromDate"] = $bdate;
     $_POST["TransToDate"]   = $edate;
   }
@@ -58,10 +58,10 @@
     Table::header($th);
     $k     = 0;
     $total = 0;
-    $bdate = Dates::dateToSql($_POST['TransFromDate']);
-    $edate = Dates::dateToSql($_POST['TransToDate']);
+    $bdate = Dates::_dateToSql($_POST['TransFromDate']);
+    $edate = Dates::_dateToSql($_POST['TransToDate']);
     $taxes = GL_Trans::get_tax_summary($_POST['TransFromDate'], $_POST['TransToDate']);
-    while ($tx = DB::fetch($taxes)) {
+    while ($tx = DB::_fetch($taxes)) {
       $payable     = $tx['payable'];
       $collectible = $tx['collectible'];
       $net         = $collectible + $payable;

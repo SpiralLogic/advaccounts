@@ -129,7 +129,7 @@
       if (count($ajax_divs)) {
         $div = array_pop($ajax_divs);
         if ($div[1] !== null) {
-          static::$Ajax->_addUpdate($div[1], $div[0], ob_get_flush());
+          static::$Ajax->addUpdate($div[1], $div[0], ob_get_flush());
         }
         if ($return_div) {
           return "</div>";
@@ -164,7 +164,7 @@
       }
       Table::start('tablestyle width50');
       echo "<tr><td class=center><span class='red'>$label</span><br>";
-      echo "<span class='red'>" . _("Date Voided:") . " " . static::$Dates->_sqlToDate($void_entry["date_"]) . "</span><br>";
+      echo "<span class='red'>" . _("Date Voided:") . " " . static::$Dates->sqlToDate($void_entry["date_"]) . "</span><br>";
       if (strlen($void_entry["memo_"]) > 0) {
         echo "<div class='center'><span class='red'>" . _("Memo:") . " " . $void_entry["memo_"] . "</span></div><br>";
       }
@@ -239,7 +239,7 @@
       if ($params != '') {
         $params = '?' . $params;
       }
-      static::$Ajax->_redirect($forward_to . $params);
+      static::$Ajax->redirect($forward_to . $params);
       exit;
     }
     /**

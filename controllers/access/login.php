@@ -8,8 +8,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  // Display demo user name and password within login form if "Config::get('demo_mode') " is true
-  if (Config::get('demo_mode') == true) {
+  // Display demo user name and password within login form if "Config::_get('demo_mode') " is true
+  if (Config::_get('demo_mode') == true) {
     $demo_text = _("Login as user: demouser and password: password");
   } else {
     $demo_text = _("Please login here");
@@ -47,18 +47,18 @@
   if (!$login_timeout) {
     Table::sectionTitle(_("Version ") . VERSION . " - " . _("Login"));
   }
-  $value = $login_timeout ? User::i()->loginname : (Config::get('demo_mode') ? "demouser" : "");
+  $value = $login_timeout ? User::i()->loginname : (Config::_get('demo_mode') ? "demouser" : "");
   Row::start();
   Cell::label($demo_text, "colspan=2 class='center'");
   Row::end();
   Forms::textRow(_("User name"), "user_name", $value, 'med', 30);
-  $password = Config::get('demo_mode') ? "password" : "";
+  $password = Config::_get('demo_mode') ? "password" : "";
   Forms::passwordRow(_("Password:"), 'password', $password);
   if ($login_timeout) {
     Forms::hidden('login_company', User::i()->company);
   } else {
     $coy       = User::i()->company;
-    $companies = Config::getAll('db');
+    $companies = Config::_getAll('db');
     echo "<tr><td class='label'><label for='login_company'>" . _("Company") . "</label></td><td><select id='login_company'
     name='login_company' class='med'>\n";
     foreach ($companies as $name => $company) {
@@ -83,7 +83,7 @@
   Display::div_end();
   echo "<div class='center'>\n";
   if (User::i()) {
-    echo     $date = Dates::today() . " | " . Dates::now();
+    echo     $date = Dates::_today() . " | " . Dates::_now();
   } else {
     echo   $date = date("m/d/Y") . " | " . date("h.i am");
   }

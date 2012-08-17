@@ -22,9 +22,9 @@
      */
     public static function update($curr_abrev, $symbol, $currency, $country, $hundreds_name, $auto_update)
     {
-      $sql = "UPDATE currencies SET currency=" . DB::escape($currency) . ", curr_symbol=" . DB::escape($symbol) . ",	country=" . DB::escape($country) . ", hundreds_name=" . DB::escape($hundreds_name) . ",auto_update = " . DB::escape($auto_update) . " WHERE curr_abrev = " . DB::escape($curr_abrev);
+      $sql = "UPDATE currencies SET currency=" . DB::_escape($currency) . ", curr_symbol=" . DB::_escape($symbol) . ",	country=" . DB::_escape($country) . ", hundreds_name=" . DB::_escape($hundreds_name) . ",auto_update = " . DB::_escape($auto_update) . " WHERE curr_abrev = " . DB::_escape($curr_abrev);
 
-      DB::query($sql, "could not update currency for $curr_abrev");
+      DB::_query($sql, "could not update currency for $curr_abrev");
     }
     /**
      * @static
@@ -41,9 +41,9 @@
       $sql
         = "INSERT INTO currencies (curr_abrev, curr_symbol, currency,
             country, hundreds_name, auto_update)
-        VALUES (" . DB::escape($curr_abrev) . ", " . DB::escape($symbol) . ", " . DB::escape($currency) . ", " . DB::escape($country) . ", " . DB::escape($hundreds_name) . "," . DB::escape($auto_update) . ")";
+        VALUES (" . DB::_escape($curr_abrev) . ", " . DB::_escape($symbol) . ", " . DB::_escape($currency) . ", " . DB::_escape($country) . ", " . DB::_escape($hundreds_name) . "," . DB::_escape($auto_update) . ")";
 
-      DB::query($sql, "could not add currency for $curr_abrev");
+      DB::_query($sql, "could not add currency for $curr_abrev");
     }
     /**
      * @static
@@ -52,11 +52,11 @@
      */
     public static function delete($curr_code)
     {
-      $sql = "DELETE FROM currencies WHERE curr_abrev=" . DB::escape($curr_code);
-      DB::query($sql, "could not delete currency	$curr_code");
+      $sql = "DELETE FROM currencies WHERE curr_abrev=" . DB::_escape($curr_code);
+      DB::_query($sql, "could not delete currency	$curr_code");
 
       $sql = "DELETE FROM exchange_rates WHERE curr_code='$curr_code'";
-      DB::query($sql, "could not delete exchange rates for currency $curr_code");
+      DB::_query($sql, "could not delete exchange rates for currency $curr_code");
     }
     /**
      * @static
@@ -67,10 +67,10 @@
      */
     public static function get($curr_code)
     {
-      $sql    = "SELECT * FROM currencies WHERE curr_abrev=" . DB::escape($curr_code);
-      $result = DB::query($sql, "could not get currency $curr_code");
+      $sql    = "SELECT * FROM currencies WHERE curr_abrev=" . DB::_escape($curr_code);
+      $result = DB::_query($sql, "could not get currency $curr_code");
 
-      $row = DB::fetch($result);
+      $row = DB::_fetch($result);
 
       return $row;
     }
@@ -88,7 +88,7 @@
         $sql .= " WHERE !inactive";
       }
 
-      return DB::query($sql, "could not get currencies");
+      return DB::_query($sql, "could not get currencies");
     }
     // CURRENCIES
     /**

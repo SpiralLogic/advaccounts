@@ -23,12 +23,12 @@
       = "SELECT *
         FROM
             dimensions
-        WHERE reference >= " . DB::escape($from) . "
-        AND reference <= " . DB::escape($to) . "
+        WHERE reference >= " . DB::_escape($from) . "
+        AND reference <= " . DB::_escape($to) . "
         ORDER BY
             reference";
 
-    return DB::query($sql, "No transactions were returned");
+    return DB::_query($sql, "No transactions were returned");
   }
 
   /**
@@ -38,18 +38,18 @@
    */
   function getYTD($dim)
   {
-    $date = Dates::today();
-    $date = Dates::beginFiscalYear($date);
-    Dates::dateToSql($date);
+    $date = Dates::_today();
+    $date = Dates::_beginFiscalYear($date);
+    Dates::_dateToSql($date);
     $sql
                 = "SELECT SUM(amount) AS Balance
         FROM
             gl_trans
         WHERE (dimension_id = '$dim' OR dimension2_id = '$dim')
         AND tran_date >= '$date'";
-    $trans_rows = DB::query($sql, "No transactions were returned");
-    if (DB::numRows($trans_rows) == 1) {
-      $DemandRow = DB::fetchRow($trans_rows);
+    $trans_rows = DB::_query($sql, "No transactions were returned");
+    if (DB::_numRows($trans_rows) == 1) {
+      $DemandRow = DB::_fetchRow($trans_rows);
       $balance   = $DemandRow[0];
     } else {
       $balance = 0.0;
@@ -84,7 +84,7 @@
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
     $res = get_transactions($fromdim, $todim);
-    while ($trans = DB::fetch($res)) {
+    while ($trans = DB::_fetch($res)) {
       $rep->TextCol(0, 1, $trans['reference']);
       $rep->TextCol(1, 2, $trans['name']);
       $rep->TextCol(2, 3, $trans['type_']);

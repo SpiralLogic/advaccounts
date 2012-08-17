@@ -16,8 +16,8 @@
         $data['branch'] = new Debtor_Branch(array('debtor_id' => $_POST['id']));
       }
     }
-    JS::renderJSON($data);
+    JS::_renderJSON($data);
   }
-  Page::start(_($help_context = "Items"), SA_CUSTOMER, Input::request('frame'));
+  Page::start(_($help_context = "Items"), SA_CUSTOMER, Input::_request('frame'));
   Debtor::addSearchBox('debtor_id', array('cell' => false, 'description' => ''));
   Page::end();

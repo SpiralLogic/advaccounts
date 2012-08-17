@@ -31,17 +31,17 @@
     const FILTER_DELIVERIES  = '5';
     const FILTER_INVOICEONLY = '6';
     protected function before() {
-      JS::openWindow(950, 500);
+      $this->JS->openWindow(950, 500);
       if (isset($_GET['id'])) {
         $_GET['debtor_id'] = $_GET['id'];
       }
-      if (Input::post('customer', Input::STRING) === '') {
-        $this->Session->_removeGlobal('debtor_id');
+      if ($this->Input->post('customer', Input::STRING) === '') {
+        $this->Session->removeGlobal('debtor_id');
         unset(Input::$post['debtor_id']);
       }
-      $this->debtor_id     = Input::$post['debtor_id'] = Input::postGetGlobal('debtor_id', INPUT::NUMERIC, null);
-      $this->filterType    = Input::$post['filterType'] = Input::post('filterType', Input::NUMERIC);
-      $this->isQuickSearch = (Input::postGet('q'));
+      $this->debtor_id     = Input::$post['debtor_id'] = $this->Input->postGetGlobal('debtor_id', INPUT::NUMERIC, null);
+      $this->filterType    = Input::$post['filterType'] = $this->Input->post('filterType', Input::NUMERIC);
+      $this->isQuickSearch = ($this->Input->postGet('q'));
     }
     protected function index() {
       Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, Input::$get->has('debtor_id'));
@@ -59,16 +59,16 @@
       Display::div_start('totals_tbl');
       $this->displaySummary();
       Display::div_end();
-      if (Input::post('RefreshInquiry')) {
-        Ajax::activate('totals_tbl');
+      if ($this->Input->post('RefreshInquiry')) {
+        $this->Ajax->activate('totals_tbl');
       }
       $sql = ($this->isQuickSearch) ? $this->prepareQuickSearch() : $this->prepareSearch();
-      if (Input::post('reference')) {
+      if ($this->Input->post('reference')) {
         $number_like = "%" . $_POST['reference'] . "%";
-        $sql .= " AND trans.reference LIKE " . DB::quote($number_like);
+        $sql .= " AND trans.reference LIKE " . DB::_quote($number_like);
       }
       if ($this->debtor_id) {
-        $sql .= " AND trans.debtor_id = " . DB::quote($this->debtor_id);
+        $sql .= " AND trans.debtor_id = " . DB::_quote($this->debtor_id);
       }
       if ($this->filterType) {
         switch ($this->filterType) {
@@ -76,7 +76,7 @@
             $sql .= " AND (trans.type = " . ST_SALESINVOICE . " OR trans.type = " . ST_BANKPAYMENT . ") ";
             break;
           case self::FILTER_OVERDUE:
-            $sql .= " AND (trans.type = " . ST_SALESINVOICE . ") AND trans.due_date < '" . Dates::today(true) . "'
+            $sql .= " AND (trans.type = " . ST_SALESINVOICE . ") AND trans.due_date < '" . Dates::_today(true) . "'
  				AND (trans.ov_amount + trans.ov_gst + trans.ov_freight_tax +
  				trans.ov_freight + trans.ov_discount - trans.alloc > 0)";
             break;
@@ -97,7 +97,7 @@
       if (!$this->isQuickSearch) {
         $sql .= " GROUP BY trans.trans_no, trans.type";
       }
-      DB::query("set @bal:=0");
+      DB::_query("set @bal:=0");
       $cols = array(
         _("Type")      => array('fun' => [$this, 'formatType'], 'ord' => ''), //
         _("#")         => array('fun' => [$this, 'viewTrans'], 'ord' => ''), //
@@ -143,8 +143,8 @@
      * @return string
      */
     protected function prepareSearch() {
-      $date_to    = Dates::dateToSql($_POST['TransToDate']);
-      $date_after = Dates::dateToSql($_POST['TransAfterDate']);
+      $date_to    = Dates::_dateToSql($_POST['TransToDate']);
+      $date_after = Dates::_dateToSql($_POST['TransAfterDate']);
       $sql
                   = "SELECT
  		trans.type,
@@ -165,13 +165,13 @@
       $sql
         .= "trans.alloc AS Allocated,
  		((trans.type = " . ST_SALESINVOICE . ")
- 			AND trans.due_date < '" . Dates::today(true) . "') AS OverDue, SUM(details.quantity - qty_done) as
+ 			AND trans.due_date < '" . Dates::_today(true) . "') AS OverDue, SUM(details.quantity - qty_done) as
  			still_to_deliver
  		FROM debtors as debtor, branches as branch,debtor_trans as trans
  		LEFT JOIN debtor_trans_details as details ON (trans.trans_no = details.debtor_trans_no AND trans.type = details.debtor_trans_type) WHERE debtor.debtor_id =
  		trans.debtor_id AND trans.branch_id = branch.branch_id";
       $sql .= " AND trans.tran_date >= '$date_after' AND trans.tran_date <= '$date_to'";
-      $this->Ajax->_activate('_page_body');
+      $this->Ajax->activate('_page_body');
 
       return $sql;
     }
@@ -179,7 +179,7 @@
      * @return string
      */
     protected function prepareQuickSearch() {
-      $searchArray = trim(Input::postGet('q'));
+      $searchArray = trim($this->Input->postGet('q'));
       $searchArray = explode(' ', $searchArray);
       if ($searchArray[0] == self::SEARCH_DELIVERY) {
         $filter = " AND type = " . ST_CUSTDELIVERY . " ";
@@ -198,17 +198,17 @@
           if (substr($quicksearch, -1) == 0 && substr($quicksearch, -3, 1) == '.') {
             $quicksearch = (substr($quicksearch, 0, -1));
           }
-          $sql .= "TotalAmount LIKE " . DB::quote('%' . substr($quicksearch, 1) . '%') . ") ";
+          $sql .= "TotalAmount LIKE " . DB::_quote('%' . substr($quicksearch, 1) . '%') . ") ";
           continue;
         }
         if (stripos($quicksearch, $this->User->_date_sep()) > 0) {
-          $sql .= " tran_date LIKE '%" . Dates::dateToSql($quicksearch, false) . "%' OR";
+          $sql .= " tran_date LIKE '%" . Dates::_dateToSql($quicksearch, false) . "%' OR";
           continue;
         }
         if (is_numeric($quicksearch)) {
           $sql .= " debtor_id = $quicksearch OR ";
         }
-        $search_value = DB::quote("%" . $quicksearch . "%");
+        $search_value = DB::_quote("%" . $quicksearch . "%");
         $sql .= " name LIKE $search_value ";
         if (is_numeric($quicksearch)) {
           $sql .= " OR trans_no LIKE $search_value OR order_ LIKE $search_value ";
@@ -264,7 +264,7 @@
       $value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ? -$row["TotalAmount"] :
         $row["TotalAmount"];
 
-      return $value >= 0 ? Num::priceFormat($value) : '';
+      return $value >= 0 ? Num::_priceFormat($value) : '';
     }
     /**
      * @param $row
@@ -275,7 +275,7 @@
       $value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_BANKDEPOSIT) ? -$row["TotalAmount"] :
         $row["TotalAmount"];
 
-      return $value > 0 ? Num::priceFormat($value) : '';
+      return $value > 0 ? Num::_priceFormat($value) : '';
     }
     /**
      * @param $row
@@ -358,7 +358,7 @@
      * @return bool
      */
     public function formatMarker($row) {
-      return (isset($row['OverDue']) && $row['OverDue'] == 1) && (Num::round($row["TotalAmount"] - $row["Allocated"], 2) != 0);
+      return (isset($row['OverDue']) && $row['OverDue'] == 1) && (Num::_round($row["TotalAmount"] - $row["Allocated"], 2) != 0);
     }
     /**
      * @param $row

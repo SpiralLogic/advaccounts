@@ -22,8 +22,8 @@
      */
     public function __construct($config = [])
     {
-      $this->_enabled = $config and \ADV\Core\Arr::get($config, 'enabled', false);
-      if ($this->_enabled) {
+      $this->enabled = $config and \ADV\Core\Arr::get($config, 'enabled', false);
+      if ($this->enabled) {
         $this->_init();
       }
     }

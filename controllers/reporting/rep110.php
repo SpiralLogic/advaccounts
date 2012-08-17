@@ -74,12 +74,12 @@
       $rep->Header2($myrow, $branch, $sales_order, '', ST_CUSTDELIVERY);
       $result   = Debtor_TransDetail::get(ST_CUSTDELIVERY, $i);
       $SubTotal = 0;
-      while ($myrow2 = DB::fetch($result)) {
+      while ($myrow2 = DB::_fetch($result)) {
         if ($myrow2["quantity"] == 0) {
           continue;
         }
-        $DisplayPrice = Num::format($myrow2["unit_price"], $dec);
-        $DisplayQty   = Num::format($myrow2["quantity"], Item::qty_dec($myrow2['stock_id']));
+        $DisplayPrice = Num::_format($myrow2["unit_price"], $dec);
+        $DisplayQty   = Num::_format($myrow2["quantity"], Item::qty_dec($myrow2['stock_id']));
         $rep->TextCol(0, 1, $myrow2['stock_id'], -2);
         $oldrow = $rep->row;
         $rep->TextColLines(1, 2, $myrow2['StockDescription'], -2);
@@ -93,14 +93,14 @@
         }
       }
       $comments = DB_Comments::get(ST_CUSTDELIVERY, $i);
-      if ($comments && DB::numRows($comments)) {
+      if ($comments && DB::_numRows($comments)) {
         $rep->NewLine();
-        while ($comment = DB::fetch($comments)) {
+        while ($comment = DB::_fetch($comments)) {
           $rep->TextColLines(0, 6, $comment['memo_'], -2);
         }
       }
-      $display_sub_total = Num::format($SubTotal, $dec);
-      $display_freight   = Num::format($myrow["ov_freight"], $dec);
+      $display_sub_total = Num::_format($SubTotal, $dec);
+      $display_freight   = Num::_format($myrow["ov_freight"], $dec);
       $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
       $linetype          = true;
       $doctype           = ST_CUSTDELIVERY;

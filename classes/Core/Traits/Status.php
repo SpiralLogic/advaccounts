@@ -15,7 +15,7 @@
   {
 
     /** @var \ADV\Core\Status */
-    protected $_status = null;
+    protected $status = null;
     /**
      * @param bool $string return status as string if true and as array if false
      *
@@ -24,10 +24,10 @@
     public function getStatus($string = false)
     {
       if ($string) {
-        return $this->_status;
+        return $this->status;
       }
 
-      return $this->_status->get();
+      return $this->status->get();
     }
     /***
      * @param null   $status
@@ -37,14 +37,14 @@
      *
      * @return Status|bool
      */
-    protected function _status($status = null, $process = null, $message = '', $var = null)
+    protected function status($status = null, $process = null, $message = '', $var = null)
     {
-      if (!$this->_status) {
-        $this->_status = new \ADV\Core\Status($status, $process, $message, $var);
+      if (!$this->status) {
+        $this->status = new \ADV\Core\Status($status, $process, $message, $var);
 
         return $status;
       }
 
-      return $this->_status->set($status, $process, $message, $var);
+      return $this->status->set($status, $process, $message, $var);
     }
   }

@@ -16,17 +16,17 @@
     if (strlen($_POST['abbr']) == 0) {
       $input_error = 1;
       Event::error(_("The unit of measure code cannot be empty."));
-      JS::setFocus('abbr');
+      JS::_setFocus('abbr');
     }
     if (strlen($_POST['abbr']) > (20 + 2)) {
       $input_error = 1;
       Event::error(_("The unit of measure code is too long."));
-      JS::setFocus('abbr');
+      JS::_setFocus('abbr');
     }
     if (strlen($_POST['description']) == 0) {
       $input_error = 1;
       Event::error(_("The unit of measure description cannot be empty."));
-      JS::setFocus('description');
+      JS::_setFocus('description');
     }
     if ($input_error != 1) {
       Item_Unit::write(htmlentities($selected_id), $_POST['abbr'], $_POST['description'], $_POST['decimals']);
@@ -50,18 +50,18 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = '';
-    $sav         = Input::post('show_inactive');
+    $sav         = Input::_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Item_Unit::getAll(Input::hasPost('show_inactive'));
+  $result = Item_Unit::getAll(Input::_hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid width40');
   $th = array(_('Unit'), _('Description'), _('Decimals'), "", "");
   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0; //row colour counter
-  while ($myrow = DB::fetch($result)) {
+  while ($myrow = DB::_fetch($result)) {
 
     Cell::label($myrow["abbr"]);
     Cell::label($myrow["name"]);

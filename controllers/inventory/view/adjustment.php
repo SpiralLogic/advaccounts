@@ -16,14 +16,14 @@
   $adjustment_items = Inv_Adjustment::get($trans_no);
   $k                = 0;
   $header_shown     = false;
-  while ($adjustment = DB::fetch($adjustment_items)) {
+  while ($adjustment = DB::_fetch($adjustment_items)) {
     if (!$header_shown) {
       $adjustment_type = Inv_Movement::get_type($adjustment['person_id']);
       Table::start('tablestyle2 width90');
       Row::start();
       Cell::labels(_("At Location"), $adjustment['location_name'], "class='tablerowhead'");
       Cell::labels(_("Reference"), $adjustment['reference'], "class='tablerowhead'", "colspan=6");
-      Cell::labels(_("Date"), Dates::sqlToDate($adjustment['tran_date']), "class='tablerowhead'");
+      Cell::labels(_("Date"), Dates::_sqlToDate($adjustment['tran_date']), "class='tablerowhead'");
       Cell::labels(_("Adjustment Type"), $adjustment_type['name'], "class='tablerowhead'");
       Row::end();
       DB_Comments::display_row(ST_INVADJUST, $trans_no);

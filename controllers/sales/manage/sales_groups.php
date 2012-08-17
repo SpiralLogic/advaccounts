@@ -15,17 +15,17 @@
     if (strlen($_POST['description']) == 0) {
       $input_error = 1;
       Event::error(_("The area description cannot be empty."));
-      JS::setFocus('description');
+      JS::_setFocus('description');
     }
     if ($input_error != 1) {
       if ($selected_id != -1) {
-        $sql  = "UPDATE groups SET description=" . DB::escape($_POST['description']) . " WHERE id = " . DB::escape($selected_id);
+        $sql  = "UPDATE groups SET description=" . DB::_escape($_POST['description']) . " WHERE id = " . DB::_escape($selected_id);
         $note = _('Selected sales group has been updated');
       } else {
-        $sql  = "INSERT INTO groups (description) VALUES (" . DB::escape($_POST['description']) . ")";
+        $sql  = "INSERT INTO groups (description) VALUES (" . DB::_escape($_POST['description']) . ")";
         $note = _('New sales group has been added');
       }
-      DB::query($sql, "The sales group could not be updated or added");
+      DB::_query($sql, "The sales group could not be updated or added");
       Event::success($note);
       $Mode = MODE_RESET;
     }
@@ -33,41 +33,41 @@
   if ($Mode == MODE_DELETE) {
     $cancel_delete = 0;
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors'
-    $sql    = "SELECT COUNT(*) FROM branches WHERE group_no=" . DB::escape($selected_id);
-    $result = DB::query($sql, "check failed");
-    $myrow  = DB::fetchRow($result);
+    $sql    = "SELECT COUNT(*) FROM branches WHERE group_no=" . DB::_escape($selected_id);
+    $result = DB::_query($sql, "check failed");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       $cancel_delete = 1;
       Event::error(_("Cannot delete this group because customers have been created using this group."));
     }
     if ($cancel_delete == 0) {
-      $sql = "DELETE FROM groups WHERE id=" . DB::escape($selected_id);
-      DB::query($sql, "could not delete sales group");
+      $sql = "DELETE FROM groups WHERE id=" . DB::_escape($selected_id);
+      DB::_query($sql, "could not delete sales group");
       Event::notice(_('Selected sales group has been deleted'));
     } //end if Delete area
     $Mode = MODE_RESET;
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav         = Input::post('show_inactive');
+    $sav         = Input::_post('show_inactive');
     unset($_POST);
     if ($sav) {
       $_POST['show_inactive'] = 1;
     }
   }
   $sql = "SELECT * FROM groups";
-  if (!Input::hasPost('show_inactive')) {
+  if (!Input::_hasPost('show_inactive')) {
     $sql .= " WHERE !inactive";
   }
   $sql .= " ORDER BY description";
-  $result = DB::query($sql, "could not get groups");
+  $result = DB::_query($sql, "could not get groups");
   Forms::start();
   Table::start('tablestyle grid width30');
   $th = array(_("Group Name"), "", "");
   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
-  while ($myrow = DB::fetch($result)) {
+  while ($myrow = DB::_fetch($result)) {
 
     Cell::label($myrow["description"]);
     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'groups', 'id');
@@ -82,9 +82,9 @@
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing area
-      $sql                  = "SELECT * FROM groups WHERE id=" . DB::escape($selected_id);
-      $result               = DB::query($sql, "could not get group");
-      $myrow                = DB::fetch($result);
+      $sql                  = "SELECT * FROM groups WHERE id=" . DB::_escape($selected_id);
+      $result               = DB::_query($sql, "could not get group");
+      $myrow                = DB::_fetch($result);
       $_POST['description'] = $myrow["description"];
     }
     Forms::hidden("selected_id", $selected_id);

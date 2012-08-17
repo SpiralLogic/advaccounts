@@ -10,10 +10,10 @@
     namespace ADV\App\Debtor;
 
     use Debtor_Branch;
+    use ADV\Core\Cell;
+    use ADV\Core\Table;
+    use ADV\Core\Row;
     use ADV\App\UI\UI;
-    use Cell;
-    use Row;
-    use Table;
     use Display;
     use ADV\Core\Session;
     use ADV\Core\Input\Input;
@@ -130,13 +130,13 @@
         {
             foreach ($this->branches as $branch) {
                 /** @var \Debtor_Branch $branch */
-                $this->_status->append($branch->getStatus());
+                $this->status->append($branch->getStatus());
             }
             foreach ($this->contacts as $contact) {
                 /** @var \ADV\App\Contact\Contact $contact */
-                $this->_status->append($contact->getStatus());
+                $this->status->append($contact->getStatus());
             }
-            $this->_status->append($this->accounts->getStatus());
+            $this->status->append($this->accounts->getStatus());
 
             return parent::getStatus();
         }
@@ -158,23 +158,23 @@
         public function delete()
         {
             if ($this->_countTransactions() > 0) {
-                return $this->_status(false, 'delete', "This customer cannot be deleted because there are transactions that refer to it.");
+                return $this->status(false, 'delete', "This customer cannot be deleted because there are transactions that refer to it.");
             }
             if ($this->_countOrders() > 0) {
-                return $this->_status(false, 'delete', "Cannot delete the customer record because orders have been created against it.");
+                return $this->status(false, 'delete', "Cannot delete the customer record because orders have been created against it.");
             }
             if ($this->_countBranches() > 0) {
-                return $this->_status(false, 'delete', "Cannot delete this customer because there are branch records set up against it.");
+                return $this->status(false, 'delete', "Cannot delete this customer because there are branch records set up against it.");
             }
             if ($this->_countContacts() > 0) {
-                return $this->_status(false, 'delete', "Cannot delete this customer because there are contact records set up against it.");
+                return $this->status(false, 'delete', "Cannot delete this customer because there are contact records set up against it.");
             }
             $sql = "DELETE FROM debtors WHERE debtor_id=" . $this->id;
             static::$DB->_query($sql, "cannot delete customer");
             unset($this->id);
             $this->_new();
 
-            return $this->_status(true, 'delete', "Customer deleted.");
+            return $this->status(true, 'delete', "Customer deleted.");
         }
         /**
          * @return array|bool
@@ -291,20 +291,20 @@
         protected function _canProcess()
         {
             if (strlen($this->name) == 0) {
-                return $this->_status(false, 'Processing', "The customer name cannot be empty.", 'name');
+                return $this->status(false, 'Processing', "The customer name cannot be empty.", 'name');
             }
             if (strlen($this->debtor_ref) == 0) {
                 $data['debtor_ref'] = substr($this->name, 0, 29);
             }
             if (!Validation::is_num($this->credit_limit, 0)) {
-                JS::setFocus('credit_limit');
+                JS::_setFocus('credit_limit');
 
-                return $this->_status(false, 'Processing', "The credit limit must be numeric and not less than zero.", 'credit_limit');
+                return $this->status(false, 'Processing', "The credit limit must be numeric and not less than zero.", 'credit_limit');
             }
             if (!Validation::is_num($this->payment_discount, 0, 100)) {
-                JS::setFocus('payment_discount');
+                JS::_setFocus('payment_discount');
 
-                return $this->_status(
+                return $this->status(
                     false,
                     'Processing',
                     "The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0.",
@@ -312,9 +312,9 @@
                 );
             }
             if (!Validation::is_num($this->discount, 0, 100)) {
-                JS::setFocus('discount');
+                JS::_setFocus('discount');
 
-                return $this->_status(
+                return $this->status(
                     false,
                     'Processing',
                     "The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0.",
@@ -332,7 +332,7 @@
                     FILTER_FLAG_ALLOW_FRACTION
                 ) || $this->payment_terms != $previous->payment_terms) && !User::i()->hasAccess(SA_CUSTOMER_CREDIT)
                 ) {
-                    return $this->_status(false, 'Processing', "You don't have access to alter credit limits", 'credit_limit');
+                    return $this->status(false, 'Processing', "You don't have access to alter credit limits", 'credit_limit');
                 }
             }
 
@@ -383,8 +383,8 @@
             $this->sales_type    = $this->credit_status = 1;
             $this->name          = $this->address = $this->email = $this->tax_id = $this->notes = $this->debtor_ref = '';
             $this->curr_code     = Bank_Currency::for_company();
-            $this->discount      = $this->payment_discount = Num::percentFormat(0);
-            $this->credit_limit  = Num::priceFormat(DB_Company::get_pref('default_credit_limit'));
+            $this->discount      = $this->payment_discount = Num::_percentFormat(0);
+            $this->credit_limit  = Num::_priceFormat(DB_Company::get_pref('default_credit_limit'));
         }
         protected function _getAccounts()
         {
@@ -430,7 +430,7 @@
             $this->branches[0]->debtor_id = $this->accounts->debtor_id = $this->id = 0;
             $this->_setDefaults();
 
-            return $this->_status(true, 'Initialize', 'Now working with a new customer');
+            return $this->status(true, 'Initialize', 'Now working with a new customer');
         }
         /**
          * @param bool|int|null $id
@@ -441,14 +441,14 @@
         protected function _read($id = null, $extra = [])
         {
             if (!parent::_read($id)) {
-                return $this->_status->get();
+                return $this->status->get();
             }
             $this->_getBranches();
             $this->_getAccounts();
             $this->_getContacts();
             $this->discount         = $this->discount * 100;
             $this->payment_discount = $this->payment_discount * 100;
-            $this->credit_limit     = Num::priceFormat($this->credit_limit);
+            $this->credit_limit     = Num::_priceFormat($this->credit_limit);
             $this->_setDefaults();
         }
         /**
@@ -484,7 +484,7 @@
                             var val = $("#debtor_id").val();
                             $("#customerBox").html("<iframe src='/contacts/customers.php?frame=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
-            JS::addLiveEvent('#debtor_id_label', 'click', $js);
+            JS::_addLiveEvent('#debtor_id_label', 'click', $js);
         }
         /**
          * @static
@@ -496,7 +496,7 @@ JS;
          */
         public static function addSearchBox($id, $options = [])
         {
-            echo UI::searchLine($id, '/contacts/search.php', $options);
+             UI::searchLine($id, '/contacts/search.php', $options);
         }
         /**
          * @static
@@ -578,7 +578,7 @@ JS;
             if ($to == null) {
                 $todate = date("Y-m-d");
             } else {
-                $todate = ($istimestamp) ? date("Y-m-d", $to) : Dates::dateToSql($to);
+                $todate = ($istimestamp) ? date("Y-m-d", $to) : Dates::_dateToSql($to);
             }
             $customer_record["Balance"]  = 0;
             $customer_record["Due"]      = 0;
@@ -775,16 +775,16 @@ JS;
             }
             echo "<td class='nowrap'>";
             $focus = false;
-            if (!$value && Input::post('customer')) {
+            if (!$value && Input::_post('customer')) {
                 $value = $_POST['customer'];
-                JS::setFocus('stock_id');
+                JS::_setFocus('stock_id');
             } elseif (!$value) {
-                $value = Session::getGlobal('debtor_id');
+                $value = Session::_getGlobal('debtor_id');
                 if ($value) {
                     $_POST['debtor_id'] = $value;
                     $value              = Debtor::get_name($value);
                 } else {
-                    JS::setFocus('customer');
+                    JS::_setFocus('customer');
                     $focus = true;
                 }
             }
@@ -795,6 +795,7 @@ JS;
                      'url'        => '/contacts/customers.php',
                      'name'       => 'customer',
                      'focus'      => $focus,
+                     'class'      => '',
                      'value'      => $value,
                      'placeholder'=> $o['placeholder']
                 )
@@ -803,7 +804,7 @@ JS;
             if ($o['row']) {
                 echo "\n</tr>\n";
             }
-            JS::beforeload(
+            JS::_beforeload(
                 "var Customer = function(data) {
             var id = document.getElementById('debtor_id');
             id.value= data.id;

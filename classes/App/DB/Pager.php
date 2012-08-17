@@ -217,7 +217,7 @@
         $link_text = Forms::setIcon($icon, $link_text);
       }
       $href = '/' . ltrim($url, '/');
-      $href = (Input::request('frame')) ? "javascript:window.parent.location='$href'" : $href;
+      $href = (Input::_request('frame')) ? "javascript:window.parent.location='$href'" : $href;
       return '<a href="' . e($href) . '" class="button">' . $link_text . "</a>";
     }
     /**
@@ -335,10 +335,10 @@
             Cell::email($cell, isset($col['align']) ? "class='$class " . $col['align'] . "'" : null);
             break;
           case 'rate':
-            Cell::label(Num::format($cell, static::$User->_exrate_dec()), "class='$class center'");
+            Cell::label(Num::_format($cell, static::$User->_exrate_dec()), "class='$class center'");
             break;
           case 'inactive':
-            if (Input::post('show_inactive')) {
+            if (Input::_post('show_inactive')) {
               $this->inactive_control_cell($row);
             }
             break;
@@ -432,7 +432,7 @@
       $headers = [];
       foreach ($this->columns as $num_col => $col) {
         // record status control column is displayed only when control checkbox is on
-        if (isset($col['head']) && ($col['type'] != 'inactive' || Input::post('show_inactive'))) {
+        if (isset($col['head']) && ($col['type'] != 'inactive' || Input::_post('show_inactive'))) {
           if (!isset($col['ord'])) {
             $headers[] = $col['head'];
           } else {
@@ -478,8 +478,8 @@
         $table = $this->main_tbl;
         $name  = "Inactive" . $id;
         $value = $row['inactive'] ? 1 : 0;
-        if (Input::hasPost('show_inactive')) {
-          if (isset($_POST['LInact'][$id]) && (Input::post('_Inactive' . $id . '_update') || Input::post('Update')) && (Input::hasPost('Inactive' . $id) != $value)
+        if (Input::_hasPost('show_inactive')) {
+          if (isset($_POST['LInact'][$id]) && (Input::_post('_Inactive' . $id . '_update') || Input::_post('Update')) && (Input::_hasPost('Inactive' . $id) != $value)
           ) {
             static::$DB->_updateRecordStatus($id, !$value, $table, $key);
             $value = !$value;
@@ -496,7 +496,7 @@
 
      */
     public function query() {
-      Ajax::activate("_{$this->name}_span");
+      Ajax::_activate("_{$this->name}_span");
       if (!$this->_init()) {
         return false;
       }
@@ -575,11 +575,11 @@
         $this->change_page($_POST[$this->name . '_page_' . $page]);
         if ($page == 'next' && !$this->next_page || $page == 'last' && !$this->last_page
         ) {
-          JS::setFocus($this->name . '_page_prev');
+          JS::_setFocus($this->name . '_page_prev');
         }
         if ($page == 'prev' && !$this->prev_page || $page == 'first' && !$this->first_page
         ) {
-          JS::setFocus($this->name . '_page_next');
+          JS::_setFocus($this->name . '_page_next');
         }
       } elseif ($sort != -1) {
         $this->sortTable($sort);

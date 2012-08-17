@@ -43,19 +43,19 @@
 			ON branches.salesman=salesman.salesman_code";
     if ($area != 0) {
       if ($salesid != 0) {
-        $sql .= " WHERE salesman.salesman_code=" . DB::escape($salesid) . "
-				AND areas.area_code=" . DB::escape($area);
+        $sql .= " WHERE salesman.salesman_code=" . DB::_escape($salesid) . "
+				AND areas.area_code=" . DB::_escape($area);
       } else {
-        $sql .= " WHERE areas.area_code=" . DB::escape($area);
+        $sql .= " WHERE areas.area_code=" . DB::_escape($area);
       }
     } elseif ($salesid != 0) {
-      $sql .= " WHERE salesman.salesman_code=" . DB::escape($salesid);
+      $sql .= " WHERE salesman.salesman_code=" . DB::_escape($salesid);
     }
     $sql .= " ORDER BY description,
 			salesman.salesman_name,
 			debtors.debtor_id,
 			branches.branch_id";
-    return DB::query($sql, "No transactions were returned");
+    return DB::_query($sql, "No transactions were returned");
   }
 
   /**
@@ -66,15 +66,15 @@
    * @return mixed
    */
   function get_transactions($debtorno, $branchcode, $date) {
-    $date   = Dates::dateToSql($date);
+    $date   = Dates::_dateToSql($date);
     $sql    = "SELECT SUM((ov_amount+ov_freight+ov_discount)*rate) AS Turnover
 		FROM debtor_trans
-		WHERE debtor_id=" . DB::escape($debtorno) . "
-		AND branch_id=" . DB::escape($branchcode) . "
+		WHERE debtor_id=" . DB::_escape($debtorno) . "
+		AND branch_id=" . DB::_escape($branchcode) . "
 		AND (type=" . ST_SALESINVOICE . " OR type=" . ST_CUSTCREDIT . ")
 		AND trandate >='$date'";
-    $result = DB::query($sql, "No transactions were returned");
-    $row    = DB::fetchRow($result);
+    $result = DB::_query($sql, "No transactions were returned");
+    $row    = DB::_fetchRow($result);
     return $row[0];
   }
 
@@ -109,12 +109,12 @@
       $salesfolk = Debtor::get_salesman($folk);
     }
     if ($more != '') {
-      $morestr = _('Greater than ') . Num::format($more, $dec);
+      $morestr = _('Greater than ') . Num::_format($more, $dec);
     } else {
       $morestr = '';
     }
     if ($less != '') {
-      $lessstr = _('Less than ') . Num::format($less, $dec);
+      $lessstr = _('Less than ') . Num::_format($less, $dec);
     } else {
       $lessstr = '';
     }
@@ -140,7 +140,7 @@
     $result = get_customer_details_for_report($area, $folk);
     $carea  = '';
     $sman   = '';
-    while ($myrow = DB::fetch($result)) {
+    while ($myrow = DB::_fetch($result)) {
       $printcustomer = true;
       if ($more != '' || $less != '') {
         $turnover = get_transactions($myrow['debtor_id'], $myrow['branch_id'], $from);
@@ -182,7 +182,7 @@
         $count1++;
         $rep->TextCol(1, 2, _('Price List') . ": " . $myrow['sales_type']);
         if ($more != 0.0 || $less != 0.0) {
-          $rep->TextCol(1, 2, _('Turnover') . ": " . Num::format($turnover, $dec), 0, $rep->lineHeight);
+          $rep->TextCol(1, 2, _('Turnover') . ": " . Num::_format($turnover, $dec), 0, $rep->lineHeight);
         }
         $rep->TextCol(2, 3, $myrow['br_name']);
         $rep->TextCol(2, 3, $myrow['contact_name'], 0, $rep->lineHeight);

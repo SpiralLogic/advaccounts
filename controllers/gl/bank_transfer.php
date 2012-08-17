@@ -8,21 +8,21 @@
      * @link      http://www.advancedgroup.com.au
      **/
     if ($_SERVER['REQUEST_METHOD'] == "GET") {
-        if (Input::get('account')) {
-            $account         = Input::get('amount') > 0 ? 'ToBankAccount' : 'FromBankAccount';
-            $_POST[$account] = Input::get('account');
+        if (Input::_get('account')) {
+            $account         = Input::_get('amount') > 0 ? 'ToBankAccount' : 'FromBankAccount';
+            $_POST[$account] = Input::_get('account');
         }
-        if (Input::get('amount')) {
-            $_POST['amount'] = abs(Input::get('amount'));
+        if (Input::_get('amount')) {
+            $_POST['amount'] = abs(Input::_get('amount'));
         }
-        if (Input::get('memo')) {
-            $_POST['memo_'] = Input::get('memo');
+        if (Input::_get('memo')) {
+            $_POST['memo_'] = Input::_get('memo');
         }
-        if (Input::get('date')) {
-            $_POST['date_'] = Input::get('date');
+        if (Input::_get('date')) {
+            $_POST['date_'] = Input::_get('date');
         }
     }
-    JS::openWindow(950, 500);
+    JS::_openWindow(950, 500);
     Page::start(_($help_context = "Transfer between Bank Accounts"), SA_BANKTRANSFER);
     Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
     if (isset($_GET[ADDED_ID])) {
@@ -34,7 +34,7 @@
         Page::footer_exit();
     }
     if (isset($_POST['_date__changed'])) {
-        Ajax::activate('_ex_rate');
+        Ajax::_activate('_ex_rate');
     }
     if (isset($_POST['AddPayment'])) {
         if (check_valid_entries() == true) {
@@ -75,39 +75,39 @@
      */
     function check_valid_entries()
     {
-        if (!Dates::isDate($_POST['date_'])) {
+        if (!Dates::_isDate($_POST['date_'])) {
             Event::error(_("The entered date is invalid ."));
-            JS::setFocus('date_');
+            JS::_setFocus('date_');
 
             return false;
         }
-        if (!Dates::isDateInFiscalYear($_POST['date_'])) {
+        if (!Dates::_isDateInFiscalYear($_POST['date_'])) {
             Event::error(_("The entered date is not in fiscal year . "));
-            JS::setFocus('date_');
+            JS::_setFocus('date_');
 
             return false;
         }
         if (!Validation::post_num('amount', 0)) {
             Event::error(_("The entered amount is invalid or less than zero ."));
-            JS::setFocus('amount');
+            JS::_setFocus('amount');
 
             return false;
         }
         if (isset($_POST['charge']) && !Validation::post_num('charge', 0)) {
             Event::error(_("The entered amount is invalid or less than zero ."));
-            JS::setFocus('charge');
+            JS::_setFocus('charge');
 
             return false;
         }
         if (isset($_POST['charge']) && Validation::input_num('charge') > 0 && DB_Company::get_pref('bank_charge_act') == '') {
             Event::error(_("The Bank Charge Account has not been set in System and General GL Setup ."));
-            JS::setFocus('charge');
+            JS::_setFocus('charge');
 
             return false;
         }
         if (!Ref::is_valid($_POST['ref'])) {
             Event::error(_("You must enter a reference ."));
-            JS::setFocus('ref');
+            JS::_setFocus('ref');
 
             return false;
         }
@@ -116,7 +116,7 @@
         }
         if ($_POST['FromBankAccount'] == $_POST['ToBankAccount']) {
             Event::error(_("The source and destination bank accouts cannot be the same ."));
-            JS::setFocus('ToBankAccount');
+            JS::_setFocus('ToBankAccount');
 
             return false;
         }

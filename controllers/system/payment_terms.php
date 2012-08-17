@@ -15,67 +15,67 @@
     if (!is_numeric($_POST['DayNumber'])) {
       $inpug_error = 1;
       Event::error(_("The number of days or the day in the following month must be numeric."));
-      JS::setFocus('DayNumber');
+      JS::_setFocus('DayNumber');
     } elseif (strlen($_POST['terms']) == 0) {
       $inpug_error = 1;
       Event::error(_("The Terms description must be entered."));
-      JS::setFocus('terms');
+      JS::_setFocus('terms');
     }
     if ($_POST['DayNumber'] == '') {
       $_POST['DayNumber'] = 0;
     }
     if ($inpug_error != 1) {
       if ($selected_id != -1) {
-        if (Input::hasPost('DaysOrFoll')) {
-          $sql = "UPDATE payment_terms SET terms=" . DB::escape($_POST['terms']) . ",
+        if (Input::_hasPost('DaysOrFoll')) {
+          $sql = "UPDATE payment_terms SET terms=" . DB::_escape($_POST['terms']) . ",
 					day_in_following_month=0,
-					days_before_due=" . DB::escape($_POST['DayNumber']) . "
-					WHERE terms_indicator = " . DB::escape($selected_id);
+					days_before_due=" . DB::_escape($_POST['DayNumber']) . "
+					WHERE terms_indicator = " . DB::_escape($selected_id);
         } else {
-          $sql = "UPDATE payment_terms SET terms=" . DB::escape($_POST['terms']) . ",
-					day_in_following_month=" . DB::escape($_POST['DayNumber']) . ",
+          $sql = "UPDATE payment_terms SET terms=" . DB::_escape($_POST['terms']) . ",
+					day_in_following_month=" . DB::_escape($_POST['DayNumber']) . ",
 					days_before_due=0
-					WHERE terms_indicator = " . DB::escape($selected_id);
+					WHERE terms_indicator = " . DB::_escape($selected_id);
         }
         $note = _('Selected payment terms have been updated');
       } else {
-        if (Input::hasPost('DaysOrFoll')) {
+        if (Input::_hasPost('DaysOrFoll')) {
           $sql
             = "INSERT INTO payment_terms (terms,
 					days_before_due, day_in_following_month)
-					VALUES (" . DB::escape($_POST['terms']) . ", " . DB::escape($_POST['DayNumber']) . ", 0)";
+					VALUES (" . DB::_escape($_POST['terms']) . ", " . DB::_escape($_POST['DayNumber']) . ", 0)";
         } else {
           $sql
             = "INSERT INTO payment_terms (terms,
 					days_before_due, day_in_following_month)
-					VALUES (" . DB::escape($_POST['terms']) . ",
-					0, " . DB::escape($_POST['DayNumber']) . ")";
+					VALUES (" . DB::_escape($_POST['terms']) . ",
+					0, " . DB::_escape($_POST['DayNumber']) . ")";
         }
         $note = _('New payment terms have been added');
       }
       //run the sql from either of the above possibilites
-      DB::query($sql, "The payment term could not be added or updated");
+      DB::_query($sql, "The payment term could not be added or updated");
       Event::success($note);
       $Mode = MODE_RESET;
     }
   }
   if ($Mode == MODE_DELETE) {
     // PREVENT DELETES IF DEPENDENT RECORDS IN debtors
-    $sql    = "SELECT COUNT(*) FROM debtors WHERE payment_terms = " . DB::escape($selected_id);
-    $result = DB::query($sql, "check failed");
-    $myrow  = DB::fetchRow($result);
+    $sql    = "SELECT COUNT(*) FROM debtors WHERE payment_terms = " . DB::_escape($selected_id);
+    $result = DB::_query($sql, "check failed");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this payment term, because customer accounts have been created referring to this term."));
     } else {
-      $sql    = "SELECT COUNT(*) FROM suppliers WHERE payment_terms = " . DB::escape($selected_id);
-      $result = DB::query($sql, "check failed");
-      $myrow  = DB::fetchRow($result);
+      $sql    = "SELECT COUNT(*) FROM suppliers WHERE payment_terms = " . DB::_escape($selected_id);
+      $result = DB::_query($sql, "check failed");
+      $myrow  = DB::_fetchRow($result);
       if ($myrow[0] > 0) {
         Event::error(_("Cannot delete this payment term, because supplier accounts have been created referring to this term"));
       } else {
         //only delete if used in neither customer or supplier accounts
-        $sql = "DELETE FROM payment_terms WHERE terms_indicator=" . DB::escape($selected_id);
-        DB::query($sql, "could not delete a payment terms");
+        $sql = "DELETE FROM payment_terms WHERE terms_indicator=" . DB::_escape($selected_id);
+        DB::_query($sql, "could not delete a payment terms");
         Event::notice(_('Selected payment terms have been deleted'));
       }
     }
@@ -84,22 +84,22 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav         = Input::post('show_inactive');
+    $sav         = Input::_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
   $sql = "SELECT * FROM payment_terms";
-  if (!Input::hasPost('show_inactive')) {
+  if (!Input::_hasPost('show_inactive')) {
     $sql .= " WHERE !inactive";
   }
-  $result = DB::query($sql, "could not get payment terms");
+  $result = DB::_query($sql, "could not get payment terms");
   Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("Description"), _("Following Month On"), _("Due After (Days)"), "", "");
   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0; //row colour counter
-  while ($myrow = DB::fetch($result)) {
+  while ($myrow = DB::_fetch($result)) {
     if ($myrow["day_in_following_month"] == 0) {
       $full_text = _("N/A");
     } else {
@@ -128,9 +128,9 @@
       //editing an existing payment terms
       $sql
                               = "SELECT * FROM payment_terms
-			WHERE terms_indicator=" . DB::escape($selected_id);
-      $result                 = DB::query($sql, "could not get payment term");
-      $myrow                  = DB::fetch($result);
+			WHERE terms_indicator=" . DB::_escape($selected_id);
+      $result                 = DB::_query($sql, "could not get payment term");
+      $myrow                  = DB::_fetch($result);
       $_POST['terms']         = $myrow["terms"];
       $days_before_due        = $myrow["days_before_due"];
       $day_in_following_month = $myrow["day_in_following_month"];

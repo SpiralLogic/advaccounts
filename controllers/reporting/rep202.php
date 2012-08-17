@@ -19,7 +19,7 @@
    */
   function get_invoices($creditor_id, $to)
   {
-    $todate    = Dates::dateToSql($to);
+    $todate    = Dates::_dateToSql($to);
     $past_due1 = DB_Company::get_pref('past_due_days');
     $past_due2 = 2 * $past_due1;
     // Revomed allocated from sql
@@ -45,7 +45,7 @@
             AND ABS(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount) > 0.004
             ORDER BY creditor_trans.tran_date";
 
-    return DB::query($sql, "The supplier details could not be retrieved");
+    return DB::_query($sql, "The supplier details could not be retrieved");
   }
 
   function print_aged_supplier_analysis()
@@ -131,11 +131,11 @@
     $txt_past_due2 = _('Over') . " " . $past_due2 . " " . _('Days');
     $sql           = "SELECT creditor_id, name AS name, curr_code FROM suppliers";
     if ($fromsupp != ALL_NUMERIC) {
-      $sql .= " WHERE creditor_id=" . DB::escape($fromsupp);
+      $sql .= " WHERE creditor_id=" . DB::_escape($fromsupp);
     }
     $sql .= " ORDER BY name";
-    $result = DB::query($sql, "The suppliers could not be retrieved");
-    while ($myrow = DB::fetch($result)) {
+    $result = DB::_query($sql, "The suppliers could not be retrieved");
+    while ($myrow = DB::_fetch($result)) {
       if (!$convert && $currency != $myrow['curr_code']) {
         continue;
       }
@@ -175,15 +175,15 @@
       $rep->NewLine(1, 2);
       if (!$summaryOnly) {
         $res = get_invoices($myrow['creditor_id'], $to);
-        if (DB::numRows($res) == 0) {
+        if (DB::_numRows($res) == 0) {
           continue;
         }
         $rep->Line($rep->row + 4);
-        while ($trans = DB::fetch($res)) {
+        while ($trans = DB::_fetch($res)) {
           $rep->NewLine(1, 2);
           $rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
           $rep->TextCol(1, 2, $trans['reference'], -2);
-          $rep->TextCol(2, 3, Dates::sqlToDate($trans['tran_date']), -2);
+          $rep->TextCol(2, 3, Dates::_sqlToDate($trans['tran_date']), -2);
           foreach ($trans as $i => $value) {
             $trans[$i] *= $rate;
           }
@@ -224,7 +224,7 @@
       $pg->axis_y         = _("Amount");
       $pg->graphic_1      = $to;
       $pg->type           = $graphics;
-      $pg->skin           = Config::get('graphs_skin');
+      $pg->skin           = Config::_get('graphs_skin');
       $pg->built_in       = false;
       $pg->fontfile       = BASE_URL . "reporting/fonts/Vera.ttf";
       $pg->latin_notation = (User::dec_sep() != ".");

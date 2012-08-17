@@ -15,16 +15,16 @@
     if (empty($_POST['name'])) {
       $error = 1;
       Event::error(_("Printer name cannot be empty."));
-      JS::setFocus('name');
+      JS::_setFocus('name');
     } elseif (empty($_POST['host'])) {
       Event::notice(_("You have selected printing to server at user IP."));
     } elseif (!Validation::post_num('tout', 0, 60)) {
       $error = 1;
       Event::error(_("Timeout cannot be less than zero nor longer than 60 (sec)."));
-      JS::setFocus('tout');
+      JS::_setFocus('tout');
     }
     if ($error != 1) {
-      Printer::write_def($selected_id, Input::post('name'), Input::post('descr'), Input::post('queue'), Input::post('host'), Validation::input_num('port', 0), Validation::input_num('tout', 0));
+      Printer::write_def($selected_id, Input::_post('name'), Input::_post('descr'), Input::_post('queue'), Input::_post('host'), Validation::input_num('port', 0), Validation::input_num('tout', 0));
       Event::success($selected_id == -1 ? _('New printer definition has been created') :
                        _('Selected printer definition has been updated'));
       $Mode = MODE_RESET;
@@ -32,14 +32,14 @@
   }
   if ($Mode == MODE_DELETE) {
     // PREVENT DELETES IF DEPENDENT RECORDS IN print_profiles
-    $sql    = "SELECT COUNT(*) FROM print_profiles WHERE printer = " . DB::escape($selected_id);
-    $result = DB::query($sql, "check printers relations failed");
-    $myrow  = DB::fetchRow($result);
+    $sql    = "SELECT COUNT(*) FROM print_profiles WHERE printer = " . DB::_escape($selected_id);
+    $result = DB::_query($sql, "check printers relations failed");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this printer definition, because print profile have been created using it."));
     } else {
-      $sql = "DELETE FROM printers WHERE id=" . DB::escape($selected_id);
-      DB::query($sql, "could not delete printer definition");
+      $sql = "DELETE FROM printers WHERE id=" . DB::_escape($selected_id);
+      DB::_query($sql, "could not delete printer definition");
       Event::notice(_('Selected printer definition has been deleted'));
     }
     $Mode = MODE_RESET;
@@ -54,7 +54,7 @@
   $th = array(_("Name"), _("Description"), _("Host"), _("Printer Queue"), '', '');
   Table::header($th);
   $k = 0; //row colour counter
-  while ($myrow = DB::fetch($result)) {
+  while ($myrow = DB::_fetch($result)) {
 
     Cell::label($myrow['name']);
     Cell::label($myrow['description']);

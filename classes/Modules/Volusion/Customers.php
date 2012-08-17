@@ -1,6 +1,7 @@
 <?php
   namespace Modules\Volusion;
   use \ADV\Core\DB\DBDuplicateException, \ADV\Core\DB\DB, \Event, \ADV\Core\XMLParser;
+  use ADV\App\Debtor\Debtor;
 
   /**
    * Class for getting Customers from Volusion and putting them in to the intermediate database.
@@ -15,6 +16,9 @@
      * @var array
      */
     public $customers = array();
+    /**
+
+     */
     public function __construct() {
       echo __NAMESPACE__;
       $this->status = new \ADV\Core\Status();
@@ -67,11 +71,11 @@
         $name = $customer['EmailAddress'];
       }
       try {
-        DB::insert('WebCustomers')->values($customer)->exec();
+        DB::_insert('WebCustomers')->values($customer)->exec();
         $this->status->set(true, 'insert', "Added Customer $name to website customer database! {$customer['CustomerID']} ");
       }
       catch (DBDuplicateException $e) {
-        DB::update('WebCustomers')->values($customer)->where('CustomerID=', $customer['CustomerID'])->exec();
+        DB::_update('WebCustomers')->values($customer)->where('CustomerID=', $customer['CustomerID'])->exec();
         $this->status->set(false, 'insert', "Updated Customer $name ! {$customer['CustomerID']}");
       }
     }
@@ -79,9 +83,9 @@
      * @return string
      */
     public function getXML() {
-      $apiuser = \Config::get('modules.webstore')['apiuser'];
-      $apikey  = \Config::get('modules.webstore')['apikey'];
-      $url     = \Config::get('modules.webstore')['apiurl'];
+      $apiuser = \Config::_get('modules.webstore')['apiuser'];
+      $apikey  = \Config::_get('modules.webstore')['apikey'];
+      $url     = \Config::_get('modules.webstore')['apiurl'];
       $url .= "Login=" . $apiuser;
       $url .= '&EncryptedPassword=' . $apikey;
       $url .= '&EDI_Name=Generic\Customers';
@@ -96,7 +100,7 @@
      * @return array
      */
     protected function createCustomer() {
-      $result = DB::select()->from('WebCustomers')->where('extid=', 0)->fetch()->assoc()->all();
+      $result = DB::_select()->from('WebCustomers')->where('extid=', 0)->fetch()->assoc()->all();
       if (!$result) {
         return $this->status->set(false, 'insert', "No new customers in database");
       }
@@ -109,11 +113,11 @@
         } else {
           $name = $row['CompanyName'] = $row['EmailAddress'];
         }
-        $result = \DB::select('debtor_id')->from('debtors')->where('webid =', $row["CustomerID"])->fetch()->assoc()->one();
+        $result = DB::_select('debtor_id')->from('debtors')->where('webid =', $row["CustomerID"])->fetch()->assoc()->one();
         if ($result['debtor_id'] > 0) {
-          $c = new \Debtor($result['debtor_id']);
+          $c = new Debtor($result['debtor_id']);
         } else {
-          $c = new \Debtor();
+          $c = new Debtor();
         }
         $c->name                                      = $c->debtor_ref = $name;
         $c->branches[$c->defaultBranch]->post_address = $row["BillingAddress2"];
@@ -145,7 +149,7 @@
           $added++;
           $this->status->set(true, 'add', "Customer  {$c->name} has been added.  {$c->id} ");
         }
-        \DB::update('WebCustomers')->value('extid', $c->id)->where('CustomerID=', $row['CustomerID'])->exec();
+        DB::_update('WebCustomers')->value('extid', $c->id)->where('CustomerID=', $row['CustomerID'])->exec();
       }
       Event::notice("Added $added Customers. Updated $updated Customers.");
 

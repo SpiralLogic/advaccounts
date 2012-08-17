@@ -16,7 +16,7 @@
     if (strlen($_POST['bank_account_name']) == 0) {
       $input_error = 1;
       Event::error(_("The bank account name cannot be empty."));
-      JS::setFocus('bank_account_name');
+      JS::_setFocus('bank_account_name');
     }
     if ($input_error != 1) {
       if ($selected_id != -1) {
@@ -31,18 +31,18 @@
   } elseif ($Mode == MODE_DELETE) {
     //the link to delete a selected record was clicked instead of the submit button
     $cancel_delete = 0;
-    $acc           = DB::escape($selected_id);
+    $acc           = DB::_escape($selected_id);
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'bank_trans'
     $sql    = "SELECT COUNT(*) FROM bank_trans WHERE bank_act=$acc";
-    $result = DB::query($sql, "check failed");
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql, "check failed");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       $cancel_delete = 1;
       Event::error(_("Cannot delete this bank account because transactions have been created using this account."));
     }
     $sql    = "SELECT COUNT(*) FROM sales_pos WHERE pos_account=$acc";
-    $result = DB::query($sql, "check failed");
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql, "check failed");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       $cancel_delete = 1;
       Event::error(_("Cannot delete this bank account because POS definitions have been created using this account."));
@@ -62,11 +62,11 @@
   $sql = "SELECT account.*, gl_account.account_name
     FROM bank_accounts account, chart_master gl_account
     WHERE account.account_code = gl_account.account_code";
-  if (!Input::hasPost('show_inactive')) {
+  if (!Input::_hasPost('show_inactive')) {
     $sql .= " AND !account.inactive";
   }
   $sql .= " ORDER BY account_code, bank_curr_code";
-  $result = DB::query($sql, "could not get bank accounts");
+  $result = DB::_query($sql, "could not get bank accounts");
   Forms::start();
   Table::start('tablestyle grid width80');
   $th = array(
@@ -76,7 +76,7 @@
   Table::header($th);
   $k                  = 0;
   $bank_account_types = Bank_Account::$types;
-  while ($myrow = DB::fetch($result)) {
+  while ($myrow = DB::_fetch($result)) {
     Cell::label($myrow["bank_account_name"], ' class="nowrap"');
     Cell::label($bank_account_types[$myrow["account_type"]], ' class="nowrap"');
     Cell::label($myrow["bank_curr_code"], ' class="nowrap"');
@@ -114,7 +114,7 @@
     Forms::hidden('account_code');
     Forms::hidden('account_type');
     Forms::hidden('BankAccountCurrency', $_POST['BankAccountCurrency']);
-    JS::setFocus('bank_account_name');
+    JS::_setFocus('bank_account_name');
   }
   Forms::textRow(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
   if ($is_editing) {

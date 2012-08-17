@@ -30,11 +30,11 @@
    */
   function isDateInFiscalYears($date)
   {
-    $date   = Dates::dateToSql($date);
+    $date   = Dates::_dateToSql($date);
     $sql    = "SELECT * FROM fiscal_year WHERE '$date' >= begin AND '$date' <= end";
-    $result = DB::query($sql, "could not get all fiscal years");
+    $result = DB::_query($sql, "could not get all fiscal years");
 
-    return DB::fetch($result) !== false;
+    return DB::_fetch($result) !== false;
   }
 
   /**
@@ -44,14 +44,14 @@
    */
   function is_bad_begin_date($date)
   {
-    $bdate  = Dates::dateToSql($date);
+    $bdate  = Dates::_dateToSql($date);
     $sql    = "SELECT MAX(end) FROM fiscal_year WHERE begin < '$bdate'";
-    $result = DB::query($sql, "could not retrieve last fiscal years");
-    $row    = DB::fetchRow($result);
+    $result = DB::_query($sql, "could not retrieve last fiscal years");
+    $row    = DB::_fetchRow($result);
     if ($row[0] === null) {
       return false;
     }
-    $max = Dates::addDays(Dates::sqlToDate($row[0]), 1);
+    $max = Dates::_addDays(Dates::_sqlToDate($row[0]), 1);
 
     return ($max !== $date);
   }
@@ -64,13 +64,13 @@
    */
   function check_years_before($date, $closed = false)
   {
-    $date = Dates::dateToSql($date);
+    $date = Dates::_dateToSql($date);
     $sql  = "SELECT COUNT(*) FROM fiscal_year WHERE begin < '$date'";
     if (!$closed) {
       $sql .= " AND closed=0";
     }
-    $result = DB::query($sql, "could not check fiscal years before");
-    $row    = DB::fetchRow($result);
+    $result = DB::_query($sql, "could not check fiscal years before");
+    $row    = DB::_fetchRow($result);
 
     return ($row[0] > 0);
   }
@@ -80,22 +80,22 @@
    */
   function check_data()
   {
-    if (!Dates::isDate($_POST['from_date']) || isDateInFiscalYears($_POST['from_date']) || is_bad_begin_date($_POST['from_date'])
+    if (!Dates::_isDate($_POST['from_date']) || isDateInFiscalYears($_POST['from_date']) || is_bad_begin_date($_POST['from_date'])
     ) {
       Event::error(_("Invalid BEGIN date in fiscal year."));
-      JS::setFocus('from_date');
+      JS::_setFocus('from_date');
 
       return false;
     }
-    if (!Dates::isDate($_POST['to_date']) || isDateInFiscalYears($_POST['to_date'])) {
+    if (!Dates::_isDate($_POST['to_date']) || isDateInFiscalYears($_POST['to_date'])) {
       Event::error(_("Invalid END date in fiscal year."));
-      JS::setFocus('to_date');
+      JS::_setFocus('to_date');
 
       return false;
     }
-    if (Dates::isGreaterThan($_POST['from_date'], $_POST['to_date'])) {
+    if (Dates::_isGreaterThan($_POST['from_date'], $_POST['to_date'])) {
       Event::error(_("BEGIN date bigger than END date."));
-      JS::setFocus('from_date');
+      JS::_setFocus('from_date');
 
       return false;
     }
@@ -116,7 +116,7 @@
 
       return false;
     }
-    DB::begin();
+    DB::_begin();
     $myrow = DB_Company::get_fiscalyear($year);
     $to    = $myrow['end'];
     // retrieve total balances from balance sheet accounts
@@ -124,10 +124,10 @@
              = "SELECT SUM(amount) FROM gl_trans INNER JOIN chart_master ON account=account_code
      INNER JOIN chart_types ON account_type=id INNER JOIN chart_class ON class_id=cid
         WHERE ctype>=" . CL_ASSETS . " AND ctype <=" . CL_EQUITY . " AND tran_date <= '$to'";
-    $result  = DB::query($sql, "The total balance could not be calculated");
-    $row     = DB::fetchRow($result);
-    $balance = Num::round($row[0], User::price_dec());
-    $to      = Dates::sqlToDate($to);
+    $result  = DB::_query($sql, "The total balance could not be calculated");
+    $row     = DB::_fetchRow($result);
+    $balance = Num::_round($row[0], User::price_dec());
+    $to      = Dates::_sqlToDate($to);
     if ($balance != 0.0) {
       $trans_type = ST_JOURNAL;
       $trans_id   = SysTypes::get_next_trans_no($trans_type);
@@ -135,7 +135,7 @@
       GL_Trans::add($trans_type, $trans_id, $to, $co['profit_loss_year_act'], 0, 0, _("Closing Year"), $balance);
     }
     DB_AuditTrail::close_transactions($to);
-    DB::commit();
+    DB::_commit();
 
     return true;
   }
@@ -146,10 +146,10 @@
   function open_year($year)
   {
     $myrow = DB_Company::get_fiscalyear($year);
-    $from  = Dates::sqlToDate($myrow['begin']);
-    DB::begin();
+    $from  = Dates::_sqlToDate($myrow['begin']);
+    DB::_begin();
     DB_AuditTrail::open_transactions($from);
-    DB::commit();
+    DB::_commit();
   }
 
   /**
@@ -165,7 +165,7 @@
       if ($_POST['closed'] == 1) {
         if (check_years_before($_POST['from_date'], false)) {
           Event::error(_("Cannot CLOSE this year because there are open fiscal years before"));
-          JS::setFocus('closed');
+          JS::_setFocus('closed');
 
           return false;
         }
@@ -196,7 +196,7 @@
   {
     $myrow = DB_Company::get_fiscalyear($selected_id);
     // PREVENT DELETES IF DEPENDENT RECORDS IN gl_trans
-    if (check_years_before(Dates::sqlToDate($myrow['begin']), true)) {
+    if (check_years_before(Dates::_sqlToDate($myrow['begin']), true)) {
       Event::error(_("Cannot delete this fiscal year because thera are fiscal years before."));
 
       return false;
@@ -217,19 +217,19 @@
   function delete_attachments_and_comments($type_no, $trans_no)
   {
     $sql    = "SELECT * FROM attachments WHERE type_no = $type_no AND trans_no = $trans_no";
-    $result = DB::query($sql, "Could not retrieve attachments");
-    while ($row = DB::fetch($result)) {
+    $result = DB::_query($sql, "Could not retrieve attachments");
+    while ($row = DB::_fetch($result)) {
       $dir = COMPANY_PATH . "attachments";
       if (file_exists($dir . DS . $row['unique_name'])) {
         unlink($dir . DS . $row['unique_name']);
       }
       $sql = "DELETE FROM attachments WHERE type_no = $type_no AND trans_no = $trans_no";
-      DB::query($sql, "Could not delete attachment");
+      DB::_query($sql, "Could not delete attachment");
     }
     $sql = "DELETE FROM comments WHERE type = $type_no AND id = $trans_no";
-    DB::query($sql, "Could not delete comments");
+    DB::_query($sql, "Could not delete comments");
     $sql = "DELETE FROM refs WHERE type = $type_no AND id = $trans_no";
-    DB::query($sql, "Could not delete refs");
+    DB::_query($sql, "Could not delete refs");
   }
 
   /**
@@ -237,177 +237,177 @@
    */
   function delete_this_fiscalyear($selected_id)
   {
-    Utils::backup(Config::get('db.' . User::i()->company), 'Security backup before Fiscal Year Removal');
-    DB::begin();
+    Utils::backup(Config::_get('db.' . User::i()->company), 'Security backup before Fiscal Year Removal');
+    DB::_begin();
     $ref    = _("Open Balance");
     $myrow  = DB_Company::get_fiscalyear($selected_id);
     $to     = $myrow['end'];
     $sql    = "SELECT order_no, trans_type FROM sales_orders WHERE ord_date <= '$to' AND type <> 1"; // don't take the templates
-    $result = DB::query($sql, "Could not retrieve sales orders");
-    while ($row = DB::fetch($result)) {
+    $result = DB::_query($sql, "Could not retrieve sales orders");
+    while ($row = DB::_fetch($result)) {
       $sql  = "SELECT SUM(qty_sent), SUM(quantity) FROM sales_order_details WHERE order_no = {$row['order_no']} AND trans_type = {$row['trans_type']}";
-      $res  = DB::query($sql, "Could not retrieve sales order details");
-      $row2 = DB::fetchRow($res);
+      $res  = DB::_query($sql, "Could not retrieve sales order details");
+      $row2 = DB::_fetchRow($res);
       if ($row2[0] == $row2[1]) {
         $sql = "DELETE FROM sales_order_details WHERE order_no = {$row['order_no']} AND trans_type = {$row['trans_type']}";
-        DB::query($sql, "Could not delete sales order details");
+        DB::_query($sql, "Could not delete sales order details");
         $sql = "DELETE FROM sales_orders WHERE order_no = {$row['order_no']} AND trans_type = {$row['trans_type']}";
-        DB::query($sql, "Could not delete sales order");
+        DB::_query($sql, "Could not delete sales order");
         delete_attachments_and_comments($row['trans_type'], $row['order_no']);
       }
     }
     $sql    = "SELECT order_no FROM purch_orders WHERE ord_date <= '$to'";
-    $result = DB::query($sql, "Could not retrieve purchase orders");
-    while ($row = DB::fetch($result)) {
+    $result = DB::_query($sql, "Could not retrieve purchase orders");
+    while ($row = DB::_fetch($result)) {
       $sql  = "SELECT SUM(quantity_ordered), SUM(quantity_received) FROM purch_order_details WHERE order_no = {$row['order_no']}";
-      $res  = DB::query($sql, "Could not retrieve purchase order details");
-      $row2 = DB::fetchRow($res);
+      $res  = DB::_query($sql, "Could not retrieve purchase order details");
+      $row2 = DB::_fetchRow($res);
       if ($row2[0] == $row2[1]) {
         $sql = "DELETE FROM purch_order_details WHERE order_no = {$row['order_no']}";
-        DB::query($sql, "Could not delete purchase order details");
+        DB::_query($sql, "Could not delete purchase order details");
         $sql = "DELETE FROM purch_orders WHERE order_no = {$row['order_no']}";
-        DB::query($sql, "Could not delete purchase order");
+        DB::_query($sql, "Could not delete purchase order");
         delete_attachments_and_comments(ST_PURCHORDER, $row['order_no']);
       }
     }
     $sql    = "SELECT id FROM grn_batch WHERE delivery_date <= '$to'";
-    $result = DB::query($sql, "Could not retrieve grn batch");
-    while ($row = DB::fetch($result)) {
+    $result = DB::_query($sql, "Could not retrieve grn batch");
+    while ($row = DB::_fetch($result)) {
       $sql = "DELETE FROM grn_items WHERE grn_batch_id = {$row['id']}";
-      DB::query($sql, "Could not delete grn items");
+      DB::_query($sql, "Could not delete grn items");
       $sql = "DELETE FROM grn_batch WHERE id = {$row['id']}";
-      DB::query($sql, "Could not delete grn batch");
+      DB::_query($sql, "Could not delete grn batch");
       delete_attachments_and_comments(25, $row['id']);
     }
     $sql
             = "SELECT trans_no, type FROM debtor_trans WHERE tran_date <= '$to' AND
         (ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount) = alloc";
-    $result = DB::query($sql, "Could not retrieve debtor trans");
-    while ($row = DB::fetch($result)) {
+    $result = DB::_query($sql, "Could not retrieve debtor trans");
+    while ($row = DB::_fetch($result)) {
       if ($row['type'] == ST_SALESINVOICE) {
         $deliveries = Debtor_Trans::get_parent(ST_SALESINVOICE, $row['trans_no']);
         foreach ($deliveries as $delivery) {
           $sql = "DELETE FROM debtor_trans_details WHERE debtor_trans_no = $delivery AND debtor_trans_type = " . ST_CUSTDELIVERY;
-          DB::query($sql, "Could not delete debtor trans details");
+          DB::_query($sql, "Could not delete debtor trans details");
           $sql = "DELETE FROM debtor_trans WHERE trans_no = $delivery AND type = " . ST_CUSTDELIVERY;
-          DB::query($sql, "Could not delete debtor trans");
+          DB::_query($sql, "Could not delete debtor trans");
           delete_attachments_and_comments(ST_CUSTDELIVERY, $delivery);
         }
       }
       $sql = "DELETE FROM debtor_allocations WHERE trans_no_from = {$row['trans_no']} AND trans_type_from = {$row['type']}";
-      DB::query($sql, "Could not delete cust allocations");
+      DB::_query($sql, "Could not delete cust allocations");
       $sql = "DELETE FROM debtor_trans_details WHERE debtor_trans_no = {$row['trans_no']} AND debtor_trans_type = {$row['type']}";
-      DB::query($sql, "Could not delete debtor trans details");
+      DB::_query($sql, "Could not delete debtor trans details");
       $sql = "DELETE FROM debtor_trans WHERE trans_no = {$row['trans_no']} AND type = {$row['type']}";
-      DB::query($sql, "Could not delete debtor trans");
+      DB::_query($sql, "Could not delete debtor trans");
       delete_attachments_and_comments($row['type'], $row['trans_no']);
     }
     $sql
             = "SELECT trans_no, type FROM creditor_trans WHERE tran_date <= '$to' AND
         ABS(ov_amount + ov_gst + ov_discount) = alloc";
-    $result = DB::query($sql, "Could not retrieve supp trans");
-    while ($row = DB::fetch($result)) {
+    $result = DB::_query($sql, "Could not retrieve supp trans");
+    while ($row = DB::_fetch($result)) {
       $sql = "DELETE FROM creditor_allocations WHERE trans_no_from = {$row['trans_no']} AND trans_type_from = {$row['type']}";
-      DB::query($sql, "Could not delete supp allocations");
+      DB::_query($sql, "Could not delete supp allocations");
       $sql = "DELETE FROM creditor_trans_details WHERE creditor_trans_no = {$row['trans_no']} AND creditor_trans_type = {$row['type']}";
-      DB::query($sql, "Could not delete supp invoice items");
+      DB::_query($sql, "Could not delete supp invoice items");
       $sql = "DELETE FROM creditor_trans WHERE trans_no = {$row['trans_no']} AND type = {$row['type']}";
-      DB::query($sql, "Could not delete supp trans");
+      DB::_query($sql, "Could not delete supp trans");
       delete_attachments_and_comments($row['type'], $row['trans_no']);
     }
     $sql    = "SELECT id FROM workorders WHERE released_date <= '$to' AND closed=1";
-    $result = DB::query($sql, "Could not retrieve supp trans");
-    while ($row = DB::fetch($result)) {
+    $result = DB::_query($sql, "Could not retrieve supp trans");
+    while ($row = DB::_fetch($result)) {
       $sql = "SELECT issue_no FROM wo_issues WHERE workorder_id = {$row['id']}";
-      $res = DB::query($sql, "Could not retrieve wo issues");
-      while ($row2 = DB::fetchRow($res)) {
+      $res = DB::_query($sql, "Could not retrieve wo issues");
+      while ($row2 = DB::_fetchRow($res)) {
         $sql = "DELETE FROM wo_issue_items WHERE issue_id = {$row2[0]}";
-        DB::query($sql, "Could not delete wo issue items");
+        DB::_query($sql, "Could not delete wo issue items");
       }
       delete_attachments_and_comments(ST_MANUISSUE, $row['id']);
       $sql = "DELETE FROM wo_issues WHERE workorder_id = {$row['id']}";
-      DB::query($sql, "Could not delete wo issues");
+      DB::_query($sql, "Could not delete wo issues");
       $sql = "DELETE FROM wo_manufacture WHERE workorder_id = {$row['id']}";
-      DB::query($sql, "Could not delete wo manufacture");
+      DB::_query($sql, "Could not delete wo manufacture");
       $sql = "DELETE FROM wo_requirements WHERE workorder_id = {$row['id']}";
-      DB::query($sql, "Could not delete wo requirements");
+      DB::_query($sql, "Could not delete wo requirements");
       $sql = "DELETE FROM workorders WHERE id = {$row['id']}";
-      DB::query($sql, "Could not delete workorders");
+      DB::_query($sql, "Could not delete workorders");
       delete_attachments_and_comments(ST_WORKORDER, $row['id']);
     }
     $sql
             = "SELECT loc_code, stock_id, SUM(qty) AS qty, SUM(qty*standard_cost) AS std_cost FROM stock_moves WHERE tran_date <= '$to' GROUP by
         loc_code, stock_id";
-    $result = DB::query($sql, "Could not retrieve supp trans");
-    while ($row = DB::fetch($result)) {
+    $result = DB::_query($sql, "Could not retrieve supp trans");
+    while ($row = DB::_fetch($result)) {
       $sql = "DELETE FROM stock_moves WHERE tran_date <= '$to' AND loc_code = '{$row['loc_code']}' AND stock_id = '{$row['stock_id']}'";
-      DB::query($sql, "Could not delete stock moves");
+      DB::_query($sql, "Could not delete stock moves");
       $qty      = $row['qty'];
-      $std_cost = ($qty == 0 ? 0 : Num::round($row['std_cost'] / $qty, User::price_dec()));
+      $std_cost = ($qty == 0 ? 0 : Num::_round($row['std_cost'] / $qty, User::price_dec()));
       $sql
                 = "INSERT INTO stock_moves (stock_id, loc_code, tran_date, reference, qty, standard_cost) VALUES
             ('{$row['stock_id']}', '{$row['loc_code']}', '$to', '$ref', $qty, $std_cost)";
-      DB::query($sql, "Could not insert stock move");
+      DB::_query($sql, "Could not insert stock move");
     }
     $sql = "DELETE FROM voided WHERE date_ <= '$to'";
-    DB::query($sql, "Could not delete voided items");
+    DB::_query($sql, "Could not delete voided items");
     $sql = "DELETE FROM trans_tax_details WHERE tran_date <= '$to'";
-    DB::query($sql, "Could not delete trans tax details");
+    DB::_query($sql, "Could not delete trans tax details");
     $sql = "DELETE FROM exchange_rates WHERE date_ <= '$to'";
-    DB::query($sql, "Could not delete exchange rates");
+    DB::_query($sql, "Could not delete exchange rates");
     $sql = "DELETE FROM budget_trans WHERE tran_date <= '$to'";
-    DB::query($sql, "Could not delete exchange rates");
+    DB::_query($sql, "Could not delete exchange rates");
     $sql    = "SELECT account, SUM(amount) AS amount FROM gl_trans WHERE tran_date <= '$to' GROUP by account";
-    $result = DB::query($sql, "Could not retrieve gl trans");
-    while ($row = DB::fetch($result)) {
+    $result = DB::_query($sql, "Could not retrieve gl trans");
+    while ($row = DB::_fetch($result)) {
       $sql = "DELETE FROM gl_trans WHERE tran_date <= '$to' AND account = '{$row['account']}'";
-      DB::query($sql, "Could not delete gl trans");
+      DB::_query($sql, "Could not delete gl trans");
       if (GL_Account::is_balancesheet($row['account'])) {
         $trans_no = SysTypes::get_next_trans_no(ST_JOURNAL);
         $sql
                   = "INSERT INTO gl_trans (type, type_no, tran_date, account, memo_, amount) VALUES
                 (" . ST_JOURNAL . ", $trans_no, '$to', '{$row['account']}', '$ref', {$row['amount']})";
-        DB::query($sql, "Could not insert gl trans");
+        DB::_query($sql, "Could not insert gl trans");
       }
     }
     $sql    = "SELECT bank_act, SUM(amount) AS amount FROM bank_trans WHERE trans_date <= '$to' GROUP BY bank_act";
-    $result = DB::query($sql, "Could not retrieve bank trans");
-    while ($row = DB::fetch($result)) {
+    $result = DB::_query($sql, "Could not retrieve bank trans");
+    while ($row = DB::_fetch($result)) {
       $sql = "DELETE FROM bank_trans WHERE trans_date <= '$to' AND bank_act = '{$row['bank_act']}'";
-      DB::query($sql, "Could not delete bank trans");
+      DB::_query($sql, "Could not delete bank trans");
       $sql
         = "INSERT INTO bank_trans (type, trans_no, trans_date, bank_act, ref, amount) VALUES
             (0, 0, '$to', '{$row['bank_act']}', '$ref', {$row['amount']})";
-      DB::query($sql, "Could not insert bank trans");
+      DB::_query($sql, "Could not insert bank trans");
     }
     $sql = "DELETE FROM audit_trail WHERE gl_date <= '$to'";
-    DB::query($sql, "Could not delete audit trail");
+    DB::_query($sql, "Could not delete audit trail");
     $sql    = "SELECT type, id FROM comments WHERE type != " . ST_SALESQUOTE . " AND type != " . ST_SALESORDER . " AND type != " . ST_PURCHORDER;
-    $result = DB::query($sql, "Could not retrieve comments");
-    while ($row = DB::fetch($result)) {
+    $result = DB::_query($sql, "Could not retrieve comments");
+    while ($row = DB::_fetch($result)) {
       $sql  = "SELECT count(*) FROM gl_trans WHERE type = {$row['type']} AND type_no = {$row['id']}";
-      $res  = DB::query($sql, "Could not retrieve gl_trans");
-      $row2 = DB::fetchRow($res);
+      $res  = DB::_query($sql, "Could not retrieve gl_trans");
+      $row2 = DB::_fetchRow($res);
       if ($row2[0] == 0) // if no link, then delete comments
       {
         $sql = "DELETE FROM comments WHERE type = {$row['type']} AND id = {$row['id']}";
-        DB::query($sql, "Could not delete comments");
+        DB::_query($sql, "Could not delete comments");
       }
     }
     $sql    = "SELECT type, id FROM refs WHERE type != " . ST_SALESQUOTE . " AND type != " . ST_SALESORDER . " AND type != " . ST_PURCHORDER;
-    $result = DB::query($sql, "Could not retrieve refs");
-    while ($row = DB::fetch($result)) {
+    $result = DB::_query($sql, "Could not retrieve refs");
+    while ($row = DB::_fetch($result)) {
       $sql  = "SELECT count(*) FROM gl_trans WHERE type = {$row['type']} AND type_no = {$row['id']}";
-      $res  = DB::query($sql, "Could not retrieve gl_trans");
-      $row2 = DB::fetchRow($res);
+      $res  = DB::_query($sql, "Could not retrieve gl_trans");
+      $row2 = DB::_fetchRow($res);
       if ($row2[0] == 0) // if no link, then delete refs
       {
         $sql = "DELETE FROM refs WHERE type = {$row['type']} AND id = {$row['id']}";
-        DB::query($sql, "Could not delete refs");
+        DB::_query($sql, "Could not delete refs");
       }
     }
     DB_Company::delete_fiscalyear($selected_id);
-    DB::commit();
+    DB::_commit();
   }
 
   /**
@@ -435,13 +435,13 @@
     $th = array(_("Fiscal Year Begin"), _("Fiscal Year End"), _("Closed"), "", "");
     Table::header($th);
     $k = 0;
-    while ($myrow = DB::fetch($result)) {
+    while ($myrow = DB::_fetch($result)) {
       if ($myrow['id'] == $company_year) {
         Row::start("class='stockmankobg'");
       } else {
       }
-      $from = Dates::sqlToDate($myrow["begin"]);
-      $to   = Dates::sqlToDate($myrow["end"]);
+      $from = Dates::_sqlToDate($myrow["begin"]);
+      $to   = Dates::_sqlToDate($myrow["end"]);
       if ($myrow["closed"] == 0) {
         $closed_text = _("No");
       } else {
@@ -475,8 +475,8 @@
     if ($selected_id != -1) {
       if ($Mode == MODE_EDIT) {
         $myrow              = DB_Company::get_fiscalyear($selected_id);
-        $_POST['from_date'] = Dates::sqlToDate($myrow["begin"]);
-        $_POST['to_date']   = Dates::sqlToDate($myrow["end"]);
+        $_POST['from_date'] = Dates::_sqlToDate($myrow["begin"]);
+        $_POST['to_date']   = Dates::_sqlToDate($myrow["end"]);
         $_POST['closed']    = $myrow["closed"];
       }
       Forms::hidden('from_date');

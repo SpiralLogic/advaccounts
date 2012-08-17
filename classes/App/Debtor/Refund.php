@@ -31,7 +31,7 @@
      */
     public static function add($trans_no, $debtor_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0) {
       $amount = $amount * -1;
-      DB::begin();
+      DB::_begin();
       $company_record  = DB_Company::get_prefs();
       $refund_no       = Debtor_Trans::write(ST_CUSTREFUND, $trans_no, $debtor_id, $branch_id, $date_, $ref, $amount, $discount, 0, 0, 0, 0, 0, 0, 0, "", 0, $rate);
       $bank_gl_account = Bank_Account::get_gl($bank_account);
@@ -68,7 +68,7 @@
       Bank_Trans::add(ST_CUSTREFUND, $refund_no, $bank_account, $ref, $date_, $amount - $charge, PT_CUSTOMER, $debtor_id, Bank_Currency::for_debtor($debtor_id), "", $rate);
       DB_Comments::add(ST_CUSTREFUND, $refund_no, $date_, $memo_);
       Ref::save(ST_CUSTREFUND, $refund_no, $ref);
-      DB::commit();
+      DB::_commit();
       return $refund_no;
     }
     /**
@@ -78,11 +78,11 @@
      * @param $type_no
      */
     public static function void($type, $type_no) {
-      DB::begin();
+      DB::_begin();
       Bank_Trans::void($type, $type_no, true);
       GL_Trans::void($type, $type_no, true);
       Sales_Allocation::void($type, $type_no);
       Debtor_Trans::void($type, $type_no);
-      DB::commit();
+      DB::_commit();
     }
   }

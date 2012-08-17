@@ -9,7 +9,7 @@
     <label for="name">Supplier name:</label><input id="name" name="name" class="big">
     <label for="id">Supplier ID:</label><input id="id" name="id" class="small" maxlength="7">
   </div>
-  <div class='formbox width35'>
+  <div class='formbox '>
     <div class='tablehead'>
       Shipping Details
     </div>
@@ -20,7 +20,7 @@
     {{$form.address}}
     {{$form.fax}}
     {{$postcode->render()}}    </div>
-  <div class='formbox width35'>
+  <div class='formbox '>
     <div class='tablehead'>
       Accounts Details
     </div>
@@ -32,7 +32,7 @@
     {{$supp_postcode->render()}}
   </div>
   {#$menu->endTab()->startTab('Accounts', 'Accounts')#}
-  <div class='formbox width35'>
+  <div class='formbox '>
     <div class='tablehead'>
       Accounts Details
     </div>

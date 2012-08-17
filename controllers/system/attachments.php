@@ -16,8 +16,8 @@
   if ($view_id != -1) {
     $row = get_attachment($view_id);
     if ($row['filename'] != "") {
-      if (Ajax::inAjax()) {
-        Ajax::popup($_SERVER['DOCUMENT_URI'] . '?vw=' . $view_id);
+      if (Ajax::_inAjax()) {
+        Ajax::_popup($_SERVER['DOCUMENT_URI'] . '?vw=' . $view_id);
       } else {
         $type = ($row['filetype']) ? $row['filetype'] : 'application/octet-stream';
         header("Content-type: " . $type);
@@ -40,8 +40,8 @@
   if ($download_id != -1) {
     $row = get_attachment($download_id);
     if ($row['filename'] != "") {
-      if (Ajax::inAjax()) {
-        Ajax::redirect($_SERVER['DOCUMENT_URI'] . '?dl=' . $download_id);
+      if (Ajax::_inAjax()) {
+        Ajax::_redirect($_SERVER['DOCUMENT_URI'] . '?dl=' . $download_id);
       } else {
         $type = ($row['filetype']) ? $row['filetype'] : 'application/octet-stream';
         header("Content-type: " . $type);
@@ -52,7 +52,7 @@
       }
     }
   }
-  JS::openWindow(950, 500);
+  JS::_openWindow(950, 500);
   Page::start(_($help_context = "Attach Documents"), SA_ATTACHDOCUMENT);
   list($Mode, $selected_id) = Page::simple_mode(true);
   if (isset($_GET['filterType'])) // catch up external links
@@ -87,27 +87,27 @@
       $unique_name = $filename = $filetype = "";
       $filesize    = 0;
     }
-    $date = Dates::today(true);
+    $date = Dates::_today(true);
     if ($Mode == ADD_ITEM) {
       $sql
         = "INSERT INTO attachments (type_no, trans_no, description, filename, unique_name,
-			filesize, filetype, tran_date) VALUES (" . DB::escape($_POST['filterType']) . "," . DB::escape($_POST['trans_no']) . "," . DB::escape($_POST['description']) . ", " . DB::escape($filename) . ", " . DB::escape($unique_name) . ", " . DB::escape($filesize) . ", " . DB::escape($filetype) . ", '$date')";
-      DB::query($sql, "Attachment could not be inserted");
+			filesize, filetype, tran_date) VALUES (" . DB::_escape($_POST['filterType']) . "," . DB::_escape($_POST['trans_no']) . "," . DB::_escape($_POST['description']) . ", " . DB::_escape($filename) . ", " . DB::_escape($unique_name) . ", " . DB::_escape($filesize) . ", " . DB::_escape($filetype) . ", '$date')";
+      DB::_query($sql, "Attachment could not be inserted");
       Event::success(_("Attachment has been inserted."));
     } else {
       $sql
         = "UPDATE attachments SET
-			type_no=" . DB::escape($_POST['filterType']) . ",
-			trans_no=" . DB::escape($_POST['trans_no']) . ",
-			description=" . DB::escape($_POST['description']) . ", ";
+			type_no=" . DB::_escape($_POST['filterType']) . ",
+			trans_no=" . DB::_escape($_POST['trans_no']) . ",
+			description=" . DB::_escape($_POST['description']) . ", ";
       if ($filename != "") {
-        $sql .= "filename=" . DB::escape($filename) . ",
-			unique_name=" . DB::escape($unique_name) . ",
-			filesize=" . DB::escape($filesize) . ",
-			filetype=" . DB::escape($filetype);
+        $sql .= "filename=" . DB::_escape($filename) . ",
+			unique_name=" . DB::_escape($unique_name) . ",
+			filesize=" . DB::_escape($filesize) . ",
+			filetype=" . DB::_escape($filetype);
       }
-      $sql .= "tran_date='$date' WHERE id=" . DB::escape($selected_id);
-      DB::query($sql, "Attachment could not be updated");
+      $sql .= "tran_date='$date' WHERE id=" . DB::_escape($selected_id);
+      DB::_query($sql, "Attachment could not be updated");
       Event::success(_("Attachment has been updated."));
     }
     $Mode = MODE_RESET;
@@ -118,8 +118,8 @@
     if (file_exists($dir . "/" . $row['unique_name'])) {
       unlink($dir . "/" . $row['unique_name']);
     }
-    $sql = "DELETE FROM attachments WHERE id = " . DB::escape($selected_id);
-    DB::query($sql, "Could not delete attachment");
+    $sql = "DELETE FROM attachments WHERE id = " . DB::_escape($selected_id);
+    DB::_query($sql, "Could not delete attachment");
     Event::notice(_("Attachment has been deleted."));
     $Mode = MODE_RESET;
   }

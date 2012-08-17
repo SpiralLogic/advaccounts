@@ -28,7 +28,7 @@
      */
     public static function amountDecimal($label, $params = "", $id = null) {
       $dec = 0;
-      Cell::label(Num::priceDecimal($label, $dec), ' class="alignright nowrap"' . $params, $id);
+      Cell::label(Num::_priceDecimal($label, $dec), ' class="alignright nowrap"' . $params, $id);
     }
     /**
      * @param        $label
@@ -38,9 +38,9 @@
      */
     public static function amount($label, $bold = false, $params = "", $id = null) {
       if ($bold) {
-        Cell::label("<span class='bold'>" . Num::priceFormat($label) . "</span>", "class='amount'" . $params, $id);
+        Cell::label("<span class='bold'>" . Num::_priceFormat($label) . "</span>", "class='amount'" . $params, $id);
       } else {
-        Cell::label(Num::priceFormat($label), "class='amount'" . $params, $id);
+        Cell::label(Num::_priceFormat($label), "class='amount'" . $params, $id);
       }
     }
     /**
@@ -93,7 +93,7 @@
     public static function label($label, $params = "", $id = null) {
       if (!empty($id)) {
         $params .= " id='$id'";
-        Ajax::addUpdate($id, $id, $label);
+        Ajax::_addUpdate($id, $id, $label);
       }
       echo "<td $params >$label</td>\n";
 
@@ -106,9 +106,9 @@
      */
     public static function percent($label, $bold = false, $id = null) {
       if ($bold) {
-        Cell::label("<span class='bold'>" . Num::percentFormat($label) . "</span>", ' class="alignright nowrap"', $id);
+        Cell::label("<span class='bold'>" . Num::_percentFormat($label) . "</span>", ' class="alignright nowrap"', $id);
       } else {
-        Cell::label(Num::percentFormat($label), ' class="alignright nowrap"', $id);
+        Cell::label(Num::_percentFormat($label), ' class="alignright nowrap"', $id);
       }
     }
     /**
@@ -122,9 +122,9 @@
         $dec = \User::qty_dec();
       }
       if ($bold) {
-        Cell::label("<span class='bold'>" . Num::format($label, $dec) . "</span>", ' class="alignright nowrap"', $id);
+        Cell::label("<span class='bold'>" . Num::_format($label, $dec) . "</span>", ' class="alignright nowrap"', $id);
       } else {
-        Cell::label(Num::format(Num::round($label), $dec), ' class="alignright nowrap"', $id);
+        Cell::label(Num::_format(Num::_round($label), $dec), ' class="alignright nowrap"', $id);
       }
     }
     /**
@@ -135,16 +135,16 @@
      */
     public static function unit_amount($label, $bold = false, $params = "", $id = null) {
       if ($bold) {
-        Cell::label("<span class='bold'>" . Num::priceForamt($label) . "</span>", ' class="alignright nowrap"' . $params, $id);
+        Cell::label("<span class='bold'>" . Num::_priceForamt($label) . "</span>", ' class="alignright nowrap"' . $params, $id);
       } else {
-        Cell::label(Num::priceForamt($label), ' class="alignright nowrap"' . $params, $id);
+        Cell::label(Num::_priceForamt($label), ' class="alignright nowrap"' . $params, $id);
       }
     }
     /**
      * @param $value
      */
     public static function debitOrCredit($value) {
-      $value = Num::priceFormat($value);
+      $value = Num::_priceFormat($value);
       if ($value >= 0) {
         Cell::amount($value);
         Cell::label("");

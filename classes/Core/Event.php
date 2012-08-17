@@ -39,8 +39,8 @@
      */
     public static function init() {
       static::$shutdown_events_id = 'shutdown.events.' . \User::i()->username;
-      $shutdown_events            = Cache::get(static::$shutdown_events_id);
-      Cache::delete(static::$shutdown_events_id);
+      $shutdown_events            = Cache::_get(static::$shutdown_events_id);
+      Cache::_delete(static::$shutdown_events_id);
       if ($shutdown_events) {
         while ($msg = array_pop($shutdown_events)) {
           static::handle($msg[0], $msg[1], $msg[2], $msg[3]);
@@ -151,6 +151,6 @@
       catch (\Exception $e) {
         static::error('Error during post processing: ' . $e->getMessage());
       }
-      Cache::set(static::$shutdown_events_id, static::$shutdown_events);
+      Cache::_set(static::$shutdown_events_id, static::$shutdown_events);
     }
   }

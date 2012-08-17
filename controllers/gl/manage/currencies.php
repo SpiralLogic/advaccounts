@@ -33,22 +33,22 @@
   {
     if (strlen($_POST['Abbreviation']) == 0) {
       Event::error(_("The currency abbreviation must be entered."));
-      JS::setFocus('Abbreviation');
+      JS::_setFocus('Abbreviation');
 
       return false;
     } elseif (strlen($_POST['CurrencyName']) == 0) {
       Event::error(_("The currency name must be entered."));
-      JS::setFocus('CurrencyName');
+      JS::_setFocus('CurrencyName');
 
       return false;
     } elseif (strlen($_POST['Symbol']) == 0) {
       Event::error(_("The currency symbol must be entered."));
-      JS::setFocus('Symbol');
+      JS::_setFocus('Symbol');
 
       return false;
     } elseif (strlen($_POST['hundreds_name']) == 0) {
       Event::error(_("The hundredths name must be entered."));
-      JS::setFocus('hundreds_name');
+      JS::_setFocus('hundreds_name');
 
       return false;
     }
@@ -68,10 +68,10 @@
       return false;
     }
     if ($selected_id != "") {
-      GL_Currency::update($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], $_POST['country'], $_POST['hundreds_name'], Input::hasPost('auto_update'));
+      GL_Currency::update($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], $_POST['country'], $_POST['hundreds_name'], Input::_hasPost('auto_update'));
       Event::success(_('Selected currency settings has been updated'));
     } else {
-      GL_Currency::add($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], $_POST['country'], $_POST['hundreds_name'], Input::hasPost('auto_update'));
+      GL_Currency::add($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], $_POST['country'], $_POST['hundreds_name'], Input::_hasPost('auto_update'));
       Event::success(_('New currency has been added'));
     }
     $Mode = MODE_RESET;
@@ -87,27 +87,27 @@
     if ($selected_id == "") {
       return false;
     }
-    $curr = DB::escape($selected_id);
+    $curr = DB::_escape($selected_id);
     // PREVENT DELETES IF DEPENDENT RECORDS IN debtors
     $sql    = "SELECT COUNT(*) FROM debtors WHERE curr_code = $curr";
-    $result = DB::query($sql);
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql);
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this currency, because customer accounts have been created referring to this currency."));
 
       return false;
     }
     $sql    = "SELECT COUNT(*) FROM suppliers WHERE curr_code = $curr";
-    $result = DB::query($sql);
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql);
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this currency, because supplier accounts have been created referring to this currency."));
 
       return false;
     }
     $sql    = "SELECT COUNT(*) FROM company WHERE curr_default = $curr";
-    $result = DB::query($sql);
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql);
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this currency, because the company preferences uses this currency."));
 
@@ -115,8 +115,8 @@
     }
     // see if there are any bank accounts that use this currency
     $sql    = "SELECT COUNT(*) FROM bank_accounts WHERE bank_curr_code = $curr";
-    $result = DB::query($sql);
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql);
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this currency, because thre are bank accounts that use this currency."));
 
@@ -143,7 +143,7 @@
   function display_currencies()
   {
     $company_currency = Bank_Currency::for_company();
-    $result           = GL_Currency::getAll(Input::hasPost('show_inactive'));
+    $result           = GL_Currency::getAll(Input::_hasPost('show_inactive'));
     Table::start('tablestyle grid');
     $th = array(
       _("Abbreviation"), _("Symbol"), _("Currency Name"), _("Hundredths name"), _("Country"), _("Auto update"), "", ""
@@ -151,7 +151,7 @@
     Forms::inactiveControlCol($th);
     Table::header($th);
     $k = 0; //row colour counter
-    while ($myrow = DB::fetch($result)) {
+    while ($myrow = DB::_fetch($result)) {
       if ($myrow[1] == $company_currency) {
         Row::start("class='currencybg'");
       } else {
@@ -205,7 +205,7 @@
     Forms::textRowEx(_("Currency Name:"), 'CurrencyName', 20);
     Forms::textRowEx(_("Hundredths Name:"), 'hundreds_name', 15);
     Forms::textRowEx(_("Country:"), 'country', 40);
-    Forms::checkRow(_("Automatic exchange rate update:"), 'auto_update', Input::post('auto_update'));
+    Forms::checkRow(_("Automatic exchange rate update:"), 'auto_update', Input::_post('auto_update'));
     Table::end(1);
     Forms::submitAddUpdateCenter($selected_id == '', '', 'both');
   }

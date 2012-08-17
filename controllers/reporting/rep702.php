@@ -49,7 +49,7 @@
 			}
 			$trans = GL_Trans::get($from, $to, -1, null, 0, 0, $systype);
 			$typeno = $type = 0;
-			while ($myrow = DB::fetch($trans)) {
+			while ($myrow = DB::_fetch($trans)) {
 				if ($type != $myrow['type'] || $typeno != $myrow['type_no']) {
 					if ($typeno != 0) {
 						$rep->Line($rep->row + 4);

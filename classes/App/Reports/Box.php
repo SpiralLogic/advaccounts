@@ -57,19 +57,19 @@
       foreach ($this->ar_classes as $key => $value) {
         $style = $class_counter == $_REQUEST['Class'] ? '' : "style='display:none'";
         $acc   = Display::access_string($key);
-        $st_classes .= "<a href='" . $_SERVER['DOCUMENT_URI'] . "?Class=$class_counter' class='menu_option' id='" . JS::defaultFocus() . "' onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
+        $st_classes .= "<a href='" . $_SERVER['DOCUMENT_URI'] . "?Class=$class_counter' class='menu_option' id='" . JS::_defaultFocus() . "' onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
         $st_reports .= "<table id='TAB_" . $class_counter . "' $style cellpadding=0 cellspacing=0 style='width:100%'><tr><td><span class='bold'>" . _("Reports For Class: ") . "&nbsp;$key</span></td></tr>\n";
         foreach ($value as $report) {
           $acc = Display::access_string($report->name);
-          $st_reports .= "<tr><td><a class='printlink' href='" . $_SERVER['DOCUMENT_URI'] . "?Class=$class_counter&rep_id=$report->id' id='" . JS::defaultFocus() . "'$acc[1]>$acc[0]</a><tr><td>\n";
+          $st_reports .= "<tr><td><a class='printlink' href='" . $_SERVER['DOCUMENT_URI'] . "?Class=$class_counter&rep_id=$report->id' id='" . JS::_defaultFocus() . "'$acc[1]>$acc[0]</a><tr><td>\n";
           if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id'] == $report->id) {
             $action    = BASE_URL . 'reporting/prn_redirect.php';
             $st_params = "<table><tr><td>\n<form method='POST' action='$action' target='_blank'>\n";
-            $st_params .= Forms::submit('Rep' . $report->id, _("Display: ") . Display::access_string($report->name, true), false, '', Config::get('debug.pdf') ?
+            $st_params .= Forms::submit('Rep' . $report->id, _("Display: ") . Display::access_string($report->name, true), false, '', Config::_get('debug.pdf') ?
               false : 'default process') . Forms::hidden('REP_ID', $report->id, false) . '<br><br>';
             $st_params .= $this->getOptions($report->get_controls());
             $st_params .= "\n</form></td></tr></table>\n";
-            JS::setFocus('Rep' . $report->id);
+            JS::_setFocus('Rep' . $report->id);
             $Ajax->addUpdate(true, 'rep_form', $st_params);
           }
         }
@@ -174,7 +174,7 @@
                                                                               'order'       => false
                                                                          ));
         case 'DATEMONTH':
-          return Dates::months($name);
+          return Dates::_months($name);
         case 'DATE':
         case 'DATEBEGIN':
         case 'DATEEND':
@@ -183,25 +183,25 @@
         case 'DATEBEGINTAX':
         case 'DATEENDTAX':
           if ($type == 'DATEBEGIN') {
-            $date = Dates::beginFiscalYear();
+            $date = Dates::_beginFiscalYear();
           } elseif ($type == 'DATEEND') {
-            $date = Dates::endFiscalYear();
+            $date = Dates::_endFiscalYear();
           } else {
-            $date = Dates::today();
+            $date = Dates::_today();
           }
           if ($type == 'DATEBEGINM') {
-            $date = Dates::beginMonth($date);
+            $date = Dates::_beginMonth($date);
           } elseif ($type == 'DATEENDM') {
-            $date = Dates::endMonth($date);
+            $date = Dates::_endMonth($date);
           } elseif ($type == 'DATEBEGINTAX' || $type == 'DATEENDTAX') {
             $row   = DB_Company::get_prefs();
-            $edate = Dates::addMonths($date, -$row['tax_last']);
-            $edate = Dates::endMonth($edate);
+            $edate = Dates::_addMonths($date, -$row['tax_last']);
+            $edate = Dates::_endMonth($edate);
             if ($type == 'DATEENDTAX') {
               $date = $edate;
             } else {
-              $bdate = Dates::beginMonth($edate);
-              $bdate = Dates::addMonths($bdate, -$row['tax_prd'] + 1);
+              $bdate = Dates::_beginMonth($edate);
+              $bdate = Dates::_addMonths($bdate, -$row['tax_prd'] + 1);
               $date  = $bdate;
             }
           }
@@ -218,7 +218,7 @@
         case 'DESTINATION':
           $sel = array(_("PDF/Printer"), "Excel");
           $def = 0;
-          if (Config::get('print_default_excel') == 1) {
+          if (Config::_get('print_default_excel') == 1) {
             $def = 1;
           }
 
@@ -296,7 +296,7 @@
         case 'INVOICE':
           $IV  = _("IV");
           $CN  = _("CN");
-          $ref = (Config::get('print_useinvoicenumber') == 0 ? "trans_no" : "reference");
+          $ref = (Config::_get('print_useinvoicenumber') == 0 ? "trans_no" : "reference");
           $sql
                = "SELECT concat(debtor_trans.trans_no, '-',
                         debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_SALESINVOICE . ", ' $IV ', ' $CN '), debtors.name) as IName
@@ -314,7 +314,7 @@
 
           return Forms::selectBox($name, '', $sql, 'TNO', 'IName', array('order' => false));
         case 'ORDERS':
-          $ref = (Config::get('print_useinvoicenumber') == 0) ? "order_no" : "reference";
+          $ref = (Config::_get('print_useinvoicenumber') == 0) ? "order_no" : "reference";
           $sql
                = "SELECT sales_orders.order_no, concat(sales_orders.$ref, '-',
                         debtors.name) as IName
@@ -323,7 +323,7 @@
 
           return Forms::selectBox($name, '', $sql, 'order_no', 'IName', array('order' => false));
         case 'QUOTATIONS':
-          $ref = (Config::get('print_useinvoicenumber') == 0 ? "order_no" : "reference");
+          $ref = (Config::_get('print_useinvoicenumber') == 0 ? "order_no" : "reference");
           $sql
                = "SELECT sales_orders.order_no, concat(sales_orders.$ref, '-',
                         debtors.name) as IName
@@ -332,7 +332,7 @@
 
           return Forms::selectBox($name, '', $sql, 'order_no', 'IName', array('order' => false));
         case 'PO':
-          $ref = (Config::get('print_useinvoicenumber') == 0 ? "order_no" : "reference");
+          $ref = (Config::_get('print_useinvoicenumber') == 0 ? "order_no" : "reference");
           $sql
                = "SELECT purch_orders.order_no, concat(purch_orders.$ref, '-',
                         suppliers.name) as IName
@@ -343,7 +343,7 @@
           $BP  = _("BP");
           $SP  = _("SP");
           $CN  = _("CN");
-          $ref = (Config::get('print_useinvoicenumber') == 0 ? "trans_no" : "reference");
+          $ref = (Config::_get('print_useinvoicenumber') == 0 ? "trans_no" : "reference");
           $sql
                = "SELECT concat(creditor_trans.trans_no, '-',
                         creditor_trans.type) AS TNO, concat(creditor_trans.$ref, if (type=" . ST_BANKPAYMENT . ", ' $BP ', if (type=" . ST_SUPPAYMENT . ", ' $SP ', ' $CN ')), suppliers.name) as IName
@@ -354,7 +354,7 @@
           $BD  = _("BD");
           $CP  = _("CP");
           $CN  = _("CN");
-          $ref = (Config::get('print_useinvoicenumber') == 0 ? "trans_no" : "reference");
+          $ref = (Config::_get('print_useinvoicenumber') == 0 ? "trans_no" : "reference");
           $sql
                = "SELECT concat(debtor_trans.trans_no, '-',
                         debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_BANKDEPOSIT . ", ' $BD ', if (type=" . ST_CUSTPAYMENT . ", ' $CP ', ' $CN ')), debtors.name) as IName
@@ -365,7 +365,7 @@
           $BD  = _("BD");
           $CP  = _("CP");
           $CN  = _("CN");
-          $ref = (Config::get('print_useinvoicenumber') == 0 ? "trans_no" : "reference");
+          $ref = (Config::_get('print_useinvoicenumber') == 0 ? "trans_no" : "reference");
           $sql
                = "SELECT concat(debtor_trans.trans_no, '-',
                         debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_BANKDEPOSIT . ", ' $BD ', if (type=" . ST_CUSTREFUND . ",

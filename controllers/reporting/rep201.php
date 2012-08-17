@@ -20,7 +20,7 @@
    */
   function get_open_balance($creditor_id, $to, $convert)
   {
-    $to  = Dates::dateToSql($to);
+    $to  = Dates::_dateToSql($to);
     $sql = "SELECT SUM(IF(creditor_trans.type = " . ST_SUPPINVOICE . ", (creditor_trans.ov_amount + creditor_trans.ov_gst +
      creditor_trans.ov_discount)";
     if ($convert) {
@@ -51,9 +51,9 @@
         FROM creditor_trans
      WHERE creditor_trans.tran_date < '$to'
         AND creditor_trans.creditor_id = '$creditor_id' GROUP BY creditor_id";
-    $result = DB::query($sql, "No transactions were returned");
+    $result = DB::_query($sql, "No transactions were returned");
 
-    return DB::fetch($result);
+    return DB::_fetch($result);
   }
 
   /**
@@ -65,8 +65,8 @@
    */
   function get_transactions($creditor_id, $from, $to)
   {
-    $from = Dates::dateToSql($from);
-    $to   = Dates::dateToSql($to);
+    $from = Dates::_dateToSql($from);
+    $to   = Dates::_dateToSql($to);
     $sql
                 = "SELECT creditor_trans.*,
                 (creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)
@@ -77,7 +77,7 @@
              WHERE creditor_trans.tran_date >= '$from' AND creditor_trans.tran_date <= '$to'
              AND creditor_trans.creditor_id = '$creditor_id'
                  ORDER BY creditor_trans.tran_date";
-    $trans_rows = DB::query($sql, "No transactions were returned");
+    $trans_rows = DB::_query($sql, "No transactions were returned");
 
     return $trans_rows;
   }
@@ -146,20 +146,20 @@
     $grandtotal = array(0, 0, 0, 0);
     $sql        = "SELECT creditor_id, name, curr_code FROM suppliers";
     if ($fromsupp != ALL_NUMERIC) {
-      $sql .= " WHERE creditor_id=" . DB::escape($fromsupp);
+      $sql .= " WHERE creditor_id=" . DB::_escape($fromsupp);
     }
     $sql .= " ORDER BY name";
-    $result = DB::query($sql, "The customers could not be retrieved");
-    while ($myrow = DB::fetch($result)) {
+    $result = DB::_query($sql, "The customers could not be retrieved");
+    while ($myrow = DB::_fetch($result)) {
       if (!$convert && $currency != $myrow['curr_code']) {
         continue;
       }
       $bal     = get_open_balance($myrow['creditor_id'], $from, $convert);
       $init[0] = $init[1] = 0.0;
-      $init[0] = Num::round(abs($bal['charges']), $dec);
-      $init[1] = Num::round(Abs($bal['credits']), $dec);
-      $init[2] = Num::round($bal['Allocated'], $dec);
-      $init[3] = Num::round($bal['OutStanding'], $dec);
+      $init[0] = Num::_round(abs($bal['charges']), $dec);
+      $init[1] = Num::_round(Abs($bal['credits']), $dec);
+      $init[2] = Num::_round($bal['Allocated'], $dec);
+      $init[3] = Num::_round($bal['OutStanding'], $dec);
       ;
       $total = array(0, 0, 0, 0);
       for ($i = 0; $i < 4; $i++) {
@@ -167,7 +167,7 @@
         $grandtotal[$i] += $init[$i];
       }
       $res = get_transactions($myrow['creditor_id'], $from, $to);
-      if ($no_zeros && DB::numRows($res) == 0) {
+      if ($no_zeros && DB::_numRows($res) == 0) {
         continue;
       }
       $rep->TextCol(0, 2, $myrow['name']);
@@ -181,11 +181,11 @@
       $rep->AmountCol(7, 8, $init[2], $dec);
       $rep->AmountCol(8, 9, $init[3], $dec);
       $rep->NewLine(1, 2);
-      if (DB::numRows($res) == 0) {
+      if (DB::_numRows($res) == 0) {
         continue;
       }
       $rep->Line($rep->row + 4);
-      while ($trans = DB::fetch($res)) {
+      while ($trans = DB::_fetch($res)) {
         if ($no_zeros && $trans['TotalAmount'] == 0 && $trans['Allocated'] == 0) {
           continue;
         }
@@ -204,13 +204,13 @@
           $rate = 1.0;
         }
         if ($trans['TotalAmount'] > 0.0) {
-          $item[0] = Num::round(abs($trans['TotalAmount']) * $rate, $dec);
+          $item[0] = Num::_round(abs($trans['TotalAmount']) * $rate, $dec);
           $rep->AmountCol(5, 6, $item[0], $dec);
         } else {
-          $item[1] = Num::round(abs($trans['TotalAmount']) * $rate, $dec);
+          $item[1] = Num::_round(abs($trans['TotalAmount']) * $rate, $dec);
           $rep->AmountCol(6, 7, $item[1], $dec);
         }
-        $item[2] = Num::round($trans['Allocated'] * $rate, $dec);
+        $item[2] = Num::_round($trans['Allocated'] * $rate, $dec);
         $rep->AmountCol(7, 8, $item[2], $dec);
         /*
                      if ($trans['type'] == 20)

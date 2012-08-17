@@ -32,14 +32,14 @@
         $sql .= " WHERE `$st[1]`=$trans_type";
       }
       $unique = false;
-      $result = DB::query($sql, "The next transaction number for $trans_type could not be retrieved");
-      $myrow  = DB::fetchRow($result);
+      $result = DB::_query($sql, "The next transaction number for $trans_type could not be retrieved");
+      $myrow  = DB::_fetchRow($result);
       $ref    = $myrow[0];
       while (!$unique) {
         $ref++;
         $sql    = "SELECT id FROM refs WHERE `id`=" . $ref . " AND `type`=" . $trans_type;
-        $result = DB::query($sql);
-        $unique = (DB::numRows($result) > 0) ? false : true;
+        $result = DB::_query($sql);
+        $unique = (DB::_numRows($result) > 0) ? false : true;
       }
       return $ref;
     }
@@ -113,7 +113,7 @@
     public static function get()
     {
       $sql    = "SELECT type_id,type_no,CONCAT(prefix,next_reference)as next_reference FROM sys_types";
-      $result = DB::query($sql, "could not query systypes table");
+      $result = DB::_query($sql, "could not query systypes table");
       return $result;
     }
     /**

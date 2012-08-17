@@ -33,7 +33,7 @@
         = <<<JS
 $.get('http://$host');
 JS;
-      JS::onload($js);
+      JS::_onload($js);
     }
     public function youtrack()
     {

@@ -7,7 +7,7 @@
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
      **/
-    JS::openWindow(950, 600);
+    JS::_openWindow(950, 600);
     Page::start(_($help_context = "View Sales Dispatch"), SA_SALESTRANSVIEW, true);
     if (isset($_GET["trans_no"])) {
         $trans_id = $_GET["trans_no"];
@@ -40,8 +40,8 @@
     Cell::labels(_("Sales Type"), $myrow["sales_type"], "class='label'");
     Row::end();
     Row::start();
-    Cell::labels(_("Dispatch Date"), Dates::sqlToDate($myrow["tran_date"]), "class='label'", ' class="nowrap"');
-    Cell::labels(_("Due Date"), Dates::sqlToDate($myrow["due_date"]), "class='label'", ' class="nowrap"');
+    Cell::labels(_("Dispatch Date"), Dates::_sqlToDate($myrow["tran_date"]), "class='label'", ' class="nowrap"');
+    Cell::labels(_("Due Date"), Dates::_sqlToDate($myrow["due_date"]), "class='label'", ' class="nowrap"');
     Cell::labels(_("Deliveries"), Debtor::viewTrans(ST_CUSTDELIVERY, Debtor_Trans::get_parent(ST_SALESINVOICE, $trans_id)), "class='label'");
     Row::end();
     DB_Comments::display_row(ST_CUSTDELIVERY, $trans_id);
@@ -50,7 +50,7 @@
     Table::end(1); // outer table
     $result = Debtor_TransDetail::get(ST_CUSTDELIVERY, $trans_id);
     Table::start('tablestyle grid width95');
-    if (DB::numRows($result) > 0) {
+    if (DB::_numRows($result) > 0) {
         $th = array(
             _("Item Code"),
             _("Item Description"),
@@ -63,16 +63,16 @@
         Table::header($th);
         $k         = 0; //row colour counter
         $sub_total = 0;
-        while ($myrow2 = DB::fetch($result)) {
+        while ($myrow2 = DB::_fetch($result)) {
             if ($myrow2['quantity'] == 0) {
                 continue;
             }
-            $value = Num::round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
+            $value = Num::_round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
             $sub_total += $value;
             if ($myrow2["discount_percent"] == 0) {
                 $display_discount = "";
             } else {
-                $display_discount = Num::percentFormat($myrow2["discount_percent"] * 100) . "%";
+                $display_discount = Num::_percentFormat($myrow2["discount_percent"] * 100) . "%";
             }
             Cell::label($myrow2["stock_id"]);
             Cell::label($myrow2["StockDescription"]);
@@ -86,18 +86,18 @@
     } else {
         Event::warning(_("There are no line items on this dispatch."), 1, 2);
     }
-    $display_sub_tot = Num::priceFormat($sub_total);
-    $display_freight = Num::priceFormat($myrow["ov_freight"]);
+    $display_sub_tot = Num::_priceFormat($sub_total);
+    $display_freight = Num::_priceFormat($myrow["ov_freight"]);
     /*Print out the delivery note text entered */
     Row::label(_("Sub-total"), $display_sub_tot, "colspan=6 class='alignright'", " class='alignright nowrap width15'");
     Row::label(_("Shipping"), $display_freight, "colspan=6 class='alignright'", ' class="alignright nowrap"');
     $tax_items = GL_Trans::get_tax_details(ST_CUSTDELIVERY, $trans_id);
     Debtor_Trans::display_tax_details($tax_items, 6);
-    $display_total = Num::priceFormat($myrow["ov_freight"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"] + $myrow["ov_gst"]);
+    $display_total = Num::_priceFormat($myrow["ov_freight"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"] + $myrow["ov_gst"]);
     Row::label(_("TOTAL VALUE"), $display_total, "colspan=6 class='alignright'", ' class="alignright nowrap"');
     Table::end(1);
     Display::is_voided(ST_CUSTDELIVERY, $trans_id, _("This dispatch has been voided."));
-    if (Input::get('frame')) {
+    if (Input::_get('frame')) {
         return;
     }
     Display::submenu_print(_("&Print This Delivery Note"), ST_CUSTDELIVERY, $_GET['trans_no'], 'prtopt');

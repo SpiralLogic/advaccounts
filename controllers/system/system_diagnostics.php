@@ -57,7 +57,7 @@
   {
     $test['descr']    = _('MySQL version') . ' >5.0';
     $test['type']     = 3;
-    $test['test']     = DB::getAttribute(PDO::ATTR_SERVER_VERSION);
+    $test['test']     = DB::_getAttribute(PDO::ATTR_SERVER_VERSION);
     $test['result']   = $test['test'] > '5.0';
     $test['comments'] = _('Upgrade MySQL server to version at least 5.1');
 
@@ -167,8 +167,8 @@
   {
     $test['descr']    = _('Debugging mode');
     $test['type']     = 0;
-    $test['test']     = Config::get('debug.enabled') ? _("Yes") : _("No");
-    $test['result']   = Config::get('debug.enabled') != 0;
+    $test['test']     = Config::_get('debug.enabled') ? _("Yes") : _("No");
+    $test['result']   = Config::_get('debug.enabled') != 0;
     $test['comments'] = _('To switch debugging on set true in config.php file');
 
     return $test;
@@ -182,15 +182,15 @@
     $test['descr'] = _('Error logging');
     $test['type']  = 2;
     // if error lgging is on, but log file does not exists try write
-    if (Config::get('debug.log_file') && !is_file(Config::get('debug.log_file'))) {
-      fclose(fopen(Config::get('debug.log_file'), 'w'));
+    if (Config::_get('debug.log_file') && !is_file(Config::_get('debug.log_file'))) {
+      fclose(fopen(Config::_get('debug.log_file'), 'w'));
     }
-    $test['result'] = Config::get('debug.log_file') != '' && is_writable(Config::get('debug.log_file'));
-    $test['test']   = Config::get('debug.log_file') == '' ? _("Disabled") : Config::get('debug.log_file');
-    if (Config::get('debug.log_file') == '') {
+    $test['result'] = Config::_get('debug.log_file') != '' && is_writable(Config::_get('debug.log_file'));
+    $test['test']   = Config::_get('debug.log_file') == '' ? _("Disabled") : Config::_get('debug.log_file');
+    if (Config::_get('debug.log_file') == '') {
       $test['comments'] = _('To switch error logging set $error_logging in config.php file');
     } else {
-      if (!is_writable(Config::get('debug.log_file'))) {
+      if (!is_writable(Config::_get('debug.log_file'))) {
         $test['comments'] = _('Log file is not writeable');
       }
     }
@@ -221,7 +221,7 @@
       return $test;
     }
     ;
-    foreach (Config::getAll('db') as $n => $comp) {
+    foreach (Config::_getAll('db') as $n => $comp) {
       $path = COMPANY_PATH . "";
       if (!is_dir($path) || !is_writable($path)) {
         $test['result']     = false;
@@ -276,7 +276,7 @@
     $test['comments'] = [];
     $old              = setlocale(LC_MESSAGES, '0');
     $langs            = [];
-    foreach (Config::get('languages.installed') as $language) {
+    foreach (Config::_get('languages.installed') as $language) {
       $langs[] = $language['code'];
       if ($language['code'] == 'en_AU') {
         continue;
@@ -323,7 +323,7 @@
     $test['test']       = DOCROOT . 'config' . DS . 'extensions.php';
     $test['result']     = is_file($test['test']) && is_writable($test['test']);
     $test['comments'][] = sprintf(_("'%s' file should be writeable"), $test['test']);
-    foreach (Config::getAll('db') as $n => $comp) {
+    foreach (Config::_getAll('db') as $n => $comp) {
       $path = COMPANY_PATH . "$n";
       if (!is_dir($path)) {
         continue;

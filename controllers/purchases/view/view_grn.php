@@ -8,7 +8,7 @@
      * @link      http://www.advancedgroup.com.au
      **/
 
-    JS::openWindow(950, 500);
+    JS::_openWindow(950, 500);
     Page::start(_($help_context = "View Purchase Order Delivery"), SA_SUPPTRANSVIEW, true);
     if (!isset($_GET['trans_no'])) {
         die ("<BR>" . _("This page must be called with a Purchase Order Delivery number to review."));
@@ -48,7 +48,7 @@
         Row::end();
         $total += $line_total;
     }
-    $display_total = Num::format($total, User::price_dec());
+    $display_total = Num::_format($total, User::price_dec());
     Row::label(_("Total Excluding Tax/Shipping"), $display_total, "colspan=6", ' class="alignright nowrap"');
     Table::end(1);
     Display::is_voided(ST_SUPPRECEIVE, $_GET['trans_no'], _("This delivery has been voided."));

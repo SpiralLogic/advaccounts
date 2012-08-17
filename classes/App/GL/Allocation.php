@@ -138,7 +138,7 @@
             }
             if ($type == ST_BANKPAYMENT || $type == ST_BANKDEPOSIT) {
                 $result            = Bank_Trans::get($type, $trans_no);
-                $bank_trans        = DB::fetch($result);
+                $bank_trans        = DB::_fetch($result);
                 $this->person_type = $bank_trans['person_type_id'] == PT_SUPPLIER;
             } else {
                 $this->person_type = $type == ST_SUPPCREDIT || $type == ST_SUPPAYMENT;
@@ -149,10 +149,10 @@
                 $this->person_id   = $trans[$this->person_type ? 'creditor_id' : 'debtor_id'];
                 $this->person_name = $trans[$this->person_type ? "supplier_name" : "DebtorName"];
                 $this->amount      = $trans["Total"];
-                $this->date_       = Dates::sqlToDate($trans["tran_date"]);
+                $this->date_       = Dates::_sqlToDate($trans["tran_date"]);
             } else {
-                $this->person_id = Input::post($this->person_type ? 'creditor_id' : 'debtor_id');
-                $this->date_     = Input::post($this->person_type ? 'date_' : 'DateBanked', null, Dates::today());
+                $this->person_id = Input::_post($this->person_type ? 'creditor_id' : 'debtor_id');
+                $this->date_     = Input::_post($this->person_type ? 'date_' : 'DateBanked', null, Dates::_today());
             }
             /* Now populate the array of possible (and previous actual) allocations
        for this customer/supplier. First get the transactions that have
@@ -162,13 +162,13 @@
             } else {
                 Sales_Allocation::get_to_trans($this->person_id);
             }
-            $results = DB::fetchAll();
+            $results = DB::_fetchAll();
             foreach ($results as $myrow) {
                 $this->add_item(
                     $myrow["type"],
                     $myrow["trans_no"],
-                    Dates::sqlToDate($myrow["tran_date"]),
-                    Dates::sqlToDate($myrow["due_date"]),
+                    Dates::_sqlToDate($myrow["tran_date"]),
+                    Dates::_sqlToDate($myrow["due_date"]),
                     $myrow["Total"], // trans total
                     $myrow["alloc"], // trans total allocated
                     0
@@ -185,13 +185,13 @@
             } else {
                 Sales_Allocation::get_to_trans($this->person_id, $trans_no, $type);
             }
-            $results = DB::fetchAll();
+            $results = DB::_fetchAll();
             foreach ($results as $myrow) {
                 $this->add_or_update_item(
                     $myrow["type"],
                     $myrow["trans_no"],
-                    Dates::sqlToDate($myrow["tran_date"]),
-                    Dates::sqlToDate($myrow["due_date"]),
+                    Dates::_sqlToDate($myrow["tran_date"]),
+                    Dates::_sqlToDate($myrow["due_date"]),
                     $myrow["Total"],
                   $myrow["alloc"] - $myrow["amt"],
                     $myrow["amt"]
@@ -200,7 +200,7 @@
         }
         public function write()
         {
-            DB::begin();
+            DB::_begin();
             if ($this->person_type) {
                 Purch_Allocation::clear($this->type, $this->trans_no, $this->date_);
             } else {
@@ -236,7 +236,7 @@
             } else {
                 Sales_Allocation::update($this->type, $this->trans_no, $total_allocated);
             }
-            DB::commit();
+            DB::_commit();
         }
         /**
          * @static
@@ -269,15 +269,15 @@
                     Cell::label($alloc_item->due_date, "class='alignright'");
                     Cell::amount($alloc_item->amount);
                     Cell::amount($alloc_item->amount_allocated);
-                    $_POST['amount' . $counter] = Num::priceFormat($alloc_item->current_allocated + Input::post('amount' . $counter, Input::NUMERIC));
-                    Forms::amountCells(null, "amount" . $counter, Num::priceFormat('amount' . $counter));
+                    $_POST['amount' . $counter] = Num::_priceFormat($alloc_item->current_allocated + Input::_post('amount' . $counter, Input::NUMERIC));
+                    Forms::amountCells(null, "amount" . $counter, Num::_priceFormat('amount' . $counter));
                     $un_allocated = $alloc_item->amount - $alloc_item->amount_allocated;
                     Cell::amount($un_allocated, false, '');
                     Cell::label("<a href='#' name=Alloc$counter class='button allocateAll'>" . _("All") . "</a>");
                     Cell::label(
                         "<a href='#' name=DeAll$counter class='button allocateNone'>" . _("None") . "</a>" . Forms::hidden(
                             "un_allocated" . $counter,
-                            Num::priceFormat($un_allocated),
+                            Num::_priceFormat($un_allocated),
                             false
                         )
                     );
@@ -286,7 +286,7 @@
                     $counter++;
                 }
                 if ($show_totals) {
-                    Row::label(_("Total Allocated"), Num::priceFormat($total_allocated), "colspan=6 class='alignright'", "class='alignright' id='total_allocated'", 3);
+                    Row::label(_("Total Allocated"), Num::_priceFormat($total_allocated), "colspan=6 class='alignright'", "class='alignright' id='total_allocated'", 3);
                     $amount = $_SESSION['alloc']->amount;
                     if ($_SESSION['alloc']->type == ST_SUPPCREDIT || $_SESSION['alloc']->type == ST_SUPPAYMENT || $_SESSION['alloc']->type == ST_BANKPAYMENT
                     ) {
@@ -298,7 +298,7 @@
                     } else {
                         $font1 = $font2 = "";
                     }
-                    $left_to_allocate = Num::priceFormat($amount - $total_allocated);
+                    $left_to_allocate = Num::_priceFormat($amount - $total_allocated);
                     Row::label(_("Left to Allocate"), $font1 . $left_to_allocate . $font2, "colspan=6 class='alignright'", " class='alignright nowrap' id='left_to_allocate'", 3);
                 }
                 Table::end(1);
@@ -315,13 +315,13 @@
             for ($counter = 0; $counter < $_POST["TotalNumberOfAllocs"]; $counter++) {
                 if (!Validation::post_num('amount' . $counter, 0)) {
                     Event::error(_("The entry for one or more amounts is invalid or negative."));
-                    JS::setFocus('amount' . $counter);
+                    JS::_setFocus('amount' . $counter);
 
                     return false;
                 }
                 if (Validation::input_num('amount' . $counter) > Validation::input_num('un_allocated' . $counter)) {
                     Event::error(_("At least one transaction is overallocated."));
-                    JS::setFocus('amount' . $counter);
+                    JS::_setFocus('amount' . $counter);
 
                     return false;
                 }
@@ -332,7 +332,7 @@
             if (in_array($_SESSION['alloc']->type, array(ST_BANKPAYMENT, ST_SUPPCREDIT, ST_SUPPAYMENT))) {
                 $amount = -$amount;
             }
-            if ($total_allocated - ($amount + Validation::input_num('discount')) > Config::get('accounts.allocation_allowance')) {
+            if ($total_allocated - ($amount + Validation::input_num('discount')) > Config::_get('accounts.allocation_allowance')) {
                 Event::error(_("These allocations cannot be processed because the amount allocated is more than the total amount left to allocate."));
 
                 return false;
@@ -364,13 +364,13 @@
             $doc = new Sales_Order($type, 0);
             $doc->start();
             $doc->trans_type = $type;
-            $doc->due_date   = $doc->document_date = Dates::newDocDate($date);
+            $doc->due_date   = $doc->document_date = Dates::_newDocDate($date);
             $doc->set_customer($customer->id, $customer->name, $customer->curr_code, $customer->discount, $customer->payment_terms);
             $doc->set_branch($customer->branches[$branch_id]->id, $customer->branches[$branch_id]->tax_group_id);
             $doc->pos        = User::pos();
-            $doc->ship_via   = Config::get('default.ship_via', 1);
+            $doc->ship_via   = Config::_get('default.ship_via', 1);
             $doc->sales_type = 1;
-            $doc->location   = Config::get('default.location');
+            $doc->location   = Config::_get('default.location');
             $doc->cust_ref   = $ref;
             $doc->Comments   = "Invoice for Customer Payment: " . $doc->cust_ref;
             $doc->salesman   = User::i()->salesmanid;
@@ -390,7 +390,7 @@
         public static function display($alloc_result, $total)
         {
             global $systypes_array;
-            if (!$alloc_result || DB::numRows() == 0) {
+            if (!$alloc_result || DB::_numRows() == 0) {
                 return;
             }
             Display::heading(_("Allocations"));
@@ -398,12 +398,12 @@
             $th = array(_("Type"), _("Number"), _("Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation"));
             Table::header($th);
             $k = $total_allocated = 0;
-            while ($alloc_row = DB::fetch($alloc_result)) {
+            while ($alloc_row = DB::_fetch($alloc_result)) {
                 Cell::label($systypes_array[$alloc_row['type']]);
                 Cell::label(GL_UI::viewTrans($alloc_row['type'], $alloc_row['trans_no']));
-                Cell::label(Dates::sqlToDate($alloc_row['tran_date']));
-                $alloc_row['Total'] = Num::round($alloc_row['Total'], User::price_dec());
-                $alloc_row['amt']   = Num::round($alloc_row['amt'], User::price_dec());
+                Cell::label(Dates::_sqlToDate($alloc_row['tran_date']));
+                $alloc_row['Total'] = Num::_round($alloc_row['Total'], User::price_dec());
+                $alloc_row['amt']   = Num::_round($alloc_row['amt'], User::price_dec());
                 Cell::amount($alloc_row['Total']);
                 //Cell::amount($alloc_row['Total'] - $alloc_row['PrevAllocs'] - $alloc_row['amt']);
                 Cell::amount($alloc_row['Total'] - $alloc_row['amt']);
@@ -417,7 +417,7 @@
             Row::end();
             Row::start();
             Cell::label(_("Left to Allocate:"), "class='alignright' colspan=5");
-            $total = Num::round($total, User::price_dec());
+            $total = Num::_round($total, User::price_dec());
             Cell::amount($total - $total_allocated);
             Row::end();
             Table::end(1);
@@ -514,7 +514,7 @@
             $_POST['OrderDate']        = $order->document_date;
             $_POST['delivery_date']    = $order->due_date;
             $_POST['cust_ref']         = $order->cust_ref;
-            $_POST['freight_cost']     = Num::priceFormat($order->freight_cost);
+            $_POST['freight_cost']     = Num::_priceFormat($order->freight_cost);
             $_POST['deliver_to']       = $order->deliver_to;
             $_POST['delivery_address'] = $order->delivery_address;
             $_POST['name']             = $order->name;

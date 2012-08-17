@@ -10,13 +10,13 @@
   namespace ADV\Core;
 
   /**
-   * @method get($var, $default = false)
-   * @method removeAll()
+   * @method _get($var, $default = false)
+   * @method _removeAll()
    * @method Config i()
    */
   class Config
   {
-    use Traits\StaticAccess;
+    use Traits\StaticAccess2;
 
     /***
      * @var array|null
@@ -31,7 +31,7 @@
      * @internal param string $group
      * @return mixed
      */
-    public function _set($var, $value) {
+    public function set($var, $value) {
       if (!strstr($var, '.')) {
         $var = 'config.' . $var;
       }
@@ -51,7 +51,7 @@
      * @internal param null $array_key
      * @return Array|mixed
      */
-    public function _get($var, $default = false) {
+    public function get($var, $default = false) {
       if (!strstr($var, '.')) {
         $var = 'config.' . $var;
       }
@@ -71,7 +71,7 @@
      * @param        $var
      * @param string $group
      */
-    public function _remove($var, $group = 'config') {
+    public function remove($var, $group = 'config') {
       if (array_key_exists($var, $this->_vars[$group])) {
         unset($this->_vars[$group][$var]);
       }
@@ -85,7 +85,7 @@
      * @return mixed
      * @return array
      */
-    public function _getAll($group = 'config', $default = []) {
+    public function getAll($group = 'config', $default = []) {
       if (!isset($this->_vars[$group]) && $this->load($group) === false) {
         return $default;
       }
@@ -96,23 +96,23 @@
      * @static
 
      */
-    public function _removeAll() {
-      Cache::delete('config');
+    public function removeAll() {
+      $this->Cache->delete('config');
       $this->_vars = [];
     }
     /**
      * @static
 
      */
-    public function _reset() {
-      $this->_removeAll();
+    public function reset() {
+      $this->removeAll();
       $this->load();
     }
     /**
      * @return mixed
      */
-    public function _shutdown() {
-      return $this->Cache->_set('config', $this->_vars);
+    public function shutdown() {
+      return $this->Cache->set('config', $this->_vars);
     }
     public function __construct(Cache $cache = null) {
       $this->Cache = $cache ? : Cache::i();
@@ -120,7 +120,7 @@
         $this->Cache->delete('config');
         header('Location: /');
       } elseif ($this->_vars === null) {
-        $this->_vars = $this->Cache->_get('config');
+        $this->_vars = $this->Cache->get('config');
       }
       if (!$this->_vars) {
         $this->load();

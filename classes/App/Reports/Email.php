@@ -63,15 +63,15 @@
       $this->Config = \Config::i();
       $this->mail   = new PHPMailer(true);
       $this->mail->IsSMTP(); // telling the class to use SMTP
-      $this->mail->Host     = $this->Config->_get('email.server'); // SMTP server
-      $this->mail->Username = $this->Config->_get('email.username');
-      $this->mail->Password = $this->Config->_get('email.password');
-      $this->mail->From     = $this->Config->_get('email.from_email');
+      $this->mail->Host     = $this->Config->get('email.server'); // SMTP server
+      $this->mail->Username = $this->Config->get('email.username');
+      $this->mail->Password = $this->Config->get('email.password');
+      $this->mail->From     = $this->Config->get('email.from_email');
       $this->mail->SMTPAuth = true;
       $this->mail->WordWrap = 50;
       if ($defaults) {
-        $this->mail->FromName = $this->Config->_get('email.from_name');
-        $bcc                  = $this->Config->_get('email.bcc');
+        $this->mail->FromName = $this->Config->get('email.from_name');
+        $bcc                  = $this->Config->get('email.bcc');
         if ($bcc) {
           $this->mail->AddBCC($bcc);
         }

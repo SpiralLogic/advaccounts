@@ -180,10 +180,10 @@ all the info to do the necessary entries without looking up ie additional querie
                     echo "<div class='center'>";
                     echo _("Quick Entry:") . "&nbsp;";
                     echo GL_QuickEntry::select('qid', null, QE_SUPPINV, true);
-                    $qid = GL_QuickEntry::get(Input::post('qid'));
+                    $qid = GL_QuickEntry::get(Input::_post('qid'));
                     if (Forms::isListUpdated('qid')) {
                         unset($_POST['total_amount']); // enable default
-                        Ajax::activate('total_amount');
+                        Ajax::_activate('total_amount');
                     }
                     echo "&nbsp;" . $qid['base_desc'] . ":&nbsp;";
                     $amount = Validation::input_num('total_amount', $qid['base_amount']);
@@ -252,7 +252,7 @@ all the info to do the necessary entries without looking up ie additional querie
             $colspan = ($dim == 2 ? 5 : ($dim == 1 ? 4 : 3));
             Row::label(
                 _("Total"),
-                Num::priceFormat($total_gl_value),
+                Num::_priceFormat($total_gl_value),
               "colspan=" . $colspan . " class='alignright bold'",
                 "nowrap class='alignright bold'",
                 ($mode == 1 ? 3 : 0)

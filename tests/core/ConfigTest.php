@@ -15,8 +15,8 @@
     protected function setUp() {
       $this->object = new Config;
       $cache        = $this->getMockBuilder('\\ADV\\Core\\Cache')->disableOriginalConstructor()->getMock();
-      $cache->expects($this->any())->method('_delete')->will($this->returnValue(true));
-      $cache->expects($this->any())->method('_set')->will($this->returnArgument(1));
+      $cache->expects($this->any())->method('delete')->will($this->returnValue(true));
+      $cache->expects($this->any())->method('set')->will($this->returnArgument(1));
     }
     /**
      * Tears down the fixture, for example, closes a network connection.
@@ -25,11 +25,11 @@
     protected function tearDown() {
     }
     /**
-     * @covers ADV\Core\Config::_set
+     * @covers ADV\Core\Config::__set
      * @todo   Implement test_set().
      */
     public function test_set() {
-      $result = $this->object->_set('test', 'val');
+      $result = $this->object->set('test', 'val');
       $this->assertEquals('val', $result);
       $vars = $this->readAttribute($this->object, '_vars');
       $this->assertArrayHasKey('config', $vars);
@@ -37,77 +37,77 @@
       $this->assertArrayHasKey('test', $vars);
     }
     /**
-     * @covers ADV\Core\Config::_get
+     * @covers ADV\Core\Config::__get
      * @depnds test_set
      */
     public function test_get() {
-      $this->object->_set('test', 'val');
-      $actual = $this->object->_get('test');
+      $this->object->set('test', 'val');
+      $actual = $this->object->get('test');
       $this->assertEquals('val', $actual);
-      $actual = $this->object->_get('test2', 'default');
+      $actual = $this->object->get('test2', 'default');
       $this->assertEquals('default', $actual);
     }
     /**
-     * @covers  ADV\Core\Config::_remove
+     * @covers  ADV\Core\Config::__remove
      * @depends test_set
      */
     public function test_remove() {
-      $this->object->_set('test', 'val');
+      $this->object->set('test', 'val');
       $vars = $this->readAttribute($this->object, '_vars');
       $this->assertArrayHasKey('config', $vars);
       $vars = $vars['config'];
       $this->assertArrayHasKey('test', $vars);
-      $this->object->_remove('test');
+      $this->object->remove('test');
       $vars = $this->readAttribute($this->object, '_vars');
       $this->assertArrayHasKey('config', $vars);
       $vars = $vars['config'];
       $this->assertArrayNotHasKey('test', $vars);
     }
     /**
-     * @covers ADV\Core\Config::_getAll
+     * @covers ADV\Core\Config::__getAll
      */
     public function test_getAll() {
       $vars = $this->readAttribute($this->object, '_vars');
-      $this->assertEquals($vars['config'], $this->object->_getAll());
-      $actual = $this->object->_getAll('apps');
+      $this->assertEquals($vars['config'], $this->object->getAll());
+      $actual = $this->object->getAll('apps');
       $vars   = $this->readAttribute($this->object, '_vars');
       $this->assertEquals($vars['apps'], $actual);
       return $vars;
     }
     /**
-     * @covers  ADV\Core\Config::_removeAll
+     * @covers  ADV\Core\Config::__removeAll
      * @depends test_getAll
      */
     public function test_removeAll($vars) {
-      $actual = $this->object->_getAll('apps');
+      $actual = $this->object->getAll('apps');
       $this->assertEquals($vars['apps'], $actual);
-      $this->object->_removeAll();
+      $this->object->removeAll();
       $actual = $this->readAttribute($this->object, '_vars');
       $this->assertEquals([], $actual);
     }
     /**
-     * @covers ADV\Core\Config::_reset
+     * @covers ADV\Core\Config::__reset
      */
     public function test_reset() {
-      $actual = $this->object->_getAll(); // Remove the following lines when you implement this test.
+      $actual = $this->object->getAll(); // Remove the following lines when you implement this test.
       $this->assertAttributeNotEmpty('_vars', $this->object);
       $vars = $this->readAttribute($this->object, '_vars');
       $this->assertArrayHasKey('config', $vars);
       $this->assertSame($vars['config'], $actual);
-      $this->object->_set('config.test', 'testing');
+      $this->object->set('config.test', 'testing');
       $vars = $this->readAttribute($this->object, '_vars');
       $this->assertSame($vars['config']['test'], 'testing');
-      $this->object->_reset();
+      $this->object->reset();
       $this->assertAttributeNotEmpty('_vars', $this->object);
       $vars = $this->readAttribute($this->object, '_vars');
       $this->assertArrayNotHasKey('test', $vars['config']);
     }
     /**
-     * @covers ADV\Core\Config::_shutdown
+     * @covers ADV\Core\Config::__shutdown
      * @todo   Implement test_shutdown().
      */
     public function test_shutdown() {
-      $actual   = $this->object->_shutdown();
+      $actual   = $this->object->shutdown();
       $expected = $this->readAttribute($this->object, '_vars');
       $this->assertSame($expected, $actual);
     }

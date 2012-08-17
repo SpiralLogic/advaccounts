@@ -19,12 +19,12 @@
    */
   function get_bank_balance_to($to, $account)
   {
-    $to = Dates::dateToSql($to);
+    $to = Dates::_dateToSql($to);
     $sql
             = "SELECT SUM(amount) FROM bank_trans WHERE bank_act='$account'
     AND trans_date < '$to'";
-    $result = DB::query($sql, "The starting balance on hand could not be calculated");
-    $row    = DB::fetchRow($result);
+    $result = DB::_query($sql, "The starting balance on hand could not be calculated");
+    $row    = DB::_fetchRow($result);
 
     return $row[0];
   }
@@ -38,8 +38,8 @@
    */
   function get_bank_transactions($from, $to, $account)
   {
-    $from = Dates::dateToSql($from);
-    $to   = Dates::dateToSql($to);
+    $from = Dates::_dateToSql($from);
+    $to   = Dates::_dateToSql($to);
     $sql
           = "SELECT bank_trans.* FROM bank_trans
         WHERE bank_trans.bank_act = '$account'
@@ -47,7 +47,7 @@
         AND trans_date <= '$to'
         ORDER BY trans_date,bank_trans.id";
 
-    return DB::query($sql, "The transactions for '$account' could not be retrieved");
+    return DB::_query($sql, "The transactions for '$account' could not be retrieved");
   }
 
   function print_bank_transactions()
@@ -87,7 +87,7 @@
     $rep->Header();
     $prev_balance = get_bank_balance_to($from, $account["id"]);
     $trans        = get_bank_transactions($from, $to, $account['id']);
-    $rows         = DB::numRows($trans);
+    $rows         = DB::_numRows($trans);
     if ($prev_balance != 0.0 || $rows != 0) {
       $rep->Font('bold');
       $rep->TextCol(0, 3, $act);
@@ -104,7 +104,7 @@
         // Keep a running total as we loop through
         // the transactions.
         $total_debit = $total_credit = 0;
-        while ($myrow = DB::fetch($trans)) {
+        while ($myrow = DB::_fetch($trans)) {
           $total += $myrow['amount'];
           $rep->TextCol(0, 1, $systypes_array[$myrow["type"]]);
           $rep->TextCol(1, 2, $myrow['trans_no']);

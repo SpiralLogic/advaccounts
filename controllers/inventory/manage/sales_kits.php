@@ -10,10 +10,10 @@
   Page::start(_($help_context = "Sales Kits & Alias Codes"), SA_SALESKIT);
   Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
   list($Mode, $selected_id) = Page::simple_mode(true);
-  if (Input::post('update_name')) {
-    Item_Code::update_kit_props(Input::post('item_code'), Input::post('description'), Input::post('category'));
+  if (Input::_post('update_name')) {
+    Item_Code::update_kit_props(Input::_post('item_code'), Input::_post('description'), Input::_post('category'));
     Event::success(_('Kit common properties has been updated'));
-    Ajax::activate('_page_body');
+    Ajax::_activate('_page_body');
   }
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     update_component($Mode, $_POST['item_code'], $selected_id);
@@ -23,12 +23,12 @@
     // if selected kit is not included in any other kit.
     //
     $other_kits = Item_Code::get_where_used($_POST['item_code']);
-    $num_kits   = DB::numRows($other_kits);
+    $num_kits   = DB::_numRows($other_kits);
     $kit        = Item_Code::get_kit($_POST['item_code']);
-    if ((DB::numRows($kit) == 1) && $num_kits) {
+    if ((DB::_numRows($kit) == 1) && $num_kits) {
       $msg = _("This item cannot be deleted because it is the last item in the kit used by following kits") . ':<br>';
       while ($num_kits--) {
-        $kit = DB::fetch($other_kits);
+        $kit = DB::_fetch($other_kits);
         $msg .= "'" . $kit[0] . "'";
         if ($num_kits) {
           $msg .= ',';
@@ -49,15 +49,15 @@
   echo "<div class='center'>" . _("Select a sale kit:") . "&nbsp;";
   echo Sales_UI::kits('item_code', null, _('New kit'), true);
   echo "</div><br>";
-  $props = Item_Code::get_kit_props(Input::post('item_code'));
+  $props = Item_Code::get_kit_props(Input::_post('item_code'));
   if (Forms::isListUpdated('item_code')) {
-    if (Input::post('item_code') == '') {
+    if (Input::_post('item_code') == '') {
       $_POST['description'] = '';
     }
-    Ajax::activate('_page_body');
+    Ajax::_activate('_page_body');
   }
   $selected_kit = $_POST['item_code'];
-  if (Input::post('item_code') == '') {
+  if (Input::_post('item_code') == '') {
     // New sales kit entry
     Table::start('tablestyle2');
     Forms::textRow(_("Alias/kit code:"), 'kit_code', null, 20, 21);
@@ -78,13 +78,13 @@
   if ($Mode == MODE_EDIT) {
     $myrow              = Item_Code::get($selected_id);
     $_POST['component'] = $myrow["stock_id"];
-    $_POST['quantity']  = Num::format($myrow["quantity"], Item::qty_dec($myrow["stock_id"]));
+    $_POST['quantity']  = Num::_format($myrow["quantity"], Item::qty_dec($myrow["stock_id"]));
   }
   Forms::hidden("selected_id", $selected_id);
   Sales_UI::local_items_row(_("Component:"), 'component', null, false, true);
-  //	if (Input::post('description') == '')
+  //	if (Input::_post('description') == '')
   //		$_POST['description'] = get_kit_name($_POST['component']);
-  if (Input::post('item_code') == '') { // new kit/alias
+  if (Input::_post('item_code') == '') { // new kit/alias
     if ($Mode != ADD_ITEM && $Mode != UPDATE_ITEM) {
       $_POST['description'] = $props['description'];
       $_POST['category']    = $props['category_id'];
@@ -92,15 +92,15 @@
     Forms::textRow(_("Description:"), 'description', null, 50, 200);
     Item_Category::row(_("Category:"), 'category', null);
   }
-  $res   = Item::get_edit_info(Input::post('component'));
+  $res   = Item::get_edit_info(Input::_post('component'));
   $dec   = $res["decimals"] == '' ? 0 : $res["decimals"];
   $units = $res["units"] == '' ? _('kits') : $res["units"];
   if (Forms::isListUpdated('component')) {
-    $_POST['quantity'] = Num::format(1, $dec);
-    Ajax::activate('quantity');
-    Ajax::activate('category');
+    $_POST['quantity'] = Num::_format(1, $dec);
+    Ajax::_activate('quantity');
+    Ajax::_activate('category');
   }
-  Forms::qtyRow(_("Quantity:"), 'quantity', Num::format(1, $dec), '', $units, $dec);
+  Forms::qtyRow(_("Quantity:"), 'quantity', Num::_format(1, $dec), '', $units, $dec);
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();
@@ -118,7 +118,7 @@
     );
     Table::header($th);
     $k = 0;
-    while ($myrow = DB::fetch($result)) {
+    while ($myrow = DB::_fetch($result)) {
       Cell::label($myrow["stock_id"]);
       Cell::label($myrow["comp_name"]);
       Cell::qty($myrow["quantity"], false, $myrow["units"] == '' ? 0 : Item::qty_dec($myrow["comp_name"]));
@@ -143,27 +143,27 @@
     global $selected_kit;
     if (!Validation::post_num('quantity', 0)) {
       Event::error(_("The quantity entered must be numeric and greater than zero."));
-      JS::setFocus('quantity');
+      JS::_setFocus('quantity');
 
       return;
     } elseif ($_POST['description'] == '') {
       Event::error(_("Item code description cannot be empty."));
-      JS::setFocus('description');
+      JS::_setFocus('description');
 
       return;
     } elseif ($selected_item == -1) // adding new item or new alias/kit
     {
-      if (Input::post('item_code') == '') { // New kit/alias definition
+      if (Input::_post('item_code') == '') { // New kit/alias definition
         $kit = Item_Code::get_kit($_POST['kit_code']);
-        if (DB::numRows($kit)) {
+        if (DB::_numRows($kit)) {
           Event::error(_("This item code is already assigned to stock item or sale kit."));
-          JS::setFocus('kit_code');
+          JS::_setFocus('kit_code');
 
           return;
         }
-        if (Input::post('kit_code') == '') {
+        if (Input::_post('kit_code') == '') {
           Event::error(_("Kit/alias code cannot be empty."));
-          JS::setFocus('kit_code');
+          JS::_setFocus('kit_code');
 
           return;
         }
@@ -171,14 +171,14 @@
     }
     if (Item_Code::is_item_in_kit($selected_item, $kit_code, $_POST['component'], true)) {
       Event::error(_("The selected component contains directly or on any lower level the kit under edition. Recursive kits are not allowed."));
-      JS::setFocus('component');
+      JS::_setFocus('component');
 
       return;
     }
     /*Now check to see that the component is not already in the kit */
     if (Item_Code::is_item_in_kit($selected_item, $kit_code, $_POST['component'])) {
       Event::error(_("The selected component is already in this kit. You can modify it's quantity but it cannot appear more than once in the same kit."));
-      JS::setFocus('component');
+      JS::_setFocus('component');
 
       return;
     }
@@ -190,14 +190,14 @@
       } else {
         $msg = _("New component has been added to selected kit.");
       }
-      Item_Code::add($kit_code, Input::post('component'), Input::post('description'), Input::post('category'), Validation::input_num('quantity'), 0);
+      Item_Code::add($kit_code, Input::_post('component'), Input::_post('description'), Input::_post('category'), Validation::input_num('quantity'), 0);
       Event::success($msg);
     } else {
       $props = Item_Code::get_kit_props($_POST['item_code']);
-      Item_Code::update($selected_item, $kit_code, Input::post('component'), $props['description'], $props['category_id'], Validation::input_num('quantity'), 0);
+      Item_Code::update($selected_item, $kit_code, Input::_post('component'), $props['description'], $props['category_id'], Validation::input_num('quantity'), 0);
       Event::success(_("Component of selected kit has been updated."));
     }
     $Mode = MODE_RESET;
-    Ajax::activate('_page_body');
+    Ajax::_activate('_page_body');
   }
 

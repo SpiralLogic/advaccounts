@@ -45,7 +45,7 @@
       $this->User    = User::getCurrentUser($this->Session, Config::i());
       $this->DB      = DB::i();
       $this->Input   = Input::i();
-      $this->action  = $this->Input->_post('_action');
+      $this->action  = $this->Input->post('_action');
       $this->before();
       $this->index();
       $this->after();

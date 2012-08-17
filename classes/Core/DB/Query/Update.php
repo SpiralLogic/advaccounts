@@ -12,7 +12,7 @@
   use ADV\Core\DB\DB;
 
   /**
-   * @method values($values)
+   * @method \ADV\Core\DB\Query\Select values($values)
    */
   class Update extends Insert
   {

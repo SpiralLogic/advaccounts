@@ -27,7 +27,7 @@
   Cell::labels(_("Reference"), $from_trans['reference'], "class='tablerowhead'");
   $adjustment_type = Inv_Movement::get_type($from_trans['person_id']);
   Cell::labels(_("Adjustment Type"), $adjustment_type['name'], "class='tablerowhead'");
-  Cell::labels(_("Date"), Dates::sqlToDate($from_trans['tran_date']), "class='tablerowhead'");
+  Cell::labels(_("Date"), Dates::_sqlToDate($from_trans['tran_date']), "class='tablerowhead'");
   Row::end();
   DB_Comments::display_row(ST_LOCTRANSFER, $trans_no);
   Table::end(1);
@@ -37,7 +37,7 @@
   Table::header($th);
   $transfer_items = Inv_Movement::get(ST_LOCTRANSFER, $trans_no);
   $k              = 0;
-  while ($item = DB::fetch($transfer_items)) {
+  while ($item = DB::_fetch($transfer_items)) {
     if ($item['loc_code'] == $to_trans['loc_code']) {
 
       Cell::label($item['stock_id']);
