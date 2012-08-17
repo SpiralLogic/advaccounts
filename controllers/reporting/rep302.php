@@ -33,10 +33,10 @@
         WHERE stock_master.category_id=stock_category.category_id
         AND (stock_master.mb_flag='" . STOCK_PURCHASED . "' OR stock_master.mb_flag='" . STOCK_MANUFACTURE . "')";
     if ($category != 0) {
-      $sql .= " AND stock_master.category_id = " . DB::escape($category);
+      $sql .= " AND stock_master.category_id = " . DB::_escape($category);
     }
     if ($location != 'all') {
-      $sql .= " AND IF(stock_moves.stock_id IS null, '1=1',stock_moves.loc_code = " . DB::escape($location) . ")";
+      $sql .= " AND IF(stock_moves.stock_id IS null, '1=1',stock_moves.loc_code = " . DB::_escape($location) . ")";
     }
     $sql
       .= " GROUP BY stock_master.category_id,
@@ -46,7 +46,7 @@
         ORDER BY stock_master.category_id,
         stock_master.stock_id";
 
-    return DB::query($sql, "No transactions were returned");
+    return DB::_query($sql, "No transactions were returned");
   }
 
   /**
@@ -74,9 +74,9 @@
             AND loc_code ='$location'
             AND (type=13 OR type=11)
             AND visible=1";
-    $trans_rows = DB::query($sql, "No transactions were returned");
+    $trans_rows = DB::_query($sql, "No transactions were returned");
 
-    return DB::fetch($trans_rows);
+    return DB::_fetch($trans_rows);
   }
 
   function print_inventory_planning()
@@ -134,7 +134,7 @@
     $rep->Header();
     $res  = get_transactions($category, $location);
     $catt = '';
-    while ($trans = DB::fetch($res)) {
+    while ($trans = DB::_fetch($res)) {
       if ($catt != $trans['cat_name']) {
         if ($catt != '') {
           $rep->Line($rep->row - 2);

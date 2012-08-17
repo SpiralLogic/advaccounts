@@ -75,20 +75,20 @@
       $upload_id = (isset($_REQUEST['id'])) ? stripslashes($_REQUEST['id']) : null;
       if ($upload_id) {
         $sql    = "SELECT content as content,type FROM upload WHERE `id` = {$upload_id}";
-        $result = DB::query($sql, 'Could not retrieve file');
-        $result = DB::fetchAssoc($result);
+        $result = DB::_query($sql, 'Could not retrieve file');
+        $result = DB::_fetchAssoc($result);
         header('Cache-Control: no-cache, must-revalidate');
         header('Content-type: ' . $result['type']);
         $content = $result['content'];
         echo $content;
       } else {
         $sql    = "SELECT `id`,`filename` as name, `size` ,`type` FROM upload WHERE `order_no` = " . $this->order_no;
-        $result = DB::query($sql, 'Could not retrieve upload information');
-        if (DB::numRows($result) < 1) {
+        $result = DB::_query($sql, 'Could not retrieve upload information');
+        if (DB::_numRows($result) < 1) {
           return;
         } else {
           /** @noinspection PhpAssignmentInConditionInspection */
-          while ($row = DB::fetchAssoc($result)) {
+          while ($row = DB::_fetchAssoc($result)) {
             $info[] = $row;
           }
         }
@@ -132,7 +132,7 @@
      */
     public static function insert($id) {
       if (!self::$inserted) {
-        JS::footerFile(array(
+        JS::_footerFile(array(
                             '/js/js2/jquery.fileupload.js', '/js/js2/jquery.fileupload-ui.js', '/js/js2/jquery.fileupload-app.js'
                        ));
         self::$inserted = true;
@@ -187,7 +187,7 @@
       $name   = isset($_REQUEST['file']) ? ($_REQUEST['file']) : null;
       $id     = isset($_REQUEST['id']) ? ($_REQUEST['id']) : null;
       $sql    = "DELETE FROM upload WHERE `id` = {$id} AND `filename` = '{$name}'";
-      $result = DB::query($sql, 'Could not delete file');
+      $result = DB::_query($sql, 'Could not delete file');
       header('Content-type: application/json');
       echo json_encode($result);
     }
@@ -219,8 +219,8 @@
         return $file;
       }
       /*$sql = "SELECT * FROM upload WHERE id = {$upload_id} LIMIT 1";
-               $result = DB::query($sql, 'Could not query uploads');
-               $result = DB::fetchAssoc($result);
+               $result = DB::_query($sql, 'Could not query uploads');
+               $result = DB::_fetchAssoc($result);
                $file = new stdClass();
                $file->name = $result ['filename'];
                $file->type = $result ['type'];
@@ -373,10 +373,10 @@
       } else {
         $file->error = $error;
       }
-      /* DB::begin();
+      /* DB::_begin();
                $sql = "INSERT INTO upload (`filename`,`size`,`type`,`order_no`,`content`) VALUES ('{$file->name}','{$file->size}','{$file->type}','{$this->order_no}', '{$content}')";
-               DB::query($sql, 'Could not insert file into database');
-               $upload_id = DB::insertId();
+               DB::_query($sql, 'Could not insert file into database');
+               $upload_id = DB::_insertId();
                $file->id = $this->upload_id = $upload_id;*/
 
       return $file;

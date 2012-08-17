@@ -8,7 +8,7 @@
      * @link      http://www.advancedgroup.com.au
      **/
 
-    JS::openWindow(950, 500);
+    JS::_openWindow(950, 500);
     Page::start(_($help_context = "View Credit Note"), SA_SALESTRANSVIEW, true);
     if (isset($_GET["trans_no"])) {
         $trans_id = $_GET["trans_no"];
@@ -38,7 +38,7 @@
     Table::start('tablestyle width100');
     Row::start();
     Cell::labels(_("Ref"), $myrow["reference"], "class='tablerowhead'");
-    Cell::labels(_("Date"), Dates::sqlToDate($myrow["tran_date"]), "class='tablerowhead'");
+    Cell::labels(_("Date"), Dates::_sqlToDate($myrow["tran_date"]), "class='tablerowhead'");
     Cell::labels(_("Currency"), $myrow["curr_code"], "class='tablerowhead'");
     Row::end();
     Row::start();
@@ -52,7 +52,7 @@
     $sub_total = 0;
     $result    = Debtor_TransDetail::get(ST_CUSTCREDIT, $trans_id);
     Table::start('tablestyle grid width95');
-    if (DB::numRows($result) > 0) {
+    if (DB::_numRows($result) > 0) {
         $th = array(
             _("Item Code"),
             _("Item Description"),
@@ -65,17 +65,17 @@
         Table::header($th);
         $k         = 0; //row colour counter
         $sub_total = 0;
-        while ($myrow2 = DB::fetch($result)) {
+        while ($myrow2 = DB::_fetch($result)) {
             if ($myrow2["quantity"] == 0) {
                 continue;
             }
 
-            $value = Num::round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
+            $value = Num::_round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
             $sub_total += $value;
             if ($myrow2["discount_percent"] == 0) {
                 $display_discount = "";
             } else {
-                $display_discount = Num::percentFormat($myrow2["discount_percent"] * 100) . "%";
+                $display_discount = Num::_percentFormat($myrow2["discount_percent"] * 100) . "%";
             }
             Cell::label($myrow2["stock_id"]);
             Cell::label($myrow2["StockDescription"]);
@@ -89,10 +89,10 @@
     } else {
         Event::warning(_("There are no line items on this credit note."), 1, 2);
     }
-    $display_sub_tot = Num::priceFormat($sub_total);
-    $display_freight = Num::priceFormat($myrow["ov_freight"]);
+    $display_sub_tot = Num::_priceFormat($sub_total);
+    $display_freight = Num::_priceFormat($myrow["ov_freight"]);
     $credit_total    = $myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"];
-    $display_total   = Num::priceFormat($credit_total);
+    $display_total   = Num::_priceFormat($credit_total);
     /*Print out the invoice text entered */
     if ($sub_total != 0) {
         Row::label(_("Sub Total"), $display_sub_tot, "colspan=6 class='alignright'", " class='nowrap alignright width15'");
@@ -106,7 +106,7 @@
     if (!$voided) {
         GL_Allocation::from(PT_CUSTOMER, $myrow['debtor_id'], ST_CUSTCREDIT, $trans_id, $credit_total);
     }
-    if (Input::get('frame')) {
+    if (Input::_get('frame')) {
         return;
     }
     /* end of check to see that there was an invoice record to print */

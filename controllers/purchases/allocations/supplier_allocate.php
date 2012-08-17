@@ -8,8 +8,8 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(950, 500);
-  JS::footerFile('/js/allocate.js');
+  JS::_openWindow(950, 500);
+  JS::_footerFile('/js/allocate.js');
   Page::start(_($help_context = "Allocate Supplier Payment or Credit Note"), SA_SUPPLIERALLOC);
 
   if (isset($_POST['Process'])) {
@@ -28,9 +28,9 @@
   if (isset($_GET['trans_no']) && isset($_GET['trans_type'])) {
     $_SESSION['alloc'] = new GL_Allocation($_GET['trans_type'], $_GET['trans_no']);
   }
-  if (Input::post('UpdateDisplay')) {
+  if (Input::_post('UpdateDisplay')) {
     $_SESSION['alloc']->read();
-    Ajax::activate('alloc_tbl');
+    Ajax::_activate('alloc_tbl');
   }
   if (isset($_SESSION['alloc'])) {
     edit_allocations_for_transaction($_SESSION['alloc']->type, $_SESSION['alloc']->trans_no);
@@ -58,7 +58,7 @@
     Display::heading(_("Allocation of") . " " . $systypes_array[$_SESSION['alloc']->type] . " # " . $_SESSION['alloc']->trans_no);
     Display::heading($_SESSION['alloc']->person_name);
     Display::heading(_("Date:") . " <span class='bold'>" . $_SESSION['alloc']->date_ . "</span>");
-    Display::heading(_("Total:") . " <span class='bold'>" . Num::priceFormat(-$_SESSION['alloc']->amount) . "</span>");
+    Display::heading(_("Total:") . " <span class='bold'>" . Num::_priceFormat(-$_SESSION['alloc']->amount) . "</span>");
     echo "<br>";
     Display::div_start('alloc_tbl');
     if (count($_SESSION['alloc']->allocs) > 0) {

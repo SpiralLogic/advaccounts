@@ -3,36 +3,36 @@
     <td class='menu_group top'>
       <table class='width100'>
         <tr>
-          <td class='menu_group' colspan={{ $colspan }}>
+          <td class='menu_group' colspan={{$colspan}}>
             {{$name}}
           </td>
         </tr>
         <tr>
           <td class='width50 menu_group_items'>
             <ul>
-              {{#foreach $lmods as $mod}}
-              {{#if !$mod['label']}}
+              {{#$lmods}}
+              {{#if !$.label}}
               <li class='empty'>&nbsp;</li>
-              {{#elseif ($mod['access'])}}
-              <li>{{ $mod['link'] }} </li>
+              {{#elseif $.access}}
+              <li>{{$.link}} </li>
               {{#else}}
-              <li><span class='inactive'>{{$mod['anchor']}} </span></li>
+              <li><span class='inactive'>{{$.anchor}} </span></li>
               {{/if}}
-              {{/foreach}}
+              {{/$lmods}}
             </ul>
           </td>
           {{#if $rmods}}
           <td class='width50 menu_group_items'>
             <ul>
-              {{#foreach $rmods as $mod}}
-              {{#if !$mod['label']}}
+              {{#$rmods}}
+              {{#if !$.label}}
               <li class='empty'>&nbsp;</li>
-              {{#elseif $mod['access']}}
-              <li>{{$mod['link']}} </li>
+              {{#elseif $.access}}
+              <li>{{$.link}} </li>
               {{#else}}
-              <li><span class='inactive'>{{$mod['anchor']}} </span></li>
+              <li><span class='inactive'>{{$.anchor}} </span></li>
               {{/if}}
-              {{/foreach}}
+              {{/$rmods}}
             </ul>
           </td>
           {{/if}}

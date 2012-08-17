@@ -14,7 +14,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(950, 500);
+  JS::_openWindow(950, 500);
   if (isset($_GET['outstanding_only']) && ($_GET['outstanding_only'] == true)) {
     // curently outstanding simply means not closed
     $outstanding_only = 1;
@@ -25,20 +25,20 @@
   }
   // Ajax updates
   //
-  if (Input::post('SearchOrders')) {
-    Ajax::activate('orders_tbl');
-  } elseif (Input::post('_OrderNumber_changed')) {
-    $disable = Input::post('OrderNumber') !== '';
-    Ajax::addDisable(true, 'StockLocation', $disable);
-    Ajax::addDisable(true, 'OverdueOnly', $disable);
-    Ajax::addDisable(true, 'OpenOnly', $disable);
-    Ajax::addDisable(true, 'SelectedStockItem', $disable);
+  if (Input::_post('SearchOrders')) {
+    Ajax::_activate('orders_tbl');
+  } elseif (Input::_post('_OrderNumber_changed')) {
+    $disable = Input::_post('OrderNumber') !== '';
+    Ajax::_addDisable(true, 'StockLocation', $disable);
+    Ajax::_addDisable(true, 'OverdueOnly', $disable);
+    Ajax::_addDisable(true, 'OpenOnly', $disable);
+    Ajax::_addDisable(true, 'SelectedStockItem', $disable);
     if ($disable) {
-      JS::setFocus('OrderNumber');
+      JS::_setFocus('OrderNumber');
     } else {
-      JS::setFocus('StockLocation');
+      JS::_setFocus('StockLocation');
     }
-    Ajax::activate('orders_tbl');
+    Ajax::_activate('orders_tbl');
   }
   if (isset($_GET["stock_id"])) {
     $_POST['SelectedStockItem'] = $_GET["stock_id"];
@@ -62,7 +62,7 @@
    * @return bool
    */
   function checkOverdue($row) {
-    return (!$row["closed"] && Dates::differenceBetween(Dates::today(), Dates::sqlToDate($row["required_by"]), "d") > 0);
+    return (!$row["closed"] && Dates::_differenceBetween(Dates::_today(), Dates::_sqlToDate($row["required_by"]), "d") > 0);
   }
 
   /**
@@ -165,7 +165,7 @@
    * @return int|string
    */
   function dec_amount($row, $amount) {
-    return Num::format($amount, $row['decimals']);
+    return Num::_format($amount, $row['decimals']);
   }
 
   $sql
@@ -188,20 +188,20 @@
     WHERE workorder.stock_id=item.stock_id
         AND workorder.loc_code=location.loc_code
         AND item.units=unit.abbr";
-  if (Input::hasPost('OpenOnly') || $outstanding_only != 0) {
+  if (Input::_hasPost('OpenOnly') || $outstanding_only != 0) {
     $sql .= " AND workorder.closed=0";
   }
   if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
-    $sql .= " AND workorder.loc_code=" . DB::quote($_POST['StockLocation']);
+    $sql .= " AND workorder.loc_code=" . DB::_quote($_POST['StockLocation']);
   }
   if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
-    $sql .= " AND workorder.wo_ref LIKE " . DB::quote('%' . $_POST['OrderNumber'] . '%');
+    $sql .= " AND workorder.wo_ref LIKE " . DB::_quote('%' . $_POST['OrderNumber'] . '%');
   }
   if (isset($_POST['SelectedStockItem']) && $_POST['SelectedStockItem'] != ALL_TEXT) {
-    $sql .= " AND workorder.stock_id=" . DB::quote($_POST['SelectedStockItem']);
+    $sql .= " AND workorder.stock_id=" . DB::_quote($_POST['SelectedStockItem']);
   }
-  if (Input::hasPost('OverdueOnly')) {
-    $Today = Dates::today(true);
+  if (Input::_hasPost('OverdueOnly')) {
+    $Today = Dates::_today(true);
     $sql .= " AND workorder.required_by < '$Today' ";
   }
   $cols  = array(

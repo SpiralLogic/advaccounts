@@ -25,7 +25,7 @@
       if (is_array($trans_no)) {
         $trans_no = key($trans_no);
       }
-      DB::begin();
+      DB::_begin();
       $customer             = Debtor::get($delivery->debtor_id);
       $delivery_items_total = $delivery->get_items_total_dispatch();
       $freight_tax          = $delivery->get_shipping_tax();
@@ -34,7 +34,7 @@
       $tax_total = 0;
       $taxes     = $delivery->get_taxes(); // all taxes with freight_tax
       foreach ($taxes as $taxitem) {
-        $taxitem['Value'] = Num::round($taxitem['Value'], User::price_dec());
+        $taxitem['Value'] = Num::_round($taxitem['Value'], User::price_dec());
         $tax_total += $taxitem['Value'];
       }
       /* Insert/update the debtor_trans */
@@ -98,7 +98,7 @@
       if ($trans_no == 0) {
         Ref::save(ST_CUSTDELIVERY, $delivery->reference);
       }
-      DB::commit();
+      DB::_commit();
 
       return $delivery_no;
     }
@@ -110,15 +110,15 @@
      */
     public static function void($type, $type_no)
     {
-      DB::begin();
+      DB::_begin();
       GL_Trans::void($type, $type_no, true);
       // reverse all the changes in the sales order
       $items_result = Debtor_TransDetail::get($type, $type_no);
       $order        = Debtor_Trans::get_order($type, $type_no);
       if ($order) {
         $order_items = Sales_Order::get_details($order, ST_SALESORDER);
-        while ($row = DB::fetch($items_result)) {
-          $order_line = DB::fetch($order_items);
+        while ($row = DB::_fetch($items_result)) {
+          $order_line = DB::_fetch($order_items);
           Sales_Order::update_parent_line(ST_CUSTDELIVERY, $order_line['id'], -$row['quantity']);
         }
       }
@@ -129,7 +129,7 @@
       // do this last because other voidings can depend on it
       // DO NOT MOVE THIS ABOVE VOIDING or we can end up with trans with alloc < 0
       Debtor_Trans::void($type, $type_no);
-      DB::commit();
+      DB::_commit();
     }
     /**
      * @static
@@ -140,28 +140,28 @@
      */
     public static function check_data($order)
     {
-      if (!isset($_POST['DispatchDate']) || !Dates::isDate($_POST['DispatchDate'])) {
+      if (!isset($_POST['DispatchDate']) || !Dates::_isDate($_POST['DispatchDate'])) {
         Event::error(_("The entered date of delivery is invalid."));
-        JS::setFocus('DispatchDate');
+        JS::_setFocus('DispatchDate');
 
         return false;
       }
-      if (!Dates::isDateInFiscalYear($_POST['DispatchDate'])) {
+      if (!Dates::_isDateInFiscalYear($_POST['DispatchDate'])) {
         Event::error(_("The entered date of delivery is not in fiscal year."));
-        JS::setFocus('DispatchDate');
+        JS::_setFocus('DispatchDate');
 
         return false;
       }
-      if (!isset($_POST['due_date']) || !Dates::isDate($_POST['due_date'])) {
+      if (!isset($_POST['due_date']) || !Dates::_isDate($_POST['due_date'])) {
         Event::error(_("The entered dead-line for invoice is invalid."));
-        JS::setFocus('due_date');
+        JS::_setFocus('due_date');
 
         return false;
       }
       if ($order->trans_no == 0) {
         if (!Ref::is_valid($_POST['ref'])) {
           Event::error(_("You must enter a reference."));
-          JS::setFocus('ref');
+          JS::_setFocus('ref');
 
           return false;
         }
@@ -170,11 +170,11 @@
         }
       }
       if ($_POST['ChargeFreightCost'] == "") {
-        $_POST['ChargeFreightCost'] = Num::priceFormat(0);
+        $_POST['ChargeFreightCost'] = Num::_priceFormat(0);
       }
       if (!Validation::post_num('ChargeFreightCost', 0)) {
         Event::error(_("The entered shipping value is not numeric."));
-        JS::setFocus('ChargeFreightCost');
+        JS::_setFocus('ChargeFreightCost');
 
         return false;
       }
@@ -215,7 +215,7 @@
     {
       $order                      = Sales_Order::check_edit_conflicts($order);
       $_POST['ship_via']          = $order->ship_via;
-      $_POST['ChargeFreightCost'] = Num::priceFormat($order->freight_cost);
+      $_POST['ChargeFreightCost'] = Num::_priceFormat($order->freight_cost);
       $_POST['DispatchDate']      = $order->document_date;
       $_POST['due_date']          = $order->due_date;
       $_POST['location']          = $order->location;
@@ -249,7 +249,7 @@
           } elseif ($itm->quantity < 0 && Validation::post_num('Line' . $line, $max, $min)) {
             $order->line_items[$line]->qty_dispatched = Validation::input_num('Line' . $line);
           } else {
-            JS::setFocus('Line' . $line);
+            JS::_setFocus('Line' . $line);
             $ok = 0;
           }
         }

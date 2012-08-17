@@ -28,8 +28,8 @@
       $sql
         = "INSERT INTO purch_data (creditor_id, stockid, stock_id, price, suppliers_uom,
         conversion_factor, supplier_description) VALUES (";
-      $sql .= DB::escape($creditor_id) . ", " . DB::escape($stock_id) . ", " . DB::escape($stockid) . ", " . $price . ", " . DB::escape($suppliers_uom) . ", " . $conversion_factor . ", " . DB::escape($supplier_description) . ")";
-      DB::query($sql, "The supplier purchasing details could not be added");
+      $sql .= DB::_escape($creditor_id) . ", " . DB::_escape($stock_id) . ", " . DB::_escape($stockid) . ", " . $price . ", " . DB::_escape($suppliers_uom) . ", " . $conversion_factor . ", " . DB::_escape($supplier_description) . ")";
+      DB::_query($sql, "The supplier purchasing details could not be added");
     }
     /**
      * @static
@@ -44,12 +44,12 @@
     public static function update($selected_id, $stock_id, $price, $suppliers_uom, $conversion_factor, $supplier_description)
     {
       $sql = "UPDATE purch_data SET price=" . $price . ",
-        suppliers_uom=" . DB::escape($suppliers_uom) . ",
+        suppliers_uom=" . DB::_escape($suppliers_uom) . ",
         conversion_factor=" . $conversion_factor . ",
-        supplier_description=" . DB::escape($supplier_description) . "
-        WHERE stock_id=" . DB::escape($stock_id) . " AND
-        creditor_id=" . DB::escape($selected_id);
-      DB::query($sql, "The supplier purchasing details could not be updated");
+        supplier_description=" . DB::_escape($supplier_description) . "
+        WHERE stock_id=" . DB::_escape($stock_id) . " AND
+        creditor_id=" . DB::_escape($selected_id);
+      DB::_query($sql, "The supplier purchasing details could not be updated");
     }
     /**
      * @static
@@ -59,9 +59,9 @@
      */
     public static function delete($selected_id, $stock_id)
     {
-      $sql = "DELETE FROM purch_data WHERE creditor_id=" . DB::escape($selected_id) . "
-        AND stock_id=" . DB::escape($stock_id);
-      DB::query($sql, "could not delete purchasing data");
+      $sql = "DELETE FROM purch_data WHERE creditor_id=" . DB::_escape($selected_id) . "
+        AND stock_id=" . DB::_escape($stock_id);
+      DB::_query($sql, "could not delete purchasing data");
     }
     /**
      * @static
@@ -76,9 +76,9 @@
         = "SELECT purch_data.*,suppliers.name, suppliers.curr_code
         FROM purch_data INNER JOIN suppliers
         ON purch_data.creditor_id=suppliers.creditor_id
-        WHERE stock_id = " . DB::escape($stock_id);
+        WHERE stock_id = " . DB::_escape($stock_id);
 
-      return DB::query($sql, "The supplier purchasing details for the selected part could not be retrieved");
+      return DB::_query($sql, "The supplier purchasing details for the selected part could not be retrieved");
     }
     /**
      * @static
@@ -93,11 +93,11 @@
       $sql
               = "SELECT purch_data.*,suppliers.name FROM purch_data
         INNER JOIN suppliers ON purch_data.creditor_id=suppliers.creditor_id
-        WHERE purch_data.creditor_id=" . DB::escape($selected_id) . "
-        AND purch_data.stock_id=" . DB::escape($stock_id);
-      $result = DB::query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
+        WHERE purch_data.creditor_id=" . DB::_escape($selected_id) . "
+        AND purch_data.stock_id=" . DB::_escape($stock_id);
+      $result = DB::_query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
 
-      return DB::fetch($result);
+      return DB::_fetch($result);
     }
     /**
      * @static

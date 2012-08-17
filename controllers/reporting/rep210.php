@@ -25,13 +25,13 @@
  		suppliers.email, suppliers.address, suppliers.contact
 		FROM creditor_trans, suppliers
 		WHERE creditor_trans.creditor_id = suppliers.creditor_id
-		AND creditor_trans.type = " . DB::escape($type) . "
-		AND creditor_trans.trans_no = " . DB::escape($trans_no);
-    $result = DB::query($sql, "The remittance cannot be retrieved");
-    if (DB::numRows($result) == 0) {
+		AND creditor_trans.type = " . DB::_escape($type) . "
+		AND creditor_trans.trans_no = " . DB::_escape($trans_no);
+    $result = DB::_query($sql, "The remittance cannot be retrieved");
+    if (DB::_numRows($result) == 0) {
       return false;
     }
-    return DB::fetch($result);
+    return DB::_fetch($result);
   }
 
   /**
@@ -44,11 +44,11 @@
   function get_allocations_for_remittance($creditor_id, $type, $trans_no) {
     $sql = Purch_Allocation::get_sql("amt, supplier_reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
 		AND trans.type = alloc.trans_type_to
-		AND alloc.trans_no_from=" . DB::escape($trans_no) . "
-		AND alloc.trans_type_from=" . DB::escape($type) . "
-		AND trans.creditor_id=" . DB::escape($creditor_id), "creditor_allocations as alloc");
+		AND alloc.trans_no_from=" . DB::_escape($trans_no) . "
+		AND alloc.trans_type_from=" . DB::_escape($type) . "
+		AND trans.creditor_id=" . DB::_escape($creditor_id), "creditor_allocations as alloc");
     $sql .= " ORDER BY trans_no";
-    return DB::query($sql, "Cannot retreive alloc to transactions");
+    return DB::_query($sql, "Cannot retreive alloc to transactions");
   }
 
   function print_remittances() {
@@ -115,11 +115,11 @@
         $total_allocated = 0;
         $rep->TextCol(0, 4, $doc_Towards, -2);
         $rep->NewLine(2);
-        while ($myrow2 = DB::fetch($result)) {
+        while ($myrow2 = DB::_fetch($result)) {
           $rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
           $rep->TextCol(1, 2, $myrow2['supplier_reference'], -2);
-          $rep->TextCol(2, 3, Dates::sqlToDate($myrow2['tran_date']), -2);
-          $rep->TextCol(3, 4, Dates::sqlToDate($myrow2['due_date']), -2);
+          $rep->TextCol(2, 3, Dates::_sqlToDate($myrow2['tran_date']), -2);
+          $rep->TextCol(3, 4, Dates::_sqlToDate($myrow2['due_date']), -2);
           $rep->AmountCol(4, 5, $myrow2['Total'], $dec, -2);
           $rep->AmountCol(5, 6, $myrow2['Total'] - $myrow2['alloc'], $dec, -2);
           $rep->AmountCol(6, 7, $myrow2['amt'], $dec, -2);

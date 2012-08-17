@@ -20,7 +20,7 @@
     public static function credit_row($supplier, $credit, $parms = '')
     {
       Row::label(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? 'class="redfg openWindow"' :
-        '') . "href='/purchases/inquiry/supplier_inquiry.php?creditor_id=" . $supplier . "' >" . Num::priceFormat($credit) . "</a>", $parms);
+        '') . "href='/purchases/inquiry/supplier_inquiry.php?creditor_id=" . $supplier . "' >" . Num::_priceFormat($credit) . "</a>", $parms);
     }
     /**
      * @static
@@ -34,7 +34,7 @@
      *
      * @return null|string
      */
-    public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
+    public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '',$raw=false)
     {
       $viewer = "/purchases/view/";
       switch ($type) {
@@ -57,6 +57,7 @@
           return null;
       }
       $viewer .= "?trans_no=$trans_no";
+      if ($raw) return $viewer;
       if ($label == "") {
         $label = $trans_no;
       }

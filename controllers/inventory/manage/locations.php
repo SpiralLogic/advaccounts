@@ -16,15 +16,15 @@
                 ie the page has called itself with some user input */
     //first off validate inputs sensible
     $_POST['loc_code'] = strtoupper($_POST['loc_code']);
-    if (strlen(DB::escape($_POST['loc_code'])) > 7) //check length after conversion
+    if (strlen(DB::_escape($_POST['loc_code'])) > 7) //check length after conversion
     {
       $input_error = 1;
       Event::error(_("The location code must be five characters or less long (including converted special chars)."));
-      JS::setFocus('loc_code');
+      JS::_setFocus('loc_code');
     } elseif (strlen($_POST['location_name']) == 0) {
       $input_error = 1;
       Event::error(_("The location name must be entered."));
-      JS::setFocus('location_name');
+      JS::_setFocus('location_name');
     }
     if ($input_error != 1) {
       if ($selected_id != -1) {
@@ -45,65 +45,65 @@
    */
   function can_delete($selected_id)
   {
-    $sql    = "SELECT COUNT(*) FROM stock_moves WHERE loc_code=" . DB::escape($selected_id);
-    $result = DB::query($sql, "could not query stock moves");
-    $myrow  = DB::fetchRow($result);
+    $sql    = "SELECT COUNT(*) FROM stock_moves WHERE loc_code=" . DB::_escape($selected_id);
+    $result = DB::_query($sql, "could not query stock moves");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this location because item movements have been created using this location."));
 
       return false;
     }
-    $sql    = "SELECT COUNT(*) FROM workorders WHERE loc_code=" . DB::escape($selected_id);
-    $result = DB::query($sql, "could not query work orders");
-    $myrow  = DB::fetchRow($result);
+    $sql    = "SELECT COUNT(*) FROM workorders WHERE loc_code=" . DB::_escape($selected_id);
+    $result = DB::_query($sql, "could not query work orders");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this location because it is used by some work orders records."));
 
       return false;
     }
     $sql    = "SELECT COUNT(*) FROM branches WHERE default_location='$selected_id'";
-    $result = DB::query($sql, "could not query customer branches");
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql, "could not query customer branches");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this location because it is used by some branch records as the default location to deliver from."));
 
       return false;
     }
-    $sql    = "SELECT COUNT(*) FROM bom WHERE loc_code=" . DB::escape($selected_id);
-    $result = DB::query($sql, "could not query bom");
-    $myrow  = DB::fetchRow($result);
+    $sql    = "SELECT COUNT(*) FROM bom WHERE loc_code=" . DB::_escape($selected_id);
+    $result = DB::_query($sql, "could not query bom");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this location because it is used by some related records in other tables."));
 
       return false;
     }
-    $sql    = "SELECT COUNT(*) FROM grn_batch WHERE loc_code=" . DB::escape($selected_id);
-    $result = DB::query($sql, "could not query grn batch");
-    $myrow  = DB::fetchRow($result);
+    $sql    = "SELECT COUNT(*) FROM grn_batch WHERE loc_code=" . DB::_escape($selected_id);
+    $result = DB::_query($sql, "could not query grn batch");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this location because it is used by some related records in other tables."));
 
       return false;
     }
-    $sql    = "SELECT COUNT(*) FROM purch_orders WHERE into_stock_location=" . DB::escape($selected_id);
-    $result = DB::query($sql, "could not query purch orders");
-    $myrow  = DB::fetchRow($result);
+    $sql    = "SELECT COUNT(*) FROM purch_orders WHERE into_stock_location=" . DB::_escape($selected_id);
+    $result = DB::_query($sql, "could not query purch orders");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this location because it is used by some related records in other tables."));
 
       return false;
     }
-    $sql    = "SELECT COUNT(*) FROM sales_orders WHERE from_stk_loc=" . DB::escape($selected_id);
-    $result = DB::query($sql, "could not query sales orders");
-    $myrow  = DB::fetchRow($result);
+    $sql    = "SELECT COUNT(*) FROM sales_orders WHERE from_stk_loc=" . DB::_escape($selected_id);
+    $result = DB::_query($sql, "could not query sales orders");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this location because it is used by some related records in other tables."));
 
       return false;
     }
-    $sql    = "SELECT COUNT(*) FROM sales_pos WHERE pos_location=" . DB::escape($selected_id);
-    $result = DB::query($sql, "could not query sales pos");
-    $myrow  = DB::fetchRow($result);
+    $sql    = "SELECT COUNT(*) FROM sales_pos WHERE pos_location=" . DB::_escape($selected_id);
+    $result = DB::_query($sql, "could not query sales pos");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this location because it is used by some related records in other tables."));
 
@@ -122,15 +122,15 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav         = Input::post('show_inactive');
+    $sav         = Input::_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
   $sql = "SELECT * FROM locations";
-  if (!Input::hasPost('show_inactive')) {
+  if (!Input::_hasPost('show_inactive')) {
     $sql .= " WHERE !inactive";
   }
-  $result = DB::query($sql, "could not query locations");
+  $result = DB::_query($sql, "could not query locations");
   ;
   Forms::start();
   Table::start('tablestyle grid');
@@ -138,7 +138,7 @@
   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0; //row colour counter
-  while ($myrow = DB::fetch($result)) {
+  while ($myrow = DB::_fetch($result)) {
     Cell::label($myrow["loc_code"]);
     Cell::label($myrow["location_name"]);
     Cell::label($myrow["delivery_address"]);

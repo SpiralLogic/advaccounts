@@ -12,8 +12,8 @@
   Page::start(_($help_context = "Trial Balance"), SA_GLANALYTIC);
   // Ajax updates
   //
-  if (Input::post('Show')) {
-    Ajax::activate('balance_tbl');
+  if (Input::_post('Show')) {
+    Ajax::_activate('balance_tbl');
   }
   gl_inquiry_controls();
   display_trial_balance();
@@ -54,23 +54,23 @@
     $k        = 0;
     $accounts = GL_Account::getAll();
     $pdeb     = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
-    $begin    = Dates::beginFiscalYear();
-    if (Dates::isGreaterThan($begin, $_POST['TransFromDate'])) {
+    $begin    = Dates::_beginFiscalYear();
+    if (Dates::_isGreaterThan($begin, $_POST['TransFromDate'])) {
       $begin = $_POST['TransFromDate'];
     }
-    $begin = Dates::addDays($begin, -1);
-    while ($account = DB::fetch($accounts)) {
+    $begin = Dates::_addDays($begin, -1);
+    while ($account = DB::_fetch($accounts)) {
       $prev = GL_Trans::get_balance($account["account_code"], 0, 0, $begin, $_POST['TransFromDate'], false, false);
       $curr = GL_Trans::get_balance($account["account_code"], 0, 0, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
       $tot  = GL_Trans::get_balance($account["account_code"], 0, 0, $begin, $_POST['TransToDate'], false, true);
-      if (Input::hasPost("NoZero") && !$prev['balance'] && !$curr['balance'] && !$tot['balance']) {
+      if (Input::_hasPost("NoZero") && !$prev['balance'] && !$curr['balance'] && !$tot['balance']) {
         continue;
       }
 
       $url = "<a href='" . BASE_URL . "gl/inquiry/gl_account.php?TransFromDate=" . $_POST["TransFromDate"] . "&TransToDate=" . $_POST["TransToDate"] . "&account=" . $account["account_code"] . "'>" . $account["account_code"] . "</a>";
       Cell::label($url);
       Cell::label($account["account_name"]);
-      if (Input::hasPost('Balance')) {
+      if (Input::_hasPost('Balance')) {
         Cell::debitOrCredit($prev['balance']);
         Cell::debitOrCredit($curr['balance']);
         Cell::debitOrCredit($tot['balance']);
@@ -96,7 +96,7 @@
     //$prev = GL_Trans::get_balance(null, $begin, $_POST['TransFromDate'], false, false);
     //$curr = GL_Trans::get_balance(null, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
     //$tot = GL_Trans::get_balance(null, $begin, $_POST['TransToDate'], false, true);
-    if (!Input::hasPost('Balance')) {
+    if (!Input::_hasPost('Balance')) {
       Row::start("class='inquirybg' style='font-weight:bold'");
       Cell::label(_("Total") . " - " . $_POST['TransToDate'], "colspan=2");
       Cell::amount($pdeb);

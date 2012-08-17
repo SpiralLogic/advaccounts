@@ -7,20 +7,20 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  Page::start(_($help_context = "Reorder Levels"), SA_REORDER, Input::request('frame'));
+  Page::start(_($help_context = "Reorder Levels"), SA_REORDER, Input::_request('frame'));
   Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);
   if (isset($_GET['stock_id'])) {
     $_POST['stock_id'] = $_GET['stock_id'];
   }
   if (Forms::isListUpdated('stock_id')) {
-    Ajax::activate('show_heading');
-    Ajax::activate('reorders');
+    Ajax::_activate('show_heading');
+    Ajax::_activate('reorders');
   }
   Forms::start(false, $_SERVER['REQUEST_URI']);
-  if (!Input::post('stock_id')) {
-    Session::setGlobal('stock_id', $_POST['stock_id']);
+  if (!Input::_post('stock_id')) {
+    Session::_setGlobal('stock_id', $_POST['stock_id']);
   }
-  if (!Input::request('frame')) {
+  if (!Input::_request('frame')) {
     echo "<div class='center'>" . _("Item:") . "&nbsp;";
     echo Item_UI::costable('stock_id', $_POST['stock_id'], false, true);
     echo "<hr></div>";
@@ -28,7 +28,7 @@
     Display::item_heading($_POST['stock_id']);
     Display::br();
     Display::div_end();
-    Session::setGlobal('stock_id', $_POST['stock_id']);
+    Session::_setGlobal('stock_id', $_POST['stock_id']);
   }
   Display::div_start('reorders');
   Table::start('tablestyle grid width30');
@@ -38,7 +38,7 @@
   $k       = 0; //row colour counter
   $result  = Inv_Location::get_details($_POST['stock_id']);
   $updated = false;
-  while ($myrow = DB::fetch($result)) {
+  while ($myrow = DB::_fetch($result)) {
     if (isset($_POST['UpdateData']) && Validation::post_num($myrow["loc_code"])) {
       $myrow["reorder_level"] = Validation::input_num($myrow["loc_code"]);
       Inv_Location::set_reorder($_POST['stock_id'], $myrow["loc_code"], Validation::input_num($myrow["loc_code"]));
@@ -66,7 +66,7 @@
   Display::div_end();
   Forms::submitCenter('UpdateData', _("Update"), true, false, 'default');
   Forms::end();
-  if (Input::request('frame')) {
+  if (Input::_request('frame')) {
     Page::end(true);
   } else {
     Page::end();

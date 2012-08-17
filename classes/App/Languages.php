@@ -20,7 +20,7 @@
     public static function select($name, $selected_id = null)
     {
       $items = [];
-      $langs = Config::get('languages.installed');
+      $langs = Config::_get('languages.installed');
       foreach ($langs as $language) {
         $items[$language['code']] = $language['name'];
       }

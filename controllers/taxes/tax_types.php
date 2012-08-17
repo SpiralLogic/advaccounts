@@ -26,11 +26,11 @@
     }
     if ($Mode == MODE_RESET) {
         $selected_id = -1;
-        $sav         = Input::post('show_inactive');
+        $sav         = Input::_post('show_inactive');
         unset($_POST);
         $_POST['show_inactive'] = $sav;
     }
-    $result = Tax_Types::getAll(Input::hasPost('show_inactive'));
+    $result = Tax_Types::getAll(Input::_hasPost('show_inactive'));
     Forms::start();
     Event::warning(_("To avoid problems with manual journal entry all tax types should have unique Sales/Purchasing GL accounts."));
     Table::start('tablestyle grid');
@@ -45,10 +45,10 @@
     Forms::inactiveControlCol($th);
     Table::header($th);
     $k = 0;
-    while ($myrow = DB::fetch($result)) {
+    while ($myrow = DB::_fetch($result)) {
 
         Cell::label($myrow["name"]);
-        Cell::label(Num::percentFormat($myrow["rate"]), "class='alignright'");
+        Cell::label(Num::_percentFormat($myrow["rate"]), "class='alignright'");
         Cell::label($myrow["sales_gl_code"] . "&nbsp;" . $myrow["SalesAccountName"]);
         Cell::label($myrow["purchasing_gl_code"] . "&nbsp;" . $myrow["PurchasingAccountName"]);
         Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'tax_types', 'id');
@@ -64,7 +64,7 @@
             //editing an existing status code
             $myrow                       = Tax_Types::get($selected_id);
             $_POST['name']               = $myrow["name"];
-            $_POST['rate']               = Num::percentFormat($myrow["rate"]);
+            $_POST['rate']               = Num::_percentFormat($myrow["rate"]);
             $_POST['sales_gl_code']      = $myrow["sales_gl_code"];
             $_POST['purchasing_gl_code'] = $myrow["purchasing_gl_code"];
         }

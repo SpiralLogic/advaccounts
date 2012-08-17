@@ -1,4 +1,6 @@
 <?php
+  use ADV\Core\DB\DB;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -149,10 +151,10 @@
      */
     public function delete()
     {
-      DB::delete('branches')->where('branch_id=', $this->branch_id)->exec();
+      DB::_delete('branches')->where('branch_id=', $this->branch_id)->exec();
       $this->_new();
 
-      return $this->_status(true, 'delete', "Branch deleted.");
+      return $this->status(true, 'delete', "Branch deleted.");
     }
     /**
      * @return string
@@ -178,7 +180,7 @@
     protected function _canProcess()
     {
       if (strlen($this->br_name) < 1) {
-        return $this->_status(false, 'write', 'Branch name can not be empty');
+        return $this->status(false, 'write', 'Branch name can not be empty');
       }
 
       return true;
@@ -196,7 +198,7 @@
     {
       $company_record                 = DB_Company::get_prefs();
       $this->branch_id                = 0;
-      $this->default_location         = Config::get('default.location');
+      $this->default_location         = Config::_get('default.location');
       $this->sales_discount_account   = $company_record['default_sales_discount_act'];
       $this->receivables_account      = $company_record['debtors_act'];
 
@@ -210,7 +212,7 @@
     {
       $this->_defaults();
 
-      return $this->_status(true, 'new', 'Now working with a new Branch');
+      return $this->status(true, 'new', 'Now working with a new Branch');
     }
     /**
      * @param null $changes
@@ -228,20 +230,22 @@
       }
     }
     /**
-     * @param bool|int|null $params
+     * @param null  $id
+     * @param array $extra
      *
+     * @internal param bool|int|null $params
      * @return array|bool|null
      */
     protected function _read($id = null, $extra = [])
     {
       if (!$id) {
-        return $this->_status(false, 'read', 'No Branch parameters provided');
+        return $this->status(false, 'read', 'No Branch parameters provided');
       }
       $this->_defaults();
       if (!is_array($id)) {
         $id = array('branch_id' => $id);
       }
-      $sql = DB::select('b.*', 'a.description', 's.salesman_name', 't.name AS tax_group_name')
+      $sql = DB::_select('b.*', 'a.description', 's.salesman_name', 't.name AS tax_group_name')
         ->from('branches b, debtors c, areas a, salesman s, tax_groups t')->where(array(
                                                                                        'b.debtor_id=c.debtor_id',
                                                                                        'b.tax_group_id=t.id',
@@ -251,9 +255,9 @@
       foreach ($id as $key => $value) {
         $sql->where("b.$key=", $value);
       }
-      DB::fetch()->intoClass($this);
+      DB::_fetch()->intoClass($this);
 
-      return $this->_status(true, 'read', 'Read Branch from Database');
+      return $this->status(true, 'read', 'Read Branch from Database');
     }
     /**
      * @static

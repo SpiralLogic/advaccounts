@@ -18,7 +18,7 @@
    */
   function get_invoices($debtor_id, $to)
   {
-    $todate    = Dates::dateToSql($to);
+    $todate    = Dates::_dateToSql($to);
     $past_due1 = DB_Company::get_pref('past_due_days');
     $past_due2 = 2 * $past_due1;
     // Revomed allocated from sql
@@ -44,7 +44,7 @@
             AND ABS(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight + debtor_trans.ov_freight_tax + debtor_trans.ov_discount) > 0.004
             ORDER BY debtor_trans.tran_date";
 
-    return DB::query($sql, "The customer details could not be retrieved");
+    return DB::_query($sql, "The customer details could not be retrieved");
   }
 
   function print_aged_customer_analysis()
@@ -123,11 +123,11 @@
     $total = array(0, 0, 0, 0, 0);
     $sql   = "SELECT debtor_id, name, curr_code FROM debtors";
     if ($fromcust != ALL_NUMERIC) {
-      $sql .= " WHERE debtor_id=" . DB::escape($fromcust);
+      $sql .= " WHERE debtor_id=" . DB::_escape($fromcust);
     }
     $sql .= " ORDER BY name";
-    $result = DB::query($sql, "The customers could not be retrieved");
-    while ($myrow = DB::fetch($result)) {
+    $result = DB::_query($sql, "The customers could not be retrieved");
+    while ($myrow = DB::_fetch($result)) {
       if (!$convert && $currency != $myrow['curr_code']) {
         continue;
       }
@@ -167,11 +167,11 @@
       $rep->NewLine(1, 2);
       if (!$summaryOnly) {
         $res = get_invoices($myrow['debtor_id'], $to);
-        if (DB::numRows($res) == 0) {
+        if (DB::_numRows($res) == 0) {
           continue;
         }
         $rep->Line($rep->row + 4);
-        while ($trans = DB::fetch($res)) {
+        while ($trans = DB::_fetch($res)) {
           $rep->NewLine(1, 2);
           $rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
           $rep->TextCol(1, 2, $trans['reference'], -2);
@@ -222,7 +222,7 @@
       $pg->axis_y         = _("Amount");
       $pg->graphic_1      = $to;
       $pg->type           = $graphics;
-      $pg->skin           = Config::get('graphs_skin');
+      $pg->skin           = Config::_get('graphs_skin');
       $pg->built_in       = false;
       $pg->fontfile       = DOCROOT . "reporting/fonts/Vera.ttf";
       $pg->latin_notation = (User::dec_sep() != ".");

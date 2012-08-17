@@ -15,7 +15,7 @@
     if (strlen($_POST['name']) == 0) {
       $input_error = 1;
       Event::error(_("The work centre name cannot be empty."));
-      JS::setFocus('name');
+      JS::_setFocus('name');
     }
     if ($input_error != 1) {
       if ($selected_id != -1) {
@@ -35,17 +35,17 @@
    */
   function can_delete($selected_id)
   {
-    $sql    = "SELECT COUNT(*) FROM bom WHERE workcentre_added=" . DB::escape($selected_id);
-    $result = DB::query($sql, "check can delete work centre");
-    $myrow  = DB::fetchRow($result);
+    $sql    = "SELECT COUNT(*) FROM bom WHERE workcentre_added=" . DB::_escape($selected_id);
+    $result = DB::_query($sql, "check can delete work centre");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this work centre because BOMs have been created referring to it."));
 
       return false;
     }
-    $sql    = "SELECT COUNT(*) FROM wo_requirements WHERE workcentre=" . DB::escape($selected_id);
-    $result = DB::query($sql, "check can delete work centre");
-    $myrow  = DB::fetchRow($result);
+    $sql    = "SELECT COUNT(*) FROM wo_requirements WHERE workcentre=" . DB::_escape($selected_id);
+    $result = DB::_query($sql, "check can delete work centre");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this work centre because work order requirements have been created referring to it."));
 
@@ -64,18 +64,18 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav         = Input::post('show_inactive');
+    $sav         = Input::_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = WO_WorkCentre::getAll(Input::hasPost('show_inactive'));
+  $result = WO_WorkCentre::getAll(Input::_hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid width50');
   $th = array(_("Name"), _("description"), "", "");
   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
-  while ($myrow = DB::fetch($result)) {
+  while ($myrow = DB::_fetch($result)) {
     Cell::label($myrow["name"]);
     Cell::label($myrow["description"]);
     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'workcentres', 'id');

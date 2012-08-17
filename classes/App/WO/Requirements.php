@@ -25,11 +25,11 @@
         workcentres.name AS WorkCentreDescription FROM
         (wo_requirements, locations, " . "workcentres) INNER JOIN stock_master ON
         wo_requirements.stock_id = stock_master.stock_id
-        WHERE workorder_id=" . DB::escape($woid) . "
+        WHERE workorder_id=" . DB::_escape($woid) . "
         AND locations.loc_code = wo_requirements.loc_code
         AND workcentres.id=workcentre";
 
-      return DB::query($sql, "The work order requirements could not be retrieved");
+      return DB::_query($sql, "The work order requirements could not be retrieved");
     }
     /**
      * @static
@@ -41,11 +41,11 @@
     {
       // create Work Order Requirements based on the bom
       $result = WO::get_bom($stock_id);
-      while ($myrow = DB::fetch($result)) {
+      while ($myrow = DB::_fetch($result)) {
         $sql
           = "INSERT INTO wo_requirements (workorder_id, stock_id, workcentre, units_req, loc_code)
-            VALUES (" . DB::escape($woid) . ", '" . $myrow["component"] . "', '" . $myrow["workcentre_added"] . "', '" . $myrow["quantity"] . "', '" . $myrow["loc_code"] . "')";
-        DB::query($sql, "The work order requirements could not be added");
+            VALUES (" . DB::_escape($woid) . ", '" . $myrow["component"] . "', '" . $myrow["workcentre_added"] . "', '" . $myrow["quantity"] . "', '" . $myrow["loc_code"] . "')";
+        DB::_query($sql, "The work order requirements could not be added");
       }
     }
     /**
@@ -55,8 +55,8 @@
      */
     public static function delete($woid)
     {
-      $sql = "DELETE FROM wo_requirements WHERE workorder_id=" . DB::escape($woid);
-      DB::query($sql, "The work order requirements could not be deleted");
+      $sql = "DELETE FROM wo_requirements WHERE workorder_id=" . DB::_escape($woid);
+      DB::_query($sql, "The work order requirements could not be deleted");
     }
     /**
      * @static
@@ -67,9 +67,9 @@
      */
     public static function update($woid, $stock_id, $quantity)
     {
-      $sql = "UPDATE wo_requirements SET units_issued = units_issued + " . DB::escape($quantity) . "
-        WHERE workorder_id = " . DB::escape($woid) . " AND stock_id = " . DB::escape($stock_id);
-      DB::query($sql, "The work requirements issued quantity couldn't be updated");
+      $sql = "UPDATE wo_requirements SET units_issued = units_issued + " . DB::_escape($quantity) . "
+        WHERE workorder_id = " . DB::_escape($woid) . " AND stock_id = " . DB::_escape($stock_id);
+      DB::_query($sql, "The work requirements issued quantity couldn't be updated");
     }
     /**
      * @static
@@ -79,8 +79,8 @@
      */
     public static function void($type = null, $woid)
     {
-      $sql = "UPDATE wo_requirements SET units_issued = 0 WHERE workorder_id = " . DB::escape($woid);
-      DB::query($sql, "The work requirements issued quantity couldn't be voided");
+      $sql = "UPDATE wo_requirements SET units_issued = 0 WHERE workorder_id = " . DB::_escape($woid);
+      DB::_query($sql, "The work requirements issued quantity couldn't be voided");
     }
     /**
      * @static
@@ -93,7 +93,7 @@
     public static function display($woid, $quantity, $show_qoh = false, $date = null)
     {
       $result = WO_Requirements::get($woid);
-      if (DB::numRows($result) == 0) {
+      if (DB::_numRows($result) == 0) {
         Display::note(_("There are no Requirements for this Order."), 1, 0);
       } else {
         Table::start('tablestyle grid width90');
@@ -110,9 +110,9 @@
         $k          = 0; //row colour counter
         $has_marked = false;
         if ($date == null) {
-          $date = Dates::today();
+          $date = Dates::_today();
         }
-        while ($myrow = DB::fetch($result)) {
+        while ($myrow = DB::_fetch($result)) {
           $qoh      = 0;
           $show_qoh = true;
           // if it's a non-stock item (eg. service) don't show qoh

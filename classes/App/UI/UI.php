@@ -138,7 +138,7 @@
         HTML::div();
       }
       $callback = $o['callback'] ? : ucfirst($id);
-      JS::autocomplete($id, $callback, $url);
+      JS::_autocomplete($id, $callback, $url);
 
       $search = HTML::setReturn(false);
       if ($return) {
@@ -289,7 +289,7 @@ JS;
                 ).blur(function() { $(this).data('active',false)}).focus(function() { $(this).data('active',true)}).on('paste',function() {var \$this=$(this);window.setTimeout(function(){\$this.catcomplete('search', \$this.val())},1)});
 JS;
       $clean = "\$$id.catcomplete('destroy');";
-      JS::addLive($js, $clean);
+      JS::_addLive($js, $clean);
       return HTML::setReturn(false);
     }
     /**
@@ -315,7 +315,7 @@ JS;
      },'html');
      return false;
 JS;
-      JS::addLiveEvent('.email-button', 'click', $action, 'wrapper', true);
+      JS::_addLiveEvent('.email-button', 'click', $action, 'wrapper', true);
       $loaded = true;
     }
     public static function lineSortable() {
@@ -360,6 +360,6 @@ $('.grid').find('.newline').droppable({drop:function (event, ui) {
     currfield.find('input').val(currvalue).end().find('textarea').text(currvalue).attr('rows',4);
     currfield.not(':has(input),:has(textarea),:has(button)').text(currvalue)})}})
 JS;
-      JS::addLive($js);
+      JS::_addLive($js);
     }
   }

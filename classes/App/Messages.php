@@ -30,7 +30,7 @@
       if (!$userid) {
         return false;
       }
-      $result        = DB::select('um.*,u.real_name as `from`')->from('user_messages um, users u')->where('um.user=', $userid)
+      $result        = DB::_select('um.*,u.real_name as `from`')->from('user_messages um, users u')->where('um.user=', $userid)
         ->andWhere('um.from=u.id')->andWhere('unread>', 0)->fetch()->all();
       static::$count = count($result);
       foreach ($result as $row) {
@@ -43,7 +43,7 @@
         $unread = $row['unread'] - 1;
         $id     = $row['id'];
         $sql2   = "UPDATE user_messages SET unread={$unread} WHERE id={$id} AND user=" . $userid;
-        DB::query($sql2, 'Could not mark messages as unread');
+        DB::_query($sql2, 'Could not mark messages as unread');
       }
 
       return static::$count;
@@ -58,8 +58,8 @@
      * @return null|PDOStatement
      */
     public static function set($userid, $subject, $message) {
-      $sql    = "INSERT INTO user_messages (user, subject,message,unread,`from`) VALUES (" . DB::escape($userid) . ", " . DB::escape($subject) . ", " . DB::escape($message) . ", 1, " . DB::escape(User::i()->user) . ")";
-      $result = DB::query($sql, "Couldn't add message for $userid");
+      $sql    = "INSERT INTO user_messages (user, subject,message,unread,`from`) VALUES (" . DB::_escape($userid) . ", " . DB::_escape($subject) . ", " . DB::_escape($message) . ", 1, " . DB::_escape(User::i()->user) . ")";
+      $result = DB::_query($sql, "Couldn't add message for $userid");
 
       return $result;
     }

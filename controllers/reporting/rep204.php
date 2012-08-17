@@ -38,11 +38,11 @@
         AND grn_items.po_detail_item = purch_order_details.po_detail_item
         AND qty_recd-quantity_inv <>0 ";
     if ($fromsupp != ALL_NUMERIC) {
-      $sql .= "AND grn_batch.creditor_id =" . DB::escape($fromsupp) . " ";
+      $sql .= "AND grn_batch.creditor_id =" . DB::_escape($fromsupp) . " ";
     }
     $sql .= "ORDER BY grn_batch.creditor_id,
             grn_batch.id";
-    return DB::query($sql, "No transactions were returned");
+    return DB::_query($sql, "No transactions were returned");
   }
 
   function print_outstanding_GRN() {
@@ -77,7 +77,7 @@
     $Supplier    = '';
     $SuppTot_Val = 0;
     $res         = get_transactions($fromsupp);
-    While ($GRNs = DB::fetch($res)) {
+    While ($GRNs = DB::_fetch($res)) {
       $dec2 = Item::qty_dec($GRNs['item_code']);
       if ($Supplier != $GRNs['creditor_id']) {
         if ($Supplier != '') {

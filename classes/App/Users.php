@@ -28,9 +28,9 @@
     {
       $sql
         = "INSERT INTO users (user_id, real_name, phone, email, role_id, language, pos, print_profile, rep_popup,hash)
-                VALUES (" . DB::escape($user_id) . ",
-                " . DB::escape($real_name) . ", " . DB::escape($phone) . "," . DB::escape($email) . ", " . DB::escape($role_id) . ", " . DB::escape($language) . ", " . DB::escape($pos) . "," . DB::escape($profile) . "," . DB::escape($rep_popup) . "," . DB::escape($hash) . " )";
-      DB::query($sql, "could not add user for $user_id");
+                VALUES (" . DB::_escape($user_id) . ",
+                " . DB::_escape($real_name) . ", " . DB::_escape($phone) . "," . DB::_escape($email) . ", " . DB::_escape($role_id) . ", " . DB::_escape($language) . ", " . DB::_escape($pos) . "," . DB::_escape($profile) . "," . DB::_escape($rep_popup) . "," . DB::_escape($hash) . " )";
+      DB::_query($sql, "could not add user for $user_id");
     }
     /**
      * @static
@@ -48,15 +48,15 @@
      */
     public static function  update($id, $user_id, $real_name, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos)
     {
-      $sql = "UPDATE users SET real_name=" . DB::escape($real_name) . ", phone=" . DB::escape($phone) . ",
-                email=" . DB::escape($email) . ",
-                role_id=" . DB::escape($role_id) . ",
-                language=" . DB::escape($language) . ",
-                print_profile=" . DB::escape($profile) . ",
-                rep_popup=" . DB::escape($rep_popup) . ",
-                pos=" . DB::escape($pos) . ",
-                user_id = " . DB::escape($user_id) . " WHERE id=" . DB::escape($id);
-      DB::query($sql, "could not update user for $user_id");
+      $sql = "UPDATE users SET real_name=" . DB::_escape($real_name) . ", phone=" . DB::_escape($phone) . ",
+                email=" . DB::_escape($email) . ",
+                role_id=" . DB::_escape($role_id) . ",
+                language=" . DB::_escape($language) . ",
+                print_profile=" . DB::_escape($profile) . ",
+                rep_popup=" . DB::_escape($rep_popup) . ",
+                pos=" . DB::_escape($pos) . ",
+                user_id = " . DB::_escape($user_id) . " WHERE id=" . DB::_escape($id);
+      DB::_query($sql, "could not update user for $user_id");
       session_regenerate_id();
     }
     /**
@@ -88,28 +88,28 @@
     {
       $sql
         = "UPDATE users SET
-                price_dec=" . DB::escape($price_dec) . ",
-                qty_dec=" . DB::escape($qty_dec) . ",
-                exrate_dec=" . DB::escape($exrate_dec) . ",
-                percent_dec=" . DB::escape($percent_dec) . ",
-                show_gl=" . DB::escape($show_gl) . ",
-                show_codes=" . DB::escape($show_codes) . ",
-                date_format=" . DB::escape($date_format) . ",
-                date_sep=" . DB::escape($date_sep) . ",
-                tho_sep=" . DB::escape($tho_sep) . ",
-                dec_sep=" . DB::escape($dec_sep) . ",
-                theme=" . DB::escape($theme) . ",
-                page_size=" . DB::escape($page_size) . ",
-                show_hints=" . DB::escape($show_hints) . ",
-                print_profile=" . DB::escape($profile) . ",
-                rep_popup=" . DB::escape($rep_popup) . ",
-                query_size=" . DB::escape($query_size) . ",
-                graphic_links=" . DB::escape($graphic_links) . ",
-                language=" . DB::escape($language) . ",
-                sticky_doc_date=" . DB::escape($stickydate) . ",
-                startup_tab=" . DB::escape($startup_tab) . "
-                WHERE id = " . DB::escape($id);
-      DB::query($sql, "could not update user display prefs for $id");
+                price_dec=" . DB::_escape($price_dec) . ",
+                qty_dec=" . DB::_escape($qty_dec) . ",
+                exrate_dec=" . DB::_escape($exrate_dec) . ",
+                percent_dec=" . DB::_escape($percent_dec) . ",
+                show_gl=" . DB::_escape($show_gl) . ",
+                show_codes=" . DB::_escape($show_codes) . ",
+                date_format=" . DB::_escape($date_format) . ",
+                date_sep=" . DB::_escape($date_sep) . ",
+                tho_sep=" . DB::_escape($tho_sep) . ",
+                dec_sep=" . DB::_escape($dec_sep) . ",
+                theme=" . DB::_escape($theme) . ",
+                page_size=" . DB::_escape($page_size) . ",
+                show_hints=" . DB::_escape($show_hints) . ",
+                print_profile=" . DB::_escape($profile) . ",
+                rep_popup=" . DB::_escape($rep_popup) . ",
+                query_size=" . DB::_escape($query_size) . ",
+                graphic_links=" . DB::_escape($graphic_links) . ",
+                language=" . DB::_escape($language) . ",
+                sticky_doc_date=" . DB::_escape($stickydate) . ",
+                startup_tab=" . DB::_escape($startup_tab) . "
+                WHERE id = " . DB::_escape($id);
+      DB::_query($sql, "could not update user display prefs for $id");
       session_regenerate_id();
     }
     /**
@@ -128,7 +128,7 @@
         $sql .= " AND !u.inactive";
       }
 
-      return DB::query($sql, "could not get users");
+      return DB::_query($sql, "could not get users");
     }
     /**
      * @static
@@ -139,10 +139,10 @@
      */
     public static function  get($id)
     {
-      $sql    = "SELECT * FROM users WHERE id=" . DB::escape($id);
-      $result = DB::query($sql, "could not get user $id");
+      $sql    = "SELECT * FROM users WHERE id=" . DB::_escape($id);
+      $result = DB::_query($sql, "could not get user $id");
 
-      return DB::fetch($result);
+      return DB::_fetch($result);
     }
     //	This public static function is necessary for admin prefs update after upgrade from 2.1
     //
@@ -155,10 +155,10 @@
      */
     public static function  get_by_login($user_id)
     {
-      $sql    = "SELECT * FROM users WHERE user_id=" . DB::escape($user_id);
-      $result = DB::query($sql, "could not get user $user_id");
+      $sql    = "SELECT * FROM users WHERE user_id=" . DB::_escape($user_id);
+      $result = DB::_query($sql, "could not get user $user_id");
 
-      return DB::fetch($result);
+      return DB::_fetch($result);
     }
     /**
      * @static
@@ -167,8 +167,8 @@
      */
     public static function  delete($id)
     {
-      $sql = "DELETE FROM users WHERE id=" . DB::escape($id);
-      DB::query($sql, "could not delete user $id");
+      $sql = "DELETE FROM users WHERE id=" . DB::_escape($id);
+      DB::_query($sql, "could not delete user $id");
     }
     /**
      * @static
@@ -195,8 +195,8 @@
     public static function  update_visitdate($user_id)
     {
       $sql = "UPDATE users SET last_visit_date='" . date("Y-m-d H:i:s") . "'
-                WHERE user_id=" . DB::escape($user_id);
-      DB::query($sql, "could not update last visit date for user $user_id");
+                WHERE user_id=" . DB::_escape($user_id);
+      DB::_query($sql, "could not update last visit date for user $user_id");
     }
     /**
      * @static
@@ -207,9 +207,9 @@
      */
     public static function  check_activity($id)
     {
-      $sql    = "SELECT COUNT(*) FROM audit_trail WHERE audit_trail.user=" . DB::escape($id);
-      $result = DB::query($sql, "Cant check user activity");
-      $ret    = DB::fetch($result);
+      $sql    = "SELECT COUNT(*) FROM audit_trail WHERE audit_trail.user=" . DB::_escape($id);
+      $result = DB::_query($sql, "Cant check user activity");
+      $ret    = DB::_fetch($result);
 
       return $ret[0];
     }
@@ -219,7 +219,7 @@
      */
     public static function  show_online()
     {
-      if (!Config::get('ui_users_showonline') || !isset($_SESSION['get_text'])) {
+      if (!Config::_get('ui_users_showonline') || !isset($_SESSION['get_text'])) {
         return "";
       }
 
@@ -362,28 +362,28 @@
      */
     protected static function get_online()
     {
-      $usersonline = Cache::get('users_online');
+      $usersonline = Cache::_get('users_online');
       if ($usersonline) {
         return $usersonline;
       }
-      $result = DB::query("SHOW TABLES LIKE 'useronline'");
-      if (DB::numRows($result) == 1) {
+      $result = DB::_query("SHOW TABLES LIKE 'useronline'");
+      if (DB::_numRows($result) == 1) {
         $timeoutseconds = 120;
         $timestamp      = time();
         $timeout        = $timestamp - $timeoutseconds;
         $ip             = static::get_ip();
         // Add user to database
-        DB::insert('useronline')->values(array('timestamp' => $timestamp, 'ip' => $ip, 'file' => $_SERVER['DOCUMENT_URI']))
+        DB::_insert('useronline')->values(array('timestamp' => $timestamp, 'ip' => $ip, 'file' => $_SERVER['DOCUMENT_URI']))
           ->exec();
         //Remove users that were not online within $timeoutseconds.
-        DB::query("DELETE FROM useronline WHERE timestamp<" . $timeout);
+        DB::_query("DELETE FROM useronline WHERE timestamp<" . $timeout);
         // Select online users
-        $result = DB::query("SELECT DISTINCT ip FROM useronline");
-        $users  = DB::numRows($result);
+        $result = DB::_query("SELECT DISTINCT ip FROM useronline");
+        $users  = DB::_numRows($result);
       } else {
         $users = 1;
       }
-      Cache::set('users_online', $users, 300);
+      Cache::_set('users_online', $users, 300);
 
       return $users;
     }

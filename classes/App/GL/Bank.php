@@ -30,7 +30,7 @@
         return;
       }
       if ($date_ == null) {
-        $date_ = Dates::today();
+        $date_ = Dates::_today();
       }
       $for_amount = 0;
       // We have to calculate all the currency accounts belonging to the GL account
@@ -39,15 +39,15 @@
       $sql
               = "SELECT SUM(bt.amount) AS for_amount, ba.bank_curr_code
 		FROM bank_trans bt, bank_accounts ba
-		WHERE ba.id = bt.bank_act AND ba.account_code = " . DB::escape($account) . " AND bt.trans_date<='" . Dates::dateToSql($date_) . "'
+		WHERE ba.id = bt.bank_act AND ba.account_code = " . DB::_escape($account) . " AND bt.trans_date<='" . Dates::_dateToSql($date_) . "'
 		GROUP BY ba.bank_curr_code";
-      $result = DB::query($sql, "Transactions for bank account $acc_id could not be calculated");
-      while ($row = DB::fetch($result)) {
+      $result = DB::_query($sql, "Transactions for bank account $acc_id could not be calculated");
+      while ($row = DB::_fetch($result)) {
         if ($row['for_amount'] == 0) {
           continue;
         }
         $rate = Bank_Currency::exchange_rate_from_home($row['bank_curr_code'], $date_);
-        $for_amount += Num::round($row['for_amount'] * $rate, User::price_dec());
+        $for_amount += Num::_round($row['for_amount'] * $rate, User::price_dec());
       }
       $amount = GL_Trans::get_from_to("", $date_, $account);
       $diff   = $amount - $for_amount;
@@ -84,7 +84,7 @@
      * @return int
      */
     public static function add_bank_transfer($from_account, $to_account, $date_, $amount, $ref, $memo_, $charge = 0) {
-      DB::begin();
+      DB::_begin();
       $trans_type      = ST_BANKTRANSFER;
       $currency        = Bank_Currency::for_company($from_account);
       $trans_no        = SysTypes::get_next_trans_no($trans_type);
@@ -110,7 +110,7 @@
       DB_Comments::add($trans_type, $trans_no, $date_, $memo_);
       Ref::save($trans_type, $ref);
       DB_AuditTrail::add($trans_type, $trans_no, $date_);
-      DB::commit();
+      DB::_commit();
       return $trans_no;
     }
     //	Add bank payment or deposit to database.
@@ -145,7 +145,7 @@
       }
       $do_exchange_variance = false;
       if ($use_transaction) {
-        DB::begin();
+        DB::_begin();
       }
       $currency        = Bank_Currency::for_company($from_account);
       $bank_gl_account = Bank_Account::get_gl($from_account);
@@ -200,7 +200,7 @@
       Ref::save($trans_type, $ref);
       DB_AuditTrail::add($trans_type, $trans_no, $date_);
       if ($use_transaction) {
-        DB::commit();
+        DB::_commit();
       }
       return array($trans_type, $trans_no);
     }

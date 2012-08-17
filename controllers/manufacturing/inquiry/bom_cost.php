@@ -15,7 +15,7 @@
     $_POST['stock_id'] = $_GET['stock_id'];
   }
   if (Forms::isListUpdated('stock_id')) {
-    Ajax::activate('_page_body');
+    Ajax::_activate('_page_body');
   }
   Forms::start(false);
   Table::start('tablestyle_noborder');
@@ -23,7 +23,7 @@
   Table::end();
   Display::br();
   Display::heading(_("All Costs Are In:") . " " . Bank_Currency::for_company());
-  WO::display_bom(Input::post('stock_id'));
+  WO::display_bom(Input::_post('stock_id'));
   Forms::end();
   Page::end();
 

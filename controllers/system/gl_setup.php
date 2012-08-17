@@ -11,10 +11,10 @@
   Page::start(_($help_context = "System and General GL Setup"), SA_GLSETUP);
 
   if (isset($_POST['submit']) && can_process()) {
-    $_POST['allow_negative_stock'] = Input::hasPost('allow_negative_stock');
+    $_POST['allow_negative_stock'] = Input::_hasPost('allow_negative_stock');
     $_POST['po_over_receive']      = Validation::input_num('po_over_receive');
     $_POST['po_over_charge']       = Validation::input_num('po_over_charge');
-    $_POST['accumulate_shipping']  = Input::hasPost('accumulate_shipping');
+    $_POST['accumulate_shipping']  = Input::_hasPost('accumulate_shipping');
     DB_Company::update_gl_setup($_POST);
     Event::success(_("The general GL setup has been updated."));
   } /* end of if submit */
@@ -41,8 +41,8 @@
   $_POST['default_inv_sales_act']      = $myrow['default_inv_sales_act'];
   $_POST['default_assembly_act']       = $myrow['default_assembly_act'];
   $_POST['allow_negative_stock']       = $myrow['allow_negative_stock'];
-  $_POST['po_over_receive']            = Num::percentFormat($myrow['po_over_receive']);
-  $_POST['po_over_charge']             = Num::percentFormat($myrow['po_over_charge']);
+  $_POST['po_over_receive']            = Num::_percentFormat($myrow['po_over_receive']);
+  $_POST['po_over_charge']             = Num::_percentFormat($myrow['po_over_charge']);
   $_POST['past_due_days']              = $myrow['past_due_days'];
   $_POST['default_credit_limit']       = $myrow['default_credit_limit'];
   $_POST['legal_text']                 = $myrow['legal_text'];
@@ -104,17 +104,17 @@
   {
     if (!Validation::post_num('po_over_receive', 0, 100)) {
       Event::error(_("The delivery over-receive allowance must be between 0 and 100."));
-      JS::setFocus('po_over_receive');
+      JS::_setFocus('po_over_receive');
       return false;
     }
     if (!Validation::post_num('po_over_charge', 0, 100)) {
       Event::error(_("The invoice over-charge allowance must be between 0 and 100."));
-      JS::setFocus('po_over_charge');
+      JS::_setFocus('po_over_charge');
       return false;
     }
     if (!Validation::post_num('past_due_days', 0, 100)) {
       Event::error(_("The past due days interval allowance must be between 0 and 100."));
-      JS::setFocus('past_due_days');
+      JS::_setFocus('past_due_days');
       return false;
     }
     return true;

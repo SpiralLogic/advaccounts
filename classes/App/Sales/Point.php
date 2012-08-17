@@ -20,8 +20,8 @@
      */
     public static function     add($name, $location, $account, $cash, $credit)
     {
-      $sql = "INSERT INTO sales_pos (pos_name, pos_location, pos_account, cash_sale, credit_sale) VALUES (" . DB::escape($name) . "," . DB::escape($location) . "," . DB::escape($account) . ",$cash,$credit)";
-      DB::query($sql, "could not add point of sale");
+      $sql = "INSERT INTO sales_pos (pos_name, pos_location, pos_account, cash_sale, credit_sale) VALUES (" . DB::_escape($name) . "," . DB::_escape($location) . "," . DB::_escape($account) . ",$cash,$credit)";
+      DB::_query($sql, "could not add point of sale");
     }
     /**
      * @static
@@ -35,8 +35,8 @@
      */
     public static function update($id, $name, $location, $account, $cash, $credit)
     {
-      $sql = "UPDATE sales_pos SET pos_name=" . DB::escape($name) . ",pos_location=" . DB::escape($location) . ",pos_account=" . DB::escape($account) . ",cash_sale =$cash" . ",credit_sale =$credit" . " WHERE id = " . DB::escape($id);
-      DB::query($sql, "could not update sales type");
+      $sql = "UPDATE sales_pos SET pos_name=" . DB::_escape($name) . ",pos_location=" . DB::_escape($location) . ",pos_account=" . DB::_escape($account) . ",cash_sale =$cash" . ",credit_sale =$credit" . " WHERE id = " . DB::_escape($id);
+      DB::_query($sql, "could not update sales type");
     }
     /**
      * @static
@@ -54,7 +54,7 @@
         $sql .= " WHERE !pos.inactive";
       }
 
-      return DB::query($sql, "could not get all POS definitions");
+      return DB::_query($sql, "could not get all POS definitions");
     }
     /**
      * @static
@@ -68,10 +68,10 @@
       $sql    = "SELECT pos.*, loc.location_name, acc.bank_account_name FROM " . "sales_pos as pos
         LEFT JOIN locations as loc on pos.pos_location=loc.loc_code
         LEFT JOIN bank_accounts as acc on pos.pos_account=acc.id
-        WHERE pos.id=" . DB::escape($id);
-      $result = DB::query($sql, "could not get POS definition");
+        WHERE pos.id=" . DB::_escape($id);
+      $result = DB::_query($sql, "could not get POS definition");
 
-      return DB::fetch($result);
+      return DB::_fetch($result);
     }
     /**
      * @static
@@ -82,9 +82,9 @@
      */
     public static function get_name($id)
     {
-      $sql    = "SELECT pos_name FROM sales_pos WHERE id=" . DB::escape($id);
-      $result = DB::query($sql, "could not get POS name");
-      $row    = DB::fetchRow($result);
+      $sql    = "SELECT pos_name FROM sales_pos WHERE id=" . DB::_escape($id);
+      $result = DB::_query($sql, "could not get POS name");
+      $row    = DB::_fetchRow($result);
 
       return $row[0];
     }
@@ -95,8 +95,8 @@
      */
     public static function delete($id)
     {
-      $sql = "DELETE FROM sales_pos WHERE id=" . DB::escape($id);
-      DB::query($sql, "The point of sale record could not be deleted");
+      $sql = "DELETE FROM sales_pos WHERE id=" . DB::_escape($id);
+      DB::_query($sql, "The point of sale record could not be deleted");
     }
     /**
      * @static
@@ -110,7 +110,7 @@
     public static function row($label, $name, $selected_id = null, $spec_option = false, $submit_on_change = false)
     {
       $sql = "SELECT id, pos_name, inactive FROM sales_pos";
-      JS::defaultFocus($name);
+      JS::_defaultFocus($name);
       echo '<tr>';
       if ($label != null) {
         echo "<td class='label'>$label</td>\n";
@@ -133,13 +133,13 @@
     {
       if (strlen($_POST['name']) == 0) {
         Event::error(_("The POS name cannot be empty."));
-        JS::setFocus('pos_name');
+        JS::_setFocus('pos_name');
 
         return false;
       }
-      if (!Input::hasPost('cash') && !Input::hasPost('credit')) {
+      if (!Input::_hasPost('cash') && !Input::_hasPost('credit')) {
         Event::error(_("You must allow cash or credit sale."));
-        JS::setFocus('credit');
+        JS::_setFocus('credit');
 
         return false;
       }

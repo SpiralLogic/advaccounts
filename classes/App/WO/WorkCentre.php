@@ -19,8 +19,8 @@
     {
       $sql
         = "INSERT INTO workcentres (name, description)
-        VALUES (" . DB::escape($name) . "," . DB::escape($description) . ")";
-      DB::query($sql, "could not add work centre");
+        VALUES (" . DB::_escape($name) . "," . DB::_escape($description) . ")";
+      DB::_query($sql, "could not add work centre");
     }
     /**
      * @static
@@ -31,9 +31,9 @@
      */
     public static function update($type_id, $name, $description)
     {
-      $sql = "UPDATE workcentres SET name=" . DB::escape($name) . ", description=" . DB::escape($description) . "
-        WHERE id=" . DB::escape($type_id);
-      DB::query($sql, "could not update work centre");
+      $sql = "UPDATE workcentres SET name=" . DB::_escape($name) . ", description=" . DB::_escape($description) . "
+        WHERE id=" . DB::_escape($type_id);
+      DB::_query($sql, "could not update work centre");
     }
     /**
      * @static
@@ -49,7 +49,7 @@
         $sql .= " WHERE !inactive";
       }
 
-      return DB::query($sql, "could not get all work centres");
+      return DB::_query($sql, "could not get all work centres");
     }
     /**
      * @static
@@ -60,10 +60,10 @@
      */
     public static function get($type_id)
     {
-      $sql    = "SELECT * FROM workcentres WHERE id=" . DB::escape($type_id);
-      $result = DB::query($sql, "could not get work centre");
+      $sql    = "SELECT * FROM workcentres WHERE id=" . DB::_escape($type_id);
+      $result = DB::_query($sql, "could not get work centre");
 
-      return DB::fetch($result);
+      return DB::_fetch($result);
     }
     /**
      * @static
@@ -72,8 +72,8 @@
      */
     public static function delete($type_id)
     {
-      $sql = "DELETE FROM workcentres WHERE id=" . DB::escape($type_id);
-      DB::query($sql, "could not delete work centre");
+      $sql = "DELETE FROM workcentres WHERE id=" . DB::_escape($type_id);
+      DB::_query($sql, "could not delete work centre");
     }
   }
 

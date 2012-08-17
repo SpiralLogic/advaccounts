@@ -27,9 +27,9 @@
         FROM purch_orders, suppliers, locations
         WHERE purch_orders.creditor_id = suppliers.creditor_id
         AND locations.loc_code = into_stock_location
-        AND purch_orders.order_no = " . DB::escape($order_no);
-    $result = DB::query($sql, "The order cannot be retrieved");
-    return DB::fetch($result);
+        AND purch_orders.order_no = " . DB::_escape($order_no);
+    $result = DB::_query($sql, "The order cannot be retrieved");
+    return DB::_fetch($result);
   }
 
   /**
@@ -42,9 +42,9 @@
         FROM purch_order_details
         LEFT JOIN stock_master
         ON purch_order_details.item_code=stock_master.stock_id
-        WHERE order_no =" . DB::escape($order_no) . " ";
+        WHERE order_no =" . DB::_escape($order_no) . " ";
     $sql .= " ORDER BY po_detail_item";
-    return DB::query($sql, "Retreive order Line Items");
+    return DB::_query($sql, "Retreive order Line Items");
   }
 
   function print_po() {
@@ -90,7 +90,7 @@
       $rep->Header2($myrow, null, $myrow, $baccount, ST_PURCHORDER);
       $result   = get_po_details($i);
       $SubTotal = 0;
-      while ($myrow2 = DB::fetch($result)) {
+      while ($myrow2 = DB::_fetch($result)) {
         if ($myrow2['item_code'] != 'freight' || $myrow['freight'] != $myrow2['unit_price']) {
           $data = Purch_Order::get_data($myrow['creditor_id'], $myrow2['item_code']);
           if ($data !== false) {
@@ -101,16 +101,16 @@
               $myrow2['units'] = $data['suppliers_uom'];
             }
             if ($data['conversion_factor'] > 1) {
-              $myrow2['unit_price']       = Num::round($myrow2['unit_price'] * $data['conversion_factor'], User::price_dec());
-              $myrow2['quantity_ordered'] = Num::round($myrow2['quantity_ordered'] / $data['conversion_factor'], User::qty_dec());
+              $myrow2['unit_price']       = Num::_round($myrow2['unit_price'] * $data['conversion_factor'], User::price_dec());
+              $myrow2['quantity_ordered'] = Num::_round($myrow2['quantity_ordered'] / $data['conversion_factor'], User::qty_dec());
             }
           }
-          $Net = Num::round(($myrow2["unit_price"] * $myrow2["quantity_ordered"]), User::price_dec());
+          $Net = Num::_round(($myrow2["unit_price"] * $myrow2["quantity_ordered"]), User::price_dec());
           $SubTotal += $Net;
           $dec2         = 0;
-          $DisplayPrice = Num::priceDecimal($myrow2["unit_price"], $dec2);
-          $DisplayQty   = Num::format($myrow2["quantity_ordered"], Item::qty_dec($myrow2['item_code']));
-          $DisplayNet   = Num::format($Net, $dec);
+          $DisplayPrice = Num::_priceDecimal($myrow2["unit_price"], $dec2);
+          $DisplayQty   = Num::_format($myrow2["quantity_ordered"], Item::qty_dec($myrow2['item_code']));
+          $DisplayNet   = Num::_format($Net, $dec);
           $rep->TextCol(0, 1, $myrow2['item_code'], -2);
           $oldrow = $rep->row;
           $rep->TextColLines(1, 2, $myrow2['description'], -2);
@@ -131,7 +131,7 @@
         $rep->NewLine();
         $rep->TextColLines(1, 5, $myrow['comments'], -2);
       }
-      $display_sub_total = Num::format($SubTotal, $dec);
+      $display_sub_total = Num::_format($SubTotal, $dec);
       $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
       $linetype          = true;
       $doctype           = ST_PURCHORDER;
@@ -144,9 +144,9 @@
       $rep->TextCol(6, 7, $display_sub_total, -2);
       $rep->NewLine();
       $rep->TextCol(3, 6, 'Freight:', -2);
-      $rep->TextCol(6, 7, Num::format($myrow['freight'], $dec), -2);
+      $rep->TextCol(6, 7, Num::_format($myrow['freight'], $dec), -2);
       $rep->NewLine();
-      $display_total = Num::format($SubTotal + $myrow['freight'], $dec);
+      $display_total = Num::_format($SubTotal + $myrow['freight'], $dec);
       $rep->Font('bold');
       $rep->TextCol(3, 6, Report::TOTAL_PO_EX_TAX, -2);
       $rep->TextCol(6, 7, $display_total, -2);

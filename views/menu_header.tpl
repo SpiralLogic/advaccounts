@@ -13,10 +13,10 @@
 <div id='logo'><h1>{{APP_TITLE}}<br><span class='slogan'>{{VERSION}}</span></h1></div>
 <div id='_tabs2'>
   <ul class="menu" id="topmenu">
-    {{#foreach $menu as $m}}
-    <li class='{{$m.class}}'>
-      <a href='{{$m.href}}' {{$m.acc1}}>{{$m.acc0}}</a>
+    {{#$menu}}
+    <li class='{{$.class}}'>
+      <a href='{{$.href}}' {{$.acc1}}>{{$.acc0}}</a>
     </li>
-    {{/foreach}}
+    {{/$menu}}
   </ul>
 </div>

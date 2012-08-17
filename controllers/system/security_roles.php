@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   Page::start(_($help_context = "Access setup"), SA_SECROLES);
-  $new_role = Input::post('role') == '' || Input::post('cancel') || Input::post('clone');
+  $new_role = Input::_post('role') == '' || Input::_post('cancel') || Input::_post('clone');
   // Following compare function is used for sorting areas
   // in such a way that security areas defined by module/plugin
   // is properly placed under related section regardless of
@@ -44,32 +44,32 @@
   }
 
   if (Forms::isListUpdated('role')) {
-    Ajax::activate('details');
-    Ajax::activate('controls');
+    Ajax::_activate('details');
+    Ajax::_activate('controls');
   }
   function clear_data()
   {
     unset($_POST);
   }
 
-  if (Input::post('addupdate')) {
+  if (Input::_post('addupdate')) {
     $input_error = 0;
     if ($_POST['description'] == '') {
       $input_error = 1;
       Event::error(_("Role description cannot be empty."));
-      JS::setFocus('description');
+      JS::_setFocus('description');
     } elseif ($_POST['name'] == '') {
       $input_error = 1;
       Event::error(_("Role name cannot be empty."));
-      JS::setFocus('name');
+      JS::_setFocus('name');
     }
     // prevent accidental editor lockup by removing SA_SECROLES
-    if (Input::post('role') == User::i()->access) {
+    if (Input::_post('role') == User::i()->access) {
       if (!isset($_POST['Area' . User::i()->Security['areas'][SA_SECROLES][0]]) || !isset($_POST[Section . SS_SETUP])
       ) {
         Event::error(_("Access level edition in Company setup section have to be enabled for your account."));
         $input_error = 1;
-        JS::setFocus(!isset($_POST['Section' . SS_SETUP]) ? 'Section' . SS_SETUP :
+        JS::_setFocus(!isset($_POST['Section' . SS_SETUP]) ? 'Section' . SS_SETUP :
                        'Area' . User::i()->Security['areas'][SA_SECROLES][0]);
       }
     }
@@ -95,31 +95,31 @@
         Event::success(_("New security role has been added."));
       } else {
         Security::update_role($_POST['role'], $_POST['name'], $_POST['description'], $sections, $areas);
-        DB::updateRecordStatus($_POST['role'], Input::post('inactive'), 'security_roles', 'id');
+        DB::_updateRecordStatus($_POST['role'], Input::_post('inactive'), 'security_roles', 'id');
         Event::success(_("Security role has been updated."));
       }
       $new_role = true;
       clear_data();
-      Ajax::activate('_page_body');
+      Ajax::_activate('_page_body');
     }
   }
-  if (Input::post('delete')) {
-    if (Security::check_role_used(Input::post('role'))) {
+  if (Input::_post('delete')) {
+    if (Security::check_role_used(Input::_post('role'))) {
       Event::error(_("This role is currently assigned to some users and cannot be deleted"));
     } else {
-      Security::delete(Input::post('role'));
+      Security::delete(Input::_post('role'));
       Event::notice(_("Security role has been sucessfully deleted."));
       unset($_POST['role']);
     }
-    Ajax::activate('_page_body');
+    Ajax::_activate('_page_body');
   }
-  if (Input::post('cancel')) {
+  if (Input::_post('cancel')) {
     unset($_POST['role']);
-    Ajax::activate('_page_body');
+    Ajax::_activate('_page_body');
   }
-  if (!isset($_POST['role']) || Input::post('clone') || Forms::isListUpdated('role')) {
-    $id    = Input::post('role');
-    $clone = Input::post('clone');
+  if (!isset($_POST['role']) || Input::_post('clone') || Forms::isListUpdated('role')) {
+    $id    = Input::_post('role');
+    $clone = Input::_post('clone');
     unset($_POST);
     if ($id) {
       $row                  = Security::get_role($id);
@@ -142,8 +142,8 @@
       $_POST['Section' . $s] = 1;
     }
     if ($clone) {
-      JS::setFocus('name');
-      Ajax::activate('_page_body');
+      JS::_setFocus('name');
+      Ajax::_activate('_page_body');
     } else {
       $_POST['role'] = $id;
     }
@@ -151,18 +151,18 @@
   Forms::start();
   Table::start('tablestyle_noborder');
   Row::start();
-  Security::roles_cells(_("Role:") . "&nbsp;", 'role', null, true, true, Input::hasPost('show_inactive'));
-  $new_role = Input::post('role') == '';
+  Security::roles_cells(_("Role:") . "&nbsp;", 'role', null, true, true, Input::_hasPost('show_inactive'));
+  $new_role = Input::_post('role') == '';
   Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
   Row::end();
   Table::end();
   echo "<hr>";
-  if (Input::post('_show_inactive_update')) {
-    Ajax::activate('role');
-    JS::setFocus('role');
+  if (Input::_post('_show_inactive_update')) {
+    Ajax::_activate('role');
+    JS::_setFocus('role');
   }
   if (Forms::findPostPrefix('_Section')) {
-    Ajax::activate('details');
+    Ajax::_activate('details');
   }
   Display::div_start('details');
   Table::start('tablestyle2');
@@ -189,7 +189,7 @@
       //			 Event::error(sprintf("Bad section %X:", $m));
       Row::label(User::i()->Security['sections'][$m] . ':', Forms::checkbox(null, 'Section' . $m, null, true, _("On/off set of features")), "class='left tablehead'", "class='tablehead'");
     }
-    if (Input::hasPost('Section' . $m)) {
+    if (Input::_hasPost('Section' . $m)) {
       Forms::checkRow($parms[1], 'Area' . $parms[0], null, false, '', "class='center'");
       Row::end();
     } else {

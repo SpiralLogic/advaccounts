@@ -18,8 +18,8 @@
      */
     public static function add($name, $tax_included, $factor)
     {
-      $sql = "INSERT INTO sales_types (sales_type,tax_included,factor) VALUES (" . DB::escape($name) . "," . DB::escape($tax_included) . "," . DB::escape($factor) . ")";
-      DB::query($sql, "could not add sales type");
+      $sql = "INSERT INTO sales_types (sales_type,tax_included,factor) VALUES (" . DB::_escape($name) . "," . DB::_escape($tax_included) . "," . DB::_escape($factor) . ")";
+      DB::_query($sql, "could not add sales type");
     }
     /**
      * @static
@@ -31,9 +31,9 @@
      */
     public static function update($id, $name, $tax_included, $factor)
     {
-      $sql = "UPDATE sales_types SET sales_type = " . DB::escape($name) . ",
-    tax_included =" . DB::escape($tax_included) . ", factor=" . DB::escape($factor) . " WHERE id = " . DB::escape($id);
-      DB::query($sql, "could not update sales type");
+      $sql = "UPDATE sales_types SET sales_type = " . DB::_escape($name) . ",
+    tax_included =" . DB::_escape($tax_included) . ", factor=" . DB::_escape($factor) . " WHERE id = " . DB::_escape($id);
+      DB::_query($sql, "could not update sales type");
     }
     /**
      * @static
@@ -49,7 +49,7 @@
         $sql .= " WHERE !inactive";
       }
 
-      return DB::query($sql, "could not get all sales types");
+      return DB::_query($sql, "could not get all sales types");
     }
     /**
      * @static
@@ -60,10 +60,10 @@
      */
     public static function get($id)
     {
-      $sql    = "SELECT * FROM sales_types WHERE id=" . DB::escape($id);
-      $result = DB::query($sql, "could not get sales type");
+      $sql    = "SELECT * FROM sales_types WHERE id=" . DB::_escape($id);
+      $result = DB::_query($sql, "could not get sales type");
 
-      return DB::fetch($result);
+      return DB::_fetch($result);
     }
     /**
      * @static
@@ -74,9 +74,9 @@
      */
     public static function get_name($id)
     {
-      $sql    = "SELECT sales_type FROM sales_types WHERE id=" . DB::escape($id);
-      $result = DB::query($sql, "could not get sales type");
-      $row    = DB::fetchRow($result);
+      $sql    = "SELECT sales_type FROM sales_types WHERE id=" . DB::_escape($id);
+      $result = DB::_query($sql, "could not get sales type");
+      $row    = DB::_fetchRow($result);
 
       return $row[0];
     }
@@ -87,10 +87,10 @@
      */
     public static function delete($id)
     {
-      $sql = "DELETE FROM sales_types WHERE id=" . DB::escape($id);
-      DB::query($sql, "The Sales type record could not be deleted");
-      $sql = "DELETE FROM prices WHERE sales_type_id=" . DB::escape($id);
-      DB::query($sql, "The Sales type prices could not be deleted");
+      $sql = "DELETE FROM sales_types WHERE id=" . DB::_escape($id);
+      DB::_query($sql, "The Sales type record could not be deleted");
+      $sql = "DELETE FROM prices WHERE sales_type_id=" . DB::_escape($id);
+      DB::_query($sql, "The Sales type prices could not be deleted");
     }
     /**
      * @static
@@ -154,13 +154,13 @@
     {
       if (strlen($_POST['sales_type']) == 0) {
         Event::error(_("The sales type description cannot be empty."));
-        JS::setFocus('sales_type');
+        JS::_setFocus('sales_type');
 
         return false;
       }
       if (!Validation::post_num('factor', 0)) {
         Event::error(_("Calculation factor must be valid positive number."));
-        JS::setFocus('factor');
+        JS::_setFocus('factor');
 
         return false;
       }

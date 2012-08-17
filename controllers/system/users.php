@@ -15,11 +15,11 @@
 
     if (can_process($auth)) {
       if ($Mode == UPDATE_ITEM) {
-        Users::update($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], Input::hasPost('rep_popup'), $_POST['pos']);
+        Users::update($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], Input::_hasPost('rep_popup'), $_POST['pos']);
         Event::success(_("The selected user has been updated."));
       } else {
-        Users::add($_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], Input::hasPost('rep_popup'), $_POST['pos']);
-        Users::update_display_prefs(DB::insertId(), User::price_dec(), User::qty_dec(), User::exrate_dec(), User::percent_dec(), User::show_gl(), User::show_codes(), User::date_format(), User::date_sep(), User::prefs()->tho_sep, User::prefs()->dec_sep, User::theme(), User::page_size(), User::hints(), $_POST['profile'], Input::hasPost('rep_popup'), User::query_size(), User::graphic_links(), $_POST['language'], User::sticky_doc_date(), User::startup_tab());
+        Users::add($_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], Input::_hasPost('rep_popup'), $_POST['pos']);
+        Users::update_display_prefs(DB::_insertId(), User::price_dec(), User::qty_dec(), User::exrate_dec(), User::percent_dec(), User::show_gl(), User::show_codes(), User::date_format(), User::date_sep(), User::prefs()->tho_sep, User::prefs()->dec_sep, User::theme(), User::page_size(), User::hints(), $_POST['profile'], Input::_hasPost('rep_popup'), User::query_size(), User::graphic_links(), $_POST['language'], User::sticky_doc_date(), User::startup_tab());
         Event::success(_("A new user has been added."));
       }
       $Mode = MODE_RESET;
@@ -32,11 +32,11 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav         = Input::post('show_inactive');
+    $sav         = Input::_post('show_inactive');
     unset($_POST); // clean all input fields
     $_POST['show_inactive'] = $sav;
   }
-  $result = Users::getAll(Input::hasPost('show_inactive'));
+  $result = Users::getAll(Input::_hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid');
   $th = array(
@@ -45,8 +45,8 @@
   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0; //row colour counter
-  while ($myrow = DB::fetch($result)) {
-    $last_visit_date = Dates::sqlToDate($myrow["last_visit_date"]);
+  while ($myrow = DB::_fetch($result)) {
+    $last_visit_date = Dates::_sqlToDate($myrow["last_visit_date"]);
     /*The security_headings array is defined in config.php */
     $not_me = strcasecmp($myrow["user_id"], User::i()->username);
     Cell::label($myrow["user_id"]);
@@ -57,7 +57,7 @@
     Cell::label($myrow["role"]);
     if ($not_me) {
       Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'users', 'id');
-    } elseif (Input::hasPost('show_inactive')) {
+    } elseif (Input::_hasPost('show_inactive')) {
       Cell::label('');
     }
     Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
@@ -90,7 +90,7 @@
     Forms::hidden('selected_id', $selected_id);
     Forms::hidden('user_id');
     Row::start();
-    Row::label(_("User login:"), Input::post('user_id'));
+    Row::label(_("User login:"), Input::_post('user_id'));
   } else { //end of if $selected_id only do the else when a new record is being entered
     Forms::textRow(_("User Login:"), "user_id", null, 22, 20);
     $_POST['language']  = User::language();
@@ -110,7 +110,7 @@
   Languages::row(_("Language:"), 'language', null);
   Sales_Point::row(_("User's POS") . ':', 'pos', null);
   Reports_UI::print_profiles_row(_("Printing profile") . ':', 'profile', null, _('Browser printing support'));
-  Forms::checkRow(_("Use popup window for reports:"), 'rep_popup', Input::post('rep_popup'), false, _('Set this option to on if your browser directly supports pdf files'));
+  Forms::checkRow(_("Use popup window for reports:"), 'rep_popup', Input::_post('rep_popup'), false, _('Set this option to on if your browser directly supports pdf files'));
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();
@@ -125,7 +125,7 @@
   {
     if (strlen($_POST['user_id']) < 4) {
       Event::error(_("The user login entered must be at least 4 characters long."));
-      JS::setFocus('user_id');
+      JS::_setFocus('user_id');
 
       return false;
     }

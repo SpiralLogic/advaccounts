@@ -22,26 +22,26 @@
     protected $order_number;
     protected $creditor_id;
     protected function before() {
-      JS::openWindow(950, 500);
-      $this->order_number = Input::getPost('order_number', Input::STRING);
-      $this->creditor_id  = Input::postGet('creditor_id', Input::NUMERIC, -1);
-      if (Input::post('SearchOrders')) {
-        Ajax::activate('orders_tbl');
+      JS::_openWindow(950, 500);
+      $this->order_number = $this->Input->getPost('order_number', Input::STRING);
+      $this->creditor_id  = $this->Input->postGet('creditor_id', Input::NUMERIC, -1);
+      if ($this->Input->post('SearchOrders')) {
+        $this->Ajax->activate('orders_tbl');
       }
       if ($this->order_number) {
-        Ajax::addFocus(true, 'order_number');
+        $this->Ajax->addFocus(true, 'order_number');
       } else {
-        Ajax::addFocus(true, 'OrdersAfterDate');
+        $this->Ajax->addFocus(true, 'OrdersAfterDate');
       }
-      Ajax::activate('orders_tbl');
-      if (Input::post('_control') != 'supplier' && !Input::post('supplier')) {
-        $_POST['creditor_id'] = Session::i()->setGlobal('creditor', '');
+      $this->Ajax->activate('orders_tbl');
+      if ($this->Input->post('_control') != 'supplier' && !$this->Input->post('supplier')) {
+        $_POST['creditor_id'] = $this->Session->setGlobal('creditor', '');
       }
     }
     protected function index() {
-      Page::start(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, Input::request('frame'));
+      Page::start(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, $this->Input->request('frame'));
       Forms::start();
-      if (!Input::request('frame')) {
+      if (!$this->Input->request('frame')) {
         Table::start('tablestyle_noborder');
         Row::start();
         Creditor::newselect(null, ['row'=> false, 'cell_class'=> 'med']);
@@ -89,7 +89,7 @@
           if (empty($quicksearch)) {
             continue;
           }
-          $quicksearch = DB::quote("%" . $quicksearch . "%");
+          $quicksearch = $this->DB->_quote("%" . $quicksearch . "%");
           $sql .= " AND (supplier.name LIKE $quicksearch OR porder.order_no LIKE $quicksearch
   		 OR porder.reference LIKE $quicksearch
   		 OR porder.requisition_no LIKE $quicksearch
@@ -97,26 +97,26 @@
         }
       } else {
         if ($this->order_number) {
-          $sql .= " AND (porder.order_no LIKE " . DB::quote('%' . $this->order_number . '%');
-          $sql .= " OR porder.reference LIKE " . DB::quote('%' . $this->order_number . '%') . ') ';
+          $sql .= " AND (porder.order_no LIKE " . $this->DB->_quote('%' . $this->order_number . '%');
+          $sql .= " OR porder.reference LIKE " . $this->DB->_quote('%' . $this->order_number . '%') . ') ';
         }
         if ($this->creditor_id > -1) {
-          $sql .= " AND porder.creditor_id = " . DB::quote($this->creditor_id);
+          $sql .= " AND porder.creditor_id = " . $this->DB->_quote($this->creditor_id);
         }
-        $stock_location = Input::post('StockLocation', Input::STRING);
-        $location       = Input::get(LOC_NOT_FAXED_YET);
+        $stock_location = $this->Input->post('StockLocation', Input::STRING);
+        $location       = $this->Input->get(LOC_NOT_FAXED_YET);
         if ($stock_location || $location) {
           $sql .= " AND porder.into_stock_location = ";
-          $sql .= ($location == 1) ? "'" . LOC_NOT_FAXED_YET . "'" : DB::quote($stock_location);
+          $sql .= ($location == 1) ? "'" . LOC_NOT_FAXED_YET . "'" : $this->DB->_quote($stock_location);
         } else {
-          $data_after  = Dates::dateToSql($_POST['OrdersAfterDate']);
-          $date_before = Dates::dateToSql($_POST['OrdersToDate']);
+          $data_after  = Dates::_dateToSql($_POST['OrdersAfterDate']);
+          $date_before = Dates::_dateToSql($_POST['OrdersToDate']);
           $sql .= " AND porder.ord_date >= '$data_after'";
           $sql .= " AND porder.ord_date <= '$date_before'";
         }
-        $selected_stock_item = Input::post('SelectStockFromList');
+        $selected_stock_item = $this->Input->post('SelectStockFromList');
         if ($selected_stock_item) {
-          $sql .= " AND line.item_code=" . DB::quote($selected_stock_item);
+          $sql .= " AND line.item_code=" . $this->DB->_quote($selected_stock_item);
         }
       } //end not order number selected
       $sql .= " GROUP BY porder.order_no";
@@ -150,7 +150,7 @@
         );
       }
       $table        = DB_Pager::new_db_pager('orders_tbl', $sql, $cols);
-      $table->width = (Input::request('frame')) ? '100' : "90";
+      $table->width = ($this->Input->request('frame')) ? '100' : "90";
       $table->display($table);
     }
     /**

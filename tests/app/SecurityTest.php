@@ -21,7 +21,7 @@
         ['access_levels.areas', false, $access_levels['areas']],
         ['access_levels.sections', false, $access_levels['sections']]
       ];
-      $config->expects($this->any())->method('_get')->will($this->returnValueMap($map));
+      $config->expects($this->any())->method('get')->will($this->returnValueMap($map));
       $page           = $this->getMockBuilder('ADV\\App\\Page')->disableOriginalConstructor()->getMock();
       $this->security = new Security( $config);
     }
@@ -173,14 +173,14 @@
    	*/
    	public function test_htmlentities_charactor_references_double_encode()
    	{
-   		$config = \Config::get('security.htmlentities_double_encode');
-   		\Config::set('security.htmlentities_double_encode', true);
+   		$config = \Config::_get('security.htmlentities_double_encode');
+   		\Config::_set('security.htmlentities_double_encode', true);
 
    		$output = Security::htmlentities('You must write & as &amp;');
    		$expected = 'You must write &amp; as &amp;amp;';
    		$this->assertEquals($expected, $output);
 
-   		\Config::set('security.htmlentities_double_encode', $config);
+   		\Config::_set('security.htmlentities_double_encode', $config);
    	}
 
    	/**

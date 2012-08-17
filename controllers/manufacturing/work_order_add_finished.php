@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(950, 500);
+  JS::_openWindow(950, 500);
   Page::start(_($help_context = "Produce or Unassemble Finished Items From Work Order"), SA_MANUFRECEIVE);
   if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
     $_POST['selected_id'] = $_GET['trans_no'];
@@ -40,7 +40,7 @@
     global $wo_details;
     if (!Ref::is_valid($_POST['ref'])) {
       Event::error(_("You must enter a reference."));
-      JS::setFocus('ref');
+      JS::_setFocus('ref');
 
       return false;
     }
@@ -49,24 +49,24 @@
     }
     if (!Validation::post_num('quantity', 0)) {
       Event::error(_("The quantity entered is not a valid number or less then zero."));
-      JS::setFocus('quantity');
+      JS::_setFocus('quantity');
 
       return false;
     }
-    if (!Dates::isDate($_POST['date_'])) {
+    if (!Dates::_isDate($_POST['date_'])) {
       Event::error(_("The entered date is invalid."));
-      JS::setFocus('date_');
+      JS::_setFocus('date_');
 
       return false;
-    } elseif (!Dates::isDateInFiscalYear($_POST['date_'])) {
+    } elseif (!Dates::_isDateInFiscalYear($_POST['date_'])) {
       Event::error(_("The entered date is not in fiscal year."));
-      JS::setFocus('date_');
+      JS::_setFocus('date_');
 
       return false;
     }
-    if (Dates::differenceBetween(Dates::sqlToDate($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
+    if (Dates::_differenceBetween(Dates::_sqlToDate($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
       Event::error(_("The production date cannot be before the release date of the work order."));
-      JS::setFocus('date_');
+      JS::_setFocus('date_');
 
       return false;
     }
@@ -76,7 +76,7 @@
       $qoh        = Item::get_qoh_on_date($wo_details["stock_id"], $wo_details["loc_code"], $_POST['date_']);
       if (-Validation::input_num('quantity') + $qoh < 0) {
         Event::error(_("The unassembling cannot be processed because there is insufficient stock."));
-        JS::setFocus('quantity');
+        JS::_setFocus('quantity');
 
         return false;
       }
@@ -85,7 +85,7 @@
     if (($_POST['ProductionType'] == 1) && !DB_Company::get_pref('allow_negative_stock')) {
       $err    = false;
       $result = WO_Requirements::get($_POST['selected_id']);
-      while ($row = DB::fetch($result)) {
+      while ($row = DB::_fetch($result)) {
         if ($row['mb_flag'] == 'D') // service, non stock
         {
           continue;
@@ -97,7 +97,7 @@
         }
       }
       if ($err) {
-        JS::setFocus('quantity');
+        JS::_setFocus('quantity');
 
         return false;
       }

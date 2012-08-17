@@ -22,17 +22,17 @@
       if ($selected != '') {
         $sql
           = "UPDATE item_units SET
-         abbr = " . DB::escape($abbr) . ",
-         name = " . DB::escape($description) . ",
-         decimals = " . DB::escape($decimals) . "
-     WHERE abbr = " . DB::escape($selected);
+         abbr = " . DB::_escape($abbr) . ",
+         name = " . DB::_escape($description) . ",
+         decimals = " . DB::_escape($decimals) . "
+     WHERE abbr = " . DB::_escape($selected);
       } else {
         $sql
           = "INSERT INTO item_units
-            (abbr, name, decimals) VALUES( " . DB::escape($abbr) . ",
-             " . DB::escape($description) . ", " . DB::escape($decimals) . ")";
+            (abbr, name, decimals) VALUES( " . DB::_escape($abbr) . ",
+             " . DB::_escape($description) . ", " . DB::_escape($decimals) . ")";
       }
-      DB::query($sql, "an item unit could not be updated");
+      DB::_query($sql, "an item unit could not be updated");
     }
     /**
      * @static
@@ -41,8 +41,8 @@
      */
     public static function delete($unit)
     {
-      $sql = "DELETE FROM item_units WHERE abbr=" . DB::escape($unit);
-      DB::query($sql, "an unit of measure could not be deleted");
+      $sql = "DELETE FROM item_units WHERE abbr=" . DB::_escape($unit);
+      DB::_query($sql, "an unit of measure could not be deleted");
     }
     /**
      * @static
@@ -53,10 +53,10 @@
      */
     public static function get($unit)
     {
-      $sql    = "SELECT * FROM item_units WHERE abbr=" . DB::escape($unit);
-      $result = DB::query($sql, "an unit of measure could not be retrieved");
+      $sql    = "SELECT * FROM item_units WHERE abbr=" . DB::_escape($unit);
+      $result = DB::_query($sql, "an unit of measure could not be retrieved");
 
-      return DB::fetch($result);
+      return DB::_fetch($result);
     }
     /**
      * @static
@@ -67,9 +67,9 @@
      */
     public static function desc($unit)
     {
-      $sql    = "SELECT description FROM item_units WHERE abbr=" . DB::escape($unit);
-      $result = DB::query($sql, "could not unit description");
-      $row    = DB::fetchRow($result);
+      $sql    = "SELECT description FROM item_units WHERE abbr=" . DB::_escape($unit);
+      $result = DB::_query($sql, "could not unit description");
+      $row    = DB::_fetchRow($result);
 
       return $row[0];
     }
@@ -82,9 +82,9 @@
      */
     public static function used($unit)
     {
-      $sql    = "SELECT COUNT(*) FROM stock_master WHERE units=" . DB::escape($unit);
-      $result = DB::query($sql, "could not query stock master");
-      $myrow  = DB::fetchRow($result);
+      $sql    = "SELECT COUNT(*) FROM stock_master WHERE units=" . DB::_escape($unit);
+      $result = DB::_query($sql, "could not query stock master");
+      $myrow  = DB::_fetchRow($result);
 
       return ($myrow[0] > 0);
     }
@@ -103,7 +103,7 @@
       }
       $sql .= " ORDER BY name";
 
-      return DB::query($sql, "could not get stock categories");
+      return DB::_query($sql, "could not get stock categories");
     }
     /**
      * @static
@@ -116,9 +116,9 @@
     {
       $sql
               = "SELECT decimals FROM item_units,	stock_master
-        WHERE abbr=units AND stock_id=" . DB::escape($stock_id) . " LIMIT 1";
-      $result = DB::query($sql, "could not get unit decimals");
-      $row    = DB::fetchRow($result);
+        WHERE abbr=units AND stock_id=" . DB::_escape($stock_id) . " LIMIT 1";
+      $result = DB::_query($sql, "could not get unit decimals");
+      $row    = DB::_fetchRow($result);
 
       return $row[0];
     }
@@ -138,7 +138,7 @@
         echo "<td class='label'>$label</td>\n";
       }
       echo "<td>";
-      while ($unit = DB::fetch($result)) {
+      while ($unit = DB::_fetch($result)) {
         $units[$unit['abbr']] = $unit['name'];
       }
       echo Forms::arraySelect($name, $value, $units, array('disabled' => !$enabled));
@@ -157,7 +157,7 @@
     {
       $result = Item_Unit::getAll();
       $units  = [];
-      while ($unit = DB::fetch($result)) {
+      while ($unit = DB::_fetch($result)) {
         $units[$unit['abbr']] = $unit['name'];
       }
 

@@ -14,10 +14,10 @@
     //initialise no input errors assumed initially before we test
     $input_error = 0;
     //first off validate inputs sensible
-    if (Input::post('id')) {
+    if (Input::_post('id')) {
       $input_error = 1;
       Event::error(_("The payment method cannot be empty."));
-      JS::setFocus('name');
+      JS::_setFocus('name');
     }
     if ($input_error != 1) {
       if ($selected_id != -1) {
@@ -32,18 +32,18 @@
   } elseif ($Mode == MODE_DELETE) {
     //the link to delete a selected record was clicked instead of the submit button
     $cancel_delete  = 0;
-    $payment_method = DB::escape($selected_id);
+    $payment_method = DB::_escape($selected_id);
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'bank_trans'
     $sql    = "SELECT COUNT(*) FROM payment_methods WHERE id=$payment_method";
-    $result = DB::query($sql, "check failed");
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql, "check failed");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       $cancel_delete = 1;
       Event::error(_("Cannot delete this payment method because transactions have been created using this account."));
     }
     $sql    = "SELECT COUNT(*) FROM bank_trans WHERE payment_method=$payment_method";
-    $result = DB::query($sql, "check failed");
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql, "check failed");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       $cancel_delete = 1;
       Event::error(_("Cannot delete this payment method because transactions have been created using this account."));
@@ -62,16 +62,16 @@
   Forms::start();
   Table::start('tablestyle grid width80');
   $sql = "SELECT * FROM payment_methods";
-  if (!Input::hasPost('show_inactive')) {
+  if (!Input::_hasPost('show_inactive')) {
     $sql .= " AND !inactive";
   }
   $sql .= " ORDER BY name";
-  $result = DB::query($sql, "could not get payment methods");
+  $result = DB::_query($sql, "could not get payment methods");
   $th     = array(_("Payment Method"), _("Goes To Undeposited"), '', '');
   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
-  while ($myrow = DB::fetch($result)) {
+  while ($myrow = DB::_fetch($result)) {
 
     Cell::label($myrow["name"], ' class="nowrap"');
     Cell::label($myrow["undeposited"], ' class="nowrap"');
@@ -92,7 +92,7 @@
       $_POST['inactive']    = $myrow["inactive"];
     }
     Forms::hidden('id', $selected_id);
-    JS::setFocus('name');
+    JS::_setFocus('name');
   }
   Forms::textRow(_("Payment Method Name:"), 'name', null, 50, 100);
   Forms::yesnoListRow(_("Goes to Undeposited Funds:"), 'undeposited');

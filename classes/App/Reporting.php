@@ -206,7 +206,7 @@
                 ob_start();
             }
             if (static::$debug === null) {
-                static::$debug = Config::get('debug.pdf');
+                static::$debug = Config::_get('debug.pdf');
             }
             if (!static::$JS) {
                 static::$JS = JS::i();
@@ -277,7 +277,7 @@ JS;
                 static::$JS = JS::i();
             }
             if (static::$debug === null) {
-                static::$debug = Config::get('debug.pdf');
+                static::$debug = Config::_get('debug.pdf');
             }
             $url = $dir ? : BASE_URL . 'reporting/prn_redirect.php?';
             $id  = static::$JS->_defaultFocus($id);

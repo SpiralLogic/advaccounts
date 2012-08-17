@@ -18,8 +18,8 @@
     {
       $sql
         = "INSERT INTO movement_types (name)
-        VALUES (" . DB::escape($name) . ")";
-      DB::query($sql, "could not add item movement type");
+        VALUES (" . DB::_escape($name) . ")";
+      DB::_query($sql, "could not add item movement type");
     }
     /**
      * @static
@@ -29,9 +29,9 @@
      */
     public static function update_type($type_id, $name)
     {
-      $sql = "UPDATE movement_types SET name=" . DB::escape($name) . "
-            WHERE id=" . DB::escape($type_id);
-      DB::query($sql, "could not update item movement type");
+      $sql = "UPDATE movement_types SET name=" . DB::_escape($name) . "
+            WHERE id=" . DB::_escape($type_id);
+      DB::_query($sql, "could not update item movement type");
     }
     /**
      * @static
@@ -47,7 +47,7 @@
         $sql .= " WHERE !inactive";
       }
 
-      return DB::query($sql, "could not get all item movement type");
+      return DB::_query($sql, "could not get all item movement type");
     }
     /**
      * @static
@@ -58,10 +58,10 @@
      */
     public static function get_type($type_id)
     {
-      $sql    = "SELECT * FROM movement_types WHERE id=" . DB::escape($type_id);
-      $result = DB::query($sql, "could not get item movement type");
+      $sql    = "SELECT * FROM movement_types WHERE id=" . DB::_escape($type_id);
+      $result = DB::_query($sql, "could not get item movement type");
 
-      return DB::fetch($result);
+      return DB::_fetch($result);
     }
     /**
      * @static
@@ -70,8 +70,8 @@
      */
     public static function delete($type_id)
     {
-      $sql = "DELETE FROM movement_types WHERE id=" . DB::escape($type_id);
-      DB::query($sql, "could not delete item movement type");
+      $sql = "DELETE FROM movement_types WHERE id=" . DB::_escape($type_id);
+      DB::_query($sql, "could not delete item movement type");
     }
     /**
      * @static
@@ -88,12 +88,12 @@
                 FROM stock_moves,locations,stock_master
                 WHERE stock_moves.stock_id = stock_master.stock_id
                 AND locations.loc_code=stock_moves.loc_code
-                AND type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no) . " ORDER BY trans_id";
+                AND type=" . DB::_escape($type) . " AND trans_no=" . DB::_escape($type_no) . " ORDER BY trans_id";
       if ($visible) {
         $sql .= " AND stock_moves.visible=1";
       }
 
-      return DB::query($sql, "Could not get stock moves");
+      return DB::_query($sql, "Could not get stock moves");
     }
     /**
      * @static
@@ -105,8 +105,8 @@
     {
       $sql
         = "UPDATE stock_moves SET qty=0, price=0, discount_percent=0,
-                standard_cost=0	WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
-      DB::query($sql, "Could not void stock moves");
+                standard_cost=0	WHERE type=" . DB::_escape($type) . " AND trans_no=" . DB::_escape($type_no);
+      DB::_query($sql, "Could not void stock moves");
     }
     /**
      * @static
@@ -133,17 +133,17 @@
       if (!Item::is_inventory_item($stock_id)) {
         return null;
       }
-      $date = Dates::dateToSql($date_);
+      $date = Dates::_dateToSql($date_);
       $sql
             = "INSERT INTO stock_moves (stock_id, trans_no, type, loc_code,
             tran_date, person_id, reference, qty, standard_cost, visible, price,
-            discount_percent) VALUES (" . DB::escape($stock_id) . ", " . DB::escape($trans_no) . ", " . DB::escape($type) . ",	" . DB::escape($location) . ", '$date', " . DB::escape($person_id) . ", " . DB::escape($reference) . ", " . DB::escape($quantity) . ", " . DB::escape($std_cost) . "," . DB::escape($show_or_hide) . ", " . DB::escape($price) . ", " . DB::escape($discount_percent) . ")";
+            discount_percent) VALUES (" . DB::_escape($stock_id) . ", " . DB::_escape($trans_no) . ", " . DB::_escape($type) . ",	" . DB::_escape($location) . ", '$date', " . DB::_escape($person_id) . ", " . DB::_escape($reference) . ", " . DB::_escape($quantity) . ", " . DB::_escape($std_cost) . "," . DB::_escape($show_or_hide) . ", " . DB::_escape($price) . ", " . DB::_escape($discount_percent) . ")";
       if ($error_msg == "") {
         $error_msg = "The stock movement record cannot be inserted";
       }
-      DB::query($sql, $error_msg);
+      DB::_query($sql, $error_msg);
 
-      return DB::insertId();
+      return DB::_insertId();
     }
     /***
      * @static

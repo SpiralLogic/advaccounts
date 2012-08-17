@@ -84,9 +84,9 @@
      * @return string
      */
     public function getXML() {
-      $apiuser = \Config::get('modules.Volusion')['apiuser'];
-      $apikey  = \Config::get('modules.Volusion')['apikey'];
-      $url     = \Config::get('modules.Volusion')['apiurl'];
+      $apiuser = \Config::_get('modules.Volusion')['apiuser'];
+      $apikey  = \Config::_get('modules.Volusion')['apikey'];
+      $url     = \Config::_get('modules.Volusion')['apiurl'];
       $url .= "Login=" . $apiuser;
       $url .= '&EncryptedPassword=' . $apikey;
       $url .= '&EDI_Name=Generic\Orders';
@@ -142,7 +142,7 @@
         //			echo $this->_classname . ' already exists, updating changes<br>';
         try {
           $current['ison_jobsboard'] = null;
-          \DB::update($this->table)->values($current)->where($this->idcolumn . '=', $current[$this->idcolumn])->exec();
+          \DB::_update($this->table)->values($current)->where($this->idcolumn . '=', $current[$this->idcolumn])->exec();
           return 'Updated ' . $this->_classname . ' ' . $current[$this->idcolumn];
         }
         catch (\DBUpdateException $e) {
@@ -154,7 +154,7 @@
       } else {
         echo $this->_classname . ' doesn\'t exist, adding<br>';
         try {
-          \DB::insert($this->table)->values($current)->exec();
+          \DB::_insert($this->table)->values($current)->exec();
           return 'Inserted ' . $this->_classname . ' ' . $current[$this->idcolumn];
         }
         catch (\DBInsertException $e) {
@@ -171,7 +171,7 @@
      */
     public function exists() {
       $current = $this->current();
-      $results = \DB::select($this->idcolumn)->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])
+      $results = \DB::_select($this->idcolumn)->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])
         ->fetch()->one();
       return (count($results) > 0) ? $results[$this->idcolumn] : false;
     }
@@ -328,7 +328,7 @@
      */
     public function exists() {
       $current = $this->current();
-      $results = \DB::select()->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])
+      $results = \DB::_select()->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])
         ->andWhere('OrderDetailID=', $current['OrderDetailID'])->fetch()->all();
       return (count($results) > 0);
     }

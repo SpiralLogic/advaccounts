@@ -77,10 +77,10 @@
     public function __construct($user = null) {
       if ($user == null) {
         // set default values, used before login
-        $this->date_sep    = Config::get('date.ui_separator');
-        $this->date_format = Config::get('date.ui_format');
-        $this->language    = Config::get('default.language');
-        $this->startup_tab = Config::get('apps.default');
+        $this->date_sep    = Config::_get('date.ui_separator');
+        $this->date_format = Config::_get('date.ui_format');
+        $this->language    = Config::_get('default.language');
+        $this->startup_tab = Config::_get('apps.default');
       } else {
         $this->setFromArray($user);
         $_SESSION['language']->setLanguage($this->language);
@@ -90,7 +90,7 @@
      * @return string
      */
     public function date_display() {
-      $date_seps = Config::get('date.separators');
+      $date_seps = Config::_get('date.separators');
       $sep       = $date_seps[$this->date_sep];
       if ($this->date_format == 0) {
         return "m" . $sep . "d" . $sep . "Y";
@@ -104,7 +104,7 @@
      * @return mixed
      */
     public function tho_sep() {
-      $tho_seps = Config::get('separators_thousands');
+      $tho_seps = Config::_get('separators_thousands');
 
       return $tho_seps [$this->tho_sep];
     }
@@ -112,7 +112,7 @@
      * @return mixed
      */
     public function dec_sep() {
-      $dec_seps = Config::get('separators_decimal');
+      $dec_seps = Config::_get('separators_decimal');
 
       return $dec_seps [$this->dec_sep];
     }

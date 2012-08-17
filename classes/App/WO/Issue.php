@@ -23,24 +23,24 @@
          */
         public static function add($woid, $ref, $to_work_order, $items, $location, $workcentre, $date_, $memo_)
         {
-            DB::begin();
+            DB::_begin();
             $details = WO::get($woid);
             if (strlen($details[0]) == 0) {
                 echo _("The order number sent is not valid.");
-                DB::cancel();
+                DB::_cancel();
                 exit;
             }
             if (WO::is_closed($woid)) {
                 Event::error("UNEXPECTED : Issuing items for a closed Work Order");
-                DB::cancel();
+                DB::_cancel();
                 exit;
             }
             // insert the actual issue
             $sql
               = "INSERT INTO wo_issues (workorder_id, reference, issue_date, loc_code, workcentre_id)
-        VALUES (" . DB::escape($woid) . ", " . DB::escape($ref) . ", '" . Dates::dateToSql($date_) . "', " . DB::escape($location) . ", " . DB::escape($workcentre) . ")";
-            DB::query($sql, "The work order issue could not be added");
-            $number = DB::insertId();
+        VALUES (" . DB::_escape($woid) . ", " . DB::_escape($ref) . ", '" . Dates::_dateToSql($date_) . "', " . DB::_escape($location) . ", " . DB::_escape($workcentre) . ")";
+            DB::_query($sql, "The work order issue could not be added");
+            $number = DB::_insertId();
             foreach ($items as $item) {
                 if ($to_work_order) {
                     $item->quantity = -$item->quantity;
@@ -49,15 +49,15 @@
                 Inv_Movement::add(ST_MANUISSUE, $item->stock_id, $number, $location, $date_, $memo_, -$item->quantity, 0);
                 $sql
                   = "INSERT INTO wo_issue_items (issue_id, stock_id, qty_issued)
-            VALUES (" . DB::escape($number) . ", " . DB::escape($item->stock_id) . ", " . DB::escape($item->quantity) . ")";
-                DB::query($sql, "A work order issue item could not be added");
+            VALUES (" . DB::_escape($number) . ", " . DB::_escape($item->stock_id) . ", " . DB::_escape($item->quantity) . ")";
+                DB::_query($sql, "A work order issue item could not be added");
             }
             if ($memo_) {
                 DB_Comments::add(ST_MANUISSUE, $number, $date_, $memo_);
             }
             Ref::save(ST_MANUISSUE, $ref);
             DB_AuditTrail::add(ST_MANUISSUE, $number, $date_);
-            DB::commit();
+            DB::_commit();
         }
         /**
          * @static
@@ -68,9 +68,9 @@
          */
         public static function getAll($woid)
         {
-            $sql = "SELECT * FROM wo_issues WHERE workorder_id=" . DB::escape($woid) . " ORDER BY issue_no";
+            $sql = "SELECT * FROM wo_issues WHERE workorder_id=" . DB::_escape($woid) . " ORDER BY issue_no";
 
-            return DB::query($sql, "The work order issues could not be retrieved");
+            return DB::_query($sql, "The work order issues could not be retrieved");
         }
         /**
          * @static
@@ -85,9 +85,9 @@
               = "SELECT wo_issues.*, wo_issue_items.*
         FROM wo_issues, wo_issue_items
         WHERE wo_issues.issue_no=wo_issue_items.issue_id
-        AND wo_issues.workorder_id=" . DB::escape($woid) . " ORDER BY wo_issue_items.id";
+        AND wo_issues.workorder_id=" . DB::_escape($woid) . " ORDER BY wo_issue_items.id";
 
-            return DB::query($sql, "The work order issues could not be retrieved");
+            return DB::_query($sql, "The work order issues could not be retrieved");
         }
         /**
          * @static
@@ -102,14 +102,14 @@
                     = "SELECT DISTINCT wo_issues.*, workorders.stock_id,
         stock_master.description, locations.location_name, " . "workcentres.name AS WorkCentreName
         FROM wo_issues, workorders, stock_master, " . "locations, workcentres
-        WHERE issue_no=" . DB::escape($issue_no) . "
+        WHERE issue_no=" . DB::_escape($issue_no) . "
         AND workorders.id = wo_issues.workorder_id
         AND locations.loc_code = wo_issues.loc_code
         AND workcentres.id = wo_issues.workcentre_id
         AND stock_master.stock_id = workorders.stock_id";
-            $result = DB::query($sql, "A work order issue could not be retrieved");
+            $result = DB::_query($sql, "A work order issue could not be retrieved");
 
-            return DB::fetch($result);
+            return DB::_fetch($result);
         }
         /**
          * @static
@@ -122,11 +122,11 @@
         {
             $sql = "SELECT wo_issue_items.*," . "stock_master.description, stock_master.units
         FROM wo_issue_items, stock_master
-        WHERE issue_id=" . DB::escape($issue_no) . "
+        WHERE issue_id=" . DB::_escape($issue_no) . "
         AND stock_master.stock_id=wo_issue_items.stock_id
         ORDER BY wo_issue_items.id";
 
-            return DB::query($sql, "The work order issue items could not be retrieved");
+            return DB::_query($sql, "The work order issue items could not be retrieved");
         }
         /**
          * @static
@@ -137,10 +137,10 @@
          */
         public static function exists($issue_no)
         {
-            $sql    = "SELECT issue_no FROM wo_issues WHERE issue_no=" . DB::escape($issue_no);
-            $result = DB::query($sql, "Cannot retreive a wo issue");
+            $sql    = "SELECT issue_no FROM wo_issues WHERE issue_no=" . DB::_escape($issue_no);
+            $result = DB::_query($sql, "Cannot retreive a wo issue");
 
-            return (DB::numRows($result) > 0);
+            return (DB::_numRows($result) > 0);
         }
         /**
          * @static
@@ -150,17 +150,17 @@
         public static function display($woid)
         {
             $result = WO_Issue::getAll($woid);
-            if (DB::numRows($result) == 0) {
+            if (DB::_numRows($result) == 0) {
                 Display::note(_("There are no Issues for this Order."), 0, 1);
             } else {
                 Table::start('tablestyle grid');
                 $th = array(_("#"), _("Reference"), _("Date"));
                 Table::header($th);
                 $k = 0; //row colour counter
-                while ($myrow = DB::fetch($result)) {
+                while ($myrow = DB::_fetch($result)) {
                     Cell::label(GL_UI::viewTrans(28, $myrow["issue_no"]));
                     Cell::label($myrow['reference']);
-                    Cell::label(Dates::sqlToDate($myrow["issue_date"]));
+                    Cell::label(Dates::_sqlToDate($myrow["issue_date"]));
                     Row::end();
                 }
                 Table::end();
@@ -177,15 +177,15 @@
             if ($type != ST_MANUISSUE) {
                 $type = ST_MANUISSUE;
             }
-            DB::begin();
+            DB::_begin();
             // void the actual issue items and their quantities
-            $sql = "UPDATE wo_issue_items Set qty_issued = 0 WHERE issue_id=" . DB::escape($type_no);
-            DB::query($sql, "A work order issue item could not be voided");
+            $sql = "UPDATE wo_issue_items Set qty_issued = 0 WHERE issue_id=" . DB::_escape($type_no);
+            DB::_query($sql, "A work order issue item could not be voided");
             // void all related stock moves
             Inv_Movement::void($type, $type_no);
             // void any related gl trans
             GL_Trans::void($type, $type_no, true);
-            DB::commit();
+            DB::_commit();
         }
         /**
          * @static
@@ -248,7 +248,7 @@
             if ($id == -1) {
                 WO_Issue::edit_controls($order);
             }
-            //	Row::label(_("Total"), Num::format($total,User::price_dec()), "colspan=5", "class='alignright'");
+            //	Row::label(_("Total"), Num::_format($total,User::price_dec()), "colspan=5", "class='alignright'");
             Table::end();
             Display::div_end();
         }
@@ -265,24 +265,24 @@
             if ($line_no != -1 && $line_no == $id) {
                 $_POST['stock_id'] = $order->line_items[$id]->stock_id;
                 $_POST['qty']      = Item::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
-                $_POST['std_cost'] = Num::priceFormat($order->line_items[$id]->standard_cost);
+                $_POST['std_cost'] = Num::_priceFormat($order->line_items[$id]->standard_cost);
                 $_POST['units']    = $order->line_items[$id]->units;
                 Forms::hidden('stock_id', $_POST['stock_id']);
                 Cell::label($_POST['stock_id']);
                 Cell::label($order->line_items[$id]->description);
-                Ajax::activate('items_table');
+                Ajax::_activate('items_table');
             } else {
                 $wo_details = WO::get($_SESSION['issue_items']->order_id);
                 Item_UI::component_cells(null, 'stock_id', $wo_details["stock_id"], null, false, true);
                 if (Forms::isListUpdated('stock_id')) {
-                    Ajax::activate('units');
-                    Ajax::activate('qty');
-                    Ajax::activate('std_cost');
+                    Ajax::_activate('units');
+                    Ajax::_activate('qty');
+                    Ajax::_activate('std_cost');
                 }
                 $item_info         = Item::get_edit_info($_POST['stock_id']);
                 $dec               = $item_info["decimals"];
-                $_POST['qty']      = Num::format(0, $dec);
-                $_POST['std_cost'] = Num::priceFormat($item_info["standard_cost"]);
+                $_POST['qty']      = Num::_format(0, $dec);
+                $_POST['std_cost'] = Num::_priceFormat($item_info["standard_cost"]);
                 $_POST['units']    = $item_info["units"];
             }
             Forms::qtyCells(null, 'qty', $_POST['qty'], null, null, $dec);
@@ -292,7 +292,7 @@
                 Forms::buttonCell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
                 Forms::buttonCell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
                 Forms::hidden('LineNo', $line_no);
-                JS::setFocus('qty');
+                JS::_setFocus('qty');
             } else {
                 Forms::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
             }

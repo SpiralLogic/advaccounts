@@ -19,8 +19,8 @@
    */
   function getTaxTransactions($from, $to)
   {
-    $fromdate = Dates::dateToSql($from);
-    $todate   = Dates::dateToSql($to);
+    $fromdate = Dates::_dateToSql($from);
+    $todate   = Dates::_dateToSql($to);
     $sql
               = "SELECT taxrec.*, taxrec.amount*ex_rate AS amount,
      taxrec.net_amount*ex_rate AS net_amount,
@@ -40,7 +40,7 @@
             AND taxrec.tran_date <= '$todate'
         ORDER BY taxrec.tran_date";
     //Event::error($sql);
-    return DB::query($sql, "No transactions were returned");
+    return DB::_query($sql, "No transactions were returned");
   }
 
   /**
@@ -50,7 +50,7 @@
   {
     $sql = "SELECT * FROM tax_types ORDER BY id";
 
-    return DB::query($sql, "No transactions were returned");
+    return DB::_query($sql, "No transactions were returned");
   }
 
   /**
@@ -61,9 +61,9 @@
   function getTaxInfo($id)
   {
     $sql    = "SELECT * FROM tax_types WHERE id=$id";
-    $result = DB::query($sql, "No transactions were returned");
+    $result = DB::_query($sql, "No transactions were returned");
 
-    return DB::fetch($result);
+    return DB::_fetch($result);
   }
 
   function print_tax_report()
@@ -91,7 +91,7 @@
     }
     $res   = getTaxTypes();
     $taxes = [];
-    while ($tax = DB::fetch($res)) {
+    while ($tax = DB::_fetch($res)) {
       $taxes[$tax['id']] = array('in' => 0, 'out' => 0, 'taxin' => 0, 'taxout' => 0);
     }
     $params  = array(
@@ -112,7 +112,7 @@
     $totalnet     = 0.0;
     $totaltax     = 0.0;
     $transactions = getTaxTransactions($from, $to);
-    while ($trans = DB::fetch($transactions)) {
+    while ($trans = DB::_fetch($transactions)) {
       if (in_array($trans['trans_type'], array(ST_CUSTCREDIT, ST_SUPPINVOICE))) {
         $trans['net_amount'] *= -1;
         $trans['amount'] *= -1;
@@ -162,7 +162,7 @@
     $taxtotal = 0;
     foreach ($taxes as $id => $sum) {
       $tx = getTaxInfo($id);
-      $rep->TextCol(0, 1, $tx['name'] . " " . Num::format($tx['rate'], $dec) . "%");
+      $rep->TextCol(0, 1, $tx['name'] . " " . Num::_format($tx['rate'], $dec) . "%");
       $rep->AmountCol(1, 2, $sum['out'], $dec);
       $rep->AmountCol(2, 3, $sum['taxout'], $dec);
       $rep->AmountCol(3, 4, $sum['in'], $dec);

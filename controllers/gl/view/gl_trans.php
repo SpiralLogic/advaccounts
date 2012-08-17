@@ -17,10 +17,10 @@
   $sql
           = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
 	LEFT JOIN chart_master as cm ON gl.account = cm.account_code
-	LEFT JOIN refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)" . " WHERE gl.type= " . DB::escape($_GET['type_id']) . " AND gl.type_no = " . DB::escape($_GET['trans_no']) . " ORDER BY counter";
-  $result = DB::query($sql, "could not get transactions");
+	LEFT JOIN refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)" . " WHERE gl.type= " . DB::_escape($_GET['type_id']) . " AND gl.type_no = " . DB::_escape($_GET['trans_no']) . " ORDER BY counter";
+  $result = DB::_query($sql, "could not get transactions");
   //alert("sql = ".$sql);
-  if (DB::numRows($result) == 0) {
+  if (DB::_numRows($result) == 0) {
     echo "<p><div class='center'>" . _("No general ledger transactions have been created for") . " " . $systypes_array[$_GET['type_id']] . " " . _("number") . " " . $_GET['trans_no'] . "</div></p><br><br>";
     Page::end(true);
     exit;
@@ -44,7 +44,7 @@
   }
   $k             = 0; //row colour counter
   $heading_shown = false;
-  while ($myrow = DB::fetch($result)) {
+  while ($myrow = DB::_fetch($result)) {
     if ($myrow['amount'] == 0) {
       continue;
     }
@@ -88,7 +88,7 @@
     Row::start();
     Cell::label("$trans_name #" . $_GET['trans_no']);
     Cell::label($myrow["reference"]);
-    Cell::label(Dates::sqlToDate($myrow["tran_date"]));
+    Cell::label(Dates::_sqlToDate($myrow["tran_date"]));
     Cell::label(Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
     Row::end();
     DB_Comments::display_row($_GET['type_id'], $_GET['trans_no']);

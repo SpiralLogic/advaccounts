@@ -54,28 +54,28 @@
     public $order;
     protected function before() {
       $this->order = Orders::session_get() ? : null;
-      $this->JS->_openWindow(900, 500);
-      if (Input::get('debtor_id', Input::NUMERIC)) {
+      $this->JS->openWindow(900, 500);
+      if ($this->Input->get('debtor_id', Input::NUMERIC)) {
         $this->action       = Orders::CANCEL_CHANGES;
         $_POST['debtor_id'] = $_GET['debtor_id'];
         $this->Ajax->activate('debtor_id');
       }
-      $this->type = Input::get('type');
+      $this->type = $this->Input->get('type');
       $this->setTitle("New Sales Order Entry");
-      if (Input::get(Orders::ADD, Input::NUMERIC, false) !== false) {
+      if ($this->Input->get(Orders::ADD, Input::NUMERIC, false) !== false) {
         $this->setTitle($this->addTitles[$this->type]);
         $this->order = $this->createOrder($this->type, 0);
-      } elseif (Input::get(Orders::UPDATE, Input::NUMERIC, -1) > 0) {
+      } elseif ($this->Input->get(Orders::UPDATE, Input::NUMERIC, -1) > 0) {
         $this->setTitle($this->modifyTitles[$this->type] . $_GET[Orders::UPDATE]);
-        $this->order = $this->createOrder($this->type, Input::get(Orders::UPDATE));
-      } elseif (Input::get(Orders::QUOTE_TO_ORDER)) {
+        $this->order = $this->createOrder($this->type, $this->Input->get(Orders::UPDATE));
+      } elseif ($this->Input->get(Orders::QUOTE_TO_ORDER)) {
         $this->type = Orders::QUOTE_TO_ORDER;
         $this->setTitle("New Order from Quote");
         $this->order = $this->createOrder(ST_SALESQUOTE, $_GET[Orders::QUOTE_TO_ORDER]);
-      } elseif (Input::get(Orders::CLONE_ORDER)) {
+      } elseif ($this->Input->get(Orders::CLONE_ORDER)) {
         $this->type = Orders::CLONE_ORDER;
         $this->setTitle("New order from previous order");
-        $this->order = $this->createOrder(ST_SALESORDER, Input::get(Orders::CLONE_ORDER));
+        $this->order = $this->createOrder(ST_SALESORDER, $this->Input->get(Orders::CLONE_ORDER));
       }
       $this->setSecurity();
       if (!$this->order) {
@@ -160,7 +160,7 @@
     protected function checkBranch() {
       if (Forms::isListUpdated('branch_id')) {
         // when branch is selected via external editor also customer can change
-        $br                 = Sales_Branch::get(Input::post('branch_id'));
+        $br                 = Sales_Branch::get($this->Input->post('branch_id'));
         $_POST['debtor_id'] = $br['debtor_id'];
         $this->Ajax->activate('debtor_id');
       }
@@ -267,8 +267,8 @@
           echo "<div style='text-align:center;'><iframe style='margin:0 auto; border-width:0;' src='" . '/sales/customer_payments.php' . "?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
         }
       }
-      $this->JS->_setFocus('prtopt');
-      $this->Ajax->_activate('_page_body', $new_trans, $edit_trans, $this->addTitles[$trans_type]);
+      $this->JS->setFocus('prtopt');
+      $this->Ajax->activate('_page_body', $new_trans, $edit_trans, $this->addTitles[$trans_type]);
       //	UploadHandler::insert($order_no);
       Page::footer_exit();
     }
@@ -277,21 +277,21 @@
      * @return bool
      */
     protected function canProcess() {
-      if (!Input::post('debtor_id')) {
+      if (!$this->Input->post('debtor_id')) {
         Event::error(_("There is no customer selected."));
-        $this->JS->_setFocus('debtor_id');
+        $this->JS->setFocus('debtor_id');
 
         return false;
       }
-      if (!Input::post('branch_id')) {
+      if (!$this->Input->post('branch_id')) {
         Event::error(_("This customer has no branch defined."));
-        $this->JS->_setFocus('branch_id');
+        $this->JS->setFocus('branch_id');
 
         return false;
       }
-      if (!Dates::isDate($_POST['OrderDate'])) {
+      if (!Dates::_isDate($_POST['OrderDate'])) {
         Event::error(_("The entered date is invalid."));
-        $this->JS->_setFocus('OrderDate');
+        $this->JS->setFocus('OrderDate');
 
         return false;
       }
@@ -300,9 +300,9 @@
 
         return false;
       }
-      if ($this->order->trans_type != ST_SALESORDER && $this->order->trans_type != ST_SALESQUOTE && !Dates::isDateInFiscalYear($_POST['OrderDate'])) {
+      if ($this->order->trans_type != ST_SALESORDER && $this->order->trans_type != ST_SALESQUOTE && !Dates::_isDateInFiscalYear($_POST['OrderDate'])) {
         Event::error(_("The entered date is not in fiscal year"));
-        $this->JS->_setFocus('OrderDate');
+        $this->JS->setFocus('OrderDate');
 
         return false;
       }
@@ -326,61 +326,61 @@
       if ($this->order->trans_type == ST_SALESORDER && $this->order->trans_no == 0 && !empty($_POST['cust_ref']) && $this->order->check_cust_ref($_POST['cust_ref'])
       ) {
         Event::error(_("This customer already has a purchase order with this number."));
-        $this->JS->_setFocus('cust_ref');
+        $this->JS->setFocus('cust_ref');
 
         return false;
       }
       if (strlen($_POST['deliver_to']) <= 1) {
         Event::error(_("You must enter the person or company to whom delivery should be made to."));
-        $this->JS->_setFocus('deliver_to');
+        $this->JS->setFocus('deliver_to');
 
         return false;
       }
       if (strlen($_POST['delivery_address']) <= 1) {
         Event::error(_("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
-        $this->JS->_setFocus('delivery_address');
+        $this->JS->setFocus('delivery_address');
 
         return false;
       }
       if ($_POST['freight_cost'] == "") {
-        $_POST['freight_cost'] = Num::priceFormat(0);
+        $_POST['freight_cost'] = Num::_priceFormat(0);
       }
       if (!Validation::post_num('freight_cost', 0)) {
         Event::error(_("The shipping cost entered is expected to be numeric."));
-        $this->JS->_setFocus('freight_cost');
+        $this->JS->setFocus('freight_cost');
 
         return false;
       }
-      if (!Dates::isDate($_POST['delivery_date'])) {
+      if (!Dates::_isDate($_POST['delivery_date'])) {
         if ($this->order->trans_type == ST_SALESQUOTE) {
           Event::error(_("The Valid date is invalid."));
         } else {
           Event::error(_("The delivery date is invalid."));
         }
-        $this->JS->_setFocus('delivery_date');
+        $this->JS->setFocus('delivery_date');
 
         return false;
       }
-      //if (Dates::isGreaterThan($this->order->document_date, $_POST['delivery_date'])) {
-      if (Dates::differenceBetween($_POST['delivery_date'], $_POST['OrderDate']) < 0) {
+      //if (Dates::_isGreaterThan($this->order->document_date, $_POST['delivery_date'])) {
+      if (Dates::_differenceBetween($_POST['delivery_date'], $_POST['OrderDate']) < 0) {
         if ($this->order->trans_type == ST_SALESQUOTE) {
           Event::error(_("The requested valid date is before the date of the quotation."));
         } else {
           Event::error(_("The requested delivery date is before the date of the order."));
         }
-        $this->JS->_setFocus('delivery_date');
+        $this->JS->setFocus('delivery_date');
 
         return false;
       }
       if ($this->order->trans_type == ST_SALESORDER && strlen($_POST['name']) < 1) {
         Event::error(_("You must enter a Person Ordering name."));
-        $this->JS->_setFocus('name');
+        $this->JS->setFocus('name');
 
         return false;
       }
       if (!Ref::is_valid($_POST['ref'])) {
         Event::error(_("You must enter a reference."));
-        $this->JS->_setFocus('ref');
+        $this->JS->setFocus('ref');
 
         return false;
       }
@@ -397,12 +397,12 @@
     protected function checkItemData() {
       if (!$this->User->hasAccess(SA_SALESCREDIT) && (!Validation::post_num('qty', 0) || !Validation::post_num('Disc', 0, 100))) {
         Event::error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
-        $this->JS->_setFocus('qty');
+        $this->JS->setFocus('qty');
 
         return false;
       } elseif (!Validation::post_num('price', 0)) {
         Event::error(_("Price for item must be entered and can not be less than 0"));
-        $this->JS->_setFocus('price');
+        $this->JS->setFocus('price');
 
         return false;
       } elseif (!$this->User->hasAccess(SA_SALESCREDIT) && isset($_POST['LineNo']) && isset($this->order->line_items[$_POST['LineNo']]) && !Validation::post_num(
@@ -410,7 +410,7 @@
         $this->order->line_items[$_POST['LineNo']]->qty_done
       )
       ) {
-        $this->JS->_setFocus('qty');
+        $this->JS->setFocus('qty');
         Event::error(
           _("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively.")
         );
@@ -427,7 +427,7 @@
           Event::error(
             _(
               "The delivery cannot be processed because there is an insufficient quantity for item:"
-            ) . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . Num::format($qoh, Item::qty_dec($_POST['stock_id']))
+            ) . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . Num::_format($qoh, Item::qty_dec($_POST['stock_id']))
           );
 
           return false;
@@ -457,7 +457,7 @@
         $doc->trans_no      = 0;
         $doc->trans_type    = ST_SALESORDER;
         $doc->reference     = Ref::get_next($doc->trans_type);
-        $doc->document_date = $doc->due_date = Dates::newDocDate();
+        $doc->document_date = $doc->due_date = Dates::_newDocDate();
         foreach ($doc->line_items as $line) {
           $line->qty_done = $line->qty_dispatched = 0;
         }
@@ -465,7 +465,7 @@
         $doc                = new Sales_Order(ST_SALESORDER, array($trans_no));
         $doc->trans_type    = $type;
         $doc->trans_no      = 0;
-        $doc->document_date = Dates::newDocDate();
+        $doc->document_date = Dates::_newDocDate();
         if ($type == ST_SALESINVOICE) {
           $doc->due_date = Sales_Order::get_invoice_duedate($doc->debtor_id, $doc->document_date);
           $doc->pos      = $this->User->_pos();
@@ -508,7 +508,7 @@
       $modified   = ($this->order->trans_no != 0);
       $so_type    = $this->order->so_type;
       $trans_type = $this->order->trans_type;
-      Dates::newDocDate($this->order->document_date);
+      Dates::_newDocDate($this->order->document_date);
       $this->Session->setGlobal('debtor_id', $this->order->debtor_id);
       $this->order->write(1);
       $jobsboard_order = clone ($this->order);
@@ -529,7 +529,7 @@
       $order_no = (is_array($this->order->trans_no)) ? key($this->order->trans_no) : $this->order->trans_no;
       Orders::Session_delete($_POST['order_id']);
       $this->order = $this->createOrder($type, $order_no);
-      JS::setfocus('customer');
+      $this->JS->setfocus('customer');
     }
     /**
      * @return mixed
@@ -632,10 +632,10 @@
       Validation::check(Validation::BRANCHES_ACTIVE, _("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
     }
     protected function setLineOrder() {
-      $line_map = Input::getPost('lineMap', []);
+      $line_map = $this->Input->getPost('lineMap', []);
       $this->order->setLineOrder($line_map);
       $data = ['lineMap'=> $this->order, 'status'=> true];
-      $this->JS->_renderJSON($data);
+      $this->JS->renderJSON($data);
     }
     protected function setSecurity() {
       if ($this->order->trans_type) {

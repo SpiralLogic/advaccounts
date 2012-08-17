@@ -18,7 +18,7 @@
      */
     public static function add($payment_method, $undeposited, $inactive = 0)
     {
-      DB::insert('payment_methods')->values(array('name'       => $payment_method,
+      DB::_insert('payment_methods')->values(array('name'       => $payment_method,
                                                  'undeposited' => $undeposited,
                                                  'inactive'    => $inactive
                                             ))->exec();
@@ -33,7 +33,7 @@
      */
     public static function update($id, $payment_method, $undeposited, $inactive = 0)
     {
-      DB::update('payment_methods')->values(array('name'       => $payment_method,
+      DB::_update('payment_methods')->values(array('name'       => $payment_method,
                                                  'undeposited' => $undeposited,
                                                  'inactive'    => $inactive
                                             ))->where('id=', $id)->exec();
@@ -45,7 +45,7 @@
      */
     public static function delete($id)
     {
-      DB::delete('payment_methods')->where('id=', $id)->exec();
+      DB::_delete('payment_methods')->where('id=', $id)->exec();
     }
     /**
      * @static
@@ -56,10 +56,10 @@
      */
     public static function get($id)
     {
-      $sql    = "SELECT * FROM payment_methods WHERE id=" . DB::escape($id);
-      $result = DB::query($sql, "could not retreive bank account for $id");
+      $sql    = "SELECT * FROM payment_methods WHERE id=" . DB::_escape($id);
+      $result = DB::_query($sql, "could not retreive bank account for $id");
 
-      return DB::fetch($result);
+      return DB::_fetch($result);
     }
     /**
      * @static
@@ -71,8 +71,8 @@
      */
     public static function select($name, $selected_id = null)
     {
-      $result = DB::select('name')->from('payment_methods')->where('inactive=', 0);
-      while ($row = DB::fetch($result)) {
+      $result = DB::_select('name')->from('payment_methods')->where('inactive=', 0);
+      while ($row = DB::_fetch($result)) {
         $payment_methods[] = $row['name'];
       }
 

@@ -25,18 +25,18 @@
     if (strlen($_POST['account_code']) == 0) {
       $input_error = 1;
       Event::error(_("The account code must be entered."));
-      JS::setFocus('account_code');
+      JS::_setFocus('account_code');
     } elseif (strlen($_POST['account_name']) == 0) {
       $input_error = 1;
       Event::error(_("The account name cannot be empty."));
-      JS::setFocus('account_name');
-    } elseif (!Config::get('accounts.allowcharacters') && !is_numeric($_POST['account_code'])) {
+      JS::_setFocus('account_name');
+    } elseif (!Config::_get('accounts.allowcharacters') && !is_numeric($_POST['account_code'])) {
       $input_error = 1;
       Event::error(_("The account code must be numeric."));
-      JS::setFocus('account_code');
+      JS::_setFocus('account_code');
     }
     if ($input_error != 1) {
-      if (Config::get('accounts.allowcharacters') == 2) {
+      if (Config::_get('accounts.allowcharacters') == 2) {
         $_POST['account_code'] = strtoupper($_POST['account_code']);
       }
       if (!isset($_POST['account_tags'])) {
@@ -45,9 +45,9 @@
       if ($selected_account) {
         if (GL_Account::update($_POST['account_code'], $_POST['account_name'], $_POST['account_type'], $_POST['account_code2'])
         ) {
-          DB::updateRecordStatus($_POST['account_code'], $_POST['inactive'], 'chart_master', 'account_code');
+          DB::_updateRecordStatus($_POST['account_code'], $_POST['inactive'], 'chart_master', 'account_code');
           Tags::update_associations(TAG_ACCOUNT, $_POST['account_code'], $_POST['account_tags']);
-          Ajax::activate('account_code'); // in case of status change
+          Ajax::_activate('account_code'); // in case of status change
           Event::success(_("Account data has been updated."));
         }
       } else {
@@ -58,7 +58,7 @@
           $selected_account = $_POST['AccountList'] = $_POST['account_code'];
         }
       }
-      Ajax::activate('_page_body');
+      Ajax::_activate('_page_body');
     }
   }
   if (isset($_POST['delete'])) {
@@ -69,20 +69,20 @@
       $selected_account = $_POST['AccountList'] = '';
       Event::notice(_("Selected account has been deleted"));
       unset($_POST['account_code']);
-      Ajax::activate('_page_body');
+      Ajax::_activate('_page_body');
     }
   }
   Forms::start();
   if (Validation::check(Validation::GL_ACCOUNTS)) {
     Table::start('tablestyle_noborder');
     Row::start();
-    GL_UI::all_cells(null, 'AccountList', null, false, false, _('New account'), true, Input::hasPost('show_inactive'));
+    GL_UI::all_cells(null, 'AccountList', null, false, false, _('New account'), true, Input::_hasPost('show_inactive'));
     Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
     Row::end();
     Table::end();
-    if (Input::post('_show_inactive_update')) {
-      Ajax::activate('AccountList');
-      JS::setFocus('AccountList');
+    if (Input::_post('_show_inactive_update')) {
+      Ajax::_activate('AccountList');
+      JS::_setFocus('AccountList');
     }
   }
   Display::br(1);
@@ -97,7 +97,7 @@
     $_POST['inactive']      = $myrow["inactive"];
     $tags_result            = Tags::get_all_associated_with_record(TAG_ACCOUNT, $selected_account);
     $tagids                 = [];
-    while ($tag = DB::fetch($tags_result)) {
+    while ($tag = DB::_fetch($tags_result)) {
       $tagids[] = $tag['id'];
     }
     $_POST['account_tags'] = $tagids;
@@ -137,10 +137,10 @@
     if ($selected_account == "") {
       return false;
     }
-    $acc    = DB::escape($selected_account);
+    $acc    = DB::_escape($selected_account);
     $sql    = "SELECT COUNT(*) FROM gl_trans WHERE account=$acc";
-    $result = DB::query($sql, "Couldn't test for existing transactions");
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql, "Couldn't test for existing transactions");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account because transactions have been created using this account."));
 
@@ -163,16 +163,16 @@
             OR default_adj_act=$acc
             OR default_inv_sales_act=$acc
             OR default_assembly_act=$acc";
-    $result = DB::query($sql, "Couldn't test for default company GL codes");
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql, "Couldn't test for default company GL codes");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account because it is used as one of the company default GL accounts."));
 
       return false;
     }
     $sql    = "SELECT COUNT(*) FROM bank_accounts WHERE account_code=$acc";
-    $result = DB::query($sql, "Couldn't test for bank accounts");
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql, "Couldn't test for bank accounts");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account because it is used by a bank account."));
 
@@ -184,16 +184,16 @@
             OR cogs_account=$acc
             OR adjustment_account=$acc
             OR sales_account=$acc";
-    $result = DB::query($sql, "Couldn't test for existing stock GL codes");
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql, "Couldn't test for existing stock GL codes");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account because it is used by one or more Items."));
 
       return false;
     }
     $sql    = "SELECT COUNT(*) FROM tax_types WHERE sales_gl_code=$acc OR purchasing_gl_code=$acc";
-    $result = DB::query($sql, "Couldn't test for existing tax GL codes");
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql, "Couldn't test for existing tax GL codes");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account because it is used by one or more Taxes."));
 
@@ -205,8 +205,8 @@
             OR sales_discount_account=$acc
             OR receivables_account=$acc
             OR payment_discount_account=$acc";
-    $result = DB::query($sql, "Couldn't test for existing cust branch GL codes");
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql, "Couldn't test for existing cust branch GL codes");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account because it is used by one or more Customer Branches."));
 
@@ -217,8 +217,8 @@
             purchase_account=$acc
             OR payment_discount_account=$acc
             OR payable_account=$acc";
-    $result = DB::query($sql, "Couldn't test for existing suppliers GL codes");
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql, "Couldn't test for existing suppliers GL codes");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account because it is used by one or more suppliers."));
 
@@ -227,8 +227,8 @@
     $sql
             = "SELECT COUNT(*) FROM quick_entry_lines WHERE
             dest_id=$acc AND UPPER(LEFT(action, 1)) <> 'T'";
-    $result = DB::query($sql, "Couldn't test for existing suppliers GL codes");
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql, "Couldn't test for existing suppliers GL codes");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account because it is used by one or more Quick Entry Lines."));
 

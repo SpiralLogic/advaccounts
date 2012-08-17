@@ -11,10 +11,10 @@
   if (AJAX_REFERRER && isset($_POST['user_id'])) {
     Messages::set($_POST['user_id'], $_POST['subject'], $_POST['message']);
     Event::success("Message sent!");
-    JS::renderJSON([]);
+    JS::_renderJSON([]);
   }
-  JS::footerFile("/js/messages.js");
-  Page::start(_($help_context = "Messages"), SA_OPEN, Input::request('frame'));
+  JS::_footerFile("/js/messages.js");
+  Page::start(_($help_context = "Messages"), SA_OPEN, Input::_request('frame'));
   HTML::div(array('style' => 'margin:0 auto;text-align:center'));
   Users::row(_("User:"), 'user_id');
   HTML::br(false)->label(array(

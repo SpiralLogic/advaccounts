@@ -13,11 +13,11 @@
         $trans_no = $_GET["trans_no"];
     }
     $result = Bank_Trans::get(ST_BANKTRANSFER, $trans_no);
-    if (DB::numRows($result) != 2) {
+    if (DB::_numRows($result) != 2) {
         Event::error("Bank transfer does not contain two records");
     }
-    $trans1 = DB::fetch($result);
-    $trans2 = DB::fetch($result);
+    $trans1 = DB::_fetch($result);
+    $trans2 = DB::_fetch($result);
     if ($trans1["amount"] < 0) {
         $from_trans = $trans1; // from trans is the negative one
         $to_trans   = $trans2;
@@ -43,7 +43,7 @@
     if ($show_currencies) {
         Cell::labels(_("Currency"), $from_trans['bank_curr_code'], "class='tablerowhead'");
     }
-    Cell::labels(_("Amount"), Num::format(-$from_trans['amount'], User::price_dec()), "class='tablerowhead'", "class='alignright'");
+    Cell::labels(_("Amount"), Num::_format(-$from_trans['amount'], User::price_dec()), "class='tablerowhead'", "class='alignright'");
     if ($show_currencies) {
         Row::end();
         Row::start();
@@ -53,11 +53,11 @@
         Cell::labels(_("Currency"), $to_trans['bank_curr_code'], "class='tablerowhead'");
     }
     if ($show_both_amounts) {
-        Cell::labels(_("Amount"), Num::format($to_trans['amount'], User::price_dec()), "class='tablerowhead'", "class='alignright'");
+        Cell::labels(_("Amount"), Num::_format($to_trans['amount'], User::price_dec()), "class='tablerowhead'", "class='alignright'");
     }
     Row::end();
     Row::start();
-    Cell::labels(_("Date"), Dates::sqlToDate($from_trans['trans_date']), "class='tablerowhead'");
+    Cell::labels(_("Date"), Dates::_sqlToDate($from_trans['trans_date']), "class='tablerowhead'");
     Cell::labels(_("Transfer Type"), $bank_transfer_types[$from_trans['account_type']], "class='tablerowhead'");
     Cell::labels(_("Reference"), $from_trans['ref'], "class='tablerowhead'");
     Row::end();

@@ -7,12 +7,12 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(950, 500);
+  JS::_openWindow(950, 500);
   Page::start(_($help_context = "Void a Transaction"), SA_VOIDTRANSACTION);
   if (!isset($_POST['date_'])) {
-    $_POST['date_'] = Dates::today();
-    if (!Dates::isDateInFiscalYear($_POST['date_'])) {
-      $_POST['date_'] = Dates::endFiscalYear();
+    $_POST['date_'] = Dates::_today();
+    if (!Dates::_isDateInFiscalYear($_POST['date_'])) {
+      $_POST['date_'] = Dates::_endFiscalYear();
     }
   }
   if (isset($_POST['ConfirmVoiding'])) {
@@ -22,16 +22,16 @@
     } else {
       handle_void_transaction();
     }
-    Ajax::activate('_page_body');
+    Ajax::_activate('_page_body');
   }
   if (isset($_POST['ProcessVoiding'])) {
     if (!check_valid_entries()) {
       unset($_POST['ProcessVoiding']);
     }
-    Ajax::activate('_page_body');
+    Ajax::_activate('_page_body');
   }
   if (isset($_POST['CancelVoiding'])) {
-    Ajax::activate('_page_body');
+    Ajax::_activate('_page_body');
   }
   voiding_controls();
   Page::end();
@@ -126,9 +126,9 @@
     Forms::start();
     Table::start('tablestyle2');
     if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-      $_POST['trans_no']   = Input::get('trans_no');
-      $_POST['filterType'] = Input::get('type');
-      $_POST['memo_']      = Input::get('memo');
+      $_POST['trans_no']   = Input::_get('trans_no');
+      $_POST['filterType'] = Input::_get('type');
+      $_POST['memo_']      = Input::_get('memo');
     }
     SysTypes::row(_("Transaction Type:"), "filterType", null, true);
     Forms::textRow(_("Transaction #:"), 'trans_no', null, 12, 12);
@@ -167,25 +167,25 @@
   {
     if (DB_AuditTrail::is_closed_trans($_POST['filterType'], $_POST['trans_no'])) {
       Event::error(_("The selected transaction was closed for edition and cannot be voided."));
-      JS::setFocus('trans_no');
+      JS::_setFocus('trans_no');
 
       return false;
     }
-    if (!Dates::isDate($_POST['date_'])) {
+    if (!Dates::_isDate($_POST['date_'])) {
       Event::error(_("The entered date is invalid."));
-      JS::setFocus('date_');
+      JS::_setFocus('date_');
 
       return false;
     }
-    /*if (!Dates::isDateInFiscalYear($_POST['date_'])) {
+    /*if (!Dates::_isDateInFiscalYear($_POST['date_'])) {
       Event::error(_("The entered date is not in fiscal year."));
-      JS::setFocus('date_');
+      JS::_setFocus('date_');
 
       return false;
     }*/
     if (!is_numeric($_POST['trans_no']) OR $_POST['trans_no'] <= 0) {
       Event::error(_("The transaction number is expected to be numeric and greater than zero."));
-      JS::setFocus('trans_no');
+      JS::_setFocus('trans_no');
 
       return false;
     }
@@ -217,7 +217,7 @@
       } else {
         Event::error($error);
         unset($_POST['trans_no'], $_POST['memo_'], $_POST['date_']);
-        JS::setFocus('trans_no');
+        JS::_setFocus('trans_no');
       }
     }
   }

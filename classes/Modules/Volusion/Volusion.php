@@ -23,11 +23,15 @@
 
    */
   class Volusion extends Module\Base {
+    /** @var DB */
     protected $jobsboardDB;
+    /**
+     * @param array $config
+     */
     public function __construct($config=[]) {
       parent::__construct($config);
       if (!$this->jobsboardDB) {
-        $this->jobsboardDB = new \DB('jobsboard');
+        $this->jobsboardDB = new DB('jobsboard');
       }
     }
     public function _init() {
@@ -72,7 +76,7 @@
      * @return array
      */
      function getNotOnJobsboard() {
-      $results = DB::select('OrderID,ison_jobsboard')->from('WebOrders')->where('ison_jobsboard IS null')->fetch()->all();
+      $results = DB::_select('OrderID,ison_jobsboard')->from('WebOrders')->where('ison_jobsboard IS null')->fetch()->all();
       return $results;
     }
     /**
@@ -101,13 +105,13 @@
      * @return \ADV\Core\DB\Query\Result|bool|int|mixed
      */
     protected function insertJob($id) {
-      $order = DB::select()->from('WebOrders')->where('OrderID=', $id)->fetch()->one();
+      $order = DB::_select()->from('WebOrders')->where('OrderID=', $id)->fetch()->one();
       if (!$order) {
         \Event::error('Could not find job ' . $id . ' in database');
         return false;
       }
-      $orderdetails = DB::select()->from('WebOrderDetails')->where('OrderID=', $id)->fetch()->all();
-      $jobsboard_no = $this->jobsboardDB->_select('Advanced_Job_No')->from('Job_List')->where('websaleid=', $id)->fetch()->one();
+      $orderdetails = DB::_select()->from('WebOrderDetails')->where('OrderID=', $id)->fetch()->all();
+      $jobsboard_no = $this->jobsboardDB->select('Advanced_Job_No')->from('Job_List')->where('websaleid=', $id)->fetch()->one();
       $jobsboard_no = $jobsboard_no['Advanced_Job_No'];
       $lineitems    = $lines = array();
       foreach ($orderdetails as $detail) {
@@ -126,8 +130,8 @@
         $newJob         = array(
           'Advanced_Job_No' => $jobsboard_no, 'websaleid'       => $id, 'Detail'          => $detail,
         );
-        $this->jobsboardDB->_update('Job_List')->values($newJob)->where('Advanced_Job_No=', $jobsboard_no)->exec();
-        DB::update('WebOrders')->value('ison_jobsboard',$jobsboard_no)->where('OrderID=', $id)->exec();
+        $this->jobsboardDB->update('Job_List')->values($newJob)->where('Advanced_Job_No=', $jobsboard_no)->exec();
+        DB::_update('WebOrders')->value('ison_jobsboard',$jobsboard_no)->where('OrderID=', $id)->exec();
         $this->insertJobsboardlines($lineitems, $jobsboard_no);
         return $jobsboard_no;
       }
@@ -173,9 +177,9 @@
         }
       }
       $newJob['Updates'] = $updates;
-      $jobsboard_no      = $this->jobsboardDB->_insert('Job_List')->values($newJob)->exec();
+      $jobsboard_no      = $this->jobsboardDB->insert('Job_List')->values($newJob)->exec();
       $this->insertJobsboardlines($lineitems, $jobsboard_no);
-      DB::update('WebOrders')->value('ison_jobsboard', $jobsboard_no)->where('OrderID=', $order['OrderID'])->exec();
+      DB::_update('WebOrders')->value('ison_jobsboard', $jobsboard_no)->where('OrderID=', $order['OrderID'])->exec();
       $result = $jobsboard_no;
       return $result;
     }
@@ -189,15 +193,15 @@
       foreach ($deleted as $line) {
         $line['quantity'] = 0;
         $line['description'] .= " DELETED!";
-        $this->jobsboardDB->_update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->andWhere('job_id=', $jobid)->exec();
+        $this->jobsboardDB->update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->andWhere('job_id=', $jobid)->exec();
       }
       foreach ($lines as $line) {
         $line['job_id'] = $jobid;
         try {
-          $line['line_id'] = $this->jobsboardDB->_insert('JobListItems')->values($line)->exec();
+          $line['line_id'] = $this->jobsboardDB->insert('JobListItems')->values($line)->exec();
         }
         catch (DBDuplicateException $e) {
-          $this->jobsboardDB->_update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->andWhere('job_id=', $jobid)->exec();
+          $this->jobsboardDB->update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->andWhere('job_id=', $jobid)->exec();
         }
       }
     }
@@ -207,7 +211,7 @@
      * @return array
      */
     protected function getJobsboardLines($jobid) {
-      $result = $this->jobsboardDB->_select()->from('JobListItems')->where('job_id=', $jobid)->fetch()->all();
+      $result = $this->jobsboardDB->select()->from('JobListItems')->where('job_id=', $jobid)->fetch()->all();
       return $result;
     }
   }

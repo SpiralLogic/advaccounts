@@ -10,7 +10,7 @@
     //
     //	Entry/Modify Delivery Note against Sales Order
     //
-    JS::openWindow(950, 500);
+    JS::_openWindow(950, 500);
     $page_title = _($help_context = "Deliver Items for a Sales Order");
     if (isset($_GET[Orders::MODIFY_DELIVERY])) {
         $page_title   = sprintf(_("Modifying Delivery Note # %d."), $_GET[Orders::MODIFY_DELIVERY]);
@@ -54,7 +54,7 @@
         $order->order_no      = key($order->trans_no);
         $order->trans_no      = 0;
         $order->reference     = Ref::get_next(ST_CUSTDELIVERY);
-        $order->document_date = Dates::newDocDate();
+        $order->document_date = Dates::_newDocDate();
         Sales_Delivery::copyToPost($order);
     } elseif (isset($_GET[Orders::MODIFY_DELIVERY]) && $_GET[Orders::MODIFY_DELIVERY] > 0) {
         $order = new Sales_Order(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
@@ -75,7 +75,7 @@
             Event::error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
         } elseif (!Validation::post_num('ChargeFreightCost', 0)) {
             Event::error(_("Freight cost cannot be less than zero"));
-            JS::setFocus('ChargeFreightCost');
+            JS::_setFocus('ChargeFreightCost');
         }
     }
     if (isset($_POST['process_delivery']) && Sales_Delivery::check_data($order) && Sales_Delivery::check_qoh($order)) {
@@ -88,7 +88,7 @@
         $newdelivery = ($dn->trans_no == 0);
         Sales_Delivery::copyFromPost($order);
         if ($newdelivery) {
-            Dates::newDocDate($dn->document_date);
+            Dates::_newDocDate($dn->document_date);
         }
         $delivery_no = $dn->write($bo_policy);
         $dn->finish();
@@ -99,7 +99,7 @@
         }
     }
     if (isset($_POST['Update']) || isset($_POST['_location_update'])) {
-        Ajax::activate('Items');
+        Ajax::_activate('Items');
     }
     Forms::start();
     Forms::hidden('order_id');
@@ -135,10 +135,10 @@
     Cell::label(_("Shipping Company"), "class='label'");
     Sales_UI::shippers_cells(null, 'ship_via', $_POST['ship_via']);
     // set this up here cuz it's used to calc qoh
-    if (!isset($_POST['DispatchDate']) || !Dates::isDate($_POST['DispatchDate'])) {
-        $_POST['DispatchDate'] = Dates::newDocDate();
-        if (!Dates::isDateInFiscalYear($_POST['DispatchDate'])) {
-            $_POST['DispatchDate'] = Dates::endFiscalYear();
+    if (!isset($_POST['DispatchDate']) || !Dates::_isDate($_POST['DispatchDate'])) {
+        $_POST['DispatchDate'] = Dates::_newDocDate();
+        if (!Dates::_isDateInFiscalYear($_POST['DispatchDate'])) {
+            $_POST['DispatchDate'] = Dates::_endFiscalYear();
         }
     }
     Forms::dateCells(_("Date"), 'DispatchDate', '', $order->trans_no == 0, 0, 0, 0, "class='label'");
@@ -146,7 +146,7 @@
     Table::end();
     echo "</td><td>"; // outer table
     Table::start('tablestyle width90');
-    if (!isset($_POST['due_date']) || !Dates::isDate($_POST['due_date'])) {
+    if (!isset($_POST['due_date']) || !Dates::_isDate($_POST['due_date'])) {
         $_POST['due_date'] = $order->get_invoice_duedate($order->debtor_id, $_POST['DispatchDate']);
     }
     Row::start();
@@ -207,7 +207,7 @@
         Cell::label($line->units);
         Cell::qty($line->qty_done, false, $dec);
         Forms::qtyCellsSmall(null, 'Line' . $line_no, Item::qty_format($line->qty_dispatched, $line->stock_id, $dec), null, null, $dec);
-        $display_discount_percent = Num::percentFormat($line->discount_percent * 100) . "%";
+        $display_discount_percent = Num::_percentFormat($line->discount_percent * 100) . "%";
         $line_total               = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
         Cell::amount($line->price);
         Cell::label($line->tax_type_name);
@@ -215,18 +215,18 @@
         Cell::amount($line_total);
         Row::end();
     }
-    $_POST['ChargeFreightCost'] = Input::post('ChargeFreightCost', null, Num::priceFormat($order->freight_cost));
+    $_POST['ChargeFreightCost'] = Input::_post('ChargeFreightCost', null, Num::_priceFormat($order->freight_cost));
     $colspan                    = 9;
     Row::start();
     Cell::label(_("Shipping Cost"), "colspan=$colspan class='alignright'");
     Forms::amountCellsSmall(null, 'ChargeFreightCost', $order->freight_cost);
     Row::end();
     $inv_items_total   = $order->get_items_total_dispatch();
-    $display_sub_total = Num::priceFormat($inv_items_total + Validation::input_num('ChargeFreightCost'));
+    $display_sub_total = Num::_priceFormat($inv_items_total + Validation::input_num('ChargeFreightCost'));
     Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan class='alignright'", "class='alignright'");
     $taxes         = $order->get_taxes(Validation::input_num('ChargeFreightCost'));
     $tax_total     = Tax::edit_items($taxes, $colspan, $order->tax_included);
-    $display_total = Num::priceFormat(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
+    $display_total = Num::_priceFormat(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
     Row::label(_("Amount Total"), $display_total, "colspan=$colspan class='alignright'", "class='alignright'");
     Table::end(1);
     if ($has_marked) {

@@ -24,12 +24,12 @@
     handle_delete($selected_id);
     $Mode = MODE_RESET;
   }
-  if (Input::post('Update')) {
+  if (Input::_post('Update')) {
     $exts = DB_Company::get_company_extensions();
     foreach ($exts as $i => $ext) {
-      $exts[$i]['active'] = Input::hasPost('Active' . $i);
+      $exts[$i]['active'] = Input::_hasPost('Active' . $i);
     }
-    advaccounting::write_extensions($exts, Input::post('extset'));
+    advaccounting::write_extensions($exts, Input::_post('extset'));
     $installed_extensions = $exts;
     Event::notice(_('Current active extensions set has been saved.'));
   }
@@ -39,12 +39,12 @@
   }
   Forms::start(true);
   if (Forms::isListUpdated('extset')) {
-    Ajax::activate('_page_body');
+    Ajax::_activate('_page_body');
   }
   echo "<div class='center'>" . _('Extensions:') . "&nbsp;&nbsp;";
   echo Extensions::view('extset', null, true);
   echo "</div><br>";
-  $set = Input::post('extset', null, -1);
+  $set = Input::_post('extset', null, -1);
   if ($set == -1) {
     display_extensions();
     display_ext_edit($Mode, $selected_id);
@@ -66,7 +66,7 @@
       return false;
     }
     // update per company files
-    $cnt = count(Config::getAll('db'));
+    $cnt = count(Config::_getAll('db'));
     for ($i = 0; $i < $cnt; $i++) {
       $newexts = $extensions;
       // update 'active' status
@@ -77,7 +77,7 @@
         }
       }
       if (!advaccounting::write_extensions($newexts, $i)) {
-        Event::notice(sprintf(_("Cannot update extensions list for company '%s'."), Config::get('db.' . $i)['name']));
+        Event::notice(sprintf(_("Cannot update extensions list for company '%s'."), Config::_get('db.' . $i)['name']));
 
         return false;
       }
@@ -147,7 +147,7 @@
     $extensions[$id]['name']   = $_POST['name'];
     $extensions[$id]['path']   = $_POST['path'];
     $extensions[$id]['title']  = $_POST['title'];
-    $extensions[$id]['active'] = Input::hasPost('active');
+    $extensions[$id]['active'] = Input::_hasPost('active');
     // Currently we support only plugin extensions here.
     $extensions[$id]['type'] = 'plugin';
     $directory               = DOCROOT . "modules/" . $_POST['path'];
@@ -163,7 +163,7 @@
       }
       move_uploaded_file($file1, $file2);
     } else {
-      $extensions[$id]['filename'] = Input::post('filename');
+      $extensions[$id]['filename'] = Input::_post('filename');
     }
     if (is_uploaded_file($_FILES['uploadfile2']['tmp_name'])) {
       $file1 = $_FILES['uploadfile2']['tmp_name'];
@@ -173,7 +173,7 @@
       }
       move_uploaded_file($file1, $file2);
       $db_name = User::i()->company;
-      Utils::import($file2, Config::get('db.' . $db_name));
+      Utils::import($file2, Config::_get('db.' . $db_name));
     }
     if (is_uploaded_file($_FILES['uploadfile3']['tmp_name'])) {
       $extensions[$id]['acc_file'] = $_FILES['uploadfile3']['name'];
@@ -184,7 +184,7 @@
       }
       move_uploaded_file($file1, $file2);
     } else {
-      $extensions[$id]['acc_file'] = Input::post('acc_file');
+      $extensions[$id]['acc_file'] = Input::_post('acc_file');
     }
     // security area guess for plugins
     if ($extensions[$id]['type'] == 'plugin') {

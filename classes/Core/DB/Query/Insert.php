@@ -45,14 +45,14 @@
         $this->into($table);
       }
       $this->type      = DB::INSERT;
-      $this->hasfields = Cache::get('INFORMATION_SCHEMA.COLUMNS.' . $table);
+      $this->hasfields = null;//Cache::_get('INFORMATION_SCHEMA.COLUMNS.' . $table);
       if (!$this->hasfields) {
-        $query = DB::query('SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = ' . DB::quote($table), false);
+        $query = DB::_query('SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = ' . DB::_quote($table), false);
         /** @noinspection PhpAssignmentInConditionInspection */
         while ($row = $query->fetch(\PDO::FETCH_ASSOC)) {
           $this->hasfields[] = $row['COLUMN_NAME'];
         }
-        Cache::set('INFORMATION_SCHEMA.COLUMNS.' . $table, $this->hasfields);
+        Cache::_set('INFORMATION_SCHEMA.COLUMNS.' . $table, $this->hasfields);
       }
 
       return $this;

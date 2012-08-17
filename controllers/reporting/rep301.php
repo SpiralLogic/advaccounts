@@ -44,16 +44,16 @@
             stock_master.description
         HAVING SUM(stock_moves.qty) != 0";
     if ($category != 0) {
-      $sql .= " AND stock_master.category_id = " . DB::escape($category);
+      $sql .= " AND stock_master.category_id = " . DB::_escape($category);
     }
     if ($location != 'all') {
-      $sql .= " AND stock_moves.loc_code = " . DB::escape($location);
+      $sql .= " AND stock_moves.loc_code = " . DB::_escape($location);
     }
     $sql
       .= " ORDER BY stock_master.category_id,
             stock_master.stock_id";
 
-    return DB::query($sql, "No transactions were returned");
+    return DB::_query($sql, "No transactions were returned");
   }
 
   function print_inventory_valuation_report()
@@ -106,7 +106,7 @@
     $res   = get_transactions($category, $location);
     $total = $grandtotal = 0.0;
     $catt  = '';
-    while ($trans = DB::fetch($res)) {
+    while ($trans = DB::_fetch($res)) {
       if ($catt != $trans['cat_name']) {
         if ($catt != '') {
           if ($detail) {

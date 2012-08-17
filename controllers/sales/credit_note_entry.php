@@ -20,7 +20,7 @@
   {
     public $credit;
     protected function before() {
-      JS::openWindow(950, 500);
+      $this->JS->openWindow(950, 500);
       $this->credit = Orders::session_get() ? : null;
       if ($this->Input->get(Orders::NEW_CREDIT)) {
         $this->setTitle("Customer Credit Note");
@@ -33,9 +33,9 @@
       }
       if (Forms::isListUpdated('branch_id')) {
         // when branch is selected via external editor also customer can change
-        $br                 = Sales_Branch::get(Input::post('branch_id'));
+        $br                 = Sales_Branch::get($this->Input->post('branch_id'));
         $_POST['debtor_id'] = $br['debtor_id'];
-        Ajax::activate('debtor_id');
+        $this->Ajax->activate('debtor_id');
       }
       if (isset($_POST[Orders::CANCEL_CHANGES])) {
         $this->cancelCredit();
@@ -85,7 +85,7 @@
       }
       $this->credit = $this->copy_to_cn($this->credit);
       $credit_no    = $this->credit->write($_POST['WriteOffGLCode']);
-      Dates::newDocDate($this->credit->document_date);
+      Dates::_newDocDate($this->credit->document_date);
       $this->pageComplete($credit_no);
 
       return true;
@@ -108,7 +108,7 @@
       Display::note(GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another &Credit Note"), "NewCredit=yes");
       Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
-      $this->Ajax->_activate('_page_body', "/sales/view/view_credit?trans_no=$credit_no&trans_type=$trans_type", '/sales/credit_note_entry?NewCredit=Yes');
+      $this->Ajax->activate('_page_body', "/sales/view/view_credit?trans_no=$credit_no&trans_type=$trans_type", '/sales/credit_note_entry?NewCredit=Yes');
     }
     protected function index() {
       Page::start($this->title, SA_SALESCREDIT);
@@ -162,7 +162,7 @@
       $_POST['debtor_id']         = $this->credit->debtor_id;
       $_POST['branch_id']         = $this->credit->Branch;
       $_POST['OrderDate']         = $this->credit->document_date;
-      $_POST['ChargeFreightCost'] = Num::priceFormat($this->credit->freight_cost);
+      $_POST['ChargeFreightCost'] = Num::_priceFormat($this->credit->freight_cost);
       $_POST['location']          = $this->credit->location;
       $_POST['sales_type_id']     = $this->credit->sales_type;
       if ($this->credit->trans_no == 0) {
@@ -197,19 +197,19 @@
       if ($this->credit->trans_no == 0) {
         if (!Ref::is_valid($_POST['ref'])) {
           Event::error(_("You must enter a reference."));
-          JS::setFocus('ref');
+          $this->JS->setFocus('ref');
           $input_error = 1;
         } elseif (!Ref::is_new($_POST['ref'], ST_CUSTCREDIT)) {
           $_POST['ref'] = Ref::get_next(ST_CUSTCREDIT);
         }
       }
-      if (!Dates::isDate($_POST['OrderDate'])) {
+      if (!Dates::_isDate($_POST['OrderDate'])) {
         Event::error(_("The entered date for the credit note is invalid."));
-        JS::setFocus('OrderDate');
+        $this->JS->setFocus('OrderDate');
         $input_error = 1;
-      } elseif (!Dates::isDateInFiscalYear($_POST['OrderDate'])) {
+      } elseif (!Dates::_isDateInFiscalYear($_POST['OrderDate'])) {
         Event::error(_("The entered date is not in fiscal year."));
-        JS::setFocus('OrderDate');
+        $this->JS->setFocus('OrderDate');
         $input_error = 1;
       }
 
@@ -221,19 +221,19 @@
     protected function check_item_data() {
       if (!Validation::post_num('qty', 0)) {
         Event::error(_("The quantity must be greater than zero."));
-        JS::setFocus('qty');
+        $this->JS->setFocus('qty');
 
         return false;
       }
       if (!Validation::post_num('price', 0)) {
         Event::error(_("The entered price is negative or invalid."));
-        JS::setFocus('price');
+        $this->JS->setFocus('price');
 
         return false;
       }
       if (!Validation::post_num('Disc', 0, 100)) {
         Event::error(_("The entered discount percent is negative, greater than 100 or invalid."));
-        JS::setFocus('Disc');
+        $this->JS->setFocus('Disc');
 
         return false;
       }

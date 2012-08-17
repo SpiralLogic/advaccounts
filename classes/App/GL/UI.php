@@ -1,4 +1,7 @@
 <?php
+  use ADV\App\Debtor\Debtor;
+  use ADV\App\WO\WO;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -147,32 +150,32 @@
      *
      * @return null|string
      */
-    public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
-      $view_str = Debtor::viewTrans($type, $trans_no, $label, $icon, $class, $id);
+    public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '',$raw=false) {
+      $view_str = Debtor::viewTrans($type, $trans_no, $label, $icon, $class, $id, $raw);
       if ($view_str != null) {
         return $view_str;
       }
-      $view_str = Purch_UI::viewTrans($type, $trans_no, $label, $icon, $class, $id);
+      $view_str = Purch_UI::viewTrans($type, $trans_no, $label, $icon, $class, $id, $raw);
       if ($view_str != null) {
         return $view_str;
       }
-      $view_str = Bank_UI::viewTrans($type, $trans_no, $label, $icon, $class, $id);
+      $view_str = Bank_UI::viewTrans($type, $trans_no, $label, $icon, $class, $id, $raw);
       if ($view_str != null) {
         return $view_str;
       }
-      $view_str = Item_UI::viewTrans($type, $trans_no, $label, $icon, $class, $id);
+      $view_str = Item_UI::viewTrans($type, $trans_no, $label, $icon, $class, $id, $raw);
       if ($view_str != null) {
         return $view_str;
       }
-      $view_str = WO::viewTrans($type, $trans_no, $label, $icon, $class, $id);
+      $view_str = WO::viewTrans($type, $trans_no, $label, $icon, $class, $id, $raw);
       if ($view_str != null) {
         return $view_str;
       }
-      $view_str = Dimensions::viewTrans($type, $trans_no, $label, $icon, $class, $id);
+      $view_str = Dimensions::viewTrans($type, $trans_no, $label, $icon, $class, $id, $raw);
       if ($view_str != null) {
         return $view_str;
       }
-      $view_str = GL_Journal::view($type, $trans_no, $label, $icon, $class, $id);
+      $view_str = GL_Journal::view($type, $trans_no, $label, $icon, $class, $id, $raw);
       if ($view_str != null) {
         return $view_str;
       }

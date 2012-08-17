@@ -42,7 +42,7 @@
      */
     function adv_ob_flush_handler($text)
     {
-      return (Ajax::inAjax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
+      return (Ajax::_inAjax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
     }
   }
   define("ICON_EDIT", "edit.gif");

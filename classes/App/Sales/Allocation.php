@@ -25,8 +25,8 @@
         = "INSERT INTO debtor_allocations (
         amt, date_alloc,
         trans_type_from, trans_no_from, trans_no_to, trans_type_to)
-        VALUES ($amount, Now() ," . DB::escape($trans_type_from) . ", " . DB::escape($trans_no_from) . ", " . DB::escape($trans_no_to) . ", " . DB::escape($trans_type_to) . ")";
-      DB::query($sql, "A customer allocation could not be added to the database");
+        VALUES ($amount, Now() ," . DB::_escape($trans_type_from) . ", " . DB::_escape($trans_no_from) . ", " . DB::_escape($trans_no_to) . ", " . DB::_escape($trans_type_to) . ")";
+      DB::_query($sql, "A customer allocation could not be added to the database");
     }
     /**
      * @static
@@ -37,9 +37,9 @@
      */
     public static function delete($trans_id)
     {
-      $sql = "DELETE FROM debtor_allocations WHERE id = " . DB::escape($trans_id);
+      $sql = "DELETE FROM debtor_allocations WHERE id = " . DB::_escape($trans_id);
 
-      return DB::query($sql, "The existing allocation $trans_id could not be deleted");
+      return DB::_query($sql, "The existing allocation $trans_id could not be deleted");
     }
     /**
      * @static
@@ -53,10 +53,10 @@
     {
       $sql
                = "SELECT (ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc) AS BalToAllocate
-        FROM debtor_trans WHERE trans_no=" . DB::escape($trans_no) . " AND type=" . DB::escape($trans_type);
-      $result  = DB::query($sql, "calculate the allocation");
-      $myrow   = DB::fetchRow($result);
-      $balance = (abs($myrow[0]) <= Config::get('accounts.allocation_allowance')) ? 0 : $myrow[0];
+        FROM debtor_trans WHERE trans_no=" . DB::_escape($trans_no) . " AND type=" . DB::_escape($trans_type);
+      $result  = DB::_query($sql, "calculate the allocation");
+      $myrow   = DB::_fetchRow($result);
+      $balance = (abs($myrow[0]) <= Config::_get('accounts.allocation_allowance')) ? 0 : $myrow[0];
 
       return $balance;
     }
@@ -71,8 +71,8 @@
     {
       $sql
         = "UPDATE debtor_trans SET alloc = alloc + $alloc
-        WHERE type=" . DB::escape($trans_type) . " AND trans_no = " . DB::escape($trans_no);
-      DB::query($sql, "The debtor transaction record could not be modified for the allocation against it");
+        WHERE type=" . DB::_escape($trans_type) . " AND trans_no = " . DB::_escape($trans_no);
+      DB::_query($sql, "The debtor transaction record could not be modified for the allocation against it");
     }
     /**
      * @static
@@ -86,14 +86,14 @@
       // clear any allocations for this transaction
       $sql
               = "SELECT * FROM debtor_allocations
-        WHERE (trans_type_from=" . DB::escape($type) . " AND trans_no_from=" . DB::escape($type_no) . ")
-        OR (trans_type_to=" . DB::escape($type) . " AND trans_no_to=" . DB::escape($type_no) . ")";
-      $result = DB::query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
-      while ($row = DB::fetch($result)) {
+        WHERE (trans_type_from=" . DB::_escape($type) . " AND trans_no_from=" . DB::_escape($type_no) . ")
+        OR (trans_type_to=" . DB::_escape($type) . " AND trans_no_to=" . DB::_escape($type_no) . ")";
+      $result = DB::_query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
+      while ($row = DB::_fetch($result)) {
         $sql = "UPDATE debtor_trans SET alloc=alloc - " . $row['amt'] . "
             WHERE (type= " . $row['trans_type_from'] . " AND trans_no=" . $row['trans_no_from'] . ")
             OR (type=" . $row['trans_type_to'] . " AND trans_no=" . $row['trans_no_to'] . ")";
-        DB::query($sql, "could not clear allocation");
+        DB::_query($sql, "could not clear allocation");
         // 2008-09-20 Joe Hunt
         if ($date != "") {
           Bank::exchange_variation($type, $type_no, $row['trans_type_to'], $row['trans_no_to'], $date, $row['amt'], PT_CUSTOMER, true);
@@ -102,9 +102,9 @@
       // remove any allocations for this transaction
       $sql
         = "DELETE FROM debtor_allocations
-        WHERE (trans_type_from=" . DB::escape($type) . " AND trans_no_from=" . DB::escape($type_no) . ")
-        OR (trans_type_to=" . DB::escape($type) . " AND trans_no_to=" . DB::escape($type_no) . ")";
-      DB::query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
+        WHERE (trans_type_from=" . DB::_escape($type) . " AND trans_no_from=" . DB::_escape($type_no) . ")
+        OR (trans_type_to=" . DB::_escape($type) . " AND trans_no_to=" . DB::_escape($type_no) . ")";
+      DB::_query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
     }
     /**
      * @static
@@ -160,7 +160,7 @@
       }
       $cust_sql = "";
       if ($debtor_id != null) {
-        $cust_sql = " AND trans.debtor_id = " . DB::quote($debtor_id);
+        $cust_sql = " AND trans.debtor_id = " . DB::_quote($debtor_id);
       }
       $cust_sql .= ' and  trans.debtor_id<>4721 '; //TODO: REMOVE
 
@@ -184,7 +184,7 @@
             AND trans.type = alloc.trans_type_to
             AND alloc.trans_no_from=$trans_no
             AND alloc.trans_type_from=$type
-            AND trans.debtor_id=" . DB::escape($debtor_id), "debtor_allocations as alloc");
+            AND trans.debtor_id=" . DB::_escape($debtor_id), "debtor_allocations as alloc");
       } else {
         $sql = Sales_Allocation::get_sql(null, "round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) > 0
             AND trans.type <> " . ST_CUSTPAYMENT . "
@@ -192,10 +192,10 @@
             AND trans.type <> " . ST_BANKDEPOSIT . "
             AND trans.type <> " . ST_CUSTCREDIT . "
             AND trans.type <> " . ST_CUSTDELIVERY . "
-            AND trans.debtor_id=" . DB::escape($debtor_id));
+            AND trans.debtor_id=" . DB::_escape($debtor_id));
       }
 
-      return DB::query($sql . " ORDER BY trans_no", "Cannot retreive alloc to transactions");
+      return DB::_query($sql . " ORDER BY trans_no", "Cannot retreive alloc to transactions");
     }
     public static function clear_allocations()
     {
@@ -215,7 +215,7 @@
       Display::heading(sprintf(_("Allocation of %s # %d"), $systypes_array[$_SESSION['alloc']->type], $_SESSION['alloc']->trans_no));
       Display::heading($_SESSION['alloc']->person_name);
       Display::heading(_("Date:") . " <span class='bold'>" . $_SESSION['alloc']->date_ . "</span>");
-      Display::heading(_("Total:") . " <span class='bold'>" . Num::priceFormat($_SESSION['alloc']->amount) . "</span>");
+      Display::heading(_("Total:") . " <span class='bold'>" . Num::_priceFormat($_SESSION['alloc']->amount) . "</span>");
       echo "<br>";
       Forms::start();
       if (isset($_POST['inquiry'], $_SERVER['HTTP_REFERER']) || stristr($_SERVER['HTTP_REFERER'], 'customer_allocation_inquiry.php')) {
@@ -279,7 +279,7 @@
      */
     public static function amount_left($row)
     {
-      return Num::priceFormat($row["Total"] - $row["alloc"]);
+      return Num::_priceFormat($row["Total"] - $row["alloc"]);
     }
     /**
      * @static

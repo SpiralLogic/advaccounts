@@ -7,12 +7,12 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(950, 500);
+  JS::_openWindow(950, 500);
   Page::start(_($help_context = "Journal Inquiry"), SA_GLANALYTIC);
   // Ajax updates
   //
-  if (Input::post('Search')) {
-    Ajax::activate('journal_tbl');
+  if (Input::_post('Search')) {
+    Ajax::_activate('journal_tbl');
   }
   if (!isset($_POST['filterType'])) {
     $_POST['filterType'] = -1;
@@ -56,16 +56,16 @@
       a.user=u.id
      LEFT JOIN ".''."bank_trans as bank_trans ON
       (gl.type=bank_trans.type AND gl.type_no=bank_trans.trans_no)
-    WHERE gl.tran_date >= '" . Dates::dateToSql($_POST['FromDate']) . "'
-    AND gl.tran_date <= '" . Dates::dateToSql($_POST['ToDate']) . "'
+    WHERE gl.tran_date >= '" . Dates::_dateToSql($_POST['FromDate']) . "'
+    AND gl.tran_date <= '" . Dates::_dateToSql($_POST['ToDate']) . "'
     AND gl.amount!=0";
   if (isset($_POST['Ref']) && $_POST['Ref'] != "") {
     $sql .= " AND reference LIKE '%". $_POST['Ref'] . "%'";
   }
-  if (Input::post('filterType') != -1) {
-    $sql .= " AND gl.type=".Input::post('filterType');
+  if (Input::_post('filterType') != -1) {
+    $sql .= " AND gl.type=".Input::_post('filterType');
   }
-  if (!Input::hasPost('AlsoClosed')) {
+  if (!Input::_hasPost('AlsoClosed')) {
     $sql .= " AND gl_seq=0";
   }
   $sql .= " GROUP BY gl.type, gl.type_no";
@@ -88,8 +88,8 @@
          (gl.type=refs.type AND gl.type_no=refs.id)
       LEFT JOIN users as u ON
          a.user=u.id
-     WHERE gl.tran_date >= '" . Dates::dateToSql($_POST['FromDate']) . "'
-     AND gl.tran_date <= '" . Dates::dateToSql($_POST['ToDate']) . "'
+     WHERE gl.tran_date >= '" . Dates::_dateToSql($_POST['FromDate']) . "'
+     AND gl.tran_date <= '" . Dates::_dateToSql($_POST['ToDate']) . "'
      AND gl.amount!=0";
   if (isset($_POST['Ref']) && $_POST['Ref'] != "") {
     $sql .= " AND reference LIKE '%" . $_POST['Ref'] . "%'";
@@ -97,10 +97,10 @@
   if (isset($_POST['Memo']) && $_POST['Memo'] != "") {
     $sql .= " AND com.memo_ LIKE '%" . $_POST['Memo'] . "%'";
   }
-  if (Input::post('filterType') != -1) {
-    $sql .= " AND gl.type=" . Input::post('filterType');
+  if (Input::_post('filterType') != -1) {
+    $sql .= " AND gl.type=" . Input::_post('filterType');
   }
-  if (!Input::hasPost('AlsoClosed')) {
+  if (!Input::_hasPost('AlsoClosed')) {
     $sql .= " AND gl_seq=0";
   }
   $sql .= " GROUP BY gl.type, gl.type_no";
@@ -124,7 +124,7 @@
       'insert' => true, 'fun' => 'edit_link'
     )
   );
-  if (!Input::hasPost('AlsoClosed')) {
+  if (!Input::_hasPost('AlsoClosed')) {
     $cols[_("#")] = 'skip';
   }
   $table        = DB_Pager::new_db_pager('journal_tbl', $sql, $cols);

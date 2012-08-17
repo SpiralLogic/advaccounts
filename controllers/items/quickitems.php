@@ -25,9 +25,9 @@
     if (isset($_GET['page'])) {
       $data['page'] = $_GET['page'];
     }
-    JS::renderJSON($data, JSON_NUMERIC_CHECK);
+    JS::_renderJSON($data, JSON_NUMERIC_CHECK);
   }
-  JS::footerFile("/js/quickitems.js");
+  JS::_footerFile("/js/quickitems.js");
   Page::start(_($help_context = "Items"), SA_CUSTOMER, isset($_GET['frame']));
   $view = new View('items/quickitems');
   $view->set('stock_cats', Item_Category::select('category_id'));
@@ -52,8 +52,8 @@
   $data['item']        = $item = new Item($id);
   $data['stockLevels'] = $item->getStockLevels();
   $data                = json_encode($data, JSON_NUMERIC_CHECK);
-  $view->set('firstPage', Input::get('page', null, null));
+  $view->set('firstPage', Input::_get('page', null, null));
   $view->render();
-  JS::tabs('tabs' . MenuUI::$menuCount, [], 1);
-  JS::onload("Items.onload($data);");
+  JS::_tabs('tabs' . MenuUI::$menuCount, [], 1);
+  JS::_onload("Items.onload($data);");
   Page::end(true);

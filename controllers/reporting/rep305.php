@@ -19,8 +19,8 @@
    */
   function get_transactions($from, $to)
   {
-    $from = Dates::dateToSql($from);
-    $to   = Dates::dateToSql($to);
+    $from = Dates::_dateToSql($from);
+    $to   = Dates::_dateToSql($to);
     $sql
           = "SELECT DISTINCT grn_batch.creditor_id,
  purch_order_details.*,
@@ -35,7 +35,7 @@
  AND grn_batch.delivery_date<='$to'
  ORDER BY stock_master.stock_id, grn_batch.delivery_date";
 
-    return DB::query($sql, "No transactions were returned");
+    return DB::_query($sql, "No transactions were returned");
   }
 
   function print_grn_valuation()
@@ -70,7 +70,7 @@
     $res      = get_transactions($from, $to);
     $total    = $qtotal = $grandtotal = 0.0;
     $stock_id = '';
-    while ($trans = DB::fetch($res)) {
+    while ($trans = DB::_fetch($res)) {
       if ($stock_id != $trans['item_code']) {
         if ($stock_id != '') {
           $rep->Line($rep->row - 4);
@@ -84,7 +84,7 @@
         $stock_id = $trans['item_code'];
       }
       $curr = Bank_Currency::for_creditor($trans['creditor_id']);
-      $rate = Bank_Currency::exchange_rate_from_home($curr, Dates::sqlToDate($trans['delivery_date']));
+      $rate = Bank_Currency::exchange_rate_from_home($curr, Dates::_sqlToDate($trans['delivery_date']));
       $trans['unit_price'] *= $rate;
       $trans['act_price'] *= $rate;
       $rep->NewLine();
@@ -95,7 +95,7 @@
       $rep->AmountCol(3, 4, $trans['quantity_received'], $qdec);
       $rep->AmountCol(4, 5, $trans['unit_price'], $dec);
       $rep->AmountCol(5, 6, $trans['act_price'], $dec);
-      $amt = Num::round($trans['quantity_received'] * $trans['act_price'], $dec);
+      $amt = Num::_round($trans['quantity_received'] * $trans['act_price'], $dec);
       $rep->AmountCol(6, 7, $amt, $dec);
       $total += $amt;
       $qtotal += $trans['quantity_received'];

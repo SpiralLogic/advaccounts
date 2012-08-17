@@ -8,6 +8,9 @@
    * @link      http://www.advancedgroup.com.au
    **/
   use ADV\Core\Session;
+  use ADV\Core\JS;
+  use ADV\App\Security;
+  use ADV\Core\DB\DB;
   use ADV\Core\Config;
   use ADV\Core\Traits\StaticAccess;
 
@@ -15,6 +18,7 @@
    * @method theme
    * @method User ii()
    * @method logout()
+   * @method numeric($input)
    */
   class User {
     use \ADV\Core\Traits\Hook;
@@ -81,9 +85,9 @@
     public $last_record;
     /** @var Session */
     protected $Session;
-    /** @var Security */
+    /** @var \ADV\App\Security */
     public $Security;
-    /** @var DB */
+    /** @var \ADV\Core\DB\DB */
     protected $DB;
     /**
      * @static
@@ -118,10 +122,13 @@
     public function __construct(Session $session = null, Config $config = null) {
       $this->Session = $session ? : Session::i();
       $this->Config  = $config ? : Config::i();
-      $this->company = $this->Config->_get('default.company') ? : 'default';
+      $this->company = $this->Config->get('default.company') ? : 'default';
       $this->logged  = false;
       $this->prefs   = new UserPrefs((array) $this);
     }
+    /**
+     * @return array
+     */
     public function __sleep() {
       $this->Session = null;
       return array_keys((array) $this);
@@ -132,9 +139,9 @@
     public function set_salesman($salesmanid = null) {
       if ($salesmanid == null) {
         $salesman_name = $this->name;
-        $sql           = "SELECT salesman_code FROM salesman WHERE salesman_name = " . \DB::escape($salesman_name);
-        $query         = \DB::query($sql, 'Couldn\'t find current salesman');
-        $result        = \DB::fetchAssoc($query);
+        $sql           = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::_escape($salesman_name);
+        $query         = DB::_query($sql, 'Couldn\'t find current salesman');
+        $result        = DB::_fetchAssoc($query);
         if (!empty($result['salesman_code'])) {
           $this->salesmanid = $result['salesman_code'];
         }
@@ -197,7 +204,7 @@
         $this->timeout         = DB_Company::get_pref('login_tout');
         $this->salesmanid      = $this->get_salesmanid();
         $this->fireHooks('login');
-        $this->Session->_checkUserAgent();
+        $this->Session->checkUserAgent();
         $this->Session['User'] = $this;
         Event::registerShutdown('Users', 'update_visitdate', [$this->username]);
         Event::registerShutdown($this, '_addLog');
@@ -235,7 +242,7 @@
       }
     }
     public function _addLog() {
-      \DB::insert('user_login_log')->values(array(
+      DB::_insert('user_login_log')->values(array(
                                                  'user'    => $this->username, 'IP'      => Users::get_ip(), 'success' => 2
                                             ))->exec();
     }
@@ -308,7 +315,7 @@
         'sticky_doc_date' => $stickydate,
         'startup_tab'     => $startup_tab
       );
-      if (!$this->Config->_get('demo_mode')) {
+      if (!$this->Config->get('demo_mode')) {
         Users::update_display_prefs($this->user, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $show_gl, $show_codes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $page_size, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $language, $stickydate, $startup_tab);
       }
       $this->prefs = new UserPrefs(Users::get($this->user));
@@ -327,14 +334,14 @@
     public function _add_js_data() {
       $js = "var user = {theme: '/themes/" . $this->_theme() . "/'" //
         . ",loadtxt: '" . _('Requesting data...') //
-        . "',date: '" . Dates::today() //
+        . "',date: '" . Dates::_today() //
         . "',datefmt: " . $this->_date_format() //
-        . ",datesep: '" . $this->Config->_get('date.ui_format') //
+        . ",datesep: '" . $this->Config->get('date.ui_format') //
         . "',ts: '" . $this->_tho_sep() //
         . "',ds: '" . $this->_dec_sep() //
         . "',pdec: " . $this->_price_dec() //
         . "};";
-      JS::beforeload($js);
+      JS::_beforeload($js);
     }
     /**
      * @static
@@ -445,7 +452,7 @@
      * @return int
      */
     public function _date_sep() {
-      return (isset($_SESSION["current_user"])) ? $this->prefs->date_sep : $this->Config->_get('date.ui_separator');
+      return (isset($_SESSION["current_user"])) ? $this->prefs->date_sep : $this->Config->get('date.ui_separator');
     }
     /**
      * @static
@@ -528,10 +535,10 @@
      * @return mixed
      */
     private function get_salesmanid() {
-      return \DB::select('salesman_code')->from('salesman')->where('user_id=', $this->user)->fetch()->one('salesman_code');
+      return DB::_select('salesman_code')->from('salesman')->where('user_id=', $this->user)->fetch()->one('salesman_code');
     }
     public function _logout() {
-      Session::kill();
+      Session::_kill();
       $this->logged = false;
     }
     public function getHash() {

@@ -24,7 +24,7 @@
      */
     public static function add($Items, $location_from, $location_to, $date_, $type, $reference, $memo_)
     {
-      DB::begin();
+      DB::_begin();
       $transfer_id = SysTypes::get_next_trans_no(ST_LOCTRANSFER);
       foreach ($Items as $line_item) {
         Inv_Transfer::add_item($transfer_id, $line_item->stock_id, $location_from, $location_to, $date_, $type, $reference, $line_item->quantity);
@@ -32,7 +32,7 @@
       DB_Comments::add(ST_LOCTRANSFER, $transfer_id, $date_, $memo_);
       Ref::save(ST_LOCTRANSFER, $reference);
       DB_AuditTrail::add(ST_LOCTRANSFER, $transfer_id, $date_);
-      DB::commit();
+      DB::_commit();
 
       return $transfer_id;
     }
@@ -65,14 +65,14 @@
     public static function get($trans_no)
     {
       $result = Inv_Transfer::get_items($trans_no);
-      if (DB::numRows($result) < 2) {
+      if (DB::_numRows($result) < 2) {
         Event::error("transfer with less than 2 items : $trans_no", "");
       }
       // this public static function is very bad that it assumes that 1st record and 2nd record contain the
       // from and to locations - if get_stock_moves uses a different ordering than trans_no then
       // it will bomb
-      $move1 = DB::fetch($result);
-      $move2 = DB::fetch($result);
+      $move1 = DB::_fetch($result);
+      $move2 = DB::_fetch($result);
       // return an array of (From, To)
       if ($move1['qty'] < 0) {
         return array($move1, $move2);
@@ -90,7 +90,7 @@
     public static function get_items($trans_no)
     {
       $result = Inv_Movement::get(ST_LOCTRANSFER, $trans_no);
-      if (DB::numRows($result) == 0) {
+      if (DB::_numRows($result) == 0) {
         return null;
       }
 
@@ -118,11 +118,11 @@
      */
     public static function update_pid($type, $stock_id, $from, $to, $pid, $cost)
     {
-      $from = Dates::dateToSql($from);
-      $to   = Dates::dateToSql($to);
-      $sql  = "UPDATE stock_moves SET standard_cost=" . DB::escape($cost) . " WHERE type=" . DB::escape($type) . "	AND stock_id=" . DB::escape($stock_id) . " AND tran_date>='$from' AND tran_date<='$to'
-                AND person_id = " . DB::escape($pid);
-      DB::query($sql, "The stock movement standard_cost cannot be updated");
+      $from = Dates::_dateToSql($from);
+      $to   = Dates::_dateToSql($to);
+      $sql  = "UPDATE stock_moves SET standard_cost=" . DB::_escape($cost) . " WHERE type=" . DB::_escape($type) . "	AND stock_id=" . DB::_escape($stock_id) . " AND tran_date>='$from' AND tran_date<='$to'
+                AND person_id = " . DB::_escape($pid);
+      DB::_query($sql, "The stock movement standard_cost cannot be updated");
     }
     public static function header()
     {
@@ -191,16 +191,16 @@
         Forms::hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id']);
         Cell::label($order->line_items[$id]->description);
-        Ajax::activate('items_table');
+        Ajax::_activate('items_table');
       } else {
         Item_UI::costable_cells(null, 'stock_id', null, false, true);
         if (Forms::isListUpdated('stock_id')) {
-          Ajax::activate('units');
-          Ajax::activate('qty');
+          Ajax::_activate('units');
+          Ajax::_activate('qty');
         }
-        $item_info      = Item::get_edit_info(Input::post('stock_id'));
+        $item_info      = Item::get_edit_info(Input::_post('stock_id'));
         $dec            = $item_info['decimals'];
-        $_POST['qty']   = Num::format(0, $dec);
+        $_POST['qty']   = Num::_format(0, $dec);
         $_POST['units'] = $item_info["units"];
       }
       Forms::qtyCellsSmall(null, 'qty', $_POST['qty'], null, null, $dec);
@@ -209,7 +209,7 @@
         Forms::buttonCell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
         Forms::buttonCell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
         Forms::hidden('LineNo', $line_no);
-        JS::setFocus('qty');
+        JS::_setFocus('qty');
       } else {
         Forms::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
       }

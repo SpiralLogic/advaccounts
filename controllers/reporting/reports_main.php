@@ -344,6 +344,6 @@
   ));
   $reports->add_custom_reports($reports);
   $js = " showClass(" . $_GET['Class'] . ")";
-  JS::onload($js);
+  JS::_onload($js);
   echo $reports->getDisplay();
   Page::end();

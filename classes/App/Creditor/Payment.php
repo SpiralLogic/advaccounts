@@ -25,13 +25,13 @@
      * @return int
      */
     public static function add($creditor_id, $date_, $bank_account, $amount, $discount, $ref, $memo_, $rate = 0, $charge = 0) {
-      $result = DB::select('trans_no')->from('creditor_trans')->where('creditor_id=', $creditor_id)->andWhere('tran_date=', Dates::dateToSql($date_))->andWhere('type=', ST_SUPPAYMENT)->andWhere('ov_amount=', -$amount)->fetch()->one();
-      if ($result && $result['trans_no'] !== Session::getFlash('Creditor_Payment')) {
-        Session::setFlash('Creditor_Payment', $result['trans_no']);
+      $result = DB::_select('trans_no')->from('creditor_trans')->where('creditor_id=', $creditor_id)->andWhere('tran_date=', Dates::_dateToSql($date_))->andWhere('type=', ST_SUPPAYMENT)->andWhere('ov_amount=', -$amount)->fetch()->one();
+      if ($result && $result['trans_no'] !== Session::_getFlash('Creditor_Payment')) {
+        Session::_setFlash('Creditor_Payment', $result['trans_no']);
         Event::warning('A payment for same amount and date already exists for this supplier, do you want to process anyway?');
         return false;
       }
-      DB::begin();
+      DB::_begin();
       $supplier_currency     = Bank_Currency::for_creditor($creditor_id);
       $bank_account_currency = Bank_Currency::for_company($bank_account);
       $bank_gl_account       = Bank_Account::get_gl($bank_account);
@@ -69,7 +69,7 @@
       Bank_Trans::add($trans_type, $payment_id, $bank_account, $ref, $date_, -($amount + $supplier_charge), PT_SUPPLIER, $creditor_id, $bank_account_currency, "Could not add the supplier payment bank transaction");
       DB_Comments::add($trans_type, $payment_id, $date_, $memo_);
       Ref::save($trans_type, $ref);
-      DB::commit();
+      DB::_commit();
       return $payment_id;
     }
     /**
@@ -79,47 +79,47 @@
      * @param $type_no
      */
     public static function void($type, $type_no) {
-      DB::begin();
+      DB::_begin();
       Bank_Trans::void($type, $type_no, true);
       GL_Trans::void($type, $type_no, true);
       Purch_Allocation::void($type, $type_no);
       Creditor_Trans::void($type, $type_no);
-      DB::commit();
+      DB::_commit();
     }
     /**
      * @static
      * @return bool
      */
     public static function    can_process() {
-      if (!Input::post('creditor_id')) {
+      if (!Input::_post('creditor_id')) {
         Event::error(_("There is no supplier selected."));
-        JS::setFocus('creditor_id');
+        JS::_setFocus('creditor_id');
         return false;
       }
       if ($_POST['amount'] == "") {
-        $_POST['amount'] = Num::priceFormat(0);
+        $_POST['amount'] = Num::_priceFormat(0);
       }
       if (!Validation::post_num('amount', 0)) {
         Event::error(_("The entered amount is invalid or less than zero."));
-        JS::setFocus('amount');
+        JS::_setFocus('amount');
         return false;
       }
       if (isset($_POST['charge']) && !Validation::post_num('charge', 0)) {
         Event::error(_("The entered amount is invalid or less than zero."));
-        JS::setFocus('charge');
+        JS::_setFocus('charge');
         return false;
       }
       if (isset($_POST['charge']) && Validation::input_num('charge') > 0) {
         $charge_acct = DB_Company::get_pref('bank_charge_act');
         if (GL_Account::get($charge_acct) == false) {
           Event::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
-          JS::setFocus('charge');
+          JS::_setFocus('charge');
           return false;
         }
       }
       if (isset($_POST['_ex_rate']) && !Validation::post_num('_ex_rate', 0.000001)) {
         Event::error(_("The exchange rate must be numeric and greater than zero."));
-        JS::setFocus('_ex_rate');
+        JS::_setFocus('_ex_rate');
         return false;
       }
       if ($_POST['discount'] == "") {
@@ -127,27 +127,27 @@
       }
       if (!Validation::post_num('discount', 0)) {
         Event::error(_("The entered discount is invalid or less than zero."));
-        JS::setFocus('amount');
+        JS::_setFocus('amount');
         return false;
       }
       //if (Validation::input_num('amount') - Validation::input_num('discount') <= 0)
       if (Validation::input_num('amount') <= 0) {
         Event::error(_("The total of the amount and the discount is zero or negative. Please enter positive values."));
-        JS::setFocus('amount');
+        JS::_setFocus('amount');
         return false;
       }
-      if (!Dates::isDate($_POST['date_'])) {
+      if (!Dates::_isDate($_POST['date_'])) {
         Event::error(_("The entered date is invalid."));
-        JS::setFocus('date_');
+        JS::_setFocus('date_');
         return false;
-      } elseif (!Dates::isDateInFiscalYear($_POST['date_'])) {
+      } elseif (!Dates::_isDateInFiscalYear($_POST['date_'])) {
         Event::error(_("The entered date is not in fiscal year."));
-        JS::setFocus('date_');
+        JS::_setFocus('date_');
         return false;
       }
       if (!Ref::is_valid($_POST['ref'])) {
         Event::error(_("You must enter a reference."));
-        JS::setFocus('ref');
+        JS::_setFocus('ref');
         return false;
       }
       if (!Ref::is_new($_POST['ref'], ST_SUPPAYMENT)) {

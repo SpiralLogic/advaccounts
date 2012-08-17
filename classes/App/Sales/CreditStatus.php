@@ -19,8 +19,8 @@
     {
       $sql
         = "INSERT INTO credit_status (reason_description, dissallow_invoices)
-        VALUES (" . DB::escape($description) . "," . DB::escape($disallow_invoicing) . ")";
-      DB::query($sql, "could not add credit status");
+        VALUES (" . DB::_escape($description) . "," . DB::_escape($disallow_invoicing) . ")";
+      DB::_query($sql, "could not add credit status");
     }
     /**
      * @static
@@ -31,9 +31,9 @@
      */
     public static function update($status_id, $description, $disallow_invoicing)
     {
-      $sql = "UPDATE credit_status SET reason_description=" . DB::escape($description) . ",
-        dissallow_invoices=" . DB::escape($disallow_invoicing) . " WHERE id=" . DB::escape($status_id);
-      DB::query($sql, "could not update credit status");
+      $sql = "UPDATE credit_status SET reason_description=" . DB::_escape($description) . ",
+        dissallow_invoices=" . DB::_escape($disallow_invoicing) . " WHERE id=" . DB::_escape($status_id);
+      DB::_query($sql, "could not update credit status");
     }
     /**
      * @static
@@ -49,7 +49,7 @@
         $sql .= " WHERE !inactive";
       }
 
-      return DB::query($sql, "could not get all credit status");
+      return DB::_query($sql, "could not get all credit status");
     }
     /**
      * @static
@@ -60,10 +60,10 @@
      */
     public static function get($status_id)
     {
-      $sql    = "SELECT * FROM credit_status WHERE id=" . DB::escape($status_id);
-      $result = DB::query($sql, "could not get credit status");
+      $sql    = "SELECT * FROM credit_status WHERE id=" . DB::_escape($status_id);
+      $result = DB::_query($sql, "could not get credit status");
 
-      return DB::fetch($result);
+      return DB::_fetch($result);
     }
     /**
      * @static
@@ -72,8 +72,8 @@
      */
     public static function delete($status_id)
     {
-      $sql = "DELETE FROM credit_status WHERE id=" . DB::escape($status_id);
-      DB::query($sql, "could not delete credit status");
+      $sql = "DELETE FROM credit_status WHERE id=" . DB::_escape($status_id);
+      DB::_query($sql, "could not delete credit status");
     }
     /**
      * @static
@@ -135,9 +135,9 @@
     {
       $sql
               = "SELECT COUNT(*) FROM debtors
-            WHERE credit_status=" . DB::escape($selected_id);
-      $result = DB::query($sql, "could not query customers");
-      $myrow  = DB::fetchRow($result);
+            WHERE credit_status=" . DB::_escape($selected_id);
+      $result = DB::_query($sql, "could not query customers");
+      $myrow  = DB::_fetchRow($result);
       if ($myrow[0] > 0) {
         Event::error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
 
@@ -154,7 +154,7 @@
     {
       if (strlen($_POST['reason_description']) == 0) {
         Event::error(_("The credit status description cannot be empty."));
-        JS::setFocus('reason_description');
+        JS::_setFocus('reason_description');
 
         return false;
       }

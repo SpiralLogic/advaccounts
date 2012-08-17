@@ -17,9 +17,9 @@
   //		'Type', 'Null', 'Key', 'Default', 'Extra'
   //
   $installers = get_installers();
-  if (Input::post('Upgrade')) {
+  if (Input::_post('Upgrade')) {
     $ret = true;
-    foreach (Config::getAll('db') as $conn) {
+    foreach (Config::_getAll('db') as $conn) {
       // connect to database
       if (!($db = db_open($conn))) {
         Event::error(_("Cannot connect to database for company") . " '" . $conn['name'] . "'");
@@ -44,7 +44,7 @@
       User::i()->prefs = new UserPrefs($user);
       Event::success(_('All companies data has been successfully updated'));
     }
-    Ajax::activate('_page_body');
+    Ajax::_activate('_page_body');
   }
   Forms::start();
   Table::start('tablestyle grid');
@@ -96,15 +96,15 @@ You have to clean database manually to enable them, or try to perform forced upg
    */
   function check_table($pref, $table, $field = null, $properties = null)
   {
-    $tables = @DB::query("SHOW TABLES LIKE '" . $pref . $table . "'");
-    if (!DB::numRows($tables)) {
+    $tables = @DB::_query("SHOW TABLES LIKE '" . $pref . $table . "'");
+    if (!DB::_numRows($tables)) {
       return 1;
     } // no such table or error
-    $fields = @DB::query("SHOW COLUMNS FROM " . $pref . $table);
+    $fields = @DB::_query("SHOW COLUMNS FROM " . $pref . $table);
     if (!isset($field)) {
       return 0;
     } // table exists
-    while ($row = DB::fetchAssoc($fields)) {
+    while ($row = DB::_fetchAssoc($fields)) {
       if ($row['Field'] == $field) {
         if (!isset($properties)) {
           return 0;
@@ -163,8 +163,8 @@ You have to clean database manually to enable them, or try to perform forced upg
     global $installers;
     $inst  = $installers[$index];
     $ret   = true;
-    $force = Input::post('force_' . $index);
-    if ($force || Input::post('install_' . $index)) {
+    $force = Input::_post('force_' . $index);
+    if ($force || Input::_post('install_' . $index)) {
       $state = $inst->installed();
       if (!$state || $force) {
         if (!$inst->pre_check($force)) {

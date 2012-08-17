@@ -20,8 +20,8 @@
     {
       $sql
         = "INSERT INTO refs (type, id, reference)
-			VALUES (" . DB::escape($type) . ", " . DB::escape($id) . ", " . DB::escape(trim($reference)) . ")";
-      DB::query($sql, "could not add reference entry");
+			VALUES (" . DB::_escape($type) . ", " . DB::_escape($id) . ", " . DB::_escape(trim($reference)) . ")";
+      DB::_query($sql, "could not add reference entry");
       if ($reference != 'auto') {
         static::save_last($type);
       }
@@ -36,9 +36,9 @@
      */
     public static function find($type, $reference)
     {
-      $sql    = "SELECT id FROM refs WHERE type=" . DB::escape($type) . " AND reference=" . DB::escape($reference);
-      $result = DB::query($sql, "could not query reference table");
-      return (DB::numRows($result) > 0);
+      $sql    = "SELECT id FROM refs WHERE type=" . DB::_escape($type) . " AND reference=" . DB::_escape($reference);
+      $result = DB::_query($sql, "could not query reference table");
+      return (DB::_numRows($result) > 0);
     }
     /**
      * @static
@@ -48,8 +48,8 @@
      */
     public static function save($type, $reference)
     {
-      $sql = "UPDATE sys_types SET next_reference= REPLACE(" . DB::escape(trim($reference)) . ",prefix,'') WHERE type_id = " . DB::escape($type);
-      DB::query($sql, "The next transaction ref for $type could not be updated");
+      $sql = "UPDATE sys_types SET next_reference= REPLACE(" . DB::_escape(trim($reference)) . ",prefix,'') WHERE type_id = " . DB::_escape($type);
+      DB::_query($sql, "The next transaction ref for $type could not be updated");
     }
     /**
      * @static
@@ -60,9 +60,9 @@
      */
     public static function get_next($type)
     {
-      $sql    = "SELECT CONCAT(prefix,next_reference) FROM sys_types WHERE type_id = " . DB::escape($type);
-      $result = DB::query($sql, "The last transaction ref for $type could not be retreived");
-      $row    = DB::fetchRow($result);
+      $sql    = "SELECT CONCAT(prefix,next_reference) FROM sys_types WHERE type_id = " . DB::_escape($type);
+      $result = DB::_query($sql, "The last transaction ref for $type could not be retreived");
+      $row    = DB::_fetchRow($result);
       $ref    = $row[0];
       if (!static::is_valid($ref)) {
         $db_info = SysTypes::get_db_info($type);
@@ -75,8 +75,8 @@
             $sql .= " AND $db_type=$type";
           }
           $sql .= " ORDER BY $db_ref DESC LIMIT 1";
-          $result = DB::query($sql, "The last transaction ref for $type could not be retreived");
-          $result = DB::fetch($result);
+          $result = DB::_query($sql, "The last transaction ref for $type could not be retreived");
+          $result = DB::_fetch($result);
           $ref    = $result[0];
         }
       }
@@ -97,9 +97,9 @@
      */
     public static function get($type, $id)
     {
-      $sql    = "SELECT * FROM refs WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($id);
-      $result = DB::query($sql, "could not query reference table");
-      $row    = DB::fetch($result);
+      $sql    = "SELECT * FROM refs WHERE type=" . DB::_escape($type) . " AND id=" . DB::_escape($id);
+      $result = DB::_query($sql, "could not query reference table");
+      $row    = DB::_fetch($result);
       return $row['reference'];
     }
     /**
@@ -112,8 +112,8 @@
      */
     public static function delete($type, $id)
     {
-      $sql = "DELETE FROM refs WHERE type=$type AND id=" . DB::escape($id);
-      return DB::query($sql, "could not delete from reference table");
+      $sql = "DELETE FROM refs WHERE type=$type AND id=" . DB::_escape($id);
+      return DB::_query($sql, "could not delete from reference table");
     }
     /**
      * @static
@@ -124,8 +124,8 @@
      */
     public static function update($type, $id, $reference)
     {
-      $sql = "UPDATE refs SET reference=" . DB::escape($reference) . " WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($id);
-      DB::query($sql, "could not update reference entry");
+      $sql = "UPDATE refs SET reference=" . DB::_escape($reference) . " WHERE type=" . DB::_escape($type) . " AND id=" . DB::_escape($id);
+      DB::_query($sql, "could not update reference entry");
       if ($reference != 'auto') {
         static::save_last($type);
       }
@@ -207,8 +207,8 @@
         if ($db_type != null) {
           $sql .= " AND $db_type=$type";
         }
-        $result = DB::query($sql, "could not test for unique reference");
-        return (DB::numRows($result) == 0);
+        $result = DB::_query($sql, "could not test for unique reference");
+        return (DB::_numRows($result) == 0);
       }
       // it's a type that doesn't use references - shouldn't be calling here, but say yes anyways
       return true;

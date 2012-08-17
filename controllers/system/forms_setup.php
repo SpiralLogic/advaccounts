@@ -10,11 +10,11 @@
   Page::start(_($help_context = "Forms Setup"), SA_FORMSETUP);
   if (isset($_POST['setprefs'])) {
     $systypes = SysTypes::get();
-    DB::begin();
-    while ($type = DB::fetch($systypes)) {
+    DB::_begin();
+    while ($type = DB::_fetch($systypes)) {
       Ref::save($type["type_id"], $_POST['id' . $type["type_id"]]);
     }
-    DB::commit();
+    DB::_commit();
     Event::success(_("Forms settings have been updated."));
   }
   Forms::start();
@@ -24,7 +24,7 @@
   $th = array(_("Form"), _("Next Reference"));
   Table::header($th);
   $i = 0;
-  while ($type = DB::fetch($systypes)) {
+  while ($type = DB::_fetch($systypes)) {
     if ($i++ == ST_CUSTCREDIT) {
       Table::section(2);
       Table::header($th);

@@ -335,7 +335,7 @@
       } else {
         $how = _("Closed");
       }
-      $this->fiscal_year = Dates::sqlToDate($year['begin']) . " - " . Dates::sqlToDate($year['end']) . " (" . $how . ")";
+      $this->fiscal_year = Dates::_sqlToDate($year['begin']) . " - " . Dates::_sqlToDate($year['end']) . " (" . $how . ")";
       $this->company     = DB_Company::get_prefs();
       $this->user        = User::i()->name;
       $this->host        = $_SERVER['SERVER_NAME'];
@@ -380,7 +380,7 @@
       $this->row -= ($this->lineHeight + 4);
       $str = _("Print Out Date") . ':';
       $this->Text($this->leftMargin, $str, $titleCol);
-      $str = Dates::today() . ' ' . Dates::now();
+      $str = Dates::_today() . ' ' . Dates::_now();
       if ($this->company['time_zone']) {
         $str .= ' ' . date('O') . ' GMT';
       }
@@ -604,7 +604,7 @@
       // Timestamp of when this copy of the report was generated
       $str = _("Generated At") . ':';
       $this->Text($this->leftMargin, $str, $headerFieldCol);
-      $str = Dates::today() . ' ' . Dates::now();
+      $str = Dates::_today() . ' ' . Dates::_now();
       if ($this->company['time_zone']) {
         $str .= ' ' . date('O') . ' GMT';
       }
@@ -670,7 +670,7 @@
      */
     public function DatePrettyPrint($date, $input_format = 0, $output_format = 0) {
       if ($date != '') {
-        $date  = Dates::dateToSql($date);
+        $date  = Dates::_dateToSql($date);
         $year  = (int) (substr($date, 0, 4));
         $month = (int) (substr($date, 5, 2));
         $day   = (int) (substr($date, 8, 2));
@@ -844,7 +844,7 @@
       if ($color_red && $txt < 0) {
         $this->SetTextColor(255, 0, 0);
       }
-      $ret = $this->TextCol($c, $n, Num::format($txt, $dec), $corr, $r, $border, $fill, $link, $stretch);
+      $ret = $this->TextCol($c, $n, Num::_format($txt, $dec), $corr, $r, $border, $fill, $link, $stretch);
       if ($color_red && $txt < 0) {
         $this->SetTextColor(0, 0, 0);
       }
@@ -872,7 +872,7 @@
       if ($color_red && $txt < 0) {
         $this->SetTextColor(255, 0, 0);
       }
-      $ret = $this->TextCol($c, $n, Num::priceFormat($txt), $corr, $r, $border, $fill, $link, $stretch);
+      $ret = $this->TextCol($c, $n, Num::_priceFormat($txt), $corr, $r, $border, $fill, $link, $stretch);
       if ($color_red && $txt < 0) {
         $this->SetTextColor(0, 0, 0);
       }
@@ -894,7 +894,7 @@
      */
     public function DateCol($c, $n, $txt, $conv = false, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 1) {
       if ($conv) {
-        $txt = Dates::sqlToDate($txt);
+        $txt = Dates::_sqlToDate($txt);
       }
       return $this->TextCol($c, $n, $txt, $corr, $r, $border, $fill, $link, $stretch);
     }
@@ -1091,7 +1091,7 @@
      * @return void
      */
     public function  End($email = 0, $subject = null, $myrow = null, $doctype = 0) {
-      if (Config::get('debug.pdf') == 1) {
+      if (Config::_get('debug.pdf') == 1) {
         $pdfcode = $this->Output('', 'S');
         $pdfcode = str_replace("\n", "\n<br>", htmlspecialchars($pdfcode));
         ob_clean();
@@ -1172,12 +1172,12 @@
         } else {
           $printer = Printer::get_report(User::print_profile(), $_POST['REP_ID']);
           if ($printer == false) {
-            if (Ajax::inAjax()) {
+            if (Ajax::_inAjax()) {
               if (User::rep_popup()) {
-                Ajax::popup($fname);
+                Ajax::_popup($fname);
               } // when embeded pdf viewer used
               else {
-                Ajax::redirect($fname);
+                Ajax::_redirect($fname);
               } // otherwise use faster method
             } else {
               //echo '<html>

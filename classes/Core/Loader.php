@@ -53,7 +53,7 @@
     public function registerCache(Cache $cache)
     {
       $this->Cache   = $cache;
-      $cachedClasses = $cache->_get('Loader', []);
+      $cachedClasses = $cache->get('Loader', []);
       if ($cachedClasses) {
         $this->classes = $cachedClasses['classes'];
         $this->loaded  = $cachedClasses['paths'];

@@ -13,13 +13,13 @@
     $input_error = 0;
     if (!Validation::post_num('login_tout', 10)) {
       Event::error(_("Login timeout must be positive number not less than 10."));
-      JS::setFocus('login_tout');
+      JS::_setFocus('login_tout');
       $input_error = 1;
     }
     if (strlen($_POST['coy_name']) == 0) {
       $input_error = 1;
       Event::error(_("The company name must be entered."));
-      JS::setFocus('coy_name');
+      JS::_setFocus('coy_name');
     }
     if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '') {
       $result   = $_FILES['pic']['error'];
@@ -33,8 +33,8 @@
       ) {
         Event::error(_('Only jpg and png files are supported - a file extension of .jpg or .png is expected'));
         $input_error = 1;
-      } elseif ($_FILES['pic']['size'] > (Config::get('item_images_max_size') * 1024)) { //File Size Check
-        Event::error(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item_images_max_size'));
+      } elseif ($_FILES['pic']['size'] > (Config::_get('item_images_max_size') * 1024)) { //File Size Check
+        Event::error(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::_get('item_images_max_size'));
         $input_error = 1;
       } elseif ($_FILES['pic']['type'] == "text/plain") { //File type Check
         Event::error(_('Only graphics files can be uploaded'));
@@ -54,7 +54,7 @@
         }
       }
     }
-    if (Input::hasPost('del_coy_logo')) {
+    if (Input::_hasPost('del_coy_logo')) {
       $filename = COMPANY_PATH . "images/" . $_POST['coy_logo'];
       if (file_exists($filename)) {
         $result = unlink($filename);
@@ -77,8 +77,8 @@
       User::i()->timeout = $_POST['login_tout'];
       Event::success(_("Company setup has been updated."));
     }
-    JS::setFocus('coy_name');
-    Ajax::activate('_page_body');
+    JS::_setFocus('coy_name');
+    Ajax::_activate('_page_body');
   } /* end of if submit */
   Forms::start(true);
   $myrow                     = DB_Company::get_prefs();

@@ -105,6 +105,6 @@
     {
       $this->_defaults();
 
-      return $this->_status(true, 'Initialize new Contact', 'Now working with a new Contact');
+      return $this->status(true, 'Initialize new Contact', 'Now working with a new Contact');
     }
   }

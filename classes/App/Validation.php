@@ -57,7 +57,7 @@
         return 0;
       }
       $cachekey = 'validation.' . md5($validate . $extra);
-      if (Cache::get($cachekey)) {
+      if (Cache::_get($cachekey)) {
         return 1;
       }
       if ($extra !== null) {
@@ -65,18 +65,18 @@
           return $default;
         }
         if (is_string($extra)) {
-          $extra = DB::escape($extra);
+          $extra = DB::_escape($extra);
         }
       } else {
         $extra = '';
       }
 
-      $result = DB::query('SELECT COUNT(*) FROM ' . $validate . ' ' . $extra, 'Could not do check empty query');
-      $myrow  = DB::fetchRow($result);
+      $result = DB::_query('SELECT COUNT(*) FROM ' . $validate . ' ' . $extra, 'Could not do check empty query');
+      $myrow  = DB::_fetchRow($result);
       if (!($myrow[0] > 0)) {
         throw new Exception($msg);
       } else {
-        Cache::set($cachekey, true);
+        Cache::_set($cachekey, true);
 
         return $myrow[0];
       }

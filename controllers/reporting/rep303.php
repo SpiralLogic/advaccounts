@@ -35,10 +35,10 @@
         WHERE stock_master.category_id=stock_category.category_id
         AND (stock_master.mb_flag='" . STOCK_PURCHASED . "' OR stock_master.mb_flag='" . STOCK_MANUFACTURE . "')";
     if ($category != 0) {
-      $sql .= " AND stock_master.category_id = " . DB::escape($category);
+      $sql .= " AND stock_master.category_id = " . DB::_escape($category);
     }
     if ($location != 'all') {
-      $sql .= " AND IF(stock_moves.stock_id IS null, '1=1',stock_moves.loc_code = " . DB::escape($location) . ")";
+      $sql .= " AND IF(stock_moves.stock_id IS null, '1=1',stock_moves.loc_code = " . DB::_escape($location) . ")";
     }
     $sql
       .= " GROUP BY stock_master.category_id,
@@ -48,7 +48,7 @@
         ORDER BY stock_master.category_id,
         stock_master.stock_id";
 
-    return DB::query($sql, "No transactions were returned");
+    return DB::_query($sql, "No transactions were returned");
   }
 
   function print_stock_check()
@@ -138,7 +138,7 @@
     $rep->Header();
     $res  = get_transactions($category, $location);
     $catt = '';
-    while ($trans = DB::fetch($res)) {
+    while ($trans = DB::_fetch($res)) {
       if ($location == 'all') {
         $loc_code = "";
       } else {
@@ -187,12 +187,12 @@
           . Item::img_name($trans['stock_id']) . '.jpg';
         if (file_exists($image)) {
           $rep->NewLine();
-          if ($rep->row - Config::get('item_images_height') < $rep->bottomMargin) {
+          if ($rep->row - Config::_get('item_images_height') < $rep->bottomMargin) {
             $rep->Header();
           }
-          $rep->AddImage($image, $rep->cols[1], $rep->row - Config::get('item_images_height'), 0,
-            Config::get('item_images_height'));
-          $rep->row -= Config::get('item_images_height');
+          $rep->AddImage($image, $rep->cols[1], $rep->row - Config::_get('item_images_height'), 0,
+            Config::_get('item_images_height'));
+          $rep->row -= Config::_get('item_images_height');
           $rep->NewLine();
         }
       }

@@ -30,13 +30,13 @@
             stock_master,
             bom
         WHERE stock_master.stock_id=bom.component
-        AND bom.parent >= " . DB::escape($from) . "
-        AND bom.parent <= " . DB::escape($to) . "
+        AND bom.parent >= " . DB::_escape($from) . "
+        AND bom.parent <= " . DB::_escape($to) . "
         ORDER BY
             bom.parent,
             bom.component";
 
-    return DB::query($sql, "No transactions were returned");
+    return DB::_query($sql, "No transactions were returned");
   }
 
   function print_bill_of_material()
@@ -67,7 +67,7 @@
     $rep->Header();
     $res    = get_transactions($frompart, $topart);
     $parent = '';
-    while ($trans = DB::fetch($res)) {
+    while ($trans = DB::_fetch($res)) {
       if ($parent != $trans['parent']) {
         if ($parent != '') {
           $rep->Line($rep->row - 2);

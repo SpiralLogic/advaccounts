@@ -26,222 +26,222 @@
     protected function tearDown() {
     }
     /**
-     * @covers ADV\Core\Input\Input::_post
+     * @covers ADV\Core\Input\Input::__post
      */
     public function testPost() {
       $_POST['test0'] = 'wawa';
       $expected       = 'wawa';
-      $actual         = Input::post('test0');
+      $actual         = Input::_post('test0');
       $this->assertSame($expected, $actual);
       $_POST['test0'] = '0';
       $expected       = '0';
-      $actual         = Input::post('test0');
+      $actual         = Input::_post('test0');
       $this->assertSame($expected, $actual);
       $expected = '';
-      $actual   = Input::post('name', Input::STRING);
+      $actual   = Input::_post('name', Input::STRING);
       $this->assertSame($expected, $actual);
       $expected = 'phil';
-      $actual   = Input::post('name', Input::STRING, 'phil');
+      $actual   = Input::_post('name', Input::STRING, 'phil');
       $this->assertSame($expected, $actual);
       $_POST['test'] = 'ing';
-      $this->assertSame('ing', Input::post('test'));
-      $this->assertSame('ing', Input::post('test', Input::STRING));
-      $this->assertSame('ing', Input::post('test', Input::STRING, ''));
-      $this->assertSame(0, Input::post('test', Input::NUMERIC));
-      $this->assertSame(0, Input::post('test', Input::NUMERIC, 0));
-      $this->assertSame(1, Input::post('test', Input::NUMERIC, 1));
-      $this->assertSame(null, Input::post('test2'));
-      $this->assertEquals('', Input::post('test2'));
-      $this->assertSame('', Input::post('test2', Input::STRING));
-      $this->assertSame(0, Input::post('test2', Input::NUMERIC));
-      $this->assertSame(5, Input::post('test2', Input::NUMERIC, 5));
+      $this->assertSame('ing', Input::_post('test'));
+      $this->assertSame('ing', Input::_post('test', Input::STRING));
+      $this->assertSame('ing', Input::_post('test', Input::STRING, ''));
+      $this->assertSame(0, Input::_post('test', Input::NUMERIC));
+      $this->assertSame(0, Input::_post('test', Input::NUMERIC, 0));
+      $this->assertSame(1, Input::_post('test', Input::NUMERIC, 1));
+      $this->assertSame(null, Input::_post('test2'));
+      $this->assertEquals('', Input::_post('test2'));
+      $this->assertSame('', Input::_post('test2', Input::STRING));
+      $this->assertSame(0, Input::_post('test2', Input::NUMERIC));
+      $this->assertSame(5, Input::_post('test2', Input::NUMERIC, 5));
       $_POST['test2'] = '0';
-      $this->assertSame('0', Input::post('test2'));
-      $this->assertSame('0', Input::post('test2', Input::STRING));
-      $this->assertSame('0', Input::post('test2', Input::STRING, ''));
-      $this->assertSame(0, Input::post('test2', Input::NUMERIC));
-      $this->assertSame(0, Input::post('test2', Input::NUMERIC, 0));
-      $this->assertSame(0, Input::post('test2', Input::NUMERIC, 1));
-      $this->assertSame(null, Input::post('test3'));
-      $this->assertEquals(0, Input::post('test3'));
+      $this->assertSame('0', Input::_post('test2'));
+      $this->assertSame('0', Input::_post('test2', Input::STRING));
+      $this->assertSame('0', Input::_post('test2', Input::STRING, ''));
+      $this->assertSame(0, Input::_post('test2', Input::NUMERIC));
+      $this->assertSame(0, Input::_post('test2', Input::NUMERIC, 0));
+      $this->assertSame(0, Input::_post('test2', Input::NUMERIC, 1));
+      $this->assertSame(null, Input::_post('test3'));
+      $this->assertEquals(0, Input::_post('test3'));
       $_POST['test3'] = 7;
-      $this->assertSame(7, Input::post('test3'));
-      $this->assertSame('', Input::post('test3', Input::STRING));
-      $this->assertSame('', Input::post('test3', Input::STRING, ''));
-      $this->assertSame(7, Input::post('test3', Input::NUMERIC));
-      $this->assertSame(7, Input::post('test3', Input::NUMERIC, 0));
-      $this->assertSame(7, Input::post('test3', Input::NUMERIC, 1));
+      $this->assertSame(7, Input::_post('test3'));
+      $this->assertSame('', Input::_post('test3', Input::STRING));
+      $this->assertSame('', Input::_post('test3', Input::STRING, ''));
+      $this->assertSame(7, Input::_post('test3', Input::NUMERIC));
+      $this->assertSame(7, Input::_post('test3', Input::NUMERIC, 0));
+      $this->assertSame(7, Input::_post('test3', Input::NUMERIC, 1));
     }
     /**
-     * @covers ADV\Core\Input\Input::_get
+     * @covers ADV\Core\Input\Input::__get
      * @todo   Implement testGet().
      */
     public function testGet() {
       $_GET['test0'] = 'wawa';
       $expected      = 'wawa';
-      $actual        = Input::get('test0');
+      $actual        = Input::_get('test0');
       $this->assertSame($expected, $actual);
       $_GET['test0'] = '0';
       $expected      = '0';
-      $actual        = Input::get('test0');
+      $actual        = Input::_get('test0');
       $this->assertSame($expected, $actual);
       $expected = '';
-      $actual   = Input::get('name', Input::STRING);
+      $actual   = Input::_get('name', Input::STRING);
       $this->assertSame($expected, $actual);
       $expected = 'phil';
-      $actual   = Input::get('name', Input::STRING, 'phil');
+      $actual   = Input::_get('name', Input::STRING, 'phil');
       $this->assertSame($expected, $actual);
       $_GET['test'] = 'ing';
-      $this->assertSame('ing', Input::get('test'));
-      $this->assertSame('ing', Input::get('test', Input::STRING));
-      $this->assertSame('ing', Input::get('test', Input::STRING, ''));
-      $this->assertSame(0, Input::get('test', Input::NUMERIC));
-      $this->assertSame(0, Input::get('test', Input::NUMERIC, 0));
-      $this->assertSame(1, Input::get('test', Input::NUMERIC, 1));
-      $this->assertSame(null, Input::get('test2'));
-      $this->assertEquals('', Input::get('test2'));
-      $this->assertSame('', Input::get('test2', Input::STRING));
-      $this->assertSame(0, Input::get('test2', Input::NUMERIC));
-      $this->assertSame(5, Input::get('test2', Input::NUMERIC, 5));
+      $this->assertSame('ing', Input::_get('test'));
+      $this->assertSame('ing', Input::_get('test', Input::STRING));
+      $this->assertSame('ing', Input::_get('test', Input::STRING, ''));
+      $this->assertSame(0, Input::_get('test', Input::NUMERIC));
+      $this->assertSame(0, Input::_get('test', Input::NUMERIC, 0));
+      $this->assertSame(1, Input::_get('test', Input::NUMERIC, 1));
+      $this->assertSame(null, Input::_get('test2'));
+      $this->assertEquals('', Input::_get('test2'));
+      $this->assertSame('', Input::_get('test2', Input::STRING));
+      $this->assertSame(0, Input::_get('test2', Input::NUMERIC));
+      $this->assertSame(5, Input::_get('test2', Input::NUMERIC, 5));
       $_GET['test2'] = '0';
-      $this->assertSame('0', Input::get('test2'));
-      $this->assertSame('0', Input::get('test2', Input::STRING));
-      $this->assertSame('0', Input::get('test2', Input::STRING, ''));
-      $this->assertSame(0, Input::get('test2', Input::NUMERIC));
-      $this->assertSame(0, Input::get('test2', Input::NUMERIC, 0));
-      $this->assertSame(0, Input::get('test2', Input::NUMERIC, 1));
-      $this->assertSame(null, Input::get('test3'));
-      $this->assertEquals(0, Input::get('test3'));
+      $this->assertSame('0', Input::_get('test2'));
+      $this->assertSame('0', Input::_get('test2', Input::STRING));
+      $this->assertSame('0', Input::_get('test2', Input::STRING, ''));
+      $this->assertSame(0, Input::_get('test2', Input::NUMERIC));
+      $this->assertSame(0, Input::_get('test2', Input::NUMERIC, 0));
+      $this->assertSame(0, Input::_get('test2', Input::NUMERIC, 1));
+      $this->assertSame(null, Input::_get('test3'));
+      $this->assertEquals(0, Input::_get('test3'));
       $_GET['test3'] = 7;
-      $this->assertSame(7, Input::get('test3'));
-      $this->assertSame('', Input::get('test3', Input::STRING));
-      $this->assertSame('', Input::get('test3', Input::STRING, ''));
-      $this->assertSame(7, Input::get('test3', Input::NUMERIC));
-      $this->assertSame(7, Input::get('test3', Input::NUMERIC, 0));
-      $this->assertSame(7, Input::get('test3', Input::NUMERIC, 1));
+      $this->assertSame(7, Input::_get('test3'));
+      $this->assertSame('', Input::_get('test3', Input::STRING));
+      $this->assertSame('', Input::_get('test3', Input::STRING, ''));
+      $this->assertSame(7, Input::_get('test3', Input::NUMERIC));
+      $this->assertSame(7, Input::_get('test3', Input::NUMERIC, 0));
+      $this->assertSame(7, Input::_get('test3', Input::NUMERIC, 1));
     }
     /**
-     * @covers ADV\Core\Input\Input::_request
+     * @covers ADV\Core\Input\Input::__request
      * @todo   Implement testRequest().
      */
     public function testRequest() {
       $_GET['test3'] = 7;
-      $this->assertSame(7, Input::get('test3'));
-      $this->assertSame('', Input::get('test3', Input::STRING));
-      $this->assertSame('', Input::get('test3', Input::STRING, ''));
-      $this->assertSame(7, Input::get('test3', Input::NUMERIC));
-      $this->assertSame(7, Input::get('test3', Input::NUMERIC, 0));
-      $this->assertSame(7, Input::get('test3', Input::NUMERIC, 1));
+      $this->assertSame(7, Input::_get('test3'));
+      $this->assertSame('', Input::_get('test3', Input::STRING));
+      $this->assertSame('', Input::_get('test3', Input::STRING, ''));
+      $this->assertSame(7, Input::_get('test3', Input::NUMERIC));
+      $this->assertSame(7, Input::_get('test3', Input::NUMERIC, 0));
+      $this->assertSame(7, Input::_get('test3', Input::NUMERIC, 1));
       $_POST['test3'] = 7;
-      $this->assertSame(7, Input::post('test3'));
-      $this->assertSame('', Input::post('test3', Input::STRING));
-      $this->assertSame('', Input::post('test3', Input::STRING, ''));
-      $this->assertSame(7, Input::post('test3', Input::NUMERIC));
-      $this->assertSame(7, Input::post('test3', Input::NUMERIC, 0));
-      $this->assertSame(7, Input::post('test3', Input::NUMERIC, 1));
+      $this->assertSame(7, Input::_post('test3'));
+      $this->assertSame('', Input::_post('test3', Input::STRING));
+      $this->assertSame('', Input::_post('test3', Input::STRING, ''));
+      $this->assertSame(7, Input::_post('test3', Input::NUMERIC));
+      $this->assertSame(7, Input::_post('test3', Input::NUMERIC, 0));
+      $this->assertSame(7, Input::_post('test3', Input::NUMERIC, 1));
     }
     /**
-     * @covers ADV\Core\Input\Input::_getPost
+     * @covers ADV\Core\Input\Input::__getPost
      * @todo   Implement testgetPost().
      */
     public function testGetPost() {
       $_GET['test3'] = 7;
-      $this->assertSame(7, Input::getPost('test3'));
+      $this->assertSame(7, Input::_getPost('test3'));
       $_POST['test3'] = 8;
-      $this->assertSame(7, Input::getPost('test3'));
+      $this->assertSame(7, Input::_getPost('test3'));
       unset($_GET['test3']);
-      $this->assertSame(8, Input::getPost('test3'));
+      $this->assertSame(8, Input::_getPost('test3'));
     }
     /**
-     * @covers ADV\Core\Input\Input::_getPostGlobal
+     * @covers ADV\Core\Input\Input::__getPostGlobal
      * @todo   Implement testgetPostGlobal().
      */
     public function testgetPostGlobal() {
       $_GET['test3'] = 7;
-      $this->assertSame(7, Input::getPostGlobal('test3'));
+      $this->assertSame(7, Input::_getPostGlobal('test3'));
       $_POST['test3'] = 8;
-      $this->assertSame(7, Input::getPostGlobal('test3'));
+      $this->assertSame(7, Input::_getPostGlobal('test3'));
       unset($_GET['test3']);
       unset($_POST['test3']);
       $_SESSION['globals']['test3'] = 9;
-      $this->assertSame(9, Input::getPostGlobal('test3'));
+      $this->assertSame(9, Input::_getPostGlobal('test3'));
     }
     /**
-     * @covers ADV\Core\Input\Input::_postGlobal
+     * @covers ADV\Core\Input\Input::__postGlobal
      * @todo   Implement testpostGlobal().
      */
     public function testpostGlobal() {
       $_GET['test3'] = 7;
-      $this->assertSame(null, Input::postGlobal('test3'));
+      $this->assertSame(null, Input::_postGlobal('test3'));
       $_POST['test3'] = 8;
-      $this->assertSame(8, Input::postGlobal('test3'));
+      $this->assertSame(8, Input::_postGlobal('test3'));
       unset($_GET['test3']);
       unset($_POST['test3']);
       $_SESSION['globals']['test3'] = 9;
-      $this->assertSame(9, Input::postGlobal('test3'));
+      $this->assertSame(9, Input::_postGlobal('test3'));
     }
     /**
-     * @covers ADV\Core\Input\Input::_postGet
+     * @covers ADV\Core\Input\Input::__postGet
      * @todo   Implement testpostGet().
      */
     public function testpostGet() {
       $_GET['test3'] = 7;
-      $this->assertSame(7, Input::postGet('test3'));
+      $this->assertSame(7, Input::_postGet('test3'));
       $_POST['test3'] = 8;
-      $this->assertSame(8, Input::postGet('test3'));
+      $this->assertSame(8, Input::_postGet('test3'));
       unset($_GET['test3']);
-      $this->assertSame(8, Input::postGet('test3'));
+      $this->assertSame(8, Input::_postGet('test3'));
     }
     /**
-     * @covers ADV\Core\Input\Input::_session
+     * @covers ADV\Core\Input\Input::__session
      * @todo   Implement testSession().
      */
     public function testSession() {
       $_SESSION['test3'] = 7;
-      $this->assertSame(false, Input::session('test3'));
+      $this->assertSame(false, Input::_session('test3'));
     }
     /**
-     * @covers ADV\Core\Input\Input::_hasPost
+     * @covers ADV\Core\Input\Input::__hasPost
      * @todo   Implement testhasPost().
      */
     public function testhasPost() {
-      $this->assertSame(false, Input::hasPost('test'));
-      $this->assertSame(false, Input::hasPost('test', 'test2'));
+      $this->assertSame(false, Input::_hasPost('test'));
+      $this->assertSame(false, Input::_hasPost('test', 'test2'));
       $_POST['test'] = false;
-      $this->assertSame(false, Input::hasPost('test', 'test2'), 'Should return false even if one variable is set.');
-      $this->assertSame(true, Input::hasPost('test'), 'Should return true if post variable is set to false because it exists');
+      $this->assertSame(false, Input::_hasPost('test', 'test2'), 'Should return false even if one variable is set.');
+      $this->assertSame(true, Input::_hasPost('test'), 'Should return true if post variable is set to false because it exists');
       $_POST['test2'] = null;
-      $this->assertSame(false, Input::hasPost('test2'), 'Test2 is set but is null so it should return false!');
-      $this->assertSame(false, Input::hasPost('test', 'test2'), 'Both are set but test2 is set but is null so it should return false!');
+      $this->assertSame(false, Input::_hasPost('test2'), 'Test2 is set but is null so it should return false!');
+      $this->assertSame(false, Input::_hasPost('test', 'test2'), 'Both are set but test2 is set but is null so it should return false!');
       $_POST['test2'] = 'something';
-      $this->assertSame(true, Input::hasPost('test', 'test2'), 'Both are set but test2 is set but is null so it should return false!');
+      $this->assertSame(true, Input::_hasPost('test', 'test2'), 'Both are set but test2 is set but is null so it should return false!');
     }
     /**
-     * @covers ADV\Core\Input\Input::_hasGet
+     * @covers ADV\Core\Input\Input::__hasGet
      * @todo   Implement testhasGet().
      */
     public function testhasGet() {
       $_GET['test'] = false;
-      $this->assertSame(true, Input::hasGet('test'));
-      $this->assertSame(false, Input::hasGet('test', 'test2'));
+      $this->assertSame(true, Input::_hasGet('test'));
+      $this->assertSame(false, Input::_hasGet('test', 'test2'));
     }
     /**
-     * @covers ADV\Core\Input\Input::_has
+     * @covers ADV\Core\Input\Input::__has
      * @todo   Implement testHas().
      */
     public function testHas() {
       $_REQUEST['test'] = false;
-      $this->assertSame(true, Input::has('test'));
-      $this->assertSame(false, Input::has('test', 'test2'));
+      $this->assertSame(true, Input::_has('test'));
+      $this->assertSame(false, Input::_has('test', 'test2'));
     }
     /**
-     * @covers ADV\Core\Input\Input::_hasSession
+     * @covers ADV\Core\Input\Input::__hasSession
      * @todo   Implement testhasSession().
      */
     public function testhasSession() {
       $_SESSION['test'] = false;
-      $this->assertSame(true, Input::hasSession('test'));
-      $this->assertSame(false, Input::hasSession('test', 'test2'));
+      $this->assertSame(true, Input::_hasSession('test'));
+      $this->assertSame(false, Input::_hasSession('test', 'test2'));
     }
     public function testSetting() {
       Input::$post['test'] = 'wawa';

@@ -9,6 +9,7 @@
    **/
   class DB_Comments
   {
+
     /** @var \ADV\Core\DB\DB */
     static $DB;
     /**
@@ -21,7 +22,7 @@
      */
     public static function add($type, $type_no, $date_, $memo_) {
       if ($memo_ != null && $memo_ != "") {
-        $date = Dates::dateToSql($date_);
+        $date = Dates::_dateToSql($date_);
         $sql  = "INSERT INTO comments (type, id, date_, memo_)
                  VALUES (" . static::$DB->_escape($type) . ", " . static::$DB->_escape($type_no) . ", '$date', " . static::$DB->_escape($memo_) . ")";
         static::$DB->_query($sql, "could not add comments transaction entry");
@@ -95,9 +96,9 @@
     public static function update($type, $id, $date_, $memo_) {
       if ($date_ == null) {
         DB_Comments::delete($type, $id);
-        DB_Comments::add($type, $id, Dates::today(), $memo_);
+        DB_Comments::add($type, $id, Dates::_today(), $memo_);
       } else {
-        $date = Dates::dateToSql($date_);
+        $date = Dates::_dateToSql($date_);
         $sql  = "UPDATE comments SET memo_=" . static::$DB->_escape($memo_) . " WHERE type=" . static::$DB->_escape($type) . " AND id=" . static::$DB->_escape($id) . " AND date_='$date'";
         static::$DB->_query($sql, "could not update comments");
       }

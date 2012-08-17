@@ -10,8 +10,8 @@
   $js = "";
   Page::start(_($help_context = "Balance Sheet Drilldown"), SA_GLANALYTIC);
   // Ajax updates
-  if (Input::post('Show')) {
-    Ajax::activate('balance_tbl');
+  if (Input::_post('Show')) {
+    Ajax::_activate('balance_tbl');
   }
   if (isset($_GET["TransFromDate"])) {
     $_POST["TransFromDate"] = $_GET["TransFromDate"];
@@ -45,7 +45,7 @@
     $typestotal = 0;
     //Get Accounts directly under this group/type
     $result = GL_Account::getAll(null, null, $type);
-    while ($account = DB::fetch($result)) {
+    while ($account = DB::_fetch($result)) {
       $prev_balance = GL_Trans::get_balance_from_to("", $from, $account["account_code"], $dimension, $dimension2);
       $curr_balance = GL_Trans::get_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
       if (!$prev_balance && !$curr_balance) {
@@ -63,7 +63,7 @@
     $levelptr = 1;
     //Get Account groups/types under this group/type
     $result = GL_Type::getAll(false, false, $type);
-    while ($accounttype = DB::fetch($result)) {
+    while ($accounttype = DB::_fetch($result)) {
       $typestotal += display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $drilldown);
     }
     //Display Type Summary if total is != 0
@@ -103,7 +103,7 @@
 
   function display_balance_sheet()
   {
-    $from      = Dates::beginFiscalYear();
+    $from      = Dates::_beginFiscalYear();
     $to        = $_POST['TransToDate'];
     $dim       = DB_Company::get_pref('use_dimension');
     $dimension = $dimension2 = 0;
@@ -122,7 +122,7 @@
       $parent      = -1;
       //Get classes for BS
       $classresult = GL_Class::getAll(false, 1);
-      while ($class = DB::fetch($classresult)) {
+      while ($class = DB::_fetch($classresult)) {
         $classclose = 0.0;
         $convert    = Systypes::get_class_type_convert($class["ctype"]);
         $ctype      = $class["ctype"];
@@ -131,7 +131,7 @@
         Table::sectionTitle($class["class_name"]);
         //Get Account groups/types under this group/type
         $typeresult = GL_Type::getAll(false, $class['cid'], -1);
-        while ($accounttype = DB::fetch($typeresult)) {
+        while ($accounttype = DB::_fetch($typeresult)) {
           $TypeTotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $drilldown);
           //Print Summary
           if ($TypeTotal != 0) {

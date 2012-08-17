@@ -7,7 +7,7 @@
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
      **/
-    JS::openWindow(950, 600);
+    JS::_openWindow(950, 600);
     Page::start(_($help_context = "View Sales Invoice"), SA_SALESTRANSVIEW, true);
     if (isset($_GET["trans_no"])) {
         $trans_id = $_GET["trans_no"];
@@ -40,8 +40,8 @@
     Cell::labels(_("Sales Type"), $myrow["sales_type"], "class='label'");
     Row::end();
     Row::start();
-    Cell::labels(_("Invoice Date"), Dates::sqlToDate($myrow["tran_date"]), "class='label'", ' class="nowrap"');
-    Cell::labels(_("Due Date"), Dates::sqlToDate($myrow["due_date"]), "class='label'", ' class="nowrap"');
+    Cell::labels(_("Invoice Date"), Dates::_sqlToDate($myrow["tran_date"]), "class='label'", ' class="nowrap"');
+    Cell::labels(_("Due Date"), Dates::_sqlToDate($myrow["due_date"]), "class='label'", ' class="nowrap"');
     Cell::labels(_("Deliveries"), Debtor::viewTrans(ST_CUSTDELIVERY, Debtor_Trans::get_parent(ST_SALESINVOICE, $trans_id)), "class='label'");
     Row::end();
     DB_Comments::display_row(ST_SALESINVOICE, $trans_id);
@@ -50,7 +50,7 @@
     Table::end(1); // outer table
     $result = Debtor_TransDetail::get(ST_SALESINVOICE, $trans_id);
     Table::start('tablestyle grid width95');
-    if (DB::numRows() > 0) {
+    if (DB::_numRows() > 0) {
         $th = array(
             _("Item Code"),
             _("Item Description"),
@@ -67,12 +67,12 @@
             if ($myrow2["quantity"] == 0) {
                 continue;
             }
-            $value = Num::round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
+            $value = Num::_round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
             $sub_total += $value;
             if ($myrow2["discount_percent"] == 0) {
                 $display_discount = "";
             } else {
-                $display_discount = Num::percentFormat($myrow2["discount_percent"] * 100) . "%";
+                $display_discount = Num::_percentFormat($myrow2["discount_percent"] * 100) . "%";
             }
             Cell::label($myrow2["stock_id"]);
             Cell::label($myrow2["StockDescription"]);
@@ -86,18 +86,18 @@
     } else {
         Event::warning(_("There are no line items on this invoice."), 1, 2);
     }
-    $display_sub_tot = Num::priceFormat($sub_total);
-    $display_freight = Num::priceFormat($myrow["ov_freight"]);
+    $display_sub_tot = Num::_priceFormat($sub_total);
+    $display_freight = Num::_priceFormat($myrow["ov_freight"]);
     /*Print out the invoice text entered */
     Row::label(_("Sub-total"), $display_sub_tot, "colspan=6 class='alignright'", " class='alignright nowrap width15'");
     Row::label(_("Shipping"), $display_freight, "colspan=6 class='alignright'", ' class="alignright nowrap"');
     $tax_items = GL_Trans::get_tax_details(ST_SALESINVOICE, $trans_id);
     Debtor_Trans::display_tax_details($tax_items, 6);
-    $display_total = Num::priceFormat($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]);
+    $display_total = Num::_priceFormat($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]);
     Row::label(_("TOTAL INVOICE"), $display_total, "colspan=6 class='alignright'", ' class="alignright nowrap"');
     Table::end(1);
     Display::is_voided(ST_SALESINVOICE, $trans_id, _("This invoice has been voided."));
-    if (Input::get('frame')) {
+    if (Input::_get('frame')) {
         return;
     }
     $customer = new Debtor($myrow['debtor_id']);

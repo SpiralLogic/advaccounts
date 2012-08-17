@@ -21,8 +21,8 @@
    */
   function GetSalesmanTrans($from, $to)
   {
-    $fromdate = Dates::dateToSql($from);
-    $todate   = Dates::dateToSql($to);
+    $fromdate = Dates::_dateToSql($from);
+    $todate   = Dates::_dateToSql($to);
     $sql
               = "SELECT DISTINCT debtor_trans.*,
 		ov_amount+ov_discount AS InvoiceTotal,
@@ -38,7 +38,7 @@
 		 AND debtor_trans.tran_date>='$fromdate'
 		 AND debtor_trans.tran_date<='$todate'
 		ORDER BY salesman.salesman_code, debtor_trans.tran_date";
-    return DB::query($sql, "Error getting order details");
+    return DB::_query($sql, "Error getting order details");
   }
 
   function print_salesman_list()
@@ -84,7 +84,7 @@
     $salesman = 0;
     $subtotal = $total = $subprov = $provtotal = 0;
     $result   = GetSalesmanTrans($from, $to);
-    while ($myrow = DB::fetch($result)) {
+    while ($myrow = DB::_fetch($result)) {
       if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight)) {
         $salesman = 0;
         $rep->Header();
@@ -103,9 +103,9 @@
         $rep->TextCol(0, 2, $myrow['salesman_code'] . " " . $myrow['salesman_name']);
         $rep->TextCol(2, 3, $myrow['salesman_phone']);
         $rep->TextCol(3, 4, $myrow['salesman_email']);
-        $rep->TextCol(4, 5, Num::format($myrow['provision'], User::percent_dec()) . " %");
+        $rep->TextCol(4, 5, Num::_format($myrow['provision'], User::percent_dec()) . " %");
         $rep->AmountCol(5, 6, $myrow['break_pt'], $dec);
-        $rep->TextCol(6, 7, Num::format($myrow['provision2'], User::percent_dec()) . " %");
+        $rep->TextCol(6, 7, Num::_format($myrow['provision2'], User::percent_dec()) . " %");
         $rep->NewLine(2);
         $salesman = $myrow['salesman_code'];
         $total += $subtotal;

@@ -22,21 +22,21 @@
     protected $selected_stock_item;
     protected $stock_location;
     protected function before() {
-      JS::openWindow(950, 500);
-      $_POST['order_number']     = Input::getPost('order_number', Input::NUMERIC);
+      JS::_openWindow(950, 500);
+      $_POST['order_number']     = Input::_getPost('order_number', Input::NUMERIC);
       $this->order_no            =& $_POST['order_number'];
-      $this->creditor_id         = Input::getPost('creditor_id', Input::NUMERIC, 0);
-      $this->stock_location      = Input::getPost('StockLocation', Input::STRING, '');
-      $this->selected_stock_item = Input::getPost('SelectStockFromList', Input::STRING, '');
-      if (Input::post('SearchOrders')) {
-        Ajax::activate('orders_tbl');
+      $this->creditor_id         = Input::_getPost('creditor_id', Input::NUMERIC, 0);
+      $this->stock_location      = Input::_getPost('StockLocation', Input::STRING, '');
+      $this->selected_stock_item = Input::_getPost('SelectStockFromList', Input::STRING, '');
+      if (Input::_post('SearchOrders')) {
+        Ajax::_activate('orders_tbl');
       }
       if ($this->order_no) {
-        Ajax::addFocus(true, 'order_number');
+        Ajax::_addFocus(true, 'order_number');
       } else {
-        Ajax::addFocus(true, 'OrdersAfterDate');
+        Ajax::_addFocus(true, 'OrdersAfterDate');
       }
-      Ajax::activate('orders_tbl');
+      Ajax::_activate('orders_tbl');
     }
     protected function index() {
       Page::start(_($help_context = "Search Outstanding Purchase Orders"), SA_SUPPTRANSVIEW);
@@ -45,7 +45,7 @@
       Forms::start();
       Table::start('tablestyle_noborder');
       Row::start();
-      Creditor::cells(_(""), 'creditor_id', Input::post('creditor_id'), true);
+      Creditor::cells(_(""), 'creditor_id', Input::_post('creditor_id'), true);
       Forms::refCells(_("#:"), 'order_number');
       Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
       Forms::dateCells(_("To:"), 'OrdersToDate');
@@ -71,7 +71,7 @@
  porder.ord_date,
  supplier.curr_code,
  Sum(line.unit_price*line.quantity_ordered) AS OrderValue,
- Sum(line.delivery_date < '" . Dates::today(true) . "'
+ Sum(line.delivery_date < '" . Dates::_today(true) . "'
  AND (line.quantity_ordered > line.quantity_received)) As OverDue
  FROM purch_orders as porder, purch_order_details as line, suppliers as supplier, locations as location
  WHERE porder.order_no = line.order_no
@@ -79,25 +79,25 @@
  AND location.loc_code = porder.into_stock_location
  AND (line.quantity_ordered > line.quantity_received) ";
       if ($this->creditor_id) {
-        $sql .= " AND supplier.creditor_id = " . DB::quote($this->creditor_id);
+        $sql .= " AND supplier.creditor_id = " . DB::_quote($this->creditor_id);
       }
       if ($this->order_no) {
-        $sql .= " AND (porder.order_no LIKE " . DB::quote('%' . $this->order_no . '%');
-        $sql .= " OR porder.reference LIKE " . DB::quote('%' . $this->order_no . '%') . ') ';
+        $sql .= " AND (porder.order_no LIKE " . DB::_quote('%' . $this->order_no . '%');
+        $sql .= " OR porder.reference LIKE " . DB::_quote('%' . $this->order_no . '%') . ') ';
       } else {
-        $data_after  = Dates::dateToSql($_POST['OrdersAfterDate']);
-        $data_before = Dates::dateToSql($_POST['OrdersToDate']);
+        $data_after  = Dates::_dateToSql($_POST['OrdersAfterDate']);
+        $data_before = Dates::_dateToSql($_POST['OrdersToDate']);
         $sql .= " AND porder.ord_date >= '$data_after'";
         $sql .= " AND porder.ord_date <= '$data_before'";
         if ($this->stock_location) {
-          $sql .= " AND porder.into_stock_location = " . DB::quote($this->stock_location);
+          $sql .= " AND porder.into_stock_location = " . DB::_quote($this->stock_location);
         }
         if ($this->selected_stock_item) {
-          $sql .= " AND line.item_code=" . DB::quote($this->selected_stock_item);
+          $sql .= " AND line.item_code=" . DB::_quote($this->selected_stock_item);
         }
       } //end not order number selected
       $sql .= " GROUP BY porder.order_no";
-      DB::query($sql, "No orders were returned");
+      DB::_query($sql, "No orders were returned");
       /*show a table of the orders returned by the sql */
       $cols = array(
         _("#")                                     => ['fun'     => [$this, 'formatTrans'], 'ord'     => ''], //
