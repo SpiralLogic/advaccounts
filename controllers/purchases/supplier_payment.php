@@ -1,5 +1,9 @@
 <?php
   use ADV\App\Creditor\Creditor;
+  use ADV\Core\Table;
+  use ADV\Core\Ajax;
+  use ADV\Core\Input\Input;
+  use ADV\Core\JS;
 
   /**
    * PHP version 5.4
@@ -55,9 +59,9 @@
         $_SESSION['alloc']->read();
         Ajax::activate('alloc_tbl');
       }
-      $this->company_currency  = Bank_Currency::for_company();
+      $this->company_currency = Bank_Currency::for_company();
       $this->supplier_currency = Bank_Currency::for_creditor($this->creditor_id);
-      $this->bank_currency     = Bank_Currency::for_company($_POST['bank_account']);
+      $this->bank_currency = Bank_Currency::for_company($_POST['bank_account']);
     }
     protected function index() {
       Page::start(_($help_context = "Supplier Payment Entry"), SA_SUPPLIERPAYMNT);
@@ -96,13 +100,26 @@
       Forms::end();
       Page::end();
     }
+    /**
+     * @return bool
+     */
     protected function processSupplierPayment() {
       if ($this->company_currency != $this->bank_currency && $this->bank_currency != $this->supplier_currency) {
         $rate = 0;
       } else {
         $rate = Validation::input_num('_ex_rate');
       }
-      $payment_id = Creditor_Payment::add($this->creditor_id, $_POST['date_'], $_POST['bank_account'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['ref'], $_POST['memo_'], $rate, Validation::input_num('charge'));
+      $payment_id = Creditor_Payment::add(
+        $this->creditor_id,
+        $_POST['date_'],
+        $_POST['bank_account'],
+        Validation::input_num('amount'),
+        Validation::input_num('discount'),
+        $_POST['ref'],
+        $_POST['memo_'],
+        $rate,
+        Validation::input_num('charge')
+      );
       if (!$payment_id) {
         return false;
       }
@@ -121,6 +138,8 @@
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter another supplier &payment"), "creditor_id=" . $this->creditor_id, true, 'class="button"');
       $this->Ajax->_activate('_page_body');
       Page::footer_exit();
+
+      return true;
     }
     protected function runValidation() {
       Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));

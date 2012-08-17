@@ -1,2 +1,2 @@
 
-<div class='center'>{{#foreach $buttons as $button}}{{$button}}{{/foreach}}</div>
+<div class='center'>{{#$buttons}}{{.}}{{/$buttons}}</div>

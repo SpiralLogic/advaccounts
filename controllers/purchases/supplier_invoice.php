@@ -1,5 +1,8 @@
 <?php
   use ADV\App\Page;
+  use ADV\App\Item\Item;
+  use ADV\Core\Input\Input;
+  use ADV\Core\DB\DB;
 
   /**
    * PHP version 5.4
@@ -11,7 +14,6 @@
    **/
   class SupplierInvoice extends \ADV\App\Controller\Base
   {
-
     /** @var Creditor_Trans */
     protected $trans;
     protected $creditor_id;
@@ -174,14 +176,28 @@
           DB::begin();
           $myrow = Purch_GRN::get_item($id2);
           $grn   = Purch_GRN::get_batch($myrow['grn_batch_id']);
-          $sql   = "UPDATE purch_order_details
+          $sql
+                 = "UPDATE purch_order_details
                   SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = " . $myrow["po_detail_item"];
           DB::query($sql, "The quantity invoiced of the purchase order line could not be updated");
-          $sql = "UPDATE grn_items
+          $sql
+            = "UPDATE grn_items
                SET qty_recd = quantity_inv WHERE id = " . $myrow["id"];
           DB::query($sql, "The quantity invoiced off the items received record could not be updated");
           Purch_GRN::update_average_material_cost($grn["creditor_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Dates::today());
-          Inv_Movement::add(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], Dates::sqlToDate($grn["delivery_date"]), "", -$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["creditor_id"], 1, $myrow['unit_price']);
+          Inv_Movement::add(
+            ST_SUPPRECEIVE,
+            $myrow["item_code"],
+            $myrow['grn_batch_id'],
+            $grn['loc_code'],
+            Dates::sqlToDate($grn["delivery_date"]),
+            "",
+            -$myrow["QtyOstdg"],
+            $myrow['std_cost_unit'],
+            $grn["creditor_id"],
+            1,
+            $myrow['unit_price']
+          );
           DB::commit();
           Event::notice(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
           $this->Ajax->_activate('grn_items');
@@ -241,11 +257,13 @@
     protected function checkData() {
       if (!$this->trans->is_valid_trans_to_post()) {
         Event::error(_("The invoice cannot be processed because the there are no items or values on the invoice. Invoices are expected to have a charge."));
+
         return false;
       }
       if (!Ref::is_valid($this->trans->reference)) {
         Event::error(_("You must enter an invoice reference."));
         $this->JS->_setFocus('reference');
+
         return false;
       }
       if (!Ref::is_new($this->trans->reference, ST_SUPPINVOICE)) {
@@ -254,29 +272,37 @@
       if (!Ref::is_valid($this->trans->supplier_reference)) {
         Event::error(_("You must enter a supplier's invoice reference."));
         $this->JS->_setFocus('supplier_reference');
+
         return false;
       }
       if (!Dates::isDate($this->trans->tran_date)) {
         Event::error(_("The invoice as entered cannot be processed because the invoice date is in an incorrect format."));
         $this->JS->_setFocus('trans_date');
+
         return false;
       } elseif (!Dates::isDateInFiscalYear($this->trans->tran_date)) {
         Event::error(_("The entered date is not in fiscal year."));
         $this->JS->_setFocus('trans_date');
+
         return false;
       }
       if (!Dates::isDate($this->trans->due_date)) {
         Event::error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
         $this->JS->_setFocus('due_date');
+
         return false;
       }
-      $sql    = "SELECT Count(*) FROM creditor_trans WHERE creditor_id=" . DB::escape($this->trans->creditor_id) . " AND supplier_reference=" . DB::escape($_POST['supplier_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
+      $sql    = "SELECT Count(*) FROM creditor_trans WHERE creditor_id=" . DB::escape($this->trans->creditor_id) . " AND supplier_reference=" . DB::escape(
+        $_POST['supplier_reference']
+      ) . " AND ov_amount!=0"; // ignore voided invoice references
       $result = DB::query($sql, "The sql to check for the previous entry of the same invoice failed");
       $myrow  = DB::fetchRow($result);
       if ($myrow[0] == 1) { /*Transaction reference already entered */
         Event::error(_("This invoice number has already been entered. It cannot be entered again. (" . $_POST['supplier_reference'] . ")"));
+
         return false;
       }
+
       return true;
     }
     /**
@@ -288,16 +314,19 @@
       if (!Validation::post_num('this_quantity_inv' . $n, 0) || Validation::input_num('this_quantity_inv' . $n) == 0) {
         Event::error(_("The quantity to invoice must be numeric and greater than zero."));
         $this->JS->_setFocus('this_quantity_inv' . $n);
+
         return false;
       }
       if (!Validation::post_num('ChgPrice' . $n)) {
         Event::error(_("The price is not numeric."));
         $this->JS->_setFocus('ChgPrice' . $n);
+
         return false;
       }
       if (!Validation::post_num('ExpPrice' . $n)) {
         Event::error(_("The price is not numeric."));
         $this->JS->_setFocus('ExpPrice' . $n);
+
         return false;
       }
       $margin = DB_Company::get_pref('po_over_charge');
@@ -305,10 +334,17 @@
         if ($_POST['order_price' . $n] != Validation::input_num('ChgPrice' . $n)) {
           if (Input::post('order_price' . $n, Input::NUMERIC, 0) != 0 && Validation::input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {
             if (!$this->Session->_get('err_over_charge')) {
-              Event::warning(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage
-              allowance is :") . $margin . "%");
+              Event::warning(
+                _(
+                  "The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary."
+                ) . _(
+                  "The over-charge percentage
+              allowance is :"
+                ) . $margin . "%"
+              );
               $this->JS->_setFocus('ChgPrice' . $n);
               $_SESSION['err_over_charge'] = true;
+
               return false;
             } else {
               $_SESSION['err_over_charge'] = false;
@@ -318,11 +354,17 @@
       }
       if (Config::get('purchases.valid_charged_to_delivered_qty') == true) {
         if (Validation::input_num('this_quantity_inv' . $n) / ($_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n]) > (1 + ($margin / 100))) {
-          Event::error(_("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");
+          Event::error(
+            _(
+              "The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary."
+            ) . _("The over-charge percentage allowance is :") . $margin . "%"
+          );
           $this->JS->_setFocus('this_quantity_inv' . $n);
+
           return false;
         }
       }
+
       return true;
     }
     /**
@@ -336,8 +378,22 @@
           $complete = false;
         }
         $_SESSION['err_over_charge'] = false;
-        $this->trans->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('this_quantity_inv' . $n), $_POST['order_price' . $n],
-          Validation::input_num('ChgPrice' . $n), $complete, $_POST['std_cost_unit' . $n], "", Validation::input_num('ChgDiscount' . $n), Validation::input_num('ExpPrice' . $n));
+        $this->trans->add_grn_to_trans(
+          $n,
+          $_POST['po_detail_item' . $n],
+          $_POST['item_code' . $n],
+          $_POST['description' . $n],
+          $_POST['qty_recd' . $n],
+          $_POST['prev_quantity_inv' . $n],
+          Validation::input_num('this_quantity_inv' . $n),
+          $_POST['order_price' . $n],
+          Validation::input_num('ChgPrice' . $n),
+          $complete,
+          $_POST['std_cost_unit' . $n],
+          "",
+          Validation::input_num('ChgDiscount' . $n),
+          Validation::input_num('ExpPrice' . $n)
+        );
       }
       $this->Ajax->_activate('grn_items');
       $this->Ajax->_activate('inv_tot');
@@ -372,7 +428,8 @@
     }
     protected function addJS() {
       Item::addEditDialog();
-      $js = <<<JS
+      $js
+        = <<<JS
                    $("#wrapper").delegate('.amount','change',function() {
                var feild = $(this), ChgTax=$('[name="ChgTax"]'),ChgTotal=$('[name="ChgTotal"]'),invTotal=$('#invoiceTotal'), fields = $(this).parent().parent(), fv = {}, nodes = {
                qty: $('[name^="this_quantity"]',fields),

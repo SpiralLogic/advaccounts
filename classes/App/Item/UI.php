@@ -8,8 +8,8 @@
    * @link      http://www.advancedgroup.com.au
    **/
   // STOCK ITEMS
-  class Item_UI {
-
+  class Item_UI
+  {
     /**
      * @static
      *
@@ -83,9 +83,16 @@
       if ($label != null) {
         echo "<td>$label</td>\n";
       }
-      echo Item::select($name, $selected_id, $all_option, $submit_on_change, array(
-        'where' => "stock_id != '$parent_stock_id'", 'cells' => true
-      ));
+      echo Item::select(
+        $name,
+        $selected_id,
+        $all_option,
+        $submit_on_change,
+        array(
+             'where' => "stock_id != '$parent_stock_id'",
+             'cells' => true
+        )
+      );
     }
     /**
      * @static
@@ -113,9 +120,17 @@
       if ($label != null) {
         echo "<td>$label</td>\n";
       }
-      echo Item::select($name, $selected_id, $all_option, $submit_on_change, array(
-        'where' => "mb_flag!='" . STOCK_SERVICE . "'", 'cells' => true, 'description' => ''
-      ));
+      echo Item::select(
+        $name,
+        $selected_id,
+        $all_option,
+        $submit_on_change,
+        array(
+             'where'       => "mb_flag!='" . STOCK_SERVICE . "'",
+             'cells'       => true,
+             'description' => ''
+        )
+      );
     }
     /**
      * @static
@@ -132,9 +147,15 @@
         echo "<td class='label'>$label</td>\n";
       }
       echo "<td>";
-      echo Forms::arraySelect($name, $selected_id, $stock_types, array(
-        'select_submit' => true, 'disabled' => !$enabled
-      ));
+      echo Forms::arraySelect(
+        $name,
+        $selected_id,
+        $stock_types,
+        array(
+             'select_submit' => true,
+             'disabled'      => !$enabled
+        )
+      );
       echo "</td></tr>\n";
     }
     /**
@@ -148,9 +169,16 @@
      */
     public static function type($name, $selected_id = null, $enabled = true) {
       global $stock_types;
-      return Forms::arraySelect($name, $selected_id, $stock_types, array(
-        'select_submit' => true, 'disabled' => !$enabled
-      ));
+
+      return Forms::arraySelect(
+        $name,
+        $selected_id,
+        $stock_types,
+        array(
+             'select_submit' => true,
+             'disabled'      => !$enabled
+        )
+      );
     }
     /**
      * @static
@@ -161,10 +189,11 @@
      * @param bool   $icon
      * @param string $class
      * @param string $id
+     * @param bool   $raw
      *
      * @return null|string
      */
-    public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+    public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '', $raw = false) {
       $viewer = "inventory/view/";
       switch ($type) {
         case ST_INVADJUST:
@@ -177,9 +206,13 @@
           return null;
       }
       $viewer .= "?trans_no=$trans_no";
+      if ($raw) {
+        return $viewer;
+      }
       if ($label == "") {
         $label = $trans_no;
       }
+
       return Display::viewer_link($label, $viewer, $class, $id, $icon);
     }
     /**
@@ -194,16 +227,16 @@
     public static function status($stock_id, $description = null, $echo = true) {
       if ($description) //Display::link_params_separate( "/inventory/inquiry/stock_status.php", (User::show_codes()?$stock_id . " - ":"") . $description, "stock_id=$stock_id");
       {
-        $preview_str = "<a class='openWindow' target='_blank' href='/inventory/inquiry/stock_status.php?stock_id=$stock_id' >" . (User::show_codes()
-          ? $stock_id . " - " : "") . $description . "</a>";
-      }
-      else //Display::link_params_separate( "/inventory/inquiry/stock_status.php", $stock_id, "stock_id=$stock_id");
+        $preview_str = "<a class='openWindow' target='_blank' href='/inventory/inquiry/stock_status.php?stock_id=$stock_id' >" . (User::show_codes() ? $stock_id . " - " :
+          "") . $description . "</a>";
+      } else //Display::link_params_separate( "/inventory/inquiry/stock_status.php", $stock_id, "stock_id=$stock_id");
       {
         $preview_str = "<a class='openWindow' target='_blank' href='/inventory/inquiry/stock_status.php?stock_id=$stock_id' >$stock_id</a>";
       }
       if ($echo) {
         echo $preview_str;
       }
+
       return $preview_str;
     }
     /**

@@ -195,10 +195,10 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
         }
       }
       $rep->Font('bold');
-      $txt_current   = _("Current");
-      $txt_now_due   = "1-" . $past_due1 . " " . $txt_days;
-      $txt_past_due1 = $past_due1 + 1 . "-" . $past_due2 . " " . $txt_days;
-      $txt_past_due2 = $txt_over . " " . $past_due2 . " " . $txt_days;
+      $txt_current   = "1-30 Days";
+      $txt_now_due   = "31-60  Days";
+      $txt_past_due1 = "61-90  Days";
+      $txt_past_due2 = "90+ Days";
       $str           = array($txt_current, $txt_now_due, $txt_past_due1, $txt_past_due2, $txt_total_balance);
       $str2          = array(
         Num::format(($customer_record["Due"] - $customer_record["Overdue1"]), $dec),

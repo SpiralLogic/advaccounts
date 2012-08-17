@@ -1,5 +1,9 @@
 <?php
   use ADV\App\Debtor\Debtor;
+  use ADV\Core\Ajax;
+  use ADV\Core\Input\Input;
+  use ADV\Core\Table;
+  use ADV\Core\JS;
 
   /**
    * PHP version 5.4
@@ -14,7 +18,6 @@
   //
   class CreditNote extends \ADV\App\Controller\Base
   {
-
     public $credit;
     protected function before() {
       JS::openWindow(950, 500);
@@ -34,9 +37,6 @@
         $_POST['debtor_id'] = $br['debtor_id'];
         Ajax::activate('debtor_id');
       }
-      if (isset($_GET[ADDED_ID])) {
-        $this->pageComplete();
-      }
       if (isset($_POST[Orders::CANCEL_CHANGES])) {
         $this->cancelCredit();
       }
@@ -51,7 +51,13 @@
       }
       if (isset($_POST[Orders::UPDATE_ITEM])) {
         if ($_POST[Orders::UPDATE_ITEM] != "" && check_item_data()) {
-          $this->credit->update_order_item($_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
+          $this->credit->update_order_item(
+            $_POST['line_no'],
+            Validation::input_num('qty'),
+            Validation::input_num('price'),
+            Validation::input_num('Disc') / 100,
+            $_POST['description']
+          );
         }
         Item_Line::start_focus('_stock_id_edit');
       }
@@ -62,6 +68,9 @@
         $this->processCredit();
       }
     }
+    /**
+     * @return bool
+     */
     protected function processCredit() {
       if (!$this->can_process()) {
         return false;
@@ -78,6 +87,8 @@
       $credit_no    = $this->credit->write($_POST['WriteOffGLCode']);
       Dates::newDocDate($this->credit->document_date);
       $this->pageComplete($credit_no);
+
+      return true;
     }
     protected function cancelCredit() {
       $type     = $this->credit->trans_type;
@@ -85,6 +96,9 @@
       Orders::session_delete($_POST['order_id']);
       $this->credit = $this->handle_new_credit($order_no);
     }
+    /**
+     * @param $credit_no
+     */
     protected function pageComplete($credit_no) {
       $trans_type = ST_CUSTCREDIT;
       Event::success(sprintf(_("Credit Note # %d has been processed"), $credit_no));
@@ -122,8 +136,7 @@
       Validation::check(Validation::BRANCHES_ACTIVE, _("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
     }
     /***
-     * @param $this->credit
-     *
+     * @internal param $this ->credit
      * @return Sales_Order
      */
     protected function copy_to_cn() {
@@ -140,7 +153,8 @@
       $this->credit->dimension2_id = $_POST['dimension2_id'];
     }
     /**
-     * @param $this->credit
+     * @return void
+     * @internal param $this ->credit
      */
     protected function copy_from_cn() {
       $this->credit               = Sales_Order::check_edit_conflicts($this->credit);
@@ -172,8 +186,7 @@
       $this->copy_from_cn();
     }
     /**
-     * @param Sales_Order $this->credit
-     *
+     * @internal param \Sales_Order $this ->credit
      * @return bool
      */
     protected function can_process() {
@@ -199,6 +212,7 @@
         JS::setFocus('OrderDate');
         $input_error = 1;
       }
+
       return ($input_error == 0);
     }
     /**
@@ -208,18 +222,22 @@
       if (!Validation::post_num('qty', 0)) {
         Event::error(_("The quantity must be greater than zero."));
         JS::setFocus('qty');
+
         return false;
       }
       if (!Validation::post_num('price', 0)) {
         Event::error(_("The entered price is negative or invalid."));
         JS::setFocus('price');
+
         return false;
       }
       if (!Validation::post_num('Disc', 0, 100)) {
         Event::error(_("The entered discount percent is negative, greater than 100 or invalid."));
         JS::setFocus('Disc');
+
         return false;
       }
+
       return true;
     }
   }

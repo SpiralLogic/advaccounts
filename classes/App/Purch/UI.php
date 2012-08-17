@@ -34,7 +34,7 @@
      *
      * @return null|string
      */
-    public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
+    public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '',$raw=false)
     {
       $viewer = "/purchases/view/";
       switch ($type) {
@@ -57,6 +57,7 @@
           return null;
       }
       $viewer .= "?trans_no=$trans_no";
+      if ($raw) return $viewer;
       if ($label == "") {
         $label = $trans_no;
       }

@@ -1,5 +1,12 @@
 <?php
-  /**
+    use ADV\Core\Input\Input;
+    use ADV\Core\DB\DB;
+    use ADV\Core\Row;
+    use ADV\Core\Table;
+    use ADV\Core\Ajax;
+    use ADV\Core\JS;
+
+    /**
    * PHP version 5.4
    * @category  PHP
    * @package   ADVAccounts
