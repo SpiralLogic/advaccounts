@@ -1,4 +1,7 @@
 <?php
+  use ADV\Core\Ajax;
+  use ADV\Core\Input\Input;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -17,8 +20,14 @@
     protected $fields = [];
     protected $start;
     protected $end;
+    /** @var Ajax */
     protected $Ajax;
+    /** @var Input */
     protected $Input;
+    /**
+     * @param ADV\Core\Input\Input $input
+     * @param ADV\Core\Ajax        $ajax
+     */
     public function __construct(\ADV\Core\Input\Input $input = null, \ADV\Core\Ajax $ajax = null) {
       $this->Ajax  = $ajax ? : Ajax::i();
       $this->Input = $input ? : Input::i();
@@ -128,6 +137,7 @@
         $value =$attr['value'] = $this->Input->post($name, null, '');
       }
       $attr['name'] = $name;
+      $attr['placeholder'] = rtrim($label,':');
       array_merge($attr, $input_attr);
       $attr['id'] = $this->nameToId($name);
       $content    = HTML::setReturn(true)->textarea($attr['id'], $value, $attr, false)->setReturn(false);
@@ -146,7 +156,7 @@
      */
     public function text($label, $name, $value = null, $input_attr = []) {
       if ($label) {
-        $attr['placeholder'] = $label;
+        $attr['placeholder'] =  rtrim($label,':');
       }
       if ($value === null) {
         $attr['value'] = $this->Input->post($name);
@@ -192,7 +202,7 @@
      * @internal param bool $negatives
      */
     public function number($label, $name, $value = null, $dec = null, $post_label = null, $input_attr = []) {
-      $attr['placeholder'] = $label;
+      $attr['placeholder'] =  rtrim($label,':');
       $attr['data-dec']  =  $dec ? : User::price_dec();
       if (!$this->Input->post($name)) {
         $value        = $value ? : 0;

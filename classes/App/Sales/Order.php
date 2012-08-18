@@ -1503,7 +1503,7 @@
         Cell::qty($line_no == -1 ? 0 : $this->line_items[$line_no]->qty_done, false, $dec);
       }
       Cell::label($units, '', 'units');
-      Forms::amountCells(null, 'price');
+      Forms::amountCellsEx(null, 'price','small',null,null,null,['$']);
       Forms::percentCells(null, 'Disc', Num::_percentFormat($_POST['Disc']));
       $line_total = Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('Disc') / 100);
       Cell::amount($line_total, false, '', 'line_total');

@@ -116,6 +116,8 @@ textarea {
   display:       block;
   min-height:    25px;
   border-radius: 4px 4px 0 4px;
+  padding-top:   3px;
+  max-width:     300px;
 }
 
 select {
@@ -233,7 +235,7 @@ textarea {
 
 input,
 button,
-select {
+select, textarea {
   font-family: Tahoma, Verdana, Geneva;
 }
 
@@ -254,7 +256,8 @@ input[type="search"],
 input[type="tel"],
 input[type="color"],
 .uneditable-input {
-  display: inline-block;  color:   #131313;
+  display: inline-block;
+  color:   #131313;
 
 }
 
@@ -664,7 +667,8 @@ select:focus:required:invalid:focus {
   -moz-box-shadow:    inset 0 1px 2px rgba(0, 0, 0, 0.025);
   box-shadow:         inset 0 1px 2px rgba(0, 0, 0, 0.025);
 }
-input:-moz-placeholder {
+
+input:-moz-placeholder, textarea:-moz-placeholder {
   color: #c1c1c1;
 }
 
@@ -672,7 +676,7 @@ input:-ms-input-placeholder {
   color: #c1c1c1;
 }
 
-input::-webkit-input-placeholder {
+::-webkit-input-placeholder {
   color: #c1c1c1;
 }
 
@@ -3546,8 +3550,6 @@ div.formbox {
   display: block;
 }
 
-
-
 .combo_select {
   border:     0;
   background: url(themes/default/images/button_ok.png) no-repeat;
@@ -3576,12 +3578,11 @@ div.formbox {
   margin: 2px 5px 2px 5px;
 }
 
-.formbox .input-append input, .formbox .input-prepend .add-on {
+.grid .input-prepend .add-on, .formbox .input-prepend .add-on {
   margin-right: -1px;
-
 }
 
-.formbox .input-prepend input, .formbox .input-append .add-on {
+.grid .input-append .add-on, .formbox .input-append .add-on {
   margin-left: -1px;
 }
 
@@ -3598,6 +3599,16 @@ div.formbox {
   width: 157px;
 }
 
+.formbox .input-append input {
+  margin-right: -1px;
+  border-right: none;
+}
+
+.formbox .input-prepend input {
+  margin-left: -1px;
+  border-left: none;
+}
+
 div.formbox label > span:first-child {
   display:          table-cell;
   width:            180px;
@@ -3611,7 +3622,9 @@ div.formbox label > span:first-child {
   vertical-align:   top;
   border:           white 1px solid;
 }
-
+.formbox textarea, .grid textarea {
+  display:block;
+}
 .amount {
   max-width:   8em;
   font-size:   11px;
@@ -3755,12 +3768,20 @@ td.tableheader3 {
 }
 
 .grid .input-append input, .grid .input-prepend input {
-  min-width:    3em;
+  min-width: 3em;
+}
+
+.grid .input-prepend input {
+  border-left: none;
+}
+
+.grid .input-append input {
   border-right: none;
 }
 
 .grid span.add-on {
   margin: 0;
+  height: 25px;
 }
 
 td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid tbody td:first-child, .tablestyle tbody td:first-child {

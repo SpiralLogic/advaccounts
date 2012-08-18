@@ -10,12 +10,12 @@
     namespace ADV\App\Tax;
 
     use Tax_Groups;
+    use ADV\Core\Row;
     use ADV\Core\Input\Input;
     use Forms;
     use Cell;
     use User;
     use ADV\Core\Num;
-    use Row;
     use ADV\Core\DB\DB;
     use Tax_ItemType;
 
@@ -300,7 +300,7 @@
                     Row::label(
                         _("Included") . " " . $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%) " . _("Amount:") . " ",
                         Num::_format($taxitem['Value'], User::price_dec()),
-                        "colspan=$columns style='background:inherit; text-align:right;'",
+                        "colspan=$columns class='alignright'",
                         "class='alignright'",
                         $leftspan
                     );
@@ -309,7 +309,7 @@
                     Row::label(
                         $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)",
                         Num::_format($taxitem['Value'], User::price_dec()),
-                        "colspan=$columns style='background:inherit; text-align:right;'",
+                      "colspan=$columns class='alignright'",
                         "class='alignright'",
                         $leftspan
                     );
