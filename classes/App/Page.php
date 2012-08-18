@@ -98,6 +98,7 @@
       }
       foreach ($application->modules as $module) {
         $app            = new View('application');
+
         $app['colspan'] = (count($module->rightAppFunctions) > 0) ? 2 : 1;
         $app['name']    = $module->name;
         foreach ([$module->leftAppFunctions, $module->rightAppFunctions] as $modules) {

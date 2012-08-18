@@ -27,8 +27,8 @@
                 $data['company'] = $this->creditor = new Creditor();
                 unset($_POST['supp_ref']);
                 $data['company']->save($_POST);
-            } elseif (Input::_request('id', Input::NUMERIC) > 0) {
-                $data['company']     = $this->creditor = new Creditor(Input::_request('id', Input::NUMERIC));
+            } elseif ($this->Input->request('id', Input::NUMERIC) > 0) {
+                $data['company']     = $this->creditor = new Creditor($this->Input->request('id', Input::NUMERIC));
                 $data['contact_log'] = Contact_Log::read($this->creditor->id, CT_SUPPLIER);
                 Session::_setGlobal('creditor_id', $this->creditor->id);
             } else {
@@ -52,7 +52,7 @@
         }
         protected function index()
         {
-            Page::start(_($help_context = "Suppliers"), SA_SUPPLIER, Input::_request('frame'));
+            Page::start(_($help_context = "Suppliers"), SA_SUPPLIER, $this->Input->request('frame'));
             if (isset($_POST['delete'])) {
                 $this->delete();
             }
@@ -66,7 +66,7 @@
             $form->text('Supplier ID:', 'id', $this->creditor->id, ['class' => 'small', 'maxlength' => 7]);
             $view->set('form', $form);
             $view->set('creditor_id', $this->creditor->id);
-            if (!Input::_get('frame')) {
+            if (!$this->Input->get('frame')) {
                 $shortcuts = new MenuUI(array('noajax' => true));
                 $shortcuts->addLink('Supplier Payment', 'Make supplier payment!', '/purchases/supplier_payment.php?creditor_id=', 'id');
                 $shortcuts->addLink('Supplier Invoice', 'Make supplier invoice!', '/purchases/supplier_invoice.php?New=1&creditor_id=', 'id');
@@ -84,7 +84,7 @@
                                                   'postcode' => array('postcode', $this->creditor->postcode)
                                              ));
             $view->set('postcode', $postcode);
-            $form->text('Phone Number:', 'supp_phone', $this->creditor->phone2, 35, 30);
+            $form->text('Phone Number:', 'supp_phone', $this->creditor->phone2);
             $form->textarea('Address:', 'supp_address', $this->creditor->supp_address, ['cols'=> 37, 'rows'=> 4]);
             $supp_postcode = new Contact_Postcode(array(
                                                        'city'     => array('supp_city', $this->creditor->city),
