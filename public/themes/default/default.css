@@ -3632,8 +3632,6 @@ div.formbox label > span:first-child {
   text-align:  right;
 }
 
-input.amount, input.freight {
-}
 
 .desc {
   white-space: pre-wrap;
