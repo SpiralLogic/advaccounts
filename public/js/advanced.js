@@ -48,7 +48,7 @@ jQuery.extend(jQuery.easing, {
     this.o.autocomplete = {};
     $(this.loader).ajaxStart(function () {
       Adv.loader.on();
-      Adv.Scroll.atLoad = true;
+      Adv.Scroll.loaded = false;
       if (Adv.debug.ajax) {
         console.time('ajax')
       }
@@ -465,16 +465,7 @@ Adv.extend({
           return isNaN(val) ? 0 : val;
         },
         setFocus:function (name, byId) {
-          var el, scrollMaxY = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-          if (typeof(Adv.Scroll.focus) == 'number' && typeof Adv.Scroll.element == 'string') {
-            var pos = $(document.getElementsByName(Adv.Scroll.element)[0]).position().top;
-            Adv.Scroll.to(pos - Adv.Scroll.focus);
-            Adv.Scroll.focus = Adv.Scroll.element = Adv.Scroll.atLoad = false;
-            return;
-          }
-          if (Adv.Scroll.atLoad === false) {
-            return;
-          }
+          var el;
           if (typeof(name) == 'object') {
             el = name;
           }
@@ -501,9 +492,11 @@ Adv.extend({
             // Using tmp var prevents crash on IE5
             pos = $(el).position().top - 100;
             setTimeout(function () { Adv.Scroll.to(pos, 300);}, 0);
+            el.focus();
             if (el.select) {
               el.select();
             }
+
           }
         },
         //returns the absolute position of some element within document
@@ -591,7 +584,7 @@ Adv.extend({
     })(),
     Scroll:(function () {
       return{
-        atLoad:true,
+        loaded:false,
         focus:null,
         elementName:null,
         to:function (position, duration) {
@@ -602,9 +595,23 @@ Adv.extend({
           $('html,body').animate({scrollTop:position}, {queue:false, duration:duration, easing:'easeInSine'});
         },
         scrollDetect:function () {
-          Adv.Scroll.atLoad = false;
+          Adv.Scroll.loaded = true;
           window.removeEventListener('scroll', Adv.Scroll.scrollDetect, false)
+        },
+        loadPosition:function (force) {
+          var scrollMaxY = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+          if (Adv.Scroll.loaded && force === undefined) {
+            return;
+          }
+          if (typeof(Adv.Scroll.focus) == 'number' && typeof Adv.Scroll.element == 'string') {
+            var pos = $(document.getElementsByName(Adv.Scroll.element)[0]).position().top;
+            Adv.Scroll.to(pos - Adv.Scroll.focus);
+            Adv.Scroll.focus = Adv.Scroll.element = Adv.Scroll.loaded = true;
+            return;
+          }
+          Adv.Forms.setFocus();
         }
+
 
       };
     })()}

@@ -104,7 +104,7 @@ JsHttpRequest.request = function (trigger, form, tout) {
   }
   catch (e) {
   }
-  Adv.Scroll.atLoad = true;
+  Adv.Scroll.loadPosition(true);
   JsHttpRequest._request(trigger, form, tout, 0);
 }
 JsHttpRequest._request = function (trigger, form, tout, retry) {
