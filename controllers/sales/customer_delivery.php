@@ -1,5 +1,7 @@
 <?php
-    /**
+  use ADV\Core\Table;
+
+  /**
      * PHP version 5.4
      * @category  PHP
      * @package   ADVAccounts
@@ -115,7 +117,7 @@
     //if (!isset($_POST['ref']))
     //	$_POST['ref'] = Ref::get_next(ST_CUSTDELIVERY);
     if ($order->trans_no == 0) {
-        Forms::refCells(_("Reference"), 'ref', '', null, "class='label'");
+        Forms::refCells(_("Reference"), 'ref', '', Ref::get_next(ST_CUSTDELIVERY), "class='label'");
     } else {
         Cell::labels(_("Reference"), $order->reference, "class='label'");
         Forms::hidden('ref', $order->reference);
@@ -217,6 +219,7 @@
     }
     $_POST['ChargeFreightCost'] = Input::_post('ChargeFreightCost', null, Num::_priceFormat($order->freight_cost));
     $colspan                    = 9;
+  Table::foot();
     Row::start();
     Cell::label(_("Shipping Cost"), "colspan=$colspan class='alignright'");
     Forms::amountCellsSmall(null, 'ChargeFreightCost', $order->freight_cost);
@@ -228,6 +231,7 @@
     $tax_total     = Tax::edit_items($taxes, $colspan, $order->tax_included);
     $display_total = Num::_priceFormat(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
     Row::label(_("Amount Total"), $display_total, "colspan=$colspan class='alignright'", "class='alignright'");
+  Table::footEnd();
     Table::end(1);
     if ($has_marked) {
         Event::warning(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='red'");

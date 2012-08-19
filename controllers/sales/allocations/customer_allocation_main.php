@@ -1,4 +1,6 @@
 <?php
+  use ADV\App\Debtor\Debtor;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -16,7 +18,7 @@
     $_POST['debtor_id'] = Session::_getGlobal('debtor_id');
   }
   echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
-  echo Debtor::select('debtor_id', $_POST['debtor_id'], true, true);
+  Debtor::newselect(null, ['label'=> false, 'row'=> false]);
   echo "<br>";
   Forms::check(_("Show Settled Items:"), 'ShowSettled', null, true);
   echo "</div><br><br>";

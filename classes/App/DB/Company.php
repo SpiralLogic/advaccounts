@@ -15,8 +15,9 @@
    * @property null i
    * @method DB_Company i()
    * @method get_pref($pref_name)
-   * @method get_prefs($pref_name)
+   * @method get_prefs()
    * @method get_current_fiscalyear()
+   * @method key_in_foreign_table($id, $tables, $stdkey, $escaped = false)
    */
   class DB_Company extends \ADV\App\DB\Base
   {

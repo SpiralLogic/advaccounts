@@ -144,7 +144,7 @@
                                 ['insert' => true, 'fun'    => [$this, 'formatEmailBtn']], //
                                 // Print button
                                 ['insert' => true, 'fun'    => [$this, 'formatPrintBtn']], //
-                                // Recieve/Invoice button
+                                // receive/Invoice button
                                 ['insert' => true, 'fun' => [$this, 'formatProcessBtn']] //
                            )//
         );

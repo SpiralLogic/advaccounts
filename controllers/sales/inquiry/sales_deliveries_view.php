@@ -57,12 +57,12 @@
       Forms::start(false, $_SERVER['DOCUMENT_URI'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
       Table::start('tablestyle_noborder');
       Row::start();
-      Debtor::cells(_('Customer:'), 'debtor_id', null, true);
+      Debtor::newselect(null, ['label'=> false, 'row'=> false]);
       Forms::refCellsSearch(_("#:"), 'DeliveryNumber', '', null, '', true);
       Forms::dateCells(_("from:"), 'DeliveryAfterDate', '', null, -30);
       Forms::dateCells(_("to:"), 'DeliveryToDate', '', null, 1);
       Inv_Location::cells(_("Location:"), 'StockLocation', null, true);
-      Item::cells(_("Item:"), 'SelectStockFromList', null, true, false, false, false, false);
+      Item::cells(_(""), 'SelectStockFromList', null, true, false, false, false, false);
       Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
       Forms::hidden('OutstandingOnly');
       Row::end();

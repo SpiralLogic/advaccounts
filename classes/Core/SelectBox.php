@@ -53,6 +53,7 @@
      * @var bool
      */
     protected $async = true; // select update via ajax (true) vs _page_body reload
+    protected $class= ''; // select update via ajax (true) vs _page_body reload
     // search box parameters
     /**
      * @var null
@@ -186,7 +187,7 @@
       $search_button = $this->editable ? '_' . $this->name . '_button' : ($search_box ? $search_submit : false);
       $select_submit = $this->select_submit;
       $by_id         = ($this->type == 0);
-      $class         = $by_id ? 'combo' : 'combo2';
+      $class         = $this->class.=($by_id ? ' combo' : ' combo2');
       $disabled      = $this->disabled ? "disabled" : '';
       $multi         = $this->multi;
       if (!count($this->search)) {

@@ -345,9 +345,10 @@ Adv.extend({
           this.setFormValue(id, value, disabled, true);
         },
         autocomplete:function (id, url, callback) {
-          var $this, els = Adv.Forms.findInputEl(id);
+          var $this, els = Adv.Forms.findInputEl(id),blank={id:0, value:''};
           Adv.Forms.findInputEl(id);
-          Adv.o.autocomplete[id] = $this = $(els).autocomplete({
+          Adv.o.autocomplete[id] = $this = $(els)
+            .autocomplete({
             minLength:2,
             delay:400,
             autoFocus:true,
@@ -359,13 +360,11 @@ Adv.extend({
                 return false;
               }
               Adv.loader.off();
-              Adv.lastXhr = $.getJSON(url, request, function (data, status, xhr) {
+              Adv.lastXhr = $.getJSON(url, request, function (data) {
                 Adv.loader.on();
                 if (!$this.data('active')) {
                   if (data.length === 0) {
-                    data = [
-                      {id:0, value:''}
-                    ]
+                    data = blank;
                   }
                   callback(data[0]);
                   return false;
@@ -380,7 +379,9 @@ Adv.extend({
                 return false;
               }
             },
-            focus:function () {return false;}}).blur(function () {$(this).data('active', false); }).bind('autocompleteclose',function () {
+            focus:function () {return false;}})
+            .blur(function () {$(this).data('active', false); })
+            .bind('autocompleteclose',function () {
               if (this.value.length > 1 && $this.data().autocomplete.selectedItem === null && $this.data()['default'] !== null) {
                 if (callback($this.data()['default'], event, this) !== false) {
                   $this.val($this.data()['default'].label);
@@ -391,10 +392,15 @@ Adv.extend({
               $(this).data('active', true).on('change.autocomplete', function () {
                 $(this).autocomplete('search', $this.val());
               })
-            }).on('paste',function () {
+            })
+            .on('paste',function () {
               var $this = $(this);
               window.setTimeout(function () {$this.autocomplete('search', $this.val())}, 1)
-            }).css({'z-index':'2'});
+            })
+            .on('change',function () {
+              if (this.value==='')callback(blank,event,this);
+            })
+            .css({'z-index':'2'});
           if (document.activeElement === $this[0]) {
             $this.data('active', true);
           }

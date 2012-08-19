@@ -140,6 +140,7 @@
         // search box parameters
         'height'        => false, // number of lines in select box
         'sel_hint'      => null, //
+        'class'      => '', //
         'disabled'      => false
       );
       // ------ merge options with defaults ----------
@@ -190,7 +191,7 @@
         $selected_id = array($first_id);
       }
       $_POST[$name] = $multi ? $selected_id : $selected_id[0];
-      $selector     = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' : '') . "$disabled id='$name' name='$name" . ($multi ? '[]' : '') . "' class='combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
+      $selector     = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' : '') . "$disabled id='$name' name='$name" . ($multi ? '[]' : '') . "' class='".$opts['class']." combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
       static::$Ajax->addUpdate($name, "_{$name}_sel", $selector);
       $selector = "<div id='_{$name}_sel' class='combodiv'>" . $selector . "</div>\n";
       if ($select_submit != false) { // if submit on change is used - add select button

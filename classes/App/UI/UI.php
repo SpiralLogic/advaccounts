@@ -181,8 +181,9 @@
         'editable'         => true,
         'selected'         => '',
         'label'            => null,
+        'placeholder'     =>'Item',
         'cells'            => false,
-        'class'            => null,
+        'class'            => 'med',
         'inactive'         => false,
         'purchase'         => false,
         'sale'             => false,
@@ -211,7 +212,7 @@
         HTML::label(null, $o['label'], array('for' => $id), false);
       }
       HTML::input($id, array(
-                            'value'      => $o['selected'], 'placeholder'=> $o['label'], 'name'       => $id, 'class'      => $o['class'], 'size'       => $o['size']
+                            'value'      => $o['selected'], 'placeholder'=> $o['placeholder'], 'name'       => $id, 'class'      => $o['class'], 'size'       => $o['size']
                        ));
       if ($o['editable']) {
         HTML::label('lineedit', 'edit', array(

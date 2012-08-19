@@ -152,4 +152,11 @@
         $this->_openTag($func, $attr);
       }
     }
+    /**
+     * @return HTML|string
+     */
+    public function __tostring() {
+
+      return $this->setReturn(false);
+    }
   }

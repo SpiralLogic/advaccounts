@@ -1,4 +1,6 @@
 <?php
+  use ADV\Core\DB\DB;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -126,7 +128,7 @@
       $allocs = array(
         ALL_TEXT => _("All Types"), '1'      => _("Sales Invoices"), '2'      => _("Overdue Invoices"), '3'      => _("Payments"), '4'      => _("Credit Notes"), '5'      => _("Delivery Notes"), '6'      => _("Invoices Only")
       );
-      echo Forms::arraySelect($name, $selected, $allocs);
+      echo Forms::arraySelect($name, $selected, $allocs,['class'=>'med']);
       echo "</td>\n";
     }
     /**

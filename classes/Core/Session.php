@@ -27,6 +27,8 @@
    * @method _regenerate()
    * @method _kill()
    * @method _checkUserAgent()
+   * @method _getFlash()
+   * @method _setFlash()
    * @method Session i()
    * @property  string        page_title
    */
