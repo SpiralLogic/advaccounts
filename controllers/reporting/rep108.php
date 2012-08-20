@@ -1,4 +1,6 @@
 <?php
+  use ADV\Core\DB\DB;
+  use ADV\Core\Input\Input;
 
   /* * ********************************************************************
            Copyright (C) Advanced Group PTY LTD
@@ -169,12 +171,12 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
         if (!$inc_payments && $trans['type'] == ST_CUSTPAYMENT) {
           continue;
         }
-        $display_total = Num::_format(abs($trans["TotalAmount"]), $dec);
-        $outstanding   = abs($trans["TotalAmount"] - $trans["Allocated"]);
-        if (!$inc_payments && $outstanding == 0) {
+        $display_total       = Num::_format(abs($trans["TotalAmount"]), $dec);
+        $outstanding         = abs($trans["TotalAmount"] - $trans["Allocated"]);
+        $display_outstanding = Num::_format($outstanding, $dec);
+        if (!$inc_payments && $display_outstanding == 0) {
           continue;
         }
-        $display_outstanding = Num::_format($outstanding, $dec);
         if (!$inc_all || !$inc_payments) {
           $balance += ($trans['type'] == ST_SALESINVOICE) ? $outstanding : -$outstanding;
         } else {

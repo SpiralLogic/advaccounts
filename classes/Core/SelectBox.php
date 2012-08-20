@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
   use User;
   use ADV\Core\DB\DB;
   use ADV\Core\Input\Input;
@@ -53,7 +54,7 @@
      * @var bool
      */
     protected $async = true; // select update via ajax (true) vs _page_body reload
-    protected $class= ''; // select update via ajax (true) vs _page_body reload
+    protected $class = ''; // select update via ajax (true) vs _page_body reload
     // search box parameters
     /**
      * @var null
@@ -143,8 +144,6 @@
     protected $JS;
     /** @var Ajax */
     protected $Ajax;
-
-
     /**
      * @param       $name
      * @param null  $selected_id
@@ -161,11 +160,11 @@
       $this->valfield    = $valfield;
       $this->namefield   = $namefield;
       $this->DB          = DB::i();
-      $this->Input= Input::i();
-      $this->JS= JS::i();
-      $this->Ajax= Ajax::i();
+      $this->Input       = Input::i();
+      $this->JS          = JS::i();
+      $this->Ajax        = Ajax::i();
 
-      $options           = (array) $options;
+      $options = (array) $options;
       foreach ($options as $option => $value) {
         if (property_exists($this, $option)) {
           $this->$option = $value;
@@ -187,9 +186,10 @@
       $search_button = $this->editable ? '_' . $this->name . '_button' : ($search_box ? $search_submit : false);
       $select_submit = $this->select_submit;
       $by_id         = ($this->type == 0);
-      $class         = $this->class.=($by_id ? ' combo' : ' combo2');
-      $disabled      = $this->disabled ? "disabled" : '';
-      $multi         = $this->multi;
+      $class         = $this->class .= ($by_id ? ' combo' : ' combo2');
+
+      $disabled = $this->disabled ? "disabled" : '';
+      $multi    = $this->multi;
       if (!count($this->search)) {
         $this->search = array($by_id ? $this->valfield : $this->namefield);
       }
@@ -198,8 +198,7 @@
       }
       if ($this->box_hint === null) {
         $this->box_hint = $search_box && $search_submit != false ?
-          ($by_id ? _('Enter code fragment to search or * for all') : _('Enter description fragment to search or * for all')) :
-          '';
+          ($by_id ? _('Enter code fragment to search or * for all') : _('Enter description fragment to search or * for all')) : '';
       }
       if ($this->selected_id == null) {
         $this->selected_id = $this->Input->post($this->name, null, (string) $this->default);
@@ -225,7 +224,7 @@
           $this->Ajax->activate($this->name);
         }
       }
-      $search_button_in_post=$this->Input->post($search_button);
+      $search_button_in_post = $this->Input->post($search_button);
       $this->generateSQL($search_box, $search_button, $txt);
       // ------ make selector ----------
       $selector = $first_opt = '';
@@ -244,8 +243,7 @@
           if (in_array((string) $value, $this->selected_id, true)) {
             $sel   = 'selected';
             $found = $value;
-            $edit  = $this->editable && $row['editable'] && ($this->Input->post($search_box) == $value) ? $row[1] :
-              false; // get non-formatted description
+            $edit  = $this->editable && $row['editable'] && ($this->Input->post($search_box) == $value) ? $row[1] : false; // get non-formatted description
             if ($edit) {
               break; // selected field is editable - abandon list construction
             }
@@ -288,7 +286,7 @@
         $this->selected_id = array($first_id);
       }
       $_POST[$this->name] = $multi ? $this->selected_id : $this->selected_id[0];
-      $selector           = "<select id='".str_replace(['[', ']'], ['.', ''], $this->name)."' " . ($multi ? "multiple" : '') . ($this->height !== false ?
+      $selector           = "<select id='" . str_replace(['[', ']'], ['.', ''], $this->name) . "' " . ($multi ? "multiple" : '') . ($this->height !== false ?
         ' size="' . $this->height . '"' : '') . "$disabled name='$this->name" . ($multi ? '[]' :
         '') . "' class='$class' title='" . $this->sel_hint . "' " . $this->rel . ">" . $selector . "</select>\n";
       if ($by_id && ($search_box != false || $this->editable)) {
@@ -296,7 +294,11 @@
         if (isset($_POST[$search_box]) && $this->editable && $edit) {
           $selector = "<input type='hidden' name='$this->name' value='" . $_POST[$this->name] . "'>";
           if (isset($row['long_description'])) {
-            $selector .= "<textarea name='{$this->name}_text' cols='{$this->max}' id='".str_replace(['[', ']'], ['.', ''], $this->name)."' " . $this->rel . " rows='2'>{$row['long_description']}</textarea></td>\n";
+            $selector .= "<textarea name='{$this->name}_text' cols='{$this->max}' id='" . str_replace(
+              ['[', ']'],
+              ['.', ''],
+              $this->name
+            ) . "' " . $this->rel . " rows='2'>{$row['long_description']}</textarea></td>\n";
           } else {
             $selector .= "<input type='text' $disabled name='{$this->name}_text' id='{$this->name}_text' size='" . $this->editable . "' maxlength='" . $this->max . "' " . $this->rel . " value='$edit'>\n";
           }
@@ -323,8 +325,8 @@
       // ------ make combo ----------
       $edit_entry = '';
       if ($search_box) {
-        $edit_entry = "<input $disabled type='text' name='$search_box' id='$search_box' size='" . $this->size . "' maxlength='" . $this->max . "' value='$txt' class='$class' rel='$this->name' autocomplete='off' title='" . $this->box_hint . "'" . (!User::fallback() && !$by_id ?
-          " style=display:none;" : '') . ">\n";
+        $edit_entry = "<input $disabled type='text' name='$search_box' id='$search_box' size='" . $this->size . "' maxlength='" . $this->max . "' value='$txt' class='$class' rel='$this->name' autocomplete='off' title='" . $this->box_hint . "'" . (!User::fallback(
+        ) && !$by_id ? " style=display:none;" : '') . ">\n";
         if ($search_submit != false || $this->editable) {
           $edit_entry .= "<input $disabled type='submit' class='combo_submit' style='" . (User::fallback() ? '' :
             'display:none;') . "' data-aspect='fallback' name='" . ($search_submit ? $search_submit : "_{$this->name}_button") . "'

@@ -30,7 +30,7 @@ function _set_combo_input(e) {
       JsHttpRequest.request(button);
     }
     else {
-      if (this.className == 'combo2') {
+      if ($(this).is('.combo2')) {
         this.style.display = 'none';
         select.style.display = 'inline';
         Adv.Forms.setFocus(select);
@@ -42,7 +42,7 @@ function _set_combo_input(e) {
     var select = document.getElementsByName(this.getAttribute('rel'))[0];
     if (select && select.selectedIndex >= 0) {
       var len = select.length;
-      var byid = this.className == 'combo';
+      var byid = $(this).is('.combo');
       var ac = this.value.toUpperCase();
       select.options[select.selectedIndex].selected = false;
       for (i = 0; i < len; i++) {
@@ -64,7 +64,7 @@ function _set_combo_input(e) {
   }
 }
 function _update_box(s) {
-  var byid = s.className == 'combo';
+  var byid = $(s).is('.combo');
   var rel = s.getAttribute('rel');
   var box = document.getElementsByName(rel)[0];
   if (box && s.selectedIndex >= 0) {
@@ -86,14 +86,14 @@ function _set_combo_select(e) {
     var box = document.getElementsByName(this.getAttribute('rel'))[0];
 //			if(this.className=='combo')
 //			    _update_box(this);
-    if ((this.selectedIndex != this.getAttribute('_last')) || (this.className == 'combo' && _update_box(this))) {
+    if ((this.selectedIndex != this.getAttribute('_last')) || ($(this).is('.combo') && _update_box(this))) {
       this.onchange();
     }
   }
   e.onchange = function () {
     var s = this;
     this.setAttribute('_last', this.selectedIndex);
-    if (s.className == 'combo') {
+    if ($(s).is('.combo')) {
       _update_box(s);
     }
     if (s.selectedIndex >= 0) {
@@ -109,7 +109,7 @@ function _set_combo_select(e) {
     event = event || window.event;
     key = event.keyCode || event.which;
     var box = document.getElementsByName(this.getAttribute('rel'))[0];
-    if (box && key == 32 && this.className == 'combo2') {
+    if (box && key == 32 && $(this).is('.combo2')) {
       this.style.display = 'none';
       box.style.display = 'inline';
       box.value = '';
@@ -144,12 +144,12 @@ var inserts = {
     if (e.onfocus == undefined) {
       e.onfocus = function () {
         save_focus(this);
-        if (this.className == 'combo') {
+        if ($(this).is('.combo')) {
           this.select();
         }
       };
     }
-    if (e.className == 'combo' || e.className == 'combo2') {
+    if ($(e).is('.combo,.combo2')) {
       _set_combo_input(e);
     }
     else {
@@ -158,7 +158,7 @@ var inserts = {
           ev = ev || window.event;
           key = ev.keyCode || ev.which;
           if (key == 13) {
-            if (e.className == 'searchbox') {
+            if ($(e).is('.searchbox')) {
               e.onblur();
             }
             return false;
@@ -251,8 +251,7 @@ var inserts = {
       e.onfocus = function () {
         save_focus(this);
       };
-      var c = e.className;
-      if (c == 'combo' || c == 'combo2') {
+      if ($(e).is('.combo,.combo2')) {
         _set_combo_select(e);
       }
     }
