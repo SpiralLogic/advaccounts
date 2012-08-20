@@ -17,11 +17,11 @@
     /**
      * @var array
      */
-    protected $_status = [];
+    protected $status = [];
     /**
      * @var array
      */
-    protected $_errors = [];
+    protected $errors = [];
     const SUCCESS = E_SUCCESS;
     const INFO    = E_USER_NOTICE;
     const WARNING = E_USER_WARNING;
@@ -66,9 +66,9 @@
           $newstatus['var'] = $var;
         }
       }
-      $this->_status[] = $newstatus;
+      $this->status[] = $newstatus;
       if ($status == self::ERROR) {
-        $this->_errors[] = $newstatus;
+        $this->errors[] = $newstatus;
       }
       return !($status == self::ERROR);
     }
@@ -82,18 +82,18 @@
       if ($error_only && $status['status'] != self::ERROR) {
         return true;
       }
-      $this->_status[] = $status;
+      $this->status[] = $status;
       return false;
     }
     /**
      * @return array
      */
     public function get() {
-      if (!empty($this->_errors)) {
-        return end($this->_errors);
+      if (!empty($this->errors)) {
+        return end($this->errors);
       }
-      if (!empty($this->_status)) {
-        return end($this->_status);
+      if (!empty($this->status)) {
+        return end($this->status);
       }
       return false;
     }
@@ -101,8 +101,8 @@
      * @return bool|mixed
      */
     public function hasError() {
-      if (!empty($this->_errors)) {
-        return end($this->_errors);
+      if (!empty($this->errors)) {
+        return end($this->errors);
       }
       return false;
     }
@@ -110,7 +110,7 @@
      * @return array
      */
     public function getAll() {
-      return $this->_status;
+      return $this->status;
     }
     /**
      * @return string

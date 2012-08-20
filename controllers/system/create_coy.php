@@ -43,7 +43,7 @@
 
       return false;
     }
-    foreach (Config::getAll('db') as $id => $con) {
+    foreach (Config::_getAll('db') as $id => $con) {
       if ($id != $selected_id && $_POST['host'] == $con['host'] && $_POST['dbname'] == $con['dbname']
       ) {
       }
@@ -59,25 +59,25 @@
    */
   function handle_submit(&$selected_id)
   {
-    $comp_subdirs = Config::get('company_subdirs');
+    $comp_subdirs = Config::_get('company_subdirs');
     $error        = false;
     if (!check_data($selected_id)) {
       return false;
     }
     $id                          = $_GET['id'];
-    $connections                 = Config::getAll('db');
+    $connections                 = Config::_getAll('db');
     $new                         = !isset($connections[$id]);
     $db_connection['name']       = $_POST['name'];
     $db_connection['host']       = $_POST['host'];
     $db_connection['dbuser']     = $_POST['dbuser'];
     $db_connection['dbpassword'] = $_POST['dbpassword'];
     $db_connection['dbname']     = $_POST['dbname'];
-    Config::set($id, $db_connection, 'db');
+    Config::_set($id, $db_connection, 'db');
     if ((bool) $_POST['def'] == true) {
-      Config::set('default.company', $id);
+      Config::_set('default.company', $id);
     }
     if (isset($_GET['ul']) && $_GET['ul'] == 1) {
-      $conn = Config::get('db.' . $id);
+      $conn = Config::_get('db.' . $id);
       if (($db = Utils::create($conn)) == 0) {
         Event::error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
         $error = true;
@@ -89,7 +89,7 @@
             $error = true;
           } else {
             if (isset($_POST['admpassword']) && $_POST['admpassword'] != "") {
-              DB::query("UPDATE users set password = '" . md5($_POST['admpassword']) . "' WHERE user_id = 'admin'");
+              DB::_query("UPDATE users set password = '" . md5($_POST['admpassword']) . "' WHERE user_id = 'admin'");
             }
           }
         } else {
@@ -104,16 +104,16 @@
       }
     } else {
       if ($_GET['c'] = 'u') {
-        $conn = Config::get('db.' . $id);
+        $conn = Config::_get('db.' . $id);
         if (($db = Utils::create($conn)) == 0) {
           Event::error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
         } elseif ($_POST['admpassword'] != "") {
-          DB::query("UPDATE users set password = '" . md5($_POST['admpassword']) . "' WHERE user_id = 'admin'");
+          DB::_query("UPDATE users set password = '" . md5($_POST['admpassword']) . "' WHERE user_id = 'admin'");
         }
       }
     }
     if ($new) {
-      create_comp_dirs(COMPANY_PATH . "$id", $comp_subdirs = Config::get('company_subdirs'));
+      create_comp_dirs(COMPANY_PATH . "$id", $comp_subdirs = Config::_get('company_subdirs'));
     }
     $exts = DB_Company::get_company_extensions();
     advaccounting::write_extensions($exts, $id);
@@ -127,7 +127,7 @@
     $id = $_GET['id'];
     // First make sure all company directories from the one under removal are writable.
     // Without this after operation we end up with changed per-company owners!
-    for ($i = $id; $i < count(Config::getAll('db')); $i++) {
+    for ($i = $id; $i < count(Config::_getAll('db')); $i++) {
       if (!is_dir(COMPANY_PATH . DS . $i) || !is_writable(COMPANY_PATH . DS . $i)) {
         Event::error(_('Broken company subdirectories system. You have to remove this company manually.'));
 
@@ -146,7 +146,7 @@
       return;
     }
     // 'shift' company directories names
-    for ($i = $id + 1; $i < count(Config::getAll('db')); $i++) {
+    for ($i = $id + 1; $i < count(Config::_getAll('db')); $i++) {
       if (!rename(COMPANY_PATH . DS . $i, COMPANY_PATH . DS . ($i - 1))) {
         Event::error(_("Cannot rename company subdirectory"));
 
@@ -157,8 +157,8 @@
     if ($err == 0) {
       Event::error(_("Error removing Database: ") . _(", please remove it manually"));
     }
-    if (Config::get('default.company') == $id) {
-      Config::set('default.company', 1);
+    if (Config::_get('default.company') == $id) {
+      Config::_set('default.company', 1);
     }
     // finally remove renamed company directory
     @Files::flushDir($tmpname, true);
@@ -189,10 +189,10 @@
     );
     Table::header($th);
     $k    = 0;
-    $conn = Config::getAll('db');
+    $conn = Config::_getAll('db');
     $n    = count($conn);
     for ($i = 0; $i < $n; $i++) {
-      if ($i == Config::get('default.company')) {
+      if ($i == Config::_get('default.company')) {
         $what = _("Yes");
       } else {
         $what = _("No");
@@ -228,7 +228,7 @@
     if ($selected_id != -1) {
       $n = $selected_id;
     } else {
-      $n = count(Config::getAll('db'));
+      $n = count(Config::_getAll('db'));
     }
     Forms::start(true);
     echo "
@@ -245,13 +245,13 @@
             </script>";
     Table::start('tablestyle2');
     if ($selected_id != -1) {
-      $conn                = Config::get('db.' . $selected_id);
+      $conn                = Config::_get('db.' . $selected_id);
       $_POST['name']       = $conn['name'];
       $_POST['host']       = $conn['host'];
       $_POST['dbuser']     = $conn['dbuser'];
       $_POST['dbpassword'] = $conn['dbpassword'];
       $_POST['dbname']     = $conn['dbname'];
-      if ($selected_id == Config::get('default.company')) {
+      if ($selected_id == Config::_get('default.company')) {
         $_POST['def'] = true;
       } else {
         $_POST['def'] = false;

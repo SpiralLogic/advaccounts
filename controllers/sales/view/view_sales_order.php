@@ -8,7 +8,7 @@
      * @link      http://www.advancedgroup.com.au
      **/
 
-    JS::openWindow(950, 600);
+    JS::_openWindow(950, 600);
     if ($_GET['trans_type'] == ST_SALESQUOTE) {
         Page::start(_($help_context = "View Sales Quotation"), SA_SALESTRANSVIEW, true);
     } else {
@@ -61,23 +61,23 @@
         Display::heading(_("Delivery Notes"));
         $th = array(_("#"), _("Ref"), _("Date"), _("Total"));
         Table::header($th);
-        $sql            = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTDELIVERY . " AND order_=" . DB::escape($_GET['trans_no']);
-        $result         = DB::query($sql, "The related delivery notes could not be retreived");
+        $sql            = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTDELIVERY . " AND order_=" . DB::_escape($_GET['trans_no']);
+        $result         = DB::_query($sql, "The related delivery notes could not be retreived");
         $delivery_total = 0;
         $k              = 0;
         $dn_numbers     = [];
-        while ($del_row = DB::fetch($result)) {
+        while ($del_row = DB::_fetch($result)) {
 
             $dn_numbers[] = $del_row["trans_link"];
             $this_total   = $del_row["ov_freight"] + $del_row["ov_amount"] + $del_row["ov_freight_tax"] + $del_row["ov_gst"];
             $delivery_total += $this_total;
             Cell::label(Debtor::viewTrans($del_row["type"], $del_row["trans_no"]));
             Cell::label($del_row["reference"]);
-            Cell::label(Dates::sqlToDate($del_row["tran_date"]));
+            Cell::label(Dates::_sqlToDate($del_row["tran_date"]));
             Cell::amount($this_total);
             Row::end();
         }
-        Row::label(null, Num::priceFormat($delivery_total), " ", "colspan=4 class='alignright'");
+        Row::label(null, Num::_priceFormat($delivery_total), " ", "colspan=4 class='alignright'");
         Table::end();
         echo "</td><td class='top'>";
         Table::start('tablestyle grid width90');
@@ -88,21 +88,21 @@
         $invoices_total = 0;
         if (count($dn_numbers)) {
             $sql    = "SELECT * FROM debtor_trans WHERE type=" . ST_SALESINVOICE . " AND trans_no IN(" . implode(',', array_values($dn_numbers)) . ")";
-            $result = DB::query($sql, "The related invoices could not be retreived");
+            $result = DB::_query($sql, "The related invoices could not be retreived");
             $k      = 0;
-            while ($inv_row = DB::fetch($result)) {
+            while ($inv_row = DB::_fetch($result)) {
 
                 $this_total = $inv_row["ov_freight"] + $inv_row["ov_freight_tax"] + $inv_row["ov_gst"] + $inv_row["ov_amount"];
                 $invoices_total += $this_total;
                 $inv_numbers[] = $inv_row["trans_no"];
                 Cell::label(Debtor::viewTrans($inv_row["type"], $inv_row["trans_no"]));
                 Cell::label($inv_row["reference"]);
-                Cell::label(Dates::sqlToDate($inv_row["tran_date"]));
+                Cell::label(Dates::_sqlToDate($inv_row["tran_date"]));
                 Cell::amount($this_total);
                 Row::end();
             }
         }
-        Row::label(null, Num::priceFormat($invoices_total), " ", "colspan=4 class='alignright'");
+        Row::label(null, Num::_priceFormat($invoices_total), " ", "colspan=4 class='alignright'");
         Table::end();
         echo "</td><td class='top'>";
         Table::start('tablestyle grid width90');
@@ -115,20 +115,20 @@
                 ',',
                 array_values($inv_numbers)
             ) . ")";
-            $result = DB::query($sql, "The related payments could not be retreived");
+            $result = DB::_query($sql, "The related payments could not be retreived");
             $k      = 0;
-            while ($payment_row = DB::fetch($result)) {
+            while ($payment_row = DB::_fetch($result)) {
 
                 $this_total = $payment_row["amt"];
                 $payments_total += $this_total;
                 Cell::label(Debtor::viewTrans($payment_row["trans_type_from"], $payment_row["trans_no_from"]));
                 Cell::label($payment_row["reference"]);
-                Cell::label(Dates::sqlToDate($payment_row["date_alloc"]));
+                Cell::label(Dates::_sqlToDate($payment_row["date_alloc"]));
                 Cell::amount($this_total);
                 Row::end();
             }
         }
-        Row::label(null, Num::priceFormat($payments_total), " ", "colspan=4 class='alignright'");
+        Row::label(null, Num::_priceFormat($payments_total), " ", "colspan=4 class='alignright'");
         Table::end();
         echo "</td><td class='top'>";
         Table::start('tablestyle grid width90');
@@ -140,20 +140,20 @@
             // FIXME - credit notes retrieved here should be those linked to invoices containing
             // at least one line from this order
             $sql    = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTCREDIT . " AND trans_link IN(" . implode(',', array_values($inv_numbers)) . ")";
-            $result = DB::query($sql, "The related credit notes could not be retreived");
+            $result = DB::_query($sql, "The related credit notes could not be retreived");
             $k      = 0;
-            while ($credits_row = DB::fetch($result)) {
+            while ($credits_row = DB::_fetch($result)) {
 
                 $this_total = $credits_row["ov_freight"] + $credits_row["ov_freight_tax"] + $credits_row["ov_gst"] + $credits_row["ov_amount"];
                 $credits_total += $this_total;
                 Cell::label(Debtor::viewTrans($credits_row["type"], $credits_row["trans_no"]));
                 Cell::label($credits_row["reference"]);
-                Cell::label(Dates::sqlToDate($credits_row["tran_date"]));
+                Cell::label(Dates::_sqlToDate($credits_row["tran_date"]));
                 Cell::amount(-$this_total);
                 Row::end();
             }
         }
-        Row::label(null, "<font color=red>" . Num::priceFormat(-$credits_total) . "</font>", " ", "colspan=4 class='alignright'");
+        Row::label(null, "<font color=red>" . Num::_priceFormat(-$credits_total) . "</font>", " ", "colspan=4 class='alignright'");
         Table::end();
         echo "</td></tr>";
         Table::end();
@@ -177,7 +177,7 @@
     Table::header($th);
     $k = 0; //row colour counter
     foreach ($_SESSION['View']->line_items as $stock_item) {
-        $line_total = Num::round($stock_item->quantity * $stock_item->price * (1 - $stock_item->discount_percent), User::price_dec());
+        $line_total = Num::_round($stock_item->quantity * $stock_item->price * (1 - $stock_item->discount_percent), User::price_dec());
 
         Cell::label($stock_item->stock_id);
         Cell::label($stock_item->description);
@@ -200,19 +200,19 @@
         )
     );
     $items_total   = $_SESSION['View']->get_items_total();
-    Row::label(_("Shipping"), Num::priceFormat($_SESSION['View']->freight_cost), "class='alignright' colspan=6", ' class="alignright nowrap"', 1);
+    Row::label(_("Shipping"), Num::_priceFormat($_SESSION['View']->freight_cost), "class='alignright' colspan=6", ' class="alignright nowrap"', 1);
     $taxes = $view->get_taxes_for_order();
     foreach ($taxes as $tax) {
         $display_total += $tax['Value'];
-        Row::label(_("Tax: " . $tax['tax_type_name']), Num::priceFormat($tax['Value']), "class='alignright' colspan=6", ' class="alignright nowrap"', 1);
+        Row::label(_("Tax: " . $tax['tax_type_name']), Num::_priceFormat($tax['Value']), "class='alignright' colspan=6", ' class="alignright nowrap"', 1);
     }
-    $display_total = Num::priceFormat($items_total + $_SESSION['View']->freight_cost);
+    $display_total = Num::_priceFormat($items_total + $_SESSION['View']->freight_cost);
     Row::label(_("Total Order Value"), $display_total, "class='alignright' colspan=6", ' class="alignright nowrap"', 1);
     Table::end(2);
-    if (Input::get('frame')) {
+    if (Input::_get('frame')) {
         return;
     }
-    if (Input::get('trans_type') == ST_SALESORDER) {
+    if (Input::_get('trans_type') == ST_SALESORDER) {
         Display::submenu_option(_("Clone This Order"), "/sales/sales_order_entry.php?CloneOrder={$_GET['trans_no']}' target='_top' ");
         Display::submenu_option(_('Edit Order'), "/sales/sales_order_entry.php?" . Orders::UPDATE . "=" . $_GET['trans_no'] . "&type=" . ST_SALESORDER . "' target='_top' ");
         Display::submenu_print(_("&Print Order"), ST_SALESORDER, $_GET['trans_no'], 'prtopt');
@@ -223,11 +223,11 @@
             Display::submenu_option(_("Invoice Items On This Order"), "/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}' target='_top' ");
         }
         Display::submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?" . Orders::ADD . "=0&type=30' target='_top' ");
-    } elseif (Input::get('trans_type') == ST_SALESQUOTE) {
+    } elseif (Input::_get('trans_type') == ST_SALESQUOTE) {
         Display::submenu_option(_('Edit Quote'), "/sales/sales_order_entry.php?" . Orders::UPDATE . "=" . $_GET['trans_no'] . "&type=" . ST_SALESQUOTE . "' target='_top' ");
         Display::submenu_print(_("&Print Quote"), ST_SALESQUOTE, $_GET['trans_no'], 'prtopt');
         Display::submenu_print(_("Print Proforma Invoice"), ST_PROFORMAQ, $_GET['trans_no'], 'prtopt');
-        Display::submenu_option(_("Make &Order from This Quote"), "/sales/sales_order_entry.php?" . Orders::QUOTE_TO_ORDER . '=' . Input::get('trans_no') . "' target='_top' ");
+        Display::submenu_option(_("Make &Order from This Quote"), "/sales/sales_order_entry.php?" . Orders::QUOTE_TO_ORDER . '=' . Input::_get('trans_no') . "' target='_top' ");
         Display::submenu_option(_("&New Quote"), "/sales/sales_order_entry.php?" . Orders::ADD . "=0&type=" . ST_SALESQUOTE . "' target='_top' ");
     }
     //UploadHandler::insert($_GET['trans_no']);

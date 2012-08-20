@@ -17,7 +17,7 @@
     protected $trans;
     protected $creditor_id;
     protected function before() {
-      $this->JS->_openWindow(900, 500);
+      $this->JS->openWindow(900, 500);
       Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
       $this->trans             = Creditor_Trans::i();
       $this->trans->is_invoice = false;
@@ -30,7 +30,7 @@
       if (isset($_GET['New']) && isset($_GET['invoice_no'])) {
         $this->trans->supplier_reference = $_POST['invoice_no'] = $_GET['invoice_no'];
       }
-      $this->creditor_id = $this->trans->creditor_id ? : Input::getPost('creditor_id', Input::NUMERIC, null);
+      $this->creditor_id = $this->trans->creditor_id ? : Input::_getPost('creditor_id', Input::NUMERIC, null);
       if (isset($_POST['AddGLCodeToTrans'])) {
         $this->addGlCodeToTrans();
       }
@@ -43,20 +43,20 @@
       $id = Forms::findPostPrefix('grn_item_id');
       if ($id != -1) {
         $this->commitItemData($id);
-        Ajax::activate('grn_items');
-        Ajax::activate('inv_tot');
+        Ajax::_activate('grn_items');
+        Ajax::_activate('inv_tot');
       }
       if (isset($_POST['InvGRNAll'])) {
         $this->invGrnAll();
       }
-      if (Input::post('PONumber')) {
-        $this->Ajax->_activate('grn_items');
-        $this->Ajax->_activate('inv_tot');
+      if (Input::_post('PONumber')) {
+        $this->Ajax->activate('grn_items');
+        $this->Ajax->activate('inv_tot');
       }
       $this->checkDelete();
       if (isset($_POST['RefreshInquiry'])) {
-        Ajax::activate('grn_items');
-        Ajax::activate('inv_tot');
+        Ajax::_activate('grn_items');
+        Ajax::_activate('inv_tot');
       }
       if (isset($_POST['go'])) {
         $this->go();
@@ -76,8 +76,8 @@
         Purch_Invoice::totals($this->trans);
         Display::div_end();
       }
-      if (Input::post('AddGLCodeToTrans')) {
-        Ajax::activate('inv_tot');
+      if (Input::_post('AddGLCodeToTrans')) {
+        Ajax::_activate('inv_tot');
       }
       Display::br();
       Forms::submitCenterBegin('Cancel', _("Cancel Invoice"));
@@ -124,7 +124,7 @@
             Adv.Forms.priceFormat(invTotal.attr('id'),total+ChgTax+ChgTotal,2,true); }
         }});
 JS;
-      $this->JS->_onload($js);
+      $this->JS->onload($js);
     }
     protected function pageComplete() {
       $invoice_no = $_GET[ADDED_ID];
@@ -138,26 +138,26 @@ JS;
       Page::footer_exit();
     }
     protected function go() {
-      Ajax::activate('gl_items');
+      Ajax::_activate('gl_items');
       GL_QuickEntry::show_menu($this->trans, $_POST['qid'], Validation::input_num('total_amount'), QE_SUPPINV);
-      $_POST['total_amount'] = Num::priceFormat(0);
-      Ajax::activate('total_amount');
-      Ajax::activate('inv_tot');
+      $_POST['total_amount'] = Num::_priceFormat(0);
+      Ajax::_activate('total_amount');
+      Ajax::_activate('inv_tot');
     }
     protected function checkDelete() {
       $id3 = Forms::findPostPrefix(MODE_DELETE);
       if ($id3 != -1) {
         $this->trans->remove_grn_from_trans($id3);
-        Ajax::activate('grn_items');
-        Ajax::activate('inv_tot');
+        Ajax::_activate('grn_items');
+        Ajax::_activate('inv_tot');
       }
       $id4 = Forms::findPostPrefix('Delete2');
       if ($id4 != -1) {
         $this->trans->remove_gl_codes_from_trans($id4);
         unset($_POST['gl_code'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_'], $_POST['AddGLCodeToTrans']);
-        $this->JS->_setFocus('gl_code');
-        Ajax::activate('gl_items');
-        Ajax::activate('inv_tot');
+        $this->JS->setFocus('gl_code');
+        Ajax::_activate('gl_items');
+        Ajax::_activate('inv_tot');
       }
     }
     protected function invGrnAll() {
@@ -168,7 +168,7 @@ JS;
           $this->commitItemData($id);
         }
       }
-      $this->Ajax->_activate('_page_body');
+      $this->Ajax->activate('_page_body');
     }
     protected function postCredit() {
       Purch_Invoice::copy_to_trans($this->trans);
@@ -185,37 +185,37 @@ JS;
       Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$invoice_no");
     }
     protected function addGlCodeToTrans() {
-      Ajax::activate('gl_items');
+      Ajax::_activate('gl_items');
       $input_error = false;
-      $sql         = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DB::escape($_POST['gl_code']);
-      $result      = DB::query($sql, "get account information");
-      if (DB::numRows($result) == 0) {
+      $sql         = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DB::_escape($_POST['gl_code']);
+      $result      = DB::_query($sql, "get account information");
+      if (DB::_numRows($result) == 0) {
         Event::error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
-        $this->JS->_setFocus('gl_code');
+        $this->JS->setFocus('gl_code');
         $input_error = true;
       } else {
-        $myrow       = DB::fetchRow($result);
+        $myrow       = DB::_fetchRow($result);
         $gl_act_name = $myrow[1];
         if (!Validation::post_num('amount')) {
           Event::error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
-          $this->JS->_setFocus('amount');
+          $this->JS->setFocus('amount');
           $input_error = true;
         }
       }
-      if (!Tax_Types::is_tax_gl_unique(Input::post('gl_code'))) {
+      if (!Tax_Types::is_tax_gl_unique(Input::_post('gl_code'))) {
         Event::error(_("Cannot post to GL account used by more than one tax type."));
-        $this->JS->_setFocus('gl_code');
+        $this->JS->setFocus('gl_code');
         $input_error = true;
       }
       if ($input_error == false) {
         $this->trans->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, $_POST['dimension_id'], $_POST['dimension2_id'], Validation::input_num('amount'), $_POST['memo_']);
-        $this->JS->_setFocus('gl_code');
+        $this->JS->setFocus('gl_code');
       }
     }
     protected function clearFields() {
       unset($_POST['gl_code'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_'], $_POST['AddGLCodeToTrans']);
-      Ajax::activate('gl_items');
-      $this->JS->_setFocus('gl_code');
+      Ajax::_activate('gl_items');
+      $this->JS->setFocus('gl_code');
     }
     /**
      * @return bool
@@ -224,13 +224,13 @@ JS;
       global $total_grn_value, $total_gl_value;
       if (!$this->trans->is_valid_trans_to_post()) {
         Event::error(_("The credit note cannot be processed because the there are no items or values on the invoice. Credit notes are expected to have a charge."));
-        $this->JS->_setFocus('');
+        $this->JS->setFocus('');
 
         return false;
       }
       if (!Ref::is_valid($this->trans->reference)) {
         Event::error(_("You must enter an credit note reference."));
-        $this->JS->_setFocus('reference');
+        $this->JS->setFocus('reference');
 
         return false;
       }
@@ -239,24 +239,24 @@ JS;
       }
       if (!Ref::is_valid($this->trans->supplier_reference)) {
         Event::error(_("You must enter a supplier's credit note reference."));
-        $this->JS->_setFocus('supplier_reference');
+        $this->JS->setFocus('supplier_reference');
 
         return false;
       }
-      if (!Dates::isDate($this->trans->tran_date)) {
+      if (!Dates::_isDate($this->trans->tran_date)) {
         Event::error(_("The credit note as entered cannot be processed because the date entered is not valid."));
-        $this->JS->_setFocus('tran_date');
+        $this->JS->setFocus('tran_date');
 
         return false;
-      } elseif (!Dates::isDateInFiscalYear($this->trans->tran_date)) {
+      } elseif (!Dates::_isDateInFiscalYear($this->trans->tran_date)) {
         Event::error(_("The entered date is not in fiscal year."));
-        $this->JS->_setFocus('tran_date');
+        $this->JS->setFocus('tran_date');
 
         return false;
       }
-      if (!Dates::isDate($this->trans->due_date)) {
+      if (!Dates::_isDate($this->trans->due_date)) {
         Event::error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
-        $this->JS->_setFocus('due_date');
+        $this->JS->setFocus('due_date');
 
         return false;
       }
@@ -281,13 +281,13 @@ JS;
     protected function checkItemData($n) {
       if (!Validation::post_num('this_quantityCredited' . $n, 0)) {
         Event::error(_("The quantity to credit must be numeric and greater than zero."));
-        $this->JS->_setFocus('this_quantityCredited' . $n);
+        $this->JS->setFocus('this_quantityCredited' . $n);
 
         return false;
       }
       if (!Validation::post_num('ChgPrice' . $n, 0)) {
         Event::error(_("The price is either not numeric or negative."));
-        $this->JS->_setFocus('ChgPrice' . $n);
+        $this->JS->setFocus('ChgPrice' . $n);
 
         return false;
       }
@@ -302,7 +302,7 @@ JS;
       unset($_POST['supplier']);
       Creditor_Trans::killInstance();
       $this->trans = Creditor_Trans::i(true);
-      $this->Ajax->_activate('_page_body');
+      $this->Ajax->activate('_page_body');
     }
     /**
      * @param $n

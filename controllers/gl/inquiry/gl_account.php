@@ -8,13 +8,13 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::setFocus('account');
-  JS::openWindow(950, 500);
+  JS::_setFocus('account');
+  JS::_openWindow(950, 500);
   Page::start(_($help_context = "General Ledger Inquiry"), SA_GLTRANSVIEW);
   // Ajax updates
   //
-  if (Input::post('Show')) {
-    Ajax::activate('trans_tbl');
+  if (Input::_post('Show')) {
+    Ajax::_activate('trans_tbl');
   }
   if (isset($_GET["account"])) {
     $_POST["account"] = $_GET["account"];
@@ -38,15 +38,15 @@
     $_POST["amount_max"] = $_GET["amount_max"];
   }
   if (!isset($_POST["amount_min"])) {
-    $_POST["amount_min"] = Num::priceFormat(0);
+    $_POST["amount_min"] = Num::_priceFormat(0);
   }
   if (!isset($_POST["amount_max"])) {
-    $_POST["amount_max"] = Num::priceFormat(0);
+    $_POST["amount_max"] = Num::_priceFormat(0);
   }
 
   gl_inquiry_controls();
   Display::div_start('trans_tbl');
-  if (Input::post('Show') || Input::post('account')) {
+  if (Input::_post('Show') || Input::_post('account')) {
     show_results();
   }
   Display::div_end();
@@ -127,11 +127,11 @@
     if ($_POST["account"] != null && GL_Account::is_balancesheet($_POST["account"])) {
       $begin = "";
     } else {
-      $begin = Dates::beginFiscalYear();
-      if (Dates::isGreaterThan($begin, $_POST['TransFromDate'])) {
+      $begin = Dates::_beginFiscalYear();
+      if (Dates::_isGreaterThan($begin, $_POST['TransFromDate'])) {
         $begin = $_POST['TransFromDate'];
       }
-      $begin = Dates::addDays($begin, -1);
+      $begin = Dates::_addDays($begin, -1);
     }
     $bfw = 0;
     if ($show_balances) {
@@ -146,10 +146,10 @@
     $running_total = $bfw;
     $j             = 1;
     $k             = 0; //row colour counter
-    while ($myrow = DB::fetch($result)) {
+    while ($myrow = DB::_fetch($result)) {
 
       $running_total += $myrow["amount"];
-      $trandate = Dates::sqlToDate($myrow["tran_date"]);
+      $trandate = Dates::_sqlToDate($myrow["tran_date"]);
       Cell::label($systypes_array[$myrow["type"]]);
       Cell::label(GL_UI::view($myrow["type"], $myrow["type_no"], $myrow["type_no"], true));
       Cell::label($trandate);
@@ -185,7 +185,7 @@
       Row::end();
     }
     Table::end(2);
-    if (DB::numRows($result) == 0) {
+    if (DB::_numRows($result) == 0) {
       Event::warning(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
     }
   }

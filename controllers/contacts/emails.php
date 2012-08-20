@@ -12,7 +12,7 @@
     exit();
   }
   $content = false;
-  if (Input::hasPost('type', 'id')) {
+  if (Input::_hasPost('type', 'id')) {
     if ($_POST['type'] == CT_CUSTOMER) {
       $content = Debtor::getEmailDialogue($_POST['id']);
     } elseif ($_POST['type'] == CT_SUPPLIER) {
@@ -24,4 +24,4 @@
       echo $content;
     }
   }
-  JS::render();
+  JS::_render();

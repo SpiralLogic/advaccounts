@@ -19,9 +19,9 @@
      * @return mixed
      */
     public static function get_name($group_no) {
-      $sql = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);
-      $result = DB::query($sql, "could not get group");
-      $row = DB::fetch($result);
+      $sql = "SELECT description FROM groups WHERE id = " . DB::_escape($group_no);
+      $result = DB::_query($sql, "could not get group");
+      $row = DB::_fetch($result);
       return $row[0];
   }
   }

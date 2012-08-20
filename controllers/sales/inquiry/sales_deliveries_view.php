@@ -21,7 +21,7 @@
     public $debtor_id;
     public $stock_id;
     protected function before() {
-      JS::openWindow(950, 600);
+      JS::_openWindow(950, 600);
       if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true)) {
         $_POST['OutstandingOnly'] = true;
         $this->setTitle("Search Not Invoiced Deliveries");
@@ -29,21 +29,21 @@
         $_POST['OutstandingOnly'] = false;
         $this->setTitle("Search All Deliveries");
       }
-      $this->debtor_id = Input::getPost('debtor_id', Input::NUMERIC, -1);
-      if (Input::post('_DeliveryNumber_changed')) {
-        $disable = Input::post('DeliveryNumber') !== '';
-        Ajax::addDisable(true, 'DeliveryAfterDate', $disable);
-        Ajax::addDisable(true, 'DeliveryToDate', $disable);
-        Ajax::addDisable(true, 'StockLocation', $disable);
-        Ajax::addDisable(true, '_SelectStockFromList_edit', $disable);
-        Ajax::addDisable(true, 'SelectStockFromList', $disable);
+      $this->debtor_id = $this->Input->getPost('debtor_id', Input::NUMERIC, -1);
+      if ($this->Input->post('_DeliveryNumber_changed')) {
+        $disable = $this->Input->post('DeliveryNumber') !== '';
+        $this->Ajax->addDisable(true, 'DeliveryAfterDate', $disable);
+        $this->Ajax->addDisable(true, 'DeliveryToDate', $disable);
+        $this->Ajax->addDisable(true, 'StockLocation', $disable);
+        $this->Ajax->addDisable(true, '_SelectStockFromList_edit', $disable);
+        $this->Ajax->addDisable(true, 'SelectStockFromList', $disable);
         // if search is not empty rewrite table
         if ($disable) {
-          Ajax::addFocus(true, 'DeliveryNumber');
+          $this->Ajax->addFocus(true, 'DeliveryNumber');
         } else {
-          Ajax::addFocus(true, 'DeliveryAfterDate');
+          $this->Ajax->addFocus(true, 'DeliveryAfterDate');
         }
-        Ajax::activate('deliveries_tbl');
+        $this->Ajax->activate('deliveries_tbl');
       }
       if ($this->Input->post('SelectStockFromList', Input::STRING, '')) {
         $this->stock_id = $_POST['SelectStockFromList'];
@@ -57,12 +57,12 @@
       Forms::start(false, $_SERVER['DOCUMENT_URI'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
       Table::start('tablestyle_noborder');
       Row::start();
-      Debtor::cells(_('Customer:'), 'debtor_id', null, true);
+      Debtor::newselect(null, ['label'=> false, 'row'=> false]);
       Forms::refCellsSearch(_("#:"), 'DeliveryNumber', '', null, '', true);
       Forms::dateCells(_("from:"), 'DeliveryAfterDate', '', null, -30);
       Forms::dateCells(_("to:"), 'DeliveryToDate', '', null, 1);
       Inv_Location::cells(_("Location:"), 'StockLocation', null, true);
-      Item::cells(_("Item:"), 'SelectStockFromList', null, true, false, false, false, false);
+      Item::cells(_(""), 'SelectStockFromList', null, true, false, false, false, false);
       Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
       Forms::hidden('OutstandingOnly');
       Row::end();
@@ -101,19 +101,19 @@
       //figure out the sql required from the inputs available
       if (isset($_POST['DeliveryNumber']) && $_POST['DeliveryNumber'] != "") {
         $delivery = "%" . $_POST['DeliveryNumber'];
-        $sql .= " AND trans.trans_no LIKE " . DB::quote($delivery);
+        $sql .= " AND trans.trans_no LIKE " . DB::_quote($delivery);
         $sql .= " GROUP BY trans.trans_no";
       } else {
-        $sql .= " AND trans.tran_date >= '" . Dates::dateToSql($_POST['DeliveryAfterDate']) . "'";
-        $sql .= " AND trans.tran_date <= '" . Dates::dateToSql($_POST['DeliveryToDate']) . "'";
+        $sql .= " AND trans.tran_date >= '" . Dates::_dateToSql($_POST['DeliveryAfterDate']) . "'";
+        $sql .= " AND trans.tran_date <= '" . Dates::_dateToSql($_POST['DeliveryToDate']) . "'";
         if ($this->debtor_id != -1) {
-          $sql .= " AND trans.debtor_id=" . DB::quote($this->debtor_id) . " ";
+          $sql .= " AND trans.debtor_id=" . DB::_quote($this->debtor_id) . " ";
         }
         if (isset($this->stock_id)) {
-          $sql .= " AND line.stock_id=" . DB::quote($this->stock_id) . " ";
+          $sql .= " AND line.stock_id=" . DB::_quote($this->stock_id) . " ";
         }
         if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
-          $sql .= " AND sorder.from_stk_loc = " . DB::quote($_POST['StockLocation']);
+          $sql .= " AND sorder.from_stk_loc = " . DB::_quote($_POST['StockLocation']);
         }
         $sql .= " GROUP BY trans.trans_no ";
       } //end no delivery number selected
@@ -152,7 +152,7 @@
      * @return bool
      */
     public function formatMarker($row) {
-      return Dates::isGreaterThan(Dates::today(), Dates::sqlToDate($row["due_date"])) && $row["Outstanding"] != 0;
+      return Dates::_isGreaterThan(Dates::_today(), Dates::_sqlToDate($row["due_date"])) && $row["Outstanding"] != 0;
     }
     /**
      * @param $row
@@ -182,7 +182,7 @@
       $selected   = [];
       foreach ($_POST['Sel_'] as $delivery => $branch) {
         $checkbox = 'Sel_' . $delivery;
-        if (Input::hasPost($checkbox)) {
+        if ($this->Input->hasPost($checkbox)) {
           if (!$del_count) {
             $del_branch = $branch;
           } else {

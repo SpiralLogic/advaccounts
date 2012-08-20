@@ -9,8 +9,12 @@
    **/
   namespace ADV\Core;
   use User;
+  use ADV\Core\DB\DB;
   use ADV\Core\Input\Input;
 
+  /**
+
+   */
   class SelectBox
   {
     /**
@@ -49,6 +53,7 @@
      * @var bool
      */
     protected $async = true; // select update via ajax (true) vs _page_body reload
+    protected $class= ''; // select update via ajax (true) vs _page_body reload
     // search box parameters
     /**
      * @var null
@@ -130,6 +135,16 @@
     protected $valfield;
     /** @var */
     protected $namefield;
+    /** @var DB */
+    protected $DB;
+    /** @var Input */
+    protected $Input;
+    /** @var JS */
+    protected $JS;
+    /** @var Ajax */
+    protected $Ajax;
+
+
     /**
      * @param       $name
      * @param null  $selected_id
@@ -145,7 +160,11 @@
       $this->sql         = $sql;
       $this->valfield    = $valfield;
       $this->namefield   = $namefield;
-      $this->DB          = \DB::i();
+      $this->DB          = DB::i();
+      $this->Input= Input::i();
+      $this->JS= JS::i();
+      $this->Ajax= Ajax::i();
+
       $options           = (array) $options;
       foreach ($options as $option => $value) {
         if (property_exists($this, $option)) {
@@ -168,7 +187,7 @@
       $search_button = $this->editable ? '_' . $this->name . '_button' : ($search_box ? $search_submit : false);
       $select_submit = $this->select_submit;
       $by_id         = ($this->type == 0);
-      $class         = $by_id ? 'combo' : 'combo2';
+      $class         = $this->class.=($by_id ? ' combo' : ' combo2');
       $disabled      = $this->disabled ? "disabled" : '';
       $multi         = $this->multi;
       if (!count($this->search)) {
@@ -183,29 +202,30 @@
           '';
       }
       if ($this->selected_id == null) {
-        $this->selected_id = Input::post($this->name, null, (string) $this->default);
+        $this->selected_id = $this->Input->post($this->name, null, (string) $this->default);
       }
       if (!is_array($this->selected_id)) {
         $this->selected_id = array((string) $this->selected_id);
       } // code is generalized for multiple selection support
-      $txt = Input::post($search_box);
+      $txt = $this->Input->post($search_box);
       if (isset($_POST['_' . $this->name . '_update'])) { // select list or search box change
         if ($by_id) {
           $txt = $_POST[$this->name];
         }
         if (!$this->async) {
-          Ajax::activate('_page_body');
+          $this->Ajax->activate('_page_body');
         } else {
-          Ajax::activate($this->name);
+          $this->Ajax->activate($this->name);
         }
       }
       if (isset($_POST[$search_button])) {
         if (!$this->async) {
-          Ajax::activate('_page_body');
+          $this->Ajax->activate('_page_body');
         } else {
-          Ajax::activate($this->name);
+          $this->Ajax->activate($this->name);
         }
       }
+      $search_button_in_post=$this->Input->post($search_button);
       $this->generateSQL($search_box, $search_button, $txt);
       // ------ make selector ----------
       $selector = $first_opt = '';
@@ -214,17 +234,17 @@
       $lastcat  = null;
       $edit     = false;
       if ($result = $this->executeSQL()) {
-        while ($row = $this->DB->_fetch($result)) {
+        while ($row = $this->DB->fetch($result)) {
           $value = $row[0];
           $descr = $this->format == null ? $row[1] : call_user_func($this->format, $row);
           $sel   = '';
-          if (Input::post($search_button) && ($txt == $value)) {
+          if ($search_button_in_post && ($txt == $value)) {
             $this->selected_id[] = $value;
           }
           if (in_array((string) $value, $this->selected_id, true)) {
             $sel   = 'selected';
             $found = $value;
-            $edit  = $this->editable && $row['editable'] && (Input::post($search_box) == $value) ? $row[1] :
+            $edit  = $this->editable && $row['editable'] && ($this->Input->post($search_box) == $value) ? $row[1] :
               false; // get non-formatted description
             if ($edit) {
               break; // selected field is editable - abandon list construction
@@ -249,7 +269,7 @@
           }
           $selector .= "<option $sel $optclass value='$value'>$descr</option>\n";
         }
-        $this->DB->_freeResult($result);
+        $this->DB->freeResult($result);
       }
       // Prepend special option.
       if ($this->spec_option !== false) { // if special option used - add it
@@ -280,18 +300,18 @@
           } else {
             $selector .= "<input type='text' $disabled name='{$this->name}_text' id='{$this->name}_text' size='" . $this->editable . "' maxlength='" . $this->max . "' " . $this->rel . " value='$edit'>\n";
           }
-          JS::setFocus($this->name . '_text'); // prevent lost focus
+          $this->JS->setFocus($this->name . '_text'); // prevent lost focus
         } else {
-          if (Input::post($search_submit ? $search_submit : "_{$this->name}_button")) {
-            JS::setFocus($this->name);
+          if ($this->Input->post($search_submit ? $search_submit : "_{$this->name}_button")) {
+            $this->JS->setFocus($this->name);
           }
         } // prevent lost focus
         if (!$this->editable) {
           $txt = $found;
         }
-        Ajax::addUpdate($this->name, $search_box, $txt ? $txt : '');
+        $this->Ajax->addUpdate($this->name, $search_box, $txt ? $txt : '');
       }
-      Ajax::addUpdate($this->name, "_{$this->name}_sel", $selector);
+      $this->Ajax->addUpdate($this->name, "_{$this->name}_sel", $selector);
       // span for select list/input field update
       $selector = "<div id='_{$this->name}_sel' class='combodiv'>" . $selector . "</div>\n";
       // if selectable or editable list is used - add select button
@@ -311,7 +331,7 @@
           value=' ' title='" . _("Set filter") . "'> ";
         }
       }
-      JS::defaultFocus(($search_box && $by_id) ? $search_box : $this->name);
+      $this->JS->defaultFocus(($search_box && $by_id) ? $search_box : $this->name);
       if ($search_box && $this->cells) {
         $str = ($edit_entry ? "<td>$edit_entry</td>" : '') . "<td>$selector</td>";
       } else {
@@ -334,16 +354,16 @@
           if (isset($_POST[$search_button])) {
             $this->selected_id = []; // ignore selected_id while search
             if (!$this->async) {
-              Ajax::activate('_page_body');
+              $this->Ajax->activate('_page_body');
             } else {
-              Ajax::activate($this->name);
+              $this->Ajax->activate($this->name);
             }
           }
           if ($txt == '') {
             if ($this->spec_option === false && $this->selected_id == []) {
               $limit = ' LIMIT 1';
             } else {
-              $this->where[] = $this->valfield . "='" . Input::post($this->name, null, $this->spec_id) . "'";
+              $this->where[] = $this->valfield . "='" . $this->Input->post($this->name, null, $this->spec_id) . "'";
             }
           } else {
             if ($txt != '*') {
@@ -354,7 +374,7 @@
                 }
                 $search_fields = $this->search;
                 foreach ($search_fields as $i => $s) {
-                  $search_fields[$i] = $s . ' LIKE ' . $this->DB->_escape("%$text%");
+                  $search_fields[$i] = $s . ' LIKE ' . $this->DB->escape("%$text%");
                 }
                 $this->where[] = '(' . implode($search_fields, ' OR ') . ')';
               }
@@ -386,7 +406,7 @@
      * @return null|PDOStatement
      */
     private function executeSQL() {
-      return $this->DB->_query($this->sql);
+      return $this->DB->query($this->sql);
     }
     /**
      * @param $result
@@ -394,6 +414,6 @@
      * @return \ADV\Core\DB\Query\Result|Array
      */
     private function getNext($result) {
-      return $this->DB->_fetch($result);
+      return $this->DB->fetch($result);
     }
   }

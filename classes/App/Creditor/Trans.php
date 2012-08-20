@@ -249,11 +249,11 @@
          */
         public static function add($type, $creditor_id, $date_, $due_date, $reference, $supplier_reference, $amount, $amount_tax, $discount, $err_msg = "", $rate = 0)
         {
-            $date = Dates::dateToSql($date_);
+            $date = Dates::_dateToSql($date_);
             if ($due_date == "") {
                 $due_date = "0000-00-00";
             } else {
-                $due_date = Dates::dateToSql($due_date);
+                $due_date = Dates::_dateToSql($due_date);
             }
             $trans_no = SysTypes::get_next_trans_no($type);
             $curr     = Bank_Currency::for_creditor($creditor_id);
@@ -263,14 +263,14 @@
             $sql
               = "INSERT INTO creditor_trans (trans_no, type, creditor_id, tran_date, due_date,
 				reference, supplier_reference, ov_amount, ov_gst, rate, ov_discount) ";
-            $sql .= "VALUES (" . DB::escape($trans_no) . ", " . DB::escape($type) . ", " . DB::escape($creditor_id) . ", '$date', '$due_date',
-				" . DB::escape($reference) . ", " . DB::escape($supplier_reference) . ", " . DB::escape($amount) . ", " . DB::escape($amount_tax) . ", " . DB::escape(
+            $sql .= "VALUES (" . DB::_escape($trans_no) . ", " . DB::_escape($type) . ", " . DB::_escape($creditor_id) . ", '$date', '$due_date',
+				" . DB::_escape($reference) . ", " . DB::_escape($supplier_reference) . ", " . DB::_escape($amount) . ", " . DB::_escape($amount_tax) . ", " . DB::_escape(
                 $rate
-            ) . ", " . DB::escape($discount) . ")";
+            ) . ", " . DB::_escape($discount) . ")";
             if ($err_msg == "") {
                 $err_msg = "Cannot insert a supplier transaction record";
             }
-            DB::query($sql, $err_msg);
+            DB::_query($sql, $err_msg);
             DB_AuditTrail::add($type, $trans_no, $date_);
             return $trans_no;
         }
@@ -300,29 +300,29 @@
                 // it's a payment so also get the bank account
                 $sql .= ", bank_trans, bank_accounts";
             }
-            $sql .= " WHERE creditor_trans.trans_no=" . DB::escape($trans_no) . "
+            $sql .= " WHERE creditor_trans.trans_no=" . DB::_escape($trans_no) . "
 				AND creditor_trans.creditor_id=suppliers.creditor_id";
             if ($trans_type > 0) {
-                $sql .= " AND creditor_trans.type=" . DB::escape($trans_type);
+                $sql .= " AND creditor_trans.type=" . DB::_escape($trans_type);
             }
             if ($trans_type == ST_SUPPAYMENT) {
                 // it's a payment so also get the bank account
-                $sql .= " AND bank_trans.trans_no =" . DB::escape($trans_no) . "
-					AND bank_trans.type=" . DB::escape($trans_type) . "
+                $sql .= " AND bank_trans.trans_no =" . DB::_escape($trans_no) . "
+					AND bank_trans.type=" . DB::_escape($trans_type) . "
 					AND bank_accounts.id=bank_trans.bank_act ";
             }
-            $result = DB::query($sql, "Cannot retreive a supplier transaction");
-            if (DB::numRows($result) == 0) {
+            $result = DB::_query($sql, "Cannot retreive a supplier transaction");
+            if (DB::_numRows($result) == 0) {
                 // can't return nothing
                 Event::error("no supplier trans found for given params", $sql, true);
                 exit;
             }
-            if (DB::numRows($result) > 1) {
+            if (DB::_numRows($result) > 1) {
                 // can't return multiple
                 Event::error("duplicate supplier transactions found for given params", $sql, true);
                 exit;
             }
-            return DB::fetch($result);
+            return DB::_fetch($result);
         }
         /**
          * @static
@@ -337,10 +337,10 @@
             if ($type == ST_SUPPRECEIVE) {
                 return Purch_GRN::exists($type_no);
             }
-            $sql    = "SELECT trans_no FROM creditor_trans WHERE type=" . DB::escape($type) . "
-				AND trans_no=" . DB::escape($type_no);
-            $result = DB::query($sql, "Cannot retreive a supplier transaction");
-            return (DB::numRows($result) > 0);
+            $sql    = "SELECT trans_no FROM creditor_trans WHERE type=" . DB::_escape($type) . "
+				AND trans_no=" . DB::_escape($type_no);
+            $result = DB::_query($sql, "Cannot retreive a supplier transaction");
+            return (DB::_numRows($result) > 0);
         }
         /**
          * @static
@@ -352,8 +352,8 @@
         {
             $sql
               = "UPDATE creditor_trans SET ov_amount=0, ov_discount=0, ov_gst=0,
-				alloc=0 WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
-            DB::query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
+				alloc=0 WHERE type=" . DB::_escape($type) . " AND trans_no=" . DB::_escape($type_no);
+            DB::_query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
         }
         /**
          * @static
@@ -431,11 +431,11 @@
         {
             $sql
                     = "SELECT conversion_factor FROM purch_data
-					WHERE creditor_id = " . DB::escape($creditor_id) . "
-					AND stock_id = " . DB::escape($stock_id);
-            $result = DB::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
-            if (DB::numRows($result) == 1) {
-                $myrow = DB::fetch($result);
+					WHERE creditor_id = " . DB::_escape($creditor_id) . "
+					AND stock_id = " . DB::_escape($stock_id);
+            $result = DB::_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
+            if (DB::_numRows($result) == 1) {
+                $myrow = DB::_fetch($result);
                 return $myrow['conversion_factor'];
             } else {
                 return 1;
@@ -451,8 +451,8 @@
         public static function trans_tax_details($tax_items, $columns, $tax_recorded = 0)
         {
             $tax_total = 0;
-            while ($tax_item = DB::fetch($tax_items)) {
-                $tax = Num::format(abs($tax_item['amount']), User::price_dec());
+            while ($tax_item = DB::_fetch($tax_items)) {
+                $tax = Num::_format(abs($tax_item['amount']), User::price_dec());
                 if ($tax_item['included_in_price']) {
                     Row::label(
                         _("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " . _("Amount") . ": $tax",
@@ -465,7 +465,7 @@
                 $tax_total += $tax;
             }
             if ($tax_recorded != 0) {
-                $tax_correction = Num::format($tax_recorded - $tax_total, User::price_dec());
+                $tax_correction = Num::_format($tax_recorded - $tax_total, User::price_dec());
                 Row::label("Tax Correction ", $tax_correction, "colspan=$columns class='alignright'", "class='alignright'");
             }
         }
@@ -476,13 +476,13 @@
          */
         public static function get_duedate_from_terms($creditor_trans)
         {
-            if (!Dates::isDate($creditor_trans->tran_date)) {
-                $creditor_trans->tran_date = Dates::today();
+            if (!Dates::_isDate($creditor_trans->tran_date)) {
+                $creditor_trans->tran_date = Dates::_today();
             }
             if (substr($creditor_trans->terms, 0, 1) == "1") { /*Its a day in the following month when due */
-                $creditor_trans->due_date = Dates::addDays(Dates::endMonth($creditor_trans->tran_date), (int) substr($creditor_trans->terms, 1));
+                $creditor_trans->due_date = Dates::_addDays(Dates::_endMonth($creditor_trans->tran_date), (int) substr($creditor_trans->terms, 1));
             } else { /*Use the Days Before Due to add to the invoice date */
-                $creditor_trans->due_date = Dates::addDays($creditor_trans->tran_date, (int) substr($creditor_trans->terms, 1));
+                $creditor_trans->due_date = Dates::_addDays($creditor_trans->tran_date, (int) substr($creditor_trans->terms, 1));
             }
         }
     } /* end of class defintion */

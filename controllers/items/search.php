@@ -25,5 +25,5 @@
     if (isset($_GET['page'])) {
       $data['page'] = $_GET['page'];
     }
-    JS::renderJSON($data, JSON_NUMERIC_CHECK);
+    JS::_renderJSON($data, JSON_NUMERIC_CHECK);
   }

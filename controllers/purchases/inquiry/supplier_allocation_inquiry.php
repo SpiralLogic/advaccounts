@@ -17,7 +17,7 @@
   class AllocationInquiry extends \ADV\App\Controller\Base
   {
     protected function before() {
-      JS::openWindow(950, 500);
+      $this->JS->openWindow(950, 500);
       if (isset($_GET['creditor_id']) || isset($_GET['id'])) {
         $_POST['creditor_id'] = isset($_GET['id']) ? $_GET['id'] : $_GET['creditor_id'];
       }
@@ -36,17 +36,17 @@
         }
       }
       if (!isset($_POST['creditor_id'])) {
-        $_POST['creditor_id'] = Session::getGlobal('creditor_id');
+        $_POST['creditor_id'] = $this->Session->getGlobal('creditor_id');
       }
-      if (!isset($_POST['TransAfterDate']) && Session::getGlobal('TransAfterDate')) {
-        $_POST['TransAfterDate'] = Session::getGlobal('TransAfterDate');
+      if (!isset($_POST['TransAfterDate']) && $this->Session->getGlobal('TransAfterDate')) {
+        $_POST['TransAfterDate'] = $this->Session->getGlobal('TransAfterDate');
       } elseif (isset($_POST['TransAfterDate'])) {
-        Session::setGlobal('TransAfterDate', $_POST['TransAfterDate']);
+        $this->Session->setGlobal('TransAfterDate', $_POST['TransAfterDate']);
       }
-      if (!isset($_POST['TransToDate']) && Session::getGlobal('TransToDate')) {
-        $_POST['TransToDate'] = Session::getGlobal('TransToDate');
+      if (!isset($_POST['TransToDate']) && $this->Session->getGlobal('TransToDate')) {
+        $_POST['TransToDate'] = $this->Session->getGlobal('TransToDate');
       } elseif (isset($_POST['TransToDate'])) {
-        Session::setGlobal('TransToDate', $_POST['TransToDate']);
+        $this->Session->setGlobal('TransToDate', $_POST['TransToDate']);
       }
     }
     protected function index() {
@@ -54,7 +54,7 @@
       Forms::start(false, '', 'invoiceForm');
       Table::start('tablestyle_noborder');
       Row::start();
-      if (!Input::get('frame')) {
+      if (!$this->Input->get('frame')) {
         Creditor::cells(_("Supplier: "), 'creditor_id', null, true);
       }
       Forms::dateCells(_("From:"), 'TransAfterDate', '', null, -90);
@@ -62,7 +62,7 @@
       Purch_Allocation::row("filterType", null);
       Forms::checkCells(_("Show settled:"), 'showSettled', null);
       Forms::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-      Session::setGlobal('creditor_id', $_POST['creditor_id']);
+      $this->Session->setGlobal('creditor_id', $_POST['creditor_id']);
       Row::end();
       Table::end();
       $this->displayTable();
@@ -71,8 +71,8 @@
       Page::end();
     }
     protected function displayTable() {
-      $date_after = Dates::dateToSql($_POST['TransAfterDate']);
-      $date_to    = Dates::dateToSql($_POST['TransToDate']);
+      $date_after = Dates::_dateToSql($_POST['TransAfterDate']);
+      $date_to    = Dates::_dateToSql($_POST['TransToDate']);
       // Sherifoz 22.06.03 Also get the description
       $sql
         = "SELECT
@@ -87,13 +87,13 @@
             supplier.curr_code,
              (trans.ov_amount + trans.ov_gst + trans.ov_discount) AS TotalAmount,
             trans.alloc AS Allocated,
-            ((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::today(true) . "') AS OverDue
+            ((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::_today(true) . "') AS OverDue
          FROM creditor_trans as trans, suppliers as supplier
          WHERE supplier.creditor_id = trans.creditor_id
          AND trans.tran_date >= '$date_after'
          AND trans.tran_date <= '$date_to'";
       if ($_POST['creditor_id'] != ALL_TEXT) {
-        $sql .= " AND trans.creditor_id = " . DB::quote($_POST['creditor_id']);
+        $sql .= " AND trans.creditor_id = " . DB::_quote($_POST['creditor_id']);
       }
       if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
         if (($_POST['filterType'] == '1') || ($_POST['filterType'] == '2')) {
@@ -104,11 +104,11 @@
           $sql .= " AND trans.type = " . ST_SUPPCREDIT . " ";
         }
         if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) {
-          $today = Dates::today(true);
+          $today = Dates::_today(true);
           $sql .= " AND trans.due_date < '$today' ";
         }
       }
-      if (!Input::hasPost('showSettled')) {
+      if (!$this->Input->hasPost('showSettled')) {
         $sql .= " AND (round(abs(ov_amount + ov_gst + ov_discount) - alloc,6) != 0) ";
       }
       $cols = array(
@@ -211,7 +211,7 @@
     public function formatDebit($row) {
       $value = -$row["TotalAmount"];
 
-      return $value >= 0 ? Num::priceFormat($value) : '';
+      return $value >= 0 ? Num::_priceFormat($value) : '';
     }
     /**
      * @param $row
@@ -221,7 +221,7 @@
     public function formatCredit($row) {
       $value = $row["TotalAmount"];
 
-      return $value > 0 ? Num::priceFormat($value) : '';
+      return $value > 0 ? Num::_priceFormat($value) : '';
     }
   }
 

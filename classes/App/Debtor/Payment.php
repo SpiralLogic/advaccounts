@@ -1,4 +1,6 @@
 <?php
+  use ADV\Core\DB\DB;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -34,13 +36,13 @@
      * @return int
      */
     public static function add($trans_no, $debtor_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0, $tax = 0) {
-      $result = DB::select('trans_no')->from('debtor_trans')->where('debtor_id=', $debtor_id)->andWhere('branch_id=', $branch_id)->andWhere('tran_date=', Dates::dateToSql($date_))->andWhere('type=', ST_CUSTPAYMENT)->andWhere('ov_amount=', $amount)->fetch()->one();
-      if ($result && $result['trans_no']!==Session::getFlash('customer_payment')) {
-        Session::setFlash('customer_payment', $result['trans_no']);
+      $result = DB::_select('trans_no')->from('debtor_trans')->where('debtor_id=', $debtor_id)->andWhere('branch_id=', $branch_id)->andWhere('tran_date=', Dates::_dateToSql($date_))->andWhere('type=', ST_CUSTPAYMENT)->andWhere('ov_amount=', $amount)->fetch()->one();
+      if ($result && $result['trans_no']!==Session::_getFlash('customer_payment')) {
+        Session::_setFlash('customer_payment', $result['trans_no']);
         Event::warning('A payment for same amount and date already exists for this customer, do you want to process anyway?');
         return false;
       }
-      DB::begin();
+      DB::_begin();
       $company_record  = DB_Company::get_prefs();
       $payment_no      = Debtor_Trans::write(ST_CUSTPAYMENT, $trans_no, $debtor_id, $branch_id, $date_, $ref, $amount, $discount, $tax, 0, 0, 0, 0, 0, 0, $date_, 0, $rate);
       $bank_gl_account = Bank_Account::get_gl($bank_account);
@@ -84,7 +86,7 @@
       Bank_Trans::add(ST_CUSTPAYMENT, $payment_no, $bank_account, $ref, $date_, $amount - $charge, PT_CUSTOMER, $debtor_id, Bank_Currency::for_debtor($debtor_id), "", $rate);
       DB_Comments::add(ST_CUSTPAYMENT, $payment_no, $date_, $memo_);
       Ref::save(ST_CUSTPAYMENT, $ref);
-      DB::commit();
+      DB::_commit();
       return $payment_no;
     }
     /**
@@ -94,12 +96,12 @@
      * @param $type_no
      */
     public static function void($type, $type_no) {
-      DB::begin();
+      DB::_begin();
       Bank_Trans::void($type, $type_no, true);
       GL_Trans::void($type, $type_no, true);
       Sales_Allocation::void($type, $type_no);
       Debtor_Trans::void($type, $type_no);
-      DB::commit();
+      DB::_commit();
     }
     /**
      * @static
@@ -109,7 +111,7 @@
      * @param string $parms
      */
     public static function credit_row($customer, $credit, $parms = '') {
-      Row::label(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? ' class="redfg openWindow"' : '') . " href='" . e('/sales/inquiry/customer_inquiry.php?frame=1&debtor_id=' . $customer) . "'>" . Num::priceFormat($credit) . "</a>", $parms);
+      Row::label(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? ' class="redfg openWindow"' : '') . " href='" . e('/sales/inquiry/customer_inquiry.php?frame=1&debtor_id=' . $customer) . "'>" . Num::_priceFormat($credit) . "</a>", $parms);
     }
     /**
      * @static
@@ -126,7 +128,7 @@
       $allocs = array(
         ALL_TEXT => _("All Types"), '1'      => _("Sales Invoices"), '2'      => _("Overdue Invoices"), '3'      => _("Payments"), '4'      => _("Credit Notes"), '5'      => _("Delivery Notes"), '6'      => _("Invoices Only")
       );
-      echo Forms::arraySelect($name, $selected, $allocs);
+      echo Forms::arraySelect($name, $selected, $allocs,['class'=>'med']);
       echo "</td>\n";
     }
     /**
@@ -145,8 +147,8 @@
                   FROM debtors, credit_status
                   WHERE debtors.credit_status = credit_status.id
                       AND debtors.debtor_id = " . $debtor_id;
-        $result = DB::query($sql, "could not query customers");
-        $myrow  = DB::fetch($result);
+        $result = DB::_query($sql, "could not query customers");
+        $myrow  = DB::_fetch($result);
         $type   = ST_CUSTREFUND;
       }
       $_POST['HoldAccount']      = $myrow["dissallow_invoices"];

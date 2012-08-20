@@ -16,21 +16,21 @@
     if ($_POST['stock_id'] == "" || !isset($_POST['stock_id'])) {
       $input_error = 1;
       Event::error(_("There is no item selected."));
-      JS::setFocus('stock_id');
+      JS::_setFocus('stock_id');
     } elseif (!Validation::input_num('quantity')) {
       $input_error = 1;
       Event::error(_("The price entered was not positive number."));
-      JS::setFocus('quantity');
+      JS::_setFocus('quantity');
     } elseif ($_POST['description'] == '') {
       $input_error = 1;
       Event::error(_("Item code description cannot be empty."));
-      JS::setFocus('description');
+      JS::_setFocus('description');
     } elseif ($selected_id == -1) {
       $kit = Item_Code::get_kit($_POST['item_code']);
-      if (DB::numRows($kit)) {
+      if (DB::_numRows($kit)) {
         $input_error = 1;
         Event::error(_("This item code is already assigned to stock item or sale kit."));
-        JS::setFocus('item_code');
+        JS::_setFocus('item_code');
       }
     }
     if ($input_error == 0) {
@@ -54,16 +54,16 @@
     unset($_POST);
   }
   if (Forms::isListUpdated('stock_id')) {
-    Ajax::activate('_page_body');
+    Ajax::_activate('_page_body');
   }
   Forms::start();
-  if (!Input::post('stock_id')) {
-    Session::setGlobal('stock_id', $_POST['stock_id']);
+  if (!Input::_post('stock_id')) {
+    Session::_setGlobal('stock_id', $_POST['stock_id']);
   }
   echo "<div class='center'>" . _("Item:") . "&nbsp;";
   echo Item_Purchase::select('stock_id', $_POST['stock_id'], false, true, false, false);
   echo "<hr></div>";
-  Session::setGlobal('stock_id', $_POST['stock_id']);
+  Session::_setGlobal('stock_id', $_POST['stock_id']);
   $result    = Item_Code::get_defaults($_POST['stock_id']);
   $dec       = $result['decimals'];
   $units     = $result['units'];
@@ -77,7 +77,7 @@
   );
   Table::header($th);
   $k = $j = 0; //row colour counter
-  while ($myrow = DB::fetch($result)) {
+  while ($myrow = DB::_fetch($result)) {
 
     Cell::label($myrow["item_code"]);
     Cell::qty($myrow["quantity"], $dec);

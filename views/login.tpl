@@ -28,7 +28,7 @@
   </td>
   <input type='hidden' name='" . serialize($p) . "' value='$val'>
 <div class='center'>
-  echo $date = Dates::today() . " | " . Dates::now();
+  echo $date = Dates::_today() . " | " . Dates::_now();
   echo $date = date("m/d/Y") . " | " . date("h.i am");
   <br><a class='pad20' target='_blank' href='" . POWERED_URL . "' tabindex='-1'>" . APP_TITLE . ' ' . VERSION . " - " .
   _("Theme:") . "

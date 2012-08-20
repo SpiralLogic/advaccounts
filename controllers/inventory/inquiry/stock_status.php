@@ -14,22 +14,22 @@
   } else {
     Page::start(_($help_context = "Inventory Item Status"));
   }
-  if (Input::post('stock_id')) {
-    Ajax::activate('status_tbl');
+  if (Input::_post('stock_id')) {
+    Ajax::_activate('status_tbl');
   }
   Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
   Forms::start();
-  if (!Input::post('stock_id')) {
-    Session::setGlobal('stock_id', $_POST['stock_id']);
+  if (!Input::_post('stock_id')) {
+    Session::_setGlobal('stock_id', $_POST['stock_id']);
   }
   echo "<div class='center bold pad10 font13'> ";
   Item::cells(_("Item:"), 'stock_id', $_POST['stock_id'], false, true, false, false);
   echo "</div>";
-  Session::setGlobal('stock_id', $_POST['stock_id']);
+  Session::_setGlobal('stock_id', $_POST['stock_id']);
   $mb_flag           = WO::get_mb_flag($_POST['stock_id']);
   $kitset_or_service = false;
   Display::div_start('status_tbl');
-  if (Input::post('mb_flag') == STOCK_SERVICE) {
+  if (Input::_post('mb_flag') == STOCK_SERVICE) {
     Event::warning(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
     $kitset_or_service = true;
   }
@@ -48,7 +48,7 @@
   $j   = 1;
   $k   = 0; //row colour counter
 
-  while ($myrow = DB::fetch($loc_details)) {
+  while ($myrow = DB::_fetch($loc_details)) {
 
     $demand_qty = Item::get_demand($_POST['stock_id'], $myrow["loc_code"]);
     $demand_qty += WO::get_demand_asm_qty($_POST['stock_id'], $myrow["loc_code"]);

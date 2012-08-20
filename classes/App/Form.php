@@ -1,4 +1,7 @@
 <?php
+  use ADV\Core\Ajax;
+  use ADV\Core\Input\Input;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -17,9 +20,16 @@
     protected $fields = [];
     protected $start;
     protected $end;
+    /** @var Ajax */
     protected $Ajax;
+    /** @var Input */
     protected $Input;
-    public function __construct(\ADV\Core\Input\Input $input = null, \ADV\Core\Ajax $ajax = null) {
+    /**
+     * @param ADV\Core\Input\Input $input
+     * @param ADV\Core\Ajax        $ajax
+     */
+    public function __construct(\ADV\Core\Input\Input $input = null, \ADV\Core\Ajax $ajax = null)
+    {
       $this->Ajax  = $ajax ? : Ajax::i();
       $this->Input = $input ? : Input::i();
     }
@@ -30,7 +40,8 @@
      * @param string $action
      * @param string $name
      */
-    public function start($name = '', $action = '', $multi = null, $input_attr = []) {
+    public function start($name = '', $action = '', $multi = null, $input_attr = [])
+    {
       $attr['enctype'] = $multi ? 'multipart/form-data' : null;
       $attr['name']    = $name;
       $attr['method']  = 'post';
@@ -42,7 +53,8 @@
     /**
      * @param int $breaks
      */
-    public function end() {
+    public function end()
+    {
       $this->end = HTML::setReturn(true)->input('_focus', ['name'=> '_focus', 'type'=> 'hidden', 'value'=> e($this->Input->post('_focus'))])->form->setReturn(false);
       return $this->end;
     }
@@ -56,7 +68,8 @@
      *
      * @return int|null|string
      */
-    public function findPostPrefix($prefix, $numeric = true) {
+    public function findPostPrefix($prefix, $numeric = true)
+    {
       foreach ($_POST as $postkey => $postval) {
         if (strpos($postkey, $prefix) === 0) {
           $id = substr($postkey, strlen($prefix));
@@ -73,7 +86,8 @@
      *
      * @return bool
      */
-    public function isListUpdated($name) {
+    public function isListUpdated($name)
+    {
       return isset($_POST['_' . $name . '_update']) || isset($_POST['_' . $name . '_button']);
     }
     /**
@@ -81,7 +95,8 @@
      *
      * @return mixed
      */
-    protected function nameToId($name) {
+    protected function nameToId($name)
+    {
       return str_replace(['[', ']'], ['-', ''], $name);
     }
     /**
@@ -89,7 +104,8 @@
      * @param      $name
      * @param null $control
      */
-    public function label($label, $name, $control = null) {
+    public function label($label, $name, $control = null)
+    {
       if ($label === null) {
         return;
       }
@@ -107,11 +123,13 @@
      * @internal param bool $echo
      * @return string
      */
-    public function hidden($name, $value = null) {
+    public function hidden($name, $value = null)
+    {
       $attr['value'] = e($value ? : $this->Input->post($name));
       $attr['id']    = $this->nameToId($name);
       $attr['type']  = 'hidden';
-      $this->Ajax->_addUpdate($name, $name, $value);
+      $attr['name']  = $name;
+      $this->Ajax->addUpdate($name, $name, $value);
       $this->fields[$attr['id']] = HTML::setReturn(true)->input($attr['id'], $attr, false)->setReturn(false);
     }
     /**
@@ -123,12 +141,14 @@
      * @param null   $title
      * @param string $params
      */
-    public function  textarea($label, $name, $value=null, $input_attr = []) {
+    public function  textarea($label, $name, $value = null, $input_attr = [])
+    {
       if ($value === null) {
-        $value =$attr['value'] = $this->Input->post($name, null, '');
+        $value = $attr['value'] = $this->Input->post($name, null, '');
       }
-      $attr['name'] = $name;
-      array_merge($attr, $input_attr);
+      $attr['name']        = $name;
+      $attr['placeholder'] = rtrim($label, ':');
+      $attr=array_merge($attr, $input_attr);
       $attr['id'] = $this->nameToId($name);
       $content    = HTML::setReturn(true)->textarea($attr['id'], $value, $attr, false)->setReturn(false);
       $this->Ajax->addUpdate($name, $name, $value);
@@ -144,9 +164,10 @@
      * @param string     $title
      * @param array      $input_attr
      */
-    public function text($label, $name, $value = null, $input_attr = []) {
+    public function text($label, $name, $value = null, $input_attr = [])
+    {
       if ($label) {
-        $attr['placeholder'] = $label;
+        $attr['placeholder'] = rtrim($label, ':');
       }
       if ($value === null) {
         $attr['value'] = $this->Input->post($name);
@@ -169,7 +190,8 @@
      * @return void
      * @internal param null $init
      */
-    public function  percent($label, $name, $value = null, $inputparams = []) {
+    public function  percent($label, $name, $value = null, $inputparams = [])
+    {
       $attr['class'] = 'percent';
       array_merge($attr, $inputparams);
       $this->number($label, $name, $value, User::percent_dec(), '%', $inputparams);
@@ -191,9 +213,10 @@
      * @internal param string $inputparams
      * @internal param bool $negatives
      */
-    public function number($label, $name, $value = null, $dec = null, $post_label = null, $input_attr = []) {
-      $attr['placeholder'] = $label;
-      $attr['data-dec']  =  $dec ? : User::price_dec();
+    public function number($label, $name, $value = null, $dec = null, $post_label = null, $input_attr = [])
+    {
+      $attr['placeholder'] = rtrim($label, ':');
+      $attr['data-dec']    = $dec ? : User::price_dec();
       if (!$this->Input->post($name)) {
         $value        = $value ? : 0;
         $_POST[$name] = number_format($value, $dec);
@@ -207,7 +230,6 @@
       } elseif (is_string($size)) {
         $attr['class'] .= ($name == 'freight') ? ' freight ' : ' amount ';
       }
-
       $attr['maxlength'] = $input_attr['max'];
       $attr['name']      = $name;
       $attr['id']        = $this->nameToId($name);
@@ -215,9 +237,16 @@
       array_merge($attr, $input_attr);
       $content = HTML::setReturn(true)->input($name, $attr)->setReturn(false);
       $this->Ajax->addUpdate($name, $name, $value);
+      $pre_label = '';
+      if (is_array($post_label)) {
+        $pre_label  = $post_label[0];
+        $post_label = null;
+      }
       if ($post_label) {
-        $content = "<div class='input-append'>$content<span class='add-on' id='_{$name}_label'>$post_label</span></div>";
+        $content = "<div class='input-append'>$content<span class='add-on' id='_{$name}_label'>$post_label</div>";
         $this->Ajax->addUpdate($name, '_' . $name . '_label', $post_label);
+      } elseif ($pre_label) {
+        $content = "<div class='input-prepend'><span class='add-on' >$pre_label</span>$content</div>";
       }
       $this->fields[$attr['id']] = $content;
       $this->label($label, $name);
@@ -238,7 +267,8 @@
      *
      * @return string
      */
-    public function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = null) {
+    public function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = null)
+    {
       $box = new SelectBox($name, $selected_id, $sql, $valfield, $namefield, $options);
       return $box->create();
     }
@@ -254,7 +284,8 @@
      *
      * @return string
      */
-    public function arraySelect($name, $selected_id, $items, $options = []) {
+    public function arraySelect($name, $selected_id, $items, $options = [])
+    {
       $opts = array( // default options
         'spec_option'   => false, // option text or false
         'spec_id'       => 0, // option id
@@ -317,7 +348,7 @@
             (/themes/%s/images/button_ok.png) no-repeat;%s' data-aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
         $selector .= sprintf($_select_button, $disabled, User::theme(), (User::fallback() ? '' : 'display:none;'), '_' . $name . '_update') . "\n";
       }
-      JS::defaultFocus($name);
+      JS::_defaultFocus($name);
       return $selector;
     }
     // SUBMITS //
@@ -345,7 +376,8 @@
      *
      * @return string
      */
-    public static function submit($name, $value, $echo = true, $title = false, $atype = false, $icon = false) {
+    public static function submit($name, $value, $echo = true, $title = false, $atype = false, $icon = false)
+    {
       $aspect = '';
       if ($atype === null) {
         $aspect = User::fallback() ? " data-aspect='fallback'" : " style='display:none;'";
@@ -377,7 +409,8 @@
       }
       $caption    = ($name == '_action') ? $title : $value;
       $id         = ($name == '_action') ? '' : "id=\"$name\"";
-      $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') : $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\"  value=\"$value\"" . ($title ? " title='$title'" : '') . ">" . ($icon ? "<img alt='$value' src='/themes/" . User::theme() . "/images/$icon' height='12'>" : '') . "<span>$caption</span>" . "</button>\n";
+      $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') : $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\"  value=\"$value\"" . ($title ? " title='$title'" : '') . ">" . ($icon ? "<img alt='$value' src='/themes/" . User::theme(
+      ) . "/images/$icon' height='12'>" : '') . "<span>$caption</span>" . "</button>\n";
       if ($echo) {
         echo $submit_str;
       } else {
@@ -394,7 +427,8 @@
      * @param bool $async
      * @param bool $clone
      */
-    public function submitAddUpdate($add = true, $title = false, $async = false, $clone = false) {
+    public function submitAddUpdate($add = true, $title = false, $async = false, $clone = false)
+    {
       $cancel = $async;
       if ($async === 'both') {
         $async  = 'default';
@@ -419,13 +453,14 @@
      * @param $action
      * @param $msg
      */
-    public function submitConfirm($name, $action, $msg = null) {
+    public function submitConfirm($name, $action, $msg = null)
+    {
       if ($msg) {
         $name = $action;
       } else {
         $msg = $action;
       }
-      JS::beforeload("_validate.$name=function(){ return confirm('" . strtr($msg, array("\n" => '\\n')) . "');};");
+      JS::_beforeload("_validate.$name=function(){ return confirm('" . strtr($msg, array("\n" => '\\n')) . "');};");
     }
     /**
      * @param             $icon
@@ -433,7 +468,8 @@
      *
      * @return string
      */
-    public function setIcon($icon, $title = '') {
+    public function setIcon($icon, $title = '')
+    {
       $path  = THEME_PATH . User::theme();
       $title = $title ? " title='$title'" : '';
       return "<img src='$path/images/$icon' style='width:12px; height=12px' $title />";
@@ -447,7 +483,8 @@
      *
      * @return string
      */
-    public function button($name, $value, $title = false, $icon = false, $aspect = '') {
+    public function button($name, $value, $title = false, $icon = false, $aspect = '')
+    {
       // php silently changes dots,spaces,'[' and characters 128-159
       // to underscore in POST names, to maintain compatibility with register_globals
       $rel = '';
@@ -476,7 +513,8 @@
      *
      * @return string
      */
-    public function checkbox($label, $name, $value = null, $submit_on_change = false, $title = false) {
+    public function checkbox($label, $name, $value = null, $submit_on_change = false, $title = false)
+    {
       $str = '';
       if ($label) {
         $str .= $label . " ";
@@ -500,7 +538,8 @@
      * @param bool $submit_on_change
      * @param bool $title
      */
-    public function check($label, $name, $value = null, $submit_on_change = false, $title = false) {
+    public function check($label, $name, $value = null, $submit_on_change = false, $title = false)
+    {
       echo Forms::checkbox($label, $name, $value, $submit_on_change, $title);
     }
     /**
@@ -510,7 +549,8 @@
      * @param bool $submit_on_change
      * @param bool $title
      */
-    public function  checkRow($label, $name, $value = null, $submit_on_change = false, $title = false) {
+    public function  checkRow($label, $name, $value = null, $submit_on_change = false, $title = false)
+    {
       echo "<tr><td class='label'>$label</td>";
       Forms::checkCells(null, $name, $value, $submit_on_change, $title);
       echo "</tr>\n";
@@ -531,7 +571,8 @@
      * @internal param null $params
      * @internal param string $params2
      */
-    public function  textRowEx($label, $name, $size, $max = null, $title = null, $value = null, $rowparams = null, $post_label = null, $label_cell_params = '', $submit_on_change = false) {
+    public function  textRowEx($label, $name, $size, $max = null, $title = null, $value = null, $rowparams = null, $post_label = null, $label_cell_params = '', $submit_on_change = false)
+    {
       echo "<tr {$rowparams}><td class='label' {$label_cell_params}><label for='$name'>$label</label></td>";
       Forms::textCellsEx(null, $name, $size, $max, $value, $title, $rowparams, $post_label, $submit_on_change);
       echo "</tr>\n";
@@ -546,7 +587,8 @@
      * @param string $params
      * @param string $post_label
      */
-    public function emailRow($label, $name, $value, $size, $max, $title = null, $params = "", $post_label = "") {
+    public function emailRow($label, $name, $value, $size, $max, $title = null, $params = "", $post_label = "")
+    {
       if ($this->Input->post($name)) {
         $label = "<a href='Mailto:" . $_POST[$name] . "'>$label</a>";
       }
@@ -562,7 +604,8 @@
      * @param null $params
      * @param null $post_label
      */
-    public function emailRowEx($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null) {
+    public function emailRowEx($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null)
+    {
       if ($this->Input->post($name)) {
         $label = "<a href='Mailto:" . $_POST[$name] . "'>$label</a>";
       }
@@ -578,7 +621,8 @@
      * @param string $params
      * @param string $post_label
      */
-    public function linkRow($label, $name, $value, $size, $max, $title = null, $params = "", $post_label = "") {
+    public function linkRow($label, $name, $value, $size, $max, $title = null, $params = "", $post_label = "")
+    {
       $val = $this->Input->post($name);
       if ($val) {
         if (strpos($val, 'http://') === false) {
@@ -598,7 +642,8 @@
      * @param null $params
      * @param null $post_label
      */
-    public function linkRowEx($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null) {
+    public function linkRowEx($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null)
+    {
       $val = $this->Input->post($name);
       if ($val) {
         if (strpos($val, 'http://') === false) {
@@ -619,7 +664,8 @@
      * @param null $params
      * @param bool $submit_on_change
      */
-    public function  dateRow($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false) {
+    public function  dateRow($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false)
+    {
       echo "<tr><td class='label'><label for='$name'> $label</label></td>";
       $this->dateCells(null, $name, $title, $check, $inc_days, $inc_months, $inc_years, $params, $submit_on_change);
       echo "</tr>\n";
@@ -629,7 +675,8 @@
      * @param $name
      * @param $value
      */
-    public function passwordRow($label, $name, $value) {
+    public function passwordRow($label, $name, $value)
+    {
       echo "<tr><td class='label'><label for='$name'>$label</label></td>";
       Cell::label("<input type='password' class='med'  name='$name' id='$name' value='$value' />");
       echo "</tr>\n";
@@ -639,7 +686,8 @@
      * @param        $name
      * @param string $id
      */
-    public function fileRow($label, $name, $id = "") {
+    public function fileRow($label, $name, $id = "")
+    {
       echo "<tr><td class='label'>$label</td>";
       $this->fileCells(null, $name, $id);
       echo "</tr>\n";
@@ -651,7 +699,8 @@
      * @param null $init
      * @param bool $submit_on_change
      */
-    public function  refRow($label, $name, $title = null, $init = null, $submit_on_change = false) {
+    public function  refRow($label, $name, $title = null, $init = null, $submit_on_change = false)
+    {
       echo "<tr><td class='label'><label for='$name'> $label</label></td>";
       $this->refCells(null, $name, $title, $init, null, $submit_on_change);
       echo "</tr>\n";
@@ -663,7 +712,8 @@
      * @param string $cellparams
      * @param string $inputparams
      */
-    public function percentRow($label, $name, $init = null, $cellparams = '', $inputparams = '') {
+    public function percentRow($label, $name, $init = null, $cellparams = '', $inputparams = '')
+    {
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         $_POST[$name] = ($init === null) ? '' : $init;
       }
@@ -678,7 +728,8 @@
      * @param null   $dec
      * @param string $inputparams
      */
-    public function  AmountRow($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '') {
+    public function  AmountRow($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '')
+    {
       echo "<tr>";
       $this->amountCells($label, $name, $init, $params, $post_label, $dec, $inputparams);
       echo "</tr>\n";
@@ -693,7 +744,8 @@
      * @param int    $leftfill
      * @param string $inputparams
      */
-    public function  SmallAmountRow($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $leftfill = 0, $inputparams = '') {
+    public function  SmallAmountRow($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $leftfill = 0, $inputparams = '')
+    {
       echo "<tr>";
       Form::amountCellsSmall($label, $name, $init, $params, $post_label, $dec, $inputparams);
       if ($leftfill != 0) {
@@ -709,7 +761,8 @@
      * @param null $post_label
      * @param null $dec
      */
-    public function qtyRow($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
+    public function qtyRow($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
+    {
       if (!isset($dec)) {
         $dec = User::qty_dec();
       }
@@ -725,7 +778,8 @@
      * @param null $post_label
      * @param null $dec
      */
-    public function qtyRowSmall($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
+    public function qtyRowSmall($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
+    {
       if (!isset($dec)) {
         $dec = User::qty_dec();
       }
@@ -743,7 +797,8 @@
      * @param string $params
      * @param string $labelparams
      */
-    public function  textareaRow($label, $name, $value, $cols, $rows, $title = null, $params = "", $labelparams = "") {
+    public function  textareaRow($label, $name, $value, $cols, $rows, $title = null, $params = "", $labelparams = "")
+    {
       echo "<tr><td class='label' $labelparams><label for='$name'>$label</label></td>";
       $this->textareaCells(null, $name, $value, $cols, $rows, $title, $params);
       echo "</tr>\n";
@@ -753,7 +808,8 @@
      *
      * @param $th
      */
-    public function  inactiveControlRow($th) {
+    public function  inactiveControlRow($th)
+    {
       echo  "<tr><td colspan=" . (count($th)) . ">" . "<div style='float:left;'>" . $this->checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") . "</div><div style='float:right;'>" . $this->submit('Update', _('Update'), false, '', null) . "</div></td></tr>";
     }
     /**
@@ -761,7 +817,8 @@
      *
      * @param $th
      */
-    public function inactiveControlCol(&$th) {
+    public function inactiveControlCol(&$th)
+    {
       if ($this->Input->hasPost('show_inactive')) {
         Arr::insert($th, count($th) - 2, _("Inactive"));
       }
@@ -778,7 +835,8 @@
      *
      * @return string
      */
-    public function  yesnoList($name, $selected_id = null, $items = [0=> 'No', 1=> 'Yes'], $submit_on_change = false) {
+    public function  yesnoList($name, $selected_id = null, $items = [0=> 'No', 1=> 'Yes'], $submit_on_change = false)
+    {
       return $this->arraySelect($name, $selected_id, $items, array('select_submit' => $submit_on_change, 'async' => false));
     }
     /**
@@ -789,7 +847,8 @@
      * @param string $name_no
      * @param bool   $submit_on_change
      */
-    public function  yesnoListRow($label, $name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false) {
+    public function  yesnoListRow($label, $name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false)
+    {
       echo "<tr><td class='label'>$label</td>";
       Form::yesnoListCells(null, $name, $selected_id, $name_yes, $name_no, $submit_on_change);
       echo "</tr>\n";
@@ -798,7 +857,8 @@
      * @param $label
      * @param $name
      */
-    public function  recordStatusListRow($label, $name) {
+    public function  recordStatusListRow($label, $name)
+    {
       Form::yesnoListRow($label, $name, null, _('Inactive'), _('Active'));
     }
     /**
@@ -810,14 +870,17 @@
      *
      * @return string
      */
-    public function numberList($name, $selected, $from, $to, $no_option = false) {
+    public function numberList($name, $selected, $from, $to, $no_option = false)
+    {
       $items = [];
       for ($i = $from; $i <= $to; $i++) {
         $items[$i] = "$i";
       }
-      return $this->arraySelect($name, $selected, $items, array(
-                                                               'spec_option' => $no_option, 'spec_id' => ALL_NUMERIC
-                                                          ));
+      return $this->arraySelect(
+        $name, $selected, $items, array(
+                                       'spec_option' => $no_option, 'spec_id'     => ALL_NUMERIC
+                                  )
+      );
     }
     /**
      * @param      $label
@@ -827,7 +890,8 @@
      * @param      $to
      * @param bool $no_option
      */
-    public function numberListRow($label, $name, $selected, $from, $to, $no_option = false) {
+    public function numberListRow($label, $name, $selected, $from, $to, $no_option = false)
+    {
       echo "<tr><td class='label'>$label</td>";
       $this->numberListCells(null, $name, $selected, $from, $to, $no_option);
       echo "</tr>\n";
@@ -837,9 +901,10 @@
      * @param      $name
      * @param null $value
      */
-    public function dateFormatsListRow($label, $name, $value = null) {
+    public function dateFormatsListRow($label, $name, $value = null)
+    {
       echo "<tr><td class='label'>$label</td>\n<td>";
-      echo $this->arraySelect($name, $value, Config::get('date.formats'));
+      echo $this->arraySelect($name, $value, Config::_get('date.formats'));
       echo "</td></tr>\n";
     }
     /**
@@ -847,9 +912,10 @@
      * @param      $name
      * @param null $value
      */
-    public function dateSepsListRow($label, $name, $value = null) {
+    public function dateSepsListRow($label, $name, $value = null)
+    {
       echo "<tr><td class='label'>$label</td>\n<td>";
-      echo $this->arraySelect($name, $value, Config::get('date.separators'));
+      echo $this->arraySelect($name, $value, Config::_get('date.separators'));
       echo "</td></tr>\n";
     }
     /**
@@ -857,9 +923,10 @@
      * @param      $name
      * @param null $value
      */
-    public function thoSepsListRow($label, $name, $value = null) {
+    public function thoSepsListRow($label, $name, $value = null)
+    {
       echo "<tr><td class='label'>$label</td>\n<td>";
-      echo $this->arraySelect($name, $value, Config::get('separators_thousands'));
+      echo $this->arraySelect($name, $value, Config::_get('separators_thousands'));
       echo "</td></tr>\n";
     }
     /**
@@ -867,9 +934,10 @@
      * @param      $name
      * @param null $value
      */
-    public function decSepsListRow($label, $name, $value = null) {
+    public function decSepsListRow($label, $name, $value = null)
+    {
       echo "<tr><td class='label'>$label</td>\n<td>";
-      echo $this->arraySelect($name, $value, Config::get('separators_decimal'));
+      echo $this->arraySelect($name, $value, Config::_get('separators_decimal'));
       echo "</td></tr>\n";
     }
     /**
@@ -877,15 +945,17 @@
      *
      * @return string
      */
-    public function dateFormat($row) {
-      return Dates::sqlToDate($row['reconciled']);
+    public function dateFormat($row)
+    {
+      return Dates::_sqlToDate($row['reconciled']);
     }
     /**
      * @param $row
      *
      * @return string
      */
-    public function addCurrFormat($row) {
+    public function addCurrFormat($row)
+    {
       //     $company_currency;
       // if ($company_currency == null) {
       $company_currency = Bank_Currency::for_company();
@@ -897,7 +967,8 @@
      *
      * @return string
      */
-    public function stockItemsFormat($row) {
+    public function stockItemsFormat($row)
+    {
       return (User::show_codes() ? ($row[0] . "&nbsp;-&nbsp;") : "") . $row[1];
     }
     /**
@@ -905,7 +976,8 @@
      *
      * @return string
      */
-    public function templateItemsFormat($row) {
+    public function templateItemsFormat($row)
+    {
       return ($row[0] . "&nbsp;- &nbsp;" . _("Amount") . "&nbsp;" . $row[1]);
     }
     /**
@@ -913,15 +985,17 @@
      *
      * @return string
      */
-    public function fiscalYearFormat($row) {
-      return Dates::sqlToDate($row[1]) . "&nbsp;-&nbsp;" . Dates::sqlToDate($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') : _('Active')) . "</option>\n";
+    public function fiscalYearFormat($row)
+    {
+      return Dates::_sqlToDate($row[1]) . "&nbsp;-&nbsp;" . Dates::_sqlToDate($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') : _('Active')) . "</option>\n";
     }
     /**
      * @param $row
      *
      * @return string
      */
-    public function accountFormat($row) {
+    public function accountFormat($row)
+    {
       return $row[0] . "&nbsp;&nbsp;&nbsp;&nbsp;" . $row[1];
     }
     /**
@@ -932,7 +1006,8 @@
      *
      * @return string
      */
-    public function prep_value($value) {
+    public function prep_value($value)
+    {
       $value = htmlspecialchars($value);
       $value = str_replace(array("'", '"'), array("&#39;", "&quot;"), $value);
       return $value;
@@ -945,7 +1020,8 @@
      * @param bool   $title
      * @param string $params
      */
-    public function  checkCells($label, $name, $value = null, $submit_on_change = false, $title = false, $params = '') {
+    public function  checkCells($label, $name, $value = null, $submit_on_change = false, $title = false, $params = '')
+    {
       echo "<td $params>";
       if ($label != null) {
         echo "<label for=\"$name\"> $label</label>";
@@ -963,13 +1039,14 @@
      * @param $table
      * @param $key
      */
-    public function  inactiveControlCell($id, $value, $table, $key) {
+    public function  inactiveControlCell($id, $value, $table, $key)
+    {
       $name  = "Inactive" . $id;
       $value = $value ? 1 : 0;
       if ($this->Input->hasPost('show_inactive')) {
         if (isset($_POST['LInact'][$id]) && ($this->Input->post('_Inactive' . $id . '_update') || $this->Input->post('Update')) && ($this->Input->hasPost('Inactive' . $id) != $value)
         ) {
-          DB::updateRecordStatus($id, !$value, $table, $key);
+          DB::_updateRecordStatus($id, !$value, $table, $key);
         }
         echo "<td class='center'>";
         echo $this->checkbox(null, $name, $value, true, '', "class='center'") . $this->hidden("LInact[$id]", $value, false);
@@ -983,7 +1060,8 @@
      * @param bool   $icon
      * @param string $aspect
      */
-    public function buttonCell($name, $value, $title = false, $icon = false, $aspect = '') {
+    public function buttonCell($name, $value, $title = false, $icon = false, $aspect = '')
+    {
       echo "<td class='center'>";
       echo $this->button($name, $value, $title, $icon, $aspect);
       echo "</td>";
@@ -993,7 +1071,8 @@
      * @param      $value
      * @param bool $title
      */
-    public function buttonDeleteCell($line_no, $value, $title = false) {
+    public function buttonDeleteCell($line_no, $value, $title = false)
+    {
       if (strpos($line_no, 'Delete') === 0) {
         $this->buttonCell($line_no, $value, $title, ICON_DELETE);
       } else {
@@ -1005,7 +1084,8 @@
      * @param      $value
      * @param bool $title
      */
-    public function buttonEditCell($line_no, $value, $title = false) {
+    public function buttonEditCell($line_no, $value, $title = false)
+    {
       if (strpos($line_no, 'Edit') === 0) {
         $this->buttonCell($line_no, $value, $title, ICON_EDIT);
       } else {
@@ -1017,7 +1097,8 @@
      * @param      $value
      * @param bool $title
      */
-    public function buttonSelectCell($name, $value, $title = false) {
+    public function buttonSelectCell($name, $value, $title = false)
+    {
       $this->buttonCell($name, $value, $title, ICON_ADD, 'selector');
     }
     /**
@@ -1025,7 +1106,8 @@
      * @param        $name
      * @param string $id
      */
-    public function fileCells($label, $name, $id = "") {
+    public function fileCells($label, $name, $id = "")
+    {
       if ($id != "") {
         $id = "id='$id'";
       }
@@ -1047,20 +1129,21 @@
      * @param bool  $submit_on_change
      * @param array $options
      */
-    public function dateCells($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false, $options = []) {
+    public function dateCells($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false, $options = [])
+    {
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         if ($inc_years == 1001) {
           $_POST[$name] = null;
         } else {
-          $dd = Dates::today();
+          $dd = Dates::_today();
           if ($inc_days != 0) {
-            $dd = Dates::addDays($dd, $inc_days);
+            $dd = Dates::_addDays($dd, $inc_days);
           }
           if ($inc_months != 0) {
-            $dd = Dates::addMonths($dd, $inc_months);
+            $dd = Dates::_addMonths($dd, $inc_months);
           }
           if ($inc_years != 0) {
-            $dd = Dates::addYears($dd, $inc_years);
+            $dd = Dates::_addYears($dd, $inc_years);
           }
           $_POST[$name] = $dd;
         }
@@ -1072,7 +1155,7 @@
       echo "<td >";
       $class  = $submit_on_change ? 'searchbox datepicker' : 'datepicker';
       $aspect = $check ? ' data-aspect="cdate"' : '';
-      if ($check && ($this->Input->post($name) != Dates::today())) {
+      if ($check && ($this->Input->post($name) != Dates::_today())) {
         $aspect .= ' style="color:#FF0000"';
       }
       echo "<input id='$name' type='text' name='$name' class='$class' $aspect  maxlength='10' value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" : '') . " > $post_label";
@@ -1086,7 +1169,8 @@
      * @param bool   $title
      * @param bool   $async
      */
-    public function submitCells($name, $value, $extra = "", $title = false, $async = false) {
+    public function submitCells($name, $value, $extra = "", $title = false, $async = false)
+    {
       echo "<td $extra>";
       $this->submit($name, $value, true, $title, $async);
       echo "</td>\n";
@@ -1099,7 +1183,8 @@
      * @param null $params
      * @param bool $submit_on_change
      */
-    public function  refCells($label, $name, $title = null, $init = null, $params = null, $submit_on_change = false) {
+    public function  refCells($label, $name, $title = null, $init = null, $params = null, $submit_on_change = false)
+    {
       $this->textCellsEx($label, $name, 'small', 18, $init, $title, $params, null, $submit_on_change);
     }
     /**
@@ -1112,7 +1197,8 @@
      * @param null $post_label
      * @param null $dec
      */
-    public function unitAmountCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
+    public function unitAmountCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
+    {
       if (!isset($dec)) {
         $dec = User::price_dec() + 2;
       }
@@ -1126,7 +1212,8 @@
      * @param      $to
      * @param bool $no_option
      */
-    public function numberListCells($label, $name, $selected, $from, $to, $no_option = false) {
+    public function numberListCells($label, $name, $selected, $from, $to, $no_option = false)
+    {
       if ($label != null) {
         Cell::label($label);
       }
@@ -1148,7 +1235,8 @@
      * <p>
      *       The return value will be casted to boolean if non-boolean was returned.
      */
-    public function offsetExists($offset) {
+    public function offsetExists($offset)
+    {
       return array_key_exists($offset, $this->fields);
     }
     /**
@@ -1162,7 +1250,8 @@
      *
      * @return mixed Can return all value types.
      */
-    public function offsetGet($offset) {
+    public function offsetGet($offset)
+    {
       return $this->fields[$offset];
     }
     /**
@@ -1179,7 +1268,8 @@
      *
      * @return void
      */
-    public function offsetSet($offset, $value) {
+    public function offsetSet($offset, $value)
+    {
       $this->fields[$offset] = $value;
     }
     /**
@@ -1193,10 +1283,12 @@
      *
      * @return void
      */
-    public function offsetUnset($offset) {
+    public function offsetUnset($offset)
+    {
       unset($this->fields[$offset]);
     }
-    public function getFields() {
+    public function getFields()
+    {
       return $this->fields;
     }
   }

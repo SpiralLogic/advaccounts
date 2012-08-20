@@ -22,17 +22,17 @@
      * @return mixed
      */
     public static function add($reference, $name, $type_, $date_, $due_date, $memo_) {
-      DB::begin();
-      $date    = Dates::dateToSql($date_);
-      $duedate = Dates::dateToSql($due_date);
+      DB::_begin();
+      $date    = Dates::_dateToSql($date_);
+      $duedate = Dates::_dateToSql($due_date);
       $sql
                = "INSERT INTO dimensions (reference, name, type_, date_, due_date)
-		VALUES (" . DB::escape($reference) . ", " . DB::escape($name) . ", " . DB::escape($type_) . ", '$date', '$duedate')";
-      DB::query($sql, "could not add dimension");
-      $id = DB::insertId();
+		VALUES (" . DB::_escape($reference) . ", " . DB::_escape($name) . ", " . DB::_escape($type_) . ", '$date', '$duedate')";
+      DB::_query($sql, "could not add dimension");
+      $id = DB::_insertId();
       DB_Comments::add(ST_DIMENSION, $id, $date_, $memo_);
       Ref::save(ST_DIMENSION, $id, $reference);
-      DB::commit();
+      DB::_commit();
 
       return $id;
     }
@@ -49,17 +49,17 @@
      * @return mixed
      */
     public static function update($id, $name, $type_, $date_, $due_date, $memo_) {
-      DB::begin();
-      $date    = Dates::dateToSql($date_);
-      $duedate = Dates::dateToSql($due_date);
-      $sql     = "UPDATE dimensions SET name=" . DB::escape($name) . ",
-		type_ = " . DB::escape($type_) . ",
+      DB::_begin();
+      $date    = Dates::_dateToSql($date_);
+      $duedate = Dates::_dateToSql($due_date);
+      $sql     = "UPDATE dimensions SET name=" . DB::_escape($name) . ",
+		type_ = " . DB::_escape($type_) . ",
 		date_='$date',
 		due_date='$duedate'
-		WHERE id = " . DB::escape($id);
-      DB::query($sql, "could not update dimension");
+		WHERE id = " . DB::_escape($id);
+      DB::_query($sql, "could not update dimension");
       DB_Comments::update(ST_DIMENSION, $id, null, $memo_);
-      DB::commit();
+      DB::_commit();
 
       return $id;
     }
@@ -69,12 +69,12 @@
      * @param $id
      */
     public static function delete($id) {
-      DB::begin();
+      DB::_begin();
       // delete the actual dimension
-      $sql = "DELETE FROM dimensions WHERE id=" . DB::escape($id);
-      DB::query($sql, "The dimension could not be deleted");
+      $sql = "DELETE FROM dimensions WHERE id=" . DB::_escape($id);
+      DB::_query($sql, "The dimension could not be deleted");
       DB_Comments::delete(ST_DIMENSION, $id);
-      DB::commit();
+      DB::_commit();
     }
     /**
      * @static
@@ -85,13 +85,13 @@
      * @return \ADV\Core\DB\Query\Result
      */
     public static function get($id, $allow_null = false) {
-      $sql    = "SELECT * FROM dimensions	WHERE id=" . DB::escape($id);
-      $result = DB::query($sql, "The dimension could not be retrieved");
-      if (!$allow_null && DB::numRows($result) == 0) {
+      $sql    = "SELECT * FROM dimensions	WHERE id=" . DB::_escape($id);
+      $result = DB::_query($sql, "The dimension could not be retrieved");
+      if (!$allow_null && DB::_numRows($result) == 0) {
         Event::error("Could not find dimension $id", $sql);
       }
 
-      return DB::fetch($result);
+      return DB::_fetch($result);
     }
     /**
      * @static
@@ -123,7 +123,7 @@
     public static function getAll() {
       $sql = "SELECT * FROM dimensions ORDER BY date_";
 
-      return DB::query($sql, "The dimensions could not be retrieved");
+      return DB::_query($sql, "The dimensions could not be retrieved");
     }
     /**
      * @static
@@ -143,9 +143,9 @@
      * @return bool
      */
     public static function has_payments($id) {
-      $sql = "SELECT SUM(amount) FROM gl_trans WHERE dimension_id = " . DB::escape($id);
-      $res = DB::query($sql, "Transactions could not be calculated");
-      $row = DB::fetchRow($res);
+      $sql = "SELECT SUM(amount) FROM gl_trans WHERE dimension_id = " . DB::_escape($id);
+      $res = DB::_query($sql, "Transactions could not be calculated");
+      $row = DB::_fetchRow($res);
 
       return ($row[0] != 0.0);
     }
@@ -167,8 +167,8 @@
      * @param $id
      */
     public static function close($id) {
-      $sql = "UPDATE dimensions SET closed='1' WHERE id = " . DB::escape($id);
-      DB::query($sql, "could not close dimension");
+      $sql = "UPDATE dimensions SET closed='1' WHERE id = " . DB::_escape($id);
+      DB::_query($sql, "could not close dimension");
     }
     /**
      * @static
@@ -177,7 +177,7 @@
      */
     public static function reopen($id) {
       $sql = "UPDATE dimensions SET closed='0' WHERE id = $id";
-      DB::query($sql, "could not reopen dimension");
+      DB::_query($sql, "could not reopen dimension");
     }
     /**
      * @static
@@ -187,16 +187,16 @@
      * @param $to
      */
     public static function display_balance($id, $from, $to) {
-      $from = Dates::dateToSql($from);
-      $to   = Dates::dateToSql($to);
+      $from = Dates::_dateToSql($from);
+      $to   = Dates::_dateToSql($to);
       $sql
               = "SELECT account, chart_master.account_name, sum(amount) AS amt FROM
 			gl_trans,chart_master WHERE
 			gl_trans.account = chart_master.account_code AND
 			(dimension_id = $id OR dimension2_id = $id) AND
 			tran_date >= '$from' AND tran_date <= '$to' GROUP BY account";
-      $result = DB::query($sql, "Transactions could not be calculated");
-      if (DB::numRows($result) == 0) {
+      $result = DB::_query($sql, "Transactions could not be calculated");
+      if (DB::_numRows($result) == 0) {
         Event::warning(_("There are no transactions for this dimension for the selected period."));
       } else {
         Display::heading(_("Balance for this Dimension"));
@@ -205,7 +205,7 @@
         $th = array(_("Account"), _("Debit"), _("Credit"));
         Table::header($th);
         $total = $k = 0;
-        while ($myrow = DB::fetch($result)) {
+        while ($myrow = DB::_fetch($result)) {
           Cell::label($myrow["account"] . " " . $myrow['account_name']);
           Cell::debitOrCredit($myrow["amt"]);
           $total += $myrow["amt"];

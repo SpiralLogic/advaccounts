@@ -12,10 +12,10 @@
     header("Location: /");
     exit();
   }
-  if (Input::hasPost('contact_id', 'message', 'type')) {
+  if (Input::_hasPost('contact_id', 'message', 'type')) {
     $message_id = Contact_Log::add($_POST['contact_id'], $_POST['contact_name'], $_POST['type'], $_POST['message']);
   }
-  if (Input::hasPost('contact_id', 'type')) {
+  if (Input::_hasPost('contact_id', 'type')) {
     $contact_log = Contact_Log::read($_POST['contact_id'], $_POST['type']);
-    JS::renderJSON($contact_log);
+    JS::_renderJSON($contact_log);
   }

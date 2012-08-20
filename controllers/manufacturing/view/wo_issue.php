@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(950, 500);
+  JS::_openWindow(950, 500);
   Page::start(_($help_context = "View Work Order Issue"), SA_MANUFTRANSVIEW, true);
   if ($_GET['trans_no'] != "") {
     $wo_issue_no = $_GET['trans_no'];
@@ -32,7 +32,7 @@
     Cell::label($myrow["stock_id"] . " - " . $myrow["description"]);
     Cell::label($myrow["location_name"]);
     Cell::label($myrow["WorkCentreName"]);
-    Cell::label(Dates::sqlToDate($myrow["issue_date"]));
+    Cell::label(Dates::_sqlToDate($myrow["issue_date"]));
     Row::end();
     DB_Comments::display_row(28, $issue_no);
     Table::end(1);
@@ -45,7 +45,7 @@
   function display_wo_issue_details($issue_no)
   {
     $result = WO_Issue::get_details($issue_no);
-    if (DB::numRows($result) == 0) {
+    if (DB::_numRows($result) == 0) {
       Event::warning(_("There are no items for this issue."));
     } else {
       Table::start('tablestyle grid');
@@ -54,7 +54,7 @@
       $j          = 1;
       $k          = 0; //row colour counter
       $total_cost = 0;
-      while ($myrow = DB::fetch($result)) {
+      while ($myrow = DB::_fetch($result)) {
 
         Cell::label($myrow["stock_id"] . " - " . $myrow["description"]);
         Cell::qty($myrow["qty_issued"], false, Item::qty_dec($myrow["stock_id"]));

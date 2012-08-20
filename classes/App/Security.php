@@ -29,8 +29,8 @@
      */
     public function __construct(\ADV\Core\Config $config = null) {
       $this->Config   = $config ? : Config::i();
-      $this->areas    = $this->Config->_get('access_levels.areas');
-      $this->sections = $this->Config->_get('access_levels.sections');
+      $this->areas    = $this->Config->get('access_levels.areas');
+      $this->sections = $this->Config->get('access_levels.sections');
     }
     /**
      * @param User $user
@@ -65,8 +65,8 @@
      */
     public function get_role($id) {
       $sql = "SELECT * FROM security_roles WHERE id='$id'";
-      $ret = DB::query($sql, "could not retrieve security roles");
-      $row = DB::fetch($ret);
+      $ret = DB::_query($sql, "could not retrieve security roles");
+      $row = DB::_fetch($ret);
       if ($row != false) {
         $row['areas']    = explode(';', $row['areas']);
         $row['sections'] = explode(';', $row['sections']);
@@ -83,11 +83,11 @@
      */
     public static function add_role($name, $description, $sections, $areas) {
       $sql = "INSERT INTO security_roles (role, description, sections, areas) VALUES (" . //
-        DB::escape($name) . "," . //
-        DB::escape($description) . "," . //
-        DB::escape(implode(';', $sections)) . ", " . //
-        DB::escape(implode(';', $areas)) . ")";
-      DB::query($sql, "could not add new security role");
+        DB::_escape($name) . "," . //
+        DB::_escape($description) . "," . //
+        DB::_escape(implode(';', $sections)) . ", " . //
+        DB::_escape(implode(';', $areas)) . ")";
+      DB::_query($sql, "could not add new security role");
     }
     /**
      * @static
@@ -100,12 +100,12 @@
      */
     public static function update_role($id, $name, $description, $sections, $areas) {
       $sql = "UPDATE security_roles SET" . //
-        " role=" . DB::escape($name) . "," . //
-        " description=" . DB::escape($description) . "," . //
-        " sections=" . DB::escape(implode(';', $sections)) . "," . //
-        " areas=" . DB::escape(implode(';', $areas)) . //
+        " role=" . DB::_escape($name) . "," . //
+        " description=" . DB::_escape($description) . "," . //
+        " sections=" . DB::_escape(implode(';', $sections)) . "," . //
+        " areas=" . DB::_escape(implode(';', $areas)) . //
         " WHERE id=$id";
-      DB::query($sql, "could not update role");
+      DB::_query($sql, "could not update role");
     }
     /**
      * @static
@@ -114,7 +114,7 @@
      */
     public static function delete($id) {
       $sql = "DELETE FROM security_roles WHERE id=$id";
-      DB::query($sql, "could not delete role");
+      DB::_query($sql, "could not delete role");
     }
     /**
      * @static
@@ -125,8 +125,8 @@
      */
     public static function check_role_used($id) {
       $sql = "SELECT count(*) FROM users WHERE role_id=$id";
-      $ret = DB::query($sql, 'cannot check role usage');
-      $row = DB::fetch($ret);
+      $ret = DB::_query($sql, 'cannot check role usage');
+      $row = DB::_fetch($ret);
       return $row[0];
     }
     /**

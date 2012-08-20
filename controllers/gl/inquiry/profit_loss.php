@@ -10,8 +10,8 @@
   $js = "";
   Page::start(_($help_context = "Profit & Loss Drilldown"), SA_GLANALYTIC);
   // Ajax updates
-  if (Input::post('Show')) {
-    Ajax::activate('pl_tbl');
+  if (Input::_post('Show')) {
+    Ajax::_activate('pl_tbl');
   }
   if (isset($_GET["TransFromDate"])) {
     $_POST["TransFromDate"] = $_GET["TransFromDate"];
@@ -59,7 +59,7 @@
     $totals_arr = [];
     //Get Accounts directly under this group/type
     $result = GL_Account::getAll(null, null, $type);
-    while ($account = DB::fetch($result)) {
+    while ($account = DB::_fetch($result)) {
       $per_balance = GL_Trans::get_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
       if ($compare == 2) {
         $acc_balance = GL_Trans::get_budget_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
@@ -84,7 +84,7 @@
     $levelptr = 1;
     //Get Account groups/types under this group/type
     $result = GL_Type::getAll(false, false, $type);
-    while ($accounttype = DB::fetch($result)) {
+    while ($accounttype = DB::_fetch($result)) {
       $totals_arr = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, $pdec, $rep, $dimension, $dimension2, $drilldown);
       $per_balance_total += $totals_arr[0];
       $acc_balance_total += $totals_arr[1];
@@ -179,11 +179,11 @@
       if ($compare == 2) {
         $begin = $from;
       } else {
-        $begin = Dates::beginFiscalYear();
+        $begin = Dates::_beginFiscalYear();
       }
     } elseif ($compare == 1) {
-      $begin = Dates::addMonths($from, -12);
-      $end   = Dates::addMonths($to, -12);
+      $begin = Dates::_addMonths($from, -12);
+      $end   = Dates::_addMonths($to, -12);
     }
     Display::div_start('pl_tbl');
     Table::start('tablestyle grid width50');
@@ -200,7 +200,7 @@
       $classper = $classacc = $salesper = $salesacc = 0.0;
       //Get classes for PL
       $classresult = GL_Class::getAll(false, 0);
-      while ($class = DB::fetch($classresult)) {
+      while ($class = DB::_fetch($classresult)) {
         $class_per_total = 0;
         $class_acc_total = 0;
         $convert         = Systypes::get_class_type_convert($class["ctype"]);
@@ -209,7 +209,7 @@
         echo $tableheader;
         //Get Account groups/types under this group/type
         $typeresult = GL_Type::getAll(false, $class['cid'], -1);
-        while ($accounttype = DB::fetch($typeresult)) {
+        while ($accounttype = DB::_fetch($typeresult)) {
           $TypeTotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, $pdec, $rep, $dimension, $dimension2, $drilldown);
           $class_per_total += $TypeTotal[0];
           $class_acc_total += $TypeTotal[1];

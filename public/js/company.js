@@ -357,7 +357,7 @@ $(function () {
           contact_name:Adv.ContactLog.find("[name='contact_name']").val(),
           contact_id:Company.get().id,
           message:Adv.ContactLog.find("[name='message']").val(),
-          type:"C"
+          type:Adv.ContactLog.find("#type").val()
         };
         Adv.ContactLog.dialog('disable');
         $.post('contact_log.php', data, function (data) {

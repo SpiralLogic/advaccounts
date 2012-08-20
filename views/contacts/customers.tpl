@@ -100,7 +100,7 @@
   </div>
   {#$menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info')#}
 
-  <div class='formbox  width35'>
+  <div class='formbox'>
     <div class='tablehead'>
       Accounts Details
       {{$form.branch_id}}
@@ -115,7 +115,7 @@
     {{$form.webid}}
 
   </div>
-  <div class='formbox width35'>
+  <div class='formbox'>
     <div class='tablehead'>
       GL Accounts
     </div>
@@ -137,4 +137,11 @@
   <button id="btnConfirm" name="submit" type="submit" class="button ui-helper-hidden">New Customer</button>
   <button id="btnCancel" name="new" type="submit" class="button">New</button>
   {{$shortcuts->render()}}
+</div>
+<div id="contactLog" class=' center'>
+  <div class="formbox marginauto ">
+  {{$form.contact_name}}<br>
+    {{$form.message}}
+    {{$form.type}}
+  </div>
 </div>

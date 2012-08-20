@@ -48,7 +48,7 @@ jQuery.extend(jQuery.easing, {
     this.o.autocomplete = {};
     $(this.loader).ajaxStart(function () {
       Adv.loader.on();
-      Adv.Scroll.atLoad = true;
+      Adv.Scroll.loaded = false;
       if (Adv.debug.ajax) {
         console.time('ajax')
       }
@@ -326,7 +326,6 @@ Adv.extend({
         return el;
       };
       return {
-
         findInputEl:function (id) {
           var els = document.getElementsByName ? document.getElementsByName(id) : $("[name='" + id + "'");
           if (!els.length) {
@@ -346,9 +345,10 @@ Adv.extend({
           this.setFormValue(id, value, disabled, true);
         },
         autocomplete:function (id, url, callback) {
-          var $this, els = Adv.Forms.findInputEl(id);
+          var $this, els = Adv.Forms.findInputEl(id),blank={id:0, value:''};
           Adv.Forms.findInputEl(id);
-          Adv.o.autocomplete[id] = $this = $(els).autocomplete({
+          Adv.o.autocomplete[id] = $this = $(els)
+            .autocomplete({
             minLength:2,
             delay:400,
             autoFocus:true,
@@ -360,13 +360,11 @@ Adv.extend({
                 return false;
               }
               Adv.loader.off();
-              Adv.lastXhr = $.getJSON(url, request, function (data, status, xhr) {
+              Adv.lastXhr = $.getJSON(url, request, function (data) {
                 Adv.loader.on();
                 if (!$this.data('active')) {
                   if (data.length === 0) {
-                    data = [
-                      {id:0, value:''}
-                    ]
+                    data = blank;
                   }
                   callback(data[0]);
                   return false;
@@ -381,7 +379,9 @@ Adv.extend({
                 return false;
               }
             },
-            focus:function () {return false;}}).blur(function () {$(this).data('active', false); }).bind('autocompleteclose',function () {
+            focus:function () {return false;}})
+            .blur(function () {$(this).data('active', false); })
+            .bind('autocompleteclose',function () {
               if (this.value.length > 1 && $this.data().autocomplete.selectedItem === null && $this.data()['default'] !== null) {
                 if (callback($this.data()['default'], event, this) !== false) {
                   $this.val($this.data()['default'].label);
@@ -392,10 +392,15 @@ Adv.extend({
               $(this).data('active', true).on('change.autocomplete', function () {
                 $(this).autocomplete('search', $this.val());
               })
-            }).on('paste',function () {
+            })
+            .on('paste',function () {
               var $this = $(this);
               window.setTimeout(function () {$this.autocomplete('search', $this.val())}, 1)
-            }).css({'z-index':'2'});
+            })
+            .on('change',function () {
+              if (this.value==='')callback(blank,event,this);
+            })
+            .css({'z-index':'2'});
           if (document.activeElement === $this[0]) {
             $this.data('active', true);
           }
@@ -466,16 +471,7 @@ Adv.extend({
           return isNaN(val) ? 0 : val;
         },
         setFocus:function (name, byId) {
-          var el, scrollMaxY = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-          if (typeof(Adv.Scroll.focus) == 'number' && typeof Adv.Scroll.element == 'string') {
-            var pos = $(document.getElementsByName(Adv.Scroll.element)[0]).position().top;
-            Adv.Scroll.to(pos - Adv.Scroll.focus);
-            Adv.Scroll.focus = Adv.Scroll.element = Adv.Scroll.atLoad = false;
-            return;
-          }
-          if (Adv.Scroll.atLoad === false) {
-            return;
-          }
+          var el;
           if (typeof(name) == 'object') {
             el = name;
           }
@@ -502,9 +498,11 @@ Adv.extend({
             // Using tmp var prevents crash on IE5
             pos = $(el).position().top - 100;
             setTimeout(function () { Adv.Scroll.to(pos, 300);}, 0);
+            el.focus();
             if (el.select) {
               el.select();
             }
+
           }
         },
         //returns the absolute position of some element within document
@@ -592,7 +590,7 @@ Adv.extend({
     })(),
     Scroll:(function () {
       return{
-        atLoad:true,
+        loaded:false,
         focus:null,
         elementName:null,
         to:function (position, duration) {
@@ -603,9 +601,23 @@ Adv.extend({
           $('html,body').animate({scrollTop:position}, {queue:false, duration:duration, easing:'easeInSine'});
         },
         scrollDetect:function () {
-          Adv.Scroll.atLoad = false;
+          Adv.Scroll.loaded = true;
           window.removeEventListener('scroll', Adv.Scroll.scrollDetect, false)
+        },
+        loadPosition:function (force) {
+          var scrollMaxY = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+          if (Adv.Scroll.loaded && force === undefined) {
+            return;
+          }
+          if (typeof(Adv.Scroll.focus) == 'number' && typeof Adv.Scroll.element == 'string') {
+            var pos = $(document.getElementsByName(Adv.Scroll.element)[0]).position().top;
+            Adv.Scroll.to(pos - Adv.Scroll.focus);
+            Adv.Scroll.focus = Adv.Scroll.element = Adv.Scroll.loaded = true;
+            return;
+          }
+          Adv.Forms.setFocus();
         }
+
 
       };
     })()}

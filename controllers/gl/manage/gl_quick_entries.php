@@ -47,7 +47,7 @@
             $Mode = MODE_RESET;
         } else {
             Event::error(_("The Quick Entry has Quick Entry Lines. Cannot be deleted."));
-            JS::setFocus('description');
+            JS::_setFocus('description');
         }
     }
     if ($Mode2 == 'BDel') {
@@ -59,7 +59,7 @@
         $selected_id          = -1;
         $_POST['description'] = $_POST['type'] = '';
         $_POST['base_desc']   = _('Base Amount');
-        $_POST['base_amount'] = Num::priceFormat(0);
+        $_POST['base_amount'] = Num::_priceFormat(0);
     }
     if ($Mode2 == 'RESET2') {
         $selected_id2  = -1;
@@ -72,7 +72,7 @@
     Table::header($th);
     $k = 0;
     global $quick_entry_types, $quick_actions;
-    while ($myrow = DB::fetch($result)) {
+    while ($myrow = DB::_fetch($result)) {
         $type_text = $quick_entry_types[$myrow["type"]];
         Cell::label($myrow['description']);
         Cell::label($type_text);
@@ -93,14 +93,14 @@
         $_POST['description'] = $myrow["description"];
         $_POST['type']        = $myrow["type"];
         $_POST['base_desc']   = $myrow["base_desc"];
-        $_POST['base_amount'] = Num::priceFormat($myrow["base_amount"]);
+        $_POST['base_amount'] = Num::_priceFormat($myrow["base_amount"]);
         Forms::hidden('selected_id', $selected_id);
         //}
     }
     Forms::textRowEx(_("Description") . ':', 'description', 50, 60);
     GL_QuickEntry::types(_("Entry Type") . ':', 'type');
     Forms::textRowEx(_("Base Amount Description") . ':', 'base_desc', 50, 60, '', _('Base Amount'));
-    Forms::AmountRow(_("Default Base Amount") . ':', 'base_amount', Num::priceFormat(0));
+    Forms::AmountRow(_("Default Base Amount") . ':', 'base_amount', Num::_priceFormat(0));
     Table::end(1);
     Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
     Forms::end();
@@ -121,7 +121,7 @@
         }
         Table::header($th);
         $k = 0;
-        while ($myrow = DB::fetch($result)) {
+        while ($myrow = DB::_fetch($result)) {
             Cell::label($quick_actions[$myrow['action']]);
             $act_type = strtolower(substr($myrow['action'], 0, 1));
             if ($act_type == 't') {
@@ -131,7 +131,7 @@
                 if ($act_type == '=') {
                     Cell::label('');
                 } elseif ($act_type == '%') {
-                    Cell::label(Num::format($myrow['amount'], User::exrate_dec()), ' class="alignright nowrap"');
+                    Cell::label(Num::_format($myrow['amount'], User::exrate_dec()), ' class="alignright nowrap"');
                 } else {
                     Cell::amount($myrow['amount']);
                 }
@@ -169,7 +169,7 @@
         }
         GL_QuickEntry::actions(_("Posted") . ":", 'actn', null, true);
         if (Forms::isListUpdated('actn')) {
-            Ajax::activate('edit_line');
+            Ajax::_activate('edit_line');
         }
         $actn = strtolower(substr($_POST['actn'], 0, 1));
         if ($actn == 't') {
@@ -179,9 +179,9 @@
             GL_UI::all_row(_("Account") . ":", 'dest_id', null, $_POST['type'] == QE_DEPOSIT || $_POST['type'] == QE_PAYMENT);
             if ($actn != '=') {
                 if ($actn == '%') {
-                    Forms::SmallAmountRow(_("Part") . ":", 'amount', Num::priceFormat(0), null, "%", User::exrate_dec());
+                    Forms::SmallAmountRow(_("Part") . ":", 'amount', Num::_priceFormat(0), null, "%", User::exrate_dec());
                 } else {
-                    Forms::AmountRow(_("Amount") . ":", 'amount', Num::priceFormat(0));
+                    Forms::AmountRow(_("Amount") . ":", 'amount', Num::_priceFormat(0));
                 }
             }
         }
@@ -215,10 +215,10 @@
     function simple_page_mode2($numeric_id = true)
     {
         $default      = $numeric_id ? -1 : '';
-        $selected_id2 = Input::post('selected_id2', null, $default);
+        $selected_id2 = Input::_post('selected_id2', null, $default);
         foreach (array('ADD_ITEM2', 'UPDATE_ITEM2', 'RESET2') as $m) {
             if (isset($_POST[$m])) {
-                Ajax::activate('_page_body');
+                Ajax::_activate('_page_body');
                 if ($m == 'RESET2') {
                     $selected_id2 = $default;
                 }
@@ -232,7 +232,7 @@
                     //				$selected_id2 = strtr(substr($p, strlen($m)), array('%2E'=>'.'));
                     unset($_POST['_focus']); // focus on first form entry
                     $selected_id2 = quoted_printable_decode(substr($p, strlen($m)));
-                    Ajax::activate('_page_body');
+                    Ajax::_activate('_page_body');
 
                     return array($m, $selected_id2);
                 }
@@ -266,13 +266,13 @@
     {
         if (strlen($_POST['description']) == 0) {
             Event::error(_("The Quick Entry description cannot be empty."));
-            JS::setFocus('description');
+            JS::_setFocus('description');
 
             return false;
         }
         if (strlen($_POST['base_desc']) == 0) {
             Event::error(_("The base amount description cannot be empty."));
-            JS::setFocus('base_desc');
+            JS::_setFocus('base_desc');
 
             return false;
         }

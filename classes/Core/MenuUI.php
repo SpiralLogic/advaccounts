@@ -109,9 +109,9 @@
       $menu->set('items', $this->items);
       $menu->set('tabs', $this->tabs);
       $menu->render();
-      JS::tabs('tabs' . MenuUI::$menuCount, $this->options, $this->firstPage);
+      JS::_tabs('tabs' . MenuUI::$menuCount, $this->options, $this->firstPage);
       foreach ($this->jslinks as $js) {
-        JS::onload($js);
+        JS::_onload($js);
       }
       MenuUI::$menuCount++;
     }

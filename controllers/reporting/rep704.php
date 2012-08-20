@@ -114,19 +114,19 @@
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
     $accounts = GL_Account::getAll($fromacc, $toacc);
-    while ($account = DB::fetch($accounts)) {
+    while ($account = DB::_fetch($accounts)) {
       if (GL_Account::is_balancesheet($account["account_code"])) {
         $begin = "";
       } else {
-        $begin = Dates::beginFiscalYear();
-        if (Dates::isGreaterThan($begin, $from)) {
+        $begin = Dates::_beginFiscalYear();
+        if (Dates::_isGreaterThan($begin, $from)) {
           $begin = $from;
         }
-        $begin = Dates::addDays($begin, -1);
+        $begin = Dates::_addDays($begin, -1);
       }
       $prev_balance = GL_Trans::get_balance_from_to($begin, $from, $account["account_code"], $dimension, $dimension2);
       $trans        = GL_Trans::get($from, $to, -1, $account['account_code'], $dimension, $dimension2,null,0);
-      $rows         = DB::numRows($trans);
+      $rows         = DB::_numRows($trans);
       if ($prev_balance == 0.0 && $rows == 0) {
         continue;
       }
@@ -142,7 +142,7 @@
       $total = $prev_balance;
       $rep->NewLine(2);
       if ($rows > 0) {
-        while ($myrow = DB::fetch($trans)) {
+        while ($myrow = DB::_fetch($trans)) {
           $total += $myrow['amount'];
           $rep->TextCol(0, 1, $systypes_array[$myrow["type"]], -2);
           $reference = Ref::get($myrow["type"], $myrow["type_no"]);
@@ -170,7 +170,7 @@
           } else {
             $rep->AmountCol(8, 9, abs($myrow['amount']), $dec);
           }
-          $rep->TextCol(9, 10, Num::format($total, $dec));
+          $rep->TextCol(9, 10, Num::_format($total, $dec));
           $rep->NewLine();
           if ($rep->row < $rep->bottomMargin + $rep->lineHeight) {
             $rep->Line($rep->row - 2);

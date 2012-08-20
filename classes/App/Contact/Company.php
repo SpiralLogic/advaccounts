@@ -105,7 +105,7 @@
         $action = <<<JS
 				 $.post('/contacts/{$type}s.php',{id:$(this).data('id')},function(data) {Adv.o.company_details.render(data.company); \$company_details.dialog('open');},'json');
 JS;
-        JS::addLiveEvent($selector, 'click', $action, 'wrapper', true);
+        JS::_addLiveEvent($selector, 'click', $action, 'wrapper', true);
       }
       $details->addButton('Close', '$(this).dialog("close")');
       $details->show();

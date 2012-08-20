@@ -9,26 +9,25 @@
      **/
     namespace ADV\Core;
 
-    use \JsHttpRequest;
 
     /**
      * @method Ajax i()
-     * @method Ajax activate($trigname)
-     * @method Ajax redirect($url)
-     * @method Ajax popup($url)
-     * @method Ajax addAssign($trigger, $sTarget, $sAttribute, $sData)
-     * @method Ajax addUpdate($trigger, $sTarget, $sData)
-     * @method Ajax addEnable($trigger, $sTarget, $sData = true)
-     * @method Ajax addDisable($trigger, $sTarget, $sData = true)
-     * @method Ajax addFocus($trigger, $sTarget)
-     * @method Ajax run()
-     * @method Ajax flush()
-     * @method Ajax inAjax()
-     * @method Ajax absoluteURL()
+     * @method Ajax _activate($trigname)
+     * @method Ajax _redirect($url)
+     * @method Ajax _popup($url)
+     * @method Ajax _addAssign($trigger, $sTarget, $sAttribute, $sData)
+     * @method Ajax _addUpdate($trigger, $sTarget, $sData)
+     * @method Ajax _addEnable($trigger, $sTarget, $sData = true)
+     * @method Ajax _addDisable($trigger, $sTarget, $sData = true)
+     * @method Ajax _addFocus($trigger, $sTarget)
+     * @method Ajax _run()
+     * @method Ajax _flush()
+     * @method Ajax _inAjax()
+     * @method Ajax _absoluteURL()
      */
     class Ajax extends \JsHttpRequest
     {
-        use Traits\StaticAccess;
+        use Traits\StaticAccess2;
 
         /**
          * @var array
@@ -57,12 +56,12 @@
          *
          * @return void
          */
-        public function _activate($trigname, $newurl = null, $historyurl = null, $title = null)
+        public function activate($trigname, $newurl = null, $historyurl = null, $title = null)
         {
-            if ($this->_inAjax()) {
+            if ($this->inAjax()) {
                 $this->triggers[$trigname] = true;
                 if ($historyurl) {
-                    $this->_addScript(true, "window.onpopstate=function(event) { window.location.href = '$historyurl';};history.pushState({},'" . $title . "','" . $newurl . "');");
+                    $this->addScript(true, "window.onpopstate=function(event) { window.location.href = '$historyurl';};history.pushState({},'" . $title . "','" . $newurl . "');");
                 }
             }
         }
@@ -74,11 +73,11 @@
          *
          * @return void
          */
-        public function _redirect($url)
+        public function redirect($url)
         {
             if ($this->isActive()) {
-                $this->addCommand(true, array('n' => 'rd'), $this->_absoluteURL($url));
-                $this->_run();
+                $this->addCommand(true, array('n' => 'rd'), $this->absoluteURL($url));
+                $this->run();
             }
         }
         /**
@@ -88,9 +87,9 @@
          *
          * @return void
          */
-        public function _popup($url)
+        public function popup($url)
         {
-            $this->addCommand(true, array('n' => 'pu'), $this->_absoluteURL($url));
+            $this->addCommand(true, array('n' => 'pu'), $this->absoluteURL($url));
         }
         /**
          * Adds an executable Javascript code.
@@ -100,7 +99,7 @@
          *
          * @return Ajax
          */
-        public function _addScript($trigger, $sJS)
+        public function addScript($trigger, $sJS)
         {
             $this->addCommand($trigger, array('n' => 'js'), $sJS, 'js');
             return $this;
@@ -115,7 +114,7 @@
          *
          * @return Ajax
          */
-        public function _addAssign($trigger, $sTarget, $sAttribute, $sData)
+        public function addAssign($trigger, $sTarget, $sAttribute, $sData)
         {
             $this->addCommand(
                 $trigger,
@@ -137,7 +136,7 @@
          *
          * @return Ajax
          */
-        public function _addUpdate($trigger, $sTarget, $sData)
+        public function addUpdate($trigger, $sTarget, $sData)
         {
             $this->addCommand(
                 $trigger,
@@ -158,7 +157,7 @@
          *
          * @return Ajax
          */
-        public function _addDisable($trigger, $sTarget, $sData = true)
+        public function addDisable($trigger, $sTarget, $sData = true)
         {
             $this->addCommand(
                 $trigger,
@@ -179,7 +178,7 @@
          *
          * @return Ajax
          */
-        public function _addEnable($trigger, $sTarget, $sData = true)
+        public function addEnable($trigger, $sTarget, $sData = true)
         {
             $this->addCommand(
                 $trigger,
@@ -199,20 +198,21 @@
          *
          * @return Ajax
          */
-        public function _addFocus($trigger, $sTarget)
+        public function addFocus($trigger, $sTarget)
         {
             $this->addCommand($trigger, array('n' => 'fc'), $sTarget, 'fc');
             return $this;
         }
-        /**
-         * Internal procedure adding command to response.
-         *
-         * @param $trigger
-         * @param $aAttributes
-         * @param $mData
-         *
-         * @return void
-         */
+      /**
+       * Internal procedure adding command to response.
+       *
+       * @param      $trigger
+       * @param      $aAttributes
+       * @param      $mData
+       * @param null $special
+       *
+       * @return void
+       */
         protected function addCommand($trigger, $aAttributes, $mData, $special = null)
         {
             if ($this->isActive() && ($trigger !== false)) {
@@ -229,7 +229,7 @@
         /**
          * @return mixed
          */
-        public function _run()
+        public function run()
         {
             if (!$this->isActive()) {
                 return;
@@ -260,10 +260,9 @@
             $GLOBALS['_RESULT'] = $this->aCommands;
         }
         /**
-         * @static
          * @return bool
          */
-        public function _inAjax()
+        public function inAjax()
         {
             return $this->isActive();
         }
@@ -271,7 +270,7 @@
          * @static
          * @return bool
          */
-        public function _flush()
+        public function flush()
         {
             $this->aCommands = [];
         }
@@ -283,7 +282,7 @@
          *
          * @return string
          */
-        public function _absoluteURL($url)
+        public function absoluteURL($url)
         {
             return strpos($url, '..') === 0 ? dirname($_SERVER['DOCUMENT_URI']) . '/' . $url : str_replace(WEBROOT, '/', $url);
         }

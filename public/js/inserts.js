@@ -8,10 +8,7 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-var _hotkeys = {
-  'alt':  false, // whether is the Alt key pressed
-  'focus':-1    // currently selected indeks of document.links
-};
+
 function save_focus(e) {
   Adv.Scroll.focus = e.name || e.id;
   var h = document.getElementById('hints');
@@ -281,4 +278,4 @@ var inserts = {
 
 };
 Behaviour.register(inserts);
-Behaviour.addLoadEvent(Adv.Forms.setFocus);
+Behaviour.addLoadEvent(Adv.Scroll.loadPosition);

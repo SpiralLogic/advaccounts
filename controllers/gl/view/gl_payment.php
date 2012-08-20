@@ -14,10 +14,10 @@
     }
     // get the pay-from bank payment info
     $result = Bank_Trans::get(ST_BANKPAYMENT, $trans_no);
-    if (DB::numRows($result) != 1) {
+    if (DB::_numRows($result) != 1) {
         Event::error("duplicate payment bank transaction found");
     }
-    $from_trans       = DB::fetch($result);
+    $from_trans       = DB::_fetch($result);
     $company_currency = Bank_Currency::for_company();
     $show_currencies  = false;
     if ($from_trans['bank_curr_code'] != $company_currency) {
@@ -38,8 +38,8 @@
     if ($show_currencies) {
         Cell::labels(_("Currency"), $from_trans['bank_curr_code'], "class='tablerowhead'");
     }
-    Cell::labels(_("Amount"), Num::format($from_trans['amount'], User::price_dec()), "class='tablerowhead'", "class='alignright'");
-    Cell::labels(_("Date"), Dates::sqlToDate($from_trans['trans_date']), "class='tablerowhead'");
+    Cell::labels(_("Amount"), Num::_format($from_trans['amount'], User::price_dec()), "class='tablerowhead'", "class='alignright'");
+    Cell::labels(_("Date"), Dates::_sqlToDate($from_trans['trans_date']), "class='tablerowhead'");
     Row::end();
     Row::start();
     Cell::labels(_("Pay To"), Bank::payment_person_name($from_trans['person_type_id'], $from_trans['person_id']), "class='tablerowhead'", "colspan=$colspan1");
@@ -52,7 +52,7 @@
     Table::end(1);
     $voided = Display::is_voided(ST_BANKPAYMENT, $trans_no, _("This payment has been voided."));
     $items  = GL_Trans::get_many(ST_BANKPAYMENT, $trans_no);
-    if (DB::numRows($items) == 0) {
+    if (DB::_numRows($items) == 0) {
         Event::warning(_("There are no items for this payment."));
     } else {
         Display::heading(_("Items for this Payment"));
@@ -92,7 +92,7 @@
         Table::header($th);
         $k            = 0; //row colour counter
         $total_amount = 0;
-        while ($item = DB::fetch($items)) {
+        while ($item = DB::_fetch($items)) {
             if ($item["account"] != $from_trans["account_code"]) {
 
                 Cell::label($item["account"]);
@@ -109,7 +109,7 @@
                 $total_amount += $item["amount"];
             }
         }
-        Row::label(_("Total"), Num::format($total_amount, User::price_dec()), "colspan=" . (2 + $dim) . " class='alignright'", "class='alignright'");
+        Row::label(_("Total"), Num::_format($total_amount, User::price_dec()), "colspan=" . (2 + $dim) . " class='alignright'", "class='alignright'");
         Table::end(1);
         if (!$voided) {
             GL_Allocation::from($from_trans['person_type_id'], $from_trans['person_id'], 1, $trans_no, -$from_trans['amount']);

@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(950, 500);
+  JS::_openWindow(950, 500);
   Page::start(_($help_context = "View Payment to Supplier"), SA_SUPPTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {
     $trans_no = $_GET["trans_no"];
@@ -31,13 +31,13 @@
   Row::start();
   Cell::labels(_("To Supplier"), $receipt['supplier_name'], "class='tablerowhead'");
   Cell::labels(_("From Bank Account"), $receipt['bank_account_name'], "class='tablerowhead'");
-  Cell::labels(_("Date Paid"), Dates::sqlToDate($receipt['tran_date']), "class='tablerowhead'");
+  Cell::labels(_("Date Paid"), Dates::_sqlToDate($receipt['tran_date']), "class='tablerowhead'");
   Row::end();
   Row::start();
   if ($show_currencies) {
     Cell::labels(_("Payment Currency"), $receipt['bank_curr_code'], "class='tablerowhead'");
   }
-  Cell::labels(_("Amount"), Num::format(-$receipt['BankAmount'], User::price_dec()), "class='tablerowhead'");
+  Cell::labels(_("Amount"), Num::_format(-$receipt['BankAmount'], User::price_dec()), "class='tablerowhead'");
   Cell::labels(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], "class='tablerowhead'");
   Row::end();
   Row::start();
@@ -45,7 +45,7 @@
     Cell::labels(_("Supplier's Currency"), $receipt['SupplierCurrCode'], "class='tablerowhead'");
   }
   if ($show_both_amounts) {
-    Cell::labels(_("Amount"), Num::format(-$receipt['Total'], User::price_dec()), "class='tablerowhead'");
+    Cell::labels(_("Amount"), Num::_format(-$receipt['Total'], User::price_dec()), "class='tablerowhead'");
   }
   Cell::labels(_("Reference"), $receipt['ref'], "class='tablerowhead'");
   Row::end();
@@ -56,7 +56,7 @@
   if (!$voided) {
     GL_Allocation::from(PT_SUPPLIER, $receipt['creditor_id'], ST_SUPPAYMENT, $trans_no, -$receipt['Total']);
   }
-  if (Input::get('frame')) {
+  if (Input::_get('frame')) {
     return;
   }
   Page::end(true);

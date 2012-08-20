@@ -10,7 +10,7 @@
   //
   //	Entry/Modify Credit Note for selected Sales Invoice
   //
-  JS::openWindow(950, 500);
+  JS::_openWindow(950, 500);
   if (isset($_GET[Orders::MODIFY_CREDIT])) {
     $page_title   = $_SESSION['page_title'] = sprintf(_("Modifying Credit Invoice # %d."), $_GET[Orders::MODIFY_CREDIT]);
     $help_context = "Modifying Credit Invoice";
@@ -43,7 +43,7 @@
     $ci->src_docs      = $ci->trans_no;
     $ci->src_date      = $ci->document_date;
     $ci->trans_no      = 0;
-    $ci->document_date = Dates::newDocDate();
+    $ci->document_date = Dates::_newDocDate();
     $ci->reference     = Ref::get_next(ST_CUSTCREDIT);
     for ($line_no = 0; $line_no < count($ci->line_items); $line_no++) {
       $ci->line_items[$line_no]->qty_dispatched = '0';
@@ -66,7 +66,7 @@
     }
     copy_to_credit();
     if ($new_credit) {
-      Dates::newDocDate(Orders::session_get($_POST['order_id'])->document_date);
+      Dates::_newDocDate(Orders::session_get($_POST['order_id'])->document_date);
     }
     $credit    = Orders::session_get($_POST['order_id']);
     $credit_no = $credit->write($_POST['WriteOffGLCode']);
@@ -87,8 +87,8 @@
     Orders::session_delete($_POST['order_id']);
     create_order($type, $order_no);
   }
-  if (Input::post('Update')) {
-    Ajax::activate('credit_items');
+  if (Input::_post('Update')) {
+    Ajax::_activate('credit_items');
   }
   display_credit_items();
   display_credit_options();
@@ -127,21 +127,21 @@
    * @return bool
    */
   function can_process() {
-    if (!Dates::isDate($_POST['CreditDate'])) {
+    if (!Dates::_isDate($_POST['CreditDate'])) {
       Event::error(_("The entered date is invalid."));
-      JS::setFocus('CreditDate');
+      JS::_setFocus('CreditDate');
 
       return false;
-    } elseif (!Dates::isDateInFiscalYear($_POST['CreditDate'])) {
+    } elseif (!Dates::_isDateInFiscalYear($_POST['CreditDate'])) {
       Event::error(_("The entered date is not in fiscal year."));
-      JS::setFocus('CreditDate');
+      JS::_setFocus('CreditDate');
 
       return false;
     }
     if (Orders::session_get($_POST['order_id'])->trans_no == 0) {
       if (!Ref::is_valid($_POST['ref'])) {
         Event::error(_("You must enter a reference."));
-        JS::setFocus('ref');
+        JS::_setFocus('ref');
 
         return false;
       }
@@ -151,7 +151,7 @@
     }
     if (!Validation::post_num('ChargeFreightCost', 0)) {
       Event::error(_("The entered shipping cost is invalid or less than zero."));
-      JS::setFocus('ChargeFreightCost');
+      JS::_setFocus('ChargeFreightCost');
 
       return false;
     }
@@ -182,7 +182,7 @@
   function copy_from_credit($order) {
     $order                      = Sales_Order::check_edit_conflicts($order);
     $_POST['ShipperID']         = $order->ship_via;
-    $_POST['ChargeFreightCost'] = Num::priceFormat($order->freight_cost);
+    $_POST['ChargeFreightCost'] = Num::_priceFormat($order->freight_cost);
     $_POST['CreditDate']        = $order->document_date;
     $_POST['location']          = $order->location;
     $_POST['CreditText']        = $order->Comments;
@@ -251,7 +251,7 @@
       $dec = Item::qty_dec($line->stock_id);
       Cell::qty($line->quantity, false, $dec);
       Cell::label($line->units);
-      Forms::amountCells(null, 'Line' . $line_no, Num::format($line->qty_dispatched, $dec), null, null, $dec);
+      Forms::amountCells(null, 'Line' . $line_no, Num::_format($line->qty_dispatched, $dec), null, null, $dec);
       $line_total = ($line->qty_dispatched * $line->price * (1 - $line->discount_percent));
       Cell::amount($line->price);
       Cell::percent($line->discount_percent * 100);
@@ -259,19 +259,19 @@
       Row::end();
     }
     if (!Validation::post_num('ChargeFreightCost')) {
-      $_POST['ChargeFreightCost'] = Num::priceFormat(Orders::session_get($_POST['order_id'])->freight_cost);
+      $_POST['ChargeFreightCost'] = Num::_priceFormat(Orders::session_get($_POST['order_id'])->freight_cost);
     }
     $colspan = 7;
     Row::start();
     Cell::label(_("Credit Shipping Cost"), "colspan=$colspan class='alignright'");
-    Forms::amountCellsSmall(null, "ChargeFreightCost", Num::priceFormat(Input::post('ChargeFreightCost', null, 0)));
+    Forms::amountCellsSmall(null, "ChargeFreightCost", Num::_priceFormat(Input::_post('ChargeFreightCost', null, 0)));
     Row::end();
     $inv_items_total   = Orders::session_get($_POST['order_id'])->get_items_total_dispatch();
-    $display_sub_total = Num::priceFormat($inv_items_total + Validation::input_num('ChargeFreightCost'));
+    $display_sub_total = Num::_priceFormat($inv_items_total + Validation::input_num('ChargeFreightCost'));
     Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan class='alignright'", "class='alignright'");
     $taxes         = Orders::session_get($_POST['order_id'])->get_taxes(Validation::input_num('ChargeFreightCost'));
     $tax_total     = Tax::edit_items($taxes, $colspan, Orders::session_get($_POST['order_id'])->tax_included);
-    $display_total = Num::priceFormat(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
+    $display_total = Num::_priceFormat(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
     Row::label(_("Credit Note Total"), $display_total, "colspan=$colspan class='alignright'", "class='alignright'");
     Table::end();
     Display::div_end();
@@ -280,7 +280,7 @@
   function display_credit_options() {
     echo "<br>";
     if (isset($_POST['_CreditType_update'])) {
-      Ajax::activate('options');
+      Ajax::_activate('options');
     }
     Display::div_start('options');
     Table::start('tablestyle2');

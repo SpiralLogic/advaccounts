@@ -23,9 +23,9 @@
               = "SELECT branches.*,salesman.salesman_name
 		FROM branches, salesman
 		WHERE branches.salesman=salesman.salesman_code
-		AND branch_id=" . DB::escape($branch_id);
-      $result = DB::query($sql, "Cannot retreive a customer branch");
-      return DB::fetch($result);
+		AND branch_id=" . DB::_escape($branch_id);
+      $result = DB::_query($sql, "Cannot retreive a customer branch");
+      return DB::_fetch($result);
     }
     /**
      * @static
@@ -38,9 +38,9 @@
     {
       $sql
               = "SELECT receivables_account,sales_account, sales_discount_account, payment_discount_account
-		FROM branches WHERE branch_id=" . DB::escape($branch_id);
-      $result = DB::query($sql, "Cannot retreive a customer branch");
-      return DB::fetch($result);
+		FROM branches WHERE branch_id=" . DB::_escape($branch_id);
+      $result = DB::_query($sql, "Cannot retreive a customer branch");
+      return DB::_fetch($result);
     }
     /**
      * @static
@@ -53,9 +53,9 @@
     {
       $sql
               = "SELECT br_name FROM branches
-		WHERE branch_id = " . DB::escape($branch_id);
-      $result = DB::query($sql, "could not retreive name for branch" . $branch_id);
-      $myrow  = DB::fetchRow($result);
+		WHERE branch_id = " . DB::_escape($branch_id);
+      $result = DB::_query($sql, "could not retreive name for branch" . $branch_id);
+      $myrow  = DB::_fetchRow($result);
       return $myrow[0];
     }
     /**
@@ -69,8 +69,8 @@
     {
       $sql
         = "SELECT branch_id, debtor_id FROM branches
-		WHERE group_no = " . DB::escape($group_no);
-      return DB::query($sql, "could not retreive branches for group " . $group_no);
+		WHERE group_no = " . DB::_escape($group_no);
+      return DB::_query($sql, "could not retreive branches for group " . $group_no);
     }
     /**
      * @static
@@ -86,8 +86,8 @@
  FROM branches
  WHERE debtor_id={$customer_no}
  ORDER BY branch_id ";
-      $result = DB::query($sql, "Could not retrieve any branches");
-      $myrow  = DB::fetchAssoc($result);
+      $result = DB::_query($sql, "Could not retrieve any branches");
+      $myrow  = DB::_fetchAssoc($result);
       return $myrow;
     }
   }

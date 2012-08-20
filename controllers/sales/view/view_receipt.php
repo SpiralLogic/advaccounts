@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(950, 600);
+  JS::_openWindow(950, 600);
   $trans_type = $_GET['trans_type'];
   Page::start("", SA_SALESTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {
@@ -30,12 +30,12 @@
   Row::start();
   Cell::labels(_("From Customer"), $receipt['DebtorName']);
   Cell::labels(_("Into Bank Account"), $receipt['bank_account_name']);
-  Cell::labels(_("Date of Deposit"), Dates::sqlToDate($receipt['tran_date']));
+  Cell::labels(_("Date of Deposit"), Dates::_sqlToDate($receipt['tran_date']));
   Row::end();
   Row::start();
   Cell::labels(_("Payment Currency"), $receipt['curr_code']);
-  Cell::labels(_("Amount"), Num::priceFormat($receipt['Total'] - $receipt['ov_discount']));
-  Cell::labels(_("Discount"), Num::priceFormat($receipt['ov_discount']));
+  Cell::labels(_("Amount"), Num::_priceFormat($receipt['Total'] - $receipt['ov_discount']));
+  Cell::labels(_("Discount"), Num::_priceFormat($receipt['ov_discount']));
   Row::end();
   Row::start();
   Cell::labels(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']]);
@@ -48,7 +48,7 @@
   if (!$voided && ($trans_type != ST_CUSTREFUND)) {
     GL_Allocation::from(PT_CUSTOMER, $receipt['debtor_id'], ST_CUSTPAYMENT, $trans_id, $receipt['Total']);
   }
-  if (Input::get('frame')) {
+  if (Input::_get('frame')) {
     return;
   }
   Display::submenu_print(_("&Print This Receipt"), $trans_type, $_GET['trans_no'], 'prtopt');

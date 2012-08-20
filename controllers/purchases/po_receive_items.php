@@ -7,7 +7,7 @@
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
      **/
-    JS::openWindow(950, 500);
+    JS::_openWindow(950, 500);
     Page::start(_($help_context = "Receive Purchase Order Items"), SA_GRN);
     if (isset($_GET[ADDED_ID])) {
         $grn        = $_GET[ADDED_ID];
@@ -36,10 +36,10 @@ set from the post to the quantity to be received in this receival*/
             if (($line->quantity - $line->qty_received) > 0) {
                 $_POST[$line->line_no] = max($_POST[$line->line_no], 0);
                 if (!Validation::post_num($line->line_no)) {
-                    $_POST[$line->line_no] = Num::format(0, Item::qty_dec($line->stock_id));
+                    $_POST[$line->line_no] = Num::_format(0, Item::qty_dec($line->stock_id));
                 }
                 if (!isset($_POST['DefaultReceivedDate']) || $_POST['DefaultReceivedDate'] == "") {
-                    $_POST['DefaultReceivedDate'] = Dates::newDocDate();
+                    $_POST['DefaultReceivedDate'] = Dates::_newDocDate();
                 }
                 $order->line_items[$line->line_no]->receive_qty = Validation::input_num($line->line_no);
                 if (isset($_POST[$line->stock_id . "Desc"]) && strlen($_POST[$line->stock_id . "Desc"]) > 0) {
@@ -47,10 +47,10 @@ set from the post to the quantity to be received in this receival*/
                 }
             }
         }
-        Ajax::activate('grn_items');
+        Ajax::_activate('grn_items');
     }
     if (isset($_POST['ProcessGoodsReceived']) && $order->can_receive()) {
-        Session::setGlobal('creditor_id', $order->creditor_id);
+        Session::_setGlobal('creditor_id', $order->creditor_id);
         if ($order->has_changed()) {
             Event::error(
                 _(
@@ -60,12 +60,12 @@ set from the post to the quantity to be received in this receival*/
             Display::link_no_params("/purchases/inquiry/po_search.php", _("Select a different purchase order for receiving goods against"));
             Display::link_params("/purchases/po_receive_items.php", _("Re-Read the updated purchase order for receiving goods against"), "PONumber=" . $order->order_no);
             unset($order->line_items, $order, $_POST['ProcessGoodsReceived']);
-            Ajax::activate('_page_body');
+            Ajax::_activate('_page_body');
             Page::footer_exit();
         }
         $grn                     = Purch_GRN::add($order, $_POST['DefaultReceivedDate'], $_POST['ref'], $_POST['location']);
         $_SESSION['delivery_po'] = $order->order_no;
-        Dates::newDocDate($_POST['DefaultReceivedDate']);
+        Dates::_newDocDate($_POST['DefaultReceivedDate']);
         unset($order->line_items);
         $order->finish($_POST['order_id']);
         unset($order);
@@ -113,9 +113,9 @@ set from the post to the quantity to be received in this receival*/
             Cell::qty($line->qty_received, false, $dec);
             Cell::qty($qty_outstanding, false, $dec);
             if ($qty_outstanding > 0) {
-                Forms::qtyCells(null, $line->line_no, Num::format($line->receive_qty, $dec), "class='alignright'", null, $dec);
+                Forms::qtyCells(null, $line->line_no, Num::_format($line->receive_qty, $dec), "class='alignright'", null, $dec);
             } else {
-                Cell::label(Num::format($line->receive_qty, $dec), "class='alignright'");
+                Cell::label(Num::_format($line->receive_qty, $dec), "class='alignright'");
             }
             Cell::amountDecimal($line->price);
             Cell::percent($line->discount * 100);
@@ -124,8 +124,8 @@ set from the post to the quantity to be received in this receival*/
         }
     }
     Cell::label(_("Freight"), "colspan=9 class='alignright'");
-    Forms::amountCellsSmall(null, 'freight', Num::priceFormat($order->freight));
-    $display_total = Num::format($total + $_POST['freight'], User::price_dec());
+    Forms::amountCellsSmall(null, 'freight', Num::_priceFormat($order->freight));
+    $display_total = Num::_format($total + $_POST['freight'], User::price_dec());
     Row::label(_("Total value of items received"), $display_total, "colspan=9 class='alignright'", ' class="alignright nowrap"');
     Table::end();
     Display::div_end();

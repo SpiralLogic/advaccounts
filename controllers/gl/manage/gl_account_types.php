@@ -35,14 +35,14 @@
     $_POST['id'] = $_POST['name'] = '';
     unset($_POST['parent'], $_POST['class_id']);
   }
-  $result = GL_Type::getAll(Input::hasPost('show_inactive'));
+  $result = GL_Type::getAll(Input::_hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid');
   $th = array(_("ID"), _("Name"), _("Subgroup Of"), _("Class Type"), "", "");
   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
-  while ($myrow = DB::fetch($result)) {
+  while ($myrow = DB::_fetch($result)) {
     $bs_text = GL_Class::get_name($myrow["class_id"]);
     if ($myrow["parent"] == ANY_NUMERIC) {
       $parent_text = "";
@@ -93,12 +93,12 @@
     if ($selected_id == -1) {
       return false;
     }
-    $type = DB::escape($selected_id);
+    $type = DB::_escape($selected_id);
     $sql
             = "SELECT COUNT(*) FROM chart_master
         WHERE account_type=$type";
-    $result = DB::query($sql, "could not query chart master");
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql, "could not query chart master");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account group because GL accounts have been created referring to it."));
 
@@ -107,8 +107,8 @@
     $sql
             = "SELECT COUNT(*) FROM chart_types
         WHERE parent=$type";
-    $result = DB::query($sql, "could not query chart types");
-    $myrow  = DB::fetchRow($result);
+    $result = DB::_query($sql, "could not query chart types");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account group because GL account groups have been created referring to it."));
 
@@ -127,13 +127,13 @@
   {
     if (!Validation::input_num('id')) {
       Event::error(_("The account id must be an integer and cannot be empty."));
-      JS::setFocus('id');
+      JS::_setFocus('id');
 
       return false;
     }
     if (strlen($_POST['name']) == 0) {
       Event::error(_("The account group name cannot be empty."));
-      JS::setFocus('name');
+      JS::_setFocus('name');
 
       return false;
     }

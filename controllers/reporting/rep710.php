@@ -20,8 +20,8 @@
    * @return null|PDOStatement
    */
   function get_transactions($from, $to, $type, $user) {
-    $fromdate = Dates::dateToSql($from) . " 00:00:00";
-    $todate   = Dates::dateToSql($to) . " 23:59.59";
+    $fromdate = Dates::_dateToSql($from) . " 00:00:00";
+    $todate   = Dates::_dateToSql($to) . " 23:59.59";
     $sql      = "SELECT a.*,
         SUM(IF(ISNULL(g.amount), null, IF(g.amount > 0, g.amount, 0))) AS amount,
         u.user_id,
@@ -40,7 +40,7 @@
             AND a.stamp <= '$todate'
         GROUP BY a.trans_no,a.gl_seq,a.stamp
         ORDER BY a.stamp,a.gl_seq";
-    return DB::query($sql, "No transactions were returned");
+    return DB::_query($sql, "No transactions were returned");
   }
 
   function print_audit_trail() {
@@ -79,15 +79,15 @@
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
     $trans = get_transactions($from, $to, $systype, $user);
-    while ($myrow = DB::fetch($trans)) {
-      $rep->TextCol(0, 1, Dates::sqlToDate(date("Y-m-d", $myrow['unix_stamp'])));
+    while ($myrow = DB::_fetch($trans)) {
+      $rep->TextCol(0, 1, Dates::_sqlToDate(date("Y-m-d", $myrow['unix_stamp'])));
       if (User::date_format() == 0) {
         $rep->TextCol(1, 2, date("h:i:s a", $myrow['unix_stamp']));
       } else {
         $rep->TextCol(1, 2, date("H:i:s", $myrow['unix_stamp']));
       }
       $rep->TextCol(2, 3, $myrow['user_id']);
-      $rep->TextCol(3, 4, Dates::sqlToDate($myrow['gl_date']));
+      $rep->TextCol(3, 4, Dates::_sqlToDate($myrow['gl_date']));
       $rep->TextCol(4, 5, $systypes_array[$myrow['type']]);
       $rep->TextCol(5, 6, $myrow['trans_no']);
       if ($myrow['gl_seq'] == null) {

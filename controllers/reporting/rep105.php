@@ -22,8 +22,8 @@
    */
   function GetSalesOrders($from, $to, $category = 0, $location = null, $backorder = 0)
   {
-    $fromdate = Dates::dateToSql($from);
-    $todate   = Dates::dateToSql($to);
+    $fromdate = Dates::_dateToSql($from);
+    $todate   = Dates::_dateToSql($to);
     $sql
               = "SELECT sales_orders.order_no,
                 sales_orders.debtor_id,
@@ -47,17 +47,17 @@
  WHERE sales_orders.ord_date >='$fromdate'
  AND sales_orders.ord_date <='$todate'";
     if ($category > 0) {
-      $sql .= " AND stock_master.category_id=" . DB::escape($category);
+      $sql .= " AND stock_master.category_id=" . DB::_escape($category);
     }
     if ($location != null) {
-      $sql .= " AND sales_orders.from_stk_loc=" . DB::escape($location);
+      $sql .= " AND sales_orders.from_stk_loc=" . DB::_escape($location);
     }
     if ($backorder) {
       $sql .= " AND sales_order_details.quantity - sales_order_details.qty_sent > 0";
     }
     $sql .= " ORDER BY sales_orders.order_no";
 
-    return DB::query($sql, "Error getting order details");
+    return DB::_query($sql, "Error getting order details");
   }
 
   function print_order_status_list()
@@ -125,7 +125,7 @@
     $rep->Header();
     $orderno = 0;
     $result  = GetSalesOrders($from, $to, $category, $location, $backorder);
-    while ($myrow = DB::fetch($result)) {
+    while ($myrow = DB::_fetch($result)) {
       if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight)) {
         $orderno = 0;
         $rep->Header();

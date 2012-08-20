@@ -73,7 +73,7 @@
         if (0 == count($args)) {
           $key = '_no_arguments';
         } else {
-          $key = $this->_keyForArguments($args);
+          $key = $this->keyForArguments($args);
         }
         if ('_no_arguments' == $key && !isset($this->_objects[$name][$key]) && !empty($this->_objects[$name])) {
           $key = key($this->_objects[$name]);
@@ -109,7 +109,7 @@
       }
       $arguments                   = is_array($args) && func_num_args() == 2 ? $args : func_get_args();
       $arguments[0]                = $this;
-      $key                         = $this->_keyForArguments($arguments);
+      $key                         = $this->keyForArguments($arguments);
       $this->_objects[$name][$key] = call_user_func_array($this->_callbacks[$name], $arguments);
 
       return $this->_objects[$name][$key];
@@ -140,7 +140,7 @@
      *
      * @return string
      */
-    protected function _keyForArguments(Array $arguments) {
+    protected function keyForArguments(Array $arguments) {
       if (count($arguments) && $this === $arguments[0]) {
         array_shift($arguments);
       }

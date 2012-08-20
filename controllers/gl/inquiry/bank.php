@@ -7,13 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(950, 500);
+  JS::_openWindow(950, 500);
   Page::start(_($help_context = "Bank Statement"), SA_BANKTRANSVIEW);
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
   // Ajax updates
   //
-  if (Input::post('Show')) {
-    Ajax::activate('trans_tbl');
+  if (Input::_post('Show')) {
+    Ajax::_activate('trans_tbl');
   }
   Forms::start();
   Table::start('tablestyle_noborder');
@@ -25,18 +25,18 @@
   Row::end();
   Table::end();
   Forms::end();
-  $date_after = Dates::dateToSql($_POST['TransAfterDate']);
-  $date_to    = Dates::dateToSql($_POST['TransToDate']);
+  $date_after = Dates::_dateToSql($_POST['TransAfterDate']);
+  $date_to    = Dates::_dateToSql($_POST['TransToDate']);
   if (!isset($_POST['bank_account'])) {
     $_POST['bank_account'] = "";
   }
   $sql
           = "SELECT bank_trans.* FROM bank_trans
-    WHERE bank_trans.bank_act = " . DB::escape($_POST['bank_account']) . "
+    WHERE bank_trans.bank_act = " . DB::_escape($_POST['bank_account']) . "
     AND trans_date >= '$date_after'
     AND trans_date <= '$date_to'
     ORDER BY trans_date,bank_trans.id";
-  $result = DB::query($sql, "The transactions for '" . $_POST['bank_account'] . "' could not be retrieved");
+  $result = DB::_query($sql, "The transactions for '" . $_POST['bank_account'] . "' could not be retrieved");
   Display::div_start('trans_tbl');
   $act = Bank_Account::get($_POST["bank_account"]);
   Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
@@ -45,12 +45,12 @@
     _("Type"), _("#"), _("Reference"), _("Date"), _("Debit"), _("Credit"), _("Balance"), _("Person/Item"), ""
   );
   Table::header($th);
-  $sql        = "SELECT SUM(amount) FROM bank_trans WHERE bank_act=" . DB::escape($_POST['bank_account']) . "
+  $sql        = "SELECT SUM(amount) FROM bank_trans WHERE bank_act=" . DB::_escape($_POST['bank_account']) . "
     AND trans_date < '$date_after'";
-  $before_qty = DB::query($sql, "The starting balance on hand could not be calculated");
+  $before_qty = DB::_query($sql, "The starting balance on hand could not be calculated");
   Row::start("class='inquirybg'");
   Cell::label("<span class='bold'>" . _("Opening Balance") . " - " . $_POST['TransAfterDate'] . "</span>", "colspan=4");
-  $bfw_row = DB::fetchRow($before_qty);
+  $bfw_row = DB::_fetchRow($before_qty);
   $bfw     = $bfw_row[0];
   Cell::debitOrCredit($bfw);
   Cell::label("");
@@ -59,9 +59,9 @@
   $running_total = $bfw;
   $j             = 1;
   $k             = 0; //row colour counter
-  while ($myrow = DB::fetch($result)) {
+  while ($myrow = DB::_fetch($result)) {
     $running_total += $myrow["amount"];
-    $trandate = Dates::sqlToDate($myrow["trans_date"]);
+    $trandate = Dates::_sqlToDate($myrow["trans_date"]);
     Cell::label($systypes_array[$myrow["type"]]);
     Cell::label(GL_UI::viewTrans($myrow["type"], $myrow["trans_no"]));
     Cell::label(GL_UI::viewTrans($myrow["type"], $myrow["trans_no"], $myrow['ref']));

@@ -31,18 +31,18 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav         = Input::post('show_inactive');
+    $sav         = Input::_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Sales_CreditStatus::getAll(Input::hasPost('show_inactive'));
+  $result = Sales_CreditStatus::getAll(Input::_hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid width40');
   $th = array(_("Description"), _("Dissallow Invoices"), '', '');
   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
-  while ($myrow = DB::fetch($result)) {
+  while ($myrow = DB::_fetch($result)) {
 
     if ($myrow["dissallow_invoices"] == 0) {
       $disallow_text = _("Invoice OK");

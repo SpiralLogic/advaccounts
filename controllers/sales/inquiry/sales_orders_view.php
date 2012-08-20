@@ -30,20 +30,26 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
     protected $debtor_id;
     protected $stock_id;
     protected $searchArray = [];
+    const SEARCH_ORDER = 'o';
+    const SEARCH_QUOTE = 'q';
+    const MODE_OUTSTANDING = 'OutstandingOnly';
+    const MODE_INVTEMPLATES = 'InvoiceTemplates';
+    const MODE_DELTEMPLATES = 'DeliveryTemplates';
+    const MODE_QUOTES = "Quotations";
     protected function before() {
       $this->setSecurity();
       // then check session value
-      JS::openWindow(950, 600);
+      $this->JS->openWindow(950, 600);
       if (AJAX_REFERRER && !empty($_POST['q'])) {
         $this->searchArray = explode(' ', $_POST['q']);
       }
-      if ($this->searchArray && $this->searchArray[0] == 'o') {
+      if ($this->searchArray && $this->searchArray[0] == self::SEARCH_ORDER) {
         $this->trans_type = ST_SALESORDER;
-      } elseif ($this->searchArray && $this->searchArray[0] == 'q') {
+      } elseif ($this->searchArray && $this->searchArray[0] == self::SEARCH_QUOTE) {
         $this->trans_type = ST_SALESQUOTE;
       } elseif ($this->searchArray) {
         $this->trans_type = ST_SALESORDER;
-      } elseif (Input::post('type')) {
+      } elseif ($this->Input->post('type')) {
         $this->trans_type = $_POST['type'];
       } elseif (isset($_GET['type']) && ($_GET['type'] == ST_SALESQUOTE)) {
         $this->trans_type = ST_SALESQUOTE;
@@ -51,24 +57,24 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
         $this->trans_type = ST_SALESORDER;
       }
       if ($this->trans_type == ST_SALESORDER) {
-        if (Input::get('OutstandingOnly')) {
-          $_POST['order_view_mode'] = 'OutstandingOnly';
+        if ($this->Input->get(self::MODE_OUTSTANDING)) {
+          $_POST['order_view_mode'] = self::MODE_OUTSTANDING;
           $this->setTitle("Search Outstanding Sales Orders");
-        } elseif ($this->Input->get('InvoiceTemplates')) {
-          $_POST['order_view_mode'] = 'InvoiceTemplates';
+        } elseif ($this->Input->get(self::MODE_INVTEMPLATES)) {
+          $_POST['order_view_mode'] = self::MODE_INVTEMPLATES;
           $this->setTitle("Search Template for Invoicing");
-        } elseif ($this->Input->get('DeliveryTemplates')) {
-          $_POST['order_view_mode'] = 'DeliveryTemplates';
+        } elseif ($this->Input->get(self::MODE_DELTEMPLATES)) {
+          $_POST['order_view_mode'] = self::MODE_DELTEMPLATES;
           $this->setTitle("Select Template for Delivery");
         } elseif (!isset($_POST['order_view_mode'])) {
           $_POST['order_view_mode'] = false;
           $this->setTitle("Search All Sales Orders");
         }
       } else {
-        $_POST['order_view_mode'] = "Quotations";
+        $_POST['order_view_mode'] = self::MODE_QUOTES;
         $this->setTitle("Search All Sales Quotations");
       }
-      $this->debtor_id = Input::getPost('debtor_id', Input::NUMERIC, -1);
+      $this->debtor_id = $this->Input->getPost('debtor_id', Input::NUMERIC);
       if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
       ) {
         $this->stock_id = $_POST['SelectStockFromList'];
@@ -76,41 +82,41 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       $id = Forms::findPostPrefix('_chgtpl');
       if ($id != -1) {
         $sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
-        DB::query($sql, "Can't change sales order type");
-        Ajax::activate('orders_tbl');
+        DB::_query($sql, "Can't change sales order type");
+        $this->Ajax->activate('orders_tbl');
       }
       if (isset($_POST['Update']) && isset($_POST['last'])) {
         foreach ($_POST['last'] as $id => $value) {
-          if ($value != Input::hasPost('chgtpl' . $id)) {
+          if ($value != $this->Input->hasPost('chgtpl' . $id)) {
             $sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
-            DB::query($sql, "Can't change sales order type");
-            Ajax::activate('orders_tbl');
+            DB::_query($sql, "Can't change sales order type");
+            $this->Ajax->activate('orders_tbl');
           }
         }
       }
       //	Order range form
       //
-      if (Input::post('_OrderNumber_changed')) { // enable/disable selection controls
-        $disable = Input::post('OrderNumber') !== '';
-        if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
-          Ajax::addDisable(true, 'OrdersAfterDate', $disable);
-          Ajax::addDisable(true, 'OrdersToDate', $disable);
+      if ($this->Input->post('_OrderNumber_changed')) { // enable/disable selection controls
+        $disable = $this->Input->post('OrderNumber') !== '';
+        if ($_POST['order_view_mode'] != self::MODE_DELTEMPLATES && $_POST['order_view_mode'] != self::MODE_INVTEMPLATES) {
+          $this->Ajax->addDisable(true, 'OrdersAfterDate', $disable);
+          $this->Ajax->addDisable(true, 'OrdersToDate', $disable);
         }
-        Ajax::addDisable(true, 'StockLocation', $disable);
-        Ajax::addDisable(true, '_SelectStockFromList_edit', $disable);
-        Ajax::addDisable(true, 'SelectStockFromList', $disable);
+        $this->Ajax->addDisable(true, 'StockLocation', $disable);
+        $this->Ajax->addDisable(true, '_SelectStockFromList_edit', $disable);
+        $this->Ajax->addDisable(true, 'SelectStockFromList', $disable);
         if ($disable) {
-          Ajax::addFocus(true, 'OrderNumber');
+          $this->Ajax->addFocus(true, 'OrderNumber');
         } else {
-          Ajax::addFocus(true, 'OrdersAfterDate');
+          $this->Ajax->addFocus(true, 'OrdersAfterDate');
         }
-        Ajax::activate('orders_tbl');
+        $this->Ajax->activate('orders_tbl');
       }
     }
     protected function setSecurity() {
-      if (Input::get('OutstandingOnly') || Input::post('order_view_mode') == 'OutstandingOnly') {
+      if ($this->Input->get(self::MODE_OUTSTANDING) || $this->Input->post('order_view_mode') == self::MODE_OUTSTANDING) {
         $this->security = SA_SALESDELIVERY;
-      } elseif (Input::get('InvoiceTemplates') || Input::post('order_view_mode') == 'InvoiceTemplates') {
+      } elseif ($this->Input->get(self::MODE_INVTEMPLATES) || $this->Input->post('order_view_mode') == self::MODE_INVTEMPLATES) {
         $this->security = SA_SALESINVOICE;
       } else {
         $this->security = SA_SALESAREA;
@@ -121,9 +127,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       Forms::start();
       Table::start('tablestyle_noborder');
       Row::start();
-      Debtor::cells(_(""), 'debtor_id', $this->debtor_id, true);
+      Debtor::newselect(null, ['label'=> false, 'row'=> false]);
       Forms::refCellsSearch(_("#:"), 'OrderNumber', '', null, '', true);
-      if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
+      if ($_POST['order_view_mode'] != self::MODE_DELTEMPLATES && $_POST['order_view_mode'] != self::MODE_INVTEMPLATES) {
         Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
         Forms::dateCells(_("To:"), 'OrdersToDate', '', null, 1);
       }
@@ -135,9 +141,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
       Row::end();
       Table::end(1);
-      Forms::hidden('order_view_mode', $_POST['order_view_mode']);
+      Forms::hidden('order_view_mode');
       Forms::hidden('type', $this->trans_type);
-      $this->displayTable($this->searchArray);
+      $this->displayTable();
       UI::emailDialogue(CT_CUSTOMER);
       Forms::submitCenter('Update', _("Update"), true, '', null);
       Forms::end();
@@ -149,7 +155,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
         = "SELECT
  		sorder.trans_type,
  		sorder.order_no,
- 		sorder.reference," . ($_POST['order_view_mode'] == 'InvoiceTemplates' || $_POST['order_view_mode'] == 'DeliveryTemplates' ? "sorder.comments, " : "sorder.customer_ref, ") . "
+ 		sorder.reference," . ($_POST['order_view_mode'] == self::MODE_INVTEMPLATES || $_POST['order_view_mode'] == self::MODE_DELTEMPLATES ? "sorder.comments, " : "sorder.customer_ref, ") . "
  		sorder.ord_date,
  		sorder.delivery_date,
  		debtor.name,
@@ -164,7 +170,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  	FROM sales_orders as sorder, sales_order_details as line, debtors as debtor, branches as branch
  		WHERE sorder.order_no = line.order_no
  		AND sorder.trans_type = line.trans_type";
-      if ($this->searchArray[0] == 'o') {
+      if ($this->searchArray[0] == self::SEARCH_ORDER) {
         $sql .= " AND sorder.trans_type = 30 ";
       } elseif ($this->searchArray[0] == 'q') {
         $sql .= " AND sorder.trans_type = " . ST_SALESQUOTE . " ";
@@ -177,21 +183,22 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
         .= " AND sorder.debtor_id = debtor.debtor_id
  		AND sorder.branch_id = branch.branch_id
  		AND debtor.debtor_id = branch.debtor_id";
-      if ($this->debtor_id != -1) {
-        $sql .= " AND sorder.debtor_id = " . DB::quote($this->debtor_id);
+
+      if ($this->debtor_id >0) {
+        $sql .= " AND sorder.debtor_id = " . DB::_quote($this->debtor_id);
       }
       if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
         // search orders with number like
         $number_like = "%" . $_POST['OrderNumber'];
-        $sql .= " AND sorder.order_no LIKE " . DB::quote($number_like) . " GROUP BY sorder.order_no";
+        $sql .= " AND sorder.order_no LIKE " . DB::_quote($number_like) . " GROUP BY sorder.order_no";
         $number_like = "%" . $_POST['OrderNumber'] . "%";
-        $sql .= " OR sorder.reference LIKE " . DB::quote($number_like) . " GROUP BY sorder.order_no";
+        $sql .= " OR sorder.reference LIKE " . DB::_quote($number_like) . " GROUP BY sorder.order_no";
       } elseif (AJAX_REFERRER && isset($this->searchArray) && !empty($_POST['q'])) {
         foreach ($this->searchArray as $quicksearch) {
           if (empty($quicksearch)) {
             continue;
           }
-          $quicksearch = DB::quote("%" . trim($quicksearch) . "%");
+          $quicksearch = DB::_quote("%" . trim($quicksearch) . "%");
           $sql
             .= " AND ( debtor.debtor_id = $quicksearch OR debtor.name LIKE $quicksearch OR sorder.order_no LIKE $quicksearch
  			OR sorder.reference LIKE $quicksearch OR sorder.contact_name LIKE $quicksearch
@@ -206,27 +213,27 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  				sorder.customer_ref,
  				sorder.deliver_to";
       } else { // ... or select inquiry constraints
-        if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates' && !isset($_POST['q'])
+        if ($_POST['order_view_mode'] != self::MODE_DELTEMPLATES && $_POST['order_view_mode'] != self::MODE_INVTEMPLATES && !isset($_POST['q'])
         ) {
-          $date_after  = Dates::dateToSql($_POST['OrdersAfterDate']);
-          $date_before = Dates::dateToSql($_POST['OrdersToDate']);
+          $date_after  = Dates::_dateToSql($_POST['OrdersAfterDate']);
+          $date_before = Dates::_dateToSql($_POST['OrdersToDate']);
           $sql .= " AND sorder.ord_date >= '$date_after' AND sorder.ord_date <= '$date_before'";
         }
-        if ($this->trans_type == 32 && !Input::hasPost('show_all')) {
-          $sql .= " AND sorder.delivery_date >= '" . Dates::today(true) . "'";
+        if ($this->trans_type == ST_SALESQUOTE && !$this->Input->hasPost('show_all')) {
+          $sql .= " AND sorder.delivery_date >= '" . Dates::_today(true) . "'";
         }
-        if ($this->debtor_id != -1) {
-          $sql .= " AND sorder.debtor_id=" . DB::quote($this->debtor_id);
+        if ($this->debtor_id> 0) {
+          $sql .= " AND sorder.debtor_id=" . DB::_quote($this->debtor_id);
         }
         if ($this->stock_id) {
-          $sql .= " AND line.stk_code=" . DB::quote($this->stock_id);
+          $sql .= " AND line.stk_code=" . DB::_quote($this->stock_id);
         }
         if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
-          $sql .= " AND sorder.from_stk_loc = " . DB::quote($_POST['StockLocation']);
+          $sql .= " AND sorder.from_stk_loc = " . DB::_quote($_POST['StockLocation']);
         }
-        if ($_POST['order_view_mode'] == 'OutstandingOnly') {
+        if ($_POST['order_view_mode'] == self::MODE_OUTSTANDING) {
           $sql .= " AND line.qty_sent < line.quantity";
-        } elseif ($_POST['order_view_mode'] == 'InvoiceTemplates' || $_POST['order_view_mode'] == 'DeliveryTemplates'
+        } elseif ($_POST['order_view_mode'] == self::MODE_INVTEMPLATES || $_POST['order_view_mode'] == self::MODE_DELTEMPLATES
         ) {
           $sql .= " AND sorder.type=1";
         }
@@ -270,11 +277,11 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
           _("Total")       => array('type' => 'amount', 'ord' => ''), //
         );
       }
-      if ($_POST['order_view_mode'] == 'InvoiceTemplates') {
+      if ($_POST['order_view_mode'] == self::MODE_INVTEMPLATES) {
         Arr::substitute($cols, 3, 1, _("Description"));
         Arr::append($cols, array(array('insert' => true, 'fun' => [$this, 'formatInvoiceBtn'])));
       } else {
-        if ($_POST['order_view_mode'] == 'DeliveryTemplates') {
+        if ($_POST['order_view_mode'] == self::MODE_DELTEMPLATES) {
           Arr::substitute($cols, 3, 1, _("Description"));
           Arr::append($cols, array(array('insert' => true, 'fun' => [$this, 'formatDeliveryBtn2'])));
         }
@@ -292,9 +299,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
      */
     function formatMarker($row) {
       if ($this->trans_type == ST_SALESQUOTE) {
-        return (Dates::isGreaterThan(Dates::today(), Dates::sqlToDate($row['delivery_date'])));
+        return (Dates::_isGreaterThan(Dates::_today(), Dates::_sqlToDate($row['delivery_date'])));
       } else {
-        return ($row['type'] == 0 && Dates::isGreaterThan(Dates::today(), Dates::sqlToDate($row['delivery_date'])) && ($row['TotDelivered'] < $row['TotQuantity']));
+        return ($row['type'] == 0 && Dates::_isGreaterThan(Dates::_today(), Dates::_sqlToDate($row['delivery_date'])) && ($row['TotDelivered'] < $row['TotQuantity']));
       }
     }
     /**
@@ -387,13 +394,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
     function formatDropdown($row) {
       $dropdown = new View('ui/dropdown');
       switch ($_POST['order_view_mode']) {
-        case 'OutstandingOnly':
+        case self::MODE_OUTSTANDING:
           $items[] = $this->formatDeliveryBtn($row);
           break;
-        case 'InvoiceTemplates':
+        case self::MODE_INVTEMPLATES:
           $items[] = $this->formatInvoiceTemplateBtn($row);
           break;
-        case 'DeliveryTemplates':
+        case self::MODE_DELTEMPLATES:
           $items[] = $this->formatDeliveryTemplateBtn($row);
           break;
         default:

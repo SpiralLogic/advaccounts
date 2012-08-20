@@ -23,9 +23,9 @@
     {
       $sql
         = "INSERT INTO chart_types (id, name, class_id, parent)
-        VALUES ($id, " . DB::escape($name) . ", " . DB::escape($class_id) . ", " . DB::escape($parent) . ")";
+        VALUES ($id, " . DB::_escape($name) . ", " . DB::_escape($class_id) . ", " . DB::_escape($parent) . ")";
 
-      return DB::query($sql);
+      return DB::_query($sql);
     }
     /**
      * @static
@@ -39,10 +39,10 @@
      */
     public static function update($id, $name, $class_id, $parent)
     {
-      $sql = "UPDATE chart_types SET name=" . DB::escape($name) . ",
-        class_id=" . DB::escape($class_id) . ", parent=" . DB::escape($parent) . " WHERE id = " . DB::escape($id);
+      $sql = "UPDATE chart_types SET name=" . DB::_escape($name) . ",
+        class_id=" . DB::_escape($class_id) . ", parent=" . DB::_escape($parent) . " WHERE id = " . DB::_escape($id);
 
-      return DB::query($sql, "could not update account type");
+      return DB::_query($sql, "could not update account type");
     }
     /**
      * @static
@@ -60,16 +60,16 @@
         $sql .= " WHERE !inactive";
       }
       if ($class_id != false) {
-        $sql .= " AND class_id=" . DB::escape($class_id);
+        $sql .= " AND class_id=" . DB::_escape($class_id);
       }
       if ($parent == -1) {
         $sql .= " AND parent <= 0";
       } elseif ($parent != false) {
-        $sql .= " AND parent=" . DB::escape($parent);
+        $sql .= " AND parent=" . DB::_escape($parent);
       }
       $sql .= " ORDER BY class_id, id";
 
-      return DB::query($sql, "could not get account types");
+      return DB::_query($sql, "could not get account types");
     }
     /**
      * @static
@@ -80,10 +80,10 @@
      */
     public static function get($id)
     {
-      $sql    = "SELECT * FROM chart_types WHERE id = " . DB::escape($id);
-      $result = DB::query($sql, "could not get account type");
+      $sql    = "SELECT * FROM chart_types WHERE id = " . DB::_escape($id);
+      $result = DB::_query($sql, "could not get account type");
 
-      return DB::fetch($result);
+      return DB::_fetch($result);
     }
     /**
      * @static
@@ -94,9 +94,9 @@
      */
     public static function get_name($id)
     {
-      $sql    = "SELECT name FROM chart_types WHERE id = " . DB::escape($id);
-      $result = DB::query($sql, "could not get account type");
-      $row    = DB::fetchRow($result);
+      $sql    = "SELECT name FROM chart_types WHERE id = " . DB::_escape($id);
+      $result = DB::_query($sql, "could not get account type");
+      $row    = DB::_fetchRow($result);
 
       return $row[0];
     }
@@ -107,8 +107,8 @@
      */
     public static function delete($id)
     {
-      $sql = "DELETE FROM chart_types WHERE id = " . DB::escape($id);
-      DB::query($sql, "could not delete account type");
+      $sql = "DELETE FROM chart_types WHERE id = " . DB::_escape($id);
+      DB::_query($sql, "could not delete account type");
     }
     /**
      * @static

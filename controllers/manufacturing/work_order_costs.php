@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(950, 500);
+  JS::_openWindow(950, 500);
   Page::start(_($help_context = "Work Order Additional Costs"), SA_WORKORDERCOST);
   if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
     $_POST['selected_id'] = $_GET['trans_no'];
@@ -37,24 +37,24 @@
     global $wo_details;
     if (!Validation::post_num('costs', 0)) {
       Event::error(_("The amount entered is not a valid number or less then zero."));
-      JS::setFocus('costs');
+      JS::_setFocus('costs');
 
       return false;
     }
-    if (!Dates::isDate($_POST['date_'])) {
+    if (!Dates::_isDate($_POST['date_'])) {
       Event::error(_("The entered date is invalid."));
-      JS::setFocus('date_');
+      JS::_setFocus('date_');
 
       return false;
-    } elseif (!Dates::isDateInFiscalYear($_POST['date_'])) {
+    } elseif (!Dates::_isDateInFiscalYear($_POST['date_'])) {
       Event::error(_("The entered date is not in fiscal year."));
-      JS::setFocus('date_');
+      JS::_setFocus('date_');
 
       return false;
     }
-    if (Dates::differenceBetween(Dates::sqlToDate($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
+    if (Dates::_differenceBetween(Dates::_sqlToDate($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
       Event::error(_("The additional cost date cannot be before the release date of the work order."));
-      JS::setFocus('date_');
+      JS::_setFocus('date_');
 
       return false;
     }
@@ -63,14 +63,14 @@
   }
 
   if (isset($_POST['process']) && can_process() == true) {
-    DB::begin();
+    DB::_begin();
     GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'], 0, 0, $wo_cost_types[$_POST['PaymentType']], -Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
     $is_bank_to = Bank_Account::is($_POST['cr_acc']);
     if ($is_bank_to) {
       Bank_Trans::add(ST_WORKORDER, $_POST['selected_id'], $is_bank_to, "", $_POST['date_'], -Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType'], Bank_Currency::for_company(), "Cannot insert a destination bank transaction");
     }
     GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'], $_POST['dim1'], $_POST['dim2'], $wo_cost_types[$_POST['PaymentType']], Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
-    DB::commit();
+    DB::_commit();
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=" . $_POST['selected_id']);
   }
   WO_Cost::display($_POST['selected_id']);
@@ -84,8 +84,8 @@
   $item_accounts   = Item::get_gl_code($wo_details['stock_id']);
   $_POST['db_acc'] = $item_accounts['assembly_account'];
   $sql             = "SELECT DISTINCT account_code FROM bank_accounts";
-  $rs              = DB::query($sql, "could not get bank accounts");
-  $r               = DB::fetchRow($rs);
+  $rs              = DB::_query($sql, "could not get bank accounts");
+  $r               = DB::_fetchRow($rs);
   $_POST['cr_acc'] = $r[0];
   Forms::AmountRow(_("Additional Costs:"), 'costs');
   GL_UI::all_row(_("Debit Account"), 'db_acc', null);

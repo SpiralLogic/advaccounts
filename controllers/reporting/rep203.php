@@ -19,7 +19,7 @@
    */
   function get_transactions($supplier, $date)
   {
-    $date = Dates::dateToSql($date);
+    $date = Dates::_dateToSql($date);
     $dec  = User::price_dec();
     $sql
           = "SELECT creditor_trans.supplier_reference,
@@ -38,7 +38,7 @@
         ORDER BY creditor_trans.type,
             creditor_trans.trans_no";
 
-    return DB::query($sql, "No transactions were returned");
+    return DB::_query($sql, "No transactions were returned");
   }
 
   function print_payment_report()
@@ -97,18 +97,18 @@
                 = "SELECT creditor_id, name, curr_code, payment_terms.terms FROM suppliers, payment_terms
         WHERE ";
     if ($fromsupp != ALL_NUMERIC) {
-      $sql .= "creditor_id=" . DB::escape($fromsupp) . " AND ";
+      $sql .= "creditor_id=" . DB::_escape($fromsupp) . " AND ";
     }
     $sql
       .= "suppliers.payment_terms = payment_terms.terms_indicator
         ORDER BY name";
-    $result = DB::query($sql, "The customers could not be retrieved");
-    while ($myrow = DB::fetch($result)) {
+    $result = DB::_query($sql, "The customers could not be retrieved");
+    while ($myrow = DB::_fetch($result)) {
       if (!$convert && $currency != $myrow['curr_code']) {
         continue;
       }
       $res = get_transactions($myrow['creditor_id'], $to);
-      if ($no_zeros && DB::numRows($res) == 0) {
+      if ($no_zeros && DB::_numRows($res) == 0) {
         continue;
       }
       $rep->fontSize += 2;
@@ -118,12 +118,12 @@
       }
       $rep->fontSize -= 2;
       $rep->NewLine(1, 2);
-      if (DB::numRows($res) == 0) {
+      if (DB::_numRows($res) == 0) {
         continue;
       }
       $rep->Line($rep->row + 4);
       $total[0] = $total[1] = 0.0;
-      while ($trans = DB::fetch($res)) {
+      while ($trans = DB::_fetch($res)) {
         if ($no_zeros && $trans['TranTotal'] == 0 && $trans['Balance'] == 0) {
           continue;
         }

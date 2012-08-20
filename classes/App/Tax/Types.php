@@ -21,8 +21,8 @@
     {
       $sql
         = "INSERT INTO tax_types (name, sales_gl_code, purchasing_gl_code, rate)
-        VALUES (" . DB::escape($name) . ", " . DB::escape($sales_gl_code) . ", " . DB::escape($purchasing_gl_code) . ", $rate)";
-      DB::query($sql, "could not add tax type");
+        VALUES (" . DB::_escape($name) . ", " . DB::_escape($sales_gl_code) . ", " . DB::_escape($purchasing_gl_code) . ", $rate)";
+      DB::_query($sql, "could not add tax type");
     }
     /**
      * @static
@@ -35,12 +35,12 @@
      */
     public static function update($type_id, $name, $sales_gl_code, $purchasing_gl_code, $rate)
     {
-      $sql = "UPDATE tax_types SET name=" . DB::escape($name) . ",
-        sales_gl_code=" . DB::escape($sales_gl_code) . ",
-        purchasing_gl_code=" . DB::escape($purchasing_gl_code) . ",
+      $sql = "UPDATE tax_types SET name=" . DB::_escape($name) . ",
+        sales_gl_code=" . DB::_escape($sales_gl_code) . ",
+        purchasing_gl_code=" . DB::_escape($purchasing_gl_code) . ",
         rate=$rate
-        WHERE id=" . DB::escape($type_id);
-      DB::query($sql, "could not update tax type");
+        WHERE id=" . DB::_escape($type_id);
+      DB::_query($sql, "could not update tax type");
     }
     /**
      * @static
@@ -63,7 +63,7 @@
         $sql .= " AND !tax_types.inactive";
       }
 
-      return DB::query($sql, "could not get all tax types");
+      return DB::_query($sql, "could not get all tax types");
     }
     /**
      * @static
@@ -73,7 +73,7 @@
     {
       $sql = "SELECT * FROM tax_types";
 
-      return DB::query($sql, "could not get all tax types");
+      return DB::_query($sql, "could not get all tax types");
     }
     /**
      * @static
@@ -91,10 +91,10 @@
         FROM tax_types, chart_master AS Chart1,
         chart_master AS Chart2
         WHERE tax_types.sales_gl_code = Chart1.account_code
-        AND tax_types.purchasing_gl_code = Chart2.account_code AND id=" . DB::escape($type_id);
-      $result = DB::query($sql, "could not get tax type");
+        AND tax_types.purchasing_gl_code = Chart2.account_code AND id=" . DB::_escape($type_id);
+      $result = DB::_query($sql, "could not get tax type");
 
-      return DB::fetch($result);
+      return DB::_fetch($result);
     }
     /**
      * @static
@@ -105,9 +105,9 @@
      */
     public static function get_default_rate($type_id)
     {
-      $sql    = "SELECT rate FROM tax_types WHERE id=" . DB::escape($type_id);
-      $result = DB::query($sql, "could not get tax type rate");
-      $row    = DB::fetchRow($result);
+      $sql    = "SELECT rate FROM tax_types WHERE id=" . DB::_escape($type_id);
+      $result = DB::_query($sql, "could not get tax type rate");
+      $row    = DB::_fetchRow($result);
 
       return $row[0];
     }
@@ -124,13 +124,13 @@
         return false;
       }
 
-      DB::begin();
-      $sql = "DELETE FROM tax_types WHERE id=" . DB::escape($type_id);
-      DB::query($sql, "could not delete tax type");
+      DB::_begin();
+      $sql = "DELETE FROM tax_types WHERE id=" . DB::_escape($type_id);
+      DB::_query($sql, "could not delete tax type");
       // also delete any item tax exemptions associated with this type
       $sql = "DELETE FROM item_tax_type_exemptions WHERE tax_type_id=$type_id";
-      DB::query($sql, "could not delete item tax type exemptions");
-      DB::commit();
+      DB::_query($sql, "could not delete item tax type exemptions");
+      DB::_commit();
       Event::notice(_('Selected tax type has been deleted'));
     }
     /**
@@ -148,12 +148,12 @@
     {
       $purch_code = $gl_code2 == -1 ? $gl_code : $gl_code2;
       $sql        = "SELECT count(*) FROM " . "tax_types
-        WHERE (sales_gl_code=" . DB::escape($gl_code) . " OR purchasing_gl_code=" . DB::escape($purch_code) . ")";
+        WHERE (sales_gl_code=" . DB::_escape($gl_code) . " OR purchasing_gl_code=" . DB::_escape($purch_code) . ")";
       if ($selected_id != -1) {
-        $sql .= " AND id!=" . DB::escape($selected_id);
+        $sql .= " AND id!=" . DB::_escape($selected_id);
       }
-      $res = DB::query($sql, "could not query gl account uniqueness");
-      $row = DB::fetch($res);
+      $res = DB::_query($sql, "could not query gl account uniqueness");
+      $row = DB::_fetch($res);
 
       return $gl_code2 == -1 ? ($row[0] <= 1) : ($row[0] == 0);
     }
@@ -220,9 +220,9 @@
      */
     public static function can_delete($selected_id)
     {
-      $sql    = "SELECT COUNT(*) FROM tax_group_items	WHERE tax_type_id=" . DB::escape($selected_id);
-      $result = DB::query($sql, "could not query tax groups");
-      $myrow  = DB::fetchRow($result);
+      $sql    = "SELECT COUNT(*) FROM tax_group_items	WHERE tax_type_id=" . DB::_escape($selected_id);
+      $result = DB::_query($sql, "could not query tax groups");
+      $myrow  = DB::_fetchRow($result);
       if ($myrow[0] > 0) {
         Event::error(_("Cannot delete this tax type because tax groups been created referring to it."));
 
@@ -242,18 +242,18 @@
     {
       if (strlen($_POST['name']) == 0) {
         Event::error(_("The tax type name cannot be empty."));
-        JS::setFocus('name');
+        JS::_setFocus('name');
 
         return false;
       } elseif (!Validation::post_num('rate', 0)) {
         Event::error(_("The default tax rate must be numeric and not less than zero."));
-        JS::setFocus('rate');
+        JS::_setFocus('rate');
 
         return false;
       }
-      if (!Tax_Types::is_tax_gl_unique(Input::post('sales_gl_code'), Input::post('purchasing_gl_code'), $selected_id)) {
+      if (!Tax_Types::is_tax_gl_unique(Input::_post('sales_gl_code'), Input::_post('purchasing_gl_code'), $selected_id)) {
         Event::error(_("Selected GL Accounts cannot be used by another tax type."));
-        JS::setFocus('sales_gl_code');
+        JS::_setFocus('sales_gl_code');
 
         return false;
       }

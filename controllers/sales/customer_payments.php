@@ -17,46 +17,46 @@
     public $debtor_id;
     protected function before() {
       if ($_SERVER['REQUEST_METHOD'] == "GET") {
-        if ($this->Input->_get('account')) {
-          $_POST['bank_acount'] = $this->Input->_get('account');
+        if ($this->Input->get('account')) {
+          $_POST['bank_acount'] = $this->Input->get('account');
         }
-        if ($this->Input->_get('amount')) {
-          $_POST['amount'] = $this->Input->_get('amount');
+        if ($this->Input->get('amount')) {
+          $_POST['amount'] = $this->Input->get('amount');
         }
-        if ($this->Input->_get('memo')) {
-          $_POST['memo_'] = $this->Input->_get('memo');
+        if ($this->Input->get('memo')) {
+          $_POST['memo_'] = $this->Input->get('memo');
         }
-        if ($this->Input->_get('date')) {
-          $_POST['DateBanked'] = $this->Input->_get('date');
+        if ($this->Input->get('date')) {
+          $_POST['DateBanked'] = $this->Input->get('date');
         }
-        if ($this->Input->_get('fee')) {
-          $_POST['charge'] = $this->Input->_get('fee');
+        if ($this->Input->get('fee')) {
+          $_POST['charge'] = $this->Input->get('fee');
         }
       }
-      $this->JS->_openWindow(900, 500);
-      $this->JS->_footerFile('/js/payalloc.js');
-      $this->debtor_id    = $this->Input->_postGetGlobal('debtor_id');
+      $this->JS->openWindow(900, 500);
+      $this->JS->footerFile('/js/payalloc.js');
+      $this->debtor_id    = $this->Input->postGetGlobal('debtor_id');
       $_POST['debtor_id'] =& $this->debtor_id;
       if (Forms::isListUpdated('branch_id') || !$_POST['debtor_id']) {
-        $br              = Sales_Branch::get($this->Input->_post('branch_id'));
+        $br              = Sales_Branch::get($this->Input->post('branch_id'));
         $this->debtor_id = $br['debtor_id'];
-        Ajax::activate('debtor_id');
+        $this->Ajax->activate('debtor_id');
       }
-      $this->Session->_setGlobal('debtor_id', $this->debtor_id);
-      $this->date_banked = $this->Input->_post('DateBanked', null, Dates::newDocDate());
-      if (!Dates::isDateInFiscalYear($this->date_banked)) {
-        $this->date_banked = Dates::endFiscalYear();
+      $this->Session->setGlobal('debtor_id', $this->debtor_id);
+      $this->date_banked = $this->Input->post('DateBanked', null, Dates::_newDocDate());
+      if (!Dates::_isDateInFiscalYear($this->date_banked)) {
+        $this->date_banked = Dates::_endFiscalYear();
       }
       $_POST['DateBanked'] = &$this->date_banked;
       // validate inputs
       if (isset($_POST['_debtor_id_button'])) {
-        Ajax::activate('branch_id');
+        $this->Ajax->activate('branch_id');
       }
       if (isset($_POST['_DateBanked_changed'])) {
-        Ajax::activate('_ex_rate');
+        $this->Ajax->activate('_ex_rate');
       }
-      if ($this->Input->_hasPost('debtor_id') || Forms::isListUpdated('bank_account')) {
-        Ajax::activate('_page_body');
+      if ($this->Input->hasPost('debtor_id') || Forms::isListUpdated('bank_account')) {
+        $this->Ajax->activate('_page_body');
       }
       if (!isset($_POST['bank_account'])) // first page call
       {
@@ -82,7 +82,7 @@
       } else {
         $rate = Validation::input_num('_ex_rate');
       }
-      if ($this->Input->_hasPost('createinvoice')) {
+      if ($this->Input->hasPost('createinvoice')) {
         GL_Allocation::create_miscorder(new Debtor($this->debtor_id), $_POST['branch_id'], $this->date_banked, $_POST['memo_'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'));
       }
       $payment_no                  = Debtor_Payment::add(0, $this->debtor_id, $_POST['branch_id'], $_POST['bank_account'], $this->date_banked, $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate, Validation::input_num('charge'));
@@ -95,12 +95,12 @@
       Display::note(GL_UI::view(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
       //	Display::link_params( "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
       Display::link_no_params("/sales/customer_payments.php", _("Enter Another &Customer Payment"));
-      $this->Ajax->_activate('_page_body');
+      $this->Ajax->activate('_page_body');
       Page::footer_exit();
       return true;
     }
     protected function index() {
-      Page::start(_($help_context = "Customer Payment Entry"), SA_SALESPAYMNT, $this->Input->_request('frame'));
+      Page::start(_($help_context = "Customer Payment Entry"), SA_SALESPAYMNT, $this->Input->request('frame'));
       $this->runAction();
       Forms::start();
       Table::startOuter('tablestyle2 width90 pad2');
@@ -108,7 +108,7 @@
       Debtor::newselect();
       Forms::refRow(_("Reference:"), 'ref', null, Ref::get_next(ST_CUSTPAYMENT));
       Debtor_Payment::read_customer_data($this->debtor_id);
-      $display_discount_percent = Num::percentFormat($_POST['payment_discount'] * 100) . "%";
+      $display_discount_percent = Num::_percentFormat($_POST['payment_discount'] * 100) . "%";
       Table::section(2);
       Debtor_Branch::row(_("Branch:"), $this->debtor_id, 'branch_id', null, false, true, true);
       Bank_Account::row(_("Into Bank Account:"), 'bank_account', null, true);
@@ -131,7 +131,7 @@
       Table::start('tablestyle width70');
       Row::label(_("Customer prompt payment discount :"), $display_discount_percent);
       Forms::AmountRow(_("Amount of Discount:"), 'discount', 0);
-      if (User::i()->hasAccess(SS_SALES) && !$this->Input->_post('TotalNumberOfAllocs')) {
+      if (User::i()->hasAccess(SS_SALES) && !$this->Input->post('TotalNumberOfAllocs')) {
         //    Forms::checkRow(_("Create invoice and apply for this payment: "), 'createinvoice');
       }
       Forms::AmountRow(_("Amount:"), 'amount');
@@ -142,7 +142,7 @@
       }
       Forms::submitCenter('_action', 'addPaymentItem', true, 'Add Payment', 'default');
       Forms::end();
-      Page::end(!$this->Input->_request('frame'));
+      Page::end(!$this->Input->request('frame'));
     }
     /**
      * @internal param $prefix
@@ -161,28 +161,28 @@
      * @return bool
      */
     protected function can_process($type) {
-      if (!$this->Input->_post('debtor_id')) {
+      if (!$this->Input->post('debtor_id')) {
         Event::error(_("There is no customer selected."));
-        $this->JS->_setFocus('debtor_id');
+        $this->JS->setFocus('debtor_id');
         return false;
       }
-      if (!$this->Input->_post('branch_id')) {
+      if (!$this->Input->post('branch_id')) {
         Event::error(_("This customer has no branch defined."));
-        $this->JS->_setFocus('branch_id');
+        $this->JS->setFocus('branch_id');
         return false;
       }
-      if (!isset($_POST['DateBanked']) || !Dates::isDate($_POST['DateBanked'])) {
+      if (!isset($_POST['DateBanked']) || !Dates::_isDate($_POST['DateBanked'])) {
         Event::error(_("The entered date is invalid. Please enter a valid date for the payment."));
-        $this->JS->_setFocus('DateBanked');
+        $this->JS->setFocus('DateBanked');
         return false;
-      } elseif (!Dates::isDateInFiscalYear($_POST['DateBanked'])) {
+      } elseif (!Dates::_isDateInFiscalYear($_POST['DateBanked'])) {
         Event::error(_("The entered date is not in fiscal year."));
-        $this->JS->_setFocus('DateBanked');
+        $this->JS->setFocus('DateBanked');
         return false;
       }
       if (!Ref::is_valid($_POST['ref'])) {
         Event::error(_("You must enter a reference."));
-        $this->JS->_setFocus('ref');
+        $this->JS->setFocus('ref');
         return false;
       }
       if (!Ref::is_new($_POST['ref'], $type)) {
@@ -190,25 +190,25 @@
       }
       if (!Validation::post_num('amount', 0)) {
         Event::error(_("The entered amount is invalid or negative and cannot be processed."));
-        $this->JS->_setFocus('amount');
+        $this->JS->setFocus('amount');
         return false;
       }
       if (isset($_POST['charge']) && !Validation::post_num('charge', 0)) {
         Event::error(_("The entered amount is invalid or negative and cannot be processed."));
-        $this->JS->_setFocus('charge');
+        $this->JS->setFocus('charge');
         return false;
       }
       if (isset($_POST['charge']) && Validation::input_num('charge') > 0) {
         $charge_acct = DB_Company::get_pref('bank_charge_act');
         if (GL_Account::get($charge_acct) == false) {
           Event::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
-          $this->JS->_setFocus('charge');
+          $this->JS->setFocus('charge');
           return false;
         }
       }
       if (isset($_POST['_ex_rate']) && !Validation::post_num('_ex_rate', 0.000001)) {
         Event::error(_("The exchange rate must be numeric and greater than zero."));
-        $this->JS->_setFocus('_ex_rate');
+        $this->JS->setFocus('_ex_rate');
         return false;
       }
       if ($_POST['discount'] == "") {
@@ -216,7 +216,7 @@
       }
       if (!Validation::post_num('discount')) {
         Event::error(_("The entered discount is not a valid number."));
-        $this->JS->_setFocus('discount');
+        $this->JS->setFocus('discount');
         return false;
       }
       if ($type == ST_CUSTPAYMENT && !User::i()->salesmanid) {
@@ -226,12 +226,12 @@
       // if ($type == ST_CUSTPAYMENT &&(Validation::input_num('amount') - Validation::input_num('discount') < 0)) {
       if ($type == ST_CUSTPAYMENT && Validation::input_num('discount', 0, 0) < 0) {
         Event::error(_("The balance of the amount and discount is zero or negative. Please enter valid amounts."));
-        $this->JS->_setFocus('discount');
+        $this->JS->setFocus('discount');
         return false;
       }
       if ($type == ST_CUSTREFUND && Validation::input_num('amount') >= 0) {
         Event::error(_("The balance of the amount and discount is zero or positive. Please enter valid amounts."));
-        $this->JS->_setfocus('[name="amount"]');
+        $this->JS->setfocus('[name="amount"]');
         return false;
       }
       $_SESSION['alloc']->amount = Validation::input_num('amount');

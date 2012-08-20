@@ -21,43 +21,43 @@
     protected $creditor_id;
     public $bank_account;
     protected function before() {
-      JS::openWindow(950, 500);
-      JS::footerFile('/js/payalloc.js');
+      JS::_openWindow(950, 500);
+      JS::_footerFile('/js/payalloc.js');
       if ($_SERVER['REQUEST_METHOD'] == "GET") {
-        if (Input::get('account')) {
-          $_POST['bank_acount'] = Input::get('account');
+        if (Input::_get('account')) {
+          $_POST['bank_acount'] = Input::_get('account');
         }
-        if (Input::get('amount')) {
-          $_POST['amount'] = abs(Input::get('amount'));
+        if (Input::_get('amount')) {
+          $_POST['amount'] = abs(Input::_get('amount'));
         }
-        if (Input::get('memo')) {
-          $_POST['memo_'] = Input::get('memo');
+        if (Input::_get('memo')) {
+          $_POST['memo_'] = Input::_get('memo');
         }
-        if (Input::get('date')) {
-          $_POST['date_'] = Input::get('date');
+        if (Input::_get('date')) {
+          $_POST['date_'] = Input::_get('date');
         }
       }
-      $_POST['creditor_id'] = Input::postGetGlobal('creditor_id', null, -1);
+      $_POST['creditor_id'] = Input::_postGetGlobal('creditor_id', null, -1);
       $this->creditor_id    = &$_POST['creditor_id'];
-      $this->Session->_setGlobal('creditor_id', $this->creditor_id);
+      $this->Session->setGlobal('creditor_id', $this->creditor_id);
       if (!$this->bank_account) // first page call
       {
         $_SESSION['alloc'] = new GL_Allocation(ST_SUPPAYMENT, 0);
       }
-      $_POST['bank_account'] = Input::postGetGlobal('bank_account', null, -1);
+      $_POST['bank_account'] = Input::_postGetGlobal('bank_account', null, -1);
       $this->bank_account    = &$_POST['bank_account'];
       if (!isset($_POST['date_'])) {
-        $_POST['date_'] = Dates::newDocDate();
-        if (!Dates::isDateInFiscalYear($_POST['date_'])) {
-          $_POST['date_'] = Dates::endFiscalYear();
+        $_POST['date_'] = Dates::_newDocDate();
+        if (!Dates::_isDateInFiscalYear($_POST['date_'])) {
+          $_POST['date_'] = Dates::_endFiscalYear();
         }
       }
       if (isset($_POST['_date__changed'])) {
-        Ajax::activate('_ex_rate');
+        Ajax::_activate('_ex_rate');
       }
-      if (Input::post('_control') == 'creditor' || Forms::isListUpdated('bank_account')) {
+      if (Input::_post('_control') == 'creditor' || Forms::isListUpdated('bank_account')) {
         $_SESSION['alloc']->read();
-        Ajax::activate('alloc_tbl');
+        Ajax::_activate('alloc_tbl');
       }
       $this->company_currency = Bank_Currency::for_company();
       $this->supplier_currency = Bank_Currency::for_creditor($this->creditor_id);
@@ -123,7 +123,7 @@
       if (!$payment_id) {
         return false;
       }
-      Dates::newDocDate($_POST['date_']);
+      Dates::_newDocDate($_POST['date_']);
       $_SESSION['alloc']->trans_no = $payment_id;
       $_SESSION['alloc']->write();
       //unset($this->creditor_id);
@@ -136,7 +136,7 @@
       Display::note(GL_UI::view(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment"), false, 'button'));
       // Display::link_params($path_to_root . "/purchases/allocations/supplier_allocate.php", _("&Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter another supplier &payment"), "creditor_id=" . $this->creditor_id, true, 'class="button"');
-      $this->Ajax->_activate('_page_body');
+      $this->Ajax->activate('_page_body');
       Page::footer_exit();
 
       return true;

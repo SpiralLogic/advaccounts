@@ -34,7 +34,7 @@
      */
     public static function add_access(User $user)
     {
-      $installed_extensions = Config::get('extensions.installed');
+      $installed_extensions = Config::_get('extensions.installed');
       /** @noinspection PhpUnusedLocalVariableInspection */
       foreach ($installed_extensions as $extid => $ext) {
         $scode       = 100;
@@ -78,7 +78,7 @@
     public static function view($name, $value = null, $submit_on_change = false)
     {
       $items = [];
-      foreach (Config::getAll('db') as $comp) {
+      foreach (Config::_getAll('db') as $comp) {
         $items[] = sprintf(_("Activated for '%s'"), $comp['name']);
       }
 

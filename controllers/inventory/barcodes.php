@@ -81,7 +81,7 @@
             </style></head><body>';
     $csvitems = [];
     $file     = fopen($file, 'r');
-    $result   = DB::select('s.stock_id', 's.description')->from('stock_master s');
+    $result   = DB::_select('s.stock_id', 's.description')->from('stock_master s');
     while (($item = fgetcsv($file, 1000, ',')) !== false) {
       $result->orWhere("s.stock_id LIKE ", $item[0]);
       $csvitems[strtolower($item[0])] = $item[1];

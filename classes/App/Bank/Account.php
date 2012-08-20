@@ -40,10 +40,10 @@
               = "INSERT INTO bank_accounts (account_code, account_type,
         bank_account_name, bank_name, bank_account_number, bank_address,
         bank_curr_code, dflt_curr_act)
-        VALUES (" . DB::escape($account_code) . ", " . DB::escape($account_type) . ", " . DB::escape($bank_account_name) . ", " . DB::escape($bank_name) . ", " . DB::escape(
+        VALUES (" . DB::_escape($account_code) . ", " . DB::_escape($account_type) . ", " . DB::_escape($bank_account_name) . ", " . DB::_escape($bank_name) . ", " . DB::_escape(
                 $bank_account_number
-            ) . "," . DB::escape($bank_address) . ", " . DB::escape($bank_curr_code) . ", " . DB::escape($dflt_curr_act) . ")";
-            DB::query($sql, "could not add a bank account for $account_code");
+            ) . "," . DB::_escape($bank_address) . ", " . DB::_escape($bank_curr_code) . ", " . DB::_escape($dflt_curr_act) . ")";
+            DB::_query($sql, "could not add a bank account for $account_code");
         }
         /**
          * @static
@@ -64,13 +64,13 @@
             {
                 Bank_Currency::clear_default($bank_curr_code);
             }
-            $sql = "UPDATE bank_accounts	SET account_type = " . DB::escape($account_type) . ",
-        account_code=" . DB::escape($account_code) . ",
-        bank_account_name=" . DB::escape($bank_account_name) . ", bank_name=" . DB::escape($bank_name) . ",
-        bank_account_number=" . DB::escape($bank_account_number) . ", bank_curr_code=" . DB::escape($bank_curr_code) . ",
-        bank_address=" . DB::escape($bank_address) . ",
-        dflt_curr_act=" . DB::escape($dflt_curr_act) . " WHERE id = " . DB::escape($id);
-            DB::query($sql, "could not update bank account for $account_code");
+            $sql = "UPDATE bank_accounts	SET account_type = " . DB::_escape($account_type) . ",
+        account_code=" . DB::_escape($account_code) . ",
+        bank_account_name=" . DB::_escape($bank_account_name) . ", bank_name=" . DB::_escape($bank_name) . ",
+        bank_account_number=" . DB::_escape($bank_account_number) . ", bank_curr_code=" . DB::_escape($bank_curr_code) . ",
+        bank_address=" . DB::_escape($bank_address) . ",
+        dflt_curr_act=" . DB::_escape($dflt_curr_act) . " WHERE id = " . DB::_escape($id);
+            DB::_query($sql, "could not update bank account for $account_code");
         }
         /**
          * @static
@@ -79,8 +79,8 @@
          */
         public static function delete($id)
         {
-            $sql = "DELETE FROM bank_accounts WHERE id=" . DB::escape($id);
-            DB::query($sql, "could not delete bank account for $id");
+            $sql = "DELETE FROM bank_accounts WHERE id=" . DB::_escape($id);
+            DB::_query($sql, "could not delete bank account for $id");
         }
         /**
          * @static
@@ -91,9 +91,9 @@
          */
         public static function get($id)
         {
-            $sql    = "SELECT * FROM bank_accounts WHERE id=" . DB::escape($id);
-            $result = DB::query($sql, "could not retreive bank account for $id");
-            return DB::fetch($result);
+            $sql    = "SELECT * FROM bank_accounts WHERE id=" . DB::_escape($id);
+            $result = DB::_query($sql, "could not retreive bank account for $id");
+            return DB::_fetch($result);
         }
         /**
          * @static
@@ -104,9 +104,9 @@
          */
         public static function get_gl($id)
         {
-            $sql          = "SELECT account_code FROM bank_accounts WHERE id=" . DB::escape($id);
-            $result       = DB::query($sql, "could not retreive bank account for $id");
-            $bank_account = DB::fetch($result);
+            $sql          = "SELECT account_code FROM bank_accounts WHERE id=" . DB::_escape($id);
+            $result       = DB::_query($sql, "could not retreive bank account for $id");
+            $bank_account = DB::_fetch($result);
             return isset($bank_account['account_code']) ? $bank_account['account_code'] : false;
         }
         /**
@@ -115,7 +115,7 @@
         public function getAll()
         {
             $bank_accounts = [];
-            $result        = DB::query("SELECT bank_accounts.id, bank_account_name name FROM bank_accounts WHERE !inactive")->fetchAll();
+            $result        = DB::_query("SELECT bank_accounts.id, bank_account_name name FROM bank_accounts WHERE !inactive")->fetchAll();
             foreach ($result as $acc) {
                 $bank_accounts[$acc['id']] = $acc['name'];
             }
@@ -140,10 +140,10 @@
             if (!$curr) {
                 $curr = $home_curr;
             }
-            $sql    = "SELECT b.*, b.bank_curr_code='$home_curr' as fall_back FROM " . "bank_accounts b" . " WHERE b.bank_curr_code=" . DB::escape($curr) . " OR b.bank_curr_code='$home_curr'
+            $sql    = "SELECT b.*, b.bank_curr_code='$home_curr' as fall_back FROM " . "bank_accounts b" . " WHERE b.bank_curr_code=" . DB::_escape($curr) . " OR b.bank_curr_code='$home_curr'
         ORDER BY fall_back, dflt_curr_act desc";
-            $result = DB::query($sql, "could not retreive default bank account");
-            return DB::fetch($result);
+            $result = DB::_query($sql, "could not retreive default bank account");
+            return DB::_fetch($result);
         }
         /**
          * @static
@@ -154,9 +154,9 @@
          */
         public static function get_customer_default($cust_id)
         {
-            $sql    = "SELECT curr_code FROM debtors WHERE debtor_id=" . DB::escape($cust_id);
-            $result = DB::query($sql, "could not retreive default customer currency code");
-            $row    = DB::fetchRow($result);
+            $sql    = "SELECT curr_code FROM debtors WHERE debtor_id=" . DB::_escape($cust_id);
+            $result = DB::_query($sql, "could not retreive default customer currency code");
+            $row    = DB::_fetchRow($result);
             $ba     = static::get_default($row[0]);
             return $ba['id'];
         }
@@ -168,7 +168,7 @@
         public static function hasStatements($id = null)
         {
             $id     = $id ? : static::get_default()['id'];
-            $result = DB::select('count(*) as count')->from('temprec')->where('bank_account_id=', $id)->fetch()->one();
+            $result = DB::_select('count(*) as count')->from('temprec')->where('bank_account_id=', $id)->fetch()->one();
             return $result['count'];
         }
         /**
@@ -181,9 +181,9 @@
         public static function is($account_code)
         {
             $sql    = "SELECT id FROM bank_accounts WHERE account_code='$account_code'";
-            $result = DB::query($sql, "checking account is bank account");
-            if (DB::numRows($result) > 0) {
-                $acct = DB::fetch($result);
+            $result = DB::_query($sql, "checking account is bank account");
+            if (DB::_numRows($result) > 0) {
+                $acct = DB::_fetch($result);
                 return $acct['id'];
             } else {
                 return false;
@@ -299,15 +299,15 @@
         public static function getBalances($bank_account, $begin_date, $end_date)
         {
             $begin_date    = static::checkBeginDate($begin_date);
-            $sql           = "(select (rb - amount) as amount from temprec where date>" . DB::quote($begin_date) . " and date<=" . DB::quote(
+            $sql           = "(select (rb - amount) as amount from temprec where date>" . DB::_quote($begin_date) . " and date<=" . DB::_quote(
                 $end_date
-            ) . " and bank_account_id=" . DB::quote($bank_account) . " order by date, id desc limit 0,
-          1) union (select rb as amount from temprec where date>" . DB::quote($begin_date) . " and date<=" . DB::quote($end_date) . " and bank_account_id=" . DB::quote(
+            ) . " and bank_account_id=" . DB::_quote($bank_account) . " order by date, id desc limit 0,
+          1) union (select rb as amount from temprec where date>" . DB::_quote($begin_date) . " and date<=" . DB::_quote($end_date) . " and bank_account_id=" . DB::_quote(
                 $bank_account
             ) . " order by date desc, id asc limit 0,1)";
-            $result        = DB::query($sql);
-            $begin_balance = DB::fetch($result)['amount'];
-            $end_balance   = DB::fetch($result)['amount'];
+            $result        = DB::_query($sql);
+            $begin_balance = DB::_fetch($result)['amount'];
+            $end_balance   = DB::_fetch($result)['amount'];
             return array($begin_balance, $end_balance);
         }
         /**
@@ -331,11 +331,11 @@
         public static function getStatement($bank_account, $begin_date, $end_date)
         {
             $begin_date = static::checkBeginDate($begin_date);
-            $sql        = "SELECT date as state_date, amount as state_amount,memo,id as state_id, reconciled_to_id FROM temprec WHERE date > " . DB::quote(
+            $sql        = "SELECT date as state_date, amount as state_amount,memo,id as state_id, reconciled_to_id FROM temprec WHERE date > " . DB::_quote(
                 $begin_date
-            ) . " AND date <=" . DB::quote($end_date) . " and bank_account_id=" . DB::quote($bank_account) . " ORDER BY reconciled_to_id DESC, date ,amount";
-            DB::query($sql);
-            $statement_trans = DB::fetchAll();
+            ) . " AND date <=" . DB::_quote($end_date) . " and bank_account_id=" . DB::_quote($bank_account) . " ORDER BY reconciled_to_id DESC, date ,amount";
+            DB::_query($sql);
+            $statement_trans = DB::_fetchAll();
             return $statement_trans;
         }
     }

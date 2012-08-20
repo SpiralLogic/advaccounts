@@ -78,20 +78,20 @@
         $rep->Header2($myrow, $branch, $sales_order, $baccount, $j);
         $result   = Debtor_TransDetail::get($j, $i);
         $SubTotal = 0;
-        while ($myrow2 = DB::fetch($result)) {
+        while ($myrow2 = DB::_fetch($result)) {
           if ($myrow2["quantity"] == 0) {
             continue;
           }
-          $Net = Num::round($sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
+          $Net = Num::_round($sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
           $SubTotal += $Net;
           $TaxType      = Tax_ItemType::get_for_item($myrow2['stock_id']);
-          $DisplayPrice = Num::format($myrow2["unit_price"], $dec);
-          $DisplayQty   = Num::format($sign * $myrow2["quantity"], Item::qty_dec($myrow2['stock_id']));
-          $DisplayNet   = Num::format($Net, $dec);
+          $DisplayPrice = Num::_format($myrow2["unit_price"], $dec);
+          $DisplayQty   = Num::_format($sign * $myrow2["quantity"], Item::qty_dec($myrow2['stock_id']));
+          $DisplayNet   = Num::_format($Net, $dec);
           if ($myrow2["discount_percent"] == 0) {
             $DisplayDiscount = "";
           } else {
-            $DisplayDiscount = Num::format($myrow2["discount_percent"] * 100, User::percent_dec()) . "%";
+            $DisplayDiscount = Num::_format($myrow2["discount_percent"] * 100, User::percent_dec()) . "%";
           }
           $rep->TextCol(0, 1, $myrow2['stock_id'], -2);
           $oldrow = $rep->row;
@@ -111,14 +111,14 @@
           }
         }
         $comments = DB_Comments::get($j, $i);
-        if ($comments && DB::numRows($comments)) {
+        if ($comments && DB::_numRows($comments)) {
           $rep->NewLine();
-          while ($comment = DB::fetch($comments)) {
+          while ($comment = DB::_fetch($comments)) {
             $rep->TextColLines(0, 6, $comment['memo_'], -2);
           }
         }
-        $display_sub_total = Num::format($SubTotal, $dec);
-        $display_freight   = Num::format($sign * $myrow["ov_freight"], $dec);
+        $display_sub_total = Num::_format($SubTotal, $dec);
+        $display_freight   = Num::_format($sign * $myrow["ov_freight"], $dec);
         $fromBottom        = ($myrow['type'] == ST_SALESINVOICE) ? 15 : 12;
         $rep->row          = $rep->bottomMargin + ($fromBottom * $rep->lineHeight);
         $linetype          = true;
@@ -136,8 +136,8 @@
         $rep->TextCol(7, 8, $display_freight, -2);
         $rep->NewLine();
         $tax_items = GL_Trans::get_tax_details($j, $i);
-        while ($tax_item = DB::fetch($tax_items)) {
-          $DisplayTax = Num::format($sign * $tax_item['amount'], $dec);
+        while ($tax_item = DB::_fetch($tax_items)) {
+          $DisplayTax = Num::_format($sign * $tax_item['amount'], $dec);
           if ($tax_item['included_in_price']) {
             $rep->TextCol(3, 7, $doc_included . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " . $doc_amount . ": " . $DisplayTax, -2);
           } else {
@@ -146,7 +146,7 @@
           }
         }
         $rep->NewLine();
-        $display_total = Num::format($sign * ($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]), $dec);
+        $display_total = Num::_format($sign * ($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]), $dec);
         $rep->Font('bold');
         $rep->TextCol(3, 7, $doc_total_invoice, -2);
         $rep->TextCol(7, 8, $display_total, -2);
@@ -169,7 +169,7 @@
         $rep->Font();
         if ($email == 1) {
           $myrow['dimension_id'] = $paylink; // helper for pmt link
-          $myrow['email']        = $myrow['email'] ? : Input::get('Email');
+          $myrow['email']        = $myrow['email'] ? : Input::_get('Email');
           if (!$myrow['email']) {
             $myrow['email']      = $branch['email'];
             $myrow['DebtorName'] = $branch['br_name'];

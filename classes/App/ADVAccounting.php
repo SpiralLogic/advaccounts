@@ -1,5 +1,7 @@
 <?php
   use ADV\App\Page;
+  use ADV\Core\JS;
+  use ADV\Core\Input\Input;
   use ADV\Core\Config;
   use ADV\Core\Ajax;
   use ADV\Core\Session;
@@ -16,10 +18,11 @@
    * @link      http://www.advancedgroup.com.au
    **/
   /**
-
+* @method ADVAccounting i()
    */
   class ADVAccounting
   {
+
     use \ADV\Core\Traits\Singleton;
 
     public $applications = [];
@@ -34,6 +37,8 @@
     protected $Config = null;
     /** @var Session */
     protected $Session = null;
+    /** @var Ajax */
+    protected $Ajax = null;
     protected $get_text = null;
     /** */
     public function __construct(\ADV\Core\Loader $loader) {
@@ -47,6 +52,7 @@
         class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'Errors.php';
         return \ADV\Core\Errors::handler($severity, $message, $filepath, $line);
       }, E_ALL & ~E_STRICT & ~E_NOTICE);
+
       set_exception_handler(function (\Exception $e) {
         class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'Errors.php';
         \ADV\Core\Errors::exceptionHandler($e);
@@ -57,26 +63,25 @@
       static::i($this);
       $this->Cache = \ADV\Core\Cache::i();
       $loader->registerCache($this->Cache);
-      $this->Cache->_defineConstants($_SERVER['SERVER_NAME'] . '.defines', function() {
+      $this->Cache->defineConstants($_SERVER['SERVER_NAME'] . '.defines', function () {
         return include(DOCROOT . 'config' . DS . 'defines.php');
       });
       include(DOCROOT . 'config' . DS . 'types.php');
       $this->Config = Config::i();
-      // Ajax communication object
-      $this->Ajax = Ajax::i();
-      ob_start([$this, 'flush_handler'], 0);
+      $this->Ajax   = Ajax::i();
+     ob_start([$this, 'flush_handler'], 0);
       $this->Session = Session::i();
       $this->setTextSupport();
-      $this->Session['language'] = new Language();
+     $this->Session['language'] = new Language();
       $this->User                = User::i($this->Session);
       $this->menu                = new Menu(_("Main Menu"));
       $this->menu->addItem(_("Main Menu"), "index.php");
       $this->menu->addItem(_("Logout"), "/account/access/logout.php");
-      array_walk($_POST, function(&$v) {
+      array_walk($_POST, function (&$v) {
         $v = is_string($v) ? trim($v) : $v;
       });
       $this->loadModules();
-      $this->applications = $this->Cache->_get('applications');
+      $this->applications = $this->Cache->get('applications');
       if (!$this->applications) {
         $this->setupApplications();
       }
@@ -126,7 +131,7 @@
      * @noinspection PhpUnusedFunctionInspection
      */
     public function flush_handler($text) {
-      return ($this->Ajax->_inAjax()) ? Errors::format() : Page::$before_box . Errors::format() . $text;
+      return ($this->Ajax->inAjax()) ? Errors::format() : Page::$before_box . Errors::format() . $text;
     }
     /**
      * @param $id
@@ -152,13 +157,13 @@
         $this->selected = $this->get_application($app_id);
       }
       if (!$this->selected || !is_object($this->selected)) {
-        $this->selected = $this->get_application($this->Config->_get('apps.default'));
+        $this->selected = $this->get_application($this->Config->get('apps.default'));
       }
       return $this->selected;
     }
     public function display() {
       Extensions::add_access($this->User);
-      Input::get('application')  and $this->set_selected($_GET['application']);
+      Input::_get('application')  and $this->set_selected($_GET['application']);
       $page = Page::start(_($help_context = "Main Menu"), SA_OPEN, false, true);
       $page->display_application($this->get_selected());
       Page::end();
@@ -166,7 +171,7 @@
     public function loginFail() {
       header("HTTP/1.1 401 Authorization Required");
       (new View('failed_login'))->render();
-      $this->Session->_kill();
+      $this->Session->kill();
       die();
     }
     /**
@@ -192,10 +197,11 @@
       return $this->selected;
     }
     protected function checkLogin() {
-      if (!$this->Session instanceof \ADV\Core\Session || !$this->Session->_checkUserAgent()) {
+      if (!$this->Session instanceof \ADV\Core\Session || !$this->Session->checkUserAgent()) {
         $this->showLogin();
       }
-      if (Input::post("user_name")) {
+
+      if (Input::_post("user_name")) {
         $this->login();
       } elseif (!$this->User->logged_in()) {
         $this->showLogin();
@@ -211,7 +217,7 @@
       }
     }
     protected function login() {
-      $company = Input::post('login_company', null, 'default');
+      $company = Input::_post('login_company', null, 'default');
       if ($company) {
         try {
           if (!$this->User->login($company, $_POST["user_name"], $_POST["password"])) {
@@ -233,15 +239,15 @@
         'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI'])
       );
       require(DOCROOT . "controllers/access/login.php");
-      if ($this->Ajax->_inAjax()) {
-        $this->Ajax->_redirect($_SERVER['DOCUMENT_URI']);
+      if ($this->Ajax->inAjax()) {
+        $this->Ajax->redirect($_SERVER['DOCUMENT_URI']);
       } elseif (AJAX_REFERRER) {
-        JS::redirect('/');
+        JS::_redirect('/');
       }
       exit();
     }
     protected function loadModules() {
-      $modules = $this->Config->_getAll('modules', []);
+      $modules = $this->Config->getAll('modules', []);
       foreach ($modules as $module => $module_config) {
         $module = '\\Modules\\' . $module . '\\' . $module;
         new $module($module_config);
@@ -249,8 +255,8 @@
     }
     protected function setupApplications() {
       $this->applications = [];
-      $extensions         = $this->Config->_get('extensions.installed');
-      $apps               = $this->Config->_get('apps.active');
+      $extensions         = $this->Config->get('extensions.installed');
+      $apps               = $this->Config->get('apps.active');
       foreach ($apps as $app) {
         $app = '\\ADV\\App\\Apps\\' . $app;
         $this->add_application(new $app());
@@ -263,7 +269,7 @@
         $this->Session['get_text']->add_domain($this->Session['langauge']->code, LANG_PATH);
       }
       $this->add_application(new \ADV\App\Apps\System());
-      $this->Cache->_set('applications', $this->applications);
+      $this->Cache->set('applications', $this->applications);
     }
     /**
      * @return mixed

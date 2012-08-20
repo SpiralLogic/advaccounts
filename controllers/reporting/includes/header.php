@@ -75,9 +75,9 @@
     $this->NewLine();
     $this->NewLine();
     $this->Font('bold');
-    if (Dates::isGreaterThan($myrow['tran_date'], Dates::today())) {
+    if (Dates::_isGreaterThan($myrow['tran_date'], Dates::_today())) {
       $date               = _("Current");
-      $myrow['tran_date'] = Dates::today(true);
+      $myrow['tran_date'] = Dates::_today(true);
     } else {
       $date = date('F Y', strtotime($myrow['tran_date'] . '- 1 day'));
     }
@@ -142,23 +142,23 @@
   $this->NewLine(3);
   $this->Text($mcol + 100, $txt_date);
   if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) {
-    $this->Text($mcol + 180, Dates::sqlToDate($myrow['ord_date']));
+    $this->Text($mcol + 180, Dates::_sqlToDate($myrow['ord_date']));
   } elseif ($doctype == ST_WORKORDER) {
-    $this->Text($mcol + 180, Dates::sqlToDate($myrow['date_']));
+    $this->Text($mcol + 180, Dates::_sqlToDate($myrow['date_']));
   } else {
-    $this->Text($mcol + 180, Dates::sqlToDate($myrow['tran_date']));
+    $this->Text($mcol + 180, Dates::_sqlToDate($myrow['tran_date']));
   }
   $this->NewLine();
   $this->Text($mcol + 100, $doc_invoice_no);
   if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) { // QUOTE, PO or SO
-    if (Config::get('print_useinvoicenumber') == 1) {
+    if (Config::_get('print_useinvoicenumber') == 1) {
       $this->Text($mcol + 180, $myrow['reference']);
     } else {
       $this->Text($mcol + 180, $myrow['order_no']);
     }
   }
   if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) { // QUOTE, PO or SO
-    if (Config::get('print_useinvoicenumber') == 1) {
+    if (Config::_get('print_useinvoicenumber') == 1) {
       $this->Text($mcol + 180, $myrow['reference']);
     } else {
       $this->Text($mcol + 180, $myrow['order_no']);
@@ -167,7 +167,7 @@
     $this->Text($mcol + 180, $myrow['id']);
   } else {
     if (isset($myrow['trans_no']) && isset($myrow['reference'])) { // INV/CRE/STA
-      if (Config::get('print_useinvoicenumber') == 1) {
+      if (Config::_get('print_useinvoicenumber') == 1) {
         $this->Text($mcol + 180, $myrow['reference']);
       } else {
         $this->Text($mcol + 180, $myrow['order_no']);
@@ -183,16 +183,16 @@
       $id = isset($myrow['salesman']) ? $myrow['salesman'] : '';
     }
     $sql    = "SELECT salesman_name FROM salesman WHERE salesman_code='$id'";
-    $result = DB::query($sql, "could not get sales person");
-    $row    = DB::fetch($result);
+    $result = DB::_query($sql, "could not get sales person");
+    $row    = DB::_fetch($result);
     if (empty($row['salesman_name'])) {
       $user = User::i()->name;
     } else {
       $user = $row['salesman_name'];
     }
     //$sql = "SELECT salesman_name FROM sales_order WHERE salesman_code='$id'";
-    //$result = DB::query($sql, "could not get sales person");
-    //$row = DB::fetch($result);
+    //$result = DB::_query($sql, "could not get sales person");
+    //$row = DB::_fetch($result);
     $this->Text($mcol + 180, $user);
     //$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
     //$this->TextWrap($col, $this->row, $width, User::i(), 'C');
@@ -280,8 +280,8 @@
   if ($doctype == ST_PURCHORDER) {
     $id     = $branch['salesman'];
     $sql    = "SELECT salesman_name FROM salesman WHERE salesman_code='$id'";
-    $result = DB::query($sql, "could not get sales person");
-    $row    = DB::fetch($result);
+    $result = DB::_query($sql, "could not get sales person");
+    $row    = DB::_fetch($result);
     $this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
     //$this->TextWrap($col, $this->row, $width, User::i(), 'C');
   } # __ADVANCEDEDIT__ END #
@@ -312,7 +312,7 @@
       $line = "";	# __ADVANCEDEDIT__ END # }
 
       foreach ($deliveries as $delivery) {
-        if (Config::get('print_useinvoicenumber') == 0) {
+        if (Config::_get('print_useinvoicenumber') == 0) {
           $ref = Ref::get(ST_CUSTDELIVERY, $delivery);
           if ($ref) $delivery = $ref;
         }
@@ -324,7 +324,7 @@
     else*/
   if ($doctype == ST_CUSTDELIVERY) {
     $ref = $myrow['order_'];
-    if (Config::get('print_useinvoicenumber') == 0) {
+    if (Config::_get('print_useinvoicenumber') == 0) {
       $ref = Ref::get(ST_SALESORDER, $myrow['order_']);
       if (!$ref) {
         $ref = $myrow['order_'];
@@ -350,25 +350,25 @@
   # __ADVANCEDEDIT__ END #
   $col += $width;
   if ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE) {
-    $this->TextWrap($col, $this->row, $width, Dates::sqlToDate($myrow['delivery_date']), 'C');
+    $this->TextWrap($col, $this->row, $width, Dates::_sqlToDate($myrow['delivery_date']), 'C');
   } elseif ($doctype == ST_WORKORDER) {
     $this->TextWrap($col, $this->row, $width, $myrow["units_issued"], 'C');
   } elseif ($doctype != ST_PURCHORDER && $doctype != ST_CUSTCREDIT && $doctype != ST_CUSTPAYMENT && $doctype != ST_CUSTREFUND && $doctype != ST_SUPPAYMENT && isset
   ($myrow['due_date'])
   ) {
-    $this->TextWrap($col, $this->row, $width, Dates::sqlToDate($myrow['due_date']), 'C');
+    $this->TextWrap($col, $this->row, $width, Dates::_sqlToDate($myrow['due_date']), 'C');
   }
   # __ADVANCEDEDIT__ BEGIN # remove payment terms from purchase order
   if ((!isset($packing_slip) || $packing_slip == 0) && $doctype != ST_PURCHORDER && $doctype != ST_CUSTDELIVERY) {
     # __ADVANCEDEDIT__ END #
     $this->row -= (2 * $this->lineHeight);
     if ($doctype == ST_WORKORDER) {
-      $str = Dates::sqlToDate($myrow["required_by"]);
+      $str = Dates::_sqlToDate($myrow["required_by"]);
     } else {
       $id     = $myrow['payment_terms'];
       $sql    = "SELECT terms FROM payment_terms WHERE terms_indicator='$id'";
-      $result = DB::query($sql, "could not get paymentterms");
-      $row    = DB::fetch($result);
+      $result = DB::_query($sql, "could not get paymentterms");
+      $row    = DB::_fetch($result);
       $str    = $row["terms"];
     }
     $this->Font('bold');

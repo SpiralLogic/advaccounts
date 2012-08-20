@@ -8,28 +8,28 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  Page::start(_($help_context = "Items"), SA_ITEM, Input::request('frame'));
+  Page::start(_($help_context = "Items"), SA_ITEM, Input::_request('frame'));
   $user_comp = '';
-  $new_item  = Input::post('stock_id') == '' || Input::post('cancel') || Input::post('clone');
+  $new_item  = Input::_post('stock_id') == '' || Input::_post('cancel') || Input::_post('clone');
   if (isset($_GET['stock_id'])) {
     $_POST['stock_id'] = $stock_id = $_GET['stock_id'];
   } elseif (isset($_POST['stock_id'])) {
     $stock_id = $_POST['stock_id'];
   }
   if (Forms::isListUpdated('stock_id')) {
-    $_POST['NewStockID'] = Input::post('stock_id');
+    $_POST['NewStockID'] = Input::_post('stock_id');
     clear_data();
-    Ajax::activate('details');
-    Ajax::activate('controls');
+    Ajax::_activate('details');
+    Ajax::_activate('controls');
   }
-  if (Input::post('cancel')) {
+  if (Input::_post('cancel')) {
     $_POST['NewStockID'] = $_POST['stock_id'] = '';
     clear_data();
-    JS::setFocus('stock_id');
-    Ajax::activate('_page_body');
+    JS::_setFocus('stock_id');
+    Ajax::_activate('_page_body');
   }
   if (Forms::isListUpdated('category_id') || Forms::isListUpdated('mb_flag')) {
-    Ajax::activate('details');
+    Ajax::_activate('details');
   }
   $upload_file = "";
   if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '') {
@@ -45,8 +45,8 @@
     if (strtoupper(substr(trim($_FILES['pic']['name']), strlen($_FILES['pic']['name']) - 3)) != 'JPG') {
       Event::warning(_('Only jpg files are supported - a file extension of .jpg is expected'));
       $upload_file = 'No';
-    } elseif ($_FILES['pic']['size'] > (Config::get('item_images_max_size') * 1024)) { //File Size Check
-      Event::warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item_images_max_size'));
+    } elseif ($_FILES['pic']['size'] > (Config::_get('item_images_max_size') * 1024)) { //File Size Check
+      Event::warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::_get('item_images_max_size'));
       $upload_file = 'No';
     } elseif ($_FILES['pic']['type'] == "text/plain") { //File type Check
       Event::warning(_('Only graphics files can be uploaded'));
@@ -61,7 +61,7 @@
     if ($upload_file == 'Yes') {
       $result = move_uploaded_file($_FILES['pic']['tmp_name'], $filename);
     }
-    Ajax::activate('details');
+    Ajax::_activate('details');
     /* EOF Add Image upload for New Item - by Ori */
   }
   Validation::check(Validation::STOCK_CATEGORIES, _("There are no item categories defined in the system. At least one item category is required to add a item."));
@@ -79,38 +79,38 @@
     if (strlen($_POST['description']) == 0) {
       $input_error = 1;
       Event::error(_('The item name must be entered.'));
-      JS::setFocus('description');
+      JS::_setFocus('description');
     } elseif (empty($_POST['NewStockID'])) {
       $input_error = 1;
       Event::error(_('The item code cannot be empty'));
-      JS::setFocus('NewStockID');
+      JS::_setFocus('NewStockID');
     } elseif (strstr($_POST['NewStockID'], " ") || strstr($_POST['NewStockID'], "'") || strstr($_POST['NewStockID'], "+") || strstr($_POST['NewStockID'], "\"") || strstr($_POST['NewStockID'], "&") || strstr($_POST['NewStockID'], "\t")
     ) {
       $input_error = 1;
       Event::error(_('The item code cannot contain any of the following characters - & + OR a space OR quotes'));
-      JS::setFocus('NewStockID');
-    } elseif ($new_item && DB::numRows(Item_Code::get_kit($_POST['NewStockID']))) {
+      JS::_setFocus('NewStockID');
+    } elseif ($new_item && DB::_numRows(Item_Code::get_kit($_POST['NewStockID']))) {
       $input_error = 1;
       Event::error(_("This item code is already assigned to stock item or sale kit."));
-      JS::setFocus('NewStockID');
+      JS::_setFocus('NewStockID');
     }
     if ($input_error != 1) {
-      if (Input::hasPost('del_image')) {
+      if (Input::_hasPost('del_image')) {
         $filename = COMPANY_PATH . "$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg";
         if (file_exists($filename)) {
           unlink($filename);
         }
       }
       if (!$new_item) { /*so its an existing one */
-        Item::update($_POST['NewStockID'], $_POST['description'], $_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'], Input::post('units'), Input::post('mb_flag'), $_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['dimension_id'], $_POST['dimension2_id'], Input::hasPost('no_sale'), Input::hasPost('editable'));
-        DB::updateRecordStatus($_POST['NewStockID'], $_POST['inactive'], 'stock_master', 'stock_id');
-        DB::updateRecordStatus($_POST['NewStockID'], $_POST['inactive'], 'item_codes', 'item_code');
-        Ajax::activate('stock_id'); // in case of status change
+        Item::update($_POST['NewStockID'], $_POST['description'], $_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'], Input::_post('units'), Input::_post('mb_flag'), $_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['dimension_id'], $_POST['dimension2_id'], Input::_hasPost('no_sale'), Input::_hasPost('editable'));
+        DB::_updateRecordStatus($_POST['NewStockID'], $_POST['inactive'], 'stock_master', 'stock_id');
+        DB::_updateRecordStatus($_POST['NewStockID'], $_POST['inactive'], 'item_codes', 'item_code');
+        Ajax::_activate('stock_id'); // in case of status change
         Event::success(_("Item has been updated."));
       } else { //it is a NEW part
-        Item::add($_POST['NewStockID'], $_POST['description'], $_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'], $_POST['units'], $_POST['mb_flag'], $_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['dimension_id'], $_POST['dimension2_id'], Input::hasPost('no_sale'), Input::hasPost('editable'));
+        Item::add($_POST['NewStockID'], $_POST['description'], $_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'], $_POST['units'], $_POST['mb_flag'], $_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['dimension_id'], $_POST['dimension2_id'], Input::_hasPost('no_sale'), Input::_hasPost('editable'));
         Event::success(_("A new item has been added."));
-        JS::setFocus('NewStockID');
+        JS::_setFocus('NewStockID');
       }
       if (isset($_POST['addupdatenew'])) {
         $_POST['NewStockID'] = $_POST['stock_id'] = '';
@@ -118,16 +118,16 @@
         $new_item = true;
         Display::meta_forward($_SERVER['DOCUMENT_URI']);
       } else {
-        Session::setGlobal('stock_id', $_POST['NewStockID']);
+        Session::_setGlobal('stock_id', $_POST['NewStockID']);
         $_POST['stock_id'] = $_POST['NewStockID'];
       }
-      Ajax::activate('_page_body');
+      Ajax::_activate('_page_body');
     }
   }
-  if (Input::post('clone')) {
+  if (Input::_post('clone')) {
     unset($_POST['stock_id'], $_POST['inactive']);
-    JS::setFocus('NewStockID');
-    Ajax::activate('_page_body');
+    JS::_setFocus('NewStockID');
+    Ajax::_activate('_page_body');
   }
   /**
    * @param      $stock_id
@@ -145,8 +145,8 @@
     );
     $msg  = '';
     foreach ($sqls as $sql => $err) {
-      $result = DB::query($sql . DB::escape($stock_id), "could not query stock usage");
-      $myrow  = DB::fetchRow($result);
+      $result = DB::_query($sql . DB::_escape($stock_id), "could not query stock usage");
+      $myrow  = DB::_fetchRow($result);
       if ($myrow[0] > 0) {
         $msg = $err;
         break;
@@ -154,11 +154,11 @@
     }
     if ($msg == '') {
       $kits     = Item_Code::get_where_used($stock_id);
-      $num_kits = DB::numRows($kits);
+      $num_kits = DB::_numRows($kits);
       if ($num_kits) {
         $msg = _("This item cannot be deleted because some code aliases or foreign codes was entered for it, or there are kits defined using this item as component") . ':<br>';
         while ($num_kits--) {
-          $kit = DB::fetch($kits);
+          $kit = DB::_fetch($kits);
           $msg .= "'" . $kit[0] . "'";
           if ($num_kits) {
             $msg .= ',';
@@ -187,7 +187,7 @@
       $_POST['stock_id'] = '';
       clear_data();
       $new_item = true;
-      Ajax::activate('_page_body');
+      Ajax::_activate('_page_body');
     }
   }
   Forms::start(true);
@@ -195,17 +195,17 @@
     Table::start('tablestyle_noborder');
     Row::start();
     if ($new_item) {
-      Item::cells(_("Select an item:"), 'stock_id', null, _('New item'), true, Input::hasPost('show_inactive'), false);
+      Item::cells(_("Select an item:"), 'stock_id', null, _('New item'), true, Input::_hasPost('show_inactive'), false);
       Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
     } else {
       Forms::hidden('stock_id', $_POST['stock_id']);
     }
-    $new_item = Input::post('stock_id') == '';
+    $new_item = Input::_post('stock_id') == '';
     Row::end();
     Table::end();
-    if (Input::post('_show_inactive_update')) {
-      $_SESSION['options']['stock_id']['inactive'] = Input::hasPost('show_inactive');
-      Ajax::activate('stock_id');
+    if (Input::_post('_show_inactive_update')) {
+      $_SESSION['options']['stock_id']['inactive'] = Input::_hasPost('show_inactive');
+      Ajax::_activate('stock_id');
     }
   }
   Display::div_start('details');
@@ -216,7 +216,7 @@
     Forms::textRow(_("Item Code:"), 'NewStockID', null, 21, 20);
     $_POST['inactive'] = 0;
   } else { // Must be modifying an existing item
-    if (Input::post('NewStockID') != Input::post('stock_id') || Input::post('addupdate')) { // first item display
+    if (Input::_post('NewStockID') != Input::_post('stock_id') || Input::_post('addupdate')) { // first item display
       $_POST['NewStockID']         = $_POST['stock_id'];
       $myrow                       = Item::get($_POST['NewStockID']);
       $_POST['long_description']   = $myrow["long_description"];
@@ -239,7 +239,7 @@
     }
     Row::label(_("Item Code:"), $_POST['NewStockID']);
     Forms::hidden('NewStockID', $_POST['NewStockID']);
-    JS::setFocus('description');
+    JS::_setFocus('description');
   }
   Forms::textRow(_("Name:"), 'description', null, 52, 200);
   Forms::textareaRow(_('Description:'), 'long_description', null, 42, 3);
@@ -305,7 +305,7 @@
   $check_remove_image = false;
   if (isset($_POST['NewStockID']) && file_exists(COMPANY_PATH . "$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg")) {
     // 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
-    $stock_img_link .= "<img id='item_img' alt = '[" . $_POST['NewStockID'] . ".jpg]' src='" . COMPANY_PATH . "$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg?nocache=" . rand() . "' height='" . Config::get('item_images_height') . "' >";
+    $stock_img_link .= "<img id='item_img' alt = '[" . $_POST['NewStockID'] . ".jpg]' src='" . COMPANY_PATH . "$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg?nocache=" . rand() . "' height='" . Config::_get('item_images_height') . "' >";
     $check_remove_image = true;
   } else {
     $stock_img_link .= _("No image");
@@ -322,23 +322,23 @@
   if (!isset($_POST['NewStockID']) || $new_item) {
     Forms::submitCenter('addupdate', _("Insert New Item"), true, '', 'default');
   } else {
-    Forms::submitCenterBegin('addupdate', _("Update Item"), '', Input::request('frame') ? true : 'default');
-    Forms::submitReturn('select', Input::post('stock_id'), _("Select this items and return to document entry."), 'default');
+    Forms::submitCenterBegin('addupdate', _("Update Item"), '', Input::_request('frame') ? true : 'default');
+    Forms::submitReturn('select', Input::_post('stock_id'), _("Select this items and return to document entry."), 'default');
     Forms::submit('clone', _("Clone This Item"), true, '', true);
     Forms::submit('delete', _("Delete This Item"), true, '', true);
     Forms::submit('addupdatenew', _("Save & New"), true, '', true);
     Forms::submitCenterEnd('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
   }
-  if (Input::post('stock_id')) {
-    Session::setGlobal('stock_id', $_POST['stock_id']);
+  if (Input::_post('stock_id')) {
+    Session::_setGlobal('stock_id', $_POST['stock_id']);
     echo "<iframe src='/inventory/purchasing_data.php?frame=1' style='width:48%;height:450px;overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
   }
-  if (Input::post('stock_id')) {
-    Session::setGlobal('stock_id', $_POST['stock_id']);
+  if (Input::_post('stock_id')) {
+    Session::_setGlobal('stock_id', $_POST['stock_id']);
     echo "<iframe src='/inventory/prices.php?frame=1' style='float:right;width:48%;height:450px;overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
   }
   Display::div_end();
-  Forms::hidden('frame', Input::request('frame'));
+  Forms::hidden('frame', Input::_request('frame'));
   Forms::end();
   Page::end();
 

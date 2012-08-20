@@ -10,13 +10,13 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  if (Input::post('view')) {
-    if (!Input::post('backups')) {
+  if (Input::_post('view')) {
+    if (!Input::_post('backups')) {
       Event::error(_('Select backup file first.'));
     } else {
-      $filename = BACKUP_PATH . Input::post('backups');
-      if (Ajax::inAjax()) {
-        Ajax::popup($filename);
+      $filename = BACKUP_PATH . Input::_post('backups');
+      if (Ajax::_inAjax()) {
+        Ajax::_popup($filename);
       } else {
         header('Content-type: application/octet-stream');
         header('Content-Length: ' . filesize($filename));
@@ -27,35 +27,35 @@
     }
   }
   ;
-  if (Input::post('download')) {
-    download_file(BACKUP_PATH . Input::post('backups'));
+  if (Input::_post('download')) {
+    download_file(BACKUP_PATH . Input::_post('backups'));
     exit;
   }
   Page::start(_($help_context = "Backup and Restore Database"), SA_BACKUP);
   check_paths();
   $db_name     = User::i()->company;
-  $connections = Config::getAll('db');
+  $connections = Config::_getAll('db');
   $conn        = $connections[$db_name];
-  if (Input::post('creat')) {
-    generate_backup($conn, Input::post('comp'), Input::post('comments'));
-    Ajax::activate('backups');
+  if (Input::_post('creat')) {
+    generate_backup($conn, Input::_post('comp'), Input::_post('comments'));
+    Ajax::_activate('backups');
   }
   ;
-  if (Input::post('restore')) {
-    if (Utils::import(BACKUP_PATH . Input::post('backups'), $conn)) {
+  if (Input::_post('restore')) {
+    if (Utils::import(BACKUP_PATH . Input::_post('backups'), $conn)) {
       Event::success(_("Restore backup completed."));
     }
   }
-  if (Input::post('deldump')) {
-    if (unlink(BACKUP_PATH . Input::post('backups'))) {
-      Event::notice(_("File successfully deleted.") . " " . _("Filename") . ": " . Input::post('backups'));
-      Ajax::activate('backups');
+  if (Input::_post('deldump')) {
+    if (unlink(BACKUP_PATH . Input::_post('backups'))) {
+      Event::notice(_("File successfully deleted.") . " " . _("Filename") . ": " . Input::_post('backups'));
+      Ajax::_activate('backups');
     } else {
       Event::error(_("Can't delete backup file."));
     }
   }
   ;
-  if (Input::post('upload')) {
+  if (Input::_post('upload')) {
     $tmpname = $_FILES['uploadfile']['tmp_name'];
     $fname   = $_FILES['uploadfile']['name'];
     if (!preg_match("/.sql(.zip|.gz)?$/", $fname)) {
@@ -63,7 +63,7 @@
     } elseif (is_uploaded_file($tmpname)) {
       rename($tmpname, BACKUP_PATH . $fname);
       Event::notice("File uploaded to backup directory");
-      Ajax::activate('backups');
+      Ajax::_activate('backups');
     } else {
       Event::error(_("File was not uploaded into the system."));
     }

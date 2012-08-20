@@ -35,15 +35,15 @@
         Table::section(3, "50%");
         Row::start();
         GL_QuickEntry::cells(_("Quick Entry") . ":", 'person_id', null, QE_JOURNAL, true);
-        $qid = GL_QuickEntry::get(Input::post('person_id'));
+        $qid = GL_QuickEntry::get(Input::_post('person_id'));
         if (Forms::isListUpdated('person_id')) {
           unset($_POST['total_amount']); // enable default
-          Ajax::activate('total_amount');
+          Ajax::_activate('total_amount');
         }
         Forms::amountCells(
           $qid['base_desc'] . ":",
           'total_amount',
-          Num::priceFormat($qid['base_amount']),
+          Num::_priceFormat($qid['base_amount']),
           null,
           "&nbsp;&nbsp;" . Forms::submit('go', _("Go"), false, false, true)
         );
@@ -157,11 +157,11 @@
         $_POST['dimension_id']  = $item->dimension_id;
         $_POST['dimension2_id'] = $item->dimension2_id;
         if ($item->amount > 0) {
-          $_POST['AmountDebit']  = Num::priceFormat($item->amount);
+          $_POST['AmountDebit']  = Num::_priceFormat($item->amount);
           $_POST['AmountCredit'] = "";
         } else {
           $_POST['AmountDebit']  = "";
-          $_POST['AmountCredit'] = Num::priceFormat(abs($item->amount));
+          $_POST['AmountCredit'] = Num::_priceFormat(abs($item->amount));
         }
         $_POST['description'] = $item->description;
         $_POST['LineMemo']    = $item->reference;
@@ -174,17 +174,17 @@
         if ($dim > 1) {
           Dimensions::cells(null, 'dimension2_id', null, true, " ", false, 2);
         }
-        Ajax::activate('items_table');
+        Ajax::_activate('items_table');
       } else {
         // Adding a new row
-        $_POST['AmountDebit']   = ''; //Num::priceFormat(0);
-        $_POST['AmountCredit']  = ''; //Num::priceFormat(0);
+        $_POST['AmountDebit']   = ''; //Num::_priceFormat(0);
+        $_POST['AmountCredit']  = ''; //Num::_priceFormat(0);
         $_POST['dimension_id']  = 0;
         $_POST['dimension2_id'] = 0;
         $_POST['_code_id_edit'] = "";
         $_POST['code_id']       = "";
         if (isset($_POST['_code_id_update'])) {
-          Ajax::activate('code_id');
+          Ajax::_activate('code_id');
         }
         $skip_bank = !User::i()->hasAccess(SA_BANKJOURNAL);
         echo GL_UI::all('code_id', null, $skip_bank, true);
@@ -207,7 +207,7 @@
       if ($id != -1) {
         Forms::buttonCell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
         Forms::buttonCell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
-        JS::setFocus('amount');
+        JS::_setFocus('amount');
       } else {
         Forms::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new line to journal'), true);
       }
@@ -300,7 +300,7 @@
       }
       $trans_id = $order->order_id;
       if ($use_transaction) {
-        DB::begin();
+        DB::_begin();
       }
       if (!$new) {
         static::void($trans_type, $trans_id, false);
@@ -346,7 +346,7 @@
       if ($reverse) {
         //$reversingDate = date(User::date_display(),
         //	Mktime(0,0,0,get_month($date_)+1,1,get_year($date_)));
-        $reversingDate    = Dates::beginMonth(Dates::addMonths($date_, 1));
+        $reversingDate    = Dates::_beginMonth(Dates::_addMonths($date_, 1));
         $trans_id_reverse = SysTypes::get_next_trans_no($trans_type);
         foreach ($order->gl_items as $journal_item) {
           $is_bank_to = Bank_Account::is($journal_item->code_id);
@@ -382,7 +382,7 @@
         DB_AuditTrail::add($trans_type, $trans_id_reverse, $reversingDate);
       }
       if ($use_transaction) {
-        DB::commit();
+        DB::_commit();
       }
 
       return $trans_id;
@@ -396,13 +396,13 @@
      */
     public static function void($type, $type_no, $use_transaction = true) {
       if ($use_transaction) {
-        DB::begin();
+        DB::_begin();
       }
       Bank_Trans::void($type, $type_no, true);
       //	static::void($type, $type_no, true);	 // this is done above
       //	static::void_tax_details($type, $type_no); // ditto
       if ($use_transaction) {
-        DB::commit();
+        DB::_commit();
       }
     }
   }

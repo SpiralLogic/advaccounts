@@ -108,11 +108,11 @@
   $this->row = $adrline;
   $this->NewLine(3);
   $this->Text($mcol + 100, $txt_date);
-  $this->Text($mcol + 180, Dates::sqlToDate($myrow['tran_date']));
+  $this->Text($mcol + 180, Dates::_sqlToDate($myrow['tran_date']));
   $this->NewLine();
   $this->Text($mcol + 100, $doc_invoice_no);
   if (isset($myrow['trans_no']) && isset($myrow['reference'])) { // INV/CRE/STA
-    if (Config::get('print_useinvoicenumber') == 1) {
+    if (Config::_get('print_useinvoicenumber') == 1) {
       $this->Text($mcol + 180, $myrow['trans_no']);
     } else {
       $this->Text($mcol + 180, $myrow['reference']);
@@ -170,8 +170,8 @@
   $this->NewLine();
   $id     = $myrow['payment_terms'];
   $sql    = "SELECT terms FROM payment_terms WHERE terms_indicator='$id'";
-  $result = DB::query($sql, "could not get paymentterms");
-  $row    = DB::fetch($result);
+  $result = DB::_query($sql, "could not get paymentterms");
+  $row    = DB::_fetch($result);
   $str    = $row["terms"];
   $this->Font('italic');
   $this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Payment_Terms . ": " . $str);

@@ -98,6 +98,7 @@
       }
       foreach ($application->modules as $module) {
         $app            = new View('application');
+
         $app['colspan'] = (count($module->rightAppFunctions) > 0) ? 2 : 1;
         $app['name']    = $module->name;
         foreach ([$module->leftAppFunctions, $module->rightAppFunctions] as $modules) {
@@ -136,14 +137,14 @@
     protected function init($menu) {
       $this->App      = ADVAccounting::i();
       $this->sel_app  = $this->App->selected;
-      $this->ajaxpage = (AJAX_REFERRER || Ajax::inAjax());
+      $this->ajaxpage = (AJAX_REFERRER || Ajax::_inAjax());
       $this->menu     = ($this->frame) ? false : $menu;
       $this->theme    = $this->User->theme();
       $this->encoding = $_SESSION['language']->encoding;
       $this->lang_dir = $_SESSION['language']->dir;
       if (!$this->ajaxpage) {
         $this->header();
-        $this->JS->_openWindow(900, 500);
+        $this->JS->openWindow(900, 500);
         if ($this->menu) {
           $this->menu_header();
         }
@@ -172,7 +173,7 @@
     }
     protected function header() {
       $this->header = true;
-      $this->JS->_openWindow(900, 500);
+      $this->JS->openWindow(900, 500);
       if (!headers_sent()) {
         header("Content-type: text/html; charset={$this->encoding}");
       }
@@ -185,19 +186,19 @@
       $header['stylesheets'] = $this->renderCSS();
       $header['scripts']     = [];
       if (class_exists('JS', false)) {
-        $header['scripts'] = $this->JS->_renderHeader();
+        $header['scripts'] = $this->JS->renderHeader();
       }
       $header->render();
     }
     protected function menu_header() {
       $menu                = new View('menu_header');
       $menu['theme']       = $this->User->theme();
-      $menu['company']     = $this->Config->_get('db.' . $this->User->company)['company'];
+      $menu['company']     = $this->Config->get('db.' . $this->User->company)['company'];
       $menu['server_name'] = $_SERVER['SERVER_NAME'];
       $menu['username']    = $this->User->username;
       $menu['name']        = $this->User->name;
       $menu['help_url']    = '';
-      if ($this->Config->_get('help_baseurl') != null) {
+      if ($this->Config->get('help_baseurl') != null) {
         $menu['help_url'] = $this->help_url();
       }
       /** @var ADVAccounting $application */
@@ -231,7 +232,7 @@
         $help_page_url = $this->App->applications[$this->App->selected->id]->help_context;
         $help_page_url = Display::access_string($help_page_url, true);
       }
-      return $this->Config->_get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
+      return $this->Config->get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
                                                                                                  ' ' => '',
                                                                                                  '/' => '',
                                                                                                  '&' => 'And'
@@ -243,10 +244,10 @@
       if ((!$this->isIndex && !$this->hide_back_link)) {
         $footer['backlink'] = $this->menu ? _("Back") : _("Close");
       }
-      $footer['today']     = $this->Dates->_today();
-      $footer['now']       = $this->Dates->_now();
+      $footer['today']     = $this->Dates->today();
+      $footer['now']       = $this->Dates->now();
       $footer['mem']       = Files::convertSize(memory_get_usage(true)) . '/' . Files::convertSize(memory_get_peak_usage(true));
-      $footer['load_time'] = Dates::getReadableTime(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
+      $footer['load_time'] = Dates::_getReadableTime(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
       $footer['user']      = $this->User->username;
       $footer['footer']    = $this->menu && !AJAX_REFERRER;
       return $footer;
@@ -257,16 +258,16 @@
     protected function footer() {
       $validate = [];
       $footer   = $this->menu_footer();
-      $footer->set('beforescripts', "_focus = '" . Input::post('_focus') . "';_validate = " . $this->Ajax->php2js($validate) . ";");
+      $footer->set('beforescripts', "_focus = '" . Input::_post('_focus') . "';_validate = " . $this->Ajax->php2js($validate) . ";");
       $this->User->_add_js_data();
       $footer->set('sidemenu', ($this->header && $this->menu ? (new Sidemenu($this->User))->render() : ''));
-      $footer->set('js', $this->JS->_render(true));
+      $footer->set('js', $this->JS->render(true));
       $footer->set('messages', (!AJAX_REFERRER ? Messages::show() : ''));
       $footer->set('page_body', Display::div_end(true));
       $footer->render();
     }
     protected function renderCSS() {
-      $this->css += $this->Config->_get('assets.css');
+      $this->css += $this->Config->get('assets.css');
       $path = THEME_PATH . $this->theme . DS;
       $css  = implode(',', $this->css);
       return [$path . $css];
@@ -310,10 +311,10 @@
      */
     public static function simple_mode($numeric_id = true) {
       $default     = $numeric_id ? -1 : '';
-      $selected_id = Input::post('selected_id', null, $default);
+      $selected_id = Input::_post('selected_id', null, $default);
       foreach (array(ADD_ITEM, UPDATE_ITEM, MODE_RESET, MODE_CLONE) as $m) {
         if (isset($_POST[$m])) {
-          Ajax::activate('_page_body');
+          Ajax::_activate('_page_body');
           if ($m == MODE_RESET || $m == MODE_CLONE) {
             $selected_id = $default;
           }
@@ -326,7 +327,7 @@
           if (strpos($p, $m) === 0) {
             unset($_POST['_focus']); // focus on first form entry
             $selected_id = quoted_printable_decode(substr($p, strlen($m)));
-            Ajax::activate('_page_body');
+            Ajax::_activate('_page_body');
             return array($m, $selected_id);
           }
         }

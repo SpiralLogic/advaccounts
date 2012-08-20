@@ -8,18 +8,18 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(950, 500);
-  JS::headerFile('/js/payalloc.js');
-  Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::request('frame'));
+  JS::_openWindow(950, 500);
+  JS::_headerFile('/js/payalloc.js');
+  Page::start(_($help_context = "Customer Refund Entry"), SA_SALESREFUND, Input::_request('frame'));
   Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
   Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-  if (!isset($_POST['debtor_id']) && Session::getGlobal('debtor_id')) {
-    $customer = new Debtor(Session::getGlobal('debtor_id'));
+  if (!isset($_POST['debtor_id']) && Session::_getGlobal('debtor_id')) {
+    $customer = new Debtor(Session::_getGlobal('debtor_id'));
   }
   if (!isset($_POST['DateBanked'])) {
-    $_POST['DateBanked'] = Dates::newDocDate();
-    if (!Dates::isDateInFiscalYear($_POST['DateBanked'])) {
-      $_POST['DateBanked'] = Dates::endFiscalYear();
+    $_POST['DateBanked'] = Dates::_newDocDate();
+    if (!Dates::_isDateInFiscalYear($_POST['DateBanked'])) {
+      $_POST['DateBanked'] = Dates::_endFiscalYear();
     }
   }
   if (isset($_GET[ADDED_ID])) {
@@ -38,11 +38,11 @@
     }
   }
   if (isset($_POST['_DateBanked_changed'])) {
-    JS::setfocus('_DataBanked_changed');
+    JS::_setfocus('_DataBanked_changed');
   }
   if (Forms::isListUpdated('debtor_id') || Forms::isListUpdated('bank_account')) {
     $_SESSION['alloc']->read();
-    Ajax::activate('alloc_tbl');
+    Ajax::_activate('alloc_tbl');
   }
   if (isset($_POST['AddRefundItem'])) {
     $cust_currency = Bank_Currency::for_debtor($_POST['debtor_id']);
@@ -53,7 +53,7 @@
     } else {
       $rate = Validation::input_num('_ex_rate');
     }
-    Dates::newDocDate($_POST['DateBanked']);
+    Dates::_newDocDate($_POST['DateBanked']);
     $refund_id                   = Debtor_Refund::add(0, $_POST['debtor_id'], $_POST['branch_id'], $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate, Validation::input_num('charge'));
     $_SESSION['alloc']->trans_no = $refund_id;
     $_SESSION['alloc']->write();
@@ -75,8 +75,8 @@
     Forms::hidden('branch_id', ANY_NUMERIC);
   }
   Debtor_Payment::read_customer_data($customer->id, true);
-  Session::setGlobal('debtor_id', $customer->id);
-  $display_discount_percent = Num::percentFormat($_POST['payment_discount'] * 100) . "%";
+  Session::_setGlobal('debtor_id', $customer->id);
+  $display_discount_percent = Num::_percentFormat($_POST['payment_discount'] * 100) . "%";
   Table::section(2);
   Bank_Account::row(_("Into Bank Account:"), 'bank_account', null, true);
   Forms::textRow(_("Reference:"), 'ref', null, 20, 40);
@@ -106,4 +106,4 @@
   Forms::submitCenter('AddRefundItem', _("Add Refund"), true, '', 'default');
   Display::br();
   Forms::end();
-  Page::end(!Input::request('frame'));
+  Page::end(!Input::_request('frame'));

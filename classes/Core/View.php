@@ -31,7 +31,7 @@
         throw new \InvalidArgumentException("There is no view $template !");
       }
       if (file_exists(WEBROOT . $this->_js)) {
-        JS::footerFile(BASE_URL . $this->_js);
+        JS::_footerFile(BASE_URL . $this->_js);
       }
     }
     /**
@@ -49,8 +49,8 @@
       // The contents of each view file is cached in an array for the
       // request since partial views may be rendered inside of for
       // loops which could incur performance penalties.
-      //    $__contents = null; // static::$Cache->_get('template.' . $this->_template);
-      $__contents = static::$Cache->_get('template.' . $this->_template);
+      //    $__contents = null; // static::$Cache->get('template.' . $this->_template);
+      $__contents = static::$Cache->get('template.' . $this->_template);
       if (!$__contents || !is_array($__contents)) {
         $__contents = file_get_contents($this->_template);
         $__contents = $this->compile($__contents);
@@ -92,7 +92,7 @@
     public function checkCache($template, $lastmodified)
     {
       if ($lastmodified < filemtime($template)) {
-        static::$Cache->_delete('template.' . $this->_template);
+        static::$Cache->delete('template.' . $this->_template);
       }
     }
     /**
@@ -229,7 +229,7 @@
       $__contents = $this->compileHashes($__contents);
       $__contents = $this->compileEchos($__contents, $context);
       $__contents = $this->compileDotNotation($__contents);
-      static::$Cache->_set('template.' . $this->_template, [$__contents, filemtime($this->_template)]);
+      static::$Cache->set('template.' . $this->_template, [$__contents, filemtime($this->_template)]);
       return $__contents;
     }
     /**

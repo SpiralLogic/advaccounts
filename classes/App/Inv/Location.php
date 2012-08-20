@@ -25,13 +25,13 @@
     {
       $sql
         = "INSERT INTO locations (loc_code, location_name, delivery_address, phone, phone2, fax, email, contact)
-        VALUES (" . DB::escape($loc_code) . ", " . DB::escape($location_name) . ", " . DB::escape($delivery_address) . ", " . DB::escape($phone) . ", " . DB::escape($phone2) . ", " . DB::escape($fax) . ", " . DB::escape($email) . ", " . DB::escape($contact) . ")";
-      DB::query($sql, "a location could not be added");
+        VALUES (" . DB::_escape($loc_code) . ", " . DB::_escape($location_name) . ", " . DB::_escape($delivery_address) . ", " . DB::_escape($phone) . ", " . DB::_escape($phone2) . ", " . DB::_escape($fax) . ", " . DB::_escape($email) . ", " . DB::_escape($contact) . ")";
+      DB::_query($sql, "a location could not be added");
       /* Also need to add stock_location records for all existing items */
       $sql
         = "INSERT INTO stock_location (loc_code, stock_id, reorder_level)
-        SELECT " . DB::escape($loc_code) . ", stock_master.stock_id, 0 FROM stock_master";
-      DB::query($sql, "a location could not be added");
+        SELECT " . DB::_escape($loc_code) . ", stock_master.stock_id, 0 FROM stock_master";
+      DB::_query($sql, "a location could not be added");
     }
     /**
      * @static
@@ -47,8 +47,8 @@
      */
     public static function update($loc_code, $location_name, $delivery_address, $phone, $phone2, $fax, $email, $contact)
     {
-      $sql = "UPDATE locations SET location_name=" . DB::escape($location_name) . ", delivery_address=" . DB::escape($delivery_address) . ", phone=" . DB::escape($phone) . ", phone2=" . DB::escape($phone2) . ", fax=" . DB::escape($fax) . ", email=" . DB::escape($email) . ", contact=" . DB::escape($contact) . " WHERE loc_code = " . DB::escape($loc_code);
-      DB::query($sql, "a location could not be updated");
+      $sql = "UPDATE locations SET location_name=" . DB::_escape($location_name) . ", delivery_address=" . DB::_escape($delivery_address) . ", phone=" . DB::_escape($phone) . ", phone2=" . DB::_escape($phone2) . ", fax=" . DB::_escape($fax) . ", email=" . DB::_escape($email) . ", contact=" . DB::_escape($contact) . " WHERE loc_code = " . DB::_escape($loc_code);
+      DB::_query($sql, "a location could not be updated");
     }
     /**
      * @static
@@ -57,10 +57,10 @@
      */
     public static function delete($item_location)
     {
-      $sql = "DELETE FROM locations WHERE loc_code=" . DB::escape($item_location);
-      DB::query($sql, "a location could not be deleted");
-      $sql = "DELETE FROM stock_location WHERE loc_code =" . DB::escape($item_location);
-      DB::query($sql, "a location could not be deleted");
+      $sql = "DELETE FROM locations WHERE loc_code=" . DB::_escape($item_location);
+      DB::_query($sql, "a location could not be deleted");
+      $sql = "DELETE FROM stock_location WHERE loc_code =" . DB::_escape($item_location);
+      DB::_query($sql, "a location could not be deleted");
     }
     /**
      * @static
@@ -71,10 +71,10 @@
      */
     public static function get($item_location)
     {
-      $sql    = "SELECT * FROM locations WHERE loc_code=" . DB::escape($item_location);
-      $result = DB::query($sql, "a location could not be retrieved");
+      $sql    = "SELECT * FROM locations WHERE loc_code=" . DB::_escape($item_location);
+      $result = DB::_query($sql, "a location could not be retrieved");
 
-      return DB::fetch($result);
+      return DB::_fetch($result);
     }
     /**
      * @static
@@ -87,8 +87,8 @@
     {
       $sql
         = "UPDATE stock_location SET reorder_level = $reorder_level
-        WHERE stock_id = " . DB::escape($stock_id) . " AND loc_code = " . DB::escape($loc_code);
-      DB::query($sql, "an item reorder could not be set");
+        WHERE stock_id = " . DB::_escape($stock_id) . " AND loc_code = " . DB::_escape($loc_code);
+      DB::_query($sql, "an item reorder could not be set");
     }
     /**
      * @static
@@ -100,8 +100,8 @@
      */
     public static function set_shelves($stock_id, $loc_code, $primary_location, $secondary_location)
     {
-      $sql = "UPDATE stock_location SET shelf_primary = " . DB::escape($primary_location) . " , shelf_secondary = " . DB::escape($secondary_location) . " WHERE stock_id = " . DB::escape($stock_id) . " AND loc_code = " . DB::escape($loc_code);
-      DB::query($sql, "an item reorder could not be set");
+      $sql = "UPDATE stock_location SET shelf_primary = " . DB::_escape($primary_location) . " , shelf_secondary = " . DB::_escape($secondary_location) . " WHERE stock_id = " . DB::_escape($stock_id) . " AND loc_code = " . DB::_escape($loc_code);
+      DB::_query($sql, "an item reorder could not be set");
     }
     /**
      * @static
@@ -116,9 +116,9 @@
         = "SELECT stock_location.*, locations.location_name
         FROM stock_location, locations
         WHERE stock_location.loc_code=locations.loc_code
-        AND stock_location.stock_id = " . DB::escape($stock_id) . " AND stock_location.loc_code <> " . DB::escape(LOC_DROP_SHIP) . " AND stock_location.loc_code <> " . DB::escape(LOC_NOT_FAXED_YET) . " ORDER BY stock_location.loc_code";
+        AND stock_location.stock_id = " . DB::_escape($stock_id) . " AND stock_location.loc_code <> " . DB::_escape(LOC_DROP_SHIP) . " AND stock_location.loc_code <> " . DB::_escape(LOC_NOT_FAXED_YET) . " ORDER BY stock_location.loc_code";
 
-      return DB::query($sql, "an item reorder could not be retreived");
+      return DB::_query($sql, "an item reorder could not be retreived");
     }
     /**
      * @static
@@ -129,10 +129,10 @@
      */
     public static function get_name($loc_code)
     {
-      $sql    = "SELECT location_name FROM locations WHERE loc_code=" . DB::escape($loc_code);
-      $result = DB::query($sql, "could not retreive the location name for $loc_code");
-      if (DB::numRows($result) == 1) {
-        $row = DB::fetchRow($result);
+      $sql    = "SELECT location_name FROM locations WHERE loc_code=" . DB::_escape($loc_code);
+      $result = DB::_query($sql, "could not retreive the location name for $loc_code");
+      if (DB::_numRows($result) == 1) {
+        $row = DB::_fetchRow($result);
 
         return $row[0];
       }
@@ -149,10 +149,10 @@
      */
     public static function get_for_trans($order)
     {
-      $sql    = "SELECT locations.* FROM stock_moves," . "locations" . " WHERE type=" . DB::escape($order->trans_type) . " AND trans_no=" . key($order->trans_no) . " AND qty!=0 " . " AND locations.loc_code=stock_moves.loc_code";
-      $result = DB::query($sql, 'Retreiving inventory location');
-      if (DB::numRows($result)) {
-        return DB::fetch($result);
+      $sql    = "SELECT locations.* FROM stock_moves," . "locations" . " WHERE type=" . DB::_escape($order->trans_type) . " AND trans_no=" . key($order->trans_no) . " AND qty!=0 " . " AND locations.loc_code=stock_moves.loc_code";
+      $result = DB::_query($sql, 'Retreiving inventory location');
+      if (DB::_numRows($result)) {
+        return DB::_fetch($result);
       }
 
       return null;
@@ -171,13 +171,14 @@
     {
       $sql = "SELECT loc_code, location_name, inactive FROM locations";
       if (!$selected_id && !isset($_POST[$name])) {
-        $selected_id = $all_option === true ? -1 : Config::get('default.location');
+        $selected_id = $all_option === true ? -1 : Config::_get('default.location');
       }
       return Forms::selectBox($name, $selected_id, $sql, 'loc_code', 'location_name', array(
                                                                                            'spec_option'   => $all_option === true ?
                                                                                              _("All Locations") : $all_option,
                                                                                            'spec_id'       => ALL_TEXT,
-                                                                                           'select_submit' => $submit_on_change
+                                                                                           'select_submit' => $submit_on_change,
+                                                                                           'class'=>'med'
                                                                                       ));
     }
     /**

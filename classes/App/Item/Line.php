@@ -98,8 +98,8 @@
      */
     public static function start_focus($field)
     {
-      Ajax::activate('items_table');
-      JS::setFocus($field);
+      Ajax::_activate('items_table');
+      JS::_setFocus($field);
     }
   }
 

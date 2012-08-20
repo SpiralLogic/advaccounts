@@ -64,7 +64,7 @@
       $table_queries        = [];
       $sql_errors           = [];
       ini_set("max_execution_time", "180");
-      DB::query("SET foreign_key_checks=0");
+      DB::_query("SET foreign_key_checks=0");
       // uncrompress gziped backup files
       if (strpos($filename, ".gz") || strpos($filename, ".GZ")) {
         $lines = Utils::ungzip("lines", $filename);
@@ -110,9 +110,9 @@
       // execute drop tables if exists queries
       if (is_array($drop_queries)) {
         foreach ($drop_queries as $drop_query) {
-          if (!DB::query($drop_query[0])) {
-            if (!in_array(DB::errorNo(), $ignored_mysql_errors) || !$force) {
-              $sql_errors[] = array(DB::errorMsg(), $drop_query[1]);
+          if (!DB::_query($drop_query[0])) {
+            if (!in_array(DB::_errorNo(), $ignored_mysql_errors) || !$force) {
+              $sql_errors[] = array(DB::_errorMsg(), $drop_query[1]);
             }
           }
         }
@@ -120,9 +120,9 @@
       // execute create tables queries
       if (is_array($table_queries)) {
         foreach ($table_queries as $table_query) {
-          if (!DB::query($table_query[0])) {
-            if (!in_array(DB::errorNo(), $ignored_mysql_errors) || !$force) {
-              $sql_errors[] = array(DB::errorMsg(), $table_query[1]);
+          if (!DB::_query($table_query[0])) {
+            if (!in_array(DB::_errorNo(), $ignored_mysql_errors) || !$force) {
+              $sql_errors[] = array(DB::_errorMsg(), $table_query[1]);
             }
           }
         }
@@ -130,14 +130,14 @@
       // execute insert data queries
       if (is_array($data_queries)) {
         foreach ($data_queries as $data_query) {
-          if (!DB::query($data_query[0])) {
-            if (!in_array(DB::errorNo(), $ignored_mysql_errors) || !$force) {
-              $sql_errors[] = array(DB::errorMsg(), $data_query[1]);
+          if (!DB::_query($data_query[0])) {
+            if (!in_array(DB::_errorNo(), $ignored_mysql_errors) || !$force) {
+              $sql_errors[] = array(DB::_errorMsg(), $data_query[1]);
             }
           }
         }
       }
-      DB::query("SET foreign_key_checks=1");
+      DB::_query("SET foreign_key_checks=1");
       if (count($sql_errors)) {
         // display first failure message; the rest are probably derivative
         $err = $sql_errors[0];
@@ -275,15 +275,15 @@
       }
       //$out.="use ".$db.";\n"; we don't use this option.
       // get auto_increment values and names of all tables
-      $res        = DB::query("show table status");
+      $res        = DB::_query("show table status");
       $all_tables = [];
-      while ($row = DB::fetch($res)) {
+      while ($row = DB::_fetch($res)) {
         $all_tables[] = $row;
       }
       // get table structures
       foreach ($all_tables as $table) {
-        $res1                      = DB::query("SHOW CREATE TABLE `" . $table['Name'] . "`");
-        $tmp                       = DB::fetch($res1);
+        $res1                      = DB::_query("SHOW CREATE TABLE `" . $table['Name'] . "`");
+        $tmp                       = DB::_fetch($res1);
         $table_sql[$table['Name']] = $tmp["Create Table"];
       }
       // find foreign keys
@@ -325,19 +325,19 @@
           if (!$error) {
             $out .= "### Data of table `" . $tablename . "` ###\n\n";
             // check if field types are null or NOT null
-            $res3       = DB::query("SHOW COLUMNS FROM `" . $tablename . "`");
+            $res3       = DB::_query("SHOW COLUMNS FROM `" . $tablename . "`");
             $field_null = [];
-            for ($j = 0; $j < DB::numRows($res3); $j++) {
-              $row3         = DB::fetch($res3);
+            for ($j = 0; $j < DB::_numRows($res3); $j++) {
+              $row3         = DB::_fetch($res3);
               $field_null[] = $row3[2] == 'YES' && $row3[4] === null;
             }
-            $res2 = DB::query("SELECT * FROM `" . $tablename . "`");
-            for ($j = 0; $j < DB::numRows($res2); $j++) {
+            $res2 = DB::_query("SELECT * FROM `" . $tablename . "`");
+            for ($j = 0; $j < DB::_numRows($res2); $j++) {
               $out .= "INSERT INTO `" . $tablename . "` VALUES (";
-              $row2 = DB::fetchRow($res2);
+              $row2 = DB::_fetchRow($res2);
               // run through each field
-              for ($k = 0; $k < $nf = DB::numFields($res2); $k++) {
-                $out .= DB::escape($row2[$k], $field_null[$k]);
+              for ($k = 0; $k < $nf = DB::_numFields($res2); $k++) {
+                $out .= DB::_escape($row2[$k], $field_null[$k]);
                 if ($k < ($nf - 1)) {
                   $out .= ", ";
                 }

@@ -16,17 +16,17 @@
   {
     if (strlen($_POST['password']) < 4) {
       Event::error(_("The password entered must be at least 4 characters long."));
-      JS::setFocus('password');
+      JS::_setFocus('password');
       return false;
     }
     if (strstr($_POST['password'], User::i()->username) != false) {
       Event::error(_("The password cannot contain the user login."));
-      JS::setFocus('password');
+      JS::_setFocus('password');
       return false;
     }
     if ($_POST['password'] != $_POST['passwordConfirm']) {
       Event::error(_("The passwords entered are not the same."));
-      JS::setFocus('password');
+      JS::_setFocus('password');
       return false;
     }
     return true;
@@ -34,7 +34,7 @@
 
   if (isset($_POST[UPDATE_ITEM])) {
     if (can_process()) {
-      if (Config::get('demo_mode')) {
+      if (Config::_get('demo_mode')) {
         Event::warning(_("Password cannot be changed in demo mode."));
       } else {
         $auth  = new Auth(User::i()->username);
@@ -49,7 +49,7 @@
           Event::success(_("Password Changed"));
         }
       }
-      Ajax::activate('_page_body');
+      Ajax::_activate('_page_body');
     }
   } elseif (User::i()->change_password) {
     Event::warning('You are required to change your password!');

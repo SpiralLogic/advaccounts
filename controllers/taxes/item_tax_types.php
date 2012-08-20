@@ -15,15 +15,15 @@
         if (strlen($_POST['name']) == 0) {
             $input_error = 1;
             Event::error(_("The item tax type description cannot be empty."));
-            JS::setFocus('name');
+            JS::_setFocus('name');
         }
         if ($input_error != 1) {
             // create an array of the exemptions
             $exempt_from = [];
             $tax_types   = Tax_Types::get_all_simple();
             $i           = 0;
-            while ($myrow = DB::fetch($tax_types)) {
-                if (Input::hasPost('ExemptTax' . $myrow["id"])) {
+            while ($myrow = DB::_fetch($tax_types)) {
+                if (Input::_hasPost('ExemptTax' . $myrow["id"])) {
                     $exempt_from[$i] = $myrow["id"];
                     $i++;
                 }
@@ -44,18 +44,18 @@
     }
     if ($Mode == MODE_RESET) {
         $selected_id = -1;
-        $sav         = Input::post('show_inactive');
+        $sav         = Input::_post('show_inactive');
         unset($_POST);
         $_POST['show_inactive'] = $sav;
     }
-    $result2 = $result = Tax_ItemType::getAll(Input::hasPost('show_inactive'));
+    $result2 = $result = Tax_ItemType::getAll(Input::_hasPost('show_inactive'));
     Forms::start();
     Table::start('tablestyle grid width30');
     $th = array(_("Name"), _("Tax exempt"), '', '');
     Forms::inactiveControlCol($th);
     Table::header($th);
     $k = 0;
-    while ($myrow = DB::fetch($result2)) {
+    while ($myrow = DB::_fetch($result2)) {
 
         if ($myrow["exempt"] == 0) {
             $disallow_text = _("No");
@@ -80,8 +80,8 @@
             $_POST['exempt'] = $myrow["exempt"];
             // read the exemptions and check the ones that are on
             $exemptions = Tax_ItemType::get_exemptions($selected_id);
-            if (DB::numRows($exemptions) > 0) {
-                while ($exmp = DB::fetch($exemptions)) {
+            if (DB::_numRows($exemptions) > 0) {
+                while ($exmp = DB::_fetch($exemptions)) {
                     $_POST['ExemptTax' . $exmp["tax_type_id"]] = 1;
                 }
             }
@@ -97,10 +97,10 @@
         $th = array(_("Tax Name"), _("Rate"), _("Is exempt"));
         Table::header($th);
         $tax_types = Tax_Types::get_all_simple();
-        while ($myrow = DB::fetch($tax_types)) {
+        while ($myrow = DB::_fetch($tax_types)) {
 
             Cell::label($myrow["name"]);
-            Cell::label(Num::percentFormat($myrow["rate"]) . " %", ' class="alignright nowrap"');
+            Cell::label(Num::_percentFormat($myrow["rate"]) . " %", ' class="alignright nowrap"');
             Forms::checkCells("", 'ExemptTax' . $myrow["id"], null);
             Row::end();
         }

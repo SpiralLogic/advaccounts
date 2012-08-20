@@ -16,7 +16,7 @@
     if (strlen($_POST['name']) == 0) {
       $input_error = 1;
       Event::error(_("The inventory movement type name cannot be empty."));
-      JS::setFocus('name');
+      JS::_setFocus('name');
     }
     if ($input_error != 1) {
       if ($selected_id != -1) {
@@ -38,9 +38,9 @@
   {
     $sql
             = "SELECT COUNT(*) FROM stock_moves
-		WHERE type=" . ST_INVADJUST . " AND person_id=" . DB::escape($selected_id);
-    $result = DB::query($sql, "could not query stock moves");
-    $myrow  = DB::fetchRow($result);
+		WHERE type=" . ST_INVADJUST . " AND person_id=" . DB::_escape($selected_id);
+    $result = DB::_query($sql, "could not query stock moves");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this inventory movement type because item transactions have been created referring to it."));
       return false;
@@ -57,18 +57,18 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav         = Input::post('show_inactive');
+    $sav         = Input::_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Inv_Movement::get_all_types(Input::hasPost('show_inactive'));
+  $result = Inv_Movement::get_all_types(Input::_hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid width30');
   $th = array(_("Description"), "", "");
   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
-  while ($myrow = DB::fetch($result)) {
+  while ($myrow = DB::_fetch($result)) {
 
     Cell::label($myrow["name"]);
     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'movement_types', 'id');

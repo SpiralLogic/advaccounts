@@ -8,19 +8,19 @@
      * @link      http://www.advancedgroup.com.au
      **/
     $page_security = isset($_GET['NewPayment']) || (isset($_SESSION['pay_items']) && $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT) ? SA_PAYMENT : SA_DEPOSIT;
-    JS::openWindow(950, 500);
+    JS::_openWindow(950, 500);
     if ($_SERVER['REQUEST_METHOD'] == "GET") {
-        if (Input::get('account')) {
-            $_POST['bank_acount'] = Input::get('account');
+        if (Input::_get('account')) {
+            $_POST['bank_acount'] = Input::_get('account');
         }
-        if (Input::get('amount')) {
-            $_POST['amount'] = abs(Input::get('amount'));
+        if (Input::_get('amount')) {
+            $_POST['amount'] = abs(Input::_get('amount'));
         }
-        if (Input::get('memo')) {
-            $_POST['memo_'] = Input::get('memo');
+        if (Input::_get('memo')) {
+            $_POST['memo_'] = Input::_get('memo');
         }
-        if (Input::get('date')) {
-            $_POST['date_'] = Input::get('date');
+        if (Input::_get('date')) {
+            $_POST['date_'] = Input::_get('date');
         }
     }
     if (isset($_GET['NewPayment'])) {
@@ -33,9 +33,9 @@
     Page::start($_SESSION['page_title'], $page_security);
     Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
     if (Forms::isListUpdated('PersonDetailID')) {
-        $br                 = Sales_Branch::get(Input::post('PersonDetailID'));
+        $br                 = Sales_Branch::get(Input::_post('PersonDetailID'));
         $_POST['person_id'] = $br['debtor_id'];
-        Ajax::activate('person_id');
+        Ajax::_activate('person_id');
     }
     if (isset($_GET[ADDED_ID])) {
         $trans_no   = $_GET[ADDED_ID];
@@ -56,30 +56,30 @@
         Page::footer_exit();
     }
     if (isset($_POST['_date__changed'])) {
-        Ajax::activate('_ex_rate');
+        Ajax::_activate('_ex_rate');
     }
     if (isset($_POST['Process'])) {
         $input_error = 0;
         if ($_SESSION['pay_items']->count_gl_items() < 1) {
             Event::error(_("You must enter at least one payment line."));
-            JS::setFocus('code_id');
+            JS::_setFocus('code_id');
             $input_error = 1;
         }
         if ($_SESSION['pay_items']->gl_items_total() == 0.0) {
             Event::error(_("The total bank amount cannot be 0."));
-            JS::setFocus('code_id');
+            JS::_setFocus('code_id');
             $input_error = 1;
         }
         if (!Ref::is_new($_POST['ref'], $_SESSION['pay_items']->trans_type)) {
             $_POST['ref'] = Ref::get_next($_SESSION['pay_items']->trans_type);
         }
-        if (!Dates::isDate($_POST['date_'])) {
+        if (!Dates::_isDate($_POST['date_'])) {
             Event::error(_("The entered date for the payment is invalid."));
-            JS::setFocus('date_');
+            JS::_setFocus('date_');
             $input_error = 1;
-        } elseif (!Dates::isDateInFiscalYear($_POST['date_'])) {
+        } elseif (!Dates::_isDateInFiscalYear($_POST['date_'])) {
             Event::error(_("The entered date is not in fiscal year."));
-            JS::setFocus('date_');
+            JS::_setFocus('date_');
             $input_error = 1;
         }
         if ($input_error == 1) {
@@ -94,13 +94,13 @@
             $_POST['date_'],
             $_POST['PayType'],
             $_POST['person_id'],
-            Input::post('PersonDetailID'),
+            Input::_post('PersonDetailID'),
             $_POST['ref'],
             $_POST['memo_']
         );
         $trans_type = $trans[0];
         $trans_no   = $trans[1];
-        Dates::newDocDate($_POST['date_']);
+        Dates::_newDocDate($_POST['date_']);
         $_SESSION['pay_items']->clear_items();
         unset($_SESSION['pay_items']);
         Display::meta_forward($_SERVER['DOCUMENT_URI'], $trans_type == ST_BANKPAYMENT ? "AddedID=$trans_no" : "AddedDep=$trans_no");
@@ -125,8 +125,8 @@
             Validation::input_num('total_amount'),
             $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT
         );
-        $_POST['total_amount'] = Num::priceFormat(0);
-        Ajax::activate('total_amount');
+        $_POST['total_amount'] = Num::_priceFormat(0);
+        Ajax::_activate('total_amount');
         Item_Line::start_focus('_code_id_edit');
     }
     Forms::start();
@@ -156,21 +156,21 @@
      */
     function check_item_data()
     {
-        if (Input::post('PayType') == PT_QUICKENTRY && $_SESSION['pay_items']->count_gl_items() < 1) {
+        if (Input::_post('PayType') == PT_QUICKENTRY && $_SESSION['pay_items']->count_gl_items() < 1) {
             Event::error('You must select and add quick entry before adding extra lines!');
-            JS::setFocus('total_amount');
+            JS::_setFocus('total_amount');
             return false;
         }
         //if (!Validation::post_num('amount', 0))
         //{
         //	Event::error( _("The amount entered is not a valid number or is less than zero."));
-        //	JS::setFocus('amount');
+        //	JS::_setFocus('amount');
         //	return false;
         //}
 
         if ($_POST['code_id'] == $_POST['bank_account']) {
             Event::error(_("The source and destination accouts cannot be the same."));
-            JS::setFocus('code_id');
+            JS::_setFocus('code_id');
             return false;
         }
         if (Bank_Account::is($_POST['code_id'])) {
@@ -179,7 +179,7 @@
             } else {
                 Event::error(_("You cannot make a deposit from a bank account. Please use the transfer funds facility for this."));
             }
-            JS::setFocus('code_id');
+            JS::_setFocus('code_id');
             return false;
         }
         return true;
@@ -222,9 +222,9 @@
             unset ($_SESSION['pay_items']);
         }
         $_SESSION['pay_items'] = new Item_Order($type);
-        $_POST['date_']        = Dates::newDocDate();
-        if (!Dates::isDateInFiscalYear($_POST['date_'])) {
-            $_POST['date_'] = Dates::endFiscalYear();
+        $_POST['date_']        = Dates::_newDocDate();
+        if (!Dates::_isDateInFiscalYear($_POST['date_'])) {
+            $_POST['date_'] = Dates::_endFiscalYear();
         }
         $_SESSION['pay_items']->tran_date = $_POST['date_'];
     }

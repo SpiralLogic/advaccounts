@@ -104,7 +104,7 @@ JsHttpRequest.request = function (trigger, form, tout) {
   }
   catch (e) {
   }
-  Adv.Scroll.atLoad = true;
+  Adv.Scroll.loadPosition(true);
   JsHttpRequest._request(trigger, form, tout, 0);
 }
 JsHttpRequest._request = function (trigger, form, tout, retry) {
@@ -220,15 +220,13 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
           Adv.loader.off();
         }
         Behaviour.apply();
-        if (errors.length > 0) {
-          window.scrollTo(0, 0);
-        }
         //document.getElementById('msgbox').scrollIntoView(true);
         // Restore focus if we've just lost focus because of DOM element refresh
-        if (!newwin) {
+        Adv.Events.rebind();
+        if (!errors && !newwin) {
           Adv.Forms.setFocus();
         }
-        Adv.Events.rebind();
+
       }
     }, false
   );

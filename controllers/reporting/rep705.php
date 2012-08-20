@@ -51,14 +51,14 @@
              FROM gl_trans
                 WHERE account='$account'";
     if ($dimension != 0) {
-      $sql .= " AND dimension_id = " . ($dimension < 0 ? 0 : DB::escape($dimension));
+      $sql .= " AND dimension_id = " . ($dimension < 0 ? 0 : DB::_escape($dimension));
     }
     if ($dimension2 != 0) {
-      $sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : DB::escape($dimension2));
+      $sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : DB::_escape($dimension2));
     }
-    $result = DB::query($sql, "Transactions for account $account could not be calculated");
+    $result = DB::_query($sql, "Transactions for account $account could not be calculated");
 
-    return DB::fetch($result);
+    return DB::_fetch($result);
   }
 
   /**
@@ -82,7 +82,7 @@
     $printtitle = 0; //Flag for printing type name
     //Get Accounts directly under this group/type
     $result = GL_Account::getAll(null, null, $type);
-    while ($account = DB::fetch($result)) {
+    while ($account = DB::_fetch($result)) {
       $bal = getPeriods($yr, $mo, $account["account_code"], $dimension, $dimension2);
       if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] && !$bal['per05'] && !$bal['per06'] && !$bal['per07'] && !$bal['per08'] && !$bal['per09'] && !$bal['per10'] && !$bal['per11'] && !$bal['per12']
       ) {
@@ -121,7 +121,7 @@
     }
     //Get Account groups/types under this group/type
     $result = GL_Type::getAll(false, false, $type);
-    while ($accounttype = DB::fetch($result)) {
+    while ($accounttype = DB::_fetch($result)) {
       //Print Type Title if has sub types and not previously printed
       if (!$printtitle) {
         $printtitle = 1;
@@ -190,10 +190,10 @@
     //$yr = date('Y');
     //$mo = date('m'):
     // from now
-    $sql     = "SELECT begin, end, YEAR(end) AS yr, MONTH(end) AS mo FROM fiscal_year WHERE id=" . DB::escape($year);
-    $result  = DB::query($sql, "could not get fiscal year");
-    $row     = DB::fetch($result);
-    $year    = Dates::sqlToDate($row['begin']) . " - " . Dates::sqlToDate($row['end']);
+    $sql     = "SELECT begin, end, YEAR(end) AS yr, MONTH(end) AS mo FROM fiscal_year WHERE id=" . DB::_escape($year);
+    $result  = DB::_query($sql, "could not get fiscal year");
+    $row     = DB::_fetch($result);
+    $year    = Dates::_sqlToDate($row['begin']) . " - " . Dates::_sqlToDate($row['end']);
     $yr      = $row['yr'];
     $mo      = $row['mo'];
     $da      = 1;
@@ -268,7 +268,7 @@
     $rep->Header();
     $sales       = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     $classresult = GL_Class::getAll(false, 0);
-    while ($class = DB::fetch($classresult)) {
+    while ($class = DB::_fetch($classresult)) {
       $ctotal  = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       $convert = Systypes::get_class_type_convert($class["ctype"]);
       //Print Class Name
@@ -278,7 +278,7 @@
       $rep->NewLine();
       //Get Account groups/types under this group/type with no parents
       $typeresult = GL_Type::getAll(false, $class['cid'], -1);
-      while ($accounttype = DB::fetch($typeresult)) {
+      while ($accounttype = DB::_fetch($typeresult)) {
         $classtotal = display_type($accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2);
         for ($i = 1; $i <= 12; $i++) {
           $ctotal[$i] += $classtotal[$i];

@@ -43,7 +43,7 @@
       if ($myrow === false) {
         continue;
       }
-      $date_ = Dates::sqlToDate($myrow["date_"]);
+      $date_ = Dates::_sqlToDate($myrow["date_"]);
       if ($email == 1) {
         $rep           = new $report_type("", "", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_MANUFTRANSVIEW : SA_MANUFBULKREP,User::page_size());
         $rep->currency = $cur;
@@ -59,7 +59,7 @@
       $rep->TextCol(0, 5, _("Work Order Requirements"), -2);
       $rep->NewLine(2);
       $has_marked = false;
-      while ($myrow2 = DB::fetch($result)) {
+      while ($myrow2 = DB::_fetch($result)) {
         $qoh      = 0;
         $show_qoh = true;
         // if it's a non-stock item (eg. service) don't show qoh
@@ -97,9 +97,9 @@
       $rep->NewLine(1);
       $rep->TextCol(0, 5, " *** = " . _("Insufficient stock"), -2);
       $comments = DB_Comments::get(ST_WORKORDER, $i);
-      if ($comments && DB::numRows($comments)) {
+      if ($comments && DB::_numRows($comments)) {
         $rep->NewLine();
-        while ($comment = DB::fetch($comments)) {
+        while ($comment = DB::_fetch($comments)) {
           $rep->TextColLines(0, 6, $comment['memo_'], -2);
         }
       }

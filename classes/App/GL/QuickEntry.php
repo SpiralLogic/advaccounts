@@ -18,8 +18,8 @@
      */
     public static function add($description, $type, $base_amount, $base_desc) {
       $sql = "INSERT INTO quick_entries (description, type, base_amount, base_desc)
-        VALUES (" . DB::escape($description) . ", " . DB::escape($type) . ", " . DB::escape($base_amount) . ", " . DB::escape($base_desc) . ")";
-      DB::query($sql, "could not insert quick entry for $description");
+        VALUES (" . DB::_escape($description) . ", " . DB::_escape($type) . ", " . DB::_escape($base_amount) . ", " . DB::_escape($base_desc) . ")";
+      DB::_query($sql, "could not insert quick entry for $description");
     }
     /**
      * @static
@@ -31,10 +31,10 @@
      * @param $base_desc
      */
     public static function update($selected_id, $description, $type, $base_amount, $base_desc) {
-      $sql = "UPDATE quick_entries	SET description = " . DB::escape($description) . ",
-            type=" . DB::escape($type) . ", base_amount=" . DB::escape($base_amount) . ", base_desc=" . DB::escape($base_desc) . "
-            WHERE id = " . DB::escape($selected_id);
-      DB::query($sql, "could not update quick entry for $selected_id");
+      $sql = "UPDATE quick_entries	SET description = " . DB::_escape($description) . ",
+            type=" . DB::_escape($type) . ", base_amount=" . DB::_escape($base_amount) . ", base_desc=" . DB::_escape($base_desc) . "
+            WHERE id = " . DB::_escape($selected_id);
+      DB::_query($sql, "could not update quick entry for $selected_id");
     }
     /**
      * @static
@@ -42,8 +42,8 @@
      * @param $selected_id
      */
     public static function delete($selected_id) {
-      $sql = "DELETE FROM quick_entries WHERE id=" . DB::escape($selected_id);
-      DB::query($sql, "could not delete quick entry $selected_id");
+      $sql = "DELETE FROM quick_entries WHERE id=" . DB::_escape($selected_id);
+      DB::_query($sql, "could not delete quick entry $selected_id");
     }
     /**
      * @static
@@ -59,9 +59,9 @@
       $sql = "INSERT INTO quick_entry_lines
             (qid, action, dest_id, amount, dimension_id, dimension2_id)
         VALUES
-            ($qid, " . DB::escape($action) . "," . DB::escape($dest_id) . ",
-                " . DB::escape($amount) . ", " . DB::escape($dim) . ", " . DB::escape($dim2) . ")";
-      DB::query($sql, "could not insert quick entry line for $qid");
+            ($qid, " . DB::_escape($action) . "," . DB::_escape($dest_id) . ",
+                " . DB::_escape($amount) . ", " . DB::_escape($dim) . ", " . DB::_escape($dim2) . ")";
+      DB::_query($sql, "could not insert quick entry line for $qid");
     }
     /**
      * @static
@@ -75,10 +75,10 @@
      * @param $dim2
      */
     public static function update_line($selected_id, $qid, $action, $dest_id, $amount, $dim, $dim2) {
-      $sql = "UPDATE quick_entry_lines SET qid = " . DB::escape($qid) . ", action=" . DB::escape($action) . ",
-            dest_id=" . DB::escape($dest_id) . ", amount=" . DB::escape($amount) . ", dimension_id=" . DB::escape($dim) . ", dimension2_id=" . DB::escape($dim2) . "
-            WHERE id = " . DB::escape($selected_id);
-      DB::query($sql, "could not update quick entry line for $selected_id");
+      $sql = "UPDATE quick_entry_lines SET qid = " . DB::_escape($qid) . ", action=" . DB::_escape($action) . ",
+            dest_id=" . DB::_escape($dest_id) . ", amount=" . DB::_escape($amount) . ", dimension_id=" . DB::_escape($dim) . ", dimension2_id=" . DB::_escape($dim2) . "
+            WHERE id = " . DB::_escape($selected_id);
+      DB::_query($sql, "could not update quick entry line for $selected_id");
     }
     /**
      * @static
@@ -86,8 +86,8 @@
      * @param $selected_id
      */
     public static function delete_line($selected_id) {
-      $sql = "DELETE FROM quick_entry_lines WHERE id=" . DB::escape($selected_id);
-      DB::query($sql, "could not delete quick entry line $selected_id");
+      $sql = "DELETE FROM quick_entry_lines WHERE id=" . DB::_escape($selected_id);
+      DB::_query($sql, "could not delete quick entry line $selected_id");
     }
     /**
      * @static
@@ -99,10 +99,10 @@
     public static function has($type = null) {
       $sql = "SELECT id FROM quick_entries";
       if ($type != null) {
-        $sql .= " WHERE type=" . DB::escape($type);
+        $sql .= " WHERE type=" . DB::_escape($type);
       }
-      $result = DB::query($sql, "could not retreive quick entries");
-      return DB::numRows($result) > 0;
+      $result = DB::_query($sql, "could not retreive quick entries");
+      return DB::_numRows($result) > 0;
     }
     /**
      * @static
@@ -114,10 +114,10 @@
     public static function getAll($type = null) {
       $sql = "SELECT * FROM quick_entries";
       if ($type != null) {
-        $sql .= " WHERE type=" . DB::escape($type);
+        $sql .= " WHERE type=" . DB::_escape($type);
       }
       $sql .= " ORDER BY description";
-      return DB::query($sql, "could not retreive quick entries");
+      return DB::_query($sql, "could not retreive quick entries");
     }
     /**
      * @static
@@ -127,9 +127,9 @@
      * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($selected_id) {
-      $sql    = "SELECT * FROM quick_entries WHERE id=" . DB::escape($selected_id);
-      $result = DB::query($sql, "could not retreive quick entry $selected_id");
-      return DB::fetch($result);
+      $sql    = "SELECT * FROM quick_entries WHERE id=" . DB::_escape($selected_id);
+      $result = DB::_query($sql, "could not retreive quick entry $selected_id");
+      return DB::_fetch($result);
     }
     /**
      * @static
@@ -147,8 +147,8 @@
             LEFT JOIN tax_types ON
                 quick_entry_lines.dest_id = tax_types.id
             WHERE
-                qid=" . DB::escape($qid) . " ORDER by id";
-      return DB::query($sql, "could not retreive quick entries");
+                qid=" . DB::_escape($qid) . " ORDER by id";
+      return DB::_query($sql, "could not retreive quick entries");
     }
     /**
      * @static
@@ -158,9 +158,9 @@
      * @return bool
      */
     public static function has_lines($qid) {
-      $sql    = "SELECT id FROM quick_entry_lines WHERE qid=" . DB::escape($qid);
-      $result = DB::query($sql, "could not retreive quick entries");
-      return DB::numRows($result) > 0;
+      $sql    = "SELECT id FROM quick_entry_lines WHERE qid=" . DB::_escape($qid);
+      $result = DB::_query($sql, "could not retreive quick entries");
+      return DB::_numRows($result) > 0;
     }
     /**
      * @static
@@ -170,9 +170,9 @@
      * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function has_line($selected_id) {
-      $sql    = "SELECT * FROM quick_entry_lines WHERE id=" . DB::escape($selected_id);
-      $result = DB::query($sql, "could not retreive quick entry for $selected_id");
-      return DB::fetch($result);
+      $sql    = "SELECT * FROM quick_entry_lines WHERE id=" . DB::_escape($selected_id);
+      $result = DB::_query($sql, "could not retreive quick entry for $selected_id");
+      return DB::_fetch($result);
     }
     //
     //	Expands selected quick entry $id into GL posings and adds to order.
@@ -193,7 +193,7 @@
       $bank_amount = 0;
       if (!isset($id) || $id == null || $id == "") {
         Event::error(_("No Quick Entries are defined."));
-        JS::setFocus('total_amount');
+        JS::_setFocus('total_amount');
       } else {
         if ($type == QE_DEPOSIT) {
           $base = -$base;
@@ -209,7 +209,7 @@
         $result   = GL_QuickEntry::get_lines($id);
         $totrate  = 0;
         $qe_lines = [];
-        while ($row = DB::fetch($result)) {
+        while ($row = DB::_fetch($result)) {
           $qe_lines[] = $row;
           switch (strtolower($row['action'])) {
             case "t": // post taxes calculated on base amount
@@ -243,14 +243,14 @@
               $base -= $part;
               break;
             case "%": // store acc*amount% to GL account
-              $part = Num::round($base * $qe_line['amount'] / 100, User::price_dec());
+              $part = Num::_round($base * $qe_line['amount'] / 100, User::price_dec());
               break;
             case "%+": // ditto & increase base amount
-              $part = Num::round($base * $qe_line['amount'] / 100, User::price_dec());
+              $part = Num::_round($base * $qe_line['amount'] / 100, User::price_dec());
               $base += $part;
               break;
             case "%-": // ditto & reduce base amount
-              $part = Num::round($base * $qe_line['amount'] / 100, User::price_dec());
+              $part = Num::_round($base * $qe_line['amount'] / 100, User::price_dec());
               $base -= $part;
               break;
             case "t": // post taxes calculated on base amount
@@ -271,14 +271,14 @@
                 $taxgroup = $order->tax_group_id;
                 $rates    = 0;
                 $res      = Tax_Groups::get_for_item($order->tax_group_id);
-                while ($row = DB::fetch($res)) {
+                while ($row = DB::_fetch($res)) {
                   $rates += $row['rate'];
                 }
                 if ($rates == 0) {
                   continue 2;
                 }
               }
-              $tax = Num::round($part * $item_tax['rate'], User::price_dec());
+              $tax = Num::_round($part * $item_tax['rate'], User::price_dec());
               if ($tax == 0) {
                 continue 2;
               }

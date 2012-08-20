@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(950, 500);
+  JS::_openWindow(950, 500);
   Page::start(_($help_context = "Work Order Release to Manufacturing"), SA_MANUFRELEASE);
   if (isset($_GET["trans_no"])) {
     $selected_id = $_GET["trans_no"];
@@ -26,14 +26,14 @@
   {
     if ($myrow['released']) {
       Event::error(_("This work order has already been released."));
-      JS::setFocus('released');
+      JS::_setFocus('released');
 
       return false;
     }
     // make sure item has components
     if (!WO::has_bom($myrow['stock_id'])) {
       Event::error(_("This Work Order cannot be released. The selected item to manufacture does not have a bom."));
-      JS::setFocus('stock_id');
+      JS::_setFocus('stock_id');
 
       return false;
     }
@@ -46,7 +46,7 @@
     Event::notice(_("The work order has been released to manufacturing."));
     Display::note(GL_UI::viewTrans(ST_WORKORDER, $selected_id, _("View this Work Order")));
     Display::link_no_params("search_work_orders.php", _("Select another &work order"));
-    Ajax::activate('_page_body');
+    Ajax::_activate('_page_body');
     Page::end();
     exit;
   }

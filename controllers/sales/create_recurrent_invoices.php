@@ -8,18 +8,18 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  JS::openWindow(950, 600);
+  JS::_openWindow(950, 600);
   Page::start(_($help_context = "Create and Print Recurrent Invoices"), SA_SALESINVOICE);
   if (isset($_GET['recurrent'])) {
-    $date = Dates::today();
-    if (Dates::isDateInFiscalYear($date)) {
+    $date = Dates::_today();
+    if (Dates::_isDateInFiscalYear($date)) {
       $invs   = [];
-      $sql    = "SELECT * FROM recurrent_invoices WHERE id=" . DB::escape($_GET['recurrent']);
-      $result = DB::query($sql, "could not get recurrent invoice");
-      $myrow  = DB::fetch($result);
+      $sql    = "SELECT * FROM recurrent_invoices WHERE id=" . DB::_escape($_GET['recurrent']);
+      $result = DB::_query($sql, "could not get recurrent invoice");
+      $myrow  = DB::_fetch($result);
       if ($myrow['debtor_id'] == 0) {
         $cust = Sales_Branch::get_from_group($myrow['group_no']);
-        while ($row = DB::fetch($cust)) {
+        while ($row = DB::_fetch($cust)) {
           $invs[] = Sales_Invoice::create_recurrent($row['debtor_id'], $row['branch_id'], $myrow['order_no'], $myrow['id']);
         }
       } else {
@@ -51,7 +51,7 @@
     }
   }
   $sql    = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_id";
-  $result = DB::query($sql, "could not get recurrent invoices");
+  $result = DB::_query($sql, "could not get recurrent invoices");
   Table::start('tablestyle grid width70');
   $th = array(
     _("Description"),
@@ -67,20 +67,20 @@
   );
   Table::header($th);
   $k     = 0;
-  $today = Dates::addDays(Dates::today(), 1);
+  $today = Dates::_addDays(Dates::_today(), 1);
   $due   = false;
-  while ($myrow = DB::fetch($result)) {
-    $begin     = Dates::sqlToDate($myrow["begin"]);
-    $end       = Dates::sqlToDate($myrow["end"]);
-    $last_sent = Dates::sqlToDate($myrow["last_sent"]);
+  while ($myrow = DB::_fetch($result)) {
+    $begin     = Dates::_sqlToDate($myrow["begin"]);
+    $end       = Dates::_sqlToDate($myrow["end"]);
+    $last_sent = Dates::_sqlToDate($myrow["last_sent"]);
     if ($myrow['monthly'] > 0) {
-      $due_date = Dates::beginMonth($last_sent);
+      $due_date = Dates::_beginMonth($last_sent);
     } else {
       $due_date = $last_sent;
     }
-    $due_date = Dates::addMonths($due_date, $myrow['monthly']);
-    $due_date = Dates::addDays($due_date, $myrow['days']);
-    $overdue  = Dates::isGreaterThan($today, $due_date) && Dates::isGreaterThan($today, $begin) && Dates::isGreaterThan($end, $today);
+    $due_date = Dates::_addMonths($due_date, $myrow['monthly']);
+    $due_date = Dates::_addDays($due_date, $myrow['days']);
+    $overdue  = Dates::_isGreaterThan($today, $due_date) && Dates::_isGreaterThan($today, $begin) && Dates::_isGreaterThan($end, $today);
     if ($overdue) {
       Row::start("class='overduebg'");
       $due = true;

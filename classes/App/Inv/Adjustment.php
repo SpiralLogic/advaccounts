@@ -24,7 +24,7 @@
          */
         public static function add($items, $location, $date_, $type, $increase, $reference, $memo_)
         {
-            DB::begin();
+            DB::_begin();
             $adj_id = SysTypes::get_next_trans_no(ST_INVADJUST);
             foreach ($items as $line_item) {
                 if (!$increase) {
@@ -35,7 +35,7 @@
             DB_Comments::add(ST_INVADJUST, $adj_id, $date_, $memo_);
             Ref::save(ST_INVADJUST, $reference);
             DB_AuditTrail::add(ST_INVADJUST, $adj_id, $date_);
-            DB::commit();
+            DB::_commit();
             return $adj_id;
         }
         /**
@@ -62,7 +62,7 @@
         public static function get($trans_no)
         {
             $result = Inv_Movement::get(ST_INVADJUST, $trans_no);
-            if (DB::numRows($result) == 0) {
+            if (DB::_numRows($result) == 0) {
                 return null;
             }
             return $result;
@@ -83,7 +83,7 @@
         public static function add_item($adj_id, $stock_id, $location, $date_, $type, $reference, $quantity, $standard_cost, $memo_)
         {
             $mb_flag = WO::get_mb_flag($stock_id);
-            if (Input::post('mb_flag') == STOCK_SERVICE) {
+            if (Input::_post('mb_flag') == STOCK_SERVICE) {
                 Event::error("Cannot do inventory adjustment for Service item : $stock_id", "");
             }
             Purch_GRN::update_average_material_cost(null, $stock_id, $standard_cost, $quantity, $date_);
@@ -171,7 +171,7 @@
             if ($id == -1) {
                 Inv_Adjustment::item_controls($order);
             }
-            Row::label(_("Total"), Num::format($total, User::price_dec()), "class='alignright' colspan=5", "class='alignright'", 2);
+            Row::label(_("Total"), Num::_format($total, User::price_dec()), "class='alignright' colspan=5", "class='alignright'", 2);
             Table::end();
             Display::div_end();
         }
@@ -190,25 +190,25 @@
             if ($line_no != -1 && $line_no == $id) {
                 $_POST['stock_id'] = $order->line_items[$id]->stock_id;
                 $_POST['qty']      = Item::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
-                //$_POST['std_cost'] = Num::priceFormat($order->line_items[$id]->standard_cost);
-                $_POST['std_cost'] = Num::priceDecimal($order->line_items[$id]->standard_cost, $dec2);
+                //$_POST['std_cost'] = Num::_priceFormat($order->line_items[$id]->standard_cost);
+                $_POST['std_cost'] = Num::_priceDecimal($order->line_items[$id]->standard_cost, $dec2);
                 $_POST['units']    = $order->line_items[$id]->units;
                 Forms::hidden('stock_id', $_POST['stock_id']);
                 Cell::label($_POST['stock_id']);
                 Cell::label($order->line_items[$id]->description, ' class="nowrap"');
-                Ajax::activate('items_table');
+                Ajax::_activate('items_table');
             } else {
                 Item_UI::costable_cells(null, 'stock_id', null, false, true);
                 if (Forms::isListUpdated('stock_id')) {
-                    Ajax::activate('units');
-                    Ajax::activate('qty');
-                    Ajax::activate('std_cost');
+                    Ajax::_activate('units');
+                    Ajax::_activate('qty');
+                    Ajax::_activate('std_cost');
                 }
                 $item_info = Item::get_edit_info((isset($_POST['stock_id']) ? $_POST['stock_id'] : ''));
                 $dec = $item_info['decimals'];
-                $_POST['qty'] = Num::format(0, $dec);
-                //$_POST['std_cost'] = Num::priceFormat($item_info["standard_cost"]);
-                $_POST['std_cost'] = Num::priceDecimal($item_info["standard_cost"], $dec2);
+                $_POST['qty'] = Num::_format(0, $dec);
+                //$_POST['std_cost'] = Num::_priceFormat($item_info["standard_cost"]);
+                $_POST['std_cost'] = Num::_priceDecimal($item_info["standard_cost"], $dec2);
                 $_POST['units']    = $item_info["units"];
             }
             Forms::qtyCells(null, 'qty', $_POST['qty'], null, null, $dec);
@@ -220,7 +220,7 @@
                 Forms::buttonCell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
                 Forms::buttonCell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
                 Forms::hidden('LineNo', $line_no);
-                JS::setFocus('qty');
+                JS::_setFocus('qty');
             } else {
                 Forms::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
             }

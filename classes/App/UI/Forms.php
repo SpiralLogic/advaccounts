@@ -99,7 +99,7 @@
             $value = get_post($name);
         }
         $ret = "<input type=\"hidden\" id=\"$name\" name=\"$name\" value=\"$value\">";
-        Ajax::addUpdate($name, $name, $value);
+        Ajax::_addUpdate($name, $name, $value);
         if ($echo) {
             echo $ret . "\n";
         } else {
@@ -171,9 +171,9 @@
         } // code is generalized for multiple selection support
         if (isset($_POST['_' . $name . '_update'])) {
             if (!$opts['async']) {
-                Ajax::activate('_page_body');
+                Ajax::_activate('_page_body');
             } else {
-                Ajax::activate($name);
+                Ajax::_activate($name);
             }
         }
         // ------ make selector ----------
@@ -206,7 +206,7 @@
         $_POST[$name] = $multi ? $selected_id : $selected_id[0];
         $selector     = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' :
           '') . "$disabled id='$name' name='$name" . ($multi ? '[]' : '') . "' class='combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
-        Ajax::addUpdate($name, "_{$name}_sel", $selector);
+        Ajax::_addUpdate($name, "_{$name}_sel", $selector);
         $selector = "<div id='_{$name}_sel'>" . $selector . "</div>\n";
         if ($select_submit != false) { // if submit on change is used - add select button
             $_select_button
@@ -220,7 +220,7 @@
               '_' . $name . '_update'
             ) . "\n";
         }
-        JS::defaultFocus($name);
+        JS::_defaultFocus($name);
 
         return $selector;
     }
@@ -456,7 +456,7 @@
      */
     function submit_return($name, $value, $title = false)
     {
-        if (Input::request('frame')) {
+        if (Input::_request('frame')) {
             submit($name, $value, true, $title, 'selector');
         }
     }
@@ -467,7 +467,7 @@
      */
     function submit_js_confirm($name, $msg)
     {
-        JS::beforeload("_validate.$name=function(){ return confirm('" . strtr($msg, array("\n" => '\\n')) . "');};");
+        JS::_beforeload("_validate.$name=function(){ return confirm('" . strtr($msg, array("\n" => '\\n')) . "');};");
     }
 
     /**
@@ -597,7 +597,7 @@
         }
         $str .= "<input" . ($value == 1 ? ' checked' : '') . " type='checkbox' name='$name' id='$name' value='1'" . ($submit_on_change ? " onclick='$submit_on_change'" :
           '') . ($title ? " title='$title'" : '') . " >\n";
-        Ajax::addUpdate($name, $name, $value);
+        Ajax::_addUpdate($name, $name, $value);
 
         return $str;
     }
@@ -671,7 +671,7 @@
             echo " " . $post_label;
         }
         echo "</td>\n";
-        Ajax::addUpdate($name, $name, $value);
+        Ajax::_addUpdate($name, $name, $value);
     }
 
     /**
@@ -689,7 +689,7 @@
      */
     function text_cells_ex($label, $name, $size, $max = null, $init = null, $title = null, $params = null, $post_label = null, $submit_on_change = false)
     {
-        JS::defaultFocus($name);
+        JS::_defaultFocus($name);
         if (!isset($_POST[$name]) || $_POST[$name] == "") {
             if ($init !== null) {
                 $_POST[$name] = $init;
@@ -711,7 +711,7 @@
             echo " " . $post_label;
         }
         echo "</td>\n";
-        Ajax::addUpdate($name, $name, $_POST[$name]);
+        Ajax::_addUpdate($name, $name, $_POST[$name]);
     }
 
     /**
@@ -852,15 +852,15 @@
             if ($inc_years == 1001) {
                 $_POST[$name] = null;
             } else {
-                $dd = Dates::today();
+                $dd = Dates::_today();
                 if ($inc_days != 0) {
-                    $dd = Dates::addDays($dd, $inc_days);
+                    $dd = Dates::_addDays($dd, $inc_days);
                 }
                 if ($inc_months != 0) {
-                    $dd = Dates::addMonths($dd, $inc_months);
+                    $dd = Dates::_addMonths($dd, $inc_months);
                 }
                 if ($inc_years != 0) {
-                    $dd = Dates::addYears($dd, $inc_years);
+                    $dd = Dates::_addYears($dd, $inc_years);
                 }
                 $_POST[$name] = $dd;
             }
@@ -873,13 +873,13 @@
         }
         $class  = $submit_on_change ? 'searchbox datepicker' : 'datepicker';
         $aspect = $check ? ' data-aspect="cdate"' : '';
-        if ($check && (get_post($name) != Dates::today())) {
+        if ($check && (get_post($name) != Dates::_today())) {
             $aspect .= ' style="color:#FF0000"';
         }
         echo "<input id='$name' type='text' name='$name' class='$class' $aspect size=\"10\" maxlength='10' value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" :
           '') . " > $post_label";
         echo "</td>\n";
-        Ajax::addUpdate($name, $name, $_POST[$name]);
+        Ajax::_addUpdate($name, $name, $_POST[$name]);
     }
 
     /**
@@ -1041,17 +1041,17 @@
         } else {
             echo "class='amount' ";
         }
-        if (!Input::post($name)) {
+        if (!Input::_post($name)) {
             $_POST[$name] = number_format(0, $dec);
         }
         echo "type='text' name='$name' size='$size' maxlength='$max' data-dec='$dec' value='" . $_POST[$name] . "' $inputparams>";
         if ($post_label) {
             echo "<span id='_{$name}_label'> $post_label</span>";
-            Ajax::addUpdate($name, '_' . $name . '_label', $post_label);
+            Ajax::_addUpdate($name, '_' . $name . '_label', $post_label);
         }
         echo "</td>\n";
-        Ajax::addUpdate($name, $name, $_POST[$name]);
-        Ajax::addAssign($name, $name, 'data-dec', $dec);
+        Ajax::_addUpdate($name, $name, $_POST[$name]);
+        Ajax::_addAssign($name, $name, 'data-dec', $dec);
     }
 
     /**
@@ -1224,7 +1224,7 @@
             $value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
         }
         echo "<td><textarea id='$name' name='$name' cols='" . ($cols + 2) . "' rows='$rows'" . ($title ? " title='$title'" : '') . ">$value</textarea></td>\n";
-        Ajax::addUpdate($name, $name, $value);
+        Ajax::_addUpdate($name, $name, $value);
     }
 
     /**
@@ -1261,7 +1261,7 @@
         if (check_value('show_inactive')) {
             if (isset($_POST['LInact'][$id]) && (get_post('_Inactive' . $id . '_update') || get_post('Update')) && (check_value('Inactive' . $id) != $value)
             ) {
-                DB::updateRecordStatus($id, !$value, $table, $key);
+                DB::_updateRecordStatus($id, !$value, $table, $key);
             }
             echo '<td class="center">' . checkbox(null, $name, $value, true, '', "class='center'") . hidden("LInact[$id]", $value, false) . '</td>';
         }
@@ -1290,7 +1290,7 @@
             Arr::insert($th, count($th) - 2, _("Inactive"));
         }
         if (get_post('_show_inactive_update')) {
-            Ajax::activate('_page_body');
+            Ajax::_activate('_page_body');
         }
     }
 
@@ -1430,7 +1430,7 @@
     function dateformats_list_row($label, $name, $value = null)
     {
         echo "<tr><td class='label'>$label</td>\n<td>";
-        echo array_selector($name, $value, Config::get('date.formats'));
+        echo array_selector($name, $value, Config::_get('date.formats'));
         echo "</td></tr>\n";
     }
 
@@ -1442,7 +1442,7 @@
     function dateseps_list_row($label, $name, $value = null)
     {
         echo "<tr><td class='label'>$label</td>\n<td>";
-        echo array_selector($name, $value, Config::get('date.separators'));
+        echo array_selector($name, $value, Config::_get('date.separators'));
         echo "</td></tr>\n";
     }
 
@@ -1454,7 +1454,7 @@
     function thoseps_list_row($label, $name, $value = null)
     {
         echo "<tr><td class='label'>$label</td>\n<td>";
-        echo array_selector($name, $value, Config::get('separators_thousands'));
+        echo array_selector($name, $value, Config::_get('separators_thousands'));
         echo "</td></tr>\n";
     }
 
@@ -1466,7 +1466,7 @@
     function decseps_list_row($label, $name, $value = null)
     {
         echo "<tr><td class='label'>$label</td>\n<td>";
-        echo array_selector($name, $value, Config::get('separators_decimal'));
+        echo array_selector($name, $value, Config::_get('separators_decimal'));
         echo "</td></tr>\n";
     }
 
@@ -1477,7 +1477,7 @@
      */
     function _format_date($row)
     {
-        return Dates::sqlToDate($row['reconciled']);
+        return Dates::_sqlToDate($row['reconciled']);
     }
 
     /**
@@ -1522,7 +1522,7 @@
      */
     function _format_fiscalyears($row)
     {
-        return Dates::sqlToDate($row[1]) . "&nbsp;-&nbsp;" . Dates::sqlToDate($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') : _('Active')) . "</option>\n";
+        return Dates::_sqlToDate($row[1]) . "&nbsp;-&nbsp;" . Dates::_sqlToDate($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') : _('Active')) . "</option>\n";
     }
 
     /**

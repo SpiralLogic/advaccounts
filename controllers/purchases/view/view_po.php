@@ -8,7 +8,7 @@
      * @link      http://www.advancedgroup.com.au
      **/
 
-    JS::openWindow(950, 500);
+    JS::_openWindow(950, 500);
     Page::start(_($help_context = "View Purchase Order"), SA_SUPPTRANSVIEW, true);
     if (!isset($_GET['trans_no'])) {
         die ("<br>" . _("This page must be called with a purchase order number to review."));
@@ -38,7 +38,7 @@
     foreach ($order->line_items as $stock_item) {
         $line_total = $stock_item->quantity * $stock_item->price * (1 - $stock_item->discount);
         // if overdue and outstanding quantities, then highlight as so
-        if (($stock_item->quantity - $stock_item->qty_received > 0) && Dates::isGreaterThan(Dates::today(), $stock_item->req_del_date)
+        if (($stock_item->quantity - $stock_item->qty_received > 0) && Dates::_isGreaterThan(Dates::_today(), $stock_item->req_del_date)
         ) {
             Row::start("class='overduebg'");
             $overdue_items = true;
@@ -61,7 +61,7 @@
         Row::end();
         $total += $line_total;
     }
-    $display_total = Num::format($total, User::price_dec());
+    $display_total = Num::_format($total, User::price_dec());
     Row::label(_("Total Excluding Tax/Shipping"), $display_total, "class='alignright' colspan=6", ' class="alignright nowrap"', 3);
     Table::end();
     if ($overdue_items) {
@@ -69,33 +69,33 @@
     }
     $k           = 0;
     $grns_result = Purch_GRN::get_for_po($_GET['trans_no']);
-    if (DB::numRows($grns_result) > 0) {
+    if (DB::_numRows($grns_result) > 0) {
         echo "</td><td class='top'>"; // outer table
         Display::heading(_("Deliveries"));
         Table::start('tablestyle grid');
         $th = array(_("#"), _("Reference"), _("Delivered On"));
         Table::header($th);
-        while ($myrow = DB::fetch($grns_result)) {
+        while ($myrow = DB::_fetch($grns_result)) {
 
             Cell::label(GL_UI::viewTrans(ST_SUPPRECEIVE, $myrow["id"]));
             Cell::label($myrow["reference"]);
-            Cell::label(Dates::sqlToDate($myrow["delivery_date"]));
+            Cell::label(Dates::_sqlToDate($myrow["delivery_date"]));
             Row::end();
         }
         Table::end();
     }
     $invoice_result = Purch_Invoice::get_po_credits($_GET['trans_no']);
     $k              = 0;
-    if (DB::numRows($invoice_result) > 0) {
+    if (DB::_numRows($invoice_result) > 0) {
         echo "</td><td class='top'>"; // outer table
         Display::heading(_("Invoices/Credits"));
         Table::start('tablestyle grid');
         $th = array(_("#"), _("Date"), _("Total"));
         Table::header($th);
-        while ($myrow = DB::fetch($invoice_result)) {
+        while ($myrow = DB::_fetch($invoice_result)) {
 
             Cell::label(GL_UI::viewTrans($myrow["type"], $myrow["trans_no"]));
-            Cell::label(Dates::sqlToDate($myrow["tran_date"]));
+            Cell::label(Dates::_sqlToDate($myrow["tran_date"]));
             Cell::amount($myrow["Total"]);
             Row::end();
         }
@@ -103,7 +103,7 @@
     }
     echo "</td></tr>";
     Table::end(1); // outer table
-    if (Input::get('frame')) {
+    if (Input::_get('frame')) {
         return;
     }
     Display::submenu_print(_("Print This Order"), ST_PURCHORDER, $_GET['trans_no'], 'prtopt');

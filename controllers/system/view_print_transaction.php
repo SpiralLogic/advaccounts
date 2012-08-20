@@ -7,13 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  JS::openWindow(950, 500);
+  JS::_openWindow(950, 500);
   Page::start(_($help_context = "View or Print Transactions"), SA_VIEWPRINTTRANSACTION);
   if (isset($_POST['ProcessSearch'])) {
     if (!check_valid_entries()) {
       unset($_POST['ProcessSearch']);
     }
-    Ajax::activate('transactions');
+    Ajax::_activate('transactions');
   }
   Forms::start(false);
   viewing_controls();
@@ -108,10 +108,10 @@
         $sql .= " ,$trans_ref ";
       }
       $sql .= ", " . $_POST['filterType'] . " as type FROM $table_name
-            WHERE $trans_no_name >= " . DB::quote($_POST['FromTransNo']) . "
-            AND $trans_no_name <= " . DB::quote($_POST['ToTransNo']);
+            WHERE $trans_no_name >= " . DB::_quote($_POST['FromTransNo']) . "
+            AND $trans_no_name <= " . DB::_quote($_POST['ToTransNo']);
       if ($type_name != null) {
-        $sql .= " AND `$type_name` = " . DB::quote($_POST['filterType']);
+        $sql .= " AND `$type_name` = " . DB::_quote($_POST['filterType']);
       }
       $sql .= " ORDER BY $trans_no_name";
       $print_type = $_POST['filterType'];

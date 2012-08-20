@@ -7,7 +7,7 @@
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
      **/
-    JS::openWindow(950, 500);
+    JS::_openWindow(950, 500);
     Page::start(_($help_context = "View Supplier Credit Note"), SA_SUPPTRANSVIEW, true);
     if (isset($_GET["trans_no"])) {
         $trans_no = $_GET["trans_no"];
@@ -34,12 +34,12 @@
     Table::end(1);
     $total_gl        = Purch_GLItem::display_items($creditor_trans, 3);
     $total_grn       = Purch_GRN::display_items($creditor_trans, 2);
-    $display_sub_tot = Num::format($total_gl + $total_grn, User::price_dec());
+    $display_sub_tot = Num::_format($total_gl + $total_grn, User::price_dec());
     Table::start('tablestyle width95');
     Row::label(_("Sub Total"), $display_sub_tot, "class='alignright'", " class='nowrap alignright width17' ");
     $tax_items = GL_Trans::get_tax_details(ST_SUPPCREDIT, $trans_no);
     Creditor_Trans::trans_tax_details($tax_items, 1);
-    $display_total = Num::format(-($creditor_trans->ov_amount + $creditor_trans->ov_gst), User::price_dec());
+    $display_total = Num::_format(-($creditor_trans->ov_amount + $creditor_trans->ov_gst), User::price_dec());
     Row::label(_("TOTAL CREDIT NOTE"), $display_total, "colspan=1 class='alignright'", ' class="alignright nowrap"');
     Table::end(1);
     $voided = Display::is_voided(ST_SUPPCREDIT, $trans_no, _("This credit note has been voided."));

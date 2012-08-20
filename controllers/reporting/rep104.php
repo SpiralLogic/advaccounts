@@ -27,13 +27,13 @@
                 stock_category
             WHERE stock_master.category_id=stock_category.category_id AND NOT stock_master.inactive";
     if ($category != 0) {
-      $sql .= " AND stock_category.category_id = " . DB::escape($category);
+      $sql .= " AND stock_category.category_id = " . DB::_escape($category);
     }
     $sql
       .= " ORDER BY stock_master.category_id,
                 stock_master.stock_id";
 
-    return DB::query($sql, "No transactions were returned");
+    return DB::_query($sql, "No transactions were returned");
   }
 
   /**
@@ -52,11 +52,11 @@
             ON i.category_id=c.category_id";
     $sql .= " WHERE !i.is_foreign AND i.item_code!=i.stock_id";
     if ($category != 0) {
-      $sql .= " AND c.category_id = " . DB::escape($category);
+      $sql .= " AND c.category_id = " . DB::_escape($category);
     }
     $sql .= " GROUP BY i.item_code";
 
-    return DB::query($sql, "No kits were returned");
+    return DB::_query($sql, "No kits were returned");
   }
 
   function print_price_listing()
@@ -125,7 +125,7 @@
     $result                 = fetch_items($category);
     $catgor                 = '';
     $_POST['sales_type_id'] = $salestype;
-    while ($myrow = DB::fetch($result)) {
+    while ($myrow = DB::_fetch($result)) {
       if ($catgor != $myrow['description']) {
         $rep->Line($rep->row - $rep->lineHeight);
         $rep->NewLine(2);
@@ -147,17 +147,17 @@
         } else {
           $disp = 0.0;
         }
-        $rep->TextCol(3, 4, Num::format($disp, User::percent_dec()) . " %");
+        $rep->TextCol(3, 4, Num::_format($disp, User::percent_dec()) . " %");
       }
       if ($pictures) {
         $image = COMPANY_PATH . "images/" . Item::img_name($myrow['stock_id']) . ".jpg";
         if (file_exists($image)) {
           $rep->NewLine();
-          if ($rep->row - Config::get('item_images_height') < $rep->bottomMargin) {
+          if ($rep->row - Config::_get('item_images_height') < $rep->bottomMargin) {
             $rep->Header();
           }
-          $rep->AddImage($image, $rep->cols[1], $rep->row - Config::get('item_images_height'), 0, Config::get('item_images_height'));
-          $rep->row -= Config::get('item_images_height');
+          $rep->AddImage($image, $rep->cols[1], $rep->row - Config::_get('item_images_height'), 0, Config::_get('item_images_height'));
+          $rep->row -= Config::_get('item_images_height');
           $rep->NewLine();
         }
       } else {
@@ -167,7 +167,7 @@
     $rep->Line($rep->row - 4);
     $result = get_kits($category);
     $catgor = '';
-    while ($myrow = DB::fetch($result)) {
+    while ($myrow = DB::_fetch($result)) {
       if ($catgor != $myrow['cat_name']) {
         if ($catgor == '') {
           $rep->NewLine(2);

@@ -15,29 +15,33 @@
    */
   class SessionException extends \Exception
   {
+
   }
+
   /**
    * @property \ADVAccounting App
-   * @method  getGlobal($var, $default = null)
-   * @method setGlobal($var, $value = null)
-   * @method get()
-   * @method set()
-   * @method regenerate()
-   * @method checkUserAgent()
-   * @method setUserAgent()
+   * @method  _getGlobal($var, $default = null)
+   * @method _setGlobal($var, $value = null)
+   * @method _get()
+   * @method _set()
+   * @method _regenerate()
+   * @method _kill()
+   * @method _checkUserAgent()
+   * @method _getFlash()
+   * @method _setFlash()
    * @method Session i()
    * @property  string        page_title
    */
   class Session implements \ArrayAccess
   {
-    use Traits\StaticAccess;
+
+    use Traits\StaticAccess2;
 
     /***
      * @var \gettextNativeSupport|\gettext_php_support
      */
     public $get_text;
-    protected $_flash = [];
-
+    protected $flash = [];
     /**
      * @throws \ADV\Core\SessionException
      */
@@ -72,7 +76,7 @@
         $this['globals'] = [];
       }
       if (isset($_SESSION['flash'])) {
-        $this->_flash = $_SESSION['flash'];
+        $this->flash = $_SESSION['flash'];
       }
       $this['flash'] = [];
     }
@@ -80,7 +84,7 @@
      * @static
      * @return bool
      */
-    public function _checkUserAgent() {
+    public function checkUserAgent() {
       if ($this['HTTP_USER_AGENT'] != sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR']))) {
         $this->setUserAgent();
         return false;
@@ -118,7 +122,7 @@
      * @internal param $valie
      * @return float|string
      */
-    public function _setGlobal($var, $value = null) {
+    public function setGlobal($var, $value = null) {
       if ($value === null) {
         if (isset($_SESSION['globals'][$var])) {
           unset($_SESSION['globals'][$var]);
@@ -136,19 +140,20 @@
      * @internal param $valie
      * @return float|string
      */
-    public function _setFlash($var, $value) {
+    public function setFlash($var, $value) {
       $_SESSION['flash'][$var] = $value;
       return $value;
     }
     /**
-     * @param $var
-     * @param $value
+     * @param      $var
+     * @param null $default
      *
+     * @internal param $value
      * @internal param $valie
      * @return float|string
      */
-    public function _getFlash($var, $default = null) {
-      return isset($this->_flash[$var]) ? $this->_flash[$var] : $default;
+    public function getFlash($var, $default = null) {
+      return isset($this->flash[$var]) ? $this->flash[$var] : $default;
     }
     /**
      * @param $var
@@ -156,13 +161,13 @@
      *
      * @return mixed
      */
-    public function _getGlobal($var, $default = null) {
+    public function getGlobal($var, $default = null) {
       return isset($this['globals'][$var]) ? $this['globals'][$var] : $default;
     }
     /**
      * @internal param $globals
      */
-    public function _removeGlobal() {
+    public function removeGlobal() {
       $globals = func_get_args();
       foreach ($globals as $var) {
         if (is_string($var) || is_int($var)) {
@@ -175,7 +180,7 @@
      * @return void
      */
     public static function kill() {
-      Config::removeAll();
+      Config::_removeAll();
       session_start();
       session_destroy();
     }
@@ -183,7 +188,7 @@
      * @static
      * @return void
      */
-    public function _regenerate() {
+    public function regenerate() {
       session_regenerate_id();
     }
     /**
@@ -257,7 +262,7 @@
      *
      * @return null
      */
-    public function _get($var, $default = null) {
+    public function get($var, $default = null) {
       $value = $default;
       if (!isset($_SESSION[$var])) {
         $value = $_SESSION[$var];
@@ -270,7 +275,7 @@
      *
      * @return mixed
      */
-    public function _set($var, $value) {
+    public function set($var, $value) {
       $_SESSION[$var] = $value;
       return $value;
     }

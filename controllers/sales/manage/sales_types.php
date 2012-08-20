@@ -22,15 +22,15 @@
   }
   if ($Mode == MODE_DELETE) {
     // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
-    $sql    = "SELECT COUNT(*) FROM debtor_trans WHERE tpe=" . DB::escape($selected_id);
-    $result = DB::query($sql, "The number of transactions using this Sales type record could not be retrieved");
-    $myrow  = DB::fetchRow($result);
+    $sql    = "SELECT COUNT(*) FROM debtor_trans WHERE tpe=" . DB::_escape($selected_id);
+    $result = DB::_query($sql, "The number of transactions using this Sales type record could not be retrieved");
+    $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this sale type because customer transactions have been created using this sales type."));
     } else {
-      $sql    = "SELECT COUNT(*) FROM debtors WHERE sales_type=" . DB::escape($selected_id);
-      $result = DB::query($sql, "The number of customers using this Sales type record could not be retrieved");
-      $myrow  = DB::fetchRow($result);
+      $sql    = "SELECT COUNT(*) FROM debtors WHERE sales_type=" . DB::_escape($selected_id);
+      $result = DB::_query($sql, "The number of customers using this Sales type record could not be retrieved");
+      $myrow  = DB::_fetchRow($result);
       if ($myrow[0] > 0) {
         Event::error(_("Cannot delete this sale type because customers are currently set up to use this sales type."));
       } else {
@@ -42,11 +42,11 @@
   }
   if ($Mode == MODE_RESET) {
     $selected_id = -1;
-    $sav         = Input::post('show_inactive');
+    $sav         = Input::_post('show_inactive');
     unset($_POST);
     $_POST['show_inactive'] = $sav;
   }
-  $result = Sales_Type::getAll(Input::hasPost('show_inactive'));
+  $result = Sales_Type::getAll(Input::_hasPost('show_inactive'));
   Forms::start();
   Table::start('tablestyle grid width30');
   $th = array(_('Type Name'), _('Factor'), _('Tax Incl'), '', '');
@@ -54,13 +54,13 @@
   Table::header($th);
   $k          = 0;
   $base_sales = DB_Company::get_base_sales_type();
-  while ($myrow = DB::fetch($result)) {
+  while ($myrow = DB::_fetch($result)) {
     if ($myrow["id"] == $base_sales) {
       Row::start("class='overduebg'");
     } else {
     }
     Cell::label($myrow["sales_type"]);
-    $f = Num::format($myrow["factor"], 4);
+    $f = Num::_format($myrow["factor"], 4);
     if ($myrow["id"] == $base_sales) {
       $f = "<I>" . _('Base') . "</I>";
     }
@@ -86,11 +86,11 @@
       $myrow                 = Sales_Type::get($selected_id);
       $_POST['sales_type']   = $myrow["sales_type"];
       $_POST['tax_included'] = $myrow["tax_included"];
-      $_POST['factor']       = Num::format($myrow["factor"], 4);
+      $_POST['factor']       = Num::_format($myrow["factor"], 4);
     }
     Forms::hidden('selected_id', $selected_id);
   } else {
-    $_POST['factor'] = Num::format(1, 4);
+    $_POST['factor'] = Num::_format(1, 4);
   }
   Forms::textRowEx(_("Sales Type Name") . ':', 'sales_type', 20);
   Forms::AmountRow(_("Calculation factor") . ':', 'factor', null, null, null, 4);

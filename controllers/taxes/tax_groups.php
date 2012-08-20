@@ -17,7 +17,7 @@
         if (strlen($_POST['name']) == 0) {
             $input_error = 1;
             Event::error(_("The tax group name cannot be empty."));
-            JS::setFocus('name');
+            JS::_setFocus('name');
         }
 
         if ($input_error != 1) {
@@ -50,18 +50,18 @@
     }
     if ($Mode == MODE_RESET) {
         $selected_id = -1;
-        $sav         = Input::post('show_inactive');
+        $sav         = Input::_post('show_inactive');
         unset($_POST);
         $_POST['show_inactive'] = $sav;
     }
-    $result = Tax_Groups::getAll(Input::hasPost('show_inactive'));
+    $result = Tax_Groups::getAll(Input::_hasPost('show_inactive'));
     Forms::start();
     Table::start('tablestyle grid');
     $th = array(_("Description"), _("Shipping Tax"), "", "");
     Forms::inactiveControlCol($th);
     Table::header($th);
     $k = 0;
-    while ($myrow = DB::fetch($result)) {
+    while ($myrow = DB::_fetch($result)) {
 
         Cell::label($myrow["name"]);
         if ($myrow["tax_shipping"]) {
@@ -89,9 +89,9 @@ if ($myrow["type" . $i] != ALL_NUMERIC)
             $_POST['tax_shipping'] = $group["tax_shipping"];
             $items                 = Tax_Groups::get_for_item($selected_id);
             $i                     = 0;
-            while ($tax_item = DB::fetch($items)) {
+            while ($tax_item = DB::_fetch($items)) {
                 $_POST['tax_type_id' . $i] = $tax_item["tax_type_id"];
-                $_POST['rate' . $i]        = Num::percentFormat($tax_item["rate"]);
+                $_POST['rate' . $i]        = Num::_percentFormat($tax_item["rate"]);
                 $i++;
             }
             while ($i < 5) {
@@ -117,10 +117,10 @@ if ($myrow["type" . $i] != ALL_NUMERIC)
         Tax_Types::cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
         if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != ALL_NUMERIC) {
             $default_rate = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
-            Cell::label(Num::percentFormat($default_rate), ' class="alignright nowrap"');
+            Cell::label(Num::_percentFormat($default_rate), ' class="alignright nowrap"');
             //Editable rate has been removed 090920 Joe Hunt
             //if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
-            //	$_POST['rate' . $i] = Num::percentFormat($default_rate);
+            //	$_POST['rate' . $i] = Num::_percentFormat($default_rate);
             // Forms::amountCellsSmall(null, 'rate' . $i, $_POST['rate' . $i], null, null,
             // User::percent_dec());
         }

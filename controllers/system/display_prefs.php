@@ -13,24 +13,24 @@
     if (!is_numeric($_POST['query_size']) || ($_POST['query_size'] < 1)|| ($_POST['query_size'] > 100)) {
       Event::error($_POST['query_size']);
       Event::error(_("Query size must be integer and greater than zero and no bigger than 100."));
-      JS::setFocus('query_size');
+      JS::_setFocus('query_size');
     } else {
       $chg_theme = User::theme() != $_POST['theme'];
       $chg_lang  = $_SESSION['language']->code != $_POST['language'];
       User::i()
-        ->update_prefs($_POST['prices'], $_POST['Quantities'], $_POST['Rates'], $_POST['Percent'], Input::hasPost('show_gl'), Input::hasPost('show_codes'), $_POST['date_format'], $_POST['date_sep'], $_POST['tho_sep'], $_POST['dec_sep'], $_POST['theme'], $_POST['page_size'], Input::hasPost('show_hints'), $_POST['profile'], Input::hasPost('rep_popup'), (int) ($_POST['query_size']), Input::hasPost('graphic_links'), $_POST['language'], Input::hasPost('sticky_doc_date'), $_POST['startup_tab']);
+        ->update_prefs($_POST['prices'], $_POST['Quantities'], $_POST['Rates'], $_POST['Percent'], Input::_hasPost('show_gl'), Input::_hasPost('show_codes'), $_POST['date_format'], $_POST['date_sep'], $_POST['tho_sep'], $_POST['dec_sep'], $_POST['theme'], $_POST['page_size'], Input::_hasPost('show_hints'), $_POST['profile'], Input::_hasPost('rep_popup'), (int) ($_POST['query_size']), Input::_hasPost('graphic_links'), $_POST['language'], Input::_hasPost('sticky_doc_date'), $_POST['startup_tab']);
       if ($chg_lang) {
         $_SESSION['language']->setLanguage($_POST['language']);
       }
       // refresh main menu
       Files::flushDir(COMPANY_PATH . 'js_cache');
-      if ($chg_theme && Config::get('demo_mode')) {
+      if ($chg_theme && Config::_get('demo_mode')) {
         User::prefs()->theme = $_POST['theme'];
       }
       if ($chg_theme || $chg_lang) {
         Display::meta_forward($_SERVER['DOCUMENT_URI']);
       }
-      if (Config::get('demo_mode')) {
+      if (Config::_get('demo_mode')) {
         Event::warning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));
       } else {
         Event::success(_("Display settings have been updated."));
@@ -51,7 +51,7 @@
   /* The array $dateseps is set up in config.php for modifications
       possible separators can be added by modifying the array definition by editing that file */
   Forms::thoSepsListRow(_("Thousand Separator:"), "tho_sep", User::prefs()->tho_sep);
-  /* The array Config::get('separators_thousands') is set up in config.php for modifications
+  /* The array Config::_get('separators_thousands') is set up in config.php for modifications
       possible separators can be added by modifying the array definition by editing that file */
   Forms::decSepsListRow(_("Decimal Separator:"), "dec_sep", User::prefs()->dec_sep);
   if (!isset($_POST['language'])) {
@@ -69,7 +69,7 @@
       possible separators can be added by modifying the array definition by editing that file */
   Reports_UI::pagesizes_row(_("Page Size:"), "page_size", User::page_size());
   Users::tabs_row(_("Start-up Tab"), 'startup_tab', User::startup_tab());
-  /* The array Config::get('print_paper_sizes') is set up in config.php for modifications
+  /* The array Config::_get('print_paper_sizes') is set up in config.php for modifications
       possible separators can be added by modifying the array definition by editing that file */
   if (!isset($_POST['profile'])) {
     $_POST['profile'] = User::print_profile();

@@ -10,15 +10,15 @@
   namespace ADV\Core;
 
   /**
-   * @method priceFormat($number)
-   * @method format($number, $decimals = 0)
-   * @method percentFormat($number)
-   * @method round($number, $decimals = 0)
+   * @method _priceFormat($number)
+   * @method _format($number, $decimals = 0)
+   * @method _percentFormat($number)
+   * @method _round($number, $decimals = 0)
 
    */
   class Num
   {
-    use Traits\StaticAccess;
+    use Traits\StaticAccess2;
 
     /**
      * @var int
@@ -58,10 +58,10 @@
      *
      * @return int|string
      */
-    public function _priceFormat($number)
+    public function priceFormat($number)
     {
       $number = str_replace($this->tho_sep, '', $number);
-      return $this->_format($this->_round($number, $this->price_dec + 2), $this->price_dec);
+      return $this->format($this->round($number, $this->price_dec + 2), $this->price_dec);
     }
     /**
      * @static
@@ -71,7 +71,7 @@
      *
      * @return int|string
      */
-    public function _priceDecimal($number, $dec = null)
+    public function priceDecimal($number, $dec = null)
     {
       $dec = $dec !== null ? $dec : $this->price_dec;
       $str = strval($number);
@@ -82,7 +82,7 @@
           $dec = $len;
         }
       }
-      return $this->_format($number, $dec);
+      return $this->format($number, $dec);
     }
     /**
      * @static
@@ -92,7 +92,7 @@
      *
      * @return float
      */
-    public function _round($number, $decimals = 0)
+    public function round($number, $decimals = 0)
     {
       return round($number, $decimals, PHP_ROUND_HALF_EVEN);
     }
@@ -104,7 +104,7 @@
      *
      * @return int|string
      */
-    public function _format($number, $decimals = 0)
+    public function format($number, $decimals = 0)
     {
       $tsep = $this->tho_sep;
       $dsep = $this->dec_sep;
@@ -123,9 +123,9 @@
      *
      * @return int|string
      */
-    public function _exrateFormat($number)
+    public function exrateFormat($number)
     {
-      return $this->_format($number, $this->exrate_dec);
+      return $this->format($number, $this->exrate_dec);
     }
     /**
      * @static
@@ -134,9 +134,9 @@
      *
      * @return int|string
      */
-    public function _percentFormat($number)
+    public function percentFormat($number)
     {
-      return $this->_format($number, $this->percent_dec);
+      return $this->format($number, $this->percent_dec);
     }
     /**
      * @static
@@ -146,7 +146,7 @@
      *
      * @return float|int
      */
-    public function _toNearestCents($price, $round_to)
+    public function toNearestCents($price, $round_to)
     {
       if ($price == 0) {
         return 0;
@@ -173,7 +173,7 @@
      * Simple English version of number to words conversion.
 
      */
-    public function _toWords($number)
+    public function toWords($number)
     {
       $Bn = floor($number / 1000000000); /* Billions (giga) */
       $number -= $Bn * 1000000000;
@@ -187,16 +187,16 @@
       $n   = $number % 10; /* Ones */
       $res = "";
       if ($Bn) {
-        $res .= $this->_toWords($Bn) . " Billion";
+        $res .= $this->toWords($Bn) . " Billion";
       }
       if ($Gn) {
-        $res .= (empty($res) ? "" : " ") . $this->_toWords($Gn) . " Million";
+        $res .= (empty($res) ? "" : " ") . $this->toWords($Gn) . " Million";
       }
       if ($kn) {
-        $res .= (empty($res) ? "" : " ") . $this->_toWords($kn) . " Thousand";
+        $res .= (empty($res) ? "" : " ") . $this->toWords($kn) . " Thousand";
       }
       if ($Hn) {
-        $res .= (empty($res) ? "" : " ") . $this->_toWords($Hn) . " Hundred";
+        $res .= (empty($res) ? "" : " ") . $this->toWords($Hn) . " Hundred";
       }
       $ones = array(
         "",
