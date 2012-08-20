@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Creditor;
+
   use ADV\App\UI\UI;
   use ADV\Core\DB\DB;
   use Display;
@@ -50,6 +51,7 @@
         }
         $data[] = $row;
       }
+
       return $data;
     }
     /** @var */
@@ -139,6 +141,7 @@
     public $defaultContact;
     /** @var */
     public $supp_city;
+    public $supp_address;
     /** @var */
     public $supp_state;
     /** @var */
@@ -179,6 +182,7 @@
 
       if (!parent::save($changes)) {
         $this->_setDefaults();
+
         return false;
       }
       foreach ($this->contacts as $contact) {
@@ -187,6 +191,7 @@
         }
       }
       $this->_setDefaults();
+
       return true;
     }
     public function delete() {
@@ -223,8 +228,10 @@
     protected function _canProcess() {
       if (empty($this->name)) {
         $this->status(false, 'Processing', "The supplier name cannot be empty.", 'name');
+
         return false;
       }
+
       return true;
     }
     /**
@@ -252,6 +259,7 @@
      */
     protected function _new() {
       $this->_defaults();
+
       return $this->status(true, 'Initialize new supplier', 'Now working with a new supplier');
     }
     /**
@@ -259,8 +267,7 @@
      */
     protected function _getContacts() {
       $this->contacts = [];
-      static::$DB->_select()->from('contacts')->where('parent_id=', $this->id)->andWhere('parent_type=', CT_SUPPLIER)
-        ->orderby('name DESC');
+      static::$DB->_select()->from('contacts')->where('parent_id=', $this->id)->andWhere('parent_type=', CT_SUPPLIER)->orderby('name DESC');
       $contacts = static::$DB->_fetch()->asClassLate('Contact', array(CT_SUPPLIER));
       if (count($contacts)) {
         foreach ($contacts as $contact) {
@@ -277,13 +284,15 @@
       $customerBox = new Dialog('Supplier Edit', 'supplierBox', '');
       $customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
       $customerBox->addBeforeClose('$("#creditor_id").trigger("change")');
-      $customerBox->setOptions(array(
-                                    'autoOpen'   => false,
-                                    'modal'      => true,
-                                    'width'      => '850',
-                                    'height'     => '715',
-                                    'resizeable' => true
-                               ));
+      $customerBox->setOptions(
+        array(
+             'autoOpen'   => false,
+             'modal'      => true,
+             'width'      => '850',
+             'height'     => '715',
+             'resizeable' => true
+        )
+      );
       $customerBox->show();
       $js
         = <<<JS
@@ -306,6 +315,7 @@ JS;
       $this->discount     = $this->discount * 100;
       $this->credit_limit = Num::_priceFormat($this->credit_limit);
       $this->_setDefaults();
+
       return $this;
     }
     /**
@@ -366,6 +376,7 @@ JS;
         $supp["Overdue1"] = 0;
         $supp["Overdue2"] = 0;
       }
+
       return $supp;
     }
     /**
@@ -396,6 +407,7 @@ JS;
         AND trans.type = " . ST_SUPPINVOICE;
       $result  = static::$DB->_query($sql);
       $results = static::$DB->_fetch($result);
+
       return $results['Total'];
     }
     /**
@@ -408,6 +420,7 @@ JS;
     public static function get($creditor_id) {
       $sql    = "SELECT * FROM suppliers WHERE creditor_id=" . static::$DB->_escape($creditor_id);
       $result = static::$DB->_query($sql, "could not get supplier");
+
       return static::$DB->_fetch($result);
     }
     /**
@@ -421,6 +434,7 @@ JS;
       $sql    = "SELECT name AS name FROM suppliers WHERE creditor_id=" . static::$DB->_escape($creditor_id);
       $result = static::$DB->_query($sql, "could not get supplier");
       $row    = static::$DB->_fetchRow($result);
+
       return $row[0];
     }
     /**
@@ -433,6 +447,7 @@ JS;
     public static function get_accounts_name($creditor_id) {
       $sql    = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE creditor_id=" . static::$DB->_escape($creditor_id);
       $result = static::$DB->_query($sql, "could not get supplier");
+
       return static::$DB->_fetch($result);
     }
     /**
@@ -471,32 +486,37 @@ JS;
         echo '<tr>';
       }
       Forms::hidden('creditor_id');
-      UI::search('creditor', array(
-                                  'cells'            => true,
-                                  //
-                                  'url'              => '/contacts/suppliers.php',
-                                  ///
-                                  'label_cell_params'=> ['rowspan'=> $o['rowspan'], 'class'=> 'nowrap label ' . $o['cell_class']],
-                                  //
-                                  'label'            => $o['label'],
-                                  //
-                                  'name'             => 'creditor',
-                                  //
-                                  'input_cell_params'=> $o['cell_params'],
-                                  //
-                                  'focus'            => $focus,
-                                  //
-                                  'value'            => $value,
-                             ));
+      UI::search(
+        'creditor',
+        array(
+             'cells'            => true,
+             //
+             'url'              => '/contacts/suppliers.php',
+             ///
+             'label_cell_params'=> ['rowspan'=> $o['rowspan'], 'class'=> 'nowrap label ' . $o['cell_class']],
+             //
+             'label'            => $o['label'],
+             //
+             'name'             => 'creditor',
+             //
+             'input_cell_params'=> $o['cell_params'],
+             //
+             'focus'            => $focus,
+             //
+             'value'            => $value,
+        )
+      );
       if ($o['row']) {
         echo "</tr>\n";
       }
-      JS::_beforeload("var Creditor = function(data) {
+      JS::_beforeload(
+        "var Creditor = function(data) {
             var id = document.getElementById('creditor_id');
             id.value= data.id;
             var creditor = document.getElementById('creditor');
             creditor.value=data.value;
-            JsHttpRequest.request(creditor)}");
+            JsHttpRequest.request(creditor)}"
+      );
     }
     /**
      * @static
@@ -513,21 +533,26 @@ JS;
     public static function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $all = false, $editkey = false) {
       $sql  = "SELECT creditor_id, supp_ref, curr_code, inactive FROM suppliers ";
       $mode = DB_Company::get_pref('no_supplier_list');
-      return Forms::selectBox($name, $selected_id, $sql, 'creditor_id', 'name', array(
-                                                                                     'format'        => 'Forms::addCurrFormat',
-                                                                                     'order'         => array('supp_ref'),
-                                                                                     'search_box'    => $mode != 0,
-                                                                                     'type'          => 1,
-                                                                                     'spec_option'   => $spec_option === true ?
-                                                                                       _("All Suppliers") : $spec_option,
-                                                                                     'spec_id'       => ALL_TEXT,
-                                                                                     'select_submit' => $submit_on_change,
-                                                                                     'async'         => false,
-                                                                                     'sel_hint'      => $mode ?
-                                                                                       _('Press Space tab to filter by name fragment') :
-                                                                                       _('Select supplier'),
-                                                                                     'show_inactive' => $all
-                                                                                ));
+
+      return Forms::selectBox(
+        $name,
+        $selected_id,
+        $sql,
+        'creditor_id',
+        'name',
+        array(
+             'format'        => 'Forms::addCurrFormat',
+             'order'         => array('supp_ref'),
+             'search_box'    => $mode != 0,
+             'type'          => 1,
+             'spec_option'   => $spec_option === true ? _("All Suppliers") : $spec_option,
+             'spec_id'       => ALL_TEXT,
+             'select_submit' => $submit_on_change,
+             'async'         => false,
+             'sel_hint'      => $mode ? _('Press Space tab to filter by name fragment') : _('Select supplier'),
+             'show_inactive' => $all
+        )
+      );
     }
     /**
      * @static
