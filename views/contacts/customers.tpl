@@ -138,3 +138,10 @@
   <button id="btnCancel" name="new" type="submit" class="button">New</button>
   {{$shortcuts->render()}}
 </div>
+<div id="contactLog" class=' center'>
+  <div class="formbox marginauto ">
+  {{$form.contact_name}}<br>
+    {{$form.message}}
+    {{$form.type}}
+  </div>
+</div>

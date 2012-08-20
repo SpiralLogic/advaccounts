@@ -98,7 +98,7 @@
       $form->hidden('accounts_id', $this->customer->accounts->accounts_id);
       $form->percent("Discount Percent:", 'discount', $this->customer->discount, ["disabled"=> User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
       $form->percent("Prompt Payment Discount:", 'payment_discount', $this->customer->payment_discount, ["disabled"=> User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
-      $form->number("Credit Limit:", 'credit_limit', $this->customer->credit_limit, null, null, ["disabled"=> User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
+      $form->number("Credit Limit:", 'credit_limit', $this->customer->credit_limit, null, ['$'], ["disabled"=> User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
       $form->text("GSTNo:", 'tax_id', $this->customer->tax_id);
       $form->label('Sales Type:', 'sales_type', Sales_Type::select('sales_type', $this->customer->sales_type));
       $form->label('Inactive:', 'inactive', UI::select('inactive', ['No', 'Yes'], ['name' => 'inactive'], $this->customer->inactive, true));
@@ -110,7 +110,7 @@
       }
       $form->label('Payment Terms:', 'payment_terms', GL_UI::payment_terms('payment_terms', $this->customer->payment_terms));
       $form->label('Credit Status:', 'credit_status', Sales_CreditStatus::select('credit_status', $this->customer->credit_status));
-      $form->textarea(null, 'messageLog', Contact_Log::read($this->customer->id, CT_CUSTOMER), ['class'=> 'width95', 'cols'=> 100]);
+      $form->textarea(null, 'messageLog',Contact_Log::read($this->customer->id, CT_CUSTOMER), ['style'=> 'height:100px;width:95%;margin:0 auto;', 'cols'=> 100]);
       /** @noinspection PhpUndefinedMethodInspection */
       $contacts = new View('contacts/contact');
       $view->set('contacts', $contacts->render(true));
@@ -146,7 +146,7 @@
       $form->hidden('type', CT_CUSTOMER);
       $view['date'] = date('Y-m-d H:i:s');
       $form->text('Contact:', 'contact_name', $this->customer->accounts->contact_name);
-      $form->textarea('Entry:', 'message', Contact_Log::read($this->customer->id, CT_CUSTOMER), ['cols'=> 100, 'rows'=> 10]);
+      $form->textarea('Entry:', 'message','' , ['cols'=> 100, 'rows'=> 10]);
       if (!$this->Input->get('frame')) {
         $shortcuts = new MenuUI(array('noajax' => true));
         $shortcuts->addLink(

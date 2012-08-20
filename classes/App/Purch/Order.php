@@ -717,7 +717,7 @@
         $this->item_controls();
       }
       Table::foot();
-      Forms::SmallAmountRow(_("Freight"), 'freight', Num::_priceFormat(Input::_post('freight', null, 0)), "colspan=8 class='bold alignright'", null, null, 3);
+      Forms::SmallAmountRow(_("Freight"), 'freight', Num::_priceFormat(Input::_post('freight', null, 0)), "colspan=8 class='bold alignright'", ['$'], null, 3," class='small alignright'");
       $display_total = Num::_priceFormat($total + Validation::input_num('freight'));
       Row::label(_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 class='bold alignright'", "nowrap class='alignright' _nofreight='$total'", 2);
       Table::footEnd();
@@ -813,7 +813,7 @@
       Cell::qty($qty_rcvd, false, $dec);
       Cell::label($_POST['units'], '', 'units');
       Forms::dateCells(null, 'req_del_date', '', null, 0, 0, 0);
-      Forms::amountCells(null, 'price', null, null, null, $dec2);
+      Forms::amountCells(null, 'price', null, null, ['$'], $dec2);
       Forms::percentCells(null, 'discount', $_POST['discount']);
       $line_total = Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('discount') / 100);
       Cell::amount($line_total, false, '', 'line_total');

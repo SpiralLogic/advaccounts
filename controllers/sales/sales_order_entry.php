@@ -60,7 +60,7 @@
         $_POST['debtor_id'] = $_GET['debtor_id'];
         $this->Ajax->activate('debtor_id');
       }
-      $this->type = $this->Input->get('type');
+      $this->type = $this->Input->get('type',Input::NUMERIC,ST_SALESORDER);
       $this->setTitle("New Sales Order Entry");
       if ($this->Input->get(Orders::ADD, Input::NUMERIC, false) !== false) {
         $this->setTitle($this->addTitles[$this->type]);
@@ -79,7 +79,7 @@
       }
       $this->setSecurity();
       if (!$this->order) {
-        $this->order = $this->createOrder(ST_SALESORDER, 0);
+        $this->order = $this->createOrder($this->type, 0);
       }
     }
     protected function index() {

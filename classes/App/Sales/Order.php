@@ -1246,14 +1246,14 @@
       Table::foot();
       Row::start();
       Cell::label(_("Shipping Charge"), "colspan=$colspan class='alignright'");
-      Forms::amountCellsSmall(null, 'freight_cost', Num::_priceFormat(Input::_post('freight_cost', null, 0)));
+      Forms::amountCellsSmall(null, 'freight_cost', Num::_priceFormat(Input::_post('freight_cost', null, 0)),null,['$']);
       Cell::label('', 'colspan=2');
       Row::end();
       $display_sub_total = Num::_priceFormat($total + Validation::input_num('freight_cost'));
       Row::start();
       Cell::label(_("Total Discount"), "colspan=$colspan class='alignright'");
-      Forms::amountCellsSmall(null, null, $total_discount);
-      HTML::td(null, array('colspan'=> 2, 'class'=> 'center'))->button('discountAll', 'Discount All', array('name' => 'discountAll'), false);
+      Forms::amountCellsSmall(null, null, $total_discount,null,['$']);
+      HTML::td(null, array('colspan'=> 2, 'class'=> 'center'))->button('discountAll', 'Discount All', array('name' => '_action','value'=>'discountAll'), false);
       Forms::hidden('_discountAll', '0', true);
       HTML::td();
       $action = "var discount = prompt('Discount Percent?',''); if (!discount) return false; $(\"[name='_discountAll']\").val(Number(discount));e=$(this);save_focus(e);JsHttpRequest.request(this);return false;";

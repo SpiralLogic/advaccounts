@@ -128,6 +128,7 @@
       $attr['value'] = e($value ? : $this->Input->post($name));
       $attr['id']    = $this->nameToId($name);
       $attr['type']  = 'hidden';
+      $attr['name']  = $name;
       $this->Ajax->addUpdate($name, $name, $value);
       $this->fields[$attr['id']] = HTML::setReturn(true)->input($attr['id'], $attr, false)->setReturn(false);
     }
@@ -147,7 +148,7 @@
       }
       $attr['name']        = $name;
       $attr['placeholder'] = rtrim($label, ':');
-      array_merge($attr, $input_attr);
+      $attr=array_merge($attr, $input_attr);
       $attr['id'] = $this->nameToId($name);
       $content    = HTML::setReturn(true)->textarea($attr['id'], $value, $attr, false)->setReturn(false);
       $this->Ajax->addUpdate($name, $name, $value);
@@ -236,9 +237,16 @@
       array_merge($attr, $input_attr);
       $content = HTML::setReturn(true)->input($name, $attr)->setReturn(false);
       $this->Ajax->addUpdate($name, $name, $value);
+      $pre_label = '';
+      if (is_array($post_label)) {
+        $pre_label  = $post_label[0];
+        $post_label = null;
+      }
       if ($post_label) {
-        $content = "<div class='input-append'>$content<span class='add-on' id='_{$name}_label'>$post_label</span></div>";
+        $content = "<div class='input-append'>$content<span class='add-on' id='_{$name}_label'>$post_label</div>";
         $this->Ajax->addUpdate($name, '_' . $name . '_label', $post_label);
+      } elseif ($pre_label) {
+        $content = "<div class='input-prepend'><span class='add-on' >$pre_label</span>$content</div>";
       }
       $this->fields[$attr['id']] = $content;
       $this->label($label, $name);
@@ -869,13 +877,9 @@
         $items[$i] = "$i";
       }
       return $this->arraySelect(
-        $name,
-        $selected,
-        $items,
-        array(
-             'spec_option' => $no_option,
-             'spec_id'     => ALL_NUMERIC
-        )
+        $name, $selected, $items, array(
+                                       'spec_option' => $no_option, 'spec_id'     => ALL_NUMERIC
+                                  )
       );
     }
     /**
