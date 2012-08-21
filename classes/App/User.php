@@ -18,6 +18,7 @@
    * @method theme
    * @method User ii()
    * @method logout()
+   * @method price_dec()
    * @method numeric($input)
    */
   class User {

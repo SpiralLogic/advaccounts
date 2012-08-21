@@ -1325,7 +1325,7 @@
       } else {
         echo "<td class='alignright nowrap' >";
       }
-      $dec = $dec === null ? static::$dic['User']->_price_dec() : $dec;
+      $dec = $dec === null ? User::price_dec() : $dec;
       if (!Input::_post($name)) {
         $init         = $init ? : 0;
         $_POST[$name] = Num::_priceDecimal($init, $dec);

@@ -300,10 +300,12 @@ Adv.extend({
           }
         }
         if (el.type === 'checkbox') {
-          value = el.checked = !!value;
+          value=(value==='false'||!value||value==0)?false:true;
+          el.value = el.checked = value;
           if (isdefault) {
             el.defaultChecked = value;
           }
+          return el;
         }
         if (String(value).length === 0) {
           value = '';

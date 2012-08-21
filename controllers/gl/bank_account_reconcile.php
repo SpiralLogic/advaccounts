@@ -21,7 +21,6 @@
    */
   class Reconcile extends \ADV\App\Controller\Base
   {
-
     /** @var Num Num*/
     protected $Num;
     /** @var Dates Dates*/
@@ -53,15 +52,13 @@
     /**
 
      */
-    protected function before() {
-      $this->Dates             = Dates::i();
-      $this->Num               = Num::i();
-      $_POST['bank_account']   = $this->Input->postGlobal('bank_account', INPUT::NUMERIC, Bank_Account::get_default()['id']);
-      $this->bank_account      = &$_POST['bank_account'];
-      $_POST['bank_date']      = $this->Input->postGlobal('bank_date', [$this, 'checkDate'], $this->Dates->today());
-      $this->bank_date         = &$_POST['bank_date'];
-      $_POST['reconcile_date'] = $this->Input->post('reconcile_date', null, $this->Dates->sqlToDate($_POST['bank_date']));
-      $this->reconcile_date    = &$_POST['reconcile_date'];
+    protected function before()
+    {
+      $this->Dates          = Dates::i();
+      $this->Num            = Num::i();
+      $this->bank_account   = &$this->Input->postGlobal('bank_account', INPUT::NUMERIC, Bank_Account::get_default()['id']);
+      $this->bank_date      = &$this->Input->postGlobal('bank_date', [$this, 'checkDate'], $this->Dates->today());
+      $this->reconcile_date = &$this->Input->post('reconcile_date', null, $this->Dates->sqlToDate($_POST['bank_date']));
       $this->JS->openWindow(950, 500);
       $this->JS->footerFile('/js/libs/redips-drag-min.js');
       $this->JS->footerFile('/js/reconcile.js');
@@ -101,7 +98,8 @@
     /**
 
      */
-    protected function index() {
+    protected function index()
+    {
       $this->runAction();
       Page::start(_($help_context = "Reconcile Bank Account"), SA_RECONCILE);
       Forms::start();
@@ -120,13 +118,14 @@
       if (!$this->Ajax->inAjax() || AJAX_REFERRER) {
         $this->addDialogs();
       }
-      JS::_addLive("Adv.Reconcile.setUpGrid();");
+      $this->JS->addLive("Adv.Reconcile.setUpGrid();");
       Page::end();
     }
     /**
 
      */
-    protected function addDialogs() {
+    protected function addDialogs()
+    {
       $date_dialog  = new View('ui/date_dialog');
       $date_changer = new \ADV\Core\Dialog('Change Date', 'dateChanger', $date_dialog->render(true), ['resizeable'=> false, 'modal'=> true]);
       $date_changer->addButton('Save', 'Adv.Reconcile.changeDate(this)');
@@ -141,7 +140,8 @@
     /**
      * @return string
      */
-    protected function render() {
+    protected function render()
+    {
       ob_start();
       $this->accountHasStatements ? $this->statementLayout() : $this->simpleLayout();
       return '<div id="newgrid">' . ob_get_clean() . '</div>';
@@ -149,9 +149,10 @@
     /**
      * @return bool
      */
-    protected function simpleLayout() {
+    protected function simpleLayout()
+    {
       $sql = GL_Account::get_sql_for_reconcile($this->bank_account, $this->reconcile_date);
-      $act = Bank_Account::get($_POST["bank_account"]);
+      $act = Bank_Account::get($this->bank_account);
       Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
       $cols               = array(
         _("Type")        => array('fun' => array($this, 'formatType'), 'ord' => ''), //
@@ -174,7 +175,8 @@
     /**
      * @return bool
      */
-    protected function statementLayout() {
+    protected function statementLayout()
+    {
       $rec                         = Bank_Trans::getPeriod($this->bank_account, $this->begin_date, $this->end_date);
       $statement_trans             = Bank_Account::getStatement($this->bank_account, $this->begin_date, $this->end_date);
       $known_trans                 = [];
@@ -244,7 +246,8 @@
     /**
 
      */
-    protected function displaySummary() {
+    protected function displaySummary()
+    {
       $this->getTotal();
       Display::div_start('summary');
       Table::start();
@@ -276,7 +279,8 @@
     /**
      * @return int
      */
-    protected function getTotal() {
+    protected function getTotal()
+    {
       if ($this->accountHasStatements) {
         list($beg_balance, $end_balance) = Bank_Account::getBalances($this->bank_account, $this->begin_date, $this->end_date);
         $_POST["beg_balance"] = $this->Num->priceFormat($beg_balance);
@@ -304,55 +308,60 @@
     /**
 
      */
-    protected function changeDate() {
-      $bank_trans_id = Input::_post('trans_id', Input::NUMERIC, -1);
-      $newdate       = Input::_post('date');
+    protected function changeDate()
+    {
+      $bank_trans_id = $this->Input->post('trans_id', Input::NUMERIC, -1);
+      $newdate       = $this->Input->post('date');
       Bank_Trans::changeDate($bank_trans_id, $newdate, $status);
       $data['status'] = $status->get();
       $data['grid']   = $this->render();
-      JS::_renderJSON($data);
+      $this->JS->renderJSON($data);
     }
     /**
      * @internal param $row
      * @return string
      */
-    protected function changeBank() {
-      $newbank  = Input::_post('newbank', Input::NUMERIC);
-      $trans_no = Input::_post('trans_no', Input::NUMERIC);
-      $type     = Input::_post('type', Input::NUMERIC);
+    protected function changeBank()
+    {
+      $newbank  = $this->Input->post('newbank', Input::NUMERIC);
+      $trans_no = $this->Input->post('trans_no', Input::NUMERIC);
+      $type     = $this->Input->post('type', Input::NUMERIC);
       if ($newbank && $type && $trans_no) {
         Bank_Trans::changeBankAccount($trans_no, $type, $this->bank_account, $newbank);
       }
       $data['grid'] = $this->render();
-      JS::_renderJSON($data);
+      $this->JS->renderJSON($data);
     }
     /**
 
      */
-    protected function unGroup() {
-      $groupid = Input::_post('groupid', Input::NUMERIC);
+    protected function unGroup()
+    {
+      $groupid = $this->Input->post('groupid', Input::NUMERIC);
       if ($groupid > 0) {
         Bank_Undeposited::ungroup($groupid);
         $this->updateData();
       }
       $data['grid'] = $this->render();
-      JS::_renderJSON($data);
+      $this->JS->renderJSON($data);
     }
     /**
      * @return mixed
      */
-    protected function deposit() {
-      $trans1 = Input::_post('trans1', INPUT::NUMERIC);
-      $trans2 = Input::_post('trans2', INPUT::NUMERIC);
+    protected function deposit()
+    {
+      $trans1 = $this->Input->post('trans1', INPUT::NUMERIC);
+      $trans2 = $this->Input->post('trans2', INPUT::NUMERIC);
       Bank_Undeposited::addToGroup($trans1, $this->bank_account, $trans2);
       $data['grid'] = $this->render();
-      JS::_renderJSON($data);
+      $this->JS->renderJSON($data);
     }
     /**
      * @internal param $prefix
      * @return bool|mixed
      */
-    protected function runValidation() {
+    protected function runValidation()
+    {
       Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
     }
     /**
@@ -360,7 +369,8 @@
      *
      * @return string
      */
-    public function formatCheckbox($row) {
+    public function formatCheckbox($row)
+    {
       if (!$row['amount']) {
         return '';
       }
@@ -379,7 +389,8 @@
      *
      * @return string
      */
-    public function formatRow($row) {
+    public function formatRow($row)
+    {
       $tocheck = 'done';
       /* $comment = Bank_Trans::getInfo($row['trans_no'], $row['type']);
       foreach ($comment as $trans) {
@@ -418,7 +429,8 @@
      * @internal param $type
      * @return mixed
      */
-    public function formatType($row) {
+    public function formatType($row)
+    {
       $type = $row['type'];
       global $systypes_array;
       if (!$type) {
@@ -432,7 +444,8 @@
      * @internal param $trans
      * @return null|string
      */
-    public function formatTrans($row) {
+    public function formatTrans($row)
+    {
       $content = '';
       if ($row['type'] != ST_GROUPDEPOSIT) {
         $content = GL_UI::viewTrans($row["type"], $row["trans_no"]);
@@ -444,13 +457,15 @@
      *
      * @return string
      */
-    public function formatDropdown($row) {
+    public function formatDropdown($row)
+    {
       if ($row['reconciled']) {
         return '';
       }
       $dropdown = new View('ui/dropdown');
       if (!$row['id']) {
         $title = 'Create';
+      }
         if ($row['state_amount'] > 0) {
           $data = [];
           if (stripos($row['memo'], 'AMEX')) {
@@ -465,7 +480,8 @@
           $items[] = ['class'=> 'createBP', 'label'=> 'Bank Payment', 'href'=> '/gl/gl_bank?NewPayment=Yes'];
         }
         $items[] = ['class'=> 'createFT', 'label'=> 'Funds Transfer', 'href'=> '/gl/bank_transfer'];
-      } else {
+        $items[] = ['divider'=>true];
+
         $items[] = ['class'=> 'changeDate', 'label'=> 'Change Date'];
         switch ($row['type']) {
           case ST_GROUPDEPOSIT:
@@ -476,7 +492,6 @@
           default:
             $items[] = ['class'=> 'changeBank', 'label'=> 'Move Bank'];
             $items[] = ['class'=> 'voidTrans', 'label'=> 'Void Trans', 'data'=> ['type'=> $row['type'], 'trans_no'=> $row['trans_no']]];
-        }
         $title = ($row['type'] == ST_GROUPDEPOSIT) ? 'Group' : substr($row['ref'], 0, 7);
       }
       $menus[] = ['title'=> $title, 'auto'=> 'auto', 'items'=> $items];
@@ -488,7 +503,8 @@
      *
      * @return string
      */
-    public function formatGL($row) {
+    public function formatGL($row)
+    {
       if (!$row['amount']) {
         return '';
       }
@@ -499,7 +515,8 @@
      *
      * @return int|string
      */
-    public function formatDebit($row) {
+    public function formatDebit($row)
+    {
       $value = $row["amount"];
       if ($value > 0) {
         return '<span class="bold">' . $this->Num->priceFormat($value) . '</span>';
@@ -511,7 +528,8 @@
      *
      * @return int|string
      */
-    public function formatCredit($row) {
+    public function formatCredit($row)
+    {
       $value = -$row["amount"];
       if ($value <= 0) {
         return '';
@@ -523,7 +541,8 @@
      *
      * @return string
      */
-    public function formatInfo($row) {
+    public function formatInfo($row)
+    {
       $content = '';
       if ($row['type'] == ST_BANKTRANSFER) {
         $content = DB_Comments::get_string(ST_BANKTRANSFER, $row['trans_no']);
@@ -547,7 +566,8 @@
      *
      * @return int
      */
-    public function sortByOrder($a, $b) {
+    public function sortByOrder($a, $b)
+    {
       $date1 = $a['state_date'] ? : $a['trans_date'];
       $date2 = $b['state_date'] ? : $b['trans_date'];
       if ($date1 == $date2) {
@@ -560,7 +580,8 @@
     /**
 
      */
-    public function updateData() {
+    public function updateData()
+    {
       DB_Pager::kill('bank_rec');
       unset($_POST["beg_balance"], $_POST["end_balance"]);
       $this->Ajax->activate('_page_body');
@@ -570,7 +591,8 @@
      *
      * @return bool
      */
-    public function checkDate($date) {
+    public function checkDate($date)
+    {
       $date = $this->Dates->sqlToDate($date);
       return $this->Dates->isDate($date);
     }
@@ -579,8 +601,9 @@
      *
      * @return bool
      */
-    public function updateCheckbox($reconcile_id) {
-      if (!$this->Dates->isDate($this->reconcile_date) && Input::_hasPost("rec_" . $reconcile_id)) // temporary fix
+    public function updateCheckbox($reconcile_id)
+    {
+      if (!$this->Dates->isDate($this->reconcile_date) && $this->Input->hasPost("rec_" . $reconcile_id)) // temporary fix
       {
         Event::error(_("Invalid reconcile date format"));
         $this->JS->setFocus('reconcile_date');
@@ -590,14 +613,14 @@
       {
         $this->Ajax->activate('bank_date');
       }
-      $reconcile_value = Input::_hasPost("rec_" . $reconcile_id) ? ("'" . $this->Dates->dateToSql($this->reconcile_date) . "'") : 'null';
+      $reconcile_value = $this->Input->hasPost("rec_" . $reconcile_id) ? ("'" . $this->Dates->dateToSql($this->reconcile_date) . "'") : 'null';
       GL_Account::update_reconciled_values(
         $reconcile_id,
         $reconcile_value,
         $this->reconcile_date,
         Validation::input_num('end_balance'),
         $this->bank_account,
-        Input::_post('state_' . $reconcile_id, Input::NUMERIC, -1)
+        $this->Input->post('state_' . $reconcile_id, Input::NUMERIC, -1)
       );
       $this->Ajax->activate('_page_body');
       return true;

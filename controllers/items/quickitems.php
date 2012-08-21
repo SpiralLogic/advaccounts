@@ -1,4 +1,6 @@
 <?php
+  use ADV\App\Item\Item;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -25,7 +27,7 @@
     if (isset($_GET['page'])) {
       $data['page'] = $_GET['page'];
     }
-    JS::_renderJSON($data, JSON_NUMERIC_CHECK);
+    JS::_renderJSON($data);
   }
   JS::_footerFile("/js/quickitems.js");
   Page::start(_($help_context = "Items"), SA_CUSTOMER, isset($_GET['frame']));
@@ -42,7 +44,7 @@
   if (!isset($_GET['stock_id'])) {
     HTML::div('itemSearch', array('class' => 'bold pad10 center'));
     Item::addSearchBox('itemSearchId', array(
-                                            'label'    => 'Item:', 'size' => '50px', 'selectjs' => '$("#itemSearchId").val("");Items.fetch(value.stock_id);return false;'
+                                            'label'    => 'Item:', 'size' => '50px', 'selectjs' => '$("#itemSearchId").val(value.item_name);Items.fetch(value.stock_id);return false;'
                                        ));
     HTML::div();
     $id = 0;

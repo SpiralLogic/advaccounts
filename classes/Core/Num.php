@@ -13,6 +13,7 @@
    * @method _priceFormat($number)
    * @method _format($number, $decimals = 0)
    * @method _percentFormat($number)
+   * @method _priceDecimal($number, $dec = null)
    * @method _round($number, $decimals = 0)
 
    */

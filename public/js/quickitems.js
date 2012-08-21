@@ -72,12 +72,14 @@ var Items = function () {
       $.each(item, function (i, data) {
         Adv.Forms.setFormValue(i, data);
       });
+
     },
     get:function () {
       return item;
     },
     save:function () {
       $.post('#', item, function (data) {
+        console.log(data);
         Items.onload(data);
       }, 'json');
     }
@@ -92,17 +94,16 @@ $(function () {
     return false;
   }).hide()});
   Adv.o.tabs[0] = $("#tabs0");
-  Adv.o.tabs[0].delegate("input,textarea,select", "change keypress", function (event) {
-    var $this = $(this), $thisname = $this.attr('name'), value;
+  Adv.o.tabs[0].delegate("input,textarea,select", "change keyup", function (event) {
+    var $this = $(this), $thisname = $this.attr('name');
     Adv.Forms.stateModified($this);
-
     Adv.btnCancel.button('option', 'label', 'Cancel Changes').show();
     if (Items.get().id) {
       Adv.btnSave.button("option", "label", "Save Changes").show();
     } else {
       Adv.btnSave.button("option", "label", "Save New Item").show();
     }
-    Items.set($thisname, value);
+    Items.set($thisname, this.value);
   })
 });
 

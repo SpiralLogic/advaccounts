@@ -24,28 +24,20 @@
       JS::_openWindow(950, 500);
       JS::_footerFile('/js/payalloc.js');
       if ($_SERVER['REQUEST_METHOD'] == "GET") {
-        if (Input::_get('account')) {
-          $_POST['bank_acount'] = Input::_get('account');
-        }
-        if (Input::_get('amount')) {
-          $_POST['amount'] = abs(Input::_get('amount'));
-        }
-        if (Input::_get('memo')) {
-          $_POST['memo_'] = Input::_get('memo');
-        }
-        if (Input::_get('date')) {
-          $_POST['date_'] = Input::_get('date');
+        if ($this->Input->hasGet('account','amount','memo','date')) {
+          $_POST['bank_account'] = $this->Input->get('account');
+          $_POST['amount'] = abs($this->Input->get('amount'));
+          $_POST['memo_'] = $this->Input->get('memo');
+          $_POST['date_'] = $this->Input->get('date');
         }
       }
-      $_POST['creditor_id'] = Input::_postGetGlobal('creditor_id', null, -1);
-      $this->creditor_id    = &$_POST['creditor_id'];
+      $this->creditor_id    = &$this->Input->postGetGlobal('creditor_id', null, -1);
       $this->Session->setGlobal('creditor_id', $this->creditor_id);
       if (!$this->bank_account) // first page call
       {
         $_SESSION['alloc'] = new GL_Allocation(ST_SUPPAYMENT, 0);
       }
-      $_POST['bank_account'] = Input::_postGetGlobal('bank_account', null, -1);
-      $this->bank_account    = &$_POST['bank_account'];
+      $this->bank_account    = &$this->Input->postGetGlobal('bank_account', null, -1);
       if (!isset($_POST['date_'])) {
         $_POST['date_'] = Dates::_newDocDate();
         if (!Dates::_isDateInFiscalYear($_POST['date_'])) {
@@ -55,7 +47,7 @@
       if (isset($_POST['_date__changed'])) {
         Ajax::_activate('_ex_rate');
       }
-      if (Input::_post('_control') == 'creditor' || Forms::isListUpdated('bank_account')) {
+      if ($this->Input->post('_control') == 'creditor' || Forms::isListUpdated('bank_account')) {
         $_SESSION['alloc']->read();
         Ajax::_activate('alloc_tbl');
       }
@@ -65,7 +57,7 @@
     }
     protected function index() {
       Page::start(_($help_context = "Supplier Payment Entry"), SA_SUPPLIERPAYMNT);
-      if (isset($_POST['ProcessSuppPayment']) && Creditor_Payment::can_process()) {
+      if (isset($_POST['ProcessSuppPayment'])) {
         $this->processSupplierPayment();
       }
       Forms::start();
@@ -104,6 +96,7 @@
      * @return bool
      */
     protected function processSupplierPayment() {
+      if (!Creditor_Payment::can_process()) return false;
       if ($this->company_currency != $this->bank_currency && $this->bank_currency != $this->supplier_currency) {
         $rate = 0;
       } else {
