@@ -451,10 +451,10 @@
                         } else {
                             Forms::qtyCells(null, 'this_quantityCredited' . $n, Num::_format(max($myrow["quantity_inv"], 0), $dec), null, null, $dec);
                         }
-                        $dec2 = 0;
-                        Forms::amountCells(null, 'ChgPrice' . $n, Num::_priceDecimal($myrow["unit_price"], $dec2), null, null, $dec2, 'ChgPriceCalc' . $n);
-                        Forms::amountCells(null, 'ExpPrice' . $n, Num::_priceDecimal($myrow["unit_price"], $dec2), null, null, $dec2, 'ExpPriceCalc' . $n);
-                        Forms::amountCellsSmall(null, 'ChgDiscount' . $n, Num::_percentFormat($myrow['discount'] * 100), null, null, User::percent_dec());
+                        $dec2 = User::price_dec();
+                        Forms::amountCells(null, 'ChgPrice' . $n, Num::_priceDecimal($myrow["unit_price"], $dec2), null, ['$'], $dec2, 'ChgPriceCalc' . $n);
+                        Forms::amountCells(null, 'ExpPrice' . $n, Num::_priceDecimal($myrow["unit_price"], $dec2), null, ['$'], $dec2, 'ExpPriceCalc' . $n);
+                        Forms::amountCellsSmall(null, 'ChgDiscount' . $n, Num::_percentFormat($myrow['discount'] * 100), null, '%', User::percent_dec());
                         Cell::amount(
                             Num::_priceDecimal(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2),
                             false,

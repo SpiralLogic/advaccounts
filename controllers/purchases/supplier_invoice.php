@@ -27,12 +27,11 @@
       if (isset($_POST['Cancel'])) {
         $this->cancelInvoice();
       }
-      $this->creditor_id = $this->trans->creditor_id ? : Input::_post('creditor_id', Input::NUMERIC, null);
+      $this->creditor_id = $this->trans->creditor_id ? : $this->Input->post('creditor_id', Input::NUMERIC, null);
       if (!$this->creditor_id) {
         $this->creditor_id = $this->Session->getGlobal('creditor');
       }
-      $this->creditor_id    = Input::_postGetGlobal('creditor_id');
-      $_POST['creditor_id'] =& $this->creditor_id;
+      $this->creditor_id    = &$this->Input->postGetGlobal('creditor_id');
       $this->Session->setGlobal('creditor_id', $this->creditor_id);
       if (isset($_POST['AddGLCodeToTrans'])) {
         $this->addGlCodesToTrans();
@@ -47,7 +46,7 @@
       if (isset($_POST['InvGRNAll'])) {
         $this->invGrnAll();
       }
-      if (Input::_post('PONumber')) {
+      if ($this->Input->post('PONumber')) {
         $this->Ajax->activate('grn_items');
         $this->Ajax->activate('inv_tot');
       }
@@ -75,7 +74,7 @@
         Purch_Invoice::totals($this->trans);
         Display::div_end();
       }
-      if (Input::_post('AddGLCodeToTrans')) {
+      if ($this->Input->post('AddGLCodeToTrans')) {
         $this->Ajax->activate('inv_tot');
       }
       Display::br();
@@ -118,7 +117,7 @@
           $input_error = true;
         }
       }
-      if (!Tax_Types::is_tax_gl_unique(Input::_post('gl_code'))) {
+      if (!Tax_Types::is_tax_gl_unique($this->Input->post('gl_code'))) {
         Event::error(_("Cannot post to GL account used by more than one tax type."));
         $this->JS->setFocus('gl_code');
         $input_error = true;
@@ -210,21 +209,21 @@
       if (!$this->checkData()) {
         return;
       }
-      if (Input::_post('ChgTax', null, 0) != 0) {
+      if ($this->Input->post('ChgTax', null, 0) != 0) {
         $taxexists = false;
         foreach ($this->trans->gl_codes as &$gl_item) {
           if ($gl_item->gl_code == 2430) {
             $taxexists = true;
-            $gl_item->amount += Input::_post('ChgTax');
+            $gl_item->amount += $this->Input->post('ChgTax');
             break;
           }
         }
         if (!$taxexists) {
-          $this->trans->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, Input::_post('ChgTax'), 'GST Correction');
+          $this->trans->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, $this->Input->post('ChgTax'), 'GST Correction');
         }
       }
-      if (Input::_post('ChgTotal', null, 0) != 0) {
-        $this->trans->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, Input::_post('ChgTotal'), 'Rounding Correction');
+      if ($this->Input->post('ChgTotal', null, 0) != 0) {
+        $this->trans->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, $this->Input->post('ChgTotal'), 'Rounding Correction');
       }
       $invoice_no                          = Purch_Invoice::add($this->trans);
       $_SESSION['history'][ST_SUPPINVOICE] = $this->trans->reference;
@@ -332,7 +331,7 @@
       $margin = DB_Company::get_pref('po_over_charge');
       if (Config::_get('purchases.valid_charged_to_delivered_price') == true && $margin != 0) {
         if ($_POST['order_price' . $n] != Validation::input_num('ChgPrice' . $n)) {
-          if (Input::_post('order_price' . $n, Input::NUMERIC, 0) != 0 && Validation::input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {
+          if ($this->Input->post('order_price' . $n, Input::NUMERIC, 0) != 0 && Validation::input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {
             if (!$this->Session->get('err_over_charge')) {
               Event::warning(
                 _(

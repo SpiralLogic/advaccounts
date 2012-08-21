@@ -9,6 +9,7 @@
    */
   class Base implements \ArrayAccess
   {
+
     const NUMERIC = 1;
     const OBJECT  = 2;
     const STRING  = 3;
@@ -31,8 +32,7 @@
     /**
      * @param $container
      */
-    public function __construct(&$container)
-    {
+    public function __construct(&$container) {
       $this->container = &$container;
     }
     /***
@@ -42,9 +42,17 @@
      *
      * @return bool|int|string|object
      */
-    public function &get($var, $type = null, $default = null)
-    {
+    public function &get($var, $type = null, $default = null) {
       $result = $this->hasSet($var, $type, $default);
+      if (is_array($var)&&count($var)>1) {
+        $array = &$this->container;
+        while (count($var)>1) {
+          $key   = array_shift($var);
+          $array = &$array[$key];
+        }
+        $array[$key]=$result;
+        return $array[$key];
+      }
       if (!($type == self::NUMERIC && $result === true)) {
         $this->container[$var] = $result;
       }
@@ -57,8 +65,7 @@
      *
      * @return bool
      */
-    public function has($vars)
-    {
+    public function has($vars) {
       if (is_null($vars)) {
         return true;
       } elseif (!is_array($vars)) {
@@ -81,8 +88,7 @@
      * @internal param array $array
      * @return bool|int|null|string
      */
-    protected function hasSet($var, $type = null, $default = null)
-    {
+    protected function hasSet($var, $type = null, $default = null) {
       //     if ($type!==null&&$default===null) $default=$type;
       $array = $this->container;
       if (is_array($var)) {
@@ -115,7 +121,7 @@
           if (!checkdate($matches[2], $matches[3], $matches[1]) && !checkdate($matches[2], $matches[1], $matches[3]) && !checkdate($matches[1], $matches[2], $matches[3])) {
             $value = null;
           }
-          if ($value === null ) {
+          if ($value === null) {
             return ($default === null) ? null : $default;
           }
           break;
@@ -142,8 +148,7 @@
      * <p>
      *       The return value will be casted to boolean if non-boolean was returned.
      */
-    public function offsetExists($offset)
-    {
+    public function offsetExists($offset) {
       return array_key_exists($offset, $this->container);
     }
     /**
@@ -157,8 +162,7 @@
      *
      * @return mixed Can return all value types.
      */
-    public function offsetGet($offset)
-    {
+    public function offsetGet($offset) {
       return $this->hasSet($offset);
     }
     /**
@@ -175,8 +179,7 @@
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
-    {
+    public function offsetSet($offset, $value) {
       $this->container[$offset] = $value;
     }
     /**
@@ -190,8 +193,7 @@
      *
      * @return void
      */
-    public function offsetUnset($offset)
-    {
+    public function offsetUnset($offset) {
       unset($this->container[$offset]);
     }
   }

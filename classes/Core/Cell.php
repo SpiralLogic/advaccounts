@@ -27,7 +27,7 @@
      * @param null   $id
      */
     public static function amountDecimal($label, $params = "", $id = null) {
-      $dec = 0;
+      $dec = null;
       Cell::label(Num::_priceDecimal($label, $dec), ' class="alignright nowrap"' . $params, $id);
     }
     /**
