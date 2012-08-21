@@ -9,5 +9,5 @@
   <a class="button" href="{{$.href}}" accesskey="{{$.accesskey}}">
     {{$.label}}</a>
   <br><br>
-{{/$buttons}}
+  {{/$buttons}}
 </div>

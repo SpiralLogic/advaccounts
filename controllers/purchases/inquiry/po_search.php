@@ -23,8 +23,7 @@
     protected $stock_location;
     protected function before() {
       JS::_openWindow(950, 500);
-      $_POST['order_number']     = Input::_getPost('order_number', Input::NUMERIC);
-      $this->order_no            =& $_POST['order_number'];
+      $this->order_no            =&Input::_getPost('order_number', Input::NUMERIC);
       $this->creditor_id         = Input::_getPost('creditor_id', Input::NUMERIC, 0);
       $this->stock_location      = Input::_getPost('StockLocation', Input::STRING, '');
       $this->selected_stock_item = Input::_getPost('SelectStockFromList', Input::STRING, '');

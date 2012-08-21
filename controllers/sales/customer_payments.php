@@ -1,5 +1,6 @@
 <?php
   use ADV\App\Debtor\Debtor;
+  use ADV\Core\Input\Input;
   use ADV\Core\Row;
   use ADV\Core\Table;
 
@@ -16,38 +17,26 @@
     public $date_banked;
     public $debtor_id;
     protected function before() {
-      if ($_SERVER['REQUEST_METHOD'] == "GET") {
-        if ($this->Input->get('account')) {
+      if ($_SERVER['REQUEST_METHOD'] == "GET" && $this->Input->get('account','amount','memo','date')) {
           $_POST['bank_acount'] = $this->Input->get('account');
-        }
-        if ($this->Input->get('amount')) {
           $_POST['amount'] = $this->Input->get('amount');
-        }
-        if ($this->Input->get('memo')) {
           $_POST['memo_'] = $this->Input->get('memo');
-        }
-        if ($this->Input->get('date')) {
           $_POST['DateBanked'] = $this->Input->get('date');
-        }
-        if ($this->Input->get('fee')) {
-          $_POST['charge'] = $this->Input->get('fee');
-        }
+          $_POST['charge'] = $this->Input->get('fee',Input::NUMERIC);
       }
       $this->JS->openWindow(900, 500);
       $this->JS->footerFile('/js/payalloc.js');
-      $this->debtor_id    = $this->Input->postGetGlobal('debtor_id');
-      $_POST['debtor_id'] =& $this->debtor_id;
+      $this->debtor_id    = &$this->Input->postGetGlobal('debtor_id');
       if (Forms::isListUpdated('branch_id') || !$_POST['debtor_id']) {
         $br              = Sales_Branch::get($this->Input->post('branch_id'));
         $this->debtor_id = $br['debtor_id'];
         $this->Ajax->activate('debtor_id');
       }
       $this->Session->setGlobal('debtor_id', $this->debtor_id);
-      $this->date_banked = $this->Input->post('DateBanked', null, Dates::_newDocDate());
+      $this->date_banked = &$this->Input->post('DateBanked', null, Dates::_newDocDate());
       if (!Dates::_isDateInFiscalYear($this->date_banked)) {
         $this->date_banked = Dates::_endFiscalYear();
       }
-      $_POST['DateBanked'] = &$this->date_banked;
       // validate inputs
       if (isset($_POST['_debtor_id_button'])) {
         $this->Ajax->activate('branch_id');
