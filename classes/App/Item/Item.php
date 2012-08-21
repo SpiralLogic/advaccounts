@@ -190,8 +190,9 @@
       $this->tax_type_id        = 1;
       $this->mb_flag            = STOCK_PURCHASED;
       $this->sales_account      = DB_Company::i()->default_inv_sales_act;
-      $this->inventory_account  = null;
+      $this->inventory_account  = DB_Company::i()->default_inventory_act;
       $this->cogs_account       = DB_Company::i()->default_cogs_act;
+      $this->assembly_account= DB_Company::i()->default_assembly_act;
       $this->adjustment_account = DB_Company::i()->default_adj_act;
       $this->actual_cost        = 0;
       $this->last_cost          = 0;

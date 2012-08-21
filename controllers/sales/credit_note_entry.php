@@ -18,16 +18,18 @@
   //
   class CreditNote extends \ADV\App\Controller\Base
   {
+
+    /** @var Sales_Order */
     public $credit;
     protected function before() {
       $this->JS->openWindow(950, 500);
       $this->credit = Orders::session_get() ? : null;
       if ($this->Input->get(Orders::NEW_CREDIT)) {
         $this->setTitle("Customer Credit Note");
-        $this->handle_new_credit(0);
+        $this->handleNewCredit(0);
       } elseif ($this->Input->get(Orders::MODIFY_CREDIT)) {
         $this->setTitle("Modifying Customer Credit Note " . $this->Input->get(Orders::MODIFY_CREDIT));
-        $this->handle_new_credit($this->Input->get(Orders::MODIFY_CREDIT));
+        $this->handleNewCredit($this->Input->get(Orders::MODIFY_CREDIT));
       } else {
         $this->setTitle("Customer Credit Note");
       }
@@ -45,12 +47,12 @@
         $this->credit->remove_from_order($id);
         Item_Line::start_focus('_stock_id_edit');
       }
-      if (isset($_POST[Orders::ADD_LINE]) && check_item_data()) {
+      if (isset($_POST[Orders::ADD_LINE]) && $this->checkItemData()) {
         $this->credit->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
         Item_Line::start_focus('_stock_id_edit');
       }
       if (isset($_POST[Orders::UPDATE_ITEM])) {
-        if ($_POST[Orders::UPDATE_ITEM] != "" && check_item_data()) {
+        if ($_POST[Orders::UPDATE_ITEM] != "" && $this->checkItemData()) {
           $this->credit->update_order_item(
             $_POST['line_no'],
             Validation::input_num('qty'),
@@ -72,7 +74,7 @@
      * @return bool
      */
     protected function processCredit() {
-      if (!$this->can_process()) {
+      if (!$this->canProcess()) {
         return false;
       }
       if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) || $_POST['WriteOffGLCode'] == '')) {
@@ -83,18 +85,17 @@
       if (!isset($_POST['WriteOffGLCode'])) {
         $_POST['WriteOffGLCode'] = 0;
       }
-      $this->credit = $this->copy_to_cn($this->credit);
+      $this->credit = $this->copyToCredit($this->credit);
       $credit_no    = $this->credit->write($_POST['WriteOffGLCode']);
       Dates::_newDocDate($this->credit->document_date);
       $this->pageComplete($credit_no);
-
       return true;
     }
     protected function cancelCredit() {
       $type     = $this->credit->trans_type;
       $order_no = (is_array($this->credit->trans_no)) ? key($this->credit->trans_no) : $this->credit->trans_no;
       Orders::session_delete($_POST['order_id']);
-      $this->credit = $this->handle_new_credit($order_no);
+      $this->credit = $this->handleNewCredit($order_no);
     }
     /**
      * @param $credit_no
@@ -140,7 +141,7 @@
      * @internal param $this ->credit
      * @return Sales_Order
      */
-    protected function copy_to_cn() {
+    protected function copyToCredit() {
       $this->credit->Comments      = $_POST['CreditText'];
       $this->credit->document_date = $_POST['OrderDate'];
       $this->credit->freight_cost  = Validation::input_num('ChargeFreightCost');
@@ -157,7 +158,7 @@
      * @return void
      * @internal param $this ->credit
      */
-    protected function copy_from_cn() {
+    protected function copyFromCredit() {
       $this->credit               = Sales_Order::check_edit_conflicts($this->credit);
       $_POST['CreditText']        = $this->credit->Comments;
       $_POST['debtor_id']         = $this->credit->debtor_id;
@@ -180,17 +181,17 @@
      *
      * @return Sales_Order
      */
-    protected function handle_new_credit($trans_no) {
+    protected function handleNewCredit($trans_no) {
       $this->credit = new Sales_Order(ST_CUSTCREDIT, $trans_no);
       Orders::session_delete($this->credit->order_id);
       $this->credit->start();
-      $this->copy_from_cn();
+      $this->copyFromCredit();
     }
     /**
      * @internal param \Sales_Order $this ->credit
      * @return bool
      */
-    protected function can_process() {
+    protected function canProcess() {
       $input_error = 0;
       if ($this->credit->count_items() == 0 && (!Validation::post_num('ChargeFreightCost', 0))) {
         return false;
@@ -213,33 +214,29 @@
         $this->JS->setFocus('OrderDate');
         $input_error = 1;
       }
-
       return ($input_error == 0);
     }
     /**
      * @return bool
      */
-    protected function check_item_data() {
+    protected function checkItemData() {
       if (!Validation::post_num('qty', 0)) {
         Event::error(_("The quantity must be greater than zero."));
         $this->JS->setFocus('qty');
-
         return false;
       }
       if (!Validation::post_num('price', 0)) {
         Event::error(_("The entered price is negative or invalid."));
         $this->JS->setFocus('price');
-
         return false;
       }
       if (!Validation::post_num('Disc', 0, 100)) {
         Event::error(_("The entered discount percent is negative, greater than 100 or invalid."));
         $this->JS->setFocus('Disc');
-
         return false;
       }
-
       return true;
     }
   }
-new CreditNote();
+
+  new CreditNote();
