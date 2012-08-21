@@ -22,18 +22,18 @@
   </ul>
   <div id="tabs0-0">
     <div id="Items" class="width40 formbox" style='display:none'>
-      <input type="hidden" value="${id}" id="id">
+      <input type="hidden" value="${id}"  name="id" id="id">
       <label for="stock_id"><span>Code:</span><input name="stock_id" id="stock_id" type="text" value="${stock_id}" maxlength="20"></label>
-      <label for="name"><span>Name:</span><input id="name" type="text" value="${name}" maxlength="200"></label>
-      <label for="long_description"><span>Description:</span><textarea id="long_description" rows="6" cols="36">${long_description}</textarea></label>
-      <label for="no_sale"><span>Not for sale:</span><input id="no_sale" value=1 type="checkbox"/></label>
-      <label for="inactive"><span>inactive:</span><input id="inactive" value=1 type="checkbox"/></label>
+      <label for="name"><span>Name:</span><input id="name" name="name" type="text" value="${name}" maxlength="200"></label>
+      <label for="long_description"><span>Description:</span><textarea name="long_description"  id="long_description" rows="6" cols="36">${long_description}</textarea></label>
+      <label for="no_sale"><span>Not for sale:</span><input id="no_sale" name="no_sale" type="checkbox"/></label>
+      <label for="inactive"><span>inactive:</span><input id="inactive" name="inactive" type="checkbox"/></label>
       <label for="category_id"><span>Category:</span>{{$stock_cats}}</label>
       <label for="uom"><span>Units of Mesasure:</span>{{$units}}</label>
     </div>
     <div class="center">
       <table id="stockLevels" class="marginauto grid width80" style="display:none">
-        <tr>
+        <thead><tr>
           <th>Location</th>
           <th>QOH</th>
           <th>Shelf Primary</th>
@@ -43,9 +43,8 @@
           <th>Available</th>
           <th>On PurchaseOrder</th>
         </tr>
-        <tbody>
-        <script id="stockRow" type="text/x-jquery-tmpl">
-          <tr>
+        </thead><tbody>
+        <tr id="stockRow" >
             <td>${location_name}</td>
             <td>${qty}</td>
             <td>${shelf_primary}</td>
@@ -54,8 +53,7 @@
             <td>${demand}</td>
             <td>${available}</td>
             <td>${onorder}</td>
-          </tr>
-        </script>
+        </tr>
         </tbody>
       </table>
     </div>
@@ -86,7 +84,7 @@
     <iframe id='webFrame' data-srcpre='{{Config::_get('modules.webstore')['product_url']}}' data-srcpost='{{Config::_get('modules.webstore')['url_extension']}}'
             style='width:100%'
             height='500' frameborder='0'></iframe>
-  </div><button name='btnCancel' >Cancel</button>
-  <button name='btnSave' >Save</button>
+  </div><button name='btnCancel' id='btnCancel' >Cancel</button>
+  <button name='btnSave' id='btnSave' >Save</button>
 
 </div>
