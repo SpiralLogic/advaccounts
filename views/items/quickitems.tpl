@@ -16,7 +16,7 @@
     <li class='ui-state-default ui-corner-top'>
       <a title='Locations' href='#tabs0-4'><span>Locations</span></a>
     </li>
-    <li class='ui-state-default ui-corner-top'>
+    <li class='ui-state-default ui-corner-top hidden'>
       <a title='Website' href='#tabs0-5'><span>Website</span></a>
     </li>
   </ul>
@@ -24,7 +24,7 @@
     <div id="Items" class="width40 formbox" style='display:none'>
       <input type="hidden" value="${id}"  name="id" id="id">
       <label for="stock_id"><span>Code:</span><input name="stock_id" id="stock_id" type="text" value="${stock_id}" maxlength="20"></label>
-      <label for="name"><span>Name:</span><input id="name" name="name" type="text" value="${name}" maxlength="200"></label>
+      <label for="description"><span>Name:</span><input id="name" name="description" type="text" value="${description}" maxlength="200"></label>
       <label for="long_description"><span>Description:</span><textarea name="long_description"  id="long_description" rows="6" cols="36">${long_description}</textarea></label>
       <label for="no_sale"><span>Not for sale:</span><input id="no_sale" name="no_sale" type="checkbox"/></label>
       <label for="inactive"><span>inactive:</span><input id="inactive" name="inactive" type="checkbox"/></label>
@@ -43,8 +43,8 @@
           <th>Available</th>
           <th>On PurchaseOrder</th>
         </tr>
-        </thead><tbody>
-        <tr id="stockRow" >
+        </thead><tbody id="stockRow">
+        <tr >
             <td>${location_name}</td>
             <td>${qty}</td>
             <td>${shelf_primary}</td>
@@ -79,7 +79,7 @@
 
     <iframe id='locationFrame' data-src='{{BASE_URL}}inventory/reorder_level.php?frame=1&stock_id={{$item->stock_id}}' style='width:100%' height='500' frameborder='0'></iframe>
   </div>
-  <div id="tabs0-5" class="ui-tabs-hide">
+  <div id="tabs0-5" class="ui-tabs-hide hidden">
 
     <iframe id='webFrame' data-srcpre='{{Config::_get('modules.webstore')['product_url']}}' data-srcpost='{{Config::_get('modules.webstore')['url_extension']}}'
             style='width:100%'
