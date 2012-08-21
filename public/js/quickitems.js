@@ -72,7 +72,6 @@ var Items = function () {
       $.each(item, function (i, data) {
         Adv.Forms.setFormValue(i, data);
       });
-
     },
     get:function () {
       return item;
@@ -106,4 +105,3 @@ $(function () {
     Items.set($thisname, this.value);
   })
 });
-

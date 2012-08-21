@@ -44,7 +44,7 @@
   if (!isset($_GET['stock_id'])) {
     HTML::div('itemSearch', array('class' => 'bold pad10 center'));
     Item::addSearchBox('itemSearchId', array(
-                                            'label'    => 'Item:', 'size' => '50px', 'selectjs' => '$("#itemSearchId").val(value.item_name);Items.fetch(value.stock_id);return false;'
+                                            'label'    => 'Item:', 'size' => '50px', 'selectjs' => '$("#itemSearchId").val(value.stock_id);Items.fetch(value.stock_id);return false;'
                                        ));
     HTML::div();
     $id = 0;
