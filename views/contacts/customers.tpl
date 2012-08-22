@@ -145,3 +145,4 @@
     {{$form.type}}
   </div>
 </div>
+{{$form->end()}}

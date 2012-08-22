@@ -94,7 +94,7 @@
     if (DB_Company::get_pref('add_pct') != -1) {
       $calculated = true;
     }
-    Event::warning(_("There are no prices set up for this part."), 1);
+    Event::warning(_("There are no prices set up for this part."),false);
   }
   Display::div_end();
   echo "<br>";

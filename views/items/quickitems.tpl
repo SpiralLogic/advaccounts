@@ -20,6 +20,7 @@
       <a title='Website' href='#tabs0-5'><span>Website</span></a>
     </li>
   </ul>
+  <form>
   <div id="tabs0-0">
     <div id="Items" class="width40 formbox" style='display:none'>
       <input type="hidden" value="${id}"  name="id" id="id">
@@ -88,3 +89,4 @@
   <button name='btnSave' id='btnSave' >Save</button>
 
 </div>
+</form>

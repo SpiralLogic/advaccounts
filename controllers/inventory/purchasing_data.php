@@ -96,7 +96,7 @@
     $result = DB::_query($sql, "The supplier purchasing details for the selected part could not be retrieved");
     Display::div_start('price_table');
     if (DB::_numRows($result) == 0) {
-      Event::warning(_("There is no supplier prices set up for the product selected"));
+      Event::warning(_("There are no supplier prices set up for the product selected"),false);
     } else {
       if (Input::_request('frame')) {
         Table::start('tablestyle grid width90');
