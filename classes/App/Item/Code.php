@@ -1,4 +1,6 @@
 <?php
+  use ADV\Core\DB\DB;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -53,7 +55,7 @@
      * @param     $qty
      * @param int $foreign
      */
-    public static function  add($item_code, $stock_id, $description, $category, $qty, $foreign = 0)
+    public static function  add($stockid,$item_code, $stock_id, $description, $category, $qty, $foreign = 0)
     {
       $id = DB::_select('id')->from('item_codes')->where('item_code=', $item_code)->fetch()->one();
       $sql
@@ -62,13 +64,13 @@
         $sql .= "id, ";
       }
       $sql
-        .= "item_code, stock_id, description, category_id, quantity, is_foreign)
+        .= "stockid, item_code, stock_id, description, category_id, quantity, is_foreign)
                     VALUES( ";
       if (isset($id['id'])) {
         $sql .= $id['id'] . ", ";
       }
-      $sql .= DB::_escape($item_code) . "," . DB::_escape($stock_id) . ",
-                     " . DB::_escape($description) . "," . DB::_escape($category) . "," . DB::_escape($qty) . "," . DB::_escape($foreign) . ")";
+      $sql .= DB::_quote($stockid,PDO::PARAM_INT) . "," . DB::_quote($item_code) . "," . DB::_quote($stock_id) . ",
+                     " . DB::_quote($description) . "," . DB::_quote($category) . "," . DB::_quote($qty) . "," . DB::_quote($foreign) . ")";
       DB::_query($sql, "an item code could not be added");
     }
     /**

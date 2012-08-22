@@ -48,7 +48,7 @@
         //to set client-side cache On or Off
         'clientCache'      => true,
         //Setting this to false will force the browser to use cached files without checking for changes.
-        'clientCacheCheck' => false,
+        'clientCacheCheck' => true,
         'css'              => array(
             'default.css', //
             'jquery-ui.css', //

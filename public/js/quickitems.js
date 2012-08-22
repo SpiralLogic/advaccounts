@@ -4,14 +4,11 @@
  */
 Adv.extend({
   revertState:function () {
-    $('.ui-state-highlight').each(function () {
-      var $this = $(this);
-      $this.val($this.data('init'));
-      if (this.type === 'checkbox') {
-        this.checked = !!$this.data('init');
-      }
-    });
-    Adv.Forms.resetHighlights();
+    var form = document.getElementsByTagName('form')[0];
+    form.reset();
+    Adv.btnCancel.attr('name', 'new').text("New");
+    Adv.Forms.resetHighlights();      $("#itemSearchId").val('');
+
   },
   resetState:function () {
     $("#tabs0 input, #tabs0 textarea").empty();
@@ -71,7 +68,9 @@ var Items = function () {
       }
       $.each(item, function (i, data) {
         Adv.Forms.setFormValue(i, data);
-      });
+      });      Adv.btnCancel.attr('name', 'new').text("New");
+      Adv.Forms.setFocus('stock_id');
+
     },
     get:function () {
       return item;
@@ -86,21 +85,27 @@ var Items = function () {
 }();
 $(function () {
   Adv.extend({btnCancel:$("#btnCancel").button().click(function () {
-    (Adv.fieldsChanged > 0) ? Adv.revertState() : Adv.resetState();
+    ($(this).attr('name') == 'new') ? Adv.resetState() : Adv.revertState();
     return false;
-  }).hide(), btnSave:$("#btnSave").button().click(function () {
+  }), btnSave:$("#btnSave").button().click(function () {
     Items.save();
+    Adv.btnCancel.attr('name', 'new').text("New");
     return false;
   }).hide()});
   Adv.o.tabs[0] = $("#tabs0");
   Adv.o.tabs[0].delegate("input,textarea,select", "change keyup", function (event) {
     var $this = $(this), $thisname = $this.attr('name');
     Adv.Forms.stateModified($this);
-    Adv.btnCancel.button('option', 'label', 'Cancel Changes').show();
+    Adv.btnCancel.button('option', 'label', 'Cancel Changes');
     if (Items.get().id) {
       Adv.btnSave.button("option", "label", "Save Changes").show();
     } else {
       Adv.btnSave.button("option", "label", "Save New Item").show();
+    }
+    if (Adv.fieldsChanged === 0) {
+      Adv.btnCancel.attr('name', 'new').text("New");
+    } else {
+      Adv.btnCancel.attr('name', 'cancel').text('Cancel Changes');
     }
     Items.set($thisname, this.value);
   })
