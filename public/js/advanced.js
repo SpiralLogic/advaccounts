@@ -1,51 +1,49 @@
 var Adv = {};
-jQuery.widget("custom.catcomplete", $.ui.autocomplete, {
-  _renderMenu:function (ul, items) {
-    var self = this, currentCategory = "";
-    $.each(items, function (index, item) {
-      if (item.category != currentCategory) {
-        ul.append("<li class='ui-autocomplete-category'>" + item.category + "</li>");
-        currentCategory = item.category;
-      }
-      self._renderItem(ul, item);
-    });
-  }
-});
-jQuery.fn.quickEach = (function () {
-  var jq = jQuery([1]);
-  return function (c) {
-    var i = -1, el, len = this.length;
-    try {
-      while (++i < len && (el = jq[0] = this[i]) && c.call(jq, i, el) !== false) {
-      }
-    }
-    catch (e) {
-      delete jq[0];
-      throw e;
-    }
-    delete jq[0];
-    return this;
-  };
-}());
-jQuery.easing['jswing'] = jQuery.easing['swing'];
-jQuery.extend(jQuery.easing, {
-  def:'easeOutExpo',
-  easeOutExpo:function (x, t, b, c, d) {
-    return (t == d) ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
-  }
-});
 (function (window, $, undefined) {
   var Adv = {
     loader:document.getElementById('ajaxmark'),
     fieldsChanged:0,
     debug:{ ajax:true},
     lastXhr:'',
-    o:{$content:$("#content"), tabs:{}}
+    o:{$content:$("#content"), tabs:{}, wrapper:$("#wrapper"), autocomplete:{}}
   };
   (function () {
-    var extender = jQuery.extend;
-    this.o.wrapper = $("#wrapper");
-    this.o.autocomplete = {};
+    $.widget("custom.catcomplete", $.ui.autocomplete, {
+      _renderMenu:function (ul, items) {
+        var self = this, currentCategory = "";
+        $.each(items, function (index, item) {
+          if (item.category != currentCategory) {
+            ul.append("<li class='ui-autocomplete-category'>" + item.category + "</li>");
+            currentCategory = item.category;
+          }
+          self._renderItem(ul, item);
+        });
+      }
+    });
+    $.fn.quickEach = (function () {
+      var jq = jQuery([1]);
+      return function (c) {
+        var i = -1, el, len = this.length;
+        try {
+          while (++i < len && (el = jq[0] = this[i]) && c.call(jq, i, el) !== false) {
+          }
+        }
+        catch (e) {
+          delete jq[0];
+          throw e;
+        }
+        delete jq[0];
+        return this;
+      };
+    }());
+    $.easing['jswing'] = $.easing['swing'];
+    $.extend(jQuery.easing, {
+      def:'easeOutExpo',
+      easeOutExpo:function (x, t, b, c, d) {
+        return (t == d) ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
+      }
+    });
+    var extender = $.extend;
     $(this.loader).ajaxStart(function () {
       Adv.loader.on();
       Adv.Scroll.loaded = false;
@@ -87,77 +85,71 @@ Adv.extend({
           status:256,
           message:"Request failed: " + settings.url + "<br>"
         };
-        Adv.showStatus(status);
+        Adv.Status.show(status);
       })
       .ajaxComplete(function (event, request) {
         Behaviour.apply();
         try {
           var data = $.parseJSON(request.responseText);
           if (data && data.status) {
-            Adv.showStatus(data.status);
+            Adv.Status.show(data.status);
           }
         }
         catch (e) {
           return false
         }
       }),
-    showStatus:function (status) {
-      var text = '', closeTime;
-      status = status || {status:null, message:''};
-      if (status.status === 'redirect') {
-        window.onunload = null;
-        return window.location.href = status.message;
-      }
-      if (status.html) {
-        text = status.html;
-      }
-      else {
-        if (status.message) {
-          switch (status.status) {
-            case 1024:
-              status.class = 'info_msg';
-              break;
-            case 512:
-              status.class = 'warn_msg';
-              break;
-            case 256:
-            case 8:
-            case -1:
-              status.class = 'err_msg';
-              break;
-            case 61438:
-            default:
-              status.class = 'success_msg';
-              break;
+    Status:{
+      show:function (status) {
+        var text = '', closeTime;
+        status = status || {status:null, message:''};
+        if (status.status === 'redirect') {
+          window.onunload = null;
+          return window.location.href = status.message;
+        }
+        if (status.html) {
+          text = status.html;
+        }
+        else {
+          if (status.message) {
+            switch (status.status) {
+              case 1024:
+                status.class = 'info_msg';
+                break;
+              case 512:
+                status.class = 'warn_msg';
+                break;
+              case 256:
+              case 8:
+              case -1:
+                status.class = 'err_msg';
+                break;
+              case 61438:
+              default:
+                status.class = 'success_msg';
+                break;
+            }
+            text = '<div class="' + status.class + '">' + status.message + '</div>';
           }
-          text = '<div class="' + status.class + '">' + status.message + '</div>';
         }
-      }
-      if (text) {
-        Adv.msgbox.html(text);
-      }
-      window.clearTimeout(closeTime);
-      Adv.msgbox.stop(true, true).animate({ height:'show', opacity:1 }, 1000, 'easeOutExpo', function () {
-        closeTime = window.setTimeout(Adv.hideStatus, 15000);
-      });
-      try {
-        var y = Adv.Forms.elementPos(Adv.msgbox[0]).y - 40;
-      }
-      catch (e) {
-      } finally {
-        if (text && $.isNumeric(y)) {
-          scrollTo(0, y);
+        if (text) {
+          Adv.msgbox.html(text);
         }
+        window.clearTimeout(closeTime);
+        Adv.msgbox.stop(true, true).animate({ height:'show', opacity:1 }, 1000, 'easeOutExpo', function () {
+          closeTime = window.setTimeout(Adv.Status.hide, 15000);
+        });
+        Adv.Forms.setFocus(Adv.msgbox[0]);
+      },
+      hideStatus:function () {
+        Adv.msgbox.stop(true, true).animate({ height:'hide', opacity:0 }, 2000, 'easeOutExpo');
       }
-    },
-    hideStatus:function () {
-      Adv.msgbox.stop(true, true).animate({ height:'hide', opacity:0 }, 2000, 'easeOutExpo');
+
     },
     openWindow:function (url, title, width, height) {
       width = width || 900;
       height = height || 600;
-      var left = (screen.width - width) / 2;
-      var top = (screen.height - height) / 2;
+      var left = (screen.width - width) / 2, top = (screen.height - height) / 2;
       return window.open(url, title, 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
     },
     hoverWindow:{
@@ -300,7 +292,7 @@ Adv.extend({
           }
         }
         if (el.type === 'checkbox') {
-          value=(value==='false'||!value||value==0)?false:true;
+          value = (!(value === 'false' || !value || value == 0));
           el.value = el.checked = value;
           if (isdefault) {
             el.defaultChecked = value;
@@ -347,41 +339,41 @@ Adv.extend({
           this.setFormValue(id, value, disabled, true);
         },
         autocomplete:function (id, url, callback) {
-          var $this, els = Adv.Forms.findInputEl(id),blank={id:0, value:''};
+          var $this, els = Adv.Forms.findInputEl(id), blank = {id:0, value:''};
           Adv.Forms.findInputEl(id);
           Adv.o.autocomplete[id] = $this = $(els)
             .autocomplete({
-            minLength:2,
-            delay:400,
-            autoFocus:true,
-            source:function (request, response) {
-              var $this = Adv.o.autocomplete[id];
-              $this.off('change.autocomplete');
-              $this.data('default', null);
-              if ($this.data().autocomplete.previous == $this.val()) {
-                return false;
-              }
-              Adv.loader.off();
-              Adv.lastXhr = $.getJSON(url, request, function (data) {
-                Adv.loader.on();
-                if (!$this.data('active')) {
-                  if (data.length === 0) {
-                    data = blank;
-                  }
-                  callback(data[0]);
+              minLength:2,
+              delay:400,
+              autoFocus:true,
+              source:function (request, response) {
+                var $this = Adv.o.autocomplete[id];
+                $this.off('change.autocomplete');
+                $this.data('default', null);
+                if ($this.data().autocomplete.previous == $this.val()) {
                   return false;
                 }
-                $this.data('default', data[0]);
-                response(data);
-              });
-            },
-            select:function (event, ui) {
-              $this.data('default', null);
-              if (callback(ui.item, event, this) === false) {
-                return false;
-              }
-            },
-            focus:function () {return false;}})
+                Adv.loader.off();
+                Adv.lastXhr = $.getJSON(url, request, function (data) {
+                  Adv.loader.on();
+                  if (!$this.data('active')) {
+                    if (data.length === 0) {
+                      data = blank;
+                    }
+                    callback(data[0]);
+                    return false;
+                  }
+                  $this.data('default', data[0]);
+                  response(data);
+                });
+              },
+              select:function (event, ui) {
+                $this.data('default', null);
+                if (callback(ui.item, event, this) === false) {
+                  return false;
+                }
+              },
+              focus:function () {return false;}})
             .blur(function () {$(this).data('active', false); })
             .bind('autocompleteclose',function () {
               if (this.value.length > 1 && $this.data().autocomplete.selectedItem === null && $this.data()['default'] !== null) {
@@ -395,12 +387,14 @@ Adv.extend({
                 $(this).autocomplete('search', $this.val());
               })
             })
-            .on('paste',function () {
+            .on('paste', function () {
               var $this = $(this);
               window.setTimeout(function () {$this.autocomplete('search', $this.val())}, 1)
             })
-            .on('change',function () {
-              if (this.value==='')callback(blank,event,this);
+            .on('change', function () {
+              if (this.value === '') {
+                callback(blank, event, this);
+              }
             })
             .css({'z-index':'2'});
           if (document.activeElement === $this[0]) {
@@ -622,83 +616,82 @@ Adv.extend({
 
 
       };
-    })()}
+    })(),
+    Events:(function () {
+      var events = [], onload = false, toClean = false, toFocus = {}, firstBind = function (s, t, a) {
+        $(s).bind(t, a);
+      };
+      return {
+        bind:function (selector, types, action) {
+          events[events.length] = {s:selector, t:types, a:action};
+          firstBind(selector, types, action);
+        },
+        onload:function (actions, clean) {
+          var c = !!onload;
+          onload = actions;
+          if (c) {
+            return;
+          }
+          onload();
+          if (clean !== undefined) {
+            toClean = clean;
+          }
+        },
+        rebind:function () {
+          if (toClean) {
+            toClean();
+          }
+          if (onload) {
+            onload();
+          }
+          $.each(events, function (k, v) {
+            firstBind(v.s, v.t, v.a);
+          });
+          if (Adv.msgbox.children().length) {
+            toFocus.pos = [0, Adv.msgbox.position().top];
+          }
+          if (toFocus.el) {
+            $(toFocus.el).focus();
+          }
+          if (toFocus.pos) {
+            scrollTo(toFocus.pos[0], toFocus.pos[1]);
+          }
+          toFocus = {el:false, pos:false};
+        },
+        onFocus:function (el, pos) {
+          toFocus = {el:el, pos:pos};
+        },
+        onLeave:function (msg) {
+          if (msg) {
+            window.onbeforeunload = function () {
+              return msg;
+            };
+          }
+          else {
+            window.onbeforeunload = function () {
+              return null;
+            };
+          }
+        }
+      }
+    }()),
+    postcode:(function () {
+      var sets = [];
+      return {
+        add:function (set, city, state, code) {
+          sets[set] = {city:$(document.getElementsByName(city)), state:$(document.getElementsByName(state)), postcode:$(document.getElementsByName(code))}
+        },
+        fetch:function (data, item, ui) {
+          var set = $(ui).data("set");
+          data = data.value.split('|');
+          sets[set].city.val(data[0]).trigger('change');
+          sets[set].state.val(data[1]).trigger('change');
+          sets[set].postcode.val(data[2]).trigger('change');
+          return false;
+        }
+      };
+    }())
+  }
 );
 window.addEventListener('scroll', Adv.Scroll.scrollDetect, false);
-Adv.extend({
-  Events:(function () {
-    var events = [], onload = false, toClean = false, toFocus = {}, firstBind = function (s, t, a) {
-      $(s).bind(t, a);
-    };
-    return {
-      bind:function (selector, types, action) {
-        events[events.length] = {s:selector, t:types, a:action};
-        firstBind(selector, types, action);
-      },
-      onload:function (actions, clean) {
-        var c = !!onload;
-        onload = actions;
-        if (c) {
-          return;
-        }
-        onload();
-        if (clean !== undefined) {
-          toClean = clean;
-        }
-      },
-      rebind:function () {
-        if (toClean) {
-          toClean();
-        }
-        if (onload) {
-          onload();
-        }
-        $.each(events, function (k, v) {
-          firstBind(v.s, v.t, v.a);
-        });
-        if (Adv.msgbox.children().length) {
-          toFocus.pos = [0, Adv.msgbox.position().top];
-        }
-        if (toFocus.el) {
-          $(toFocus.el).focus();
-        }
-        if (toFocus.pos) {
-          scrollTo(toFocus.pos[0], toFocus.pos[1]);
-        }
-        toFocus = {el:false, pos:false};
-      },
-      onFocus:function (el, pos) {
-        toFocus = {el:el, pos:pos};
-      },
-      onLeave:function (msg) {
-        if (msg) {
-          window.onbeforeunload = function () {
-            return msg;
-          };
-        }
-        else {
-          window.onbeforeunload = function () {
-            return null;
-          };
-        }
-      }
-    }
-  }()),
-  postcode:(function () {
-    var sets = [];
-    return {
-      add:function (set, city, state, code) {
-        sets[set] = {city:$(document.getElementsByName(city)), state:$(document.getElementsByName(state)), postcode:$(document.getElementsByName(code))}
-      },
-      fetch:function (data, item, ui) {
-        var set = $(ui).data("set");
-        data = data.value.split('|');
-        sets[set].city.val(data[0]).trigger('change');
-        sets[set].state.val(data[1]).trigger('change');
-        sets[set].postcode.val(data[2]).trigger('change');
-        return false;
-      }
-    };
-  }())
-});
 

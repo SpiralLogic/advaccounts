@@ -185,7 +185,7 @@
         {
 
             Row::start();
-            $dec2 = 0;
+            $dec2 = null;
             $id   = Forms::findPostPrefix(MODE_EDIT);
             if ($line_no != -1 && $line_no == $id) {
                 $_POST['stock_id'] = $order->line_items[$id]->stock_id;
