@@ -30,10 +30,12 @@
     const FILTER_CREDITS     = '4';
     const FILTER_DELIVERIES  = '5';
     const FILTER_INVOICEONLY = '6';
+    protected $frame;
     protected function before() {
       $this->JS->openWindow(950, 500);
+      $this->frame = $this->Input->hasGet('debtor_id');
       if (isset($_GET['id'])) {
-        $_GET['debtor_id'] = $_GET['id'];
+        $_GET['debtor_id'] = $this->Input->get('id');
       }
       if ($this->Input->post('customer', Input::STRING) === '') {
         $this->Session->removeGlobal('debtor_id');
@@ -44,7 +46,7 @@
       $this->isQuickSearch = ($this->Input->postGet('q'));
     }
     protected function index() {
-      Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, Input::$get->has('debtor_id'));
+      Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, $this->frame);
       Forms::start();
       Table::start('tablestyle_noborder');
       Row::start();
