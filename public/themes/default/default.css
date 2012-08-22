@@ -3760,7 +3760,9 @@ td.tableheader3 {
   font-family:   Tahoma, Verdana, Geneva;
   font-size:     1em;
 }
-
+.grid .input-prepend {
+  min-width: 7em;
+}
 .grid input {
   min-width: 6em;
 }

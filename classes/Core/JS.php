@@ -22,7 +22,6 @@
    */
   class JS
   {
-
     use Traits\StaticAccess2;
 
     /**
@@ -64,7 +63,8 @@
     /**
      * @param Config $config
      */
-    public function __construct(Config $config = null) {
+    public function __construct(Config $config = null)
+    {
       $this->Config = $config ? : Config::i();
       $this->footerFile($this->Config->get('assets.footer'));
     }
@@ -76,7 +76,8 @@
      *
      * @return mixed
      */
-    public function openWindow($width, $height) {
+    public function openWindow($width, $height)
+    {
       if ($this->openWindow || !$this->Config->get('ui_windows_popups')) {
         return;
       }
@@ -92,7 +93,8 @@
      * @param bool  $url
      * @param array $options
      */
-    public function autocomplete($id, $callback, $url = false) {
+    public function autocomplete($id, $callback, $url = false)
+    {
       if (!$url) {
         $url = $_SERVER['REQUEST_URI'];
       }
@@ -107,7 +109,8 @@
      * @param $address
      * @param $title
      */
-    public function gmap($selector, $address, $title) {
+    public function gmap($selector, $address, $title)
+    {
       $address = str_replace(array("\r", "\t", "\n", "\v"), ", ", $address);
       $apikey  = $this->Config->get('js.maps_api_key');
       $js      = "Adv.maps = { api_key: '$apikey'}";
@@ -133,7 +136,8 @@ JS;
      * Returns unique name if $name=null
 
      */
-    public function defaultFocus($name = null) {
+    public function defaultFocus($name = null)
+    {
       if ($name == null) {
         $name = uniqid('_el', true);
       }
@@ -146,7 +150,8 @@ JS;
      * @static
 
      */
-    public function resetFocus() {
+    public function resetFocus()
+    {
       unset($_POST['_focus']);
     }
     /**
@@ -156,7 +161,8 @@ JS;
      * @param array $options
      * @param       $page
      */
-    public function tabs($id, $options = [], $page = null) {
+    public function tabs($id, $options = [], $page = null)
+    {
       $defaults = ['noajax'=> false, 'haslinks'=> false];
       $options  = array_merge($defaults, $options);
       $noajax   = $options['noajax'] ? 'true' : 'false';
@@ -167,7 +173,8 @@ JS;
      * @static
 
      */
-    public function renderHeader() {
+    public function renderHeader()
+    {
       $scripts = [];
       /** @noinspection PhpDynamicAsStaticMethodCallInspection */
       foreach ($this->headerFiles as $dir => $files) {
@@ -180,7 +187,8 @@ JS;
      * @static
 
      */
-    public function render($return = false) {
+    public function render($return = false)
+    {
       if ($return) {
         ob_start();
       }
@@ -225,7 +233,8 @@ JS;
      *
      * @param $data
      */
-    public function renderJSON($data) {
+    public function renderJSON($data)
+    {
       $data  = (array) $data;
       $error = Errors::JSONError();
       if (isset($data['status']) && $data['status'] && Errors::dbErrorCount()) {
@@ -244,7 +253,8 @@ JS;
      * @param bool $cached
      * @param bool $cached
      */
-    public function setFocus($selector, $cached = false) {
+    public function setFocus($selector, $cached = false)
+    {
       $this->focus = ($selector) ? (!$cached) ? "$('$selector')" : 'Adv.o.' . $selector : false;
       Ajax::_addFocus(true, $selector);
       $_POST['_focus'] = $selector;
@@ -259,7 +269,8 @@ JS;
      * @return string
      * @return array|mixed|string
      */
-    public function arrayToOptions($options = [], $funcs = [], $level = 0) {
+    public function arrayToOptions($options = [], $funcs = [], $level = 0)
+    {
       foreach ($options as $key => $value) {
         if (is_array($value)) {
           $ret           = $this->arrayToOptions($value, $funcs, 1);
@@ -290,7 +301,8 @@ JS;
      * @param $type
      * @param $action
      */
-    public function addEvent($selector, $type, $action) {
+    public function addEvent($selector, $type, $action)
+    {
       $this->onload("$('$selector').bind('$type',function(e){ {$action} }).css('cursor','pointer');");
     }
     /**
@@ -302,7 +314,8 @@ JS;
      * @param bool $delegate
      * @param bool $cached
      */
-    public function addLiveEvent($selector, $type, $action, $delegate = false, $cached = false) {
+    public function addLiveEvent($selector, $type, $action, $delegate = false, $cached = false)
+    {
       if (!$delegate) {
         $this->addLive("$('$selector').bind('$type',function(e){ {$action} });");
       } else {
@@ -316,7 +329,8 @@ JS;
      * @param      $action
      * @param bool $clean
      */
-    public function addLive($action, $clean = false) {
+    public function addLive($action, $clean = false)
+    {
       $this->register($action, $this->onlive);
       if ($clean) {
         $this->register($clean, $this->toclean);
@@ -327,7 +341,8 @@ JS;
      *
      * @param array $events
      */
-    public function addEvents($events = []) {
+    public function addEvents($events = [])
+    {
       if (is_array($events)) {
         foreach ($events as $event) {
           if (count($event == 3)) {
@@ -341,7 +356,8 @@ JS;
      *
      * @param bool $js
      */
-    public function onload($js = false) {
+    public function onload($js = false)
+    {
       if ($js) {
         $this->register($js, $this->onload);
       }
@@ -351,7 +367,8 @@ JS;
      *
      * @param bool $js
      */
-    public function beforeload($js = false) {
+    public function beforeload($js = false)
+    {
       if ($js) {
         $this->register($js, $this->beforeload);
       }
@@ -361,7 +378,8 @@ JS;
      *
      * @param $file
      */
-    public function headerFile($file) {
+    public function headerFile($file)
+    {
       $this->registerFile($file, $this->headerFiles);
     }
     /**
@@ -369,7 +387,8 @@ JS;
      *
      * @param $file
      */
-    public function footerFile($file) {
+    public function footerFile($file)
+    {
       $this->registerFile($file, $this->footerFiles);
     }
     /**
@@ -377,7 +396,8 @@ JS;
      *
      * @param bool $message
      */
-    public function onUnload($message = false) {
+    public function onUnload($message = false)
+    {
       if ($message) {
         $this->addLiveEvent(':input', 'change', "Adv.Events.onLeave('$message')", 'wrapper', true);
         $this->addLiveEvent('form', 'submit', "Adv.Events.onLeave()", 'wrapper', true);
@@ -388,7 +408,8 @@ JS;
      *
      * @param $url
      */
-    public function redirect($url) {
+    public function redirect($url)
+    {
       $data['status'] = array('status' => 'redirect', 'message' => $url);
       $this->renderJSON($data);
     }
@@ -398,7 +419,8 @@ JS;
      * @param array|bool $js
      * @param            $var
      */
-    protected function register($js = false, &$var) {
+    protected function register($js = false, &$var)
+    {
       if (is_array($js)) {
         foreach ($js as $j) {
           $this->register($j, $var);
@@ -414,7 +436,8 @@ JS;
      * @param array|bool $file
      * @param            $var
      */
-    protected function registerFile($file, &$var) {
+    protected function registerFile($file, &$var)
+    {
       if (is_array($file)) {
         foreach ($file as $f) {
           $this->registerFile($f, $var);

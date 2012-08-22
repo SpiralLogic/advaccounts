@@ -213,7 +213,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
         }
         // Write errors to the debug div.
         if (errors) {
-          Adv.showStatus({html:errors});
+          Adv.Status.show({html:errors});
         }
         if (Adv.loader) {
           Adv.loader.off();
