@@ -46,7 +46,7 @@ var Adv = {};
     var extender = $.extend;
     $(this.loader).ajaxStart(function () {
       Adv.loader.on();
-      Adv.Scroll.loaded = false;
+      Adv.ScrollDetect.loaded = false;
       if (Adv.debug.ajax) {
         console.time('ajax')
       }
@@ -75,6 +75,18 @@ var Adv = {};
   }).apply(Adv);
   window.Adv = Adv;
 })(window, jQuery);
+Adv.extend({
+  ScrollDetect:(function() {
+    return {
+      loaded:false,
+      off:function () {
+        Adv.ScrollDetect.loaded = true;
+        window.removeEventListener('scroll', Adv.ScrollDetect.off, false)
+      }
+    }
+  }())
+});    window.addEventListener('scroll', Adv.ScrollDetect.off, false);
+
 Adv.extend({
     msgbox:$('#msgbox')
       .ajaxError(function (event, request, settings) {
@@ -467,7 +479,7 @@ Adv.extend({
           return isNaN(val) ? 0 : val;
         },
         setFocus:function (name, byId) {
-          var el;
+          var el,pos;
           if (typeof(name) == 'object') {
             el = name;
           }
@@ -489,15 +501,17 @@ Adv.extend({
               el = document.getElementById(name);
             }
           }
-          if (el && el.focus) {
+          if (el ) {
             // The timeout is needed to prevent unpredictable behaviour on IE & Gecko.
             // Using tmp var prevents crash on IE5
             pos = $(el).position().top - 100;
-            setTimeout(function () { Adv.Scroll.to(pos, 300);}, 0);
-            el.focus();
-            if (el.select) {
-              el.select();
-            }
+            setTimeout(function () {
+              Adv.Scroll.to(pos, 300);
+            if (el.focus){el.focus();}
+              if (el.select) {
+                el.select();
+              }
+            }, 0);
 
           }
         },
@@ -586,7 +600,6 @@ Adv.extend({
     })(),
     Scroll:(function () {
       return{
-        loaded:false,
         focus:null,
         elementName:null,
         to:function (position, duration) {
@@ -596,19 +609,15 @@ Adv.extend({
           }
           $('html,body').animate({scrollTop:position}, {queue:false, duration:duration, easing:'easeInSine'});
         },
-        scrollDetect:function () {
-          Adv.Scroll.loaded = true;
-          window.removeEventListener('scroll', Adv.Scroll.scrollDetect, false)
-        },
         loadPosition:function (force) {
           var scrollMaxY = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-          if (Adv.Scroll.loaded && force === undefined) {
+          if (Adv.ScrollDetect.loaded && force === undefined) {
             return;
           }
           if (typeof(Adv.Scroll.focus) == 'number' && typeof Adv.Scroll.element == 'string') {
             var pos = $(document.getElementsByName(Adv.Scroll.element)[0]).position().top;
             Adv.Scroll.to(pos - Adv.Scroll.focus);
-            Adv.Scroll.focus = Adv.Scroll.element = Adv.Scroll.loaded = true;
+            Adv.Scroll.focus = Adv.Scroll.element = Adv.ScrollDetect.loaded = true;
             return;
           }
           Adv.Forms.setFocus();
@@ -648,18 +657,8 @@ Adv.extend({
             firstBind(v.s, v.t, v.a);
           });
           if (Adv.msgbox.children().length) {
-            toFocus.pos = [0, Adv.msgbox.position().top];
+            Adv.Scroll.to(Adv.msgbox.position().top, 300);
           }
-          if (toFocus.el) {
-            $(toFocus.el).focus();
-          }
-          if (toFocus.pos) {
-            scrollTo(toFocus.pos[0], toFocus.pos[1]);
-          }
-          toFocus = {el:false, pos:false};
-        },
-        onFocus:function (el, pos) {
-          toFocus = {el:el, pos:pos};
         },
         onLeave:function (msg) {
           if (msg) {
@@ -693,5 +692,4 @@ Adv.extend({
     }())
   }
 );
-window.addEventListener('scroll', Adv.Scroll.scrollDetect, false);
 

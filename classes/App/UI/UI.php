@@ -260,7 +260,7 @@ JS;
                                 if ( xhr === Adv.lastXhr ) {
                                 if (!Adv.o.stock_id.data('active')) {
                                 var value = data[0];
-                            Adv.Events.onFocus("#stock_id",[0,Adv.o.stock_id.position().top]);
+                             Adv.Forms.setFocus("stock_id",true);
                                 $.each(value,function(k,v) {Adv.Forms.setFormValue(k,v);});
                                     $desc_js
                                         return false;
@@ -278,7 +278,7 @@ JS;
                      select: function( event, ui ) {
  var value = ui.item.value;
  $selectjs
-                                Adv.Events.onFocus("#stock_id",[0,$(this).position().top]);
+                                 Adv.Forms.setFocus("stock_id",true);
                                 $.each(value,function(k,v) {Adv.Forms.setFormValue(k,v);});
                                     $desc_js
 

@@ -216,7 +216,7 @@ JS;
         $onReady .= implode("", $this->onload);
       }
       if (!empty($this->focus)) {
-        $onReady .= $this->focus . '.focus();';
+        $onReady .= 'Adv.Forms.setFocus("'.$this->focus.'");';
       }
       if ($onReady != '') {
         $content .= "\n$(function(){ " . $onReady . '});';
@@ -253,9 +253,9 @@ JS;
      * @param bool $cached
      * @param bool $cached
      */
-    public function setFocus($selector, $cached = false)
+    public function setFocus($selector)
     {
-      $this->focus = ($selector) ? (!$cached) ? "$('$selector')" : 'Adv.o.' . $selector : false;
+      $this->focus = $selector;
       Ajax::_addFocus(true, $selector);
       $_POST['_focus'] = $selector;
     }
