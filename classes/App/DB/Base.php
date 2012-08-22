@@ -28,7 +28,7 @@
     protected $_table;
     /** @var */
     protected $_id_column;
-    protected $_classanme;
+    protected $_classname;
     abstract public function delete();
     abstract protected function _canProcess();
     abstract protected function _defaults();
@@ -81,14 +81,14 @@
     protected function __construct($id = 0, $extra = [])
     {
       $_id_column = $this->_id_column;
-      $this->_classname = end(explode('\\', get_class($this)));
+      $this->_classname = end(explode('\\', ltrim(get_called_class(), '\\')));
       if ($_id_column && $_id_column != 'id') {
         $this->id = &$this->$_id_column;
       }
       if (is_numeric($id) && $id > 0) {
         $this->id = $id;
         $this->_read($id, $extra);
-        return $this->status(true, 'initalise',$this->_classanme  . " details loaded from DB!");
+        return $this->status(true, 'initalise',$this->_classname  . " details loaded from DB!");
       } elseif (is_array($id)) {
         $this->_defaults();
         if (isset($id['id']) && $id['id']) {
@@ -110,7 +110,7 @@
     protected function _read($id = null, $extra = [])
     {
       if ($id === null) {
-        return $this->status(false, 'read', 'No ' . $this->_classname, ' ID to read');
+        return $this->status(false, 'read', 'No ' . $this->_classname. ' ID to read');
       }
       $this->_defaults();
       try {
