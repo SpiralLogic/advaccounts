@@ -1,5 +1,7 @@
 <?php
-    /**
+  use ADV\App\Creditor\Creditor;
+
+  /**
      * PHP version 5.4
      * @category  PHP
      * @package   adv.accounts.app

@@ -12,6 +12,60 @@
   //
   class SysTypes
   {
+    public static $names = array(
+      ST_SALESQUOTE   => "Sales Quotation",
+      ST_SALESORDER   => "Sales Order",
+      ST_PROFORMA     => "Proforma Invoice",
+      ST_CUSTDELIVERY => "Sales Delivery",
+      ST_SALESINVOICE => "Sales Invoice",
+      ST_CUSTCREDIT   => "Sales Credit Note",
+      ST_CUSTPAYMENT  => "Debtor Payment",
+      ST_CUSTREFUND   => "Debtor Refund",
+      ST_PURCHORDER   => "Purchase Order",
+      ST_SUPPRECEIVE  => "Purchase Delivery",
+      ST_SUPPINVOICE  => "Purchase Invoice",
+      ST_SUPPCREDIT   => "Purchase Credit Note",
+      ST_SUPPAYMENT   => "Creditor Payment",
+      ST_JOURNAL      => "Journal Entry",
+      ST_BANKPAYMENT  => "Bank Payment",
+      ST_BANKDEPOSIT  => "Bank Deposit",
+      ST_BANKTRANSFER => "Funds Transfer",
+      ST_GROUPDEPOSIT => "Group Deposit",
+      ST_MANUISSUE    => "Work Order Issue",
+      ST_WORKORDER    => "Work Order",
+      ST_MANURECEIVE  => "Work Order Production",
+      ST_INVADJUST    => "Inventory Adjustment",
+      ST_LOCTRANSFER  => "Location Transfer",
+      ST_COSTUPDATE   => "Cost Update",
+      ST_DIMENSION    => "Dimension"
+    );
+    public static $short_names = array(
+      ST_SALESQUOTE   => "Quote",
+      ST_SALESORDER   => "Order",
+      ST_PROFORMA     => "Proforma",
+      ST_CUSTDELIVERY => "Despatch",
+      ST_SALESINVOICE => "Cust Invoice",
+      ST_CUSTCREDIT   => "Credit Note",
+      ST_CUSTPAYMENT  => "Payment",
+      ST_CUSTREFUND   => "Refund",
+      ST_PURCHORDER   => "Order",
+      ST_SUPPRECEIVE  => "Delivery",
+      ST_SUPPINVOICE  => "Invoice",
+      ST_SUPPCREDIT   => "Credit Note",
+      ST_SUPPAYMENT   => "Payment",
+      ST_JOURNAL      => "Journal Entry",
+      ST_BANKPAYMENT  => "Payment",
+      ST_BANKDEPOSIT  => "Deposit",
+      ST_BANKTRANSFER => "Funds Transfer",
+      ST_GROUPDEPOSIT => "Group Deposit",
+      ST_MANUISSUE    => "Work Order Issue",
+      ST_WORKORDER    => "Work Order",
+      ST_MANURECEIVE  => "Work Order Production",
+      ST_INVADJUST    => "Adjustment",
+      ST_LOCTRANSFER  => "Location Transfer",
+      ST_COSTUPDATE   => "Cost Update",
+      ST_DIMENSION    => "Dimension"
+    );
     /**
      * @static
      *
@@ -140,12 +194,11 @@
     public static function select($name, $value = null, $spec_opt = false, $submit_on_change = false)
     {
       global $systypes_array;
-      return Forms::arraySelect($name, $value, $systypes_array, array(
-                                                                     'spec_option'   => $spec_opt,
-                                                                     'spec_id'       => ALL_NUMERIC,
-                                                                     'select_submit' => $submit_on_change,
-                                                                     'async'         => false,
-                                                                ));
+      return Forms::arraySelect(
+        $name, $value, $systypes_array, array(
+                                             'spec_option'   => $spec_opt, 'spec_id'       => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async'         => false,
+                                        )
+      );
     }
     /**
      * @static

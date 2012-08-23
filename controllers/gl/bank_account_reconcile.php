@@ -181,15 +181,7 @@
       $statement_trans             = Bank_Account::getStatement($this->bank_account, $this->begin_date, $this->end_date);
       $known_trans                 = [];
       $known_headers               = [
-        'type',
-        'trans_no',
-        'ref',
-        'trans_date',
-        'id',
-        'amount',
-        'person_id',
-        'person_type_id',
-        'reconciled'
+        'type', 'trans_no', 'ref', 'trans_date', 'id', 'amount', 'person_id', 'person_type_id', 'reconciled'
       ];
       $known_headers               = array_combine(array_values($known_headers), array_pad([], count($known_headers), ''));
       $statement_transment_headers = array_combine(array_keys($statement_trans[0]), array_values(array_pad([], count($statement_trans[0]), '')));
@@ -379,9 +371,7 @@
       $hidden   = 'last[' . $row['id'] . ']';
       $value    = $row['reconciled'] != '';
       return Forms::checkbox(null, $name, $value, false, _('Reconcile this transaction')) . Forms::hidden($hidden, $value, false) . Forms::hidden(
-        'state_' . $row['id'],
-        $state_id,
-        false
+        'state_' . $row['id'], $state_id, false
       );
     }
     /**
@@ -466,6 +456,7 @@
       if (!$row['id']) {
         $title = 'Create';
       }
+      if ($row['state_amount']) {
         if ($row['state_amount'] > 0) {
           $data = [];
           if (stripos($row['memo'], 'AMEX')) {
@@ -480,19 +471,19 @@
           $items[] = ['class'=> 'createBP', 'label'=> 'Bank Payment', 'href'=> '/gl/gl_bank?NewPayment=Yes'];
         }
         $items[] = ['class'=> 'createFT', 'label'=> 'Funds Transfer', 'href'=> '/gl/bank_transfer'];
-        $items[] = ['divider'=>true];
-
-        $items[] = ['class'=> 'changeDate', 'label'=> 'Change Date'];
-        switch ($row['type']) {
-          case ST_GROUPDEPOSIT:
-            $items[] = ['class'=> 'unGroup', 'label'=> 'Ungroup'];
-            break;
-          case ST_BANKDEPOSIT:
-          case ST_CUSTPAYMENT:
-          default:
-            $items[] = ['class'=> 'changeBank', 'label'=> 'Move Bank'];
-            $items[] = ['class'=> 'voidTrans', 'label'=> 'Void Trans', 'data'=> ['type'=> $row['type'], 'trans_no'=> $row['trans_no']]];
-        $title = ($row['type'] == ST_GROUPDEPOSIT) ? 'Group' : substr($row['ref'], 0, 7);
+        $items[] = ['divider'=> true];
+      }
+      $items[] = ['class'=> 'changeDate', 'label'=> 'Change Date'];
+      switch ($row['type']) {
+        case ST_GROUPDEPOSIT:
+          $items[] = ['class'=> 'unGroup', 'label'=> 'Ungroup'];
+            $title   =  'Group'; break;
+        case ST_BANKDEPOSIT:
+        case ST_CUSTPAYMENT:
+        default:
+          $items[] = ['class'=> 'changeBank', 'label'=> 'Move Bank'];
+          $items[] = ['class'=> 'voidTrans', 'label'=> 'Void Trans', 'data'=> ['type'=> $row['type'], 'trans_no'=> $row['trans_no']]];
+          $title   = substr($row['ref'], 0, 7);
       }
       $menus[] = ['title'=> $title, 'auto'=> 'auto', 'items'=> $items];
       $dropdown->set('menus', $menus);
@@ -615,12 +606,7 @@
       }
       $reconcile_value = $this->Input->hasPost("rec_" . $reconcile_id) ? ("'" . $this->Dates->dateToSql($this->reconcile_date) . "'") : 'null';
       GL_Account::update_reconciled_values(
-        $reconcile_id,
-        $reconcile_value,
-        $this->reconcile_date,
-        Validation::input_num('end_balance'),
-        $this->bank_account,
-        $this->Input->post('state_' . $reconcile_id, Input::NUMERIC, -1)
+        $reconcile_id, $reconcile_value, $this->reconcile_date, Validation::input_num('end_balance'), $this->bank_account, $this->Input->post('state_' . $reconcile_id, Input::NUMERIC, -1)
       );
       $this->Ajax->activate('_page_body');
       return true;

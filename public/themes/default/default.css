@@ -1083,6 +1083,9 @@ legend + .control-group {
   line-height: 14px;
 }
 
+.btn-mini.btn-split {
+  padding:     2px 0 2px 6px;
+}
 .btn-primary,
 .btn-primary:hover,
 .btn-warning,

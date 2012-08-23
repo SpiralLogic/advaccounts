@@ -493,7 +493,7 @@ JS;
                          'name'             => 'creditor', //
                          'input_cell_params'=> $o['cell_params'], //
                          'focus'            => $focus, //
-                         'value'            => $value,
+                         'value'            => $value?:null,
                     )
       );
       if ($o['row']) {
