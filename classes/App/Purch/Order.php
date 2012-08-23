@@ -769,7 +769,7 @@
      */
     public function item_controls($stock_id = null) {
       Row::start();
-      $dec2 = 0;
+      $dec2 = null;
       $id   = Forms::findPostPrefix(MODE_EDIT);
       if (($id != -1) && $stock_id != null) {
         Forms::hidden('line_no', $id);

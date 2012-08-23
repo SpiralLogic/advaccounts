@@ -48,7 +48,7 @@
       previous = $wrapper.contents().detach();
       history.pushState({}, 'Search Results', searchInput.data("url") + 'q=' + searchInput.val());
       $wrapper.html(data);
-      Adv.showStatus({html:$('.msgbox').detach().html()});
+      Adv.Status.show({html:$('.msgbox').detach().html()});
     };
     $search.delegate("li", "click", function ()
     {

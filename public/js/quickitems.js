@@ -7,7 +7,8 @@ Adv.extend({
     var form = document.getElementsByTagName('form')[0];
     form.reset();
     Adv.btnCancel.attr('name', 'new').text("New");
-    Adv.Forms.resetHighlights();
+    Adv.Forms.resetHighlights();      $("#itemSearchId").val('');
+
   },
   resetState:function () {
     $("#tabs0 input, #tabs0 textarea").empty();
@@ -68,7 +69,6 @@ var Items = function () {
       $.each(item, function (i, data) {
         Adv.Forms.setFormValue(i, data);
       });      Adv.btnCancel.attr('name', 'new').text("New");
-      $("#itemSearchId").val('');
       Adv.Forms.setFocus('stock_id');
 
     },

@@ -1294,6 +1294,7 @@
         Debtor::newselect();
         if (Input::_post('_control') == 'customer') {
           // customer has changed
+          JS::_setFocus('stock_id');
           Ajax::_activate('_page_body');
         }
         Debtor_Branch::row(_("Branch:"), $_POST['debtor_id'], 'branch_id', null, false, true, true, true);

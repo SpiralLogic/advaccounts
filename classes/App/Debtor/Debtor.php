@@ -745,7 +745,7 @@ JS;
         if (!Input::_post('customer')) {
           $_POST['debtor_id'] = null;
         }
-        JS::_setFocus('stock_id');
+
       } elseif (!$value) {
         $value = Session::_getGlobal('debtor_id');
         if ($value) {

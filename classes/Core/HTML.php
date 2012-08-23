@@ -105,7 +105,7 @@
       $attrs = '';
       foreach ($attr as $key => $value) {
         if (is_bool($value)) {
-          $attrs .= ' ' . $key;
+          if ($value) $attrs .= ' ' . $key;
           continue;
         }
         if (is_null($value)) {

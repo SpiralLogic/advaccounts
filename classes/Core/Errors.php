@@ -142,7 +142,7 @@
       }
       if (static::$current_severity > -1) {
         if (class_exists('JS', false)) {
-          JS::_beforeload("Adv.showStatus();");
+          JS::_beforeload("Adv.Status.show();");
         }
       }
       return $content;

@@ -260,7 +260,7 @@ var Company = function () {
       $.post('#', Company.get(), function (data) {
         Adv.btnConfirm.prop('disabled', false);
         if (data.status) {
-          Adv.showStatus(data.status);
+          Adv.Status.show(data.status);
           if (!data.status.status) {
             return;
           }
