@@ -13,13 +13,13 @@
     <div class='tablehead'>
       Shipping Details
     </div>
-    {{$form.contact}}
-    {{$form.phone}}
-    {{$form.fax}}
-    {{$form.email}}
-    {{$form.address}}
-    {{$form.fax}}
-    {{$postcode->render()}}    </div>
+  {{$form.contact}}
+  {{$form.phone}}
+  {{$form.fax}}
+  {{$form.email}}
+  {{$form.address}}
+  {{$form.fax}}
+  {{$postcode->render()}}    </div>
   <div class='formbox '>
     <div class='tablehead'>
       Accounts Details
@@ -27,32 +27,32 @@
     <div class='center'>
       <button id="useShipAddress" name="useShipAddress" class="button">Use shipping details</button>
     </div>
-    {{$form.supp_phone}}
-    {{$form.supp_address}}
-    {{$supp_postcode->render()}}
+  {{$form.supp_phone}}
+  {{$form.supp_address}}
+  {{$supp_postcode->render()}}
   </div>
   {#$menu->endTab()->startTab('Accounts', 'Accounts')#}
   <div class='formbox '>
     <div class='tablehead'>
       Accounts Details
     </div>
-    {{$form.payment_discount}}
-    {{$form.credit_limit}}
-    {{$form.tax_id}}
-    {{$form.tax_group_id}}
-    {{$form.inactive}}
-    {{$form.curr_code}}
-    {{$form.payment_terms}}
-    {{$form.payable_account}}
-    {{$form.payment_discount_account}}
+  {{$form.payment_discount}}
+  {{$form.credit_limit}}
+  {{$form.tax_id}}
+  {{$form.tax_group_id}}
+  {{$form.inactive}}
+  {{$form.curr_code}}
+  {{$form.payment_terms}}
+  {{$form.payable_account}}
+  {{$form.payment_discount_account}}
   </div>
   <div class='formbox width35'>
     <div class='tablehead'>
       Contact Log:
     </div>
     <div class='center'>
-      <button id="addLog" name="addLog" class="button">Add log entry</button>  <br>  {{$form.messageLog}}
-
+      <button id="addLog" name="addLog" class="button">Add log entry</button>
+      <br>  {{$form.messageLog}}
     </div>
   </div>
   {#$menu->endTab()->startTab('Supplier Contacts', 'Supplier Contacts')#}
@@ -89,12 +89,12 @@
   </div>
   {#$menu->endTab()->startTab('Invoices', 'Invoices')#}
   <div id='invoiceFrame' data-src='/purchases/inquiry/supplier_allocation_inquiry.php?creditor_id={{$creditor_id}}'></div>
-  {{$form.frame}}
-  {{$form._focus}} {{$form->end()}}
+{{$form.frame}}
+{{$form._focus}} {{$form->end()}}
   {#$menu->endTab()->render()#}
 </div>
-<div class='center clearleft'>
-  <button id="btnConfirm" name="submit" type="submit" class="button ui-helper-hidden">New Customer</button>
-  <button id="btnCancel" name="new" type="submit" class="button">New</button>
-  {{$shortcuts->render()}}
-</div>
+<div class='center clearleft pad20'>
+  <button id="btnConfirm" name="save" type="submit" class="btn btn-success ui-helper-hidden">New Customer</button>
+  <button id="btnNew" name="new" type="submit" class="btn btn-primary">New</button>
+  <button id="btnCancel" name="cancel" type="submit" class="btn btn-danger">Cancel</button>
+</div>  {{$shortcuts->render()}}

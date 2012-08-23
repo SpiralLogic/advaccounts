@@ -60,7 +60,7 @@
         $_POST['debtor_id'] = $_GET['debtor_id'];
         $this->Ajax->activate('debtor_id');
       }
-      $this->type = $this->Input->get('type',Input::NUMERIC,ST_SALESORDER);
+      $this->type = $this->Input->get('type', Input::NUMERIC, ST_SALESORDER);
       $this->setTitle("New Sales Order Entry");
       if ($this->Input->get(Orders::ADD, Input::NUMERIC, false) !== false) {
         $this->setTitle($this->addTitles[$this->type]);
@@ -166,7 +166,7 @@
       }
     }
     protected function cancelItem() {
-      Item_Line::start_focus('_stock_id_edit');
+      Item_Line::start_focus('stock_id');
     }
     /**
      * @param $error
@@ -318,7 +318,7 @@
           $_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
         } else {
           Event::error(_("You must enter at least one non empty item line."));
-          Item_Line::start_focus('_stock_id_edit');
+          Item_Line::start_focus('stock_id');
 
           return false;
         }
@@ -583,7 +583,7 @@
           $_POST['description']
         );
       }
-      Item_Line::start_focus('_stock_id_edit');
+      Item_Line::start_focus('stock_id');
     }
     protected function discountAll() {
       if (!is_numeric($_POST['_discountAll'])) {
@@ -604,7 +604,7 @@
       }
       $this->order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
       $_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
-      Item_Line::start_focus('_stock_id_edit');
+      Item_Line::start_focus('stock_id');
     }
     /**
      * @return mixed
@@ -619,7 +619,7 @@
       } else {
         Event::error(_("This item cannot be deleted because some of it has already been delivered."));
       }
-      Item_Line::start_focus('_stock_id_edit');
+      Item_Line::start_focus('stock_id');
     }
     /**
      * @return bool|mixed|void

@@ -18,7 +18,6 @@
   //
   class CreditNote extends \ADV\App\Controller\Base
   {
-
     /** @var Sales_Order */
     public $credit;
     protected function before() {
@@ -45,11 +44,11 @@
       $id = Forms::findPostPrefix(MODE_DELETE);
       if ($id != -1) {
         $this->credit->remove_from_order($id);
-        Item_Line::start_focus('_stock_id_edit');
+        Item_Line::start_focus('stock_id');
       }
       if (isset($_POST[Orders::ADD_LINE]) && $this->checkItemData()) {
         $this->credit->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
-        Item_Line::start_focus('_stock_id_edit');
+        Item_Line::start_focus('stock_id');
       }
       if (isset($_POST[Orders::UPDATE_ITEM])) {
         if ($_POST[Orders::UPDATE_ITEM] != "" && $this->checkItemData()) {
@@ -61,10 +60,10 @@
             $_POST['description']
           );
         }
-        Item_Line::start_focus('_stock_id_edit');
+        Item_Line::start_focus('stock_id');
       }
       if (isset($_POST['cancelItem'])) {
-        Item_Line::start_focus('_stock_id_edit');
+        Item_Line::start_focus('stock_id');
       }
       if (isset($_POST['ProcessCredit'])) {
         $this->processCredit();
@@ -89,6 +88,7 @@
       $credit_no    = $this->credit->write($_POST['WriteOffGLCode']);
       Dates::_newDocDate($this->credit->document_date);
       $this->pageComplete($credit_no);
+
       return true;
     }
     protected function cancelCredit() {
@@ -214,6 +214,7 @@
         $this->JS->setFocus('OrderDate');
         $input_error = 1;
       }
+
       return ($input_error == 0);
     }
     /**
@@ -223,18 +224,22 @@
       if (!Validation::post_num('qty', 0)) {
         Event::error(_("The quantity must be greater than zero."));
         $this->JS->setFocus('qty');
+
         return false;
       }
       if (!Validation::post_num('price', 0)) {
         Event::error(_("The entered price is negative or invalid."));
         $this->JS->setFocus('price');
+
         return false;
       }
       if (!Validation::post_num('Disc', 0, 100)) {
         Event::error(_("The entered discount percent is negative, greater than 100 or invalid."));
         $this->JS->setFocus('Disc');
+
         return false;
       }
+
       return true;
     }
   }

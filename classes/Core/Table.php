@@ -7,6 +7,7 @@
    * To change this template use File | Settings | File Templates.
    */
   namespace ADV\Core;
+
   /**
 
    */
@@ -24,8 +25,8 @@
      * @param        $labels
      * @param string $params
      */
-    static function header($labels, $params = '',$extra=null) {
-      echo '<thead><tr>'.$extra;
+    static function header($labels, $params = '', $extra = null) {
+      echo '<thead>' . $extra . '<tr>';
       $labels = (array) $labels;
       foreach ($labels as $label) {
         Cell::labelHeader($label, $params);

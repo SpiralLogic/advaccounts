@@ -258,7 +258,6 @@ input[type="color"],
 .uneditable-input {
   display: inline-block;
   color:   #131313;
-
 }
 
 input,
@@ -3493,7 +3492,6 @@ div.warn_msg {
   background:             -ms-linear-gradient(top, rgb(255, 224, 140) 0%, rgb(254, 191, 4) 100%); /* IE10+ */
   background:             linear-gradient(to bottom, rgb(255, 224, 140) 0%, rgb(254, 191, 4) 100%); /* W3C */
   filter:                 progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ffe08c', endColorstr = '#febf04', GradientType = 0); /* IE6-8 */
-
   border-color:           #ffc005 #ffc005 hsl(45, 100%, 39.5%);
   color:                  #0c0c0c !important;
   -webkit-font-smoothing: antialiased;
@@ -3618,20 +3616,19 @@ div.formbox label > span:first-child {
   font-weight:      bold;
   background-color: #D4E6F6;
   vertical-align:   top;
-  border:           white 1px solid;
-  vertical-align:   top;
-  border:           white 1px solid;
+  border:           #F3F9FE 1px solid;
 }
+
 .formbox textarea, .grid textarea {
-  display:block;
+  display: block;
 }
+
 .amount {
   max-width:   8em;
   font-size:   11px;
   white-space: nowrap;
   text-align:  right;
 }
-
 
 .desc {
   white-space: pre-wrap;
@@ -3760,9 +3757,11 @@ td.tableheader3 {
   font-family:   Tahoma, Verdana, Geneva;
   font-size:     1em;
 }
+
 .grid .input-prepend {
   min-width: 7em;
 }
+
 .grid input {
   min-width: 6em;
 }
@@ -3894,15 +3893,14 @@ button img {
   -o-transition:      -o-box-shadow 0.25s ease-in-out;
 }
 
-.ajaxsubmit:hover, .inputsubmit:hover, .editbutton:hover, .button:hover, .button-large:hover, button:hover {
+.ajaxsubmit:hover, .inputsubmit:hover, .editbutton:hover, .button:hover, .button-large:hover {
   color:           #1c4257;
   border-color:    #7096ab;
   -moz-box-shadow: 0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
   box-shadow:      0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
-  box-shadow:      0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 }
 
-.ajaxsubmit:focus, .inputsubmit:focus, .editbutton:focus, .button:focus, .button-large:focus, button:focus {
+.ajaxsubmit:focus, .inputsubmit:focus, .editbutton:focus, .button:focus, .button-large:focus {
   outline:         none;
   color:           #1c4257;
   border-color:    #7096ab;
@@ -3919,7 +3917,7 @@ button img {
   box-shadow:      0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 }
 
-.ajaxsubmit:active, .inputsubmit:active, .editbutton:active, .button:active, .button-large:active, button:active {
+.ajaxsubmit:active, .inputsubmit:active, .editbutton:active, .button:active, .button-large:active {
   color:           #1c4257;
   border-color:    #7096ab;
   background:      #b9e0f5;
@@ -4007,7 +4005,7 @@ th:hover span {
 .navibar span {
   display:     inline-block;
   font-weight: 500;
-  padding-top: 3px;
+  padding:     3px;
 }
 
 table.tablestyle .navibar td {

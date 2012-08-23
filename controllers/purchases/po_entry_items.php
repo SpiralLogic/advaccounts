@@ -60,7 +60,7 @@
       if (Input::_get(Orders::MODIFY_ORDER)) {
         $this->order = $this->createOrder($_GET[Orders::MODIFY_ORDER]);
       } elseif (isset($_POST[CANCEL]) || isset($_POST[UPDATE_ITEM])) {
-        Item_Line::start_focus('_stock_id_edit');
+        Item_Line::start_focus('stock_id');
       } elseif (isset($_GET[Orders::NEW_ORDER]) || !isset($this->order)) {
         $this->order = $this->createOrder();
         if (Input::_get('UseOrder') && !count($this->order->line_items)) {
@@ -79,7 +79,7 @@
       } else {
         Event::error(_("This item cannot be deleted because some of it has already been received."));
       }
-      Item_Line::start_focus('_stock_id_edit');
+      Item_Line::start_focus('stock_id');
     }
     protected function commitOrder() {
       Purch_Order::copyFromPost($this->order);
@@ -152,7 +152,7 @@
           }
         } /* end of if not already on the order and allow input was true*/
       }
-      Item_Line::start_focus('_stock_id_edit');
+      Item_Line::start_focus('stock_id');
     }
     protected function updateItem() {
       if ($this->order->line_items[$_POST['line_no']]->qty_inv > Validation::input_num(
@@ -175,7 +175,7 @@
           $_POST['discount'] / 100
         );
         unset($_POST['stock_id'], $_POST['qty'], $_POST['price'], $_POST['req_del_date']);
-        Item_Line::start_focus('_stock_id_edit');
+        Item_Line::start_focus('stock_id');
       }
     }
     protected function index() {
@@ -231,10 +231,10 @@
       $new_trans  = "/purchases/po_entry_items.php?" . Orders::NEW_ORDER;
       $view       = new View('orders/complete');
       $buttons[]  = ['label'=> _("&View this order"), 'href'=> GL_UI::viewTrans($trans_type, $order_no, '', false, '', '', true)];
-      $href=Reporting::print_doc_link($order_no, '', true, $trans_type,false,'','',0,0,true);
-      $buttons[]  = ['label'=>_("&Print This Order"),'href'=>$href];
-      $edit_trans=BASE_URL . "purchases/po_entry_items.php?ModifyOrder=$order_no";
-      $buttons[]  = ['label'=>_("&Edit This Order"),'href'=>$edit_trans];
+      $href       = Reporting::print_doc_link($order_no, '', true, $trans_type, false, '', '', 0, 0, true);
+      $buttons[]  = ['label'=> _("&Print This Order"), 'href'=> $href];
+      $edit_trans = BASE_URL . "purchases/po_entry_items.php?ModifyOrder=$order_no";
+      $buttons[]  = ['label'=> _("&Edit This Order"), 'href'=> $edit_trans];
       $view->set('emailtrans', Reporting::emailDialogue($this->creditor_id, ST_PURCHORDER, $order_no));
       $buttons[] = ['label'=> 'Receive this purchase order', 'accesskey'=> 'R', 'href'=> "/purchases/po_receive_items.php?PONumber=$order_no"];
       $buttons[] = ['label'=> 'New purchase order', 'accesskey'=> 'N', 'href'=> $new_trans];
