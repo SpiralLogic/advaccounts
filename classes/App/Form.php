@@ -290,7 +290,7 @@
       $spec_id       = 0; // option id
       $select_submit = false; //submit on select: true/false
       $async         = true; // select update via ajax (true) vs _page_body reload
-      $default       = ''; // default value when $_POST is not set
+      $default       = null; // default value when $_POST is not set
       $multi         = false; // multiple select
       // search box parameters
       $height   = false; // number of lines in select box
@@ -308,7 +308,7 @@
       }
       // ------ make selector ----------
       $selector = $first_opt = '';
-      $found = $first_id = false;
+      $found    = $first_id = false;
       foreach ($items as $value => $descr) {
         $sel   = in_array((string) $value, $selected_id);
         $found = ($sel) ? $value : false;
