@@ -130,11 +130,11 @@
 </div>
 <div class='center clearleft pad20'>
   <button id="btnNew" name="new" type="submit" class="btn btn-primary">New</button>
-  <button id="btnCancel" name="cancel" type="submit" class="btn btn-danger"><i class="icon-cross"></i> Cancel</button>
+  <button id="btnCancel" name="cancel" type="submit" class="btn btn-danger ui-helper-hidden"><i class="icon-cross"></i> Cancel</button>
   <button id="btnConfirm" name="save" type="submit" class="btn btn-success ui-helper-hidden"><i class="icon-ok"></i> Save</button>
 </div>  {{$shortcuts->render()}}
 
-<div id="contactLog" class=' center'>
+<div id="contactLog" class='ui-helper-hidden center'>
   <div class="formbox marginauto ">
     {{$form.contact_name}}<br>
     {{$form.message}}

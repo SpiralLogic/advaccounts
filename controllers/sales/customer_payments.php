@@ -109,7 +109,7 @@
       if ($cust_currency != $bank_currency) {
         GL_ExchangeRate::display($bank_currency, $cust_currency, $this->date_banked, ($bank_currency == $comp_currency));
       }
-      Forms::AmountRow(_("Bank Charge:"), 'charge', 0);
+      Forms::AmountRow(_("Bank Charge:"), 'charge', 0,null,['$']);
       Table::endOuter(1);
       Display::div_start('alloc_tbl');
       if ($cust_currency == $bank_currency) {
@@ -119,11 +119,11 @@
       Display::div_end();
       Table::start('tablestyle width70');
       Row::label(_("Customer prompt payment discount :"), $display_discount_percent);
-      Forms::AmountRow(_("Amount of Discount:"), 'discount', 0);
+      Forms::AmountRow(_("Amount of Discount:"), 'discount', 0,null,['$']);
       if (User::i()->hasAccess(SS_SALES) && !$this->Input->post('TotalNumberOfAllocs')) {
         //    Forms::checkRow(_("Create invoice and apply for this payment: "), 'createinvoice');
       }
-      Forms::AmountRow(_("Amount:"), 'amount');
+      Forms::AmountRow(_("Amount:"), 'amount',null,null,['$']);
       Forms::textareaRow(_("Memo:"), 'memo_', null, 22, 4);
       Table::end(1);
       if ($cust_currency != $bank_currency) {

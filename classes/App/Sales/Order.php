@@ -1302,9 +1302,9 @@
           if (!isset($_POST['branch_id']) || !$_POST['branch_id']) {
             // ignore errors on customer search box call
             if (!$_POST['debtor_id']) {
-              $customer_error = _("No customer found for entered text.");
+             Event::warning("No customer found for entered text.",false);
             } else {
-              $customer_error = _("The selected customer does not have any branches. Please create at least one branch.");
+              Event::warning("The selected customer does not have any branches. Please create at least one branch.",false);
             }
             unset($_POST['branch_id']);
             $this->Branch = 0;

@@ -3450,7 +3450,12 @@ div.err_msg, div.warn_msg, div.info_msg, div.success_msg {
   box-shadow:             0 2px 3px 1px rgba(10, 10, 10, .5);
   box-shadow:             0 2px 3px 1px rgba(10, 10, 10, .5);
 }
-
+.error .tooltip-inner {
+  background:red;
+}
+.error.tooltip.right .tooltip-arrow{
+  border-right:5px solid red;
+}
 div.info_msg {
   background-color:  #0074cc;
   background-image:  -moz-linear-gradient(top, #0088cc, #0055cc);

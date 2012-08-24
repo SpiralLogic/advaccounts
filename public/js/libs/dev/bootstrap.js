@@ -594,7 +594,7 @@
 
         $tip
           .css(tp)
-          .addClass(placement)
+          .addClass(placement+' '+this.options.class)
           .addClass('in')
       }
     }
@@ -719,6 +719,7 @@
   , title: ''
   , delay: 0
   , html: true
+  , class:'',
   }
 
 }(window.jQuery);

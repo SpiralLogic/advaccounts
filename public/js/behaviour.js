@@ -190,7 +190,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
                                     objElement.disabled = data;
                                     break;
                                   case 'fc':
-                                    Adv.Scroll.focus = data;
+                                    Adv.Forms.setFocus(data);
                                     break;
                                   case 'js':
                                     eval(data);
@@ -214,6 +214,9 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
                           // Write errors to the debug div.
                           if (errors) {
                             Adv.Status.show({html:errors});
+                            if (cmd =='fc' && Adv.msgbox.find('div').hasClass('err_msg')) {
+                              $(document.getElementById(data)).attr('title',Adv.msgbox.text()).tooltip({placement:'right',class:'error'}).tooltip('show');
+                            }
                           }
                           if (Adv.loader) {
                             Adv.loader.off();
