@@ -397,9 +397,9 @@ $(function () {
     Adv.Forms.stateModified($this);
     if (Adv.fieldsChanged > 0) {
       buttontext = (Company.get().id) ? "Changes" : "New";
-      Adv.btnConfirm.text('Save ' + buttontext).show();
-      Adv.btnCancel.text('Cancel ' + buttontext).show();
       Adv.btnNew.hide();
+      Adv.btnCancel.html('<i class="icon-trash"></i> Cancel ' + buttontext).show();
+      Adv.btnConfirm.html('<i class="icon-ok"></i> Save ' + buttontext).show();
       Adv.o.companysearch.prop('disabled', true);
     }
     else {

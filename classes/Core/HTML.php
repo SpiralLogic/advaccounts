@@ -19,6 +19,7 @@
    * @method HTML _td()
    * @method HTML _div()
    * @method HTML script()
+   * @method HTML span()
    * @property HTML tr
    * @property HTML td
    * @property HTML script

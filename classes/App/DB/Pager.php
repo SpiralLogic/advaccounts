@@ -1,5 +1,10 @@
 <?php
   use ADV\Core\Cell;
+  use ADV\Core\JS;
+  use ADV\Core\Ajax;
+  use ADV\Core\DB\DB;
+  use ADV\Core\Input\Input;
+  use ADV\Core\Row;
   use ADV\Core\Table;
 
   /**
@@ -19,7 +24,7 @@
   {
     /** @var User */
     static $User;
-    /** @var DB */
+    /** @var \ADV\Core\DB\DB */
     static $DB;
     const SQL = 1;
     const ARR = 2;
@@ -288,6 +293,11 @@
 
       return true;
     }
+    /**
+     * @param $row
+     *
+     * @return mixed
+     */
     public function displayRow($row) {
       if ($this->marker && call_user_func($this->marker, $row)) {
         Row::start("class='$this->marker_class'");
@@ -364,6 +374,11 @@
 
       return $row;
     }
+    /**
+     * @param bool $return
+     *
+     * @return string
+     */
     public function displayNavigation($return = false) {
       if ($return) {
         ob_start();
@@ -426,6 +441,9 @@
         Row::end();
       }
     }
+    /**
+     * @param $headers
+     */
     protected function displayHeaders($headers) {
       Table::header($headers, '', $this->displayNavigation(true));
       if ($this->header_fun) { // if set header handler
@@ -443,6 +461,9 @@
         Row::end();
       }
     }
+    /**
+     * @return array
+     */
     protected function makeHeaders() {
       $headers = [];
       foreach ($this->columns as $num_col => $col) {
@@ -903,6 +924,9 @@
 
       return $sql;
     }
+    /**
+     * @param $name
+     */
     public static function kill($name) {
       unset($_SESSION['pager'][$name]);
     }
