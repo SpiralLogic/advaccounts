@@ -1,5 +1,7 @@
 <?php
-$test = new \ADV\App\Form\Feild('input','test');
-$test->label('wawa');
-$test['class']='wawa';
-echo $test ;
+$test = new \ADV\App\Form\Form();
+$test->text('test','ed',['class'=>'wawa'])->label('wawa');
+
+
+  $feilds = $test->getFields();
+echo $feilds['test'];

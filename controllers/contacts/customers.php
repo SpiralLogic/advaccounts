@@ -16,10 +16,10 @@
    **/
   class Debtors extends \ADV\App\Controller\Base
   {
-
     /** @var Debtor */
     protected $customer;
-    protected function before() {
+    protected function before()
+    {
       ADVAccounting::i()->set_selected('Debtors');
       if (AJAX_REFERRER) {
         if (isset($_GET['term'])) {
@@ -44,7 +44,8 @@
       $this->JS->footerFile("/js/company.js");
       $this->JS->onload("Company.setValues(" . json_encode($data) . ");");
     }
-    protected function index() {
+    protected function index()
+    {
       Page::start(_($help_context = "Customers"), SA_CUSTOMER, $this->Input->request('frame'));
       $currentBranch = $this->customer->branches[$this->customer->defaultBranch];
       if (isset($_POST['delete'])) {
@@ -72,35 +73,35 @@
           true
         )
       );
-      $form->text('Contact:', 'branch[contact_name]', $currentBranch->contact_name);
-      $form->text('Phone Number:', 'branch[phone]', $currentBranch->phone);
-      $form->text("Alt Phone Number:", 'branch[phone2]', $currentBranch->phone2);
-      $form->text("Fax Number:", 'branch[fax]', $currentBranch->fax);
-      $form->text("Email:", 'branch[email]', $currentBranch->email);
+      $form->text('branch[contact_name]', $currentBranch->contact_name)->label('Contact:');
+      $form->text('branch[phone]', $currentBranch->phone)->label('Phone Number:');
+      $form->text('branch[phone2]', $currentBranch->phone2)->label("Alt Phone Number:");
+      $form->text('branch[fax]', $currentBranch->fax)->label("Fax Number:");
+      $form->text('branch[email]', $currentBranch->email)->label("Email:");
       $form->textarea('branch[br_address]', $currentBranch->br_address, ['cols'=> 37, 'rows'=> 4])->label('Street:');
       $branch_postcode = new Contact_Postcode([
-        'city'     => ['branch[city]', $currentBranch->city], //
-        'state'    => ['branch[state]', $currentBranch->state], //
-        'postcode' => ['branch[postcode]', $currentBranch->postcode]
-      ]);
+                                              'city'     => ['branch[city]', $currentBranch->city], //
+                                              'state'    => ['branch[state]', $currentBranch->state], //
+                                              'postcode' => ['branch[postcode]', $currentBranch->postcode]
+                                              ]);
       $view->set('branch_postcode', $branch_postcode);
-      $form->text('Accounts Contact:', 'accounts[contact_name]', $this->customer->accounts->contact_name);
-      $form->text('Phone Number:', 'accounts[phone]', $this->customer->accounts->phone);
-      $form->text('Alt Phone Number:', 'accounts[phone2]', $this->customer->accounts->phone2);
-      $form->text('Fax Number:', 'accounts[fax]', $this->customer->accounts->fax);
-      $form->text('E-mail:', 'accounts[email]', $this->customer->accounts->email);
+      $form->text('accounts[contact_name]', $this->customer->accounts->contact_name)->label('Accounts Contact:');
+      $form->text('accounts[phone]', $this->customer->accounts->phone)->label('Phone Number:');
+      $form->text('accounts[phone2]', $this->customer->accounts->phone2)->label('Alt Phone Number:');
+      $form->text('accounts[fax]', $this->customer->accounts->fax)->label('Fax Number:');
+      $form->text('accounts[email]', $this->customer->accounts->email)->label('E-mail:');
       $form->textarea('accounts[br_address]', $this->customer->accounts->br_address, ['cols'=> 37, 'rows'=> 4])->label('Street:');
       $accounts_postcode = new Contact_Postcode([
-        'city'     => ['accounts[city]', $this->customer->accounts->city], //
-        'state'    => ['accounts[state]', $this->customer->accounts->state], //
-        'postcode' => ['accounts[postcode]', $this->customer->accounts->postcode] //
-      ]);
+                                                'city'     => ['accounts[city]', $this->customer->accounts->city], //
+                                                'state'    => ['accounts[state]', $this->customer->accounts->state], //
+                                                'postcode' => ['accounts[postcode]', $this->customer->accounts->postcode] //
+                                                ]);
       $view->set('accounts_postcode', $accounts_postcode);
       $form->hidden('accounts_id', $this->customer->accounts->accounts_id);
       $form->percent("Discount Percent:", 'discount', $this->customer->discount, ["disabled"=> User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
       $form->percent("Prompt Payment Discount:", 'payment_discount', $this->customer->payment_discount, ["disabled"=> User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
       $form->number("Credit Limit:", 'credit_limit', $this->customer->credit_limit, null, ['$'], ["disabled"=> User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
-      $form->text("GSTNo:", 'tax_id', $this->customer->tax_id);
+      $form->text('tax_id', $this->customer->tax_id)->label("GSTNo:");
       $form->label('Sales Type:', 'sales_type', Sales_Type::select('sales_type', $this->customer->sales_type));
       $form->label('Inactive:', 'inactive', UI::select('inactive', ['No', 'Yes'], ['name' => 'inactive'], $this->customer->inactive, true));
       if (!$this->customer->id) {
@@ -111,7 +112,7 @@
       }
       $form->label('Payment Terms:', 'payment_terms', GL_UI::payment_terms('payment_terms', $this->customer->payment_terms));
       $form->label('Credit Status:', 'credit_status', Sales_CreditStatus::select('credit_status', $this->customer->credit_status));
-      $form->textarea('messageLog',Contact_Log::read($this->customer->id, CT_CUSTOMER), ['style'=> 'height:100px;width:95%;margin:0 auto;', 'cols'=> 100]);
+      $form->textarea('messageLog', Contact_Log::read($this->customer->id, CT_CUSTOMER), ['style'=> 'height:100px;width:95%;margin:0 auto;', 'cols'=> 100]);
       /** @noinspection PhpUndefinedMethodInspection */
       $contacts = new View('contacts/contact');
       $view->set('contacts', $contacts->render(true));
@@ -127,7 +128,7 @@
         'branch[disable_trans]',
         UI::select('branch.disable_trans', ['Yes', 'No'], ['name' => 'branch[disable_trans]'], $currentBranch->disable_trans, true)
       );
-      $form->text("Websale ID", 'webid', $this->customer->webid, ['disbaled'=> true]);
+      $form->text('webid', $this->customer->webid, ['disbaled'=> true])->label("Websale ID");
       $form->label('Sales Account:', 'branch[sales_account]', GL_UI::all('branch[sales_account]', $currentBranch->sales_account, true, false, true));
       $form->label('Receivables Account:', 'branch[receivables_account]', GL_UI::all('branch[receivables_account]', $currentBranch->receivables_account, true, false, false));
       $form->label(
@@ -146,8 +147,8 @@
       $view->set('form', $form);
       $form->hidden('type', CT_CUSTOMER);
       $view['date'] = date('Y-m-d H:i:s');
-      $form->text('Contact:', 'contact_name', $this->customer->accounts->contact_name);
-      $form->textarea('message',['cols'=> 100, 'rows'=> 10])->label('Entry:');
+      $form->text('contact_name', $this->customer->accounts->contact_name)->label('Contact:');
+      $form->textarea('message', ['cols'=> 100, 'rows'=> 10])->label('Entry:');
       if (!$this->Input->get('frame')) {
         $shortcuts = new MenuUI(array('noajax' => true));
         $shortcuts->addLink(
@@ -177,19 +178,22 @@
       $view->render();
       Page::end(true);
     }
-    protected function delete() {
+    protected function delete()
+    {
       $this->customer->delete();
       $status = $this->customer->getStatus();
       Event::notice($status['message']);
     }
-    protected function after() {
+    protected function after()
+    {
       // TODO: Implement after() method.
     }
     /**
      * @internal param $prefix
      * @return bool|mixed
      */
-    protected function runValidation() {
+    protected function runValidation()
+    {
       Validation::check(Validation::SALES_TYPES, _("There are no sales types defined. Please define at least one sales type before adding a customer."));
       Validation::check(Validation::SALESPERSONS, _("There are no sales people defined in the system. At least one sales person is required before proceeding."));
       Validation::check(Validation::SALES_AREA, _("There are no sales areas defined in the system. At least one sales area is required before proceeding."));

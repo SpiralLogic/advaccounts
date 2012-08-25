@@ -22,16 +22,21 @@
     protected $name;
     protected $content = '';
     protected $label;
-    protected $type;
+    protected $tag;
     protected $validator;
-    public function __construct($type, $name)
+    /**
+     * @param $tag
+     * @param $name
+     */
+    public function __construct($tag, $name)
     {
-      $this->type = $type;
+      $this->tag = $tag;
       $this->name = $this['name'] = $name;
       $this->id   = $this->nameToId();
     }
     /**
      * @param $label
+     * @return \ADV\App\Form\Feild
      */
     public function label($label)
     {
@@ -45,26 +50,47 @@
 
       return $this;
     }
+    /**
+     * @return mixed
+     */
     protected function nameToId()
     {
       return str_replace(['[', ']'], ['-', ''], $this->name);
     }
+    /**
+     * @param $content
+     *
+     * @return Feild
+     */
     public function setContent($content)
     {
       $this->content = $content;
 
       return $this;
     }
+    /**
+     * @param $attr
+     *
+     * @return Feild
+     */
     public function mergeAttr($attr)
     {
       $this->attr = array_merge($this->attr, (array) $attr);
 
       return $this;
     }
+    /**
+     * @param $function
+     */
     public function setValidation(Callable $function)
     {
       $this->validator = $function;
     }
+    /**
+     * @param array $args
+     *
+     * @return bool
+     */
     public function isValid(array $args)
     {
       $result = call_user_func_array($this->validator, $args);
@@ -78,10 +104,13 @@
 
       return false;
     }
+    /**
+     * @return string
+     */
     public function __toString()
     {
-      $type    = $this->type;
-      $control = HTML::setReturn(true)->$type($this->id, $this->content, $this->attr, false)->setReturn(false);
+      $tag    = $this->tag;
+      $control = HTML::setReturn(true)->$tag($this->id, $this->content, $this->attr, false)->setReturn(false);
       if ($this->label) {
         $control = "<label for='" . $this->name . "'><span>" . $this->label . "</span>$control</label>";
       }

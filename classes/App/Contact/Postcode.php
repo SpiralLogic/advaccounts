@@ -49,14 +49,14 @@
                                                                              'max'               => 40,
                                                                              'callback'          => 'Adv.postcode.fetch'
                                                                         ), true));
-      $form->text('State: ', $this->state[0], $this->state[0], [
+      $form->text($this->state[0], $this->state[0], [
                                                                'placeholder'       => 'State',
                                                                'maxlength'         => 35,
                                                                'data-set'          => static::$count,
                                                                'size'              => 35,
                                                                'value'             => $this->state[1],
                                                                'name'              => $this->state[0]
-                                                               ]);
+                                                               ])->label('State: ');
       $form->label('Postcode: ', $this->postcode[0], UI::search($this->postcode[0], [
                                                                                     'placeholder'       => 'Postcode',
                                                                                     'url'               => $this->url . '?postcode=1',

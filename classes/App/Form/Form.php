@@ -153,18 +153,10 @@
      */
     public function  textarea($name, $value = null, $input_attr = [])
     {
-      if (is_array($value)) {
-        $input_attr=$value;
-        $value=null;
-      }
-      $feild = new Feild('textarea', $name);
-      $this->fields[$feild->id] = $feild;
-      if ($value === null) {
-        $value = $this->Input->post($name, null, '');
-      }
+      $feild = $this->addFeild('textarea', $name, $value);
       $feild->setContent($value);
-      return $feild->mergeAttr($input_attr);
 
+      return $feild->mergeAttr($input_attr);
     }
     /**
      * @param            $label
@@ -175,22 +167,24 @@
      * @param string     $title
      * @param array      $input_attr
      */
-    public function text($label, $name, $value = null, $input_attr = [])
+    public function text($name, $value = null, $input_attr = [])
     {
-      if ($label) {
-        $attr['placeholder'] = rtrim($label, ':');
+      $feild         = $this->addFeild('input', $name, $value);
+      $feild['type'] = 'text';
+
+      return $feild->mergeAttr($input_attr);
+    }
+    protected function addFeild($tag, $name, $value)
+    {
+      $feild = new Feild($tag, $name);
+      if ($value === null && $this->Input->hasPost($name)) {
+        $value = $this->Input->post($name);
       }
-      if ($value === null) {
-        $attr['value'] = $this->Input->post($name);
-      }
-      $attr['type'] = 'text';
-      $attr['name'] = $name;
-      array_merge($attr, $input_attr);
-      $attr['id'] = $this->nameToId($name);
-      $content    = HTML::setReturn(true)->input($attr['id'], $attr)->setReturn(false);
+      $feild['value']           = $value;
+      $this->fields[$feild->id] = $feild;
       $this->Ajax->addUpdate($name, $name, $value);
-      $this->fields[$attr['id']] = $content;
-      $this->label($label, $name);
+
+      return $feild;
     }
     /**
      * @param              $label
