@@ -1,3 +1,5 @@
 <?php
-  $date = '14/12/2012';
-
+$test = new \ADV\App\Form\Feild('input','test');
+$test->label('wawa');
+$test['class']='wawa';
+echo $test ;

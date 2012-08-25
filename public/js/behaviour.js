@@ -156,6 +156,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
   JsHttpRequest.query((upload ? "form." : "") + "POST " + url, // force form loader
                       content, // Function is called when an answer arrives.
                       function (result, errors) {
+                        var tooltipclass;
                         // Write the answer.
                         var newwin = 0, repwin;
                         if (result) {
@@ -214,8 +215,18 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
                           // Write errors to the debug div.
                           if (errors) {
                             Adv.Status.show({html:errors});
-                            if (cmd =='fc' && Adv.msgbox.find('div').hasClass('err_msg')) {
-                              $(document.getElementById(data)).attr('title',Adv.msgbox.text()).tooltip({placement:'right',class:'error'}).tooltip('show');
+                            if (cmd =='fc' && Adv.msgbox.find('div').is('.err_msg,.warn_msg')) {
+                              if (Adv.msgbox.find('div').is('err_msg')) {
+                                tooltipclass = 'error';
+                              } else {
+                                tooltipclass = 'warning';
+                              }
+
+                              var feild =$('#'+data);
+                              if (feild.is('input'))
+                              {
+                                feild.attr('title', Adv.msgbox.text()).tooltip({placement:'right', class:tooltipclass}).tooltip('show');
+                              }
                             }
                           }
                           if (Adv.loader) {

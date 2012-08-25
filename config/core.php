@@ -81,5 +81,5 @@
     'ADV\\App\\WO'               => array(
       'WO', //
     ), //
-    'ADV\\Core\\Input'           => ['Input'],
+    'ADV\\Core\\Input'           => ['Input'],    'ADV\\App\\Form'           => ['Form'],
   );

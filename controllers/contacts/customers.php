@@ -1,5 +1,6 @@
 <?php
   use ADV\App\Debtor\Debtor;
+  use ADV\App\Form\Form;
   use ADV\Core\Input\Input;
   use ADV\Core\Row;
   use ADV\App\UI\UI;
@@ -76,7 +77,7 @@
       $form->text("Alt Phone Number:", 'branch[phone2]', $currentBranch->phone2);
       $form->text("Fax Number:", 'branch[fax]', $currentBranch->fax);
       $form->text("Email:", 'branch[email]', $currentBranch->email);
-      $form->textarea('Street:', 'branch[br_address]', $currentBranch->br_address, ['cols'=> 37, 'rows'=> 4]);
+      $form->textarea('branch[br_address]', $currentBranch->br_address, ['cols'=> 37, 'rows'=> 4])->label('Street:');
       $branch_postcode = new Contact_Postcode([
         'city'     => ['branch[city]', $currentBranch->city], //
         'state'    => ['branch[state]', $currentBranch->state], //
@@ -88,7 +89,7 @@
       $form->text('Alt Phone Number:', 'accounts[phone2]', $this->customer->accounts->phone2);
       $form->text('Fax Number:', 'accounts[fax]', $this->customer->accounts->fax);
       $form->text('E-mail:', 'accounts[email]', $this->customer->accounts->email);
-      $form->text('Street:', 'accounts[br_address]', $this->customer->accounts->br_address);
+      $form->textarea('accounts[br_address]', $this->customer->accounts->br_address, ['cols'=> 37, 'rows'=> 4])->label('Street:');
       $accounts_postcode = new Contact_Postcode([
         'city'     => ['accounts[city]', $this->customer->accounts->city], //
         'state'    => ['accounts[state]', $this->customer->accounts->state], //
@@ -110,7 +111,7 @@
       }
       $form->label('Payment Terms:', 'payment_terms', GL_UI::payment_terms('payment_terms', $this->customer->payment_terms));
       $form->label('Credit Status:', 'credit_status', Sales_CreditStatus::select('credit_status', $this->customer->credit_status));
-      $form->textarea(null, 'messageLog',Contact_Log::read($this->customer->id, CT_CUSTOMER), ['style'=> 'height:100px;width:95%;margin:0 auto;', 'cols'=> 100]);
+      $form->textarea('messageLog',Contact_Log::read($this->customer->id, CT_CUSTOMER), ['style'=> 'height:100px;width:95%;margin:0 auto;', 'cols'=> 100]);
       /** @noinspection PhpUndefinedMethodInspection */
       $contacts = new View('contacts/contact');
       $view->set('contacts', $contacts->render(true));
@@ -139,14 +140,14 @@
         'branch[payment_discount_account]',
         GL_UI::all('branch[payment_discount_account]', $currentBranch->payment_discount_account, false, false, true)
       );
-      $form->textarea('General Notes:', 'branch[notes]', $currentBranch->notes, ['cols'=> 100, 'rows'=> 10]);
+      $form->textarea('branch[notes]', $currentBranch->notes, ['cols'=> 100, 'rows'=> 10])->label('General Notes:');
       $view['debtor_id'] = $this->customer->id;
       $form->hidden('frame', $this->Input->request('frame'));
       $view->set('form', $form);
       $form->hidden('type', CT_CUSTOMER);
       $view['date'] = date('Y-m-d H:i:s');
       $form->text('Contact:', 'contact_name', $this->customer->accounts->contact_name);
-      $form->textarea('Entry:', 'message','' , ['cols'=> 100, 'rows'=> 10]);
+      $form->textarea('message',['cols'=> 100, 'rows'=> 10])->label('Entry:');
       if (!$this->Input->get('frame')) {
         $shortcuts = new MenuUI(array('noajax' => true));
         $shortcuts->addLink(

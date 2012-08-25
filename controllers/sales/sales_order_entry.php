@@ -25,7 +25,6 @@
    */
   class SalesOrder extends Base
   {
-
     protected $addTitles = array(
       ST_SALESQUOTE  => "New Sales Quotation Entry", //
       ST_SALESINVOICE=> "Direct Sales Invoice", //
@@ -50,7 +49,8 @@
      * @var \Sales_Order;
      */
     public $order;
-    protected function before() {
+    protected function before()
+    {
       $this->order = Orders::session_get() ? : null;
       $this->JS->openWindow(900, 500);
       if ($_SERVER['REQUEST_METHOD'] === "GET") {
@@ -80,7 +80,8 @@
       }
       $this->setSecurity();
     }
-    protected function index() {
+    protected function index()
+    {
       Page::start($this->title, $this->security);
       $this->checkBranch();
       if (isset($_GET[REMOVED])) {
@@ -128,7 +129,8 @@
       UI::emailDialogue(CT_CUSTOMER);
       Page::end(true);
     }
-    protected function checkBranch() {
+    protected function checkBranch()
+    {
       if (Forms::isListUpdated('branch_id')) {
         // when branch is selected via external editor also customer can change
         $br                 = Sales_Branch::get($this->Input->post('branch_id'));
@@ -136,23 +138,28 @@
         $this->Ajax->activate('debtor_id');
       }
     }
-    protected function cancelItem() {
+    protected function cancelItem()
+    {
       Item_Line::start_focus('stock_id');
     }
     /**
      * @param $error
      */
-    protected function exitError($error) {
+    protected function exitError($error)
+    {
       Event::warning($error);
       $this->Session->setGlobal('debtor_id', null);
       Page::footer_exit();
     }
-    protected function Refresh() {
+    protected function Refresh()
+    {
       $this->Ajax->activate('items_table');
     }
-    protected function add() {
+    protected function add()
+    {
     }
-    protected function after() {
+    protected function after()
+    {
       unset($this->Session['order_no']);
     }
     /**
@@ -164,7 +171,8 @@
      * @return void
      * @internal param string $trans_name
      */
-    protected function pageComplete($order_no, $trans_type, $edit = false, $update = false) {
+    protected function pageComplete($order_no, $trans_type, $edit = false, $update = false)
+    {
       $edit_trans = '';
       switch ($trans_type) {
         case ST_SALESINVOICE:
@@ -193,7 +201,10 @@
       Reporting::emailDialogue($customer->id, $trans_type, $order_no);
       if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
         Display::submenu_print(
-          _("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt'
+          _("Print Proforma Invoice"),
+          ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ),
+          $order_no,
+          'prtopt'
         );
       }
       if ($trans_type == ST_SALESORDER) {
@@ -242,7 +253,8 @@
      * @internal param \Sales_Order $order
      * @return bool
      */
-    protected function canProcess() {
+    protected function canProcess()
+    {
       if (!$this->Input->post('debtor_id')) {
         Event::error(_("There is no customer selected."));
         $this->JS->setFocus('debtor_id');
@@ -270,7 +282,11 @@
       if (count($this->order->line_items) == 0) {
         if (!empty($_POST['stock_id']) && $this->checkItemData()) {
           $this->order->add_line(
-            $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']
+            $_POST['stock_id'],
+            Validation::input_num('qty'),
+            Validation::input_num('price'),
+            Validation::input_num('Disc') / 100,
+            $_POST['description']
           );
           $_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
         } else {
@@ -322,14 +338,17 @@
         $this->JS->setFocus('delivery_date');
         return false;
       }
-      if ($this->order->trans_type == ST_SALESORDER && strlen($_POST['name']) < 1&& strlen($_POST['cust_ref']) < 1) {
-        Event::error(_("You must enter a Purchase Order Number."));
-        $this->JS->setFocus('cust_ref');
-        return false;
-      }
+
       if ($this->order->trans_type == ST_SALESORDER && strlen($_POST['name']) < 1) {
         Event::error(_("You must enter a Person Ordering name."));
         $this->JS->setFocus('name');
+        return false;
+      }
+      $result = $this->order->trans_type == ST_SALESORDER && strlen($_POST['cust_ref']) < 1;
+      if ($result && $this->order->order_id !== Session::_getFlash('SalesOrder')) {
+        Session::_setFlash('SalesOrder', $this->order->order_id);
+        Event::warning('Are you sure you want to commit this order without a purchase order number?');
+        $this->JS->setFocus('cust_ref');
         return false;
       }
       if (!Ref::is_valid($_POST['ref'])) {
@@ -346,7 +365,8 @@
      * @internal param $this ->order
      * @return bool
      */
-    protected function checkItemData() {
+    protected function checkItemData()
+    {
       if (!$this->User->hasAccess(SA_SALESCREDIT) && (!Validation::post_num('qty', 0) || !Validation::post_num('Disc', 0, 100))) {
         Event::error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
         $this->JS->setFocus('qty');
@@ -356,7 +376,8 @@
         $this->JS->setFocus('price');
         return false;
       } elseif (!$this->User->hasAccess(SA_SALESCREDIT) && isset($_POST['LineNo']) && isset($this->order->line_items[$_POST['LineNo']]) && !Validation::post_num(
-        'qty', $this->order->line_items[$_POST['LineNo']]->qty_done
+        'qty',
+        $this->order->line_items[$_POST['LineNo']]->qty_done
       )
       ) {
         $this->JS->setFocus('qty');
@@ -389,7 +410,8 @@
      *
      * @return \Purch_Order|\Sales_Order
      */
-    protected function createOrder($type, $trans_no) {
+    protected function createOrder($type, $trans_no)
+    {
       if (isset($_GET[Orders::QUOTE_TO_ORDER])) {
         $this->order    = new Sales_Order(ST_SALESQUOTE, array($trans_no));
         $doc            = clone($this->order);
@@ -429,7 +451,8 @@
       $this->type = $type;
       return Sales_Order::copyToPost($doc);
     }
-    protected function removed() {
+    protected function removed()
+    {
       if ($_GET['type'] == ST_SALESQUOTE) {
         Event::notice(_("This sales quotation has been deleted as requested."), 1);
         Display::submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?add=0type=" . ST_SALESQUOTE);
@@ -444,7 +467,8 @@
     /**
      * @return mixed
      */
-    protected function processOrder() {
+    protected function processOrder()
+    {
       if (!$this->canProcess($this->order)) {
         return;
       }
@@ -468,7 +492,8 @@
       }
       $this->pageComplete($trans_no, $trans_type, true, $modified);
     }
-    protected function cancelChanges() {
+    protected function cancelChanges()
+    {
       $type     = $this->order->trans_type;
       $order_no = (is_array($this->order->trans_no)) ? key($this->order->trans_no) : $this->order->trans_no;
       Orders::Session_delete($_POST['order_id']);
@@ -478,7 +503,8 @@
     /**
      * @return mixed
      */
-    protected function deleteOrder() {
+    protected function deleteOrder()
+    {
       if (!$this->User->hasAccess(SS_SETUP)) {
         Event::error('You don\'t have access to delete orders');
         return;
@@ -498,12 +524,12 @@
           } else {
             $trans_no   = key($this->order->trans_no);
             $trans_type = $this->order->trans_type;
-            if (!isset($_GET[REMOVED_ID])) {
-              $this->order->delete($trans_no, $trans_type);
+            $this->order->delete($trans_no, $trans_type);
+            if ($trans_type == ST_SALESORDER) {
               $jb = new \Modules\Jobsboard\Jobsboard([]);
               $jb->removejob($trans_no);
-              Event::notice(_("Sales order has been cancelled as requested."), 1);
             }
+            Event::notice(_("Sales order has been cancelled."), 1);
           }
         } else {
           Display::meta_forward('/index.php', 'application=sales');
@@ -516,15 +542,21 @@
       Display::submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
       Page::footer_exit();
     }
-    protected function updateItem() {
+    protected function updateItem()
+    {
       if ($this->checkItemData($this->order)) {
         $this->order->update_order_item(
-          $_POST['LineNo'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']
+          $_POST['LineNo'],
+          Validation::input_num('qty'),
+          Validation::input_num('price'),
+          Validation::input_num('Disc') / 100,
+          $_POST['description']
         );
       }
       Item_Line::start_focus('stock_id');
     }
-    protected function discountAll() {
+    protected function discountAll()
+    {
       if (!is_numeric($_POST['_discountAll'])) {
         Event::error(_("Discount must be a number"));
       } elseif ($_POST['_discountAll'] < 0 || $_POST['_discountAll'] > 100) {
@@ -537,7 +569,8 @@
     /**
      * @return mixed
      */
-    protected function addLine() {
+    protected function addLine()
+    {
       if (!$this->checkItemData($this->order)) {
         return;
       }
@@ -548,7 +581,8 @@
     /**
      * @return mixed
      */
-    protected function checkRowDelete() {
+    protected function checkRowDelete()
+    {
       $line_id = $this->getActionID(Orders::DELETE_LINE);
       if ($line_id === -1) {
         return;
@@ -563,20 +597,23 @@
     /**
      * @return bool|mixed|void
      */
-    protected function runValidation() {
+    protected function runValidation()
+    {
       if (!is_object($this->order)) {
         $this->exitError('No current order to edit.');
       }
       Validation::check(Validation::STOCK_ITEMS, _("There are no inventory items defined in the system."));
       Validation::check(Validation::BRANCHES_ACTIVE, _("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
     }
-    protected function setLineOrder() {
+    protected function setLineOrder()
+    {
       $line_map = $this->Input->getPost('lineMap', []);
       $this->order->setLineOrder($line_map);
       $data = ['lineMap'=> $this->order, 'status'=> true];
       $this->JS->renderJSON($data);
     }
-    protected function setSecurity() {
+    protected function setSecurity()
+    {
       if ($this->order->trans_type) {
         $this->type = $this->order->trans_type;
       }

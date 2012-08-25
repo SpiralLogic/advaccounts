@@ -12,7 +12,8 @@ Adv.extend({
              resetState: function () {
                $("#tabs0 input, #tabs0 textarea").empty();
                $("#company").val('');
-               Company.fetch(0);
+               Company.fetch(0);                   Adv.fieldsChanged = 0;
+
                Adv.btnCancel.hide();
                Adv.btnConfirm.hide();
                Adv.btnNew.show();
@@ -147,7 +148,7 @@ var Branches = function () {
     btnBranchAdd:function () {
       btn.unbind('click');
       if (!Branches.adding && current.branch_id > 0 && Company.get().id > 0) {
-        btn.text('Add New Branch').one('click',function (event) {
+        btn.text('Add New Branch').one('click',function () {
           Branches.New();
           Branches.adding = true;
           return false
@@ -258,6 +259,24 @@ var Company = function () {
       data = data || '';
       $invoiceFrame.load($invoiceFrameSrc, '&' + data + "&frame=1&id=" + id);
     },
+    useShipFeilds: function() {
+      Adv.accFields.each(function () {
+        var newval, $this = $(this), name = $this.attr('name').match(/([^[]*)\[(.+)\]/);
+        if (!name) {
+          name = $this.attr('name');
+          name = [name, name.split('_')[1]];
+          if (!name) {
+            return
+          }
+          newval = $("[name='" + name[1] + "']").val();
+        }
+        else {
+          newval = $("[name='branch[" + name[2] + "]']").val();
+        }
+        $this.val(newval).trigger('keyup');
+        Company.set(name[0], newval);
+      });
+    },
     Save:      function () {
       Branches.btnBranchAdd();
       Adv.btnConfirm.prop('disabled', true);
@@ -327,28 +346,13 @@ $(function () {
       location.href = url + Company.get().id;
     }
     return false;
-  }, selected:                              -1 })
-  $("#useShipAddress").click(function () {
-    Adv.accFields.each(function () {
-      var newval, $this = $(this), name = $this.attr('name').match(/([^[]*)\[(.+)\]/);
-      if (!name) {
-        name = $this.attr('name');
-        name = [name, name.split('_')[1]];
-        if (!name) {
-          return
-        }
-        newval = $("[name='" + name[1] + "']").val();
-      }
-      else {
-        newval = $("[name='branch[" + name[2] + "]']").val();
-      }
-      $this.val(newval).trigger('change');
-      Company.set(name[0], newval);
-    });
+  }, selected:                              -1 });
+  $("#useShipAddress").click(function (e) {
+Company.useShipFeilds();
     return false;
   });
   Adv.o.companysearch = $('#companysearch');
-  $("#addLog").click(function (event) {
+  $("#addLog").click(function () {
     Adv.ContactLog.dialog("open");
     return false;
   });
@@ -386,7 +390,7 @@ $(function () {
                                    $(this).dialog("open");
                                  });
   $("#messageLog").prop('disabled', true).css('background', 'white');
-  $("[name='messageLog']").keypress(function (event) {
+  $("[name='messageLog']").keypress(function () {
     return false;
   });
   Adv.o.tabs[0].delegate("input, textarea,select", "change keyup", function () {
@@ -397,9 +401,9 @@ $(function () {
     Adv.Forms.stateModified($this);
     if (Adv.fieldsChanged > 0) {
       buttontext = (Company.get().id) ? "Changes" : "New";
-      Adv.btnNew.hide();
-      Adv.btnCancel.html('<i class="icon-trash"></i> Cancel ' + buttontext).show();
-      Adv.btnConfirm.html('<i class="icon-ok"></i> Save ' + buttontext).show();
+            Adv.btnNew.hide();
+            Adv.btnCancel.html('<i class="icon-trash"></i> Cancel ' + buttontext).show();
+            Adv.btnConfirm.html('<i class="icon-ok"></i> Save ' + buttontext).show();
       Adv.o.companysearch.prop('disabled', true);
     }
     else {

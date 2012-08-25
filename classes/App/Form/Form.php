@@ -1,6 +1,12 @@
 <?php
-  use ADV\Core\Ajax;
-  use ADV\Core\Input\Input;
+  namespace ADV\App\Form;
+  use \ADV\Core\Ajax;
+  use Forms;
+  use \ADV\Core\JS;
+  use \ADV\Core\SelectBox;
+  use User;
+  use \ADV\Core\HTML;
+  use \ADV\Core\Input\Input;
 
   /**
    * PHP version 5.4
@@ -48,6 +54,7 @@
       $attr['action']  = $action;
       array_merge($attr, $input_attr);
       $this->start = HTML::setReturn(true)->form($name, $attr)->setReturn(false);
+
       return $this->start;
     }
     /**
@@ -56,6 +63,7 @@
     public function end()
     {
       $this->end = HTML::setReturn(true)->input('_focus', ['name'=> '_focus', 'type'=> 'hidden', 'value'=> e($this->Input->post('_focus'))])->form->setReturn(false);
+
       return $this->end;
     }
     /**
@@ -73,9 +81,11 @@
       foreach ($_POST as $postkey => $postval) {
         if (strpos($postkey, $prefix) === 0) {
           $id = substr($postkey, strlen($prefix));
+
           return $numeric ? (int) $id : $id;
         }
       }
+
       return $numeric ? -1 : null;
     }
     /**
@@ -141,19 +151,20 @@
      * @param null   $title
      * @param string $params
      */
-    public function  textarea($label, $name, $value = null, $input_attr = [])
+    public function  textarea($name, $value = null, $input_attr = [])
     {
-      if ($value === null) {
-        $value = $attr['value'] = $this->Input->post($name, null, '');
+      if (is_array($value)) {
+        $input_attr=$value;
+        $value=null;
       }
-      $attr['name']        = $name;
-      $attr['placeholder'] = rtrim($label, ':');
-      $attr                = array_merge($attr, $input_attr);
-      $attr['id']          = $this->nameToId($name);
-      $content             = HTML::setReturn(true)->textarea($attr['id'], $value, $attr, false)->setReturn(false);
-      $this->Ajax->addUpdate($name, $name, $value);
-      $this->fields[$attr['id']] = $content;
-      $this->label($label, $name);
+      $feild = new Feild('textarea', $name);
+      $this->fields[$feild->id] = $feild;
+      if ($value === null) {
+        $value = $this->Input->post($name, null, '');
+      }
+      $feild->setContent($value);
+      return $feild->mergeAttr($input_attr);
+
     }
     /**
      * @param            $label
@@ -270,6 +281,7 @@
     public function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = null)
     {
       $box = new SelectBox($name, $selected_id, $sql, $valfield, $namefield, $options);
+
       return $box->create();
     }
     /**
@@ -350,6 +362,7 @@
         $selector .= HTML::setReturn(true)->input(null, $input_attr, false)->setReturn(false);
       }
       JS::_defaultFocus($name);
+
       return $selector;
     }
     // SUBMITS //
@@ -391,18 +404,18 @@
               $aspect = " data-aspect='selector' rel='$value'";
               $value  = _("Select");
               if ($icon === false) {
-                $icon = ICON_SUBMIT;
+                $icon = "<i class='greenfg icon-ok'> </i>";
               }
               break;
             case 'default':
               $atype = true;
               if ($icon === false) {
-                $icon = ICON_SUBMIT;
+                $icon = "<i class='greenfg icon-ok'> </i>";
               }
               break;
             case 'cancel':
               if ($icon === false) {
-                $icon = ICON_ESCAPE;
+                $icon = "<i class=' icon-danger'> </i>";
               }
               break;
           }
@@ -410,8 +423,7 @@
       }
       $caption    = ($name == '_action') ? $title : $value;
       $id         = ($name == '_action') ? '' : "id=\"$name\"";
-      $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') : $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\"  value=\"$value\"" . ($title ? " title='$title'" : '') . ">" . ($icon ? "<img alt='$value' src='/themes/" . User::theme(
-      ) . "/images/$icon' height='12'>" : '') . "<span>$caption</span>" . "</button>\n";
+      $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') : $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\"  value=\"$value\"" . ($title ? " title='$title'" : '') . ">" . $icon . "<span>$caption</span>" . "</button>\n";
       if ($echo) {
         echo $submit_str;
       } else {
@@ -473,6 +485,7 @@
     {
       $path  = THEME_PATH . User::theme();
       $title = $title ? " title='$title'" : '';
+
       return "<img src='$path/images/$icon' style='width:12px; height=12px' $title />";
     }
     /**
@@ -500,6 +513,7 @@
         {
           $icon = ICON_DELETE;
         }
+
         return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='1'" . ($title ? " title='$title'" : " title='$value'") . ($aspect ? " data-aspect='$aspect'" : '') . $rel . " />" . Forms::setIcon($icon) . "</button>\n";
       } else {
         return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='$value'" . ($title ? " title='$title'" : '') . ($aspect ? " data-aspect='$aspect'" : '') . $rel . " >$caption</button>\n";

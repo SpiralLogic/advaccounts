@@ -96,7 +96,7 @@
       </script>
     </div>
   </div>
-  {#$menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info')#}
+  {#$menu->endTab()->startTab('Extra Shipping Info', 'Extra Info')#}
   <div class='formbox'>
     <div class='tablehead'>
       Accounts Details

@@ -6,13 +6,16 @@ Adv.extend({
   revertState:function () {
     var form = document.getElementsByTagName('form')[0];
     form.reset();
-    Adv.btnCancel.attr('name', 'new').text("New");
-    Adv.Forms.resetHighlights();      $("#itemSearchId").val('');
+    Adv.btnConfirm.hide();
+    Adv.btnCancel.hide();
+    Adv.btnNew.show();    Adv.Forms.resetHighlights();      $("#itemSearchId").val('');
 
   },
   resetState:function () {
     $("#tabs0 input, #tabs0 textarea").empty();
-    Items.fetch(0);
+    Items.fetch(0); Adv.btnCancel.hide();
+                   Adv.btnConfirm.hide();
+                   Adv.btnNew.show();
   }
 });
 var Items = function () {
@@ -84,28 +87,35 @@ var Items = function () {
   };
 }();
 $(function () {
-  Adv.extend({btnCancel:$("#btnCancel").button().click(function () {
-    ($(this).attr('name') == 'new') ? Adv.resetState() : Adv.revertState();
+  Adv.extend({btnCancel:$("#btnCancel").button().mousedown(function () {
+    Adv.revertState();
     return false;
-  }), btnSave:$("#btnSave").button().click(function () {
+  }), btnConfirm:$("#btnConfirm").button().mousedown(function () {
     Items.save();
-    Adv.btnCancel.attr('name', 'new').text("New");
     return false;
-  }).hide()});
+  }),
+    btnNew:       $("#btnNew").button().mousedown(function () {
+      Adv.resetState();
+      return false;
+    }) }
+  );
   Adv.o.tabs[0] = $("#tabs0");
   Adv.o.tabs[0].delegate("input,textarea,select", "change keyup", function (event) {
-    var $this = $(this), $thisname = $this.attr('name');
+    var $this = $(this), buttontext,$thisname = $this.attr('name');
     Adv.Forms.stateModified($this);
-    Adv.btnCancel.button('option', 'label', 'Cancel Changes');
-    if (Items.get().id) {
-      Adv.btnSave.button("option", "label", "Save Changes").show();
-    } else {
-      Adv.btnSave.button("option", "label", "Save New Item").show();
+    if (Adv.fieldsChanged > 0) {
+      buttontext = (Items.get().id) ? "Changes" : "New";
+            Adv.btnNew.hide();
+            Adv.btnCancel.html('<i class="icon-trash"></i> Cancel ' + buttontext).show();
+            Adv.btnConfirm.html('<i class="icon-ok"></i> Save ' + buttontext).show();
+      Adv.o.companysearch.prop('disabled', true);
     }
-    if (Adv.fieldsChanged === 0) {
-      Adv.btnCancel.attr('name', 'new').text("New");
-    } else {
-      Adv.btnCancel.attr('name', 'cancel').text('Cancel Changes');
+    else {
+      if (Adv.fieldsChanged === 0) {
+        Adv.btnConfirm.hide();
+        Adv.btnCancel.hide();
+        Adv.btnNew.show();
+      }
     }
     Items.set($thisname, this.value);
   })

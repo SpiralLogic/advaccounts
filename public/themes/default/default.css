@@ -735,7 +735,7 @@ input:-ms-input-placeholder {
 .input-append .add-on {
   display:          inline-block;
   width:            auto;
-  min-width:        16px;
+  min-width:        24px;
   padding:          4px 5px;
   font-weight:      normal;
   text-align:       center;
@@ -3450,11 +3450,21 @@ div.err_msg, div.warn_msg, div.info_msg, div.success_msg {
   box-shadow:             0 2px 3px 1px rgba(10, 10, 10, .5);
   box-shadow:             0 2px 3px 1px rgba(10, 10, 10, .5);
 }
+.error .tooltip-inner ,.warning .tooltip-inner {
+  font-weight: bold;
+}
 .error .tooltip-inner {
   background:red;
 }
+.warning .tooltip-inner {
+  background:rgb(255, 193, 5);
+  color:rgb(12, 12, 12);
+}
 .error.tooltip.right .tooltip-arrow{
   border-right:5px solid red;
+}
+.warning.tooltip.right .tooltip-arrow{
+  border-right:5px solid rgb(255, 193, 5);
 }
 div.info_msg {
   background-color:  #0074cc;
@@ -4218,7 +4228,9 @@ body.lite {
   color:       red;
   font-weight: bold;
 }
-
+.greenfg {
+  color:#0b0;
+}
 .redborder {
   border-width: 2px;
   border-style: solid;

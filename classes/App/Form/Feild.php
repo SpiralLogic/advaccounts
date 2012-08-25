@@ -8,20 +8,26 @@
    * To change this template use File | Settings | File Templates.
    */
   namespace ADV\App\Form;
-  use ADV\Core\HTML;
+  use \ADV\Core\HTML;
+  use ADV\Core\Event;
+  use ADV\Core\JS;
 
+  /**
+
+   */
   class Feild implements \ArrayAccess
   {
     protected $attr = [];
-    protected $id;
+    public $id;
     protected $name;
-    protected $content='';
+    protected $content = '';
     protected $label;
     protected $type;
+    protected $validator;
     public function __construct($type, $name)
     {
       $this->type = $type;
-      $this->name=  $this['name']=$name;
+      $this->name = $this['name'] = $name;
       $this->id   = $this->nameToId();
     }
     /**
@@ -30,13 +36,47 @@
     public function label($label)
     {
       if ($label === null) {
-        return;
+        return $this;
       }
       $this->label = $label;
+      if (!isset($this->attr['placeholder'])) {
+        $this['placeholder'] = rtrim($label, ':');
+      }
+
+      return $this;
     }
     protected function nameToId()
     {
       return str_replace(['[', ']'], ['-', ''], $this->name);
+    }
+    public function setContent($content)
+    {
+      $this->content = $content;
+
+      return $this;
+    }
+    public function mergeAttr($attr)
+    {
+      $this->attr = array_merge($this->attr, (array) $attr);
+
+      return $this;
+    }
+    public function setValidation(Callable $function)
+    {
+      $this->validator = $function;
+    }
+    public function isValid(array $args)
+    {
+      $result = call_user_func_array($this->validator, $args);
+      if ($result === true) {
+        return true;
+      }
+      if (is_string($result)) {
+        Event::error($result);
+      }
+      JS::setFocus($this->id);
+
+      return false;
     }
     public function __toString()
     {
