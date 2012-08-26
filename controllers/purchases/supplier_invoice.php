@@ -31,7 +31,7 @@
       if (!$this->creditor_id) {
         $this->creditor_id = $this->Session->getGlobal('creditor');
       }
-      $this->creditor_id    = &$this->Input->postGetGlobal('creditor_id');
+      $this->creditor_id = &$this->Input->postGetGlobal('creditor_id');
       $this->Session->setGlobal('creditor_id', $this->creditor_id);
       if (isset($_POST['AddGLCodeToTrans'])) {
         $this->addGlCodesToTrans();
@@ -410,7 +410,7 @@
     }
     protected function go() {
       $this->Ajax->activate('gl_items');
-      GL_QuickEntry::show_menu($this->trans, $_POST['qid'], Validation::input_num('total_amount'), QE_SUPPINV);
+      GL_QuickEntry::addEntry($this->trans, $_POST['qid'], Validation::input_num('total_amount'), QE_SUPPINV);
       $_POST['total_amount'] = Num::_priceFormat(0);
       $this->Ajax->activate('total_amount');
       $this->Ajax->activate('inv_tot');

@@ -1,6 +1,9 @@
 <?php
   namespace ADV\App\Form;
+
   use \ADV\Core\Ajax;
+  use ADV\Core\Arr;
+  use ADV\Core\Num;
   use Forms;
   use \ADV\Core\JS;
   use \ADV\Core\SelectBox;
@@ -34,20 +37,21 @@
      * @param ADV\Core\Input\Input $input
      * @param ADV\Core\Ajax        $ajax
      */
-    public function __construct(\ADV\Core\Input\Input $input = null, \ADV\Core\Ajax $ajax = null)
-    {
+    public function __construct(\ADV\Core\Input\Input $input = null, \ADV\Core\Ajax $ajax = null) {
       $this->Ajax  = $ajax ? : Ajax::i();
       $this->Input = $input ? : Input::i();
     }
     /**
      * @static
      *
-     * @param bool   $multi
-     * @param string $action
      * @param string $name
+     * @param string $action
+     * @param bool   $multi
+     * @param array  $input_attr
+     *
+     * @return
      */
-    public function start($name = '', $action = '', $multi = null, $input_attr = [])
-    {
+    public function start($name = '', $action = '', $multi = null, $input_attr = []) {
       $attr['enctype'] = $multi ? 'multipart/form-data' : null;
       $attr['name']    = $name;
       $attr['method']  = 'post';
@@ -58,10 +62,10 @@
       return $this->start;
     }
     /**
-     * @param int $breaks
+     * @return
+     * @internal param int $breaks
      */
-    public function end()
-    {
+    public function end() {
       $this->end = HTML::setReturn(true)->input('_focus', ['name'=> '_focus', 'type'=> 'hidden', 'value'=> e($this->Input->post('_focus'))])->form->setReturn(false);
 
       return $this->end;
@@ -76,8 +80,7 @@
      *
      * @return int|null|string
      */
-    public function findPostPrefix($prefix, $numeric = true)
-    {
+    public function findPostPrefix($prefix, $numeric = true) {
       foreach ($_POST as $postkey => $postval) {
         if (strpos($postkey, $prefix) === 0) {
           $id = substr($postkey, strlen($prefix));
@@ -96,8 +99,7 @@
      *
      * @return bool
      */
-    public function isListUpdated($name)
-    {
+    public function isListUpdated($name) {
       return isset($_POST['_' . $name . '_update']) || isset($_POST['_' . $name . '_button']);
     }
     /**
@@ -105,17 +107,16 @@
      *
      * @return mixed
      */
-    protected function nameToId($name)
-    {
+    protected function nameToId($name) {
       return str_replace(['[', ']'], ['-', ''], $name);
     }
     /**
      * @param      $label
      * @param      $name
      * @param null $control
+     * @param null $control
      */
-    public function label($label, $name, $control = null)
-    {
+    public function label($label, $name, $control = null) {
       if ($label === null) {
         return;
       }
@@ -127,136 +128,120 @@
       $this->fields[$id] = $content;
     }
     /**
+     * @param $control
+     *
+     * @return \ADV\App\Form\Feild
+     */
+    public function custom($control) {
+      preg_match('/name=([\'"]?)(.+?)\1/', $control, $matches);
+      $name  = $matches[2];
+      $feild = new Feild('custom', $name);
+      $feild->customControl($control);
+      $this->fields[$feild->id] = $feild;
+
+      return $feild;
+    }
+    /**
      * @param      $name
      * @param null $value
      *
      * @internal param bool $echo
      * @return string
      */
-    public function hidden($name, $value = null)
-    {
-      $attr['value'] = e($value ? : $this->Input->post($name));
-      $attr['id']    = $this->nameToId($name);
-      $attr['type']  = 'hidden';
-      $attr['name']  = $name;
+    public function hidden($name, $value = null) {
+      $feild         = $this->addFeild('input', $name, $value);
+      $feild['type'] = 'hidden';
       $this->Ajax->addUpdate($name, $name, $value);
-      $this->fields[$attr['id']] = HTML::setReturn(true)->input($attr['id'], $attr, false)->setReturn(false);
     }
     /**
-     * @param        $label
      * @param        $name
      * @param        $value
-     * @param        $cols
-     * @param        $rows
-     * @param null   $title
-     * @param string $params
+     * @param array  $input_attr
+     *
+     * @return \ADV\App\Form\Feild
      */
-    public function  textarea($name, $value = null, $input_attr = [])
-    {
+    public function  textarea($name, $value = null, $input_attr = []) {
       $feild = $this->addFeild('textarea', $name, $value);
       $feild->setContent($value);
 
       return $feild->mergeAttr($input_attr);
     }
     /**
-     * @param            $label
      * @param            $name
      * @param null       $value
-     * @param int        $max
-     * @param int|string $size
-     * @param string     $title
      * @param array      $input_attr
+     *
+     * @return \ADV\App\Form\Feild
      */
-    public function text($name, $value = null, $input_attr = [])
-    {
+    public function text($name, $value = null, $input_attr = []) {
       $feild         = $this->addFeild('input', $name, $value);
       $feild['type'] = 'text';
 
       return $feild->mergeAttr($input_attr);
     }
-    protected function addFeild($tag, $name, $value)
-    {
+    /**
+     * @param $tag
+     * @param $name
+     * @param $value
+     *
+     * @return Feild
+     */
+    protected function addFeild($tag, $name, $value) {
       $feild = new Feild($tag, $name);
       if ($value === null && $this->Input->hasPost($name)) {
         $value = $this->Input->post($name);
       }
-      $feild['value']           = $value;
+      $feild['value']           = e($value);
       $this->fields[$feild->id] = $feild;
       $this->Ajax->addUpdate($name, $name, $value);
 
       return $feild;
     }
     /**
-     * @param              $label
-     * @param              $name
-     * @param null         $value
-     * @param array|string $inputparams
+     * @param       $name
+     * @param null  $value
+     * @param array $inputparams
      *
-     * @return void
-     * @internal param null $init
+     * @return Feild
+
      */
-    public function  percent($label, $name, $value = null, $inputparams = [])
-    {
-      $attr['class'] = 'percent';
-      array_merge($attr, $inputparams);
-      $this->number($label, $name, $value, User::percent_dec(), '%', $inputparams);
+    public function  percent($name, $value = null, $inputparams = []) {
+      return $this->number($name, $value, User::percent_dec(), $inputparams)->append('%');
     }
     /**
-     * @param        $label
+     * @param       $name
+     * @param null  $value
+     * @param array $inputparams
+     *
+     * @return Feild
+
+     */
+    public function  amount($name, $value = null, $inputparams = []) {
+      return $this->number($name, $value, User::price_dec(), $inputparams)->prepend('$');
+    }
+    /**
      * @param        $name
      * @param null   $value
      * @param null   $dec
-     * @param null   $max
-     * @param        $size
-     * @param null   $post_label
      * @param array  $input_attr
      *
-     * @return void
-     * @internal param null $init
-     * @internal param null $params
-     * @internal param null $id
-     * @internal param string $inputparams
-     * @internal param bool $negatives
+     * @return \ADV\App\Form\Feild
      */
-    public function number($label, $name, $value = null, $dec = null, $post_label = null, $input_attr = [])
-    {
-      $attr['placeholder'] = rtrim($label, ':');
-      $attr['data-dec']    = $dec ? : User::price_dec();
-      if (!$this->Input->post($name)) {
-        $value        = $value ? : 0;
-        $_POST[$name] = number_format($value, $dec);
-      }
-      if ($value === null) {
-        $attr['value'] = $this->Input->post($name);
-      }
-      $size = &$input_attr['size'];
+    public function number($name, $value = null, $dec = null, $input_attr = []) {
+      $feild             = $this->addFeild('input', $name, $value);
+      $feild['data-dec'] = $dec ? : User::price_dec();
+      $_POST[$name]      = $feild['value'] = Num::_format($feild['value'] ? : 0, $feild['data-dec']);
+      $size              = Arr::get($input_attr, 'size');
       if ($size && is_numeric($size)) {
-        $attr['size'] = $size;
+        $feild['size'] = $size;
       } elseif (is_string($size)) {
-        $attr['class'] .= ($name == 'freight') ? ' freight ' : ' amount ';
+        $feild['class'] .= ($name == 'freight') ? ' freight ' : ' amount ';
       }
-      $attr['maxlength'] = $input_attr['max'];
-      $attr['name']      = $name;
-      $attr['id']        = $this->nameToId($name);
-      $attr['type']      = 'text';
-      array_merge($attr, $input_attr);
-      $content = HTML::setReturn(true)->input($name, $attr)->setReturn(false);
-      $this->Ajax->addUpdate($name, $name, $value);
-      $pre_label = '';
-      if (is_array($post_label)) {
-        $pre_label  = $post_label[0];
-        $post_label = null;
-      }
-      if ($post_label) {
-        $content = "<div class='input-append'>$content<span class='add-on' id='_{$name}_label'>$post_label</div>";
-        $this->Ajax->addUpdate($name, '_' . $name . '_label', $post_label);
-      } elseif ($pre_label) {
-        $content = "<div class='input-prepend'><span class='add-on' >$pre_label</span>$content</div>";
-      }
-      $this->fields[$attr['id']] = $content;
-      $this->label($label, $name);
-      $this->Ajax->addUpdate($name, $name, $value);
+      $feild['maxlength'] = $input_attr['max'];
+      $feild['type']      = 'text';
       $this->Ajax->addAssign($name, $name, 'data-dec', $dec);
+
+      return $feild->mergeAttr($input_attr);
     }
     /**
      * Universal sql combo generator
@@ -272,8 +257,7 @@
      *
      * @return string
      */
-    public function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = null)
-    {
+    public function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = null) {
       $box = new SelectBox($name, $selected_id, $sql, $valfield, $namefield, $options);
 
       return $box->create();
@@ -290,8 +274,7 @@
      *
      * @return string
      */
-    public function arraySelect($name, $selected_id, $items, $options = [])
-    {
+    public function arraySelect($name, $selected_id, $items, $options = []) {
       $spec_option   = false; // option text or false
       $spec_id       = 0; // option id
       $select_submit = false; //submit on select: true/false
@@ -384,8 +367,7 @@
      *
      * @return string
      */
-    public static function submit($name, $value, $echo = true, $title = false, $atype = false, $icon = false)
-    {
+    public static function submit($name, $value, $echo = true, $title = false, $atype = false, $icon = false) {
       $aspect = '';
       if ($atype === null) {
         $aspect = User::fallback() ? " data-aspect='fallback'" : " style='display:none;'";
@@ -417,7 +399,8 @@
       }
       $caption    = ($name == '_action') ? $title : $value;
       $id         = ($name == '_action') ? '' : "id=\"$name\"";
-      $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') : $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\"  value=\"$value\"" . ($title ? " title='$title'" : '') . ">" . $icon . "<span>$caption</span>" . "</button>\n";
+      $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') :
+        $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\"  value=\"$value\"" . ($title ? " title='$title'" : '') . ">" . $icon . "<span>$caption</span>" . "</button>\n";
       if ($echo) {
         echo $submit_str;
       } else {
@@ -434,8 +417,7 @@
      * @param bool $async
      * @param bool $clone
      */
-    public function submitAddUpdate($add = true, $title = false, $async = false, $clone = false)
-    {
+    public function submitAddUpdate($add = true, $title = false, $async = false, $clone = false) {
       $cancel = $async;
       if ($async === 'both') {
         $async  = 'default';
@@ -460,8 +442,7 @@
      * @param $action
      * @param $msg
      */
-    public function submitConfirm($name, $action, $msg = null)
-    {
+    public function submitConfirm($name, $action, $msg = null) {
       if ($msg) {
         $name = $action;
       } else {
@@ -475,8 +456,7 @@
      *
      * @return string
      */
-    public function setIcon($icon, $title = '')
-    {
+    public function setIcon($icon, $title = '') {
       $path  = THEME_PATH . User::theme();
       $title = $title ? " title='$title'" : '';
 
@@ -491,8 +471,7 @@
      *
      * @return string
      */
-    public function button($name, $value, $title = false, $icon = false, $aspect = '')
-    {
+    public function button($name, $value, $title = false, $icon = false, $aspect = '') {
       // php silently changes dots,spaces,'[' and characters 128-159
       // to underscore in POST names, to maintain compatibility with register_globals
       $rel = '';
@@ -508,9 +487,11 @@
           $icon = ICON_DELETE;
         }
 
-        return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='1'" . ($title ? " title='$title'" : " title='$value'") . ($aspect ? " data-aspect='$aspect'" : '') . $rel . " />" . Forms::setIcon($icon) . "</button>\n";
+        return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='1'" . ($title ? " title='$title'" : " title='$value'") . ($aspect ?
+          " data-aspect='$aspect'" : '') . $rel . " />" . Forms::setIcon($icon) . "</button>\n";
       } else {
-        return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='$value'" . ($title ? " title='$title'" : '') . ($aspect ? " data-aspect='$aspect'" : '') . $rel . " >$caption</button>\n";
+        return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='$value'" . ($title ? " title='$title'" : '') . ($aspect ?
+          " data-aspect='$aspect'" : '') . $rel . " >$caption</button>\n";
       }
     }
     /**
@@ -527,8 +508,7 @@
      * <p>
      *       The return value will be casted to boolean if non-boolean was returned.
      */
-    public function offsetExists($offset)
-    {
+    public function offsetExists($offset) {
       return array_key_exists($offset, $this->fields);
     }
     /**
@@ -542,8 +522,7 @@
      *
      * @return mixed Can return all value types.
      */
-    public function offsetGet($offset)
-    {
+    public function offsetGet($offset) {
       return $this->fields[$offset];
     }
     /**
@@ -560,8 +539,7 @@
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
-    {
+    public function offsetSet($offset, $value) {
       $this->fields[$offset] = $value;
     }
     /**
@@ -575,12 +553,10 @@
      *
      * @return void
      */
-    public function offsetUnset($offset)
-    {
+    public function offsetUnset($offset) {
       unset($this->fields[$offset]);
     }
-    public function getFields()
-    {
+    public function getFields() {
       return $this->fields;
     }
   }

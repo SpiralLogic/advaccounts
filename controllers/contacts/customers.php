@@ -18,8 +18,7 @@
   {
     /** @var Debtor */
     protected $customer;
-    protected function before()
-    {
+    protected function before() {
       ADVAccounting::i()->set_selected('Debtors');
       if (AJAX_REFERRER) {
         if (isset($_GET['term'])) {
@@ -44,8 +43,7 @@
       $this->JS->footerFile("/js/company.js");
       $this->JS->onload("Company.setValues(" . json_encode($data) . ");");
     }
-    protected function index()
-    {
+    protected function index() {
       Page::start(_($help_context = "Customers"), SA_CUSTOMER, $this->Input->request('frame'));
       $currentBranch = $this->customer->branches[$this->customer->defaultBranch];
       if (isset($_POST['delete'])) {
@@ -98,39 +96,39 @@
                                                 ]);
       $view->set('accounts_postcode', $accounts_postcode);
       $form->hidden('accounts_id', $this->customer->accounts->accounts_id);
-      $form->percent("Discount Percent:", 'discount', $this->customer->discount, ["disabled"=> User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
-      $form->percent("Prompt Payment Discount:", 'payment_discount', $this->customer->payment_discount, ["disabled"=> User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
-      $form->number("Credit Limit:", 'credit_limit', $this->customer->credit_limit, null, ['$'], ["disabled"=> User::i()->hasAccess(SA_CUSTOMER_CREDIT)]);
+      $form->percent('discount', $this->customer->discount, ["disabled"=> !User::i()->hasAccess(SA_CUSTOMER_CREDIT)])->label("Discount Percent:");
+      $form->percent('payment_discount', $this->customer->payment_discount, ["disabled"=> !User::i()->hasAccess(SA_CUSTOMER_CREDIT)])->label("Prompt Payment Discount:");
+      $form->amount('credit_limit', $this->customer->credit_limit, ["disabled"=> !User::i()->hasAccess(SA_CUSTOMER_CREDIT)])->label("Credit Limit:");
       $form->text('tax_id', $this->customer->tax_id)->label("GSTNo:");
-      $form->label('Sales Type:', 'sales_type', Sales_Type::select('sales_type', $this->customer->sales_type));
-      $form->label('Inactive:', 'inactive', UI::select('inactive', ['No', 'Yes'], ['name' => 'inactive'], $this->customer->inactive, true));
+      $form->custom(Sales_Type::select('sales_type', $this->customer->sales_type))->label('Sales Type:');
+      $form->custom(UI::select('inactive', ['No', 'Yes'], ['name' => 'inactive'], $this->customer->inactive, true))->label('Inactive:');
       if (!$this->customer->id) {
-        $form->label('Currency Code:', 'curr_code', GL_Currency::select('curr_code', $this->customer->curr_code));
+        $form->custom(GL_Currency::select('curr_code', $this->customer->curr_code))->label('Currency Code:');
       } else {
         $form->label('Currency Code:', 'curr_code', $this->customer->curr_code);
         $form->hidden('curr_code', $this->customer->curr_code);
       }
-      $form->label('Payment Terms:', 'payment_terms', GL_UI::payment_terms('payment_terms', $this->customer->payment_terms));
-      $form->label('Credit Status:', 'credit_status', Sales_CreditStatus::select('credit_status', $this->customer->credit_status));
+      $form->custom(GL_UI::payment_terms('payment_terms', $this->customer->payment_terms))->label('Payment Terms:');
+      $form->custom(Sales_CreditStatus::select('credit_status', $this->customer->credit_status))->label('Credit Status:');
       $form->textarea('messageLog', Contact_Log::read($this->customer->id, CT_CUSTOMER), ['style'=> 'height:100px;width:95%;margin:0 auto;', 'cols'=> 100]);
       /** @noinspection PhpUndefinedMethodInspection */
       $contacts = new View('contacts/contact');
       $view->set('contacts', $contacts->render(true));
       $form->hidden('branch_id', $currentBranch->branch_id);
-      $form->label('Salesman:', 'branch[salesman]', Sales_UI::persons('branch[salesman]', $currentBranch->salesman));
-      $form->label('Sales Area:', 'branch[area]', Sales_UI::areas('branch[area]', $currentBranch->area));
-      $form->label('Sales Group:', 'branch[group_no]', Sales_UI::groups('branch[group_no]', $currentBranch->group_no));
-      $form->label('Dispatch Location:', 'branch[default_location]', Inv_Location::select('branch[default_location]', $currentBranch->default_location));
-      $form->label('Default Shipper:', 'branch[default_ship_via]', Sales_UI::shippers('branch[default_ship_via]', $currentBranch->default_ship_via));
-      $form->label('Tax Group:', 'branch[tax_group_id]', Tax_Groups::select('branch[tax_group_id]', $currentBranch->tax_group_id));
+      $form->custom(Sales_UI::persons('branch[salesman]', $currentBranch->salesman))->label('Salesman:');
+      $form->custom(Sales_UI::areas('branch[area]', $currentBranch->area))->label('Sales Area:');
+      $form->custom(Sales_UI::groups('branch[group_no]', $currentBranch->group_no))->label('Sales Group:');
+      $form->custom(Inv_Location::select('branch[default_location]', $currentBranch->default_location))->label('Dispatch Location:');
+      $form->custom(Sales_UI::shippers('branch[default_ship_via]', $currentBranch->default_ship_via))->label('Default Shipper:');
+      $form->custom(Tax_Groups::select('branch[tax_group_id]', $currentBranch->tax_group_id))->label('Tax Group:');
       $form->label(
         'Disabled:',
         'branch[disable_trans]',
         UI::select('branch.disable_trans', ['Yes', 'No'], ['name' => 'branch[disable_trans]'], $currentBranch->disable_trans, true)
       );
       $form->text('webid', $this->customer->webid, ['disbaled'=> true])->label("Websale ID");
-      $form->label('Sales Account:', 'branch[sales_account]', GL_UI::all('branch[sales_account]', $currentBranch->sales_account, true, false, true));
-      $form->label('Receivables Account:', 'branch[receivables_account]', GL_UI::all('branch[receivables_account]', $currentBranch->receivables_account, true, false, false));
+      $form->custom(GL_UI::all('branch[sales_account]', $currentBranch->sales_account, true, false, true))->label('Sales Account:');
+      $form->custom(GL_UI::all('branch[receivables_account]', $currentBranch->receivables_account, true, false, false))->label('Receivables Account:');
       $form->label(
         'Discount Account:',
         'branch[sales_discount_account]',
@@ -178,22 +176,19 @@
       $view->render();
       Page::end(true);
     }
-    protected function delete()
-    {
+    protected function delete() {
       $this->customer->delete();
       $status = $this->customer->getStatus();
       Event::notice($status['message']);
     }
-    protected function after()
-    {
+    protected function after() {
       // TODO: Implement after() method.
     }
     /**
      * @internal param $prefix
      * @return bool|mixed
      */
-    protected function runValidation()
-    {
+    protected function runValidation() {
       Validation::check(Validation::SALES_TYPES, _("There are no sales types defined. Please define at least one sales type before adding a customer."));
       Validation::check(Validation::SALESPERSONS, _("There are no sales people defined in the system. At least one sales person is required before proceeding."));
       Validation::check(Validation::SALES_AREA, _("There are no sales areas defined in the system. At least one sales area is required before proceeding."));

@@ -139,7 +139,7 @@ JS;
     }
     protected function go() {
       Ajax::_activate('gl_items');
-      GL_QuickEntry::show_menu($this->trans, $_POST['qid'], Validation::input_num('total_amount'), QE_SUPPINV);
+      GL_QuickEntry::addEntry($this->trans, $_POST['qid'], Validation::input_num('total_amount'), QE_SUPPINV);
       $_POST['total_amount'] = Num::_priceFormat(0);
       Ajax::_activate('total_amount');
       Ajax::_activate('inv_tot');

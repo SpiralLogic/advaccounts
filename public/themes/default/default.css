@@ -39,7 +39,7 @@ table {
 | BOOTSTRAP FORMS 									|
 \--------------------------------------------------*/
 
-textarea,select,
+textarea, select,
 input,
 input[type="text"],
 input[type="password"],
@@ -71,7 +71,7 @@ input[type="color"],
   transition:            border linear 0.2s, box-shadow linear 0.2s;
 }
 
-textarea:focus,select:focus,
+textarea:focus, select:focus,
 input:focus,
 input[type="text"]:focus,
 input[type="password"]:focus,
@@ -269,7 +269,7 @@ textarea {
   height: auto;
 }
 
-textarea,select,
+textarea, select,
 input[type="text"],
 input[type="password"],
 input[type="datetime"],
@@ -300,7 +300,7 @@ input[type="color"],
   transition:            border linear 0.2s, box-shadow linear 0.2s;
 }
 
-textarea:focus,select:focus,
+textarea:focus, select:focus,
 input[type="text"]:focus,
 input[type="password"]:focus,
 input[type="datetime"]:focus,
@@ -1084,8 +1084,9 @@ legend + .control-group {
 }
 
 .btn-mini.btn-split {
-  padding:     2px 0 2px 6px;
+  padding: 2px 0 2px 6px;
 }
+
 .btn-primary,
 .btn-primary:hover,
 .btn-warning,
@@ -3450,22 +3451,28 @@ div.err_msg, div.warn_msg, div.info_msg, div.success_msg {
   box-shadow:             0 2px 3px 1px rgba(10, 10, 10, .5);
   box-shadow:             0 2px 3px 1px rgba(10, 10, 10, .5);
 }
-.error .tooltip-inner ,.warning .tooltip-inner {
+
+.error .tooltip-inner, .warning .tooltip-inner {
   font-weight: bold;
 }
+
 .error .tooltip-inner {
-  background:red;
+  background: red;
 }
+
 .warning .tooltip-inner {
-  background:rgb(255, 193, 5);
-  color:rgb(12, 12, 12);
+  background: rgb(255, 193, 5);
+  color:      rgb(12, 12, 12);
 }
-.error.tooltip.right .tooltip-arrow{
-  border-right:5px solid red;
+
+.error.tooltip.right .tooltip-arrow {
+  border-right: 5px solid red;
 }
-.warning.tooltip.right .tooltip-arrow{
-  border-right:5px solid rgb(255, 193, 5);
+
+.warning.tooltip.right .tooltip-arrow {
+  border-right: 5px solid rgb(255, 193, 5);
 }
+
 div.info_msg {
   background-color:  #0074cc;
   background-image:  -moz-linear-gradient(top, #0088cc, #0055cc);
@@ -3598,7 +3605,7 @@ div.formbox {
   margin-right: -1px;
 }
 
-.grid .input-append .add-on, .formbox .input-append .add-on {
+.grid .input-append input+.add-on, .formbox .input-append input+.add-on {
   margin-left: -1px;
 }
 
@@ -3623,6 +3630,10 @@ div.formbox {
 .formbox .input-prepend input {
   margin-left: -1px;
   border-left: none;
+}
+
+.formbox .input-append.input-prepend input {
+  width: 136px;
 }
 
 div.formbox label > span:first-child {
@@ -4228,9 +4239,11 @@ body.lite {
   color:       red;
   font-weight: bold;
 }
+
 .greenfg {
-  color:#0b0;
+  color: #0b0;
 }
+
 .redborder {
   border-width: 2px;
   border-style: solid;

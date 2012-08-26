@@ -1,7 +1,3 @@
 <?php
-$test = new \ADV\App\Form\Form();
-$test->text('test','ed',['class'=>'wawa'])->label('wawa');
-
-
-  $feilds = $test->getFields();
-echo $feilds['test'];
+  $test = new \ADV\App\Form\Form();
+  $test->custom(Sales_UI::persons('branch[salesman]'));

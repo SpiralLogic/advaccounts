@@ -214,19 +214,11 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
                           }
                           // Write errors to the debug div.
                           if (errors) {
-                            Adv.Status.show({html:errors});
-                            if (cmd =='fc' && Adv.msgbox.find('div').is('.err_msg,.warn_msg')) {
-                              if (Adv.msgbox.find('div').is('err_msg')) {
-                                tooltipclass = 'error';
-                              } else {
-                                tooltipclass = 'warning';
-                              }
-
-                              var feild =$('#'+data);
-                              if (feild.is('input'))
-                              {
-                                feild.attr('title', Adv.msgbox.text()).tooltip({placement:'right', class:tooltipclass}).tooltip('show');
-                              }
+                            if (cmd == 'fc') {
+                              Adv.Forms.error(data, errors)
+                            }
+                            else {
+                              Adv.Status.show({html:errors});
                             }
                           }
                           if (Adv.loader) {

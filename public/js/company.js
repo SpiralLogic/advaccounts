@@ -12,8 +12,8 @@ Adv.extend({
              resetState: function () {
                $("#tabs0 input, #tabs0 textarea").empty();
                $("#company").val('');
-               Company.fetch(0);                   Adv.fieldsChanged = 0;
-
+               Company.fetch(0);
+               Adv.fieldsChanged = 0;
                Adv.btnCancel.hide();
                Adv.btnConfirm.hide();
                Adv.btnNew.show();
@@ -173,7 +173,7 @@ var Accounts = function () {
 var Company = function () {
   var company, companytype, transactions = $('#transactions'), companyIDs = $("#companyIDs"), $companyID = $("#name").attr('autocomplete', 'off');
   return {
-    init:      function () {
+    init:         function () {
       Branches.init();
       $companyID.autocomplete({
                                 source:   function (request, response) {
@@ -201,7 +201,7 @@ var Company = function () {
                                       window.setTimeout(function () {$this.autocomplete('search', $this.val())}, 1)
                                     });
     },
-    setValues: function (content) {
+    setValues:    function (content) {
       if (!content.company) {
         return;
       }
@@ -232,13 +232,13 @@ var Company = function () {
       });
       Adv.Forms.resetHighlights();
     },
-    hideSearch:function () {
+    hideSearch:   function () {
       $companyID.autocomplete('disable');
     },
-    showSearch:function () {
+    showSearch:   function () {
       $companyID.autocomplete('enable');
     },
-    fetch:     function (item) {
+    fetch:        function (item) {
       if (typeof(item) === "number") {
         item = {id:item};
       }
@@ -248,7 +248,7 @@ var Company = function () {
       }, 'json');
       Company.getFrames(item.id);
     },
-    getFrames: function (id, data) {
+    getFrames:    function (id, data) {
       if (id === undefined && company.id) {
         id = company.id
       }
@@ -259,7 +259,7 @@ var Company = function () {
       data = data || '';
       $invoiceFrame.load($invoiceFrameSrc, '&' + data + "&frame=1&id=" + id);
     },
-    useShipFeilds: function() {
+    useShipFeilds:function () {
       Adv.accFields.each(function () {
         var newval, $this = $(this), name = $this.attr('name').match(/([^[]*)\[(.+)\]/);
         if (!name) {
@@ -277,23 +277,20 @@ var Company = function () {
         Company.set(name[0], newval);
       });
     },
-    Save:      function () {
+    Save:         function () {
       Branches.btnBranchAdd();
       Adv.btnConfirm.prop('disabled', true);
       $.post('#', Company.get(), function (data) {
         Adv.btnConfirm.prop('disabled', false);
-        if (data.status) {
-          Adv.Status.show(data.status);
-          if (!data.status.status) {
-            return;
-          }
+        if (data.status && !data.status.status) {
+          return;
         }
         Branches.adding = false;
         Company.setValues(data);
         Adv.revertState();
       }, 'json');
     },
-    set:       function (key, value) {
+    set:          function (key, value) {
       var group, valarray = key.match(/([^[]*)\[(.+)\]/);
       if (valarray !== null) {
         group = valarray[1];
@@ -313,7 +310,7 @@ var Company = function () {
           company[key] = value;
       }
     },
-    get:       function () {
+    get:          function () {
       return company
     }
   }
@@ -348,7 +345,7 @@ $(function () {
     return false;
   }, selected:                              -1 });
   $("#useShipAddress").click(function (e) {
-Company.useShipFeilds();
+    Company.useShipFeilds();
     return false;
   });
   Adv.o.companysearch = $('#companysearch');
@@ -401,9 +398,9 @@ Company.useShipFeilds();
     Adv.Forms.stateModified($this);
     if (Adv.fieldsChanged > 0) {
       buttontext = (Company.get().id) ? "Changes" : "New";
-            Adv.btnNew.hide();
-            Adv.btnCancel.html('<i class="icon-trash"></i> Cancel ' + buttontext).show();
-            Adv.btnConfirm.html('<i class="icon-ok"></i> Save ' + buttontext).show();
+      Adv.btnNew.hide();
+      Adv.btnCancel.html('<i class="icon-trash"></i> Cancel ' + buttontext).show();
+      Adv.btnConfirm.html('<i class="icon-ok"></i> Save ' + buttontext).show();
       Adv.o.companysearch.prop('disabled', true);
     }
     else {
