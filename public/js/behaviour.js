@@ -103,7 +103,6 @@ JsHttpRequest.request = function (trigger, form, tout) {
   }
   catch (e) {
   }
-  Adv.Scroll.loadPosition(true);
   JsHttpRequest._request(trigger, form, tout, 0);
 };
 JsHttpRequest._request = function (trigger, form, tout, retry) {
@@ -229,6 +228,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
                           // Restore focus if we've just lost focus because of DOM element refresh
                           Adv.Events.rebind();
                           if (!errors && !newwin) {
+                            Adv.Scroll.loadPosition(true);
                             Adv.Forms.setFocus();
                           }
                         }

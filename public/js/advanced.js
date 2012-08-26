@@ -650,7 +650,7 @@ Adv.extend({
                      return;
                    }
                    if (typeof(Adv.Scroll.focus) == 'number' && typeof Adv.Scroll.elementName == 'string') {
-                     var pos = $(document.getElementsByName(Adv.Scroll.elementName)[0]).offset().top;
+                     var pos = $(document.getElementsByName(Adv.Scroll.elementName)[0]).position().top;
                      Adv.Scroll.to(pos - Adv.Scroll.focus);
                      Adv.Scroll.focus = Adv.Scroll.elementName = Adv.ScrollDetect.loaded = true;
                      return;
