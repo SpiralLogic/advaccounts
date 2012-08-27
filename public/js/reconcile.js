@@ -61,8 +61,7 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
     return false;
   },
   changeFlag:                function () {
-    Adv.Scroll.focus = $(this).position().top - scrollY;
-    Adv.Scroll.elementName = $(this).attr('name');
+    Adv.Scroll.set(this);
     JsHttpRequest.request('_' + $(this).attr('name') + '_update', this.form);
   },
   setUpGrid:                 function () {

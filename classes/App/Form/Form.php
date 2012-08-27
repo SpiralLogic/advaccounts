@@ -2,6 +2,7 @@
   namespace ADV\App\Form;
 
   use \ADV\Core\Ajax;
+  use ADV\Core\Session;
   use ADV\Core\Arr;
   use ADV\Core\Num;
   use Forms;
@@ -33,13 +34,19 @@
     protected $Ajax;
     /** @var Input */
     protected $Input;
+    protected $uniqueid;
+    protected $validators = [];
     /**
      * @param ADV\Core\Input\Input $input
      * @param ADV\Core\Ajax        $ajax
+     * @param \ADV\Core\Session    $session
      */
-    public function __construct(\ADV\Core\Input\Input $input = null, \ADV\Core\Ajax $ajax = null) {
-      $this->Ajax  = $ajax ? : Ajax::i();
-      $this->Input = $input ? : Input::i();
+    public function __construct(\ADV\Core\Input\Input $input = null, \ADV\Core\Ajax $ajax = null, \ADV\Core\Session $session = null) {
+      $this->Ajax                         = $ajax ? : Ajax::i();
+      $this->Input                        = $input ? : Input::i();
+      $this->Session                      = $session ? : Session::i();
+      $this->uniqueid                     = uniqid();
+      $_SESSION['forms'][$this->uniqueid] = $this;
     }
     /**
      * @static
@@ -52,12 +59,13 @@
      * @return
      */
     public function start($name = '', $action = '', $multi = null, $input_attr = []) {
+
       $attr['enctype'] = $multi ? 'multipart/form-data' : null;
       $attr['name']    = $name;
       $attr['method']  = 'post';
       $attr['action']  = $action;
       array_merge($attr, $input_attr);
-      $this->start = HTML::setReturn(true)->form($name, $attr)->setReturn(false);
+      $this->start = HTML::setReturn(true)->form($name, $attr)->input(null, ['type'=> 'hidden', 'value'=> $this->uniqueid, 'name'=> '_form_id'], false)->setReturn(false);
 
       return $this->start;
     }
@@ -134,10 +142,12 @@
      */
     public function custom($control) {
       preg_match('/name=([\'"]?)(.+?)\1/', $control, $matches);
-      $name  = $matches[2];
-      $feild = new Feild('custom', $name);
+      $name      = $matches[2];
+      $validator = null;
+      $feild     = new Feild('custom', $name);
       $feild->customControl($control);
-      $this->fields[$feild->id] = $feild;
+      $this->fields[$feild->id]     = $feild;
+      $this->validators[$feild->id] =& $feild->validator;
 
       return $feild;
     }
@@ -191,8 +201,9 @@
       if ($value === null && $this->Input->hasPost($name)) {
         $value = $this->Input->post($name);
       }
-      $feild['value']           = e($value);
-      $this->fields[$feild->id] = $feild;
+      $feild['value']               = e($value);
+      $this->fields[$feild->id]     = $feild;
+      $this->validators[$feild->id] =& $feild->validator;
       $this->Ajax->addUpdate($name, $name, $value);
 
       return $feild;
@@ -520,7 +531,7 @@
      *                      The offset to retrieve.
      * </p>
      *
-     * @return mixed Can return all value types.
+     * @return \Adv\App\Form\Feild Can return all value types.
      */
     public function offsetGet($offset) {
       return $this->fields[$offset];
@@ -556,7 +567,25 @@
     public function offsetUnset($offset) {
       unset($this->fields[$offset]);
     }
+    /**
+     * @return array
+     */
     public function getFields() {
       return $this->fields;
+    }
+    /**
+     * @param $valids
+     */
+    public function runValidators($valids) {
+
+      foreach ($_SESSION['forms'][$this->uniqueid]->validators as $function) {
+        $valids->$function();
+      }
+    }
+    /**
+     * @return array
+     */
+    public function __sleep() {
+      return ['uniqueid', 'validators'];
     }
   }

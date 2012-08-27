@@ -227,9 +227,8 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
                           //document.getElementById('msgbox').scrollIntoView(true);
                           // Restore focus if we've just lost focus because of DOM element refresh
                           Adv.Events.rebind();
-                          if (!errors && !newwin) {
+                          if (!errors && !newwin && cmd != 'fc') {
                             Adv.Scroll.loadPosition(true);
-                            Adv.Forms.setFocus();
                           }
                         }
                       }, false);

@@ -24,13 +24,15 @@
     protected $content = '';
     protected $label;
     protected $tag;
-    protected $validator;
+    public $validator;
     protected $append;
     protected $prepend;
     protected $control;
     /**
      * @param $tag
      * @param $name
+     *
+     * @internal param $validator
      */
     public function __construct($tag, $name) {
       $this->tag  = $tag;
@@ -128,27 +130,15 @@
       return $return . "</div>";
     }
     /**
-     * @param $function
-     */
-    public function setValidation(Callable $function) {
-      $this->validator = $function;
-    }
-    /**
-     * @param array $args
+     * @param $validator
      *
-     * @return bool
+     * @return \ADV\App\Form\Feild
+     * @internal param $function
      */
-    public function isValid(array $args) {
-      $result = call_user_func_array($this->validator, $args);
-      if ($result === true) {
-        return true;
-      }
-      if (is_string($result)) {
-        Event::error($result);
-      }
-      JS::setFocus($this->id);
+    public function setValidator($validator) {
+      $this->validator = $validator;
 
-      return false;
+      return $this;
     }
     /**
      * @return string

@@ -182,7 +182,6 @@
       Event::notice($status['message']);
     }
     protected function after() {
-      // TODO: Implement after() method.
     }
     /**
      * @internal param $prefix

@@ -3454,6 +3454,7 @@ div.err_msg, div.warn_msg, div.info_msg, div.success_msg {
 
 .error .tooltip-inner, .warning .tooltip-inner {
   font-weight: bold;
+  opacity:     .9;
 }
 
 .error .tooltip-inner {

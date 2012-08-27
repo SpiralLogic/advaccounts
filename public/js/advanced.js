@@ -254,7 +254,7 @@ Adv.extend({
                }
              }},
              Forms:      (function () {
-               var tooltip, tooltiptimeout, menu = {
+               var tooltip, tooltiptimeout, focus, menu = {
                  current:   null,
                  closetimer:null,
                  open:      function (el) {
@@ -478,8 +478,8 @@ Adv.extend({
                    }
                    else {
                      if (!name) { // page load/ajax update
-                       if (Adv.Scroll.focus) {
-                         name = Adv.Scroll.focus;
+                       if (focus) {
+                         name = focus;
                        }  // last focus set in onfocus handlers
                        else {
                          if (document.forms.length) {  // no current focus (first page display) -  set it from from last form
@@ -518,6 +518,13 @@ Adv.extend({
                      return true;
                    }
                    return false;
+                 }, saveFocus:   function (e) {
+                   focus = e.name || e.id;
+                   var h = document.getElementById('hints');
+                   if (h) {
+                     h.style.display = e.title && e.title.length ? 'inline' : 'none';
+                     h.innerHTML = e.title ? e.title : '';
+                   }
                  },
                  //returns the absolute position of some element within document
                  elementPos:     function (e) {
@@ -625,7 +632,7 @@ Adv.extend({
                      tooltip = feild.attr('title', error).tooltip({trigger:'manual', placement:'right', class:type}).tooltip('show');
                      tooltiptimeout = setTimeout(function () {
                        if (tooltip) {
-                         // tooltip.tooltip('destroy');
+                         tooltip.tooltip('destroy');
                        }
                      }, 3000);
                    }
@@ -638,11 +645,15 @@ Adv.extend({
                  focus:       null,
                  elementName: null,
                  to:          function (position, duration) {
+                   console.log(position, duration);
                    if (duration === undefined) {
                      $(window).scrollTop(position);
                      return;
                    }
                    $('html,body').animate({scrollTop:position}, {queue:false, duration:duration, easing:'easeInSine'});
+                 }, set:      function (el) {
+                   Adv.Scroll.focus = $(el).position().top - scrollY;
+                   Adv.Scroll.elementName = $(el).attr('name');
                  },
                  loadPosition:function (force) {
                    var scrollMaxY = document.documentElement.scrollHeight - document.documentElement.clientHeight;
