@@ -11,4 +11,4 @@
     <button class="btn btn-primary save">Save changes</button>
   </div>
 </div>
-<span  id="help_indicator"><i style='width:25px;color:#0000cd;z-index:100' class='font20 icon-question-sign'></i></span>
+<span  id="help_indicator" class='hidden'><i style='width:25px;color:#0000cd;z-index:100' class='font20 icon-question-sign'></i></span>
