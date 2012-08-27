@@ -31,8 +31,8 @@
     protected function _buildQuery()
     {
       $sql = "UPDATE " . $this->table . " SET ";
-      foreach ($this->fields as &$feild) {
-        $feild = " $feild = :$feild";
+      foreach ($this->fields as &$field) {
+        $field = " $field = :$field";
       }
       $sql .= implode(', ', $this->fields);
       $sql .= $this->_buildWhere();

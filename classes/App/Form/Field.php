@@ -16,7 +16,7 @@
   /**
 
    */
-  class Feild implements \ArrayAccess
+  class Field implements \ArrayAccess
   {
     protected $attr = [];
     public $id;
@@ -42,7 +42,7 @@
     /**
      * @param $label
      *
-     * @return \ADV\App\Form\Feild
+     * @return \ADV\App\Form\Field
      */
     public function label($label) {
       if ($label === null) {
@@ -64,7 +64,7 @@
     /**
      * @param $content
      *
-     * @return Feild
+     * @return Field
      */
     public function setContent($content) {
       $this->content = $content;
@@ -80,7 +80,7 @@
     /**
      * @param $attr
      *
-     * @return Feild
+     * @return Field
      */
     public function mergeAttr($attr) {
       $this->attr = array_merge($this->attr, (array) $attr);
@@ -90,7 +90,7 @@
     /**
      * @param $text
      *
-     * @return \ADV\App\Form\Feild
+     * @return \ADV\App\Form\Field
      */
     public function append($text) {
       $this->append = $text;
@@ -100,7 +100,7 @@
     /**
      * @param $text
      *
-     * @return \ADV\App\Form\Feild
+     * @return \ADV\App\Form\Field
      */
     public function prepend($text) {
       $this->prepend = $text;
@@ -132,13 +132,26 @@
     /**
      * @param $validator
      *
-     * @return \ADV\App\Form\Feild
+     * @return \ADV\App\Form\Field
      * @internal param $function
      */
     public function setValidator($validator) {
       $this->validator = $validator;
 
       return $this;
+    }
+    /**
+     * @param $warning
+     *
+     * @return Field
+     */
+    public function setWarning($warning) {
+      if ($this->tag!=='button'){
+        return $this;
+      }
+      JS::_beforeload("_validate.".$this->name."=function(){ return confirm('" . strtr($warning, array("\n" => '\\n')) . "');};");
+      return $this;
+
     }
     /**
      * @return string

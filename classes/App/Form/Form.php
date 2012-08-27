@@ -1,6 +1,5 @@
 <?php
   namespace ADV\App\Form;
-
   use \ADV\Core\Ajax;
   use ADV\Core\Session;
   use ADV\Core\Arr;
@@ -27,6 +26,7 @@
    */
   class Form implements \ArrayAccess
   {
+
     protected $fields = [];
     protected $start;
     protected $end;
@@ -59,14 +59,12 @@
      * @return
      */
     public function start($name = '', $action = '', $multi = null, $input_attr = []) {
-
       $attr['enctype'] = $multi ? 'multipart/form-data' : null;
       $attr['name']    = $name;
       $attr['method']  = 'post';
       $attr['action']  = $action;
       array_merge($attr, $input_attr);
       $this->start = HTML::setReturn(true)->form($name, $attr)->input(null, ['type'=> 'hidden', 'value'=> $this->uniqueid, 'name'=> '_form_id'], false)->setReturn(false);
-
       return $this->start;
     }
     /**
@@ -75,7 +73,6 @@
      */
     public function end() {
       $this->end = HTML::setReturn(true)->input('_focus', ['name'=> '_focus', 'type'=> 'hidden', 'value'=> e($this->Input->post('_focus'))])->form->setReturn(false);
-
       return $this->end;
     }
     /**
@@ -92,11 +89,9 @@
       foreach ($_POST as $postkey => $postval) {
         if (strpos($postkey, $prefix) === 0) {
           $id = substr($postkey, strlen($prefix));
-
           return $numeric ? (int) $id : $id;
         }
       }
-
       return $numeric ? -1 : null;
     }
     /**
@@ -138,18 +133,17 @@
     /**
      * @param $control
      *
-     * @return \ADV\App\Form\Feild
+     * @return \ADV\App\Form\Field
      */
     public function custom($control) {
       preg_match('/name=([\'"]?)(.+?)\1/', $control, $matches);
       $name      = $matches[2];
       $validator = null;
-      $feild     = new Feild('custom', $name);
-      $feild->customControl($control);
-      $this->fields[$feild->id]     = $feild;
-      $this->validators[$feild->id] =& $feild->validator;
-
-      return $feild;
+      $field     = new Field('custom', $name);
+      $field->customControl($control);
+      $this->fields[$field->id]     = $field;
+      $this->validators[$field->id] =& $field->validator;
+      return $field;
     }
     /**
      * @param      $name
@@ -159,8 +153,8 @@
      * @return string
      */
     public function hidden($name, $value = null) {
-      $feild         = $this->addFeild('input', $name, $value);
-      $feild['type'] = 'hidden';
+      $field         = $this->addField('input', $name, $value);
+      $field['type'] = 'hidden';
       $this->Ajax->addUpdate($name, $name, $value);
     }
     /**
@@ -168,52 +162,49 @@
      * @param        $value
      * @param array  $input_attr
      *
-     * @return \ADV\App\Form\Feild
+     * @return \ADV\App\Form\Field
      */
     public function  textarea($name, $value = null, $input_attr = []) {
-      $feild = $this->addFeild('textarea', $name, $value);
-      $feild->setContent($value);
-
-      return $feild->mergeAttr($input_attr);
+      $field = $this->addField('textarea', $name, $value);
+      $field->setContent($value);
+      return $field->mergeAttr($input_attr);
     }
     /**
      * @param            $name
      * @param null       $value
      * @param array      $input_attr
      *
-     * @return \ADV\App\Form\Feild
+     * @return \ADV\App\Form\Field
      */
     public function text($name, $value = null, $input_attr = []) {
-      $feild         = $this->addFeild('input', $name, $value);
-      $feild['type'] = 'text';
-
-      return $feild->mergeAttr($input_attr);
+      $field         = $this->addField('input', $name, $value);
+      $field['type'] = 'text';
+      return $field->mergeAttr($input_attr);
     }
     /**
      * @param $tag
      * @param $name
      * @param $value
      *
-     * @return Feild
+     * @return Field
      */
-    protected function addFeild($tag, $name, $value) {
-      $feild = new Feild($tag, $name);
+    protected function addField($tag, $name, $value) {
+      $field = new Field($tag, $name);
       if ($value === null && $this->Input->hasPost($name)) {
         $value = $this->Input->post($name);
       }
-      $feild['value']               = e($value);
-      $this->fields[$feild->id]     = $feild;
-      $this->validators[$feild->id] =& $feild->validator;
+      $field['value']               = e($value);
+      $this->fields[$field->id]     = $field;
+      $this->validators[$field->id] =& $field->validator;
       $this->Ajax->addUpdate($name, $name, $value);
-
-      return $feild;
+      return $field;
     }
     /**
      * @param       $name
      * @param null  $value
      * @param array $inputparams
      *
-     * @return Feild
+     * @return Field
 
      */
     public function  percent($name, $value = null, $inputparams = []) {
@@ -224,7 +215,7 @@
      * @param null  $value
      * @param array $inputparams
      *
-     * @return Feild
+     * @return Field
 
      */
     public function  amount($name, $value = null, $inputparams = []) {
@@ -236,23 +227,22 @@
      * @param null   $dec
      * @param array  $input_attr
      *
-     * @return \ADV\App\Form\Feild
+     * @return \ADV\App\Form\Field
      */
     public function number($name, $value = null, $dec = null, $input_attr = []) {
-      $feild             = $this->addFeild('input', $name, $value);
-      $feild['data-dec'] = $dec ? : User::price_dec();
-      $_POST[$name]      = $feild['value'] = Num::_format($feild['value'] ? : 0, $feild['data-dec']);
+      $field             = $this->addField('input', $name, $value);
+      $field['data-dec'] = $dec ? : User::price_dec();
+      $_POST[$name]      = $field['value'] = Num::_format($field['value'] ? : 0, $field['data-dec']);
       $size              = Arr::get($input_attr, 'size');
       if ($size && is_numeric($size)) {
-        $feild['size'] = $size;
+        $field['size'] = $size;
       } elseif (is_string($size)) {
-        $feild['class'] .= ($name == 'freight') ? ' freight ' : ' amount ';
+        $field['class'] .= ($name == 'freight') ? ' freight ' : ' amount ';
       }
-      $feild['maxlength'] = $input_attr['max'];
-      $feild['type']      = 'text';
+      $field['maxlength'] = $input_attr['max'];
+      $field['type']      = 'text';
       $this->Ajax->addAssign($name, $name, 'data-dec', $dec);
-
-      return $feild->mergeAttr($input_attr);
+      return $field->mergeAttr($input_attr);
     }
     /**
      * Universal sql combo generator
@@ -270,7 +260,6 @@
      */
     public function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = null) {
       $box = new SelectBox($name, $selected_id, $sql, $valfield, $namefield, $options);
-
       return $box->create();
     }
     /**
@@ -350,7 +339,6 @@
         $selector .= HTML::setReturn(true)->input(null, $input_attr, false)->setReturn(false);
       }
       JS::_defaultFocus($name);
-
       return $selector;
     }
     // SUBMITS //
@@ -369,54 +357,23 @@
      * $atype can contain also multiply type selectors separated by space,
      * however make sense only combination of 'process' and one of defualt/selector/cancel
      *
-     * @param      $name
-     * @param      $value
-     * @param bool $echo
-     * @param bool $title
-     * @param bool $atype
-     * @param bool $icon
-     *
-     * @return string
+     * @param       $name
+     * @param       $value
+     * @param bool  $caption
+     * @param bool  $icon
+     * @param array $input_attr
      */
-    public static function submit($name, $value, $echo = true, $title = false, $atype = false, $icon = false) {
-      $aspect = '';
-      if ($atype === null) {
-        $aspect = User::fallback() ? " data-aspect='fallback'" : " style='display:none;'";
-      } elseif (!is_bool($atype)) { // necessary: switch uses '=='
-        $aspect = " data-aspect='$atype' ";
-        $types  = explode(' ', $atype);
-        foreach ($types as $type) {
-          switch ($type) {
-            case 'selector':
-              $aspect = " data-aspect='selector' rel='$value'";
-              $value  = _("Select");
-              if ($icon === false) {
-                $icon = "<i class='greenfg icon-ok'> </i>";
-              }
-              break;
-            case 'default':
-              $atype = true;
-              if ($icon === false) {
-                $icon = "<i class='greenfg icon-ok'> </i>";
-              }
-              break;
-            case 'cancel':
-              if ($icon === false) {
-                $icon = "<i class=' icon-danger'> </i>";
-              }
-              break;
-          }
-        }
-      }
-      $caption    = ($name == '_action') ? $title : $value;
-      $id         = ($name == '_action') ? '' : "id=\"$name\"";
-      $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') :
-        $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\"  value=\"$value\"" . ($title ? " title='$title'" : '') . ">" . $icon . "<span>$caption</span>" . "</button>\n";
-      if ($echo) {
-        echo $submit_str;
-      } else {
-        return $submit_str;
-      }
+    public function submit($name, $value, $caption = false, $icon = false, $input_attr = []) {
+      $field =       $field = new Field('button', $name);
+      $field->id = $value;
+      $field['class'] .= 'ajaxsubmit';
+      $field['type']  = 'submit';
+      $field['value']  = $value;
+      $field['title'] = $caption;
+      $icon           = ($icon) ? "<i class='" . $icon . "'> </i> " : '';
+      $field->setContent($icon . $caption);
+      $this->fields[$field->id]=$field;
+      return $field->mergeAttr($input_attr);
     }
     /**
      * For following controls:
@@ -470,7 +427,6 @@
     public function setIcon($icon, $title = '') {
       $path  = THEME_PATH . User::theme();
       $title = $title ? " title='$title'" : '';
-
       return "<img src='$path/images/$icon' style='width:12px; height=12px' $title />";
     }
     /**
@@ -497,7 +453,6 @@
         {
           $icon = ICON_DELETE;
         }
-
         return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='1'" . ($title ? " title='$title'" : " title='$value'") . ($aspect ?
           " data-aspect='$aspect'" : '') . $rel . " />" . Forms::setIcon($icon) . "</button>\n";
       } else {
@@ -531,7 +486,7 @@
      *                      The offset to retrieve.
      * </p>
      *
-     * @return \Adv\App\Form\Feild Can return all value types.
+     * @return \Adv\App\Form\Field Can return all value types.
      */
     public function offsetGet($offset) {
       return $this->fields[$offset];
@@ -577,7 +532,6 @@
      * @param $valids
      */
     public function runValidators($valids) {
-
       foreach ($_SESSION['forms'][$this->uniqueid]->validators as $function) {
         $valids->$function();
       }

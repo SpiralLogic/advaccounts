@@ -558,12 +558,12 @@
         $offset     = ($this->curr_page - 1) * $this->page_len;
         $this->data = array_slice($this->sql, $offset, $this->page_len);
       }
-      $dbfeild_names = array_keys($this->data[0]);
-      $cnt           = min(count($dbfeild_names), count($this->columns));
+      $dbfield_names = array_keys($this->data[0]);
+      $cnt           = min(count($dbfield_names), count($this->columns));
       for ($c = $i = 0; $c < $cnt; $c++) {
         if (!(isset($this->columns[$c]['insert']) && $this->columns[$c]['insert'])) {
           //	if (!@($this->columns[$c]['type']=='skip'))
-          $this->columns[$c]['name'] = $dbfeild_names[$c];
+          $this->columns[$c]['name'] = $dbfield_names[$c];
           if (isset($this->columns[$c]['type']) && !($this->columns[$c]['type'] == 'insert')) {
             $i++;
           }

@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   use ADV\App\Controller\Base;
+  use ADV\App\Form\Form;
   use ADV\Core\JS;
   use ADV\Core\Table;
   use ADV\App\Item\Item;
@@ -109,18 +110,19 @@
       echo "</td></tr>";
       Table::end(1);
       Display::div_start('controls', 'items_table');
-      $buttons = [];
+      $buttons = new Form();
       if ($this->order->trans_no > 0 && $this->User->hasAccess(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())) {
-        Form::submitConfirm('_action', Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
-        $buttons[] = Form::submit('_action', Orders::DELETE_ORDER, false, $deleteorder); //, _('Cancels document entry or removes sales order when editing an old document')
+        $buttons->submit('_action', Orders::DELETE_ORDER, $deleteorder,ICON_DELETE)->setWarning('You are about to void this Document.\nDo you want to continue?');
+
       }
-      $buttons[] = Form::submit('_action', Orders::CANCEL_CHANGES, false, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
+      $buttons->submit('_action', Orders::CANCEL_CHANGES, _("Cancel Changes"),ICON_CANCEL);
       if (count($this->order->line_items)) {
         $type      = ($this->order->trans_no > 0) ? $corder : $porder; //_('Check entered data and save document')
-        $buttons[] = Form::submit('_action', Orders::PROCESS_ORDER, false, $type, 'default');
+        $buttons->submit('_action', Orders::PROCESS_ORDER, $type, ICON_SUBMIT);
       }
+
       $view = new View('libraries/forms');
-      $view->set('buttons', $buttons);
+      $view->set('buttons', $buttons->getFields());
       $view->render();
       Display::div_end();
       Forms::end();

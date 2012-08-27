@@ -259,7 +259,7 @@ var Company = function () {
       data = data || '';
       $invoiceFrame.load($invoiceFrameSrc, '&' + data + "&frame=1&id=" + id);
     },
-    useShipFeilds:function () {
+    useShipFields:function () {
       Adv.accFields.each(function () {
         var newval, $this = $(this), name = $this.attr('name').match(/([^[]*)\[(.+)\]/);
         if (!name) {
@@ -345,7 +345,7 @@ $(function () {
     return false;
   }, selected:                              -1 });
   $("#useShipAddress").click(function (e) {
-    Company.useShipFeilds();
+    Company.useShipFields();
     return false;
   });
   Adv.o.companysearch = $('#companysearch');

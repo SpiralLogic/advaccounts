@@ -197,17 +197,17 @@
       Table::end(1);
       Display::div_start('controls', 'items_table');
       if ($this->order->order_has_items()) {
-        Forms::submitCenterBegin(Orders::CANCEL, _("Delete This Order"));
-        Forms::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
+        Forms::submitCenterBegin(Orders::CANCEL, _("Delete This Order"),false,false,ICON_DELETE);
+        Forms::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."),false,ICON_CANCEL);
         if ($this->order->order_no) {
-          Forms::submitCenterEnd(COMMIT, _("Update Order"), '', 'default');
+          Forms::submitCenterEnd(COMMIT, _("Update Order"), '', 'default',ICON_UPDATE);
         } else {
-          Forms::submitCenterEnd(COMMIT, _("Place Order"), '', 'default');
+          Forms::submitCenterEnd(COMMIT, _("Place Order"), '', 'default',ICON_SUBMIT);
         }
       } else {
         Forms::submitConfirm(Orders::CANCEL, _('You are about to void this Document.\nDo you want to continue?'));
         Forms::submitCenterBegin(Orders::CANCEL, _("Delete This Order"), true, false, ICON_DELETE);
-        Forms::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
+        Forms::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."),false,ICON_CANCEL);
       }
       Display::div_end();
       Forms::end();

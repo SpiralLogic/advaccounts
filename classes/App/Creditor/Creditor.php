@@ -57,7 +57,7 @@
     /** @var */
     public $id = 0, $creditor_id; //
     /** @var */
-    public $name = 'New Supplier'; //
+    public $name = ''; //
     /** @var */
     /** @var */
     public $tax_id, $gst_no; //
@@ -229,11 +229,24 @@
      */
     protected function _canProcess()
     {
-      if (empty($this->name)) {
-        $this->status(false, 'Processing', "The supplier name cannot be empty.", 'name');
-        return false;
-      }
-      return true;
+      if (strlen($this->name) == 0) {
+         return $this->status(false, 'Processing', "The supplier name cannot be empty.", 'name');
+       }
+       if (strlen($this->creditor_id) == 0) {
+         $data['debtor_ref'] = substr($this->name, 0, 29);
+       }
+       if (!Validation::is_num($this->credit_limit, 0)) {
+         return $this->status(false, 'Processing', "The credit limit must be numeric and not less than zero.", 'credit_limit');
+       }
+       if (!Validation::is_num($this->discount, 0, 100)) {
+         return $this->status(
+           false,
+           'Processing',
+           "The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0.",
+           'discount'
+         );
+       }
+       return true;
     }
     /**
      * @return mixed|void

@@ -126,7 +126,7 @@
         'branch[disable_trans]',
         UI::select('branch.disable_trans', ['Yes', 'No'], ['name' => 'branch[disable_trans]'], $currentBranch->disable_trans, true)
       );
-      $form->text('webid', $this->customer->webid, ['disbaled'=> true])->label("Websale ID");
+      $form->text('webid', $this->customer->webid, ['disabled'=> true])->label("Websale ID");
       $form->custom(GL_UI::all('branch[sales_account]', $currentBranch->sales_account, true, false, true))->label('Sales Account:');
       $form->custom(GL_UI::all('branch[receivables_account]', $currentBranch->receivables_account, true, false, false))->label('Receivables Account:');
       $form->label(

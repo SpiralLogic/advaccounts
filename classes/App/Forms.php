@@ -260,8 +260,9 @@
       }
       $caption    = ($name == '_action') ? $title : $value;
       $id         = ($name == '_action') ? '' : "id=\"$name\"";
-      $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') : $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\" value=\"$value\"" . ($title ? " title='$title'" : '') . ">" . ($icon ? "<img alt='$value' src='/themes/" . User::theme(
-      ) . "/images/$icon' height='12'>" : '') . "<span>$caption</span>" . "</button>\n";
+      $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') : $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\" value=\"$value\"" . ($title ? " title='$title'" : '') . ">" . Forms::setIcon($icon) .
+        "<span>$caption</span>" .
+        "</button>\n";
       if ($echo) {
         echo $submit_str;
         return true;
@@ -440,7 +441,8 @@
      */
     public static function setIcon($icon, $title = false)
     {
-      return "<img src='/themes/" . static::$dic['User']->_theme() . "/images/$icon' style='width:12' height='12' " . ($title ? " title='$title'" : "") . " />\n";
+      $title = ($title)?"title='$title'":'';
+      return "<i class='".$icon."' > </i> ";
     }
     /**
      * @param        $name

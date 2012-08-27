@@ -90,20 +90,20 @@
                                                  'postcode' => array('supp_postcode', $this->creditor->postcode)
                                             ));
       $view->set('supp_postcode', $supp_postcode);
-      $form->percent("Prompt Payment Discount:", 'payment_discount', $this->creditor->discount, ["disabled"=> User::i()->hasAccess(SA_SUPPLIERCREDIT)]);
-      $form->number("Credit Limit:", 'credit_limit', $this->creditor->credit_limit, null, null, ["disabled"=> User::i()->hasAccess(SA_SUPPLIERCREDIT)]);
-      $form->text('tax_id', $this->creditor->tax_id)->label("GSTNo:");
-      $form->label('Tax Group:', 'tax_group_id', Tax_Groups::select('tax_group_id', $this->creditor->tax_group_id));
+      $form->percent( 'payment_discount', $this->creditor->discount, ["disabled"=> !User::i()->hasAccess(SA_SUPPLIERCREDIT)])->label("Prompt Payment Discount:");
+      $form->amount( 'credit_limit', $this->creditor->credit_limit, ["disabled"=> !User::i()->hasAccess(SA_SUPPLIERCREDIT)])->label("Credit Limit:");
+      $form->text('tax_id', $this->creditor->tax_id)->label("GST No:");
+      $form->custom( Tax_Groups::select('tax_group_id', $this->creditor->tax_group_id))->label('Tax Group:');
       $form->textarea('notes', $this->creditor->notes)->label('General Notes:');
-      $form->label('Inactive:', 'inactive', UI::select('inactive', ['0'=> 'No', '1'=> 'Yes'], ['name' => 'inactive'], $this->creditor->inactive, true));
+      $form->custom( UI::select('inactive', ['0'=> 'No', '1'=> 'Yes'], ['name' => 'inactive'], $this->creditor->inactive, true))->label('Inactive:');
       if (!$this->creditor->id) {
-        $form->label('Currency Code:', 'curr_code', GL_Currency::select('curr_code', $this->creditor->curr_code));
+        $form->custom( GL_Currency::select('curr_code', $this->creditor->curr_code))->label('Currency Code:');
       } else {
-        $form->label('Currency Code:', 'curr_code', $this->creditor->curr_code);
+        $form->custom( $this->creditor->curr_code)->label('Currency Code:');
         $form->hidden('curr_code', $this->creditor->curr_code);
       }
-      $form->label('Payment Terms:', 'payment_terms', GL_UI::payment_terms('payment_terms', $this->creditor->payment_terms));
-      $form->label('Payable Account:', 'payable_account', GL_UI::all('payable_account', $this->creditor->payable_account, false, false, true));
+      $form->custom( GL_UI::payment_terms('payment_terms', $this->creditor->payment_terms))->label('Payment Terms:');
+      $form->custom( GL_UI::all('payable_account', $this->creditor->payable_account, false, false, true))->label('Payable Account:');
       $form->label(
         'Prompt Payment Account:',
         'payment_discount_account',

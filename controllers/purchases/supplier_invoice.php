@@ -430,7 +430,7 @@
       $js
         = <<<JS
                    $("#wrapper").delegate('.amount','change',function() {
-               var feild = $(this), ChgTax=$('[name="ChgTax"]'),ChgTotal=$('[name="ChgTotal"]'),invTotal=$('#invoiceTotal'), fields = $(this).parent().parent(), fv = {}, nodes = {
+               var field = $(this), ChgTax=$('[name="ChgTax"]'),ChgTotal=$('[name="ChgTotal"]'),invTotal=$('#invoiceTotal'), fields = $(this).parent().parent(), fv = {}, nodes = {
                qty: $('[name^="this_quantity"]',fields),
                price: $('[name^="ChgPrice"]',fields),
                discount: $('[name^="ChgDiscount"]',fields),
@@ -441,7 +441,7 @@
                $.each(nodes,function(k,v) {
                if (v && v.val()) fv[k] = Number(v.val().replace(',',''));
                });
-               if (feild.attr('id') == nodes.total.attr('id')) {
+               if (field.attr('id') == nodes.total.attr('id')) {
                if (fv.price == 0 && fv.discount==0) {
                fv.price = fv.total / fv.qty;
                } else {
@@ -456,7 +456,7 @@
                };
                Adv.Forms.priceFormat(nodes.eachprice.attr('id'),(fv.total/fv.qty),2,true);
                } else {
-                  if (feild.attr('name')=='ChgTotal' || feild.attr('name')=='ChgTax') {
+                  if (field.attr('name')=='ChgTotal' || field.attr('name')=='ChgTax') {
                   var total = Number(invTotal.data('total'));
                   var ChgTax = Number(ChgTax.val().replace(',',''));
                   var ChgTotal = Number(ChgTotal.val().replace(',',''));

@@ -18,7 +18,6 @@
     {{$form.fax}}
     {{$form.email}}
     {{$form.address}}
-    {{$form.fax}}
     {{$postcode->render()}}    </div>
   <div class='formbox '>
     <div class='tablehead'>
