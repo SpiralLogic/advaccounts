@@ -7,6 +7,11 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  use ADV\Core\JS;
+
+  /**
+
+   */
   abstract class Contact_Company extends \ADV\App\DB\Base
   {
     /**
@@ -84,7 +89,8 @@
       if ($id) {
         $company = new static($id);
       }
-      $content = '<div><span class="bold">Shipping Address:</span><br>${address}</br></br>
+      $content
+               = '<div><span class="bold">Shipping Address:</span><br>${address}</br></br>
 				 		<span class="bold">Mailing Address:</span><br>${post_address}</br></br>
 				 		<span class="bold">Phone: </span>${phone}</br></br>
 				 		<span class="bold">Phone2: </span>${phone2}</br></br>
@@ -102,7 +108,8 @@
       if ($id) {
         $details->addOpenEvent($selector, 'click');
       } else {
-        $action = <<<JS
+        $action
+          = <<<JS
 				 $.post('/contacts/{$type}s.php',{id:$(this).data('id')},function(data) {Adv.o.company_details.render(data.company); \$company_details.dialog('open');},'json');
 JS;
         JS::_addLiveEvent($selector, 'click', $action, 'wrapper', true);
@@ -131,8 +138,10 @@ JS;
           $text = $types[$type];
           $content .= Reporting::email_link($trans, _("Email This ") . $text, true, $type, 'EmailLink', null, $emails, 0, true);
         }
+
         return $content;
       }
+
       return false;
     }
     /**

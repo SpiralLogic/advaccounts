@@ -11,18 +11,18 @@
 
   /**
    * @method static \ADV\Core\Ajax i()
-   * @method Ajax _activate($trigname)
-   * @method Ajax _redirect($url)
-   * @method Ajax _popup($url)
-   * @method Ajax _addAssign($trigger, $sTarget, $sAttribute, $sData)
-   * @method Ajax _addUpdate($trigger, $sTarget, $sData)
-   * @method Ajax _addEnable($trigger, $sTarget, $sData = true)
-   * @method Ajax _addDisable($trigger, $sTarget, $sData = true)
-   * @method Ajax _addFocus($trigger, $sTarget)
-   * @method Ajax _run()
-   * @method Ajax _flush()
-   * @method Ajax _inAjax()
-   * @method Ajax _absoluteURL()
+   * @method static Ajax _activate($trigname)
+   * @method static Ajax _redirect($url)
+   * @method static Ajax _popup($url)
+   * @method static Ajax _addAssign($trigger, $sTarget, $sAttribute, $sData)
+   * @method static Ajax _addUpdate($trigger, $sTarget, $sData)
+   * @method static Ajax _addEnable($trigger, $sTarget, $sData = true)
+   * @method static Ajax _addDisable($trigger, $sTarget, $sData = true)
+   * @method static Ajax _addFocus($trigger, $sTarget)
+   * @method static Ajax _run()
+   * @method static Ajax _flush()
+   * @method static Ajax _inAjax()
+   * @method static Ajax _absoluteURL()
    */
   class Ajax extends \JsHttpRequest
   {

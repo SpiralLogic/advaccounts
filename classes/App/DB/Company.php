@@ -8,20 +8,20 @@
    * @link      http://www.advancedgroup.com.au
    **/
   use ADV\Core\Traits\StaticAccess;
+  use ADV\App\User;
   use ADV\Core\Input\Input;
   use ADV\Core\DB\DB;
 
   /**
    * @property null i
-   * @method DB_Company i()
-   * @method get_pref($pref_name)
-   * @method get_prefs()
-   * @method get_current_fiscalyear()
-   * @method key_in_foreign_table($id, $tables, $stdkey, $escaped = false)
+   * @method static DB_Company i()
+   * @method static get_pref($pref_name)
+   * @method static get_prefs()
+   * @method static get_current_fiscalyear()
+   * @method static key_in_foreign_table($id, $tables, $stdkey, $escaped = false)
    */
   class DB_Company extends \ADV\App\DB\Base
   {
-
     use StaticAccess;
 
     /**
@@ -110,6 +110,7 @@
       DB::_update('company')->values((array) $this)->where('coy_code=', $this->id)->exec();
       DB::_commit();
       $_SESSION['config']['company'] = $this;
+
       return $this->status(true, 'Processing', "Company has been updated.");
     }
     public function delete() {
@@ -214,6 +215,7 @@
      */
     public function _getAll_fiscalyears() {
       $sql = "SELECT * FROM fiscal_year ORDER BY begin";
+
       return DB::_query($sql, "could not get all fiscal years");
     }
     /**
@@ -224,6 +226,7 @@
       $sql    = "SELECT base_sales FROM company WHERE coy_code=1";
       $result = DB::_query($sql, "could not get base sales type");
       $myrow  = DB::_fetch($result);
+
       return $myrow[0];
     }
     /**
@@ -237,8 +240,10 @@
       $file                 = BASE_URL . ($id == -1 ? '' : 'company/' . $id) . '/installed_extensions.php';
       $installed_extensions = [];
       if (is_file($file)) {
+
         include($file);
       }
+
       return $installed_extensions;
     }
     /**
@@ -249,6 +254,7 @@
       $year   = $this->_get_pref('f_year');
       $sql    = "SELECT * FROM fiscal_year WHERE id=" . DB::_escape($year);
       $result = DB::_query($sql, "could not get current fiscal year");
+
       return DB::_fetch($result);
     }
     /**
@@ -261,6 +267,7 @@
     public function _get_fiscalyear($id) {
       $sql    = "SELECT * FROM fiscal_year WHERE id=" . DB::_escape($id);
       $result = DB::_query($sql, "could not get fiscal year");
+
       return DB::_fetch($result);
     }
     /**
@@ -272,6 +279,7 @@
      */
     public function _get_pref($pref_name) {
       $prefs = (array) $this;
+
       return $prefs[$pref_name];
     }
     /**
@@ -317,6 +325,7 @@
               = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
  FROM payment_terms t WHERE terms_indicator=" . DB::_escape($selected_id);
       $result = DB::_query($sql, "could not get payment term");
+
       return DB::_fetch($result);
     }
     /**
@@ -331,6 +340,7 @@
       if (!$show_inactive) {
         $sql .= " WHERE !inactive";
       }
+
       return DB::_query($sql, "could not get payment terms");
     }
     /**
@@ -366,6 +376,7 @@
       $sql    = "SELECT sum(cnt) FROM (" . implode(' UNION ', $sqls) . ") as counts";
       $result = DB::_query($sql, "check relations for " . implode(',', $tables) . " failed");
       $count  = DB::_fetch($result);
+
       return $count[0];
     }
     /**

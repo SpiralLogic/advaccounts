@@ -24,7 +24,7 @@
     protected $title;
     /*** @var User */
     protected $User;
-    /*** @var ADV\Core\Ajax */
+    /*** @var \ADV\Core\Ajax */
     protected $Ajax;
     /*** @var Session */
     protected $Session;

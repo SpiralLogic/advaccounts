@@ -10,11 +10,18 @@
    **/
   namespace ADV\App;
 
+  use ADV\Core\Config;
+  use DB_Company;
+  use ADV\Core\Session;
+
   /**
 
    */
   use ADV\Core\DB\DB;
 
+  /**
+
+   */
   class Dates extends \ADV\Core\Dates
   {
     use \ADV\Core\Traits\StaticAccess2;
@@ -25,15 +32,15 @@
     protected $Company = null;
     /**
      * @param \Config                   $config
-     * @param \ADV\App\User|\User       $User
+     * @param \ADV\App\User|User        $User
      * @param \Session                  $Session $Session
      * @param \DB_Company               $Company
      */
     public function __construct(\Config $config = null, User $User = null, \Session $Session = null, \DB_Company $Company = null) {
-      $config               = $config ? : \Config::i();
+      $config               = $config ? : Config::i();
       $this->User           = $User ? : User::i();
-      $this->Session        = $Session ? : \Session::i();
-      $this->Company        = $Company ? : \DB_Company::i();
+      $this->Session        = $Session ? : Session::i();
+      $this->Company        = $Company ? : DB_Company::i();
       $this->userFiscalYear = $config->_get('use_fiscalyear');
       $this->sep            = $this->separators[is_int($this->User->_date_sep()) ? $this->User->_date_sep() : $config->get('date.ui_separator')];
       $this->format         = $this->User->_date_format();

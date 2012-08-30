@@ -17,12 +17,13 @@
   namespace ADV\App\Bank;
 
   use Debtor_Trans;
+  use ADV\Core\Event;
+  use ADV\App\Validation;
   use ADV\App\User;
   use ADV\App\Debtor\Debtor;
   use DB_Comments;
   use GL_QuickEntry;
   use ADV\Core\Errors;
-  use Validation;
   use GL_Trans;
   use DB_Company;
   use ADV\Core\Num;
@@ -50,16 +51,16 @@
       if ($from_curr_code == $to_curr_code) {
         return 1.0000;
       }
-      $home_currency = static::for_company();
+      $home_currency = Bank_Currency::for_company();
       if ($to_curr_code == $home_currency) {
-        return static::get_exchange_rate_to_home_currency($from_curr_code, $date_);
+        return Bank_Currency::exchange_rate_to_home($from_curr_code, $date_);
       }
       if ($from_curr_code == $home_currency) {
-        return static::get_exchange_rate_from_home_currency($to_curr_code, $date_);
+        return Bank_Currency::exchange_rate_from_home($to_curr_code, $date_);
       }
 
       // neither from or to are the home currency
-      return static::get_exchange_rate_to_home_currency($from_curr_code, $date_) / static::get_exchange_rate_to_home_currency($to_curr_code, $date_);
+      return Bank_Currency::exchange_rate_to_home($from_curr_code, $date_) / Bank_Currency::exchange_rate_to_home($to_curr_code, $date_);
     }
     /**
      * @static

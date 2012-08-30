@@ -1,5 +1,17 @@
 <?php
   use ADV\App\Creditor\Creditor;
+  use ADV\Core\DB\DB;
+  use ADV\Core\JS;
+  use ADV\App\User;
+  use ADV\Core\Row;
+  use ADV\App\Dimensions;
+  use ADV\Core\Cell;
+  use ADV\App\Ref;
+  use ADV\App\Validation;
+  use ADV\Core\Ajax;
+  use ADV\App\Forms;
+  use ADV\Core\Table;
+  use ADV\App\Display;
   use ADV\Core\Input\Input;
   use ADV\App\Debtor\Debtor;
 
@@ -316,7 +328,7 @@
      */
     public static function  balance_row($bank_acc, $parms = '') {
       $to  = Dates::_addDays(Dates::_today(), 1);
-      $bal = get_balance_before_for_bank_account($bank_acc, $to);
+      $bal = Bank_Account::getBalances($bank_acc, null, $to);
       Row::label(
         _("Bank Balance:"),
         "<a target='_blank' " . ($bal < 0 ? 'class="redfg openWindow"' : '') . "href='/gl/inquiry/bank.php?bank_account=" . $bank_acc . "'" . " >&nbsp;" . Num::_priceFormat(

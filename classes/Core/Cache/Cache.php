@@ -14,7 +14,7 @@
    * @method static _set($key, $value, $expires = 86400)
    * @method static _defineConstants($name, $constants)
    * @method static _delete($key)
-   * @method Cache i()
+   * @method static Cache i()
    */
   class Cache
   {

@@ -10,16 +10,16 @@
   namespace ADV\Core\Input;
 
   /**
-   * @method _post($var, $type = null, $default = null)
-   * @method _get($var, $type = null, $default = null)
-   * @method _session($var, $type = null, $default = null)
-   * @method _getPost($var, $type = null, $default = null)
+   * @method static _post($var, $type = null, $default = null)
+   * @method static _get($var, $type = null, $default = null)
+   * @method static _session($var, $type = null, $default = null)
+   * @method static _getPost($var, $type = null, $default = null)
    * @method static Input i()
-   * @method _postGet($var, $type = null, $default = null)
-   * @method _postGetGlobal($var, $type = null, $default = null)
-   * @method _getPostGlobal($var, $type = null, $default = null)
-   * @method _request($var, $type = null, $default = null)
-   * @method _hasPost($vars)
+   * @method static _postGet($var, $type = null, $default = null)
+   * @method static _postGetGlobal($var, $type = null, $default = null)
+   * @method static _getPostGlobal($var, $type = null, $default = null)
+   * @method static _request($var, $type = null, $default = null)
+   * @method static _hasPost($vars)
    */
   class Input
   {

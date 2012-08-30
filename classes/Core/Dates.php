@@ -12,6 +12,8 @@
    */
   namespace ADV\Core;
 
+  use ADV\App\Forms;
+
   /**
    * Dates validation and parsing functions
    * These functions refer to the global variable defining the date format
@@ -24,21 +26,21 @@
   use DB_Company;
 
   /**
-   * @method __date()
-   * @method _dateToSql($date)
-   * @method _today()
-   * @method _now()
-   * @method \ADV\Core\Dates i()
-   * @method _isDate($date = null, $format = null)
-   * @method _isDateInFiscalYear($date, $convert = false)
-   * @method _isGreaterThan($date1, $date2)
-   * @method _newDocDate()
-   * @method _addDays($date, $days)
-   * @method _sqlToDate($date)
-   * @method _beginMonth($date)
-   * @method _addMonths($date, $months)
-   * @method _endFiscalYear()
-   * @method _beginFiscalYear()
+   * @method static __date()
+   * @method static _dateToSql($date)
+   * @method static _today()
+   * @method static _now()
+   * @method static \ADV\Core\Dates i()
+   * @method static _isDate($date = null, $format = null)
+   * @method static _isDateInFiscalYear($date, $convert = false)
+   * @method static _isGreaterThan($date1, $date2)
+   * @method static _newDocDate()
+   * @method static _addDays($date, $days)
+   * @method static _sqlToDate($date)
+   * @method static _beginMonth($date)
+   * @method static _addMonths($date, $months)
+   * @method static _endFiscalYear()
+   * @method static _beginFiscalYear()
    */
 
   class Dates
@@ -398,7 +400,7 @@ provided that both dates are after 1970. Also only works for dates up to the yea
         $months[$i] = date('F', strtotime("now - $i months"));
       }
 
-      return \Forms::arraySelect($name, $month, $months);
+      return Forms::arraySelect($name, $month, $months);
     }
     /**
      * @static

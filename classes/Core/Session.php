@@ -20,16 +20,16 @@
 
   /**
    * @property \ADV\App\ADVAccounting App
-   * @method  _getGlobal($var, $default = null)
-   * @method _setGlobal($var, $value = null)
-   * @method _get()
-   * @method _set()
-   * @method _regenerate()
-   * @method _kill()
-   * @method _checkUserAgent()
-   * @method _getFlash()
-   * @method _setFlash()
-   * @method Session i()
+   * @method  static _getGlobal($var, $default = null)
+   * @method static _setGlobal($var, $value = null)
+   * @method static _get()
+   * @method static _set()
+   * @method static _regenerate()
+   * @method static _kill()
+   * @method static _checkUserAgent()
+   * @method static _getFlash()
+   * @method static _setFlash()
+   * @method static Session i()
    * @property  string                page_title
    */
   class Session implements \ArrayAccess

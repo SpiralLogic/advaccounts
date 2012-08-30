@@ -12,24 +12,25 @@
   use PDO, PDOStatement, PDOException, PDORow, Cache;
 
   /**
-   * @method DB i()
-   * @method \PDOStatement _query($sql, $err_msg = null)
-   * @method \ADV\Core\DB\Query\Select _select($columns = null)
-   * @method \ADV\Core\DB\Query\Insert _insert($into)
-   * @method \ADV\Core\DB\Query\Update _update($into)
-   * @method _escape($value, $null = false)
-   * @method \ADV\Core\DB\Query\Result|Array _fetch($result = null, $fetch_mode = \PDO::FETCH_BOTH)
-   * @method _fetchRow($result = null)
-   * @method _fetchAll($fetch_type = \PDO::FETCH_ASSOC)
-   * @method _fetchAssoc()
-   * @method _numRows($sql = null)
-   * @method DB _begin()
-   * @method _commit()
-   * @method _updateRecordStatus($id, $status, $table, $key)
-   * @method _cancel()
-   * @method \ADV\Core\DB\Query\Delete _delete()
-   * @method _errorNo()
-   * @method _quote($value, $type = null)
+   * @method static DB i()
+   * @method static \PDOStatement _query($sql, $err_msg = null)
+   * @method static \ADV\Core\DB\Query\Select _select($columns = null)
+   * @method static \ADV\Core\DB\Query\Insert _insert($into)
+   * @method static \ADV\Core\DB\Query\Update _update($into)
+   * @method static _escape($value, $null = false)
+   * @method static \ADV\Core\DB\Query\Result|Array _fetch($result = null, $fetch_mode = \PDO::FETCH_BOTH)
+   * @method static _fetchRow($result = null)
+   * @method static _fetchAll($fetch_type = \PDO::FETCH_ASSOC)
+   * @method static _fetchAssoc()
+   * @method static _insertId()
+   * @method static _numRows($sql = null)
+   * @method static DB _begin()
+   * @method static DB  _commit()
+   * @method  static DB _updateRecordStatus($id, $status, $table, $key)
+   * @method  static DB _cancel()
+   * @method static \ADV\Core\DB\Query\Delete _delete()
+   * @method static _errorNo()
+   * @method  static _quote($value, $type = null)
    */
   class DB
   {
@@ -197,6 +198,7 @@
       $this->errorSql  = $sql;
       $data            = $this->data;
       try {
+        /** @var \PDOStatement $prepared  */
         $prepared = $this->conn->prepare($sql);
         $params   = substr_count($sql, '?');
         if ($data && $params > count($data)) {
