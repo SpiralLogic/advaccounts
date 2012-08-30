@@ -375,7 +375,6 @@ $('.grid').find('tbody').sortable({
               });
             });
             self.sortable('enable');
-            console.log(_this)
           }, 'json');
       }
     });

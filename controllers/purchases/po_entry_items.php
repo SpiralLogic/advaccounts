@@ -39,18 +39,14 @@
       if ($id != -1 && $this->order) {
         $this->deleteItem($id);
       }
-      if (isset($_POST[COMMIT])) {
-        $this->commitOrder();
-      }
+
       if (isset($_POST[UPDATE_ITEM]) && $this->checkData()) {
         $this->updateItem();
       }
       if (isset($_POST[ADD_ITEM])) {
         $this->addItem();
       }
-      if (isset($_POST[Orders::CANCEL])) {
-        $this->cancelOrder();
-      }
+
       if (isset($_POST[CANCEL])) {
         $this->cancelItem();
       }
@@ -184,6 +180,12 @@
       } else {
         Page::start(_($help_context = "Purchase Order Entry"), SA_PURCHASEORDER);
       }
+      if (isset($_POST[COMMIT])) {
+        $this->commitOrder();
+      }
+      if (isset($_POST[Orders::CANCEL])) {
+        $this->cancelOrder();
+      }
       Forms::start();
       echo "<br>";
       Forms::hidden('order_id');
@@ -197,17 +199,17 @@
       Table::end(1);
       Display::div_start('controls', 'items_table');
       if ($this->order->order_has_items()) {
-        Forms::submitCenterBegin(Orders::CANCEL, _("Delete This Order"),false,false,ICON_DELETE);
-        Forms::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."),false,ICON_CANCEL);
+        Forms::submitCenterBegin(Orders::CANCEL, _("Delete This Order"), false, false, ICON_DELETE);
+        Forms::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."), false, ICON_CANCEL);
         if ($this->order->order_no) {
-          Forms::submitCenterEnd(COMMIT, _("Update Order"), '', 'default',ICON_UPDATE);
+          Forms::submitCenterEnd(COMMIT, _("Update Order"), '', 'default', ICON_UPDATE);
         } else {
-          Forms::submitCenterEnd(COMMIT, _("Place Order"), '', 'default',ICON_SUBMIT);
+          Forms::submitCenterEnd(COMMIT, _("Place Order"), '', 'default', ICON_SUBMIT);
         }
       } else {
         Forms::submitConfirm(Orders::CANCEL, _('You are about to void this Document.\nDo you want to continue?'));
         Forms::submitCenterBegin(Orders::CANCEL, _("Delete This Order"), true, false, ICON_DELETE);
-        Forms::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."),false,ICON_CANCEL);
+        Forms::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."), false, ICON_CANCEL);
       }
       Display::div_end();
       Forms::end();

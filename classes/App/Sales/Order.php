@@ -1373,7 +1373,7 @@
         }
       }
       if ($editable) {
-        Forms::refRow(_("Reference") . ':', 'ref', _('Reference number unique for this document type'), Ref::get_next($this->trans_type), '');
+        Forms::refRow(_("Reference") . ':', 'ref', _('Reference number unique for this document type'), $this->reference ? : Ref::get_next($this->trans_type), '');
       } else {
         Forms::hidden('ref', $this->reference);
         Row::label(_("Reference:"), $this->reference);

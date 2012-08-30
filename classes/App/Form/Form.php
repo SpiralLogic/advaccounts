@@ -1,13 +1,15 @@
 <?php
   namespace ADV\App\Form;
+
   use \ADV\Core\Ajax;
+  use ADV\App\Forms;
+  use ADV\App\User;
   use ADV\Core\Session;
   use ADV\Core\Arr;
   use ADV\Core\Num;
-  use Forms;
+
   use \ADV\Core\JS;
   use \ADV\Core\SelectBox;
-  use User;
   use \ADV\Core\HTML;
   use \ADV\Core\Input\Input;
 
@@ -26,7 +28,6 @@
    */
   class Form implements \ArrayAccess
   {
-
     protected $fields = [];
     protected $start;
     protected $end;
@@ -42,11 +43,8 @@
      * @param \ADV\Core\Session    $session
      */
     public function __construct(\ADV\Core\Input\Input $input = null, \ADV\Core\Ajax $ajax = null, \ADV\Core\Session $session = null) {
-      $this->Ajax                         = $ajax ? : Ajax::i();
-      $this->Input                        = $input ? : Input::i();
-      $this->Session                      = $session ? : Session::i();
-      $this->uniqueid                     = uniqid();
-      $_SESSION['forms'][$this->uniqueid] = $this;
+      $this->Ajax  = $ajax ? : Ajax::i();
+      $this->Input = $input ? : Input::i();
     }
     /**
      * @static
@@ -64,7 +62,8 @@
       $attr['method']  = 'post';
       $attr['action']  = $action;
       array_merge($attr, $input_attr);
-      $this->start = HTML::setReturn(true)->form($name, $attr)->input(null, ['type'=> 'hidden', 'value'=> $this->uniqueid, 'name'=> '_form_id'], false)->setReturn(false);
+      $this->start = HTML::setReturn(true)->form($name, $attr)->input(null, ['type'=> 'hidden', 'value'=> $this->uniqueid, 'name'=> '_form_id'])->setReturn(false);
+
       return $this->start;
     }
     /**
@@ -72,7 +71,8 @@
      * @internal param int $breaks
      */
     public function end() {
-      $this->end = HTML::setReturn(true)->input('_focus', ['name'=> '_focus', 'type'=> 'hidden', 'value'=> e($this->Input->post('_focus'))])->form->setReturn(false);
+      $this->end = HTML::setReturn(true)->form->setReturn(false);
+
       return $this->end;
     }
     /**
@@ -89,9 +89,11 @@
       foreach ($_POST as $postkey => $postval) {
         if (strpos($postkey, $prefix) === 0) {
           $id = substr($postkey, strlen($prefix));
+
           return $numeric ? (int) $id : $id;
         }
       }
+
       return $numeric ? -1 : null;
     }
     /**
@@ -127,7 +129,7 @@
       if (!$control && isset($this->fields[$id])) {
         $control = $this->fields[$id];
       }
-      $content           = "<label for='$name'><span>$label</span>$control</label>";
+      $content           = "<label for='$id'><span>$label</span>$control</label>";
       $this->fields[$id] = $content;
     }
     /**
@@ -137,12 +139,16 @@
      */
     public function custom($control) {
       preg_match('/name=([\'"]?)(.+?)\1/', $control, $matches);
-      $name      = $matches[2];
+      $name    = $matches[2];
+      $id      = $this->nameToId($name);
+      $control = preg_replace('/id=([\'"]?)' . preg_quote($name) . '\1/', "id='$id'", $control, 1);
+
       $validator = null;
       $field     = new Field('custom', $name);
       $field->customControl($control);
-      $this->fields[$field->id]     = $field;
-      $this->validators[$field->id] =& $field->validator;
+      $this->fields[$id]     = $field;
+      $this->validators[$id] =& $field->validator;
+
       return $field;
     }
     /**
@@ -167,6 +173,7 @@
     public function  textarea($name, $value = null, $input_attr = []) {
       $field = $this->addField('textarea', $name, $value);
       $field->setContent($value);
+
       return $field->mergeAttr($input_attr);
     }
     /**
@@ -179,6 +186,7 @@
     public function text($name, $value = null, $input_attr = []) {
       $field         = $this->addField('input', $name, $value);
       $field['type'] = 'text';
+
       return $field->mergeAttr($input_attr);
     }
     /**
@@ -193,10 +201,13 @@
       if ($value === null && $this->Input->hasPost($name)) {
         $value = $this->Input->post($name);
       }
-      $field['value']               = e($value);
+      if ($tag !== 'textarea') {
+        $field['value'] = e($value);
+      }
       $this->fields[$field->id]     = $field;
       $this->validators[$field->id] =& $field->validator;
       $this->Ajax->addUpdate($name, $name, $value);
+
       return $field;
     }
     /**
@@ -242,6 +253,7 @@
       $field['maxlength'] = $input_attr['max'];
       $field['type']      = 'text';
       $this->Ajax->addAssign($name, $name, 'data-dec', $dec);
+
       return $field->mergeAttr($input_attr);
     }
     /**
@@ -260,6 +272,7 @@
      */
     public function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = null) {
       $box = new SelectBox($name, $selected_id, $sql, $valfield, $namefield, $options);
+
       return $box->create();
     }
     /**
@@ -339,6 +352,7 @@
         $selector .= HTML::setReturn(true)->input(null, $input_attr, false)->setReturn(false);
       }
       JS::_defaultFocus($name);
+
       return $selector;
     }
     // SUBMITS //
@@ -364,15 +378,16 @@
      * @param array $input_attr
      */
     public function submit($name, $value, $caption = false, $icon = false, $input_attr = []) {
-      $field =       $field = new Field('button', $name);
+      $field     = $field = new Field('button', $name);
       $field->id = $value;
       $field['class'] .= 'ajaxsubmit';
       $field['type']  = 'submit';
-      $field['value']  = $value;
+      $field['value'] = $value;
       $field['title'] = $caption;
       $icon           = ($icon) ? "<i class='" . $icon . "'> </i> " : '';
       $field->setContent($icon . $caption);
-      $this->fields[$field->id]=$field;
+      $this->fields[$field->id] = $field;
+
       return $field->mergeAttr($input_attr);
     }
     /**
@@ -419,17 +434,6 @@
       JS::_beforeload("_validate.$name=function(){ return confirm('" . strtr($msg, array("\n" => '\\n')) . "');};");
     }
     /**
-     * @param             $icon
-     * @param bool|string $title
-     *
-     * @return string
-     */
-    public function setIcon($icon, $title = '') {
-      $path  = THEME_PATH . User::theme();
-      $title = $title ? " title='$title'" : '';
-      return "<img src='$path/images/$icon' style='width:12px; height=12px' $title />";
-    }
-    /**
      * @param        $name
      * @param        $value
      * @param bool   $title
@@ -453,6 +457,7 @@
         {
           $icon = ICON_DELETE;
         }
+
         return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='1'" . ($title ? " title='$title'" : " title='$value'") . ($aspect ?
           " data-aspect='$aspect'" : '') . $rel . " />" . Forms::setIcon($icon) . "</button>\n";
       } else {
@@ -486,7 +491,7 @@
      *                      The offset to retrieve.
      * </p>
      *
-     * @return \Adv\App\Form\Field Can return all value types.
+     * @return \ADV\App\Form\Field Can return all value types.
      */
     public function offsetGet($offset) {
       return $this->fields[$offset];
@@ -540,6 +545,6 @@
      * @return array
      */
     public function __sleep() {
-      return ['uniqueid', 'validators'];
+      return ['validators'];
     }
   }

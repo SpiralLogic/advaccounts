@@ -9,6 +9,8 @@
    **/
   namespace ADV\Core;
 
+  use ADV\Core\Cache\Cache;
+
   /**
    * @method _get($var, $default = false)
    * @method _removeAll()

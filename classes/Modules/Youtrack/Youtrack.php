@@ -7,7 +7,8 @@
    * To change this template use File | Settings | File Templates.
    */
   namespace Modules\Youtrack;
-  use User;
+
+  use ADV\App\User;
   use ADV\Core\JS;
   use ADV\Core\Config;
   use ADV\Core\Module;
@@ -17,16 +18,14 @@
    */
   class Youtrack extends Module\Base
   {
-    public function _init()
-    {
+    public function _init() {
       User::register_login($this, '_login');
     }
-    public function _login()
-    {
+    public function _login() {
       $host = 'advanced.advancedgroup.com.au/modules/youtrack';
       if (strpos($_SERVER['HTTP_HOST'], 'dev') !== false) {
         $host = 'dev.' . $host;
-      }elseif (strpos($_SERVER['HTTP_HOST'], 'backup') !== false){
+      } elseif (strpos($_SERVER['HTTP_HOST'], 'backup') !== false) {
         $host = 'backup.' . $host;
       }
       $js
@@ -35,8 +34,7 @@ $.get('http://$host');
 JS;
       JS::_onload($js);
     }
-    public function youtrack()
-    {
+    public function youtrack() {
       $ch = curl_init('http://advanced.advancedgroup.com.au:8090/rest/user/login');
       curl_setopt($ch, CURLOPT_POST, 2);
       $user = User::i()->username;

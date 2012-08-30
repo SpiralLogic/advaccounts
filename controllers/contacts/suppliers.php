@@ -1,5 +1,9 @@
 <?php
   use ADV\App\Creditor\Creditor;
+  use ADV\App\Validation;
+  use ADV\App\User;
+  use ADV\Core\Input\Input;
+  use ADV\App\ADVAccounting;
   use ADV\App\Form\Form;
   use ADV\Core\Row;
   use ADV\Core\Table;
@@ -17,6 +21,7 @@
   {
     /** @var Creditor */
     protected $creditor;
+    protected $company_data;
     protected function before() {
       /** @noinspection PhpUndefinedMethodInspection */
       ADVAccounting::i()->set_selected('Creditors');
@@ -38,21 +43,36 @@
         /** @noinspection PhpUndefinedMethodInspection */
         $data['status'] = $this->creditor->getStatus();
         /** @noinspection PhpUndefinedMethodInspection */
-        JS::_renderJSON($data);
+        $this->JS->renderJSON($data);
       }
-      JS::_footerFile("/js/company.js");
-      JS::_onload("Company.setValues(" . json_encode($data) . ");");
+      $this->JS->footerFile("/js/company.js");
+      $this->company_data = $data;
     }
     protected function search() {
       if (isset($_GET['term'])) {
         $data = Creditor::search($_GET['term']);
-        JS::_renderJSON($data);
+        $this->JS->renderJSON($data);
       }
     }
     protected function index() {
       Page::start(_($help_context = "Suppliers"), SA_SUPPLIER, $this->Input->request('frame'));
       if (isset($_POST['delete'])) {
         $this->delete();
+      }
+      echo $this->generateForm();
+      $this->JS->onload("Company.setValues(" . json_encode($this->company_data) . ");")->setFocus($this->creditor->id ? 'name' : 'supplier');
+
+      Page::end(true);
+    }
+    /**
+     * @return string
+     */
+    protected function generateForm() {
+      $cache = Cache::_get('supplier_form');
+      if ($cache) {
+        $this->JS->setState($cache[1]);
+
+        return $form = $cache[0];
       }
       $this->JS->autocomplete('supplier', 'Company.fetch');
       $form          = new Form();
@@ -90,20 +110,20 @@
                                                  'postcode' => array('supp_postcode', $this->creditor->postcode)
                                             ));
       $view->set('supp_postcode', $supp_postcode);
-      $form->percent( 'payment_discount', $this->creditor->discount, ["disabled"=> !User::i()->hasAccess(SA_SUPPLIERCREDIT)])->label("Prompt Payment Discount:");
-      $form->amount( 'credit_limit', $this->creditor->credit_limit, ["disabled"=> !User::i()->hasAccess(SA_SUPPLIERCREDIT)])->label("Credit Limit:");
+      $form->percent('payment_discount', $this->creditor->discount, ["disabled"=> !User::i()->hasAccess(SA_SUPPLIERCREDIT)])->label("Prompt Payment Discount:");
+      $form->amount('credit_limit', $this->creditor->credit_limit, ["disabled"=> !User::i()->hasAccess(SA_SUPPLIERCREDIT)])->label("Credit Limit:");
       $form->text('tax_id', $this->creditor->tax_id)->label("GST No:");
-      $form->custom( Tax_Groups::select('tax_group_id', $this->creditor->tax_group_id))->label('Tax Group:');
+      $form->custom(Tax_Groups::select('tax_group_id', $this->creditor->tax_group_id))->label('Tax Group:');
       $form->textarea('notes', $this->creditor->notes)->label('General Notes:');
-      $form->custom( UI::select('inactive', ['0'=> 'No', '1'=> 'Yes'], ['name' => 'inactive'], $this->creditor->inactive, true))->label('Inactive:');
+      $form->custom(UI::select('inactive', ['0'=> 'No', '1'=> 'Yes'], ['name' => 'inactive'], $this->creditor->inactive, true))->label('Inactive:');
       if (!$this->creditor->id) {
-        $form->custom( GL_Currency::select('curr_code', $this->creditor->curr_code))->label('Currency Code:');
+        $form->custom(GL_Currency::select('curr_code', $this->creditor->curr_code))->label('Currency Code:');
       } else {
-        $form->custom( $this->creditor->curr_code)->label('Currency Code:');
+        $form->custom($this->creditor->curr_code)->label('Currency Code:');
         $form->hidden('curr_code', $this->creditor->curr_code);
       }
-      $form->custom( GL_UI::payment_terms('payment_terms', $this->creditor->payment_terms))->label('Payment Terms:');
-      $form->custom( GL_UI::all('payable_account', $this->creditor->payable_account, false, false, true))->label('Payable Account:');
+      $form->custom(GL_UI::payment_terms('payment_terms', $this->creditor->payment_terms))->label('Payment Terms:');
+      $form->custom(GL_UI::all('payable_account', $this->creditor->payable_account, false, false, true))->label('Payable Account:');
       $form->label(
         'Prompt Payment Account:',
         'payment_discount_account',
@@ -115,8 +135,10 @@
       $form->textarea('messageLog', '', ['class'=> 'big', 'cols'=> 40]);
 
       $form->textarea('Entry:', 'message', '', ['cols'=> 100, 'rows'=> 10]);
-      $view->render();
-      Page::end(true);
+      $form = $view->render(true);
+      Cache::_set('supplier_form', [$form, $this->JS->getState()]);
+
+      return $form;
     }
     protected function runValidation() {
       Validation::check(Validation::SALES_AREA, _("There are no sales areas defined in the system. At least one sales area is required before proceeding."));

@@ -9,12 +9,15 @@
    **/
   namespace ADV\Core;
 
+  use ADV\Core\Cache\Cache;
+
   /**
 
    */
   class Load_Exception extends \Exception
   {
   }
+
   /**
 
    */
@@ -41,8 +44,7 @@
     /**
 
      */
-    public function __construct()
-    {
+    public function __construct() {
       $core = include(DOCROOT . 'config' . DS . 'core.php');
       $this->importNamespaces((array) $core);
       spl_autoload_register(array($this, 'load'), true);
@@ -50,8 +52,7 @@
     /**
      * @param Cache $cache
      */
-    public function registerCache(Cache $cache)
-    {
+    public function registerCache(Cache $cache) {
       $this->Cache   = $cache;
       $cachedClasses = $cache->get('Loader', []);
       if ($cachedClasses) {
@@ -66,8 +67,7 @@
      * @param array $classes
      * @param       $type
      */
-    protected function addClasses(array $classes, $type)
-    {
+    protected function addClasses(array $classes, $type) {
       foreach ($classes as $dir => $class) {
         if (!is_string($dir)) {
           $dir = '';
@@ -79,15 +79,13 @@
      * @param $namespace
      * @param $classes
      */
-    protected function importNamespace($namespace, $classes)
-    {
+    protected function importNamespace($namespace, $classes) {
       $this->global_classes = array_merge($this->global_classes, array_fill_keys($classes, $namespace));
     }
     /**
      * @param array $namespaces
      */
-    protected function importNamespaces(array $namespaces)
-    {
+    protected function importNamespaces(array $namespaces) {
       foreach ($namespaces as $namespace => $classes) {
         $this->importNamespace($namespace, $classes);
       }
@@ -104,15 +102,14 @@
      * @internal param $path
      * @return string
      */
-    protected function tryPath($paths, $required_class, $classname, $global = false)
-    {
+    protected function tryPath($paths, $required_class, $classname, $global = false) {
       $paths = (array) $paths;
       while ($path = array_shift($paths)) {
-        $filepath = realpath($path);
-        if (is_readable($filepath)) {
-          return $this->includeFile($filepath, $required_class, $classname, $global);
+        if (is_readable($path)) {
+          return $this->includeFile($path, $required_class, $classname, $global);
         }
       }
+
       return false;
     }
     /**
@@ -126,11 +123,7 @@
      * @internal param $class
      * @return bool
      */
-    protected function includeFile($filepath, $requested_class, $classname, $global)
-    {
-      if (empty($filepath)) {
-        throw new Load_Exception('File for class ' . $requested_class . ' cannot be found!');
-      }
+    protected function includeFile($filepath, $requested_class, $classname, $global) {
       if (!include_once($filepath)) {
         throw new Load_Exception('File for class ' . $requested_class . ' cannot be	loaded from : ' . $filepath);
       }
@@ -138,6 +131,7 @@
         $fullclass = $this->global_classes[$classname] . '\\' . $classname;
         class_alias($fullclass, $classname);
       }
+
       return true;
     }
     /**
@@ -147,8 +141,7 @@
      * @internal param $required_class
      * @return bool|string
      */
-    public function load($requested_class)
-    {
+    public function load($requested_class) {
       $classpieces = explode('\\', ltrim($requested_class, '\\'));
       $global      = '';
       $classname   = array_pop($classpieces);
@@ -168,6 +161,7 @@
       }
       $paths  = [$dir . $class_file . '.php', $dir . $class_file . DS . $class_file . '.php'];
       $result = $this->trypath($paths, $requested_class, $classname, $global);
+
       return $result;
     }
   }

@@ -7,12 +7,13 @@
    * To change this template use File | Settings | File Templates.
    */
   namespace ADV\App\Controller;
+
   use ADV\Core\Ajax;
+  use ADV\App\User;
   use ADV\Core\DB\DB;
   use ADV\Core\JS;
   use ADV\Core\Input\Input;
   use ADV\Core\Config;
-  use User;
   use ADV\Core\Session;
 
   /**
@@ -21,7 +22,7 @@
   abstract class Base
   {
     protected $title;
-    /*** @var \User */
+    /*** @var User */
     protected $User;
     /*** @var ADV\Core\Ajax */
     protected $Ajax;
@@ -76,6 +77,7 @@
       if (strpos($this->action, $prefix) !== false) {
         return str_replace($prefix, '', $this->action);
       }
+
       return -1;
     }
     protected function runAction() {

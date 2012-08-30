@@ -1,5 +1,6 @@
 <?php
   use ADV\App\UI\UI;
+  use ADV\App\Form\Form;
   use ADV\Core\JS;
   use ADV\Core\DB\DB;
 
@@ -39,35 +40,52 @@
      */
     public function render() {
       $form = new Form();
-      $form->label('City: ', $this->city[0], UI::search($this->city[0], array(
-                                                                             'placeholder'       => 'City',
-                                                                             'url'               => $this->url . '?city=1',
-                                                                             'nodiv'             => true,
-                                                                             'set'               => static::$count,
-                                                                             'name'              => $this->city[0],
-                                                                             'size'              => 35,
-                                                                             'max'               => 40,
-                                                                             'callback'          => 'Adv.postcode.fetch'
-                                                                        ), true));
-      $form->text($this->state[0], $this->state[0], [
-                                                               'placeholder'       => 'State',
-                                                               'maxlength'         => 35,
-                                                               'data-set'          => static::$count,
-                                                               'size'              => 35,
-                                                               'value'             => $this->state[1],
-                                                               'name'              => $this->state[0]
-                                                               ])->label('State: ');
-      $form->label('Postcode: ', $this->postcode[0], UI::search($this->postcode[0], [
-                                                                                    'placeholder'       => 'Postcode',
-                                                                                    'url'               => $this->url . '?postcode=1',
-                                                                                    'nodiv'             => true,
-                                                                                    'set'               => static::$count,
-                                                                                    'name'              => $this->postcode[0],
-                                                                                    'size'              => 35,
-                                                                                    'max'               => 40,
-                                                                                    'callback'          => 'Adv.postcode.fetch'
-                                                                                    ], true));
+      $form->custom(
+        UI::search(
+          $this->city[0],
+          array(
+               'placeholder'       => 'City',
+               'url'               => $this->url . '?city=1',
+               'nodiv'             => true,
+               'set'               => static::$count,
+               'name'              => $this->city[0],
+               'size'              => 35,
+               'max'               => 40,
+               'callback'          => 'Adv.postcode.fetch'
+          ),
+          true
+        )
+      )->label('City: ');
+      $form->text(
+        $this->state[0],
+        $this->state[0],
+        [
+        'placeholder'       => 'State',
+        'maxlength'         => 35,
+        'data-set'          => static::$count,
+        'size'              => 35,
+        'value'             => $this->state[1],
+        'name'              => $this->state[0]
+        ]
+      )->label('State: ');
+      $form->custom(
+        UI::search(
+          $this->postcode[0],
+          [
+          'placeholder'       => 'Postcode',
+          'url'               => $this->url . '?postcode=1',
+          'nodiv'             => true,
+          'set'               => static::$count,
+          'name'              => $this->postcode[0],
+          'size'              => 35,
+          'max'               => 40,
+          'callback'          => 'Adv.postcode.fetch'
+          ],
+          true
+        )
+      )->label('Postcode: ');
       $this->registerJS();
+
       return implode('', $form->getFields());
     }
     /**
@@ -81,7 +99,8 @@
       $city     = $this->city[0];
       $state    = $this->state[0];
       $postcode = $this->postcode[0];
-      $js       = <<<JS
+      $js
+                = <<<JS
 				Adv.postcode.add('$set','$city','$state','$postcode');
 JS;
       JS::_onload($js);
@@ -105,7 +124,11 @@ JS;
      * @return mixed
      */
     public static function search($term, $type = 'Locality') {
-      $result = DB::_select('id', "CONCAT(Locality,', ',State,', ',Pcode) as label", "CONCAT(Locality,'|',State,'|',Pcode) as value")->from('postcodes')->where($type . ' LIKE', $term . '%')->orderBy('Pcode')->limit(20)->fetch()->all();
+      $result = DB::_select('id', "CONCAT(Locality,', ',State,', ',Pcode) as label", "CONCAT(Locality,'|',State,'|',Pcode) as value")->from('postcodes')->where(
+        $type . ' LIKE',
+        $term . '%'
+      )->orderBy('Pcode')->limit(20)->fetch()->all();
+
       return $result;
     }
     /**

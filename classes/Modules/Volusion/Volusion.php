@@ -8,7 +8,9 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace Modules\Volusion;
+
   use \ADV\Core\Module;
+  use ADV\App\User;
   use \Modules\Volusion\Orders as Orders;
   use \ADV\Core\DB\DB;
   use \ADV\Core\DB\DBDuplicateException;
@@ -16,19 +18,19 @@
   use \ADV\Core\DB\DBInsertException;
   use \ADV\Core\DB\DBSelectException;
   use \ADV\Core\DB\DBUpdateException;
-  use \User;
   use \ADV\Core\Event;
 
   /**
 
    */
-  class Volusion extends Module\Base {
+  class Volusion extends Module\Base
+  {
     /** @var DB */
     protected $jobsboardDB;
     /**
      * @param array $config
      */
-    public function __construct($config=[]) {
+    public function __construct($config = []) {
       parent::__construct($config);
       if (!$this->jobsboardDB) {
         $this->jobsboardDB = new DB('jobsboard');
@@ -70,19 +72,21 @@
       if ($success) {
         \Event::success('Added/Update ' . $success . ' websales');
       }
+
       return $orders;
     }
     /**
      * @return array
      */
-     function getNotOnJobsboard() {
+    function getNotOnJobsboard() {
       $results = DB::_select('OrderID,ison_jobsboard')->from('WebOrders')->where('ison_jobsboard IS null')->fetch()->all();
+
       return $results;
     }
     /**
      * @return bool
      */
-      function notOnJobsboard() {
+    function notOnJobsboard() {
       $neworders = $this->getNotOnJobsboard();
 
       if (!$neworders) {
@@ -97,6 +101,7 @@
         }
         $success++;
       }
+
       return $neworders;
     }
     /**
@@ -108,6 +113,7 @@
       $order = DB::_select()->from('WebOrders')->where('OrderID=', $id)->fetch()->one();
       if (!$order) {
         \Event::error('Could not find job ' . $id . ' in database');
+
         return false;
       }
       $orderdetails = DB::_select()->from('WebOrderDetails')->where('OrderID=', $id)->fetch()->all();
@@ -116,10 +122,16 @@
       $lineitems    = $lines = array();
       foreach ($orderdetails as $detail) {
         $lines[]     = array(
-          'item_code'   => '[' . $detail['ProductCode'] . ']', 'ProductName' => $detail['ProductName'], 'quantity'    => 'x' . $detail['Quantity'], 'options'     => '</div><div>' . $detail['Options'],
+          'item_code'   => '[' . $detail['ProductCode'] . ']',
+          'ProductName' => $detail['ProductName'],
+          'quantity'    => 'x' . $detail['Quantity'],
+          'options'     => '</div><div>' . $detail['Options'],
         );
         $lineitems[] = array(
-          'stock_code'  => $detail['ProductCode'], 'quantity'    => $detail['Quantity'], 'description' => $detail['ProductName'] . $detail['Options'], 'line_id'     => $detail['OrderDetailID'],
+          'stock_code'  => $detail['ProductCode'],
+          'quantity'    => $detail['Quantity'],
+          'description' => $detail['ProductName'] . $detail['Options'],
+          'line_id'     => $detail['OrderDetailID'],
         );
       }
       if ($jobsboard_no > 0) {
@@ -128,15 +140,22 @@
         $comments       = (strlen($order['Order_Comments']) > 0) ? $order['Order_Comments'] . "\r\n" : '';
         $detail         = $comments . "Payment Method: " . $payment_method . "\r\nShipping Method: " . $freight_method . "\r\nFreight Paid: " . $order['TotalShippingCost'];
         $newJob         = array(
-          'Advanced_Job_No' => $jobsboard_no, 'websaleid'       => $id, 'Detail'          => $detail,
+          'Advanced_Job_No' => $jobsboard_no,
+          'websaleid'       => $id,
+          'Detail'          => $detail,
         );
         $this->jobsboardDB->update('Job_List')->values($newJob)->where('Advanced_Job_No=', $jobsboard_no)->exec();
-        DB::_update('WebOrders')->value('ison_jobsboard',$jobsboard_no)->where('OrderID=', $id)->exec();
+        DB::_update('WebOrders')->value('ison_jobsboard', $jobsboard_no)->where('OrderID=', $id)->exec();
         $this->insertJobsboardlines($lineitems, $jobsboard_no);
+
         return $jobsboard_no;
       }
       $newJob = array(
-        'websaleid'             => $id, 'Customer'              => "Websale: $id " . $order['BillingCompanyName'], 'Date_Ordered'          => date('Y-m-d', strtotime("now")), 'Promised_Due_Date'     => date('Y-m-d', strtotime("+1 week")), 'Brief_Job_Description' => var_export($lines, true)
+        'websaleid'             => $id,
+        'Customer'              => "Websale: $id " . $order['BillingCompanyName'],
+        'Date_Ordered'          => date('Y-m-d', strtotime("now")),
+        'Promised_Due_Date'     => date('Y-m-d', strtotime("+1 week")),
+        'Brief_Job_Description' => var_export($lines, true)
       );
       if ($order['PaymentDeclined'] == "Y") {
         $newJob['Priority_Level']       = 3;
@@ -181,6 +200,7 @@
       $this->insertJobsboardlines($lineitems, $jobsboard_no);
       DB::_update('WebOrders')->value('ison_jobsboard', $jobsboard_no)->where('OrderID=', $order['OrderID'])->exec();
       $result = $jobsboard_no;
+
       return $result;
     }
     /**
@@ -199,8 +219,7 @@
         $line['job_id'] = $jobid;
         try {
           $line['line_id'] = $this->jobsboardDB->insert('JobListItems')->values($line)->exec();
-        }
-        catch (DBDuplicateException $e) {
+        } catch (DBDuplicateException $e) {
           $this->jobsboardDB->update('JobListItems')->values($line)->where('line_id=', $line['line_id'])->andWhere('job_id=', $jobid)->exec();
         }
       }
@@ -212,6 +231,7 @@
      */
     protected function getJobsboardLines($jobid) {
       $result = $this->jobsboardDB->select()->from('JobListItems')->where('job_id=', $jobid)->fetch()->all();
+
       return $result;
     }
   }

@@ -7,6 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\App;
+
+  use ADV\Core\View;
+
+  /**
+
+   */
   class Sidemenu
   {
     protected $menu;
@@ -16,6 +23,9 @@
     public function render() {
       return $this->menu->render(true);
     }
+    /**
+     * @param User $user
+     */
     public function __construct(User $user) {
       $this->menu         = new View('sidemenu');
       $this->menu['bank'] = $user->hasAccess(SS_GL);

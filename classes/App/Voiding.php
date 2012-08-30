@@ -7,6 +7,24 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\App;
+
+  use GL_Trans;
+  use ADV\Core\DB\DB;
+  use DB_AuditTrail;
+  use WO_Produce;
+  use WO_Issue;
+  use ADV\App\WO\WO;
+  use Creditor_Trans;
+  use Inv_Adjustment;
+  use Inv_Transfer;
+  use Debtor_Trans;
+  use Bank_Trans;
+  use GL_Journal;
+
+  /**
+
+   */
   class Voiding
   {
     /**
@@ -19,8 +37,7 @@
      *
      * @return bool
      */
-    public static function void($type, $type_no, $date_, $memo_)
-    {
+    public static function void($type, $type_no, $date_, $memo_) {
       $void_entry = static::get($type, $type_no);
       if ($void_entry != null) {
         return false;
@@ -48,10 +65,9 @@
           if (!Debtor_Trans::exists($type, $type_no)) {
             return false;
           }
-          if ($type == ST_CUSTDELIVERY )
-          {
+          if ($type == ST_CUSTDELIVERY) {
             $delivery = Debtor_Trans::get($type_no, $type);
-            if (!$delivery['trans_link'] ) {
+            if (!$delivery['trans_link']) {
               if (static::get(ST_SALESINVOICE, $delivery['trans_link']) === false) {
                 return false;
               }
@@ -112,6 +128,7 @@
       // only add an entry if it's actually been voided
       DB_AuditTrail::add($type, $type_no, $date_, _("Voided.") . "\n" . $memo_);
       static::add($type, $type_no, $date_, $memo_);
+
       return true;
     }
     /**
@@ -122,10 +139,10 @@
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get($type, $type_no)
-    {
+    public static function get($type, $type_no) {
       $sql    = "SELECT * FROM voided WHERE type=" . DB::_escape($type) . " AND id=" . DB::_escape($type_no);
       $result = DB::_query($sql, "could not query voided transaction table");
+
       return DB::_fetch($result);
     }
     /**
@@ -136,10 +153,10 @@
      *
      * @return int
      */
-    public static function has($type, $type_no)
-    {
+    public static function has($type, $type_no) {
       $sql    = "SELECT * FROM voided WHERE type=" . DB::_escape($type) . " AND id=" . DB::_escape($type_no);
       $result = DB::_query($sql, "could not query voided transaction table");
+
       return DB::_numRows($result);
     }
     /**
@@ -150,8 +167,7 @@
      * @param $date_
      * @param $memo_
      */
-    public static function add($type, $type_no, $date_, $memo_)
-    {
+    public static function add($type, $type_no, $date_, $memo_) {
       $date = Dates::_dateToSql($date_);
       $sql
             = "INSERT INTO voided (type, id, date_, memo_)

@@ -7,6 +7,14 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\App;
+
+  use ADV\Core\DB\DB;
+  use ADV\Core\Dialog;
+
+  /**
+
+   */
   class Messages
   {
     /**
@@ -17,6 +25,9 @@
      * @var int
      */
     protected static $count = 0;
+    /**
+
+     */
     public function __construct() {
     }
     /**
@@ -30,8 +41,9 @@
       if (!$userid) {
         return false;
       }
-      $result        = DB::_select('um.*,u.real_name as `from`')->from('user_messages um, users u')->where('um.user=', $userid)
-        ->andWhere('um.from=u.id')->andWhere('unread>', 0)->fetch()->all();
+      $result        = DB::_select('um.*,u.real_name as `from`')->from('user_messages um, users u')->where('um.user=', $userid)->andWhere('um.from=u.id')->andWhere('unread>', 0)
+        ->fetch()
+        ->all();
       static::$count = count($result);
       foreach ($result as $row) {
         if (!empty($row['subject'])) {
@@ -55,10 +67,12 @@
      * @param $subject
      * @param $message
      *
-     * @return null|PDOStatement
+     * @return null|\PDOStatement
      */
     public static function set($userid, $subject, $message) {
-      $sql    = "INSERT INTO user_messages (user, subject,message,unread,`from`) VALUES (" . DB::_escape($userid) . ", " . DB::_escape($subject) . ", " . DB::_escape($message) . ", 1, " . DB::_escape(User::i()->user) . ")";
+      $sql    = "INSERT INTO user_messages (user, subject,message,unread,`from`) VALUES (" . DB::_escape($userid) . ", " . DB::_escape($subject) . ", " . DB::_escape(
+        $message
+      ) . ", 1, " . DB::_escape(User::i()->user) . ")";
       $result = DB::_query($sql, "Couldn't add message for $userid");
 
       return $result;
@@ -67,6 +81,8 @@
      * @static
      *
      * @param User $user
+     *
+     * @return string
      */
     public static function show($user = null) {
       $user = $user ? : User::i();
@@ -78,14 +94,20 @@
       if (static::$count > 0) {
         static::makeDialog();
       }
+
       return ob_get_clean();
     }
     public static function makeDialog() {
       $dialog = new Dialog(static::$count . ' New Messages', 'messagesbox', static::$messages);
       $dialog->addButtons(array('Close' => '$(this).dialog("close");'));
-      $dialog->setOptions(array(
-                               'autoOpen'   => true, 'modal'      => true, 'width'      => '500', 'resizeable' => false
-                          ));
+      $dialog->setOptions(
+        array(
+             'autoOpen'   => true,
+             'modal'      => true,
+             'width'      => '500',
+             'resizeable' => false
+        )
+      );
       $dialog->show();
     }
   }

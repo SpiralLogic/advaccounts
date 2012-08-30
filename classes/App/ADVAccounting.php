@@ -1,6 +1,10 @@
 <?php
-  use ADV\App\Page;
+  namespace ADV\App;
+
   use ADV\Core\JS;
+  use ADV\Core\Event;
+  use ADV\Core\View;
+  use ADV\Core\Errors;
   use ADV\Core\Input\Input;
   use ADV\Core\Config;
   use ADV\Core\Ajax;
@@ -18,11 +22,10 @@
    * @link      http://www.advancedgroup.com.au
    **/
   /**
-* @method ADVAccounting i()
+   * @method ADVAccounting i()
    */
   class ADVAccounting
   {
-
     use \ADV\Core\Traits\Singleton;
 
     public $applications = [];
@@ -42,44 +45,58 @@
     protected $get_text = null;
     /** */
     public function __construct(\ADV\Core\Loader $loader) {
-      set_error_handler(function ($severity, $message, $filepath, $line) {
-        if ($filepath == COREPATH . 'Errors.php') {
-          while (ob_get_level()) {
-            ob_end_clean();
+      set_error_handler(
+        function ($severity, $message, $filepath, $line) {
+          if ($filepath == COREPATH . 'Errors.php') {
+            while (ob_get_level()) {
+              ob_end_clean();
+            }
+            die($message);
           }
-          die($message);
-        }
-        class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'Errors.php';
-        return \ADV\Core\Errors::handler($severity, $message, $filepath, $line);
-      }, E_ALL & ~E_STRICT & ~E_NOTICE);
+          class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'Errors.php';
 
-      set_exception_handler(function (\Exception $e) {
-        class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'Errors.php';
-        \ADV\Core\Errors::exceptionHandler($e);
-      });
-      register_shutdown_function(function () {
-        \ADV\Core\Event::shutdown();
-      });
+          return \ADV\Core\Errors::handler($severity, $message, $filepath, $line);
+        },
+        E_ALL & ~E_STRICT & ~E_NOTICE
+      );
+
+      set_exception_handler(
+        function (\Exception $e) {
+          class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'Errors.php';
+          \ADV\Core\Errors::exceptionHandler($e);
+        }
+      );
+      register_shutdown_function(
+        function () {
+          \ADV\Core\Event::shutdown();
+        }
+      );
       static::i($this);
-      $this->Cache = \ADV\Core\Cache::i();
+      $this->Cache = \ADV\Core\Cache\Cache::i(new \ADV\Core\Cache\APC());
       $loader->registerCache($this->Cache);
-      $this->Cache->defineConstants($_SERVER['SERVER_NAME'] . '.defines', function () {
-        return include(DOCROOT . 'config' . DS . 'defines.php');
-      });
+      $this->Cache->defineConstants(
+        $_SERVER['SERVER_NAME'] . '.defines',
+        function () {
+          return include(DOCROOT . 'config' . DS . 'defines.php');
+        }
+      );
       include(DOCROOT . 'config' . DS . 'types.php');
       $this->Config = Config::i();
       $this->Ajax   = Ajax::i();
-     ob_start([$this, 'flush_handler'], 0);
+      ob_start([$this, 'flush_handler'], 0);
       $this->Session = Session::i();
       $this->setTextSupport();
-     $this->Session['language'] = new Language();
+      $this->Session['language'] = new Language();
       $this->User                = User::i($this->Session);
       $this->menu                = new Menu(_("Main Menu"));
       $this->menu->addItem(_("Main Menu"), "index.php");
       $this->menu->addItem(_("Logout"), "/account/access/logout.php");
-      array_walk($_POST, function (&$v) {
-        $v = is_string($v) ? trim($v) : $v;
-      });
+      array_walk(
+        $_POST,
+        function (&$v) {
+          $v = is_string($v) ? trim($v) : $v;
+        }
+      );
       $this->loadModules();
       $this->applications = $this->Cache->get('applications');
       if (!$this->applications) {
@@ -93,7 +110,7 @@
       if (!strstr($_SERVER['DOCUMENT_URI'], 'logout.php')) {
         $this->checkLogin();
       }
-      \ADV\Core\Event::init();
+      \ADV\Core\Event::init($this->Cache);
       $this->get_selected();
       $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
       $index      = $controller == $_SERVER['SCRIPT_NAME'];
@@ -140,6 +157,7 @@
      */
     public function get_application($id) {
       $id = strtolower($id);
+
       return isset($this->applications[$id]) ? $this->applications[$id] : null;
     }
     /**
@@ -159,6 +177,7 @@
       if (!$this->selected || !is_object($this->selected)) {
         $this->selected = $this->get_application($this->Config->get('apps.default'));
       }
+
       return $this->selected;
     }
     public function display() {
@@ -194,6 +213,7 @@
     public function set_selected($app_id) {
       $this->User->selectedApp = $this->get_application($app_id);
       $this->selected          = $this->User->selectedApp;
+
       return $this->selected;
     }
     protected function checkLogin() {
@@ -224,8 +244,7 @@
             // Incorrect password
             $this->loginFail();
           }
-        }
-        catch (\ADV\Core\DB\DBException $e) {
+        } catch (\ADV\Core\DB\DBException $e) {
           throw new \ADV\Core\DB\DBException('Could not connect to database!');
         }
         $this->User->ui_mode = $_POST['ui_mode'];
@@ -299,7 +318,8 @@
       //	$extensions = $exts;
       $msg = "<?php\n\n";
       if ($company == -1) {
-        $msg .= "/* List of installed additional modules and plugins. If adding extensions manually
+        $msg
+          .= "/* List of installed additional modules and plugins. If adding extensions manually
                    to the list make sure they have unique, so far not used extension_ids as a keys,
                    and \$next_extension_id is also updated.
                    'name' - name for identification purposes;
@@ -315,7 +335,8 @@
                */
                \n\$next_extension_id = $next_extension_id; // unique id for next installed extension\n\n";
       } else {
-        $msg .= "/*
+        $msg
+          .= "/*
                    Do not edit this file manually. This copy of global file is overwritten
                    by extensions editor.
                */\n\n";
@@ -336,16 +357,19 @@
       // Check if the file is writable first.
       if (!$zp = fopen($filename, 'w')) {
         Event::error(sprintf(_("Cannot open the extension setup file '%s' for writing."), $filename));
+
         return false;
       } else {
         if (!fwrite($zp, $msg)) {
           Event::error(sprintf(_("Cannot write to the extensions setup file '%s'."), $filename));
           fclose($zp);
+
           return false;
         }
         // Close file
         fclose($zp);
       }
+
       return true;
     }
   }

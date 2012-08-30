@@ -7,11 +7,24 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\App;
+
+  use ADV\Core\Event;
+
+  use Reporting;
+  use GL_UI;
+  use ADV\Core\DB\DB;
+  use ADV\Core\Table;
+  use Voiding;
+  use ADV\Core\Ajax;
+  use ADV\Core\JS;
+
   $GLOBALS['ajax_divs'] = [];
   /**
 
    */
-  class Display {
+  class Display
+  {
     /** @var JS */
     static $JS;
     /** @var User */
@@ -37,6 +50,7 @@
         $access = " accesskey='" . strtoupper($slices[2]) . "'";
       }
       $label = str_replace('&&', '&', $label);
+
       return $clean ? $label : array($label, $access);
     }
     /**
@@ -170,6 +184,7 @@
       }
       echo "</td></tr>";
       Table::end(1);
+
       return true;
     }
     /**
@@ -204,6 +219,7 @@
       }
       $id   = static::$JS->_defaultFocus($id);
       $pars = Display::access_string($label);
+
       return "<a href='$url' class='menu_option' id='$id' $pars[1]>$pars[0]</a>";
     }
     /**
@@ -221,6 +237,7 @@
       }
       $id   = static::$JS->_defaultFocus($id);
       $pars = Display::access_string($label);
+
       return "<a href='$url' class='button  button-large' id='$id' $pars[1]>$pars[0]</a>";
     }
     /**
@@ -489,6 +506,7 @@
       } else {
         $preview_str = $label;
       }
+
       return $preview_str;
     }
     private static function i() {

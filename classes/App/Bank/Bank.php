@@ -15,7 +15,9 @@
   //	there is more than one using given gl account.
   //
   namespace ADV\App\Bank;
+
   use Debtor_Trans;
+  use ADV\App\User;
   use ADV\App\Debtor\Debtor;
   use DB_Comments;
   use GL_QuickEntry;
@@ -23,7 +25,6 @@
   use Validation;
   use GL_Trans;
   use DB_Company;
-  use User;
   use ADV\Core\Num;
   use Bank_Currency;
   use ADV\App\Creditor\Creditor;
@@ -56,6 +57,7 @@
       if ($from_curr_code == $home_currency) {
         return static::get_exchange_rate_from_home_currency($to_curr_code, $date_);
       }
+
       // neither from or to are the home currency
       return static::get_exchange_rate_to_home_currency($from_curr_code, $date_) / static::get_exchange_rate_to_home_currency($to_curr_code, $date_);
     }
@@ -71,6 +73,7 @@
      */
     public static function exchange_from_to($amount, $from_curr_code, $to_curr_code, $date_) {
       $ex_rate = static::get_exchange_rate_from_to($from_curr_code, $to_curr_code, $date_);
+
       return $amount / $ex_rate;
     }
     // Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
@@ -152,6 +155,7 @@
           return Validation::check(Validation::SUPPLIERS);
         default :
           Event::error("Invalid type sent to has_items", "");
+
           return false;
       }
     }
@@ -176,9 +180,11 @@
           if (!is_null($trans_no)) {
             $comment = "<br>" . DB_Comments::get_string(ST_BANKPAYMENT, $trans_no);
           }
+
           return ($full ? $payment_person_types[$type] . " " : "") . $qe["description"] . $comment;
         case PT_WORKORDER :
           global $wo_cost_types;
+
           return $wo_cost_types[$type];
         case PT_CUSTOMER :
           return ($full ? $payment_person_types[$type] . " " : "") . Debtor::get_name($person_id);

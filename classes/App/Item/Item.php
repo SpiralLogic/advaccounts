@@ -12,7 +12,7 @@
   use \ADV\App\DB\Base;
   use ADV\App\UI\UI;
   use ADV\Core\Dialog;
-  use Forms;
+
   use Item_Unit;
   use ADV\Core\Num;
   use ADV\Core\JS;
@@ -182,7 +182,7 @@
      */
     protected function _canProcess() {
       if (!$this->stock_id) {
-        return $this->status(false, 'saving', 'Item must have a stock_id', 'stock_id');
+        return $this->status(false, 'saving', 'Item must have a stock_id ' . $this->stock_id, 'stock_id');
       }
       if (!$this->name) {
         return $this->status(false, 'saving', 'Item must have a name', 'name');

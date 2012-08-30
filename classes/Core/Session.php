@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
   use \Memcached;
 
   /**
@@ -15,11 +16,10 @@
    */
   class SessionException extends \Exception
   {
-
   }
 
   /**
-   * @property \ADVAccounting App
+   * @property \ADV\App\ADVAccounting App
    * @method  _getGlobal($var, $default = null)
    * @method _setGlobal($var, $value = null)
    * @method _get()
@@ -30,11 +30,10 @@
    * @method _getFlash()
    * @method _setFlash()
    * @method Session i()
-   * @property  string        page_title
+   * @property  string                page_title
    */
   class Session implements \ArrayAccess
   {
-
     use Traits\StaticAccess2;
 
     /***
@@ -87,8 +86,10 @@
     public function checkUserAgent() {
       if ($this['HTTP_USER_AGENT'] != sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR']))) {
         $this->setUserAgent();
+
         return false;
       }
+
       return true;
     }
     /**
@@ -127,10 +128,12 @@
         if (isset($_SESSION['globals'][$var])) {
           unset($_SESSION['globals'][$var]);
         }
+
         return null;
       }
       $_SESSION['globals'][$var] = $value;
       $this[$var]                = $value;
+
       return $value;
     }
     /**
@@ -142,6 +145,7 @@
      */
     public function setFlash($var, $value) {
       $_SESSION['flash'][$var] = $value;
+
       return $value;
     }
     /**
@@ -223,6 +227,7 @@
       if (!$this->offsetExists($offset)) {
         return null;
       }
+
       return $_SESSION[$offset];
     }
     /**
@@ -267,6 +272,7 @@
       if (!isset($_SESSION[$var])) {
         $value = $_SESSION[$var];
       }
+
       return $value;
     }
     /**
@@ -277,6 +283,7 @@
      */
     public function set($var, $value) {
       $_SESSION[$var] = $value;
+
       return $value;
     }
   }

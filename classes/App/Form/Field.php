@@ -114,11 +114,11 @@
      */
     protected function formatAddOns($content) {
       if ($this->append && $this->prepend) {
-        $return = "<div class='input-append input-prepend'><span class='add-on'>" . $this->prepend . "</span>";
+        $return = "<span class='input-append input-prepend'><span class='add-on'>" . $this->prepend . "</span>";
       } elseif ($this->append) {
-        $return = "<div class='input-append'>";
+        $return = "<span class='input-append'>";
       } elseif ($this->prepend) {
-        $return = "<div class='input-prepend'><span class='add-on'>" . $this->prepend . "</span>";
+        $return = "<span class='input-prepend'><span class='add-on'>" . $this->prepend . "</span>";
       } else {
         return $content;
       }
@@ -127,7 +127,7 @@
         $return .= "<span class='add-on' id='_" . $this->name . "_label'>" . $this->append . "</span>";
       }
 
-      return $return . "</div>";
+      return $return . "</span>";
     }
     /**
      * @param $validator
@@ -146,12 +146,12 @@
      * @return Field
      */
     public function setWarning($warning) {
-      if ($this->tag!=='button'){
+      if ($this->tag !== 'button') {
         return $this;
       }
-      JS::_beforeload("_validate.".$this->name."=function(){ return confirm('" . strtr($warning, array("\n" => '\\n')) . "');};");
-      return $this;
+      JS::_beforeload("_validate." . $this->name . "=function(){ return confirm('" . strtr($warning, array("\n" => '\\n')) . "');};");
 
+      return $this;
     }
     /**
      * @return string
@@ -159,13 +159,13 @@
     public function __toString() {
       if (!isset($this->control)) {
         $tag     = $this->tag;
-        $control = HTML::setReturn(true)->$tag($this->id, $this->content, $this->attr, false)->setReturn(false);
+        $control = HTML::setReturn(true)->$tag($this->id, $this->content, $this->attr, ($tag === 'input'))->setReturn(false);
       } else {
         $control = $this->control;
       }
       $control = $this->formatAddOns($control);
       if ($this->label) {
-        $control = "<label for='" . $this->name . "'><span>" . $this->label . "</span>$control</label>";
+        $control = "<label for='" . $this->id . "'><span>" . $this->label . "</span>$control</label>";
       }
 
       return $control;
