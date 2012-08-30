@@ -105,8 +105,8 @@
       return $numeric ? -1 : null;
     }
     /**
-     *  Helper function.
-     *  Returns true if selector $name is subject to update.
+     * Helper function.
+     * Returns true if selector $name is subject to update.
      *
      * @param $name
      *
@@ -114,23 +114,6 @@
      */
     public function isListUpdated($name) {
       return isset($_POST['_' . $name . '_update']) || isset($_POST['_' . $name . '_button']);
-    }
-    /**
-     * @param      $label
-     * @param      $name
-     * @param null $control
-     * @param null $control
-     */
-    public function label($label, $name, $control = null) {
-      if ($label === null) {
-        return;
-      }
-      $id = $this->nameToId($name);
-      if (!$control && isset($this->fields[$id])) {
-        $control = $this->fields[$id];
-      }
-      $content           = "<label for='$id'><span>$label</span>$control</label>";
-      $this->fields[$id] = $content;
     }
     /**
      * @param $control
@@ -164,22 +147,22 @@
       $this->Ajax->addUpdate($name, $name, $value);
     }
     /**
-     * @param        $name
-     * @param        $value
-     * @param array  $input_attr
+     * @param       $name
+     * @param       $value
+     * @param array $input_attr
      *
      * @return \ADV\App\Form\Field
      */
-    public function  textarea($name, $value = null, $input_attr = []) {
+    public function textarea($name, $value = null, $input_attr = []) {
       $field = $this->addField('textarea', $name, $value);
       $field->setContent($value);
 
       return $field->mergeAttr($input_attr);
     }
     /**
-     * @param            $name
-     * @param null       $value
-     * @param array      $input_attr
+     * @param       $name
+     * @param null  $value
+     * @param array $input_attr
      *
      * @return \ADV\App\Form\Field
      */
@@ -197,7 +180,7 @@
      * @return Field
 
      */
-    public function  percent($name, $value = null, $inputparams = []) {
+    public function percent($name, $value = null, $inputparams = []) {
       return $this->number($name, $value, User::percent_dec(), $inputparams)->append('%');
     }
     /**
@@ -208,21 +191,22 @@
      * @return Field
 
      */
-    public function  amount($name, $value = null, $inputparams = []) {
+    public function amount($name, $value = null, $inputparams = []) {
       return $this->number($name, $value, User::price_dec(), $inputparams)->prepend('$');
     }
     /**
-     * @param        $name
-     * @param null   $value
-     * @param null   $dec
-     * @param array  $input_attr
+     * @param       $name
+     * @param null  $value
+     * @param int   $dec
+     * @param array $input_attr
      *
      * @return \ADV\App\Form\Field
      */
     public function number($name, $value = null, $dec = null, $input_attr = []) {
+      $value             = (is_numeric($dec)) ? $value : Num::_round($value, $dec);
       $field             = $this->addField('input', $name, $value);
-      $field['data-dec'] = $dec ? : User::price_dec();
-      $_POST[$name]      = $field['value'] = Num::_format($field['value'] ? : 0, $field['data-dec']);
+      $field['data-dec'] = (int) $dec;
+      $field['value']    = Num::_format($field['value'] ? : 0, $field['data-dec']);
       $size              = Arr::get($input_attr, 'size');
       if ($size && is_numeric($size)) {
         $field['size'] = $size;
@@ -240,12 +224,12 @@
      * $sql must return selector values and selector texts in columns 0 & 1
      * Options are merged with default.
      *
-     * @param           $name
-     * @param           $selected_id
-     * @param           $sql
-     * @param           $valfield
-     * @param           $namefield
-     * @param array     $options
+     * @param       $name
+     * @param       $selected_id
+     * @param       $sql
+     * @param       $valfield
+     * @param       $namefield
+     * @param array $options
      *
      * @return string
      */
@@ -255,9 +239,9 @@
       return $box->create();
     }
     /**
-     *  Universal array combo generator
-     *  $items is array of options 'value' => 'description'
-     *  Options is reduced set of combo_selector options and is merged with defaults.
+     * Universal array combo generator
+     * $items is array of options 'value' => 'description'
+     * Options is reduced set of combo_selector options and is merged with defaults.
      *
      * @param            $name
      * @param            $selected_id
@@ -274,7 +258,7 @@
       $default       = null; // default value when $_POST is not set
       $multi         = false; // multiple select
       // search box parameters
-      //TODO $height   = false; // number of lines in select box
+      //TODO $height = false; // number of lines in select box
       $sel_hint = null; //
       $disabled = null;
       // ------ merge options with defaults ----------
@@ -336,15 +320,15 @@
     /**
      * Universal submit form button.
      * $atype - type of submit:
-     *  Normal submit:
-     *   false - normal button; optional icon
-     *   null  - button visible only in fallback mode; optional icon
-     *  Ajax submit:
-     *   true    - standard button; optional icon
-     *   'default' - default form submit on Ctrl-Enter press; dflt ICON_OK icon
-     *   'selector' - ditto with closing current popup editor window
-     *   'cancel'  - cancel form entry on Escape press; dflt ICON_CANCEL
-     *   'process' - displays progress bar during call; optional icon
+     * Normal submit:
+     * false - normal button; optional icon
+     * null - button visible only in fallback mode; optional icon
+     * Ajax submit:
+     * true - standard button; optional icon
+     * 'default' - default form submit on Ctrl-Enter press; dflt ICON_OK icon
+     * 'selector' - ditto with closing current popup editor window
+     * 'cancel' - cancel form entry on Escape press; dflt ICON_CANCEL
+     * 'process' - displays progress bar during call; optional icon
      * $atype can contain also multiply type selectors separated by space,
      * however make sense only combination of 'process' and one of defualt/selector/cancel
      *
@@ -376,10 +360,10 @@
       }
     }
     /**
-     * @param                        $name
-     * @param   string|null          $value
-     * @param                        $caption
-     * @param array                  $input_attr Input attributes
+     * @param             $name
+     * @param string|null $value
+     * @param             $caption
+     * @param array       $input_attr Input attributes
      *
      * @return string
      */

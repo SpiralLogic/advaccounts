@@ -10,6 +10,8 @@
   namespace ADV\Core;
 
   /**
+   * @method HTML button()
+   * @method HTML _button()
    * @method HTML table()
    * @method HTML tr()
    * @method HTML td()
