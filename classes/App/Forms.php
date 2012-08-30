@@ -808,7 +808,6 @@
      */
     public static function inactiveControlCol(&$th) {
       if (Input::_hasPost('show_inactive')) {
-
         Arr::insert($th, count($th) - 2, _("Inactive"));
       }
       if (Input::_post('_show_inactive_update')) {
@@ -904,11 +903,7 @@
      */
     public static function dateFormatsListRow($label, $name, $value = null) {
       echo "<tr><td class='label'>$label</td>\n<td>";
-      echo Forms::arraySelect(
-        $name,
-        $value,
-        Config::_get('date.formats')
-      );
+      echo Forms::arraySelect($name, $value, Config::_get('date.formats'));
       echo "</td></tr>\n";
     }
     /**
@@ -1285,7 +1280,7 @@
      * @param bool $submit_on_change
      */
     public static function refCellsSearch($label, $name, $title = null, $init = null, $params = null, $submit_on_change = false) {
-      Forms::textCellsEx($label, $name, 'small', 18, $init, $title, $params, '', $submit_on_change);
+      Forms::textCellsEx($label, $name, 'small', 18, $init, $title, $params, '', $submit_on_change, ' placeholder="Reference"');
     }
     /**
      * @param        $label
@@ -1333,12 +1328,14 @@
         echo "<td class='alignright nowrap' >";
       }
       $dec = $dec === null ? User::price_dec() : $dec;
-      if (!Input::_post($name)) {
-        $init         = $init ? : 0;
-        $_POST[$name] = Num::_priceDecimal($init, $dec);
+
+      if ($init === null) {
+        $init = Input::post($name, Input::NUMERIC);
       }
+      $init = $_POST[$name] = Num::_priceDecimal($init, $dec);
+
       $input_attr['name']     = $name;
-      $input_attr['value']    = $_POST[$name];
+      $input_attr['value']    = $init;
       $input_attr['data-dec'] = $dec;
       $input_attr['class']    = ($name == 'freight') ? 'freight ' : 'amount ';
       if ($size && is_numeric($size)) {
@@ -1374,7 +1371,7 @@
         echo "<input $inputparams>";
       }
       echo "</td>\n";
-      static::$Ajax->addUpdate($name, $name, $_POST[$name]);
+      static::$Ajax->addUpdate($name, $name, $init);
       static::$Ajax->addAssign($name, $name, 'data-dec', $dec);
     }
     /**

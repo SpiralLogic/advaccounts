@@ -1,17 +1,4 @@
 <?php
-  namespace ADV\App\Form;
-
-  use \ADV\Core\Ajax;
-  use ADV\App\Forms;
-  use ADV\App\User;
-  use ADV\Core\Session;
-  use ADV\Core\Arr;
-  use ADV\Core\Num;
-
-  use \ADV\Core\JS;
-  use \ADV\Core\SelectBox;
-  use \ADV\Core\HTML;
-  use \ADV\Core\Input\Input;
 
   /**
    * PHP version 5.4
@@ -21,6 +8,18 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\App\Form;
+
+  use \ADV\App\Forms;
+  use \ADV\App\User;
+  use \ADV\Core\Ajax;
+  use \ADV\Core\Arr;
+  use \ADV\Core\Num;
+  use \ADV\Core\JS;
+  use \ADV\Core\SelectBox;
+  use \ADV\Core\HTML;
+  use \ADV\Core\Input\Input;
+
   /**
    * @param bool   $multi
    * @param string $action
@@ -28,6 +27,7 @@
    */
   class Form implements \ArrayAccess
   {
+    /** @var Field[] */
     protected $fields = [];
     protected $start;
     protected $end;
@@ -35,8 +35,8 @@
     protected $Ajax;
     /** @var Input */
     protected $Input;
-    protected $uniqueid;
     protected $validators = [];
+    protected $uniqueid;
     /**
      * @param ADV\Core\Input\Input $input
      * @param ADV\Core\Ajax        $ajax
@@ -54,21 +54,29 @@
      * @param bool   $multi
      * @param array  $input_attr
      *
-     * @return
+     * @return \ADV\Core\HTML|string
      */
     public function start($name = '', $action = '', $multi = null, $input_attr = []) {
       $attr['enctype'] = $multi ? 'multipart/form-data' : null;
       $attr['name']    = $name;
       $attr['method']  = 'post';
       $attr['action']  = $action;
+      $this->uniqueid  = $this->nameToId($name);
       array_merge($attr, $input_attr);
-      $this->start = HTML::setReturn(true)->form($name, $attr)->input(null, ['type'=> 'hidden', 'value'=> $this->uniqueid, 'name'=> '_form_id'])->setReturn(false);
+      $this->start = HTML::setReturn(true)->form($name, $attr)->input(
+        null,
+        [
+        'type' => 'hidden',
+        'value'=> $this->uniqueid,
+        'name' => '_form_id'
+        ]
+      )->setReturn(false);
 
       return $this->start;
     }
     /**
-     * @return
-     * @internal param int $breaks
+     * @return \ADV\Core\HTML|string
+    @internal param int $breaks
      */
     public function end() {
       $this->end = HTML::setReturn(true)->form->setReturn(false);
@@ -106,14 +114,6 @@
      */
     public function isListUpdated($name) {
       return isset($_POST['_' . $name . '_update']) || isset($_POST['_' . $name . '_button']);
-    }
-    /**
-     * @param $name
-     *
-     * @return mixed
-     */
-    protected function nameToId($name) {
-      return str_replace(['[', ']'], ['-', ''], $name);
     }
     /**
      * @param      $label
@@ -190,27 +190,6 @@
       return $field->mergeAttr($input_attr);
     }
     /**
-     * @param $tag
-     * @param $name
-     * @param $value
-     *
-     * @return Field
-     */
-    protected function addField($tag, $name, $value) {
-      $field = new Field($tag, $name);
-      if ($value === null && $this->Input->hasPost($name)) {
-        $value = $this->Input->post($name);
-      }
-      if ($tag !== 'textarea') {
-        $field['value'] = e($value);
-      }
-      $this->fields[$field->id]     = $field;
-      $this->validators[$field->id] =& $field->validator;
-      $this->Ajax->addUpdate($name, $name, $value);
-
-      return $field;
-    }
-    /**
      * @param       $name
      * @param null  $value
      * @param array $inputparams
@@ -261,12 +240,12 @@
      * $sql must return selector values and selector texts in columns 0 & 1
      * Options are merged with default.
      *
-     * @param          $name
-     * @param          $selected_id
-     * @param          $sql
-     * @param          $valfield
-     * @param          $namefield
-     * @param null     $options
+     * @param           $name
+     * @param           $selected_id
+     * @param           $sql
+     * @param           $valfield
+     * @param           $namefield
+     * @param array     $options
      *
      * @return string
      */
@@ -295,7 +274,7 @@
       $default       = null; // default value when $_POST is not set
       $multi         = false; // multiple select
       // search box parameters
-      $height   = false; // number of lines in select box
+      //TODO $height   = false; // number of lines in select box
       $sel_hint = null; //
       $disabled = null;
       // ------ merge options with defaults ----------
@@ -337,14 +316,13 @@
         'class'   => 'combo', //
         'title'   => $sel_hint
       ];
-      $selector     = HTML::setReturn(true)->div("_{$name}_sel", ['class'=> 'combodiv'])->select($input_attr['id'], $selector, $input_attr, false)->_div()->setReturn(false);
+      $selector     = HTML::setReturn(true)->span("_{$name}_sel", ['class'=> 'combodiv'])->select($input_attr['id'], $selector, $input_attr, false)->_span()->setReturn(false);
       $this->Ajax->addUpdate($name, "_{$name}_sel", $selector);
       if ($select_submit != false) { // if submit on change is used - add select button
         $input_attr = [
           'disabled'=> $disabled,
           'type'    => 'submit',
           'class'   => 'combo_select',
-          'stle'    => 'border:0;background:url(/themes/' . User::theme() . '/images/button_ok.png) no-repeat' . (User::fallback() ? '' : 'display:none;'),
           'name'    => '_' . $name . '_update',
           'title'   => _("Select"),
           'value'   => ' '
@@ -355,7 +333,6 @@
 
       return $selector;
     }
-    // SUBMITS //
     /**
      * Universal submit form button.
      * $atype - type of submit:
@@ -371,99 +348,55 @@
      * $atype can contain also multiply type selectors separated by space,
      * however make sense only combination of 'process' and one of defualt/selector/cancel
      *
-     * @param       $name
-     * @param       $value
-     * @param bool  $caption
-     * @param bool  $icon
-     * @param array $input_attr
-     */
-    public function submit($name, $value, $caption = false, $icon = false, $input_attr = []) {
-      $field     = $field = new Field('button', $name);
-      $field->id = $value;
-      $field['class'] .= 'ajaxsubmit';
-      $field['type']  = 'submit';
-      $field['value'] = $value;
-      $field['title'] = $caption;
-      $icon           = ($icon) ? "<i class='" . $icon . "'> </i> " : '';
-      $field->setContent($icon . $caption);
-      $this->fields[$field->id] = $field;
-
-      return $field->mergeAttr($input_attr);
-    }
-    /**
-     * For following controls:
-     * 'both' - use both Ctrl-Enter and Escape hotkeys
-     * 'cancel' - apply to MODE_RESET button
+     * @param             $action
+     * @param bool|string $caption
+     * @param array       $input_attr
      *
-     * @param bool $add
-     * @param bool $title
-     * @param bool $async
-     * @param bool $clone
+     * @return \ADV\App\Form\Button
      */
-    public function submitAddUpdate($add = true, $title = false, $async = false, $clone = false) {
-      $cancel = $async;
-      if ($async === 'both') {
-        $async  = 'default';
-        $cancel = 'cancel';
-      } elseif ($async === 'default') {
-        $cancel = true;
-      } elseif ($async === 'cancel') {
-        $async = true;
-      }
-      if ($add) {
-        Forms::submit(ADD_ITEM, _("Add new"), true, $title, $async);
-      } else {
-        Forms::submit(UPDATE_ITEM, _("Update"), true, _('Submit Changes'), $async);
-        if ($clone) {
-          Forms::submit(MODE_CLONE, _("Clone"), true, _('Edit new record with current data'), $async);
-        }
-        Forms::submit(MODE_RESET, _("Cancel"), true, _('Cancel Changes'), $cancel);
+    public function submit($action, $caption = '', $input_attr = []) {
+      $button                    = new Button('_action', $action, $caption);
+      $button->id                = $this->nameToId($action);
+      $this->fields[$button->id] = $button;
+
+      return $button->mergeAttr($input_attr);
+    }
+    /**
+     * @return array
+     */
+    public function getFields() {
+      return $this->fields;
+    }
+    /**
+     * @param $valids
+     */
+    public function runValidators($valids) {
+      foreach ($_SESSION['forms'][$this->uniqueid]->validators as $function) {
+        $valids->$function();
       }
     }
     /**
-     * @param $name
-     * @param $action
-     * @param $msg
-     */
-    public function submitConfirm($name, $action, $msg = null) {
-      if ($msg) {
-        $name = $action;
-      } else {
-        $msg = $action;
-      }
-      JS::_beforeload("_validate.$name=function(){ return confirm('" . strtr($msg, array("\n" => '\\n')) . "');};");
-    }
-    /**
-     * @param        $name
-     * @param        $value
-     * @param bool   $title
-     * @param bool   $icon
-     * @param string $aspect
+     * @param                        $name
+     * @param   string|null          $value
+     * @param                        $caption
+     * @param array                  $input_attr Input attributes
      *
      * @return string
      */
-    public function button($name, $value, $title = false, $icon = false, $aspect = '') {
-      // php silently changes dots,spaces,'[' and characters 128-159
-      // to underscore in POST names, to maintain compatibility with register_globals
-      $rel = '';
-      if ($aspect == 'selector') {
-        $rel   = " rel='$value'";
-        $value = _("Select");
-      }
-      $caption = ($name == '_action') ? $title : $value;
-      $name    = htmlentities(strtr($name, array('.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B')));
-      if (User::graphic_links() && $icon) {
-        if ($value == _("Delete")) // Helper during implementation
-        {
-          $icon = ICON_DELETE;
-        }
 
-        return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='1'" . ($title ? " title='$title'" : " title='$value'") . ($aspect ?
-          " data-aspect='$aspect'" : '') . $rel . " />" . Forms::setIcon($icon) . "</button>\n";
-      } else {
-        return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='$value'" . ($title ? " title='$title'" : '') . ($aspect ?
-          " data-aspect='$aspect'" : '') . $rel . " >$caption</button>\n";
-      }
+    public function button($name, $value, $caption, $input_attr = []) {
+      $button                    = new Button($name, $value, $caption);
+      $this->fields[$button->id] = $button;
+
+      return $button->mergeAttr($input_attr);
+    }
+    /**
+     * @param $icon
+     *
+     * @return string
+     */
+    protected function setIcon($icon) {
+      return " <i class='" . $icon . "' > </i> ";
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
@@ -530,21 +463,36 @@
     /**
      * @return array
      */
-    public function getFields() {
-      return $this->fields;
-    }
-    /**
-     * @param $valids
-     */
-    public function runValidators($valids) {
-      foreach ($_SESSION['forms'][$this->uniqueid]->validators as $function) {
-        $valids->$function();
-      }
-    }
-    /**
-     * @return array
-     */
     public function __sleep() {
       return ['validators'];
+    }
+    /**
+     * @param $tag
+     * @param $name
+     * @param $value
+     *
+     * @return Field
+     */
+    protected function addField($tag, $name, $value) {
+      $field = new Field($tag, $name);
+      if ($value === null && $this->Input->hasPost($name)) {
+        $value = $this->Input->post($name);
+      }
+      if ($tag !== 'textarea') {
+        $field['value'] = e($value);
+      }
+      $this->fields[$field->id]     = $field;
+      $this->validators[$field->id] =& $field->validator;
+      $this->Ajax->addUpdate($name, $name, $value);
+
+      return $field;
+    }
+    /**
+     * @param $name
+     *
+     * @return mixed
+     */
+    protected function nameToId($name) {
+      return str_replace(['[', ']'], ['-', ''], $name);
     }
   }

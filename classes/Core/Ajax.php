@@ -10,7 +10,7 @@
   namespace ADV\Core;
 
   /**
-   * @method \ADV\Core\Ajax i()
+   * @method static \ADV\Core\Ajax i()
    * @method Ajax _activate($trigname)
    * @method Ajax _redirect($url)
    * @method Ajax _popup($url)

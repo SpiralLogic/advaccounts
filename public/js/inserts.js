@@ -140,7 +140,7 @@ function passBack(value) {
  Behaviour definitions
  */
 var inserts = {
-  'input':                                                                                  function (e) {
+  'input':                                                                                                          function (e) {
     if (e.onfocus == undefined) {
       e.onfocus = function () {
         Adv.Forms.saveFocus(this);
@@ -168,16 +168,16 @@ var inserts = {
       }
     }
   },
-  'input.combo2,input[data-aspect="fallback"]':                                             function (e) {
+  'input.combo2,input[data-aspect="fallback"]':                                                                     function (e) {
     // this hides search button for js enabled browsers
     e.style.display = 'none';
   },
-  'div.js_only':                                                                            function (e) {
+  'div.js_only':                                                                                                    function (e) {
     // this shows divs for js enabled browsers only
     e.style.display = 'block';
   },
 //	'.ajaxsubmit,.editbutton,.navibutton': // much slower on IE7
-  'button.ajaxsubmit,input.ajaxsubmit,input.editbutton,button.editbutton,button.navibutton':function (e) {
+  'button[name="_action"],button.ajaxsubmit,input.ajaxsubmit,input.editbutton,button.editbutton,button.navibutton': function (e) {
     e.onclick = function () {
       Adv.Forms.saveFocus(e);
       var asp = e.getAttribute('data-aspect');
@@ -190,7 +190,7 @@ var inserts = {
       return false;
     }
   },
-  'button':                                                                                 function (e) {
+  'button':                                                                                                         function (e) {
     if (e.name) {
       var func = (e.name == '_action') ? _validate[e.value] : _validate[e.name];
       var old = e.onclick;
@@ -212,7 +212,7 @@ var inserts = {
       }
     }
   },
-  '.amount':                                                                                function (e) {
+  '.amount':                                                                                                        function (e) {
     if (e.onblur == undefined) {
       e.onblur = function () {
         var dec = this.getAttribute("data-dec");
@@ -220,7 +220,7 @@ var inserts = {
       };
     }
   },
-  '.freight':                                                                               function (e) {
+  '.freight':                                                                                                       function (e) {
     if (e.onblur == undefined) {
       e.onblur = function () {
         var dec = this.getAttribute("data-dec");
@@ -228,25 +228,25 @@ var inserts = {
       };
     }
   },
-  '.searchbox':// emulated onchange event handling for text inputs
-                                                                                            function (e) {
-                                                                                              e.setAttribute('_last_val', e.value);
-                                                                                              e.setAttribute('autocomplete', 'off'); //must be off when calling onblur
-                                                                                              e.onblur = function () {
-                                                                                                var val = this.getAttribute('_last_val');
-                                                                                                if (val != this.value) {
-                                                                                                  this.setAttribute('_last_val', this.value);
-                                                                                                  JsHttpRequest.request('_' + this.name + '_changed', this.form);
-                                                                                                }
-                                                                                              }
-                                                                                            },
-  'button[data-aspect="selector"], input[data-aspect="selector"]':                          function (e) {
+  '.searchbox': // emulated onchange event handling for text inputs
+                                                                                                                    function (e) {
+                                                                                                                      e.setAttribute('_last_val', e.value);
+                                                                                                                      e.setAttribute('autocomplete', 'off'); //must be off when calling onblur
+                                                                                                                      e.onblur = function () {
+                                                                                                                        var val = this.getAttribute('_last_val');
+                                                                                                                        if (val != this.value) {
+                                                                                                                          this.setAttribute('_last_val', this.value);
+                                                                                                                          JsHttpRequest.request('_' + this.name + '_changed', this.form);
+                                                                                                                        }
+                                                                                                                      }
+                                                                                                                    },
+  'button[data-aspect="selector"], input[data-aspect="selector"]':                                                  function (e) {
     e.onclick = function () {
       passBack(this.getAttribute('rel'));
       return false;
     }
   },
-  'select':                                                                                 function (e) {
+  'select':                                                                                                         function (e) {
     if (e.onfocus == undefined) {
       e.onfocus = function () {
         Adv.Forms.saveFocus(this);
@@ -256,14 +256,14 @@ var inserts = {
       }
     }
   },
-  'a.printlink,button.printlink':                                                           function (e) {
+  'a.printlink,button.printlink':                                                                                   function (e) {
     e.onclick = function () {
       Adv.Forms.saveFocus(this);
       JsHttpRequest.request(this, null, 60000);
       return false;
     }
   },
-  'a':                                                                                      function (e) { // traverse menu
+  'a':                                                                                                              function (e) { // traverse menu
     e.onkeydown = function (ev) {
       ev = ev || window.event;
       key = ev.keyCode || ev.which;

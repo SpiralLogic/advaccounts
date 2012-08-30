@@ -18,11 +18,14 @@
   use ADV\Core\Traits\StaticAccess;
 
   /**
-   * @method theme
+   * @method static theme
    * @method User ii()
-   * @method logout()
-   * @method price_dec()
-   * @method numeric($input)
+   * @method static logout()
+   * @method static price_dec()
+   * @method static numeric($input)
+   * @method static fallback()
+   * @method static percent_dec()
+   * @method static graphic_links()
    */
   class User
   {

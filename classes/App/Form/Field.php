@@ -141,19 +141,6 @@
       return $this;
     }
     /**
-     * @param $warning
-     *
-     * @return Field
-     */
-    public function setWarning($warning) {
-      if ($this->tag !== 'button') {
-        return $this;
-      }
-      JS::_beforeload("_validate." . $this->name . "=function(){ return confirm('" . strtr($warning, array("\n" => '\\n')) . "');};");
-
-      return $this;
-    }
-    /**
      * @return string
      */
     public function __toString() {

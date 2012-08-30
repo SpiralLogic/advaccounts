@@ -3469,6 +3469,10 @@ input.datepicker {
   min-width: inherit;
 }
 
+#help_indicator {
+  position: absolute;
+}
+
 #help_indicator .icon-question-sign {
   width: 25px; color: #0000cd; z-index: 100;
 }

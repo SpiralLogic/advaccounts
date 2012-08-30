@@ -11,15 +11,16 @@
 
   /**
    * @method \ADV\Core\JS i
-   * @method JS _openWindow($width, $height)
-   * @method JS _setFocus($selector, $cached = false)
-   * @method JS _headerFile($file)
-   * @method JS _footerFile($file)
-   * @method JS _onload()
-   * @method JS _renderJSON()
-   * @method JS _autocomplete()
-   * @method JS _beforeload($JS_ = false)
-   * @method JS _addLiveEvent($selector, $type, $action, $delegate = false, $cached = false)
+   * @method static JS _openWindow($width, $height)
+   * @method static JS _setFocus($selector, $cached = false)
+   * @method static JS _headerFile($file)
+   * @method static JS _footerFile($file)
+   * @method static JS _onload()
+   * @method static JS _renderJSON()
+   * @method static JS _autocomplete()
+   * @method static JS _beforeload($JS_ = false)
+   * @method static JS _addLiveEvent($selector, $type, $action, $delegate = false, $cached = false)
+   * @method static JS _defaultFocus($name = null)
    */
   class JS
   {

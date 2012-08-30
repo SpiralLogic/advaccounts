@@ -8,27 +8,35 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
   /**
    * @method HTML table()
    * @method HTML tr()
    * @method HTML td()
    * @method HTML div()
    * @method HTML textarea()
+   * @method HTML form()
+   * @method HTML _form()
    * @method HTML label()
    * @method HTML input()
    * @method HTML _td()
    * @method HTML _div()
    * @method HTML script()
    * @method HTML span()
+   * @method HTML _span()
+   * @method HTML option()
+   * @method HTML select()
    * @property HTML tr
    * @property HTML td
    * @property HTML script
    * @property HTML table
    * @property HTML div
+   * @property HTML form
+   * @property HTML option
+   * @property HTML select
    */
   class HTML
   {
-
     /**
      * @var HTML
      */
@@ -43,8 +51,7 @@
      *
      * @return null
      */
-    public function __call($func, $args)
-    {
+    public function __call($func, $args) {
       return static::__callStatic($func, $args);
     }
     /**
@@ -52,8 +59,7 @@
      *
      * @return null
      */
-    public function __get($func)
-    {
+    public function __get($func) {
       static::__callStatic($func);
 
       return static::$_instance;
@@ -65,8 +71,7 @@
      *
      * @return HTML|string
      */
-    public static function setReturn($state = null)
-    {
+    public static function setReturn($state = null) {
       if (static::$_instance === null) {
         static::$_instance = new static;
       }
@@ -87,8 +92,7 @@
      *
      * @return null
      */
-    public static function __callStatic($func, $args = [])
-    {
+    public static function __callStatic($func, $args = []) {
       if (static::$_instance === null) {
         static::$_instance = new static;
       }
@@ -101,12 +105,13 @@
      * @param array  $attr
      * @param string $content
      */
-    protected function _openTag($type, $attr = [], $content = '')
-    {
+    protected function _openTag($type, $attr = [], $content = '') {
       $attrs = '';
       foreach ($attr as $key => $value) {
         if (is_bool($value)) {
-          if ($value) $attrs .= ' ' . $key;
+          if ($value) {
+            $attrs .= ' ' . $key;
+          }
           continue;
         }
         if (is_null($value)) {
@@ -115,15 +120,14 @@
         if ($key == 'input') {
           $value = \Forms::prep_value($value);
         }
-        $attrs .= ((empty($value)&&$key!=='value') || $key == 'content') ? '' : ' ' . $key . '="' . $value . '"';
+        $attrs .= ((empty($value) && $key !== 'value') || $key == 'content') ? '' : ' ' . $key . '="' . $value . '"';
       }
       echo  '<' . $type . ' ' . $attrs . '>' . (isset($attr['content']) ? $attr['content'] : $content);
     }
     /**
      * @param $type
      */
-    protected function _closeTag($type)
-    {
+    protected function _closeTag($type) {
       echo '</' . $type . '>';
     }
     /**
@@ -132,8 +136,7 @@
      * @param array  $attr
      * @param string $content
      */
-    protected function _Builder($func, $args, $attr = [], $content = '')
-    {
+    protected function _Builder($func, $args, $attr = [], $content = '') {
       $open = (is_bool(end($args))) ? array_pop($args) : true;
       foreach ($args as $key => $val) {
         if ($key == 0 && is_string($val)) {

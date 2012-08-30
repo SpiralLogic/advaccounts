@@ -10,11 +10,11 @@
   namespace ADV\Core;
 
   /**
-   * @method _priceFormat($number)
-   * @method _format($number, $decimals = 0)
-   * @method _percentFormat($number)
-   * @method _priceDecimal($number, $dec = null)
-   * @method _round($number, $decimals = 0)
+   * @method static _priceFormat($number)
+   * @method static _format($number, $decimals = 0)
+   * @method static _percentFormat($number)
+   * @method static _priceDecimal($number, $dec = null)
+   * @method static _round($number, $decimals = 0)
 
    */
   class Num

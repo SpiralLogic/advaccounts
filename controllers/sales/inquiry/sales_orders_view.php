@@ -1,5 +1,6 @@
 <?php
   use ADV\App\Debtor\Debtor;
+  use ADV\App\Forms;
   use ADV\App\UI\UI;
   use ADV\Core\Row;
   use ADV\Core\Table;
@@ -128,13 +129,26 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       Table::start('tablestyle_noborder');
       Row::start();
       Debtor::newselect(null, ['label'=> false, 'row'=> false]);
-      Forms::refCellsSearch(_("#:"), 'OrderNumber', '', null, '', true);
+      Forms::refCellsSearch(null, 'OrderNumber', '', null, '', true);
       if ($_POST['order_view_mode'] != self::MODE_DELTEMPLATES && $_POST['order_view_mode'] != self::MODE_INVTEMPLATES) {
         Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
         Forms::dateCells(_("To:"), 'OrdersToDate', '', null, 1);
       }
       Inv_Location::cells(_(""), 'StockLocation', null, true);
-      Item::cells(_("Item:"), 'SelectStockFromList', null, true);
+      Item::select(
+        'SelectStockFromList',
+        null,
+        true,
+        false,
+        array(
+             'submitonselect' => false,
+             'cells'          => true,
+             'size'           => 10,
+             'purchase'       => false,
+             'show_inactive'  => true,
+             'placeholder'    => 'Item',
+        )
+      );
       if ($this->trans_type == ST_SALESQUOTE) {
         Forms::checkCells(_("Show All:"), 'show_all');
       }

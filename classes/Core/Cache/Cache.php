@@ -10,10 +10,10 @@
   namespace ADV\Core\Cache;
 
   /**
-   * @method mixed _get($key, $default = false)
-   * @method _set($key, $value, $expires = 86400)
-   * @method _defineConstants($name, $constants)
-   * @method _delete($key)
+   * @method static mixed _get($key, $default = false)
+   * @method static _set($key, $value, $expires = 86400)
+   * @method static _defineConstants($name, $constants)
+   * @method static _delete($key)
    * @method Cache i()
    */
   class Cache

@@ -8,12 +8,13 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core\Input;
+
   /**
    * @method _post($var, $type = null, $default = null)
    * @method _get($var, $type = null, $default = null)
    * @method _session($var, $type = null, $default = null)
    * @method _getPost($var, $type = null, $default = null)
-   * @method Input i()
+   * @method static Input i()
    * @method _postGet($var, $type = null, $default = null)
    * @method _postGetGlobal($var, $type = null, $default = null)
    * @method _getPostGlobal($var, $type = null, $default = null)
@@ -52,8 +53,7 @@
     /**
 
      */
-    public function __construct()
-    {
+    public function __construct() {
       static::$post    = new Base($_POST);
       static::$get     = new Base($_GET);
       static::$session = new Base($_SESSION);
@@ -66,8 +66,7 @@
      *
      * @return bool|int|string
      */
-    public function &post($var, $type = null, $default = null)
-    {
+    public function &post($var, $type = null, $default = null) {
       return static::$post->get($var, $type, $default);
     }
     /***
@@ -80,8 +79,7 @@
      * @internal param mixed $public $_GET variable to return
      * @return bool|int|string
      */
-    public function get($var, $type = null, $default = null)
-    {
+    public function get($var, $type = null, $default = null) {
       return static::$get->get($var, $type, $default);
     }
     /***
@@ -93,8 +91,7 @@
      *
      * @return bool|int|string
      */
-    public function &request($var, $type = null, $default = null)
-    {
+    public function &request($var, $type = null, $default = null) {
       return static::$request->get($var, $type, $default);
     }
     /***
@@ -106,8 +103,7 @@
      *
      * @return bool|int|string
      */
-    public function &getPost($var, $type = null, $default = null)
-    {
+    public function &getPost($var, $type = null, $default = null) {
       return $this->firstThenSecond(static::$get, static::$post, $var, $type, $default);
     }
     /**
@@ -119,12 +115,12 @@
      *
      * @return bool|int|null|string
      */
-    public function &getPostGlobal($var, $type = null, $default = null)
-    {
+    public function &getPostGlobal($var, $type = null, $default = null) {
       $result = $this->firstThenSecond(static::$get, static::$post, $var, $type, false);
       if ($result === false) {
         $result = $this->getGlobal($var, $type, $default);
       }
+
       return $this->returnPost($var, $result);
     }
     /**
@@ -136,12 +132,12 @@
      *
      * @return bool|int|null|string
      */
-    public function &postGetGlobal($var, $type = null, $default = null)
-    {
+    public function &postGetGlobal($var, $type = null, $default = null) {
       $result = $this->firstThenSecond(static::$post, static::$get, $var, $type, false);
       if ($result === false) {
         $result = $this->getGlobal($var, $type, $default);
       }
+
       return $this->returnPost($var, $result);
     }
     /**
@@ -151,12 +147,12 @@
      *
      * @return bool|int|null|string
      */
-    public function &postGlobal($var, $type = null, $default = null)
-    {
+    public function &postGlobal($var, $type = null, $default = null) {
       $result = $this->post($var, $type, false);
       if ($result === false) {
         $result = $this->getGlobal($var, $type, $default);
       }
+
       return $this->returnPost($var, $result);
     }
     /***
@@ -168,9 +164,9 @@
      *
      * @return bool|int|string
      */
-    public function &postGet($var, $type = null, $default = null)
-    {
+    public function &postGet($var, $type = null, $default = null) {
       $result = $this->firstThenSecond(static::$post, static::$get, $var, $type, $default);
+
       return $this->returnPost($var, $result);
     }
     /***
@@ -182,8 +178,7 @@
      *
      * @return bool|int|string
      */
-    public function &session($var = [], $type = null, $default = null)
-    {
+    public function &session($var = [], $type = null, $default = null) {
       return (session_status() === PHP_SESSION_NONE) ? false : static::$session->get($var, $type, $default);
     }
     /***
@@ -193,13 +188,13 @@
      *
      * @return bool
      */
-    public function hasPost($vars)
-    {
+    public function hasPost($vars) {
       if (is_null($vars)) {
         return true;
       } elseif (!is_array($vars)) {
         $vars = func_get_args();
       }
+
       return static::$post->has($vars);
     }
     /***
@@ -209,13 +204,13 @@
      *
      * @return bool
      */
-    public function hasGet($vars)
-    {
+    public function hasGet($vars) {
       if (is_null($vars)) {
         return true;
       } elseif (!is_array($vars)) {
         $vars = func_get_args();
       }
+
       return static::$get->has($vars);
     }
     /***
@@ -225,13 +220,13 @@
      *
      * @return bool
      */
-    public function has($vars)
-    {
+    public function has($vars) {
       if (is_null($vars)) {
         return true;
       } elseif (!is_array($vars)) {
         $vars = func_get_args();
       }
+
       return static::$request->has($vars);
     }
     /***
@@ -241,13 +236,13 @@
      *
      * @return bool
      */
-    public function hasSession($vars)
-    {
+    public function hasSession($vars) {
       if (is_null($vars)) {
         return true;
       } elseif (!is_array($vars)) {
         $vars = func_get_args();
       }
+
       return static::$session->has($vars);
     }
     /**
@@ -259,8 +254,7 @@
      *
      * @return bool|int|null|string
      */
-    protected function getGlobal($var, $type, $default)
-    {
+    protected function getGlobal($var, $type, $default) {
       return static::$session->get(['globals', $var], $type, $default);
     }
     /**
@@ -274,9 +268,9 @@
      *
      * @return bool|int|null|string
      */
-    protected function firstThenSecond(Base $first, Base $second, $var, $type = null, $default = null)
-    {
+    protected function firstThenSecond(Base $first, Base $second, $var, $type = null, $default = null) {
       $container = ($first->has($var)) ? $first : $second;
+
       return $container->get($var, $type, $default);
     }
     /**
@@ -288,8 +282,7 @@
      * @internal param array $array
      * @return bool
      */
-    protected function doesHave(Base $container, $vars)
-    {
+    protected function doesHave(Base $container, $vars) {
       return $container->has($vars);
     }
     /**
@@ -303,8 +296,7 @@
      * @internal param array $array
      * @return bool|int|null|string
      */
-    protected function &getVar(Base $container, $var, $type = null, $default = null)
-    {
+    protected function &getVar(Base $container, $var, $type = null, $default = null) {
       return $container->get($var, $type, $default);
     }
     /**
@@ -313,9 +305,9 @@
      *
      * @return mixed
      */
-    protected function &returnPost($var, $value)
-    {
+    protected function &returnPost($var, $value) {
       $_POST[$var] = $value;
+
       return $_POST[$var];
     }
   }

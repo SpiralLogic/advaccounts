@@ -120,12 +120,12 @@
       Display::div_start('controls', 'items_table');
       $buttons = new Form();
       if ($this->order->trans_no > 0 && $this->User->hasAccess(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())) {
-        $buttons->submit('_action', Orders::DELETE_ORDER, $deleteorder, ICON_DELETE)->setWarning('You are about to void this Document.\nDo you want to continue?');
+        $buttons->submit(Orders::DELETE_ORDER, $deleteorder)->preIcon(ICON_DELETE)->setWarning('You are about to void this Document.\nDo you want to continue?');
       }
-      $buttons->submit('_action', Orders::CANCEL_CHANGES, _("Cancel Changes"), ICON_CANCEL);
+      $buttons->submit(Orders::CANCEL_CHANGES, _("Cancel Changes"))->preIcon(ICON_CANCEL);
       if (count($this->order->line_items)) {
         $type = ($this->order->trans_no > 0) ? $corder : $porder; //_('Check entered data and save document')
-        $buttons->submit('_action', Orders::PROCESS_ORDER, $type, ICON_SUBMIT);
+        $buttons->submit(Orders::PROCESS_ORDER, $type)->preIcon(ICON_SUBMIT);
       }
 
       $view = new View('libraries/forms');
