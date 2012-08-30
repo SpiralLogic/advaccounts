@@ -33,12 +33,12 @@
   <h3><a href="#">Customer Search</a></h3>
 
   <div>
-    <input size="14" id="quickCustomer"/>
+    <input class="width85" id="quickCustomer"/>
   </div>
   <h3><a href="#">Supplier Search</a></h3>
 
   <div>
-    <input size="14" id="quickSupplier"/>
+    <input  class="width85" id="quickSupplier"/>
   </div>
   <!-- end sidemenu div-->
 </div>

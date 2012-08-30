@@ -9,7 +9,6 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Form;
-
   use \ADV\App\Forms;
   use \ADV\App\User;
   use \ADV\Core\Ajax;
@@ -42,7 +41,8 @@
      * @param ADV\Core\Ajax        $ajax
      * @param \ADV\Core\Session    $session
      */
-    public function __construct(\ADV\Core\Input\Input $input = null, \ADV\Core\Ajax $ajax = null, \ADV\Core\Session $session = null) {
+    public function __construct(\ADV\Core\Input\Input $input = null, \ADV\Core\Ajax $ajax = null, \ADV\Core\Session $session = null)
+    {
       $this->Ajax  = $ajax ? : Ajax::i();
       $this->Input = $input ? : Input::i();
     }
@@ -56,7 +56,8 @@
      *
      * @return \ADV\Core\HTML|string
      */
-    public function start($name = '', $action = '', $multi = null, $input_attr = []) {
+    public function start($name = '', $action = '', $multi = null, $input_attr = [])
+    {
       $attr['enctype'] = $multi ? 'multipart/form-data' : null;
       $attr['name']    = $name;
       $attr['method']  = 'post';
@@ -78,54 +79,36 @@
      * @return \ADV\Core\HTML|string
     @internal param int $breaks
      */
-    public function end() {
+    public function end()
+    {
       $this->end = HTML::setReturn(true)->form->setReturn(false);
 
       return $this->end;
     }
     /**
-     * Seek for _POST variable with $prefix.
-     * If var is found returns variable name with prefix stripped,
-     * and null or -1 otherwise.
+     * @param      $name
+     * @param null $value
      *
-     * @param      $prefix
-     * @param bool $numeric
-     *
-     * @return int|null|string
+     * @internal param bool $echo
+     * @return string
      */
-    public function findPostPrefix($prefix, $numeric = true) {
-      foreach ($_POST as $postkey => $postval) {
-        if (strpos($postkey, $prefix) === 0) {
-          $id = substr($postkey, strlen($prefix));
-
-          return $numeric ? (int) $id : $id;
-        }
-      }
-
-      return $numeric ? -1 : null;
-    }
-    /**
-     * Helper function.
-     * Returns true if selector $name is subject to update.
-     *
-     * @param $name
-     *
-     * @return bool
-     */
-    public function isListUpdated($name) {
-      return isset($_POST['_' . $name . '_update']) || isset($_POST['_' . $name . '_button']);
+    public function hidden($name, $value = null)
+    {
+      $field         = $this->addField('input', $name, $value);
+      $field['type'] = 'hidden';
+      $this->Ajax->addUpdate($name, $name, $value);
     }
     /**
      * @param $control
      *
      * @return \ADV\App\Form\Field
      */
-    public function custom($control) {
+    public function custom($control)
+    {
       preg_match('/name=([\'"]?)(.+?)\1/', $control, $matches);
-      $name    = $matches[2];
-      $id      = $this->nameToId($name);
-      $control = preg_replace('/id=([\'"]?)' . preg_quote($name) . '\1/', "id='$id'", $control, 1);
-
+      $name      = $matches[2];
+      $id        = $this->nameToId($name);
+      $control   = preg_replace('/id=([\'"]?)' . preg_quote($name) . '\1/', "id='$id'", $control, 1);
       $validator = null;
       $field     = new Field('custom', $name);
       $field->customControl($control);
@@ -135,16 +118,49 @@
       return $field;
     }
     /**
-     * @param      $name
-     * @param null $value
+     * @param       $name
+     * @param null  $value
+     * @param array $input_attr
      *
-     * @internal param bool $echo
-     * @return string
+     * @return \ADV\App\Form\Field
      */
-    public function hidden($name, $value = null) {
+    public function text($name, $value = null, $input_attr = [])
+    {
       $field         = $this->addField('input', $name, $value);
-      $field['type'] = 'hidden';
-      $this->Ajax->addUpdate($name, $name, $value);
+      $field['type'] = 'text';
+
+      return $field->mergeAttr($input_attr);
+    }
+    /**
+     * @param       $name
+     * @param       $value
+     * @param array $input_attr
+     *
+     * @return Field
+     */
+    public function date($name, $value, $input_attr = [])
+    {
+      $field              = $this->addField('input', $name, $value);
+      $field['type']      = 'text';
+      $field['maxlength'] = 10;
+      $field['class']     = 'datepicker';
+
+      return $field->mergeAttr($input_attr);
+    }
+    /**
+     * @param       $name
+     * @param bool      $value
+     * @param array $input_attr
+     *
+     * @return Field
+     */
+    public function checkbox($name, $value, $input_attr = [])
+    {
+      $field              = $this->addField('input', $name, !!$value);
+      $field['type']      = 'checkbox';
+      $field['checked']      = !!$value;
+
+      return $field->mergeAttr($input_attr);
     }
     /**
      * @param       $name
@@ -153,7 +169,8 @@
      *
      * @return \ADV\App\Form\Field
      */
-    public function textarea($name, $value = null, $input_attr = []) {
+    public function textarea($name, $value = null, $input_attr = [])
+    {
       $field = $this->addField('textarea', $name, $value);
       $field->setContent($value);
 
@@ -162,37 +179,14 @@
     /**
      * @param       $name
      * @param null  $value
-     * @param array $input_attr
-     *
-     * @return \ADV\App\Form\Field
-     */
-    public function text($name, $value = null, $input_attr = []) {
-      $field         = $this->addField('input', $name, $value);
-      $field['type'] = 'text';
-
-      return $field->mergeAttr($input_attr);
-    }
-    /**
-     * @param       $name
-     * @param null  $value
      * @param array $inputparams
      *
      * @return Field
 
      */
-    public function percent($name, $value = null, $inputparams = []) {
+    public function percent($name, $value = null, $inputparams = [])
+    {
       return $this->number($name, $value, User::percent_dec(), $inputparams)->append('%');
-    }
-    /**
-     * @param       $name
-     * @param null  $value
-     * @param array $inputparams
-     *
-     * @return Field
-
-     */
-    public function amount($name, $value = null, $inputparams = []) {
-      return $this->number($name, $value, User::price_dec(), $inputparams)->prepend('$');
     }
     /**
      * @param       $name
@@ -202,7 +196,8 @@
      *
      * @return \ADV\App\Form\Field
      */
-    public function number($name, $value = null, $dec = null, $input_attr = []) {
+    public function number($name, $value = null, $dec = null, $input_attr = [])
+    {
       $value             = (is_numeric($dec)) ? $value : Num::_round($value, $dec);
       $field             = $this->addField('input', $name, $value);
       $field['data-dec'] = (int) $dec;
@@ -220,6 +215,18 @@
       return $field->mergeAttr($input_attr);
     }
     /**
+     * @param       $name
+     * @param null  $value
+     * @param array $inputparams
+     *
+     * @return Field
+
+     */
+    public function amount($name, $value = null, $inputparams = [])
+    {
+      return $this->number($name, $value, User::price_dec(), $inputparams)->prepend('$');
+    }
+    /**
      * Universal sql combo generator
      * $sql must return selector values and selector texts in columns 0 & 1
      * Options are merged with default.
@@ -233,7 +240,8 @@
      *
      * @return string
      */
-    public function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = null) {
+    public function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = null)
+    {
       $box = new SelectBox($name, $selected_id, $sql, $valfield, $namefield, $options);
 
       return $box->create();
@@ -250,7 +258,8 @@
      *
      * @return string
      */
-    public function arraySelect($name, $selected_id, $items, $options = []) {
+    public function arraySelect($name, $selected_id, $items, $options = [])
+    {
       $spec_option   = false; // option text or false
       $spec_id       = 0; // option id
       $select_submit = false; //submit on select: true/false
@@ -318,6 +327,21 @@
       return $selector;
     }
     /**
+     * @param             $name
+     * @param string|null $value
+     * @param             $caption
+     * @param array       $input_attr Input attributes
+     *
+     * @return string
+     */
+    public function button($name, $value, $caption, $input_attr = [])
+    {
+      $button                    = new Button($name, $value, $caption);
+      $this->fields[$button->id] = $button;
+
+      return $button->mergeAttr($input_attr);
+    }
+    /**
      * Universal submit form button.
      * $atype - type of submit:
      * Normal submit:
@@ -338,7 +362,8 @@
      *
      * @return \ADV\App\Form\Button
      */
-    public function submit($action, $caption = '', $input_attr = []) {
+    public function submit($action, $caption = '', $input_attr = [])
+    {
       $button                    = new Button('_action', $action, $caption);
       $button->id                = $this->nameToId($action);
       $this->fields[$button->id] = $button;
@@ -348,39 +373,52 @@
     /**
      * @return array
      */
-    public function getFields() {
+    public function getFields()
+    {
       return $this->fields;
+    }
+    /**
+     * Seek for _POST variable with $prefix.
+     * If var is found returns variable name with prefix stripped,
+     * and null or -1 otherwise.
+     *
+     * @param      $prefix
+     * @param bool $numeric
+     *
+     * @return int|null|string
+     */
+    public function findPostPrefix($prefix, $numeric = true)
+    {
+      foreach ($_POST as $postkey => $postval) {
+        if (strpos($postkey, $prefix) === 0) {
+          $id = substr($postkey, strlen($prefix));
+
+          return $numeric ? (int) $id : $id;
+        }
+      }
+
+      return $numeric ? -1 : null;
+    }
+    /**
+     * Helper function.
+     * Returns true if selector $name is subject to update.
+     *
+     * @param $name
+     *
+     * @return bool
+     */
+    public function isListUpdated($name)
+    {
+      return isset($_POST['_' . $name . '_update']) || isset($_POST['_' . $name . '_button']);
     }
     /**
      * @param $valids
      */
-    public function runValidators($valids) {
+    public function runValidators($valids)
+    {
       foreach ($_SESSION['forms'][$this->uniqueid]->validators as $function) {
         $valids->$function();
       }
-    }
-    /**
-     * @param             $name
-     * @param string|null $value
-     * @param             $caption
-     * @param array       $input_attr Input attributes
-     *
-     * @return string
-     */
-
-    public function button($name, $value, $caption, $input_attr = []) {
-      $button                    = new Button($name, $value, $caption);
-      $this->fields[$button->id] = $button;
-
-      return $button->mergeAttr($input_attr);
-    }
-    /**
-     * @param $icon
-     *
-     * @return string
-     */
-    protected function setIcon($icon) {
-      return " <i class='" . $icon . "' > </i> ";
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
@@ -396,7 +434,8 @@
      * <p>
      *       The return value will be casted to boolean if non-boolean was returned.
      */
-    public function offsetExists($offset) {
+    public function offsetExists($offset)
+    {
       return array_key_exists($offset, $this->fields);
     }
     /**
@@ -410,7 +449,8 @@
      *
      * @return \ADV\App\Form\Field Can return all value types.
      */
-    public function offsetGet($offset) {
+    public function offsetGet($offset)
+    {
       return $this->fields[$offset];
     }
     /**
@@ -427,7 +467,8 @@
      *
      * @return void
      */
-    public function offsetSet($offset, $value) {
+    public function offsetSet($offset, $value)
+    {
       $this->fields[$offset] = $value;
     }
     /**
@@ -441,13 +482,15 @@
      *
      * @return void
      */
-    public function offsetUnset($offset) {
+    public function offsetUnset($offset)
+    {
       unset($this->fields[$offset]);
     }
     /**
      * @return array
      */
-    public function __sleep() {
+    public function __sleep()
+    {
       return ['validators'];
     }
     /**
@@ -457,7 +500,8 @@
      *
      * @return Field
      */
-    protected function addField($tag, $name, $value) {
+    protected function addField($tag, $name, $value)
+    {
       $field = new Field($tag, $name);
       if ($value === null && $this->Input->hasPost($name)) {
         $value = $this->Input->post($name);
@@ -476,7 +520,8 @@
      *
      * @return mixed
      */
-    protected function nameToId($name) {
+    protected function nameToId($name)
+    {
       return str_replace(['[', ']'], ['-', ''], $name);
     }
   }

@@ -34,7 +34,7 @@ Adv.extend({ Help: (function () {
           content = data.text;
           $(':input').popover('destroy');
           indicator.hide();
-          $current.popover({title: 'Help' + "<i class='floatright help-edit font13 icon-edit'>&nbsp;</i>", html: true, content: data.text }).popover('show');
+          $current.popover({title: 'Help' + "<i class='floatright help-edit font13 icon-edit'>&nbsp;</i>", html: true, dealy:{show:0,hide:300},content: data.text }).popover('show');
           $('.popover-title').on('click', '.help-edit', showEditor);
         };
       if (!$current.attr('id')) {

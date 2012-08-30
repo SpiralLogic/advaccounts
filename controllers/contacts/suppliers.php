@@ -124,11 +124,7 @@
       }
       $form->custom(GL_UI::payment_terms('payment_terms', $this->creditor->payment_terms))->label('Payment Terms:');
       $form->custom(GL_UI::all('payable_account', $this->creditor->payable_account, false, false, true))->label('Payable Account:');
-      $form->label(
-        'Prompt Payment Account:',
-        'payment_discount_account',
-        GL_UI::all('payment_discount_account', $this->creditor->payment_discount_account, false, false, true)
-      );
+      $form->custom(GL_UI::all('payment_discount_account', $this->creditor->payment_discount_account, false, false, true))->label('Prompt Payment Account:');
       $form->hidden('type', CT_SUPPLIER);
       $view['date'] = date('Y-m-d H:i:s');
       $form->text('contact_name', $this->creditor->contact_name)->label('Contact:');
