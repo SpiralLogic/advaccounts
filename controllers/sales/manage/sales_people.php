@@ -185,7 +185,7 @@
       Display::div_start('edit_user');
       $view = new View('sales/people');
       $form = new Form();
-      $form->custom(Users::select('user_id'))->label('User:');
+      $form->custom(Users::select('user_id', null, " "))->label('User:');
       $form->text('salesman_name', null, ['maxlength'=> 30])->label('Name: ');
       $form->text('salesman_phone', null, ['maxlength'=> 20])->label('Telephone number: ');
       $form->text('salesman_fax', null, ['maxlength'=> 20])->label('Fax number: ');

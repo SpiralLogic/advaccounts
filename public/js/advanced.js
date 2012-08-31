@@ -354,9 +354,9 @@ Adv.extend({
                  },
                  setFormValues:   function (data) {
                    $.each(data, function (k, v) {
-                     var value = v.value || v;
+                     var value = (v.value !== undefined) ? v.value : v;
                      Adv.Forms.setFormValue(k, value);
-                   })
+                   });
                  },
                  setFormDefault:  function (id, value, disabled) {
                    this.setFormValue(id, value, disabled, true);
