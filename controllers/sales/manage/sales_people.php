@@ -28,8 +28,7 @@
     protected $result;
     protected $selected_id;
     protected $Mode;
-    protected function before()
-    {
+    protected function before() {
       if ($this->action == ADD_ITEM || $this->action == UPDATE_ITEM) {
         if ($this->selected_id != -1) {
           $this->addNew();
@@ -40,7 +39,7 @@
         $this->action = MODE_RESET;
       }
       $id = $this->getActionId('Delete');
-      if ($id>-1) {
+      if ($id > -1) {
         //the link to delete a selected record was clicked instead of the submit button
         $this->delete($id);
         $this->Mode = MODE_RESET;
@@ -50,23 +49,20 @@
       }
       $this->getSalesPersons();
     }
-    protected function getSalesPersons()
-    {
+    protected function getSalesPersons() {
       $sql = "SELECT s.*,u.user_id,u.id FROM salesman s, users u WHERE s.user_id=u.id";
       if (!Input::_hasPost('show_inactive')) {
         $sql .= " AND !s.inactive";
       }
       $this->result = $sql;
     }
-    protected function reset()
-    {
+    protected function reset() {
       $this->selected_id = -1;
       $sav               = Input::_post('show_inactive');
       unset($_POST);
       $_POST['show_inactive'] = $sav;
     }
-    protected function delete($id)
-    { // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors'
+    protected function delete($id) { // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors'
       $sql    = "SELECT COUNT(*) FROM branches WHERE salesman=" . DB::_escape($id);
       $result = DB::_query($sql, "check failed");
       $myrow  = DB::_fetchRow($result);
@@ -84,11 +80,11 @@
         return $result;
       }
     }
-    protected function addNew()
-    {
+    protected function addNew() {
       $this->canProcess();
       /*Selected group is null cos no item selected on first time round so must be adding a record must be submitting new entries in the new Sales-person form */
-      $sql    = "INSERT INTO salesman (salesman_name, user_id, salesman_phone, salesman_fax, salesman_email,
+      $sql
+              = "INSERT INTO salesman (salesman_name, user_id, salesman_phone, salesman_fax, salesman_email,
    			provision, break_pt, provision2)
    			VALUES (" . DB::_escape($_POST['salesman_name']) . ", " . DB::_escape($_POST['user_id']) . ", " . DB::_escape($_POST['salesman_phone']) . ", " . DB::_escape(
         $_POST['salesman_fax']
@@ -102,11 +98,10 @@
 
       return $result;
     }
-    protected function update()
-    {
+    protected function update() {
       $this->canProcess();
       /*selected_id could also exist if submit had not been clicked this code would not run in this case cos submit is false of course see the delete code below*/
-      $sql = "UPDATE salesman SET salesman_name=" . DB::_escape($_POST['salesman_name']) . ",
+      $sql    = "UPDATE salesman SET salesman_name=" . DB::_escape($_POST['salesman_name']) . ",
    			user_id=" . DB::_escape($_POST['user_id']) . ",
    			salesman_phone=" . DB::_escape($_POST['salesman_phone']) . ",
    			salesman_fax=" . DB::_escape($_POST['salesman_fax']) . ",
@@ -123,8 +118,7 @@
 
       return $result;
     }
-    protected function canProcess()
-    { //initialise no input errors assumed initially before we test
+    protected function canProcess() { //initialise no input errors assumed initially before we test
       $input_error = 0;
       if (strlen($_POST['salesman_name']) == 0) {
         $input_error = 1;
@@ -147,10 +141,8 @@
 
       return $input_error;
     }
-    protected function index()
-    {
+    protected function index() {
       Page::start(_($help_context = "Sales Persons"), SA_SALESMAN);
-      Forms::start();
       $cols  = array(
         _("User ID"),
         _("Name"),
@@ -161,8 +153,8 @@
         _("Provision"),
         _("Break Pt."),
         _("Provision") . " 2",
-        ['type'=>"skip"],
-        ['type'=>"skip"],
+        ['type'=> "skip"],
+        ['type'=> "skip"],
         ['insert'=> true, 'fun'=> [$this, 'formatEditBtn']],
         ['insert'=> true, 'fun'=> [$this, 'formatDeleteBtn']]
       );
@@ -171,7 +163,7 @@
       echo '<br>';
       $_POST['salesman_email'] = "";
       $id                      = $this->getActionId('Edit');
-      if ($id>-1) {
+      if ($id > -1) {
         //editing an existing Sales-person
         $sql                     = "SELECT * FROM salesman WHERE salesman_code=" . DB::_escape($id);
         $result                  = DB::_query($sql, "could not get sales person");
@@ -191,32 +183,30 @@
         $_POST['provision2'] = Num::_percentFormat(0);
       }
       Display::div_start('edit_user');
-      $form = new Form('edit_user');
-      $form->custom(Users::select('user_id'))->label('User:');
-      $form->text('salesman_name',null,['maxlength'=>30])->label('Name: ');
-      $form->text('salesman_phone',null,['maxlength'=>20])->label('Telephone number:: ');
-      Forms::textRowEx(_("Fax number:"), 'salesman_fax', 20);
-      Forms::emailRowEx(_("E-mail:"), 'salesman_email', 40);
-      Forms::percentRow(_("Provision") . ':', 'provision');
-      Forms::AmountRow(_("Break Pt.:"), 'break_pt');
-      Forms::percentRow(_("Provision") . " 2:", 'provision2');
-      Table::end(1);
+      $view = new View('sales/people');
       $form = new Form();
-      $form->submit(ADD_ITEM, $id== -1 ? 'Add' : 'Update');
-      Forms::submitAddUpdateCenter($id== -1, '', 'both');
+      $form->custom(Users::select('user_id'))->label('User:');
+      $form->text('salesman_name', null, ['maxlength'=> 30])->label('Name: ');
+      $form->text('salesman_phone', null, ['maxlength'=> 20])->label('Telephone number: ');
+      $form->text('salesman_fax', null, ['maxlength'=> 20])->label('Fax number: ');
+      $form->text('salesman_email', null, ['maxlength'=> 40])->label('E-mail: ');
+      $form->percent('provision')->label("Provision: ");
+      $form->amount('break_pt')->label("Break Pt.:");
+      $form->percent('provision2')->label("Provision 2: ");
+      $form->submit(ADD_ITEM, $id == -1 ? 'Add' : 'Update');
+      $form->submit(CANCEL, 'Cancel Changes');
+      $view->set('form', $form->getFields());
+      $view->render();
       Display::div_end();
-      Forms::end();
       Page::end();
     }
-    public function formatEditBtn($row)
-    {
+    public function formatEditBtn($row) {
       $button = new \ADV\App\Form\Button('_action', 'Edit' . $row['salesman_code'], 'Edit');
       $button['class'] .= ' btn-mini btn-primary';
 
       return $button;
     }
-    public function formatDeleteBtn($row)
-    {
+    public function formatDeleteBtn($row) {
       $button = new \ADV\App\Form\Button('_action', 'Delete' . $row['salesman_code'], 'Delete');
       $button['class'] .= ' btn-mini btn-danger';
 

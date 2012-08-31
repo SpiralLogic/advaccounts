@@ -9,6 +9,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Form;
+
   use \ADV\App\Forms;
   use \ADV\App\User;
   use \ADV\Core\Ajax;
@@ -24,7 +25,7 @@
    * @param string $action
    * @param string $name
    */
-  class Form implements \ArrayAccess
+  class Form implements \ArrayAccess, \Iterator
   {
     /** @var Field[] */
     protected $fields = [];
@@ -36,13 +37,13 @@
     protected $Input;
     protected $validators = [];
     protected $uniqueid;
+    protected $current;
     /**
      * @param ADV\Core\Input\Input $input
      * @param ADV\Core\Ajax        $ajax
      * @param \ADV\Core\Session    $session
      */
-    public function __construct(\ADV\Core\Input\Input $input = null, \ADV\Core\Ajax $ajax = null, \ADV\Core\Session $session = null)
-    {
+    public function __construct(\ADV\Core\Input\Input $input = null, \ADV\Core\Ajax $ajax = null, \ADV\Core\Session $session = null) {
       $this->Ajax  = $ajax ? : Ajax::i();
       $this->Input = $input ? : Input::i();
     }
@@ -56,8 +57,7 @@
      *
      * @return \ADV\Core\HTML|string
      */
-    public function start($name = '', $action = '', $multi = null, $input_attr = [])
-    {
+    public function start($name = '', $action = '', $multi = null, $input_attr = []) {
       $attr['enctype'] = $multi ? 'multipart/form-data' : null;
       $attr['name']    = $name;
       $attr['method']  = 'post';
@@ -79,8 +79,7 @@
      * @return \ADV\Core\HTML|string
     @internal param int $breaks
      */
-    public function end()
-    {
+    public function end() {
       $this->end = HTML::setReturn(true)->form->setReturn(false);
 
       return $this->end;
@@ -92,8 +91,7 @@
      * @internal param bool $echo
      * @return string
      */
-    public function hidden($name, $value = null)
-    {
+    public function hidden($name, $value = null) {
       $field         = $this->addField('input', $name, $value);
       $field['type'] = 'hidden';
       $this->Ajax->addUpdate($name, $name, $value);
@@ -103,8 +101,7 @@
      *
      * @return \ADV\App\Form\Field
      */
-    public function custom($control)
-    {
+    public function custom($control) {
       preg_match('/name=([\'"]?)(.+?)\1/', $control, $matches);
       $name      = $matches[2];
       $id        = $this->nameToId($name);
@@ -124,8 +121,7 @@
      *
      * @return \ADV\App\Form\Field
      */
-    public function text($name, $value = null, $input_attr = [])
-    {
+    public function text($name, $value = null, $input_attr = []) {
       $field         = $this->addField('input', $name, $value);
       $field['type'] = 'text';
 
@@ -138,8 +134,7 @@
      *
      * @return Field
      */
-    public function date($name, $value, $input_attr = [])
-    {
+    public function date($name, $value, $input_attr = []) {
       $field              = $this->addField('input', $name, $value);
       $field['type']      = 'text';
       $field['maxlength'] = 10;
@@ -148,17 +143,16 @@
       return $field->mergeAttr($input_attr);
     }
     /**
-     * @param       $name
+     * @param           $name
      * @param bool      $value
-     * @param array $input_attr
+     * @param array     $input_attr
      *
      * @return Field
      */
-    public function checkbox($name, $value, $input_attr = [])
-    {
-      $field              = $this->addField('input', $name, !!$value);
-      $field['type']      = 'checkbox';
-      $field['checked']      = !!$value;
+    public function checkbox($name, $value, $input_attr = []) {
+      $field            = $this->addField('input', $name, !!$value);
+      $field['type']    = 'checkbox';
+      $field['checked'] = !!$value;
 
       return $field->mergeAttr($input_attr);
     }
@@ -169,8 +163,7 @@
      *
      * @return \ADV\App\Form\Field
      */
-    public function textarea($name, $value = null, $input_attr = [])
-    {
+    public function textarea($name, $value = null, $input_attr = []) {
       $field = $this->addField('textarea', $name, $value);
       $field->setContent($value);
 
@@ -184,8 +177,7 @@
      * @return Field
 
      */
-    public function percent($name, $value = null, $inputparams = [])
-    {
+    public function percent($name, $value = null, $inputparams = []) {
       return $this->number($name, $value, User::percent_dec(), $inputparams)->append('%');
     }
     /**
@@ -196,8 +188,7 @@
      *
      * @return \ADV\App\Form\Field
      */
-    public function number($name, $value = null, $dec = null, $input_attr = [])
-    {
+    public function number($name, $value = null, $dec = null, $input_attr = []) {
       $value             = (is_numeric($dec)) ? $value : Num::_round($value, $dec);
       $field             = $this->addField('input', $name, $value);
       $field['data-dec'] = (int) $dec;
@@ -222,8 +213,7 @@
      * @return Field
 
      */
-    public function amount($name, $value = null, $inputparams = [])
-    {
+    public function amount($name, $value = null, $inputparams = []) {
       return $this->number($name, $value, User::price_dec(), $inputparams)->prepend('$');
     }
     /**
@@ -240,8 +230,7 @@
      *
      * @return string
      */
-    public function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = null)
-    {
+    public function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = null) {
       $box = new SelectBox($name, $selected_id, $sql, $valfield, $namefield, $options);
 
       return $box->create();
@@ -258,8 +247,7 @@
      *
      * @return string
      */
-    public function arraySelect($name, $selected_id, $items, $options = [])
-    {
+    public function arraySelect($name, $selected_id, $items, $options = []) {
       $spec_option   = false; // option text or false
       $spec_id       = 0; // option id
       $select_submit = false; //submit on select: true/false
@@ -334,8 +322,7 @@
      *
      * @return string
      */
-    public function button($name, $value, $caption, $input_attr = [])
-    {
+    public function button($name, $value, $caption, $input_attr = []) {
       $button                    = new Button($name, $value, $caption);
       $this->fields[$button->id] = $button;
 
@@ -362,8 +349,7 @@
      *
      * @return \ADV\App\Form\Button
      */
-    public function submit($action, $caption = '', $input_attr = [])
-    {
+    public function submit($action, $caption = '', $input_attr = []) {
       $button                    = new Button('_action', $action, $caption);
       $button->id                = $this->nameToId($action);
       $this->fields[$button->id] = $button;
@@ -373,8 +359,7 @@
     /**
      * @return array
      */
-    public function getFields()
-    {
+    public function getFields() {
       return $this->fields;
     }
     /**
@@ -387,8 +372,7 @@
      *
      * @return int|null|string
      */
-    public function findPostPrefix($prefix, $numeric = true)
-    {
+    public function findPostPrefix($prefix, $numeric = true) {
       foreach ($_POST as $postkey => $postval) {
         if (strpos($postkey, $prefix) === 0) {
           $id = substr($postkey, strlen($prefix));
@@ -407,15 +391,13 @@
      *
      * @return bool
      */
-    public function isListUpdated($name)
-    {
+    public function isListUpdated($name) {
       return isset($_POST['_' . $name . '_update']) || isset($_POST['_' . $name . '_button']);
     }
     /**
      * @param $valids
      */
-    public function runValidators($valids)
-    {
+    public function runValidators($valids) {
       foreach ($_SESSION['forms'][$this->uniqueid]->validators as $function) {
         $valids->$function();
       }
@@ -434,8 +416,7 @@
      * <p>
      *       The return value will be casted to boolean if non-boolean was returned.
      */
-    public function offsetExists($offset)
-    {
+    public function offsetExists($offset) {
       return array_key_exists($offset, $this->fields);
     }
     /**
@@ -449,8 +430,7 @@
      *
      * @return \ADV\App\Form\Field Can return all value types.
      */
-    public function offsetGet($offset)
-    {
+    public function offsetGet($offset) {
       return $this->fields[$offset];
     }
     /**
@@ -467,8 +447,7 @@
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
-    {
+    public function offsetSet($offset, $value) {
       $this->fields[$offset] = $value;
     }
     /**
@@ -482,15 +461,13 @@
      *
      * @return void
      */
-    public function offsetUnset($offset)
-    {
+    public function offsetUnset($offset) {
       unset($this->fields[$offset]);
     }
     /**
      * @return array
      */
-    public function __sleep()
-    {
+    public function __sleep() {
       return ['validators'];
     }
     /**
@@ -500,8 +477,7 @@
      *
      * @return Field
      */
-    protected function addField($tag, $name, $value)
-    {
+    protected function addField($tag, $name, $value) {
       $field = new Field($tag, $name);
       if ($value === null && $this->Input->hasPost($name)) {
         $value = $this->Input->post($name);
@@ -520,8 +496,53 @@
      *
      * @return mixed
      */
-    protected function nameToId($name)
-    {
+    protected function nameToId($name) {
       return str_replace(['[', ']'], ['-', ''], $name);
+    }
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Return the current element
+     * @link http://php.net/manual/en/iterator.current.php
+     * @return mixed Can return any type.
+     */
+    public function current() {
+      return current($this->fields);
+    }
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Move forward to next element
+     * @link http://php.net/manual/en/iterator.next.php
+     * @return void Any returned value is ignored.
+     */
+    public function next() {
+      $this->current = next($this->fields);
+    }
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Return the key of the current element
+     * @link http://php.net/manual/en/iterator.key.php
+     * @return mixed scalar on success, or null on failure.
+     */
+    public function key() {
+      return key($this->fields);
+    }
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Checks if current position is valid
+     * @link http://php.net/manual/en/iterator.valid.php
+     * @return boolean The return value will be casted to boolean and then evaluated.
+     *       Returns true on success or false on failure.
+     */
+    public function valid() {
+      return $this->current !== false;
+    }
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Rewind the Iterator to the first element
+     * @link http://php.net/manual/en/iterator.rewind.php
+     * @return void Any returned value is ignored.
+     */
+    public function rewind() {
+      reset($this->fields);
     }
   }
