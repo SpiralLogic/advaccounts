@@ -19,12 +19,12 @@
   use ADV\Core\Ajax;
   use ADV\Core\JS;
 
-  $GLOBALS['ajax_divs'] = [];
   /**
 
    */
   class Display
   {
+protected static $ajax_divs;
     /** @var JS */
     static $JS;
     /** @var User */
@@ -119,15 +119,15 @@
      * @param bool   $non_ajax
      */
     public static function div_start($id = '', $trigger = null, $non_ajax = false, $echo = true) {
-      global $ajax_divs;
+
       if (!static::$JS) {
         static::$JS = JS::i();
       }
       if ($non_ajax) { // div for non-ajax elements
-        array_push($ajax_divs, array($id, null));
+        array_push(static::$ajax_divs, array($id, null));
         echo "<div class='js hidden' " . ($id != '' ? "id='$id'" : '') . ">";
       } else { // ajax ready div
-        array_push($ajax_divs, array($id, $trigger === null ? $id : $trigger));
+        array_push(static::$ajax_divs, array($id, $trigger === null ? $id : $trigger));
         echo "<div " . ($id != '' ? "id='$id'" : '') . ">";
         ob_start();
       }
@@ -136,12 +136,12 @@
      * @static
      */
     public static function div_end($return_div = false) {
-      global $ajax_divs;
+
       if (!static::$Ajax) {
         static::$Ajax = Ajax::i();
       }
-      if (count($ajax_divs)) {
-        $div = array_pop($ajax_divs);
+      if (count(static::$ajax_divs)) {
+        $div = array_pop(static::$ajax_divs);
         if ($div[1] !== null) {
           static::$Ajax->addUpdate($div[1], $div[0], ob_get_flush());
         }

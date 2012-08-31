@@ -357,11 +357,11 @@
       if ($add) {
         Forms::submit(ADD_ITEM, _("Add new"), true, $title, $async);
       } else {
+        Forms::submit(MODE_RESET, _("Cancel"), true, _('Cancel edition'), $cancel);
         Forms::submit(UPDATE_ITEM, _("Update"), true, _('Submit changes'), $async);
         if ($clone) {
           Forms::submit(MODE_CLONE, _("Clone"), true, _('Edit new record with current data'), $async);
         }
-        Forms::submit(MODE_RESET, _("Cancel"), true, _('Cancel edition'), $cancel);
       }
     }
     /**
