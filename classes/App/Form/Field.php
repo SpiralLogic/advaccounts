@@ -20,6 +20,8 @@
   {
     protected $attr = [];
     public $id;
+    public $value = null;
+    public $default;
     protected $name;
     protected $content = '';
     protected $label;
@@ -145,8 +147,9 @@
      */
     public function __toString() {
       if (!isset($this->control)) {
-        $tag     = $this->tag;
-        $control = HTML::setReturn(true)->$tag($this->id, $this->content, $this->attr, ($tag === 'input'))->setReturn(false);
+        $tag                 = $this->tag;
+        $this->attr['value'] = (isset($this->value)) ? $this->value : $this->default;
+        $control             = HTML::setReturn(true)->$tag($this->id, $this->content, $this->attr, ($tag === 'input'))->setReturn(false);
       } else {
         $control = $this->control;
       }
@@ -203,6 +206,11 @@
      * @return void
      */
     public function offsetSet($offset, $value) {
+      if ($offset == 'value') {
+        $this->value = $value;
+
+        return;
+      }
       $this->attr[$offset] = $value;
     }
     /**
