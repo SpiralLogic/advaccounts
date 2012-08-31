@@ -3653,7 +3653,7 @@ td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid 
 }
 
 .grid tbody tr:nth-child(even), tr.grid:nth-child(even) {
-  background: none repeat scroll 0 0 #D2DBF4;
+  background: white repeat scroll 0 0 #D2DBF4;
   border:     1px solid #D2DBF4;
 }
 
@@ -3661,8 +3661,8 @@ td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid 
   background-color: #edfecc;
 }
 
-.grid tfoot td, .grid tfoot td.label {
-  border: 1px solid #E1E1E1;
+.grid tfoot,.grid tfoot td, .grid tfoot td.label {
+  background-color: white;
 }
 
 .recgrid {

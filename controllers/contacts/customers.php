@@ -64,7 +64,7 @@
      */
     protected function generateForm() {
 
-      $cache = Cache::_get('customer_form');
+      $cache = null;Cache::_get('customer_form');
       if ($cache) {
         $this->JS->setState($cache[1]);
 
@@ -117,6 +117,8 @@
                                                 ]);
       $view->set('accounts_postcode', $accounts_postcode);
       $form->hidden('accounts_id', $this->debtor->accounts->accounts_id);
+      $form->group('accounts');
+
       $form->percent('discount', $this->debtor->discount, ["disabled"=> !User::i()->hasAccess(SA_CUSTOMER_CREDIT)])->label("Discount Percent:");
       $form->percent('payment_discount', $this->debtor->payment_discount, ["disabled"=> !User::i()->hasAccess(SA_CUSTOMER_CREDIT)])->label("Prompt Payment Discount:");
       $form->amount('credit_limit', $this->debtor->credit_limit, ["disabled"=> !User::i()->hasAccess(SA_CUSTOMER_CREDIT)])->label("Credit Limit:");
@@ -131,6 +133,10 @@
       }
       $form->custom(GL_UI::payment_terms('payment_terms', $this->debtor->payment_terms))->label('Payment Terms:');
       $form->custom(Sales_CreditStatus::select('credit_status', $this->debtor->credit_status))->label('Credit Status:');
+      $form->group();
+
+
+
       $form->textarea('messageLog', Contact_Log::read($this->debtor->id, CT_CUSTOMER), ['style'=> 'height:100px;width:95%;margin:0 auto;', 'cols'=> 100]);
       /** @noinspection PhpUndefinedMethodInspection */
       $contacts = new View('contacts/contact');
