@@ -25,6 +25,7 @@
    */
   class SalesPeople extends Base
   {
+
     protected $result;
     protected $selected_id;
     protected $Mode;
@@ -68,7 +69,6 @@
       $myrow  = DB::_fetchRow($result);
       if ($myrow[0] > 0) {
         Event::error("Cannot delete this sales-person because branches are set up referring to this sales-person - first alter the branches concerned.");
-
         return false;
       } else {
         $sql    = "DELETE FROM salesman WHERE salesman_code=" . DB::_escape($id);
@@ -76,7 +76,6 @@
         if ($result) {
           Event::notice(_('Selected sales person data have been deleted'));
         }
-
         return $result;
       }
     }
@@ -95,7 +94,6 @@
       if ($result) {
         Event::success(_('Selected sales person data have been updated'));
       }
-
       return $result;
     }
     protected function update() {
@@ -115,7 +113,6 @@
         Event::success(_('New sales person data have been added'));
       }
       ;
-
       return $result;
     }
     protected function canProcess() { //initialise no input errors assumed initially before we test
@@ -135,10 +132,8 @@
         $input_error = 1;
         Event::error(_("Salesman provision breakpoint must be numeric and not less than 0."));
         JS::_setFocus('break_pt');
-
         return $input_error;
       }
-
       return $input_error;
     }
     protected function index() {
@@ -155,10 +150,10 @@
         _("Provision") . " 2",
         ['type'=> "skip"],
         ['type'=> "skip"],
-        ['insert'=> true, 'fun'=> [$this, 'formatEditBtn']],
-        ['insert'=> true, 'fun'=> [$this, 'formatDeleteBtn']]
+        ['insert'=> true, "align"=>"center", 'fun'=> [$this, 'formatEditBtn']],
+        ['insert'=> true, "align"=>"center", 'fun'=> [$this, 'formatDeleteBtn']]
       );
-      $table = DB_Pager::new_db_pager('sales_persons11', $this->result, $cols);
+      $table = DB_Pager::new_db_pager('sales_persons', $this->result, $cols);
       $table->display();
       echo '<br>';
       $_POST['salesman_email'] = "";
@@ -183,10 +178,13 @@
         $_POST['provision2'] = Num::_percentFormat(0);
       }
       Display::div_start('edit_user');
+
+
       $view = new View('sales/people');
       $form = new Form();
-      $form->custom(Users::select('user_id', null, " "))->label('User:');
+      if ($this->action==CANCEL) $form->option(Form::NO_VALUES,true);
       $form->text('salesman_name', null, ['maxlength'=> 30])->label('Name: ');
+      $form->custom(Users::select('user_id', null, " "))->label('User:');
       $form->text('salesman_phone', null, ['maxlength'=> 20])->label('Telephone number: ');
       $form->text('salesman_fax', null, ['maxlength'=> 20])->label('Fax number: ');
       $form->text('salesman_email', null, ['maxlength'=> 40])->label('E-mail: ');
@@ -201,17 +199,18 @@
       Display::div_end();
       $this->Ajax->addJson(true, 'setFormValues', $form);
       Page::end();
+
+
+      
     }
     public function formatEditBtn($row) {
       $button = new \ADV\App\Form\Button('_action', 'Edit' . $row['salesman_code'], 'Edit');
       $button['class'] .= ' btn-mini btn-primary';
-
       return $button;
     }
     public function formatDeleteBtn($row) {
       $button = new \ADV\App\Form\Button('_action', 'Delete' . $row['salesman_code'], 'Delete');
       $button['class'] .= ' btn-mini btn-danger';
-
       return $button;
     }
   }

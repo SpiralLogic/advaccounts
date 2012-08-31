@@ -9,7 +9,6 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Form;
-
   use \ADV\App\Forms;
   use \ADV\App\User;
   use \ADV\Core\Ajax;
@@ -27,6 +26,8 @@
    */
   class Form implements \ArrayAccess, \Iterator, \JsonSerializable
   {
+
+    const NO_VALUES = 1;
     /** @var Field[] */
     protected $fields = [];
     protected $groups = [];
@@ -39,6 +40,9 @@
     protected $validators = [];
     protected $uniqueid;
     protected $current;
+    protected $options = [
+      self::NO_VALUES=> false,
+    ];
     protected $currentgroup;
     /**
      * @param ADV\Core\Input\Input $input
@@ -70,12 +74,11 @@
       $this->start = HTML::setReturn(true)->form($name, $attr)->input(
         null,
         [
-        'type' => 'hidden',
-        'value'=> $this->uniqueid,
-        'name' => '_form_id'
+          'type' => 'hidden',
+          'value'=> $this->uniqueid,
+          'name' => '_form_id'
         ]
       )->setReturn(false);
-
       return $this->start;
     }
     /**
@@ -84,7 +87,6 @@
      */
     public function end() {
       $this->end = HTML::setReturn(true)->form->setReturn(false);
-
       return $this->end;
     }
     /**
@@ -97,8 +99,16 @@
         $this->groups[$name] = [];
       }
       $this->currentgroup = &$this->groups[$name];
-
       return $this;
+    }
+    /**
+     * @param $option
+     * @param $value
+     */
+    public function option($option, $value) {
+      if (isset($this->options[$option])) {
+        $this->options[$option] = $value;
+      }
     }
     /**
      * @param      $name
@@ -125,7 +135,6 @@
       $control   = preg_replace('/id=([\'"]?)' . preg_quote($name) . '\1/', "id='$id'", $control, 1);
       $validator = null;
       $field->customControl($control);
-
       return $field;
     }
     /**
@@ -138,7 +147,6 @@
     public function text($name, $value = null, $input_attr = []) {
       $field         = $this->addField('input', $name, $value);
       $field['type'] = 'text';
-
       return $field->mergeAttr($input_attr);
     }
     /**
@@ -153,7 +161,6 @@
       $field['type']      = 'text';
       $field['maxlength'] = 10;
       $field['class']     = 'datepicker';
-
       return $field->mergeAttr($input_attr);
     }
     /**
@@ -167,7 +174,6 @@
       $field            = $this->addField('input', $name, !!$value);
       $field['type']    = 'checkbox';
       $field['checked'] = !!$value;
-
       return $field->mergeAttr($input_attr);
     }
     /**
@@ -180,7 +186,6 @@
     public function textarea($name, $value = null, $input_attr = []) {
       $field = $this->addField('textarea', $name, $value);
       $field->setContent($value);
-
       return $field->mergeAttr($input_attr);
     }
     /**
@@ -215,7 +220,6 @@
       }
       $field['type'] = 'text';
       $this->Ajax->addAssign($name, $name, 'data-dec', $dec);
-
       return $field->mergeAttr($input_attr);
     }
     /**
@@ -245,7 +249,6 @@
      */
     public function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = null) {
       $box = new SelectBox($name, $selected_id, $sql, $valfield, $namefield, $options);
-
       return $box->create();
     }
     /**
@@ -324,7 +327,6 @@
         $selector .= HTML::setReturn(true)->input(null, $input_attr, false)->setReturn(false);
       }
       JS::_defaultFocus($name);
-
       return $selector;
     }
     /**
@@ -341,7 +343,6 @@
         $this->currentgroup[] = $button;
       }
       $this->fields[$button->id] = $button;
-
       return $button->mergeAttr($input_attr);
     }
     /**
@@ -372,7 +373,6 @@
         $this->currentgroup[] = $button;
       }
       $this->fields[$button->id] = $button;
-
       return $button->mergeAttr($input_attr);
     }
     /**
@@ -395,11 +395,9 @@
       foreach ($_POST as $postkey => $postval) {
         if (strpos($postkey, $prefix) === 0) {
           $id = substr($postkey, strlen($prefix));
-
           return $numeric ? (int) $id : $id;
         }
       }
-
       return $numeric ? -1 : null;
     }
     /**
@@ -453,7 +451,6 @@
       if (!isset($this->fields[$offset]) && isset($this->groups[$offset])) {
         return $this->groups[$offset];
       }
-
       return $this->fields[$offset];
     }
     /**
@@ -502,7 +499,7 @@
      */
     protected function addField($tag, $name, $value) {
       $field = new Field($tag, $name);
-      if ($value === null && $this->Input->hasPost($name)) {
+      if ($value === null && !$this->options[self::NO_VALUES] && $this->Input->hasPost($name)) {
         $value = $this->Input->post($name);
       }
       if ($tag !== 'textarea') {
@@ -511,11 +508,9 @@
       if (is_array($this->currentgroup)) {
         $this->currentgroup[] = $field;
       }
-
       $this->fields[$field->id]     = $field;
       $this->validators[$field->id] =& $field->validator;
       $this->Ajax->addUpdate($name, $name, $value);
-
       return $field;
     }
     /**
@@ -580,7 +575,6 @@
       foreach ($this->fields as $id=> $field) {
         $return[$id] = ['value'=> $field['value']];
       }
-
       return $return;
     }
   }
