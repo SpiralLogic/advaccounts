@@ -3366,6 +3366,14 @@ div.warn_msg {
   vertical-align: top;
 }
 
+.formdiv {
+  padding:    10px 40px;
+  background: #F3F9FE;
+  display:    inline-block;
+  text-align: center;
+  border:     1px solid #B6B6B6;
+}
+
 .combodiv {
   display: block;
 }
@@ -3383,6 +3391,10 @@ div.warn_msg {
 .formbox label {
   display: table-row;
   margin:  5px 2px;
+}
+
+.formdiv label {
+  text-align: left;
 }
 
 .formbox select, .formbox button {

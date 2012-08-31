@@ -352,6 +352,12 @@ Adv.extend({
                    });
                    return els;
                  },
+                 setFormValues:   function (data) {
+                   $.each(data, function (k, v) {
+                     var value = v.value || v;
+                     Adv.Forms.setFormValue(k, value);
+                   })
+                 },
                  setFormDefault:  function (id, value, disabled) {
                    this.setFormValue(id, value, disabled, true);
                  },

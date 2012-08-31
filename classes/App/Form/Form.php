@@ -25,10 +25,11 @@
    * @param string $action
    * @param string $name
    */
-  class Form implements \ArrayAccess, \Iterator
+  class Form implements \ArrayAccess, \Iterator, \JsonSerializable
   {
     /** @var Field[] */
     protected $fields = [];
+    protected $groups = [];
     protected $start;
     protected $end;
     /** @var Ajax */
@@ -38,6 +39,7 @@
     protected $validators = [];
     protected $uniqueid;
     protected $current;
+    protected $currentgroup;
     /**
      * @param ADV\Core\Input\Input $input
      * @param ADV\Core\Ajax        $ajax
@@ -46,6 +48,7 @@
     public function __construct(\ADV\Core\Input\Input $input = null, \ADV\Core\Ajax $ajax = null, \ADV\Core\Session $session = null) {
       $this->Ajax  = $ajax ? : Ajax::i();
       $this->Input = $input ? : Input::i();
+      $this->group();
     }
     /**
      * @static
@@ -85,6 +88,19 @@
       return $this->end;
     }
     /**
+     * @param $name
+     *
+     * @return \ADV\App\Form\Form
+     */
+    public function group($name = '_default') {
+      if (!isset($this->groups[$name])) {
+        $this->groups[$name] = [];
+      }
+      $this->currentgroup = &$this->groups[$name];
+
+      return $this;
+    }
+    /**
      * @param      $name
      * @param null $value
      *
@@ -104,13 +120,11 @@
     public function custom($control) {
       preg_match('/name=([\'"]?)(.+?)\1/', $control, $matches);
       $name      = $matches[2];
-      $id        = $this->nameToId($name);
+      $field     = $this->addField('custom', $name, Input::_post($name));
+      $id        = $field->id;
       $control   = preg_replace('/id=([\'"]?)' . preg_quote($name) . '\1/', "id='$id'", $control, 1);
       $validator = null;
-      $field     = new Field('custom', $name);
       $field->customControl($control);
-      $this->fields[$id]     = $field;
-      $this->validators[$id] =& $field->validator;
 
       return $field;
     }
@@ -199,8 +213,7 @@
       } elseif (is_string($size)) {
         $field['class'] .= ($name == 'freight') ? ' freight ' : ' amount ';
       }
-      $field['maxlength'] = $input_attr['max'];
-      $field['type']      = 'text';
+      $field['type'] = 'text';
       $this->Ajax->addAssign($name, $name, 'data-dec', $dec);
 
       return $field->mergeAttr($input_attr);
@@ -323,7 +336,10 @@
      * @return string
      */
     public function button($name, $value, $caption, $input_attr = []) {
-      $button                    = new Button($name, $value, $caption);
+      $button = new Button($name, $value, $caption);
+      if (is_array($this->currentgroup)) {
+        $this->currentgroup[] = $button;
+      }
       $this->fields[$button->id] = $button;
 
       return $button->mergeAttr($input_attr);
@@ -350,8 +366,11 @@
      * @return \ADV\App\Form\Button
      */
     public function submit($action, $caption = '', $input_attr = []) {
-      $button                    = new Button('_action', $action, $caption);
-      $button->id                = $this->nameToId($action);
+      $button     = new Button('_action', $action, $caption);
+      $button->id = $this->nameToId($action);
+      if (is_array($this->currentgroup)) {
+        $this->currentgroup[] = $button;
+      }
       $this->fields[$button->id] = $button;
 
       return $button->mergeAttr($input_attr);
@@ -417,7 +436,7 @@
      *       The return value will be casted to boolean if non-boolean was returned.
      */
     public function offsetExists($offset) {
-      return array_key_exists($offset, $this->fields);
+      return array_key_exists($offset, $this->fields) || array_key_exists($offset, $this->groups);
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
@@ -431,6 +450,10 @@
      * @return \ADV\App\Form\Field Can return all value types.
      */
     public function offsetGet($offset) {
+      if (!isset($this->fields[$offset]) && isset($this->groups[$offset])) {
+        return $this->groups[$offset];
+      }
+
       return $this->fields[$offset];
     }
     /**
@@ -485,6 +508,10 @@
       if ($tag !== 'textarea') {
         $field['value'] = e($value);
       }
+      if (is_array($this->currentgroup)) {
+        $this->currentgroup[] = $field;
+      }
+
       $this->fields[$field->id]     = $field;
       $this->validators[$field->id] =& $field->validator;
       $this->Ajax->addUpdate($name, $name, $value);
@@ -506,7 +533,7 @@
      * @return mixed Can return any type.
      */
     public function current() {
-      return current($this->fields);
+      return current($this->groups['_default']);
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
@@ -515,7 +542,7 @@
      * @return void Any returned value is ignored.
      */
     public function next() {
-      $this->current = next($this->fields);
+      $this->current = next($this->groups['_default']);
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
@@ -524,7 +551,7 @@
      * @return mixed scalar on success, or null on failure.
      */
     public function key() {
-      return key($this->fields);
+      return key($this->groups['_default']);
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
@@ -543,6 +570,17 @@
      * @return void Any returned value is ignored.
      */
     public function rewind() {
-      reset($this->fields);
+      reset($this->groups['_default']);
+    }
+    /**
+     * @return array
+     */
+    public function jsonSerialize() {
+      $return = [];
+      foreach ($this->fields as $id=> $field) {
+        $return[$id] = ['value'=> $field['value']];
+      }
+
+      return $return;
     }
   }

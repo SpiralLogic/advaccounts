@@ -37,14 +37,14 @@
 
  */
 var Behaviour = {
-  list:        [],
-  register:    function (sheet) {
+  list:         [],
+  register:     function (sheet) {
     Behaviour.list.push(sheet);
   },
-  start:       function () {
+  start:        function () {
     Behaviour.addLoadEvent(Behaviour.apply);
   },
-  apply:       function () {
+  apply:        function () {
     var selector = '', sheet, element, list;
     for (var h = 0; sheet = Behaviour.list[h]; h++) {
       for (selector in sheet) {
@@ -61,7 +61,7 @@ var Behaviour = {
       }
     }
   },
-  addLoadEvent:function (func) {
+  addLoadEvent: function (func) {
     var oldonload = window.onload;
     if (typeof window.onload != 'function') {
       window.onload = func;
@@ -198,6 +198,9 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
                                   case 'rd':
                                     window.location = data;
                                     break;
+                                  case 'json':
+                                    Adv.Forms[property](data);
+                                    break;
                                   case 'pu':
                                     newwin = 1;
                                     window.open(data, undefined, 'toolbar=no,scrollbar=no,resizable=yes,menubar=no');
@@ -217,7 +220,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
                               Adv.Forms.error(data, errors)
                             }
                             else {
-                              Adv.Status.show({html:errors});
+                              Adv.Status.show({html: errors});
                             }
                           }
                           if (Adv.loader) {

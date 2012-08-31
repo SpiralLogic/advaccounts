@@ -144,7 +144,7 @@
     protected function index() {
       Page::start(_($help_context = "Sales Persons"), SA_SALESMAN);
       $cols  = array(
-        _("User ID"),
+        _("Salesman ID"),
         _("Name"),
         _("User"),
         _("Phone"),
@@ -193,11 +193,13 @@
       $form->percent('provision')->label("Provision: ");
       $form->amount('break_pt')->label("Break Pt.:");
       $form->percent('provision2')->label("Provision 2: ");
+      $form->group('buttons');
       $form->submit(ADD_ITEM, $id == -1 ? 'Add' : 'Update');
       $form->submit(CANCEL, 'Cancel Changes');
-      $view->set('form', $form->getFields());
+      $view->set('form', $form);
       $view->render();
       Display::div_end();
+      $this->Ajax->addJson(true, 'setFormValues', $form);
       Page::end();
     }
     public function formatEditBtn($row) {

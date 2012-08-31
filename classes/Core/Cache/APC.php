@@ -27,7 +27,7 @@
      * @return mixed
      */
     public function set($key, $value, $expires = 86400) {
-      $serialized_value = igbinary_serialize($value);
+      $serialized_value = $value; //igbinary_serialize($value);
       apc_Store($_SERVER["SERVER_NAME"] . '.' . $key, $serialized_value, $expires);
 
       return $value;
@@ -52,7 +52,9 @@
      */
     public function get($key, $default = false) {
       $result = apc_fetch($_SERVER["SERVER_NAME"] . '.' . $key, $success);
-      $result = ($success === true) ? igbinary_unserialize($result) : $default;
+      $result = ($success === true) ? $result : $default;
+
+      //$result = ($success === true) ? igbinary_unserialize($result) : $default;
 
       return $result;
     }

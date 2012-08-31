@@ -185,6 +185,9 @@
 
       return $this;
     }
+    public function addJson($trigger, $sTarget, $json) {
+      $this->addCommand($trigger, ['n'=> 'json', 'p'=> $sTarget], $json);
+    }
     /**
      * Set current focus.
      *

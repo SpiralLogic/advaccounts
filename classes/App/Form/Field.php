@@ -50,7 +50,7 @@
       }
       $this->label = $label;
       if (!isset($this->attr['placeholder'])) {
-        $this['placeholder'] = rtrim($label, ':');
+        $this['placeholder'] = rtrim(trim($label), ':');
       }
 
       return $this;

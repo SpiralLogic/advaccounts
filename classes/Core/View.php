@@ -195,7 +195,8 @@
           $return .= '<?php endforeach; endif; ?>';
         } else {*/
           $tempvar  = uniqid();
-          $return   = '<?php if (isset($' . $var . ') && is_array($' . $var . ')): foreach($' . $var . ' as $_' . $tempvar . '_name => $_' . $tempvar . '_val): ?>';
+          $return   = '<?php if (isset($' . $var . ') && (is_array($' . $var . ') || $' . $var . ' instanceof \Traversable )): foreach($' . $var . ' as $_' . $tempvar . '_name =>
+           $_' . $tempvar . '_val): ?>';
           $contents = $this->compile($contents, true);
           $contents = str_replace(['{{!}}', '{{.}}'], ['{{$_' . $tempvar . '_name}}', '{{$_' . $tempvar . '_val}}'], $contents);
           $return .= str_replace('$.', '$_' . $tempvar . '_val.', $contents);
