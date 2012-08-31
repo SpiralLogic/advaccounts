@@ -1,6 +1,6 @@
 <div class="center">
   <div class="formbox formdiv">
-    <h3>Sales Person Detail:</h3>
+    <h3>Sales Person Detail:</h3><br>
     {{$form->start()}}
     {{#$form}}
     {{.}}
