@@ -3397,9 +3397,12 @@ div.warn_msg {
   text-align: left;
 }
 
+.formbox select {
+  height: 25px;
+}
+
 .formbox select, .formbox button {
   margin: 8px;
-  height: 25px;
 }
 
 .formbox input, .formbox textarea {
@@ -3661,7 +3664,7 @@ td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid 
   background-color: #edfecc;
 }
 
-.grid tfoot,.grid tfoot td, .grid tfoot td.label {
+.grid tfoot, .grid tfoot td, .grid tfoot td.label {
   background-color: white;
 }
 

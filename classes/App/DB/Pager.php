@@ -1,5 +1,8 @@
 <?php
   use ADV\Core\Cell;
+  use ADV\App\Display;
+  use ADV\App\Forms;
+  use ADV\App\User;
   use ADV\Core\JS;
   use ADV\Core\Ajax;
   use ADV\Core\DB\DB;
@@ -22,7 +25,7 @@
    */
   class DB_Pager
   {
-    /** @var User */
+    /** @var \Adv\App\User */
     static $User;
     /** @var \ADV\Core\DB\DB */
     static $DB;
@@ -233,8 +236,9 @@
      * @param      $name
      * @param      $value
      * @param bool $enabled
-     * @param bool $icon
+     * @param null $title
      *
+     * @internal param bool $icon
      * @return string
      */
     public function navi($name, $value, $enabled = true, $title = null) {
@@ -253,15 +257,14 @@
      * @param      $name
      * @param      $value
      * @param bool $enabled
+     * @param null $title
      */
     public function navi_cell($name, $value, $enabled = true, $title = null) {
       Cell::label($this->navi($name, $value, $enabled, false, $title));
     }
     /**
      * @static
-     *
-     * @param DB_Pager $pager
-     *
+     * @internal param \DB_Pager $pager
      * @return bool
      */
     public function display() {
@@ -389,7 +392,7 @@
       HTML::td(null, ['colspan'=> $colspan, 'class'=> 'navibar']);
       if ($this->rec_count) {
         $but_pref = $this->name . '_page_';
-        if (@$this->inactive_ctrl) {
+        if ($this->inactive_ctrl) {
           Forms::submit('Update', _('Update'), true, '', null);
         } // inactive update
         HTML::span(
@@ -424,11 +427,14 @@
       if ($return) {
         return ob_get_clean();
       }
+
+      return true;
     }
     protected function displayFooter() {
       if ($this->footer_fun) { // if set footer handler
         Row::start("class='{$this->footer_class}'");
         $fun = $this->footer_fun;
+        $h   = [];
         if (method_exists($this, $fun)) {
           $h = $this->$fun($this);
         } elseif (is_callable($fun)) {
@@ -449,11 +455,13 @@
       if ($this->header_fun) { // if set header handler
         Row::start("class='{$this->header_class}'");
         $fun = $this->header_fun;
+        $h   = [];
         if (method_exists($this, $fun)) {
           $h = $this->$fun($this);
         } elseif (is_callable($fun)) {
           $h = call_user_func($fun, $this);
         }
+
         foreach ($h as $c) { // draw header columns
           $pars = isset($c[1]) ? $c[1] : '';
           Cell::label($c[0], $pars);
@@ -535,7 +543,7 @@
      */
     public function query() {
       Ajax::_activate("_{$this->name}_span");
-      if (!$this->_init()) {
+      if (!$this->init()) {
         return false;
       }
       if ($this->type == self::SQL) {
@@ -847,7 +855,7 @@
      * @return bool
      * Initialization after changing record set
      */
-    protected function _init() {
+    protected function init() {
       if ($this->ready == false) {
         if ($this->type == self::SQL) {
           $sql    = $this->_sql_gen(true);

@@ -9,7 +9,7 @@
    **/
   namespace ADV\Core;
 
-  use User;
+  use ADV\App\User;
   use ADV\Core\DB\DB;
   use ADV\Core\Input\Input;
 
@@ -408,7 +408,7 @@
       $this->sql .= $limit;
     }
     /**
-     * @return null|PDOStatement
+     * @return null|\PDOStatement
      */
     private function executeSQL() {
       return $this->DB->query($this->sql);

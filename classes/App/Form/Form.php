@@ -57,6 +57,53 @@
       $this->group();
     }
     /**
+     * @param $tag
+     * @param $name
+     * @param $value
+     *
+     * @return Field
+     */
+    protected function addField($tag, $name, $value = null) {
+      $field          = new Field($tag, $name);
+      $field->default = $value;
+      if ($value === null && $this->Input->hasPost($name)) {
+        $field->value = $this->Input->post($name);
+      }
+      if ($tag !== 'textarea') {
+        $field->value = e($field->value);
+      }
+      if (is_array($this->currentgroup)) {
+        $this->currentgroup[] = $field;
+      }
+      $this->fields[$field->id]     = $field;
+      $this->validators[$field->id] =& $field->validator;
+      $this->Ajax->addUpdate($name, $name, $field->value);
+
+      return $field;
+    }
+    /**
+     * @param $name
+     *
+     * @return \ADV\App\Form\Form
+     */
+    public function group($name = '_default') {
+      if (!isset($this->groups[$name])) {
+        $this->groups[$name] = [];
+      }
+      $this->currentgroup = &$this->groups[$name];
+
+      return $this;
+    }
+    /**
+     * @param $option
+     * @param $value
+     */
+    public function option($option, $value) {
+      if (isset($this->options[$option])) {
+        $this->options[$option] = $value;
+      }
+    }
+    /**
      * @static
      *
      * @param string $name
@@ -94,28 +141,6 @@
       return $this->end;
     }
     /**
-     * @param $name
-     *
-     * @return \ADV\App\Form\Form
-     */
-    public function group($name = '_default') {
-      if (!isset($this->groups[$name])) {
-        $this->groups[$name] = [];
-      }
-      $this->currentgroup = &$this->groups[$name];
-
-      return $this;
-    }
-    /**
-     * @param $option
-     * @param $value
-     */
-    public function option($option, $value) {
-      if (isset($this->options[$option])) {
-        $this->options[$option] = $value;
-      }
-    }
-    /**
      * @param      $name
      * @param null $value
      *
@@ -128,22 +153,6 @@
       $this->Ajax->addUpdate($name, $name, $value);
     }
     /**
-     * @param $control
-     *
-     * @return \ADV\App\Form\Field
-     */
-    public function custom($control) {
-      preg_match('/name=([\'"]?)(.+?)\1/', $control, $matches);
-      $name      = $matches[2];
-      $field     = $this->addField('custom', $name, null);
-      $id        = $field->id;
-      $control   = preg_replace('/id=([\'"]?)' . preg_quote($name) . '\1/', "id='$id'", $control, 1);
-      $validator = null;
-      $field->customControl($control);
-
-      return $field;
-    }
-    /**
      * @param       $name
      * @param null  $value
      * @param array $input_attr
@@ -153,6 +162,19 @@
     public function text($name, $value = null, $input_attr = []) {
       $field         = $this->addField('input', $name, $value);
       $field['type'] = 'text';
+
+      return $field->mergeAttr($input_attr);
+    }
+    /**
+     * @param       $name
+     * @param       $value
+     * @param array $input_attr
+     *
+     * @return \ADV\App\Form\Field
+     */
+    public function textarea($name, $value = null, $input_attr = []) {
+      $field = $this->addField('textarea', $name, $value);
+      $field->setContent($value);
 
       return $field->mergeAttr($input_attr);
     }
@@ -182,19 +204,6 @@
       $field            = $this->addField('input', $name, !!$value);
       $field['type']    = 'checkbox';
       $field['checked'] = !!$value;
-
-      return $field->mergeAttr($input_attr);
-    }
-    /**
-     * @param       $name
-     * @param       $value
-     * @param array $input_attr
-     *
-     * @return \ADV\App\Form\Field
-     */
-    public function textarea($name, $value = null, $input_attr = []) {
-      $field = $this->addField('textarea', $name, $value);
-      $field->setContent($value);
 
       return $field->mergeAttr($input_attr);
     }
@@ -243,6 +252,22 @@
      */
     public function amount($name, $value = null, $inputparams = []) {
       return $this->number($name, $value, User::price_dec(), $inputparams)->prepend('$');
+    }
+    /**
+     * @param $control
+     *
+     * @return \ADV\App\Form\Field
+     */
+    public function custom($control) {
+      preg_match('/name=([\'"]?)(.+?)\1/', $control, $matches);
+      $name      = $matches[2];
+      $field     = $this->addField('custom', $name, null);
+      $id        = $field->id;
+      $control   = preg_replace('/id=([\'"]?)' . preg_quote($name) . '\1/', "id='$id'", $control, 1);
+      $validator = null;
+      $field->customControl($control);
+
+      return $field;
     }
     /**
      * Universal sql combo generator
@@ -437,6 +462,35 @@
       }
     }
     /**
+     * @param $name
+     *
+     * @return mixed
+     */
+    protected function nameToId($name) {
+      return str_replace(['[', ']'], ['-', ''], $name);
+    }
+    /**
+     * @return array
+     */
+    public function jsonSerialize() {
+      $return = [];
+      $use    = ($this->useDefaults) ? 'default' : 'value';
+      foreach ($this->fields as $id=> $field) {
+        if ($field instanceof Button) {
+          continue;
+        }
+        $return[$id] = ['value'=> $field->$use];
+      }
+
+      return $return;
+    }
+    /**
+     * @return array
+     */
+    public function __sleep() {
+      return ['validators'];
+    }
+    /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Whether a offset exists
      * @link http://php.net/manual/en/arrayaccess.offsetexists.php
@@ -503,45 +557,6 @@
       unset($this->fields[$offset]);
     }
     /**
-     * @return array
-     */
-    public function __sleep() {
-      return ['validators'];
-    }
-    /**
-     * @param $tag
-     * @param $name
-     * @param $value
-     *
-     * @return Field
-     */
-    protected function addField($tag, $name, $value = null) {
-      $field          = new Field($tag, $name);
-      $field->default = $value;
-      if ($value === null && $this->Input->hasPost($name)) {
-        $field->value = $this->Input->post($name);
-      }
-      if ($tag !== 'textarea') {
-        $field->value = e($field->value);
-      }
-      if (is_array($this->currentgroup)) {
-        $this->currentgroup[] = $field;
-      }
-      $this->fields[$field->id]     = $field;
-      $this->validators[$field->id] =& $field->validator;
-      $this->Ajax->addUpdate($name, $name, $field->value);
-
-      return $field;
-    }
-    /**
-     * @param $name
-     *
-     * @return mixed
-     */
-    protected function nameToId($name) {
-      return str_replace(['[', ']'], ['-', ''], $name);
-    }
-    /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Return the current element
      * @link http://php.net/manual/en/iterator.current.php
@@ -586,20 +601,5 @@
      */
     public function rewind() {
       reset($this->groups['_default']);
-    }
-    /**
-     * @return array
-     */
-    public function jsonSerialize() {
-      $return = [];
-      $use    = ($this->useDefaults) ? 'default' : 'value';
-      foreach ($this->fields as $id=> $field) {
-        if ($field instanceof Button) {
-          continue;
-        }
-        $return[$id] = ['value'=> $field->$use];
-      }
-
-      return $return;
     }
   }

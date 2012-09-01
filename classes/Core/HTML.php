@@ -14,17 +14,17 @@
    * @method HTML _button()
    * @method HTML table()
    * @method HTML tr()
-   * @method HTML td()
+   * @method static HTML td()
    * @method HTML div()
    * @method HTML textarea()
    * @method HTML form()
    * @method HTML _form()
    * @method HTML label()
    * @method HTML input()
-   * @method HTML _td()
+   * @method static HTML _td()
    * @method HTML _div()
    * @method HTML script()
-   * @method HTML span()
+   * @method static HTML span()
    * @method HTML _span()
    * @method HTML option()
    * @method HTML select()
@@ -120,7 +120,8 @@
           continue;
         }
         if ($key == 'input') {
-          $value = \Forms::prep_value($value);
+          $value = Security::htmlentities($value);
+          $value = str_replace(array("'", '"'), array("&#39;", "&quot;"), $value);
         }
         $attrs .= ((empty($value) && $key !== 'value') || $key == 'content') ? '' : ' ' . $key . '="' . $value . '"';
       }

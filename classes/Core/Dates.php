@@ -36,6 +36,7 @@
    * @method static _isGreaterThan($date1, $date2)
    * @method static _newDocDate()
    * @method static _addDays($date, $days)
+   * @method static _addYears($date, $years)
    * @method static _sqlToDate($date)
    * @method static _beginMonth($date)
    * @method static _addMonths($date, $months)

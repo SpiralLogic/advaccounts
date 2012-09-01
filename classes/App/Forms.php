@@ -115,7 +115,7 @@
      *
      * @return string
      */
-    public static function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = null) {
+    public static function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = []) {
       $box = new SelectBox ($name, $selected_id, $sql, $valfield, $namefield, $options);
 
       return $box->create();
@@ -125,10 +125,10 @@
      * $items is array of options 'value' => 'description'
      * Options is reduced set of combo_selector options and is merged with defaults.
      *
-     * @param      $name
-     * @param      $selected_id
-     * @param      $items
-     * @param null $options
+     * @param            $name
+     * @param            $selected_id
+     * @param            $items
+     * @param array|null $options
      *
      * @return string
      */
@@ -178,17 +178,17 @@
           $found = $value;
         }
         if ($first_id === false) {
-          $first_id  = $value;
-          $first_opt = $descr;
+          $first_id = $value;
+          //$first_opt = $descr;
         }
         $selector .= "<option $sel value='$value'>$descr</option>\n";
       }
       // Prepend special option.
       if ($spec_option !== false) { // if special option used - add it
-        $first_id  = $spec_id;
-        $first_opt = $spec_option;
-        $sel       = $found === false ? 'selected' : '';
-        $selector  = "<option $sel value='$spec_id'>$spec_option</option>\n" . $selector;
+        $first_id = $spec_id;
+        //$first_opt = $spec_option;
+        $sel      = $found === false ? 'selected' : '';
+        $selector = "<option $sel value='$spec_id'>$spec_option</option>\n" . $selector;
       }
       if ($found === false) {
         $selected_id = array($first_id);
@@ -225,12 +225,12 @@
      * $atype can contain also multiply type selectors separated by space,
      * however make sense only combination of 'process' and one of defualt/selector/cancel
      *
-     * @param      $name
-     * @param      $value
-     * @param bool $echo
-     * @param bool $title
-     * @param bool $atype
-     * @param bool $icon
+     * @param           $name
+     * @param           $value
+     * @param bool      $echo
+     * @param bool      $title
+     * @param bool|null $atype
+     * @param bool      $icon
      *
      * @return string
      */
@@ -264,8 +264,8 @@
           }
         }
       }
-      $caption    = ($name == '_action') ? $title : $value;
-      $id         = ($name == '_action') ? '' : "id=\"$name\"";
+      $caption = ($name == '_action') ? $title : $value;
+      //$id         = ($name == '_action') ? '' : "id=\"$name\"";
       $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') :
         $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\" value=\"$value\"" . ($title ? " title='$title'" : '') . ">" . Forms::setIcon(
         $icon
@@ -438,7 +438,7 @@
      * @return string
      */
     public static function setIcon($icon, $title = false) {
-      $title = ($title) ? "title='$title'" : '';
+      //$title = ($title) ? "title='$title'" : '';
 
       return "<i class='" . $icon . "' > </i> ";
     }
@@ -558,10 +558,13 @@
      * @param null   $max
      * @param null   $title
      * @param null   $value
-     * @param null   $params
+     * @param null   $rowparams
      * @param null   $post_label
-     * @param string $params2
+     * @param string $label_cell_params
      * @param bool   $submit_on_change
+     *
+     * @internal param null $params
+     * @internal param string $params2
      */
     public static function textRowEx(
       $label,
@@ -1055,9 +1058,11 @@
       echo "</td>";
     }
     /**
-     * @param      $name
+     * @param      $line_no
      * @param      $value
      * @param bool $title
+     *
+     * @internal param $name
      */
     public static function buttonDeleteCell($line_no, $value, $title = false) {
       if (strpos($line_no, 'Delete') === 0 || strpos($line_no, 'BDel') === 0) {
@@ -1067,9 +1072,11 @@
       }
     }
     /**
-     * @param      $name
+     * @param      $line_no
      * @param      $value
      * @param bool $title
+     *
+     * @internal param $name
      */
     public static function buttonEditCell($line_no, $value, $title = false) {
       if (strpos($line_no, 'Edit') === 0 || strpos($line_no, 'BEdit') === 0) {
@@ -1121,7 +1128,7 @@
       $inc_days = 0,
       $inc_months = 0,
       $inc_years = 0,
-      $params = null,
+      //$params = null,
       $submit_on_change = false,
       $options = []
     ) {
@@ -1191,15 +1198,16 @@
       Ajax::_addUpdate($name, $name, $value);
     }
     /**
-     * @param      $label
-     * @param      $name
-     * @param      $size
-     * @param null $max
-     * @param null $init
-     * @param null $title
-     * @param null $params
-     * @param null $post_label
-     * @param bool $submit_on_change
+     * @param        $label
+     * @param        $name
+     * @param        $size
+     * @param null   $max
+     * @param null   $init
+     * @param null   $title
+     * @param null   $params
+     * @param null   $post_label
+     * @param bool   $submit_on_change
+     * @param string $inparams
      *
      * @internal param null $labparams
      */
@@ -1330,7 +1338,7 @@
       $dec = $dec === null ? User::price_dec() : $dec;
 
       if ($init === null) {
-        $init = Input::post($name, Input::NUMERIC);
+        $init = Input::_post($name, Input::NUMERIC);
       }
       $init = $_POST[$name] = Num::_priceDecimal($init, $dec);
 
@@ -1488,12 +1496,13 @@
       static::$Ajax->addUpdate($name, $name, $value);
     }
     /**
-     * @param      $label
-     * @param      $name
-     * @param null $init
-     * @param null $params
-     * @param null $post_label
-     * @param null $dec
+     * @param        $label
+     * @param        $name
+     * @param null   $init
+     * @param null   $params
+     * @param null   $post_label
+     * @param null   $dec
+     * @param string $inputparams
      */
     public static function qtyCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '') {
       if (!isset($dec)) {

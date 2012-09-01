@@ -18,11 +18,11 @@
    */
   class Button implements \ArrayAccess
   {
-    protected $attr = [];
     public $id;
+    public $validator;
+    protected $attr = [];
     protected $name;
     protected $caption = '';
-    public $validator;
     protected $preicon;
     protected $posticon;
     /**
@@ -41,10 +41,14 @@
       $this->caption                    = $caption;
     }
     /**
-     * @return mixed
+     * @param $type
+     *
+     * @return \ADV\App\Form\Button
      */
-    protected function nameToId() {
-      return str_replace(['[', ']'], ['-', ''], $this->name);
+    public function type($type) {
+      $this->attr['class'] .= ' btn-' . $type;
+
+      return $this;
     }
     /**
      * @param $warning
@@ -53,16 +57,6 @@
      */
     public function setWarning($warning) {
       JS::_beforeload("_validate." . $this->name . "=function(){ return confirm('" . strtr($warning, array("\n" => '\\n')) . "');};");
-
-      return $this;
-    }
-    /**
-     * @param $attr
-     *
-     * @return Button
-     */
-    public function mergeAttr($attr) {
-      $this->attr = array_merge($this->attr, (array) $attr);
 
       return $this;
     }
@@ -88,6 +82,32 @@
       return $this;
     }
     /**
+     * @param $validator
+     *
+     * @return \ADV\App\Form\Button
+     */
+    public function setValidator($validator) {
+      $this->validator = $validator;
+
+      return $this;
+    }
+    /**
+     * @param $attr
+     *
+     * @return Button
+     */
+    public function mergeAttr($attr) {
+      $this->attr = array_merge($this->attr, (array) $attr);
+
+      return $this;
+    }
+    /**
+     * @return mixed
+     */
+    protected function nameToId() {
+      return str_replace(['[', ']'], ['-', ''], $this->name);
+    }
+    /**
 
      */
     protected function formatIcons() {
@@ -97,16 +117,6 @@
       if ($this->posticon) {
         $this->caption .= " <i class='" . $this->posticon . "' > </i>";
       }
-    }
-    /**
-     * @param $validator
-     *
-     * @return \ADV\App\Form\Button
-     */
-    public function setValidator($validator) {
-      $this->validator = $validator;
-
-      return $this;
     }
     /**
      * @return string

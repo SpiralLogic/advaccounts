@@ -1,5 +1,8 @@
 <?php
   namespace Modules\Volusion;
+
+  use ADV\Core\XMLParser;
+
   /**
 
    */
@@ -9,6 +12,9 @@
      * @var array
      */
     public $products = array();
+    /**
+
+     */
     public function __construct() {
     }
     /**
@@ -19,7 +25,7 @@
       if (!$productsXML) {
         return false;
       }
-      $this->products = \XMLParser::XMLtoArray($productsXML);
+      $this->products = XMLParser::XMLtoArray($productsXML);
 
       return true;
     }

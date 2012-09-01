@@ -194,8 +194,8 @@
       $form->amount('break_pt')->label("Break Pt.:");
       $form->percent('provision2')->label("Provision 2: ");
       $form->group('buttons');
-      $form->submit(ADD_ITEM, $id == -1 ? 'Add' : 'Update');
-      $form->submit(CANCEL, 'Cancel Changes');
+      $form->submit(CANCEL, 'Cancel Changes')->type('danger')->preIcon(ICON_CANCEL);
+      $form->submit(ADD_ITEM, 'Save')->type('success')->preIcon(ICON_SUBMIT);
       $view->set('form', $form);
       $view->render();
       $this->Ajax->addJson(true, 'setFormValues', $form);

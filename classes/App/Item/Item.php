@@ -163,7 +163,7 @@
      *
      * @return bool|void
      */
-    protected function _read($id = null, $extra = []) {
+    protected function read($id = null, $extra = []) {
       $id = $id ? : 0;
       if (!is_numeric($id)) {
         $stockid = static::getStockID((string) $id);
@@ -171,7 +171,7 @@
           $id = $stockid;
         }
       }
-      if (!parent::_read($id)) {
+      if (!parent::read($id)) {
         return $this->status->get();
       }
 
@@ -180,7 +180,7 @@
     /**
      * @return bool
      */
-    protected function _canProcess() {
+    protected function canProcess() {
       if (!$this->stock_id) {
         return $this->status(false, 'saving', 'Item must have a stock_id ' . $this->stock_id, 'stock_id');
       }
@@ -193,13 +193,13 @@
     /**
      * @return void
      */
-    protected function _countTransactions() {
-      // TODO: Implement _countTransactions() method.
+    protected function countTransactions() {
+      // TODO: Implement countTransactions() method.
     }
     /**
      * @return void
      */
-    protected function _defaults() {
+    protected function defaults() {
       $this->sales_account      = DB_Company::i()->default_inv_sales_act;
       $this->inventory_account  = DB_Company::i()->default_inventory_act;
       $this->cogs_account       = DB_Company::i()->default_cogs_act;
@@ -209,19 +209,19 @@
     /**
      * @return array|null
      */
-    protected function _new() {
-      $this->_defaults();
+    protected function init() {
+      $this->defaults();
 
       return $this->status(true, 'Initialize new Item', 'Now working with a new Item');
     }
     /**
      * @return array|bool|int|null
      */
-    protected function _saveNew() {
+    protected function saveNew() {
       DB::_begin();
       $data = (array) $this;
       unset($data['id']);
-      if (!parent::_saveNew()) {
+      if (!parent::saveNew()) {
         DB::_cancel();
 
         return false;
@@ -250,7 +250,7 @@
 
       return $this->status(\ADV\Core\Status::SUCCESS, 'Processing', "Item has been added.");
     }
-    protected function _setDefaults() {
+    protected function setDefaults() {
       if ($this->mb_flag == STOCK_MANUFACTURE || $this->mb_flag == STOCK_PURCHASED) {
         $this->inventory_account = DB_Company::i()->default_inventory_act;
       } else {
@@ -274,7 +274,7 @@
      * @return array|bool|int|null
      */
     public function save($changes = null) {
-      $this->_setDefaults();
+      $this->setDefaults();
       if (!parent::save($changes)) {
         return false;
       }

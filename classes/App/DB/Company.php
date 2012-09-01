@@ -100,11 +100,11 @@
       if (is_array($changes)) {
         $this->setFromArray($changes);
       }
-      if (!$this->_canProcess()) {
+      if (!$this->canProcess()) {
         return false;
       }
       if ($this->id == 0) {
-        $this->_saveNew();
+        $this->saveNew();
       }
       DB::_begin();
       DB::_update('company')->values((array) $this)->where('coy_code=', $this->id)->exec();
@@ -119,15 +119,15 @@
     /**
      * @return bool
      */
-    protected function _canProcess() {
+    protected function canProcess() {
       return true;
-      // TODO: Implement _canProcess() method.
+      // TODO: Implement canProcess() method.
     }
-    protected function _defaults() {
-      // TODO: Implement _defaults() method.
+    protected function defaults() {
+      // TODO: Implement defaults() method.
     }
-    protected function _new() {
-      // TODO: Implement _new() method.
+    protected function init() {
+      // TODO: Implement init() method.
     }
     /**
      * @param int|null $id
@@ -135,15 +135,15 @@
      *
      * @return bool|void
      */
-    protected function _read($id = null, $extra = []) {
+    protected function read($id = null, $extra = []) {
       $id = $id ? : 0;
       DB::_select()->from('company')->where('coy_code=', $id)->fetch()->intoObject($this);
     }
     /**
      * @return bool|int|void
      */
-    protected function _saveNew() {
-      // TODO: Implement _saveNew() method.
+    protected function saveNew() {
+      // TODO: Implement saveNew() method.
     }
     /**
      * @static

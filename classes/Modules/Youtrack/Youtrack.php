@@ -18,7 +18,7 @@
    */
   class Youtrack extends Module\Base
   {
-    public function _init() {
+    public function init() {
       User::register_login($this, '_login');
     }
     public function _login() {

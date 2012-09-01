@@ -9,7 +9,6 @@
   namespace ADV\Core\Traits;
 
   /**
-
    */
   trait Singleton
   {

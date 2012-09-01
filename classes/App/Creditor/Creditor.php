@@ -179,7 +179,7 @@
      */
     public function save($changes = null) {
       if (!parent::save($changes)) {
-        $this->_setDefaults();
+        $this->setDefaults();
 
         return false;
       }
@@ -188,7 +188,7 @@
           $contact->save(array('parent_id' => $this->id));
         }
       }
-      $this->_setDefaults();
+      $this->setDefaults();
 
       return true;
     }
@@ -216,14 +216,14 @@
     /**
      * @return void
      */
-    protected function _setDefaults() {
+    protected function setDefaults() {
       $this->contacts[]     = new Contact(CT_SUPPLIER, array('parent_id' => $this->id));
       $this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
     }
     /**
      * @return bool
      */
-    protected function _canProcess() {
+    protected function canProcess() {
       if (strlen($this->name) == 0) {
         return $this->status(false, 'Processing', "The supplier name cannot be empty.", 'name');
       }
@@ -247,13 +247,13 @@
     /**
      * @return mixed|void
      */
-    protected function _countTransactions() {
-      // TODO: Implement _countTransactions() method.
+    protected function countTransactions() {
+      // TODO: Implement countTransactions() method.
     }
     /**
      * @return bool|\Status
      */
-    protected function _defaults() {
+    protected function defaults() {
       $this->credit_limit             = Num::_priceFormat(0);
       $company_record                 = DB_Company::get_prefs();
       $this->curr_code                = $company_record["curr_default"];
@@ -262,13 +262,13 @@
       $this->payment_discount_account = $company_record['pyt_discount_act'];
       $this->tax_group_id             = 1;
       $this->id                       = 0;
-      $this->_setDefaults();
+      $this->setDefaults();
     }
     /**
      * @return bool|\Status
      */
-    protected function _new() {
-      $this->_defaults();
+    protected function init() {
+      $this->defaults();
 
       return $this->status(true, 'Initialize new supplier', 'Now working with a new supplier');
     }
@@ -317,14 +317,14 @@ JS;
      *
      * @return array|bool
      */
-    protected function _read($id = false, $extra = []) {
-      if (!parent::_read($id)) {
+    protected function read($id = false, $extra = []) {
+      if (!parent::read($id)) {
         return $this->status->get();
       }
       $this->_getContacts();
       $this->discount     = $this->discount * 100;
       $this->credit_limit = Num::_priceFormat($this->credit_limit);
-      $this->_setDefaults();
+      $this->setDefaults();
 
       return $this;
     }

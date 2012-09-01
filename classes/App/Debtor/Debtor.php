@@ -45,7 +45,7 @@
     /**
      * @var
      */
-    public $sales_type;
+    public $sales_type = 1;
     /**
      * @var string
      */
@@ -53,7 +53,7 @@
     /**
      * @var
      */
-    public $credit_status;
+    public $credit_status = 1;
     /**
      * @var int
      */
@@ -101,7 +101,7 @@
     /**
      * @var
      */
-    public $notes;
+    public $notes = '';
     /**
      * @var string
      */
@@ -153,7 +153,7 @@
      * @return array|null
      */
     public function delete() {
-      if ($this->_countTransactions() > 0) {
+      if ($this->countTransactions() > 0) {
         return $this->status(false, 'delete', "This customer cannot be deleted because there are transactions that refer to it.");
       }
       if ($this->_countOrders() > 0) {
@@ -168,7 +168,7 @@
       $sql = "DELETE FROM debtors WHERE debtor_id=" . $this->id;
       static::$DB->_query($sql, "cannot delete customer");
       unset($this->id);
-      $this->_new();
+      $this->init();
 
       return $this->status(true, 'delete', "Customer deleted.");
     }
@@ -231,7 +231,7 @@
       $data['payment_discount'] = User::numeric($this->payment_discount) / 100;
       $data['credit_limit']     = User::numeric($this->credit_limit);
       if (!parent::save($changes)) {
-        $this->_setDefaults();
+        $this->setDefaults();
 
         return false;
       }
@@ -252,7 +252,7 @@
           $this->contacts[] = $contact;
         }
       }
-      $this->_setDefaults();
+      $this->setDefaults();
 
       return true;
     }
@@ -281,7 +281,7 @@
     /**
      * @return array|bool|null
      */
-    protected function _canProcess() {
+    protected function canProcess() {
       if (strlen($this->name) == 0) {
         return $this->status(false, 'Processing', "The customer name cannot be empty.", 'name');
       }
@@ -357,7 +357,7 @@
     /**
      * @return int|mixed
      */
-    protected function _countTransactions() {
+    protected function countTransactions() {
       static::$DB->_select('COUNT(*)')->from('debtor_trans')->where('debtor_id=', $this->id);
 
       return (int) static::$DB->_numRows();
@@ -365,13 +365,11 @@
     /**
      * @return void
      */
-    protected function _defaults() {
-      $this->payment_terms = $this->dimension_id = $this->dimension2_id = $this->inactive = 0;
-      $this->sales_type    = $this->credit_status = 1;
-      $this->name          = $this->address = $this->email = $this->tax_id = $this->notes = $this->debtor_ref = '';
-      $this->curr_code     = Bank_Currency::for_company();
-      $this->discount      = $this->payment_discount = Num::_percentFormat(0);
-      $this->credit_limit  = Num::_priceFormat(DB_Company::get_pref('default_credit_limit'));
+    protected function defaults() {
+      parent::defaults();
+      $this->curr_code    = Bank_Currency::for_company();
+      $this->discount     = $this->payment_discount = Num::_percentFormat(0);
+      $this->credit_limit = Num::_priceFormat(DB_Company::get_pref('default_credit_limit'));
     }
     protected function _getAccounts() {
       static::$DB->_select()->from('branches')->where('debtor_id=', $this->debtor_id)->andWhere('branch_ref=', 'accounts');
@@ -406,12 +404,12 @@
     /**
      * @return array|null
      */
-    protected function _new() {
-      $this->_defaults();
+    protected function init() {
+      $this->defaults();
       $this->accounts               = new Debtor_Account();
       $this->branches[0]            = new Debtor_Branch();
       $this->branches[0]->debtor_id = $this->accounts->debtor_id = $this->id = 0;
-      $this->_setDefaults();
+      $this->setDefaults();
 
       return $this->status(true, 'Initialize', 'Now working with a new customer');
     }
@@ -421,8 +419,8 @@
      *
      * @return array|bool
      */
-    protected function _read($id = null, $extra = []) {
-      if (!parent::_read($id)) {
+    protected function read($id = null, $extra = []) {
+      if (!parent::read($id)) {
         return $this->status->get();
       }
       $this->_getBranches();
@@ -431,14 +429,14 @@
       $this->discount         = $this->discount * 100;
       $this->payment_discount = $this->payment_discount * 100;
       $this->credit_limit     = Num::_priceFormat($this->credit_limit);
-      $this->_setDefaults();
+      $this->setDefaults();
 
       return true;
     }
     /**
      * @return void
      */
-    protected function _setDefaults() {
+    protected function setDefaults() {
       $this->defaultBranch  = reset($this->branches)->branch_id;
       $this->defaultContact = count($this->contacts) ? reset($this->contacts)->id : 0;
       $this->contacts[]     = new Contact(CT_CUSTOMER, array('parent_id' => $this->id));

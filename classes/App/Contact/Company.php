@@ -23,7 +23,7 @@
      */
     public $name = '';
     /** @var */
-    public $address;
+    public $address = '';
     /** @var */
     public $city;
     /** @var */
@@ -35,9 +35,9 @@
      */
     public $post_address = '';
     /** @var */
-    public $tax_id;
+    public $tax_id = '';
     /** @var */
-    public $contact_name;
+    public $contact_name = '';
     /**
      * @var int
      */
@@ -66,7 +66,7 @@
      * @abstract
      * @return mixed
      */
-    abstract protected function _countTransactions();
+    abstract protected function countTransactions();
     /**
      * @param $name
      * @param $emails

@@ -26,6 +26,7 @@
    * @method static fallback()
    * @method static percent_dec()
    * @method static graphic_links()
+   * @method static register_login($object, $function = null, $arguments = [])
    */
   class User
   {
@@ -417,24 +418,9 @@
      * @return bool|float|int|mixed|string
      */
     public function _numeric($input) {
-      $num = trim($input);
-      $sep = $this->_tho_sep();
-      if ($sep != '') {
-        $num = str_replace($sep, '', $num);
-      }
-      $sep = $this->_dec_sep();
-      if ($sep != '.') {
-        $num = str_replace($sep, '.', $num);
-      }
-      if (!is_numeric($num)) {
-        return false;
-      }
-      $num = (float) $num;
-      if ($num == (int) $num) {
-        return (int) $num;
-      } else {
-        return $num;
-      }
+      $num = str_replace([$this->prefs->tho_sep, $this->prefs->dec_sep], ['', '.'], trim($input));
+
+      return is_numeric($num) ? $num : $num;
     }
     /**
      * @static

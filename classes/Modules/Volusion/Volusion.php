@@ -36,7 +36,7 @@
         $this->jobsboardDB = new DB('jobsboard');
       }
     }
-    public function _init() {
+    public function init() {
       User::register_login('ADV\\Core\\Event', 'registerShutdown', [$this, 'doWebsales']);
     }
     public function doWebsales() {

@@ -1368,3 +1368,24 @@
   {
   }
 
+  /**
+
+   */
+  interface JsonSerializable
+  {
+    public function jsonSerialize();
+  }
+
+  /**
+   * @param $string
+   */
+  function igbinary_serialize($string) {
+    return $string;
+  }
+
+  /**
+   * @param $string
+   */
+  function igbinary_unserialize($string) {
+    return $string;
+  }

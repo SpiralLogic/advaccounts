@@ -18,15 +18,15 @@
    */
   class Field implements \ArrayAccess
   {
-    protected $attr = [];
     public $id;
     public $value = null;
     public $default;
+    public $validator;
+    protected $attr = [];
     protected $name;
     protected $content = '';
     protected $label;
     protected $tag;
-    public $validator;
     protected $append;
     protected $prepend;
     protected $control;
@@ -56,12 +56,6 @@
       }
 
       return $this;
-    }
-    /**
-     * @return mixed
-     */
-    protected function nameToId() {
-      return str_replace(['[', ']'], ['-', ''], $this->name);
     }
     /**
      * @param $content
@@ -110,6 +104,23 @@
       return $this;
     }
     /**
+     * @param $validator
+     *
+     * @return \ADV\App\Form\Field
+     * @internal param $function
+     */
+    public function setValidator($validator) {
+      $this->validator = $validator;
+
+      return $this;
+    }
+    /**
+     * @return mixed
+     */
+    protected function nameToId() {
+      return str_replace(['[', ']'], ['-', ''], $this->name);
+    }
+    /**
      * @param $content
      *
      * @return string
@@ -130,17 +141,6 @@
       }
 
       return $return . "</span>";
-    }
-    /**
-     * @param $validator
-     *
-     * @return \ADV\App\Form\Field
-     * @internal param $function
-     */
-    public function setValidator($validator) {
-      $this->validator = $validator;
-
-      return $this;
     }
     /**
      * @return string
