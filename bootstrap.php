@@ -71,7 +71,7 @@
      */
     function e($string) {
 
-      return \ADV\App\Security::htmlentities($string);
+      return \ADV\Core\Security::htmlentities($string);
     }
   }
 

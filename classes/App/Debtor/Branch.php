@@ -1,5 +1,6 @@
 <?php
   use ADV\Core\DB\DB;
+  use ADV\App\Forms;
   use ADV\App\User;
 
   /**

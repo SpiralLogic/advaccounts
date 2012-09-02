@@ -8,7 +8,7 @@
    * @date      1/09/12
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace Adv\Core;
+  namespace ADV\Core;
 
   /**
 

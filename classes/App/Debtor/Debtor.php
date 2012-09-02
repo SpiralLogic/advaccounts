@@ -41,7 +41,7 @@
     /**
      * @var string
      */
-    public $name = 'New Customer';
+    public $name = '';
     /**
      * @var
      */
@@ -97,7 +97,7 @@
     /**
      * @var
      */
-    public $debtor_id;
+    public $debtor_id = 0;
     /**
      * @var
      */

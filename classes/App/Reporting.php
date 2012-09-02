@@ -27,7 +27,7 @@
     static $debug = null;
     /** @var User */
     static $User = null;
-    /** @var \Adv\Core\JS */
+    /** @var \ADV\Core\JS */
     static $JS = null;
     /**
      * @static

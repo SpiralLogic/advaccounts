@@ -261,6 +261,9 @@ var Company = function () {
     useShipFields: function () {
       Adv.accFields.each(function () {
         var newval, $this = $(this), name = $this.attr('name').match(/([^[]*)\[(.+)\]/);
+        if ($this.val().length > 0) {
+          return;
+        }
         if (!name) {
           name = $this.attr('name');
           name = [name, name.split('_')[1]];

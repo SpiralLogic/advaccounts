@@ -25,7 +25,7 @@
    */
   class DB_Pager
   {
-    /** @var \Adv\App\User */
+    /** @var \ADV\App\User */
     static $User;
     /** @var \ADV\Core\DB\DB */
     static $DB;

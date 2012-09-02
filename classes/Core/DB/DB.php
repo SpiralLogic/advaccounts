@@ -9,7 +9,7 @@
    **/
   namespace ADV\Core\DB;
 
-  use PDO, PDOStatement, PDOException, PDORow, Cache;
+  use PDO, PDOStatement, PDOException;
 
   /**
    * @method static DB i()

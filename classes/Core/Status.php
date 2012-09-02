@@ -8,12 +8,12 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
   /**
 
    */
   class Status
   {
-
     /**
      * @var array
      */
@@ -40,10 +40,10 @@
     /**
      * Adds new status entry
      *
-     * @param int      $status  One of Status::SUCCESS | Status::INFO | Status::WARNING | Status::ERROR
-     * @param string   $process What process caused the change in status
-     * @param string   $message Friendly message to display
-     * @param mixed    $var     The variable if any invovled in causeing the status
+     * @param int|null      $status  One of Status::SUCCESS | Status::INFO | Status::WARNING | Status::ERROR
+     * @param string        $process What process caused the change in status
+     * @param string        $message Friendly message to display
+     * @param mixed         $var     The variable if any invovled in causeing the status
      *
      * @return bool
      */
@@ -67,9 +67,10 @@
         }
       }
       $this->status[] = $newstatus;
-      if ($status == self::ERROR) {
+      if ($status === self::ERROR) {
         $this->errors[] = $newstatus;
       }
+
       return !($status == self::ERROR);
     }
     /**
@@ -83,6 +84,7 @@
         return true;
       }
       $this->status[] = $status;
+
       return false;
     }
     /**
@@ -95,6 +97,7 @@
       if (!empty($this->status)) {
         return end($this->status);
       }
+
       return false;
     }
     /**
@@ -104,6 +107,7 @@
       if (!empty($this->errors)) {
         return end($this->errors);
       }
+
       return false;
     }
     /**
@@ -120,6 +124,7 @@
       $str  = ucwords($last['process']);
       $str .= ($last['status'] != self::ERROR) ? ' Succeeded: ' : ' Failed: ';
       $str .= $last['message'];
+
       return $str;
     }
   }

@@ -2,6 +2,7 @@
   namespace ADV\App\DB;
 
   use ADV\Core\DB\DBDuplicateException;
+  use DBException;
   use ADV\Core\DB\DBInsertException;
   use ADV\Core\DB\DBSelectException;
   use ADV\Core\Status;
@@ -33,7 +34,7 @@
     abstract public function delete();
     abstract protected function canProcess();
     protected function defaults() {
-      $this->setFromArray(get_class_vars(__CLASS__));
+      $this->setFromArray(get_class_vars(get_called_class()));
     }
     /**
      * @return bool
@@ -99,13 +100,14 @@
       }
       if (is_numeric($id) && $id > 0) {
         $this->id = $id;
+
         $this->read($id, $extra);
 
         return $this->status(true, 'initalise', $this->_classname . " details loaded from DB!");
       } elseif (is_array($id)) {
         $this->defaults();
-        if (isset($id['id']) && $id['id']) {
-          $this->read($id['id'], $extra);
+        if (isset($id[$_id_column]) && $id[$_id_column]) {
+          $this->read($id[$_id_column], $extra);
         } else {
           $this->init();
         }
@@ -120,6 +122,7 @@
      * @param int   $id    Id of row to read from database
      * @param array $extra
      *
+     * @throws \DBException
      * @return bool
      */
     protected function read($id = null, $extra = []) {
@@ -127,6 +130,10 @@
         return $this->status(false, 'read', 'No ' . $this->_classname . ' ID to read');
       }
       $this->defaults();
+
+      if (!$this->_table || !$this->_id_column) {
+        throw new DBException('No table name or id column for class: ' . get_called_class() . '(' . $this->_classname . ')');
+      }
       try {
         $query = DB::_select()->from($this->_table)->where($this->_id_column . '=', $id);
         foreach ($extra as $field => $value) {
@@ -151,7 +158,7 @@
         return $this->status(false, 'write', $e->getMessage() . '. The entered information is a duplicate. Please modify the existing record or use different values.');
       }
 
-      return $this->status(true, 'write', 'Added to databse: ' . $this->_classname);
+      return $this->status(true, 'write', 'Added to database: ' . $this->_classname);
     }
   }
 

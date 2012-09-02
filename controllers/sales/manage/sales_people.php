@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   use ADV\App\Controller\Base;
+  use ADV\App\Sales\Person;
   use ADV\App\Display;
   use ADV\App\Form\Form;
   use ADV\App\Users;
@@ -47,14 +48,6 @@
       if ($this->action == MODE_RESET) {
         $this->reset();
       }
-      $this->getSalesPersons();
-    }
-    protected function getSalesPersons() {
-      $sql = "SELECT s.*,u.user_id,u.id FROM salesman s, users u WHERE s.user_id=u.id";
-      if (!Input::_hasPost('show_inactive')) {
-        $sql .= " AND !s.inactive";
-      }
-      $this->result = $sql;
     }
     protected function reset() {
       $this->selected_id = -1;
@@ -158,7 +151,7 @@
         ['insert'=> true, "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['insert'=> true, "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']]
       );
-      $table = DB_Pager::new_db_pager('sales_persons', $this->result, $cols);
+      $table = DB_Pager::new_db_pager('sales_persons', Person::getAll(), $cols);
       $table->display();
       echo '<br>';
       $_POST['salesman_email'] = "";

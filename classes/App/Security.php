@@ -18,7 +18,7 @@
   use ADV\Core\DB\DB;
   use ADV\Core\Config;
 
-  class Security extends \Adv\Core\Security implements ArrayAccess
+  class Security extends \ADV\Core\Security implements ArrayAccess
   {
     public $areas;
     protected $sections;

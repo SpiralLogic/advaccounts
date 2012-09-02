@@ -1366,6 +1366,8 @@
    */
   class XHProfRuns_Default
   {
+    function save_run() {
+    }
   }
 
   /**
