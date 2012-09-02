@@ -1,6 +1,5 @@
 <?php
   namespace ADV\App;
-
   use ADV\Core\JS;
   use ADV\Core\Event;
   use ADV\Core\View;
@@ -44,7 +43,8 @@
     protected $Ajax = null;
     protected $get_text = null;
     /** */
-    public function __construct(\ADV\Core\Loader $loader) {
+    public function __construct(\ADV\Core\Loader $loader)
+    {
       set_error_handler(
         function ($severity, $message, $filepath, $line) {
           if ($filepath == COREPATH . 'Errors.php') {
@@ -59,7 +59,6 @@
         },
         E_ALL & ~E_STRICT & ~E_NOTICE
       );
-
       set_exception_handler(
         function (\Exception $e) {
           class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'Errors.php';
@@ -135,7 +134,8 @@
     /**
      * @param $app
      */
-    public function add_application($app) {
+    public function add_application($app)
+    {
       if ($app->enabled) // skip inactive modules
       {
         $this->applications[strtolower($app->id)] = $app;
@@ -147,7 +147,8 @@
      * @return string
      * @noinspection PhpUnusedFunctionInspection
      */
-    public function flush_handler($text) {
+    public function flush_handler($text)
+    {
       return ($this->Ajax->inAjax()) ? Errors::format() : Page::$before_box . Errors::format() . $text;
     }
     /**
@@ -155,7 +156,8 @@
      *
      * @return null
      */
-    public function get_application($id) {
+    public function get_application($id)
+    {
       $id = strtolower($id);
 
       return isset($this->applications[$id]) ? $this->applications[$id] : null;
@@ -163,7 +165,8 @@
     /**
      * @return null
      */
-    public function get_selected() {
+    public function get_selected()
+    {
       if ($this->selected !== null && is_object($this->selected)) {
         return $this->selected;
       }
@@ -180,14 +183,16 @@
 
       return $this->selected;
     }
-    public function display() {
+    public function display()
+    {
       Extensions::add_access($this->User);
       Input::_get('application')  and $this->set_selected($_GET['application']);
       $page = Page::start(_($help_context = "Main Menu"), SA_OPEN, false, true);
       $page->display_application($this->get_selected());
       Page::end();
     }
-    public function loginFail() {
+    public function loginFail()
+    {
       header("HTTP/1.1 401 Authorization Required");
       (new View('failed_login'))->render();
       $this->Session->kill();
@@ -199,7 +204,8 @@
      * @internal param $session
      * @internal param $cache
      */
-    public static function refresh() {
+    public static function refresh()
+    {
       /** @var ADVAccounting $instance  */
       $instance               = static::i();
       $instance->applications = [];
@@ -210,17 +216,18 @@
      *
      * @return bool
      */
-    public function set_selected($app_id) {
+    public function set_selected($app_id)
+    {
       $this->User->selectedApp = $this->get_application($app_id);
       $this->selected          = $this->User->selectedApp;
 
       return $this->selected;
     }
-    protected function checkLogin() {
+    protected function checkLogin()
+    {
       if (!$this->Session instanceof \ADV\Core\Session || !$this->Session->checkUserAgent()) {
         $this->showLogin();
       }
-
       if (Input::_post("user_name")) {
         $this->login();
       } elseif (!$this->User->logged_in()) {
@@ -236,7 +243,8 @@
         Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $this->User->username);
       }
     }
-    protected function login() {
+    protected function login()
+    {
       $company = Input::_post('login_company', null, 'default');
       if ($company) {
         try {
@@ -252,7 +260,8 @@
         $this->Session['language']->setLanguage($this->Session['language']->code);
       }
     }
-    protected function showLogin() {
+    protected function showLogin()
+    {
       // strip ajax marker from uri, to force synchronous page reload
       $_SESSION['timeout'] = array(
         'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI'])
@@ -265,14 +274,16 @@
       }
       exit();
     }
-    protected function loadModules() {
+    protected function loadModules()
+    {
       $modules = $this->Config->getAll('modules', []);
       foreach ($modules as $module => $module_config) {
         $module = '\\Modules\\' . $module . '\\' . $module;
         new $module($module_config);
       }
     }
-    protected function setupApplications() {
+    protected function setupApplications()
+    {
       $this->applications = [];
       $extensions         = $this->Config->get('extensions.installed');
       $apps               = $this->Config->get('apps.active');
@@ -293,7 +304,8 @@
     /**
      * @return mixed
      */
-    protected function setTextSupport() {
+    protected function setTextSupport()
+    {
       if (!isset($this->Session['get_text'])) {
         $this->Session['get_text'] = \gettextNativeSupport::i();
       }
@@ -306,7 +318,8 @@
      *
      * @return bool
      */
-    public static function write_extensions($extensions = null, $company = -1) {
+    public static function write_extensions($extensions = null, $company = -1)
+    {
       global $installed_extensions, $next_extension_id;
       if (!isset($extensions)) {
         $extensions = $installed_extensions;
@@ -318,8 +331,7 @@
       //	$extensions = $exts;
       $msg = "<?php\n\n";
       if ($company == -1) {
-        $msg
-          .= "/* List of installed additional modules and plugins. If adding extensions manually
+        $msg .= "/* List of installed additional modules and plugins. If adding extensions manually
                    to the list make sure they have unique, so far not used extension_ids as a keys,
                    and \$next_extension_id is also updated.
                    'name' - name for identification purposes;
@@ -335,8 +347,7 @@
                */
                \n\$next_extension_id = $next_extension_id; // unique id for next installed extension\n\n";
       } else {
-        $msg
-          .= "/*
+        $msg .= "/*
                    Do not edit this file manually. This copy of global file is overwritten
                    by extensions editor.
                */\n\n";

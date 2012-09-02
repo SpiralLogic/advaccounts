@@ -32,8 +32,8 @@
       <button id="useShipAddress" name="useShipAddress" class="button">Use shipping details</button>
     </div>
     {{#$form.accounts_details}}
-        {{.}}
-        {{/$form.accounts_details}}
+    {{.}}
+    {{/$form.accounts_details}}
     {{#$accounts_postcode}}
     {{.}}
     {{/$accounts_postcode}}

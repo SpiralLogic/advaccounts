@@ -23,7 +23,8 @@
     /** @var Debtor */
     protected $debtor;
     protected $company_data;
-    protected function before() {
+    protected function before()
+    {
       ADVAccounting::i()->set_selected('Debtors');
       if (AJAX_REFERRER) {
         if (isset($_GET['term'])) {
@@ -46,24 +47,23 @@
         $this->JS->renderJSON($data);
       }
       $this->company_data = $data;
-
       $this->JS->footerFile("/js/company.js");
     }
-    protected function index() {
+    protected function index()
+    {
       Page::start(_($help_context = "Customers"), SA_CUSTOMER, $this->Input->request('frame'));
       if (isset($_POST['delete'])) {
         $this->delete();
       }
       echo $this->generateForm();
       $this->JS->onload("Company.setValues(" . json_encode($this->company_data) . ");")->setFocus($this->debtor->id ? 'name' : 'customer');
-
       Page::end(true);
     }
     /**
      * @return string
      */
-    protected function generateForm() {
-
+    protected function generateForm()
+    {
       $cache = null;
       Cache::_get('customer_form');
       if ($cache) {
@@ -119,7 +119,6 @@
       $view->set('accounts_postcode', $accounts_postcode->getForm());
       $form->hidden('accounts_id', $this->debtor->accounts->accounts_id);
       $form->group('accounts');
-
       $form->percent('discount', $this->debtor->discount, ["disabled"=> !User::i()->hasAccess(SA_CUSTOMER_CREDIT)])->label("Discount Percent:");
       $form->percent('payment_discount', $this->debtor->payment_discount, ["disabled"=> !User::i()->hasAccess(SA_CUSTOMER_CREDIT)])->label("Prompt Payment Discount:");
       $form->amount('credit_limit', $this->debtor->credit_limit, ["disabled"=> !User::i()->hasAccess(SA_CUSTOMER_CREDIT)])->label("Credit Limit:");
@@ -135,7 +134,6 @@
       $form->custom(GL_UI::payment_terms('payment_terms', $this->debtor->payment_terms))->label('Payment Terms:');
       $form->custom(Sales_CreditStatus::select('credit_status', $this->debtor->credit_status))->label('Credit Status:');
       $form->group();
-
       $form->textarea('messageLog', Contact_Log::read($this->debtor->id, CT_CUSTOMER), ['style'=> 'height:100px;width:95%;margin:0 auto;', 'cols'=> 100]);
       /** @noinspection PhpUndefinedMethodInspection */
       $contacts = new View('contacts/contact');
@@ -194,18 +192,21 @@
 
       return $form;
     }
-    protected function delete() {
+    protected function delete()
+    {
       $this->debtor->delete();
       $status = $this->debtor->getStatus();
       Event::notice($status['message']);
     }
-    protected function after() {
+    protected function after()
+    {
     }
     /**
      * @internal param $prefix
      * @return bool|mixed
      */
-    protected function runValidation() {
+    protected function runValidation()
+    {
       Validation::check(Validation::SALES_TYPES, _("There are no sales types defined. Please define at least one sales type before adding a customer."));
       Validation::check(Validation::SALESPERSONS, _("There are no sales people defined in the system. At least one sales person is required before proceeding."));
       Validation::check(Validation::SALES_AREA, _("There are no sales areas defined in the system. At least one sales area is required before proceeding."));
