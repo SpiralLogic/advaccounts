@@ -238,8 +238,8 @@ JS;
       if (!empty($GLOBALS['JsHttpRequest_Active'])) {
         $this->resetFocus();
         Ajax::_addJson(true, null, $data);
+        exit();
 
-        return;
       }
       ob_end_clean();
       echo   json_encode($data);

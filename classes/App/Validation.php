@@ -158,7 +158,7 @@
         $result = false;
       }
 
-      return ($result === false || $result === null) ? $default : 1;
+      return !($result === false || $result === null) ;
     }
     /**
      *   Read numeric value from user formatted input

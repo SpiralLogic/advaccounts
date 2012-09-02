@@ -123,6 +123,7 @@ Adv.extend({
       }
       else {
         if (status.message) {
+
           switch (status.status) {
             case 1024:
               status.class = 'info_msg';

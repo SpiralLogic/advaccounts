@@ -67,15 +67,15 @@
       if (strlen($this->salesman_name) == 0) {
         return $this->status(false, 'saving', "The sales person name cannot be empty.", 'salesman_name');
       }
-      $this->provision = Validation::input_num($this->provision, 0, 0, 100);
+      $this->provision = Validation::is_num($this->provision,  0, 100);
       if ($this->provision === false) {
         return $this->status(false, 'saving', 'Provisions needs to be a number and not less than 0', 'provision');
       }
-      $this->break_pt = Validation::input_num($this->break_pt, 0, 0, $this->provision);
+      $this->break_pt = Validation::is_num($this->break_pt,  0, $this->provision);
       if ($this->break_pt === false) {
         return $this->status(false, 'saving', 'Break point needs to be a number and not less than 0 and no greater than inital provision', 'break_pt');
       }
-      $this->provision2 = Validation::input_num($this->provision2, 0, 0, $this->break_pt);
+      $this->provision2 = Validation::is_num($this->provision2, 0, $this->break_pt);
       if ($this->provision2 === false) {
         return $this->status(false, 'saving', 'Provisions 2 needs to be a number and not less than 0 and greater than break point');
       }
