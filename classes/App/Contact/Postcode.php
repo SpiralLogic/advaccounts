@@ -109,10 +109,7 @@
       $city     = $this->city[0];
       $state    = $this->state[0];
       $postcode = $this->postcode[0];
-      $js       = <<<JS
-				Adv.postcode.add('$set','$city','$state','$postcode');
-JS;
-      JS::_onload($js);
+      JS::_onload("Adv.postcode.add('$set','$city','$state','$postcode');");
       static::$count++;
     }
     /**

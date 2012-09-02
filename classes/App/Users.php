@@ -336,7 +336,7 @@
      *
      * @return string
      */
-    public static function select($name, $selected_id = null, $spec_opt = false) {
+    public static function select($name, $selected_id = null, $spec_opt = false,$inactive=false) {
       $sql = "SELECT id, real_name, inactive FROM users";
 
       return Forms::selectBox(
@@ -348,7 +348,8 @@
         array(
              'order'       => array('real_name'),
              'spec_option' => $spec_opt,
-             'spec_id'     => ALL_NUMERIC
+             'spec_id'     => ALL_NUMERIC,
+             'show_inactive'=>$inactive,
         )
       );
     }

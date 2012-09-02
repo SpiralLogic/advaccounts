@@ -8,9 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App;
-
   use ADV\Core\Event;
-
   use Reporting;
   use GL_UI;
   use ADV\Core\DB\DB;
@@ -24,7 +22,7 @@
    */
   class Display
   {
-protected static $ajax_divs;
+    protected static $ajax_divs = [];
     /** @var JS */
     static $JS;
     /** @var User */
@@ -42,7 +40,8 @@ protected static $ajax_divs;
      *
      * @return array|mixed|string
      */
-    public static function access_string($label, $clean = false) {
+    public static function access_string($label, $clean = false)
+    {
       $access = '';
       $slices = [];
       if (preg_match('/(.*)&([a-zA-Z0-9])(.*)/', $label, $slices)) {
@@ -59,7 +58,8 @@ protected static $ajax_divs;
      * @param bool   $cond
      * @param string $msg
      */
-    public static function backtrace($cond = true, $msg = '') {
+    public static function backtrace($cond = true, $msg = '')
+    {
       if ($cond) {
         if ($msg) {
           $str = "<div class='center'><span class='headingtext'>$msg</span></div>\n";
@@ -106,7 +106,8 @@ protected static $ajax_divs;
      *
      * @param int $num
      */
-    public static function br($num = 1) {
+    public static function br($num = 1)
+    {
       for ($i = 0; $i < $num; $i++) {
         echo "<br>";
       }
@@ -118,8 +119,8 @@ protected static $ajax_divs;
      * @param null   $trigger
      * @param bool   $non_ajax
      */
-    public static function div_start($id = '', $trigger = null, $non_ajax = false, $echo = true) {
-
+    public static function div_start($id = '', $trigger = null, $non_ajax = false, $echo = true)
+    {
       if (!static::$JS) {
         static::$JS = JS::i();
       }
@@ -135,8 +136,8 @@ protected static $ajax_divs;
     /**
      * @static
      */
-    public static function div_end($return_div = false) {
-
+    public static function div_end($return_div = false)
+    {
       if (!static::$Ajax) {
         static::$Ajax = Ajax::i();
       }
@@ -156,7 +157,8 @@ protected static $ajax_divs;
      *
      * @param $msg
      */
-    public static function heading($msg) {
+    public static function heading($msg)
+    {
       echo "<div class='center'><span class='headingtext'>$msg</span></div>\n";
     }
     /**
@@ -168,7 +170,8 @@ protected static $ajax_divs;
      *
      * @return bool
      */
-    public static function is_voided($type, $id, $label) {
+    public static function is_voided($type, $id, $label)
+    {
       if (!static::$Dates) {
         static::$Dates = Dates::i();
       }
@@ -192,7 +195,8 @@ protected static $ajax_divs;
      *
      * @param $stock_id
      */
-    public static function item_heading($stock_id) {
+    public static function item_heading($stock_id)
+    {
       if (!static::$DB) {
         static::$DB = DB::i();
       }
@@ -213,7 +217,8 @@ protected static $ajax_divs;
      *
      * @return string
      */
-    public static function menu_link($url, $label, $id = null) {
+    public static function menu_link($url, $label, $id = null)
+    {
       if (!static::$JS) {
         static::$JS = JS::i();
       }
@@ -231,7 +236,8 @@ protected static $ajax_divs;
      *
      * @return string
      */
-    public static function menu_button($url, $label, $id = null) {
+    public static function menu_button($url, $label, $id = null)
+    {
       if (!static::$JS) {
         static::$JS = JS::i();
       }
@@ -246,7 +252,8 @@ protected static $ajax_divs;
      * @param        $forward_to
      * @param string $params
      */
-    public static function meta_forward($forward_to, $params = "") {
+    public static function meta_forward($forward_to, $params = "")
+    {
       if (!static::$Ajax) {
         static::$Ajax = Ajax::i();
       }
@@ -267,7 +274,8 @@ protected static $ajax_divs;
      * @param int    $br2
      * @param string $extra
      */
-    public static function note($msg, $br = 0, $br2 = 0, $extra = "") {
+    public static function note($msg, $br = 0, $br2 = 0, $extra = "")
+    {
       for ($i = 0; $i < $br; $i++) {
         echo "<br>";
       }
@@ -286,7 +294,8 @@ protected static $ajax_divs;
      * @param bool $center
      * @param bool $no_menu
      */
-    public static function link_back($center = true, $no_menu = true) {
+    public static function link_back($center = true, $no_menu = true)
+    {
     }
     /**
      * @static
@@ -296,7 +305,8 @@ protected static $ajax_divs;
      * @param bool $center
      * @param bool $button
      */
-    public static function link_no_params($target, $label, $center = true, $button = false) {
+    public static function link_no_params($target, $label, $center = true, $button = false)
+    {
       if (!static::$JS) {
         static::$JS = JS::i();
       }
@@ -322,7 +332,8 @@ protected static $ajax_divs;
      * @param $target
      * @param $label
      */
-    public static function link_no_params_td($target, $label) {
+    public static function link_no_params_td($target, $label)
+    {
       echo "<td>";
       Display::link_no_params($target, $label);
       echo "</td>\n";
@@ -336,7 +347,8 @@ protected static $ajax_divs;
      * @param bool   $center
      * @param string $params
      */
-    public static function link_params($target, $label, $link_params = '', $center = true, $params = '') {
+    public static function link_params($target, $label, $link_params = '', $center = true, $params = '')
+    {
       if (!static::$JS) {
         static::$JS = JS::i();
       }
@@ -362,7 +374,8 @@ protected static $ajax_divs;
      * @param bool   $center
      * @param string $params
      */
-    public static function link_button($target, $label, $link_params = '', $center = true, $params = '') {
+    public static function link_button($target, $label, $link_params = '', $center = true, $params = '')
+    {
       if (!static::$JS) {
         static::$JS = JS::i();
       }
@@ -387,7 +400,8 @@ protected static $ajax_divs;
      * @param        $link_params
      * @param string $params
      */
-    public static function link_params_td($target, $label, $link_params, $params = '') {
+    public static function link_params_td($target, $label, $link_params, $params = '')
+    {
       echo "<td>";
       Display::link_params($target, $label, $link_params, false, $params);
       echo "</td>\n";
@@ -401,7 +415,8 @@ protected static $ajax_divs;
      * @param bool $center
      * @param bool $nobr
      */
-    public static function link_params_separate($target, $label, $params, $center = false, $nobr = false) {
+    public static function link_params_separate($target, $label, $params, $center = false, $nobr = false)
+    {
       if (!static::$JS) {
         static::$JS = JS::i();
       }
@@ -425,7 +440,8 @@ protected static $ajax_divs;
      * @param $label
      * @param $params
      */
-    public static function link_params_separate_td($target, $label, $params) {
+    public static function link_params_separate_td($target, $label, $params)
+    {
       echo "<td>";
       Display::link_params_separate($target, $label, $params);
       echo "</td>\n";
@@ -437,7 +453,8 @@ protected static $ajax_divs;
      * @param      $url
      * @param null $id
      */
-    public static function submenu_option($title, $url, $id = null) {
+    public static function submenu_option($title, $url, $id = null)
+    {
       Display::note(Display::menu_button(BASE_URL . ltrim($url, '/'), $title, $id), 1, 0);
     }
     /**
@@ -446,7 +463,8 @@ protected static $ajax_divs;
      * @param      $title
      * @param      $url
      * @param null $id*/
-    public static function submenu_button($title, $url, $id = null) {
+    public static function submenu_button($title, $url, $id = null)
+    {
       Display::note(Display::menu_button(BASE_URL . ltrim($url, '/'), $title, $id), 0, 1);
     }
     /**
@@ -457,7 +475,8 @@ protected static $ajax_divs;
      * @param      $number
      * @param null $id
      */
-    public static function submenu_view($title, $type, $number, $id = null) {
+    public static function submenu_view($title, $type, $number, $id = null)
+    {
       Display::note(GL_UI::viewTrans($type, $number, $title, false, 'menu_option button', $id), 0, 1, false);
     }
     /**
@@ -470,7 +489,8 @@ protected static $ajax_divs;
      * @param int|null $email
      * @param int      $extra
      */
-    public static function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 0) {
+    public static function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 0)
+    {
       Display::note(Reporting::print_doc_link($number, $title, true, $type, false, 'button printlink', $id, $email, $extra), 1, 0);
     }
     /**
@@ -484,7 +504,8 @@ protected static $ajax_divs;
      *
      * @return string
      */
-    public static function viewer_link($label, $url = '', $class = '', $id = '', $icon = null) {
+    public static function viewer_link($label, $url = '', $class = '', $id = '', $icon = null)
+    {
       if (!static::$User) {
         static::$User = User::i();
       }
@@ -509,6 +530,7 @@ protected static $ajax_divs;
 
       return $preview_str;
     }
-    private static function i() {
+    private static function i()
+    {
     }
   }

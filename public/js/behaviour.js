@@ -199,7 +199,11 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
                                     window.location = data;
                                     break;
                                   case 'json':
-                                    Adv.Forms[property](data);
+                                    if (data.status) {
+                                      Adv.Status.show(data.status);
+                                    }
+                                    if (Adv.Forms[property]){
+                                    Adv.Forms[property](data);}
                                     break;
                                   case 'pu':
                                     newwin = 1;

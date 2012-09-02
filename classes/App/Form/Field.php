@@ -163,7 +163,11 @@
           $control = $this->control;
           break;
         case 'select':
-          $control = preg_replace('/value=([\'"]?)' . preg_quote($value) . '\1/', 'selected \0', $this->control);
+          $values = (array) $value;
+          $control =$this->control;
+          foreach ($values as $v) {
+            $control = preg_replace('/value=([\'"]?)' . preg_quote($v) . '\1/', 'selected \0', $control);
+          }
           break;
         default:
           $this->attr['value'] = $value;

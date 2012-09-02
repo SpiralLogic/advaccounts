@@ -20,6 +20,7 @@
    * @method static Ajax _addDisable($trigger, $sTarget, $sData = true)
    * @method static Ajax _addFocus($trigger, $sTarget)
    * @method static Ajax _run()
+   * @method static Ajax _addJson($trigger, $sTarget, $json)
    * @method static Ajax _flush()
    * @method static Ajax _inAjax()
    * @method static Ajax _absoluteURL()
@@ -185,8 +186,8 @@
 
       return $this;
     }
-    public function addJson($trigger, $sTarget, $json) {
-      $this->addCommand($trigger, ['n'=> 'json', 'p'=> $sTarget], $json);
+    public function addJson($trigger, $formMethod=null, $json) {
+      $this->addCommand($trigger, ['n'=> 'json', 'p'=> $formMethod], $json);
     }
     /**
      * Set current focus.

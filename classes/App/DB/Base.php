@@ -41,8 +41,7 @@
      */
     protected function init() {
       $this->defaults();
-
-      return $this->status->set(Status::SUCCESS, 'init', 'Now working with new ' . $this->_classname);
+      return $this->status(Status::SUCCESS, 'init', 'Now working with new ' . $this->_classname);
     }
     /**
      * @param array|null $changes can take an array of  changes  where key->value pairs match properties->values and applies them before save
