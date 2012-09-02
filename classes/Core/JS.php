@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
   /**
    * @method static \ADV\Core\JS i
    * @method static JS _openWindow($width, $height)
@@ -65,8 +66,7 @@
     /**
      * @param Config $config
      */
-    public function __construct(Config $config = null)
-    {
+    public function __construct(Config $config = null) {
       $this->Config = $config ? : Config::i();
       $this->footerFile($this->Config->get('assets.footer'));
     }
@@ -78,8 +78,7 @@
      *
      * @return mixed
      */
-    public function openWindow($width, $height)
-    {
+    public function openWindow($width, $height) {
       if ($this->openWindow || !$this->Config->get('ui_windows_popups')) {
         return;
       }
@@ -94,8 +93,7 @@
      * @param       $callback
      * @param bool  $url
      */
-    public function autocomplete($id, $callback, $url = false)
-    {
+    public function autocomplete($id, $callback, $url = false) {
       if (!$url) {
         $url = $_SERVER['REQUEST_URI'];
       }
@@ -107,13 +105,13 @@
      * @static
      * @internal param $address
      */
-    public function gmap()
-    {
+    public function gmap() {
       //$address = str_replace(array("\r", "\t", "\n", "\v"), ", ", $address);
       $apikey = $this->Config->get('js.maps_api_key');
       $js     = "Adv.maps = { api_key: '$apikey'}";
       $this->beforeload($js);
-      $js = <<<JS
+      $js
+        = <<<JS
 var map = $("<div/>").gMap({
   address:"__address_",
   markers:[{ address:"__address_", html:"_address", popup:true}],
@@ -134,8 +132,7 @@ JS;
      * Returns unique name if $name=null
 
      */
-    public function defaultFocus($name = null)
-    {
+    public function defaultFocus($name = null) {
       if ($name == null) {
         $name = uniqid('_el', true);
       }
@@ -149,8 +146,7 @@ JS;
      * @static
 
      */
-    public function resetFocus()
-    {
+    public function resetFocus() {
       unset($_POST['_focus']);
     }
     /**
@@ -160,8 +156,7 @@ JS;
      * @param array $options
      * @param       $page
      */
-    public function tabs($id, $options = [], $page = null)
-    {
+    public function tabs($id, $options = [], $page = null) {
       $defaults = ['noajax'=> false, 'haslinks'=> false];
       $options  = array_merge($defaults, $options);
       $noajax   = $options['noajax'] ? 'true' : 'false';
@@ -172,8 +167,7 @@ JS;
      * @static
 
      */
-    public function renderHeader()
-    {
+    public function renderHeader() {
       $scripts = [];
       /** @noinspection PhpDynamicAsStaticMethodCallInspection */
       foreach ($this->headerFiles as $dir => $files) {
@@ -187,8 +181,7 @@ JS;
      * @static
 
      */
-    public function render($return = false)
-    {
+    public function render($return = false) {
       if ($return) {
         ob_start();
       }
@@ -234,8 +227,7 @@ JS;
      *
      * @param $data
      */
-    public function renderJSON($data)
-    {
+    public function renderJSON($data) {
       $data  = (array) $data;
       $error = Errors::JSONError();
       if (isset($data['status']) && $data['status'] && Errors::dbErrorCount()) {
@@ -243,7 +235,7 @@ JS;
       } elseif (!isset($data['status']) && Errors::messageCount()) {
         $data['status'] = $error;
       }
-      if (isset($GLOBALS['JsHttpRequest_Active'])) {
+      if (!empty($GLOBALS['JsHttpRequest_Active'])) {
         $this->resetFocus();
         Ajax::_addJson(true, null, $data);
 
@@ -258,8 +250,7 @@ JS;
      *
      * @param      $selector
      */
-    public function setFocus($selector)
-    {
+    public function setFocus($selector) {
       $this->focus = $selector;
       Ajax::_addFocus(true, $selector);
       $_POST['_focus'] = $selector;
@@ -274,8 +265,7 @@ JS;
      * @return string
      * @return array|mixed|string
      */
-    public function arrayToOptions($options = [], $funcs = [], $level = 0)
-    {
+    public function arrayToOptions($options = [], $funcs = [], $level = 0) {
       foreach ($options as $key => $value) {
         if (is_array($value)) {
           $ret           = $this->arrayToOptions($value, $funcs, 1);
@@ -307,8 +297,7 @@ JS;
      * @param $type
      * @param $action
      */
-    public function addEvent($selector, $type, $action)
-    {
+    public function addEvent($selector, $type, $action) {
       $this->onload("$('$selector').bind('$type',function(e){ {$action} }).css('cursor','pointer');");
     }
     /**
@@ -320,8 +309,7 @@ JS;
      * @param bool $delegate
      * @param bool $cached
      */
-    public function addLiveEvent($selector, $type, $action, $delegate = false, $cached = false)
-    {
+    public function addLiveEvent($selector, $type, $action, $delegate = false, $cached = false) {
       if (!$delegate) {
         $this->addLive("$('$selector').bind('$type',function(e){ {$action} });");
       } else {
@@ -335,8 +323,7 @@ JS;
      * @param      $action
      * @param bool $clean
      */
-    public function addLive($action, $clean = false)
-    {
+    public function addLive($action, $clean = false) {
       $this->register($action, $this->onlive);
       if ($clean) {
         $this->register($clean, $this->toclean);
@@ -347,8 +334,7 @@ JS;
      *
      * @param array $events
      */
-    public function addEvents($events = [])
-    {
+    public function addEvents($events = []) {
       if (is_array($events)) {
         foreach ($events as $event) {
           if (count($event) == 3) {
@@ -364,8 +350,7 @@ JS;
      *
      * @return \ADV\Core\JS
      */
-    public function onload($js = false)
-    {
+    public function onload($js = false) {
       if ($js) {
         $this->register($js, $this->onload);
       }
@@ -377,8 +362,7 @@ JS;
      *
      * @param bool $js
      */
-    public function beforeload($js = false)
-    {
+    public function beforeload($js = false) {
       if ($js) {
         $this->register($js, $this->beforeload);
       }
@@ -388,8 +372,7 @@ JS;
      *
      * @param $file
      */
-    public function headerFile($file)
-    {
+    public function headerFile($file) {
       $this->registerFile($file, $this->headerFiles);
     }
     /**
@@ -397,8 +380,7 @@ JS;
      *
      * @param $file
      */
-    public function footerFile($file)
-    {
+    public function footerFile($file) {
       $this->registerFile($file, $this->footerFiles);
     }
     /**
@@ -406,8 +388,7 @@ JS;
      *
      * @param bool $message
      */
-    public function onUnload($message = false)
-    {
+    public function onUnload($message = false) {
       if ($message) {
         $this->addLiveEvent(':input', 'change', "Adv.Events.onLeave('$message')", 'wrapper', true);
         $this->addLiveEvent('form', 'submit', "Adv.Events.onLeave()", 'wrapper', true);
@@ -418,16 +399,14 @@ JS;
      *
      * @param $url
      */
-    public function redirect($url)
-    {
+    public function redirect($url) {
       $data['status'] = array('status' => 'redirect', 'message' => $url);
       $this->renderJSON($data);
     }
     /**
      * @return array
      */
-    public function getState()
-    {
+    public function getState() {
       $state = get_object_vars($this);
       unset($state['Config']);
 
@@ -436,8 +415,7 @@ JS;
     /**
      * @param array $state
      */
-    public function setState(Array $state = [])
-    {
+    public function setState(Array $state = []) {
       foreach ($state as $property=> $value) {
         if (property_exists($this, $property)) {
           $this->$property = $value;
@@ -450,8 +428,7 @@ JS;
      * @param array|bool $js
      * @param            $var
      */
-    protected function register($js = false, &$var)
-    {
+    protected function register($js = false, &$var) {
       if (is_array($js)) {
         foreach ($js as $j) {
           $this->register($j, $var);
@@ -467,8 +444,7 @@ JS;
      * @param array|bool $file
      * @param            $var
      */
-    protected function registerFile($file, &$var)
-    {
+    protected function registerFile($file, &$var) {
       if (is_array($file)) {
         foreach ($file as $f) {
           $this->registerFile($f, $var);

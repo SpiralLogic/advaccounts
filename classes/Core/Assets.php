@@ -11,6 +11,7 @@
      * Website: http://farhadi.ir/
      */
   namespace ADV\Core;
+
   /**
 
    */
@@ -35,7 +36,7 @@
     protected $minifyTypes
       = array(
         'js'  => array(
-          'minify'   => true, //
+          'minify'   => false, //
           'minifier' => '\\ADV\\Core\\JSMin', //
           'settings' => [] //
         ), //
@@ -182,17 +183,21 @@
       if (!headers_sent($file, $log)) {
         header("Content-Type: {$this->mimeTypes[$this->fileType]}; charset=" . $this->charSet);
       }
-      $this->gzip = ($this->gzip && !in_array($this->fileType, $this->gzipExceptions) && in_array('gzip', array_map('trim', explode(',', @$_SERVER['HTTP_ACCEPT_ENCODING']))) && function_exists('gzencode'));
+      $this->gzip = ($this->gzip && !in_array($this->fileType, $this->gzipExceptions) && in_array(
+        'gzip',
+        array_map('trim', explode(',', @$_SERVER['HTTP_ACCEPT_ENCODING']))
+      ) && function_exists('gzencode'));
       if ($this->gzip) {
         header("Content-Encoding: gzip");
       }
       $this->minify      = $this->minify && class_exists($this->minifyTypes[$this->fileType]['minifier']);
       $this->serverCache = $this->serverCache && ($this->minify || $this->gzip || $this->concatenate);
       if ($this->serverCache) {
-        $cachedFile = $this->cacheDir . DIRECTORY_SEPARATOR . $this->cachePrefix . md5($query) . '.' . $this->fileType . ($this->gzip ?
-          '.gz' : '');
+        $cachedFile = $this->cacheDir . DIRECTORY_SEPARATOR . $this->cachePrefix . md5($query) . '.' . $this->fileType . ($this->gzip ? '.gz' : '');
       }
-      $generateContent = ((!$this->serverCache && (!$this->clientCache || !$this->clientCacheCheck || !isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || $_SERVER['HTTP_IF_MODIFIED_SINCE'] != $this->gmdatestr($this->filesmtime()))) || ($this->serverCache && (!file_exists($cachedFile) || ($this->serverCacheCheck && $this->filesmtime() > filemtime($cachedFile)))));
+      $generateContent = ((!$this->serverCache && (!$this->clientCache || !$this->clientCacheCheck || !isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || $_SERVER['HTTP_IF_MODIFIED_SINCE'] != $this->gmdatestr(
+        $this->filesmtime()
+      ))) || ($this->serverCache && (!file_exists($cachedFile) || ($this->serverCacheCheck && $this->filesmtime() > filemtime($cachedFile)))));
       if ($this->clientCache && $this->clientCacheCheck) {
         if ($this->serverCache && !$generateContent) {
           $mtime = filemtime($cachedFile);

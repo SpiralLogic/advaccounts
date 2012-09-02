@@ -23,8 +23,7 @@
     /** @var Debtor */
     protected $debtor;
     protected $company_data;
-    protected function before()
-    {
+    protected function before() {
       ADVAccounting::i()->set_selected('Debtors');
       if (AJAX_REFERRER) {
         if (isset($_GET['term'])) {
@@ -49,8 +48,7 @@
       $this->company_data = $data;
       $this->JS->footerFile("/js/company.js");
     }
-    protected function index()
-    {
+    protected function index() {
       Page::start(_($help_context = "Customers"), SA_CUSTOMER, $this->Input->request('frame'));
       if (isset($_POST['delete'])) {
         $this->delete();
@@ -62,8 +60,7 @@
     /**
      * @return string
      */
-    protected function generateForm()
-    {
+    protected function generateForm() {
       $cache = null;
       Cache::_get('customer_form');
       if ($cache) {
@@ -124,7 +121,7 @@
       $form->amount('credit_limit', $this->debtor->credit_limit, ["disabled"=> !User::i()->hasAccess(SA_CUSTOMER_CREDIT)])->label("Credit Limit:");
       $form->text('tax_id', $this->debtor->tax_id)->label("GSTNo:");
       $form->custom(Sales_Type::select('sales_type', $this->debtor->sales_type))->label('Sales Type:');
-      $form->arraySelect('inactive', $this->debtor->inactive, ['No', 'Yes'])->label('Inactive:');
+      $form->arraySelect('inactive', ['No', 'Yes'], $this->debtor->inactive)->label('Inactive:');
       if (!$this->debtor->id) {
         $form->custom(GL_Currency::select('curr_code', $this->debtor->curr_code))->label('Currency Code:');
       } else {
@@ -192,21 +189,18 @@
 
       return $form;
     }
-    protected function delete()
-    {
+    protected function delete() {
       $this->debtor->delete();
       $status = $this->debtor->getStatus();
       Event::notice($status['message']);
     }
-    protected function after()
-    {
+    protected function after() {
     }
     /**
      * @internal param $prefix
      * @return bool|mixed
      */
-    protected function runValidation()
-    {
+    protected function runValidation() {
       Validation::check(Validation::SALES_TYPES, _("There are no sales types defined. Please define at least one sales type before adding a customer."));
       Validation::check(Validation::SALESPERSONS, _("There are no sales people defined in the system. At least one sales person is required before proceeding."));
       Validation::check(Validation::SALES_AREA, _("There are no sales areas defined in the system. At least one sales area is required before proceeding."));
