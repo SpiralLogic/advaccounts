@@ -1,5 +1,7 @@
 <?php
-  use ADV\App\Sales\Person;
+  $accounts_postcode = new Contact_Postcode([
+                                                  'city'     => ['accounts[city]', 'df'], //
+                                                  'state'    => ['accounts[state]', 'dfdf'], //
+                                                  'postcode' => ['accounts[postcode]', 2323] //
+                                                  ]);
 
-  $person = Person::getAll();
-  var_dump($person);

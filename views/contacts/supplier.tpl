@@ -18,7 +18,11 @@
   {{$form.fax}}
   {{$form.email}}
   {{$form.address}}
-  {{$postcode->render()}}    </div>
+  {{#$postcode}}
+  {{.}}
+    {{/$postcode}}
+
+  </div>
   <div class='formbox '>
     <div class='tablehead'>
       Accounts Details
@@ -28,7 +32,9 @@
     </div>
   {{$form.supp_phone}}
   {{$form.supp_address}}
-  {{$supp_postcode->render()}}
+  {{#$supp_postcode}}
+  {{.}}
+  {{/$supp_postcode}}
   </div>
   {#$menu->endTab()->startTab('Accounts', 'Accounts')#}
   <div class='formbox '>

@@ -38,7 +38,7 @@
      * @internal param $postcode
      * @internal param array $options
      */
-    public function render() {
+    protected function generate() {
       $form = new Form();
       $form->custom(
         UI::search(
@@ -58,7 +58,7 @@
       )->label('City: ');
       $form->text(
         $this->state[0],
-        $this->state[0],
+        $this->state[1],
         [
         'placeholder'       => 'State',
         'maxlength'         => 35,
@@ -85,8 +85,13 @@
         )
       )->label('Postcode: ');
       $this->registerJS();
-
-      return implode('', $form->getFields());
+return $form;
+    }
+    /**
+     * @return ADV\App\Form\Form
+     */
+    public function getForm() {
+      return $this->generate();
     }
     /**
      * @static

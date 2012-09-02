@@ -416,12 +416,6 @@
       return $button->mergeAttr($input_attr);
     }
     /**
-     * @return array
-     */
-    public function getFields() {
-      return $this->fields;
-    }
-    /**
      * Seek for _POST variable with $prefix.
      * If var is found returns variable name with prefix stripped,
      * and null or -1 otherwise.

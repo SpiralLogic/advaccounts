@@ -17,13 +17,12 @@
     <div id="branchSelect" class="center">{{$branchlist}}
       <button id="addBranch" class="invis" name="addBranch">Add new address</button>
     </div>
-    {{$form.branch-contact_name}}
-    {{$form.branch-phone}}
-    {{$form.branch-phone2}}
-    {{$form.branch-fax}}
-    {{$form.branch-email}}
-    {{$form.branch-br_address}}
-    {{$branch_postcode->render()}}
+    {{#$form.shipping_details}}
+    {{.}}
+    {{/$form.shipping_details}}
+    {{#$branch_postcode}}
+    {{.}}
+    {{/$branch_postcode}}
   </div>
   <div class='formbox'>
     <div class='tablehead'>
@@ -32,13 +31,12 @@
     <div class='center'>
       <button id="useShipAddress" name="useShipAddress" class="button">Use shipping details</button>
     </div>
-    {{$form.accounts-contact_name}}
-    {{$form.accounts-phone}}
-    {{$form.accounts-phone2}}
-    {{$form.accounts-fax}}
-    {{$form.accounts-email}}
-    {{$form.accounts-br_address}}
-    {{$accounts_postcode->render()}}
+    {{#$form.accounts_details}}
+        {{.}}
+        {{/$form.accounts_details}}
+    {{#$accounts_postcode}}
+    {{.}}
+    {{/$accounts_postcode}}
   </div>
   {#$menu->endTab()->startTab('Accounts', 'Accounts')#}
   <div class='formbox'>

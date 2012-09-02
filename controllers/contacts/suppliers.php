@@ -101,7 +101,7 @@
                                             'state'    => array('state', $this->creditor->state),
                                             'postcode' => array('postcode', $this->creditor->postcode)
                                        ));
-      $view->set('postcode', $postcode);
+      $view->set('postcode', $postcode->getForm());
       $form->text('supp_phone', $this->creditor->phone2)->label('Phone Number:');
       $form->textarea('supp_address', $this->creditor->supp_address, ['cols'=> 37, 'rows'=> 4])->label('Address:');
       $supp_postcode = new Contact_Postcode(array(
@@ -109,7 +109,7 @@
                                                  'state'    => array('supp_state', $this->creditor->state),
                                                  'postcode' => array('supp_postcode', $this->creditor->postcode)
                                             ));
-      $view->set('supp_postcode', $supp_postcode);
+      $view->set('supp_postcode', $supp_postcode->getForm());
       $form->percent('payment_discount', $this->creditor->discount, ["disabled"=> !User::i()->hasAccess(SA_SUPPLIERCREDIT)])->label("Prompt Payment Discount:");
       $form->amount('credit_limit', $this->creditor->credit_limit, ["disabled"=> !User::i()->hasAccess(SA_SUPPLIERCREDIT)])->label("Credit Limit:");
       $form->text('tax_id', $this->creditor->tax_id)->label("GST No:");

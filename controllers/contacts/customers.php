@@ -92,7 +92,7 @@
           true
         )
       );
-      $form->text('branch[contact_name]', $currentBranch->contact_name)->label('Contact:');
+      $form->group('shipping_details')->text('branch[contact_name]', $currentBranch->contact_name)->label('Contact:');
       $form->text('branch[phone]', $currentBranch->phone)->label('Phone Number:');
       $form->text('branch[phone2]', $currentBranch->phone2)->label("Alt Phone Number:");
       $form->text('branch[fax]', $currentBranch->fax)->label("Fax Number:");
@@ -103,8 +103,8 @@
                                               'state'    => ['branch[state]', $currentBranch->state], //
                                               'postcode' => ['branch[postcode]', $currentBranch->postcode]
                                               ]);
-      $view->set('branch_postcode', $branch_postcode);
-      $form->text('accounts[contact_name]', $this->debtor->accounts->contact_name)->label('Accounts Contact:');
+      $view->set('branch_postcode', $branch_postcode->getForm());
+      $form->group('accounts_details')->text('accounts[contact_name]', $this->debtor->accounts->contact_name)->label('Accounts Contact:');
       $form->text('accounts[phone]', $this->debtor->accounts->phone)->label('Phone Number:');
       $form->text('accounts[phone2]', $this->debtor->accounts->phone2)->label('Alt Phone Number:');
       $form->text('accounts[fax]', $this->debtor->accounts->fax)->label('Fax Number:');
@@ -115,7 +115,7 @@
                                                 'state'    => ['accounts[state]', $this->debtor->accounts->state], //
                                                 'postcode' => ['accounts[postcode]', $this->debtor->accounts->postcode] //
                                                 ]);
-      $view->set('accounts_postcode', $accounts_postcode);
+      $view->set('accounts_postcode', $accounts_postcode->getForm());
       $form->hidden('accounts_id', $this->debtor->accounts->accounts_id);
       $form->group('accounts');
 

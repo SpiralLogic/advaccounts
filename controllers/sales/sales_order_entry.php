@@ -129,7 +129,7 @@
       }
 
       $view = new View('libraries/forms');
-      $view->set('buttons', $buttons->getFields());
+      $view->set('buttons', $buttons);
       $view->render();
       Display::div_end();
       Forms::end();
