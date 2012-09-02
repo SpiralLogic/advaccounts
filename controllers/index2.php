@@ -1,7 +1,16 @@
 <?php
-  $accounts_postcode = new Contact_Postcode([
-                                                  'city'     => ['accounts[city]', 'df'], //
-                                                  'state'    => ['accounts[state]', 'dfdf'], //
-                                                  'postcode' => ['accounts[postcode]', 2323] //
-                                                  ]);
+  use ADV\App\Form\Form;
 
+  Page::start('test');
+  global $class_types;
+  $form = new Form();
+  $form->arraySelect('test', null, $class_types);
+
+  $test        = $form['test'];
+  $test->value = 3;
+  var_dump(json_encode($form));
+
+  $form->useDefaults = true;
+  echo $test;
+  var_dump(json_encode($form));
+  Page::end(true);

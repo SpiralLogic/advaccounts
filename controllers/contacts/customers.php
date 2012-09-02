@@ -64,7 +64,8 @@
      */
     protected function generateForm() {
 
-      $cache = null;Cache::_get('customer_form');
+      $cache = null;
+      Cache::_get('customer_form');
       if ($cache) {
         $this->JS->setState($cache[1]);
 
@@ -124,7 +125,7 @@
       $form->amount('credit_limit', $this->debtor->credit_limit, ["disabled"=> !User::i()->hasAccess(SA_CUSTOMER_CREDIT)])->label("Credit Limit:");
       $form->text('tax_id', $this->debtor->tax_id)->label("GSTNo:");
       $form->custom(Sales_Type::select('sales_type', $this->debtor->sales_type))->label('Sales Type:');
-      $form->custom(UI::select('inactive', ['No', 'Yes'], ['name' => 'inactive'], $this->debtor->inactive, true))->label('Inactive:');
+      $form->arraySelect('inactive', $this->debtor->inactive, ['No', 'Yes'])->label('Inactive:');
       if (!$this->debtor->id) {
         $form->custom(GL_Currency::select('curr_code', $this->debtor->curr_code))->label('Currency Code:');
       } else {
@@ -134,8 +135,6 @@
       $form->custom(GL_UI::payment_terms('payment_terms', $this->debtor->payment_terms))->label('Payment Terms:');
       $form->custom(Sales_CreditStatus::select('credit_status', $this->debtor->credit_status))->label('Credit Status:');
       $form->group();
-
-
 
       $form->textarea('messageLog', Contact_Log::read($this->debtor->id, CT_CUSTOMER), ['style'=> 'height:100px;width:95%;margin:0 auto;', 'cols'=> 100]);
       /** @noinspection PhpUndefinedMethodInspection */

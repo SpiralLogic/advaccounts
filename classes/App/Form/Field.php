@@ -146,12 +146,18 @@
      * @return string
      */
     public function __toString() {
-      if (!isset($this->control)) {
-        $tag                 = $this->tag;
-        $this->attr['value'] = (isset($this->value)) ? $this->value : $this->default;
-        $control             = HTML::setReturn(true)->$tag($this->id, $this->content, $this->attr, ($tag === 'input'))->setReturn(false);
-      } else {
-        $control = $this->control;
+      $tag   = $this->tag;
+      $value = (isset($this->value)) ? $this->value : $this->default;
+      switch ($tag) {
+        case 'custom':
+          $control = $this->control;
+          break;
+        case 'select':
+          $control = preg_replace('/value=([\'"]?)' . preg_quote($value) . '\1/', 'selected \0', $this->control);
+          break;
+        default:
+          $this->attr['value'] = $value;
+          $control             = HTML::setReturn(true)->$tag($this->id, $this->content, $this->attr, ($tag === 'input'))->setReturn(false);
       }
       $control = $this->formatAddOns($control);
       if ($this->label) {

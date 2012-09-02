@@ -293,29 +293,33 @@
      * $items is array of options 'value' => 'description'
      * Options is reduced set of combo_selector options and is merged with defaults.
      *
-     * @param            $name
-     * @param            $selected_id
-     * @param            $items
-     * @param array|null $options
+     * @param                 $name
+     * @param                 $selected_id
+     * @param   array         $items   Associative array [ value=>label ]
+     * @param array|null      $options [  spec_option   => false, // option text or false<br>
+     *                                 spec_id       => 0, // option id<br>
+     *                                 select_submit => false, //submit on select: true/false<br>
+     *                                 async         => true, // select update via ajax (true) vs _page_body reload<br>
+     *                                 default       => null, // default value when $_POST is not set<br>
+     *                                 multi         => false, // multiple select<br>
+     *                                 sel_hint => null,<br>
+     *                                 disabled => null,<br>
+     * ]
      *
-     * @return string
+     * @return Field
      */
     public function arraySelect($name, $selected_id, $items, $options = []) {
-      $spec_option   = false; // option text or false
-      $spec_id       = 0; // option id
-      $select_submit = false; //submit on select: true/false
-      $async         = true; // select update via ajax (true) vs _page_body reload
-      $default       = null; // default value when $_POST is not set
-      $multi         = false; // multiple select
+      $spec_option = false; // option text or false
+      $spec_id     = 0; // option id
+      $async       = true; // select update via ajax (true) vs _page_body reload
+      $multi       = false; // multiple select
       // search box parameters
       //TODO $height = false; // number of lines in select box
       $sel_hint = null; //
       $disabled = null;
       // ------ merge options with defaults ----------
       extract($options, EXTR_IF_EXISTS);
-      if ($selected_id == null) {
-        $selected_id = $this->Input->post($name, null, $default);
-      }
+      $field       = $this->addField('select', $name, $selected_id);
       $selected_id = (array) $selected_id;
       // code is generalized for multiple selection support
       if ($this->Input->post("_{$name}_update")) {
@@ -324,13 +328,13 @@
       // ------ make selector ----------
       $selector = $first_opt = '';
       $found    = $first_id = false;
-      foreach ($items as $value => $descr) {
+      foreach ($items as $value => $label) {
         $sel   = in_array((string) $value, $selected_id);
         $found = ($sel) ? $value : false;
         if ($first_id === false) {
           $first_id = $value;
         }
-        $selector .= HTML::setReturn(true)->option(null, $descr, ['selected'=> $sel, 'value'=> $value], false)->setReturn(false);
+        $selector .= HTML::setReturn(true)->option(null, $label, ['selected'=> $sel, 'value'=> $value], false)->setReturn(false);
       }
       // Prepend special option.
       if ($spec_option !== false) { // if special option used - add it
@@ -341,31 +345,20 @@
       if ($found === false) {
         $selected_id = [$first_id];
       }
-      $_POST[$name] = $multi ? $selected_id : $selected_id[0];
-      $input_attr   = [
+      $field->default = $multi ? [$first_id] : $first_id;
+      $field->value   = $multi ? $selected_id : $selected_id[0];
+      $input_attr     = [
         'multiple'=> $multi, //
         'disabled'=> $disabled, //
-        'id'      => $this->nameToId($name), //
         'name'    => $name . ($multi ? '[]' : ''), //
         'class'   => 'combo', //
         'title'   => $sel_hint
       ];
-      $selector     = HTML::setReturn(true)->span("_{$name}_sel", ['class'=> 'combodiv'])->select($input_attr['id'], $selector, $input_attr, false)->_span()->setReturn(false);
+      $selector       = HTML::setReturn(true)->span("_{$name}_sel", ['class'=> 'combodiv'])->select($field->id, $selector, $input_attr, false)->_span()->setReturn(false);
       $this->Ajax->addUpdate($name, "_{$name}_sel", $selector);
-      if ($select_submit != false) { // if submit on change is used - add select button
-        $input_attr = [
-          'disabled'=> $disabled,
-          'type'    => 'submit',
-          'class'   => 'combo_select',
-          'name'    => '_' . $name . '_update',
-          'title'   => _("Select"),
-          'value'   => ' '
-        ];
-        $selector .= HTML::setReturn(true)->input(null, $input_attr, false)->setReturn(false);
-      }
-      JS::_defaultFocus($name);
+      $field->customControl($selector);
 
-      return $selector;
+      return $field;
     }
     /**
      * @param             $name

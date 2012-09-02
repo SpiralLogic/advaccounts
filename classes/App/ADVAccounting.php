@@ -22,7 +22,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   /**
-   * @method ADVAccounting i()
+   * @method static ADVAccounting i()
    */
   class ADVAccounting
   {

@@ -46,7 +46,6 @@
     </div>
     {{#$form.accounts}}
     {{.}}
-    <br>
     {{/$form.accounts}}
   </div>
   <div class='formbox width35'>
