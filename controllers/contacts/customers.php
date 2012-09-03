@@ -66,7 +66,7 @@
       if ($cache) {
         $this->JS->setState($cache[1]);
 
-        return $form = igbinary_unserialize($cache[0]);
+        return $form = $cache[0];
       }
       $this->JS->autocomplete('customer', 'Company.fetch');
       $currentBranch = $this->debtor->branches[$this->debtor->defaultBranch];
@@ -125,7 +125,7 @@
       if (!$this->debtor->id) {
         $form->custom(GL_Currency::select('curr_code', $this->debtor->curr_code))->label('Currency Code:');
       } else {
-        $form->label('Currency Code:', 'curr_code', $this->debtor->curr_code);
+        //$form->label('Currency Code:', 'curr_code', $this->debtor->curr_code);
         $form->hidden('curr_code', $this->debtor->curr_code);
       }
       $form->custom(GL_UI::payment_terms('payment_terms', $this->debtor->payment_terms))->label('Payment Terms:');
@@ -185,7 +185,7 @@
         UI::emailDialogue(CT_CUSTOMER);
       }
       $form = HTMLmin::minify($view->render(true));
-      Cache::_set('customer_form', [igbinary_serialize($form), $this->JS->getState()]);
+      Cache::_set('customer_form', [$form, $this->JS->getState()]);
 
       return $form;
     }
