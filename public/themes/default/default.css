@@ -4086,7 +4086,7 @@ body.lite {
 }
 
 .settledbg {
-  background-color: #0b0;
+  background-color: #0b0 !important;
 }
 
 .settledfg {

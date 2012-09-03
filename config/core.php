@@ -63,6 +63,7 @@
       'Security', //
       'Dates', //
       'Display', //
+      'Dimensions', //
       'User', //
       'Users', //
       'Orders', //

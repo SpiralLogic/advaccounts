@@ -1,4 +1,5 @@
 <?php
+  use ADV\App\Dimensions;
 
   /* * ********************************************************************
            Copyright (C) Advanced Group PTY LTD

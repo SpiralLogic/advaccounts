@@ -1,5 +1,6 @@
 <?php
   use ADV\App\Debtor\Debtor;
+  use ADV\Core\Input\Input;
 
   /**
    * PHP version 5.4
@@ -19,7 +20,8 @@
   }
   echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
   Debtor::newselect(null, ['label'=> false, 'row'=> false]);
-  echo "<br>";
+  echo "<br>";  $settled =  (Input::_hasPost('ShowSettled'));
+
   Forms::check(_("Show Settled Items:"), 'ShowSettled', null, true);
   echo "</div><br><br>";
   Session::_setGlobal('debtor_id', $_POST['debtor_id']);
@@ -31,10 +33,6 @@
            if (!Bank_Currency::is_company($custCurr))
              echo _("Customer Currency:") . $custCurr;
          }*/
-  $settled = false;
-  if (Input::_hasPost('ShowSettled')) {
-    $settled = true;
-  }
   $debtor_id = null;
   if (isset($_POST['debtor_id'])) {
     $debtor_id = $_POST['debtor_id'];

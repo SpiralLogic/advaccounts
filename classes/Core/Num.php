@@ -94,7 +94,7 @@
      * @return float
      */
     public function round($number, $decimals = 0) {
-      return round($number, $decimals, PHP_ROUND_HALF_EVEN);
+      return round($number, $decimals, PHP_ROUND_HALF_UP);
     }
     /**
      * @static

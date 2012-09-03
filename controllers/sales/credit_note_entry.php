@@ -1,5 +1,9 @@
 <?php
   use ADV\App\Debtor\Debtor;
+  use ADV\App\Ref;
+  use ADV\App\Validation;
+  use ADV\App\Forms;
+  use ADV\App\Orders;
   use ADV\Core\Ajax;
   use ADV\Core\Input\Input;
   use ADV\Core\Table;
@@ -18,7 +22,7 @@
   //
   class CreditNote extends \ADV\App\Controller\Base
   {
-    /** @var Sales_Order */
+    /** @var \Sales_Order */
     public $credit;
     protected function before() {
       $this->JS->openWindow(950, 500);
@@ -95,7 +99,7 @@
       $type     = $this->credit->trans_type;
       $order_no = (is_array($this->credit->trans_no)) ? key($this->credit->trans_no) : $this->credit->trans_no;
       Orders::session_delete($_POST['order_id']);
-      $this->credit = $this->handleNewCredit($order_no);
+     $this->handleNewCredit($order_no);
     }
     /**
      * @param $credit_no
@@ -184,6 +188,7 @@
     protected function handleNewCredit($trans_no) {
       $this->credit = new Sales_Order(ST_CUSTCREDIT, $trans_no);
       Orders::session_delete($this->credit->order_id);
+      $this->credit->reference = Ref::get_next($this->credit->trans_type);
       $this->credit->start();
       $this->copyFromCredit();
     }

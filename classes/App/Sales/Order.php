@@ -1,5 +1,6 @@
 <?php
   use ADV\Core\Cell;
+  use ADV\App\Dimensions;
   use ADV\App\UI\UI;
   use ADV\App\Reports\Email;
   use ADV\App\WO\WO;
@@ -241,7 +242,7 @@
       $this->line_items = [];
       $this->sales_type = "";
       $this->view_only  = $view;
-      $this->trans_type = ($type == ST_SALESQUOTE) ? ST_SALESQUOTE : ST_SALESORDER;
+      $this->trans_type = $type;
       $this->read($type, $trans_no);
       $this->generateID();
     }

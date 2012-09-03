@@ -18,6 +18,7 @@
    * @method static get_prefs()
    * @method static get_current_fiscalyear()
    * @method static key_in_foreign_table($id, $tables, $stdkey, $escaped = false)
+   * @method static get_base_sales_type()
    */
   class DB_Company extends \ADV\App\DB\Base
   {

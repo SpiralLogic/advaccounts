@@ -1,4 +1,20 @@
 <?php
+  use ADV\Core\Input\Input;
+  use ADV\App\Reporting;
+  use ADV\App\Tax\Tax;
+  use ADV\App\Item\Item;
+  use ADV\App\Display;
+  use ADV\App\Debtor\Debtor;
+  use ADV\Core\Cell;
+  use ADV\Core\Row;
+  use ADV\Core\Table;
+  use ADV\App\Ref;
+  use ADV\Core\JS;
+  use ADV\App\Validation;
+  use ADV\App\Orders;
+  use ADV\App\Forms;
+  use ADV\Core\Ajax;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -85,8 +101,10 @@
     $type     = $order->trans_type;
     $order_no = key($order->trans_no);
     Orders::session_delete($_POST['order_id']);
-    create_order($type, $order_no);
-  }
+    $credit = new Sales_Order(ST_CUSTCREDIT, $trans_no);
+    $credit->reference = Ref::get_next($credit->trans_type);
+    $credit->start();
+         $this->copyFromCredit();  }
   if (Input::_post('Update')) {
     Ajax::_activate('credit_items');
   }
@@ -197,6 +215,7 @@
     Table::start('tablestyle2 width90 pad5');
     echo "<tr><td>"; // outer table
     Table::start('tablestyle width100');
+
     Row::start();
     Cell::labels(_("Customer"), Orders::session_get($_POST['order_id'])->customer_name, "class='tablerowhead'");
     Cell::labels(_("Branch"), Sales_Branch::get_name(Orders::session_get($_POST['order_id'])->Branch), "class='tablerowhead'");
@@ -204,7 +223,7 @@
     Row::end();
     Row::start();
     if (Orders::session_get($_POST['order_id'])->trans_no == 0) {
-      Forms::refCells(_("Reference"), 'ref', '', null, "class='tablerowhead'");
+      Forms::refCells(_("Reference"), 'ref', '', Orders::session_get($_POST['order_id'])->reference, "class='tablerowhead'");
     } else {
       Cell::labels(_("Reference"), Orders::session_get($_POST['order_id'])->reference, "class='tablerowhead'");
     }
