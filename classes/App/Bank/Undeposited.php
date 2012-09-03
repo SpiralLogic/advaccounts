@@ -1,5 +1,6 @@
 <?php
   use ADV\Core\DB\DB;
+  use ADV\App\User;
 
   /**
    * Created by JetBrains PhpStorm.
@@ -15,7 +16,9 @@
     /** @var Dates */
     static $Dates;
     /**
-     * @param $groupid
+     * @param $group_id
+     *
+     * @internal param $groupid
      */
     public static function ungroup($group_id) {
       $sql = "UPDATE bank_trans SET undeposited=0, reconciled=null WHERE undeposited =" . static::$DB->_escape($group_id);
@@ -24,21 +27,38 @@
       static::$DB->_query($sql, "Couldn't update removed group deposit data");
     }
     /**
-     * @param $deposit
+     * @param $deposit_id
+     *
+     * @internal param $deposit
      */
     public static function undeposit($deposit_id) {
       $sql = "UPDATE bank_trans SET undeposited=0, reconciled=null WHERE id=" . $deposit_id;
       static::$DB->_query($sql, "Can't change undeposited status");
     }
+    /**
+     * @param $account
+     * @param $date
+     *
+     * @return mixed
+     */
     public static function createGroup($account, $date) {
-      $sql        = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited)
+      $sql
+                  = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited)
           VALUES (" . ST_GROUPDEPOSIT . ", " . static::$DB->_quote($account) . ", 0," . static::$DB->_quote('Group Deposit') . "," . //
         static::$DB->_quote($date) . ", 6," . //
         static::$DB->_quote(User::i()->user) . ",0)";
       $query      = static::$DB->_query($sql, "Undeposited Cannot be Added");
       $deposit_id = static::$DB->_insertId($query);
+
       return $deposit_id;
     }
+    /**
+     * @param $trans_id
+     * @param $account
+     * @param $togroup
+     *
+     * @return bool
+     */
     public static function addToGroup($trans_id, $account, $togroup) {
       if ($trans_id == $togroup) {
         Event::error('These are both the same transaction!');
@@ -55,12 +75,13 @@
       $group2  = $result2['undeposited'];
       if ($group1 > 1 && $group2 > 1) {
         Event::error('Transactions are already grouped!');
+
         return false;
       }
       if ($type1 == ST_GROUPDEPOSIT && $type2 == ST_GROUPDEPOSIT) {
         $group = $trans_id;
         $sql   = "UPDATE bank_trans SET undeposited=" . $group . " WHERE undeposited=" . static::$DB->_quote($togroup) . " AND bank_act = " . static::$DB->_quote($account);
-        $sql .= "; DELETE FROM bank_trans WHERE id=".$togroup. " AND bank_act=". static::$DB->_quote($account)." AND type=".ST_GROUPDEPOSIT;
+        $sql .= "; DELETE FROM bank_trans WHERE id=" . $togroup . " AND bank_act=" . static::$DB->_quote($account) . " AND type=" . ST_GROUPDEPOSIT;
       } elseif ($type1 == ST_GROUPDEPOSIT) {
         $group = $trans_id;
         $sql   = "UPDATE bank_trans SET undeposited=" . $trans_id . " WHERE id=" . static::$DB->_quote($togroup) . " AND bank_act = " . static::$DB->_quote($account);
@@ -73,8 +94,11 @@
         $sql .= "; UPDATE bank_trans SET undeposited=" . $group . " WHERE id=" . static::$DB->_quote($togroup) . " AND bank_act = " . static::$DB->_quote($account);
       }
       $amount = $amount1 + $amount2;
-      $sql .= "; UPDATE bank_trans SET amount=$amount WHERE id = " . static::$DB->_quote($group) . " AND type= " . ST_GROUPDEPOSIT . " AND bank_act = " . static::$DB->_quote($account);
-      static::$DB->_query($sql, "Can't change undeposited status");
+      $sql .= "; UPDATE bank_trans SET amount=$amount WHERE id = " . static::$DB->_quote($group) . " AND type= " . ST_GROUPDEPOSIT . " AND bank_act = " . static::$DB->_quote(
+        $account
+      );
+
+      return static::$DB->_query($sql, "Can't change undeposited status");
     }
     /**
      * @static
@@ -91,11 +115,13 @@
       $current = $trans['undeposited'];
       if ($current != $fromgroup) {
         Event::error('Transaction is not in this group!');
+
         return false;
       }
       $sql = "UPDATE bank_trans SET undeposited=0 WHERE id=" . static::$DB->_quote($trans_id) . " AND bank_act = " . static::$DB->_quote($account);
       $sql .= "; UPDATE bank_trans SET amount=amount - $amount WHERE id = " . static::$DB->_quote($fromgroup);
-      static::$DB->_query($sql, "Can't change undeposited status");
+
+      return static::$DB->_query($sql, "Can't change undeposited status");
     }
   }
 

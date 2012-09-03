@@ -7,6 +7,14 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\App;
+
+  use ADV\Core\Cache\Cache;
+  use ADV\Core\DB\DB;
+
+  /**
+
+   */
   class Validation
   {
     const CUSTOMERS         = "debtors";
@@ -50,7 +58,7 @@
      * @param null   $default
      *
      * @return int|null
-     * @throws Exception
+     * @throws \Exception
      */
     public static function check($validate, $msg = '', $extra = null, $default = null) {
       if ($extra === false) {
@@ -74,7 +82,7 @@
       $result = DB::_query('SELECT COUNT(*) FROM ' . $validate . ' ' . $extra, 'Could not do check empty query');
       $myrow  = DB::_fetchRow($result);
       if (!($myrow[0] > 0)) {
-        throw new Exception($msg);
+        throw new \Exception($msg);
       } else {
         Cache::_set($cachekey, true);
 
@@ -150,7 +158,7 @@
         $result = false;
       }
 
-      return ($result === false || $result === null) ? $default : 1;
+      return !($result === false || $result === null);
     }
     /**
      *   Read numeric value from user formatted input

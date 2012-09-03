@@ -8,15 +8,18 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace Modules\Jobsboard;
-  use \ADV\Core\Module;
-  use \ADV\Core\Config;
-  use \ADV\Core\DB\DB;
-  use \User;
+
+  use ADV\Core\Module;
+  use ADV\Core\Event;
+  use ADV\App\User;
+  use ADV\Core\Config;
+  use ADV\Core\DB\DB;
 
   /**
    * Jobsboard
    */
-  class Jobsboard extends Module\Base {
+  class Jobsboard extends Module\Base
+  {
     /** @var */
     protected $currentJob;
     /** @var */
@@ -34,7 +37,7 @@
         $this->jobsboardDB = new DB('jobsboard');
       }
     }
-    public function _init() {
+    public function init() {
       User::register_login($this, 'tasks');
     }
     /**
@@ -46,16 +49,21 @@
       $job = $this->get_job($trans_no);
       if ($trans_no && $this->jobExists($trans_no)) {
         $this->currentJob['Customer']             = $job['Customer'] . ' - CANCELLED';
-        $this->currentJob['Updates']              = date('Y-m-d h:m:s', strtotime("now")) . ' ' . 'Job has BEEN CANCELLED from acounts by ' . \User::i()->name . ' ' . chr(13) . chr(10) . $job['Updates'];
-        $this->currentJob['Next_Action_Required'] = '<div>Job has BEEN CANCELLED from accounts by ' . \User::i()->name . '</div>' . $job['Next_Action_Required'];
+        $this->currentJob['Updates']              = date('Y-m-d h:m:s', strtotime("now")) . ' ' . 'Job has BEEN CANCELLED from acounts by ' . User::i()->name . ' ' . chr(
+          13
+        ) . chr(
+          10
+        ) . $job['Updates'];
+        $this->currentJob['Next_Action_Required'] = '<div>Job has BEEN CANCELLED from accounts by ' . User::i()->name . '</div>' . $job['Next_Action_Required'];
         $this->currentJob['order_ref']            = '';
         $this->currentJob['order_no']             = '';
         $this->currentJob['Priority_Level']       = 5;
         $this->jobsboardDB->update('Job_List')->values($this->currentJob)->where('Advanced_Job_No=', $this->currentJob['Advanced_Job_No'])->exec();
-        \Event::success('Order ' . $trans_no . ' has been removed from the Jobs Board!');
+        Event::success('Order ' . $trans_no . ' has been removed from the Jobs Board!');
       } else {
-        \Event::error('There is no current Order to remove from jobsboard');
+        Event::error('There is no current Order to remove from jobsboard');
       }
+
       return false;
     }
     /**
@@ -68,7 +76,7 @@
      */
     public function addjob($job_data) {
       $this->order_no = $order_no = $job_data->trans_no;
-      $user_name      = \User::i()->name;
+      $user_name      = User::i()->name;
       $orderlines     = $this->getOrderLines();
       $update         = var_export($job_data, true);
       $job            = $this->get_job($order_no);
@@ -79,7 +87,11 @@
          * @var \Sales_Line $line
          */
         $lines[$line['id']] = array(
-          'line_id'     => $line['id'], 'stock_code'  => $line['stk_code'], 'price'       => $line['unit_price'], 'description' => $line['description'], 'quantity'    => $line['quantity']
+          'line_id'     => $line['id'],
+          'stock_code'  => $line['stk_code'],
+          'price'       => $line['unit_price'],
+          'description' => $line['description'],
+          'quantity'    => $line['quantity']
         );
       }
       if ($exists) {
@@ -127,6 +139,7 @@
       $data['Updates']              = $update;
       $this->lines                  = $lines;
       ($exists) ? $this->updateJob($data) : $this->insertJob($data);
+
       return;
     }
     /***
@@ -139,6 +152,7 @@
       if ($this->currentJob) {
         $this->getLines();
       }
+
       return $this->currentJob;
     }
     /***
@@ -149,6 +163,7 @@
       if (empty($this->currentJob)) {
         return false;
       }
+
       return (isset($this->currentJob['Advanced_Job_No']));
     }
     /**
@@ -208,6 +223,7 @@
       foreach ($lines as $line) {
         $result[$line['line_id']] = $line;
       }
+
       return $result;
     }
     /***
@@ -216,6 +232,7 @@
      */
     protected function getOrderLines() {
       $lines = DB::_select()->from('sales_order_details')->where('order_no=', $this->order_no)->fetch()->all();
+
       return $lines;
     }
     /**
@@ -225,25 +242,27 @@
     public function tasks() {
       $result = false;
       try {
-        $this->jobsboardDB->query('UPDATE Job_List SET priority_changed = NOW() , Main_Employee_Responsible = previous_user WHERE
-        Priority_Level<5 AND priority_changed < (NOW() - INTERVAL 3 DAY) AND Main_Employee_Responsible<>previous_user AND priority_changed>0');
+        $this->jobsboardDB->query(
+          'UPDATE Job_List SET priority_changed = NOW() , Main_Employee_Responsible = previous_user WHERE
+        Priority_Level<5 AND priority_changed < (NOW() - INTERVAL 3 DAY) AND Main_Employee_Responsible<>previous_user AND priority_changed>0'
+        );
         $result = $this->jobsboardDB->numRows();
-      }
-      catch (\Exception $e) {
+      } catch (\Exception $e) {
       }
       if ($result) {
-        \Event::notice($result . ' Jobs were returned to their previous responslble person.');
+        Event::notice($result . ' Jobs were returned to their previous responslble person.');
       }
       $result = false;
       try {
-        $this->jobsboardDB->query('UPDATE Job_List SET has_worked_change = NOW() , Can_work_be_done_today = -1 WHERE
-        Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_be_done_today=0 AND has_worked_change>0');
+        $this->jobsboardDB->query(
+          'UPDATE Job_List SET has_worked_change = NOW() , Can_work_be_done_today = -1 WHERE
+        Priority_Level<5 AND has_worked_change < (NOW() - INTERVAL 3 DAY) AND Can_work_be_done_today=0 AND has_worked_change>0'
+        );
         $result = $this->jobsboardDB->numRows();
-      }
-      catch (\Exception $e) {
+      } catch (\Exception $e) {
       }
       if ($result) {
-        \Event::notice($result . ' Jobs were changed back to having "work can be done" due to inactivity.');
+        Event::notice($result . ' Jobs were changed back to having "work can be done" due to inactivity.');
       }
     }
   }

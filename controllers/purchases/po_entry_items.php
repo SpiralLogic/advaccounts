@@ -39,18 +39,14 @@
       if ($id != -1 && $this->order) {
         $this->deleteItem($id);
       }
-      if (isset($_POST[COMMIT])) {
-        $this->commitOrder();
-      }
+
       if (isset($_POST[UPDATE_ITEM]) && $this->checkData()) {
         $this->updateItem();
       }
       if (isset($_POST[ADD_ITEM])) {
         $this->addItem();
       }
-      if (isset($_POST[Orders::CANCEL])) {
-        $this->cancelOrder();
-      }
+
       if (isset($_POST[CANCEL])) {
         $this->cancelItem();
       }
@@ -60,7 +56,7 @@
       if (Input::_get(Orders::MODIFY_ORDER)) {
         $this->order = $this->createOrder($_GET[Orders::MODIFY_ORDER]);
       } elseif (isset($_POST[CANCEL]) || isset($_POST[UPDATE_ITEM])) {
-        Item_Line::start_focus('_stock_id_edit');
+        Item_Line::start_focus('stock_id');
       } elseif (isset($_GET[Orders::NEW_ORDER]) || !isset($this->order)) {
         $this->order = $this->createOrder();
         if (Input::_get('UseOrder') && !count($this->order->line_items)) {
@@ -79,7 +75,7 @@
       } else {
         Event::error(_("This item cannot be deleted because some of it has already been received."));
       }
-      Item_Line::start_focus('_stock_id_edit');
+      Item_Line::start_focus('stock_id');
     }
     protected function commitOrder() {
       Purch_Order::copyFromPost($this->order);
@@ -152,7 +148,7 @@
           }
         } /* end of if not already on the order and allow input was true*/
       }
-      Item_Line::start_focus('_stock_id_edit');
+      Item_Line::start_focus('stock_id');
     }
     protected function updateItem() {
       if ($this->order->line_items[$_POST['line_no']]->qty_inv > Validation::input_num(
@@ -175,7 +171,7 @@
           $_POST['discount'] / 100
         );
         unset($_POST['stock_id'], $_POST['qty'], $_POST['price'], $_POST['req_del_date']);
-        Item_Line::start_focus('_stock_id_edit');
+        Item_Line::start_focus('stock_id');
       }
     }
     protected function index() {
@@ -183,6 +179,12 @@
         Page::start(_($help_context = "Modify Purchase Order #") . $_GET[Orders::MODIFY_ORDER], SA_PURCHASEORDER);
       } else {
         Page::start(_($help_context = "Purchase Order Entry"), SA_PURCHASEORDER);
+      }
+      if (isset($_POST[COMMIT])) {
+        $this->commitOrder();
+      }
+      if (isset($_POST[Orders::CANCEL])) {
+        $this->cancelOrder();
       }
       Forms::start();
       echo "<br>";
@@ -197,17 +199,17 @@
       Table::end(1);
       Display::div_start('controls', 'items_table');
       if ($this->order->order_has_items()) {
-        Forms::submitCenterBegin(Orders::CANCEL, _("Delete This Order"));
-        Forms::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
+        Forms::submitCenterBegin(Orders::CANCEL, _("Delete This Order"), false, false, ICON_DELETE);
+        Forms::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."), false, ICON_CANCEL);
         if ($this->order->order_no) {
-          Forms::submitCenterEnd(COMMIT, _("Update Order"), '', 'default');
+          Forms::submitCenterEnd(COMMIT, _("Update Order"), '', 'default', ICON_UPDATE);
         } else {
-          Forms::submitCenterEnd(COMMIT, _("Place Order"), '', 'default');
+          Forms::submitCenterEnd(COMMIT, _("Place Order"), '', 'default', ICON_SUBMIT);
         }
       } else {
         Forms::submitConfirm(Orders::CANCEL, _('You are about to void this Document.\nDo you want to continue?'));
         Forms::submitCenterBegin(Orders::CANCEL, _("Delete This Order"), true, false, ICON_DELETE);
-        Forms::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
+        Forms::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."), false, ICON_CANCEL);
       }
       Display::div_end();
       Forms::end();
@@ -231,10 +233,10 @@
       $new_trans  = "/purchases/po_entry_items.php?" . Orders::NEW_ORDER;
       $view       = new View('orders/complete');
       $buttons[]  = ['label'=> _("&View this order"), 'href'=> GL_UI::viewTrans($trans_type, $order_no, '', false, '', '', true)];
-      $href=Reporting::print_doc_link($order_no, '', true, $trans_type,false,'','',0,0,true);
-      $buttons[]  = ['label'=>_("&Print This Order"),'href'=>$href];
-      $edit_trans=BASE_URL . "purchases/po_entry_items.php?ModifyOrder=$order_no";
-      $buttons[]  = ['label'=>_("&Edit This Order"),'href'=>$edit_trans];
+      $href       = Reporting::print_doc_link($order_no, '', true, $trans_type, false, '', '', 0, 0, true);
+      $buttons[]  = ['label'=> _("&Print This Order"), 'href'=> $href];
+      $edit_trans = BASE_URL . "purchases/po_entry_items.php?ModifyOrder=$order_no";
+      $buttons[]  = ['label'=> _("&Edit This Order"), 'href'=> $edit_trans];
       $view->set('emailtrans', Reporting::emailDialogue($this->creditor_id, ST_PURCHORDER, $order_no));
       $buttons[] = ['label'=> 'Receive this purchase order', 'accesskey'=> 'R', 'href'=> "/purchases/po_receive_items.php?PONumber=$order_no"];
       $buttons[] = ['label'=> 'New purchase order', 'accesskey'=> 'N', 'href'=> $new_trans];

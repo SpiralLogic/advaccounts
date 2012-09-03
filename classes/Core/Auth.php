@@ -8,11 +8,17 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
+  use ADV\App\Users;
+
   /**
 
    */
   use ADV\Core\DB\DB;
 
+  /**
+
+   */
   class Auth
   {
     /** @var */
@@ -33,7 +39,13 @@
      * @param $password
      */
     public function updatePassword($id, $password) {
-      \DB::_update('users')->value('password', $this->hashPassword($password))->value('user_id', $this->username)->value('hash', $this->makeHash($password, $id))->value('change_password', 0)->where('id=', $id)->exec();
+      DB::_update('users')->value('password', $this->hashPassword($password))->value('user_id', $this->username)->value(
+        'hash',
+        $this->makeHash(
+          $password,
+          $id
+        )
+      )->value('change_password', 0)->where('id=', $id)->exec();
       session_regenerate_id();
     }
     /**
@@ -42,6 +54,7 @@
      */
     public function hashPassword() {
       $password = crypt($this->password, '$6$rounds=5000$' . Config::_get('auth_salt') . '$');
+
       return $password;
     }
     /**
@@ -64,15 +77,17 @@
         }
         unset($result['password']);
       }
-      DB::_insert('user_login_log')->values(array('user' => $username, 'IP' => \Users::get_ip(), 'success' => (bool) $result))->exec();
+      DB::_insert('user_login_log')->values(array('user' => $username, 'IP' => Users::get_ip(), 'success' => (bool) $result))->exec();
+
       return $result;
     }
     /**
      * @return bool
      */
     public function isBruteForce() {
-      $query = \DB::_query('select COUNT(IP) FROM user_login_log WHERE success=0 AND timestamp>NOW() - INTERVAL 1 HOUR AND IP=' . \DB::_escape(\Users::get_ip()));
-      return (\DB::_fetch($query)[0] > Config::_get('max_login_attempts', 50));
+      $query = DB::_query('select COUNT(IP) FROM user_login_log WHERE success=0 AND timestamp>NOW() - INTERVAL 1 HOUR AND IP=' . DB::_escape(Users::get_ip()));
+
+      return (DB::_fetch($query)[0] > Config::_get('max_login_attempts', 50));
     }
     /**
      * @static
@@ -95,7 +110,9 @@
      */
     public static function checkPasswordStrength($password, $username = false) {
       $returns = array(
-        'strength' => 0, 'error' => 0, 'text' => ''
+        'strength' => 0,
+        'error'    => 0,
+        'text'     => ''
       );
       $length  = strlen($password);
       if ($length < 8) {
@@ -149,6 +166,7 @@
           }
         }
       }
+
       return $returns;
     }
   }

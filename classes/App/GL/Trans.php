@@ -1,4 +1,8 @@
 <?php
+  use ADV\Core\DB\DB;
+  use ADV\App\Tax\Tax;
+  use ADV\App\User;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -32,8 +36,21 @@
      *
      * @return float
      */
-    public static function add($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_, $amount, $currency = null, $person_type_id = null, $person_id = null, $err_msg = "", $rate = 0)
-    {
+    public static function add(
+      $type,
+      $trans_id,
+      $date_,
+      $account,
+      $dimension,
+      $dimension2,
+      $memo_,
+      $amount,
+      $currency = null,
+      $person_type_id = null,
+      $person_id = null,
+      $err_msg = "",
+      $rate = 0
+    ) {
       $date = Dates::_dateToSql($date_);
       if ($currency != null) {
         if ($rate == 0) {
@@ -97,8 +114,7 @@
      * $date_ is display date (non-sql)
      * $amount is in HOME currency
      */
-    public static function add_std_cost($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_, $amount, $person_type_id = null, $person_id = null, $err_msg = "")
-    {
+    public static function add_std_cost($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_, $amount, $person_type_id = null, $person_id = null, $err_msg = "") {
       if ($amount != 0) {
         return static::add($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_, $amount, null, $person_type_id, $person_id, $err_msg);
       } else {
@@ -118,11 +134,23 @@
      * @return float|int
      * public static function for even out rounding problems
      */
-    public static function add_balance($type, $trans_id, $date_, $amount, $person_type_id = null, $person_id = null)
-    {
+    public static function add_balance($type, $trans_id, $date_, $amount, $person_type_id = null, $person_id = null) {
       $amount = Num::_round($amount, User::price_dec());
       if ($amount != 0) {
-        return static::add($type, $trans_id, $date_, DB_Company::get_pref('exchange_diff_act'), 0, 0, "", $amount, null, $person_type_id, $person_id, "The balanced GL transaction could not be inserted");
+        return static::add(
+          $type,
+          $trans_id,
+          $date_,
+          DB_Company::get_pref('exchange_diff_act'),
+          0,
+          0,
+          "",
+          $amount,
+          null,
+          $person_type_id,
+          $person_id,
+          "The balanced GL transaction could not be inserted"
+        );
       } else {
         return 0;
       }
@@ -142,8 +170,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get($from_date, $to_date, $trans_no = 0, $account = null, $dimension = 0, $dimension2 = 0, $filter_type = null, $amount_min = null, $amount_max = null)
-    {
+    public static function get($from_date, $to_date, $trans_no = 0, $account = null, $dimension = 0, $dimension2 = 0, $filter_type = null, $amount_min = null, $amount_max = null) {
       $from = Dates::_dateToSql($from_date);
       $to   = Dates::_dateToSql($to_date);
       $sql  = "SELECT gl_trans.*, " . "chart_master.account_name FROM gl_trans, " . "chart_master
@@ -183,8 +210,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_many($type, $trans_id)
-    {
+    public static function get_many($type, $trans_id) {
       $sql = "SELECT gl_trans.*, " . "chart_master.account_name FROM " . "gl_trans, chart_master
         WHERE chart_master.account_code=gl_trans.account
         AND gl_trans.type=" . DB::_escape($type) . " AND gl_trans.type_no=" . DB::_escape($trans_id);
@@ -199,8 +225,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_wo_cost($trans_id, $person_id = -1)
-    {
+    public static function get_wo_cost($trans_id, $person_id = -1) {
       $sql = "SELECT gl_trans.*, chart_master.account_name FROM " . "gl_trans, chart_master
         WHERE chart_master.account_code=gl_trans.account
         AND gl_trans.type=" . ST_WORKORDER . " AND gl_trans.type_no=" . DB::_escape($trans_id) . "
@@ -223,8 +248,7 @@
      *
      * @return mixed
      */
-    public static function get_balance_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0)
-    {
+    public static function get_balance_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
       $from = Dates::_dateToSql($from_date);
       $to   = Dates::_dateToSql($to_date);
       $sql
@@ -258,8 +282,7 @@
      *
      * @return mixed
      */
-    public static function get_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0)
-    {
+    public static function get_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
       $from = Dates::_dateToSql($from_date);
       $to   = Dates::_dateToSql($to_date);
       $sql
@@ -295,8 +318,7 @@
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get_balance($account, $dimension, $dimension2, $from, $to, $from_incl = true, $to_incl = true)
-    {
+    public static function get_balance($account, $dimension, $dimension2, $from, $to, $from_incl = true, $to_incl = true) {
       $sql
         = "SELECT SUM(IF(amount >= 0, amount, 0)) as debit,
         SUM(IF(amount < 0, -amount, 0)) as credit, SUM(amount) as balance
@@ -339,8 +361,7 @@
      *
      * @return mixed
      */
-    public static function get_budget_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0)
-    {
+    public static function get_budget_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
       $from = Dates::_dateToSql($from_date);
       $to   = Dates::_dateToSql($to_date);
       $sql
@@ -378,8 +399,7 @@
      *
      * @return mixed
      */
-    public static function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate, $date, $memo)
-    {
+    public static function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate, $date, $memo) {
       $tax_type = Tax::is_account($gl_code);
       if (!$tax_type) {
         return;
@@ -417,14 +437,14 @@
      * @param $tran_date
      * @param $memo
      */
-    public static function add_tax_details($trans_type, $trans_no, $tax_id, $rate, $included, $amount, $net_amount, $ex_rate, $tran_date, $memo)
-    {
+    public static function add_tax_details($trans_type, $trans_no, $tax_id, $rate, $included, $amount, $net_amount, $ex_rate, $tran_date, $memo) {
       $sql
         = "INSERT INTO trans_tax_details
         (trans_type, trans_no, tran_date, tax_type_id, rate, ex_rate,
             included_in_price, net_amount, amount, memo)
-        VALUES (" . DB::_escape($trans_type) . "," . DB::_escape($trans_no) . ",'" . Dates::_dateToSql($tran_date) . "'," . DB::_escape($tax_id) . "," . DB::_escape($rate) . "," . DB::_escape($ex_rate) . "," . ($included ?
-        1 : 0) . "," . DB::_escape($net_amount) . "," . DB::_escape($amount) . "," . DB::_escape($memo) . ")";
+        VALUES (" . DB::_escape($trans_type) . "," . DB::_escape($trans_no) . ",'" . Dates::_dateToSql($tran_date) . "'," . DB::_escape($tax_id) . "," . DB::_escape(
+        $rate
+      ) . "," . DB::_escape($ex_rate) . "," . ($included ? 1 : 0) . "," . DB::_escape($net_amount) . "," . DB::_escape($amount) . "," . DB::_escape($memo) . ")";
       DB::_query($sql, "Cannot save trans tax details");
     }
     /**
@@ -435,8 +455,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_tax_details($trans_type, $trans_no)
-    {
+    public static function get_tax_details($trans_type, $trans_no) {
       $sql = "SELECT trans_tax_details.*, " . "tax_types.name AS tax_type_name
         FROM trans_tax_details,tax_types
         WHERE trans_type = " . DB::_escape($trans_type) . "
@@ -452,8 +471,7 @@
      * @param $type
      * @param $type_no
      */
-    public static function void_tax_details($type, $type_no)
-    {
+    public static function void_tax_details($type, $type_no) {
       $sql
         = "UPDATE trans_tax_details SET amount=0, net_amount=0
         WHERE trans_no=" . DB::_escape($type_no) . " AND trans_type=" . DB::_escape($type);
@@ -467,8 +485,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_tax_summary($from, $to)
-    {
+    public static function get_tax_summary($from, $to) {
       $fromdate = Dates::_dateToSql($from);
       $todate   = Dates::_dateToSql($to);
       $sql
@@ -494,6 +511,7 @@
             AND taxrec.tran_date >= '$fromdate'
             AND taxrec.tran_date <= '$todate'
         GROUP BY ttype.id";
+
       //Event::error($sql);
       return DB::_query($sql, "Cannot retrieve tax summary");
     }
@@ -505,8 +523,7 @@
      *
      * @return bool
      */
-    public static function exists($type, $trans_id)
-    {
+    public static function exists($type, $trans_id) {
       $sql    = "SELECT type_no FROM gl_trans WHERE type=" . DB::_escape($type) . " AND type_no=" . DB::_escape($trans_id);
       $result = DB::_query($sql, "Cannot retreive a gl transaction");
 
@@ -519,8 +536,7 @@
      * @param      $trans_id
      * @param bool $nested
      */
-    public static function void($type, $trans_id, $nested = false)
-    {
+    public static function void($type, $trans_id, $nested = false) {
       if (!$nested) {
         DB::_begin();
       }
@@ -539,13 +555,20 @@
      *
      * @return mixed
      */
-    public static function get_value($account, $type, $trans_no)
-    {
+    public static function get_value($account, $type, $trans_no) {
       $sql    = "SELECT SUM(amount) FROM gl_trans WHERE account=" . DB::_escape($account) . " AND type=" . DB::_escape($type) . " AND type_no=" . DB::_escape($trans_no);
       $result = DB::_query($sql, "query for gl trans value");
       $row    = DB::_fetchRow($result);
 
       return $row[0];
+    }
+    /**
+     * @return mixed
+     */
+    public static function getCurrentOpenFiscalPeriod() {
+      $row = DB::_select('MIN( BEGIN ) as start', ' MAX( END ) as end')->from('fiscal_year')->where('closed<>', 1)->fetch()->one();
+
+      return $row;
     }
   }
 

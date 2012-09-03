@@ -1,5 +1,6 @@
 <?php
   use ADV\App\Debtor\Debtor;
+  use ADV\App\Forms;
   use ADV\App\UI\UI;
   use ADV\Core\Row;
   use ADV\Core\Table;
@@ -30,12 +31,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
     protected $debtor_id;
     protected $stock_id;
     protected $searchArray = [];
-    const SEARCH_ORDER = 'o';
-    const SEARCH_QUOTE = 'q';
-    const MODE_OUTSTANDING = 'OutstandingOnly';
+    const SEARCH_ORDER      = 'o';
+    const SEARCH_QUOTE      = 'q';
+    const MODE_OUTSTANDING  = 'OutstandingOnly';
     const MODE_INVTEMPLATES = 'InvoiceTemplates';
     const MODE_DELTEMPLATES = 'DeliveryTemplates';
-    const MODE_QUOTES = "Quotations";
+    const MODE_QUOTES       = "Quotations";
     protected function before() {
       $this->setSecurity();
       // then check session value
@@ -128,13 +129,26 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       Table::start('tablestyle_noborder');
       Row::start();
       Debtor::newselect(null, ['label'=> false, 'row'=> false]);
-      Forms::refCellsSearch(_("#:"), 'OrderNumber', '', null, '', true);
+      Forms::refCellsSearch(null, 'OrderNumber', '', null, '', true);
       if ($_POST['order_view_mode'] != self::MODE_DELTEMPLATES && $_POST['order_view_mode'] != self::MODE_INVTEMPLATES) {
         Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
         Forms::dateCells(_("To:"), 'OrdersToDate', '', null, 1);
       }
       Inv_Location::cells(_(""), 'StockLocation', null, true);
-      Item::cells(_("Item:"), 'SelectStockFromList', null, true);
+      Item::select(
+        'SelectStockFromList',
+        null,
+        true,
+        false,
+        array(
+             'submitonselect' => false,
+             'cells'          => true,
+             'size'           => 10,
+             'purchase'       => false,
+             'show_inactive'  => true,
+             'placeholder'    => 'Item',
+        )
+      );
       if ($this->trans_type == ST_SALESQUOTE) {
         Forms::checkCells(_("Show All:"), 'show_all');
       }
@@ -155,7 +169,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
         = "SELECT
  		sorder.trans_type,
  		sorder.order_no,
- 		sorder.reference," . ($_POST['order_view_mode'] == self::MODE_INVTEMPLATES || $_POST['order_view_mode'] == self::MODE_DELTEMPLATES ? "sorder.comments, " : "sorder.customer_ref, ") . "
+ 		sorder.reference," . ($_POST['order_view_mode'] == self::MODE_INVTEMPLATES || $_POST['order_view_mode'] == self::MODE_DELTEMPLATES ? "sorder.comments, " :
+        "sorder.customer_ref, ") . "
  		sorder.ord_date,
  		sorder.delivery_date,
  		debtor.name,
@@ -184,7 +199,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  		AND sorder.branch_id = branch.branch_id
  		AND debtor.debtor_id = branch.debtor_id";
 
-      if ($this->debtor_id >0) {
+      if ($this->debtor_id > 0) {
         $sql .= " AND sorder.debtor_id = " . DB::_quote($this->debtor_id);
       }
       if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
@@ -222,7 +237,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
         if ($this->trans_type == ST_SALESQUOTE && !$this->Input->hasPost('show_all')) {
           $sql .= " AND sorder.delivery_date >= '" . Dates::_today(true) . "'";
         }
-        if ($this->debtor_id> 0) {
+        if ($this->debtor_id > 0) {
           $sql .= " AND sorder.debtor_id=" . DB::_quote($this->debtor_id);
         }
         if ($this->stock_id) {
@@ -289,7 +304,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       Arr::append($cols, [['insert' => true, 'fun' => [$this, 'formatDropdown']]]);
       $table = DB_Pager::new_db_pager('orders_tbl', $sql, $cols, null, null, 0, 4);
       $table->setMarker([$this, 'formatMarker'], _("Marked items are overdue."));
-      $table->width = "80%";
+      $table->width = "90%";
       $table->display($table);
     }
     /**

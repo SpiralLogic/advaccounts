@@ -26,7 +26,15 @@
       $current_stock = $item->getStockLevels($_POST['StockLocation']);
       $line->quantity -= $current_stock['qty'];
     }
-    $trans_no = Inv_Adjustment::add($_SESSION['adj_items']->line_items, $_POST['StockLocation'], $_POST['AdjDate'], $_POST['type'], $_POST['Increase'], $_POST['ref'], $_POST['memo_']);
+    $trans_no = Inv_Adjustment::add(
+      $_SESSION['adj_items']->line_items,
+      $_POST['StockLocation'],
+      $_POST['AdjDate'],
+      $_POST['type'],
+      $_POST['Increase'],
+      $_POST['ref'],
+      $_POST['memo_']
+    );
     Dates::_newDocDate($_POST['AdjDate']);
     $_SESSION['adj_items']->clear_items();
     unset($_SESSION['adj_items']);
@@ -43,7 +51,7 @@
     handle_update_item();
   }
   if (isset($_POST['cancelItem'])) {
-    Item_Line::start_focus('_stock_id_edit');
+    Item_Line::start_focus('stock_id');
   }
   if (isset($_GET['NewAdjustment']) || !isset($_SESSION['adj_items'])) {
     handle_new_order();
@@ -61,8 +69,7 @@
   /**
    * @return bool
    */
-  function check_item_data()
-  {
+  function check_item_data() {
     if (!Validation::post_num('qty', 0)) {
       Event::error(_("The quantity entered is negative or invalid."));
       JS::_setFocus('qty');
@@ -79,35 +86,31 @@
     return true;
   }
 
-  function handle_update_item()
-  {
+  function handle_update_item() {
     if ($_POST['updateItem'] != "" && check_item_data()) {
       $id = $_POST['LineNo'];
       $_SESSION['adj_items']->update_order_item($id, Validation::input_num('qty'), Validation::input_num('std_cost'));
     }
-    Item_Line::start_focus('_stock_id_edit');
+    Item_Line::start_focus('stock_id');
   }
 
   /**
    * @param $id
    */
-  function handle_delete_item($id)
-  {
+  function handle_delete_item($id) {
     $_SESSION['adj_items']->remove_from_order($id);
-    Item_Line::start_focus('_stock_id_edit');
+    Item_Line::start_focus('stock_id');
   }
 
-  function handle_new_item()
-  {
+  function handle_new_item() {
     if (!check_item_data()) {
       return;
     }
     Item_Order::add_line($_SESSION['adj_items'], $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('std_cost'));
-    Item_Line::start_focus('_stock_id_edit');
+    Item_Line::start_focus('stock_id');
   }
 
-  function handle_new_order()
-  {
+  function handle_new_order() {
     if (isset($_SESSION['adj_items'])) {
       $_SESSION['adj_items']->clear_items();
       unset ($_SESSION['adj_items']);
@@ -123,8 +126,7 @@
   /**
    * @return bool
    */
-  function can_process()
-  {
+  function can_process() {
     $adj = &$_SESSION['adj_items'];
     if (count($adj->line_items) == 0) {
       Event::error(_("You must enter at least one non empty item line."));

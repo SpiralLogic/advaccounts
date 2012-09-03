@@ -7,11 +7,75 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  //	Returns next transaction number.
-  //	Used only for transactions stored in tables without autoincremented key.
+  namespace ADV\App;
+
+    //	Returns next transaction number.
+    //	Used only for transactions stored in tables without autoincremented key.
   //
+  use ADV\Core\Event;
+  use ADV\Core\DB\DB;
+
+  /**
+
+   */
   class SysTypes
   {
+    public static $names
+      = array(
+        ST_SALESQUOTE   => "Sales Quotation",
+        ST_SALESORDER   => "Sales Order",
+        ST_PROFORMA     => "Proforma Invoice",
+        ST_CUSTDELIVERY => "Sales Delivery",
+        ST_SALESINVOICE => "Sales Invoice",
+        ST_CUSTCREDIT   => "Sales Credit Note",
+        ST_CUSTPAYMENT  => "Debtor Payment",
+        ST_CUSTREFUND   => "Debtor Refund",
+        ST_PURCHORDER   => "Purchase Order",
+        ST_SUPPRECEIVE  => "Purchase Delivery",
+        ST_SUPPINVOICE  => "Purchase Invoice",
+        ST_SUPPCREDIT   => "Purchase Credit Note",
+        ST_SUPPAYMENT   => "Creditor Payment",
+        ST_JOURNAL      => "Journal Entry",
+        ST_BANKPAYMENT  => "Bank Payment",
+        ST_BANKDEPOSIT  => "Bank Deposit",
+        ST_BANKTRANSFER => "Funds Transfer",
+        ST_GROUPDEPOSIT => "Group Deposit",
+        ST_MANUISSUE    => "Work Order Issue",
+        ST_WORKORDER    => "Work Order",
+        ST_MANURECEIVE  => "Work Order Production",
+        ST_INVADJUST    => "Inventory Adjustment",
+        ST_LOCTRANSFER  => "Location Transfer",
+        ST_COSTUPDATE   => "Cost Update",
+        ST_DIMENSION    => "Dimension"
+      );
+    public static $short_names
+      = array(
+        ST_SALESQUOTE   => "Quote",
+        ST_SALESORDER   => "Order",
+        ST_PROFORMA     => "Proforma",
+        ST_CUSTDELIVERY => "Despatch",
+        ST_SALESINVOICE => "Cust Invoice",
+        ST_CUSTCREDIT   => "Credit Note",
+        ST_CUSTPAYMENT  => "Payment",
+        ST_CUSTREFUND   => "Refund",
+        ST_PURCHORDER   => "Order",
+        ST_SUPPRECEIVE  => "Delivery",
+        ST_SUPPINVOICE  => "Invoice",
+        ST_SUPPCREDIT   => "Credit Note",
+        ST_SUPPAYMENT   => "Payment",
+        ST_JOURNAL      => "Journal Entry",
+        ST_BANKPAYMENT  => "Payment",
+        ST_BANKDEPOSIT  => "Deposit",
+        ST_BANKTRANSFER => "Funds Transfer",
+        ST_GROUPDEPOSIT => "Group Deposit",
+        ST_MANUISSUE    => "Work Order Issue",
+        ST_WORKORDER    => "Work Order",
+        ST_MANURECEIVE  => "Work Order Production",
+        ST_INVADJUST    => "Adjustment",
+        ST_LOCTRANSFER  => "Location Transfer",
+        ST_COSTUPDATE   => "Cost Update",
+        ST_DIMENSION    => "Dimension"
+      );
     /**
      * @static
      *
@@ -19,12 +83,12 @@
      *
      * @return int
      */
-    public static function get_next_trans_no($trans_type)
-    {
+    public static function get_next_trans_no($trans_type) {
       $st = SysTypes::get_db_info($trans_type);
       if (!($st && $st[0] && $st[2])) {
         // this is in fact internal error condition.
         Event::error('Internal error: invalid type passed to SysTypes::get_next_trans_no()');
+
         return 0;
       }
       $sql = "SELECT MAX(`$st[2]`) FROM $st[0]";
@@ -41,6 +105,7 @@
         $result = DB::_query($sql);
         $unique = (DB::_numRows($result) > 0) ? false : true;
       }
+
       return $ref;
     }
     /**
@@ -50,8 +115,7 @@
      *
      * @return array|null
      */
-    public static function get_db_info($type)
-    {
+    public static function get_db_info($type) {
       switch ($type) {
         case   ST_JOURNAL    :
           return array("gl_trans", "type", "type_no", null, "tran_date");
@@ -108,12 +172,12 @@
     }
     /**
      * @static
-     * @return null|PDOStatement
+     * @return null|\PDOStatement
      */
-    public static function get()
-    {
+    public static function get() {
       $sql    = "SELECT type_id,type_no,CONCAT(prefix,next_reference)as next_reference FROM sys_types";
       $result = DB::_query($sql, "could not query systypes table");
+
       return $result;
     }
     /**
@@ -123,8 +187,7 @@
      *
      * @return int
      */
-    public static function get_class_type_convert($ctype)
-    {
+    public static function get_class_type_convert($ctype) {
       return ((($ctype >= CL_LIABILITIES && $ctype <= CL_INCOME) || $ctype == CL_NONE) ? -1 : 1);
     }
     /**
@@ -137,15 +200,20 @@
      *
      * @return string
      */
-    public static function select($name, $value = null, $spec_opt = false, $submit_on_change = false)
-    {
+    public static function select($name, $value = null, $spec_opt = false, $submit_on_change = false) {
       global $systypes_array;
-      return Forms::arraySelect($name, $value, $systypes_array, array(
-                                                                     'spec_option'   => $spec_opt,
-                                                                     'spec_id'       => ALL_NUMERIC,
-                                                                     'select_submit' => $submit_on_change,
-                                                                     'async'         => false,
-                                                                ));
+
+      return Forms::arraySelect(
+        $name,
+        $value,
+        $systypes_array,
+        array(
+             'spec_option'   => $spec_opt,
+             'spec_id'       => ALL_NUMERIC,
+             'select_submit' => $submit_on_change,
+             'async'         => false,
+        )
+      );
     }
     /**
      * @static
@@ -155,8 +223,7 @@
      * @param null $value
      * @param bool $submit_on_change
      */
-    public static function cells($label, $name, $value = null, $submit_on_change = false)
-    {
+    public static function cells($label, $name, $value = null, $submit_on_change = false) {
       if ($label != null) {
         echo "<td>$label</td>\n";
       }
@@ -172,8 +239,7 @@
      * @param null $value
      * @param bool $submit_on_change
      */
-    public static function row($label, $name, $value = null, $submit_on_change = false)
-    {
+    public static function row($label, $name, $value = null, $submit_on_change = false) {
       echo "<tr><td class='label'>$label</td>";
       SysTypes::cells(null, $name, $value, $submit_on_change);
       echo "</tr>\n";

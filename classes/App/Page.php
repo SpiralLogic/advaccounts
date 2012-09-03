@@ -1,5 +1,8 @@
 <?php
   namespace ADV\App;
+
+  use ADV\App\ADVAccounting;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -8,20 +11,17 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  use Display;
   use ADV\Core\Errors;
   use ADV\Core\Files;
-  use ADV\App\Dates;
-  use Messages;
-  use Sidemenu;
   use ADV\Core\Input\Input;
   use ADV\Core\View;
   use ADV\Core\JS;
-  use ADVAccounting;
   use ADV\Core\Ajax;
   use ADV\Core\Config;
-  use User;
 
+  /**
+
+   */
   class Page
   {
     /**
@@ -69,7 +69,7 @@
      */
     protected $title = '';
     /** @var Page */
-    protected static $i = null;
+    public static $i = null;
     /**
      * @var \Security
      */
@@ -78,6 +78,7 @@
     protected $Dates = null;
     protected $security;
     public $hide_back_link;
+    public $renderedjs;
     /**
      * @param $hide_back_link
      */
@@ -97,7 +98,7 @@
         Display::meta_forward($application->direct);
       }
       foreach ($application->modules as $module) {
-        $app            = new View('application');
+        $app = new View('application');
 
         $app['colspan'] = (count($module->rightAppFunctions) > 0) ? 2 : 1;
         $app['name']    = $module->name;
@@ -123,7 +124,7 @@
      * @param      $title
      * @param bool $index
      */
-    public function __construct(User $user, Config $config, Ajax $ajax, JS $js, Dates $dates) {
+    public function __construct(User $user, Config $config, \ADV\Core\Ajax $ajax, \ADV\Core\JS $js, \ADV\App\Dates $dates) {
       $this->User   = $user ? : User::i();
       $this->Config = $config ? : Config::i();
       $this->Ajax   = $ajax ? : Ajax::i();
@@ -164,8 +165,7 @@
         exit;
       }
       if ($this->title && !$this->isIndex && !$this->frame && !IS_JSON_REQUEST) {
-        echo "<div class='titletext'>$this->title" . ($this->User->_hints() ?
-          "<span id='hints' class='floatright' style='display:none'></span>" : '') . "</div>";
+        echo "<div class='titletext'>$this->title" . ($this->User->_hints() ? "<span id='hints' class='floatright' style='display:none'></span>" : '') . "</div>";
       }
       if (!IS_JSON_REQUEST) {
         Display::div_start('_page_body');
@@ -232,12 +232,21 @@
         $help_page_url = $this->App->applications[$this->App->selected->id]->help_context;
         $help_page_url = Display::access_string($help_page_url, true);
       }
-      return $this->Config->get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
-                                                                                                 ' ' => '',
-                                                                                                 '/' => '',
-                                                                                                 '&' => 'And'
-                                                                                            ))) . '&ctxhelp=1&lang=' . $country;
+
+      return $this->Config->get('help_baseurl') . urlencode(
+        strtr(
+          ucwords($help_page_url),
+          array(
+               ' ' => '',
+               '/' => '',
+               '&' => 'And'
+          )
+        )
+      ) . '&ctxhelp=1&lang=' . $country;
     }
+    /**
+     * @return \ADV\Core\View
+     */
     protected function menu_footer() {
       $footer             = new View('footer');
       $footer['backlink'] = false;
@@ -250,6 +259,7 @@
       $footer['load_time'] = Dates::_getReadableTime(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
       $footer['user']      = $this->User->username;
       $footer['footer']    = $this->menu && !AJAX_REFERRER;
+
       return $footer;
     }
     /**
@@ -261,15 +271,21 @@
       $footer->set('beforescripts', "_focus = '" . Input::_post('_focus') . "';_validate = " . $this->Ajax->php2js($validate) . ";");
       $this->User->_add_js_data();
       $footer->set('sidemenu', ($this->header && $this->menu ? (new Sidemenu($this->User))->render() : ''));
-      $footer->set('js', $this->JS->render(true));
+      $this->renderedjs = $this->renderedjs ? : $this->JS->render(true);
+      $footer->set('js', $this->renderedjs);
       $footer->set('messages', (!AJAX_REFERRER ? Messages::show() : ''));
+      $footer->set('help_modal', (new View('help_modal'))->render());
       $footer->set('page_body', Display::div_end(true));
       $footer->render();
     }
+    /**
+     * @return array
+     */
     protected function renderCSS() {
       $this->css += $this->Config->get('assets.css');
       $path = THEME_PATH . $this->theme . DS;
       $css  = implode(',', $this->css);
+
       return [$path . $css];
     }
     /**
@@ -294,12 +310,13 @@
      */
     public static function start($title, $security = SA_OPEN, $no_menu = false, $isIndex = false) {
       if (static::$i === null) {
-        static::$i = new static(User::i(), Config::i(), Ajax::i(), JS::i(), Dates::i());
+        static::$i = new static(User::i(), Config::i(), \ADV\Core\Ajax::i(), \ADV\Core\JS::i(), \ADV\App\Dates::i());
       }
       static::$i->title    = $title;
       static::$i->isIndex  = $isIndex;
       static::$i->security = $security;
       static::$i->init(!$no_menu);
+
       return static::$i;
     }
     /**
@@ -319,6 +336,7 @@
             $selected_id = $default;
           }
           unset($_POST['_focus']);
+
           return array($m, $selected_id);
         }
       }
@@ -328,10 +346,12 @@
             unset($_POST['_focus']); // focus on first form entry
             $selected_id = quoted_printable_decode(substr($p, strlen($m)));
             Ajax::_activate('_page_body');
+
             return array($m, $selected_id);
           }
         }
       }
+
       return array('', $selected_id);
     }
     public static function footer_exit() {

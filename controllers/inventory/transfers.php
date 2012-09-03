@@ -61,7 +61,15 @@
     }
   }
   if (isset($_POST['Process'])) {
-    $trans_no = Inv_Transfer::add($_SESSION['transfer_items']->line_items, $_POST['FromStockLocation'], $_POST['ToStockLocation'], $_POST['AdjDate'], $_POST['type'], $_POST['ref'], $_POST['memo_']);
+    $trans_no = Inv_Transfer::add(
+      $_SESSION['transfer_items']->line_items,
+      $_POST['FromStockLocation'],
+      $_POST['ToStockLocation'],
+      $_POST['AdjDate'],
+      $_POST['type'],
+      $_POST['ref'],
+      $_POST['memo_']
+    );
     Dates::_newDocDate($_POST['AdjDate']);
     $_SESSION['transfer_items']->clear_items();
     unset($_SESSION['transfer_items']);
@@ -78,7 +86,7 @@
     handle_update_item();
   }
   if (isset($_POST['cancelItem'])) {
-    Item_Line::start_focus('_stock_id_edit');
+    Item_Line::start_focus('stock_id');
   }
   if (isset($_GET['NewTransfer']) || !isset($_SESSION['transfer_items'])) {
     handle_new_order();
@@ -100,8 +108,7 @@
   /**
    * @return bool
    */
-  function check_item_data()
-  {
+  function check_item_data() {
     if (!Validation::post_num('qty', 0)) {
       Event::error(_("The quantity entered must be a positive number."));
       JS::_setFocus('qty');
@@ -112,8 +119,7 @@
     return true;
   }
 
-  function handle_update_item()
-  {
+  function handle_update_item() {
     if ($_POST['updateItem'] != "" && check_item_data()) {
       $id = $_POST['LineNo'];
       if (!isset($_POST['std_cost'])) {
@@ -121,20 +127,18 @@
       }
       $_SESSION['transfer_items']->update_order_item($id, Validation::input_num('qty'), $_POST['std_cost']);
     }
-    Item_Line::start_focus('_stock_id_edit');
+    Item_Line::start_focus('stock_id');
   }
 
   /**
    * @param $id
    */
-  function handle_delete_item($id)
-  {
+  function handle_delete_item($id) {
     $_SESSION['transfer_items']->remove_from_order($id);
-    Item_Line::start_focus('_stock_id_edit');
+    Item_Line::start_focus('stock_id');
   }
 
-  function handle_new_item()
-  {
+  function handle_new_item() {
     if (!check_item_data()) {
       return;
     }
@@ -142,11 +146,10 @@
       $_POST['std_cost'] = 0;
     }
     Item_Order::add_line($_SESSION['transfer_items'], $_POST['stock_id'], Validation::input_num('qty'), $_POST['std_cost']);
-    Item_Line::start_focus('_stock_id_edit');
+    Item_Line::start_focus('stock_id');
   }
 
-  function handle_new_order()
-  {
+  function handle_new_order() {
     if (isset($_SESSION['transfer_items'])) {
       $_SESSION['transfer_items']->clear_items();
       unset ($_SESSION['transfer_items']);

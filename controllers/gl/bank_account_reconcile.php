@@ -1,5 +1,8 @@
 <?php
   use ADV\Core\Input\Input;
+  use ADV\App\Validation;
+  use ADV\App\Display;
+  use ADV\App\Forms;
   use ADV\Core\JS;
   use ADV\App\UI\UI;
   use ADV\App\Bank\Bank;
@@ -52,8 +55,7 @@
     /**
 
      */
-    protected function before()
-    {
+    protected function before() {
       $this->Dates          = Dates::i();
       $this->Num            = Num::i();
       $this->bank_account   = &$this->Input->postGlobal('bank_account', INPUT::NUMERIC, Bank_Account::get_default()['id']);
@@ -98,8 +100,7 @@
     /**
 
      */
-    protected function index()
-    {
+    protected function index() {
       $this->runAction();
       Page::start(_($help_context = "Reconcile Bank Account"), SA_RECONCILE);
       Forms::start();
@@ -124,8 +125,7 @@
     /**
 
      */
-    protected function addDialogs()
-    {
+    protected function addDialogs() {
       $date_dialog  = new View('ui/date_dialog');
       $date_changer = new \ADV\Core\Dialog('Change Date', 'dateChanger', $date_dialog->render(true), ['resizeable'=> false, 'modal'=> true]);
       $date_changer->addButton('Save', 'Adv.Reconcile.changeDate(this)');
@@ -140,17 +140,16 @@
     /**
      * @return string
      */
-    protected function render()
-    {
+    protected function render() {
       ob_start();
       $this->accountHasStatements ? $this->statementLayout() : $this->simpleLayout();
+
       return '<div id="newgrid">' . ob_get_clean() . '</div>';
     }
     /**
      * @return bool
      */
-    protected function simpleLayout()
-    {
+    protected function simpleLayout() {
       $sql = GL_Account::get_sql_for_reconcile($this->bank_account, $this->reconcile_date);
       $act = Bank_Account::get($this->bank_account);
       Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
@@ -170,13 +169,13 @@
       $table->width       = "80";
       $table->rowFunction = [$this, 'formatRow'];
       $table->display($table);
+
       return true;
     }
     /**
      * @return bool
      */
-    protected function statementLayout()
-    {
+    protected function statementLayout() {
       $rec                         = Bank_Trans::getPeriod($this->bank_account, $this->begin_date, $this->end_date);
       $statement_trans             = Bank_Account::getStatement($this->bank_account, $this->begin_date, $this->end_date);
       $known_trans                 = [];
@@ -241,13 +240,13 @@
       $table->class       = 'recgrid';
       $table->rowFunction = [$this, 'formatRow'];
       $table->display();
+
       return true;
     }
     /**
 
      */
-    protected function displaySummary()
-    {
+    protected function displaySummary() {
       $this->getTotal();
       Display::div_start('summary');
       Table::start();
@@ -279,8 +278,7 @@
     /**
      * @return int
      */
-    protected function getTotal()
-    {
+    protected function getTotal() {
       if ($this->accountHasStatements) {
         list($beg_balance, $end_balance) = Bank_Account::getBalances($this->bank_account, $this->begin_date, $this->end_date);
         $_POST["beg_balance"] = $this->Num->priceFormat($beg_balance);
@@ -303,13 +301,13 @@
           }
         }
       }
+
       return;
     }
     /**
 
      */
-    protected function changeDate()
-    {
+    protected function changeDate() {
       $bank_trans_id = $this->Input->post('trans_id', Input::NUMERIC, -1);
       $newdate       = $this->Input->post('date');
       Bank_Trans::changeDate($bank_trans_id, $newdate, $status);
@@ -321,8 +319,7 @@
      * @internal param $row
      * @return string
      */
-    protected function changeBank()
-    {
+    protected function changeBank() {
       $newbank  = $this->Input->post('newbank', Input::NUMERIC);
       $trans_no = $this->Input->post('trans_no', Input::NUMERIC);
       $type     = $this->Input->post('type', Input::NUMERIC);
@@ -335,8 +332,7 @@
     /**
 
      */
-    protected function unGroup()
-    {
+    protected function unGroup() {
       $groupid = $this->Input->post('groupid', Input::NUMERIC);
       if ($groupid > 0) {
         Bank_Undeposited::ungroup($groupid);
@@ -348,8 +344,7 @@
     /**
      * @return mixed
      */
-    protected function deposit()
-    {
+    protected function deposit() {
       $trans1 = $this->Input->post('trans1', INPUT::NUMERIC);
       $trans2 = $this->Input->post('trans2', INPUT::NUMERIC);
       Bank_Undeposited::addToGroup($trans1, $this->bank_account, $trans2);
@@ -360,8 +355,7 @@
      * @internal param $prefix
      * @return bool|mixed
      */
-    protected function runValidation()
-    {
+    protected function runValidation() {
       Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
     }
     /**
@@ -369,8 +363,7 @@
      *
      * @return string
      */
-    public function formatCheckbox($row)
-    {
+    public function formatCheckbox($row) {
       if (!$row['amount']) {
         return '';
       }
@@ -378,6 +371,7 @@
       $state_id = $row['state_id'];
       $hidden   = 'last[' . $row['id'] . ']';
       $value    = $row['reconciled'] != '';
+
       return Forms::checkbox(null, $name, $value, false, _('Reconcile this transaction')) . Forms::hidden($hidden, $value, false) . Forms::hidden(
         'state_' . $row['id'],
         $state_id,
@@ -389,8 +383,7 @@
      *
      * @return string
      */
-    public function formatRow($row)
-    {
+    public function formatRow($row) {
       $tocheck = 'done';
       /* $comment = Bank_Trans::getInfo($row['trans_no'], $row['type']);
       foreach ($comment as $trans) {
@@ -403,6 +396,7 @@
         $class  = "class='overduebg deny mark'";
         $amount = e($row['state_amount']);
         $date   = e($this->Dates->sqlToDate($row['state_date']));
+
         return "<tr  $class  data-date='$date' data-amount='$amount'> ";
       }
       $name     = $row['id'];
@@ -419,6 +413,7 @@
       ) {
         $class = "class='cangroup overduebg'";
       }
+
       // save also in hidden field for testing during 'Reconcile'
       return "<tr  $class data-id='$name' data-date='$date' data-type='$type' data-transno='$trans_no' data-amount='$amount'> ";
     }
@@ -429,13 +424,13 @@
      * @internal param $type
      * @return mixed
      */
-    public function formatType($row)
-    {
+    public function formatType($row) {
       $type = $row['type'];
       global $systypes_array;
       if (!$type) {
         return '';
       }
+
       return $systypes_array[$type];
     }
     /**
@@ -444,12 +439,12 @@
      * @internal param $trans
      * @return null|string
      */
-    public function formatTrans($row)
-    {
+    public function formatTrans($row) {
       $content = '';
       if ($row['type'] != ST_GROUPDEPOSIT) {
         $content = GL_UI::viewTrans($row["type"], $row["trans_no"]);
       }
+
       return $content;
     }
     /**
@@ -457,8 +452,7 @@
      *
      * @return string
      */
-    public function formatDropdown($row)
-    {
+    public function formatDropdown($row) {
       if ($row['reconciled']) {
         return '';
       }
@@ -466,6 +460,7 @@
       if (!$row['id']) {
         $title = 'Create';
       }
+      if ($row['state_amount']) {
         if ($row['state_amount'] > 0) {
           $data = [];
           if (stripos($row['memo'], 'AMEX')) {
@@ -480,22 +475,24 @@
           $items[] = ['class'=> 'createBP', 'label'=> 'Bank Payment', 'href'=> '/gl/gl_bank?NewPayment=Yes'];
         }
         $items[] = ['class'=> 'createFT', 'label'=> 'Funds Transfer', 'href'=> '/gl/bank_transfer'];
-        $items[] = ['divider'=>true];
-
-        $items[] = ['class'=> 'changeDate', 'label'=> 'Change Date'];
-        switch ($row['type']) {
-          case ST_GROUPDEPOSIT:
-            $items[] = ['class'=> 'unGroup', 'label'=> 'Ungroup'];
-            break;
-          case ST_BANKDEPOSIT:
-          case ST_CUSTPAYMENT:
-          default:
-            $items[] = ['class'=> 'changeBank', 'label'=> 'Move Bank'];
-            $items[] = ['class'=> 'voidTrans', 'label'=> 'Void Trans', 'data'=> ['type'=> $row['type'], 'trans_no'=> $row['trans_no']]];
-        $title = ($row['type'] == ST_GROUPDEPOSIT) ? 'Group' : substr($row['ref'], 0, 7);
+        $items[] = ['divider'=> true];
+      }
+      $items[] = ['class'=> 'changeDate', 'label'=> 'Change Date'];
+      switch ($row['type']) {
+        case ST_GROUPDEPOSIT:
+          $items[] = ['class'=> 'unGroup', 'label'=> 'Ungroup'];
+          $title   = 'Group';
+          break;
+        case ST_BANKDEPOSIT:
+        case ST_CUSTPAYMENT:
+        default:
+          $items[] = ['class'=> 'changeBank', 'label'=> 'Move Bank'];
+          $items[] = ['class'=> 'voidTrans', 'label'=> 'Void Trans', 'data'=> ['type'=> $row['type'], 'trans_no'=> $row['trans_no']]];
+          $title   = substr($row['ref'], 0, 7);
       }
       $menus[] = ['title'=> $title, 'auto'=> 'auto', 'items'=> $items];
       $dropdown->set('menus', $menus);
+
       return $dropdown->render(true);
     }
     /**
@@ -503,11 +500,11 @@
      *
      * @return string
      */
-    public function formatGL($row)
-    {
+    public function formatGL($row) {
       if (!$row['amount']) {
         return '';
       }
+
       return ($row['type'] != ST_GROUPDEPOSIT) ? GL_UI::view($row["type"], $row["trans_no"]) : '';
     }
     /**
@@ -515,12 +512,12 @@
      *
      * @return int|string
      */
-    public function formatDebit($row)
-    {
+    public function formatDebit($row) {
       $value = $row["amount"];
       if ($value > 0) {
         return '<span class="bold">' . $this->Num->priceFormat($value) . '</span>';
       }
+
       return '';
     }
     /**
@@ -528,12 +525,12 @@
      *
      * @return int|string
      */
-    public function formatCredit($row)
-    {
+    public function formatCredit($row) {
       $value = -$row["amount"];
       if ($value <= 0) {
         return '';
       }
+
       return '<span class="bold">' . $this->Num->priceFormat($value) . '</span>';
     }
     /**
@@ -541,8 +538,7 @@
      *
      * @return string
      */
-    public function formatInfo($row)
-    {
+    public function formatInfo($row) {
       $content = '';
       if ($row['type'] == ST_BANKTRANSFER) {
         $content = DB_Comments::get_string(ST_BANKTRANSFER, $row['trans_no']);
@@ -558,6 +554,7 @@
       if (!$row['reconciled'] && ($row['trans_no'] || $row['type'] == ST_GROUPDEPOSIT)) {
         return '<div class="drag row">' . $content . '</div>';
       }
+
       return '<div class="deny row">' . $content . '</div>';
     }
     /**
@@ -566,22 +563,22 @@
      *
      * @return int
      */
-    public function sortByOrder($a, $b)
-    {
+    public function sortByOrder($a, $b) {
       $date1 = $a['state_date'] ? : $a['trans_date'];
       $date2 = $b['state_date'] ? : $b['trans_date'];
       if ($date1 == $date2) {
         $amount1 = $a['state_amount'] ? : $a['amount'];
         $amount2 = $b['state_amount'] ? : $b['amount'];
+
         return $amount1 - $amount2;
       }
+
       return strcmp($date1, $date2);
     }
     /**
 
      */
-    public function updateData()
-    {
+    public function updateData() {
       DB_Pager::kill('bank_rec');
       unset($_POST["beg_balance"], $_POST["end_balance"]);
       $this->Ajax->activate('_page_body');
@@ -591,9 +588,9 @@
      *
      * @return bool
      */
-    public function checkDate($date)
-    {
+    public function checkDate($date) {
       $date = $this->Dates->sqlToDate($date);
+
       return $this->Dates->isDate($date);
     }
     /**
@@ -601,12 +598,12 @@
      *
      * @return bool
      */
-    public function updateCheckbox($reconcile_id)
-    {
+    public function updateCheckbox($reconcile_id) {
       if (!$this->Dates->isDate($this->reconcile_date) && $this->Input->hasPost("rec_" . $reconcile_id)) // temporary fix
       {
         Event::error(_("Invalid reconcile date format"));
         $this->JS->setFocus('reconcile_date');
+
         return false;
       }
       if ($this->bank_date == '') // new reconciliation
@@ -623,6 +620,7 @@
         $this->Input->post('state_' . $reconcile_id, Input::NUMERIC, -1)
       );
       $this->Ajax->activate('_page_body');
+
       return true;
     }
   }

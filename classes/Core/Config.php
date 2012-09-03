@@ -9,10 +9,12 @@
    **/
   namespace ADV\Core;
 
+  use ADV\Core\Cache\Cache;
+
   /**
-   * @method _get($var, $default = false)
-   * @method _removeAll()
-   * @method Config i()
+   * @method static _get($var, $default = false)
+   * @method static _removeAll()
+   * @method static Config i()
    */
   class Config
   {
@@ -114,6 +116,9 @@
     public function shutdown() {
       return $this->Cache->set('config', $this->_vars);
     }
+    /**
+     * @param Cache\Cache $cache
+     */
     public function __construct(Cache $cache = null) {
       $this->Cache = $cache ? : Cache::i();
       if (isset($_GET['reload_config'])) {

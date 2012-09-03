@@ -8,6 +8,14 @@
    * @link      http://www.advancedgroup.com.au
    **/
   use ADV\App\Controller\Base;
+  use ADV\App\Ref;
+  use ADV\App\Validation;
+  use ADV\App\Reporting;
+  use ADV\App\Display;
+  use ADV\App\Forms;
+  use ADV\App\SysTypes;
+  use ADV\App\Orders;
+  use ADV\App\Form\Form;
   use ADV\Core\JS;
   use ADV\Core\Table;
   use ADV\App\Item\Item;
@@ -55,32 +63,32 @@
     protected function before() {
       $this->order = Orders::session_get() ? : null;
       $this->JS->openWindow(900, 500);
-      if ($this->Input->get('debtor_id', Input::NUMERIC)) {
-        $this->action       = Orders::CANCEL_CHANGES;
-        $_POST['debtor_id'] = $_GET['debtor_id'];
-        $this->Ajax->activate('debtor_id');
-      }
-      $this->type = $this->Input->get('type',Input::NUMERIC,ST_SALESORDER);
-      $this->setTitle("New Sales Order Entry");
-      if ($this->Input->get(Orders::ADD, Input::NUMERIC, false) !== false) {
-        $this->setTitle($this->addTitles[$this->type]);
-        $this->order = $this->createOrder($this->type, 0);
-      } elseif ($this->Input->get(Orders::UPDATE, Input::NUMERIC, -1) > 0) {
-        $this->setTitle($this->modifyTitles[$this->type] . $_GET[Orders::UPDATE]);
-        $this->order = $this->createOrder($this->type, $this->Input->get(Orders::UPDATE));
-      } elseif ($this->Input->get(Orders::QUOTE_TO_ORDER)) {
-        $this->type = Orders::QUOTE_TO_ORDER;
-        $this->setTitle("New Order from Quote");
-        $this->order = $this->createOrder(ST_SALESQUOTE, $_GET[Orders::QUOTE_TO_ORDER]);
-      } elseif ($this->Input->get(Orders::CLONE_ORDER)) {
-        $this->type = Orders::CLONE_ORDER;
-        $this->setTitle("New order from previous order");
-        $this->order = $this->createOrder(ST_SALESORDER, $this->Input->get(Orders::CLONE_ORDER));
+      if ($_SERVER['REQUEST_METHOD'] === "GET") {
+        if ($this->Input->get('debtor_id', Input::NUMERIC)) {
+          $this->action       = Orders::CANCEL_CHANGES;
+          $_POST['debtor_id'] = $_GET['debtor_id'];
+          $this->Ajax->activate('debtor_id');
+        }
+        $this->type = $this->Input->get('type', Input::NUMERIC, ST_SALESORDER);
+        $type_id    = 0;
+        $this->setTitle("New Sales Order Entry");
+        if ($this->Input->get(Orders::ADD, Input::NUMERIC, false) !== false) {
+          $this->setTitle($this->addTitles[$this->type]);
+        } elseif ($this->Input->get(Orders::UPDATE, Input::NUMERIC, -1) > 0) {
+          $this->setTitle($this->modifyTitles[$this->type] . $_GET[Orders::UPDATE]);
+          $type_id = $this->Input->get(Orders::UPDATE);
+        } elseif ($this->Input->get(Orders::QUOTE_TO_ORDER)) {
+          $this->type = Orders::QUOTE_TO_ORDER;
+          $this->setTitle("New Order from Quote");
+          $type_id = $_GET[Orders::QUOTE_TO_ORDER];
+        } elseif ($this->Input->get(Orders::CLONE_ORDER)) {
+          $this->type = Orders::CLONE_ORDER;
+          $this->setTitle("New order from previous order");
+          $type_id = $this->Input->get(Orders::CLONE_ORDER);
+        }
+        $this->order = $this->createOrder($this->type, $type_id);
       }
       $this->setSecurity();
-      if (!$this->order) {
-        $this->order = $this->createOrder($this->type, 0);
-      }
     }
     protected function index() {
       Page::start($this->title, $this->security);
@@ -91,43 +99,16 @@
       $this->checkRowDelete();
       $this->runAction();
       $this->runValidation();
-      switch ($this->order->trans_type) {
-        case ST_SALESINVOICE:
-          $idate       = _("Invoice Date:");
-          $orderitems  = _("Sales Invoice Items");
-          $deleteorder = _("Delete Invoice");
-          $corder      = '';
-          $porder      = _("Place Invoice");
-          break;
-        case ST_CUSTDELIVERY:
-          $idate       = _("Delivery Date:");
-          $orderitems  = _("Delivery Note Items");
-          $deleteorder = _("Delete Delivery");
-          $corder      = '';
-          $porder      = _("Place Delivery");
-          break;
-        case ST_SALESQUOTE:
-          $idate       = _("Quotation Date:");
-          $orderitems  = _("Sales Quotation Items");
-          $deleteorder = _("Delete Quotation");
-          $porder      = _("Place Quotation");
-          $corder      = _("Commit Quotations Changes");
-          break;
-        case ST_SALESORDER;
-        default:
-          $idate       = _("Order Date:");
-          $orderitems  = _("Sales Order Items");
-          $deleteorder = _("Delete Order");
-          $porder      = _("Place Order");
-          $corder      = _("Commit Order Changes");
-          break;
-      }
+      $type_name       = SysTypes::$names[$this->order->trans_type];
+      $type_name_short = SysTypes::$short_names[$this->order->trans_type];
+      $idate           = _("$type_name_short Date:");
+      $orderitems      = _("$type_name Items");
+      $deleteorder     = _("Delete $type_name_short");
+      $corder          = _("Commit $type_name_short Changes");
+      $porder          = _("Place $type_name_short");
       Forms::start();
-      $customer_error = $this->order->header($idate);
-      if ($customer_error != "") {
-        $this->exitError($customer_error);
-      }
-      Forms::hidden('order_id', $_POST['order_id']);
+      $this->order->header($idate);
+      Forms::hidden('order_id');
       Table::start('tablesstyle center width90 pad10');
       echo "<tr><td>";
       $edit_line = $this->getActionId(Orders::EDIT_LINE);
@@ -137,16 +118,16 @@
       echo "</td></tr>";
       Table::end(1);
       Display::div_start('controls', 'items_table');
-      $buttons = [];
+      $buttons = new Form();
       if ($this->order->trans_no > 0 && $this->User->hasAccess(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())) {
-        Form::submitConfirm('_action', Orders::DELETE_ORDER, _('You are about to void this Document.\nDo you want to continue?'));
-        $buttons[] = Form::submit('_action', Orders::DELETE_ORDER, false, $deleteorder); //, _('Cancels document entry or removes sales order when editing an old document')
+        $buttons->submit(Orders::DELETE_ORDER, $deleteorder)->preIcon(ICON_DELETE)->setWarning('You are about to void this Document.\nDo you want to continue?');
       }
-      $buttons[] = Form::submit('_action', Orders::CANCEL_CHANGES, false, _("Cancel Changes")); //, _("Revert this document entry back to its former state.")
+      $buttons->submit(Orders::CANCEL_CHANGES, _("Cancel Changes"))->preIcon(ICON_CANCEL);
       if (count($this->order->line_items)) {
-        $type      = ($this->order->trans_no > 0) ? $corder : $porder; //_('Check entered data and save document')
-        $buttons[] = Form::submit('_action', Orders::PROCESS_ORDER, false, $type, 'default');
+        $type = ($this->order->trans_no > 0) ? $corder : $porder; //_('Check entered data and save document')
+        $buttons->submit(Orders::PROCESS_ORDER, $type)->preIcon(ICON_SUBMIT);
       }
+
       $view = new View('libraries/forms');
       $view->set('buttons', $buttons);
       $view->render();
@@ -166,7 +147,7 @@
       }
     }
     protected function cancelItem() {
-      Item_Line::start_focus('_stock_id_edit');
+      Item_Line::start_focus('stock_id');
     }
     /**
      * @param $error
@@ -318,7 +299,7 @@
           $_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
         } else {
           Event::error(_("You must enter at least one non empty item line."));
-          Item_Line::start_focus('_stock_id_edit');
+          Item_Line::start_focus('stock_id');
 
           return false;
         }
@@ -372,9 +353,18 @@
 
         return false;
       }
+
       if ($this->order->trans_type == ST_SALESORDER && strlen($_POST['name']) < 1) {
         Event::error(_("You must enter a Person Ordering name."));
         $this->JS->setFocus('name');
+
+        return false;
+      }
+      $result = $this->order->trans_type == ST_SALESORDER && strlen($_POST['cust_ref']) < 1;
+      if ($result && $this->order->order_id !== Session::_getFlash('SalesOrder')) {
+        Session::_setFlash('SalesOrder', $this->order->order_id);
+        Event::warning('Are you sure you want to commit this order without a purchase order number?');
+        $this->JS->setFocus('cust_ref');
 
         return false;
       }
@@ -555,12 +545,12 @@
           } else {
             $trans_no   = key($this->order->trans_no);
             $trans_type = $this->order->trans_type;
-            if (!isset($_GET[REMOVED_ID])) {
-              $this->order->delete($trans_no, $trans_type);
+            $this->order->delete($trans_no, $trans_type);
+            if ($trans_type == ST_SALESORDER) {
               $jb = new \Modules\Jobsboard\Jobsboard([]);
               $jb->removejob($trans_no);
-              Event::notice(_("Sales order has been cancelled as requested."), 1);
             }
+            Event::notice(_("Sales order has been cancelled."), 1);
           }
         } else {
           Display::meta_forward('/index.php', 'application=sales');
@@ -583,7 +573,7 @@
           $_POST['description']
         );
       }
-      Item_Line::start_focus('_stock_id_edit');
+      Item_Line::start_focus('stock_id');
     }
     protected function discountAll() {
       if (!is_numeric($_POST['_discountAll'])) {
@@ -604,7 +594,7 @@
       }
       $this->order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
       $_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
-      Item_Line::start_focus('_stock_id_edit');
+      Item_Line::start_focus('stock_id');
     }
     /**
      * @return mixed
@@ -619,7 +609,7 @@
       } else {
         Event::error(_("This item cannot be deleted because some of it has already been delivered."));
       }
-      Item_Line::start_focus('_stock_id_edit');
+      Item_Line::start_focus('stock_id');
     }
     /**
      * @return bool|mixed|void

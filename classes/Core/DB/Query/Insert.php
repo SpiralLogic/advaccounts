@@ -17,6 +17,7 @@
    */
   class Insert extends Query
   {
+
     /** @var */
     protected $table;
     /**
@@ -45,7 +46,7 @@
         $this->into($table);
       }
       $this->type      = DB::INSERT;
-      $this->hasfields = null;//Cache::_get('INFORMATION_SCHEMA.COLUMNS.' . $table);
+      $this->hasfields = null; //Cache::_get('INFORMATION_SCHEMA.COLUMNS.' . $table);
       if (!$this->hasfields) {
         $query = DB::_query('SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = ' . DB::_quote($table), false);
         /** @noinspection PhpAssignmentInConditionInspection */
@@ -54,7 +55,6 @@
         }
         Cache::_set('INFORMATION_SCHEMA.COLUMNS.' . $table, $this->hasfields);
       }
-
       return $this;
     }
     /**
@@ -64,7 +64,6 @@
      */
     public function into($table) {
       $this->table = $table;
-
       return $this;
     }
     /**
@@ -74,30 +73,28 @@
      */
     public function values($values) {
       $this->data = (array) $values + $this->data;
-
       return $this;
     }
     /**
-     * @param $feild
+     * @param $field
      * @param $value
      *
      * @throws \ADV\Core\DB\DBException
      * @return \ADV\Core\DB\Query\Insert
      */
-    public function value($feild, $value) {
-      if (is_array($feild) && is_array($value)) {
-        if (count($feild) != count($value)) {
-          throw new DBException('Feild count and Value count unequal');
+    public function value($field, $value) {
+      if (is_array($field) && is_array($value)) {
+        if (count($field) != count($value)) {
+          throw new DBException('Field count and Value count unequal');
         } else {
-          $this->values(array_combine($feild, $value));
+          $this->values(array_combine($field, $value));
         }
-      } elseif (is_array($feild) && !is_array($value)) {
-        $values = array_fill(0, count($feild), $value);
-        $this->values(array_combine($feild, $values));
+      } elseif (is_array($field) && !is_array($value)) {
+        $values = array_fill(0, count($field), $value);
+        $this->values(array_combine($field, $values));
       } else {
-        $this->values(array($feild => $value));
+        $this->values(array($field => $value));
       }
-
       return $this;
     }
     /**
@@ -110,11 +107,10 @@
         $this->values((array) $data);
       }
       $this->data   = array_intersect_key($this->data, array_flip($this->hasfields));
-      $this->data   = array_filter($this->data, function($value) {
+      $this->data   = array_filter($this->data, function ($value) {
         return !is_object($value);
       });
       $this->fields = array_keys($this->data);
-
       return $this->_buildQuery();
     }
     /**
@@ -125,7 +121,6 @@
       $sql .= implode(', ', $this->fields) . ") VALUES (";
       $sql .= ':' . implode(', :', str_replace('-', '_', $this->fields));
       $sql .= ') ';
-
       return $sql;
     }
   }

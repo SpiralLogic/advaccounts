@@ -8,7 +8,9 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
-  use \User;
+
+  use ADV\App\User;
+  use ADV\Core\Cache\Cache;
 
   /**
 
@@ -33,14 +35,16 @@
      * @var string id for cache handler to store shutdown events
      */
     protected static $shutdown_events_id;
+    protected static $Cache;
     /**
      * @static
 
      */
-    public static function init() {
-      static::$shutdown_events_id = 'shutdown.events.' . \User::i()->username;
-      $shutdown_events            = Cache::_get(static::$shutdown_events_id);
-      Cache::_delete(static::$shutdown_events_id);
+    public static function init(Cache $cache) {
+      static::$Cache              = $cache;
+      static::$shutdown_events_id = 'shutdown.events.' . User::i()->username;
+      $shutdown_events            = static::$Cache->get(static::$shutdown_events_id);
+      static::$Cache->delete(static::$shutdown_events_id);
       if ($shutdown_events) {
         while ($msg = array_pop($shutdown_events)) {
           static::handle($msg[0], $msg[1], $msg[2], $msg[3]);
@@ -57,6 +61,7 @@
      */
     public static function error($message, $log = true) {
       $backtrace = debug_backtrace();
+
       return static::handle($message, reset($backtrace), E_USER_ERROR, $log);
     }
     /**
@@ -69,6 +74,7 @@
      */
     public static function notice($message, $log = true) {
       $backtrace = debug_backtrace();
+
       return static::handle($message, reset($backtrace), E_USER_NOTICE, $log);
     }
     /**
@@ -81,6 +87,7 @@
      */
     public static function success($message, $log = true) {
       $backtrace = debug_backtrace();
+
       return static::handle($message, reset($backtrace), E_SUCCESS, $log);
     }
     /**
@@ -93,6 +100,7 @@
      */
     public static function warning($message, $log = true) {
       $backtrace = debug_backtrace();
+
       return static::handle($message, reset($backtrace), E_USER_WARNING, $log);
     }
     /**
@@ -113,6 +121,7 @@
         $message .= $log ? 1 : 0;
         ($type === E_SUCCESS) ? Errors::handler($type, $message) : trigger_error($message, $type);
       }
+
       return ($type === E_SUCCESS || $type === E_USER_NOTICE);
     }
     /**
@@ -138,19 +147,18 @@
     /*** @static Shutdown handler */
     public static function shutdown() {
       Errors::process();
-      $levels = ob_get_level() - (extension_loaded('newrelic') ?1:0);
-        for ($i = 0; $i < $levels; $i++) {
-          ob_end_flush();
-        }
+      $levels = ob_get_level() - (extension_loaded('newrelic') ? 1 : 0);
+      for ($i = 0; $i < $levels; $i++) {
+        ob_end_flush();
+      }
       session_write_close();
       fastcgi_finish_request();
       static::$request_finsihed = true;
       try {
         static::fireHooks('shutdown');
-      }
-      catch (\Exception $e) {
+      } catch (\Exception $e) {
         static::error('Error during post processing: ' . $e->getMessage());
       }
-      Cache::_set(static::$shutdown_events_id, static::$shutdown_events);
+      static::$Cache->set(static::$shutdown_events_id, static::$shutdown_events);
     }
   }

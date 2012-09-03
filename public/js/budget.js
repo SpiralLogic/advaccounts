@@ -9,28 +9,23 @@
  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
 function focus_budget(i) {
-	save_focus(i);
-	i.setAttribute('_last', Adv.Forms.getAmount(i.name));
+  Adv.Forms.saveFocus(i);
+  i.setAttribute('_last', Adv.Forms.getAmount(i.name));
 }
-
 function blur_budget(i) {
-	var amount = Adv.Forms.getAmount(i.name);
-	var total = Adv.Forms.getAmount('Total', 1);
-
-	Adv.Forms.priceFormat(i.name, amount, 0);
-	Adv.Forms.priceFormat('Total', total + amount - i.getAttribute('_last'), 0, 1, 1);
+  var amount = Adv.Forms.getAmount(i.name);
+  var total = Adv.Forms.getAmount('Total', 1);
+  Adv.Forms.priceFormat(i.name, amount, 0);
+  Adv.Forms.priceFormat('Total', total + amount - i.getAttribute('_last'), 0, 1, 1);
 }
-
-
 var budget_calc = {
-	'.amount':function (e) {
-		e.onblur = function () {
-			blur_budget(this);
-		};
-		e.onfocus = function () {
-			focus_budget(this);
-		};
-	}
+  '.amount':function (e) {
+    e.onblur = function () {
+      blur_budget(this);
+    };
+    e.onfocus = function () {
+      focus_budget(this);
+    };
+  }
 }
-
 Behaviour.register(budget_calc);

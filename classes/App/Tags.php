@@ -7,6 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\App;
+
+  use ADV\Core\DB\DB;
+
+  /**
+
+   */
   class Tags
   {
     /**
@@ -16,10 +23,9 @@
      * @param $name
      * @param $description
      *
-     * @return null|PDOStatement
+     * @return null|\PDOStatement
      */
-    public static function add($type, $name, $description)
-    {
+    public static function add($type, $name, $description) {
       $sql
         = "INSERT INTO tags (type, name, description)
          VALUES (" . DB::_escape($type) . ", " . DB::_escape($name) . ", " . DB::_escape($description) . ")";
@@ -34,10 +40,9 @@
      * @param      $description
      * @param null $type
      *
-     * @return null|PDOStatement
+     * @return null|\PDOStatement
      */
-    public static function update($id, $name, $description, $type = null)
-    {
+    public static function update($id, $name, $description, $type = null) {
       $sql = "UPDATE tags SET name=" . DB::_escape($name) . ", description=" . DB::_escape($description);
       if ($type != null) {
         $sql .= ", type=" . DB::_escape($type);
@@ -52,10 +57,9 @@
      * @param      $type
      * @param bool $all
      *
-     * @return null|PDOStatement
+     * @return null|\PDOStatement
      */
-    public static function getAll($type, $all = false)
-    {
+    public static function getAll($type, $all = false) {
       $sql = "SELECT * FROM tags WHERE type=" . DB::_escape($type);
       if (!$all) {
         $sql .= " AND !inactive";
@@ -71,8 +75,7 @@
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get($id)
-    {
+    public static function get($id) {
       $sql    = "SELECT * FROM tags WHERE id = " . DB::_escape($id);
       $result = DB::_query($sql, "could not get tag");
 
@@ -85,8 +88,7 @@
      *
      * @return mixed
      */
-    public static function get_type($id)
-    {
+    public static function get_type($id) {
       $sql    = "SELECT type FROM tags WHERE id = " . DB::_escape($id);
       $result = DB::_query($sql, "could not get tag type");
       $row    = DB::_fetchRow($result);
@@ -100,8 +102,7 @@
      *
      * @return mixed
      */
-    public static function get_name($id)
-    {
+    public static function get_name($id) {
       $sql    = "SELECT name FROM tags WHERE id = " . DB::_escape($id);
       $result = DB::_query($sql, "could not get tag name");
       $row    = DB::_fetchRow($result);
@@ -115,8 +116,7 @@
      *
      * @return mixed
      */
-    public static function get_description($id)
-    {
+    public static function get_description($id) {
       $sql    = "SELECT description FROM tags WHERE id = " . DB::_escape($id);
       $result = DB::_query($sql, "could not get tag description");
       $row    = DB::_fetchRow($result);
@@ -128,8 +128,7 @@
      *
      * @param $id
      */
-    public static function delete($id)
-    {
+    public static function delete($id) {
       $sql = "DELETE FROM tags WHERE id = " . DB::_escape($id);
       DB::_query($sql, "could not delete tag");
     }
@@ -139,8 +138,7 @@
      * @param $recordid
      * @param $tagids
      */
-    public static function add_associations($recordid, $tagids)
-    {
+    public static function add_associations($recordid, $tagids) {
       foreach ($tagids as $tagid) {
         if (!$tagid) {
           continue;
@@ -158,8 +156,7 @@
      * @param $recordid
      * @param $tagids
      */
-    public static function update_associations($type, $recordid, $tagids)
-    {
+    public static function update_associations($type, $recordid, $tagids) {
       // Delete the old associations
       Tags::delete_associations($type, $recordid, false);
       // Add the new associations
@@ -175,8 +172,7 @@
      * @param      $recordid
      * @param bool $all
      */
-    public static function delete_associations($type, $recordid, $all = false)
-    {
+    public static function delete_associations($type, $recordid, $all = false) {
       /* multiply table DELETE syntax available since MySQL 4.0.0:
       $sql = "DELETE ta FROM ".''."tag_associations ta
             INNER JOIN ".''."tags tags ON tags.id = ta.tag_id
@@ -203,10 +199,9 @@
      *
      * @param $id
      *
-     * @return null|PDOStatement
+     * @return null|\PDOStatement
      */
-    public static function get_associated_records($id)
-    {
+    public static function get_associated_records($id) {
       // Which table we query is based on the tag type
       $type  = Tags::get_type($id);
       $table = $key = '';
@@ -234,10 +229,9 @@
      * @param $type
      * @param $recordid
      *
-     * @return null|PDOStatement
+     * @return null|\PDOStatement
      */
-    public static function get_all_associated_with_record($type, $recordid)
-    {
+    public static function get_all_associated_with_record($type, $recordid) {
       $sql
         = "SELECT tags.* FROM tag_associations AS ta
                  INNER JOIN tags AS tags ON tags.id = ta.tag_id
@@ -257,8 +251,7 @@
      *
      * @return string
      */
-    public static function select($name, $height, $type, $multi = false, $all = false, $spec_opt = false)
-    {
+    public static function select($name, $height, $type, $multi = false, $all = false, $spec_opt = false) {
       // Get tags
       $results = Tags::getAll($type, $all);
       while ($tag = DB::_fetch($results)) {
@@ -269,12 +262,17 @@
         $spec_opt = false;
       }
 
-      return Forms::arraySelect($name, null, $tags, array(
-                                                         'multi'       => $multi,
-                                                         'height'      => $height,
-                                                         'spec_option' => $spec_opt,
-                                                         'spec_id'     => -1,
-                                                    ));
+      return Forms::arraySelect(
+        $name,
+        null,
+        $tags,
+        array(
+             'multi'       => $multi,
+             'height'      => $height,
+             'spec_option' => $spec_opt,
+             'spec_id'     => -1,
+        )
+      );
     }
     /**
      * @static
@@ -287,8 +285,7 @@
      * @param bool $all
      * @param bool $spec_opt
      */
-    public static function cells($label, $name, $height, $type, $mult = false, $all = false, $spec_opt = false)
-    {
+    public static function cells($label, $name, $height, $type, $mult = false, $all = false, $spec_opt = false) {
       if ($label != null) {
         echo "<td>$label</td>\n";
       }
@@ -307,8 +304,7 @@
      * @param bool $all
      * @param bool $spec_opt
      */
-    public static function row($label, $name, $height, $type, $mult = false, $all = false, $spec_opt = false)
-    {
+    public static function row($label, $name, $height, $type, $mult = false, $all = false, $spec_opt = false) {
       echo "<tr><td class='label'>$label</td>";
       Tags::cells(null, $name, $height, $type, $mult, $all, $spec_opt);
       echo "</tr>\n";

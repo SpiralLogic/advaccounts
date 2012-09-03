@@ -1,5 +1,13 @@
 <?php
   use ADV\Core\Cell;
+  use ADV\App\Display;
+  use ADV\App\Forms;
+  use ADV\App\User;
+  use ADV\Core\JS;
+  use ADV\Core\Ajax;
+  use ADV\Core\DB\DB;
+  use ADV\Core\Input\Input;
+  use ADV\Core\Row;
   use ADV\Core\Table;
 
   /**
@@ -17,9 +25,9 @@
    */
   class DB_Pager
   {
-    /** @var User */
+    /** @var \ADV\App\User */
     static $User;
-    /** @var DB */
+    /** @var \ADV\Core\DB\DB */
     static $DB;
     const SQL = 1;
     const ARR = 2;
@@ -164,7 +172,7 @@
     public $id;
     public $rowFunction;
     public $class;
-    protected $hasBar=false;
+    protected $hasBar = false;
     /**
      * @param      $sql
      * @param      $name
@@ -198,6 +206,7 @@
       unset($this->marker);
       unset($this->rowClass);
       unset($this->rowFunction);
+
       return array_keys((array) $this);
     }
     /**
@@ -218,6 +227,7 @@
       }
       $href = '/' . ltrim($url, '/');
       $href = (Input::_request('frame')) ? "javascript:window.parent.location='$href'" : $href;
+
       return '<a href="' . e($href) . '" class="button">' . $link_text . "</a>";
     }
     /**
@@ -226,18 +236,20 @@
      * @param      $name
      * @param      $value
      * @param bool $enabled
-     * @param bool $icon
+     * @param null $title
      *
+     * @internal param bool $icon
      * @return string
      */
-    public function navi($name, $value, $enabled = true, $icon = false, $title = null) {
+    public function navi($name, $value, $enabled = true, $title = null) {
       if (!static::$User) {
         static::$User = User::i();
       }
-      $id= $this->hasBar?" id='$name' ":'';
-      $title = $title ? : $value;
-      $this->hasBar =true;
-      return "<button " . ($enabled ? '' : 'disabled') . " class=\"navibutton\" type=\"submit\"  name=\"$name\"  \"$id\" value=\"$value\">" . ($icon ? "<img src='/themes/" . static::$User->_theme() . "/images/" . $icon . "'>" : '') . "<span>$title</span></button>\n";
+      $id           = $this->hasBar ? " id='$name' " : '';
+      $title        = $title ? : $value;
+      $this->hasBar = true;
+
+      return "<button " . ($enabled ? '' : 'disabled') . " class=\"navibutton\" type=\"submit\"  name=\"$name\"  $id value=\"$value\"><span>$title</span></button>\n";
     }
     /**
      * @static
@@ -245,15 +257,14 @@
      * @param      $name
      * @param      $value
      * @param bool $enabled
+     * @param null $title
      */
     public function navi_cell($name, $value, $enabled = true, $title = null) {
       Cell::label($this->navi($name, $value, $enabled, false, $title));
     }
     /**
      * @static
-     *
-     * @param DB_Pager $pager
-     *
+     * @internal param \DB_Pager $pager
      * @return bool
      */
     public function display() {
@@ -282,8 +293,14 @@
       $this->displayNavigation();
       Table::end();
       Display::div_end();
+
       return true;
     }
+    /**
+     * @param $row
+     *
+     * @return mixed
+     */
     public function displayRow($row) {
       if ($this->marker && call_user_func($this->marker, $row)) {
         Row::start("class='$this->marker_class'");
@@ -357,48 +374,67 @@
         }
       }
       Row::end();
+
       return $row;
     }
-    public function displayNavigation($return=false) {
-    if ($return)ob_start();
+    /**
+     * @param bool $return
+     *
+     * @return string
+     */
+    public function displayNavigation($return = false) {
+      if ($return) {
+        ob_start();
+      }
       Row::start("class='navibar'");
       $colspan = count($this->columns);
       $inact   = $this->inactive_ctrl == true ? ' ' . Forms::checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
+      HTML::td(null, ['colspan'=> $colspan, 'class'=> 'navibar']);
       if ($this->rec_count) {
-        echo "<td colspan=$colspan class='navibar' >";
-        echo "<table class='floatright'>";
         $but_pref = $this->name . '_page_';
-        Row::start();
-        if (@$this->inactive_ctrl) {
+        if ($this->inactive_ctrl) {
           Forms::submit('Update', _('Update'), true, '', null);
         } // inactive update
-        $this->navi_cell($but_pref . 'first', 1, $this->first_page, 'First');
-        $this->navi_cell($but_pref . 'prev', $this->curr_page - 1, $this->prev_page, 'Prev');
-        $this->navi_cell($but_pref . 'next', $this->curr_page + 1, $this->next_page, 'Next');
-        $this->navi_cell($but_pref . 'last', $this->max_page, $this->last_page, 'Last');
-        Row::end();
-        echo "</table>";
+        HTML::span(
+          null,
+          $this->navi($but_pref . 'first', 1, $this->first_page, "<i class='icon-fast-backward'> </i>") . $this->navi(
+            $but_pref . 'prev',
+            $this->curr_page - 1,
+            $this->prev_page,
+            '<i class="icon-backward"> </i>'
+          ) . $this->navi($but_pref . 'next', $this->curr_page + 1, $this->next_page, '<i class="icon-forward"> </i>') . $this->navi(
+            $but_pref . 'last',
+            $this->max_page,
+            $this->last_page,
+            '<i class="icon-fast-forward"> </i>'
+          ),
+          ['class'=> 'floatright'],
+          false
+        );
         $from = ($this->curr_page - 1) * $this->page_len + 1;
         $to   = $from + $this->page_len - 1;
         if ($to > $this->rec_count) {
           $to = $this->rec_count;
         }
         $all = $this->rec_count;
-        HTML::span(true, "Records $from-$to of $all", false);
+        HTML::span(true, "Records $from-$to of $all", [], false);
         echo $inact;
-        echo "</td>";
       } else {
-        Cell::label(_('No records') . $inact, "colspan=$colspan class='navibar'");
+        HTML::span(null, _('No records') . $inact, [], false);
       }
+      HTML::_td();
       Row::end();
-      if ($return){
+      if ($return) {
         return ob_get_clean();
       }
+
+      return true;
     }
     protected function displayFooter() {
       if ($this->footer_fun) { // if set footer handler
         Row::start("class='{$this->footer_class}'");
         $fun = $this->footer_fun;
+        $h   = [];
         if (method_exists($this, $fun)) {
           $h = $this->$fun($this);
         } elseif (is_callable($fun)) {
@@ -411,16 +447,21 @@
         Row::end();
       }
     }
+    /**
+     * @param $headers
+     */
     protected function displayHeaders($headers) {
       Table::header($headers, '', $this->displayNavigation(true));
       if ($this->header_fun) { // if set header handler
         Row::start("class='{$this->header_class}'");
         $fun = $this->header_fun;
+        $h   = [];
         if (method_exists($this, $fun)) {
           $h = $this->$fun($this);
         } elseif (is_callable($fun)) {
           $h = call_user_func($fun, $this);
         }
+
         foreach ($h as $c) { // draw header columns
           $pars = isset($c[1]) ? $c[1] : '';
           Cell::label($c[0], $pars);
@@ -428,6 +469,9 @@
         Row::end();
       }
     }
+    /**
+     * @return array
+     */
     protected function makeHeaders() {
       $headers = [];
       foreach ($this->columns as $num_col => $col) {
@@ -443,10 +487,11 @@
             } else {
               $icon = false;
             }
-            $headers[] = $this->navi($this->name . '_sort_' . $num_col, $col['head'], true, $icon);
+            $headers[] = $this->navi($this->name . '_sort_' . $num_col, $col['head'], true);
           }
         }
       }
+
       return $headers;
     }
     /**
@@ -459,6 +504,7 @@
     public function change_page($page = null) {
       $this->setPage($page);
       $this->query();
+
       return true;
     }
     /**
@@ -497,7 +543,7 @@
      */
     public function query() {
       Ajax::_activate("_{$this->name}_span");
-      if (!$this->_init()) {
+      if (!$this->init()) {
         return false;
       }
       if ($this->type == self::SQL) {
@@ -520,17 +566,18 @@
         $offset     = ($this->curr_page - 1) * $this->page_len;
         $this->data = array_slice($this->sql, $offset, $this->page_len);
       }
-      $dbfeild_names = array_keys($this->data[0]);
-      $cnt           = min(count($dbfeild_names), count($this->columns));
+      $dbfield_names = array_keys($this->data[0]);
+      $cnt           = min(count($dbfield_names), count($this->columns));
       for ($c = $i = 0; $c < $cnt; $c++) {
         if (!(isset($this->columns[$c]['insert']) && $this->columns[$c]['insert'])) {
           //	if (!@($this->columns[$c]['type']=='skip'))
-          $this->columns[$c]['name'] = $dbfeild_names[$c];
+          $this->columns[$c]['name'] = $dbfield_names[$c];
           if (isset($this->columns[$c]['type']) && !($this->columns[$c]['type'] == 'insert')) {
             $i++;
           }
         }
       }
+
       return true;
     }
     /**
@@ -695,6 +742,7 @@
       if (is_array($sql)) {
         $this->type = self::ARR;
         $this->sql  = $sql;
+
         return;
       }
       if ($sql != $this->sql) {
@@ -753,6 +801,7 @@
     protected function sortTable($col) {
       if ($this->type == self::ARR) {
         $this->query();
+
         return true;
       }
       if (is_null($col)) {
@@ -763,6 +812,7 @@
       $this->columns[$col]['ord'] = $ord;
       $this->setPage(1);
       $this->query();
+
       return true;
     }
     /**
@@ -784,7 +834,8 @@
      */
     public function setInactiveCtrl($table, $key) {
       $this->inactive_ctrl = array(
-        'table' => $table, 'key'   => $key
+        'table' => $table,
+        'key'   => $key
       );
     }
     /***
@@ -804,7 +855,7 @@
      * @return bool
      * Initialization after changing record set
      */
-    protected function _init() {
+    protected function init() {
       if ($this->ready == false) {
         if ($this->type == self::SQL) {
           $sql    = $this->_sql_gen(true);
@@ -827,6 +878,7 @@
         }
         $this->ready = true;
       }
+
       return true;
     }
     /**
@@ -852,6 +904,7 @@
       }
       if ($count) {
         $group = $group == '' ? "*" : "DISTINCT $group";
+
         return "SELECT COUNT($group) FROM $from $where";
       }
       $sql = "$select FROM $from $where";
@@ -876,8 +929,12 @@
       $page_len = $this->page_len;
       $offset   = ($this->curr_page - 1) * $page_len;
       $sql .= " LIMIT $offset, $page_len";
+
       return $sql;
     }
+    /**
+     * @param $name
+     */
     public static function kill($name) {
       unset($_SESSION['pager'][$name]);
     }
@@ -922,6 +979,7 @@
           $column['fun'] = $coldef[$column['funkey']]['fun'];
         }
       }
+
       return $_SESSION['pager'][$name];
     }
   }

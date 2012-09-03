@@ -1,3 +1,5 @@
 <?php
-  $date = '14/12/2012';
+  use ADV\App\Form\Form;
 
+  echo "<pre>";
+  var_dump(DB_Company::get_prefs());

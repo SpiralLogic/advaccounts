@@ -9,17 +9,16 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App;
+
   /**
    * @property Security i
    * @method Security i
    */
   use ArrayAccess;
-  use Forms;
   use ADV\Core\DB\DB;
-  use User;
   use ADV\Core\Config;
 
-  class Security implements ArrayAccess
+  class Security extends \ADV\Core\Security implements ArrayAccess
   {
     public $areas;
     protected $sections;
@@ -53,6 +52,7 @@
       } elseif ($user->hasSectionAccess($page_level)) {
         $access = $user->hasSectionAccess($page_level);
       }
+
       // only first registered company has site admin privileges
       return $access && ($user->company == 'default' || (isset($code) && ($code & ~0xff) != SS_SADMIN));
     }
@@ -71,6 +71,7 @@
         $row['areas']    = explode(';', $row['areas']);
         $row['sections'] = explode(';', $row['sections']);
       }
+
       return $row;
     }
     /**
@@ -127,6 +128,7 @@
       $sql = "SELECT count(*) FROM users WHERE role_id=$id";
       $ret = DB::_query($sql, 'cannot check role usage');
       $row = DB::_fetch($ret);
+
       return $row[0];
     }
     /**
@@ -142,13 +144,20 @@
      */
     public static function roles($name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false) {
       $sql = "SELECT id, role, inactive FROM security_roles";
-      return Forms::selectBox($name, $selected_id, $sql, 'id', 'description', array(
-                                                                                   'spec_option'                               => $new_item ?
-                                                                                     _("New role") : false,
-                                                                                   'spec_id'                                   => '',
-                                                                                   'select_submit'                             => $submit_on_change,
-                                                                                   'show_inactive'                             => $show_inactive
-                                                                              ));
+
+      return Forms::selectBox(
+        $name,
+        $selected_id,
+        $sql,
+        'id',
+        'description',
+        array(
+             'spec_option'                               => $new_item ? _("New role") : false,
+             'spec_id'                                   => '',
+             'select_submit'                             => $submit_on_change,
+             'show_inactive'                             => $show_inactive
+        )
+      );
     }
     /**
      * @static
@@ -184,43 +193,6 @@
       echo "</tr>\n";
     }
     /**
-     * @static
-     *
-     * @param $value
-     *
-     * @throws \RuntimeException
-     * @return array|string
-     */
-    public static function htmlentities($value) {
-      static $already_cleaned = [];
-      // Nothing to escape for non-string scalars, or for already processed values
-      if (is_bool($value) or is_int($value) or is_float($value) or in_array($value, $already_cleaned, true)) {
-        return $value;
-      }
-      if (is_string($value)) {
-        $value = htmlentities($value, ENT_COMPAT, 'UTF-8', false);
-      } elseif (is_array($value) or ($value instanceof \Iterator and $value instanceof \ArrayAccess)) {
-        // Add to $already_cleaned variable when object
-        is_object($value) and $already_cleaned[] = $value;
-        foreach ($value as $k => $v) {
-          $value[$k] = static::htmlentities($v);
-        }
-      } elseif ($value instanceof \Iterator or get_class($value) == 'stdClass') {
-        // Add to $already_cleaned variable
-        $already_cleaned[] = $value;
-        foreach ($value as $k => $v) {
-          $value->{$k} = static::htmlentities($v);
-        }
-      } elseif (is_object($value)) {
-        // Throw exception when it wasn't whitelisted and can't be converted to String
-        if (!method_exists($value, '__toString')) {
-          throw new \RuntimeException('Object class "' . get_class($value) . '" could not be converted to string or ' . 'sanitized as ArrayAcces. Whitelist it in security.whitelisted_classes in app/config/config.php ' . 'to allow it to be passed unchecked.');
-        }
-        $value = static::htmlentities((string) $value);
-      }
-      return $value;
-    }
-    /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Whether a offset exists
      * @link http://php.net/manual/en/arrayaccess.offsetexists.php
@@ -254,6 +226,8 @@
           return $this->areas;
         case 'sections':
           return $this->sections;
+        default:
+          return false;
       }
     }
     /**

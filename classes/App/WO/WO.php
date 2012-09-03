@@ -10,6 +10,12 @@
   namespace ADV\App\WO;
 
   use ADV\App\Dates;
+  use ADV\App\Display;
+  use ADV\Core\Table;
+  use ADV\Core\Cell;
+  use ADV\Core\Row;
+  use ADV\App\User;
+  use ADV\App\Ref;
   use ADV\Core\Num;
   use Item_UI;
   use GL_UI;
@@ -21,16 +27,10 @@
   use ADV\Core\Errors;
   use WO_Requirements;
   use DB_AuditTrail;
-  use Ref;
   use DB_Comments;
   use WO_Cost;
   use WO_Quick;
-  use User;
-  use Row;
   use ADV\App\Item\Item;
-  use Cell;
-  use Table;
-  use Display;
   use ADV\Core\Event;
   use ADV\Core\DB\DB;
 

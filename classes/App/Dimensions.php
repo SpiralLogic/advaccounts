@@ -1,4 +1,14 @@
 <?php
+
+  namespace ADV\App;
+
+  use ADV\Core\DB\DB;
+  use ADV\Core\Event;
+  use DB_Comments;
+  use ADV\Core\Row;
+  use ADV\Core\Cell;
+  use ADV\Core\Table;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -118,7 +128,7 @@
     }
     /**
      * @static
-     * @return null|PDOStatement
+     * @return null|\PDOStatement
      */
     public static function getAll() {
       $sql = "SELECT * FROM dimensions ORDER BY date_";

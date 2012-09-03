@@ -7,12 +7,12 @@
    * To change this template use File | Settings | File Templates.
    */
   namespace ADV\Core\Module;
+
   /**
 
    */
   abstract class Base implements Loadable
   {
-
     /**
      * @var array
      */
@@ -20,11 +20,10 @@
     /**
      * @param array $config
      */
-    public function __construct($config = [])
-    {
+    public function __construct($config = []) {
       $this->enabled = $config and \ADV\Core\Arr::get($config, 'enabled', false);
       if ($this->enabled) {
-        $this->_init();
+        $this->init();
       }
     }
   }

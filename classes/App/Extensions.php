@@ -7,6 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\App;
+
+  use ADV\Core\Config;
+
+  /**
+
+   */
   class Extensions
   {
     /**
@@ -16,8 +23,7 @@
      *
      * @return array
      */
-    public static function get_access($id)
-    {
+    public static function get_access($id) {
       global $installed_extensions;
       $ext               = $installed_extensions[$id];
       $security_sections = $security_areas = [];
@@ -32,8 +38,7 @@
      * @static
 
      */
-    public static function add_access(User $user)
-    {
+    public static function add_access(User $user) {
       $installed_extensions = Config::_get('extensions.installed');
       /** @noinspection PhpUnusedLocalVariableInspection */
       foreach ($installed_extensions as $extid => $ext) {
@@ -75,18 +80,22 @@
      *
      * @return string
      */
-    public static function view($name, $value = null, $submit_on_change = false)
-    {
+    public static function view($name, $value = null, $submit_on_change = false) {
       $items = [];
       foreach (Config::_getAll('db') as $comp) {
         $items[] = sprintf(_("Activated for '%s'"), $comp['name']);
       }
 
-      return Forms::arraySelect($name, $value, $items, array(
-                                                            'spec_option'   => _("Installed on system"),
-                                                            'spec_id'       => -1,
-                                                            'select_submit' => $submit_on_change,
-                                                            'async'         => true
-                                                       ));
+      return Forms::arraySelect(
+        $name,
+        $value,
+        $items,
+        array(
+             'spec_option'   => _("Installed on system"),
+             'spec_id'       => -1,
+             'select_submit' => $submit_on_change,
+             'async'         => true
+        )
+      );
     }
   }

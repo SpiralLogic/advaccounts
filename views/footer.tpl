@@ -21,6 +21,7 @@
 </div>
 {{$sidemenu}}
 {{$messages}}
+{{$help_folder}}
 {{#if !AJAX_REFERRER}}
 {{/if}}
 <script>{{$beforescripts}}

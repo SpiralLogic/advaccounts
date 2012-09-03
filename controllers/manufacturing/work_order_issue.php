@@ -15,22 +15,20 @@
     Display::link_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
     Page::footer_exit();
   }
-  function handle_new_order()
-  {
+  function handle_new_order() {
     if (isset($_SESSION['issue_items'])) {
       $_SESSION['issue_items']->clear_items();
       unset ($_SESSION['issue_items']);
     }
     Session_register("issue_items");
-    $_SESSION['issue_items']           = new Item_Order(28);
+    $_SESSION['issue_items'] = new Item_Order(28);
     $_SESSION['issue_items']->order_id = $_GET['trans_no'];
   }
 
   /**
    * @return bool
    */
-  function can_process()
-  {
+  function can_process() {
     if (!Dates::_isDate($_POST['date_'])) {
       Event::error(_("The entered date for the issue is invalid."));
       JS::_setFocus('date_');
@@ -53,7 +51,9 @@
     }
     $failed_item = $_SESSION['issue_items']->check_qoh($_POST['location'], $_POST['date_'], !$_POST['IssueType']);
     if ($failed_item != -1) {
-      Event::error(_("The issue cannot be processed because an entered item would cause a negative inventory balance :") . " " . $failed_item->stock_id . " - " . $failed_item->description);
+      Event::error(
+        _("The issue cannot be processed because an entered item would cause a negative inventory balance :") . " " . $failed_item->stock_id . " - " . $failed_item->description
+      );
 
       return false;
     }
@@ -63,9 +63,22 @@
 
   if (isset($_POST['Process']) && can_process()) {
     // if failed, returns a stockID
-    $failed_data = WO_Issue::add($_SESSION['issue_items']->order_id, $_POST['ref'], $_POST['IssueType'], $_SESSION['issue_items']->line_items, $_POST['location'], $_POST['WorkCentre'], $_POST['date_'], $_POST['memo_']);
+    $failed_data = WO_Issue::add(
+      $_SESSION['issue_items']->order_id,
+      $_POST['ref'],
+      $_POST['IssueType'],
+      $_SESSION['issue_items']->line_items,
+      $_POST['location'],
+      $_POST['WorkCentre'],
+      $_POST['date_'],
+      $_POST['memo_']
+    );
     if ($failed_data != null) {
-      Event::error(_("The process cannot be completed because there is an insufficient total quantity for a component.") . "<br>" . _("Component is :") . $failed_data[0] . "<br>" . _("From location :") . $failed_data[1] . "<br>");
+      Event::error(
+        _("The process cannot be completed because there is an insufficient total quantity for a component.") . "<br>" . _("Component is :") . $failed_data[0] . "<br>" . _(
+          "From location :"
+        ) . $failed_data[1] . "<br>"
+      );
     } else {
       Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=" . $_SESSION['issue_items']->order_id);
     }
@@ -73,8 +86,7 @@
   /**
    * @return bool
    */
-  function check_item_data()
-  {
+  function check_item_data() {
     if (!Validation::post_num('qty', 0)) {
       Event::error(_("The quantity entered is negative or invalid."));
       JS::_setFocus('qty');
@@ -91,31 +103,28 @@
     return true;
   }
 
-  function handle_update_item()
-  {
+  function handle_update_item() {
     if ($_POST['updateItem'] != "" && check_item_data()) {
       $id = $_POST['LineNo'];
       $_SESSION['issue_items']->update_order_item($id, Validation::input_num('qty'), Validation::input_num('std_cost'));
     }
-    Item_Line::start_focus('_stock_id_edit');
+    Item_Line::start_focus('stock_id');
   }
 
   /**
    * @param $id
    */
-  function handle_delete_item($id)
-  {
+  function handle_delete_item($id) {
     $_SESSION['issue_items']->remove_from_order($id);
-    Item_Line::start_focus('_stock_id_edit');
+    Item_Line::start_focus('stock_id');
   }
 
-  function handle_new_item()
-  {
+  function handle_new_item() {
     if (!check_item_data()) {
       return;
     }
     WO_Issue::add_to($_SESSION['issue_items'], $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('std_cost'));
-    Item_Line::start_focus('_stock_id_edit');
+    Item_Line::start_focus('stock_id');
   }
 
   $id = Forms::findPostPrefix(MODE_DELETE);
@@ -129,7 +138,7 @@
     handle_update_item();
   }
   if (isset($_POST['cancelItem'])) {
-    Item_Line::start_focus('_stock_id_edit');
+    Item_Line::start_focus('stock_id');
   }
   if (isset($_GET['trans_no'])) {
     handle_new_order();

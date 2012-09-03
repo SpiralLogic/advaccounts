@@ -1,5 +1,7 @@
 <?php
   use ADV\App\Bank\Bank;
+  use ADV\App\User;
+  use ADV\App\Apps\GL;
   use ADV\Core\Input\Input;
   use ADV\Core\DB\DB;
   use ADV\App\Dates;
@@ -14,7 +16,6 @@
    **/
   class Bank_Trans
   {
-
     // add a bank transaction
     // $amount is in $currency
     // $date_ is display date (non-sql)
@@ -72,6 +73,7 @@
     public static function exists($type, $type_no) {
       $sql    = "SELECT trans_no FROM bank_trans WHERE type=" . static::$DB->_escape($type) . " AND trans_no=" . static::$DB->_escape($type_no);
       $result = static::$DB->_query($sql, "Cannot retreive a bank transaction");
+
       return (static::$DB->_numRows($result) > 0);
     }
     /**
@@ -99,6 +101,7 @@
         $sql .= " AND bank_trans.person_id = " . static::$DB->_escape($person_id);
       }
       $sql .= " ORDER BY trans_date, bank_trans.id";
+
       return static::$DB->_query($sql, "query for bank transaction");
     }
     /**
@@ -111,7 +114,7 @@
      * @return array|bool
      */
     public static function getPeriod($bank_account, $from, $to = null) {
-      $fiscalperiod = Dates::_getCurrentOpenFiscalPeriod();
+      $fiscalperiod = GL_Trans::getCurrentOpenFiscalPeriod();
       $beginfiscal  = $fiscalperiod['start'];
       $sql
                     = "SELECT bt.type, bt.trans_no, bt.ref, bt.trans_date,bt.id, IF( bt.trans_no IS null, SUM( g.amount ), bt.amount ) AS amount
@@ -125,6 +128,7 @@
       }
       $sql .= ") AND bt.amount!=0 GROUP BY bt.id ORDER BY IF(bt.trans_date>'" . $from . "' AND bt.trans_date<='" . $to . "',1,0) , bt.reconciled DESC ,bt.trans_date , amount ";
       static::$DB->_query($sql);
+
       return static::$DB->_fetchAll();
     }
     /**
@@ -178,6 +182,7 @@
       ) . ") WHERE id=" . DB::_quote($trans_no) . " AND type=" . DB::_quote($type);
       DB::_query($sql);
       static::$DB->_commit();
+
       return true;
     }
     /**
@@ -223,21 +228,22 @@
             static::$DB->_cancel();
             $status->set(\ADV\Core\Status::ERROR, 'chnage date', $bank_trans_id . 'Cannot change date for this transaction');
         }
-        $sql = "UPDATE comments SET memo_ = CONCAT(memo_,'" . ' <br>Date changed from ' . $row['trans_date'] . ' to ' . $sqldate . ' by ' . User::i()->username . "') WHERE id=" . DB::_quote($row["trans_no"]) . " AND type=" . DB::_quote($row['type']);
+        $sql = "UPDATE comments SET memo_ = CONCAT(memo_,'" . ' <br>Date changed from ' . $row['trans_date'] . ' to ' . $sqldate . ' by ' . User::i(
+        )->username . "') WHERE id=" . DB::_quote($row["trans_no"]) . " AND type=" . DB::_quote($row['type']);
         DB::_query($sql);
         static::$DB->_commit();
+
         return true;
-      }
-      catch (\ADV\Core\DB\DBException $e) {
+      } catch (\ADV\Core\DB\DBException $e) {
         static::$DB->_cancel();
         $status->set(\ADV\Core\Status::ERROR, 'change date', 'Database error: ' . $e->getMessage());
       }
+
       return false;
     }
     /**
      * @param $bank_account
      * @param $groupid
-     *
      *
      * @return null|PDOStatement
      */
@@ -248,11 +254,19 @@
      			WHERE bank_trans.bank_act=" . static::$DB->_quote(
         $bank_account
       ) . " AND bank_trans.type != " . ST_GROUPDEPOSIT . " AND bank_trans.undeposited>0 AND (undeposited = " . static::$DB->_quote($groupid) . ")";
+
       return static::$DB->_query($sql, 'Couldn\'t get deposit references');
     }
+    /**
+     * @param $trans_no
+     * @param $type
+     *
+     * @return PDOStatement
+     */
     public static function getInfo($trans_no, $type) {
       $sql
         = "SELECT memo_ from gl_trans WHERE type = " . static::$DB->_quote($type) . " AND type_no = " . static::$DB->_quote($trans_no);
+
       return static::$DB->_query($sql, 'Couldn\'t get deposit references');
     }
   }

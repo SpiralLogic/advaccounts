@@ -12,7 +12,7 @@
   } elseif (strpos($_SERVER['HTTP_HOST'], 'advaccounts') !== false) {
     header('Location: http://advanced.advancedgroup.com.au' . $_SERVER['REQUEST_URI']);
   }
- if ($_SERVER['DOCUMENT_URI'] !== '/assets.php' && (!isset($_SERVER['QUERY_STRING']) || (strlen($_SERVER['QUERY_STRING']) && substr_compare(
+  if ($_SERVER['DOCUMENT_URI'] !== '/assets.php' && (!isset($_SERVER['QUERY_STRING']) || (strlen($_SERVER['QUERY_STRING']) && substr_compare(
     $_SERVER['QUERY_STRING'],
     '/profile/',
     0,
@@ -24,7 +24,8 @@
     include $XHPROF_ROOT . "/xhprof_lib/config.php";
     include $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
     include $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
-    xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
+    $ignore = array('call_user_func', 'call_user_func_array');
+    xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY, array('ignored_functions' => $ignore));
     register_shutdown_function(
       function () {
         register_shutdown_function(
@@ -38,7 +39,7 @@
       }
     );
   }
-  error_reporting(E_ALL&~E_STRICT&~E_NOTICE );
+  error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
   ini_set('display_errors', 'On');
   ini_set("ignore_repeated_errors", "On");
   ini_set("log_errors", "On");
@@ -70,8 +71,9 @@
      */
     function e($string) {
 
-      return \ADV\App\Security::htmlentities($string);
+      return \ADV\Core\Security::htmlentities($string);
     }
   }
-  new ADVAccounting($loader);
+
+  new \ADV\App\ADVAccounting($loader);
 

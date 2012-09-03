@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Contact;
+
   use \ADV\App\DB\Base;
 
   /**
@@ -60,50 +61,43 @@
      * @param int       $type
      * @param array|int $id
      */
-    public function __construct($type, $id = 0)
-    {
+    public function __construct($type, $id = 0) {
       $this->parent_type = (int) $type;
       parent::__construct($id, array('parent_type' => $type));
     }
-    public function delete()
-    {
+    public function delete() {
       // TODO: Implement delete() method.
     }
     /**
      * @return bool
      */
-    protected function _canProcess()
-    {
+    protected function canProcess() {
       return true;
     }
     /**
      * @return bool|int
      */
-    protected function _saveNew()
-    {
+    protected function saveNew() {
       $temp = new Contact($this->parent_type);
       foreach ($this as $key => $value) {
         if ($key != 'parent_id' && $key != 'id' && $key != 'parent_type' && $key != '_status' && $temp->$key != $value) {
-          return parent::_saveNew();
+          return parent::saveNew();
         }
       }
 
       return false;
     }
-    protected function _countTransactions()
-    {
-      // TODO: Implement _countTransactions() method.
+    protected function countTransactions() {
+      // TODO: Implement countTransactions() method.
     }
-    protected function _defaults()
-    {
+    protected function defaults() {
       $this->id = (int) $this->id;
     }
     /**
      * @return bool|\Status
      */
-    protected function _new()
-    {
-      $this->_defaults();
+    protected function init() {
+      $this->defaults();
 
       return $this->status(true, 'Initialize new Contact', 'Now working with a new Contact');
     }

@@ -8,9 +8,12 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Creditor;
+
   use ADV\App\UI\UI;
+  use ADV\App\Forms;
+  use ADV\App\Validation;
+  use ADV\App\User;
   use ADV\Core\DB\DB;
-  use Display;
   use ADV\Core\Session;
   use ADV\Core\Input\Input;
   use ADV\App\Dates;
@@ -19,10 +22,7 @@
   use ADV\Core\Num;
   use Bank_Currency;
   use ADV\Core\JS;
-  use Validation;
   use ADV\App\Contact\Contact;
-  use User;
-  use Forms;
 
   /**
 
@@ -36,8 +36,7 @@
      *
      * @return array|string
      */
-    public static function search($terms)
-    {
+    public static function search($terms) {
       $sql = "SELECT creditor_id as id, supp_ref as label, supp_ref as value FROM suppliers WHERE supp_ref LIKE '%" . $terms . "%' ";
       if (is_numeric($terms)) {
         $sql .= ' OR creditor_id LIKE  ' . static::$DB->_quote($terms . '%');
@@ -51,13 +50,14 @@
         }
         $data[] = $row;
       }
+
       return $data;
     }
     /** @var */
     /** @var */
     public $id = 0, $creditor_id; //
     /** @var */
-    public $name = 'New Supplier'; //
+    public $name = ''; //
     /** @var */
     /** @var */
     public $tax_id, $gst_no; //
@@ -158,8 +158,7 @@
     /**
      * @param int|null $id
      */
-    public function __construct($id = null)
-    {
+    public function __construct($id = null) {
       $this->gst_no   = &$this->tax_id;
       $this->contact  = &$this->contact_name;
       $this->address  = &$this->post_address;
@@ -170,8 +169,7 @@
     /**
      * @return array
      */
-    public function getEmailAddresses()
-    {
+    public function getEmailAddresses() {
       return $this->email ? array('Accounts' => array($this->id => array($this->name, $this->email))) : false;
     }
     /**
@@ -179,10 +177,10 @@
      *
      * @return array|bool|int|null|void
      */
-    public function save($changes = null)
-    {
+    public function save($changes = null) {
       if (!parent::save($changes)) {
-        $this->_setDefaults();
+        $this->setDefaults();
+
         return false;
       }
       foreach ($this->contacts as $contact) {
@@ -190,11 +188,11 @@
           $contact->save(array('parent_id' => $this->id));
         }
       }
-      $this->_setDefaults();
+      $this->setDefaults();
+
       return true;
     }
-    public function delete()
-    {
+    public function delete() {
       // TODO: Implement delete() method.
     }
     /**
@@ -202,8 +200,7 @@
      *
      * @return array|null|void
      */
-    protected function setFromArray($changes = null)
-    {
+    protected function setFromArray($changes = null) {
       parent::setFromArray($changes);
       if (isset($changes['contacts']) && is_array($changes['contacts'])) {
         foreach ($changes['contacts'] as $contact) {
@@ -213,40 +210,50 @@
         $this->contacts = [];
       }
       $this->discount     = User::numeric($this->discount) / 100;
-      $this->ref          = substr($this->name, 0, 29);
+      $this->supp_ref     = substr($this->name, 0, 29);
       $this->credit_limit = str_replace(',', '', $this->credit_limit);
     }
     /**
      * @return void
      */
-    protected function _setDefaults()
-    {
+    protected function setDefaults() {
       $this->contacts[]     = new Contact(CT_SUPPLIER, array('parent_id' => $this->id));
       $this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
     }
     /**
      * @return bool
      */
-    protected function _canProcess()
-    {
-      if (empty($this->name)) {
-        $this->status(false, 'Processing', "The supplier name cannot be empty.", 'name');
-        return false;
+    protected function canProcess() {
+      if (strlen($this->name) == 0) {
+        return $this->status(false, 'Processing', "The supplier name cannot be empty.", 'name');
       }
+      if (strlen($this->creditor_id) == 0) {
+        $data['debtor_ref'] = substr($this->name, 0, 29);
+      }
+      if (!Validation::is_num($this->credit_limit, 0)) {
+        return $this->status(false, 'Processing', "The credit limit must be numeric and not less than zero.", 'credit_limit');
+      }
+      if (!Validation::is_num($this->discount, 0, 100)) {
+        return $this->status(
+          false,
+          'Processing',
+          "The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0.",
+          'discount'
+        );
+      }
+
       return true;
     }
     /**
      * @return mixed|void
      */
-    protected function _countTransactions()
-    {
-      // TODO: Implement _countTransactions() method.
+    protected function countTransactions() {
+      // TODO: Implement countTransactions() method.
     }
     /**
      * @return bool|\Status
      */
-    protected function _defaults()
-    {
+    protected function defaults() {
       $this->credit_limit             = Num::_priceFormat(0);
       $company_record                 = DB_Company::get_prefs();
       $this->curr_code                = $company_record["curr_default"];
@@ -255,21 +262,20 @@
       $this->payment_discount_account = $company_record['pyt_discount_act'];
       $this->tax_group_id             = 1;
       $this->id                       = 0;
-      $this->_setDefaults();
+      $this->setDefaults();
     }
     /**
      * @return bool|\Status
      */
-    protected function _new()
-    {
-      $this->_defaults();
+    protected function init() {
+      $this->defaults();
+
       return $this->status(true, 'Initialize new supplier', 'Now working with a new supplier');
     }
     /**
      * @return void
      */
-    protected function _getContacts()
-    {
+    protected function _getContacts() {
       $this->contacts = [];
       static::$DB->_select()->from('contacts')->where('parent_id=', $this->id)->andWhere('parent_type=', CT_SUPPLIER)->orderby('name DESC');
       $contacts = static::$DB->_fetch()->asClassLate('Contact', array(CT_SUPPLIER));
@@ -284,18 +290,22 @@
      * @static
      * @return void
      */
-    public static function addEditDialog()
-    {
+    public static function addEditDialog() {
       $customerBox = new Dialog('Supplier Edit', 'supplierBox', '');
       $customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
       $customerBox->addBeforeClose('$("#creditor_id").trigger("change")');
       $customerBox->setOptions(
         array(
-             'autoOpen'   => false, 'modal'      => true, 'width'      => '850', 'height'     => '715', 'resizeable' => true
+             'autoOpen'   => false,
+             'modal'      => true,
+             'width'      => '850',
+             'height'     => '715',
+             'resizeable' => true
         )
       );
       $customerBox->show();
-      $js = <<<JS
+      $js
+        = <<<JS
                             var val = $("#creditor_id").val();
                             $("#supplierBox").html("<iframe src='/contacts/suppliers.php?frame=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
@@ -307,15 +317,15 @@ JS;
      *
      * @return array|bool
      */
-    protected function _read($id = false, $extra = [])
-    {
-      if (!parent::_read($id)) {
+    protected function read($id = false, $extra = []) {
+      if (!parent::read($id)) {
         return $this->status->get();
       }
       $this->_getContacts();
       $this->discount     = $this->discount * 100;
       $this->credit_limit = Num::_priceFormat($this->credit_limit);
-      $this->_setDefaults();
+      $this->setDefaults();
+
       return $this;
     }
     /**
@@ -326,8 +336,7 @@ JS;
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get_to_trans($creditor_id, $to = null)
-    {
+    public static function get_to_trans($creditor_id, $to = null) {
       if ($to == null) {
         $todate = date("Y-m-d");
       } else {
@@ -336,9 +345,10 @@ JS;
       $past_due1 = DB_Company::get_pref('past_due_days') ? : 30;
       $past_due2 = 2 * $past_due1;
       // removed - creditor_trans.alloc from all summations
-      $value  = "(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)";
-      $due    = "IF (creditor_trans.type=" . ST_SUPPINVOICE . " OR creditor_trans.type=" . ST_SUPPCREDIT . ",creditor_trans.due_date,creditor_trans.tran_date)";
-      $sql    = "SELECT suppliers.name, suppliers.curr_code, payment_terms.terms,
+      $value = "(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)";
+      $due   = "IF (creditor_trans.type=" . ST_SUPPINVOICE . " OR creditor_trans.type=" . ST_SUPPCREDIT . ",creditor_trans.due_date,creditor_trans.tran_date)";
+      $sql
+              = "SELECT suppliers.name, suppliers.curr_code, payment_terms.terms,
         Sum($value) AS Balance,
         Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0)) AS Due,
         Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past_due1,$value,0)) AS Overdue1,
@@ -360,7 +370,8 @@ JS;
       if (static::$DB->_numRows($result) == 0) {
         /*Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
         $nil_balance = true;
-        $sql         = "SELECT suppliers.name, suppliers.curr_code, suppliers.creditor_id, payment_terms.terms FROM suppliers,
+        $sql
+                     = "SELECT suppliers.name, suppliers.curr_code, suppliers.creditor_id, payment_terms.terms FROM suppliers,
                  payment_terms WHERE
                  suppliers.payment_terms = payment_terms.terms_indicator
                  AND suppliers.creditor_id = " . static::$DB->_escape($creditor_id);
@@ -375,6 +386,7 @@ JS;
         $supp["Overdue1"] = 0;
         $supp["Overdue2"] = 0;
       }
+
       return $supp;
     }
     /**
@@ -386,12 +398,12 @@ JS;
      *
      * @return mixed
      */
-    public static function get_oweing($creditor_id, $date_from, $date_to)
-    {
+    public static function get_oweing($creditor_id, $date_from, $date_to) {
       $date_from = Dates::_dateToSql($date_from);
       $date_to   = Dates::_dateToSql($date_to);
       // Sherifoz 22.06.03 Also get the description
-      $sql     = "SELECT
+      $sql
+               = "SELECT
 
 
      SUM((trans.ov_amount + trans.ov_gst + trans.ov_discount)) AS Total
@@ -405,6 +417,7 @@ JS;
         AND trans.type = " . ST_SUPPINVOICE;
       $result  = static::$DB->_query($sql);
       $results = static::$DB->_fetch($result);
+
       return $results['Total'];
     }
     /**
@@ -414,10 +427,10 @@ JS;
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get($creditor_id)
-    {
+    public static function get($creditor_id) {
       $sql    = "SELECT * FROM suppliers WHERE creditor_id=" . static::$DB->_escape($creditor_id);
       $result = static::$DB->_query($sql, "could not get supplier");
+
       return static::$DB->_fetch($result);
     }
     /**
@@ -427,11 +440,11 @@ JS;
      *
      * @return mixed
      */
-    public static function get_name($creditor_id)
-    {
+    public static function get_name($creditor_id) {
       $sql    = "SELECT name AS name FROM suppliers WHERE creditor_id=" . static::$DB->_escape($creditor_id);
       $result = static::$DB->_query($sql, "could not get supplier");
       $row    = static::$DB->_fetchRow($result);
+
       return $row[0];
     }
     /**
@@ -441,10 +454,10 @@ JS;
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get_accounts_name($creditor_id)
-    {
+    public static function get_accounts_name($creditor_id) {
       $sql    = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE creditor_id=" . static::$DB->_escape($creditor_id);
       $result = static::$DB->_query($sql, "could not get supplier");
+
       return static::$DB->_fetch($result);
     }
     /**
@@ -455,8 +468,7 @@ JS;
      *
      * @return void
      */
-    public static function newselect($value = null, $options = [])
-    {
+    public static function newselect($value = null, $options = []) {
       $o     = [
         'row'        => true, //
         'cell_params'=> [], //
@@ -485,16 +497,17 @@ JS;
       }
       Forms::hidden('creditor_id');
       UI::search(
-        'creditor', array(
-                         'cells'            => true, //
-                         'url'              => '/contacts/suppliers.php', ///
-                         'label_cell_params'=> ['rowspan'=> $o['rowspan'], 'class'=> 'nowrap label ' . $o['cell_class']], //
-                         'label'            => $o['label'], //
-                         'name'             => 'creditor', //
-                         'input_cell_params'=> $o['cell_params'], //
-                         'focus'            => $focus, //
-                         'value'            => $value,
-                    )
+        'creditor',
+        array(
+             'cells'            => true, //
+             'url'              => '/contacts/suppliers.php', ///
+             'label_cell_params'=> ['rowspan'=> $o['rowspan'], 'class'=> 'nowrap label ' . $o['cell_class']], //
+             'label'            => $o['label'], //
+             'name'             => 'creditor', //
+             'input_cell_params'=> $o['cell_params'], //
+             'focus'            => $focus, //
+             'value'            => $value ? : null,
+        )
       );
       if ($o['row']) {
         echo "</tr>\n";
@@ -520,23 +533,28 @@ JS;
      *
      * @return string
      */
-    public static function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $all = false, $editkey = false)
-    {
+    public static function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $all = false, $editkey = false) {
       $sql  = "SELECT creditor_id, supp_ref, curr_code, inactive FROM suppliers ";
       $mode = DB_Company::get_pref('no_supplier_list');
+
       return Forms::selectBox(
-        $name, $selected_id, $sql, 'creditor_id', 'name', array(
-                                                               'format'        => 'Forms::addCurrFormat',
-                                                               'order'         => array('supp_ref'),
-                                                               'search_box'    => $mode != 0,
-                                                               'type'          => 1,
-                                                               'spec_option'   => $spec_option === true ? _("All Suppliers") : $spec_option,
-                                                               'spec_id'       => ALL_TEXT,
-                                                               'select_submit' => $submit_on_change,
-                                                               'async'         => false,
-                                                               'sel_hint'      => $mode ? _('Press Space tab to filter by name fragment') : _('Select supplier'),
-                                                               'show_inactive' => $all
-                                                          )
+        $name,
+        $selected_id,
+        $sql,
+        'creditor_id',
+        'name',
+        array(
+             'format'        => 'Forms::addCurrFormat',
+             'order'         => array('supp_ref'),
+             'search_box'    => $mode != 0,
+             'type'          => 1,
+             'spec_option'   => $spec_option === true ? _("All Suppliers") : $spec_option,
+             'spec_id'       => ALL_TEXT,
+             'select_submit' => $submit_on_change,
+             'async'         => false,
+             'sel_hint'      => $mode ? _('Press Space tab to filter by name fragment') : _('Select supplier'),
+             'show_inactive' => $all
+        )
       );
     }
     /**
@@ -552,8 +570,7 @@ JS;
      *
      * @return void
      */
-    public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false)
-    {
+    public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
       echo "<td class='label'>";
       if ($label != null) {
         echo "<label for='$name'>$label</label>";
@@ -574,8 +591,7 @@ JS;
      *
      * @return void
      */
-    public static function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false)
-    {
+    public static function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
       echo "<tr><td class='label'><label for='$name'>$label</label></td><td>";
       echo Creditor::select($name, $selected_id, $all_option, $submit_on_change, $all, $editkey);
       echo "</td></tr>\n";

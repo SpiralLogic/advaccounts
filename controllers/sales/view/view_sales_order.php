@@ -200,7 +200,8 @@
         )
     );
     $items_total   = $_SESSION['View']->get_items_total();
-    Row::label(_("Shipping"), Num::_priceFormat($_SESSION['View']->freight_cost), "class='alignright' colspan=6", ' class="alignright nowrap"', 1);
+  Table::foot();
+  Row::label(_("Shipping"), Num::_priceFormat($_SESSION['View']->freight_cost), "class='alignright' colspan=6", ' class="alignright nowrap"', 1);
     $taxes = $view->get_taxes_for_order();
     foreach ($taxes as $tax) {
         $display_total += $tax['Value'];
@@ -208,7 +209,8 @@
     }
     $display_total = Num::_priceFormat($items_total + $_SESSION['View']->freight_cost);
     Row::label(_("Total Order Value"), $display_total, "class='alignright' colspan=6", ' class="alignright nowrap"', 1);
-    Table::end(2);
+  Table::footEnd();
+  Table::end(2);
     if (Input::_get('frame')) {
         return;
     }

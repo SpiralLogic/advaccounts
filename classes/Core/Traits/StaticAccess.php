@@ -9,10 +9,12 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core\Traits;
-  /**
 
+  /**
+   * @method static i($class = null)
    */
-  trait StaticAccess {
+  trait StaticAccess
+  {
     /**
      * @static
      *
@@ -33,9 +35,8 @@
     public static function __callStatic($func, $args) {
       try {
         return call_user_func_array(array(static::i(), '_' . $func), $args);
-      }
-      catch (\ADV\Core\Exception $e) {
-        \Event::error('Call to undefined static method ' . $func . ' in class ' . get_called_class());
+      } catch (\ADV\Core\Exception $e) {
+        return \Event::error('Call to undefined static method ' . $func . ' in class ' . get_called_class());
       }
     }
     /**
@@ -47,9 +48,8 @@
     public function __call($func, $args) {
       try {
         return call_user_func_array(array(static::i(), '_' . $func), $args);
-      }
-      catch (\ADV\Core\Exception $e) {
-        \Event::error('Call to undefined static method ' . $func . ' in class ' . get_called_class());
+      } catch (\ADV\Core\Exception $e) {
+        return \Event::error('Call to undefined static method ' . $func . ' in class ' . get_called_class());
       }
     }
   }

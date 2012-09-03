@@ -15,7 +15,6 @@
       'Assets', //
       'Auth', //
       'Loader', //
-      'Cache', //
       'Cell', //
       'Config', //
       'DatePicker', //
@@ -25,6 +24,7 @@
       'Files', //
       'Hook', //
       'HTML', //
+      'HTMLmin', //
       'HttpNotFoundException', //
       'JS', //
       'JSMin', //
@@ -40,7 +40,10 @@
       'UploadHandler', //
       'View', //
       'XMLParser', //
-    ), //
+    ),
+    'ADV\\Core\\Cache'           => [
+      'Cache', //
+    ], //
     'ADV\\Core\\DB'              => array(
       'DB', //
       'DBException', //
@@ -50,12 +53,29 @@
       'DBSelectException', //
       'DBUpdateException', //
       'Utils', //
-    ), 'ADV\\Core\\Module'       => array(
+    ),
+    'ADV\\Core\\Module'          => array(
       'Loadable', //
-    ), 'ADV\\App'                => array(
+    ),
+    'ADV\\App'                   => array(
+      'ADVAccounting', //
       'Page', //
       'Security', //
       'Dates', //
+      'Display', //
+      'User', //
+      'Users', //
+      'Orders', //
+      'Validation', //
+      'Voiding', //
+      'SysTypes', //
+      'Report', //
+      'Forms', //
+      'Languages', //
+      'Messages', //
+      'Ref', //
+      'Reporting', //
+
     ), //
     'ADV\\App\\Debtor'           => array(
       'Debtor', //
@@ -82,4 +102,5 @@
       'WO', //
     ), //
     'ADV\\Core\\Input'           => ['Input'],
+    'ADV\\App\\Form'             => ['Form'],
   );

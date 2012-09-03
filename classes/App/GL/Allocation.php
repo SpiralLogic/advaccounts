@@ -1,5 +1,7 @@
 <?php
-    /**
+  use ADV\Core\Cell;
+
+  /**
      * PHP version 5.4
      * @category  PHP
      * @package   adv.accounts.app
@@ -270,7 +272,7 @@
                     Cell::amount($alloc_item->amount);
                     Cell::amount($alloc_item->amount_allocated);
                     $_POST['amount' . $counter] = Num::_priceFormat($alloc_item->current_allocated + Input::_post('amount' . $counter, Input::NUMERIC));
-                    Forms::amountCells(null, "amount" . $counter, Num::_priceFormat('amount' . $counter));
+                    Forms::amountCells(null, "amount" . $counter, Num::_priceFormat('amount' . $counter),null,['$']);
                     $un_allocated = $alloc_item->amount - $alloc_item->amount_allocated;
                     Cell::amount($un_allocated, false, '');
                     Cell::label("<a href='#' name=Alloc$counter class='button allocateAll'>" . _("All") . "</a>");

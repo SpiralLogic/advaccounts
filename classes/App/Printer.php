@@ -1,4 +1,6 @@
 <?php
+  use ADV\Core\DB\DB;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -22,12 +24,15 @@
      *
      * @return null|PDOStatement
      */
-    public static function write_def($id, $name, $descr, $queue, $host, $port, $timeout)
-    {
+    public static function write_def($id, $name, $descr, $queue, $host, $port, $timeout) {
       if ($id > 0) {
-        $sql = "UPDATE printers SET description=" . DB::_escape($descr) . ",name=" . DB::_escape($name) . ",queue=" . DB::_escape($queue) . ",host=" . DB::_escape($host) . ",port=" . DB::_escape($port) . ",timeout=" . DB::_escape($timeout) . " WHERE id=" . DB::_escape($id);
+        $sql = "UPDATE printers SET description=" . DB::_escape($descr) . ",name=" . DB::_escape($name) . ",queue=" . DB::_escape($queue) . ",host=" . DB::_escape(
+          $host
+        ) . ",port=" . DB::_escape($port) . ",timeout=" . DB::_escape($timeout) . " WHERE id=" . DB::_escape($id);
       } else {
-        $sql = "INSERT INTO printers (" . "name,description,queue,host,port,timeout) " . "VALUES (" . DB::_escape($name) . "," . DB::_escape($descr) . "," . DB::_escape($queue) . "," . DB::_escape($host) . "," . DB::_escape($port) . "," . DB::_escape($timeout) . ")";
+        $sql = "INSERT INTO printers (" . "name,description,queue,host,port,timeout) " . "VALUES (" . DB::_escape($name) . "," . DB::_escape($descr) . "," . DB::_escape(
+          $queue
+        ) . "," . DB::_escape($host) . "," . DB::_escape($port) . "," . DB::_escape($timeout) . ")";
       }
 
       return DB::_query($sql, "could not write printer definition");
@@ -36,8 +41,7 @@
      * @static
      * @return null|PDOStatement
      */
-    public static function getAll()
-    {
+    public static function getAll() {
       $sql = "SELECT * FROM printers";
 
       return DB::_query($sql, "could not get printer definitions");
@@ -49,8 +53,7 @@
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get($id)
-    {
+    public static function get($id) {
       $sql    = "SELECT * FROM printers WHERE id=" . DB::_escape($id);
       $result = DB::_query($sql, "could not get printer definition");
 
@@ -67,8 +70,7 @@
      *
      * @return bool
      */
-    public static function update_profile($name, $dest)
-    {
+    public static function update_profile($name, $dest) {
       foreach ($dest as $rep => $printer) {
         if ($printer != '' || $rep == '') {
           $sql = "REPLACE INTO print_profiles " . "(profile, report, printer) VALUES (" . DB::_escape($name) . "," . DB::_escape($rep) . "," . DB::_escape($printer) . ")";
@@ -94,8 +96,7 @@
      *
      * @return \ADV\Core\DB\Query\Result|Array|bool
      */
-    public static function get_report($profile, $report)
-    {
+    public static function get_report($profile, $report) {
       $sql    = "SELECT printer FROM print_profiles WHERE profile=" . DB::_quote($profile) . " AND report=" . DB::_quote($report);
       $result = DB::_query($sql, 'report printer lookup failed');
       if (!$result) {
@@ -122,8 +123,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function delete_profile($name)
-    {
+    public static function delete_profile($name) {
       $sql = "DELETE FROM print_profiles WHERE profile=" . DB::_escape($name);
 
       return DB::_query($sql, "could not delete printing profile");
@@ -138,8 +138,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_profile($name)
-    {
+    public static function get_profile($name) {
       $sql = "SELECT	* FROM print_profiles WHERE profile=" . DB::_escape($name);
 
       return DB::_query($sql, "could not get printing profile");

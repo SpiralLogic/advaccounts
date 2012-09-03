@@ -1,5 +1,7 @@
 <?php
   use ADV\Core\DB\DB;
+  use ADV\App\Forms;
+  use ADV\App\User;
 
   /**
    * PHP version 5.4
@@ -138,8 +140,7 @@
     /**
      * @param int|null $id
      */
-    public function __construct($id = null)
-    {
+    public function __construct($id = null) {
       $this->id = &$this->branch_id;
       parent::__construct($id);
       $this->name         = &$this->br_name;
@@ -149,18 +150,16 @@
     /**
      * @return array|null
      */
-    public function delete()
-    {
+    public function delete() {
       DB::_delete('branches')->where('branch_id=', $this->branch_id)->exec();
-      $this->_new();
+      $this->init();
 
       return $this->status(true, 'delete', "Branch deleted.");
     }
     /**
      * @return string
      */
-    public function getAddress()
-    {
+    public function getAddress() {
       $address = $this->br_address . "\n";
       if ($this->city) {
         $address .= $this->city;
@@ -177,8 +176,7 @@
     /**
      * @return array|bool|null
      */
-    protected function _canProcess()
-    {
+    protected function canProcess() {
       if (strlen($this->br_name) < 1) {
         return $this->status(false, 'write', 'Branch name can not be empty');
       }
@@ -188,29 +186,25 @@
     /**
      * @return void
      */
-    protected function _countTransactions()
-    {
+    protected function countTransactions() {
     }
     /**
      * @return void
      */
-    protected function _defaults()
-    {
+    protected function defaults() {
+      parent::defaults();
       $company_record                 = DB_Company::get_prefs();
-      $this->branch_id                = 0;
       $this->default_location         = Config::_get('default.location');
       $this->sales_discount_account   = $company_record['default_sales_discount_act'];
       $this->receivables_account      = $company_record['debtors_act'];
-
       $this->payment_discount_account = $company_record['default_prompt_payment_act'];
       $this->salesman                 = (User::i()) ? User::i()->salesmanid : 1;
     }
     /**
      * @return array|null
      */
-    protected function _new()
-    {
-      $this->_defaults();
+    protected function init() {
+      $this->defaults();
 
       return $this->status(true, 'new', 'Now working with a new Branch');
     }
@@ -219,8 +213,7 @@
      *
      * @return array|null|void
      */
-    protected function setFromArray($changes = null)
-    {
+    protected function setFromArray($changes = null) {
       parent::setFromArray($changes);
       if (!empty($this->city)) {
         $this->br_name = $this->city . " " . strtoupper($this->state);
@@ -236,22 +229,22 @@
      * @internal param bool|int|null $params
      * @return array|bool|null
      */
-    protected function _read($id = null, $extra = [])
-    {
+    protected function read($id = null, $extra = []) {
       if (!$id) {
         return $this->status(false, 'read', 'No Branch parameters provided');
       }
-      $this->_defaults();
+      $this->defaults();
       if (!is_array($id)) {
         $id = array('branch_id' => $id);
       }
-      $sql = DB::_select('b.*', 'a.description', 's.salesman_name', 't.name AS tax_group_name')
-        ->from('branches b, debtors c, areas a, salesman s, tax_groups t')->where(array(
-                                                                                       'b.debtor_id=c.debtor_id',
-                                                                                       'b.tax_group_id=t.id',
-                                                                                       'b.area=a.area_code',
-                                                                                       'b.salesman=s.salesman_code'
-                                                                                  ));
+      $sql = DB::_select('b.*', 'a.description', 's.salesman_name', 't.name AS tax_group_name')->from('branches b, debtors c, areas a, salesman s, tax_groups t')->where(
+        array(
+             'b.debtor_id=c.debtor_id',
+             'b.tax_group_id=t.id',
+             'b.area=a.area_code',
+             'b.salesman=s.salesman_code'
+        )
+      );
       foreach ($id as $key => $value) {
         $sql->where("b.$key=", $value);
       }
@@ -272,22 +265,27 @@
      *
      * @return string
      */
-    public static function select($debtor_id, $name, $selected_id = null, $spec_option = true, $enabled = true, $submit_on_change = false, $editkey = false)
-    {
+    public static function select($debtor_id, $name, $selected_id = null, $spec_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
       $sql
              = "SELECT branch_id, branch_ref FROM branches
             WHERE branch_ref <> 'accounts' AND inactive <> 1  AND debtor_id='" . $debtor_id . "' ";
       $where = $enabled ? array("disable_trans = 0") : [];
 
-      return Forms::selectBox($name, $selected_id, $sql, 'branch_id', 'br_name', array(
-                                                                                     'where'         => $where,
-                                                                                     'order'         => array('branch_ref'),
-                                                                                     'spec_option'   => $spec_option === true ?
-                                                                                       _('All branches') : $spec_option,
-                                                                                     'spec_id'       => ALL_TEXT,
-                                                                                     'select_submit' => $submit_on_change,
-                                                                                     'sel_hint'      => _('Select customer branch')
-                                                                                ));
+      return Forms::selectBox(
+        $name,
+        $selected_id,
+        $sql,
+        'branch_id',
+        'br_name',
+        array(
+             'where'         => $where,
+             'order'         => array('branch_ref'),
+             'spec_option'   => $spec_option === true ? _('All branches') : $spec_option,
+             'spec_id'       => ALL_TEXT,
+             'select_submit' => $submit_on_change,
+             'sel_hint'      => _('Select customer branch')
+        )
+      );
     }
     /**
      * @static
@@ -303,8 +301,7 @@
      *
      * @return void
      */
-    public static function cells($label, $debtor_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false)
-    {
+    public static function cells($label, $debtor_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
       if ($label != null) {
         echo "<td>$label</td>\n";
       }
@@ -326,8 +323,7 @@
      *
      * @return void
      */
-    public static function row($label, $debtor_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false)
-    {
+    public static function row($label, $debtor_id, $name, $selected_id = null, $all_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
       echo "<tr><td class='label'>$label</td>";
       Debtor_Branch::cells(null, $debtor_id, $name, $selected_id, $all_option, $enabled, $submit_on_change, $editkey);
       echo "</tr>";

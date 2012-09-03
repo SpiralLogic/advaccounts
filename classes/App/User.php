@@ -7,21 +7,29 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\App;
+
   use ADV\Core\Session;
+  use DB_Company;
+  use ADV\Core\Event;
   use ADV\Core\JS;
-  use ADV\App\Security;
   use ADV\Core\DB\DB;
   use ADV\Core\Config;
   use ADV\Core\Traits\StaticAccess;
 
   /**
-   * @method theme
+   * @method static theme
    * @method User ii()
-   * @method logout()
-   * @method price_dec()
-   * @method numeric($input)
+   * @method static logout()
+   * @method static price_dec()
+   * @method static numeric($input)
+   * @method static fallback()
+   * @method static percent_dec()
+   * @method static graphic_links()
+   * @method static register_login($object, $function = null, $arguments = [])
    */
-  class User {
+  class User
+  {
     use \ADV\Core\Traits\Hook;
     use StaticAccess {
     StaticAccess::i as ii;
@@ -71,7 +79,7 @@
      */
     public $ui_mode = 0;
     /***
-     * @var \UserPrefs
+     * @var UserPrefs
      */
     public $prefs;
     /**
@@ -114,6 +122,7 @@
       if (isset($_SESSION['User'])) {
         $user = $_SESSION['User'];
       }
+
       return static::ii($user, $session, $config);
     }
     /**
@@ -132,6 +141,7 @@
      */
     public function __sleep() {
       $this->Session = null;
+
       return array_keys((array) $this);
     }
     /**
@@ -160,6 +170,7 @@
         $this->last_record = time();
         Event::registerShutdown($this, '_addLog');
       }
+
       return $this->logged;
     }
     /**
@@ -170,7 +181,7 @@
      * @return bool
      */
     public function login($company, $loginname) {
-      $this->Session =  $this->Session ? : Session::i();
+      $this->Session = $this->Session ? : Session::i();
       $this->company = $company;
       $this->logged  = false;
       $myrow         = Users::get_for_login($loginname, $_POST['password']);
@@ -210,6 +221,7 @@
         Event::registerShutdown('Users', 'update_visitdate', [$this->username]);
         Event::registerShutdown($this, '_addLog');
       }
+
       return $this->logged;
     }
     /**
@@ -243,9 +255,13 @@
       }
     }
     public function _addLog() {
-      DB::_insert('user_login_log')->values(array(
-                                                 'user'    => $this->username, 'IP'      => Users::get_ip(), 'success' => 2
-                                            ))->exec();
+      DB::_insert('user_login_log')->values(
+        array(
+             'user'    => $this->username,
+             'IP'      => Users::get_ip(),
+             'success' => 2
+        )
+      )->exec();
     }
     /**
      * @param $page_level
@@ -293,7 +309,28 @@
      * @param $stickydate
      * @param $startup_tab
      */
-    public function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $show_gl, $show_codes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $page_size, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $language, $stickydate, $startup_tab) {
+    public function update_prefs(
+      $price_dec,
+      $qty_dec,
+      $exrate_dec,
+      $percent_dec,
+      $show_gl,
+      $show_codes,
+      $date_format,
+      $date_sep,
+      $tho_sep,
+      $dec_sep,
+      $theme,
+      $page_size,
+      $show_hints,
+      $profile,
+      $rep_popup,
+      $query_size,
+      $graphic_links,
+      $language,
+      $stickydate,
+      $startup_tab
+    ) {
       $user = array(
         'price_dec'       => $price_dec,
         'qty_dec'         => $qty_dec,
@@ -317,7 +354,29 @@
         'startup_tab'     => $startup_tab
       );
       if (!$this->Config->get('demo_mode')) {
-        Users::update_display_prefs($this->user, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $show_gl, $show_codes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $page_size, $show_hints, $profile, $rep_popup, $query_size, $graphic_links, $language, $stickydate, $startup_tab);
+        Users::update_display_prefs(
+          $this->user,
+          $price_dec,
+          $qty_dec,
+          $exrate_dec,
+          $percent_dec,
+          $show_gl,
+          $show_codes,
+          $date_format,
+          $date_sep,
+          $tho_sep,
+          $dec_sep,
+          $theme,
+          $page_size,
+          $show_hints,
+          $profile,
+          $rep_popup,
+          $query_size,
+          $graphic_links,
+          $language,
+          $stickydate,
+          $startup_tab
+        );
       }
       $this->prefs = new UserPrefs(Users::get($this->user));
     }

@@ -7,6 +7,12 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  use ADV\Core\DB\DB;
+  use ADV\App\User;
+
+  /**
+
+   */
   class Bank_Currency
   {
     /**
@@ -16,22 +22,19 @@
      *
      * @return bool
      */
-    public static function is_company($currency)
-    {
+    public static function is_company($currency) {
       return (static::for_company() == $currency);
     }
     /**
      * @static
      * @return bool
      */
-    public static function for_company()
-    {
+    public static function for_company() {
       try {
         $result = DB::_select('curr_default')->from('company')->fetch()->one();
 
         return $result['curr_default'];
-      }
-      catch (DBSelectException $e) {
+      } catch (DBSelectException $e) {
         Event::error('Could not get company currency');
       }
 
@@ -42,8 +45,7 @@
      *
      * @param $curr_code
      */
-    public static function clear_default($curr_code)
-    {
+    public static function clear_default($curr_code) {
       $sql = "UPDATE bank_accounts SET dflt_curr_act=0 WHERE bank_curr_code=" . DB::_escape($curr_code);
       DB::_query($sql, "could not update default currency account");
     }
@@ -54,8 +56,7 @@
      *
      * @return mixed
      */
-    public static function for_bank_account($id)
-    {
+    public static function for_bank_account($id) {
       $sql    = "SELECT bank_curr_code FROM bank_accounts WHERE id='$id'";
       $result = DB::_query($sql, "retreive bank account currency");
       $myrow  = DB::_fetchRow($result);
@@ -69,8 +70,7 @@
      *
      * @return mixed
      */
-    public static function for_debtor($debtor_id)
-    {
+    public static function for_debtor($debtor_id) {
       $sql    = "SELECT curr_code FROM debtors WHERE debtor_id = '$debtor_id'";
       $result = DB::_query($sql, "Retreive currency of customer $debtor_id");
       $myrow  = DB::_fetchRow($result);
@@ -84,8 +84,7 @@
      *
      * @return mixed
      */
-    public static function for_creditor($creditor_id)
-    {
+    public static function for_creditor($creditor_id) {
       $sql    = "SELECT curr_code FROM suppliers WHERE creditor_id = '$creditor_id'";
       $result = DB::_query($sql, "Retreive currency of supplier $creditor_id");
       $myrow  = DB::_fetchRow($result);
@@ -100,8 +99,7 @@
      *
      * @return bool
      */
-    public static function for_payment_person($type, $person_id)
-    {
+    public static function for_payment_person($type, $person_id) {
       switch ($type) {
         case PT_MISC :
         case PT_QUICKENTRY :
@@ -123,8 +121,7 @@
      *
      * @return float
      */
-    public static function exchange_rate_from_home($currency_code, $date_)
-    {
+    public static function exchange_rate_from_home($currency_code, $date_) {
       if ($currency_code == static::for_company() || $currency_code == null) {
         return 1.0000;
       }
@@ -151,8 +148,7 @@
      *
      * @return float
      */
-    public static function exchange_rate_to_home($currency_code, $date_)
-    {
+    public static function exchange_rate_to_home($currency_code, $date_) {
       return 1 / static::exchange_rate_from_home($currency_code, $date_);
     }
     /**
@@ -164,8 +160,7 @@
      *
      * @return float
      */
-    public static function to_home($amount, $currency_code, $date_)
-    {
+    public static function to_home($amount, $currency_code, $date_) {
       $ex_rate = static::exchange_rate_to_home($currency_code, $date_);
 
       return Num::_round($amount / $ex_rate, User::price_dec());

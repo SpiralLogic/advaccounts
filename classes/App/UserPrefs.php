@@ -7,6 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\App;
+
+  use ADV\Core\Config;
+
+  /**
+
+   */
   class UserPrefs
   {
     use \ADV\Core\Traits\SetFromArray;

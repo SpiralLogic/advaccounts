@@ -37,14 +37,14 @@
 
  */
 var Behaviour = {
-  list:[],
-  register:function (sheet) {
+  list:         [],
+  register:     function (sheet) {
     Behaviour.list.push(sheet);
   },
-  start:function () {
+  start:        function () {
     Behaviour.addLoadEvent(Behaviour.apply);
   },
-  apply:function () {
+  apply:        function () {
     var selector = '', sheet, element, list;
     for (var h = 0; sheet = Behaviour.list[h]; h++) {
       for (selector in sheet) {
@@ -61,7 +61,7 @@ var Behaviour = {
       }
     }
   },
-  addLoadEvent:function (func) {
+  addLoadEvent: function (func) {
     var oldonload = window.onload;
     if (typeof window.onload != 'function') {
       window.onload = func;
@@ -103,9 +103,8 @@ JsHttpRequest.request = function (trigger, form, tout) {
   }
   catch (e) {
   }
-  Adv.Scroll.loadPosition(true);
   JsHttpRequest._request(trigger, form, tout, 0);
-}
+};
 JsHttpRequest._request = function (trigger, form, tout, retry) {
   if (trigger.tagName == 'A') {
     var content = {};
@@ -154,79 +153,95 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
     }
   }, tout);
   JsHttpRequest.query((upload ? "form." : "") + "POST " + url, // force form loader
-    content, // Function is called when an answer arrives.
-    function (result, errors) {
-      // Write the answer.
-      var newwin = 0, repwin;
-      if (result) {
-        for (var i in result) {
-          atom = result[i];
-          cmd = atom['n'];
-          property = atom['p'];
-          type = atom['c'];
-          id = atom['t'];
-          data = atom['data'];
+                      content, // Function is called when an answer arrives.
+                      function (result, errors) {
+                        var tooltipclass;
+                        // Write the answer.
+                        var newwin = 0, repwin, hasStatus = false;
+                        if (result) {
+                          for (var i in result) {
+                            atom = result[i];
+                            cmd = atom['n'];
+                            property = atom['p'];
+                            type = atom['c'];
+                            id = atom['t'];
+                            data = atom['data'];
 //				debug(cmd+':'+property+':'+type+':'+id);
-          // seek element by id if there is no elemnt with given name
-          objElement = document.getElementsByName(id)[0] || document.getElementById(id);
-          if (cmd == 'as') {
-            eval("objElement.setAttribute('" + property + "'," + data + ");");
-          }
-          else {
-            if (cmd == 'up') {
+                            // seek element by id if there is no elemnt with given name
+                            objElement = document.getElementsByName(id)[0] || document.getElementById(id);
+                            if (cmd == 'as') {
+                              eval("objElement.setAttribute('" + property + "'," + data + ");");
+                            }
+                            else {
+                              if (cmd == 'up') {
 //				if(!objElement) alert('No element "'+id+'"');
-              if (objElement) {
-                if (objElement.tagName == 'INPUT' || objElement.tagName == 'TEXTAREA') {
-                  objElement.value = data;
-                }
-                else {
-                  objElement.innerHTML = data;
-                } // selector, div, span etc
-              }
-            }
-            else {
-              switch (cmd) {
-                case 'di':
-                  objElement.disabled = data;
-                  break;
-                case 'fc':
-                  Adv.Scroll.focus = data;
-                  break;
-                case 'js':
-                  eval(data);
-                  break;
-                case 'rd':
-                  window.location = data;
-                  break;
-                case 'pu':
-                  newwin = 1;
-                  window.open(data, undefined, 'toolbar=no,scrollbar=no,resizable=yes,menubar=no');
-                  break;
-                default:
-                  errors = errors + '<br>Unknown ajax function: ' + cmd;
-              }
-            }
-          }
-        }
-        if (tcheck) {
-          JsHttpRequest.clearTimeout(tcheck);
-        }
-        // Write errors to the debug div.
-        if (errors) {
-          Adv.Status.show({html:errors});
-        }
-        if (Adv.loader) {
-          Adv.loader.off();
-        }
-        Behaviour.apply();
-        //document.getElementById('msgbox').scrollIntoView(true);
-        // Restore focus if we've just lost focus because of DOM element refresh
-        Adv.Events.rebind();
-        if (!errors && !newwin) {
-          Adv.Forms.setFocus();
-        }
-      }
-    }, false);
+                                if (objElement) {
+                                  if (objElement.tagName == 'INPUT' || objElement.tagName == 'TEXTAREA') {
+                                    objElement.value = data;
+                                  }
+                                  else {
+                                    objElement.innerHTML = data;
+                                  } // selector, div, span etc
+                                }
+                              }
+                              else {
+                                switch (cmd) {
+                                  case 'di':
+                                    objElement.disabled = data;
+                                    break;
+                                  case 'fc':
+                                    Adv.Forms.setFocus(data);
+                                    break;
+                                  case 'js':
+                                    eval(data);
+                                    break;
+                                  case 'rd':
+                                    window.location = data;
+                                    break;
+                                  case 'json':
+                                    if (data.status) {
+                                      hasStatus = true;
+                                      Adv.Status.show(data.status);
+                                    }
+                                    if (Adv.Forms[property]) {
+                                      Adv.Forms[property](data);
+                                    }
+                                    break;
+                                  case 'pu':
+                                    newwin = 1;
+                                    window.open(data, undefined, 'toolbar=no,scrollbar=no,resizable=yes,menubar=no');
+                                    break;
+                                  default:
+                                    hasStatus = true;
+                                    errors = errors + '<br>Unknown ajax function: ' + cmd;
+                                }
+                              }
+                            }
+                          }
+                          if (tcheck) {
+                            JsHttpRequest.clearTimeout(tcheck);
+                          }
+                          // Write errors to the debug div.
+                          if (errors && !hasStatus) {
+                            if (cmd == 'fc') {
+                              Adv.Forms.error(data, errors)
+                            }
+                            else {
+                              Adv.Status.show({html: errors});
+                            }
+                          }
+                          if (Adv.loader) {
+                            Adv.loader.off();
+                          }
+                          Behaviour.apply();
+                          //document.getElementById('msgbox').scrollIntoView(true);
+                          // Restore focus if we've just lost focus because of DOM element refresh
+                          Adv.Events.rebind();
+                          if (!errors && !hasStatus && !newwin && cmd != 'fc') {
+                            Adv.Scroll.loadPosition(true);
+                          }
+                        }
+                      }, false);
 }
 // collect all form input values plus inp trigger value
 JsHttpRequest.formInputs = function (inp, objForm, upload) {
