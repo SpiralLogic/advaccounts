@@ -30,7 +30,7 @@
     public $salesman_phone;
     public $salesman_fax;
     public $salesman_email;
-    public $inactive;
+    public $inactive=0;
     public $provision;
     public $break_pt;
     public $provision2;

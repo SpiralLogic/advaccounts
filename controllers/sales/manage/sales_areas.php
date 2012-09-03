@@ -1,4 +1,11 @@
 <?php
+  use ADV\App\Forms;
+  use ADV\App\Sales\Areas;
+  use ADV\Core\Row;
+  use ADV\Core\DB\DB;
+  use ADV\Core\Cell;
+  use ADV\Core\Table;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -7,87 +14,82 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  class SalesArea extends \ADV\App\Controller\Base
+  {
 
-  Page::start(_($help_context = "Sales Areas"), SA_SALESAREA);
-  list($Mode, $selected_id) = Page::simple_mode(true);
-  if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
-    $input_error = 0;
-    if (strlen($_POST['description']) == 0) {
-      $input_error = 1;
-      Event::error(_("The area description cannot be empty."));
-      JS::_setFocus('description');
-    }
-    if ($input_error != 1) {
-      if ($selected_id != -1) {
-        $sql  = "UPDATE areas SET description=" . DB::_escape($_POST['description']) . " WHERE area_code = " . DB::_escape($selected_id);
-        $note = _('Selected sales area has been updated');
-      } else {
-        $sql  = "INSERT INTO areas (description) VALUES (" . DB::_escape($_POST['description']) . ")";
-        $note = _('New sales area has been added');
+    protected $sales_area;
+    protected function before() {
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if ($this->action == ADD_ITEM) {
+          $this->sales_area = new Areas($_POST);
+          //run the sql from either of the above possibilites
+          if (!$this->sales_area->save()) {
+            $result['status'] = $this->sales_area->getStatus();
+            $this->JS->renderJSON($result);
+          }
+        }
+        $id = $this->getActionId('Delete');
+        if ($id > -1) {
+          $this->sales_area = new Areas($id);
+          //the link to delete a selected record was clicked instead of the submit button
+          $this->sales_area->delete();
+        }
+        $id = $this->getActionId('Edit');
+        if ($id > -1) {
+          //editing an existing Sales-person
+          $this->sales_area = new Areas($id);
+          $this->JS->setFocus('description');
+        } else {
+          $this->sales_area = new Areas(0);
+        }
+        $result['status'] = $this->sales_area->getStatus();
+        $this->Ajax->addJson(true, null, $result);
       }
-      DB::_query($sql, "The sales area could not be updated or added");
-      Event::success($note);
-      $Mode = MODE_RESET;
+    }
+    protected function index() {
+      Page::start(_($help_context = "Sales Areas"), SA_SALESAREA);
+      $cols         = [
+        ['type'=> 'skip'],
+        'Area Name',
+        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
+        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
+      ];
+      $table        = DB_Pager::new_db_pager('45sales_area_table', Areas::getAll(), $cols);
+      $table->class = 'width30';
+      $table->display();
+      echo '<br>';
+      $view = new \ADV\Core\View('form/simple');
+      $form = new \ADV\App\Form\Form();
+      $form->hidden('area_code');
+      $form->text('description')->label('Area Name:');
+      $form->submit(CANCEL, 'Cancel')->type('danger')->preIcon(ICON_CANCEL);
+      $form->submit(ADD_ITEM, 'Save')->type('success')->preIcon(ICON_ADD);
+      $form->setValues($this->sales_area);
+      $view->set('form', $form);
+      $view->render();
+      $this->Ajax->addJson(true, 'setFormValues', $form);
+      Page::end(true);
+    }
+    /**
+     * @param $row
+     *
+     * @return ADV\App\Form\Button
+     */
+    public function formatEditBtn($row) {
+      $button = new \ADV\App\Form\Button('_action', 'Edit' . $row['area_code'], 'Edit');
+      $button['class'] .= ' btn-mini btn-primary';
+      return $button;
+    }
+    /**
+     * @param $row
+     *
+     * @return ADV\App\Form\Button
+     */
+    public function formatDeleteBtn($row) {
+      $button = new \ADV\App\Form\Button('_action', 'Delete' . $row['area_code'], 'Delete');
+      $button['class'] .= ' btn-mini btn-danger';
+      return $button;
     }
   }
-  if ($Mode == MODE_DELETE) {
-    $cancel_delete = 0;
-    // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors'
-    $sql    = "SELECT COUNT(*) FROM branches WHERE area=" . DB::_escape($selected_id);
-    $result = DB::_query($sql, "check failed");
-    $myrow  = DB::_fetchRow($result);
-    if ($myrow[0] > 0) {
-      $cancel_delete = 1;
-      Event::error(_("Cannot delete this area because customer branches have been created using this area."));
-    }
-    if ($cancel_delete == 0) {
-      $sql = "DELETE FROM areas WHERE area_code=" . DB::_escape($selected_id);
-      DB::_query($sql, "could not delete sales area");
-      Event::notice(_('Selected sales area has been deleted'));
-    } //end if Delete area
-    $Mode = MODE_RESET;
-  }
-  if ($Mode == MODE_RESET) {
-    $selected_id = -1;
-    $sav         = Input::_post('show_inactive');
-    unset($_POST);
-    $_POST['show_inactive'] = $sav;
-  }
-  $sql = "SELECT * FROM areas";
-  if (!Input::_hasPost('show_inactive')) {
-    $sql .= " WHERE !inactive";
-  }
-  $result = DB::_query($sql, "could not get areas");
-  Forms::start();
-  Table::start('tablestyle grid width30');
-  $th = array(_("Area Name"), "", "");
-  Forms::inactiveControlCol($th);
-  Table::header($th);
-  $k = 0;
-  while ($myrow = DB::_fetch($result)) {
-    Cell::label($myrow["description"]);
-    Forms::inactiveControlCell($myrow["area_code"], $myrow["inactive"], 'areas', 'area_code');
-    Forms::buttonEditCell("Edit" . $myrow["area_code"], _("Edit"));
-    Forms::buttonDeleteCell("Delete" . $myrow["area_code"], _("Delete"));
-    Row::end();
-  }
-  Forms::inactiveControlRow($th);
-  Table::end();
-  echo '<br>';
-  Table::start('tablestyle2');
-  if ($selected_id != -1) {
-    if ($Mode == MODE_EDIT) {
-      //editing an existing area
-      $sql                  = "SELECT * FROM areas WHERE area_code=" . DB::_escape($selected_id);
-      $result               = DB::_query($sql, "could not get area");
-      $myrow                = DB::_fetch($result);
-      $_POST['description'] = $myrow["description"];
-    }
-    Forms::hidden("selected_id", $selected_id);
-  }
-  Forms::textRowEx(_("Area Name:"), 'description', 30);
-  Table::end(1);
-  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Forms::end();
-  Page::end();
 
+  new SalesArea();

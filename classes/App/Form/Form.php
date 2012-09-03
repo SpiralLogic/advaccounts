@@ -226,6 +226,7 @@
      */
     public function percent($name, $value = null, $inputparams = [])
     {
+      $inputparams = array_merge(['class'=>'amount'],$inputparams);
       return $this->number($name, $value, User::percent_dec(), $inputparams)->append('%');
     }
     /**
@@ -242,12 +243,6 @@
       $field             = $this->addField('input', $name, $value);
       $field['data-dec'] = (int) $dec;
       $field['value']    = Num::_format($field['value'] ? : 0, $field['data-dec']);
-      $size              = Arr::get($input_attr, 'size');
-      if ($size && is_numeric($size)) {
-        $field['size'] = $size;
-      } elseif (is_string($size)) {
-        $field['class'] .= ($name == 'freight') ? ' freight ' : ' amount ';
-      }
       $field['type'] = 'text';
       $this->Ajax->addAssign($name, $name, 'data-dec', $dec);
 
@@ -263,6 +258,7 @@
      */
     public function amount($name, $value = null, $inputparams = [])
     {
+      $inputparams = array_merge(['class'=>'amount'],$inputparams);
       return $this->number($name, $value, User::price_dec(), $inputparams)->prepend('$');
     }
     /**
@@ -415,6 +411,9 @@
 
       return $button->mergeAttr($input_attr);
     }
+    /**
+     * @param $values
+     */
     public function setValues($values)
     {
       $values = (array) $values;

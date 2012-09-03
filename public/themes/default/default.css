@@ -142,6 +142,7 @@ input.big, textarea.big {
 
 input.small {
   width: 5em;
+  min-width:5em;
 }
 
 select, input {
@@ -3428,7 +3429,6 @@ div.warn_msg {
 .formbox input.big {
   width: 95%;
 }
-
 .formbox label select {
   width:  180px;
   margin: 5px 0 0 5px;
@@ -3438,6 +3438,9 @@ div.warn_msg {
   width: 157px;
 }
 
+.formbox input.amount {
+  width:6em;
+}
 .formbox .input-append input {
   margin-right: -1px;
   border-right: none;

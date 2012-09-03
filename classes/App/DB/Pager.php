@@ -607,7 +607,8 @@
      *              Force pager initialization.
 
      */
-    public function refresh_pager($name) {
+    public function refresh_pager($name=null) {
+     $name=$name?:$this->name;
       if (isset($_SESSION[$name])) {
         $_SESSION[$name]->ready = false;
       }

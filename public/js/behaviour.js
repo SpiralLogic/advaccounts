@@ -157,7 +157,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
                       function (result, errors) {
                         var tooltipclass;
                         // Write the answer.
-                        var newwin = 0, repwin, hasStatus = false;
+                        var newwin = 0, repwin, cmd, hasStatus = false;
                         if (result) {
                           for (var i in result) {
                             atom = result[i];
@@ -212,7 +212,6 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
                                     window.open(data, undefined, 'toolbar=no,scrollbar=no,resizable=yes,menubar=no');
                                     break;
                                   default:
-                                    hasStatus = true;
                                     errors = errors + '<br>Unknown ajax function: ' + cmd;
                                 }
                               }
@@ -223,7 +222,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
                           }
                           // Write errors to the debug div.
                           if (errors && !hasStatus) {
-                            if (cmd == 'fc') {
+                            if (cmd && cmd == 'fc') {
                               Adv.Forms.error(data, errors)
                             }
                             else {

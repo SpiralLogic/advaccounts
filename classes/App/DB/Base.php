@@ -31,7 +31,17 @@
     /** @var */
     protected $_id_column;
     protected $_classname;
-    abstract public function delete();
+    public function delete() {
+
+
+      try {
+        $id_column=$this->_id_column;
+        DB::_delete($this->_table)->where($id_column.'=',$this->$id_column)->exec();
+      }catch (\DBDeleteException $e){
+        return $this->status(false, 'delete', 'Could not delete' . $this->_classname);
+      }
+      return $this->status(true, 'delete', 'Deleted ' . $this->_classname.'!');
+    }
     abstract protected function canProcess();
     protected function defaults() {
       $this->setFromArray(get_class_vars(get_called_class()));
@@ -92,7 +102,7 @@
      * @param int   $id    Id to read from database, or an array of changes which can include the id to load before applying changes or 0 for a new object
      * @param array $extra
      */
-    protected function __construct($id = 0, $extra = []) {
+    public function __construct($id = 0, $extra = []) {
       $_id_column       = $this->_id_column;
       $this->_classname = end(explode('\\', ltrim(get_called_class(), '\\')));
       if ($_id_column && $_id_column != 'id') {

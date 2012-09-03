@@ -123,7 +123,7 @@
           $value = Security::htmlentities($value);
           $value = str_replace(array("'", '"'), array("&#39;", "&quot;"), $value);
         }
-        $attrs .= ((empty($value) && $key !== 'value') || $key == 'content') ? '' : ' ' . $key . '="' . $value . '"';
+        $attrs .= ((empty($value) && $value!==0 && $key !== 'value') || $key == 'content') ? '' : ' ' . $key . '="' . $value . '"';
       }
       echo  '<' . $type . ' ' . $attrs . '>' . (isset($attr['content']) ? $attr['content'] : $content);
     }
