@@ -22,8 +22,7 @@
   {
     protected $order_number;
     protected $creditor_id;
-    protected function before()
-    {
+    protected function before() {
       JS::_openWindow(950, 500);
       $this->order_number = $this->Input->getPost('order_number', Input::STRING);
       $this->creditor_id  = $this->Input->postGet('creditor_id', Input::NUMERIC, -1);
@@ -40,8 +39,7 @@
         $_POST['creditor_id'] = $this->Session->setGlobal('creditor', '');
       }
     }
-    protected function index()
-    {
+    protected function index() {
       Page::start(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, $this->Input->request('frame'));
       Forms::start();
       if (!$this->Input->request('frame')) {
@@ -63,15 +61,15 @@
       Forms::end();
       Page::end();
     }
-    protected function makeTable()
-    {
+    protected function makeTable() {
       $searchArray = [];
       $location    = $stock_location = '';
       if (AJAX_REFERRER && !empty($_POST['q'])) {
         $searchArray = explode(' ', $_POST['q']);
         unset($_POST['creditor_id']);
       }
-      $sql = "SELECT
+      $sql
+        = "SELECT
   	porder.order_no,
   	porder.reference,
   	supplier.name,
@@ -94,7 +92,8 @@
             continue;
           }
           $quicksearch = $this->DB->_quote("%" . $quicksearch . "%");
-          $sql .= " AND (supplier.name LIKE $quicksearch OR porder.order_no LIKE $quicksearch
+          $sql
+            .= " AND (supplier.name LIKE $quicksearch OR porder.order_no LIKE $quicksearch
   		 OR porder.reference LIKE $quicksearch
   		 OR porder.requisition_no LIKE $quicksearch
   		 OR location.location_name LIKE $quicksearch)";
@@ -135,10 +134,15 @@
         _("Order Date")  => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'), //
         _("Currency")    => array('align' => 'center'), //
         _("Order Total") => 'amount', //
-        'ord'=>'skip','rec'=>'skip','inv'=>'skip','stock_lock'=>'skip','creditor_id'=>'skip',
+        'ord'            => 'skip',
+        'rec'            => 'skip',
+        'inv'            => 'skip',
+        'stock_lock'     => 'skip',
+        'creditor_id'    => 'skip',
         // Edit link
 
-                   ['insert' => true, 'fun' => [$this, 'formatDropDown']]); //
+        ['insert' => true, 'fun' => [$this, 'formatDropDown']]
+      ); //
       if ($stock_location) {
         $cols[_("Location")] = 'skip';
       }
@@ -154,8 +158,7 @@
      *
      * @return null|string
      */
-    public function formatView($row)
-    {
+    public function formatView($row) {
       return GL_UI::viewTrans(ST_PURCHORDER, $row["order_no"]);
     }
     /**
@@ -163,8 +166,7 @@
      *
      * @return string
      */
-    public function formatEditBtn($row)
-    {
+    public function formatEditBtn($row) {
       return "/purchases/po_entry_items.php?" . Orders::MODIFY_ORDER . "=" . $row["order_no"];
     }
     /**
@@ -172,8 +174,7 @@
      *
      * @return string
      */
-    public function formatProcessBtn($row)
-    {
+    public function formatProcessBtn($row) {
       if ($row['Received'] > 0) {
         return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
       } elseif ($row['Invoiced'] > 0) {
@@ -187,8 +188,7 @@
      *
      * @return string
      */
-    public function formatPrintBtn($row)
-    {
+    public function formatPrintBtn($row) {
       return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink');
     }
     /**
@@ -196,22 +196,17 @@
      *
      * @return ADV\Core\HTML|string
      */
-    public function formatEmailBtn($row)
-    {
+    public function formatEmailBtn($row) {
       return Reporting::emailDialogue($row['id'], ST_PURCHORDER, $row['order_no']);
     }
-    public function formatDropDown($row)
-    {
+    public function formatDropDown($row) {
       $dropdown = new View('ui/dropdown');
-      $title    = $caption = _("Print");
-      if ($row['type'] == ST_PURCHORDER) {
-        $edit_url = $this->formatEditBtn($row);
-        $items[]  = ['label'=> 'Edit', 'href'=> $edit_url];
-        $title    = 'Edit';
-      }
-      $href    = Reporting::print_doc_link($row['order_no'], _("Print"), true, $row['type'], ICON_PRINT, 'button printlink', '', 0, 0, true);
-      $items[] = ['class'=> 'printlink', 'label'=> $caption, 'href'=> $href];
-      $items[] = ['class'=> 'email-button', 'label'=> 'Email', 'href'=> '#', 'data'=> ['emailid' => $row['creditor_id'] . '-' . $row['type'] . '-' . $row['order_no']]];
+      $edit_url = $this->formatEditBtn($row);
+      $items[]  = ['label'=> 'Edit', 'href'=> $edit_url];
+      $title    = 'Edit';
+      $href     = Reporting::print_doc_link($row['order_no'], _("Print"), true, ST_PURCHORDER, ICON_PRINT, 'button printlink', '', 0, 0, true);
+      $items[]  = ['class'=> 'printlink', 'label'=> 'Print', 'href'=> $href];
+      $items[]  = ['class'=> 'email-button', 'label'=> 'Email', 'href'=> '#', 'data'=> ['emailid' => $row['creditor_id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']]];
       if ($row['Received'] > 0) {
         $href = "/purchases/po_receive_items.php?PONumber=" . $row["order_no"];
       } elseif ($row['Invoiced'] > 0) {

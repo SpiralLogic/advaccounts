@@ -3644,7 +3644,7 @@ td.tableheader3 {
   height: 25px;
 }
 
-td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .grid tfoot td:first-child, .tablestyle tfoot td:first-child {
+td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .tablestyle tbody td:first-child {
   text-indent:   5px;
   border:        1px solid #fff;
   color:         black;
