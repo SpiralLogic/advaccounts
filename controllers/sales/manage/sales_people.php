@@ -30,24 +30,21 @@
     protected $selected_id;
     protected $Mode;
     protected $sales_person;
-    protected function before()
-    {
+    protected function before() {
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($this->action == ADD_ITEM) {
           $this->sales_person = new \ADV\App\Sales\Person($_POST);
           //run the sql from either of the above possibilites
-          $this->sales_person->save();
-          $result['status'] = $this->sales_person->getStatus();
-
-          $this->JS->renderJSON($result);
+          if (!$this->sales_person->save()) {
+            $result['status'] = $this->sales_person->getStatus();
+            $this->JS->renderJSON($result);
+          }
         }
         $id = $this->getActionId('Delete');
         if ($id > -1) {
           $this->sales_person = new \ADV\App\Sales\Person($id);
           //the link to delete a selected record was clicked instead of the submit button
           $this->sales_person->delete();
-          $result['status'] = $this->sales_person->getStatus();
-          $this->JS->renderJSON($result);
         }
         $id = $this->getActionId('Edit');
         if ($id > -1) {
@@ -57,10 +54,11 @@
         } else {
           $this->sales_person = new \ADV\App\Sales\Person(0);
         }
+        $result['status'] = $this->sales_person->getStatus();
+        $this->Ajax->addJson(true, null, $result);
       }
     }
-    protected function index()
-    {
+    protected function index() {
       Page::start(_($help_context = "Sales Persons"), SA_SALESMAN);
       $cols  = array(
         _("Salesman ID"),
@@ -85,7 +83,7 @@
       $form->useDefaults = ($this->action == CANCEL);
       $form->hidden('salesman_code');
       $form->text('salesman_name', null, ['maxlength'=> 30])->label('Name: ');
-      $form->custom(Users::select('user_id', null, " ",true))->label('User:');
+      $form->custom(Users::select('user_id', null, " ", true))->label('User:');
       $form->text('salesman_phone', null, ['maxlength'=> 20])->label('Telephone number: ');
       $form->text('salesman_fax', null, ['maxlength'=> 20])->label('Fax number: ');
       $form->text('salesman_email', null, ['maxlength'=> 40])->label('E-mail: ');
@@ -106,8 +104,7 @@
      *
      * @return ADV\App\Form\Button
      */
-    public function formatEditBtn($row)
-    {
+    public function formatEditBtn($row) {
       $button = new \ADV\App\Form\Button('_action', 'Edit' . $row['salesman_code'], 'Edit');
       $button['class'] .= ' btn-mini btn-primary';
 
@@ -118,8 +115,7 @@
      *
      * @return ADV\App\Form\Button
      */
-    public function formatDeleteBtn($row)
-    {
+    public function formatDeleteBtn($row) {
       $button = new \ADV\App\Form\Button('_action', 'Delete' . $row['salesman_code'], 'Delete');
       $button['class'] .= ' btn-mini btn-danger';
 
