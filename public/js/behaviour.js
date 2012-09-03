@@ -157,7 +157,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
                       function (result, errors) {
                         var tooltipclass;
                         // Write the answer.
-                        var newwin = 0, repwin;
+                        var newwin = 0, repwin, hasStatus = false;
                         if (result) {
                           for (var i in result) {
                             atom = result[i];
@@ -200,16 +200,19 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
                                     break;
                                   case 'json':
                                     if (data.status) {
+                                      hasStatus = true;
                                       Adv.Status.show(data.status);
                                     }
-                                    if (Adv.Forms[property]){
-                                    Adv.Forms[property](data);}
+                                    if (Adv.Forms[property]) {
+                                      Adv.Forms[property](data);
+                                    }
                                     break;
                                   case 'pu':
                                     newwin = 1;
                                     window.open(data, undefined, 'toolbar=no,scrollbar=no,resizable=yes,menubar=no');
                                     break;
                                   default:
+                                    hasStatus = true;
                                     errors = errors + '<br>Unknown ajax function: ' + cmd;
                                 }
                               }
@@ -219,7 +222,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
                             JsHttpRequest.clearTimeout(tcheck);
                           }
                           // Write errors to the debug div.
-                          if (errors) {
+                          if (errors && !hasStatus) {
                             if (cmd == 'fc') {
                               Adv.Forms.error(data, errors)
                             }
@@ -234,7 +237,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
                           //document.getElementById('msgbox').scrollIntoView(true);
                           // Restore focus if we've just lost focus because of DOM element refresh
                           Adv.Events.rebind();
-                          if (!errors && !newwin && cmd != 'fc') {
+                          if (!errors && !hasStatus && !newwin && cmd != 'fc') {
                             Adv.Scroll.loadPosition(true);
                           }
                         }

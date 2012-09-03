@@ -335,8 +335,8 @@
             'display:none;') . "' data-aspect='fallback' name='" . ($search_submit ? $search_submit : "_{$this->name}_button") . "'
           value=' ' title='" . _("Set filter") . "'> ";
         }
+        $this->JS->defaultFocus(($search_box && $by_id) ? $search_box : $this->name);
       }
-      //  $this->JS->defaultFocus(($search_box && $by_id) ? $search_box : $this->name);
       if ($search_box && $this->cells) {
         $str = ($edit_entry ? "<td>$edit_entry</td>" : '') . "<td>$selector</td>";
       } else {

@@ -158,7 +158,7 @@
         $result = false;
       }
 
-      return !($result === false || $result === null) ;
+      return !($result === false || $result === null);
     }
     /**
      *   Read numeric value from user formatted input
@@ -175,11 +175,7 @@
       if (!isset($_POST) || !isset($_POST[$postname])) {
         $_POST[$postname] = $default;
       }
-
-      return static::num($_POST[$postname], $default, $min, $max);
-    }
-    public static function num($number, $default = 0, $min = null, $max = null) {
-      $result = filter_var($number, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND);
+      $result = filter_var($_POST[$postname], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND);
       if ($min !== null && $result < $min) {
         $result = false;
       }

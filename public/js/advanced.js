@@ -148,7 +148,6 @@ Adv.extend({
                        Adv.Forms.error(status.var, status.message, type);
                        return;
                      }
-                     console.log(status);
                      text = '<div class="' + status.class + '">' + status.message + '</div>';
                    }
                  }
@@ -517,30 +516,30 @@ Adv.extend({
                        el = document.getElementById(name);
                      }
                    }
-                   if (el) {
-                     // The timeout is needed to prevent unpredictable behaviour on IE & Gecko.
-                     // Using tmp var prevents crash on IE5
-                     $el = $(el);
-                     pos = $el.offset().top - 100;
-                     if (tooltip) {
-                       tooltip.tooltip('destroy');
-                     }
-                     if (!$el.is(':visible')) {
-                       return false;
-                     }
-                     setTimeout(function () {
-                       Adv.Scroll.to(pos, 300);
-                       if (el.focus) {
-                         el.focus();
-                       }
-                       if (el.select) {
-                         el.select();
-                       }
-                       el = null;
-                     }, 0);
-                     return true;
+                   if (!el) {
+                     return false;
                    }
-                   return false;
+                   // The timeout is needed to prevent unpredictable behaviour on IE & Gecko.
+                   // Using tmp var prevents crash on IE5
+                   $el = $(el);
+                   pos = $el.offset().top - 100;
+                   if (tooltip) {
+                     tooltip.tooltip('destroy');
+                   }
+                   if (!$el.is(':visible')) {
+                     return false;
+                   }
+                   setTimeout(function () {
+                     Adv.Scroll.to(pos, 300);
+                     if (el.focus) {
+                       el.focus();
+                     }
+                     if (el.select) {
+                       el.select();
+                     }
+                     el = null;
+                   }, 0);
+                   return true;
                  }, saveFocus:    function (e) {
                    focus = e.name || e.id;
                    var h = document.getElementById('hints');

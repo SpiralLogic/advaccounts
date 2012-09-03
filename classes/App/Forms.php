@@ -1109,16 +1109,17 @@
      * When $check!=null current date is displayed in red when set to other
      * than current date.
      *
-     * @param       $label
-     * @param       $name
-     * @param null  $title
-     * @param null  $check
-     * @param int   $inc_days
-     * @param int   $inc_months
-     * @param int   $inc_years
-     * @param null  $params
-     * @param bool  $submit_on_change
-     * @param array $options
+     * @param            $label
+     * @param            $name
+     * @param null       $title
+     * @param null       $check
+     * @param int        $inc_days
+     * @param int        $inc_months
+     * @param int        $inc_years
+     * @param bool|null  $submit_on_change
+     * @param array|bool $options
+     *
+     * @internal param null $params
      */
     public static function dateCells(
       $label,

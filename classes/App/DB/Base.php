@@ -41,6 +41,7 @@
      */
     protected function init() {
       $this->defaults();
+
       return $this->status(Status::SUCCESS, 'init', 'Now working with new ' . $this->_classname);
     }
     /**
@@ -99,11 +100,13 @@
       }
       if (is_numeric($id) && $id > 0) {
         $this->id = $id;
-
         $this->read($id, $extra);
 
         return $this->status(true, 'initalise', $this->_classname . " details loaded from DB!");
       } elseif (is_array($id)) {
+        if (isset($id['id'])) {
+          $id[$_id_column] = $id['id'];
+        }
         $this->defaults();
         if (isset($id[$_id_column]) && $id[$_id_column]) {
           $this->read($id[$_id_column], $extra);

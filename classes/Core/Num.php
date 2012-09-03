@@ -15,6 +15,7 @@
    * @method static _percentFormat($number)
    * @method static _priceDecimal($number, $dec = null)
    * @method static _round($number, $decimals = 0)
+   * @method static Num i()
 
    */
   class Num

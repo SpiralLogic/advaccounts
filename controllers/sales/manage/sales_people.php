@@ -51,6 +51,7 @@
           //editing an existing Sales-person
           $this->sales_person = new \ADV\App\Sales\Person($id);
           $this->Ajax->activate('edit_user');
+          $this->JS->setFocus('salesman_name');
         } else {
           $this->sales_person = new \ADV\App\Sales\Person(0);
         }

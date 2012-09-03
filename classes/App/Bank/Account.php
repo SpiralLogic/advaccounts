@@ -110,7 +110,7 @@
     /**
      * @return array
      */
-    public function getAll() {
+    public static function getAll() {
       $bank_accounts = [];
       $result        = DB::_query("SELECT bank_accounts.id, bank_account_name name FROM bank_accounts WHERE !inactive")->fetchAll();
       foreach ($result as $acc) {

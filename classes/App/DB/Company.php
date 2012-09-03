@@ -13,7 +13,6 @@
   use ADV\Core\DB\DB;
 
   /**
-   * @property null i
    * @method static DB_Company i()
    * @method static get_pref($pref_name)
    * @method static get_prefs()
@@ -27,6 +26,9 @@
     /**
      * @var int
      */
+    protected $_id_column = 'coy_code';
+    protected $_table = 'company';
+    protected $_classname = 'Company';
     public $id = 0;
     public $coy_code;
     public $coy_name;
