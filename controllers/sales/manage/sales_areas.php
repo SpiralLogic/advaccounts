@@ -54,7 +54,7 @@
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
       ];
-      $table        = DB_Pager::new_db_pager('45sales_area_table', Areas::getAll(), $cols);
+      $table        = DB_Pager::new_db_pager('sales_area_table', Areas::getAll(), $cols);
       $table->class = 'width30';
       $table->display();
       echo '<br>';

@@ -1,5 +1,10 @@
 <?php
   use ADV\App\Bank\Bank;
+  use ADV\App\Ref;
+  use ADV\App\SysTypes;
+  use ADV\App\User;
+  use ADV\Core\DB\DB;
+  use ADV\App\Dates;
 
   /**
    * PHP version 5.4
@@ -127,7 +132,7 @@
      *
      * @param      $trans_type
      * @param      $from_account
-     * @param      $items
+     * @param  Purch_GLItem[]    $items
      * @param      $date_
      * @param      $person_type_id
      * @param      $person_id

@@ -1,4 +1,7 @@
 <?php
+  use ADV\App\Report;
+  use ADV\Core\JS;
+
   /**
    * PHP version 5.4
    * @category  PHP

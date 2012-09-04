@@ -7,6 +7,20 @@
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
      **/
+  use ADV\Core\JS;
+  use ADV\App\Orders;
+  use ADV\Core\Input\Input;
+  use ADV\App\Item\Item;
+  use ADV\App\User;
+  use ADV\App\Dates;
+  use ADV\App\Debtor\Debtor;
+  use ADV\Core\DB\DB;
+  use ADV\App\Forms;
+  use ADV\Core\Cell;
+  use ADV\Core\Row;
+  use ADV\App\Display;
+  use ADV\Core\Table;
+
     JS::_openWindow(950, 600);
     Page::start(_($help_context = "View Sales Dispatch"), SA_SALESTRANSVIEW, true);
     if (isset($_GET["trans_no"])) {

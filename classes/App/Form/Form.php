@@ -45,9 +45,9 @@
     protected $currentgroup;
     public $useDefaults = false;
     /**
-     * @param ADV\Core\Input\Input $input
-     * @param ADV\Core\Ajax        $ajax
-     * @param \ADV\Core\Session    $session
+     * @param \ADV\Core\Input\Input $input
+     * @param \ADV\Core\Ajax               $ajax
+     * @param \ADV\Core\Session                                        $session
      */
     public function __construct(\ADV\Core\Input\Input $input = null, \ADV\Core\Ajax $ajax = null, \ADV\Core\Session $session = null)
     {
@@ -58,15 +58,14 @@
     /**
      * @param $tag
      * @param $name
-     * @param $value
      *
+     * @internal param $value
      * @return Field
      */
-    protected function addField($tag, $name, $value = null)
+    protected function addField($tag, $name)
     {
       $field          = new Field($tag, $name);
-      $field->default = $value;
-      if ($value === null && $this->Input->hasPost($name)) {
+      if ($this->Input->hasPost($name)) {
         $field->value = $this->Input->post($name);
       }
       if ($tag !== 'textarea') {
@@ -145,56 +144,52 @@
       return $this->end;
     }
     /**
-     * @param      $name
-     * @param null $value
+     * @param $name
      *
+     * @internal param null $value
      * @internal param bool $echo
      * @return string
      */
-    public function hidden($name, $value = null)
+    public function hidden($name)
     {
-      $field         = $this->addField('input', $name, $value);
+      $field         = $this->addField('input', $name);
       $field['type'] = 'hidden';
-      $this->Ajax->addUpdate($name, $name, $value);
     }
     /**
      * @param       $name
-     * @param null  $value
      * @param array $input_attr
      *
+     * @internal param null $value
      * @return \ADV\App\Form\Field
      */
-    public function text($name, $value = null, $input_attr = [])
+    public function text($name, $input_attr = [])
     {
-      $field         = $this->addField('input', $name, $value);
+      $field         = $this->addField('input', $name);
       $field['type'] = 'text';
-
       return $field->mergeAttr($input_attr);
     }
     /**
      * @param       $name
-     * @param       $value
      * @param array $input_attr
      *
+     * @internal param $value
      * @return \ADV\App\Form\Field
      */
-    public function textarea($name, $value = null, $input_attr = [])
+    public function textarea($name, $input_attr = [])
     {
-      $field = $this->addField('textarea', $name, $value);
-      $field->setContent($value);
-
+      $field = $this->addField('textarea', $name);
       return $field->mergeAttr($input_attr);
     }
     /**
      * @param       $name
-     * @param       $value
      * @param array $input_attr
      *
+     * @internal param $value
      * @return Field
      */
-    public function date($name, $value, $input_attr = [])
+    public function date($name, $input_attr = [])
     {
-      $field              = $this->addField('input', $name, $value);
+      $field              = $this->addField('input', $name);
       $field['type']      = 'text';
       $field['maxlength'] = 10;
       $field['class']     = 'datepicker';
@@ -210,7 +205,8 @@
      */
     public function checkbox($name, $value, $input_attr = [])
     {
-      $field            = $this->addField('input', $name, !!$value);
+      $field            = $this->addField('input', $name);
+      $field->val(!!$value);
       $field['type']    = 'checkbox';
       $field['checked'] = !!$value;
 
@@ -218,48 +214,46 @@
     }
     /**
      * @param       $name
-     * @param null  $value
      * @param array $inputparams
      *
+     * @internal param null $value
      * @return Field
-
      */
-    public function percent($name, $value = null, $inputparams = [])
+    public function percent($name, $inputparams = [])
     {
       $inputparams = array_merge(['class'=>'amount'],$inputparams);
-      return $this->number($name, $value, User::percent_dec(), $inputparams)->append('%');
+      return $this->number($name, User::percent_dec(), $inputparams)->append('%');
     }
     /**
      * @param       $name
-     * @param null  $value
      * @param int   $dec
      * @param array $input_attr
      *
+     * @internal param null $value
      * @return \ADV\App\Form\Field
      */
-    public function number($name, $value = null, $dec = null, $input_attr = [])
+    public function number($name, $dec = null, $input_attr = [])
     {
-      $value             = (is_numeric($dec)) ? $value : Num::_round($value, $dec);
-      $field             = $this->addField('input', $name, $value);
+      $field             = $this->addField('input', $name);
       $field['data-dec'] = (int) $dec;
-      $field['value']    = Num::_format($field['value'] ? : 0, $field['data-dec']);
       $field['type'] = 'text';
       $this->Ajax->addAssign($name, $name, 'data-dec', $dec);
-
-      return $field->mergeAttr($input_attr);
+      $field->mergeAttr($input_attr);
+      $field['value']    = Num::_format($field['value'], $field['data-dec']);
+      return $field;
     }
     /**
      * @param       $name
-     * @param null  $value
-     * @param array $inputparams
+     * @param array $input_attr
      *
+     * @internal param null $value
+     * @internal param array $inputparams
      * @return Field
-
      */
-    public function amount($name, $value = null, $inputparams = [])
+    public function amount($name,  $input_attr = [])
     {
-      $inputparams = array_merge(['class'=>'amount'],$inputparams);
-      return $this->number($name, $value, User::price_dec(), $inputparams)->prepend('$');
+      $input_attr= array_merge(['class'=>'amount'],$input_attr);
+      return $this->number($name,  User::price_dec(), $input_attr)->prepend('$');
     }
     /**
      * @param $control
@@ -270,7 +264,7 @@
     {
       preg_match('/name=([\'"]?)(.+?)\1/', $control, $matches);
       $name      = $matches[2];
-      $field     = $this->addField('custom', $name, null);
+      $field     = $this->addField('custom', $name);
       $id        = $field->id;
       $control   = preg_replace('/id=([\'"]?)' . preg_quote($name) . '\1/', "id='$id'", $control, 1);
       $validator = null;
@@ -331,7 +325,8 @@
       // ------ merge options with defaults ----------
       extract($options, EXTR_IF_EXISTS);
       $selected_id = $multi ? (array) $selected_id : $selected_id;
-      $field       = $this->addField('select', $name, $selected_id);
+      $field       = $this->addField('select', $name);
+      $field->val( $selected_id);
       // code is generalized for multiple selection support
       if ($this->Input->post("_{$name}_update")) {
         $async ? $this->Ajax->activate($name) : $this->Ajax->activate('_page_body');
@@ -400,8 +395,15 @@
      *
      * @return \ADV\App\Form\Button
      */
-    public function submit($action, $caption = '', $input_attr = [])
+    public function submit($action, $caption = null, $input_attr = [])
     {
+      if (is_array($caption)) {
+        $input_attr = $caption;
+        $caption =null;
+      }
+      if ($caption===null){
+        $caption=$action;
+      }
       $button     = new Button('_action', $action, $caption);
       $button->id = $this->nameToId($action);
       if (is_array($this->currentgroup)) {
@@ -414,12 +416,13 @@
     /**
      * @param $values
      */
-    public function setValues($values)
+    public function setValues($values,$group=null)
     {
       $values = (array) $values;
+      $fields = $group?$this->groups[$group]:$this->fields;
       foreach ($values as $id=> $value) {
-        if (array_key_exists($id, $this->fields)) {
-          $this->fields[$id]->value = $value;
+        if (array_key_exists($id, $fields)) {
+          $fields[$id]->value = $value;
         }
       }
     }

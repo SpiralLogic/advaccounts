@@ -16,6 +16,9 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
+  use ADV\App\ADVAccounting;
+
   /**
 
    */
@@ -82,7 +85,7 @@
       // version set globally in php.ini
       ini_set('default_charset', $this->encoding);
       if (isset($session['App']) && $changed) {
-        \ADVAccounting::refresh();
+        ADVAccounting::refresh();
       } // refresh menu
     }
   }

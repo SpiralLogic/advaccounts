@@ -16,6 +16,8 @@
    **/
   namespace ADV\Core;
 
+  use ADV\App\User;
+
   /**
 
    */
@@ -118,8 +120,8 @@
      * @param null $id
      */
     public static function qty($label, $bold = false, $dec = null, $id = null) {
-      if (!isset($dec)) {
-        $dec = \User::qty_dec();
+      if ($dec===null) {
+        $dec = User::qty_dec();
       }
       if ($bold) {
         Cell::label("<span class='bold'>" . Num::_format($label, $dec) . "</span>", ' class="alignright nowrap"', $id);
@@ -135,9 +137,9 @@
      */
     public static function unit_amount($label, $bold = false, $params = "", $id = null) {
       if ($bold) {
-        Cell::label("<span class='bold'>" . Num::_priceForamt($label) . "</span>", ' class="alignright nowrap"' . $params, $id);
+        Cell::label("<span class='bold'>" . Num::_priceFormat($label) . "</span>", ' class="alignright nowrap"' . $params, $id);
       } else {
-        Cell::label(Num::_priceForamt($label), ' class="alignright nowrap"' . $params, $id);
+        Cell::label(Num::_priceFormat($label), ' class="alignright nowrap"' . $params, $id);
       }
     }
     /**

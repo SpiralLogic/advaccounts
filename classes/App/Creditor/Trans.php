@@ -1,5 +1,12 @@
 <?php
-    /**
+  use ADV\App\User;
+  use ADV\App\Dates;
+  use ADV\Core\Row;
+  use ADV\Core\DB\DB;
+  use ADV\App\SysTypes;
+  use ADV\App\Tax\Tax;
+
+  /**
      * PHP version 5.4
      * @category  PHP
      * @package   adv.accounts.app
@@ -36,7 +43,7 @@
             unset($_SESSION["Creditor_Trans"]);
         }
         /**
-         * @var array
+         * @var Purch_GLItem[]
          */
         public $grn_items; /*array of objects of class GRNDetails using the GRN No as the pointer */
         /**
@@ -83,7 +90,10 @@
          * @var int
          */
         public $gl_codes_counter = 0;
-        public function __construct()
+      /**
+
+       */
+      public function __construct()
         {
             /*Constructor function initialises a new Supplier Transaction object */
             $this->grn_items = [];
@@ -185,7 +195,6 @@
                 $tax_group_id = $this->tax_group_id;
             }
             $tax_group = Tax_Groups::get_items_as_array($tax_group_id);
-            /** @var Purch_GLItem $line  */
             foreach ($this->grn_items as $line) {
                 $items[]  = $line->item_code;
                 $prices[] = round(($line->this_quantity_inv * $line->taxfree_charge_price($tax_group_id, $tax_group)), User::price_dec(), PHP_ROUND_HALF_EVEN);

@@ -1,5 +1,6 @@
 <?php
   use ADV\Core\Cell;
+  use ADV\App\Dates;
   use ADV\App\Display;
   use ADV\App\Forms;
   use ADV\App\User;
@@ -269,7 +270,8 @@
      */
     public function display() {
       if (!static::$dates) {
-        static::$dates = Dates::i();
+        static::$dates =
+          Dates::i();
       }
       if (!static::$User) {
         static::$User = User::i();

@@ -8,6 +8,9 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core\Traits;
+
+  use ADV\Core\Event;
+
   /**
 
    */
@@ -35,7 +38,7 @@
       if ($function) {
         $callback = (is_object($object)) ? [$object, $function] : $object . '::' . $function;
       } elseif (!is_callable($callback)) {
-        return \Event::error('Hook is not callable!');
+        return Event::error('Hook is not callable!');
       }
       static::$hooks->add($hook, $callback, $arguments);
     }

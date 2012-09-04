@@ -9,11 +9,19 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace Modules\Volusion;
+
+  use ADV\Core\XMLParser;
+  use ADV\Core\Event;
+  use ADV\Core\DB\DB;
+
   /**
 
    */
   use ADV\Core\DB\DBDuplicateException;
 
+  /**
+
+   */
   class Orders implements \Iterator, \Countable
   {
 
@@ -74,6 +82,9 @@
     public $status;
     /** @var */
     public $XML;
+    /**
+
+     */
     public function __construct() {
       $this->_classname = str_replace(__NAMESPACE__ . '\\', '', __CLASS__);
       //echo 'Getting from Volusion<br>';
@@ -92,7 +103,7 @@
       $url .= '&EDI_Name=Generic\Orders';
       $url .= '&SELECT_Columns=*';
       if (!$result = file_get_contents($url)) {
-        \Event::warning('Could not retrieve web orders');
+        Event::warning('Could not retrieve web orders');
       }
       $this->XML = $result;
       return $result;
@@ -105,7 +116,7 @@
       if (!$XML) {
         return false;
       }
-      $this->data = \XMLParser::XMLtoArray($XML);
+      $this->data = XMLParser::XMLtoArray($XML);
       if (isset($this->data[$this->idcolumn])) {
         $this->data = array($this->data);
       }
@@ -142,7 +153,7 @@
         //			echo $this->_classname . ' already exists, updating changes<br>';
         try {
           $current['ison_jobsboard'] = null;
-          \DB::_update($this->table)->values($current)->where($this->idcolumn . '=', $current[$this->idcolumn])->exec();
+          DB::_update($this->table)->values($current)->where($this->idcolumn . '=', $current[$this->idcolumn])->exec();
           return 'Updated ' . $this->_classname . ' ' . $current[$this->idcolumn];
         }
         catch (\DBUpdateException $e) {
@@ -154,7 +165,7 @@
       } else {
         echo $this->_classname . ' doesn\'t exist, adding<br>';
         try {
-          \DB::_insert($this->table)->values($current)->exec();
+          DB::_insert($this->table)->values($current)->exec();
           return 'Inserted ' . $this->_classname . ' ' . $current[$this->idcolumn];
         }
         catch (\DBInsertException $e) {
@@ -171,7 +182,7 @@
      */
     public function exists() {
       $current = $this->current();
-      $results = \DB::_select($this->idcolumn)->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])
+      $results = DB::_select($this->idcolumn)->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])
         ->fetch()->one();
       return (count($results) > 0) ? $results[$this->idcolumn] : false;
     }
@@ -198,7 +209,7 @@
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Return the key of the current element
      * @link http://php.net/manual/en/iterator.key.php
-     * @return scalar scalar on success, integer
+     * @return mixed scalar on success, integer
      */
     public function key() {
       return $this->data[$this->current]['OrderID'];
@@ -272,7 +283,7 @@
     public function next() {
       $this->current++;
       if (!$this->valid()) {
-        return false;
+        return;
       }
       if (isset($this->data[$this->current]['Options']) && isset($this->data[$this->current]['OrderDetails_Options'])) {
         $options       = $this->data[$this->current]['OrderDetails_Options'];
@@ -291,7 +302,7 @@
       }
       return $this->data[$this->current];
     }
-    /**
+      /**
      * @return mixed
      */
     public function key() {
@@ -328,7 +339,7 @@
      */
     public function exists() {
       $current = $this->current();
-      $results = \DB::_select()->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])
+      $results = DB::_select()->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])
         ->andWhere('OrderDetailID=', $current['OrderDetailID'])->fetch()->all();
       return (count($results) > 0);
     }

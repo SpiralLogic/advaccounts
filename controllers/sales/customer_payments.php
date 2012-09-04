@@ -1,5 +1,11 @@
 <?php
   use ADV\App\Debtor\Debtor;
+  use ADV\App\User;
+  use ADV\App\Ref;
+  use ADV\App\Display;
+  use ADV\App\Validation;
+  use ADV\App\Dates;
+  use ADV\App\Forms;
   use ADV\Core\Input\Input;
   use ADV\Core\Row;
   use ADV\Core\Table;

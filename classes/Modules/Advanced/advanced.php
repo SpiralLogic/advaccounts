@@ -1,4 +1,6 @@
 <?php
+  use ADV\App\Extensions;
+  use ADV\App\User;
 
   Extensions::add_access(User::i());
   // Turn these next two lines on for debugging

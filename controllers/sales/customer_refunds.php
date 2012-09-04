@@ -1,4 +1,13 @@
 <?php
+  use ADV\Core\JS;
+  use ADV\Core\Table;
+  use ADV\Core\Ajax;
+  use ADV\App\Forms;
+  use ADV\App\Display;
+  use ADV\App\Dates;
+  use ADV\App\Debtor\Debtor;
+  use ADV\App\Validation;
+  use ADV\Core\Input\Input;
 
   /**
    * PHP version 5.4

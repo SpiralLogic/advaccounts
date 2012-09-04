@@ -10,9 +10,9 @@
   namespace ADV\App;
 
   use ADV\Core\Session;
-  use DB_Company;
-  use ADV\Core\Event;
   use ADV\Core\JS;
+  use ADV\Core\Event;
+  use DB_Company;
   use ADV\Core\DB\DB;
   use ADV\Core\Config;
   use ADV\Core\Traits\StaticAccess;
@@ -21,9 +21,14 @@
    * @method static theme
    * @method User ii()
    * @method static logout()
+   * @method static date_format()
+   * @method static date_sep()
+   * @method static int qty_dec()
    * @method static price_dec()
    * @method static numeric($input)
+   * @method static print_profile()
    * @method static fallback()
+   * @method static rep_popup()
    * @method static percent_dec()
    * @method static graphic_links()
    * @method static register_login($object, $function = null, $arguments = [])
@@ -126,8 +131,8 @@
       return static::ii($user, $session, $config);
     }
     /**
-     * @param ADV\Core\Session $session
-     * @param ADV\Core\Config  $config
+     * @param \ADV\Core\Session $session
+     * @param \ADV\Core\Config  $config
      */
     public function __construct(Session $session = null, Config $config = null) {
       $this->Session = $session ? : Session::i();

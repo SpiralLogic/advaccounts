@@ -32,6 +32,7 @@
 
      */
     public function __construct($name, $value, $caption) {
+
       $this->name = $this->attr['name'] = $name;
       $this->id                         = $this->nameToId();
       $this->attr['type']               = 'submit';

@@ -60,7 +60,7 @@
     /**
      * @param $table
      *
-     * @return Query\Insert
+     * @return Insert
      */
     public function into($table) {
       $this->table = $table;

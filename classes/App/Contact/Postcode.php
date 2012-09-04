@@ -60,16 +60,14 @@
       )->label('City: ');
       $form->text(
         $this->state[0],
-        $this->state[1],
         [
         'placeholder'       => 'State',
         'maxlength'         => 35,
         'data-set'          => static::$count,
         'size'              => 35,
-        'value'             => $this->state[1],
         'name'              => $this->state[0]
         ]
-      )->label('State: ');
+      )->label('State: ')->val($this->state[1]);
       $form->custom(
         UI::search(
           $this->postcode[0],
@@ -91,11 +89,15 @@
       return $form;
     }
     /**
+     * @param array|mixed $values
+     *
      * @return ADV\App\Form\Form
      */
-    public function getForm()
+    public function getForm($values= null)
     {
-      return $this->generate();
+      $form = $this->generate();
+      if ($values) $form->setValues($values);
+      return $form;
     }
     /**
      * @static

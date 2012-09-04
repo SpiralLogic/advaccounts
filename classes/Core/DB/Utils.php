@@ -8,6 +8,12 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core\DB;
+
+  use ADV\Core\Event;
+  use ADV\Core\Files;
+  use ADV\App\User;
+  use DB_Company;
+
   /**
 
    */

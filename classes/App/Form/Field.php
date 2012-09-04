@@ -9,6 +9,7 @@
    */
   namespace ADV\App\Form;
   use \ADV\Core\HTML;
+  use ADV\Core\Ajax;
   use ADV\Core\Event;
   use ADV\Core\JS;
 
@@ -85,6 +86,12 @@
     {
       $this->attr = array_merge($this->attr, (array) $attr);
 
+      return $this;
+    }
+    public function val($value) {
+      $this->default = $value;
+      $this->value = $value;
+      Ajax::_addUpdate($this->name, $this->name, $value);
       return $this;
     }
     /**

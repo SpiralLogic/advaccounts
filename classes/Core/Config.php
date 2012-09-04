@@ -117,7 +117,7 @@
       return $this->Cache->set('config', $this->_vars);
     }
     /**
-     * @param Cache\Cache $cache
+     * @param Cache $cache
      */
     public function __construct(Cache $cache = null) {
       $this->Cache = $cache ? : Cache::i();

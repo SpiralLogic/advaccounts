@@ -4,6 +4,9 @@
    */
   namespace ADV\Core;
 
+  /**
+
+   */
   class CSSMin
   {
     protected $minified = '';
@@ -23,7 +26,7 @@
      * @internal param array $mimeTypes
      * @internal param $url
      * @internal param $count
-     * @return \CSSMin
+     * @return CSSMin
      */
     public function __construct($source, $options = []) {
       if (isset($options['filedir'])) {

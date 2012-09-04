@@ -1,5 +1,18 @@
 <?php
   use ADV\App\Dimensions;
+  use ADV\App\Dates;
+  use ADV\App\Ref;
+  use ADV\Core\DB\DB;
+  use ADV\App\SysTypes;
+  use ADV\Core\JS;
+  use ADV\App\User;
+  use ADV\Core\Cell;
+  use ADV\App\Display;
+  use ADV\Core\Ajax;
+  use ADV\Core\Input\Input;
+  use ADV\App\Forms;
+  use ADV\Core\Row;
+  use ADV\Core\Table;
 
   /**
    * PHP version 5.4
@@ -101,7 +114,6 @@
         $th[] = '';
       }
       Table::header($th);
-      $k  = 0;
       $id = Forms::findPostPrefix(MODE_EDIT);
       foreach ($order->gl_items as $line => $item) {
         if ($id != $line) {

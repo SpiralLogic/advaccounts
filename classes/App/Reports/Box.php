@@ -1,5 +1,13 @@
 <?php
   use ADV\App\Dimensions;
+  use ADV\App\Report;
+  use ADV\App\Tags;
+  use ADV\App\SysTypes;
+  use ADV\App\Dates;
+  use ADV\App\Forms;
+  use ADV\Core\JS;
+  use ADV\App\Display;
+  use ADV\Core\Ajax;
 
   /**
    * PHP version 5.4
@@ -17,6 +25,9 @@
      * @var array
      */
     public $ctrl_handlers = [];
+    /**
+
+     */
     public function __construct() {
     }
     public function reportClasses() {

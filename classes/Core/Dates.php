@@ -39,7 +39,9 @@
    * @method static _addYears($date, $years)
    * @method static _sqlToDate($date)
    * @method static _beginMonth($date)
+   * @method static _endMonth($date)
    * @method static _addMonths($date, $months)
+   * @method static _months()
    * @method static _endFiscalYear()
    * @method static _beginFiscalYear()
    */

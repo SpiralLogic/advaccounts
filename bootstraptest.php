@@ -1125,4 +1125,5 @@
   /**
 
    */
-  define('CANCEL', 'CancelUpdate');
+  define('CANCEL', 'Cancel');
+  define('SAVE', 'Save');

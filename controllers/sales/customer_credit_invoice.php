@@ -1,5 +1,6 @@
 <?php
   use ADV\Core\Input\Input;
+  use ADV\App\Dates;
   use ADV\App\Reporting;
   use ADV\App\Tax\Tax;
   use ADV\App\Item\Item;

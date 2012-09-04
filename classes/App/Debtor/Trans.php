@@ -1,5 +1,10 @@
 <?php
-    /**
+  use ADV\Core\DB\DB;
+  use ADV\Core\Row;
+  use ADV\App\SysTypes;
+  use ADV\App\Dates;
+
+  /**
      * PHP version 5.4
      * @category  PHP
      * @package   adv.accounts.app
@@ -151,9 +156,9 @@
          * @param        $trans_no
          * @param        $debtor_id
          * @param        $branch_no
-         * @param        $date_         is display date (non-sql)
+         * @param string       $date_         is display date (non-sql)
          * @param        $reference
-         * @param        $total         in customer's currency
+         * @param  float      $total         in customer's currency
          * @param int    $discount      in customer's currency
          * @param int    $tax           in customer's currency
          * @param int    $freight       in customer's currency

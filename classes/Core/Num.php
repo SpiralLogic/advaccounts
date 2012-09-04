@@ -9,6 +9,8 @@
    **/
   namespace ADV\Core;
 
+  use ADV\App\User;
+
   /**
    * @method static _priceFormat($number)
    * @method static _format($number, $decimals = 0)
@@ -42,10 +44,10 @@
     public $percent_dec;
     protected $user;
     /**
-     * @param \User $user
+     * @param User $user
      */
-    public function __construct(\User $user = null) {
-      $this->user        = $user ? : \User::i();
+    public function __construct(User $user = null) {
+      $this->user        = $user ? : User::i();
       $this->price_dec   = $this->user->_price_dec();
       $this->tho_sep     = $this->user->_tho_sep();
       $this->dec_sep     = $this->user->_dec_sep();

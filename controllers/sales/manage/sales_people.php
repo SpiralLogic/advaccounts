@@ -8,18 +8,10 @@
    * @link      http://www.advancedgroup.com.au
    **/
   use ADV\App\Controller\Base;
-  use ADV\App\Sales\Person;
-  use ADV\App\Display;
-  use ADV\App\Form\Form;
   use ADV\App\Users;
-  use ADV\Core\Row;
-  use ADV\Core\Cell;
-  use ADV\Core\Table;
-  use ADV\App\Forms;
-  use ADV\Core\Input\Input;
-  use ADV\Core\DB\DB;
+  use ADV\App\Sales\Person;
+  use ADV\App\Form\Form;
   use ADV\App\Validation;
-  use ADV\Core\JS;
 
   /**
 
@@ -33,7 +25,7 @@
     protected $sales_person;
     protected function before() {
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        if ($this->action == ADD_ITEM) {
+        if ($this->action == SAVE) {
           $this->sales_person = new \ADV\App\Sales\Person($_POST);
           //run the sql from either of the above possibilites
           if (!$this->sales_person->save()) {
@@ -65,7 +57,7 @@
     protected function index() {
       Page::start(_($help_context = "Sales Persons"), SA_SALESMAN);
       $cols  = array(
-        _("Salesman ID"),
+        _("ID"),
         _("Name"),
         _("User"),
         _("Phone"),
@@ -86,17 +78,17 @@
       $form              = new Form();
       $form->useDefaults = ($this->action == CANCEL);
       $form->hidden('salesman_code');
-      $form->text('salesman_name', null, ['maxlength'=> 30])->label('Name: ');
+      $form->text('salesman_name', ['maxlength'=> 30])->label('Name: ');
       $form->custom(Users::select('user_id', null, " ", true))->label('User:');
-      $form->text('salesman_phone', null, ['maxlength'=> 20])->label('Telephone number: ');
-      $form->text('salesman_fax', null, ['maxlength'=> 20])->label('Fax number: ');
-      $form->text('salesman_email', null, ['maxlength'=> 40])->label('E-mail: ');
+      $form->text('salesman_phone', ['maxlength'=> 20])->label('Telephone number: ');
+      $form->text('salesman_fax', ['maxlength'=> 20])->label('Fax number: ');
+      $form->text('salesman_email')->label('Email Address: ');
       $form->percent('provision')->label("Provision: ");
       $form->amount('break_pt')->label("Break Pt.:");
       $form->percent('provision2')->label("Provision 2: ");
       $form->group('buttons');
-      $form->submit(CANCEL, 'Cancel Changes')->type('danger')->preIcon(ICON_CANCEL);
-      $form->submit(ADD_ITEM, 'Save')->type('success')->preIcon(ICON_SUBMIT);
+      $form->submit(CANCEL)->type('danger')->preIcon(ICON_CANCEL);
+      $form->submit(SAVE)->type('success')->preIcon(ICON_SUBMIT);
       $form->setValues($this->sales_person);
       $view->set('form', $form);
       $view->render();

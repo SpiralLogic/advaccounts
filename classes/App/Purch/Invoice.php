@@ -1,5 +1,20 @@
 <?php
   use ADV\App\Creditor\Creditor;
+  use ADV\Core\JS;
+  use ADV\Core\Ajax;
+  use ADV\App\Forms;
+  use ADV\Core\Cell;
+  use ADV\Core\Row;
+  use ADV\App\Display;
+  use ADV\Core\Table;
+  use ADV\App\Tax\Tax;
+  use ADV\Core\Input\Input;
+  use ADV\App\Bank\Bank;
+  use ADV\App\Ref;
+  use ADV\App\Item\Item;
+  use ADV\App\User;
+  use ADV\App\Dates;
+  use ADV\Core\DB\DB;
 
   /**
      * PHP version 5.4
@@ -39,7 +54,8 @@
             $creditor_trans->tax_description = $myrow['tax_group_name'];
             $creditor_trans->tax_group_id    = $myrow['tax_group_id'];
             if ($creditor_trans->tran_date == "") {
-                $creditor_trans->tran_date = Dates::_today();
+                $creditor_trans->tran_date =
+                  Dates::_today();
                 if (!Dates::_isDateInFiscalYear($creditor_trans->tran_date)) {
                     $creditor_trans->tran_date = Dates::_endFiscalYear();
                 }

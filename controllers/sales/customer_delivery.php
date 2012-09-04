@@ -1,5 +1,21 @@
 <?php
   use ADV\Core\Table;
+  use ADV\Core\Input\Input;
+  use ADV\App\Tax\Tax;
+  use ADV\App\Item\Item;
+  use ADV\App\WO\WO;
+  use ADV\Core\Cell;
+  use ADV\Core\Row;
+  use ADV\App\Forms;
+  use ADV\Core\Ajax;
+  use ADV\App\Validation;
+  use ADV\App\Dates;
+  use ADV\App\Ref;
+  use ADV\App\Reporting;
+  use ADV\App\Debtor\Debtor;
+  use ADV\App\Display;
+  use ADV\App\Orders;
+  use ADV\Core\JS;
 
   /**
      * PHP version 5.4

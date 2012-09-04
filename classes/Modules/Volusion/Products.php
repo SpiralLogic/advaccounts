@@ -2,6 +2,7 @@
   namespace Modules\Volusion;
 
   use ADV\Core\XMLParser;
+  use ADV\Core\Event;
 
   /**
 
@@ -41,7 +42,7 @@
       $url .= '&EDI_Name=Generic\Products';
       $url .= '&SELECT_Columns=*&LIMIT=1';
       if (!$result = file_get_contents($url)) {
-        \Event::warning('Could not retrieve web products');
+        Event::warning('Could not retrieve web products');
       }
       ;
 

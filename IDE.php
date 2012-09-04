@@ -1087,7 +1087,11 @@
   /**
 
    */
-  define('CANCEL', 'CancelUpdate');
+  define('CANCEL', 'Cancel');
+  /**
+
+   */
+  define('SAVE', 'Save');
   /**
    */
   class Arr extends ADV\Core\Arr
@@ -1119,13 +1123,6 @@
 
    */
   class Config extends ADV\Core\Config
-  {
-  }
-
-  /**
-
-   */
-  class Dates extends ADV\Core\Dates
   {
   }
 

@@ -50,13 +50,13 @@
           $success++;
         }
         if ($success) {
-          \Event::success('Succesfully added ' . $success . ' jobs to database');
+          Event::success('Succesfully added ' . $success . ' jobs to database');
         }
       }
       $this->notOnJobsboard();
     }
     /**
-     * @return bool|Volusion\Orders
+     * @return bool|Orders
      */
     function getNewWebsales() {
       $orders = new Orders();
@@ -70,7 +70,7 @@
         }
       }
       if ($success) {
-        \Event::success('Added/Update ' . $success . ' websales');
+        Event::success('Added/Update ' . $success . ' websales');
       }
 
       return $orders;
@@ -90,14 +90,14 @@
       $neworders = $this->getNotOnJobsboard();
 
       if (!$neworders) {
-        //		\Event::notice('No jobs in database from website but not on jobsboard');
+        //		Event::notice('No jobs in database from website but not on jobsboard');
         return false;
       }
       $success = 0;
       foreach ($neworders as $neworder) {
         $job = $this->insertJob($neworder['OrderID']);
         if ($job) {
-          \Event::success("Websale " . $neworder['OrderID'] . " successfully added to Jobs Board with Job Number $job!");
+          Event::success("Websale " . $neworder['OrderID'] . " successfully added to Jobs Board with Job Number $job!");
         }
         $success++;
       }
@@ -112,7 +112,7 @@
     protected function insertJob($id) {
       $order = DB::_select()->from('WebOrders')->where('OrderID=', $id)->fetch()->one();
       if (!$order) {
-        \Event::error('Could not find job ' . $id . ' in database');
+        Event::error('Could not find job ' . $id . ' in database');
 
         return false;
       }

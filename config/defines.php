@@ -66,7 +66,6 @@
     'SS_GL'                   => 62 << 8,
     'SS_GL_A'                 => 63 << 8,
     'SS_ADV'                  => 71 << 8,
-
     'SA_ADVANCED'             => 'SA_ADVANCED',
     'SA_OPEN'                 => 'SA_OPEN',
     'SA_DENIED'               => 'SA_DENIED',
@@ -322,5 +321,6 @@
     'TYPE'                    => 'type',
     'REMOVED_ID'              => 'RemovedID',
     'REMOVED'                 => 'Removed',
-    'CANCEL'                  => 'CancelUpdate',
+    'CANCEL'                  => 'Cancel',
+    'SAVE'                  => 'Save',
   );

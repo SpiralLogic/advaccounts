@@ -1,5 +1,6 @@
 <?php
   use ADV\App\Creditor\Creditor;
+  use ADV\Core\HTMLmin;
   use ADV\App\Validation;
   use ADV\App\User;
   use ADV\Core\Input\Input;
@@ -35,7 +36,7 @@
       } elseif ($this->Input->request('id', Input::NUMERIC) > 0) {
         $data['company']     = $this->creditor = new Creditor($this->Input->request('id', Input::NUMERIC));
         $data['contact_log'] = Contact_Log::read($this->creditor->id, CT_SUPPLIER);
-        Session::_setGlobal('creditor_id', $this->creditor->id);
+        Session::_setGlobal('creditor_id');
       } else {
         $data['company'] = $this->creditor = new Creditor();
       }
@@ -55,7 +56,7 @@
       }
     }
     protected function index() {
-      Page::start(_($help_context = "Suppliers"), SA_SUPPLIER, $this->Input->request('frame'));
+      Page::start(_($help_context = "Suppliers"), SA_SUPPLIER);
       if (isset($_POST['delete'])) {
         $this->delete();
       }
@@ -68,7 +69,7 @@
      * @return string
      */
     protected function generateForm() {
-      $cache = Cache::_get('supplier_form');
+      $cache = null;//Cache::_get('supplier_form');
       if ($cache) {
         $this->JS->setState($cache[1]);
 
@@ -80,8 +81,8 @@
       $view          = new View('contacts/supplier');
       $view['frame'] = $this->Input->get('frame') || $this->Input->get('id');
       $view->set('menu', $menu);
-      $form->text('name', $this->creditor->name, ['class' => 'width60'])->label('Supplier Name:');
-      $form->text('id', $this->creditor->id, ['class' => 'small', 'maxlength' => 7])->label('Supplier ID:');
+      $form->text('name', ['class' => 'width60'])->label('Supplier Name:');
+      $form->text('id', ['class' => 'small', 'maxlength' => 7])->label('Supplier ID:');
       $view->set('form', $form);
       $view->set('creditor_id', $this->creditor->id);
       if (!$this->Input->get('frame')) {
@@ -91,47 +92,49 @@
         $view->set('shortcuts', $shortcuts);
         UI::emailDialogue(CT_SUPPLIER);
       }
-      $form->text('contact', $this->creditor->contact)->label('Contact:');
-      $form->text('phone', $this->creditor->phone)->label('Phone Number:');
-      $form->text('fax', $this->creditor->fax)->label('Fax Number:');
-      $form->text('email', $this->creditor->email)->label('Email:');
-      $form->textarea('address', $this->creditor->address, ['cols'=> 37, 'rows'=> 4])->label('Street:');
+      $form->text('contact')->label('Contact:');
+      $form->text('phone')->label('Phone Number:');
+      $form->text('fax')->label('Fax Number:');
+      $form->text('email')->label('Email:');
+      $form->textarea('address', ['cols'=> 37, 'rows'=> 4])->label('Street:');
       $postcode = new Contact_Postcode(array(
-                                            'city'     => array('city', $this->creditor->city),
-                                            'state'    => array('state', $this->creditor->state),
-                                            'postcode' => array('postcode', $this->creditor->postcode)
+                                            'city'     => array('city'),
+                                            'state'    => array('state'),
+                                            'postcode' => array('postcode')
                                        ));
       $view->set('postcode', $postcode->getForm());
-      $form->text('supp_phone', $this->creditor->phone2)->label('Phone Number:');
-      $form->textarea('supp_address', $this->creditor->supp_address, ['cols'=> 37, 'rows'=> 4])->label('Address:');
+      $form->text('supp_phone')->label('Phone Number:');
+      $form->textarea('supp_address', ['cols'=> 37, 'rows'=> 4])->label('Address:');
       $supp_postcode = new Contact_Postcode(array(
-                                                 'city'     => array('supp_city', $this->creditor->city),
-                                                 'state'    => array('supp_state', $this->creditor->state),
-                                                 'postcode' => array('supp_postcode', $this->creditor->postcode)
+                                                 'city'     => array('supp_city'),
+                                                 'state'    => array('supp_state'),
+                                                 'postcode' => array('supp_postcode')
                                             ));
       $view->set('supp_postcode', $supp_postcode->getForm());
-      $form->percent('payment_discount', $this->creditor->discount, ["disabled"=> !User::i()->hasAccess(SA_SUPPLIERCREDIT)])->label("Prompt Payment Discount:");
-      $form->amount('credit_limit', $this->creditor->credit_limit, ["disabled"=> !User::i()->hasAccess(SA_SUPPLIERCREDIT)])->label("Credit Limit:");
-      $form->text('tax_id', $this->creditor->tax_id)->label("GST No:");
-      $form->custom(Tax_Groups::select('tax_group_id', $this->creditor->tax_group_id))->label('Tax Group:');
-      $form->textarea('notes', $this->creditor->notes)->label('General Notes:');
-      $form->custom(UI::select('inactive', ['0'=> 'No', '1'=> 'Yes'], ['name' => 'inactive'], $this->creditor->inactive, true))->label('Inactive:');
+      $form->percent('payment_discount', ["disabled"=> !User::i()->hasAccess(SA_SUPPLIERCREDIT)])->label("Prompt Payment Discount:");
+      $form->amount('credit_limit', ["disabled"=> !User::i()->hasAccess(SA_SUPPLIERCREDIT)])->label("Credit Limit:");
+      $form->text('tax_id')->label("GST No:");
+      $form->custom(Tax_Groups::select('tax_group_id'))->label('Tax Group:');
+      $form->textarea('notes')->label('General Notes:');
+      $form->custom(UI::select('inactive', ['0'=> 'No', '1'=> 'Yes'], ['name' => 'inactive'], true))->label('Inactive:');
       if (!$this->creditor->id) {
-        $form->custom(GL_Currency::select('curr_code', $this->creditor->curr_code))->label('Currency Code:');
+        $form->custom(GL_Currency::select('curr_code'))->label('Currency Code:');
       } else {
         $form->custom($this->creditor->curr_code)->label('Currency Code:');
-        $form->hidden('curr_code', $this->creditor->curr_code);
+        $form->hidden('curr_code');
       }
-      $form->custom(GL_UI::payment_terms('payment_terms', $this->creditor->payment_terms))->label('Payment Terms:');
-      $form->custom(GL_UI::all('payable_account', $this->creditor->payable_account, false, false, true))->label('Payable Account:');
-      $form->custom(GL_UI::all('payment_discount_account', $this->creditor->payment_discount_account, false, false, true))->label('Prompt Payment Account:');
+      $form->custom(GL_UI::payment_terms('payment_terms'))->label('Payment Terms:');
+      $form->custom(GL_UI::all('payable_account', false, false, true))->label('Payable Account:');
+      $form->custom(GL_UI::all('payment_discount_account', false, false, true))->label('Prompt Payment Account:');
       $form->hidden('type', CT_SUPPLIER);
       $view['date'] = date('Y-m-d H:i:s');
-      $form->text('contact_name', $this->creditor->contact_name)->label('Contact:');
-      $form->textarea('messageLog', '', ['class'=> 'big', 'cols'=> 40]);
+      $form->text('contact_name')->label('Contact:');
+      $form->textarea('messageLog', ['class'=> 'big', 'cols'=> 40]);
 
-      $form->textarea('Entry:', 'message', '', ['cols'=> 100, 'rows'=> 10]);
-      $form = $view->render(true);
+      $form->textarea('Entry:', 'message', ['cols'=> 100, 'rows'=> 10]);
+      $view->set('form', $form);
+
+      $form = HTMLmin::minify($view->render(true));
       Cache::_set('supplier_form', [$form, $this->JS->getState()]);
 
       return $form;

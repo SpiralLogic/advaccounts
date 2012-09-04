@@ -1,5 +1,16 @@
 <?php
   use ADV\App\Dimensions;
+  use ADV\Core\Cell;
+  use ADV\Core\Table;
+  use ADV\App\User;
+  use ADV\App\Validation;
+  use ADV\Core\Ajax;
+  use ADV\Core\Input\Input;
+  use ADV\App\Display;
+  use ADV\Core\Row;
+  use ADV\App\Forms;
+  use ADV\App\Creditor\Creditor;
+  use ADV\App\Tax\Tax;
 
   /**
      * PHP version 5.4
@@ -123,13 +134,14 @@ all the info to do the necessary entries without looking up ie additional querie
             //			return $this->chg_price;
             return Tax::tax_free_price($this->item_code, $this->chg_price * (1 - $this->discount / 100), $tax_group_id, 0, $tax_group);
         }
-        /**
-         * @static
-         *
-         * @param $creditor_trans
-         * @param $k
-         */
-        public static function display_controls($creditor_trans, $k)
+      /**
+       * @static
+       *
+       * @param $creditor_trans
+       *
+       * @internal param $k
+       */
+        public static function display_controls($creditor_trans)
         {
             $accs             = Creditor::get_accounts_name($creditor_trans->creditor_id);
             $_POST['gl_code'] = $accs['purchase_account'];
@@ -190,7 +202,7 @@ all the info to do the necessary entries without looking up ie additional querie
                     echo "&nbsp;" . $qid['base_desc'] . ":&nbsp;";
                     $amount = Validation::input_num('total_amount', $qid['base_amount']);
                     $dec    = User::price_dec();
-                    echo "<input class='amount' type='text' name='total_amount' data-dec='2' maxlength='12'  value='$amount'>&nbsp;";
+                    echo "<input class='amount' type='text' name='total_amount' data-dec='$dec' maxlength='12'  value='$amount'>&nbsp;";
                     Forms::submit('go', _("Go"), true, false, true);
                     echo "</div>";
                 }

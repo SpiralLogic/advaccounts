@@ -14,7 +14,7 @@
    * @method static _get($var, $type = null, $default = null)
    * @method static _session($var, $type = null, $default = null)
    * @method static _getPost($var, $type = null, $default = null)
-   * @method static Input i()
+   * @method static \ADV\Core\Input\Input i()
    * @method static _postGet($var, $type = null, $default = null)
    * @method static _postGetGlobal($var, $type = null, $default = null)
    * @method static _getPostGlobal($var, $type = null, $default = null)

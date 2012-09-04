@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core\DB\Query;
-  use PDO, PDOStatement, PDOException, PDORow;
+  use PDO, PDOStatement, \PDOException, \PDORow;
 
   /**
 
@@ -70,7 +70,7 @@
      * @param      $condition
      * @param null $uservar
      *
-     * @return \ADV\Core\DB\Query|Select
+     * @return Query|Select
      */
     public function where($condition, $uservar = null)
     {
