@@ -1,5 +1,7 @@
 <?php
   use ADV\Core\Row;
+  use ADV\App\Form\Button;
+  use ADV\App\Form\Form;
   use ADV\Core\Table;
 
   /**
@@ -50,9 +52,6 @@
       if (isset($_POST['_date__changed'])) {
         $this->Ajax->activate('_ex_rate');
       }
-      if (isset($_POST['Process']) && $this->canProcess()) {
-        $this->processOrder();
-      }
       $id = Forms::findPostPrefix(MODE_DELETE);
       if ($id != -1) {
         $this->deleteItem($id);
@@ -72,6 +71,7 @@
     }
     protected function index() {
       Page::start($this->title, $this->security);
+      $this->runAction();
       Forms::start();
       Bank_UI::header($this->order);
       Table::start('tablesstyle2 width90 pad10');
@@ -82,8 +82,9 @@
       echo "</td>";
       Row::end();
       Table::end(1);
-      Forms::submitCenterBegin('Update', _("Update"), '', null);
-      Forms::submitCenterEnd('Process', _("Process " . $this->type), '', 'default');
+echo '<div class="center">';
+      echo (new Button('_action',COMMIT,COMMIT))->type('success')->preIcon(ICON_SUBMIT);
+      echo "</div>";
       Forms::end();
       Page::end();
     }
@@ -131,7 +132,8 @@
 
       return true;
     }
-    protected function processOrder() {
+    protected function commit() {
+      if (!$this->canProcess()) return ;
       $trans            = GL_Bank::add_bank_transaction(
         $this->order->trans_type,
         $_POST['bank_account'],

@@ -601,4 +601,5 @@
     {
       reset($this->groups['_default']);
     }
+    public function __tostring() { $return=''; foreach($this as $field) { $return .= $field;} return $return;}
   }

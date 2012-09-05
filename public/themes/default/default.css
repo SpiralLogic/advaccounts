@@ -1858,7 +1858,8 @@ input[type="submit"].btn.btn-mini {
 }
 
 .modal.hide {
-  display: none; }
+  display: none;
+}
 
 .modal.fade.in {
   top: 50%;
@@ -3497,7 +3498,9 @@ input.datepicker {
 }
 
 #help_indicator .icon-question-sign {
-  width: 25px; color: #0000cd; z-index: 100;
+  width:   25px;
+  color:   #0000cd;
+  z-index: 100;
 }
 
 .modal textarea {
@@ -3651,12 +3654,18 @@ td.tableheader3 {
   margin: 0;
   height: 25px;
 }
+.tablestyle tbody td:last-child {
+  border-right: 2px solid #e1e1e1;
+}
 
 td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .tablestyle tbody td:first-child {
   text-indent:   5px;
-  border:        1px solid #fff;
   color:         black;
   padding-right: 7px;
+}
+
+td.tablerowhead, .tablerowhead td, td + input {
+  border: 1px solid #fff;
 }
 
 .grid tbody tr:nth-child(odd), tr.grid:nth-child(odd) {

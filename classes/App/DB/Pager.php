@@ -347,7 +347,7 @@
             Cell::percent($cell);
             break;
           case 'amount':
-            ($cell == '') ? Cell::label('') : Cell::amount($cell, false);
+            ($cell === '') ? Cell::label('') : Cell::amount($cell, false);
             break;
           case 'qty':
             ($cell == '') ? Cell::label('') : Cell::qty($cell, false, isset($col['dec']) ? $col['dec'] : null);

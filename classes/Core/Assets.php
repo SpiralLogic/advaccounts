@@ -11,12 +11,12 @@
      * Website: http://farhadi.ir/
      */
   namespace ADV\Core;
-
   /**
 
    */
   class Assets
   {
+
     protected $baseDir = WEBROOT;
     protected $charSet = 'UTF-8';
     protected $debug = false;
@@ -36,7 +36,7 @@
     protected $minifyTypes
       = array(
         'js'  => array(
-          'minify'   => false, //
+          'minify'   => true, //
           'minifier' => '\\ADV\\Core\\JSMin', //
           'settings' => [] //
         ), //
@@ -124,7 +124,6 @@
       if (is_null($time)) {
         $time = time();
       }
-
       return gmdate("D, d M Y H:i:s", $time) . " GMT";
     }
     /**
@@ -141,7 +140,6 @@
         }
         $filesmtime = max(filemtime($file), $filesmtime);
       }
-
       return $filesmtime;
     }
     /**
@@ -234,10 +232,10 @@
               $minifier_class                   = $minify_type_settings['minifier'];
               $minify_type_settings['settings'] = $minify_type_settings['settings'] ? : [];
               $minifier                         = new $minifier_class($content, array(
-                                                                                     'fileDir'             => $fileDir,
-                                                                                     'minify_type_settings'=> $minify_type_settings['settings'],
-                                                                                     'mimeTypes'           => $this->mimeTypes
-                                                                                ));
+                'fileDir'             => $fileDir,
+                'minify_type_settings'=> $minify_type_settings['settings'],
+                'mimeTypes'           => $this->mimeTypes
+              ));
               $content                          = $minifier->minify();
             }
           }
@@ -251,8 +249,10 @@
               fclose($handle);
             }
           }
-          header('Content-Length: ' . strlen($content));
-          echo $content;
+          header('Content-Length: ' . filesize($cachedFile)); ob_clean();
+              flush();
+          readfile($cachedFile);    exit;
+
         } else {
           if (!headers_sent($file, $log)) {
             header('Content-Length: ' . filesize($cachedFile));
