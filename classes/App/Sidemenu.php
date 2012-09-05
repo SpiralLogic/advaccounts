@@ -23,6 +23,9 @@
     public function render() {
       return $this->menu->render(true);
     }
+    public function get() {
+      return $this->menu->getALL();
+    }
     /**
      * @param User $user
      */

@@ -1,6 +1,5 @@
 <?php
   namespace ADV\App;
-
   use ADV\App\ADVAccounting;
 
   /**
@@ -24,6 +23,7 @@
    */
   class Page
   {
+
     /**
      * @var
      */
@@ -99,7 +99,6 @@
       }
       foreach ($application->modules as $module) {
         $app = new View('application');
-
         $app['colspan'] = (count($module->rightAppFunctions) > 0) ? 2 : 1;
         $app['name']    = $module->name;
         foreach ([$module->leftAppFunctions, $module->rightAppFunctions] as $modules) {
@@ -116,7 +115,6 @@
           }
           $app->set((!$app['lmods']) ? 'lmods' : 'rmods', $mods);
         }
-
         $app->render();
       }
     }
@@ -232,14 +230,13 @@
         $help_page_url = $this->App->applications[$this->App->selected->id]->help_context;
         $help_page_url = Display::access_string($help_page_url, true);
       }
-
       return $this->Config->get('help_baseurl') . urlencode(
         strtr(
           ucwords($help_page_url),
           array(
-               ' ' => '',
-               '/' => '',
-               '&' => 'And'
+            ' ' => '',
+            '/' => '',
+            '&' => 'And'
           )
         )
       ) . '&ctxhelp=1&lang=' . $country;
@@ -259,7 +256,6 @@
       $footer['load_time'] = Dates::_getReadableTime(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
       $footer['user']      = $this->User->username;
       $footer['footer']    = $this->menu && !AJAX_REFERRER;
-
       return $footer;
     }
     /**
@@ -270,11 +266,9 @@
       $footer   = $this->menu_footer();
       $footer->set('beforescripts', "_focus = '" . Input::_post('_focus') . "';_validate = " . $this->Ajax->php2js($validate) . ";");
       $this->User->_add_js_data();
-      $footer->set('sidemenu', ($this->header && $this->menu ? (new Sidemenu($this->User))->render() : ''));
-      $this->renderedjs = $this->renderedjs ? : $this->JS->render(true);
-      $footer->set('js', $this->renderedjs);
+        $footer->set('sidemenu', ($this->header && $this->menu? ['bank'=> $this->User->hasAccess(SS_GL)]:false));
+      $footer->set('JS', $this->JS);
       $footer->set('messages', (!AJAX_REFERRER ? Messages::show() : ''));
-      $footer->set('help_modal', (new View('help_modal'))->render());
       $footer->set('page_body', Display::div_end(true));
       $footer->render();
     }
@@ -285,7 +279,6 @@
       $this->css += $this->Config->get('assets.css');
       $path = THEME_PATH . $this->theme . DS;
       $css  = implode(',', $this->css);
-
       return [$path . $css];
     }
     /**
@@ -316,7 +309,6 @@
       static::$i->isIndex  = $isIndex;
       static::$i->security = $security;
       static::$i->init(!$no_menu);
-
       return static::$i;
     }
     /**
@@ -336,7 +328,6 @@
             $selected_id = $default;
           }
           unset($_POST['_focus']);
-
           return array($m, $selected_id);
         }
       }
@@ -346,12 +337,10 @@
             unset($_POST['_focus']); // focus on first form entry
             $selected_id = quoted_printable_decode(substr($p, strlen($m)));
             Ajax::_activate('_page_body');
-
             return array($m, $selected_id);
           }
         }
       }
-
       return array('', $selected_id);
     }
     public static function footer_exit() {

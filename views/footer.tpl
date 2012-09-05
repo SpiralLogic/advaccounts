@@ -12,20 +12,22 @@
   {{#if $user}}
   <span class='power'><a target='_blank' href='{{POWERED_URL}}'>{{POWERED_BY}}</a></span>
   <span class='date'>{{$today}} | {{$now}}</span>
-  <span> </span>| <span>mem/peak: {{$mem}} </span><span>|</span><span> load time: {{$load_time}}</span>
+  <span> </span>| <span>mem/peak: {{$mem}} </span><span>|</span><span> load time: {{\ADV\App\Dates::_getReadableTime(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'])}}</span>
   {{/if}}
   <!-- end footer div-->
 </div>
 {{/if}}
+
 <!-- end content div-->
 </div>
-{{$sidemenu}}
+
+{{+sidemenu}}
+{{+help_modal}}
 {{$messages}}
-{{$help_folder}}
 {{#if !AJAX_REFERRER}}
 {{/if}}
 <script>{{$beforescripts}}
-</script>  {{$js}}
+</script>  {#$JS->render()#}
 {{#if !AJAX_REFERRER}}
 </body>
 </html>

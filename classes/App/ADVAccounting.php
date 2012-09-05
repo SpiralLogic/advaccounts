@@ -283,7 +283,7 @@
           $ext = '\\ADV\\App\\Apps\\' . $ext['name'];
           $this->add_application(new $ext());
         }
-        $this->Session->get_text->add_domain($this->Session['langauge']->code, LANG_PATH);
+        $this->Session->get_text->add_domain($this->Session->language->code, LANG_PATH);
       }
       $this->add_application(new \ADV\App\Apps\System());
       $this->Cache->set('applications', $this->applications);

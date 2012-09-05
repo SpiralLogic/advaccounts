@@ -68,7 +68,6 @@
         return $form = $cache[0];
       }
       $this->JS->autocomplete('customer', 'Company.fetch');
-      $currentBranch = $this->debtor->branches[$this->debtor->defaultBranch];
       $form          = new Form();
       $menu          = new MenuUI();
       $view          = new View('contacts/customers');

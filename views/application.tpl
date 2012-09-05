@@ -1,4 +1,4 @@
-<table class='width100'>
+   <table class='width100'>
   <tr>
     <td class='menu_group top'>
       <table class='width100'>

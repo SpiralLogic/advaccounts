@@ -68,7 +68,7 @@
      * @return string
      */
     protected function generateForm() {
-      $cache = null; // Cache::_get('supplier_form');
+      $cache =  Cache::_get('supplier_form');
       if ($cache) {
         $this->JS->setState($cache[1]);
 
