@@ -17,7 +17,7 @@
     class Location extends \ADV\App\DB\Base
     {
       protected $_table = 'locations';
-      protected $_classname = 'Locations';
+      protected $_classname = 'Location';
       protected $_id_column = 'id';
       public $id = 0;
       public $loc_code;
