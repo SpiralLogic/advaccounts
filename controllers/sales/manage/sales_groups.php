@@ -1,97 +1,47 @@
 <?php
+  use ADV\App\Sales\Group;
+  use ADV\App\Form\Form;
+
   /**
-   * PHP version 5.4
-   * @category  PHP
-   * @package   ADVAccounts
-   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-   * @copyright 2010 - 2012
-   * @link      http://www.advancedgroup.com.au
-   **/
 
-  Page::start(_($help_context = "Sales Groups"), SA_SALESGROUP);
-  list($Mode, $selected_id) = Page::simple_mode(true);
-  if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
-    $input_error = 0;
-    if (strlen($_POST['description']) == 0) {
-      $input_error = 1;
-      Event::error(_("The area description cannot be empty."));
-      JS::_setFocus('description');
-    }
-    if ($input_error != 1) {
-      if ($selected_id != -1) {
-        $sql  = "UPDATE groups SET description=" . DB::_escape($_POST['description']) . " WHERE id = " . DB::_escape($selected_id);
-        $note = _('Selected sales group has been updated');
-      } else {
-        $sql  = "INSERT INTO groups (description) VALUES (" . DB::_escape($_POST['description']) . ")";
-        $note = _('New sales group has been added');
-      }
-      DB::_query($sql, "The sales group could not be updated or added");
-      Event::success($note);
-      $Mode = MODE_RESET;
-    }
-  }
-  if ($Mode == MODE_DELETE) {
-    $cancel_delete = 0;
-    // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors'
-    $sql    = "SELECT COUNT(*) FROM branches WHERE group_no=" . DB::_escape($selected_id);
-    $result = DB::_query($sql, "check failed");
-    $myrow  = DB::_fetchRow($result);
-    if ($myrow[0] > 0) {
-      $cancel_delete = 1;
-      Event::error(_("Cannot delete this group because customers have been created using this group."));
-    }
-    if ($cancel_delete == 0) {
-      $sql = "DELETE FROM groups WHERE id=" . DB::_escape($selected_id);
-      DB::_query($sql, "could not delete sales group");
-      Event::notice(_('Selected sales group has been deleted'));
-    } //end if Delete area
-    $Mode = MODE_RESET;
-  }
-  if ($Mode == MODE_RESET) {
-    $selected_id = -1;
-    $sav         = Input::_post('show_inactive');
-    unset($_POST);
-    if ($sav) {
-      $_POST['show_inactive'] = 1;
-    }
-  }
-  $sql = "SELECT * FROM groups";
-  if (!Input::_hasPost('show_inactive')) {
-    $sql .= " WHERE !inactive";
-  }
-  $sql .= " ORDER BY description";
-  $result = DB::_query($sql, "could not get groups");
-  Forms::start();
-  Table::start('tablestyle grid width30');
-  $th = array(_("Group Name"), "", "");
-  Forms::inactiveControlCol($th);
-  Table::header($th);
-  $k = 0;
-  while ($myrow = DB::_fetch($result)) {
+   */
+  class SalesGroups extends \ADV\App\Controller\Manage
+  {
 
-    Cell::label($myrow["description"]);
-    Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'groups', 'id');
-    Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
-    Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
-    Row::end();
-  }
-  Forms::inactiveControlRow($th);
-  Table::end();
-  echo '<br>';
-  Table::start('tablestyle2');
-  if ($selected_id != -1) {
-    if ($Mode == MODE_EDIT) {
-      //editing an existing area
-      $sql                  = "SELECT * FROM groups WHERE id=" . DB::_escape($selected_id);
-      $result               = DB::_query($sql, "could not get group");
-      $myrow                = DB::_fetch($result);
-      $_POST['description'] = $myrow["description"];
+    protected function before() {
+      $this->object = new Group();
+      $this->runPost();
     }
-    Forms::hidden("selected_id", $selected_id);
-  }
-  Forms::textRowEx(_("Group Name:"), 'description', 30);
-  Table::end(1);
-  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Forms::end();
-  Page::end();
+    protected function index() {
+      Page::start(_($help_context = "Sales Areas"), SA_SALESAREA);
+      $this->generateTable();
+      echo '<br>';
+      $this->generateForm();
+      Page::end(true);
+    }
+    /**
+     * @param \ADV\App\Form\Form|\Form   $form
+     * @param \ADV\Core\View|\View $view
+     *
+     * @return mixed
+     */
+    protected function formContents(Form $form, \ADV\Core\View $view) {
+      $form->hidden('id');
+      $form->text('description')->label('Area Name:');
+      $form->submit(CANCEL)->type('danger')->preIcon(ICON_CANCEL);
+      $form->submit(SAVE)->type('success')->preIcon(ICON_ADD);
+    }
+    protected function generateTable() {
+      $cols         = [
+        ['type'=> 'skip'],
+        'Group Name',
+        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
+        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
+      ];
+      $table        = DB_Pager::new_db_pager('sales_group_table', Group::getAll(), $cols);
+      $table->class = 'width30';
+      $table->display();
+    }
 
+  }
+new SalesGroups();

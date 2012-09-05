@@ -550,7 +550,7 @@ debit freight re-charged and debit sales */
       }
       Row::start();
       Cell::label(_("Shipping"), "colspan=$colspan class='alignright bold'");
-      Forms::amountCellsSmall(null, 'ChargeFreightCost', Num::_priceFormat(Input::_post('ChargeFreightCost', null, 0)));
+      Forms::amountCellsSmall(null, 'ChargeFreightCost', Num::_priceFormat(Input::_post('ChargeFreightCost', null, 0)),null,['$']);
       Cell::label('', 'colspan=2');
       Row::end();
       $taxes         = $order->get_taxes($_POST['ChargeFreightCost']);
@@ -603,7 +603,7 @@ debit freight re-charged and debit sales */
       Forms::qtyCells(null, 'qty', $_POST['qty'], null, null, $dec);
       Cell::label($_POST['units']);
       Forms::amountCells(null, 'price', null);
-      Forms::amountCellsSmall(null, 'Disc', Num::_percentFormat(0), null, null, User::percent_dec());
+      Forms::amountCellsSmall(null, 'Disc', Num::_percentFormat(0), null, '%', User::percent_dec());
       Cell::amount(Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('Disc') / 100));
       if ($id != -1) {
         Forms::buttonCell(Orders::UPDATE_ITEM, _("Update"), _('Confirm changes'), ICON_UPDATE);

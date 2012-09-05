@@ -264,7 +264,7 @@ JS;
 
         return ob_get_clean();
       }
-      static::$JS->_onload($js);
+      static::$JS->onload($js);
     }
     /**
      * Universal link to any kind of report.
@@ -291,7 +291,7 @@ JS;
         static::$debug = Config::_get('debug.pdf');
       }
       $url = $dir ? : BASE_URL . 'reporting/prn_redirect.php?';
-      $id  = static::$JS->_defaultFocus($id);
+      $id  = static::$JS->defaultFocus($id);
       foreach ($pars as $par => $val) {
         $pars[$par] = "$par=" . urlencode($val);
       }

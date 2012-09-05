@@ -1,4 +1,16 @@
 <?php
+  use ADV\Core\JS;
+  use ADV\App\Dimensions;
+  use ADV\Core\Row;
+  use ADV\Core\Table;
+  use ADV\App\Display;
+  use ADV\Core\Input\Input;
+  use ADV\Core\DB\DB;
+  use ADV\App\Validation;
+  use ADV\App\Item\Item;
+  use ADV\App\Forms;
+  use ADV\Core\Ajax;
+
   /**
    * PHP version 5.4
    * @category  PHP

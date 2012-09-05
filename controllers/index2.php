@@ -17,7 +17,7 @@
 
      */
     public function __construct() {
-      $this->DB = DB::i();
+      $this->DB = new DB('jobsboard');
     }
     /**
      * @param $table
@@ -76,8 +76,9 @@
         }
       }
     }
-    protected function hasInactive($row) {
-    }
+    /**
+     * @return string
+     */
     public function generate() {
       $name     = $this->name;
       $vars     = implode("\n", $this->vars) . PHP_EOL;
@@ -118,4 +119,4 @@ CLASS;
   }
 
   $test = new Generator();
-  $test->getTableDetails('locations');
+  $test->getTableDetails('sales_types');

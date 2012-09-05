@@ -13,6 +13,7 @@
    */
   class Errors
   {
+
     const DB_DUPLICATE_ERROR_CODE = 1062;
     /** @var array Container for the system messages */
     public static $messages = [];
@@ -93,7 +94,10 @@
         list($message, $file, $line, $log) = explode('||', $message) + [1 => 'No File Given', 2 => 'No Line Given', 3=> true];
       }
       $error = array(
-        'type' => $type, 'message' => $message, 'file' => $file, 'line' => $line
+        'type'    => $type,
+        'message' => $message,
+        'file'    => $file,
+        'line'    => $line
       );
       if (in_array($type, static::$user_errors) || in_array($type, static::$fatal_levels)) {
         static::$messages[] = $error;
@@ -114,7 +118,11 @@
      */
     public static function exceptionHandler(\Exception $e) {
       $error                    = array(
-        'type'    => -1, 'code'    => $e->getCode(), 'message' => end(explode('\\', get_class($e))) . ' ' . $e->getMessage(), 'file'    => $e->getFile(), 'line'    => $e->getLine()
+        'type'    => -1,
+        'code'    => $e->getCode(),
+        'message' => end(explode('\\', get_class($e))) . ' ' . $e->getMessage(),
+        'file'    => $e->getFile(),
+        'line'    => $e->getLine()
       );
       static::$current_severity = -1;
       static::$messages[]       = $error;
@@ -130,7 +138,11 @@
      */
     public static function format() {
       $msg_class = array(
-        E_USER_ERROR        => array('ERROR', 'err_msg'), E_RECOVERABLE_ERROR => array('ERROR', 'err_msg'), E_USER_WARNING      => array('WARNING', 'warn_msg'), E_USER_NOTICE       => array('USER', 'info_msg'), E_SUCCESS           => array('SUCCESS', 'success_msg')
+        E_USER_ERROR        => array('ERROR', 'err_msg'),
+        E_RECOVERABLE_ERROR => array('ERROR', 'err_msg'),
+        E_USER_WARNING      => array('WARNING', 'warn_msg'),
+        E_USER_NOTICE       => array('USER', 'info_msg'),
+        E_SUCCESS           => array('SUCCESS', 'success_msg')
       );
       $content   = '';
       foreach (static::$messages as $msg) {
@@ -291,9 +303,11 @@
     public static function JSONError() {
       $status = false;
       if (count(static::$dberrors) > 0) {
-        $dberror           = end(static::$dberrors);
-        $status['status']  = E_ERROR;
-        $status['message'] = $dberror['message'];
+        $dberror          = end(static::$dberrors);
+        $status['status'] = E_ERROR;
+        preg_match('/Column \'(.+)\'(.*)/', $dberror['message'], $matches);
+        $status['var']     = $matches[1];
+        $status['message'] = $matches[1].$matches[2];
       } elseif (count(static::$messages) > 0) {
         $message           = end(static::$messages);
         $status['status']  = $message['type'];

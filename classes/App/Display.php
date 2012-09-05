@@ -9,11 +9,9 @@
    **/
   namespace ADV\App;
   use ADV\Core\Event;
-  use Reporting;
   use GL_UI;
   use ADV\Core\DB\DB;
   use ADV\Core\Table;
-  use Voiding;
   use ADV\Core\Ajax;
   use ADV\Core\JS;
 
@@ -201,8 +199,8 @@
         static::$DB = DB::i();
       }
       if ($stock_id != "") {
-        $result = static::$DB->_query("SELECT description, units FROM stock_master WHERE stock_id=" . static::$DB->_escape($stock_id));
-        $myrow  = static::$DB->_fetchRow($result);
+        $result = static::$DB->query("SELECT description, units FROM stock_master WHERE stock_id=" . static::$DB->escape($stock_id));
+        $myrow  = static::$DB->fetchRow($result);
         static::heading("$stock_id - $myrow[0]");
         $units = $myrow[1];
         static::heading(_("in units of : ") . $units);
@@ -222,7 +220,7 @@
       if (!static::$JS) {
         static::$JS = JS::i();
       }
-      $id   = static::$JS->_defaultFocus($id);
+      $id   = static::$JS->defaultFocus($id);
       $pars = Display::access_string($label);
 
       return "<a href='$url' class='menu_option' id='$id' $pars[1]>$pars[0]</a>";
@@ -241,7 +239,7 @@
       if (!static::$JS) {
         static::$JS = JS::i();
       }
-      $id   = static::$JS->_defaultFocus($id);
+      $id   = static::$JS->defaultFocus($id);
       $pars = Display::access_string($label);
 
       return "<a href='$url' class='button  button-large' id='$id' $pars[1]>$pars[0]</a>";
@@ -310,7 +308,7 @@
       if (!static::$JS) {
         static::$JS = JS::i();
       }
-      $id   = static::$JS->_defaultFocus();
+      $id   = static::$JS->defaultFocus();
       $pars = Display::access_string($label);
       if ($target == '') {
         $target = $_SERVER['DOCUMENT_URI'];
@@ -352,7 +350,7 @@
       if (!static::$JS) {
         static::$JS = JS::i();
       }
-      $id   = static::$JS->_defaultFocus();
+      $id   = static::$JS->defaultFocus();
       $pars = Display::access_string($label);
       if ($target == '') {
         $target = $_SERVER['DOCUMENT_URI'];
@@ -379,7 +377,7 @@
       if (!static::$JS) {
         static::$JS = JS::i();
       }
-      $id   = static::$JS->_defaultFocus();
+      $id   = static::$JS->defaultFocus();
       $pars = Display::access_string($label);
       if ($target == '') {
         $target = $_SERVER['DOCUMENT_URI'];
@@ -420,7 +418,7 @@
       if (!static::$JS) {
         static::$JS = JS::i();
       }
-      $id   = static::$JS->_defaultFocus();
+      $id   = static::$JS->defaultFocus();
       $pars = Display::access_string($label);
       if (!$nobr) {
         echo "<br>";

@@ -135,6 +135,7 @@ Adv.extend({
                          break;
                        case 256:
                        case 8:
+                       case 1:
                        case -1:
                          status.class = 'err_msg';
                          type = 'error';
