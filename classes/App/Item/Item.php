@@ -182,10 +182,10 @@
      */
     protected function canProcess() {
       if (!$this->stock_id) {
-        return $this->status(false, 'saving', 'Item must have a stock_id ' . $this->stock_id, 'stock_id');
+        return $this->status(false, 'Item must have a stock_id ' . $this->stock_id, 'stock_id');
       }
       if (!$this->name) {
-        return $this->status(false, 'saving', 'Item must have a name', 'name');
+        return $this->status(false, 'Item must have a name', 'name');
       }
 
       return true;
@@ -212,7 +212,7 @@
     protected function init() {
       $this->defaults();
 
-      return $this->status(true, 'Initialize new Item', 'Now working with a new Item');
+      return $this->status(true, 'Now working with a new Item');
     }
     /**
      * @return array|bool|int|null
@@ -233,7 +233,7 @@
       if (!$result) {
         DB::_cancel();
 
-        return $this->status(false, 'locations', "Could not add item location information.");
+        return $this->status(false, "Could not add item location information.");
       }
       $sql    = "INSERT INTO item_codes (stockid, item_code, stock_id, description, category_id, quantity, is_foreign) VALUES(" . DB::_quote($this->id) . "," . DB::_quote(
         $this->stock_id
@@ -244,11 +244,11 @@
       if (!$result) {
         DB::_cancel();
 
-        return $this->status(false, 'item code', "Could not add item code information.");
+        return $this->status(false, "Could not add item code information.");
       }
       DB::_commit();
 
-      return $this->status(\ADV\Core\Status::SUCCESS, 'Processing', "Item has been added.");
+      return $this->status(\ADV\Core\Status::SUCCESS, "Item has been added.");
     }
     protected function setDefaults() {
       if ($this->mb_flag == STOCK_MANUFACTURE || $this->mb_flag == STOCK_PURCHASED) {

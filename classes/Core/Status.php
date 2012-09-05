@@ -28,39 +28,38 @@
     const ERROR   = E_USER_ERROR;
     /**
      * @param null   $status
-     * @param null   $process
      * @param string $message
      * @param null   $var
+     *
+     * @internal param null $process
      */
-    public function __construct($status = null, $process = null, $message = '', $var = null) {
+    public function __construct($status = null, $message = '', $var = null) {
       if (func_num_args() > 0 && $message) {
-        $this->set($status, $process, $message, $var);
+        $this->set($status, $message, $var);
       }
     }
     /**
      * Adds new status entry
      *
      * @param int|null      $status  One of Status::SUCCESS | Status::INFO | Status::WARNING | Status::ERROR
-     * @param string        $process What process caused the change in status
      * @param string        $message Friendly message to display
      * @param mixed         $var     The variable if any invovled in causeing the status
      *
+     * @internal param string $process What process caused the change in status
      * @return bool
      */
-    public function set($status = self::INFO, $process = null, $message = '', $var = null) {
+    public function set($status = self::INFO, $message = '', $var = null) {
       if ($status === true) {
         $status = self::INFO;
       }
       if ($status === false) {
         $status = self::ERROR;
       }
-      if ($status === null || $process === null) {
+      if ($status === null) {
         $newstatus['status']  = self::ERROR;
-        $newstatus['process'] = 'status';
         $newstatus['message'] = 'Not enough parameters passed for status update.';
       } else {
         $newstatus['status']  = $status;
-        $newstatus['process'] = $process;
         $newstatus['message'] = $message;
         if (!empty($var) && $var != null) {
           $newstatus['var'] = $var;
@@ -121,8 +120,7 @@
      */
     public function __toString() {
       $last = $this->get();
-      $str  = ucwords($last['process']);
-      $str .= ($last['status'] != self::ERROR) ? ' Succeeded: ' : ' Failed: ';
+      $str  = ($last['status'] != self::ERROR) ? ' Succeeded: ' : ' Failed: ';
       $str .= $last['message'];
 
       return $str;

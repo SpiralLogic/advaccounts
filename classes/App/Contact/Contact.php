@@ -99,6 +99,6 @@
     protected function init() {
       $this->defaults();
 
-      return $this->status(true, 'Initialize new Contact', 'Now working with a new Contact');
+      return $this->status(true, 'Now working with a new Contact');
     }
   }

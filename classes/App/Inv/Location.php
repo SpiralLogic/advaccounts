@@ -34,51 +34,30 @@
        */
       protected function canProcess() {
         $this->loc_code = strtoupper($this->loc_code);
-        if (strlen($this->loc_code) > 7) //check length after conversion
-        {
-          return $this->status(false, 'saving', _("The location code must be five characters or less long (including converted special chars)."), 'location_name');
-        }
-        if (empty($this->location_name)) {
-          return $this->status(false, 'saving', 'Location_name must be not be empty', 'location_name');
+
+        if (strlen($this->loc_code) > 5) {
+          return $this->status(false, 'Loc_code must be not be longer than 5 characters!', 'loc_code');
         }
         if (strlen($this->location_name) > 60) {
-          return $this->status(false, 'saving', 'Location_name must be not be longer than 60 characters!', 'location_name');
-        }
-        if (empty($this->delivery_address)) {
-          return $this->status(false, 'saving', 'Delivery_address must be not be empty', 'delivery_address');
+          return $this->status(false, 'Location_name must be not be longer than 60 characters!', 'location_name');
         }
         if (strlen($this->delivery_address) > 255) {
-          return $this->status(false, 'saving', 'Delivery_address must be not be longer than 255 characters!', 'delivery_address');
-        }
-        if (empty($this->phone)) {
-          return $this->status(false, 'saving', 'Phone must be not be empty', 'phone');
+          return $this->status(false, 'Delivery_address must be not be longer than 255 characters!', 'delivery_address');
         }
         if (strlen($this->phone) > 30) {
-          return $this->status(false, 'saving', 'Phone must be not be longer than 30 characters!', 'phone');
-        }
-        if (empty($this->phone2)) {
-          return $this->status(false, 'saving', 'Phone2 must be not be empty', 'phone2');
+          return $this->status(false, 'Phone must be not be longer than 30 characters!', 'phone');
         }
         if (strlen($this->phone2) > 30) {
-          return $this->status(false, 'saving', 'Phone2 must be not be longer than 30 characters!', 'phone2');
-        }
-        if (empty($this->fax)) {
-          return $this->status(false, 'delete', 'Fax must be not be empty', 'fax');
+          return $this->status(false, 'Phone2 must be not be longer than 30 characters!', 'phone2');
         }
         if (strlen($this->fax) > 30) {
-          return $this->status(false, 'saving', 'Fax must be not be longer than 30 characters!', 'fax');
-        }
-        if (empty($this->email)) {
-          return $this->status(false, 'saving', 'Email must be not be empty', 'email');
+          return $this->status(false, 'Fax must be not be longer than 30 characters!', 'fax');
         }
         if (strlen($this->email) > 100) {
-          return $this->status(false, 'saving', 'Email must be not be longer than 100 characters!', 'email');
-        }
-        if (empty($this->contact)) {
-          return $this->status(false, 'saving', 'Contact must be not be empty', 'contact');
+          return $this->status(false, 'Email must be not be longer than 100 characters!', 'email');
         }
         if (strlen($this->contact) > 30) {
-          return $this->status(false, 'saving', 'Contact must be not be longer than 30 characters!', 'contact');
+          return $this->status(false, 'Contact must be not be longer than 30 characters!', 'contact');
         }
 
         return true;
@@ -104,49 +83,49 @@
         $result = DB::_query($sql, "could not query stock moves");
         $myrow  = DB::_fetchRow($result);
         if ($myrow[0] > 0) {
-          return $this->status(false, 'saving', _("Cannot delete this location because item movements have been created using this location."));
+          return $this->status(false, _("Cannot delete this location because item movements have been created using this location."));
         }
         $sql    = "SELECT COUNT(*) FROM workorders WHERE loc_code=" . DB::_escape($this->loc_code);
         $result = DB::_query($sql, "could not query work orders");
         $myrow  = DB::_fetchRow($result);
         if ($myrow[0] > 0) {
-          return $this->status(false, 'saving', _("Cannot delete this location because it is used by some work orders records."));
+          return $this->status(false, _("Cannot delete this location because it is used by some work orders records."));
         }
         $sql    = "SELECT COUNT(*) FROM branches WHERE default_location=" . DB::_escape($this->loc_code);
         $result = DB::_query($sql, "could not query customer branches");
         $myrow  = DB::_fetchRow($result);
         if ($myrow[0] > 0) {
-          return $this->status(false, 'delete', _("Cannot delete this location because it is used by some branch records as the default location to deliver from."));
+          return $this->status(false, _("Cannot delete this location because it is used by some branch records as the default location to deliver from."));
         }
         $sql    = "SELECT COUNT(*) FROM bom WHERE loc_code=" . DB::_escape($this->loc_code);
         $result = DB::_query($sql, "could not query bom");
         $myrow  = DB::_fetchRow($result);
         if ($myrow[0] > 0) {
-          return $this->status(false, 'delete', _("Cannot delete this location because it is used by some related records in other tables."));
+          return $this->status(false, _("Cannot delete this location because it is used by some related records in other tables."));
         }
         $sql    = "SELECT COUNT(*) FROM grn_batch WHERE loc_code=" . DB::_escape($this->loc_code);
         $result = DB::_query($sql, "could not query grn batch");
         $myrow  = DB::_fetchRow($result);
         if ($myrow[0] > 0) {
-          return $this->status(false, 'delete', _("Cannot delete this location because it is used by some related records in other tables."));
+          return $this->status(false, _("Cannot delete this location because it is used by some related records in other tables."));
         }
         $sql    = "SELECT COUNT(*) FROM purch_orders WHERE into_stock_location=" . DB::_escape($this->loc_code);
         $result = DB::_query($sql, "could not query purch orders");
         $myrow  = DB::_fetchRow($result);
         if ($myrow[0] > 0) {
-          return $this->status(false, 'delete', _("Cannot delete this location because it is used by some related records in other tables."));
+          return $this->status(false, _("Cannot delete this location because it is used by some related records in other tables."));
         }
         $sql    = "SELECT COUNT(*) FROM sales_orders WHERE from_stk_loc=" . DB::_escape($this->loc_code);
         $result = DB::_query($sql, "could not query sales orders");
         $myrow  = DB::_fetchRow($result);
         if ($myrow[0] > 0) {
-          return $this->status(false, 'delete', _("Cannot delete this location because it is used by some related records in other tables."));
+          return $this->status(false, _("Cannot delete this location because it is used by some related records in other tables."));
         }
         $sql    = "SELECT COUNT(*) FROM sales_pos WHERE pos_location=" . DB::_escape($this->loc_code);
         $result = DB::_query($sql, "could not query sales pos");
         $myrow  = DB::_fetchRow($result);
         if ($myrow[0] > 0) {
-          return $this->status(false, 'delete', _("Cannot delete this location because it is used by some related records in other tables."));
+          return $this->status(false, _("Cannot delete this location because it is used by some related records in other tables."));
         }
 
         return parent::delete();

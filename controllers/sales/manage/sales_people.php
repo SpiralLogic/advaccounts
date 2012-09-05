@@ -18,26 +18,18 @@
    */
   class SalesPeople extends Base
   {
-
     protected $result;
     protected $selected_id;
     protected $Mode;
     protected $sales_person;
     protected function before() {
+      $this->sales_person = new \ADV\App\Sales\Person(0);
+
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        if ($this->action == SAVE) {
-          $this->sales_person = new \ADV\App\Sales\Person($_POST);
-          //run the sql from either of the above possibilites
-          if (!$this->sales_person->save()) {
-            $result['status'] = $this->sales_person->getStatus();
-            $this->JS->renderJSON($result);
-          } else {
-            DB_Pager::kill('sales_persons');
-          }
-        }
+
         $id = $this->getActionId('Delete');
         if ($id > -1) {
-          $this->sales_person = new \ADV\App\Sales\Person($id);
+          $this->sales_person->load($id);
           //the link to delete a selected record was clicked instead of the submit button
           $this->sales_person->delete();
           $result['status'] = $this->sales_person->getStatus();
@@ -46,12 +38,22 @@
         $id = $this->getActionId('Edit');
         if ($id > -1) {
           //editing an existing Sales-person
-          $this->sales_person = new \ADV\App\Sales\Person($id);
+          $this->sales_person->load($id);
           $this->Ajax->activate('edit_user');
           $this->JS->setFocus('salesman_name');
-        } else {
-          $this->sales_person = new \ADV\App\Sales\Person(0);
         }
+        if ($this->action == SAVE) {
+          $this->sales_person->save($_POST);
+          //run the sql from either of the above possibilites
+          $result['status'] = $this->sales_person->getStatus();
+          if ($result['status']['status'] == Status::ERROR) {
+            $this->JS->renderJSON($result);
+          }
+          $this->sales_person->load(0);
+        } else {
+          $result['status'] = $this->sales_person->getStatus();
+        }
+        $this->Ajax->addJson(true, null, $result);
       }
     }
     protected function index() {
@@ -103,6 +105,7 @@
     public function formatEditBtn($row) {
       $button = new \ADV\App\Form\Button('_action', 'Edit' . $row['salesman_code'], 'Edit');
       $button['class'] .= ' btn-mini btn-primary';
+
       return $button;
     }
     /**
@@ -113,6 +116,7 @@
     public function formatDeleteBtn($row) {
       $button = new \ADV\App\Form\Button('_action', 'Delete' . $row['salesman_code'], 'Delete');
       $button['class'] .= ' btn-mini btn-danger';
+
       return $button;
     }
   }

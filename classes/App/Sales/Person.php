@@ -30,10 +30,10 @@
     public $salesman_phone;
     public $salesman_fax;
     public $salesman_email;
-    public $inactive=0;
-    public $provision;
-    public $break_pt;
-    public $provision2;
+    public $inactive = 0;
+    public $provision = 0;
+    public $break_pt = 0;
+    public $provision2 = 0;
     /**
      * @param int   $id
      * @param array $extra
@@ -41,21 +41,16 @@
     public function __construct($id = 0, $extra = []) {
       parent::__construct($id, $extra);
     }
+    /**
+     * @return \ADV\Core\Traits\Status|bool
+     */
     public function delete() {
-      $sql    = "SELECT COUNT(*) FROM branches WHERE salesman=" . DB::_escape($this->id);
-      $result = DB::_query($sql, "check failed");
-      $myrow  = DB::_fetchRow($result);
-      if ($myrow[0] > 0) {
-        return $this->status(false, 'delete', "Cannot delete this sales-person because branches are set up referring to this sales-person - first alter the branches concerned.");
+      $result = $this->DB->select("COUNT(*) as count")->from('branches')->where('salesman=', $this->id)->fetch()->one('count');
+      if ($result > 0) {
+        return $this->status(false, "Cannot delete this sales-person because branches are set up referring to this sales-person - first alter the branches concerned.");
       }
-      $sql    = "DELETE FROM salesman WHERE salesman_code=" . DB::_escape($this->id);
-      $result = DB::_query($sql, "The sales-person could not be deleted");
-      if (!$result) {
-        return $this->status(false, 'delete', 'Selected sales person could not be deleted');
-      }
-      $this->defaults();
 
-      return $this->status(true, 'delete', 'Selected sales person data have been deleted');
+      return parent::delete();
     }
     /**
      * @return bool
@@ -65,16 +60,16 @@
         $this->user_id = null;
       }
       if (strlen($this->salesman_name) == 0) {
-        return $this->status(false, 'saving', "The sales person name *cannot be empty.", 'salesman_name');
+        return $this->status(false, "The sales person name *cannot be empty.", 'salesman_name');
       }
       if (!Validation::is_num($this->provision, 0, 100)) {
-        return $this->status(false, 'saving', 'Provisions needs to be a number and not less than 0', 'provision');
+        return $this->status(false, 'Provisions needs to be a number and not less than 0', 'provision');
       }
       if (!Validation::is_num($this->break_pt, 0, $this->provision)) {
-        return $this->status(false, 'saving', 'Break point needs to be a number and not less than 0 and no greater than inital provision', 'break_pt');
+        return $this->status(false, 'Break point needs to be a number and not less than 0 and no greater than inital provision', 'break_pt');
       }
       if (!Validation::is_num($this->provision2, 0, $this->break_pt)) {
-        return $this->status(false, 'saving', 'Provisions 2 needs to be a number and not less than 0 and greater than break point', 'provision2');
+        return $this->status(false, 'Provisions 2 needs to be a number and not less than 0 and greater than break point', 'provision2');
       }
 
       return true;
@@ -91,6 +86,11 @@
       $this->break_pt   = Num::_priceFormat($this->break_pt);
       $this->provision2 = Num::_percentFormat($this->provision2);
     }
+    /**
+     * @param bool $inactive
+     *
+     * @return mixed
+     */
     public static function getAll($inactive = false) {
       $sql = "SELECT s.*,u.user_id,u.id FROM salesman s, users u WHERE s.user_id=u.id";
       if (!$inactive) {

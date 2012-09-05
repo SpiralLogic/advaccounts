@@ -17,28 +17,32 @@
   {
     protected $inv_location;
     protected function before() {
+      $this->inv_location = new Location(0);
+
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $this->inv_location = new Location(0);
-        $id                 = $this->getActionId(DELETE);
-        if (strlen($id) > 0) {
-          $this->inv_location = new Location($id);
+
+        $id = $this->getActionId('Delete');
+        if ($id > -1) {
+          $this->inv_location->load($id);
           //the link to delete a selected record was clicked instead of the submit button
           $this->inv_location->delete();
+          $result['status'] = $this->inv_location->getStatus();
+          $this->Ajax->addJson(true, null, $result);
         }
-        $id = $this->getActionId(EDIT);
-        if (strlen($id) > 0) {
+        $id = $this->getActionId('Edit');
+        if ($id > -1) {
           //editing an existing Sales-person
-          $this->inv_location = new Location($id);
+          $this->inv_location->load($id);
           $this->JS->setFocus('location_name');
         }
         if ($this->action == SAVE) {
           $this->inv_location->save($_POST);
           //run the sql from either of the above possibilites
           $result['status'] = $this->inv_location->getStatus();
-          if (!$result['status']['status']) {
+          if ($result['status']['status'] == Status::ERROR) {
             $this->JS->renderJSON($result);
           }
-          $this->inv_location = new Location(0);
+          $this->inv_location->load(0);
         } else {
           $result['status'] = $this->inv_location->getStatus();
         }

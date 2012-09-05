@@ -20,10 +20,10 @@
      */
     protected function canProcess() {
       if (empty($this->description)) {
-        return $this->status(false, 'saving', 'Description must be not be empty', 'description');
+        return $this->status(false, 'Description must be not be empty', 'description');
       }
       if (strlen($this->description) > 60) {
-        return $this->status(false, 'saving', 'Description must be not be longer than 60 characters!', 'description');
+        return $this->status(false, 'Description must be not be longer than 60 characters!', 'description');
       }
 
       return true;

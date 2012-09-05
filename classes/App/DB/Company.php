@@ -114,7 +114,7 @@
       DB::_commit();
       $_SESSION['config']['company'] = $this;
 
-      return $this->status(true, 'Processing', "Company has been updated.");
+      return $this->status(true, "Company has been updated.");
     }
     public function delete() {
       // TODO: Implement delete() method.

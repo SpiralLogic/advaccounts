@@ -60,17 +60,17 @@
       if (in_array($row['DATA_TYPE'], ['int', 'float', 'double', 'decimal'])) {
         $min            = (strpos($row['COLUMN_TYPE'], 'unsigned')) ? '0' : 'null';
         $this->valids[] = 'if (!Validation::is_num($this->' . $name . ', ' . $min . ')){
-            return $this->status(false,\'saving\',\'' . ucfirst($name) . ' must be a number\',\'' . $name . '\');' . PHP_EOL . '}' . PHP_EOL;
+            return $this->status(false,\'' . ucfirst($name) . ' must be a number\',\'' . $name . '\');' . PHP_EOL . '}' . PHP_EOL;
       }
       if (in_array($row['DATA_TYPE'], ['varchar', 'text', 'char'])) {
-        if ($row['NULLABLE'] !== 'N') {
+        if ($row['NULLABLE'] === 'NO' && $row['COLUMN_DEFAULT'] === 'NONE') {
           $this->valids[] = 'if (empty($this->' . $name . ')){
-            return $this->status(false,\'saving\',\'' . ucfirst($name) . ' must be not be empty\',\'' . $name . '\');' . PHP_EOL . '}' . PHP_EOL;
+            return $this->status(false,\'' . ucfirst($name) . ' must be not be empty\',\'' . $name . '\');' . PHP_EOL . '}' . PHP_EOL;
         }
         if ($row['CHARACTER_MAXIMUM_LENGTH'] !== '') {
           $len            = $row['CHARACTER_MAXIMUM_LENGTH'];
           $this->valids[] = 'if (strlen($this->' . $name . ')>' . $len . '){
-                  return $this->status(false,\'saving\',\'' . ucfirst(
+                  return $this->status(false,\'' . ucfirst(
             $name
           ) . ' must be not be longer than ' . $len . ' characters!\',\'' . $name . '\');' . PHP_EOL . '}' . PHP_EOL;
         }

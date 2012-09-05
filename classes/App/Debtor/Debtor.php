@@ -154,23 +154,23 @@
      */
     public function delete() {
       if ($this->countTransactions() > 0) {
-        return $this->status(false, 'delete', "This customer cannot be deleted because there are transactions that refer to it.");
+        return $this->status(false, "This customer cannot be deleted because there are transactions that refer to it.");
       }
       if ($this->_countOrders() > 0) {
-        return $this->status(false, 'delete', "Cannot delete the customer record because orders have been created against it.");
+        return $this->status(false, "Cannot delete the customer record because orders have been created against it.");
       }
       if ($this->_countBranches() > 0) {
-        return $this->status(false, 'delete', "Cannot delete this customer because there are branch records set up against it.");
+        return $this->status(false, "Cannot delete this customer because there are branch records set up against it.");
       }
       if ($this->_countContacts() > 0) {
-        return $this->status(false, 'delete', "Cannot delete this customer because there are contact records set up against it.");
+        return $this->status(false, "Cannot delete this customer because there are contact records set up against it.");
       }
       $sql = "DELETE FROM debtors WHERE debtor_id=" . $this->id;
       static::$DB->_query($sql, "cannot delete customer");
       unset($this->id);
       $this->init();
 
-      return $this->status(true, 'delete', "Customer deleted.");
+      return $this->status(true, "Customer deleted.");
     }
     /**
      * @return array|bool
@@ -283,7 +283,7 @@
      */
     protected function canProcess() {
       if (strlen($this->name) == 0) {
-        return $this->status(false, 'Processing', "The customer name cannot be empty.", 'name');
+        return $this->status(false, "The customer name cannot be empty.", 'name');
       }
       if (strlen($this->debtor_ref) == 0) {
         $data['debtor_ref'] = substr($this->name, 0, 29);
@@ -291,7 +291,7 @@
       if (!Validation::is_num($this->credit_limit, 0)) {
         JS::_setFocus('credit_limit');
 
-        return $this->status(false, 'Processing', "The credit limit must be numeric and not less than zero.", 'credit_limit');
+        return $this->status(false, "The credit limit must be numeric and not less than zero.", 'credit_limit');
       }
       if (!Validation::is_num($this->payment_discount, 0, 100)) {
         JS::_setFocus('payment_discount');
@@ -324,7 +324,7 @@
           FILTER_FLAG_ALLOW_FRACTION
         ) || $this->payment_terms != $previous->payment_terms) && !User::i()->hasAccess(SA_CUSTOMER_CREDIT)
         ) {
-          return $this->status(false, 'Processing', "You don't have access to alter credit limits", 'credit_limit');
+          return $this->status(false, "You don't have access to alter credit limits", 'credit_limit');
         }
       }
 
@@ -411,7 +411,7 @@
       $this->branches[0]->debtor_id = $this->accounts->debtor_id = $this->id = 0;
       $this->setDefaults();
 
-      return $this->status(true, 'Initialize', 'Now working with a new customer');
+      return $this->status(true, 'Now working with a new customer');
     }
     /**
      * @param bool|int|null $id

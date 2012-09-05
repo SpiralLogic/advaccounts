@@ -225,13 +225,13 @@
      */
     protected function canProcess() {
       if (strlen($this->name) == 0) {
-        return $this->status(false, 'Processing', "The supplier name cannot be empty.", 'name');
+        return $this->status(false, "The supplier name cannot be empty.", 'name');
       }
       if (strlen($this->creditor_id) == 0) {
         $data['debtor_ref'] = substr($this->name, 0, 29);
       }
       if (!Validation::is_num($this->credit_limit, 0)) {
-        return $this->status(false, 'Processing', "The credit limit must be numeric and not less than zero.", 'credit_limit');
+        return $this->status(false, "The credit limit must be numeric and not less than zero.", 'credit_limit');
       }
       if (!Validation::is_num($this->discount, 0, 100)) {
         return $this->status(
@@ -270,7 +270,7 @@
     protected function init() {
       $this->defaults();
 
-      return $this->status(true, 'Initialize new supplier', 'Now working with a new supplier');
+      return $this->status(true, 'Now working with a new supplier');
     }
     /**
      * @return void

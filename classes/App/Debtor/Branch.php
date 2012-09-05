@@ -154,7 +154,7 @@
       DB::_delete('branches')->where('branch_id=', $this->branch_id)->exec();
       $this->init();
 
-      return $this->status(true, 'delete', "Branch deleted.");
+      return $this->status(true, "Branch deleted.");
     }
     /**
      * @return string
@@ -178,7 +178,7 @@
      */
     protected function canProcess() {
       if (strlen($this->br_name) < 1) {
-        return $this->status(false, 'write', 'Branch name can not be empty');
+        return $this->status(false, 'Branch name can not be empty');
       }
 
       return true;
@@ -206,7 +206,7 @@
     protected function init() {
       $this->defaults();
 
-      return $this->status(true, 'new', 'Now working with a new Branch');
+      return $this->status(true, 'Now working with a new Branch');
     }
     /**
      * @param null $changes
@@ -231,7 +231,7 @@
      */
     protected function read($id = null, $extra = []) {
       if (!$id) {
-        return $this->status(false, 'read', 'No Branch parameters provided');
+        return $this->status(false, 'No Branch parameters provided');
       }
       $this->defaults();
       if (!is_array($id)) {
@@ -250,7 +250,7 @@
       }
       DB::_fetch()->intoClass($this);
 
-      return $this->status(true, 'read', 'Read Branch from Database');
+      return $this->status(true, 'Read Branch from Database');
     }
     /**
      * @static
