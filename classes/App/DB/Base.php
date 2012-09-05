@@ -135,6 +135,9 @@
 
       return $this->status(true, 'Deleted ' . $this->_classname . '!');
     }
+    public function getIDColumn() {
+      return $this->_id_column;
+    }
     protected function defaults() {
       $values = get_class_vars(get_called_class());
       unset($values['DB'], $values['_id_column'], $values['_table'], $values['_classname']);
