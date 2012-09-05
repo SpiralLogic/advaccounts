@@ -1,6 +1,5 @@
 <?php
   use ADV\App\Creditor\Creditor;
-  use ADV\Core\HTMLmin;
   use ADV\App\Validation;
   use ADV\App\User;
   use ADV\Core\Input\Input;
@@ -36,7 +35,7 @@
       } elseif ($this->Input->request('id', Input::NUMERIC) > 0) {
         $data['company']     = $this->creditor = new Creditor($this->Input->request('id', Input::NUMERIC));
         $data['contact_log'] = Contact_Log::read($this->creditor->id, CT_SUPPLIER);
-        Session::_setGlobal('creditor_id');
+        Session::_setGlobal('creditor_id', $this->creditor->id);
       } else {
         $data['company'] = $this->creditor = new Creditor();
       }
@@ -56,7 +55,7 @@
       }
     }
     protected function index() {
-      Page::start(_($help_context = "Suppliers"), SA_SUPPLIER);
+      Page::start(_($help_context = "Suppliers"), SA_SUPPLIER, $this->Input->request('frame'));
       if (isset($_POST['delete'])) {
         $this->delete();
       }
@@ -69,7 +68,7 @@
      * @return string
      */
     protected function generateForm() {
-      $cache = null;//Cache::_get('supplier_form');
+      $cache = null; // Cache::_get('supplier_form');
       if ($cache) {
         $this->JS->setState($cache[1]);
 
@@ -116,7 +115,7 @@
       $form->text('tax_id')->label("GST No:");
       $form->custom(Tax_Groups::select('tax_group_id'))->label('Tax Group:');
       $form->textarea('notes')->label('General Notes:');
-      $form->custom(UI::select('inactive', ['0'=> 'No', '1'=> 'Yes'], ['name' => 'inactive'], true))->label('Inactive:');
+      $form->arraySelect('inactive', ['No', 'Yes'])->label('Inactive:');
       if (!$this->creditor->id) {
         $form->custom(GL_Currency::select('curr_code'))->label('Currency Code:');
       } else {
@@ -124,17 +123,15 @@
         $form->hidden('curr_code');
       }
       $form->custom(GL_UI::payment_terms('payment_terms'))->label('Payment Terms:');
-      $form->custom(GL_UI::all('payable_account', false, false, true))->label('Payable Account:');
-      $form->custom(GL_UI::all('payment_discount_account', false, false, true))->label('Prompt Payment Account:');
+      $form->custom(GL_UI::all('payable_account', null, false, false, true))->label('Payable Account:');
+      $form->custom(GL_UI::all('payment_discount_account', null, false, false, true))->label('Prompt Payment Account:');
       $form->hidden('type', CT_SUPPLIER);
       $view['date'] = date('Y-m-d H:i:s');
       $form->text('contact_name')->label('Contact:');
       $form->textarea('messageLog', ['class'=> 'big', 'cols'=> 40]);
 
-      $form->textarea('Entry:', 'message', ['cols'=> 100, 'rows'=> 10]);
-      $view->set('form', $form);
-
-      $form = HTMLmin::minify($view->render(true));
+      $form->textarea('message', ['cols'=> 100, 'rows'=> 10])->label('Entry:');
+      $form = $view->render(true);
       Cache::_set('supplier_form', [$form, $this->JS->getState()]);
 
       return $form;

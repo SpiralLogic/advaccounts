@@ -1092,6 +1092,8 @@
 
    */
   define('SAVE', 'Save');
+  define('DELETE', 'Delete');
+  define('EDIT', 'Edit');
   /**
    */
   class Arr extends ADV\Core\Arr

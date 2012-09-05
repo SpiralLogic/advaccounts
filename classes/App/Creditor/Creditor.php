@@ -210,7 +210,7 @@
         $this->contacts = [];
       }
       $this->discount     = User::numeric($this->discount) / 100;
-      $this->supp_ref     = substr($this->name, 0, 29);
+      $this->supp_ref     = substr($this->name, 0, 29) ? : '';
       $this->credit_limit = str_replace(',', '', $this->credit_limit);
     }
     /**

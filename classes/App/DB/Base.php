@@ -31,16 +31,20 @@
     /** @var */
     protected $_id_column;
     protected $_classname;
+    /**
+     * @return \ADV\Core\Traits\Status|bool
+     */
     public function delete() {
 
-
       try {
-        $id_column=$this->_id_column;
-        DB::_delete($this->_table)->where($id_column.'=',$this->$id_column)->exec();
-      }catch (\DBDeleteException $e){
+        $id_column = $this->_id_column;
+        DB::_delete($this->_table)->where($id_column . '=', $this->$id_column)->exec();
+      } catch (\DBDeleteException $e) {
         return $this->status(false, 'delete', 'Could not delete' . $this->_classname);
       }
-      return $this->status(true, 'delete', 'Deleted ' . $this->_classname.'!');
+      $this->defaults();
+
+      return $this->status(true, 'delete', 'Deleted ' . $this->_classname . '!');
     }
     abstract protected function canProcess();
     protected function defaults() {
@@ -64,7 +68,7 @@
         $this->setFromArray($changes);
       }
       if (!$this->canProcess()) {
-        return false;
+        return $this->getStatus();
       }
       if ($this->id == 0) {
         return $this->saveNew();
@@ -108,7 +112,7 @@
       if ($_id_column && $_id_column != 'id') {
         $this->id = &$this->$_id_column;
       }
-      if (is_numeric($id) && $id > 0) {
+      if ((is_numeric($id) && $id > 0) || (is_string($id) && strlen($id) > 0)) {
         $this->id = $id;
         $this->read($id, $extra);
 

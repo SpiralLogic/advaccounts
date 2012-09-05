@@ -322,5 +322,7 @@
     'REMOVED_ID'              => 'RemovedID',
     'REMOVED'                 => 'Removed',
     'CANCEL'                  => 'Cancel',
-    'SAVE'                  => 'Save',
+    'SAVE'                    => 'Save',
+    'EDIT'                    => 'Edit',
+    'DELETE'                  => 'Delete',
   );

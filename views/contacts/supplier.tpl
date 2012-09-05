@@ -95,7 +95,6 @@
   {#$menu->endTab()->startTab('Invoices', 'Invoices')#}
   <div id='invoiceFrame' data-src='/purchases/inquiry/supplier_allocation_inquiry.php?creditor_id={{$creditor_id}}'></div>
 {{$form.frame}}
-{{$form._focus}}
   {#$menu->endTab()->render()#}
 {{$form->end()}}
 </div>

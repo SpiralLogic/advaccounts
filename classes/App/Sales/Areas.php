@@ -1,47 +1,44 @@
 <?php
-
-  /**
-   * PHP version 5.4
-   * @category  PHP
-   * @package   ADVAccounts
-   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-   * @copyright 2010 - 2012
-   * @date      1/09/12
-   * @link      http://www.advancedgroup.com.au
-   **/
   namespace ADV\App\Sales;
 
   use ADV\Core\DB\DB;
+  use ADV\App\Validation;
 
   /**
 
    */
   class Areas extends \ADV\App\DB\Base
   {
-    protected $_id_column = 'area_code';
     protected $_table = 'areas';
-    protected $_classname = 'Sales Area';
-    public $description;
+    protected $_classname = 'Areas';
+    protected $_id_column = 'area_code';
     public $area_code;
-    public $inactive=0;
-
+    public $description;
+    public $inactive = 0;
     /**
-     * @return bool
+     * @return \ADV\Core\Traits\Status|bool
      */
     protected function canProcess() {
-      if (strlen($this->description)==0){
-        return $this->status(false,"save","You must not be too short",'description');
+      if (empty($this->description)) {
+        return $this->status(false, 'saving', 'Description must be not be empty', 'description');
       }
+      if (strlen($this->description) > 60) {
+        return $this->status(false, 'saving', 'Description must be not be longer than 60 characters!', 'description');
+      }
+
       return true;
     }
     /**
      * @param bool $inactive
      *
-     * @return mixed
+     * @return array
      */
     public static function getAll($inactive = false) {
-      $sql = "SELECT * FROM areas";
-      DB::_query($sql, 'Could not fetch Sales Areas');
-      return DB::_fetchAll();
+      $q = DB::_select()->from('areas');
+      if ($inactive) {
+        $q->andWhere('inactive=', 1);
+      }
+
+      return $q->fetch()->all();
     }
   }

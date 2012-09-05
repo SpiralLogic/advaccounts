@@ -141,8 +141,8 @@ input.big, textarea.big {
 }
 
 input.small {
-  width: 5em;
-  min-width:5em;
+  width:     5em;
+  min-width: 5em;
 }
 
 select, input {
@@ -1857,6 +1857,9 @@ input[type="submit"].btn.btn-mini {
   top:                -25%;
 }
 
+.modal.hide {
+  display: none; }
+
 .modal.fade.in {
   top: 50%;
 }
@@ -3429,6 +3432,7 @@ div.warn_msg {
 .formbox input.big {
   width: 95%;
 }
+
 .formbox label select {
   width:  180px;
   margin: 5px 0 0 5px;
@@ -3439,8 +3443,9 @@ div.warn_msg {
 }
 
 .formbox input.amount {
-  width:6em;
+  width: 6em;
 }
+
 .formbox .input-append input {
   margin-right: -1px;
   border-right: none;
