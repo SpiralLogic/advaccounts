@@ -9,16 +9,16 @@
    **/
   return array(
     'active'  => array(
-      'Sales', //
-      'Debtors', //
-      'Purchases', //
-      'Creditors', //
-      'Inventory', //
-      'Manufacturing', //
-      'Dimensions', //
-      'GL', //
-      'Advanced', //
-      'System'
+      'Sales'        => ['enabled'=> true], //
+      'Debtors'      => ['name'=> 'Customers', 'enabled'=> true, 'direct'=> '/contacts/customers'], //
+      'Purchases'    => ['enabled'=> true], //
+      'Creditors'    => ['name'=> 'Suppliers', 'enabled'=> true, 'direct'=> '/contacts/suppliers'], //
+      'Inventory'    => ['enabled'=> true], //
+      'Manufacturing'=> ['enabled'=> true], //
+      'Dimensions'   => ['enabled'=> false], //
+      'GL'           => ['name'=> 'Banking', 'enabled'=> true], //
+      'Advanced'     => ['enabled'=> true], //
+      'System'       => ['enabled'=> true]
     ), //
     'default' => 'Sales'
   );

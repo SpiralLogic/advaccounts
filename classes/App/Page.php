@@ -1,5 +1,6 @@
 <?php
   namespace ADV\App;
+
   use ADV\App\ADVAccounting;
 
   /**
@@ -23,7 +24,6 @@
    */
   class Page
   {
-
     /**
      * @var
      */
@@ -33,7 +33,8 @@
      */
     public $ajaxpage;
     public $lang_dir = '';
-    /** @var ADVAccounting */
+    /** @var \ADV\App\ADVAccounting */
+
     protected $App;
     /** @var User */
     protected $User;
@@ -97,8 +98,9 @@
       if ($application->direct) {
         Display::meta_forward($application->direct);
       }
+
       foreach ($application->modules as $module) {
-        $app = new View('application');
+        $app            = new View('application');
         $app['colspan'] = (count($module->rightAppFunctions) > 0) ? 2 : 1;
         $app['name']    = $module->name;
         foreach ([$module->leftAppFunctions, $module->rightAppFunctions] as $modules) {
@@ -135,7 +137,7 @@
      */
     protected function init($menu) {
       $this->App      = ADVAccounting::i();
-      $this->sel_app  = $this->App->selected;
+      $this->sel_app  = $this->sel_app ? : $this->App->get_selected()->id;
       $this->ajaxpage = (AJAX_REFERRER || Ajax::_inAjax());
       $this->menu     = ($this->frame) ? false : $menu;
       $this->theme    = $this->User->theme();
@@ -176,7 +178,7 @@
         header("Content-type: text/html; charset={$this->encoding}");
       }
       $header                = new View('header');
-      $header['class']       = (is_object($this->sel_app) ? strtolower($this->sel_app->id) : '');
+      $header['class']       = strtolower($this->sel_app);
       $header['lang_dir']    = $this->lang_dir;
       $header['title']       = $this->title;
       $header['body_class']  = !$this->menu ? 'lite' : '';
@@ -201,13 +203,13 @@
       }
       /** @var ADVAccounting $application */
       $menuitems = [];
-      foreach ($this->App->applications as $app) {
+      foreach ($this->App->applications as $app=> $config) {
         $item          = [];
-        $acc           = Display::access_string($app->name);
-        $item['acc0']  = $acc[0];
+        $acc           = Display::access_string($app);
+        $item['acc0']  = isset($config['name']) ? $config['name'] : $acc[0];
         $item['acc1']  = $acc[1];
-        $item['class'] = ($this->sel_app && $this->sel_app->id == $app->id) ? "active" : "";
-        $item['href']  = (!$app->direct) ? '/index.php?application=' . $app->id : '/' . ltrim($app->direct, '/');
+        $item['class'] = ($this->sel_app == strtolower($app)) ? "active" : null;
+        $item['href']  = (!isset($config['direct'])) ? '/index.php?application=' . $app : '/' . ltrim($config['direct'], '/');
         $menuitems[]   = $item;
       }
       $menu->set('menu', $menuitems);
@@ -230,13 +232,14 @@
         $help_page_url = $this->App->applications[$this->App->selected->id]->help_context;
         $help_page_url = Display::access_string($help_page_url, true);
       }
+
       return $this->Config->get('help_baseurl') . urlencode(
         strtr(
           ucwords($help_page_url),
           array(
-            ' ' => '',
-            '/' => '',
-            '&' => 'And'
+               ' ' => '',
+               '/' => '',
+               '&' => 'And'
           )
         )
       ) . '&ctxhelp=1&lang=' . $country;
@@ -256,6 +259,7 @@
       $footer['load_time'] = Dates::_getReadableTime(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
       $footer['user']      = $this->User->username;
       $footer['footer']    = $this->menu && !AJAX_REFERRER;
+
       return $footer;
     }
     /**
@@ -266,7 +270,7 @@
       $footer   = $this->menu_footer();
       $footer->set('beforescripts', "_focus = '" . Input::_post('_focus') . "';_validate = " . $this->Ajax->php2js($validate) . ";");
       $this->User->_add_js_data();
-        $footer->set('sidemenu', ($this->header && $this->menu? ['bank'=> $this->User->hasAccess(SS_GL)]:false));
+      $footer->set('sidemenu', ($this->header && $this->menu ? ['bank'=> $this->User->hasAccess(SS_GL)] : false));
       $footer->set('JS', $this->JS);
       $footer->set('messages', (!AJAX_REFERRER ? Messages::show() : ''));
       $footer->set('page_body', Display::div_end(true));
@@ -279,6 +283,7 @@
       $this->css += $this->Config->get('assets.css');
       $path = THEME_PATH . $this->theme . DS;
       $css  = implode(',', $this->css);
+
       return [$path . $css];
     }
     /**
@@ -305,10 +310,16 @@
       if (static::$i === null) {
         static::$i = new static(User::i(), Config::i(), \ADV\Core\Ajax::i(), \ADV\Core\JS::i(), \ADV\App\Dates::i());
       }
-      static::$i->title    = $title;
+      if (is_array($title)) {
+        static::$i->title   = $title[0];
+        static::$i->sel_app = $title[1];
+      } else {
+        static::$i->title = $title;
+      }
       static::$i->isIndex  = $isIndex;
       static::$i->security = $security;
       static::$i->init(!$no_menu);
+
       return static::$i;
     }
     /**
@@ -328,6 +339,7 @@
             $selected_id = $default;
           }
           unset($_POST['_focus']);
+
           return array($m, $selected_id);
         }
       }
@@ -337,10 +349,12 @@
             unset($_POST['_focus']); // focus on first form entry
             $selected_id = quoted_printable_decode(substr($p, strlen($m)));
             Ajax::_activate('_page_body');
+
             return array($m, $selected_id);
           }
         }
       }
+
       return array('', $selected_id);
     }
     public static function footer_exit() {

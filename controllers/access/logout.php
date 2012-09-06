@@ -19,6 +19,6 @@
   echo "<a class='bold' href='/index.php'>" . _("Click here to Login Again.") . "</a>";
   echo "</div></td></tr>
 </table><br>\n";
-  User::logout();
+  //User::logout();
   Page::end(true);
 

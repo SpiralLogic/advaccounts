@@ -24,7 +24,6 @@
     protected $company_data;
     protected function before() {
       /** @noinspection PhpUndefinedMethodInspection */
-      ADVAccounting::i()->set_selected('Creditors');
       if (AJAX_REFERRER) {
         $this->search();
       }
@@ -55,7 +54,7 @@
       }
     }
     protected function index() {
-      Page::start(_($help_context = "Suppliers"), SA_SUPPLIER, $this->Input->request('frame'));
+      Page::start([_($help_context = "Suppliers"), 'creditors'], SA_SUPPLIER, $this->Input->request('frame'));
       if (isset($_POST['delete'])) {
         $this->delete();
       }
@@ -68,7 +67,7 @@
      * @return string
      */
     protected function generateForm() {
-      $cache =  Cache::_get('supplier_form');
+      $cache = Cache::_get('supplier_form');
       if ($cache) {
         $this->JS->setState($cache[1]);
 

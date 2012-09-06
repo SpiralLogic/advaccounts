@@ -24,7 +24,6 @@
     protected $debtor;
     protected $company_data;
     protected function before() {
-//      ADVAccounting::i()->set_selected('Debtors');
       if (AJAX_REFERRER) {
         if (isset($_GET['term'])) {
           $data = Debtor::search($_GET['term']);
@@ -49,7 +48,7 @@
       $this->JS->footerFile("/js/company.js");
     }
     protected function index() {
-      Page::start(_($help_context = "Customers"), SA_CUSTOMER, $this->Input->request('frame'));
+      Page::start([_($help_context = "Customers"), 'debtors'], SA_CUSTOMER, $this->Input->request('frame'));
       if (isset($_POST['delete'])) {
         $this->delete();
       }
@@ -61,7 +60,7 @@
      * @return string
      */
     protected function generateForm() {
-      $cache =  Cache::_get('customer_form');
+      $cache = Cache::_get('customer_form');
       if ($cache) {
         $this->JS->setState($cache[1]);
 
@@ -101,8 +100,8 @@
                                               ]);
       $view->set('branch_postcode', $branch_postcode->getForm());
       $form->group('accounts_details')->text('accounts[contact_name]')->label('Accounts Contact:');
-      $form->text('accounts[phone]' )->label('Phone Number:');
-      $form->text('accounts[phone2]' )->label('Alt Phone Number:');
+      $form->text('accounts[phone]')->label('Phone Number:');
+      $form->text('accounts[phone2]')->label('Alt Phone Number:');
       $form->text('accounts[fax]')->label('Fax Number:');
       $form->text('accounts[email]')->label('E-mail:');
       $form->textarea('accounts[br_address]', ['cols'=> 37, 'rows'=> 4])->label('Street:');
@@ -115,9 +114,9 @@
       $form->hidden('accounts_id');
       $form->group('accounts');
       $has_access = !User::i()->hasAccess(SA_CUSTOMER_CREDIT);
-      $form->percent('discount', ["disabled"=> $has_access ])->label("Discount Percent:");
-      $form->percent('payment_discount', ["disabled"=> $has_access ])->label("Prompt Payment Discount:");
-      $form->amount('credit_limit', ["disabled"=> $has_access ])->label("Credit Limit:");
+      $form->percent('discount', ["disabled"=> $has_access])->label("Discount Percent:");
+      $form->percent('payment_discount', ["disabled"=> $has_access])->label("Prompt Payment Discount:");
+      $form->amount('credit_limit', ["disabled"=> $has_access])->label("Credit Limit:");
       $form->text('tax_id')->label("GSTNo:");
       $form->custom(Sales_Type::select('sales_type'))->label('Sales Type:');
       $form->arraySelect('inactive', ['No', 'Yes'])->label('Inactive:');
@@ -142,7 +141,7 @@
       $form->custom(Sales_UI::shippers('branch[default_ship_via]'))->label('Default Shipper:');
       $form->custom(Tax_Groups::select('branch[tax_group_id]'))->label('Tax Group:');
       $form->arraySelect('branch[disable_trans]', ['Yes', 'No'])->label('Disabled: ');
-      $form->text('webid',  ['disabled'=> true])->label("Websale ID");
+      $form->text('webid', ['disabled'=> true])->label("Websale ID");
       $form->custom(GL_UI::all('branch[sales_account]', null, true, false, true))->label('Sales Account:');
       $form->custom(GL_UI::all('branch[receivables_account]', null, true, false, false))->label('Receivables Account:');
       $form->custom(GL_UI::all('branch[sales_discount_account]', null, false, false, true))->label('Discount Account:');

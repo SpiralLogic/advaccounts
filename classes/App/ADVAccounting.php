@@ -43,6 +43,7 @@
     /** @var Ajax */
     protected $Ajax = null;
     protected $get_text = null;
+    public $extensions;
     /** */
     public function __construct(\ADV\Core\Loader $loader) {
       set_error_handler(
@@ -97,11 +98,8 @@
         }
       );
       $this->loadModules();
-      $this->applications = $this->Cache->get('applications');
-      if (!$this->applications) {
-        $this->setupApplications();
-      }
-      define('BUILD_VERSION', is_readable(DOCROOT . 'version') ?file_get_contents(DOCROOT . 'version', null, null, null, 6):000)  ;
+      $this->setupApplications();
+      define('BUILD_VERSION', is_readable(DOCROOT . 'version') ? file_get_contents(DOCROOT . 'version', null, null, null, 6) : 000);
 
       define('VERSION', '3.' . BUILD_VERSION . '-SYEDESIGN');
       // logout.php is the only page we should have always
@@ -134,12 +132,6 @@
     /**
      * @param $app
      */
-    public function add_application($app) {
-      if ($app->enabled) // skip inactive modules
-      {
-        $this->applications[strtolower($app->id)] = $app;
-      }
-    }
     /**
      * @param $text
      *
@@ -155,9 +147,9 @@
      * @return null
      */
     public function get_application($id) {
-      $id = strtolower($id);
+      $app_class = '\\ADV\\App\\Apps\\' . $id;
 
-      return isset($this->applications[$id]) ? $this->applications[$id] : null;
+      return isset($this->applications[$id]) ? new $app_class : null;
     }
     /**
      * @return null
@@ -271,22 +263,9 @@
       }
     }
     protected function setupApplications() {
-      $this->applications = [];
-      $extensions         = $this->Config->get('extensions.installed');
-      $apps               = $this->Config->get('apps.active');
-      foreach ($apps as $app) {
-        $app = '\\ADV\\App\\Apps\\' . $app;
-        $this->add_application(new $app());
-      }
-      if (count($extensions) > 0) {
-        foreach ($extensions as $ext) {
-          $ext = '\\ADV\\App\\Apps\\' . $ext['name'];
-          $this->add_application(new $ext());
-        }
-        $this->Session->get_text->add_domain($this->Session->language->code, LANG_PATH);
-      }
-      $this->add_application(new \ADV\App\Apps\System());
-      $this->Cache->set('applications', $this->applications);
+      $this->extensions   = $this->Config->get('extensions.installed');
+      $this->applications = $this->Config->get('apps.active');
+      $this->Session->get_text->add_domain($this->Session->language->code, LANG_PATH);
     }
     /**
      * @return mixed

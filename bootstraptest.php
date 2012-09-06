@@ -26,13 +26,16 @@
      *
      * @return array|string
      */
-    function e($string) { return Security::htmlentities($string); }
+    function e($string) {
+      return Security::htmlentities($string);
+    }
   }
-  register_shutdown_function(function ()
-  {
-    class_exists('Event', false) or  include(COREPATH . 'Event.php');
-    Event::shutdown();
-  });
+  register_shutdown_function(
+    function () {
+      class_exists('Event', false) or  include(COREPATH . 'Event.php');
+      Event::shutdown();
+    }
+  );
   if (!function_exists('adv_ob_flush_handler')) {
     /**
      * @param $text
@@ -40,84 +43,11 @@
      * @return string
      * @noinspection PhpUnusedFunctionInspection
      */
-    function adv_ob_flush_handler($text)
-    {
+    function adv_ob_flush_handler($text) {
       return (Ajax::_inAjax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
     }
   }
-  define("ICON_EDIT", "edit.gif");
-  /**
 
-   */
-  define("ICON_DELETE", "delete.gif");
-  /**
-
-   */
-  define("ICON_ADD", "ok.gif");
-  /**
-
-   */
-  define("ICON_UPDATE", "ok.gif");
-  /**
-
-   */
-  define("ICON_OK", "ok.gif");
-  /**
-
-   */
-  define("ICON_CANCEL", "cancel.png");
-  /**
-
-   */
-  define("ICON_GL", "gl.png");
-  /**
-
-   */
-  define("ICON_PRINT", "print.png");
-  /**
-
-   */
-  define("ICON_PDF", "pdf.gif");
-  /**
-
-   */
-  define("ICON_DOC", "invoice.gif");
-  /**
-
-   */
-  define("ICON_CREDIT", "credit.gif");
-  /**
-
-   */
-  define("ICON_RECEIVE", "receive.gif");
-  /**
-
-   */
-  define("ICON_DOWN", "download.gif");
-  /**
-
-   */
-  define("ICON_MONEY", "money.png");
-  /**
-
-   */
-  define("ICON_REMOVE", "remove.png");
-  /**
-
-   */
-  define("ICON_REPORT", "report.png");
-  /**
-
-   */
-  define("ICON_VIEW", "view.gif");
-  /**
-
-   */
-  define("ICON_SUBMIT", "ok.gif");
-  /**
-
-   */
-  define("ICON_ESCAPE", "escape.png");
   /**
 
    */

@@ -633,7 +633,7 @@ Adv.extend({
                  error:           function (field, error, type) {
                    var $error;
                    if (tooltip) {
-                     tooltip.tooltip('destroy');
+                     tooltip.tooltip('destroy').removeClass('error');
                    }
                    window.clearTimeout(tooltiptimeout);
                    if (type === undefined) {
@@ -652,10 +652,10 @@ Adv.extend({
                    }
                    field = $(Adv.Forms.findInputEl(field));
                    if (field.is('input,textarea,select')) {
-                     tooltip = field.tooltip({title: function () {return error;}, trigger: 'manual', placement: 'right', class: type}).tooltip('show');
+                     tooltip = field.addClass('error').tooltip({title: function () {return error;}, trigger: 'manual', placement: 'right', class: type}).tooltip('show');
                      tooltiptimeout = setTimeout(function () {
                        if (tooltip) {
-                         tooltip.tooltip('destroy');
+                         tooltip.removeClass('error').tooltip('destroy');
                        }
                      }, 3000);
                    }
