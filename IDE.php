@@ -11,7 +11,28 @@
   /**
 
    */
-  define('DEFAULT_TAX_GROUP', 1);
+  define('ICON_TRASH', 1);
+  /**
+
+   */
+  define('ICON_ADD', 1);
+  /**
+
+   */
+  define('ICON_COMMIT', 1);
+  define('ICON_SUBMIT', 1);
+  /**
+
+   */
+  define('ICON_DELETE', 1);
+  /**
+
+   */
+  define('ICON_SAVE', 1);
+  /**
+
+   */
+  define('ICON_CANCEL', 1);
   /**
 
    */

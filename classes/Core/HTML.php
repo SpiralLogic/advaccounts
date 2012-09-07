@@ -39,6 +39,8 @@
    */
   class HTML
   {
+    use Traits\HTML;
+
     /**
      * @var HTML
      */
@@ -46,7 +48,7 @@
     /**
      * @var bool
      */
-    protected static $_return = false;
+    public $content;
     /**
      * @param $func
      * @param $args
@@ -54,7 +56,13 @@
      * @return null
      */
     public function __call($func, $args) {
-      return static::__callStatic($func, $args);
+      if (count($args) == 0) {
+        $this->content .= '</' . ltrim($func, '_') . '>';
+      } else {
+        $this->_Builder($func, $args);
+      }
+
+      return $this;
     }
     /**
      * @param $func
@@ -62,29 +70,9 @@
      * @return null
      */
     public function __get($func) {
-      static::__callStatic($func);
+      $this->__call($func, []);
 
-      return static::$_instance;
-    }
-    /**
-     * @static
-     *
-     * @param null $state
-     *
-     * @return HTML|string
-     */
-    public static function setReturn($state = null) {
-      if (static::$_instance === null) {
-        static::$_instance = new static;
-      }
-      static::$_return = ($state === null) ? !(static::$_return) : $state;
-      if (!static::$_return) {
-        return ob_get_clean();
-      } else {
-        ob_start();
-      }
-
-      return static::$_instance;
+      return $this;
     }
     /**
      * @static
@@ -98,72 +86,49 @@
       if (static::$_instance === null) {
         static::$_instance = new static;
       }
-      (count($args) == 0) ? static::$_instance->_closeTag(($func[0] == '_') ? substr($func, 1) : $func) : static::$_instance->_Builder($func, $args);
+      static::$_instance->__call($func, $args);
 
       return static::$_instance;
     }
     /**
-     * @param        $type
-     * @param array  $attr
-     * @param string $content
+     * @param $attr
+     *
+     * @return string
      */
-    protected function _openTag($type, $attr = [], $content = '') {
-      $attrs = '';
-      foreach ($attr as $key => $value) {
-        if (is_bool($value)) {
-          if ($value) {
-            $attrs .= ' ' . $key;
-          }
-          continue;
-        }
-        if (is_null($value)) {
-          continue;
-        }
-        if ($key == 'input') {
-          $value = Security::htmlentities($value);
-          $value = str_replace(array("'", '"'), array("&#39;", "&quot;"), $value);
-        }
-        $attrs .= ((empty($value) && $value!==0 && $key !== 'value') || $key == 'content') ? '' : ' ' . $key . '="' . $value . '"';
-      }
-      echo  '<' . $type . ' ' . $attrs . '>' . (isset($attr['content']) ? $attr['content'] : $content);
-    }
-    /**
-     * @param $type
-     */
-    protected function _closeTag($type) {
-      echo '</' . $type . '>';
+    public static function attr($attr) {
     }
     /**
      * @param        $func
      * @param        $args
-     * @param array  $attr
-     * @param string $content
+     *
+     * @internal param array $attr
+     * @internal param string $content
      */
-    protected function _Builder($func, $args, $attr = [], $content = '') {
+    protected function _Builder($func, $args) {
+      $attr = [];
       $open = (is_bool(end($args))) ? array_pop($args) : true;
       foreach ($args as $key => $val) {
         if ($key == 0 && is_string($val)) {
           $attr['id'] = $val;
         } elseif (!isset($attr['content']) && is_string($val)) {
-          $content = $attr['content'] = $val;
+          $content = $val;
         } elseif (is_array($val)) {
           $attr = array_merge($attr, $val);
         }
       }
-      if (!$open) {
-        if ($open === false) {
-          $this->_openTag($func, $attr, $content);
-        }
-        $this->_closeTag($func);
-      } else {
-        $this->_openTag($func, $attr);
+      if (!isset($content) && isset($attr['content'])) {
+        $content = $attr['content'];
+        unset($attr['content']);
       }
+      $this->content .= $this->makeElement($func, $attr, $content, !$open);
     }
     /**
      * @return HTML|string
      */
     public function __tostring() {
+      $content       = $this->content;
+      $this->content = '';
 
-      return $this->setReturn(false);
+      return $content;
     }
   }

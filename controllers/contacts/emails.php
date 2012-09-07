@@ -19,7 +19,7 @@
       $content = Creditor::getEmailDialogue($_POST['id']);
     }
     if ($content == false) {
-      HTML::h3(null, 'No email addresses available.', array('class' => 'center bold top40 font15'), false);
+      echo HTML::h3(null, 'No email addresses available.', array('class' => 'center bold top40 font15'), false);
     } else {
       echo $content;
     }

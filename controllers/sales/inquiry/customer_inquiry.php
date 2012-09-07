@@ -337,17 +337,15 @@
       if ($row['type'] != ST_SALESINVOICE) {
         return '';
       }
-      HTML::setReturn(true);
-      UI::button(
+
+      return HTML::button(
         false,
         'Email',
         array(
              'class'        => 'button email-button',
              'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
         )
-      );
-
-      return HTML::setReturn(false);
+      )->__toString();
     }
     /**
      * @param $row

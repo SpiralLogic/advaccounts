@@ -21,37 +21,37 @@
   {
     /** @var \ADV\App\DB\Base */
     protected $object;
-    public $_form;
-    public $_view;
+    protected $defaultFocus;
     protected function runPost() {
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-        $id = $this->getActionId('Delete');
+        $id = $this->getActionId(DELETE);
         if ($id > -1) {
           $this->object->load($id);
           //the link to delete a selected record was clicked instead of the submit button
           $this->object->delete();
-          $result['status'] = $this->object->getStatus();
-          $this->Ajax->addJson(true, null, $result);
+          $status = $this->object->getStatus();
+          $this->Ajax->addStatus(true, null, $status);
         }
-        $id = $this->getActionId('Edit');
+        $id = $this->getActionId(EDIT);
         if ($id > -1) {
           //editing an existing Sales-person
           $this->object->load($id);
-          $this->JS->setFocus('location_name');
+          $this->JS->setFocus($this->defaultFocus);
         }
         if ($this->action == SAVE) {
           $this->object->save($_POST);
           //run the sql from either of the above possibilites
-          $result['status'] = $this->object->getStatus();
-          if ($result['status']['status'] == Status::ERROR) {
-            $this->JS->renderJSON($result);
+          $status = $this->object->getStatus();
+          if ($status['status'] == Status::ERROR) {
+            $this->JS->renderStatus($status);
           }
           $this->object->load(0);
-        } else {
-          $result['status'] = $this->object->getStatus();
+        } elseif ($this->action == CANCEL) {
+          $status = $this->object->getStatus();
         }
-        $this->Ajax->addJson(true, null, $result);
+        if (isset($status)) {
+          $this->Ajax->addStatus($status);
+        }
       }
     }
     protected function generateForm() {
@@ -71,7 +71,7 @@
      */
     public function formatEditBtn($row) {
       $button = new \ADV\App\Form\Button('_action', EDIT . $row[$this->object->getIDColumn()], EDIT);
-      $button['class'] .= ' btn-mini btn-primary';
+      $button->type('mini')->type('primary');
 
       return $button;
     }
@@ -83,7 +83,7 @@
     public function formatDeleteBtn($row) {
       $button = new \ADV\App\Form\Button('_action', DELETE . $row[$this->object->getIDColumn()], DELETE);
       $button->preIcon(ICON_DELETE);
-      $button['class'] .= ' btn-mini btn-danger';
+      $button->type('mini')->type('danger');
 
       return $button;
     }

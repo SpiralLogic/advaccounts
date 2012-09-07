@@ -1252,9 +1252,14 @@
       Row::start();
       Cell::label(_("Total Discount"), "colspan=$colspan class='alignright'");
       Forms::amountCellsSmall(null, null, $total_discount, null, ['$']);
-      HTML::td(null, array('colspan'=> 2, 'class'=> 'center'))->button('discountAll', 'Discount All', array('name' => '_action', 'value'=> 'discountAll'), false);
+      echo  (new HTML)->td(null, array('colspan'=> 2, 'class'=> 'center'))->button(
+        'discountAll',
+        'Discount All',
+        array('name' => '_action', 'value'=> 'discountAll'),
+        false
+      );
       Forms::hidden('_discountAll', '0', true);
-      HTML::td();
+      echo HTML::td();
       $action = "var discount = prompt('Discount Percent?',''); if (!discount) return false; $(\"[name='_discountAll']\").val(Number(discount));e=$(this);Adv.Forms.saveFocus(e);JsHttpRequest.request(this);return false;";
       JS::_addLiveEvent('#discountAll', 'click', $action);
       Row::end();

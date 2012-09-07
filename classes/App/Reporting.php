@@ -238,14 +238,14 @@
         $id = " id='$id'";
       }
       $ars = Display::access_string($link_text);
-      HTML::br()->p(array('class' => 'center'));
+      echo  HTML::br()->p(array('class' => 'center'));
       UI::select('EmailSelect' . $type_no, $emails, array('style' => 'max-width:400px'))->br;
-      UI::button(
+      echo HTML::button(
         'EmailButton' . $type_no,
         $link_text,
         array(
              'style'    => 'margin:20px',
-             'data-url' => $url
+             'data-url' => $url,
         )
       )->p;
       $js
@@ -260,7 +260,7 @@
 		});
 JS;
       if ($return) {
-        HTML::script('null', $js, false);
+        echo HTML::script('null', $js, false);
 
         return ob_get_clean();
       }
@@ -324,16 +324,14 @@ JS;
      * @return \ADV\Core\HTML|string
      */
     public static function emailDialogue($id, $type, $type_no, $text = "Email") {
-      HTML::setReturn(true);
-      UI::button(
+
+      return HTML::button(
         false,
         $text,
         array(
              'class'        => 'button email-button',
              'data-emailid' => $id . '-' . $type . '-' . $type_no
         )
-      );
-
-      return HTML::setReturn(false);
+      )->__toString();
     }
   }

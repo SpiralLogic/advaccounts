@@ -272,8 +272,7 @@
      */
     public function display() {
       if (!static::$dates) {
-        static::$dates =
-          Dates::i();
+        static::$dates = Dates::i();
       }
       if (!static::$User) {
         static::$User = User::i();
@@ -344,7 +343,7 @@
             Cell::label(static::$dates->sqlToDate(substr($cell, 0, 10)) . ' ' . substr($cell, 10), "class='$class center'");
             break;
           case 'percent':
-            Cell::percent($cell);
+            Cell::percent($cell * 100);
             break;
           case 'amount':
             ($cell === '') ? Cell::label('') : Cell::amount($cell, false);
@@ -393,13 +392,13 @@
       Row::start("class='navibar'");
       $colspan = count($this->columns);
       $inact   = $this->inactive_ctrl == true ? ' ' . Forms::checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
-      HTML::td(null, ['colspan'=> $colspan, 'class'=> 'navibar']);
+      echo HTML::td(null, ['colspan'=> $colspan, 'class'=> 'navibar']);
       if ($this->rec_count) {
         $but_pref = $this->name . '_page_';
         if ($this->inactive_ctrl) {
           Forms::submit('Update', _('Update'), true, '', null);
         } // inactive update
-        HTML::span(
+        echo HTML::span(
           null,
           $this->navi($but_pref . 'first', 1, $this->first_page, "<i class='icon-fast-backward'> </i>") . $this->navi(
             $but_pref . 'prev',
@@ -421,12 +420,12 @@
           $to = $this->rec_count;
         }
         $all = $this->rec_count;
-        HTML::span(true, "Records $from-$to of $all", [], false);
+        echo HTML::span(true, "Records $from-$to of $all", [], false);
         echo $inact;
       } else {
-        HTML::span(null, _('No records') . $inact, [], false);
+        echo HTML::span(null, _('No records') . $inact, [], false);
       }
-      HTML::_td();
+      echo HTML::_td();
       Row::end();
       if ($return) {
         return ob_get_clean();
@@ -528,8 +527,10 @@
         $table = $this->main_tbl;
         $name  = "Inactive" . $id;
         $value = $row['inactive'] ? 1 : 0;
-        if (static::$Input->hasPost('show_inactive')) {
-          if (isset($_POST['LInact'][$id]) && (static::$Input->post('_Inactive' . $id . '_update') || static::$Input->post('Update')) && (static::$Input->hasPost('Inactive' . $id) != $value)
+        if (static::$Input->post('show_inactive')) {
+          if (isset($_POST['LInact'][$id]) && (static::$Input->post('_Inactive' . $id . '_update') || static::$Input->post('Update')) && (static::$Input->hasPost(
+            'Inactive' . $id
+          ) != $value)
           ) {
             static::$DB->_updateRecordStatus($id, !$value, $table, $key);
             $value = !$value;
@@ -611,8 +612,8 @@
      *              Force pager initialization.
 
      */
-    public function refresh_pager($name=null) {
-     $name=$name?:$this->name;
+    public function refresh_pager($name = null) {
+      $name = $name ? : $this->name;
       if (isset($_SESSION[$name])) {
         $_SESSION[$name]->ready = false;
       }
@@ -988,5 +989,6 @@
       return $_SESSION['pager'][$name];
     }
   }
-DB_Pager::$Input = Input::i();
-DB_Pager::$JS = JS::i();
+
+  DB_Pager::$Input = Input::i();
+  DB_Pager::$JS    = JS::i();

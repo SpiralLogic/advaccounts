@@ -188,7 +188,7 @@ JS;
       $files = $content = $onReady = '';
       if (!AJAX_REFERRER) {
         foreach ($this->footerFiles as $dir => $file) {
-          $files .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $file)), false)->setReturn(false);
+          $files .= (new HTML)->script(array('src' => $dir . '/' . implode(',', $file)), false);
         }
         echo $files;
       } else {
@@ -215,12 +215,20 @@ JS;
         $content .= "\n$(function(){ " . $onReady . '});';
       }
       /** @noinspection PhpDynamicAsStaticMethodCallInspection */
-      HTML::script(array('content' => $content))->script;
+      echo    HTML::script(null, $content, [], false);
       if ($return) {
         return ob_get_clean();
       }
 
       return true;
+    }
+    /**
+     * @param $status
+     *
+     * @return mixed
+     */
+    public function renderStatus(Status $status) {
+      return $this->_renderJSON(['status'=> $status]);
     }
     /**
      * @static
@@ -239,7 +247,6 @@ JS;
         $this->resetFocus();
         Ajax::_addJson(true, null, $data);
         exit();
-
       }
       ob_end_clean();
       echo   json_encode($data);
@@ -251,6 +258,9 @@ JS;
      * @param      $selector
      */
     public function setFocus($selector) {
+      if (empty($select)) {
+        return;
+      }
       $this->focus = $selector;
       Ajax::_addFocus(true, $selector);
       $_POST['_focus'] = $selector;

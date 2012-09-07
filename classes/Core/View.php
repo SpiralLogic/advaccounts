@@ -7,6 +7,7 @@
    * To change this template use File | Settings | File Templates.
    */
   namespace ADV\Core;
+
   use ADV\Core\Cache\Cache;
 
   /**
@@ -14,7 +15,6 @@
    */
   class View implements \ArrayAccess
   {
-
     protected $_viewdata = [];
     protected $_template = null;
     /** @var \ADV\Core\Cache\Cache */
@@ -34,7 +34,7 @@
       }
       $js = 'js' . DS . $template . '.js';
       if (file_exists(WEBROOT . $js)) {
-        $this->_js[] = BASE_URL.$js;
+        $this->_js[] = BASE_URL . $js;
       }
     }
     /**
@@ -59,8 +59,7 @@
           $contents = ob_get_clean();
           Errors::handler(E_ERROR, 'template ' . $this->_template . " failed to render!<pre>" . $contents);
         }
-      }
-      catch (\Exception $e) {
+      } catch (\Exception $e) {
         // If we caught an exception, we'll silently flush the output
         // buffer so that no partially rendered views get thrown out
         // to the client and confuse the user with junk.
@@ -71,6 +70,7 @@
         return ob_get_clean();
       }
       echo ob_get_clean();
+
       return true;
     }
     /**
@@ -96,12 +96,14 @@
         }
         $__contents = $this->compile($__contents);
         JS::_footerFile($this->_js);
+
         return $__contents;
       } else {
         Event::registerShutdown($this, 'checkCache', [$this->_template, $__contents[1]]);
         $this->checkCache($this->_template, $__contents[1]);
         JS::_footerFile($__contents[2]);
         $__contents = $__contents[0];
+
         return $__contents;
       }
     }
@@ -111,6 +113,7 @@
     }
     public function runContext($contents) {
       $contents = preg_replace('/\$([^\.][a-zA-Z_0-9]+?)/', '\$' . $this->context . '.$1', $contents);
+
       return $contents;
     }
     /**
@@ -130,7 +133,11 @@
      * @return mixed
      */
     protected static function compileEchos($value) {
-      return preg_replace('/\{\{([^!.].*?)\}\}/', '<?php echo $1; ?>', $value);
+      return preg_replace(
+        '/\{\{([^!\.].*?)\}\}/',
+        '<?php  echo $1; ?>',
+        $value
+      );
     }
     /**
      * @static
@@ -139,14 +146,18 @@
      *
      * @return mixed
      */
-    protected  function compileMixins($value) {
-      return preg_replace_callback('/\{\{\+(.+?)\}\}/', function ($input) {
+    protected function compileMixins($value) {
+      return preg_replace_callback(
+        '/\{\{\>(.+?)\}\}/',
+        function ($input) {
           $view = new View($input[1]);
           $view->addContext($input[1]);
-          $this->_js =array_unique(array_merge($this->_js,$view->_js));
-          return '<?php if ($'.$input[1].'!==false): ?>'.$view->getCompiled().'<?php endif; ?>';
+          $this->_js = array_unique(array_merge($this->_js, $view->_js));
+
+          return '<?php if ($' . $input[1] . '!==false): ?>' . $view->getCompiled() . '<?php endif; ?>';
         },
-        $value);
+        $value
+      );
     }
     /**
      * @static
@@ -177,6 +188,7 @@
      */
     protected static function compileNothings($value) {
       $pattern = '/\{\{(\$.+?)\?\}\}(.+?)\{\{\/\1\?\}\}/s';
+
       return preg_replace($pattern, '<?php if(isset($1) && $1): ?>$2<?php endif; ?>', $value);
     }
     /**
@@ -187,7 +199,9 @@
      * @return string
      */
     protected static function compileStructureOpenings($value) {
+
       $pattern = '/\{\{#(if|elseif|foreach|for|while)(.*?)\}\}/';
+
       return preg_replace($pattern, '<?php $1($2): ?>', $value);
     }
     /**
@@ -198,7 +212,9 @@
      * @return string
      */
     protected static function compileStructureClosings($value) {
+
       $pattern = '/\{\{\/(if|foreach|for|while)\}\}/';
+
       return preg_replace($pattern, '<?php end$1; ?>', $value);
     }
     /**
@@ -233,11 +249,13 @@
           $return .= str_replace('$.', '$_' . $tempvar . '_val.', $contents);
           //$implicit = $this->compileContext($contents, '_' . $var);
           $return .= '<?php endforeach; endif; ?>';
+
           //        }
           return $return;
         },
         $value
       );
+
       return $return;
     }
     /**
@@ -257,6 +275,7 @@
       $__contents = $this->compileEchos($__contents, $context);
       $__contents = $this->compileDotNotation($__contents);
       static::$Cache->set('template.' . $this->_template, [$__contents, filemtime($this->_template), $this->_js]);
+
       return $__contents;
     }
     /**
@@ -267,9 +286,10 @@
      * @return \ADV\Core\View
      */
     public function set($offset, $value, $escape = false) {
-      $value  = $escape ? e($value) : $value;
-      $offset = preg_replace('/[^a-zA-Z0-9_\x7f-\xff]/', '_', $offset);
+      $value                    = $escape ? e($value) : $value;
+      $offset                   = preg_replace('/[^a-zA-Z0-9_\x7f-\xff]/', '_', $offset);
       $this->_viewdata[$offset] = $value;
+
       return $this;
     }
     public function getALL() {
@@ -307,6 +327,7 @@
       if (!array_key_exists($offset, $this->_viewdata)) {
         return null;
       }
+
       return $this->_viewdata[$offset];
     }
     /**

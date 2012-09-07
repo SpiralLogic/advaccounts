@@ -47,6 +47,7 @@
       $this->DB      = DB::i();
       $this->Input   = Input::i();
       $this->action  = $this->Input->post('_action');
+      $this->method  = $_SERVER['REQUEST_METHOD'];
       $this->before();
       $this->index();
       $this->after();

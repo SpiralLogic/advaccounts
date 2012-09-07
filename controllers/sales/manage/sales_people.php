@@ -73,7 +73,7 @@
         ['insert'=> true, "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['insert'=> true, "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']]
       );
-      $table = DB_Pager::new_db_pager('sales_persons', Person::getAll(), $cols);
+      $table = DB_Pager::new_db_pager('sales_persons', Person::getAll($this->Input->post('show_inactive')), $cols);
       $table->display();
       echo '<br>';
       $view              = new View('form/simple');

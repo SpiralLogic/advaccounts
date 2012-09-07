@@ -89,6 +89,7 @@
     public function startTab($title, $tooltip, $link = '#', $style = '') {
       $count = count($this->items);
       $this->addTab($title, $tooltip, $link);
+
       $this->current_tab['id']    = 'tabs' . MenuUI::$menuCount . '-' . $count;
       $this->current_tab['class'] = 'ui-tabs-panel ui-widget-content ui-corner-bottom ';
       $this->current_tab['class'] .= ($count > 0 || $this->firstPage != $count) ? 'ui-tabs-hide' : '';
@@ -149,10 +150,13 @@
      * @param null   $target
      */
     public function __construct($label, $tooltip = '', $link = '#', $param_element = null, $target = null) {
-      $this->label         = $label;
-      $this->link          = e($link);
-      $this->tooltip       = e($tooltip);
-      $this->param_element = $param_element;
-      $this->target        = $target;
+      $this->label = $label;
+      $this->attrs = [
+        'href'           => e($link),
+        'title'          => $label,
+        'tooltip'        => e($tooltip),
+        'data-paramel'   => $param_element,
+        'target'         => $target
+      ];
     }
   }

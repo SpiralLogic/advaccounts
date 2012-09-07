@@ -1,6 +1,7 @@
 <?php
   use ADV\App\Form\Form;
   use ADV\App\Sales\Areas;
+  use ADV\Core\View;
   use ADV\Core\DB\DB;
 
   /**
@@ -30,7 +31,8 @@
      *
      * @return mixed|void
      */
-    protected function formContents(\ADV\App\Form\Form $form, \ADV\Core\View $view) {
+    protected function formContents(Form $form, View $view) {
+      $view['title'] = 'Sales Area';
       $form->hidden('area_code');
       $form->text('description')->label('Area Name:');
       $form->submit(CANCEL)->type('danger')->preIcon(ICON_CANCEL);

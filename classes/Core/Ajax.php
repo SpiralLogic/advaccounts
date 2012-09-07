@@ -186,7 +186,18 @@
 
       return $this;
     }
-    public function addJson($trigger, $formMethod=null, $json) {
+    /**
+     * @param Status $status
+     */
+    public function addStatus(Status $status) {
+      $this->addJson(true, null, ['status'=> $status]);
+    }
+    /**
+     * @param      $trigger
+     * @param null $formMethod
+     * @param      $json
+     */
+    public function addJson($trigger, $formMethod = null, $json) {
       $this->addCommand($trigger, ['n'=> 'json', 'p'=> $formMethod], $json);
     }
     /**

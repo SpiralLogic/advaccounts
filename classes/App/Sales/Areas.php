@@ -35,8 +35,8 @@
      */
     public static function getAll($inactive = false) {
       $q = DB::_select()->from('areas');
-      if ($inactive) {
-        $q->andWhere('inactive=', 1);
+      if (!$inactive) {
+        $q->andWhere('inactive=', 0);
       }
 
       return $q->fetch()->all();

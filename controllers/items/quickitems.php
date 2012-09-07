@@ -11,7 +11,6 @@
    **/
   class QuickItems extends \ADV\App\Controller\Base
   {
-
     protected $itemData;
     protected function before() {
       ADVAccounting::i()->set_selected('items');
@@ -27,6 +26,7 @@
     protected function getItemData($id) {
       $data['item']        = $item = new Item($id);
       $data['stockLevels'] = $item->getStockLevels();
+
       return json_encode($data, JSON_NUMERIC_CHECK);
     }
     protected function runAjax() {
@@ -62,11 +62,16 @@
       $view->set('adjustment_account', GL_UI::all('adjustment_account'));
       $view->set('assembly_account', GL_UI::all('assembly_account'));
       if (!isset($_GET['stock_id'])) {
-        HTML::div('itemSearch', array('class' => 'bold pad10 center'));
-        Item::addSearchBox('itemSearchId', array(
-          'label'    => 'Item:', 'size' => '50px', 'selectjs' => '$("#itemSearchId").val(value.stock_id);Items.fetch(value.stock_id);return false;'
-        ));
-        HTML::div();
+        echo HTML::div('itemSearch', array('class' => 'bold pad10 center'));
+        Item::addSearchBox(
+          'itemSearchId',
+          array(
+               'label'    => 'Item:',
+               'size'     => '50px',
+               'selectjs' => '$("#itemSearchId").val(value.stock_id);Items.fetch(value.stock_id);return false;'
+          )
+        );
+        echo HTML::div();
         $id = 0;
         $this->JS->setFocus('#itemSearchId');
       } else {
@@ -80,4 +85,5 @@
       Page::end(true);
     }
   }
-new QuickItems();
+
+  new QuickItems();

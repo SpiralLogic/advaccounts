@@ -16,31 +16,8 @@
   /**
 
    */
-  class UI extends HTML
+  class UI
   {
-    /**
-     * @static
-     *
-     * @param bool  $id
-     * @param bool  $content
-     * @param array $attr
-     *
-     * @return \ADV\Core\HTML|null
-     */
-    public static function button($id = false, $content = false, $attr = []) {
-      if ($id) {
-        $attr['id'] = $id;
-      }
-      if (empty($attr['name']) && ($id)) {
-        $attr['name'] = $id;
-      }
-      if (!isset($attr['class'])) {
-        $attr['class'] = 'button';
-      }
-      HTML::button($id, $content, $attr, false);
-
-      return static::$_instance;
-    }
     /**
      * @static
      *
@@ -51,27 +28,28 @@
      * @return \ADV\Core\HTML|null
      */
     public static function select($id = false, $options = [], $params = [], $selected = null, $return = false) {
-      HTML::setReturn(true)->select($id, $params);
+      $HTML = new HTML();
+      $HTML->select($id, $params);
       foreach ((array) $options as $value => $name) {
         if (is_array($name)) {
-          HTML::optgroup(array('label' => $value));
+          $HTML->optgroup(array('label' => $value));
           foreach ($name as $value) {
             $selected = ($selected == $value[1]) ? null : true;
-            HTML::option(null, $value[0] . ' (' . $value[1] . ')', array('selected'=> $selected, 'value' => $value[1]), false);
+            $HTML->option(null, $value[0] . ' (' . $value[1] . ')', array('selected'=> $selected, 'value' => $value[1]), false);
           }
-          HTML::optgroup();
+          $HTML->optgroup();
         } else {
           $selected = ($selected === $value) ? null : true;
-          HTML::option(null, $name, array('value' => $value, 'selected'=> $selected), false);
+          $HTML->option(null, $name, array('value' => $value, 'selected'=> $selected), false);
         }
       }
-      $select = HTML::_select()->setReturn(false);
+      $select = $HTML->_select()->__toString();
       if ($return) {
         return $select;
       }
       echo $select;
 
-      return static::$_instance;
+      return $HTML;
     }
     /***
      * @static
@@ -91,7 +69,7 @@
 
      */
     public static function search($id, $options = [], $return = false) {
-      $o   = array(
+      $o    = array(
         'url'               => false, //
         'nodiv'             => false, //
         'label'             => false, //
@@ -107,20 +85,20 @@
         'input_cell_params' => [],
         'label_cell_params' => ['class' > 'label pointer']
       );
-      $o   = array_merge($o, $options);
-      $url = $o['url'] ? : false;
-      HTML::setReturn(true);
+      $o    = array_merge($o, $options);
+      $url  = $o['url'] ? : false;
+      $HTML = new HTML;
       if (!$o['nodiv']) {
-        HTML::div(['class' => 'ui-widget ']);
+        $HTML->div(['class' => 'ui-widget ']);
       }
       if ($o['cells']) {
-        HTML::td(null, $o['label_cell_params']);
+        $HTML->td(null, $o['label_cell_params']);
       }
       if (($o['label'])) {
-        HTML::label(null, $o['label'], ['for' => $id], false);
+        $HTML->label(null, $o['label'], ['for' => $id], false);
       }
       if ($o['cells']) {
-        HTML::_td();
+        $HTML->_td();
       }
       $input_attr = [
         'class'      => $o['class'], //
@@ -132,25 +110,25 @@
         'placeholder'=> $o['placeholder'] ? : $o['label'],
       ];
       if ($o['cells']) {
-        HTML::td(null, $o['input_cell_params']);
+        $HTML->td(null, $o['input_cell_params']);
       }
-      HTML::input($id, $input_attr);
+      $HTML->input($id, $input_attr);
       if ($o['cells']) {
-        HTML::_td();
+        $HTML->_td();
       }
       if (!($o['nodiv'])) {
-        HTML::div();
+        $HTML->div();
       }
       $callback = $o['callback'] ? : ucfirst($id);
       JS::_autocomplete($id, $callback, $url);
 
-      $search = HTML::setReturn(false);
+      $search = $HTML->__toString();
       if ($return) {
         return $search;
       }
       echo $search;
 
-      return static::$_instance;
+      return $HTML;
     }
     /**
      * @static
@@ -209,14 +187,14 @@
       $UniqueID                      = md5(serialize($o));
       $_SESSION['search'][$UniqueID] = $o;
       $desc_js                       = $o['js'];
-      HTML::setReturn(true);
+      $HTML                          = new HTML;
       if ($o['cells']) {
-        HTML::td(null, array('class'=> 'label'));
+        $HTML->td(null, array('class'=> 'label'));
       }
       if ($o['label']) {
-        HTML::label(null, $o['label'], array('for' => $id), false);
+        $HTML->label(null, $o['label'], array('for' => $id), false);
       }
-      HTML::input(
+      $HTML->input(
         $id,
         array(
              'value'      => $o['selected'],
@@ -227,7 +205,7 @@
         )
       );
       if ($o['editable']) {
-        HTML::label(
+        $HTML->label(
           'lineedit',
           'edit',
           array(
@@ -240,13 +218,13 @@
         $desc_js .= '$("#lineedit").data("stock_id",value.stock_id).show().parent().css("white-space","nowrap"); ';
       }
       if ($o['cells']) {
-        HTML::td()->td(true);
+        $HTML->td()->td(true);
       }
       $selectjs = '';
       if ($o['selectjs']) {
         $selectjs = $o['selectjs'];
       } elseif ($o['description'] !== false) {
-        HTML::textarea(
+        $HTML->textarea(
           'description',
           $o['description'],
           array(
@@ -270,7 +248,7 @@ JS;
 JS;
       }
       if ($o['cells']) {
-        HTML::td();
+        $HTML->td();
       }
       $js
              = <<<JS
@@ -321,7 +299,7 @@ JS;
       $clean = "\$$id.catcomplete('destroy');";
       JS::_addLive($js, $clean);
 
-      return HTML::setReturn(false);
+      return $HTML->__toString();
     }
     /**
      * @static

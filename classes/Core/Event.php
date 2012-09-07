@@ -146,6 +146,7 @@
     }
     /*** @static Shutdown handler */
     public static function shutdown() {
+
       Errors::process();
       $levels = ob_get_level() - (extension_loaded('newrelic') ? 1 : 0);
       for ($i = 0; $i < $levels; $i++) {

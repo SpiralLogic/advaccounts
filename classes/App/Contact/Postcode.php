@@ -27,8 +27,7 @@
     /**
      * @param $options
      */
-    public function __construct($options)
-    {
+    public function __construct($options) {
       static::$count++;
       $this->setFromArray($options);
     }
@@ -39,8 +38,7 @@
      * @internal param $postcode
      * @internal param array $options
      */
-    protected function generate()
-    {
+    protected function generate() {
       $form = new Form();
       $form->custom(
         UI::search(
@@ -68,6 +66,7 @@
         'name'              => $this->state[0]
         ]
       )->label('State: ')->val($this->state[1]);
+
       $form->custom(
         UI::search(
           $this->postcode[0],
@@ -93,10 +92,12 @@
      *
      * @return ADV\App\Form\Form
      */
-    public function getForm($values= null)
-    {
+    public function getForm($values = null) {
       $form = $this->generate();
-      if ($values) $form->setValues($values);
+      if ($values) {
+        $form->setValues($values);
+      }
+
       return $form;
     }
     /**
@@ -105,8 +106,7 @@
      * @internal param $state
      * @internal param $postcode
      */
-    public function registerJS()
-    {
+    public function registerJS() {
       $set      = static::$count;
       $city     = $this->city[0];
       $state    = $this->state[0];
@@ -122,8 +122,7 @@
      * @internal param $this $string ->cit
      * @return array
      */
-    public static function searchByCity($city = "*")
-    {
+    public static function searchByCity($city = "*") {
       return static::search($city, 'Locality');
     }
     /**
@@ -132,8 +131,7 @@
      *
      * @return mixed
      */
-    public static function search($term, $type = 'Locality')
-    {
+    public static function search($term, $type = 'Locality') {
       $result = DB::_select('id', "CONCAT(Locality,', ',State,', ',Pcode) as label", "CONCAT(Locality,'|',State,'|',Pcode) as value")->from('postcodes')->where(
         $type . ' LIKE',
         $term . '%'
@@ -148,8 +146,7 @@
      *
      * @return array
      */
-    public static function searchByPostcode($postcode = "*")
-    {
+    public static function searchByPostcode($postcode = "*") {
       return static::search($postcode, 'Pcode');
     }
   }

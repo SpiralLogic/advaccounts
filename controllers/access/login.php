@@ -38,7 +38,7 @@
   Table::start('login');
   Row::start();
   echo "<td class='center' colspan=2>";
-  echo "<a target='_blank' href='" . POWERED_URL . "'><img width=440 height=64 src='/themes/$def_theme/images/logo_advaccounts.png' alt='ADVAccounts'  /></a>";
+  echo "<a target='_blank' href='" . POWERED_URL . "'><img width=440 height=64 src='/themes/$def_theme/images/logo-advaccounts.png' alt='ADVAccounts'  /></a>";
   if ($login_timeout) {
     echo "<span class='font5'>" . _('Authorization timeout') . "</span><br>You were idle for: " . (User::i()->last_act + User::i()->timeout - time());
   }

@@ -1,5 +1,5 @@
 <div class='ajaxmark'>
-  <img alt='Ajax Loading' width='25' height='25' id='ajaxmark' src='/themes/{{$theme}}/images/ajax_loader3.gif'>
+  <img alt='Ajax Loading'  id='ajaxmark' src='/themes/{{$theme}}/images/progressbar.gif'>
   <div id='top'><p>{{$company}} | {{$server_name}} | {{$name}}</p>
     <ul>
       <li><a href='{{BASE_URL}}system/display_prefs.php?'>Preferences</a></li>

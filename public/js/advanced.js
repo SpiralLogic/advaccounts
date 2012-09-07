@@ -68,7 +68,7 @@ var Adv = {};
         }
       },
       on:  function (tout) {
-        var img = tout > 50000 ? 'progressbar.gif' : 'ajax-loader.gif';
+        var img = tout > 50000 ? 'progressbar.gif' : 'spinner-blue.gif';
         Adv.loader.off(img);
       }
     })

@@ -1,5 +1,7 @@
 <?php
-  namespace ADV\Core\DB;
+  namespace ADV\App\DB;
+
+  use ADV\Core\DB\DB;
 
   /**
 
@@ -23,6 +25,7 @@
      * @param $table
      */
     public function getTableDetails($table) {
+      $this->$table = $table;
       $this->vars[] = 'protected $_table = \'' . $table . '\';';
       $this->name   = ucfirst($table);
       $this->vars[] = 'protected $_classname = \'' . $this->name . '\';';
@@ -87,6 +90,7 @@
      */
     public function generate() {
       $name     = $this->name;
+      $name     = $this->table;
       $vars     = implode("\n", $this->vars) . PHP_EOL;
       $valids   = implode("", $this->valids) . PHP_EOL;
       $inactive = $this->inactive . PHP_EOL;
@@ -115,7 +119,7 @@ class $name extends \ADV\App\DB\Base {
   * @return array
   */
       public static function getAll(\$inactive = false) {
-        \$q = DB::_select()->from('$name');
+        \$q = DB::_select()->from('$table');
         $inactive
         return \$q->fetch()->all();
       }
@@ -123,6 +127,3 @@ class $name extends \ADV\App\DB\Base {
 CLASS;
     }
   }
-
-  $test = new Generator();
-  $test->getTableDetails('sales_types');

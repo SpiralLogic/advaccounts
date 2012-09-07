@@ -15,16 +15,27 @@
   }
   JS::_footerFile("/js/messages.js");
   Page::start(_($help_context = "Messages"), SA_OPEN, Input::_request('frame'));
-  HTML::div(array('style' => 'margin:0 auto;text-align:center'));
+  echo HTML::div(array('style' => 'margin:0 auto;text-align:center'));
   Users::row(_("User:"), 'user_id');
-  HTML::br(false)->label(array(
-                              'content' => "Subject: ", 'for'     => 'subject'
-                         ))->br->input('subject', array('size' => 50))->label;
-  HTML::br(false)->label(array(
-                              'content' => "Message: ", 'for'     => 'message'
-                         ))->br->textarea('message', array(
-                                                          'cols'  => 35, 'rows'  => 5, 'title' => 'Message to send:'
-                                                     ))->textarea->label->br;
-  UI::button('btnSend', 'Send Message');
-  HTML::_div();
+  echo HTML::br(false)->label(
+    array(
+         'content' => "Subject: ",
+         'for'     => 'subject'
+    )
+  )->br->input('subject', array('size' => 50))->label;
+  echo HTML::br(false)->label(
+    array(
+         'content' => "Message: ",
+         'for'     => 'message'
+    )
+  )->br->textarea(
+    'message',
+    array(
+         'cols'  => 35,
+         'rows'  => 5,
+         'title' => 'Message to send:'
+    )
+  )->textarea->label->br;
+  echo HTML::button('btnSend', 'Send Message');
+  echo HTML::_div();
   Page::end();

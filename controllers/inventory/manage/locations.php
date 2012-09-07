@@ -13,7 +13,6 @@
    **/
   class InvLocation extends \ADV\App\Controller\Manage
   {
-    protected $inv_location;
     protected function before() {
       $this->object = new Location();
       $this->runPost();
@@ -32,6 +31,7 @@
      * @return mixed|void
      */
     protected function formContents(Form $form, View $view) {
+      $view['title'] = 'Inventory Location';
       $form->hidden('id');
       $form->text('loc_code')->label('Location Code:');
       $form->text('location_name')->label('Location Name:');
@@ -62,15 +62,4 @@
   }
 
   new InvLocation();
-
-
-/**
- * PHP version 5.4
- * @category  PHP
- * @package   ADVAccounts
- * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
- * @copyright 2010 - 2012
- * @link      http://www.advancedgroup.com.au
- **/
-
 

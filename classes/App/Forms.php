@@ -508,8 +508,12 @@
       if ($value === null) {
         $value = Input::_post($name, null, 0);
       }
-      $str .= "<input" . ($value == 1 ? ' checked' : '') . " type='checkbox' name='$name' id='$name' value='1'" . ($submit_on_change ? " onclick='$submit_on_change'" :
-        '') . ($title ? " title='$title'" : '') . " >\n";
+      if (Input::_hasPost('_' . $name . '_update')) {
+        $value = ($value) ? 0 : 1;
+      }
+      $val = ($value) ? '1' : '0';
+      $str .= "<input" . ($value == 1 ? ' checked' : '') . " type='checkbox' name='$name' id='$name' value='" . $val . "'" . ($submit_on_change ? "
+      onclick='$submit_on_change'" : '') . ($title ? " title='$title'" : '') . " >\n";
       static::$Ajax->addUpdate($name, $name, $value);
 
       return $str;
