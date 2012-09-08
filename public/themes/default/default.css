@@ -3005,19 +3005,32 @@ img {
   font-weight:      bold;
   text-align:       left;
   box-shadow:       0 1px 0 rgba(255, 255, 255, 0.6) inset;
-  border:           1px solid #7096AB;
 }
 
-.menu_group_items {
+div.menu_group {
+  display: -webkit-flex;
+}
+
+div.menu_group.title {
+  margin-top: 5px;
+}
+
+.menu_group ul {
+  width:            100%;
   background-color: #f7f5fc;
   font-weight:      normal;
   padding:          9px;
-  border:           1px solid #8cacbb;
+  border-right:     1px solid #8cacbb;
   font-size:        14px;
+}
+
+.menu_group  li {
+  margin: 0 0 4px 25px;
 }
 
 .purchases .menu_group, .creditors .menu_group {
   background: #80fe80;
+  border:     1px solid #80fe80;
   background: -moz-linear-gradient(top, #80fe80 0%, #62bb46 100%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #80fe80), color-stop(100%, #62bb46));
   background: -webkit-linear-gradient(top, #80fe80 0%, #62bb46 100%);
@@ -3029,6 +3042,7 @@ img {
 
 .inventory .menu_group, .manufacturing .menu_group {
   background: #DB4949;
+  border:     1px solid #DB4949;
   background: -moz-linear-gradient(top, #E38881 0%, #DB4949 100%);
   background: -webkit-linear-gradient(top, #E38881 0%, #DB4949 100%);
   background: -o-linear-gradient(top, #E38881 0%, #DB4949 100%);
@@ -3036,6 +3050,7 @@ img {
 }
 
 .gl .menu_group {
+  border:     1px solid #ffe08c;
   background: #ffe08c;
   background: -moz-linear-gradient(top, #ffe08c 0%, #febf04 100%);
   background: -webkit-linear-gradient(top, #ffe08c 0%, #febf04 100%);
