@@ -108,9 +108,9 @@
      */
     public static function percent($label, $bold = false, $id = null) {
       if ($bold) {
-        Cell::label("<span class='bold'>" . Num::_percentFormat($label) . "</span>", ' class="alignright nowrap"', $id);
+        Cell::label("<span class='bold'>" . Num::_percentFormat($label) . "</span>%", ' class="alignright nowrap"', $id);
       } else {
-        Cell::label(Num::_percentFormat($label), ' class="alignright nowrap"', $id);
+        Cell::label(Num::_percentFormat($label) . '%', ' class="alignright nowrap"', $id);
       }
     }
     /**
@@ -120,7 +120,7 @@
      * @param null $id
      */
     public static function qty($label, $bold = false, $dec = null, $id = null) {
-      if ($dec===null) {
+      if ($dec === null) {
         $dec = User::qty_dec();
       }
       if ($bold) {

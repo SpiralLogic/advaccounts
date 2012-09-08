@@ -56,6 +56,16 @@
       return $this;
     }
     /**
+     * @param bool $on
+     *
+     * @return Field
+     */
+    public function focus($on = true) {
+      $this->attr['autofocus'] = true;
+
+      return $this;
+    }
+    /**
      * @param $content
      *
      * @return Field
@@ -213,7 +223,11 @@
      * @return mixed Can return all value types.
      */
     public function offsetGet($offset) {
-      return $this->attr[$offset];
+      if (isset($this->attr[$offset])) {
+        return $this->attr[$offset];
+      }
+
+      return null;
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>

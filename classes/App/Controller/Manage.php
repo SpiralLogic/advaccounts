@@ -11,6 +11,11 @@
   namespace ADV\App\Controller;
 
   use ADV\Core\Status;
+  use DB_Pager;
+  use ADV\App\Forms;
+  use ADV\App\Page;
+  use ADV\App\Form\Field;
+  use ADV\Core\Input\Input;
   use ADV\App\Form\Form;
   use ADV\Core\View;
 
@@ -22,6 +27,7 @@
     /** @var \ADV\App\DB\Base */
     protected $object;
     protected $defaultFocus;
+    protected $showInactive;
     protected function runPost() {
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $id = $this->getActionId(DELETE);
@@ -38,8 +44,16 @@
           $this->object->load($id);
           $this->JS->setFocus($this->defaultFocus);
         }
+        $id = $this->getActionId(INACTIVE);
+        if ($id > -1) {
+          //editing an existing Sales-person
+          $this->object->load($id);
+          $changes['inactive'] = $this->Input->post('_value', Input::NUMERIC);
+          $this->action        = SAVE;
+        }
         if ($this->action == SAVE) {
-          $this->object->save($_POST);
+          $changes = isset($changes) ? $changes : $_POST;
+          $this->object->save($changes);
           //run the sql from either of the above possibilites
           $status = $this->object->getStatus();
           if ($status['status'] == Status::ERROR) {
@@ -54,15 +68,43 @@
         }
       }
     }
+    protected function index() {
+      Page::start($this->title, SA_SALESTYPES);
+      $this->generateTable();
+      if ($this->hasInactiveField) {
+      }
+      echo '<br>';
+      $this->generateForm();
+      Page::end(true);
+    }
     protected function generateForm() {
 
-      $view = new \ADV\Core\View('form/simple');
-      $form = new \ADV\App\Form\Form();
+      $view          = new \ADV\Core\View('form/simple');
+      $form          = new \ADV\App\Form\Form();
+      $view['title'] = $this->title;
       $this->formContents($form, $view);
+      $form->group('buttons');
+      $form->submit(CANCEL)->type('danger')->preIcon(ICON_CANCEL);
+      $form->submit(SAVE)->type('success')->preIcon(ICON_ADD);
       $form->setValues($this->object);
       $view->set('form', $form);
       $view->render();
       $this->Ajax->addJson(true, 'setFormValues', $form);
+    }
+    /**
+     * @return \DB_Pager
+     */
+    protected function generateTable() {
+      $cols         = $this->generateTableCols();
+      $pager_name   = get_called_class() . '_table';
+      $inactive     = ($this->Input->post('_action') == 'showInactive' && $this->Input->post('_value', Input::NUMERIC) == 1) || ($this->Input->post(
+        '_action'
+      ) != 'showInactive' && !$_SESSION['pager'][$pager_name]->showInactive);
+      $table        = DB_Pager::new_db_pager($pager_name, $this->object->getAll($inactive), $cols);
+      $table->class = 'width50';
+      $table->display();
+
+      return $table;
     }
     /**
      * @param $row
@@ -94,4 +136,5 @@
      * @return mixed
      */
     abstract protected function formContents(Form $form, View $view);
+    abstract protected function generateTableCols();
   }

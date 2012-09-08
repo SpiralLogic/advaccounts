@@ -35,8 +35,6 @@
       $view['title'] = 'Sales Area';
       $form->hidden('area_code');
       $form->text('description')->label('Area Name:');
-      $form->submit(CANCEL)->type('danger')->preIcon(ICON_CANCEL);
-      $form->submit(SAVE)->type('success')->preIcon(ICON_ADD);
     }
     protected function generateTable() {
       $cols         = [

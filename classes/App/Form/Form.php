@@ -222,12 +222,12 @@
      * @return \ADV\App\Form\Field
      */
     public function number($name, $dec = null, $input_attr = []) {
-      $field             = $this->addField('checkbox', $name);
+      $field             = $this->addField('input', $name);
       $field['data-dec'] = (int) $dec;
       $field['type']     = 'text';
       $this->Ajax->addAssign($name, $name, 'data-dec', $dec);
       $field->mergeAttr($input_attr);
-      $field['value'] = Num::_format($field['value'], $field['data-dec']);
+      $field['value'] = Num::_format($field['value'] ? : 0, $field['data-dec']);
 
       return $field;
     }
@@ -449,7 +449,11 @@
         if ($field instanceof Button) {
           continue;
         }
-        $return[$id] = ['value'=> $field->$use];
+        $value = ['value'=> $field->$use];
+        if ($field['autofocus'] === true) {
+          $value['focus'] = true;
+        }
+        $return[$id] = $value;
       }
 
       return $return;

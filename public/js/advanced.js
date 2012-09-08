@@ -370,9 +370,13 @@ Adv.extend({
                    return els;
                  },
                  setFormValues:   function (data) {
+                   var focused = false;
                    $.each(data, function (k, v) {
                      var value = (v.value !== undefined) ? v.value : v;
                      Adv.Forms.setFormValue(k, value);
+                     if (!focused && v.focus !== undefined) {
+                       focused = focus = k;
+                     }
                    });
                  },
                  setFormDefault:  function (id, value, disabled) {

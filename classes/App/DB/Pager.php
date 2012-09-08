@@ -153,6 +153,7 @@
     and before first query.
      */
     public $inactive_ctrl = false;
+    public $showInactive = null;
     /**
      * @var
      */
@@ -282,6 +283,7 @@
       }
       $this->select_records();
       Display::div_start("_{$this->name}_span");
+
       $headers = $this->makeHeaders();
       $class   = $this->class ? : 'tablestyle grid width' . rtrim($this->width, '%');
       Table::start($class);
@@ -321,7 +323,7 @@
         if (isset($col['fun'])) { // use data input function if defined
           $fun = $col['fun'];
           if (is_callable($fun)) {
-            $cell = call_user_func($fun, $row, $cell);
+            $cell = call_user_func($fun, $row, $cell, $this);
           } elseif (is_callable([$this, $fun])) {
             $cell = $this->$fun($row, $cell);
           } else {
@@ -330,6 +332,9 @@
         }
         $class = isset($col['class']) ? $col['class'] : null;
         switch ($coltype) { // format column
+          case 'bool':
+            Cell::label(($cell ? 'Yes' : 'No'), " class='$class width40'");
+            break;
           case 'time':
             Cell::label($cell, " class='$class width40'");
             break;
@@ -362,6 +367,12 @@
               $this->inactive_control_cell($row);
             }
             break;
+          case 'inactive2':
+            if ($this->showInactive === null) {
+              $this->showInactive = false;
+            }
+            $this->formatInactive($row);
+            break;
           case 'id':
             if (isset($col['align'])) {
               Cell::label($cell, " class='$class " . $col['align'] . " pagerclick' data-id='" . $row['id'] . "'");
@@ -391,7 +402,10 @@
       }
       Row::start("class='navibar'");
       $colspan = count($this->columns);
-      $inact   = $this->inactive_ctrl == true ? ' ' . Forms::checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
+      $inact   = $this->showInactive !== null ? ' ' . $this->formatInactiveFooter() . _("Show also Inactive") : '';
+      if (!isset($inact)) {
+        $inact = $this->inactive_ctrl == true ? ' ' . Forms::checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
+      }
       echo HTML::td(null, ['colspan'=> $colspan, 'class'=> 'navibar']);
       if ($this->rec_count) {
         $but_pref = $this->name . '_page_';
@@ -477,9 +491,10 @@
      */
     protected function makeHeaders() {
       $headers = [];
+
       foreach ($this->columns as $num_col => $col) {
         // record status control column is displayed only when control checkbox is on
-        if (isset($col['head']) && ($col['type'] != 'inactive' || static::$Input->post('show_inactive'))) {
+        if (isset($col['head']) && ($col['type'] == 'inactive' || !static::$Input->post('show_inactive'))) {
           if (!isset($col['ord'])) {
             $headers[] = $col['head'];
           } else {
@@ -540,6 +555,33 @@
       } else {
         echo '';
       }
+    }
+    /**
+     * @param $row
+     *
+     * @return \ADV\App\Form\Field
+     */
+    public function formatInactive($row) {
+      $field = '';
+      if ($this->showInactive === true) {
+        $checked = $row['inactive'] ? 'checked' : '';
+        $field   = '<td class="center"><input ' . $checked . ' type="checkbox" name="_action" value="' . INACTIVE . $row['id'] . '" onclick="JsHttpRequest.request(this)"></td>';
+      }
+      echo $field;
+    }
+    public function formatInactiveFooter() {
+      if (Input::_post('_action') == 'showInactive') {
+        $this->showInactive = (Input::_post('_value', Input::NUMERIC) == 1);
+      }
+      if ($this->showInactive === true) {
+        $checked = 'checked';
+      } else {
+        $checked = '';
+      }
+      $field = '<input ' . $checked . ' type="checkbox" name="_action" value="showInactive" onclick="JsHttpRequest.request(this)">';
+      Ajax::_activate("_{$this->name}_span");
+
+      return $field;
     }
     /**
      * @return bool
@@ -677,6 +719,12 @@
             $c['head']           = $h;
             break;
           case 'insert':
+          case 'inactive2':
+            if ($this->showInactive === null) {
+              $this->showInactive = true;
+            }
+            $c['head'] = $h;
+            break;
           default:
             $c['head'] = $h;
             break;

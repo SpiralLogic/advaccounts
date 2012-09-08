@@ -1,4 +1,7 @@
 <?php
+
+  use ADV\App\Forms;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -52,6 +55,7 @@
     Cell::label($myrow["reason_description"]);
     Cell::label($disallow_text);
     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'credit_status', 'id');
+
     Forms::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
     Row::end();

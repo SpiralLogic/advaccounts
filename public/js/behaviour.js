@@ -106,6 +106,10 @@ JsHttpRequest.request = function (trigger, form, tout) {
   JsHttpRequest._request(trigger, form, tout, 0);
 };
 JsHttpRequest._request = function (trigger, form, tout, retry) {
+  if (trigger === '_action') {
+    console.log(arguements);
+    return;
+  }
   if (trigger.tagName == 'A') {
     var content = {};
     var upload = 0;
@@ -131,6 +135,10 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
   content['_random'] = Math.random() * 1234567;
   if (trigger.tagName === 'BUTTON') {
     content['_action'] = trigger.value;
+  }
+  if (trigger.tagName === 'INPUT' && trigger.type === 'checkbox') {
+    content['_action'] = trigger.value;
+    content['_value'] = !!trigger.checked;
   }
   content['_control'] = trigger.id;
   var tcheck = setTimeout(function () {

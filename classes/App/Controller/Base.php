@@ -75,8 +75,11 @@
      * @return int|mixed
      */
     protected function getActionId($prefix) {
-      if (strpos($this->action, $prefix) !== false) {
-        return str_replace($prefix, '', $this->action);
+      if (strpos($this->action, $prefix) === 0) {
+        $result = str_replace($prefix, '', $this->action);
+        if (!empty($result)) {
+          return $result;
+        }
       }
 
       return -1;
