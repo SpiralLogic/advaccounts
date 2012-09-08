@@ -22,6 +22,7 @@
     protected $selected_id;
     protected $Mode;
     protected $sales_person;
+    protected $tableWidth='width80';
     protected function before() {
       $this->object = new Person(0);
       $this->runPost();
@@ -51,9 +52,13 @@
       $form->amount('break_pt')->label("Break Pt.:");
       $form->percent('provision2')->label("Provision 2: ");
     }
-    protected function generateTable() {
+    /**
+     * @return array
+     */
+    protected function generateTableCols() {
       $cols  = array(
         _("ID"),
+        ['type'=> "skip"],
         _("Name"),
         _("User"),
         _("Phone"),
@@ -62,13 +67,13 @@
         _("Provision"),
         _("Break Pt."),
         _("Provision") . " 2",
-        ['type'=> "skip"],
-        ['type'=> "skip"],
+        _('Inactive')=>  ['type'=> "active"],
+
         ['insert'=> true, "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['insert'=> true, "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']]
       );
-      $table = DB_Pager::new_db_pager('sales_persons', Person::getAll($this->Input->post('show_inactive')), $cols);
-      $table->display();
+      return $cols;
+
     }
   }
 

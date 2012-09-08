@@ -41,10 +41,11 @@
       $form->text('fax')->label('Fax:');
       $form->text('email')->label('Email:');
       $form->text('contact')->label('Contact Name:');
-      $form->submit(CANCEL)->type('danger')->preIcon(ICON_CANCEL);
-      $form->submit(SAVE)->type('success')->preIcon(ICON_ADD);
     }
-    protected function generateTable() {
+    /**
+     * @return array
+     */
+    protected function generateTableCols() {
       $cols         = [
         ['type'=> 'skip'],
         _("Location Code"), //
@@ -55,9 +56,8 @@
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
       ];
-      $table        = DB_Pager::new_db_pager('inv_location_table', Location::getAll(), $cols);
-      $table->class = 'width90';
-      $table->display();
+      return $cols;
+
     }
   }
 

@@ -32,7 +32,8 @@
   /**
 
    */
-  define('ICON_CANCEL', 1);
+  define('ICON_CANCEL', 1);   define( 'ICON_ASC', 1);
+  define( 'ICON_DESC'  , 1);
   /**
 
    */

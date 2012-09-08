@@ -28,6 +28,8 @@
     'ICON_VIEW'                 => "icon-info-sign",
     'ICON_SUBMIT'               => "icon-ok",
     'ICON_ESCAPE'               => "icon-circle-arrow-left",
+    'ICON_ASC'                  =>"icon-arrow-up",
+    'ICON_DESC'                  =>"icon-arrow-down",
     'DEFAULT_TAX_GROUP'         => 1,
     'DEFAULT_AREA'              => 1,
     'DEFAULT_SHIP_VIA'          => 1,

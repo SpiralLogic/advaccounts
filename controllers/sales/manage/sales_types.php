@@ -8,10 +8,8 @@
    * @link      http://www.advancedgroup.com.au
    **/
   use ADV\App\Form\Form;
-  use ADV\App\Forms;
   use ADV\App\Sales\Type;
   use ADV\Core\View;
-  use ADV\Core\DB\DB;
 
   /**
    * PHP version 5.4
@@ -23,6 +21,7 @@
    **/
   class SalesTypes extends \ADV\App\Controller\Manage
   {
+    protected $title = "Sales Types";
     protected function before() {
       $this->object = new Type();
       $this->runPost();
@@ -34,7 +33,7 @@
      * @return mixed|void
      */
     protected function formContents(Form $form, View $view) {
-      $view['title'] = 'Sales Types';
+      $view['title'] = $this->title;
       $form->hidden('id');
       $form->text('sales_type')->label('Sales Type:')->focus();
       $form->percent('factor')->label('Factor:');
@@ -50,7 +49,7 @@
         'Sales Type',
         'Tax Incl.'=> ['type'=> 'bool'],
         'Factor'   => ['type'=> 'percent'],
-        'Inactive' => ['type'=> 'inactive2'],
+        'Inactive' => ['type'=> 'active'],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
       ];

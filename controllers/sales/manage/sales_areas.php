@@ -36,16 +36,17 @@
       $form->hidden('area_code');
       $form->text('description')->label('Area Name:');
     }
-    protected function generateTable() {
+    /**
+     * @return array
+     */
+    protected function generateTableCols() {
       $cols         = [
         ['type'=> 'skip'],
         'Area Name',
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
       ];
-      $table        = DB_Pager::new_db_pager('sales_area_table', Areas::getAll(), $cols);
-      $table->class = 'width30';
-      $table->display();
+      return $cols;
     }
   }
 

@@ -30,16 +30,17 @@
       $form->hidden('id');
       $form->text('description')->label('Area Name:');
     }
-    protected function generateTable() {
+    /**
+     * @return array
+     */
+    protected function generateTableCols() {
       $cols         = [
         ['type'=> 'skip'],
         'Group Name',
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
       ];
-      $table        = DB_Pager::new_db_pager('sales_group_table', Group::getAll(), $cols);
-      $table->class = 'width30';
-      $table->display();
+      return $cols;
     }
   }
 

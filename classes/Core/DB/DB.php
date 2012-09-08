@@ -650,7 +650,12 @@
     public function __sleep() {
       $this->conn     = null;
       $this->prepared = null;
+      $this->default_connection = null;
+      static::$connections=[];
 
-      return array_keys((array) $this);
+      return [];
+    }
+    public function __wakeup() {
+DB::i();
     }
   }

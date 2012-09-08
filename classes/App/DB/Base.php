@@ -17,6 +17,10 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  /**
+   * @method Status getStatus()
+   * @method array getAll()
+   */
   abstract class Base
   {
     use \ADV\Core\Traits\SetFromArray;

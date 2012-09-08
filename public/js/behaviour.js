@@ -528,11 +528,11 @@ Behaviour.register({
                        if (e.onfocus === undefined) {
                          e.onfocus = function () {
                            Adv.Forms.saveFocus(this);
-                         };
+                         };  }
                          if ($(e).is('.combo,.combo2')) {
                            _set_combo_select(e);
                          }
-                       }
+
                      },
                      'a.printlink,button.printlink':                                                                                   function (e) {
                        e.onclick = function () {

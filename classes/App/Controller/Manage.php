@@ -12,9 +12,7 @@
 
   use ADV\Core\Status;
   use DB_Pager;
-  use ADV\App\Forms;
   use ADV\App\Page;
-  use ADV\App\Form\Field;
   use ADV\Core\Input\Input;
   use ADV\App\Form\Form;
   use ADV\Core\View;
@@ -27,7 +25,7 @@
     /** @var \ADV\App\DB\Base */
     protected $object;
     protected $defaultFocus;
-    protected $showInactive;
+    protected $tableWidth='width50';
     protected function runPost() {
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $id = $this->getActionId(DELETE);
@@ -71,8 +69,6 @@
     protected function index() {
       Page::start($this->title, SA_SALESTYPES);
       $this->generateTable();
-      if ($this->hasInactiveField) {
-      }
       echo '<br>';
       $this->generateForm();
       Page::end(true);
@@ -101,9 +97,8 @@
         '_action'
       ) != 'showInactive' && !$_SESSION['pager'][$pager_name]->showInactive);
       $table        = DB_Pager::new_db_pager($pager_name, $this->object->getAll($inactive), $cols);
-      $table->class = 'width50';
+      $table->class = $this->tableWidth;
       $table->display();
-
       return $table;
     }
     /**

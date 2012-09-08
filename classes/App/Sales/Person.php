@@ -92,7 +92,7 @@
      * @return mixed
      */
     public static function getAll($inactive = false) {
-      $sql = "SELECT s.*,u.user_id,u.id FROM salesman s, users u WHERE s.user_id=u.id";
+      $sql = "SELECT s.salesman_code as id,s.*,u.user_id FROM salesman s, users u WHERE s.user_id=u.id";
       if (!$inactive) {
         $sql .= " AND !s.inactive";
       }
