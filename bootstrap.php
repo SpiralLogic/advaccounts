@@ -25,7 +25,7 @@
     include $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
     include $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
     $ignore = array('call_user_func', 'call_user_func_array');
-    xhprof_enable(XHPROF_FLAGS_CPU | XHPROF_FLAGS_MEMORY, array('ignored_functions' => $ignore));
+    xhprof_enable(XHPROF_FLAGS_CPU | XHPROF_FLAGS_NO_BUILTINS | XHPROF_FLAGS_MEMORY, array('ignored_functions' => $ignore));
     register_shutdown_function(
       function () {
         register_shutdown_function(
