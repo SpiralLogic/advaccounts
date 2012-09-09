@@ -26,7 +26,6 @@
    */
   class DB_Pager
   {
-
     /** @var \ADV\App\User */
     static $User;
     /** @var \ADV\Core\DB\DB */
@@ -208,20 +207,9 @@
       $this->displayNavigation();
       Table::end();
       Display::div_end();
+      $_SESSION['pager'][$this->name] = igbinary_serialize($this);
+
       return true;
-    }
-    /**
-     * @return array
-     */
-    public function __sleep() {
-      foreach ($this->columns as &$column) {
-        if (isset($column['fun'])) {
-          unset($column['fun']);
-        }
-      }
-      unset($this->marker);
-      unset($this->rowFunction);
-      return array_keys((array) $this);
     }
     /**
      * @return bool
@@ -250,6 +238,7 @@
         }
         $this->ready = true;
       }
+
       return true;
     }
     /**
@@ -267,6 +256,7 @@
       $id           = $this->hasBar ? " id='$name' " : '';
       $title        = $title ? : $value;
       $this->hasBar = true;
+
       return "<button " . ($enabled ? '' : 'disabled') . " class=\"navibutton\" type=\"submit\"  name=\"$name\"  $id value=\"$value\"><span>$title</span></button>\n";
     }
     /**
@@ -278,7 +268,9 @@
       foreach ($this->columns as $num_col => $col) {
         // record status control column is displayed only when control checkbox is on
         if (isset($col['head']) && ($col['type'] == 'inactive' || $inactive)) {
-          if ($col['type'] == 'active'&&$this->showInactive===false) continue;
+          if ($col['type'] == 'active' && $this->showInactive === false) {
+            continue;
+          }
           if (!isset($col['ord'])) {
             $headers[] = $col['head'];
             continue;
@@ -296,6 +288,7 @@
           $headers[] = $this->navi($this->name . '_sort_' . $num_col, $col['head'] . $icon, true);
         }
       }
+
       return $headers;
     }
     /**
@@ -362,6 +355,7 @@
       if ($return) {
         return ob_get_clean();
       }
+
       return true;
     }
     /**
@@ -428,9 +422,6 @@
             }
             break;
           case 'active':
-            if ($this->showInactive === null) {
-              $this->showInactive = false;
-            }
             $this->formatInactive($row);
             break;
           case 'id':
@@ -448,15 +439,17 @@
         }
       }
       Row::end();
+
       return $row;
     }
     /**
      * @return string
      */
     protected function formatInactiveFooter() {
-      $checked = ($this->showInactive === true) ? 'checked' : '';
+      $checked = ($this->showInactive) ? 'checked' : '';
       $field   = '<input ' . $checked . ' type="checkbox" name="_action" value="showInactive" onclick="JsHttpRequest.request(this)">';
       Ajax::_activate("_{$this->name}_span");
+
       return $field;
     }
     /**
@@ -469,6 +462,7 @@
     protected function change_page($page = null) {
       $this->setPage($page);
       $this->query();
+
       return true;
     }
     /**
@@ -556,6 +550,7 @@
           }
         }
       }
+
       return true;
     }
     /**
@@ -683,7 +678,7 @@
             break;
           case 'active':
             if ($this->showInactive === null) {
-              $this->showInactive = true;
+              $this->showInactive = false;
             }
             $c['head'] = $h;
             break;
@@ -722,6 +717,7 @@
       if (is_array($sql)) {
         $this->type = self::ARR;
         $this->sql  = $sql;
+
         return;
       }
       if ($sql != $this->sql) {
@@ -780,6 +776,7 @@
     protected function sortTable($col) {
       if ($this->type == self::ARR) {
         $this->query();
+
         return true;
       }
       if (is_null($col)) {
@@ -790,6 +787,7 @@
       $this->columns[$col]['ord'] = $ord;
       $this->setPage(1);
       $this->query();
+
       return true;
     }
     /**
@@ -815,6 +813,7 @@
       }
       if ($count) {
         $group = $group == '' ? "*" : "DISTINCT $group";
+
         return "SELECT COUNT($group) FROM $from $where";
       }
       $sql = "$select FROM $from $where";
@@ -839,6 +838,7 @@
       $page_length = $this->page_length;
       $offset      = ($this->curr_page - 1) * $page_length;
       $sql .= " LIMIT $offset, $page_length";
+
       return $sql;
     }
     /**
@@ -862,6 +862,7 @@
       }
       $href = '/' . ltrim($url, '/');
       $href = (static::$Input->request('frame')) ? "javascript:window.parent.location='$href'" : $href;
+
       return '<a href="' . e($href) . '" class="button">' . $link_text . "</a>";
     }
     /**
@@ -882,7 +883,7 @@
         $_SESSION['pager'] = [];
       }
       if (isset($_SESSION['pager'][$name])) {
-        $pager = $_SESSION['pager'][$name];
+        $pager = igbinary_unserialize($_SESSION['pager'][$name]);
         if (is_array($sql)) {
           $pager->sql       = $sql;
           $pager->rec_count = count($pager->sql);
@@ -907,6 +908,7 @@
       if (Input::_post('_action') == 'showInactive') {
         $pager->showInactive = (Input::_post('_value', Input::NUMERIC) == 1);
       }
+
       return $pager;
     }
   }
