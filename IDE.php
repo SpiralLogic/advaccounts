@@ -32,8 +32,9 @@
   /**
 
    */
-  define('ICON_CANCEL', 1);   define( 'ICON_ASC', 1);
-  define( 'ICON_DESC'  , 1);
+  define('ICON_CANCEL', 1);
+  define('ICON_ASC', 1);
+  define('ICON_DESC', 1);
   /**
 
    */
@@ -1326,6 +1327,53 @@
   interface JsonSerializable
   {
     public function jsonSerialize();
+  }
+
+  /**
+
+   */
+  interface ArrayAccess
+  {
+  }
+
+  /**
+
+   */
+  interface SessionHandlerInterface
+  {
+    public function close();
+    /**
+     * @param $session_id
+     *
+     * @return mixed
+     */
+    public function destroy($session_id);
+    /**
+     * @param $maxlifetime
+     *
+     * @return mixed
+     */
+    public function gc($maxlifetime);
+    /**
+     * @param $save_path
+     * @param $session_id
+     *
+     * @return mixed
+     */
+    public function open($save_path, $session_id);
+    /**
+     * @param $session_id
+     *
+     * @return mixed
+     */
+    public function read($session_id);
+    /**
+     * @param $session_id
+     * @param $session_data
+     *
+     * @return mixed
+     */
+    public function write($session_id, $session_data);
   }
 
   /**

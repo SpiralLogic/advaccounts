@@ -10,7 +10,7 @@
       font:            .7em Tahoma, Arial, sans-serif;
       line-height:     1.7em;
       color:           #454545;
-      background:       repeat-x, -webkit-radial-gradient(white 25%, transparent 16%) 0 0, -webkit-radial-gradient(white 25%, transparent 16%) 8px 8px, -webkit-radial-gradient(rgba(0, 0, 0, .1) 15%, transparent 20%) 0 1px, -webkit-radial-gradient(rgba(0, 0, 0, .1) 15%, transparent 20%) 8px 9px, rgba(250, 250, 250, .5);
+  background:            url(/themes/default/images/background.png) repeat;
       background-size: 16px 16px;
     }
 

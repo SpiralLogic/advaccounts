@@ -274,6 +274,10 @@
      * @return bool
      */
     public function hasAccess($page_level) {
+      if ($page_level == SA_OPEN) {
+        return true;
+      }
+
       return $this->Security->hasAccess($this, $page_level);
     }
     /**
