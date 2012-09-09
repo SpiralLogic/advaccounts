@@ -1,76 +1,37 @@
 <?php
+
+  phpinfo();
+  use ADV\Core\DB\DB;
+
   /**
    * Object hashing tests.
    */
-  $sos = new SplObjectStorage();
+  class test
+  {
 
-  $docs       = array();
-  $iterations = 100000;
-
-  for ($i = 0; $i < $iterations; ++$i) {
-    $doc = new DOMDocument();
-    //$doc = new stdClass();
-
-    $docs[] = $doc;
+    public $function;
+    function __construct() {
+      echo '<pre >';
+      $cols         = array(
+        _("ID"),
+        ['type'=> "skip"],
+        _("Name"),
+        _("User"),
+        _("Phone"),
+        _("Fax"),
+        _("Email"),
+        _("Provision"),
+        _("Break Pt."),
+        _("Provision") . " 2",
+        _('Inactive')=> ['type'=> "active"],
+      );
+      $pager_name   = '_table';
+      $table        = DB_Pager::new_db_pager($pager_name, \ADV\App\Sales\Person::getAll(), $cols);
+      $table->class = 'width50';
+      $table->display();
+    }
   }
 
-  $start = $finis = 0;
+  new test();
 
-  $mem_empty = memory_get_usage();
-
-  // Load the SplObjectStorage
-  $start = microtime(true);
-  foreach ($docs as $d) {
-    $sos->attach($d);
-  }
-  $finis = microtime(true);
-
-  $time_to_fill = $finis - $start;
-
-  // Check membership on the object storage
-  $start = microtime(false);
-  foreach ($docs as $d) {
-    $sos->contains($d);
-  }
-
-  $finis = microtime(false);
-
-  $time_to_check = $finis - $start;
-
-  $mem_spl = memory_get_usage();
-
-  $mem_used = $mem_spl - $mem_empty;
-
-  printf("SplObjectStorage:\nTime to fill: %0.12f.\nTime to check: %0.12f.\nMemory: %d\n\n", $time_to_fill, $time_to_check, $mem_used);
-
-  unset($sos);
-  $mem_empty = memory_get_usage();
-
-  // Test arrays:
-  $start = microtime(true);
-  $arr   = array();
-
-  // Load the array
-  foreach ($docs as $d) {
-    $arr[spl_object_hash($d)] = $d;
-  }
-  $finis = microtime(true);
-
-  $time_to_fill = $finis - $start;
-
-  // Check membership on the array
-  $start = microtime(false);
-  foreach ($docs as $d) {
-    //$arr[spl_object_hash($d)];
-    isset($arr[spl_object_hash($d)]);
-  }
-
-  $finis = microtime(false);
-
-  $time_to_check = $finis - $start;
-  $mem_arr       = memory_get_usage();
-
-  $mem_used = $mem_arr - $mem_empty;
-
-  printf("Arrays:\nTime to fill: %0.12f.\nTime to check: %0.12f.\nMemory: %d\n\n", $time_to_fill, $time_to_check, $mem_used);
-?>
+  unset($_SESSION);

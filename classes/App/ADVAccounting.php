@@ -1,6 +1,5 @@
 <?php
   namespace ADV\App;
-
   use ADV\Core\JS;
   use ADV\Core\Event;
   use ADV\Core\View;
@@ -26,6 +25,7 @@
    */
   class ADVAccounting
   {
+
     use \ADV\Core\Traits\Singleton;
 
     public $applications = [];
@@ -42,6 +42,7 @@
     protected $Session = null;
     /** @var Ajax */
     protected $Ajax = null;
+    protected $controller = null;
     protected $get_text = null;
     public $extensions;
     /** */
@@ -55,7 +56,6 @@
             die($message);
           }
           class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'Errors.php';
-
           return \ADV\Core\Errors::handler($severity, $message, $filepath, $line);
         },
         E_ALL & ~E_STRICT & ~E_NOTICE
@@ -100,7 +100,6 @@
       $this->loadModules();
       $this->setupApplications();
       define('BUILD_VERSION', is_readable(DOCROOT . 'version') ? file_get_contents(DOCROOT . 'version', null, null, null, 6) : 000);
-
       define('VERSION', '3.' . BUILD_VERSION . '-SYEDESIGN');
       // logout.php is the only page we should have always
       // accessable regardless of access level and current login status.
@@ -118,7 +117,8 @@
         $controller = (substr_compare($controller, '.php', -4, 4, true) === 0) ? $controller : $controller . '.php';
         $controller = DOCROOT . 'controllers' . DS . $controller;
         if (file_exists($controller)) {
-          include($controller);
+
+          $this->controller=$controller;
         } else {
           $show404 = true;
           header('HTTP/1.0 404 Not Found');
@@ -148,7 +148,6 @@
      */
     public function get_application($id) {
       $app_class = '\\ADV\\App\\Apps\\' . $id;
-
       return isset($this->applications[$id]) ? new $app_class : null;
     }
     /**
@@ -168,8 +167,9 @@
       if (!$this->selected || !is_object($this->selected)) {
         $this->selected = $this->get_application($this->Config->get('apps.default'));
       }
-
       return $this->selected;
+    }
+    public function getController() {return $this->controller;
     }
     public function display() {
       Extensions::add_access($this->User);
@@ -204,7 +204,6 @@
     public function set_selected($app_id) {
       $this->User->selectedApp = $this->get_application($app_id);
       $this->selected          = $this->User->selectedApp;
-
       return $this->selected;
     }
     protected function checkLogin() {
@@ -234,7 +233,8 @@
             // Incorrect password
             $this->loginFail();
           }
-        } catch (\ADV\Core\DB\DBException $e) {
+        }
+        catch (\ADV\Core\DB\DBException $e) {
           throw new \ADV\Core\DB\DBException('Could not connect to database!');
         }
         $this->User->ui_mode = $_POST['ui_mode'];
@@ -334,19 +334,16 @@
       // Check if the file is writable first.
       if (!$zp = fopen($filename, 'w')) {
         Event::error(sprintf(_("Cannot open the extension setup file '%s' for writing."), $filename));
-
         return false;
       } else {
         if (!fwrite($zp, $msg)) {
           Event::error(sprintf(_("Cannot write to the extensions setup file '%s'."), $filename));
           fclose($zp);
-
           return false;
         }
         // Close file
         fclose($zp);
       }
-
       return true;
     }
   }

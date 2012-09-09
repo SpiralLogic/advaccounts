@@ -54,9 +54,9 @@
       session_name('ADV' . md5($_SERVER['SERVER_NAME']));
       /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() === PHP_SESSION_NONE && extension_loaded('Memcached')) {
-        ini_set('session.save_handler', 'Memcached');
+      ini_set('session.save_handler', 'Memcached');
         ini_set('session.save_path', '127.0.0.1:11211');
-        (Memcached::HAVE_IGBINARY)  and  ini_set('session.serialize_handler', 'igbinary');
+       (Memcached::HAVE_IGBINARY)  and  ini_set('session.serialize_handler', 'igbinary');
         session_start();
       }
       /** @noinspection PhpUndefinedFunctionInspection */

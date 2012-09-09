@@ -898,6 +898,7 @@
         $pager->setSQL($sql);
         $pager->setColumns($coldef);
         $pager->sortTable($sort);
+        $_SESSION['pager'][$name]=$pager;
       }
       foreach ($pager->columns as &$column) {
         if (isset($column['funkey'])) {

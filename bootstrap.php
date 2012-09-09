@@ -12,7 +12,7 @@
   } elseif (strpos($_SERVER['HTTP_HOST'], 'advaccounts') !== false) {
     header('Location: http://advanced.advancedgroup.com.au' . $_SERVER['REQUEST_URI']);
   }
-  if ($_SERVER['DOCUMENT_URI'] !== '/assets.php' && (!isset($_SERVER['QUERY_STRING']) || (strlen($_SERVER['QUERY_STRING']) && substr_compare(
+/*  if ($_SERVER['DOCUMENT_URI'] !== '/assets.php' && (!isset($_SERVER['QUERY_STRING']) || (strlen($_SERVER['QUERY_STRING']) && substr_compare(
     $_SERVER['QUERY_STRING'],
     '/profile/',
     0,
@@ -38,7 +38,7 @@
         );
       }
     );
-  }
+  }*/
   error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
   ini_set('display_errors', 'On');
   ini_set("ignore_repeated_errors", "On");
@@ -62,7 +62,6 @@
     new \ADV\Core\Assets();
     exit;
   }
-
   if (!function_exists('e')) {
     /**
      * @param $string
@@ -70,10 +69,14 @@
      * @return array|string
      */
     function e($string) {
-
       return \ADV\Core\Security::htmlentities($string);
     }
   }
-
-  new \ADV\App\ADVAccounting($loader);
+  call_user_func(function () use ($loader) {
+    $app        = new \ADV\App\ADVAccounting($loader);
+    $controller = $app->getController();
+    if ($controller) {
+      include($controller);
+    }
+  });
 

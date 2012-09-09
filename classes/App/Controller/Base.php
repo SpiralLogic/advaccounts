@@ -52,6 +52,7 @@
       $this->index();
       $this->after();
     }
+
     protected function before() {
     }
     abstract protected function index();
@@ -89,4 +90,8 @@
         call_user_func(array($this, $this->action));
       }
     }
+public function __sleep() {
+  $this->DB = null;
+  return array_keys((array)$this);
+}
   }

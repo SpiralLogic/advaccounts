@@ -131,7 +131,7 @@
 }
 
 .ui-widget-header {
-  background: url(themes/default/images/bg.gif) 0 0 repeat-x;
+  background:  0 0 repeat-x;
   background: -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(237, 237, 237)), color-stop(0, rgb(196, 196, 196)));
   background: -moz-linear-gradient(center top, rgb(237, 237, 237), rgb(196, 196, 196));
 }
@@ -149,7 +149,7 @@
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
-  background:         url(themes/default/images/bg.gif) 0 0 repeat-x;
+  background:          0 0 repeat-x;
   background:         -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(237, 237, 237)), color-stop(0, rgb(196, 196, 196)));
   background:         -moz-linear-gradient(center top, rgb(237, 237, 237), rgb(196, 196, 196));
   -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
@@ -177,7 +177,7 @@
   outline:            none;
   color:              #1c4257;
   border:             1px solid #7096ab;
-  background:         url(themes/default/images/bg.gif) 0 -50px repeat-x;
+  background:          0 -50px repeat-x;
   background:         -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(185, 224, 245)), color-stop(0, rgb(146, 189, 214)));
   background:         -moz-linear-gradient(center top, rgb(185, 224, 245), rgb(146, 189, 214));
   -webkit-box-shadow: none;
@@ -652,7 +652,7 @@ button.ui-button-icons-only {
   outline:            none;
   color:              #1c4257;
   border-color:       #7096ab;
-  background:         url(themes/default/images/bg.gif) 0 -50px repeat-x;
+  background:          0 -50px repeat-x;
   background:         -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(185, 224, 245)), color-stop(0, rgb(146, 189, 214)));
   background:         -moz-linear-gradient(center top, rgb(185, 224, 245), rgb(146, 189, 214));
   -moz-box-shadow:    0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
