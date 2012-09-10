@@ -92,8 +92,7 @@
 
       $this->current_tab['attrs']['id']    = 'tabs' . MenuUI::$menuCount . '-' . $count;
       $this->current_tab['attrs']['class'] = 'ui-tabs-panel ui-widget-content ui-corner-bottom ';
-      $this->current_tab['attrs']['class'] .= ($count > 0 || $this->firstPage != $count) ? 'ui-tabs-hide' : '';
-      $this->current_tab['attrs']['style'] = $style;
+      $this->current_tab['attrs']['style'] = ($count > 0 || $this->firstPage != $count)?  ' display:none;':'' ;      $this->current_tab['attrs']['style'] .= $style;
       ob_start();
 
       return $this;

@@ -171,8 +171,8 @@
      * @param null $table
      * @param int  $page_length
      */
-    public function __construct($sql, $name, $table = null, $page_length = 0) {
-
+    public function __construct($sql, $name, $table = null, $page_length = 0)
+    {
       $this->width;
       if ($page_length == 0) {
         $page_length = static::$User->_query_size();
@@ -182,11 +182,27 @@
       $this->setSQL($sql);
     }
     /**
+     * @return array
+     */
+    public function __sleep()
+    {
+      foreach ($this->columns as &$column) {
+        if (isset($column['fun'])) {
+          unset($column['fun']);
+        }
+      }
+      unset($this->marker);
+      unset($this->rowFunction);
+
+      return array_keys((array) $this);
+    }
+    /**
      * @static
      * @internal param \DB_Pager $pager
      * @return bool
      */
-    public function display() {
+    public function display()
+    {
       $this->select_records();
       Display::div_start("_{$this->name}_span");
       $headers = $this->makeHeaders();
@@ -209,7 +225,8 @@
      * @return bool
      * Initialization after changing record set
      */
-    protected function init() {
+    protected function init()
+    {
       if ($this->ready == false) {
         if ($this->type == self::SQL) {
           $sql    = $this->_sql_gen(true);
@@ -246,7 +263,8 @@
      * @internal param bool $icon
      * @return string
      */
-    protected function navi($name, $value, $enabled = true, $title = null) {
+    protected function navi($name, $value, $enabled = true, $title = null)
+    {
       $id           = $this->hasBar ? " id='$name' " : '';
       $title        = $title ? : $value;
       $this->hasBar = true;
@@ -256,7 +274,8 @@
     /**
      * @return array
      */
-    protected function makeHeaders() {
+    protected function makeHeaders()
+    {
       $headers  = [];
       $inactive = !static::$Input->post('show_inactive');
       foreach ($this->columns as $num_col => $col) {
@@ -288,7 +307,8 @@
     /**
      * @param $headers
      */
-    protected function displayHeaders($headers) {
+    protected function displayHeaders($headers)
+    {
       Table::header($headers, '', $this->displayNavigation(true));
     }
     /**
@@ -296,7 +316,8 @@
      *
      * @return string
      */
-    protected function displayNavigation($return = false) {
+    protected function displayNavigation($return = false)
+    {
       if ($return) {
         ob_start();
       }
@@ -357,7 +378,8 @@
      *
      * @return mixed
      */
-    protected function displayRow($row) {
+    protected function displayRow($row)
+    {
       if ($this->marker && is_callable($this->marker) && call_user_func($this->marker, $row)) {
         Row::start("class='$this->marker_class'");
       } elseif (is_callable($this->rowFunction)) {
@@ -439,7 +461,8 @@
     /**
      * @return string
      */
-    protected function formatInactiveFooter() {
+    protected function formatInactiveFooter()
+    {
       $checked = ($this->showInactive) ? 'checked' : '';
       $field   = '<input ' . $checked . ' type="checkbox" name="_action" value="showInactive" onclick="JsHttpRequest.request(this)">';
       Ajax::_activate("_{$this->name}_span");
@@ -453,7 +476,8 @@
      * Set query result page
 
      */
-    protected function change_page($page = null) {
+    protected function change_page($page = null)
+    {
       $this->setPage($page);
       $this->query();
 
@@ -466,7 +490,8 @@
      * Helper for display inactive control cells
 
      */
-    protected function  inactive_control_cell(&$row) {
+    protected function  inactive_control_cell(&$row)
+    {
       if ($this->inactive_ctrl) {
         //	return inactive_control_cell($row[$this->inactive_ctrl['key']],
         // $row['inactive'], $this->inactive_ctrl['table'],
@@ -495,7 +520,8 @@
      *
      * @return \ADV\App\Form\Field
      */
-    protected function formatInactive($row) {
+    protected function formatInactive($row)
+    {
       $field = '';
       if ($this->showInactive === true) {
         $checked = $row['inactive'] ? 'checked' : '';
@@ -508,7 +534,8 @@
      * Query database
 
      */
-    protected function query() {
+    protected function query()
+    {
       Ajax::_activate("_{$this->name}_span");
       if (!$this->init()) {
         return false;
@@ -577,7 +604,8 @@
     /**
      * Set current page in response to user control.
      */
-    protected function select_records() {
+    protected function select_records()
+    {
       $page = Forms::findPostPrefix($this->name . '_page_', false);
       $sort = Forms::findPostPrefix($this->name . '_sort_', true);
       if ($page) {
@@ -601,7 +629,8 @@
      * Calculates page numbers for html controls.
 
      */
-    protected function setPage($to) {
+    protected function setPage($to)
+    {
       switch ($to) {
         case 'next':
           $page = $this->curr_page + 1;
@@ -640,7 +669,8 @@
      *
      * @param array  $flds array( fldname1, fldname2=>type,...)
      */
-    protected function setColumns($flds) {
+    protected function setColumns($flds)
+    {
       $this->columns = [];
       if (!is_array($flds)) {
         $flds = array($flds);
@@ -697,7 +727,8 @@
      * @param string $msgclass
      * Set check function to mark some rows.
      */
-    public function setMarker($func, $notice = '', $markercl = 'overduebg', $msgclass = 'overduefg') {
+    public function setMarker($func, $notice = '', $markercl = 'overduebg', $msgclass = 'overduefg')
+    {
       $this->marker       = $func;
       $this->marker_txt   = $notice;
       $this->marker_class = $markercl;
@@ -707,7 +738,8 @@
      * @param $sql
      * Parse base sql select query.
      */
-    protected function setSQL($sql) {
+    protected function setSQL($sql)
+    {
       if (is_array($sql)) {
         $this->type = self::ARR;
         $this->sql  = $sql;
@@ -747,7 +779,8 @@
      * @return mixed
      * Set additional constraint on record set
      */
-    protected function setWhere($where = null) {
+    protected function setWhere($where = null)
+    {
       if ($where) {
         if (!is_array($where)) {
           $where = array($where);
@@ -767,7 +800,8 @@
      * Change sort column direction
      * in order asc->desc->none->asc
      */
-    protected function sortTable($col) {
+    protected function sortTable($col)
+    {
       if ($this->type == self::ARR) {
         $this->query();
 
@@ -793,7 +827,8 @@
      * $count==true  - for total records count
 
      */
-    protected function _sql_gen($count = false) {
+    protected function _sql_gen($count = false)
+    {
       $select = $this->select;
       $from   = $this->from;
       $where  = $this->where;
@@ -838,7 +873,8 @@
     /**
      * @param $name
      */
-    public static function kill($name) {
+    public static function kill($name)
+    {
       unset($_SESSION['pager'][$name]);
     }
     /**
@@ -850,7 +886,8 @@
      *
      * @return string
      */
-    public static function link($link_text, $url, $icon = false) {
+    public static function link($link_text, $url, $icon = false)
+    {
       if (static::$User->_graphic_links() && $icon) {
         $link_text = Forms::setIcon($icon, $link_text);
       }
@@ -872,7 +909,8 @@
      *
      * @return DB_Pager
      */
-    public static function new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_length = 0, $sort = null) {
+    public static function new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_length = 0, $sort = null)
+    {
       if (!isset($_SESSION['pager'])) {
         $_SESSION['pager'] = [];
       }
