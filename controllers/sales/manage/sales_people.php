@@ -18,11 +18,7 @@
    */
   class SalesPeople extends Manage
   {
-    protected $result;
-    protected $selected_id;
-    protected $Mode;
-    protected $sales_person;
-    protected $tableWidth='width80';
+    protected $tableWidth = '80';
     protected function before() {
       $this->object = new Person(0);
       $this->runPost();
@@ -43,7 +39,7 @@
     protected function formContents(Form $form, View $view) {
       $view['title'] = 'Sales Person Details';
       $form->hidden('salesman_code');
-      $form->text('salesman_name', ['maxlength'=> 30])->label('Name: ');
+      $form->text('salesman_name', ['maxlength'=> 30])->label('Name: ')->focus();
       $form->custom(Users::select('user_id', null, " ", true))->label('User:');
       $form->text('salesman_phone', ['maxlength'=> 20])->label('Telephone number: ');
       $form->text('salesman_fax', ['maxlength'=> 20])->label('Fax number: ');
@@ -56,7 +52,7 @@
      * @return array
      */
     protected function generateTableCols() {
-      $cols  = array(
+      $cols = array(
         _("ID"),
         ['type'=> "skip"],
         _("Name"),
@@ -67,13 +63,12 @@
         _("Provision"),
         _("Break Pt."),
         _("Provision") . " 2",
-        _('Inactive')=>  ['type'=> "active"],
-
+        _('Inactive')=> ['type'=> "active"],
         ['insert'=> true, "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['insert'=> true, "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']]
       );
-      return $cols;
 
+      return $cols;
     }
   }
 

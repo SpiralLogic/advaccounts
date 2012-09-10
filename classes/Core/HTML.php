@@ -96,6 +96,7 @@
      * @return string
      */
     public static function attr($attr) {
+      return static::expandAttributes($attr);
     }
     /**
      * @param        $func

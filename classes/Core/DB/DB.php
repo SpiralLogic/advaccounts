@@ -74,9 +74,9 @@
      */
     protected $useCache = false;
     /**
-     * @var \Config
+     * @var array
      */
-    protected $Config = false;
+    protected $config = false;
     /**
      * @var bool
      */
@@ -91,15 +91,15 @@
      * @throws DBException
      */
     public function __construct($name = 'default', \Config $config = null, $cache = null) {
-      $this->Config   = $config ? : \Config::i();
+      $Config         = $config ? : \Config::i();
       $this->useCache = class_exists('ADV\\Core\\Cach\\Cache', false);
-      if (!$this->Config) {
+      if (!$Config) {
         throw new DBException('No database configuration provided');
       }
-      $config      = $this->Config->get('db.' . $name);
-      $this->debug = false;
-      $this->connect($config);
-      $this->default_connection = $config['name'];
+      $this->config = $Config->get('db.' . $name);
+      $this->debug  = false;
+      $this->connect($this->config);
+      $this->default_connection = $this->config['name'];
     }
     /**
      * @param  $config
@@ -650,12 +650,10 @@
     public function __sleep() {
       $this->conn     = null;
       $this->prepared = null;
-      $this->default_connection = null;
-      static::$connections=[];
 
-      return [];
+      return array_keys((array) $this);
     }
     public function __wakeup() {
-DB::i();
+      $this->connect($this->config);
     }
   }

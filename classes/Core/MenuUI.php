@@ -88,12 +88,12 @@
      */
     public function startTab($title, $tooltip, $link = '#', $style = '') {
       $count = count($this->items);
-      $this->addTab($title, $tooltip, $link);
+      $this->addTab($title, $tooltip, '#tabs' . MenuUI::$menuCount . '-' . $count);
 
-      $this->current_tab['id']    = 'tabs' . MenuUI::$menuCount . '-' . $count;
-      $this->current_tab['class'] = 'ui-tabs-panel ui-widget-content ui-corner-bottom ';
-      $this->current_tab['class'] .= ($count > 0 || $this->firstPage != $count) ? 'ui-tabs-hide' : '';
-      $this->current_tab['style'] = $style;
+      $this->current_tab['attrs']['id']    = 'tabs' . MenuUI::$menuCount . '-' . $count;
+      $this->current_tab['attrs']['class'] = 'ui-tabs-panel ui-widget-content ui-corner-bottom ';
+      $this->current_tab['attrs']['class'] .= ($count > 0 || $this->firstPage != $count) ? 'ui-tabs-hide' : '';
+      $this->current_tab['attrs']['style'] = $style;
       ob_start();
 
       return $this;
@@ -117,7 +117,7 @@
       $menu->set('items', $this->items);
       $menu->set('tabs', $this->tabs);
       $menu->render();
-      JS::_tabs('tabs' . MenuUI::$menuCount, $this->options, $this->firstPage);
+      JS::_tabs(MenuUI::$menuCount, $this->options, $this->firstPage);
       foreach ($this->jslinks as $js) {
         JS::_onload($js);
       }

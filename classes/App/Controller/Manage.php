@@ -25,9 +25,9 @@
     /** @var \ADV\App\DB\Base */
     protected $object;
     protected $defaultFocus;
-    protected $tableWidth='width50';
+    protected $tableWidth = '50';
     protected function runPost() {
-      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      if ($this->method == 'POST') {
         $id = $this->getActionId(DELETE);
         if ($id > -1) {
           $this->object->load($id);
@@ -40,7 +40,6 @@
         if ($id > -1) {
           //editing an existing Sales-person
           $this->object->load($id);
-          $this->JS->setFocus($this->defaultFocus);
         }
         $id = $this->getActionId(INACTIVE);
         if ($id > -1) {
@@ -60,6 +59,9 @@
           $this->object->load(0);
         } elseif ($this->action == CANCEL) {
           $status = $this->object->getStatus();
+        } elseif ($this->action == 'showInactive') {
+          $this->generateTable();
+          exit();
         }
         if (isset($status)) {
           $this->Ajax->addStatus($status);
@@ -91,14 +93,19 @@
      * @return \DB_Pager
      */
     protected function generateTable() {
-      $cols         = $this->generateTableCols();
-      $pager_name   = get_called_class() . '_table';
-      $inactive     = ($this->Input->post('_action') == 'showInactive' && $this->Input->post('_value', Input::NUMERIC) == 1) || ($this->Input->post(
-        '_action'
-      ) != 'showInactive' && !$_SESSION['pager'][$pager_name]->showInactive);
+      $cols       = $this->generateTableCols();
+      $pager_name = get_called_class() . '_table';
+      $inactive   = false;
+      if (isset($_SESSION['pager'][$pager_name])) {
+        $inactive = ($this->action == 'showInactive' && $this->Input->post(
+          '_value',
+          Input::NUMERIC
+        ) == 1) || ($this->action != 'showInactive' && $_SESSION['pager'][$pager_name]->showInactive);
+      }
       $table        = DB_Pager::new_db_pager($pager_name, $this->object->getAll($inactive), $cols);
-      $table->class = $this->tableWidth;
+      $table->width = $this->tableWidth;
       $table->display();
+
       return $table;
     }
     /**

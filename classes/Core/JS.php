@@ -160,7 +160,7 @@ JS;
       $defaults = ['noajax'=> false, 'haslinks'=> false];
       $options  = array_merge($defaults, $options);
       $noajax   = $options['noajax'] ? 'true' : 'false';
-      $haslinks = $options['haslinks'] ? 'true' : 'false';
+      $haslinks = $options['hasLinks'] ? 'true' : 'false';
       $this->onload("Adv.tabmenu.init('$id',$noajax,$haslinks,$page)");
     }
     /**

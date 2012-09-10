@@ -181,11 +181,11 @@
           break;
         case 'checkbox':
           $this->attr['checked'] = !!$value;
-          $control               = $this->makeElement('input', $this->attr, true);
+          $control               = $this->makeElement('input', $this->attr, false);
           break;
         default:
           $this->attr['value'] = $value;
-          $control             = $this->makeElement($tag, $this->attr, $this->content, true);
+          $control             = $this->makeElement($tag, $this->attr, $this->content, $tag != 'input');
       }
       $control = $this->formatAddOns($control);
       if ($this->label) {

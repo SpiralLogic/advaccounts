@@ -60,10 +60,12 @@ var Adv = {};
     extender(Adv.loader, {
       off: function (img) {
         if (img) {
+          $(document.body).addClass('wait');
           Adv.loader.src = user.theme + 'images/' + img;
           Adv.loader.style.visibility = 'visible';
         }
         else {
+          $(document.body).removeClass('wait');
           Adv.loader.style.visibility = 'hidden';
         }
       },
@@ -224,40 +226,34 @@ Adv.extend({
                  width:  100,
                  height: 100}).html(Adv.o.popupWindow).on('mouseleave',function () { $(this).remove(); }).appendTo(Adv.o.wrapper).position({my: "center center", at: "center center", of: document.body});
              },
-             tabmenu:     {init: function (id, ajax, links, page) {
-               Adv.o.tabs[id] = $('#' + id);
-               if (links) {
-                 Adv.o.tabs[id].tabs({
-                                       select: function (event, ui) {
-                                         var $tab = $(ui.tab), param = $('#' + $tab.data('paramel')).val(), url = $.data(ui.tab, 'load.tabs') + param, target = $tab.data('target');
-                                         if (url) {
-                                           if (target) {
-                                             Adv.openWindow(url, 'Test');
-                                           }
-                                           else {
-                                             location.href = url;
-                                           }
-                                           return false;
-                                         }
-                                         return true;
-                                       }
-                                     })
-               }
-               else {
-                 Adv.o.tabs[id].tabs();
-               }
-               Adv.o.tabs[id].toggleClass('tabs');
-               if (page) {
-                 Adv.tabmenu.page(id, page);
-               }
-             }, //
-               page:             function (id, page) {
-                 if (page) {
-                   Adv.o.tabs[id].tabs('select', page);
+             tabmenu:     ( function () {
+               var deferreds = [];
+               return{
+                 init:  function (id, ajax, links, page) {
+                   Adv.o.tabs[id] = $('#tabs' + id);
+                   Adv.o.tabs[id].tabs();
+                   if (page) {
+                     Adv.tabmenu.page(id, page);
+                   }
+                   if (deferreds[id] !== undefined) {
+                     deferreds[id].resolve();
+                   }
+                 }, //
+                 page:  function (id, page) {
+                   if (page) {
+                     Adv.o.tabs[id].tabs('active', page);
+                   }
+                 },
+                 defer: function (id) {
+                   if (deferreds[id] === undefined) {
+                     deferreds[id] = $.Deferred();
+                   }
+                   return deferreds[id];
                  }
-               }},
+               }
+             }()),
              Forms:       (function () {
-               var tooltip, tooltiptimeout, focus, menu = {
+               var tooltip, tooltiptimeout, focusonce, focus, menu = {
                  current:    null,
                  closetimer: null,
                  open:       function (el) {
@@ -375,7 +371,7 @@ Adv.extend({
                      var value = (v.value !== undefined) ? v.value : v;
                      Adv.Forms.setFormValue(k, value);
                      if (!focused && v.focus !== undefined) {
-                       focused = focus = k;
+                       focused = focusonce = k;
                      }
                    });
                  },
@@ -505,15 +501,17 @@ Adv.extend({
                    }
                    else {
                      if (!name) { // page load/ajax update
-                       if (focus) {
+                       if (focusonce) {
+                         name = focusonce;
+                         focusonce = null;
+                       }  // last focus set in onfocus handlers
+                       if (!name && focus) {
                          name = focus;
                        }  // last focus set in onfocus handlers
-                       else {
-                         if (document.forms.length) {  // no current focus (first page display) -  set it from from last form
-                           var cur = document.getElementsByName('_focus')[document.forms.length - 1];
-                           if (cur) {
-                             name = cur.value;
-                           }
+                       if (!name && document.forms.length) {  // no current focus (first page display) -  set it from from last form
+                         var cur = document.getElementsByName('_focus')[document.forms.length - 1];
+                         if (cur) {
+                           name = cur.value;
                          }
                        }
                      }
@@ -546,7 +544,7 @@ Adv.extend({
                    }, 0);
                    return true;
                  }, saveFocus:    function (e) {
-                   focus = e.name || e.id;
+                   focusonce = e.name || e.id;
                    var h = document.getElementById('hints');
                    if (h) {
                      h.style.display = e.title && e.title.length ? 'inline' : 'none';
@@ -760,4 +758,3 @@ Adv.extend({
                };
              }())
            });
-

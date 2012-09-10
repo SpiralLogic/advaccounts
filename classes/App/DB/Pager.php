@@ -172,12 +172,7 @@
      * @param int  $page_length
      */
     public function __construct($sql, $name, $table = null, $page_length = 0) {
-      if (!static::$User) {
-        static::$User = User::i();
-      }
-      if (!static::$DB) {
-        static::$DB = DB::i();
-      }
+
       $this->width;
       if ($page_length == 0) {
         $page_length = static::$User->_query_size();
@@ -207,7 +202,6 @@
       $this->displayNavigation();
       Table::end();
       Display::div_end();
-      $_SESSION['pager'][$this->name] = igbinary_serialize($this);
 
       return true;
     }
@@ -267,7 +261,7 @@
       $inactive = !static::$Input->post('show_inactive');
       foreach ($this->columns as $num_col => $col) {
         // record status control column is displayed only when control checkbox is on
-        if (isset($col['head']) && ($col['type'] == 'inactive' || $inactive)) {
+        if (isset($col['head']) && ($col['type'] != 'inactive' || $inactive)) {
           if ($col['type'] == 'active' && $this->showInactive === false) {
             continue;
           }
@@ -277,15 +271,15 @@
           }
           switch ($col['ord']) {
             case 'desc':
-              $icon = "<i class='" . ICON_DESC . "'> </i>";
+              $icon = " <i class='" . ICON_DESC . "'> </i>";
               break;
             case 'asc':
-              $icon = "<i class='" . ICON_ASC . "'> </i>";
+              $icon = " <i class='" . ICON_ASC . "'> </i>";
               break;
             default:
               $icon = '';
           }
-          $headers[] = $this->navi($this->name . '_sort_' . $num_col, $col['head'] . $icon, true);
+          $headers[] = $this->navi($this->name . '_sort_' . $num_col, $col['head'], true, $col['head'] . $icon);
         }
       }
 
@@ -432,7 +426,7 @@
             }
             break;
           default:
-            $alignclass = isset($col['align']) ? " class='$class " . $col['align'] . "'" : ($class ? "class='$class'" : "");
+            $alignclass = isset($col['align']) ? " class='$class align" . $col['align'] . "'" : ($class ? "class='$class'" : "");
             Cell::label($cell, $alignclass);
             break;
           case 'skip': // column not displayed
@@ -703,7 +697,7 @@
      * @param string $msgclass
      * Set check function to mark some rows.
      */
-    protected function setMarker($func, $notice = '', $markercl = 'overduebg', $msgclass = 'overduefg') {
+    public function setMarker($func, $notice = '', $markercl = 'overduebg', $msgclass = 'overduefg') {
       $this->marker       = $func;
       $this->marker_txt   = $notice;
       $this->marker_class = $markercl;
@@ -883,7 +877,7 @@
         $_SESSION['pager'] = [];
       }
       if (isset($_SESSION['pager'][$name])) {
-        $pager = igbinary_unserialize($_SESSION['pager'][$name]);
+        $pager = $_SESSION['pager'][$name];
         if (is_array($sql)) {
           $pager->sql       = $sql;
           $pager->rec_count = count($pager->sql);
@@ -899,7 +893,7 @@
         $pager->setSQL($sql);
         $pager->setColumns($coldef);
         $pager->sortTable($sort);
-        $_SESSION['pager'][$name]=$pager;
+        $_SESSION['pager'][$name] = $pager;
       }
       foreach ($pager->columns as &$column) {
         if (isset($column['funkey'])) {

@@ -60,7 +60,7 @@
      * @return string
      */
     protected function generateForm() {
-      $cache = Cache::_get('customer_form');
+      $cache = null; //Cache::_get('customer_form');
       if ($cache) {
         $this->JS->setState($cache[1]);
 
@@ -157,28 +157,25 @@
       $contact_form->textarea('message', ['cols'=> 100, 'rows'=> 10])->label('Entry:');
       $view->set('contact_form', $contact_form);
       if (!$this->Input->get('frame')) {
-        $shortcuts = new MenuUI(array('noajax' => true));
-        $shortcuts->addLink(
-          'Create Quote',
-          'Create Quote for this customer!',
-          '/sales/sales_order_entry.php?type=' . ST_SALESQUOTE . '&add=' . ST_SALESQUOTE . '&debtor_id=',
-          'id'
-        );
-        $shortcuts->addLink('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?type=30&add=' . ST_SALESORDER . '&debtor_id=', 'id');
-        $shortcuts->addLink(
-          'Print Statement',
-          'Print Statement for this Customer!',
-          '/reporting/prn_redirect.php?REP_ID=108&PARAM_2=0&PARAM_4=0&PARAM_5=0&PARAM_6=0&PARAM_0=',
-          'id',
-          true
-        );
-        $shortcuts->addJSLink(
-          'Email Statement',
-          'Email Statement for this Customer!',
-          'emailTab',
-          "Adv.o.tabs[1].bind('tabsselect',function(e,o) {if (o.index!=3)return; return false;});"
-        );
-        $shortcuts->addLink('Customer Payment', 'Make customer payment!', '/sales/customer_payments.php?debtor_id=', 'id');
+        $shortcuts = [
+          [
+            'caption'=> 'Create Quote',
+            'Create Quote for this customer!',
+            'data'   => '/sales/sales_order_entry.php?type=' . ST_SALESQUOTE . '&add=' . ST_SALESQUOTE . '&debtor_id='
+          ],
+          ['caption'=> 'Create Order', 'Create Order for this customer!', 'data'=> '/sales/sales_order_entry.php?type=30&add=' . ST_SALESORDER . '&debtor_id='],
+          [
+            'caption'=> 'Print Statement',
+            'Print Statement for this Customer!',
+            'data'   => '/reporting/prn_redirect.php?REP_ID=108&PARAM_2=0&PARAM_4=0&PARAM_5=0&PARAM_6=0&PARAM_0='
+          ],
+          [
+            'caption'=> 'Email Statement',
+            'Email Statement for this Customer!',
+            'data'   => 'emailTab'
+          ],
+          ['caption'=> 'Customer Payment', 'Make customer payment!', 'data'=> '/sales/customer_payments.php?debtor_id=']
+        ];
         $view->set('shortcuts', $shortcuts);
         UI::emailDialogue(CT_CUSTOMER);
       }

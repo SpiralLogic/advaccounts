@@ -58,7 +58,7 @@
     {{$form.messageLog}}
   </div>
   {#$menu->endTab()->startTab('Customer Contacts', 'Customer Contacts')#}
-  {{>contacts/customers}}
+  {{>contacts/contact}}
   {#$menu->endTab()->startTab('Extra Shipping Info', 'Extra Info')#}
   <div class='formbox'>
     <div class='tablehead'>
@@ -85,8 +85,8 @@
     {{$form.branch_notes}}
   </div>
   {#$menu->endTab()->startTab('Invoices', 'Invoices')#}
-  <div id='invoiceFrame' data-src='/sales/inquiry/customer_allocation_inquiry.php?debtor_id={{$debtor_id}}'></div>
   {{$form.frame}}
+  <div id='invoiceFrame' data-src='/sales/inquiry/customer_allocation_inquiry.php?debtor_id={{$debtor_id}}'></div>
   {{$form._focus}}
   {#$menu->endTab()->render()#}
   {{$form->end()}}
@@ -95,7 +95,10 @@
   <button id="btnNew" name="new" type="submit" class="btn btn-primary">New</button>
   <button id="btnCancel" name="cancel" type="submit" class="btn btn-danger ui-helper-hidden"><i class="icon-cross"></i> Cancel</button>
   <button id="btnConfirm" name="save" type="submit" class="btn btn-success ui-helper-hidden"><i class="icon-ok"></i> Save</button>
-</div>  {{$shortcuts->render()}}
+</div>
+<div id="shortcuts" class="center">{{#$shortcuts}}
+  <button class="btn" data-url="{{$.data}}">{{$.caption}}</button>
+  {{/$shortcuts}}</div>
 {{$contact_form->start()}}
 <div id="contactLog" class='ui-helper-hidden center'>
   <div class="formbox marginauto ">

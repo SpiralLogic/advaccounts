@@ -207,8 +207,9 @@ var Company = function () {
       }
       company = content.company;
       var data = company;
-      var activetabs = (!company.id) ? [0, 1, 2, 3, 4] : [];
-      Adv.o.tabs[1].tabs('option', 'disabled', activetabs);
+      var activetabs = (!company.id) ? [1, 2, 3, 4] : [];
+      Adv.o.tabs[0].tabs('option', 'disabled', activetabs);
+      $('#shortcuts').find('buttonm').prop('disabled', !company.id);
       if (content.contact_log !== undefined) {
         Adv.setContactLog(content.contact_log);
       }
@@ -338,14 +339,6 @@ $(function () {
   if (!Adv.accFields.length) {
     Adv.accFields = $("[name^='supp_']");
   }
-  Adv.o.tabs[0] = $("#tabs0");
-  Adv.o.tabs[1] = $("#tabs1").tabs({ select: function (event, ui) {
-    var url = $.data(ui.tab, 'load.tabs');
-    if (url) {
-      location.href = url + Company.get().id;
-    }
-    return false;
-  }, selected:                               -1 });
   $("#useShipAddress").click(function (e) {
     Company.useShipFields();
     return false;
@@ -392,27 +385,29 @@ $(function () {
   $("[name='messageLog']").keypress(function () {
     return false;
   });
-  Adv.o.tabs[0].delegate("input, textarea,select", "change keyup", function () {
-    var $this = $(this), $thisname = $this.attr('name'), buttontext;
-    if ($thisname === 'messageLog' || $thisname === 'branchList' || Adv.o.tabs[0].tabs('option', 'selected') == 4) {
-      return;
-    }
-    Adv.Forms.stateModified($this);
-    if (Adv.fieldsChanged > 0) {
-      buttontext = (Company.get().id) ? "Changes" : "New";
-      Adv.btnNew.hide();
-      Adv.btnCancel.html('<i class="icon-trash"></i> Cancel ' + buttontext).show();
-      Adv.btnConfirm.html('<i class="icon-ok"></i> Save ' + buttontext).show();
-      Adv.o.companysearch.prop('disabled', true);
-    }
-    else {
-      if (Adv.fieldsChanged === 0) {
-        Adv.btnConfirm.hide();
-        Adv.btnCancel.hide();
-        Adv.btnNew.show();
+  Adv.tabmenu.defer(0).done(function () {
+    Adv.o.tabs[0].delegate("input, textarea,select", "change keyup", function () {
+      var $this = $(this), $thisname = $this.attr('name'), buttontext;
+      if ($thisname === 'messageLog' || $thisname === 'branchList' || Adv.o.tabs[0].tabs('option', 'active') == 4) {
+        return;
       }
-    }
-    Company.set($thisname, $this.val());
+      Adv.Forms.stateModified($this);
+      if (Adv.fieldsChanged > 0) {
+        buttontext = (Company.get().id) ? "Changes" : "New";
+        Adv.btnNew.hide();
+        Adv.btnCancel.html('<i class="icon-trash"></i> Cancel ' + buttontext).show();
+        Adv.btnConfirm.html('<i class="icon-ok"></i> Save ' + buttontext).show();
+        Adv.o.companysearch.prop('disabled', true);
+      }
+      else {
+        if (Adv.fieldsChanged === 0) {
+          Adv.btnConfirm.hide();
+          Adv.btnCancel.hide();
+          Adv.btnNew.show();
+        }
+      }
+      Company.set($thisname, $this.val());
+    });
   });
   $("#id").prop('disabled', true);
   Company.init();
@@ -420,5 +415,11 @@ $(function () {
     Company.getFrames(undefined, $('#invoiceForm').serialize());
     return false;
   });
-  Company.getFrames($("#id").val());
+  $("#shortcuts").on('mousedown', 'button', function () {
+    var $this = $(this), url = $this.data('url') + Company.id;
+    if (url) {
+      Adv.openWindow(url);
+    }
+  });
+  // Company.getFrames($("#id").val());
 });

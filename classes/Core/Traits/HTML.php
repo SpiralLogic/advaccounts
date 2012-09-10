@@ -23,13 +23,26 @@
      *
      * @return string
      */
-    protected static function makeElement($tag, $attributes, $content = null, $close = false) {
+    protected function makeElement($tag, $attributes, $content = null, $close = false) {
       if ($content === true) {
         $close   = true;
         $content = '';
       } elseif ($content === null) {
         $content = '';
       }
+
+      if ($close) {
+        $content .= '</' . $tag . '>';
+      }
+
+      return '<' . $tag . ' ' . static::expandAttributes($attributes) . '>' . $content;
+    }
+    /**
+     * @param $attributes
+     *
+     * @return string
+     */
+    protected static function expandAttributes($attributes) {
       $attrs = '';
       foreach ($attributes as $key => $value) {
         if ($value === true) {
@@ -44,10 +57,7 @@
         }
         $attrs .= ' ' . $key . '="' . $value . '"';
       }
-      if ($close) {
-        $content .= '</' . $tag . '>';
-      }
 
-      return '<' . $tag . ' ' . $attrs . '>' . $content;
+      return $attrs;
     }
   }

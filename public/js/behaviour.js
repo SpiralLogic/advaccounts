@@ -139,8 +139,11 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
   if (trigger.tagName === 'INPUT' && trigger.type === 'checkbox') {
     content['_action'] = trigger.value;
     content['_value'] = !!trigger.checked;
+    Adv.Forms.saveFocus(trigger);
   }
-  content['_control'] = trigger.id;
+  if (trigger.id) {
+    content['_control'] = trigger.id;
+  }
   var tcheck = setTimeout(function () {
     for (var id in JsHttpRequest.PENDING) {
       var call = JsHttpRequest.PENDING[id];
@@ -528,11 +531,11 @@ Behaviour.register({
                        if (e.onfocus === undefined) {
                          e.onfocus = function () {
                            Adv.Forms.saveFocus(this);
-                         };  }
-                         if ($(e).is('.combo,.combo2')) {
-                           _set_combo_select(e);
-                         }
-
+                         };
+                       }
+                       if ($(e).is('.combo,.combo2')) {
+                         _set_combo_select(e);
+                       }
                      },
                      'a.printlink,button.printlink':                                                                                   function (e) {
                        e.onclick = function () {

@@ -15,6 +15,8 @@
    */
   class View implements \ArrayAccess
   {
+    use \ADV\Core\Traits\HTML;
+
     protected $_viewdata = [];
     protected $_template = null;
     /** @var \ADV\Core\Cache\Cache */

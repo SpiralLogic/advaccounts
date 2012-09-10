@@ -3,12 +3,11 @@
             ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all'>
     {{#foreach $items as $key => $item}}
     <li class='ui-state-default ui-corner-top'>
-      <a {{HTML::attr($item->attr)}}><span>{{$item->label}}</span></a></li>
+      <a {{HTML::attr($item->attrs)}}><span>{{$item->label}}</span></a></li>
     {{/foreach}}
   </ul>
   {{#$tabs}}
-  <div id="{{$.id}}" {{$.class?}}class="{{$.class}}"{{/$.class?}}
-       {{$.style?}}style="{{$.style}}"{{/$.style?}}>
+  <div {{HTML::attr($.attrs)}}>
     {{$.contents}}
   </div>
   {{/$tabs}}
