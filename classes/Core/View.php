@@ -48,7 +48,7 @@
      */
     public function render($return = false) {
       $__contents = $this->getCompiled();
-      //return var_dump($__contents);
+      //   return var_dump($__contents);
       ob_start() and extract($this->_viewdata, EXTR_SKIP);
       // We'll include the view contents for parsing within a catcher
       // so we can avoid any WSOD errors. If an exception occurs we
@@ -86,8 +86,8 @@
       // The contents of each view file is cached in an array for the
       // request since partial views may be rendered inside of for
       // loops which could incur performance penalties.
-      //    $__contents = null; // static::$Cache->get('template.' . $this->_template);
-      $__contents = static::$Cache->get('template.' . $this->_template);
+     //    $__contents = null; // static::$Cache->get('template.' . $this->_template);
+   $__contents = static::$Cache->get('template.' . $this->_template);
       if (!$__contents || !is_array($__contents)) {
         $__contents = file_get_contents($this->_template);
         while (strpos($__contents, '  ')) {
@@ -114,7 +114,7 @@
       $this->context = $context;
     }
     public function runContext($contents) {
-      $contents = preg_replace('/\$([^\.][a-zA-Z_0-9]+?)/', '\$' . $this->context . '.$1', $contents);
+      $contents = preg_replace('/\$([^\.{][a-zA-Z_0-9]+?)/', '\$' . $this->context . '.$1', $contents);
 
       return $contents;
     }
@@ -156,7 +156,7 @@
           $view->addContext($input[1]);
           $this->_js = array_unique(array_merge($this->_js, $view->_js));
 
-          return '<?php if ($' . $input[1] . '!==false): ?>' . $view->getCompiled() . '<?php endif; ?>';
+          return '<?php if ($' . $view->context  . '!==false): ?>' . $view->getCompiled() . '<?php endif; ?>';
         },
         $value
       );

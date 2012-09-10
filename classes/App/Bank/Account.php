@@ -327,7 +327,7 @@
         $begin_date
       ) . " AND date <=" . DB::_quote($end_date) . " and bank_account_id=" . DB::_quote($bank_account) . " ORDER BY reconciled_to_id DESC, date ,amount";
       DB::_query($sql);
-      $statement_trans = DB::_fetchAll();
+      $statement_trans = DB::_fetchAll()?:[];
 
       return $statement_trans;
     }
