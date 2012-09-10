@@ -7,8 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  global
-         $bank_transfer_types, //
+  global $bank_transfer_types, //
          $class_types, //
          $payment_person_types, //
          $quick_actions, //
@@ -20,7 +19,6 @@
          $wo_cost_types, //
          $wo_types_array, $sales_type_names;
   //
-
   $bank_transfer_types  = array(
     BT_TRANSFER => "Transfer", //
     "Cheque", //
@@ -87,60 +85,51 @@
     ST_CUSTCREDIT   => "Sales Credit Note",
     ST_CUSTPAYMENT  => "Debtor Payment",
     ST_CUSTREFUND   => "Debtor Refund",
-
     ST_PURCHORDER   => "Purchase Order",
     ST_SUPPRECEIVE  => "Purchase Delivery",
     ST_SUPPINVOICE  => "Purchase Invoice",
     ST_SUPPCREDIT   => "Purchase Credit Note",
     ST_SUPPAYMENT   => "Creditor Payment",
-
     ST_JOURNAL      => "Journal Entry",
     ST_BANKPAYMENT  => "Bank Payment",
     ST_BANKDEPOSIT  => "Bank Deposit",
     ST_BANKTRANSFER => "Funds Transfer",
     ST_GROUPDEPOSIT => "Group Deposit",
-
     ST_MANUISSUE    => "Work Order Issue",
     ST_WORKORDER    => "Work Order",
     ST_MANURECEIVE  => "Work Order Production",
-
     ST_INVADJUST    => "Inventory Adjustment",
     ST_LOCTRANSFER  => "Location Transfer",
     ST_COSTUPDATE   => "Cost Update",
-
     ST_DIMENSION    => "Dimension"
-  ); $systypes_array_short       = array(
-      ST_SALESQUOTE   => "Quote",
-      ST_SALESORDER   => "Order",
-      ST_PROFORMA     => "Proforma",
-      ST_CUSTDELIVERY => "Despatch",
-      ST_SALESINVOICE => "Cust Invoice",
-      ST_CUSTCREDIT   => "Credit Note",
-      ST_CUSTPAYMENT  => "Payment",
-      ST_CUSTREFUND   => "Refund",
-
-      ST_PURCHORDER   => "Order",
-      ST_SUPPRECEIVE  => "Delivery",
-      ST_SUPPINVOICE  => "Invoice",
-      ST_SUPPCREDIT   => "Credit Note",
-      ST_SUPPAYMENT   => "Payment",
-
-      ST_JOURNAL      => "Journal Entry",
-      ST_BANKPAYMENT  => "Payment",
-      ST_BANKDEPOSIT  => "Deposit",
-      ST_BANKTRANSFER => "Funds Transfer",
-      ST_GROUPDEPOSIT => "Group Deposit",
-
-      ST_MANUISSUE    => "Work Order Issue",
-      ST_WORKORDER    => "Work Order",
-      ST_MANURECEIVE  => "Work Order Production",
-
-      ST_INVADJUST    => "Adjustment",
-      ST_LOCTRANSFER  => "Location Transfer",
-      ST_COSTUPDATE   => "Cost Update",
-
-      ST_DIMENSION    => "Dimension"
-    );
+  );
+  $systypes_array_short = array(
+    ST_SALESQUOTE   => "Quote",
+    ST_SALESORDER   => "Order",
+    ST_PROFORMA     => "Proforma",
+    ST_CUSTDELIVERY => "Despatch",
+    ST_SALESINVOICE => "Cust Invoice",
+    ST_CUSTCREDIT   => "Credit Note",
+    ST_CUSTPAYMENT  => "Payment",
+    ST_CUSTREFUND   => "Refund",
+    ST_PURCHORDER   => "Order",
+    ST_SUPPRECEIVE  => "Delivery",
+    ST_SUPPINVOICE  => "Invoice",
+    ST_SUPPCREDIT   => "Credit Note",
+    ST_SUPPAYMENT   => "Payment",
+    ST_JOURNAL      => "Journal Entry",
+    ST_BANKPAYMENT  => "Payment",
+    ST_BANKDEPOSIT  => "Deposit",
+    ST_BANKTRANSFER => "Funds Transfer",
+    ST_GROUPDEPOSIT => "Group Deposit",
+    ST_MANUISSUE    => "Work Order Issue",
+    ST_WORKORDER    => "Work Order",
+    ST_MANURECEIVE  => "Work Order Production",
+    ST_INVADJUST    => "Adjustment",
+    ST_LOCTRANSFER  => "Location Transfer",
+    ST_COSTUPDATE   => "Cost Update",
+    ST_DIMENSION    => "Dimension"
+  );
   $tag_types            = array(
     TAG_ACCOUNT   => "Account", //
     TAG_DIMENSION => "Dimension"

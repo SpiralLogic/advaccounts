@@ -30,5 +30,6 @@
     ),
   );
   return array(
-    'next_id' => $GLOBALS['next_id'], 'installed' => $GLOBALS['installed_extensions']
+    'next_id'   => $GLOBALS['next_id'],
+    'installed' => $GLOBALS['installed_extensions']
   );

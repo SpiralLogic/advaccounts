@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   return array(
     'Jobsboard'=> array('enabled'=> false, 'init'=> true),
     'Youtrack' => array('enabled'=> true, 'init'=> true),

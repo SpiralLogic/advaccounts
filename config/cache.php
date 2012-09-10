@@ -7,9 +7,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   return array(
-    'pool_id' => $_SERVER['SERVER_NAME'], 'servers' => array( //
+    'pool_id' => $_SERVER['SERVER_NAME'],
+    'servers' => array( //
       array('127.0.0.1', 11211, 1) //
     )
   );

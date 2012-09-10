@@ -7,12 +7,12 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   return array(
     'ui_windows_popups'      => true, //
     'ui_users_showonline'    => true, //
     'help_baseurl'           => null, //
-    'use_fiscalyear'         => true, 'print_default_excel'    => false, //
+    'use_fiscalyear'         => true,
+    'print_default_excel'    => false, //
     'print_paper_sizes'      => array("Letter", "A4"), //
     'print_useinvoicenumber' => 1, //
     'auth_salt'              => '342342134sdfgsgdf', //

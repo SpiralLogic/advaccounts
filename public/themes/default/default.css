@@ -3478,6 +3478,7 @@ table.tablestyle {
   margin: 0 auto;
   width:  100%;
 }
+
 table.tablestyle td {
   padding:             2px 5px;
   border-collapse:     collapse;
@@ -3623,7 +3624,8 @@ td .btn-group {
   display: -webkit-flex;
   display: -moz-flex;
   display: -ms-flex;
-  display: -o-flex;; }
+  display: -o-flex;;
+}
 
 .recgrid tr {
   background-color: white;
@@ -3745,7 +3747,8 @@ button img {
 }
 
 .navibar table tr td {
-  border: none !important;vertical-align: middle;
+  border:         none !important;
+  vertical-align: middle;
 }
 
 .navibutton {
@@ -3804,7 +3807,8 @@ th:hover span {
 }
 
 table.tablestyle .navibar td {
-  padding: 0;vertical-align: middle;
+  padding:        0;
+  vertical-align: middle;
 }
 
 /*--------------------------------- END BUTTONS -----------------------------------------------------------------*/
@@ -4175,7 +4179,7 @@ body.lite {
   text-align: left;
 }
 
-.aligncenter,.center {
+.aligncenter, .center {
   text-align: center;
   margin:     0 auto;
 }

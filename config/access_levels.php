@@ -45,7 +45,8 @@
       SS_GL      => "Banking & GL transactions",
       SS_GL_A    => "Banking & GL analytics",
       SS_ADV     => "Advanced"
-    ), 'areas'    => array(
+    ),
+    'areas'       => array(
       //
       //	Advanced
       //

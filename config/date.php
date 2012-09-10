@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   return array(
     'formats'      => array("m/d/Y", "d/m/Y", "Y/m/d"), //
     'ui_format'    => 1, //

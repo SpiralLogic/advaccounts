@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   return array(
     'ICON_EDIT'                  => "icon-file",
     'ICON_DELETE'                => "icon-trash",
