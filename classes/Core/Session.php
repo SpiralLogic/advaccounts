@@ -47,7 +47,7 @@
         throw new SessionException('Sessions are disasbled!');
       }
       ini_set('session.gc_maxlifetime', 3200); // 10hrs
-      $handler = new \ADV\Core\Session\Memcached();
+      $handler = new \ADV\Core\Session\APC();
       session_set_save_handler($handler, true);
       session_start();
 
