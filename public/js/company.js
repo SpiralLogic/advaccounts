@@ -209,7 +209,7 @@ var Company = function () {
       var data = company;
       var activetabs = (!company.id) ? [1, 2, 3, 4] : [];
       Adv.o.tabs[0].tabs('option', 'disabled', activetabs);
-      $('#shortcuts').find('buttonm').prop('disabled', !company.id);
+      $('#shortcuts').find('button').prop('disabled', !company.id);
       if (content.contact_log !== undefined) {
         Adv.setContactLog(content.contact_log);
       }
@@ -409,17 +409,17 @@ $(function () {
       Company.set($thisname, $this.val());
     });
   });
+  $("#shortcuts").on('click', 'button', function () {
+    var $this = $(this), url = $this.data('url') + Company.id;
+    if (url) {
+      Adv.openWindow(url);
+    }
+  });
   $("#id").prop('disabled', true);
   Company.init();
   Adv.o.wrapper.delegate('#RefreshInquiry', 'click', function () {
     Company.getFrames(undefined, $('#invoiceForm').serialize());
     return false;
-  });
-  $("#shortcuts").on('mousedown', 'button', function () {
-    var $this = $(this), url = $this.data('url') + Company.id;
-    if (url) {
-      Adv.openWindow(url);
-    }
   });
   // Company.getFrames($("#id").val());
 });
