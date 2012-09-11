@@ -87,7 +87,7 @@
       $form->setValues($this->object);
       $view->set('form', $form);
       $view->render();
-      $this->Ajax->addJson(true, 'setFormValues', $form);
+   //   $this->Ajax->addJson(true, 'setFormValues', $form);
     }
     /**
      * @return \DB_Pager

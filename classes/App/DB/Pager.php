@@ -921,10 +921,10 @@
           $pager->rec_count = count($pager->sql);
           $pager->max_page  = $pager->page_length ? ceil($pager->rec_count / $pager->page_length) : 0;
         } elseif ($pager->sql != $sql) {
-          unset($_SESSION['pager'][$name]); // kill pager if sql has changed
+          unset($pager); // kill pager if sql has changed
         }
       }
-      if (!isset($_SESSION['pager'][$name])) {
+      if (!isset($pager)) {
         $pager           = new static($sql, $name, $table, $page_length);
         $pager->main_tbl = $table;
         $pager->key      = $key;
