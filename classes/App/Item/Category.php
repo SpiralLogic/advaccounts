@@ -9,6 +9,7 @@
    **/
   namespace ADV\App\Item {
     use ADV\Core\DB\DB;
+    use DB_Company;
     use ADV\App\Validation;
 
     /**
@@ -16,12 +17,11 @@
      */
     class Category extends \ADV\App\DB\Base
     {
-
       protected $_table = 'stock_category';
       protected $_classname = 'Stock_category';
       protected $_id_column = 'category_id';
       public $category_id;
-      public $description;
+      public $description = '';
       public $inactive = 0;
       public $dflt_tax_type = 1;
       public $dflt_units = 'each';
@@ -73,13 +73,18 @@
         if (!Validation::is_num($this->dflt_assembly_act, 0)) {
           return $this->status(false, 'Dflt_assembly_act must be a number', 'dflt_assembly_act');
         }
-        if (!Validation::is_num($this->dflt_dim1, 0)) {
-          return $this->status(false, 'Dflt_dim1 must be a number', 'dflt_dim1');
-        }
-        if (!Validation::is_num($this->dflt_dim2, 0)) {
-          return $this->status(false, 'Dflt_dim2 must be a number', 'dflt_dim2');
-        }
+
         return true;
+      }
+      public function defaults() {
+        parent::defaults();
+        $company                   = DB_Company::i();
+        $this->dflt_sales_act      = $company->default_sales_act;
+        $this->dflt_inventory_act  = $company->default_inventory_act;
+        $this->dflt_cogs_act       = $company->default_cogs_act;
+        $this->dflt_adjustment_act = $company->default_adj_act;
+        $this->dflt_assembly_act   = $company->default_inv_sales_act;
+        $this->dflt_assembly_act   = $company->default_assembly_act;
       }
       /**
        * @param bool $inactive
@@ -91,7 +96,8 @@
         if ($inactive) {
           $sql .= " AND !c.inactive";
         }
-      DB::_query($sql);
+        DB::_query($sql);
+
         return DB::_fetchAll();
       }
     }
@@ -99,7 +105,6 @@
   namespace {
     class Item_Category
     {
-
       /**
        * @static
        *
@@ -116,13 +121,30 @@
        * @param $dim2
        * @param $no_sale
        */
-      public static function add($description, $tax_type_id, $sales_account, $cogs_account, $inventory_account, $adjustment_account, $assembly_account, $units, $mb_flag, $dim1, $dim2, $no_sale) {
+      public static function add(
+        $description,
+        $tax_type_id,
+        $sales_account,
+        $cogs_account,
+        $inventory_account,
+        $adjustment_account,
+        $assembly_account,
+        $units,
+        $mb_flag,
+        $dim1,
+        $dim2,
+        $no_sale
+      ) {
         $sql
           = "INSERT INTO stock_category (description, dflt_tax_type,
 			dflt_units, dflt_mb_flag, dflt_sales_act, dflt_cogs_act,
 			dflt_inventory_act, dflt_adjustment_act, dflt_assembly_act,
 			dflt_dim1, dflt_dim2, dflt_no_sale)
-		VALUES (" . DB::_escape($description) . "," . DB::_escape($tax_type_id) . "," . DB::_escape($units) . "," . DB::_escape($mb_flag) . "," . DB::_escape($sales_account) . "," . DB::_escape($cogs_account) . "," . DB::_escape($inventory_account) . "," . DB::_escape($adjustment_account) . "," . DB::_escape($assembly_account) . "," . DB::_escape($dim1) . "," . DB::_escape($dim2) . "," . DB::_escape($no_sale) . ")";
+		VALUES (" . DB::_escape($description) . "," . DB::_escape($tax_type_id) . "," . DB::_escape($units) . "," . DB::_escape($mb_flag) . "," . DB::_escape(
+          $sales_account
+        ) . "," . DB::_escape($cogs_account) . "," . DB::_escape($inventory_account) . "," . DB::_escape($adjustment_account) . "," . DB::_escape(
+          $assembly_account
+        ) . "," . DB::_escape($dim1) . "," . DB::_escape($dim2) . "," . DB::_escape($no_sale) . ")";
         DB::_query($sql, "an item category could not be added");
       }
       /**
@@ -142,8 +164,30 @@
        * @param $dim2
        * @param $no_sale
        */
-      public static function update($id, $description, $tax_type_id, $sales_account, $cogs_account, $inventory_account, $adjustment_account, $assembly_account, $units, $mb_flag, $dim1, $dim2, $no_sale) {
-        $sql = "UPDATE stock_category SET " . "description = " . DB::_escape($description) . "," . "dflt_tax_type = " . DB::_escape($tax_type_id) . "," . "dflt_units = " . DB::_escape($units) . "," . "dflt_mb_flag = " . DB::_escape($mb_flag) . "," . "dflt_sales_act = " . DB::_escape($sales_account) . "," . "dflt_cogs_act = " . DB::_escape($cogs_account) . "," . "dflt_inventory_act = " . DB::_escape($inventory_account) . "," . "dflt_adjustment_act = " . DB::_escape($adjustment_account) . "," . "dflt_assembly_act = " . DB::_escape($assembly_account) . "," . "dflt_dim1 = " . DB::_escape($dim1) . "," . "dflt_dim2 = " . DB::_escape($dim2) . "," . "dflt_no_sale = " . DB::_escape($no_sale) . "WHERE category_id = " . DB::_escape($id);
+      public static function update(
+        $id,
+        $description,
+        $tax_type_id,
+        $sales_account,
+        $cogs_account,
+        $inventory_account,
+        $adjustment_account,
+        $assembly_account,
+        $units,
+        $mb_flag,
+        $dim1,
+        $dim2,
+        $no_sale
+      ) {
+        $sql = "UPDATE stock_category SET " . "description = " . DB::_escape($description) . "," . "dflt_tax_type = " . DB::_escape(
+          $tax_type_id
+        ) . "," . "dflt_units = " . DB::_escape($units) . "," . "dflt_mb_flag = " . DB::_escape($mb_flag) . "," . "dflt_sales_act = " . DB::_escape(
+          $sales_account
+        ) . "," . "dflt_cogs_act = " . DB::_escape($cogs_account) . "," . "dflt_inventory_act = " . DB::_escape($inventory_account) . "," . "dflt_adjustment_act = " . DB::_escape(
+          $adjustment_account
+        ) . "," . "dflt_assembly_act = " . DB::_escape($assembly_account) . "," . "dflt_dim1 = " . DB::_escape($dim1) . "," . "dflt_dim2 = " . DB::_escape(
+          $dim2
+        ) . "," . "dflt_no_sale = " . DB::_escape($no_sale) . "WHERE category_id = " . DB::_escape($id);
         DB::_query($sql, "an item category could not be updated");
       }
       /**
@@ -165,6 +209,7 @@
       public static function get($id) {
         $sql    = "SELECT * FROM stock_category WHERE category_id=" . DB::_escape($id);
         $result = DB::_query($sql, "an item category could not be retrieved");
+
         return DB::_fetch($result);
       }
       /**
@@ -178,6 +223,7 @@
         $sql    = "SELECT description FROM stock_category WHERE category_id=" . DB::_escape($id);
         $result = DB::_query($sql, "could not get sales type");
         $row    = DB::_fetchRow($result);
+
         return $row[0];
       }
       /**
@@ -192,13 +238,21 @@
        */
       public static function select($name, $selected_id = null, $spec_opt = false, $submit_on_change = false) {
         $sql = "SELECT category_id, description, inactive FROM stock_category";
-        return Forms::selectBox($name, $selected_id, $sql, 'category_id', 'description', array(
-          'order'         => 'category_id',
-          'spec_option'   => $spec_opt,
-          'spec_id'       => -1,
-          'select_submit' => $submit_on_change,
-          'async'         => true
-        ));
+
+        return Forms::selectBox(
+          $name,
+          $selected_id,
+          $sql,
+          'category_id',
+          'description',
+          array(
+               'order'         => 'category_id',
+               'spec_option'   => $spec_opt,
+               'spec_id'       => -1,
+               'select_submit' => $submit_on_change,
+               'async'         => true
+          )
+        );
       }
       /**
        * @static

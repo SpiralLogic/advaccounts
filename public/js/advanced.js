@@ -91,10 +91,11 @@ Adv.extend({
 window.addEventListener('scroll', Adv.ScrollDetect.off, false);
 Adv.extend({
              msgbox:      $('#msgbox').ajaxError(function (event, request, settings) {
+               var status;
                if (request.statusText == "abort") {
                  return;
                }
-               var status = {
+               status = {
                  status:  256,
                  message: "Request failed: " + settings.url + "<br>"
                };
@@ -108,6 +109,7 @@ Adv.extend({
                                  }
                                }
                                catch (e) {
+                                 console.log(e);
                                  return false
                                }
                                return undefined;
@@ -159,7 +161,7 @@ Adv.extend({
                  }
                  window.clearTimeout(closeTime);
                  Adv.msgbox.stop(true, true).animate({ height: 'show', opacity: 1 }, 1000, 'easeOutExpo', function () {
-                   closeTime = window.setTimeout(Adv.Status.hideStatus, 15000);
+                   closeTime = setTimeout(Adv.Status.hideStatus, 15000);
                  });
                  Adv.Forms.setFocus(Adv.msgbox[0]);
                },
@@ -253,7 +255,7 @@ Adv.extend({
                }
              }()),
              Forms:       (function () {
-               var tooltip, tooltiptimeout, focusonce, focus, menu = {
+               var tooltip, hidden = [], tooltiptimeout, focusonce, focus, menu = {
                  current:    null,
                  closetimer: null,
                  open:       function (el) {
@@ -267,10 +269,11 @@ Adv.extend({
                    menu.current = null;
                  }
                }, _setFormValue = function (el, value, disabled, isdefault) {
-                 var exists = false;
+                 var exists;
                  if (!el) {
-                   return;
+                   return false;
                  }
+                 value = String(value);
                  if (typeof disabled === 'boolean') {
                    el.disabled = disabled;
                  }
@@ -320,7 +323,7 @@ Adv.extend({
                        }
                      }
                      catch (e) {
-                       console.log(el.options);
+                       console.log(e, el.options);
                      }
                    }
                  }
@@ -368,10 +371,19 @@ Adv.extend({
                  setFormValues:   function (data) {
                    var focused = false;
                    $.each(data, function (k, v) {
-                     var value = (v.value !== undefined) ? v.value : v;
-                     Adv.Forms.setFormValue(k, value);
+                     var el, label, value = (v.value !== undefined) ? v.value : v;
+                     el = Adv.Forms.setFormValue(k, value);
+                     if (el.type === 'hidden') {return;}
                      if (!focused && v.focus !== undefined) {
                        focused = focusonce = k;
+                     }
+                     if (v.hidden === true) {
+                       hidden[k] = $(el);
+                       hidden[k].hide().closest('label').hide();
+                     }
+                     else if (hidden[k] !== undefined) {
+                       hidden[k].show().closest('label').show();
+                       delete hidden[k];
                      }
                    });
                  },
@@ -553,7 +565,7 @@ Adv.extend({
                  },
                  //returns the absolute position of some element within document
                  elementPos:      function (e) {
-                   var res = new Object();
+                   var res = {};
                    res.x = 0;
                    res.y = 0;
                    if (e !== null) {
@@ -680,7 +692,6 @@ Adv.extend({
                    Adv.Scroll.elementName = $(el).attr('name');
                  },
                  loadPosition: function (force) {
-                   var scrollMaxY = document.documentElement.scrollHeight - document.documentElement.clientHeight;
                    if (Adv.ScrollDetect.loaded && force === undefined) {
                      return;
                    }
@@ -697,7 +708,7 @@ Adv.extend({
                };
              })(),
              Events:      (function () {
-               var events = [], onload = false, toClean = false, toFocus = {}, firstBind = function (s, t, a) {
+               var events = [], onload = false, toClean = false, firstBind = function (s, t, a) {
                  $(s).bind(t, a);
                };
                return {

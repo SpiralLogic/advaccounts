@@ -3620,7 +3620,6 @@ td .btn-group a {
 }
 
 td .btn-group {
-
   display: -webkit-flex;
   display: -moz-flex;
   display: -ms-flex;
@@ -3802,12 +3801,16 @@ th:hover span {
 
 .navibar span {
   display:     inline-block;
-  font-weight: 500;
+  font-weight: 600;
   padding:     3px;
 }
 
+.navibar input[type="checkbox"] {
+  margin: 0 10px 0 15px;
+}
+
 table.tablestyle .navibar td {
-  padding:        0;
+  padding:        0 10px;
   vertical-align: middle;
 }
 

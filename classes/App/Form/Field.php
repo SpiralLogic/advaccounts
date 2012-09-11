@@ -18,6 +18,7 @@
 
     public $id;
     public $value = null;
+    public $hide = false;
     public $default;
     public $validator;
     protected $attr = [];
@@ -61,7 +62,7 @@
      * @return Field
      */
     public function focus($on = true) {
-      $this->attr['autofocus'] = true;
+      $this->attr['autofocus'] = $on;
 
       return $this;
     }
@@ -171,6 +172,8 @@
       switch ($tag) {
         case 'custom':
           $control = $this->control;
+          $control = preg_replace('/value=([\'"]?)' . preg_quote($v) . '\1/', 'selected \0', $control);
+
           break;
         case 'select':
           $values  = (array) $value;

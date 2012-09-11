@@ -1,8 +1,4 @@
 <?php
-  use ADV\App\Form\Form;
-  use ADV\Core\View;
-  use ADV\Core\DB\DB;
-
   /**
    * PHP version 5.4
    * @category  PHP
@@ -11,11 +7,19 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  use ADV\App\Form\Form;
+  use ADV\App\Item\Category;
+  use ADV\Core\View;
+  use ADV\Core\DB\DB;
+
+  /**
+   * @property Category $object
+   */
   class ItemCategory extends \ADV\App\Controller\Manage
   {
-
+    protected $tableWidth = '80';
     protected function before() {
-     $this->object = new \ADV\App\Item\Category();
+      $this->object = new Category();
       $this->runPost();
     }
     protected function index() {
@@ -33,20 +37,28 @@
      */
     protected function formContents(Form $form, View $view) {
       $view['title'] = 'Item Category';
-      $form->hidden('category_id');
       $form->text('description')->label("Category Name:")->focus();
-      $form->text('dflt_mb_flag')->label("Category Name:");
-      $form->custom(Tax_ItemType::select('dflt_tax_type', '', null))->label(_("Item Tax Type:"));
-      $form->custom(Item_Unit::select('dflt_units', null))->label(_("Units of Measure:"));
       $form->checkbox('dflt_no_sale')->label("Exclude from sales:");
+      $form->arraySelect('dflt_mb_flag', [STOCK_SERVICE=> 'Service', STOCK_MANUFACTURE=> 'Manufacture', STOCK_PURCHASED=> 'Purchased', STOCK_INFO=> 'Info'])->label('Type:');
+      $form->custom(Item_Unit::select('dflt_units', null))->label(_("Units of Measure:"));
+      $form->custom(Tax_ItemType::select('dflt_tax_type', '', null))->label(_("Tax Type:"));
       $form->custom(GL_UI::all('dflt_sales_act'))->label(_("Sales Account:"));
-      $form->custom(GL_UI::all('dflt_cogs_act'))->label(_("C.O.G.S. Account:"));
-      $form->hidden('dflt_inventory_act');
-      $form->hidden('dflt_assembly_act');
       $form->custom(GL_UI::all('dflt_inventory_act'))->label(_("Inventory Account:"));
       $form->custom(GL_UI::all('dflt_cogs_act'))->label(_("C.O.G.S. Account:"));
-      $form->custom(GL_UI::all('dflt_adjustment_act'))->label(_("Inventory Adjustments Account:"));
-      $form->custom(GL_UI::all('dflt_assembly_act'))->label(_("Item Assembly Costs Account:"));
+      $form->custom(GL_UI::all('dflt_adjustment_act'))->label(_("Inventory Adjustment Account:"));
+      $form->custom(GL_UI::all('dflt_assembly_act'))->label(_("Assembly Cost Account:"));
+      if ($this->object->dflt_mb_flag == STOCK_SERVICE || $this->object->dflt_mb_flag == STOCK_INFO) {
+        $form->hide('dflt_cogs_act');
+        $form->hide('dflt_inventory_act');
+        $form->hide('dflt_adjustment_act');
+        $form->hide('dflt_assembly_act');
+      }
+      if ($this->object->dflt_mb_flag == STOCK_PURCHASED) {
+        $form->hide('dflt_assembly_act');
+      }
+      if ($this->object->dflt_mb_flag == STOCK_INFO) {
+        $form->hide('dflt_sales_act');
+      }
     }
     /**
      * @return array
@@ -54,23 +66,52 @@
     protected function generateTableCols() {
       $cols = [
         ['type'=> 'skip'],
-        'description',
-        'inactive'=> ['type'=> 'active'],
-        'dflt_tax_type',
-        'dflt_units',
-        'dflt_mb_flag',
-        'dflt_sales_act',
-        'dflt_cogs_act',
-        'dflt_inventory_act',
-        'dflt_adjustment_act',
-        'dflt_assembly_act',
-        'dflt_dim1',
-        'dflt_dim2',
-        'dflt_no_sale',
+        'Name',
+        'inactive'   => ['type'=> 'active'],
+        ['type'=> 'skip'],
+        'Units',
+        ['type'=> 'skip'],
+        'Sales'      => ['fun'=> [$this, 'formatAccounts'], 'useName'=> true],
+        'COGS'       => ['fun'=> [$this, 'formatAccounts'], 'useName'=> true],
+        'Inventory'  => ['fun'=> [$this, 'formatAccounts'], 'useName'=> true],
+        'Adjustments'=> ['fun'=> [$this, 'formatAccounts'], 'useName'=> true],
+        'Assemnbly'  => ['fun'=> [$this, 'formatAccounts'], 'useName'=> true],
+        ['type'=> 'skip'],
+        ['type'=> 'skip'],
+        ['type'=> 'skip'],
+        'Tax',
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
       ];
+
       return $cols;
+    }
+    /**
+     * @param $row
+     * @param $cellname
+     *
+     * @return string
+     */
+    public function formatAccounts($row, $cellname) {
+      $unsed = [];
+      if ($row['dflt_mb_flag'] == STOCK_SERVICE || $row['dflt_mb_flag'] == STOCK_INFO) {
+        $unsed = [
+          'dflt_cogs_act',
+          'dflt_inventory_act',
+          'dflt_adjustment_act',
+          'dflt_assembly_act',
+        ];
+      } elseif ($row['dflt_mb_flag'] == STOCK_PURCHASED) {
+        $unsed = ['dflt_assembly_act'];
+      }
+      if ($row['dflt_mb_flag'] == STOCK_INFO) {
+        $unsed += ['dflt_sales_act'];
+      }
+      if (in_array($cellname, $unsed)) {
+        return '-';
+      }
+
+      return $row[$cellname];
     }
   }
 

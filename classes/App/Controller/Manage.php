@@ -87,7 +87,7 @@
       $form->setValues($this->object);
       $view->set('form', $form);
       $view->render();
-   //   $this->Ajax->addJson(true, 'setFormValues', $form);
+      $this->Ajax->addJson(true, 'setFormValues', $form);
     }
     /**
      * @return \DB_Pager
@@ -102,6 +102,7 @@
           Input::NUMERIC
         ) == 1) || ($this->action != 'showInactive' && $_SESSION['pager'][$pager_name]->showInactive);
       }
+      DB_Pager::kill($pager_name);
       $table        = DB_Pager::new_db_pager($pager_name, $this->object->getAll($inactive), $cols);
       $table->width = $this->tableWidth;
       $table->display();

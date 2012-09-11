@@ -189,9 +189,9 @@
     }
     /**
      * @param           $name
-     * @param bool      $value
      * @param array     $input_attr
      *
+     * @internal param bool $value
      * @return Field
      */
     public function checkbox($name, $input_attr = []) {
@@ -401,7 +401,16 @@
       return $button->mergeAttr($input_attr);
     }
     /**
-     * @param $values
+     * @param $id
+     */
+    public function hide($id) {
+      $this->fields[$this->nameToId($id)]->hide = true;
+    }
+    /**
+     * @param      $values
+     * @param null $group
+     *
+     * @return void
      */
     public function setValues($values, $group = null) {
       $values = (array) $values;
@@ -450,9 +459,12 @@
           continue;
         }
         $value = ['value'=> $field->$use];
-        if ($field['autofocus'] === true) {
+        if ($field->hide === true) {
+          $value['hidden'] = true;
+        } elseif ($field['autofocus'] === true) {
           $value['focus'] = true;
         }
+
         $return[$id] = $value;
       }
 
