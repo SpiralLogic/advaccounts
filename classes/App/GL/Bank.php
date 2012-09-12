@@ -132,7 +132,7 @@
      *
      * @param      $trans_type
      * @param      $from_account
-     * @param  Purch_GLItem[]    $items
+     * @param  Purch_GLItem[]|Item_Order    $items
      * @param      $date_
      * @param      $person_type_id
      * @param      $person_id

@@ -37,6 +37,7 @@
      * @return array|string
      */
     public static function search($terms) {
+      static::$staticDB = \ADV\Core\DB\DB::i();
       $sql = "SELECT creditor_id as id, supp_ref as label, supp_ref as value FROM suppliers WHERE supp_ref LIKE '%" . $terms . "%' ";
       if (is_numeric($terms)) {
         $sql .= ' OR creditor_id LIKE  ' . static::$staticDB->_quote($terms . '%');
@@ -55,7 +56,7 @@
     }
     /** @var */
     /** @var */
-    public $id = 0, $creditor_id; //
+    public $id = 0, $creditor_id=0; //
     /** @var */
     public $name = ''; //
     /** @var */
@@ -121,7 +122,7 @@
     /**
      * @var string
      */
-    public $tax_group_id;
+    public $tax_group_id=1;
     /** @var */
     public $purchase_account;
     /** @var */
@@ -154,16 +155,18 @@
      */
     protected $_id_column = 'creditor_id';
     /** @var DB */
-    static $staticDB;
+    protected   static $staticDB;
     /**
      * @param int|null $id
      */
     public function __construct($id = null) {
+      static::$staticDB = \ADV\Core\DB\DB::i();
       $this->gst_no   = &$this->tax_id;
       $this->contact  = &$this->contact_name;
       $this->address  = &$this->post_address;
       $this->phone2   = &$this->supp_phone;
       $this->supp_ref = &$this->name;
+      $this->creditor_id =& $this->id;
       parent::__construct($id);
     }
     /**
@@ -254,15 +257,13 @@
      * @return bool|\Status
      */
     protected function defaults() {
+      parent::defaults();
       $this->credit_limit             = Num::_priceFormat(0);
       $company_record                 = DB_Company::get_prefs();
       $this->curr_code                = $company_record["curr_default"];
       $this->payable_account          = $company_record["creditors_act"];
       $this->purchase_account         = $company_record["default_cogs_act"];
       $this->payment_discount_account = $company_record['pyt_discount_act'];
-      $this->tax_group_id             = 1;
-      $this->id                       = 0;
-      $this->setDefaults();
     }
     /**
      * @return bool|\Status
@@ -270,7 +271,8 @@
     protected function init() {
       $this->defaults();
 
-      return $this->status(true, 'Now working with a new supplier');
+      $this->setDefaults();
+$this->id = (int)$this->id;
     }
     /**
      * @return void
@@ -598,4 +600,4 @@ JS;
     }
   }
 
-  Creditor::$staticDB = \ADV\Core\DB\DB::i();
+

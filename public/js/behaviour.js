@@ -179,7 +179,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
                             // seek element by id if there is no elemnt with given name
                             objElement = document.getElementsByName(id)[0] || document.getElementById(id);
                             if (cmd == 'as') {
-                              objElement.attr(property, data);
+                              $(objElement).attr(property, data);
                             }
                             else {
                               if (cmd == 'up') {

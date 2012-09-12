@@ -1,5 +1,6 @@
 <?php
   use ADV\App\Creditor\Creditor;
+  use ADV\Core\HTMLmin;
   use ADV\App\Validation;
   use ADV\App\User;
   use ADV\Core\Input\Input;
@@ -67,8 +68,8 @@
      * @return string
      */
     protected function generateForm() {
-      $cache = Cache::_get('supplier_form');
-      //$cache = null; //Cache::_get('supplier_form');
+     $cache = Cache::_get('supplier_form');
+ //  $cache = null; //Cache::_get('supplier_form');
       if ($cache) {
         $this->JS->setState($cache[1]);
 
@@ -84,13 +85,6 @@
       $form->text('id', ['class' => 'small', 'maxlength' => 7])->label('Supplier ID:');
       $view->set('form', $form);
       $view->set('creditor_id', $this->creditor->id);
-      if (!$this->Input->get('frame')) {
-        $shortcuts = new MenuUI(array('noajax' => true));
-        $shortcuts->addLink('Supplier Payment', 'Make supplier payment!', '/purchases/supplier_payment.php?creditor_id=', 'id');
-        $shortcuts->addLink('Supplier Invoice', 'Make supplier invoice!', '/purchases/supplier_invoice.php?New=1&creditor_id=', 'id');
-        $view->set('shortcuts', $shortcuts);
-        UI::emailDialogue(CT_SUPPLIER);
-      }
       $form->text('contact')->label('Contact:');
       $form->text('phone')->label('Phone Number:');
       $form->text('fax')->label('Fax Number:');
@@ -125,13 +119,27 @@
       $form->custom(GL_UI::payment_terms('payment_terms'))->label('Payment Terms:');
       $form->custom(GL_UI::all('payable_account', null, false, false, true))->label('Payable Account:');
       $form->custom(GL_UI::all('payment_discount_account', null, false, false, true))->label('Prompt Payment Account:');
+      $view->set('form', $form);
       $form->hidden('type', CT_SUPPLIER);
-      $view['date'] = date('Y-m-d H:i:s');
-      $form->text('contact_name')->label('Contact:');
-      $form->textarea('messageLog', ['class'=> 'big', 'cols'=> 40]);
+      $contact_form = new Form();
+         $view['date'] = date('Y-m-d H:i:s');
+         $contact_form->text('contact_name')->label('Contact:');
+         $contact_form->textarea('message', ['cols'=> 100, 'rows'=> 10])->label('Entry:');
+         $view->set('contact_form', $contact_form);
+      if (!$this->Input->get('frame')) {
+               $shortcuts = [
+                 [
+                   'caption'=> 'Supplier Payment',
+                   'Make supplier payment!',
+                   'data'   => '/purchases/supplier_payment.php?creditor_id='
+                 ],
+                 ['caption'=> 'Create Order', 'Create Order for this customer!', 'data'=> '/purchases/supplier_invoice.php?New=1&creditor_id='],
+               ];
+               $view->set('shortcuts', $shortcuts);
+              UI::emailDialogue(CT_SUPPLIER);
+            }
+      $form = HTMLmin::minify($view->render(true));
 
-      $form->textarea('message', ['cols'=> 100, 'rows'=> 10])->label('Entry:');
-      $form = $view->render(true);
       Cache::_set('supplier_form', [$form, $this->JS->getState()]);
 
       return $form;

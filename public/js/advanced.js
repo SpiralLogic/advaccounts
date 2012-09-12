@@ -273,11 +273,11 @@ Adv.extend({
                  if (!el) {
                    return false;
                  }
-                 value = String(value);
                  if (typeof disabled === 'boolean') {
                    el.disabled = disabled;
                  }
                  if (el.tagName === 'SELECT') {
+                   value = String(value);
                    for (var i = 0, opts = el.options; i < opts.length; ++i) {
                      if (opts[i].value === value) {
                        exists = opts[i];
