@@ -111,7 +111,7 @@
      */
     protected $_id_column = 'debtor_id';
     /** @var \ADV\Core\DB\DB */
-static $staticDB;
+protected static $staticDB;
     /**
      * @param int|null $id
      */
@@ -486,7 +486,6 @@ JS;
      * @return array
      */
     public static function search($terms) {
-      static::$staticDB = \ADV\Core\DB\DB::i();
       $data  = [];
       $terms = preg_replace("/[^a-zA-Z 0-9]+/", " ", $terms);
       $sql   = static::$staticDB->_select('debtor_id as id', 'name as label', 'name as value', "IF(name LIKE " . static::$staticDB->_quote(trim($terms) . '%') . ",0,5) as weight")
@@ -947,6 +946,13 @@ JS;
       Row::end();
       Table::end();
     }
+    /**
+     * @param $db
+     */
+    public static function setDB($db)
+    {
+      static::$staticDB = $db;
+    }
   }
 
-  Debtor::$staticDB = \ADV\Core\DB\DB::i();
+  Debtor::setDB(\ADV\Core\DB\DB::i());
