@@ -1,5 +1,10 @@
 <?php
   use ADV\Core\Row;
+  use ADV\App\Display;
+  use ADV\App\Dates;
+  use ADV\App\Ref;
+  use ADV\App\Validation;
+  use ADV\App\Forms;
   use ADV\App\Form\Button;
   use ADV\App\Form\Form;
   use ADV\Core\Table;
@@ -21,9 +26,10 @@
     protected $trans_no;
     protected $type;
     protected function before() {
-      if ($this->Input->hasSession('pay_items')) {
-        $this->order = $this->Input->session('pay_items');
-      }
+      //     if (isset($_SESSION['pay_items'])) {
+      $this->order = $this->Input->session('pay_items');
+      var_dump($this->order);
+      //   }
       if (!$this->order) {
         if ($this->Input->get('NewPayment')) {
           $this->newOrder(ST_BANKPAYMENT);
@@ -31,6 +37,7 @@
           $this->newOrder(ST_BANKDEPOSIT);
         }
       }
+
       $this->security = $this->order->trans_type == ST_BANKPAYMENT ? SA_PAYMENT : SA_DEPOSIT;
 
       $this->JS->openWindow(950, 500);
@@ -82,11 +89,13 @@
       echo "</td>";
       Row::end();
       Table::end(1);
-echo '<div class="center">';
-      echo (new Button('_action',COMMIT,COMMIT))->type('success')->preIcon(ICON_SUBMIT);
+      echo '<div class="center">';
+      echo (new Button('_action', COMMIT, COMMIT))->type('success')->preIcon(ICON_SUBMIT);
       echo "</div>";
+
       Forms::end();
       Page::end();
+      var_dump($_SESSION);
     }
     protected function quickEntries() {
       GL_QuickEntry::addEntry(
@@ -133,7 +142,9 @@ echo '<div class="center">';
       return true;
     }
     protected function commit() {
-      if (!$this->canProcess()) return ;
+      if (!$this->canProcess()) {
+        return;
+      }
       $trans            = GL_Bank::add_bank_transaction(
         $this->order->trans_type,
         $_POST['bank_account'],
@@ -215,9 +226,7 @@ echo '<div class="center">';
      * @param $type
      */
     protected function newOrder($type) {
-      if (isset($this->order)) {
-        unset($_SESSION['pay_items']);
-      }
+
       $this->order    = $_SESSION['pay_items'] = new Item_Order($type);
       $_POST['date_'] = Dates::_newDocDate();
       if (!Dates::_isDateInFiscalYear($_POST['date_'])) {
