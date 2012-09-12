@@ -1,5 +1,6 @@
 <?php
   use ADV\App\Creditor\Creditor;
+  use ADV\App\Reporting;
   use ADV\Core\Ajax;
   use ADV\App\UI\UI;
   use ADV\App\Item\Item;
@@ -232,11 +233,11 @@
       $trans_type = ST_PURCHORDER;
       $new_trans  = "/purchases/po_entry_items.php?" . Orders::NEW_ORDER;
       $view       = new View('orders/complete');
-      $buttons[]  = ['label'=> _("&View this order"), 'href'=> GL_UI::viewTrans($trans_type, $order_no, '', false, '', '', true)];
+      $buttons[]  = ['label'=> _("View this order"), 'href'=> GL_UI::viewTrans($trans_type, $order_no, '', false, '', '', true)];
       $href       = Reporting::print_doc_link($order_no, '', true, $trans_type, false, '', '', 0, 0, true);
-      $buttons[]  = ['label'=> _("&Print This Order"), 'href'=> $href];
+      $buttons[]  = ['target'=> '_new', 'label'=> _("Print This Order"), 'href'=> $href];
       $edit_trans = BASE_URL . "purchases/po_entry_items.php?ModifyOrder=$order_no";
-      $buttons[]  = ['label'=> _("&Edit This Order"), 'href'=> $edit_trans];
+      $buttons[]  = ['label'=> _("Edit This Order"), 'href'=> $edit_trans];
       $view->set('emailtrans', Reporting::emailDialogue($this->creditor_id, ST_PURCHORDER, $order_no));
       $buttons[] = ['label'=> 'Receive this purchase order', 'accesskey'=> 'R', 'href'=> "/purchases/po_receive_items.php?PONumber=$order_no"];
       $buttons[] = ['label'=> 'New purchase order', 'accesskey'=> 'N', 'href'=> $new_trans];

@@ -26,10 +26,9 @@
     protected $trans_no;
     protected $type;
     protected function before() {
-      //     if (isset($_SESSION['pay_items'])) {
-      $this->order = $this->Input->session('pay_items');
-      var_dump($this->order);
-      //   }
+      if (isset($_SESSION['pay_items'])) {
+        $this->order = $this->Input->session('pay_items');
+      }
       if (!$this->order) {
         if ($this->Input->get('NewPayment')) {
           $this->newOrder(ST_BANKPAYMENT);

@@ -325,13 +325,14 @@ JS;
      */
     public static function emailDialogue($id, $type, $type_no, $text = "Email") {
 
-      return HTML::button(
+      return (new HTML)->button(
         false,
         $text,
         array(
              'class'        => 'button email-button',
              'data-emailid' => $id . '-' . $type . '-' . $type_no
-        )
+        ),
+        false
       )->__toString();
     }
   }
