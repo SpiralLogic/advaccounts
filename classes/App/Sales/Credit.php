@@ -32,7 +32,6 @@
    */
   class Sales_Credit
   {
-
     /**
      * @static
      *
@@ -77,7 +76,7 @@
       }
       //	$sales_order=$invoice->order_no;	//?
       // if (is_array($sales_order)) $sales_order = $sales_order[0]; //?
-      if (!isset($credit_note->order_no)) {
+      if (!$credit_note->order_no) {
         $credit_note->order_no = 0;
       }
       /*Now insert the Credit Note into the debtor_trans table with the allocations as calculated above*/
@@ -96,7 +95,7 @@
         $freight_added_tax,
         $credit_note->sales_type,
         $credit_note->order_no,
-        $credit_invoice,
+        $credit_invoice ? : 0,
         $credit_note->ship_via,
         null,
         $alloc,
@@ -223,6 +222,7 @@ debit freight re-charged and debit sales */
         Ref::save(ST_CUSTCREDIT, $credit_note->reference);
       }
       DB::_commit();
+
       return $credit_no;
     }
     /**
@@ -373,6 +373,7 @@ debit freight re-charged and debit sales */
           );
         } /*end of if discount !=0 */
       } /*if line_price!=0 */
+
       return $total;
     }
     /**
@@ -394,13 +395,14 @@ debit freight re-charged and debit sales */
       if ($order->debtor_id != $_POST['debtor_id'] /*|| $order->sales_type != $_POST['sales_type_id']*/) {
         // customer has changed
         Ajax::_activate('branch_id');
+        JS::_setFocus('stock_id');
       }
       Debtor_Branch::row(_("Branch:"), $_POST['debtor_id'], 'branch_id', null, false, true, true, true);
       //if (($_SESSION['credit_items']->order_no == 0) ||
       //	($order->debtor_id != $_POST['debtor_id']) ||
       //	($order->Branch != $_POST['branch_id']))
       //	$customer_error = $order->customer_to_order($_POST['debtor_id'], $_POST['branch_id']);
-      if (is_object($order) && ($order->debtor_id != $_POST['debtor_id']) || ($order->Branch != $_POST['branch_id'])
+      if (is_object($order) && $order->debtor_id > 0 && ($order->debtor_id != $_POST['debtor_id'] || $order->Branch != $_POST['branch_id'])
       ) {
         $old_order                 = clone($order);
         $customer_error            = $order->customer_to_order($_POST['debtor_id'], $_POST['branch_id']);
@@ -438,7 +440,7 @@ debit freight re-charged and debit sales */
       if ($order->trans_no == 0) {
         Forms::refRow(_("Reference") . ':', 'ref', _('Reference number unique for this document type'), $order->reference ? : Ref::get_next($order->trans_type), '');
       } else {
-        $order->reference =$order->reference ? : Ref::get_next($order->trans_type);
+        $order->reference = $order->reference ? : Ref::get_next($order->trans_type);
         Row::label(_("Reference") . ':', $order->reference);
       }
       if (!Bank_Currency::is_company($order->customer_currency)) {
@@ -491,6 +493,7 @@ debit freight re-charged and debit sales */
         }
         Ajax::_activate('items_table');
       }
+
       return $customer_error;
     }
     /**
@@ -550,7 +553,7 @@ debit freight re-charged and debit sales */
       }
       Row::start();
       Cell::label(_("Shipping"), "colspan=$colspan class='alignright bold'");
-      Forms::amountCellsSmall(null, 'ChargeFreightCost', Num::_priceFormat(Input::_post('ChargeFreightCost', null, 0)),null,['$']);
+      Forms::amountCellsSmall(null, 'ChargeFreightCost', Num::_priceFormat(Input::_post('ChargeFreightCost', null, 0)), null, ['$']);
       Cell::label('', 'colspan=2');
       Row::end();
       $taxes         = $order->get_taxes($_POST['ChargeFreightCost']);
@@ -574,10 +577,10 @@ debit freight re-charged and debit sales */
         $_POST['stock_id'] = $order->line_items[$id]->stock_id;
         $item_info         = Item::get_edit_info(Input::_post('stock_id'));
         $dec               = $item_info['decimals'];
-        $_POST['qty']   = Item::qty_format($order->line_items[$id]->qty_dispatched, $_POST['stock_id']);
-        $_POST['price'] = Num::_priceFormat($order->line_items[$id]->price);
-        $_POST['Disc']  = Num::_percentFormat(($order->line_items[$id]->discount_percent) * 100);
-        $_POST['units'] = $order->line_items[$id]->units;
+        $_POST['qty']      = Item::qty_format($order->line_items[$id]->qty_dispatched, $_POST['stock_id']);
+        $_POST['price']    = Num::_priceFormat($order->line_items[$id]->price);
+        $_POST['Disc']     = Num::_percentFormat(($order->line_items[$id]->discount_percent) * 100);
+        $_POST['units']    = $order->line_items[$id]->units;
         Forms::hidden('stock_id', $_POST['stock_id']);
         Cell::label($_POST['stock_id']);
         Cell::label($order->line_items[$id]->description, ' class="nowrap"');
@@ -659,8 +662,8 @@ debit freight re-charged and debit sales */
         $name,
         $selected,
         array(
-          'Return'   => _("Items Returned to Inventory Location"),
-          'WriteOff' => _("Items Written Off")
+             'Return'   => _("Items Returned to Inventory Location"),
+             'WriteOff' => _("Items Written Off")
         ),
         array('select_submit' => $submit_on_change)
       );

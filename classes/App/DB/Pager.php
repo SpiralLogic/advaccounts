@@ -261,7 +261,7 @@
      *
      * @return string
      */
-    protected function navi($id, $html, $name, $value, $enabled = true, $title = null) {
+    protected function navi($id, HTML $html, $name, $value, $enabled = true, $title = null) {
       $attrs = [
         'disabled'=> !$enabled,
         'class'   => 'navibutton',
@@ -297,7 +297,8 @@
             default:
               $icon = '';
           }
-          $headers[] = $this->navi($this->name . '_sort_' . $num_col, $col['head'], true, $col['head'] . $icon);
+          $html      = new HTML;
+          $headers[] = $this->navi($this->name . '_sort_' . $num_col, $html, $this->name . '_sort_' . $num_col, $col['head'], true, $col['head'] . $icon);
         }
       }
 

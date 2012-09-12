@@ -32,7 +32,7 @@
       if ($this->order_number) {
         $this->Ajax->addFocus(true, 'order_number');
       } else {
-        $this->Ajax->addFocus(true, 'OrdersAfterDate');
+        $this->Ajax->addFocus(true, 'creditor');
       }
       $this->Ajax->activate('orders_tbl');
       if ($this->Input->post('_control') != 'supplier' && !$this->Input->post('supplier')) {

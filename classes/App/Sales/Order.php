@@ -106,7 +106,7 @@
     /**
      * @var
      */
-    public $debtor_id;
+    public $debtor_id = 0;
     /**
      * @var
      */
