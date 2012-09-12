@@ -28,7 +28,7 @@
     }
     protected function before() {
       $this->JS->openWindow(950, 500);
-      $this->order_no            =&$this->Input->getPost('order_number', Input::NUMERIC);
+      $this->order_no            =& $this->Input->getPost('order_number', Input::NUMERIC);
       $this->creditor_id         = $this->Input->getPost('creditor_id', Input::NUMERIC, 0);
       $this->stock_location      = $this->Input->getPost('StockLocation', Input::STRING, '');
       $this->selected_stock_item = $this->Input->getPost('SelectStockFromList', Input::STRING, '');
@@ -37,8 +37,6 @@
       }
       if ($this->order_no) {
         $this->Ajax->addFocus(true, 'order_number');
-      } else {
-        $this->Ajax->addFocus(true, 'OrdersAfterDate');
       }
       $this->Ajax->activate('orders_tbl');
     }

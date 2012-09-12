@@ -258,7 +258,7 @@ JS;
      * @param      $selector
      */
     public function setFocus($selector) {
-      if (empty($selectro)) {
+      if (empty($selector)) {
         return;
       }
       $this->focus = $selector;

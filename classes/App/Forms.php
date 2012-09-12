@@ -205,7 +205,8 @@
  (/themes/%s/images/button_ok.png) no-repeat;%s' data-aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
         $selector .= sprintf($_select_button, $disabled, User::theme(), (static::$dic['User']->fallback() ? '' : 'display:none;'), '_' . $name . '_update') . "\n";
       }
-      static::$dic['JS']->_defaultFocus($name);
+
+      //  static::$dic['JS']->_defaultFocus($name);
 
       return $selector;
     }

@@ -1,5 +1,6 @@
 <?php
   use ADV\Core\Cell;
+  use ADV\Core\HTML;
   use ADV\App\Dates;
   use ADV\App\Display;
   use ADV\App\Forms;
@@ -212,7 +213,7 @@
       foreach ($this->data as $row) {
         $this->displayRow($row);
       }
-      $this->displayNavigation();
+      echo $this->displayNavigation('bottom');
       Table::end();
       Display::div_end();
 
@@ -251,20 +252,24 @@
     /**
      * @static
      *
-     * @param      $name
-     * @param      $value
-     * @param bool $enabled
-     * @param null $title
+     * @param          $id
+     * @param HTML     $html
+     * @param          $name
+     * @param          $value
+     * @param bool     $enabled
+     * @param null     $title
      *
-     * @internal param bool $icon
      * @return string
      */
-    protected function navi($name, $value, $enabled = true, $title = null) {
-      $id           = $this->hasBar ? " id='$name' " : '';
-      $title        = $title ? : $value;
-      $this->hasBar = true;
-
-      return "<button " . ($enabled ? '' : 'disabled') . " class=\"navibutton\" type=\"submit\"  name=\"$name\"  $id value=\"$value\"><span>$title</span></button>\n";
+    protected function navi($id, $html, $name, $value, $enabled = true, $title = null) {
+      $attrs = [
+        'disabled'=> !$enabled,
+        'class'   => 'navibutton',
+        'type'    => 'submit',
+        'name'    => $name,
+        'value'   => $value,
+      ];
+      $html->button($name . '_' . $id, $attrs)->span(null, $title, false)->_button;
     }
     /**
      * @return array
@@ -302,18 +307,14 @@
      * @param $headers
      */
     protected function displayHeaders($headers) {
-      Table::header($headers, '', $this->displayNavigation(true));
+      Table::header($headers, '', $this->displayNavigation('top'));
     }
     /**
-     * @param bool $return
+     * @param $id
      *
      * @return string
      */
-    protected function displayNavigation($return = false) {
-      if ($return) {
-        ob_start();
-      }
-      Row::start("class='navibar'");
+    protected function displayNavigation($id) {
       $colspan = count($this->columns);
       $inact   = '';
       if ($this->showInactive !== null) {
@@ -324,46 +325,30 @@
       if ($inact) {
         $inact .= _("Show also Inactive");
       }
-      echo HTML::td(null, ['colspan'=> $colspan, 'class'=> 'navibar']);
+      $html = new HTML();
+      $html->tr(['class'=> 'navibar']);
+      $html->td(['colspan'=> $colspan, 'class'=> 'navibar']);
       if ($this->rec_count) {
         $button_prefix = $this->name . '_page_';
         if ($this->inactive_ctrl) {
           Forms::submit('Update', _('Update'), true, '', null);
         } // inactive update
-        echo HTML::span(
-          null,
-          $this->navi($button_prefix . 'first', 1, $this->first_page, "<i class='icon-fast-backward'> </i>") . $this->navi(
-            $button_prefix . 'prev',
-            $this->curr_page - 1,
-            $this->prev_page,
-            '<i class="icon-backward"> </i>'
-          ) . $this->navi($button_prefix . 'next', $this->curr_page + 1, $this->next_page, '<i class="icon-forward"> </i>') . $this->navi(
-            $button_prefix . 'last',
-            $this->max_page,
-            $this->last_page,
-            '<i class="icon-fast-forward"> </i>'
-          ),
-          ['class'=> 'floatright'],
-          false
-        );
+        $html->span(null, ['class'=> 'floatright']);
+        $this->generateNavigation($id, $button_prefix, $html);
+        $html->_span();
         $from = ($this->curr_page - 1) * $this->page_length + 1;
         $to   = $from + $this->page_length - 1;
         if ($to > $this->rec_count) {
           $to = $this->rec_count;
         }
         $all = $this->rec_count;
-        echo HTML::span(true, "Records $from-$to of $all", [], false);
-        echo $inact;
+        $html->span(true, "Records $from-$to of $all " . $inact, [], false);
       } else {
-        echo HTML::span(null, _('No records') . $inact, [], false);
+        $html->span(null, _('No records') . $inact, [], false);
       }
-      echo HTML::_td();
-      Row::end();
-      if ($return) {
-        return ob_get_clean();
-      }
+      $html->_td()->tr;
 
-      return true;
+      return $html;
     }
     /**
      * @param $row
@@ -598,11 +583,11 @@
         $this->change_page($_POST[$this->name . '_page_' . $page]);
         if ($page == 'next' && !$this->next_page || $page == 'last' && !$this->last_page
         ) {
-          static::$JS->setFocus($this->name . '_page_prev');
+          static::$JS->setFocus($this->name . '_page_prev_bottom');
         }
         if ($page == 'prev' && !$this->prev_page || $page == 'first' && !$this->first_page
         ) {
-          static::$JS->setFocus($this->name . '_page_next');
+          static::$JS->setFocus($this->name . '_page_next_top');
         }
       } elseif ($sort != -1) {
         $this->sortTable($sort);
@@ -919,6 +904,17 @@
       }
 
       return $pager;
+    }
+    /**
+     * @param $id
+     * @param $prefix
+     * @param $html
+     */
+    protected function generateNavigation($id, $prefix, $html) {
+      $this->navi($id, $html, $prefix . 'first', 1, $this->first_page, "<i class='icon-fast-backward'> </i>");
+      $this->navi($id, $html, $prefix . 'prev', $this->curr_page - 1, $this->prev_page, '<i class="icon-backward"> </i>');
+      $this->navi($id, $html, $prefix . 'next', $this->curr_page + 1, $this->next_page, '<i class="icon-forward"> </i>');
+      $this->navi($id, $html, $prefix . 'last', $this->max_page, $this->last_page, '<i class="icon-fast-forward"> </i>');
     }
   }
 
