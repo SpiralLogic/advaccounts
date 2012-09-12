@@ -37,7 +37,7 @@
      * @return array|string
      */
     public static function search($terms) {
-      static::$staticDB = \ADV\Core\DB\DB::i();
+
       $sql = "SELECT creditor_id as id, supp_ref as label, supp_ref as value FROM suppliers WHERE supp_ref LIKE '%" . $terms . "%' ";
       if (is_numeric($terms)) {
         $sql .= ' OR creditor_id LIKE  ' . static::$staticDB->_quote($terms . '%');
@@ -155,7 +155,7 @@
      */
     protected $_id_column = 'creditor_id';
     /** @var DB */
-    protected   static $staticDB;
+    public static $staticDB;
     /**
      * @param int|null $id
      */
@@ -601,3 +601,4 @@ JS;
   }
 
 
+  Creditor::$staticDB = \ADV\Core\DB\DB::i();

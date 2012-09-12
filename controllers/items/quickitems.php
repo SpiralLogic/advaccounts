@@ -52,7 +52,9 @@
     protected function index() {
       Page::start(_($help_context = "Items"), SA_CUSTOMER, isset($_GET['frame']));
       $view = new View('items/quickitems');
-      $view->set('stock_cats', Item_Category::select('category_id'));
+      $menu          = new MenuUI();
+      $view->set('menu', $menu);
+     $view->set('stock_cats', Item_Category::select('category_id'));
       $view->set('units', Item_Unit::select('uom'));
       $view->set('tax_itemtype', Tax_ItemType::select('tax_type_id'));
       $view->set('stock_type', Item_UI::type('mb_flag'));
@@ -73,7 +75,7 @@
         );
         echo HTML::div();
         $id = 0;
-        $this->JS->setFocus('#itemSearchId');
+        $this->JS->setFocus('itemSearchId');
       } else {
         $id = Item::getStockId($_GET['stock_id']);
       }
