@@ -207,7 +207,8 @@ var Company = function () {
       }
       company = content.company;
       var data = company;
-      var activetabs = (!company.id) ? [1, 2, 3, 4] : [];
+      var activetabs = (!Number(company.id)) ? [1, 2, 3, 4] : [];
+      console.log(activetabs);
       Adv.o.tabs[0].tabs('option', 'disabled', activetabs);
       $('#shortcuts').find('button').prop('disabled', !company.id);
       if (content.contact_log !== undefined) {

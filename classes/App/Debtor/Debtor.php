@@ -111,11 +111,12 @@
      */
     protected $_id_column = 'debtor_id';
     /** @var \ADV\Core\DB\DB */
-    static $staticDB;
+protected static $staticDB;
     /**
      * @param int|null $id
      */
     public function __construct($id = null) {
+
       $this->debtor_id =& $this->id;
       parent::__construct($id);
       $this->debtor_ref = substr($this->name, 0, 60);
@@ -488,7 +489,7 @@ JS;
       $data  = [];
       $terms = preg_replace("/[^a-zA-Z 0-9]+/", " ", $terms);
       $sql   = static::$staticDB->_select('debtor_id as id', 'name as label', 'name as value', "IF(name LIKE " . static::$staticDB->_quote(trim($terms) . '%') . ",0,5) as weight")
-        ->from(
+         ->from(
         'debtors'
       )->where('name LIKE ', trim($terms) . "%")->orWhere('name LIKE ', trim($terms))->orWhere('name LIKE', '%' . str_replace(' ', '%', trim($terms)) . "%");
       if (is_numeric($terms)) {
@@ -945,6 +946,13 @@ JS;
       Row::end();
       Table::end();
     }
+    /**
+     * @param $db
+     */
+    public static function setDB($db)
+    {
+      static::$staticDB = $db;
+    }
   }
 
-  Debtor::$staticDB = \ADV\Core\DB\DB::i();
+  Debtor::setDB(\ADV\Core\DB\DB::i());

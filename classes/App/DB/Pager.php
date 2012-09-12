@@ -106,7 +106,7 @@
     /**
      * @var int|?
      */
-    protected $page_length = 1;
+    public $page_length = 1;
     /**
      * @var
      */
@@ -592,6 +592,7 @@
      */
     protected function select_records() {
       $page = Forms::findPostPrefix($this->name . '_page_', false);
+
       $sort = Forms::findPostPrefix($this->name . '_sort_', true);
       if ($page) {
         $this->change_page($_POST[$this->name . '_page_' . $page]);

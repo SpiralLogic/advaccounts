@@ -98,7 +98,7 @@
         }
         DB::_query($sql);
 
-        return DB::_fetchAll();
+        return $sql;
       }
     }
   }

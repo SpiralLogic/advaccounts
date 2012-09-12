@@ -16,7 +16,7 @@ var Adv = {};
             ul.append("<li class='ui-autocomplete-category'>" + item.category + "</li>");
             currentCategory = item.category;
           }
-          self._renderItem(ul, item);
+          self._renderItemData(ul, item);
         });
       }
     });
@@ -273,11 +273,11 @@ Adv.extend({
                  if (!el) {
                    return false;
                  }
-                 value = String(value);
                  if (typeof disabled === 'boolean') {
                    el.disabled = disabled;
                  }
                  if (el.tagName === 'SELECT') {
+                   value = String(value);
                    for (var i = 0, opts = el.options; i < opts.length; ++i) {
                      if (opts[i].value === value) {
                        exists = opts[i];
