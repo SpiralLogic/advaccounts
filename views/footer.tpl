@@ -8,6 +8,7 @@
 <!-- end wrapper div-->
 </div>
 {{#if $footer}}
+
 <div id='footer'>
     {{#if $user}}
     <span class='power'><i class='icon-share'> </i><a target='_blank' href='{{POWERED_URL}}'>{{POWERED_BY}}</a></span>

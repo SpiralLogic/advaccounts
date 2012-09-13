@@ -1,7 +1,7 @@
 <?php
   use ADV\Core\Cell;
   use ADV\App\Dimensions;
-  use ADV\App\UI\UI;
+  use ADV\App\UI;
   use ADV\App\Reports\Email;
   use ADV\App\WO\WO;
   use ADV\App\Tax\Tax;
@@ -12,7 +12,6 @@
   use ADV\Core\Input\Input;
   use ADV\App\Debtor\Debtor;
   use ADV\Core\Table;
-  use ADV\Core\Row;
 
   /**
    * PHP version 5.4
@@ -33,8 +32,7 @@
   /**
 
    */
-  class Sales_Order
-  {
+  class Sales_Order {
     /**
      * @var int
      */
@@ -414,7 +412,6 @@
         $cust_ref
       ) . " AND type != " . $this->trans_type;
       $result = DB::_query($sql);
-
       return (DB::_numRows($result) > 0) ? true : false;
     }
     /**
@@ -523,13 +520,11 @@
     public function add_to_order($line_no, $stock_id, $qty, $price, $disc, $qty_done = 0, $standard_cost = 0, $description = null, $id = 0, $src_no = 0) {
       if (isset($stock_id) && $stock_id != "" && isset($qty) /* && $qty > 0*/) {
         $this->line_items[$line_no] = new Sales_Line($stock_id, $qty, $price, $disc, $qty_done, $standard_cost, $description, $id, $src_no);
-
         return 1;
       } else {
         // shouldn't come here under normal circumstances
         Event::error("unexpected - adding an invalid item or null quantity", "", true);
       }
-
       return 0;
     }
     /**
@@ -589,7 +584,6 @@
           $counter++;
         }
       }
-
       return $counter;
     }
     /**
@@ -602,7 +596,6 @@
         $price = $line->line_price();
         $total += round($line->quantity * $price * (1 - $line->discount_percent), User::price_dec());
       }
-
       return $total;
     }
     /**
@@ -615,7 +608,6 @@
         $price = $line->price;
         $total += round(($line->qty_dispatched * $price * (1 - $line->discount_percent)), User::price_dec());
       }
-
       return $total;
     }
     /**
@@ -627,7 +619,6 @@
           return true;
         }
       }
-
       return false;
     }
     /**
@@ -640,7 +631,6 @@
           return 1;
         }
       }
-
       return 0;
     }
     /**
@@ -653,7 +643,6 @@
       if (isset($this->line_items[$line_no]) && $this->line_items[$line_no]->qty_done != 0) {
         return 1;
       }
-
       return 0;
     }
     /**
@@ -679,7 +668,6 @@
         $val1                = (floatval((intval(round(($val * 20), 0))) / 20));
         $taxes['1']['Value'] = $val1;
       }
-
       return $taxes;
     }
     /**
@@ -705,7 +693,6 @@
         $val1                = (floatval((intval(round(($val * 20), 0))) / 20));
         $taxes['1']['Value'] = $val1;
       }
-
       return $taxes;
     }
     /**
@@ -746,8 +733,7 @@
       $order_no   = SysTypes::get_next_trans_no($this->trans_type);
       $del_date   = Dates::_dateToSql($this->due_date);
       $order_type = 0; // this is default on new order
-      $sql
-                  = "INSERT INTO sales_orders (order_no, type, debtor_id, trans_type, branch_id, customer_ref, reference, salesman, comments, source_no, ord_date,
+      $sql        = "INSERT INTO sales_orders (order_no, type, debtor_id, trans_type, branch_id, customer_ref, reference, salesman, comments, source_no, ord_date,
             order_type, ship_via, deliver_to, delivery_address, contact_name, contact_phone,
             contact_email, freight_cost, from_stk_loc, delivery_date)
             VALUES (" . DB::_escape($order_no) . "," . DB::_escape($order_type) . "," . DB::_escape($this->debtor_id) . ", " . DB::_escape($this->trans_type) . "," . DB::_escape(
@@ -769,8 +755,7 @@
       }
       foreach ($this->line_items as $position => $line) {
         if (Config::_get('accounts.stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
-          $sql
-               = "SELECT stock_location.*, locations.location_name, locations.email
+          $sql = "SELECT stock_location.*, locations.location_name, locations.email
                     FROM stock_location, locations
                     WHERE stock_location.loc_code=locations.loc_code
                     AND stock_location.stock_id = '" . $line->stock_id . "'
@@ -803,7 +788,6 @@
         $this->email_notify($loc, $st_ids, $st_names, $st_reorder, $st_num);
       }
       Orders::session_delete($this->order_id);
-
       return $order_no;
     }
     /**
@@ -849,7 +833,6 @@
           $line_no++;
         }
       }
-
       return true;
     }
     /**
@@ -876,7 +859,6 @@
             }
           }
           $this->add_to_order(count($this->line_items), $item['stock_id'], $new_item_qty * $item['quantity'], $price, $discount, 0, 0, $description);
-
           return;
         }
       }
@@ -987,8 +969,7 @@
       }
       foreach ($this->line_items as $position => $line) {
         if (Config::_get('accounts.stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
-          $sql
-               = "SELECT stock_location.*, locations.location_name, locations.email
+          $sql = "SELECT stock_location.*, locations.location_name, locations.email
                             FROM stock_location, locations
                             WHERE stock_location.loc_code=locations.loc_code
                              AND stock_location.stock_id = " . DB::_escape($line->stock_id) . "
@@ -1008,8 +989,7 @@
             }
           }
         }
-        $sql
-          = "INSERT INTO sales_order_details
+        $sql = "INSERT INTO sales_order_details
                      (id, order_no, trans_type, stk_code, description, unit_price, quantity,
                      discount_percent, qty_sent, sort_order)
                      VALUES (";
@@ -1028,7 +1008,6 @@
       if (Config::_get('accounts.stock_emailnotify') == 1 && count($st_ids) > 0) {
         $this->email_notify($loc, $st_ids, $st_names, $st_reorder, $st_num);
       }
-
       return $order_no;
     }
     public function convertToOrder() {
@@ -1124,7 +1103,6 @@
       } else {
         $this->set_location($myrow["default_location"], $myrow["location_name"]);
       }
-
       return $ret_error;
     }
     /**
@@ -1142,7 +1120,6 @@
         $this->line_items[$order_map[$line_no]] = $line;
       }
       ksort($this->line_items);
-
       return true;
     }
     /**
@@ -1168,7 +1145,7 @@
         );
       }
       Display::div_start('items_table');
-      Table::start('tablestyle width90 grid');
+      Table::start('padded width90 grid');
       $th = array(
         _("Item Code"),
         _("Item Description"),
@@ -1210,7 +1187,7 @@
               $has_marked = true;
             }
           }
-          Row::start($row_class . 'data-line=' . $line_no);
+          echo '<tr' . $row_class . 'data-line=' . $line_no . '>';
           Cell::label($stock_item->stock_id, "class='stock pointer' data-stock_id='{$stock_item->stock_id}'");
           //Cell::label($stock_item->description, ' class="nowrap"' );
           Cell::description($stock_item->description);
@@ -1227,7 +1204,7 @@
             Forms::buttonEditCell($line_no, _("Edit"), _('Edit document line'));
             Forms::buttonDeleteCell($line_no, _("Delete"), _('Remove line from document'));
           }
-          Row::end();
+          echo '</tr>';
         } else {
           $this->item_controls($id, $line_no);
         }
@@ -1243,13 +1220,13 @@
         ++$colspan;
       }
       Table::foot();
-      Row::start();
+      echo '<tr>';
       Cell::label(_("Shipping Charge"), "colspan=$colspan class='alignright'");
       Forms::amountCellsSmall(null, 'freight_cost', Num::_priceFormat(Input::_post('freight_cost', null, 0)), null, ['$']);
       Cell::label('', 'colspan=2');
-      Row::end();
+      echo '</tr>';
       $display_sub_total = Num::_priceFormat($total + Validation::input_num('freight_cost'));
-      Row::start();
+      echo '<tr>';
       Cell::label(_("Total Discount"), "colspan=$colspan class='alignright'");
       Forms::amountCellsSmall(null, null, $total_discount, null, ['$']);
       echo  (new HTML)->td(null, array('colspan'=> 2, 'class'=> 'center'))->button(
@@ -1262,15 +1239,15 @@
       echo HTML::td();
       $action = "var discount = prompt('Discount Percent?',''); if (!discount) return false; $(\"[name='_discountAll']\").val(Number(discount));e=$(this);Adv.Forms.saveFocus(e);JsHttpRequest.request(this);return false;";
       JS::_addLiveEvent('#discountAll', 'click', $action);
-      Row::end();
-      Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan  class='alignright'", "class='alignright'", 2);
+      echo '</tr>';
+      Table::label(_("Sub-total"), $display_sub_total, "colspan=$colspan  class='alignright'", "class='alignright'", 2);
       $taxes         = $this->get_taxes(Validation::input_num('freight_cost'));
       $tax_total     = Tax::edit_items($taxes, $colspan, $this->tax_included, 2);
       $display_total = Num::_priceFormat(($total + Validation::input_num('freight_cost') + $tax_total));
-      Row::start();
+      echo '<tr>';
       Cell::labels(_("Amount Total"), $display_total, "colspan=$colspan class=' alignright'", "class='alignright'");
       Forms::submitCells('_action', Orders::REFRESH, "colspan=2", _("Refresh"), true);
-      Row::end();
+      echo '</tr>';
       Table::footEnd();
       Table::end();
       if ($has_marked) {
@@ -1289,7 +1266,7 @@
      */
     public function header($date_text, $display_tax_group = false) {
       $editable = ($this->any_already_delivered() == 0);
-      Table::startOuter('tablestyle2 width90');
+      Table::startOuter('standard width90');
       Table::section(1);
       $customer_error = "";
       $change_prices  = 0;
@@ -1297,7 +1274,7 @@
         if (isset($this)) {
           // can't change the customer/branch if items already received on this order
           //echo $this->customer_name . " - " . $this->deliver_to;
-          Row::label(_('Customer:'), $this->customer_name . " - " . $this->deliver_to, "id='debtor_id_label' class='label pointer'");
+          Table::label(_('Customer:'), $this->customer_name . " - " . $this->deliver_to, "id='debtor_id_label' class='label pointer'");
           Forms::hidden('debtor_id', $this->debtor_id);
           Forms::hidden('branch_id', $this->Branch);
           Forms::hidden('sales_type', $this->sales_type);
@@ -1382,11 +1359,11 @@
         Forms::refRow(_("Reference") . ':', 'ref', _('Reference number unique for this document type'), $this->reference ? : Ref::get_next($this->trans_type), '');
       } else {
         Forms::hidden('ref', $this->reference);
-        Row::label(_("Reference:"), $this->reference);
+        Table::label(_("Reference:"), $this->reference);
       }
       if (!Bank_Currency::is_company($this->customer_currency)) {
         Table::section(2);
-        Row::label(_("Customer Currency:"), $this->customer_currency);
+        Table::label(_("Customer Currency:"), $this->customer_currency);
         GL_ExchangeRate::display(
           $this->customer_currency,
           Bank_Currency::for_company(),
@@ -1400,7 +1377,7 @@
       if ($editable) {
         Sales_Type::row(_("Price List"), 'sales_type', null, true);
       } else {
-        Row::label(_("Price List:"), $this->sales_type_name);
+        Table::label(_("Price List:"), $this->sales_type_name);
       }
       if ($this->sales_type != $_POST['sales_type']) {
         $myrow = Sales_Type::get($_POST['sales_type']);
@@ -1408,7 +1385,7 @@
         Ajax::_activate('sales_type');
         $change_prices = 1;
       }
-      Row::label(_("Customer Discount:"), ($this->default_discount * 100) . "%");
+      Table::label(_("Customer Discount:"), ($this->default_discount * 100) . "%");
       Table::section(4);
       if ($editable) {
         if (!isset($_POST['OrderDate']) || !$_POST['OrderDate']) {
@@ -1442,11 +1419,11 @@
           }
         }
       } else {
-        Row::label($date_text, $this->document_date);
+        Table::label($date_text, $this->document_date);
         Forms::hidden('OrderDate', $this->document_date);
       }
       if ($display_tax_group) {
-        Row::label(_("Tax Group:"), $this->tax_group_name);
+        Table::label(_("Tax Group:"), $this->tax_group_name);
         Forms::hidden('tax_group_id', $this->tax_group_id);
       }
       Sales_UI::persons_row(_("Sales Person:"), 'salesman', (isset($this->salesman)) ? $this->salesman : User::i()->salesmanid);
@@ -1457,7 +1434,6 @@
         }
         Ajax::_activate('items_table');
       }
-
       return $customer_error;
     }
     /**
@@ -1469,7 +1445,7 @@
     public function item_controls($id, $line_no = -1) {
       if ($line_no != -1 && $line_no == $id) // edit old line
       {
-        Row::start('class="editline"');
+        echo '<tr' . 'class="editline"' . '>';
         $_POST['stock_id']    = $this->line_items[$id]->stock_id;
         $dec                  = Item::qty_dec($_POST['stock_id']);
         $_POST['qty']         = Num::_format($this->line_items[$id]->qty_dispatched, $dec);
@@ -1483,7 +1459,7 @@
         Ajax::_activate('items_table');
       } else // prepare new line
       {
-        Row::start('class="newline"');
+        echo '<tr' . 'class="newline"' . '>';
         Sales_UI::items_cells(null, 'stock_id', null, false, false, array('description' => ''));
         if (Forms::isListUpdated('stock_id')) {
           Ajax::_activate('price');
@@ -1517,7 +1493,7 @@
       } else {
         Forms::submitCells('_action', Orders::ADD_LINE, 'colspan=2 class="center"', _("Add Item"), true); //_('Add new item to document'),
       }
-      Row::end();
+      echo '</tr>';
     }
     /**
 
@@ -1527,10 +1503,10 @@
       if (Input::_post('cash', null, 0)) { // Direct payment sale
         Ajax::_activate('items_table');
         Display::heading(_('Cash payment'));
-        Table::start('tablestyle2 width60');
-        Row::label(_("Deliver from Location:"), $this->location_name);
+        Table::start('standard width60');
+        Table::label(_("Deliver from Location:"), $this->location_name);
         Forms::hidden('location', $this->location);
-        Row::label(_("Cash account:"), $this->account_name);
+        Table::label(_("Cash account:"), $this->account_name);
         Forms::textareaRow(_("Comments:"), "Comments", $this->Comments, 31, 5);
         Table::end();
       } else {
@@ -1548,7 +1524,7 @@
           $delname = _("Required Delivery Date") . ':';
         }
         Display::heading($title);
-        Table::startOuter('tablestyle2 width90');
+        Table::startOuter('standard width90');
         Table::section(1);
         Inv_Location::row(_("Deliver from Location:"), 'location', null, false, true);
         if (Forms::isListUpdated('location')) {
@@ -1608,8 +1584,7 @@
      * @throws DBException
      */
     public static function get_header($order_no, $trans_type) {
-      $sql
-              = "SELECT DISTINCT sales_orders.*,
+      $sql    = "SELECT DISTINCT sales_orders.*,
          debtors.name,
          debtors.curr_code,
          debtors.email AS master_email,
@@ -1645,7 +1620,6 @@
       if ($num == 1) {
         return DB::_fetch($result);
       }
-
       return Event::error("Order has been deleted or does not exist!", E_USER_ERROR);
     }
     /**
@@ -1657,13 +1631,11 @@
      * @return null|PDOStatement
      */
     public static function get_details($order_no, $trans_type) {
-      $sql
-        = "SELECT sales_order_details.id, stk_code, unit_price, sales_order_details.description,sales_order_details.quantity,
+      $sql = "SELECT sales_order_details.id, stk_code, unit_price, sales_order_details.description,sales_order_details.quantity,
         discount_percent, qty_sent as qty_done, stock_master.units,stock_master.tax_type_id,stock_master.material_cost + stock_master.labour_cost + stock_master.overhead_cost AS standard_cost
         FROM sales_order_details, stock_master WHERE sales_order_details.stk_code = stock_master.stock_id AND order_no =" . DB::_escape(
         $order_no
       ) . " AND trans_type = " . DB::_escape($trans_type) . " ORDER BY sort_order, id";
-
       return DB::_query($sql, "Retreive order Line Items");
     }
     /**
@@ -1675,7 +1647,6 @@
       $sql    = "SELECT SUM(qty_sent) FROM sales_order_details WHERE order_no=" . DB::_escape($this->order_no) . " AND trans_type=" . ST_SALESORDER . "";
       $result = DB::_query($sql, "could not query for sales order usage");
       $row    = DB::_fetchRow($result);
-
       return ($row[0] > 0);
     }
     /**
@@ -1684,8 +1655,7 @@
      * @param $order_no
      */
     public static function close($order_no) {
-      $sql
-        = "UPDATE sales_order_details
+      $sql = "UPDATE sales_order_details
             SET quantity = qty_sent WHERE order_no = " . DB::_escape($order_no) . " AND trans_type=" . ST_SALESORDER . "";
       DB::_query($sql, "The sales order detail record could not be updated");
     }
@@ -1701,8 +1671,7 @@
       if (!Dates::_isDate($invdate)) {
         return Dates::_newDocDate();
       }
-      $sql
-              = "SELECT debtors.debtor_id, debtors.payment_terms, payment_terms.* FROM debtors,
+      $sql    = "SELECT debtors.debtor_id, debtors.payment_terms, payment_terms.* FROM debtors,
             payment_terms WHERE debtors.payment_terms = payment_terms.terms_indicator AND
             debtors.debtor_id = " . DB::_escape($debtorno);
       $result = DB::_query($sql, "The customer details could not be retrieved");
@@ -1715,7 +1684,6 @@
       } else {
         $duedate = Dates::_addDays($invdate, $myrow['days_before_due']);
       }
-
       return $duedate;
     }
     /**
@@ -1728,8 +1696,7 @@
      */
     public static function get_customer($debtor_id) {
       // Now check to ensure this account is not on hold */
-      $sql
-              = "SELECT debtors.name,
+      $sql    = "SELECT debtors.name,
          debtors.address,
          credit_status.dissallow_invoices,
          debtors.sales_type AS salestype,
@@ -1747,7 +1714,6 @@
             AND debtors.credit_status=credit_status.id
             AND debtors.debtor_id = " . DB::_escape($debtor_id);
       $result = DB::_query($sql, "Customer Record Retreive");
-
       return DB::_fetch($result);
     }
     /**
@@ -1760,8 +1726,7 @@
      */
     public static function get_branch($debtor_id, $branch_id) {
       // the branch was also selected from the customer selection so default the delivery details from the customer branches table branches. The order process will ask for branch details later anyway
-      $sql
-        = "SELECT branches.br_name,
+      $sql = "SELECT branches.br_name,
      branches.br_address,
      branches.city, branches.state, branches.postcode, branches.contact_name, branches.br_post_address, branches.phone, branches.email,
                  default_location, location_name, default_ship_via, tax_groups.name AS tax_group_name, tax_groups.id AS tax_group_id
@@ -1770,7 +1735,6 @@
                     AND locations.loc_code=default_location
                     AND branches.branch_id=" . DB::_escape($branch_id) . "
                     AND branches.debtor_id = " . DB::_escape($debtor_id);
-
       return DB::_query($sql, "Customer Branch Record Retreive");
     }
     /**
@@ -1795,10 +1759,8 @@
         } elseif ($session_order->trans_no) {
           Event::warning(_('You were previously editing this order in another tab, those changes have been applied to this tab'));
         }
-
         return $session_order;
       }
-
       return $order;
     }
     /**
@@ -1817,19 +1779,16 @@
         return false;
       } else {
         if ($doc_type == ST_SALESORDER) {
-          $sql
-            = "UPDATE sales_order_details
+          $sql = "UPDATE sales_order_details
                                 SET qty_sent = qty_sent + $qty_dispatched
                                 WHERE id=" . DB::_escape($line_id);
         } else {
-          $sql
-            = "UPDATE debtor_trans_details
+          $sql = "UPDATE debtor_trans_details
                                 SET qty_done = qty_done + $qty_dispatched
                                 WHERE id=" . DB::_escape($line_id);
         }
       }
       DB::_query($sql, "The parent document detail record could not be updated");
-
       return true;
     }
     /**
@@ -1863,7 +1822,6 @@
         $_POST['dimension2_id'] = $order->dimension2_id;
       }
       $_POST['order_id'] = $order->order_id;
-
       return Orders::session_set($order);
     }
     /**

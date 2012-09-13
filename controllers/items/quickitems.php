@@ -1,6 +1,6 @@
 <?php
   use ADV\App\Item\Item;
-  use ADV\App\UI\UI;
+  use ADV\App\UI;
   use ADV\App\ADVAccounting;
 
   /**
@@ -11,8 +11,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class QuickItems extends \ADV\App\Controller\Base
-  {
+  class QuickItems extends \ADV\App\Controller\Base {
     protected $itemData;
     protected function before() {
       ADVAccounting::i()->set_selected('items');
@@ -29,7 +28,6 @@
     protected function getItemData($id) {
       $data['item']        = $item = new Item($id);
       $data['stockLevels'] = $item->getStockLevels();
-
       return json_encode($data, JSON_NUMERIC_CHECK);
     }
     protected function runPost() {

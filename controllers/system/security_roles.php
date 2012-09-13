@@ -20,10 +20,8 @@
    *
    * @return int
    */
-  function comp_areas($area1, $area2)
-  {
+  function comp_areas($area1, $area2) {
     $sec_comp = ($area1[0] & 0xff00) - ($area2[0] & 0xff00);
-
     return $sec_comp == 0 ? ($area1[2] - $area2[2]) : $sec_comp;
   }
 
@@ -32,14 +30,12 @@
    *
    * @return array
    */
-  function sort_areas($areas)
-  {
+  function sort_areas($areas) {
     $old_order = 0;
     foreach ($areas as $key => $area) {
       $areas[$key][] = $old_order++;
     }
     uasort($areas, 'comp_areas');
-
     return $areas;
   }
 
@@ -47,8 +43,7 @@
     Ajax::_activate('details');
     Ajax::_activate('controls');
   }
-  function clear_data()
-  {
+  function clear_data() {
     unset($_POST);
   }
 
@@ -69,8 +64,9 @@
       ) {
         Event::error(_("Access level edition in Company setup section have to be enabled for your account."));
         $input_error = 1;
-        JS::_setFocus(!isset($_POST['Section' . SS_SETUP]) ? 'Section' . SS_SETUP :
-                       'Area' . User::i()->Security['areas'][SA_SECROLES][0]);
+        JS::_setFocus(
+          !isset($_POST['Section' . SS_SETUP]) ? 'Section' . SS_SETUP : 'Area' . User::i()->Security['areas'][SA_SECROLES][0]
+        );
       }
     }
     if ($input_error == 0) {
@@ -149,12 +145,12 @@
     }
   }
   Forms::start();
-  Table::start('tablestyle_noborder');
-  Row::start();
+  Table::start('noborder');
+  echo '<tr>';
   Security::roles_cells(_("Role:") . "&nbsp;", 'role', null, true, true, Input::_hasPost('show_inactive'));
   $new_role = Input::_post('role') == '';
   Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
-  Row::end();
+  echo '</tr>';
   Table::end();
   echo "<hr>";
   if (Input::_post('_show_inactive_update')) {
@@ -165,12 +161,12 @@
     Ajax::_activate('details');
   }
   Display::div_start('details');
-  Table::start('tablestyle2');
+  Table::start('standard');
   Forms::textRow(_("Role name:"), 'name', null, 20, 22);
   Forms::textRow(_("Role description:"), 'description', null, 50, 52);
   Forms::recordStatusListRow(_("Current status:"), 'inactive');
   Table::end(1);
-  Table::start('tablestyle grid width40');
+  Table::start('padded grid width40');
   $k   = $j = 0; //row colour counter
   $ext = $sec = $m = -1;
   foreach (sort_areas(User::i()->Security['areas']) as $area => $parms) {
@@ -187,11 +183,11 @@
       $m   = $parms[0] & ~0xff;
       //			if(!isset($security_sections[$m]))
       //			 Event::error(sprintf("Bad section %X:", $m));
-      Row::label(User::i()->Security['sections'][$m] . ':', Forms::checkbox(null, 'Section' . $m, null, true, _("On/off set of features")), "class='left tablehead'", "class='tablehead'");
+      Table::label(User::i()->Security['sections'][$m] . ':', Forms::checkbox(null, 'Section' . $m, null, true, _("On/off set of features")), "class='left tablehead'", "class='tablehead'");
     }
     if (Input::_hasPost('Section' . $m)) {
       Forms::checkRow($parms[1], 'Area' . $parms[0], null, false, '', "class='center'");
-      Row::end();
+      echo '</tr>';
     } else {
       Forms::hidden('Area' . $parms[0]);
     }

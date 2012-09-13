@@ -118,12 +118,12 @@
   Forms::start();
   GL_Journal::header($_SESSION['journal_items']);
   Table::start('tables_style2 width90 pad10');
-  Row::start();
+  echo '<tr>';
   echo "<td>";
   GL_Journal::items(_("Rows"), $_SESSION['journal_items']);
   GL_Journal::option_controls();
   echo "</td>";
-  Row::end();
+  echo '</tr>';
   Table::end(1);
   Forms::submitCenter('Process', _("Process Journal Entry"), true, _('Process journal entry only if debits equal to credits'), 'default');
   Forms::end();

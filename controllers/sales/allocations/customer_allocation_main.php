@@ -10,7 +10,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::_openWindow(950, 500);
   Page::start(_($help_context = "Customer Allocations"), SA_SALESALLOC);
   Forms::start();
@@ -20,8 +19,8 @@
   }
   echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
   Debtor::newselect(null, ['label'=> false, 'row'=> false]);
-  echo "<br>";  $settled =  (Input::_hasPost('ShowSettled'));
-
+  echo "<br>";
+  $settled = (Input::_hasPost('ShowSettled'));
   Forms::check(_("Show Settled Items:"), 'ShowSettled', null, true);
   echo "</div><br><br>";
   Session::_setGlobal('debtor_id', $_POST['debtor_id']);
@@ -43,23 +42,28 @@
     _("#")                => array('fun' => 'Sales_Allocation::viewTrans'),
     _("Reference"),
     _("Date")             => array(
-      'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'
+      'name' => 'tran_date',
+      'type' => 'date',
+      'ord'  => 'desc'
     ),
     _("Customer")         => array('ord' => ''),
     _("Currency")         => array('align' => 'center'),
     _("Total")            => 'amount',
     _("Left to Allocate") => array(
-      'align' => 'right', 'insert' => true, 'fun' => 'Sales_Allocation::amount_left'
+      'align'  => 'right',
+      'insert' => true,
+      'fun'    => 'Sales_Allocation::amount_left'
     ),
     array(
-      'insert' => true, 'fun' => 'Sales_Allocation::alloc_link'
+      'insert' => true,
+      'fun'    => 'Sales_Allocation::alloc_link'
     )
   );
   if (isset($_POST['debtor_id'])) {
     $cols[_("Customer")] = 'skip';
     $cols[_("Currency")] = 'skip';
   }
-  $table = DB_Pager::new_db_pager('alloc_tbl', $sql, $cols);
+  $table = DB_Pager::newPager('alloc_tbl', $sql, $cols);
   $table->setMarker('Sales_Allocation::check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
   $table->width = "75%";
   $table->display($table);

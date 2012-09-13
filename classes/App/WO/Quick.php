@@ -7,8 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class WO_Quick
-  {
+  class WO_Quick {
     /**
      * @static
      *
@@ -26,8 +25,7 @@
      *
      * @return string
      */
-    public static function add($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc)
-    {
+    public static function add($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc) {
       DB::_begin();
       // if unassembling, reverse the stock movements
       if ($type == WO_UNASSEMBLY) {
@@ -43,8 +41,7 @@
         $labour = 0;
       }
       WO_Cost::add_labour($stock_id, $units_reqd, $date_, $labour);
-      $sql
-        = "INSERT INTO workorders (wo_ref, loc_code, units_reqd, units_issued, stock_id,
+      $sql = "INSERT INTO workorders (wo_ref, loc_code, units_reqd, units_issued, stock_id,
 		type, additional_costs, date_, released_date, required_by, released, closed)
  	VALUES (" . DB::_escape($wo_ref) . ", " . DB::_escape($loc_code) . ", " . DB::_escape($units_reqd) . ", " . DB::_escape($units_reqd) . ", " . DB::_escape($stock_id) . ",
 		" . DB::_escape($type) . ", " . DB::_escape($costs) . ", '$date', '$date', '$date', 1, 1)";
@@ -55,8 +52,7 @@
       while ($bom_item = DB::_fetch($result)) {
         $unit_quantity = $bom_item["quantity"];
         $item_quantity = $bom_item["quantity"] * $units_reqd;
-        $sql
-                       = "INSERT INTO wo_requirements (workorder_id, stock_id, workcentre, units_req, units_issued, loc_code)
+        $sql           = "INSERT INTO wo_requirements (workorder_id, stock_id, workcentre, units_req, units_issued, loc_code)
 			VALUES ($woid, '" . $bom_item["component"] . "',
 			'" . $bom_item["workcentre_added"] . "',
 			$unit_quantity,	$item_quantity, '" . $bom_item["loc_code"] . "')";
@@ -89,8 +85,7 @@
      * @param int    $labour
      * @param string $cr_lab_acc
      */
-    public static function costs($woid, $stock_id, $units_reqd, $date_, $advanced = 0, $costs = 0, $cr_acc = "", $labour = 0, $cr_lab_acc = "")
-    {
+    public static function costs($woid, $stock_id, $units_reqd, $date_, $advanced = 0, $costs = 0, $cr_acc = "", $labour = 0, $cr_lab_acc = "") {
       $result = WO::get_bom($stock_id);
       // credit all the components
       $total_cost = 0;
@@ -151,20 +146,24 @@
      * @param      $woid
      * @param bool $suppress_view_link
      */
-    public static function display($woid, $suppress_view_link = false)
-    {
-
+    public static function display($woid, $suppress_view_link = false) {
       $myrow = WO::get($woid);
       if (strlen($myrow[0]) == 0) {
         Display::note(_("The work order number sent is not valid."));
         exit;
       }
-      Table::start('tablestyle width90');
+      Table::start('padded width90');
       $th = array(
-        _("#"), _("Reference"), _("Type"), _("Manufactured Item"), _("Into Location"), _("Date"), _("Quantity")
+        _("#"),
+        _("Reference"),
+        _("Type"),
+        _("Manufactured Item"),
+        _("Into Location"),
+        _("Date"),
+        _("Quantity")
       );
       Table::header($th);
-      Row::start();
+      echo '<tr>';
       if ($suppress_view_link) {
         Cell::label($myrow["id"]);
       } else {
@@ -176,7 +175,7 @@
       Cell::label($myrow["location_name"]);
       Cell::label(Dates::_sqlToDate($myrow["date_"]));
       Cell::qty($myrow["units_issued"], false, Item::qty_dec($myrow["stock_id"]));
-      Row::end();
+      echo '</tr>';
       DB_Comments::display_row(ST_WORKORDER, $woid);
       Table::end();
       if ($myrow["closed"] == true) {

@@ -11,7 +11,6 @@
   use ADV\Core\Ajax;
   use ADV\Core\Input\Input;
   use ADV\App\Forms;
-  use ADV\Core\Row;
   use ADV\Core\Table;
 
   /**
@@ -22,8 +21,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class GL_Journal
-  {
+  class GL_Journal {
     /**
      * @static
      *
@@ -32,23 +30,23 @@
     public static function header($order) {
       $qes = GL_QuickEntry::has(QE_JOURNAL);
       $new = $order->order_id == 0;
-      Table::startOuter('tablestyle2 width90');
+      Table::startOuter('standard width90');
       Table::section(1);
-      Row::start();
+      echo '<tr>';
       Forms::dateCells(_("Date:"), 'date_', '', $new);
       Table::section(2, $qes ? "20%" : "50%");
       Forms::refCells(_("Reference:"), 'ref', '');
       Forms::hidden('ref_original');
-      Row::end();
+      echo '</tr>';
       if ($new) {
         Table::section(3, "20%");
-        Row::start();
+        echo '<tr>';
         Forms::checkCells(_("Reverse Transaction:"), 'Reverse', null);
-        Row::end();
+        echo '</tr>';
       }
       if ($qes !== false) {
         Table::section(3, "50%");
-        Row::start();
+        echo '<tr>';
         GL_QuickEntry::cells(_("Quick Entry") . ":", 'person_id', null, QE_JOURNAL, true);
         $qid = GL_QuickEntry::get(Input::_post('person_id'));
         if (Forms::isListUpdated('person_id')) {
@@ -62,7 +60,7 @@
           null,
           "&nbsp;&nbsp;" . Forms::submit('go', _("Go"), false, false, true)
         );
-        Row::end();
+        echo '</tr>';
       }
       Table::endOuter(1);
     }
@@ -76,7 +74,7 @@
       Display::heading($title);
       $dim = DB_Company::get_pref('use_dimension');
       Display::div_start('items_table');
-      Table::start('tablestyle grid width95');
+      Table::start('padded grid width95');
       if ($dim == 2) {
         $th = array(
           _("Account Code"),
@@ -134,7 +132,7 @@
           Cell::label($item->reference);
           Forms::buttonEditCell("Edit$line", _("Edit"), _('Edit journal line'));
           Forms::buttonDeleteCell("Delete$line", _("Delete"), _('Remove line from journal'));
-          Row::end();
+          echo '</tr>';
         } else {
           GL_Journal::item_controls($order, $dim, $line);
         }
@@ -144,12 +142,12 @@
       }
       if ($order->count_gl_items()) {
         $colspan = ($dim == 2 ? "4" : ($dim == 1 ? "3" : "2"));
-        Row::start();
+        echo '<tr>';
         Cell::label(_("Total"), "class='alignright'  colspan=" . $colspan);
         Cell::amount($order->gl_items_total_debit());
         Cell::amount(abs($order->gl_items_total_credit()));
         Cell::label('', "colspan=3");
-        Row::end();
+        echo '</tr>';
       }
       Table::end();
       Display::div_end();
@@ -162,7 +160,7 @@
      * @param null $Index
      */
     public static function item_controls($order, $dim, $Index = null) {
-      Row::start();
+      echo '<tr>';
       $id = Forms::findPostPrefix(MODE_EDIT);
       if ($Index != -1 && $Index == $id) {
         // Modifying an existing row
@@ -225,7 +223,7 @@
       } else {
         Forms::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new line to journal'), true);
       }
-      Row::end();
+      echo '</tr>';
     }
     public static function option_controls() {
       echo "<br><table class='center'>";
@@ -257,7 +255,6 @@
       if ($label == "") {
         $label = $trans_no;
       }
-
       return Display::viewer_link($label, $viewer, $class, $id, $icon);
     }
     /**
@@ -269,7 +266,6 @@
      * @param bool $submit_on_change
      */
     public static function  cells($label, $name, $value = null, $submit_on_change = false) {
-
       echo "<td>";
       if ($label != null) {
         echo "<label for=\"$name\"> $label</label>";
@@ -398,7 +394,6 @@
       if ($use_transaction) {
         DB::_commit();
       }
-
       return $trans_id;
     }
     /**

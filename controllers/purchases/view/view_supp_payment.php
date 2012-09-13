@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::_openWindow(950, 500);
   Page::start(_($help_context = "View Payment to Supplier"), SA_SUPPTRANSVIEW, true);
   if (isset($_GET["trans_no"])) {
@@ -27,20 +26,20 @@
   echo "<div class='center'>";
   Display::heading(_("Payment to Supplier") . " #$trans_no");
   echo "<br>";
-  Table::start('tablestyle2 width90');
-  Row::start();
+  Table::start('standard width90');
+  echo '<tr>';
   Cell::labels(_("To Supplier"), $receipt['supplier_name'], "class='tablerowhead'");
   Cell::labels(_("From Bank Account"), $receipt['bank_account_name'], "class='tablerowhead'");
   Cell::labels(_("Date Paid"), Dates::_sqlToDate($receipt['tran_date']), "class='tablerowhead'");
-  Row::end();
-  Row::start();
+  echo '</tr>';
+  echo '<tr>';
   if ($show_currencies) {
     Cell::labels(_("Payment Currency"), $receipt['bank_curr_code'], "class='tablerowhead'");
   }
   Cell::labels(_("Amount"), Num::_format(-$receipt['BankAmount'], User::price_dec()), "class='tablerowhead'");
   Cell::labels(_("Payment Type"), Bank_Trans::$types[$receipt['BankTransType']], "class='tablerowhead'");
-  Row::end();
-  Row::start();
+  echo '</tr>';
+  echo '<tr>';
   if ($show_currencies) {
     Cell::labels(_("Supplier's Currency"), $receipt['SupplierCurrCode'], "class='tablerowhead'");
   }
@@ -48,7 +47,7 @@
     Cell::labels(_("Amount"), Num::_format(-$receipt['Total'], User::price_dec()), "class='tablerowhead'");
   }
   Cell::labels(_("Reference"), $receipt['ref'], "class='tablerowhead'");
-  Row::end();
+  echo '</tr>';
   DB_Comments::display_row(ST_SUPPAYMENT, $trans_no);
   Table::end(1);
   $voided = Display::is_voided(ST_SUPPAYMENT, $trans_no, _("This payment has been voided."));

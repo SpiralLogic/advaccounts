@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::_openWindow(950, 500);
   Page::start(_($help_context = "Produce or Unassemble Finished Items From Work Order"), SA_MANUFRECEIVE);
   if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
@@ -20,7 +19,9 @@
     Display::note(GL_UI::viewTrans($stype, $id, _("View this Work Order")));
     Display::note(GL_UI::view($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
     $ar = array(
-      'PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype
+      'PARAM_0' => $_GET['date'],
+      'PARAM_1' => $_GET['date'],
+      'PARAM_2' => $stype
     );
     Display::note(Reporting::print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
     Display::link_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
@@ -35,13 +36,11 @@
   /**
    * @return bool
    */
-  function can_process()
-  {
+  function can_process() {
     global $wo_details;
     if (!Ref::is_valid($_POST['ref'])) {
       Event::error(_("You must enter a reference."));
       JS::_setFocus('ref');
-
       return false;
     }
     if (!Ref::is_new($_POST['ref'], ST_MANURECEIVE)) {
@@ -50,24 +49,20 @@
     if (!Validation::post_num('quantity', 0)) {
       Event::error(_("The quantity entered is not a valid number or less then zero."));
       JS::_setFocus('quantity');
-
       return false;
     }
     if (!Dates::_isDate($_POST['date_'])) {
       Event::error(_("The entered date is invalid."));
       JS::_setFocus('date_');
-
       return false;
     } elseif (!Dates::_isDateInFiscalYear($_POST['date_'])) {
       Event::error(_("The entered date is not in fiscal year."));
       JS::_setFocus('date_');
-
       return false;
     }
     if (Dates::_differenceBetween(Dates::_sqlToDate($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
       Event::error(_("The production date cannot be before the release date of the work order."));
       JS::_setFocus('date_');
-
       return false;
     }
     // if unassembling we need to check the qoh
@@ -77,7 +72,6 @@
       if (-Validation::input_num('quantity') + $qoh < 0) {
         Event::error(_("The unassembling cannot be processed because there is insufficient stock."));
         JS::_setFocus('quantity');
-
         return false;
       }
     }
@@ -98,11 +92,9 @@
       }
       if ($err) {
         JS::_setFocus('quantity');
-
         return false;
       }
     }
-
     return true;
   }
 
@@ -126,7 +118,7 @@
   if (!isset($_POST['quantity']) || $_POST['quantity'] == '') {
     $_POST['quantity'] = Item::qty_format(max($wo_details["units_reqd"] - $wo_details["units_issued"], 0), $wo_details["stock_id"], $dec);
   }
-  Table::start('tablestyle2');
+  Table::start('standard');
   Display::br();
   Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_MANURECEIVE));
   if (!isset($_POST['ProductionType'])) {

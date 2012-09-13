@@ -1,7 +1,6 @@
 <?php
   use ADV\Core\JS;
   use ADV\App\Dimensions;
-  use ADV\Core\Row;
   use ADV\Core\Table;
   use ADV\App\Display;
   use ADV\Core\Input\Input;
@@ -19,7 +18,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Items"), SA_ITEM, Input::_request('frame'));
   $user_comp = '';
   $new_item  = Input::_post('stock_id') == '' || Input::_post('cancel') || Input::_post('clone');
@@ -78,8 +76,7 @@
   }
   Validation::check(Validation::STOCK_CATEGORIES, _("There are no item categories defined in the system. At least one item category is required to add a item."));
   Validation::check(Validation::ITEM_TAX_TYPES, _("There are no item tax types defined in the system. At least one item tax type is required to add a item."));
-  function clear_data()
-  {
+  function clear_data() {
     unset($_POST['long_description'], $_POST['description'], $_POST['category_id'], $_POST['tax_type_id'], $_POST['units'], $_POST['mb_flag'], $_POST['NewStockID'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['no_sale']);
   }
 
@@ -114,13 +111,47 @@
         }
       }
       if (!$new_item) { /*so its an existing one */
-        Item::update($_POST['NewStockID'], $_POST['description'], $_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'], Input::_post('units'), Input::_post('mb_flag'), $_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['dimension_id'], $_POST['dimension2_id'], Input::_hasPost('no_sale'), Input::_hasPost('editable'));
+        Item::update(
+          $_POST['NewStockID'],
+          $_POST['description'],
+          $_POST['long_description'],
+          $_POST['category_id'],
+          $_POST['tax_type_id'],
+          Input::_post('units'),
+          Input::_post('mb_flag'),
+          $_POST['sales_account'],
+          $_POST['inventory_account'],
+          $_POST['cogs_account'],
+          $_POST['adjustment_account'],
+          $_POST['assembly_account'],
+          $_POST['dimension_id'],
+          $_POST['dimension2_id'],
+          Input::_hasPost('no_sale'),
+          Input::_hasPost('editable')
+        );
         DB::_updateRecordStatus($_POST['NewStockID'], $_POST['inactive'], 'stock_master', 'stock_id');
         DB::_updateRecordStatus($_POST['NewStockID'], $_POST['inactive'], 'item_codes', 'item_code');
         Ajax::_activate('stock_id'); // in case of status change
         Event::success(_("Item has been updated."));
       } else { //it is a NEW part
-        Item::add($_POST['NewStockID'], $_POST['description'], $_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'], $_POST['units'], $_POST['mb_flag'], $_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'], $_POST['adjustment_account'], $_POST['assembly_account'], $_POST['dimension_id'], $_POST['dimension2_id'], Input::_hasPost('no_sale'), Input::_hasPost('editable'));
+        Item::add(
+          $_POST['NewStockID'],
+          $_POST['description'],
+          $_POST['long_description'],
+          $_POST['category_id'],
+          $_POST['tax_type_id'],
+          $_POST['units'],
+          $_POST['mb_flag'],
+          $_POST['sales_account'],
+          $_POST['inventory_account'],
+          $_POST['cogs_account'],
+          $_POST['adjustment_account'],
+          $_POST['assembly_account'],
+          $_POST['dimension_id'],
+          $_POST['dimension2_id'],
+          Input::_hasPost('no_sale'),
+          Input::_hasPost('editable')
+        );
         Event::success(_("A new item has been added."));
         JS::_setFocus('NewStockID');
       }
@@ -147,8 +178,7 @@
    *
    * @return bool
    */
-  function check_usage($stock_id, $dispmsg = true)
-  {
+  function check_usage($stock_id, $dispmsg = true) {
     $sqls = array(
       "SELECT COUNT(*) FROM stock_moves WHERE stock_id="          => _('Cannot delete this item because there are stock movements that refer to this item.'),
       "SELECT COUNT(*) FROM bom WHERE component="                 => _('Cannot delete this item record because there are bills of material that require this part as a component.'),
@@ -204,8 +234,8 @@
   }
   Forms::start(true);
   if (Validation::check(Validation::STOCK_ITEMS)) {
-    Table::start('tablestyle_noborder');
-    Row::start();
+    Table::start('noborder');
+    echo '<tr>';
     if ($new_item) {
       Item::cells(_("Select an item:"), 'stock_id', null, _('New item'), true, Input::_hasPost('show_inactive'), false);
       Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
@@ -213,7 +243,7 @@
       Forms::hidden('stock_id', $_POST['stock_id']);
     }
     $new_item = Input::_post('stock_id') == '';
-    Row::end();
+    echo '</tr>';
     Table::end();
     if (Input::_post('_show_inactive_update')) {
       $_SESSION['options']['stock_id']['inactive'] = Input::_hasPost('show_inactive');
@@ -221,7 +251,7 @@
     }
   }
   Display::div_start('details');
-  Table::startOuter('tablestyle2');
+  Table::startOuter('standard');
   Table::section(1);
   Table::sectionTitle(_("Item"));
   if ($new_item) {
@@ -249,7 +279,7 @@
       $_POST['inactive']           = $myrow["inactive"];
       $_POST['editable']           = $myrow["editable"];
     }
-    Row::label(_("Item Code:"), $_POST['NewStockID']);
+    Table::label(_("Item Code:"), $_POST['NewStockID']);
     Forms::hidden('NewStockID', $_POST['NewStockID']);
     JS::_setFocus('description');
   }
@@ -322,7 +352,7 @@
   } else {
     $stock_img_link .= _("No image");
   }
-  Row::label("&nbsp;", $stock_img_link);
+  Table::label("&nbsp;", $stock_img_link);
   if ($check_remove_image) {
     Forms::checkRow(_("Delete Image:"), 'del_image');
   }

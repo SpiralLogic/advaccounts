@@ -20,7 +20,7 @@ body {
 }
 
 body.wait {
-  cursor: wait;
+  cursor: wait !important;
 }
 
 iframe {
@@ -3409,6 +3409,7 @@ input.datepicker {
 
 #help_indicator {
   position: absolute;
+  cursor:   help;
 }
 
 #help_indicator .icon-question-sign {
@@ -3461,11 +3462,7 @@ table .headingtext {
   text-align: center;
 }
 
-.tableseparator {
-  border-left: 1px solid #444466;
-}
-
-table.tablestyle {
+table.padded {
   border-collapse: collapse;
   border:          2px solid #e1e1e1;
   margin:          10px auto 0;
@@ -3479,7 +3476,7 @@ table.tablestyle {
   width:  100%;
 }
 
-table.tablestyle td {
+table.padded td {
   padding:             2px 5px;
   border-collapse:     collapse;
   border:              1px solid #e1e1e1;
@@ -3488,60 +3485,45 @@ table.tablestyle td {
   vertical-align:      top;
 }
 
-table.tablestyle2 {
+table.standard {
   border-collapse: collapse;
   border:          1px solid #cccccc;
   margin:          0 auto;
 }
 
-table.tablestyle2 th .headingtext {
+table.standard th .headingtext {
   color:       #f9f9f9;
   font-weight: bold;
 }
 
-table.tablestyle2 td {
+table.standard td {
   border-collapse: collapse;
   border:          1px solid #E1E1E1;
   padding:         3px;
 }
 
-table.tablestyle_inner,
-table.tablestyle_inner td {
+table.inner,
+table.inner td {
   border-collapse: collapse;
   border:          1px solid #f9f9f9;
 }
 
-.tablestyle_noborder {
+table.noborder {
   margin: 0 auto;
 }
 
-.tablestyle_noborder td {
+table.noborder td {
   font-weight:  bold;
   font-size:    12px;
   padding-left: 5px;
   background:   transparent;
 }
 
-.label, .tablestyle2 label {
+.label, .standard label {
   background-color: #D4E6F6;
   font-weight:      bold;
   font-size:        12px;
   white-space:      nowrap;
-}
-
-td.tableheader3 {
-  margin:        0 auto;
-  text-align:    center;
-  padding:       0.5em 1em 0.3em;
-  position:      relative;
-  border-radius: 6px 6px 6px 6px;
-  background:    -moz-linear-gradient(center top, #EDEDED, #C4C4C4) repeat scroll 0 0 transparent;
-  box-shadow:    0 1px 0 rgba(255, 255, 255, 0.6) inset;
-  background:    -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #EDEDED), color-stop(1.00, #C4C4C4));
-  color:         #333;
-  font-weight:   bold;
-  font-family:   Tahoma, Verdana, Geneva;
-  font-size:     1em;
 }
 
 .grid .input-prepend {
@@ -3569,11 +3551,11 @@ td.tableheader3 {
   height: 25px;
 }
 
-.tablestyle tbody td:last-child {
+.padded tbody td:last-child {
   border-right: 2px solid #e1e1e1;
 }
 
-td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .tablestyle tbody td:first-child {
+td.tablerowhead, .tablerowhead td, .tableinfo td:first-child, td + input, .padded tbody td:first-child {
   text-indent:   5px;
   color:         black;
   padding-right: 7px;
@@ -3809,7 +3791,7 @@ th:hover span {
   margin: 0 10px 0 15px;
 }
 
-table.tablestyle .navibar td {
+table.padded .navibar td {
   padding:        0 10px;
   vertical-align: middle;
 }

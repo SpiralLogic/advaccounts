@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::_openWindow(950, 500);
   Page::start(_($help_context = "View Work Order Issue"), SA_MANUFTRANSVIEW, true);
   if ($_GET['trans_no'] != "") {
@@ -16,16 +15,21 @@
   /**
    * @param $issue_no
    */
-  function display_wo_issue($issue_no)
-  {
+  function display_wo_issue($issue_no) {
     $myrow = WO_Issue::get($issue_no);
     Display::br(1);
-    Table::start('tablestyle');
+    Table::start('padded');
     $th = array(
-      _("Issue #"), _("Reference"), _("For Work Order #"), _("Item"), _("From Location"), _("To Work Centre"), _("Date of Issue")
+      _("Issue #"),
+      _("Reference"),
+      _("For Work Order #"),
+      _("Item"),
+      _("From Location"),
+      _("To Work Centre"),
+      _("Date of Issue")
     );
     Table::header($th);
-    Row::start();
+    echo '<tr>';
     Cell::label($myrow["issue_no"]);
     Cell::label($myrow["reference"]);
     Cell::label(GL_UI::viewTrans(ST_WORKORDER, $myrow["workorder_id"]));
@@ -33,7 +37,7 @@
     Cell::label($myrow["location_name"]);
     Cell::label($myrow["WorkCentreName"]);
     Cell::label(Dates::_sqlToDate($myrow["issue_date"]));
-    Row::end();
+    echo '</tr>';
     DB_Comments::display_row(28, $issue_no);
     Table::end(1);
     Display::is_voided(28, $issue_no, _("This issue has been voided."));
@@ -42,24 +46,22 @@
   /**
    * @param $issue_no
    */
-  function display_wo_issue_details($issue_no)
-  {
+  function display_wo_issue_details($issue_no) {
     $result = WO_Issue::get_details($issue_no);
     if (DB::_numRows($result) == 0) {
       Event::warning(_("There are no items for this issue."));
     } else {
-      Table::start('tablestyle grid');
+      Table::start('padded grid');
       $th = array(_("Component"), _("Quantity"), _("Units"));
       Table::header($th);
       $j          = 1;
       $k          = 0; //row colour counter
       $total_cost = 0;
       while ($myrow = DB::_fetch($result)) {
-
         Cell::label($myrow["stock_id"] . " - " . $myrow["description"]);
         Cell::qty($myrow["qty_issued"], false, Item::qty_dec($myrow["stock_id"]));
         Cell::label($myrow["units"]);
-        Row::end();
+        echo '</tr>';
         ;
         $j++;
         If ($j == 12) {

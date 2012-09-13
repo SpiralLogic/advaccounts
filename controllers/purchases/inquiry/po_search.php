@@ -4,7 +4,6 @@
   use ADV\Core\Input\Input;
   use ADV\App\Reporting;
   use ADV\App\Creditor\Creditor;
-  use ADV\Core\Row;
   use ADV\Core\Table;
 
   /**
@@ -15,8 +14,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class POSearch extends \ADV\App\Controller\Base
-  {
+  class POSearch extends \ADV\App\Controller\Base {
     protected $Dates;
     protected $order_no;
     protected $creditor_id;
@@ -45,8 +43,8 @@
       // Ajax updates
       //
       Forms::start();
-      Table::start('tablestyle_noborder');
-      Row::start();
+      Table::start('noborder');
+      echo '<tr>';
       Creditor::cells(_(""), 'creditor_id', $this->Input->post('creditor_id'), true);
       Forms::refCells(_("#:"), 'order_number');
       Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
@@ -54,7 +52,7 @@
       Inv_Location::cells(_("Location:"), 'StockLocation', null, true);
       //Item::cells(_("Item:"), 'SelectStockFromList', null, true,false,false,false,true);
       Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
-      Row::end();
+      echo '</tr>';
       Table::end();
       $this->makeTable();
       Creditor::addInfoDialog('.pagerclick');
@@ -62,8 +60,7 @@
       Page::end();
     }
     protected function makeTable() { //figure out the sql required from the inputs available
-      $sql
-        = "SELECT
+      $sql = "SELECT
  porder.order_no,
  porder.reference,
  supplier.name,
@@ -119,7 +116,7 @@
       if (!$this->stock_location) {
         $cols[_("Location")] = 'skip';
       }
-      $table = DB_Pager::new_db_pager('orders_tbl', $sql, $cols);
+      $table = DB_Pager::newPager('orders_tbl', $sql, $cols);
       $table->setMarker([$this, 'formatMarker'], _("Marked orders have overdue items."));
       $table->width = "85%";
       $table->display($table);

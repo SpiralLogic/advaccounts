@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Inventory Item Where Used Inquiry"), SA_WORKORDERANALYTIC);
   Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
   Forms::start(false);
@@ -23,13 +22,11 @@
    *
    * @return string
    */
-  function select_link($row)
-  {
+  function select_link($row) {
     return DB_Pager::link($row["parent"] . " - " . $row["description"], "/manufacturing/manage/bom_edit.php?stock_id=" . $row["parent"]);
   }
 
-  $sql
-                = "SELECT
+  $sql          = "SELECT
 		bom.parent,
 		workcentre.name As WorkCentreName,
 		location.location_name,
@@ -41,9 +38,12 @@
 			AND bom.loc_code = location.loc_code
 			AND bom.component=" . DB::_quote($_POST['stock_id']);
   $cols         = array(
-    _("Parent Item") => array('fun' => 'select_link'), _("Work Centre"), _("Location"), _("Quantity Required")
+    _("Parent Item") => array('fun' => 'select_link'),
+    _("Work Centre"),
+    _("Location"),
+    _("Quantity Required")
   );
-  $table        = DB_Pager::new_db_pager('usage_table', $sql, $cols);
+  $table        = DB_Pager::newPager('usage_table', $sql, $cols);
   $table->width = "80%";
   $table->display($table);
   Forms::end();

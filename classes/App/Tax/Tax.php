@@ -13,9 +13,7 @@
   use ADV\App\Forms;
   use ADV\Core\Cell;
   use ADV\App\User;
-  use ADV\Core\Row;
   use ADV\Core\Input\Input;
-
   use ADV\Core\Num;
   use ADV\Core\DB\DB;
   use Tax_ItemType;
@@ -23,8 +21,7 @@
   /**
 
    */
-  class Tax
-  {
+  class Tax {
     /***
      * @static
      *
@@ -65,7 +62,6 @@
       foreach ($tax_array as $taxitem) {
         $tax_multiplier += $taxitem["rate"];
       }
-
       return $price / (1 + ($tax_multiplier / 100));
     }
     /***
@@ -100,7 +96,6 @@
       foreach ($tax_array as $taxitem) {
         $tax_multiplier += $taxitem["rate"];
       }
-
       return $price * (($tax_multiplier / 100));
     }
     /**
@@ -139,7 +134,6 @@
       foreach ($tax_array as $taxitem) {
         $tax_multiplier += $taxitem["rate"];
       }
-
       return $price * (1 + ($tax_multiplier / 100));
     }
     /***
@@ -181,7 +175,6 @@
           $ret_tax_array[$index] = $tax_group_item;
         }
       }
-
       return $ret_tax_array;
     }
     /***
@@ -253,7 +246,6 @@
           }
         }
       }
-
       return $ret_tax_array;
     }
     /**
@@ -264,13 +256,11 @@
      * @return bool
      */
     public static function is_account($account_code) {
-      $sql
-              = "SELECT id FROM tax_types WHERE
+      $sql    = "SELECT id FROM tax_types WHERE
         sales_gl_code=" . DB::_escape($account_code) . " OR purchasing_gl_code=" . DB::_escape($account_code);
       $result = DB::_query($sql, "checking account is tax account");
       if (DB::_numRows($result) > 0) {
         $acct = DB::_fetch($result);
-
         return $acct['id'];
       } else {
         return false;
@@ -291,7 +281,7 @@
       $total = 0;
       foreach ($taxes as $taxitem) {
         if ($tax_included) {
-          Row::label(
+          Table::label(
             _("Included") . " " . $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%) " . _("Amount:") . " ",
             Num::_format($taxitem['Value'], User::price_dec()),
             "colspan=$columns class='alignright'",
@@ -300,7 +290,7 @@
           );
         } else {
           $total += $taxitem['Value'];
-          Row::label(
+          Table::label(
             $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)",
             Num::_format($taxitem['Value'], User::price_dec()),
             "colspan=$columns class='alignright'",
@@ -312,10 +302,9 @@
       if ($tax_correcting) {
         Cell::label(_("Tax Correction"), "colspan=$columns style='background:inherit; text-align:right; width:90%'");
         Forms::amountCellsSmall(null, 'ChgTax', Num::_priceFormat(Input::_post('ChgTax'), User::price_dec()));
-        Row::end();
+        echo '</tr>';
         $total += Input::_post('ChgTax');
       }
-
       return $total;
     }
   }

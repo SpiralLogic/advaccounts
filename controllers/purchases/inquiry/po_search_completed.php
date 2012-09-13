@@ -2,10 +2,9 @@
   use ADV\Core\Input\Input;
   use ADV\App\Reporting;
   use ADV\Core\DB\DB;
-  use ADV\App\UI\UI;
+  use ADV\App\UI;
   use ADV\App\Item\Item;
   use ADV\App\Creditor\Creditor;
-  use ADV\Core\Row;
   use ADV\Core\Table;
   use ADV\Core\Ajax;
   use ADV\Core\JS;
@@ -18,8 +17,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class POCompletedInquiry extends \ADV\App\Controller\Base
-  {
+  class POCompletedInquiry extends \ADV\App\Controller\Base {
     protected $order_number;
     protected $creditor_id;
     protected function before() {
@@ -43,8 +41,8 @@
       Page::start(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, $this->Input->request('frame'));
       Forms::start();
       if (!$this->Input->request('frame')) {
-        Table::start('tablestyle_noborder');
-        Row::start();
+        Table::start('noborder');
+        echo '<tr>';
         Creditor::newselect(null, ['row'=> false, 'cell_class'=> 'med']);
         Forms::refCells(_("#:"), 'order_number');
         Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
@@ -52,7 +50,7 @@
         //Inv_Location::cells(_("Location:"), 'StockLocation', null, true);
         Item::cells(_("Item:"), 'SelectStockFromList', null, true);
         Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
-        Row::end();
+        echo '</tr>';
         Table::end();
       }
       $this->makeTable();
@@ -68,8 +66,7 @@
         $searchArray = explode(' ', $_POST['q']);
         unset($_POST['creditor_id']);
       }
-      $sql
-        = "SELECT
+      $sql = "SELECT
   	porder.order_no,
   	porder.reference,
   	supplier.name,
@@ -92,8 +89,7 @@
             continue;
           }
           $quicksearch = $this->DB->_quote("%" . $quicksearch . "%");
-          $sql
-            .= " AND (supplier.name LIKE $quicksearch OR porder.order_no LIKE $quicksearch
+          $sql .= " AND (supplier.name LIKE $quicksearch OR porder.order_no LIKE $quicksearch
   		 OR porder.reference LIKE $quicksearch
   		 OR porder.requisition_no LIKE $quicksearch
   		 OR location.location_name LIKE $quicksearch)";
@@ -140,7 +136,6 @@
         'stock_lock'     => 'skip',
         'creditor_id'    => 'skip',
         // Edit link
-
         ['insert' => true, 'fun' => [$this, 'formatDropDown']]
       ); //
       if ($stock_location) {
@@ -149,7 +144,7 @@
       if ($location == 1) {
         $cols[_("Invoice #")] = 'skip';
       }
-      $table        = DB_Pager::new_db_pager('orders_tbl', $sql, $cols);
+      $table        = DB_Pager::newPager('orders_tbl', $sql, $cols);
       $table->width = ($this->Input->request('frame')) ? '100' : "90";
       $table->display($table);
     }
@@ -180,7 +175,6 @@
       } elseif ($row['Invoiced'] > 0) {
         return DB_Pager::link(_("Invoice"), "/purchases/supplier_invoice.php?New=1&creditor_id=" . $row['creditor_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
       }
-
       return '';
     }
     /**
@@ -215,7 +209,6 @@
       $items[] = ['label'=> 'Receive', 'href'=> $href];
       $menus[] = ['title'=> $title, 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
       $dropdown->set('menus', $menus);
-
       return $dropdown->render(true);
     }
   }

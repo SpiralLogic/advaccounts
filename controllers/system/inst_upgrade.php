@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Software Upgrade"), SA_SOFTWAREUPGRADE);
   //
   //	Checks $field existence in $table with given field $properties
@@ -47,16 +46,19 @@
     Ajax::_activate('_page_body');
   }
   Forms::start();
-  Table::start('tablestyle grid');
+  Table::start('padded grid');
   $th = array(
-    _("Version"), _("Description"), _("Sql file"), _("Install"), _("Force upgrade")
+    _("Version"),
+    _("Description"),
+    _("Sql file"),
+    _("Install"),
+    _("Force upgrade")
   );
   Table::header($th);
   $k       = 0; //row colour counter
   $partial = 0;
   foreach ($installers as $i => $inst) {
-
-    Row::start();
+    echo '<tr>';
     Cell::label($inst->version);
     Cell::label($inst->description);
     Cell::label($inst->sql ? $inst->sql : '<i>' . _('None') . '</i>', 'class=center');
@@ -75,12 +77,16 @@
       }
     }
     Forms::checkCells(null, 'force_' . $i, 0);
-    Row::end();
+    echo '</tr>';
   }
   Table::end(1);
   if ($partial != 0) {
-    Event::warning(_("Database upgrades marked as partially installed cannot be installed automatically.
-You have to clean database manually to enable them, or try to perform forced upgrade."));
+    Event::warning(
+      _(
+        "Database upgrades marked as partially installed cannot be installed automatically.
+You have to clean database manually to enable them, or try to perform forced upgrade."
+      )
+    );
     Display::br();
   }
   Forms::submitCenter('Upgrade', _('Upgrade system'), true, _('Save database and perform upgrade'), 'process');
@@ -94,8 +100,7 @@ You have to clean database manually to enable them, or try to perform forced upg
    *
    * @return int
    */
-  function check_table($pref, $table, $field = null, $properties = null)
-  {
+  function check_table($pref, $table, $field = null, $properties = null) {
     $tables = @DB::_query("SHOW TABLES LIKE '" . $pref . $table . "'");
     if (!DB::_numRows($tables)) {
       return 1;
@@ -126,8 +131,7 @@ You have to clean database manually to enable them, or try to perform forced upg
   /**
    * @return array
    */
-  function get_installers()
-  {
+  function get_installers() {
     $patchdir = DOCROOT . "sql/";
     $upgrades = [];
     $datadir  = @opendir($patchdir);
@@ -158,8 +162,7 @@ You have to clean database manually to enable them, or try to perform forced upg
    *
    * @return bool
    */
-  function upgrade_step($index, $conn)
-  {
+  function upgrade_step($index, $conn) {
     global $installers;
     $inst  = $installers[$index];
     $ret   = true;
@@ -190,8 +193,7 @@ You have to clean database manually to enable them, or try to perform forced upg
    *
    * @return bool|resource
    */
-  function db_open($conn)
-  {
+  function db_open($conn) {
     $db = mysql_connect($conn["host"], $conn["dbuser"], $conn["dbpassword"]);
     if (!$db) {
       return false;

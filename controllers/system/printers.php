@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Printer Locations"), SA_PRINTERS);
   list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
@@ -25,8 +24,9 @@
     }
     if ($error != 1) {
       Printer::write_def($selected_id, Input::_post('name'), Input::_post('descr'), Input::_post('queue'), Input::_post('host'), Validation::input_num('port', 0), Validation::input_num('tout', 0));
-      Event::success($selected_id == -1 ? _('New printer definition has been created') :
-                       _('Selected printer definition has been updated'));
+      Event::success(
+        $selected_id == -1 ? _('New printer definition has been created') : _('Selected printer definition has been updated')
+      );
       $Mode = MODE_RESET;
     }
   }
@@ -50,25 +50,24 @@
   }
   $result = Printer::getAll();
   Forms::start();
-  Table::start('tablestyle grid');
+  Table::start('padded grid');
   $th = array(_("Name"), _("Description"), _("Host"), _("Printer Queue"), '', '');
   Table::header($th);
   $k = 0; //row colour counter
   while ($myrow = DB::_fetch($result)) {
-
     Cell::label($myrow['name']);
     Cell::label($myrow['description']);
     Cell::label($myrow['host']);
     Cell::label($myrow['queue']);
     Forms::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
-    Row::end();
+    echo '</tr>';
   } //END WHILE LIST LOOP
   Table::end();
   Forms::end();
   echo '<br>';
   Forms::start();
-  Table::start('tablestyle2');
+  Table::start('standard');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       $myrow          = Printer::get($selected_id);

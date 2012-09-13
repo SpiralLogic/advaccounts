@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Install/Activate extensions"), SA_CREATEMODULES);
   list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
@@ -58,11 +57,9 @@
    *
    * @return bool
    */
-  function update_extensions($extensions)
-  {
+  function update_extensions($extensions) {
     if (!advaccounting::write_extensions($extensions)) {
       Event::notice(_("Cannot update system extensions list."));
-
       return false;
     }
     // update per company files
@@ -78,11 +75,9 @@
       }
       if (!advaccounting::write_extensions($newexts, $i)) {
         Event::notice(sprintf(_("Cannot update extensions list for company '%s'."), Config::_get('db.' . $i)['name']));
-
         return false;
       }
     }
-
     return true;
   }
 
@@ -92,36 +87,29 @@
    *
    * @return bool
    */
-  function check_data($id, $exts)
-  {
+  function check_data($id, $exts) {
     if ($_POST['name'] == "") {
       Event::error(_("Extension name cannot be empty."));
-
       return false;
     }
     foreach ($exts as $n => $ext) {
       if ($_POST['name'] == $ext['name'] && $id != $n) {
         Event::error(_("Extension name have to be unique."));
-
         return false;
       }
     }
     if ($_POST['title'] == "") {
       Event::error(_("Extension title cannot be empty."));
-
       return false;
     }
     if ($_POST['path'] == "") {
       Event::error(_("Extension folder name cannot be empty."));
-
       return false;
     }
     if ($id == -1 && !is_uploaded_file($_FILES['uploadfile']['tmp_name'])) {
       Event::error(_("You have to select plugin file to upload"));
-
       return false;
     }
-
     return true;
   }
 
@@ -130,8 +118,7 @@
    *
    * @return bool
    */
-  function handle_submit($selected_id)
-  {
+  function handle_submit($selected_id) {
     global $next_extension_id;
     $extensions = DB_Company::get_company_extensions();
     if (!check_data($selected_id, $extensions)) {
@@ -140,7 +127,6 @@
     $id = $selected_id == -1 ? $next_extension_id : $selected_id;
     if ($selected_id != -1 && $extensions[$id]['type'] != 'plugin') {
       Event::error(_('Module installation support is not implemented yet. You have to do it manually.'));
-
       return;
     }
     $extensions[$id]['tab']    = $_POST['tab'];
@@ -201,7 +187,6 @@
     if (!update_extensions($extensions)) {
       return false;
     }
-
     return true;
   }
 
@@ -210,8 +195,7 @@
    *
    * @return bool
    */
-  function handle_delete($selected_id)
-  {
+  function handle_delete($selected_id) {
     $extensions = DB_Company::get_company_extensions();
     $id         = $selected_id;
     $filename   = DOCROOT . ($extensions[$id]['type'] == 'plugin' ? "modules" . DS : DS) . $extensions[$id]['path'];
@@ -221,22 +205,26 @@
     if (update_extensions($extensions)) {
       Event::notice(_("Selected extension has been successfully deleted"));
     }
-
     return true;
   }
 
-  function display_extensions()
-  {
-    Table::start('tablestyle grid');
+  function display_extensions() {
+    Table::start('padded grid');
     $th = array(
-      _("Name"), _("Tab"), _("Link text"), _("Folder"), _("Filename"), _("Access extensions"), "", ""
+      _("Name"),
+      _("Tab"),
+      _("Link text"),
+      _("Folder"),
+      _("Filename"),
+      _("Access extensions"),
+      "",
+      ""
     );
     Table::header($th);
     $k    = 0;
     $mods = DB_Company::get_company_extensions();
     foreach ($mods as $i => $mod) {
       $is_mod = $mod['type'] == 'module';
-
       Cell::label($mod['name']);
       Cell::label($is_mod ? $mod['title'] : Display::access_string(ADVAccounting::i()->applications[$mod['tab']]->name, true));
       $ttl = Display::access_string($mod['title']);
@@ -251,7 +239,7 @@
       }
       Forms::buttonDeleteCell("Delete" . $i, _("Delete"));
       Forms::submitConfirm(MODE_DELETE . $i, _('You are about to delete this extension\nDo you want to continue?'));
-      Row::end();
+      echo '</tr>';
     }
     Table::end(1);
   }
@@ -259,9 +247,8 @@
   /**
    * @param $id
    */
-  function company_extensions($id)
-  {
-    Table::start('tablestyle grid');
+  function company_extensions($id) {
+    Table::start('padded grid');
     $th = array(_("Name"), _("Tab"), _("Link text"), _("Active"));
     // get all available extensions and display
     // with current status stored in company directory.
@@ -278,14 +265,14 @@
     Table::header($th);
     $k = 0;
     foreach ($mods as $i => $mod) {
-
       Cell::label($mod['name']);
-      Cell::label($mod['type'] == 'module' ? $mod['title'] :
-                    Display::access_string(ADVAccounting::i()->applications[$mod['tab']]->name, true));
+      Cell::label(
+        $mod['type'] == 'module' ? $mod['title'] : Display::access_string(ADVAccounting::i()->applications[$mod['tab']]->name, true)
+      );
       $ttl = Display::access_string($mod['title']);
       Cell::label($ttl[0]);
       Forms::checkCells(null, 'Active' . $i, @$mod['active'] ? 1 : 0, false, false, "class='center'");
-      Row::end();
+      echo '</tr>';
     }
     Table::end(1);
     Forms::submitCenter('Update', _('Update'), true, false, 'default');
@@ -295,10 +282,9 @@
    * @param $Mode
    * @param $selected_id
    */
-  function display_ext_edit($Mode, $selected_id)
-  {
+  function display_ext_edit($Mode, $selected_id) {
     $extensions = DB_Company::get_company_extensions();
-    Table::start('tablestyle2');
+    Table::start('standard');
     if ($selected_id != -1 && $extensions[$selected_id]['type'] == 'plugin') {
       if ($Mode == MODE_EDIT) {
         $mod               = $extensions[$selected_id];

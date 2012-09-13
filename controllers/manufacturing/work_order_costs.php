@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::_openWindow(950, 500);
   Page::start(_($help_context = "Work Order Additional Costs"), SA_WORKORDERCOST);
   if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
@@ -32,33 +31,27 @@
   /**
    * @return bool
    */
-  function can_process()
-  {
+  function can_process() {
     global $wo_details;
     if (!Validation::post_num('costs', 0)) {
       Event::error(_("The amount entered is not a valid number or less then zero."));
       JS::_setFocus('costs');
-
       return false;
     }
     if (!Dates::_isDate($_POST['date_'])) {
       Event::error(_("The entered date is invalid."));
       JS::_setFocus('date_');
-
       return false;
     } elseif (!Dates::_isDateInFiscalYear($_POST['date_'])) {
       Event::error(_("The entered date is not in fiscal year."));
       JS::_setFocus('date_');
-
       return false;
     }
     if (Dates::_differenceBetween(Dates::_sqlToDate($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
       Event::error(_("The additional cost date cannot be before the release date of the work order."));
       JS::_setFocus('date_');
-
       return false;
     }
-
     return true;
   }
 
@@ -77,7 +70,7 @@
   Forms::start();
   Forms::hidden('selected_id', $_POST['selected_id']);
   //Forms::hidden('WOReqQuantity', $_POST['WOReqQuantity']);
-  Table::start('tablestyle2');
+  Table::start('standard');
   Display::br();
   Forms::yesnoListRow(_("Type:"), 'PaymentType', null, WO_Cost::$types[WO_OVERHEAD], WO_Cost::$types[WO_LABOUR]);
   Forms::dateRow(_("Date:"), 'date_');

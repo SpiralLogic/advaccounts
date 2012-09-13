@@ -15,7 +15,6 @@
       'Creditors'    => ['name'=> 'Suppliers', 'enabled'=> true, 'direct'=> '/contacts/suppliers'], //
       'Inventory'    => ['enabled'=> true], //
       'Manufacturing'=> ['enabled'=> true], //
-      'Dimensions'   => ['enabled'=> false], //
       'GL'           => ['name'=> 'Banking', 'enabled'=> true], //
       'Advanced'     => ['enabled'=> true], //
       'System'       => ['enabled'=> true]

@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::_openWindow(950, 500);
   Page::start(_($help_context = "Inventory Item Cost Update"), SA_STANDARDCOST);
   Validation::check(Validation::COST_ITEMS, _("There are no costable inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);
@@ -46,8 +45,7 @@
   echo Item_UI::costable('stock_id', $_POST['stock_id'], false, true);
   echo "</div><hr>";
   Session::_setGlobal('stock_id', $_POST['stock_id']);
-  $sql
-          = "SELECT description, units, material_cost, labour_cost,
+  $sql    = "SELECT description, units, material_cost, labour_cost,
     overhead_cost, mb_flag
     FROM stock_master
     WHERE stock_id=" . DB::_escape($_POST['stock_id']) . "
@@ -58,7 +56,7 @@
   Forms::hidden("OldMaterialCost", $myrow["material_cost"]);
   Forms::hidden("OldLabourCost", $myrow["labour_cost"]);
   Forms::hidden("OldOverheadCost", $myrow["overhead_cost"]);
-  Table::start('tablestyle2');
+  Table::start('standard');
   $dec1                   = $dec2 = $dec3 = 0;
   $_POST['material_cost'] = Num::_priceDecimal($myrow["material_cost"], $dec1);
   $_POST['labour_cost']   = Num::_priceDecimal($myrow["labour_cost"], $dec2);

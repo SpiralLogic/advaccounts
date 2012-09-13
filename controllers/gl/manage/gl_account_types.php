@@ -37,7 +37,7 @@
   }
   $result = GL_Type::getAll(Input::_hasPost('show_inactive'));
   Forms::start();
-  Table::start('tablestyle grid');
+  Table::start('padded grid');
   $th = array(_("ID"), _("Name"), _("Subgroup Of"), _("Class Type"), "", "");
   Forms::inactiveControlCol($th);
   Table::header($th);
@@ -56,11 +56,11 @@
     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'chart_types', 'id');
     Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
-    Row::end();
+    echo '</tr>';
   }
   Forms::inactiveControlRow($th);
   Table::end(1);
-  Table::start('tablestyle2');
+  Table::start('standard');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing status code
@@ -72,7 +72,7 @@
       Forms::hidden('selected_id', $selected_id);
     }
     Forms::hidden('id');
-    Row::label(_("ID:"), $_POST['id']);
+    Table::label(_("ID:"), $_POST['id']);
   } else {
     Forms::textRowEx(_("ID:"), 'id', 10);
   }
@@ -88,33 +88,27 @@
    *
    * @return bool
    */
-  function can_delete($selected_id)
-  {
+  function can_delete($selected_id) {
     if ($selected_id == -1) {
       return false;
     }
-    $type = DB::_escape($selected_id);
-    $sql
-            = "SELECT COUNT(*) FROM chart_master
+    $type   = DB::_escape($selected_id);
+    $sql    = "SELECT COUNT(*) FROM chart_master
         WHERE account_type=$type";
     $result = DB::_query($sql, "could not query chart master");
     $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account group because GL accounts have been created referring to it."));
-
       return false;
     }
-    $sql
-            = "SELECT COUNT(*) FROM chart_types
+    $sql    = "SELECT COUNT(*) FROM chart_types
         WHERE parent=$type";
     $result = DB::_query($sql, "could not query chart types");
     $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account group because GL account groups have been created referring to it."));
-
       return false;
     }
-
     return true;
   }
 
@@ -123,25 +117,20 @@
    *
    * @return bool
    */
-  function can_process(&$selected_id)
-  {
+  function can_process(&$selected_id) {
     if (!Validation::input_num('id')) {
       Event::error(_("The account id must be an integer and cannot be empty."));
       JS::_setFocus('id');
-
       return false;
     }
     if (strlen($_POST['name']) == 0) {
       Event::error(_("The account group name cannot be empty."));
       JS::_setFocus('name');
-
       return false;
     }
     if (isset($selected_id) && ($selected_id == $_POST['parent'])) {
       Event::error(_("You cannot set an account group to be a subgroup of itself."));
-
       return false;
     }
-
     return true;
   }

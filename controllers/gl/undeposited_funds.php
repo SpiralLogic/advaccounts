@@ -1,6 +1,5 @@
 <?php
-  use ADV\Core\Row;
-  use ADV\App\UI\UI;
+  use ADV\App\UI;
   use ADV\App\Bank\Bank;
   use ADV\Core\Cell;
   use ADV\Core\Table;
@@ -13,8 +12,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class UndepositedFunds extends \ADV\App\Controller\Base
-  {
+  class UndepositedFunds extends \ADV\App\Controller\Base {
     /** @var Dates */
     protected $Dates;
     public $updateData;
@@ -101,27 +99,26 @@
       Display::div_start('summary');
       Table::start();
       Table::header(_("Deposit Date"));
-      Row::start();
+      echo '<tr>';
       Forms::dateCells("", "deposit_date", _('Date of funds to deposit'), Input::_post('deposit_date') == '', 0, 0, 0, null, false, array('rebind' => false));
-      Row::end();
+      echo '</tr>';
       Table::header(_("Total Amount"));
-      Row::start();
+      echo '<tr>';
       Cell::amount($_POST['deposited'], false, '', "deposited");
       Forms::hidden("to_deposit", $_POST['to_deposit'], true);
-      Row::end();
-      Row::start();
-      Row::end();
+      echo '</tr>';
+      echo '<tr>';
+      echo '</tr>';
       Table::header(_("Bank fees"));
-      Row::start();
+      echo '<tr>';
       Cell::amount($_POST['bank_fees'], false, '', "bank_fees");
-      Row::end();
+      echo '</tr>';
       Table::end();
       echo HTML::button('deposit', _("Deposit"));
       Display::div_end();
       echo "<hr>";
-      $date = $this->Dates->addDays($_POST['deposit_date'], 10);
-      $sql
-                    = "SELECT	type, trans_no, ref, trans_date,
+      $date         = $this->Dates->addDays($_POST['deposit_date'], 10);
+      $sql          = "SELECT	type, trans_no, ref, trans_date,
                     amount,	person_id, person_type_id, reconciled, id
             FROM bank_trans
             WHERE undeposited=1 AND trans_date <= '" . $this->Dates->dateToSql($date) . "' AND reconciled IS null AND amount<>0
@@ -137,7 +134,7 @@
         ['insert' => true, 'fun' => [$this, 'viewGl']], //
         "X"                          => ['insert' => true, 'fun' => [$this, 'depositCheckbox']]
       );
-      $table        = DB_Pager::new_db_pager('trans_tbl', $sql, $cols);
+      $table        = DB_Pager::newPager('trans_tbl', $sql, $cols);
       $table->width = "80%";
       $table->display($table);
       UI::lineSortable();
@@ -152,10 +149,8 @@
       if (!$this->Dates->isDate(Input::_post('deposit_date'))) {
         Event::error(_("Invalid deposit date format"));
         JS::_setFocus('deposit_date');
-
         return false;
       }
-
       return true;
     }
     //
@@ -174,7 +169,6 @@
       // save also in hidden field for testing during 'Reconcile'
       $date = $this->Dates->sqlToDate($row['trans_date']);
       $name = $row['id'];
-
       return "<input type='checkbox' name='dep' value='$name'  data-id='$name' title='Deposit this transaction' data-date='$date' data-amount='$amount' $chk_value> ";
     }
     /**
@@ -184,8 +178,6 @@
      * @return mixed
      */
     function sysTypeName($dummy, $type) {
-
-
       return SysTypes::$names[$type];
     }
     /**
@@ -197,7 +189,6 @@
     function viewTrans($row) {
       $content = GL_UI::viewTrans($row["type"], $row["trans_no"]);
       $content .= '<br><a class="button voidlink" data-type="' . $row["type"] . '" data-trans_no="' . $row["trans_no"] . '">void</a>';
-
       return $content;
     }
     /**
@@ -215,7 +206,6 @@
      */
     function formatDebit($row) {
       $value = $row["amount"];
-
       return $value >= 0 ? Num::_priceFormat($value) : '';
     }
     /**
@@ -225,7 +215,6 @@
      */
     function formatCredit($row) {
       $value = -$row["amount"];
-
       return $value > 0 ? Num::_priceFormat($value) : '';
     }
     /**
@@ -266,7 +255,6 @@
       if (!count($_SESSION['undeposited'])) {
         $_POST['deposit_date'] = $this->Dates->today();
       }
-
       return true;
     }
     protected function runValidation() {

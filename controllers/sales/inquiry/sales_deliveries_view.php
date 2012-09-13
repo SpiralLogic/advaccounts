@@ -3,7 +3,6 @@
   use ADV\Core\DB\DB;
   use ADV\App\Item\Item;
   use ADV\App\Debtor\Debtor;
-  use ADV\Core\Row;
   use ADV\Core\Table;
   use ADV\Core\Ajax;
   use ADV\Core\JS;
@@ -16,8 +15,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class deliveryInquiry extends \ADV\App\Controller\Base
-  {
+  class deliveryInquiry extends \ADV\App\Controller\Base {
     public $debtor_id;
     public $stock_id;
     protected function before() {
@@ -55,8 +53,8 @@
         $this->batchInvoice();
       }
       Forms::start(false, $_SERVER['DOCUMENT_URI'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
-      Table::start('tablestyle_noborder');
-      Row::start();
+      Table::start('noborder');
+      echo '<tr>';
       Debtor::newselect(null, ['label'=> false, 'row'=> false]);
       Forms::refCellsSearch(_("#:"), 'DeliveryNumber', '', null, '', true);
       Forms::dateCells(_("from:"), 'DeliveryAfterDate', '', null, -30);
@@ -65,15 +63,14 @@
       Item::cells(_(""), 'SelectStockFromList', null, true, false, false, false, false);
       Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
       Forms::hidden('OutstandingOnly');
-      Row::end();
+      echo '</tr>';
       Table::end();
       $this->displayTable();
       Forms::end();
       Page::end();
     }
     protected function displayTable() {
-      $sql
-        = "SELECT trans.trans_no,
+      $sql = "SELECT trans.trans_no,
   		debtor.name,
   		branch.branch_id,
   		sorder.contact_name,
@@ -142,7 +139,7 @@
         }
         unset($_SESSION['Batch']);
       }
-      $table = DB_Pager::new_db_pager('deliveries_tbl', $sql, $cols);
+      $table = DB_Pager::newPager('deliveries_tbl', $sql, $cols);
       $table->setMarker([$this, 'formatMarker'], _("Marked items are overdue."));
       $table->display($table);
     }
@@ -161,7 +158,6 @@
      */
     public function formatBatch($row) {
       $name = "Sel_" . $row['trans_no'];
-
       return $row['Done'] ? '' : "<input type='checkbox' name='$name' value='1' >" // add also trans_no => branch code for checking after 'Batch' submit
         . "<input name='Sel_[" . $row['trans_no'] . "]' type='hidden' value='" . $row['branch_id'] . "'>\n";
     }
@@ -201,7 +197,6 @@
         $_SESSION['DeliveryBatch'] = $selected;
         Display::meta_forward('/sales/customer_invoice.php', 'BatchInvoice=Yes');
       }
-
       return $selected;
     }
     /**
@@ -216,11 +211,10 @@
       } elseif ($row["Outstanding"] > 0) {
         $items[] = ['label'=> 'Invoice', 'href'=> "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no']];
       }
-      $href = Reporting::print_doc_link($row['trans_no'], _("Print"), true, ST_CUSTDELIVERY, ICON_PRINT, '', '', 0, 0, true);
+      $href    = Reporting::print_doc_link($row['trans_no'], _("Print"), true, ST_CUSTDELIVERY, ICON_PRINT, '', '', 0, 0, true);
       $items[] = ['class'=> 'printlink', 'label'=> 'Print', 'href'=> $href];
       $menus[] = ['title'=> $items[0]['label'], 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
       $dropdown->set('menus', $menus);
-
       return $dropdown->render(true);
     }
   }

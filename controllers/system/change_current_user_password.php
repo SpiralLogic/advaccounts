@@ -7,13 +7,11 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Change password"), SA_CHGPASSWD);
   /**
    * @return bool
    */
-  function can_process()
-  {
+  function can_process() {
     if (strlen($_POST['password']) < 4) {
       Event::error(_("The password entered must be at least 4 characters long."));
       JS::_setFocus('password');
@@ -55,10 +53,10 @@
     Event::warning('You are required to change your password!');
   }
   Forms::start();
-  Table::start('tablestyle');
+  Table::start('padded');
   Table::sectionTitle(_("Enter your new password in the fields."));
   $myrow = Users::get(User::i()->user);
-  Row::label(_("User login:"), $myrow['user_id']);
+  Table::label(_("User login:"), $myrow['user_id']);
   $_POST['password'] = $_POST['passwordConfirm'] = "";
   Forms::passwordRow(_("Password:"), 'password', $_POST['password']);
   Forms::passwordRow(_("Repeat password:"), 'passwordConfirm', $_POST['passwordConfirm']);

@@ -18,7 +18,7 @@
     Event::success(_("Forms settings have been updated."));
   }
   Forms::start();
-  Table::startOuter('tablestyle2');
+  Table::startOuter('standard');
   $systypes = SysTypes::get();
   Table::section(1);
   $th = array(_("Form"), _("Next Reference"));
@@ -29,7 +29,7 @@
       Table::section(2);
       Table::header($th);
     }
-     Forms::refRow(SysTypes::$names[$type["type_id"]], 'id' . $type["type_id"], '', $type["next_reference"]);
+    Forms::refRow(SysTypes::$names[$type["type_id"]], 'id' . $type["type_id"], '', $type["next_reference"]);
   }
   Table::endOuter(1);
   Forms::submitCenter('setprefs', _("Update"), true, '', 'default');

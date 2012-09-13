@@ -7,8 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Inv_Transfer
-  {
+  class Inv_Transfer {
     /**
      * @static
      *
@@ -22,8 +21,7 @@
      *
      * @return int
      */
-    public static function add($Items, $location_from, $location_to, $date_, $type, $reference, $memo_)
-    {
+    public static function add($Items, $location_from, $location_to, $date_, $type, $reference, $memo_) {
       DB::_begin();
       $transfer_id = SysTypes::get_next_trans_no(ST_LOCTRANSFER);
       foreach ($Items as $line_item) {
@@ -33,7 +31,6 @@
       Ref::save(ST_LOCTRANSFER, $reference);
       DB_AuditTrail::add(ST_LOCTRANSFER, $transfer_id, $date_);
       DB::_commit();
-
       return $transfer_id;
     }
     /***
@@ -50,8 +47,7 @@
      *               add 2 stock_moves entries for a stock transfer
 
      */
-    public static function add_item($transfer_id, $stock_id, $location_from, $location_to, $date_, $type, $reference, $quantity)
-    {
+    public static function add_item($transfer_id, $stock_id, $location_from, $location_to, $date_, $type, $reference, $quantity) {
       Inv_Movement::add(ST_LOCTRANSFER, $stock_id, $transfer_id, $location_from, $date_, $reference, -$quantity, 0, $type);
       Inv_Movement::add(ST_LOCTRANSFER, $stock_id, $transfer_id, $location_to, $date_, $reference, $quantity, 0, $type);
     }
@@ -62,8 +58,7 @@
      *
      * @return array
      */
-    public static function get($trans_no)
-    {
+    public static function get($trans_no) {
       $result = Inv_Transfer::get_items($trans_no);
       if (DB::_numRows($result) < 2) {
         Event::error("transfer with less than 2 items : $trans_no", "");
@@ -87,13 +82,11 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_items($trans_no)
-    {
+    public static function get_items($trans_no) {
       $result = Inv_Movement::get(ST_LOCTRANSFER, $trans_no);
       if (DB::_numRows($result) == 0) {
         return null;
       }
-
       return $result;
     }
     /**
@@ -102,8 +95,7 @@
      * @param $type
      * @param $type_no
      */
-    public static function void($type, $type_no)
-    {
+    public static function void($type, $type_no) {
       Inv_Movement::void($type, $type_no);
     }
     /**
@@ -116,17 +108,15 @@
      * @param $pid
      * @param $cost
      */
-    public static function update_pid($type, $stock_id, $from, $to, $pid, $cost)
-    {
+    public static function update_pid($type, $stock_id, $from, $to, $pid, $cost) {
       $from = Dates::_dateToSql($from);
       $to   = Dates::_dateToSql($to);
       $sql  = "UPDATE stock_moves SET standard_cost=" . DB::_escape($cost) . " WHERE type=" . DB::_escape($type) . "	AND stock_id=" . DB::_escape($stock_id) . " AND tran_date>='$from' AND tran_date<='$to'
                 AND person_id = " . DB::_escape($pid);
       DB::_query($sql, "The stock movement standard_cost cannot be updated");
     }
-    public static function header()
-    {
-      Table::startOuter('tablestyle width70');
+    public static function header() {
+      Table::startOuter('padded width70');
       Table::section(1);
       Inv_Location::row(_("From Location:"), 'FromStockLocation', null);
       Inv_Location::row(_("To Location:"), 'ToStockLocation', null);
@@ -143,11 +133,10 @@
      * @param $title
      * @param $order
      */
-    public static function display_items($title, $order)
-    {
+    public static function display_items($title, $order) {
       Display::heading($title);
       Display::div_start('items_table');
-      Table::start('tablestyle grid width90');
+      Table::start('padded grid width90');
       $th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), '');
       if (count($order->line_items)) {
         $th[] = '';
@@ -163,7 +152,7 @@
           Cell::label($stock_item->units);
           Forms::buttonEditCell("Edit$line_no", _("Edit"), _('Edit document line'));
           Forms::buttonDeleteCell("Delete$line_no", _("Delete"), _('Remove line from document'));
-          Row::end();
+          echo '</tr>';
         } else {
           Inv_Transfer::item_controls($order, $line_no);
         }
@@ -180,9 +169,8 @@
      * @param $order
      * @param $line_no
      */
-    public static function item_controls($order, $line_no = -1)
-    {
-      Row::start();
+    public static function item_controls($order, $line_no = -1) {
+      echo '<tr>';
       $id = Forms::findPostPrefix(MODE_EDIT);
       if ($line_no != -1 && $line_no == $id) {
         $_POST['stock_id'] = $order->line_items[$id]->stock_id;
@@ -213,10 +201,9 @@
       } else {
         Forms::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
       }
-      Row::end();
+      echo '</tr>';
     }
-    public static function option_controls()
-    {
+    public static function option_controls() {
       echo "<br>";
       Table::start();
       Forms::textareaRow(_("Memo"), 'memo_', null, 50, 3);

@@ -6,7 +6,6 @@
   use ADV\App\Display;
   use ADV\Core\Input\Input;
   use ADV\App\Dimensions;
-  use ADV\Core\Row;
   use ADV\Core\Table;
   use ADV\App\Debtor\Debtor;
   use ADV\App\Item\Item;
@@ -30,8 +29,7 @@
    * if ($writeoff_acc==0) return goods into $order->location
    * if src_docs!=0 => credit invoice else credit note
    */
-  class Sales_Credit
-  {
+  class Sales_Credit {
     /**
      * @static
      *
@@ -222,7 +220,6 @@ debit freight re-charged and debit sales */
         Ref::save(ST_CUSTCREDIT, $credit_note->reference);
       }
       DB::_commit();
-
       return $credit_no;
     }
     /**
@@ -294,10 +291,8 @@ debit freight re-charged and debit sales */
       $customer       = Debtor::get($order->debtor_id);
       // 2008-08-01. If there is a Customer Dimension, then override with this,
       // else take the Item Dimension (if any)
-      $dim   = ($order->dimension_id != $customer['dimension_id'] ? $order->dimension_id :
-        ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_codes["dimension_id"]));
-      $dim2  = ($order->dimension2_id != $customer['dimension2_id'] ? $order->dimension2_id :
-        ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_codes["dimension2_id"]));
+      $dim   = ($order->dimension_id != $customer['dimension_id'] ? $order->dimension_id : ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_codes["dimension_id"]));
+      $dim2  = ($order->dimension2_id != $customer['dimension2_id'] ? $order->dimension2_id : ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_codes["dimension2_id"]));
       $total = 0;
       /* insert gl_trans to credit stock and debit cost of sales at standard cost*/
       $standard_cost = Item_Price::get_standard_cost($order_line->stock_id);
@@ -373,7 +368,6 @@ debit freight re-charged and debit sales */
           );
         } /*end of if discount !=0 */
       } /*if line_price!=0 */
-
       return $total;
     }
     /**
@@ -384,7 +378,7 @@ debit freight re-charged and debit sales */
      * @return mixed|string
      */
     public static function header($order) {
-      Table::startOuter('tablestyle width90');
+      Table::startOuter('padded width90');
       Table::section(1);
       $customer_error = "";
       $change_prices  = 0;
@@ -436,16 +430,15 @@ debit freight re-charged and debit sales */
         unset($old_order);
       }
       Session::_setGlobal('debtor_id', $_POST['debtor_id']);
-
       if ($order->trans_no == 0) {
         Forms::refRow(_("Reference") . ':', 'ref', _('Reference number unique for this document type'), $order->reference ? : Ref::get_next($order->trans_type), '');
       } else {
         $order->reference = $order->reference ? : Ref::get_next($order->trans_type);
-        Row::label(_("Reference") . ':', $order->reference);
+        Table::label(_("Reference") . ':', $order->reference);
       }
       if (!Bank_Currency::is_company($order->customer_currency)) {
         Table::section(2);
-        Row::label(_("Customer Currency:"), $order->customer_currency);
+        Table::label(_("Customer Currency:"), $order->customer_currency);
         GL_ExchangeRate::display($order->customer_currency, Bank_Currency::for_company(), $_POST['OrderDate']);
       }
       Table::section(3);
@@ -460,7 +453,7 @@ debit freight re-charged and debit sales */
         $change_prices = 1;
       }
       Sales_UI::shippers_row(_("Shipping Company:"), 'ShipperID', $order->ship_via);
-      Row::label(_("Customer Discount:"), ($order->default_discount * 100) . "%");
+      Table::label(_("Customer Discount:"), ($order->default_discount * 100) . "%");
       Table::section(4);
       if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "") {
         $_POST['OrderDate'] = $order->document_date;
@@ -493,7 +486,6 @@ debit freight re-charged and debit sales */
         }
         Ajax::_activate('items_table');
       }
-
       return $customer_error;
     }
     /**
@@ -505,7 +497,7 @@ debit freight re-charged and debit sales */
     public static function display_items($title, $order) {
       Display::heading($title);
       Display::div_start('items_table');
-      Table::start('tablestyle grid width90');
+      Table::start('padded grid width90');
       $th = array(
         _("Item Code"),
         _("Item Description"),
@@ -535,7 +527,7 @@ debit freight re-charged and debit sales */
           Cell::amount($line_total);
           Forms::buttonEditCell("Edit$line_no", _("Edit"), _('Edit document line'));
           Forms::buttonDeleteCell("Delete$line_no", _('Delete'), _('Remove line from document'));
-          Row::end();
+          echo '</tr>';
         } else {
           Sales_Credit::item_controls($order, $k, $line_no);
         }
@@ -547,19 +539,19 @@ debit freight re-charged and debit sales */
       Table::foot();
       $colspan           = 6;
       $display_sub_total = Num::_priceFormat($subtotal);
-      Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan class='alignright bold'", "class='alignright'", 2);
+      Table::label(_("Sub-total"), $display_sub_total, "colspan=$colspan class='alignright bold'", "class='alignright'", 2);
       if (!isset($_POST['ChargeFreightCost']) OR ($_POST['ChargeFreightCost'] == "")) {
         $_POST['ChargeFreightCost'] = 0;
       }
-      Row::start();
+      echo '<tr>';
       Cell::label(_("Shipping"), "colspan=$colspan class='alignright bold'");
       Forms::amountCellsSmall(null, 'ChargeFreightCost', Num::_priceFormat(Input::_post('ChargeFreightCost', null, 0)), null, ['$']);
       Cell::label('', 'colspan=2');
-      Row::end();
+      echo '</tr>';
       $taxes         = $order->get_taxes($_POST['ChargeFreightCost']);
       $tax_total     = Tax::edit_items($taxes, $colspan, $order->tax_included, 2);
       $display_total = Num::_priceFormat(($subtotal + $_POST['ChargeFreightCost'] + $tax_total));
-      Row::label(_("Credit Note Total"), $display_total, "colspan=$colspan class='alignright bold'", "class='amount'", 2);
+      Table::label(_("Credit Note Total"), $display_total, "colspan=$colspan class='alignright bold'", "class='amount'", 2);
       Table::footEnd();
       Table::end();
       Display::div_end();
@@ -616,7 +608,7 @@ debit freight re-charged and debit sales */
       } else {
         Forms::submitCells(Orders::ADD_LINE, _("Add Item"), "colspan=2", _('Add new item to document'), true);
       }
-      Row::end();
+      echo '</tr>';
     }
     /**
      * @static
@@ -629,7 +621,7 @@ debit freight re-charged and debit sales */
         Ajax::_activate('options');
       }
       Display::div_start('options');
-      Table::start('tablestyle2');
+      Table::start('standard');
       Sales_Credit::row(_("Credit Note Type"), 'CreditType', null, true);
       if ($_POST['CreditType'] == "Return") {
         /*if the credit note is a return of goods then need to know which location to receive them into */

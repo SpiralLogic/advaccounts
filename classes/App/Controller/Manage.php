@@ -20,8 +20,7 @@
   /**
 
    */
-  abstract class Manage extends Base
-  {
+  abstract class Manage extends Base {
     /** @var \ADV\App\DB\Base */
     protected $object;
     protected $defaultFocus;
@@ -76,7 +75,6 @@
       Page::end(true);
     }
     protected function generateForm() {
-
       $view          = new \ADV\Core\View('form/simple');
       $form          = new \ADV\App\Form\Form();
       $view['title'] = $this->title;
@@ -103,10 +101,9 @@
         ) == 1) || ($this->action != 'showInactive' && $_SESSION['pager'][$pager_name]->showInactive);
       }
       //DB_Pager::kill($pager_name);
-      $table        = DB_Pager::new_db_pager($pager_name, $this->object->getAll($inactive), $cols);
+      $table        = DB_Pager::newPager($pager_name, $this->object->getAll($inactive), $cols);
       $table->width = $this->tableWidth;
       $table->display();
-
       return $table;
     }
     /**
@@ -117,7 +114,6 @@
     public function formatEditBtn($row) {
       $button = new \ADV\App\Form\Button('_action', EDIT . $row[$this->object->getIDColumn()], EDIT);
       $button->type('mini')->type('primary');
-
       return $button;
     }
     /**
@@ -129,7 +125,6 @@
       $button = new \ADV\App\Form\Button('_action', DELETE . $row[$this->object->getIDColumn()], DELETE);
       $button->preIcon(ICON_DELETE);
       $button->type('mini')->type('danger');
-
       return $button;
     }
     /**

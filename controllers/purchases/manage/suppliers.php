@@ -9,7 +9,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Suppliers"), SA_SUPPLIER, Input::_request('frame'));
   Validation::check(Validation::TAX_GROUP, _("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
   if (isset($_GET['creditor_id'])) {
@@ -62,11 +61,16 @@
         Ajax::_activate('creditor_id'); // in case of status change
         Event::success(_("Supplier has been updated."));
       } else {
-        $sql
-          = "INSERT INTO suppliers (name, ref, address, address, phone, phone2, fax, gst_no, email, website,
+        $sql = "INSERT INTO suppliers (name, ref, address, address, phone, phone2, fax, gst_no, email, website,
 				contact, account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
 				payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
-				VALUES (" . DB::_escape($_POST['name']) . ", " . DB::_escape($_POST['ref']) . ", " . DB::_escape($_POST['address']) . ", " . DB::_escape($_POST['address']) . ", " . DB::_escape($_POST['phone']) . ", " . DB::_escape($_POST['phone2']) . ", " . DB::_escape($_POST['fax']) . ", " . DB::_escape($_POST['gst_no']) . ", " . DB::_escape($_POST['email']) . ", " . DB::_escape($_POST['website']) . ", " . DB::_escape($_POST['contact']) . ", " . DB::_escape($_POST['account_no']) . ", " . DB::_escape($_POST['bank_account']) . ", " . Validation::input_num('credit_limit', 0) . ", " . DB::_escape($_POST['dimension_id']) . ", " . DB::_escape($_POST['dimension2_id']) . ", " . DB::_escape($_POST['curr_code']) . ", " . DB::_escape($_POST['payment_terms']) . ", " . DB::_escape($_POST['payable_account']) . ", " . DB::_escape($_POST['purchase_account']) . ", " . DB::_escape($_POST['payment_discount_account']) . ", " . DB::_escape($_POST['notes']) . ", " . DB::_escape($_POST['tax_group_id']) . ")";
+				VALUES (" . DB::_escape($_POST['name']) . ", " . DB::_escape($_POST['ref']) . ", " . DB::_escape($_POST['address']) . ", " . DB::_escape($_POST['address']) . ", " . DB::_escape($_POST['phone']) . ", " . DB::_escape($_POST['phone2']) . ", " . DB::_escape($_POST['fax']) . ", " . DB::_escape(
+          $_POST['gst_no']
+        ) . ", " . DB::_escape($_POST['email']) . ", " . DB::_escape($_POST['website']) . ", " . DB::_escape($_POST['contact']) . ", " . DB::_escape($_POST['account_no']) . ", " . DB::_escape($_POST['bank_account']) . ", " . Validation::input_num('credit_limit', 0) . ", " . DB::_escape(
+          $_POST['dimension_id']
+        ) . ", " . DB::_escape($_POST['dimension2_id']) . ", " . DB::_escape($_POST['curr_code']) . ", " . DB::_escape($_POST['payment_terms']) . ", " . DB::_escape($_POST['payable_account']) . ", " . DB::_escape($_POST['purchase_account']) . ", " . DB::_escape(
+          $_POST['payment_discount_account']
+        ) . ", " . DB::_escape($_POST['notes']) . ", " . DB::_escape($_POST['tax_group_id']) . ")";
         DB::_query($sql, "The supplier could not be added");
         $_POST['creditor_id'] = DB::_insertId();
         $new_supplier         = false;
@@ -103,12 +107,12 @@
   }
   Forms::start();
   if (Validation::check(Validation::SUPPLIERS)) {
-    Table::start('tablestyle_noborder pad3');
-    //	Table::start('tablestyle_noborder');
-    Row::start();
+    Table::start('noborder pad3');
+    //	Table::start('noborder');
+    echo '<tr>';
     Creditor::cells(_("Select a supplier: "), 'creditor_id', null, _('New supplier'), true, Input::_hasPost('show_inactive'));
     Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
-    Row::end();
+    echo '</tr>';
     Table::end();
     if (Input::_post('_show_inactive_update')) {
       Ajax::_activate('creditor_id');
@@ -117,7 +121,7 @@
   } else {
     Forms::hidden('creditor_id', Input::_post('creditor_id'));
   }
-  Table::startOuter('tablestyle2');
+  Table::startOuter('standard');
   Table::section(1);
   if (!$new_supplier) {
     //SupplierID exists - either passed when calling the form or from the form itself
@@ -180,7 +184,7 @@
   Forms::textRow(_("Bank Name/Account:"), 'bank_account', null, 42, 40);
   Forms::AmountRow(_("Credit Limit:"), 'credit_limit', null);
   if (!$new_supplier) {
-    Row::label(_("Supplier's Currency:"), $_POST['curr_code']);
+    Table::label(_("Supplier's Currency:"), $_POST['curr_code']);
     Forms::hidden('curr_code', $_POST['curr_code']);
   } else {
     GL_Currency::row(_("Supplier's Currency:"), 'curr_code', null);
@@ -211,8 +215,12 @@
   Table::endOuter(1);
   Display::div_start('controls');
   if (!$new_supplier) {
-    Forms::submitCenterBegin('submit', _("Update Supplier"), _('Update supplier data'), Input::_request('frame') ? true :
-      'default');
+    Forms::submitCenterBegin(
+      'submit',
+      _("Update Supplier"),
+      _('Update supplier data'),
+      Input::_request('frame') ? true : 'default'
+    );
     Forms::submitReturn('select', Input::_post('creditor_id'), _("Select this supplier and return to document entry."));
     Forms::submitCenterEnd('delete', _("Delete Supplier"), _('Delete supplier data if have been never used'), true);
   } else {

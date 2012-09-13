@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   if (isset($_GET['stock_id'])) {
     $_POST['stock_id'] = $_GET['stock_id'];
     Page::start(_($help_context = "Inventory Item Status"), SA_ITEMSSTATVIEW, true);
@@ -34,22 +33,24 @@
     $kitset_or_service = true;
   }
   $loc_details = Inv_Location::get_details($_POST['stock_id']);
-
-  Table::start('tablestyle grid');
+  Table::start('padded grid');
   if ($kitset_or_service == true) {
     $th = array(_("Location"), _("Demand"));
   } else {
     $th = array(
-      _("Location"), _("Quantity On Hand"), _("Re-Order Level"), _("Demand"), _("Available"), _("On Order")
+      _("Location"),
+      _("Quantity On Hand"),
+      _("Re-Order Level"),
+      _("Demand"),
+      _("Available"),
+      _("On Order")
     );
   }
   Table::header($th);
   $dec = Item::qty_dec($_POST['stock_id']);
   $j   = 1;
   $k   = 0; //row colour counter
-
   while ($myrow = DB::_fetch($loc_details)) {
-
     $demand_qty = Item::get_demand($_POST['stock_id'], $myrow["loc_code"]);
     $demand_qty += WO::get_demand_asm_qty($_POST['stock_id'], $myrow["loc_code"]);
     $qoh = Item::get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
@@ -62,12 +63,12 @@
       Cell::qty($demand_qty, false, $dec);
       Cell::qty($qoh - $demand_qty, false, $dec);
       Cell::qty($qoo, false, $dec);
-      Row::end();
+      echo '</tr>';
     } else {
       /* It must be a service or kitset part */
       Cell::label($myrow["location_name"]);
       Cell::qty($demand_qty, false, $dec);
-      Row::end();
+      echo '</tr>';
     }
     $j++;
     If ($j == 12) {

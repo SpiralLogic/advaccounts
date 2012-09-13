@@ -1,5 +1,4 @@
 <?php
-  use ADV\Core\Row;
   use ADV\App\Bank\Bank;
   use ADV\App\User;
   use ADV\App\Debtor\Debtor;
@@ -25,16 +24,14 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class GlBank extends \ADV\App\Controller\Base
-  {
+  class GlBank extends \ADV\App\Controller\Base {
     /** @var Item_Order */
     protected $order;
     protected $security;
     protected $trans_type;
     protected $trans_no;
     protected $type;
-    protected function before()
-    {
+    protected function before() {
       if ($this->Input->hasSession('pay_items')) {
         $this->order = $this->Input->session('pay_items');
       }
@@ -82,21 +79,20 @@
         $this->quickEntries();
       }
     }
-    protected function index()
-    {
+    protected function index() {
       Page::start($this->title, $this->security);
       $this->runAction();
       Forms::start();
       $this->header($this->order);
       Table::start('tablesstyle2 width90 pad10');
-      Row::start();
+      echo '<tr>';
       echo "<td>";
       $this->items();
       echo "<br><table class='center'>";
       Forms::textareaRow(_("Memo"), 'memo_', null, 50, 3);
       echo "</table>";
       echo "</td>";
-      Row::end();
+      echo '</tr>';
       Table::end(1);
       echo '<div class="center">';
       echo (new Button('_action', COMMIT, COMMIT))->type('success')->preIcon(ICON_SUBMIT);
@@ -107,11 +103,10 @@
     /**
      * @return void
      */
-    protected function header()
-    {
+    protected function header() {
       $payment = $this->order->trans_type == ST_BANKPAYMENT;
       Display::div_start('pmt_header');
-      Table::startOuter('tablestyle2 width90'); // outer table
+      Table::startOuter('standard width90'); // outer table
       Table::section(1);
       Bank_Account::row($payment ? _("From:") : _("To:"), 'bank_account', null, true);
       Forms::dateRow(_("Date:"), 'date_', '', true, 0, 0, 0, null, true);
@@ -189,19 +184,18 @@
      * @static
      * @return void
      */
-    protected function items()
-    {
-      $title=_($this->type . " Items");
+    protected function items() {
+      $title = _($this->type . " Items");
       Display::heading($title);
       Display::div_start('items_table');
       Table::start('tables_style grid width95');
-          $th = array(
-            _("Account Code"),
-            _("Account Description"),
-            _("Amount"),
-            _("Memo"),
-            ""
-          );
+      $th = array(
+        _("Account Code"),
+        _("Account Description"),
+        _("Amount"),
+        _("Memo"),
+        ""
+      );
       if (count($this->order->gl_items)) {
         $th[] = '';
       }
@@ -220,7 +214,7 @@
           Cell::label($item->reference);
           Forms::buttonEditCell("Edit$line", _("Edit"), _('Edit document line'));
           Forms::buttonDeleteCell("Delete$line", _("Delete"), _('Remove line from document'));
-          Row::end();
+          echo '</tr>';
         } else {
           $this->itemControls($line);
         }
@@ -229,7 +223,7 @@
         $this->itemControls();
       }
       if ($this->order->count_gl_items()) {
-        Row::label(_("Total"), Num::_format(abs($this->order->gl_items_total()), User::price_dec()), " class='alignright'", "class='alignright'", 3);
+        Table::label(_("Total"), Num::_format(abs($this->order->gl_items_total()), User::price_dec()), " class='alignright'", "class='alignright'", 3);
       }
       Table::end();
       Display::div_end();
@@ -241,10 +235,9 @@
      *
      * @return void
      */
-    protected function itemControls( $Index = null)
-    {
+    protected function itemControls($Index = null) {
       $payment = $this->order->trans_type == ST_BANKPAYMENT;
-      Row::start();
+      echo '<tr>';
       $id = Forms::findPostPrefix(MODE_EDIT);
       if ($Index != -1 && $Index == $id) {
         $item                   = $this->order->gl_items[$Index];
@@ -290,10 +283,9 @@
       } else {
         Forms::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
       }
-      Row::end();
+      echo '</tr>';
     }
-    protected function quickEntries()
-    {
+    protected function quickEntries() {
       GL_QuickEntry::addEntry(
         $this->order,
         $_POST['person_id'],
@@ -307,18 +299,15 @@
     /**
      * @return bool
      */
-    protected function canProcess()
-    {
+    protected function canProcess() {
       if ($this->order->count_gl_items() < 1) {
         Event::error(_("You must enter at least one payment line."));
         $this->JS->setFocus('code_id');
-
         return false;
       }
       if ($this->order->gl_items_total() == 0.0) {
         Event::error(_("The total bank amount cannot be 0."));
         $this->JS->setFocus('code_id');
-
         return false;
       }
       if (!Ref::is_new($_POST['ref'], $this->order->trans_type)) {
@@ -327,19 +316,15 @@
       if (!Dates::_isDate($_POST['date_'])) {
         Event::error(_("The entered date is invalid."));
         $this->JS->setFocus('date_');
-
         return false;
       } elseif (!Dates::_isDateInFiscalYear($_POST['date_'])) {
         Event::error(_("The entered date is not in fiscal year."));
         $this->JS->setFocus('date_');
-
         return false;
       }
-
       return true;
     }
-    protected function commit()
-    {
+    protected function commit() {
       if (!$this->canProcess()) {
         return;
       }
@@ -361,8 +346,7 @@
       unset($_SESSION['pay_items']);
       $this->pageComplete();
     }
-    protected function pageComplete()
-    {
+    protected function pageComplete() {
       Event::success(_($this->type . " " . $this->trans_no . " has been entered"));
       Display::note(GL_UI::view($this->trans_type, $this->trans_no, _("&View the GL Postings for this " . $this->type)));
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter A &Payment"), "NewPayment=yes");
@@ -373,12 +357,10 @@
     /**
      * @return bool
      */
-    protected function checkItemData()
-    {
+    protected function checkItemData() {
       if ($this->Input->post('PayType') == PT_QUICKENTRY && $this->order->count_gl_items() < 1) {
         Event::error('You must select and add quick entry before adding extra lines!');
         $this->JS->setFocus('total_amount');
-
         return false;
       }
       //if (!Validation::post_num('amount', 0))
@@ -390,20 +372,16 @@
       if ($_POST['code_id'] == $_POST['bank_account']) {
         Event::error(_("The source and destination accouts cannot be the same."));
         $this->JS->setFocus('code_id');
-
         return false;
       }
       if (Bank_Account::is($_POST['code_id'])) {
         Event::error(_("You cannot make a " . $this->type . " from a bank account. Please use the transfer funds facility for this."));
         $this->JS->setFocus('code_id');
-
         return false;
       }
-
       return true;
     }
-    protected function updateItem()
-    {
+    protected function updateItem() {
       $amount = ($this->order->trans_type == ST_BANKPAYMENT ? 1 : -1) * Validation::input_num('amount');
       if ($_POST['updateItem'] != "" && $this->checkItemData()) {
         $this->order->update_gl_item($_POST['Index'], $_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
@@ -413,17 +391,17 @@
     /**
      * @param $id
      */
-    protected function deleteItem($id)
-    {
+    protected function deleteItem($id) {
       $this->order->remove_gl_item($id);
       Item_Line::start_focus('_code_id_edit');
     }
     /**
      * @return bool
      */
-    protected function addLine()
-    {
-      if (!$this->checkItemData()) return;
+    protected function addLine() {
+      if (!$this->checkItemData()) {
+        return;
+      }
       $amount = ($this->order->trans_type == ST_BANKPAYMENT ? 1 : -1) * Validation::input_num('amount');
       $this->order->add_gl_item($_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
       Item_Line::start_focus('_code_id_edit');
@@ -431,8 +409,7 @@
     /**
      * @param $type
      */
-    protected function newOrder($type)
-    {
+    protected function newOrder($type) {
       if (isset($this->order)) {
         unset($_SESSION['pay_items']);
       }
@@ -443,8 +420,7 @@
       }
       $this->order->tran_date = $_POST['date_'];
     }
-    protected function runValidation()
-    {
+    protected function runValidation() {
       Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
     }
   }

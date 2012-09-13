@@ -39,7 +39,6 @@
     Display::note(GL_UI::view(ST_CUSTREFUND, $refund_id, _("&View the GL Journal Entries for this Customer Refund")));
     Page::footer_exit();
   }
-
   // validate inputs
   if (isset($_POST['AddRefundItem'])) {
     if (!Debtor_Payment::can_process(ST_CUSTREFUND)) {
@@ -69,7 +68,7 @@
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$refund_id");
   }
   Forms::start();
-  Table::startOuter('tablestyle2 width60 pad5');
+  Table::startOuter('standard width60 pad5');
   Table::section(1);
   Debtor::newselect();
   if (!isset($_POST['bank_account'])) // first page call
@@ -104,7 +103,7 @@
     GL_Allocation::show_allocatable(true);
     Display::div_end();
   }
-  Table::start('tablestyle width60');
+  Table::start('padded width60');
   Forms::AmountRow(_("Amount:"), 'amount');
   Forms::textareaRow(_("Memo:"), 'memo_', null, 22, 4);
   Table::end(1);

@@ -7,9 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "System and General GL Setup"), SA_GLSETUP);
-
   if (isset($_POST['submit']) && can_process()) {
     $_POST['allow_negative_stock'] = Input::_hasPost('allow_negative_stock');
     $_POST['po_over_receive']      = Validation::input_num('po_over_receive');
@@ -19,8 +17,8 @@
     Event::success(_("The general GL setup has been updated."));
   } /* end of if submit */
   Forms::start();
-  //Table::startOuter("class='tablestyle'");
-  Table::startOuter('tablestyle2');
+  //Table::startOuter("class='padded'");
+  Table::startOuter('standard');
   Table::section(1);
   $myrow                               = DB_Company::get_prefs();
   $_POST['retained_earnings_act']      = $myrow["retained_earnings_act"];
@@ -83,7 +81,7 @@
   GL_UI::all_row(_("Purchase Discount Account:"), 'pyt_discount_act', $_POST['pyt_discount_act']);
   Table::sectionTitle(_("Inventory"));
   Forms::checkRow(_("Allow Negative Inventory:"), 'allow_negative_stock', null);
-  Row::label(null, _("Warning: This may cause a delay in GL postings"), "", "class='stockmankofg' colspan=2");
+  Table::label(null, _("Warning: This may cause a delay in GL postings"), "", "class='stockmankofg' colspan=2");
   Table::sectionTitle(_("Items Defaults"));
   GL_UI::all_row(_("Sales Account:"), 'default_inv_sales_act', $_POST['default_inv_sales_act']);
   GL_UI::all_row(_("Inventory Account:"), 'default_inventory_act', $_POST['default_inventory_act']);
@@ -100,8 +98,7 @@
   /**
    * @return bool
    */
-  function can_process()
-  {
+  function can_process() {
     if (!Validation::post_num('po_over_receive', 0, 100)) {
       Event::error(_("The delivery over-receive allowance must be between 0 and 100."));
       JS::_setFocus('po_over_receive');

@@ -37,8 +37,7 @@
    *
    * @return int|mixed
    */
-  function display_type($type, $typename, $from, $to, $convert, $drilldown)
-  {
+  function display_type($type, $typename, $from, $to, $convert, $drilldown) {
     global $levelptr, $k;
     $dimension  = $dimension2 = 0;
     $acctstotal = 0;
@@ -53,10 +52,10 @@
       }
       if ($drilldown && $levelptr == 0) {
         $url = "<a href='" . BASE_URL . "gl/inquiry/gl_account.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&account=" . $account['account_code'] . "'>" . $account['account_code'] . " " . $account['account_name'] . "</a>";
-        Row::start("class='stockmankobg'");
+        echo "<tr class='stockmankobg'>";
         Cell::label($url);
         Cell::amount(($curr_balance + $prev_balance) * $convert);
-        Row::end();
+        echo '</tr>';
       }
       $acctstotal += $curr_balance + $prev_balance;
     }
@@ -69,10 +68,10 @@
     //Display Type Summary if total is != 0
     if (($acctstotal + $typestotal) != 0) {
       if ($drilldown && $type == $_POST["AccGrp"]) {
-        Row::start("class='inquirybg' style='font-weight:bold'");
+        echo "<tr class='inquirybg' style='font-weight:bold'>";
         Cell::label(_('Total') . " " . $typename);
         Cell::amount(($acctstotal + $typestotal) * $convert);
-        Row::end();
+        echo '</tr>';
       }
       //START Patch#1 : Display only direct child types
       $acctype1 = GL_Type::get($type);
@@ -84,16 +83,14 @@
         $url = "<a href='" . BASE_URL . "gl/inquiry/balance_sheet.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&AccGrp=" . $type . "'>" . $typename . "</a>";
         Cell::label($url);
         Cell::amount(($acctstotal + $typestotal) * $convert);
-        Row::end();
+        echo '</tr>';
       }
     }
-
     return ($acctstotal + $typestotal);
   }
 
-  function inquiry_controls()
-  {
-    Table::start('tablestyle_noborder');
+  function inquiry_controls() {
+    Table::start('noborder');
     Forms::dateCells(_("As at:"), 'TransToDate');
     Forms::submitCells('Show', _("Show"), '', '', 'default');
     Table::end();
@@ -101,8 +98,7 @@
     Forms::hidden('AccGrp');
   }
 
-  function display_balance_sheet()
-  {
+  function display_balance_sheet() {
     $from      = Dates::_beginFiscalYear();
     $to        = $_POST['TransToDate'];
     $dim       = DB_Company::get_pref('use_dimension');
@@ -115,7 +111,7 @@
       $drilldown = 0;
     } // Root level
     Display::div_start('balance_tbl');
-    Table::start('tablestyle grid width30');
+    Table::start('padded grid width30');
     if (!$drilldown) //Root Level
     {
       $equityclose = $lclose = $calculateclose = 0.0;
@@ -138,15 +134,15 @@
             $url = "<a href='" . BASE_URL . "gl/inquiry/balance_sheet.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&AccGrp=" . $accounttype['id'] . "'>" . $accounttype['name'] . "</a>";
             Cell::label($url);
             Cell::amount($TypeTotal * $convert);
-            Row::end();
+            echo '</tr>';
           }
           $classclose += $TypeTotal;
         }
         //Print class Summary
-        Row::start("class='inquirybg' style='font-weight:bold'");
+        echo "<tr class='inquirybg' style='font-weight:bold'>";
         Cell::label(_('Total') . " " . $class["class_name"]);
         Cell::amount($classclose * $convert);
-        Row::end();
+        echo '</tr>';
         if ($ctype == CL_EQUITY) {
           $equityclose += $classclose;
           $econvert = $convert;
@@ -162,14 +158,14 @@
       }
       //Final Report Summary
       $url = "<a href='" . BASE_URL . "gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&Compare=0'>" . _('Calculated Return') . "</a>";
-      Row::start("class='inquirybg' style='font-weight:bold'");
+      echo "<tr class='inquirybg' style='font-weight:bold'>";
       Cell::label($url);
       Cell::amount($calculateclose);
-      Row::end();
-      Row::start("class='inquirybg' style='font-weight:bold'");
+      echo '</tr>';
+      echo "<tr class='inquirybg' style='font-weight:bold'>";
       Cell::label(_('Total') . " " . _('Liabilities') . _(' and ') . _('Equities'));
       Cell::amount($lclose * $lconvert + $equityclose * $econvert + $calculateclose);
-      Row::end();
+      echo '</tr>';
     } else //Drill Down
     {
       //Level Pointer : Global variable defined in order to control display of root

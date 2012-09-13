@@ -13,7 +13,7 @@
   JS::_openWindow(950, 500);
   Page::start(_($help_context = "Customer Allocation Inquiry"), SA_SALESALLOC);
   if (Input::_get('debtor_id')) {
-    $_POST['debtor_id'] = Input::_get('debtor_id',Input::NUMERIC);
+    $_POST['debtor_id'] = Input::_get('debtor_id', Input::NUMERIC);
   }
   if (isset($_GET['frame'])) {
     foreach ($_GET as $k => $v) {
@@ -21,8 +21,8 @@
     }
   }
   Forms::start(false, '', 'invoiceForm');
-  Table::start('tablestyle_noborder');
-  Row::start();
+  Table::start('noborder');
+  echo '<tr>';
   if (!Input::_get('frame')) {
     Debtor::newselect(null, ['label'=> 'Customer:', 'row'=> false]);
   }
@@ -42,7 +42,7 @@
   Debtor_Payment::allocations_select(_("Type:"), 'filterType', null);
   Forms::checkCells(" " . _("show settled:"), 'showSettled', null);
   Forms::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-  Row::end();
+  echo '</tr>';
   Table::end();
   $data_after = Dates::_dateToSql($_POST['TransAfterDate']);
   $date_to    = Dates::_dateToSql($_POST['TransToDate']);
@@ -67,8 +67,7 @@
 			AND round(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount,2) != 0
  		AND trans.tran_date >= '$data_after'
  		AND trans.tran_date <= '$date_to'";
-
-  if (Input::_post('debtor_id',Input::NUMERIC)) {
+  if (Input::_post('debtor_id', Input::NUMERIC)) {
     $sql .= " AND trans.debtor_id = " . DB::_quote($_POST['debtor_id']);
   }
   if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
@@ -99,7 +98,6 @@
     ),
     _("Type")                                                                          => array(
       'fun' => function ($dummy, $type) {
-
         return SysTypes::$names[$type];
       }
     ),
@@ -176,7 +174,7 @@
   if (!Input::_get('frame')) {
     array_shift($cols);
   }
-  $table = DB_Pager::new_db_pager('doc_tbl', $sql, $cols);
+  $table = DB_Pager::newPager('doc_tbl', $sql, $cols);
   $table->setMarker(
     function ($row) {
       return ($row['OverDue'] == 1 && Num::_priceFormat(abs($row["TotalAmount"]) - $row["Allocated"]) != 0);

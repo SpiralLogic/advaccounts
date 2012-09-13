@@ -13,8 +13,8 @@
     $security = SA_GLACCOUNTTAGS;
   } elseif (Input::_get('type') == "dimension" || Input::_post('type') == TAG_DIMENSION) {
     $security = SA_DIMTAGS;
-  }else {
-    $security=SA_DENIED;
+  } else {
+    $security = SA_DENIED;
   }
   // We use Input::_post('type') throughout this script, so convert $_GET vars
   // if Input::_post('type') is not set.
@@ -68,7 +68,7 @@
   }
   $result = Tags::getAll(Input::_post('type'), Input::_hasPost('show_inactive'));
   Forms::start();
-  Table::start('tablestyle grid');
+  Table::start('padded grid');
   $th = array(_("Tag Name"), _("Tag Description"), "", "");
   Forms::inactiveControlCol($th);
   Table::header($th);
@@ -79,11 +79,11 @@
     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'tags', 'id');
     Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
-    Row::end();
+    echo '</tr>';
   }
   Forms::inactiveControlRow($th);
   Table::end(1);
-  Table::start('tablestyle2');
+  Table::start('standard');
   if ($selected_id != -1) // We've selected a tag
   {
     if ($Mode == MODE_EDIT) {

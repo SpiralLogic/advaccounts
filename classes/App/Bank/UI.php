@@ -4,7 +4,6 @@
   use ADV\Core\DB\DB;
   use ADV\Core\JS;
   use ADV\App\User;
-  use ADV\Core\Row;
   use ADV\App\Dimensions;
   use ADV\Core\Cell;
   use ADV\App\Ref;
@@ -37,11 +36,9 @@
      * @return string
      */
     public static function reconcile($account, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
-      $sql
-        = "SELECT reconciled FROM bank_trans
+      $sql = "SELECT reconciled FROM bank_trans
  WHERE bank_act=" . DB::_escape($account) . " AND reconciled IS NOT null AND amount!=0
  GROUP BY reconciled";
-
       return Forms::selectBox(
         $name,
         $selected_id,
@@ -84,7 +81,7 @@
     public static function balance_row($bank_acc, $parms = '') {
       $to  = Dates::_addDays(Dates::_today(), 1);
       $bal = Bank_Account::getBalances($bank_acc, null, $to);
-      Row::label(
+      Table::label(
         _("Bank Balance:"),
         "<a target='_blank' " . ($bal < 0 ? 'class="redfg openWindow"' : '') . "href='/gl/inquiry/bank.php?bank_account=" . $bank_acc . "'" . " >&nbsp;" . Num::_priceFormat(
           $bal
@@ -101,8 +98,7 @@
      * @param bool $submit_on_change
      */
     public static function cash_accounts_row($label, $name, $selected_id = null, $submit_on_change = false) {
-      $sql
-        = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
+      $sql = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
  FROM bank_accounts
  WHERE bank_accounts.account_type=3";
       if ($label != null) {
@@ -156,7 +152,6 @@
       if ($raw) {
         return "gl/view/$viewer?trans_no=$trans_no";
       }
-
       return Display::viewer_link($label, "gl/view/$viewer?trans_no=$trans_no", $class, $id, $icon);
     }
   }

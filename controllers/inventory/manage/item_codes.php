@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Foreign Item Codes"), SA_FORITEMCODE);
   Validation::check(Validation::PURCHASE_ITEMS, _("There are no inventory items defined in the system."), STOCK_PURCHASED);
   list($Mode, $selected_id) = Page::simple_mode(true);
@@ -71,14 +70,19 @@
   $dflt_cat  = $result['category_id'];
   $result    = Item_Code::getAll($_POST['stock_id']);
   Display::div_start('code_table');
-  Table::start('tablestyle grid width60');
+  Table::start('padded grid width60');
   $th = array(
-    _("EAN/UPC Code"), _("Quantity"), _("Units"), _("Description"), _("Category"), "", ""
+    _("EAN/UPC Code"),
+    _("Quantity"),
+    _("Units"),
+    _("Description"),
+    _("Category"),
+    "",
+    ""
   );
   Table::header($th);
   $k = $j = 0; //row colour counter
   while ($myrow = DB::_fetch($result)) {
-
     Cell::label($myrow["item_code"]);
     Cell::qty($myrow["quantity"], $dec);
     Cell::label($units);
@@ -86,7 +90,7 @@
     Cell::label($myrow["cat_name"]);
     Forms::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
     Forms::buttonEditCell("Delete" . $myrow['id'], _("Delete"));
-    Row::end();
+    echo '</tr>';
     $j++;
     If ($j == 12) {
       $j = 1;
@@ -110,7 +114,7 @@
     $_POST['category_id'] = $dflt_cat;
   }
   echo "<br>";
-  Table::start('tablestyle2');
+  Table::start('standard');
   Forms::hidden('code_id', $selected_id);
   Forms::textRow(_("UPC/EAN code:"), 'item_code', null, 20, 21);
   Forms::qtyRow(_("Quantity:"), 'quantity', null, '', $units, $dec);

@@ -6,8 +6,7 @@
   use ADV\App\ADVAccounting;
   use ADV\App\Form\Form;
   use ADV\Core\Input\Input;
-  use ADV\Core\Row;
-  use ADV\App\UI\UI;
+  use ADV\App\UI;
   use ADV\Core\Table;
 
   /**
@@ -18,8 +17,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Debtors extends \ADV\App\Controller\Base
-  {
+  class Debtors extends \ADV\App\Controller\Base {
     /** @var Debtor */
     protected $debtor;
     protected $company_data;
@@ -64,7 +62,6 @@
       //$cache = null;
       if ($cache) {
         $this->JS->setState($cache[1]);
-
         return $form = $cache[0];
       }
       $this->JS->autocomplete('customer', 'Company.fetch');
@@ -182,7 +179,6 @@
       }
       $form = HTMLmin::minify($view->render(true));
       Cache::_set('customer_form', [$form, $this->JS->getState()]);
-
       return $form;
     }
     protected function delete() {

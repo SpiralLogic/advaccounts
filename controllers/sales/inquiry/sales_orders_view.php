@@ -1,8 +1,7 @@
 <?php
   use ADV\App\Debtor\Debtor;
   use ADV\App\Forms;
-  use ADV\App\UI\UI;
-  use ADV\Core\Row;
+  use ADV\App\UI;
   use ADV\Core\Table;
   use ADV\Core\DB\DB;
   use ADV\Core\Input\Input;
@@ -24,8 +23,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   /**
 
    */
-  class SalesOrderInquiry extends \ADV\App\Controller\Base
-  {
+  class SalesOrderInquiry extends \ADV\App\Controller\Base {
     protected $security;
     protected $trans_type;
     protected $debtor_id;
@@ -126,8 +124,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
     protected function index() {
       Page::start($this->title, $this->security);
       Forms::start();
-      Table::start('tablestyle_noborder');
-      Row::start();
+      Table::start('noborder');
+      echo '<tr>';
       Debtor::newselect(null, ['label'=> false, 'row'=> false]);
       Forms::refCellsSearch(null, 'OrderNumber', '', null, '', true);
       if ($_POST['order_view_mode'] != self::MODE_DELTEMPLATES && $_POST['order_view_mode'] != self::MODE_INVTEMPLATES) {
@@ -153,7 +151,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
         Forms::checkCells(_("Show All:"), 'show_all');
       }
       Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
-      Row::end();
+      echo '</tr>';
       Table::end(1);
       Forms::hidden('order_view_mode');
       Forms::hidden('type', $this->trans_type);
@@ -165,12 +163,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
     }
     protected function displayTable() { //	Orders inquiry table
       //
-      $sql
-        = "SELECT
+      $sql = "SELECT
  		sorder.trans_type,
  		sorder.order_no,
- 		sorder.reference," . ($_POST['order_view_mode'] == self::MODE_INVTEMPLATES || $_POST['order_view_mode'] == self::MODE_DELTEMPLATES ? "sorder.comments, " :
-        "sorder.customer_ref, ") . "
+ 		sorder.reference," . ($_POST['order_view_mode'] == self::MODE_INVTEMPLATES || $_POST['order_view_mode'] == self::MODE_DELTEMPLATES ? "sorder.comments, " : "sorder.customer_ref, ") . "
  		sorder.ord_date,
  		sorder.delivery_date,
  		debtor.name,
@@ -194,11 +190,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       } else {
         $sql .= " AND sorder.trans_type = " . $this->trans_type;
       }
-      $sql
-        .= " AND sorder.debtor_id = debtor.debtor_id
+      $sql .= " AND sorder.debtor_id = debtor.debtor_id
  		AND sorder.branch_id = branch.branch_id
  		AND debtor.debtor_id = branch.debtor_id";
-
       if ($this->debtor_id > 0) {
         $sql .= " AND sorder.debtor_id = " . DB::_quote($this->debtor_id);
       }
@@ -214,14 +208,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
             continue;
           }
           $quicksearch = DB::_quote("%" . trim($quicksearch) . "%");
-          $sql
-            .= " AND ( debtor.debtor_id = $quicksearch OR debtor.name LIKE $quicksearch OR sorder.order_no LIKE $quicksearch
+          $sql .= " AND ( debtor.debtor_id = $quicksearch OR debtor.name LIKE $quicksearch OR sorder.order_no LIKE $quicksearch
  			OR sorder.reference LIKE $quicksearch OR sorder.contact_name LIKE $quicksearch
  			OR sorder.customer_ref LIKE $quicksearch
  			 OR sorder.customer_ref LIKE $quicksearch OR branch.br_name LIKE $quicksearch)";
         }
-        $sql
-          .= " GROUP BY sorder.ord_date,
+        $sql .= " GROUP BY sorder.ord_date,
  				 sorder.order_no,
  				sorder.debtor_id,
  				sorder.branch_id,
@@ -252,8 +244,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
         ) {
           $sql .= " AND sorder.type=1";
         }
-        $sql
-          .= " GROUP BY sorder.ord_date,
+        $sql .= " GROUP BY sorder.ord_date,
  sorder.order_no,
  				sorder.debtor_id,
  				sorder.branch_id,
@@ -302,7 +293,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
         }
       }
       Arr::append($cols, [['insert' => true, 'fun' => [$this, 'formatDropdown']]]);
-      $table = DB_Pager::new_db_pager('orders_tbl', $sql, $cols, null, null, 0, 4);
+      $table = DB_Pager::newPager('orders_tbl', $sql, $cols, null, null, 0, 4);
       $table->setMarker([$this, 'formatMarker'], _("Marked items are overdue."));
       $table->width = "90%";
       $table->display($table);
@@ -337,7 +328,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       if ($row['trans_type'] == ST_SALESORDER) {
         return ['label'=> _("Dispatch"), 'href'=> "/sales/customer_delivery.php?OrderNumber=" . $row['order_no']];
       }
-
       return ['label'=> _("Sales Order"), 'href'=> "/sales/sales_order_entry.php?OrderNumber=" . $row['order_no']];
     }
     /**
@@ -349,7 +339,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       if ($row['trans_type'] == ST_SALESORDER) {
         return ['label'=> _("Invoice"), 'href'=> "/sales/sales_order_entry.php?NewInvoice=" . $row['order_no']];
       }
-
       return '';
     }
     /**
@@ -368,7 +357,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
     function formatOrderBtn($row) {
       $name  = "chgtpl" . $row['order_no'];
       $value = $row['type'] ? 1 : 0;
-
       // save also in hidden field for testing during 'Update'
       return Forms::checkbox(null, $name, $value, true, _('Set this order as a template for direct deliveries/invoices')) . Forms::hidden(
         'last[' . $row
@@ -442,7 +430,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       }
       $menus[] = ['title'=> $items[0]['label'], 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
       $dropdown->set('menus', $menus);
-
       return $dropdown->render(true);
     }
   }

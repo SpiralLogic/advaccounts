@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Payment Methods"), SA_BANKACCOUNT);
   list($Mode, $selected_id) = Page::simple_mode();
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
@@ -60,7 +59,7 @@
   }
   /* Always show the list of accounts */
   Forms::start();
-  Table::start('tablestyle grid width80');
+  Table::start('padded grid width80');
   $sql = "SELECT * FROM payment_methods";
   if (!Input::_hasPost('show_inactive')) {
     $sql .= " AND !inactive";
@@ -72,18 +71,17 @@
   Table::header($th);
   $k = 0;
   while ($myrow = DB::_fetch($result)) {
-
     Cell::label($myrow["name"], ' class="nowrap"');
     Cell::label($myrow["undeposited"], ' class="nowrap"');
     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'payment_methods', 'id');
     Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
-    Row::end();
+    echo '</tr>';
   }
   Forms::inactiveControlRow($th);
   Table::end(1);
   $is_editing = $selected_id != -1;
-  Table::start('tablestyle2');
+  Table::start('standard');
   if ($is_editing) {
     if ($Mode == MODE_EDIT) {
       $myrow                = GL_PaymentMethod::get($selected_id);

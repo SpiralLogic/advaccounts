@@ -1,5 +1,5 @@
 <?php
-  use ADV\App\UI\UI;
+  use ADV\App\UI;
   use ADV\App\Form\Form;
   use ADV\Core\JS;
   use ADV\Core\DB\DB;
@@ -12,8 +12,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Contact_Postcode
-  {
+  class Contact_Postcode {
     use \ADV\Core\Traits\SetFromArray;
 
     /**
@@ -66,7 +65,6 @@
         'name'              => $this->state[0]
         ]
       )->label('State: ')->val($this->state[1]);
-
       $form->custom(
         UI::search(
           $this->postcode[0],
@@ -84,7 +82,6 @@
         )
       )->label('Postcode: ');
       $this->registerJS();
-
       return $form;
     }
     /**
@@ -97,7 +94,6 @@
       if ($values) {
         $form->setValues($values);
       }
-
       return $form;
     }
     /**
@@ -136,7 +132,6 @@
         $type . ' LIKE',
         $term . '%'
       )->orderBy('Pcode')->limit(20)->fetch()->all();
-
       return $result;
     }
     /**

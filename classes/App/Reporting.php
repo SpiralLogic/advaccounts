@@ -14,16 +14,14 @@
   namespace ADV\App;
 
   use ADV\Core\HTML;
-
   use ADV\Core\JS;
   use ADV\Core\Config;
-  use ADV\App\UI\UI;
+  use ADV\App\UI;
 
   /**
 
    */
-  class Reporting
-  {
+  class Reporting {
     static $debug = null;
     /** @var User */
     static $User = null;
@@ -61,7 +59,6 @@
       $options = static::print_option_array($type_no, $doc_no, $email, $extra);
       $ar      = $options[0];
       $rep     = $options[1];
-
       return static::print_link($link_text, $rep, $ar, "", $icon, $class, $id, $raw);
     }
     /**
@@ -191,7 +188,6 @@
           break;
         //		default: $ar = [];
       }
-
       return array($ar, $rep);
     }
     /**
@@ -213,9 +209,6 @@
       if (empty($emails)) {
         return false;
       }
-      if ($return) {
-        ob_start();
-      }
       if (static::$debug === null) {
         static::$debug = Config::_get('debug.pdf');
       }
@@ -231,25 +224,19 @@
       }
       $ars[] = 'REP_ID=' . urlencode($rep);
       $url .= implode('&', $ars);
-      if ($class != '' && static::$debug) {
-        $class = "class='" . e($class) . "'";
-      }
-      if ($id != '') {
-        $id = " id='$id'";
-      }
-      $ars = Display::access_string($link_text);
-      echo  HTML::br()->p(array('class' => 'center'));
-      UI::select('EmailSelect' . $type_no, $emails, array('style' => 'max-width:400px'))->br;
-      echo HTML::button(
+      $html = new HTML;
+      $html->br()->p(['class' => 'center']);
+      UI::select('EmailSelect' . $type_no, $emails, ['style' => 'max-width:400px'], null, $html)->br;
+      $html->button(
         'EmailButton' . $type_no,
         $link_text,
         array(
              'style'    => 'margin:20px',
              'data-url' => $url,
-        )
+        ),
+        false
       )->p;
-      $js
-        = <<<JS
+      $js = <<<JS
 		$('#EmailButton$type_no').click(function() {
 		if (!confirm("Send email now?")) { return false;}
 			var email = $("#EmailSelect$type_no").val();
@@ -260,10 +247,9 @@
 		});
 JS;
       if ($return) {
-        echo HTML::script('null', $js, false);
-
-        return ob_get_clean();
+        return $html->script('null', $js, false)->__tostring();
       }
+      echo $html;
       static::$JS->onload($js);
     }
     /**
@@ -310,7 +296,6 @@ JS;
       if ($raw) {
         return $url;
       }
-
       return "<a target='_blank' href='" . e($url) . "' $id $class $pars[1]>$pars[0]</a>";
     }
     /**
@@ -324,7 +309,6 @@ JS;
      * @return \ADV\Core\HTML|string
      */
     public static function emailDialogue($id, $type, $type_no, $text = "Email") {
-
       return (new HTML)->button(
         false,
         $text,

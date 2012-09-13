@@ -7,18 +7,37 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Display Setup"), SA_SETUPDISPLAY);
   if (isset($_POST['setprefs'])) {
-    if (!is_numeric($_POST['query_size']) || ($_POST['query_size'] < 1)|| ($_POST['query_size'] > 100)) {
+    if (!is_numeric($_POST['query_size']) || ($_POST['query_size'] < 1) || ($_POST['query_size'] > 100)) {
       Event::error($_POST['query_size']);
       Event::error(_("Query size must be integer and greater than zero and no bigger than 100."));
       JS::_setFocus('query_size');
     } else {
       $chg_theme = User::theme() != $_POST['theme'];
       $chg_lang  = $_SESSION['language']->code != $_POST['language'];
-      User::i()
-        ->update_prefs($_POST['prices'], $_POST['Quantities'], $_POST['Rates'], $_POST['Percent'], Input::_hasPost('show_gl'), Input::_hasPost('show_codes'), $_POST['date_format'], $_POST['date_sep'], $_POST['tho_sep'], $_POST['dec_sep'], $_POST['theme'], $_POST['page_size'], Input::_hasPost('show_hints'), $_POST['profile'], Input::_hasPost('rep_popup'), (int) ($_POST['query_size']), Input::_hasPost('graphic_links'), $_POST['language'], Input::_hasPost('sticky_doc_date'), $_POST['startup_tab']);
+      User::i()->update_prefs(
+        $_POST['prices'],
+        $_POST['Quantities'],
+        $_POST['Rates'],
+        $_POST['Percent'],
+        Input::_hasPost('show_gl'),
+        Input::_hasPost('show_codes'),
+        $_POST['date_format'],
+        $_POST['date_sep'],
+        $_POST['tho_sep'],
+        $_POST['dec_sep'],
+        $_POST['theme'],
+        $_POST['page_size'],
+        Input::_hasPost('show_hints'),
+        $_POST['profile'],
+        Input::_hasPost('rep_popup'),
+        (int) ($_POST['query_size']),
+        Input::_hasPost('graphic_links'),
+        $_POST['language'],
+        Input::_hasPost('sticky_doc_date'),
+        $_POST['startup_tab']
+      );
       if ($chg_lang) {
         $_SESSION['language']->setLanguage($_POST['language']);
       }
@@ -38,7 +57,7 @@
     }
   }
   Forms::start();
-  Table::startOuter('tablestyle2');
+  Table::startOuter('standard');
   Table::section(1);
   Table::sectionTitle(_("Decimal Places"));
   Forms::textRowEx(_("Prices/Amounts:"), 'prices', 5, 5, '', User::price_dec());

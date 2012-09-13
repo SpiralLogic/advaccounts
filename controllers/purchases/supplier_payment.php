@@ -13,8 +13,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class SupplierPayment extends \ADV\App\Controller\Base
-  {
+  class SupplierPayment extends \ADV\App\Controller\Base {
     protected $supplier_currency;
     protected $bank_currency;
     protected $company_currency;
@@ -61,7 +60,7 @@
         $this->processSupplierPayment();
       }
       Forms::start();
-      Table::startOuter('tablestyle2 width80 pad5');
+      Table::startOuter('standard width80 pad5');
       Table::section(1);
       Creditor::newselect();
       Bank_Account::row(_("Bank Account:"), 'bank_account', null, true);
@@ -80,7 +79,7 @@
         GL_Allocation::show_allocatable(false);
       }
       Display::div_end();
-      Table::start('tablestyle width60');
+      Table::start('padded width60');
       Forms::AmountRow(_("Amount of Discount:"), 'discount');
       Forms::AmountRow(_("Amount of Payment:"), 'amount');
       Forms::textareaRow(_("Memo:"), 'memo_', null, 22, 4);
@@ -133,7 +132,6 @@
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter another supplier &payment"), "creditor_id=" . $this->creditor_id, true, 'class="button"');
       $this->Ajax->activate('_page_body');
       Page::footer_exit();
-
       return true;
     }
     protected function runValidation() {

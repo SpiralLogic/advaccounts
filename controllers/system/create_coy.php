@@ -33,14 +33,12 @@
    *
    * @return bool
    */
-  function check_data(&$selected_id)
-  {
+  function check_data(&$selected_id) {
     if ($_POST['name'] == "" || $_POST['host'] == "" || $_POST['dbuser'] == "" || $_POST['dbname'] == "") {
       return false;
     }
     if ($selected_id == -1 && (!isset($_GET['ul']) || $_GET['ul'] != 1)) {
       Event::error(_("When creating a new company, you must provide a Database script file."));
-
       return false;
     }
     foreach (Config::_getAll('db') as $id => $con) {
@@ -48,7 +46,6 @@
       ) {
       }
     }
-
     return true;
   }
 
@@ -57,8 +54,7 @@
    *
    * @return bool
    */
-  function handle_submit(&$selected_id)
-  {
+  function handle_submit(&$selected_id) {
     $comp_subdirs = Config::_get('company_subdirs');
     $error        = false;
     if (!check_data($selected_id)) {
@@ -99,7 +95,6 @@
       }
       if ($error) {
         remove_connection($id);
-
         return false;
       }
     } else {
@@ -118,19 +113,16 @@
     $exts = DB_Company::get_company_extensions();
     advaccounting::write_extensions($exts, $id);
     Event::success($new ? _('New company has been created.') : _('Company has been updated.'));
-
     return true;
   }
 
-  function handle_delete()
-  {
+  function handle_delete() {
     $id = $_GET['id'];
     // First make sure all company directories from the one under removal are writable.
     // Without this after operation we end up with changed per-company owners!
     for ($i = $id; $i < count(Config::_getAll('db')); $i++) {
       if (!is_dir(COMPANY_PATH . DS . $i) || !is_writable(COMPANY_PATH . DS . $i)) {
         Event::error(_('Broken company subdirectories system. You have to remove this company manually.'));
-
         return;
       }
     }
@@ -142,14 +134,12 @@
     $tmpname = COMPANY_PATH . 'old_' . $id;
     if (!@rename($cdir, $tmpname)) {
       Event::error(_('Cannot rename subdirectory to temporary name.'));
-
       return;
     }
     // 'shift' company directories names
     for ($i = $id + 1; $i < count(Config::_getAll('db')); $i++) {
       if (!rename(COMPANY_PATH . DS . $i, COMPANY_PATH . DS . ($i - 1))) {
         Event::error(_("Cannot rename company subdirectory"));
-
         return;
       }
     }
@@ -164,14 +154,12 @@
     @Files::flushDir($tmpname, true);
     if (!@rmdir($tmpname)) {
       Event::error(_("Cannot remove temporary renamed company data directory ") . $tmpname);
-
       return;
     }
     Event::notice(_("Selected company as been deleted"));
   }
 
-  function display_companies()
-  {
+  function display_companies() {
     $coyno = User::i()->company;
     echo "
             <script language='javascript'>
@@ -183,9 +171,16 @@
                 document.location.replace('create_coy.php?c=df&id='+id)
             }
             </script>";
-    Table::start('tablestyle grid');
+    Table::start('padded grid');
     $th = array(
-      _("Company"), _("Database Host"), _("Database User"), _("Database Name"), _("Table Pref"), _("Default"), "", ""
+      _("Company"),
+      _("Database Host"),
+      _("Database User"),
+      _("Database Name"),
+      _("Table Pref"),
+      _("Default"),
+      "",
+      ""
     );
     Table::header($th);
     $k    = 0;
@@ -198,7 +193,7 @@
         $what = _("No");
       }
       if ($i == $coyno) {
-        Row::start("class='stockmankobg'");
+        echo "<tr class='stockmankobg'>";
       } else {
       }
       Cell::label($conn[$i]['name']);
@@ -214,7 +209,7 @@
       }
       Cell::label("<a href='" . $_SERVER['DOCUMENT_URI'] . "?selected_id=$i'>$edit</a>");
       Cell::label($i == $coyno ? '' : "<a href=''>$delete</a>");
-      Row::end();
+      echo '</tr>';
     }
     Table::end();
     Event::warning(_("The marked company is the current company which cannot be deleted."), 0, 0, "class='currentfg'");
@@ -223,8 +218,7 @@
   /**
    * @param $selected_id
    */
-  function display_company_edit($selected_id)
-  {
+  function display_company_edit($selected_id) {
     if ($selected_id != -1) {
       $n = $selected_id;
     } else {
@@ -243,7 +237,7 @@
                 document.forms[0].Forms::submit()
             }
             </script>";
-    Table::start('tablestyle2');
+    Table::start('standard');
     if ($selected_id != -1) {
       $conn                = Config::_get('db.' . $selected_id);
       $_POST['name']       = $conn['name'];

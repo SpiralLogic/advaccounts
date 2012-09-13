@@ -9,7 +9,6 @@
   use ADV\Core\Ajax;
   use ADV\Core\DB\DB;
   use ADV\Core\Input\Input;
-  use ADV\Core\Row;
   use ADV\Core\Table;
 
   /**
@@ -25,8 +24,7 @@
   any form.
 
    */
-  class DB_Pager
-  {
+  class DB_Pager {
     /** @var \ADV\App\User */
     static $User;
     /** @var \ADV\Core\DB\DB */
@@ -192,7 +190,6 @@
       }
       unset($this->marker);
       unset($this->rowFunction);
-
       return array_keys((array) $this);
     }
     /**
@@ -201,10 +198,10 @@
      * @return bool
      */
     public function display() {
-      $this->select_records();
+      $this->selectRecords();
       Display::div_start("_{$this->name}_span");
       $headers = $this->makeHeaders();
-      $class   = $this->class ? : 'tablestyle grid width' . rtrim($this->width, '%');
+      $class   = $this->class ? : 'padded grid width' . rtrim($this->width, '%');
       Table::start($class);
       if (isset($this->marker_txt)) {
         Event::warning($this->marker_txt, 0, 1, "class='$this->notice_class'");
@@ -216,7 +213,6 @@
       echo $this->displayNavigation('bottom');
       Table::end();
       Display::div_end();
-
       return true;
     }
     /**
@@ -226,7 +222,7 @@
     protected function init() {
       if ($this->ready == false) {
         if ($this->type == self::SQL) {
-          $sql    = $this->_sql_gen(true);
+          $sql    = $this->sqlGen(true);
           $result = static::$DB->_query($sql, 'Error reading record set');
           if ($result == false) {
             return false;
@@ -246,7 +242,6 @@
         }
         $this->ready = true;
       }
-
       return true;
     }
     /**
@@ -301,7 +296,6 @@
           $headers[] = $this->navi($this->name . '_sort_' . $num_col, $html, $this->name . '_sort_' . $num_col, $col['head'], true, $col['head'] . $icon);
         }
       }
-
       return $headers;
     }
     /**
@@ -348,7 +342,6 @@
         $html->span(null, _('No records') . $inact, [], false);
       }
       $html->_td()->tr;
-
       return $html;
     }
     /**
@@ -358,7 +351,7 @@
      */
     protected function displayRow($row) {
       if ($this->marker && is_callable($this->marker) && call_user_func($this->marker, $row)) {
-        Row::start("class='$this->marker_class'");
+        echo "<tr class='$this->marker_class'>";
       } elseif (is_callable($this->rowFunction)) {
         echo call_user_func($this->rowFunction, $row);
       } else {
@@ -411,7 +404,7 @@
             break;
           case 'inactive':
             if (static::$Input->post('show_inactive')) {
-              $this->inactive_control_cell($row);
+              $this->inactiveControlCell($row);
             }
             break;
           case 'active':
@@ -431,8 +424,7 @@
           case 'skip': // column not displayed
         }
       }
-      Row::end();
-
+      echo '</tr>';
       return $row;
     }
     /**
@@ -442,7 +434,6 @@
       $checked = ($this->showInactive) ? 'checked' : '';
       $field   = '<input ' . $checked . ' type="checkbox" name="_action" value="showInactive" onclick="JsHttpRequest.request(this)">';
       Ajax::_activate("_{$this->name}_span");
-
       return $field;
     }
     /**
@@ -452,10 +443,9 @@
      * Set query result page
 
      */
-    protected function change_page($page = null) {
+    protected function changePage($page = null) {
       $this->setPage($page);
       $this->query();
-
       return true;
     }
     /**
@@ -465,9 +455,9 @@
      * Helper for display inactive control cells
 
      */
-    protected function  inactive_control_cell(&$row) {
+    protected function  inactiveControlCell(&$row) {
       if ($this->inactive_ctrl) {
-        //	return inactive_control_cell($row[$this->inactive_ctrl['key']],
+        //	return inactiveControlCell($row[$this->inactive_ctrl['key']],
         // $row['inactive'], $this->inactive_ctrl['table'],
         // $this->inactive_ctrl['key']);
         $key   = $this->key ? $this->key : $this->columns[0]['name']; // TODO - support for complex keys
@@ -517,7 +507,7 @@
         if ($this->rec_count == 0) {
           return true;
         }
-        $sql    = $this->_sql_gen(false);
+        $sql    = $this->sqlGen(false);
         $result = static::$DB->_query($sql, 'Error browsing database: ' . $sql);
         if (!$result) {
           return false;
@@ -543,7 +533,6 @@
           }
         }
       }
-
       return true;
     }
     /**
@@ -576,12 +565,11 @@
     /**
      * Set current page in response to user control.
      */
-    protected function select_records() {
+    protected function selectRecords() {
       $page = Forms::findPostPrefix($this->name . '_page_', false);
-
       $sort = Forms::findPostPrefix($this->name . '_sort_', true);
       if ($page) {
-        $this->change_page($_POST[$this->name . '_page_' . $page]);
+        $this->changePage($_POST[$this->name . '_page_' . $page]);
         if ($page == 'next' && !$this->next_page || $page == 'last' && !$this->last_page
         ) {
           static::$JS->setFocus($this->name . '_page_prev_bottom');
@@ -711,7 +699,6 @@
       if (is_array($sql)) {
         $this->type = self::ARR;
         $this->sql  = $sql;
-
         return;
       }
       if ($sql != $this->sql) {
@@ -770,7 +757,6 @@
     protected function sortTable($col) {
       if ($this->type == self::ARR) {
         $this->query();
-
         return true;
       }
       if (is_null($col)) {
@@ -781,7 +767,6 @@
       $this->columns[$col]['ord'] = $ord;
       $this->setPage(1);
       $this->query();
-
       return true;
     }
     /**
@@ -793,7 +778,7 @@
      * $count==true  - for total records count
 
      */
-    protected function _sql_gen($count = false) {
+    protected function sqlGen($count = false) {
       $select = $this->select;
       $from   = $this->from;
       $where  = $this->where;
@@ -807,7 +792,6 @@
       }
       if ($count) {
         $group = $group == '' ? "*" : "DISTINCT $group";
-
         return "SELECT COUNT($group) FROM $from $where";
       }
       $sql = "$select FROM $from $where";
@@ -832,7 +816,6 @@
       $page_length = $this->page_length;
       $offset      = ($this->curr_page - 1) * $page_length;
       $sql .= " LIMIT $offset, $page_length";
-
       return $sql;
     }
     /**
@@ -856,7 +839,6 @@
       }
       $href = '/' . ltrim($url, '/');
       $href = (static::$Input->request('frame')) ? "javascript:window.parent.location='$href'" : $href;
-
       return '<a href="' . e($href) . '" class="button">' . $link_text . "</a>";
     }
     /**
@@ -872,7 +854,7 @@
      *
      * @return DB_Pager
      */
-    public static function new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_length = 0, $sort = null) {
+    public static function newPager($name, $sql, $coldef, $table = null, $key = null, $page_length = 0, $sort = null) {
       if (!isset($_SESSION['pager'])) {
         $_SESSION['pager'] = [];
       }
@@ -903,7 +885,6 @@
       if (Input::_post('_action') == 'showInactive') {
         $pager->showInactive = (Input::_post('_value', Input::NUMERIC) == 1);
       }
-
       return $pager;
     }
     /**

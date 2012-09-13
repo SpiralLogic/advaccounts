@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Payment Terms"), SA_PAYTERMS);
   list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
@@ -40,13 +39,11 @@
         $note = _('Selected payment terms have been updated');
       } else {
         if (Input::_hasPost('DaysOrFoll')) {
-          $sql
-            = "INSERT INTO payment_terms (terms,
+          $sql = "INSERT INTO payment_terms (terms,
 					days_before_due, day_in_following_month)
 					VALUES (" . DB::_escape($_POST['terms']) . ", " . DB::_escape($_POST['DayNumber']) . ", 0)";
         } else {
-          $sql
-            = "INSERT INTO payment_terms (terms,
+          $sql = "INSERT INTO payment_terms (terms,
 					days_before_due, day_in_following_month)
 					VALUES (" . DB::_escape($_POST['terms']) . ",
 					0, " . DB::_escape($_POST['DayNumber']) . ")";
@@ -94,7 +91,7 @@
   }
   $result = DB::_query($sql, "could not get payment terms");
   Forms::start();
-  Table::start('tablestyle grid');
+  Table::start('padded grid');
   $th = array(_("Description"), _("Following Month On"), _("Due After (Days)"), "", "");
   Forms::inactiveControlCol($th);
   Table::header($th);
@@ -110,24 +107,22 @@
     } else {
       $after_text = $myrow["days_before_due"] . " " . _("days");
     }
-
     Cell::label($myrow["terms"]);
     Cell::label($full_text);
     Cell::label($after_text);
     Forms::inactiveControlCell($myrow["terms_indicator"], $myrow["inactive"], 'payment_terms', "terms_indicator");
     Forms::buttonEditCell("Edit" . $myrow["terms_indicator"], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow["terms_indicator"], _("Delete"));
-    Row::end();
+    echo '</tr>';
   } //END WHILE LIST LOOP
   Forms::inactiveControlRow($th);
   Table::end(1);
-  Table::start('tablestyle2');
+  Table::start('standard');
   $day_in_following_month = $days_before_due = 0;
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing payment terms
-      $sql
-                              = "SELECT * FROM payment_terms
+      $sql                    = "SELECT * FROM payment_terms
 			WHERE terms_indicator=" . DB::_escape($selected_id);
       $result                 = DB::_query($sql, "could not get payment term");
       $myrow                  = DB::_fetch($result);

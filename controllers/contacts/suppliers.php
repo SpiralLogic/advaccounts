@@ -6,9 +6,8 @@
   use ADV\Core\Input\Input;
   use ADV\App\ADVAccounting;
   use ADV\App\Form\Form;
-  use ADV\Core\Row;
   use ADV\Core\Table;
-  use ADV\App\UI\UI;
+  use ADV\App\UI;
 
   /**
    * PHP version 5.4
@@ -18,8 +17,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Creditors extends \ADV\App\Controller\Base
-  {
+  class Creditors extends \ADV\App\Controller\Base {
     /** @var Creditor */
     protected $creditor;
     protected $company_data;
@@ -61,18 +59,16 @@
       }
       echo $this->generateForm();
       $this->JS->onload("Company.setValues(" . json_encode($this->company_data) . ");")->setFocus($this->creditor->id ? 'name' : 'supplier');
-
       Page::end(true);
     }
     /**
      * @return string
      */
     protected function generateForm() {
-     $cache = Cache::_get('supplier_form');
- //  $cache = null; //Cache::_get('supplier_form');
+      $cache = Cache::_get('supplier_form');
+      //  $cache = null; //Cache::_get('supplier_form');
       if ($cache) {
         $this->JS->setState($cache[1]);
-
         return $form = $cache[0];
       }
       $this->JS->autocomplete('supplier', 'Company.fetch');
@@ -122,26 +118,24 @@
       $view->set('form', $form);
       $form->hidden('type', CT_SUPPLIER);
       $contact_form = new Form();
-         $view['date'] = date('Y-m-d H:i:s');
-         $contact_form->text('contact_name')->label('Contact:');
-         $contact_form->textarea('message', ['cols'=> 100, 'rows'=> 10])->label('Entry:');
-         $view->set('contact_form', $contact_form);
+      $view['date'] = date('Y-m-d H:i:s');
+      $contact_form->text('contact_name')->label('Contact:');
+      $contact_form->textarea('message', ['cols'=> 100, 'rows'=> 10])->label('Entry:');
+      $view->set('contact_form', $contact_form);
       if (!$this->Input->get('frame')) {
-               $shortcuts = [
-                 [
-                   'caption'=> 'Supplier Payment',
-                   'Make supplier payment!',
-                   'data'   => '/purchases/supplier_payment.php?creditor_id='
-                 ],
-                 ['caption'=> 'Create Order', 'Create Order for this customer!', 'data'=> '/purchases/supplier_invoice.php?New=1&creditor_id='],
-               ];
-               $view->set('shortcuts', $shortcuts);
-              UI::emailDialogue(CT_SUPPLIER);
-            }
+        $shortcuts = [
+          [
+            'caption'=> 'Supplier Payment',
+            'Make supplier payment!',
+            'data'   => '/purchases/supplier_payment.php?creditor_id='
+          ],
+          ['caption'=> 'Create Order', 'Create Order for this customer!', 'data'=> '/purchases/supplier_invoice.php?New=1&creditor_id='],
+        ];
+        $view->set('shortcuts', $shortcuts);
+        UI::emailDialogue(CT_SUPPLIER);
+      }
       $form = HTMLmin::minify($view->render(true));
-
       Cache::_set('supplier_form', [$form, $this->JS->getState()]);
-
       return $form;
     }
     protected function runValidation() {

@@ -4,10 +4,9 @@
   use ADV\App\Display;
   use ADV\App\Forms;
   use ADV\Core\JS;
-  use ADV\App\UI\UI;
+  use ADV\App\UI;
   use ADV\App\Bank\Bank;
   use ADV\Core\Cell;
-  use ADV\Core\Row;
   use ADV\Core\Table;
   use ADV\Core\DB\DB;
 
@@ -22,8 +21,7 @@
   /**
    * @property \ADV\Core\Input\Input Input
    */
-  class Reconcile extends \ADV\App\Controller\Base
-  {
+  class Reconcile extends \ADV\App\Controller\Base {
     /** @var Num Num*/
     protected $Num;
     /** @var Dates Dates*/
@@ -105,11 +103,11 @@
       Page::start(_($help_context = "Reconcile Bank Account"), SA_RECONCILE);
       Forms::start();
       Table::start();
-      Row::start();
+      echo '<tr>';
       Bank_Account::cells(_("Account:"), 'bank_account', null, true);
       Bank_UI::reconcile_cells(_("Bank Statement:"), $this->Input->post('bank_account'), 'bank_date', null, true, _("New"));
       Forms::buttonCell("reset", "reset", "reset");
-      Row::end();
+      echo '</tr>';
       Table::end();
       $this->displaySummary();
       echo "<hr><div id='drag'>";
@@ -143,7 +141,6 @@
     protected function render() {
       ob_start();
       $this->accountHasStatements ? $this->statementLayout() : $this->simpleLayout();
-
       return '<div id="newgrid">' . ob_get_clean() . '</div>';
     }
     /**
@@ -165,11 +162,10 @@
         "X"              => array('insert' => true, 'fun' => array($this, 'formatCheckbox')), //
         ['insert'=> true, 'fun'=> array($this, 'formatDropdown')], ////
       );
-      $table              = DB_Pager::new_db_pager('bank_rec', $sql, $cols);
+      $table              = DB_Pager::newPager('bank_rec', $sql, $cols);
       $table->width       = "80";
       $table->rowFunction = [$this, 'formatRow'];
       $table->display($table);
-
       return true;
     }
     /**
@@ -236,11 +232,10 @@
         'Memo'      => ['class'=> 'state_memo'], //
         ['fun'=> array($this, 'formatDropdown')], //
       ];
-      $table              = DB_Pager::new_db_pager('bank_rec', $known_trans, $cols);
+      $table              = DB_Pager::newPager('bank_rec', $known_trans, $cols);
       $table->class       = 'recgrid';
       $table->rowFunction = [$this, 'formatRow'];
       $table->display();
-
       return true;
     }
     /**
@@ -251,27 +246,27 @@
       Display::div_start('summary');
       Table::start();
       Table::sectionTitle(_("Reconcile Date"), 1);
-      Row::start();
+      echo '<tr>';
       Forms::dateCells("", "reconcile_date", _('Date of bank statement to reconcile'), $this->bank_date == '', 0, 0, 0, null, true);
-      Row::end();
+      echo '</tr>';
       Table::sectionTitle(_("Beginning Balance"), 1);
-      Row::start();
+      echo '<tr>';
       Forms::amountCellsEx("", "beg_balance", 15);
-      Row::end();
+      echo '</tr>';
       Table::sectionTitle(_("Ending Balance"), 1);
-      Row::start();
+      echo '<tr>';
       Forms::amountCellsEx("", "end_balance", 15);
       $reconciled = Validation::input_num('reconciled');
       $difference = Validation::input_num("end_balance") - Validation::input_num("beg_balance") - $reconciled;
-      Row::end();
+      echo '</tr>';
       Table::sectionTitle(_("Reconciled Amount"), 1);
-      Row::start();
+      echo '<tr>';
       Cell::amount($reconciled, false, '', "reconciled");
-      Row::end();
+      echo '</tr>';
       Table::sectionTitle(_("Difference"), 1);
-      Row::start();
+      echo '<tr>';
       Cell::amount($difference, false, '', "difference");
-      Row::end();
+      echo '</tr>';
       Table::end();
       Display::div_end();
     }
@@ -301,7 +296,6 @@
           }
         }
       }
-
       return;
     }
     /**
@@ -371,7 +365,6 @@
       $state_id = $row['state_id'];
       $hidden   = 'last[' . $row['id'] . ']';
       $value    = $row['reconciled'] != '';
-
       return Forms::checkbox(null, $name, $value, false, _('Reconcile this transaction')) . Forms::hidden($hidden, $value, false) . Forms::hidden(
         'state_' . $row['id'],
         $state_id,
@@ -396,7 +389,6 @@
         $class  = "class='overduebg deny mark'";
         $amount = e($row['state_amount']);
         $date   = e($this->Dates->sqlToDate($row['state_date']));
-
         return "<tr  $class  data-date='$date' data-amount='$amount'> ";
       }
       $name     = $row['id'];
@@ -413,7 +405,6 @@
       ) {
         $class = "class='cangroup overduebg'";
       }
-
       // save also in hidden field for testing during 'Reconcile'
       return "<tr  $class data-id='$name' data-date='$date' data-type='$type' data-transno='$trans_no' data-amount='$amount'> ";
     }
@@ -426,11 +417,9 @@
      */
     public function formatType($row) {
       $type = $row['type'];
-
       if (!$type) {
         return '';
       }
-
       return SysTypes::$names[$type];
     }
     /**
@@ -444,7 +433,6 @@
       if ($row['type'] != ST_GROUPDEPOSIT) {
         $content = GL_UI::viewTrans($row["type"], $row["trans_no"]);
       }
-
       return $content;
     }
     /**
@@ -457,7 +445,6 @@
         return '';
       }
       $dropdown = new View('ui/dropdown');
-
       if ($row['state_amount']) {
         if ($row['state_amount'] > 0) {
           $data = [];
@@ -488,9 +475,8 @@
           $items[] = ['class'=> 'voidTrans', 'label'=> 'Void Trans', 'data'=> ['type'=> $row['type'], 'trans_no'=> $row['trans_no']]];
           $title   = substr($row['ref'], 0, 7);
       }
-      $menus[] = ['title'=> $title?:'Create', 'auto'=> 'auto', 'items'=> $items];
+      $menus[] = ['title'=> $title ? : 'Create', 'auto'=> 'auto', 'items'=> $items];
       $dropdown->set('menus', $menus);
-
       return $dropdown->render(true);
     }
     /**
@@ -502,7 +488,6 @@
       if (!$row['amount']) {
         return '';
       }
-
       return ($row['type'] != ST_GROUPDEPOSIT) ? GL_UI::view($row["type"], $row["trans_no"]) : '';
     }
     /**
@@ -515,7 +500,6 @@
       if ($value > 0) {
         return '<span class="bold">' . $this->Num->priceFormat($value) . '</span>';
       }
-
       return '';
     }
     /**
@@ -528,7 +512,6 @@
       if ($value <= 0) {
         return '';
       }
-
       return '<span class="bold">' . $this->Num->priceFormat($value) . '</span>';
     }
     /**
@@ -552,7 +535,6 @@
       if (!$row['reconciled'] && ($row['trans_no'] || $row['type'] == ST_GROUPDEPOSIT)) {
         return '<div class="drag row">' . $content . '</div>';
       }
-
       return '<div class="deny row">' . $content . '</div>';
     }
     /**
@@ -567,10 +549,8 @@
       if ($date1 == $date2) {
         $amount1 = $a['state_amount'] ? : $a['amount'];
         $amount2 = $b['state_amount'] ? : $b['amount'];
-
         return $amount1 - $amount2;
       }
-
       return strcmp($date1, $date2);
     }
     /**
@@ -588,7 +568,6 @@
      */
     public function checkDate($date) {
       $date = $this->Dates->sqlToDate($date);
-
       return $this->Dates->isDate($date);
     }
     /**
@@ -601,7 +580,6 @@
       {
         Event::error(_("Invalid reconcile date format"));
         $this->JS->setFocus('reconcile_date');
-
         return false;
       }
       if ($this->bank_date == '') // new reconciliation
@@ -618,7 +596,6 @@
         $this->Input->post('state_' . $reconcile_id, Input::NUMERIC, -1)
       );
       $this->Ajax->activate('_page_body');
-
       return true;
     }
   }

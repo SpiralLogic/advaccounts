@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   if (isset($_GET['vw'])) {
     $view_id = $_GET['vw'];
   } else {
@@ -89,14 +88,14 @@
     }
     $date = Dates::_today(true);
     if ($Mode == ADD_ITEM) {
-      $sql
-        = "INSERT INTO attachments (type_no, trans_no, description, filename, unique_name,
-			filesize, filetype, tran_date) VALUES (" . DB::_escape($_POST['filterType']) . "," . DB::_escape($_POST['trans_no']) . "," . DB::_escape($_POST['description']) . ", " . DB::_escape($filename) . ", " . DB::_escape($unique_name) . ", " . DB::_escape($filesize) . ", " . DB::_escape($filetype) . ", '$date')";
+      $sql = "INSERT INTO attachments (type_no, trans_no, description, filename, unique_name,
+			filesize, filetype, tran_date) VALUES (" . DB::_escape($_POST['filterType']) . "," . DB::_escape($_POST['trans_no']) . "," . DB::_escape($_POST['description']) . ", " . DB::_escape($filename) . ", " . DB::_escape($unique_name) . ", " . DB::_escape($filesize) . ", " . DB::_escape(
+        $filetype
+      ) . ", '$date')";
       DB::_query($sql, "Attachment could not be inserted");
       Event::success(_("Attachment has been inserted."));
     } else {
-      $sql
-        = "UPDATE attachments SET
+      $sql = "UPDATE attachments SET
 			type_no=" . DB::_escape($_POST['filterType']) . ",
 			trans_no=" . DB::_escape($_POST['trans_no']) . ",
 			description=" . DB::_escape($_POST['description']) . ", ";
@@ -127,13 +126,12 @@
     unset($_POST['trans_no'], $_POST['description']);
     $selected_id = -1;
   }
-
   viewing_controls();
   if (isset($_POST['filterType'])) {
     display_rows($_POST['filterType']);
   }
   Forms::start(true);
-  Table::start('tablestyle2');
+  Table::start('standard');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       $row                  = get_attachment($selected_id);
@@ -141,7 +139,7 @@
       $_POST['description'] = $row["description"];
       Forms::hidden('trans_no', $row['trans_no']);
       Forms::hidden('unique_name', $row['unique_name']);
-      Row::label(_("Transaction #"), $row['trans_no']);
+      Table::label(_("Transaction #"), $row['trans_no']);
     }
     Forms::hidden('selected_id', $selected_id);
   } else {

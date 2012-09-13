@@ -18,7 +18,6 @@
   use ADV\Core\DB\DB;
   use ADV\App\Forms;
   use ADV\Core\Cell;
-  use ADV\Core\Row;
   use ADV\App\Display;
   use ADV\Core\Table;
 
@@ -66,7 +65,7 @@
   }
   $sql    = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_id";
   $result = DB::_query($sql, "could not get recurrent invoices");
-  Table::start('tablestyle grid width70');
+  Table::start('padded grid width70');
   $th = array(
     _("Description"),
     _("Template No"),
@@ -96,7 +95,7 @@
     $due_date = Dates::_addDays($due_date, $myrow['days']);
     $overdue  = Dates::_isGreaterThan($today, $due_date) && Dates::_isGreaterThan($today, $begin) && Dates::_isGreaterThan($end, $today);
     if ($overdue) {
-      Row::start("class='overduebg'");
+      echo "<tr class='overduebg'>";
       $due = true;
     } else {
     }
@@ -119,7 +118,7 @@
     } else {
       Cell::label("");
     }
-    Row::end();
+    echo '</tr>';
   }
   Table::end();
   if ($due) {

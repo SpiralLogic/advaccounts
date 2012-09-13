@@ -33,14 +33,12 @@
    *
    * @return bool
    */
-  function can_delete($selected_id)
-  {
+  function can_delete($selected_id) {
     $sql    = "SELECT COUNT(*) FROM bom WHERE workcentre_added=" . DB::_escape($selected_id);
     $result = DB::_query($sql, "check can delete work centre");
     $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this work centre because BOMs have been created referring to it."));
-
       return false;
     }
     $sql    = "SELECT COUNT(*) FROM wo_requirements WHERE workcentre=" . DB::_escape($selected_id);
@@ -48,10 +46,8 @@
     $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this work centre because work order requirements have been created referring to it."));
-
       return false;
     }
-
     return true;
   }
 
@@ -70,7 +66,7 @@
   }
   $result = WO_WorkCentre::getAll(Input::_hasPost('show_inactive'));
   Forms::start();
-  Table::start('tablestyle grid width50');
+  Table::start('padded grid width50');
   $th = array(_("Name"), _("description"), "", "");
   Forms::inactiveControlCol($th);
   Table::header($th);
@@ -81,11 +77,11 @@
     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'workcentres', 'id');
     Forms::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
-    Row::end();
+    echo '</tr>';
   }
   Forms::inactiveControlRow($th);
   Table::end(1);
-  Table::start('tablestyle2');
+  Table::start('standard');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing status code

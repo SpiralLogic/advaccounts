@@ -25,7 +25,6 @@
     if (count($tr->line_items) == 0) {
       Event::error(_("You must enter at least one non empty item line."));
       JS::_setFocus('stock_id');
-
       return false;
     }
     if (!Ref::is_valid($_POST['ref'])) {
@@ -94,12 +93,12 @@
   Forms::start();
   Inv_Transfer::header($_SESSION['transfer_items']);
   Table::start('tablesstyle width70 pad10');
-  Row::start();
+  echo '<tr>';
   echo "<td>";
   Inv_Transfer::display_items(_("Items"), $_SESSION['transfer_items']);
   Inv_Transfer::option_controls();
   echo "</td>";
-  Row::end();
+  echo '</tr>';
   Table::end(1);
   Forms::submitCenterBegin('Update', _("Update"), '', null);
   Forms::submitCenterEnd('Process', _("Process Transfer"), '', 'default');
@@ -112,10 +111,8 @@
     if (!Validation::post_num('qty', 0)) {
       Event::error(_("The quantity entered must be a positive number."));
       JS::_setFocus('qty');
-
       return false;
     }
-
     return true;
   }
 

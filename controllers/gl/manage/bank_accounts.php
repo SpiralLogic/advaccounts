@@ -68,9 +68,18 @@
   $sql .= " ORDER BY account_code, bank_curr_code";
   $result = DB::_query($sql, "could not get bank accounts");
   Forms::start();
-  Table::start('tablestyle grid width80');
+  Table::start('padded grid width80');
   $th = array(
-    _("Account Name"), _("Type"), _("Currency"), _("GL Account"), _("Bank"), _("Number"), _("Bank Address"), _("Dflt"), '', ''
+    _("Account Name"),
+    _("Type"),
+    _("Currency"),
+    _("GL Account"),
+    _("Bank"),
+    _("Number"),
+    _("Bank Address"),
+    _("Dflt"),
+    '',
+    ''
   );
   Forms::inactiveControlCol($th);
   Table::header($th);
@@ -92,12 +101,12 @@
     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'bank_accounts', 'id');
     Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
-    Row::end();
+    echo '</tr>';
   }
   Forms::inactiveControlRow($th);
   Table::end(1);
   $is_editing = $selected_id != -1;
-  Table::start('tablestyle2');
+  Table::start('standard');
   if ($is_editing) {
     if ($Mode == MODE_EDIT) {
       $myrow                        = Bank_Account::get($selected_id);
@@ -119,18 +128,18 @@
   Forms::textRow(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
   if ($is_editing) {
     $bank_account_types = Bank_Account::$types;
-    Row::label(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
+    Table::label(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
   } else {
     Bank_Account::type_row(_("Account Type:"), 'account_type', null);
   }
   if ($is_editing) {
-    Row::label(_("Bank Account Currency:"), $_POST['BankAccountCurrency']);
+    Table::label(_("Bank Account Currency:"), $_POST['BankAccountCurrency']);
   } else {
     GL_Currency::row(_("Bank Account Currency:"), 'BankAccountCurrency', null);
   }
   Forms::yesnoListRow(_("Default currency account:"), 'dflt_curr_act');
   if ($is_editing) {
-    Row::label(_("Bank Account GL Code:"), $_POST['account_code']);
+    Table::label(_("Bank Account GL Code:"), $_POST['account_code']);
   } else {
     GL_UI::all_row(_("Bank Account GL Code:"), 'account_code', null);
   }

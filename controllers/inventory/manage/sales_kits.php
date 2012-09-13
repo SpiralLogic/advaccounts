@@ -59,21 +59,21 @@
   $selected_kit = $_POST['item_code'];
   if (Input::_post('item_code') == '') {
     // New sales kit entry
-    Table::start('tablestyle2');
+    Table::start('standard');
     Forms::textRow(_("Alias/kit code:"), 'kit_code', null, 20, 21);
   } else {
     // Kit selected so display bom or edit component
     $_POST['description'] = $props['description'];
     $_POST['category']    = $props['category_id'];
-    Table::start('tablestyle2');
+    Table::start('standard');
     Forms::textRow(_("Description:"), 'description', null, 50, 200);
     Item_Category::row(_("Category:"), 'category', null);
     Forms::submitRow('update_name', _("Update"), false, 'class=center colspan=2', _('Update kit/alias name'), true);
-    Row::end();
+    echo '</tr>';
     Table::end(1);
     display_kit_items($selected_kit);
     echo '<br>';
-    Table::start('tablestyle2');
+    Table::start('standard');
   }
   if ($Mode == MODE_EDIT) {
     $myrow              = Item_Code::get($selected_id);
@@ -108,13 +108,17 @@
   /**
    * @param $selected_kit
    */
-  function display_kit_items($selected_kit)
-  {
+  function display_kit_items($selected_kit) {
     $result = Item_Code::get_kit($selected_kit);
     Display::div_start('bom');
-    Table::start('tablestyle grid width60');
+    Table::start('padded grid width60');
     $th = array(
-      _("Stock Item"), _("Description"), _("Quantity"), _("Units"), '', ''
+      _("Stock Item"),
+      _("Description"),
+      _("Quantity"),
+      _("Units"),
+      '',
+      ''
     );
     Table::header($th);
     $k = 0;
@@ -125,7 +129,7 @@
       Cell::label($myrow["units"] == '' ? _('kit') : $myrow["units"]);
       Forms::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
       Forms::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
-      Row::end();
+      echo '</tr>';
     } //END WHILE LIST LOOP
     Table::end();
     Display::div_end();
@@ -138,18 +142,15 @@
    *
    * @return mixed
    */
-  function update_component(&$Mode, $kit_code, $selected_item)
-  {
+  function update_component(&$Mode, $kit_code, $selected_item) {
     global $selected_kit;
     if (!Validation::post_num('quantity', 0)) {
       Event::error(_("The quantity entered must be numeric and greater than zero."));
       JS::_setFocus('quantity');
-
       return;
     } elseif ($_POST['description'] == '') {
       Event::error(_("Item code description cannot be empty."));
       JS::_setFocus('description');
-
       return;
     } elseif ($selected_item == -1) // adding new item or new alias/kit
     {
@@ -158,13 +159,11 @@
         if (DB::_numRows($kit)) {
           Event::error(_("This item code is already assigned to stock item or sale kit."));
           JS::_setFocus('kit_code');
-
           return;
         }
         if (Input::_post('kit_code') == '') {
           Event::error(_("Kit/alias code cannot be empty."));
           JS::_setFocus('kit_code');
-
           return;
         }
       }
@@ -172,14 +171,12 @@
     if (Item_Code::is_item_in_kit($selected_item, $kit_code, $_POST['component'], true)) {
       Event::error(_("The selected component contains directly or on any lower level the kit under edition. Recursive kits are not allowed."));
       JS::_setFocus('component');
-
       return;
     }
     /*Now check to see that the component is not already in the kit */
     if (Item_Code::is_item_in_kit($selected_item, $kit_code, $_POST['component'])) {
       Event::error(_("The selected component is already in this kit. You can modify it's quantity but it cannot appear more than once in the same kit."));
       JS::_setFocus('component');
-
       return;
     }
     if ($selected_item == -1) { // new item alias/kit
