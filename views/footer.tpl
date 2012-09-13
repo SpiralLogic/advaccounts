@@ -18,10 +18,8 @@
 </div>
 {{/if}}
 {{>help_modal}}
-
 <!-- end content div-->
 </div>
-
 {{>sidemenu}}
 {{$messages}}
 {{#if !AJAX_REFERRER}}

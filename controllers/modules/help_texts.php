@@ -13,12 +13,11 @@
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($_POST['save']) {
       try {
-        DB::_insert('help_texts')->value('page', $_POST['page'])->value('element', $_POST['element'])->value('text', $_POST['text'])->exec();
-      }
-      catch (\ADV\Core\DB\DBDuplicateException $e) {
-        DB::_update('help_texts')->value('text', $_POST['text'])->where('page=', $_POST['page'])->andWhere('element=', $_POST['element'])->exec();
+        DB::_insert('help_texts')->value('page', $_POST['page'])->value('element', $_POST['element'])->value('text', $_POST['text'])->value('title', $_POST['title'])->exec();
+      } catch (\ADV\Core\DB\DBDuplicateException $e) {
+        DB::_update('help_texts')->value('text', $_POST['text'])->value('title', $_POST['title'])->where('page=', $_POST['page'])->andWhere('element=', $_POST['element'])->exec();
       }
     }
-    $data['text'] = DB::_select('text')->from('help_texts')->where('page=', $_POST['page'])->andWhere('element=', $_POST['element'])->fetch()->one('text');
+    $data = DB::_select('text,title')->from('help_texts')->where('page=', $_POST['page'])->andWhere('element=', $_POST['element'])->fetch()->one();
     JS::_renderJSON($data);
   }

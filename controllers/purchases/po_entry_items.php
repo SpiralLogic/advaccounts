@@ -1,13 +1,4 @@
 <?php
-  use ADV\App\Creditor\Creditor;
-  use ADV\App\Reporting;
-  use ADV\Core\Ajax;
-  use ADV\App\UI\UI;
-  use ADV\App\Item\Item;
-  use ADV\Core\Table;
-  use ADV\Core\DB\DB;
-  use ADV\Core\Input\Input;
-  use ADV\Core\JS;
 
   /**
    * PHP version 5.4
@@ -17,8 +8,25 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  /** @noinspection PhpIncludeInspection */
-  //
+  use ADV\App\Item\Item;
+  use ADV\App\Display;
+  use ADV\App\Forms;
+  use ADV\App\Ref;
+  use ADV\App\Validation;
+  use ADV\App\Dates;
+  use ADV\App\Orders;
+  use ADV\App\Reporting;
+  use ADV\App\Creditor\Creditor;
+  use ADV\App\UI\UI;
+  use ADV\Core\Ajax;
+  use ADV\Core\Table;
+  use ADV\Core\JS;
+  use ADV\Core\DB\DB;
+  use ADV\Core\Input\Input;
+
+  /**
+
+   */
   class PurchaseOrder extends \ADV\App\Controller\Base
   {
     protected $iframe = '';
@@ -69,6 +77,9 @@
       Orders::session_delete($_POST['order_id']);
       $this->order = $this->createOrder($order_no);
     }
+    /**
+     * @param $id
+     */
     protected function deleteItem($id) {
       if ($this->order->some_already_received($id) == 0) {
         $this->order->remove_from_order($id);

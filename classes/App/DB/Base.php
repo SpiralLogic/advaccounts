@@ -19,7 +19,6 @@
    **/
   /**
    * @method Status getStatus()
-   * @method array getAll()
    */
   abstract class Base
   {
@@ -33,7 +32,7 @@
     protected $_table;
     protected $_id_column;
     protected $_classname;
-    /** @var DB*/
+    /** @var \ADV\Core\DB\DB*/
     protected $DB;
     abstract protected function canProcess();
     /**

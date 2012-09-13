@@ -9,21 +9,21 @@
    **/
   namespace ADV\App\Item;
 
-  use \ADV\App\DB\Base;
-  use ADV\App\UI\UI;
-  use ADV\Core\Dialog;
-
   use Item_Unit;
+  use DB_AuditTrail;
+  use GL_Trans;
+  use Item_Code;
+  use DB_Company;
+  use ADV\App\Forms;
+  use ADV\App\User;
+  use ADV\App\UI\UI;
+  use ADV\App\Dates;
+  use ADV\App\DB\Base;
+  use ADV\App\SysTypes;
+  use ADV\Core\Dialog;
   use ADV\Core\Num;
   use ADV\Core\JS;
   use ADV\Core\Input\Input;
-  use DB_AuditTrail;
-  use GL_Trans;
-  use SysTypes;
-  use User;
-  use ADV\App\Dates;
-  use Item_Code;
-  use DB_Company;
   use ADV\Core\DB\DB;
 
   /**
@@ -373,7 +373,6 @@
       return $row['QtyDemand'];
     }
     /**
-     * @static
      * @return null|\PDOStatement
      */
     public static function getAll() {
