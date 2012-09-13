@@ -99,8 +99,8 @@
     ),
     _("Type")                                                                          => array(
       'fun' => function ($dummy, $type) {
-        global $systypes_array;
-        return $systypes_array[$type];
+
+        return SysTypes::$names[$type];
       }
     ),
     _("#")                                                                             => array(

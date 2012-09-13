@@ -91,7 +91,6 @@
      */
     public static function costs($woid, $stock_id, $units_reqd, $date_, $advanced = 0, $costs = 0, $cr_acc = "", $labour = 0, $cr_lab_acc = "")
     {
-      global $wo_cost_types;
       $result = WO::get_bom($stock_id);
       // credit all the components
       $total_cost = 0;
@@ -128,20 +127,20 @@
       // credit additional costs
       $item_accounts = Item::get_gl_code($stock_id);
       if ($costs != 0.0) {
-        GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $cr_acc, 0, 0, $wo_cost_types[WO_OVERHEAD], -$costs, PT_WORKORDER, WO_OVERHEAD);
+        GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $cr_acc, 0, 0, WO_Cost::$types[WO_OVERHEAD], -$costs, PT_WORKORDER, WO_OVERHEAD);
         $is_bank_to = Bank_Account::is($cr_acc);
         if ($is_bank_to) {
           Bank_Trans::add(ST_WORKORDER, $woid, $is_bank_to, "", $date_, -$costs, PT_WORKORDER, WO_OVERHEAD, Bank_Currency::for_company(), "Cannot insert a destination bank transaction");
         }
-        GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["assembly_account"], $item_accounts["dimension_id"], $item_accounts["dimension2_id"], $wo_cost_types[WO_OVERHEAD], $costs, PT_WORKORDER, WO_OVERHEAD);
+        GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["assembly_account"], $item_accounts["dimension_id"], $item_accounts["dimension2_id"], WO_Cost::$types[WO_OVERHEAD], $costs, PT_WORKORDER, WO_OVERHEAD);
       }
       if ($labour != 0.0) {
-        GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $cr_lab_acc, 0, 0, $wo_cost_types[WO_LABOUR], -$labour, PT_WORKORDER, WO_LABOUR);
+        GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $cr_lab_acc, 0, 0, WO_Cost::$types[WO_LABOUR], -$labour, PT_WORKORDER, WO_LABOUR);
         $is_bank_to = Bank_Account::is($cr_lab_acc);
         if ($is_bank_to) {
           Bank_Trans::add(ST_WORKORDER, $woid, $is_bank_to, "", $date_, -$labour, PT_WORKORDER, WO_LABOUR, Bank_Currency::for_company(), "Cannot insert a destination bank transaction");
         }
-        GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["assembly_account"], $item_accounts["dimension_id"], $item_accounts["dimension2_id"], $wo_cost_types[WO_LABOUR], $labour, PT_WORKORDER, WO_LABOUR);
+        GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["assembly_account"], $item_accounts["dimension_id"], $item_accounts["dimension2_id"], WO_Cost::$types[WO_LABOUR], $labour, PT_WORKORDER, WO_LABOUR);
       }
       // debit total components $total_cost
       GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["inventory_account"], 0, 0, null, -$total_cost);
@@ -154,7 +153,7 @@
      */
     public static function display($woid, $suppress_view_link = false)
     {
-      global $wo_types_array;
+
       $myrow = WO::get($woid);
       if (strlen($myrow[0]) == 0) {
         Display::note(_("The work order number sent is not valid."));
@@ -172,7 +171,7 @@
         Cell::label(GL_UI::viewTrans(ST_WORKORDER, $myrow["id"]));
       }
       Cell::label($myrow["wo_ref"]);
-      Cell::label($wo_types_array[$myrow["type"]]);
+      Cell::label(WO::$types[$myrow["type"]]);
       Item_UI::status_cell($myrow["stock_id"], $myrow["StockItemName"]);
       Cell::label($myrow["location_name"]);
       Cell::label(Dates::_sqlToDate($myrow["date_"]));

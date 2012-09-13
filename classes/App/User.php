@@ -28,13 +28,13 @@
    * @method static numeric($input)
    * @method static print_profile()
    * @method static fallback()
+   * @method static show_gl()
    * @method static rep_popup()
    * @method static percent_dec()
    * @method static graphic_links()
    * @method static register_login($object, $function = null, $arguments = [])
    */
-  class User
-  {
+  class User {
     use \ADV\Core\Traits\Hook;
     use StaticAccess {
     StaticAccess::i as ii;
@@ -301,7 +301,7 @@
      * @param $qty_dec
      * @param $exrate_dec
      * @param $percent_dec
-     * @param $show_gl
+     * @param static $show_gl
      * @param $show_codes
      * @param $date_format
      * @param $date_sep

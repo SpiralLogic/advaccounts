@@ -9,6 +9,15 @@
    **/
   class GL_Class
   {
+
+    public static $types      = array(
+        CL_ASSETS      => "Assets", //
+        CL_LIABILITIES => "Liabilities", //
+        CL_EQUITY      => "Equity", //
+        CL_INCOME      => "Income", //
+        CL_COGS        => "Cost of Goods Sold", //
+        CL_EXPENSE     => "Expense",
+      );
     /**
      * @static
      *
@@ -163,9 +172,8 @@
      */
     public static function  types_row($label, $name, $selected_id = null, $submit_on_change = false)
     {
-      global $class_types;
       echo "<tr><td class='label'>$label</td><td>";
-      echo Forms::arraySelect($name, $selected_id, $class_types, array('select_submit' => $submit_on_change));
+      echo Forms::arraySelect($name, $selected_id, GL_Class::$types, array('select_submit' => $submit_on_change));
       echo "</td></tr>\n";
     }
   }

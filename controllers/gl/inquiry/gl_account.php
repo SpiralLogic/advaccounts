@@ -81,7 +81,7 @@
 
   function show_results()
   {
-    global $systypes_array;
+
     if (!isset($_POST["account"])) {
       $_POST["account"] = null;
     }
@@ -150,7 +150,7 @@
 
       $running_total += $myrow["amount"];
       $trandate = Dates::_sqlToDate($myrow["tran_date"]);
-      Cell::label($systypes_array[$myrow["type"]]);
+      Cell::label(SysTypes::$names[$myrow["type"]]);
       Cell::label(GL_UI::view($myrow["type"], $myrow["type_no"], $myrow["type_no"], true));
       Cell::label($trandate);
       if ($_POST["account"] == null) {

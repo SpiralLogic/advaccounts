@@ -243,7 +243,7 @@
     Forms::hidden('old_qty', $myrow["units_reqd"]);
     Forms::hidden('old_stk_id', $myrow["stock_id"]);
     Row::label(_("Reference:"), $_POST['wo_ref']);
-    Row::label(_("Type:"), $wo_types_array[$_POST['type']]);
+    Row::label(_("Type:"), WO::$types[$_POST['type']]);
     Forms::hidden('type', $myrow["type"]);
   } else {
     $_POST['units_issued'] = $_POST['released'] = 0;
@@ -286,13 +286,13 @@
       $_POST['Labour']     = Num::_priceFormat(0);
       $_POST['cr_lab_acc'] = $r[0];
     }
-    Forms::AmountRow($wo_cost_types[WO_LABOUR], 'Labour');
+    Forms::AmountRow(WO_Cost::$types[WO_LABOUR], 'Labour');
     GL_UI::all_row(_("Credit Labour Account"), 'cr_lab_acc', null);
     if (!isset($_POST['Costs'])) {
       $_POST['Costs']  = Num::_priceFormat(0);
       $_POST['cr_acc'] = $r[0];
     }
-    Forms::AmountRow($wo_cost_types[WO_OVERHEAD], 'Costs');
+    Forms::AmountRow(WO_Cost::$types[WO_OVERHEAD], 'Costs');
     GL_UI::all_row(_("Credit Overhead Account"), 'cr_acc', null);
   }
   if (Input::_post('released')) {

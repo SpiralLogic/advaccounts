@@ -46,7 +46,7 @@
     Row::end();
     Row::start();
     Cell::labels(_("From"), Bank::payment_person_name($to_trans['person_type_id'], $to_trans['person_id']), "class='tablerowhead'", "colspan=$colspan1");
-    Cell::labels(_("Deposit Type"), $bank_transfer_types[$to_trans['account_type']], "class='tablerowhead'");
+    Cell::labels(_("Deposit Type"), Bank_Trans::$types[$to_trans['account_type']], "class='tablerowhead'");
     Row::end();
     Row::start();
     Cell::labels(_("Reference"), $to_trans['ref'], "class='tablerowhead'", "colspan=$colspan2");

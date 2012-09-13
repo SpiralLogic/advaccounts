@@ -34,6 +34,7 @@
    */
   define('ICON_CANCEL', 1);
   define('ICON_UPDATE', 1);
+  define('ICON_GL', 1);
   define('ICON_ASC', 1);
   define('ICON_DESC', 1);
   /**
@@ -774,7 +775,7 @@
 
    */
   define('ST_DIMENSION', 40);
-  // Don't include these defines in the $systypes_array.
+  // Don't include these defines in the SysTypes::$names.
   // They are used for documents only.
   /**
 

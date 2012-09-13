@@ -1,5 +1,6 @@
 <?php
   use ADV\Core\Row;
+  use ADV\App\Bank\Bank;
   use ADV\App\User;
   use ADV\App\Debtor\Debtor;
   use ADV\App\Dates;
@@ -136,7 +137,7 @@
         $this->Ajax->activate('pagehelp');
         $this->Ajax->activate('editors');
       }
-      GL_UI::payment_person_type_row($payment ? _("Pay To:") : _("From:"), 'PayType', $_POST['PayType'], true);
+      Bank::payment_person_type_row($payment ? _("Pay To:") : _("From:"), 'PayType', $_POST['PayType'], true);
       switch ($_POST['PayType']) {
         case PT_MISC :
           Forms::textRowEx($payment ? _("To the Order of:") : _("Name:"), 'person_id', 40, 50);

@@ -45,7 +45,7 @@
     Row::end();
     Row::start();
     Cell::labels(_("Pay To"), Bank::payment_person_name($from_trans['person_type_id'], $from_trans['person_id']), "class='tablerowhead'", "colspan=$colspan1");
-    Cell::labels(_("Payment Type"), $bank_transfer_types[$from_trans['account_type']], "class='tablerowhead'");
+    Cell::labels(_("Payment Type"), Bank_Trans::$types[$from_trans['account_type']], "class='tablerowhead'");
     Row::end();
     Row::start();
     Cell::labels(_("Reference"), $from_trans['ref'], "class='tablerowhead'", "colspan=$colspan2");

@@ -9,6 +9,10 @@
    **/
   class WO_Cost
   {
+  public static $types = array(
+   WO_LABOUR   => "Labour Cost", //
+   WO_OVERHEAD => "Overhead Cost", ////
+ );
     /**
      * @static
      *

@@ -11,7 +11,7 @@
   if (isset($_GET["trans_no"])) {
     $trans_no = $_GET["trans_no"];
   }
-  Display::heading($systypes_array[ST_INVADJUST] . " #$trans_no");
+  Display::heading(SysTypes::$names[ST_INVADJUST] . " #$trans_no");
   Display::br(1);
   $adjustment_items = Inv_Adjustment::get($trans_no);
   $k                = 0;

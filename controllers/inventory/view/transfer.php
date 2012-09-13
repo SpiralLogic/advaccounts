@@ -15,7 +15,7 @@
   $transfer_items = Inv_Transfer::get($trans_no);
   $from_trans     = $transfer_items[0];
   $to_trans       = $transfer_items[1];
-  Display::heading($systypes_array[ST_LOCTRANSFER] . " #$trans_no");
+  Display::heading(SysTypes::$names[ST_LOCTRANSFER] . " #$trans_no");
   echo "<br>";
   Table::start('tablestyle2 width90');
   Row::start();

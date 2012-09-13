@@ -19,8 +19,7 @@
   /**
 
    */
-  abstract class Base
-  {
+  abstract class Base {
     protected $title;
     /*** @var User */
     protected $User;
@@ -52,7 +51,6 @@
       $this->index();
       $this->after();
     }
-
     protected function before() {
     }
     abstract protected function index();
@@ -90,8 +88,11 @@
         call_user_func(array($this, $this->action));
       }
     }
-public function __sleep() {
-  $this->DB = null;
-  return array_keys((array)$this);
-}
+    /**
+     * @return array
+     */
+    public function __sleep() {
+      $this->DB = null;
+      return array_keys((array) $this);
+    }
   }

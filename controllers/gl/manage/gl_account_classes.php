@@ -44,7 +44,7 @@
   while ($myrow = DB::_fetch($result)) {
     Cell::label($myrow["cid"]);
     Cell::label($myrow['class_name']);
-    Cell::label($class_types[$myrow["ctype"]]);
+    Cell::label(GL_Class::$types[$myrow["ctype"]]);
     Forms::inactiveControlCell($myrow["cid"], $myrow["inactive"], 'chart_class', 'cid');
     Forms::buttonEditCell("Edit" . $myrow["cid"], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow["cid"], _("Delete"));

@@ -426,12 +426,12 @@
      */
     public function formatType($row) {
       $type = $row['type'];
-      global $systypes_array;
+
       if (!$type) {
         return '';
       }
 
-      return $systypes_array[$type];
+      return SysTypes::$names[$type];
     }
     /**
      * @param $row
@@ -457,9 +457,7 @@
         return '';
       }
       $dropdown = new View('ui/dropdown');
-      if (!$row['id']) {
-        $title = 'Create';
-      }
+
       if ($row['state_amount']) {
         if ($row['state_amount'] > 0) {
           $data = [];
@@ -490,7 +488,7 @@
           $items[] = ['class'=> 'voidTrans', 'label'=> 'Void Trans', 'data'=> ['type'=> $row['type'], 'trans_no'=> $row['trans_no']]];
           $title   = substr($row['ref'], 0, 7);
       }
-      $menus[] = ['title'=> $title, 'auto'=> 'auto', 'items'=> $items];
+      $menus[] = ['title'=> $title?:'Create', 'auto'=> 'auto', 'items'=> $items];
       $dropdown->set('menus', $menus);
 
       return $dropdown->render(true);

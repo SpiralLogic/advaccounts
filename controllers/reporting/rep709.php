@@ -68,7 +68,7 @@
 
   function print_tax_report()
   {
-    global $trans_dir, $Hooks, $systypes_array;
+    global $trans_dir, $Hooks;
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
     $summaryOnly = $_POST['PARAM_2'];
@@ -118,7 +118,7 @@
         $trans['amount'] *= -1;
       }
       if (!$summaryOnly) {
-        $rep->TextCol(0, 1, $systypes_array[$trans['trans_type']]);
+        $rep->TextCol(0, 1, SysTypes::$names[$trans['trans_type']]);
         if ($trans['memo'] == '') {
           $trans['memo'] = Ref::get($trans['trans_type'], $trans['trans_no']);
         }

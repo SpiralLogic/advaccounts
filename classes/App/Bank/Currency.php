@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   use ADV\Core\DB\DB;
+  use ADV\App\Dates;
   use ADV\App\User;
 
   /**

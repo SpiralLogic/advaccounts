@@ -11,7 +11,7 @@
      See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
      * ********************************************************************* */
   // New version (without vertical lines)
-  global $wo_types_array, $systypes_array;
+
   $this->row = $this->pageHeight - $this->topMargin;
   $upper     = $this->row - 2 * $this->lineHeight;
   $lower     = $this->bottomMargin + 8 * $this->lineHeight;

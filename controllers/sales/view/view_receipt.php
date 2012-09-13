@@ -51,7 +51,7 @@
   Cell::labels(_("Discount"), Num::_priceFormat($receipt['ov_discount']));
   Row::end();
   Row::start();
-  Cell::labels(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']]);
+  Cell::labels(_("Payment Type"), Bank_Trans::$types[$receipt['BankTransType']]);
   Cell::labels(_("Reference"), $receipt['reference'], 'class="label" colspan=1');
   Forms::end();
   Row::end();

@@ -7,7 +7,21 @@
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
      **/
-    class WO_Produce
+  use ADV\Core\DB\DB;
+  use ADV\App\User;
+  use ADV\Core\Row;
+  use ADV\App\Item\Item;
+  use ADV\Core\Cell;
+  use ADV\Core\Table;
+  use ADV\App\Display;
+  use ADV\App\Ref;
+  use ADV\App\Dates;
+  use ADV\App\WO\WO;
+
+  /**
+
+   */
+  class WO_Produce
     {
         /**
          * @static
@@ -137,7 +151,6 @@
                 Table::start('tablestyle grid');
                 $th = array(_("#"), _("Reference"), _("Date"), _("Quantity"));
                 Table::header($th);
-                $k         = 0; //row colour counter
                 $total_qty = 0;
                 while ($myrow = DB::_fetch($result)) {
                     $total_qty += $myrow['quantity'];

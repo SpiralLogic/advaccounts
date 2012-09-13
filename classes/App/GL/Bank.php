@@ -14,8 +14,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class GL_Bank
-  {
+  class GL_Bank {
     /**
      * @static
      *
@@ -43,9 +42,9 @@
       // 2010-02-23 Joe Hunt with help of Ary Wibowo
       $sql
               = "SELECT SUM(bt.amount) AS for_amount, ba.bank_curr_code
-		FROM bank_trans bt, bank_accounts ba
-		WHERE ba.id = bt.bank_act AND ba.account_code = " . DB::_escape($account) . " AND bt.trans_date<='" . Dates::_dateToSql($date_) . "'
-		GROUP BY ba.bank_curr_code";
+ FROM bank_trans bt, bank_accounts ba
+ WHERE ba.id = bt.bank_act AND ba.account_code = " . DB::_escape($account) . " AND bt.trans_date<='" . Dates::_dateToSql($date_) . "'
+ GROUP BY ba.bank_curr_code";
       $result = DB::_query($sql, "Transactions for bank account $acc_id could not be calculated");
       while ($row = DB::_fetch($result)) {
         if ($row['for_amount'] == 0) {
@@ -70,12 +69,10 @@
         GL_Trans::add($trans_type, $trans_no, $date_, DB_Company::get_pref('exchange_diff_act'), 0, 0, _("Exchange Variance"), $diff, null, $person_type_id, $person_id);
       }
     }
-    //	Add bank tranfer to database.
-    //
-    //	$from_account - source bank account id
-    //	$to_account -	target bank account id
-    //
     /**
+     * Add bank tranfer to database.
+     * $from_account - source bank account id
+     * $to_account - target bank account id
      * @static
      *
      * @param     $from_account
@@ -118,28 +115,26 @@
       DB::_commit();
       return $trans_no;
     }
-    //	Add bank payment or deposit to database.
-    //
-    //	$from_account - bank account id
-    // $item - transaction order (line item's amounts in bank account's currency)
-    // $person_type_id - defines type of $person_id identifiers
-    // $person_id	- supplier/customer/other id
-    // $person_detail_id - customer branch id or not used
-    //
-    // returns an array of (inserted trans type, trans no)
     /**
+     * Add bank payment or deposit to database.
+     * $from_account - bank account id
+     * $item - transaction order (line item's amounts in bank account's currency)
+     * $person_type_id - defines type of $person_id identifiers
+     * $person_id - supplier/customer/other id
+     * $person_detail_id - customer branch id or not used
+     * returns an array of (inserted trans type, trans no)
      * @static
      *
-     * @param      $trans_type
-     * @param      $from_account
-     * @param  Purch_GLItem[]|Item_Order    $items
-     * @param      $date_
-     * @param      $person_type_id
-     * @param      $person_id
-     * @param      $person_detail_id
-     * @param      $ref
-     * @param      $memo_
-     * @param bool $use_transaction
+     * @param                           $trans_type
+     * @param                           $from_account
+     * @param Purch_GLItem[]|Item_Order $items
+     * @param                           $date_
+     * @param                           $person_type_id
+     * @param                           $person_id
+     * @param                           $person_detail_id
+     * @param                           $ref
+     * @param                           $memo_
+     * @param bool                      $use_transaction
      *
      * @return array
      */
@@ -184,9 +179,32 @@
           Event::error("invalid payment entered. Cannot pay to another bank account", "");
         }
         // do the destination account postings
-        $total += GL_Trans::add($trans_type, $trans_no, $date_, $gl_item->code_id, $gl_item->dimension_id, $gl_item->dimension2_id, $gl_item->reference, $gl_item->amount, $currency, $person_type_id, $person_id);
+        $total += GL_Trans::add(
+          $trans_type,
+          $trans_no,
+          $date_,
+          $gl_item->code_id,
+          $gl_item->dimension_id,
+          $gl_item->dimension2_id,
+          $gl_item->reference,
+          $gl_item->amount,
+          $currency,
+          $person_type_id,
+          $person_id
+        );
         if ($is_bank_to) {
-          Bank_Trans::add($trans_type, $trans_no, $is_bank_to, $ref, $date_, $gl_item->amount, $person_type_id, $person_id, $currency, "Cannot insert a destination bank transaction");
+          Bank_Trans::add(
+            $trans_type,
+            $trans_no,
+            $is_bank_to,
+            $ref,
+            $date_,
+            $gl_item->amount,
+            $person_type_id,
+            $person_id,
+            $currency,
+            "Cannot insert a destination bank transaction"
+          );
           if ($do_exchange_variance) {
             static::add_exchange_variation($trans_type, $trans_no, $date_, $is_bank_to, $gl_item->code_id, $currency, $person_type_id, $person_id);
           }

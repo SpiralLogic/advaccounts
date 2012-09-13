@@ -9,8 +9,26 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-  class Purch_GRN
+  use ADV\App\User;
+  use ADV\App\Dates;
+  use ADV\App\Ref;
+  use ADV\App\Item\Item;
+  use ADV\Core\DB\DB;
+
+  /**
+
+   */class Purch_GRN
   {
+    /**
+     * @param      $supplier
+     * @param      $stock_id
+     * @param      $price
+     * @param      $qty
+     * @param      $date
+     * @param bool $adj_only
+     *
+     * @return mixed
+     */
     public static function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only = false) {
       if ($supplier != null) {
         $currency = Bank_Currency::for_creditor($supplier);
@@ -66,7 +84,15 @@
 
       return $material_cost;
     }
-    public static function add(&$order, $date_, $reference, $location) {
+  /**
+   * @param $order
+   * @param $date_
+   * @param $reference
+   * @param $location
+   *
+   * @return mixed
+   */
+  public static function add(&$order, $date_, $reference, $location) {
       DB::_begin();
       $grn = static::add_batch($order->order_no, $order->creditor_id, $reference, $location, $date_);
       foreach ($order->line_items as $order_line) {
@@ -116,7 +142,16 @@
 
       return $grn;
     }
-    public static function add_batch($po_number, $creditor_id, $reference, $location, $date_) {
+  /**
+   * @param $po_number
+   * @param $creditor_id
+   * @param $reference
+   * @param $location
+   * @param $date_
+   *
+   * @return mixed
+   */
+  public static function add_batch($po_number, $creditor_id, $reference, $location, $date_) {
       $date = Dates::_dateToSql($date_);
       $sql
             = "INSERT INTO grn_batch (purch_order_no, delivery_date, creditor_id, reference, loc_code)
@@ -127,7 +162,19 @@
 
       return DB::_insertId();
     }
-    public static function add_item($grn_batch_id, $po_detail_item, $item_code, $description, $standard_unit_cost, $quantity_received, $price, $discount) {
+  /**
+   * @param $grn_batch_id
+   * @param $po_detail_item
+   * @param $item_code
+   * @param $description
+   * @param $standard_unit_cost
+   * @param $quantity_received
+   * @param $price
+   * @param $discount
+   *
+   * @return mixed
+   */
+  public static function add_item($grn_batch_id, $po_detail_item, $item_code, $description, $standard_unit_cost, $quantity_received, $price, $discount) {
       $sql
         = "UPDATE purch_order_details
  SET quantity_received = quantity_received + " . DB::_escape($quantity_received) . ",

@@ -790,7 +790,7 @@
 
    */
   define('ST_DIMENSION', 40);
-  // Don't include these defines in the $systypes_array.
+  // Don't include these defines in the SysTypes::$names.
   // They are used for documents only.
   /**
 

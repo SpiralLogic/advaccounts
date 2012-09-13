@@ -38,7 +38,7 @@
     Cell::labels(_("Payment Currency"), $receipt['bank_curr_code'], "class='tablerowhead'");
   }
   Cell::labels(_("Amount"), Num::_format(-$receipt['BankAmount'], User::price_dec()), "class='tablerowhead'");
-  Cell::labels(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], "class='tablerowhead'");
+  Cell::labels(_("Payment Type"), Bank_Trans::$types[$receipt['BankTransType']], "class='tablerowhead'");
   Row::end();
   Row::start();
   if ($show_currencies) {

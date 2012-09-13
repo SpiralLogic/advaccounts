@@ -184,9 +184,9 @@
      * @return mixed
      */
     function sysTypeName($dummy, $type) {
-      global $systypes_array;
 
-      return $systypes_array[$type];
+
+      return SysTypes::$names[$type];
     }
     /**
      * @param $row

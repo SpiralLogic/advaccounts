@@ -71,9 +71,8 @@
     $th = array(_("Description"), _("Type"), "", "");
     Table::header($th);
     $k = 0;
-    global $quick_entry_types, $quick_actions;
     while ($myrow = DB::_fetch($result)) {
-        $type_text = $quick_entry_types[$myrow["type"]];
+        $type_text = GL_QuickEntry::$types[$myrow["type"]];
         Cell::label($myrow['description']);
         Cell::label($type_text);
         Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
@@ -122,7 +121,7 @@
         Table::header($th);
         $k = 0;
         while ($myrow = DB::_fetch($result)) {
-            Cell::label($quick_actions[$myrow['action']]);
+            Cell::label(GL_QuickEntry::$actions[$myrow['action']]);
             $act_type = strtolower(substr($myrow['action'], 0, 1));
             if ($act_type == 't') {
                 Cell::labels($myrow['tax_name'], '');

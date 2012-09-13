@@ -73,7 +73,7 @@
     }
   }
 
-  Display::heading($systypes_array[ST_MANUISSUE] . " # " . $wo_issue_no);
+  Display::heading(SysTypes::$names[ST_MANUISSUE] . " # " . $wo_issue_no);
   display_wo_issue($wo_issue_no);
   Display::heading(_("Items for this Issue"));
   display_wo_issue_details($wo_issue_no);

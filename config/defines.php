@@ -243,7 +243,7 @@
     'ST_SALESQUOTE'              => 32,
     'ST_COSTUPDATE'              => 35,
     'ST_DIMENSION'               => 40,
-    // Don't include these defines in the $systypes_array.
+    // Don't include these defines in the SysTypes::$names.
     // They are used for documents only.
     'ST_STATEMENT'               => 91,
     'ST_CHEQUE'                  => 92,

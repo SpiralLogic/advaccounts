@@ -31,6 +31,12 @@
    */
   class Item extends Base
   {
+    public static $types = array(
+        STOCK_MANUFACTURE => "Manufactured", //
+        STOCK_PURCHASED   => "Purchased", //
+        STOCK_SERVICE     => "Service", //
+        STOCK_INFO        => "Information"
+      );
     /**
      * @var int
      */

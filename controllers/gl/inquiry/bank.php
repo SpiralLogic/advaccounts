@@ -62,7 +62,7 @@
   while ($myrow = DB::_fetch($result)) {
     $running_total += $myrow["amount"];
     $trandate = Dates::_sqlToDate($myrow["trans_date"]);
-    Cell::label($systypes_array[$myrow["type"]]);
+    Cell::label(SysTypes::$names[$myrow["type"]]);
     Cell::label(GL_UI::viewTrans($myrow["type"], $myrow["trans_no"]));
     Cell::label(GL_UI::viewTrans($myrow["type"], $myrow["trans_no"], $myrow['ref']));
     Cell::label($trandate);

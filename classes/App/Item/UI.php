@@ -141,7 +141,6 @@
      * @param bool $enabled
      */
     public static function type_row($label, $name, $selected_id = null, $enabled = true) {
-      global $stock_types;
       echo "<tr>";
       if ($label != null) {
         echo "<td class='label'>$label</td>\n";
@@ -150,7 +149,7 @@
       echo Forms::arraySelect(
         $name,
         $selected_id,
-        $stock_types,
+        Item::$types,
         array(
              'select_submit' => true,
              'disabled'      => !$enabled
@@ -168,12 +167,11 @@
      * @return string
      */
     public static function type($name, $selected_id = null, $enabled = true) {
-      global $stock_types;
 
       return Forms::arraySelect(
         $name,
         $selected_id,
-        $stock_types,
+        Item::$types,
         array(
              'select_submit' => true,
              'disabled'      => !$enabled

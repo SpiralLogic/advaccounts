@@ -75,7 +75,7 @@
     while ($myrow = DB::_fetch($result)) {
 
         $trandate  = Dates::_sqlToDate($myrow["tran_date"]);
-        $type_name = $systypes_array[$myrow["type"]];
+        $type_name = SysTypes::$names[$myrow["type"]];
         if ($myrow["qty"] > 0) {
             $quantity_formatted = Num::_format($myrow["qty"], $dec);
             $total_in += $myrow["qty"];

@@ -91,9 +91,9 @@
    * @return mixed
    */
   function wo_type_name($dummy, $type) {
-    global $wo_types_array;
 
-    return $wo_types_array[$type];
+
+    return WO::$types[$type];
   }
 
   /**

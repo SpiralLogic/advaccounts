@@ -269,12 +269,12 @@
      * @param bool $submit_on_change
      */
     public static function  cells($label, $name, $value = null, $submit_on_change = false) {
-      global $systypes_array;
+
       echo "<td>";
       if ($label != null) {
         echo "<label for=\"$name\"> $label</label>";
       }
-      $items = $systypes_array;
+      $items = SysTypes::$names;
       // exclude quotes, orders and dimensions
       foreach (array(ST_PURCHORDER, ST_WORKORDER, ST_SALESORDER, ST_DIMENSION, ST_SALESQUOTE) as $excl) {
         unset($items[$excl]);

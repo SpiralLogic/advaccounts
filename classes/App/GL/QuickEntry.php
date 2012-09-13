@@ -9,6 +9,27 @@
    **/
   class GL_QuickEntry
   {
+    public static $actions      = array(
+        '='  => 'Remainder', // post current base amount to GL account
+        'a'  => 'Amount', // post amount to GL account
+        'a+' => 'Amount, increase base', // post amount to GL account and increase base
+        'a-' => 'Amount, reduce base', // post amount to GL account and reduce base
+        '%'  => '% amount of base', // store acc*amount% to GL account
+        '%+' => '% amount of base, increase base', // ditto & increase base amount
+        '%-' => '% amount of base, reduce base', // ditto & reduce base amount
+        'T'  => 'Taxes added', // post taxes calculated on base amount
+        'T+' => 'Taxes added, increase base', // ditto & increase base amount
+        'T-' => 'Taxes added, reduce base', // ditto & reduce base amount
+        't'  => 'Taxes included', // post taxes calculated on base amount
+        't+' => 'Taxes included, increase base', // ditto & increase base amount
+        't-' => 'Taxes included, reduce base' // ditto & reduce base amount
+      );
+    public static $types   = array(
+        QE_DEPOSIT => "Bank Deposit", //
+        QE_PAYMENT => "Bank Payment", //
+        QE_JOURNAL => "Journal Entry", //
+        QE_SUPPINV => "Supplier Invoice/Credit"
+      );
     /**
      * @static
      *
@@ -392,9 +413,8 @@
      * @param bool $submit_on_change
      */
     public static function actions($label, $name, $selected_id = null, $submit_on_change = false) {
-      global $quick_actions;
       echo "<tr><td class='label'>$label</td><td>";
-      echo Forms::arraySelect($name, $selected_id, $quick_actions, array('select_submit' => $submit_on_change));
+      echo Forms::arraySelect($name, $selected_id, static::$actions, array('select_submit' => $submit_on_change));
       echo "</td></tr>\n";
     }
     /**

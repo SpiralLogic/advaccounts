@@ -39,6 +39,11 @@
    */
   class WO
   {
+    public static $types       = array(
+        WO_ASSEMBLY   => "Assemble", //
+        WO_UNASSEMBLY => "Unassemble", //
+        WO_ADVANCED   => "Advanced Manufacture"
+      );
     /**
      * @var array
      */
@@ -693,7 +698,6 @@
      * @param $woid
      */
     public static function display_payments($woid) {
-      global $wo_cost_types;
       //$result = Bank_Trans::get(null, null, PT_WORKORDER, $woid);
       $result = GL_Trans::get_wo_cost($woid);
       if (DB::_numRows($result) == 0) {
@@ -705,7 +709,7 @@
         $k = 0; //row colour counter
         while ($myrow = DB::_fetch($result)) {
           Cell::label(GL_UI::view(ST_WORKORDER, $myrow["type_no"], $myrow["type_no"]));
-          Cell::label($wo_cost_types[$myrow['person_id']]);
+          Cell::label(WO_Cost::$types[$myrow['person_id']]);
           $date = Dates::_sqlToDate($myrow["tran_date"]);
           Cell::label($date);
           Cell::amount(-($myrow['amount']));
@@ -721,7 +725,7 @@
      * @param bool $suppress_view_link
      */
     public static function display($woid, $suppress_view_link = false) {
-      global $wo_types_array;
+
       $myrow = WO::get($woid);
       if (strlen($myrow[0]) == 0) {
         Display::note(_("The work order number sent is not valid."));
@@ -761,7 +765,7 @@
         Cell::label(GL_UI::viewTrans(ST_WORKORDER, $myrow["id"]));
       }
       Cell::label($myrow["wo_ref"]);
-      Cell::label($wo_types_array[$myrow["type"]]);
+      Cell::label(WO::$types[$myrow["type"]]);
       Item_UI::status_cell($myrow["stock_id"], $myrow["StockItemName"]);
       Cell::label($myrow["location_name"]);
       Cell::label(Dates::_sqlToDate($myrow["date_"]));

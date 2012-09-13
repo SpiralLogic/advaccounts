@@ -14,8 +14,14 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Bank_Trans
-  {
+  class Bank_Trans {
+    public static $types
+      = array(
+        BT_TRANSFER => "Transfer", //
+        "Cheque", //
+        "Credit", //
+        "Cash"
+      );
     // add a bank transaction
     // $amount is in $currency
     // $date_ is display date (non-sql)

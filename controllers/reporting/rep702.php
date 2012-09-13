@@ -17,7 +17,7 @@
 
 	function print_list_of_journal_entries()
 		{
-			global $systypes_array;
+
 			$from = $_POST['PARAM_0'];
 			$to = $_POST['PARAM_1'];
 			$systype = $_POST['PARAM_2'];
@@ -38,7 +38,7 @@
 			$params = array(
 				0 => $comments, 1 => array(
 					'text' => _('Period'), 'from' => $from, 'to' => $to), 2 => array(
-					'text' => _('Type'), 'from' => $systype == -1 ? _('All') : $systypes_array[$systype], 'to' => ''));
+					'text' => _('Type'), 'from' => $systype == -1 ? _('All') : SysTypes::$names[$systype], 'to' => ''));
 			/** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
     $rep = new $report_type(_('List of Journal Entries'), "JournalEntries", SA_GLANALYTIC,User::page_size());
 			$rep->Font();
@@ -57,7 +57,7 @@
 					}
 					$typeno = $myrow['type_no'];
 					$type = $myrow['type'];
-					$TransName = $systypes_array[$myrow['type']];
+					$TransName = SysTypes::$names[$myrow['type']];
 					$rep->TextCol(0, 1, $TransName . " # " . $myrow['type_no']);
 					$rep->TextCol(1, 2, Ref::get($myrow['type'], $myrow['type_no']));
 					$rep->DateCol(2, 3, $myrow['tran_date'], true);

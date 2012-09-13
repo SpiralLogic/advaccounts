@@ -435,8 +435,8 @@
      * @return string
      */
     protected function gl_systypes_list($name, $value = null, $spec_opt = false) {
-      global $systypes_array;
-      $types = $systypes_array;
+
+      $types = SysTypes::$names;
       foreach (array(
                  ST_LOCTRANSFER,
                  ST_PURCHORDER,

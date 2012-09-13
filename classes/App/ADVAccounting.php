@@ -81,7 +81,6 @@
           return include(DOCROOT . 'config' . DS . 'defines.php');
         }
       );
-      include(DOCROOT . 'config' . DS . 'types.php');
       $this->Config = Config::i();
       $this->Ajax   = Ajax::i();
       ob_start([$this, 'flush_handler'], 0);

@@ -23,7 +23,7 @@
   $result = DB::_query($sql, "could not get transactions");
   //alert("sql = ".$sql);
   if (DB::_numRows($result) == 0) {
-    echo "<p><div class='center'>" . _("No general ledger transactions have been created for") . " " . $systypes_array[$_GET['type_id']] . " " . _("number") . " " . $_GET['trans_no'] . "</div></p><br><br>";
+    echo "<p><div class='center'>" . _("No general ledger transactions have been created for") . " " . SysTypes::$names[$_GET['type_id']] . " " . _("number") . " " . $_GET['trans_no'] . "</div></p><br><br>";
     Page::end(true);
     exit;
   }
@@ -80,8 +80,8 @@
    */
   function display_gl_heading($myrow)
   {
-    global $systypes_array;
-    $trans_name = $systypes_array[$_GET['type_id']];
+
+    $trans_name = SysTypes::$names[$_GET['type_id']];
     Table::start('tablestyle width95');
     $th = array(
       _("General Ledger Transaction Details"), _("Reference"), _("Date"), _("Person/Item")

@@ -247,7 +247,7 @@
          */
         public static function show_allocatable($show_totals)
         {
-            global $systypes_array;
+
             $counter = $total_allocated = 0;
             if (count($_SESSION['alloc']->allocs)) {
                 Table::start('tablestyle grid width60');
@@ -265,7 +265,7 @@
                 );
                 Table::header($th);
                 foreach ($_SESSION['alloc']->allocs as $alloc_item) {
-                    Cell::label($systypes_array[$alloc_item->type]);
+                    Cell::label(SysTypes::$names[$alloc_item->type]);
                     Cell::label(GL_UI::viewTrans($alloc_item->type, $alloc_item->type_no));
                     Cell::label($alloc_item->date_, "class='alignright'");
                     Cell::label($alloc_item->due_date, "class='alignright'");
@@ -391,7 +391,7 @@
          */
         public static function display($alloc_result, $total)
         {
-            global $systypes_array;
+
             if (!$alloc_result || DB::_numRows() == 0) {
                 return;
             }
@@ -401,7 +401,7 @@
             Table::header($th);
             $k = $total_allocated = 0;
             while ($alloc_row = DB::_fetch($alloc_result)) {
-                Cell::label($systypes_array[$alloc_row['type']]);
+                Cell::label(SysTypes::$names[$alloc_row['type']]);
                 Cell::label(GL_UI::viewTrans($alloc_row['type'], $alloc_row['trans_no']));
                 Cell::label(Dates::_sqlToDate($alloc_row['tran_date']));
                 $alloc_row['Total'] = Num::_round($alloc_row['Total'], User::price_dec());

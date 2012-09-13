@@ -64,12 +64,12 @@
 
   if (isset($_POST['process']) && can_process() == true) {
     DB::_begin();
-    GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'], 0, 0, $wo_cost_types[$_POST['PaymentType']], -Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
+    GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'], 0, 0, WO_Cost::$types[$_POST['PaymentType']], -Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
     $is_bank_to = Bank_Account::is($_POST['cr_acc']);
     if ($is_bank_to) {
       Bank_Trans::add(ST_WORKORDER, $_POST['selected_id'], $is_bank_to, "", $_POST['date_'], -Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType'], Bank_Currency::for_company(), "Cannot insert a destination bank transaction");
     }
-    GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'], $_POST['dim1'], $_POST['dim2'], $wo_cost_types[$_POST['PaymentType']], Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
+    GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'], $_POST['dim1'], $_POST['dim2'], WO_Cost::$types[$_POST['PaymentType']], Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
     DB::_commit();
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=" . $_POST['selected_id']);
   }
@@ -79,7 +79,7 @@
   //Forms::hidden('WOReqQuantity', $_POST['WOReqQuantity']);
   Table::start('tablestyle2');
   Display::br();
-  Forms::yesnoListRow(_("Type:"), 'PaymentType', null, $wo_cost_types[WO_OVERHEAD], $wo_cost_types[WO_LABOUR]);
+  Forms::yesnoListRow(_("Type:"), 'PaymentType', null, WO_Cost::$types[WO_OVERHEAD], WO_Cost::$types[WO_LABOUR]);
   Forms::dateRow(_("Date:"), 'date_');
   $item_accounts   = Item::get_gl_code($wo_details['stock_id']);
   $_POST['db_acc'] = $item_accounts['assembly_account'];

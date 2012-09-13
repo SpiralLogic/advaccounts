@@ -29,7 +29,7 @@
       Table::section(2);
       Table::header($th);
     }
-     Forms::refRow($systypes_array[$type["type_id"]], 'id' . $type["type_id"], '', $type["next_reference"]);
+     Forms::refRow(SysTypes::$names[$type["type_id"]], 'id' . $type["type_id"], '', $type["next_reference"]);
   }
   Table::endOuter(1);
   Forms::submitCenter('setprefs', _("Update"), true, '', 'default');

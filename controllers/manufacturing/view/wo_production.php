@@ -38,7 +38,7 @@
     Display::is_voided(ST_MANURECEIVE, $prod_id, _("This production has been voided."));
   }
 
-  Display::heading($systypes_array[ST_MANURECEIVE] . " # " . $wo_production);
+  Display::heading(SysTypes::$names[ST_MANURECEIVE] . " # " . $wo_production);
   display_wo_production($wo_production);
   Display::br(2);
   Page::end(true);

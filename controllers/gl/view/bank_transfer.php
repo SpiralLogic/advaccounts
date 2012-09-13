@@ -35,7 +35,7 @@
         $show_currencies   = true;
         $show_both_amounts = true;
     }
-    Display::heading($systypes_array[ST_BANKTRANSFER] . " #$trans_no");
+    Display::heading(SysTypes::$names[ST_BANKTRANSFER] . " #$trans_no");
     echo "<br>";
     Table::start('tablestyle width90');
     Row::start();
@@ -58,7 +58,7 @@
     Row::end();
     Row::start();
     Cell::labels(_("Date"), Dates::_sqlToDate($from_trans['trans_date']), "class='tablerowhead'");
-    Cell::labels(_("Transfer Type"), $bank_transfer_types[$from_trans['account_type']], "class='tablerowhead'");
+    Cell::labels(_("Transfer Type"), Bank_Trans::$types[$from_trans['account_type']], "class='tablerowhead'");
     Cell::labels(_("Reference"), $from_trans['ref'], "class='tablerowhead'");
     Row::end();
     DB_Comments::display_row(ST_BANKTRANSFER, $trans_no);

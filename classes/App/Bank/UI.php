@@ -1,5 +1,6 @@
 <?php
   use ADV\App\Creditor\Creditor;
+  use ADV\App\Dates;
   use ADV\Core\DB\DB;
   use ADV\Core\JS;
   use ADV\App\User;
@@ -23,11 +24,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Bank_UI
-  {
-
-
-
+  class Bank_UI {
     /**
      * @static
      *
@@ -39,11 +36,11 @@
      *
      * @return string
      */
-    public static function  reconcile($account, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
+    public static function reconcile($account, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
       $sql
         = "SELECT reconciled FROM bank_trans
-                            WHERE bank_act=" . DB::_escape($account) . " AND reconciled IS NOT null AND amount!=0
-                            GROUP BY reconciled";
+ WHERE bank_act=" . DB::_escape($account) . " AND reconciled IS NOT null AND amount!=0
+ GROUP BY reconciled";
 
       return Forms::selectBox(
         $name,
@@ -70,7 +67,7 @@
      * @param bool $submit_on_change
      * @param bool $special_option
      */
-    public static function  reconcile_cells($label, $account, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
+    public static function reconcile_cells($label, $account, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
       if ($label != null) {
         echo "<td>$label</td>\n";
       }
@@ -84,7 +81,7 @@
      * @param        $bank_acc
      * @param string $parms
      */
-    public static function  balance_row($bank_acc, $parms = '') {
+    public static function balance_row($bank_acc, $parms = '') {
       $to  = Dates::_addDays(Dates::_today(), 1);
       $bal = Bank_Account::getBalances($bank_acc, null, $to);
       Row::label(
@@ -103,11 +100,11 @@
      * @param null $selected_id
      * @param bool $submit_on_change
      */
-    public static function  cash_accounts_row($label, $name, $selected_id = null, $submit_on_change = false) {
+    public static function cash_accounts_row($label, $name, $selected_id = null, $submit_on_change = false) {
       $sql
         = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
-                        FROM bank_accounts
-                        WHERE bank_accounts.account_type=3";
+ FROM bank_accounts
+ WHERE bank_accounts.account_type=3";
       if ($label != null) {
         echo "<tr><td class='label'>$label</td>\n";
       }
@@ -139,7 +136,7 @@
      *
      * @return null|string
      */
-    public static function  viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '', $raw = false) {
+    public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '', $raw = false) {
       if ($label == "") {
         $label = $trans_no;
       }

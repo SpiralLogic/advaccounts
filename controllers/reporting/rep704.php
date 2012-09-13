@@ -16,7 +16,7 @@
 
   function print_GL_transactions()
   {
-    global $systypes_array;
+
     $dim       = DB_Company::get_pref('use_dimension');
     $dimension = $dimension2 = 0;
     $from      = $_POST['PARAM_0'];
@@ -144,7 +144,7 @@
       if ($rows > 0) {
         while ($myrow = DB::_fetch($trans)) {
           $total += $myrow['amount'];
-          $rep->TextCol(0, 1, $systypes_array[$myrow["type"]], -2);
+          $rep->TextCol(0, 1, SysTypes::$names[$myrow["type"]], -2);
           $reference = Ref::get($myrow["type"], $myrow["type_no"]);
           $rep->TextCol(1, 2, $reference);
           $rep->TextCol(2, 3, $myrow['type_no'], -2);

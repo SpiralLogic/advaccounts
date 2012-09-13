@@ -42,9 +42,6 @@ Adv.extend({ Help: (function () {
           $current.popover({title: helpTitle + "<i class='floatright help-edit font13 icon-edit'>&nbsp;</i>", html: true, dealy: {show: 0, hide: 300}, content: data.text || 'No Help Yet!' }).popover('show');
           $('.popover-title').on('click', '.help-edit', showEditor);
         };
-      if (!$current.attr('id')) {
-        return;
-      }
       $.post(url, data, makePopover, 'json');
     } //
     , indicator = $('#help_indicator').on('click', showHelp)
@@ -55,7 +52,8 @@ Adv.extend({ Help: (function () {
       $(document).off('keypress.indicator keydown.indicator');
     } //
     , showIndicator = function () {
-      if ($(this) == $current) {return;}
+      var $this = $(this);
+      if ($this== $current || !$this.attr('id') || $this.is('.navibutton')) {return;}
       $current = $(this);
       $(':input').popover('destroy');
       $current.on('mouseleave.indicator blur.indicator', startHide);
