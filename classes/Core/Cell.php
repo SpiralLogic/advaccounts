@@ -21,8 +21,7 @@
   /**
 
    */
-  class Cell
-  {
+  class Cell {
     /**
      * @param        $label
      * @param string $params
@@ -98,7 +97,6 @@
         Ajax::_addUpdate($id, $id, $label);
       }
       echo "<td $params >$label</td>\n";
-
       return $label;
     }
     /**
@@ -120,9 +118,6 @@
      * @param null $id
      */
     public static function qty($label, $bold = false, $dec = null, $id = null) {
-      if ($dec === null) {
-        $dec = User::qty_dec();
-      }
       if ($bold) {
         Cell::label("<span class='bold'>" . Num::_format($label, $dec) . "</span>", ' class="alignright nowrap"', $id);
       } else {

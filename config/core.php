@@ -15,6 +15,7 @@
       'Assets', //
       'Auth', //
       'Loader', //
+      'Cache', //
       'Cell', //
       'Config', //
       'DatePicker', //
@@ -41,9 +42,6 @@
       'View', //
       'XMLParser', //
     ),
-    'ADV\\Core\\Cache'           => [
-      'Cache', //
-    ], //
     'ADV\\Core\\DB'              => array(
       'DB', //
       'DBException', //
@@ -76,6 +74,7 @@
       'Messages', //
       'Ref', //
       'Reporting', //
+      'UI', //
     ), //
     'ADV\\App\\Debtor'           => array(
       'Debtor', //
@@ -95,9 +94,6 @@
     'ADV\\App\\Tax'              => array(
       'Tax', //
     ), // //
-    'ADV\\App\\UI'               => array(
-      'UI', //
-    ), //// //
     'ADV\\App\\WO'               => array(
       'WO', //
     ), //

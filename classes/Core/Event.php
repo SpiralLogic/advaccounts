@@ -10,7 +10,7 @@
   namespace ADV\Core;
 
   use ADV\App\User;
-  use ADV\Core\Cache\Cache;
+  use ADV\Core\Cache;
 
   /**
 
@@ -19,6 +19,8 @@
   {
     use \ADV\Core\Traits\Hook;
 
+    /** @var \ADV\Core\Cache */
+    protected static $Cache;
     /**
      * @var array all objects with methods to be run on shutdown
      */
@@ -35,14 +37,13 @@
      * @var string id for cache handler to store shutdown events
      */
     protected static $shutdown_events_id;
-    protected static $Cache;
     /**
      * @static
 
      */
-    public static function init(Cache $cache) {
+    public static function init(Cache $cache,$presistanceKey='') {
       static::$Cache              = $cache;
-      static::$shutdown_events_id = 'shutdown.events.' . User::i()->username;
+      static::$shutdown_events_id = 'shutdown.events.' . $presistanceKey;
       $shutdown_events            = static::$Cache->get(static::$shutdown_events_id);
       static::$Cache->delete(static::$shutdown_events_id);
       if ($shutdown_events) {
@@ -146,9 +147,8 @@
     }
     /*** @static Shutdown handler */
     public static function shutdown() {
-
       Errors::process();
-      $levels = ob_get_level() - (extension_loaded('newrelic') ? 1 : 0);
+      $levels = ob_get_level();
       for ($i = 0; $i < $levels; $i++) {
         ob_end_flush();
       }

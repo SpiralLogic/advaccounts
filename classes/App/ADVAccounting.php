@@ -73,7 +73,7 @@
         }
       );
       static::i($this);
-      $this->Cache = \ADV\Core\Cache\Cache::i(new \ADV\Core\Cache\APC());
+      $this->Cache = \ADV\Core\Cache::i(new \ADV\Core\Cache\APC());
       $loader->registerCache($this->Cache);
       $this->Cache->defineConstants(
         $_SERVER['SERVER_NAME'] . '.defines',
@@ -106,7 +106,7 @@
       if (!strstr($_SERVER['DOCUMENT_URI'], 'logout.php')) {
         $this->checkLogin();
       }
-      \ADV\Core\Event::init($this->Cache);
+      \ADV\Core\Event::init($this->Cache,$this->User->username);
       $this->get_selected();
       $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
       $index      = $controller == $_SERVER['SCRIPT_NAME'];

@@ -7,7 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace ADV\Core\Cache;
+  namespace ADV\Core;
+  use ADV\Core\Cache\Cachable;
 
   /**
    * @method static mixed _get($key, $default = false)
@@ -49,6 +50,7 @@
     public function set($key, $value, $expires = 86400) {
       return $this->driver->set($key, $value, $expires);
     }
+
     /**
      * @static
      *
@@ -80,7 +82,7 @@
      *
      * @return Cache|bool
      */
-    public function defineConstants($name, $constants) {
+    public function defineConstants($name, Array $constants) {
       $loader = $this->driver->getLoadConstantsFunction();
       if (is_callable($loader)) {
         $loader = $loader($name);

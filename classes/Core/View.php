@@ -8,7 +8,7 @@
    */
   namespace ADV\Core;
 
-  use ADV\Core\Cache\Cache;
+  use ADV\Core\Cache;
 
   /**
 
@@ -19,7 +19,7 @@
 
     protected $_viewdata = [];
     protected $_template = null;
-    /** @var \ADV\Core\Cache\Cache */
+    /** @var \ADV\Core\Cache */
     public static $Cache;
     protected static $count = 0;
     protected $context;

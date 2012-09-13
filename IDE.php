@@ -1071,7 +1071,7 @@
   /**
 
    */
-  class Cache extends ADV\Core\Cache\Cache
+  class Cache extends ADV\Core\Cache
   {
   }
 
