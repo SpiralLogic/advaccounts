@@ -27,10 +27,14 @@
     public $order_no;
     /** @var DB */
     protected $jobsboardDB;
-    public function init() {
+    public function __construct(){
+      parent::__construct();
       if (!$this->jobsboardDB) {
-        $this->jobsboardDB = new DB('jobsboard');
-      }
+             $this->jobsboardDB = new DB('jobsboard');
+           }
+    }
+    public function init() {
+
       $this->tasks();
     }
     /**

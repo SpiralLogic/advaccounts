@@ -195,7 +195,7 @@
         Display::submenu_option(_("&Edit This " . $trans_name), $edit_trans);
       }
       Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
-      Reporting::emailDialogue($customer->id, $trans_type, $order_no);
+     echo "<br><div class='center'>".Reporting::emailDialogue($customer->id, $trans_type, $order_no)."</div>";
       if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
         Display::submenu_print(
           _("Print Proforma Invoice"),
