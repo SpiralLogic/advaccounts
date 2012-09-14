@@ -14,7 +14,7 @@
   if ($_GET['trans_no'] != "") {
     $woid = $_GET['trans_no'];
   }
-  Display::heading($systypes_array[ST_WORKORDER] . " # " . $woid);
+  Display::heading(SysTypes::$names[ST_WORKORDER] . " # " . $woid);
   Display::br(1);
   $myrow = WO::get($woid);
   if ($myrow["type"] == WO_ADVANCED) {

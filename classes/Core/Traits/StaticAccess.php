@@ -10,6 +10,8 @@
    **/
   namespace ADV\Core\Traits;
 
+  use ADV\Core\Event;
+
   /**
    * @method static i($class = null)
    */
@@ -36,7 +38,7 @@
       try {
         return call_user_func_array(array(static::i(), '_' . $func), $args);
       } catch (\ADV\Core\Exception $e) {
-        return \Event::error('Call to undefined static method ' . $func . ' in class ' . get_called_class());
+        return Event::error('Call to undefined static method ' . $func . ' in class ' . get_called_class());
       }
     }
     /**
@@ -49,7 +51,7 @@
       try {
         return call_user_func_array(array(static::i(), '_' . $func), $args);
       } catch (\ADV\Core\Exception $e) {
-        return \Event::error('Call to undefined static method ' . $func . ' in class ' . get_called_class());
+        return Event::error('Call to undefined static method ' . $func . ' in class ' . get_called_class());
       }
     }
   }

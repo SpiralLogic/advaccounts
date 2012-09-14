@@ -1,4 +1,20 @@
 <?php
+  use ADV\Core\Input\Input;
+  use ADV\App\Dates;
+  use ADV\App\Reporting;
+  use ADV\App\Tax\Tax;
+  use ADV\App\Item\Item;
+  use ADV\App\Display;
+  use ADV\App\Debtor\Debtor;
+  use ADV\Core\Cell;
+  use ADV\Core\Table;
+  use ADV\App\Ref;
+  use ADV\Core\JS;
+  use ADV\App\Validation;
+  use ADV\App\Orders;
+  use ADV\App\Forms;
+  use ADV\Core\Ajax;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -85,7 +101,10 @@
     $type     = $order->trans_type;
     $order_no = key($order->trans_no);
     Orders::session_delete($_POST['order_id']);
-    create_order($type, $order_no);
+    $credit            = new Sales_Order(ST_CUSTCREDIT, $trans_no);
+    $credit->reference = Ref::get_next($credit->trans_type);
+    $credit->start();
+    $this->copyFromCredit();
   }
   if (Input::_post('Update')) {
     Ajax::_activate('credit_items');
@@ -119,7 +138,6 @@
         }
       }
     }
-
     return $ok;
   }
 
@@ -130,19 +148,16 @@
     if (!Dates::_isDate($_POST['CreditDate'])) {
       Event::error(_("The entered date is invalid."));
       JS::_setFocus('CreditDate');
-
       return false;
     } elseif (!Dates::_isDateInFiscalYear($_POST['CreditDate'])) {
       Event::error(_("The entered date is not in fiscal year."));
       JS::_setFocus('CreditDate');
-
       return false;
     }
     if (Orders::session_get($_POST['order_id'])->trans_no == 0) {
       if (!Ref::is_valid($_POST['ref'])) {
         Event::error(_("You must enter a reference."));
         JS::_setFocus('ref');
-
         return false;
       }
       if (!Ref::is_new($_POST['ref'], ST_CUSTCREDIT)) {
@@ -152,15 +167,12 @@
     if (!Validation::post_num('ChargeFreightCost', 0)) {
       Event::error(_("The entered shipping cost is invalid or less than zero."));
       JS::_setFocus('ChargeFreightCost');
-
       return false;
     }
     if (!check_quantities()) {
       Event::error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
-
       return false;
     }
-
     return true;
   }
 
@@ -194,21 +206,21 @@
   function display_credit_items() {
     Forms::start();
     Forms::hidden('order_id');
-    Table::start('tablestyle2 width90 pad5');
+    Table::start('standard width90 pad5');
     echo "<tr><td>"; // outer table
-    Table::start('tablestyle width100');
-    Row::start();
-    Cell::labels(_("Customer"), Orders::session_get($_POST['order_id'])->customer_name, "class='tablerowhead'");
-    Cell::labels(_("Branch"), Sales_Branch::get_name(Orders::session_get($_POST['order_id'])->Branch), "class='tablerowhead'");
-    Cell::labels(_("Currency"), Orders::session_get($_POST['order_id'])->customer_currency, "class='tablerowhead'");
-    Row::end();
-    Row::start();
+    Table::start('padded width100');
+    echo '<tr>';
+    Cell::labelled(_("Customer"), Orders::session_get($_POST['order_id'])->customer_name, "class='tablerowhead'");
+    Cell::labelled(_("Branch"), Sales_Branch::get_name(Orders::session_get($_POST['order_id'])->Branch), "class='tablerowhead'");
+    Cell::labelled(_("Currency"), Orders::session_get($_POST['order_id'])->customer_currency, "class='tablerowhead'");
+    echo '</tr>';
+    echo '<tr>';
     if (Orders::session_get($_POST['order_id'])->trans_no == 0) {
-      Forms::refCells(_("Reference"), 'ref', '', null, "class='tablerowhead'");
+      Forms::refCells(_("Reference"), 'ref', '', Orders::session_get($_POST['order_id'])->reference, "class='tablerowhead'");
     } else {
-      Cell::labels(_("Reference"), Orders::session_get($_POST['order_id'])->reference, "class='tablerowhead'");
+      Cell::labelled(_("Reference"), Orders::session_get($_POST['order_id'])->reference, "class='tablerowhead'");
     }
-    Cell::labels(_("Crediting Invoice"), Debtor::viewTrans(ST_SALESINVOICE, array_keys(Orders::session_get($_POST['order_id'])->src_docs)), "class='tablerowhead'");
+    Cell::labelled(_("Crediting Invoice"), Debtor::viewTrans(ST_SALESINVOICE, array_keys(Orders::session_get($_POST['order_id'])->src_docs)), "class='tablerowhead'");
     if (!isset($_POST['ShipperID'])) {
       $_POST['ShipperID'] = Orders::session_get($_POST['order_id'])->ship_via;
     }
@@ -218,17 +230,17 @@
     //	 $_POST['sales_type_id'] = Orders::session_get($_POST['order_id'])->sales_type;
     //	Cell::label(_("Sales Type"), "class='tablerowhead'");
     //	Sales_Type::cells(null, 'sales_type_id', $_POST['sales_type_id']);
-    Row::end();
+    echo '</tr>';
     Table::end();
     echo "</td><td>"; // outer table
-    Table::start('tablestyle width100');
-    Row::label(_("Invoice Date"), Orders::session_get($_POST['order_id'])->src_date, "class='tablerowhead'");
+    Table::start('padded width100');
+    Table::label(_("Invoice Date"), Orders::session_get($_POST['order_id'])->src_date, "class='tablerowhead'");
     Forms::dateRow(_("Credit Note Date"), 'CreditDate', '', Orders::session_get($_POST['order_id'])->trans_no == 0, 0, 0, 0, "class='tablerowhead'");
     Table::end();
     echo "</td></tr>";
     Table::end(1); // outer table
     Display::div_start('credit_items');
-    Table::start('tablestyle grid width90');
+    Table::start('padded grid width90');
     $th = array(
       _("Item Code"),
       _("Item Description"),
@@ -256,23 +268,23 @@
       Cell::amount($line->price);
       Cell::percent($line->discount_percent * 100);
       Cell::amount($line_total);
-      Row::end();
+      echo '</tr>';
     }
     if (!Validation::post_num('ChargeFreightCost')) {
       $_POST['ChargeFreightCost'] = Num::_priceFormat(Orders::session_get($_POST['order_id'])->freight_cost);
     }
     $colspan = 7;
-    Row::start();
+    echo '<tr>';
     Cell::label(_("Credit Shipping Cost"), "colspan=$colspan class='alignright'");
     Forms::amountCellsSmall(null, "ChargeFreightCost", Num::_priceFormat(Input::_post('ChargeFreightCost', null, 0)));
-    Row::end();
+    echo '</tr>';
     $inv_items_total   = Orders::session_get($_POST['order_id'])->get_items_total_dispatch();
     $display_sub_total = Num::_priceFormat($inv_items_total + Validation::input_num('ChargeFreightCost'));
-    Row::label(_("Sub-total"), $display_sub_total, "colspan=$colspan class='alignright'", "class='alignright'");
+    Table::label(_("Sub-total"), $display_sub_total, "colspan=$colspan class='alignright'", "class='alignright'");
     $taxes         = Orders::session_get($_POST['order_id'])->get_taxes(Validation::input_num('ChargeFreightCost'));
     $tax_total     = Tax::edit_items($taxes, $colspan, Orders::session_get($_POST['order_id'])->tax_included);
     $display_total = Num::_priceFormat(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
-    Row::label(_("Credit Note Total"), $display_total, "colspan=$colspan class='alignright'", "class='alignright'");
+    Table::label(_("Credit Note Total"), $display_total, "colspan=$colspan class='alignright'", "class='alignright'");
     Table::end();
     Display::div_end();
   }
@@ -283,7 +295,7 @@
       Ajax::_activate('options');
     }
     Display::div_start('options');
-    Table::start('tablestyle2');
+    Table::start('standard');
     Sales_Credit::row(_("Credit Note Type"), 'CreditType', null, true);
     if ($_POST['CreditType'] == "Return") {
       /*if the credit note is a return of goods then need to know which location to receive them into */

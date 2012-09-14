@@ -1,5 +1,6 @@
 <?php
   namespace ADV\App;
+
   use ADV\Core\JS;
   use ADV\Core\Event;
   use ADV\Core\View;
@@ -21,10 +22,9 @@
    * @link      http://www.advancedgroup.com.au
    **/
   /**
-   * @method static ADVAccounting i()
+   * @method static \ADV\App\ADVAccounting i()
    */
-  class ADVAccounting
-  {
+  class ADVAccounting {
     use \ADV\Core\Traits\Singleton;
 
     public $applications = [];
@@ -41,10 +41,11 @@
     protected $Session = null;
     /** @var Ajax */
     protected $Ajax = null;
+    protected $controller = null;
     protected $get_text = null;
+    public $extensions;
     /** */
-    public function __construct(\ADV\Core\Loader $loader)
-    {
+    public function __construct(\ADV\Core\Loader $loader) {
       set_error_handler(
         function ($severity, $message, $filepath, $line) {
           if ($filepath == COREPATH . 'Errors.php') {
@@ -71,7 +72,7 @@
         }
       );
       static::i($this);
-      $this->Cache = \ADV\Core\Cache\Cache::i(new \ADV\Core\Cache\APC());
+      $this->Cache = \ADV\Core\Cache::i(new \ADV\Core\Cache\APC());
       $loader->registerCache($this->Cache);
       $this->Cache->defineConstants(
         $_SERVER['SERVER_NAME'] . '.defines',
@@ -79,7 +80,6 @@
           return include(DOCROOT . 'config' . DS . 'defines.php');
         }
       );
-      include(DOCROOT . 'config' . DS . 'types.php');
       $this->Config = Config::i();
       $this->Ajax   = Ajax::i();
       ob_start([$this, 'flush_handler'], 0);
@@ -97,19 +97,15 @@
         }
       );
       $this->loadModules();
-      $this->applications = $this->Cache->get('applications');
-      if (!$this->applications) {
-        $this->setupApplications();
-      }
-      is_readable(DOCROOT . 'version') and define('BUILD_VERSION', file_get_contents(DOCROOT . 'version', null, null, null, 6));
-      defined('BUILD_VERSION') or define('BUILD_VERSION', 000);
+      $this->setupApplications();
+      define('BUILD_VERSION', is_readable(DOCROOT . 'version') ? file_get_contents(DOCROOT . 'version', null, null, null, 6) : 000);
       define('VERSION', '3.' . BUILD_VERSION . '-SYEDESIGN');
       // logout.php is the only page we should have always
       // accessable regardless of access level and current login status.
       if (!strstr($_SERVER['DOCUMENT_URI'], 'logout.php')) {
         $this->checkLogin();
       }
-      \ADV\Core\Event::init($this->Cache);
+      \ADV\Core\Event::init($this->Cache, $this->User->username);
       $this->get_selected();
       $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
       $index      = $controller == $_SERVER['SCRIPT_NAME'];
@@ -120,11 +116,12 @@
         $controller = (substr_compare($controller, '.php', -4, 4, true) === 0) ? $controller : $controller . '.php';
         $controller = DOCROOT . 'controllers' . DS . $controller;
         if (file_exists($controller)) {
-          include($controller);
+
+          $this->controller = $controller;
         } else {
           $show404 = true;
           header('HTTP/1.0 404 Not Found');
-          \Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
+          Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
         }
       }
       if ($index || $show404) {
@@ -134,21 +131,13 @@
     /**
      * @param $app
      */
-    public function add_application($app)
-    {
-      if ($app->enabled) // skip inactive modules
-      {
-        $this->applications[strtolower($app->id)] = $app;
-      }
-    }
     /**
      * @param $text
      *
      * @return string
      * @noinspection PhpUnusedFunctionInspection
      */
-    public function flush_handler($text)
-    {
+    public function flush_handler($text) {
       return ($this->Ajax->inAjax()) ? Errors::format() : Page::$before_box . Errors::format() . $text;
     }
     /**
@@ -156,17 +145,15 @@
      *
      * @return null
      */
-    public function get_application($id)
-    {
-      $id = strtolower($id);
+    public function get_application($id) {
+      $app_class = '\\ADV\\App\\Apps\\' . $id;
 
-      return isset($this->applications[$id]) ? $this->applications[$id] : null;
+      return isset($this->applications[$id]) ? new $app_class : null;
     }
     /**
      * @return null
      */
-    public function get_selected()
-    {
+    public function get_selected() {
       if ($this->selected !== null && is_object($this->selected)) {
         return $this->selected;
       }
@@ -183,16 +170,20 @@
 
       return $this->selected;
     }
-    public function display()
-    {
+    /**
+     * @return null|string
+     */
+    public function getController() {
+      return $this->controller;
+    }
+    public function display() {
       Extensions::add_access($this->User);
       Input::_get('application')  and $this->set_selected($_GET['application']);
       $page = Page::start(_($help_context = "Main Menu"), SA_OPEN, false, true);
       $page->display_application($this->get_selected());
       Page::end();
     }
-    public function loginFail()
-    {
+    public function loginFail() {
       header("HTTP/1.1 401 Authorization Required");
       (new View('failed_login'))->render();
       $this->Session->kill();
@@ -204,8 +195,7 @@
      * @internal param $session
      * @internal param $cache
      */
-    public static function refresh()
-    {
+    public static function refresh() {
       /** @var ADVAccounting $instance  */
       $instance               = static::i();
       $instance->applications = [];
@@ -216,15 +206,13 @@
      *
      * @return bool
      */
-    public function set_selected($app_id)
-    {
+    public function set_selected($app_id) {
       $this->User->selectedApp = $this->get_application($app_id);
       $this->selected          = $this->User->selectedApp;
 
       return $this->selected;
     }
-    protected function checkLogin()
-    {
+    protected function checkLogin() {
       if (!$this->Session instanceof \ADV\Core\Session || !$this->Session->checkUserAgent()) {
         $this->showLogin();
       }
@@ -243,10 +231,18 @@
         Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $this->User->username);
       }
     }
-    protected function login()
-    {
+    protected function login() {
       $company = Input::_post('login_company', null, 'default');
       if ($company) {
+        $modules = $this->Config->get('modules.login', []);
+        foreach ($modules as $module=> $module_config) {
+          $this->User->register_login(
+            function () use ($module, $module_config) {
+              $module = '\\Modules\\' . $module . '\\' . $module;
+              new $module($module_config);
+            }
+          );
+        }
         try {
           if (!$this->User->login($company, $_POST["user_name"], $_POST["password"])) {
             // Incorrect password
@@ -257,11 +253,10 @@
         }
         $this->User->ui_mode = $_POST['ui_mode'];
         $this->Session->regenerate();
-        $this->Session['language']->setLanguage($this->Session['language']->code);
+        $this->Session->language->setLanguage($this->Session['language']->code);
       }
     }
-    protected function showLogin()
-    {
+    protected function showLogin() {
       // strip ajax marker from uri, to force synchronous page reload
       $_SESSION['timeout'] = array(
         'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI'])
@@ -274,40 +269,29 @@
       }
       exit();
     }
-    protected function loadModules()
-    {
-      $modules = $this->Config->getAll('modules', []);
-      foreach ($modules as $module => $module_config) {
-        $module = '\\Modules\\' . $module . '\\' . $module;
-        new $module($module_config);
+    protected function loadModules() {
+      $types = $this->Config->get('modules.default', []);
+      foreach ($types as $type => $modules) {
+        foreach ($modules as $module=> $module_config) {
+          switch ($type) {
+            default:
+              $module = '\\Modules\\' . $module . '\\' . $module;
+              new $module($module_config);
+          }
+        }
       }
     }
-    protected function setupApplications()
-    {
-      $this->applications = [];
-      $extensions         = $this->Config->get('extensions.installed');
-      $apps               = $this->Config->get('apps.active');
-      foreach ($apps as $app) {
-        $app = '\\ADV\\App\\Apps\\' . $app;
-        $this->add_application(new $app());
-      }
-      if (count($extensions) > 0) {
-        foreach ($extensions as $ext) {
-          $ext = '\\ADV\\App\\Apps\\' . $ext['name'];
-          $this->add_application(new $ext());
-        }
-        $this->Session['get_text']->add_domain($this->Session['langauge']->code, LANG_PATH);
-      }
-      $this->add_application(new \ADV\App\Apps\System());
-      $this->Cache->set('applications', $this->applications);
+    protected function setupApplications() {
+      $this->extensions   = $this->Config->get('extensions.installed');
+      $this->applications = $this->Config->get('apps.active');
+      $this->Session->get_text->add_domain($this->Session->language->code, LANG_PATH);
     }
     /**
      * @return mixed
      */
-    protected function setTextSupport()
-    {
-      if (!isset($this->Session['get_text'])) {
-        $this->Session['get_text'] = \gettextNativeSupport::i();
+    protected function setTextSupport() {
+      if (!$this->Session->get_text) {
+        $this->Session->get_text = \gettextNativeSupport::i();
       }
     }
     /**
@@ -318,8 +302,7 @@
      *
      * @return bool
      */
-    public static function write_extensions($extensions = null, $company = -1)
-    {
+    public static function write_extensions($extensions = null, $company = -1) {
       global $installed_extensions, $next_extension_id;
       if (!isset($extensions)) {
         $extensions = $installed_extensions;
@@ -331,7 +314,8 @@
       //	$extensions = $exts;
       $msg = "<?php\n\n";
       if ($company == -1) {
-        $msg .= "/* List of installed additional modules and plugins. If adding extensions manually
+        $msg
+          .= "/* List of installed additional modules and plugins. If adding extensions manually
                    to the list make sure they have unique, so far not used extension_ids as a keys,
                    and \$next_extension_id is also updated.
                    'name' - name for identification purposes;
@@ -347,7 +331,8 @@
                */
                \n\$next_extension_id = $next_extension_id; // unique id for next installed extension\n\n";
       } else {
-        $msg .= "/*
+        $msg
+          .= "/*
                    Do not edit this file manually. This copy of global file is overwritten
                    by extensions editor.
                */\n\n";

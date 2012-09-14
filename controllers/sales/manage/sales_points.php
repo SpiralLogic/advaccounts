@@ -7,10 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "POS settings"), SA_POSSETUP);
   list($Mode, $selected_id) = Page::simple_mode(true);
-
   if ($Mode == ADD_ITEM && Sales_Point::can_process()) {
     Sales_Point::add($_POST['name'], $_POST['location'], $_POST['account'], Input::_hasPost('cash'), Input::_hasPost('credit'));
     Event::success(_('New point of sale has been added'));
@@ -40,15 +38,20 @@
   }
   $result = Sales_Point::getAll(Input::_hasPost('show_inactive'));
   Forms::start();
-  Table::start('tablestyle grid');
+  Table::start('padded grid');
   $th = array(
-    _('POS Name'), _('Credit sale'), _('Cash sale'), _('location'), _('Default account'), '', ''
+    _('POS Name'),
+    _('Credit sale'),
+    _('Cash sale'),
+    _('location'),
+    _('Default account'),
+    '',
+    ''
   );
   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::_fetch($result)) {
-
     Cell::label($myrow["pos_name"], ' class="nowrap"');
     Cell::label($myrow['credit_sale'] ? _('Yes') : _('No'));
     Cell::label($myrow['cash_sale'] ? _('Yes') : _('No'));
@@ -57,7 +60,7 @@
     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], "sales_pos", 'id');
     Forms::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
-    Row::end();
+    echo '</tr>';
   }
   Forms::inactiveControlRow($th);
   Table::end(1);
@@ -65,7 +68,7 @@
   if (!$cash) {
     Event::warning(_("To have cash POS first define at least one cash bank account."));
   }
-  Table::start('tablestyle2');
+  Table::start('standard');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       $myrow             = Sales_Point::get($selected_id);

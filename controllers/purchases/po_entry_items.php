@@ -1,13 +1,4 @@
 <?php
-  use ADV\App\Creditor\Creditor;
-  use ADV\Core\Ajax;
-  use ADV\App\UI\UI;
-  use ADV\App\Item\Item;
-  use ADV\Core\Table;
-  use ADV\Core\DB\DB;
-  use ADV\Core\Input\Input;
-  use ADV\Core\JS;
-
   /**
    * PHP version 5.4
    * @category  PHP
@@ -16,10 +7,26 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  /** @noinspection PhpIncludeInspection */
-  //
-  class PurchaseOrder extends \ADV\App\Controller\Base
-  {
+  use ADV\App\Item\Item;
+  use ADV\App\Display;
+  use ADV\App\Forms;
+  use ADV\App\Ref;
+  use ADV\App\Validation;
+  use ADV\App\Dates;
+  use ADV\App\Orders;
+  use ADV\App\Reporting;
+  use ADV\App\Creditor\Creditor;
+  use ADV\App\UI;
+  use ADV\Core\Ajax;
+  use ADV\Core\Table;
+  use ADV\Core\JS;
+  use ADV\Core\DB\DB;
+  use ADV\Core\Input\Input;
+
+  /**
+
+   */
+  class PurchaseOrder extends \ADV\App\Controller\Base {
     protected $iframe = '';
     /** @var Purch_Order */
     protected $order = null;
@@ -39,14 +46,12 @@
       if ($id != -1 && $this->order) {
         $this->deleteItem($id);
       }
-
       if (isset($_POST[UPDATE_ITEM]) && $this->checkData()) {
         $this->updateItem();
       }
       if (isset($_POST[ADD_ITEM])) {
         $this->addItem();
       }
-
       if (isset($_POST[CANCEL])) {
         $this->cancelItem();
       }
@@ -68,6 +73,9 @@
       Orders::session_delete($_POST['order_id']);
       $this->order = $this->createOrder($order_no);
     }
+    /**
+     * @param $id
+     */
     protected function deleteItem($id) {
       if ($this->order->some_already_received($id) == 0) {
         $this->order->remove_from_order($id);
@@ -120,8 +128,7 @@
       $allow_update = $this->checkData();
       if ($allow_update == true) {
         if ($allow_update == true) {
-          $sql
-                  = "SELECT long_description as description , units, mb_flag
+          $sql    = "SELECT long_description as description , units, mb_flag
   				FROM stock_master WHERE stock_id = " . DB::_escape($_POST['stock_id']);
           $result = DB::_query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
           if (DB::_numRows($result) == 0) {
@@ -194,7 +201,7 @@
       }
       $this->order->header();
       $this->order->display_items();
-      Table::start('tablestyle2');
+      Table::start('standard');
       Forms::textareaRow(_("Memo:"), 'Comments', null, 70, 4);
       Table::end(1);
       Display::div_start('controls', 'items_table');
@@ -232,11 +239,11 @@
       $trans_type = ST_PURCHORDER;
       $new_trans  = "/purchases/po_entry_items.php?" . Orders::NEW_ORDER;
       $view       = new View('orders/complete');
-      $buttons[]  = ['label'=> _("&View this order"), 'href'=> GL_UI::viewTrans($trans_type, $order_no, '', false, '', '', true)];
+      $buttons[]  = ['label'=> _("View this order"), 'href'=> GL_UI::viewTrans($trans_type, $order_no, '', false, '', '', true)];
       $href       = Reporting::print_doc_link($order_no, '', true, $trans_type, false, '', '', 0, 0, true);
-      $buttons[]  = ['label'=> _("&Print This Order"), 'href'=> $href];
+      $buttons[]  = ['target'=> '_new', 'label'=> _("Print This Order"), 'href'=> $href];
       $edit_trans = BASE_URL . "purchases/po_entry_items.php?ModifyOrder=$order_no";
-      $buttons[]  = ['label'=> _("&Edit This Order"), 'href'=> $edit_trans];
+      $buttons[]  = ['label'=> _("Edit This Order"), 'href'=> $edit_trans];
       $view->set('emailtrans', Reporting::emailDialogue($this->creditor_id, ST_PURCHORDER, $order_no));
       $buttons[] = ['label'=> 'Receive this purchase order', 'accesskey'=> 'R', 'href'=> "/purchases/po_receive_items.php?PONumber=$order_no"];
       $buttons[] = ['label'=> 'New purchase order', 'accesskey'=> 'N', 'href'=> $new_trans];
@@ -302,7 +309,6 @@
         $this->order = new Purch_Order($order_no);
       }
       $this->order = Purch_Order::copyToPost($this->order);
-
       return $this->order;
     }
     /**
@@ -315,28 +321,23 @@
         $min = Num::_format($min, $dec);
         Event::error(_("The quantity of the order item must be numeric and not less than ") . $min);
         JS::_setFocus('qty');
-
         return false;
       }
       if (!Validation::post_num('price', 0)) {
         Event::error(_("The price entered must be numeric and not less than zero."));
         JS::_setFocus('price');
-
         return false;
       }
       if (!Validation::post_num('discount', 0, 100)) {
         Event::error(_("Discount percent can not be less than 0 or more than 100."));
         JS::_setFocus('discount');
-
         return false;
       }
       if (!Dates::_isDate($_POST['req_del_date'])) {
         Event::error(_("The date entered is in an invalid format."));
         JS::_setFocus('req_del_date');
-
         return false;
       }
-
       return true;
     }
     /**
@@ -351,50 +352,42 @@
       if (!Input::_post('creditor_id')) {
         Event::error(_("There is no supplier selected."));
         JS::_setFocus('creditor_id');
-
         return false;
       }
       if (!Dates::_isDate($_POST['OrderDate'])) {
         Event::error(_("The entered order date is invalid."));
         JS::_setFocus('OrderDate');
-
         return false;
       }
       if (Input::_post('delivery_address') == '') {
         Event::error(_("There is no delivery address specified."));
         JS::_setFocus('delivery_address');
-
         return false;
       }
       if (!Validation::post_num('freight', 0)) {
         Event::error(_("The freight entered must be numeric and not less than zero."));
         JS::_setFocus('freight');
-
         return false;
       }
       if (Input::_post('location') == '') {
         Event::error(_("There is no location specified to move any items into."));
         JS::_setFocus('location');
-
         return false;
       }
       if ($this->order->order_has_items() == false) {
         Event::error(_("The order cannot be placed because there are no lines entered on this order."));
-
         return false;
       }
       if (!$this->order->order_no) {
         if (!Ref::is_valid(Input::_post('ref'))) {
           Event::error(_("There is no reference entered for this purchase order."));
           JS::_setFocus('ref');
-
           return false;
         }
         if (!Ref::is_new($_POST['ref'], ST_PURCHORDER)) {
           $_POST['ref'] = Ref::get_next(ST_PURCHORDER);
         }
       }
-
       return true;
     }
   }

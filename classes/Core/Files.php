@@ -118,7 +118,7 @@
       $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
       $i    = (int) floor(log($size, 1024));
 
-      return @round($size / pow(1024, $i), 2) . ' ' . $unit[$i];
+      return round($size / pow(1024, $i), 2) . ' ' . $unit[$i];
     }
     /**
      * @static
@@ -136,10 +136,10 @@
         if (is_dir($path . DS . $fname)) {
           static::flushDir($path . DS . $fname, $wipe);
           if ($wipe) {
-            @rmdir($path . DS . $fname);
+            rmdir($path . DS . $fname);
           }
         } else {
-          @unlink($path . DS . $fname);
+          unlink($path . DS . $fname);
         }
       }
     }

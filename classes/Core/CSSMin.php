@@ -4,13 +4,16 @@
    */
   namespace ADV\Core;
 
-  class CSSMin
-  {
+  /**
+
+   */
+  class CSSMin {
     protected $minified = '';
-    protected $settings
-      = array(
-        'embed'           => true, 'embedMaxSize'    => 5120, 'embedExceptions' => array('htc')
-      );
+    protected $settings = array(
+      'embed'           => true,
+      'embedMaxSize'    => 5120,
+      'embedExceptions' => array('htc')
+    );
     protected $mimeTypes = [];
     protected $filedir = '.';
     protected $source;
@@ -23,7 +26,7 @@
      * @internal param array $mimeTypes
      * @internal param $url
      * @internal param $count
-     * @return \CSSMin
+     * @return CSSMin
      */
     public function __construct($source, $options = []) {
       if (isset($options['filedir'])) {
@@ -66,7 +69,6 @@
             return $this->filedir . $url;
           }
         }
-
         return $baseUrl . $url;
       }
       $contents = file_get_contents($this->filedir . $url);
@@ -74,14 +76,12 @@
         $oldFileDir    = $this->filedir;
         $this->filedir = rtrim(dirname($this->filedir . $url), '\/') . '/';
         $oldBaseUrl    = $baseUrl;
-        $baseUrl       = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 's' :
-          '') . '://' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['SCRIPT_NAME']), '\/') . '/' . $this->filedir;
+        $baseUrl       = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['SCRIPT_NAME']), '\/') . '/' . $this->filedir;
         $contents      = $this->minify($contents);
         $this->filedir = $oldFileDir;
         $baseUrl       = $oldBaseUrl;
       }
       $base64 = base64_encode($contents);
-
       return 'data:' . $mimeType . ';base64,' . $base64;
     }
     /**
@@ -160,7 +160,6 @@
         $res .= $str[$i];
       }
       $this->minified = $res;
-
       return $this->minified;
     }
     /**

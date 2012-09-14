@@ -31,7 +31,7 @@
     Session::_setGlobal('stock_id', $_POST['stock_id']);
   }
   Display::div_start('reorders');
-  Table::start('tablestyle grid width30');
+  Table::start('padded grid width30');
   $th = array(_("Location"), _("Quantity On Hand"), _("Primary Shelf"), _("Secondary Shelf"), _("Re-Order Level"));
   Table::header($th);
   $j       = 1;
@@ -52,7 +52,7 @@
     Forms::textCells(null, 'shelf_primary' . $myrow["loc_code"], $myrow["shelf_primary"]);
     Forms::textCells(null, 'shelf_secondary' . $myrow["loc_code"], $myrow["shelf_secondary"]);
     Forms::qtyCells(null, $myrow["loc_code"], null, null, null, $dec);
-    Row::end();
+    echo '</tr>';
     $j++;
     If ($j == 12) {
       $j = 1;

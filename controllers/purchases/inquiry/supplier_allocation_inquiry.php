@@ -3,7 +3,6 @@
   use ADV\Core\DB\DB;
   use ADV\App\Creditor\Creditor;
   use ADV\Core\Input\Input;
-  use ADV\Core\Row;
   use ADV\Core\Table;
 
   /**
@@ -14,8 +13,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class AllocationInquiry extends \ADV\App\Controller\Base
-  {
+  class AllocationInquiry extends \ADV\App\Controller\Base {
     protected function before() {
       $this->JS->openWindow(950, 500);
       if (isset($_GET['creditor_id']) || isset($_GET['id'])) {
@@ -52,8 +50,8 @@
     protected function index() {
       Page::start(_($help_context = "Supplier Allocation Inquiry"), SA_SUPPLIERALLOC);
       Forms::start(false, '', 'invoiceForm');
-      Table::start('tablestyle_noborder');
-      Row::start();
+      Table::start('noborder');
+      echo '<tr>';
       if (!$this->Input->get('frame')) {
         Creditor::cells(_("Supplier: "), 'creditor_id', null, true);
       }
@@ -63,7 +61,7 @@
       Forms::checkCells(_("Show settled:"), 'showSettled', null);
       Forms::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
       $this->Session->setGlobal('creditor_id', $_POST['creditor_id']);
-      Row::end();
+      echo '</tr>';
       Table::end();
       $this->displayTable();
       Creditor::addInfoDialog('.pagerclick');
@@ -74,8 +72,7 @@
       $date_after = Dates::_dateToSql($_POST['TransAfterDate']);
       $date_to    = Dates::_dateToSql($_POST['TransToDate']);
       // Sherifoz 22.06.03 Also get the description
-      $sql
-        = "SELECT
+      $sql = "SELECT
             trans.type,
             trans.trans_no,
             trans.reference,
@@ -142,7 +139,7 @@
         $cols[_("Supplier")]    = 'skip';
         $cols[_("Currency")]    = 'skip';
       }
-      $table = DB_Pager::new_db_pager('doc_tbl', $sql, $cols);
+      $table = DB_Pager::newPager('doc_tbl', $sql, $cols);
       $table->setMarker([$this, 'formatMarker'], _("Marked items are overdue."));
       $table->width = "90";
       $table->display($table);
@@ -162,9 +159,7 @@
      * @return mixed
      */
     public function formatType($dummy, $type) {
-      global $systypes_array;
-
-      return $systypes_array[$type];
+      return SysTypes::$names[$type];
     }
     /**
      * @param $trans
@@ -188,9 +183,7 @@
      * @return mixed
      */
     public function formatBalance($row) {
-      $value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) ? -$row["TotalAmount"] - $row["Allocated"] :
-        $row["TotalAmount"] - $row["Allocated"];
-
+      $value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) ? -$row["TotalAmount"] - $row["Allocated"] : $row["TotalAmount"] - $row["Allocated"];
       return $value;
     }
     /**
@@ -200,7 +193,6 @@
      */
     public function formatAllocLink($row) {
       $link = DB_Pager::link(_("Allocations"), "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
-
       return (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) && (-$row["TotalAmount"] - $row["Allocated"]) > 0) ? $link : '';
     }
     /**
@@ -210,7 +202,6 @@
      */
     public function formatDebit($row) {
       $value = -$row["TotalAmount"];
-
       return $value >= 0 ? Num::_priceFormat($value) : '';
     }
     /**
@@ -220,7 +211,6 @@
      */
     public function formatCredit($row) {
       $value = $row["TotalAmount"];
-
       return $value > 0 ? Num::_priceFormat($value) : '';
     }
   }

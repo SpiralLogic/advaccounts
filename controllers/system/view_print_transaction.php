@@ -25,8 +25,7 @@
    *
    * @return null|string
    */
-  function view_link($trans)
-  {
+  function view_link($trans) {
     return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
   }
 
@@ -35,8 +34,7 @@
    *
    * @return string
    */
-  function printLink($row)
-  {
+  function printLink($row) {
     if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND && $row['type'] != ST_BANKDEPOSIT
     ) // customer payment or bank deposit printout not defined yet.
     {
@@ -49,16 +47,14 @@
    *
    * @return string
    */
-  function viewGl($row)
-  {
+  function viewGl($row) {
     return GL_UI::view($row["type"], $row["trans_no"]);
   }
 
-  function viewing_controls()
-  {
+  function viewing_controls() {
     Event::warning(_("Only documents can be printed."));
-    Table::start('tablestyle_noborder');
-    Row::start();
+    Table::start('noborder');
+    echo '<tr>';
     SysTypes::cells(_("Type:"), 'filterType', null, true);
     if (!isset($_POST['FromTransNo'])) {
       $_POST['FromTransNo'] = "1";
@@ -69,31 +65,26 @@
     Forms::refCells(_("from #:"), 'FromTransNo');
     Forms::refCells(_("to #:"), 'ToTransNo');
     Forms::submitCells('ProcessSearch', _("Search"), '', '', 'default');
-    Row::end();
+    echo '</tr>';
     Table::end(1);
   }
 
   /**
    * @return bool
    */
-  function check_valid_entries()
-  {
+  function check_valid_entries() {
     if (!is_numeric($_POST['FromTransNo']) OR $_POST['FromTransNo'] <= 0) {
       Event::error(_("The starting transaction number is expected to be numeric and greater than zero."));
-
       return false;
     }
     if (!is_numeric($_POST['ToTransNo']) OR $_POST['ToTransNo'] <= 0) {
       Event::error(_("The ending transaction number is expected to be numeric and greater than zero."));
-
       return false;
     }
-
     return true;
   }
 
-  function handle_search()
-  {
+  function handle_search() {
     if (check_valid_entries() == true) {
       $db_info = SysTypes::get_db_info($_POST['filterType']);
       if ($db_info == null) {
@@ -117,12 +108,19 @@
       $print_type = $_POST['filterType'];
       $print_out  = ($print_type == ST_SALESINVOICE || $print_type == ST_CUSTCREDIT || $print_type == ST_CUSTDELIVERY || $print_type == ST_PURCHORDER || $print_type == ST_SALESORDER || $print_type == ST_SALESQUOTE);
       $cols       = array(
-        _("#"), _("Reference"), _("View") => array(
-          'insert' => true, 'fun' => 'view_link'
-        ), _("Print")                     => array(
-          'insert' => true, 'fun' => 'printLink'
-        ), _("GL")                        => array(
-          'insert' => true, 'fun' => 'viewGl'
+        _("#"),
+        _("Reference"),
+        _("View")                      => array(
+          'insert' => true,
+          'fun'    => 'view_link'
+        ),
+        _("Print")                     => array(
+          'insert' => true,
+          'fun'    => 'printLink'
+        ),
+        _("GL")                        => array(
+          'insert' => true,
+          'fun'    => 'viewGl'
         )
       );
       if (!$print_out) {
@@ -131,7 +129,7 @@
       if (!$trans_ref) {
         Arr::remove($cols, 1);
       }
-      $table        =DB_Pager::new_db_pager('transactions', $sql, $cols);
+      $table        = DB_Pager::newPager('transactions', $sql, $cols);
       $table->width = "40%";
       $table->display($table);
     }

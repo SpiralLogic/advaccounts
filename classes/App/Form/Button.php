@@ -11,13 +11,14 @@
   namespace ADV\App\Form;
 
   use ADV\Core\JS;
-  use ADV\Core\HTML;
 
   /**
 
    */
   class Button implements \ArrayAccess
   {
+    use \ADV\Core\Traits\HTML;
+
     public $id;
     public $validator;
     protected $attr = [];
@@ -32,6 +33,7 @@
 
      */
     public function __construct($name, $value, $caption) {
+
       $this->name = $this->attr['name'] = $name;
       $this->id                         = $this->nameToId();
       $this->attr['type']               = 'submit';
@@ -124,7 +126,7 @@
     public function __toString() {
       $this->formatIcons();
 
-      return HTML::setReturn(true)->button($this->id, $this->caption, $this->attr, false)->setReturn(false);
+      return $this->makeElement('button', $this->attr, $this->caption, true);
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>

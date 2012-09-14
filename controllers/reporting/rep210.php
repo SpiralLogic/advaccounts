@@ -52,7 +52,7 @@
   }
 
   function print_remittances() {
-    global $systypes_array;
+
     $report_type = '\\ADV\\App\\Reports\\PDF';
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
@@ -116,7 +116,7 @@
         $rep->TextCol(0, 4, $doc_Towards, -2);
         $rep->NewLine(2);
         while ($myrow2 = DB::_fetch($result)) {
-          $rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
+          $rep->TextCol(0, 1, SysTypes::$names[$myrow2['type']], -2);
           $rep->TextCol(1, 2, $myrow2['supplier_reference'], -2);
           $rep->TextCol(2, 3, Dates::_sqlToDate($myrow2['tran_date']), -2);
           $rep->TextCol(3, 4, Dates::_sqlToDate($myrow2['due_date']), -2);

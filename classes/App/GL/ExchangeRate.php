@@ -1,4 +1,6 @@
 <?php
+  use ADV\Core\DB\DB;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -7,8 +9,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class GL_ExchangeRate
-  {
+  class GL_ExchangeRate {
     /**
      * @static
      *
@@ -16,11 +17,9 @@
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get($rate_id)
-    {
+    public static function get($rate_id) {
       $sql    = "SELECT * FROM exchange_rates WHERE id=" . DB::_escape($rate_id);
       $result = DB::_query($sql, "could not get exchange rate for $rate_id");
-
       return DB::_fetch($result);
     }
     // Retrieves buy exchange rate for given currency/date, zero if no result
@@ -32,8 +31,7 @@
      *
      * @return int
      */
-    public static function get_date($curr_code, $date_)
-    {
+    public static function get_date($curr_code, $date_) {
       $date   = Dates::_dateToSql($date_);
       $sql    = "SELECT rate_buy FROM exchange_rates WHERE curr_code=" . DB::_escape($curr_code) . " AND date_='$date'";
       $result = DB::_query($sql, "could not get exchange rate for $curr_code - $date_");
@@ -41,7 +39,6 @@
         return 0;
       }
       $row = DB::_fetch($result);
-
       return $row[0];
     }
     /**
@@ -52,8 +49,7 @@
      * @param $buy_rate
      * @param $sell_rate
      */
-    public static function update($curr_code, $date_, $buy_rate, $sell_rate)
-    {
+    public static function update($curr_code, $date_, $buy_rate, $sell_rate) {
       if (Bank_Currency::is_company($curr_code)) {
         Event::error("Exchange rates cannot be set for company currency", "", true);
       }
@@ -69,14 +65,12 @@
      * @param $buy_rate
      * @param $sell_rate
      */
-    public static function add($curr_code, $date_, $buy_rate, $sell_rate)
-    {
+    public static function add($curr_code, $date_, $buy_rate, $sell_rate) {
       if (Bank_Currency::is_company($curr_code)) {
         Event::error("Exchange rates cannot be set for company currency", "", true);
       }
       $date = Dates::_dateToSql($date_);
-      $sql
-            = "INSERT INTO exchange_rates (curr_code, date_, rate_buy, rate_sell)
+      $sql  = "INSERT INTO exchange_rates (curr_code, date_, rate_buy, rate_sell)
         VALUES (" . DB::_escape($curr_code) . ", '$date', " . DB::_escape($buy_rate) . ", " . DB::_escape($sell_rate) . ")";
       DB::_query($sql, "could not add exchange rate for $curr_code");
     }
@@ -85,8 +79,7 @@
      *
      * @param $rate_id
      */
-    public static function delete($rate_id)
-    {
+    public static function delete($rate_id) {
       $sql = "DELETE FROM exchange_rates WHERE id=" . DB::_escape($rate_id);
       DB::_query($sql, "could not delete exchange rate $rate_id");
     }
@@ -100,8 +93,7 @@
      *
      * @return float|int|mixed|string
      */
-    public static function retrieve($curr_b, $date)
-    {
+    public static function retrieve($curr_b, $date) {
       global $Hooks;
       if (method_exists($Hooks, 'retrieve_exrate')) {
         return $Hooks->retrieve_exrate($curr_b, $date);
@@ -118,8 +110,7 @@
      *
      * @return float|int|mixed|string
      */
-    public static function get_external($curr_b, $provider = 'ECB', $date)
-    {
+    public static function get_external($curr_b, $provider = 'ECB', $date) {
       $curr_a = DB_Company::get_pref('curr_default');
       if ($provider == 'ECB') {
         $filename = "/stats/eurofxref/eurofxref-daily.xml";
@@ -199,7 +190,6 @@
           }
         }
       }
-
       return $val;
     } /* end function get_extern_rate */
     // Displays currency exchange rate for given date.
@@ -214,8 +204,7 @@
      * @param      $date_
      * @param bool $edit_rate
      */
-    public static function display($from_currency, $to_currency, $date_, $edit_rate = false)
-    {
+    public static function display($from_currency, $to_currency, $date_, $edit_rate = false) {
       if ($from_currency != $to_currency) {
         $comp_currency = Bank_Currency::for_company();
         if ($from_currency == $comp_currency) {
@@ -246,7 +235,7 @@
         if ($edit_rate) {
           Forms::textCells(_("Exchange Rate:"), '_ex_rate', $rate, 8, 8, null, "class='label'", " $from_currency = 1 $to_currency");
         } else {
-          Cell::labels(_("Exchange Rate:"), "<span style='vertical-align:top;' id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency", '');
+          Cell::labelled(_("Exchange Rate:"), "<span style='vertical-align:top;' id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency", '');
         }
         Ajax::_addUpdate('_ex_rate', '_ex_rate', $rate);
       }

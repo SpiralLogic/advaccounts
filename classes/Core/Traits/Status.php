@@ -30,19 +30,18 @@
     }
     /***
      * @param null   $status
-     * @param null   $process
      * @param string $message
      * @param null   $var
      *
      * @return Status|bool
      */
-    protected function status($status = null, $process = null, $message = '', $var = null) {
+    protected function status($status = null, $message = '', $var = null) {
       if (!$this->status) {
-        $this->status = new \ADV\Core\Status($status, $process, $message, $var);
+        $this->status = new \ADV\Core\Status($status, $message, $var);
 
         return $status;
       }
 
-      return $this->status->set($status, $process, $message, $var);
+      return $this->status->set($status, $message, $var);
     }
   }

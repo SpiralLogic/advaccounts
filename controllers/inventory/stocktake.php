@@ -58,7 +58,7 @@
   }
   Forms::start();
   Inv_Adjustment::header($_SESSION['adj_items']);
-  Table::startOuter('tablestyle width80 pad10');
+  Table::startOuter('padded width80 pad10');
   Inv_Adjustment::display_items(_("Adjustment Items"), $_SESSION['adj_items']);
   Inv_Adjustment::option_controls();
   Table::endOuter(1, false);
@@ -73,16 +73,13 @@
     if (!Validation::post_num('qty', 0)) {
       Event::error(_("The quantity entered is negative or invalid."));
       JS::_setFocus('qty');
-
       return false;
     }
     if (!Validation::post_num('std_cost', 0)) {
       Event::error(_("The entered standard cost is negative or invalid."));
       JS::_setFocus('std_cost');
-
       return false;
     }
-
     return true;
   }
 
@@ -131,13 +128,11 @@
     if (count($adj->line_items) == 0) {
       Event::error(_("You must enter at least one non empty item line."));
       JS::_setFocus('stock_id');
-
       return false;
     }
     if (!Ref::is_valid($_POST['ref'])) {
       Event::error(_("You must enter a reference."));
       JS::_setFocus('ref');
-
       return false;
     }
     if (!Ref::is_new($_POST['ref'], ST_INVADJUST)) {
@@ -146,15 +141,12 @@
     if (!Dates::_isDate($_POST['AdjDate'])) {
       Event::error(_("The entered date for the adjustment is invalid."));
       JS::_setFocus('AdjDate');
-
       return false;
     } elseif (!Dates::_isDateInFiscalYear($_POST['AdjDate'])) {
       Event::error(_("The entered date is not in fiscal year."));
       JS::_setFocus('AdjDate');
-
       return false;
     }
-
     return true;
   }
 

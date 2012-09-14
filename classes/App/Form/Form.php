@@ -9,6 +9,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Form;
+
   use \ADV\App\Forms;
   use \ADV\App\User;
   use \ADV\Core\Ajax;
@@ -39,18 +40,18 @@
     protected $validators = [];
     protected $uniqueid;
     protected $current;
-    protected $options = [
-      self::NO_VALUES=> false,
-    ];
+    protected $options
+      = [
+        self::NO_VALUES=> false,
+      ];
     protected $currentgroup;
     public $useDefaults = false;
     /**
-     * @param ADV\Core\Input\Input $input
-     * @param ADV\Core\Ajax        $ajax
-     * @param \ADV\Core\Session    $session
+     * @param \ADV\Core\Input\Input                                    $input
+     * @param \ADV\Core\Ajax                                           $ajax
+     * @param \ADV\Core\Session                                        $session
      */
-    public function __construct(\ADV\Core\Input\Input $input = null, \ADV\Core\Ajax $ajax = null, \ADV\Core\Session $session = null)
-    {
+    public function __construct(\ADV\Core\Input\Input $input = null, \ADV\Core\Ajax $ajax = null, \ADV\Core\Session $session = null) {
       $this->Ajax  = $ajax ? : Ajax::i();
       $this->Input = $input ? : Input::i();
       $this->group();
@@ -58,19 +59,14 @@
     /**
      * @param $tag
      * @param $name
-     * @param $value
      *
+     * @internal param $value
      * @return Field
      */
-    protected function addField($tag, $name, $value = null)
-    {
-      $field          = new Field($tag, $name);
-      $field->default = $value;
-      if ($value === null && $this->Input->hasPost($name)) {
+    protected function addField($tag, $name) {
+      $field = new Field($tag, $name);
+      if ($this->Input->hasPost($name)) {
         $field->value = $this->Input->post($name);
-      }
-      if ($tag !== 'textarea') {
-        $field->value = e($field->value);
       }
       if (is_array($this->currentgroup)) {
         $this->currentgroup[] = $field;
@@ -86,8 +82,7 @@
      *
      * @return \ADV\App\Form\Form
      */
-    public function group($name = '_default')
-    {
+    public function group($name = '_default') {
       if (!isset($this->groups[$name])) {
         $this->groups[$name] = [];
       }
@@ -99,8 +94,7 @@
      * @param $option
      * @param $value
      */
-    public function option($option, $value)
-    {
+    public function option($option, $value) {
       if (isset($this->options[$option])) {
         $this->options[$option] = $value;
       }
@@ -115,22 +109,21 @@
      *
      * @return \ADV\Core\HTML|string
      */
-    public function start($name = '', $action = '', $multi = null, $input_attr = [])
-    {
+    public function start($name = '', $action = '', $multi = null, $input_attr = []) {
       $attr['enctype'] = $multi ? 'multipart/form-data' : null;
       $attr['name']    = $name;
       $attr['method']  = 'post';
       $attr['action']  = $action;
       $this->uniqueid  = $this->nameToId($name);
       array_merge($attr, $input_attr);
-      $this->start = HTML::setReturn(true)->form($name, $attr)->input(
+      $this->start = (new HTML)->form($name, $attr)->input(
         null,
         [
         'type' => 'hidden',
         'value'=> $this->uniqueid,
         'name' => '_form_id'
         ]
-      )->setReturn(false);
+      );
 
       return $this->start;
     }
@@ -138,63 +131,56 @@
      * @return \ADV\Core\HTML|string
     @internal param int $breaks
      */
-    public function end()
-    {
-      $this->end = HTML::setReturn(true)->form->setReturn(false);
+    public function end() {
+      $this->end = "</form>";
 
       return $this->end;
     }
     /**
-     * @param      $name
-     * @param null $value
+     * @param $name
      *
+     * @internal param null $value
      * @internal param bool $echo
      * @return string
      */
-    public function hidden($name, $value = null)
-    {
-      $field         = $this->addField('input', $name, $value);
+    public function hidden($name) {
+      $field         = $this->addField('input', $name);
       $field['type'] = 'hidden';
-      $this->Ajax->addUpdate($name, $name, $value);
     }
     /**
      * @param       $name
-     * @param null  $value
      * @param array $input_attr
      *
+     * @internal param null $value
      * @return \ADV\App\Form\Field
      */
-    public function text($name, $value = null, $input_attr = [])
-    {
-      $field         = $this->addField('input', $name, $value);
+    public function text($name, $input_attr = []) {
+      $field         = $this->addField('input', $name);
       $field['type'] = 'text';
 
       return $field->mergeAttr($input_attr);
     }
     /**
      * @param       $name
-     * @param       $value
      * @param array $input_attr
      *
+     * @internal param $value
      * @return \ADV\App\Form\Field
      */
-    public function textarea($name, $value = null, $input_attr = [])
-    {
-      $field = $this->addField('textarea', $name, $value);
-      $field->setContent($value);
+    public function textarea($name, $input_attr = []) {
+      $field = $this->addField('textarea', $name);
 
       return $field->mergeAttr($input_attr);
     }
     /**
      * @param       $name
-     * @param       $value
      * @param array $input_attr
      *
+     * @internal param $value
      * @return Field
      */
-    public function date($name, $value, $input_attr = [])
-    {
-      $field              = $this->addField('input', $name, $value);
+    public function date($name, $input_attr = []) {
+      $field              = $this->addField('input', $name);
       $field['type']      = 'text';
       $field['maxlength'] = 10;
       $field['class']     = 'datepicker';
@@ -203,78 +189,70 @@
     }
     /**
      * @param           $name
-     * @param bool      $value
      * @param array     $input_attr
      *
+     * @internal param bool $value
      * @return Field
      */
-    public function checkbox($name, $value, $input_attr = [])
-    {
-      $field            = $this->addField('input', $name, !!$value);
-      $field['type']    = 'checkbox';
-      $field['checked'] = !!$value;
+    public function checkbox($name, $input_attr = []) {
+      $field         = $this->addField('checkbox', $name);
+      $field['type'] = 'checkbox';
+      $field->value  = !!$field->value;
 
       return $field->mergeAttr($input_attr);
     }
     /**
      * @param       $name
-     * @param null  $value
      * @param array $inputparams
      *
+     * @internal param null $value
      * @return Field
-
      */
-    public function percent($name, $value = null, $inputparams = [])
-    {
-      return $this->number($name, $value, User::percent_dec(), $inputparams)->append('%');
+    public function percent($name, $inputparams = []) {
+      $inputparams = array_merge(['class'=> 'amount'], $inputparams);
+
+      return $this->number($name, User::percent_dec(), $inputparams)->append('%');
     }
     /**
      * @param       $name
-     * @param null  $value
      * @param int   $dec
      * @param array $input_attr
      *
+     * @internal param null $value
      * @return \ADV\App\Form\Field
      */
-    public function number($name, $value = null, $dec = null, $input_attr = [])
-    {
-      $value             = (is_numeric($dec)) ? $value : Num::_round($value, $dec);
-      $field             = $this->addField('input', $name, $value);
+    public function number($name, $dec = null, $input_attr = []) {
+      $field             = $this->addField('input', $name);
       $field['data-dec'] = (int) $dec;
-      $field['value']    = Num::_format($field['value'] ? : 0, $field['data-dec']);
-      $size              = Arr::get($input_attr, 'size');
-      if ($size && is_numeric($size)) {
-        $field['size'] = $size;
-      } elseif (is_string($size)) {
-        $field['class'] .= ($name == 'freight') ? ' freight ' : ' amount ';
-      }
-      $field['type'] = 'text';
+      $field['type']     = 'text';
       $this->Ajax->addAssign($name, $name, 'data-dec', $dec);
+      $field->mergeAttr($input_attr);
+      $field['value'] = Num::_format($field['value'] ? : 0, $field['data-dec']);
 
-      return $field->mergeAttr($input_attr);
+      return $field;
     }
     /**
      * @param       $name
-     * @param null  $value
-     * @param array $inputparams
+     * @param array $input_attr
      *
+     * @internal param null $value
+     * @internal param array $inputparams
      * @return Field
-
      */
-    public function amount($name, $value = null, $inputparams = [])
-    {
-      return $this->number($name, $value, User::price_dec(), $inputparams)->prepend('$');
+    public function amount($name, $input_attr = []) {
+      $input_attr = array_merge(['class'=> 'amount'], $input_attr);
+
+      return $this->number($name, User::price_dec(), $input_attr)->prepend('$');
     }
     /**
      * @param $control
      *
      * @return \ADV\App\Form\Field
      */
-    public function custom($control)
-    {
+    public function custom($control) {
       preg_match('/name=([\'"]?)(.+?)\1/', $control, $matches);
       $name      = $matches[2];
-      $field     = $this->addField('custom', $name, null);
+      $field     = $this->addField('custom', $name);
       $id        = $field->id;
       $control   = preg_replace('/id=([\'"]?)' . preg_quote($name) . '\1/', "id='$id'", $control, 1);
       $validator = null;
@@ -296,8 +274,7 @@
      *
      * @return string
      */
-    public function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = null)
-    {
+    public function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = null) {
       $box = new SelectBox($name, $selected_id, $sql, $valfield, $namefield, $options);
 
       return $box->create();
@@ -322,8 +299,7 @@
      *
      * @return Field
      */
-    public function arraySelect($name, $items, $selected_id = null, $options = [])
-    {
+    public function arraySelect($name, $items, $selected_id = null, $options = []) {
       $spec_option = false; // option text or false
       $spec_id     = 0; // option id
       $async       = true; // select update via ajax (true) vs _page_body reload
@@ -335,7 +311,10 @@
       // ------ merge options with defaults ----------
       extract($options, EXTR_IF_EXISTS);
       $selected_id = $multi ? (array) $selected_id : $selected_id;
-      $field       = $this->addField('select', $name, $selected_id);
+      $field       = $this->addField('select', $name);
+      $field->val($selected_id);
+      Ajax::_addUpdate($name, $name, $selected_id);
+
       // code is generalized for multiple selection support
       if ($this->Input->post("_{$name}_update")) {
         $async ? $this->Ajax->activate($name) : $this->Ajax->activate('_page_body');
@@ -349,8 +328,9 @@
         reset($items);
         $field->default = key($items);
       }
+      $HTML = new HTML;
       foreach ($items as $value => $label) {
-        $selector .= HTML::setReturn(true)->option(null, $label, ['value'=> $value], false)->setReturn(false);
+        $selector .= $HTML->option(null, $label, ['value'=> $value], false);
       }
       $input_attr = [
         'multiple'=> $multi, //
@@ -359,7 +339,7 @@
         'class'   => 'combo', //
         'title'   => $sel_hint
       ];
-      $selector   = HTML::setReturn(true)->span("_{$name}_sel", ['class'=> 'combodiv'])->select($field->id, $selector, $input_attr, false)->_span()->setReturn(false);
+      $selector   = $HTML->span("_{$name}_sel", ['class'=> 'combodiv'])->select($field->id, $selector, $input_attr, false)->_span()->__toString();
       $this->Ajax->addUpdate($name, "_{$name}_sel", $selector);
       $field->customControl($selector);
 
@@ -373,8 +353,7 @@
      *
      * @return string
      */
-    public function button($name, $value, $caption, $input_attr = [])
-    {
+    public function button($name, $value, $caption, $input_attr = []) {
       $button = new Button($name, $value, $caption);
       if (is_array($this->currentgroup)) {
         $this->currentgroup[] = $button;
@@ -404,8 +383,14 @@
      *
      * @return \ADV\App\Form\Button
      */
-    public function submit($action, $caption = '', $input_attr = [])
-    {
+    public function submit($action, $caption = null, $input_attr = []) {
+      if (is_array($caption)) {
+        $input_attr = $caption;
+        $caption    = null;
+      }
+      if ($caption === null) {
+        $caption = $action;
+      }
       $button     = new Button('_action', $action, $caption);
       $button->id = $this->nameToId($action);
       if (is_array($this->currentgroup)) {
@@ -415,16 +400,27 @@
 
       return $button->mergeAttr($input_attr);
     }
-    public function setValues($values)
-    {
+    /**
+     * @param $id
+     */
+    public function hide($id) {
+      $this->fields[$this->nameToId($id)]->hide = true;
+    }
+    /**
+     * @param      $values
+     * @param null $group
+     *
+     * @return void
+     */
+    public function setValues($values, $group = null) {
       $values = (array) $values;
+      $fields = $group ? $this->groups[$group] : $this->fields;
       foreach ($values as $id=> $value) {
-        if (array_key_exists($id, $this->fields)) {
-          $this->fields[$id]->value = $value;
+        if (array_key_exists($id, $fields)) {
+          $fields[$id]->value = $value;
         }
       }
     }
-
     /**
      * Helper function.
      * Returns true if selector $name is subject to update.
@@ -433,15 +429,13 @@
      *
      * @return bool
      */
-    public function isListUpdated($name)
-    {
+    public function isListUpdated($name) {
       return isset($_POST['_' . $name . '_update']);
     }
     /**
      * @param $valids
      */
-    public function runValidators($valids)
-    {
+    public function runValidators($valids) {
       foreach ($_SESSION['forms'][$this->uniqueid]->validators as $function) {
         $valids->$function();
       }
@@ -451,22 +445,27 @@
      *
      * @return mixed
      */
-    protected function nameToId($name)
-    {
+    protected function nameToId($name) {
       return str_replace(['[', ']'], ['-', ''], $name);
     }
     /**
      * @return array
      */
-    public function jsonSerialize()
-    {
+    public function jsonSerialize() {
       $return = [];
       $use    = ($this->useDefaults) ? 'default' : 'value';
       foreach ($this->fields as $id=> $field) {
         if ($field instanceof Button) {
           continue;
         }
-        $return[$id] = ['value'=> $field->$use];
+        $value = ['value'=> $field->$use];
+        if ($field->hide === true) {
+          $value['hidden'] = true;
+        } elseif ($field['autofocus'] === true) {
+          $value['focus'] = true;
+        }
+
+        $return[$id] = $value;
       }
 
       return $return;
@@ -474,8 +473,7 @@
     /**
      * @return array
      */
-    public function __sleep()
-    {
+    public function __sleep() {
       return ['validators'];
     }
     /**
@@ -492,8 +490,7 @@
      * <p>
      *       The return value will be casted to boolean if non-boolean was returned.
      */
-    public function offsetExists($offset)
-    {
+    public function offsetExists($offset) {
       return array_key_exists($offset, $this->fields) || array_key_exists($offset, $this->groups);
     }
     /**
@@ -507,8 +504,21 @@
      *
      * @return \ADV\App\Form\Field Can return all value types.
      */
-    public function offsetGet($offset)
-    {
+    public function offsetGet($offset) {
+      if ($offset == '_start') {
+        if (empty($this->start)) {
+          return $this->start();
+        }
+
+        return $this->start;
+      }
+      if ($offset == '_end') {
+        if (empty($this->end)) {
+          return $this->end();
+        }
+
+        return $this->end;
+      }
       if (!isset($this->fields[$offset]) && isset($this->groups[$offset])) {
         return $this->groups[$offset];
       }
@@ -529,8 +539,7 @@
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
-    {
+    public function offsetSet($offset, $value) {
       $this->fields[$offset] = $value;
     }
     /**
@@ -544,8 +553,7 @@
      *
      * @return void
      */
-    public function offsetUnset($offset)
-    {
+    public function offsetUnset($offset) {
       unset($this->fields[$offset]);
     }
     /**
@@ -554,8 +562,7 @@
      * @link http://php.net/manual/en/iterator.current.php
      * @return mixed Can return any type.
      */
-    public function current()
-    {
+    public function current() {
       return current($this->groups['_default']);
     }
     /**
@@ -564,8 +571,7 @@
      * @link http://php.net/manual/en/iterator.next.php
      * @return void Any returned value is ignored.
      */
-    public function next()
-    {
+    public function next() {
       $this->current = next($this->groups['_default']);
     }
     /**
@@ -574,8 +580,7 @@
      * @link http://php.net/manual/en/iterator.key.php
      * @return mixed scalar on success, or null on failure.
      */
-    public function key()
-    {
+    public function key() {
       return key($this->groups['_default']);
     }
     /**
@@ -585,8 +590,7 @@
      * @return boolean The return value will be casted to boolean and then evaluated.
      *       Returns true on success or false on failure.
      */
-    public function valid()
-    {
+    public function valid() {
       return $this->current !== false;
     }
     /**
@@ -595,8 +599,15 @@
      * @link http://php.net/manual/en/iterator.rewind.php
      * @return void Any returned value is ignored.
      */
-    public function rewind()
-    {
+    public function rewind() {
       reset($this->groups['_default']);
+    }
+    public function __tostring() {
+      $return = '';
+      foreach ($this as $field) {
+        $return .= $field;
+      }
+
+      return $return;
     }
   }

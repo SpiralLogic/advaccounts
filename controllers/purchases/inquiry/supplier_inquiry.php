@@ -2,7 +2,6 @@
   use ADV\Core\DB\DB;
   use ADV\Core\Cell;
   use ADV\App\Creditor\Creditor;
-  use ADV\Core\Row;
   use ADV\Core\Table;
   use ADV\Core\Ajax;
   use ADV\Core\Input\Input;
@@ -16,8 +15,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class SupplierInquiry extends \ADV\App\Controller\Base
-  {
+  class SupplierInquiry extends \ADV\App\Controller\Base {
     public $creditor_id;
     protected function before() {
       JS::_openWindow(950, 500);
@@ -39,14 +37,14 @@
     protected function index() {
       Page::start(_($help_context = "Supplier Inquiry"), SA_SUPPTRANSVIEW);
       Forms::start();
-      Table::start('tablestyle_noborder');
-      Row::start();
+      Table::start('noborder');
+      echo '<tr>';
       Creditor::cells(_(''), 'creditor_id', null, true);
       Forms::dateCells(_("From:"), 'TransAfterDate', '', null, -90);
       Forms::dateCells(_("To:"), 'TransToDate');
       Purch_Allocation::row("filterType", null);
       Forms::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-      Row::end();
+      echo '</tr>';
       Table::end();
       Display::div_start('totals_tbl');
       if ($this->creditor_id > 0) {
@@ -67,8 +65,7 @@
       $date_after = Dates::_dateToSql($_POST['TransAfterDate']);
       $date_to    = Dates::_dateToSql($_POST['TransToDate']);
       // Sherifoz 22.06.03 Also get the description
-      $sql
-        = "SELECT trans.type,
+      $sql = "SELECT trans.type,
     		trans.trans_no,
     		trans.reference,
     		supplier.name,
@@ -96,8 +93,7 @@
           ) . " OR trans.supplier_reference LIKE " . DB::_quote($quicksearch) . ")";
         }
       } else {
-        $sql
-          .= " AND trans . tran_date >= '$date_after'
+        $sql .= " AND trans . tran_date >= '$date_after'
     	 AND trans . tran_date <= '$date_to'";
       }
       if ($this->creditor_id > 0) {
@@ -140,7 +136,7 @@
         $cols[_("Currency")] = 'skip';
       }
       /*show a table of the transactions returned by the sql */
-      $table = DB_Pager::new_db_pager('trans_tbl', $sql, $cols);
+      $table = DB_Pager::newPager('trans_tbl', $sql, $cols);
       $table->setMarker([$this, 'formatMarker'], _("Marked items are overdue."));
       $table->width = "90";
       $table->display($table);
@@ -152,9 +148,7 @@
      * @return mixed
      */
     public function formatType($dummy, $type) {
-      global $systypes_array;
-
-      return $systypes_array[$type];
+      return SysTypes::$names[$type];
     }
     /**
      * @param $trans
@@ -187,7 +181,6 @@
      */
     public function formatDebit($row) {
       $value = $row["TotalAmount"];
-
       return $value >= 0 ? Num::_priceFormat($value) : '';
     }
     /**
@@ -197,7 +190,6 @@
      */
     public function formatCredit($row) {
       $value = -$row["TotalAmount"];
-
       return $value > 0 ? Num::_priceFormat($value) : '';
     }
     /**
@@ -219,7 +211,6 @@
       }
       $menus[] = ['title'=> 'Menu', 'items'=> $items];
       $dropdown->set('menus', $menus);
-
       return $dropdown->render(true);
     }
     /**
@@ -239,7 +230,7 @@
       $txt_now_due   = "1-" . $past_due1 . " " . _('Days');
       $txt_past_due1 = $past_due1 + 1 . "-" . $past_due2 . " " . _('Days');
       $txt_past_due2 = _('Over') . " " . $past_due2 . " " . _('Days');
-      Table::start('tablestyle width90');
+      Table::start('padded width90');
       $th = array(
         _("Currency"),
         _("Terms"),
@@ -251,7 +242,7 @@
         _("Total For Search Period")
       );
       Table::header($th);
-      Row::start();
+      echo '<tr>';
       Cell::label($supplier_record["curr_code"]);
       Cell::label($supplier_record["terms"]);
       Cell::amount($supplier_record["Balance"] - $supplier_record["Due"]);
@@ -260,7 +251,7 @@
       Cell::amount($supplier_record["Overdue2"]);
       Cell::amount($supplier_record["Balance"]);
       Cell::amount(Creditor::get_oweing($_POST['creditor_id'], $_POST['TransAfterDate'], $_POST['TransToDate']));
-      Row::end();
+      echo '</tr>';
       Table::end(1);
     }
   }

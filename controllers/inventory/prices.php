@@ -76,7 +76,7 @@
   }
   $prices_list = Item_Price::getAll($_POST['stock_id']);
   Display::div_start('price_table');
-  Table::start('tablestyle grid width90 ');
+  Table::start('padded grid width90 ');
   $th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");
   Table::header($th);
   $k          = 0; //row colour counter
@@ -87,14 +87,14 @@
     Cell::amount($myrow["price"]);
     Forms::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
-    Row::end();
+    echo '</tr>';
   }
   Table::end();
   if (DB::_numRows($prices_list) == 0) {
     if (DB_Company::get_pref('add_pct') != -1) {
       $calculated = true;
     }
-    Event::warning(_("There are no prices set up for this part."),false);
+    Event::warning(_("There are no prices set up for this part."), false);
   }
   Display::div_end();
   echo "<br>";

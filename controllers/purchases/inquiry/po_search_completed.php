@@ -1,11 +1,13 @@
 <?php
   use ADV\Core\Input\Input;
+  use ADV\App\Orders;
+  use ADV\App\Dates;
+  use ADV\App\Forms;
   use ADV\App\Reporting;
   use ADV\Core\DB\DB;
-  use ADV\App\UI\UI;
+  use ADV\App\UI;
   use ADV\App\Item\Item;
   use ADV\App\Creditor\Creditor;
-  use ADV\Core\Row;
   use ADV\Core\Table;
   use ADV\Core\Ajax;
   use ADV\Core\JS;
@@ -18,8 +20,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class POCompletedInquiry extends \ADV\App\Controller\Base
-  {
+  class POCompletedInquiry extends \ADV\App\Controller\Base {
     protected $order_number;
     protected $creditor_id;
     protected function before() {
@@ -32,7 +33,7 @@
       if ($this->order_number) {
         $this->Ajax->addFocus(true, 'order_number');
       } else {
-        $this->Ajax->addFocus(true, 'OrdersAfterDate');
+        $this->Ajax->addFocus(true, 'creditor');
       }
       $this->Ajax->activate('orders_tbl');
       if ($this->Input->post('_control') != 'supplier' && !$this->Input->post('supplier')) {
@@ -43,8 +44,8 @@
       Page::start(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, $this->Input->request('frame'));
       Forms::start();
       if (!$this->Input->request('frame')) {
-        Table::start('tablestyle_noborder');
-        Row::start();
+        Table::start('noborder');
+        echo '<tr>';
         Creditor::newselect(null, ['row'=> false, 'cell_class'=> 'med']);
         Forms::refCells(_("#:"), 'order_number');
         Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
@@ -52,7 +53,7 @@
         //Inv_Location::cells(_("Location:"), 'StockLocation', null, true);
         Item::cells(_("Item:"), 'SelectStockFromList', null, true);
         Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
-        Row::end();
+        echo '</tr>';
         Table::end();
       }
       $this->makeTable();
@@ -140,7 +141,6 @@
         'stock_lock'     => 'skip',
         'creditor_id'    => 'skip',
         // Edit link
-
         ['insert' => true, 'fun' => [$this, 'formatDropDown']]
       ); //
       if ($stock_location) {
@@ -149,7 +149,7 @@
       if ($location == 1) {
         $cols[_("Invoice #")] = 'skip';
       }
-      $table        = DB_Pager::new_db_pager('orders_tbl', $sql, $cols);
+      $table        = DB_Pager::newPager('orders_tbl', $sql, $cols);
       $table->width = ($this->Input->request('frame')) ? '100' : "90";
       $table->display($table);
     }
@@ -167,7 +167,7 @@
      * @return string
      */
     public function formatEditBtn($row) {
-      return "/purchases/po_entry_items.php?" . Orders::MODIFY_ORDER . "=" . $row["order_no"];
+      return $href = "/purchases/po_entry_items.php?" . Orders::MODIFY_ORDER . "=" . $row["order_no"];
     }
     /**
      * @param $row
@@ -180,7 +180,6 @@
       } elseif ($row['Invoiced'] > 0) {
         return DB_Pager::link(_("Invoice"), "/purchases/supplier_invoice.php?New=1&creditor_id=" . $row['creditor_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
       }
-
       return '';
     }
     /**
@@ -194,19 +193,31 @@
     /**
      * @param $row
      *
-     * @return ADV\Core\HTML|string
+     * @return \ADV\Core\HTML|string
      */
     public function formatEmailBtn($row) {
       return Reporting::emailDialogue($row['id'], ST_PURCHORDER, $row['order_no']);
     }
+    /**
+     * @param $row
+     *
+     * @return string
+     */
     public function formatDropDown($row) {
-      $dropdown = new View('ui/dropdown');
-      $edit_url = $this->formatEditBtn($row);
-      $items[]  = ['label'=> 'Edit', 'href'=> $edit_url];
-      $title    = 'Edit';
-      $href     = Reporting::print_doc_link($row['order_no'], _("Print"), true, ST_PURCHORDER, ICON_PRINT, 'button printlink', '', 0, 0, true);
-      $items[]  = ['class'=> 'printlink', 'label'=> 'Print', 'href'=> $href];
-      $items[]  = ['class'=> 'email-button', 'label'=> 'Email', 'href'=> '#', 'data'=> ['emailid' => $row['creditor_id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']]];
+      $dropdown  = new View('ui/dropdown');
+      $edit_url  = $this->formatEditBtn($row);
+      $edit_attr = [];
+      if ((Input::_request('frame'))) {
+        $edit_attr = [
+          '_target'=> "parent",
+          'onclick'=> 'javascript:window.parent.location.href=this.href; return false;'
+        ];
+      }
+      $items[] = ['label'=> 'Edit', 'attr'=> $edit_attr, 'href'=> $edit_url];
+      $title   = 'Edit';
+      $href    = Reporting::print_doc_link($row['order_no'], _("Print"), true, ST_PURCHORDER, ICON_PRINT, 'button printlink', '', 0, 0, true);
+      $items[] = ['class'=> 'printlink', 'label'=> 'Print', 'href'=> $href];
+      $items[] = ['class'=> 'email-button', 'label'=> 'Email', 'href'=> '#', 'data'=> ['emailid' => $row['creditor_id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']]];
       if ($row['Received'] > 0) {
         $href = "/purchases/po_receive_items.php?PONumber=" . $row["order_no"];
       } elseif ($row['Invoiced'] > 0) {
@@ -215,7 +226,6 @@
       $items[] = ['label'=> 'Receive', 'href'=> $href];
       $menus[] = ['title'=> $title, 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
       $dropdown->set('menus', $menus);
-
       return $dropdown->render(true);
     }
   }

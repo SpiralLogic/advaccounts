@@ -10,7 +10,7 @@
   namespace ADV\App;
 
   use ADV\Core\DB\DB;
-  use ADV\Core\Cache\Cache;
+  use ADV\Core\Cache;
   use ADV\Core\Event;
   use ADV\Core\Config;
   use ADV\Core\Auth;

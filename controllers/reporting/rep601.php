@@ -52,7 +52,7 @@
 
   function print_bank_transactions()
   {
-    global $systypes_array;
+
     $acc         = $_POST['PARAM_0'];
     $from        = $_POST['PARAM_1'];
     $to          = $_POST['PARAM_2'];
@@ -106,7 +106,7 @@
         $total_debit = $total_credit = 0;
         while ($myrow = DB::_fetch($trans)) {
           $total += $myrow['amount'];
-          $rep->TextCol(0, 1, $systypes_array[$myrow["type"]]);
+          $rep->TextCol(0, 1, SysTypes::$names[$myrow["type"]]);
           $rep->TextCol(1, 2, $myrow['trans_no']);
           $rep->TextCol(2, 3, $myrow['ref']);
           $rep->DateCol(3, 4, $myrow["trans_date"], true);

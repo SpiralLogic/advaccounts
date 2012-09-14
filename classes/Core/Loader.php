@@ -9,7 +9,7 @@
    **/
   namespace ADV\Core;
 
-  use ADV\Core\Cache\Cache;
+  use ADV\Core\Cache;
 
   /**
 

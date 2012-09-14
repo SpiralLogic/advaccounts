@@ -7,7 +7,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace ADV\Core\Cache;
+  namespace ADV\Core;
+
+  use ADV\Core\Cache\Cachable;
 
   /**
    * @method static mixed _get($key, $default = false)
@@ -16,8 +18,7 @@
    * @method static _delete($key)
    * @method static Cache i()
    */
-  class Cache
-  {
+  class Cache {
     use \ADV\Core\Traits\StaticAccess2;
 
     /**
@@ -75,8 +76,8 @@
       $this->driver->flush($time);
     }
     /**
-     * @param $name
-     * @param $constants
+     * @param                $name
+     * @param \Closure|Array $constants
      *
      * @return Cache|bool
      */
@@ -88,7 +89,6 @@
       if ($loader === true) {
         return true;
       }
-
       if (is_callable($constants)) {
         $constants = (array) call_user_func($constants);
       }
@@ -102,7 +102,6 @@
       foreach ($constants as $constant => $value) {
         define($constant, $value);
       }
-
       return $this;
     }
   }

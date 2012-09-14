@@ -50,12 +50,12 @@
    */
   function edit_allocations_for_transaction($type, $trans_no)
   {
-    global $systypes_array;
+
     Forms::start();
     if (isset($_POST['inquiry']) || stristr($_SERVER['HTTP_REFERER'], 'supplier_allocation_inquiry.php')) {
       Forms::hidden('inquiry', true);
     }
-    Display::heading(_("Allocation of") . " " . $systypes_array[$_SESSION['alloc']->type] . " # " . $_SESSION['alloc']->trans_no);
+    Display::heading(_("Allocation of") . " " . SysTypes::$names[$_SESSION['alloc']->type] . " # " . $_SESSION['alloc']->trans_no);
     Display::heading($_SESSION['alloc']->person_name);
     Display::heading(_("Date:") . " <span class='bold'>" . $_SESSION['alloc']->date_ . "</span>");
     Display::heading(_("Total:") . " <span class='bold'>" . Num::_priceFormat(-$_SESSION['alloc']->amount) . "</span>");

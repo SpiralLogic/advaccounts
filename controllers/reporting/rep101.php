@@ -93,7 +93,7 @@
 
   function print_customer_balances()
   {
-    global $systypes_array;
+
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
     $fromcust    = $_POST['PARAM_2'];
@@ -190,7 +190,7 @@
           continue;
         }
         //$rep->NewLine(1, 2);
-        //$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
+        //$rep->TextCol(0, 1, SysTypes::$names[$trans['type']]);
         //$rep->TextCol(1, 2,	$trans['reference']);
         //$rep->DateCol(2, 3,	$trans['tran_date'], true);
         if ($trans['type'] == ST_SALESINVOICE

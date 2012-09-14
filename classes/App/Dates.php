@@ -17,13 +17,7 @@
   /**
 
    */
-  use ADV\Core\DB\DB;
-
-  /**
-
-   */
-  class Dates extends \ADV\Core\Dates
-  {
+  class Dates extends \ADV\Core\Dates {
     use \ADV\Core\Traits\StaticAccess2;
 
     protected $User = null;
@@ -61,7 +55,6 @@
       if (!$date || !$this->User->_sticky_doc_date()) {
         $date = $this->Session->setGlobal('date', $this->_today());
       }
-
       return $date;
     }
     /**
@@ -87,7 +80,6 @@
       }
       $begin = $this->_sqlToDate($myrow['begin']);
       $end   = $this->_sqlToDate($myrow['end']);
-
       return ($this->isGreaterThan($date2, $begin) || $this->isGreaterThan($end, $date2));
     }
     /**
@@ -96,7 +88,6 @@
      */
     public function beginFiscalYear() {
       $myrow = \DB_Company::get_current_fiscalyear();
-
       return $this->sqlToDate($myrow['begin']);
     }
     /**
@@ -105,10 +96,24 @@
      */
     public function endFiscalYear() {
       $myrow = \DB_Company::get_current_fiscalyear();
-
       return $this->sqlToDate($myrow['end']);
     }
     /**
      * @return mixed
      */
+    /**
+     * @static
+     *
+     * @param     $name
+     * @param int $month
+     *
+     * @return string
+     */
+    public function months($name, $month = 0) {
+      $months[-1] = 'Current';
+      for ($i = 0; $i < 11; $i++) {
+        $months[$i] = date('F', strtotime("now - $i months"));
+      }
+      return Forms::arraySelect($name, $month, $months);
+    }
   }

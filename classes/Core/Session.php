@@ -9,8 +9,6 @@
    **/
   namespace ADV\Core;
 
-  use \Memcached;
-
   /**
 
    */
@@ -45,27 +43,15 @@
      * @throws \ADV\Core\SessionException
      */
     final protected function __construct() {
-      /** @noinspection PhpUndefinedConstantInspection */
-      /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() === PHP_SESSION_DISABLED) {
         throw new SessionException('Sessions are disasbled!');
       }
       ini_set('session.gc_maxlifetime', 3200); // 10hrs
-      session_name('ADV' . md5($_SERVER['SERVER_NAME']));
+      $handler = new \ADV\Core\Session\Memcached();
+      session_set_save_handler($handler, true);
+      session_start();
+
       /** @noinspection PhpUndefinedFunctionInspection */
-      if (session_status() === PHP_SESSION_NONE && extension_loaded('Memcached')) {
-        ini_set('session.save_handler', 'Memcached');
-        ini_set('session.save_path', '127.0.0.1:11211');
-        (Memcached::HAVE_IGBINARY)  and  ini_set('session.serialize_handler', 'igbinary');
-        session_start();
-      }
-      /** @noinspection PhpUndefinedFunctionInspection */
-      if (session_status() === PHP_SESSION_NONE) {
-        ini_restore('session.save_handler');
-        ini_restore('session.save_path');
-        ini_restore('session.serialize_handler');
-        session_start();
-      }
       /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() !== PHP_SESSION_ACTIVE) {
         throw new SessionException('Could not start a Session!');

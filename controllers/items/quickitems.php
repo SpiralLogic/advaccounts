@@ -1,5 +1,7 @@
 <?php
   use ADV\App\Item\Item;
+  use ADV\App\UI;
+  use ADV\App\ADVAccounting;
 
   /**
    * PHP version 5.4
@@ -9,27 +11,27 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class QuickItems extends \ADV\App\Controller\Base
-  {
-
+  class QuickItems extends \ADV\App\Controller\Base {
     protected $itemData;
     protected function before() {
       ADVAccounting::i()->set_selected('items');
       if (AJAX_REFERRER) {
-        $this->runAjax();
+        $this->runPost();
       }
       $this->JS->footerFile("/js/quickitems.js");
     }
     /**
      * @param $id
-     * @param $data
+     *
+     * @return string
      */
     protected function getItemData($id) {
       $data['item']        = $item = new Item($id);
       $data['stockLevels'] = $item->getStockLevels();
       return json_encode($data, JSON_NUMERIC_CHECK);
     }
-    protected function runAjax() {
+    protected function runPost() {
+      $data = [];
       if (isset($_GET['term'])) {
         $data = Item::search($_GET['term']);
       } elseif (isset($_POST['id'])) {
@@ -52,6 +54,8 @@
     protected function index() {
       Page::start(_($help_context = "Items"), SA_CUSTOMER, isset($_GET['frame']));
       $view = new View('items/quickitems');
+      $menu = new MenuUI();
+      $view->set('menu', $menu);
       $view->set('stock_cats', Item_Category::select('category_id'));
       $view->set('units', Item_Unit::select('uom'));
       $view->set('tax_itemtype', Tax_ItemType::select('tax_type_id'));
@@ -62,13 +66,18 @@
       $view->set('adjustment_account', GL_UI::all('adjustment_account'));
       $view->set('assembly_account', GL_UI::all('assembly_account'));
       if (!isset($_GET['stock_id'])) {
-        HTML::div('itemSearch', array('class' => 'bold pad10 center'));
-        Item::addSearchBox('itemSearchId', array(
-          'label'    => 'Item:', 'size' => '50px', 'selectjs' => '$("#itemSearchId").val(value.stock_id);Items.fetch(value.stock_id);return false;'
-        ));
-        HTML::div();
+        $searchBox = UI::searchLine(
+          'itemSearchId',
+          '/items/search.php',
+          [
+          'label'    => 'Item:',
+          'size'     => '50px',
+          'selectjs' => '$("#itemSearchId").val(value.stock_id);Items.fetch(value.stock_id);return false;'
+          ]
+        );
+        $view->set('searchBox', $searchBox);
         $id = 0;
-        $this->JS->setFocus('#itemSearchId');
+        $this->JS->setFocus('itemSearchId');
       } else {
         $id = Item::getStockId($_GET['stock_id']);
       }
@@ -80,4 +89,5 @@
       Page::end(true);
     }
   }
-new QuickItems();
+
+  new QuickItems();

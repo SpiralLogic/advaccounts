@@ -1,5 +1,19 @@
 <?php
-  use ADV\Core\Row;
+  use ADV\App\Bank\Bank;
+  use ADV\App\User;
+  use ADV\App\Debtor\Debtor;
+  use ADV\App\Dates;
+  use ADV\App\Ref;
+  use ADV\App\Validation;
+  use ADV\Core\JS;
+  use ADV\App\Creditor\Creditor;
+  use ADV\Core\Input\Input;
+  use ADV\App\Dimensions;
+  use ADV\Core\Cell;
+  use ADV\App\Forms;
+  use ADV\App\Display;
+  use ADV\App\Form\Button;
+  use ADV\App\Form\Form;
   use ADV\Core\Table;
 
   /**
@@ -10,8 +24,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class GlBank extends \ADV\App\Controller\Base
-  {
+  class GlBank extends \ADV\App\Controller\Base {
     /** @var Item_Order */
     protected $order;
     protected $security;
@@ -30,7 +43,6 @@
         }
       }
       $this->security = $this->order->trans_type == ST_BANKPAYMENT ? SA_PAYMENT : SA_DEPOSIT;
-
       $this->JS->openWindow(950, 500);
       $this->type = $this->order->trans_type == ST_BANKPAYMENT ? 'Payment' : 'Deposit';
       $this->setTitle('Bank Account ' . $this->type . ' Entry');
@@ -50,15 +62,12 @@
       if (isset($_POST['_date__changed'])) {
         $this->Ajax->activate('_ex_rate');
       }
-      if (isset($_POST['Process']) && $this->canProcess()) {
-        $this->processOrder();
-      }
       $id = Forms::findPostPrefix(MODE_DELETE);
       if ($id != -1) {
         $this->deleteItem($id);
       }
-      if (isset($_POST['addLine']) && $this->checkItemData()) {
-        $this->newItem();
+      if (isset($_POST['addLine'])) {
+        $this->addLine();
       }
       if (isset($_POST['updateItem'])) {
         $this->updateItem();
@@ -72,20 +81,209 @@
     }
     protected function index() {
       Page::start($this->title, $this->security);
+      $this->runAction();
       Forms::start();
-      Bank_UI::header($this->order);
+      $this->header($this->order);
       Table::start('tablesstyle2 width90 pad10');
-      Row::start();
+      echo '<tr>';
       echo "<td>";
-      Bank_UI::items(_($this->type . " Items"), $this->order);
-      Bank_UI::option_controls();
+      $this->items();
+      echo "<br><table class='center'>";
+      Forms::textareaRow(_("Memo"), 'memo_', null, 50, 3);
+      echo "</table>";
       echo "</td>";
-      Row::end();
+      echo '</tr>';
       Table::end(1);
-      Forms::submitCenterBegin('Update', _("Update"), '', null);
-      Forms::submitCenterEnd('Process', _("Process " . $this->type), '', 'default');
+      echo '<div class="center">';
+      echo (new Button('_action', COMMIT, COMMIT))->type('success')->preIcon(ICON_SUBMIT);
+      echo "</div>";
       Forms::end();
       Page::end();
+    }
+    /**
+     * @return void
+     */
+    protected function header() {
+      $payment = $this->order->trans_type == ST_BANKPAYMENT;
+      Display::div_start('pmt_header');
+      Table::startOuter('standard width90'); // outer table
+      Table::section(1);
+      Bank_Account::row($payment ? _("From:") : _("To:"), 'bank_account', null, true);
+      Forms::dateRow(_("Date:"), 'date_', '', true, 0, 0, 0, null, true);
+      Table::section(2, "33%");
+      if (!isset($_POST['PayType'])) {
+        if (isset($_GET['PayType'])) {
+          $_POST['PayType'] = $_GET['PayType'];
+        } else {
+          $_POST['PayType'] = "";
+        }
+      }
+      if (!isset($_POST['person_id'])) {
+        if (isset($_GET['PayPerson'])) {
+          $_POST['person_id'] = $_GET['PayPerson'];
+        } else {
+          $_POST['person_id'] = "";
+        }
+      }
+      if (isset($_POST['_PayType_update'])) {
+        $_POST['person_id'] = '';
+        $this->Ajax->activate('pmt_header');
+        $this->Ajax->activate('code_id');
+        $this->Ajax->activate('pagehelp');
+        $this->Ajax->activate('editors');
+      }
+      Bank::payment_person_type_row($payment ? _("Pay To:") : _("From:"), 'PayType', $_POST['PayType'], true);
+      switch ($_POST['PayType']) {
+        case PT_MISC :
+          Forms::textRowEx($payment ? _("To the Order of:") : _("Name:"), 'person_id', 40, 50);
+          break;
+        //case PT_WORKORDER :
+        //	workorders_list_row(_("Work Order:"), 'person_id', null);
+        //	break;
+        case PT_SUPPLIER :
+          Creditor::row(_("Supplier:"), 'person_id', null, false, true, false, true);
+          break;
+        case PT_CUSTOMER :
+          Debtor::row(_("Customer:"), 'person_id', null, false, true, false, true);
+          if ($this->Input->post('person_id') && Validation::check(Validation::BRANCHES, _("No Branches for Customer"), $_POST['person_id'])
+          ) {
+            Debtor_Branch::row(_("Branch:"), $_POST['person_id'], 'PersonDetailID', null, false, true, true, true);
+          } else {
+            $_POST['PersonDetailID'] = ANY_NUMERIC;
+            Forms::hidden('PersonDetailID');
+          }
+          break;
+        case PT_QUICKENTRY :
+          GL_QuickEntry::row(_("Type") . ":", 'person_id', null, ($payment ? QE_PAYMENT : QE_DEPOSIT), true);
+          $qid = GL_QuickEntry::get($this->Input->post('person_id'));
+          if (Forms::isListUpdated('person_id')) {
+            unset($_POST['total_amount']); // enable default
+            $this->Ajax->activate('total_amount');
+          }
+          Forms::AmountRow(
+            $qid['base_desc'] . ":",
+            'total_amount',
+            Num::_priceFormat($qid['base_amount']),
+            null,
+            "&nbsp;&nbsp;" . Forms::submit('go', _("Go"), false, false, true)
+          );
+          break;
+        //case payment_person_types::Project() :
+        //	Dimensions::select_row(_("Dimension:"), 'person_id', $_POST['person_id'], false, null, true);
+        //	break;
+      }
+      $person_currency = Bank_Currency::for_payment_person($_POST['PayType'], $_POST['person_id']);
+      $bank_currency   = Bank_Currency::for_company($_POST['bank_account']);
+      GL_ExchangeRate::display($bank_currency, $person_currency, $_POST['date_']);
+      Table::section(3, "33%");
+      Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next($this->order->trans_type));
+      Table::endOuter(1); // outer table
+      Display::div_end();
+    }
+    /**
+     * @static
+     * @return void
+     */
+    protected function items() {
+      $title = _($this->type . " Items");
+      Display::heading($title);
+      Display::div_start('items_table');
+      Table::start('tables_style grid width95');
+      $th = array(
+        _("Account Code"),
+        _("Account Description"),
+        _("Amount"),
+        _("Memo"),
+        ""
+      );
+      if (count($this->order->gl_items)) {
+        $th[] = '';
+      }
+      Table::header($th);
+      $id = Forms::findPostPrefix(MODE_EDIT);
+      foreach ($this->order->gl_items as $line => $item) {
+        if ($id != $line) {
+          Cell::label($item->code_id);
+          Cell::label($item->description);
+          //Cell::amount(abs($item->amount));
+          if ($this->order->trans_type == ST_BANKDEPOSIT) {
+            Cell::amount(-$item->amount);
+          } else {
+            Cell::amount($item->amount);
+          }
+          Cell::label($item->reference);
+          Forms::buttonEditCell("Edit$line", _("Edit"), _('Edit document line'));
+          Forms::buttonDeleteCell("Delete$line", _("Delete"), _('Remove line from document'));
+          echo '</tr>';
+        } else {
+          $this->itemControls($line);
+        }
+      }
+      if ($id == -1) {
+        $this->itemControls();
+      }
+      if ($this->order->count_gl_items()) {
+        Table::label(_("Total"), Num::_format(abs($this->order->gl_items_total()), User::price_dec()), " class='alignright'", "class='alignright'", 3);
+      }
+      Table::end();
+      Display::div_end();
+    }
+    /**
+     * @static
+     *
+     * @param null $Index
+     *
+     * @return void
+     */
+    protected function itemControls($Index = null) {
+      $payment = $this->order->trans_type == ST_BANKPAYMENT;
+      echo '<tr>';
+      $id = Forms::findPostPrefix(MODE_EDIT);
+      if ($Index != -1 && $Index == $id) {
+        $item                   = $this->order->gl_items[$Index];
+        $_POST['code_id']       = $item->code_id;
+        $_POST['dimension_id']  = $item->dimension_id;
+        $_POST['dimension2_id'] = $item->dimension2_id;
+        $_POST['amount']        = Num::_priceFormat(abs($item->amount));
+        $_POST['description']   = $item->description;
+        $_POST['LineMemo']      = $item->reference;
+        Forms::hidden('Index', $id);
+        echo GL_UI::all('code_id', null, true, true);
+        $this->Ajax->activate('items_table');
+      } else {
+        if ($_SERVER['REQUEST_METHOD'] == 'GET' && !count($this->order->gl_items) && $this->Input->get('amount', Input::NUMERIC)) {
+          $_POST['amount'] = $_GET['amount'];
+        } else {
+          $_POST['amount'] = Num::_priceFormat(0);
+        }
+        $_POST['dimension_id']  = 0;
+        $_POST['dimension2_id'] = 0;
+        if (isset($_POST['_code_id_update'])) {
+          $this->Ajax->activate('code_id');
+        }
+        if ($_POST['PayType'] == PT_CUSTOMER) {
+          $acc              = Sales_Branch::get_accounts($_POST['PersonDetailID']);
+          $_POST['code_id'] = $acc['receivables_account'];
+        } elseif ($_POST['PayType'] == PT_SUPPLIER) {
+          $acc              = Creditor::get_accounts_name($_POST['person_id']);
+          $_POST['code_id'] = $acc['payable_account'];
+        } //elseif ($_POST['PayType'] == PT_WORKORDER)
+        //	$_POST['code_id'] = DB_Company::get_pref('default_assembly_act');
+        else {
+          $_POST['code_id'] = DB_Company::get_pref($payment ? 'default_cogs_act' : 'default_inv_sales_act');
+        }
+        echo GL_UI::all('code_id', null, true, true);
+      }
+      Forms::amountCells(null, 'amount');
+      Forms::textCellsEx(null, 'LineMemo', 35, 255);
+      if ($id != -1) {
+        Forms::buttonCell('updateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
+        Forms::buttonCell('cancelItem', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
+        JS::_setFocus('amount');
+      } else {
+        Forms::submitCells('addLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
+      }
+      echo '</tr>';
     }
     protected function quickEntries() {
       GL_QuickEntry::addEntry(
@@ -105,13 +303,11 @@
       if ($this->order->count_gl_items() < 1) {
         Event::error(_("You must enter at least one payment line."));
         $this->JS->setFocus('code_id');
-
         return false;
       }
       if ($this->order->gl_items_total() == 0.0) {
         Event::error(_("The total bank amount cannot be 0."));
         $this->JS->setFocus('code_id');
-
         return false;
       }
       if (!Ref::is_new($_POST['ref'], $this->order->trans_type)) {
@@ -120,18 +316,18 @@
       if (!Dates::_isDate($_POST['date_'])) {
         Event::error(_("The entered date is invalid."));
         $this->JS->setFocus('date_');
-
         return false;
       } elseif (!Dates::_isDateInFiscalYear($_POST['date_'])) {
         Event::error(_("The entered date is not in fiscal year."));
         $this->JS->setFocus('date_');
-
         return false;
       }
-
       return true;
     }
-    protected function processOrder() {
+    protected function commit() {
+      if (!$this->canProcess()) {
+        return;
+      }
       $trans            = GL_Bank::add_bank_transaction(
         $this->order->trans_type,
         $_POST['bank_account'],
@@ -165,7 +361,6 @@
       if ($this->Input->post('PayType') == PT_QUICKENTRY && $this->order->count_gl_items() < 1) {
         Event::error('You must select and add quick entry before adding extra lines!');
         $this->JS->setFocus('total_amount');
-
         return false;
       }
       //if (!Validation::post_num('amount', 0))
@@ -174,20 +369,16 @@
       //	$this->JS->setFocus('amount');
       //	return false;
       //}
-
       if ($_POST['code_id'] == $_POST['bank_account']) {
         Event::error(_("The source and destination accouts cannot be the same."));
         $this->JS->setFocus('code_id');
-
         return false;
       }
       if (Bank_Account::is($_POST['code_id'])) {
         Event::error(_("You cannot make a " . $this->type . " from a bank account. Please use the transfer funds facility for this."));
         $this->JS->setFocus('code_id');
-
         return false;
       }
-
       return true;
     }
     protected function updateItem() {
@@ -204,7 +395,13 @@
       $this->order->remove_gl_item($id);
       Item_Line::start_focus('_code_id_edit');
     }
-    protected function newItem() {
+    /**
+     * @return bool
+     */
+    protected function addLine() {
+      if (!$this->checkItemData()) {
+        return;
+      }
       $amount = ($this->order->trans_type == ST_BANKPAYMENT ? 1 : -1) * Validation::input_num('amount');
       $this->order->add_gl_item($_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
       Item_Line::start_focus('_code_id_edit');

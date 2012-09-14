@@ -19,7 +19,7 @@ function blur_budget(i) {
   Adv.Forms.priceFormat('Total', total + amount - i.getAttribute('_last'), 0, 1, 1);
 }
 var budget_calc = {
-  '.amount':function (e) {
+  '.amount': function (e) {
     e.onblur = function () {
       blur_budget(this);
     };
@@ -27,5 +27,5 @@ var budget_calc = {
       focus_budget(this);
     };
   }
-}
+};
 Behaviour.register(budget_calc);

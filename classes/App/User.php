@@ -10,9 +10,9 @@
   namespace ADV\App;
 
   use ADV\Core\Session;
-  use DB_Company;
-  use ADV\Core\Event;
   use ADV\Core\JS;
+  use ADV\Core\Event;
+  use DB_Company;
   use ADV\Core\DB\DB;
   use ADV\Core\Config;
   use ADV\Core\Traits\StaticAccess;
@@ -21,15 +21,20 @@
    * @method static theme
    * @method User ii()
    * @method static logout()
+   * @method static date_format()
+   * @method static date_sep()
+   * @method static int qty_dec()
    * @method static price_dec()
    * @method static numeric($input)
+   * @method static print_profile()
    * @method static fallback()
+   * @method static show_gl()
+   * @method static rep_popup()
    * @method static percent_dec()
    * @method static graphic_links()
    * @method static register_login($object, $function = null, $arguments = [])
    */
-  class User
-  {
+  class User {
     use \ADV\Core\Traits\Hook;
     use StaticAccess {
     StaticAccess::i as ii;
@@ -126,8 +131,8 @@
       return static::ii($user, $session, $config);
     }
     /**
-     * @param ADV\Core\Session $session
-     * @param ADV\Core\Config  $config
+     * @param \ADV\Core\Session $session
+     * @param \ADV\Core\Config  $config
      */
     public function __construct(Session $session = null, Config $config = null) {
       $this->Session = $session ? : Session::i();
@@ -168,7 +173,7 @@
       $this->timeout();
       if ($this->logged && date('i', time() - $this->last_record) > 4) {
         $this->last_record = time();
-        Event::registerShutdown($this, '_addLog');
+        Event::registerShutdown([$this, '_addLog']);
       }
 
       return $this->logged;
@@ -218,8 +223,8 @@
         $this->fireHooks('login');
         $this->Session->checkUserAgent();
         $this->Session['User'] = $this;
-        Event::registerShutdown('Users', 'update_visitdate', [$this->username]);
-        Event::registerShutdown($this, '_addLog');
+        Event::registerShutdown(['Users', 'update_visitdate'], [$this->username]);
+        Event::registerShutdown([$this, '_addLog']);
       }
 
       return $this->logged;
@@ -231,8 +236,8 @@
      * @param       $function
      * @param array $arguments
      */
-    public function _register_login($object, $function = null, $arguments = []) {
-      $this->registerHook('login', $object, $function, $arguments);
+    public function _register_login($function = null, $arguments = []) {
+      $this->registerHook('login', $function, $arguments);
     }
     /**
      * @static
@@ -241,8 +246,8 @@
      * @param       $function
      * @param array $arguments
      */
-    public function _register_logout($object, $function, $arguments = []) {
-      $this->registerHook('logout', $object, $function, $arguments);
+    public function _register_logout($function, $arguments = []) {
+      $this->registerHook('logout', $function, $arguments);
     }
     public function timeout() {
       // skip timeout on logout page
@@ -269,6 +274,10 @@
      * @return bool
      */
     public function hasAccess($page_level) {
+      if ($page_level == SA_OPEN) {
+        return true;
+      }
+
       return $this->Security->hasAccess($this, $page_level);
     }
     /**
@@ -288,26 +297,26 @@
       return in_array($role, $this->role_set);
     }
     /**
-     * @param $price_dec
-     * @param $qty_dec
-     * @param $exrate_dec
-     * @param $percent_dec
-     * @param $show_gl
-     * @param $show_codes
-     * @param $date_format
-     * @param $date_sep
-     * @param $tho_sep
-     * @param $dec_sep
-     * @param $theme
-     * @param $page_size
-     * @param $show_hints
-     * @param $profile
-     * @param $rep_popup
-     * @param $query_size
-     * @param $graphic_links
-     * @param $language
-     * @param $stickydate
-     * @param $startup_tab
+     * @param        $price_dec
+     * @param        $qty_dec
+     * @param        $exrate_dec
+     * @param        $percent_dec
+     * @param static $show_gl
+     * @param        $show_codes
+     * @param        $date_format
+     * @param        $date_sep
+     * @param        $tho_sep
+     * @param        $dec_sep
+     * @param        $theme
+     * @param        $page_size
+     * @param        $show_hints
+     * @param        $profile
+     * @param        $rep_popup
+     * @param        $query_size
+     * @param        $graphic_links
+     * @param        $language
+     * @param        $stickydate
+     * @param        $startup_tab
      */
     public function update_prefs(
       $price_dec,

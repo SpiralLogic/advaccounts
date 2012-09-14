@@ -9,7 +9,6 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   print_annual_expense_breakdown();
   /**
    * @param $yr
@@ -20,8 +19,7 @@
    *
    * @return \ADV\Core\DB\Query\Result|Array
    */
-  function getPeriods($yr, $mo, $account, $dimension, $dimension2)
-  {
+  function getPeriods($yr, $mo, $account, $dimension, $dimension2) {
     $date13 = date('Y-m-d', mktime(0, 0, 0, $mo + 1, 1, $yr));
     $date12 = date('Y-m-d', mktime(0, 0, 0, $mo, 1, $yr));
     $date11 = date('Y-m-d', mktime(0, 0, 0, $mo - 1, 1, $yr));
@@ -35,8 +33,7 @@
     $date03 = date('Y-m-d', mktime(0, 0, 0, $mo - 9, 1, $yr));
     $date02 = date('Y-m-d', mktime(0, 0, 0, $mo - 10, 1, $yr));
     $date01 = date('Y-m-d', mktime(0, 0, 0, $mo - 11, 1, $yr));
-    $sql
-            = "SELECT SUM(CASE WHEN tran_date >= '$date01' AND tran_date < '$date02' THEN amount / 1000 ELSE 0 END) AS per01,
+    $sql    = "SELECT SUM(CASE WHEN tran_date >= '$date01' AND tran_date < '$date02' THEN amount / 1000 ELSE 0 END) AS per01,
                  SUM(CASE WHEN tran_date >= '$date02' AND tran_date < '$date03' THEN amount / 1000 ELSE 0 END) AS per02,
                  SUM(CASE WHEN tran_date >= '$date03' AND tran_date < '$date04' THEN amount / 1000 ELSE 0 END) AS per03,
                  SUM(CASE WHEN tran_date >= '$date04' AND tran_date < '$date05' THEN amount / 1000 ELSE 0 END) AS per04,
@@ -57,7 +54,6 @@
       $sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : DB::_escape($dimension2));
     }
     $result = DB::_query($sql, "Transactions for account $account could not be calculated");
-
     return DB::_fetch($result);
   }
 
@@ -74,8 +70,7 @@
    *
    * @return array
    */
-  function display_type($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dimension, $dimension2)
-  {
+  function display_type($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dimension = null, $dimension2 = null) {
     $ctotal     = array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     $total      = array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     $totals_arr = [];
@@ -150,12 +145,10 @@
     for ($i = 1; $i <= 12; $i++) {
       $totals_arr[$i] = $total[$i] + $ctotal[$i];
     }
-
     return $totals_arr;
   }
 
-  function print_annual_expense_breakdown()
-  {
+  function print_annual_expense_breakdown() {
     $dim       = DB_Company::get_pref('use_dimension');
     $dimension = $dimension2 = 0;
     if ($dim == 2) {
@@ -177,10 +170,8 @@
       }
     }
     if ($destination) {
-
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
-
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     $dec = 1;
@@ -226,43 +217,83 @@
       $per12
     );
     $aligns  = array(
-      'left', 'left', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right'
+      'left',
+      'left',
+      'right',
+      'right',
+      'right',
+      'right',
+      'right',
+      'right',
+      'right',
+      'right',
+      'right',
+      'right',
+      'right',
+      'right'
     );
     if ($dim == 2) {
       $params = array(
-        0    => $comments, 1 => array(
-          'text' => _("Year"), 'from' => $year, 'to' => ''
-        ), 2 => array(
-          'text' => _("Dimension") . " 1", 'from' => Dimensions::get_string($dimension), 'to' => ''
-        ), 3 => array(
-          'text' => _("Dimension") . " 2", 'from' => Dimensions::get_string($dimension2), 'to' => ''
-        ), 4 => array(
-          'text' => _('Info'), 'from' => _('Amounts in thousands'), 'to' => ''
+        0    => $comments,
+        1    => array(
+          'text' => _("Year"),
+          'from' => $year,
+          'to'   => ''
+        ),
+        2    => array(
+          'text' => _("Dimension") . " 1",
+          'from' => Dimensions::get_string($dimension),
+          'to'   => ''
+        ),
+        3    => array(
+          'text' => _("Dimension") . " 2",
+          'from' => Dimensions::get_string($dimension2),
+          'to'   => ''
+        ),
+        4    => array(
+          'text' => _('Info'),
+          'from' => _('Amounts in thousands'),
+          'to'   => ''
         )
       );
     } else {
       if ($dim == 1) {
         $params = array(
-          0    => $comments, 1 => array(
-            'text' => _("Year"), 'from' => $year, 'to' => ''
-          ), 2 => array(
-            'text' => _('Dimension'), 'from' => Dimensions::get_string($dimension), 'to' => ''
-          ), 3 => array(
-            'text' => _('Info'), 'from' => _('Amounts in thousands'), 'to' => ''
+          0    => $comments,
+          1    => array(
+            'text' => _("Year"),
+            'from' => $year,
+            'to'   => ''
+          ),
+          2    => array(
+            'text' => _('Dimension'),
+            'from' => Dimensions::get_string($dimension),
+            'to'   => ''
+          ),
+          3    => array(
+            'text' => _('Info'),
+            'from' => _('Amounts in thousands'),
+            'to'   => ''
           )
         );
       } else {
         $params = array(
-          0    => $comments, 1 => array(
-            'text' => _("Year"), 'from' => $year, 'to' => ''
-          ), 2 => array(
-            'text' => _('Info'), 'from' => _('Amounts in thousands'), 'to' => ''
+          0    => $comments,
+          1    => array(
+            'text' => _("Year"),
+            'from' => $year,
+            'to'   => ''
+          ),
+          2    => array(
+            'text' => _('Info'),
+            'from' => _('Amounts in thousands'),
+            'to'   => ''
           )
         );
       }
     }
     /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_('Annual Expense Breakdown'), "AnnualBreakDown",SA_GLANALYTIC, User::page_size());
+    $rep = new $report_type(_('Annual Expense Breakdown'), "AnnualBreakDown", SA_GLANALYTIC, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();

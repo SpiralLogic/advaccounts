@@ -1,4 +1,14 @@
 <?php
+  use ADV\Core\DB\DB;
+  use ADV\App\Validation;
+  use ADV\Core\JS;
+  use ADV\Core\Input\Input;
+  use ADV\App\Ref;
+  use ADV\App\Creditor\Creditor;
+  use ADV\App\User;
+  use ADV\App\Bank\Bank;
+  use ADV\App\Dates;
+
   /**
    * PHP version 5.4
    * @category  PHP

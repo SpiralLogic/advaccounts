@@ -13,18 +13,18 @@
   (function ()
   {
     var $this = this, $wrapper = $("#wrapper"), previous;
-    this.menu = $("#sidemenu").accordion({autoHeight:false, active:false, event:"mouseenter"}).draggable().show();
+    this.menu = $("#sidemenu").accordion({ heightStyle: "content",active:false, event:"mouseenter"}).draggable().show();
     this.sidemenuHide = function ()
     {
-      $this.menu.clearQueue().animate({right:' -10em', opacity:'.75'}, 500).accordion({collapsible:false, active:false});
+      $this.menu.clearQueue().animate({right:' -10em', opacity:'.75'}, 500).accordion({collapsible:true, active:false});
     };
     this.sidemenuOn = function ()
     {
-      $this.menu.animate({right:'-10em', opacity:'.75'}, 300).accordion("enable").hover(function ()
+      $this.menu.animate({right:'-10em', opacity:'.75'}, 300).accordion("enable").mouseenter(function ()
                                                                                         {
                                                                                           window.clearTimeout(menuTimeout);
                                                                                           $(this).stop().animate({right:'1em', opacity:'1'}, 500).accordion({collapsible:false, active:false});
-                                                                                        }, function ()
+                                                                                        }).mouseleave(function ()
                                                                                         {
                                                                                           menuTimeout = window.setTimeout($this.sidemenuHide, 1000);
                                                                                         });

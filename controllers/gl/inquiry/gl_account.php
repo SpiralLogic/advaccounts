@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::_setFocus('account');
   JS::_openWindow(950, 500);
   Page::start(_($help_context = "General Ledger Inquiry"), SA_GLTRANSVIEW);
@@ -43,7 +42,6 @@
   if (!isset($_POST["amount_max"])) {
     $_POST["amount_max"] = Num::_priceFormat(0);
   }
-
   gl_inquiry_controls();
   Display::div_start('trans_tbl');
   if (Input::_post('Show') || Input::_post('account')) {
@@ -51,19 +49,18 @@
   }
   Display::div_end();
   Page::end();
-  function gl_inquiry_controls()
-  {
+  function gl_inquiry_controls() {
     $dim = DB_Company::get_pref('use_dimension');
     Forms::start();
-    Table::start('tablestyle_noborder');
-    Row::start();
+    Table::start('noborder');
+    echo '<tr>';
     GL_UI::all_cells(_("Account:"), 'account', null, false, false, "All Accounts");
     Forms::dateCells(_("from:"), 'TransFromDate', '', null, -30);
     Forms::dateCells(_("to:"), 'TransToDate');
-    Row::end();
+    echo '</tr>';
     Table::end();
     Table::start();
-    Row::start();
+    echo '<tr>';
     if ($dim >= 1) {
       Dimensions::cells(_("Dimension") . " 1:", 'Dimension', null, true, " ", false, 1);
     }
@@ -73,15 +70,13 @@
     Forms::amountCellsSmall(_("Amount min:"), 'amount_min', null);
     Forms::amountCellsSmall(_("Amount max:"), 'amount_max', null);
     Forms::submitCells('Show', _("Show"), '', '', 'default');
-    Row::end();
+    echo '</tr>';
     Table::end();
     echo '<hr>';
     Forms::end();
   }
 
-  function show_results()
-  {
-    global $systypes_array;
+  function show_results() {
     if (!isset($_POST["account"])) {
       $_POST["account"] = null;
     }
@@ -101,7 +96,7 @@
     }
     // Only show balances if an account is specified AND we're not filtering by amounts
     $show_balances = $_POST["account"] != null && Validation::input_num("amount_min") == 0 && Validation::input_num("amount_max") == 0;
-    Table::start('tablestyle grid');
+    Table::start('padded grid');
     $first_cols = array(_("Type"), _("#"), _("Date"));
     if ($_POST["account"] == null) {
       $account_col = array(_("Account"));
@@ -136,21 +131,20 @@
     $bfw = 0;
     if ($show_balances) {
       $bfw = GL_Trans::get_balance_from_to($begin, $_POST['TransFromDate'], $_POST["account"], $_POST['Dimension'], $_POST['Dimension2']);
-      Row::start("class='inquirybg'");
+      echo "<tr class='inquirybg'>";
       Cell::label("<span class='bold'>" . _("Opening Balance") . " - " . $_POST['TransFromDate'] . "</span>", "colspan=$colspan");
       Cell::debitOrCredit($bfw);
       Cell::label("");
       Cell::label("");
-      Row::end();
+      echo '</tr>';
     }
     $running_total = $bfw;
     $j             = 1;
     $k             = 0; //row colour counter
     while ($myrow = DB::_fetch($result)) {
-
       $running_total += $myrow["amount"];
       $trandate = Dates::_sqlToDate($myrow["tran_date"]);
-      Cell::label($systypes_array[$myrow["type"]]);
+      Cell::label(SysTypes::$names[$myrow["type"]]);
       Cell::label(GL_UI::view($myrow["type"], $myrow["type_no"], $myrow["type_no"], true));
       Cell::label($trandate);
       if ($_POST["account"] == null) {
@@ -168,7 +162,7 @@
         Cell::amount($running_total);
       }
       Cell::label($myrow['memo_']);
-      Row::end();
+      echo '</tr>';
       $j++;
       if ($j == 12) {
         $j = 1;
@@ -177,12 +171,12 @@
     }
     //end of while loop
     if ($show_balances) {
-      Row::start("class='inquirybg'");
+      echo "<tr class='inquirybg'>";
       Cell::label("<span class='bold'>" . _("Ending Balance") . " - " . $_POST['TransToDate'] . "</span>", "colspan=$colspan");
       Cell::debitOrCredit($running_total);
       Cell::label("");
       Cell::label("");
-      Row::end();
+      echo '</tr>';
     }
     Table::end(2);
     if (DB::_numRows($result) == 0) {

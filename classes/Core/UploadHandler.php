@@ -9,13 +9,15 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
+  use ADV\Core\DB\DB;
+
   /**
 
    */
   class UploadHandler
   {
     /**
-     * @var #Farray_replace_recursive|array|?
      */
     private $options;
     /** @var */

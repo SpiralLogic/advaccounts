@@ -201,12 +201,12 @@
      * @return string
      */
     public static function select($name, $value = null, $spec_opt = false, $submit_on_change = false) {
-      global $systypes_array;
+
 
       return Forms::arraySelect(
         $name,
         $value,
-        $systypes_array,
+        SysTypes::$names,
         array(
              'spec_option'   => $spec_opt,
              'spec_id'       => ALL_NUMERIC,

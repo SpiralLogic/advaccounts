@@ -22,22 +22,18 @@
    *
    * @return bool
    */
-  function can_process($myrow)
-  {
+  function can_process($myrow) {
     if ($myrow['released']) {
       Event::error(_("This work order has already been released."));
       JS::_setFocus('released');
-
       return false;
     }
     // make sure item has components
     if (!WO::has_bom($myrow['stock_id'])) {
       Event::error(_("This Work Order cannot be released. The selected item to manufacture does not have a bom."));
       JS::_setFocus('stock_id');
-
       return false;
     }
-
     return true;
   }
 
@@ -55,9 +51,9 @@
   $_POST['released'] = $myrow["released"];
   $_POST['memo_']    = "";
   if (can_process($myrow)) {
-    Table::start('tablestyle2');
-    Row::label(_("Work Order #:"), $selected_id);
-    Row::label(_("Work Order Reference:"), $myrow["wo_ref"]);
+    Table::start('standard');
+    Table::label(_("Work Order #:"), $selected_id);
+    Table::label(_("Work Order Reference:"), $myrow["wo_ref"]);
     Forms::dateRow(_("Released Date") . ":", 'released_date');
     Forms::textareaRow(_("Memo:"), 'memo_', $_POST['memo_'], 40, 5);
     Table::end(1);

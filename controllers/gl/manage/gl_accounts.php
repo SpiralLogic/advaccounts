@@ -74,11 +74,11 @@
   }
   Forms::start();
   if (Validation::check(Validation::GL_ACCOUNTS)) {
-    Table::start('tablestyle_noborder');
-    Row::start();
+    Table::start('noborder');
+    echo '<tr>';
     GL_UI::all_cells(null, 'AccountList', null, false, false, _('New account'), true, Input::_hasPost('show_inactive'));
     Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
-    Row::end();
+    echo '</tr>';
     Table::end();
     if (Input::_post('_show_inactive_update')) {
       Ajax::_activate('AccountList');
@@ -86,7 +86,7 @@
     }
   }
   Display::br(1);
-  Table::start('tablestyle2');
+  Table::start('standard');
   if ($selected_account != "") {
     //editing an existing account
     $myrow                  = GL_Account::get($selected_account);
@@ -103,7 +103,7 @@
     $_POST['account_tags'] = $tagids;
     Forms::hidden('account_code', $_POST['account_code']);
     Forms::hidden('selected_account', $selected_account);
-    Row::label(_("Account Code:"), $_POST['account_code']);
+    Table::label(_("Account Code:"), $_POST['account_code']);
   } else {
     if (!isset($_POST['account_code'])) {
       $_POST['account_tags'] = [];
@@ -132,8 +132,7 @@
    *
    * @return bool
    */
-  function can_delete($selected_account)
-  {
+  function can_delete($selected_account) {
     if ($selected_account == "") {
       return false;
     }
@@ -143,11 +142,9 @@
     $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account because transactions have been created using this account."));
-
       return false;
     }
-    $sql
-            = "SELECT COUNT(*) FROM company WHERE debtors_act=$acc
+    $sql    = "SELECT COUNT(*) FROM company WHERE debtors_act=$acc
             OR pyt_discount_act=$acc
             OR creditors_act=$acc
             OR bank_charge_act=$acc
@@ -167,7 +164,6 @@
     $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account because it is used as one of the company default GL accounts."));
-
       return false;
     }
     $sql    = "SELECT COUNT(*) FROM bank_accounts WHERE account_code=$acc";
@@ -175,11 +171,9 @@
     $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account because it is used by a bank account."));
-
       return false;
     }
-    $sql
-            = "SELECT COUNT(*) FROM stock_master WHERE
+    $sql    = "SELECT COUNT(*) FROM stock_master WHERE
             inventory_account=$acc
             OR cogs_account=$acc
             OR adjustment_account=$acc
@@ -188,7 +182,6 @@
     $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account because it is used by one or more Items."));
-
       return false;
     }
     $sql    = "SELECT COUNT(*) FROM tax_types WHERE sales_gl_code=$acc OR purchasing_gl_code=$acc";
@@ -196,11 +189,9 @@
     $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account because it is used by one or more Taxes."));
-
       return false;
     }
-    $sql
-            = "SELECT COUNT(*) FROM branches WHERE
+    $sql    = "SELECT COUNT(*) FROM branches WHERE
             sales_account=$acc
             OR sales_discount_account=$acc
             OR receivables_account=$acc
@@ -209,11 +200,9 @@
     $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account because it is used by one or more Customer Branches."));
-
       return false;
     }
-    $sql
-            = "SELECT COUNT(*) FROM suppliers WHERE
+    $sql    = "SELECT COUNT(*) FROM suppliers WHERE
             purchase_account=$acc
             OR payment_discount_account=$acc
             OR payable_account=$acc";
@@ -221,19 +210,15 @@
     $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account because it is used by one or more suppliers."));
-
       return false;
     }
-    $sql
-            = "SELECT COUNT(*) FROM quick_entry_lines WHERE
+    $sql    = "SELECT COUNT(*) FROM quick_entry_lines WHERE
             dest_id=$acc AND UPPER(LEFT(action, 1)) <> 'T'";
     $result = DB::_query($sql, "Couldn't test for existing suppliers GL codes");
     $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this account because it is used by one or more Quick Entry Lines."));
-
       return false;
     }
-
     return true;
   }

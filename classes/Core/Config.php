@@ -9,15 +9,14 @@
    **/
   namespace ADV\Core;
 
-  use ADV\Core\Cache\Cache;
+  use ADV\Core\Cache;
 
   /**
    * @method static _get($var, $default = false)
    * @method static _removeAll()
    * @method static Config i()
    */
-  class Config
-  {
+  class Config {
     use Traits\StaticAccess2;
 
     /***
@@ -47,8 +46,8 @@
     /***
      * @static
      *
-     * @param string $var
-     * @param bool   $default
+     * @param string  $var
+     * @param mixed   $default
      *
      * @internal param null $array_key
      * @return Array|mixed
@@ -117,7 +116,7 @@
       return $this->Cache->set('config', $this->_vars);
     }
     /**
-     * @param Cache\Cache $cache
+     * @param Cache $cache
      */
     public function __construct(Cache $cache = null) {
       $this->Cache = $cache ? : Cache::i();
@@ -157,7 +156,7 @@
       }
       /** @noinspection PhpIncludeInspection */
       $this->_vars[$group_name] = include($file);
-      Event::registerShutdown($this);
+      Event::registerShutdown([$this, '_shutdown']);
 
       return true;
     }

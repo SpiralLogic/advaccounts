@@ -1,11 +1,5 @@
 <?php
-  /**
-   * Created by JetBrains PhpStorm.
-   * User: advanced
-   * Date: 9/05/12
-   * Time: 2:43 PM
-   * To change this template use File | Settings | File Templates.
-   */
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -19,126 +13,109 @@
   /**
 
    */
-  class Cell
-  {
+  class Cell {
     /**
-     * @param        $label
-     * @param string $params
+     * @param        $amount
+     * @param string $attrs
      * @param null   $id
      */
-    public static function amountDecimal($label, $params = "", $id = null) {
-      $dec = null;
-      Cell::label(Num::_priceDecimal($label, $dec), ' class="alignright nowrap"' . $params, $id);
+    public static function amountDecimal($amount, $attrs = '', $id = null) {
+      $amount = Num::_priceDecimal($amount, null);
+      Cell::label($amount, ' class="alignright nowrap"' . $attrs, $id);
     }
     /**
-     * @param        $label
+     * @param        $amount
      * @param bool   $bold
-     * @param string $params
+     * @param string $attrs
      * @param null   $id
      */
-    public static function amount($label, $bold = false, $params = "", $id = null) {
+    public static function amount($amount, $bold = false, $attrs = '', $id = null) {
+      $amount = Num::_priceFormat($amount);
       if ($bold) {
-        Cell::label("<span class='bold'>" . Num::_priceFormat($label) . "</span>", "class='amount'" . $params, $id);
-      } else {
-        Cell::label(Num::_priceFormat($label), "class='amount'" . $params, $id);
+        $amount = "<span class='bold'>" . $amount . "</span>";
       }
+      Cell::label($amount, "class='amount' " . $attrs, $id);
     }
     /**
-     * @param        $label
-     * @param string $params
+     * @param        $description
+     * @param string $attrs
      * @param null   $id
      */
-    public static function description($label, $params = "", $id = null) {
-      Cell::label($label, $params . " class='desc'", $id);
+    public static function description($description, $attrs = "", $id = null) {
+      Cell::label($description, $attrs . "class='desc' ", $id);
     }
     /**
-     * @param        $label
-     * @param string $params
+     * @param        $email
+     * @param string $attrs
      * @param null   $id
      */
-    public static function email($label, $params = "", $id = null) {
-      $label = "<a href='mailto:$label'>$label</a>";
-      Cell::label($label, $params, $id);
+    public static function email($email, $attrs = "", $id = null) {
+      $email = "<a href='mailto:$email'>$email</a>";
+      Cell::label($email, $attrs, $id);
     }
     /**
      * @param        $label
      * @param        $value
-     * @param string $params
-     * @param string $params2
+     * @param string $label_attrs
+     * @param string $value_attrs
      * @param null   $id
+
      */
-    public static function labels($label, $value, $params = "", $params2 = "", $id = null) {
-      if (strpos($params, 'class=') === false) {
-        $params .= " class='label'";
+    public static function labelled($label, $value, $label_attrs = '', $value_attrs = "", $id = null) {
+      if ($label) {
+        if (strpos($label_attrs, 'class=') === false) {
+          $label_attrs .= " class='label'";
+        }
+        echo "<td $label_attrs>$label</td>";
       }
-      if ($label != null) {
-        echo "<td  {$params}>{$label}</td>\n";
-      }
-      Cell::label($value, $params2, $id);
+      Cell::label($value, $value_attrs, $id);
     }
     /**
      * @param        $label
-     * @param string $params
+     * @param string $attrs
      */
-    public static function labelHeader($label, $params = "") {
-      echo "<th $params>$label</th>\n";
+    public static function labelHeader($label, $attrs = "") {
+      echo "<th $attrs>$label</th>\n";
     }
     /**
      * @param        $label
-     * @param string $params
+     * @param string $attrs
      * @param null   $id
      *
      * @return mixed
      */
-    public static function label($label, $params = "", $id = null) {
-      if (!empty($id)) {
-        $params .= " id='$id'";
+    public static function label($label, $attrs = "", $id = null) {
+      if ($id) {
+        $attrs .= " id='$id'";
         Ajax::_addUpdate($id, $id, $label);
       }
-      echo "<td $params >$label</td>\n";
-
+      echo "<td $attrs >$label</td>\n";
       return $label;
     }
     /**
-     * @param      $label
+     * @param      $percent
      * @param bool $bold
      * @param null $id
      */
-    public static function percent($label, $bold = false, $id = null) {
+    public static function percent($percent, $bold = false, $id = null) {
+      $percent = Num::_percentFormat($percent);
       if ($bold) {
-        Cell::label("<span class='bold'>" . Num::_percentFormat($label) . "</span>", ' class="alignright nowrap"', $id);
-      } else {
-        Cell::label(Num::_percentFormat($label), ' class="alignright nowrap"', $id);
+        $percent = "<span class='bold'>" . $percent . "</span>";
       }
+      Cell::label($percent . '%', ' class="alignright nowrap"', $id);
     }
     /**
-     * @param      $label
+     * @param      $qty
      * @param bool $bold
-     * @param null $dec
+     * @param int  $dec
      * @param null $id
      */
-    public static function qty($label, $bold = false, $dec = null, $id = null) {
-      if (!isset($dec)) {
-        $dec = \User::qty_dec();
-      }
+    public static function qty($qty, $bold = false, $dec = null, $id = null) {
+      $qty = Num::_format(Num::_round($qty, $dec), $dec);
       if ($bold) {
-        Cell::label("<span class='bold'>" . Num::_format($label, $dec) . "</span>", ' class="alignright nowrap"', $id);
-      } else {
-        Cell::label(Num::_format(Num::_round($label), $dec), ' class="alignright nowrap"', $id);
+        $qty = "<span class='bold'>" . $qty . "</span>";
       }
-    }
-    /**
-     * @param        $label
-     * @param bool   $bold
-     * @param string $params
-     * @param null   $id
-     */
-    public static function unit_amount($label, $bold = false, $params = "", $id = null) {
-      if ($bold) {
-        Cell::label("<span class='bold'>" . Num::_priceForamt($label) . "</span>", ' class="alignright nowrap"' . $params, $id);
-      } else {
-        Cell::label(Num::_priceForamt($label), ' class="alignright nowrap"' . $params, $id);
-      }
+      Cell::label($qty, ' class="alignright nowrap"', $id);
     }
     /**
      * @param $value

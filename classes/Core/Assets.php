@@ -31,12 +31,12 @@
     protected $cacheDir = 'cache';
     protected $cachePrefix = 'so_';
     protected $clientCache = true;
-    protected $clientCacheCheck = true;
+    protected $clientCacheCheck = false;
     protected $file = [];
     protected $minifyTypes
       = array(
         'js'  => array(
-          'minify'   => false, //
+          'minify'   => true, //
           'minifier' => '\\ADV\\Core\\JSMin', //
           'settings' => [] //
         ), //
@@ -251,8 +251,11 @@
               fclose($handle);
             }
           }
-          header('Content-Length: ' . strlen($content));
-          echo $content;
+          header('Content-Length: ' . filesize($cachedFile));
+          ob_clean();
+          flush();
+          readfile($cachedFile);
+          exit;
         } else {
           if (!headers_sent($file, $log)) {
             header('Content-Length: ' . filesize($cachedFile));

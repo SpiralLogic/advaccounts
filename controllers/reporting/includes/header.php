@@ -11,7 +11,7 @@
      See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
      * ********************************************************************* */
   // New version (without vertical lines)
-  global $wo_types_array, $systypes_array;
+
   $this->row = $this->pageHeight - $this->topMargin;
   $upper     = $this->row - 2 * $this->lineHeight;
   $lower     = $this->bottomMargin + 8 * $this->lineHeight;
@@ -286,9 +286,9 @@
     //$this->TextWrap($col, $this->row, $width, User::i(), 'C');
   } # __ADVANCEDEDIT__ END #
   elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
-    $this->TextWrap($col, $this->row, $width, $systypes_array[$myrow["type"]], 'C');
+    $this->TextWrap($col, $this->row, $width, SysTypes::$names[$myrow["type"]], 'C');
   } elseif ($doctype == ST_WORKORDER) {
-    $this->TextWrap($col, $this->row, $width, $wo_types_array[$myrow["type"]], 'C');
+    $this->TextWrap($col, $this->row, $width, WO::$types[$myrow["type"]], 'C');
   } elseif ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE || $doctype == ST_SALESINVOICE) {
     $this->TextWrap($col, $this->row, $width, $report_contact, 'C');
   } elseif ($doctype == ST_STATEMENT) {

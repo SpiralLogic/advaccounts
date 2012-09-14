@@ -11,7 +11,7 @@
   if (isset($_GET["trans_no"])) {
     $trans_no = $_GET["trans_no"];
   }
-  Display::heading($systypes_array[ST_INVADJUST] . " #$trans_no");
+  Display::heading(SysTypes::$names[ST_INVADJUST] . " #$trans_no");
   Display::br(1);
   $adjustment_items = Inv_Adjustment::get($trans_no);
   $k                = 0;
@@ -19,20 +19,24 @@
   while ($adjustment = DB::_fetch($adjustment_items)) {
     if (!$header_shown) {
       $adjustment_type = Inv_Movement::get_type($adjustment['person_id']);
-      Table::start('tablestyle2 width90');
-      Row::start();
-      Cell::labels(_("At Location"), $adjustment['location_name'], "class='tablerowhead'");
-      Cell::labels(_("Reference"), $adjustment['reference'], "class='tablerowhead'", "colspan=6");
-      Cell::labels(_("Date"), Dates::_sqlToDate($adjustment['tran_date']), "class='tablerowhead'");
-      Cell::labels(_("Adjustment Type"), $adjustment_type['name'], "class='tablerowhead'");
-      Row::end();
+      Table::start('standard width90');
+      echo '<tr>';
+      Cell::labelled(_("At Location"), $adjustment['location_name'], "class='tablerowhead'");
+      Cell::labelled(_("Reference"), $adjustment['reference'], "class='tablerowhead'", "colspan=6");
+      Cell::labelled(_("Date"), Dates::_sqlToDate($adjustment['tran_date']), "class='tablerowhead'");
+      Cell::labelled(_("Adjustment Type"), $adjustment_type['name'], "class='tablerowhead'");
+      echo '</tr>';
       DB_Comments::display_row(ST_INVADJUST, $trans_no);
       Table::end();
       $header_shown = true;
       echo "<br>";
-      Table::start('tablestyle grid width90');
+      Table::start('padded grid width90');
       $th = array(
-        _("Item"), _("Description"), _("Quantity"), _("Units"), _("Unit Cost")
+        _("Item"),
+        _("Description"),
+        _("Quantity"),
+        _("Units"),
+        _("Unit Cost")
       );
       Table::header($th);
     }
@@ -41,7 +45,7 @@
     Cell::qty($adjustment['qty'], false, Item::qty_dec($adjustment['stock_id']));
     Cell::label($adjustment['units']);
     Cell::amountDecimal($adjustment['standard_cost']);
-    Row::end();
+    echo '</tr>';
   }
   Table::end(1);
   Display::is_voided(ST_INVADJUST, $trans_no, _("This adjustment has been voided."));

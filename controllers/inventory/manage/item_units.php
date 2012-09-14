@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Units of Measure"), SA_UOM);
   list($Mode, $selected_id) = Page::simple_mode(false);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
@@ -56,24 +55,23 @@
   }
   $result = Item_Unit::getAll(Input::_hasPost('show_inactive'));
   Forms::start();
-  Table::start('tablestyle grid width40');
+  Table::start('padded grid width40');
   $th = array(_('Unit'), _('Description'), _('Decimals'), "", "");
   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0; //row colour counter
   while ($myrow = DB::_fetch($result)) {
-
     Cell::label($myrow["abbr"]);
     Cell::label($myrow["name"]);
     Cell::label(($myrow["decimals"] == -1 ? _("User Quantity Decimals") : $myrow["decimals"]));
     Forms::inactiveControlCell($myrow["abbr"], $myrow["inactive"], 'item_units', 'abbr');
     Forms::buttonEditCell("Edit" . $myrow["abbr"], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow["abbr"], _("Delete"));
-    Row::end();
+    echo '</tr>';
   }
   Forms::inactiveControlRow($th);
   Table::end(1);
-  Table::start('tablestyle2');
+  Table::start('standard');
   if ($selected_id != '') {
     if ($Mode == MODE_EDIT) {
       //editing an existing item category
@@ -85,7 +83,7 @@
     Forms::hidden('selected_id', $selected_id);
   }
   if ($selected_id != '' && Item_Unit::used($selected_id)) {
-    Row::label(_("Unit Abbreviation:"), $_POST['abbr']);
+    Table::label(_("Unit Abbreviation:"), $_POST['abbr']);
     Forms::hidden('abbr', $_POST['abbr']);
   } else {
     Forms::textRow(_("Unit Abbreviation:"), 'abbr', null, 20, 20);

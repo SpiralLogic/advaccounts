@@ -16,6 +16,10 @@
    */
   class Tags
   {
+  public static $types = array(
+   TAG_ACCOUNT   => "Account", //
+   TAG_DIMENSION => "Dimension"
+ );
     /**
      * @static
      *

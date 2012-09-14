@@ -25,7 +25,7 @@
     include $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
     include $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
     $ignore = array('call_user_func', 'call_user_func_array');
-    xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY, array('ignored_functions' => $ignore));
+    xhprof_enable(XHPROF_FLAGS_CPU | XHPROF_FLAGS_NO_BUILTINS | XHPROF_FLAGS_MEMORY, array('ignored_functions' => $ignore));
     register_shutdown_function(
       function () {
         register_shutdown_function(
@@ -45,10 +45,11 @@
   ini_set("log_errors", "On");
   define('E_SUCCESS', E_ALL << 1);
   define('DS', DIRECTORY_SEPARATOR);
-  define('DOCROOT', __DIR__ . DS);
+  define('DOCROOT', __DIR__ . DIRECTORY_SEPARATOR);
   define('WEBROOT', DOCROOT . 'public' . DS);
   define('APPPATH', DOCROOT . 'classes' . DS . 'App' . DS);
-  define('COREPATH', DOCROOT . 'classes' . DS . 'Core' . DS);
+
+  define('COREPATH', __DIR__ . DS . 'classes' . DS . 'Core' . DS);
   define('VENDORPATH', DOCROOT . 'classes' . DS . 'Vendor' . DS);
   define('VIEWPATH', DOCROOT . 'views' . DS);
   define('COMPANY_PATH', WEBROOT . 'company' . DS);
@@ -57,12 +58,12 @@
   define('IS_JSON_REQUEST', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false));
   define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
   define('CRLF', chr(13) . chr(10));
+  /** @var $loader  */
   $loader = require COREPATH . 'Loader.php';
   if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
     new \ADV\Core\Assets();
     exit;
   }
-
   if (!function_exists('e')) {
     /**
      * @param $string
@@ -70,10 +71,16 @@
      * @return array|string
      */
     function e($string) {
-
       return \ADV\Core\Security::htmlentities($string);
     }
   }
-
-  new \ADV\App\ADVAccounting($loader);
+  call_user_func(
+    function () use ($loader) {
+      $app        = new \ADV\App\ADVAccounting($loader);
+      $controller = $app->getController();
+      if ($controller) {
+        include($controller);
+      }
+    }
+  );
 

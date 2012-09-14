@@ -29,30 +29,24 @@
   /**
    * @return bool
    */
-  function check_data()
-  {
+  function check_data() {
     if (strlen($_POST['Abbreviation']) == 0) {
       Event::error(_("The currency abbreviation must be entered."));
       JS::_setFocus('Abbreviation');
-
       return false;
     } elseif (strlen($_POST['CurrencyName']) == 0) {
       Event::error(_("The currency name must be entered."));
       JS::_setFocus('CurrencyName');
-
       return false;
     } elseif (strlen($_POST['Symbol']) == 0) {
       Event::error(_("The currency symbol must be entered."));
       JS::_setFocus('Symbol');
-
       return false;
     } elseif (strlen($_POST['hundreds_name']) == 0) {
       Event::error(_("The hundredths name must be entered."));
       JS::_setFocus('hundreds_name');
-
       return false;
     }
-
     return true;
   }
 
@@ -62,8 +56,7 @@
    *
    * @return bool
    */
-  function handle_submit(&$Mode, $selected_id)
-  {
+  function handle_submit(&$Mode, $selected_id) {
     if (!check_data()) {
       return false;
     }
@@ -82,8 +75,7 @@
    *
    * @return bool
    */
-  function check_can_delete($selected_id)
-  {
+  function check_can_delete($selected_id) {
     if ($selected_id == "") {
       return false;
     }
@@ -94,7 +86,6 @@
     $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this currency, because customer accounts have been created referring to this currency."));
-
       return false;
     }
     $sql    = "SELECT COUNT(*) FROM suppliers WHERE curr_code = $curr";
@@ -102,7 +93,6 @@
     $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this currency, because supplier accounts have been created referring to this currency."));
-
       return false;
     }
     $sql    = "SELECT COUNT(*) FROM company WHERE curr_default = $curr";
@@ -110,7 +100,6 @@
     $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this currency, because the company preferences uses this currency."));
-
       return false;
     }
     // see if there are any bank accounts that use this currency
@@ -119,10 +108,8 @@
     $myrow  = DB::_fetchRow($result);
     if ($myrow[0] > 0) {
       Event::error(_("Cannot delete this currency, because thre are bank accounts that use this currency."));
-
       return false;
     }
-
     return true;
   }
 
@@ -130,8 +117,7 @@
    * @param $Mode
    * @param $selected_id
    */
-  function handle_delete(&$Mode, $selected_id)
-  {
+  function handle_delete(&$Mode, $selected_id) {
     if (check_can_delete($selected_id)) {
       //only delete if used in neither customer or supplier, comp prefs, bank trans accounts
       GL_Currency::delete($selected_id);
@@ -140,20 +126,26 @@
     $Mode = MODE_RESET;
   }
 
-  function display_currencies()
-  {
+  function display_currencies() {
     $company_currency = Bank_Currency::for_company();
     $result           = GL_Currency::getAll(Input::_hasPost('show_inactive'));
-    Table::start('tablestyle grid');
+    Table::start('padded grid');
     $th = array(
-      _("Abbreviation"), _("Symbol"), _("Currency Name"), _("Hundredths name"), _("Country"), _("Auto update"), "", ""
+      _("Abbreviation"),
+      _("Symbol"),
+      _("Currency Name"),
+      _("Hundredths name"),
+      _("Country"),
+      _("Auto update"),
+      "",
+      ""
     );
     Forms::inactiveControlCol($th);
     Table::header($th);
     $k = 0; //row colour counter
     while ($myrow = DB::_fetch($result)) {
       if ($myrow[1] == $company_currency) {
-        Row::start("class='currencybg'");
+        echo "<tr class='currencybg'>";
       } else {
       }
       Cell::label($myrow["curr_abrev"]);
@@ -169,7 +161,7 @@
       } else {
         Cell::label('');
       }
-      Row::end();
+      echo '</tr>';
     } //END WHILE LIST LOOP
     Forms::inactiveControlRow($th);
     Table::end();
@@ -180,9 +172,8 @@
    * @param $Mode
    * @param $selected_id
    */
-  function display_currency_edit($Mode, $selected_id)
-  {
-    Table::start('tablestyle2');
+  function display_currency_edit($Mode, $selected_id) {
+    Table::start('standard');
     if ($selected_id != '') {
       if ($Mode == MODE_EDIT) {
         //editing an existing currency
@@ -196,7 +187,7 @@
       }
       Forms::hidden('Abbreviation');
       Forms::hidden('selected_id', $selected_id);
-      Row::label(_("Currency Abbreviation:"), $_POST['Abbreviation']);
+      Table::label(_("Currency Abbreviation:"), $_POST['Abbreviation']);
     } else {
       $_POST['auto_update'] = 1;
       Forms::textRowEx(_("Currency Abbreviation:"), 'Abbreviation', 4, 3);

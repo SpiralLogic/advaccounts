@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::_setFocus('account');
   JS::_openWindow(950, 500);
   Page::start(_($help_context = "Tax Inquiry"), SA_TAXREP);
@@ -32,16 +31,15 @@
   /**
 
    */
-  function tax_inquiry_controls()
-  {
+  function tax_inquiry_controls() {
     Forms::start();
-    //Table::start('tablestyle2');
-    Table::start('tablestyle_noborder');
-    Row::start();
+    //Table::start('standard');
+    Table::start('noborder');
+    echo '<tr>';
     Forms::dateCells(_("from:"), 'TransFromDate', '', null, -30);
     Forms::dateCells(_("to:"), 'TransToDate');
     Forms::submitCells('Show', _("Show"), '', '', 'default');
-    Row::end();
+    echo '</tr>';
     Table::end();
     Forms::end();
   }
@@ -49,11 +47,10 @@
   /**
 
    */
-  function show_results()
-  {
+  function show_results() {
     /*Now get the transactions */
     Display::div_start('trans_tbl');
-    Table::start('tablestyle grid');
+    Table::start('padded grid');
     $th = array(_("Type"), _("Description"), _("Amount"), _("Outputs") . "/" . _("Inputs"));
     Table::header($th);
     $k     = 0;
@@ -66,31 +63,27 @@
       $collectible = $tx['collectible'];
       $net         = $collectible + $payable;
       $total += $net;
-
       Cell::label($tx['name'] . " " . $tx['rate'] . "%");
       Cell::label(_("Charged on sales") . " (" . _("Output Tax") . "):");
       Cell::amount($payable);
       Cell::amount($tx['net_output']);
-      Row::end();
-
+      echo '</tr>';
       Cell::label($tx['name'] . " " . $tx['rate'] . "%");
       Cell::label(_("Paid on purchases") . " (" . _("Input Tax") . "):");
       Cell::amount($collectible);
       Cell::amount($tx['net_input']);
-      Row::end();
-
+      echo '</tr>';
       Cell::label("<span class='bold'>" . $tx['name'] . " " . $tx['rate'] . "%</span>");
       Cell::label("<span class='bold'>" . _("Net payable or collectible") . ":</span>");
       Cell::amount($net, true);
       Cell::label("");
-      Row::end();
+      echo '</tr>';
     }
-
     Cell::label("");
     Cell::label("<span class='bold'>" . _("Total payable or refund") . ":</span>");
     Cell::amount($total, true);
     Cell::label("");
-    Row::end();
+    echo '</tr>';
     Table::end(2);
     Display::div_end();
   }

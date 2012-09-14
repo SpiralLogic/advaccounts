@@ -103,7 +103,7 @@ $(function () {
                  Adv.resetState();
                  return false;
                }) });
-  Adv.o.tabs[0] = $("#tabs0");
+  Adv.o.tabs[0] = $("#tabs0").tabs();
   Adv.o.tabs[0].delegate("input,textarea,select", "change keyup", function () {
     var $this = $(this), buttontext, $thisname = $this.attr('name');
     Adv.Forms.stateModified($this);

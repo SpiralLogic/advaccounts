@@ -1,5 +1,9 @@
 <?php
   namespace ADV\App\Reports;
+
+  use ADV\App\User;
+  use ADV\App\Display;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -9,12 +13,10 @@
    * @link      http://www.advancedgroup.com.au
    **/
   use Spreadsheet_Excel_Writer_Workbook;
-  use Display;
   use ADV\App\Dates;
   use DB_Company;
   use ADV\Core\Config;
   use ADV\App\Page;
-  use User;
   use ADV\Core\Event;
 
   if (!class_exists('OLEwriter')) {

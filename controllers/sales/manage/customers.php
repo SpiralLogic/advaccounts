@@ -1,4 +1,5 @@
 <?php
+  use ADV\App\Dimensions;
 
   /* * ********************************************************************
            Copyright (C) Advanced Group PTY LTD
@@ -10,7 +11,6 @@
            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
            See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
           * ********************************************************************* */
-
   Page::start(_($help_context = "Customers"), SA_CUSTOMER, Input::_request('frame'));
   if (isset($_GET['debtor_id'])) {
     $_POST['debtor_id'] = $_GET['debtor_id'];
@@ -65,15 +65,16 @@
       Event::success(_("Customer has been updated."));
     } else { //it is a new customer
       DB::_begin();
-      $sql
-        = "INSERT INTO debtors (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
+      $sql = "INSERT INTO debtors (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
     				curr_code, credit_status, payment_terms, discount, payment_discount,credit_limit,
-    				sales_type, notes) VALUES (" . DB::_escape($_POST['CustName']) . ", " . DB::_escape($_POST['cust_ref']) . ", " . DB::_escape($_POST['address']) . ", " . DB::_escape($_POST['tax_id']) . "," . DB::_escape($_POST['email']) . ", " . DB::_escape($_POST['dimension_id']) . ", " . DB::_escape($_POST['dimension2_id']) . ", " . DB::_escape($_POST['curr_code']) . ",
+    				sales_type, notes) VALUES (" . DB::_escape($_POST['CustName']) . ", " . DB::_escape($_POST['cust_ref']) . ", " . DB::_escape($_POST['address']) . ", " . DB::_escape($_POST['tax_id']) . "," . DB::_escape($_POST['email']) . ", " . DB::_escape($_POST['dimension_id']) . ", " . DB::_escape(
+        $_POST['dimension2_id']
+      ) . ", " . DB::_escape($_POST['curr_code']) . ",
     				" . DB::_escape($_POST['credit_status']) . ", " . DB::_escape($_POST['payment_terms']) . ", " . Validation::input_num('discount') / 100 . ",
     				" . Validation::input_num('payment_discount') / 100 . ", " . Validation::input_num('credit_limit') . ", " . DB::_escape($_POST['sales_type']) . ", " . DB::_escape($_POST['notes']) . ")";
       DB::_query($sql, "The customer could not be added");
       $_POST['debtor_id'] = DB::_insertId();
-      $new_customer         = false;
+      $new_customer       = false;
       DB::_commit();
       Event::success(_("A new customer has been added."));
       Ajax::_activate('_page_body');
@@ -120,11 +121,11 @@
   Validation::check(Validation::SALES_TYPES, _("There are no sales types defined. Please define at least one sales type before adding a customer."));
   Forms::start();
   if (Validation::check(Validation::CUSTOMERS, _('There are no customers.'))) {
-    Table::start('tablestyle_noborder');
-    Row::start();
+    Table::start('noborder');
+    echo '<tr>';
     Debtor::cells(_("Select a customer: "), 'debtor_id', null, _('New customer'), true, Input::_hasPost('show_inactive'));
     Forms::checkCells(_("Show inactive:"), 'show_inactive', null, true);
-    Row::end();
+    echo '</tr>';
     Table::end();
     if (Input::_post('_show_inactive_update')) {
       Ajax::_activate('debtor_id');
@@ -166,7 +167,7 @@
     $_POST['notes']            = $myrow["notes"];
     $_POST['inactive']         = $myrow["inactive"];
   }
-  Table::startOuter('tablestyle2');
+  Table::startOuter('standard');
   Table::section(1);
   Table::sectionTitle(_("Name and Address"));
   Forms::textRow(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 80);
@@ -177,7 +178,7 @@
   if ($new_customer) {
     GL_Currency::row(_("Customer's Currency:"), 'curr_code', $_POST['curr_code']);
   } else {
-    Row::label(_("Customer's Currency:"), $_POST['curr_code']);
+    Table::label(_("Customer's Currency:"), $_POST['curr_code']);
     Forms::hidden('curr_code', $_POST['curr_code']);
   }
   Sales_Type::row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
@@ -202,12 +203,14 @@
     Forms::hidden('dimension2_id', 0);
   }
   if (!$new_customer) {
-    Row::start();
+    echo '<tr>';
     echo '<td>' . _('Customer branches') . ':</td>';
-    Display::link_params_td("/sales/manage/customer_branches.php", "<span class='bold'>" . (Input::_request('frame') ?
-      _("Select or &Add") : _("&Add or Edit ")) . '</span>', "debtor_id=" . $_POST['debtor_id'] . (Input::_request('frame') ?
-      '&frame=1' : ''));
-    Row::end();
+    Display::link_params_td(
+      "/sales/manage/customer_branches.php",
+      "<span class='bold'>" . (Input::_request('frame') ? _("Select or &Add") : _("&Add or Edit ")) . '</span>',
+      "debtor_id=" . $_POST['debtor_id'] . (Input::_request('frame') ? '&frame=1' : '')
+    );
+    echo '</tr>';
   }
   Forms::textareaRow(_("General Notes:"), 'notes', null, 35, 5);
   Forms::recordStatusListRow(_("Customer status:"), 'inactive');
@@ -216,8 +219,12 @@
   if ($new_customer) {
     Forms::submitCenter('submit', _("Add New Customer"), true, '', 'default');
   } else {
-    Forms::submitCenterBegin('submit', _("Update Customer"), _('Update customer data'), Input::_request('frame') ? true :
-      'default');
+    Forms::submitCenterBegin(
+      'submit',
+      _("Update Customer"),
+      _('Update customer data'),
+      Input::_request('frame') ? true : 'default'
+    );
     Forms::submitReturn('select', Input::_post('debtor_id'), _("Select this customer and return to document entry."));
     Forms::submitCenterEnd('delete', _("Delete Customer"), _('Delete customer data if have been never used'), true);
   }

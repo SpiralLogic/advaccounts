@@ -11,93 +11,105 @@
   /**
 
    */
-  class Table
-  {
-    /**
-     * @param        $msg
-     * @param int    $colspan
-     * @param string $class
-     */
-    static function sectionTitle($msg, $colspan = 2, $class = 'tablehead') {
-      echo "<tr class='$class'><td colspan=$colspan class='$class'>$msg</td></tr>\n";
-    }
-    /**
-     * @param        $labels
-     * @param string $params
-     */
-    static function header($labels, $params = '', $extra = null) {
-      echo '<thead>' . $extra . '<tr>';
-      $labels = (array) $labels;
-      foreach ($labels as $label) {
-        Cell::labelHeader($label, $params);
-      }
-      echo '</tr></thead>';
-    }
+  class Table {
     /**
      * @param string $class
      */
-    static function start($class = "") {
-      echo "<div class='center'><table";
-      if ($class != "") {
-        echo " class='$class'";
-      }
-      echo " >\n";
-    }
-    /**
-     * @param int $breaks
-     */
-    static function end($breaks = 0) {
-      echo "</table></div>\n";
-      if ($breaks) {
-        for ($i = 0; $i < $breaks; $i++) {
-          echo "<br>";
-        }
-      }
-    }
-    /**
-     * @param string $class
-     */
-    static function startOuter($class = "") {
+    public static function startOuter($class = "") {
       Table::start($class);
       echo "<tr class='top'><td>\n"; // outer table
+    }
+    /**
+     * @param string $class
+     */
+    public static function start($class = "") {
+      if ($class) {
+        $class = "class='$class'";
+      }
+      echo "<div class='center'><table $class>";
     }
     /**
      * @param int    $number
      * @param bool   $width
      * @param string $class
      */
-    static function section($number = 1, $width = false, $class = '') {
+    public static function section($number = 1, $width = null, $class = '') {
       if ($number > 1) {
-        echo "</table>\n";
-        $width = ($width ? "width:$width" : "");
-        //echo "</td><td class='tableseparator' $width>\n"; // outer table
-        echo "</td><td style='border-left:1px solid #cccccc; $width'>\n"; // outer table
+        $width = $width ? "width:$width" : "";
+        echo "</table></td><td $width'>"; // outer table
       }
-      echo "<table class='tablestyle_inner $class'>\n";
+      echo "\n<table class='inner $class'>";
     }
     /**
-     * @param int  $breaks
-     * @param bool $close_table
+     * @param        $msg
+     * @param int    $colspan
+     * @param string $class
      */
-    static function endOuter($breaks = 0, $close_table = true) {
-      if ($close_table) {
-        echo "</table>\n";
+    public static function sectionTitle($msg, $colspan = 2, $class = 'tablehead') {
+      echo "<tr class='$class'><td colspan=$colspan class='$class'>$msg</td></tr>";
+    }
+    /**
+     * @param        $labels
+     * @param string $params
+     */
+    public static function header($labels, $params = '', $extra = '') {
+      $header = '<thead>' . $extra . '<tr>';
+      $labels = (array) $labels;
+      foreach ($labels as $label) {
+        $header .= "<th $params>$label</th>";
       }
-      echo "</td></tr>\n";
-      Table::end($breaks);
+      echo $header . '</tr></thead>';
+    }
+    /**
+     * @param        $label
+     * @param        $value
+     * @param string $params
+     * @param string $params2
+     * @param int    $leftfill
+     * @param null   $id
+     */
+    public static function label($label, $value, $label_attrs = "", $value_attrs = "", $rightfill = null, $id = null) {
+      if (stripos($label_attrs, 'class') === false) {
+        $label_attrs .= " class='label' ";
+      }
+      if (!$id) {
+        $value_attrs .= " id='$id'";
+        Ajax::_addUpdate($id, $id, $value);
+      }
+      if ((int) $rightfill) {
+        $rightfill = "<td colspan=" . (int) $rightfill . "></td>";
+      }
+      echo "<tr><td  $label_attrs>$label</td><td $value_attrs>$value</td>" . $rightfill . "</tr>";
     }
     /**
      * @static
      *
      * @param string $class
      */
-    static function foot($class = '') {
+    public static function foot($class = '') {
       if ($class) {
-        $class = " class='$class' ";
+        $class = "class='$class'";
       }
       echo "<tfoot $class>";
     }
-    static function footEnd() {
+    public static function footEnd() {
       echo "</tfoot>";
+    }
+    /**
+     * @param int $breaks
+     */
+    public static function end($breaks = 0) {
+      echo "</table></div>" . str_repeat('<br>', $breaks);
+    }
+    /**
+     * @param int  $breaks
+     * @param bool $close_table
+     */
+    public static function endOuter($breaks = 0, $close_table = true) {
+      if ($close_table) {
+        echo "</table>\n";
+      }
+      echo "</td></tr>";
+      Table::end($breaks);
     }
   }

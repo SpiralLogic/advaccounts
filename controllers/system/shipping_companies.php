@@ -10,8 +10,7 @@
   Page::start(_($help_context = "Shipping Company"), SA_SHIPPING);
   list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM && can_process()) {
-    $sql
-      = "INSERT INTO shippers (shipper_name, contact, phone, phone2, address)
+    $sql = "INSERT INTO shippers (shipper_name, contact, phone, phone2, address)
         VALUES (" . DB::_escape($_POST['shipper_name']) . ", " . DB::_escape($_POST['contact']) . ", " . DB::_escape($_POST['phone']) . ", " . DB::_escape($_POST['phone2']) . ", " . DB::_escape($_POST['address']) . ")";
     DB::_query($sql, "The Shipping Company could not be added");
     Event::success(_('New shipping company has been added'));
@@ -65,7 +64,7 @@
   $sql .= " ORDER BY shipper_id";
   $result = DB::_query($sql, "could not get shippers");
   Forms::start();
-  Table::start('tablestyle grid');
+  Table::start('padded grid');
   $th = array(_("Name"), _("Contact Person"), _("Phone Number"), _("Secondary Phone"), _("Address"), "", "");
   Forms::inactiveControlCol($th);
   Table::header($th);
@@ -79,11 +78,11 @@
     Forms::inactiveControlCell($myrow["shipper_id"], $myrow["inactive"], 'shippers', 'shipper_id');
     Forms::buttonEditCell("Edit" . $myrow["shipper_id"], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow["shipper_id"], _("Delete"));
-    Row::end();
+    echo '</tr>';
   }
   Forms::inactiveControlRow($th);
   Table::end(1);
-  Table::start('tablestyle2');
+  Table::start('standard');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing Shipper
@@ -110,15 +109,12 @@
   /**
    * @return bool
    */
-  function can_process()
-  {
+  function can_process() {
     if (strlen($_POST['shipper_name']) == 0) {
       Event::error(_("The shipping company name cannot be empty."));
       JS::_setFocus('shipper_name');
-
       return false;
     }
-
     return true;
   }
 

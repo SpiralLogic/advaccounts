@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Supplier Purchasing Data"), SA_PURCHASEPRICING, Input::_request('frame'));
   Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."), STOCK_PURCHASED);
   Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
@@ -29,8 +28,7 @@
     }
     if ($input_error == 0) {
       if ($Mode == ADD_ITEM) {
-        $sql
-          = "INSERT INTO purch_data (creditor_id, stock_id, price, suppliers_uom,
+        $sql = "INSERT INTO purch_data (creditor_id, stock_id, price, suppliers_uom,
              conversion_factor, supplier_description) VALUES (";
         $sql .= DB::_escape($_POST['creditor_id']) . ", " . DB::_escape($_POST['stock_id']) . ", " . Validation::input_num('price', 0) . ", " . DB::_escape($_POST['suppliers_uom']) . ", " . Validation::input_num('conversion_factor') . ", " . DB::_escape($_POST['supplier_description']) . ")";
         DB::_query($sql, "The supplier purchasing details could not be added");
@@ -96,20 +94,27 @@
     $result = DB::_query($sql, "The supplier purchasing details for the selected part could not be retrieved");
     Display::div_start('price_table');
     if (DB::_numRows($result) == 0) {
-      Event::warning(_("There are no supplier prices set up for the product selected"),false);
+      Event::warning(_("There are no supplier prices set up for the product selected"), false);
     } else {
       if (Input::_request('frame')) {
-        Table::start('tablestyle grid width90');
+        Table::start('padded grid width90');
       } else {
-        Table::start('tablestyle grid width65');
+        Table::start('padded grid width65');
       }
       $th = array(
-        _("Updated"), _("Supplier"), _("Price"), _("Currency"), _("Unit"), _("Conversion Factor"), _("Supplier's Code"), "", ""
+        _("Updated"),
+        _("Supplier"),
+        _("Price"),
+        _("Currency"),
+        _("Unit"),
+        _("Conversion Factor"),
+        _("Supplier's Code"),
+        "",
+        ""
       );
       Table::header($th);
       $k = $j = 0; //row colour counter
       while ($myrow = DB::_fetch($result)) {
-
         Cell::label(Dates::_sqlToDate($myrow['last_update']), "style='white-space:nowrap;'");
         Cell::label($myrow["name"]);
         Cell::amountDecimal($myrow["price"]);
@@ -119,7 +124,7 @@
         Cell::label($myrow["supplier_description"]);
         Forms::buttonEditCell("Edit" . $myrow['creditor_id'], _("Edit"));
         Forms::buttonDeleteCell("Delete" . $myrow['creditor_id'], _("Delete"));
-        Row::end();
+        echo '</tr>';
         $j++;
         If ($j == 12) {
           $j = 1;
@@ -132,8 +137,7 @@
   }
   $dec2 = 6;
   if ($Mode == MODE_EDIT) {
-    $sql
-                                   = "SELECT purch_data.*,suppliers.name FROM purch_data
+    $sql                           = "SELECT purch_data.*,suppliers.name FROM purch_data
         INNER JOIN suppliers ON purch_data.creditor_id=suppliers.creditor_id
         WHERE purch_data.creditor_id=" . DB::_escape($selected_id) . "
         AND purch_data.stock_id=" . DB::_escape($_POST['stock_id']);
@@ -150,7 +154,7 @@
   Table::start('tableinfo');
   if ($Mode == MODE_EDIT) {
     Forms::hidden('creditor_id');
-    Row::label(_("Supplier:"), $name);
+    Table::label(_("Supplier:"), $name);
   } else {
     Creditor::row(_("Supplier:"), 'creditor_id', null, false, true);
     $_POST['price'] = $_POST['suppliers_uom'] = $_POST['conversion_factor'] = $_POST['supplier_description'] = "";

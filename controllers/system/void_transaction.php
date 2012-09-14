@@ -41,8 +41,7 @@
    *
    * @return bool
    */
-  function exist_transaction($type, $type_no)
-  {
+  function exist_transaction($type, $type_no) {
     $void_entry = Voiding::has($type, $type_no);
     if ($void_entry > 0) {
       return false;
@@ -81,7 +80,6 @@
         break;
       case ST_PURCHORDER : // it's a PO
       case ST_SUPPRECEIVE : // it's a GRN
-
         return false;
       case ST_SUPPINVOICE : // it's a suppler invoice
       case ST_SUPPCREDIT : // it's a supplier credit note
@@ -107,24 +105,20 @@
         break;
       case ST_SALESORDER: // it's a sales order
       case ST_SALESQUOTE: // it's a sales quotation
-
         return false;
       case ST_COSTUPDATE : // it's a stock cost update
-
         return false;
         break;
     }
-
     return true;
   }
 
   /**
 
    */
-  function voiding_controls()
-  {
+  function voiding_controls() {
     Forms::start();
-    Table::start('tablestyle2');
+    Table::start('standard');
     if ($_SERVER['REQUEST_METHOD'] == 'GET') {
       $_POST['trans_no']   = Input::_get('trans_no');
       $_POST['filterType'] = Input::_get('type');
@@ -163,18 +157,15 @@
   /**
    * @return bool
    */
-  function check_valid_entries()
-  {
+  function check_valid_entries() {
     if (DB_AuditTrail::is_closed_trans($_POST['filterType'], $_POST['trans_no'])) {
       Event::error(_("The selected transaction was closed for edition and cannot be voided."));
       JS::_setFocus('trans_no');
-
       return false;
     }
     if (!Dates::_isDate($_POST['date_'])) {
       Event::error(_("The entered date is invalid."));
       JS::_setFocus('date_');
-
       return false;
     }
     /*if (!Dates::_isDateInFiscalYear($_POST['date_'])) {
@@ -186,18 +177,15 @@
     if (!is_numeric($_POST['trans_no']) OR $_POST['trans_no'] <= 0) {
       Event::error(_("The transaction number is expected to be numeric and greater than zero."));
       JS::_setFocus('trans_no');
-
       return false;
     }
-
     return true;
   }
 
   /**
    * @return mixed
    */
-  function handle_void_transaction()
-  {
+  function handle_void_transaction() {
     if (check_valid_entries() == true) {
       unset($_SESSION['voiding']);
       $void_entry = Voiding::get($_POST['filterType'], $_POST['trans_no']);

@@ -1,12 +1,5 @@
 <?php
-  /**
-   * PHP version 5.4
-   * @category  PHP
-   * @package   adv.accounts.core
-   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-   * @copyright 2010 - 2012
-   * @link      http://www.advancedgroup.com.au
-   **/
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -16,11 +9,11 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
   /**
 
    */
-  class Language
-  {
+  class Language {
     use Traits\Singleton;
 
     public $name;
@@ -81,9 +74,6 @@
       // Necessary for ajax calls. Due to bug in php 4.3.10 for this
       // version set globally in php.ini
       ini_set('default_charset', $this->encoding);
-      if (isset($session['App']) && $changed) {
-        \ADVAccounting::refresh();
-      } // refresh menu
     }
   }
 

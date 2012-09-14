@@ -1,5 +1,6 @@
 <?php
   use ADV\Core\DB\DB;
+  use ADV\App\Dates;
   use ADV\App\User;
 
   /**
@@ -13,7 +14,7 @@
   {
     /** @var \ADV\Core\DB\DB */
     static $DB;
-    /** @var Dates */
+    /** @var \ADV\App\Dates */
     static $Dates;
     /**
      * @param $group_id

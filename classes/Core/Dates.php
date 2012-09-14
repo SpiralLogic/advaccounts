@@ -22,10 +22,6 @@
    * "m/d/Y" for US/Canada format dates depending on setting in preferences.
    * @category PHP
    * @package  Adv.accounts.core
-   */
-  use DB_Company;
-
-  /**
    * @method static __date()
    * @method static _dateToSql($date)
    * @method static _today()
@@ -39,13 +35,13 @@
    * @method static _addYears($date, $years)
    * @method static _sqlToDate($date)
    * @method static _beginMonth($date)
+   * @method static _endMonth($date)
    * @method static _addMonths($date, $months)
+   * @method static _months()
    * @method static _endFiscalYear()
    * @method static _beginFiscalYear()
    */
-
-  class Dates
-  {
+  class Dates {
     protected $sep = '-';
     protected $formats = array("m/d/Y", "d/m/Y", "Y/m/d");
     protected $separators = array('/', ".", "-", " ");
@@ -94,7 +90,6 @@
       if ($sql_format) {
         return date('Y-m-d');
       }
-
       return $this->date(date("Y"), date("n"), date("j"));
     }
     /**
@@ -117,7 +112,6 @@
     public function beginMonth($date) {
       /** @noinspection PhpUnusedLocalVariableInspection */
       list($year, $month, $day) = $this->explode($date);
-
       return $this->date($year, $month, 1);
     }
     /**
@@ -144,7 +138,6 @@
         30,
         31
       );
-
       return $this->date($year, $month, $days_in_month[$month - 1]);
     }
     /**
@@ -158,7 +151,6 @@
     public function addDays($date, $days) {
       list($year, $month, $day) = $this->explode($date);
       $timet = mktime(0, 0, 0, $month, $day + $days, $year);
-
       return date($this->date_display(), $timet);
     }
     /**
@@ -172,7 +164,6 @@
     public function addMonths($date, $months) {
       list($year, $month, $day) = $this->explode($date);
       $timet = mktime(0, 0, 0, $month + $months, $day, $year);
-
       return date($this->date_display(), $timet);
     }
     /**
@@ -186,7 +177,6 @@
     public function addYears($date, $years) {
       list($year, $month, $day) = $this->explode($date);
       $timet = mktime(0, 0, 0, $month, $day, $year + $years);
-
       return date($this->date_display(), $timet);
     }
     /**
@@ -204,7 +194,6 @@
       $date = $this->dateToSql($date);
       $how  = $this->formats[$this->format];
       $date = \DateTime::createFromFormat('Y-m-d', $date);
-
       return $date->format($how);
     } // end static function sqlToDate
     /**
@@ -226,13 +215,11 @@
       if (count($parts) == 3 && checkdate($parts[1], $parts[2], $parts[0])) {
         return $date;
       }
-
       $how  = $this->formats[$this->format];
       $date = \DateTime::createFromFormat($how, $date);
       if (!$date) {
         return $this->today(true);
       }
-
       return $date->format('Y-m-d');
     }
     /**
@@ -248,7 +235,6 @@
       if (!$date1 || !$date2) {
         return false;
       }
-
       return ($this->differenceBetween($date1, $date2) >= 0);
     }
     /**
@@ -277,7 +263,6 @@ provided that both dates are after 1970. Also only works for dates up to the yea
         case 'm':
           return $interval->format('%r%m');
       }
-
       return false;
     }
     /**
@@ -291,7 +276,6 @@ provided that both dates are after 1970. Also only works for dates up to the yea
      */
     protected function explode($date) {
       $date = $this->dateToSql($date);
-
       return explode("-", $date);
     }
     /** Based on converter to and from Gregorian and Jalali calendars.
@@ -334,7 +318,6 @@ provided that both dates are after 1970. Also only works for dates up to the yea
       }
       $jm = $i + 1;
       $jd = $j_day_no + 1;
-
       return array($jy, $jm, $jd);
     }
     /**
@@ -384,25 +367,9 @@ provided that both dates are after 1970. Also only works for dates up to the yea
       }
       $gm = $i + 1;
       $gd = $g_day_no + 1;
-
       return array($gy, $gm, $gd);
     }
-    /**
-     * @static
-     *
-     * @param     $name
-     * @param int $month
-     *
-     * @return string
-     */
-    public function months($name, $month = 0) {
-      $months[-1] = 'Current';
-      for ($i = 0; $i < 11; $i++) {
-        $months[$i] = date('F', strtotime("now - $i months"));
-      }
 
-      return Forms::arraySelect($name, $month, $months);
-    }
     /**
      * @static
      *
@@ -429,7 +396,6 @@ provided that both dates are after 1970. Also only works for dates up to the yea
       $m = (int) ((24 * $l) / 709);
       $d = $l - (int) ((709 * $m) / 24);
       $y = 30 * $n + $j - 30;
-
       return array($y, $m, $d);
     }
     /**
@@ -469,7 +435,6 @@ provided that both dates are after 1970. Also only works for dates up to the yea
         $m = $j + 2 - 12 * $i;
         $y = 4 * $k + $n + $i - 4716;
       }
-
       return array($y, $m, $d);
     }
     /**
@@ -492,7 +457,6 @@ provided that both dates are after 1970. Also only works for dates up to the yea
         $ret       = ($time / 1000) / 60;
       }
       $ret = number_format($ret, 3, '.', '') . ' ' . $formats[$formatter];
-
       return $ret;
     }
     /**
@@ -533,7 +497,6 @@ provided that both dates are after 1970. Also only works for dates up to the yea
       $how  = $this->formats [($format !== null) ? $format : $this->format];
       $date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
       $how  = str_replace('/', $this->sep, $how);
-
       return date($how, $date);
     }
   }

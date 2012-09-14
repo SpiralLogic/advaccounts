@@ -1,5 +1,10 @@
 <?php
   use ADV\App\Debtor\Debtor;
+  use ADV\App\Dates;
+  use ADV\App\Ref;
+  use ADV\App\Validation;
+  use ADV\App\Forms;
+  use ADV\App\Orders;
   use ADV\Core\Ajax;
   use ADV\Core\Input\Input;
   use ADV\Core\Table;
@@ -18,7 +23,8 @@
   //
   class CreditNote extends \ADV\App\Controller\Base
   {
-    /** @var Sales_Order */
+
+    /** @var \Sales_Order */
     public $credit;
     protected function before() {
       $this->JS->openWindow(950, 500);
@@ -65,9 +71,6 @@
       if (isset($_POST['cancelItem'])) {
         Item_Line::start_focus('stock_id');
       }
-      if (isset($_POST['ProcessCredit'])) {
-        $this->processCredit();
-      }
     }
     /**
      * @return bool
@@ -79,23 +82,22 @@
       if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) || $_POST['WriteOffGLCode'] == '')) {
         Event::warning(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
         Event::warning(_("Please select an account to write the cost of the stock off to, then click on Process again."), 1, 0);
-        exit;
+        return false;
       }
       if (!isset($_POST['WriteOffGLCode'])) {
         $_POST['WriteOffGLCode'] = 0;
       }
-      $this->credit = $this->copyToCredit($this->credit);
-      $credit_no    = $this->credit->write($_POST['WriteOffGLCode']);
+      $this->copyToCredit($this->credit);
+      $credit_no = $this->credit->write($_POST['WriteOffGLCode']);
       Dates::_newDocDate($this->credit->document_date);
       $this->pageComplete($credit_no);
-
       return true;
     }
     protected function cancelCredit() {
       $type     = $this->credit->trans_type;
       $order_no = (is_array($this->credit->trans_no)) ? key($this->credit->trans_no) : $this->credit->trans_no;
       Orders::session_delete($_POST['order_id']);
-      $this->credit = $this->handleNewCredit($order_no);
+      $this->handleNewCredit($order_no);
     }
     /**
      * @param $credit_no
@@ -114,6 +116,9 @@
     }
     protected function index() {
       Page::start($this->title, SA_SALESCREDIT);
+      if (isset($_POST['ProcessCredit'])) {
+        $this->processCredit();
+      }
       Forms::start();
       Forms::hidden('order_id', $_POST['order_id']);
       $customer_error = Sales_Credit::header($this->credit);
@@ -184,6 +189,7 @@
     protected function handleNewCredit($trans_no) {
       $this->credit = new Sales_Order(ST_CUSTCREDIT, $trans_no);
       Orders::session_delete($this->credit->order_id);
+      $this->credit->reference = Ref::get_next($this->credit->trans_type);
       $this->credit->start();
       $this->copyFromCredit();
     }
@@ -214,7 +220,6 @@
         $this->JS->setFocus('OrderDate');
         $input_error = 1;
       }
-
       return ($input_error == 0);
     }
     /**
@@ -224,22 +229,18 @@
       if (!Validation::post_num('qty', 0)) {
         Event::error(_("The quantity must be greater than zero."));
         $this->JS->setFocus('qty');
-
         return false;
       }
       if (!Validation::post_num('price', 0)) {
         Event::error(_("The entered price is negative or invalid."));
         $this->JS->setFocus('price');
-
         return false;
       }
       if (!Validation::post_num('Disc', 0, 100)) {
         Event::error(_("The entered discount percent is negative, greater than 100 or invalid."));
         $this->JS->setFocus('Disc');
-
         return false;
       }
-
       return true;
     }
   }

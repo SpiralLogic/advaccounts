@@ -1,5 +1,6 @@
 <?php
   use ADV\Core\DB\DB;
+  use ADV\App\Dates;
 
   /**
    * PHP version 5.4
@@ -226,6 +227,12 @@
 
       return false;
     }
+    /**
+     * @param $bank_account
+     * @param $reconcile_date
+     *
+     * @return mixed
+     */
     public static function get_reconcile_start($bank_account, $reconcile_date) {
       $sql
               = "SELECT reconciled as start_date FROM bank_trans

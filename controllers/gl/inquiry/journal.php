@@ -18,8 +18,8 @@
     $_POST['filterType'] = -1;
   }
   Forms::start();
-  Table::start('tablestyle_noborder');
-  Row::start();
+  Table::start('noborder');
+  echo '<tr>';
   Forms::refCells(_("Reference:"), 'Ref', '', null, _('Enter reference fragment or leave empty'));
   GL_Journal::cells(_("Type:"), "filterType");
   Forms::dateCells(_("From:"), 'FromDate', '', null, 0, -1, 0);
@@ -27,7 +27,7 @@
   Forms::checkCells(_("Show closed:"), 'AlsoClosed', null);
   Forms::refCells(_("Memo:"), 'Memo', '', null, _('Enter memo fragment or leave empty'));
   Forms::submitCells('Search', _("Search"), '', '', 'default');
-  Row::end();
+  echo '</tr>';
   Table::end();
   /*
   // Tom Hallman 11 Nov 2009
@@ -70,8 +70,7 @@
   }
   $sql .= " GROUP BY gl.type, gl.type_no";
   */
-  $sql
-    = "SELECT	IF(ISNULL(a.gl_seq),0,a.gl_seq) as gl_seq,
+  $sql = "SELECT	IF(ISNULL(a.gl_seq),0,a.gl_seq) as gl_seq,
      gl.tran_date,
      gl.type,
      gl.type_no,
@@ -106,10 +105,13 @@
   $sql .= " GROUP BY gl.type, gl.type_no";
   $cols = array(
     _("#")                => array(
-      'fun' => 'journal_pos', 'align' => 'center'
+      'fun'   => 'journal_pos',
+      'align' => 'center'
     ),
     _("Date")             => array(
-      'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'
+      'name' => 'tran_date',
+      'type' => 'date',
+      'ord'  => 'desc'
     ),
     _("Type")             => array('fun' => 'sysTypeName'),
     _("Trans #")          => array('fun' => 'view_link'),
@@ -118,16 +120,18 @@
     _("Memo"),
     _("User"),
     _("View")             => array(
-      'insert' => true, 'fun' => 'gl_link'
+      'insert' => true,
+      'fun'    => 'gl_link'
     ),
     array(
-      'insert' => true, 'fun' => 'edit_link'
+      'insert' => true,
+      'fun'    => 'edit_link'
     )
   );
   if (!Input::_hasPost('AlsoClosed')) {
     $cols[_("#")] = 'skip';
   }
-  $table        = DB_Pager::new_db_pager('journal_tbl', $sql, $cols);
+  $table        = DB_Pager::newPager('journal_tbl', $sql, $cols);
   $table->width = "80%";
   $table->display($table);
   Forms::end();
@@ -137,8 +141,7 @@
    *
    * @return string
    */
-  function journal_pos($row)
-  {
+  function journal_pos($row) {
     return $row['gl_seq'] ? $row['gl_seq'] : '-';
   }
 
@@ -148,11 +151,8 @@
    *
    * @return mixed
    */
-  function sysTypeName($dummy, $type)
-  {
-    global $systypes_array;
-
-    return $systypes_array[$type];
+  function sysTypeName($dummy, $type) {
+    return SysTypes::$names[$type];
   }
 
   /**
@@ -160,8 +160,7 @@
    *
    * @return null|string
    */
-  function view_link($row)
-  {
+  function view_link($row) {
     return GL_UI::viewTrans($row["type"], $row["type_no"]);
   }
 
@@ -170,8 +169,7 @@
    *
    * @return string
    */
-  function gl_link($row)
-  {
+  function gl_link($row) {
     return GL_UI::view($row["type"], $row["type_no"]);
   }
 
@@ -180,10 +178,7 @@
    *
    * @return string
    */
-  function edit_link($row)
-  {
+  function edit_link($row) {
     global $editors;
-
-    return isset($editors[$row["type"]]) && !DB_AuditTrail::is_closed_trans($row["type"], $row["type_no"]) ?
-      DB_Pager::link(_("Edit"), sprintf($editors[$row["type"]], $row["type_no"], $row["type"]), ICON_EDIT) : '';
+    return isset($editors[$row["type"]]) && !DB_AuditTrail::is_closed_trans($row["type"], $row["type_no"]) ? DB_Pager::link(_("Edit"), sprintf($editors[$row["type"]], $row["type_no"], $row["type"]), ICON_EDIT) : '';
   }

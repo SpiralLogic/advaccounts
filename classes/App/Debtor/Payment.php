@@ -1,5 +1,10 @@
 <?php
   use ADV\Core\DB\DB;
+  use ADV\App\Debtor\Debtor;
+  use ADV\App\Forms;
+  use ADV\Core\Cell;
+  use ADV\App\Ref;
+  use ADV\App\Dates;
 
   /**
    * PHP version 5.4
@@ -15,8 +20,7 @@
   /**
 
    */
-  class Debtor_Payment
-  {
+  class Debtor_Payment {
     /**
      * @static
      *
@@ -37,7 +41,7 @@
      */
     public static function add($trans_no, $debtor_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0, $tax = 0) {
       $result = DB::_select('trans_no')->from('debtor_trans')->where('debtor_id=', $debtor_id)->andWhere('branch_id=', $branch_id)->andWhere('tran_date=', Dates::_dateToSql($date_))->andWhere('type=', ST_CUSTPAYMENT)->andWhere('ov_amount=', $amount)->fetch()->one();
-      if ($result && $result['trans_no']!==Session::_getFlash('customer_payment')) {
+      if ($result && $result['trans_no'] !== Session::_getFlash('customer_payment')) {
         Session::_setFlash('customer_payment', $result['trans_no']);
         Event::warning('A payment for same amount and date already exists for this customer, do you want to process anyway?');
         return false;
@@ -111,7 +115,7 @@
      * @param string $parms
      */
     public static function credit_row($customer, $credit, $parms = '') {
-      Row::label(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? ' class="redfg openWindow"' : '') . " href='" . e('/sales/inquiry/customer_inquiry.php?frame=1&debtor_id=' . $customer) . "'>" . Num::_priceFormat($credit) . "</a>", $parms);
+      Table::label(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? ' class="redfg openWindow"' : '') . " href='" . e('/sales/inquiry/customer_inquiry.php?frame=1&debtor_id=' . $customer) . "'>" . Num::_priceFormat($credit) . "</a>", $parms);
     }
     /**
      * @static
@@ -126,9 +130,15 @@
       }
       echo "<td>\n";
       $allocs = array(
-        ALL_TEXT => _("All Types"), '1'      => _("Sales Invoices"), '2'      => _("Overdue Invoices"), '3'      => _("Payments"), '4'      => _("Credit Notes"), '5'      => _("Delivery Notes"), '6'      => _("Invoices Only")
+        ALL_TEXT => _("All Types"),
+        '1'      => _("Sales Invoices"),
+        '2'      => _("Overdue Invoices"),
+        '3'      => _("Payments"),
+        '4'      => _("Credit Notes"),
+        '5'      => _("Delivery Notes"),
+        '6'      => _("Invoices Only")
       );
-      echo Forms::arraySelect($name, $selected, $allocs,['class'=>'med']);
+      echo Forms::arraySelect($name, $selected, $allocs, ['class'=> 'med']);
       echo "</td>\n";
     }
     /**

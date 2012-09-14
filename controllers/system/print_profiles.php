@@ -53,7 +53,7 @@
   if (Input::_post('profile_id') == '') {
     Forms::textRow(_("Printing Profile Name") . ':', 'name', null, 30, 30);
   } else {
-    Cell::labels(_("Printing Profile Name") . ':', Input::_post('profile_id'));
+    Cell::labelled(_("Printing Profile Name") . ':', Input::_post('profile_id'));
   }
   Table::end(1);
   $result = Printer::get_profile(Input::_post('profile_id'));
@@ -61,7 +61,7 @@
   while ($myrow = DB::_fetch($result)) {
     $prints[$myrow['report']] = $myrow['printer'];
   }
-  Table::start('tablestyle grid');
+  Table::start('padded grid');
   $th = array(_("Report Id"), _("Description"), _("Printer"));
   Table::header($th);
   $k    = 0;
@@ -76,7 +76,7 @@
     if ($descr == '') {
       $unkn = 1;
     }
-    Row::end();
+    echo '</tr>';
   }
   Table::end();
   if ($unkn) {
@@ -96,12 +96,12 @@
   Page::end();
   // Returns array of defined reports
   //
-  function get_reports()
-  {
+  function get_reports() {
     if (Config::_get('debug.enabled') || !isset($_SESSION['reports'])) {
       // to save time, store in session.
       $paths   = array(
-        DOCROOT . 'controllers' . DS . 'reporting' . DS, COMPANY_PATH . 'reporting/'
+        DOCROOT . 'controllers' . DS . 'reporting' . DS,
+        COMPANY_PATH . 'reporting/'
       );
       $reports = array('' => _('Default printing destination'));
       foreach ($paths as $dirno => $path) {
@@ -131,15 +131,13 @@
       ksort($reports);
       $_SESSION['reports'] = $reports;
     }
-
     return $_SESSION['reports'];
   }
 
   /**
    * @param $selected_id
    */
-  function clear_form(&$selected_id)
-  {
+  function clear_form(&$selected_id) {
     $selected_id   = '';
     $_POST['name'] = '';
     Ajax::_activate('_page_body');
@@ -150,15 +148,13 @@
    *
    * @return int
    */
-  function check_delete($name)
-  {
+  function check_delete($name) {
     // check if selected profile is used by any user
     if ($name == '') {
       return 0;
     } // cannot delete system default profile
     $sql = "SELECT * FROM users WHERE print_profile=" . DB::_escape($name);
     $res = DB::_query($sql, 'cannot check printing profile usage');
-
     return DB::_numRows($res);
   }
 

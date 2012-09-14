@@ -43,7 +43,7 @@
 
   function print_payment_report()
   {
-    global $systypes_array;
+
     $to          = $_POST['PARAM_0'];
     $fromsupp    = $_POST['PARAM_1'];
     $currency    = $_POST['PARAM_2'];
@@ -133,7 +133,7 @@
           $rate = 1.0;
         }
         $rep->NewLine(1, 2);
-        $rep->TextCol(0, 1, $systypes_array[$trans['type']]);
+        $rep->TextCol(0, 1, SysTypes::$names[$trans['type']]);
         $rep->TextCol(1, 2, $trans['supplier_reference']);
         if ($trans['type'] == ST_SUPPINVOICE) {
           $rep->DateCol(2, 3, $trans['due_date'], true);

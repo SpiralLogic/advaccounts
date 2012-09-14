@@ -1,4 +1,14 @@
 <?php
+  use ADV\App\Dimensions;
+  use ADV\App\Report;
+  use ADV\App\Tags;
+  use ADV\App\SysTypes;
+  use ADV\App\Dates;
+  use ADV\App\Forms;
+  use ADV\Core\JS;
+  use ADV\App\Display;
+  use ADV\Core\Ajax;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -15,6 +25,9 @@
      * @var array
      */
     public $ctrl_handlers = [];
+    /**
+
+     */
     public function __construct() {
     }
     public function reportClasses() {
@@ -422,8 +435,8 @@
      * @return string
      */
     protected function gl_systypes_list($name, $value = null, $spec_opt = false) {
-      global $systypes_array;
-      $types = $systypes_array;
+
+      $types = SysTypes::$names;
       foreach (array(
                  ST_LOCTRANSFER,
                  ST_PURCHORDER,

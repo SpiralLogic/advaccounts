@@ -9,7 +9,7 @@
    **/
   namespace ADV\App\Creditor;
 
-  use ADV\App\UI\UI;
+  use ADV\App\UI;
   use ADV\App\Forms;
   use ADV\App\Validation;
   use ADV\App\User;
@@ -27,8 +27,7 @@
   /**
 
    */
-  class Creditor extends \Contact_Company
-  {
+  class Creditor extends \Contact_Company {
     /**
      * @static
      *
@@ -39,23 +38,22 @@
     public static function search($terms) {
       $sql = "SELECT creditor_id as id, supp_ref as label, supp_ref as value FROM suppliers WHERE supp_ref LIKE '%" . $terms . "%' ";
       if (is_numeric($terms)) {
-        $sql .= ' OR creditor_id LIKE  ' . static::$DB->_quote($terms . '%');
+        $sql .= ' OR creditor_id LIKE  ' . static::$staticDB->_quote($terms . '%');
       }
       $sql .= " LIMIT 20";
-      $result = static::$DB->_query($sql, 'Couldn\'t Get Supplier');
+      $result = static::$staticDB->_query($sql, 'Couldn\'t Get Supplier');
       $data   = '';
-      while ($row = static::$DB->_fetchAssoc($result)) {
+      while ($row = static::$staticDB->_fetchAssoc($result)) {
         foreach ($row as &$value) {
           $value = htmlspecialchars_decode($value);
         }
         $data[] = $row;
       }
-
       return $data;
     }
     /** @var */
     /** @var */
-    public $id = 0, $creditor_id; //
+    public $id = 0, $creditor_id = 0; //
     /** @var */
     public $name = ''; //
     /** @var */
@@ -121,7 +119,7 @@
     /**
      * @var string
      */
-    public $tax_group_id;
+    public $tax_group_id = 1;
     /** @var */
     public $purchase_account;
     /** @var */
@@ -154,16 +152,18 @@
      */
     protected $_id_column = 'creditor_id';
     /** @var DB */
-    static $DB;
+    public static $staticDB;
     /**
      * @param int|null $id
      */
     public function __construct($id = null) {
-      $this->gst_no   = &$this->tax_id;
-      $this->contact  = &$this->contact_name;
-      $this->address  = &$this->post_address;
-      $this->phone2   = &$this->supp_phone;
-      $this->supp_ref = &$this->name;
+      static::$staticDB  = \ADV\Core\DB\DB::i();
+      $this->gst_no      = &$this->tax_id;
+      $this->contact     = &$this->contact_name;
+      $this->address     = &$this->post_address;
+      $this->phone2      = &$this->supp_phone;
+      $this->supp_ref    = &$this->name;
+      $this->creditor_id =& $this->id;
       parent::__construct($id);
     }
     /**
@@ -180,7 +180,6 @@
     public function save($changes = null) {
       if (!parent::save($changes)) {
         $this->setDefaults();
-
         return false;
       }
       foreach ($this->contacts as $contact) {
@@ -189,7 +188,6 @@
         }
       }
       $this->setDefaults();
-
       return true;
     }
     public function delete() {
@@ -210,7 +208,7 @@
         $this->contacts = [];
       }
       $this->discount     = User::numeric($this->discount) / 100;
-      $this->supp_ref     = substr($this->name, 0, 29);
+      $this->supp_ref     = substr($this->name, 0, 29) ? : '';
       $this->credit_limit = str_replace(',', '', $this->credit_limit);
     }
     /**
@@ -225,13 +223,13 @@
      */
     protected function canProcess() {
       if (strlen($this->name) == 0) {
-        return $this->status(false, 'Processing', "The supplier name cannot be empty.", 'name');
+        return $this->status(false, "The supplier name cannot be empty.", 'name');
       }
       if (strlen($this->creditor_id) == 0) {
         $data['debtor_ref'] = substr($this->name, 0, 29);
       }
       if (!Validation::is_num($this->credit_limit, 0)) {
-        return $this->status(false, 'Processing', "The credit limit must be numeric and not less than zero.", 'credit_limit');
+        return $this->status(false, "The credit limit must be numeric and not less than zero.", 'credit_limit');
       }
       if (!Validation::is_num($this->discount, 0, 100)) {
         return $this->status(
@@ -241,7 +239,6 @@
           'discount'
         );
       }
-
       return true;
     }
     /**
@@ -254,31 +251,29 @@
      * @return bool|\Status
      */
     protected function defaults() {
+      parent::defaults();
       $this->credit_limit             = Num::_priceFormat(0);
       $company_record                 = DB_Company::get_prefs();
       $this->curr_code                = $company_record["curr_default"];
       $this->payable_account          = $company_record["creditors_act"];
       $this->purchase_account         = $company_record["default_cogs_act"];
       $this->payment_discount_account = $company_record['pyt_discount_act'];
-      $this->tax_group_id             = 1;
-      $this->id                       = 0;
-      $this->setDefaults();
     }
     /**
      * @return bool|\Status
      */
     protected function init() {
       $this->defaults();
-
-      return $this->status(true, 'Initialize new supplier', 'Now working with a new supplier');
+      $this->setDefaults();
+      $this->id = (int) $this->id;
     }
     /**
      * @return void
      */
     protected function _getContacts() {
       $this->contacts = [];
-      static::$DB->_select()->from('contacts')->where('parent_id=', $this->id)->andWhere('parent_type=', CT_SUPPLIER)->orderby('name DESC');
-      $contacts = static::$DB->_fetch()->asClassLate('Contact', array(CT_SUPPLIER));
+      static::$staticDB->_select()->from('contacts')->where('parent_id=', $this->id)->andWhere('parent_type=', CT_SUPPLIER)->orderby('name DESC');
+      $contacts = static::$staticDB->_fetch()->asClassLate('Contact', array(CT_SUPPLIER));
       if (count($contacts)) {
         foreach ($contacts as $contact) {
           $this->contacts[] = $contact;
@@ -304,8 +299,7 @@
         )
       );
       $customerBox->show();
-      $js
-        = <<<JS
+      $js = <<<JS
                             var val = $("#creditor_id").val();
                             $("#supplierBox").html("<iframe src='/contacts/suppliers.php?frame=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
@@ -325,7 +319,6 @@ JS;
       $this->discount     = $this->discount * 100;
       $this->credit_limit = Num::_priceFormat($this->credit_limit);
       $this->setDefaults();
-
       return $this;
     }
     /**
@@ -345,10 +338,9 @@ JS;
       $past_due1 = DB_Company::get_pref('past_due_days') ? : 30;
       $past_due2 = 2 * $past_due1;
       // removed - creditor_trans.alloc from all summations
-      $value = "(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)";
-      $due   = "IF (creditor_trans.type=" . ST_SUPPINVOICE . " OR creditor_trans.type=" . ST_SUPPCREDIT . ",creditor_trans.due_date,creditor_trans.tran_date)";
-      $sql
-              = "SELECT suppliers.name, suppliers.curr_code, payment_terms.terms,
+      $value  = "(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)";
+      $due    = "IF (creditor_trans.type=" . ST_SUPPINVOICE . " OR creditor_trans.type=" . ST_SUPPCREDIT . ",creditor_trans.due_date,creditor_trans.tran_date)";
+      $sql    = "SELECT suppliers.name, suppliers.curr_code, payment_terms.terms,
         Sum($value) AS Balance,
         Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0)) AS Due,
         Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past_due1,$value,0)) AS Overdue1,
@@ -358,7 +350,7 @@ JS;
              creditor_trans
         WHERE
              suppliers.payment_terms = payment_terms.terms_indicator
-             AND suppliers.creditor_id = " . static::$DB->_quote($creditor_id) . "
+             AND suppliers.creditor_id = " . static::$staticDB->_quote($creditor_id) . "
              AND creditor_trans.tran_date <= '$todate'
              AND suppliers.creditor_id = creditor_trans.creditor_id
         GROUP BY
@@ -366,27 +358,25 @@ JS;
              payment_terms.terms,
              payment_terms.days_before_due,
              payment_terms.day_in_following_month";
-      $result = static::$DB->_query($sql, "The supplier details could not be retrieved");
-      if (static::$DB->_numRows($result) == 0) {
+      $result = static::$staticDB->_query($sql, "The supplier details could not be retrieved");
+      if (static::$staticDB->_numRows($result) == 0) {
         /*Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
         $nil_balance = true;
-        $sql
-                     = "SELECT suppliers.name, suppliers.curr_code, suppliers.creditor_id, payment_terms.terms FROM suppliers,
+        $sql         = "SELECT suppliers.name, suppliers.curr_code, suppliers.creditor_id, payment_terms.terms FROM suppliers,
                  payment_terms WHERE
                  suppliers.payment_terms = payment_terms.terms_indicator
-                 AND suppliers.creditor_id = " . static::$DB->_escape($creditor_id);
-        $result      = static::$DB->_query($sql, "The customer details could not be retrieved");
+                 AND suppliers.creditor_id = " . static::$staticDB->_escape($creditor_id);
+        $result      = static::$staticDB->_query($sql, "The customer details could not be retrieved");
       } else {
         $nil_balance = false;
       }
-      $supp = static::$DB->_fetch($result);
+      $supp = static::$staticDB->_fetch($result);
       if ($nil_balance == true) {
         $supp["Balance"]  = 0;
         $supp["Due"]      = 0;
         $supp["Overdue1"] = 0;
         $supp["Overdue2"] = 0;
       }
-
       return $supp;
     }
     /**
@@ -402,8 +392,7 @@ JS;
       $date_from = Dates::_dateToSql($date_from);
       $date_to   = Dates::_dateToSql($date_to);
       // Sherifoz 22.06.03 Also get the description
-      $sql
-               = "SELECT
+      $sql     = "SELECT
 
 
      SUM((trans.ov_amount + trans.ov_gst + trans.ov_discount)) AS Total
@@ -413,11 +402,10 @@ JS;
      WHERE trans.ov_amount != 0
         AND trans . tran_date >= '$date_from'
         AND trans . tran_date <= '$date_to'
-        AND trans.creditor_id = " . static::$DB->_escape($creditor_id) . "
+        AND trans.creditor_id = " . static::$staticDB->_escape($creditor_id) . "
         AND trans.type = " . ST_SUPPINVOICE;
-      $result  = static::$DB->_query($sql);
-      $results = static::$DB->_fetch($result);
-
+      $result  = static::$staticDB->_query($sql);
+      $results = static::$staticDB->_fetch($result);
       return $results['Total'];
     }
     /**
@@ -428,10 +416,9 @@ JS;
      * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($creditor_id) {
-      $sql    = "SELECT * FROM suppliers WHERE creditor_id=" . static::$DB->_escape($creditor_id);
-      $result = static::$DB->_query($sql, "could not get supplier");
-
-      return static::$DB->_fetch($result);
+      $sql    = "SELECT * FROM suppliers WHERE creditor_id=" . static::$staticDB->_escape($creditor_id);
+      $result = static::$staticDB->_query($sql, "could not get supplier");
+      return static::$staticDB->_fetch($result);
     }
     /**
      * @static
@@ -441,10 +428,9 @@ JS;
      * @return mixed
      */
     public static function get_name($creditor_id) {
-      $sql    = "SELECT name AS name FROM suppliers WHERE creditor_id=" . static::$DB->_escape($creditor_id);
-      $result = static::$DB->_query($sql, "could not get supplier");
-      $row    = static::$DB->_fetchRow($result);
-
+      $sql    = "SELECT name AS name FROM suppliers WHERE creditor_id=" . static::$staticDB->_escape($creditor_id);
+      $result = static::$staticDB->_query($sql, "could not get supplier");
+      $row    = static::$staticDB->_fetchRow($result);
       return $row[0];
     }
     /**
@@ -455,10 +441,9 @@ JS;
      * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get_accounts_name($creditor_id) {
-      $sql    = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE creditor_id=" . static::$DB->_escape($creditor_id);
-      $result = static::$DB->_query($sql, "could not get supplier");
-
-      return static::$DB->_fetch($result);
+      $sql    = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE creditor_id=" . static::$staticDB->_escape($creditor_id);
+      $result = static::$staticDB->_query($sql, "could not get supplier");
+      return static::$staticDB->_fetch($result);
     }
     /**
      * @static
@@ -533,10 +518,9 @@ JS;
      *
      * @return string
      */
-    public static function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $all = false, $editkey = false) {
+    public static function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $all = false) {
       $sql  = "SELECT creditor_id, supp_ref, curr_code, inactive FROM suppliers ";
       $mode = DB_Company::get_pref('no_supplier_list');
-
       return Forms::selectBox(
         $name,
         $selected_id,
@@ -596,6 +580,12 @@ JS;
       echo Creditor::select($name, $selected_id, $all_option, $submit_on_change, $all, $editkey);
       echo "</td></tr>\n";
     }
+    /**
+     * @param $db
+     */
+    public static function setDB($db) {
+      static::$staticDB = $db;
+    }
   }
 
-  Creditor::$DB = \ADV\Core\DB\DB::i();
+  Creditor::setDB(\ADV\Core\DB\DB::i());

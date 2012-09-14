@@ -33,13 +33,18 @@
   $sql   = "SELECT date_, rate_buy, id FROM exchange_rates " . "WHERE curr_code=" . DB::_quote($_POST['curr_abrev']) . "
      ORDER BY date_ DESC";
   $cols  = array(
-    _("Date to Use From") => 'date', _("Exchange Rate") => 'rate', array(
-      'insert' => true, 'fun' => 'edit_link'
-    ), array(
-      'insert' => true, 'fun' => 'del_link'
+    _("Date to Use From") => 'date',
+    _("Exchange Rate")    => 'rate',
+    array(
+      'insert' => true,
+      'fun'    => 'edit_link'
+    ),
+    array(
+      'insert' => true,
+      'fun'    => 'del_link'
     ),
   );
-  $table = DB_Pager::new_db_pager('orders_tbl', $sql, $cols);
+  $table = DB_Pager::newPager('orders_tbl', $sql, $cols);
   if (Bank_Currency::is_company($_POST['curr_abrev'])) {
     Event::warning(_("The selected currency is the company currency."), 2);
     Event::warning(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
@@ -58,27 +63,22 @@
   /**
    * @return bool
    */
-  function check_data()
-  {
+  function check_data() {
     if (!Dates::_isDate($_POST['date_'])) {
       Event::error(_("The entered date is invalid."));
       JS::_setFocus('date_');
-
       return false;
     }
     if (Validation::input_num('BuyRate') <= 0) {
       Event::error(_("The exchange rate cannot be zero or a negative number."));
       JS::_setFocus('BuyRate');
-
       return false;
     }
     if (GL_ExchangeRate::get_date($_POST['curr_abrev'], $_POST['date_'])) {
       Event::error(_("The exchange rate for the date is already there."));
       JS::_setFocus('date_');
-
       return false;
     }
-
     return true;
   }
 
@@ -87,8 +87,7 @@
    *
    * @return bool
    */
-  function handle_submit(&$selected_id)
-  {
+  function handle_submit(&$selected_id) {
     if (!check_data()) {
       return false;
     }
@@ -106,8 +105,7 @@
    *
    * @return mixed
    */
-  function handle_delete(&$selected_id)
-  {
+  function handle_delete(&$selected_id) {
     if ($selected_id == "") {
       return;
     }
@@ -121,8 +119,7 @@
    *
    * @return string
    */
-  function edit_link($row)
-  {
+  function edit_link($row) {
     return Forms::button(MODE_EDIT . $row["id"], _("Edit"), true, ICON_EDIT);
   }
 
@@ -131,24 +128,21 @@
    *
    * @return string
    */
-  function del_link($row)
-  {
+  function del_link($row) {
     return Forms::button(MODE_DELETE . $row["id"], _("Delete"), true, ICON_DELETE);
   }
 
   /**
    * @param $curr_code
    */
-  function display_rates($curr_code)
-  {
+  function display_rates($curr_code) {
   }
 
   /**
    * @param $selected_id
    */
-  function display_rate_edit(&$selected_id)
-  {
-    Table::start('tablestyle2');
+  function display_rate_edit(&$selected_id) {
+    Table::start('standard');
     if ($selected_id != "") {
       //editing an existing exchange rate
       $myrow            = GL_ExchangeRate::get($selected_id);
@@ -156,7 +150,7 @@
       $_POST['BuyRate'] = Num::_exrateFormat($myrow["rate_buy"]);
       Forms::hidden('selected_id', $selected_id);
       Forms::hidden('date_', $_POST['date_']);
-      Row::label(_("Date to Use From:"), $_POST['date_']);
+      Table::label(_("Date to Use From:"), $_POST['date_']);
     } else {
       $_POST['date_']   = Dates::_today();
       $_POST['BuyRate'] = '';
@@ -172,7 +166,6 @@
     Event::warning(_("Exchange rates are entered against the company currency."), 1);
   }
 
-  function clear_data()
-  {
+  function clear_data() {
     unset($_POST['selected_id'], $_POST['date_'], $_POST['BuyRate']);
   }

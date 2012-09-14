@@ -1,11 +1,10 @@
 <?php
+  use ADV\App\Forms;
+  use ADV\App\Dates;
   use ADV\Core\Input\Input;
-  use ADV\Core\JS;
-  use ADV\Core\DB\DB;
+  use ADV\App\Reporting;
   use ADV\App\Creditor\Creditor;
-  use ADV\Core\Row;
   use ADV\Core\Table;
-  use ADV\Core\Ajax;
 
   /**
    * PHP version 5.4
@@ -15,43 +14,48 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class POSearch extends \ADV\App\Controller\Base
-  {
+  class POSearch extends \ADV\App\Controller\Base {
+    protected $Dates;
     protected $order_no;
     protected $creditor_id;
     protected $selected_stock_item;
     protected $stock_location;
+    /**
+
+     */
+    public function __construct() {
+      $this->Dates = Dates::i();
+      parent::__construct();
+    }
     protected function before() {
-      JS::_openWindow(950, 500);
-      $this->order_no            =&Input::_getPost('order_number', Input::NUMERIC);
-      $this->creditor_id         = Input::_getPost('creditor_id', Input::NUMERIC, 0);
-      $this->stock_location      = Input::_getPost('StockLocation', Input::STRING, '');
-      $this->selected_stock_item = Input::_getPost('SelectStockFromList', Input::STRING, '');
-      if (Input::_post('SearchOrders')) {
-        Ajax::_activate('orders_tbl');
+      $this->JS->openWindow(950, 500);
+      $this->order_no            =& $this->Input->getPost('order_number', Input::NUMERIC);
+      $this->creditor_id         = $this->Input->getPost('creditor_id', Input::NUMERIC, 0);
+      $this->stock_location      = $this->Input->getPost('StockLocation', Input::STRING, '');
+      $this->selected_stock_item = $this->Input->getPost('SelectStockFromList', Input::STRING, '');
+      if ($this->Input->post('SearchOrders')) {
+        $this->Ajax->activate('orders_tbl');
       }
       if ($this->order_no) {
-        Ajax::_addFocus(true, 'order_number');
-      } else {
-        Ajax::_addFocus(true, 'OrdersAfterDate');
+        $this->Ajax->addFocus(true, 'order_number');
       }
-      Ajax::_activate('orders_tbl');
+      $this->Ajax->activate('orders_tbl');
     }
     protected function index() {
       Page::start(_($help_context = "Search Outstanding Purchase Orders"), SA_SUPPTRANSVIEW);
       // Ajax updates
       //
       Forms::start();
-      Table::start('tablestyle_noborder');
-      Row::start();
-      Creditor::cells(_(""), 'creditor_id', Input::_post('creditor_id'), true);
+      Table::start('noborder');
+      echo '<tr>';
+      Creditor::cells(_(""), 'creditor_id', $this->Input->post('creditor_id'), true);
       Forms::refCells(_("#:"), 'order_number');
       Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
       Forms::dateCells(_("To:"), 'OrdersToDate');
       Inv_Location::cells(_("Location:"), 'StockLocation', null, true);
       //Item::cells(_("Item:"), 'SelectStockFromList', null, true,false,false,false,true);
       Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
-      Row::end();
+      echo '</tr>';
       Table::end();
       $this->makeTable();
       Creditor::addInfoDialog('.pagerclick');
@@ -70,7 +74,7 @@
  porder.ord_date,
  supplier.curr_code,
  Sum(line.unit_price*line.quantity_ordered) AS OrderValue,
- Sum(line.delivery_date < '" . Dates::_today(true) . "'
+ Sum(line.delivery_date < '" . $this->Dates->today(true) . "'
  AND (line.quantity_ordered > line.quantity_received)) As OverDue
  FROM purch_orders as porder, purch_order_details as line, suppliers as supplier, locations as location
  WHERE porder.order_no = line.order_no
@@ -78,25 +82,25 @@
  AND location.loc_code = porder.into_stock_location
  AND (line.quantity_ordered > line.quantity_received) ";
       if ($this->creditor_id) {
-        $sql .= " AND supplier.creditor_id = " . DB::_quote($this->creditor_id);
+        $sql .= " AND supplier.creditor_id = " . $this->DB->quote($this->creditor_id);
       }
       if ($this->order_no) {
-        $sql .= " AND (porder.order_no LIKE " . DB::_quote('%' . $this->order_no . '%');
-        $sql .= " OR porder.reference LIKE " . DB::_quote('%' . $this->order_no . '%') . ') ';
+        $sql .= " AND (porder.order_no LIKE " . $this->DB->quote('%' . $this->order_no . '%');
+        $sql .= " OR porder.reference LIKE " . $this->DB->quote('%' . $this->order_no . '%') . ') ';
       } else {
-        $data_after  = Dates::_dateToSql($_POST['OrdersAfterDate']);
-        $data_before = Dates::_dateToSql($_POST['OrdersToDate']);
+        $data_after  = $this->Dates->dateToSql($_POST['OrdersAfterDate']);
+        $data_before = $this->Dates->dateToSql($_POST['OrdersToDate']);
         $sql .= " AND porder.ord_date >= '$data_after'";
         $sql .= " AND porder.ord_date <= '$data_before'";
         if ($this->stock_location) {
-          $sql .= " AND porder.into_stock_location = " . DB::_quote($this->stock_location);
+          $sql .= " AND porder.into_stock_location = " . $this->DB->quote($this->stock_location);
         }
         if ($this->selected_stock_item) {
-          $sql .= " AND line.item_code=" . DB::_quote($this->selected_stock_item);
+          $sql .= " AND line.item_code=" . $this->DB->quote($this->selected_stock_item);
         }
       } //end not order number selected
       $sql .= " GROUP BY porder.order_no";
-      DB::_query($sql, "No orders were returned");
+      $this->DB->query($sql, "No orders were returned");
       /*show a table of the orders returned by the sql */
       $cols = array(
         _("#")                                     => ['fun'     => [$this, 'formatTrans'], 'ord'     => ''], //
@@ -116,7 +120,7 @@
       if (!$this->stock_location) {
         $cols[_("Location")] = 'skip';
       }
-      $table = DB_Pager::new_db_pager('orders_tbl', $sql, $cols);
+      $table = DB_Pager::newPager('orders_tbl', $sql, $cols);
       $table->setMarker([$this, 'formatMarker'], _("Marked orders have overdue items."));
       $table->width = "85%";
       $table->display($table);

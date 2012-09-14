@@ -1,12 +1,11 @@
 <?php
-    use ADV\Core\Input\Input;
-    use ADV\Core\DB\DB;
-    use ADV\Core\Row;
-    use ADV\Core\Table;
-    use ADV\Core\Ajax;
-    use ADV\Core\JS;
+  use ADV\Core\Input\Input;
+  use ADV\Core\DB\DB;
+  use ADV\Core\Table;
+  use ADV\Core\Ajax;
+  use ADV\Core\JS;
 
-    /**
+  /**
    * PHP version 5.4
    * @category  PHP
    * @package   ADVAccounts
@@ -44,8 +43,8 @@
     $_POST['SelectedStockItem'] = $_GET["stock_id"];
   }
   Forms::start(false, $_SERVER['DOCUMENT_URI'] . "?outstanding_only=$outstanding_only");
-  Table::start('tablestyle_noborder');
-  Row::start();
+  Table::start('noborder');
+  echo '<tr>';
   Forms::refCells(_("Reference:"), 'OrderNumber', '', null, '', true);
   Inv_Location::cells(_("at Location:"), 'StockLocation', null, true);
   Forms::checkCells(_("Only Overdue:"), 'OverdueOnly', null);
@@ -54,7 +53,7 @@
   }
   Item_UI::manufactured_cells(_("for item:"), 'SelectedStockItem', null, true);
   Forms::submitCells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
-  Row::end();
+  echo '</tr>';
   Table::end();
   /**
    * @param $row
@@ -91,9 +90,7 @@
    * @return mixed
    */
   function wo_type_name($dummy, $type) {
-    global $wo_types_array;
-
-    return $wo_types_array[$type];
+    return WO::$types[$type];
   }
 
   /**
@@ -102,8 +99,7 @@
    * @return string
    */
   function edit_link($row) {
-    return $row['closed'] ? '<i>' . _('Closed') . '</i>' :
-      DB_Pager::link(_("Edit"), "/manufacturing/work_order_entry.php?trans_no=" . $row["id"], ICON_EDIT);
+    return $row['closed'] ? '<i>' . _('Closed') . '</i>' : DB_Pager::link(_("Edit"), "/manufacturing/work_order_entry.php?trans_no=" . $row["id"], ICON_EDIT);
   }
 
   /**
@@ -112,9 +108,7 @@
    * @return string
    */
   function release_link($row) {
-    return $row["closed"] ? '' :
-      ($row["released"] == 0 ? DB_Pager::link(_('Release'), "/manufacturing/work_order_release.php?trans_no=" . $row["id"]) :
-        DB_Pager::link(_('Issue'), "/manufacturing/work_order_issue.php?trans_no=" . $row["id"]));
+    return $row["closed"] ? '' : ($row["released"] == 0 ? DB_Pager::link(_('Release'), "/manufacturing/work_order_release.php?trans_no=" . $row["id"]) : DB_Pager::link(_('Issue'), "/manufacturing/work_order_issue.php?trans_no=" . $row["id"]));
   }
 
   /**
@@ -123,8 +117,7 @@
    * @return string
    */
   function produce_link($row) {
-    return $row["closed"] || !$row["released"] ? '' :
-      DB_Pager::link(_('Produce'), "/manufacturing/work_order_add_finished.php?trans_no=" . $row["id"]);
+    return $row["closed"] || !$row["released"] ? '' : DB_Pager::link(_('Produce'), "/manufacturing/work_order_add_finished.php?trans_no=" . $row["id"]);
   }
 
   /**
@@ -140,9 +133,7 @@
                                "/gl/gl_bank.php?NewPayment=1&PayType="
                                .PT_WORKORDER. "&PayPerson=" .$row["id"]);
                          */
-
-    return $row["closed"] || !$row["released"] ? '' :
-      DB_Pager::link(_('Costs'), "/manufacturing/work_order_costs.php?trans_no=" . $row["id"]);
+    return $row["closed"] || !$row["released"] ? '' : DB_Pager::link(_('Costs'), "/manufacturing/work_order_costs.php?trans_no=" . $row["id"]);
   }
 
   /**
@@ -154,7 +145,6 @@
     if ($row['closed'] == 0) {
       return '';
     }
-
     return GL_UI::view(ST_WORKORDER, $row['id']);
   }
 
@@ -168,8 +158,7 @@
     return Num::_format($amount, $row['decimals']);
   }
 
-  $sql
-    = "SELECT
+  $sql = "SELECT
     workorder.id,
     workorder.wo_ref,
     workorder.type,
@@ -212,32 +201,40 @@
     _("Location"),
     _("Item")            => array('fun' => 'view_stock'),
     _("Required")        => array(
-      'fun' => 'dec_amount', 'align' => 'right'
+      'fun'   => 'dec_amount',
+      'align' => 'right'
     ),
     _("Manufactured")    => array(
-      'fun' => 'dec_amount', 'align' => 'right'
+      'fun'   => 'dec_amount',
+      'align' => 'right'
     ),
     _("Date")            => 'date',
     _("Required By")     => array(
-      'type' => 'date', 'ord' => ''
+      'type' => 'date',
+      'ord'  => ''
     ),
     array(
-      'insert' => true, 'fun' => 'edit_link'
+      'insert' => true,
+      'fun'    => 'edit_link'
     ),
     array(
-      'insert' => true, 'fun' => 'release_link'
+      'insert' => true,
+      'fun'    => 'release_link'
     ),
     array(
-      'insert' => true, 'fun' => 'produce_link'
+      'insert' => true,
+      'fun'    => 'produce_link'
     ),
     array(
-      'insert' => true, 'fun' => 'costs_link'
+      'insert' => true,
+      'fun'    => 'costs_link'
     ),
     array(
-      'insert' => true, 'fun' => 'view_gl_link'
+      'insert' => true,
+      'fun'    => 'view_gl_link'
     )
   );
-  $table = DB_Pager::new_db_pager('orders_tbl', $sql, $cols);
+  $table = DB_Pager::newPager('orders_tbl', $sql, $cols);
   $table->setMarker('checkOverdue', _("Marked orders are overdue."));
   $table->width = "90%";
   $table->display($table);

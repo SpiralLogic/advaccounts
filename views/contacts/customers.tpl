@@ -58,37 +58,7 @@
     {{$form.messageLog}}
   </div>
   {#$menu->endTab()->startTab('Customer Contacts', 'Customer Contacts')#}
-  <div class='center'>
-    <div id="Contacts" style='min-height:200px'>
-      <script id="contact_tmpl" type='text/x-jquery-tmpl'>
-        <table id="contact-${_k}" style="display:inline-block">
-          <tr>
-            <td class="tablehead" colspan="2">${name}</td>
-          </tr>
-          <tr>
-            <td class='label'><label for='contact[name-${_k}]'>Name:</label></td>
-            <td><input type="text" name="contact[name-${_k}]" id="contact[name-${_k}]" size='35' maxlength="40" value="${name}"></td>
-          </tr>
-          <tr>
-            <td class='label'><label for='contact[phone1-${_k}]'>Phone:</label></td>
-            <td><input type="text" name="contact[phone1-${_k}]" id="contact[phone1-${_k}]" size='35' maxlength="40" value="${phone1}"></td>
-          </tr>
-          <tr>
-            <td class='label'><label for='contact[phone2-${_k}]'>Phone2:</label></td>
-            <td><input type="text" name="contact[phone2-${_k}]" id="contact[phone2-${_k}]" size='35' maxlength="40" value="${phone2}"></td>
-          </tr>
-          <tr>
-            <td class='label'><label for='contact[email-${_k}]'>Email:</label></td>
-            <td><input type="text" name="contact[email-${_k}]" id="contact[email-${_k}]" size='35' maxlength="40" value="${email}"></td>
-          </tr>
-          <tr>
-            <td class='label'><label for='contact[department-${_k}]'>Dept:</label></td>
-            <td><input type="text" name="contact[department-${_k}]" id="contact[department-${_k}]" size='35' maxlength="40" value="${department}"></td>
-          </tr>
-        </table>
-      </script>
-    </div>
-  </div>
+  {{>contacts/contact}}
   {#$menu->endTab()->startTab('Extra Shipping Info', 'Extra Info')#}
   <div class='formbox'>
     <div class='tablehead'>
@@ -115,8 +85,8 @@
     {{$form.branch_notes}}
   </div>
   {#$menu->endTab()->startTab('Invoices', 'Invoices')#}
-  <div id='invoiceFrame' data-src='/sales/inquiry/customer_allocation_inquiry.php?debtor_id={{$debtor_id}}'></div>
   {{$form.frame}}
+  <div id='invoiceFrame' data-src='/sales/inquiry/customer_allocation_inquiry.php?debtor_id={{$debtor_id}}'></div>
   {{$form._focus}}
   {#$menu->endTab()->render()#}
   {{$form->end()}}
@@ -125,7 +95,10 @@
   <button id="btnNew" name="new" type="submit" class="btn btn-primary">New</button>
   <button id="btnCancel" name="cancel" type="submit" class="btn btn-danger ui-helper-hidden"><i class="icon-cross"></i> Cancel</button>
   <button id="btnConfirm" name="save" type="submit" class="btn btn-success ui-helper-hidden"><i class="icon-ok"></i> Save</button>
-</div>  {{$shortcuts->render()}}
+</div>
+<div id="shortcuts" class="center">{{#$shortcuts}}
+  <button class="btn" data-url="{{$.data}}">{{$.caption}}</button>
+  {{/$shortcuts}}</div>
 {{$contact_form->start()}}
 <div id="contactLog" class='ui-helper-hidden center'>
   <div class="formbox marginauto ">

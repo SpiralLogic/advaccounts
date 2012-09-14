@@ -18,8 +18,7 @@
   /**
    * Jobsboard
    */
-  class Jobsboard extends Module\Base
-  {
+  class Jobsboard extends Module\Base {
     /** @var */
     protected $currentJob;
     /** @var */
@@ -28,17 +27,11 @@
     public $order_no;
     /** @var DB */
     protected $jobsboardDB;
-    /**
-     * @param array $config
-     */
-    public function __construct($config = []) {
-      parent::__construct($config);
+    public function init() {
       if (!$this->jobsboardDB) {
         $this->jobsboardDB = new DB('jobsboard');
       }
-    }
-    public function init() {
-      User::register_login($this, 'tasks');
+      $this->tasks();
     }
     /**
      * @param $trans_no

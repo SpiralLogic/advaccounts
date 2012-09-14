@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::_openWindow(950, 600);
   Page::start(_($help_context = "Recurrent Invoices"), SA_SRECURRENT);
   list($Mode, $selected_id) = Page::simple_mode(true);
@@ -20,8 +19,7 @@
     }
     if ($input_error != 1) {
       if ($selected_id != -1) {
-        $sql
-              = "UPDATE recurrent_invoices SET
+        $sql  = "UPDATE recurrent_invoices SET
  			description=" . DB::_escape($_POST['description']) . ",
  			order_no=" . DB::_escape($_POST['order_no']) . ",
  			debtor_id=" . DB::_escape($_POST['debtor_id']) . ",
@@ -33,9 +31,11 @@
  			WHERE id = " . DB::_escape($selected_id);
         $note = _('Selected recurrent invoice has been updated');
       } else {
-        $sql
-              = "INSERT INTO recurrent_invoices (description, order_no, debtor_id,
- 			group_no, days, monthly, begin, end, last_sent) VALUES (" . DB::_escape($_POST['description']) . ", " . DB::_escape($_POST['order_no']) . ", " . DB::_escape($_POST['debtor_id']) . ", " . DB::_escape($_POST['group_no']) . ", " . Validation::input_num('days', 0) . ", " . Validation::input_num('monthly', 0) . ", '" . Dates::_dateToSql($_POST['begin']) . "', '" . Dates::_dateToSql($_POST['end']) . "', '" . Dates::_dateToSql(addYears($_POST['begin'], -5)) . "')";
+        $sql  = "INSERT INTO recurrent_invoices (description, order_no, debtor_id,
+ 			group_no, days, monthly, begin, end, last_sent) VALUES (" . DB::_escape($_POST['description']) . ", " . DB::_escape($_POST['order_no']) . ", " . DB::_escape($_POST['debtor_id']) . ", " . DB::_escape($_POST['group_no']) . ", " . Validation::input_num('days', 0) . ", " . Validation::input_num(
+          'monthly',
+          0
+        ) . ", '" . Dates::_dateToSql($_POST['begin']) . "', '" . Dates::_dateToSql($_POST['end']) . "', '" . Dates::_dateToSql(addYears($_POST['begin'], -5)) . "')";
         $note = _('New recurrent invoice has been added');
       }
       DB::_query($sql, "The recurrent invoice could not be updated or added");
@@ -59,7 +59,7 @@
   $sql    = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_id";
   $result = DB::_query($sql, "could not get recurrent invoices");
   Forms::start();
-  Table::start('tablestyle grid width70');
+  Table::start('padded grid width70');
   $th = array(
     _("Description"),
     _("Template No"),
@@ -79,7 +79,6 @@
     $begin     = Dates::_sqlToDate($myrow["begin"]);
     $end       = Dates::_sqlToDate($myrow["end"]);
     $last_sent = Dates::_sqlToDate($myrow["last_sent"]);
-
     Cell::label($myrow["description"]);
     Cell::label(Debtor::viewTrans(ST_SALESORDER, $myrow["order_no"]));
     if ($myrow["debtor_id"] == 0) {
@@ -96,13 +95,13 @@
     Cell::label($last_sent);
     Forms::buttonEditCell("Edit" . $myrow["id"], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow["id"], _("Delete"));
-    Row::end();
+    echo '</tr>';
   }
   Table::end();
   Forms::end();
   echo '<br>';
   Forms::start();
-  Table::start('tablestyle2');
+  Table::start('standard');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing area

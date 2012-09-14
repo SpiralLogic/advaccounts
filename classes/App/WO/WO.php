@@ -13,7 +13,6 @@
   use ADV\App\Display;
   use ADV\Core\Table;
   use ADV\Core\Cell;
-  use ADV\Core\Row;
   use ADV\App\User;
   use ADV\App\Ref;
   use ADV\Core\Num;
@@ -37,8 +36,12 @@
   /**
 
    */
-  class WO
-  {
+  class WO {
+    public static $types = array(
+      WO_ASSEMBLY   => "Assemble", //
+      WO_UNASSEMBLY => "Unassemble", //
+      WO_ADVANCED   => "Advanced Manufacture"
+    );
     /**
      * @var array
      */
@@ -79,7 +82,6 @@
       $demand = 0.0;
       if ($level > 10) {
         Event::warning("BOM Too many Manufacturing levels deep $level");
-
         return $demand;
       }
       // Load all stock levels (stock moves) into static::$qoh_stock
@@ -127,7 +129,6 @@
         }
         $demand += static::stock_demand_manufacture($row[1], $q, $demand_id, $location, $level + 1);
       }
-
       return $demand;
     }
     /**
@@ -140,8 +141,7 @@
      */
     public static function get_demand_asm_qty($stock_id, $location) {
       $demand_qty = 0.0;
-      $sql
-                  = "SELECT sales_order_details.stk_code, SUM(sales_order_details.quantity-sales_order_details.qty_sent)
+      $sql        = "SELECT sales_order_details.stk_code, SUM(sales_order_details.quantity-sales_order_details.qty_sent)
                  AS Demmand
                  FROM sales_order_details,
                         sales_orders,
@@ -152,8 +152,7 @@
       if ($location != "") {
         $sql .= "sales_orders.from_stk_loc =" . DB::_escape($location) . " AND ";
       }
-      $sql
-        .= "sales_order_details.quantity-sales_order_details.qty_sent > 0 AND
+      $sql .= "sales_order_details.quantity-sales_order_details.qty_sent > 0 AND
                  stock_master.stock_id=sales_order_details.stk_code AND
                  (stock_master.mb_flag='" . STOCK_MANUFACTURE . "' OR stock_master.mb_flag='A')
                  GROUP BY sales_order_details.stk_code";
@@ -161,7 +160,6 @@
       while ($row = DB::_fetchRow($result)) {
         $demand_qty += static::stock_demand_manufacture($row[0], $row[1], $stock_id, $location);
       }
-
       return $demand_qty;
     }
     /**
@@ -187,7 +185,6 @@
       } else {
         $qoo = 0;
       }
-
       return $qoo;
     }
     /**
@@ -199,8 +196,7 @@
      * @return float
      */
     public static function get_on_worder_qty($stock_id, $location) {
-      $sql
-        = "SELECT SUM((workorders.units_reqd-workorders.units_issued) *
+      $sql = "SELECT SUM((workorders.units_reqd-workorders.units_issued) *
         (wo_requirements.units_req-wo_requirements.units_issued)) AS qoo
         FROM wo_requirements INNER JOIN workorders
             ON wo_requirements.workorder_id=workorders.id
@@ -218,8 +214,7 @@
       }
       $flag = WO::get_mb_flag($stock_id);
       if ($flag == 'A' || $flag == STOCK_MANUFACTURE) {
-        $sql
-          = "SELECT SUM((workorders.units_reqd-workorders.units_issued)) AS qoo
+        $sql = "SELECT SUM((workorders.units_reqd-workorders.units_issued)) AS qoo
             FROM workorders
             WHERE workorders.stock_id=" . DB::_escape($stock_id) . " ";
         if ($location != "") {
@@ -232,7 +227,6 @@
           $qoo += $qoo_row[0];
         }
       }
-
       return $qoo;
     }
     /**
@@ -249,7 +243,6 @@
         return -1;
       }
       $myrow = DB::_fetchRow($result);
-
       return $myrow[0];
     }
     /**
@@ -260,8 +253,7 @@
      * @return null|\PDOStatement
      */
     public static function get_bom($item) {
-      $sql
-        = "SELECT bom.*, locations.location_name, workcentres.name AS WorkCentreDescription,
+      $sql = "SELECT bom.*, locations.location_name, workcentres.name AS WorkCentreDescription,
      stock_master.description, stock_master.mb_flag AS ResourceType,
      stock_master.material_cost+ stock_master.labour_cost+stock_master.overhead_cost AS standard_cost, units,
      bom.quantity * (stock_master.material_cost+ stock_master.labour_cost+ stock_master.overhead_cost) AS ComponentCost
@@ -269,7 +261,6 @@
      WHERE bom.parent = " . DB::_escape($item) . "
         AND workcentres.id=bom.workcentre_added
         AND bom.loc_code = locations.loc_code ORDER BY bom.id";
-
       return DB::_query($sql, "The bill of material could not be retrieved");
     }
     /**
@@ -281,7 +272,6 @@
      */
     public static function has_bom($item) {
       $result = WO::get_bom($item);
-
       return (DB::_numRows($result) != 0);
     }
     /**
@@ -294,7 +284,7 @@
       if (DB::_numRows($result) == 0) {
         Display::note(_("The bill of material for this item is empty."), 0, 1);
       } else {
-        Table::start('tablestyle grid');
+        Table::start('padded grid');
         $th = array(
           _("Component"),
           _("Description"),
@@ -316,7 +306,7 @@
           Cell::qty($myrow["quantity"], false, Item::qty_dec($myrow["component"]));
           Cell::amount($myrow["standard_cost"]);
           Cell::amount($myrow["ComponentCost"]);
-          Row::end();
+          echo '</tr>';
           $total_cost += $myrow["ComponentCost"];
           $j++;
           If ($j == 12) {
@@ -326,7 +316,7 @@
           //end of page full new headings if
         }
         //end of while
-        Row::label(
+        Table::label(
           "<span class='bold'>" . _("Total Cost") . "</span>",
           "<span class='bold'>" . Num::_format($total_cost, User::price_dec()) . "</span>",
           "colspan=6 class='alignright'",
@@ -370,14 +360,12 @@
         return null;
       }
       $viewer .= "?trans_no=$trans_no";
-
       if ($raw) {
         return $viewer;
       }
       if ($label == "") {
         $label = $trans_no;
       }
-
       return Display::viewer_link($label, $viewer, $class, $id, $icon);
     }
     /**
@@ -406,8 +394,7 @@
       WO_Cost::add_material($stock_id, $units_reqd, $date_);
       $date     = Dates::_dateToSql($date_);
       $required = Dates::_dateToSql($required_by);
-      $sql
-                = "INSERT INTO workorders (wo_ref, loc_code, units_reqd, stock_id,
+      $sql      = "INSERT INTO workorders (wo_ref, loc_code, units_reqd, stock_id,
                 type, date_, required_by)
              VALUES (" . DB::_escape($wo_ref) . ", " . DB::_escape($loc_code) . ", " . DB::_escape($units_reqd) . ", " . DB::_escape($stock_id) . ",
                 " . DB::_escape($type) . ", '$date', " . DB::_escape($required) . ")";
@@ -417,7 +404,6 @@
       Ref::save(ST_WORKORDER, $wo_ref);
       DB_AuditTrail::add(ST_WORKORDER, $woid, $date_);
       DB::_commit();
-
       return $woid;
     }
     /**
@@ -473,8 +459,7 @@
      * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($woid, $allow_null = false) {
-      $sql
-              = "SELECT workorders.*, stock_master.description As StockItemName,
+      $sql    = "SELECT workorders.*, stock_master.description As StockItemName,
                 locations.location_name, locations.delivery_address
                 FROM workorders, stock_master, locations
                 WHERE stock_master.stock_id=workorders.stock_id
@@ -485,7 +470,6 @@
       if (!$allow_null && DB::_numRows($result) == 0) {
         Event::error("Could not find work order $woid", $sql);
       }
-
       return DB::_fetch($result);
     }
     /**
@@ -499,7 +483,6 @@
       $sql    = "SELECT COUNT(*) FROM wo_manufacture WHERE workorder_id=" . DB::_escape($woid);
       $result = DB::_query($sql, "query work order for productions");
       $myrow  = DB::_fetchRow($result);
-
       return ($myrow[0] > 0);
     }
     /**
@@ -513,7 +496,6 @@
       $sql    = "SELECT COUNT(*) FROM wo_issues WHERE workorder_id=" . DB::_escape($woid);
       $result = DB::_query($sql, "query work order for issues");
       $myrow  = DB::_fetchRow($result);
-
       return ($myrow[0] > 0);
     }
     /**
@@ -525,7 +507,6 @@
      */
     public static function has_payments($woid) {
       $result = GL_Trans::get_wo_cost($woid);
-
       return (DB::_numRows($result) != 0);
     }
     /**
@@ -540,8 +521,7 @@
       $myrow    = WO::get($woid);
       $stock_id = $myrow["stock_id"];
       $date     = Dates::_dateToSql($releaseDate);
-      $sql
-                = "UPDATE workorders SET released_date='$date',
+      $sql      = "UPDATE workorders SET released_date='$date',
                 released=1 WHERE id = " . DB::_escape($woid);
       DB::_query($sql, "could not release work order");
       // create Work Order Requirements based on the bom
@@ -570,7 +550,6 @@
       $sql    = "SELECT closed FROM workorders WHERE id = " . DB::_escape($woid);
       $result = DB::_query($sql, "could not query work order");
       $row    = DB::_fetchRow($result);
-
       return ($row[0] > 0);
     }
     /**
@@ -684,7 +663,6 @@
       while ($row = DB::_fetch($result)) {
         $cost += -$row['amount'];
       }
-
       return $cost;
     }
     /**
@@ -693,23 +671,22 @@
      * @param $woid
      */
     public static function display_payments($woid) {
-      global $wo_cost_types;
       //$result = Bank_Trans::get(null, null, PT_WORKORDER, $woid);
       $result = GL_Trans::get_wo_cost($woid);
       if (DB::_numRows($result) == 0) {
         Display::note(_("There are no additional costs for this Order."), 0, 1);
       } else {
-        Table::start('tablestyle grid');
+        Table::start('padded grid');
         $th = array(_("#"), _("Type"), _("Date"), _("Amount"));
         Table::header($th);
         $k = 0; //row colour counter
         while ($myrow = DB::_fetch($result)) {
           Cell::label(GL_UI::view(ST_WORKORDER, $myrow["type_no"], $myrow["type_no"]));
-          Cell::label($wo_cost_types[$myrow['person_id']]);
+          Cell::label(WO_Cost::$types[$myrow['person_id']]);
           $date = Dates::_sqlToDate($myrow["tran_date"]);
           Cell::label($date);
           Cell::amount(-($myrow['amount']));
-          Row::end();
+          echo '</tr>';
         }
         Table::end();
       }
@@ -721,13 +698,12 @@
      * @param bool $suppress_view_link
      */
     public static function display($woid, $suppress_view_link = false) {
-      global $wo_types_array;
       $myrow = WO::get($woid);
       if (strlen($myrow[0]) == 0) {
         Display::note(_("The work order number sent is not valid."));
         exit;
       }
-      Table::start('tablestyle width90');
+      Table::start('padded width90');
       if ($myrow["released"] == true) {
         $th = array(
           _("#"),
@@ -754,14 +730,14 @@
         );
       }
       Table::header($th);
-      Row::start();
+      echo '<tr>';
       if ($suppress_view_link) {
         Cell::label($myrow["id"]);
       } else {
         Cell::label(GL_UI::viewTrans(ST_WORKORDER, $myrow["id"]));
       }
       Cell::label($myrow["wo_ref"]);
-      Cell::label($wo_types_array[$myrow["type"]]);
+      Cell::label(WO::$types[$myrow["type"]]);
       Item_UI::status_cell($myrow["stock_id"], $myrow["StockItemName"]);
       Cell::label($myrow["location_name"]);
       Cell::label(Dates::_sqlToDate($myrow["date_"]));
@@ -772,7 +748,7 @@
         Cell::label(Dates::_sqlToDate($myrow["released_date"]));
         Cell::qty($myrow["units_issued"], false, $dec);
       }
-      Row::end();
+      echo '</tr>';
       DB_Comments::display_row(ST_WORKORDER, $woid);
       Table::end();
       if ($myrow["closed"] == true) {

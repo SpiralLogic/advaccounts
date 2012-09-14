@@ -1,7 +1,7 @@
 <div class="center">
   <div class="formbox formdiv">
-    <h3>Sales Person Detail:</h3><br>
-    {{$form->start()}}
+    <h3>{{$title}}:</h3><br>
+    {{$form._start}}
     {{#$form}}
     {{.}}
     {{/$form}}
@@ -9,6 +9,6 @@
     {{#$form.buttons}}
     {{.}}
     {{/$form.buttons}}
-    {{$form->end()}}
+    {{$form._end}}
   </div>
 </div>

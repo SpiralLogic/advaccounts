@@ -1,5 +1,10 @@
 <?php
   use ADV\App\Debtor\Debtor;
+  use ADV\App\Dimensions;
+  use ADV\App\Display;
+  use ADV\App\Forms;
+  use ADV\App\User;
+  use ADV\App\Bank\Bank;
   use ADV\App\WO\WO;
 
   /**
@@ -147,6 +152,7 @@
      * @param bool   $icon
      * @param string $class
      * @param string $id
+     * @param bool   $raw
      *
      * @return null|string
      */
@@ -229,55 +235,7 @@
       GL_UI::fiscalyears_cells(null, $name, $selected_id);
       echo "</tr>\n";
     }
-    /**
-     * @static
-     *
-     * @param      $name
-     * @param null $selected_id
-     * @param bool $submit_on_change
-     *
-     * @return string
-     */
-    public static function payment_person_type($name, $selected_id = null, $submit_on_change = false) {
-      global $payment_person_types;
-      $items = [];
-      foreach ($payment_person_types as $key => $type) {
-        if ($key != PT_WORKORDER) {
-          $items[$key] = $type;
-        }
-      }
 
-      return Forms::arraySelect($name, $selected_id, $items, array('select_submit' => $submit_on_change));
-    }
-    /**
-     * @static
-     *
-     * @param      $label
-     * @param      $name
-     * @param null $selected_id
-     * @param null $related
-     */
-    public static function payment_person_type_cells($label, $name, $selected_id = null, $related = null) {
-      if ($label != null) {
-        echo "<td>$label</td>\n";
-      }
-      echo "<td>";
-      echo GL_UI::payment_person_type($name, $selected_id, $related);
-      echo "</td>\n";
-    }
-    /**
-     * @static
-     *
-     * @param      $label
-     * @param      $name
-     * @param null $selected_id
-     * @param null $related
-     */
-    public static function payment_person_type_row($label, $name, $selected_id = null, $related = null) {
-      echo "<tr><td class='label'>$label</td>";
-      GL_UI::payment_person_type_cells(null, $name, $selected_id, $related);
-      echo "</tr>\n";
-    }
     /**
      * @static
      *

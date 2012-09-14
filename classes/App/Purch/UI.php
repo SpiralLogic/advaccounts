@@ -1,4 +1,6 @@
 <?php
+  use ADV\App\Display;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -7,8 +9,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Purch_UI
-  {
+  class Purch_UI {
     // SUPPLIERS
     /**
      * @static
@@ -17,10 +18,12 @@
      * @param        $credit
      * @param string $parms
      */
-    public static function credit_row($supplier, $credit, $parms = '')
-    {
-      Row::label(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? 'class="redfg openWindow"' :
-        '') . "href='/purchases/inquiry/supplier_inquiry.php?creditor_id=" . $supplier . "' >" . Num::_priceFormat($credit) . "</a>", $parms);
+    public static function credit_row($supplier, $credit, $parms = '') {
+      Table::label(
+        _("Current Credit:"),
+        "<a target='_blank' " . ($credit < 0 ? 'class="redfg openWindow"' : '') . "href='/purchases/inquiry/supplier_inquiry.php?creditor_id=" . $supplier . "' >" . Num::_priceFormat($credit) . "</a>",
+        $parms
+      );
     }
     /**
      * @static
@@ -34,8 +37,7 @@
      *
      * @return null|string
      */
-    public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '',$raw=false)
-    {
+    public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '', $raw = false) {
       $viewer = "/purchases/view/";
       switch ($type) {
         case ST_PURCHORDER:
@@ -57,11 +59,12 @@
           return null;
       }
       $viewer .= "?trans_no=$trans_no";
-      if ($raw) return $viewer;
+      if ($raw) {
+        return $viewer;
+      }
       if ($label == "") {
         $label = $trans_no;
       }
-
       return Display::viewer_link($label, $viewer, $class, $id, $icon);
     }
   }

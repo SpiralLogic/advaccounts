@@ -90,7 +90,7 @@
         $this->startup_tab = Config::_get('apps.default');
       } else {
         $this->setFromArray($user);
-        $_SESSION['language']->setLanguage($this->language);
+   //     $_SESSION['language']->setLanguage($this->language);
       }
     }
     /**

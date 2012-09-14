@@ -16,13 +16,13 @@
     Ajax::_activate('trans_tbl');
   }
   Forms::start();
-  Table::start('tablestyle_noborder');
-  Row::start();
+  Table::start('noborder');
+  echo '<tr>';
   Bank_Account::cells(_("Account:"), 'bank_account', null);
   Forms::dateCells(_("From:"), 'TransAfterDate', '', null, -30);
   Forms::dateCells(_("To:"), 'TransToDate');
   Forms::submitCells('Show', _("Show"), '', '', 'default');
-  Row::end();
+  echo '</tr>';
   Table::end();
   Forms::end();
   $date_after = Dates::_dateToSql($_POST['TransAfterDate']);
@@ -30,8 +30,7 @@
   if (!isset($_POST['bank_account'])) {
     $_POST['bank_account'] = "";
   }
-  $sql
-          = "SELECT bank_trans.* FROM bank_trans
+  $sql    = "SELECT bank_trans.* FROM bank_trans
     WHERE bank_trans.bank_act = " . DB::_escape($_POST['bank_account']) . "
     AND trans_date >= '$date_after'
     AND trans_date <= '$date_to'
@@ -40,29 +39,37 @@
   Display::div_start('trans_tbl');
   $act = Bank_Account::get($_POST["bank_account"]);
   Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
-  Table::start('tablestyle grid');
+  Table::start('padded grid');
   $th = array(
-    _("Type"), _("#"), _("Reference"), _("Date"), _("Debit"), _("Credit"), _("Balance"), _("Person/Item"), ""
+    _("Type"),
+    _("#"),
+    _("Reference"),
+    _("Date"),
+    _("Debit"),
+    _("Credit"),
+    _("Balance"),
+    _("Person/Item"),
+    ""
   );
   Table::header($th);
   $sql        = "SELECT SUM(amount) FROM bank_trans WHERE bank_act=" . DB::_escape($_POST['bank_account']) . "
     AND trans_date < '$date_after'";
   $before_qty = DB::_query($sql, "The starting balance on hand could not be calculated");
-  Row::start("class='inquirybg'");
+  echo "<tr class='inquirybg'>";
   Cell::label("<span class='bold'>" . _("Opening Balance") . " - " . $_POST['TransAfterDate'] . "</span>", "colspan=4");
   $bfw_row = DB::_fetchRow($before_qty);
   $bfw     = $bfw_row[0];
   Cell::debitOrCredit($bfw);
   Cell::label("");
   Cell::label("", "colspan=2");
-  Row::end();
+  echo '</tr>';
   $running_total = $bfw;
   $j             = 1;
   $k             = 0; //row colour counter
   while ($myrow = DB::_fetch($result)) {
     $running_total += $myrow["amount"];
     $trandate = Dates::_sqlToDate($myrow["trans_date"]);
-    Cell::label($systypes_array[$myrow["type"]]);
+    Cell::label(SysTypes::$names[$myrow["type"]]);
     Cell::label(GL_UI::viewTrans($myrow["type"], $myrow["trans_no"]));
     Cell::label(GL_UI::viewTrans($myrow["type"], $myrow["trans_no"], $myrow['ref']));
     Cell::label($trandate);
@@ -70,7 +77,7 @@
     Cell::amount($running_total);
     Cell::label(Bank::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
     Cell::label(GL_UI::view($myrow["type"], $myrow["trans_no"]));
-    Row::end();
+    echo '</tr>';
     if ($j == 12) {
       $j = 1;
       Table::header($th);
@@ -78,12 +85,12 @@
     $j++;
   }
   //end of while loop
-  Row::start("class='inquirybg'");
+  echo "<tr class='inquirybg'>";
   Cell::label("<span class='bold'>" . _("Ending Balance") . " - " . $_POST['TransToDate'] . "</span>", "colspan=4");
   Cell::debitOrCredit($running_total);
   Cell::label("");
   Cell::label("", "colspan=2");
-  Row::end();
+  echo '</tr>';
   Table::end(2);
   Display::div_end();
   Page::end();

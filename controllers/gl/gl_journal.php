@@ -1,4 +1,6 @@
 <?php
+  use ADV\App\Dimensions;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -116,12 +118,12 @@
   Forms::start();
   GL_Journal::header($_SESSION['journal_items']);
   Table::start('tables_style2 width90 pad10');
-  Row::start();
+  echo '<tr>';
   echo "<td>";
   GL_Journal::items(_("Rows"), $_SESSION['journal_items']);
   GL_Journal::option_controls();
   echo "</td>";
-  Row::end();
+  echo '</tr>';
   Table::end(1);
   Forms::submitCenter('Process', _("Process Journal Entry"), true, _('Process journal entry only if debits equal to credits'), 'default');
   Forms::end();
@@ -129,56 +131,46 @@
   /**
    * @return bool
    */
-  function check_item_data()
-  {
+  function check_item_data() {
     if (isset($_POST['dimension_id']) && $_POST['dimension_id'] != 0 && Dimensions::is_closed($_POST['dimension_id'])) {
       Event::error(_("Dimension is closed."));
       JS::_setFocus('dimension_id');
-
       return false;
     }
     if (isset($_POST['dimension2_id']) && $_POST['dimension2_id'] != 0 && Dimensions::is_closed($_POST['dimension2_id'])
     ) {
       Event::error(_("Dimension is closed."));
       JS::_setFocus('dimension2_id');
-
       return false;
     }
     if (!(Validation::input_num('AmountDebit') != 0 ^ Validation::input_num('AmountCredit') != 0)) {
       Event::error(_("You must enter either a debit amount or a credit amount."));
       JS::_setFocus('AmountDebit');
-
       return false;
     }
     if (strlen($_POST['AmountDebit']) && !Validation::post_num('AmountDebit', 0)) {
       Event::error(_("The debit amount entered is not a valid number or is less than zero."));
       JS::_setFocus('AmountDebit');
-
       return false;
     } elseif (strlen($_POST['AmountCredit']) && !Validation::post_num('AmountCredit', 0)) {
       Event::error(_("The credit amount entered is not a valid number or is less than zero."));
       JS::_setFocus('AmountCredit');
-
       return false;
     }
     if (!Tax_Types::is_tax_gl_unique(Input::_post('code_id'))) {
       Event::error(_("Cannot post to GL account used by more than one tax type."));
       JS::_setFocus('code_id');
-
       return false;
     }
     if (!User::i()->hasAccess(SA_BANKJOURNAL) && Bank_Account::is($_POST['code_id'])) {
       Event::error(_("You cannot make a journal entry for a bank account. Please use one of the banking functions for bank transactions."));
       JS::_setFocus('code_id');
-
       return false;
     }
-
     return true;
   }
 
-  function handle_update_item()
-  {
+  function handle_update_item() {
     if ($_POST['updateItem'] != "" && check_item_data()) {
       if (Validation::input_num('AmountDebit') > 0) {
         $amount = Validation::input_num('AmountDebit');
@@ -193,14 +185,12 @@
   /**
    * @param $id
    */
-  function handle_delete_item($id)
-  {
+  function handle_delete_item($id) {
     $_SESSION['journal_items']->remove_gl_item($id);
     Item_Line::start_focus('_code_id_edit');
   }
 
-  function handle_new_item()
-  {
+  function handle_new_item() {
     if (!check_item_data()) {
       return;
     }
@@ -217,8 +207,7 @@
    * @param int $type
    * @param int $trans_no
    */
-  function create_order($type = ST_JOURNAL, $trans_no = 0)
-  {
+  function create_order($type = ST_JOURNAL, $trans_no = 0) {
     if (isset($_SESSION['journal_items'])) {
       unset ($_SESSION['journal_items']);
     }

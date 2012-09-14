@@ -9,7 +9,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   if (Input::_post('view')) {
     if (!Input::_post('backups')) {
       Event::error(_('Select backup file first.'));
@@ -69,7 +68,7 @@
     }
   }
   Forms::start(true);
-  Table::startOuter('tablestyle2');
+  Table::startOuter('standard');
   Table::section(1);
   Table::sectionTitle(_("Create backup"));
   Forms::textareaRow(_("Comments:"), 'comments', null, 30, 8);
@@ -77,7 +76,7 @@
   Forms::submitRow('creat', _("Create Backup"), false, "colspan=2 class='center'", '', 'process');
   Table::section(2);
   Table::sectionTitle(_("Backup scripts maintenance"));
-  Row::start();
+  echo '<tr>';
   echo "<td style='padding-left:20px'class='left'>" . get_backup_file_combo() . "</td>";
   echo "<td class='top'>";
   Table::start();
@@ -90,11 +89,11 @@
   Forms::submitConfirm('deldump', sprintf(_("You are about to remove selected backup file.\nDo you want to continue ?")));
   Table::end();
   echo "</td>";
-  Row::end();
-  Row::start();
+  echo '</tr>';
+  echo '<tr>';
   echo "<td style='padding-left:20px' class='left'><input name='uploadfile' type='file'></td>";
   Forms::submitCells('upload', _("Upload file"), '', '', true);
-  Row::end();
+  echo '</tr>';
   Table::endOuter();
   Forms::end();
   Page::end();

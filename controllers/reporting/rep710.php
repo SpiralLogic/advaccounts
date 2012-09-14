@@ -44,7 +44,7 @@
   }
 
   function print_audit_trail() {
-    global $systypes_array;
+
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
     $systype     = $_POST['PARAM_2'];
@@ -68,7 +68,7 @@
       0    => $comments, 1 => array(
         'text' => _('Period'), 'from' => $from, 'to' => $to
       ), 2 => array(
-        'text' => _('Type'), 'from' => ($systype != -1 ? $systypes_array[$systype] : _('All')), 'to' => ''
+        'text' => _('Type'), 'from' => ($systype != -1 ? SysTypes::$names[$systype] : _('All')), 'to' => ''
       ), 3 => array(
         'text' => _('User'), 'from' => ($user != -1 ? $user_id : _('All')), 'to' => ''
       )
@@ -88,7 +88,7 @@
       }
       $rep->TextCol(2, 3, $myrow['user_id']);
       $rep->TextCol(3, 4, Dates::_sqlToDate($myrow['gl_date']));
-      $rep->TextCol(4, 5, $systypes_array[$myrow['type']]);
+      $rep->TextCol(4, 5, SysTypes::$names[$myrow['type']]);
       $rep->TextCol(5, 6, $myrow['trans_no']);
       if ($myrow['gl_seq'] == null) {
         $action = _('Changed');

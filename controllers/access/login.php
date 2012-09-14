@@ -36,21 +36,21 @@
   Forms::start(false, $_SESSION['timeout']['uri'], "loginform");
   echo "<input type='hidden' id='ui_mode' name='ui_mode' value='" . User::i()->ui_mode . "' />\n";
   Table::start('login');
-  Row::start();
+  echo '<tr>';
   echo "<td class='center' colspan=2>";
-  echo "<a target='_blank' href='" . POWERED_URL . "'><img width=440 height=64 src='/themes/$def_theme/images/logo_advaccounts.png' alt='ADVAccounts'  /></a>";
+  echo "<a target='_blank' href='" . POWERED_URL . "'><img width=440 height=64 src='/themes/$def_theme/images/logo-advaccounts.png' alt='ADVAccounts'  /></a>";
   if ($login_timeout) {
     echo "<span class='font5'>" . _('Authorization timeout') . "</span><br>You were idle for: " . (User::i()->last_act + User::i()->timeout - time());
   }
   echo "</td>\n";
-  Row::end();
+  echo '</tr>';
   if (!$login_timeout) {
     Table::sectionTitle(_("Version ") . VERSION . " - " . _("Login"));
   }
   $value = $login_timeout ? User::i()->loginname : (Config::_get('demo_mode') ? "demouser" : "");
-  Row::start();
+  echo '<tr>';
   Cell::label($demo_text, "colspan=2 class='center'");
-  Row::end();
+  echo '</tr>';
   Forms::textRow(_("User name"), "user_name", $value, 'med', 30);
   $password = Config::_get('demo_mode') ? "password" : "";
   Forms::passwordRow(_("Password:"), 'password', $password);
@@ -69,9 +69,9 @@
     }
     echo "</select>\n";
   }
-  Row::start();
+  echo '<tr>';
   echo "<td colspan='2' class='center pad20'><button name='SubmitUser'>" . _("Login -->") . "</button></td>\n";
-  Row::end();
+  echo '</tr>';
   Table::end(1);
   foreach ($_POST as $p => $val) {
     // add all request variables to be resend together with login data

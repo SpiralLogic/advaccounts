@@ -23,8 +23,7 @@
    * @method static JS _addLiveEvent($selector, $type, $action, $delegate = false, $cached = false)
    * @method static JS _defaultFocus($name = null)
    */
-  class JS
-  {
+  class JS {
     use Traits\StaticAccess2;
 
     /**
@@ -160,7 +159,7 @@ JS;
       $defaults = ['noajax'=> false, 'haslinks'=> false];
       $options  = array_merge($defaults, $options);
       $noajax   = $options['noajax'] ? 'true' : 'false';
-      $haslinks = $options['haslinks'] ? 'true' : 'false';
+      $haslinks = $options['hasLinks'] ? 'true' : 'false';
       $this->onload("Adv.tabmenu.init('$id',$noajax,$haslinks,$page)");
     }
     /**
@@ -188,7 +187,7 @@ JS;
       $files = $content = $onReady = '';
       if (!AJAX_REFERRER) {
         foreach ($this->footerFiles as $dir => $file) {
-          $files .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $file)), false)->setReturn(false);
+          $files .= (new HTML)->script(array('src' => $dir . '/' . implode(',', $file)), false);
         }
         echo $files;
       } else {
@@ -215,12 +214,20 @@ JS;
         $content .= "\n$(function(){ " . $onReady . '});';
       }
       /** @noinspection PhpDynamicAsStaticMethodCallInspection */
-      HTML::script(array('content' => $content))->script;
+      echo    HTML::script(null, $content, [], false);
       if ($return) {
         return ob_get_clean();
       }
 
       return true;
+    }
+    /**
+     * @param $status
+     *
+     * @return mixed
+     */
+    public function renderStatus(Status $status) {
+      return $this->_renderJSON(['status'=> $status]);
     }
     /**
      * @static
@@ -239,7 +246,6 @@ JS;
         $this->resetFocus();
         Ajax::_addJson(true, null, $data);
         exit();
-
       }
       ob_end_clean();
       echo   json_encode($data);
@@ -251,6 +257,9 @@ JS;
      * @param      $selector
      */
     public function setFocus($selector) {
+      if (empty($selector)) {
+        return;
+      }
       $this->focus = $selector;
       Ajax::_addFocus(true, $selector);
       $_POST['_focus'] = $selector;

@@ -50,7 +50,7 @@
 
   function print_aged_supplier_analysis()
   {
-    global $systypes_array;
+
     $to          = $_POST['PARAM_0'];
     $fromsupp    = $_POST['PARAM_1'];
     $currency    = $_POST['PARAM_2'];
@@ -181,7 +181,7 @@
         $rep->Line($rep->row + 4);
         while ($trans = DB::_fetch($res)) {
           $rep->NewLine(1, 2);
-          $rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
+          $rep->TextCol(0, 1, SysTypes::$names[$trans['type']], -2);
           $rep->TextCol(1, 2, $trans['reference'], -2);
           $rep->TextCol(2, 3, Dates::_sqlToDate($trans['tran_date']), -2);
           foreach ($trans as $i => $value) {

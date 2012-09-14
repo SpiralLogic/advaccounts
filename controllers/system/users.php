@@ -12,14 +12,35 @@
   if (!empty($_POST['password']) && ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM)) {
     $auth = new Auth($_POST['user_id']);
     $auth->updatePassword($_POST['user_id'], $_POST['password']);
-
     if (can_process($auth)) {
       if ($Mode == UPDATE_ITEM) {
         Users::update($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], Input::_hasPost('rep_popup'), $_POST['pos']);
         Event::success(_("The selected user has been updated."));
       } else {
         Users::add($_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], Input::_hasPost('rep_popup'), $_POST['pos']);
-        Users::update_display_prefs(DB::_insertId(), User::price_dec(), User::qty_dec(), User::exrate_dec(), User::percent_dec(), User::show_gl(), User::show_codes(), User::date_format(), User::date_sep(), User::prefs()->tho_sep, User::prefs()->dec_sep, User::theme(), User::page_size(), User::hints(), $_POST['profile'], Input::_hasPost('rep_popup'), User::query_size(), User::graphic_links(), $_POST['language'], User::sticky_doc_date(), User::startup_tab());
+        Users::update_display_prefs(
+          DB::_insertId(),
+          User::price_dec(),
+          User::qty_dec(),
+          User::exrate_dec(),
+          User::percent_dec(),
+          User::show_gl(),
+          User::show_codes(),
+          User::date_format(),
+          User::date_sep(),
+          User::prefs()->tho_sep,
+          User::prefs()->dec_sep,
+          User::theme(),
+          User::page_size(),
+          User::hints(),
+          $_POST['profile'],
+          Input::_hasPost('rep_popup'),
+          User::query_size(),
+          User::graphic_links(),
+          $_POST['language'],
+          User::sticky_doc_date(),
+          User::startup_tab()
+        );
         Event::success(_("A new user has been added."));
       }
       $Mode = MODE_RESET;
@@ -38,9 +59,16 @@
   }
   $result = Users::getAll(Input::_hasPost('show_inactive'));
   Forms::start();
-  Table::start('tablestyle grid');
+  Table::start('padded grid');
   $th = array(
-    _("User login"), _("Full Name"), _("Phone"), _("E-mail"), _("Last Visit"), _("Access Level"), "", ""
+    _("User login"),
+    _("Full Name"),
+    _("Phone"),
+    _("E-mail"),
+    _("Last Visit"),
+    _("Access Level"),
+    "",
+    ""
   );
   Forms::inactiveControlCol($th);
   Table::header($th);
@@ -66,11 +94,11 @@
     } else {
       Cell::label('');
     }
-    Row::end();
+    echo '</tr>';
   } //END WHILE LIST LOOP
   Forms::inactiveControlRow($th);
   Table::end(1);
-  Table::start('tablestyle2');
+  Table::start('standard');
   $_POST['email'] = "";
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
@@ -89,8 +117,8 @@
     }
     Forms::hidden('selected_id', $selected_id);
     Forms::hidden('user_id');
-    Row::start();
-    Row::label(_("User login:"), Input::_post('user_id'));
+    echo '<tr>';
+    Table::label(_("User login:"), Input::_post('user_id'));
   } else { //end of if $selected_id only do the else when a new record is being entered
     Forms::textRow(_("User Login:"), "user_id", null, 22, 20);
     $_POST['language']  = User::language();
@@ -121,26 +149,21 @@
    * @internal param $user
    * @return bool
    */
-  function can_process(Auth $auth)
-  {
+  function can_process(Auth $auth) {
     if (strlen($_POST['user_id']) < 4) {
       Event::error(_("The user login entered must be at least 4 characters long."));
       JS::_setFocus('user_id');
-
       return false;
     }
     $check = (is_a($auth, 'Auth')) ? $auth->checkPasswordStrength() : false;
     if (!$check && $check['error'] > 0) {
       Event::error($check['text']);
-
       return false;
     }
     if (!$check && $check['strength'] < 3) {
       Event::error(_("Password Too Weak!"));
-
       return false;
     }
-
     return true;
   }
 

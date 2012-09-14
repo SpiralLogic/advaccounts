@@ -9,6 +9,7 @@
    **/
   class WO_Types
   {
+
     //------------------------------------------------------------------------------------------------
     /**
      * @static
@@ -20,9 +21,9 @@
      */
     public static function select($name, $selected_id = null)
     {
-      global $wo_types_array;
 
-      return Forms::arraySelect($name, $selected_id, $wo_types_array, array(
+
+      return Forms::arraySelect($name, $selected_id, WO::$types, array(
                                                                        'select_submit' => true, 'async'         => true
                                                                   ));
     }

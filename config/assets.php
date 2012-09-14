@@ -54,7 +54,6 @@
       'jquery-ui.css', //
       'jquery.calc.css', //
       'font-awesome.css', //
-      //	'jquery.fileupload-ui.css'
     ),
     //
     'footer'           => array(
@@ -63,7 +62,6 @@
       '/js/libs/jquery-ui.min.js',
       '/js/advanced.js',
       '/js/behaviour.js',
-      '/js/inserts.js',
       '/js/libs/jquery-tmpl.min.js',
       '/js/libs/jquery.calc.js',
       '/js/libs/bootstrap.min.js',

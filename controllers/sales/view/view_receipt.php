@@ -7,6 +7,18 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  use ADV\Core\JS;
+  use ADV\App\Orders;
+  use ADV\Core\Input\Input;
+  use ADV\App\Item\Item;
+  use ADV\App\User;
+  use ADV\App\Dates;
+  use ADV\App\Debtor\Debtor;
+  use ADV\Core\DB\DB;
+  use ADV\App\Forms;
+  use ADV\Core\Cell;
+  use ADV\App\Display;
+  use ADV\Core\Table;
 
   JS::_openWindow(950, 600);
   $trans_type = $_GET['trans_type'];
@@ -19,7 +31,7 @@
   }
   $receipt = Debtor_Trans::get($trans_id, $trans_type);
   echo "<br>";
-  Table::start('tablestyle2 width90');
+  Table::start('standard width90');
   echo "<tr class='tablerowhead top'><th colspan=6>";
   if ($trans_type == ST_CUSTPAYMENT) {
     Display::heading(sprintf(_("Customer Payment #%d"), $trans_id));
@@ -27,21 +39,21 @@
     Display::heading(sprintf(_("Customer Refund #%d"), $trans_id));
   }
   echo "</td></tr>";
-  Row::start();
-  Cell::labels(_("From Customer"), $receipt['DebtorName']);
-  Cell::labels(_("Into Bank Account"), $receipt['bank_account_name']);
-  Cell::labels(_("Date of Deposit"), Dates::_sqlToDate($receipt['tran_date']));
-  Row::end();
-  Row::start();
-  Cell::labels(_("Payment Currency"), $receipt['curr_code']);
-  Cell::labels(_("Amount"), Num::_priceFormat($receipt['Total'] - $receipt['ov_discount']));
-  Cell::labels(_("Discount"), Num::_priceFormat($receipt['ov_discount']));
-  Row::end();
-  Row::start();
-  Cell::labels(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']]);
-  Cell::labels(_("Reference"), $receipt['reference'], 'class="label" colspan=1');
+  echo '<tr>';
+  Cell::labelled(_("From Customer"), $receipt['DebtorName']);
+  Cell::labelled(_("Into Bank Account"), $receipt['bank_account_name']);
+  Cell::labelled(_("Date of Deposit"), Dates::_sqlToDate($receipt['tran_date']));
+  echo '</tr>';
+  echo '<tr>';
+  Cell::labelled(_("Payment Currency"), $receipt['curr_code']);
+  Cell::labelled(_("Amount"), Num::_priceFormat($receipt['Total'] - $receipt['ov_discount']));
+  Cell::labelled(_("Discount"), Num::_priceFormat($receipt['ov_discount']));
+  echo '</tr>';
+  echo '<tr>';
+  Cell::labelled(_("Payment Type"), Bank_Trans::$types[$receipt['BankTransType']]);
+  Cell::labelled(_("Reference"), $receipt['reference'], 'class="label" colspan=1');
   Forms::end();
-  Row::end();
+  echo '</tr>';
   DB_Comments::display_row($trans_type, $trans_id);
   Table::end(1);
   $voided = Display::is_voided($trans_type, $trans_id, _("This customer payment has been voided."));

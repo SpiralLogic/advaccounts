@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
   /**
 
    */
@@ -28,7 +29,7 @@
     public $tabs = [];
     /** @var View */
     public $current_tab;
-    protected  $jslinks=[];
+    protected $jslinks = [];
     /**
      * @param array $options
      */
@@ -44,6 +45,7 @@
      */
     protected function addTab($title, $tooltip = '', $link = '#') {
       $this->items[] = new MenuUI_item($title, $tooltip, $link);
+
       return $this;
     }
     /**
@@ -58,6 +60,7 @@
     public function addLink($title, $tooltip = '', $link, $param_element, $target = null) {
       $this->items[]             = new MenuUI_item($title, $tooltip, $link, $param_element, $target);
       $this->options['hasLinks'] = true;
+
       return $this;
     }
     /**
@@ -71,7 +74,8 @@
     public function addJSLink($title, $tooltip = '', $name, $onselect) {
       $this->items[]             = new MenuUI_item($title, $tooltip, '#' . $name);
       $this->options['hasLinks'] = true;
-     $this->jslinks[]=$onselect;
+      $this->jslinks[]           = $onselect;
+
       return $this;
     }
     /**
@@ -84,11 +88,13 @@
      */
     public function startTab($title, $tooltip, $link = '#', $style = '') {
       $count = count($this->items);
-      $this->addTab($title, $tooltip, $link);
-      $this->current_tab['id']    = 'tabs' . MenuUI::$menuCount . '-' . $count;
-      $this->current_tab['class'] = ($count > 0 || $this->firstPage != $count) ? 'ui-tabs-hide' : '';
-      $this->current_tab['style'] = $style;
+      $this->addTab($title, $tooltip, '#tabs' . MenuUI::$menuCount . '-' . $count);
+
+      $this->current_tab['attrs']['id']    = 'tabs' . MenuUI::$menuCount . '-' . $count;
+      $this->current_tab['attrs']['class'] = 'ui-tabs-panel ui-widget-content ui-corner-bottom ';
+      $this->current_tab['attrs']['style'] = ($count > 0 || $this->firstPage != $count)?  ' display:none;':'' ;      $this->current_tab['attrs']['style'] .= $style;
       ob_start();
+
       return $this;
     }
     /**
@@ -98,6 +104,7 @@
       $this->current_tab['contents'] = ob_get_clean();
       $this->tabs[]                  = $this->current_tab;
       $this->current_tab             = [];
+
       return $this;
     }
     /**
@@ -109,7 +116,7 @@
       $menu->set('items', $this->items);
       $menu->set('tabs', $this->tabs);
       $menu->render();
-      JS::_tabs('tabs' . MenuUI::$menuCount, $this->options, $this->firstPage);
+      JS::_tabs(MenuUI::$menuCount, $this->options, $this->firstPage);
       foreach ($this->jslinks as $js) {
         JS::_onload($js);
       }
@@ -142,10 +149,13 @@
      * @param null   $target
      */
     public function __construct($label, $tooltip = '', $link = '#', $param_element = null, $target = null) {
-      $this->label         = $label;
-      $this->link          = e($link);
-      $this->tooltip       = e($tooltip);
-      $this->param_element = $param_element;
-      $this->target        = $target;
+      $this->label = $label;
+      $this->attrs = [
+        'href'           => e($link),
+        'title'          => $label,
+        'tooltip'        => e($tooltip),
+        'data-paramel'   => $param_element,
+        'target'         => $target
+      ];
     }
   }

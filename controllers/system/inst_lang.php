@@ -32,22 +32,18 @@
   /**
    * @return bool
    */
-  function check_data()
-  {
+  function check_data() {
     if ($_POST['code'] == "" || $_POST['name'] == "" || $_POST['encoding'] == "") {
       Event::error(_("Language name, code nor encoding cannot be empty"));
-
       return false;
     }
-
     return true;
   }
 
   /**
    * @return bool
    */
-  function handle_submit()
-  {
+  function handle_submit() {
     $installed_languages = Config::_get('languages.installed');
     if (!check_data()) {
       return false;
@@ -88,12 +84,10 @@
       move_uploaded_file($file1, $file2);
     }
     Config::_set('languages.installed', $installed_languages);
-
     return true;
   }
 
-  function handle_delete()
-  {
+  function handle_delete() {
     $id       = $_GET['id'];
     $language = Config::_get('languages.installed');
     $language = $language[$id]['code'];
@@ -112,8 +106,7 @@
     Display::meta_forward($_SERVER['DOCUMENT_URI']);
   }
 
-  function display_languages()
-  {
+  function display_languages() {
     $language = $_SESSION["language"]->code;
     echo "
             <script language='javascript'>
@@ -125,7 +118,7 @@
                 document.location.replace('inst_lang.php?c=df&id='+id)
             }
             </script>";
-    Table::start('tablestyle grid');
+    Table::start('padded grid');
     $th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"), _("Default"), "", "");
     Table::header($th);
     $k    = 0;
@@ -133,7 +126,7 @@
     $n    = count($conn);
     for ($i = 0; $i < $n; $i++) {
       if ($conn[$i]['code'] == $language) {
-        Row::start("class='stockmankobg'");
+        echo "<tr class='stockmankobg'>";
       } else {
       }
       Cell::label($conn[$i]['code']);
@@ -154,7 +147,7 @@
       }
       Cell::label("<a href='" . $_SERVER['DOCUMENT_URI'] . "?selected_id=$i'>$edit</a>");
       Cell::label($conn[$i]['code'] == $language ? '' : "<a href=''>$delete</a>");
-      Row::end();
+      echo '</tr>';
     }
     Table::end();
     Event::warning(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
@@ -163,8 +156,7 @@
   /**
    * @param $selected_id
    */
-  function display_language_edit($selected_id)
-  {
+  function display_language_edit($selected_id) {
     if ($selected_id != -1) {
       $n = $selected_id;
     } else {
@@ -179,7 +171,7 @@
                 document.forms[0].Forms::submit()
             }
             </script>";
-    Table::start('tablestyle2');
+    Table::start('standard');
     if ($selected_id != -1) {
       $languages         = Config::_get('languages.installed');
       $conn              = $languages[$selected_id];

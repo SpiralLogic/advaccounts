@@ -5,7 +5,6 @@
   use ADV\Core\DB\DB;
   use ADV\Core\Event;
   use DB_Comments;
-  use ADV\Core\Row;
   use ADV\Core\Cell;
   use ADV\Core\Table;
 
@@ -17,8 +16,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Dimensions
-  {
+  class Dimensions {
     /**
      * @static
      *
@@ -35,15 +33,13 @@
       DB::_begin();
       $date    = Dates::_dateToSql($date_);
       $duedate = Dates::_dateToSql($due_date);
-      $sql
-               = "INSERT INTO dimensions (reference, name, type_, date_, due_date)
+      $sql     = "INSERT INTO dimensions (reference, name, type_, date_, due_date)
 		VALUES (" . DB::_escape($reference) . ", " . DB::_escape($name) . ", " . DB::_escape($type_) . ", '$date', '$duedate')";
       DB::_query($sql, "could not add dimension");
       $id = DB::_insertId();
       DB_Comments::add(ST_DIMENSION, $id, $date_, $memo_);
       Ref::save(ST_DIMENSION, $id, $reference);
       DB::_commit();
-
       return $id;
     }
     /**
@@ -70,7 +66,6 @@
       DB::_query($sql, "could not update dimension");
       DB_Comments::update(ST_DIMENSION, $id, null, $memo_);
       DB::_commit();
-
       return $id;
     }
     /**
@@ -100,7 +95,6 @@
       if (!$allow_null && DB::_numRows($result) == 0) {
         Event::error("Could not find dimension $id", $sql);
       }
-
       return DB::_fetch($result);
     }
     /**
@@ -123,7 +117,6 @@
         $row = Dimensions::get($id, true);
         $dim = $row['reference'] . $space . $row['name'];
       }
-
       return $dim;
     }
     /**
@@ -132,7 +125,6 @@
      */
     public static function getAll() {
       $sql = "SELECT * FROM dimensions ORDER BY date_";
-
       return DB::_query($sql, "The dimensions could not be retrieved");
     }
     /**
@@ -156,7 +148,6 @@
       $sql = "SELECT SUM(amount) FROM gl_trans WHERE dimension_id = " . DB::_escape($id);
       $res = DB::_query($sql, "Transactions could not be calculated");
       $row = DB::_fetchRow($res);
-
       return ($row[0] != 0.0);
     }
     /**
@@ -168,7 +159,6 @@
      */
     public static function is_closed($id) {
       $result = Dimensions::get($id);
-
       return ($result['closed'] == '1');
     }
     /**
@@ -197,10 +187,9 @@
      * @param $to
      */
     public static function display_balance($id, $from, $to) {
-      $from = Dates::_dateToSql($from);
-      $to   = Dates::_dateToSql($to);
-      $sql
-              = "SELECT account, chart_master.account_name, sum(amount) AS amt FROM
+      $from   = Dates::_dateToSql($from);
+      $to     = Dates::_dateToSql($to);
+      $sql    = "SELECT account, chart_master.account_name, sum(amount) AS amt FROM
 			gl_trans,chart_master WHERE
 			gl_trans.account = chart_master.account_code AND
 			(dimension_id = $id OR dimension2_id = $id) AND
@@ -211,7 +200,7 @@
       } else {
         Display::heading(_("Balance for this Dimension"));
         Display::br();
-        Table::start('tablestyle grid');
+        Table::start('padded grid');
         $th = array(_("Account"), _("Debit"), _("Credit"));
         Table::header($th);
         $total = $k = 0;
@@ -219,9 +208,9 @@
           Cell::label($myrow["account"] . " " . $myrow['account_name']);
           Cell::debitOrCredit($myrow["amt"]);
           $total += $myrow["amt"];
-          Row::end();
+          echo '</tr>';
         }
-        Row::start();
+        echo '<tr>';
         Cell::label("<span class='bold'>" . _("Balance") . "</span>");
         if ($total >= 0) {
           Cell::amount($total, true);
@@ -230,7 +219,7 @@
           Cell::label("");
           Cell::amount(abs($total), true);
         }
-        Row::end();
+        echo '</tr>';
         Table::end();
       }
     }
@@ -263,7 +252,6 @@
       if ($showtype) {
         $options['where'][] = "type_=$showtype";
       }
-
       return Forms::selectBox($name, $selected_id, $sql, 'id', 'ref', $options);
     }
     /**
@@ -328,7 +316,6 @@
       if ($label == "") {
         $label = $trans_no;
       }
-
       return Display::viewer_link($label, $viewer, $class, $id, $icon);
     }
   }

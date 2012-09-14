@@ -7,8 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class WO_Requirements
-  {
+  class WO_Requirements {
     /**
      * @static
      *
@@ -16,10 +15,8 @@
      *
      * @return null|PDOStatement
      */
-    public static function get($woid)
-    {
-      $sql
-        = "SELECT wo_requirements.*, stock_master.description,
+    public static function get($woid) {
+      $sql = "SELECT wo_requirements.*, stock_master.description,
         stock_master.mb_flag,
         locations.location_name,
         workcentres.name AS WorkCentreDescription FROM
@@ -28,7 +25,6 @@
         WHERE workorder_id=" . DB::_escape($woid) . "
         AND locations.loc_code = wo_requirements.loc_code
         AND workcentres.id=workcentre";
-
       return DB::_query($sql, "The work order requirements could not be retrieved");
     }
     /**
@@ -37,13 +33,11 @@
      * @param $woid
      * @param $stock_id
      */
-    public static function add($woid, $stock_id)
-    {
+    public static function add($woid, $stock_id) {
       // create Work Order Requirements based on the bom
       $result = WO::get_bom($stock_id);
       while ($myrow = DB::_fetch($result)) {
-        $sql
-          = "INSERT INTO wo_requirements (workorder_id, stock_id, workcentre, units_req, loc_code)
+        $sql = "INSERT INTO wo_requirements (workorder_id, stock_id, workcentre, units_req, loc_code)
             VALUES (" . DB::_escape($woid) . ", '" . $myrow["component"] . "', '" . $myrow["workcentre_added"] . "', '" . $myrow["quantity"] . "', '" . $myrow["loc_code"] . "')";
         DB::_query($sql, "The work order requirements could not be added");
       }
@@ -53,8 +47,7 @@
      *
      * @param $woid
      */
-    public static function delete($woid)
-    {
+    public static function delete($woid) {
       $sql = "DELETE FROM wo_requirements WHERE workorder_id=" . DB::_escape($woid);
       DB::_query($sql, "The work order requirements could not be deleted");
     }
@@ -65,8 +58,7 @@
      * @param $stock_id
      * @param $quantity
      */
-    public static function update($woid, $stock_id, $quantity)
-    {
+    public static function update($woid, $stock_id, $quantity) {
       $sql = "UPDATE wo_requirements SET units_issued = units_issued + " . DB::_escape($quantity) . "
         WHERE workorder_id = " . DB::_escape($woid) . " AND stock_id = " . DB::_escape($stock_id);
       DB::_query($sql, "The work requirements issued quantity couldn't be updated");
@@ -77,8 +69,7 @@
      * @param null $type
      * @param      $woid
      */
-    public static function void($type = null, $woid)
-    {
+    public static function void($type = null, $woid) {
       $sql = "UPDATE wo_requirements SET units_issued = 0 WHERE workorder_id = " . DB::_escape($woid);
       DB::_query($sql, "The work requirements issued quantity couldn't be voided");
     }
@@ -90,13 +81,12 @@
      * @param bool $show_qoh
      * @param null $date
      */
-    public static function display($woid, $quantity, $show_qoh = false, $date = null)
-    {
+    public static function display($woid, $quantity, $show_qoh = false, $date = null) {
       $result = WO_Requirements::get($woid);
       if (DB::_numRows($result) == 0) {
         Display::note(_("There are no Requirements for this Order."), 1, 0);
       } else {
-        Table::start('tablestyle grid width90');
+        Table::start('padded grid width90');
         $th = array(
           _("Component"),
           _("From Location"),
@@ -125,7 +115,7 @@
           if ($show_qoh && ($myrow["units_req"] * $quantity > $qoh) && !DB_Company::get_pref('allow_negative_stock')
           ) {
             // oops, we don't have enough of one of the component items
-            Row::start("class='stockmankobg'");
+            echo "<tr class='stockmankobg'>";
             $has_marked = true;
           } else {
           }
@@ -145,7 +135,7 @@
           } else {
             Cell::label("");
           }
-          Row::end();
+          echo '</tr>';
         }
         Table::end();
         if ($has_marked) {

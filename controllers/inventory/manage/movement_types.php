@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   Page::start(_($help_context = "Inventory Movement Types"), SA_INVENTORYMOVETYPE);
   list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
@@ -34,10 +33,8 @@
    *
    * @return bool
    */
-  function can_delete($selected_id)
-  {
-    $sql
-            = "SELECT COUNT(*) FROM stock_moves
+  function can_delete($selected_id) {
+    $sql    = "SELECT COUNT(*) FROM stock_moves
 		WHERE type=" . ST_INVADJUST . " AND person_id=" . DB::_escape($selected_id);
     $result = DB::_query($sql, "could not query stock moves");
     $myrow  = DB::_fetchRow($result);
@@ -63,22 +60,21 @@
   }
   $result = Inv_Movement::get_all_types(Input::_hasPost('show_inactive'));
   Forms::start();
-  Table::start('tablestyle grid width30');
+  Table::start('padded grid width30');
   $th = array(_("Description"), "", "");
   Forms::inactiveControlCol($th);
   Table::header($th);
   $k = 0;
   while ($myrow = DB::_fetch($result)) {
-
     Cell::label($myrow["name"]);
     Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'movement_types', 'id');
     Forms::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
     Forms::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
-    Row::end();
+    echo '</tr>';
   }
   Forms::inactiveControlRow($th);
   Table::end(1);
-  Table::start('tablestyle2');
+  Table::start('standard');
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing status code

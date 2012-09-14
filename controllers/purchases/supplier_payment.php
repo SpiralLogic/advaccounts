@@ -13,8 +13,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class SupplierPayment extends \ADV\App\Controller\Base
-  {
+  class SupplierPayment extends \ADV\App\Controller\Base {
     protected $supplier_currency;
     protected $bank_currency;
     protected $company_currency;
@@ -24,20 +23,20 @@
       JS::_openWindow(950, 500);
       JS::_footerFile('/js/payalloc.js');
       if ($_SERVER['REQUEST_METHOD'] == "GET") {
-        if ($this->Input->hasGet('account','amount','memo','date')) {
+        if ($this->Input->hasGet('account', 'amount', 'memo', 'date')) {
           $_POST['bank_account'] = $this->Input->get('account');
-          $_POST['amount'] = abs($this->Input->get('amount'));
-          $_POST['memo_'] = $this->Input->get('memo');
-          $_POST['date_'] = $this->Input->get('date');
+          $_POST['amount']       = abs($this->Input->get('amount'));
+          $_POST['memo_']        = $this->Input->get('memo');
+          $_POST['date_']        = $this->Input->get('date');
         }
       }
-      $this->creditor_id    = &$this->Input->postGetGlobal('creditor_id', null, -1);
+      $this->creditor_id = &$this->Input->postGetGlobal('creditor_id', null, -1);
       $this->Session->setGlobal('creditor_id', $this->creditor_id);
       if (!$this->bank_account) // first page call
       {
         $_SESSION['alloc'] = new GL_Allocation(ST_SUPPAYMENT, 0);
       }
-      $this->bank_account    = &$this->Input->postGetGlobal('bank_account', null, -1);
+      $this->bank_account = &$this->Input->postGetGlobal('bank_account', null, -1);
       if (!isset($_POST['date_'])) {
         $_POST['date_'] = Dates::_newDocDate();
         if (!Dates::_isDateInFiscalYear($_POST['date_'])) {
@@ -51,9 +50,9 @@
         $_SESSION['alloc']->read();
         Ajax::_activate('alloc_tbl');
       }
-      $this->company_currency = Bank_Currency::for_company();
+      $this->company_currency  = Bank_Currency::for_company();
       $this->supplier_currency = Bank_Currency::for_creditor($this->creditor_id);
-      $this->bank_currency = Bank_Currency::for_company($_POST['bank_account']);
+      $this->bank_currency     = Bank_Currency::for_company($_POST['bank_account']);
     }
     protected function index() {
       Page::start(_($help_context = "Supplier Payment Entry"), SA_SUPPLIERPAYMNT);
@@ -61,7 +60,7 @@
         $this->processSupplierPayment();
       }
       Forms::start();
-      Table::startOuter('tablestyle2 width80 pad5');
+      Table::startOuter('standard width80 pad5');
       Table::section(1);
       Creditor::newselect();
       Bank_Account::row(_("Bank Account:"), 'bank_account', null, true);
@@ -80,7 +79,7 @@
         GL_Allocation::show_allocatable(false);
       }
       Display::div_end();
-      Table::start('tablestyle width60');
+      Table::start('padded width60');
       Forms::AmountRow(_("Amount of Discount:"), 'discount');
       Forms::AmountRow(_("Amount of Payment:"), 'amount');
       Forms::textareaRow(_("Memo:"), 'memo_', null, 22, 4);
@@ -96,7 +95,9 @@
      * @return bool
      */
     protected function processSupplierPayment() {
-      if (!Creditor_Payment::can_process()) return false;
+      if (!Creditor_Payment::can_process()) {
+        return false;
+      }
       if ($this->company_currency != $this->bank_currency && $this->bank_currency != $this->supplier_currency) {
         $rate = 0;
       } else {
@@ -125,13 +126,12 @@
       Display::submenu_print(_("&Print This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, 'prtopt');
       Display::submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, null, 1);
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another Invoice"), "New=1", true, 'class="button"');
-      HTML::br();
+      echo HTML::br();
       Display::note(GL_UI::view(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment"), false, 'button'));
       // Display::link_params($path_to_root . "/purchases/allocations/supplier_allocate.php", _("&Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter another supplier &payment"), "creditor_id=" . $this->creditor_id, true, 'class="button"');
       $this->Ajax->activate('_page_body');
       Page::footer_exit();
-
       return true;
     }
     protected function runValidation() {

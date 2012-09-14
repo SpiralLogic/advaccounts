@@ -15,6 +15,7 @@
       'Assets', //
       'Auth', //
       'Loader', //
+      'Cache', //
       'Cell', //
       'Config', //
       'DatePicker', //
@@ -32,7 +33,6 @@
       'Menu', //
       'MenuUI', //
       'Num', //
-      'Row', //
       'SelectBox', //
       'Session', //
       'Status', //
@@ -41,9 +41,6 @@
       'View', //
       'XMLParser', //
     ),
-    'ADV\\Core\\Cache'           => [
-      'Cache', //
-    ], //
     'ADV\\Core\\DB'              => array(
       'DB', //
       'DBException', //
@@ -63,6 +60,7 @@
       'Security', //
       'Dates', //
       'Display', //
+      'Dimensions', //
       'User', //
       'Users', //
       'Orders', //
@@ -75,7 +73,7 @@
       'Messages', //
       'Ref', //
       'Reporting', //
-
+      'UI', //
     ), //
     'ADV\\App\\Debtor'           => array(
       'Debtor', //
@@ -95,9 +93,6 @@
     'ADV\\App\\Tax'              => array(
       'Tax', //
     ), // //
-    'ADV\\App\\UI'               => array(
-      'UI', //
-    ), //// //
     'ADV\\App\\WO'               => array(
       'WO', //
     ), //

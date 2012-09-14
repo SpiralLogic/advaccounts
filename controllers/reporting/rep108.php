@@ -1,5 +1,6 @@
 <?php
   use ADV\Core\DB\DB;
+  use ADV\App\SysTypes;
   use ADV\Core\Input\Input;
 
   /* * ********************************************************************
@@ -55,7 +56,7 @@
 
   function print_statements()
   {
-    global $systypes_array, $systypes_array_short;
+
     $report_type         = '\\ADV\\App\\Reports\\PDF';
     $txt_statement       = "Statement";
     $txt_opening_balance = 'Opening Balance';
@@ -181,7 +182,7 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
           $balance += $trans["TotalAmount"];
         }
         $display_balance = Num::_format($balance, $dec);
-        $rep->TextCol(0, 1, $systypes_array_short[$trans['type']], -2);
+        $rep->TextCol(0, 1, SysTypes::$short_names[$trans['type']], -2);
         if ($trans['type'] == ST_SALESINVOICE) {
           $rep->Font('bold');
         }

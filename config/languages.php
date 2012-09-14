@@ -15,14 +15,14 @@
    -- 'rtl' only needs to be set for right-to-left languages like Arabic and Hebrew
 
    */
-
   return array(
     'installed' => array(
       0 => array(
         'code'     => 'en_AU', //
         'name'     => 'Australia', //
         'encoding' => 'UTF-8' //
-      ), array(
+      ),
+      array(
         'code'     => 'en_US', //
         'name'     => 'English', //
         'encoding' => 'UTF-8' //

@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   use ADV\Core\JS;
+  use ADV\App\Reporting;
 
   /**
 
@@ -86,9 +87,7 @@
      * @return void
      */
     public static function addInfoDialog($selector, $id = false) {
-      if ($id) {
-        $company = new static($id);
-      }
+
       $content
                = '<div><span class="bold">Shipping Address:</span><br>${address}</br></br>
 				 		<span class="bold">Mailing Address:</span><br>${post_address}</br></br>
@@ -104,7 +103,7 @@
       $type    = ($type == 'c') ? 'customer' : 'supplier';
       $details = new Dialog($type . ' Details:', 'company_details', $content, array('minHeight' => 400));
       $type    = strtolower($type);
-      $details->setTemplateData(($id) ? $company : '');
+      $details->setTemplateData(($id) ? new static($id) : '');
       if ($id) {
         $details->addOpenEvent($selector, 'click');
       } else {
@@ -127,6 +126,7 @@ JS;
     public static function getEmailDialogue($emailid) {
       list($id, $type, $trans) = explode('-', $emailid);
       $company = get_called_class();
+      /** @var \ADV\App\Debtor\Debtor|\ADV\App\Creditor\Creditor $company  */
       $company = new $company($id);
       $emails  = $company->getEmailAddresses();
       if (count($emails) > 0) {

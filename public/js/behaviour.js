@@ -37,14 +37,14 @@
 
  */
 var Behaviour = {
-  list:         [],
-  register:     function (sheet) {
+  list:        [],
+  register:    function (sheet) {
     Behaviour.list.push(sheet);
   },
-  start:        function () {
+  start:       function () {
     Behaviour.addLoadEvent(Behaviour.apply);
   },
-  apply:        function () {
+  apply:       function () {
     var selector = '', sheet, element, list;
     for (var h = 0; sheet = Behaviour.list[h]; h++) {
       for (selector in sheet) {
@@ -61,7 +61,7 @@ var Behaviour = {
       }
     }
   },
-  addLoadEvent: function (func) {
+  addLoadEvent:function (func) {
     var oldonload = window.onload;
     if (typeof window.onload != 'function') {
       window.onload = func;
@@ -73,7 +73,7 @@ var Behaviour = {
       }
     }
   }
-}
+};
 Behaviour.start();
 document.getElementsBySelector = jQuery;
 /**********************************************************************
@@ -106,6 +106,9 @@ JsHttpRequest.request = function (trigger, form, tout) {
   JsHttpRequest._request(trigger, form, tout, 0);
 };
 JsHttpRequest._request = function (trigger, form, tout, retry) {
+  if (trigger === '_action') {
+    return;
+  }
   if (trigger.tagName == 'A') {
     var content = {};
     var upload = 0;
@@ -122,6 +125,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
     content = this.formInputs(trigger, form, upload);
     if (!form) {
       url = url.substring(0, url.indexOf('?'));
+      content[trigger.name] = trigger.value;
     }
     if (!submitObj) {
       content[trigger] = 1;
@@ -132,7 +136,15 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
   if (trigger.tagName === 'BUTTON') {
     content['_action'] = trigger.value;
   }
-  content['_control'] = trigger.id;
+  if (trigger.tagName === 'INPUT' && trigger.type === 'checkbox') {
+    content['_action'] = trigger.value;
+    content['_value'] = !!trigger.checked;
+    Adv.Forms.saveFocus(trigger);
+  }
+
+  if (trigger.id) {
+    content['_control'] = trigger.id;
+  }
   var tcheck = setTimeout(function () {
     for (var id in JsHttpRequest.PENDING) {
       var call = JsHttpRequest.PENDING[id];
@@ -153,100 +165,95 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
     }
   }, tout);
   JsHttpRequest.query((upload ? "form." : "") + "POST " + url, // force form loader
-                      content, // Function is called when an answer arrives.
-                      function (result, errors) {
-                        var tooltipclass;
-                        // Write the answer.
-                        var newwin = 0, repwin, hasStatus = false;
-                        if (result) {
-                          for (var i in result) {
-                            atom = result[i];
-                            cmd = atom['n'];
-                            property = atom['p'];
-                            type = atom['c'];
-                            id = atom['t'];
-                            data = atom['data'];
-//				debug(cmd+':'+property+':'+type+':'+id);
-                            // seek element by id if there is no elemnt with given name
-                            objElement = document.getElementsByName(id)[0] || document.getElementById(id);
-                            if (cmd == 'as') {
-                              eval("objElement.setAttribute('" + property + "'," + data + ");");
-                            }
-                            else {
-                              if (cmd == 'up') {
-//				if(!objElement) alert('No element "'+id+'"');
-                                if (objElement) {
-                                  if (objElement.tagName == 'INPUT' || objElement.tagName == 'TEXTAREA') {
-                                    objElement.value = data;
-                                  }
-                                  else {
-                                    objElement.innerHTML = data;
-                                  } // selector, div, span etc
-                                }
-                              }
-                              else {
-                                switch (cmd) {
-                                  case 'di':
-                                    objElement.disabled = data;
-                                    break;
-                                  case 'fc':
-                                    Adv.Forms.setFocus(data);
-                                    break;
-                                  case 'js':
-                                    eval(data);
-                                    break;
-                                  case 'rd':
-                                    window.location = data;
-                                    break;
-                                  case 'json':
-                                    if (data.status) {
-                                      hasStatus = true;
-                                      Adv.Status.show(data.status);
-                                    }
-                                    if (Adv.Forms[property]) {
-                                      Adv.Forms[property](data);
-                                    }
-                                    break;
-                                  case 'pu':
-                                    newwin = 1;
-                                    window.open(data, undefined, 'toolbar=no,scrollbar=no,resizable=yes,menubar=no');
-                                    break;
-                                  default:
-                                    hasStatus = true;
-                                    errors = errors + '<br>Unknown ajax function: ' + cmd;
-                                }
-                              }
-                            }
-                          }
-                          if (tcheck) {
-                            JsHttpRequest.clearTimeout(tcheck);
-                          }
-                          // Write errors to the debug div.
-                          if (errors && !hasStatus) {
-                            if (cmd == 'fc') {
-                              Adv.Forms.error(data, errors)
-                            }
-                            else {
-                              Adv.Status.show({html: errors});
-                            }
-                          }
-                          if (Adv.loader) {
-                            Adv.loader.off();
-                          }
-                          Behaviour.apply();
-                          //document.getElementById('msgbox').scrollIntoView(true);
-                          // Restore focus if we've just lost focus because of DOM element refresh
-                          Adv.Events.rebind();
-                          if (!errors && !hasStatus && !newwin && cmd != 'fc') {
-                            Adv.Scroll.loadPosition(true);
-                          }
-                        }
-                      }, false);
-}
+    content, // Function is called when an answer arrives.
+    function (result, errors) {
+      // Write the answer.
+      var newwin = 0, cmd, atom, property, type, id, data, objElement, hasStatus = false;
+      if (result) {
+        for (var i in result) {
+          atom = result[i];
+          cmd = atom['n'];
+          property = atom['p'];
+          type = atom['c'];
+          id = atom['t'];
+          data = atom['data'];
+          // seek element by id if there is no elemnt with given name
+          objElement = document.getElementsByName(id)[0] || document.getElementById(id);
+          if (cmd == 'as') {
+            $(objElement).attr(property, data);
+          }
+          else {
+            if (cmd == 'up') {
+              if (objElement) {
+                if (objElement.tagName == 'INPUT' || objElement.tagName == 'TEXTAREA') {
+                  objElement.value = data;
+                }
+                else {
+                  objElement.innerHTML = data;
+                } // selector, div, span etc
+              }
+            }
+            else {
+              switch (cmd) {
+                case 'di':
+                  objElement.disabled = data;
+                  break;
+                case 'fc':
+                  Adv.Forms.setFocus(data);
+                  break;
+                case 'js':
+                  eval(data);
+                  break;
+                case 'rd':
+                  window.location = data;
+                  break;
+                case 'json':
+                  if (data.status) {
+                    hasStatus = true;
+                    Adv.Status.show(data.status);
+                  }
+                  if (Adv.Forms[property]) {
+                    Adv.Forms[property](data);
+                  }
+                  break;
+                case 'pu':
+                  newwin = 1;
+                  window.open(data, undefined, 'toolbar=no,scrollbar=no,resizable=yes,menubar=no');
+                  break;
+                default:
+                  errors = errors + '<br>Unknown ajax function: ' + cmd;
+              }
+            }
+          }
+        }
+        if (tcheck) {
+          JsHttpRequest.clearTimeout(tcheck);
+        }
+        // Write errors to the debug div.
+        if (errors && !hasStatus) {
+          if (cmd && cmd == 'fc') {
+            Adv.Forms.error(data, errors)
+          }
+          else {
+            Adv.Status.show({html:errors});
+          }
+        }
+        if (Adv.loader) {
+          Adv.loader.off();
+        }
+        Behaviour.apply();
+        //document.getElementById('msgbox').scrollIntoView(true);
+        // Restore focus if we've just lost focus because of DOM element refresh
+        Adv.Events.rebind();
+        if (!errors && !hasStatus && !newwin && cmd != 'fc') {
+          Adv.Scroll.loadPosition(true);
+        }
+      }
+    }, false);
+};
 // collect all form input values plus inp trigger value
 JsHttpRequest.formInputs = function (inp, objForm, upload) {
-  var submitObj = inp;
-  var q = {};
+  var submitObj = inp, q = {};
   if (typeof(inp) == "string") {
     submitObj = document.getElementsByName(inp)[0] || inp;
   }
@@ -276,7 +283,7 @@ JsHttpRequest.formInputs = function (inp, objForm, upload) {
       if (name) {
         if (el.type == 'select-multiple') {
           name = name.substr(0, name.length - 2);
-          q[name] = new Array;
+          q[name] = [];
           for (var j = 0; j < el.length; j++) {
             s = name.substring(0, name.length - 2);
             if (el.options[j].selected == true) {
@@ -291,7 +298,265 @@ JsHttpRequest.formInputs = function (inp, objForm, upload) {
     }
   }
   return q;
+};
+function _set_combo_input(e) {
+  e.setAttribute('_last', e.value);
+  e.onblur = function () {
+    var but_name = this.name.substring(0, this.name.length - 4) + 'button';
+    var button = document.getElementsByName(but_name)[0];
+    var select = document.getElementsByName(this.getAttribute('rel'))[0];
+    Adv.Forms.saveFocus(select);
+// submit request if there is submit_on_change option set and
+// search field has changed.
+    if (button && (this.value != this.getAttribute('_last'))) {
+      JsHttpRequest.request(button);
+    }
+    else {
+      if ($(this).is('.combo2')) {
+        this.style.display = 'none';
+        select.style.display = 'inline';
+        Adv.Forms.setFocus(select);
+      }
+    }
+    return false;
+  };
+  e.onkeyup = function () {
+    var select = document.getElementsByName(this.getAttribute('rel'))[0];
+    if (select && select.selectedIndex >= 0) {
+      var len = select.length;
+      var byid = $(this).is('.combo');
+      var ac = this.value.toUpperCase();
+      select.options[select.selectedIndex].selected = false;
+      for (var i = 0; i < len; i++) {
+        var txt = byid ? select.options[i].value : select.options[i].text;
+        if (txt.toUpperCase().indexOf(ac) >= 0) {
+          select.options[i].selected = true;
+          break;
+        }
+      }
+    }
+  };
+  e.onkeydown = function (ev) {
+    ev = ev || window.event;
+    var key = ev.keyCode || ev.which;
+    if (key == 13) {
+      this.blur();
+      return false;
+    }
+    return undefined;
+  }
 }
-//
-//	User price formatting
-//
+function _update_box(s) {
+  var byid = $(s).is('.combo');
+  var rel = s.getAttribute('rel');
+  var box = document.getElementsByName(rel)[0];
+  if (box && s.selectedIndex >= 0) {
+    var opt = s.options[s.selectedIndex];
+    if (box) {
+      var old = box.value;
+      box.value = byid ? opt.value : opt.text;
+      box.setAttribute('_last', box.value);
+      return old != box.value
+    }
+  }
+  return undefined;
+}
+function _set_combo_select(e) {
+  // When combo position is changed via js (eg from searchbox)
+  // no onchange event is generated. To ensure proper change
+  // signaling we must track selectedIndex in onblur handler.
+  e.setAttribute('_last', e.selectedIndex);
+  e.onblur = function () {
+    if ((this.selectedIndex != this.getAttribute('_last')) || ($(this).is('.combo') && _update_box(this))) {
+      this.onchange();
+    }
+  };
+  e.onchange = function () {
+    var s = this;
+    this.setAttribute('_last', this.selectedIndex);
+    if ($(s).is('.combo')) {
+      _update_box(s);
+    }
+    if (s.selectedIndex >= 0) {
+      var sname = '_' + s.name + '_update';
+      var update = document.getElementsByName(sname)[0];
+      if (update) {
+        JsHttpRequest.request(update);
+      }
+    }
+    return true;
+  };
+  e.onkeydown = function (event) {
+    event = event || window.event;
+    var key = event.keyCode || event.which;
+    var box = document.getElementsByName(this.getAttribute('rel'))[0];
+    if (box && key == 32 && $(this).is('.combo2')) {
+      this.style.display = 'none';
+      box.style.display = 'inline';
+      box.value = '';
+      Adv.Forms.setFocus(box);
+      return false;
+    }
+    return undefined;
+  }
+}
+var _w;
+function passBack(value) {
+  var o = opener;
+  if (!value) {
+    var back = o.editors[o.editors._call]; // form input bindings
+    var to = o.document.getElementsByName(back[1])[0];
+    if (to) {
+      if (to[0] != undefined) {
+        to[0].value = value;
+      } // ugly hack to set selector to any value
+      to.value = value;
+      // update page after item selection
+      o.JsHttpRequest.request('_' + to.name + '_update', to.form);
+      o.setFocus(to.name);
+    }
+  }
+  document.close();
+}
+/*
+ Behaviour definitions
+ */
+Behaviour.register({
+  'input':                                                                                                         function (e) {
+    if (e.onfocus === undefined) {
+      e.onfocus = function () {
+        Adv.Forms.saveFocus(this);
+        if ($(this).is('.combo')) {
+          this.select();
+        }
+      };
+    }
+    if ($(e).is('.combo,.combo2')) {
+      _set_combo_input(e);
+    }
+    else {
+      if (e.type == 'text') {
+        e.onkeydown = function (ev) {
+          ev = ev || window.event;
+          var key = ev.keyCode || ev.which;
+          if (key == 13) {
+            if ($(e).is('.searchbox')) {
+              e.onblur();
+            }
+            return false;
+          }
+          return true;
+        }
+      }
+    }
+  },
+  'input.combo2,input[data-aspect="fallback"]':                                                                    function (e) {
+    // this hides search button for js enabled browsers
+    e.style.display = 'none';
+  },
+  'div.js_only':                                                                                                   function (e) {
+    // this shows divs for js enabled browsers only
+    e.style.display = 'block';
+  },
+//	'.ajaxsubmit,.editbutton,.navibutton': // much slower on IE7
+  'button[name="_action"],button.ajaxsubmit,input.ajaxsubmit,input.editbutton,button.editbutton,button.navibutton':function (e) {
+    e.onclick = function () {
+      Adv.Forms.saveFocus(e);
+      var asp = e.getAttribute('data-aspect');
+      if (asp && asp.indexOf('process') !== -1) {
+        JsHttpRequest.request(this, null, 60000);
+      }
+      else {
+        JsHttpRequest.request(this);
+      }
+      return false;
+    }
+  },
+  'button':                                                                                                        function (e) {
+    if (e.name) {
+      var func = (e.name == '_action') ? _validate[e.value] : _validate[e.name];
+      var old = e.onclick;
+      if (func) {
+        if (typeof old != 'function' || old == func) { // prevent multiply binding on ajax update
+          e.onclick = func;
+        }
+        else {
+          e.onclick = function () {
+            if (func()) {
+              old();
+              return true;
+            }
+            else {
+              return false;
+            }
+          }
+        }
+      }
+    }
+  },
+  '.amount':                                                                                                       function (e) {
+    if (e.onblur === undefined) {
+      e.onblur = function () {
+        var dec = this.getAttribute("data-dec");
+        Adv.Forms.priceFormat(this.name, Adv.Forms.getAmount(this.name), dec);
+      };
+    }
+  },
+  '.freight':                                                                                                      function (e) {
+    if (e.onblur === undefined) {
+      e.onblur = function () {
+        var dec = this.getAttribute("data-dec");
+        Adv.Forms.priceFormat(this.name, Adv.Forms.getAmount(this.name), dec, '2');
+      };
+    }
+  },
+  '.searchbox':// emulated onchange event handling for text inputs
+                                                                                                                   function (e) {
+                                                                                                                     e.setAttribute('_last_val', e.value);
+                                                                                                                     e.setAttribute('autocomplete', 'off'); //must be off when calling onblur
+                                                                                                                     e.onblur = function () {
+                                                                                                                       var val = this.getAttribute('_last_val');
+                                                                                                                       if (val != this.value) {
+                                                                                                                         this.setAttribute('_last_val', this.value);
+                                                                                                                         JsHttpRequest.request('_' + this.name + '_changed', this.form);
+                                                                                                                       }
+                                                                                                                     }
+                                                                                                                   },
+  'button[data-aspect="selector"], input[data-aspect="selector"]':                                                 function (e) {
+    e.onclick = function () {
+      passBack(this.getAttribute('rel'));
+      return false;
+    }
+  },
+  'select':                                                                                                        function (e) {
+    if (e.onfocus === undefined) {
+      e.onfocus = function () {
+        Adv.Forms.saveFocus(this);
+      };
+    }
+    if ($(e).is('.combo,.combo2')) {
+      _set_combo_select(e);
+    }
+  },
+  'a.printlink,button.printlink':                                                                                  function (e) {
+    e.onclick = function () {
+      Adv.Forms.saveFocus(this);
+      JsHttpRequest.request(this, null, 60000);
+      return false;
+    }
+  },
+  'a':                                                                                                             function (e) { // traverse menu
+    e.onkeydown = function (ev) {
+      ev = ev || window.event;
+      var key = ev.keyCode || ev.which;
+      if (key == 37 || key == 38 || key == 39 || key == 40) {
+        Adv.Forms.moveFocus(key, e, document.links);
+        ev.returnValue = false;
+        return false;
+      }
+      return undefined;
+    }
+  }
+
+});
+Behaviour.addLoadEvent(Adv.Scroll.loadPosition);

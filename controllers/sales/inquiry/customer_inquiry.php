@@ -2,11 +2,10 @@
   use ADV\App\Debtor\Debtor;
   use ADV\Core\DB\DB;
   use ADV\Core\Ajax;
-  use ADV\Core\Row;
   use ADV\Core\Table;
   use ADV\Core\Input\Input;
   use ADV\Core\JS;
-  use ADV\App\UI\UI;
+  use ADV\App\UI;
 
   /**
    * PHP version 5.4
@@ -16,8 +15,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class SalesInquirey extends \ADV\App\Controller\Base
-  {
+  class SalesInquirey extends \ADV\App\Controller\Base {
     public $isQuickSearch;
     public $filterType;
     public $debtor_id;
@@ -48,15 +46,15 @@
     protected function index() {
       Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, $this->frame);
       Forms::start();
-      Table::start('tablestyle_noborder');
-      Row::start();
+      Table::start('noborder');
+      echo '<tr>';
       Debtor::newselect(null, ['label'=> false, 'row'=> false]);
       Forms::refCellsSearch(_("#"), 'reference', '', null, '', true);
       Forms::dateCells(_("From:"), 'TransAfterDate', '', null, -30);
       Forms::dateCells(_("To:"), 'TransToDate', '', null, 1);
       Debtor_Payment::allocations_select(null, 'filterType', $this->filterType, true);
       Forms::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-      Row::end();
+      echo '</tr>';
       Table::end();
       Display::div_start('totals_tbl');
       $this->displaySummary();
@@ -125,7 +123,7 @@
       if (!$this->filterType || !$this->isQuickSearch) {
         $cols[_("RB")] = 'skip';
       }
-      $table = DB_Pager::new_db_pager('trans_tbl', $sql, $cols);
+      $table = DB_Pager::newPager('trans_tbl', $sql, $cols);
       $table->setMarker([$this, 'formatMarker'], _("Marked items are overdue."));
       $table->width = "85%";
       $table->display($table);
@@ -147,8 +145,7 @@
     protected function prepareSearch() {
       $date_to    = Dates::_dateToSql($_POST['TransToDate']);
       $date_after = Dates::_dateToSql($_POST['TransAfterDate']);
-      $sql
-                  = "SELECT
+      $sql        = "SELECT
  		trans.type,
  		trans.trans_no,
  		trans.order_,
@@ -164,8 +161,7 @@
       if ($this->filterType) {
         $sql .= "@bal := @bal+(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), ";
       }
-      $sql
-        .= "trans.alloc AS Allocated,
+      $sql .= "trans.alloc AS Allocated,
  		((trans.type = " . ST_SALESINVOICE . ")
  			AND trans.due_date < '" . Dates::_today(true) . "') AS OverDue, SUM(details.quantity - qty_done) as
  			still_to_deliver
@@ -174,7 +170,6 @@
  		trans.debtor_id AND trans.branch_id = branch.branch_id";
       $sql .= " AND trans.tran_date >= '$date_after' AND trans.tran_date <= '$date_to'";
       $this->Ajax->activate('_page_body');
-
       return $sql;
     }
     /**
@@ -220,7 +215,6 @@
       if (isset($filter) && $filter) {
         $sql .= $filter;
       }
-
       return $sql;
     }
     protected function displaySummary() {
@@ -237,9 +231,7 @@
      * @return mixed
      */
     public function formatType($dummy, $type) {
-      global $systypes_array;
-
-      return $systypes_array[$type];
+      return SysTypes::$names[$type];
     }
     /**
      * @param $row
@@ -263,9 +255,7 @@
      * @return string
      */
     public function formatDebit($row) {
-      $value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ? -$row["TotalAmount"] :
-        $row["TotalAmount"];
-
+      $value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ? -$row["TotalAmount"] : $row["TotalAmount"];
       return $value >= 0 ? Num::_priceFormat($value) : '';
     }
     /**
@@ -274,9 +264,7 @@
      * @return string
      */
     public function formatCredit($row) {
-      $value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_BANKDEPOSIT) ? -$row["TotalAmount"] :
-        $row["TotalAmount"];
-
+      $value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_BANKDEPOSIT) ? -$row["TotalAmount"] : $row["TotalAmount"];
       return $value > 0 ? Num::_priceFormat($value) : '';
     }
     /**
@@ -325,7 +313,6 @@
       if ($str && (!DB_AuditTrail::is_closed_trans($row['type'], $row["trans_no"]) || $row['type'] == ST_SALESINVOICE)) {
         return $str;
       }
-
       return false;
     }
     /**
@@ -337,17 +324,14 @@
       if ($row['type'] != ST_SALESINVOICE) {
         return '';
       }
-      HTML::setReturn(true);
-      UI::button(
+      return HTML::button(
         false,
         'Email',
         array(
              'class'        => 'button email-button',
              'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
         )
-      );
-
-      return HTML::setReturn(false);
+      )->__toString();
     }
     /**
      * @param $row
@@ -389,7 +373,6 @@
       $items[] = ['class'=> 'email-button', 'label'=> 'Email', 'href'=> '#', 'data'=> ['emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']]];
       $menus[] = ['title'=> $title, 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
       $dropdown->set('menus', $menus);
-
       return $dropdown->render(true);
     }
   }

@@ -14,7 +14,7 @@
    * @method static _get($var, $type = null, $default = null)
    * @method static _session($var, $type = null, $default = null)
    * @method static _getPost($var, $type = null, $default = null)
-   * @method static Input i()
+   * @method static \ADV\Core\Input\Input i()
    * @method static _postGet($var, $type = null, $default = null)
    * @method static _postGetGlobal($var, $type = null, $default = null)
    * @method static _getPostGlobal($var, $type = null, $default = null)
@@ -173,13 +173,17 @@
      * @static
      *
      * @param mixed $var     $_SESSION variable to return
-     * @param Input $type    Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
      * @param null  $default Default value if there is no current variable
      *
      * @return bool|int|string
      */
-    public function &session($var = [], $type = null, $default = null) {
-      return (session_status() === PHP_SESSION_NONE) ? false : static::$session->get($var, $type, $default);
+    public function session($var, $default = null) {
+
+      if (!array_key_exists($var, $_SESSION)) {
+        return $default;
+      }
+
+      return $_SESSION[$var];
     }
     /***
      * @static
@@ -232,18 +236,13 @@
     /***
      * @static
      *
-     * @param mixed $vars Test for existence of either $_POST or $_GET variable
+     * @param $var
      *
+     * @internal param mixed $vars Test for existence of either $_POST or $_GET variable
      * @return bool
      */
-    public function hasSession($vars) {
-      if (is_null($vars)) {
-        return true;
-      } elseif (!is_array($vars)) {
-        $vars = func_get_args();
-      }
-
-      return static::$session->has($vars);
+    public function hasSession($var) {
+      return array_key_exists($var, $_SESSION);
     }
     /**
      * @static

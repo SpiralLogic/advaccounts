@@ -10,8 +10,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Bank_Account
-  {
+  class Bank_Account {
     static $types
       = array(
         BT_TRANSFER => "Savings Account", //
@@ -327,7 +326,7 @@
         $begin_date
       ) . " AND date <=" . DB::_quote($end_date) . " and bank_account_id=" . DB::_quote($bank_account) . " ORDER BY reconciled_to_id DESC, date ,amount";
       DB::_query($sql);
-      $statement_trans = DB::_fetchAll();
+      $statement_trans = DB::_fetchAll() ? : [];
 
       return $statement_trans;
     }

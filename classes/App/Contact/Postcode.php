@@ -1,5 +1,5 @@
 <?php
-  use ADV\App\UI\UI;
+  use ADV\App\UI;
   use ADV\App\Form\Form;
   use ADV\Core\JS;
   use ADV\Core\DB\DB;
@@ -12,8 +12,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Contact_Postcode
-  {
+  class Contact_Postcode {
     use \ADV\Core\Traits\SetFromArray;
 
     /**
@@ -27,8 +26,7 @@
     /**
      * @param $options
      */
-    public function __construct($options)
-    {
+    public function __construct($options) {
       static::$count++;
       $this->setFromArray($options);
     }
@@ -39,8 +37,7 @@
      * @internal param $postcode
      * @internal param array $options
      */
-    protected function generate()
-    {
+    protected function generate() {
       $form = new Form();
       $form->custom(
         UI::search(
@@ -60,16 +57,14 @@
       )->label('City: ');
       $form->text(
         $this->state[0],
-        $this->state[1],
         [
         'placeholder'       => 'State',
         'maxlength'         => 35,
         'data-set'          => static::$count,
         'size'              => 35,
-        'value'             => $this->state[1],
         'name'              => $this->state[0]
         ]
-      )->label('State: ');
+      )->label('State: ')->val($this->state[1]);
       $form->custom(
         UI::search(
           $this->postcode[0],
@@ -87,15 +82,19 @@
         )
       )->label('Postcode: ');
       $this->registerJS();
-
       return $form;
     }
     /**
+     * @param array|mixed $values
+     *
      * @return ADV\App\Form\Form
      */
-    public function getForm()
-    {
-      return $this->generate();
+    public function getForm($values = null) {
+      $form = $this->generate();
+      if ($values) {
+        $form->setValues($values);
+      }
+      return $form;
     }
     /**
      * @static
@@ -103,8 +102,7 @@
      * @internal param $state
      * @internal param $postcode
      */
-    public function registerJS()
-    {
+    public function registerJS() {
       $set      = static::$count;
       $city     = $this->city[0];
       $state    = $this->state[0];
@@ -120,8 +118,7 @@
      * @internal param $this $string ->cit
      * @return array
      */
-    public static function searchByCity($city = "*")
-    {
+    public static function searchByCity($city = "*") {
       return static::search($city, 'Locality');
     }
     /**
@@ -130,13 +127,11 @@
      *
      * @return mixed
      */
-    public static function search($term, $type = 'Locality')
-    {
+    public static function search($term, $type = 'Locality') {
       $result = DB::_select('id', "CONCAT(Locality,', ',State,', ',Pcode) as label", "CONCAT(Locality,'|',State,'|',Pcode) as value")->from('postcodes')->where(
         $type . ' LIKE',
         $term . '%'
       )->orderBy('Pcode')->limit(20)->fetch()->all();
-
       return $result;
     }
     /**
@@ -146,8 +141,7 @@
      *
      * @return array
      */
-    public static function searchByPostcode($postcode = "*")
-    {
+    public static function searchByPostcode($postcode = "*") {
       return static::search($postcode, 'Pcode');
     }
   }

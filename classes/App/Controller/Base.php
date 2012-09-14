@@ -19,8 +19,7 @@
   /**
 
    */
-  abstract class Base
-  {
+  abstract class Base {
     protected $title;
     /*** @var User */
     protected $User;
@@ -47,6 +46,7 @@
       $this->DB      = DB::i();
       $this->Input   = Input::i();
       $this->action  = $this->Input->post('_action');
+      $this->method  = $_SERVER['REQUEST_METHOD'];
       $this->before();
       $this->index();
       $this->after();
@@ -74,8 +74,11 @@
      * @return int|mixed
      */
     protected function getActionId($prefix) {
-      if (strpos($this->action, $prefix) !== false) {
-        return str_replace($prefix, '', $this->action);
+      if (strpos($this->action, $prefix) === 0) {
+        $result = str_replace($prefix, '', $this->action);
+        if (!empty($result)) {
+          return $result;
+        }
       }
 
       return -1;
@@ -84,5 +87,12 @@
       if ($this->action && is_callable(array($this, $this->action))) {
         call_user_func(array($this, $this->action));
       }
+    }
+    /**
+     * @return array
+     */
+    public function __sleep() {
+      $this->DB = null;
+      return array_keys((array) $this);
     }
   }

@@ -1,5 +1,7 @@
 <?php
   namespace ADV\App\Reports;
+
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -8,7 +10,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  use User;
   use ADV\Core\Config;
   use ADV\Core\Num;
   use ADV\App\Dates;
@@ -16,10 +17,14 @@
   use ADV\App\Page;
   use Reports_Printer_Remote;
   use ADV\Core\Ajax;
+  use ADV\App\User;
   use Printer;
   use ADV\Core\Event;
   use ADV\App\Debtor\Debtor;
 
+  /**
+
+   */
   class PDF extends \Cpdf
   {
     /**
@@ -753,7 +758,7 @@
     }
     // Get current cell padding setting from TCPDF object
     /**
-     * @return cell|float
+     * @return \ADV\Core\Cell|float
      */
     public function GetCellPadding() {
       return $this->cMargin;

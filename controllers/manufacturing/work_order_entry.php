@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::_openWindow(950, 500);
   Page::start(_($help_context = "Work Order Entry"), SA_WORKORDERENTRY);
   Validation::check(Validation::MANUFACTURE_ITEMS, _("There are no manufacturable items defined in the system."), STOCK_MANUFACTURE);
@@ -24,14 +23,18 @@
     Display::note(GL_UI::viewTrans($stype, $id, _("View this Work Order")));
     if ($_GET['type'] != WO_ADVANCED) {
       $ar = array(
-        'PARAM_0' => $id, 'PARAM_1' => $id, 'PARAM_2' => 0
+        'PARAM_0' => $id,
+        'PARAM_1' => $id,
+        'PARAM_2' => 0
       );
       Display::note(Reporting::print_link(_("Print this Work Order"), 409, $ar), 1);
       $ar['PARAM_2'] = 1;
       Display::note(Reporting::print_link(_("Email this Work Order"), 409, $ar), 1);
       Event::warning(GL_UI::view($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
       $ar = array(
-        'PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype
+        'PARAM_0' => $_GET['date'],
+        'PARAM_1' => $_GET['date'],
+        'PARAM_2' => $stype
       );
       Event::warning(Reporting::print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
     }
@@ -52,8 +55,7 @@
     Event::notice(_("This work order has been closed. There can be no more issues against it.") . " #$id");
     safe_exit();
   }
-  function safe_exit()
-  {
+  function safe_exit() {
     Display::link_no_params("", _("Enter a new work order"));
     Display::link_no_params("search_work_orders.php", _("Select an existing work order"));
     Page::footer_exit();
@@ -70,8 +72,7 @@
    *
    * @return bool
    */
-  function can_process(&$selected_id = null)
-  {
+  function can_process(&$selected_id = null) {
     if (!is_null($selected_id)) {
       if (!Ref::is_valid($_POST['wo_ref'])) {
         Event::error(_("You must enter a reference."));
@@ -206,7 +207,7 @@
     Ajax::_activate('_page_body');
   }
   Forms::start();
-  Table::start('tablestyle2');
+  Table::start('standard');
   $existing_comments = "";
   $dec               = 0;
   if (isset($selected_id)) {
@@ -242,8 +243,8 @@
     Forms::hidden('selected_id', $selected_id);
     Forms::hidden('old_qty', $myrow["units_reqd"]);
     Forms::hidden('old_stk_id', $myrow["stock_id"]);
-    Row::label(_("Reference:"), $_POST['wo_ref']);
-    Row::label(_("Type:"), $wo_types_array[$_POST['type']]);
+    Table::label(_("Reference:"), $_POST['wo_ref']);
+    Table::label(_("Type:"), WO::$types[$_POST['type']]);
     Forms::hidden('type', $myrow["type"]);
   } else {
     $_POST['units_issued'] = $_POST['released'] = 0;
@@ -254,8 +255,8 @@
     Forms::hidden('stock_id', Input::_post('stock_id'));
     Forms::hidden('StockLocation', $_POST['StockLocation']);
     Forms::hidden('type', $_POST['type']);
-    Row::label(_("Item:"), $myrow["StockItemName"]);
-    Row::label(_("Destination Location:"), $myrow["location_name"]);
+    Table::label(_("Item:"), $myrow["StockItemName"]);
+    Table::label(_("Destination Location:"), $myrow["location_name"]);
   } else {
     Item_UI::manufactured_row(_("Item:"), 'stock_id', null, false, true);
     if (Forms::isListUpdated('stock_id')) {
@@ -271,7 +272,7 @@
   if (Input::_post('type') == WO_ADVANCED) {
     Forms::qtyRow(_("Quantity Required:"), 'quantity', null, null, null, $dec);
     if ($_POST['released']) {
-      Row::label(_("Quantity Manufactured:"), number_format($_POST['units_issued'], Item::qty_dec(Input::_post('stock_id'))));
+      Table::label(_("Quantity Manufactured:"), number_format($_POST['units_issued'], Item::qty_dec(Input::_post('stock_id'))));
     }
     Forms::dateRow(_("Date") . ":", 'date_', '', true);
     Forms::dateRow(_("Date Required By") . ":", 'RequDate', '', null, DB_Company::get_pref('default_workorder_required'));
@@ -286,17 +287,17 @@
       $_POST['Labour']     = Num::_priceFormat(0);
       $_POST['cr_lab_acc'] = $r[0];
     }
-    Forms::AmountRow($wo_cost_types[WO_LABOUR], 'Labour');
+    Forms::AmountRow(WO_Cost::$types[WO_LABOUR], 'Labour');
     GL_UI::all_row(_("Credit Labour Account"), 'cr_lab_acc', null);
     if (!isset($_POST['Costs'])) {
       $_POST['Costs']  = Num::_priceFormat(0);
       $_POST['cr_acc'] = $r[0];
     }
-    Forms::AmountRow($wo_cost_types[WO_OVERHEAD], 'Costs');
+    Forms::AmountRow(WO_Cost::$types[WO_OVERHEAD], 'Costs');
     GL_UI::all_row(_("Credit Overhead Account"), 'cr_acc', null);
   }
   if (Input::_post('released')) {
-    Row::label(_("Released On:"), $_POST['released_date']);
+    Table::label(_("Released On:"), $_POST['released_date']);
   }
   Forms::textareaRow(_("Memo:"), 'memo_', null, 40, 5);
   Table::end(1);

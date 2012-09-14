@@ -8,17 +8,17 @@
    * To change this template use File | Settings | File Templates.
    */
   namespace ADV\App\Form;
-  use \ADV\Core\HTML;
-  use ADV\Core\Event;
-  use ADV\Core\JS;
 
   /**
 
    */
   class Field implements \ArrayAccess
   {
+    use \ADV\Core\Traits\HTML;
+
     public $id;
     public $value = null;
+    public $hide = false;
     public $default;
     public $validator;
     protected $attr = [];
@@ -35,8 +35,7 @@
      *
      * @internal param $validator
      */
-    public function __construct($tag, $name)
-    {
+    public function __construct($tag, $name) {
       $this->tag  = $tag;
       $this->name = $this['name'] = $name;
       $this->id   = $this->nameToId();
@@ -46,8 +45,7 @@
      *
      * @return \ADV\App\Form\Field
      */
-    public function label($label)
-    {
+    public function label($label) {
       if ($label === null) {
         return $this;
       }
@@ -59,12 +57,21 @@
       return $this;
     }
     /**
+     * @param bool $on
+     *
+     * @return Field
+     */
+    public function focus($on = true) {
+      $this->attr['autofocus'] = $on;
+
+      return $this;
+    }
+    /**
      * @param $content
      *
      * @return Field
      */
-    public function setContent($content)
-    {
+    public function setContent($content) {
       $this->content = $content;
 
       return $this;
@@ -72,8 +79,7 @@
     /**
      * @param $control
      */
-    public function customControl($control)
-    {
+    public function customControl($control) {
       $this->control = $control;
     }
     /**
@@ -81,9 +87,19 @@
      *
      * @return Field
      */
-    public function mergeAttr($attr)
-    {
+    public function mergeAttr($attr) {
       $this->attr = array_merge($this->attr, (array) $attr);
+
+      return $this;
+    }
+    /**
+     * @param $value
+     *
+     * @return Field
+     */
+    public function val($value) {
+      $this->default = $value;
+      $this->value   = $value;
 
       return $this;
     }
@@ -92,8 +108,7 @@
      *
      * @return \ADV\App\Form\Field
      */
-    public function append($text)
-    {
+    public function append($text) {
       $this->append = $text;
 
       return $this;
@@ -103,8 +118,7 @@
      *
      * @return \ADV\App\Form\Field
      */
-    public function prepend($text)
-    {
+    public function prepend($text) {
       $this->prepend = $text;
 
       return $this;
@@ -115,8 +129,7 @@
      * @return \ADV\App\Form\Field
      * @internal param $function
      */
-    public function setValidator($validator)
-    {
+    public function setValidator($validator) {
       $this->validator = $validator;
 
       return $this;
@@ -124,8 +137,7 @@
     /**
      * @return mixed
      */
-    protected function nameToId()
-    {
+    protected function nameToId() {
       return str_replace(['[', ']'], ['-', ''], $this->name);
     }
     /**
@@ -133,8 +145,7 @@
      *
      * @return string
      */
-    protected function formatAddOns($content)
-    {
+    protected function formatAddOns($content) {
       if ($this->append && $this->prepend) {
         $return = "<span class='input-append input-prepend'><span class='add-on'>" . $this->prepend . "</span>";
       } elseif ($this->append) {
@@ -154,24 +165,32 @@
     /**
      * @return string
      */
-    public function __toString()
-    {
-      $tag   = $this->tag;
-      $value = (isset($this->value)) ? $this->value : $this->default;
+    public function __toString() {
+      $tag              = $this->tag;
+      $value            = (isset($this->value)) ? $this->value : $this->default;
+      $this->attr['id'] = $this->id;
       switch ($tag) {
         case 'custom':
+          $values  = (array) $value;
           $control = $this->control;
-          break;
-        case 'select':
-          $values = (array) $value;
-          $control =$this->control;
           foreach ($values as $v) {
             $control = preg_replace('/value=([\'"]?)' . preg_quote($v) . '\1/', 'selected \0', $control);
           }
           break;
+        case 'select':
+          $values  = (array) $value;
+          $control = $this->control;
+          foreach ($values as $v) {
+            $control = preg_replace('/value=([\'"]?)' . preg_quote($v) . '\1/', 'selected \0', $control);
+          }
+          break;
+        case 'checkbox':
+          $this->attr['checked'] = !!$value;
+          $control               = $this->makeElement('input', $this->attr, false);
+          break;
         default:
           $this->attr['value'] = $value;
-          $control             = HTML::setReturn(true)->$tag($this->id, $this->content, $this->attr, ($tag === 'input'))->setReturn(false);
+          $control             = $this->makeElement($tag, $this->attr, $this->content, $tag != 'input');
       }
       $control = $this->formatAddOns($control);
       if ($this->label) {
@@ -194,8 +213,7 @@
      * <p>
      *       The return value will be casted to boolean if non-boolean was returned.
      */
-    public function offsetExists($offset)
-    {
+    public function offsetExists($offset) {
       return array_key_exists($offset, $this->attr);
     }
     /**
@@ -209,9 +227,12 @@
      *
      * @return mixed Can return all value types.
      */
-    public function offsetGet($offset)
-    {
-      return $this->attr[$offset];
+    public function offsetGet($offset) {
+      if (isset($this->attr[$offset])) {
+        return $this->attr[$offset];
+      }
+
+      return null;
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
@@ -227,8 +248,7 @@
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
-    {
+    public function offsetSet($offset, $value) {
       if ($offset == 'value') {
         $this->value = $value;
 
@@ -247,8 +267,7 @@
      *
      * @return void
      */
-    public function offsetUnset($offset)
-    {
+    public function offsetUnset($offset) {
       unset($this->attr[$offset]);
     }
   }

@@ -1,7 +1,12 @@
 <?php
   use ADV\App\Debtor\Debtor;
+  use ADV\App\User;
+  use ADV\App\Ref;
+  use ADV\App\Display;
+  use ADV\App\Validation;
+  use ADV\App\Dates;
+  use ADV\App\Forms;
   use ADV\Core\Input\Input;
-  use ADV\Core\Row;
   use ADV\Core\Table;
 
   /**
@@ -12,21 +17,20 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class DebtorPayment extends \ADV\App\Controller\Base
-  {
+  class DebtorPayment extends \ADV\App\Controller\Base {
     public $date_banked;
     public $debtor_id;
     protected function before() {
-      if ($_SERVER['REQUEST_METHOD'] == "GET" && $this->Input->get('account','amount','memo','date')) {
-          $_POST['bank_acount'] = $this->Input->get('account');
-          $_POST['amount'] = $this->Input->get('amount');
-          $_POST['memo_'] = $this->Input->get('memo');
-          $_POST['DateBanked'] = $this->Input->get('date');
-          $_POST['charge'] = $this->Input->get('fee',Input::NUMERIC);
+      if ($_SERVER['REQUEST_METHOD'] == "GET" && $this->Input->get('account', 'amount', 'memo', 'date')) {
+        $_POST['bank_acount'] = $this->Input->get('account');
+        $_POST['amount']      = $this->Input->get('amount');
+        $_POST['memo_']       = $this->Input->get('memo');
+        $_POST['DateBanked']  = $this->Input->get('date');
+        $_POST['charge']      = $this->Input->get('fee', Input::NUMERIC);
       }
       $this->JS->openWindow(900, 500);
       $this->JS->footerFile('/js/payalloc.js');
-      $this->debtor_id    = &$this->Input->postGetGlobal('debtor_id');
+      $this->debtor_id = &$this->Input->postGetGlobal('debtor_id');
       if (Forms::isListUpdated('branch_id') || !$_POST['debtor_id']) {
         $br              = Sales_Branch::get($this->Input->post('branch_id'));
         $this->debtor_id = $br['debtor_id'];
@@ -51,7 +55,7 @@
       {
         $_SESSION['alloc'] = new GL_Allocation(ST_CUSTPAYMENT, 0);
       }
-      if (!Forms::isListUpdated('bank_account')&&!isset($_POST['bank_account'])) {
+      if (!Forms::isListUpdated('bank_account') && !isset($_POST['bank_account'])) {
         $_POST['bank_account'] = Bank_Account::get_customer_default($this->debtor_id);
       }
     }
@@ -62,7 +66,6 @@
       if (!$this->can_process(ST_CUSTPAYMENT)) {
         return false;
       }
-
       $cust_currency = Bank_Currency::for_debtor($this->debtor_id);
       $bank_currency = Bank_Currency::for_company($_POST['bank_account']);
       $comp_currency = Bank_Currency::for_company();
@@ -74,8 +77,10 @@
       if ($this->Input->hasPost('createinvoice')) {
         GL_Allocation::create_miscorder(new Debtor($this->debtor_id), $_POST['branch_id'], $this->date_banked, $_POST['memo_'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'));
       }
-      $payment_no                  = Debtor_Payment::add(0, $this->debtor_id, $_POST['branch_id'], $_POST['bank_account'], $this->date_banked, $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate, Validation::input_num('charge'));
-      if (!$payment_no) return false;
+      $payment_no = Debtor_Payment::add(0, $this->debtor_id, $_POST['branch_id'], $_POST['bank_account'], $this->date_banked, $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate, Validation::input_num('charge'));
+      if (!$payment_no) {
+        return false;
+      }
       $_SESSION['alloc']->trans_no = $payment_no;
       $_SESSION['alloc']->write();
       Event::success(_("The customer payment has been successfully entered."));
@@ -92,7 +97,7 @@
       Page::start(_($help_context = "Customer Payment Entry"), SA_SALESPAYMNT, $this->Input->request('frame'));
       $this->runAction();
       Forms::start();
-      Table::startOuter('tablestyle2 width90 pad2');
+      Table::startOuter('standard width90 pad2');
       Table::section(1);
       Debtor::newselect();
       Forms::refRow(_("Reference:"), 'ref', null, Ref::get_next(ST_CUSTPAYMENT));
@@ -109,7 +114,7 @@
       if ($cust_currency != $bank_currency) {
         GL_ExchangeRate::display($bank_currency, $cust_currency, $this->date_banked, ($bank_currency == $comp_currency));
       }
-      Forms::AmountRow(_("Bank Charge:"), 'charge', 0,null,['$']);
+      Forms::AmountRow(_("Bank Charge:"), 'charge', 0, null, ['$']);
       Table::endOuter(1);
       Display::div_start('alloc_tbl');
       if ($cust_currency == $bank_currency) {
@@ -117,13 +122,13 @@
         GL_Allocation::show_allocatable(false);
       }
       Display::div_end();
-      Table::start('tablestyle width70');
-      Row::label(_("Customer prompt payment discount :"), $display_discount_percent);
-      Forms::AmountRow(_("Amount of Discount:"), 'discount', 0,null,['$']);
+      Table::start('padded width70');
+      Table::label(_("Customer prompt payment discount :"), $display_discount_percent);
+      Forms::AmountRow(_("Amount of Discount:"), 'discount', 0, null, ['$']);
       if (User::i()->hasAccess(SS_SALES) && !$this->Input->post('TotalNumberOfAllocs')) {
         //    Forms::checkRow(_("Create invoice and apply for this payment: "), 'createinvoice');
       }
-      Forms::AmountRow(_("Amount:"), 'amount',null,null,['$']);
+      Forms::AmountRow(_("Amount:"), 'amount', null, null, ['$']);
       Forms::textareaRow(_("Memo:"), 'memo_', null, 22, 4);
       Table::end(1);
       if ($cust_currency != $bank_currency) {
@@ -227,7 +232,7 @@
       if (isset($_POST["TotalNumberOfAllocs"])) {
         return GL_Allocation::check();
       }
-        return true;
+      return true;
     }
   }
 
