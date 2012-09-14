@@ -1,6 +1,8 @@
 <?php
   use ADV\Core\Input\Input;
   use ADV\App\Orders;
+  use ADV\App\Dates;
+  use ADV\App\Forms;
   use ADV\App\Reporting;
   use ADV\Core\DB\DB;
   use ADV\App\UI;
@@ -165,7 +167,7 @@
      * @return string
      */
     public function formatEditBtn($row) {
-      return "/purchases/po_entry_items.php?" . Orders::MODIFY_ORDER . "=" . $row["order_no"];
+      return $href = "/purchases/po_entry_items.php?" . Orders::MODIFY_ORDER . "=" . $row["order_no"];
     }
     /**
      * @param $row
@@ -191,7 +193,7 @@
     /**
      * @param $row
      *
-     * @return ADV\Core\HTML|string
+     * @return \ADV\Core\HTML|string
      */
     public function formatEmailBtn($row) {
       return Reporting::emailDialogue($row['id'], ST_PURCHORDER, $row['order_no']);
@@ -202,13 +204,20 @@
      * @return string
      */
     public function formatDropDown($row) {
-      $dropdown = new View('ui/dropdown');
-      $edit_url = $this->formatEditBtn($row);
-      $items[]  = ['label'=> 'Edit', 'href'=> $edit_url];
-      $title    = 'Edit';
-      $href     = Reporting::print_doc_link($row['order_no'], _("Print"), true, ST_PURCHORDER, ICON_PRINT, 'button printlink', '', 0, 0, true);
-      $items[]  = ['class'=> 'printlink', 'label'=> 'Print', 'href'=> $href];
-      $items[]  = ['class'=> 'email-button', 'label'=> 'Email', 'href'=> '#', 'data'=> ['emailid' => $row['creditor_id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']]];
+      $dropdown  = new View('ui/dropdown');
+      $edit_url  = $this->formatEditBtn($row);
+      $edit_attr = [];
+      if ((Input::_request('frame'))) {
+        $edit_attr = [
+          '_target'=> "parent",
+          'onclick'=> 'javascript:window.parent.location.href=this.href; return false;'
+        ];
+      }
+      $items[] = ['label'=> 'Edit', 'attr'=> $edit_attr, 'href'=> $edit_url];
+      $title   = 'Edit';
+      $href    = Reporting::print_doc_link($row['order_no'], _("Print"), true, ST_PURCHORDER, ICON_PRINT, 'button printlink', '', 0, 0, true);
+      $items[] = ['class'=> 'printlink', 'label'=> 'Print', 'href'=> $href];
+      $items[] = ['class'=> 'email-button', 'label'=> 'Email', 'href'=> '#', 'data'=> ['emailid' => $row['creditor_id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']]];
       if ($row['Received'] > 0) {
         $href = "/purchases/po_receive_items.php?PONumber=" . $row["order_no"];
       } elseif ($row['Invoiced'] > 0) {
