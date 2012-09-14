@@ -97,15 +97,15 @@
      * @param null $selected_id
      * @param bool $submit_on_change
      */
-    public static function cash_accounts_row($label, $name, $selected_id = null, $submit_on_change = false) {
+    public static function cash_accounts_row($label, $name, $selected_id = null, $submit_on_change = false,$raw=false ) {
       $sql = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
  FROM bank_accounts
  WHERE bank_accounts.account_type=3";
       if ($label != null) {
-        echo "<tr><td class='label'>$label</td>\n";
+      if (!$raw)  echo "<tr><td class='label'>$label</td>\n";
       }
-      echo "<td>";
-      echo Forms::selectBox(
+      if (!$raw)echo "<td>";
+      $select = Forms::selectBox(
         $name,
         $selected_id,
         $sql,
@@ -117,6 +117,8 @@
              'async'         => true
         )
       );
+      if ($raw) return $select;
+      echo $select;
       echo "</td></tr>\n";
     }
     /**

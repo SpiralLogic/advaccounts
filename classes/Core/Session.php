@@ -63,7 +63,6 @@
       if (isset($_SESSION['flash'])) {
         $this->flash = $_SESSION['flash'];
       }
-      $this['flash'] = [];
     }
     /**
      * @static
@@ -110,6 +109,7 @@
      * @return float|string
      */
     public function setGlobal($var, $value = null) {
+
       if ($value === null) {
         if (isset($_SESSION['globals'][$var])) {
           unset($_SESSION['globals'][$var]);
@@ -119,7 +119,6 @@
       }
       $_SESSION['globals'][$var] = $value;
       $this[$var]                = $value;
-
       return $value;
     }
     /**
@@ -130,6 +129,7 @@
      * @return float|string
      */
     public function setFlash($var, $value) {
+
       $_SESSION['flash'][$var] = $value;
 
       return $value;
