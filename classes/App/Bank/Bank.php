@@ -38,15 +38,14 @@
   /**
 
    */
-  class Bank
-  {
-    public static  $payment_person_types = array(
-        PT_MISC => "Miscellaneous", //
-        "Work Order", //
-        "Debtor", //
-        "Creditor", //
-        "Quick Entry"
-      );
+  class Bank {
+    public static $payment_person_types = array(
+      "Miscellaneous", //
+      "Work Order", //
+      "Debtor", //
+      "Creditor", //
+      "Quick Entry"
+    );
     /**
      * @static
      *
@@ -68,7 +67,6 @@
       if ($from_curr_code == $home_currency) {
         return Bank_Currency::exchange_rate_from_home($to_curr_code, $date_);
       }
-
       // neither from or to are the home currency
       return Bank_Currency::exchange_rate_to_home($from_curr_code, $date_) / Bank_Currency::exchange_rate_to_home($to_curr_code, $date_);
     }
@@ -84,7 +82,6 @@
      */
     public static function exchange_from_to($amount, $from_curr_code, $to_curr_code, $date_) {
       $ex_rate = static::get_exchange_rate_from_to($from_curr_code, $to_curr_code, $date_);
-
       return $amount / $ex_rate;
     }
     // Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
@@ -103,7 +100,6 @@
      * @return mixed
      */
     public static function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $amount, $person_type, $neg = false) {
-
       if ($person_type == PT_CUSTOMER) {
         $trans     = Debtor_Trans::get($trans_no, $type);
         $pyt_trans = Debtor_Trans::get($pyt_no, $pyt_type);
@@ -146,53 +142,52 @@
       }
     }
     /**
-       * @static
-       *
-       * @param      $name
-       * @param null $selected_id
-       * @param bool $submit_on_change
-       *
-       * @return string
-       */
-      public static function payment_person_type($name, $selected_id = null, $submit_on_change = false) {
-        $items = [];
-        foreach (Bank::$payment_person_types as $key => $type) {
-          if ($key != PT_WORKORDER) {
-            $items[$key] = $type;
-          }
+     * @static
+     *
+     * @param      $name
+     * @param null $selected_id
+     * @param bool $submit_on_change
+     *
+     * @return string
+     */
+    public static function payment_person_type($name, $selected_id = null, $submit_on_change = false) {
+      $items = [];
+      foreach (Bank::$payment_person_types as $key => $type) {
+        if ($key != PT_WORKORDER) {
+          $items[$key] = $type;
         }
-
-        return Forms::arraySelect($name, $selected_id, $items, array('select_submit' => $submit_on_change));
       }
-      /**
-       * @static
-       *
-       * @param      $label
-       * @param      $name
-       * @param null $selected_id
-       * @param null $related
-       */
-      public static function payment_person_type_cells($label, $name, $selected_id = null, $related = null) {
-        if ($label != null) {
-          echo "<td>$label</td>\n";
-        }
-        echo "<td>";
-        echo Bank::payment_person_type($name, $selected_id, $related);
-        echo "</td>\n";
+      return Forms::arraySelect($name, $selected_id, $items, array('select_submit' => $submit_on_change));
+    }
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     * @param null $related
+     */
+    public static function payment_person_type_cells($label, $name, $selected_id = null, $related = null) {
+      if ($label != null) {
+        echo "<td>$label</td>\n";
       }
-      /**
-       * @static
-       *
-       * @param      $label
-       * @param      $name
-       * @param null $selected_id
-       * @param null $related
-       */
-      public static function payment_person_type_row($label, $name, $selected_id = null, $related = null) {
-        echo "<tr><td class='label'>$label</td>";
-        Bank::payment_person_type_cells(null, $name, $selected_id, $related);
-        echo "</tr>\n";
-      }
+      echo "<td>";
+      echo Bank::payment_person_type($name, $selected_id, $related);
+      echo "</td>\n";
+    }
+    /**
+     * @static
+     *
+     * @param      $label
+     * @param      $name
+     * @param null $selected_id
+     * @param null $related
+     */
+    public static function payment_person_type_row($label, $name, $selected_id = null, $related = null) {
+      echo "<tr><td class='label'>$label</td>";
+      Bank::payment_person_type_cells(null, $name, $selected_id, $related);
+      echo "</tr>\n";
+    }
     /**
      * @static
      *
@@ -214,7 +209,6 @@
           return Validation::check(Validation::SUPPLIERS);
         default :
           Event::error("Invalid type sent to has_items", "");
-
           return false;
       }
     }
@@ -238,10 +232,8 @@
           if (!is_null($trans_no)) {
             $comment = "<br>" . DB_Comments::get_string(ST_BANKPAYMENT, $trans_no);
           }
-
           return ($full ? Bank::$payment_person_types[$type] . " " : "") . $qe["description"] . $comment;
         case PT_WORKORDER :
-
           return WO_Cost::$types[$type];
         case PT_CUSTOMER :
           return ($full ? Bank::$payment_person_types[$type] . " " : "") . Debtor::get_name($person_id);
@@ -253,6 +245,5 @@
           return '';
       }
     }
-
   }
 

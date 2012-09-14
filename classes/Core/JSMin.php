@@ -8,8 +8,11 @@
    * @return string
    */
   namespace ADV\Core;
-  class JSMin
-  {
+
+  /**
+
+   */
+  class JSMin {
     protected $minified = '';
     protected $source;
     /**
@@ -74,7 +77,6 @@
             $i++;
           }
         }
-
         $LF_needed = false;
         if (preg_match('/[\n\r\t ]/', $str[$i])) {
           if (strlen($res) && preg_match('/[\n ]/', $res[strlen($res) - 1])) {
@@ -90,13 +92,10 @@
             $i++;
           }
         }
-
         if (strlen($str) <= $i + 1) {
           break;
         }
-
         $current_char = $str[$i];
-
         if ($LF_needed) {
           $current_char = "\n";
         } elseif ($current_char == "\t") {
@@ -104,7 +103,6 @@
         } elseif ($current_char == "\r") {
           $current_char = "\n";
         }
-
         // detect unnecessary white spaces
         if ($current_char == " ") {
           if (strlen($res) && (preg_match('/^[^(){}[\]=+\-*\/%&|!><?:~^,;"\']{2}$/', $res[strlen($res) - 1] . $str[$i + 1]) || preg_match('/^(\+\+)|(--)$/', $res[strlen($res) - 1] . $str[$i + 1]) // for example i+ ++j;
@@ -113,7 +111,10 @@
             $res .= $current_char;
           }
         } elseif ($current_char == "\n") {
-          if (strlen($res) && (preg_match('/^[^({[=+\-*%&|!><?:~^,;\/][^)}\]=+\-*%&|><?:,;\/]$/', $res[strlen($res) - 1] . $str[$i + 1]) || (strlen($res) > 1 && preg_match('/^(\+\+)|(--)$/', $res[strlen($res) - 2] . $res[strlen($res) - 1])) || (strlen($str) > $i + 2 && preg_match('/^(\+\+)|(--)$/', $str[$i + 1] . $str[$i + 2])) || preg_match('/^(\+\+)|(--)$/', $res[strlen($res) - 1] . $str[$i + 1]) // || // for example i+ ++j;
+          if (strlen($res) && (preg_match('/^[^({[=+\-*%&|!><?:~^,;\/][^)}\]=+\-*%&|><?:,;\/]$/', $res[strlen($res) - 1] . $str[$i + 1]) || (strlen($res) > 1 && preg_match('/^(\+\+)|(--)$/', $res[strlen($res) - 2] . $res[strlen($res) - 1])) || (strlen($str) > $i + 2 && preg_match(
+            '/^(\+\+)|(--)$/',
+            $str[$i + 1] . $str[$i + 2]
+          )) || preg_match('/^(\+\+)|(--)$/', $res[strlen($res) - 1] . $str[$i + 1]) // || // for example i+ ++j;
           )
           ) {
             $res .= $current_char;
@@ -121,14 +122,12 @@
         } else {
           $res .= $current_char;
         }
-
         // if the next charachter be a slash, detects if it is a divide operator or start of a regex
         if (preg_match('/[({[=+\-*\/%&|!><?:~^,;]/', $current_char)) {
           $maybe_regex = true;
         } elseif (!preg_match('/[\n ]/', $current_char)) {
           $maybe_regex = false;
         }
-
         $i++;
       }
       if ($i < strlen($str) && preg_match('/[^\n\r\t ]/', $str[$i])) {

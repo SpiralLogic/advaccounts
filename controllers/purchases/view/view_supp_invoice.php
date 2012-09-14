@@ -22,15 +22,15 @@
   echo "<br>";
   Table::start('padded width95');
   echo '<tr>';
-  Cell::labels(_("Supplier"), $creditor_trans->supplier_name, "class='tablerowhead'");
-  Cell::labels(_("Reference"), $creditor_trans->reference, "class='tablerowhead'");
-  Cell::labels(_("Supplier's Reference"), $creditor_trans->supplier_reference, "class='tablerowhead'");
+  Cell::labelled(_("Supplier"), $creditor_trans->supplier_name, "class='tablerowhead'");
+  Cell::labelled(_("Reference"), $creditor_trans->reference, "class='tablerowhead'");
+  Cell::labelled(_("Supplier's Reference"), $creditor_trans->supplier_reference, "class='tablerowhead'");
   echo '</tr>';
   echo '<tr>';
-  Cell::labels(_("Invoice Date"), $creditor_trans->tran_date, "class='tablerowhead'");
-  Cell::labels(_("Due Date"), $creditor_trans->due_date, "class='tablerowhead'");
+  Cell::labelled(_("Invoice Date"), $creditor_trans->tran_date, "class='tablerowhead'");
+  Cell::labelled(_("Due Date"), $creditor_trans->due_date, "class='tablerowhead'");
   if (!Bank_Currency::is_company($supplier_curr_code)) {
-    Cell::labels(_("Currency"), $supplier_curr_code, "class='tablerowhead'");
+    Cell::labelled(_("Currency"), $supplier_curr_code, "class='tablerowhead'");
   }
   echo '</tr>';
   DB_Comments::display_row(ST_SUPPINVOICE, $trans_no);

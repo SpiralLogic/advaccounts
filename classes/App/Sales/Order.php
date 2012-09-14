@@ -1245,7 +1245,7 @@
       $tax_total     = Tax::edit_items($taxes, $colspan, $this->tax_included, 2);
       $display_total = Num::_priceFormat(($total + Validation::input_num('freight_cost') + $tax_total));
       echo '<tr>';
-      Cell::labels(_("Amount Total"), $display_total, "colspan=$colspan class=' alignright'", "class='alignright'");
+      Cell::labelled(_("Amount Total"), $display_total, "colspan=$colspan class=' alignright'", "class='alignright'");
       Forms::submitCells('_action', Orders::REFRESH, "colspan=2", _("Refresh"), true);
       echo '</tr>';
       Table::footEnd();

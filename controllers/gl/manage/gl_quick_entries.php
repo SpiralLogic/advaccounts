@@ -124,7 +124,7 @@
       Cell::label(GL_QuickEntry::$actions[$myrow['action']]);
       $act_type = strtolower(substr($myrow['action'], 0, 1));
       if ($act_type == 't') {
-        Cell::labels($myrow['tax_name'], '');
+        Cell::labelled($myrow['tax_name'], '');
       } else {
         Cell::label($myrow['dest_id'] . ' ' . $myrow['account_name']);
         if ($act_type == '=') {

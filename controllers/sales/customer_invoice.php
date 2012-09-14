@@ -176,18 +176,18 @@
   Forms::hidden('order_id');
   Table::start('standard width90 pad5');
   echo '<tr>';
-  Cell::labels(_("Customer"), $order->customer_name, "class='tablerowhead'");
-  Cell::labels(_("Branch"), Sales_Branch::get_name($order->Branch), "class='tablerowhead'");
-  Cell::labels(_("Currency"), $order->customer_currency, "class='tablerowhead'");
+  Cell::labelled(_("Customer"), $order->customer_name, "class='tablerowhead'");
+  Cell::labelled(_("Branch"), Sales_Branch::get_name($order->Branch), "class='tablerowhead'");
+  Cell::labelled(_("Currency"), $order->customer_currency, "class='tablerowhead'");
   echo '</tr>';
   echo '<tr>';
   if ($order->trans_no == 0) {
     Forms::refCells(_("Reference"), 'ref', '', null, "class='tablerowhead'");
   } else {
-    Cell::labels(_("Reference"), $order->reference, "class='tablerowhead'");
+    Cell::labelled(_("Reference"), $order->reference, "class='tablerowhead'");
   }
-  Cell::labels(_("Delivery Notes:"), Debtor::viewTrans(ST_CUSTDELIVERY, array_keys($order->src_docs)), "class='tablerowhead'");
-  Cell::labels(_("Sales Type"), $order->sales_type_name, "class='tablerowhead'");
+  Cell::labelled(_("Delivery Notes:"), Debtor::viewTrans(ST_CUSTDELIVERY, array_keys($order->src_docs)), "class='tablerowhead'");
+  Cell::labelled(_("Sales Type"), $order->sales_type_name, "class='tablerowhead'");
   echo '</tr>';
   echo '<tr>';
   if (!isset($_POST['ship_via'])) {
@@ -208,7 +208,7 @@
   if (!$order->view_only) {
     Forms::dateCells(_("Date"), 'InvoiceDate', '', $order->trans_no == 0, 0, 0, 0, "class='tablerowhead'", true);
   } else {
-    Cell::labels(_('Invoice Date:'), $_POST['InvoiceDate']);
+    Cell::labelled(_('Invoice Date:'), $_POST['InvoiceDate']);
   }
   if (!isset($_POST['due_date']) || !Dates::_isDate($_POST['due_date'])) {
     $_POST['due_date'] = Sales_Order::get_invoice_duedate($order->debtor_id, $_POST['InvoiceDate']);
@@ -216,7 +216,7 @@
   if (!$order->view_only) {
     Forms::dateCells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tablerowhead'");
   } else {
-    Cell::labels(_('Due Date'), $_POST['due_date']);
+    Cell::labelled(_('Due Date'), $_POST['due_date']);
   }
   echo '</tr>';
   Table::end();

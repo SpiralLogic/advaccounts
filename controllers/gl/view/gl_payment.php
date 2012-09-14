@@ -35,19 +35,19 @@
     $colspan2 = 6;
   }
   echo '<tr>';
-  Cell::labels(_("From Bank Account"), $from_trans['bank_account_name'], "class='tablerowhead'");
+  Cell::labelled(_("From Bank Account"), $from_trans['bank_account_name'], "class='tablerowhead'");
   if ($show_currencies) {
-    Cell::labels(_("Currency"), $from_trans['bank_curr_code'], "class='tablerowhead'");
+    Cell::labelled(_("Currency"), $from_trans['bank_curr_code'], "class='tablerowhead'");
   }
-  Cell::labels(_("Amount"), Num::_format($from_trans['amount'], User::price_dec()), "class='tablerowhead'", "class='alignright'");
-  Cell::labels(_("Date"), Dates::_sqlToDate($from_trans['trans_date']), "class='tablerowhead'");
+  Cell::labelled(_("Amount"), Num::_format($from_trans['amount'], User::price_dec()), "class='tablerowhead'", "class='alignright'");
+  Cell::labelled(_("Date"), Dates::_sqlToDate($from_trans['trans_date']), "class='tablerowhead'");
   echo '</tr>';
   echo '<tr>';
-  Cell::labels(_("Pay To"), Bank::payment_person_name($from_trans['person_type_id'], $from_trans['person_id']), "class='tablerowhead'", "colspan=$colspan1");
-  Cell::labels(_("Payment Type"), Bank_Trans::$types[$from_trans['account_type']], "class='tablerowhead'");
+  Cell::labelled(_("Pay To"), Bank::payment_person_name($from_trans['person_type_id'], $from_trans['person_id']), "class='tablerowhead'", "colspan=$colspan1");
+  Cell::labelled(_("Payment Type"), Bank_Trans::$types[$from_trans['account_type']], "class='tablerowhead'");
   echo '</tr>';
   echo '<tr>';
-  Cell::labels(_("Reference"), $from_trans['ref'], "class='tablerowhead'", "colspan=$colspan2");
+  Cell::labelled(_("Reference"), $from_trans['ref'], "class='tablerowhead'", "colspan=$colspan2");
   echo '</tr>';
   DB_Comments::display_row(ST_BANKPAYMENT, $trans_no);
   Table::end(1);

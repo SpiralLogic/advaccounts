@@ -565,7 +565,7 @@
           $this->supplier_to_order($_POST['creditor_id']);
         }
         Forms::hidden('creditor_id', $this->creditor_id);
-        Cell::labels(_("Supplier:"), $this->supplier_name, 'rowspan=2 ', ' colspan=' . ($show_currencies + 2) . ' rowspan=2');
+        Cell::labelled(_("Supplier:"), $this->supplier_name, 'rowspan=2 ', ' colspan=' . ($show_currencies + 2) . ' rowspan=2');
       }
       if ($this->creditor_id != Input::_post('creditor_id', null, -1)) {
         $old_supp = $this->creditor_id;
@@ -588,7 +588,7 @@
       echo '</tr>';
       echo '<tr>';
       if ($show_currencies == 1) {
-        Cell::labels(_("Supplier Currency:"), $this->curr_code);
+        Cell::labelled(_("Supplier Currency:"), $this->curr_code);
         GL_ExchangeRate::display($this->curr_code, Bank_Currency::for_company(), $_POST['OrderDate']);
       }
       if (!isset($_POST['location']) || $_POST['location'] == "" || isset($_POST['_location_update']) || !isset($_POST['delivery_address']) || $_POST['delivery_address'] == "") {
@@ -621,7 +621,7 @@
         Forms::refCells(_("Purchase Order #:"), 'ref', '', Ref::get_next(ST_PURCHORDER));
       } else {
         Forms::hidden('ref', $this->reference);
-        Cell::labels(_("Purchase Order #:"), $this->reference);
+        Cell::labelled(_("Purchase Order #:"), $this->reference);
       }
       Sales_UI::persons_cells(_("Sales Person:"), 'salesman', $this->salesman);
       if (isset($_POST['_OrderDate_changed'])) {
@@ -709,17 +709,17 @@
       Display::heading(_("Purchase Order") . " #" . $_GET['trans_no']);
       echo "</td></tr>";
       echo '<tr>';
-      Cell::labels(_("Supplier"), $this->supplier_name, "class='label'");
-      Cell::labels(_("Reference"), $this->reference, "class='label'");
+      Cell::labelled(_("Supplier"), $this->supplier_name, "class='label'");
+      Cell::labelled(_("Reference"), $this->reference, "class='label'");
       if (!Bank_Currency::is_company($this->curr_code)) {
-        Cell::labels(_("Order Currency"), $this->curr_code, "class='label'");
+        Cell::labelled(_("Order Currency"), $this->curr_code, "class='label'");
       }
       if (!$is_self) {
-        Cell::labels(_("Purchase Order"), GL_UI::viewTrans(ST_PURCHORDER, $this->order_no), "class='label'");
+        Cell::labelled(_("Purchase Order"), GL_UI::viewTrans(ST_PURCHORDER, $this->order_no), "class='label'");
       }
       echo '</tr>';
       echo '<tr>';
-      Cell::labels(_("Date"), $this->orig_order_date, "class='label'");
+      Cell::labelled(_("Date"), $this->orig_order_date, "class='label'");
       if ($editable) {
         if (!isset($_POST['location'])) {
           $_POST['location'] = $this->location;
@@ -727,7 +727,7 @@
         Cell::label(_("Deliver Into Location"), "class='label'");
         Inv_Location::cells(null, 'location', null);
       } else {
-        Cell::labels(_("Deliver Into Location"), Inv_Location::get_name($this->location), "class='label'");
+        Cell::labelled(_("Deliver Into Location"), Inv_Location::get_name($this->location), "class='label'");
       }
       echo '</tr>';
       if (!$editable) {

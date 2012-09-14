@@ -49,13 +49,13 @@
   echo "</td><td>"; // outer table
   Table::start('padded width100');
   echo '<tr>';
-  Cell::labels(_("Ref"), $myrow["reference"], "class='tablerowhead'");
-  Cell::labels(_("Date"), Dates::_sqlToDate($myrow["tran_date"]), "class='tablerowhead'");
-  Cell::labels(_("Currency"), $myrow["curr_code"], "class='tablerowhead'");
+  Cell::labelled(_("Ref"), $myrow["reference"], "class='tablerowhead'");
+  Cell::labelled(_("Date"), Dates::_sqlToDate($myrow["tran_date"]), "class='tablerowhead'");
+  Cell::labelled(_("Currency"), $myrow["curr_code"], "class='tablerowhead'");
   echo '</tr>';
   echo '<tr>';
-  Cell::labels(_("Sales Type"), $myrow["sales_type"], "class='tablerowhead'");
-  Cell::labels(_("Shipping Company"), $myrow["shipper_name"], "class='tablerowhead'");
+  Cell::labelled(_("Sales Type"), $myrow["sales_type"], "class='tablerowhead'");
+  Cell::labelled(_("Shipping Company"), $myrow["shipper_name"], "class='tablerowhead'");
   echo '</tr>';
   DB_Comments::display_row(ST_CUSTCREDIT, $trans_id);
   Table::end();

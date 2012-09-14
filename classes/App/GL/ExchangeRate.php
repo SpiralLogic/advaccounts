@@ -20,7 +20,6 @@
     public static function get($rate_id) {
       $sql    = "SELECT * FROM exchange_rates WHERE id=" . DB::_escape($rate_id);
       $result = DB::_query($sql, "could not get exchange rate for $rate_id");
-
       return DB::_fetch($result);
     }
     // Retrieves buy exchange rate for given currency/date, zero if no result
@@ -40,7 +39,6 @@
         return 0;
       }
       $row = DB::_fetch($result);
-
       return $row[0];
     }
     /**
@@ -72,8 +70,7 @@
         Event::error("Exchange rates cannot be set for company currency", "", true);
       }
       $date = Dates::_dateToSql($date_);
-      $sql
-            = "INSERT INTO exchange_rates (curr_code, date_, rate_buy, rate_sell)
+      $sql  = "INSERT INTO exchange_rates (curr_code, date_, rate_buy, rate_sell)
         VALUES (" . DB::_escape($curr_code) . ", '$date', " . DB::_escape($buy_rate) . ", " . DB::_escape($sell_rate) . ")";
       DB::_query($sql, "could not add exchange rate for $curr_code");
     }
@@ -193,7 +190,6 @@
           }
         }
       }
-
       return $val;
     } /* end function get_extern_rate */
     // Displays currency exchange rate for given date.
@@ -239,7 +235,7 @@
         if ($edit_rate) {
           Forms::textCells(_("Exchange Rate:"), '_ex_rate', $rate, 8, 8, null, "class='label'", " $from_currency = 1 $to_currency");
         } else {
-          Cell::labels(_("Exchange Rate:"), "<span style='vertical-align:top;' id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency", '');
+          Cell::labelled(_("Exchange Rate:"), "<span style='vertical-align:top;' id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency", '');
         }
         Ajax::_addUpdate('_ex_rate', '_ex_rate', $rate);
       }

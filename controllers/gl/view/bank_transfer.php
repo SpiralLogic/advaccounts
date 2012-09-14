@@ -38,27 +38,27 @@
   echo "<br>";
   Table::start('padded width90');
   echo '<tr>';
-  Cell::labels(_("From Bank Account"), $from_trans['bank_account_name'], "class='tablerowhead'");
+  Cell::labelled(_("From Bank Account"), $from_trans['bank_account_name'], "class='tablerowhead'");
   if ($show_currencies) {
-    Cell::labels(_("Currency"), $from_trans['bank_curr_code'], "class='tablerowhead'");
+    Cell::labelled(_("Currency"), $from_trans['bank_curr_code'], "class='tablerowhead'");
   }
-  Cell::labels(_("Amount"), Num::_format(-$from_trans['amount'], User::price_dec()), "class='tablerowhead'", "class='alignright'");
+  Cell::labelled(_("Amount"), Num::_format(-$from_trans['amount'], User::price_dec()), "class='tablerowhead'", "class='alignright'");
   if ($show_currencies) {
     echo '</tr>';
     echo '<tr>';
   }
-  Cell::labels(_("To Bank Account"), $to_trans['bank_account_name'], "class='tablerowhead'");
+  Cell::labelled(_("To Bank Account"), $to_trans['bank_account_name'], "class='tablerowhead'");
   if ($show_currencies) {
-    Cell::labels(_("Currency"), $to_trans['bank_curr_code'], "class='tablerowhead'");
+    Cell::labelled(_("Currency"), $to_trans['bank_curr_code'], "class='tablerowhead'");
   }
   if ($show_both_amounts) {
-    Cell::labels(_("Amount"), Num::_format($to_trans['amount'], User::price_dec()), "class='tablerowhead'", "class='alignright'");
+    Cell::labelled(_("Amount"), Num::_format($to_trans['amount'], User::price_dec()), "class='tablerowhead'", "class='alignright'");
   }
   echo '</tr>';
   echo '<tr>';
-  Cell::labels(_("Date"), Dates::_sqlToDate($from_trans['trans_date']), "class='tablerowhead'");
-  Cell::labels(_("Transfer Type"), Bank_Trans::$types[$from_trans['account_type']], "class='tablerowhead'");
-  Cell::labels(_("Reference"), $from_trans['ref'], "class='tablerowhead'");
+  Cell::labelled(_("Date"), Dates::_sqlToDate($from_trans['trans_date']), "class='tablerowhead'");
+  Cell::labelled(_("Transfer Type"), Bank_Trans::$types[$from_trans['account_type']], "class='tablerowhead'");
+  Cell::labelled(_("Reference"), $from_trans['ref'], "class='tablerowhead'");
   echo '</tr>';
   DB_Comments::display_row(ST_BANKTRANSFER, $trans_no);
   Table::end(1);

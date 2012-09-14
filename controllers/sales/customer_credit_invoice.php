@@ -210,17 +210,17 @@
     echo "<tr><td>"; // outer table
     Table::start('padded width100');
     echo '<tr>';
-    Cell::labels(_("Customer"), Orders::session_get($_POST['order_id'])->customer_name, "class='tablerowhead'");
-    Cell::labels(_("Branch"), Sales_Branch::get_name(Orders::session_get($_POST['order_id'])->Branch), "class='tablerowhead'");
-    Cell::labels(_("Currency"), Orders::session_get($_POST['order_id'])->customer_currency, "class='tablerowhead'");
+    Cell::labelled(_("Customer"), Orders::session_get($_POST['order_id'])->customer_name, "class='tablerowhead'");
+    Cell::labelled(_("Branch"), Sales_Branch::get_name(Orders::session_get($_POST['order_id'])->Branch), "class='tablerowhead'");
+    Cell::labelled(_("Currency"), Orders::session_get($_POST['order_id'])->customer_currency, "class='tablerowhead'");
     echo '</tr>';
     echo '<tr>';
     if (Orders::session_get($_POST['order_id'])->trans_no == 0) {
       Forms::refCells(_("Reference"), 'ref', '', Orders::session_get($_POST['order_id'])->reference, "class='tablerowhead'");
     } else {
-      Cell::labels(_("Reference"), Orders::session_get($_POST['order_id'])->reference, "class='tablerowhead'");
+      Cell::labelled(_("Reference"), Orders::session_get($_POST['order_id'])->reference, "class='tablerowhead'");
     }
-    Cell::labels(_("Crediting Invoice"), Debtor::viewTrans(ST_SALESINVOICE, array_keys(Orders::session_get($_POST['order_id'])->src_docs)), "class='tablerowhead'");
+    Cell::labelled(_("Crediting Invoice"), Debtor::viewTrans(ST_SALESINVOICE, array_keys(Orders::session_get($_POST['order_id'])->src_docs)), "class='tablerowhead'");
     if (!isset($_POST['ShipperID'])) {
       $_POST['ShipperID'] = Orders::session_get($_POST['order_id'])->ship_via;
     }

@@ -115,7 +115,7 @@
       $id = Forms::findPostPrefix(MODE_EDIT);
       foreach ($order->gl_items as $line => $item) {
         if ($id != $line) {
-          Cell::labels($item->code_id, $item->description);
+          Cell::labelled($item->code_id, $item->description);
           if ($dim >= 1) {
             Cell::label(Dimensions::get_string($item->dimension_id, true));
           }

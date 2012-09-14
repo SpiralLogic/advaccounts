@@ -21,10 +21,10 @@
       $adjustment_type = Inv_Movement::get_type($adjustment['person_id']);
       Table::start('standard width90');
       echo '<tr>';
-      Cell::labels(_("At Location"), $adjustment['location_name'], "class='tablerowhead'");
-      Cell::labels(_("Reference"), $adjustment['reference'], "class='tablerowhead'", "colspan=6");
-      Cell::labels(_("Date"), Dates::_sqlToDate($adjustment['tran_date']), "class='tablerowhead'");
-      Cell::labels(_("Adjustment Type"), $adjustment_type['name'], "class='tablerowhead'");
+      Cell::labelled(_("At Location"), $adjustment['location_name'], "class='tablerowhead'");
+      Cell::labelled(_("Reference"), $adjustment['reference'], "class='tablerowhead'", "colspan=6");
+      Cell::labelled(_("Date"), Dates::_sqlToDate($adjustment['tran_date']), "class='tablerowhead'");
+      Cell::labelled(_("Adjustment Type"), $adjustment_type['name'], "class='tablerowhead'");
       echo '</tr>';
       DB_Comments::display_row(ST_INVADJUST, $trans_no);
       Table::end();

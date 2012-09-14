@@ -377,13 +377,13 @@
     public static function display(&$po, $editable = false) {
       Table::start('standard width90');
       echo '<tr>';
-      Cell::labels(_("Supplier"), $po->supplier_name, "class='label'");
+      Cell::labelled(_("Supplier"), $po->supplier_name, "class='label'");
       if (!Bank_Currency::is_company($po->curr_code)) {
-        Cell::labels(_("Order Currency"), $po->curr_code, "class='label'");
+        Cell::labelled(_("Order Currency"), $po->curr_code, "class='label'");
       }
-      Cell::labels(_("For Purchase Order"), GL_UI::viewTrans(ST_PURCHORDER, $po->order_no), "class='label'");
-      Cell::labels(_("Ordered On"), $po->orig_order_date, "class='label'");
-      Cell::labels(_("Supplier's Reference"), $po->requisition_no, "class='label'");
+      Cell::labelled(_("For Purchase Order"), GL_UI::viewTrans(ST_PURCHORDER, $po->order_no), "class='label'");
+      Cell::labelled(_("Ordered On"), $po->orig_order_date, "class='label'");
+      Cell::labelled(_("Supplier's Reference"), $po->requisition_no, "class='label'");
       echo '</tr>';
       echo '<tr>';
       if ($editable) {
@@ -401,8 +401,8 @@
         }
         Forms::dateCells(_("Date Items Received"), 'DefaultReceivedDate', '', true, 0, 0, 0, "class='label'");
       } else {
-        Cell::labels(_("Reference"), $po->reference, "class='label'");
-        Cell::labels(_("Deliver Into Location"), Inv_Location::get_name($po->location), "class='label'");
+        Cell::labelled(_("Reference"), $po->reference, "class='label'");
+        Cell::labelled(_("Deliver Into Location"), Inv_Location::get_name($po->location), "class='label'");
       }
       echo '</tr>';
       if (!$editable) {

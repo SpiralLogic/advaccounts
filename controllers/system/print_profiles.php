@@ -53,7 +53,7 @@
   if (Input::_post('profile_id') == '') {
     Forms::textRow(_("Printing Profile Name") . ':', 'name', null, 30, 30);
   } else {
-    Cell::labels(_("Printing Profile Name") . ':', Input::_post('profile_id'));
+    Cell::labelled(_("Printing Profile Name") . ':', Input::_post('profile_id'));
   }
   Table::end(1);
   $result = Printer::get_profile(Input::_post('profile_id'));

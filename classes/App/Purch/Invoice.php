@@ -631,7 +631,7 @@ the credit is to creditors control act done later for the total invoice value + 
       echo '<tr>';
       Table::header(_("Invoice #:"));
       if ($creditor_trans->is_invoice && isset($_POST['invoice_no'])) {
-        Cell::labels(
+        Cell::labelled(
           null,
           $_POST['invoice_no'] . Forms::hidden('invoice_no', $_POST['invoice_no'], false) . Forms::hidden('supplier_reference', $_POST['invoice_no'], false)
         );
@@ -668,7 +668,7 @@ the credit is to creditors control act done later for the total invoice value + 
         $trans                = Creditor_Trans::get($_POST['invoice_no'], ST_SUPPINVOICE);
         $_POST['creditor_id'] = $trans['creditor_id'];
         $supp                 = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
-        Cell::labels('Supplier', $supp . Forms::hidden('creditor_id', $_POST['creditor_id'], false));
+        Cell::labelled('Supplier', $supp . Forms::hidden('creditor_id', $_POST['creditor_id'], false));
       } else {
         Creditor::newselect($creditor_trans->supplier_name, array('row'=> false));
         JS::_setFocus('creditor_id');
@@ -688,7 +688,7 @@ the credit is to creditors control act done later for the total invoice value + 
       }
       echo '<tr>';
       if (!empty($creditor_trans->terms_description)) {
-        Cell::labels(_("Terms:"), $creditor_trans->terms_description);
+        Cell::labelled(_("Terms:"), $creditor_trans->terms_description);
       }
       $supplier_currency = Bank_Currency::for_creditor($creditor_trans->creditor_id);
       $company_currency  = Bank_Currency::for_company();
@@ -696,9 +696,9 @@ the credit is to creditors control act done later for the total invoice value + 
       if ($supplier_currency && $supplier_currency != $company_currency) {
         GL_ExchangeRate::display($supplier_currency, $company_currency, $_POST['tran_date']);
         if (!empty($creditor_trans->tax_description)) {
-          Cell::labels(_("Tax Group:"), $creditor_trans->tax_description);
+          Cell::labelled(_("Tax Group:"), $creditor_trans->tax_description);
         }
-        Cell::labels(_("Supplier's Currency:"), "<span class='bold'>" . $supplier_currency . "</span>");
+        Cell::labelled(_("Supplier's Currency:"), "<span class='bold'>" . $supplier_currency . "</span>");
         echo '</tr>';
         echo '</tr>';
       }

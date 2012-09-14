@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
   use ADV\Core\Cache\Cachable;
 
   /**
@@ -17,8 +18,7 @@
    * @method static _delete($key)
    * @method static Cache i()
    */
-  class Cache
-  {
+  class Cache {
     use \ADV\Core\Traits\StaticAccess2;
 
     /**
@@ -50,7 +50,6 @@
     public function set($key, $value, $expires = 86400) {
       return $this->driver->set($key, $value, $expires);
     }
-
     /**
      * @static
      *
@@ -77,12 +76,12 @@
       $this->driver->flush($time);
     }
     /**
-     * @param $name
-     * @param $constants
+     * @param                $name
+     * @param \Closure|Array $constants
      *
      * @return Cache|bool
      */
-    public function defineConstants($name, Array $constants) {
+    public function defineConstants($name, $constants) {
       $loader = $this->driver->getLoadConstantsFunction();
       if (is_callable($loader)) {
         $loader = $loader($name);
@@ -90,7 +89,6 @@
       if ($loader === true) {
         return true;
       }
-
       if (is_callable($constants)) {
         $constants = (array) call_user_func($constants);
       }
@@ -104,7 +102,6 @@
       foreach ($constants as $constant => $value) {
         define($constant, $value);
       }
-
       return $this;
     }
   }

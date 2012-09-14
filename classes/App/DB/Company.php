@@ -20,8 +20,7 @@
    * @method static key_in_foreign_table($id, $tables, $stdkey, $escaped = false)
    * @method static get_base_sales_type()
    */
-  class DB_Company extends \ADV\App\DB\Base
-  {
+  class DB_Company extends \ADV\App\DB\Base {
     use StaticAccess;
 
     /**
@@ -89,9 +88,15 @@
      * @internal param int $id
      */
     public function __construct($name = 0) {
-      $name    = $name ? : User::i()->company;
-      $company = Config::_get('db.' . Input::_post('login_company', null, $name));
-      parent::__construct($company);
+      $company = Cache::_get('Company.' . $name);
+      if ($company) {
+        $this->setFromArray($company);
+      } else {
+        $name    = $name ? : User::i()->company;
+        $company = Config::_get('db.' . Input::_post('login_company', null, $name));
+        parent::__construct($company);
+        Cache::_set('Company.' . $name, array_keys((array) $this));
+      }
       $this->id = &$this->coy_code;
     }
     /**
@@ -113,7 +118,6 @@
       DB::_update('company')->values((array) $this)->where('coy_code=', $this->id)->exec();
       DB::_commit();
       $_SESSION['config']['company'] = $this;
-
       return $this->status(true, "Company has been updated.");
     }
     public function delete() {
@@ -160,8 +164,7 @@
     public function _add_fiscalyear($from_date, $to_date, $closed) {
       $from = Dates::_dateToSql($from_date);
       $to   = Dates::_dateToSql($to_date);
-      $sql
-            = "INSERT INTO fiscal_year (begin, end, closed)
+      $sql  = "INSERT INTO fiscal_year (begin, end, closed)
  VALUES (" . DB::_escape($from) . "," . DB::_escape($to) . ", " . DB::_escape($closed) . ")";
       DB::_query($sql, "could not add fiscal year");
     }
@@ -176,13 +179,11 @@
      */
     public function _add_payment_terms($daysOrFoll, $terms, $dayNumber) {
       if ($daysOrFoll) {
-        $sql
-          = "INSERT INTO payment_terms (terms,
+        $sql = "INSERT INTO payment_terms (terms,
  days_before_due, day_in_following_month)
  VALUES (" . DB::_escape($terms) . ", " . DB::_escape($dayNumber) . ", 0)";
       } else {
-        $sql
-          = "INSERT INTO payment_terms (terms,
+        $sql = "INSERT INTO payment_terms (terms,
  days_before_due, day_in_following_month)
  VALUES (" . DB::_escape($terms) . ",
  0, " . DB::_escape($dayNumber) . ")";
@@ -218,7 +219,6 @@
      */
     public function _getAll_fiscalyears() {
       $sql = "SELECT * FROM fiscal_year ORDER BY begin";
-
       return DB::_query($sql, "could not get all fiscal years");
     }
     /**
@@ -229,7 +229,6 @@
       $sql    = "SELECT base_sales FROM company WHERE coy_code=1";
       $result = DB::_query($sql, "could not get base sales type");
       $myrow  = DB::_fetch($result);
-
       return $myrow[0];
     }
     /**
@@ -243,10 +242,8 @@
       $file                 = BASE_URL . ($id == -1 ? '' : 'company/' . $id) . '/installed_extensions.php';
       $installed_extensions = [];
       if (is_file($file)) {
-
         include($file);
       }
-
       return $installed_extensions;
     }
     /**
@@ -257,7 +254,6 @@
       $year   = $this->_get_pref('f_year');
       $sql    = "SELECT * FROM fiscal_year WHERE id=" . DB::_escape($year);
       $result = DB::_query($sql, "could not get current fiscal year");
-
       return DB::_fetch($result);
     }
     /**
@@ -270,7 +266,6 @@
     public function _get_fiscalyear($id) {
       $sql    = "SELECT * FROM fiscal_year WHERE id=" . DB::_escape($id);
       $result = DB::_query($sql, "could not get fiscal year");
-
       return DB::_fetch($result);
     }
     /**
@@ -282,7 +277,6 @@
      */
     public function _get_pref($pref_name) {
       $prefs = (array) $this;
-
       return $prefs[$pref_name];
     }
     /**
@@ -324,11 +318,9 @@
      * @return \ADV\Core\DB\Query\Result|Array
      */
     public function _get_payment_terms($selected_id) {
-      $sql
-              = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
+      $sql    = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
  FROM payment_terms t WHERE terms_indicator=" . DB::_escape($selected_id);
       $result = DB::_query($sql, "could not get payment term");
-
       return DB::_fetch($result);
     }
     /**
@@ -343,7 +335,6 @@
       if (!$show_inactive) {
         $sql .= " WHERE !inactive";
       }
-
       return DB::_query($sql, "could not get payment terms");
     }
     /**
@@ -379,7 +370,6 @@
       $sql    = "SELECT sum(cnt) FROM (" . implode(' UNION ', $sqls) . ") as counts";
       $result = DB::_query($sql, "check relations for " . implode(',', $tables) . " failed");
       $count  = DB::_fetch($result);
-
       return $count[0];
     }
     /**

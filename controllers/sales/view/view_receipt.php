@@ -40,18 +40,18 @@
   }
   echo "</td></tr>";
   echo '<tr>';
-  Cell::labels(_("From Customer"), $receipt['DebtorName']);
-  Cell::labels(_("Into Bank Account"), $receipt['bank_account_name']);
-  Cell::labels(_("Date of Deposit"), Dates::_sqlToDate($receipt['tran_date']));
+  Cell::labelled(_("From Customer"), $receipt['DebtorName']);
+  Cell::labelled(_("Into Bank Account"), $receipt['bank_account_name']);
+  Cell::labelled(_("Date of Deposit"), Dates::_sqlToDate($receipt['tran_date']));
   echo '</tr>';
   echo '<tr>';
-  Cell::labels(_("Payment Currency"), $receipt['curr_code']);
-  Cell::labels(_("Amount"), Num::_priceFormat($receipt['Total'] - $receipt['ov_discount']));
-  Cell::labels(_("Discount"), Num::_priceFormat($receipt['ov_discount']));
+  Cell::labelled(_("Payment Currency"), $receipt['curr_code']);
+  Cell::labelled(_("Amount"), Num::_priceFormat($receipt['Total'] - $receipt['ov_discount']));
+  Cell::labelled(_("Discount"), Num::_priceFormat($receipt['ov_discount']));
   echo '</tr>';
   echo '<tr>';
-  Cell::labels(_("Payment Type"), Bank_Trans::$types[$receipt['BankTransType']]);
-  Cell::labels(_("Reference"), $receipt['reference'], 'class="label" colspan=1');
+  Cell::labelled(_("Payment Type"), Bank_Trans::$types[$receipt['BankTransType']]);
+  Cell::labelled(_("Reference"), $receipt['reference'], 'class="label" colspan=1');
   Forms::end();
   echo '</tr>';
   DB_Comments::display_row($trans_type, $trans_id);

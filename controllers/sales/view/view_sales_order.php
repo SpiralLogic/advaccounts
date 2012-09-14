@@ -41,29 +41,29 @@
   echo "<tr class='top'><td colspan=4>";
   Table::start('padded width100');
   echo '<tr>';
-  Cell::labels(_("Customer Name"), $_SESSION['View']->customer_name, "class='label pointer debtor_id_label'", 'class="pointer" id="debtor_id_label"');
+  Cell::labelled(_("Customer Name"), $_SESSION['View']->customer_name, "class='label pointer debtor_id_label'", 'class="pointer" id="debtor_id_label"');
   Forms::hidden("debtor_id", $_SESSION['View']->debtor_id);
-  Cell::labels(_("Deliver To Branch"), $_SESSION['View']->deliver_to, "class='label'");
-  Cell::labels(_("Person Ordering"), nl2br($_SESSION['View']->name), "class='label'");
+  Cell::labelled(_("Deliver To Branch"), $_SESSION['View']->deliver_to, "class='label'");
+  Cell::labelled(_("Person Ordering"), nl2br($_SESSION['View']->name), "class='label'");
   echo '</tr>';
   echo '<tr>';
-  Cell::labels(_("Reference"), $_SESSION['View']->reference, "class='label'");
+  Cell::labelled(_("Reference"), $_SESSION['View']->reference, "class='label'");
   if ($_GET['trans_type'] == ST_SALESQUOTE) {
-    Cell::labels(_("Valid until"), $_SESSION['View']->due_date, "class='label'");
+    Cell::labelled(_("Valid until"), $_SESSION['View']->due_date, "class='label'");
   } else {
-    Cell::labels(_("Requested Delivery"), $_SESSION['View']->due_date, "class='label'");
+    Cell::labelled(_("Requested Delivery"), $_SESSION['View']->due_date, "class='label'");
   }
-  Cell::labels(_("Telephone"), $_SESSION['View']->phone, "class='label'");
+  Cell::labelled(_("Telephone"), $_SESSION['View']->phone, "class='label'");
   echo '</tr>';
   echo '<tr>';
-  Cell::labels(_("Customer PO #"), $_SESSION['View']->cust_ref, "class='label'");
-  Cell::labels(_("Deliver From Location"), $_SESSION['View']->location_name, "class='label'");
-  Cell::labels(_("Delivery Address"), nl2br($_SESSION['View']->delivery_address), "class='label'");
+  Cell::labelled(_("Customer PO #"), $_SESSION['View']->cust_ref, "class='label'");
+  Cell::labelled(_("Deliver From Location"), $_SESSION['View']->location_name, "class='label'");
+  Cell::labelled(_("Delivery Address"), nl2br($_SESSION['View']->delivery_address), "class='label'");
   echo '</tr>';
   echo '<tr>';
-  Cell::labels(_("Order Currency"), $_SESSION['View']->customer_currency, "class='label'");
-  Cell::labels(_("Ordered On"), $_SESSION['View']->document_date, "class='label'");
-  Cell::labels(_("E-mail"), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_SESSION['View']->email . "</a>", "class='label'", "colspan=3");
+  Cell::labelled(_("Order Currency"), $_SESSION['View']->customer_currency, "class='label'");
+  Cell::labelled(_("Ordered On"), $_SESSION['View']->document_date, "class='label'");
+  Cell::labelled(_("E-mail"), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_SESSION['View']->email . "</a>", "class='label'", "colspan=3");
   echo '</tr>';
   Table::label(_("Comments"), $_SESSION['View']->Comments, "class='label'", "colspan=5");
   Table::end();

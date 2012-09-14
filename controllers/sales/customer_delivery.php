@@ -124,9 +124,9 @@
   echo "<tr><td>"; // outer table
   Table::start('padded width100');
   echo '<tr>';
-  Cell::labels(_("Customer"), $order->customer_name, "class='label'");
-  Cell::labels(_("Branch"), Sales_Branch::get_name($order->Branch), "class='label'");
-  Cell::labels(_("Currency"), $order->customer_currency, "class='label'");
+  Cell::labelled(_("Customer"), $order->customer_name, "class='label'");
+  Cell::labelled(_("Branch"), Sales_Branch::get_name($order->Branch), "class='label'");
+  Cell::labelled(_("Currency"), $order->customer_currency, "class='label'");
   echo '</tr>';
   echo '<tr>';
   //if (!isset($_POST['ref']))
@@ -134,11 +134,11 @@
   if ($order->trans_no == 0) {
     Forms::refCells(_("Reference"), 'ref', '', Ref::get_next(ST_CUSTDELIVERY), "class='label'");
   } else {
-    Cell::labels(_("Reference"), $order->reference, "class='label'");
+    Cell::labelled(_("Reference"), $order->reference, "class='label'");
     Forms::hidden('ref', $order->reference);
   }
-  Cell::labels(_("For Sales Order"), Debtor::viewTrans(ST_SALESORDER, $order->order_no), "class='tablerowhead'");
-  Cell::labels(_("Sales Type"), $order->sales_type_name, "class='label'");
+  Cell::labelled(_("For Sales Order"), Debtor::viewTrans(ST_SALESORDER, $order->order_no), "class='tablerowhead'");
+  Cell::labelled(_("Sales Type"), $order->sales_type_name, "class='label'");
   echo '</tr>';
   echo '<tr>';
   if (!isset($_POST['location'])) {
