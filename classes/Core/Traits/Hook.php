@@ -14,41 +14,34 @@
   /**
 
    */
-  trait Hook
-  {
-
+  trait Hook {
     /** @var \Hook $hooks */
     protected static $hooks = null;
     /**
      * @static
      *
-     * @param       $hook
-     * @param       $object
-     * @param       $function
-     * @param array $arguments
+     * @param                         $hook
+     * @param   \Callable|\Closure    $function
+     * @param array                   $arguments
      *
+     * @internal param $object
      * @return bool
      */
-    public static function registerHook($hook, $object, $function = null, $arguments = [])
-    {
+    public static function registerHook($hook, $function = null, $arguments = []) {
       if (static::$hooks === null) {
         static::$hooks = new \ADV\Core\Hook();
       }
-      $callback = $object;
-      if ($function) {
-        $callback = (is_object($object)) ? [$object, $function] : $object . '::' . $function;
-      } elseif (!is_callable($callback)) {
+      if (!is_callable($function)) {
         return Event::error('Hook is not callable!');
       }
-      static::$hooks->add($hook, $callback, $arguments);
+      static::$hooks->add($hook, $function, $arguments);
     }
     /**
      * @static
      *
      * @param $hook
      */
-    public static function fireHooks($hook)
-    {
+    public static function fireHooks($hook) {
       if (static::$hooks) {
         static::$hooks->fire($hook);
       }

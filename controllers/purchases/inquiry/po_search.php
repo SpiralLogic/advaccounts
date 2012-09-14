@@ -20,6 +20,9 @@
     protected $creditor_id;
     protected $selected_stock_item;
     protected $stock_location;
+    /**
+
+     */
     public function __construct() {
       $this->Dates = Dates::i();
       parent::__construct();
@@ -60,7 +63,8 @@
       Page::end();
     }
     protected function makeTable() { //figure out the sql required from the inputs available
-      $sql = "SELECT
+      $sql
+        = "SELECT
  porder.order_no,
  porder.reference,
  supplier.name,

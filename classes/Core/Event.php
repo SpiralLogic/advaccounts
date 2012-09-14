@@ -15,8 +15,7 @@
   /**
 
    */
-  class Event
-  {
+  class Event {
     use \ADV\Core\Traits\Hook;
 
     /** @var \ADV\Core\Cache */
@@ -41,7 +40,7 @@
      * @static
 
      */
-    public static function init(Cache $cache,$presistanceKey='') {
+    public static function init(Cache $cache, $presistanceKey = '') {
       static::$Cache              = $cache;
       static::$shutdown_events_id = 'shutdown.events.' . $presistanceKey;
       $shutdown_events            = static::$Cache->get(static::$shutdown_events_id);
@@ -132,8 +131,8 @@
      * @param string $function
      * @param array  $arguments
      */
-    public static function registerShutdown($object, $function = '_shutdown', $arguments = []) {
-      Event::registerHook('shutdown', $object, $function, $arguments);
+    public static function registerShutdown($function = '_shutdown', $arguments = []) {
+      Event::registerHook('shutdown', $function, $arguments);
     }
     /**
      * @static
@@ -142,8 +141,8 @@
      * @param string $function
      * @param array  $arguments
      */
-    public static function registerPreShutdown($object, $function = '_shutdown', $arguments = []) {
-      Event::registerHook('pre_shutdown', $object, $function, $arguments);
+    public static function registerPreShutdown($function = '_shutdown', $arguments = []) {
+      Event::registerHook('pre_shutdown', $function, $arguments);
     }
     /*** @static Shutdown handler */
     public static function shutdown() {

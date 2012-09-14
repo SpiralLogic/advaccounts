@@ -16,8 +16,7 @@
    * @method static _removeAll()
    * @method static Config i()
    */
-  class Config
-  {
+  class Config {
     use Traits\StaticAccess2;
 
     /***
@@ -47,8 +46,8 @@
     /***
      * @static
      *
-     * @param string $var
-     * @param bool   $default
+     * @param string  $var
+     * @param mixed   $default
      *
      * @internal param null $array_key
      * @return Array|mixed
@@ -157,7 +156,7 @@
       }
       /** @noinspection PhpIncludeInspection */
       $this->_vars[$group_name] = include($file);
-      Event::registerShutdown($this);
+      Event::registerShutdown([$this, '_shutdown']);
 
       return true;
     }

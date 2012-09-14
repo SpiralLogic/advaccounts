@@ -24,8 +24,7 @@
   /**
    * @method static \ADV\App\ADVAccounting i()
    */
-  class ADVAccounting
-  {
+  class ADVAccounting {
     use \ADV\Core\Traits\Singleton;
 
     public $applications = [];
@@ -106,7 +105,7 @@
       if (!strstr($_SERVER['DOCUMENT_URI'], 'logout.php')) {
         $this->checkLogin();
       }
-      \ADV\Core\Event::init($this->Cache,$this->User->username);
+      \ADV\Core\Event::init($this->Cache, $this->User->username);
       $this->get_selected();
       $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
       $index      = $controller == $_SERVER['SCRIPT_NAME'];
@@ -235,6 +234,15 @@
     protected function login() {
       $company = Input::_post('login_company', null, 'default');
       if ($company) {
+        $modules = $this->Config->get('modules.login', []);
+        foreach ($modules as $module=> $module_config) {
+          $this->User->register_login(
+            function () use ($module, $module_config) {
+              $module = '\\Modules\\' . $module . '\\' . $module;
+              new $module($module_config);
+            }
+          );
+        }
         try {
           if (!$this->User->login($company, $_POST["user_name"], $_POST["password"])) {
             // Incorrect password
@@ -262,10 +270,15 @@
       exit();
     }
     protected function loadModules() {
-      $modules = $this->Config->getAll('modules', []);
-      foreach ($modules as $module => $module_config) {
-        $module = '\\Modules\\' . $module . '\\' . $module;
-        new $module($module_config);
+      $types = $this->Config->get('modules.default', []);
+      foreach ($types as $type => $modules) {
+        foreach ($modules as $module=> $module_config) {
+          switch ($type) {
+            default:
+              $module = '\\Modules\\' . $module . '\\' . $module;
+              new $module($module_config);
+          }
+        }
       }
     }
     protected function setupApplications() {

@@ -8,15 +8,18 @@
    * @link      http://www.advancedgroup.com.au
    **/
   return array(
-    'Jobsboard'=> array('enabled'=> false, 'init'=> true),
-    'Youtrack' => array('enabled'=> true, 'init'=> true),
-    'Volusion' => array(
-      'enabled'       => true,
-      'init'          => true,
-      'apiuser'       => 'admin@advancedroadsigns.com.au',
-      'apikey'        => '9BB57370C3B86C90D5AAC36AE1319FF4AC477A25258FD1F1A6938F84E763FF7B',
-      'apiurl'        => 'http://www.advancedroadsigns.com.au/net/WebService.aspx?',
-      'product_url'   => 'http://www.advancedroadsigns.com.au/-p/',
-      'url_extension' => '.htm',
-    )
+    'login'  => [
+      'Jobsboard'=> array('enabled'=> false, 'init'=> true),
+      'Youtrack' => array('enabled'=> true, 'init'=> true),
+      'Volusion' => array(
+        'enabled'       => true,
+        'init'          => true,
+        'apiuser'       => 'admin@advancedroadsigns.com.au',
+        'apikey'        => '9BB57370C3B86C90D5AAC36AE1319FF4AC477A25258FD1F1A6938F84E763FF7B',
+        'apiurl'        => 'http://www.advancedroadsigns.com.au/net/WebService.aspx?',
+        'product_url'   => 'http://www.advancedroadsigns.com.au/-p/',
+        'url_extension' => '.htm',
+      )
+    ],
+    'default'=> [],
   );

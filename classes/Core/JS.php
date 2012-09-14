@@ -23,8 +23,7 @@
    * @method static JS _addLiveEvent($selector, $type, $action, $delegate = false, $cached = false)
    * @method static JS _defaultFocus($name = null)
    */
-  class JS
-  {
+  class JS {
     use Traits\StaticAccess2;
 
     /**
@@ -187,8 +186,10 @@ JS;
       }
       $files = $content = $onReady = '';
       if (!AJAX_REFERRER) {
-        foreach ($this->footerFiles as $dir => $file) {
-          $files .= (new HTML)->script(array('src' => $dir . '/' . implode(',', $file)), false);
+        foreach ($this->footerFiles as $dir => $files) {
+          foreach ($files as $file) {
+            $files .= (new HTML)->script(array('src' => $dir . '/' . $file), false);
+          }
         }
         echo $files;
       } else {

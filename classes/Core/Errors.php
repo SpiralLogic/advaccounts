@@ -8,12 +8,11 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
   /**
 
    */
-  class Errors
-  {
-
+  class Errors {
     const DB_DUPLICATE_ERROR_CODE = 1062;
     /** @var array Container for the system messages */
     public static $messages = [];
@@ -30,24 +29,25 @@
     /** @var array Error constants to text */
     protected static $session = false;
     /** @var array */
-    protected static $levels = array(
-      -1                => 'Fatal!',
-      0                 => 'Error',
-      E_ERROR           => 'Error',
-      E_WARNING         => 'Warning',
-      E_PARSE           => 'Parsing Error',
-      E_NOTICE          => 'Notice',
-      E_CORE_ERROR      => 'Core Error',
-      E_CORE_WARNING    => 'Core Warning',
-      E_COMPILE_ERROR   => 'Compile Error',
-      E_COMPILE_WARNING => 'Compile Warning',
-      E_USER_ERROR      => 'User Error',
-      E_USER_WARNING    => 'User Warning',
-      E_USER_NOTICE     => 'User Notice',
-      E_STRICT          => 'Runtime Notice',
-      E_ALL             => 'No Error',
-      E_SUCCESS         => 'Success!'
-    );
+    protected static $levels
+      = array(
+        -1                => 'Fatal!',
+        0                 => 'Error',
+        E_ERROR           => 'Error',
+        E_WARNING         => 'Warning',
+        E_PARSE           => 'Parsing Error',
+        E_NOTICE          => 'Notice',
+        E_CORE_ERROR      => 'Core Error',
+        E_CORE_WARNING    => 'Core Warning',
+        E_COMPILE_ERROR   => 'Compile Error',
+        E_COMPILE_WARNING => 'Compile Warning',
+        E_USER_ERROR      => 'User Error',
+        E_USER_WARNING    => 'User Warning',
+        E_USER_NOTICE     => 'User Notice',
+        E_STRICT          => 'Runtime Notice',
+        E_ALL             => 'No Error',
+        E_SUCCESS         => 'Success!'
+      );
     /** @var string  temporary container for output html data before error box */
     /** @var array Errors which terminate execution */
     protected static $fatal_levels = array(E_PARSE, E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR);
@@ -65,7 +65,7 @@
       static::$useConfigClass = class_exists('Config', false);
       //   error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
       if (class_exists('\ADV\Core\Event')) {
-        Event::registerShutdown(__CLASS__, 'sendDebugEmail');
+        Event::registerShutdown([__CLASS__, 'sendDebugEmail']);
       }
       static::$admin = strpos($_SERVER['HTTP_HOST'], 'dev') === 0 || (isset($_SESSION['User']) && $_SESSION['User']->username == 'admin');
     }
@@ -103,7 +103,11 @@
         static::$messages[] = $error;
       }
       if (is_writable(DOCROOT . '../error_log')) {
-        error_log(date(DATE_RFC822) . ' ' . $error['type'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n", 3, DOCROOT . '../error_log');
+        error_log(
+          date(DATE_RFC822) . ' ' . $error['type'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n",
+          3,
+          DOCROOT . '../error_log'
+        );
       }
       if (!in_array($type, static::$user_errors) || $type == E_NOTICE || ($type == E_USER_ERROR && $log)) {
         $error['backtrace'] = static::prepareBacktrace(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
@@ -307,7 +311,7 @@
         $status['status'] = E_ERROR;
         preg_match('/Column \'(.+)\'(.*)/', $dberror['message'], $matches);
         $status['var']     = $matches[1];
-        $status['message'] = $matches[1].$matches[2];
+        $status['message'] = $matches[1] . $matches[2];
       } elseif (count(static::$messages) > 0) {
         $message           = end(static::$messages);
         $status['status']  = $message['type'];
@@ -371,7 +375,11 @@
       }
       $error              = array('line' => $source['line'], 'file' => $source['file'], 'content' => $content);
       static::$debugLog[] = $error;
-      error_log(date(DATE_RFC822) . ' ' . 'LOG' . ": " . print_r($content, true) . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n", 3, DOCROOT . '../error_log');
+      error_log(
+        date(DATE_RFC822) . ' ' . 'LOG' . ": " . print_r($content, true) . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n",
+        3,
+        DOCROOT . '../error_log'
+      );
     }
   }
 

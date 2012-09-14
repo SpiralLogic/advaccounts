@@ -23,21 +23,14 @@
   /**
 
    */
-  class Volusion extends Module\Base
-  {
+  class Volusion extends Module\Base {
     /** @var DB */
     protected $jobsboardDB;
-    /**
-     * @param array $config
-     */
-    public function __construct($config = []) {
-      parent::__construct($config);
+    public function init() {
       if (!$this->jobsboardDB) {
         $this->jobsboardDB = new DB('jobsboard');
       }
-    }
-    public function init() {
-      User::register_login('ADV\\Core\\Event', 'registerShutdown', [$this, 'doWebsales']);
+      \ADV\Core\Event::registerShutdown([$this, 'doWebsales']);
     }
     public function doWebsales() {
       $orders = $this->getNewWebsales();

@@ -45,10 +45,11 @@
   ini_set("log_errors", "On");
   define('E_SUCCESS', E_ALL << 1);
   define('DS', DIRECTORY_SEPARATOR);
-  define('DOCROOT', __DIR__ . DS);
+  define('DOCROOT', __DIR__ . DIRECTORY_SEPARATOR);
   define('WEBROOT', DOCROOT . 'public' . DS);
   define('APPPATH', DOCROOT . 'classes' . DS . 'App' . DS);
-  define('COREPATH', DOCROOT . 'classes' . DS . 'Core' . DS);
+
+  define('COREPATH', __DIR__ . DS . 'classes' . DS . 'Core' . DS);
   define('VENDORPATH', DOCROOT . 'classes' . DS . 'Vendor' . DS);
   define('VIEWPATH', DOCROOT . 'views' . DS);
   define('COMPANY_PATH', WEBROOT . 'company' . DS);
@@ -57,6 +58,7 @@
   define('IS_JSON_REQUEST', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false));
   define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
   define('CRLF', chr(13) . chr(10));
+  /** @var $loader  */
   $loader = require COREPATH . 'Loader.php';
   if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
     new \ADV\Core\Assets();

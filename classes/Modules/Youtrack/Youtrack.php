@@ -16,10 +16,9 @@
   /**
 
    */
-  class Youtrack extends Module\Base
-  {
+  class Youtrack extends Module\Base {
     public function init() {
-      User::register_login($this, '_login');
+      $this->_login();
     }
     public function _login() {
       $host = 'advanced.advancedgroup.com.au/modules/youtrack';

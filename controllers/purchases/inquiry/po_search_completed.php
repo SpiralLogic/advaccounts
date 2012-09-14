@@ -1,5 +1,6 @@
 <?php
   use ADV\Core\Input\Input;
+  use ADV\App\Orders;
   use ADV\App\Reporting;
   use ADV\Core\DB\DB;
   use ADV\App\UI;
@@ -66,7 +67,8 @@
         $searchArray = explode(' ', $_POST['q']);
         unset($_POST['creditor_id']);
       }
-      $sql = "SELECT
+      $sql
+        = "SELECT
   	porder.order_no,
   	porder.reference,
   	supplier.name,
@@ -89,7 +91,8 @@
             continue;
           }
           $quicksearch = $this->DB->_quote("%" . $quicksearch . "%");
-          $sql .= " AND (supplier.name LIKE $quicksearch OR porder.order_no LIKE $quicksearch
+          $sql
+            .= " AND (supplier.name LIKE $quicksearch OR porder.order_no LIKE $quicksearch
   		 OR porder.reference LIKE $quicksearch
   		 OR porder.requisition_no LIKE $quicksearch
   		 OR location.location_name LIKE $quicksearch)";
@@ -193,6 +196,11 @@
     public function formatEmailBtn($row) {
       return Reporting::emailDialogue($row['id'], ST_PURCHORDER, $row['order_no']);
     }
+    /**
+     * @param $row
+     *
+     * @return string
+     */
     public function formatDropDown($row) {
       $dropdown = new View('ui/dropdown');
       $edit_url = $this->formatEditBtn($row);

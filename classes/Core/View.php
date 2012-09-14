@@ -13,8 +13,7 @@
   /**
 
    */
-  class View implements \ArrayAccess
-  {
+  class View implements \ArrayAccess {
     use \ADV\Core\Traits\HTML;
 
     protected $_viewdata = [];
@@ -86,8 +85,8 @@
       // The contents of each view file is cached in an array for the
       // request since partial views may be rendered inside of for
       // loops which could incur performance penalties.
-     //    $__contents = null; // static::$Cache->get('template.' . $this->_template);
-   $__contents = static::$Cache->get('template.' . $this->_template);
+      //    $__contents = null; // static::$Cache->get('template.' . $this->_template);
+      $__contents = static::$Cache->get('template.' . $this->_template);
       if (!$__contents || !is_array($__contents)) {
         $__contents = file_get_contents($this->_template);
         while (strpos($__contents, '  ')) {
@@ -101,7 +100,7 @@
 
         return $__contents;
       } else {
-        Event::registerShutdown($this, 'checkCache', [$this->_template, $__contents[1]]);
+        Event::registerShutdown([$this, 'checkCache'], [$this->_template, $__contents[1]]);
         $this->checkCache($this->_template, $__contents[1]);
         JS::_footerFile($__contents[2]);
         $__contents = $__contents[0];
@@ -156,7 +155,7 @@
           $view->addContext($input[1]);
           $this->_js = array_unique(array_merge($this->_js, $view->_js));
 
-          return '<?php if ($' . $view->context  . '!==false): ?>' . $view->getCompiled() . '<?php endif; ?>';
+          return '<?php if ($' . $view->context . '!==false): ?>' . $view->getCompiled() . '<?php endif; ?>';
         },
         $value
       );
