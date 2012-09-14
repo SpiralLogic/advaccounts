@@ -114,7 +114,7 @@
         $conn = new PDO('mysql:host=' . $config['host'] . ';dbname=' . $config['dbname'], $config['user'], $config['pass'], array(PDO::MYSQL_ATTR_FOUND_ROWS => true));
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $conn->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_TO_STRING);
-        $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+ //       $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         static::$connections[$config['name']] = $conn;
         if ($this->conn === false) {
           $this->conn = $conn;
