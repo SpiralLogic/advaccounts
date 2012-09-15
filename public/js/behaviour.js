@@ -450,7 +450,7 @@ Behaviour.register({
       }
     }
   },
-  'input.combo2,input[data-aspect="fallback"]':                                                                    function (e) {
+  'input.combo2':                                                                                                  function (e) {
     // this hides search button for js enabled browsers
     e.style.display = 'none';
   },

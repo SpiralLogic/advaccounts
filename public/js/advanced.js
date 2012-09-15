@@ -109,7 +109,6 @@ Adv.extend({
                                  }
                                }
                                catch (e) {
-                                 console.log(e);
                                  return false
                                }
                                return undefined;

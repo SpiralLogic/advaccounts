@@ -2714,7 +2714,7 @@ img {
   color:           #333;
 }
 
-.js input.combo2, .js *[data-aspect=fallback] {
+.js input.combo2 {
   display: none;
 }
 

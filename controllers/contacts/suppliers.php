@@ -75,8 +75,9 @@
       }
       $js = new JS();
       $js->autocomplete('supplier', 'Company.fetch');
-      $form          = new Form();
-      $menu          = new MenuUI([], $js);
+      $form = new Form();
+      $menu = new MenuUI();
+      $menu->setJSObject($js);
       $view          = new View('contacts/supplier');
       $view['frame'] = $this->Input->get('frame') || $this->Input->get('id');
       $view->set('menu', $menu);
@@ -139,7 +140,6 @@
       }
       $form     = HTMLmin::minify($view->render(true));
       $js_state = $js->getState();
-
       Cache::_set('supplier_form', [$form, $js_state]);
       $this->JS->addState($js_state);
       return $form;

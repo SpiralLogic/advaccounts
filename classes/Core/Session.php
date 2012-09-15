@@ -14,9 +14,7 @@
    */
   class SessionException extends \Exception {
   }
-
   /**
-   * @property \ADV\App\ADVAccounting App
    * @method  static _getGlobal($var, $default = null)
    * @method static _setGlobal($var, $value = null)
    * @method static _get()
@@ -48,7 +46,6 @@
       $handler = new \ADV\Core\Session\Memcached();
       session_set_save_handler($handler, true);
       session_start();
-
       /** @noinspection PhpUndefinedFunctionInspection */
       /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -70,10 +67,8 @@
     public function checkUserAgent() {
       if ($this['HTTP_USER_AGENT'] != sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR']))) {
         $this->setUserAgent();
-
         return false;
       }
-
       return true;
     }
     /**
@@ -112,12 +107,10 @@
         if (isset($_SESSION['globals'][$var])) {
           unset($_SESSION['globals'][$var]);
         }
-
         return null;
       }
       $_SESSION['globals'][$var] = $value;
       $this[$var]                = $value;
-
       return $value;
     }
     /**
@@ -210,7 +203,6 @@
       if (!$this->offsetExists($offset)) {
         return null;
       }
-
       return $_SESSION[$offset];
     }
     /**
@@ -255,7 +247,6 @@
       if (!isset($_SESSION[$var])) {
         $value = $_SESSION[$var];
       }
-
       return $value;
     }
     /**
@@ -266,7 +257,6 @@
      */
     public function set($var, $value) {
       $_SESSION[$var] = $value;
-
       return $value;
     }
   }

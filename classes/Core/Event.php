@@ -9,7 +9,6 @@
    **/
   namespace ADV\Core;
 
-  use ADV\App\User;
   use ADV\Core\Cache;
 
   /**
@@ -61,7 +60,6 @@
      */
     public static function error($message, $log = true) {
       $backtrace = debug_backtrace();
-
       return static::handle($message, reset($backtrace), E_USER_ERROR, $log);
     }
     /**
@@ -74,7 +72,6 @@
      */
     public static function notice($message, $log = true) {
       $backtrace = debug_backtrace();
-
       return static::handle($message, reset($backtrace), E_USER_NOTICE, $log);
     }
     /**
@@ -87,7 +84,6 @@
      */
     public static function success($message, $log = true) {
       $backtrace = debug_backtrace();
-
       return static::handle($message, reset($backtrace), E_SUCCESS, $log);
     }
     /**
@@ -100,7 +96,6 @@
      */
     public static function warning($message, $log = true) {
       $backtrace = debug_backtrace();
-
       return static::handle($message, reset($backtrace), E_USER_WARNING, $log);
     }
     /**
@@ -121,7 +116,6 @@
         $message .= $log ? 1 : 0;
         ($type === E_SUCCESS) ? Errors::handler($type, $message) : trigger_error($message, $type);
       }
-
       return ($type === E_SUCCESS || $type === E_USER_NOTICE);
     }
     /**

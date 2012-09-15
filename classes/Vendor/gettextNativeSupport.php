@@ -24,14 +24,13 @@
    * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
    * @access private
    */
-  class gettextNativeSupport
-  {
+  class gettextNativeSupport {
     /**
      * @var array
      */
     public $_interpolation_vars = array();
     const GETTEXT_NATIVE = 1;
-    const GETTEXT_PHP = 2;
+    const GETTEXT_PHP    = 2;
     /**
      * @param $str
      *
@@ -167,7 +166,6 @@
       return $this->_interpolation_vars[$name];
     }
   }
-
   /**
    * Implementation of get_text support for PHP.
    * This implementation is abble to cache .po files into php files returning the
@@ -175,8 +173,7 @@
    * @access private
    * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
    */
-  class gettext_php_support extends gettextNativeSupport
-  {
+  class gettext_php_support extends gettextNativeSupport {
     /**
      * @var string
      */
@@ -319,14 +316,12 @@
       return $key;
     }
   }
-
   /**
    * Class representing a domain file for a specified language.
    * @access private
    * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
    */
-  class gettext_domain
-  {
+  class gettext_domain {
     /** @var */
     public $name;
     /** @var */
@@ -352,14 +347,12 @@
       return $this->_keys[$key];
     }
   }
-
   /**
    * This class is used to parse gettext '.po' files into php associative arrays.
    * @access private
    * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
    */
-  class gettext_php_support_parser
-  {
+  class gettext_php_support_parser {
     /**
      * @var array
      */
@@ -386,7 +379,7 @@
      * @throws GetText_Error
      */
     function parse($file) {
-      $this->_hash          = array();
+      $this->hash           = array();
       $this->_current_key   = false;
       $this->_current_value = "";
       if (!file_exists($file)) {
@@ -443,7 +436,6 @@
       $this->_current_value             = "";
     }
   }
-
   /**
    * This class write a php file from a gettext hashtable.
    * The produced file return the translation hashtable on include.
@@ -451,8 +443,7 @@
    * @access private
    * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
    */
-  class gettext_php_support_compiler
-  {
+  class gettext_php_support_compiler {
     /**
      * Write hash in an includable php file.
      *

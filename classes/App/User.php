@@ -10,6 +10,7 @@
   namespace ADV\App;
 
   use ADV\Core\Session;
+  use ADV\Core\Auth;
   use ADV\Core\JS;
   use ADV\Core\Event;
   use DB_Company;
@@ -27,7 +28,6 @@
    * @method static price_dec()
    * @method static numeric($input)
    * @method static print_profile()
-   * @method static fallback()
    * @method static show_gl()
    * @method static rep_popup()
    * @method static percent_dec()
@@ -68,21 +68,15 @@
     /** @var */
     public $timeout;
     /** @var */
-    public $last_act;
+    public $last_action;
     /**
      * @var array
      */
     protected $role_set = [];
-    /** @var */
-    public $old_db;
     /**
      * @var bool
      */
     public $logged = false;
-    /**
-     * @var int
-     */
-    public $ui_mode = 0;
     /***
      * @var UserPrefs
      */
@@ -94,7 +88,7 @@
     public $selectedApp;
     /** @var */
     protected $access_sections;
-    protected $_hash;
+    protected $hash;
     /** @var */
     public $last_record;
     /** @var Session */
@@ -127,7 +121,6 @@
       if (isset($_SESSION['User'])) {
         $user = $_SESSION['User'];
       }
-
       return static::ii($user, $session, $config);
     }
     /**
@@ -135,7 +128,6 @@
      * @param \ADV\Core\Config  $config
      */
     public function __construct(Session $session = null, Config $config = null) {
-      $this->DB             = DB::i();
       $this->Session        = $session ? : Session::i();
       $this->Config         = $config ? : Config::i();
       $this->company        = $this->Config->get('default.company') ? : 'default';
@@ -148,25 +140,7 @@
      */
     public function __sleep() {
       $this->Session = null;
-
       return array_keys((array) $this);
-    }
-    /**
-     * @param null $salesmanid
-     */
-    public function set_salesman($salesmanid = null) {
-      if ($salesmanid == null) {
-        $salesman_name = $this->name;
-        $sql           = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::_escape($salesman_name);
-        $query         = DB::_query($sql, 'Couldn\'t find current salesman');
-        $result        = DB::_fetchAssoc($query);
-        if (!empty($result['salesman_code'])) {
-          $this->salesmanid = $result['salesman_code'];
-        }
-      }
-      if ($salesmanid != null) {
-        $this->salesmanid = $salesmanid;
-      }
     }
     /**
      * @return bool
@@ -177,7 +151,6 @@
         $this->last_record = time();
         Event::registerShutdown([$this, '_addLog']);
       }
-
       return $this->logged;
     }
     /**
@@ -191,14 +164,14 @@
       $this->Session = $this->Session ? : Session::i();
       $this->company = $company;
       $this->logged  = false;
-      $myrow         = Users::get_for_login($loginname, $_POST['password']);
+      $myrow         = $this->get_for_login($loginname, $_POST['password']);
       if ($myrow) {
         if ($myrow["inactive"]) {
           return false;
         }
         $this->role_set = [];
         $this->access   = $myrow['role_id'];
-        $this->_hash    = $myrow["hash"];
+        $this->hash     = $myrow["hash"];
         $this->Security = new Security($this->Config);
         // store area codes available for current user role
         $role = $this->Security->get_role($myrow['role_id']);
@@ -219,7 +192,7 @@
         $this->username        = $this->loginname = $loginname;
         $this->prefs           = new UserPrefs($myrow);
         $this->user            = $myrow['id'];
-        $this->last_act        = time();
+        $this->last_action     = time();
         $this->timeout         = DB_Company::get_pref('login_tout');
         $this->salesmanid      = $this->get_salesmanid();
         $this->fireHooks('login');
@@ -228,8 +201,22 @@
         Event::registerShutdown(['Users', 'update_visitdate'], [$this->username]);
         Event::registerShutdown([$this, '_addLog']);
       }
-
       return $this->logged;
+    }
+    /**
+     * @static
+     *
+     * @param $user_id
+     *
+     * @internal param $password
+     * @return bool|mixed
+     */
+    public function  get_for_login($user_id) {
+      $auth = new Auth($user_id);
+      if ($auth->isBruteForce()) {
+        return false;
+      }
+      return $auth->checkUserPassword($user_id);
     }
     /**
      * @static
@@ -244,10 +231,9 @@
     /**
      * @static
      *
+     * @param       $object
      * @param       $function
      * @param array $arguments
-     *
-     * @internal param $object
      */
     public function _register_logout($function, $arguments = []) {
       $this->registerHook('logout', $function, $arguments);
@@ -256,17 +242,17 @@
       // skip timeout on logout page
       if ($this->logged) {
         $tout = $this->timeout;
-        if ($tout && (time() > $this->last_act + $tout)) {
+        if ($tout && (time() > $this->last_action + $tout)) {
           $this->logged = false;
         }
-        $this->last_act = time();
+        $this->last_action = time();
       }
     }
     public function _addLog() {
       DB::_insert('user_login_log')->values(
         array(
              'user'    => $this->username,
-             'IP'      => Users::get_ip(),
+             'IP'      => Auth::get_ip(),
              'success' => 2
         )
       )->exec();
@@ -280,7 +266,6 @@
       if ($page_level == SA_OPEN) {
         return true;
       }
-
       return $this->Security->hasAccess($this, $page_level);
     }
     /**
@@ -300,76 +285,22 @@
       return in_array($role, $this->role_set);
     }
     /**
-     * @param        $price_dec
-     * @param        $qty_dec
-     * @param        $exrate_dec
-     * @param        $percent_dec
-     * @param static $show_gl
-     * @param        $show_codes
-     * @param        $date_format
-     * @param        $date_sep
-     * @param        $tho_sep
-     * @param        $dec_sep
-     * @param        $theme
-     * @param        $page_size
-     * @param        $show_hints
-     * @param        $profile
-     * @param        $rep_popup
-     * @param        $query_size
-     * @param        $graphic_links
-     * @param        $language
-     * @param        $stickydate
-     * @param        $startup_tab
      */
-    public function update_prefs(
-      $price_dec,
-      $qty_dec,
-      $exrate_dec,
-      $percent_dec,
-      $show_gl,
-      $show_codes,
-      $date_format,
-      $date_sep,
-      $tho_sep,
-      $dec_sep,
-      $theme,
-      $page_size,
-      $show_hints,
-      $profile,
-      $rep_popup,
-      $query_size,
-      $graphic_links,
-      $language,
-      $stickydate,
-      $startup_tab
-    ) {
-
-      if (!$this->Config->get('demo_mode')) {
-        Users::update_display_prefs(
-          $this->user,
-          $price_dec,
-          $qty_dec,
-          $exrate_dec,
-          $percent_dec,
-          $show_gl,
-          $show_codes,
-          $date_format,
-          $date_sep,
-          $tho_sep,
-          $dec_sep,
-          $theme,
-          $page_size,
-          $show_hints,
-          $profile,
-          $rep_popup,
-          $query_size,
-          $graphic_links,
-          $language,
-          $stickydate,
-          $startup_tab
-        );
-      }
-      $this->prefs = new UserPrefs(Users::get($this->user));
+    public function update_prefs($prefs) {
+      $this->prefs = new UserPrefs($this->get());
+      $this->prefs->update($this->user, $prefs);
+    }
+    /**
+     * @static
+     *
+     * @param $id
+     *
+     * @return \ADV\Core\DB\Query\Result
+     */
+    protected function  get() {
+      $sql    = "SELECT * FROM users WHERE id=" . DB::_escape($this->user);
+      $result = DB::_query($sql, "could not get user " . $this->user);
+      return DB::_fetch($result);
     }
     /**
      * @static
@@ -396,13 +327,6 @@
     }
     /**
      * @static
-     * @return bool
-     */
-    public function _fallback() {
-      return $this->ui_mode == 0;
-    }
-    /**
-     * @static
      *
      * @param $input
      *
@@ -410,11 +334,11 @@
      */
     public function _numeric($input) {
       $num = trim($input);
-      $sep = $this->_tho_sep();
+      $sep = $this->prefs->tho_sep;
       if ($sep != '') {
         $num = str_replace($sep, '', $num);
       }
-      $sep = $this->_dec_sep();
+      $sep = $this->prefs->dec_sep;
       if ($sep != '.') {
         $num = str_replace($sep, '.', $num);
       }
@@ -593,7 +517,7 @@
       $this->logged = false;
     }
     public function getHash() {
-      return $this->_hash;
+      return $this->hash;
     }
   }
 

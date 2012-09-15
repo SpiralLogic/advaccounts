@@ -14,30 +14,17 @@
       Event::error(_("Query size must be integer and greater than zero and no bigger than 100."));
       JS::_setFocus('query_size');
     } else {
-      $chg_theme = User::theme() != $_POST['theme'];
-      $chg_lang  = $_SESSION['language']->code != $_POST['language'];
-      User::i()->update_prefs(
-        $_POST['prices'],
-        $_POST['Quantities'],
-        $_POST['Rates'],
-        $_POST['Percent'],
-        Input::_hasPost('show_gl'),
-        Input::_hasPost('show_codes'),
-        $_POST['date_format'],
-        $_POST['date_sep'],
-        $_POST['tho_sep'],
-        $_POST['dec_sep'],
-        $_POST['theme'],
-        $_POST['page_size'],
-        Input::_hasPost('show_hints'),
-        $_POST['profile'],
-        Input::_hasPost('rep_popup'),
-        (int) ($_POST['query_size']),
-        Input::_hasPost('graphic_links'),
-        $_POST['language'],
-        Input::_hasPost('sticky_doc_date'),
-        $_POST['startup_tab']
-      );
+      $chg_theme                = User::theme() != $_POST['theme'];
+      $chg_lang                 = $_SESSION['language']->code != $_POST['language'];
+      $prefs                    = $_POST;
+      $prefs['show_gl']         = Input::_hasPost('show_gl');
+      $prefs['show_codes']      = Input::_hasPost('show_codes');
+      $prefs['show_hints']      = Input::_hasPost('show_hints');
+      $prefs['rep_popup']       = Input::_hasPost('rep_popup');
+      $prefs['query_size']      = (int) ($_POST['query_size']);
+      $prefs['graphic_links']   = Input::_hasPost('graphic_links');
+      $prefs['sticky_doc_date'] = Input::_hasPost('sticky_doc_date');
+      User::i()->update_prefs($prefs);
       if ($chg_lang) {
         $_SESSION['language']->setLanguage($_POST['language']);
       }
@@ -93,11 +80,11 @@
   if (!isset($_POST['profile'])) {
     $_POST['profile'] = User::print_profile();
   }
-  Reports_UI::print_profiles_row(_("Printing profile") . ':', 'profile', null, _('Browser printing support'));
+  Reports_UI::print_profiles_row(_("Printing profile") . ':', 'print_profile', null, _('Browser printing support'));
   Forms::checkRow(_("Use popup window to display reports:"), 'rep_popup', User::rep_popup(), false, _('Set this option to on if your browser directly supports pdf files'));
   Forms::checkRow(_("Use icons instead of text links:"), 'graphic_links', User::graphic_links(), false, _('Set this option to on for using icons instead of text links'));
   Forms::textRowEx(_("Query page size:"), 'query_size', 5, 5, '', User::query_size());
-  Forms::checkRow(_("Remember last document date:"), 'sticky_doc_date', User::sticky_doc_date(), false, _('If set document date is remembered on subsequent documents, otherwise default is current date'));
+  Forms::checkRow(_("Remember last document date:"), 'stickydate', User::sticky_doc_date(), false, _('If set document date is remembered on subsequent documents, otherwise default is current date'));
   Table::endOuter(1);
   Forms::submitCenter('setprefs', _("Update"), true, '', 'default');
   Forms::end(2);

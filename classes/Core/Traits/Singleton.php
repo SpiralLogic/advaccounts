@@ -10,8 +10,7 @@
 
   /**
    */
-  trait Singleton
-  {
+  trait Singleton {
     /**
      * @var null
      */
@@ -22,36 +21,32 @@
      * @return mixed|null
      */
     public static function i($class = null) {
-
       /** @var \ADV\Core\DIC $dic  */
       $dic = \ADV\Core\DIC::getInstance();
       if (!$dic instanceof \ADV\Core\DIC) {
         if (static::$i === null) {
           static::$i = new static;
         }
-
         return static::$i;
-      }
-      if (static::$i !== null) {
-        return $dic->get(static::$i);
       }
       $namespaced_class = $class_name = get_class() == get_class($class) ? get_class($class) : get_called_class();
       $lastNsPos        = strripos($namespaced_class, '\\');
       if ($lastNsPos) {
         $class_name = substr($namespaced_class, $lastNsPos + 1);
       }
-      if (static::$i === null && is_a($class, $namespaced_class)) {
+      try {
+        return $dic->get($class_name);
+      } catch (\InvalidArgumentException $e) {
+      }
+      if (is_a($class, $namespaced_class)) {
         $dic->set(
           $class_name,
           function () use ($class) {
             return $class;
           }
         );
-        static::$i = $class_name;
-      }
-      $args = (get_class() == get_class($class)) ? array_slice(func_get_args(), 1) : [$class];
-
-      if (static::$i === null) {
+      } else {
+        $args = (get_class() == get_class($class)) ? array_slice(func_get_args(), 1) : [$class];
         $dic->set(
           $class_name,
           function () use ($namespaced_class, $args) {
@@ -59,13 +54,10 @@
               return new $namespaced_class;
             }
             $ref = new \ReflectionClass($namespaced_class);
-
             return $ref->newInstanceArgs($args);
           }
         );
-        static::$i = $class_name;
       }
-
-      return $dic->get(static::$i);
+      return $dic->get($class_name);
     }
   }
