@@ -1,5 +1,6 @@
 <?php
   use ADV\App\Debtor\Debtor;
+  use ADV\Core\MenuUI;
   use ADV\Core\JS;
   use ADV\Core\HTMLmin;
   use ADV\App\Validation;
@@ -60,15 +61,16 @@
      */
     protected function generateForm() {
       $cache = Cache::_get('customer_form');
-      //  $cache = null;
+      // $cache = null;
       if ($cache) {
         $this->JS->addState($cache[1]);
         return $form = $cache[0];
       }
       $js = new JS();
       $js->autocomplete('customer', 'Company.fetch');
-      $form          = new Form();
-      $menu          = new MenuUI([], $js);
+      $form = new Form();
+      $menu = new MenuUI();
+      $menu->setJSObject($js);
       $view          = new View('contacts/customers');
       $view['frame'] = $this->Input->get('frame') || $this->Input->get('id');
       $view->set('menu', $menu);

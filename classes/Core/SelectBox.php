@@ -316,7 +316,7 @@
       $selector = "<span id='_{$sel_name}_sel' class='combodiv'>" . $selector . "</span>\n";
       // if selectable or editable list is used - add select button
       if ($select_submit != false || $search_button) {
-        $selector .= "<input $disabled type='submit' class='combo_select' style='display:none;' data-aspect='fallback' name='_" . $this->name . "_update' value=' ' title='Select'> ";
+        $selector .= "<input $disabled type='submit' class='combo_select' style='display:none;' name='_" . $this->name . "_update' value=' ' title='Select'> ";
         //button class selects form reload/ajax selector update
       }
       // ------ make combo ----------
@@ -324,7 +324,7 @@
       if ($search_box) {
         $edit_entry = "<input $disabled type='text' name='$search_box' id='$search_box' size='" . $this->size . "' maxlength='" . $this->max . "' value='$txt' class='$class' rel='$this->name' autocomplete='off' title='" . $this->box_hint . "'" . (!$by_id ? " style=display:none;" : '') . ">\n";
         if ($search_submit != false || $this->editable) {
-          $edit_entry .= "<input $disabled type='submit' class='combo_submit' style='display:none;' data-aspect='fallback' name='" . ($search_submit ? $search_submit : "_{$this->name}_button") . "'
+          $edit_entry .= "<input $disabled type='submit' class='combo_submit' style='display:none;' name='" . ($search_submit ? $search_submit : "_{$this->name}_button") . "'
           value=' ' title='" . _("Set filter") . "'> ";
         }
         $this->JS->defaultFocus(($search_box && $by_id) ? $search_box : $this->name);

@@ -10,12 +10,12 @@
   namespace ADV\App;
 
   use ADV\Core\Config;
+  use ADV\Core\DB\DB;
 
   /**
 
    */
-  class UserPrefs
-  {
+  class UserPrefs {
     use \ADV\Core\Traits\SetFromArray;
 
     /**
@@ -90,7 +90,7 @@
         $this->startup_tab = Config::_get('apps.default');
       } else {
         $this->setFromArray($user);
-   //     $_SESSION['language']->setLanguage($this->language);
+        //     $_SESSION['language']->setLanguage($this->language);
       }
     }
     /**
@@ -112,7 +112,6 @@
      */
     public function tho_sep() {
       $tho_seps = Config::_get('separators_thousands');
-
       return $tho_seps [$this->tho_sep];
     }
     /**
@@ -120,7 +119,14 @@
      */
     public function dec_sep() {
       $dec_seps = Config::_get('separators_decimal');
-
       return $dec_seps [$this->dec_sep];
+    }
+    /**
+     * @static
+     */
+    public function  update($id, $prefs) {
+      $this->setFromArray($prefs);
+      DB::_update('users')->values($prefs)->where('id=', $id)->exec();
+      session_regenerate_id();
     }
   }

@@ -10,10 +10,9 @@
     <td>{{$title}}</td>
   </tr>
 </table>
-<input type='hidden' id='ui_mode' name='ui_mode' value='{{User::i()->ui_mode}}'/>
 <td class='center' colspan=2>
   <a target='_blank' href='{{POWERED_URL}}'><img width=440 height=64 src='/themes/{{$def_theme}}/images/logo_advaccounts.png' alt='ADVAccounts'/></a>
-  <span class='font5'>Authorization timeout</span><br>You were idle for: {{User::i()->last_act + User::i()->timeout - time()}}
+  <span class='font5'>Authorization timeout</span><br>You were idle for: {{User::i()->last_action + User::i()->timeout - time()}}
 </td>
 <tr>
   <td class='label'><label for='login_company'>Company</label></td>

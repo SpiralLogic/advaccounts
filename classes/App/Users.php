@@ -18,8 +18,7 @@
   /**
 
    */
-  class Users
-  {
+  class Users {
     /**
      * @static
      *
@@ -37,8 +36,7 @@
      * @internal param $password
      */
     public static function  add($user_id, $real_name, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos, $hash) {
-      $sql
-        = "INSERT INTO users (user_id, real_name, phone, email, role_id, language, pos, print_profile, rep_popup,hash)
+      $sql = "INSERT INTO users (user_id, real_name, phone, email, role_id, language, pos, print_profile, rep_popup,hash)
                 VALUES (" . DB::_escape($user_id) . ",
                 " . DB::_escape($real_name) . ", " . DB::_escape($phone) . "," . DB::_escape($email) . ", " . DB::_escape($role_id) . ", " . DB::_escape(
         $language
@@ -119,8 +117,7 @@
       $stickydate,
       $startup_tab
     ) {
-      $sql
-        = "UPDATE users SET
+      $sql = "UPDATE users SET
                 price_dec=" . DB::_escape($price_dec) . ",
                 qty_dec=" . DB::_escape($qty_dec) . ",
                 exrate_dec=" . DB::_escape($exrate_dec) . ",
@@ -153,13 +150,11 @@
      * @return null|\PDOStatement
      */
     public static function  getAll($all = false) {
-      $sql
-        = "SELECT u.*, r.role FROM users u, security_roles r
+      $sql = "SELECT u.*, r.role FROM users u, security_roles r
                 WHERE u.role_id=r.id";
       if (!$all) {
         $sql .= " AND !u.inactive";
       }
-
       return DB::_query($sql, "could not get users");
     }
     /**
@@ -172,7 +167,6 @@
     public static function  get($id) {
       $sql    = "SELECT * FROM users WHERE id=" . DB::_escape($id);
       $result = DB::_query($sql, "could not get user $id");
-
       return DB::_fetch($result);
     }
     //	This public static function is necessary for admin prefs update after upgrade from 2.1
@@ -187,7 +181,6 @@
     public static function  get_by_login($user_id) {
       $sql    = "SELECT * FROM users WHERE user_id=" . DB::_escape($user_id);
       $result = DB::_query($sql, "could not get user $user_id");
-
       return DB::_fetch($result);
     }
     /**
@@ -198,22 +191,6 @@
     public static function  delete($id) {
       $sql = "DELETE FROM users WHERE id=" . DB::_escape($id);
       DB::_query($sql, "could not delete user $id");
-    }
-    /**
-     * @static
-     *
-     * @param $user_id
-     *
-     * @internal param $password
-     * @return bool|mixed
-     */
-    static public function  get_for_login($user_id) {
-      $auth = new Auth($user_id);
-      if ($auth->isBruteForce()) {
-        return false;
-      }
-
-      return $auth->checkUserPassword($user_id);
     }
     /**
      * @static
@@ -236,7 +213,6 @@
       $sql    = "SELECT COUNT(*) FROM audit_trail WHERE audit_trail.user=" . DB::_escape($id);
       $result = DB::_query($sql, "Cant check user activity");
       $ret    = DB::_fetch($result);
-
       return $ret[0];
     }
     /**
@@ -247,7 +223,6 @@
       if (!Config::_get('ui_users_showonline') || !isset($_SESSION['get_text'])) {
         return "";
       }
-
       return _("users online") . ": " . static::get_online();
     }
     /**
@@ -273,7 +248,6 @@
       } else {
         $ip = $_SERVER['REMOTE_ADDR'];
       }
-
       return $ip;
     }
     /**
@@ -291,7 +265,6 @@
         Event::error($e->getMessage());
       }
       foreach ($themedir as $theme) {
-
         if (!$theme->isDot() && $theme->isDir()) {
           $themes[$theme->getFilename()] = $theme->getFilename();
         }
@@ -336,9 +309,8 @@
      *
      * @return string
      */
-    public static function select($name, $selected_id = null, $spec_opt = false,$inactive=false) {
+    public static function select($name, $selected_id = null, $spec_opt = false, $inactive = false) {
       $sql = "SELECT id, real_name, inactive FROM users";
-
       return Forms::selectBox(
         $name,
         $selected_id,
@@ -346,10 +318,10 @@
         'id',
         'real_name',
         array(
-             'order'       => array('real_name'),
-             'spec_option' => $spec_opt,
-             'spec_id'     => ALL_NUMERIC,
-             'show_inactive'=>$inactive,
+             'order'        => array('real_name'),
+             'spec_option'  => $spec_opt,
+             'spec_id'      => ALL_NUMERIC,
+             'show_inactive'=> $inactive,
         )
       );
     }
@@ -408,7 +380,6 @@
         $users = 1;
       }
       Cache::_set('users_online', $users, 300);
-
       return $users;
     }
   }

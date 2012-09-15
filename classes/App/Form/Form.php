@@ -25,8 +25,7 @@
    * @param string $action
    * @param string $name
    */
-  class Form implements \ArrayAccess, \Iterator, \JsonSerializable
-  {
+  class Form implements \ArrayAccess, \Iterator, \JsonSerializable {
     const NO_VALUES = 1;
     /** @var Field[] */
     protected $fields = [];
@@ -40,10 +39,9 @@
     protected $validators = [];
     protected $uniqueid;
     protected $current;
-    protected $options
-      = [
-        self::NO_VALUES=> false,
-      ];
+    protected $options = [
+      self::NO_VALUES=> false,
+    ];
     protected $currentgroup;
     public $useDefaults = false;
     /**
@@ -74,7 +72,6 @@
       $this->fields[$field->id]     = $field;
       $this->validators[$field->id] =& $field->validator;
       $this->Ajax->addUpdate($name, $name, $field->value);
-
       return $field;
     }
     /**
@@ -87,7 +84,6 @@
         $this->groups[$name] = [];
       }
       $this->currentgroup = &$this->groups[$name];
-
       return $this;
     }
     /**
@@ -124,7 +120,6 @@
         'name' => '_form_id'
         ]
       );
-
       return $this->start;
     }
     /**
@@ -133,7 +128,6 @@
      */
     public function end() {
       $this->end = "</form>";
-
       return $this->end;
     }
     /**
@@ -157,7 +151,6 @@
     public function text($name, $input_attr = []) {
       $field         = $this->addField('input', $name);
       $field['type'] = 'text';
-
       return $field->mergeAttr($input_attr);
     }
     /**
@@ -169,7 +162,6 @@
      */
     public function textarea($name, $input_attr = []) {
       $field = $this->addField('textarea', $name);
-
       return $field->mergeAttr($input_attr);
     }
     /**
@@ -184,7 +176,6 @@
       $field['type']      = 'text';
       $field['maxlength'] = 10;
       $field['class']     = 'datepicker';
-
       return $field->mergeAttr($input_attr);
     }
     /**
@@ -198,7 +189,6 @@
       $field         = $this->addField('checkbox', $name);
       $field['type'] = 'checkbox';
       $field->value  = !!$field->value;
-
       return $field->mergeAttr($input_attr);
     }
     /**
@@ -210,7 +200,6 @@
      */
     public function percent($name, $inputparams = []) {
       $inputparams = array_merge(['class'=> 'amount'], $inputparams);
-
       return $this->number($name, User::percent_dec(), $inputparams)->append('%');
     }
     /**
@@ -228,7 +217,6 @@
       $this->Ajax->addAssign($name, $name, 'data-dec', $dec);
       $field->mergeAttr($input_attr);
       $field['value'] = Num::_format($field['value'] ? : 0, $field['data-dec']);
-
       return $field;
     }
     /**
@@ -241,7 +229,6 @@
      */
     public function amount($name, $input_attr = []) {
       $input_attr = array_merge(['class'=> 'amount'], $input_attr);
-
       return $this->number($name, User::price_dec(), $input_attr)->prepend('$');
     }
     /**
@@ -257,7 +244,6 @@
       $control   = preg_replace('/id=([\'"]?)' . preg_quote($name) . '\1/', "id='$id'", $control, 1);
       $validator = null;
       $field->customControl($control);
-
       return $field;
     }
     /**
@@ -276,7 +262,6 @@
      */
     public function selectBox($name, $selected_id = null, $sql, $valfield, $namefield, $options = null) {
       $box = new SelectBox($name, $selected_id, $sql, $valfield, $namefield, $options);
-
       return $box->create();
     }
     /**
@@ -314,7 +299,6 @@
       $field       = $this->addField('select', $name);
       $field->val($selected_id);
       Ajax::_addUpdate($name, $name, $selected_id);
-
       // code is generalized for multiple selection support
       if ($this->Input->post("_{$name}_update")) {
         $async ? $this->Ajax->activate($name) : $this->Ajax->activate('_page_body');
@@ -342,7 +326,6 @@
       $selector   = $HTML->span("_{$name}_sel", ['class'=> 'combodiv'])->select($field->id, $selector, $input_attr, false)->_span()->__toString();
       $this->Ajax->addUpdate($name, "_{$name}_sel", $selector);
       $field->customControl($selector);
-
       return $field;
     }
     /**
@@ -359,7 +342,6 @@
         $this->currentgroup[] = $button;
       }
       $this->fields[$button->id] = $button;
-
       return $button->mergeAttr($input_attr);
     }
     /**
@@ -367,7 +349,6 @@
      * $atype - type of submit:
      * Normal submit:
      * false - normal button; optional icon
-     * null - button visible only in fallback mode; optional icon
      * Ajax submit:
      * true - standard button; optional icon
      * 'default' - default form submit on Ctrl-Enter press; dflt ICON_OK icon
@@ -397,7 +378,6 @@
         $this->currentgroup[] = $button;
       }
       $this->fields[$button->id] = $button;
-
       return $button->mergeAttr($input_attr);
     }
     /**
@@ -464,10 +444,8 @@
         } elseif ($field['autofocus'] === true) {
           $value['focus'] = true;
         }
-
         $return[$id] = $value;
       }
-
       return $return;
     }
     /**
@@ -509,20 +487,17 @@
         if (empty($this->start)) {
           return $this->start();
         }
-
         return $this->start;
       }
       if ($offset == '_end') {
         if (empty($this->end)) {
           return $this->end();
         }
-
         return $this->end;
       }
       if (!isset($this->fields[$offset]) && isset($this->groups[$offset])) {
         return $this->groups[$offset];
       }
-
       return $this->fields[$offset];
     }
     /**
@@ -607,7 +582,6 @@
       foreach ($this as $field) {
         $return .= $field;
       }
-
       return $return;
     }
   }
