@@ -1,5 +1,6 @@
 <?php
   use ADV\App\Debtor\Debtor;
+  use ADV\Core\JS;
   use ADV\Core\HTMLmin;
   use ADV\App\Validation;
   use ADV\App\User;
@@ -59,14 +60,15 @@
      */
     protected function generateForm() {
       $cache = Cache::_get('customer_form');
-      //$cache = null;
+      //  $cache = null;
       if ($cache) {
-        $this->JS->setState($cache[1]);
+        $this->JS->addState($cache[1]);
         return $form = $cache[0];
       }
-      $this->JS->autocomplete('customer', 'Company.fetch');
+      $js = new JS();
+      $js->autocomplete('customer', 'Company.fetch');
       $form          = new Form();
-      $menu          = new MenuUI();
+      $menu          = new MenuUI([], $js);
       $view          = new View('contacts/customers');
       $view['frame'] = $this->Input->get('frame') || $this->Input->get('id');
       $view->set('menu', $menu);
@@ -95,7 +97,7 @@
                                               'city'     => ['branch[city]'], //
                                               'state'    => ['branch[state]'], //
                                               'postcode' => ['branch[postcode]']
-                                              ]);
+                                              ], $js);
       $view->set('branch_postcode', $branch_postcode->getForm());
       $form->group('accounts_details')->text('accounts[contact_name]')->label('Accounts Contact:');
       $form->text('accounts[phone]')->label('Phone Number:');
@@ -107,11 +109,11 @@
                                                 'city'     => ['accounts[city]'], //
                                                 'state'    => ['accounts[state]'], //
                                                 'postcode' => ['accounts[postcode]'] //
-                                                ]);
+                                                ], $js);
       $view->set('accounts_postcode', $accounts_postcode->getForm());
       $form->hidden('accounts_id');
       $form->group('accounts');
-      $has_access = !User::i()->hasAccess(SA_CUSTOMER_CREDIT);
+      $has_access = !$this->User->hasAccess(SA_CUSTOMER_CREDIT);
       $form->percent('discount', ["disabled"=> $has_access])->label("Discount Percent:");
       $form->percent('payment_discount', ["disabled"=> $has_access])->label("Prompt Payment Discount:");
       $form->amount('credit_limit', ["disabled"=> $has_access])->label("Credit Limit:");
@@ -175,10 +177,12 @@
           ['caption'=> 'Customer Payment', 'Make customer payment!', 'data'=> '/sales/customer_payments.php?debtor_id=']
         ];
         $view->set('shortcuts', $shortcuts);
-        UI::emailDialogue(CT_CUSTOMER);
+        UI::emailDialogue(CT_CUSTOMER, $js);
       }
-      $form = HTMLmin::minify($view->render(true));
-      Cache::_set('customer_form', [$form, $this->JS->getState()]);
+      $form     = HTMLmin::minify($view->render(true));
+      $js_state = $js->getState();
+      Cache::_set('customer_form', [$form, $js_state]);
+      $this->JS->addState($js_state);
       return $form;
     }
     protected function delete() {

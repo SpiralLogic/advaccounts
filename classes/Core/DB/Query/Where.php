@@ -8,13 +8,13 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core\DB\Query;
+
   use PDO, PDOStatement, \PDOException, \PDORow;
 
   /**
 
    */
-  abstract class Where
-  {
+  abstract class Where {
     /**
      * @var array
      */
@@ -31,8 +31,7 @@
      * @var int
      */
     protected $count = 0;
-    protected function resetWhere()
-    {
+    protected function resetWhere() {
       $this->wheredata = $this->where = [];
       $this->count     = 0;
     }
@@ -43,8 +42,7 @@
      *
      * @return Select
      */
-    protected function _where($conditions, $type = 'AND', $uservar = null)
-    {
+    protected function _where($conditions, $type = 'AND', $uservar = null) {
       if (is_array($conditions)) {
         foreach ($conditions as $condition) {
           if (is_array($condition)) {
@@ -72,8 +70,7 @@
      *
      * @return Query|Select
      */
-    public function where($condition, $uservar = null)
-    {
+    public function where($condition, $uservar = null) {
       return $this->_where($condition, 'AND', $uservar);
     }
     /**
@@ -82,8 +79,7 @@
      *
      * @return Select
      */
-    public function orWhere($condition, $uservar = null)
-    {
+    public function orWhere($condition, $uservar = null) {
       return $this->_where($condition, 'OR', $uservar);
     }
     /**
@@ -92,8 +88,7 @@
      *
      * @return Select
      */
-    public function andWhere($condition, $uservar = null)
-    {
+    public function andWhere($condition, $uservar = null) {
       return $this->_where($condition, 'AND', $uservar);
     }
     /**
@@ -102,8 +97,7 @@
      *
      * @return Select
      */
-    public function orOpen($condition, $uservar = null)
-    {
+    public function orOpen($condition, $uservar = null) {
       return $this->_where($condition, 'OR (', $uservar);
     }
     /**
@@ -112,8 +106,7 @@
      *
      * @return Select
      */
-    public function andOpen($condition, $uservar = null)
-    {
+    public function andOpen($condition, $uservar = null) {
       return $this->_where($condition, 'AND (', $uservar);
     }
     /**
@@ -122,8 +115,7 @@
      *
      * @return Select
      */
-    public function closeAnd($condition, $uservar = null)
-    {
+    public function closeAnd($condition, $uservar = null) {
       return $this->_where($condition, ') AND', $uservar);
     }
     /**
@@ -132,8 +124,7 @@
      *
      * @return Select
      */
-    public function closeOr($condition, $uservar = null)
-    {
+    public function closeOr($condition, $uservar = null) {
       return $this->_where($condition, ') OR', $uservar);
     }
     /**
@@ -142,8 +133,7 @@
      *
      * @return Select
      */
-    public function open($condition, $uservar = null)
-    {
+    public function open($condition, $uservar = null) {
       if (empty($this->where)) {
         $condition = '(' . $condition;
       }
@@ -153,8 +143,7 @@
     /**
      * @return Where
      */
-    public function close()
-    {
+    public function close() {
       array_push($this->where, array_pop($this->where) . ') ');
 
       return $this;
@@ -162,8 +151,7 @@
     /**
      * @return string
      */
-    protected function _buildWhere()
-    {
+    protected function buildWhere() {
       $sql = '';
       if (!empty($this->where)) {
         $sql .= ' WHERE ' . implode(' ', $this->where);

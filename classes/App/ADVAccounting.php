@@ -84,6 +84,8 @@
       $this->Ajax   = Ajax::i();
       ob_start([$this, 'flush_handler'], 0);
       $this->Session = Session::i();
+      $this->JS      = JS::i($this->Config);
+      $this->JS->footerFile($this->Config->get('assets.footer'));
       $this->setTextSupport();
       $this->Session['language'] = new Language();
       $this->User                = User::i($this->Session);

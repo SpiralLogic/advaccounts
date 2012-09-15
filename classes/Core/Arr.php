@@ -8,10 +8,10 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
   /**
    */
-  class Arr
-  {
+  class Arr {
     /**
      * @static
      *
@@ -81,6 +81,10 @@
         if (is_int($key)) {
           $array[] = $el;
         } else {
+          if (is_array($array[$key]) && is_array($el)) {
+            Arr::append($array[$key], $el);
+            continue;
+          }
           $array[$key] = $el;
         }
       }

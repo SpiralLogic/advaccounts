@@ -23,10 +23,14 @@
     protected $state;
     protected $postcode;
     protected $url = '/contacts/postcode.php';
+    /** @var \ADV\Core\JS */
+    protected $JS;
     /**
-     * @param $options
+     * @param             $options
+     * @param ADV\Core\JS $js
      */
-    public function __construct($options) {
+    public function __construct($options, JS $js = null) {
+      $this->JS = $js ? : JS::i();
       static::$count++;
       $this->setFromArray($options);
     }
@@ -52,7 +56,8 @@
                'max'               => 40,
                'callback'          => 'Adv.postcode.fetch'
           ),
-          true
+          true,
+          $this->JS
         )
       )->label('City: ');
       $form->text(
@@ -78,7 +83,8 @@
           'max'               => 40,
           'callback'          => 'Adv.postcode.fetch'
           ],
-          true
+          true,
+          $this->JS
         )
       )->label('Postcode: ');
       $this->registerJS();
@@ -107,7 +113,7 @@
       $city     = $this->city[0];
       $state    = $this->state[0];
       $postcode = $this->postcode[0];
-      JS::_onload("Adv.postcode.add('$set','$city','$state','$postcode');");
+      $this->JS->onload("Adv.postcode.add('$set','$city','$state','$postcode');");
       static::$count++;
     }
     /**

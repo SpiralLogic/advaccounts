@@ -70,7 +70,8 @@
      * options: Javascript function autocomplete options<br>
 
      */
-    public static function search($id, $options = [], $return = false) {
+    public static function search($id, $options = [], $return = false, JS $js = null) {
+      $js   = $js ? : JS::i();
       $o    = array(
         'url'               => false, //
         'nodiv'             => false, //
@@ -122,7 +123,7 @@
         $HTML->div();
       }
       $callback = $o['callback'] ? : ucfirst($id);
-      JS::_autocomplete($id, $callback, $url);
+      $js->autocomplete($id, $callback, $url);
       $search = $HTML->__toString();
       if ($return) {
         return $search;
@@ -236,19 +237,22 @@
         );
         $desc_js .= "$('#description').css('height','auto').attr('rows',4);";
       } elseif ($o['submitonselect']) {
-        $selectjs = <<<JS
+        $selectjs
+          = <<<JS
                 $(this).val(value.stock_id);
                 $('form').trigger('submit'); return false;
 JS;
       } else {
-        $selectjs = <<<JS
+        $selectjs
+          = <<<JS
                 $(this).val(value.stock_id);return false;
 JS;
       }
       if ($o['cells']) {
         $HTML->td();
       }
-      $js    = <<<JS
+      $js
+             = <<<JS
     Adv.o.stock_id = \$$id = $("#$id").catcomplete({
                 delay: 0,
                 autoFocus: true,
@@ -304,27 +308,31 @@ JS;
      *
      * @return mixed
      */
-    public static function emailDialogue($contactType) {
+    public static function emailDialogue($contactType, JS $js = null) {
       static $loaded = false;
+      $js = $js ? : JS::i();
       if ($loaded == true) {
         return;
       }
       $emailBox = new Dialog('Select Email Address:', 'emailBox', '');
+      $emailBox->setJsObject($js);
       $emailBox->addButtons(array('Close' => '$(this).dialog("close");'));
       $emailBox->setOptions(['modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false]);
       $emailBox->show();
-      $action = <<<JS
+      $action
+        = <<<JS
      var emailID= $(this).data('emailid');
      $.post('/contacts/emails.php',{type: $contactType, id: emailID}, function(data) {
      \$emailBox.html(data).dialog('open');
      },'html');
      return false;
 JS;
-      JS::_addLiveEvent('.email-button', 'click', $action, 'wrapper', true);
+      $js->addLiveEvent('.email-button', 'click', $action, 'wrapper', true);
       $loaded = true;
     }
     public static function lineSortable() {
-      $js = <<<JS
+      $js
+        = <<<JS
 $('.grid').find('tbody').sortable({
   items:'tr:not(.newline,.editline)',
   stop:function (e, ui) {

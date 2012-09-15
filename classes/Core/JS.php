@@ -10,7 +10,7 @@
   namespace ADV\Core;
 
   /**
-   * @method static \ADV\Core\JS i
+   * @method static \ADV\Core\JS i()
    * @method static JS _openWindow($width, $height)
    * @method static JS _setFocus($selector, $cached = false)
    * @method static JS _headerFile($file)
@@ -62,12 +62,13 @@
      * @var bool
      */
     private $openWindow = false;
+    /** @var Config */
+    protected $Config;
     /**
      * @param Config $config
      */
     public function __construct(Config $config = null) {
       $this->Config = $config ? : Config::i();
-      $this->footerFile($this->Config->get('assets.footer'));
     }
     /**
      * @static
@@ -424,9 +425,13 @@ JS;
     /**
      * @param array $state
      */
-    public function setState(Array $state = []) {
+    public function addState(Array $state = []) {
       foreach ($state as $property=> $value) {
         if (property_exists($this, $property)) {
+          if (is_array($this->$property)) {
+            $this->$property = array_merge_recursive($this->$property, $value);
+            continue;
+          }
           $this->$property = $value;
         }
       }

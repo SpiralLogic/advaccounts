@@ -12,8 +12,7 @@
   /**
 
    */
-  class SessionException extends \Exception
-  {
+  class SessionException extends \Exception {
   }
 
   /**
@@ -30,8 +29,7 @@
    * @method static Session i()
    * @property  string                page_title
    */
-  class Session implements \ArrayAccess
-  {
+  class Session implements \ArrayAccess {
     use Traits\StaticAccess2;
 
     /***
@@ -63,7 +61,7 @@
       if (isset($_SESSION['flash'])) {
         $this->flash = $_SESSION['flash'];
       }
-      $this['flash'] = [];
+      $_SESSION['flash'] = [];
     }
     /**
      * @static
@@ -131,7 +129,6 @@
      */
     public function setFlash($var, $value) {
       $_SESSION['flash'][$var] = $value;
-
       return $value;
     }
     /**

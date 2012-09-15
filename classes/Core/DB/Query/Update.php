@@ -8,34 +8,32 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core\DB\Query;
+
   use PDO, PDOStatement, PDOException, PDORow;
   use ADV\Core\DB\DB;
 
   /**
    * @method \ADV\Core\DB\Query\Select values($values)
    */
-  class Update extends Insert
-  {
+  class Update extends Insert {
     /**
      * @param bool $table
      * @param      $db
      */
-    public function __construct($table = false, $db)
-    {
+    public function __construct($table = false, $db) {
       parent::__construct($table, $db);
       $this->type = DB::UPDATE;
     }
     /**
      * @return string
      */
-    protected function _buildQuery()
-    {
+    protected function buildQuery() {
       $sql = "UPDATE " . $this->table . " SET ";
       foreach ($this->fields as &$field) {
         $field = " $field = :$field";
       }
       $sql .= implode(', ', $this->fields);
-      $sql .= $this->_buildWhere();
+      $sql .= $this->buildWhere();
 
       return $sql;
     }

@@ -135,11 +135,12 @@
      * @param \ADV\Core\Config  $config
      */
     public function __construct(Session $session = null, Config $config = null) {
-      $this->Session = $session ? : Session::i();
-      $this->Config  = $config ? : Config::i();
-      $this->company = $this->Config->get('default.company') ? : 'default';
-      $this->logged  = false;
-      $this->prefs   = new UserPrefs((array) $this);
+      $this->Session        = $session ? : Session::i();
+      $this->Config         = $config ? : Config::i();
+      $this->company        = $this->Config->get('default.company') ? : 'default';
+      $this->date_ui_format = $this->Config->get('date.ui_format');
+      $this->logged         = false;
+      $this->prefs          = new UserPrefs((array) $this);
     }
     /**
      * @return array
@@ -401,14 +402,14 @@
 
      */
     public function _add_js_data() {
-      $js = "var user = {theme: '/themes/" . $this->_theme() . "/'" //
+      $js = "var user = {theme: '/themes/" . $this->prefs->theme . "/'" //
         . ",loadtxt: '" . _('Requesting data...') //
         . "',date: '" . Dates::_today() //
-        . "',datefmt: " . $this->_date_format() //
-        . ",datesep: '" . $this->Config->get('date.ui_format') //
-        . "',ts: '" . $this->_tho_sep() //
-        . "',ds: '" . $this->_dec_sep() //
-        . "',pdec: " . $this->_price_dec() //
+        . "',datefmt: " . $this->prefs->date_format //
+        . ",datesep: '" . $this->date_ui_format //
+        . "',ts: '" . $this->prefs->tho_sep //
+        . "',ds: '" . $this->prefs->dec_sep //
+        . "',pdec: " . $this->prefs->price_dec //
         . "};";
       JS::_beforeload($js);
     }

@@ -10,6 +10,8 @@
   namespace ADV\Core\DB;
 
   use PDO, PDOStatement, PDOException;
+  use ADV\Core\Cache;
+  use ADV\Core\Config;
   use ADV\Core\DB\Query\Select;
 
   /**
@@ -37,8 +39,7 @@
    * @method static _errorNo()
    * @method  static _quote($value, $type = null)
    */
-  class DB
-  {
+  class DB {
     use \ADV\Core\Traits\StaticAccess2;
 
     const SELECT = 0;
@@ -54,7 +55,7 @@
     /*** @var \PDOStatement */
     protected $prepared = null;
     /**   @var null */
-    protected $debug = null;
+    protected $debug = false;
     /** @var bool */
     protected $nested = false;
     /** @var Query\Query|Query\Select|Query\Update $query */
@@ -72,10 +73,6 @@
      */
     protected $errorInfo = false;
     /**
-     * @var bool
-     */
-    protected $useCache = false;
-    /**
      * @var array
      */
     protected $config = false;
@@ -87,19 +84,14 @@
     protected $conn = false;
     /** @var */
     protected $default_connection;
-    /** @var \Cache */
-    protected $cache;
+    /** @var Cache */
+    protected $Cache;
     /**
      * @throws DBException
      */
-    public function __construct($name = 'default', \Config $config = null, $cache = null) {
-      $Config         = $config ? : \Config::i();
-      $this->useCache = class_exists('ADV\\Core\\Cach\\Cache', false);
-      if (!$Config) {
-        throw new DBException('No database configuration provided');
-      }
+    public function __construct($name = 'default', Config $config = null, Cache $cache = null) {
+      $Config       = $config ? : \Config::i();
       $this->config = $Config->get('db.' . $name);
-      $this->debug  = false;
       $this->connect($this->config);
       $this->default_connection = $this->config['name'];
     }
@@ -114,16 +106,15 @@
         $conn = new PDO('mysql:host=' . $config['host'] . ';dbname=' . $config['dbname'], $config['user'], $config['pass'], array(PDO::MYSQL_ATTR_FOUND_ROWS => true));
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $conn->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_TO_STRING);
- //       $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        //       $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         static::$connections[$config['name']] = $conn;
         if ($this->conn === false) {
           $this->conn = $conn;
         }
-
-        return true;
       } catch (PDOException $e) {
         throw new DBException('Could not connect to database:' . $config['name'] . ', check configuration!');
       }
+      return true;
     }
     /**
      * @param      $sql
