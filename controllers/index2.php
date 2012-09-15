@@ -1,4 +1,8 @@
 <?php
-  var_dump(Session::_getFlash('test'));
+  use ADV\Core\Dates;
 
-  Session::_setFlash('test', 'testing');
+  $start = microtime(true);
+  for ($i = 0; $i < 100000; $i++) {
+    $num = DB::i();
+  }
+  var_dump(Dates::getReadableTime(microtime(true) - $start));

@@ -252,7 +252,7 @@
       DB::_insert('user_login_log')->values(
         array(
              'user'    => $this->username,
-             'IP'      => Users::get_ip(),
+             'IP'      => Auth::get_ip(),
              'success' => 2
         )
       )->exec();

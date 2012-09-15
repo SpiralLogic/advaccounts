@@ -107,6 +107,20 @@
         $this->checkLogin();
       }
       \ADV\Core\Event::init($this->Cache, $this->User->username);
+      $dic = \ADV\Core\DIC::getInstance();
+      $dic->set(
+        'Num',
+        function () {
+          $num              = new \ADV\Core\Num();
+          $num->price_dec   = $this->User->_price_dec();
+          $num->qty_dec     = $this->User->_qty_dec();
+          $num->tho_sep     = $this->User->_tho_sep();
+          $num->dec_sep     = $this->User->_dec_sep();
+          $num->exrate_dec  = $this->User->_exrate_dec();
+          $num->percent_dec = $this->User->_percent_dec();
+          return $num;
+        }
+      );
       $this->get_selected();
       $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
       $index      = $controller == $_SERVER['SCRIPT_NAME'];

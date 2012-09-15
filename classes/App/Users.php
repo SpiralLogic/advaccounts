@@ -227,31 +227,6 @@
     }
     /**
      * @static
-     * @return mixed
-     */
-    public static function get_ip() {
-      /*
-                                                                               This will find out if user is from behind proxy server.
-                                                                               In that case, the script would count them all as 1 user.
-                                                                               This public static function tryes to get real IP address.
-                                                                               */
-      if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-        $ip = $_SERVER['HTTP_CLIENT_IP'];
-      } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-      } elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
-        $ip = $_SERVER['HTTP_X_FORWARDED'];
-      } elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-        $ip = $_SERVER['HTTP_FORWARDED_FOR'];
-      } elseif (isset($_SERVER['HTTP_FORWARDED'])) {
-        $ip = $_SERVER['HTTP_FORWARDED'];
-      } else {
-        $ip = $_SERVER['REMOTE_ADDR'];
-      }
-      return $ip;
-    }
-    /**
-     * @static
      *
      * @param      $label
      * @param      $name
@@ -368,7 +343,7 @@
         $timeoutseconds = 120;
         $timestamp      = time();
         $timeout        = $timestamp - $timeoutseconds;
-        $ip             = static::get_ip();
+        $ip             = Auth::get_ip();
         // Add user to database
         DB::_insert('useronline')->values(array('timestamp' => $timestamp, 'ip' => $ip, 'file' => $_SERVER['DOCUMENT_URI']))->exec();
         //Remove users that were not online within $timeoutseconds.

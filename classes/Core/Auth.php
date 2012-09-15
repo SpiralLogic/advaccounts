@@ -9,8 +9,6 @@
    **/
   namespace ADV\Core;
 
-  use ADV\App\Users;
-
   /**
 
    */
@@ -19,8 +17,7 @@
   /**
 
    */
-  class Auth
-  {
+  class Auth {
     /** @var */
     protected $username;
     /** @var */
@@ -54,7 +51,6 @@
      */
     public function hashPassword() {
       $password = crypt($this->password, '$6$rounds=5000$' . Config::_get('auth_salt') . '$');
-
       return $password;
     }
     /**
@@ -77,16 +73,14 @@
         }
         unset($result['password']);
       }
-      DB::_insert('user_login_log')->values(array('user' => $username, 'IP' => Users::get_ip(), 'success' => (bool) $result))->exec();
-
+      DB::_insert('user_login_log')->values(array('user' => $username, 'IP' => Auth::get_ip(), 'success' => (bool) $result))->exec();
       return $result;
     }
     /**
      * @return bool
      */
     public function isBruteForce() {
-      $query = DB::_query('select COUNT(IP) FROM user_login_log WHERE success=0 AND timestamp>NOW() - INTERVAL 1 HOUR AND IP=' . DB::_escape(Users::get_ip()));
-
+      $query = DB::_query('select COUNT(IP) FROM user_login_log WHERE success=0 AND timestamp>NOW() - INTERVAL 1 HOUR AND IP=' . DB::_escape(Auth::get_ip()));
       return (DB::_fetch($query)[0] > Config::_get('max_login_attempts', 50));
     }
     /**
@@ -166,7 +160,31 @@
           }
         }
       }
-
       return $returns;
+    }
+    /**
+     * @static
+     * @return mixed
+     */
+    public static function get_ip() {
+      /*
+      This will find out if user is from behind proxy server.
+      In that case, the script would count them all as 1 user.
+      This public static function tryes to get real IP address.
+      */
+      if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+      } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+      } elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
+        $ip = $_SERVER['HTTP_X_FORWARDED'];
+      } elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+        $ip = $_SERVER['HTTP_FORWARDED_FOR'];
+      } elseif (isset($_SERVER['HTTP_FORWARDED'])) {
+        $ip = $_SERVER['HTTP_FORWARDED'];
+      } else {
+        $ip = $_SERVER['REMOTE_ADDR'];
+      }
+      return $ip;
     }
   }
