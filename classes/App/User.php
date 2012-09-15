@@ -135,6 +135,7 @@
      * @param \ADV\Core\Config  $config
      */
     public function __construct(Session $session = null, Config $config = null) {
+      $this->DB             = DB::i();
       $this->Session        = $session ? : Session::i();
       $this->Config         = $config ? : Config::i();
       $this->company        = $this->Config->get('default.company') ? : 'default';
@@ -243,9 +244,10 @@
     /**
      * @static
      *
-     * @param       $object
      * @param       $function
      * @param array $arguments
+     *
+     * @internal param $object
      */
     public function _register_logout($function, $arguments = []) {
       $this->registerHook('logout', $function, $arguments);
@@ -341,28 +343,7 @@
       $stickydate,
       $startup_tab
     ) {
-      $user = array(
-        'price_dec'       => $price_dec,
-        'qty_dec'         => $qty_dec,
-        'exrate_dec'      => $exrate_dec,
-        'percent_dec'     => $percent_dec,
-        'show_gl'         => $show_gl,
-        'show_codes'      => $show_codes,
-        'date_format'     => $date_format,
-        'date_sep'        => $date_sep,
-        'tho_sep'         => $tho_sep,
-        'dec_sep'         => $dec_sep,
-        'theme'           => $theme,
-        'page_size'       => $page_size,
-        'show_hints'      => $show_hints,
-        'print_profile'   => $profile,
-        'rep_popup'       => $rep_popup,
-        'query_size'      => $query_size,
-        'graphic_links'   => $graphic_links,
-        'language'        => $language,
-        'sticky_doc_date' => $stickydate,
-        'startup_tab'     => $startup_tab
-      );
+
       if (!$this->Config->get('demo_mode')) {
         Users::update_display_prefs(
           $this->user,
