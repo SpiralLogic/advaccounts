@@ -49,7 +49,7 @@
     /**
      * @var int
      */
-    public $tho_sep = 0;
+    public $tho_sep;
     /**
      * @var int
      */
@@ -91,6 +91,8 @@
       } else {
         $this->setFromArray($user);
         //     $_SESSION['language']->setLanguage($this->language);
+        $tho_seps      = Config::_get('separators_thousands');
+        $this->tho_sep = $tho_seps[$this->tho_sep];
       }
     }
     /**
@@ -111,8 +113,6 @@
      * @return mixed
      */
     public function tho_sep() {
-      $tho_seps = Config::_get('separators_thousands');
-      return $tho_seps [$this->tho_sep];
     }
     /**
      * @return mixed
