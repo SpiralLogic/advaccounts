@@ -166,6 +166,7 @@
       return $this->_interpolation_vars[$name];
     }
   }
+
   /**
    * Implementation of get_text support for PHP.
    * This implementation is abble to cache .po files into php files returning the
@@ -316,6 +317,7 @@
       return $key;
     }
   }
+
   /**
    * Class representing a domain file for a specified language.
    * @access private
@@ -347,6 +349,7 @@
       return $this->_keys[$key];
     }
   }
+
   /**
    * This class is used to parse gettext '.po' files into php associative arrays.
    * @access private
@@ -436,6 +439,7 @@
       $this->_current_value             = "";
     }
   }
+
   /**
    * This class write a php file from a gettext hashtable.
    * The produced file return the translation hashtable on include.

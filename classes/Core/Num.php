@@ -9,8 +9,6 @@
    **/
   namespace ADV\Core;
 
-  use ADV\App\User;
-
   /**
    * @method static _priceFormat($number)
    * @method static _format($number, $decimals = 0)
@@ -26,7 +24,7 @@
     /**
      * @var int
      */
-    public $price_dec = 4;
+    public $price_dec = 2;
     public $qty_dec = 0;
     /**
      * @var string
@@ -44,11 +42,6 @@
     public $percent_dec;
     protected $user;
     /**
-     * @param User $user
-     */
-    public function __construct(User $user = null) {
-    }
-    /**
      * @static
      *
      * @param $number
@@ -62,7 +55,8 @@
     /**
      * @static
      *
-     * @param $number
+     * @param      $number
+     * @param null $dec
      *
      * @return int|string
      */

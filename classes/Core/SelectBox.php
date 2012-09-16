@@ -193,7 +193,8 @@
         $this->sel_hint = $by_id || $search_box == false ? '' : _('Press Space tab for search pattern entry');
       }
       if ($this->box_hint === null) {
-        $this->box_hint = $search_box && $search_submit != false ? ($by_id ? _('Enter code fragment to search or * for all') : _('Enter description fragment to search or * for all')) : '';
+        $this->box_hint = $search_box && $search_submit != false ?
+          ($by_id ? _('Enter code fragment to search or * for all') : _('Enter description fragment to search or * for all')) : '';
       }
       if ($this->selected_id == null) {
         $this->selected_id = $this->Input->post($this->name, null, (string) $this->default);
@@ -285,7 +286,8 @@
         ['[', ']'],
         ['-', ''],
         $this->name
-      ) . "' " . ($multi ? "multiple" : '') . ($this->height !== false ? ' size="' . $this->height . '"' : '') . "$disabled name='$this->name" . ($multi ? '[]' : '') . "' class='$class' title='" . $this->sel_hint . "' " . $this->rel . ">" . $selector . "</select>\n";
+      ) . "' " . ($multi ? "multiple" : '') . ($this->height !== false ? ' size="' . $this->height . '"' : '') . "$disabled name='$this->name" . ($multi ? '[]' :
+        '') . "' class='$class' title='" . $this->sel_hint . "' " . $this->rel . ">" . $selector . "</select>\n";
       if ($by_id && ($search_box != false || $this->editable)) {
         // on first display show selector list
         if (isset($_POST[$search_box]) && $this->editable && $edit) {
@@ -322,7 +324,8 @@
       // ------ make combo ----------
       $edit_entry = '';
       if ($search_box) {
-        $edit_entry = "<input $disabled type='text' name='$search_box' id='$search_box' size='" . $this->size . "' maxlength='" . $this->max . "' value='$txt' class='$class' rel='$this->name' autocomplete='off' title='" . $this->box_hint . "'" . (!$by_id ? " style=display:none;" : '') . ">\n";
+        $edit_entry = "<input $disabled type='text' name='$search_box' id='$search_box' size='" . $this->size . "' maxlength='" . $this->max . "' value='$txt' class='$class' rel='$this->name' autocomplete='off' title='" . $this->box_hint . "'" . (!$by_id ?
+          " style=display:none;" : '') . ">\n";
         if ($search_submit != false || $this->editable) {
           $edit_entry .= "<input $disabled type='submit' class='combo_submit' style='display:none;' name='" . ($search_submit ? $search_submit : "_{$this->name}_button") . "'
           value=' ' title='" . _("Set filter") . "'> ";

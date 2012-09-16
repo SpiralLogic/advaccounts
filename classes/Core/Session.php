@@ -14,6 +14,7 @@
    */
   class SessionException extends \Exception {
   }
+
   /**
    * @method  static _getGlobal($var, $default = null)
    * @method static _setGlobal($var, $value = null)

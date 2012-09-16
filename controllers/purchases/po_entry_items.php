@@ -128,7 +128,8 @@
       $allow_update = $this->checkData();
       if ($allow_update == true) {
         if ($allow_update == true) {
-          $sql    = "SELECT long_description as description , units, mb_flag
+          $sql
+                  = "SELECT long_description as description , units, mb_flag
   				FROM stock_master WHERE stock_id = " . DB::_escape($_POST['stock_id']);
           $result = DB::_query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
           if (DB::_numRows($result) == 0) {

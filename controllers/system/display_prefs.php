@@ -84,7 +84,13 @@
   Forms::checkRow(_("Use popup window to display reports:"), 'rep_popup', User::rep_popup(), false, _('Set this option to on if your browser directly supports pdf files'));
   Forms::checkRow(_("Use icons instead of text links:"), 'graphic_links', User::graphic_links(), false, _('Set this option to on for using icons instead of text links'));
   Forms::textRowEx(_("Query page size:"), 'query_size', 5, 5, '', User::query_size());
-  Forms::checkRow(_("Remember last document date:"), 'stickydate', User::sticky_doc_date(), false, _('If set document date is remembered on subsequent documents, otherwise default is current date'));
+  Forms::checkRow(
+    _("Remember last document date:"),
+    'stickydate',
+    User::sticky_doc_date(),
+    false,
+    _('If set document date is remembered on subsequent documents, otherwise default is current date')
+  );
   Table::endOuter(1);
   Forms::submitCenter('setprefs', _("Update"), true, '', 'default');
   Forms::end(2);
