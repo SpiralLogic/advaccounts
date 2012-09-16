@@ -10,6 +10,7 @@
   namespace ADV\App\Tax;
 
   use Tax_Groups;
+  use ADV\Core\Table;
   use ADV\App\Forms;
   use ADV\Core\Cell;
   use ADV\App\User;

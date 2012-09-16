@@ -10,13 +10,11 @@
 }
 
 body {
-  padding:               15px 0 0 0;
-  font:                  .7em Tahoma, Geneva, Verdana;
-  line-height:           1.7em;
-  color:                 #454545;
-  background:            url(/themes/default/images/background.png) repeat;
-  background-attachment: fixed;
-  /*background-size: 16px 16px;*/
+  padding:     15px 0 0 0;
+  font:        .7em Tahoma, Geneva, Verdana;
+  line-height: 1.7em;
+  color:       #454545;
+  background:  rgb(43, 48, 48);
 }
 
 body.wait {
@@ -2714,7 +2712,7 @@ img {
   color:           #333;
 }
 
-.js input.combo2, .js *[data-aspect=fallback] {
+.js input.combo2 {
   display: none;
 }
 

@@ -195,8 +195,8 @@
       $selector = "<span id='_{$sel_name}_sel' class='combodiv'>" . $selector . "</span>\n";
       if ($select_submit != false) { // if submit on change is used - add select button
         $_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url
- (/themes/%s/images/button_ok.png) no-repeat;%s' data-aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
-        $selector .= sprintf($_select_button, $disabled, User::theme(), (static::$dic['User']->fallback() ? '' : 'display:none;'), '_' . $name . '_update') . "\n";
+ (/themes/%s/images/button_ok.png) no-repeat;%s' name='%s' value=' ' title='" . _("Select") . "'> ";
+        $selector .= sprintf($_select_button, $disabled, User::theme(), 'display:none;', '_' . $name . '_update') . "\n";
       }
       //  static::$dic['JS']->_defaultFocus($name);
       return $selector;
@@ -207,7 +207,6 @@
      * $atype - type of submit:
      * Normal submit:
      * false - normal button; optional icon
-     * null - button visible only in fallback mode; optional icon
      * Ajax submit:
      * true - standard button; optional icon
      * 'default' - default form submit on Ctrl-Enter press; dflt ICON_OK icon
@@ -229,7 +228,7 @@
     public static function submit($name, $value, $echo = true, $title = false, $atype = false, $icon = false) {
       $aspect = '';
       if ($atype === null) {
-        $aspect = static::$dic['User']->_fallback() ? " data-aspect='fallback'" : " style='display:none;'";
+        $aspect = " style='display:none;'";
       } elseif (!is_bool($atype)) { // necessary: switch uses '=='
         $aspect = " data-aspect='$atype' ";
         $types  = explode(' ', $atype);
@@ -1318,7 +1317,7 @@
       if ($init === null) {
         $init = Input::_post($name, Input::NUMERIC);
       }
-      $init = $_POST[$name] = Num::_priceDecimal($init, $dec);
+      $init                   = $_POST[$name] = Num::_priceDecimal($init, $dec);
       $input_attr['name']     = $name;
       $input_attr['value']    = $init;
       $input_attr['data-dec'] = $dec;

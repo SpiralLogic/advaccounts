@@ -223,7 +223,7 @@
         $this->itemControls();
       }
       if ($this->order->count_gl_items()) {
-        Table::label(_("Total"), Num::_format(abs($this->order->gl_items_total()), User::price_dec()), " class='alignright'", "class='alignright'", 3);
+        Table::label(_("Total"), Num::_format(abs($this->order->gl_items_total()), User::price_dec()), " colspan='2' class='alignright'", "class='alignright'", 3);
       }
       Table::end();
       Display::div_end();
@@ -402,6 +402,7 @@
       if (!$this->checkItemData()) {
         return;
       }
+
       $amount = ($this->order->trans_type == ST_BANKPAYMENT ? 1 : -1) * Validation::input_num('amount');
       $this->order->add_gl_item($_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
       Item_Line::start_focus('_code_id_edit');

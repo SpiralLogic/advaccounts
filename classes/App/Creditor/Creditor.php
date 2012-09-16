@@ -151,6 +151,7 @@
      * @var string
      */
     protected $_id_column = 'creditor_id';
+    protected $_classname = 'Supplier';
     /** @var DB */
     public static $staticDB;
     /**

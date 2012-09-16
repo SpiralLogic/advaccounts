@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core\DB\Query;
+
   use PDO, PDOStatement, PDOException, PDORow, Cache;
   use ADV\Core\DB\DB;
   use ADV\Core\DB\DBException;
@@ -15,9 +16,7 @@
   /**
 
    */
-  class Insert extends Query
-  {
-
+  class Insert extends Query {
     /** @var */
     protected $table;
     /**
@@ -107,16 +106,19 @@
         $this->values((array) $data);
       }
       $this->data   = array_intersect_key($this->data, array_flip($this->hasfields));
-      $this->data   = array_filter($this->data, function ($value) {
-        return !is_object($value);
-      });
+      $this->data   = array_filter(
+        $this->data,
+        function ($value) {
+          return !is_object($value);
+        }
+      );
       $this->fields = array_keys($this->data);
-      return $this->_buildQuery();
+      return $this->buildQuery();
     }
     /**
      * @return string
      */
-    protected function _buildQuery() {
+    protected function buildQuery() {
       $sql = "INSERT INTO " . $this->table . " (";
       $sql .= implode(', ', $this->fields) . ") VALUES (";
       $sql .= ':' . implode(', :', str_replace('-', '_', $this->fields));

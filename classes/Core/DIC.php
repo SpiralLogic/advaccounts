@@ -1,5 +1,6 @@
 <?php
   namespace ADV\Core;
+
   /**
 
    */
@@ -7,6 +8,9 @@
     protected $_objects = [];
     protected $_callbacks = [];
     protected static $i;
+    /**
+     * @return DIC
+     */
     public static function getInstance() {
       if (!static::$i) {
         static::$i = new static;
@@ -38,9 +42,12 @@
      * @param $param
      */
     public function setParam($name, $param) {
-      $this->set($name, function() use ($param) {
-        return $param;
-      });
+      $this->set(
+        $name,
+        function () use ($param) {
+          return $param;
+        }
+      );
     }
     /**
      * @param $name
@@ -111,7 +118,6 @@
       $arguments[0]                = $this;
       $key                         = $this->keyForArguments($arguments);
       $this->_objects[$name][$key] = call_user_func_array($this->_callbacks[$name], $arguments);
-
       return $this->_objects[$name][$key];
     }
     /**

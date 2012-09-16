@@ -15,7 +15,7 @@
     $demo_text = _("Please login here");
   }
   $def_theme     = "default";
-  $login_timeout = User::i()->last_act;
+  $login_timeout = User::i()->last_action;
   $title         = $login_timeout ? _('Authorization timeout') : APP_TITLE . " " . VERSION . " - " . _("Login");
   $encoding      = isset($_SESSION['language']->encoding) ? $_SESSION['language']->encoding : "utf-8";
   $rtl           = isset($_SESSION['language']->dir) ? $_SESSION['language']->dir : "ltr";
@@ -34,13 +34,12 @@
   Display::div_start('_page_body');
   Display::br(2);
   Forms::start(false, $_SESSION['timeout']['uri'], "loginform");
-  echo "<input type='hidden' id='ui_mode' name='ui_mode' value='" . User::i()->ui_mode . "' />\n";
   Table::start('login');
   echo '<tr>';
   echo "<td class='center' colspan=2>";
   echo "<a target='_blank' href='" . POWERED_URL . "'><img width=440 height=64 src='/themes/$def_theme/images/logo-advaccounts.png' alt='ADVAccounts'  /></a>";
   if ($login_timeout) {
-    echo "<span class='font5'>" . _('Authorization timeout') . "</span><br>You were idle for: " . (User::i()->last_act + User::i()->timeout - time());
+    echo "<span class='font5'>" . _('Authorization timeout') . "</span><br>You were idle for: " . (User::i()->last_action + User::i()->timeout - time());
   }
   echo "</td>\n";
   echo '</tr>';
@@ -75,7 +74,7 @@
   Table::end(1);
   foreach ($_POST as $p => $val) {
     // add all request variables to be resend together with login data
-    if (!in_array($p, array('ui_mode', 'user_name', 'password', 'SubmitUser', 'login_company'))) {
+    if (!in_array($p, array('user_name', 'password', 'SubmitUser', 'login_company'))) {
       echo "<input type='hidden' name='" . serialize($p) . "' value='$val'>";
     }
   }

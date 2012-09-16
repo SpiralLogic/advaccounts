@@ -11,8 +11,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class InvLocation extends \ADV\App\Controller\Manage
-  {
+  class InvLocation extends \ADV\App\Controller\Manage {
+    protected $tableWidth = '80';
     protected function before() {
       $this->object = new Location();
       $this->runPost();
@@ -46,7 +46,7 @@
      * @return array
      */
     protected function generateTableCols() {
-      $cols         = [
+      $cols = [
         ['type'=> 'skip'],
         _("Location Code"), //
         _("Location Name"), //
@@ -57,7 +57,6 @@
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
       ];
       return $cols;
-
     }
   }
 

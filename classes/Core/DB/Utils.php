@@ -11,14 +11,12 @@
 
   use ADV\Core\Event;
   use ADV\Core\Files;
-  use ADV\App\User;
   use DB_Company;
 
   /**
 
    */
-  class Utils extends DB
-  {
+  class Utils extends DB {
     /**
      * @static
      *
@@ -26,8 +24,7 @@
      *
      * @return int|resource
      */
-    public static function create($connection)
-    {
+    public static function create($connection) {
       $db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
       if (!mysql_select_db($connection["dbname"], $db)) {
         $sql = "CREATE DATABASE " . $connection["dbname"] . "";
@@ -36,7 +33,6 @@
         }
         mysql_select_db($connection["dbname"], $db);
       }
-
       return $db;
     }
     /**
@@ -48,8 +44,7 @@
      *
      * @return bool
      */
-    public static function import($filename, $connection = null, $force = true)
-    {
+    public static function import($filename, $connection = null, $force = true) {
       $allowed_commands     = array(
         "create"               => 'table_queries',
         "alter table"          => 'table_queries',
@@ -148,7 +143,6 @@
         // display first failure message; the rest are probably derivative
         $err = $sql_errors[0];
         Event::error(sprintf(_("SQL script execution failed in line %d: %s"), $err[1], $err[0]));
-
         return false;
       } else {
         return true;
@@ -165,8 +159,7 @@
      * @return array|string
      * returns the content of the gziped $path backup file. use of $mode see below
      */
-    public static function ungzip($mode, $path)
-    {
+    public static function ungzip($mode, $path) {
       $file_data = gzfile($path);
       // returns one string or an array of lines
       if ($mode != "lines") {
@@ -184,8 +177,7 @@
      * @return array|string
      * returns the content of the ziped $path backup file. use of $mode see below
      */
-    public static function unzip($mode, $path)
-    {
+    public static function unzip($mode, $path) {
       $all = implode("", file($path));
       // convert path to name of ziped file
       $filename = preg_replace("/.*\//", "", $path);
@@ -226,10 +218,8 @@
      *
      * @return bool|string
      */
-    public static function backup($conn, $ext = 'no', $comm = '')
-    {
+    public static function backup($conn, $ext = 'no', $comm = '') {
       $filename = $conn['dbname'] . "_" . date("Ymd_Hi") . ".sql";
-
       return Utils::export($conn, $filename, $ext, $comm);
     }
     /**
@@ -244,8 +234,7 @@
      * generates a dump of $db database
      * $drop and $zip tell if to include the drop table statement or dry to pack
      */
-    public static function export($conn, $filename, $zip = 'no', $comment = '')
-    {
+    public static function export($conn, $filename, $zip = 'no', $comment = '') {
       $error = false;
       // set max string size before writing to file
       $max_size = 1048576 * 2; // 2 MB
@@ -268,7 +257,6 @@
       $out .= "# Built by " . APP_TITLE . " " . VERSION . "\n";
       $out .= "# " . POWERED_URL . "\n";
       $out .= "# Company: " . html_entity_decode($company, ENT_QUOTES, $_SESSION['language']->encoding) . "\n";
-      $out .= "# User: " . User::i()->name . "\n\n";
       // write users comment
       if ($comment) {
         $out .= "# Comment:\n";
@@ -317,7 +305,6 @@
           // export tables
           $out .= "### Structure of table `" . $tablename . "` ###\n\n";
           $out .= "DROP TABLE IF EXISTS `" . $tablename . "`;\n\n";
-
           if (isset($table_sql)) {
             $out .= $table_sql[$tablename];
           }
@@ -361,7 +348,6 @@
             // an error occurred! Try to delete file and return error status
           } elseif ($error) {
             unlink(BACKUP_PATH . $backupfile);
-
             return false;
           }
           // if saving is successful, then empty $out, else set error flag
@@ -376,7 +362,6 @@
         // an error occurred! Try to delete file and return error status
       } else {
         unlink(BACKUP_PATH . $backupfile);
-
         return false;
       }
       // if (mysql_error()) return "databaseError(";
@@ -386,10 +371,8 @@
       if (Files::saveToFile($backupfile, $out = '', $zip)) {
       } else {
         unlink(BACKUP_PATH . $backupfile);
-
         return false;
       }
-
       return $backupfile;
     }
     /**
@@ -402,8 +385,7 @@
      * orders the tables in $tables according to the constraints in $fks
      * $fks musst be filled like this: $fks[tablename][0]=needed_table1; $fks[tablename][1]=needed_table2; ...
      */
-    public static function order_sql_tables($tables, $fks)
-    {
+    public static function order_sql_tables($tables, $fks) {
       // do not order if no contraints exist
       if (!count($fks)) {
         return $tables;
@@ -441,7 +423,6 @@
         }
         echo "<div class=\"red_left\">THIS DATABASE SEEMS TO CONTAIN 'RING CONSTRAINTS'. WA DOES NOT SUPPORT THEM. PROBABLY THE FOLOWING BACKUP IS DEFECT!</div>";
       }
-
       return $new_tables;
     }
   }

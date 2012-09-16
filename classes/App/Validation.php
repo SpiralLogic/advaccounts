@@ -15,8 +15,7 @@
   /**
 
    */
-  class Validation
-  {
+  class Validation {
     const CUSTOMERS         = "debtors";
     const CURRENCIES        = "currencies";
     const SALES_TYPES       = "sales_types";
@@ -176,6 +175,7 @@
         $_POST[$postname] = $default;
       }
       $result = filter_var($_POST[$postname], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND);
+
       if ($min !== null && $result < $min) {
         $result = false;
       }

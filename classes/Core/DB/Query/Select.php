@@ -8,14 +8,14 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core\DB\Query;
+
   use PDO, PDOStatement, PDOException, PDORow;
   use ADV\Core\DB\DB;
 
   /**
 
    */
-  class Select extends Query
-  {
+  class Select extends Query {
     /**
      * @var array
      */
@@ -50,8 +50,7 @@
      *
      * @return Select
      */
-    public function __construct($columns, $db)
-    {
+    public function __construct($columns, $db) {
       parent::__construct($db);
       $this->type = DB::SELECT;
       call_user_func_array(array($this, 'select'), $columns);
@@ -61,8 +60,7 @@
      *
      * @return Select
      */
-    public function select()
-    {
+    public function select() {
       $columns      = func_get_args();
       $this->select = array_merge($this->select, $columns);
 
@@ -73,8 +71,7 @@
      *
      * @return Select
      */
-    public function from($tables = null)
-    {
+    public function from($tables = null) {
       if (is_null($tables)) {
         return $this;
       }
@@ -88,8 +85,7 @@
      *
      * @return Select
      */
-    public function orderby($by = null)
-    {
+    public function orderby($by = null) {
       if (is_null($by)) {
         return $this;
       }
@@ -103,8 +99,7 @@
      *
      * @return Select
      */
-    public function groupby($by = null)
-    {
+    public function groupby($by = null) {
       if (is_null($by)) {
         return $this;
       }
@@ -119,8 +114,7 @@
      *
      * @return Select
      */
-    public function limit($start = 0, $quantity = null)
-    {
+    public function limit($start = 0, $quantity = null) {
       $this->limit = ($quantity == null) ? $start : "$start, $quantity";
 
       return $this;
@@ -128,9 +122,8 @@
     /**
      * @return Select
      */
-    public function union()
-    {
-      $this->union[] = '(' . $this->_buildQuery() . ')';
+    public function union() {
+      $this->union[] = '(' . $this->buildQuery() . ')';
       $this->select  = $this->from = $this->orderby = $this->groupby = [];
       $this->limit   = '';
       $this->resetWhere();
@@ -143,30 +136,27 @@
      *
      * @return void
      */
-    public function union_or($condition, $var)
-    {
+    public function union_or($condition, $var) {
       $this->union_or[$condition] = $var;
     }
     /**
      * @return string
      */
-    protected function execute()
-    {
+    protected function execute() {
       if ($this->union) {
         return implode(' UNION ', $this->union);
       }
 
-      return $this->_buildQuery();
+      return $this->buildQuery();
     }
     /**
      * @return string
      */
-    protected function _buildQuery()
-    {
+    protected function buildQuery() {
       $sql = "SELECT ";
       $sql .= (empty($this->select)) ? '*' : implode(', ', $this->select);
       $sql .= " FROM " . implode(', ', $this->from);
-      $sql .= parent::_buildWhere();
+      $sql .= parent::buildWhere();
       if (!empty($this->union_or)) {
         //$data = $this->data;
         $finalsql = [];
