@@ -41,9 +41,9 @@
    */
   class Dates {
     protected $sep = '-';
-    protected $formats = array("m/d/Y", "d/m/Y", "Y/m/d");
-    protected $separators = array('/', ".", "-", " ");
-    protected $format;
+    public $formats = array("m/d/Y", "d/m/Y", "Y/m/d");
+    public $separators = array('/', ".", "-", " ");
+    public $format;
     /**
      * @static
      *

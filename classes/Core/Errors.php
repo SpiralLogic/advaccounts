@@ -190,7 +190,6 @@
         $subject = 'Error log: ';
         $subject .= (isset(static::$session['User'])) ? static::$session['User']->username . ', ' : '';
         if (static::$session) {
-          //    unset(static::$session['current_user'], static::$session['config'], static::$session['App']);
           if (isset(static::$session['orders_tbl'])) {
             static::$session['orders_tbl'] = count(static::$session['orders_tbl']);
           }

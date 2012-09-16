@@ -318,9 +318,9 @@
         . ",loadtxt: '" . _('Requesting data...') //
         . "',date: '" . Dates::_today() //
         . "',datefmt: " . $this->prefs->date_format //
-        . ",datesep: '" . $this->date_ui_format //
-        . "',ts: '" . $this->prefs->tho_sep //
-        . "',ds: '" . $this->prefs->dec_sep //
+        . ",datesep: '" . $this->prefs->date_sep() //
+        . "',ts: '" . $this->prefs->tho_sep() //
+        . "',ds: '" . $this->prefs->dec_sep() //
         . "',pdec: " . $this->prefs->price_dec //
         . "};";
       JS::_beforeload($js);
@@ -334,17 +334,19 @@
      */
     public function _numeric($input) {
       $num = trim($input);
-      $sep = $this->prefs->tho_sep;
+      $sep = $this->prefs->tho_sep();
       if ($sep != '') {
         $num = str_replace($sep, '', $num);
       }
-      $sep = $this->prefs->dec_sep;
+      $sep = $this->prefs->dec_sep();
+
       if ($sep != '.') {
         $num = str_replace($sep, '.', $num);
       }
       if (!is_numeric($num)) {
         return false;
       }
+
       $num = (float) $num;
       if ($num == (int) $num) {
         return (int) $num;
@@ -427,7 +429,7 @@
      * @return int
      */
     public function _date_sep() {
-      return (isset($_SESSION["current_user"])) ? $this->prefs->date_sep : $this->Config->get('date.ui_separator');
+      return (isset($_SESSION["current_user"])) ? $this->prefs->date_sep() : $this->Config->get('date.ui_separator');
     }
     /**
      * @static

@@ -121,6 +121,10 @@
       $dec_seps = Config::_get('separators_decimal');
       return $dec_seps [$this->dec_sep];
     }
+    public function date_sep() {
+      $date_seps = Config::_get('date.separators');
+      return $date_seps[$this->dec_sep];
+    }
     /**
      * @static
      */
