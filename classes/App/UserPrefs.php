@@ -49,7 +49,7 @@
     /**
      * @var int
      */
-    public $tho_sep = 0;
+    public $tho_sep;
     /**
      * @var int
      */
@@ -90,8 +90,9 @@
         $this->startup_tab = Config::_get('apps.default');
       } else {
         $this->setFromArray($user);
+        //     $_SESSION['language']->setLanguage($this->language);
         $tho_seps      = Config::_get('separators_thousands');
-        $this->tho_sep = $tho_seps [$this->tho_sep];
+        $this->tho_sep = $tho_seps[$this->tho_sep];
       }
     }
     /**
@@ -107,6 +108,11 @@
       } else {
         return "Y" . $sep . "m" . $sep . "d";
       }
+    }
+    /**
+     * @return mixed
+     */
+    public function tho_sep() {
     }
     /**
      * @return mixed
