@@ -133,7 +133,7 @@
       $this->company        = $this->Config->get('default.company') ? : 'default';
       $this->date_ui_format = $this->Config->get('date.ui_format');
       $this->logged         = false;
-      $this->prefs          = new UserPrefs((array) $this);
+      $this->prefs          = new UserPrefs();
     }
     /**
      * @return array
@@ -319,7 +319,7 @@
         . "',date: '" . Dates::_today() //
         . "',datefmt: " . $this->prefs->date_format //
         . ",datesep: '" . $this->prefs->date_sep() //
-        . "',ts: '" . $this->prefs->tho_sep() //
+        . "',ts: '" . $this->prefs->tho_sep //
         . "',ds: '" . $this->prefs->dec_sep() //
         . "',pdec: " . $this->prefs->price_dec //
         . "};";
@@ -334,7 +334,7 @@
      */
     public function _numeric($input) {
       $num = trim($input);
-      $sep = $this->prefs->tho_sep();
+      $sep = $this->prefs->tho_sep;
       if ($sep != '') {
         $num = str_replace($sep, '', $num);
       }
@@ -431,12 +431,8 @@
     public function _date_sep() {
       return (isset($_SESSION["current_user"])) ? $this->prefs->date_sep() : $this->Config->get('date.ui_separator');
     }
-    /**
-     * @static
-     * @return mixed
-     */
     public function _tho_sep() {
-      return $this->prefs->tho_sep();
+      return $this->prefs->tho_sep;
     }
     /**
      * @static

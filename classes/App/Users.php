@@ -35,12 +35,13 @@
      *
      * @internal param $password
      */
-    public static function  add($user_id, $real_name, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos, $hash) {
-      $sql = "INSERT INTO users (user_id, real_name, phone, email, role_id, language, pos, print_profile, rep_popup,hash)
+    public static function  add($user_id, $real_name, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos) {
+      $sql
+        = "INSERT INTO users (user_id, real_name, phone, email, role_id, language, pos, print_profile, rep_popup,hash)
                 VALUES (" . DB::_escape($user_id) . ",
                 " . DB::_escape($real_name) . ", " . DB::_escape($phone) . "," . DB::_escape($email) . ", " . DB::_escape($role_id) . ", " . DB::_escape(
         $language
-      ) . ", " . DB::_escape($pos) . "," . DB::_escape($profile) . "," . DB::_escape($rep_popup) . "," . DB::_escape($hash) . " )";
+      ) . ", " . DB::_escape($pos) . "," . DB::_escape($profile) . "," . DB::_escape($rep_popup) . " )";
       DB::_query($sql, "could not add user for $user_id");
     }
     /**
@@ -117,7 +118,8 @@
       $stickydate,
       $startup_tab
     ) {
-      $sql = "UPDATE users SET
+      $sql
+        = "UPDATE users SET
                 price_dec=" . DB::_escape($price_dec) . ",
                 qty_dec=" . DB::_escape($qty_dec) . ",
                 exrate_dec=" . DB::_escape($exrate_dec) . ",
@@ -150,7 +152,8 @@
      * @return null|\PDOStatement
      */
     public static function  getAll($all = false) {
-      $sql = "SELECT u.*, r.role FROM users u, security_roles r
+      $sql
+        = "SELECT u.*, r.role FROM users u, security_roles r
                 WHERE u.role_id=r.id";
       if (!$all) {
         $sql .= " AND !u.inactive";
