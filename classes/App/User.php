@@ -334,17 +334,19 @@
      */
     public function _numeric($input) {
       $num = trim($input);
-      $sep = $this->prefs->tho_sep;
+      $sep = $this->prefs->tho_sep();
       if ($sep != '') {
         $num = str_replace($sep, '', $num);
       }
-      $sep = $this->prefs->dec_sep;
+      $sep = $this->prefs->dec_sep();
+
       if ($sep != '.') {
         $num = str_replace($sep, '.', $num);
       }
       if (!is_numeric($num)) {
         return false;
       }
+
       $num = (float) $num;
       if ($num == (int) $num) {
         return (int) $num;

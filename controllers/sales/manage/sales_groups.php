@@ -6,8 +6,7 @@
   /**
 
    */
-  class SalesGroups extends \ADV\App\Controller\Manage
-  {
+  class SalesGroups extends \ADV\App\Controller\Manage {
     protected function before() {
       $this->object = new Group();
       $this->runPost();
@@ -28,13 +27,13 @@
     protected function formContents(Form $form, View $view) {
       $view['title'] = 'Sales Group';
       $form->hidden('id');
-      $form->text('description')->label('Area Name:');
+      $form->text('description')->label('Group Name:');
     }
     /**
      * @return array
      */
     protected function generateTableCols() {
-      $cols         = [
+      $cols = [
         ['type'=> 'skip'],
         'Group Name',
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
