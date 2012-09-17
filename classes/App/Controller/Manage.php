@@ -93,18 +93,26 @@
     protected function generateTable() {
       $cols       = $this->generateTableCols();
       $pager_name = get_called_class() . '_table';
-      $inactive   = false;
+      //DB_Pager::kill($pager_name);
+      $table        = DB_Pager::newPager($pager_name, $this->getTableRows($pager_name), $cols);
+      $table->width = $this->tableWidth;
+      $table->display();
+      return $table;
+    }
+    /**
+     * @param $pager_name
+     *
+     * @return mixed
+     */
+    protected function getTableRows($pager_name) {
+      $inactive = false;
       if (isset($_SESSION['pager'][$pager_name])) {
         $inactive = ($this->action == 'showInactive' && $this->Input->post(
           '_value',
           Input::NUMERIC
         ) == 1) || ($this->action != 'showInactive' && $_SESSION['pager'][$pager_name]->showInactive);
       }
-      //DB_Pager::kill($pager_name);
-      $table        = DB_Pager::newPager($pager_name, $this->object->getAll($inactive), $cols);
-      $table->width = $this->tableWidth;
-      $table->display();
-      return $table;
+      return $this->object->getAll($inactive);
     }
     /**
      * @param $row

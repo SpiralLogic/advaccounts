@@ -528,6 +528,7 @@
               );
             }
             Display::link_params_td("/purchases/po_entry_items.php", _("Modify"), "ModifyOrder=" . $myrow["purch_order_no"], ' class="button"');
+            echo '<tr>';
           }
         }
       }

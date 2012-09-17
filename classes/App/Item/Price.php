@@ -7,8 +7,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Item_Price
-  {
+  use ADV\Core\DB\DB;
+  use ADV\App\Validation;
+
+  /**
+
+   */
+  class Item_Price extends \ADV\App\DB\Base {
     const PURCHASE    = 1;
     const SALE        = 2;
     const SORT_UPDATE = 'last_update';
@@ -22,10 +27,33 @@
      * @var
      */
     protected $_type;
-    /**
-     * @var
-     */
+    protected $_table = 'prices';
+    protected $_classname = 'Prices';
+    protected $_id_column = 'id';
     public $id;
+    public $item_code_id;
+    public $stock_id;
+    public $sales_type_id = 0;
+    public $curr_abrev;
+    public $price = 0.0000;
+    /**
+     * @return \ADV\Core\Traits\Status|bool
+     */
+    protected function canProcess() {
+      if (!Validation::is_num($this->item_code_id, 0)) {
+        return $this->status(false, 'Item_code_id must be a number', 'item_code_id');
+      }
+      if (strlen($this->stock_id) > 20) {
+        return $this->status(false, 'Stock_id must be not be longer than 20 characters!', 'stock_id');
+      }
+      if (strlen($this->curr_abrev) > 3) {
+        return $this->status(false, 'Curr_abrev must be not be longer than 3 characters!', 'curr_abrev');
+      }
+      if (!Validation::is_num($this->price, null)) {
+        return $this->status(false, 'Price must be a number', 'price');
+      }
+      return true;
+    }
     /**
      * @static
      *
@@ -35,16 +63,13 @@
      *
      * @return array
      */
-    public static function getPrices($stockid, $type = self::SALE, $sort = self::SORT_PRICE)
-    {
+    public static function getPrices($stockid, $type = self::SALE, $sort = self::SORT_PRICE) {
       switch ($type) {
         case self::PURCHASE:
-          $result = DB::_select()->from('purch_data')->where('stockid=', $stockid)->orderby($sort)->fetch()
-            ->asClassLate('Item_Price', array(self::PURCHASE))->all();
+          $result = DB::_select()->from('purch_data')->where('stockid=', $stockid)->orderby($sort)->fetch()->asClassLate('Item_Price', array(self::PURCHASE))->all();
           break;
         case self::SALE:
-          $result = DB::_select()->from('prices')->where('stockid=', $stockid)->orderby($sort)->fetch()
-            ->asClassLate('Item_Price', array(self::SALE))->all();
+          $result = DB::_select()->from('prices')->where('stockid=', $stockid)->orderby($sort)->fetch()->asClassLate('Item_Price', array(self::SALE))->all();
           break;
         default:
           $result = [];
@@ -63,22 +88,9 @@
      *
      * @return mixed
      */
-    public static function getPriceBySupplier($stockid, $supplierid)
-    {
-      $result = DB::_select()->from('purch_data')->where('stockid=', $stockid)->andWhere('creditor_id=', $supplierid)->fetch()
-        ->asClassLate('Item_Price', array(self::PURCHASE))->one();
+    public static function getPriceBySupplier($stockid, $supplierid) {
+      $result = DB::_select()->from('purch_data')->where('stockid=', $stockid)->andWhere('creditor_id=', $supplierid)->fetch()->asClassLate('Item_Price', array(self::PURCHASE))->one();
       return $result;
-    }
-    /**
-     * @param $type
-     */
-    public function __construct($type)
-    {
-      $this->_type = $type;
-    }
-    public function save()
-    {
-      DB::_update('prices')->where('stockid=', $this->stockid)->andWhere('id=', $this->id)->exec($this);
     }
     /**
      * @static
@@ -91,19 +103,16 @@
      *
      * @return bool
      */
-    public static function add($stock_id, $sales_type_id, $curr_abrev, $price, $item_code_id = null)
-    {
+    public static function add($stock_id, $sales_type_id, $curr_abrev, $price, $item_code_id = null) {
       if ($item_code_id == null) {
         $item_code_id = Item_Code::get_id($stock_id);
       }
-      $sql
-        = "INSERT INTO prices (item_code_id, stock_id, sales_type_id, curr_abrev, price)
+      $sql = "INSERT INTO prices (item_code_id, stock_id, sales_type_id, curr_abrev, price)
             VALUES (" . DB::_escape($item_code_id) . ", " . DB::_escape($stock_id) . ", " . DB::_escape($sales_type_id) . ", " . DB::_escape($curr_abrev) . ", " . DB::_escape($price) . ")";
       try {
         DB::_query($sql, "an item price could not be added");
         return true;
-      }
-      catch (\ADV\Core\DB\DBDuplicateException $e) {
+      } catch (\ADV\Core\DB\DBDuplicateException $e) {
         Event::error('A price already exists for this sales type.');
         return false;
       }
@@ -116,8 +125,7 @@
      * @param $curr_abrev
      * @param $price
      */
-    public static function update($price_id, $sales_type_id, $curr_abrev, $price)
-    {
+    public static function update($price_id, $sales_type_id, $curr_abrev, $price) {
       $sql = "UPDATE prices SET sales_type_id=" . DB::_escape($sales_type_id) . ",
             curr_abrev=" . DB::_escape($curr_abrev) . ",
             price=" . DB::_escape($price) . " WHERE id=" . DB::_escape($price_id);
@@ -128,8 +136,7 @@
      *
      * @param $price_id
      */
-    public static function delete($price_id)
-    {
+    public function delete($price_id) {
       $sql = "DELETE FROM prices WHERE id= " . DB::_escape($price_id);
       DB::_query($sql, "an item price could not be deleted");
     }
@@ -140,10 +147,8 @@
      *
      * @return null|PDOStatement
      */
-    public static function getAll($stock_id)
-    {
-      $sql
-        = "SELECT sales_types.sales_type, prices.*
+    public function getAll($stock_id) {
+      $sql = "SELECT sales_types.sales_type, prices.*
             FROM prices, sales_types
             WHERE prices.sales_type_id = sales_types.id
             AND stock_id=" . DB::_escape($stock_id) . " ORDER BY curr_abrev, sales_type_id";
@@ -156,8 +161,7 @@
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get($price_id)
-    {
+    public static function get($price_id) {
       $sql    = "SELECT * FROM prices WHERE id=" . DB::_escape($price_id);
       $result = DB::_query($sql, "price could not be retreived");
       return DB::_fetch($result);
@@ -169,8 +173,7 @@
      *
      * @return mixed
      */
-    public static function get_standard_cost($stock_id)
-    {
+    public static function get_standard_cost($stock_id) {
       $sql    = "SELECT IF(s.mb_flag='" . STOCK_SERVICE . "', 0, material_cost + labour_cost + overhead_cost) AS std_cost
                 FROM stock_master s WHERE stock_id=" . DB::_escape($stock_id);
       $result = DB::_query($sql, "The standard cost cannot be retrieved");
@@ -185,8 +188,7 @@
      *
      * @return float|int
      */
-    public static function get_percent($stock_id, $add_pct)
-    {
+    public static function get_percent($stock_id, $add_pct) {
       $avg = static::get_standard_cost($stock_id);
       if ($avg == 0) {
         return 0;
@@ -204,8 +206,7 @@
      *
      * @return float|int
      */
-    public static function get_calculated_price($stock_id, $currency, $sales_type_id, $factor = null, $date = null)
-    {
+    public static function get_calculated_price($stock_id, $currency, $sales_type_id, $factor = null, $date = null) {
       if ($date == null) {
         $date = Dates::_newDocDate();
       }
@@ -217,8 +218,7 @@
       $base_id   = DB_Company::get_base_sales_type();
       $home_curr = Bank_Currency::for_company();
       //	AND (sales_type_id = $sales_type_id	OR sales_type_id = $base_id)
-      $sql
-                = "SELECT price, curr_abrev, sales_type_id
+      $sql      = "SELECT price, curr_abrev, sales_type_id
             FROM prices
             WHERE stock_id = " . DB::_escape($stock_id) . "
                 AND (curr_abrev = " . DB::_escape($currency) . " OR curr_abrev = " . DB::_escape($home_curr) . ")";
@@ -280,8 +280,7 @@
      *
      * @return float|int
      */
-    public static function get_kit($item_code, $currency, $sales_type_id, $factor = null, $date = null, $std = false)
-    {
+    public static function get_kit($item_code, $currency, $sales_type_id, $factor = null, $date = null, $std = false) {
       $kit_price = 0.00;
       if (!$std) {
         $kit_price = static::get_calculated_price($item_code, $currency, $sales_type_id, $factor, $date);
@@ -310,10 +309,8 @@
      *
      * @return float|int
      */
-    public static function get_purchase($creditor_id, $stock_id)
-    {
-      $sql
-              = "SELECT price, conversion_factor FROM purch_data
+    public static function get_purchase($creditor_id, $stock_id) {
+      $sql    = "SELECT price, conversion_factor FROM purch_data
                 WHERE creditor_id = " . DB::_escape($creditor_id) . "
                 AND stock_id = " . DB::_escape($stock_id);
       $result = DB::_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
@@ -335,8 +332,7 @@
      *
      * @return int
      */
-    public static function update_cost($stock_id, $material_cost, $labour_cost, $overhead_cost, $last_cost)
-    {
+    public static function update_cost($stock_id, $material_cost, $labour_cost, $overhead_cost, $last_cost) {
       if (Input::_post('mb_flag') == STOCK_SERVICE) {
         Event::error("Cannot do cost update for Service item : $stock_id", "");
       }
@@ -374,8 +370,7 @@
      *
      * @return string
      */
-    public static function toWords($amount, $document = 0)
-    {
+    public static function toWords($amount, $document = 0) {
       // Only usefor Remittance and Receipts as default
       if (!($document == ST_SUPPAYMENT || $document == ST_CUSTPAYMENT || $document == ST_CUSTREFUND || $document == ST_CHEQUE)) {
         return "";

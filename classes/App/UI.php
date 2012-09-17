@@ -251,7 +251,7 @@ JS;
       }
       $js    = <<<JS
     Adv.o.stock_id = \$$id = $("#$id");
-    if (\$$id[0].type==='hidden'){return;}
+    if (\$$id.type==='hidden'){return;}
     \$$id.catcomplete({
                 delay: 0,
                 autoFocus: true,

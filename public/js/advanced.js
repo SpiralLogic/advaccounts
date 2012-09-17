@@ -668,26 +668,22 @@ Adv.extend({
           if ($error.is('.err_msg')) {
             type = 'error';
           }
-          else {
-            if ($error.is('.warn_msg')) {
-              type = 'warning';
-            }
-            else {
-              Adv.Status.show({html:error});
-              return;
-            }
+          if ($error.is('.warn_msg')) {
+            type = 'warning';
+          }
+          field = $(Adv.Forms.findInputEl(field));
+          if (type === undefined || !field.is('input:not(input[type=hidden]),textarea,select')) {
+            Adv.Status.show({html:error});
+            return;
           }
           error = $error.text();
         }
-        field = $(Adv.Forms.findInputEl(field));
-        if (field.is('input,textarea,select')) {
           tooltip = field.addClass('error').tooltip({title:function () {return error;}, trigger:'manual', placement:'right', class:type}).tooltip('show');
           tooltiptimeout = setTimeout(function () {
             if (tooltip) {
               tooltip.removeClass('error').tooltip('destroy');
             }
           }, 3000);
-        }
       }
 
     }
