@@ -25,7 +25,6 @@
     protected $object;
     protected $defaultFocus;
     protected $tableWidth = '50';
-    protected $security = SA_OPEN;
     protected function runPost() {
       if ($this->method == 'POST') {
         $id = $this->getActionId(DELETE);
@@ -69,7 +68,7 @@
       }
     }
     protected function index() {
-      Page::start($this->title, $this->security);
+      Page::start($this->title, SA_SALESTYPES);
       $this->generateTable();
       echo '<br>';
       $this->generateForm();
@@ -94,17 +93,26 @@
     protected function generateTable() {
       $cols       = $this->generateTableCols();
       $pager_name = get_called_class() . '_table';
-      $inactive   = false;
+      //DB_Pager::kill($pager_name);
+      $table        = DB_Pager::newPager($pager_name, $this->getTableRows($pager_name), $cols);
+      $table->width = $this->tableWidth;
+      $table->display();
+      return $table;
+    }
+    /**
+     * @param $pager_name
+     *
+     * @return mixed
+     */
+    protected function getTableRows($pager_name) {
+      $inactive = false;
       if (isset($_SESSION['pager'][$pager_name])) {
         $inactive = ($this->action == 'showInactive' && $this->Input->post(
           '_value',
           Input::NUMERIC
         ) == 1) || ($this->action != 'showInactive' && $_SESSION['pager'][$pager_name]->showInactive);
       }
-      $table        = DB_Pager::newPager($pager_name, $this->object->getAll($inactive), $cols);
-      $table->width = $this->tableWidth;
-      $table->display();
-      return $table;
+      return $this->object->getAll($inactive);
     }
     /**
      * @param $row

@@ -1,4 +1,7 @@
 <?php
+  use ADV\App\Users;
+  use ADV\App\User;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -14,32 +17,30 @@
     $auth->updatePassword($_POST['user_id'], $_POST['password']);
     if (can_process($auth)) {
       if ($Mode == UPDATE_ITEM) {
-        Users::update($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], Input::_hasPost('rep_popup'), $_POST['pos']);
-        Event::success(_("The selected user has been updated."));
-      } else {
-        Users::add($_POST['user_id'], $_POST['real_name'], $_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'], $_POST['profile'], Input::_hasPost('rep_popup'), $_POST['pos']);
-        Users::update_display_prefs(
-          DB::_insertId(),
-          User::price_dec(),
-          User::qty_dec(),
-          User::exrate_dec(),
-          User::percent_dec(),
-          User::show_gl(),
-          User::show_codes(),
-          User::date_format(),
-          User::date_sep(),
-          User::prefs()->tho_sep,
-          User::prefs()->dec_sep,
-          User::theme(),
-          User::page_size(),
-          User::hints(),
+        Users::update(
+          $selected_id,
+          $_POST['user_id'],
+          $_POST['real_name'],
+          $_POST['phone'],
+          $_POST['email'],
+          $_POST['Access'],
+          $_POST['language'],
           $_POST['profile'],
           Input::_hasPost('rep_popup'),
-          User::query_size(),
-          User::graphic_links(),
+          $_POST['pos']
+        );
+        Event::success(_("The selected user has been updated."));
+      } else {
+        Users::add(
+          $_POST['user_id'],
+          $_POST['real_name'],
+          $_POST['phone'],
+          $_POST['email'],
+          $_POST['Access'],
           $_POST['language'],
-          User::sticky_doc_date(),
-          User::startup_tab()
+          $_POST['profile'],
+          Input::_hasPost('rep_popup'),
+          $_POST['pos']
         );
         Event::success(_("A new user has been added."));
       }

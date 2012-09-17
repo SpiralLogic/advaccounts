@@ -12,8 +12,6 @@
    */
   namespace ADV\Core;
 
-  use ADV\App\Forms;
-
   /**
    * Dates validation and parsing functions
    * These functions refer to the global variable defining the date format
@@ -43,9 +41,9 @@
    */
   class Dates {
     protected $sep = '-';
-    protected $formats = array("m/d/Y", "d/m/Y", "Y/m/d");
-    protected $separators = array('/', ".", "-", " ");
-    protected $format;
+    public $formats = array("m/d/Y", "d/m/Y", "Y/m/d");
+    public $separators = array('/', ".", "-", " ");
+    public $format;
     /**
      * @static
      *
@@ -369,7 +367,6 @@ provided that both dates are after 1970. Also only works for dates up to the yea
       $gd = $g_day_no + 1;
       return array($gy, $gm, $gd);
     }
-
     /**
      * @static
      *

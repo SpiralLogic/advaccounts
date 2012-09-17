@@ -10,13 +10,10 @@
    **/
   namespace ADV\Core\Traits;
 
-  use ADV\Core\Event;
-
   /**
    * @method static i($class = null)
    */
-  trait StaticAccess
-  {
+  trait StaticAccess {
     /**
      * @static
      *
@@ -35,11 +32,10 @@
      * @return mixed
      */
     public static function __callStatic($func, $args) {
-      try {
-        return call_user_func_array(array(static::i(), '_' . $func), $args);
-      } catch (\ADV\Core\Exception $e) {
-        return Event::error('Call to undefined static method ' . $func . ' in class ' . get_called_class());
+      if (!method_exists(static::i(), '_' . $func)) {
+        throw new \BadFunctionCallException('Call to undefined static method ' . $func . ' in class ' . get_called_class());
       }
+      return call_user_func_array(array(static::i(), '_' . $func), $args);
     }
     /**
      * @param $func
@@ -48,10 +44,9 @@
      * @return mixed
      */
     public function __call($func, $args) {
-      try {
-        return call_user_func_array(array(static::i(), '_' . $func), $args);
-      } catch (\ADV\Core\Exception $e) {
-        return Event::error('Call to undefined static method ' . $func . ' in class ' . get_called_class());
+      if (!method_exists(static::i(), '_' . $func)) {
+        throw new \BadFunctionCallException('Call to undefined static method ' . $func . ' in class ' . get_called_class());
       }
+      return call_user_func_array(array(static::i(), '_' . $func), $args);
     }
   }

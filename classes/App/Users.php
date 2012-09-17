@@ -18,8 +18,7 @@
   /**
 
    */
-  class Users
-  {
+  class Users {
     /**
      * @static
      *
@@ -36,13 +35,17 @@
      *
      * @internal param $password
      */
-    public static function  add($user_id, $real_name, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos, $hash) {
-      $sql
-        = "INSERT INTO users (user_id, real_name, phone, email, role_id, language, pos, print_profile, rep_popup,hash)
-                VALUES (" . DB::_escape($user_id) . ",
-                " . DB::_escape($real_name) . ", " . DB::_escape($phone) . "," . DB::_escape($email) . ", " . DB::_escape($role_id) . ", " . DB::_escape(
-        $language
-      ) . ", " . DB::_escape($pos) . "," . DB::_escape($profile) . "," . DB::_escape($rep_popup) . "," . DB::_escape($hash) . " )";
+    public static function  add($user_id, $real_name, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos) {
+      $sql = "INSERT INTO users (user_id, real_name, phone, email, role_id, language, pos, print_profile, rep_popup)
+                VALUES (" . DB::_escape($user_id) . "," . //
+        DB::_escape($real_name) . ", " . //
+        DB::_escape($phone) . "," . //
+        DB::_escape($email) . ", " . //
+        DB::_escape($role_id) . ", " . //
+        DB::_escape($language) . ", " . //
+        DB::_escape($pos) . "," . //
+        DB::_escape($profile) . "," . //
+        DB::_escape($rep_popup) . " )";
       DB::_query($sql, "could not add user for $user_id");
     }
     /**
@@ -60,14 +63,16 @@
      * @param $pos
      */
     public static function  update($id, $user_id, $real_name, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos) {
-      $sql = "UPDATE users SET real_name=" . DB::_escape($real_name) . ", phone=" . DB::_escape($phone) . ",
-                email=" . DB::_escape($email) . ",
-                role_id=" . DB::_escape($role_id) . ",
-                language=" . DB::_escape($language) . ",
-                print_profile=" . DB::_escape($profile) . ",
-                rep_popup=" . DB::_escape($rep_popup) . ",
-                pos=" . DB::_escape($pos) . ",
-                user_id = " . DB::_escape($user_id) . " WHERE id=" . DB::_escape($id);
+      $sql = "UPDATE users SET real_name=" . DB::_escape($real_name) . //
+        ", phone=" . DB::_escape($phone) . //
+        ", email=" . DB::_escape($email) . //
+        ", role_id=" . DB::_escape($role_id) . //
+        ", language=" . DB::_escape($language) . //
+        ", print_profile=" . DB::_escape($profile) . //
+        ", rep_popup=" . DB::_escape($rep_popup) . //
+        ", pos=" . DB::_escape($pos) . //
+        ", user_id = " . DB::_escape($user_id) . //
+        " WHERE id=" . DB::_escape($id);
       DB::_query($sql, "could not update user for $user_id");
       session_regenerate_id();
     }
@@ -75,74 +80,14 @@
      * @static
      *
      * @param $id
-     * @param $price_dec
-     * @param $qty_dec
-     * @param $exrate_dec
-     * @param $percent_dec
-     * @param $show_gl
-     * @param $show_codes
-     * @param $date_format
-     * @param $date_sep
-     * @param $tho_sep
-     * @param $dec_sep
-     * @param $theme
-     * @param $page_size
-     * @param $show_hints
-     * @param $profile
-     * @param $rep_popup
-     * @param $query_size
-     * @param $graphic_links
-     * @param $language
-     * @param $stickydate
-     * @param $startup_tab
+     * @param $prefs
      */
     public static function  update_display_prefs(
       $id,
-      $price_dec,
-      $qty_dec,
-      $exrate_dec,
-      $percent_dec,
-      $show_gl,
-      $show_codes,
-      $date_format,
-      $date_sep,
-      $tho_sep,
-      $dec_sep,
-      $theme,
-      $page_size,
-      $show_hints,
-      $profile,
-      $rep_popup,
-      $query_size,
-      $graphic_links,
-      $language,
-      $stickydate,
-      $startup_tab
+      $prefs
     ) {
-      $sql
-        = "UPDATE users SET
-                price_dec=" . DB::_escape($price_dec) . ",
-                qty_dec=" . DB::_escape($qty_dec) . ",
-                exrate_dec=" . DB::_escape($exrate_dec) . ",
-                percent_dec=" . DB::_escape($percent_dec) . ",
-                show_gl=" . DB::_escape($show_gl) . ",
-                show_codes=" . DB::_escape($show_codes) . ",
-                date_format=" . DB::_escape($date_format) . ",
-                date_sep=" . DB::_escape($date_sep) . ",
-                tho_sep=" . DB::_escape($tho_sep) . ",
-                dec_sep=" . DB::_escape($dec_sep) . ",
-                theme=" . DB::_escape($theme) . ",
-                page_size=" . DB::_escape($page_size) . ",
-                show_hints=" . DB::_escape($show_hints) . ",
-                print_profile=" . DB::_escape($profile) . ",
-                rep_popup=" . DB::_escape($rep_popup) . ",
-                query_size=" . DB::_escape($query_size) . ",
-                graphic_links=" . DB::_escape($graphic_links) . ",
-                language=" . DB::_escape($language) . ",
-                sticky_doc_date=" . DB::_escape($stickydate) . ",
-                startup_tab=" . DB::_escape($startup_tab) . "
-                WHERE id = " . DB::_escape($id);
-      DB::_query($sql, "could not update user display prefs for $id");
+      $userprefs = new UserPrefs();
+      $userprefs->update($id, $prefs);
       session_regenerate_id();
     }
     /**
@@ -153,13 +98,11 @@
      * @return null|\PDOStatement
      */
     public static function  getAll($all = false) {
-      $sql
-        = "SELECT u.*, r.role FROM users u, security_roles r
+      $sql = "SELECT u.*, r.role FROM users u, security_roles r
                 WHERE u.role_id=r.id";
       if (!$all) {
         $sql .= " AND !u.inactive";
       }
-
       return DB::_query($sql, "could not get users");
     }
     /**
@@ -172,7 +115,6 @@
     public static function  get($id) {
       $sql    = "SELECT * FROM users WHERE id=" . DB::_escape($id);
       $result = DB::_query($sql, "could not get user $id");
-
       return DB::_fetch($result);
     }
     //	This public static function is necessary for admin prefs update after upgrade from 2.1
@@ -187,7 +129,6 @@
     public static function  get_by_login($user_id) {
       $sql    = "SELECT * FROM users WHERE user_id=" . DB::_escape($user_id);
       $result = DB::_query($sql, "could not get user $user_id");
-
       return DB::_fetch($result);
     }
     /**
@@ -198,22 +139,6 @@
     public static function  delete($id) {
       $sql = "DELETE FROM users WHERE id=" . DB::_escape($id);
       DB::_query($sql, "could not delete user $id");
-    }
-    /**
-     * @static
-     *
-     * @param $user_id
-     *
-     * @internal param $password
-     * @return bool|mixed
-     */
-    static public function  get_for_login($user_id) {
-      $auth = new Auth($user_id);
-      if ($auth->isBruteForce()) {
-        return false;
-      }
-
-      return $auth->checkUserPassword($user_id);
     }
     /**
      * @static
@@ -236,7 +161,6 @@
       $sql    = "SELECT COUNT(*) FROM audit_trail WHERE audit_trail.user=" . DB::_escape($id);
       $result = DB::_query($sql, "Cant check user activity");
       $ret    = DB::_fetch($result);
-
       return $ret[0];
     }
     /**
@@ -247,34 +171,7 @@
       if (!Config::_get('ui_users_showonline') || !isset($_SESSION['get_text'])) {
         return "";
       }
-
       return _("users online") . ": " . static::get_online();
-    }
-    /**
-     * @static
-     * @return mixed
-     */
-    public static function get_ip() {
-      /*
-                                                                               This will find out if user is from behind proxy server.
-                                                                               In that case, the script would count them all as 1 user.
-                                                                               This public static function tryes to get real IP address.
-                                                                               */
-      if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-        $ip = $_SERVER['HTTP_CLIENT_IP'];
-      } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-      } elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
-        $ip = $_SERVER['HTTP_X_FORWARDED'];
-      } elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-        $ip = $_SERVER['HTTP_FORWARDED_FOR'];
-      } elseif (isset($_SERVER['HTTP_FORWARDED'])) {
-        $ip = $_SERVER['HTTP_FORWARDED'];
-      } else {
-        $ip = $_SERVER['REMOTE_ADDR'];
-      }
-
-      return $ip;
     }
     /**
      * @static
@@ -291,7 +188,6 @@
         Event::error($e->getMessage());
       }
       foreach ($themedir as $theme) {
-
         if (!$theme->isDot() && $theme->isDir()) {
           $themes[$theme->getFilename()] = $theme->getFilename();
         }
@@ -312,8 +208,8 @@
     public static function tabs_row($label, $name, $selected_id = null, $all = false) {
       global $installed_extensions;
       $tabs = [];
-      foreach (ADVAccounting::i()->applications as $app) {
-        $tabs[$app->id] = Display::access_string($app->name, true);
+      foreach (ADVAccounting::i()->applications as $app=> $config) {
+        $tabs[$app] = Display::access_string($app, true);
       }
       if ($all) { // add also not active ext. modules
         foreach ($installed_extensions as $ext) {
@@ -336,9 +232,8 @@
      *
      * @return string
      */
-    public static function select($name, $selected_id = null, $spec_opt = false,$inactive=false) {
+    public static function select($name, $selected_id = null, $spec_opt = false, $inactive = false) {
       $sql = "SELECT id, real_name, inactive FROM users";
-
       return Forms::selectBox(
         $name,
         $selected_id,
@@ -346,10 +241,10 @@
         'id',
         'real_name',
         array(
-             'order'       => array('real_name'),
-             'spec_option' => $spec_opt,
-             'spec_id'     => ALL_NUMERIC,
-             'show_inactive'=>$inactive,
+             'order'        => array('real_name'),
+             'spec_option'  => $spec_opt,
+             'spec_id'      => ALL_NUMERIC,
+             'show_inactive'=> $inactive,
         )
       );
     }
@@ -396,7 +291,7 @@
         $timeoutseconds = 120;
         $timestamp      = time();
         $timeout        = $timestamp - $timeoutseconds;
-        $ip             = static::get_ip();
+        $ip             = Auth::get_ip();
         // Add user to database
         DB::_insert('useronline')->values(array('timestamp' => $timestamp, 'ip' => $ip, 'file' => $_SERVER['DOCUMENT_URI']))->exec();
         //Remove users that were not online within $timeoutseconds.
@@ -408,7 +303,6 @@
         $users = 1;
       }
       Cache::_set('users_online', $users, 300);
-
       return $users;
     }
   }

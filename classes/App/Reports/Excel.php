@@ -25,8 +25,7 @@
   /**
 
    */
-  class Excel extends Spreadsheet_Excel_Writer_Workbook
-  {
+  class Excel extends Spreadsheet_Excel_Writer_Workbook {
     /**
      * @var string
      */
@@ -194,7 +193,7 @@
       $this->formatTitle->setTopColor('gray');
       $how = User::date_format();
       $sep = Config::_get('date.separators');
-      $sep = $sep[User::date_sep()];
+      $sep = $sep[User::prefs()->date_sep];
       if ($sep == '.') {
         $sep = "\\.";
       }
@@ -277,7 +276,6 @@
       if (strlen($name) > 31) {
         $name = substr($name, 0, 31);
       }
-
       return $name;
     }
     /**
@@ -298,7 +296,6 @@
         $this->formatAmount[$dec]->setNumFormat($format);
         $this->formatAmount[$dec]->setAlign('right');
       }
-
       return $this->formatAmount[$dec];
     }
     /**
@@ -839,7 +836,6 @@
           }
         }
       }
-
       return array($txt2, $ret);
     }
     /**
@@ -940,7 +936,6 @@
           $jul++;
         }
       }
-
       return $jul;
     }
     /**
@@ -952,7 +947,6 @@
     {
       $excel_column_width_factor = 256;
       $unit_offset_length        = $this->excelColWidthFactor;
-
       return ($px / $unit_offset_length);
     }
     /**

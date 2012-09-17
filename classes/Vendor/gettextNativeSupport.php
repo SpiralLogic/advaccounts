@@ -24,14 +24,13 @@
    * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
    * @access private
    */
-  class gettextNativeSupport
-  {
+  class gettextNativeSupport {
     /**
      * @var array
      */
     public $_interpolation_vars = array();
     const GETTEXT_NATIVE = 1;
-    const GETTEXT_PHP = 2;
+    const GETTEXT_PHP    = 2;
     /**
      * @param $str
      *
@@ -175,8 +174,7 @@
    * @access private
    * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
    */
-  class gettext_php_support extends gettextNativeSupport
-  {
+  class gettext_php_support extends gettextNativeSupport {
     /**
      * @var string
      */
@@ -325,8 +323,7 @@
    * @access private
    * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
    */
-  class gettext_domain
-  {
+  class gettext_domain {
     /** @var */
     public $name;
     /** @var */
@@ -358,8 +355,7 @@
    * @access private
    * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
    */
-  class gettext_php_support_parser
-  {
+  class gettext_php_support_parser {
     /**
      * @var array
      */
@@ -386,7 +382,7 @@
      * @throws GetText_Error
      */
     function parse($file) {
-      $this->_hash          = array();
+      $this->hash           = array();
       $this->_current_key   = false;
       $this->_current_value = "";
       if (!file_exists($file)) {
@@ -451,8 +447,7 @@
    * @access private
    * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
    */
-  class gettext_php_support_compiler
-  {
+  class gettext_php_support_compiler {
     /**
      * Write hash in an includable php file.
      *

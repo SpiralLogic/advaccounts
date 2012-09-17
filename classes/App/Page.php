@@ -22,8 +22,7 @@
   /**
 
    */
-  class Page
-  {
+  class Page {
     /**
      * @var
      */
@@ -121,8 +120,12 @@
       }
     }
     /**
-     * @param      $title
-     * @param bool $index
+     * @param User             $user
+     * @param \ADV\Core\Config $config
+     * @param \ADV\Core\Ajax   $ajax
+     * @param \ADV\Core\JS     $js
+     * @param Dates            $dates
+
      */
     public function __construct(User $user, Config $config, \ADV\Core\Ajax $ajax, \ADV\Core\JS $js, \ADV\App\Dates $dates) {
       $this->User   = $user ? : User::i();

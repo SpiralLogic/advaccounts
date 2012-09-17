@@ -1,5 +1,8 @@
 <?php
-  use ADV\App\Forms;
+  use ADV\App\Form\Form;
+  use ADV\App\Sales\CreditStatus;
+  use ADV\Core\View;
+  use ADV\Core\DB\DB;
 
   /**
    * PHP version 5.4
@@ -9,67 +12,46 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  Page::start(_($help_context = "Credit Status"), SA_CRSTATUS);
-  list($Mode, $selected_id) = Page::simple_mode(true);
-  if ($Mode == ADD_ITEM && Sales_CreditStatus::can_process()) {
-    Sales_CreditStatus::add($_POST['reason_description'], $_POST['DisallowInvoices']);
-    Event::success(_('New credit status has been added'));
-    $Mode = MODE_RESET;
-  }
-  if ($Mode == UPDATE_ITEM && Sales_CreditStatus::can_process()) {
-    Event::success(_('Selected credit status has been updated'));
-    Sales_CreditStatus::update($selected_id, $_POST['reason_description'], $_POST['DisallowInvoices']);
-    $Mode = MODE_RESET;
-  }
-  if ($Mode == MODE_DELETE) {
-    if (Sales_CreditStatus::can_delete($selected_id)) {
-      Sales_CreditStatus::delete($selected_id);
-      Event::notice(_('Selected credit status has been deleted'));
+  class SalesCreditStatus extends \ADV\App\Controller\Manage {
+    protected $tableWidth = '80';
+    protected function before() {
+      $this->object = new CreditStatus();
+      $this->runPost();
     }
-    $Mode = MODE_RESET;
-  }
-  if ($Mode == MODE_RESET) {
-    $selected_id = -1;
-    $sav         = Input::_post('show_inactive');
-    unset($_POST);
-    $_POST['show_inactive'] = $sav;
-  }
-  $result = Sales_CreditStatus::getAll(Input::_hasPost('show_inactive'));
-  Forms::start();
-  Table::start('padded grid width40');
-  $th = array(_("Description"), _("Dissallow Invoices"), '', '');
-  Forms::inactiveControlCol($th);
-  Table::header($th);
-  $k = 0;
-  while ($myrow = DB::_fetch($result)) {
-    if ($myrow["dissallow_invoices"] == 0) {
-      $disallow_text = _("Invoice OK");
-    } else {
-      $disallow_text = "<span class='bold'>" . _("NO INVOICING") . "</span>";
+    protected function index() {
+      Page::start(_($help_context = "Credit Statuses"), SA_SALESCREDIT);
+      $this->generateTable();
+      echo '<br>';
+      $this->generateForm();
+      Page::end(true);
     }
-    Cell::label($myrow["reason_description"]);
-    Cell::label($disallow_text);
-    Forms::inactiveControlCell($myrow["id"], $myrow["inactive"], 'credit_status', 'id');
-    Forms::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
-    Forms::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
-    echo '</tr>';
-  }
-  Forms::inactiveControlRow($th);
-  Table::end();
-  echo '<br>';
-  Table::start('standard');
-  if ($selected_id != -1) {
-    if ($Mode == MODE_EDIT) {
-      //editing an existing status code
-      $myrow                       = Sales_CreditStatus::get($selected_id);
-      $_POST['reason_description'] = $myrow["reason_description"];
-      $_POST['DisallowInvoices']   = $myrow["dissallow_invoices"];
+    /**
+     * @param $form
+     * @param $view
+     *
+     * @return mixed|void
+     */
+    protected function formContents(Form $form, View $view) {
+      $view['title'] = 'Sales Credit Status';
+      $form->hidden('id');
+      $form->text('reason_desctripion')->label('Description:');
+      $form->arraySelect('dissallow_invoices', ['No', 'Yes'])->label('Disallow Invoices:');
     }
-    Forms::hidden('selected_id', $selected_id);
+    /**
+     * @return array
+     */
+    protected function generateTableCols() {
+      $cols = [
+        ['type'=> 'skip'],
+        'Description',
+        'Dissallow Invoices'=> ['type'=> 'bool'],
+        'Inactive'          => ['type'=> 'active'],
+        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
+        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
+      ];
+
+      return $cols;
+    }
   }
-  Forms::textRowEx(_("Description:"), 'reason_description', 50);
-  Forms::yesnoListRow(_("Dissallow invoicing ?"), 'DisallowInvoices', null);
-  Table::end(1);
-  Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
-  Forms::end();
-  Page::end();
+
+  new SalesCreditStatus();

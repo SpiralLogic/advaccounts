@@ -51,6 +51,7 @@
     /**
      * @param        $labels
      * @param string $params
+     * @param string $extra
      */
     public static function header($labels, $params = '', $extra = '') {
       $header = '<thead>' . $extra . '<tr>';
@@ -63,12 +64,16 @@
     /**
      * @param        $label
      * @param        $value
-     * @param string $params
-     * @param string $params2
-     * @param int    $leftfill
+     * @param string $label_attrs
+     * @param string $value_attrs
+     * @param null   $rightfill
      * @param null   $id
+     *
+     * @internal param string $params
+     * @internal param string $params2
+     * @internal param int $leftfill
      */
-    public static function label($label, $value, $label_attrs = "", $value_attrs = "", $rightfill = null, $id = null) {
+    public static function label($label, $value, $label_attrs = '', $value_attrs = '', $rightfill = null, $id = null) {
       if (stripos($label_attrs, 'class') === false) {
         $label_attrs .= " class='label' ";
       }
@@ -79,7 +84,7 @@
       if ((int) $rightfill) {
         $rightfill = "<td colspan=" . (int) $rightfill . "></td>";
       }
-      echo "<tr><td  $label_attrs>$label</td><td $value_attrs>$value</td>" . $rightfill . "</tr>";
+      echo "<tr><td $label_attrs>$label</td><td $value_attrs>$value</td>" . $rightfill . "</tr>";
     }
     /**
      * @static

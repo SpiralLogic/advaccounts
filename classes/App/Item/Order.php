@@ -7,8 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Item_Order
-  {
+  class Item_Order {
     /**
      * @var
      */
@@ -71,8 +70,7 @@
     /**
      * @param $type
      */
-    public function __construct($type)
-    {
+    public function __construct($type) {
       $this->trans_type = $type;
       $this->clear_items();
     }
@@ -85,8 +83,7 @@
      *
      * @return bool
      */
-    public function add_to_order($line_no, $stock_id, $qty, $standard_cost, $description = null)
-    {
+    public function add_to_order($line_no, $stock_id, $qty, $standard_cost, $description = null) {
       if (isset($stock_id) && $stock_id != "" && isset($qty)) {
         $this->line_items[$line_no] = new Item_Line($stock_id, $qty, $standard_cost, $description);
 
@@ -103,8 +100,7 @@
      *
      * @return null
      */
-    public function find_order_item($stock_id)
-    {
+    public function find_order_item($stock_id) {
       foreach ($this->line_items as $line_no => $line) {
         if ($line->stock_id == $stock_id) {
           return $this->line_items[$line_no];
@@ -118,23 +114,20 @@
      * @param $qty
      * @param $standard_cost
      */
-    public function update_order_item($line_no, $qty, $standard_cost)
-    {
+    public function update_order_item($line_no, $qty, $standard_cost) {
       $this->line_items[$line_no]->quantity      = $qty;
       $this->line_items[$line_no]->standard_cost = $standard_cost;
     }
     /**
      * @param $line_no
      */
-    public function remove_from_order($line_no)
-    {
+    public function remove_from_order($line_no) {
       array_splice($this->line_items, $line_no, 1);
     }
     /**
      * @return int|void
      */
-    public function count_items()
-    {
+    public function count_items() {
       return count($this->line_items);
     }
     /**
@@ -144,8 +137,7 @@
      *
      * @return int|string
      */
-    public function check_qoh($location, $date_, $reverse = false)
-    {
+    public function check_qoh($location, $date_, $reverse = false) {
       foreach ($this->line_items as $line_no => $line_item) {
         $item_ret = $line_item->check_qoh($location, $date_, $reverse);
         if ($item_ret != null) {
@@ -165,9 +157,8 @@
      *
      * @return bool
      */
-    public function add_gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description = null)
-    {
-      if (isset($code_id) && $code_id != "" && isset($amount) && isset($dimension_id) && isset($dimension2_id)) {
+    public function add_gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description = null) {
+      if (isset($code_id) && $code_id != "" && isset($amount)) {
         $this->gl_items[] = new Item_GL($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description);
 
         return true;
@@ -187,8 +178,7 @@
      * @param      $reference
      * @param null $description
      */
-    public function update_gl_item($index, $code_id, $dimension_id, $dimension2_id, $amount, $reference, $description = null)
-    {
+    public function update_gl_item($index, $code_id, $dimension_id, $dimension2_id, $amount, $reference, $description = null) {
       $this->gl_items[$index]->code_id       = $code_id;
       $this->gl_items[$index]->dimension_id  = $dimension_id;
       $this->gl_items[$index]->dimension2_id = $dimension2_id;
@@ -203,22 +193,19 @@
     /**
      * @param $index
      */
-    public function remove_gl_item($index)
-    {
+    public function remove_gl_item($index) {
       array_splice($this->gl_items, $index, 1);
     }
     /**
      * @return int|void
      */
-    public function count_gl_items()
-    {
+    public function count_gl_items() {
       return count($this->gl_items);
     }
     /**
      * @return int
      */
-    public function gl_items_total()
-    {
+    public function gl_items_total() {
       $total = 0;
       foreach ($this->gl_items as $gl_item) {
         $total += $gl_item->amount;
@@ -229,8 +216,7 @@
     /**
      * @return int
      */
-    public function gl_items_total_debit()
-    {
+    public function gl_items_total_debit() {
       $total = 0;
       foreach ($this->gl_items as $gl_item) {
         if ($gl_item->amount > 0) {
@@ -243,8 +229,7 @@
     /**
      * @return int
      */
-    public function gl_items_total_credit()
-    {
+    public function gl_items_total_credit() {
       $total = 0;
       foreach ($this->gl_items as $gl_item) {
         if ($gl_item->amount < 0) {
@@ -254,8 +239,7 @@
 
       return $total;
     }
-    public function clear_items()
-    {
+    public function clear_items() {
       unset($this->line_items);
       $this->line_items = [];
       unset($this->gl_items);
@@ -269,8 +253,7 @@
      * @param $new_item_qty
      * @param $standard_cost
      */
-    public static function add_line($order, $new_item, $new_item_qty, $standard_cost)
-    {
+    public static function add_line($order, $new_item, $new_item_qty, $standard_cost) {
       if ($order->find_order_item($new_item)) {
         Event::error(_("For Part: '") . $new_item . "' This item is already on this order. You can change the quantity ordered of the existing line if necessary.");
       } else {

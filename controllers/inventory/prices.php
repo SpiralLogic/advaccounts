@@ -1,4 +1,7 @@
 <?php
+  use ADV\App\Form\Form;
+  use ADV\Core\View;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -7,6 +10,44 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  class SalesPrice extends \ADV\App\Controller\Manage {
+    protected $stock_id = 5458;
+    protected function before() {
+      $this->object = new Item_Price();
+      $this->runPost();
+    }
+    /**
+     * @param \ADV\App\Form\Form $form
+     * @param \ADV\Core\View     $view
+     *
+     * @return mixed
+     */
+    protected function formContents(Form $form, View $view) {
+      $form->hidden('selected_id');
+      $form->hidden('stock_id');
+      $form->custom(GL_Currency::select('curr_abrev'))->label('Currency:');
+      $form->custom(Sales_Type::select('sales_type_id'))->label("Sales Type:");
+      if (!isset($_POST['price'])) {
+        $_POST['price'] = Num::_priceFormat(Item_Price::get_kit($this->Input->post('stock_id'), $this->Input->post('curr_abrev'), $this->Input->post('sales_type_id')));
+      }
+      $kit = Item_Code::get_defaults($_POST['stock_id']);
+      $form->amount('price')->label(_("Price:"))->append(_('per') . ' ' . $kit["units"]);
+    }
+    protected function generateTable() {
+      if ($this->stock_id) {
+        parent::generateTable();
+      }
+    }
+    protected function generateTableCols() {
+      return ['one'];
+    }
+    protected function getTableRows($pagername) {
+      return Item_Price::get();
+    }
+  }
+
+  new SalesPrice();
+/*
   Page::start(_($help_context = "Inventory Item Sales prices"), SA_SALESPRICE, Input::_request('frame'));
   Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
   Validation::check(Validation::SALES_TYPES, _("There are no sales types in the system. Please set up sales types befor entering pricing."));
@@ -21,7 +62,7 @@
   if (!isset($_POST['curr_abrev'])) {
     $_POST['curr_abrev'] = Bank_Currency::for_company();
   }
-  Forms::start(false, $_SERVER['DOCUMENT_URI'] . '?frame=1');
+  Forms::start(false, $_SERVER['DOCUMENT_URI'] . (Input::_request('frame') ? '?frame=1' : ''));
   if (!Input::_post('stock_id')) {
     $_POST['stock_id'] = Session::_getGlobal('stock_id');
   }
@@ -126,4 +167,4 @@
     Page::end(true);
   } else {
     Page::end();
-  }
+  }*/

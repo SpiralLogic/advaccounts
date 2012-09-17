@@ -128,7 +128,8 @@
       $allow_update = $this->checkData();
       if ($allow_update == true) {
         if ($allow_update == true) {
-          $sql    = "SELECT long_description as description , units, mb_flag
+          $sql
+                  = "SELECT long_description as description , units, mb_flag
   				FROM stock_master WHERE stock_id = " . DB::_escape($_POST['stock_id']);
           $result = DB::_query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
           if (DB::_numRows($result) == 0) {
@@ -206,6 +207,7 @@
       Table::end(1);
       Display::div_start('controls', 'items_table');
       if ($this->order->order_has_items()) {
+        Forms::submitConfirm(Orders::CANCEL, _('You are about to void this Document.\nDo you want to continue?'));
         Forms::submitCenterBegin(Orders::CANCEL, _("Delete This Order"), false, false, ICON_DELETE);
         Forms::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."), false, ICON_CANCEL);
         if ($this->order->order_no) {
@@ -214,8 +216,6 @@
           Forms::submitCenterEnd(COMMIT, _("Place Order"), '', 'default', ICON_SUBMIT);
         }
       } else {
-        Forms::submitConfirm(Orders::CANCEL, _('You are about to void this Document.\nDo you want to continue?'));
-        Forms::submitCenterBegin(Orders::CANCEL, _("Delete This Order"), true, false, ICON_DELETE);
         Forms::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."), false, ICON_CANCEL);
       }
       Display::div_end();

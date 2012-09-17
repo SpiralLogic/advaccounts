@@ -12,8 +12,7 @@
   /**
 
    */
-  class MenuUI extends Menu
-  {
+  class MenuUI extends Menu {
     /**
      * @var array
      */
@@ -30,11 +29,20 @@
     /** @var View */
     public $current_tab;
     protected $jslinks = [];
+    /** @var JS */
+    protected $JS;
     /**
      * @param array $options
      */
     public function __construct($options = []) {
       $this->options = $options;
+      $this->setJSObject();
+    }
+    /**
+     * @param JS $js
+     */
+    public function setJSObject(JS $js = null) {
+      $this->JS = $js ? : JS::i();
     }
     /**
      * @param        $title
@@ -92,7 +100,8 @@
 
       $this->current_tab['attrs']['id']    = 'tabs' . MenuUI::$menuCount . '-' . $count;
       $this->current_tab['attrs']['class'] = 'ui-tabs-panel ui-widget-content ui-corner-bottom ';
-      $this->current_tab['attrs']['style'] = ($count > 0 || $this->firstPage != $count)?  ' display:none;':'' ;      $this->current_tab['attrs']['style'] .= $style;
+      $this->current_tab['attrs']['style'] = ($count > 0 || $this->firstPage != $count) ? ' display:none;' : '';
+      $this->current_tab['attrs']['style'] .= $style;
       ob_start();
 
       return $this;
@@ -116,9 +125,9 @@
       $menu->set('items', $this->items);
       $menu->set('tabs', $this->tabs);
       $menu->render();
-      JS::_tabs(MenuUI::$menuCount, $this->options, $this->firstPage);
+      $this->JS->tabs(MenuUI::$menuCount, $this->options, $this->firstPage);
       foreach ($this->jslinks as $js) {
-        JS::_onload($js);
+        $this->JS->onload($js);
       }
       MenuUI::$menuCount++;
     }
@@ -127,8 +136,7 @@
   /**
 
    */
-  class MenuUI_item extends menu_item
-  {
+  class MenuUI_item extends menu_item {
     /**
      * @var string
      */

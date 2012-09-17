@@ -12,12 +12,10 @@
   /**
 
    */
-  class SessionException extends \Exception
-  {
+  class SessionException extends \Exception {
   }
 
   /**
-   * @property \ADV\App\ADVAccounting App
    * @method  static _getGlobal($var, $default = null)
    * @method static _setGlobal($var, $value = null)
    * @method static _get()
@@ -30,8 +28,7 @@
    * @method static Session i()
    * @property  string                page_title
    */
-  class Session implements \ArrayAccess
-  {
+  class Session implements \ArrayAccess {
     use Traits\StaticAccess2;
 
     /***
@@ -50,7 +47,6 @@
       $handler = new \ADV\Core\Session\Memcached();
       session_set_save_handler($handler, true);
       session_start();
-
       /** @noinspection PhpUndefinedFunctionInspection */
       /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -63,6 +59,7 @@
       if (isset($_SESSION['flash'])) {
         $this->flash = $_SESSION['flash'];
       }
+      $_SESSION['flash'] = [];
     }
     /**
      * @static
@@ -71,10 +68,8 @@
     public function checkUserAgent() {
       if ($this['HTTP_USER_AGENT'] != sha1(Arr::get($_SERVER, 'HTTP_USER_AGENT', $_SERVER['REMOTE_ADDR']))) {
         $this->setUserAgent();
-
         return false;
       }
-
       return true;
     }
     /**
@@ -109,12 +104,10 @@
      * @return float|string
      */
     public function setGlobal($var, $value = null) {
-
       if ($value === null) {
         if (isset($_SESSION['globals'][$var])) {
           unset($_SESSION['globals'][$var]);
         }
-
         return null;
       }
       $_SESSION['globals'][$var] = $value;
@@ -129,9 +122,7 @@
      * @return float|string
      */
     public function setFlash($var, $value) {
-
       $_SESSION['flash'][$var] = $value;
-
       return $value;
     }
     /**
@@ -213,7 +204,6 @@
       if (!$this->offsetExists($offset)) {
         return null;
       }
-
       return $_SESSION[$offset];
     }
     /**
@@ -258,7 +248,6 @@
       if (!isset($_SESSION[$var])) {
         $value = $_SESSION[$var];
       }
-
       return $value;
     }
     /**
@@ -269,7 +258,6 @@
      */
     public function set($var, $value) {
       $_SESSION[$var] = $value;
-
       return $value;
     }
   }

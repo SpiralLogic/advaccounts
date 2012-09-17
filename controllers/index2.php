@@ -1,7 +1,4 @@
 <?php
+  use ADV\App\DB\Generator;
 
-
-$test = \ADV\Core\Session::_getFlash('test');
-  var_dump($test);
-\ADV\Core\Session::_setFlash('test','testing');
-  var_dump($test);
+  (new Generator())->getTableDetails('prices');

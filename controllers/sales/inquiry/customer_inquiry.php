@@ -198,7 +198,7 @@
           $sql .= "TotalAmount LIKE " . DB::_quote('%' . substr($quicksearch, 1) . '%') . ") ";
           continue;
         }
-        if (stripos($quicksearch, $this->User->_date_sep()) > 0) {
+        if (stripos($quicksearch, $this->User->prefs->date_sep) > 0) {
           $sql .= " tran_date LIKE '%" . Dates::_dateToSql($quicksearch, false) . "%' OR";
           continue;
         }

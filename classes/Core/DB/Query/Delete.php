@@ -8,14 +8,14 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core\DB\Query;
+
   use PDO, PDOStatement, PDOException, PDORow;
   use ADV\Core\DB\DB;
 
   /**
 
    */
-  class Delete extends Query
-  {
+  class Delete extends Query {
     /**
      * @var bool
      */
@@ -24,8 +24,7 @@
      * @param bool $table
      * @param      $db
      */
-    public function __construct($table = false, $db)
-    {
+    public function __construct($table = false, $db) {
       $this->table = $table;
       $this->type  = DB::DELETE;
       parent::__construct($db);
@@ -33,17 +32,15 @@
     /**
      * @return string
      */
-    protected function execute()
-    {
-      return $this->_buildQuery();
+    protected function execute() {
+      return $this->buildQuery();
     }
     /**
      * @return string
      */
-    protected function _buildQuery()
-    {
+    protected function buildQuery() {
       $sql = "DELETE FROM " . $this->table;
-      $sql .= $this->_buildWhere();
+      $sql .= $this->buildWhere();
 
       return $sql;
     }

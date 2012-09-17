@@ -1,5 +1,7 @@
 <?php
   use ADV\App\Creditor\Creditor;
+  use ADV\Core\MenuUI;
+  use ADV\Core\JS;
   use ADV\Core\HTMLmin;
   use ADV\App\Validation;
   use ADV\App\User;
@@ -68,12 +70,14 @@
       $cache = Cache::_get('supplier_form');
       //  $cache = null; //Cache::_get('supplier_form');
       if ($cache) {
-        $this->JS->setState($cache[1]);
+        $this->JS->addState($cache[1]);
         return $form = $cache[0];
       }
-      $this->JS->autocomplete('supplier', 'Company.fetch');
-      $form          = new Form();
-      $menu          = new MenuUI();
+      $js = new JS();
+      $js->autocomplete('supplier', 'Company.fetch');
+      $form = new Form();
+      $menu = new MenuUI();
+      $menu->setJSObject($js);
       $view          = new View('contacts/supplier');
       $view['frame'] = $this->Input->get('frame') || $this->Input->get('id');
       $view->set('menu', $menu);
@@ -90,7 +94,7 @@
                                             'city'     => array('city'),
                                             'state'    => array('state'),
                                             'postcode' => array('postcode')
-                                       ));
+                                       ), $js);
       $view->set('postcode', $postcode->getForm());
       $form->text('supp_phone')->label('Phone Number:');
       $form->textarea('supp_address', ['cols'=> 37, 'rows'=> 4])->label('Address:');
@@ -98,7 +102,7 @@
                                                  'city'     => array('supp_city'),
                                                  'state'    => array('supp_state'),
                                                  'postcode' => array('supp_postcode')
-                                            ));
+                                            ), $js);
       $view->set('supp_postcode', $supp_postcode->getForm());
       $form->percent('payment_discount', ["disabled"=> !User::i()->hasAccess(SA_SUPPLIERCREDIT)])->label("Prompt Payment Discount:");
       $form->amount('credit_limit', ["disabled"=> !User::i()->hasAccess(SA_SUPPLIERCREDIT)])->label("Credit Limit:");
@@ -132,10 +136,12 @@
           ['caption'=> 'Create Order', 'Create Order for this customer!', 'data'=> '/purchases/supplier_invoice.php?New=1&creditor_id='],
         ];
         $view->set('shortcuts', $shortcuts);
-        UI::emailDialogue(CT_SUPPLIER);
+        UI::emailDialogue(CT_SUPPLIER, $js);
       }
-      $form = HTMLmin::minify($view->render(true));
-      Cache::_set('supplier_form', [$form, $this->JS->getState()]);
+      $form     = HTMLmin::minify($view->render(true));
+      $js_state = $js->getState();
+      Cache::_set('supplier_form', [$form, $js_state]);
+      $this->JS->addState($js_state);
       return $form;
     }
     protected function runValidation() {

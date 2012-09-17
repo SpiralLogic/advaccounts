@@ -1136,12 +1136,6 @@
   /**
 
    */
-  class MenuUI extends ADV\Core\MenuUI {
-  }
-
-  /**
-
-   */
   class Num extends ADV\Core\Num {
   }
 
