@@ -2767,7 +2767,8 @@ img {
 }
 
 #sidemenu ul input {
-  margin: 0;
+  margin: 0;  width:9em;
+
 }
 
 /*--------------------------------- END SIDEMENU -----------------------------------------------------------------*/
@@ -3007,6 +3008,9 @@ img {
 
 div.menu_group {
   display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
 }
 
 div.menu_group.title {
@@ -3717,9 +3721,6 @@ button img {
   min-width: inherit;
 }
 
-.listsubmit {
-  display: none;
-}
 
 .navibar table tr {
   background: none !important;
@@ -3967,13 +3968,7 @@ body.lite {
   background-color: rgb(230, 154, 154) !important;
 }
 
-.lightblue {
-  background-color: #33CCFF !important;
-}
 
-.whitebg {
-  background-color: white;
-}
 
 .overduefg {
   color: #FF5452;
@@ -3990,10 +3985,6 @@ body.lite {
 .redfg {
   color:       red;
   font-weight: bold;
-}
-
-.greenfg {
-  color: #0b0;
 }
 
 .redborder {

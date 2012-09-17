@@ -8,7 +8,6 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App;
-
   use ADV\Core\Session;
   use ADV\Core\Auth;
   use ADV\Core\JS;
@@ -17,6 +16,7 @@
   use ADV\Core\DB\DB;
   use ADV\Core\Config;
   use ADV\Core\Traits\StaticAccess;
+  use ADV\App\Validation;
 
   /**
    * @method static theme
@@ -34,17 +34,20 @@
    * @method static graphic_links()
    * @method static register_login($object, $function = null, $arguments = [])
    */
-  class User {
+  class User extends \ADV\App\DB\Base
+  {
+
     use \ADV\Core\Traits\Hook;
     use StaticAccess {
     StaticAccess::i as ii;
     }
 
-    /***
-     * @static
-     * @return User
-     */
+    protected $_table = 'users';
+    protected $_classname = 'Users';
+    protected $_id_column = 'id';
     public $user;
+    public $id;
+    public $user_id;
     /**
      * @var string
      */
@@ -77,9 +80,7 @@
      * @var bool
      */
     public $logged = false;
-    /***
-     * @var UserPrefs
-     */
+    /**@var UserPrefs */
     public $prefs;
     /**
      * @var bool
@@ -97,6 +98,29 @@
     public $Security;
     /** @var \ADV\Core\DB\DB */
     protected $DB;
+    /**
+     * @return \ADV\Core\Traits\Status|bool
+     */
+    protected function canProcess() {
+      if (strlen($this->user_id) < 4) {
+        Event::error(_("The user login entered must be at least 4 characters long."));
+        JS::_setFocus('user_id');
+        return false;
+      }
+      return true;
+    }
+    /**
+     * @param bool $inactive
+     *
+     * @return array
+     */
+    public static function getAll($inactive = false) {
+      $q = DB::_select('id','user_id','real_name','phone','email','pos','print_profile','rep_popup','change_password','language','last_visit_date','role_id','inactive')->from('users');
+      if ($inactive) {
+        $q->andWhere('inactive=', 1);
+      }
+      return $q->fetch()->all();
+    }
     /**
      * @static
      *
@@ -251,9 +275,9 @@
     public function _addLog() {
       DB::_insert('user_login_log')->values(
         array(
-             'user'    => $this->username,
-             'IP'      => Auth::get_ip(),
-             'success' => 2
+          'user'    => $this->username,
+          'IP'      => Auth::get_ip(),
+          'success' => 2
         )
       )->exec();
     }
@@ -429,6 +453,9 @@
     public function _date_sep() {
       return (isset($_SESSION["current_user"])) ? $this->prefs->date_sep : $this->Config->get('date.ui_separator');
     }
+    /**
+     * @return int
+     */
     public function _tho_sep() {
       return $this->prefs->tho_sep;
     }

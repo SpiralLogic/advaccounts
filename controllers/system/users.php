@@ -1,5 +1,86 @@
 <?php
+  /**
+   * PHP version 5.4
+   * @category  PHP
+   * @package   ADVAccounts
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
+  use ADV\App\Controller\Manage;
+  use ADV\App\User;
+  use ADV\App\Form\Form;
+  use ADV\Core\View;
+
+  /**
+
+   */
+  class Users extends Manage
+  {
+
+    protected $tableWidth = '80';
+    protected function before() {
+      $this->object = new User();
+      $this->runPost();
+    }
+    protected function index() {
+      Page::start(_($help_context = "Sales Persons"), SA_SALESMAN);
+      $this->generateTable();
+      echo '<br>';
+      $this->generateForm();
+      Page::end();
+    }
+    /**
+     * @param ADV\App\Form\Form $form
+     * @param View              $view
+     *
+     * @return mixed|void
+     */
+    protected function formContents(Form $form, View $view) {
+      $view['title'] = 'Users';
+      $form->hidden('id');
+      $form->text('user_id')->label('User ID: ')->focus();
+      $form->text('salesman_phone', ['maxlength'=> 20])->label('Telephone number: ');
+      $form->text('salesman_fax', ['maxlength'=> 20])->label('Fax number: ');
+      $form->text('salesman_email')->label('Email Address: ');
+      $form->percent('provision')->label("Provision: ");
+      $form->amount('break_pt')->label("Break Pt.:");
+      $form->percent('provision2')->label("Provision 2: ");
+    }
+    /**
+     * @return array
+     */
+    protected function generateTableCols() {
+      $cols = array(
+        ['type'=> "skip"],
+        _("User ID"),
+        _("Name"),
+        _("Phone"),
+        _("Email"),
+             ['type'=> "skip"],
+        ['type'=> "skip"],
+        ['type'=> "skip"],
+        ['type'=> "skip"],
+        ['type'=> "skip"],
+        _("Last Visit Fate"),
+        _("Role"),
+        _('Inactive')=> ['type'=> "active"],
+        ['insert'=> true, "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
+        ['insert'=> true, "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']]
+      );
+      return $cols;
+    }
+  }
+
+  new Users();
+
+
+
+
+
+/*
   use ADV\App\Users;
+  use ADV\App\Forms;
   use ADV\App\User;
 
   /**
@@ -9,12 +90,12 @@
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
-   **/
+
   Page::start(_($help_context = "Users"), SA_USERS);
   list($Mode, $selected_id) = list($Mode, $selected_id) = Page::simple_mode(true);
   if (!empty($_POST['password']) && ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM)) {
-    $auth = new Auth($_POST['user_id']);
-    $auth->updatePassword($_POST['user_id'], $_POST['password']);
+    $auth = new Auth($selected_id);
+    $auth->updatePassword($selected_id, $_POST['password'],$_POST['change_password']);
     if (can_process($auth)) {
       if ($Mode == UPDATE_ITEM) {
         Users::update(
@@ -76,7 +157,7 @@
   $k = 0; //row colour counter
   while ($myrow = DB::_fetch($result)) {
     $last_visit_date = Dates::_sqlToDate($myrow["last_visit_date"]);
-    /*The security_headings array is defined in config.php */
+    /*The security_headings array is defined in config.php
     $not_me = strcasecmp($myrow["user_id"], User::i()->username);
     Cell::label($myrow["user_id"]);
     Cell::label($myrow["real_name"]);
@@ -140,6 +221,7 @@
   Sales_Point::row(_("User's POS") . ':', 'pos', null);
   Reports_UI::print_profiles_row(_("Printing profile") . ':', 'profile', null, _('Browser printing support'));
   Forms::checkRow(_("Use popup window for reports:"), 'rep_popup', Input::_post('rep_popup'), false, _('Set this option to on if your browser directly supports pdf files'));
+  Forms::checkRow(_("Must change password next logon:"), 'change_password');
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();
@@ -149,14 +231,14 @@
    *
    * @internal param $user
    * @return bool
-   */
+
   function can_process(Auth $auth) {
     if (strlen($_POST['user_id']) < 4) {
       Event::error(_("The user login entered must be at least 4 characters long."));
       JS::_setFocus('user_id');
       return false;
     }
-    $check = (is_a($auth, 'Auth')) ? $auth->checkPasswordStrength() : false;
+    $check = $auth->checkPasswordStrength($_POST['password']);
     if (!$check && $check['error'] > 0) {
       Event::error($check['text']);
       return false;
@@ -168,3 +250,4 @@
     return true;
   }
 
+*/

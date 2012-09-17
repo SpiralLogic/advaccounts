@@ -1,4 +1,4 @@
 <?php
-  use ADV\App\DB\Generator;
+  use ADV\App\User;
 
-  (new Generator())->getTableDetails('prices');
+  var_dump('<pre >',User::getAll());
