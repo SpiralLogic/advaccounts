@@ -896,7 +896,7 @@
      */
     public static function dateSepsListRow($label, $name, $value = null) {
       echo "<tr><td class='label'>$label</td>\n<td>";
-      echo Forms::arraySelect($name, $value, Config::_get('date.separators'));
+      echo Forms::arraySelect($name, array_search($value, Config::_get('date.separators')), Config::_get('date.separators'));
       echo "</td></tr>\n";
     }
     /**
@@ -906,7 +906,7 @@
      */
     public static function thoSepsListRow($label, $name, $value = null) {
       echo "<tr><td class='label'>$label</td>\n<td>";
-      echo Forms::arraySelect($name, $value, Config::_get('separators_thousands'));
+      echo Forms::arraySelect($name, array_search($value, Config::_get('separators_thousands')), Config::_get('separators_thousands'));
       echo "</td></tr>\n";
     }
     /**
@@ -916,7 +916,7 @@
      */
     public static function decSepsListRow($label, $name, $value = null) {
       echo "<tr><td class='label'>$label</td>\n<td>";
-      echo Forms::arraySelect($name, $value, Config::_get('separators_decimal'));
+      echo Forms::arraySelect($name, array_search($value, Config::_get('separators_decimal')), Config::_get('separators_decimal'));
       echo "</td></tr>\n";
     }
     /**

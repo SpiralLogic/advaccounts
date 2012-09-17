@@ -1,4 +1,8 @@
 <?php
+  use ADV\App\Forms;
+  use ADV\App\Users;
+  use ADV\App\User;
+
   /**
    * PHP version 5.4
    * @category  PHP

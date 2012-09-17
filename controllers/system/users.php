@@ -42,30 +42,6 @@
           Input::_hasPost('rep_popup'),
           $_POST['pos']
         );
-
-        Users::update_display_prefs(
-          DB::_insertId(),
-          User::price_dec(),
-          User::qty_dec(),
-          User::exrate_dec(),
-          User::percent_dec(),
-          User::show_gl(),
-          User::show_codes(),
-          User::date_format(),
-          User::date_sep(),
-          User::prefs()->tho_sep,
-          User::prefs()->dec_sep,
-          User::theme(),
-          User::page_size(),
-          User::hints(),
-          $_POST['profile'],
-          Input::_hasPost('rep_popup'),
-          User::query_size(),
-          User::graphic_links(),
-          $_POST['language'],
-          User::sticky_doc_date(),
-          User::startup_tab()
-        );
         Event::success(_("A new user has been added."));
       }
       $Mode = MODE_RESET;

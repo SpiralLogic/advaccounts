@@ -36,7 +36,7 @@
       $this->Session        = $Session ? : Session::i();
       $this->Company        = $Company ? : DB_Company::i();
       $this->userFiscalYear = $config->_get('use_fiscalyear');
-      $this->sep            = $this->separators[is_int($this->User->_date_sep()) ? $this->User->_date_sep() : $config->get('date.ui_separator')];
+      $this->sep            = $this->separators[is_int($this->User->prefs->date_sep) ? $this->User->prefs->date_sep : $config->get('date.ui_separator')];
       $this->format         = $this->User->_date_format();
     }
     /**

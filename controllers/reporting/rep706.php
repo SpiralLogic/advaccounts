@@ -9,7 +9,6 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   /**
    * @param $type
    * @param $typename
@@ -25,8 +24,7 @@
    *
    * @return array
    */
-  function display_type($type, $typename, $from, $to, $convert, &$dec, &$rep, $dimension, $dimension2, &$pg, $graphics)
-  {
+  function display_type($type, $typename, $from, $to, $convert, &$dec, &$rep, $dimension, $dimension2, &$pg, $graphics) {
     $code_open_balance    = 0;
     $code_period_balance  = 0;
     $open_balance_total   = 0;
@@ -94,13 +92,11 @@
     }
     $totals_arr[0] = $code_open_balance + $open_balance_total;
     $totals_arr[1] = $code_period_balance + $period_balance_total;
-
     return $totals_arr;
   }
 
   print_balance_sheet();
-  function print_balance_sheet()
-  {
+  function print_balance_sheet() {
     $dim       = DB_Company::get_pref('use_dimension');
     $dimension = $dimension2 = 0;
     $from      = $_POST['PARAM_0'];
@@ -127,10 +123,8 @@
       }
     }
     if ($destination) {
-
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
-
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     if ($graphics) {
@@ -144,38 +138,60 @@
     $cols = array(0, 50, 200, 350, 425, 500);
     //------------0--1---2----3----4----5--
     $headers = array(
-      _('Account'), _('Account Name'), _('Open Balance'), _('Period'), _('Close Balance')
+      _('Account'),
+      _('Account Name'),
+      _('Open Balance'),
+      _('Period'),
+      _('Close Balance')
     );
     $aligns  = array('left', 'left', 'right', 'right', 'right');
     if ($dim == 2) {
       $params = array(
-        0    => $comments, 1 => array(
-          'text' => _('Period'), 'from' => $from, 'to' => $to
-        ), 2 => array(
-          'text' => _('Dimension') . " 1", 'from' => Dimensions::get_string($dimension), 'to' => ''
-        ), 3 => array(
-          'text' => _('Dimension') . " 2", 'from' => Dimensions::get_string($dimension2), 'to' => ''
+        0    => $comments,
+        1    => array(
+          'text' => _('Period'),
+          'from' => $from,
+          'to'   => $to
+        ),
+        2    => array(
+          'text' => _('Dimension') . " 1",
+          'from' => Dimensions::get_string($dimension),
+          'to'   => ''
+        ),
+        3    => array(
+          'text' => _('Dimension') . " 2",
+          'from' => Dimensions::get_string($dimension2),
+          'to'   => ''
         )
       );
     } else {
       if ($dim == 1) {
         $params = array(
-          0    => $comments, 1 => array(
-            'text' => _('Period'), 'from' => $from, 'to' => $to
-          ), 2 => array(
-            'text' => _('Dimension'), 'from' => Dimensions::get_string($dimension), 'to' => ''
+          0    => $comments,
+          1    => array(
+            'text' => _('Period'),
+            'from' => $from,
+            'to'   => $to
+          ),
+          2    => array(
+            'text' => _('Dimension'),
+            'from' => Dimensions::get_string($dimension),
+            'to'   => ''
           )
         );
       } else {
         $params = array(
-          0 => $comments, 1 => array(
-            'text' => _('Period'), 'from' => $from, 'to' => $to
+          0 => $comments,
+          1 => array(
+            'text' => _('Period'),
+            'from' => $from,
+            'to'   => $to
           )
         );
       }
     }
     /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_('Balance Sheet'), "BalanceSheet", SA_GLANALYTIC,User::page_size());
+    $rep = new $report_type(_('Balance Sheet'), "BalanceSheet", SA_GLANALYTIC, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
@@ -257,7 +273,7 @@
       $pg->skin           = Config::_get('graphs_skin');
       $pg->built_in       = false;
       $pg->fontfile       = BASE_URL . "reporting/fonts/Vera.ttf";
-      $pg->latin_notation = (User::dec_sep() != ".");
+      $pg->latin_notation = (User::prefs()->dec_sep != ".");
       $filename           = COMPANY_PATH . "pdf_files/test.png";
       $pg->display($filename, true);
       $w = $pg->width / 1.5;
