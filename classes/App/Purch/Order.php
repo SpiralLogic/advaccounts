@@ -677,7 +677,7 @@
               Cell::qty($po_line->qty_received, false, Item::qty_dec($po_line->stock_id));
               Cell::label($po_line->units);
               Cell::label($po_line->req_del_date);
-              Cell::amountDecimal($po_line->price);
+              Cell::amount($po_line->price);
               Cell::percent($po_line->discount * 100);
               Cell::amount($line_total);
               if ($editable) {
