@@ -8,16 +8,16 @@
    * @link      http://www.advancedgroup.com.au
    **/
   use ADV\App\Controller\Manage;
+  use ADV\App\Languages;
   use ADV\App\User;
+  use ADV\App\Security;
   use ADV\App\Form\Form;
   use ADV\Core\View;
 
   /**
 
    */
-  class Users extends Manage
-  {
-
+  class Users extends Manage {
     protected $tableWidth = '80';
     protected function before() {
       $this->object = new User();
@@ -39,13 +39,16 @@
     protected function formContents(Form $form, View $view) {
       $view['title'] = 'Users';
       $form->hidden('id');
-      $form->text('user_id')->label('User ID: ')->focus();
-      $form->text('salesman_phone', ['maxlength'=> 20])->label('Telephone number: ');
-      $form->text('salesman_fax', ['maxlength'=> 20])->label('Fax number: ');
-      $form->text('salesman_email')->label('Email Address: ');
-      $form->percent('provision')->label("Provision: ");
-      $form->amount('break_pt')->label("Break Pt.:");
-      $form->percent('provision2')->label("Provision 2: ");
+      $form->text('user_id')->label('User ID:')->focus();
+      $form->text('real_name')->label('Name:');
+      $form->text('phone')->label('Telephone number:');
+      $form->text('email')->label('Email Address:');
+      $form->custom(Languages::select('language'))->label('Language:');
+      $form->custom(Sales_Point::select('pos'))->label('User\'s POS');
+      $form->custom(Reports_UI::select('print_profile'))->label('Printing profile:');
+      $form->custom(Security::roles('role_id'))->label("Access Level:");
+      $form->checkbox('rep_popup')->label('Use popup window for reports:');
+      $form->checkbox('change_password')->label('Must change password next logon:');
     }
     /**
      * @return array
@@ -57,12 +60,7 @@
         _("Name"),
         _("Phone"),
         _("Email"),
-             ['type'=> "skip"],
-        ['type'=> "skip"],
-        ['type'=> "skip"],
-        ['type'=> "skip"],
-        ['type'=> "skip"],
-        _("Last Visit Fate"),
+        _("Last Visit Date"),
         _("Role"),
         _('Inactive')=> ['type'=> "active"],
         ['insert'=> true, "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],

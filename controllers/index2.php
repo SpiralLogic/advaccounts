@@ -1,4 +1,5 @@
 <?php
-  use ADV\App\User;
+  use ADV\App\DB\Generator;
 
-  var_dump('<pre >',User::getAll());
+  $g = new Generator();
+  $g->getTableDetails('users');

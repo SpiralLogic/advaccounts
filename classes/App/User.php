@@ -8,13 +8,13 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App;
+
   use ADV\Core\Session;
   use ADV\Core\Auth;
   use ADV\Core\JS;
   use ADV\Core\Event;
   use DB_Company;
   use ADV\Core\DB\DB;
-  use ADV\Core\Config;
   use ADV\Core\Traits\StaticAccess;
   use ADV\App\Validation;
 
@@ -34,9 +34,7 @@
    * @method static graphic_links()
    * @method static register_login($object, $function = null, $arguments = [])
    */
-  class User extends \ADV\App\DB\Base
-  {
-
+  class User extends \ADV\App\DB\Base {
     use \ADV\Core\Traits\Hook;
     use StaticAccess {
     StaticAccess::i as ii;
@@ -55,11 +53,12 @@
     /** @var */
     public $username;
     /** @var */
+    public $real_name;
     public $name;
     /**
      * @var string
      */
-    public $company;
+    public $company = 'default';
     /** @var */
     public $pos;
     /**
@@ -82,6 +81,9 @@
     public $logged = false;
     /**@var UserPrefs */
     public $prefs;
+    public $phone;
+    public $language;
+    public $email;
     /**
      * @var bool
      */
@@ -89,11 +91,9 @@
     public $selectedApp;
     /** @var */
     protected $access_sections;
-    protected $hash;
+    public $hash;
     /** @var */
     public $last_record;
-    /** @var Session */
-    protected $Session;
     /** @var \ADV\App\Security */
     public $Security;
     /** @var \ADV\Core\DB\DB */
@@ -115,55 +115,43 @@
      * @return array
      */
     public static function getAll($inactive = false) {
-      $q = DB::_select('id','user_id','real_name','phone','email','pos','print_profile','rep_popup','change_password','language','last_visit_date','role_id','inactive')->from('users');
-      if ($inactive) {
-        $q->andWhere('inactive=', 1);
+      $q = DB::_select('users.id', 'user_id', 'real_name', 'phone', 'email', 'last_visit_date', 'role', 'users.inactive')->from('users,security_roles')->where(
+        'security_roles.id=users.role_id'
+      );
+      if (!$inactive) {
+        $q->andWhere('users.inactive=', 0);
       }
       return $q->fetch()->all();
     }
     /**
      * @static
-     *
-     * @param Session $session
-     * @param Config  $config
-     *
      * @return User
      */
-    public static function getCurrentUser(Session $session, Config $config) {
-      return static::i($session, $config);
+    public static function getCurrentUser() {
+      return static::i();
     }
     /**
      * @static
-     *
-     * @param Session $session
-     * @param Config  $config
-     *
      * @return User
      */
-    public static function  i(Session $session = null, Config $config = null) {
+    public static function  i() {
       $user = null;
       if (isset($_SESSION['User'])) {
         $user = $_SESSION['User'];
       }
-      return static::ii($user, $session, $config);
+      return static::ii($user);
     }
     /**
-     * @param \ADV\Core\Session $session
-     * @param \ADV\Core\Config  $config
      */
-    public function __construct(Session $session = null, Config $config = null) {
-      $this->Session        = $session ? : Session::i();
-      $this->Config         = $config ? : Config::i();
-      $this->company        = $this->Config->get('default.company') ? : 'default';
-      $this->date_ui_format = $this->Config->get('date.ui_format');
-      $this->logged         = false;
-      $this->prefs          = new UserPrefs();
+    public function __construct($id = 0) {
+      parent::__construct($id = 0);
+      $this->logged = false;
+      $this->prefs  = new UserPrefs();
     }
     /**
      * @return array
      */
     public function __sleep() {
-      $this->Session = null;
       return array_keys((array) $this);
     }
     /**
@@ -185,7 +173,6 @@
      * @return bool
      */
     public function login($company, $loginname) {
-      $this->Session = $this->Session ? : Session::i();
       $this->company = $company;
       $this->logged  = false;
       $myrow         = $this->get_for_login($loginname, $_POST['password']);
@@ -196,7 +183,7 @@
         $this->role_set = [];
         $this->access   = $myrow['role_id'];
         $this->hash     = $myrow["hash"];
-        $this->Security = new Security($this->Config);
+        $this->Security = new Security();
         // store area codes available for current user role
         $role = $this->Security->get_role($myrow['role_id']);
         if (!$role) {
@@ -220,8 +207,6 @@
         $this->timeout         = DB_Company::get_pref('login_tout');
         $this->salesmanid      = $this->get_salesmanid();
         $this->fireHooks('login');
-        $this->Session->checkUserAgent();
-        $this->Session['User'] = $this;
         Event::registerShutdown(['Users', 'update_visitdate'], [$this->username]);
         Event::registerShutdown([$this, '_addLog']);
       }
@@ -275,9 +260,9 @@
     public function _addLog() {
       DB::_insert('user_login_log')->values(
         array(
-          'user'    => $this->username,
-          'IP'      => Auth::get_ip(),
-          'success' => 2
+             'user'    => $this->username,
+             'IP'      => Auth::get_ip(),
+             'success' => 2
         )
       )->exec();
     }
@@ -322,7 +307,7 @@
      * @return \ADV\Core\DB\Query\Result
      */
     protected function  get() {
-      $sql    = "SELECT * FROM users WHERE id=" . DB::_escape($this->user);
+      $sql = "SELECT * FROM users WHERE id=" . DB::_escape($this->user);
       $result = DB::_query($sql, "could not get user " . $this->user);
       return DB::_fetch($result);
     }
@@ -451,7 +436,7 @@
      * @return int
      */
     public function _date_sep() {
-      return (isset($_SESSION["current_user"])) ? $this->prefs->date_sep : $this->Config->get('date.ui_separator');
+      return (isset($_SESSION["current_user"])) ? $this->prefs->date_sep : 0;
     }
     /**
      * @return int

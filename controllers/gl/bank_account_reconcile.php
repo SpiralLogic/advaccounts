@@ -201,7 +201,7 @@
           }
         }
         foreach ($rec as $p=> $q) {
-          if ($q['amount'] == $amount) {
+          if (Num::_round($q['amount'], 2) == $amount) {
             $matched = $rec[$p] + $v;
             unset($rec[$p]);
             $known_trans[] = $matched;

@@ -15,16 +15,14 @@
     /**
 
      */
-    class Point extends \ADV\App\DB\Base
-    {
-
+    class Point extends \ADV\App\DB\Base {
       protected $_table = 'sales_pos';
       protected $_classname = 'Sales POS';
       protected $_id_column = 'id';
-      public $id=0;
+      public $id = 0;
       public $pos_name;
-      public $cash_sale=0;
-      public $credit_sale=0;
+      public $cash_sale = 0;
+      public $credit_sale = 0;
       public $pos_location;
       public $pos_account;
       public $inactive = 0;
@@ -35,8 +33,8 @@
         if (strlen($this->pos_name) > 30) {
           return $this->status(false, 'Pos_name must be not be longer than 30 characters!', 'pos_name');
         }
-        if (strlen($this->pos_location)>5){
-        return $this->status(false,'Pos_location must be not be longer than 5 characters!','pos_location');
+        if (strlen($this->pos_location) > 5) {
+          return $this->status(false, 'Pos_location must be not be longer than 5 characters!', 'pos_location');
         }
 
         return true;
@@ -65,9 +63,9 @@
   }
 
   namespace {
-    class Sales_Point
-    {
+    use ADV\App\Forms;
 
+    class Sales_Point {
       /**
        * @static
        *
@@ -78,7 +76,9 @@
        * @param $credit
        */
       public static function     add($name, $location, $account, $cash, $credit) {
-        $sql = "INSERT INTO sales_pos (pos_name, pos_location, pos_account, cash_sale, credit_sale) VALUES (" . DB::_escape($name) . "," . DB::_escape($location) . "," . DB::_escape($account) . ",$cash,$credit)";
+        $sql = "INSERT INTO sales_pos (pos_name, pos_location, pos_account, cash_sale, credit_sale) VALUES (" . DB::_escape($name) . "," . DB::_escape(
+          $location
+        ) . "," . DB::_escape($account) . ",$cash,$credit)";
         DB::_query($sql, "could not add point of sale");
       }
       /**
@@ -92,7 +92,9 @@
        * @param $credit
        */
       public static function update($id, $name, $location, $account, $cash, $credit) {
-        $sql = "UPDATE sales_pos SET pos_name=" . DB::_escape($name) . ",pos_location=" . DB::_escape($location) . ",pos_account=" . DB::_escape($account) . ",cash_sale =$cash" . ",credit_sale =$credit" . " WHERE id = " . DB::_escape($id);
+        $sql = "UPDATE sales_pos SET pos_name=" . DB::_escape($name) . ",pos_location=" . DB::_escape($location) . ",pos_account=" . DB::_escape(
+          $account
+        ) . ",cash_sale =$cash" . ",credit_sale =$credit" . " WHERE id = " . DB::_escape($id);
         DB::_query($sql, "could not update sales type");
       }
       /**
@@ -151,6 +153,34 @@
       /**
        * @static
        *
+       * @param      $name
+       * @param null $selected_id
+       * @param bool $spec_option
+       * @param bool $submit_on_change
+       *
+       * @internal param $label
+       * @return string
+       */
+      public static function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false) {
+        $sql = "SELECT id, pos_name, inactive FROM sales_pos";
+        return Forms::selectBox(
+          $name,
+          $selected_id,
+          $sql,
+          'id',
+          'pos_name',
+          array(
+               'select_submit' => $submit_on_change,
+               'async'         => true,
+               'spec_option'   => $spec_option,
+               'spec_id'       => -1,
+               'order'         => array('pos_name')
+          )
+        );
+      }
+      /**
+       * @static
+       *
        * @param      $label
        * @param      $name
        * @param null $selected_id
@@ -158,20 +188,13 @@
        * @param bool $submit_on_change
        */
       public static function row($label, $name, $selected_id = null, $spec_option = false, $submit_on_change = false) {
-        $sql = "SELECT id, pos_name, inactive FROM sales_pos";
         JS::_defaultFocus($name);
         echo '<tr>';
         if ($label != null) {
           echo "<td class='label'>$label</td>\n";
         }
         echo "<td>";
-        echo Forms::selectBox($name, $selected_id, $sql, 'id', 'pos_name', array(
-          'select_submit' => $submit_on_change,
-          'async'         => true,
-          'spec_option'   => $spec_option,
-          'spec_id'       => -1,
-          'order'         => array('pos_name')
-        ));
+        echo Sales_Point::select($name, $selected_id, $spec_option, $submit_on_change);
         echo "</td></tr>\n";
       }
       /**

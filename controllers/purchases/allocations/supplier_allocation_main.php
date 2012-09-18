@@ -1,4 +1,6 @@
 <?php
+  use ADV\Core\Input\Input;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -24,7 +26,7 @@
     unset($_POST['creditor_id']);
   }
   $settled = false;
-  if (Input::_hasPost('ShowSettled')) {
+  if (Input::_post('ShowSettled')) {
     $settled = true;
   }
   $creditor_id = null;

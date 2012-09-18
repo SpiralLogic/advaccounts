@@ -76,7 +76,7 @@
     protected function getActionId($prefix) {
       if (strpos($this->action, $prefix) === 0) {
         $result = str_replace($prefix, '', $this->action);
-        if (!empty($result)) {
+        if (strlen($result)) {
           return $result;
         }
       }
