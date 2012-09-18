@@ -78,8 +78,7 @@
       $doc_Bank_Account = '';
       $doc_Please_Quote = "All amounts stated in";
     } else {
-      $doc_Please_Quote = "Please quote " . ($doctype == ST_SALESINVOICE ? "Invoice" :
-        "Credit") . " no. when paying. All amounts stated in";
+      $doc_Please_Quote = "Please quote " . ($doctype == ST_SALESINVOICE ? "Invoice" : "Credit") . " no. when paying. All amounts stated in";
       $doc_Bank_Account = "Bank Account";
     }
     $doc_Address         = "Address";
@@ -110,7 +109,7 @@
         $this->title = "CREDIT NOTE";
       }
       if ($doctype == ST_PURCHORDER) {
-        $this->headers = array('Item Code', 'Item Description', 'Delivery Date', 'Quantity', 'Unit', 'Price', 'Total');
+        $this->headers = array('Item Code', 'Item Description', 'Delivery Date', 'Qty', 'Unit', 'Price', 'Total');
       } elseif ($doctype == ST_WORKORDER) {
         $this->headers = array(
           "Item Code",
