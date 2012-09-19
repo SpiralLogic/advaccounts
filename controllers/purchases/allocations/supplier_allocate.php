@@ -13,7 +13,7 @@
   Page::start(_($help_context = "Allocate Supplier Payment or Credit Note"), SA_SUPPLIERALLOC);
 
   if (isset($_POST['Process'])) {
-    if (Gl_Allocation::check()) {
+    if (GL_Allocation::check()) {
       $_SESSION['alloc']->write();
       clear_allocations();
       $_POST['Cancel'] = 1;
@@ -21,8 +21,7 @@
   }
   if (isset($_POST['Cancel'])) {
     clear_allocations();
-    $forward = (isset($_POST['inquiry'])) ? "/purchases/inquiry/supplier_allocation_inquiry.php" :
-      "/purchases/allocations/supplier_allocation_main.php";
+    $forward = (isset($_POST['inquiry'])) ? "/purchases/inquiry/supplier_allocation_inquiry.php" : "/purchases/allocations/supplier_allocation_main.php";
     Display::meta_forward($forward);
   }
   if (isset($_GET['trans_no']) && isset($_GET['trans_type'])) {
@@ -36,8 +35,7 @@
     edit_allocations_for_transaction($_SESSION['alloc']->type, $_SESSION['alloc']->trans_no);
   }
   Page::end();
-  function clear_allocations()
-  {
+  function clear_allocations() {
     if (isset($_SESSION['alloc'])) {
       unset($_SESSION['alloc']->allocs);
       unset($_SESSION['alloc']);
@@ -48,8 +46,7 @@
    * @param $type
    * @param $trans_no
    */
-  function edit_allocations_for_transaction($type, $trans_no)
-  {
+  function edit_allocations_for_transaction($type, $trans_no) {
 
     Forms::start();
     if (isset($_POST['inquiry']) || stristr($_SERVER['HTTP_REFERER'], 'supplier_allocation_inquiry.php')) {
