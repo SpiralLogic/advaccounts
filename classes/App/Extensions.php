@@ -14,8 +14,7 @@
   /**
 
    */
-  class Extensions
-  {
+  class Extensions {
     /**
      * @static
      *
@@ -29,7 +28,7 @@
       $security_sections = $security_areas = [];
       if (isset($ext['acc_file'])) {
         /** @noinspection PhpIncludeInspection */
-        include(DOCROOT . ($ext['type'] == 'plugin' ? 'classes/Modules/' : DS) . $ext['path'] . DS . $ext['acc_file']);
+        include(ROOT_DOC . ($ext['type'] == 'plugin' ? 'classes/Modules/' : DS) . $ext['path'] . DS . $ext['acc_file']);
       }
 
       return array($security_areas, $security_sections);

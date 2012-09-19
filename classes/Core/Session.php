@@ -31,15 +31,11 @@
   class Session implements \ArrayAccess {
     use Traits\StaticAccess2;
 
-    /***
-     * @var \gettextNativeSupport|\gettext_php_support
-     */
-    public $get_text;
     protected $flash = [];
     /**
      * @throws \ADV\Core\SessionException
      */
-    final protected function __construct() {
+    public function __construct() {
       if (session_status() === PHP_SESSION_DISABLED) {
         throw new SessionException('Sessions are disasbled!');
       }
@@ -47,7 +43,6 @@
       $handler = new \ADV\Core\Session\Memcached();
       session_set_save_handler($handler, true);
       session_start();
-      /** @noinspection PhpUndefinedFunctionInspection */
       /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() !== PHP_SESSION_ACTIVE) {
         throw new SessionException('Could not start a Session!');

@@ -15,8 +15,7 @@
   /**
 
    */
-  class UploadHandler
-  {
+  class UploadHandler {
     /**
      */
     private $options;
@@ -35,8 +34,8 @@
       ini_set('upload_max_filesize', '3M');
       $this->options = array(
         'script_url'              => $_SERVER['DOCUMENT_URI'],
-        'upload_dir'              => DOCROOT . '/upload/upload/',
-        'upload_url'              => BASE_URL . '/upload/upload/',
+        'upload_dir'              => ROOT_DOC . '/upload/upload/',
+        'upload_url'              => ROOT_URL . '/upload/upload/',
         'param_name'              => 'files',
         // The php.ini settings upload_max_filesize and post_max_size
         // take precedence over the following max_file_size setting:
@@ -58,8 +57,8 @@
                                          ),
                                          */
           'thumbnail' => array(
-            'upload_dir' => DOCROOT . 'upload/upload/thumbnails/',
-            'upload_url' => BASE_URL . 'upload/upload/thumbnails/',
+            'upload_dir' => ROOT_DOC . 'upload/upload/thumbnails/',
+            'upload_url' => ROOT_URL . 'upload/upload/thumbnails/',
             'max_width'  => 80,
             'max_height' => 80
           )
@@ -101,22 +100,32 @@
     }
     public function post() {
       $upload = isset($_FILES[$this->options['param_name']]) ? $_FILES[$this->options['param_name']] : array(
-        'tmp_name' => null, 'name'     => null, 'size'     => null, 'type'     => null, 'error'    => null
+        'tmp_name' => null,
+        'name'     => null,
+        'size'     => null,
+        'type'     => null,
+        'error'    => null
       );
       $info   = [];
       if (is_array($upload['tmp_name'])) {
         /** @noinspection PhpUnusedLocalVariableInspection */
         foreach ($upload['tmp_name'] as $index => $value) {
-          $info[] = $this->handle_file_upload($upload['tmp_name'][$index], isset($_SERVER['HTTP_X_FILE_NAME']) ?
-            $_SERVER['HTTP_X_FILE_NAME'] : $upload['name'][$index], isset($_SERVER['HTTP_X_FILE_SIZE']) ?
-            $_SERVER['HTTP_X_FILE_SIZE'] : $upload['size'][$index], isset($_SERVER['HTTP_X_FILE_TYPE']) ?
-            $_SERVER['HTTP_X_FILE_TYPE'] : $upload['type'][$index], $upload['error'][$index]);
+          $info[] = $this->handle_file_upload(
+            $upload['tmp_name'][$index],
+            isset($_SERVER['HTTP_X_FILE_NAME']) ? $_SERVER['HTTP_X_FILE_NAME'] : $upload['name'][$index],
+            isset($_SERVER['HTTP_X_FILE_SIZE']) ? $_SERVER['HTTP_X_FILE_SIZE'] : $upload['size'][$index],
+            isset($_SERVER['HTTP_X_FILE_TYPE']) ? $_SERVER['HTTP_X_FILE_TYPE'] : $upload['type'][$index],
+            $upload['error'][$index]
+          );
         }
       } else {
-        $info[] = $this->handle_file_upload($upload['tmp_name'], isset($_SERVER['HTTP_X_FILE_NAME']) ?
-          $_SERVER['HTTP_X_FILE_NAME'] : $upload['name'], isset($_SERVER['HTTP_X_FILE_SIZE']) ? $_SERVER['HTTP_X_FILE_SIZE'] :
-          $upload['size'], isset($_SERVER['HTTP_X_FILE_TYPE']) ? $_SERVER['HTTP_X_FILE_TYPE'] :
-          $upload['type'], $upload['error']);
+        $info[] = $this->handle_file_upload(
+          $upload['tmp_name'],
+          isset($_SERVER['HTTP_X_FILE_NAME']) ? $_SERVER['HTTP_X_FILE_NAME'] : $upload['name'],
+          isset($_SERVER['HTTP_X_FILE_SIZE']) ? $_SERVER['HTTP_X_FILE_SIZE'] : $upload['size'],
+          isset($_SERVER['HTTP_X_FILE_TYPE']) ? $_SERVER['HTTP_X_FILE_TYPE'] : $upload['type'],
+          $upload['error']
+        );
       }
       header('Vary: Accept');
       if (isset($_SERVER['HTTP_ACCEPT']) && (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)
@@ -134,9 +143,13 @@
      */
     public static function insert($id) {
       if (!self::$inserted) {
-        JS::_footerFile(array(
-                            '/js/js2/jquery.fileupload.js', '/js/js2/jquery.fileupload-ui.js', '/js/js2/jquery.fileupload-app.js'
-                       ));
+        JS::_footerFile(
+          array(
+               '/js/js2/jquery.fileupload.js',
+               '/js/js2/jquery.fileupload-ui.js',
+               '/js/js2/jquery.fileupload-app.js'
+          )
+        );
         self::$inserted = true;
       }
       echo '
@@ -281,7 +294,10 @@
         default:
           $src_img = $image_method = null;
       }
-      $success = $src_img && @imagecopyresampled($new_img, $src_img, 0, 0, 0, 0, $new_width, $new_height, $img_width, $img_height) && isset($write_image) && $write_image($new_img, $new_file_path);
+      $success = $src_img && @imagecopyresampled($new_img, $src_img, 0, 0, 0, 0, $new_width, $new_height, $img_width, $img_height) && isset($write_image) && $write_image(
+        $new_img,
+        $new_file_path
+      );
       // Free up memory (imagedestroy does not delete files):
       @imagedestroy($src_img);
       @imagedestroy($new_img);

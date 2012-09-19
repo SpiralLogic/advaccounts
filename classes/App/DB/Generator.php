@@ -6,10 +6,7 @@
   /**
 
    */
-  class Generator
-  {
-    /** @var \ADV\Core\DB\DB  */
-    protected $DB;
+  class Generator {
     protected $vars = [];
     protected $valids = [];
     protected $name;

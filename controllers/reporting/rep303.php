@@ -10,8 +10,6 @@
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
 
-
-
   print_stock_check();
   /**
    * @param $category
@@ -19,8 +17,7 @@
    *
    * @return null|PDOStatement
    */
-  function get_transactions($category, $location)
-  {
+  function get_transactions($category, $location) {
     $sql
       = "SELECT stock_master.category_id,
             stock_category.description AS cat_name,
@@ -51,8 +48,7 @@
     return DB::_query($sql, "No transactions were returned");
   }
 
-  function print_stock_check()
-  {
+  function print_stock_check() {
     $category    = $_POST['PARAM_0'];
     $location    = $_POST['PARAM_1'];
     $pictures    = $_POST['PARAM_2'];
@@ -99,7 +95,12 @@
     if ($check) {
       $cols    = array(0, 100, 250, 295, 345, 390, 445, 515);
       $headers = array(
-        _('Stock ID'), _('Description'), _('Quantity'), _('Check'), _('Demand'), $available,
+        _('Stock ID'),
+        _('Description'),
+        _('Quantity'),
+        _('Check'),
+        _('Demand'),
+        $available,
         _('On Order')
       );
       $aligns  = array('left', 'left', 'right', 'right', 'right', 'right', 'right');
@@ -130,9 +131,10 @@
         'from' => $nozeros,
         'to'   => ''
       )
-    );    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
+    );
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
 
-    $rep    = new $report_type(_('Stock Check Sheets'), "StockCheckSheet",SA_ITEMSVALREP, User::page_size());
+    $rep = new $report_type(_('Stock Check Sheets'), "StockCheckSheet", SA_ITEMSVALREP, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
@@ -183,15 +185,19 @@
         $rep->AmountCol(5, 6, $onorder, $dec);
       }
       if ($pictures) {
-        $image = COMPANY_PATH . 'images/'
-          . Item::img_name($trans['stock_id']) . '.jpg';
+        $image = PATH_COMPANY . 'images/' . Item::img_name($trans['stock_id']) . '.jpg';
         if (file_exists($image)) {
           $rep->NewLine();
           if ($rep->row - Config::_get('item_images_height') < $rep->bottomMargin) {
             $rep->Header();
           }
-          $rep->AddImage($image, $rep->cols[1], $rep->row - Config::_get('item_images_height'), 0,
-            Config::_get('item_images_height'));
+          $rep->AddImage(
+            $image,
+            $rep->cols[1],
+            $rep->row - Config::_get('item_images_height'),
+            0,
+            Config::_get('item_images_height')
+          );
           $rep->row -= Config::_get('item_images_height');
           $rep->NewLine();
         }

@@ -9,11 +9,12 @@
    */
   class CSSMin {
     protected $minified = '';
-    protected $settings = array(
-      'embed'           => true,
-      'embedMaxSize'    => 5120,
-      'embedExceptions' => array('htc')
-    );
+    protected $settings
+      = array(
+        'embed'           => true,
+        'embedMaxSize'    => 5120,
+        'embedExceptions' => array('htc')
+      );
     protected $mimeTypes = [];
     protected $filedir = '.';
     protected $source;
@@ -57,11 +58,13 @@
       if (isset($this->mimeTypes[$fileType])) {
         $mimeType = $this->mimeTypes[$fileType];
       } elseif (function_exists('mime_content_type')) {
-        $mimeType = mime_content_type(WEBROOT . ltrim($url, '/'));
+        $mimeType = mime_content_type(ROOT_WEB . ltrim($url, '/'));
       } else {
         $mimeType = null;
       }
-      if (!$this->settings['embed'] || !file_exists($this->filedir . $url) || ($this->settings['embedMaxSize'] > 0 && filesize($this->filedir . $url) > $this->settings['embedMaxSize']) || !$fileType || in_array($fileType, (array) $this->settings['embedExceptions']) || !$mimeType || $count > 1
+      if (!$this->settings['embed'] || !file_exists($this->filedir . $url) || ($this->settings['embedMaxSize'] > 0 && filesize(
+        $this->filedir . $url
+      ) > $this->settings['embedMaxSize']) || !$fileType || in_array($fileType, (array) $this->settings['embedExceptions']) || !$mimeType || $count > 1
       ) {
         if (strpos($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME'] . '?') === 0 || strpos($_SERVER['REQUEST_URI'], rtrim(dirname($_SERVER['SCRIPT_NAME']), '\/') . '/?') === 0
         ) {
@@ -76,7 +79,10 @@
         $oldFileDir    = $this->filedir;
         $this->filedir = rtrim(dirname($this->filedir . $url), '\/') . '/';
         $oldBaseUrl    = $baseUrl;
-        $baseUrl       = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['SCRIPT_NAME']), '\/') . '/' . $this->filedir;
+        $baseUrl       = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . rtrim(
+          dirname($_SERVER['SCRIPT_NAME']),
+          '\/'
+        ) . '/' . $this->filedir;
         $contents      = $this->minify($contents);
         $this->filedir = $oldFileDir;
         $baseUrl       = $oldBaseUrl;

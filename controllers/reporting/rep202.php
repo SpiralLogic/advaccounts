@@ -23,7 +23,8 @@
     // Revomed allocated from sql
     $value = "(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)";
     $due   = "IF (creditor_trans.type=" . ST_SUPPINVOICE . " OR creditor_trans.type=" . ST_SUPPCREDIT . ",creditor_trans.due_date,creditor_trans.tran_date)";
-    $sql   = "SELECT creditor_trans.type,
+    $sql
+           = "SELECT creditor_trans.type,
         creditor_trans.reference,
         creditor_trans.tran_date,
         $value as Balance,
@@ -240,9 +241,9 @@
       $pg->type           = $graphics;
       $pg->skin           = Config::_get('graphs_skin');
       $pg->built_in       = false;
-      $pg->fontfile       = BASE_URL . "reporting/fonts/Vera.ttf";
+      $pg->fontfile       = ROOT_URL . "reporting/fonts/Vera.ttf";
       $pg->latin_notation = (User::prefs()->dec_sep != ".");
-      $filename           = COMPANY_PATH . "pdf_files/test.png";
+      $filename           = PATH_COMPANY . "pdf_files/test.png";
       $pg->display($filename, true);
       $w = $pg->width / 1.5;
       $h = $pg->height / 1.5;

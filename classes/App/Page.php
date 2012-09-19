@@ -141,7 +141,7 @@
     protected function init($menu) {
       $this->App      = ADVAccounting::i();
       $this->sel_app  = $this->sel_app ? : $this->App->get_selected()->id;
-      $this->ajaxpage = (AJAX_REFERRER || Ajax::_inAjax());
+      $this->ajaxpage = (REQUEST_AJAX || Ajax::_inAjax());
       $this->menu     = ($this->frame) ? false : $menu;
       $this->theme    = $this->User->theme();
       $this->encoding = $_SESSION['language']->encoding;
@@ -153,7 +153,7 @@
           $this->menu_header();
         }
       }
-      if (!IS_JSON_REQUEST) {
+      if (!REQUEST_JSON) {
         $this->errorBox();
       }
       if (!$this->ajaxpage) {
@@ -167,10 +167,10 @@
         $this->end_page(false);
         exit;
       }
-      if ($this->title && !$this->isIndex && !$this->frame && !IS_JSON_REQUEST) {
+      if ($this->title && !$this->isIndex && !$this->frame && !REQUEST_JSON) {
         echo "<div class='titletext'>$this->title" . ($this->User->_hints() ? "<span id='hints' class='floatright' style='display:none'></span>" : '') . "</div>";
       }
-      if (!IS_JSON_REQUEST) {
+      if (!REQUEST_JSON) {
         Display::div_start('_page_body');
       }
     }
@@ -261,7 +261,7 @@
       $footer['mem']       = Files::convertSize(memory_get_usage(true)) . '/' . Files::convertSize(memory_get_peak_usage(true));
       $footer['load_time'] = Dates::_getReadableTime(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
       $footer['user']      = $this->User->username;
-      $footer['footer']    = $this->menu && !AJAX_REFERRER;
+      $footer['footer']    = $this->menu && !REQUEST_AJAX;
 
       return $footer;
     }
@@ -275,7 +275,7 @@
       $this->User->_add_js_data();
       $footer->set('sidemenu', ($this->header && $this->menu ? ['bank'=> $this->User->hasAccess(SS_GL)] : false));
       $footer->set('JS', $this->JS);
-      $footer->set('messages', (!AJAX_REFERRER ? Messages::show() : ''));
+      $footer->set('messages', (!REQUEST_AJAX ? Messages::show() : ''));
       $footer->set('page_body', Display::div_end(true));
       $footer->render();
     }
@@ -366,7 +366,7 @@
     }
     /** @static */
     public function errorBox() {
-      printf("<div %s='msgbox'>", AJAX_REFERRER ? 'class' : 'id');
+      printf("<div %s='msgbox'>", REQUEST_AJAX ? 'class' : 'id');
       static::$before_box = ob_get_clean(); // save html content before error box
       ob_start([$this->App, 'flush_handler']);
       echo "</div>";

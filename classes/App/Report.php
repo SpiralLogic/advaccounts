@@ -12,8 +12,7 @@
   /**
 
    */
-  class Report
-  {
+  class Report {
     /** @var */
     public $id;
     /** @var */
@@ -85,7 +84,7 @@
         $extensions = $installed_extensions;
         foreach ($extensions as $ext) {
           if (($ext['active'] && $ext['type'] == 'module')) {
-            $file = BASE_URL . '/' . $ext['path'] . "/reporting/reports_custom.php";
+            $file = ROOT_URL . '/' . $ext['path'] . "/reporting/reports_custom.php";
             if (file_exists($file)) {
               /** @noinspection PhpIncludeInspection */
               include_once($file);
@@ -93,7 +92,7 @@
           }
         }
       }
-      $file = COMPANY_PATH . "reporting/reports_custom.php";
+      $file = PATH_COMPANY . "reporting/reports_custom.php";
       if (file_exists($file)) {
         /** @noinspection PhpIncludeInspection */
         include_once($file);

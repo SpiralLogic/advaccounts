@@ -153,7 +153,7 @@
     protected $_id_column = 'creditor_id';
     protected $_classname = 'Supplier';
     /** @var DB */
-    public static $staticDB;
+    protected static $staticDB;
     /**
      * @param int|null $id
      */
@@ -300,7 +300,8 @@
         )
       );
       $customerBox->show();
-      $js = <<<JS
+      $js
+        = <<<JS
                             var val = $("#creditor_id").val();
                             $("#supplierBox").html("<iframe src='/contacts/suppliers.php?frame=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
@@ -339,9 +340,10 @@ JS;
       $past_due1 = DB_Company::get_pref('past_due_days') ? : 30;
       $past_due2 = 2 * $past_due1;
       // removed - creditor_trans.alloc from all summations
-      $value  = "(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)";
-      $due    = "IF (creditor_trans.type=" . ST_SUPPINVOICE . " OR creditor_trans.type=" . ST_SUPPCREDIT . ",creditor_trans.due_date,creditor_trans.tran_date)";
-      $sql    = "SELECT suppliers.name, suppliers.curr_code, payment_terms.terms,
+      $value = "(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)";
+      $due   = "IF (creditor_trans.type=" . ST_SUPPINVOICE . " OR creditor_trans.type=" . ST_SUPPCREDIT . ",creditor_trans.due_date,creditor_trans.tran_date)";
+      $sql
+              = "SELECT suppliers.name, suppliers.curr_code, payment_terms.terms,
         Sum($value) AS Balance,
         Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0)) AS Due,
         Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past_due1,$value,0)) AS Overdue1,
@@ -363,7 +365,8 @@ JS;
       if (static::$staticDB->_numRows($result) == 0) {
         /*Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
         $nil_balance = true;
-        $sql         = "SELECT suppliers.name, suppliers.curr_code, suppliers.creditor_id, payment_terms.terms FROM suppliers,
+        $sql
+                     = "SELECT suppliers.name, suppliers.curr_code, suppliers.creditor_id, payment_terms.terms FROM suppliers,
                  payment_terms WHERE
                  suppliers.payment_terms = payment_terms.terms_indicator
                  AND suppliers.creditor_id = " . static::$staticDB->_escape($creditor_id);
@@ -393,7 +396,8 @@ JS;
       $date_from = Dates::_dateToSql($date_from);
       $date_to   = Dates::_dateToSql($date_to);
       // Sherifoz 22.06.03 Also get the description
-      $sql     = "SELECT
+      $sql
+               = "SELECT
 
 
      SUM((trans.ov_amount + trans.ov_gst + trans.ov_discount)) AS Total

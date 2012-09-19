@@ -13,8 +13,7 @@
   /**
 
    */
-  abstract class Contact_Company extends \ADV\App\DB\Base
-  {
+  abstract class Contact_Company extends \ADV\App\DB\Base {
     /**
      * @var string
      */
@@ -143,11 +142,5 @@ JS;
       }
 
       return false;
-    }
-    /**
-     * @return array
-     */
-    public function jsonSerialize() {
-      return get_object_vars($this);
     }
   }

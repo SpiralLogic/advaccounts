@@ -61,14 +61,21 @@
         Ajax::_activate('creditor_id'); // in case of status change
         Event::success(_("Supplier has been updated."));
       } else {
-        $sql = "INSERT INTO suppliers (name, ref, address, address, phone, phone2, fax, gst_no, email, website,
+        $sql
+          = "INSERT INTO suppliers (name, ref, address, address, phone, phone2, fax, gst_no, email, website,
 				contact, account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
 				payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
-				VALUES (" . DB::_escape($_POST['name']) . ", " . DB::_escape($_POST['ref']) . ", " . DB::_escape($_POST['address']) . ", " . DB::_escape($_POST['address']) . ", " . DB::_escape($_POST['phone']) . ", " . DB::_escape($_POST['phone2']) . ", " . DB::_escape($_POST['fax']) . ", " . DB::_escape(
+				VALUES (" . DB::_escape($_POST['name']) . ", " . DB::_escape($_POST['ref']) . ", " . DB::_escape($_POST['address']) . ", " . DB::_escape(
+          $_POST['address']
+        ) . ", " . DB::_escape($_POST['phone']) . ", " . DB::_escape($_POST['phone2']) . ", " . DB::_escape($_POST['fax']) . ", " . DB::_escape(
           $_POST['gst_no']
-        ) . ", " . DB::_escape($_POST['email']) . ", " . DB::_escape($_POST['website']) . ", " . DB::_escape($_POST['contact']) . ", " . DB::_escape($_POST['account_no']) . ", " . DB::_escape($_POST['bank_account']) . ", " . Validation::input_num('credit_limit', 0) . ", " . DB::_escape(
+        ) . ", " . DB::_escape($_POST['email']) . ", " . DB::_escape($_POST['website']) . ", " . DB::_escape($_POST['contact']) . ", " . DB::_escape(
+          $_POST['account_no']
+        ) . ", " . DB::_escape($_POST['bank_account']) . ", " . Validation::input_num('credit_limit', 0) . ", " . DB::_escape(
           $_POST['dimension_id']
-        ) . ", " . DB::_escape($_POST['dimension2_id']) . ", " . DB::_escape($_POST['curr_code']) . ", " . DB::_escape($_POST['payment_terms']) . ", " . DB::_escape($_POST['payable_account']) . ", " . DB::_escape($_POST['purchase_account']) . ", " . DB::_escape(
+        ) . ", " . DB::_escape($_POST['dimension2_id']) . ", " . DB::_escape($_POST['curr_code']) . ", " . DB::_escape($_POST['payment_terms']) . ", " . DB::_escape(
+          $_POST['payable_account']
+        ) . ", " . DB::_escape($_POST['purchase_account']) . ", " . DB::_escape(
           $_POST['payment_discount_account']
         ) . ", " . DB::_escape($_POST['notes']) . ", " . DB::_escape($_POST['tax_group_id']) . ")";
         DB::_query($sql, "The supplier could not be added");
@@ -172,7 +179,7 @@
   Forms::textRow(_("Phone Number:"), 'phone', null, 32, 30);
   Forms::textRow(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
   Forms::textRow(_("Fax Number:"), 'fax', null, 32, 30);
-  Forms::emailRow(_("E-mail:"), 'email', null, 35, 55);
+  Forms::emailRow(_("Email:"), 'email', null, 35, 55);
   Forms::linkRow(_("Website:"), 'website', null, 35, 55);
   Forms::textRow(_("Our Customer No:"), 'account_no', null, 42, 40);
   Table::sectionTitle(_("Addresses"));

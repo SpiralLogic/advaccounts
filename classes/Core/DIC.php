@@ -8,6 +8,7 @@
     protected $_objects = [];
     protected $_callbacks = [];
     protected static $i;
+    protected $_last;
     /**
      * @return DIC
      */
@@ -20,9 +21,13 @@
     /**
      * @param          $name
      * @param \Closure $callable
+     *
+     * @return \ADV\Core\DIC
      */
     public function set($name, \Closure $callable) {
+      $this->_last             = $name;
       $this->_callbacks[$name] = $callable;
+      return $this;
     }
     /**
      * Sets a parameter or an object.
@@ -72,8 +77,8 @@
      *
      * @return mixed
      */
-    public function get($name) {
-      // Return object if it's already instantiated
+    public function get($name = null) {
+      $name = $name ? : $this->_last;
       if (isset($this->_objects[$name])) {
         $args = func_get_args();
         array_shift($args);
@@ -105,10 +110,11 @@
       return call_user_func_array([$this, 'get'], $args);
     }
     /**
-     * @param $name
+     * @param      $name
+     * @param null $args
      *
-     * @return mixed
      * @throws \InvalidArgumentException
+     * @return mixed
      */
     public function fresh($name, $args = null) {
       if (!isset($this->_callbacks[$name])) {

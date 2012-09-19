@@ -24,7 +24,7 @@
     protected $debtor;
     protected $company_data;
     protected function before() {
-      if (AJAX_REFERRER) {
+      if (REQUEST_AJAX) {
         if (isset($_GET['term'])) {
           $data = Debtor::search($_GET['term']);
           $this->JS->renderJSON($data);
@@ -40,7 +40,7 @@
       } else {
         $data['company'] = $this->debtor = new Debtor();
       }
-      if (AJAX_REFERRER) {
+      if (REQUEST_AJAX) {
         $data['status'] = $this->debtor->getStatus();
         $this->JS->renderJSON($data);
       }
@@ -105,7 +105,7 @@
       $form->text('accounts[phone]')->label('Phone Number:');
       $form->text('accounts[phone2]')->label('Alt Phone Number:');
       $form->text('accounts[fax]')->label('Fax Number:');
-      $form->text('accounts[email]')->label('E-mail:');
+      $form->text('accounts[email]')->label('Email:');
       $form->textarea('accounts[br_address]', ['cols'=> 37, 'rows'=> 4])->label('Street:');
       $accounts_postcode = new Contact_Postcode([
                                                 'city'     => ['accounts[city]'], //

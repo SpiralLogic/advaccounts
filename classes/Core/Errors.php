@@ -102,11 +102,11 @@
       if (in_array($type, static::$user_errors) || in_array($type, static::$fatal_levels)) {
         static::$messages[] = $error;
       }
-      if (is_writable(DOCROOT . '../error_log')) {
+      if (is_writable(ROOT_DOC . '../error_log')) {
         error_log(
           date(DATE_RFC822) . ' ' . $error['type'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n",
           3,
-          DOCROOT . '../error_log'
+          ROOT_DOC . '../error_log'
         );
       }
       if (!in_array($type, static::$user_errors) || $type == E_NOTICE || ($type == E_USER_ERROR && $log)) {
@@ -130,8 +130,8 @@
       );
       static::$current_severity = -1;
       static::$messages[]       = $error;
-      if (is_writable(DOCROOT . '../error_log')) {
-        error_log($error['code'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n", 3, DOCROOT . '../error_log');
+      if (is_writable(ROOT_DOC . '../error_log')) {
+        error_log($error['code'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n", 3, ROOT_DOC . '../error_log');
       }
       $error['backtrace'] = static::prepareBacktrace($e->getTrace());
       static::$errors[]   = $error;
@@ -248,7 +248,7 @@
       }
       if (class_exists('Ajax', false) && Ajax::_inAjax()) {
         Ajax::_run();
-      } elseif (AJAX_REFERRER && IS_JSON_REQUEST && !static::$jsonerrorsent) {
+      } elseif (REQUEST_AJAX && REQUEST_JSON && !static::$jsonerrorsent) {
         ob_end_clean();
         echo static::getJSONError();
       } elseif (static::$current_severity == -1) {
@@ -356,8 +356,8 @@
       while ($source['file'] == $db_class_file) {
         $source = array_shift($backtrace);
       }
-      if (is_writable(DOCROOT . '../error_log')) {
-        error_log(date(DATE_RFC822) . ": " . var_export($error['debug'], true) . "\n\n\n", 3, DOCROOT . '../error_log');
+      if (is_writable(ROOT_DOC . '../error_log')) {
+        error_log(date(DATE_RFC822) . ": " . var_export($error['debug'], true) . "\n\n\n", 3, ROOT_DOC . '../error_log');
       }
       Errors::handler(E_ERROR, $error['message'], $source['file'], $source['line']);
     }
@@ -377,7 +377,7 @@
       error_log(
         date(DATE_RFC822) . ' ' . 'LOG' . ": " . print_r($content, true) . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n",
         3,
-        DOCROOT . '../error_log'
+        ROOT_DOC . '../error_log'
       );
     }
   }

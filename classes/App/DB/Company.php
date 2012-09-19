@@ -164,7 +164,8 @@
     public function _add_fiscalyear($from_date, $to_date, $closed) {
       $from = Dates::_dateToSql($from_date);
       $to   = Dates::_dateToSql($to_date);
-      $sql  = "INSERT INTO fiscal_year (begin, end, closed)
+      $sql
+            = "INSERT INTO fiscal_year (begin, end, closed)
  VALUES (" . DB::_escape($from) . "," . DB::_escape($to) . ", " . DB::_escape($closed) . ")";
       DB::_query($sql, "could not add fiscal year");
     }
@@ -179,11 +180,13 @@
      */
     public function _add_payment_terms($daysOrFoll, $terms, $dayNumber) {
       if ($daysOrFoll) {
-        $sql = "INSERT INTO payment_terms (terms,
+        $sql
+          = "INSERT INTO payment_terms (terms,
  days_before_due, day_in_following_month)
  VALUES (" . DB::_escape($terms) . ", " . DB::_escape($dayNumber) . ", 0)";
       } else {
-        $sql = "INSERT INTO payment_terms (terms,
+        $sql
+          = "INSERT INTO payment_terms (terms,
  days_before_due, day_in_following_month)
  VALUES (" . DB::_escape($terms) . ",
  0, " . DB::_escape($dayNumber) . ")";
@@ -239,7 +242,7 @@
      * @return array
      */
     public function _get_company_extensions($id = -1) {
-      $file                 = BASE_URL . ($id == -1 ? '' : 'company/' . $id) . '/installed_extensions.php';
+      $file                 = ROOT_URL . ($id == -1 ? '' : 'company/' . $id) . '/installed_extensions.php';
       $installed_extensions = [];
       if (is_file($file)) {
         include($file);
@@ -318,7 +321,8 @@
      * @return \ADV\Core\DB\Query\Result|Array
      */
     public function _get_payment_terms($selected_id) {
-      $sql    = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
+      $sql
+              = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
  FROM payment_terms t WHERE terms_indicator=" . DB::_escape($selected_id);
       $result = DB::_query($sql, "could not get payment term");
       return DB::_fetch($result);

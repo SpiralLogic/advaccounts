@@ -144,7 +144,7 @@
     _("User login"),
     _("Full Name"),
     _("Phone"),
-    _("E-mail"),
+    _("Email"),
     _("Last Visit"),
     _("Access Level"),
     "",

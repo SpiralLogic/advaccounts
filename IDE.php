@@ -62,15 +62,15 @@
   /**
 
    */
-  define('COMPANY_PATH', BASE_URL . 'company/');
+  define('PATH_COMPANY', ROOT_URL . 'company/');
   /**
 
    */
-  define('THEME_PATH', BASE_URL . 'themes/');
+  define('THEME_PATH', ROOT_URL . 'themes/');
   /**
 
    */
-  define("BACKUP_PATH", COMPANY_PATH . 'backup/');
+  define("BACKUP_PATH", PATH_COMPANY . 'backup/');
   // ACCESS LEVELS
   /**
 

@@ -171,7 +171,7 @@ var Accounts = function () {
   }
 }();
 var Company = function () {
-  var company, companytype, transactions = $('#transactions'), companyIDs = $("#companyIDs"), $companyID = $("#name").attr('autocomplete', 'off');
+  var company, transactions = $('#transactions'), companyIDs = $("#companyIDs"), $companyID = $("#name").attr('autocomplete', 'off');
   return {
     init:          function () {
       Branches.init();
@@ -206,8 +206,7 @@ var Company = function () {
         return;
       }
       company = content.company;
-      var data = company;
-      var activetabs = (!Number(company.id)) ? [1, 2, 3, 4] : [];
+      var data = company, activetabs = (Number(company.id) === 0) ? [1, 2, 3, 4] : [];
       Adv.o.tabs[0].tabs('option', 'disabled', activetabs);
       $('#shortcuts').find('button').prop('disabled', !company.id);
       if (content.contact_log !== undefined) {

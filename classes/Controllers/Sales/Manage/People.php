@@ -7,7 +7,10 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\Controllers\Sales\Manage;
+
   use ADV\App\Controller\Manage;
+  use ADV\App\Page;
   use ADV\App\Users;
   use ADV\App\Sales\Person;
   use ADV\App\Form\Form;
@@ -16,8 +19,7 @@
   /**
 
    */
-  class SalesPeople extends Manage
-  {
+  class People extends Manage {
     protected $tableWidth = '80';
     protected function before() {
       $this->object = new Person(0);
@@ -31,8 +33,8 @@
       Page::end();
     }
     /**
-     * @param ADV\App\Form\Form $form
-     * @param View              $view
+     * @param \ADV\App\Form\Form $form
+     * @param View               $view
      *
      * @return mixed|void
      */
@@ -72,4 +74,3 @@
     }
   }
 
-  new SalesPeople();

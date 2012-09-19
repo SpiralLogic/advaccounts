@@ -7,8 +7,7 @@
   /**
 
    */
-  class Areas extends \ADV\App\DB\Base
-  {
+  class Area extends \ADV\App\DB\Base {
     protected $_table = 'areas';
     protected $_classname = 'Areas';
     protected $_id_column = 'area_code';

@@ -45,21 +45,26 @@
   ini_set("log_errors", "On");
   define('E_SUCCESS', E_ALL << 1);
   define('DS', DIRECTORY_SEPARATOR);
-  define('DOCROOT', __DIR__ . DIRECTORY_SEPARATOR);
-  define('WEBROOT', DOCROOT . 'public' . DS);
-  define('APPPATH', DOCROOT . 'classes' . DS . 'App' . DS);
-
-  define('COREPATH', __DIR__ . DS . 'classes' . DS . 'Core' . DS);
-  define('VENDORPATH', DOCROOT . 'classes' . DS . 'Vendor' . DS);
-  define('VIEWPATH', DOCROOT . 'views' . DS);
-  define('COMPANY_PATH', WEBROOT . 'company' . DS);
-  define('LANG_PATH', DOCROOT . 'lang' . DS);
-  define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
-  define('IS_JSON_REQUEST', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false));
-  define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
+  define('ROOT_DOC', __DIR__ . DS);
+  define('ROOT_WEB', ROOT_DOC . 'public' . DS);
+  define('ROOT_URL', str_ireplace(realpath(__DIR__), '', ROOT_DOC));
+  define('PATH_APP', ROOT_DOC . 'classes' . DS . 'App' . DS);
+  define('PATH_CORE', ROOT_DOC . 'classes' . DS . 'Core' . DS);
+  define('PATH_VENDOR', ROOT_DOC . 'classes' . DS . 'Vendor' . DS);
+  define('PATH_CONTROLLERS', ROOT_DOC . 'classes' . DS . 'Controller' . DS);
+  define('PATH_VIEW', ROOT_DOC . 'views' . DS);
+  define('PATH_COMPANY', ROOT_WEB . 'company' . DS);
+  define('PATH_LANG', ROOT_DOC . 'lang' . DS);
+  define("REQUEST_METHOD", isset($_SERVER['REQUEST_METHOD']), $_SERVER['REQUEST_METHOD']);
+  define("REQUEST_AJAX", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
+  define('REQUEST_JSON', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false));
+  define('REQUEST_POST', REQUEST_METHOD === 'POST');
+  define('REQUEST_GET', REQUEST_METHOD === 'GET');
+  define('REQUEST_PUT', REQUEST_METHOD === 'PUT');
+  define('REQUEST_DELETE', REQUEST_METHOD === 'DELETE');
   define('CRLF', chr(13) . chr(10));
   /** @var $loader  */
-  $loader = require COREPATH . 'Loader.php';
+  $loader = require PATH_CORE . 'Loader.php';
   if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
     new \ADV\Core\Assets();
     exit;

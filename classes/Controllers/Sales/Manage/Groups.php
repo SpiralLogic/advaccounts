@@ -1,18 +1,21 @@
 <?php
+  namespace ADV\Controllers\Sales\Manage;
+
   use ADV\App\Sales\Group;
+  use ADV\App\Page;
   use ADV\App\Form\Form;
   use ADV\Core\View;
 
   /**
 
    */
-  class SalesGroups extends \ADV\App\Controller\Manage {
+  class Groups extends \ADV\App\Controller\Manage {
     protected function before() {
       $this->object = new Group();
       $this->runPost();
     }
     protected function index() {
-      Page::start(_($help_context = "Sales Areas"), SA_SALESAREA);
+      Page::start(_($help_context = "Sales Groups"), SA_SALESGROUP);
       $this->generateTable();
       echo '<br>';
       $this->generateForm();
@@ -43,4 +46,3 @@
     }
   }
 
-  new SalesGroups();

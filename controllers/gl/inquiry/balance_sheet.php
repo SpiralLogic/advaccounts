@@ -51,7 +51,7 @@
         continue;
       }
       if ($drilldown && $levelptr == 0) {
-        $url = "<a href='" . BASE_URL . "gl/inquiry/gl_account.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&account=" . $account['account_code'] . "'>" . $account['account_code'] . " " . $account['account_name'] . "</a>";
+        $url = "<a href='" . ROOT_URL . "gl/inquiry/gl_account.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&account=" . $account['account_code'] . "'>" . $account['account_code'] . " " . $account['account_name'] . "</a>";
         echo "<tr class='stockmankobg'>";
         Cell::label($url);
         Cell::amount(($curr_balance + $prev_balance) * $convert);
@@ -80,7 +80,7 @@
       ) //END Patch#2
         //elseif ($drilldown && $type != $_POST["AccGrp"])
       {
-        $url = "<a href='" . BASE_URL . "gl/inquiry/balance_sheet.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&AccGrp=" . $type . "'>" . $typename . "</a>";
+        $url = "<a href='" . ROOT_URL . "gl/inquiry/balance_sheet.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&AccGrp=" . $type . "'>" . $typename . "</a>";
         Cell::label($url);
         Cell::amount(($acctstotal + $typestotal) * $convert);
         echo '</tr>';
@@ -131,7 +131,7 @@
           $TypeTotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $drilldown);
           //Print Summary
           if ($TypeTotal != 0) {
-            $url = "<a href='" . BASE_URL . "gl/inquiry/balance_sheet.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&AccGrp=" . $accounttype['id'] . "'>" . $accounttype['name'] . "</a>";
+            $url = "<a href='" . ROOT_URL . "gl/inquiry/balance_sheet.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&AccGrp=" . $accounttype['id'] . "'>" . $accounttype['name'] . "</a>";
             Cell::label($url);
             Cell::amount($TypeTotal * $convert);
             echo '</tr>';
@@ -157,7 +157,7 @@
         $calculateclose *= -1;
       }
       //Final Report Summary
-      $url = "<a href='" . BASE_URL . "gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&Compare=0'>" . _('Calculated Return') . "</a>";
+      $url = "<a href='" . ROOT_URL . "gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&Compare=0'>" . _('Calculated Return') . "</a>";
       echo "<tr class='inquirybg' style='font-weight:bold'>";
       Cell::label($url);
       Cell::amount($calculateclose);
@@ -177,7 +177,7 @@
       $convert     = Systypes::get_class_type_convert($class["ctype"]);
       //Print class Name
       Table::sectionTitle(GL_Type::get_name($_POST["AccGrp"]));
-      $classclose = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $drilldown, BASE_URL);
+      $classclose = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $drilldown, ROOT_URL);
     }
     Table::end(1); // outer table
     Display::div_end();

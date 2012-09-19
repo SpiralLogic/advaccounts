@@ -1,6 +1,9 @@
 <?php
+  namespace ADV\Controllers\Sales\Manage;
+
   use ADV\App\Form\Form;
-  use ADV\App\Sales\Areas;
+  use ADV\App\Page;
+  use ADV\App\Sales\CreditStatus;
   use ADV\Core\View;
   use ADV\Core\DB\DB;
 
@@ -12,14 +15,14 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class SalesArea extends \ADV\App\Controller\Manage
-  {
+  class Creditstatuses extends \ADV\App\Controller\Manage {
+    protected $tableWidth = '80';
     protected function before() {
-      $this->object = new Areas();
+      $this->object = new CreditStatus();
       $this->runPost();
     }
     protected function index() {
-      Page::start(_($help_context = "Sales Areas"), SA_SALESAREA);
+      Page::start(_($help_context = "Credit Statuses"), SA_CRSTATUS);
       $this->generateTable();
       echo '<br>';
       $this->generateForm();
@@ -32,22 +35,25 @@
      * @return mixed|void
      */
     protected function formContents(Form $form, View $view) {
-      $view['title'] = 'Sales Area';
-      $form->hidden('area_code');
-      $form->text('description')->label('Area Name:');
+      $view['title'] = 'Sales Credit Status';
+      $form->hidden('id');
+      $form->text('reason_desctripion')->label('Description:');
+      $form->arraySelect('dissallow_invoices', ['No', 'Yes'])->label('Disallow Invoices:');
     }
     /**
      * @return array
      */
     protected function generateTableCols() {
-      $cols         = [
+      $cols = [
         ['type'=> 'skip'],
-        'Area Name',
+        'Description',
+        'Dissallow Invoices'=> ['type'=> 'bool'],
+        'Inactive'          => ['type'=> 'active'],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
       ];
+
       return $cols;
     }
   }
 
-  new SalesArea();

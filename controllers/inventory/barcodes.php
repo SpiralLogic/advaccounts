@@ -11,7 +11,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  $file = DOCROOT . 'tmp/test.csv';
+  $file = ROOT_DOC . 'tmp/test.csv';
   if (!isset($_SESSION['barcodefile'])) {
     $_SESSION['barcodefile'] = '1';
   }

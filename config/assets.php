@@ -3,7 +3,7 @@
   * SmartOptimizer Configuration File
   */
   return array( //base dir (a relative path to the base directory)
-    'baseDir'          => WEBROOT,
+    'baseDir'          => ROOT_WEB,
     //Encoding of your js and css files. (utf-8 or iso-8859-1)
     'charSet'          => 'UTF-8',
     //Show error messages if any error occurs (true or false)
@@ -42,7 +42,7 @@
     //if you change it to false, the files will not be checked for modifications and always cached files will be used (for better performance)
     'serverCacheCheck' => true,
     //cache dir
-    'cacheDir'         => WEBROOT . 'cache',
+    'cacheDir'         => ROOT_WEB . 'cache',
     //prefix for cache files
     'cachePrefix'      => 'so_',
     //to set client-side cache On or Off

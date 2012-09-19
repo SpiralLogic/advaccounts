@@ -82,7 +82,23 @@
         $rep->Line($rep->row);
         $rep->NewLine();
       }
-      $totals_arr = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, $pdec, $rep, $dimension, $dimension2, $pg, $graphics);
+      $totals_arr = display_type(
+        $accounttype["id"],
+        $accounttype["name"],
+        $from,
+        $to,
+        $begin,
+        $end,
+        $compare,
+        $convert,
+        $dec,
+        $pdec,
+        $rep,
+        $dimension,
+        $dimension2,
+        $pg,
+        $graphics
+      );
       $per_balance_total += $totals_arr[0];
       $acc_balance_total += $totals_arr[1];
     }
@@ -252,7 +268,23 @@
       //Get Account groups/types under this group/type with no parents
       $typeresult = GL_Type::getAll(false, $class['cid'], -1);
       while ($accounttype = DB::_fetch($typeresult)) {
-        $classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, $pdec, $rep, $dimension, $dimension2, $pg, $graphics);
+        $classtotal = display_type(
+          $accounttype["id"],
+          $accounttype["name"],
+          $from,
+          $to,
+          $begin,
+          $end,
+          $compare,
+          $convert,
+          $dec,
+          $pdec,
+          $rep,
+          $dimension,
+          $dimension2,
+          $pg,
+          $graphics
+        );
         $class_per_total += $classtotal[0];
         $class_acc_total += $classtotal[1];
       }
@@ -292,9 +324,9 @@
       $pg->type           = $graphics;
       $pg->skin           = Config::_get('graphs_skin');
       $pg->built_in       = false;
-      $pg->fontfile       = BASE_URL . "reporting/fonts/Vera.ttf";
+      $pg->fontfile       = ROOT_URL . "reporting/fonts/Vera.ttf";
       $pg->latin_notation = (User::prefs()->dec_sep != ".");
-      $filename           = COMPANY_PATH . "pdf_files/test.png";
+      $filename           = PATH_COMPANY . "pdf_files/test.png";
       $pg->display($filename, true);
       $w = $pg->width / 1.5;
       $h = $pg->height / 1.5;

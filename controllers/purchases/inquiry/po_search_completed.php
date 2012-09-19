@@ -65,7 +65,7 @@
     protected function makeTable() {
       $searchArray = [];
       $location    = $stock_location = '';
-      if (AJAX_REFERRER && !empty($_POST['q'])) {
+      if (REQUEST_AJAX && !empty($_POST['q'])) {
         $searchArray = explode(' ', $_POST['q']);
         unset($_POST['creditor_id']);
       }
@@ -87,7 +87,7 @@
   	WHERE porder.order_no = line.order_no
   	AND porder.creditor_id = supplier.creditor_id
   	AND location.loc_code = porder.into_stock_location ";
-      if (AJAX_REFERRER && $searchArray && !empty($_POST['q'])) {
+      if (REQUEST_AJAX && $searchArray && !empty($_POST['q'])) {
         foreach ($searchArray as $quicksearch) {
           if (empty($quicksearch)) {
             continue;

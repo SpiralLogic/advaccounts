@@ -10,16 +10,16 @@
 
   define('E_SUCCESS', E_ALL << 1);
   define('DS', DIRECTORY_SEPARATOR);
-  define('DOCROOT', __DIR__ . DS);
-  define('APPPATH', DOCROOT . 'classes' . DS . 'App' . DS);
-  define('COREPATH', DOCROOT . 'classes' . DS . 'Core' . DS);
-  define('VENDORPATH', DOCROOT . 'classes' . DS . 'Vendor' . DS);
-  define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
-  define('IS_JSON_REQUEST', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false));
-  define('BASE_URL', str_ireplace(realpath(__DIR__), '', DOCROOT));
+  define('ROOT_DOC', __DIR__ . DS);
+  define('PATH_APP', ROOT_DOC . 'classes' . DS . 'App' . DS);
+  define('PATH_CORE', ROOT_DOC . 'classes' . DS . 'Core' . DS);
+  define('PATH_VENDOR', ROOT_DOC . 'classes' . DS . 'Vendor' . DS);
+  define("REQUEST_AJAX", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
+  define('REQUEST_JSON', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false));
+  define('ROOT_URL', str_ireplace(realpath(__DIR__), '', ROOT_DOC));
   define('CRLF', chr(13) . chr(10));
 
-  require COREPATH . 'Loader.php';
+  require PATH_CORE . 'Loader.php';
   if (!function_exists('e')) {
     /**
      * @param $string
@@ -32,7 +32,7 @@
   }
   register_shutdown_function(
     function () {
-      class_exists('Event', false) or  include(COREPATH . 'Event.php');
+      class_exists('Event', false) or  include(PATH_CORE . 'Event.php');
       Event::shutdown();
     }
   );
@@ -75,15 +75,15 @@
   /**
 
    */
-  define('COMPANY_PATH', BASE_URL . 'company/');
+  define('PATH_COMPANY', ROOT_URL . 'company/');
   /**
 
    */
-  define('THEME_PATH', BASE_URL . 'themes/');
+  define('THEME_PATH', ROOT_URL . 'themes/');
   /**
 
    */
-  define("BACKUP_PATH", COMPANY_PATH . 'backup/');
+  define("BACKUP_PATH", PATH_COMPANY . 'backup/');
   // ACCESS LEVELS
   /**
 

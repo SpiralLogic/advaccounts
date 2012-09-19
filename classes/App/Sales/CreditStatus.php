@@ -23,6 +23,9 @@
       public $reason_description;
       public $dissallow_invoices = 0;
       public $inactive = 0;
+      /**
+       * @return \ADV\Core\Traits\Status|bool
+       */
       public function delete() {
         $sql    = "SELECT COUNT(*) FROM debtors WHERE credit_status=" . DB::_escape($this->id);
         $result = DB::_query($sql, "could not query customers");
@@ -57,6 +60,9 @@
     }
   }
   namespace {
+    /**
+
+     */
     class Sales_CreditStatus {
       /**
        * @static

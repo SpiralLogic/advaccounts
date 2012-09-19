@@ -145,7 +145,8 @@
     protected function prepareSearch() {
       $date_to    = Dates::_dateToSql($_POST['TransToDate']);
       $date_after = Dates::_dateToSql($_POST['TransAfterDate']);
-      $sql        = "SELECT
+      $sql
+                  = "SELECT
  		trans.type,
  		trans.trans_no,
  		trans.order_,
@@ -161,7 +162,8 @@
       if ($this->filterType) {
         $sql .= "@bal := @bal+(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), ";
       }
-      $sql .= "trans.alloc AS Allocated,
+      $sql
+        .= "trans.alloc AS Allocated,
  		((trans.type = " . ST_SALESINVOICE . ")
  			AND trans.due_date < '" . Dates::_today(true) . "') AS OverDue, SUM(details.quantity - qty_done) as
  			still_to_deliver
@@ -255,7 +257,8 @@
      * @return string
      */
     public function formatDebit($row) {
-      $value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ? -$row["TotalAmount"] : $row["TotalAmount"];
+      $value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ? -$row["TotalAmount"] :
+        $row["TotalAmount"];
       return $value >= 0 ? Num::_priceFormat($value) : '';
     }
     /**
@@ -264,7 +267,8 @@
      * @return string
      */
     public function formatCredit($row) {
-      $value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_BANKDEPOSIT) ? -$row["TotalAmount"] : $row["TotalAmount"];
+      $value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_BANKDEPOSIT) ? -$row["TotalAmount"] :
+        $row["TotalAmount"];
       return $value > 0 ? Num::_priceFormat($value) : '';
     }
     /**
@@ -284,7 +288,7 @@
       $str = '';
       switch ($row['type']) {
         case ST_SALESINVOICE:
-          if (Voiding::get(ST_SALESINVOICE, $row["trans_no"]) === false || AJAX_REFERRER) {
+          if (Voiding::get(ST_SALESINVOICE, $row["trans_no"]) === false || REQUEST_AJAX) {
             if ($row['Allocated'] == 0) {
               $str = "/sales/customer_invoice.php?ModifyInvoice=" . $row['trans_no'];
             } else {

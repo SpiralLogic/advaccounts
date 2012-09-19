@@ -36,9 +36,7 @@
    */
   class User extends \ADV\App\DB\Base {
     use \ADV\Core\Traits\Hook;
-    use StaticAccess {
-    StaticAccess::i as ii;
-    }
+    use StaticAccess;
 
     protected $_table = 'users';
     protected $_classname = 'Users';
@@ -96,8 +94,9 @@
     public $last_record;
     /** @var \ADV\App\Security */
     public $Security;
-    /** @var \ADV\Core\DB\DB */
-    protected $DB;
+    static function i() {
+      return $_SESSION['User'];
+    }
     /**
      * @return \ADV\Core\Traits\Status|bool
      */
@@ -124,35 +123,11 @@
       return $q->fetch()->all();
     }
     /**
-     * @static
-     * @return User
-     */
-    public static function getCurrentUser() {
-      return static::i();
-    }
-    /**
-     * @static
-     * @return User
-     */
-    public static function  i() {
-      $user = null;
-      if (isset($_SESSION['User'])) {
-        $user = $_SESSION['User'];
-      }
-      return static::ii($user);
-    }
-    /**
      */
     public function __construct($id = 0) {
       parent::__construct($id = 0);
       $this->logged = false;
       $this->prefs  = new UserPrefs();
-    }
-    /**
-     * @return array
-     */
-    public function __sleep() {
-      return array_keys((array) $this);
     }
     /**
      * @return bool
@@ -307,7 +282,7 @@
      * @return \ADV\Core\DB\Query\Result
      */
     protected function  get() {
-      $sql = "SELECT * FROM users WHERE id=" . DB::_escape($this->user);
+      $sql    = "SELECT * FROM users WHERE id=" . DB::_escape($this->user);
       $result = DB::_query($sql, "could not get user " . $this->user);
       return DB::_fetch($result);
     }
@@ -436,7 +411,7 @@
      * @return int
      */
     public function _date_sep() {
-      return (isset($_SESSION["current_user"])) ? $this->prefs->date_sep : 0;
+      return (isset($_SESSION["User"])) ? $this->prefs->date_sep : 0;
     }
     /**
      * @return int

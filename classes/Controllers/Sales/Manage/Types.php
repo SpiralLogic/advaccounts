@@ -7,6 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\Controllers\Sales\Manage;
+
   use ADV\App\Form\Form;
   use ADV\App\Sales\Type;
   use ADV\Core\View;
@@ -19,8 +21,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class SalesTypes extends \ADV\App\Controller\Manage
-  {
+  class Types extends \ADV\App\Controller\Manage {
     protected $title = "Sales Types";
     protected function before() {
       $this->object = new Type();
@@ -56,4 +57,3 @@
     }
   }
 
-  new SalesTypes();

@@ -23,7 +23,8 @@
     // Revomed allocated from sql
     $value = "(debtor_trans.ov_amount + debtor_trans.ov_gst + " . "debtor_trans.ov_freight + debtor_trans.ov_freight_tax + " . "debtor_trans.ov_discount)";
     $due   = "IF (debtor_trans.type=" . ST_SALESINVOICE . ",debtor_trans.due_date,debtor_trans.tran_date)";
-    $sql   = "SELECT debtor_trans.type, debtor_trans.reference,
+    $sql
+           = "SELECT debtor_trans.type, debtor_trans.reference,
         debtor_trans.tran_date,
         $value as Balance,
         IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0) AS Due,
@@ -240,9 +241,9 @@
       $pg->type           = $graphics;
       $pg->skin           = Config::_get('graphs_skin');
       $pg->built_in       = false;
-      $pg->fontfile       = DOCROOT . "reporting/fonts/Vera.ttf";
+      $pg->fontfile       = ROOT_DOC . "reporting/fonts/Vera.ttf";
       $pg->latin_notation = (User::prefs()->dec_sep != ".");
-      $filename           = COMPANY_PATH . "images/test.png";
+      $filename           = PATH_COMPANY . "images/test.png";
       $pg->display($filename, true);
       $w = $pg->width / 1.5;
       $h = $pg->height / 1.5;

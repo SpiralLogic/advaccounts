@@ -15,7 +15,7 @@
     protected $itemData;
     protected function before() {
       ADVAccounting::i()->set_selected('items');
-      if (AJAX_REFERRER) {
+      if (REQUEST_AJAX) {
         $this->runPost();
       }
       $this->JS->footerFile("/js/quickitems.js");

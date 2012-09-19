@@ -428,7 +428,7 @@
      * @param null $id
      */
     public static function submenu_option($title, $url, $id = null) {
-      Display::note(Display::menu_button(BASE_URL . ltrim($url, '/'), $title, $id), 1, 0);
+      Display::note(Display::menu_button(ROOT_URL . ltrim($url, '/'), $title, $id), 1, 0);
     }
     /**
      * @static
@@ -437,7 +437,7 @@
      * @param      $url
      * @param null $id*/
     public static function submenu_button($title, $url, $id = null) {
-      Display::note(Display::menu_button(BASE_URL . ltrim($url, '/'), $title, $id), 0, 1);
+      Display::note(Display::menu_button(ROOT_URL . ltrim($url, '/'), $title, $id), 0, 1);
     }
     /**
      * @static

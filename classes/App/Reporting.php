@@ -236,7 +236,8 @@
         ),
         false
       )->p;
-      $js = <<<JS
+      $js
+        = <<<JS
 		$('#EmailButton$type_no').click(function() {
 		if (!confirm("Send email now?")) { return false;}
 			var email = $("#EmailSelect$type_no").val();
@@ -276,7 +277,7 @@ JS;
       if (static::$debug === null) {
         static::$debug = Config::_get('debug.pdf');
       }
-      $url = $dir ? : BASE_URL . 'reporting/prn_redirect.php?';
+      $url = $dir ? : ROOT_URL . 'reporting/prn_redirect.php?';
       $id  = static::$JS->defaultFocus($id);
       foreach ($pars as $par => $val) {
         $pars[$par] = "$par=" . urlencode($val);

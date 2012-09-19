@@ -2,6 +2,7 @@
   namespace ADV\App;
 
   use ADV\Core\JS;
+  use ADV\Core\Cache\APC;
   use ADV\Core\Event;
   use ADV\Core\View;
   use ADV\Core\Errors;
@@ -48,20 +49,20 @@
     public function __construct(\ADV\Core\Loader $loader) {
       set_error_handler(
         function ($severity, $message, $filepath, $line) {
-          if ($filepath == COREPATH . 'Errors.php') {
+          if ($filepath == PATH_CORE . 'Errors.php') {
             while (ob_get_level()) {
               ob_end_clean();
             }
             die($message);
           }
-          class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'Errors.php';
+          class_exists('ADV\\Core\\Errors', false) or include_once PATH_CORE . 'Errors.php';
           return \ADV\Core\Errors::handler($severity, $message, $filepath, $line);
         },
         E_ALL & ~E_STRICT & ~E_NOTICE
       );
       set_exception_handler(
         function (\Exception $e) {
-          class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'Errors.php';
+          class_exists('ADV\\Core\\Errors', false) or include_once PATH_CORE . 'Errors.php';
           \ADV\Core\Errors::exceptionHandler($e);
         }
       );
@@ -70,44 +71,78 @@
           \ADV\Core\Event::shutdown();
         }
       );
-      static::i($this);
-      $this->Cache = \ADV\Core\Cache::i(new \ADV\Core\Cache\APC());
+      $dic  = \ADV\Core\DIC::getInstance();
+      $self = $this;
+      $dic->set(
+        'ADVAccounting',
+        function () use ($self) {
+          return $self;
+        }
+      );
+      $this->Cache  = $dic->set(
+        'Cache',
+        function () {
+          $driver = new \ADV\Core\Cache\APC();
+          $cache  = new \ADV\Core\Cache($driver);
+          return $cache;
+        }
+      )->get();
+      $this->Config = $dic->set(
+        'Config',
+        function ($c) {
+          return new \ADV\Core\Config($c->get('Cache'));
+        }
+      )->get();
       $loader->registerCache($this->Cache);
       $this->Cache->defineConstants(
         $_SERVER['SERVER_NAME'] . '.defines',
         function () {
-          return include(DOCROOT . 'config' . DS . 'defines.php');
+          return include(ROOT_DOC . 'config' . DS . 'defines.php');
         }
       );
-      $this->Config = Config::i();
-      $this->Ajax   = Ajax::i();
+      $this->Ajax = $dic->set(
+        'Ajax',
+        function () {
+          return new \ADV\Core\Ajax();
+        }
+      )->get();
       ob_start([$this, 'flush_handler'], 0);
-      $this->Session = Session::i();
-      $this->JS      = JS::i($this->Config);
-      $this->JS->footerFile($this->Config->get('assets.footer'));
-      $this->setTextSupport();
-      $this->Session['language'] = new Language();
-      $this->User                = User::i($this->Session);
-      $this->menu                = new Menu(_("Main Menu"));
-      $this->menu->addItem(_("Main Menu"), "index.php");
-      $this->menu->addItem(_("Logout"), "/account/access/logout.php");
-      array_walk(
-        $_POST,
-        function (&$v) {
-          $v = is_string($v) ? trim($v) : $v;
+      $this->Session = $dic->set(
+        'Session',
+        function ($c) {
+          $session              = new \ADV\Core\Session();
+          $config               = $c->get('Config');
+          $l                    = \ADV\Core\Arr::searchValue($config->get('default.language'), $config->get('languages.installed'), 'code');
+          $name                 = $l['name'];
+          $code                 = $l['code'];
+          $encoding             = $l['encoding'];
+          $dir                  = isset($l['rtl']) ? 'rtl' : 'ltr';
+          $_SESSION['language'] = new \ADV\Core\Language($name, $code, $encoding, $dir);
+
+          return $session;
         }
-      );
-      $this->loadModules();
-      $this->setupApplications();
-      define('BUILD_VERSION', is_readable(DOCROOT . 'version') ? file_get_contents(DOCROOT . 'version', null, null, null, 6) : 000);
-      define('VERSION', '3.' . BUILD_VERSION . '-SYEDESIGN');
-      // logout.php is the only page we should have always
-      // accessable regardless of access level and current login status.
-      if (!strstr($_SERVER['DOCUMENT_URI'], 'logout.php')) {
-        $this->checkLogin();
-      }
-      \ADV\Core\Event::init($this->Cache, $this->User->username);
-      $dic = \ADV\Core\DIC::getInstance();
+      )->get();
+      $this->JS      = $dic->set(
+        'JS',
+        function ($c) {
+          $js             = new \ADV\Core\JS();
+          $config         = $c->get('Config');
+          $js->apikey     = $config->get('assets.maps_api_key');
+          $js->openWindow = $config->get('ui_windows_popups');
+          return $js;
+        }
+      )->get();
+
+      $this->User = $dic->set(
+        'User',
+        function () {
+          if (isset($_SESSION['User'])) {
+            return $_SESSION['User'];
+          }
+          $_SESSION['User'] = new \ADV\App\User();
+          return $_SESSION['User'];
+        }
+      )->get();
       $dic->set(
         'Num',
         function () {
@@ -121,26 +156,64 @@
           return $num;
         }
       );
+      $this->JS->footerFile($this->Config->get('assets.footer'));
+      $this->menu = new Menu(_("Main Menu"));
+      $this->menu->addItem(_("Main Menu"), "index.php");
+      $this->menu->addItem(_("Logout"), "/account/access/logout.php");
+      array_walk(
+        $_POST,
+        function (&$v) {
+          $v = is_string($v) ? trim($v) : $v;
+        }
+      );
+      $this->loadModules();
+      $this->setupApplications();
+      define('BUILD_VERSION', is_readable(ROOT_DOC . 'version') ? file_get_contents(ROOT_DOC . 'version', null, null, null, 6) : 000);
+      define('VERSION', '3.' . BUILD_VERSION . '-SYEDESIGN');
+      // logout.php is the only page we should have always
+      // accessable regardless of access level and current login status.
+      if (!strstr($_SERVER['DOCUMENT_URI'], 'logout.php')) {
+        $this->checkLogin();
+      }
+      \ADV\Core\Event::init($this->Cache, $this->User->username);
+
       $this->get_selected();
       $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
       $index      = $controller == $_SERVER['SCRIPT_NAME'];
       $show404    = false;
       if (!$index && $controller) {
-        $controller = ltrim($controller, '/');
-        // substr_compare returns 0 if true
-        $controller = (substr_compare($controller, '.php', -4, 4, true) === 0) ? $controller : $controller . '.php';
-        $controller = DOCROOT . 'controllers' . DS . $controller;
-        if (file_exists($controller)) {
-          $this->controller = $controller;
+        $controller2 = 'ADV\\Controllers' . array_reduce(
+          explode('/', ltrim($controller, '/')),
+          function ($result, $val) {
+            return $result . '\\' . ucfirst($val);
+          },
+          ''
+        );
+        if (class_exists($controller2)) {
+          $this->runController($controller2);
         } else {
-          $show404 = true;
-          header('HTTP/1.0 404 Not Found');
-          Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
+          // substr_compare returns 0 if true
+          $controller = (substr_compare($controller, '.php', -4, 4, true) === 0) ? $controller : $controller . '.php';
+          $controller = ROOT_DOC . 'controllers' . DS . $controller;
+          if (file_exists($controller)) {
+            $this->controller = $controller;
+          } else {
+            $show404 = true;
+            header('HTTP/1.0 404 Not Found');
+            Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
+          }
         }
       }
       if ($index || $show404) {
         $this->display();
       }
+    }
+    /**
+     * @param $controller2
+     */
+    protected function runController($controller2) {
+
+      new $controller2;
     }
     /**
      * @param $app
@@ -273,10 +346,10 @@
       $_SESSION['timeout'] = array(
         'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI'])
       );
-      require(DOCROOT . "controllers/access/login.php");
+      require(ROOT_DOC . "controllers/access/login.php");
       if ($this->Ajax->inAjax()) {
         $this->Ajax->redirect($_SERVER['DOCUMENT_URI']);
-      } elseif (AJAX_REFERRER) {
+      } elseif (REQUEST_AJAX) {
         JS::_redirect('/');
       }
       exit();
@@ -296,15 +369,6 @@
     protected function setupApplications() {
       $this->extensions   = $this->Config->get('extensions.installed');
       $this->applications = $this->Config->get('apps.active');
-      $this->Session->get_text->add_domain($this->Session->language->code, LANG_PATH);
-    }
-    /**
-     * @return mixed
-     */
-    protected function setTextSupport() {
-      if (!$this->Session->get_text) {
-        $this->Session->get_text = \gettextNativeSupport::i();
-      }
     }
     /**
      * @static
@@ -361,7 +425,7 @@
         $msg .= "\t\t),\n";
       }
       $msg .= "\t);\n?>";
-      $filename = DOCROOT . ($company == -1 ? '' : 'company' . DS . $company) . DS . 'installed_extensions.php';
+      $filename = ROOT_DOC . ($company == -1 ? '' : 'company' . DS . $company) . DS . 'installed_extensions.php';
       // Check if the file is writable first.
       if (!$zp = fopen($filename, 'w')) {
         Event::error(sprintf(_("Cannot open the extension setup file '%s' for writing."), $filename));

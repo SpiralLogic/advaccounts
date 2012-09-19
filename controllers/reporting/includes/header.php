@@ -56,7 +56,7 @@
   $this->LineTo($right, $iline5, $right, $iline7);
   $this->NewLine();
   if ($this->company['coy_logo'] != '') {
-    $logo = COMPANY_PATH . "images/" . $this->company['coy_logo'];
+    $logo = PATH_COMPANY . "images/" . $this->company['coy_logo'];
     $this->AddImage($logo, $ccol, $this->row, 0, 40);
   } else {
     $this->fontSize += 4;
@@ -295,8 +295,7 @@
     $this->TextWrap($col, $this->row, $width, $companyto->id, 'C');
   }
   $col += $width;
-  $report_phone = (!empty($myrow["contact_phone"])) ? $myrow["contact_phone"] :
-    ((isset($branch['phone'])) ? $branch['phone'] : ((isset($myrow['phone'])) ? $myrow['phone'] : ''));
+  $report_phone = (!empty($myrow["contact_phone"])) ? $myrow["contact_phone"] : ((isset($branch['phone'])) ? $branch['phone'] : ((isset($myrow['phone'])) ? $myrow['phone'] : ''));
   if ($doctype == ST_WORKORDER) {
     $this->TextWrap($col, $this->row, $width, $myrow["StockItemName"], 'C');
   } elseif ($doctype == ST_PURCHORDER) {

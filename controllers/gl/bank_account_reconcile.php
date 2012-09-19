@@ -114,7 +114,7 @@
       echo $this->render();
       echo '</div>';
       Forms::end();
-      if (!$this->Ajax->inAjax() || AJAX_REFERRER) {
+      if (!$this->Ajax->inAjax() || REQUEST_AJAX) {
         $this->addDialogs();
       }
       $this->JS->addLive("Adv.Reconcile.setUpGrid();");
@@ -281,7 +281,7 @@
         $_POST["reconciled"]  = $this->Num->priceFormat($end_balance - $beg_balance);
       }
       $result = GL_Account::get_max_reconciled($this->reconcile_date, $this->bank_account);
-      if ($row = $this->DB->_fetch($result)) {
+      if ($row = static::$DB->fetch($result)) {
         $_POST["reconciled"] = $this->Num->priceFormat($row["end_balance"] - $row["beg_balance"]);
         if (!isset($_POST["beg_balance"])) {
           $_POST["last_date"]   = $this->Dates->sqlToDate($row["last_date"]);

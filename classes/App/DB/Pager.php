@@ -183,11 +183,6 @@
      * @return array
      */
     public function __sleep() {
-      foreach ($this->columns as &$column) {
-        if (isset($column['fun'])) {
-          unset($column['fun']);
-        }
-      }
       unset($this->marker);
       unset($this->rowFunction);
       return array_keys((array) $this);
@@ -210,7 +205,9 @@
       foreach ($this->data as $row) {
         $this->displayRow($row);
       }
+      Table::foot();
       echo $this->displayNavigation('bottom');
+      Table::footEnd();
       Table::end();
       Display::div_end();
       return true;
@@ -572,11 +569,11 @@
         $this->changePage($_POST[$this->name . '_page_' . $page]);
         if ($page == 'next' && !$this->next_page || $page == 'last' && !$this->last_page
         ) {
-          static::$JS->setFocus($this->name . '_page_prev_bottom');
+          static::$JS->setFocus($this->name . '_page_prev_top');
         }
         if ($page == 'prev' && !$this->prev_page || $page == 'first' && !$this->first_page
         ) {
-          static::$JS->setFocus($this->name . '_page_next_top');
+          static::$JS->setFocus($this->name . '_page_next_bottom');
         }
       } elseif ($sort != -1) {
         $this->sortTable($sort);

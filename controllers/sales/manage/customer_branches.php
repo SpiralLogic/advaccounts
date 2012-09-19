@@ -70,15 +70,22 @@
         $note = _('Selected customer branch has been updated');
       } else {
         /* Selected branch is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Customer Branches form */
-        $sql  = "INSERT INTO branches (debtor_id, br_name, branch_ref, br_address,
+        $sql
+              = "INSERT INTO branches (debtor_id, br_name, branch_ref, br_address,
                 salesman, phone, phone2, fax,
                 contact_name, area, email, tax_group_id, sales_account, receivables_account, payment_discount_account, sales_discount_account, default_location,
                 br_post_address, disable_trans, group_no, default_ship_via, notes)
-                VALUES (" . DB::_escape($_POST['debtor_id']) . "," . DB::_escape($_POST['br_name']) . ", " . DB::_escape($_POST['br_ref']) . ", " . DB::_escape($_POST['br_address']) . ", " . DB::_escape($_POST['salesman']) . ", " . DB::_escape($_POST['phone']) . ", " . DB::_escape(
+                VALUES (" . DB::_escape($_POST['debtor_id']) . "," . DB::_escape($_POST['br_name']) . ", " . DB::_escape($_POST['br_ref']) . ", " . DB::_escape(
+          $_POST['br_address']
+        ) . ", " . DB::_escape($_POST['salesman']) . ", " . DB::_escape($_POST['phone']) . ", " . DB::_escape(
           $_POST['phone2']
-        ) . ", " . DB::_escape($_POST['fax']) . "," . DB::_escape($_POST['contact_name']) . ", " . DB::_escape($_POST['area']) . "," . DB::_escape($_POST['email']) . ", " . DB::_escape($_POST['tax_group_id']) . ", " . DB::_escape($_POST['sales_account']) . ", " . DB::_escape(
+        ) . ", " . DB::_escape($_POST['fax']) . "," . DB::_escape($_POST['contact_name']) . ", " . DB::_escape($_POST['area']) . "," . DB::_escape(
+          $_POST['email']
+        ) . ", " . DB::_escape($_POST['tax_group_id']) . ", " . DB::_escape($_POST['sales_account']) . ", " . DB::_escape(
           $_POST['receivables_account']
-        ) . ", " . DB::_escape($_POST['payment_discount_account']) . ", " . DB::_escape($_POST['sales_discount_account']) . ", " . DB::_escape($_POST['default_location']) . ", " . DB::_escape($_POST['br_post_address']) . "," . DB::_escape($_POST['disable_trans']) . ", " . DB::_escape(
+        ) . ", " . DB::_escape($_POST['payment_discount_account']) . ", " . DB::_escape($_POST['sales_discount_account']) . ", " . DB::_escape(
+          $_POST['default_location']
+        ) . ", " . DB::_escape($_POST['br_post_address']) . "," . DB::_escape($_POST['disable_trans']) . ", " . DB::_escape(
           $_POST['group_no']
         ) . ", " . DB::_escape($_POST['default_ship_via']) . ", " . DB::_escape($_POST['notes']) . ")";
         $note = _('New customer branch has been added');
@@ -129,7 +136,8 @@
   $num_branches = -0;
   if (Input::_post('debtor_id') > 0) {
     $num_branches = Validation::check(Validation::BRANCHES, '', Input::_post('debtor_id'));
-    $sql          = "SELECT b.branch_id, b.branch_ref, b.br_name, b.contact_name, s.salesman_name,
+    $sql
+                  = "SELECT b.branch_id, b.branch_ref, b.br_name, b.contact_name, s.salesman_name,
          a.description, b.phone, b.fax, b.email, t.name AS tax_group_name, b.inactive
         FROM branches b, debtors c, areas a, salesman s, tax_groups t
         WHERE b.debtor_id=c.debtor_id
@@ -150,7 +158,7 @@
         _("Area"),
         _("Phone No"),
         _("Fax No"),
-        _("E-mail")   => 'email',
+        _("Email")    => 'email',
         _("Tax Group"),
         _("Inactive") => 'inactive',
         //		array('fun'=>'inactive'),
@@ -191,7 +199,8 @@
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing branch
-      $sql    = "SELECT * FROM branches
+      $sql
+              = "SELECT * FROM branches
             WHERE branch_id=" . DB::_escape($_POST['branch_id']) . "
             AND debtor_id=" . DB::_escape($_POST['debtor_id']);
       $result = DB::_query($sql, "check failed");
@@ -222,7 +231,8 @@
     }
   } elseif ($Mode != ADD_ITEM) { //end of if $SelectedBranch only do the else when a new record is being entered
     if (!$num_branches) {
-      $sql                   = "SELECT name, address, email, debtor_ref
+      $sql
+                             = "SELECT name, address, email, debtor_ref
             FROM debtors WHERE debtor_id = " . DB::_escape($_POST['debtor_id']);
       $result                = DB::_query($sql, "check failed");
       $myrow                 = DB::_fetch($result);
@@ -253,7 +263,7 @@
   Forms::textRow(_("Phone Number:"), 'phone', null, 32, 30);
   Forms::textRow(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
   Forms::textRow(_("Fax Number:"), 'fax', null, 32, 30);
-  Forms::emailRow(_("E-mail:"), 'email', null, 35, 55);
+  Forms::emailRow(_("Email:"), 'email', null, 35, 55);
   Table::sectionTitle(_("Sales"));
   Sales_UI::persons_row(_("Sales Person:"), 'salesman', null);
   Sales_UI::areas_row(_("Sales Area:"), 'area', null);

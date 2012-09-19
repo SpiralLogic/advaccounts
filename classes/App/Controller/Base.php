@@ -9,8 +9,8 @@
   namespace ADV\App\Controller;
 
   use ADV\Core\Ajax;
+  use ADV\App\Page;
   use ADV\App\User;
-  use ADV\Core\DB\DB;
   use ADV\Core\JS;
   use ADV\Core\Input\Input;
   use ADV\Core\Config;
@@ -27,8 +27,8 @@
     protected $Ajax;
     /*** @var Session */
     protected $Session;
-    /*** @var \ADV\Core\DB\DB */
-    protected $DB;
+    /** @var \ADV\Core\DB\DB */
+    static $DB;
     /*** @var JS */
     protected $JS;
     /** @var Input */
@@ -42,9 +42,9 @@
       $this->Ajax    = Ajax::i();
       $this->JS      = JS::i();
       $this->Session = Session::i();
-      $this->User    = User::getCurrentUser($this->Session, Config::i());
-      $this->DB      = DB::i();
+      $this->User    = User::i();
       $this->Input   = Input::i();
+      static::$DB    = \ADV\Core\DB\DB::i();
       $this->action  = $this->Input->post('_action');
       $this->method  = $_SERVER['REQUEST_METHOD'];
       $this->before();
@@ -87,12 +87,5 @@
       if ($this->action && is_callable(array($this, $this->action))) {
         call_user_func(array($this, $this->action));
       }
-    }
-    /**
-     * @return array
-     */
-    public function __sleep() {
-      $this->DB = null;
-      return array_keys((array) $this);
     }
   }

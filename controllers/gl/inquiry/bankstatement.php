@@ -1,7 +1,7 @@
 <?php
 
 
-  $file = DOCROOT . 'tmp/test.csv';
+  $file = ROOT_DOC . 'tmp/test.csv';
   Page::start(_($help_context = "Reconcile TO Bank Statement Compare"), SA_RECONCILE);
   if (!count($_POST)) {
 
@@ -38,14 +38,14 @@
         }
         $amount = $item[1];
         $date   = strtotime($item[0]);
-        $date   = date('Y-m-d',$date);
-      try{
-       $result = DB::_select('COUNT(*) as count')->from('temprec')->where('date=', $date)->andWhere('amount=', $amount)->andWhere('rb=', $rb)->fetch()->one();
-      }catch(DBSelectException $e) {
-        var_dump(\ADV\Core\DB\DB::i()->queryString);
-      }
+        $date   = date('Y-m-d', $date);
+        try {
+          $result = DB::_select('COUNT(*) as count')->from('temprec')->where('date=', $date)->andWhere('amount=', $amount)->andWhere('rb=', $rb)->fetch()->one();
+        } catch (DBSelectException $e) {
+          var_dump(\ADV\Core\DB\DB::i()->queryString);
+        }
         if ($result['count'] == 0) {
-         DB::_insert('temprec')->values(['date'=> $date, 'amount'=> $amount, 'memo'=> $memo, 'rb'=> $rb, 'bank_account_id'=> $_POST['bank_account']])->exec();
+          DB::_insert('temprec')->values(['date'=> $date, 'amount'=> $amount, 'memo'=> $memo, 'rb'=> $rb, 'bank_account_id'=> $_POST['bank_account']])->exec();
         }
       }
     }

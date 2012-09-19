@@ -136,7 +136,7 @@
     $extensions[$id]['active'] = Input::_hasPost('active');
     // Currently we support only plugin extensions here.
     $extensions[$id]['type'] = 'plugin';
-    $directory               = DOCROOT . "modules/" . $_POST['path'];
+    $directory               = ROOT_DOC . "modules/" . $_POST['path'];
     if (!file_exists($directory)) {
       mkdir($directory);
     }
@@ -174,7 +174,7 @@
     }
     // security area guess for plugins
     if ($extensions[$id]['type'] == 'plugin') {
-      $exttext = file_get_contents(DOCROOT . '/modules/' . $extensions[$id]['path'] . '/' . $extensions[$id]['filename']);
+      $exttext = file_get_contents(ROOT_DOC . '/modules/' . $extensions[$id]['path'] . '/' . $extensions[$id]['filename']);
       $area    = SA_OPEN;
       if (preg_match('/.*\$page_security\s*=\s*[\'"]([^\'"]*)/', $exttext, $match)) {
         $area = trim($match[1]);
@@ -198,7 +198,7 @@
   function handle_delete($selected_id) {
     $extensions = DB_Company::get_company_extensions();
     $id         = $selected_id;
-    $filename   = DOCROOT . ($extensions[$id]['type'] == 'plugin' ? "modules" . DS : DS) . $extensions[$id]['path'];
+    $filename   = ROOT_DOC . ($extensions[$id]['type'] == 'plugin' ? "modules" . DS : DS) . $extensions[$id]['path'];
     Files::flushDir($filename);
     rmdir($filename);
     unset($extensions[$id]);

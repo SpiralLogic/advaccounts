@@ -227,7 +227,7 @@ Adv.extend({
                  width:  100,
                  height: 100}).html(Adv.o.popupWindow).on('mouseleave',function () { $(this).remove(); }).appendTo(Adv.o.wrapper).position({my: "center center", at: "center center", of: document.body});
              },
-             tabmenu:     ( function () {
+             tabmenu:     (function () {
                var deferreds = [];
                return{
                  init:  function (id, ajax, links, page) {

@@ -61,15 +61,8 @@
     /**
      * @var bool
      */
-    private $openWindow = false;
-    /** @var Config */
-    protected $Config;
-    /**
-     * @param Config $config
-     */
-    public function __construct(Config $config = null) {
-      $this->Config = $config ? : Config::i();
-    }
+    public $openWindow = false;
+    public $apikey;
     /**
      * @static
      *
@@ -79,7 +72,7 @@
      * @return mixed
      */
     public function openWindow($width, $height) {
-      if ($this->openWindow || !$this->Config->get('ui_windows_popups')) {
+      if (!(bool) $this->openWindow) {
         return;
       }
       $js = "Adv.hoverWindow.init($width,$height);";
@@ -107,8 +100,7 @@
      */
     public function gmap() {
       //$address = str_replace(array("\r", "\t", "\n", "\v"), ", ", $address);
-      $apikey = $this->Config->get('js.maps_api_key');
-      $js     = "Adv.maps = { api_key: '$apikey'}";
+      $js = "Adv.maps = { api_key: '" . $this->apikey . "'}";
       $this->beforeload($js);
       $js
         = <<<JS
@@ -186,7 +178,7 @@ JS;
         ob_start();
       }
       $files = $content = $onReady = '';
-      if (!AJAX_REFERRER) {
+      if (!REQUEST_AJAX) {
         foreach ($this->footerFiles as $dir => $file) {
           $files .= (new HTML)->script(array('src' => $dir . '/' . implode(',', $file)), false);
         }
@@ -418,7 +410,6 @@ JS;
      */
     public function getState() {
       $state = get_object_vars($this);
-      unset($state['Config']);
 
       return $state;
     }

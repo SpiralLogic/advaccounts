@@ -242,7 +242,7 @@
       $buttons[]  = ['label'=> _("View this order"), 'href'=> GL_UI::viewTrans($trans_type, $order_no, '', false, '', '', true)];
       $href       = Reporting::print_doc_link($order_no, '', true, $trans_type, false, '', '', 0, 0, true);
       $buttons[]  = ['target'=> '_new', 'label'=> _("Print This Order"), 'href'=> $href];
-      $edit_trans = BASE_URL . "purchases/po_entry_items.php?ModifyOrder=$order_no";
+      $edit_trans = ROOT_URL . "purchases/po_entry_items.php?ModifyOrder=$order_no";
       $buttons[]  = ['label'=> _("Edit This Order"), 'href'=> $edit_trans];
       $view->set('emailtrans', Reporting::emailDialogue($this->creditor_id, ST_PURCHORDER, $order_no));
       $buttons[] = ['label'=> 'Receive this purchase order', 'accesskey'=> 'R', 'href'=> "/purchases/po_receive_items.php?PONumber=$order_no"];

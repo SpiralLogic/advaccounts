@@ -36,7 +36,8 @@
      * @internal param $password
      */
     public static function  add($user_id, $real_name, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos) {
-      $sql = "INSERT INTO users (user_id, real_name, phone, email, role_id, language, pos, print_profile, rep_popup)
+      $sql
+        = "INSERT INTO users (user_id, real_name, phone, email, role_id, language, pos, print_profile, rep_popup)
                 VALUES (" . DB::_escape($user_id) . "," . //
         DB::_escape($real_name) . ", " . //
         DB::_escape($phone) . "," . //
@@ -98,7 +99,8 @@
      * @return null|\PDOStatement
      */
     public static function  getAll($all = false) {
-      $sql = "SELECT u.*, r.role FROM users u, security_roles r
+      $sql
+        = "SELECT u.*, r.role FROM users u, security_roles r
                 WHERE u.role_id=r.id";
       if (!$all) {
         $sql .= " AND !u.inactive";
@@ -146,9 +148,9 @@
      * @param $user_id
      */
     public static function  update_visitdate($user_id) {
-      $sql = "UPDATE users SET last_visit_date='" . date("Y-m-d H:i:s") . "'
-                WHERE user_id=" . DB::_escape($user_id);
-      DB::_query($sql, "could not update last visit date for user $user_id");
+      // $sql = "UPDATE users SET last_visit_date='" . date("Y-m-d H:i:s") . "'
+      //         WHERE user_id=" . DB::_escape($user_id);
+      //DB::_query($sql, "could not update last visit date for user $user_id");
     }
     /**
      * @static
@@ -183,7 +185,7 @@
     public static function themes_row($label, $name, $value = null) {
       $themes = [];
       try {
-        $themedir = new \DirectoryIterator(WEBROOT . THEME_PATH);
+        $themedir = new \DirectoryIterator(ROOT_WEB . THEME_PATH);
       } catch (\UnexpectedValueException $e) {
         Event::error($e->getMessage());
       }

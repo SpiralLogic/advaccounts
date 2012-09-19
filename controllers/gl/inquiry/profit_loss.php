@@ -69,7 +69,7 @@
         continue;
       }
       if ($drilldown && $levelptr == 0) {
-        $url = "<a href='" . BASE_URL . "gl/inquiry/gl_account.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&account=" . $account['account_code'] . "'>" . $account['account_code'] . " " . $account['account_name'] . "</a>";
+        $url = "<a href='" . ROOT_URL . "gl/inquiry/gl_account.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&account=" . $account['account_code'] . "'>" . $account['account_code'] . " " . $account['account_name'] . "</a>";
         echo "<tr class='stockmankobg'>";
         Cell::label($url);
         Cell::amount($per_balance * $convert);
@@ -105,7 +105,7 @@
       ) //END Patch#2
         //elseif ($drilldown && $type != $_POST["AccGrp"])
       {
-        $url = "<a href='" . BASE_URL . "gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&Compare=" . $compare . "&AccGrp=" . $type . "'>" . $typename . "</a>";
+        $url = "<a href='" . ROOT_URL . "gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&Compare=" . $compare . "&AccGrp=" . $type . "'>" . $typename . "</a>";
         Cell::label($url);
         Cell::amount(($code_per_balance + $per_balance_total) * $convert);
         Cell::amount(($code_acc_balance + $acc_balance_total) * $convert);
@@ -181,7 +181,8 @@
     }
     Display::div_start('pl_tbl');
     Table::start('padded grid width50');
-    $tableheader = "<tr>
+    $tableheader
+      = "<tr>
  <td class='tablehead'>" . _("Group/Account Name") . "</td>
  <td class='tablehead'>" . _("Period") . "</td>
         <td class='tablehead'>" . $sel[$compare] . "</td>
@@ -207,7 +208,7 @@
           $class_per_total += $TypeTotal[0];
           $class_acc_total += $TypeTotal[1];
           if ($TypeTotal[0] != 0 || $TypeTotal[1] != 0) {
-            $url = "<a href='" . BASE_URL . "gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&Compare=" . $compare . "&AccGrp=" . $accounttype['id'] . "'>" . $accounttype['name'] . "</a>";
+            $url = "<a href='" . ROOT_URL . "gl/inquiry/profit_loss.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&Compare=" . $compare . "&AccGrp=" . $accounttype['id'] . "'>" . $accounttype['name'] . "</a>";
             Cell::label($url);
             Cell::amount($TypeTotal[0] * $convert);
             Cell::amount($TypeTotal[1] * $convert);

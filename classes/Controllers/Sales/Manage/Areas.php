@@ -1,6 +1,9 @@
 <?php
+  namespace ADV\Controllers\Sales\Manage;
+
   use ADV\App\Form\Form;
-  use ADV\App\Sales\Point;
+  use ADV\App\Page;
+  use ADV\App\Sales\Area;
   use ADV\Core\View;
   use ADV\Core\DB\DB;
 
@@ -12,14 +15,13 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class SalesPOS extends \ADV\App\Controller\Manage
-  {
+  class Areas extends \ADV\App\Controller\Manage {
     protected function before() {
-      $this->object = new Point();
+      $this->object = new Area();
       $this->runPost();
     }
     protected function index() {
-      Page::start(_($help_context = "Sales Points"), SA_SALESAREA);
+      Page::start(_($help_context = "Sales Areas"), SA_SALESAREA);
       $this->generateTable();
       echo '<br>';
       $this->generateForm();
@@ -32,26 +34,17 @@
      * @return mixed|void
      */
     protected function formContents(Form $form, View $view) {
-      $view['title'] = 'Sales POS';
-      $form->hidden('id');
-      $form->text('pos_name')->label('Name: ');
-      $form->checkbox('cash_sale')->label('Cash Sales: ');
-      $form->checkbox('credit_sale')->label('Credit Sales: ');
-      $form->custom(Bank_UI::cash_accounts_row(null, 'pos_account',null,false,true))->label('Name: ');
-      $form->custom(  Inv_Location::select('pos_location'))->label('Location: ');
+      $view['title'] = 'Sales Area';
+      $form->hidden('area_code');
+      $form->text('description')->label('Area Name:');
     }
     /**
      * @return array
      */
     protected function generateTableCols() {
-      $cols         = [
+      $cols = [
         ['type'=> 'skip'],
-        'Name',
-        'Cash Sale'=>['type'=>'bool'],
-        'Credit Sale'=>['type'=>'bool'],
-        'Location',
-        'Account',
-        'Inactive'=>['type','active'],
+        'Area Name',
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
       ];
@@ -59,4 +52,3 @@
     }
   }
 
-  new SalesPOS();

@@ -16,8 +16,7 @@
    *
    * @return null|PDOStatement
    */
-  function fetch_items($category = 0)
-  {
+  function fetch_items($category = 0) {
     $sql
       = "SELECT stock_master.stock_id, stock_master.description AS name,
                 stock_master.material_cost+stock_master.labour_cost+stock_master.overhead_cost AS Standardcost,
@@ -41,8 +40,7 @@
    *
    * @return null|PDOStatement
    */
-  function get_kits($category = 0)
-  {
+  function get_kits($category = 0) {
     $sql
       = "SELECT i.item_code AS kit_code, i.description AS kit_name, c.category_id AS cat_id, c.description AS cat_name, count(*)>1 AS kit
             FROM
@@ -59,8 +57,7 @@
     return DB::_query($sql, "No kits were returned");
   }
 
-  function print_price_listing()
-  {
+  function print_price_listing() {
     $currency    = $_POST['PARAM_0'];
     $category    = $_POST['PARAM_1'];
     $salestype   = $_POST['PARAM_2'];
@@ -107,18 +104,30 @@
     $headers = array(_('Category/Items'), _('Description'), _('Price'), _('GP %'));
     $aligns  = array('left', 'left', 'right', 'right');
     $params  = array(
-      0    => $comments, 1 => array(
-        'text' => _('Currency'), 'from' => $curr_sel, 'to'   => ''
-      ), 2 => array(
-        'text' => _('Category'), 'from' => $cat, 'to'   => ''
-      ), 3 => array(
-        'text' => _('Sales Type'), 'from' => $stype, 'to'   => ''
-      ), 4 => array(
-        'text' => _('Show GP %'), 'from' => $GP, 'to'   => ''
+      0    => $comments,
+      1    => array(
+        'text' => _('Currency'),
+        'from' => $curr_sel,
+        'to'   => ''
+      ),
+      2    => array(
+        'text' => _('Category'),
+        'from' => $cat,
+        'to'   => ''
+      ),
+      3    => array(
+        'text' => _('Sales Type'),
+        'from' => $stype,
+        'to'   => ''
+      ),
+      4    => array(
+        'text' => _('Show GP %'),
+        'from' => $GP,
+        'to'   => ''
       )
     );
     /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep     = new $report_type(_('Price Listing'), "PriceListing",SA_PRICEREP, User::page_size());
+    $rep = new $report_type(_('Price Listing'), "PriceListing", SA_PRICEREP, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
@@ -150,7 +159,7 @@
         $rep->TextCol(3, 4, Num::_format($disp, User::percent_dec()) . " %");
       }
       if ($pictures) {
-        $image = COMPANY_PATH . "images/" . Item::img_name($myrow['stock_id']) . ".jpg";
+        $image = PATH_COMPANY . "images/" . Item::img_name($myrow['stock_id']) . ".jpg";
         if (file_exists($image)) {
           $rep->NewLine();
           if ($rep->row - Config::_get('item_images_height') < $rep->bottomMargin) {

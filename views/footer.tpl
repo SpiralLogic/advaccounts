@@ -10,11 +10,11 @@
 {{#if $footer}}
 
 <div id='footer'>
-    {{#if $user}}
+{{#if $user}}
     <span class='power'><i class='icon-share'> </i><a target='_blank' href='{{POWERED_URL}}'>{{POWERED_BY}}</a></span>
     <span class='date'>{{$today}} | {{$now}}</span>
-<span> </span>| <span>mem/peak: {{$mem}} </span><span>|</span><span> load time: {{\ADV\App\Dates::_getReadableTime(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) }}</span>
-    {{/if}}
+    <span> </span>| <span>mem/peak: {{$mem}} </span><span>|</span><span> load time: {{\ADV\App\Dates::_getReadableTime(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) }}</span>
+{{/if}}
     <!-- end footer div-->
 </div>
 {{/if}}
@@ -23,11 +23,11 @@
 </div>
 {{>sidemenu}}
 {{$messages}}
-{{#if !AJAX_REFERRER}}
+{{#if !REQUEST_AJAX}}
 {{/if}}
 <script>{{$beforescripts}}
 </script>  {#$JS->render()#}
-{{#if !AJAX_REFERRER}}
+{{#if !REQUEST_AJAX}}
 </body>
 </html>
 {{/if}}

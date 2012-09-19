@@ -65,13 +65,18 @@
       Event::success(_("Customer has been updated."));
     } else { //it is a new customer
       DB::_begin();
-      $sql = "INSERT INTO debtors (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
+      $sql
+        = "INSERT INTO debtors (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
     				curr_code, credit_status, payment_terms, discount, payment_discount,credit_limit,
-    				sales_type, notes) VALUES (" . DB::_escape($_POST['CustName']) . ", " . DB::_escape($_POST['cust_ref']) . ", " . DB::_escape($_POST['address']) . ", " . DB::_escape($_POST['tax_id']) . "," . DB::_escape($_POST['email']) . ", " . DB::_escape($_POST['dimension_id']) . ", " . DB::_escape(
+    				sales_type, notes) VALUES (" . DB::_escape($_POST['CustName']) . ", " . DB::_escape($_POST['cust_ref']) . ", " . DB::_escape($_POST['address']) . ", " . DB::_escape(
+        $_POST['tax_id']
+      ) . "," . DB::_escape($_POST['email']) . ", " . DB::_escape($_POST['dimension_id']) . ", " . DB::_escape(
         $_POST['dimension2_id']
       ) . ", " . DB::_escape($_POST['curr_code']) . ",
     				" . DB::_escape($_POST['credit_status']) . ", " . DB::_escape($_POST['payment_terms']) . ", " . Validation::input_num('discount') / 100 . ",
-    				" . Validation::input_num('payment_discount') / 100 . ", " . Validation::input_num('credit_limit') . ", " . DB::_escape($_POST['sales_type']) . ", " . DB::_escape($_POST['notes']) . ")";
+    				" . Validation::input_num('payment_discount') / 100 . ", " . Validation::input_num('credit_limit') . ", " . DB::_escape($_POST['sales_type']) . ", " . DB::_escape(
+        $_POST['notes']
+      ) . ")";
       DB::_query($sql, "The customer could not be added");
       $_POST['debtor_id'] = DB::_insertId();
       $new_customer       = false;
@@ -173,7 +178,7 @@
   Forms::textRow(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 80);
   Forms::textRow(_("Customer Short Name:"), 'cust_ref', null, 30, 30);
   Forms::textareaRow(_("Address:"), 'address', $_POST['address'], 35, 5);
-  Forms::emailRow(_("E-mail:"), 'email', null, 40, 40);
+  Forms::emailRow(_("Email:"), 'email', null, 40, 40);
   Forms::textRow(_("GSTNo:"), 'tax_id', null, 40, 40);
   if ($new_customer) {
     GL_Currency::row(_("Customer's Currency:"), 'curr_code', $_POST['curr_code']);

@@ -58,14 +58,15 @@
       Page::end();
     }
     protected function displayTable() {
-      if (AJAX_REFERRER && !empty($_POST['q'])) {
+      if (REQUEST_AJAX && !empty($_POST['q'])) {
         $searchArray = explode(' ', $_POST['q']);
         unset($_POST['creditor_id']);
       }
       $date_after = Dates::_dateToSql($_POST['TransAfterDate']);
       $date_to    = Dates::_dateToSql($_POST['TransToDate']);
       // Sherifoz 22.06.03 Also get the description
-      $sql = "SELECT trans.type,
+      $sql
+        = "SELECT trans.type,
     		trans.trans_no,
     		trans.reference,
     		supplier.name,
@@ -81,7 +82,7 @@
      	FROM creditor_trans as trans, suppliers as supplier
      	WHERE supplier.creditor_id = trans.creditor_id
      	AND trans.ov_amount != 0"; // exclude voided transactions
-      if (AJAX_REFERRER && !empty($_POST['q'])) {
+      if (REQUEST_AJAX && !empty($_POST['q'])) {
         foreach ($searchArray as $quicksearch) {
           if (empty($quicksearch)) {
             continue;
@@ -93,7 +94,8 @@
           ) . " OR trans.supplier_reference LIKE " . DB::_quote($quicksearch) . ")";
         }
       } else {
-        $sql .= " AND trans . tran_date >= '$date_after'
+        $sql
+          .= " AND trans . tran_date >= '$date_after'
     	 AND trans . tran_date <= '$date_to'";
       }
       if ($this->creditor_id > 0) {

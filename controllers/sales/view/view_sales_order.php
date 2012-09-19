@@ -63,7 +63,7 @@
   echo '<tr>';
   Cell::labelled(_("Order Currency"), $_SESSION['View']->customer_currency, "class='label'");
   Cell::labelled(_("Ordered On"), $_SESSION['View']->document_date, "class='label'");
-  Cell::labelled(_("E-mail"), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_SESSION['View']->email . "</a>", "class='label'", "colspan=3");
+  Cell::labelled(_("Email"), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_SESSION['View']->email . "</a>", "class='label'", "colspan=3");
   echo '</tr>';
   Table::label(_("Comments"), $_SESSION['View']->Comments, "class='label'", "colspan=5");
   Table::end();

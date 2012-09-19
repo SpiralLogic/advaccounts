@@ -20,11 +20,12 @@
   /**
    * @method Status getStatus()
    */
-  abstract class Base
-  {
+  abstract class Base {
     use \ADV\Core\Traits\SetFromArray;
     use \ADV\Core\Traits\Status;
 
+    /** @var DB */
+    static $DB;
     /**
      * @var int
      */
@@ -32,16 +33,15 @@
     protected $_table;
     protected $_id_column;
     protected $_classname;
-    /** @var \ADV\Core\DB\DB*/
-    protected $DB;
     abstract protected function canProcess();
     /**
      * @param int             $id    Id to read from database, or an array of changes which can include the id to load before applying changes or 0 for a new object
      * @param array           $extra
-     * @param \ADV\Core\DB\DB $db
+     *
+     * @internal param \ADV\Core\DB\DB $db
      */
-    public function __construct($id = 0, $extra = [], DB $db = null) {
-      $this->DB = $db ? : DB::i();
+    public function __construct($id = 0, $extra = []) {
+      static::$DB = DB::i();
       $this->load($id, $extra);
       $this->_classname = $this->_classname ? : end(explode('\\', ltrim(get_called_class(), '\\')));
       $_id_column       = $this->_id_column;
@@ -96,25 +96,25 @@
       }
       $data = (array) $this;
 
-      $this->DB->begin();
+      static::$DB->begin();
       try {
-        $updated = $this->DB->update($this->_table)->values($data)->where($this->_id_column . '=', $this->id)->exec();
+        $updated = static::$DB->update($this->_table)->values($data)->where($this->_id_column . '=', $this->id)->exec();
       } catch (DBUpdateException $e) {
-        $this->DB->cancel();
+        static::$DB->cancel();
 
         return $this->status(Status::ERROR, "Could not update " . $this->_classname);
       }
       if (property_exists($this, 'inactive')) {
         try {
           /** @noinspection PhpUndefinedFieldInspection */
-          $this->DB->updateRecordStatus($this->id, $this->inactive, $this->_table, $this->_id_column);
+          static::$DB->updateRecordStatus($this->id, $this->inactive, $this->_table, $this->_id_column);
         } catch (DBUpdateException $e) {
-          $this->DB->cancel();
+          static::$DB->cancel();
 
           return $this->status(Status::ERROR, "Could not update active status of " . $this->_classname);
         }
       }
-      $this->DB->commit();
+      static::$DB->commit();
       if (!$updated) {
         $this->id = 0;
 
@@ -130,7 +130,7 @@
 
       try {
         $id_column = $this->_id_column;
-        $this->DB->delete($this->_table)->where($id_column . '=', $this->$id_column)->exec();
+        static::$DB->delete($this->_table)->where($id_column . '=', $this->$id_column)->exec();
       } catch (\DBDeleteException $e) {
         return $this->status(false, 'Could not delete' . $this->_classname);
       }
@@ -168,11 +168,11 @@
         throw new DBException('No table name or id column for class: ' . get_called_class() . '(' . $this->_classname . ')');
       }
       try {
-        $query = $this->DB->select()->from($this->_table)->where($this->_id_column . '=', $id);
+        $query = static::$DB->select()->from($this->_table)->where($this->_id_column . '=', $id);
         foreach ($extra as $field => $value) {
           $query->andWhere($field . '=', $value);
         }
-        $this->DB->fetch()->intoClass($this);
+        static::$DB->fetch()->intoClass($this);
       } catch (DBSelectException $e) {
         return $this->status(false, 'Could not read ' . $this->_classname, (string) $id);
       }
@@ -184,7 +184,7 @@
      */
     protected function saveNew() {
       try {
-        $this->id = $this->DB->insert($this->_table)->values((array) $this)->exec();
+        $this->id = static::$DB->insert($this->_table)->values((array) $this)->exec();
       } catch (DBInsertException $e) {
         return $this->status(false, 'Could not add to databse: ' . $this->_classname);
       } catch (DBDuplicateException $e) {

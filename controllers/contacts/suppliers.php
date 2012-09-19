@@ -25,7 +25,7 @@
     protected $company_data;
     protected function before() {
       /** @noinspection PhpUndefinedMethodInspection */
-      if (AJAX_REFERRER) {
+      if (REQUEST_AJAX) {
         $this->search();
       }
       if (isset($_POST['name'])) {
@@ -39,7 +39,7 @@
       } else {
         $data['company'] = $this->creditor = new Creditor();
       }
-      if (AJAX_REFERRER) {
+      if (REQUEST_AJAX) {
         /** @noinspection PhpUndefinedMethodInspection */
         $data['status'] = $this->creditor->getStatus();
         /** @noinspection PhpUndefinedMethodInspection */

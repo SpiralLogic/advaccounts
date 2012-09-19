@@ -10,6 +10,7 @@
   namespace ADV\Core\DB;
 
   use PDO, PDOStatement, PDOException;
+  use ErrorException;
   use ADV\Core\Cache;
   use ADV\Core\Config;
   use ADV\Core\DB\Query\Select;
@@ -39,7 +40,7 @@
    * @method static _errorNo()
    * @method  static _quote($value, $type = null)
    */
-  class DB {
+  class DB implements \Serializable {
     use \ADV\Core\Traits\StaticAccess2;
 
     const SELECT = 0;
@@ -194,6 +195,13 @@
       $this->errorInfo = false;
       $this->errorSql  = $sql;
       $data            = $this->data;
+
+      if (!($this->conn instanceof \PDO)) {
+        ob_start();
+        debug_print_backtrace();
+
+        return \Event::error(ob_get_clean());
+      }
       try {
         /** @var \PDOStatement $prepared  */
         $prepared = $this->conn->prepare($sql);
@@ -535,6 +543,9 @@
       }
       try {
         $prepared = $this->prepare($sql);
+        if (!$prepared) {
+          return false;
+        }
         switch ($type) {
           case DB::SELECT:
             return new Query\Result($prepared, $data);
@@ -639,15 +650,31 @@
       \Errors::databaseError($error, $this->errorSql, $data);
     }
     /**
-     * @return array
+     * (PHP 5 &gt;= 5.1.0)<br/>
+     * String representation of object
+     * @link http://php.net/manual/en/serializable.serialize.php
      */
-    public function __sleep() {
-      $this->conn     = null;
-      $this->prepared = null;
-
-      return array_keys((array) $this);
+    public function serialize() {
+      static::$connections      = [];
+      $this->prepared           = null;
+      $this->default_connection = null;
+      $this->query              = null;
+      $this->conn               = null;
+      return base64_encode(serialize($this));
     }
-    public function __wakeup() {
-      $this->connect($this->config);
+    /**
+     * (PHP 5 &gt;= 5.1.0)<br/>
+     * Constructs the object
+     * @link http://php.net/manual/en/serializable.unserialize.php
+     *
+     * @param string $serialized <p>
+     *                           The string representation of the object.
+     * </p>
+     *
+     * @throws \ErrorException
+     * @return mixed the original value unserialized.
+     */
+    public function unserialize($serialized) {
+      return static::i();
     }
   }

@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  if (!AJAX_REFERRER) {
+  if (!REQUEST_AJAX) {
     header("Location: /");
     exit();
   }

@@ -13,10 +13,8 @@
     use ADV\App\Validation;
 
     /**
-
      */
-    class Type extends \ADV\App\DB\Base
-    {
+    class Type extends \ADV\App\DB\Base {
       protected $_table = 'sales_types';
       protected $_classname = 'Sales Type';
       protected $_id_column = 'id';
@@ -55,8 +53,7 @@
     }
   }
   namespace {
-    class Sales_Type
-    {
+    class Sales_Type {
       /**
        * @static
        *

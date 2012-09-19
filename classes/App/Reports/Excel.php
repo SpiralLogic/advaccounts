@@ -172,7 +172,7 @@
       $this->code                = strtolower($_SESSION['language']->encoding);
       $this->filename            = $filename . ".xls";
       $this->unique_name         = uniqid('') . ".xls";
-      $this->path                = COMPANY_PATH . 'pdf_files';
+      $this->path                = PATH_COMPANY . 'pdf_files';
       $this->Spreadsheet_Excel_Writer_Workbook($this->path . "/" . $this->unique_name);
       //$this->setCountry(48);
       if ($this->code != "iso-8859-1") {
@@ -729,7 +729,21 @@
      *
      * @return void
      */
-    public function AmountCol2($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0, $color_red = false, $amount_locale = null, $amount_format = null) {
+    public function AmountCol2(
+      $c,
+      $n,
+      $txt,
+      $dec = 0,
+      $corr = 0,
+      $r = 0,
+      $border = 0,
+      $fill = 0,
+      $link = null,
+      $stretch = 0,
+      $color_red = false,
+      $amount_locale = null,
+      $amount_format = null
+    ) {
       if (!is_numeric($txt)) {
         $txt = 0;
       }

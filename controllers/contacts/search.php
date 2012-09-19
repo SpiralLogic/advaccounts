@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   ADVAccounting::i()->selected_application = 'contacts';
-  if (AJAX_REFERRER) {
+  if (REQUEST_AJAX) {
     if (isset($_POST['branch_id'])) {
       if ($_POST['branch_id'] > 0) {
         $data['branch'] = new Debtor_Branch(array('branch_id' => $_POST['branch_id']));

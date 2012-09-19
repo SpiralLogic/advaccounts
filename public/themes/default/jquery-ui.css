@@ -447,16 +447,15 @@
 }
 
 .ui-accordion .ui-accordion-header {
-  cursor:     pointer;
-  position:   relative;
-  margin: 2p 0x;
-  zoom:       1;
+  cursor:   pointer;
+  position: relative;
+  margin:   2 p 0 x;
+  zoom:     1;
 }
 
 .ui-accordion .ui-accordion-li-fix {
   display: inline;
 }
-
 
 .ui-accordion .ui-accordion-header a {
   display:   block;
@@ -890,6 +889,7 @@ button.ui-button::-moz-focus-inner {
 }
 
 .ui-tabs .ui-tabs-nav li.ui-tabs-active {
+  opacity:          1;
   margin-bottom:    0;
   padding-bottom:   1px;
   color:            #1c4257;
