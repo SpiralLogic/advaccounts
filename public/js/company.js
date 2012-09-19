@@ -206,7 +206,14 @@ var Company = function () {
         return;
       }
       company = content.company;
-      var data = company, activetabs = (Number(company.id) === 0) ? [1, 2, 3, 4] : [];
+      var data = company, activetabs = [];
+      if ((Number(company.id) === 0)) {
+        activetabs = [1, 2, 3, 4];
+        Adv.o.tabs[0].tabs('select', 0);
+      }
+      else {
+        $('.email-button').data('emailid', company.id + '-91-1');
+      }
       Adv.o.tabs[0].tabs('option', 'disabled', activetabs);
       $('#shortcuts').find('button').prop('disabled', !company.id);
       if (content.contact_log !== undefined) {
@@ -387,7 +394,7 @@ $(function () {
   Adv.tabmenu.defer(0).done(function () {
     Adv.o.tabs[0].delegate("input, textarea,select", "change keyup", function () {
       var $this = $(this), $thisname = $this.attr('name'), buttontext;
-      if ($thisname === 'messageLog' || $thisname === 'branchList' || Adv.o.tabs[0].tabs('option', 'active') == 4) {
+      if ($thisname === 'messageLog' || $thisname === 'branchList') {
         return;
       }
       Adv.Forms.stateModified($this);
@@ -403,15 +410,16 @@ $(function () {
           Adv.btnConfirm.hide();
           Adv.btnCancel.hide();
           Adv.btnNew.show();
+          Adv.Events.onLeave();
         }
       }
       Company.set($thisname, $this.val());
     });
   });
   $("#shortcuts").on('click', 'button', function () {
-    var $this = $(this), url = $this.data('url') + Company.id;
+    var $this = $(this), url = $this.data('url');
     if (url) {
-      Adv.openWindow(url);
+      Adv.openTab(url + Company.get().id);
     }
   });
   $("#id").prop('disabled', true);

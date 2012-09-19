@@ -174,7 +174,9 @@ Adv.extend({
                height = height || 600;
                var left = (screen.width - width) / 2, top = (screen.height - height) / 2;
                return window.open(url, title, 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
-             },
+             }, openTab:  function (url) {
+    window.open(url, '_blank');
+  },
              hoverWindow: {
                _init:  false, init: function (width, height) {
                  Adv.hoverWindow.width = width || 600;
@@ -287,6 +289,7 @@ Adv.extend({
                      var elSelected = $(el).find('option:first')[0];
                      elSelected.selected = true;
                      if (isdefault) {
+                       $(el).find('option').prop('defaultSelected', false);
                        elSelected.defaultSelected = true
                      }
                      return el;
@@ -318,6 +321,7 @@ Adv.extend({
                    if (el.tagName === 'SELECT') {
                      try {
                        if (exists) {
+                         $(el).find('option').prop('defaultSelected', false);
                          exists.defaultSelected = true;
                        }
                      }
@@ -356,6 +360,8 @@ Adv.extend({
                  $(this).datepicker({numberOfMonths:    3,
                                       showButtonPanel:  true,
                                       showCurrentAtPos: 2,
+                                      nextText:         '',
+                                      prevText:         '',
                                       dateFormat:       'dd/mm/yy'}).off('focus.datepicker');
                });
                return {
@@ -400,7 +406,7 @@ Adv.extend({
                  setFormDefault:  function (id, value, disabled) {
                    this.setFormValue(id, value, disabled, true);
                  },
-                 autocomplete:    function (id, url, callback) {
+                 autocomplete:    function (id, type, callback) {
                    var $this, els = Adv.Forms.findInputEl(id), blank = {id: 0, value: ''};
                    if (els[0].type === 'hidden') {
                      return;
@@ -416,7 +422,8 @@ Adv.extend({
                                                                             if ($this.data().autocomplete.previous == $this.val()) {
                                                                               return false;
                                                                             }
-                                                                            Adv.lastXhr = $.getJSON(url, request, function (data) {
+                                                                            request['type'] = type;
+                                                                            Adv.lastXhr = $.getJSON('/search', request, function (data) {
                                                                               if (!$this.data('active')) {
                                                                                 data = blank;
                                                                                 return false;

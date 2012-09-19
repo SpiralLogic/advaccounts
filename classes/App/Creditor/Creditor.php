@@ -490,7 +490,7 @@ JS;
         'creditor',
         array(
              'cells'            => true, //
-             'url'              => '/contacts/suppliers.php', ///
+             'url'              => 'Creditor', ///
              'label_cell_params'=> ['rowspan'=> $o['rowspan'], 'class'=> 'nowrap label ' . $o['cell_class']], //
              'label'            => $o['label'], //
              'name'             => 'creditor', //

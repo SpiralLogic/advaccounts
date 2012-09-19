@@ -1,4 +1,6 @@
 <?php
+  namespace ADV\Controllers\Items\Manage;
+
   use ADV\App\Inv\Location;
   use ADV\App\Form\Form;
   use ADV\Core\View;
@@ -11,7 +13,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class InvLocation extends \ADV\App\Controller\Manage {
+  class Locations extends \ADV\App\Controller\Manage {
     protected $tableWidth = '80';
     protected function before() {
       $this->object = new Location();
@@ -25,8 +27,8 @@
       Page::end(true);
     }
     /**
-     * @param ADV\App\Form\Form $form
-     * @param ADV\Core\View     $view
+     * @param \ADV\App\Form\Form $form
+     * @param \ADV\Core\View     $view
      *
      * @return mixed|void
      */
@@ -60,5 +62,4 @@
     }
   }
 
-  new InvLocation();
 

@@ -732,7 +732,7 @@ JS;
       UI::search(
         'customer',
         array(
-             'url'        => '/contacts/customers.php',
+             'url'        => 'Debtor',
              'name'       => 'customer',
              'focus'      => $focus,
              'class'      => '',

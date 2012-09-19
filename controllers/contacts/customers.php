@@ -5,7 +5,6 @@
   use ADV\Core\HTMLmin;
   use ADV\App\Validation;
   use ADV\App\User;
-  use ADV\App\ADVAccounting;
   use ADV\App\Form\Form;
   use ADV\Core\Input\Input;
   use ADV\App\UI;
@@ -24,12 +23,7 @@
     protected $debtor;
     protected $company_data;
     protected function before() {
-      if (REQUEST_AJAX) {
-        if (isset($_GET['term'])) {
-          $data = Debtor::search($_GET['term']);
-          $this->JS->renderJSON($data);
-        }
-      }
+
       if (isset($_POST['name'])) {
         $data['company'] = $this->debtor = new Debtor();
         $data['company']->save($_POST);
@@ -61,13 +55,13 @@
      */
     protected function generateForm() {
       $cache = Cache::_get('customer_form');
-      // $cache = null;
+      $cache = null;
       if ($cache) {
         $this->JS->addState($cache[1]);
         return $form = $cache[0];
       }
       $js = new JS();
-      $js->autocomplete('customer', 'Company.fetch');
+      $js->autocomplete('customer', 'Company.fetch', 'Debtor');
       $form = new Form();
       $menu = new MenuUI();
       $menu->setJSObject($js);
@@ -161,22 +155,29 @@
       if (!$this->Input->get('frame')) {
         $shortcuts = [
           [
-            'caption'=> 'Create Quote',
+            'caption' => 'Create Quote',
             'Create Quote for this customer!',
-            'data'   => '/sales/sales_order_entry.php?type=' . ST_SALESQUOTE . '&add=' . ST_SALESQUOTE . '&debtor_id='
+            'data'    => '/sales/sales_order_entry.php?type=' . ST_SALESQUOTE . '&add=' . ST_SALESQUOTE . '&debtor_id=',
+            'attrs'   => ['class'=> 'btn']
           ],
-          ['caption'=> 'Create Order', 'Create Order for this customer!', 'data'=> '/sales/sales_order_entry.php?type=30&add=' . ST_SALESORDER . '&debtor_id='],
           [
-            'caption'=> 'Print Statement',
+            'caption' => 'Create Order',
+            'Create Order for this customer!',
+            'data'    => '/sales/sales_order_entry.php?type=30&add=' . ST_SALESORDER . '&debtor_id=',
+            'attrs'   => ['class'=> 'btn']
+          ],
+          [
+            'caption' => 'Print Statement',
             'Print Statement for this Customer!',
-            'data'   => '/reporting/prn_redirect.php?REP_ID=108&PARAM_2=0&PARAM_4=0&PARAM_5=0&PARAM_6=0&PARAM_0='
+            'data'    => '/reporting/prn_redirect.php?REP_ID=108&PARAM_2=0&PARAM_4=0&PARAM_5=0&PARAM_6=0&PARAM_0=',
+            'attrs'   => ['class'=> 'btn']
           ],
           [
-            'caption'=> 'Email Statement',
+            'caption' => 'Email Statement',
             'Email Statement for this Customer!',
-            'data'   => 'emailTab'
+            'attrs'   => ['class'=> 'btn email-button']
           ],
-          ['caption'=> 'Customer Payment', 'Make customer payment!', 'data'=> '/sales/customer_payments.php?debtor_id=']
+          ['caption'=> 'Customer Payment', 'Make customer payment!', 'data'=> '/sales/customer_payments.php?debtor_id=', 'attrs'   => ['class'=> 'btn']]
         ];
         $view->set('shortcuts', $shortcuts);
         UI::emailDialogue(CT_CUSTOMER, $js);

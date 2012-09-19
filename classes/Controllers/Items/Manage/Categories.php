@@ -7,6 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\Controllers\Items\Manage;
+
   use ADV\App\Form\Form;
   use ADV\App\Item\Category;
   use ADV\Core\View;
@@ -15,8 +17,7 @@
   /**
    * @property Category $object
    */
-  class ItemCategory extends \ADV\App\Controller\Manage
-  {
+  class Categoryies extends \ADV\App\Controller\Manage {
     protected $tableWidth = '80';
     protected function before() {
       $this->object = new Category();
@@ -115,5 +116,4 @@
     }
   }
 
-  new ItemCategory();
 

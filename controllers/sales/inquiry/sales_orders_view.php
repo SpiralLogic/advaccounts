@@ -1,5 +1,6 @@
 <?php
   use ADV\App\Debtor\Debtor;
+  use ADV\App\Reporting;
   use ADV\App\Forms;
   use ADV\App\UI;
   use ADV\Core\Table;

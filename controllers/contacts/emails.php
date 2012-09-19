@@ -1,4 +1,6 @@
 <?php
+  use ADV\App\Debtor\Debtor;
+
   /**
    * PHP version 5.4
    * @category  PHP

@@ -18,8 +18,7 @@
   /**
 
    */
-  class SysTypes
-  {
+  class SysTypes {
     public static $names
       = array(
         ST_SALESQUOTE   => "Sales Quotation",
@@ -28,6 +27,7 @@
         ST_CUSTDELIVERY => "Sales Delivery",
         ST_SALESINVOICE => "Sales Invoice",
         ST_CUSTCREDIT   => "Sales Credit Note",
+        ST_STATEMENT    => "Statement",
         ST_CUSTPAYMENT  => "Debtor Payment",
         ST_CUSTREFUND   => "Debtor Refund",
         ST_PURCHORDER   => "Purchase Order",
@@ -201,7 +201,6 @@
      * @return string
      */
     public static function select($name, $value = null, $spec_opt = false, $submit_on_change = false) {
-
 
       return Forms::arraySelect(
         $name,

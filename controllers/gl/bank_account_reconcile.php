@@ -584,6 +584,8 @@
       }
       if ($this->bank_date == '') // new reconciliation
       {
+        $this->bank_date = $this->reconcile_date;
+        $this->Session->setGlobal('bank_date', $this->bank_date);
         $this->Ajax->activate('bank_date');
       }
       $reconcile_value = $this->Input->hasPost("rec_" . $reconcile_id) ? ("'" . $this->Dates->dateToSql($this->reconcile_date) . "'") : 'null';

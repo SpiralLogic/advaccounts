@@ -24,10 +24,7 @@
     protected $creditor;
     protected $company_data;
     protected function before() {
-      /** @noinspection PhpUndefinedMethodInspection */
-      if (REQUEST_AJAX) {
-        $this->search();
-      }
+
       if (isset($_POST['name'])) {
         $data['company'] = $this->creditor = new Creditor();
         unset($_POST['supp_ref']);
@@ -35,7 +32,7 @@
       } elseif ($this->Input->request('id', Input::NUMERIC) > 0) {
         $data['company']     = $this->creditor = new Creditor($this->Input->request('id', Input::NUMERIC));
         $data['contact_log'] = Contact_Log::read($this->creditor->id, CT_SUPPLIER);
-        Session::_setGlobal('creditor_id', $this->creditor->id);
+        $this->Session->setGlobal('creditor_id', $this->creditor->id);
       } else {
         $data['company'] = $this->creditor = new Creditor();
       }
@@ -47,12 +44,6 @@
       }
       $this->JS->footerFile("/js/company.js");
       $this->company_data = $data;
-    }
-    protected function search() {
-      if (isset($_GET['term'])) {
-        $data = Creditor::search($_GET['term']);
-        $this->JS->renderJSON($data);
-      }
     }
     protected function index() {
       Page::start([_($help_context = "Suppliers"), 'creditors'], SA_SUPPLIER, $this->Input->request('frame'));
@@ -74,7 +65,7 @@
         return $form = $cache[0];
       }
       $js = new JS();
-      $js->autocomplete('supplier', 'Company.fetch');
+      $js->autocomplete('supplier', 'Company.fetch', 'Creditor');
       $form = new Form();
       $menu = new MenuUI();
       $menu->setJSObject($js);
@@ -104,8 +95,8 @@
                                                  'postcode' => array('supp_postcode')
                                             ), $js);
       $view->set('supp_postcode', $supp_postcode->getForm());
-      $form->percent('payment_discount', ["disabled"=> !User::i()->hasAccess(SA_SUPPLIERCREDIT)])->label("Prompt Payment Discount:");
-      $form->amount('credit_limit', ["disabled"=> !User::i()->hasAccess(SA_SUPPLIERCREDIT)])->label("Credit Limit:");
+      $form->percent('payment_discount', ["disabled"=> !$this->User->hasAccess(SA_SUPPLIERCREDIT)])->label("Prompt Payment Discount:");
+      $form->amount('credit_limit', ["disabled"=> !$this->User->hasAccess(SA_SUPPLIERCREDIT)])->label("Credit Limit:");
       $form->text('tax_id')->label("GST No:");
       $form->custom(Tax_Groups::select('tax_group_id'))->label('Tax Group:');
       $form->textarea('notes')->label('General Notes:');

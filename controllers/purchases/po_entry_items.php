@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   use ADV\App\Item\Item;
+  use ADV\App\Form\Form;
   use ADV\App\Display;
   use ADV\App\Forms;
   use ADV\App\Ref;
@@ -39,7 +40,7 @@
         $this->creditor_id = $_POST['creditor_id'] = $_GET['creditor_id'];
         $this->Ajax->activate('creditor_id');
       }
-      if (isset($_POST[Orders::CANCEL_CHANGES])) {
+      if ($this->action == Orders::CANCEL_CHANGES) {
         $this->cancelChanges();
       }
       $id = Forms::findPostPrefix(MODE_DELETE);
@@ -188,16 +189,16 @@
       } else {
         Page::start(_($help_context = "Purchase Order Entry"), SA_PURCHASEORDER);
       }
-      if (isset($_POST[COMMIT])) {
+      if ($this->action == COMMIT) {
         $this->commitOrder();
       }
-      if (isset($_POST[Orders::CANCEL])) {
+      if ($this->action == Orders::CANCEL) {
         $this->cancelOrder();
       }
       Forms::start();
       echo "<br>";
       Forms::hidden('order_id');
-      if ($this->order->creditor_id == 0) {
+      if ($this->order->creditor_id == 0 || isset($_GET[Orders::NEW_ORDER])) {
         echo $this->iframe;
       }
       $this->order->header();
@@ -206,18 +207,23 @@
       Forms::textareaRow(_("Memo:"), 'Comments', null, 70, 4);
       Table::end(1);
       Display::div_start('controls', 'items_table');
+      $buttons = new Form();
       if ($this->order->order_has_items()) {
-        Forms::submitConfirm(Orders::CANCEL, _('You are about to void this Document.\nDo you want to continue?'));
-        Forms::submitCenterBegin(Orders::CANCEL, _("Delete This Order"), false, false, ICON_DELETE);
-        Forms::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."), false, ICON_CANCEL);
-        if ($this->order->order_no) {
-          Forms::submitCenterEnd(COMMIT, _("Update Order"), '', 'default', ICON_UPDATE);
-        } else {
-          Forms::submitCenterEnd(COMMIT, _("Place Order"), '', 'default', ICON_SUBMIT);
+        if ($this->order->order_no > 0 && $this->User->hasAccess(SA_VOIDTRANSACTION)) {
+          $buttons->submit(Orders::CANCEL, "Delete Order")->preIcon(ICON_DELETE)->setWarning(
+            'You are about to void this Document.\nDo you want to continue?'
+          )->type('danger');
         }
-      } else {
-        Forms::submitCenterInsert(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."), false, ICON_CANCEL);
+        $buttons->submit(Orders::CANCEL_CHANGES, "Cancel Changes")->preIcon(ICON_CANCEL)->type('warning');
       }
+      if ($this->order->order_no) {
+        $buttons->submit(COMMIT, "Update Order")->preIcon(ICON_UPDATE)->type('success');
+      } else {
+        $buttons->submit(COMMIT, "Place Order")->preIcon(ICON_SUBMIT)->type('success');
+      }
+      $view = new View('libraries/forms');
+      $view->set('buttons', $buttons);
+      $view->render();
       Display::div_end();
       Forms::end();
       Item::addEditDialog();
