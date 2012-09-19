@@ -59,7 +59,7 @@
      */
     protected function generateForm() {
       $cache = Cache::_get('supplier_form');
-      //  $cache = null; //Cache::_get('supplier_form');
+      // $cache = null; //Cache::_get('supplier_form');
       if ($cache) {
         $this->JS->addState($cache[1]);
         return $form = $cache[0];
@@ -98,6 +98,7 @@
       $form->percent('payment_discount', ["disabled"=> !$this->User->hasAccess(SA_SUPPLIERCREDIT)])->label("Prompt Payment Discount:");
       $form->amount('credit_limit', ["disabled"=> !$this->User->hasAccess(SA_SUPPLIERCREDIT)])->label("Credit Limit:");
       $form->text('tax_id')->label("GST No:");
+      $form->text('account_no')->label("Acccount #:");
       $form->custom(Tax_Groups::select('tax_group_id'))->label('Tax Group:');
       $form->textarea('notes')->label('General Notes:');
       $form->arraySelect('inactive', ['No', 'Yes'])->label('Inactive:');
