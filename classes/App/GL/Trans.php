@@ -1,5 +1,6 @@
 <?php
   use ADV\Core\DB\DB;
+  use ADV\App\Dates;
   use ADV\App\Tax\Tax;
   use ADV\App\User;
 
@@ -171,36 +172,49 @@
      * @return null|PDOStatement
      */
     public static function get($from_date, $to_date, $trans_no = 0, $account = null, $dimension = 0, $dimension2 = 0, $filter_type = null, $amount_min = null, $amount_max = null) {
+      $sql = self::getSQL($from_date, $to_date, $trans_no, $account, $dimension, $dimension2, $filter_type, $amount_min, $amount_max);
+
+      return DB::_query($sql, "The transactions for could not be retrieved");
+    }
+    /**
+     * @param      $from_date
+     * @param      $to_date
+     * @param int  $trans_no
+     * @param null $account
+     * @param null $filter_type
+     * @param null $amount_min
+     * @param null $amount_max
+     *
+     * @internal param $from
+     * @internal param $to
+     * @internal param int $dimension
+     * @internal param int $dimension2
+     * @return string
+     */
+    public static function getSQL($from_date, $to_date, $trans_no = 0, $account = null, $filter_type = null, $amount_min = null, $amount_max = null) {
       $from = Dates::_dateToSql($from_date);
-      $to   = Dates::_dateToSql($to_date);
-      $sql  = "SELECT gl_trans.*, " . "chart_master.account_name FROM gl_trans, " . "chart_master
+            $to   = Dates::_dateToSql($to_date);
+      $sql = "SELECT gl_trans.*, chart_master.account_name FROM gl_trans, chart_master
         WHERE chart_master.account_code=gl_trans.account
         AND tran_date >= '$from'
         AND tran_date <= '$to'";
       if ($trans_no > 0) {
-        $sql .= " AND gl_trans.type_no LIKE " . DB::_escape('%' . $trans_no);
+        $sql .= " AND gl_trans.type_no LIKE " . DB::_quote('%' . $trans_no);
       }
       if ($account != null) {
-        $sql .= " AND gl_trans.account = " . DB::_escape($account);
-      }
-      if ($dimension != 0) {
-        $sql .= " AND gl_trans.dimension_id = " . ($dimension < 0 ? 0 : DB::_escape($dimension));
-      }
-      if ($dimension2 != 0) {
-        $sql .= " AND gl_trans.dimension2_id = " . ($dimension2 < 0 ? 0 : DB::_escape($dimension2));
+        $sql .= " AND gl_trans.account = " . DB::_quote($account);
       }
       if ($filter_type != null AND is_numeric($filter_type)) {
-        $sql .= " AND gl_trans.type= " . DB::_escape($filter_type);
+        $sql .= " AND gl_trans.type= " . DB::_quote($filter_type);
       }
       if ($amount_min != null) {
-        $sql .= " AND ABS(gl_trans.amount) >= ABS(" . DB::_escape($amount_min) . ")";
+        $sql .= " AND ABS(gl_trans.amount) >= ABS(" . DB::_quote($amount_min) . ")";
       }
       if ($amount_max != null) {
-        $sql .= " AND ABS(gl_trans.amount) <= ABS(" . DB::_escape($amount_max) . ")";
+        $sql .= " AND ABS(gl_trans.amount) <= ABS(" . DB::_quote($amount_max) . ")";
       }
-      $sql .= " ORDER BY tran_date, counter";
-
-      return DB::_query($sql, "The transactions for could not be retrieved");
+  //    $sql .= " ORDER BY tran_date, counter";
+      return $sql;
     }
     /**
      * @static

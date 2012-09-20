@@ -11,7 +11,6 @@
    * @link      http://www.advancedgroup.com.au
    */
   namespace ADV\Core;
-
   /**
    * Dates validation and parsing functions
    * These functions refer to the global variable defining the date format
@@ -39,11 +38,18 @@
    * @method static _endFiscalYear()
    * @method static _beginFiscalYear()
    */
-  class Dates {
+  class Dates
+  {
+
+    use \ADV\Core\Traits\StaticAccess2;
+
     protected $sep = '-';
     public $formats = array("m/d/Y", "d/m/Y", "Y/m/d");
     public $separators = array('/', ".", "-", " ");
     public $format;
+    /**
+     * @param $separator
+     */
     public function setSep($separator) {
       $this->sep = $this->separators[$separator];
     }

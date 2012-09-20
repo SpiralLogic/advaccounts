@@ -167,16 +167,19 @@
         'Dates',
         function ($c) {
           $config  = $c->get('Config');
-          $User    = $c->get('User');
-          $Session = $c->get('Session');
-          $Company = $c->get('DB_Company');
-          $dates   = new Dates($config, $User, $Session, $Company);
-          $sep     = is_int($User->prefs->date_sep) ? $User->prefs->date_sep : $config->get('date.ui_separator');
+          $user    = $c->get('User');
+          $session = $c->get('Session');
+          $company = $c->get('DB_Company');
+          $dates   = new \ADV\App\Dates($session, $company);
+          $sep     = is_int($user->prefs->date_sep) ? $user->prefs->date_sep : $config->get('date.ui_separator');
           $dates->setSep($sep);
-          $this->format = $User->prefs->date_format;
+          $dates->format = $user->prefs->date_format;
+          $dates->use_fiscal_year = $config->get('use_fiscalyear');
+          $dates->sticky_doc_date = $user->prefs->sticky_doc_date;
           return $dates;
         }
-      );
+      )->get();
+
       $this->JS->footerFile($this->Config->get('assets.footer'));
       $this->menu = new Menu(_("Main Menu"));
       $this->menu->addItem(_("Main Menu"), "index.php");
