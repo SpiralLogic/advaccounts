@@ -181,8 +181,7 @@
     }
     Display::div_start('pl_tbl');
     Table::start('padded grid width50');
-    $tableheader
-      = "<tr>
+    $tableheader = "<tr>
  <td class='tablehead'>" . _("Group/Account Name") . "</td>
  <td class='tablehead'>" . _("Period") . "</td>
         <td class='tablehead'>" . $sel[$compare] . "</td>
@@ -197,7 +196,7 @@
       while ($class = DB::_fetch($classresult)) {
         $class_per_total = 0;
         $class_acc_total = 0;
-        $convert         = SysTypes::get_class_type_convert($class["ctype"]);
+        $convert         = Systypes::get_class_type_convert($class["ctype"]);
         //Print class Name
         Table::sectionTitle($class["class_name"], 4);
         echo $tableheader;
@@ -239,7 +238,7 @@
       $accounttype = GL_Type::get($_POST["AccGrp"]);
       $classid     = $accounttype["class_id"];
       $class       = GL_Class::get($classid);
-      $convert     = SysTypes::get_class_type_convert($class["ctype"]);
+      $convert     = Systypes::get_class_type_convert($class["ctype"]);
       //Print class Name
       Table::sectionTitle(GL_Type::get_name($_POST["AccGrp"]), 4);
       echo $tableheader;
