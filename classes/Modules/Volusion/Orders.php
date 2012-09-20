@@ -22,9 +22,8 @@
   /**
 
    */
-  class Orders implements \Iterator, \Countable
-  {
-
+  class Orders implements \Iterator, \Countable {
+    protected $config;
     /** @var */
     protected $data = array();
     /**
@@ -85,7 +84,9 @@
     /**
 
      */
-    public function __construct() {
+    public function __construct($config = []) {
+      $this->config = $config;
+
       $this->_classname = str_replace(__NAMESPACE__ . '\\', '', __CLASS__);
       //echo 'Getting from Volusion<br>';
       $this->get();
@@ -95,9 +96,9 @@
      * @return string
      */
     public function getXML() {
-      $apiuser = \Config::_get('modules.Volusion')['apiuser'];
-      $apikey  = \Config::_get('modules.Volusion')['apikey'];
-      $url     = \Config::_get('modules.Volusion')['apiurl'];
+      $apiuser = $this->config['apiuser'];
+      $apikey  = $this->config['apikey'];
+      $url     = $this->config['apiurl'];
       $url .= "Login=" . $apiuser;
       $url .= '&EncryptedPassword=' . $apikey;
       $url .= '&EDI_Name=Generic\Orders';
@@ -155,11 +156,9 @@
           $current['ison_jobsboard'] = null;
           DB::_update($this->table)->values($current)->where($this->idcolumn . '=', $current[$this->idcolumn])->exec();
           return 'Updated ' . $this->_classname . ' ' . $current[$this->idcolumn];
-        }
-        catch (\DBUpdateException $e) {
+        } catch (\DBUpdateException $e) {
           return 'Could not update ' . $this->_classname . ' ' . $current[$this->idcolumn];
-        }
-        catch (DBDuplicateException $e) {
+        } catch (DBDuplicateException $e) {
           $this->status = 'Could not insert ' . $this->_classname . ' ' . $current[$this->idcolumn] . ' it already exists!';
         }
       } else {
@@ -167,11 +166,9 @@
         try {
           DB::_insert($this->table)->values($current)->exec();
           return 'Inserted ' . $this->_classname . ' ' . $current[$this->idcolumn];
-        }
-        catch (\DBInsertException $e) {
+        } catch (\DBInsertException $e) {
           return 'Could not insert ' . $this->_classname;
-        }
-        catch (DBDuplicateException $e) {
+        } catch (DBDuplicateException $e) {
           return 'Could not insert ' . $this->_classname . ' ' . $current[$this->idcolumn] . ' it already exists!';
         }
       }
@@ -182,8 +179,7 @@
      */
     public function exists() {
       $current = $this->current();
-      $results = DB::_select($this->idcolumn)->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])
-        ->fetch()->one();
+      $results = DB::_select($this->idcolumn)->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])->fetch()->one();
       return (count($results) > 0) ? $results[$this->idcolumn] : false;
     }
     public function next() {
@@ -252,9 +248,7 @@
   /**
 
    */
-  class OrderDetails extends Orders implements \Iterator, \Countable
-  {
-
+  class OrderDetails extends Orders implements \Iterator, \Countable {
     /**
      * @var OrderOptions
      */
@@ -302,7 +296,7 @@
       }
       return $this->data[$this->current];
     }
-      /**
+    /**
      * @return mixed
      */
     public function key() {
@@ -313,9 +307,7 @@
   /**
 
    */
-  class OrderOptions extends OrderDetails implements \Iterator, \Countable
-  {
-
+  class OrderOptions extends OrderDetails implements \Iterator, \Countable {
     /**
      * @var string
      */
@@ -339,8 +331,7 @@
      */
     public function exists() {
       $current = $this->current();
-      $results = DB::_select()->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])
-        ->andWhere('OrderDetailID=', $current['OrderDetailID'])->fetch()->all();
+      $results = DB::_select()->from($this->table)->where($this->idcolumn . '=', $current[$this->idcolumn])->andWhere('OrderDetailID=', $current['OrderDetailID'])->fetch()->all();
       return (count($results) > 0);
     }
     /**

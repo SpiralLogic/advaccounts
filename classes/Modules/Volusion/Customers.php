@@ -1,13 +1,14 @@
 <?php
   namespace Modules\Volusion;
+
   use \ADV\Core\DB\DBDuplicateException, \ADV\Core\DB\DB, \Event, \ADV\Core\XMLParser;
   use ADV\App\Debtor\Debtor;
 
   /**
    * Class for getting Customers from Volusion and putting them in to the intermediate database.
    */
-  class Customers
-  {
+  class Customers {
+    protected $config;
     /**
      * @var \ADV\Core\Status
      */
@@ -19,7 +20,8 @@
     /**
 
      */
-    public function __construct() {
+    public function __construct($config = []) {
+      $this->config = $config;
       echo __NAMESPACE__;
       $this->status = new \ADV\Core\Status();
     }
@@ -73,8 +75,7 @@
       try {
         DB::_insert('WebCustomers')->values($customer)->exec();
         $this->status->set(true, 'insert', "Added Customer $name to website customer database! {$customer['CustomerID']} ");
-      }
-      catch (DBDuplicateException $e) {
+      } catch (DBDuplicateException $e) {
         DB::_update('WebCustomers')->values($customer)->where('CustomerID=', $customer['CustomerID'])->exec();
         $this->status->set(false, 'insert', "Updated Customer $name ! {$customer['CustomerID']}");
       }
@@ -83,9 +84,9 @@
      * @return string
      */
     public function getXML() {
-      $apiuser = \Config::_get('modules.webstore')['apiuser'];
-      $apikey  = \Config::_get('modules.webstore')['apikey'];
-      $url     = \Config::_get('modules.webstore')['apiurl'];
+      $apiuser = $this->config['apiuser'];
+      $apikey  = $this->config['apikey'];
+      $url     = $this->config['apiurl'];
       $url .= "Login=" . $apiuser;
       $url .= '&EncryptedPassword=' . $apikey;
       $url .= '&EDI_Name=Generic\Customers';
@@ -137,8 +138,7 @@
         $c->contact_name                              = $row["FirstName"] . ' ' . $row["LastName"];
         try {
           $c->save();
-        }
-        catch (\ADV\Core\DB\DBDuplicateException $e) {
+        } catch (\ADV\Core\DB\DBDuplicateException $e) {
           $this->status->set(true, 'Update ', "Customer {$c->name} could not be added or updated. {$c->webid}.<br>" . $result['address'] . ":" . $row["BillingAddress1"]);
           continue;
         }

@@ -7,8 +7,8 @@
   /**
 
    */
-  class Products
-  {
+  class Products {
+    protected $config;
     /**
      * @var array
      */
@@ -16,7 +16,8 @@
     /**
 
      */
-    public function __construct() {
+    public function __construct($config = []) {
+      $this->config = $config;
     }
     /**
      * @return bool
@@ -34,9 +35,9 @@
      * @return string
      */
     public function getXML() {
-      $apiuser = \Config::_get('modules.webstore')['apiuser'];
-      $apikey  = \Config::_get('modules.webstore')['apikey'];
-      $url     = \Config::_get('modules.webstore')['apiurl'];
+      $apiuser = $this->config['apiuser'];
+      $apikey  = $this->config['apikey'];
+      $url     = $this->config['apiurl'];
       $url .= "Login=" . $apiuser;
       $url .= '&EncryptedPassword=' . $apikey;
       $url .= '&EDI_Name=Generic\Products';

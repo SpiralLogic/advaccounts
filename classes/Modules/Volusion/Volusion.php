@@ -52,7 +52,7 @@
      * @return bool|Orders
      */
     function getNewWebsales() {
-      $orders = new Orders();
+      $orders = new Orders($this->config);
       if (!count($orders)) {
         return false;
       }
