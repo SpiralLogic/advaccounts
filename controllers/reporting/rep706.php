@@ -25,8 +25,7 @@
    *
    * @return array
    */
-  function display_type($type, $typename, $from, $to, $convert, &$dec, &$rep, $dimension, $dimension2, &$pg, $graphics)
-  {
+  function display_type($type, $typename, $from, $to, $convert, &$dec, &$rep, $dimension, $dimension2, &$pg, $graphics) {
     $code_open_balance    = 0;
     $code_period_balance  = 0;
     $open_balance_total   = 0;
@@ -99,8 +98,7 @@
   }
 
   print_balance_sheet();
-  function print_balance_sheet()
-  {
+  function print_balance_sheet() {
     $dim       = DB_Company::get_pref('use_dimension');
     $dimension = $dimension2 = 0;
     $from      = $_POST['PARAM_0'];
@@ -144,38 +142,60 @@
     $cols = array(0, 50, 200, 350, 425, 500);
     //------------0--1---2----3----4----5--
     $headers = array(
-      _('Account'), _('Account Name'), _('Open Balance'), _('Period'), _('Close Balance')
+      _('Account'),
+      _('Account Name'),
+      _('Open Balance'),
+      _('Period'),
+      _('Close Balance')
     );
     $aligns  = array('left', 'left', 'right', 'right', 'right');
     if ($dim == 2) {
       $params = array(
-        0    => $comments, 1 => array(
-          'text' => _('Period'), 'from' => $from, 'to' => $to
-        ), 2 => array(
-          'text' => _('Dimension') . " 1", 'from' => Dimensions::get_string($dimension), 'to' => ''
-        ), 3 => array(
-          'text' => _('Dimension') . " 2", 'from' => Dimensions::get_string($dimension2), 'to' => ''
+        0    => $comments,
+        1    => array(
+          'text' => _('Period'),
+          'from' => $from,
+          'to'   => $to
+        ),
+        2    => array(
+          'text' => _('Dimension') . " 1",
+          'from' => Dimensions::get_string($dimension),
+          'to'   => ''
+        ),
+        3    => array(
+          'text' => _('Dimension') . " 2",
+          'from' => Dimensions::get_string($dimension2),
+          'to'   => ''
         )
       );
     } else {
       if ($dim == 1) {
         $params = array(
-          0    => $comments, 1 => array(
-            'text' => _('Period'), 'from' => $from, 'to' => $to
-          ), 2 => array(
-            'text' => _('Dimension'), 'from' => Dimensions::get_string($dimension), 'to' => ''
+          0    => $comments,
+          1    => array(
+            'text' => _('Period'),
+            'from' => $from,
+            'to'   => $to
+          ),
+          2    => array(
+            'text' => _('Dimension'),
+            'from' => Dimensions::get_string($dimension),
+            'to'   => ''
           )
         );
       } else {
         $params = array(
-          0 => $comments, 1 => array(
-            'text' => _('Period'), 'from' => $from, 'to' => $to
+          0 => $comments,
+          1 => array(
+            'text' => _('Period'),
+            'from' => $from,
+            'to'   => $to
           )
         );
       }
     }
     /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_('Balance Sheet'), "BalanceSheet", SA_GLANALYTIC,User::page_size());
+    $rep = new $report_type(_('Balance Sheet'), "BalanceSheet", SA_GLANALYTIC, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
@@ -187,7 +207,7 @@
     while ($class = DB::_fetch($classresult)) {
       $class_open_total   = 0;
       $class_period_total = 0;
-      $convert            = Systypes::get_class_type_convert($class["ctype"]);
+      $convert            = SysTypes::get_class_type_convert($class["ctype"]);
       //Print Class Name
       $rep->Font('bold');
       $rep->TextCol(0, 5, $class["class_name"]);
