@@ -26,7 +26,7 @@
     protected $defaultFocus;
     protected $tableWidth = '50';
     protected function runPost() {
-      if ($this->method == 'POST') {
+      if (REQUEST_POST) {
         $id = $this->getActionId(DELETE);
         if ($id > -1) {
           $this->object->load($id);

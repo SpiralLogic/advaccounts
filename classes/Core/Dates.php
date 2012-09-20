@@ -44,6 +44,9 @@
     public $formats = array("m/d/Y", "d/m/Y", "Y/m/d");
     public $separators = array('/', ".", "-", " ");
     public $format;
+    public function setSep($separator) {
+      $this->sep = $this->separators[$separator];
+    }
     /**
      * @static
      *

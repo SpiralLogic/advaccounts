@@ -12,8 +12,7 @@
   /**
 
    */
-  trait Status
-  {
+  trait Status {
     /** @var \ADV\Core\Status */
     protected $status = null;
     /**
@@ -22,6 +21,9 @@
      * @return string|array
      */
     public function getStatus($string = false) {
+      if ($this->status === null) {
+        $this->status = new \ADV\Core\Status();
+      }
       if ($string) {
         return $this->status;
       }

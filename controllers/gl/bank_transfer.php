@@ -7,7 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  if ($_SERVER['REQUEST_METHOD'] == "GET") {
+  if (REQUEST_GET) {
     if (Input::_get('account')) {
       $account         = Input::_get('amount') > 0 ? 'ToBankAccount' : 'FromBankAccount';
       $_POST[$account] = Input::_get('account');

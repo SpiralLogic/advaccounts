@@ -259,7 +259,7 @@
     while ($class = DB::_fetch($classresult)) {
       $class_per_total = 0;
       $class_acc_total = 0;
-      $convert         = Systypes::get_class_type_convert($class["ctype"]);
+      $convert         = SysTypes::get_class_type_convert($class["ctype"]);
       //Print Class Name
       $rep->Font('bold');
       $rep->TextCol(0, 5, $class["class_name"]);

@@ -22,7 +22,7 @@
     protected function before() {
       JS::_openWindow(950, 500);
       JS::_footerFile('/js/payalloc.js');
-      if ($_SERVER['REQUEST_METHOD'] == "GET") {
+      if (REQUEST_GET) {
         if ($this->Input->hasGet('account', 'amount', 'memo', 'date')) {
           $_POST['bank_account'] = $this->Input->get('account');
           $_POST['amount']       = abs($this->Input->get('amount'));

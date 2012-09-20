@@ -46,7 +46,7 @@
       $this->JS->openWindow(950, 500);
       $this->type = $this->order->trans_type == ST_BANKPAYMENT ? 'Payment' : 'Deposit';
       $this->setTitle('Bank Account ' . $this->type . ' Entry');
-      if ($_SERVER['REQUEST_METHOD'] == "GET") {
+      if (REQUEST_GET) {
         if ($this->Input->hasGet('account', 'amount', 'memo', 'date')) {
           $_POST['bank_account'] = $this->Input->get('account');
           $_POST['total_amount'] = $_POST['amount'] = abs($this->Input->get('amount'));
@@ -251,7 +251,7 @@
         echo GL_UI::all('code_id', null, true, true);
         $this->Ajax->activate('items_table');
       } else {
-        if ($_SERVER['REQUEST_METHOD'] == 'GET' && !count($this->order->gl_items) && $this->Input->get('amount', Input::NUMERIC)) {
+        if (REQUEST_GET && !count($this->order->gl_items) && $this->Input->get('amount', Input::NUMERIC)) {
           $_POST['amount'] = $_GET['amount'];
         } else {
           $_POST['amount'] = Num::_priceFormat(0);

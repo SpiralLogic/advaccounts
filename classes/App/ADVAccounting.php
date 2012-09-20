@@ -2,6 +2,7 @@
   namespace ADV\App;
 
   use ADV\Core\JS;
+  use DB_Company;
   use ADV\Core\Cache\APC;
   use ADV\Core\Event;
   use ADV\Core\View;
@@ -156,6 +157,26 @@
           return $num;
         }
       );
+      $dic->set(
+        'DB_Company',
+        function () {
+          return new DB_Company();
+        }
+      );
+      $dic->set(
+        'Dates',
+        function ($c) {
+          $config  = $c->get('Config');
+          $User    = $c->get('User');
+          $Session = $c->get('Session');
+          $Company = $c->get('DB_Company');
+          $dates   = new Dates($config, $User, $Session, $Company);
+          $sep     = is_int($User->prefs->date_sep) ? $User->prefs->date_sep : $config->get('date.ui_separator');
+          $dates->setSep($sep);
+          $this->format = $User->prefs->date_format;
+          return $dates;
+        }
+      );
       $this->JS->footerFile($this->Config->get('assets.footer'));
       $this->menu = new Menu(_("Main Menu"));
       $this->menu->addItem(_("Main Menu"), "index.php");
@@ -178,6 +199,10 @@
       \ADV\Core\Event::init($this->Cache, $this->User->username);
 
       $this->get_selected();
+      $this->route();
+    }
+    protected function route() {
+      $this->setupPage();
       $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
       $index      = $controller == $_SERVER['SCRIPT_NAME'];
       $show404    = false;
@@ -440,6 +465,16 @@
         fclose($zp);
       }
       return true;
+    }
+    private function setupPage() {
+      $dic = \ADV\Core\DIC::getInstance();
+      $dic->set(
+        'Page',
+        function ($c) {
+
+          new static($c->get('User'), $c->get('Config'), $c->get('User'), $c->get('JS'), $c->get('Dates'));
+        }
+      );
     }
   }
 

@@ -197,7 +197,7 @@
       while ($class = DB::_fetch($classresult)) {
         $class_per_total = 0;
         $class_acc_total = 0;
-        $convert         = Systypes::get_class_type_convert($class["ctype"]);
+        $convert         = SysTypes::get_class_type_convert($class["ctype"]);
         //Print class Name
         Table::sectionTitle($class["class_name"], 4);
         echo $tableheader;
@@ -239,7 +239,7 @@
       $accounttype = GL_Type::get($_POST["AccGrp"]);
       $classid     = $accounttype["class_id"];
       $class       = GL_Class::get($classid);
-      $convert     = Systypes::get_class_type_convert($class["ctype"]);
+      $convert     = SysTypes::get_class_type_convert($class["ctype"]);
       //Print class Name
       Table::sectionTitle(GL_Type::get_name($_POST["AccGrp"]), 4);
       echo $tableheader;

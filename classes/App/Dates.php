@@ -31,13 +31,6 @@
      * @param \DB_Company               $Company
      */
     public function __construct(\Config $config = null, User $User = null, \Session $Session = null, \DB_Company $Company = null) {
-      $config               = $config ? : Config::i();
-      $this->User           = $User ? : User::i();
-      $this->Session        = $Session ? : Session::i();
-      $this->Company        = $Company ? : DB_Company::i();
-      $this->userFiscalYear = $config->_get('use_fiscalyear');
-      $this->sep            = $this->separators[is_int($this->User->prefs->date_sep) ? $this->User->prefs->date_sep : $config->get('date.ui_separator')];
-      $this->format         = $this->User->_date_format();
     }
     /**
      * Retrieve and optionally set default date for new document.

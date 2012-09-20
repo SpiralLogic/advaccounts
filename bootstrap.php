@@ -55,13 +55,13 @@
   define('PATH_VIEW', ROOT_DOC . 'views' . DS);
   define('PATH_COMPANY', ROOT_WEB . 'company' . DS);
   define('PATH_LANG', ROOT_DOC . 'lang' . DS);
-  define("REQUEST_METHOD", isset($_SERVER['REQUEST_METHOD']), $_SERVER['REQUEST_METHOD']);
+  define("REQUEST_METHOD", isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null);
   define("REQUEST_AJAX", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
   define('REQUEST_JSON', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false));
-  define('REQUEST_POST', REQUEST_METHOD === 'POST');
-  define('REQUEST_GET', REQUEST_METHOD === 'GET');
-  define('REQUEST_PUT', REQUEST_METHOD === 'PUT');
-  define('REQUEST_DELETE', REQUEST_METHOD === 'DELETE');
+  define('REQUEST_POST', REQUEST_METHOD === 'POST' ? 'POST' : false);
+  define('REQUEST_GET', REQUEST_METHOD === 'GET' ? 'GET' : false);
+  define('REQUEST_PUT', REQUEST_METHOD === 'PUT' ? 'PUT' : false);
+  define('REQUEST_DELETE', REQUEST_METHOD === 'DELETE' ? 'DELETE' : false);
   define('CRLF', chr(13) . chr(10));
   /** @var $loader  */
   $loader = require PATH_CORE . 'Loader.php';

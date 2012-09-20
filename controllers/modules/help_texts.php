@@ -10,7 +10,7 @@
   use ADV\Core\JS;
   use ADV\App\Form\Form;
 
-  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  if (REQUEST_POST) {
     if ($_POST['save']) {
       try {
         DB::_insert('help_texts')->value('page', $_POST['page'])->value('element', $_POST['element'])->value('text', $_POST['text'])->value('title', $_POST['title'])->exec();

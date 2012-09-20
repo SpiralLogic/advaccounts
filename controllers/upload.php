@@ -12,7 +12,7 @@
   $order = (isset($_SESSION['order_no'])) ? $_SESSION['order_no'] : (isset($_GET['order'])) ? $_GET['order'] : false;
   if ($order) {
     $upload_handler = new UploadHandler($order, $o);
-    switch ($_SERVER['REQUEST_METHOD']) {
+    switch (REQUEST_METHOD) {
       case 'HEAD':
       case 'GET':
         $upload_handler->get();

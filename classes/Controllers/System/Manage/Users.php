@@ -7,6 +7,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+
+  namespace ADV\Controllers\System\Manage;
+
   use ADV\App\Controller\Manage;
   use ADV\App\Languages;
   use ADV\App\User;
@@ -31,8 +34,8 @@
       Page::end();
     }
     /**
-     * @param ADV\App\Form\Form $form
-     * @param View              $view
+     * @param \ADV\App\Form\Form $form
+     * @param View               $view
      *
      * @return mixed|void
      */
@@ -69,12 +72,6 @@
       return $cols;
     }
   }
-
-  new Users();
-
-
-
-
 
 /*
   use ADV\App\Users;
