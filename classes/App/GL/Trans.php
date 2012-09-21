@@ -16,8 +16,7 @@
   // $date_ is display date (non-sql)
   // $amount is in $currency currency
   // if $currency is not set, then defaults to no conversion
-  class GL_Trans
-  {
+  class GL_Trans {
     /**
      * @static
      *
@@ -193,8 +192,9 @@
      */
     public static function getSQL($from_date, $to_date, $trans_no = 0, $account = null, $filter_type = null, $amount_min = null, $amount_max = null) {
       $from = Dates::_dateToSql($from_date);
-            $to   = Dates::_dateToSql($to_date);
-      $sql = "SELECT gl_trans.*, chart_master.account_name FROM gl_trans, chart_master
+      $to   = Dates::_dateToSql($to_date);
+      $sql
+            = "SELECT type,type_no,tran_date,account, chart_master.account_name ,person_type_id,person_id,amount,memo_ FROM gl_trans, chart_master
         WHERE chart_master.account_code=gl_trans.account
         AND tran_date >= '$from'
         AND tran_date <= '$to'";
@@ -213,7 +213,7 @@
       if ($amount_max != null) {
         $sql .= " AND ABS(gl_trans.amount) <= ABS(" . DB::_quote($amount_max) . ")";
       }
-  //    $sql .= " ORDER BY tran_date, counter";
+      //    $sql .= " ORDER BY tran_date, counter";
       return $sql;
     }
     /**

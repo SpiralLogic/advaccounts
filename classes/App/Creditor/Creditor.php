@@ -492,6 +492,7 @@ JS;
              'cells'            => true, //
              'url'              => 'Creditor', ///
              'label_cell_params'=> ['rowspan'=> $o['rowspan'], 'class'=> 'nowrap label ' . $o['cell_class']], //
+             'idField'          => 'creditor_id',
              'label'            => $o['label'], //
              'name'             => 'creditor', //
              'input_cell_params'=> $o['cell_params'], //

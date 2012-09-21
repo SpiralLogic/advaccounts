@@ -5,7 +5,6 @@
   use ADV\App\Page;
   use ADV\App\Sales\Area;
   use ADV\Core\View;
-  use ADV\Core\DB\DB;
 
   /**
    * PHP version 5.4
@@ -16,6 +15,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class Areas extends \ADV\App\Controller\Manage {
+    protected $security = SA_SALESAREA;
     protected function before() {
       $this->object = new Area();
       $this->runPost();

@@ -78,6 +78,7 @@
      * @return mixed
      */
     public function get($name = null) {
+
       $name = $name ? : $this->_last;
       if (isset($this->_objects[$name])) {
         $args = func_get_args();

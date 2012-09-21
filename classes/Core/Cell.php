@@ -126,7 +126,6 @@
      * @param $value
      */
     public static function debitOrCredit($value) {
-      $value = Num::_priceFormat($value);
       if ($value >= 0) {
         Cell::amount($value);
         Cell::label("");

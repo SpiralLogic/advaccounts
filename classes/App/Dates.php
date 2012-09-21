@@ -9,28 +9,26 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App;
-  use ADV\Core\Config;
+
   use DB_Company;
-  use ADV\Core\Session;
 
   /**
 
    */
-  class Dates extends \ADV\Core\Dates
-  {
+  class Dates extends \ADV\Core\Dates {
     use \ADV\Core\Traits\StaticAccess2;
 
     public $sticky_doc_date = false;
     public $use_fiscal_year = false;
     protected $Session = null;
     protected $Company = null;
+    public $docDate;
     /**
-     * @param \ADV\Core\Session $session
-     * @param \DB_Company       $company
+     * @param \DB_Company                        $company
      *
+     * @internal param \ADV\Core\Session $session
      */
-    public function __construct(Session $session, DB_Company $company) {
-      $this->Session = $session;
+    public function __construct(DB_Company $company) {
       $this->Company = $company;
     }
     /**
@@ -42,12 +40,12 @@
      */
     public function newDocDate($date = null) {
       if (!$date) {
-        $this->Session->setGlobal('date', $date);
+        $this->docDate = $date;
       } else {
-        $date = $this->Session->getGlobal('date');
+        $date = $this->docDate;
       }
-      if (!$date || !(bool)$this->sticky_doc_date) {
-        $date = $this->Session->setGlobal('date', $this->today());
+      if (!$date || !(bool) $this->sticky_doc_date) {
+        $date = $this->docDate = $this->today();
       }
       return $date;
     }
@@ -60,7 +58,7 @@
      * @return bool
      */
     public function isDateInFiscalYear($date, $convert = false) {
-      if (!(bool)$this->userFiscalYear) {
+      if (!(bool) $this->userFiscalYear) {
         return true;
       }
       $myrow = DB_Company::i()->_get_current_fiscalyear();

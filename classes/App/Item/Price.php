@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   use ADV\Core\DB\DB;
+  use ADV\App\Item\Item;
   use ADV\App\Validation;
 
   /**
@@ -28,9 +29,9 @@
      */
     protected $_type;
     protected $_table = 'prices';
-    protected $_classname = 'Prices';
+    protected $_classname = 'Price';
     protected $_id_column = 'id';
-    public $id;
+    public $id = 0;
     public $item_code_id;
     public $stock_id;
     public $sales_type_id = 0;
@@ -41,7 +42,10 @@
      */
     protected function canProcess() {
       if (!Validation::is_num($this->item_code_id, 0)) {
-        return $this->status(false, 'Item_code_id must be a number', 'item_code_id');
+        $this->item_code_id = Item::getStockID($this->stock_id);
+        if (!$this->item_code_id) {
+          return $this->status(false, 'Item_code_id must be a number', 'item_code_id');
+        }
       }
       if (strlen($this->stock_id) > 20) {
         return $this->status(false, 'Stock_id must be not be longer than 20 characters!', 'stock_id');
@@ -53,6 +57,10 @@
         return $this->status(false, 'Price must be a number', 'price');
       }
       return true;
+    }
+    protected function defaults() {
+      parent::defaults();
+      $this->curr_abrev = Bank_Currency::for_company();
     }
     /**
      * @static
@@ -89,7 +97,8 @@
      * @return mixed
      */
     public static function getPriceBySupplier($stockid, $supplierid) {
-      $result = DB::_select()->from('purch_data')->where('stockid=', $stockid)->andWhere('creditor_id=', $supplierid)->fetch()->asClassLate('Item_Price', array(self::PURCHASE))->one();
+      $result = DB::_select()->from('purch_data')->where('stockid=', $stockid)->andWhere('creditor_id=', $supplierid)->fetch()->asClassLate('Item_Price', array(self::PURCHASE))
+        ->one();
       return $result;
     }
     /**
@@ -107,8 +116,11 @@
       if ($item_code_id == null) {
         $item_code_id = Item_Code::get_id($stock_id);
       }
-      $sql = "INSERT INTO prices (item_code_id, stock_id, sales_type_id, curr_abrev, price)
-            VALUES (" . DB::_escape($item_code_id) . ", " . DB::_escape($stock_id) . ", " . DB::_escape($sales_type_id) . ", " . DB::_escape($curr_abrev) . ", " . DB::_escape($price) . ")";
+      $sql
+        = "INSERT INTO prices (item_code_id, stock_id, sales_type_id, curr_abrev, price)
+            VALUES (" . DB::_escape($item_code_id) . ", " . DB::_escape($stock_id) . ", " . DB::_escape($sales_type_id) . ", " . DB::_escape($curr_abrev) . ", " . DB::_escape(
+        $price
+      ) . ")";
       try {
         DB::_query($sql, "an item price could not be added");
         return true;
@@ -134,21 +146,13 @@
     /**
      * @static
      *
-     * @param $price_id
-     */
-    public function delete($price_id) {
-      $sql = "DELETE FROM prices WHERE id= " . DB::_escape($price_id);
-      DB::_query($sql, "an item price could not be deleted");
-    }
-    /**
-     * @static
-     *
      * @param $stock_id
      *
      * @return null|PDOStatement
      */
-    public function getAll($stock_id) {
-      $sql = "SELECT sales_types.sales_type, prices.*
+    public static function getAll($stock_id) {
+      $sql
+        = "SELECT sales_types.sales_type, prices.*
             FROM prices, sales_types
             WHERE prices.sales_type_id = sales_types.id
             AND stock_id=" . DB::_escape($stock_id) . " ORDER BY curr_abrev, sales_type_id";
@@ -218,7 +222,8 @@
       $base_id   = DB_Company::get_base_sales_type();
       $home_curr = Bank_Currency::for_company();
       //	AND (sales_type_id = $sales_type_id	OR sales_type_id = $base_id)
-      $sql      = "SELECT price, curr_abrev, sales_type_id
+      $sql
+                = "SELECT price, curr_abrev, sales_type_id
             FROM prices
             WHERE stock_id = " . DB::_escape($stock_id) . "
                 AND (curr_abrev = " . DB::_escape($currency) . " OR curr_abrev = " . DB::_escape($home_curr) . ")";
@@ -310,7 +315,8 @@
      * @return float|int
      */
     public static function get_purchase($creditor_id, $stock_id) {
-      $sql    = "SELECT price, conversion_factor FROM purch_data
+      $sql
+              = "SELECT price, conversion_factor FROM purch_data
                 WHERE creditor_id = " . DB::_escape($creditor_id) . "
                 AND stock_id = " . DB::_escape($stock_id);
       $result = DB::_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
@@ -355,7 +361,16 @@
         $new_cost        = $material_cost + $labour_cost + $overhead_cost;
         $value_of_change = $qoh * ($new_cost - $last_cost);
         $memo_           = "Cost was " . $last_cost . " changed to " . $new_cost . " x quantity on hand of $qoh";
-        GL_Trans::add_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["adjustment_account"], $stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, (-$value_of_change));
+        GL_Trans::add_std_cost(
+          ST_COSTUPDATE,
+          $update_no,
+          $date_,
+          $stock_gl_code["adjustment_account"],
+          $stock_gl_code["dimension_id"],
+          $stock_gl_code["dimension2_id"],
+          $memo_,
+          (-$value_of_change)
+        );
         GL_Trans::add_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["inventory_account"], 0, 0, $memo_, $value_of_change);
       }
       DB_AuditTrail::add(ST_COSTUPDATE, $update_no, $date_);

@@ -4,12 +4,10 @@
   use ADV\App\Dates;
   use ADV\App\Forms;
   use ADV\App\Reporting;
-  use ADV\Core\DB\DB;
   use ADV\App\UI;
   use ADV\App\Item\Item;
   use ADV\App\Creditor\Creditor;
   use ADV\Core\Table;
-  use ADV\Core\Ajax;
   use ADV\Core\JS;
 
   /**
@@ -92,7 +90,7 @@
           if (empty($quicksearch)) {
             continue;
           }
-          $quicksearch = $this->DB->_quote("%" . $quicksearch . "%");
+          $quicksearch = static::$DB->quote("%" . $quicksearch . "%");
           $sql
             .= " AND (supplier.name LIKE $quicksearch OR porder.order_no LIKE $quicksearch
   		 OR porder.reference LIKE $quicksearch
@@ -101,17 +99,17 @@
         }
       } else {
         if ($this->order_number) {
-          $sql .= " AND (porder.order_no LIKE " . $this->DB->_quote('%' . $this->order_number . '%');
-          $sql .= " OR porder.reference LIKE " . $this->DB->_quote('%' . $this->order_number . '%') . ') ';
+          $sql .= " AND (porder.order_no LIKE " . static::$DB->quote('%' . $this->order_number . '%');
+          $sql .= " OR porder.reference LIKE " . static::$DB->quote('%' . $this->order_number . '%') . ') ';
         }
         if ($this->creditor_id > -1) {
-          $sql .= " AND porder.creditor_id = " . $this->DB->_quote($this->creditor_id);
+          $sql .= " AND porder.creditor_id = " . static::$DB->quote($this->creditor_id);
         }
         $stock_location = $this->Input->post('StockLocation', Input::STRING);
         $location       = $this->Input->get(LOC_NOT_FAXED_YET);
         if ($stock_location || $location) {
           $sql .= " AND porder.into_stock_location = ";
-          $sql .= ($location == 1) ? "'" . LOC_NOT_FAXED_YET . "'" : $this->DB->_quote($stock_location);
+          $sql .= ($location == 1) ? "'" . LOC_NOT_FAXED_YET . "'" : static::$DB->quote($stock_location);
         } else {
           $data_after  = Dates::_dateToSql($_POST['OrdersAfterDate']);
           $date_before = Dates::_dateToSql($_POST['OrdersToDate']);
@@ -120,7 +118,7 @@
         }
         $selected_stock_item = $this->Input->post('SelectStockFromList');
         if ($selected_stock_item) {
-          $sql .= " AND line.item_code=" . $this->DB->_quote($selected_stock_item);
+          $sql .= " AND line.item_code=" . static::$DB->quote($selected_stock_item);
         }
       } //end not order number selected
       $sql .= " GROUP BY porder.order_no";

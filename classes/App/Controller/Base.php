@@ -34,6 +34,7 @@
     /** @var Input */
     protected $Input;
     protected $action;
+    protected $actionID;
     public $help_context;
     /**
 
@@ -73,13 +74,20 @@
      * @return int|mixed
      */
     protected function getActionId($prefix) {
-      if (strpos($this->action, $prefix) === 0) {
-        $result = str_replace($prefix, '', $this->action);
-        if (strlen($result)) {
-          return $result;
+      if (isset($this->actionID)) {
+        return $this->actionID;
+      }
+      $prefix = (array) $prefix;
+      foreach ($prefix as $action) {
+        if (strpos($this->action, $action) === 0) {
+          $result = str_replace($action, '', $this->action);
+          if (strlen($result)) {
+            $this->action   = $action;
+            $this->actionID = $result;
+            return $result;
+          }
         }
       }
-
       return -1;
     }
     protected function runAction() {

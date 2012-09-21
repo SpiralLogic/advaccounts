@@ -1,5 +1,6 @@
 <?php
   use ADV\App\Dimensions;
+  use ADV\Core\Cell;
 
   /**
    * PHP version 5.4
@@ -14,13 +15,20 @@
     echo "<p>" . _("The script must be called with a valid transaction type and transaction number to review the general ledger postings for.") . "</p>";
     exit;
   }
-  $sql    = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
+  $sql
+    = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
 	LEFT JOIN chart_master as cm ON gl.account = cm.account_code
-	LEFT JOIN refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)" . " WHERE gl.type= " . DB::_escape($_GET['type_id']) . " AND gl.type_no = " . DB::_escape($_GET['trans_no']) . " ORDER BY counter";
+	LEFT JOIN refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)" . " WHERE gl.type= " . DB::_quote($_GET['type_id']) . " AND gl.type_no = " . DB::_quote(
+    $_GET['trans_no']
+  ) . " ORDER BY counter";
+  var_dump($sql);
+
   $result = DB::_query($sql, "could not get transactions");
   //alert("sql = ".$sql);
   if (DB::_numRows($result) == 0) {
-    echo "<p><div class='center'>" . _("No general ledger transactions have been created for") . " " . SysTypes::$names[$_GET['type_id']] . " " . _("number") . " " . $_GET['trans_no'] . "</div></p><br><br>";
+    echo "<p><div class='center'>" . _("No general ledger transactions have been created for") . " " . SysTypes::$names[$_GET['type_id']] . " " . _(
+      "number"
+    ) . " " . $_GET['trans_no'] . "</div></p><br><br>";
     Page::end(true);
     exit;
   }
@@ -56,12 +64,15 @@
       );
     }
   }
-  $k             = 0; //row colour counter
+  $k = 0; //row colour counter
   $heading_shown = false;
+  $total = 0;
   while ($myrow = DB::_fetch($result)) {
     if ($myrow['amount'] == 0) {
       continue;
     }
+    $total += $myrow['amount'];
+
     if (!$heading_shown) {
       display_gl_heading($myrow);
       Table::start('padded grid width95');

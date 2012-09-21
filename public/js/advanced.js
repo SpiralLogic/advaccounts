@@ -114,8 +114,8 @@ Adv.extend({
                                return undefined;
                              }),
              Status:      {
-               show:       function (status) {
-                 var text = '', type, closeTime = null;
+               show: function (status) {
+                 var text = '', type;
                  if (status === undefined) {
                    status = {status: null, message: ''};
                  }
@@ -158,14 +158,8 @@ Adv.extend({
                  if (text) {
                    Adv.msgbox.html(text);
                  }
-                 window.clearTimeout(closeTime);
-                 Adv.msgbox.stop(true, true).animate({ height: 'show', opacity: 1 }, 1000, 'easeOutExpo', function () {
-                   closeTime = setTimeout(Adv.Status.hideStatus, 15000);
-                 });
+                 Adv.msgbox.stop(true, true).clearQueue().animate({ height: 'show', opacity: 1}, 1000, 'easeOutExpo').delay(15000).animate({ height: 'hide', opacity: 0 }, 2000, 'easeOutExpo');
                  Adv.Forms.setFocus(Adv.msgbox[0]);
-               },
-               hideStatus: function () {
-                 Adv.msgbox.stop(true, true).animate({ height: 'hide', opacity: 0 }, 2000, 'easeOutExpo');
                }
 
              },
@@ -406,57 +400,77 @@ Adv.extend({
                  setFormDefault:  function (id, value, disabled) {
                    this.setFormValue(id, value, disabled, true);
                  },
-                 autocomplete:    function (id, type, callback) {
-                   var $this, els = Adv.Forms.findInputEl(id), blank = {id: 0, value: ''};
+                 autocomplete:    function (searchField, type, callback) {
+                   var els = Adv.Forms.findInputEl(searchField)//
+                     , $this = $(els) //
+                     , blank = {id: 0, value: ''};
                    if (els[0].type === 'hidden') {
                      return;
                    }
-                   Adv.o.autocomplete[id] = $this = $(els).autocomplete({
-                                                                          minLength: 2,
-                                                                          delay:     400,
-                                                                          autoFocus: true,
-                                                                          source:    function (request, response) {
-                                                                            var $this = Adv.o.autocomplete[id];
-                                                                            $this.off('change.autocomplete');
-                                                                            $this.data('default', null);
-                                                                            if ($this.data().autocomplete.previous == $this.val()) {
-                                                                              return false;
-                                                                            }
-                                                                            request['type'] = type;
-                                                                            Adv.lastXhr = $.getJSON('/search', request, function (data) {
-                                                                              if (!$this.data('active')) {
-                                                                                data = blank;
-                                                                                return false;
-                                                                              }
-                                                                              $this.data('default', data[0]);
-                                                                              response(data);
-                                                                            });
-                                                                          },
-                                                                          select:    function (event, ui) {
-                                                                            $this.data('default', null);
-                                                                            if (callback(ui.item, event, this) === false) {
-                                                                              return false;
-                                                                            }
-                                                                          },
-                                                                          focus:     function () {return false;}}).blur(function () {$(this).data('active', false); }).bind('autocompleteclose',function (event) {
-                                                                                                                                                                              if (this.value.length > 1 && $this.data().autocomplete.selectedItem === null && $this.data()['default'] !== null) {
-                                                                                                                                                                                if (callback($this.data()['default'], event, this) !== false) {
-                                                                                                                                                                                  $this.val($this.data()['default'].label);
-                                                                                                                                                                                }
-                                                                                                                                                                              }
-                                                                                                                                                                              $this.data('default', null)
-                                                                                                                                                                            }).focus(function () {
-                                                                                                                                                                                       $(this).data('active', true).on('change.autocomplete', function () {
-                                                                                                                                                                                         $(this).autocomplete('search', $this.val());
-                                                                                                                                                                                       })
-                                                                                                                                                                                     }).on('paste',function () {
-                                                                                                                                                                                             var $this = $(this);
-                                                                                                                                                                                             window.setTimeout(function () {$this.autocomplete('search', $this.val())}, 1)
-                                                                                                                                                                                           }).on('change',function (event) {
-                                                                                                                                                                                                   if (this.value === '') {
-                                                                                                                                                                                                     callback(blank, event, this);
-                                                                                                                                                                                                   }
-                                                                                                                                                                                                 }).css({'z-index': '2'});
+                   if (!$.isFunction(callback)) {
+                     var idField = Adv.Forms.findInputEl(callback);
+                     callback = function (data) {
+                       if (!idField.length) {
+                         idField.val(data.id);
+                       }
+                       $this.val(data.value);
+                       JsHttpRequest.request(els[0])
+                     }
+                   }
+                   Adv.o.autocomplete[searchField] = $this;
+                   $this.autocomplete({
+                                        minLength: 2,
+                                        delay:     400,
+                                        autoFocus: true,
+                                        source:    function (request, response) {
+                                          var $this = Adv.o.autocomplete[searchField];
+                                          $this.off('change.autocomplete');
+                                          $this.data('default', null);
+                                          if ($this.data().autocomplete.previous == $this.val()) {
+                                            return false;
+                                          }
+                                          request['type'] = type;
+                                          Adv.lastXhr = $.getJSON('/search', request, function (data) {
+                                            if (!$this.data('active')) {
+                                              data = blank;
+                                              return false;
+                                            }
+                                            $this.data('default', data[0]);
+                                            response(data);
+                                          });
+                                        },
+                                        select:    function (event, ui) {
+                                          $this.data('default', null);
+                                          if (callback(ui.item, event, this) === false) {
+                                            return false;
+                                          }
+                                        },
+                                        focus:     function () {return false;}});
+                   $this.on({
+                              blur:              function () {$(this).data('active', false); }, //
+                              autocompleteclose: function (event) {
+                                if (this.value.length > 1 && $this.data().autocomplete.selectedItem === null && $this.data()['default'] !== null) {
+                                  if (callback($this.data()['default'], event, this) !== false) {
+                                    $this.val($this.data()['default'].label);
+                                  }
+                                }
+                                $this.data('default', null)
+                              }, //
+                              focus:             function () {
+                                $(this).data('active', true).on('change.autocomplete', function () {
+                                  $(this).autocomplete('search', $this.val());
+                                })
+                              }, //
+                              paste:             function () {
+                                var $this = $(this);
+                                window.setTimeout(function () {$this.autocomplete('search', $this.val())}, 1)
+                              }, //
+                              change:            function (event) {
+                                if (this.value === '') {
+                                  callback(blank, event, this);
+                                }
+                              }});
+                   $this.css({'z-index': '2'});
                    if (document.activeElement === $this[0]) {
                      $this.data('active', true);
                    }
@@ -678,13 +692,13 @@ Adv.extend({
                      if ($error.is('.warn_msg')) {
                        type = 'warning';
                      }
-                     field = $(Adv.Forms.findInputEl(field));
-                     if (type === undefined || !field.is('input:not(input[type=hidden]),textarea,select')) {
-                       Adv.Status.show({html: error});
-                       return;
-                     }
-                     error = $error.text();
                    }
+                   field = $(Adv.Forms.findInputEl(field));
+                   if (type === undefined || !field.is('input:not(input[type=hidden]),textarea,select')) {
+                     Adv.Status.show({html: error});
+                     return;
+                   }
+                   error = ($error) ? $error.text() : error;
                    tooltip = field.addClass('error').tooltip({title: function () {return error;}, trigger: 'manual', placement: 'right', class: type}).tooltip('show');
                    tooltiptimeout = setTimeout(function () {
                      if (tooltip) {

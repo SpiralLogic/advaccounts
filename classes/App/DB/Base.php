@@ -136,7 +136,7 @@
       }
       $this->defaults();
 
-      return $this->status(true, 'Deleted ' . $this->_classname . '!');
+      return $this->status(true, $this->_classname . ' deleted!');
     }
     public function getIDColumn() {
       return $this->_id_column;
@@ -186,12 +186,12 @@
       try {
         $this->id = static::$DB->insert($this->_table)->values((array) $this)->exec();
       } catch (DBInsertException $e) {
-        return $this->status(false, 'Could not add to databse: ' . $this->_classname);
+        return $this->status(false, 'Could not add ' . $this->_classname . 'to database');
       } catch (DBDuplicateException $e) {
-        return $this->status(false, $e->getMessage() . '. The entered information is a duplicate. Please modify the existing record or use different values.');
+        return $this->status(false, 'You have tried to enter a duplicate ' . $this->_classname . '. Please modify the existing record or use different values.');
       }
 
-      return $this->status(true, 'Added to database: ' . $this->_classname);
+      return $this->status(true, 'Added ' . $this->_classname . ' to database');
     }
   }
 

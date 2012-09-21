@@ -1,5 +1,8 @@
 <?php
   use ADV\App\Form\Form;
+  use ADV\App\Display;
+  use ADV\App\UI;
+  use ADV\App\Validation;
   use ADV\Core\View;
 
   /**
@@ -11,10 +14,31 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class SalesPrice extends \ADV\App\Controller\Manage {
-    protected $stock_id = 5458;
+    protected $stock_id;
+    protected $security = SA_SALESPRICE;
+    protected $frame = false;
     protected function before() {
-      $this->object = new Item_Price();
+      $this->frame    = $this->Input->request('frame');
+      $this->stock_id = $this->Input->_getPostGlobal('stock_id');
+      $this->object   = new Item_Price();
       $this->runPost();
+      $this->object->stock_id = $this->stock_id;
+    }
+    protected function beforeTable() {
+      if (!$this->frame) {
+        echo "<div class='bold center pad10 margin10 font15'>" . _("Item:") . '</span>';
+        UI::search(
+          'stock_id',
+          [
+          'url'              => 'Item',
+          'idField'          => 'stock_id',
+          'name'             => 'stock_id', //
+          'focus'            => true,
+          ]
+        );
+        $this->Session->setGlobal('stock_id', $this->stock_id);
+        echo "</div>";
+      }
     }
     /**
      * @param \ADV\App\Form\Form $form
@@ -23,10 +47,12 @@
      * @return mixed
      */
     protected function formContents(Form $form, View $view) {
-      $form->hidden('selected_id');
+      $view['title'] = 'Item Selling Prices';
+      $form->hidden('id');
+      $form->hidden('item_code_id');
       $form->hidden('stock_id');
-      $form->custom(GL_Currency::select('curr_abrev'))->label('Currency:');
       $form->custom(Sales_Type::select('sales_type_id'))->label("Sales Type:");
+      $form->custom(GL_Currency::select('curr_abrev'))->label('Currency:');
       if (!isset($_POST['price'])) {
         $_POST['price'] = Num::_priceFormat(Item_Price::get_kit($this->Input->post('stock_id'), $this->Input->post('curr_abrev'), $this->Input->post('sales_type_id')));
       }
@@ -34,43 +60,41 @@
       $form->amount('price')->label(_("Price:"))->append(_('per') . ' ' . $kit["units"]);
     }
     protected function generateTable() {
+      Display::div_start('table');
       if ($this->stock_id) {
         parent::generateTable();
       }
+      if ($this->Input->post('_control') == 'stock_id') {
+        $this->Ajax->activate('table');
+      }
+      Display::div_end();
     }
     protected function generateTableCols() {
-      return ['one'];
+      $cols = [
+        'Type',
+        ['type'=> 'skip'],
+        ['type'=> 'skip'],
+        'stock_id',
+        ['type'=> 'skip'],
+        'Currency',
+        'Price',
+        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
+        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
+
+      ];
+      return $cols;
     }
     protected function getTableRows($pagername) {
-      return Item_Price::get();
+      return Item_Price::getAll($this->stock_id)->fetchAll(PDO::FETCH_ASSOC);
+    }
+    protected function runValidation() {
+      Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
+      Validation::check(Validation::SALES_TYPES, _("There are no sales types in the system. Please set up sales types befor entering pricing."));
     }
   }
 
   new SalesPrice();
 /*
-  Page::start(_($help_context = "Inventory Item Sales prices"), SA_SALESPRICE, Input::_request('frame'));
-  Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
-  Validation::check(Validation::SALES_TYPES, _("There are no sales types in the system. Please set up sales types befor entering pricing."));
-  list($Mode, $selected_id) = Page::simple_mode(true);
-  $input_error = 0;
-  if (isset($_GET['stock_id'])) {
-    $_POST['stock_id'] = $_GET['stock_id'];
-  }
-  if (isset($_GET['Item'])) {
-    $_POST['stock_id'] = $_GET['Item'];
-  }
-  if (!isset($_POST['curr_abrev'])) {
-    $_POST['curr_abrev'] = Bank_Currency::for_company();
-  }
-  Forms::start(false, $_SERVER['DOCUMENT_URI'] . (Input::_request('frame') ? '?frame=1' : ''));
-  if (!Input::_post('stock_id')) {
-    $_POST['stock_id'] = Session::_getGlobal('stock_id');
-  }
-  if (!Input::_request('frame')) {
-    echo "<div class='bold center pad10 font15'><span class='pad10'>" . _("Item:") . '</span>';
-    echo Sales_UI::items('stock_id', $_POST['stock_id'], false, true, '', array('submitonselect' => true, 'size' => 40));
-    echo "<br><br><hr></div>";
-  }
   Session::_setGlobal('stock_id', $_POST['stock_id']);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
     if (!Validation::post_num('price', 0)) {

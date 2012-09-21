@@ -732,26 +732,19 @@ JS;
       UI::search(
         'customer',
         array(
-             'url'        => 'Debtor',
-             'name'       => 'customer',
-             'focus'      => $focus,
-             'class'      => '',
-             'value'      => $value,
-             'placeholder'=> $o['placeholder']
+             'url'           => 'Debtor',
+             'name'          => 'customer',
+             'idField'       => 'debtor_id',
+             'focus'         => $focus,
+             'class'         => '',
+             'value'         => $value,
+             'placeholder'   => $o['placeholder']
         )
       );
       echo "</td>";
       if ($o['row']) {
         echo "\n</tr>\n";
       }
-      JS::_beforeload(
-        "var Customer = function(data) {
-            var id = document.getElementById('debtor_id');
-            id.value= data.id;
-            var customer = document.getElementById('customer');
-            customer.value=data.value;
-            JsHttpRequest.request(customer)}"
-      );
     }
     /**
      * @static

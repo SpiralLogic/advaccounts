@@ -39,9 +39,10 @@
     protected $validators = [];
     protected $uniqueid;
     protected $current;
-    protected $options = [
-      self::NO_VALUES=> false,
-    ];
+    protected $options
+      = [
+        self::NO_VALUES=> false,
+      ];
     protected $currentgroup;
     public $useDefaults = false;
     /**
@@ -135,11 +136,12 @@
      *
      * @internal param null $value
      * @internal param bool $echo
-     * @return string
+     * @return Field
      */
     public function hidden($name) {
       $field         = $this->addField('input', $name);
       $field['type'] = 'hidden';
+      return $field;
     }
     /**
      * @param       $name

@@ -107,43 +107,12 @@
           return new \ADV\Core\Ajax();
         }
       )->get();
-      ob_start([$this, 'flush_handler'], 0);
-      $this->Session = $dic->set(
-        'Session',
-        function ($c) {
-          $session              = new \ADV\Core\Session();
-          $config               = $c->get('Config');
-          $l                    = \ADV\Core\Arr::searchValue($config->get('default.language'), $config->get('languages.installed'), 'code');
-          $name                 = $l['name'];
-          $code                 = $l['code'];
-          $encoding             = $l['encoding'];
-          $dir                  = isset($l['rtl']) ? 'rtl' : 'ltr';
-          $_SESSION['language'] = new \ADV\Core\Language($name, $code, $encoding, $dir);
-
-          return $session;
-        }
-      )->get();
-      $this->JS      = $dic->set(
-        'JS',
-        function ($c) {
-          $js             = new \ADV\Core\JS();
-          $config         = $c->get('Config');
-          $js->apikey     = $config->get('assets.maps_api_key');
-          $js->openWindow = $config->get('ui_windows_popups');
-          return $js;
-        }
-      )->get();
-
-      $this->User = $dic->set(
-        'User',
+      $dic->set(
+        'Input',
         function () {
-          if (isset($_SESSION['User'])) {
-            return $_SESSION['User'];
-          }
-          $_SESSION['User'] = new \ADV\App\User();
-          return $_SESSION['User'];
+          return new \ADV\Core\Input\Input();
         }
-      )->get();
+      );
       $dic->set(
         'Num',
         function () {
@@ -160,7 +129,7 @@
       $dic->set(
         'DB_Company',
         function () {
-          return new DB_Company();
+          return new \DB_Company();
         }
       );
       $dic->set(
@@ -168,17 +137,54 @@
         function ($c) {
           $config  = $c->get('Config');
           $user    = $c->get('User');
-          $session = $c->get('Session');
           $company = $c->get('DB_Company');
-          $dates   = new \ADV\App\Dates($session, $company);
+          $dates   = new \ADV\App\Dates($company);
           $sep     = is_int($user->prefs->date_sep) ? $user->prefs->date_sep : $config->get('date.ui_separator');
           $dates->setSep($sep);
-          $dates->format = $user->prefs->date_format;
+          $dates->format          = $user->prefs->date_format;
           $dates->use_fiscal_year = $config->get('use_fiscalyear');
           $dates->sticky_doc_date = $user->prefs->sticky_doc_date;
           return $dates;
         }
+      );
+      ob_start([$this, 'flush_handler'], 0);
+
+      $this->JS = $dic->set(
+        'JS',
+        function ($c) {
+          $js             = new \ADV\Core\JS();
+          $config         = $c->get('Config');
+          $js->apikey     = $config->get('assets.maps_api_key');
+          $js->openWindow = $config->get('ui_windows_popups');
+          return $js;
+        }
       )->get();
+      $dic->set(
+        'User',
+        function () {
+          if (isset($_SESSION['User'])) {
+            return $_SESSION['User'];
+          }
+          $_SESSION['User'] = new \ADV\App\User();
+          return $_SESSION['User'];
+        }
+      );
+      $this->Session = $dic->set(
+        'Session',
+        function ($c) {
+          $session              = new \ADV\Core\Session();
+          $config               = $c->get('Config');
+          $l                    = \ADV\Core\Arr::searchValue($config->get('default.language'), $config->get('languages.installed'), 'code');
+          $name                 = $l['name'];
+          $code                 = $l['code'];
+          $encoding             = $l['encoding'];
+          $dir                  = isset($l['rtl']) ? 'rtl' : 'ltr';
+          $_SESSION['language'] = new \ADV\Core\Language($name, $code, $encoding, $dir);
+
+          return $session;
+        }
+      )->get();
+      $this->User    = $dic->get('User');
 
       $this->JS->footerFile($this->Config->get('assets.footer'));
       $this->menu = new Menu(_("Main Menu"));

@@ -452,7 +452,7 @@
      * Helper for display inactive control cells
 
      */
-    protected function  inactiveControlCell(&$row) {
+    protected function inactiveControlCell(&$row) {
       if ($this->inactive_ctrl) {
         //	return inactiveControlCell($row[$this->inactive_ctrl['key']],
         // $row['inactive'], $this->inactive_ctrl['table'],
@@ -897,8 +897,10 @@
     }
   }
 
-  DB_Pager::$Input = Input::i();
-  DB_Pager::$JS    = JS::i();
-  DB_Pager::$dates = Dates::i();
-  DB_Pager::$User  = User::i();
-  DB_Pager::$DB    = DB::i();
+  $dic = \ADV\Core\DIC::getInstance();
+
+  DB_Pager::$Input = $dic->get('Input');
+  DB_Pager::$JS    = $dic->get('JS');
+  DB_Pager::$dates = $dic->get('Dates');
+  DB_Pager::$User  = $dic->get('User');
+  DB_Pager::$DB    = $dic->get('DB');
