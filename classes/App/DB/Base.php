@@ -61,7 +61,7 @@
         $this->$_id_column = $id;
         $this->read($id, $extra);
 
-        return $this->status(true, $this->_classname . " details loaded from DB!");
+        return $this->status(Status::INFO, $this->_classname . " details loaded from DB!");
       } elseif (is_array($id)) {
         if (isset($id['id']) && !isset($id[$_id_column])) {
           $id[$_id_column] = $id['id'];
@@ -73,7 +73,7 @@
         }
         $this->setFromArray($id);
 
-        return $this->status(true, $this->_classname . " details constructed!");
+        return $this->status(Status::INFO, $this->_classname . " details constructed!");
       }
 
       return $this->init();
@@ -153,7 +153,7 @@
     protected function init() {
       $this->defaults();
 
-      return $this->status(Status::SUCCESS, 'Now working with new ' . $this->_classname);
+      return $this->status(Status::INFO, 'Now working with new ' . $this->_classname);
     }
     /***
      * @param int   $id    Id of row to read from database
@@ -177,7 +177,7 @@
         return $this->status(false, 'Could not read ' . $this->_classname, (string) $id);
       }
 
-      return $this->status(true, 'Successfully read ' . $this->_classname, $id);
+      return $this->status(Status::INFO, 'Successfully read ' . $this->_classname, $id);
     }
     /**
      * @return int|bool Id assigned to new database row or false if entry failed

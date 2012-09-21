@@ -19,7 +19,7 @@
     protected $frame = false;
     protected function before() {
       $this->frame    = $this->Input->request('frame');
-      $this->stock_id = $this->Input->_getPostGlobal('stock_id');
+      $this->stock_id = $this->Input->getPostGlobal('stock_id');
       $this->object   = new Item_Price();
       $this->runPost();
       $this->object->stock_id = $this->stock_id;
@@ -57,7 +57,7 @@
         $_POST['price'] = Num::_priceFormat(Item_Price::get_kit($this->Input->post('stock_id'), $this->Input->post('curr_abrev'), $this->Input->post('sales_type_id')));
       }
       $kit = Item_Code::get_defaults($_POST['stock_id']);
-      $form->amount('price')->label(_("Price:"))->append(_('per') . ' ' . $kit["units"]);
+      $form->amount('price')->label(_("Price:"))->append(_('per') . ' ' . $kit["units"])->focus();
     }
     protected function generateTable() {
       Display::div_start('table');
