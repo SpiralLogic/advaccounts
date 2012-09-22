@@ -1,5 +1,20 @@
 <?php
+  namespace ADV\Controllers\Sales;
+
+  use GL_Account;
   use ADV\App\Debtor\Debtor;
+  use DB_Company;
+  use GL_ExchangeRate;
+  use Debtor_Branch;
+  use ADV\Core\Num;
+  use ADV\App\Page;
+  use GL_UI;
+  use ADV\Core\Event;
+  use Debtor_Payment;
+  use Bank_Currency;
+  use Bank_Account;
+  use GL_Allocation;
+  use Sales_Branch;
   use ADV\App\User;
   use ADV\App\Ref;
   use ADV\App\Display;
@@ -17,7 +32,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class DebtorPayment extends \ADV\App\Controller\Base {
+  class Payment extends \ADV\App\Controller\Base {
     public $date_banked;
     public $debtor_id;
     protected function before() {
@@ -32,7 +47,7 @@
       $this->JS->footerFile('/js/payalloc.js');
       $this->debtor_id = &$this->Input->postGetGlobal('debtor_id');
       if (Forms::isListUpdated('branch_id') || !$_POST['debtor_id']) {
-        $br = Sales_Branch::get($this->Input->post('branch_id'));
+        $br              = Sales_Branch::get($this->Input->post('branch_id'));
         $this->debtor_id = $br['debtor_id'];
         $this->Ajax->activate('debtor_id');
       }
@@ -105,10 +120,10 @@
       $_SESSION['alloc']->write();
       Event::success(_("The customer payment has been successfully entered."));
       Display::submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no . "-" . ST_CUSTPAYMENT, 'prtopt');
-      Display::link_no_params("/sales/inquiry/customer_inquiry.php", _("Show Invoices"));
+      Display::link_no_params("/sales/search/transactions", _("Show Invoices"));
       Display::note(GL_UI::view(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
       //	Display::link_params( "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
-      Display::link_no_params("/sales/customer_payments.php", _("Enter Another &Customer Payment"));
+      Display::link_no_params("/sales/payment", _("Enter Another &Customer Payment"));
       $this->Ajax->activate('_page_body');
       Page::footer_exit();
       return true;
@@ -256,4 +271,3 @@
     }
   }
 
-  new DebtorPayment();

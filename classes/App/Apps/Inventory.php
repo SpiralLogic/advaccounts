@@ -27,7 +27,7 @@
       $module->addRightFunction(_("Inventory &Reports"), "reporting/reports_main?Class=2", SA_ITEMSTRANSVIEW);
       $module = $this->add_module(_("Maintenance"));
       //  $module->addLeftFunction(_("&Items"), "/inventory/manage/items?", SA_ITEM);
-      $module->addLeftFunction(_("&Items"), "items/quickitems?", SA_ITEM);
+      $module->addLeftFunction(_("&Items"), "items/manage/items?", SA_ITEM);
       $module->addLeftFunction(_("&Foreign Item Codes"), "/inventory/manage/item_codes?", SA_FORITEMCODE);
       $module->addLeftFunction(_("Sales &Kits"), "/inventory/manage/sales_kits?", SA_SALESKIT);
       $module->addLeftFunction(_("Item &Categories"), "/items/manage/categories?", SA_ITEMCATEGORY);
@@ -37,7 +37,7 @@
       $module->addRightFunction(_("&Reorder Levels"), "/inventory/reorder_level?", SA_REORDER);
       $module->addRightFunction(_("&Barcodes"), "/inventory/barcodes?", SA_INVENTORYLOCATION);
       $module = $this->add_module(_("Pricing and Costs"));
-      $module->addLeftFunction(_("Sales &Pricing"), "/inventory/prices?", SA_SALESPRICE);
+      $module->addLeftFunction(_("Sales &Pricing"), "/items/manage/prices?", SA_SALESPRICE);
       $module->addLeftFunction(_("Purchasing &Pricing"), "/inventory/purchasing_data?", SA_PURCHASEPRICING);
       $module->addRightFunction(_("Standard &Costs"), "/inventory/cost_update?", SA_STANDARDCOST);
     }

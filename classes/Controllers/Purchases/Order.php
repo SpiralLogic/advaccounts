@@ -7,7 +7,17 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\Controllers\Purchases;
+
   use ADV\App\Item\Item;
+  use ADV\Core\Num;
+  use Sales_Order;
+  use GL_UI;
+  use ADV\Core\View;
+  use ADV\App\Page;
+  use Purch_Order;
+  use ADV\Core\Event;
+  use Item_Line;
   use ADV\App\Form\Form;
   use ADV\App\Display;
   use ADV\App\Forms;
@@ -18,7 +28,6 @@
   use ADV\App\Reporting;
   use ADV\App\Creditor\Creditor;
   use ADV\App\UI;
-  use ADV\Core\Ajax;
   use ADV\Core\Table;
   use ADV\Core\JS;
   use ADV\Core\DB\DB;
@@ -27,9 +36,9 @@
   /**
 
    */
-  class PurchaseOrder extends \ADV\App\Controller\Base {
+  class Order extends \ADV\App\Controller\Base {
     protected $iframe = '';
-    /** @var Purch_Order */
+    /** @var \Purch_Order */
     protected $order = null;
     protected $creditor_id;
     protected function before() {
@@ -57,7 +66,7 @@
         $this->cancelItem();
       }
       $this->iframe = "<div class='center'><iframe src='" . e(
-        '/purchases/inquiry/po_search_completed.php?' . LOC_NOT_FAXED_YET . '=1&frame=1'
+        '/purchases/search/completed?' . LOC_NOT_FAXED_YET . '=1&frame=1'
       ) . "' class='width70' style='height:300px' ></iframe></div>";
       if (Input::_get(Orders::MODIFY_ORDER)) {
         $this->order = $this->createOrder($_GET[Orders::MODIFY_ORDER]);
@@ -121,7 +130,7 @@
         }
         Orders::session_delete($this->order->order_id);
         Event::notice(_("This purchase order has been cancelled."));
-        Display::link_params("/purchases/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
+        Display::link_params("/purchases/order", _("Enter a new purchase order"), "NewOrder=Yes");
         Page::footer_exit();
       }
     }
@@ -243,12 +252,12 @@
     protected function pageComplete($order_no) {
       Page::start(_($help_context = "Purchase Order Entry"), SA_PURCHASEORDER);
       $trans_type = ST_PURCHORDER;
-      $new_trans  = "/purchases/po_entry_items.php?" . Orders::NEW_ORDER;
+      $new_trans  = "/purchases/order?" . Orders::NEW_ORDER;
       $view       = new View('orders/complete');
       $buttons[]  = ['label'=> _("View this order"), 'href'=> GL_UI::viewTrans($trans_type, $order_no, '', false, '', '', true)];
       $href       = Reporting::print_doc_link($order_no, '', true, $trans_type, false, '', '', 0, 0, true);
       $buttons[]  = ['target'=> '_new', 'label'=> _("Print This Order"), 'href'=> $href];
-      $edit_trans = ROOT_URL . "purchases/po_entry_items.php?ModifyOrder=$order_no";
+      $edit_trans = ROOT_URL . "purchases/order?ModifyOrder=$order_no";
       $buttons[]  = ['label'=> _("Edit This Order"), 'href'=> $edit_trans];
       $view->set('emailtrans', Reporting::emailDialogue($this->creditor_id, ST_PURCHORDER, $order_no));
       $buttons[] = ['label'=> 'Receive this purchase order', 'accesskey'=> 'R', 'href'=> "/purchases/po_receive_items.php?PONumber=$order_no"];
@@ -398,4 +407,3 @@
     }
   }
 
-  new PurchaseOrder();

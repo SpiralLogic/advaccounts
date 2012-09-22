@@ -1,8 +1,16 @@
 <?php
-  use ADV\Core\JS;
+  namespace ADV\Controllers\Purchases\Search;
+
   use ADV\Core\DB\DB;
+  use ADV\Core\Num;
+  use GL_UI;
+  use ADV\App\SysTypes;
+  use DB_Pager;
+  use ADV\App\Dates;
+  use Purch_Allocation;
+  use ADV\App\Forms;
+  use ADV\App\Page;
   use ADV\App\Creditor\Creditor;
-  use ADV\Core\Input\Input;
   use ADV\Core\Table;
 
   /**
@@ -13,7 +21,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class AllocationInquiry extends \ADV\App\Controller\Base {
+  class Allocations extends \ADV\App\Controller\Base {
     protected function before() {
       $this->JS->openWindow(950, 500);
       if (isset($_GET['creditor_id']) || isset($_GET['id'])) {
@@ -48,6 +56,7 @@
       }
     }
     protected function index() {
+
       Page::start(_($help_context = "Supplier Allocation Inquiry"), SA_SUPPLIERALLOC);
       Forms::start(false, '', 'invoiceForm');
       Table::start('noborder');
@@ -72,7 +81,8 @@
       $date_after = Dates::_dateToSql($_POST['TransAfterDate']);
       $date_to    = Dates::_dateToSql($_POST['TransToDate']);
       // Sherifoz 22.06.03 Also get the description
-      $sql = "SELECT
+      $sql
+        = "SELECT
             trans.type,
             trans.trans_no,
             trans.reference,
@@ -183,7 +193,8 @@
      * @return mixed
      */
     public function formatBalance($row) {
-      $value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) ? -$row["TotalAmount"] - $row["Allocated"] : $row["TotalAmount"] - $row["Allocated"];
+      $value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) ? -$row["TotalAmount"] - $row["Allocated"] :
+        $row["TotalAmount"] - $row["Allocated"];
       return $value;
     }
     /**
@@ -215,4 +226,3 @@
     }
   }
 
-  new AllocationInquiry();

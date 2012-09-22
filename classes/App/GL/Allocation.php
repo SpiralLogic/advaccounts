@@ -1,5 +1,21 @@
 <?php
   use ADV\Core\Cell;
+  use ADV\Core\JS;
+  use ADV\App\Validation;
+  use ADV\App\Forms;
+  use ADV\App\Bank\Bank;
+  use ADV\Core\Input\Input;
+  use ADV\Core\Num;
+  use ADV\App\SysTypes;
+  use ADV\Core\Table;
+  use ADV\App\Display;
+  use ADV\Core\DB\DB;
+  use ADV\App\Tax\Tax;
+  use ADV\Core\Config;
+  use ADV\App\Dates;
+  use ADV\Core\Event;
+  use ADV\App\User;
+  use ADV\App\Debtor\Debtor;
 
   /**
    * PHP version 5.4
@@ -427,6 +443,7 @@ above logic will be overwritten with the prev alloc detail below */
       }
     }
   }
+
   /**
 
    */

@@ -35,13 +35,15 @@
     }
     protected function beforeTable() {
       if (!$this->frame) {
-        echo "<div class='bold center pad10 margin10 font15'>" . _("Item:") . '</span>';
+        echo "<div class='bold center pad10 margin20 font13'>";
         UI::search(
           'stock',
           [
+          'label'            => 'Item:',
           'url'              => 'Item',
           'idField'          => 'stock_id',
           'name'             => 'stock', //
+          'value'            => $this->stock_id,
           'focus'            => true,
           ]
         );

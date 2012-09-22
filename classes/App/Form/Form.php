@@ -434,8 +434,9 @@
      * @return array
      */
     public function jsonSerialize() {
-      $return = [];
-      $use    = ($this->useDefaults) ? 'default' : 'value';
+      $return    = [];
+      $use       = ($this->useDefaults) ? 'default' : 'value';
+      $autofocus = false;
       foreach ($this->fields as $id=> $field) {
         if ($field instanceof Button) {
           continue;
@@ -443,7 +444,7 @@
         $value = ['value'=> $field->$use];
         if ($field->hide === true) {
           $value['hidden'] = true;
-        } elseif ($field['autofocus'] === true) {
+        } elseif (!$autofocus && $field['autofocus'] === true) {
           $value['focus'] = true;
         }
         $return[$id] = $value;

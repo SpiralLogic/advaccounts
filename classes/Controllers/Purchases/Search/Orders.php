@@ -1,5 +1,11 @@
 <?php
+  namespace ADV\Controllers\Purchases\Search;
+
   use ADV\App\Forms;
+  use GL_UI;
+  use DB_Pager;
+  use Inv_Location;
+  use ADV\App\Page;
   use ADV\App\Dates;
   use ADV\Core\Input\Input;
   use ADV\App\Reporting;
@@ -14,7 +20,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class POSearch extends \ADV\App\Controller\Base {
+  class Orders extends \ADV\App\Controller\Base {
+    /** @var Dates */
     protected $Dates;
     protected $order_no;
     protected $creditor_id;
@@ -23,9 +30,9 @@
     /**
 
      */
-    public function __construct() {
+    public function run() {
       $this->Dates = Dates::i();
-      parent::__construct();
+      parent::run();
     }
     protected function before() {
       $this->JS->openWindow(950, 500);
@@ -82,25 +89,25 @@
  AND location.loc_code = porder.into_stock_location
  AND (line.quantity_ordered > line.quantity_received) ";
       if ($this->creditor_id) {
-        $sql .= " AND supplier.creditor_id = " . $this->DB->quote($this->creditor_id);
+        $sql .= " AND supplier.creditor_id = " . static::$DB->quote($this->creditor_id);
       }
       if ($this->order_no) {
-        $sql .= " AND (porder.order_no LIKE " . $this->DB->quote('%' . $this->order_no . '%');
-        $sql .= " OR porder.reference LIKE " . $this->DB->quote('%' . $this->order_no . '%') . ') ';
+        $sql .= " AND (porder.order_no LIKE " . static::$DB->quote('%' . $this->order_no . '%');
+        $sql .= " OR porder.reference LIKE " . static::$DB->quote('%' . $this->order_no . '%') . ') ';
       } else {
         $data_after  = $this->Dates->dateToSql($_POST['OrdersAfterDate']);
         $data_before = $this->Dates->dateToSql($_POST['OrdersToDate']);
         $sql .= " AND porder.ord_date >= '$data_after'";
         $sql .= " AND porder.ord_date <= '$data_before'";
         if ($this->stock_location) {
-          $sql .= " AND porder.into_stock_location = " . $this->DB->quote($this->stock_location);
+          $sql .= " AND porder.into_stock_location = " . static::$DB->quote($this->stock_location);
         }
         if ($this->selected_stock_item) {
-          $sql .= " AND line.item_code=" . $this->DB->quote($this->selected_stock_item);
+          $sql .= " AND line.item_code=" . static::$DB->quote($this->selected_stock_item);
         }
       } //end not order number selected
       $sql .= " GROUP BY porder.order_no";
-      $this->DB->query($sql, "No orders were returned");
+      static::$DB->query($sql, "No orders were returned");
       /*show a table of the orders returned by the sql */
       $cols = array(
         _("#")                                     => ['fun'     => [$this, 'formatTrans'], 'ord'     => ''], //
@@ -155,7 +162,7 @@
      * @return callable
      */
     public function formatEditBtn($row) {
-      return DB_Pager::link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrder=" . $row["order_no"], ICON_EDIT);
+      return DB_Pager::link(_("Edit"), "/purchases/order?ModifyOrder=" . $row["order_no"], ICON_EDIT);
     }
     /**
      * @param $row
@@ -167,4 +174,3 @@
     }
   }
 
-  new POSearch();

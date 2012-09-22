@@ -1,14 +1,21 @@
 <?php
+  namespace ADV\Controllers\Contacts\Manage;
+
   use ADV\App\Creditor\Creditor;
+  use GL_UI;
+  use GL_Currency;
+  use Tax_Groups;
+  use Contact_Postcode;
+  use Contact_Log;
+  use ADV\Core\View;
+  use ADV\Core\Cache;
+  use ADV\App\Page;
   use ADV\Core\MenuUI;
   use ADV\Core\JS;
   use ADV\Core\HTMLmin;
   use ADV\App\Validation;
-  use ADV\App\User;
   use ADV\Core\Input\Input;
-  use ADV\App\ADVAccounting;
   use ADV\App\Form\Form;
-  use ADV\Core\Table;
   use ADV\App\UI;
 
   /**
@@ -19,7 +26,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Creditors extends \ADV\App\Controller\Base {
+  class Suppliers extends \ADV\App\Controller\Base {
     /** @var Creditor */
     protected $creditor;
     protected $company_data;
@@ -145,4 +152,3 @@
     }
   }
 
-  new Creditors();

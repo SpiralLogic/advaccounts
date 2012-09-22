@@ -108,7 +108,8 @@
    * @return string
    */
   function release_link($row) {
-    return $row["closed"] ? '' : ($row["released"] == 0 ? DB_Pager::link(_('Release'), "/manufacturing/work_order_release.php?trans_no=" . $row["id"]) : DB_Pager::link(_('Issue'), "/manufacturing/work_order_issue.php?trans_no=" . $row["id"]));
+    return $row["closed"] ? '' : ($row["released"] == 0 ? DB_Pager::link(_('Release'), "/manufacturing/work_order_release.php?trans_no=" . $row["id"]) :
+      DB_Pager::link(_('Issue'), "/manufacturing/work_order_issue.php?trans_no=" . $row["id"]));
   }
 
   /**
@@ -130,7 +131,7 @@
 
                            return $row["closed"] || !$row["released"] ? '' :
                              DB_Pager::link(_('Costs'),
-                               "/gl/gl_bank.php?NewPayment=1&PayType="
+                               "/banking/banking?NewPayment=1&PayType="
                                .PT_WORKORDER. "&PayPerson=" .$row["id"]);
                          */
     return $row["closed"] || !$row["released"] ? '' : DB_Pager::link(_('Costs'), "/manufacturing/work_order_costs.php?trans_no=" . $row["id"]);
@@ -158,7 +159,8 @@
     return Num::_format($amount, $row['decimals']);
   }
 
-  $sql = "SELECT
+  $sql
+    = "SELECT
     workorder.id,
     workorder.wo_ref,
     workorder.type,

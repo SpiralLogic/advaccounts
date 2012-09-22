@@ -10,9 +10,9 @@
   return array(
     'active'  => array(
       'Sales'        => ['enabled'=> true], //
-      'Debtors'      => ['name'=> 'Customers', 'enabled'=> true, 'direct'=> '/contacts/customers'], //
+      'Debtors'      => ['name'=> 'Customers', 'enabled'=> true, 'direct'=> '/contacts/manage/customers'], //
       'Purchases'    => ['enabled'=> true], //
-      'Creditors'    => ['name'=> 'Suppliers', 'enabled'=> true, 'direct'=> '/contacts/suppliers'], //
+      'Creditors'    => ['name'=> 'Suppliers', 'enabled'=> true, 'direct'=> '/contacts/manage/suppliers'], //
       'Inventory'    => ['enabled'=> true], //
       'Manufacturing'=> ['enabled'=> true], //
       'GL'           => ['name'=> 'Banking', 'enabled'=> true], //

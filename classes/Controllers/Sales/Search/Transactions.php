@@ -1,10 +1,24 @@
 <?php
+  namespace ADV\Controllers\Sales\Search;
+
   use ADV\App\Debtor\Debtor;
+  use ADV\Core\View;
+  use DB_AuditTrail;
+  use ADV\App\Voiding;
+  use ADV\App\SysTypes;
+  use GL_UI;
+  use DB_Pager;
+  use ADV\App\Dates;
+  use ADV\App\Display;
+  use Debtor_Payment;
+  use ADV\App\Forms;
+  use ADV\App\Page;
+  use ADV\App\Reporting;
+  use ADV\Core\Num;
+  use ADV\Core\HTML;
   use ADV\Core\DB\DB;
-  use ADV\Core\Ajax;
   use ADV\Core\Table;
   use ADV\Core\Input\Input;
-  use ADV\Core\JS;
   use ADV\App\UI;
 
   /**
@@ -15,7 +29,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class SalesInquirey extends \ADV\App\Controller\Base {
+  class Transactions extends \ADV\App\Controller\Base {
     public $isQuickSearch;
     public $filterType;
     public $debtor_id;
@@ -45,6 +59,7 @@
     }
     protected function index() {
       Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, $this->frame);
+
       Forms::start();
       Table::start('noborder');
       echo '<tr>';
@@ -299,7 +314,7 @@
         case ST_CUSTCREDIT:
           if (Voiding::get(ST_CUSTCREDIT, $row["trans_no"]) === false && $row['Allocated'] == 0) {
             if ($row['order_'] == 0) {
-              $str = "/sales/credit_note_entry.php?ModifyCredit=" . $row['trans_no'];
+              $str = "/sales/credit?ModifyCredit=" . $row['trans_no'];
             } else {
               $str = "/sales/customer_credit_invoice.php?ModifyCredit=" . $row['trans_no'];
             }
@@ -322,13 +337,13 @@
     /**
      * @param $row
      *
-     * @return ADV\Core\HTML|string
+     * @return \ADV\Core\HTML|string
      */
     public function formatEmailBtn($row) {
       if ($row['type'] != ST_SALESINVOICE) {
         return '';
       }
-      return HTML::button(
+      return (new HTML)->button(
         false,
         'Email',
         array(
@@ -372,7 +387,7 @@
         $items[] = ['label'=> 'Credit Invoice', 'href'=> "/sales/customer_credit_invoice.php?InvoiceNumber=" . $row['trans_no']];
       }
       if ($row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0) {
-        $items[] = ['label'=> 'Make Payment', 'href'=> "/sales/customer_payments.php?debtor_id=" . $row['debtor_id']];
+        $items[] = ['label'=> 'Make Payment', 'href'=> "/sales/payment?debtor_id=" . $row['debtor_id']];
       }
       $items[] = ['class'=> 'email-button', 'label'=> 'Email', 'href'=> '#', 'data'=> ['emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']]];
       $menus[] = ['title'=> $title, 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
@@ -381,4 +396,3 @@
     }
   }
 
-  new SalesInquirey();

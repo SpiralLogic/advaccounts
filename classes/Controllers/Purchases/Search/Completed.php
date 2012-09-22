@@ -1,5 +1,11 @@
 <?php
+  namespace ADV\Controllers\Purchases\Search;
+
   use ADV\Core\Input\Input;
+  use GL_UI;
+  use ADV\Core\View;
+  use DB_Pager;
+  use ADV\App\Page;
   use ADV\App\Orders;
   use ADV\App\Dates;
   use ADV\App\Forms;
@@ -18,7 +24,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class POCompletedInquiry extends \ADV\App\Controller\Base {
+  class Completed extends \ADV\App\Controller\Base {
     protected $order_number;
     protected $creditor_id;
     protected function before() {
@@ -165,7 +171,7 @@
      * @return string
      */
     public function formatEditBtn($row) {
-      return $href = "/purchases/po_entry_items.php?" . Orders::MODIFY_ORDER . "=" . $row["order_no"];
+      return $href = "/purchases/order?" . Orders::MODIFY_ORDER . "=" . $row["order_no"];
     }
     /**
      * @param $row
@@ -176,7 +182,7 @@
       if ($row['Received'] > 0) {
         return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
       } elseif ($row['Invoiced'] > 0) {
-        return DB_Pager::link(_("Invoice"), "/purchases/supplier_invoice.php?New=1&creditor_id=" . $row['creditor_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
+        return DB_Pager::link(_("Invoice"), "/purchases/invoice?New=1&creditor_id=" . $row['creditor_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
       }
       return '';
     }
@@ -219,7 +225,7 @@
       if ($row['Received'] > 0) {
         $href = "/purchases/po_receive_items.php?PONumber=" . $row["order_no"];
       } elseif ($row['Invoiced'] > 0) {
-        $href = "/purchases/supplier_invoice.php?New=1&creditor_id=" . $row['creditor_id'] . "&PONumber=" . $row["order_no"];
+        $href = "/purchases/invoice?New=1&creditor_id=" . $row['creditor_id'] . "&PONumber=" . $row["order_no"];
       }
       $items[] = ['label'=> 'Receive', 'href'=> $href];
       $menus[] = ['title'=> $title, 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
@@ -228,4 +234,3 @@
     }
   }
 
-  new POCompletedInquiry();

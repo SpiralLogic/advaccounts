@@ -63,7 +63,7 @@
     {#$menu->endTab()->startTab('Supplier Contacts', 'Supplier Contacts')#}
 {{>contacts/contact}}
     {#$menu->endTab()->startTab('Invoices', 'Invoices')#}
-    <div id='invoiceFrame' data-src='/purchases/inquiry/supplier_allocation_inquiry.php?creditor_id={{$creditor_id}}'></div>
+    <div id='invoiceFrame' data-src='/purchases/search/allocations?creditor_id={{$creditor_id}}'></div>
 {{$form.frame}}
     {#$menu->endTab()->render()#}
 {{$form->end()}}

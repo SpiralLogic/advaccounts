@@ -1,5 +1,21 @@
 <?php
+
+  namespace ADV\Controllers\Purchases\Search;
+
   use ADV\Core\DB\DB;
+  use ADV\App\Reporting;
+  use DB_Company;
+  use ADV\Core\View;
+  use ADV\Core\Num;
+  use GL_UI;
+  use ADV\App\SysTypes;
+  use DB_Pager;
+  use ADV\App\Dates;
+  use ADV\App\Display;
+  use Purch_Allocation;
+  use ADV\App\Forms;
+  use ADV\App\Page;
+  use ADV\Core\Session;
   use ADV\Core\Cell;
   use ADV\App\Creditor\Creditor;
   use ADV\Core\Table;
@@ -15,7 +31,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class SupplierInquiry extends \ADV\App\Controller\Base {
+  class Transactions extends \ADV\App\Controller\Base {
     public $creditor_id;
     protected function before() {
       JS::_openWindow(950, 500);
@@ -202,7 +218,7 @@
     public function formatDropdown($row) {
       $dropdown = new View('ui/dropdown');
       if ($row['type'] == ST_SUPPINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0) {
-        $items[] = ['label'=> _("Credit"), 'href'=> "/purchases/supplier_credit.php?New=1&invoice_no=" . $row['trans_no']];
+        $items[] = ['label'=> _("Credit"), 'href'=> "/purchases/credit?New=1&invoice_no=" . $row['trans_no']];
       }
       if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT || $row['type'] == ST_SUPPCREDIT) {
         $href    = Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Remittance"), true, ST_SUPPAYMENT, ICON_PRINT, 'printlink', '', 0, 0, true);
@@ -258,4 +274,3 @@
     }
   }
 
-  new SupplierInquiry();

@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Apps;
+
   use ADV\App\Application\Application;
 
   /**
@@ -17,6 +18,6 @@
     public $name = 'Creditors';
     public $help_context = "&Suppliers";
     function buildMenu() {
-      $this->direct = '/contacts/suppliers';
+      $this->direct = '/contacts/manage/suppliers';
     }
   }

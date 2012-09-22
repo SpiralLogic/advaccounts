@@ -1,14 +1,22 @@
 <?php
+  namespace ADV\Controllers\Sales;
+
   use ADV\App\Debtor\Debtor;
+  use ADV\Core\Num;
+  use Sales_Order;
+  use Sales_Credit;
+  use ADV\App\Page;
+  use GL_UI;
+  use ADV\App\Display;
+  use ADV\Core\Event;
+  use Item_Line;
+  use Sales_Branch;
   use ADV\App\Dates;
   use ADV\App\Ref;
   use ADV\App\Validation;
   use ADV\App\Forms;
   use ADV\App\Orders;
-  use ADV\Core\Ajax;
-  use ADV\Core\Input\Input;
   use ADV\Core\Table;
-  use ADV\Core\JS;
 
   /**
    * PHP version 5.4
@@ -18,13 +26,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  //
-  //	Entry/Modify free hand Credit Note
-  //
-  class CreditNote extends \ADV\App\Controller\Base
-  {
-
-    /** @var \Sales_Order */
+  class Credit extends \ADV\App\Controller\Base {
+    /** @var Sales_Order */
     public $credit;
     protected function before() {
       $this->JS->openWindow(950, 500);
@@ -111,7 +114,7 @@
       Display::note(GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another &Credit Note"), "NewCredit=yes");
       Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
-      $this->Ajax->activate('_page_body', "/sales/view/view_credit?trans_no=$credit_no&trans_type=$trans_type", '/sales/credit_note_entry?NewCredit=Yes');
+      $this->Ajax->activate('_page_body', "/sales/view/view_credit?trans_no=$credit_no&trans_type=$trans_type", '/sales/credit?NewCredit=Yes');
       Page::footer_exit();
     }
     protected function index() {
@@ -144,7 +147,7 @@
     }
     /***
      * @internal param $this ->credit
-     * @return Sales_Order
+     * @return \Sales_Order
      */
     protected function copyToCredit() {
       $this->credit->Comments      = $_POST['CreditText'];
@@ -245,4 +248,3 @@
     }
   }
 
-  new CreditNote();

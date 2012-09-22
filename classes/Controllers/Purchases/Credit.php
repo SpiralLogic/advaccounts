@@ -1,8 +1,4 @@
 <?php
-  use ADV\Core\Input\Input;
-  use ADV\Core\DB\DB;
-  use ADV\Core\Ajax;
-
   /**
    * PHP version 5.4
    * @category  PHP
@@ -11,9 +7,32 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class SupplierCredit extends ADV\App\Controller\Base
-  {
-    /** @var Creditor_trans */
+  namespace ADV\Controllers\Purchases;
+
+  use ADV\Core\Input\Input;
+  use ADV\App\Dates;
+  use ADV\App\Ref;
+  use Tax_Types;
+  use ADV\Core\Num;
+  use GL_QuickEntry;
+  use GL_UI;
+  use ADV\Core\Event;
+  use ADV\App\Display;
+  use Purch_GLItem;
+  use Purch_GRN;
+  use Purch_Invoice;
+  use ADV\App\Page;
+  use ADV\App\Forms;
+  use Creditor_Trans;
+  use ADV\App\Validation;
+  use ADV\Core\DB\DB;
+  use ADV\Core\Ajax;
+
+  /**
+
+   */
+  class Credit extends \ADV\App\Controller\Base {
+    /** @var \Creditor_trans */
     protected $trans;
     protected $creditor_id;
     protected function before() {
@@ -338,4 +357,4 @@ JS;
     }
   }
 
-  new SupplierCredit();
+

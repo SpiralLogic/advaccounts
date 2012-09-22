@@ -10,21 +10,24 @@
   namespace ADV\Controllers\Items\Manage;
 
   use ADV\App\Form\Form;
+  use ADV\App\Page;
+  use GL_UI;
+  use Tax_ItemType;
+  use Item_Unit;
   use ADV\App\Item\Category;
   use ADV\Core\View;
-  use ADV\Core\DB\DB;
 
   /**
    * @property Category $object
    */
-  class Categoryies extends \ADV\App\Controller\Manage {
+  class Categories extends \ADV\App\Controller\Manage {
     protected $tableWidth = '80';
     protected function before() {
       $this->object = new Category();
       $this->runPost();
     }
     protected function index() {
-      Page::start(_($help_context = "Item Categorys"), SA_ITEMCATEGORY);
+      Page::start(_($help_context = "Item Categories"), SA_ITEMCATEGORY);
       $this->generateTable();
       echo '<br>';
       $this->generateForm();

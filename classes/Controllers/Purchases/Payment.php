@@ -1,10 +1,4 @@
 <?php
-  use ADV\App\Creditor\Creditor;
-  use ADV\Core\Table;
-  use ADV\Core\Ajax;
-  use ADV\Core\Input\Input;
-  use ADV\Core\JS;
-
   /**
    * PHP version 5.4
    * @category  PHP
@@ -13,7 +7,32 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class SupplierPayment extends \ADV\App\Controller\Base {
+
+  namespace ADV\Controllers\Purchases;
+
+  use ADV\App\Creditor\Creditor;
+  use GL_UI;
+  use ADV\Core\HTML;
+  use ADV\App\Validation;
+  use Creditor_Payment;
+  use ADV\Core\Event;
+  use ADV\App\Display;
+  use GL_ExchangeRate;
+  use ADV\App\Ref;
+  use Bank_Account;
+  use ADV\App\Page;
+  use Bank_Currency;
+  use ADV\App\Forms;
+  use ADV\App\Dates;
+  use GL_Allocation;
+  use ADV\Core\Table;
+  use ADV\Core\Ajax;
+  use ADV\Core\JS;
+
+  /**
+
+   */
+  class Payment extends \ADV\App\Controller\Base {
     protected $supplier_currency;
     protected $bank_currency;
     protected $company_currency;
@@ -126,7 +145,8 @@
       Display::submenu_print(_("&Print This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, 'prtopt');
       Display::submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, null, 1);
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another Invoice"), "New=1", true, 'class="button"');
-      echo HTML::br();
+      echo
+      HTML::br();
       Display::note(GL_UI::view(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment"), false, 'button'));
       // Display::link_params($path_to_root . "/purchases/allocations/supplier_allocate.php", _("&Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter another supplier &payment"), "creditor_id=" . $this->creditor_id, true, 'class="button"');
@@ -140,4 +160,3 @@
     }
   }
 
-  new SupplierPayment();

@@ -8,26 +8,26 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Apps;
+
   use ADV\App\Application\Application;
 
   /**
 
    */
-  class GL extends Application
-  {
+  class GL extends Application {
     public $name = 'GL';
     public $help_context = "&Banking";
     public function buildMenu() {
-      $module=$this->add_module(_("Transactions"));
-      $module->addLeftFunction(_("&Payments"), "/gl/gl_bank?NewPayment=Yes", SA_PAYMENT);
-      $module->addLeftFunction(_("&Deposits"), "/gl/gl_bank?NewDeposit=Yes", SA_DEPOSIT);
+      $module = $this->add_module(_("Transactions"));
+      $module->addLeftFunction(_("&Payments"), "/banking/banking?NewPayment=Yes", SA_PAYMENT);
+      $module->addLeftFunction(_("&Deposits"), "/banking/banking?NewDeposit=Yes", SA_DEPOSIT);
       $module->addLeftFunction(_("Bank Account &Transfers"), "/gl/bank_transfer?", SA_BANKTRANSFER);
       $module->addRightFunction(_("&Journal Entry"), "/gl/gl_journal?NewJournal=Yes", SA_JOURNALENTRY);
       $module->addRightFunction(_("&Budget Entry"), "/gl/gl_budget?", SA_BUDGETENTRY);
-      $module->addRightFunction(_("&Reconcile Bank Account"), "/gl/bank_account_reconcile?", SA_RECONCILE);
-/*      $module->addRightFunction(_("&Compare Reconcile to Bank Statement"), "/gl/inquiry/bankstatement?", SA_RECONCILE);*/
+      $module->addRightFunction(_("&Reconcile Bank Account"), "/banking/reconcile?", SA_RECONCILE);
+      /*      $module->addRightFunction(_("&Compare Reconcile to Bank Statement"), "/gl/inquiry/bankstatement?", SA_RECONCILE);*/
       $module->addRightFunction(_("Undepostied Funds"), "/gl/undeposited_funds?", SA_RECONCILE);
-      $module=$this->add_module(_("Inquiries and Reports"));
+      $module = $this->add_module(_("Inquiries and Reports"));
       $module->addLeftFunction(_("&Journal Inquiry"), "/gl/inquiry/journal?", SA_GLANALYTIC);
       $module->addLeftFunction(_("GL &Inquiry"), "/gl/inquiry/gl_account?", SA_GLTRANSVIEW);
       $module->addLeftFunction(_("Bank Account &Inquiry"), "/gl/inquiry/bank?", SA_BANKTRANSVIEW);
@@ -37,7 +37,7 @@
       $module->addRightFunction(_("&Profit and Loss Drilldown"), "/gl/inquiry/profit_loss?", SA_GLANALYTIC);
       $module->addRightFunction(_("Banking &Reports"), "/reporting/reports_main?Class=5", SA_BANKREP);
       $module->addRightFunction(_("General Ledger &Reports"), "/reporting/reports_main?Class=6", SA_GLREP);
-      $module=$this->add_module(_("Maintenance"));
+      $module = $this->add_module(_("Maintenance"));
       $module->addLeftFunction(_("Bank &Accounts"), "/gl/manage/bank_accounts?", SA_BANKACCOUNT);
       $module->addLeftFunction(_("&Quick Entries"), "/gl/manage/gl_quick_entries?", SA_QUICKENTRY);
       $module->addLeftFunction(_("Account &Tags"), "system/tags?type=account", SA_GLACCOUNTTAGS);

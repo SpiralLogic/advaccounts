@@ -445,7 +445,7 @@
       $js
         = <<<JS
                             var val = $("#debtor_id").val();
-                            $("#customerBox").html("<iframe src='/contacts/customers.php?frame=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
+                            $("#customerBox").html("<iframe src='/contacts/manage/customers?frame=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
       JS::_addLiveEvent('#debtor_id_label', 'click', $js);
     }

@@ -91,7 +91,7 @@
         $url = $_SERVER['REQUEST_URI'];
       }
       $js    = "Adv.Forms.autocomplete('$id','$type',$callback);";
-      $clean = "if (Adv.o.autocomplete['$id'].attr('type')!=='hidden'){Adv.o.autocomplete['$id'].autocomplete('destroy');}";
+      $clean = "if (Adv.o.autocomplete['$id'].attr('type')!=='hidden'){Adv.o.autocomplete['$id'].catcomplete('destroy');}";
       $this->addLive($js, $clean);
     }
     /**
@@ -153,7 +153,7 @@ JS;
       $options  = array_merge($defaults, $options);
       $noajax   = $options['noajax'] ? 'true' : 'false';
       $haslinks = $options['hasLinks'] ? 'true' : 'false';
-      $this->onload("Adv.tabmenu.init('$id',$noajax,$haslinks,$page)");
+      $this->onload("Adv.TabMenu.init('$id',$noajax,$haslinks,$page)");
     }
     /**
      * @static

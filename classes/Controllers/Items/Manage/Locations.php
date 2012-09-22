@@ -2,6 +2,7 @@
   namespace ADV\Controllers\Items\Manage;
 
   use ADV\App\Inv\Location;
+  use ADV\App\Page;
   use ADV\App\Form\Form;
   use ADV\Core\View;
 

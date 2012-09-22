@@ -72,8 +72,8 @@
           \ADV\Core\Event::shutdown();
         }
       );
-      $dic  = \ADV\Core\DIC::getInstance();
-      $self = $this;
+      $this->dic = $dic = \ADV\Core\DIC::getInstance();
+      $self      = $this;
       $dic->set(
         'ADVAccounting',
         function () use ($self) {
@@ -247,7 +247,7 @@
      */
     protected function runController($controller2) {
 
-      new $controller2;
+      new $controller2($this->Ajax, $this->JS, $this->Session, $this->User, $this->dic->get('Input'), DB::i());
     }
     /**
      * @param $app

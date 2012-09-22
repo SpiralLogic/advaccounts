@@ -1,15 +1,29 @@
 <?php
+  namespace ADV\Controllers\Banking;
+
   use ADV\Core\Input\Input;
+  use ADV\Core\Event;
+  use DB_Comments;
+  use GL_UI;
+  use ADV\App\SysTypes;
+  use ADV\Core\Arr;
+  use DB_Pager;
+  use ADV\Core\View;
+  use Bank_UI;
+  use ADV\App\Page;
+  use GL_Account;
+  use Bank_Account;
+  use ADV\Core\Num;
+  use Bank_Undeposited;
+  use Bank_Trans;
   use ADV\App\Dates;
   use ADV\App\Validation;
   use ADV\App\Display;
   use ADV\App\Forms;
-  use ADV\Core\JS;
   use ADV\App\UI;
   use ADV\App\Bank\Bank;
   use ADV\Core\Cell;
   use ADV\Core\Table;
-  use ADV\Core\DB\DB;
 
   /**
    * PHP version 5.4
@@ -305,6 +319,8 @@
     protected function changeDate() {
       $bank_trans_id = $this->Input->post('trans_id', Input::NUMERIC, -1);
       $newdate       = $this->Input->post('date');
+
+      /** @noinspection PhpUndefinedVariableInspection */
       Bank_Trans::changeDate($bank_trans_id, $newdate, $status);
       $data['status'] = $status->get();
       $data['grid']   = $this->render();
@@ -454,11 +470,11 @@
             $fee  = $beforefee[1] - $row['state_amount'];
             $data = ['fee'=> $fee, 'amount'=> $beforefee[1]];
           }
-          $items[] = ['class'=> 'createDP', 'label'=> 'Debtor Payment', 'href'=> '/sales/customer_payments', 'data'=> $data];
-          $items[] = ['class'=> 'createBD', 'label'=> 'Bank Deposit', 'href'=> '/gl/gl_bank?NewDeposit=Yes'];
+          $items[] = ['class'=> 'createDP', 'label'=> 'Debtor Payment', 'href'=> '/sales/payment', 'data'=> $data];
+          $items[] = ['class'=> 'createBD', 'label'=> 'Bank Deposit', 'href'=> '/banking/banking?NewDeposit=Yes'];
         } else {
-          $items[] = ['class'=> 'createCP', 'label'=> 'Creditor Payment', 'href'=> '/purchases/supplier_payment'];
-          $items[] = ['class'=> 'createBP', 'label'=> 'Bank Payment', 'href'=> '/gl/gl_bank?NewPayment=Yes'];
+          $items[] = ['class'=> 'createCP', 'label'=> 'Creditor Payment', 'href'=> '/purchases/payment'];
+          $items[] = ['class'=> 'createBP', 'label'=> 'Bank Payment', 'href'=> '/banking/banking?NewPayment=Yes'];
         }
         $items[] = ['class'=> 'createFT', 'label'=> 'Funds Transfer', 'href'=> '/gl/bank_transfer'];
         $items[] = ['divider'=> true];
@@ -603,4 +619,3 @@
     }
   }
 
-  new Reconcile();

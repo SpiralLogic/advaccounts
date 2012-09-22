@@ -51,7 +51,7 @@
     {{$adjustment_account?}} <label for="adjustment_account"><span>Adjustments&nbsp;Account:</span>{{$adjustment_account}}</label> {{/$adjustment_account?}}
     {{$assembly_account?}} <label for="assembly_account"><span>Assembly Account:</span>{{$assembly_account}}</label>{{/$assembly_account?}}</div>
     {#$menu->endTab()->startTab('Selling', 'Selling')#}
-    <iframe id='sellFrame' data-src='{{ROOT_URL}}inventory/prices.php?frame=1&stock_id={{$item->stock_id}}' style='width:95%' height='500' frameborder='0'></iframe>
+    <iframe id='sellFrame' data-src='{{ROOT_URL}}items/manage/prices?frame=1&stock_id={{$item->stock_id}}' style='width:95%' height='500' frameborder='0'></iframe>
     {#$menu->endTab()->startTab('Purchasing', 'Purchasing')#}
     <iframe id='buyFrame' data-src='{{ROOT_URL}}inventory/purchasing_data.php?frame=1&stock_id={{$item->stock_id}}' style='width:100%' height='500' frameborder='0'></iframe>
     {#$menu->endTab()->startTab('Locations', 'Locations')#}

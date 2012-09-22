@@ -1,35 +1,31 @@
 <?php
+  namespace ADV\Controllers\Sales\Search;
+
   use ADV\App\Debtor\Debtor;
+  use DB_Pager;
+  use ADV\Core\Arr;
+  use ADV\App\Dates;
+  use Inv_Location;
+  use ADV\App\Page;
+  use ADV\Core\View;
   use ADV\App\Reporting;
   use ADV\App\Forms;
   use ADV\App\UI;
   use ADV\Core\Table;
   use ADV\Core\DB\DB;
   use ADV\Core\Input\Input;
-  use ADV\Core\JS;
-  use ADV\Core\Ajax;
   use ADV\App\Item\Item;
 
-  /* * ********************************************************************
-Copyright (C) Advanced Group PTY LTD
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-* ********************************************************************* */
-  // first check is this is not start page call
   /**
 
    */
-  class SalesOrderInquiry extends \ADV\App\Controller\Base {
+  class Orders extends \ADV\App\Controller\Base {
     protected $security;
     protected $trans_type;
     protected $debtor_id;
     protected $stock_id;
     protected $searchArray = [];
+    const BATCH_INVOICE     = 'BatchInvoice';
     const SEARCH_ORDER      = 'o';
     const SEARCH_QUOTE      = 'q';
     const MODE_OUTSTANDING  = 'OutstandingOnly';
@@ -335,7 +331,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       if ($row['trans_type'] == ST_SALESORDER) {
         return ['label'=> _("Dispatch"), 'href'=> "/sales/customer_delivery.php?OrderNumber=" . $row['order_no']];
       }
-      return ['label'=> _("Sales Order"), 'href'=> "/sales/sales_order_entry.php?OrderNumber=" . $row['order_no']];
+      return ['label'=> _("Sales Order"), 'href'=> "/sales/order?OrderNumber=" . $row['order_no']];
     }
     /**
      * @param $row
@@ -344,7 +340,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
      */
     function formatInvoiceTemplateBtn($row) {
       if ($row['trans_type'] == ST_SALESORDER) {
-        return ['label'=> _("Invoice"), 'href'=> "/sales/sales_order_entry.php?NewInvoice=" . $row['order_no']];
+        return ['label'=> _("Invoice"), 'href'=> "/sales/order?NewInvoice=" . $row['order_no']];
       }
       return '';
     }
@@ -354,7 +350,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
      * @return string
      */
     function formatDeliveryTemplateBtn($row) {
-      return ['label'=> _("Delivery"), 'href'=> "/sales/sales_order_entry.php?NewDelivery=" . $row['order_no']];
+      return ['label'=> _("Delivery"), 'href'=> "/sales/order?NewDelivery=" . $row['order_no']];
     }
     /**
      * @param $row
@@ -378,12 +374,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
      * @return string
      */
     function formatEditBtn($row) {
-      return DB_Pager::link(_("Edit"), "/sales/sales_order_entry?update=" . $row['order_no'] . "&type=" . $row['trans_type'], ICON_EDIT);
+      /** @noinspection PhpUndefinedConstantInspection */
+      return DB_Pager::link(_("Edit"), "/sales/order?update=" . $row['order_no'] . "&type=" . $row['trans_type'], ICON_EDIT);
     }
     /**
      * @param $row
      *
-     * @return ADV\Core\HTML|string
+     * @return \ADV\Core\HTML|string
      */
     function formatEmailBtn($row) {
       return Reporting::emailDialogue($row['debtor_id'], $row['trans_type'], $row['order_no']);
@@ -402,7 +399,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
      * @return string
      */
     function formatDropdown($row) {
-      $dropdown = new View('ui/dropdown');
+      $dropdown = new
+      View('ui/dropdown');
       switch ($_POST['order_view_mode']) {
         case self::MODE_OUTSTANDING:
           $items[] = $this->formatDeliveryBtn($row);
@@ -414,9 +412,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
           $items[] = $this->formatDeliveryTemplateBtn($row);
           break;
         default:
-          $items[] = ['label'=> 'Edit', 'href'=> '/sales/sales_order_entry?update=' . $row['order_no'] . "&type=" . $row['trans_type']];
+          $items[] = ['label'=> 'Edit', 'href'=> '/sales/order?update=' . $row['order_no'] . "&type=" . $row['trans_type']];
           if ($row['trans_type'] == ST_SALESQUOTE) {
-            $items[] = ['label'=> "Create Order", "/sales/sales_order_entry?QuoteToOrder=" . $row['order_no']];
+            $items[] = ['label'=> "Create Order", "/sales/order?QuoteToOrder=" . $row['order_no']];
           }
           $items[] = ['class'=> 'email-button', 'label'=> 'Email', 'href'=> '#', 'data'=> ['emailid' => $row['debtor_id'] . '-' . $row['trans_type'] . '-' . $row['order_no']]];
           $href    = Reporting::print_doc_link(
@@ -441,4 +439,4 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
     }
   }
 
-  new SalesOrderInquiry();
+

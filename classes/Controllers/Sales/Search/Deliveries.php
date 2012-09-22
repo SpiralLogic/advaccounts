@@ -1,10 +1,20 @@
 <?php
+  namespace ADV\Controllers\Sales\Search;
+
   use ADV\Core\Input\Input;
+  use ADV\App\Reporting;
+  use ADV\Core\View;
+  use ADV\App\Display;
+  use ADV\Core\Event;
+  use DB_Pager;
+  use ADV\App\Dates;
+  use Inv_Location;
+  use ADV\App\Forms;
+  use ADV\App\Page;
   use ADV\Core\DB\DB;
   use ADV\App\Item\Item;
   use ADV\App\Debtor\Debtor;
   use ADV\Core\Table;
-  use ADV\Core\Ajax;
   use ADV\Core\JS;
 
   /**
@@ -15,7 +25,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class deliveryInquiry extends \ADV\App\Controller\Base {
+  class Deliveries extends \ADV\App\Controller\Base {
     public $debtor_id;
     public $stock_id;
     protected function before() {
@@ -70,7 +80,8 @@
       Page::end();
     }
     protected function displayTable() {
-      $sql = "SELECT trans.trans_no,
+      $sql
+        = "SELECT trans.trans_no,
   		debtor.name,
   		branch.branch_id,
   		sorder.contact_name,
@@ -219,4 +230,3 @@
     }
   }
 
-  new deliveryInquiry();

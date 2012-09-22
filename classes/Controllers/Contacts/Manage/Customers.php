@@ -1,14 +1,27 @@
 <?php
+  namespace ADV\Controllers\Contacts\Manage;
+
   use ADV\App\Debtor\Debtor;
+  use Tax_Groups;
+  use Inv_Location;
+  use Sales_UI;
+  use Sales_CreditStatus;
+  use GL_UI;
+  use GL_Currency;
+  use Sales_Type;
+  use Contact_Postcode;
+  use Contact_Log;
+  use ADV\Core\Event;
+  use ADV\Core\Cache;
+  use ADV\Core\View;
+  use ADV\App\Page;
   use ADV\Core\MenuUI;
   use ADV\Core\JS;
   use ADV\Core\HTMLmin;
   use ADV\App\Validation;
-  use ADV\App\User;
   use ADV\App\Form\Form;
   use ADV\Core\Input\Input;
   use ADV\App\UI;
-  use ADV\Core\Table;
 
   /**
    * PHP version 5.4
@@ -18,7 +31,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Debtors extends \ADV\App\Controller\Base {
+  class Customers extends \ADV\App\Controller\Base {
     /** @var Debtor */
     protected $debtor;
     protected $company_data;
@@ -208,4 +221,3 @@
     }
   }
 
-  new Debtors();

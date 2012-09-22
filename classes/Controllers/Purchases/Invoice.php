@@ -1,5 +1,25 @@
 <?php
+  namespace ADV\Controllers\Purchases;
+
   use ADV\App\Page;
+  use ADV\Core\Num;
+  use GL_QuickEntry;
+  use ADV\Core\Config;
+  use DB_Company;
+  use ADV\App\Ref;
+  use Inv_Movement;
+  use ADV\App\Dates;
+  use ADV\App\User;
+  use Tax_Types;
+  use ADV\App\Validation;
+  use GL_UI;
+  use ADV\App\Display;
+  use Purch_GLItem;
+  use Purch_GRN;
+  use ADV\Core\Event;
+  use Purch_Invoice;
+  use ADV\App\Forms;
+  use Creditor_Trans;
   use ADV\App\Item\Item;
   use ADV\Core\Input\Input;
   use ADV\Core\DB\DB;
@@ -12,8 +32,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class SupplierInvoice extends \ADV\App\Controller\Base
-  {
+  class Invoice extends \ADV\App\Controller\Base {
     /** @var Creditor_Trans */
     protected $trans;
     protected $creditor_id;
@@ -91,9 +110,9 @@
       echo "<div class='center'>";
       Event::success(_("Supplier " . $_SESSION['history'][ST_SUPPINVOICE] . "invoice has been processed."));
       Display::note(GL_UI::viewTrans($trans_type, $invoice_no, _("View this Invoice")));
-      Display::link_no_params("/purchases/inquiry/po_search.php", _("Purchase Order Maintainants"));
+      Display::link_no_params("/purchases/search/orders", _("Purchase Order Maintainants"));
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another Invoice"), "New=1");
-      Display::link_no_params("/purchases/supplier_payment.php", _("Entry supplier &payment for this invoice"));
+      Display::link_no_params("/purchases/payment", _("Entry supplier &payment for this invoice"));
       Display::link_no_params("/purchases/allocations/supplier_allocation_main.php", _("Allocate a payment to this invoice."));
       Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
       Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
@@ -169,7 +188,7 @@
         $this->Ajax->activate('inv_tot');
       }
       $id2 = -1;
-      if (User::i()->hasAccess(SA_GRNDELETE)) {
+      if ($this->User->hasAccess(SA_GRNDELETE)) {
         $id2 = Forms::findPostPrefix('void_item_id');
         if ($id2 != -1) {
           DB::_begin();
@@ -467,4 +486,3 @@ JS;
     }
   }
 
-  new SupplierInvoice();

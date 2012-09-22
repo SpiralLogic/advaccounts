@@ -303,7 +303,7 @@
       $js
         = <<<JS
                             var val = $("#creditor_id").val();
-                            $("#supplierBox").html("<iframe src='/contacts/suppliers.php?frame=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
+                            $("#supplierBox").html("<iframe src='/contacts/manage/suppliers?frame=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
       JS::_addLiveEvent('#creditor_id_label', 'click', $js);
     }

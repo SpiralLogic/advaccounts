@@ -1,5 +1,15 @@
 <?php
+  namespace ADV\Controllers\Items\Manage;
+
   use ADV\App\Item\Item;
+  use GL_UI;
+  use Item_UI;
+  use Tax_ItemType;
+  use Item_Unit;
+  use Item_Category;
+  use ADV\Core\MenuUI;
+  use ADV\Core\View;
+  use ADV\App\Page;
   use ADV\App\UI;
   use ADV\App\ADVAccounting;
 
@@ -11,7 +21,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class QuickItems extends \ADV\App\Controller\Base {
+  class Items extends \ADV\App\Controller\Base {
     protected $itemData;
     protected function before() {
       ADVAccounting::i()->set_selected('items');
@@ -39,8 +49,7 @@
           $item = new Item($_POST);
           $item->save($_POST);
         } else {
-          $id   = Item::getStockId($_POST['id']);
-          $item = new Item($id);
+          $item = new Item($_POST['id']);
         }
         $data['item']        = $item;
         $data['stockLevels'] = $item->getStockLevels();
@@ -65,15 +74,18 @@
       $view->set('cogs_account', GL_UI::all('cogs_account'));
       $view->set('adjustment_account', GL_UI::all('adjustment_account'));
       $view->set('assembly_account', GL_UI::all('assembly_account'));
+      $this->JS->autocomplete('itemSearchId', 'Items.fetch', 'Item');
       if (!isset($_GET['stock_id'])) {
-        $searchBox = UI::searchLine(
+        $searchBox = UI::search(
           'itemSearchId',
-          '/items/search.php',
           [
-          'label'    => 'Item:',
-          'size'     => '50px',
-          'selectjs' => '$("#itemSearchId").val(value.stock_id);Items.fetch(value.stock_id);return false;'
-          ]
+          'url'              => 'Item',
+          'idField'          => 'stock_id',
+          'name'             => 'itemSearchId', //
+          'focus'            => true,
+          'callback'         => 'Items.fetch'
+          ],
+          true
         );
         $view->set('searchBox', $searchBox);
         $id = 0;
@@ -90,4 +102,3 @@
     }
   }
 
-  new QuickItems();

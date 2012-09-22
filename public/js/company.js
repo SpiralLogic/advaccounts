@@ -391,7 +391,7 @@ $(function () {
   $("[name='messageLog']").keypress(function () {
     return false;
   });
-  Adv.tabmenu.defer(0).done(function () {
+  Adv.TabMenu.defer(0).done(function () {
     Adv.o.tabs[0].delegate("input, textarea,select", "change keyup", function () {
       var $this = $(this), $thisname = $this.attr('name'), buttontext;
       if ($thisname === 'messageLog' || $thisname === 'branchList') {

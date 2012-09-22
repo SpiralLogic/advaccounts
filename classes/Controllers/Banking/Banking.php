@@ -1,5 +1,21 @@
 <?php
+  namespace ADV\Controllers\Banking;
+
   use ADV\App\Bank\Bank;
+  use Item_Order;
+  use GL_Bank;
+  use ADV\Core\Event;
+  use GL_UI;
+  use DB_Company;
+  use GL_ExchangeRate;
+  use Bank_Currency;
+  use ADV\Core\Num;
+  use GL_QuickEntry;
+  use Debtor_Branch;
+  use Bank_Account;
+  use ADV\App\Page;
+  use Item_Line;
+  use Sales_Branch;
   use ADV\App\User;
   use ADV\App\Debtor\Debtor;
   use ADV\App\Dates;
@@ -8,7 +24,6 @@
   use ADV\Core\JS;
   use ADV\App\Creditor\Creditor;
   use ADV\Core\Input\Input;
-  use ADV\App\Dimensions;
   use ADV\Core\Cell;
   use ADV\App\Forms;
   use ADV\App\Display;
@@ -24,7 +39,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class GlBank extends \ADV\App\Controller\Base {
+  class Banking extends \ADV\App\Controller\Base {
     /** @var Item_Order */
     protected $order;
     protected $security;
@@ -426,4 +441,3 @@
     }
   }
 
-  new GlBank();

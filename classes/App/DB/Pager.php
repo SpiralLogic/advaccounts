@@ -255,7 +255,7 @@
      */
     protected function navi($id, HTML $html, $name, $value, $enabled = true, $title = null) {
       $attrs = [
-        'disabled'=> !$enabled,
+        'disabled'=> (bool) !$enabled,
         'class'   => 'navibutton',
         'type'    => 'submit',
         'name'    => $name,
