@@ -67,6 +67,11 @@
     }
   }
   namespace {
+    use ADV\Core\DB\DB;
+
+    /**
+
+     */
     class Item_Price {
       /**
        * @static

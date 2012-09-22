@@ -282,19 +282,17 @@ Adv.extend({
                        break;
                      }
                    }
-                   if (!exists || el.value === null || String(value).length === 0) {
-                     var elSelected = $(el).find('option:first')[0];
-                     elSelected.selected = true;
-                     if (isdefault) {
-                       $(el).find('option').prop('defaultSelected', false);
-                       elSelected.defaultSelected = true
-                     }
-                     return el;
+                   if (!exists || el.value === null || value.length === 0) {
+                     exists = $(el).find('option:first')[0];
                    }
                    if (exists) {
+                     if (isdefault) {
+                       $(el).find('option').prop('defaultSelected', false);
+                       exists.defaultSelected = true
+                     }
                      exists.selected = true;
-                     exists.defaultSelected = false;
                    }
+                   return el;
                  }
                  if (el.type === 'checkbox') {
                    value = (!(value === 'false' || !value || value == 0));
@@ -304,27 +302,16 @@ Adv.extend({
                    }
                    return el;
                  }
-                 if (String(value).length === 0) {
-                   value = '';
-                 }
                  if (el.tagName !== 'SELECT') {
+                   if (String(value).length === 0) {
+                     value = '';
+                   }
                    el.value = value;
                  }
                  if (isdefault) {
                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
                      $(el).attr('value', value);
                      el.defaultValue = value;
-                   }
-                   if (el.tagName === 'SELECT') {
-                     try {
-                       if (exists) {
-                         $(el).find('option').prop('defaultSelected', false);
-                         exists.defaultSelected = true;
-                       }
-                     }
-                     catch (e) {
-                       console.log(e, el.options);
-                     }
                    }
                  }
                  return el;
@@ -417,7 +404,8 @@ Adv.extend({
                          idField.val(data.id);
                        }
                        $this.val(data.value);
-                       JsHttpRequest.request(els[0])
+                       JsHttpRequest.request(els[0]);
+                       return false;
                      }
                    }
                    Adv.o.autocomplete[searchField] = $this;

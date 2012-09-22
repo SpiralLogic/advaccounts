@@ -625,7 +625,7 @@
         $where .= ' AND i.long_description LIKE ? ';
         $terms[] = '%' . trim($t) . '%';
       }
-      $stock_code = " s.stockid as id,s.item_code as val,";
+      $stock_code = " s.stockid as id,s.item_code as value,";
       $where2     = ' AND i.id = s.stockid ';
       $weight     = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
       $sql

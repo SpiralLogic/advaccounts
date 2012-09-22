@@ -37,12 +37,12 @@
       if (!$this->frame) {
         echo "<div class='bold center pad10 margin20 font13'>";
         UI::search(
-          'stock',
+          'stock_id',
           [
           'label'            => 'Item:',
           'url'              => 'Item',
           'idField'          => 'stock_id',
-          'name'             => 'stock', //
+          'name'             => 'stock_id', //
           'value'            => $this->stock_id,
           'focus'            => true,
           ]
