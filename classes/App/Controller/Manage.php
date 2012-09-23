@@ -110,6 +110,11 @@
       $inactive = $this->getShowInactive($pager_name);
       return $this->object->getAll($inactive);
     }
+    /**
+     * @param $pager_name
+     *
+     * @return bool
+     */
     protected function getShowInactive($pager_name) {
       $inactive = false;
       if (isset($_SESSION['pager'][$pager_name])) {

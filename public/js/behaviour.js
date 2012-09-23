@@ -494,12 +494,12 @@ Behaviour.register({
                        }
                      },
                      '[data-dec]':                                                                                                     function (e) {
-                       console.log(e.onblur);
+                       var dec = e.getAttribute("data-dec");
                        if (!e.onblur) {
                          e.onblur = function () {
-                           var dec = this.getAttribute("data-dec");
                            Adv.Forms.priceFormat(this.name, Adv.Forms.getAmount(this.name), dec);
                          };
+                         e.onblur();
                        }
                      },
                      '.freight':                                                                                                       function (e) {

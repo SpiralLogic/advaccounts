@@ -25,7 +25,7 @@
        *
        * @param $stock_id
        *
-       * @return null|PDOStatement
+       * @return null|\PDOStatement
        */
       public static function getAll($stock_id) {
         $sql

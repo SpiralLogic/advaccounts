@@ -171,22 +171,22 @@
       if (static::$current_severity == -1 || static::$errors || static::$dberrors || static::$debugLog) {
         $text            = '';
         $with_back_trace = [];
-        $text .= count(static::$debugLog) ? "<div><pre><h3>Debug Values: </h3>" . var_export(static::$debugLog, true) . "\n\n" : '';
+        $text .= count(static::$debugLog) ? "<div><pre><h3>Debug Values: </h3>" . static::dumpVar(static::$debugLog, true) . "\n\n" : '';
         if (static::$errors) {
           foreach (static::$errors as $id => $error) {
             $with_back_trace[] = $error;
             unset(static::$errors[$id]['backtrace']);
           }
-          $text .= "<div><pre><h3>Errors: </h3>" . var_export(static::$errors, true) . "\n\n";
+          $text .= "<div><pre><h3>Errors: </h3>" . static::dumpVar(static::$errors, true) . "\n\n";
         }
-        $text .= static::$dberrors ? "<h3>DB Errors: </h3>" . var_export(static::$dberrors, true) . "\n\n" : '';
-        $text .= static::$messages ? "<h3>Messages: </h3>" . var_export(static::$messages, true) . "\n\n" : '';
+        $text .= static::$dberrors ? "<h3>DB Errors: </h3>" . static::dumpVar(static::$dberrors, true) . "\n\n" : '';
+        $text .= static::$messages ? "<h3>Messages: </h3>" . static::dumpVar(static::$messages, true) . "\n\n" : '';
         $id = md5($text);
-        $text .= "<h3>SERVER: </h3>" . var_export($_SERVER, true) . "\n\n";
-        $text .= (isset($_POST) && count($_POST)) ? "<h3>POST: </h3>" . var_export($_POST, true) . "\n\n" : '';
-        $text .= (isset($_GET) && count($_GET)) ? "<h3>GET: </h3>" . var_export($_GET, true) . "\n\n" : '';
-        $text .= (isset($_REQUEST) && count($_REQUEST)) ? "<h3>REQUEST: </h3>" . var_export($_REQUEST, true) . "\n\n" : '';
-        $text .= ($with_back_trace) ? "<div><pre><h3>Errors with backtrace: </h3>" . var_export($with_back_trace, true) . "\n\n" : '';
+        $text .= "<h3>SERVER: </h3>" . static::dumpVar($_SERVER, true) . "\n\n";
+        $text .= (isset($_POST) && count($_POST)) ? "<h3>POST: </h3>" . static::dumpVar($_POST, true) . "\n\n" : '';
+        $text .= (isset($_GET) && count($_GET)) ? "<h3>GET: </h3>" . static::dumpVar($_GET, true) . "\n\n" : '';
+        $text .= (isset($_REQUEST) && count($_REQUEST)) ? "<h3>REQUEST: </h3>" . static::dumpVar($_REQUEST, true) . "\n\n" : '';
+        $text .= ($with_back_trace) ? "<div><pre><h3>Errors with backtrace: </h3>" . static::dumpVar($with_back_trace, true) . "\n\n" : '';
         $subject = 'Error log: ';
         $subject .= (isset(static::$session['User'])) ? static::$session['User']->username . ', ' : '';
         if (static::$session) {
@@ -196,7 +196,7 @@
           if (isset(static::$session['pager'])) {
             static::$session['pager'] = count(static::$session['pager']);
           }
-          $text .= "<h3>Session: </h3>" . var_export(static::$session, true) . "\n\n</pre></div>";
+          $text .= "<h3>Session: </h3>" . static::dumpVar(static::$session, true) . "\n\n</pre></div>";
         }
         $subject .= (isset(static::$levels[static::$current_severity])) ? 'Severity: ' . static::$levels[static::$current_severity] : '';
         $subject .= static::$dberrors ? ', DB Error' : '';
@@ -281,7 +281,7 @@
       }
       $view            = new View('fatal_error');
       $view['message'] = $content;
-      $view->set('debug', (static::$admin) ? var_export(Errors::$errors, true) : '');
+      $view->set('debug', (static::$admin) ? static::dumpVar(Errors::$errors, true) : '');
       $view->render();
       session_write_close();
       if (function_exists('fastcgi_finish_request')) {
@@ -357,7 +357,7 @@
         $source = array_shift($backtrace);
       }
       if (is_writable(ROOT_DOC . '../error_log')) {
-        error_log(date(DATE_RFC822) . ": " . var_export($error['debug'], true) . "\n\n\n", 3, ROOT_DOC . '../error_log');
+        error_log(date(DATE_RFC822) . ": " . static::dumpVar($error['debug'], true) . "\n\n\n", 3, ROOT_DOC . '../error_log');
       }
       Errors::handler(E_ERROR, $error['message'], $source['file'], $source['line']);
     }
@@ -370,7 +370,7 @@
       $args    = func_get_args();
       $content = [];
       foreach ($args as $arg) {
-        $content[] = var_export($arg, true);
+        $content[] = static::dumpVar($arg, true);
       }
       $error              = array('line' => $source['line'], 'file' => $source['file'], 'content' => $content);
       static::$debugLog[] = $error;
@@ -379,6 +379,16 @@
         3,
         ROOT_DOC . '../error_log'
       );
+    }
+    /**
+     * @param $var
+     *
+     * @return string
+     */
+    protected static function  dumpVar($var) {
+      ob_start();
+      var_dump($var);
+      return ob_get_clean();
     }
   }
 

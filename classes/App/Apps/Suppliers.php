@@ -14,7 +14,7 @@
   /**
 
    */
-  class Creditors extends Application {
+  class Suppliers extends Application {
     public $name = 'Creditors';
     public $help_context = "&Suppliers";
     function buildMenu() {

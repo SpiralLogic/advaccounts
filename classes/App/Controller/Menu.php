@@ -41,9 +41,9 @@
      * @internal param $name
      * @internal param bool $enabled
      */
-    public function __construct() {
+    public function __construct($session, $user) {
       global $installed_extensions;
-      $this->User = User::i();
+      $this->User = $user;
 
       $this->id           = strtolower($this->name);
       $this->name         = $this->help_context ? : $this->name;

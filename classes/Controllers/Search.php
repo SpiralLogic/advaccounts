@@ -16,6 +16,11 @@
 
    */
   class Search extends Base {
+    protected function before() {
+      if (REQUEST_GET) {
+        header('Location: /');
+      }
+    }
     /**
 
      */

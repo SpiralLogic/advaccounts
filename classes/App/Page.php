@@ -135,7 +135,8 @@
      */
     protected function init($menu) {
       $this->App      = ADVAccounting::i();
-      $this->sel_app  = $this->sel_app ? : $this->App->get_selected()->id;
+      $path           = explode('/', $_SERVER['DOCUMENT_URI']);
+      $this->sel_app  = $path[1];
       $this->ajaxpage = (REQUEST_AJAX || Ajax::_inAjax());
       $this->menu     = ($this->frame) ? false : $menu;
       $this->theme    = $this->User->theme();
@@ -207,7 +208,7 @@
         $item['acc0']  = isset($config['name']) ? $config['name'] : $acc[0];
         $item['acc1']  = $acc[1];
         $item['class'] = ($this->sel_app == strtolower($app)) ? "active" : null;
-        $item['href']  = (!isset($config['direct'])) ? '/index.php?application=' . $app : '/' . ltrim($config['direct'], '/');
+        $item['href']  = '/' . strtolower($item['acc0']);
         $menuitems[]   = $item;
       }
       $menu->set('menu', $menuitems);

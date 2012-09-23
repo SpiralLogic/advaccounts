@@ -7,17 +7,17 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  namespace ADV\App\Apps;
+  namespace ADV\Controllers;
 
-  use ADV\App\Application\Application;
+  use \ADV\App\Controller\Menu;
 
   /**
 
    */
-  class Debtors extends Application {
-    public $name = "Debtors";
-    public $help_context = "&Customers";
+  class Items extends Menu {
+    public $name = "Items";
+    public $help_context = "&Items";
     public function buildMenu() {
-      $this->direct = '/contacts/manage/customers';
+      $this->direct = '/items/manage/items';
     }
   }

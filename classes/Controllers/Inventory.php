@@ -36,7 +36,7 @@
       $module->addLeftFunction(_("Item &Categories"), "/items/manage/categories?", SA_ITEMCATEGORY);
       $module->addLeftFunction(_("Inventory &Locations"), "/items/manage/locations?", SA_INVENTORYLOCATION);
       $module->addRightFunction(_("Inventory &Movement Types"), "/inventory/manage/movement_types?", SA_INVENTORYMOVETYPE);
-      $module->addRightFunction(_("&Units of Measure"), "/inventory/manage/item_units?", SA_UOM);
+      $module->addRightFunction(_("&Units of Measure"), "/items/manage/units?", SA_UOM);
       $module->addRightFunction(_("&Reorder Levels"), "/inventory/reorder_level?", SA_REORDER);
       $module->addRightFunction(_("&Barcodes"), "/inventory/barcodes?", SA_INVENTORYLOCATION);
       $module = $this->add_module(_("Pricing and Costs"));

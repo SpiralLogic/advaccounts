@@ -207,7 +207,7 @@
       }
       \ADV\Core\Event::init($this->Cache, $this->User->username);
 
-      $this->get_selected();
+      //      $this->get_selected();
       $this->route();
     }
     protected function route() {
@@ -216,6 +216,10 @@
       $index      = $controller == $_SERVER['SCRIPT_NAME'];
       $show404    = false;
       if (!$index && $controller) {
+        $app = ucfirst(trim($controller, '/'));
+        if (isset($this->applications[$app])) {
+          $controller = (isset($this->applications[$app]['route']) ? $this->applications[$app]['route'] : $app);
+        }
         $controller2 = 'ADV\\Controllers' . array_reduce(
           explode('/', ltrim($controller, '/')),
           function ($result, $val) {
@@ -223,6 +227,7 @@
           },
           ''
         );
+
         if (class_exists($controller2)) {
           $this->runController($controller2);
         } else {
@@ -247,7 +252,7 @@
      */
     protected function runController($controller2) {
 
-      new $controller2($this->Ajax, $this->JS, $this->Session, $this->User, $this->dic->get('Input'), DB::i());
+      new $controller2($this->Session, $this->User, $this->Ajax, $this->JS, $this->dic->get('Input'), DB::i());
     }
     /**
      * @param $app
@@ -481,7 +486,7 @@
         'Page',
         function ($c) {
 
-          new static($c->get('User'), $c->get('Config'), $c->get('User'), $c->get('JS'), $c->get('Dates'));
+          return new Page($c->get('User'), $c->get('Config'), $c->get('Ajax'), $c->get('JS'), $c->get('Dates'));
         }
       );
     }

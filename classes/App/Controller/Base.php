@@ -39,13 +39,13 @@
     /**
 
      */
-    function __construct($ajax, $js, $session, $user, $input, $db) {
-      $this->Ajax    = Ajax::i();
-      $this->JS      = JS::i();
-      $this->Session = Session::i();
-      $this->User    = User::i();
-      $this->Input   = Input::i();
-      static::$DB    = \ADV\Core\DB\DB::i();
+    function __construct($session, $user, $ajax, $js, $input, $db) {
+      $this->Ajax    = $ajax;
+      $this->JS      = $js;
+      $this->Session = $session;
+      $this->User    = $user;
+      $this->Input   = $input;
+      static::$DB    = $db;
       $this->run();
     }
     protected function run() {
