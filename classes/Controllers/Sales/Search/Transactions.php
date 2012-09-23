@@ -212,7 +212,7 @@
           if (substr($quicksearch, -1) == 0 && substr($quicksearch, -3, 1) == '.') {
             $quicksearch = (substr($quicksearch, 0, -1));
           }
-          $sql .= "TotalAmount LIKE " . DB::_quote('%' . substr($quicksearch, 1) . '%') . ") ";
+          $sql .= "Round(TotalAmount," . $this->User->prefs->price_dec . ") LIKE " . DB::_quote('%' . substr($quicksearch, 1) . '%') . ") ";
           continue;
         }
         if (stripos($quicksearch, $this->User->prefs->date_sep) > 0) {

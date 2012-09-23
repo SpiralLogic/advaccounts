@@ -400,11 +400,12 @@ Adv.extend({
                    if (!$.isFunction(callback)) {
                      var idField = Adv.Forms.findInputEl(callback);
                      callback = function (data) {
-                       if (!idField.length) {
-                         idField.val(data.id);
+                       console.log($(idField));
+                       if ($(idField).length) {
+                         $(idField).val(data.id);
                        }
                        $this.val(data.value);
-                       JsHttpRequest.request(els[0]);
+                       if (!$this.is('.nosubmit')) {JsHttpRequest.request(els[0]);}
                        return false;
                      }
                    }

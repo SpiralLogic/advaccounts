@@ -1,5 +1,6 @@
 <?php
   use ADV\Core\Barcode;
+  use ADV\App\Page;
   use ADV\Core\DB\DB;
 
   /**

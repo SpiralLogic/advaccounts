@@ -11,7 +11,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  use ADV\Core\Errors;
   use ADV\Core\Files;
   use ADV\Core\Input\Input;
   use ADV\Core\View;
@@ -33,7 +32,6 @@
     public $ajaxpage;
     public $lang_dir = '';
     /** @var \ADV\App\ADVAccounting */
-
     protected $App;
     /** @var User */
     protected $User;
@@ -68,14 +66,11 @@
      * @var string
      */
     protected $title = '';
-    /** @var Page */
     public static $i = null;
-    /**
-     * @var \Security
-     */
     protected $JS = null;
     /** @var Dates */
     protected $Dates = null;
+    /** @var \Security */
     protected $security;
     public $hide_back_link;
     public $renderedjs;
@@ -357,7 +352,6 @@
           }
         }
       }
-
       return array('', $selected_id);
     }
     public static function footer_exit() {

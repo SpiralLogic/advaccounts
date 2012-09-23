@@ -310,7 +310,7 @@
         $status['status'] = E_ERROR;
         preg_match('/Column \'(.+)\'(.*)/', $dberror['message'], $matches);
         $status['var']     = $matches[1];
-        $status['message'] = $matches[1] . $matches[2];
+        $status['message'] = str_replace(['cannot be null', '_'], ['cannot be empty', ' '], $matches[1] . $matches[2]);
       } elseif (count(static::$messages) > 0) {
         $message           = end(static::$messages);
         $status['status']  = $message['type'];

@@ -208,6 +208,7 @@
         return false;
       }
       $ret = crypt($password, $hash);
+      var_dump($ret, '<br>');
       if (!is_string($ret) || strlen($ret) != strlen($hash) || strlen($ret) <= 13) {
         return false;
       }
@@ -215,6 +216,7 @@
       $status = 0;
       for ($i = 0; $i < strlen($ret); $i++) {
         $status |= (ord($ret[$i]) ^ ord($hash[$i]));
+        print($status . ' ' . (ord($ret[$i]) ^ ord($ret[$i])) . '<br>');
       }
 
       return $status === 0;

@@ -378,7 +378,7 @@
   }
   if (Input::_post('stock_id')) {
     Session::_setGlobal('stock_id', $_POST['stock_id']);
-    echo "<iframe src='/inventory/purchasing_data.php?frame=1' style='width:48%;height:450px;overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
+    echo "<iframe src='/inventory/Purchasing.php?frame=1' style='width:48%;height:450px;overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
   }
   if (Input::_post('stock_id')) {
     Session::_setGlobal('stock_id', $_POST['stock_id']);

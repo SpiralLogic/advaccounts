@@ -300,7 +300,7 @@
       $selected_id = $multi ? (array) $selected_id : $selected_id;
       $field       = $this->addField('select', $name);
       $field->val($selected_id);
-      Ajax::_addUpdate($name, $name, $selected_id);
+      $this->Ajax->addUpdate($name, $name, $selected_id);
       // code is generalized for multiple selection support
       if ($this->Input->post("_{$name}_update")) {
         $async ? $this->Ajax->activate($name) : $this->Ajax->activate('_page_body');

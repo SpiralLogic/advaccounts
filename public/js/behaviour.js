@@ -493,8 +493,9 @@ Behaviour.register({
                          }
                        }
                      },
-                     '.amount':                                                                                                        function (e) {
-                       if (e.onblur === undefined) {
+                     '[data-dec]':                                                                                                     function (e) {
+                       console.log(e.onblur);
+                       if (!e.onblur) {
                          e.onblur = function () {
                            var dec = this.getAttribute("data-dec");
                            Adv.Forms.priceFormat(this.name, Adv.Forms.getAmount(this.name), dec);

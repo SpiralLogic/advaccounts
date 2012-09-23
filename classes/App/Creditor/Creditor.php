@@ -20,7 +20,6 @@
   use ADV\Core\Dialog;
   use DB_Company;
   use ADV\Core\Num;
-  use Bank_Currency;
   use ADV\Core\JS;
   use ADV\App\Contact\Contact;
 
@@ -35,19 +34,25 @@
      *
      * @return array|string
      */
+
     public static function search($terms) {
-      $sql = "SELECT creditor_id as id, supp_ref as label, supp_ref as value FROM suppliers WHERE supp_ref LIKE '%" . $terms . "%' ";
+      $data  = [];
+      $terms = preg_replace("/[^a-zA-Z 0-9]+/", " ", $terms);
+      $sql   = static::$staticDB->_select(
+        'creditor_id as id',
+        'name as label',
+        'name as value',
+        "IF(name LIKE " . static::$staticDB->_quote(trim($terms) . '%') . ",0,5) as weight"
+      )->from(
+        'suppliers'
+      )->where('name LIKE ', trim($terms) . "%")->orWhere('name LIKE ', trim($terms))->orWhere('name LIKE', '%' . str_replace(' ', '%', trim($terms)) . "%");
       if (is_numeric($terms)) {
-        $sql .= ' OR creditor_id LIKE  ' . static::$staticDB->_quote($terms . '%');
+        $sql->orWhere('creditor_id LIKE', "$terms%");
       }
-      $sql .= " LIMIT 20";
-      $result = static::$staticDB->_query($sql, 'Couldn\'t Get Supplier');
-      $data   = '';
-      while ($row = static::$staticDB->_fetchAssoc($result)) {
-        foreach ($row as &$value) {
-          $value = htmlspecialchars_decode($value);
-        }
-        $data[] = $row;
+      $sql->orderby('weight,name')->limit(20);
+      $results = static::$staticDB->_fetch();
+      foreach ($results as $result) {
+        $data[] = @array_map('htmlspecialchars_decode', $result);
       }
       return $data;
     }

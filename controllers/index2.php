@@ -1,4 +1,4 @@
 <?php
-  include PATH_VENDOR . 'passwords.php';
+  use ADV\App\DB\Generator;
 
-echo password_
+  (new Generator())->getTableDetails('purch_data');

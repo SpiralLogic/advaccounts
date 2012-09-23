@@ -38,7 +38,7 @@
       $module->addRightFunction(_("&Barcodes"), "/inventory/barcodes?", SA_INVENTORYLOCATION);
       $module = $this->add_module(_("Pricing and Costs"));
       $module->addLeftFunction(_("Sales &Pricing"), "/items/manage/prices?", SA_SALESPRICE);
-      $module->addLeftFunction(_("Purchasing &Pricing"), "/inventory/purchasing_data?", SA_PURCHASEPRICING);
+      $module->addLeftFunction(_("Purchasing &Pricing"), "/items/manage/purchasing?", SA_PURCHASEPRICING);
       $module->addRightFunction(_("Standard &Costs"), "/inventory/cost_update?", SA_STANDARDCOST);
     }
   }

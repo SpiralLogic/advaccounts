@@ -3,7 +3,7 @@
 
     <div id="search">
         <ul>
-            <li id="orders" data-href="/sales/search/orders?type={{ ST_SALESORDER }}">Orders/Quotes</li>
+            <li id="orders" data-href="/sales/search/orders?">Orders/Quotes</li>
             <li id="invoices" data-href="/sales/search/transactions?">Invoice/Delivery</li>
             <li id="purchaseOrders" data-href="/purchases/search/completed?">Purchase Order</li>
             <li id="supplierInvoices" data-href="/purchases/search/transactions?">Supplier Invoices</li>

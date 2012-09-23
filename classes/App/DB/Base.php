@@ -1,7 +1,6 @@
 <?php
   namespace ADV\App\DB;
 
-  use DBException;
   use ADV\Core\DB\DBDuplicateException;
   use ADV\Core\DB\DBInsertException;
   use ADV\Core\DB\DBSelectException;
@@ -168,7 +167,8 @@
         throw new DBException('No table name or id column for class: ' . get_called_class() . '(' . $this->_classname . ')');
       }
       try {
-        $query = static::$DB->select()->from($this->_table)->where($this->_id_column . '=', $id);
+        $query = static::$DB->select()->from($this->_table);
+        $query = $this->getSelectModifiers($query)->where($this->_id_column . '=', $id);
         foreach ($extra as $field => $value) {
           $query->andWhere($field . '=', $value);
         }
@@ -178,6 +178,14 @@
       }
 
       return $this->status(Status::INFO, 'Successfully read ' . $this->_classname, $id);
+    }
+    /**
+     * @param \ADV\Core\DB\Query\Select $query
+     *
+     * @return \ADV\Core\DB\Query\Select
+     */
+    protected function getSelectModifiers(\ADV\Core\DB\Query\Select $query) {
+      return $query;
     }
     /**
      * @return int|bool Id assigned to new database row or false if entry failed

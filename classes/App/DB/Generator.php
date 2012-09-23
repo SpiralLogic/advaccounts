@@ -12,6 +12,7 @@
     protected $name;
     protected $inactive = '';
     protected $id_column;
+    public $table;
     /**
 
      */
@@ -22,7 +23,7 @@
      * @param $table
      */
     public function getTableDetails($table) {
-      $this->$table = $table;
+      $this->table  = $table;
       $this->vars[] = 'protected $_table = \'' . $table . '\';';
       $this->name   = ucfirst($table);
       $this->vars[] = 'protected $_classname = \'' . $this->name . '\';';
@@ -87,7 +88,7 @@
      */
     public function generate() {
       $name     = $this->name;
-      $name     = $this->table;
+      $table    = $this->table;
       $vars     = implode("\n", $this->vars) . PHP_EOL;
       $valids   = implode("", $this->valids) . PHP_EOL;
       $inactive = $this->inactive . PHP_EOL;

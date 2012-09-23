@@ -107,14 +107,19 @@
      * @return mixed
      */
     protected function getTableRows($pager_name) {
+      $inactive = $this->getShowInactive($pager_name);
+      return $this->object->getAll($inactive);
+    }
+    protected function getShowInactive($pager_name) {
       $inactive = false;
       if (isset($_SESSION['pager'][$pager_name])) {
         $inactive = ($this->action == 'showInactive' && $this->Input->post(
           '_value',
           Input::NUMERIC
         ) == 1) || ($this->action != 'showInactive' && $_SESSION['pager'][$pager_name]->showInactive);
+        return $inactive;
       }
-      return $this->object->getAll($inactive);
+      return $inactive;
     }
     /**
      * @param $row

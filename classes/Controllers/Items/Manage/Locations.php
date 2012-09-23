@@ -15,7 +15,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class Locations extends \ADV\App\Controller\Manage {
-    protected $tableWidth = '80';
+    protected $tableWidth = '90';
     protected function before() {
       $this->object = new Location();
       $this->runPost();
@@ -38,6 +38,7 @@
       $form->hidden('id');
       $form->text('loc_code')->label('Location Code:');
       $form->text('location_name')->label('Location Name:');
+      $form->arraySelect('type', [Location::BOTH=> 'Both', Location::INWARD=> 'Inward', Location::OUTWARD=> 'Outward'])->label('Type:');
       $form->textarea('delivery_address')->label('Location Address:');
       $form->text('phone')->label('Phone:');
       $form->text('phone2')->label('Phone2:');
@@ -55,11 +56,25 @@
         _("Location Name"), //
         _("Address"), //
         _("Phone"), //
-        _("Secondary Phone"),
+        ['type'=> 'skip'],
+        _("Fax"),
+        _("Email"),
+        ['type'=> 'skip'],
+        _("Inactive")=> ['type'=> 'active'],
+        _("type"),
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
       ];
       return $cols;
+    }
+    /**
+     * @param $pager_name
+     *
+     * @return mixed
+     */
+    protected function getTableRows($pager_name) {
+      $inactive = $this->getShowInactive($pager_name);
+      return $this->object->getAll($inactive);
     }
   }
 

@@ -220,7 +220,7 @@ JS;
      * @return mixed
      */
     public function renderStatus(Status $status) {
-      return $this->_renderJSON(['status'=> $status]);
+      $this->renderJSON(['status'=> $status]);
     }
     /**
      * @static
