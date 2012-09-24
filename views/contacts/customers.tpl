@@ -5,7 +5,7 @@
 {{/if}}
 <div>
 {{$form->start()}}
-    {#$menu->startTab('Details', 'Customer Details', '#', 'text-align:center')#}
+    {#$menu->startTab('Details', 'Customer Details','active')#}
     <div id="companyIDs" class='pad5'>
         <label for="name">Customer name:</label><input id="name" placeholder='Customer' name="name" class="big">
         <label for="id">Customer ID:</label><input id="id" readonly class="small" value='{{$debtor_id}}' name='id'>
@@ -15,7 +15,15 @@
             Shipping Details
         </div>
         <div id="branchSelect" class="center">{{$branchlist}}
-            <button id="addBranch" class="invis" name="addBranch">Add new address</button>
+            <div id="branchMenu" class="btn-group alignleft" style="display:inline-block;">
+                <button class="btn dropdown-toggle auto" style="float:none;" data-toggle="dropdown">Add Branch <span class="icon-caret-down"></span></button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="#" class="addBranchBtn">Add</a></li>
+                    <li>
+                        <a href="#" class="delBranchBtn">Delete</a></li>
+                </ul>
+            </div>
         </div>
     {{#$form.shipping_details}}
     {{.}}

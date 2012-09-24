@@ -13,7 +13,7 @@
     , Adv = window.Adv//
     , sidemenu = {}//
     , activestate = true//
-    , searchInput = $('<input/>').attr({type: 'text', class: 'small'}).data({'id': '', url: ''})//
+    , searchInput = $('<input/>').attr({'id': 'searchInput', type: 'text', class: 'small'}).data({'id': '', url: ''})//
     , $search = $("#search")//
     , $quickCustomer = $('#quickCustomer')//
     , $quickSupplier = $('#quickSupplier');
@@ -47,6 +47,7 @@
       Adv.lastXhr = $.post(searchInput.data("url"), { 'q': term, limit: true }, $this.showSearch);
     };
     this.showSearch = function (data) {
+      Adv.Forms.setFocus(false);
       previous = $wrapper.contents().detach();
       $this.sidemenuHide();
       history.pushState({}, 'Search Results', searchInput.data("url") + 'q=' + searchInput.val());

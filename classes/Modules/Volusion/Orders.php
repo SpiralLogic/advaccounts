@@ -103,6 +103,7 @@
       $url .= '&EncryptedPassword=' . $apikey;
       $url .= '&EDI_Name=Generic\Orders';
       $url .= '&SELECT_Columns=*';
+
       if (!$result = file_get_contents($url)) {
         Event::warning('Could not retrieve web orders');
       }

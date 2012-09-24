@@ -47,6 +47,7 @@ var Adv = {};
     $(this.loader).ajaxStart(function () {
       Adv.loader.on();
       Adv.ScrollDetect.loaded = false;
+      Adv.Forms.setFocus(true);
       if (Adv.debug.ajax) {
         console.time('ajax')
       }
@@ -253,7 +254,7 @@ Adv.extend({
                }
              }()),
              Forms:       (function () {
-               var tooltip, hidden = [], tooltiptimeout, focusonce, focus, menu = {
+               var focusOff = false, tooltip, hidden = [], tooltiptimeout, focusonce, focus, menu = {
                  current:    null,
                  closetimer: null,
                  open:       function (el) {
@@ -534,6 +535,17 @@ Adv.extend({
                  },
                  setFocus:        function (name, byId) {
                    var el, pos, $el;
+                   console.log(name);
+                   if (name === false) {
+                     focusOff = true;
+                     return;
+                   }
+                   if (name === true) {
+                     focusOff = false;
+                   }
+                   if (focusOff === true) {
+                     return;
+                   }
                    if (typeof(name) == 'object') {
                      el = name;
                    }

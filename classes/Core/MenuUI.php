@@ -31,11 +31,13 @@
     protected $jslinks = [];
     /** @var JS */
     protected $JS;
+    protected $defaultState = 'default';
     /**
      * @param array $options
      */
-    public function __construct($options = []) {
-      $this->options = $options;
+    public function __construct($options = [], $defaultState = 'default') {
+      $this->defaultState = $defaultState;
+      $this->options      = $options;
       $this->setJSObject();
     }
     /**
@@ -94,14 +96,15 @@
      *
      * @return MenuUI
      */
-    public function startTab($title, $tooltip, $link = '#', $style = '') {
+    public function startTab($title, $tooltip, $state = null) {
       $count = count($this->items);
-      $this->addTab($title, $tooltip, '#tabs' . MenuUI::$menuCount . '-' . $count);
-
+      if ($state == null) {
+        $state = $this->defaultState;
+      }
+      $this->items[]                       = new MenuUI_item($title, $tooltip, '#tabs' . MenuUI::$menuCount . '-' . $count, null, null, $state);
       $this->current_tab['attrs']['id']    = 'tabs' . MenuUI::$menuCount . '-' . $count;
-      $this->current_tab['attrs']['class'] = 'ui-tabs-panel ui-widget-content ui-corner-bottom ';
+      $this->current_tab['attrs']['class'] = 'ui-tabs-panel ui-widget-content';
       $this->current_tab['attrs']['style'] = ($count > 0 || $this->firstPage != $count) ? ' display:none;' : '';
-      $this->current_tab['attrs']['style'] .= $style;
       ob_start();
 
       return $this;
@@ -155,10 +158,14 @@
      * @param string $link
      * @param null   $param_element
      * @param null   $target
+     * @param string $state
      */
-    public function __construct($label, $tooltip = '', $link = '#', $param_element = null, $target = null) {
-      $this->label = $label;
-      $this->attrs = [
+    public function __construct($label, $tooltip = '', $link = '#', $param_element = null, $target = null, $state = 'default') {
+      $this->label   = $label;
+      $this->liattrs = [
+        'class'=> 'ui-state-default ui-corner-top ui-state-' . $state,
+      ];
+      $this->attrs   = [
         'href'           => e($link),
         'title'          => $label,
         'tooltip'        => e($tooltip),

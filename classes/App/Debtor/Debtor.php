@@ -147,6 +147,12 @@
       $branch->save();
       $this->branches[$branch->branch_id] = $branch;
     }
+    public function newBranch() {
+      $branch            = new Debtor_Branch();
+      $branch->debtor_id = $this->id;
+      $this->branches[0] = $branch;
+      return $branch;
+    }
     /**
      * @return array|null
      */
@@ -168,6 +174,23 @@
       unset($this->id);
       $this->init();
       return $this->status(true, "Customer deleted.");
+    }
+    /**
+     * @param $branch_id
+     *
+     * @return \ADV\Core\Traits\Status|bool
+     */
+    public function deleteBranch($branch_id) {
+      if (!isset($this->branches[$branch_id])) {
+        return $this->status(false, "The customer branch doesn't exist");
+      }
+      if (count($this->branches) == 1) {
+        return $this->status(false, "The customer must have at least one branch");
+      }
+      if ($this->branches[$branch_id]->delete()) {
+        return $this->status(true, "The customer branch has been deleted");
+      }
+      return $this->status(false, "The customer branch could not be deleted");
     }
     /**
      * @return array|bool

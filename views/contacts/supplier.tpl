@@ -4,7 +4,7 @@
 </div>
 {{/if}}
 <div>{{$form->start()}}
-    {#$menu->startTab('Details', 'Supplier Details', '#', 'text-align:center')#}
+    {#$menu->startTab('Details', 'Supplier Details')#}
     <div id="companyIDs">
         <label for="name">Supplier name:</label><input id="name" name="name" class="big">
         <label for="id">Supplier ID:</label><input id="id" name="id" class="small" maxlength="7">

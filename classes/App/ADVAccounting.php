@@ -212,6 +212,7 @@
     }
     protected function route() {
       $this->setupPage();
+
       $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
       $index      = $controller == $_SERVER['SCRIPT_NAME'];
       $show404    = false;
@@ -244,7 +245,7 @@
         }
       }
       if ($index || $show404) {
-        $this->display();
+        header('Location: /' . ($this->User->prefs->startup_tab ? : $this->Config->get('apps.default')));
       }
     }
     /**
@@ -271,41 +272,11 @@
      *
      * @return null
      */
-    public function get_application($id) {
-      $app_class = '\\ADV\\App\\Apps\\' . $id;
-      return isset($this->applications[$id]) ? new $app_class : null;
-    }
-    /**
-     * @return null
-     */
-    public function get_selected() {
-      if ($this->selected !== null && is_object($this->selected)) {
-        return $this->selected;
-      }
-      $path           = explode('/', $_SERVER['DOCUMENT_URI']);
-      $app_id         = $path[1];
-      $this->selected = $this->get_application($app_id);
-      if (!$this->selected) {
-        $app_id         = $this->User->_startup_tab();
-        $this->selected = $this->get_application($app_id);
-      }
-      if (!$this->selected || !is_object($this->selected)) {
-        $this->selected = $this->get_application($this->Config->get('apps.default'));
-      }
-      return $this->selected;
-    }
     /**
      * @return null|string
      */
     public function getController() {
       return $this->controller;
-    }
-    public function display() {
-      Extensions::add_access($this->User);
-      Input::_get('application')  and $this->set_selected($_GET['application']);
-      $page = Page::start(_($help_context = "Main Menu"), SA_OPEN, false, true);
-      $page->display_application($this->get_selected());
-      Page::end();
     }
     public function loginFail() {
       header("HTTP/1.1 401 Authorization Required");
@@ -394,15 +365,10 @@
       exit();
     }
     protected function loadModules() {
-      $types = $this->Config->get('modules.default', []);
-      foreach ($types as $type => $modules) {
-        foreach ($modules as $module=> $module_config) {
-          switch ($type) {
-            default:
-              $module = '\\Modules\\' . $module . '\\' . $module;
-              new $module($module_config);
-          }
-        }
+      $modules = $this->Config->get('modules.default', []);
+      foreach ($modules as $module=> $module_config) {
+        $module = '\\Modules\\' . $module . '\\' . $module;
+        new $module($module_config);
       }
     }
     protected function setupApplications() {

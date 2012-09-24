@@ -147,15 +147,6 @@
       $this->post_address = &$this->br_post_address;
     }
     /**
-     * @return array|null
-     */
-    public function delete() {
-      DB::_delete('branches')->where('branch_id=', $this->branch_id)->exec();
-      $this->init();
-
-      return $this->status(true, "Branch deleted.");
-    }
-    /**
      * @return string
      */
     public function getAddress() {

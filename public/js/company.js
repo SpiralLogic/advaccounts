@@ -82,11 +82,11 @@ Adv.extend({
   window.Contacts = Contacts
 })(window, jQuery);
 var Branches = function () {
-  var current = {}, list = $("#branchList"), btn = $("#addBranch");
+  var current = {}, list = $("#branchList"), menu = $("#branchMenu"), addBtn = $(".addBranchBtn").eq(0), delBtn = $(".delBranchBtn").eq(0);
   return {
     adding:       false,
     init:         function () {
-      btn.hide().removeClass('invis');
+      menu.hide();
       list.change(function () {
         if (!$(this).val().length) {
           return;
@@ -137,25 +137,36 @@ var Branches = function () {
       }
     },
     New:          function () {
-      $.post('search.php', {branch_id: 0, id: Company.get().id}, function (data) {
+      $.post('#', {branch_id: 0, id: Company.get().id}, function (data) {
         data = data.branch;
         Branches.add(data).change(data);
         Company.get().branches[data.branch_id] = data;
-        btn.hide();
+        menu.hide();
         Branches.adding = true;
       }, 'json');
     },
+    remove:       function () {
+      $.post('#', {_action: 'DeleteBranch', branch_id: current.id, id: Company.get().id}, function (data) {
+        list.find("[value=" + current.id + "]").remove();
+        Branches.change(list.val());
+      }, 'json');
+    },
     btnBranchAdd: function () {
-      btn.unbind('click');
+      addBtn.off('click');
+      delBtn.off('click');
       if (!Branches.adding && current.branch_id > 0 && Company.get().id > 0) {
-        btn.text('Add New Branch').one('click',function () {
+        addBtn.on('click', function () {
           Branches.New();
           Branches.adding = true;
-          return false
-        }).show();
+        });
+        delBtn.on('click', function () {
+          Branches.remove();
+          Branches.adding = false;
+        });
+        menu.show();
       }
       else {
-        current.branch_id > 0 ? btn.show() : btn.hide();
+        current.branch_id > 0 ? menu.show() : menu.hide();
       }
       return false;
     }

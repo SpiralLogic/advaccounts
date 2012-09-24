@@ -17,7 +17,7 @@
    */
   class Search extends Base {
     protected function before() {
-      if (REQUEST_GET) {
+      if (!REQUEST_AJAX) {
         header('Location: /');
       }
     }

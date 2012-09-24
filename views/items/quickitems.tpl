@@ -2,7 +2,7 @@
 {{$searchBox}}
 </div>
 <form>
-    {#$menu->startTab('Items', 'Items', '#')#}
+    {#$menu->startTab('Items', 'Items')#}
     <div id="Items" class="width40 formbox" style='display:none'>
         <input type="hidden" value="${id}" name="id" id="id">
         <label for="stock_id"><span>Code:</span><input name="stock_id" id="stock_id" type="text" value="${stock_id}" maxlength="20"></label>

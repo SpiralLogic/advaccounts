@@ -2,6 +2,7 @@
   namespace ADV\Controllers\Contacts\Manage;
 
   use ADV\App\Debtor\Debtor;
+  use Debtor_Branch;
   use Tax_Groups;
   use Inv_Location;
   use Sales_UI;
@@ -41,9 +42,15 @@
         $data['company'] = $this->debtor = new Debtor();
         $data['company']->save($_POST);
       } elseif ($this->Input->request('id', Input::NUMERIC) > 0) {
+
         $data['company']     = $this->debtor = new Debtor($this->Input->request('id', Input::NUMERIC));
         $data['contact_log'] = Contact_Log::read($this->debtor->id, CT_CUSTOMER);
         $this->Session->setGlobal('debtor_id', $this->debtor->id);
+        if ($this->Input->post('branch_id', Input::NUMERIC) === 0) {
+          $data['branch'] = $this->debtor->newBranch();
+        } elseif ($this->action == 'DeleteBranch') {
+          $data['branch'] = $this->debtor->deleteBranch($this->Input->post('branch_id', Input::NUMERIC));
+        }
       } else {
         $data['company'] = $this->debtor = new Debtor();
       }
@@ -76,7 +83,7 @@
       $js = new JS();
       $js->autocomplete('customer', 'Company.fetch', 'Debtor');
       $form = new Form();
-      $menu = new MenuUI();
+      $menu = new MenuUI([], 'disabled');
       $menu->setJSObject($js);
       $view          = new View('contacts/customers');
       $view['frame'] = $this->Input->get('frame') || $this->Input->get('id');
