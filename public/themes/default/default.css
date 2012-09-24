@@ -2912,7 +2912,12 @@ img {
   height:         40px;
   border-left:    1px solid rgba(0, 0, 0, 0.3);
 }
-
+#_tabs2 ul {
+  float:right;
+}
+#_tabs2 #topmenu{
+  float:none;
+}
 #_tabs2 ul .title {
   position:       absolute;
   right:          20px;
