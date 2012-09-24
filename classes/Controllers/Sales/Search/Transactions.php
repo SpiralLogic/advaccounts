@@ -216,7 +216,7 @@
           continue;
         }
         if (stripos($quicksearch, $this->User->prefs->date_sep) > 0) {
-          $sql .= " tran_date LIKE '%" . Dates::_dateToSql($quicksearch, false) . "%' OR";
+          $sql .= " tran_date = '" . Dates::_dateToSql($quicksearch) . "') ";
           continue;
         }
         if (is_numeric($quicksearch)) {
@@ -232,6 +232,7 @@
       if (isset($filter) && $filter) {
         $sql .= $filter;
       }
+      var_dump($sql);
       return $sql;
     }
     protected function displaySummary() {

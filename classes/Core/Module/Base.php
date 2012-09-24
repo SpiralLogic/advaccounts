@@ -15,14 +15,14 @@
     /**
      * @var array
      */
-    protected $_enabled;
+    protected $enabled;
     protected $config;
     /**
      * @param array $config
      */
     public function __construct($config = []) {
-      $this->config = $config;
-      $this->enabled = $config and \ADV\Core\Arr::get($config, 'enabled', false);
+      $this->config  = $config;
+      $this->enabled = $config['enabled'];
       if ($this->enabled) {
         $this->init();
       }

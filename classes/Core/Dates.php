@@ -218,7 +218,13 @@
       if (count($parts) == 3 && checkdate($parts[1], $parts[2], $parts[0])) {
         return $date;
       }
-      $how  = $this->formats[$this->format];
+      $parts = explode($this->sep, $date);
+      $how   = $this->formats[$this->format];
+      if (count($parts) == 2 && strlen($parts[0]) < 3 && strlen($parts[1]) < 3) {
+        $how = trim(str_replace('Y', '', $how), '/');
+      } elseif (count($parts) == 3 && strlen($parts[0]) < 3 && strlen($parts[1]) < 3 && strlen($parts[2]) < 3) {
+        $how = str_replace('Y', 'y', $how);
+      }
       $date = \DateTime::createFromFormat($how, $date);
       if (!$date) {
         return $this->today(true);

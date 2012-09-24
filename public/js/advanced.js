@@ -160,10 +160,14 @@ Adv.extend({
                  }
                  window.clearTimeout(Adv.Scroll.msgboxTimeout);
                  if (text) {
-                   Adv.msgbox.html(text);
+                   Adv.msgbox.css({opacity: 0}).html(text);
+                   if (Adv.msgbox.height() > 0) {setTimeout(function () {Adv.msgbox.css({opacity: 1, height: '40px'})}, 200);}
+                   else {
+                     Adv.msgbox.css({opacity: 1, height: '40px'})
+                   }
+                   Adv.Scroll.msgboxTimeout = setTimeout(function () {Adv.msgbox.css({opacity: 0, height: 0})}, 15000);
+                   Adv.Forms.setFocus(Adv.msgbox[0]);
                  }
-                 Adv.msgbox.stop(true, true).css('opacity', 0).animate({ height: 'show', opacity: 1}, 1000, 'easeOutExpo', function () {Adv.Scroll.msgboxTimeout = setTimeout(function () {Adv.msgbox.stop(true, true).animate({ height: 'hide', opacity: 0 }, 2000, 'easeOutExpo')}, 15000)});
-                 Adv.Forms.setFocus(Adv.msgbox[0]);
                }
 
              },
@@ -535,7 +539,6 @@ Adv.extend({
                  },
                  setFocus:        function (name, byId) {
                    var el, pos, $el;
-                   console.log(name);
                    if (name === false) {
                      focusOff = true;
                      return;

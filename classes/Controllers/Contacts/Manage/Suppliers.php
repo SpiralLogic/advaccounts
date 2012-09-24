@@ -66,7 +66,7 @@
      */
     protected function generateForm() {
       $cache = Cache::_get('supplier_form');
-      // $cache = null; //Cache::_get('supplier_form');
+      //   $cache = null; //Cache::_get('supplier_form');
       if ($cache) {
         $this->JS->addState($cache[1]);
         return $form = $cache[0];
@@ -74,7 +74,7 @@
       $js = new JS();
       $js->autocomplete('supplier', 'Company.fetch', 'Creditor');
       $form = new Form();
-      $menu = new MenuUI();
+      $menu = new MenuUI([], 'disabled');
       $menu->setJSObject($js);
       $view          = new View('contacts/supplier');
       $view['frame'] = $this->Input->get('frame') || $this->Input->get('id');
