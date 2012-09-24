@@ -1,6 +1,6 @@
 <?php
-  namespace ADV\Controllers\Contacts\Manage;
 
+  namespace ADV\Controllers\Contacts\Manage;
   use ADV\App\Creditor\Creditor;
   use ADV\App\Contact\Postcode;
   use GL_UI;
@@ -26,45 +26,46 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Suppliers extends \ADV\App\Controller\Base {
+  class Suppliers extends \ADV\App\Controller\Base
+  {
+
     /** @var Creditor */
     protected $creditor;
-    protected $company_data;
     protected function before() {
-
-      if (isset($_POST['name'])) {
-        $data['company'] = $this->creditor = new Creditor();
-        unset($_POST['supp_ref']);
-        $data['company']->save($_POST);
-      } elseif ($this->Input->request('id', Input::NUMERIC) > 0) {
-        $data['company']     = $this->creditor = new Creditor($this->Input->request('id', Input::NUMERIC));
-        $data['contact_log'] = Contact_Log::read($this->creditor->id, CT_SUPPLIER);
+      if ($this->action == 'save') {
+        $this->creditor = new Creditor();
+        $this->creditor->save($_POST['company']);
+      } elseif ($this->action == 'fetch' && $this->Input->request('id', Input::NUMERIC) > 0) {
+        $this->creditor      = new Creditor($this->Input->request('id', Input::NUMERIC));
+        $data['contact_log'] = Contact_Log::read($this->creditor->id, CT_CUSTOMER);
         $this->Session->setGlobal('creditor_id', $this->creditor->id);
       } else {
-        $data['company'] = $this->creditor = new Creditor();
+        $this->creditor = new Creditor();
       }
       if (REQUEST_AJAX) {
-        /** @noinspection PhpUndefinedMethodInspection */
-        $data['status'] = $this->creditor->getStatus();
-        /** @noinspection PhpUndefinedMethodInspection */
+        if ($this->creditor) {
+          $data['company'] = $this->creditor;
+        }
+        $data['status'] = $this->creditor->status->get();
         $this->JS->renderJSON($data);
       }
       $this->JS->footerFile("/js/company.js");
-      $this->company_data = $data;
     }
-    protected function index() {
+    protected
+    function index() {
       Page::start([_($help_context = "Suppliers"), 'creditors'], SA_SUPPLIER, $this->Input->request('frame'));
       if (isset($_POST['delete'])) {
         $this->delete();
       }
       echo $this->generateForm();
-      $this->JS->onload("Company.setValues(" . json_encode($this->company_data) . ");")->setFocus($this->creditor->id ? 'name' : 'supplier');
+      $this->JS->onload("Company.setValues(" . json_encode(['company'=> $this->creditor]) . ");")->setFocus($this->creditor->id ? 'name' : 'supplier');
       Page::end(true);
     }
     /**
      * @return string
      */
-    protected function generateForm() {
+    protected
+    function generateForm() {
       $cache = Cache::_get('supplier_form');
       //   $cache = null; //Cache::_get('supplier_form');
       if ($cache) {
@@ -89,18 +90,18 @@
       $form->text('email')->label('Email:');
       $form->textarea('address', ['cols'=> 37, 'rows'=> 4])->label('Street:');
       $postcode = new Postcode(array(
-                                            'city'     => array('city'),
-                                            'state'    => array('state'),
-                                            'postcode' => array('postcode')
-                                       ), $js);
+        'city'     => array('city'),
+        'state'    => array('state'),
+        'postcode' => array('postcode')
+      ), $js);
       $view->set('postcode', $postcode->getForm());
       $form->text('supp_phone')->label('Phone Number:');
       $form->textarea('supp_address', ['cols'=> 37, 'rows'=> 4])->label('Address:');
       $supp_postcode = new Postcode(array(
-                                                 'city'     => array('supp_city'),
-                                                 'state'    => array('supp_state'),
-                                                 'postcode' => array('supp_postcode')
-                                            ), $js);
+        'city'     => array('supp_city'),
+        'state'    => array('supp_state'),
+        'postcode' => array('supp_postcode')
+      ), $js);
       $view->set('supp_postcode', $supp_postcode->getForm());
       $form->percent('payment_discount', ["disabled"=> !$this->User->hasAccess(SA_SUPPLIERCREDIT)])->label("Prompt Payment Discount:");
       $form->amount('credit_limit', ["disabled"=> !$this->User->hasAccess(SA_SUPPLIERCREDIT)])->label("Credit Limit:");
@@ -143,12 +144,14 @@
       $this->JS->addState($js_state);
       return $form;
     }
-    protected function runValidation() {
+    protected
+    function runValidation() {
       Validation::check(Validation::SALES_AREA, _("There are no sales areas defined in the system. At least one sales area is required before proceeding."));
       Validation::check(Validation::SHIPPERS, _("There are no shipping companies defined in the system. At least one shipping company is required before proceeding."));
       Validation::check(Validation::TAX_GROUP, _("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
     }
-    private function delete() {
+    private
+    function delete() {
     }
   }
 
