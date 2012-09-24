@@ -139,11 +139,7 @@
       $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
       $linetype          = true;
       $doctype           = ST_PURCHORDER;
-      if ($rep->currency != $myrow['curr_code']) {
-        include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
-      } else {
         include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
-      }
       $rep->TextCol(3, 6, Report::SUBTOTAL, -2);
       $rep->TextCol(6, 7, $display_sub_total, -2);
       $rep->NewLine();

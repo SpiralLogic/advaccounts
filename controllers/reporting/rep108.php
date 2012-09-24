@@ -151,11 +151,7 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
       }
       $rep->Header2($myrow, Sales_Branch::get($branch), null, $baccount, ST_STATEMENT);
       $rep->NewLine();
-      if ($rep->currency != $myrow['curr_code']) {
-        include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
-      } else {
         include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
-      }
       $balance       = 0;
       $rep->currency = $cur;
       $rep->Font();
