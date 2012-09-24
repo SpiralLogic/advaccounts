@@ -37,7 +37,7 @@
     protected function formContents(Form $form, View $view) {
       $view['title'] = 'Sales Credit Status';
       $form->hidden('id');
-      $form->text('reason_desctripion')->label('Description:');
+      $form->text('reason_desription')->label('Description:');
       $form->arraySelect('dissallow_invoices', ['No', 'Yes'])->label('Disallow Invoices:');
     }
     /**
