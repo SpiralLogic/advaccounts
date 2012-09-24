@@ -270,7 +270,7 @@
      * @return bool|\Status
      */
     protected function init() {
-      $this->defaults();
+      parent::init();
       $this->setDefaults();
       $this->id = (int) $this->id;
     }

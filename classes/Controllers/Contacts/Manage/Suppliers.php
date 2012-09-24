@@ -46,7 +46,7 @@
         if ($this->creditor) {
           $data['company'] = $this->creditor;
         }
-        $data['status'] = $this->creditor->status->get();
+        $data['status'] = $this->creditor->getStatus();
         $this->JS->renderJSON($data);
       }
       $this->JS->footerFile("/js/company.js");
