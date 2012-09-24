@@ -432,6 +432,12 @@
           $items[] = ['class'=> 'printlink', 'label'=> 'Print Proforma', 'href'=> $href];
           $href    = Reporting::print_doc_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT, 'button printlink', '', 0, 0, true);
           $items[] = ['class'=> 'printlink', 'label'=> 'Print', 'href'=> $href];
+
+      }
+      if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
+
+      $href = '/system/void_transaction?type='.$row['trans_type'].'&trans_no='.$row['order_no'].'&memo=Deleted%20during%20order%20search';
+      $items[] = ['label'=> 'Void Trans', 'href'=>$href,'attr'=> ['target'=> '_blank']];
       }
       $menus[] = ['title'=> $items[0]['label'], 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
       $dropdown->set('menus', $menus);

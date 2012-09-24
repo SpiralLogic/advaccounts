@@ -215,6 +215,14 @@
           $sql .= "Round(TotalAmount," . $this->User->prefs->price_dec . ") LIKE " . DB::_quote('%' . substr($quicksearch, 1) . '%') . ") ";
           continue;
         }
+        if ($quicksearch[0] == ">"&&$quicksearch[1] == "$") {
+          $quicksearch=ltrim($quicksearch,'>');
+          if (substr($quicksearch, -1) == 0 && substr($quicksearch, -3, 1) == '.') {
+            $quicksearch = (substr($quicksearch, 0, -1));
+          }
+          $sql .= "Round(TotalAmount," . $this->User->prefs->price_dec . ") > " . DB::_quote(substr($quicksearch, 1) ) . ") ";
+          continue;
+        }
         if (stripos($quicksearch, $this->User->prefs->date_sep) > 0) {
           $sql .= " tran_date = '" . Dates::_dateToSql($quicksearch) . "') ";
           continue;
@@ -232,7 +240,6 @@
       if (isset($filter) && $filter) {
         $sql .= $filter;
       }
-      var_dump($sql);
       return $sql;
     }
     protected function displaySummary() {
@@ -391,7 +398,10 @@
         $items[] = ['label'=> 'Make Payment', 'href'=> "/sales/payment?debtor_id=" . $row['debtor_id']];
       }
       $items[] = ['class'=> 'email-button', 'label'=> 'Email', 'href'=> '#', 'data'=> ['emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']]];
-      $menus[] = ['title'=> $title, 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
+      if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
+             $href    = '/system/void_transaction?type=' . $row['type'] . '&trans_no=' . $row['trans_no'] . '&memo=Deleted%20during%20order%20search';
+             $items[] = ['label'=> 'Void Trans', 'href'=> $href, 'attr'=> ['target'=> '_blank']];
+           } $menus[] = ['title'=> $title, 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
       $dropdown->set('menus', $menus);
       return $dropdown->render(true);
     }

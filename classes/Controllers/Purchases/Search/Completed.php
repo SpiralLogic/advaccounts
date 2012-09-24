@@ -1,6 +1,5 @@
 <?php
   namespace ADV\Controllers\Purchases\Search;
-
   use ADV\Core\Input\Input;
   use GL_UI;
   use ADV\Core\View;
@@ -24,7 +23,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Completed extends \ADV\App\Controller\Base {
+  class Completed extends \ADV\App\Controller\Base
+  {
+
     protected $order_number;
     protected $creditor_id;
     protected function before() {
@@ -213,7 +214,7 @@
       $edit_attr = [];
       if ((Input::_request('frame'))) {
         $edit_attr = [
-          '_target'=> "parent",
+          'target' => "_parent",
           'onclick'=> 'javascript:window.parent.location.href=this.href; return false;'
         ];
       }
@@ -228,6 +229,10 @@
         $href = "/purchases/invoice?New=1&creditor_id=" . $row['creditor_id'] . "&PONumber=" . $row["order_no"];
       }
       $items[] = ['label'=> 'Receive', 'href'=> $href];
+      if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
+        $href    = '/system/void_transaction?type=' . ST_PURCHORDER . '&trans_no=' . $row['order_no'] . '&memo=Deleted%20during%20order%20search';
+        $items[] = ['label'=> 'Void Trans', 'href'=> $href, 'attr'=> ['target'=> '_blank']];
+      }
       $menus[] = ['title'=> $title, 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
       $dropdown->set('menus', $menus);
       return $dropdown->render(true);

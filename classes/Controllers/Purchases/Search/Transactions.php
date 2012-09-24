@@ -227,7 +227,10 @@
       if (empty($items)) {
         return '';
       }
-      $menus[] = ['title'=> 'Menu', 'items'=> $items];
+      if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
+             $href    = '/system/void_transaction?type=' . $row['type'] . '&trans_no=' . $row['trans_no'] . '&memo=Deleted%20during%20order%20search';
+             $items[] = ['label'=> 'Void Trans', 'href'=> $href, 'attr'=> ['target'=> '_blank']];
+           }$menus[] = ['title'=> 'Menu', 'items'=> $items];
       $dropdown->set('menus', $menus);
       return $dropdown->render(true);
     }

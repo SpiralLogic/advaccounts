@@ -1,6 +1,5 @@
 <?php
   namespace ADV\Controllers\Sales\Search;
-
   use ADV\Core\Input\Input;
   use ADV\App\Reporting;
   use ADV\Core\View;
@@ -25,7 +24,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Deliveries extends \ADV\App\Controller\Base {
+  class Deliveries extends \ADV\App\Controller\Base
+  {
+
     public $debtor_id;
     public $stock_id;
     protected function before() {
@@ -224,6 +225,10 @@
       }
       $href    = Reporting::print_doc_link($row['trans_no'], _("Print"), true, ST_CUSTDELIVERY, ICON_PRINT, '', '', 0, 0, true);
       $items[] = ['class'=> 'printlink', 'label'=> 'Print', 'href'=> $href];
+      if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
+        $href    = '/system/void_transaction?type=' . ST_CUSTDELIVERY . '&trans_no=' . $row['trans_no'] . '&memo=Deleted%20during%20order%20search';
+        $items[] = ['label'=> 'Void Trans', 'href'=> $href, 'attr'=> ['target'=> '_blank']];
+      }
       $menus[] = ['title'=> $items[0]['label'], 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
       $dropdown->set('menus', $menus);
       return $dropdown->render(true);

@@ -1,4 +1,6 @@
 <?php
+  use ADV\App\Voiding;
+
   /**
    * PHP version 5.4
    * @category  PHP

@@ -68,7 +68,8 @@
           if ($type == ST_CUSTDELIVERY) {
             $delivery = Debtor_Trans::get($type_no, $type);
             if (!$delivery['trans_link']) {
-              if (static::get(ST_SALESINVOICE, $delivery['trans_link']) === false) {
+
+              if (static::get(ST_SALESINVOICE, $delivery['trans_link']) !== false) {
                 return false;
               }
             }
