@@ -464,11 +464,7 @@
         // include("includes/lang/en_AU/statement_head.php");
         //} else
       }
-      if (isset($myrow['curr_code']) && $this->currency != $myrow['curr_code']) {
-        include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
-      } else {
         include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
-      }
       include(REPORTS_PATH . 'includes' . DS . 'header.php');
       // }
       $this->row = isset($temp) ? $temp : $this->row;
@@ -1170,11 +1166,7 @@
         $doc_Kindest_regards = '';
         if ($email == 1) {
           $emailtype = true;
-          if ($this->currency != $myrow['curr_code']) {
-            include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
-          } else {
             include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
-          }
           $mail = new Email(str_replace(",", "", $this->company['coy_name']), $this->company['email']);
           if (!isset($myrow['email']) || $myrow['email'] == '') {
             $myrow['email'] = isset($myrow['contact_email']) ? $myrow['contact_email'] : '';

@@ -48,7 +48,7 @@
       }
       $this->creditor_id = $this->trans->creditor_id ? : $this->Input->post('creditor_id', Input::NUMERIC, null);
       if (!$this->creditor_id) {
-        $this->creditor_id = $this->Session->getGlobal('creditor');
+        $this->creditor_id = $this->Session->getGlobal('creditor_id');
       }
       $this->creditor_id = &$this->Input->postGetGlobal('creditor_id');
       $this->Session->setGlobal('creditor_id', $this->creditor_id);

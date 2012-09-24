@@ -46,7 +46,7 @@
         $data['company']     = $this->debtor = new Debtor($this->Input->request('id', Input::NUMERIC));
         $data['contact_log'] = Contact_Log::read($this->debtor->id, CT_CUSTOMER);
         $this->Session->setGlobal('debtor_id', $this->debtor->id);
-        if ($this->Input->post('branch_id', Input::NUMERIC) === 0) {
+        if ($this->Input->post('branch_id') === 0) {
           $data['branch'] = $this->debtor->newBranch();
         } elseif ($this->action == 'DeleteBranch') {
           $data['branch'] = $this->debtor->deleteBranch($this->Input->post('branch_id', Input::NUMERIC));

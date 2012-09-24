@@ -671,18 +671,18 @@
       $terms      = array($item_code, '%' . $item_code . '%');
       $terms      = array($item_code, $item_code . '%', $terms[1], $terms[1], $terms[1]);
       $termswhere = ' OR i.long_description LIKE ? ';
-      $where      = '';
+      $constraints      = '';
       foreach ($term as $t) {
-        $where .= ' AND i.long_description LIKE ? ';
+        $constraints .= ' AND i.long_description LIKE ? ';
         $terms[] = '%' . trim($t) . '%';
       }
-      $where .= ($inactive ? '' : ' AND s.inactive = 0 ') . ($no_sale ? '' : ' AND i.no_sale =0 ');
-      $where2 = (!empty($where) ? ' AND ' . $where : ' ');
+      $constraints .= ($inactive ? '' : ' AND s.inactive = 0 ') . ($no_sale ? '' : ' AND i.no_sale =0 ');
+      $constraints2 = (!empty($where) ? ' AND ' . $where : ' ');
       if ($type == 'local') {
         $where2 .= " AND !s.is_foreign ";
       }
       $stock_code = " s.item_code as stock_id,";
-      $where2 .= ' AND i.id = s.stockid ';
+      $constraints2 .= ' AND i.id = s.stockid ';
       $sales_type = $prices = '';
       $weight     = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
       if ($purchase) {
@@ -699,21 +699,21 @@
         $weight     = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
         $stock_code = " s.item_code as stock_id, p.price,";
         $prices     = ", prices p";
-        $where .= " AND s.id = p.item_code_id ";
+        $constraints .= " AND s.id = p.item_code_id ";
         if (isset($sales_type)) {
           $sales_type = ' AND p.sales_type_id =' . $sales_type;
         }
       } elseif ($kitsonly) {
-        $where .= " AND s.stock_id!=i.stock_id ";
+        $constraints .= " AND s.stock_id!=i.stock_id ";
       }
       $select = ($select) ? $select : ' ';
       $sql
               = "SELECT $select $stock_code i.description as item_name, c.description as category, i.long_description as description , editable,
                             $weight FROM stock_category c, item_codes s, stock_master i  $prices
-                            WHERE (s.item_code LIKE ? $termswhere) $where
-                            AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.item_code
+                            WHERE (s.item_code LIKE ? $termswhere) $constraints
+                            AND s.category_id = c.category_id $constraints2 $sales_type GROUP BY s.item_code
                             ORDER BY weight, s.category_id, s.item_code LIMIT 30";
-      DB::_prepare($sql);
+      var_dump($sql);DB::_prepare($sql);
       $result = DB::_execute($terms);
       return $result;
     }
@@ -779,7 +779,7 @@ JS;
      * @return void
      */
     public static function addSearchBox($id, $options = []) {
-      echo UI::searchLine($id, '/items/search.php', $options);
+      echo UI::searchLine($id, '/search', $options);
     }
     /**
      * @static

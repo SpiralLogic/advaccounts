@@ -2854,6 +2854,7 @@ img {
 
 #summary input {
   text-align: center;
+  width:5em;
 }
 
 #summary table {
