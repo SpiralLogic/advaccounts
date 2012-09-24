@@ -33,11 +33,12 @@
     protected $JS;
     protected $defaultState = 'default';
     /**
-     * @param array $options
+     * @param string $defaultState
+     *
+     * @internal param array $options
      */
-    public function __construct($options = [], $defaultState = 'default') {
+    public function __construct($defaultState = 'default') {
       $this->defaultState = $defaultState;
-      $this->options      = $options;
       $this->setJSObject();
     }
     /**
@@ -89,11 +90,12 @@
       return $this;
     }
     /**
-     * @param        $title
-     * @param        $tooltip
-     * @param string $link
-     * @param string $style
+     * @param      $title
+     * @param      $tooltip
+     * @param null $state
      *
+     * @internal param string $link
+     * @internal param string $style
      * @return MenuUI
      */
     public function startTab($title, $tooltip, $state = null) {

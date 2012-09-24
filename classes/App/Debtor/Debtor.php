@@ -8,7 +8,6 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Debtor;
-
   use Debtor_Branch;
   use ADV\App\Display;
   use ADV\App\Forms;
@@ -31,7 +30,9 @@
   /**
 
    */
-  class Debtor extends \Contact_Company {
+  class Debtor extends \Contact_Company
+  {
+
     /**
      * @var int
      */
@@ -48,6 +49,7 @@
      * @var string
      */
     public $debtor_ref = '';
+    public $type=  CT_CUSTOMER;
     /**
      * @var
      */
@@ -127,13 +129,23 @@
     public function getStatus($string = false) {
       foreach ($this->branches as $branch) {
         /** @var \Debtor_Branch $branch */
-        $this->status->append($branch->getStatus());
+        $status = $branch->getStatus();
+        if ($status != false) {
+          $this->status->append($status);
+        }
       }
       foreach ($this->contacts as $contact) {
+        $status = $contact->getStatus();
         /** @var \ADV\App\Contact\Contact $contact */
-        $this->status->append($contact->getStatus());
+        if ($status != false) {
+          $this->status->append($status);
+        }
       }
-      $this->status->append($this->accounts->getStatus());
+      $status = $this->accounts->getStatus();
+      /** @var \ADV\App\Contact\Contact $contact */
+      if ($status != false) {
+        $this->status->append($status);
+      }
       return parent::getStatus();
     }
     /**
@@ -244,6 +256,7 @@
      * @return array|bool|int|null|void
      */
     public function save($changes = null) {
+
       $data['debtor_ref']       = substr($this->name, 0, 29);
       $data['discount']         = User::numeric($this->discount) / 100;
       $data['payment_discount'] = User::numeric($this->payment_discount) / 100;
@@ -298,30 +311,25 @@
      * @return array|bool|null
      */
     protected function canProcess() {
-      if (strlen($this->name) == 0) {
+      if (!$this->name) {
         return $this->status(false, "The customer name cannot be empty.", 'name');
       }
       if (strlen($this->debtor_ref) == 0) {
-        $data['debtor_ref'] = substr($this->name, 0, 29);
+        $this->debtor_ref = substr($this->name, 0, 29);
       }
       if (!Validation::is_num($this->credit_limit, 0)) {
-        JS::_setFocus('credit_limit');
         return $this->status(false, "The credit limit must be numeric and not less than zero.", 'credit_limit');
       }
       if (!Validation::is_num($this->payment_discount, 0, 100)) {
-        JS::_setFocus('payment_discount');
         return $this->status(
           false,
-          'Processing',
           "The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0.",
           'payment_discount'
         );
       }
       if (!Validation::is_num($this->discount, 0, 100)) {
-        JS::_setFocus('discount');
         return $this->status(
           false,
-          'Processing',
           "The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0.",
           'discount'
         );
@@ -457,11 +465,11 @@
       $customerBox->addBeforeClose('$("#debtor_id").trigger("change")');
       $customerBox->setOptions(
         array(
-             'autoOpen'   => false,
-             'modal'      => true,
-             'width'      => '850',
-             'height'     => '715',
-             'resizeable' => true
+          'autoOpen'   => false,
+          'modal'      => true,
+          'width'      => '850',
+          'height'     => '715',
+          'resizeable' => true
         )
       );
       $customerBox->show();
@@ -755,13 +763,13 @@ JS;
       UI::search(
         'customer',
         array(
-             'url'           => 'Debtor',
-             'name'          => 'customer',
-             'idField'       => 'debtor_id',
-             'focus'         => $focus,
-             'class'         => '',
-             'value'         => $value,
-             'placeholder'   => $o['placeholder']
+          'url'           => 'Debtor',
+          'name'          => 'customer',
+          'idField'       => 'debtor_id',
+          'focus'         => $focus,
+          'class'         => '',
+          'value'         => $value,
+          'placeholder'   => $o['placeholder']
         )
       );
       echo "</td>";
@@ -792,17 +800,17 @@ JS;
         'debtor_id',
         'name',
         array(
-             'format'        => 'Forms::addCurrFormat',
-             'order'         => array('name'),
-             'search_box'    => $mode != 0,
-             'type'          => 1,
-             'size'          => 20,
-             'spec_option'   => $spec_option === true ? _("All Customers") : $spec_option,
-             'spec_id'       => ALL_TEXT,
-             'select_submit' => $submit_on_change,
-             'async'         => $async,
-             'sel_hint'      => $mode ? _('Press Space tab to filter by name fragment; F2 - entry new customer') : _('Select customer'),
-             'show_inactive' => $show_inactive
+          'format'        => 'Forms::addCurrFormat',
+          'order'         => array('name'),
+          'search_box'    => $mode != 0,
+          'type'          => 1,
+          'size'          => 20,
+          'spec_option'   => $spec_option === true ? _("All Customers") : $spec_option,
+          'spec_id'       => ALL_TEXT,
+          'select_submit' => $submit_on_change,
+          'async'         => $async,
+          'sel_hint'      => $mode ? _('Press Space tab to filter by name fragment; F2 - entry new customer') : _('Select customer'),
+          'show_inactive' => $show_inactive
         )
       );
     }

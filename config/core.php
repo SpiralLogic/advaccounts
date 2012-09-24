@@ -83,6 +83,7 @@
     ), //
     'ADV\\App\\Contact'          => array(
       'Contact', //
+      'Postcode', //
     ), //
     'ADV\\App\\Creditor'         => array(
       'Creditor', //

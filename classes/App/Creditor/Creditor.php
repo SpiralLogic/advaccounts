@@ -131,6 +131,7 @@
     public $payable_account;
     /** @var */
     public $payment_discount_account;
+    public $type=  CT_SUPPLIER;
     /**
      * @var string
      */

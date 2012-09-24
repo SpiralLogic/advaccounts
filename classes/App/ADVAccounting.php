@@ -296,16 +296,7 @@
       $instance->applications = [];
       $instance->setupApplications();
     }
-    /**
-     * @param $app_id
-     *
-     * @return bool
-     */
-    public function set_selected($app_id) {
-      $this->User->selectedApp = $this->get_application($app_id);
-      $this->selected          = $this->User->selectedApp;
-      return $this->selected;
-    }
+
     protected function checkLogin() {
       if (!$this->Session instanceof \ADV\Core\Session || !$this->Session->checkUserAgent()) {
         $this->showLogin();

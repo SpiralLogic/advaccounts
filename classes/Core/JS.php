@@ -86,11 +86,9 @@
      * @param       $callback
      * @param bool  $url
      */
-    public function autocomplete($id, $callback, $type) {
-      if (!$type) {
-        $url = $_SERVER['REQUEST_URI'];
-      }
-      $js    = "Adv.Forms.autocomplete('$id','$type',$callback);";
+    public function autocomplete($id, $callback, $type,$data=[]) {
+      $data = json_encode($data);
+      $js    = "Adv.Forms.autocomplete('$id','$type',$callback,$data);";
       $clean = "if (Adv.o.autocomplete['$id'].attr('type')!=='hidden'){Adv.o.autocomplete['$id'].catcomplete('destroy');}";
       $this->addLive($js, $clean);
     }

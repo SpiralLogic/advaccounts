@@ -46,7 +46,7 @@
       $module->addLeftFunction(_("&Quick Entries"), "/gl/manage/gl_quick_entries?", SA_QUICKENTRY);
       $module->addLeftFunction(_("Account &Tags"), "system/tags?type=account", SA_GLACCOUNTTAGS);
       //  $module->addLeftFunction(_("Payment Methods"), "/gl/manage/payment_methods", SA_BANKACCOUNT);
-      $module->addLeftFunction(_("&Currencies"), "/gl/manage/currencies?", SA_CURRENCY);
+      $module->addLeftFunction(_("&Currencies"), "/banking/manage/currencies?", SA_CURRENCY);
       $module->addLeftFunction(_("&Exchange Rates"), "/gl/manage/exchange_rates?", SA_EXCHANGERATE);
       $module->addRightFunction(_("&GL Accounts"), "/gl/manage/gl_accounts?", SA_GLACCOUNT);
       $module->addRightFunction(_("GL Account &Groups"), "/gl/manage/gl_account_types?", SA_GLACCOUNTGROUP);

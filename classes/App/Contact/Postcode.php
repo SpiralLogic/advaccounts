@@ -1,4 +1,5 @@
 <?php
+  namespace ADV\App\Contact;
   use ADV\App\UI;
   use ADV\App\Form\Form;
   use ADV\Core\JS;
@@ -12,7 +13,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Contact_Postcode {
+  class Postcode
+  {
+
     use \ADV\Core\Traits\SetFromArray;
 
     /**
@@ -22,12 +25,12 @@
     protected $city;
     protected $state;
     protected $postcode;
-    protected $url = '/contacts/postcode.php';
+    protected $url = 'postcode';
     /** @var \ADV\Core\JS */
     protected $JS;
     /**
-     * @param             $options
-     * @param ADV\Core\JS $js
+     * @param                                           $options
+     * @param \ADV\Core\JS $js
      */
     public function __construct($options, JS $js = null) {
       $this->JS = $js ? : JS::i();
@@ -47,14 +50,15 @@
         UI::search(
           $this->city[0],
           array(
-               'placeholder'       => 'City',
-               'url'               => $this->url . '?city=1',
-               'nodiv'             => true,
-               'set'               => static::$count,
-               'name'              => $this->city[0],
-               'size'              => 35,
-               'max'               => 40,
-               'callback'          => 'Adv.postcode.fetch'
+            'placeholder'        => 'City',
+            'url'                => 'Postcode',
+            'data'               => ['type'=> 'Locality'],
+            'nodiv'              => true,
+            'set'                => static::$count,
+            'name'               => $this->city[0],
+            'size'               => 35,
+            'max'                => 40,
+            'callback'           => 'Adv.postcode.fetch'
           ),
           true,
           $this->JS
@@ -63,25 +67,26 @@
       $form->text(
         $this->state[0],
         [
-        'placeholder'       => 'State',
-        'maxlength'         => 35,
-        'data-set'          => static::$count,
-        'size'              => 35,
-        'name'              => $this->state[0]
+          'placeholder'       => 'State',
+          'maxlength'         => 35,
+          'data-set'          => static::$count,
+          'size'              => 35,
+          'name'              => $this->state[0]
         ]
       )->label('State: ')->val($this->state[1]);
       $form->custom(
         UI::search(
           $this->postcode[0],
           [
-          'placeholder'       => 'Postcode',
-          'url'               => $this->url . '?postcode=1',
-          'nodiv'             => true,
-          'set'               => static::$count,
-          'name'              => $this->postcode[0],
-          'size'              => 35,
-          'max'               => 40,
-          'callback'          => 'Adv.postcode.fetch'
+            'url'                => 'Postcode',
+            'placeholder'        => 'Postcode',
+            'data'               => ['type'=> 'Pcode'],
+            'nodiv'              => true,
+            'set'                => static::$count,
+            'name'               => $this->postcode[0],
+            'size'               => 35,
+            'max'                => 40,
+            'callback'           => 'Adv.postcode.fetch'
           ],
           true,
           $this->JS
@@ -93,7 +98,7 @@
     /**
      * @param array|mixed $values
      *
-     * @return ADV\App\Form\Form
+     * @return \ADV\App\Form\Form
      */
     public function getForm($values = null) {
       $form = $this->generate();
@@ -129,13 +134,14 @@
     }
     /**
      * @param        $term
-     * @param string $type
+     * @param array  $data
      *
+     * @internal param string $type
      * @return mixed
      */
-    public static function search($term, $type = 'Locality') {
+    public static function search($term, $data = ['type'=> 'Locality']) {
       $result = DB::_select('id', "CONCAT(Locality,', ',State,', ',Pcode) as label", "CONCAT(Locality,'|',State,'|',Pcode) as value")->from('postcodes')->where(
-        $type . ' LIKE',
+        $data['type'] . ' LIKE',
         $term . '%'
       )->orderBy('Pcode')->limit(20)->fetch()->all();
       return $result;

@@ -1,6 +1,5 @@
 <?php
   namespace ADV\Core\Input;
-
   /**
    * Created by JetBrains PhpStorm.
    * User: Complex
@@ -10,6 +9,7 @@
    */
   class Base implements \ArrayAccess
   {
+
     const NUMERIC = 1;
     const OBJECT  = 2;
     const STRING  = 3;
@@ -33,7 +33,6 @@
      * @param $container
      */
     public function __construct(&$container) {
-
       $this->container = &$container;
     }
     /***
@@ -45,7 +44,6 @@
      */
     public function &get($var, $type = null, $default = null) {
       $result = $this->hasSet($var, $type, $default);
-
       if (is_array($var) && count($var) > 1) {
         $array = &$this->container;
         while (count($var) > 1) {
@@ -53,13 +51,11 @@
           $array = &$array[$key];
         }
         $array[$key] = $result;
-
         return $array[$key];
       }
       if (!($type == self::NUMERIC && $result === true)) {
         $this->container[$var] = $result;
       }
-
       return $this->container[$var];
     }
     /***
@@ -80,7 +76,6 @@
           return false;
         }
       }
-
       return true;
     }
     /**
@@ -108,13 +103,12 @@
         }
       }
       $value = (is_string($var) && isset($array[$var])) ? $array[$var] : $default; //chnage back to null if fuckoutz happen
-
       switch ($type) {
         case self::NUMERIC:
+          $value = str_replace([',', ' '], '', $value);
           if ($value === null || !is_numeric($value)) {
             return ($default === null) ? $this->default_number : $default;
           }
-
           return ($value === $this->default_number) ? true : $value + 0;
         case self::STRING:
           if ($value === null || !is_string($value)) {
@@ -139,7 +133,6 @@
             }
           }
       }
-
       return $value;
     }
     /**

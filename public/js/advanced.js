@@ -401,7 +401,7 @@ Adv.extend({
       setFormDefault:function (id, value, disabled) {
         this.setFormValue(id, value, disabled, true);
       },
-      autocomplete:function (searchField, type, callback) {
+      autocomplete:function (searchField, type, callback, data) {
         var els = Adv.Forms.findInputEl(searchField)//
           , $this = $(els) //
           , blank = {id:0, value:''};
@@ -435,6 +435,7 @@ Adv.extend({
               return false;
             }
             request['type'] = type;
+            request['data'] = data;
             Adv.lastXhr = $.getJSON('/search', request, function (data) {
               if (!$this.data('active')) {
                 data = blank;
@@ -444,6 +445,7 @@ Adv.extend({
               response(data);
             });
           },
+
           select:function (event, ui) {
             $this.data('default', null);
             if (callback(ui.item, event, this) === false) {

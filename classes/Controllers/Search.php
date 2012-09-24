@@ -28,13 +28,14 @@
      */
     protected function index() {
       $type=  $this->Input->request('type');
+      $searchdata = $this->Input->request('data');
       $searchclass = '\\' . $type;
       if (isset($_GET['term'])) {
         $uniqueID = $this->Input->get('UniqueID');
         if ($uniqueID) {
           $data = Item::searchOrder($_GET['term'], $uniqueID);
         } else {
-          $data = $searchclass::search($_GET['term']);
+          $data = $searchclass::search($_GET['term'],$searchdata);
         }
         $this->JS->renderJSON($data);
       }

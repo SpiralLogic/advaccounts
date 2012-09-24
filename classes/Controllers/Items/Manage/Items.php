@@ -1,7 +1,7 @@
 <?php
   namespace ADV\Controllers\Items\Manage;
-
   use ADV\App\Item\Item;
+  use ADV\App\Form\Form;
   use GL_UI;
   use Item_UI;
   use Tax_ItemType;
@@ -21,10 +21,11 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Items extends \ADV\App\Controller\Base {
+  class Items extends \ADV\App\Controller\Base
+  {
+
     protected $itemData;
     protected function before() {
-      ADVAccounting::i()->set_selected('items');
       if (REQUEST_AJAX) {
         $this->runPost();
       }
@@ -63,27 +64,32 @@
     protected function index() {
       Page::start(_($help_context = "Items"), SA_CUSTOMER, isset($_GET['frame']));
       $view = new View('items/quickitems');
-      $menu = new MenuUI();
+      $menu = new MenuUI('disabled');
       $view->set('menu', $menu);
-      $view->set('stock_cats', Item_Category::select('category_id'));
-      $view->set('units', Item_Unit::select('uom'));
-      $view->set('tax_itemtype', Tax_ItemType::select('tax_type_id'));
-      $view->set('stock_type', Item_UI::type('mb_flag'));
-      $view->set('sales_account', GL_UI::all('sales_account'));
-      $view->set('inventory_account', GL_UI::all('inventory_account'));
-      $view->set('cogs_account', GL_UI::all('cogs_account'));
-      $view->set('adjustment_account', GL_UI::all('adjustment_account'));
-      $view->set('assembly_account', GL_UI::all('assembly_account'));
+      $form = new Form();
+      $form->group('items');
+      $form->custom(Item_Category::select('category_id'))->label('Category:');
+      $form->custom(Item_Unit::select('uom'))->label('Units:');
+      $form->custom(Tax_ItemType::select('tax_type_id'))->label('Tax Type:');
+      $form->group('accounts');
+
+      $form->custom(Item_UI::type('mb_flag'))->label('Type:');
+      $form->custom(GL_UI::all('sales_account'))->label('Sales Account:');
+      $form->custom(GL_UI::all('inventory_account'))->label('Inventory Account:');
+      $form->custom(GL_UI::all('cogs_account'))->label('Cost of Goods Sold Account:');
+      $form->custom(GL_UI::all('adjustment_account'))->label('Adjustment Account:');
+      $form->custom(GL_UI::all('assembly_account'))->label('Assembly Account:');
+      $view->set('form', $form);
       $this->JS->autocomplete('itemSearchId', 'Items.fetch', 'Item');
       if (!isset($_GET['stock_id'])) {
         $searchBox = UI::search(
           'itemSearchId',
           [
-          'url'              => 'Item',
-          'idField'          => 'stock_id',
-          'name'             => 'itemSearchId', //
-          'focus'            => true,
-          'callback'         => 'Items.fetch'
+            'url'              => 'Item',
+            'idField'          => 'stock_id',
+            'name'             => 'itemSearchId', //
+            'focus'            => true,
+            'callback'         => 'Items.fetch'
           ],
           true
         );

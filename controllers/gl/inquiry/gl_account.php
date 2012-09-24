@@ -44,17 +44,10 @@
   if (isset($_GET["Dimension2"])) {
     $_POST["Dimension2"] = $_GET["Dimension2"];
   }
-  if (isset($_GET["amount_min"])) {
-    $_POST["amount_min"] = $_GET["amount_min"];
-  }
   if (isset($_GET["amount_max"])) {
     $_POST["amount_max"] = $_GET["amount_max"];
-  }
-  if (!isset($_POST["amount_min"])) {
-    $_POST["amount_min"] = Num::_priceFormat(0);
-  }
-  if (!isset($_POST["amount_max"])) {
-    $_POST["amount_max"] = Num::_priceFormat(0);
+  }  if (isset($_GET["amount_min"])) {
+    $_POST["amount_min"] = $_GET["amount_min"];
   }
   Forms::start();
   Display::div_start('trans_tbl');
@@ -74,7 +67,7 @@
   if ($dim > 1) {
     Dimensions::cells(_("Dimension") . " 2:", 'Dimension2', null, true, " ", false, 2);
   }
-  Forms::amountCellsSmall(_("Amount min:"), 'amount_min', null);
+  Forms::amountCellsSmall(_("Amount min:"), 'amount_min',null );
   Forms::amountCellsSmall(_("Amount max:"), 'amount_max', null);
   Forms::submitCells('Show', _("Show"), '', '', 'default');
   echo '</tr>';
@@ -92,13 +85,11 @@
       $_POST["account"] = null;
     }
     $act_name = $_POST["account"] ? GL_Account::get_name($_POST["account"]) : "";
-    $sql      = GL_Trans::getSQL('2011-01-01', '2012-01-01', -1, $_POST["account"], null, Validation::input_num('amount_min'), Validation::input_num('amount_max'));
+    $sql      = GL_Trans::getSQL('2011-01-01', '2012-01-01', -1, $_POST["account"], null,  Validation::input_num('amount_min'), Validation::input_num('amount_max'));
     if ($_POST["account"] != null) {
       Display::heading($_POST["account"] . "&nbsp;&nbsp;&nbsp;" . $act_name);
     }
-    var_dump($sql);
     // Only show balances if an account is specified AND we're not filtering by amounts
-    $show_balances = $_POST["account"] != null && Validation::input_num("amount_min") == 0 && Validation::input_num("amount_max") == 0;
     $cols          = [ //
       _("Type")       => ['fun'=> 'formatType'], //
       _("#")          => ['fun'=> 'formatView'], //
@@ -138,7 +129,7 @@
     echo '</tr>';
   }
   $running_total = $bfw;*/
-    //  DB_Pager::kill('GL_Account');
+   //  DB_Pager::kill('GL_Account');
     $table        = DB_Pager::newPager('GL_Account', $sql, $cols);
     $table->width = "90";
     $table->display();

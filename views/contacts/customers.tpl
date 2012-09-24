@@ -101,7 +101,7 @@
 </div>
 <div class='center clearleft pad20'>
     <button id="btnNew" name="new" type="submit" class="btn btn-primary">New</button>
-    <button id="btnCancel" name="cancel" type="submit" class="btn btn-danger ui-helper-hidden"><i class="icon-cross"></i> Cancel</button>
+    <button id="btnCancel" name="cancel" type="submit" class="btn btn-danger ui-helper-hidden"><i class="icon-trash"></i> Cancel</button>
     <button id="btnConfirm" name="save" type="submit" class="btn btn-success ui-helper-hidden"><i class="icon-ok"></i> Save</button>
 </div>
 <div id="shortcuts" class="center">{{#$shortcuts}}

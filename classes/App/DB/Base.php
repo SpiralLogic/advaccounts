@@ -17,7 +17,6 @@
    * @link      http://www.advancedgroup.com.au
    **/
   /**
-   * @method Status getStatus()
    */
   abstract class Base {
     use \ADV\Core\Traits\SetFromArray;
@@ -88,7 +87,7 @@
         $this->setFromArray($changes);
       }
       if (!$this->canProcess()) {
-        return $this->getStatus();
+        return false;
       }
       if ($this->id == 0) {
         return $this->saveNew();

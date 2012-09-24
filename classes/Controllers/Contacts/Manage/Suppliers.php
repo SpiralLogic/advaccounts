@@ -2,10 +2,10 @@
   namespace ADV\Controllers\Contacts\Manage;
 
   use ADV\App\Creditor\Creditor;
+  use ADV\App\Contact\Postcode;
   use GL_UI;
   use GL_Currency;
   use Tax_Groups;
-  use Contact_Postcode;
   use Contact_Log;
   use ADV\Core\View;
   use ADV\Core\Cache;
@@ -74,7 +74,7 @@
       $js = new JS();
       $js->autocomplete('supplier', 'Company.fetch', 'Creditor');
       $form = new Form();
-      $menu = new MenuUI([], 'disabled');
+      $menu = new MenuUI('disabled');
       $menu->setJSObject($js);
       $view          = new View('contacts/supplier');
       $view['frame'] = $this->Input->get('frame') || $this->Input->get('id');
@@ -88,7 +88,7 @@
       $form->text('fax')->label('Fax Number:');
       $form->text('email')->label('Email:');
       $form->textarea('address', ['cols'=> 37, 'rows'=> 4])->label('Street:');
-      $postcode = new Contact_Postcode(array(
+      $postcode = new Postcode(array(
                                             'city'     => array('city'),
                                             'state'    => array('state'),
                                             'postcode' => array('postcode')
@@ -96,7 +96,7 @@
       $view->set('postcode', $postcode->getForm());
       $form->text('supp_phone')->label('Phone Number:');
       $form->textarea('supp_address', ['cols'=> 37, 'rows'=> 4])->label('Address:');
-      $supp_postcode = new Contact_Postcode(array(
+      $supp_postcode = new Postcode(array(
                                                  'city'     => array('supp_city'),
                                                  'state'    => array('supp_state'),
                                                  'postcode' => array('supp_postcode')

@@ -207,7 +207,7 @@
       if ($filter_type != null AND is_numeric($filter_type)) {
         $sql .= " AND gl_trans.type= " . DB::_quote($filter_type);
       }
-      if ($amount_min != null) {
+      if ($amount_min) {
         $sql .= " AND ABS(gl_trans.amount) >= ABS(" . DB::_quote($amount_min) . ")";
       }
       if ($amount_max != null) {

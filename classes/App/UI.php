@@ -82,6 +82,7 @@
         'value'               => null, //
         'focus'               => null, //
         'idField'             => null, //
+        'data'             => [], //
         'callback'            => false, //
         'cells'               => false, //
         'cell_class'          => null, //
@@ -124,7 +125,7 @@
         $HTML->div();
       }
       $callback = $o['callback'] ? : '"' . $o['idField'] . '"';
-      $js->autocomplete($id, $callback, $url);
+      $js->autocomplete($id, $callback, $url,$o['data']);
       $search = $HTML->__toString();
       if ($return) {
         return $search;
