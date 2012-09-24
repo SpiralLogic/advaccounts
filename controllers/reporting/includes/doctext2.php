@@ -110,7 +110,7 @@
         $this->title = "CREDIT NOTE";
       }
       if ($doctype == ST_PURCHORDER) {
-        $this->headers = array('Item Code', 'Item Description', 'Delivery Date', 'Quantity', 'Unit', 'Price', 'Total');
+        $this->headers = array('Item Code', 'Item Description', 'Delivery Date', 'Qty', 'Unit', 'Price', 'Total');
       } elseif ($doctype == ST_WORKORDER) {
         $this->headers = array(
           "Item Code",

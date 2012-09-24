@@ -301,7 +301,7 @@
     $classresult = GL_Class::getAll(false, 0);
     while ($class = DB::_fetch($classresult)) {
       $ctotal  = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      $convert = Systypes::get_class_type_convert($class["ctype"]);
+      $convert = SysTypes::get_class_type_convert($class["ctype"]);
       //Print Class Name
       $rep->Font('bold');
       $rep->TextCol(0, 5, $class["class_name"]);

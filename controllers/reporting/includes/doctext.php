@@ -158,9 +158,8 @@
         $this->title = _("PROFORMA INVOICE");
       }
       if ($doctype == ST_PURCHORDER) {
-        $this->headers = array(_("Item Code"), _("Item Description"), '', _("Quantity"), _("Unit"), _("Price"), _("Total"));
-      }
-      elseif ($doctype == ST_WORKORDER) {
+        $this->headers = array(_("Item Code"), _("Item Description"), _("Qty"), _("Unit"), _("Price"), _("Disc"), _("Total"));
+      } elseif ($doctype == ST_WORKORDER) {
         $this->headers = array(
           _("Item Code"), _("Item Description"), _("From Location"), _("Work Centre"), _("Unit Quantity"), _("Total Quantity"), _("Units Issued")
         );

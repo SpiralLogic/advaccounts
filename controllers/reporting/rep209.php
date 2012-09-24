@@ -61,9 +61,9 @@
       $to = 0;
     }
     $dec  = User::price_dec();
-    $cols = array(4, 80, 329, 330, 370, 405, 450, 515);
+    $cols = array(4, 80, 310, 330, 380, 410, 450, 460, 300);
     // $headers in doctext.inc
-    $aligns = array('left', 'left', 'left', 'center', 'right', 'right', 'right');
+    $aligns = array('left', 'left', 'center', 'center', 'right', 'right', 'right', 'right');
     $params = array('comments' => $comments);
     $cur    = DB_Company::get_pref('curr_default');
     if ($email == 0) {
@@ -105,10 +105,12 @@
               $myrow2['quantity_ordered'] = Num::_round($myrow2['quantity_ordered'] / $data['conversion_factor'], User::qty_dec());
             }
           }
-          $Net = Num::_round(($myrow2["unit_price"] * $myrow2["quantity_ordered"]), User::price_dec());
+          $Net = Num::_round(($myrow2["unit_price"] * $myrow2["quantity_ordered"] * (1 - $myrow2["discount"])), User::price_dec());
           $SubTotal += $Net;
-          $dec2         = 0;
-          $DisplayPrice = Num::_priceDecimal($myrow2["unit_price"], $dec2);
+          $price           = $myrow2["unit_price"];
+          $DisplayPrice    = Num::_priceFormat($price);
+          $DisplayDiscount = Num::_percentFormat($myrow2['discount'] * 100);
+          $DisplayDiscount .= $DisplayDiscount > 0 ? '%' : '';
           $DisplayQty   = Num::_format($myrow2["quantity_ordered"], Item::qty_dec($myrow2['item_code']));
           $DisplayNet   = Num::_format($Net, $dec);
           $rep->TextCol(0, 1, $myrow2['item_code'], -2);
@@ -116,10 +118,10 @@
           $rep->TextColLines(1, 2, $myrow2['description'], -2);
           $newrow   = $rep->row;
           $rep->row = $oldrow;
-          $rep->TextCol(2, 3, '', -2);
-          $rep->TextCol(3, 4, $DisplayQty, -2);
-          $rep->TextCol(4, 5, $myrow2['units'], -2);
-          $rep->TextCol(5, 6, $DisplayPrice, -2);
+          $rep->TextCol(2, 3, $DisplayQty, -2);
+          $rep->TextCol(4, 5, $DisplayPrice, -2);
+          $rep->TextCol(3, 4, $myrow2['units'], -2);
+          $rep->TextCol(5, 6, $DisplayDiscount, -2);
           $rep->TextCol(6, 7, $DisplayNet, -2);
           $rep->row = $newrow;
           if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) {
@@ -135,11 +137,7 @@
       $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
       $linetype          = true;
       $doctype           = ST_PURCHORDER;
-      if ($rep->currency != $myrow['curr_code']) {
-        include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
-      } else {
         include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
-      }
       $rep->TextCol(3, 6, Report::SUBTOTAL, -2);
       $rep->TextCol(6, 7, $display_sub_total, -2);
       $rep->NewLine();
