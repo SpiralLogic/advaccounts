@@ -2909,27 +2909,30 @@ img {
 /*<editor-fold desc="Top Menu">*/
 /*--------------------------------- TOP MENU -----------------------------------------------------------------*/
 #tabs {
-  background:  -moz-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
-  background:  -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(219, 219, 219, 1)), color-stop(51%, rgba(160, 160, 160, 1)), color-stop(100%, rgba(158, 158, 158, 1)));
-  background:  -webkit-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
-  background:  -o-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
-  background:  -ms-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
-  background:  linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
-  filter:      progid:DXImageTransform.Microsoft.gradient(startColorstr = '#dbdbdb', endColorstr = '#9e9e9e', GradientType = 0);
-  border-top:  2px solid #939393;
-  margin:      0 0 0;
-  padding:     0 0 0 5px;
-  height:      30px;
-  z-index:     100;
-  border-left: 1px solid rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
+  background:     -moz-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
+  background:     -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(219, 219, 219, 1)), color-stop(51%, rgba(160, 160, 160, 1)), color-stop(100%, rgba(158, 158, 158, 1)));
+  background:     -webkit-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
+  background:     -o-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
+  background:     -ms-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
+  background:     linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
+  filter:         progid:DXImageTransform.Microsoft.gradient(startColorstr = '#dbdbdb', endColorstr = '#9e9e9e', GradientType = 0);
+  border-top:     2px solid #939393;
+  margin:         0 0 0;
+  padding:        0 0 0 5px;
+  height:         33px;
+  z-index:        100;
+  border-left:    1px solid rgba(0, 0, 0, 0.3);
 }
 
 #tabs ul {
-  float: right;
+  float:     right;
+  font-size: 10px;
 }
 
 #tabs #topmenu {
-  float: none;
+  float:     none;
+  font-size: 12px;
 }
 
 #tabs ul .title {
@@ -2943,7 +2946,7 @@ img {
 #tabs ul li {
   list-style: none;
   float:      left;
-  height:     30px;
+  height:     33px;
   text-align: center;
   margin:     0;
   display:    inline-block;
@@ -2959,8 +2962,8 @@ img {
   padding:            0 5px;
   border-left:        1px solid rgba(255, 255, 255, 0.1);
   border-right:       1px solid rgba(0, 0, 0, 0.1);
-  line-height:        30px;
-  height:             30px;
+  line-height:        33px;
+  height:             33px;
 }
 
 #tabs ul .active a, #tabs ul a:hover, #tabs ul li:hover {
