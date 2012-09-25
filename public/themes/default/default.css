@@ -2696,7 +2696,6 @@ img {
   margin:     9px auto;
   visibility: hidden;
   top:        0;
-
 }
 
 .lite #ajaxmark {
@@ -2708,7 +2707,6 @@ img {
   text-align: center;
   position:   fixed;
   top:        0;
-
 }
 
 .titletext {
@@ -2910,7 +2908,7 @@ img {
 /*</editor-fold>*/
 /*<editor-fold desc="Top Menu">*/
 /*--------------------------------- TOP MENU -----------------------------------------------------------------*/
-#_tabs2 {
+#tabs {
   background:  -moz-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
   background:  -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(219, 219, 219, 1)), color-stop(51%, rgba(160, 160, 160, 1)), color-stop(100%, rgba(158, 158, 158, 1)));
   background:  -webkit-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
@@ -2926,15 +2924,15 @@ img {
   border-left: 1px solid rgba(0, 0, 0, 0.3);
 }
 
-#_tabs2 ul {
+#tabs ul {
   float: right;
 }
 
-#_tabs2 #topmenu {
+#tabs #topmenu {
   float: none;
 }
 
-#_tabs2 ul .title {
+#tabs ul .title {
   position:       absolute;
   right:          20px;
   top:            10px;
@@ -2942,7 +2940,7 @@ img {
   text-transform: uppercase;
 }
 
-#_tabs2 ul li {
+#tabs ul li {
   list-style: none;
   float:      left;
   height:     30px;
@@ -2951,7 +2949,7 @@ img {
   display:    inline-block;
 }
 
-#_tabs2 ul a {
+#tabs ul a {
   color:              #363636;
   text-decoration:    none;
   -moz-transition:    all .5s linear;
@@ -2965,7 +2963,7 @@ img {
   height:             30px;
 }
 
-#_tabs2 ul .active a, #_tabs2 ul a:hover, #_tabs2 ul li:hover {
+#tabs ul .active a, #tabs ul a:hover, #tabs ul li:hover {
   color:              white;
   background:         #5cadff;
   background:         -moz-linear-gradient(top, #5cadff 0%, #192e9c 100%, #4e6ad9 50%);
@@ -2979,7 +2977,7 @@ img {
   -webkit-transition: all .3s linear;
 }
 
-.creditors #_tabs2 ul .active a, .creditors #_tabs2 ul a:hover, .purchases #_tabs2 ul .active a, .purchases #_tabs2 ul a:hover {
+.creditors #tabs ul .active a, .creditors #tabs ul a:hover, .purchases #tabs ul .active a, .purchases #tabs ul a:hover {
   background: #6ed86e;
   background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzZlZDg2ZSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjQ1JSIgc3RvcC1jb2xvcj0iIzQ0YjU0OCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMyNzc3MzQiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
   background: -moz-linear-gradient(top, #6ed86e 0%, #44b548 45%, #277734 100%);
@@ -2991,7 +2989,7 @@ img {
   filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#6ed86e', endColorstr = '#277734', GradientType = 0);
 }
 
-.inventory #_tabs2 ul .active a, .inventory #_tabs2 ul a:hover, .manufacturing #_tabs2 ul .active a, .manufacturing #_tabs2 ul a:hover {
+.inventory #tabs ul .active a, .inventory #tabs ul a:hover, .manufacturing #tabs ul .active a, .manufacturing #tabs ul a:hover {
   background: #e38881;
   background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2UzODg4MSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjQ1JSIgc3RvcC1jb2xvcj0iI2RiNDk0OSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiODFkMWQiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
   background: -moz-linear-gradient(top, #e38881 0%, #db4949 45%, #b81d1d 100%);
@@ -3003,7 +3001,7 @@ img {
   filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#e38881', endColorstr = '#b81d1d', GradientType = 0);
 }
 
-.banking #_tabs2 ul .active a, .banking #_tabs2 ul a:hover {
+.banking #tabs ul .active a, .banking #tabs ul a:hover {
   background: #ffe7aa;
   background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZTdhYSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjM4JSIgc3RvcC1jb2xvcj0iI2ZlYmYwNCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNjOTkwMDIiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
   background: -moz-linear-gradient(top, #ffe7aa 0%, #febf04 38%, #c99002 100%);
@@ -3156,6 +3154,7 @@ div.menu_group.title {
 
 #msgbox {
   overflow:           hidden;
+  border-radius-top:  3px;
   opacity:            0;
   height:             0;
   width:              100%;
@@ -3180,7 +3179,7 @@ body {
 }
 
 div.err_msg, div.warn_msg, div.info_msg, div.success_msg {
-  margin:                 5px 0 10px;
+  margin:                 3px 0 3px;
   background-color:       #da4f49;
   background-image:       -moz-linear-gradient(top, #ee5f5b, #bd362f);
   background-image:       -ms-linear-gradient(top, #ee5f5b, #bd362f);
