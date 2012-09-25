@@ -1,6 +1,5 @@
 var Adv = {};
 (function (window, $, undefined) {
-
   var Adv = {
     loader:       document.getElementById('ajaxmark'),
     fieldsChanged:0,
@@ -162,10 +161,12 @@ Adv.extend({
       window.clearTimeout(Adv.Scroll.msgboxTimeout);
       if (text) {
         $('body').css('padding-top', '110px');
-
         Adv.msgbox.css({opacity:0}).html(text);
         if (Adv.msgbox.height() > 0) {
-          setTimeout(function () {Adv.msgbox.css({opacity:1, height:'40px'})}, 200);
+                     setTimeout(function () {
+                       $('body').css('padding-top', '110px');
+                       Adv.msgbox.css({opacity: 1, height: '40px'})
+                     }, 200);
         }
         else {
           $('body').css('padding-top', '110px');
