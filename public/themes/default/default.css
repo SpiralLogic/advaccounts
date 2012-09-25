@@ -10,7 +10,7 @@
 }
 
 body {
-  padding:     5px 0 0 0;
+  padding:     70px 0 0 0;
   font:        .7em Tahoma, Geneva, Verdana;
   line-height: 1.7em;
   color:       #454545;
@@ -2667,7 +2667,20 @@ img {
   padding-bottom: 10px;
   text-indent:    20px;
   background:     white;
-  height:         60px;
+  height:         36px;
+}
+
+#header {
+  position:    fixed;
+  padding-top: 4px;
+  top:         0;
+  background:  rgb(43, 48, 48);
+  width:       80%;
+  z-index:     1000;
+}
+
+#logo h1 {
+  font-size: 1.7em;
 }
 
 #hints {
@@ -2680,9 +2693,10 @@ img {
 }
 
 #ajaxmark {
-  margin:     15px auto;
+  margin:     9px auto;
   visibility: hidden;
   top:        0;
+
 }
 
 .lite #ajaxmark {
@@ -2690,9 +2704,11 @@ img {
 }
 
 .ajaxmark {
-  width:      100%;
-  position:   absolute;
+  width:      80%;
   text-align: center;
+  position:   fixed;
+  top:        0;
+
 }
 
 .titletext {
@@ -2709,9 +2725,8 @@ img {
   text-decoration: underline;
   margin:          0;
   opacity:         .8;
-  padding-left:    150px;
+  padding-left:    15px;
   position:        relative;
-  top:             -13px;
   text-shadow:     rgba(100, 100, 100, .6) 1px 2px;
   color:           #333;
 }
@@ -2771,7 +2786,8 @@ img {
 }
 
 #sidemenu ul input {
-  margin: 0; width: 9em;
+  margin: 0;
+  width:  9em;
 }
 
 /*--------------------------------- END SIDEMENU -----------------------------------------------------------------*/
@@ -2854,7 +2870,7 @@ img {
 
 #summary input {
   text-align: center;
-  width:5em;
+  width:      5em;
 }
 
 #summary table {
@@ -2894,30 +2910,30 @@ img {
 /*</editor-fold>*/
 /*<editor-fold desc="Top Menu">*/
 /*--------------------------------- TOP MENU -----------------------------------------------------------------*/
-#_tabs2   {
-  text-align:     left;
-  text-transform: uppercase;
-  background:     rgb(219, 219, 219);
-  background:     -moz-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
-  background:     -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(219, 219, 219, 1)), color-stop(51%, rgba(160, 160, 160, 1)), color-stop(100%, rgba(158, 158, 158, 1)));
-  background:     -webkit-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
-  background:     -o-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
-  background:     -ms-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
-  background:     linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
-  filter:         progid:DXImageTransform.Microsoft.gradient(startColorstr = '#dbdbdb', endColorstr = '#9e9e9e', GradientType = 0);
-  border-top:     2px solid #939393;
-  position:       relative;
-  margin:         4px 0 0;
-  padding:        0 0 0 15px;
-  height:         40px;
-  border-left:    1px solid rgba(0, 0, 0, 0.3);
+#_tabs2 {
+  background:  -moz-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
+  background:  -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(219, 219, 219, 1)), color-stop(51%, rgba(160, 160, 160, 1)), color-stop(100%, rgba(158, 158, 158, 1)));
+  background:  -webkit-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
+  background:  -o-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
+  background:  -ms-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
+  background:  linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
+  filter:      progid:DXImageTransform.Microsoft.gradient(startColorstr = '#dbdbdb', endColorstr = '#9e9e9e', GradientType = 0);
+  border-top:  2px solid #939393;
+  margin:      0 0 0;
+  padding:     0 0 0 5px;
+  height:      30px;
+  z-index:     100;
+  border-left: 1px solid rgba(0, 0, 0, 0.3);
 }
+
 #_tabs2 ul {
-  float:right;
+  float: right;
 }
-#_tabs2 #topmenu{
-  float:none;
+
+#_tabs2 #topmenu {
+  float: none;
 }
+
 #_tabs2 ul .title {
   position:       absolute;
   right:          20px;
@@ -2929,7 +2945,7 @@ img {
 #_tabs2 ul li {
   list-style: none;
   float:      left;
-  height:     39px;
+  height:     30px;
   text-align: center;
   margin:     0;
   display:    inline-block;
@@ -2940,14 +2956,13 @@ img {
   text-decoration:    none;
   -moz-transition:    all .5s linear;
   -webkit-transition: all .5s linear;
-  text-transform:     uppercase;
   font-weight:        bold;
   display:            block;
-  padding:            0 10px;
+  padding:            0 5px;
   border-left:        1px solid rgba(255, 255, 255, 0.1);
   border-right:       1px solid rgba(0, 0, 0, 0.1);
-  line-height:        39px;
-  height:             39px;
+  line-height:        30px;
+  height:             30px;
 }
 
 #_tabs2 ul .active a, #_tabs2 ul a:hover, #_tabs2 ul li:hover {
@@ -3140,14 +3155,22 @@ div.menu_group.title {
 /*--------------------------------- MSGBOX -----------------------------------------------------------------*/
 
 #msgbox {
-  width:              80%;
   overflow:           hidden;
   opacity:            0;
   height:             0;
+  width:              100%;
+  background:         white;
   -webkit-transition: opacity .3s linear, height .4s ease-out;
   -moz-transition:    opacity .3s linear, height .4s ease-out;
   -o-transition:      opacity .3s linear, height .4s ease-out;
   transition:         opacity .3s linear, height .4s ease-out;
+}
+
+body {
+  -webkit-transition: padding .4s ease-out;
+  -moz-transition:    padding .4s ease-out;
+  -o-transition:      padding .4s ease-out;
+  transition:         padding .4s ease-out;
 }
 
 #msgbox, .msgbox {

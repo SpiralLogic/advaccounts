@@ -92,7 +92,6 @@
       if ($application->direct) {
         Display::meta_forward($application->direct);
       }
-
       foreach ($application->modules as $module) {
         $app            = new View('application');
         $app['colspan'] = (count($module->rightAppFunctions) > 0) ? 2 : 1;
@@ -145,6 +144,7 @@
       if (!$this->ajaxpage) {
         $this->header();
         $this->JS->openWindow(900, 500);
+        echo '<div id="header">';
         if ($this->menu) {
           $this->menu_header();
         }
@@ -152,6 +152,7 @@
       if (!REQUEST_JSON) {
         $this->errorBox();
       }
+      echo "</div>";
       if (!$this->ajaxpage) {
         echo "<div id='wrapper'>";
       }
@@ -231,7 +232,6 @@
         $help_page_url = $this->App->applications[$this->App->selected->id]->help_context;
         $help_page_url = Display::access_string($help_page_url, true);
       }
-
       return $this->Config->get('help_baseurl') . urlencode(
         strtr(
           ucwords($help_page_url),
@@ -258,7 +258,6 @@
       $footer['load_time'] = Dates::_getReadableTime(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
       $footer['user']      = $this->User->username;
       $footer['footer']    = $this->menu && !REQUEST_AJAX;
-
       return $footer;
     }
     /**
@@ -282,7 +281,6 @@
       $this->css += $this->Config->get('assets.css');
       $path = THEME_PATH . $this->theme . DS;
       $css  = implode(',', $this->css);
-
       return [$path . $css];
     }
     /**
@@ -318,7 +316,6 @@
       static::$i->isIndex  = $isIndex;
       static::$i->security = $security;
       static::$i->init(!$no_menu);
-
       return static::$i;
     }
     /**
@@ -338,7 +335,6 @@
             $selected_id = $default;
           }
           unset($_POST['_focus']);
-
           return array($m, $selected_id);
         }
       }
@@ -348,7 +344,6 @@
             unset($_POST['_focus']); // focus on first form entry
             $selected_id = quoted_printable_decode(substr($p, strlen($m)));
             Ajax::_activate('_page_body');
-
             return array($m, $selected_id);
           }
         }

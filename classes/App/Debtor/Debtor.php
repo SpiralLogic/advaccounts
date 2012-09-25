@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Debtor;
+
   use Debtor_Branch;
   use ADV\App\Display;
   use ADV\App\Forms;
@@ -30,9 +31,7 @@
   /**
 
    */
-  class Debtor extends \Contact_Company
-  {
-
+  class Debtor extends \Contact_Company {
     /**
      * @var int
      */
@@ -49,7 +48,7 @@
      * @var string
      */
     public $debtor_ref = '';
-    public $type=  CT_CUSTOMER;
+    public $type = CT_CUSTOMER;
     /**
      * @var
      */
@@ -165,6 +164,12 @@
       $this->branches[0] = $branch;
       return $branch;
     }
+    public function newBranch() {
+      $branch            = new Debtor_Branch();
+      $branch->debtor_id = $this->id;
+      $this->branches[0] = $branch;
+      return $branch;
+    }
     /**
      * @return array|null
      */
@@ -231,8 +236,7 @@
       if ($this->id == 0) {
         return [];
       }
-      $sql
-               = "SELECT debtor_trans.*, sales_orders.customer_ref,
+      $sql     = "SELECT debtor_trans.*, sales_orders.customer_ref,
                         (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
                         debtor_trans.ov_freight_tax + debtor_trans.ov_discount)
                         AS TotalAmount, debtor_trans.alloc AS Allocated
@@ -256,7 +260,6 @@
      * @return array|bool|int|null|void
      */
     public function save($changes = null) {
-
       $data['debtor_ref']       = substr($this->name, 0, 29);
       $data['discount']         = User::numeric($this->discount) / 100;
       $data['payment_discount'] = User::numeric($this->payment_discount) / 100;
@@ -465,16 +468,15 @@
       $customerBox->addBeforeClose('$("#debtor_id").trigger("change")');
       $customerBox->setOptions(
         array(
-          'autoOpen'   => false,
-          'modal'      => true,
-          'width'      => '850',
-          'height'     => '715',
-          'resizeable' => true
+             'autoOpen'   => false,
+             'modal'      => true,
+             'width'      => '850',
+             'height'     => '715',
+             'resizeable' => true
         )
       );
       $customerBox->show();
-      $js
-        = <<<JS
+      $js = <<<JS
                             var val = $("#debtor_id").val();
                             $("#customerBox").html("<iframe src='/contacts/manage/customers?frame=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
@@ -501,8 +503,7 @@ JS;
     public static function search($terms) {
       $data  = [];
       $terms = preg_replace("/[^a-zA-Z 0-9]+/", " ", $terms);
-      $sql   = static::$staticDB->_select('debtor_id as id', 'name as label', 'name as value', "IF(name LIKE " . static::$staticDB->_quote(trim($terms) . '%') . ",0,5) as weight")
-        ->from(
+      $sql   = static::$staticDB->_select('debtor_id as id', 'name as label', 'name as value', "IF(name LIKE " . static::$staticDB->_quote(trim($terms) . '%') . ",0,5) as weight")->from(
         'debtors'
       )->where('name LIKE ', trim($terms) . "%")->orWhere('name LIKE ', trim($terms))->orWhere('name LIKE', '%' . str_replace(' ', '%', trim($terms)) . "%");
       if (is_numeric($terms)) {
@@ -540,8 +541,7 @@ JS;
         ) . '%'
       );
       $where    = ($o['inactive'] ? '' : ' AND inactive = 0 ');
-      $sql
-                = "(SELECT debtor_id as id, name as label, debtor_id as value, name as description FROM debtors WHERE name LIKE $term1 $where ORDER BY name LIMIT 20)
+      $sql      = "(SELECT debtor_id as id, name as label, debtor_id as value, name as description FROM debtors WHERE name LIKE $term1 $where ORDER BY name LIMIT 20)
                                     UNION (SELECT debtor_id as id, name as label, debtor_id as value, name as description FROM debtors
                                     WHERE debtor_ref LIKE $term1 OR name LIKE $term2 OR debtor_id LIKE $term1 $where ORDER BY debtor_id, name LIMIT 20)";
       $result   = static::$staticDB->_query($sql, 'Couldn\'t Get Customers');
@@ -579,12 +579,10 @@ JS;
       $past_due1 = DB_Company::get_pref('past_due_days');
       $past_due2 = 2 * $past_due1;
       // removed - debtor_trans.alloc from all summations
-      $value
-           = "IF(debtor_trans.type=11 OR debtor_trans.type=1 OR debtor_trans.type=12 OR debtor_trans.type=2,
+      $value  = "IF(debtor_trans.type=11 OR debtor_trans.type=1 OR debtor_trans.type=12 OR debtor_trans.type=2,
         -1, 1) *" . "(debtor_trans.ov_amount + debtor_trans.ov_gst + " . "debtor_trans.ov_freight + debtor_trans.ov_freight_tax + " . "debtor_trans.ov_discount)";
-      $due = "IF (debtor_trans.type=10,debtor_trans.due_date,debtor_trans.tran_date)";
-      $sql
-              = "SELECT debtors.name, debtors.curr_code, payment_terms.terms,		debtors.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description,
+      $due    = "IF (debtor_trans.type=10,debtor_trans.due_date,debtor_trans.tran_date)";
+      $sql    = "SELECT debtors.name, debtors.curr_code, payment_terms.terms,		debtors.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description,
             Sum(" . $value . ") AS Balance,
             Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0)) AS Due,
             Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past_due1,$value,0)) AS Overdue1,
@@ -611,8 +609,7 @@ JS;
       $result = static::$staticDB->_query($sql, "The customer details could not be retrieved");
       if (static::$staticDB->_numRows($result) == 0) {
         /* Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
-        $sql
-                = "SELECT debtors.name, debtors.curr_code, debtors.debtor_id, payment_terms.terms,
+        $sql    = "SELECT debtors.name, debtors.curr_code, debtors.debtor_id, payment_terms.terms,
              debtors.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description
              FROM debtors,
               payment_terms,
@@ -661,8 +658,7 @@ JS;
      * @return Array|\ADV\Core\DB\Query\Result
      */
     public static function get_habit($debtor_id) {
-      $sql
-              = "SELECT debtors.payment_discount,
+      $sql    = "SELECT debtors.payment_discount,
                  credit_status.dissallow_invoices
                 FROM debtors, credit_status
                 WHERE debtors.credit_status = credit_status.id
@@ -763,13 +759,13 @@ JS;
       UI::search(
         'customer',
         array(
-          'url'           => 'Debtor',
-          'name'          => 'customer',
-          'idField'       => 'debtor_id',
-          'focus'         => $focus,
-          'class'         => '',
-          'value'         => $value,
-          'placeholder'   => $o['placeholder']
+             'url'           => 'Debtor',
+             'name'          => 'customer',
+             'idField'       => 'debtor_id',
+             'focus'         => $focus,
+             'class'         => '',
+             'value'         => $value,
+             'placeholder'   => $o['placeholder']
         )
       );
       echo "</td>";
@@ -800,17 +796,17 @@ JS;
         'debtor_id',
         'name',
         array(
-          'format'        => 'Forms::addCurrFormat',
-          'order'         => array('name'),
-          'search_box'    => $mode != 0,
-          'type'          => 1,
-          'size'          => 20,
-          'spec_option'   => $spec_option === true ? _("All Customers") : $spec_option,
-          'spec_id'       => ALL_TEXT,
-          'select_submit' => $submit_on_change,
-          'async'         => $async,
-          'sel_hint'      => $mode ? _('Press Space tab to filter by name fragment; F2 - entry new customer') : _('Select customer'),
-          'show_inactive' => $show_inactive
+             'format'        => 'Forms::addCurrFormat',
+             'order'         => array('name'),
+             'search_box'    => $mode != 0,
+             'type'          => 1,
+             'size'          => 20,
+             'spec_option'   => $spec_option === true ? _("All Customers") : $spec_option,
+             'spec_id'       => ALL_TEXT,
+             'select_submit' => $submit_on_change,
+             'async'         => $async,
+             'sel_hint'      => $mode ? _('Press Space tab to filter by name fragment; F2 - entry new customer') : _('Select customer'),
+             'show_inactive' => $show_inactive
         )
       );
     }
