@@ -58,8 +58,8 @@
     //
     'footer'           => array(
       '/js/libs/JsHttpRequest.js',
-      '/js/libs/jquery.min.js',
-      '/js/libs/jquery-ui.min.js',
+      '/js/libs/jquery.js',
+      '/js/libs/jquery-ui.js',
       '/js/advanced.js',
       '/js/behaviour.js',
       '/js/libs/jquery-tmpl.min.js',

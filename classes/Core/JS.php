@@ -177,8 +177,10 @@ JS;
       }
       $files = $content = $onReady = '';
       if (!REQUEST_AJAX) {
-        foreach ($this->footerFiles as $dir => $file) {
-          $files .= (new HTML)->script(array('src' => $dir . '/' . implode(',', $file)), false);
+        foreach ($this->footerFiles as $dir => $files2) {
+        foreach ($files2 as $file) {
+          $files .= (new HTML)->script(array('src' => $dir . '/' . $file), false);
+        }
         }
         echo $files;
       } else {
@@ -205,7 +207,7 @@ JS;
         $content .= "\n$(function(){ " . $onReady . '});';
       }
       /** @noinspection PhpDynamicAsStaticMethodCallInspection */
-      echo    HTML::script(null, $content, [], false);
+      echo    HTML::script(null,str_replace([';','{'],[";\n","{\n"],$content), [], false);
       if ($return) {
         return ob_get_clean();
       }
