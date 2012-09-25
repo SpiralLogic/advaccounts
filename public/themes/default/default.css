@@ -3206,7 +3206,6 @@ div.err_msg, div.warn_msg, div.info_msg, div.success_msg {
   outline:                rgb(255, 255, 255) none 0;
   -moz-box-shadow:        0 2px 3px 1px rgba(10, 10, 10, .5);
   box-shadow:             0 2px 3px 1px rgba(10, 10, 10, .5);
-  box-shadow:             0 2px 3px 1px rgba(10, 10, 10, .5);
 }
 
 .error .tooltip-inner, .warning .tooltip-inner {

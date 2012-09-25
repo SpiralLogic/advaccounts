@@ -36,8 +36,8 @@
       $this->setSecurity();
       // then check session value
       $this->JS->openWindow(950, 600);
-      if (REQUEST_AJAX && !empty($_POST['q'])) {
-        $this->searchArray = explode(' ', $_POST['q']);
+      if (!empty($_REQUEST['q'])) {
+        $this->searchArray = explode(' ', $_REQUEST['q']);
       }
       if ($this->searchArray && $this->searchArray[0] == self::SEARCH_ORDER) {
         $this->trans_type = ST_SALESORDER;
@@ -160,12 +160,10 @@
     }
     protected function displayTable() { //	Orders inquiry table
       //
-      $sql
-        = "SELECT
+      $sql = "SELECT
  		sorder.trans_type,
  		sorder.order_no,
- 		sorder.reference," . ($_POST['order_view_mode'] == self::MODE_INVTEMPLATES || $_POST['order_view_mode'] == self::MODE_DELTEMPLATES ? "sorder.comments, " :
-        "sorder.customer_ref, ") . "
+ 		sorder.reference," . ($_POST['order_view_mode'] == self::MODE_INVTEMPLATES || $_POST['order_view_mode'] == self::MODE_DELTEMPLATES ? "sorder.comments, " : "sorder.customer_ref, ") . "
  		sorder.ord_date,
  		sorder.delivery_date,
  		debtor.name,
@@ -189,8 +187,7 @@
       } else {
         $sql .= " AND sorder.trans_type = " . $this->trans_type;
       }
-      $sql
-        .= " AND sorder.debtor_id = debtor.debtor_id
+      $sql .= " AND sorder.debtor_id = debtor.debtor_id
  		AND sorder.branch_id = branch.branch_id
  		AND debtor.debtor_id = branch.debtor_id";
       if ($this->debtor_id > 0) {
@@ -208,14 +205,12 @@
             continue;
           }
           $quicksearch = DB::_quote("%" . trim($quicksearch) . "%");
-          $sql
-            .= " AND ( debtor.debtor_id = $quicksearch OR debtor.name LIKE $quicksearch OR sorder.order_no LIKE $quicksearch
+          $sql .= " AND ( debtor.debtor_id = $quicksearch OR debtor.name LIKE $quicksearch OR sorder.order_no LIKE $quicksearch
  			OR sorder.reference LIKE $quicksearch OR sorder.contact_name LIKE $quicksearch
  			OR sorder.customer_ref LIKE $quicksearch
  			 OR sorder.customer_ref LIKE $quicksearch OR branch.br_name LIKE $quicksearch)";
         }
-        $sql
-          .= " GROUP BY sorder.ord_date,
+        $sql .= " GROUP BY sorder.ord_date,
  				 sorder.order_no,
  				sorder.debtor_id,
  				sorder.branch_id,
@@ -246,8 +241,7 @@
         ) {
           $sql .= " AND sorder.type=1";
         }
-        $sql
-          .= " GROUP BY sorder.ord_date,
+        $sql .= " GROUP BY sorder.ord_date,
  sorder.order_no,
  				sorder.debtor_id,
  				sorder.branch_id,
@@ -432,12 +426,10 @@
           $items[] = ['class'=> 'printlink', 'label'=> 'Print Proforma', 'href'=> $href];
           $href    = Reporting::print_doc_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT, 'button printlink', '', 0, 0, true);
           $items[] = ['class'=> 'printlink', 'label'=> 'Print', 'href'=> $href];
-
       }
       if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
-
-      $href = '/system/void_transaction?type='.$row['trans_type'].'&trans_no='.$row['order_no'].'&memo=Deleted%20during%20order%20search';
-      $items[] = ['label'=> 'Void Trans', 'href'=>$href,'attr'=> ['target'=> '_blank']];
+        $href    = '/system/void_transaction?type=' . $row['trans_type'] . '&trans_no=' . $row['order_no'] . '&memo=Deleted%20during%20order%20search';
+        $items[] = ['label'=> 'Void Trans', 'href'=> $href, 'attr'=> ['target'=> '_blank']];
       }
       $menus[] = ['title'=> $items[0]['label'], 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
       $dropdown->set('menus', $menus);

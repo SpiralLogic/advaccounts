@@ -1,5 +1,6 @@
 var Adv = {};
 (function (window, $, undefined) {
+
   var Adv = {
     loader:       document.getElementById('ajaxmark'),
     fieldsChanged:0,
@@ -367,7 +368,7 @@ Adv.extend({
     });
     return {
       findInputEl:    function (id) {
-        var els = document.getElementsByName ? document.getElementsByName(id) : $("[name='" + id + "'");
+        var els = document.getElementsByName(id);
         if (!els.length) {
           els = [document.getElementById(id)];
         }

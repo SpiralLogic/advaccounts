@@ -12,7 +12,7 @@
   use ADV\Core\Input\Input;
   use ADV\App\Dates;
   use ADV\App\Ref;
-  use Tax_Types;
+  use Tax_Type;
   use ADV\Core\Num;
   use GL_QuickEntry;
   use GL_UI;
@@ -107,8 +107,7 @@
       Page::end();
     }
     protected function addJS() {
-      $js
-        = <<<JS
+      $js = <<<JS
              $("#wrapper").delegate('.amount','change',function() {
          var field = $(this), ChgTax=$('[name="ChgTax"]'),ChgTotal=$('[name="ChgTotal"]'),invTotal=$('#invoiceTotal'), fields = $(this).parent().parent(), fv = {}, nodes = {
          qty: $('[name^="this_quantity"]',fields),
@@ -221,7 +220,7 @@ JS;
           $input_error = true;
         }
       }
-      if (!Tax_Types::is_tax_gl_unique(Input::_post('gl_code'))) {
+      if (!Tax_Type::is_tax_gl_unique(Input::_post('gl_code'))) {
         Event::error(_("Cannot post to GL account used by more than one tax type."));
         $this->JS->setFocus('gl_code');
         $input_error = true;
@@ -244,13 +243,11 @@ JS;
       if (!$this->trans->is_valid_trans_to_post()) {
         Event::error(_("The credit note cannot be processed because the there are no items or values on the invoice. Credit notes are expected to have a charge."));
         $this->JS->setFocus('');
-
         return false;
       }
       if (!Ref::is_valid($this->trans->reference)) {
         Event::error(_("You must enter an credit note reference."));
         $this->JS->setFocus('reference');
-
         return false;
       }
       if (!Ref::is_new($this->trans->reference, ST_SUPPCREDIT)) {
@@ -259,24 +256,20 @@ JS;
       if (!Ref::is_valid($this->trans->supplier_reference)) {
         Event::error(_("You must enter a supplier's credit note reference."));
         $this->JS->setFocus('supplier_reference');
-
         return false;
       }
       if (!Dates::_isDate($this->trans->tran_date)) {
         Event::error(_("The credit note as entered cannot be processed because the date entered is not valid."));
         $this->JS->setFocus('tran_date');
-
         return false;
       } elseif (!Dates::_isDateInFiscalYear($this->trans->tran_date)) {
         Event::error(_("The entered date is not in fiscal year."));
         $this->JS->setFocus('tran_date');
-
         return false;
       }
       if (!Dates::_isDate($this->trans->due_date)) {
         Event::error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
         $this->JS->setFocus('due_date');
-
         return false;
       }
       if ($this->trans->ov_amount < ($total_gl_value + $total_grn_value)) {
@@ -285,10 +278,8 @@ JS;
             "The credit note total as entered is less than the sum of the the general ledger entires (if any) and the charges for goods received. There must be a mistake somewhere, the credit note as entered will not be processed."
           )
         );
-
         return false;
       }
-
       return true;
     }
     /**S
@@ -301,16 +292,13 @@ JS;
       if (!Validation::post_num('this_quantityCredited' . $n, 0)) {
         Event::error(_("The quantity to credit must be numeric and greater than zero."));
         $this->JS->setFocus('this_quantityCredited' . $n);
-
         return false;
       }
       if (!Validation::post_num('ChgPrice' . $n, 0)) {
         Event::error(_("The price is either not numeric or negative."));
         $this->JS->setFocus('ChgPrice' . $n);
-
         return false;
       }
-
       return true;
     }
     protected function cancelCredit() {

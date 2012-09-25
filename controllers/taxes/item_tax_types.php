@@ -19,7 +19,7 @@
     if ($input_error != 1) {
       // create an array of the exemptions
       $exempt_from = [];
-      $tax_types   = Tax_Types::get_all_simple();
+      $tax_types   = Tax_Type::get_all_simple();
       $i           = 0;
       while ($myrow = DB::_fetch($tax_types)) {
         if (Input::_hasPost('ExemptTax' . $myrow["id"])) {
@@ -94,7 +94,7 @@
     Table::start('standard grid');
     $th = array(_("Tax Name"), _("Rate"), _("Is exempt"));
     Table::header($th);
-    $tax_types = Tax_Types::get_all_simple();
+    $tax_types = Tax_Type::get_all_simple();
     while ($myrow = DB::_fetch($tax_types)) {
       Cell::label($myrow["name"]);
       Cell::label(Num::_percentFormat($myrow["rate"]) . " %", ' class="alignright nowrap"');

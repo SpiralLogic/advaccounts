@@ -10,7 +10,7 @@
   use Inv_Movement;
   use ADV\App\Dates;
   use ADV\App\User;
-  use Tax_Types;
+  use Tax_Type;
   use ADV\App\Validation;
   use GL_UI;
   use ADV\App\Display;
@@ -136,7 +136,7 @@
           $input_error = true;
         }
       }
-      if (!Tax_Types::is_tax_gl_unique($this->Input->post('gl_code'))) {
+      if (!Tax_Type::is_tax_gl_unique($this->Input->post('gl_code'))) {
         Event::error(_("Cannot post to GL account used by more than one tax type."));
         $this->JS->setFocus('gl_code');
         $input_error = true;
@@ -194,12 +194,10 @@
           DB::_begin();
           $myrow = Purch_GRN::get_item($id2);
           $grn   = Purch_GRN::get_batch($myrow['grn_batch_id']);
-          $sql
-                 = "UPDATE purch_order_details
+          $sql   = "UPDATE purch_order_details
                   SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = " . $myrow["po_detail_item"];
           DB::_query($sql, "The quantity invoiced of the purchase order line could not be updated");
-          $sql
-            = "UPDATE grn_items
+          $sql = "UPDATE grn_items
                SET qty_recd = quantity_inv WHERE id = " . $myrow["id"];
           DB::_query($sql, "The quantity invoiced off the items received record could not be updated");
           Purch_GRN::update_average_material_cost($grn["creditor_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Dates::_today());
@@ -275,13 +273,11 @@
     protected function checkData() {
       if (!$this->trans->is_valid_trans_to_post()) {
         Event::error(_("The invoice cannot be processed because the there are no items or values on the invoice. Invoices are expected to have a charge."));
-
         return false;
       }
       if (!Ref::is_valid($this->trans->reference)) {
         Event::error(_("You must enter an invoice reference."));
         $this->JS->setFocus('reference');
-
         return false;
       }
       if (!Ref::is_new($this->trans->reference, ST_SUPPINVOICE)) {
@@ -290,24 +286,20 @@
       if (!Ref::is_valid($this->trans->supplier_reference)) {
         Event::error(_("You must enter a supplier's invoice reference."));
         $this->JS->setFocus('supplier_reference');
-
         return false;
       }
       if (!Dates::_isDate($this->trans->tran_date)) {
         Event::error(_("The invoice as entered cannot be processed because the invoice date is in an incorrect format."));
         $this->JS->setFocus('trans_date');
-
         return false;
       } elseif (!Dates::_isDateInFiscalYear($this->trans->tran_date)) {
         Event::error(_("The entered date is not in fiscal year."));
         $this->JS->setFocus('trans_date');
-
         return false;
       }
       if (!Dates::_isDate($this->trans->due_date)) {
         Event::error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
         $this->JS->setFocus('due_date');
-
         return false;
       }
       $sql    = "SELECT Count(*) FROM creditor_trans WHERE creditor_id=" . DB::_escape($this->trans->creditor_id) . " AND supplier_reference=" . DB::_escape(
@@ -317,10 +309,8 @@
       $myrow  = DB::_fetchRow($result);
       if ($myrow[0] == 1) { /*Transaction reference already entered */
         Event::error(_("This invoice number has already been entered. It cannot be entered again. (" . $_POST['supplier_reference'] . ")"));
-
         return false;
       }
-
       return true;
     }
     /**
@@ -332,19 +322,16 @@
       if (!Validation::post_num('this_quantity_inv' . $n, 0) || Validation::input_num('this_quantity_inv' . $n) == 0) {
         Event::error(_("The quantity to invoice must be numeric and greater than zero."));
         $this->JS->setFocus('this_quantity_inv' . $n);
-
         return false;
       }
       if (!Validation::post_num('ChgPrice' . $n)) {
         Event::error(_("The price is not numeric."));
         $this->JS->setFocus('ChgPrice' . $n);
-
         return false;
       }
       if (!Validation::post_num('ExpPrice' . $n)) {
         Event::error(_("The price is not numeric."));
         $this->JS->setFocus('ExpPrice' . $n);
-
         return false;
       }
       $margin = DB_Company::get_pref('po_over_charge');
@@ -362,7 +349,6 @@
               );
               $this->JS->setFocus('ChgPrice' . $n);
               $_SESSION['err_over_charge'] = true;
-
               return false;
             } else {
               $_SESSION['err_over_charge'] = false;
@@ -378,11 +364,9 @@
             ) . _("The over-charge percentage allowance is :") . $margin . "%"
           );
           $this->JS->setFocus('this_quantity_inv' . $n);
-
           return false;
         }
       }
-
       return true;
     }
     /**
@@ -446,8 +430,7 @@
     }
     protected function addJS() {
       Item::addEditDialog();
-      $js
-        = <<<JS
+      $js = <<<JS
                    $("#wrapper").delegate('.amount','change',function() {
                var field = $(this), ChgTax=$('[name="ChgTax"]'),ChgTotal=$('[name="ChgTotal"]'),invTotal=$('#invoiceTotal'), fields = $(this).parent().parent(), fv = {}, nodes = {
                qty: $('[name^="this_quantity"]',fields),

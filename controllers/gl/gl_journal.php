@@ -157,7 +157,7 @@
       JS::_setFocus('AmountCredit');
       return false;
     }
-    if (!Tax_Types::is_tax_gl_unique(Input::_post('code_id'))) {
+    if (!Tax_Type::is_tax_gl_unique(Input::_post('code_id'))) {
       Event::error(_("Cannot post to GL account used by more than one tax type."));
       JS::_setFocus('code_id');
       return false;

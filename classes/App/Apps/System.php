@@ -26,7 +26,7 @@
       $module->addLeftFunction(_("&Forms Setup"), "/system/forms_setup?", SA_FORMSETUP);
       $module->addRightFunction(_("&Taxes"), "/taxes/tax_types?", SA_TAXRATES);
       $module->addRightFunction(_("Tax &Groups"), "/taxes/tax_groups?", SA_TAXGROUPS);
-      $module->addRightFunction(_("Item Ta&x Types"), "/taxes/item_tax_types?", SA_ITEMTAXTYPE);
+      $module->addRightFunction(_("Item Ta&x Types"), "/tax/manage/types?", SA_ITEMTAXTYPE);
       $module->addRightFunction(_("System and &General GL Setup"), "/system/gl_setup?", SA_GLSETUP);
       $module->addRightFunction(_("&Fiscal Years"), "/system/fiscalyears?", SA_FISCALYEARS);
       $module->addRightFunction(_("&Print Profiles"), "/system/print_profiles?", SA_PRINTPROFILE);

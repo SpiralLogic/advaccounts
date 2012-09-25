@@ -74,8 +74,7 @@
           $memo_ = User::i()->username . " - " . $memo_;
         }
       }
-      $sql
-        = "INSERT INTO gl_trans ( type, type_no, tran_date,
+      $sql = "INSERT INTO gl_trans ( type, type_no, tran_date,
         account, dimension_id, dimension2_id, memo_, amount";
       if ($person_type_id != null) {
         $sql .= ", person_type_id, person_id";
@@ -91,7 +90,6 @@
         $err_msg = "The GL transaction could not be inserted";
       }
       DB::_query($sql, $err_msg);
-
       return $amount_in_home_currency;
     }
     /***
@@ -172,7 +170,6 @@
      */
     public static function get($from_date, $to_date, $trans_no = 0, $account = null, $dimension = 0, $dimension2 = 0, $filter_type = null, $amount_min = null, $amount_max = null) {
       $sql = self::getSQL($from_date, $to_date, $trans_no, $account, $dimension, $dimension2, $filter_type, $amount_min, $amount_max);
-
       return DB::_query($sql, "The transactions for could not be retrieved");
     }
     /**
@@ -193,8 +190,7 @@
     public static function getSQL($from_date, $to_date, $trans_no = 0, $account = null, $filter_type = null, $amount_min = null, $amount_max = null) {
       $from = Dates::_dateToSql($from_date);
       $to   = Dates::_dateToSql($to_date);
-      $sql
-            = "SELECT type,type_no,tran_date,account, chart_master.account_name ,person_type_id,person_id,amount,memo_ FROM gl_trans, chart_master
+      $sql  = "SELECT type,type_no,tran_date,account, chart_master.account_name ,person_type_id,person_id,amount,memo_ FROM gl_trans, chart_master
         WHERE chart_master.account_code=gl_trans.account
         AND tran_date >= '$from'
         AND tran_date <= '$to'";
@@ -228,7 +224,6 @@
       $sql = "SELECT gl_trans.*, " . "chart_master.account_name FROM " . "gl_trans, chart_master
         WHERE chart_master.account_code=gl_trans.account
         AND gl_trans.type=" . DB::_escape($type) . " AND gl_trans.type_no=" . DB::_escape($trans_id);
-
       return DB::_query($sql, "The gl transactions could not be retrieved");
     }
     /**
@@ -248,7 +243,6 @@
         $sql .= " AND gl_trans.person_id=" . DB::_escape($person_id);
       }
       $sql .= " AND amount < 0";
-
       return DB::_query($sql, "The gl transactions could not be retrieved");
     }
     /**
@@ -265,8 +259,7 @@
     public static function get_balance_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
       $from = Dates::_dateToSql($from_date);
       $to   = Dates::_dateToSql($to_date);
-      $sql
-            = "SELECT SUM(amount) FROM gl_trans
+      $sql  = "SELECT SUM(amount) FROM gl_trans
         WHERE account='$account'";
       if ($from_date != "") {
         $sql .= " AND tran_date > '$from'";
@@ -282,7 +275,6 @@
       }
       $result = DB::_query($sql, "The starting balance for account $account could not be calculated");
       $row    = DB::_fetchRow($result);
-
       return $row[0];
     }
     /**
@@ -299,8 +291,7 @@
     public static function get_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
       $from = Dates::_dateToSql($from_date);
       $to   = Dates::_dateToSql($to_date);
-      $sql
-            = "SELECT SUM(amount) FROM gl_trans
+      $sql  = "SELECT SUM(amount) FROM gl_trans
         WHERE account='$account'";
       if ($from_date != "") {
         $sql .= " AND tran_date >= '$from'";
@@ -316,7 +307,6 @@
       }
       $result = DB::_query($sql, "Transactions for account $account could not be calculated");
       $row    = DB::_fetchRow($result);
-
       return $row[0];
     }
     /**
@@ -333,8 +323,7 @@
      * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get_balance($account, $dimension, $dimension2, $from, $to, $from_incl = true, $to_incl = true) {
-      $sql
-        = "SELECT SUM(IF(amount >= 0, amount, 0)) as debit,
+      $sql = "SELECT SUM(IF(amount >= 0, amount, 0)) as debit,
         SUM(IF(amount < 0, -amount, 0)) as credit, SUM(amount) as balance
         FROM gl_trans,chart_master," . "chart_types, chart_class
         WHERE gl_trans.account=chart_master.account_code AND " . "chart_master.account_type=chart_types.id
@@ -361,7 +350,6 @@
         $sql .= " tran_date < '$to_date' ";
       }
       $result = DB::_query($sql, "No general ledger accounts were returned");
-
       return DB::_fetch($result);
     }
     /**
@@ -378,8 +366,7 @@
     public static function get_budget_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
       $from = Dates::_dateToSql($from_date);
       $to   = Dates::_dateToSql($to_date);
-      $sql
-            = "SELECT SUM(amount) FROM budget_trans
+      $sql  = "SELECT SUM(amount) FROM budget_trans
         WHERE account=" . DB::_escape($account);
       if ($from_date != "") {
         $sql .= " AND tran_date >= '$from' ";
@@ -395,7 +382,6 @@
       }
       $result = DB::_query($sql, "No budget accounts were returned");
       $row    = DB::_fetchRow($result);
-
       return $row[0];
     }
     //	Stores journal/bank transaction tax details if applicable
@@ -418,7 +404,7 @@
       if (!$tax_type) {
         return;
       } // $gl_code is not tax account
-      $tax = Tax_Types::get($tax_type);
+      $tax = Tax_Type::get($tax_type);
       if ($gl_code == $tax['sales_gl_code']) {
         $amount = -$amount;
       }
@@ -452,8 +438,7 @@
      * @param $memo
      */
     public static function add_tax_details($trans_type, $trans_no, $tax_id, $rate, $included, $amount, $net_amount, $ex_rate, $tran_date, $memo) {
-      $sql
-        = "INSERT INTO trans_tax_details
+      $sql = "INSERT INTO trans_tax_details
         (trans_type, trans_no, tran_date, tax_type_id, rate, ex_rate,
             included_in_price, net_amount, amount, memo)
         VALUES (" . DB::_escape($trans_type) . "," . DB::_escape($trans_no) . ",'" . Dates::_dateToSql($tran_date) . "'," . DB::_escape($tax_id) . "," . DB::_escape(
@@ -476,7 +461,6 @@
         AND trans_no = " . DB::_escape($trans_no) . "
         AND (net_amount != 0 OR amount != 0)
         AND tax_types.id = trans_tax_details.tax_type_id";
-
       return DB::_query($sql, "The transaction tax details could not be retrieved");
     }
     /**
@@ -486,8 +470,7 @@
      * @param $type_no
      */
     public static function void_tax_details($type, $type_no) {
-      $sql
-        = "UPDATE trans_tax_details SET amount=0, net_amount=0
+      $sql = "UPDATE trans_tax_details SET amount=0, net_amount=0
         WHERE trans_no=" . DB::_escape($type_no) . " AND trans_type=" . DB::_escape($type);
       DB::_query($sql, "The transaction tax details could not be voided");
     }
@@ -502,8 +485,7 @@
     public static function get_tax_summary($from, $to) {
       $fromdate = Dates::_dateToSql($from);
       $todate   = Dates::_dateToSql($to);
-      $sql
-                = "SELECT
+      $sql      = "SELECT
                 SUM(IF(trans_type=" . ST_CUSTCREDIT . " || trans_type=" . ST_SUPPINVOICE . " || trans_type=" . ST_JOURNAL . ",-1,1)*
                 IF(trans_type=" . ST_BANKDEPOSIT . " || trans_type=" . ST_SALESINVOICE . " || (trans_type=" . ST_JOURNAL . " AND amount<0)" . " || trans_type=" . ST_CUSTCREDIT . ", net_amount*ex_rate,0)) net_output,
 
@@ -525,7 +507,6 @@
             AND taxrec.tran_date >= '$fromdate'
             AND taxrec.tran_date <= '$todate'
         GROUP BY ttype.id";
-
       //Event::error($sql);
       return DB::_query($sql, "Cannot retrieve tax summary");
     }
@@ -540,7 +521,6 @@
     public static function exists($type, $trans_id) {
       $sql    = "SELECT type_no FROM gl_trans WHERE type=" . DB::_escape($type) . " AND type_no=" . DB::_escape($trans_id);
       $result = DB::_query($sql, "Cannot retreive a gl transaction");
-
       return (DB::_numRows($result) > 0);
     }
     /**
@@ -573,7 +553,6 @@
       $sql    = "SELECT SUM(amount) FROM gl_trans WHERE account=" . DB::_escape($account) . " AND type=" . DB::_escape($type) . " AND type_no=" . DB::_escape($trans_no);
       $result = DB::_query($sql, "query for gl trans value");
       $row    = DB::_fetchRow($result);
-
       return $row[0];
     }
     /**
@@ -581,7 +560,6 @@
      */
     public static function getCurrentOpenFiscalPeriod() {
       $row = DB::_select('MIN( BEGIN ) as start', ' MAX( END ) as end')->from('fiscal_year')->where('closed<>', 1)->fetch()->one();
-
       return $row;
     }
   }

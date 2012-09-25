@@ -173,7 +173,7 @@
     $actn = strtolower(substr($_POST['actn'], 0, 1));
     if ($actn == 't') {
       //Tax_ItemType::row(_("Item Tax Type").":",'dest_id', null);
-      Tax_Types::row(_("Tax Type") . ":", 'dest_id', null);
+      Tax_Type::row(_("Tax Type") . ":", 'dest_id', null);
     } else {
       GL_UI::all_row(_("Account") . ":", 'dest_id', null, $_POST['type'] == QE_DEPOSIT || $_POST['type'] == QE_PAYMENT);
       if ($actn != '=') {
