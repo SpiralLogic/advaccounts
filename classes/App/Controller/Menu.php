@@ -8,11 +8,13 @@
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @date      22/09/12
-   * @link      http://www.advancedgroup.com.au
+   * @href      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Controller;
 
   use ADV\App\Display;
+  use ADV\Core\Arr;
+  use ADV\App\Application\Func;
   use ADV\App\User;
   use ADV\App\Page;
   use ADV\App\Application\Module;
@@ -42,59 +44,54 @@
      * @internal param bool $enabled
      */
     public function __construct($session, $user) {
-      global $installed_extensions;
-      $this->User = $user;
-
+      $this->User         = $user;
       $this->id           = strtolower($this->name);
       $this->name         = $this->help_context ? : $this->name;
       $this->help_context = _($this->name);
       $this->modules      = [];
-      $this->extensions   = $installed_extensions;
-      $this->buildMenu();
-      if (count($this->extensions) > 0) {
-        $this->addExtensions();
-      }
-      $this->display();
     }
     abstract function buildMenu();
     /**
      * @param      $name
-     * @param null $icon
      *
-     * @return Module
+     * @internal param null $icon
+     * @return $this
      */
-    public function add_module($name, $icon = null) {
-
-      $module          = new Module($name, $icon);
-      $this->modules[] = $module;
-      return $module;
+    public function add_module($name) {
+      $this->modules[$name]    = ['right'=> [], 'left'=> []];
+      $this->rightAppFunctions =& $this->modules[$name]['right'];
+      $this->leftAppFunctions  =& $this->modules[$name]['left'];
+      return $this;
     }
-    protected function addExtensions() {
-      foreach ($this->extensions as $mod) {
-        if (@$mod['active'] && $mod['type'] == 'plugin' && $mod['tab'] == $this->id) {
-        }
-      }
+    public function getModules() {
+      $modules = [];
+      foreach ($this->modules as $name => $module) {
+        $functions = [];
+        Arr::append($functions, $module['right']);
+        Arr::append($functions, $module['left']);
+        $modules[] = ['title'=>$name, 'modules'=> $functions];
     }
-    protected function display() {
-
+      return $modules;
+    }
+    public function display() {
+      $this->buildMenu();
       Page::start(_($help_context = "Main Menu"), SA_OPEN, false, true);
       if ($this->direct) {
         Display::meta_forward($this->direct);
       }
-
-      foreach ($this->modules as $module) {
+      foreach ($this->modules as $name => $module) {
         $app            = new View('application');
-        $app['colspan'] = (count($module->rightAppFunctions) > 0) ? 2 : 1;
-        $app['name']    = $module->name;
-        foreach ([$module->leftAppFunctions, $module->rightAppFunctions] as $modules) {
+        $app['colspan'] = (count($module['right']) > 0) ? 2 : 1;
+        $app['name']    = $name;
+        foreach ([$module['left'], $module['right']] as $modules) {
           $mods = [];
           foreach ($modules as $func) {
-            $mod['access'] = $this->User->hasAccess($func->access);
-            $mod['label']  = $func->label;
+            $mod['access'] = $this->User->hasAccess($func['access']);
+            $mod['label']  = $func['label'];
             if ($mod['access']) {
-              $mod['link'] = Display::menu_link($func->link, $func->label);
+              $mod['href'] = Display::menu_link($func['href'], $func['label']);
             } else {
-              $mod['anchor'] = Display::access_string($func->label, true);
+              $mod['anchor'] = Display::access_string($func['label'], true);
             }
             $mods[] = $mod;
           }
@@ -104,4 +101,40 @@
       }
       Page::end();
     }
+    /**
+     * @param        $label
+     * @param string $href
+     * @param string $access
+     *
+     * @return Func
+     */
+    public function addLeftFunction($label, $href = "", $access = SA_OPEN) {
+      $appfunction              = ['label'=> $label, 'href'=> $href, 'access'=> $access];
+      $this->leftAppFunctions[] = $appfunction;
+      return $appfunction;
+    }
+    /**
+     * @param        $label
+     * @param string $href
+     * @param string $access
+     *
+     * @return Func
+     */
+    public function addRightFunction($label, $href = "", $access = SA_OPEN) {
+      $appfunction               = ['label'=> $label, 'href'=> $href, 'access'=> $access];
+      $this->rightAppFunctions[] = $appfunction;
+      return $appfunction;
+    }
+    /**
+     * @var null
+     */
+    public $icon;
+    /**
+     * @var array
+     */
+    public $leftAppFunctions = [];
+    /**
+     * @var array
+     */
+    public $rightAppFunctions = [];
   }

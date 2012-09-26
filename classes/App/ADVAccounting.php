@@ -253,7 +253,10 @@
      */
     protected function runController($controller2) {
 
-      new $controller2($this->Session, $this->User, $this->Ajax, $this->JS, $this->dic->get('Input'), DB::i());
+      $controller = new $controller2($this->Session, $this->User, $this->Ajax, $this->JS, $this->dic->get('Input'), DB::i());
+      if (method_exists($controller,'display')){
+        $controller->display();
+      }
     }
     /**
      * @param $app

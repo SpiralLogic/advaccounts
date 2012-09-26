@@ -92,19 +92,19 @@
       if ($application->direct) {
         Display::meta_forward($application->direct);
       }
-      foreach ($application->modules as $module) {
+      foreach ($application->modules as $name => $module) {
         $app            = new View('application');
-        $app['colspan'] = (count($module->rightAppFunctions) > 0) ? 2 : 1;
-        $app['name']    = $module->name;
-        foreach ([$module->leftAppFunctions, $module->rightAppFunctions] as $modules) {
+        $app['colspan'] = (count($module['right']) > 0) ? 2 : 1;
+        $app['name']    = $name;
+        foreach ([$module['left'], $module['right']] as $modules) {
           $mods = [];
           foreach ($modules as $func) {
-            $mod['access'] = $this->User->hasAccess($func->access);
-            $mod['label']  = $func->label;
+            $mod['access'] = $this->User->hasAccess($func['access']);
+            $mod['label']  = $func['label'];
             if ($mod['access']) {
-              $mod['link'] = Display::menu_link($func->link, $func->label);
+              $mod['href'] = Display::menu_link($func['href'], $func['label']);
             } else {
-              $mod['anchor'] = Display::access_string($func->label, true);
+              $mod['anchor'] = Display::access_string($func['label'], true);
             }
             $mods[] = $mod;
           }
@@ -204,13 +204,21 @@
       /** @var ADVAccounting $application */
       $menuitems = [];
       foreach ($this->App->applications as $app=> $config) {
-        $item          = [];
-        $acc           = Display::access_string($app);
-        $item['acc0']  = isset($config['name']) ? $config['name'] : $acc[0];
-        $item['acc1']  = $acc[1];
+        $item = [];
+        if (!$config['enabled']) {
+          continue;
+        }
+        $item['name']  = $app;
         $item['class'] = ($this->sel_app == strtolower($app)) ? "active" : null;
-        $item['href']  = '/' . strtolower($item['acc0']);
-        $menuitems[]   = $item;
+        $item['href']  = '/' . strtolower($item['name']);
+        $app = '\\ADV\\Controllers\\' . $app;
+        if (class_exists($app)) {
+          $dic = \ADV\Core\DIC::getInstance();
+          $app = new $app($dic->get('Session'), $dic->get('User'));
+          $app->buildMenu();
+          $item['extra'] = $app->getModules();
+        }
+        $menuitems[] = $item;
       }
       $menu->set('menu', $menuitems);
       $menu->render();
