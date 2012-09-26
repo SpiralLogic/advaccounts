@@ -401,7 +401,7 @@
 
   function display_fiscalyears() {
     $company_year = DB_Company::get_pref('f_year');
-    $result       = DB_Company::get_all_fiscalyears();
+    $result       = DB_Company::getAll_fiscalyears();
     Forms::start();
     Event::warning(
       _(

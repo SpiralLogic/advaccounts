@@ -59,7 +59,7 @@
 </head>
 <body>
 <div id='content'>
-  <div id='msgbox'>
+  <div id='msgbox' style="opacity:1;height:auto" >
     <div class="err_msg">{{$message}}</div>
     <pre class="left bold">{{$debug}}</pre>
   </div>

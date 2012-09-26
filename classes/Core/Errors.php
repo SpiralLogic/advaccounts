@@ -274,7 +274,8 @@
      * @internal param null $e
      */
     protected static function fatal() {
-      ob_end_clean();
+while (ob_get_level()>0){
+      ob_end_clean();}
       $content = strip_tags(static::format());
       if (!$content) {
         $content = 'A fatal error has occured!';

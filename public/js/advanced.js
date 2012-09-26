@@ -805,6 +805,7 @@ Adv.extend({
   }())
 });
 $(function () {
+
   var topmenu = $('#topmenu,#tabs>ul'), prev , current = topmenu.find('.active');
   var left = function () {
     var next = current.prev();
