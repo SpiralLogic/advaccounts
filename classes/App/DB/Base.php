@@ -2,6 +2,7 @@
   namespace ADV\App\DB;
 
   use ADV\Core\DB\DBDuplicateException;
+  use ADV\Core\DB\DBDeleteException;
   use ADV\Core\DB\DBInsertException;
   use ADV\Core\DB\DBSelectException;
   use ADV\Core\Status;
@@ -129,11 +130,10 @@
       try {
         $id_column = $this->_id_column;
         static::$DB->delete($this->_table)->where($id_column . '=', $this->$id_column)->exec();
-      } catch (\DBDeleteException $e) {
+      } catch (DBDeleteException $e) {
         return $this->status(false, 'Could not delete' . $this->_classname);
       }
       $this->defaults();
-
       return $this->status(true, $this->_classname . ' deleted!');
     }
     public function getIDColumn() {

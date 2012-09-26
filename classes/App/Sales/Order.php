@@ -1,5 +1,6 @@
 <?php
   use ADV\Core\Cell;
+  use ADV\App\Forms;
   use ADV\App\Dimensions;
   use ADV\App\UI;
   use ADV\App\Reports\Email;
@@ -1232,7 +1233,7 @@
       $display_sub_total = Num::_priceFormat($total + Validation::input_num('freight_cost'));
       echo '<tr>';
       Cell::label(_("Total Discount"), "colspan=$colspan class='alignright'");
-      Forms::amountCellsSmall(null, null, $total_discount, null, ['$']);
+      Forms::amountCellsSmall(null, 'totalDiscount', $total_discount, null, ['$']);
       echo  (new HTML)->td(null, array('colspan'=> 2, 'class'=> 'center'))->button(
         'discountAll',
         'Discount All',
@@ -1249,7 +1250,7 @@
       $tax_total     = Tax::edit_items($taxes, $colspan, $this->tax_included, 2);
       $display_total = Num::_priceFormat(($total + Validation::input_num('freight_cost') + $tax_total));
       echo '<tr>';
-      Cell::labelled(_("Amount Total"), $display_total, "colspan=$colspan class=' alignright'", "class='alignright'");
+      Cell::labelled(_("Total"), $display_total, "colspan=$colspan class='alignright'", "class='alignright'");
       Forms::submitCells('_action', Orders::REFRESH, "colspan=2", _("Refresh"), true);
       echo '</tr>';
       Table::footEnd();

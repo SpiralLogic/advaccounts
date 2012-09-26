@@ -562,7 +562,7 @@
             return false;
         }
       } catch (PDOException $e) {
-        $this->error($e);
+        $this->error($e, false, true);
         switch ($type) {
           case DB::SELECT:
             throw new DBSelectException('Could not select from database.');
@@ -618,13 +618,14 @@
     /**
      * @param \Exception|PDOException  $e
      * @param bool                     $msg
+     * @param bool                     $silent
      *
-     * @throws \ADV\Core\DB\DBDuplicateException
-     * @throws \ADV\Core\DB\DBException
+     * @throws DBDuplicateException
+     * @throws DBException
      * @internal param bool|string $exit
      * @return bool
      */
-    protected function error(\Exception $e, $msg = false) {
+    protected function error(\Exception $e, $msg = false, $silent = false) {
       $data       = $this->data;
       $this->data = [];
       if ($data && is_array(reset($data))) {
@@ -646,6 +647,9 @@
       }
       if (!class_exists('Errors')) {
         throw new DBException($error);
+      }
+      if ($silent) {
+        return $error;
       }
       \Errors::databaseError($error, $this->errorSql, $data);
     }

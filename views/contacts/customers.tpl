@@ -15,7 +15,7 @@
             Shipping Details
         </div>
         <div id="branchSelect" class="center">{{$branchlist}}
-            <div id="branchMenu" class="btn-group alignleft" style="display:inline-block;">
+            <div id="branchMenu" class="btn-group alignleft" style="display:inline-block;display:none;">
                 <button class="btn dropdown-toggle auto" style="float:none;" data-toggle="dropdown">Add Branch <span class="icon-caret-down"></span></button>
                 <ul class="dropdown-menu">
                     <li>

@@ -10,6 +10,7 @@
   namespace ADV\App\Debtor;
 
   use Debtor_Branch;
+  use ADV\Core\Status;
   use ADV\App\Display;
   use ADV\App\Forms;
   use ADV\App\Validation;
@@ -150,13 +151,15 @@
     /**
      * @param null $details
      *
-     * @return void
+     * @return \Debtor_Branch
      */
     public function addBranch($details = null) {
       $branch            = new Debtor_Branch($details);
       $branch->debtor_id = $this->id;
       $branch->save();
       $this->branches[$branch->branch_id] = $branch;
+      $this->status(Status::INFO, 'Added new branch');
+      return $branch;
     }
     /**
      * @return array|null
@@ -192,10 +195,11 @@
       if (count($this->branches) == 1) {
         return $this->status(false, "The customer must have at least one branch");
       }
-      if ($this->branches[$branch_id]->delete()) {
-        return $this->status(true, "The customer branch has been deleted");
+      if (!$this->branches[$branch_id]->delete()) {
+        return $this->status(false, "The customer branch could not be deleted");
       }
-      return $this->status(false, "The customer branch could not be deleted");
+      unset($this->branches[$branch_id]);
+      return $this->status(true, "The customer branch has been deleted");
     }
     /**
      * @return array|bool

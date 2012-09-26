@@ -545,18 +545,5 @@ Behaviour.register({
                          return false;
                        }
                      },
-                     'a':                                                                                                              function (e) { // traverse menu
-                       e.onkeydown = function (ev) {
-                         ev = ev || window.event;
-                         var key = ev.keyCode || ev.which;
-                         if (key == 37 || key == 38 || key == 39 || key == 40) {
-                           Adv.Forms.moveFocus(key, e, document.links);
-                           ev.returnValue = false;
-                           return false;
-                         }
-                         return undefined;
-                       }
-                     }
-
                    });
 Behaviour.addLoadEvent(Adv.Scroll.loadPosition);

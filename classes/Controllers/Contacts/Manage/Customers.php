@@ -1,5 +1,6 @@
 <?php
   namespace ADV\Controllers\Contacts\Manage;
+
   use ADV\App\Debtor\Debtor;
   use ADV\App\Contact\Postcode;
   use Debtor_Branch;
@@ -31,9 +32,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Customers extends \ADV\App\Controller\Base
-  {
-
+  class Customers extends \ADV\App\Controller\Base {
     /** @var Debtor */
     protected $debtor;
     protected function before() {
@@ -41,15 +40,17 @@
         $this->debtor = new Debtor();
         $this->debtor->save($_POST['company']);
       } elseif ($this->action == 'fetch' && $this->Input->request('id', Input::NUMERIC) > 0) {
-        $this->debtor        = $this->debtor = new Debtor($this->Input->request('id', Input::NUMERIC));
+        $this->debtor        = new Debtor($this->Input->request('id', Input::NUMERIC));
         $data['contact_log'] = Contact_Log::read($this->debtor->id, CT_CUSTOMER);
         $this->Session->setGlobal('debtor_id', $this->debtor->id);
       } elseif ($this->action == 'addBranch') {
-        $data['branch'] = $this->debtor->newBranch();
+        $this->debtor   = new Debtor($this->Input->request('id', Input::NUMERIC));
+        $data['branch'] = $this->debtor->addBranch();
       } elseif ($this->action == 'deleteBranch') {
-        $data['branch'] = $this->debtor->deleteBranch($this->Input->post('branch_id', Input::NUMERIC));
+        $this->debtor = new Debtor($this->Input->request('id', Input::NUMERIC));
+        $this->debtor->deleteBranch($this->Input->post('branch_id', Input::NUMERIC));
       } else {
-        $this->debtor = $this->debtor = new Debtor();
+        $this->debtor = new Debtor();
       }
       if (REQUEST_AJAX) {
         if ($this->debtor) {
@@ -66,7 +67,7 @@
         $this->delete();
       }
       echo $this->generateForm();
-      $this->JS->onload("Company.setValues(" . json_encode(['company'=>$this->debtor]) . ");")->setFocus($this->debtor->id ? 'name' : 'customer');
+      $this->JS->onload("Company.setValues(" . json_encode(['company'=> $this->debtor]) . ");")->setFocus($this->debtor->id ? 'name' : 'customer');
       Page::end(true);
     }
     /**
@@ -109,10 +110,10 @@
       $form->text('branch[email]')->label("Email:");
       $form->textarea('branch[br_address]', ['cols'=> 37, 'rows'=> 4])->label('Street:');
       $branch_postcode = new Postcode([
-        'city'     => ['branch[city]'], //
-        'state'    => ['branch[state]'], //
-        'postcode' => ['branch[postcode]']
-      ], $js);
+                                      'city'     => ['branch[city]'], //
+                                      'state'    => ['branch[state]'], //
+                                      'postcode' => ['branch[postcode]']
+                                      ], $js);
       $view->set('branch_postcode', $branch_postcode->getForm());
       $form->group('accounts_details')->text('accounts[contact_name]')->label('Accounts Contact:');
       $form->text('accounts[phone]')->label('Phone Number:');
@@ -121,10 +122,10 @@
       $form->text('accounts[email]')->label('Email:');
       $form->textarea('accounts[br_address]', ['cols'=> 37, 'rows'=> 4])->label('Street:');
       $accounts_postcode = new Postcode([
-        'city'     => ['accounts[city]'], //
-        'state'    => ['accounts[state]'], //
-        'postcode' => ['accounts[postcode]'] //
-      ], $js);
+                                        'city'     => ['accounts[city]'], //
+                                        'state'    => ['accounts[state]'], //
+                                        'postcode' => ['accounts[postcode]'] //
+                                        ], $js);
       $view->set('accounts_postcode', $accounts_postcode->getForm());
       $form->hidden('accounts_id');
       $form->group('accounts');
