@@ -79,7 +79,6 @@ var Adv = {};
   window.Adv = Adv;
 })(window, jQuery);
 Adv.extend({
-
   ScrollDetect:(function () {
     return {
       loaded:false,
@@ -824,4 +823,7 @@ Adv.extend({
       }
     };
   }())
+});
+$(function() {
+$('#tabs').find('a').focus(function(){$(this).parent().addClass('hover'); }).focusout(function(){$(this).parent().removeClass('hover'); })
 });

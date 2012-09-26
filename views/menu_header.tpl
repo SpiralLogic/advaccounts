@@ -10,6 +10,7 @@
     {{#$menu}}
         <li class='{{$.class}}'>
             <a href='{{$.href}}' >{{$.name}}</a>
+           {{#if $.extra}}
             <ul>
            {{#$.extra}}
             <li class='title'>{{$.title}}</li>
@@ -18,6 +19,7 @@
             {{/$.modules}}
             {{/$.extra}}
             </ul>
+            {{/if}}
         </li>
     {{/$menu}}
     </ul>
