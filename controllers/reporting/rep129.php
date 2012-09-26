@@ -125,7 +125,11 @@
       $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
       $linetype          = true;
       $doctype           = ($print_as_quote < 3) ? ST_SALESORDER : ST_SALESQUOTE;
+      if ($rep->currency != $myrow['curr_code']) {
+        include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
+      } else {
         include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
+      }
       $rep->TextCol(4, 7, $doc_shipping . ' (ex.GST)', -2);
       $rep->TextCol(7, 8, $display_freight, -2);
       $rep->NewLine();

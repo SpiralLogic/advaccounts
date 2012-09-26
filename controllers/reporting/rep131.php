@@ -102,7 +102,11 @@
       $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
       $linetype          = true;
       $doctype           = ST_SALESQUOTE;
+      if ($rep->currency != $myrow['curr_code']) {
+        include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
+      } else {
         include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
+      }
       $rep->TextCol(4, 7, $doc_sub_total, -2);
       $rep->TextCol(7, 8, $display_sub_total, -2);
       $rep->NewLine();

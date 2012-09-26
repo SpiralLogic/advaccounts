@@ -96,7 +96,11 @@
         $result   = get_allocations_for_receipt($myrow['debtor_id'], $myrow['type'], $myrow['trans_no']);
         $linetype = true;
         $doctype  = ST_CUSTPAYMENT;
+        if ($rep->currency != $myrow['curr_code']) {
+          include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
+        } else {
           include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
+        }
         $total_allocated = 0;
         $rep->TextCol(0, 4, $doc_Towards, -2);
         $rep->NewLine(2);

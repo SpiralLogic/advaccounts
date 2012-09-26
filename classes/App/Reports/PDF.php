@@ -1,5 +1,7 @@
 <?php
   namespace ADV\App\Reports;
+
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -25,7 +27,6 @@
    */
   class PDF extends \Cpdf
   {
-
     /**
      * @var array
      */
@@ -263,10 +264,7 @@
       $enc                  = strtoupper($_SESSION['language']->encoding);
       // for the language array in class.pdf.inc
       $l = array(
-        'a_meta_charset'  => $enc,
-        'a_meta_dir'      => $rtl,
-        'a_meta_language' => $code,
-        'w_page'          => 'page'
+        'a_meta_charset' => $enc, 'a_meta_dir' => $rtl, 'a_meta_language' => $code, 'w_page' => 'page'
       );
       parent::__construct($size, $l, $orientation);
     }
@@ -465,7 +463,11 @@
         // include("includes/lang/en_AU/statement_head.php");
         //} else
       }
-      include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
+      if (isset($myrow['curr_code']) && $this->currency != $myrow['curr_code']) {
+        include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
+      } else {
+        include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
+      }
       include(REPORTS_PATH . 'includes' . DS . 'header.php');
       // }
       $this->row = isset($temp) ? $temp : $this->row;
@@ -1127,7 +1129,11 @@
         $doc_Kindest_regards = '';
         if ($email == 1) {
           $emailtype = true;
-          include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
+          if ($this->currency != $myrow['curr_code']) {
+            include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
+          } else {
+            include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
+          }
           $mail = new Email(str_replace(",", "", $this->company['coy_name']), $this->company['email']);
           if (!isset($myrow['email']) || $myrow['email'] == '') {
             $myrow['email'] = isset($myrow['contact_email']) ? $myrow['contact_email'] : '';
@@ -1136,6 +1142,7 @@
           if (isset($myrow['dimension_id']) && $myrow['dimension_id'] > 0 && $doctype == ST_SALESINVOICE) { // helper for payment links
             if ($myrow['dimension_id'] == 1) {
               $amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"], User::price_dec());
+
               $txt = $doc_Payment_Link . " PayPal: ";
               $nn  = urlencode($this->title . " " . $myrow['reference']);
               $url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" . $nn . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
