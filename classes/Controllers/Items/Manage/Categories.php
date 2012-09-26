@@ -41,6 +41,7 @@
      */
     protected function formContents(Form $form, View $view) {
       $view['title'] = 'Item Category';
+      $form->hidden('category_id');
       $form->text('description')->label("Category Name:")->focus($this->action == EDIT);
       $form->checkbox('dflt_no_sale')->label("Exclude from sales:");
       $form->arraySelect('dflt_mb_flag', [STOCK_SERVICE=> 'Service', STOCK_MANUFACTURE=> 'Manufacture', STOCK_PURCHASED=> 'Purchased', STOCK_INFO=> 'Info'])->label('Type:');

@@ -2722,10 +2722,9 @@ img {
   font-size:       0.55em;
   text-decoration: underline;
   margin:          0;
-  opacity:         .8;
+  opacity:         .9;
   padding-left:    15px;
   position:        relative;
-  text-shadow:     rgba(100, 100, 100, .6) 1px 2px;
   color:           #333;
 }
 
@@ -2939,9 +2938,13 @@ img {
 }
 
 #tabs ul li ul li.title {
-  text-indent: 4px;
-  background:  rgba(98, 98, 102, 1);
-  font-weight: bold; text-decoration: none;
+  text-indent:     4px;
+  background:      rgba(98, 98, 102, 1);
+  font-weight:     bold;
+  text-decoration: none;
+
+  color:      white;
+
 }
 
 #tabs ul li {
@@ -2965,7 +2968,7 @@ img {
   height:          33px;
 }
 
-#tabs >ul a {
+#tabs >ul >li,#tabs ul li ul {
   -moz-transition:    all .3s linear;
   -webkit-transition: all .3s linear;
 }
@@ -2974,10 +2977,12 @@ img {
   display: none;
 }
 
-#tabs ul li:hover ul, #tabs ul li.hover ul {
+#tabs ul li.hover ul {
   display:  block;
   width:    auto;
   position: absolute;
+  opacity:1;
+
 }
 
 #tabs ul li ul li {
@@ -2991,18 +2996,12 @@ img {
 #tabs ul li ul li a {
   padding:        2px 8px 3px;
   height:         21px;
-  opacity:        0;
   font-size:      12px;
   line-height:    15px;
   text-transform: none;
 }
 
-#tabs ul li:hover ul li a,
-#tabs ul li.hover ul li a {
-  opacity: 1;
-}
-
-#tabs .active> a, #tabs >ul >li >a:hover, #tabs >ul> li:hover, #tabs a:focus {
+#tabs .active> a, #tabs .hover> a, #tabs a:hover, #tabs >ul> li.hover, #tabs a:focus {
   color:      white;
   background: #5cadff;
   background: -moz-linear-gradient(top, #5cadff 0%, #192e9c 100%, #4e6ad9 50%);
@@ -3014,7 +3013,7 @@ img {
   filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#5cadff', endColorstr = '#4e6ad9', GradientType = 0);
 }
 
-.purchases #tabs .active> a, .purchases #tabs li:hover, .purchases #tabs li:hover >a, .purchases  #tabs li.hover, .purchases  #tabs li.hover>a {
+.purchases #tabs .active> a, .purchases #tabs .hover> a, .purchases #tabs a:hover, .purchases #tabs >ul> li.hover, .purchases #tabs a:focus {
   background: #6ed86e;
   background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzZlZDg2ZSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjQ1JSIgc3RvcC1jb2xvcj0iIzQ0YjU0OCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMyNzc3MzQiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
   background: -moz-linear-gradient(top, #6ed86e 0%, #44b548 45%, #277734 100%);
@@ -3026,7 +3025,7 @@ img {
   filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#6ed86e', endColorstr = '#277734', GradientType = 0);
 }
 
-.inventory #tabs .active >a, .inventory #tabs li:hover, .inventory #tabs li:hover >a, .inventory  #tabs li.hover, .manufacturing #tabs li:hover, .manufacturing #tabs li:hover >a, .manufacturing #tabs .active a, .manufacturing #tabs  li.hover {
+.inventory #tabs .active> a, .inventory #tabs .hover> a, .inventory #tabs a:hover, .inventory #tabs >ul> li.hover, .inventory #tabs a:focus, .manufacturing #tabs .active> a, .manufacturing #tabs .hover> a, .manufacturing #tabs >ul >li.hover >a:hover, .manufacturing #tabs >ul> li.hover, .manufacturing #tabs a:focus {
   background: #e38881;
   background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2UzODg4MSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjQ1JSIgc3RvcC1jb2xvcj0iI2RiNDk0OSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiODFkMWQiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
   background: -moz-linear-gradient(top, #e38881 0%, #db4949 45%, #b81d1d 100%);
@@ -3038,7 +3037,7 @@ img {
   filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#e38881', endColorstr = '#b81d1d', GradientType = 0);
 }
 
-.banking #tabs .active> a, .banking #tabs li:hover, .banking  #tabs li.hover {
+.banking #tabs .active> a, .banking #tabs .hover> a, .banking #tabs a:hover, .banking #tabs >ul> li.hover, .banking #tabs a:focus {
   background: #ffe7aa;
   background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZTdhYSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjM4JSIgc3RvcC1jb2xvcj0iI2ZlYmYwNCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNjOTkwMDIiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
   background: -moz-linear-gradient(top, #ffe7aa 0%, #febf04 38%, #c99002 100%);

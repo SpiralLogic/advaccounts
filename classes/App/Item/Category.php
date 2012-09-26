@@ -18,9 +18,9 @@
     class Category extends \ADV\App\DB\Base
     {
       protected $_table = 'stock_category';
-      protected $_classname = 'Stock_category';
+      protected $_classname = 'Stock Category';
       protected $_id_column = 'category_id';
-      public $category_id;
+      public $category_id=0;
       public $description = '';
       public $inactive = 0;
       public $dflt_tax_type = 1;

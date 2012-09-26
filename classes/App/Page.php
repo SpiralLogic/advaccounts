@@ -2,6 +2,8 @@
   namespace ADV\App;
 
   use ADV\App\ADVAccounting;
+  use ADV\Core\Session;
+  use ADV\Core\Cache;
 
   /**
    * PHP version 5.4
@@ -121,7 +123,8 @@
      * @param Dates            $dates
 
      */
-    public function __construct(User $user, Config $config, \ADV\Core\Ajax $ajax, \ADV\Core\JS $js, \ADV\App\Dates $dates) {
+    public function __construct(Session $session, User $user, Config $config, \ADV\Core\Ajax $ajax, \ADV\Core\JS $js, \ADV\App\Dates $dates) {
+      $this->Session = $session;
       $this->User   = $user ? : User::i();
       $this->Config = $config ? : Config::i();
       $this->Ajax   = $ajax ? : Ajax::i();
@@ -191,6 +194,10 @@
       $header->render();
     }
     protected function menu_header() {
+      $cache = $this->Session->get('menu_header');
+      if ($cache) {
+        echo $cache;
+      }
       $menu                = new View('menu_header');
       $menu['theme']       = $this->User->theme();
       $menu['company']     = $this->Config->get('db.' . $this->User->company)['company'];
@@ -213,15 +220,15 @@
         $item['href']  = '/' . strtolower($item['name']);
         $app = '\\ADV\\Controllers\\' . $app;
         if (class_exists($app)) {
-          $dic = \ADV\Core\DIC::getInstance();
-          $app = new $app($dic->get('Session'), $dic->get('User'));
+          $app = new $app($this->Session, $this->User);
           $app->buildMenu();
           $item['extra'] = $app->getModules();
         }
         $menuitems[] = $item;
       }
       $menu->set('menu', $menuitems);
-      $menu->render();
+      echo $this->Session->set('menu_header',$menu->render(true));
+
     }
     /**
      * @param null $context
@@ -313,7 +320,7 @@
      */
     public static function start($title, $security = SA_OPEN, $no_menu = false, $isIndex = false) {
       if (static::$i === null) {
-        static::$i = new static(User::i(), Config::i(), \ADV\Core\Ajax::i(), \ADV\Core\JS::i(), \ADV\App\Dates::i());
+        static::$i = new static(Session::i(),User::i(), Config::i(), \ADV\Core\Ajax::i(), \ADV\Core\JS::i(), \ADV\App\Dates::i());
       }
       if (is_array($title)) {
         static::$i->title   = $title[0];

@@ -1,6 +1,5 @@
 <?php
   namespace ADV\App\DB;
-
   use ADV\Core\DB\DBDuplicateException;
   use ADV\Core\DB\DBDeleteException;
   use ADV\Core\DB\DBInsertException;
@@ -19,7 +18,9 @@
    **/
   /**
    */
-  abstract class Base {
+  abstract class Base
+  {
+
     use \ADV\Core\Traits\SetFromArray;
     use \ADV\Core\Traits\Status;
 
@@ -59,7 +60,6 @@
       if ((is_numeric($id) && $id > 0) || (is_string($id) && strlen($id) > 0)) {
         $this->$_id_column = $id;
         $this->read($id, $extra);
-
         return $this->status(Status::INFO, $this->_classname . " details loaded from DB!");
       } elseif (is_array($id)) {
         if (isset($id['id']) && !isset($id[$_id_column])) {
@@ -71,10 +71,8 @@
           $this->init();
         }
         $this->setFromArray($id);
-
         return $this->status(Status::INFO, $this->_classname . " details constructed!");
       }
-
       return $this->init();
     }
     /**
@@ -94,43 +92,40 @@
         return $this->saveNew();
       }
       $data = (array) $this;
-
       static::$DB->begin();
       try {
         $updated = static::$DB->update($this->_table)->values($data)->where($this->_id_column . '=', $this->id)->exec();
-      } catch (DBUpdateException $e) {
+      }
+      catch (DBUpdateException $e) {
         static::$DB->cancel();
-
         return $this->status(Status::ERROR, "Could not update " . $this->_classname);
       }
       if (property_exists($this, 'inactive')) {
         try {
           /** @noinspection PhpUndefinedFieldInspection */
           static::$DB->updateRecordStatus($this->id, $this->inactive, $this->_table, $this->_id_column);
-        } catch (DBUpdateException $e) {
+        }
+        catch (DBUpdateException $e) {
           static::$DB->cancel();
-
           return $this->status(Status::ERROR, "Could not update active status of " . $this->_classname);
         }
       }
       static::$DB->commit();
       if (!$updated) {
         $this->id = 0;
-
         return $this->status(Status::WARNING, 'Could not find ' . $this->_classname . '  to update, save again to try and add as new.');
       }
-
       return $this->status(Status::SUCCESS, $this->_classname . ' changes saved to database.');
     }
     /**
      * @return \ADV\Core\Traits\Status|bool
      */
     public function delete() {
-
       try {
         $id_column = $this->_id_column;
         static::$DB->delete($this->_table)->where($id_column . '=', $this->$id_column)->exec();
-      } catch (DBDeleteException $e) {
+      }
+      catch (DBDeleteException $e) {
         return $this->status(false, 'Could not delete' . $this->_classname);
       }
       $this->defaults();
@@ -150,7 +145,6 @@
      */
     protected function init() {
       $this->defaults();
-
       return $this->status(Status::INFO, 'Now working with new ' . $this->_classname);
     }
     /***
@@ -172,10 +166,10 @@
           $query->andWhere($field . '=', $value);
         }
         static::$DB->fetch()->intoClass($this);
-      } catch (DBSelectException $e) {
+      }
+      catch (DBSelectException $e) {
         return $this->status(false, 'Could not read ' . $this->_classname, (string) $id);
       }
-
       return $this->status(Status::INFO, 'Successfully read ' . $this->_classname, $id);
     }
     /**
@@ -192,13 +186,18 @@
     protected function saveNew() {
       try {
         $this->id = static::$DB->insert($this->_table)->values((array) $this)->exec();
-      } catch (DBInsertException $e) {
-        return $this->status(false, 'Could not add ' . $this->_classname . 'to database');
-      } catch (DBDuplicateException $e) {
+      }
+      catch (DBInsertException $e) {
+        $error = static::$DB->getLastError();
+        if ($error) {
+          return $this->status(false, $error['message'], $error['var']);
+        }
+        return $this->status(false, 'Could not add ' . $this->_classname . ' to database');
+      }
+      catch (DBDuplicateException $e) {
         return $this->status(false, 'You have tried to enter a duplicate ' . $this->_classname . '. Please modify the existing record or use different values.');
       }
-
-      return $this->status(true, 'Added ' . $this->_classname . ' to database');
+      return $this->status(Status::SUCCESS, 'Added ' . $this->_classname . ' to database');
     }
   }
 

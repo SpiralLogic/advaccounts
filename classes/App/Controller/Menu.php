@@ -69,6 +69,9 @@
         $functions = [];
         Arr::append($functions, $module['right']);
         Arr::append($functions, $module['left']);
+        foreach ($functions as &$func) {
+          $func = str_replace('&','',$func);
+        }
         $modules[] = ['title'=>$name, 'modules'=> $functions];
     }
       return $modules;

@@ -446,7 +446,7 @@
         'Page',
         function ($c) {
 
-          return new Page($c->get('User'), $c->get('Config'), $c->get('Ajax'), $c->get('JS'), $c->get('Dates'));
+          return new Page($c->get('Session'),$c->get('User'), $c->get('Config'), $c->get('Ajax'), $c->get('JS'), $c->get('Dates'));
         }
       );
     }
