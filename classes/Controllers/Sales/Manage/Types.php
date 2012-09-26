@@ -23,6 +23,7 @@
    **/
   class Types extends \ADV\App\Controller\Manage {
     protected $title = "Sales Types";
+    protected $security = SA_SALESTYPES;
     protected function before() {
       $this->object = new Type();
       $this->runPost();

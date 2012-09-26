@@ -73,6 +73,7 @@
       'Messages', //
       'Ref', //
       'Reporting', //
+      'Tags', //
       'UI', //
     ), //
     'ADV\\App\\Debtor'           => array(

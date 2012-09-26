@@ -1,4 +1,5 @@
 <?php
+  use ADV\App\Tags;
   /**
    * PHP version 5.4
    * @category  PHP
