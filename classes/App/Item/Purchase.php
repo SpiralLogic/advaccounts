@@ -1,4 +1,6 @@
 <?php
+  use ADV\App\Item\Item;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -7,8 +9,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Item_Purchase
-  {
+  class Item_Purchase {
     /**
      * @static
      *
@@ -20,15 +21,16 @@
      * @param      $supplier_description
      * @param null $stockid
      */
-    public static function add($creditor_id, $stock_id, $price, $suppliers_uom, $conversion_factor, $supplier_description, $stockid = null)
-    {
+    public static function add($creditor_id, $stock_id, $price, $suppliers_uom, $conversion_factor, $supplier_description, $stockid = null) {
       if ($stockid == null) {
         $stockid = Item::get_stockid($stock_id);
       }
       $sql
         = "INSERT INTO purch_data (creditor_id, stockid, stock_id, price, suppliers_uom,
         conversion_factor, supplier_description) VALUES (";
-      $sql .= DB::_escape($creditor_id) . ", " . DB::_escape($stock_id) . ", " . DB::_escape($stockid) . ", " . $price . ", " . DB::_escape($suppliers_uom) . ", " . $conversion_factor . ", " . DB::_escape($supplier_description) . ")";
+      $sql .= DB::_escape($creditor_id) . ", " . DB::_escape($stock_id) . ", " . DB::_escape($stockid) . ", " . $price . ", " . DB::_escape(
+        $suppliers_uom
+      ) . ", " . $conversion_factor . ", " . DB::_escape($supplier_description) . ")";
       DB::_query($sql, "The supplier purchasing details could not be added");
     }
     /**
@@ -41,8 +43,7 @@
      * @param $conversion_factor
      * @param $supplier_description
      */
-    public static function update($selected_id, $stock_id, $price, $suppliers_uom, $conversion_factor, $supplier_description)
-    {
+    public static function update($selected_id, $stock_id, $price, $suppliers_uom, $conversion_factor, $supplier_description) {
       $sql = "UPDATE purch_data SET price=" . $price . ",
         suppliers_uom=" . DB::_escape($suppliers_uom) . ",
         conversion_factor=" . $conversion_factor . ",
@@ -57,8 +58,7 @@
      * @param $selected_id
      * @param $stock_id
      */
-    public static function delete($selected_id, $stock_id)
-    {
+    public static function delete($selected_id, $stock_id) {
       $sql = "DELETE FROM purch_data WHERE creditor_id=" . DB::_escape($selected_id) . "
         AND stock_id=" . DB::_escape($stock_id);
       DB::_query($sql, "could not delete purchasing data");
@@ -70,8 +70,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function getAll($stock_id)
-    {
+    public static function getAll($stock_id) {
       $sql
         = "SELECT purch_data.*,suppliers.name, suppliers.curr_code
         FROM purch_data INNER JOIN suppliers
@@ -88,10 +87,9 @@
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get($selected_id, $stock_id)
-    {
+    public static function get($selected_id, $stock_id) {
       $sql
-              = "SELECT purch_data.*,suppliers.name FROM purch_data
+        = "SELECT purch_data.*,suppliers.name FROM purch_data
         INNER JOIN suppliers ON purch_data.creditor_id=suppliers.creditor_id
         WHERE purch_data.creditor_id=" . DB::_escape($selected_id) . "
         AND purch_data.stock_id=" . DB::_escape($stock_id);
@@ -112,13 +110,20 @@
      *
      * @return string
      */
-    public static function select($name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false, $legacy = false)
-    {
-      return Item::select($name, $selected_id, $all_option, $submit_on_change, array(
-                                                                                    'where'         => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
-                                                                                    'show_inactive' => $all,
-                                                                                    'editable'      => false
-                                                                               ), false, $legacy);
+    public static function select($name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false, $legacy = false) {
+      return Item::select(
+        $name,
+        $selected_id,
+        $all_option,
+        $submit_on_change,
+        array(
+             'where'         => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
+             'show_inactive' => $all,
+             'editable'      => false
+        ),
+        false,
+        $legacy
+      );
     }
     /**
      * @static
@@ -130,18 +135,23 @@
      * @param bool $submit_on_change
      * @param bool $editkey
      */
-    public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $editkey = false)
-    {
+    public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $editkey = false) {
       if ($label != null) {
         echo "<td>$label</td>\n";
       }
-      echo Item::select($name, $selected_id, $all_option, $submit_on_change, array(
-                                                                                  'where'       => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
-                                                                                  'editable'    => 30,
-                                                                                  'cells'       => true,
-                                                                                  'description' => '',
-                                                                                  'class'       => 'auto'
-                                                                             ));
+      echo Item::select(
+        $name,
+        $selected_id,
+        $all_option,
+        $submit_on_change,
+        array(
+             'where'       => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
+             'editable'    => 30,
+             'cells'       => true,
+             'description' => '',
+             'class'       => 'auto'
+        )
+      );
     }
     /**
      * @static
@@ -153,8 +163,7 @@
      * @param bool $submit_on_change
      * @param bool $editkey
      */
-    public static function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $editkey = false)
-    {
+    public static function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $editkey = false) {
       echo "<tr><td class='label'>$label</td>";
       Item_Purchase::cells(null, $name, $selected_id, $all_option, $submit_on_change, $editkey);
       echo "</tr>\n";

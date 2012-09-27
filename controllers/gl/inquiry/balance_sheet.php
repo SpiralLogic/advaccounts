@@ -120,7 +120,7 @@
       $classresult = GL_Class::getAll(false, 1);
       while ($class = DB::_fetch($classresult)) {
         $classclose = 0.0;
-        $convert    = Systypes::get_class_type_convert($class["ctype"]);
+        $convert    = SysTypes::get_class_type_convert($class["ctype"]);
         $ctype      = $class["ctype"];
         $classname  = $class["class_name"];
         //Print class Name
@@ -174,7 +174,7 @@
       $accounttype = GL_Type::get($_POST["AccGrp"]);
       $classid     = $accounttype["class_id"];
       $class       = GL_Class::get($classid);
-      $convert     = Systypes::get_class_type_convert($class["ctype"]);
+      $convert     = SysTypes::get_class_type_convert($class["ctype"]);
       //Print class Name
       Table::sectionTitle(GL_Type::get_name($_POST["AccGrp"]));
       $classclose = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $drilldown, BASE_URL);

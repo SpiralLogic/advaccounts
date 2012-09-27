@@ -33,7 +33,8 @@
     $date03 = date('Y-m-d', mktime(0, 0, 0, $mo - 9, 1, $yr));
     $date02 = date('Y-m-d', mktime(0, 0, 0, $mo - 10, 1, $yr));
     $date01 = date('Y-m-d', mktime(0, 0, 0, $mo - 11, 1, $yr));
-    $sql    = "SELECT SUM(CASE WHEN tran_date >= '$date01' AND tran_date < '$date02' THEN amount / 1000 ELSE 0 END) AS per01,
+    $sql
+            = "SELECT SUM(CASE WHEN tran_date >= '$date01' AND tran_date < '$date02' THEN amount / 1000 ELSE 0 END) AS per01,
                  SUM(CASE WHEN tran_date >= '$date02' AND tran_date < '$date03' THEN amount / 1000 ELSE 0 END) AS per02,
                  SUM(CASE WHEN tran_date >= '$date03' AND tran_date < '$date04' THEN amount / 1000 ELSE 0 END) AS per03,
                  SUM(CASE WHEN tran_date >= '$date04' AND tran_date < '$date05' THEN amount / 1000 ELSE 0 END) AS per04,
@@ -301,7 +302,7 @@
     $classresult = GL_Class::getAll(false, 0);
     while ($class = DB::_fetch($classresult)) {
       $ctotal  = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      $convert = Systypes::get_class_type_convert($class["ctype"]);
+      $convert = SysTypes::get_class_type_convert($class["ctype"]);
       //Print Class Name
       $rep->Font('bold');
       $rep->TextCol(0, 5, $class["class_name"]);
