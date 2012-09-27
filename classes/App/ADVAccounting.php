@@ -184,8 +184,9 @@
           return $session;
         }
       )->get();
-      $this->User    = $dic->get('User');
 
+      $this->User  = $dic->get('User');
+      $this->Input = $dic->get('Input');
       $this->JS->footerFile($this->Config->get('assets.footer'));
       $this->menu = new Menu(_("Main Menu"));
       $this->menu->addItem(_("Main Menu"), "index.php");
@@ -254,7 +255,7 @@
     protected function runController($controller2) {
 
       $controller = new $controller2($this->Session, $this->User, $this->Ajax, $this->JS, $this->dic->get('Input'), DB::i());
-      if (method_exists($controller,'display')){
+      if (method_exists($controller, 'display')) {
         $controller->display();
       }
     }
@@ -299,12 +300,11 @@
       $instance->applications = [];
       $instance->setupApplications();
     }
-
     protected function checkLogin() {
       if (!$this->Session instanceof \ADV\Core\Session || !$this->Session->checkUserAgent()) {
         $this->showLogin();
       }
-      if (Input::_post("user_name")) {
+      if ($this->Input->post("user_name")) {
         $this->login();
       } elseif (!$this->User->logged_in()) {
         $this->showLogin();
@@ -320,7 +320,7 @@
       }
     }
     protected function login() {
-      $company = Input::_post('login_company', null, 'default');
+      $company = $this->Input->post('login_company', null, 'default');
       if ($company) {
         $modules = $this->Config->get('modules.login', []);
         foreach ($modules as $module=> $module_config) {
@@ -343,6 +343,9 @@
         $this->Session['User'] = $this->User;
         $this->Session->regenerate();
         $this->Session->language->setLanguage($this->Session['language']->code);
+        if ($this->Input->post('uri')) {
+          header('Location: ' . $this->Input->post('uri'));
+        }
       }
     }
     protected function showLogin() {
@@ -446,7 +449,7 @@
         'Page',
         function ($c) {
 
-          return new Page($c->get('Session'),$c->get('User'), $c->get('Config'), $c->get('Ajax'), $c->get('JS'), $c->get('Dates'));
+          return new Page($c->get('Session'), $c->get('User'), $c->get('Config'), $c->get('Ajax'), $c->get('JS'), $c->get('Dates'));
         }
       );
     }

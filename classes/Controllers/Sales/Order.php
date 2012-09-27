@@ -41,24 +41,27 @@
 
    */
   class Order extends Base {
-    protected $addTitles = array(
-      ST_SALESQUOTE  => "New Sales Quotation Entry", //
-      ST_SALESINVOICE=> "Direct Sales Invoice", //
-      ST_CUSTDELIVERY=> "Direct Sales Delivery", //
-      ST_SALESORDER  => "New Sales Order Entry"
-    );
-    protected $modifyTitles = array(
-      ST_SALESQUOTE => "Modifying Sales Quotation # ", //
-      ST_SALESORDER => "Modifying Sales Order # "
-    );
-    protected $typeSecurity = array(
-      ST_SALESORDER          => SA_SALESORDER, //
-      ST_SALESQUOTE          => SA_SALESQUOTE, ///
-      ST_CUSTDELIVERY        => SA_SALESDELIVERY, //
-      Orders::QUOTE_TO_ORDER => SA_SALESORDER, //
-      Orders::CLONE_ORDER    => SA_SALESORDER, //
-      ST_SALESINVOICE        => SA_SALESINVOICE
-    );
+    protected $addTitles
+      = array(
+        ST_SALESQUOTE  => "New Sales Quotation Entry", //
+        ST_SALESINVOICE=> "Direct Sales Invoice", //
+        ST_CUSTDELIVERY=> "Direct Sales Delivery", //
+        ST_SALESORDER  => "New Sales Order Entry"
+      );
+    protected $modifyTitles
+      = array(
+        ST_SALESQUOTE => "Modifying Sales Quotation # ", //
+        ST_SALESORDER => "Modifying Sales Order # "
+      );
+    protected $typeSecurity
+      = array(
+        ST_SALESORDER          => SA_SALESORDER, //
+        ST_SALESQUOTE          => SA_SALESQUOTE, ///
+        ST_CUSTDELIVERY        => SA_SALESDELIVERY, //
+        Orders::QUOTE_TO_ORDER => SA_SALESORDER, //
+        Orders::CLONE_ORDER    => SA_SALESORDER, //
+        ST_SALESINVOICE        => SA_SALESINVOICE
+      );
     protected $security;
     public $type;
     /***
@@ -229,7 +232,8 @@
         Display::submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $order_no, 'prtopt', null, 1);
         Display::note(GL_UI::view(ST_CUSTDELIVERY, $order_no, _("View the GL Journal Entries for this Dispatch")), 0, 1);
         Display::submenu_option(_("Make &Invoice Against This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$order_no");
-        ((isset($_GET['Type']) && $_GET['Type'] == 1)) ? Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/search/orders?DeliveryTemplates=Yes") : Display::submenu_option(_("Enter a &New Delivery"), $new_trans);
+        ((isset($_GET['Type']) && $_GET['Type'] == 1)) ? Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/search/orders?DeliveryTemplates=Yes") :
+          Display::submenu_option(_("Enter a &New Delivery"), $new_trans);
       } elseif ($trans_type == ST_SALESINVOICE) {
         $sql    = "SELECT trans_type_from, trans_no_from FROM debtor_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . $this->DB->escape(
           $order_no
@@ -606,12 +610,7 @@
       $this->JS->renderJSON($data);
     }
     protected function setSecurity() {
-      if ($this->order->trans_type) {
-        $this->type = $this->order->trans_type;
-      }
-      // first check is this is not start page call
-      $this->security = $this->typeSecurity[$this->type];
-      $value          = (!$this->order) ? : $this->order->trans_type;
+      $value = $this->type;
       // then check Session value
       if (isset($this->typeSecurity[$value])) {
         $this->security = $this->typeSecurity[$value];

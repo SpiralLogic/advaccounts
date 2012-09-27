@@ -1,4 +1,6 @@
 <?php
+  use ADV\App\Forms;
+  use ADV\Core\Table;
 
   /**
    * PHP version 5.4
@@ -33,7 +35,10 @@
   echo "<table class='titletext'><tr><td>$title</td></tr></table>\n";
   Display::div_start('_page_body');
   Display::br(2);
-  Forms::start(false, $_SESSION['timeout']['uri'], "loginform");
+  Forms::start(false, REQUEST_POST ? $_SESSION['timeout']['uri'] : '#', "loginform");
+  if (REQUEST_GET) {
+    Forms::hidden('uri', $_SESSION['timeout']['uri']);
+  }
   Table::start('login');
   echo '<tr>';
   echo "<td class='center' colspan=2>";

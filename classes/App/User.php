@@ -16,7 +16,6 @@
   use DB_Company;
   use ADV\Core\DB\DB;
   use ADV\Core\Traits\StaticAccess;
-  use ADV\App\Validation;
 
   /**
    * @method static theme
@@ -227,8 +226,9 @@
         $tout = $this->timeout;
         if ($tout && (time() > $this->last_action + $tout)) {
           $this->logged = false;
+        } else {
+          $this->last_action = time();
         }
-        $this->last_action = time();
       }
     }
     public function _addLog() {

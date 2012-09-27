@@ -45,7 +45,7 @@
     public function __construct() {
       $core = include(ROOT_DOC . 'config' . DS . 'core.php');
       $this->importNamespaces((array) $core);
-      spl_autoload_register(array($this, 'load'), true);
+      spl_autoload_register([$this, 'load'], true);
     }
     /**
      * @param Cache $cache
