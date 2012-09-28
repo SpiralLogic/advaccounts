@@ -2942,9 +2942,7 @@ img {
   background:      rgba(98, 98, 102, 1);
   font-weight:     bold;
   text-decoration: none;
-
-  color:      white;
-
+  color:           white;
 }
 
 #tabs ul li {
@@ -2968,7 +2966,7 @@ img {
   height:          33px;
 }
 
-#tabs >ul >li,#tabs ul li ul {
+#tabs >ul >li, #tabs ul li ul {
   -moz-transition:    all .3s linear;
   -webkit-transition: all .3s linear;
 }
@@ -2981,8 +2979,7 @@ img {
   display:  block;
   width:    auto;
   position: absolute;
-  opacity:1;
-
+  opacity:  1;
 }
 
 #tabs ul li ul li {
@@ -3721,6 +3718,10 @@ td .btn-group {
 
 .tableinfo input, .tableinfo textarea, .tableinfo select {
   max-width: 30em;
+}
+
+.grid .alignright .input-prepend {
+  float: right;
 }
 
 /*--------------------------------- END TABLES -----------------------------------------------------------------*/
