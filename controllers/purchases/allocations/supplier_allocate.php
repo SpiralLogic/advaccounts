@@ -46,7 +46,7 @@
    * @param $type
    * @param $trans_no
    */
-  function edit_allocations_for_transaction($type, $trans_no) {
+  function edit_allocations_for_transaction($type, $trans_no)  function edit_allocations_for_transaction($type, $trans_no) {
 
     Forms::start();
     if (isset($_POST['inquiry']) || stristr($_SERVER['HTTP_REFERER'], 'supplier_allocation_inquiry.php')) {

@@ -375,7 +375,7 @@ grid.find('tbody').sortable({
     });
     return ui;
   }}).find('tr:not(.newline,.editline)');
-grid.find('.newline').droppable({drop:function (event, ui) {
+gridgrid.find('.newline').droppable({drop:function (event, ui) {
   var infields = $(this).find('td');
   $(ui.draggable).find('td').each(function (k, v) {
     var currfield = infields.eq(k),currvalue=$(v).text();
