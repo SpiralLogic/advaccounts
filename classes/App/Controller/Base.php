@@ -8,12 +8,8 @@
    */
   namespace ADV\App\Controller;
 
-  use ADV\Core\Ajax;
   use ADV\App\Page;
   use ADV\App\User;
-  use ADV\Core\JS;
-  use ADV\Core\Input\Input;
-  use ADV\Core\Config;
   use ADV\Core\Session;
 
   /**
@@ -23,38 +19,23 @@
     protected $title;
     /*** @var User */
     protected $User;
-    /*** @var \ADV\Core\Ajax */
-    protected $Ajax;
-    /*** @var Session */
+    /*** @var \ADV\Core\Session */
     protected $Session;
-    /** @var \ADV\Core\DB\DB */
-    static $DB;
-    /*** @var JS */
-    protected $JS;
-    /** @var Input */
-    protected $Input;
-    protected $action;
-    protected $actionID;
     public $help_context;
+    /** @var Page */
+    public $Page;
     /**
 
      */
-    function __construct($session, $user, $ajax, $js, $input, $db) {
-      $this->Ajax    = $ajax;
-      $this->JS      = $js;
+    function __construct($session, $user) {
       $this->Session = $session;
       $this->User    = $user;
-      $this->Input   = $input;
-      static::$DB    = $db;
-      $this->run();
     }
-    protected function run() {
-      $this->action = $this->Input->post('_action');
-      $this->before();
-      $this->index();
-      $this->after();
-    }
-    protected function before() {
+    /**
+     * @param \ADV\App\Page $page
+     */
+    public function setPage(Page $page) {
+      $this->Page = $page;
     }
     abstract protected function index();
     /**
@@ -63,39 +44,5 @@
     protected function setTitle($title) {
       $this->title = _($this->help_context = $title);
     }
-    protected function after() {
-    }
-    /**
-     * @internal param $prefix
-     * @return bool|mixed
-     */
-    protected function runValidation() {
-    }
-    /**
-     * @param $prefix
-     *
-     * @return int|mixed
-     */
-    protected function getActionId($prefix) {
-      if (isset($this->actionID)) {
-        return $this->actionID;
-      }
-      $prefix = (array) $prefix;
-      foreach ($prefix as $action) {
-        if (strpos($this->action, $action) === 0) {
-          $result = str_replace($action, '', $this->action);
-          if (strlen($result)) {
-            $this->action   = $action;
-            $this->actionID = $result;
-            return $result;
-          }
-        }
-      }
-      return -1;
-    }
-    protected function runAction() {
-      if ($this->action && is_callable(array($this, $this->action))) {
-        call_user_func(array($this, $this->action));
-      }
-    }
+    abstract public function run();
   }
