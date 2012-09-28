@@ -107,7 +107,6 @@
       $form->percent('payment_discount', ["disabled"=> !User::i()->hasAccess(SA_SUPPLIERCREDIT)])->label("Prompt Payment Discount:");
       $form->amount('credit_limit', ["disabled"=> !User::i()->hasAccess(SA_SUPPLIERCREDIT)])->label("Credit Limit:");
       $form->text('tax_id')->label("GST No:");
-      $form->text('account_no')->label("Account #:");
       $form->custom(Tax_Groups::select('tax_group_id'))->label('Tax Group:');
       $form->textarea('notes')->label('General Notes:');
       $form->arraySelect('inactive', ['No', 'Yes'])->label('Inactive:');

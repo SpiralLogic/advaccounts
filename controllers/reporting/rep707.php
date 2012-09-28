@@ -10,6 +10,7 @@
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
 
+
   /**
    * @param $type
    * @param $typename
@@ -29,7 +30,8 @@
    *
    * @return array
    */
-  function display_type($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension, $dimension2, &$pg, $graphics) {
+  function display_type($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension, $dimension2, &$pg, $graphics)
+  {
     $code_per_balance  = 0;
     $code_acc_balance  = 0;
     $per_balance_total = 0;
@@ -83,23 +85,7 @@
         $rep->Line($rep->row);
         $rep->NewLine();
       }
-      $totals_arr = display_type(
-        $accounttype["id"],
-        $accounttype["name"],
-        $from,
-        $to,
-        $begin,
-        $end,
-        $compare,
-        $convert,
-        $dec,
-        $pdec,
-        $rep,
-        $dimension,
-        $dimension2,
-        $pg,
-        $graphics
-      );
+      $totals_arr = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, $pdec, $rep, $dimension, $dimension2, $pg, $graphics);
       $per_balance_total += $totals_arr[0];
       $acc_balance_total += $totals_arr[1];
     }
@@ -131,7 +117,8 @@
    *
    * @return float|int
    */
-  function Achieve($d1, $d2) {
+  function Achieve($d1, $d2)
+  {
     if ($d1 == 0 && $d2 == 0) {
       return 0;
     } elseif ($d2 == 0) {
@@ -144,7 +131,8 @@
     return $ret;
   }
 
-  function print_profit_and_loss_statement() {
+  function print_profit_and_loss_statement()
+  {
     $dim       = DB_Company::get_pref('use_dimension');
     $dimension = $dimension2 = 0;
     $from      = $_POST['PARAM_0'];
@@ -193,45 +181,27 @@
     $aligns  = array('left', 'left', 'right', 'right', 'right');
     if ($dim == 2) {
       $params = array(
-        0    => $comments,
-        1    => array(
-          'text' => _('Period'),
-          'from' => $from,
-          'to'   => $to
-        ),
-        2    => array(
-          'text' => _('Dimension') . " 1",
-          'from' => Dimensions::get_string($dimension),
-          'to'   => ''
-        ),
-        3    => array(
-          'text' => _('Dimension') . " 2",
-          'from' => Dimensions::get_string($dimension2),
-          'to'   => ''
+        0    => $comments, 1 => array(
+          'text' => _('Period'), 'from' => $from, 'to' => $to
+        ), 2 => array(
+          'text' => _('Dimension') . " 1", 'from' => Dimensions::get_string($dimension), 'to' => ''
+        ), 3 => array(
+          'text' => _('Dimension') . " 2", 'from' => Dimensions::get_string($dimension2), 'to' => ''
         )
       );
     } else {
       if ($dim == 1) {
         $params = array(
-          0    => $comments,
-          1    => array(
-            'text' => _('Period'),
-            'from' => $from,
-            'to'   => $to
-          ),
-          2    => array(
-            'text' => _('Dimension'),
-            'from' => Dimensions::get_string($dimension),
-            'to'   => ''
+          0    => $comments, 1 => array(
+            'text' => _('Period'), 'from' => $from, 'to' => $to
+          ), 2 => array(
+            'text' => _('Dimension'), 'from' => Dimensions::get_string($dimension), 'to' => ''
           )
         );
       } else {
         $params = array(
-          0 => $comments,
-          1 => array(
-            'text' => _('Period'),
-            'from' => $from,
-            'to'   => $to
+          0 => $comments, 1 => array(
+            'text' => _('Period'), 'from' => $from, 'to' => $to
           )
         );
       }
@@ -250,7 +220,7 @@
       $headers[3] = _('Period Y-1');
     }
     /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_('Profit and Loss Statement'), "ProfitAndLoss", SA_GLANALYTIC, User::page_size());
+    $rep = new $report_type(_('Profit and Loss Statement'), "ProfitAndLoss", SA_GLANALYTIC,User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
@@ -262,7 +232,7 @@
     while ($class = DB::_fetch($classresult)) {
       $class_per_total = 0;
       $class_acc_total = 0;
-      $convert         = SysTypes::get_class_type_convert($class["ctype"]);
+      $convert         = Systypes::get_class_type_convert($class["ctype"]);
       //Print Class Name
       $rep->Font('bold');
       $rep->TextCol(0, 5, $class["class_name"]);
@@ -271,23 +241,7 @@
       //Get Account groups/types under this group/type with no parents
       $typeresult = GL_Type::getAll(false, $class['cid'], -1);
       while ($accounttype = DB::_fetch($typeresult)) {
-        $classtotal = display_type(
-          $accounttype["id"],
-          $accounttype["name"],
-          $from,
-          $to,
-          $begin,
-          $end,
-          $compare,
-          $convert,
-          $dec,
-          $pdec,
-          $rep,
-          $dimension,
-          $dimension2,
-          $pg,
-          $graphics
-        );
+        $classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, $pdec, $rep, $dimension, $dimension2, $pg, $graphics);
         $class_per_total += $classtotal[0];
         $class_acc_total += $classtotal[1];
       }
