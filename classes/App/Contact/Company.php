@@ -54,7 +54,7 @@
     /**
      * @var int
      */
-    public $payment_terms = 1;
+    public $payment_terms = 0;
     /**
      * @var string
      */
