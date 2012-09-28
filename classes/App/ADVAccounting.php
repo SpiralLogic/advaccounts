@@ -207,16 +207,14 @@
       }
       \ADV\Core\Event::init($this->Cache, $this->User->username);
 
-      //      $this->get_selected();
       $this->route();
     }
     protected function route() {
       $this->setupPage();
 
       $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
-      $index      = $controller == $_SERVER['SCRIPT_NAME'];
       $show404    = false;
-      if (!$index && $controller) {
+      if ($controller) {
         $app = ucfirst(trim($controller, '/'));
         if (isset($this->applications[$app])) {
           $controller = (isset($this->applications[$app]['route']) ? $this->applications[$app]['route'] : $app);
@@ -238,24 +236,24 @@
           if (file_exists($controller)) {
             $this->controller = $controller;
           } else {
-            $show404 = true;
             header('HTTP/1.0 404 Not Found');
+            $controller = 'ADV\\Controllers\\' . ($this->User->prefs->startup_tab ? : $this->Config->get('apps.default'));
             Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
+            if (class_exists($controller)) {
+              $this->runController($controller);
+            }
           }
         }
-      }
-      if ($index || $show404) {
-        header('Location: /' . ($this->User->prefs->startup_tab ? : $this->Config->get('apps.default')));
       }
     }
     /**
      * @param $controller2
      */
-    protected function runController($controller2) {
+    protected function runController($controller) {
       $dic = \ADV\Core\DIC::getInstance();
 
       /** @var \ADV\App\Controller\Base $controller  */
-      $controller = new $controller2($this->Session, $this->User, $this->Ajax, $this->JS, $dic->get('Input'), DB::i());
+      $controller = new $controller($this->Session, $this->User, $this->Ajax, $this->JS, $dic->get('Input'), DB::i());
       $controller->setPage($dic->get('Page'));
       $controller->run();
     }

@@ -9,7 +9,7 @@
    */
   class Area extends \ADV\App\DB\Base {
     protected $_table = 'areas';
-    protected $_classname = 'Areas';
+    protected $_classname = 'Area';
     protected $_id_column = 'area_code';
     public $area_code;
     public $description;

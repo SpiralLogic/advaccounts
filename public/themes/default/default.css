@@ -36,6 +36,10 @@ table {
   margin:     0 auto;
 }
 
+div.inline {
+  display: inline-block;
+}
+
 /*<editor-fold desc="Form Inputs">*/
 /*--------------------------------------------------\
 | BOOTSTRAP FORMS 									|
@@ -3187,22 +3191,22 @@ div.menu_group.title {
 
 #msgbox {
   overflow:           hidden;
-  border-radius-top:  3px;
+  border-radius-top:  5px;
   opacity:            0;
   height:             0;
   width:              100%;
   background:         white;
-  -webkit-transition: opacity .3s linear, height .4s ease-out;
-  -moz-transition:    opacity .3s linear, height .4s ease-out;
-  -o-transition:      opacity .3s linear, height .4s ease-out;
-  transition:         opacity .3s linear, height .4s ease-out;
+  -webkit-transition: opacity .4s linear, height .3s ease-out;
+  -moz-transition:    opacity .4s linear, height .3s ease-out;
+  -o-transition:      opacity .4s linear, height .3s ease-out;
+  transition:         opacity .4s linear, height .3s ease-out;
 }
 
 body {
-  -webkit-transition: padding .4s ease-out;
-  -moz-transition:    padding .4s ease-out;
-  -o-transition:      padding .4s ease-out;
-  transition:         padding .4s ease-out;
+  -webkit-transition: padding .1s ease;
+  -moz-transition:    padding .1s ease;
+  -o-transition:      padding .1s ease;
+  transition:         padding .1s ease;
 }
 
 #msgbox, .msgbox {

@@ -10,7 +10,7 @@
    **/
   namespace ADV\Controllers;
 
-  use \ADV\App\Controller\Menu;
+  use ADV\App\Controller\Menu;
   use ADV\App\Orders;
 
   /**
