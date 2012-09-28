@@ -1,5 +1,6 @@
 <?php
   use ADV\Core\Cell;
+  use ADV\App\Orders;
   use ADV\App\Forms;
   use ADV\App\Dimensions;
   use ADV\App\UI;

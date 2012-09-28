@@ -72,7 +72,6 @@
     protected $JS = null;
     /** @var Dates */
     protected $Dates = null;
-    /** @var \Security */
     protected $security;
     public $hide_back_link;
     public $renderedjs;
@@ -125,12 +124,12 @@
      */
     public function __construct(Session $session, User $user, Config $config, \ADV\Core\Ajax $ajax, \ADV\Core\JS $js, \ADV\App\Dates $dates) {
       $this->Session = $session;
-      $this->User   = $user ? : User::i();
-      $this->Config = $config ? : Config::i();
-      $this->Ajax   = $ajax ? : Ajax::i();
-      $this->JS     = $js ? : JS::i();
-      $this->Dates  = $dates ? : Dates::i();
-      $this->frame  = isset($_GET['frame']);
+      $this->User    = $user;
+      $this->Config  = $config;
+      $this->Ajax    = $ajax;
+      $this->JS      = $js;
+      $this->Dates   = $dates;
+      $this->frame   = isset($_GET['frame']);
     }
     /**
      * @param $menu
@@ -167,9 +166,6 @@
         $this->end_page(false);
         exit;
       }
-      if ($this->title && !$this->isIndex && !$this->frame && !REQUEST_JSON) {
-        echo "<div class='titletext'>$this->title" . ($this->User->_hints() ? "<span id='hints' class='floatright' style='display:none'></span>" : '') . "</div>";
-      }
       if (!REQUEST_JSON) {
         Display::div_start('_page_body');
       }
@@ -200,14 +196,10 @@
       }
       $menu                = new View('menu_header');
       $menu['theme']       = $this->User->theme();
-      $menu['company']     = $this->Config->get('db.' . $this->User->company)['company'];
+      $menu['company']     = $this->User->company_name;
       $menu['server_name'] = $_SERVER['SERVER_NAME'];
       $menu['username']    = $this->User->username;
       $menu['name']        = $this->User->name;
-      $menu['help_url']    = '';
-      if ($this->Config->get('help_baseurl') != null) {
-        $menu['help_url'] = $this->help_url();
-      }
       /** @var ADVAccounting $application */
       $menuitems = [];
       foreach ($this->App->applications as $app=> $config) {
@@ -218,7 +210,7 @@
         $item['name']  = $app;
         $item['class'] = ($this->sel_app == strtolower($app)) ? "active" : null;
         $item['href']  = '/' . strtolower($item['name']);
-        $app = '\\ADV\\Controllers\\' . $app;
+        $app           = '\\ADV\\Controllers\\' . $app;
         if (class_exists($app)) {
           $app = new $app($this->Session, $this->User);
           $app->buildMenu();
@@ -227,36 +219,7 @@
         $menuitems[] = $item;
       }
       $menu->set('menu', $menuitems);
-      echo $this->Session->set('menu_header',$menu->render(true));
-
-    }
-    /**
-     * @param null $context
-     *
-     * @return string
-     */
-    protected function help_url($context = null) {
-      global $help_context;
-      $country = $_SESSION['language']->code;
-      if ($context != null) {
-        $help_page_url = $context;
-      } elseif (isset($help_context)) {
-        $help_page_url = $help_context;
-      } else // main menu
-      {
-        $help_page_url = $this->App->applications[$this->App->selected->id]->help_context;
-        $help_page_url = Display::access_string($help_page_url, true);
-      }
-      return $this->Config->get('help_baseurl') . urlencode(
-        strtr(
-          ucwords($help_page_url),
-          array(
-               ' ' => '',
-               '/' => '',
-               '&' => 'And'
-          )
-        )
-      ) . '&ctxhelp=1&lang=' . $country;
+      echo $this->Session->set('menu_header', $menu->render(true));
     }
     /**
      * @return \ADV\Core\View
@@ -270,7 +233,7 @@
       $footer['today']     = $this->Dates->today();
       $footer['now']       = $this->Dates->now();
       $footer['mem']       = Files::convertSize(memory_get_usage(true)) . '/' . Files::convertSize(memory_get_peak_usage(true));
-      $footer['load_time'] = Dates::_getReadableTime(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
+      $footer['load_time'] = $this->Dates->getReadableTime(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
       $footer['user']      = $this->User->username;
       $footer['footer']    = $this->menu && !REQUEST_AJAX;
       return $footer;
@@ -320,7 +283,7 @@
      */
     public static function start($title, $security = SA_OPEN, $no_menu = false, $isIndex = false) {
       if (static::$i === null) {
-        static::$i = new static(Session::i(),User::i(), Config::i(), \ADV\Core\Ajax::i(), \ADV\Core\JS::i(), \ADV\App\Dates::i());
+        static::$i = new static(Session::i(), User::i(), Config::i(), \ADV\Core\Ajax::i(), \ADV\Core\JS::i(), \ADV\App\Dates::i());
       }
       if (is_array($title)) {
         static::$i->title   = $title[0];

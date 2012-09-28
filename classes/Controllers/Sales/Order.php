@@ -610,7 +610,12 @@
       $this->JS->renderJSON($data);
     }
     protected function setSecurity() {
-      $value = $this->type;
+      if ($this->order->trans_type) {
+        $this->type = $this->order->trans_type;
+      }
+      // first check is this is not start page call
+      $this->security = $this->typeSecurity[$this->type];
+      $value          = (!$this->order) ? : $this->order->trans_type;
       // then check Session value
       if (isset($this->typeSecurity[$value])) {
         $this->security = $this->typeSecurity[$value];

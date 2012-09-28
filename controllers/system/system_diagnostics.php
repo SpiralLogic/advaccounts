@@ -269,28 +269,5 @@
     return $test;
   }
 
-  /**
-   * @return array
-   */
-  function tst_extconfig() {
-    $test['descr']      = _('Extensions configuration files');
-    $test['type']       = 3;
-    $test['test']       = ROOT_DOC . 'config' . DS . 'extensions.php';
-    $test['result']     = is_file($test['test']) && is_writable($test['test']);
-    $test['comments'][] = sprintf(_("'%s' file should be writeable"), $test['test']);
-    foreach (Config::_getAll('db') as $n => $comp) {
-      $path = PATH_COMPANY . "$n";
-      if (!is_dir($path)) {
-        continue;
-      }
-      $path .= "/config/extensions.php";
-      if (!is_file($path) || !is_writable($path)) {
-        $test['result']     = false;
-        $test['comments'][] = sprintf(_("'%s' is not writeable"), $path);
-        continue;
-      }
-      ;
-    }
-    return $test;
-  }
+
 

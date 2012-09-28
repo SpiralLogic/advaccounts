@@ -43,7 +43,6 @@
       $module->addRightFunction(_("&Backup and Restore"), "/system/backups?", SA_BACKUP);
       $module->addRightFunction(_("Create/Update &Companies"), "/system/create_coy?", SA_CREATECOMPANY);
       $module->addRightFunction(_("Install/Update &Languages"), "/system/inst_lang?", SA_CREATELANGUAGE);
-      $module->addRightFunction(_("Install/Activate &Extensions"), "/system/inst_module?", SA_CREATEMODULES);
       $module->addRightFunction(_("Software &Upgrade"), "/system/inst_upgrade?", SA_SOFTWAREUPGRADE);
     }
   }

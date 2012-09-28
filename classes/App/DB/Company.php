@@ -234,21 +234,7 @@
       $myrow  = DB::_fetch($result);
       return $myrow[0];
     }
-    /**
-     * @static
-     *
-     * @param $id
-     *
-     * @return array
-     */
-    public function _get_company_extensions($id = -1) {
-      $file                 = ROOT_URL . ($id == -1 ? '' : 'company/' . $id) . '/installed_extensions.php';
-      $installed_extensions = [];
-      if (is_file($file)) {
-        include($file);
-      }
-      return $installed_extensions;
-    }
+
     /**
      * @static
      * @return \ADV\Core\DB\Query\Result|Array

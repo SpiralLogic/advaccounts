@@ -1,8 +1,6 @@
 <?php
-  use ADV\App\Extensions;
   use ADV\App\User;
 
-  Extensions::add_access(User::i());
   // Turn these next two lines on for debugging
   //error_reporting(E_ALL);
   //ini_set("display_errors", "on");

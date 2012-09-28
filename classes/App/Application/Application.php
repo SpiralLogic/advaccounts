@@ -40,16 +40,11 @@
      * @internal param bool $enabled
      */
     public function __construct() {
-      global $installed_extensions;
       $this->id           = strtolower($this->name);
       $this->name         = $this->help_context ? : $this->name;
       $this->help_context = _($this->name);
       $this->modules      = [];
-      $this->extensions   = $installed_extensions;
       $this->buildMenu();
-      if (count($this->extensions) > 0) {
-        $this->addExtensions();
-      }
     }
     abstract function buildMenu();
     /**
@@ -64,13 +59,6 @@
       $this->modules[] = $module;
       return $module;
     }
-    protected function addExtensions() {
-      foreach ($this->extensions as $mod) {
-        if (@$mod['active'] && $mod['type'] == 'plugin' && $mod['tab'] == $this->id) {
-          //   $this->addRightFunction(2, $mod['title'], 'modules/' . $mod['path'] . '/' . $mod['filename'] . '?', isset($mod['access']) ?
-          //   $mod['access'] : SA_OPEN);
-        }
-      }
-    }
+
   }
 

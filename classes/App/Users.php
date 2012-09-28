@@ -208,18 +208,11 @@
      * @param bool $all
      */
     public static function tabs_row($label, $name, $selected_id = null, $all = false) {
-      global $installed_extensions;
       $tabs = [];
       foreach (ADVAccounting::i()->applications as $app=> $config) {
         $tabs[$app] = Display::access_string($app, true);
       }
-      if ($all) { // add also not active ext. modules
-        foreach ($installed_extensions as $ext) {
-          if ($ext['type'] == 'module' && !$ext['active']) {
-            $tabs[$ext['tab']] = Display::access_string($ext['title'], true);
-          }
-        }
-      }
+
       echo "<tr>\n";
       echo "<td class='label'>$label</td><td>\n";
       echo Forms::arraySelect($name, $selected_id, $tabs);

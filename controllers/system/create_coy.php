@@ -110,8 +110,6 @@
     if ($new) {
       create_comp_dirs(PATH_COMPANY . "$id", $comp_subdirs = Config::_get('company_subdirs'));
     }
-    $exts = DB_Company::get_company_extensions();
-    advaccounting::write_extensions($exts, $id);
     Event::success($new ? _('New company has been created.') : _('Company has been updated.'));
     return true;
   }

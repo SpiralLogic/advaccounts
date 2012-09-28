@@ -97,6 +97,7 @@ document.getElementsBySelector = jQuery;
 //		request is directed to current location
 //
 JsHttpRequest.request = function (trigger, form, tout) {
+  console.log(arguments);
   tout = (tout) ? tout : 15000;
   try {
     Adv.loader.on(tout);

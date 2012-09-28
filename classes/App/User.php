@@ -55,6 +55,7 @@
      * @var string
      */
     public $company = 'default';
+    public $company_name;
     /** @var */
     public $pos;
     /**
@@ -178,6 +179,7 @@
         $this->user            = $myrow['id'];
         $this->last_action     = time();
         $this->timeout         = DB_Company::get_pref('login_tout');
+        $this->company_name    = DB_Company::get_pref('coy_name');
         $this->salesmanid      = $this->get_salesmanid();
         $this->fireHooks('login');
         Event::registerShutdown(['Users', 'update_visitdate'], [$this->username]);
