@@ -12,7 +12,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class UndepositedFunds extends \ADV\App\Controller\Base {
+  class UndepositedFunds extends \ADV\App\Controller\Action {
     /** @var Dates */
     protected $Dates;
     public $updateData;
@@ -117,8 +117,9 @@
       echo HTML::button('deposit', _("Deposit"));
       Display::div_end();
       echo "<hr>";
-      $date         = $this->Dates->addDays($_POST['deposit_date'], 10);
-      $sql          = "SELECT	type, trans_no, ref, trans_date,
+      $date = $this->Dates->addDays($_POST['deposit_date'], 10);
+      $sql
+                    = "SELECT	type, trans_no, ref, trans_date,
                     amount,	person_id, person_type_id, reconciled, id
             FROM bank_trans
             WHERE undeposited=1 AND trans_date <= '" . $this->Dates->dateToSql($date) . "' AND reconciled IS null AND amount<>0
