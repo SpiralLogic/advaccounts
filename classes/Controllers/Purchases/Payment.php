@@ -32,7 +32,7 @@
   /**
 
    */
-  class Payment extends \ADV\App\Controller\Base {
+  class Payment extends \ADV\App\Controller\Action {
     protected $supplier_currency;
     protected $bank_currency;
     protected $company_currency;
@@ -74,7 +74,7 @@
       $this->bank_currency     = Bank_Currency::for_company($_POST['bank_account']);
     }
     protected function index() {
-      Page::start(_($help_context = "Supplier Payment Entry"), SA_SUPPLIERPAYMNT);
+      $this->Page->init(_($help_context = "Supplier Payment Entry"), SA_SUPPLIERPAYMNT);
       if (isset($_POST['ProcessSuppPayment'])) {
         $this->processSupplierPayment();
       }
@@ -108,7 +108,7 @@
       }
       Forms::submitCenter('ProcessSuppPayment', _("Enter Payment"), true, '', 'default');
       Forms::end();
-      Page::end();
+      $this->Page->end_page();
     }
     /**
      * @return bool
@@ -151,7 +151,7 @@
       // Display::link_params($path_to_root . "/purchases/allocations/supplier_allocate.php", _("&Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter another supplier &payment"), "creditor_id=" . $this->creditor_id, true, 'class="button"');
       $this->Ajax->activate('_page_body');
-      Page::footer_exit();
+      $this->Page->footer_exit();
       return true;
     }
     protected function runValidation() {

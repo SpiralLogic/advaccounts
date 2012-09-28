@@ -15,19 +15,15 @@
   use ADV\App\Display;
   use ADV\Core\Arr;
   use ADV\App\Application\Func;
-  use ADV\App\User;
   use ADV\App\Page;
-  use ADV\App\Application\Module;
   use ADV\Core\View;
 
   /**
 
    */
-  abstract class Menu {
+  abstract class Menu extends Base {
     protected $direct = false;
     protected $modules = [];
-    /** @var \ADV\App\User */
-    protected $User;
     /** @var */
     public $id;
     /** @var */
@@ -44,13 +40,12 @@
      * @internal param bool $enabled
      */
     public function __construct($session, $user) {
-      $this->User         = $user;
-      $this->id           = strtolower($this->name);
-      $this->name         = $this->help_context ? : $this->name;
-      $this->help_context = _($this->name);
-      $this->modules      = [];
+      $this->User = $user;
+      $this->id   = strtolower($this->name);
+      $this->name = $this->help_context ? : $this->name;
+      $this->setTitle($this->name);
     }
-    abstract function buildMenu();
+    abstract protected function before();
     /**
      * @param      $name
      *
@@ -63,22 +58,30 @@
       $this->leftAppFunctions  =& $this->modules[$name]['left'];
       return $this;
     }
+    /**
+     * @return array
+     */
     public function getModules() {
+      $this->before();
+
       $modules = [];
       foreach ($this->modules as $name => $module) {
         $functions = [];
         Arr::append($functions, $module['right']);
         Arr::append($functions, $module['left']);
         foreach ($functions as &$func) {
-          $func = str_replace('&','',$func);
+          $func = str_replace('&', '', $func);
         }
-        $modules[] = ['title'=>$name, 'modules'=> $functions];
-    }
+        $modules[] = ['title'=> $name, 'modules'=> $functions];
+      }
       return $modules;
     }
-    public function display() {
-      $this->buildMenu();
-      Page::start(_($help_context = "Main Menu"), SA_OPEN, false, true);
+    public function run() {
+      $this->before();
+      $this->index();
+    }
+    protected function index() {
+      $this->Page->init(_($this->help_context = "Main Menu"), SA_OPEN, false, true);
       if ($this->direct) {
         Display::meta_forward($this->direct);
       }

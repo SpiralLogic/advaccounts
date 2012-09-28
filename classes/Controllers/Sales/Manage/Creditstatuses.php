@@ -22,11 +22,11 @@
       $this->runPost();
     }
     protected function index() {
-      Page::start(_($help_context = "Credit Statuses"), SA_CRSTATUS);
+      $this->Page->init(_($help_context = "Credit Statuses"), SA_CRSTATUS);
       $this->generateTable();
       echo '<br>';
       $this->generateForm();
-      Page::end(true);
+      $this->Page->end_page(true);
     }
     /**
      * @param $form

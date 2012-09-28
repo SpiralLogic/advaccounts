@@ -20,13 +20,15 @@
     /**
      * @static
      *
-     * @param bool  $id
-     * @param array $options
-     * @param array $params
+     * @param bool                $id
+     * @param array               $options
+     * @param array               $params
+     * @param null                $selected
+     * @param \ADV\Core\HTML|bool $return
      *
      * @return \ADV\Core\HTML|null
      */
-    public static function select($id = false, $options = [], $params = [], $selected = null, $return = false) {
+    public static function select($id = false, $options = [], $params = [], $selected = null, HTML $return = null) {
       if ($return instanceof HTML) {
         $HTML = $return;
       } else {
@@ -56,19 +58,20 @@
     /***
      * @static
      *
-     * @param       $id
-     * @param array $attr    includes (url,label,size,name,set,focus, nodiv, callback, options
-     * @param array $options
+     * @param              $id
+     * @param array        $options
+     * @param bool         $return
+     * @param \ADV\Core\JS $js
      *
+     * @internal param array $attr includes (url,label,size,name,set,focus, nodiv, callback, options
      * @return HTML|null
-     * url: url to get search results from<br>
-     * label: if set becomes the text of a &lt;label&gt; element for the input<br>
-     * size: size of the input<br>
-     * focus: whether to start with focus<br>
-     * nodiv: if true then a div is not included<br>
-     * callback: name of the javascript function to be the callback for the results, refaults to the same name as the id with camel case<br>
-     * options: Javascript function autocomplete options<br>
-
+     *           url: url to get search results from<br>
+     *           label: if set becomes the text of a &lt;label&gt; element for the input<br>
+     *           size: size of the input<br>
+     *           focus: whether to start with focus<br>
+     *           nodiv: if true then a div is not included<br>
+     *           callback: name of the javascript function to be the callback for the results, refaults to the same name as the id with camel case<br>
+     *           options: Javascript function autocomplete options<br>
      */
     public static function search($id, $options = [], $return = false, JS $js = null) {
       $js   = $js ? : JS::i();
@@ -82,7 +85,7 @@
         'value'               => null, //
         'focus'               => null, //
         'idField'             => null, //
-        'data'             => [], //
+        'data'                => [], //
         'callback'            => false, //
         'cells'               => false, //
         'cell_class'          => null, //
@@ -125,7 +128,7 @@
         $HTML->div();
       }
       $callback = $o['callback'] ? : '"' . $o['idField'] . '"';
-      $js->autocomplete($id, $callback, $url,$o['data']);
+      $js->autocomplete($id, $callback, $url, $o['data']);
       $search = $HTML->__toString();
       if ($return) {
         return $search;
@@ -262,7 +265,7 @@ JS;
                 autoFocus: true,
                 minLength: 1,
                 source: function( request, response ) {
-                        if (Adv.lastXhr) Adv.lastXhr.abort();
+                        if (Adv.lastXhr) {Adv.lastXhr.abort();}
                         Adv.loader.off();
                         Adv.lastXhr = $.ajax({
                                 url: "$url",
@@ -289,6 +292,7 @@ JS;
                         },
                      select: function( event, ui ) {
  var value = ui.item.value;
+
  $selectjs
                                  Adv.Forms.setFocus("description",true);
                                 $.each(value,function(k,v) {Adv.Forms.setFormValue(k,v);});
@@ -308,7 +312,8 @@ JS;
     /**
      * @static
      *
-     * @param $contactType
+     * @param              $contactType
+     * @param \ADV\Core\JS $js
      *
      * @return mixed
      */
@@ -337,17 +342,18 @@ JS;
     public static function lineSortable() {
       $js
         = <<<JS
-$('.grid').find('tbody').sortable({
+        var grid = $('.grid');
+grid.find('tbody').sortable({
   items:'tr:not(.newline,.editline)',
-  stop:function (e, ui) {
+  stop:function () {
     var self = $(this), _this = self.find('tr:not(".newline,.editline")'), lines = {};
     self.sortable('disable');
-    $.each(_this, function (k, v) {
+    $.each(_this, function (k) {
       lines[$(this).data('line')] = k;
       if (k == _this.length - 1) {
         $.post('#', {lineMap:lines, _action:'setLineOrder', order_id:$("#order_id").val()},
-          function (data) {
-            $.each(_this, function (k, v) {
+          function () {
+            $.each(_this, function () {
               var that = $(this), curline = that.data('line'), buttons = that.find('#_action');
               that.data('line', lines[curline]);
               if (that.hasClass('editline')) {
@@ -369,7 +375,7 @@ $('.grid').find('tbody').sortable({
     });
     return ui;
   }}).find('tr:not(.newline,.editline)');
-$('.grid').find('.newline').droppable({drop:function (event, ui) {
+grid.find('.newline').droppable({drop:function (event, ui) {
   var infields = $(this).find('td');
   $(ui.draggable).find('td').each(function (k, v) {
     var currfield = infields.eq(k),currvalue=$(v).text();

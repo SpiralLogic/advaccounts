@@ -26,7 +26,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Credit extends \ADV\App\Controller\Base {
+  class Credit extends \ADV\App\Controller\Action {
     /** @var Sales_Order */
     public $credit;
     protected function before() {
@@ -115,10 +115,10 @@
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another &Credit Note"), "NewCredit=yes");
       Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
       $this->Ajax->activate('_page_body', "/sales/view/view_credit?trans_no=$credit_no&trans_type=$trans_type", '/sales/credit?NewCredit=Yes');
-      Page::footer_exit();
+      $this->Page->footer_exit();
     }
     protected function index() {
-      Page::start($this->title, SA_SALESCREDIT);
+      $this->Page->init($this->title, SA_SALESCREDIT);
       if (isset($_POST['ProcessCredit'])) {
         $this->processCredit();
       }
@@ -139,7 +139,7 @@
       Forms::submitCenterEnd('ProcessCredit', _("Process Credit Note"), '', false);
       echo "</tr></table></div>";
       Forms::end();
-      Page::end();
+      $this->Page->end_page();
     }
     protected function runValidation() {
       Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));

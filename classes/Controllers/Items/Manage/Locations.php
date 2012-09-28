@@ -21,11 +21,11 @@
       $this->runPost();
     }
     protected function index() {
-      Page::start(_($help_context = "Inventory Locations"), SA_INVENTORYLOCATION);
+      $this->Page->init(_($help_context = "Inventory Locations"), SA_INVENTORYLOCATION);
       $this->generateTable();
       echo '<br>';
       $this->generateForm();
-      Page::end(true);
+      $this->Page->end_page(true);
     }
     /**
      * @param \ADV\App\Form\Form $form

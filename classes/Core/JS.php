@@ -19,6 +19,7 @@
    * @method static JS _redirect($url)
    * @method static JS _renderJSON()
    * @method static JS _autocomplete()
+   * @method static JS _addLive($action, $clean = false)
    * @method static JS _beforeload($JS_ = false)
    * @method static JS _addLiveEvent($selector, $type, $action, $delegate = false, $cached = false)
    * @method static JS _defaultFocus($name = null)
@@ -84,33 +85,16 @@
      *
      * @param       $id
      * @param       $callback
-     * @param bool  $url
+     * @param       $type
+     * @param array $data
+     *
+     * @internal param bool $url
      */
-    public function autocomplete($id, $callback, $type,$data=[]) {
-      $data = json_encode($data);
+    public function autocomplete($id, $callback, $type, $data = []) {
+      $data  = json_encode($data);
       $js    = "Adv.Forms.autocomplete('$id','$type',$callback,$data);";
       $clean = "if (Adv.o.autocomplete['$id'].attr('type')!=='hidden'){Adv.o.autocomplete['$id'].catcomplete('destroy');}";
       $this->addLive($js, $clean);
-    }
-    /**
-     * @static
-     * @internal param $address
-     */
-    public function gmap() {
-      //$address = str_replace(array("\r", "\t", "\n", "\v"), ", ", $address);
-      $js = "Adv.maps = { api_key: '" . $this->apikey . "'}";
-      $this->beforeload($js);
-      $js
-        = <<<JS
-var map = $("<div/>").gMap({
-  address:"__address_",
-  markers:[{ address:"__address_", html:"_address", popup:true}],
-  zoom:10}).appendTo('body').dialog({title:"__title_", autoOpen:false, show:"slide", hide:"slide", height:450, width:1000, modal:true});
-$("__selector_").click(function () {  map.dialog("open"); return false; });
-$(".ui-widget-overlay").click(function () { map.dialog("close");  return false; });
-JS;
-      $this->addLive($js);
-      $this->footerFile('/js/libs/jquery.gmap-1.1.0-min.js');
     }
     /**
      * @static

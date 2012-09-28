@@ -197,7 +197,7 @@
       $date = $this->dateToSql($date);
       $how  = $this->formats[$this->format];
       $date = \DateTime::createFromFormat('Y-m-d', $date);
-      return $date->format($how);
+      return $date->format(str_replace('/', $this->sep, $how));
     } // end static function sqlToDate
     /**
      * @static
@@ -215,20 +215,22 @@
         $date = substr($date, 0, 10);
       }
       $parts = explode('-', $date);
-      if (count($parts) == 3 && checkdate($parts[1], $parts[2], $parts[0])) {
+      if (count($parts) == 3 && strlen($parts[0]) === 4 && checkdate($parts[1], $parts[2], $parts[0])) {
         return $date;
       }
       $parts = explode($this->sep, $date);
       $how   = $this->formats[$this->format];
       if (count($parts) == 2 && strlen($parts[0]) < 3 && strlen($parts[1]) < 3) {
-        $how = trim(str_replace('Y', '', $how), '/');
+        $how = trim(str_replace('Y', '', $how), '-');
       } elseif (count($parts) == 3 && strlen($parts[0]) < 3 && strlen($parts[1]) < 3 && strlen($parts[2]) < 3) {
         $how = str_replace('Y', 'y', $how);
       }
+      list($how, $date) = str_replace($this->separators, '-', [$how, $date]);
       $date = \DateTime::createFromFormat($how, $date);
       if (!$date) {
         return $this->today(true);
       }
+
       return $date->format('Y-m-d');
     }
     /**

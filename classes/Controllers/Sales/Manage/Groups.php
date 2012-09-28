@@ -15,11 +15,11 @@
       $this->runPost();
     }
     protected function index() {
-      Page::start(_($help_context = "Sales Groups"), SA_SALESGROUP);
+      $this->Page->init(_($help_context = "Sales Groups"), SA_SALESGROUP);
       $this->generateTable();
       echo '<br>';
       $this->generateForm();
-      Page::end(true);
+      $this->Page->end_page(true);
     }
     /**
      * @param \ADV\App\Form\Form|\Form   $form

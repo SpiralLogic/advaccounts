@@ -21,7 +21,7 @@
     /**
 
      */
-    public function buildMenu() {
+    protected function before() {
 
       $module = $this->add_module(_("Purchases"));
       $module->addLeftFunction(_("Purchase &Order Entry"), "/purchases/order?NewOrder=Yes", SA_PURCHASEORDER);

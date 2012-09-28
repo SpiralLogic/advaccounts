@@ -20,7 +20,7 @@
   /**
 
    */
-  abstract class Manage extends Base {
+  abstract class Manage extends Action {
     /** @var \ADV\App\DB\Base */
     protected $object;
     protected $defaultFocus;
@@ -65,7 +65,7 @@
       }
     }
     protected function index() {
-      Page::start($this->title, $this->security);
+      $this->Page->init($this->title, $this->security);
       $this->beforeTable();
       $this->generateTable();
       echo '<br>';

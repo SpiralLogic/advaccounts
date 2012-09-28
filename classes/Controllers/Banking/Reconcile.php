@@ -36,7 +36,7 @@
   /**
    * @property \ADV\Core\Input\Input Input
    */
-  class Reconcile extends \ADV\App\Controller\Base {
+  class Reconcile extends \ADV\App\Controller\Action {
     /** @var Num Num*/
     protected $Num;
     /** @var Dates Dates*/
@@ -115,7 +115,7 @@
      */
     protected function index() {
       $this->runAction();
-      Page::start(_($help_context = "Reconcile Bank Account"), SA_RECONCILE);
+      $this->Page->init(_($help_context = "Reconcile Bank Account"), SA_RECONCILE);
       Forms::start();
       Table::start();
       echo '<tr>';
@@ -133,7 +133,7 @@
         $this->addDialogs();
       }
       $this->JS->addLive("Adv.Reconcile.setUpGrid();");
-      Page::end();
+      $this->Page->end_page();
     }
     /**
 

@@ -36,7 +36,7 @@
   /**
 
    */
-  class Order extends \ADV\App\Controller\Base {
+  class Order extends \ADV\App\Controller\Action {
     protected $iframe = '';
     /** @var \Purch_Order */
     protected $order = null;
@@ -131,7 +131,7 @@
         Orders::session_delete($this->order->order_id);
         Event::notice(_("This purchase order has been cancelled."));
         Display::link_params("/purchases/order", _("Enter a new purchase order"), "NewOrder=Yes");
-        Page::footer_exit();
+        $this->Page->footer_exit();
       }
     }
     protected function addItem() {
@@ -194,9 +194,9 @@
     }
     protected function index() {
       if (isset($_GET[Orders::MODIFY_ORDER])) {
-        Page::start(_($help_context = "Modify Purchase Order #") . $_GET[Orders::MODIFY_ORDER], SA_PURCHASEORDER);
+        $this->Page->init(_($help_context = "Modify Purchase Order #") . $_GET[Orders::MODIFY_ORDER], SA_PURCHASEORDER);
       } else {
-        Page::start(_($help_context = "Purchase Order Entry"), SA_PURCHASEORDER);
+        $this->Page->init(_($help_context = "Purchase Order Entry"), SA_PURCHASEORDER);
       }
       if ($this->action == COMMIT) {
         $this->commitOrder();
@@ -240,7 +240,7 @@
       if (isset($this->order->creditor_id)) {
         Creditor::addInfoDialog("td[name=\"supplier_name\"]", $this->order->supplier_details['creditor_id']);
       }
-      Page::end(true);
+      $this->Page->end_page(true);
     }
     protected function runValidation() {
       Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
@@ -250,7 +250,7 @@
      * @param $order_no
      */
     protected function pageComplete($order_no) {
-      Page::start(_($help_context = "Purchase Order Entry"), SA_PURCHASEORDER);
+      $this->Page->init(_($help_context = "Purchase Order Entry"), SA_PURCHASEORDER);
       $trans_type = ST_PURCHORDER;
       $new_trans  = "/purchases/order?" . Orders::NEW_ORDER;
       $view       = new View('orders/complete');
@@ -265,7 +265,7 @@
       $view->set('buttons', $buttons);
       $view->render();
       $this->Ajax->activate('_page_body', $new_trans, $edit_trans, $help_context);
-      Page::footer_exit();
+      $this->Page->footer_exit();
     }
     /**
      * @param int $order_no
@@ -362,7 +362,7 @@
     protected function canCommit() {
       if (!$this->order) {
         Event::error(_("You are not currently editing an order."));
-        Page::footer_exit();
+        $this->Page->footer_exit();
       }
       if (!Input::_post('creditor_id')) {
         Event::error(_("There is no supplier selected."));

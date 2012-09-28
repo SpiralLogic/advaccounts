@@ -21,7 +21,7 @@
     /**
 
      */
-    public function buildMenu() {
+    protected function before() {
       $module = $this->add_module(_("Transactions"));
       $module->addLeftFunction(_("Inventory Location &Transfers"), "/inventory/transfers?NewTransfer=1", SA_LOCATIONTRANSFER);
       $module->addLeftFunction(_("Inventory &Adjustments"), "/inventory/adjustments?NewAdjustment=1", SA_INVENTORYADJUSTMENT);

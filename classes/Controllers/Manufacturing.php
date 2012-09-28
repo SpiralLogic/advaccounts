@@ -21,7 +21,7 @@
     /**
 
      */
-    public function buildMenu() {
+    protected function before() {
       $module = $this->add_module(_("Transactions"));
       $module->addLeftFunction(_("Work &Order Entry"), "/manufacturing/work_order_entry?", SA_WORKORDERENTRY);
       $module->addLeftFunction(_("&Outstanding Work Orders"), "/manufacturing/search_work_orders?outstanding_only=1", SA_MANUFTRANSVIEW);

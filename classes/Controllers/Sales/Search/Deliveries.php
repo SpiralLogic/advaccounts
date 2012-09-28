@@ -1,5 +1,6 @@
 <?php
   namespace ADV\Controllers\Sales\Search;
+
   use ADV\Core\Input\Input;
   use ADV\App\Reporting;
   use ADV\Core\View;
@@ -24,9 +25,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Deliveries extends \ADV\App\Controller\Base
-  {
-
+  class Deliveries extends \ADV\App\Controller\Action {
     public $debtor_id;
     public $stock_id;
     protected function before() {
@@ -59,7 +58,7 @@
       }
     }
     protected function index() {
-      Page::start($this->title, SA_SALESINVOICE);
+      $this->Page->init($this->title, SA_SALESINVOICE);
       if (isset($_POST[Orders::BATCH_INVOICE])) {
         $this->batchInvoice();
       }
@@ -78,7 +77,7 @@
       Table::end();
       $this->displayTable();
       Forms::end();
-      Page::end();
+      $this->Page->end_page();
     }
     protected function displayTable() {
       $sql

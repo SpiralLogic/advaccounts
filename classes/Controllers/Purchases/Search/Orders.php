@@ -20,7 +20,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Orders extends \ADV\App\Controller\Base {
+  class Orders extends \ADV\App\Controller\Action {
     /** @var Dates */
     protected $Dates;
     protected $order_no;
@@ -49,7 +49,7 @@
       $this->Ajax->activate('orders_tbl');
     }
     protected function index() {
-      Page::start(_($help_context = "Search Outstanding Purchase Orders"), SA_SUPPTRANSVIEW);
+      $this->Page->init(_($help_context = "Search Outstanding Purchase Orders"), SA_SUPPTRANSVIEW);
       // Ajax updates
       //
       Forms::start();
@@ -67,7 +67,7 @@
       $this->makeTable();
       Creditor::addInfoDialog('.pagerclick');
       Forms::end();
-      Page::end();
+      $this->Page->end_page();
     }
     protected function makeTable() { //figure out the sql required from the inputs available
       $sql

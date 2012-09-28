@@ -3,7 +3,6 @@
 
   use ADV\App\Debtor\Debtor;
   use ADV\App\Contact\Postcode;
-  use Debtor_Branch;
   use Tax_Groups;
   use Inv_Location;
   use Sales_UI;
@@ -32,7 +31,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Customers extends \ADV\App\Controller\Base {
+  class Customers extends \ADV\App\Controller\Action {
     /** @var Debtor */
     protected $debtor;
     protected function before() {
@@ -62,13 +61,13 @@
       $this->JS->footerFile("/js/company.js");
     }
     protected function index() {
-      Page::start([_($help_context = "Customers"), 'debtors'], SA_CUSTOMER, $this->Input->request('frame'));
+      $this->Page->init(_($this->help_context = "Customers"), SA_CUSTOMER, $this->Input->request('frame'));
       if (isset($_POST['delete'])) {
         $this->delete();
       }
       echo $this->generateForm();
       $this->JS->onload("Company.setValues(" . json_encode(['company'=> $this->debtor]) . ");")->setFocus($this->debtor->id ? 'name' : 'customer');
-      Page::end(true);
+      $this->Page->end_page(true);
     }
     /**
      * @return string

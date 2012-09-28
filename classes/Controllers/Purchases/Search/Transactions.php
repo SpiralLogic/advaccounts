@@ -31,7 +31,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Transactions extends \ADV\App\Controller\Base {
+  class Transactions extends \ADV\App\Controller\Action {
     public $creditor_id;
     protected function before() {
       JS::_openWindow(950, 500);
@@ -51,7 +51,7 @@
       }
     }
     protected function index() {
-      Page::start(_($help_context = "Supplier Inquiry"), SA_SUPPTRANSVIEW);
+      $this->Page->init(_($help_context = "Supplier Inquiry"), SA_SUPPTRANSVIEW);
       Forms::start();
       Table::start('noborder');
       echo '<tr>';
@@ -71,7 +71,7 @@
       $this->displayTable();
       Creditor::addInfoDialog('.pagerclick');
       Forms::end();
-      Page::end();
+      $this->Page->end_page();
     }
     protected function displayTable() {
       if (REQUEST_AJAX && !empty($_POST['q'])) {
@@ -228,9 +228,10 @@
         return '';
       }
       if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
-             $href    = '/system/void_transaction?type=' . $row['type'] . '&trans_no=' . $row['trans_no'] . '&memo=Deleted%20during%20order%20search';
-             $items[] = ['label'=> 'Void Trans', 'href'=> $href, 'attr'=> ['target'=> '_blank']];
-           }$menus[] = ['title'=> 'Menu', 'items'=> $items];
+        $href    = '/system/void_transaction?type=' . $row['type'] . '&trans_no=' . $row['trans_no'] . '&memo=Deleted%20during%20order%20search';
+        $items[] = ['label'=> 'Void Trans', 'href'=> $href, 'attr'=> ['target'=> '_blank']];
+      }
+      $menus[] = ['title'=> 'Menu', 'items'=> $items];
       $dropdown->set('menus', $menus);
       return $dropdown->render(true);
     }

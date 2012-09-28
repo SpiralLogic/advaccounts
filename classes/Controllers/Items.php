@@ -17,7 +17,7 @@
   class Items extends Menu {
     public $name = "Items";
     public $help_context = "&Items";
-    public function buildMenu() {
+    protected function before() {
       $this->direct = '/items/manage/items';
     }
   }

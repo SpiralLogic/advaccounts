@@ -21,7 +21,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Allocations extends \ADV\App\Controller\Base {
+  class Allocations extends \ADV\App\Controller\Action {
     protected function before() {
       $this->JS->openWindow(950, 500);
       if (isset($_GET['creditor_id']) || isset($_GET['id'])) {
@@ -57,7 +57,7 @@
     }
     protected function index() {
 
-      Page::start(_($help_context = "Supplier Allocation Inquiry"), SA_SUPPLIERALLOC);
+      $this->Page->init(_($help_context = "Supplier Allocation Inquiry"), SA_SUPPLIERALLOC);
       Forms::start(false, '', 'invoiceForm');
       Table::start('noborder');
       echo '<tr>';
@@ -75,7 +75,7 @@
       $this->displayTable();
       Creditor::addInfoDialog('.pagerclick');
       Forms::end();
-      Page::end();
+      $this->Page->end_page();
     }
     protected function displayTable() {
       $date_after = Dates::_dateToSql($_POST['TransAfterDate']);

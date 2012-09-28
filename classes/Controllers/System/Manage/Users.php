@@ -27,11 +27,11 @@
       $this->runPost();
     }
     protected function index() {
-      Page::start(_($help_context = "Sales Persons"), SA_SALESMAN);
+      $this->Page->init(_($help_context = "Sales Persons"), SA_SALESMAN);
       $this->generateTable();
       echo '<br>';
       $this->generateForm();
-      Page::end();
+      $this->Page->end_page();
     }
     /**
      * @param \ADV\App\Form\Form $form
@@ -86,8 +86,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
 
-  Page::start(_($help_context = "Users"), SA_USERS);
-  list($Mode, $selected_id) = list($Mode, $selected_id) = Page::simple_mode(true);
+  $this->Page->init(_($help_context = "Users"), SA_USERS);
+  list($Mode, $selected_id) = list($Mode, $selected_id) = $this->Page->simple_mode(true);
   if (!empty($_POST['password']) && ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM)) {
     $auth = new Auth($selected_id);
     $auth->updatePassword($selected_id, $_POST['password'],$_POST['change_password']);
@@ -220,7 +220,7 @@
   Table::end(1);
   Forms::submitAddUpdateCenter($selected_id == -1, '', 'both');
   Forms::end();
-  Page::end();
+  $this->Page->end_page();
   /**
    * @param \Auth $auth
    *

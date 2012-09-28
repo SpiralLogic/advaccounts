@@ -21,7 +21,7 @@
     /**
 
      */
-    public function buildMenu() {
+    protected function before() {
       $module = $this->add_module(_("Websales To Jobsboard"));
       $module->addLeftFunction(_("Put websales on Bobs Joard"), "/jobsboard/websales/", SA_OPEN);
       $module->addLeftFunction(_("Put web customers into accounting"), "/modules/advanced/web", SA_OPEN);

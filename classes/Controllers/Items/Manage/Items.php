@@ -1,5 +1,6 @@
 <?php
   namespace ADV\Controllers\Items\Manage;
+
   use ADV\App\Item\Item;
   use ADV\App\Form\Form;
   use GL_UI;
@@ -21,9 +22,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Items extends \ADV\App\Controller\Base
-  {
-
+  class Items extends \ADV\App\Controller\Action {
     protected $itemData;
     protected function before() {
       if (REQUEST_AJAX) {
@@ -62,7 +61,7 @@
       $this->JS->renderJSON($data);
     }
     protected function index() {
-      Page::start(_($help_context = "Items"), SA_CUSTOMER, isset($_GET['frame']));
+      $this->Page->init(_($help_context = "Items"), SA_CUSTOMER, isset($_GET['frame']));
       $view = new View('items/quickitems');
       $menu = new MenuUI('disabled');
       $view->set('menu', $menu);
@@ -85,11 +84,11 @@
         $searchBox = UI::search(
           'itemSearchId',
           [
-            'url'              => 'Item',
-            'idField'          => 'stock_id',
-            'name'             => 'itemSearchId', //
-            'focus'            => true,
-            'callback'         => 'Items.fetch'
+          'url'              => 'Item',
+          'idField'          => 'stock_id',
+          'name'             => 'itemSearchId', //
+          'focus'            => true,
+          'callback'         => 'Items.fetch'
           ],
           true
         );
@@ -104,7 +103,7 @@
       $view->render();
       $this->JS->tabs('tabs' . MenuUI::$menuCount, [], 0);
       $this->JS->onload("Items.onload($data);");
-      Page::end(true);
+      $this->Page->end_page(true);
     }
   }
 

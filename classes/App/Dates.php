@@ -16,17 +16,13 @@
 
    */
   class Dates extends \ADV\Core\Dates {
-    use \ADV\Core\Traits\StaticAccess2;
-
     public $sticky_doc_date = false;
     public $use_fiscal_year = false;
-    protected $Session = null;
     protected $Company = null;
     public $docDate;
     /**
      * @param \DB_Company                        $company
-     *
-     * @internal param \ADV\Core\Session $session
+
      */
     public function __construct(DB_Company $company) {
       $this->Company = $company;
@@ -58,10 +54,10 @@
      * @return bool
      */
     public function isDateInFiscalYear($date, $convert = false) {
-      if (!(bool) $this->userFiscalYear) {
+      if (!(bool) $this->use_fiscal_year) {
         return true;
       }
-      $myrow = DB_Company::i()->_get_current_fiscalyear();
+      $myrow = $this->Company->get_current_fiscalyear();
       if ($myrow['closed'] == 1) {
         return false;
       }
@@ -79,7 +75,7 @@
      * @return string Date in Users Format
      */
     public function beginFiscalYear() {
-      $myrow = DB_Company::i()->_get_current_fiscalyear();
+      $myrow = $this->Company->get_current_fiscalyear();
       return $this->sqlToDate($myrow['begin']);
     }
     /**
@@ -87,7 +83,7 @@
      * @return string Date in Users Format
      */
     public function endFiscalYear() {
-      $myrow = DB_Company::i()->_get_current_fiscalyear();
+      $myrow = $this->Company->get_current_fiscalyear();
       return $this->sqlToDate($myrow['end']);
     }
     /**

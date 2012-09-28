@@ -17,7 +17,7 @@
   class System extends Menu {
     public $name = "System";
     public $help_context = "&System";
-    public function buildMenu() {
+    protected function before() {
       $module = $this->add_module(_("Company Setup"));
       $module->addLeftFunction(_("&Company Setup"), "/system/company_preferences?", SA_SETUPCOMPANY);
       $module->addLeftFunction(_("&User Accounts Setup"), "/system/manage/users?", SA_USERS);

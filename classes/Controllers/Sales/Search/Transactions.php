@@ -12,7 +12,6 @@
   use ADV\App\Display;
   use Debtor_Payment;
   use ADV\App\Forms;
-  use ADV\App\Page;
   use ADV\App\Reporting;
   use ADV\Core\Num;
   use ADV\Core\HTML;
@@ -29,7 +28,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Transactions extends \ADV\App\Controller\Base {
+  class Transactions extends \ADV\App\Controller\Action {
     public $isQuickSearch;
     public $filterType;
     public $debtor_id;
@@ -58,7 +57,7 @@
       $this->isQuickSearch = ($this->Input->postGet('q'));
     }
     protected function index() {
-      Page::start(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, $this->frame);
+      $this->Page->init(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, $this->frame);
 
       Forms::start();
       Table::start('noborder');
@@ -144,7 +143,7 @@
       $table->display($table);
       UI::emailDialogue(CT_CUSTOMER);
       Forms::end();
-      Page::end();
+      $this->Page->end_page();
     }
     /**
      * @param $trans
@@ -215,12 +214,12 @@
           $sql .= "Round(TotalAmount," . $this->User->prefs->price_dec . ") LIKE " . DB::_quote('%' . substr($quicksearch, 1) . '%') . ") ";
           continue;
         }
-        if ($quicksearch[0] == ">"&&$quicksearch[1] == "$") {
-          $quicksearch=ltrim($quicksearch,'>');
+        if ($quicksearch[0] == ">" && $quicksearch[1] == "$") {
+          $quicksearch = ltrim($quicksearch, '>');
           if (substr($quicksearch, -1) == 0 && substr($quicksearch, -3, 1) == '.') {
             $quicksearch = (substr($quicksearch, 0, -1));
           }
-          $sql .= "Round(TotalAmount," . $this->User->prefs->price_dec . ") > " . DB::_quote(substr($quicksearch, 1) ) . ") ";
+          $sql .= "Round(TotalAmount," . $this->User->prefs->price_dec . ") > " . DB::_quote(substr($quicksearch, 1)) . ") ";
           continue;
         }
         if (stripos($quicksearch, $this->User->prefs->date_sep) > 0) {
@@ -399,9 +398,10 @@
       }
       $items[] = ['class'=> 'email-button', 'label'=> 'Email', 'href'=> '#', 'data'=> ['emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']]];
       if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
-             $href    = '/system/void_transaction?type=' . $row['type'] . '&trans_no=' . $row['trans_no'] . '&memo=Deleted%20during%20order%20search';
-             $items[] = ['label'=> 'Void Trans', 'href'=> $href, 'attr'=> ['target'=> '_blank']];
-           } $menus[] = ['title'=> $title, 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
+        $href    = '/system/void_transaction?type=' . $row['type'] . '&trans_no=' . $row['trans_no'] . '&memo=Deleted%20during%20order%20search';
+        $items[] = ['label'=> 'Void Trans', 'href'=> $href, 'attr'=> ['target'=> '_blank']];
+      }
+      $menus[] = ['title'=> $title, 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
       $dropdown->set('menus', $menus);
       return $dropdown->render(true);
     }

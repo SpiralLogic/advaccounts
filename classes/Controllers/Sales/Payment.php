@@ -32,7 +32,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Payment extends \ADV\App\Controller\Base {
+  class Payment extends \ADV\App\Controller\Action {
     public $date_banked;
     public $debtor_id;
     protected function before() {
@@ -125,11 +125,11 @@
       //	Display::link_params( "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
       Display::link_no_params("/sales/payment", _("Enter Another &Customer Payment"));
       $this->Ajax->activate('_page_body');
-      Page::footer_exit();
+      $this->Page->footer_exit();
       return true;
     }
     protected function index() {
-      Page::start(_($help_context = "Customer Payment Entry"), SA_SALESPAYMNT, $this->Input->request('frame'));
+      $this->Page->init(_($help_context = "Customer Payment Entry"), SA_SALESPAYMNT, $this->Input->request('frame'));
       $this->runAction();
       Forms::start();
       Table::startOuter('standard width90 pad2');
@@ -171,7 +171,7 @@
       }
       Forms::submitCenter('_action', 'addPaymentItem', true, 'Add Payment', 'default');
       Forms::end();
-      Page::end(!$this->Input->request('frame'));
+      $this->Page->end_page(!$this->Input->request('frame'));
     }
     /**
      * @internal param $prefix

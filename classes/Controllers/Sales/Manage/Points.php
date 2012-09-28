@@ -21,11 +21,11 @@
       $this->runPost();
     }
     protected function index() {
-      Page::start(_($help_context = "Sales Points"), SA_SALESAREA);
+      $this->Page->init(_($help_context = "Sales Points"), SA_SALESAREA);
       $this->generateTable();
       echo '<br>';
       $this->generateForm();
-      Page::end(true);
+      $this->Page->end_page(true);
     }
     /**
      * @param $form

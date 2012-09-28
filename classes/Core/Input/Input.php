@@ -21,8 +21,7 @@
    * @method static _request($var, $type = null, $default = null)
    * @method static _hasPost($vars)
    */
-  class Input
-  {
+  class Input {
     use \ADV\Core\Traits\StaticAccess2;
 
     const NUMERIC = 1;
@@ -242,7 +241,13 @@
      * @return bool
      */
     public function hasSession($var) {
-      return array_key_exists($var, $_SESSION);
+      $vars = func_get_args();
+      foreach ($vars as $var) {
+        if (!array_key_exists($var, $_SESSION)) {
+          return false;
+        }
+      }
+      return true;
     }
     /**
      * @static
@@ -267,7 +272,7 @@
      *
      * @return bool|int|null|string
      */
-    protected function firstThenSecond(Base $first, Base $second, $var, $type = null, $default = null) {
+    protected function &firstThenSecond(Base $first, Base $second, $var, $type = null, $default = null) {
       $container = ($first->has($var)) ? $first : $second;
 
       return $container->get($var, $type, $default);

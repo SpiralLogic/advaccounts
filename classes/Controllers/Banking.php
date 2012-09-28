@@ -21,7 +21,7 @@
     /**
 
      */
-    public function buildMenu() {
+    protected function before() {
       $module = $this->add_module(_("Transactions"));
       $module->addLeftFunction(_("&Payments"), "/banking/banking?NewPayment=Yes", SA_PAYMENT);
       $module->addLeftFunction(_("&Deposits"), "/banking/banking?NewDeposit=Yes", SA_DEPOSIT);

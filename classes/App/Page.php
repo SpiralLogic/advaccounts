@@ -68,6 +68,7 @@
      * @var string
      */
     protected $title = '';
+    /** @var Page  */
     public static $i = null;
     protected $JS = null;
     /** @var Dates */
@@ -76,51 +77,12 @@
     public $hide_back_link;
     public $renderedjs;
     /**
-     * @param $hide_back_link
-     */
-    public function end_page($hide_back_link) {
-      $this->hide_back_link = $hide_back_link;
-      if ($this->frame) {
-        $this->hide_back_link = true;
-        $this->header         = false;
-      }
-      $this->footer();
-    }
-    /**
-     * @param $application
-     */
-    public function display_application($application) {
-      if ($application->direct) {
-        Display::meta_forward($application->direct);
-      }
-      foreach ($application->modules as $name => $module) {
-        $app            = new View('application');
-        $app['colspan'] = (count($module['right']) > 0) ? 2 : 1;
-        $app['name']    = $name;
-        foreach ([$module['left'], $module['right']] as $modules) {
-          $mods = [];
-          foreach ($modules as $func) {
-            $mod['access'] = $this->User->hasAccess($func['access']);
-            $mod['label']  = $func['label'];
-            if ($mod['access']) {
-              $mod['href'] = Display::menu_link($func['href'], $func['label']);
-            } else {
-              $mod['anchor'] = Display::access_string($func['label'], true);
-            }
-            $mods[] = $mod;
-          }
-          $app->set((!$app['lmods']) ? 'lmods' : 'rmods', $mods);
-        }
-        $app->render();
-      }
-    }
-    /**
-     * @param User             $user
-     * @param \ADV\Core\Config $config
-     * @param \ADV\Core\Ajax   $ajax
-     * @param \ADV\Core\JS     $js
-     * @param Dates            $dates
-
+     * @param \ADV\Core\Session $session
+     * @param User              $user
+     * @param \ADV\Core\Config  $config
+     * @param \ADV\Core\Ajax    $ajax
+     * @param \ADV\Core\JS      $js
+     * @param Dates             $dates
      */
     public function __construct(Session $session, User $user, Config $config, \ADV\Core\Ajax $ajax, \ADV\Core\JS $js, \ADV\App\Dates $dates) {
       $this->Session = $session;
@@ -132,14 +94,37 @@
       $this->frame   = isset($_GET['frame']);
     }
     /**
+     * @static
+     *
+     * @param        $title
+     * @param string $security
+     * @param bool   $no_menu
+     * @param bool   $isIndex
+     *
+     * @return null|Page
+     */
+    public static function start($title, $security = SA_OPEN, $no_menu = false, $isIndex = false) {
+      if (static::$i === null) {
+        static::$i = new static(Session::i(), User::i(), Config::i(), \ADV\Core\Ajax::i(), \ADV\Core\JS::i(), \ADV\App\Dates::i());
+      }
+      static::$i->init($title, $security, $isIndex, !$no_menu);
+      return static::$i;
+    }
+    /**
+     * @param $title
+     * @param $security
+     * @param $isIndex
      * @param $menu
      */
-    protected function init($menu) {
+    public function init($title, $security, $no_menu = false, $isIndex = false) {
+      $this->title    = $title;
+      $this->isIndex  = $isIndex;
+      $this->security = $security;
       $this->App      = ADVAccounting::i();
       $path           = explode('/', $_SERVER['DOCUMENT_URI']);
       $this->sel_app  = $path[1];
       $this->ajaxpage = (REQUEST_AJAX || Ajax::_inAjax());
-      $this->menu     = ($this->frame) ? false : $menu;
+      $this->menu     = ($this->frame) ? false : !$no_menu;
       $this->theme    = $this->User->theme();
       $this->encoding = $_SESSION['language']->encoding;
       $this->lang_dir = $_SESSION['language']->dir;
@@ -189,13 +174,22 @@
       }
       $header->render();
     }
+    /**
+     * @return array
+     */
+    protected function renderCSS() {
+      $this->css += $this->Config->get('assets.css');
+      $path = THEME_PATH . $this->theme . DS;
+      $css  = implode(',', $this->css);
+      return [$path . $css];
+    }
     protected function menu_header() {
       $cache = $this->Session->get('menu_header');
       if ($cache) {
         echo $cache;
       }
       $menu                = new View('menu_header');
-      $menu['theme']       = $this->User->theme();
+      $menu['theme']       = $this->User->prefs->theme;
       $menu['company']     = $this->User->company_name;
       $menu['server_name'] = $_SERVER['SERVER_NAME'];
       $menu['username']    = $this->User->username;
@@ -212,8 +206,8 @@
         $item['href']  = '/' . strtolower($item['name']);
         $app           = '\\ADV\\Controllers\\' . $app;
         if (class_exists($app)) {
-          $app = new $app($this->Session, $this->User);
-          $app->buildMenu();
+          /** @var \ADV\App\Controller\Menu $app  */
+          $app           = new $app($this->Session, $this->User);
           $item['extra'] = $app->getModules();
         }
         $menuitems[] = $item;
@@ -252,14 +246,20 @@
       $footer->set('page_body', Display::div_end(true));
       $footer->render();
     }
+    public static function footer_exit() {
+      static::$i->end_page(true);
+      exit;
+    }
     /**
-     * @return array
+     * @param $hide_back_link
      */
-    protected function renderCSS() {
-      $this->css += $this->Config->get('assets.css');
-      $path = THEME_PATH . $this->theme . DS;
-      $css  = implode(',', $this->css);
-      return [$path . $css];
+    public function end_page($hide_back_link = false) {
+      $this->hide_back_link = $hide_back_link;
+      if ($this->frame) {
+        $this->hide_back_link = true;
+        $this->header         = false;
+      }
+      $this->footer();
     }
     /**
      * @static
@@ -270,31 +270,6 @@
       if (static::$i) {
         static::$i->end_page($hide_back_link);
       }
-    }
-    /**
-     * @static
-     *
-     * @param        $title
-     * @param string $security
-     * @param bool   $no_menu
-     * @param bool   $isIndex
-     *
-     * @return null|Page
-     */
-    public static function start($title, $security = SA_OPEN, $no_menu = false, $isIndex = false) {
-      if (static::$i === null) {
-        static::$i = new static(Session::i(), User::i(), Config::i(), \ADV\Core\Ajax::i(), \ADV\Core\JS::i(), \ADV\App\Dates::i());
-      }
-      if (is_array($title)) {
-        static::$i->title   = $title[0];
-        static::$i->sel_app = $title[1];
-      } else {
-        static::$i->title = $title;
-      }
-      static::$i->isIndex  = $isIndex;
-      static::$i->security = $security;
-      static::$i->init(!$no_menu);
-      return static::$i;
     }
     /**
      * @static
@@ -327,10 +302,6 @@
         }
       }
       return array('', $selected_id);
-    }
-    public static function footer_exit() {
-      static::$i->end_page(true);
-      exit;
     }
     /** @static */
     public function errorBox() {

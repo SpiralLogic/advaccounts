@@ -9,15 +9,14 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Controllers;
-  use ADV\App\Controller\Base;
+
+  use ADV\App\Controller\Action;
   use ADV\App\Item\Item;
 
   /**
 
    */
-  class Search extends Base
-  {
-
+  class Search extends Action {
     protected function before() {
       if (!REQUEST_AJAX) {
         header('Location: /');
@@ -27,15 +26,16 @@
 
      */
     protected function index() {
-      $type=  $this->Input->request('type');
-      $searchdata = $this->Input->request('data');
+      $type        = $this->Input->request('type');
+      $searchdata  = $this->Input->request('data');
       $searchclass = '\\' . $type;
-      if (isset($_GET['term'])) {
+      $term        = $this->Input->get('term');
+      if ($term) {
         $uniqueID = $this->Input->get('UniqueID');
         if ($uniqueID) {
-          $data = Item::searchOrder($_GET['term'], $uniqueID);
+          $data = Item::searchOrder($term, $uniqueID);
         } else {
-          $data = $searchclass::search($_GET['term'],$searchdata);
+          $data = $searchclass::search($term, $searchdata);
         }
         $this->JS->renderJSON($data);
       }

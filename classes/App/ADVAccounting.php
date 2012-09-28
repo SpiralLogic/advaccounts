@@ -32,7 +32,7 @@
     public $applications = [];
     /** var Application*/
     public $selected;
-    /** @var \Menu */
+    /** @var Menu */
     public $menu;
     public $buildversion;
     /** @var User $user */
@@ -71,8 +71,8 @@
           \ADV\Core\Event::shutdown();
         }
       );
-      $this->dic = $dic = \ADV\Core\DIC::getInstance();
-      $self      = $this;
+      $dic  = \ADV\Core\DIC::getInstance();
+      $self = $this;
       $dic->set(
         'ADVAccounting',
         function () use ($self) {
@@ -146,7 +146,7 @@
           return $dates;
         }
       );
-     ob_start([$this, 'flush_handler'], 0);
+      ob_start([$this, 'flush_handler'], 0);
 
       $this->JS = $dic->set(
         'JS',
@@ -252,11 +252,12 @@
      * @param $controller2
      */
     protected function runController($controller2) {
+      $dic = \ADV\Core\DIC::getInstance();
 
-      $controller = new $controller2($this->Session, $this->User, $this->Ajax, $this->JS, $this->dic->get('Input'), DB::i());
-      if (method_exists($controller, 'display')) {
-        $controller->display();
-      }
+      /** @var \ADV\App\Controller\Base $controller  */
+      $controller = new $controller2($this->Session, $this->User, $this->Ajax, $this->JS, $dic->get('Input'), DB::i());
+      $controller->setPage($dic->get('Page'));
+      $controller->run();
     }
     /**
      * @param $app
@@ -342,7 +343,6 @@
         $this->Session['User'] = $this->User;
         $this->Session->regenerate();
         $this->Session->language->setLanguage($this->Session['language']->code);
-
       }
     }
     protected function showLogin() {
@@ -354,7 +354,7 @@
       if ($this->Ajax->inAjax()) {
         $this->Ajax->redirect($_SERVER['DOCUMENT_URI']);
       } elseif (REQUEST_AJAX) {
-        JS::_redirect('/');
+        $this->JS->redirect('/');
       }
       exit();
     }
@@ -368,13 +368,12 @@
     protected function setupApplications() {
       $this->applications = $this->Config->get('apps.active');
     }
-
     private function setupPage() {
       $dic = \ADV\Core\DIC::getInstance();
+
       $dic->set(
         'Page',
         function ($c) {
-
           return new Page($c->get('Session'), $c->get('User'), $c->get('Config'), $c->get('Ajax'), $c->get('JS'), $c->get('Dates'));
         }
       );

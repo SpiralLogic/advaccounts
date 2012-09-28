@@ -32,7 +32,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Invoice extends \ADV\App\Controller\Base {
+  class Invoice extends \ADV\App\Controller\Action {
     /** @var Creditor_Trans */
     protected $trans;
     protected $creditor_id;
@@ -75,7 +75,7 @@
       }
     }
     protected function index() {
-      Page::start(_($help_context = "Enter Supplier Invoice"), SA_SUPPLIERINVOICE);
+      $this->Page->init(_($help_context = "Enter Supplier Invoice"), SA_SUPPLIERINVOICE);
       if (isset($_GET[ADDED_ID])) {
         $this->pageComplete();
       }
@@ -102,7 +102,7 @@
       Display::br();
       Forms::end();
       $this->addJS();
-      Page::end(true);
+      $this->Page->end_page(true);
     }
     protected function pageComplete() {
       $invoice_no = $_GET[ADDED_ID];
@@ -116,7 +116,7 @@
       Display::link_no_params("/purchases/allocations/supplier_allocation_main.php", _("Allocate a payment to this invoice."));
       Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
       Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
-      Page::footer_exit();
+      $this->Page->footer_exit();
     }
     protected function addGlCodesToTrans() {
       $this->Ajax->activate('gl_items');
@@ -194,10 +194,12 @@
           DB::_begin();
           $myrow = Purch_GRN::get_item($id2);
           $grn   = Purch_GRN::get_batch($myrow['grn_batch_id']);
-          $sql   = "UPDATE purch_order_details
+          $sql
+                 = "UPDATE purch_order_details
                   SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = " . $myrow["po_detail_item"];
           DB::_query($sql, "The quantity invoiced of the purchase order line could not be updated");
-          $sql = "UPDATE grn_items
+          $sql
+            = "UPDATE grn_items
                SET qty_recd = quantity_inv WHERE id = " . $myrow["id"];
           DB::_query($sql, "The quantity invoiced off the items received record could not be updated");
           Purch_GRN::update_average_material_cost($grn["creditor_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Dates::_today());
@@ -430,7 +432,8 @@
     }
     protected function addJS() {
       Item::addEditDialog();
-      $js = <<<JS
+      $js
+        = <<<JS
                    $("#wrapper").delegate('.amount','change',function() {
                var field = $(this), ChgTax=$('[name="ChgTax"]'),ChgTotal=$('[name="ChgTotal"]'),invTotal=$('#invoiceTotal'), fields = $(this).parent().parent(), fv = {}, nodes = {
                qty: $('[name^="this_quantity"]',fields),

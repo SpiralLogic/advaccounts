@@ -27,11 +27,11 @@
       $this->runPost();
     }
     protected function index() {
-      Page::start(_($help_context = "Item Categories"), SA_ITEMCATEGORY);
+      $this->Page->init(_($help_context = "Item Categories"), SA_ITEMCATEGORY);
       $this->generateTable();
       echo '<br>';
       $this->generateForm();
-      Page::end(true);
+      $this->Page->end_page(true);
     }
     /**
      * @param $form

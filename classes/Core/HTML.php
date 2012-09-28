@@ -13,10 +13,11 @@
    * @method HTML button()
    * @method HTML _button()
    * @method HTML table()
-   * @method HTML tr()
-   * @method static HTML td()
+   * @method static HTML tr()
+   * @method HTML td()
    * @method HTML div()
    * @method HTML textarea()
+   * @method HTML optgroup()
    * @method HTML form()
    * @method HTML _form()
    * @method HTML label()
@@ -28,6 +29,7 @@
    * @method HTML _span()
    * @method HTML option()
    * @method HTML select()
+   * @method HTML _select()
    * @property HTML tr
    * @property HTML td
    * @property HTML script
@@ -37,8 +39,7 @@
    * @property HTML option
    * @property HTML select
    */
-  class HTML
-  {
+  class HTML {
     use Traits\HTML;
 
     /**

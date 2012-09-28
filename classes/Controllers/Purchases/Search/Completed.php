@@ -1,5 +1,6 @@
 <?php
   namespace ADV\Controllers\Purchases\Search;
+
   use ADV\Core\Input\Input;
   use GL_UI;
   use ADV\Core\View;
@@ -23,9 +24,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Completed extends \ADV\App\Controller\Base
-  {
-
+  class Completed extends \ADV\App\Controller\Action {
     protected $order_number;
     protected $creditor_id;
     protected function before() {
@@ -46,7 +45,7 @@
       }
     }
     protected function index() {
-      Page::start(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, $this->Input->request('frame'));
+      $this->Page->init(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, $this->Input->request('frame'));
       Forms::start();
       if (!$this->Input->request('frame')) {
         Table::start('noborder');
@@ -65,7 +64,7 @@
       Creditor::addInfoDialog('.pagerclick');
       UI::emailDialogue(CT_SUPPLIER);
       Forms::end();
-      Page::end();
+      $this->Page->end_page();
     }
     protected function makeTable() {
       $searchArray = [];

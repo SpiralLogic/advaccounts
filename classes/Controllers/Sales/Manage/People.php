@@ -26,11 +26,11 @@
       $this->runPost();
     }
     protected function index() {
-      Page::start(_($help_context = "Sales Persons"), SA_SALESMAN);
+      $this->Page->init(_($help_context = "Sales Persons"), SA_SALESMAN);
       $this->generateTable();
       echo '<br>';
       $this->generateForm();
-      Page::end();
+      $this->Page->end_page();
     }
     /**
      * @param \ADV\App\Form\Form $form

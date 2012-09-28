@@ -39,7 +39,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Banking extends \ADV\App\Controller\Base {
+  class Banking extends \ADV\App\Controller\Action {
     /** @var Item_Order */
     protected $order;
     protected $security;
@@ -95,7 +95,7 @@
       }
     }
     protected function index() {
-      Page::start($this->title, $this->security);
+      $this->Page->init($this->title, $this->security);
       $this->runAction();
       Forms::start();
       $this->header($this->order);
@@ -113,7 +113,7 @@
       echo (new Button('_action', COMMIT, COMMIT))->type('success')->preIcon(ICON_SUBMIT);
       echo "</div>";
       Forms::end();
-      Page::end();
+      $this->Page->end_page();
     }
     /**
      * @return void
@@ -367,7 +367,7 @@
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter A &Payment"), "NewPayment=yes");
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter A &Deposit"), "NewDeposit=yes");
       $this->Ajax->activate('_page_body');
-      Page::footer_exit();
+      $this->Page->footer_exit();
     }
     /**
      * @return bool

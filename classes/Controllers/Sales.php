@@ -17,13 +17,12 @@
 
    */
   class Sales extends Menu {
-
     public $name = "Sales";
     public $help_context = "&Sales";
     /**
 
      */
-    public function buildMenu() {
+    protected function before() {
       $module = $this->add_module('Quotations and Orders');
       $module->addLeftFunction(_('New Sales &Quotation'), '/sales/order?' . Orders::ADD . '=0&' . Orders::TYPE . '=' . ST_SALESQUOTE, SA_SALESQUOTE);
       $module->addLeftFunction(_('Search Quotatio&ns'), '/sales/search/orders?' . Orders::TYPE . '=' . ST_SALESQUOTE . '', SA_SALESTRANSVIEW);

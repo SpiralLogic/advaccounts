@@ -31,7 +31,7 @@
   /**
 
    */
-  class Credit extends \ADV\App\Controller\Base {
+  class Credit extends \ADV\App\Controller\Action {
     /** @var \Creditor_trans */
     protected $trans;
     protected $creditor_id;
@@ -82,7 +82,7 @@
       }
     }
     protected function index() {
-      Page::start(_($help_context = "Supplier Credit Note"), SA_SUPPLIERCREDIT);
+      $this->Page->init(_($help_context = "Supplier Credit Note"), SA_SUPPLIERCREDIT);
       if (isset($_GET[ADDED_ID])) {
         $this->pageComplete();
       }
@@ -104,10 +104,11 @@
       Display::br();
       Forms::end();
       $this->addJS();
-      Page::end();
+      $this->Page->end_page();
     }
     protected function addJS() {
-      $js = <<<JS
+      $js
+        = <<<JS
              $("#wrapper").delegate('.amount','change',function() {
          var field = $(this), ChgTax=$('[name="ChgTax"]'),ChgTotal=$('[name="ChgTotal"]'),invTotal=$('#invoiceTotal'), fields = $(this).parent().parent(), fv = {}, nodes = {
          qty: $('[name^="this_quantity"]',fields),
@@ -153,7 +154,7 @@ JS;
       Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another Credit Note"), "New=1");
       Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
-      Page::footer_exit();
+      $this->Page->footer_exit();
     }
     protected function go() {
       Ajax::_activate('gl_items');

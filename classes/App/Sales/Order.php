@@ -1,6 +1,14 @@
 <?php
   use ADV\Core\Cell;
+  use ADV\Core\Session;
   use ADV\App\Orders;
+  use ADV\Core\HTML;
+  use ADV\App\Validation;
+  use ADV\Core\Num;
+  use ADV\App\User;
+  use ADV\App\Display;
+  use ADV\App\Dates;
+  use ADV\Core\Event;
   use ADV\App\Forms;
   use ADV\App\Dimensions;
   use ADV\App\UI;

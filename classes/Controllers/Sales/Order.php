@@ -9,7 +9,7 @@
    **/
   namespace ADV\Controllers\Sales;
 
-  use ADV\App\Controller\Base;
+  use ADV\App\Controller\Action;
   use Sales_Point;
   use Sales_Order;
   use DB_Company;
@@ -17,7 +17,6 @@
   use GL_UI;
   use Item_Line;
   use Sales_Branch;
-  use ADV\App\Page;
   use ADV\App\Ref;
   use ADV\App\Validation;
   use ADV\App\Reporting;
@@ -40,7 +39,7 @@
   /**
 
    */
-  class Order extends Base {
+  class Order extends Action {
     protected $addTitles
       = array(
         ST_SALESQUOTE  => "New Sales Quotation Entry", //
@@ -99,7 +98,7 @@
       $this->setSecurity();
     }
     protected function index() {
-      Page::start($this->title, $this->security);
+      $this->Page->init($this->title, $this->security);
       $this->checkBranch();
       if (isset($_GET[REMOVED])) {
         $this->removed();
@@ -143,7 +142,7 @@
       Debtor::addEditDialog();
       Item::addEditDialog();
       UI::emailDialogue(CT_CUSTOMER);
-      Page::end(true);
+      $this->Page->end_page(true);
     }
     protected function checkBranch() {
       if (Forms::isListUpdated('branch_id')) {
@@ -162,7 +161,7 @@
     protected function exitError($error) {
       Event::warning($error);
       $this->Session->setGlobal('debtor_id', null);
-      Page::footer_exit();
+      $this->Page->footer_exit();
     }
     protected function Refresh() {
       $this->Ajax->activate('items_table');
@@ -257,7 +256,7 @@
       $this->JS->setFocus('prtopt');
       $this->Ajax->activate('_page_body', $new_trans, $edit_trans, $this->addTitles[$trans_type]);
       //	UploadHandler::insert($order_no);
-      Page::footer_exit();
+      $this->Page->footer_exit();
     }
     /**
      * @internal param \Sales_Order $order
@@ -353,8 +352,8 @@
         return false;
       }
       $result = $this->order->trans_type == ST_SALESORDER && strlen($_POST['cust_ref']) < 1;
-      if ($result && $this->order->order_id !== Session::_getFlash('SalesOrder')) {
-        Session::_setFlash('SalesOrder', $this->order->order_id);
+      if ($result && $this->order->order_id !== $this->Session->getFlash('SalesOrder')) {
+        $this->Session->setFlash('SalesOrder', $this->order->order_id);
         Event::warning('Are you sure you want to commit this order without a purchase order number?');
         $this->JS->setFocus('cust_ref');
         return false;
@@ -467,7 +466,7 @@
         Display::submenu_option(_("Enter a New Sales Order"), "/sales/order?add=0&type=" . $_GET['type']);
         Display::submenu_option(_("Select A Different Order to edit"), "/sales/search/orders.vphp?type=" . ST_SALESORDER);
       }
-      Page::footer_exit();
+      $this->Page->footer_exit();
     }
     /**
      * @return mixed
@@ -486,7 +485,7 @@
       $trans_no        = $jobsboard_order->trans_no = key($this->order->trans_no);
       if (Errors::getSeverity() == -1) { // abort on failure or error messages are lost
         $this->Ajax->activate('_page_body');
-        Page::footer_exit();
+        $this->Page->footer_exit();
       }
       $this->order->finish();
       if ($trans_type == ST_SALESORDER) {
@@ -543,7 +542,7 @@
       Display::submenu_option(_("Show outstanding &Orders"), "/sales/search/orders?OutstandingOnly=1");
       Display::submenu_option(_("Enter a New &Order"), "/sales/order?add=0&type=" . ST_SALESORDER);
       Display::submenu_option(_("Select A Different Order to edit"), "/sales/search/orders?type=" . ST_SALESORDER);
-      Page::footer_exit();
+      $this->Page->footer_exit();
     }
     protected function updateItem() {
       if ($this->checkItemData($this->order)) {
