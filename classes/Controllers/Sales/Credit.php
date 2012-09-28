@@ -115,7 +115,7 @@
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another &Credit Note"), "NewCredit=yes");
       Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
       $this->Ajax->activate('_page_body', "/sales/view/view_credit?trans_no=$credit_no&trans_type=$trans_type", '/sales/credit?NewCredit=Yes');
-      $this->Page->footer_exit();
+      $this->Page->endExit();
     }
     protected function index() {
       $this->Page->init($this->title, SA_SALESCREDIT);

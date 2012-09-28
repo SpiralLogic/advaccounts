@@ -250,6 +250,10 @@
       static::$i->end_page(true);
       exit;
     }
+    public function endExit() {
+      $this->end_page(true);
+      exit;
+    }
     /**
      * @param $hide_back_link
      */

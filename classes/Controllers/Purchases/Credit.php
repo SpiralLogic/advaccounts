@@ -154,7 +154,7 @@ JS;
       Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another Credit Note"), "New=1");
       Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
-      $this->Page->footer_exit();
+      $this->Page->endExit();
     }
     protected function go() {
       Ajax::_activate('gl_items');

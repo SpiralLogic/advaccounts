@@ -131,7 +131,7 @@
         Orders::session_delete($this->order->order_id);
         Event::notice(_("This purchase order has been cancelled."));
         Display::link_params("/purchases/order", _("Enter a new purchase order"), "NewOrder=Yes");
-        $this->Page->footer_exit();
+        $this->Page->endExit();
       }
     }
     protected function addItem() {
@@ -265,7 +265,7 @@
       $view->set('buttons', $buttons);
       $view->render();
       $this->Ajax->activate('_page_body', $new_trans, $edit_trans, $help_context);
-      $this->Page->footer_exit();
+      $this->Page->endExit();
     }
     /**
      * @param int $order_no
@@ -362,7 +362,7 @@
     protected function canCommit() {
       if (!$this->order) {
         Event::error(_("You are not currently editing an order."));
-        $this->Page->footer_exit();
+        $this->Page->endExit();
       }
       if (!Input::_post('creditor_id')) {
         Event::error(_("There is no supplier selected."));

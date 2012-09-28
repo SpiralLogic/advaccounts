@@ -161,7 +161,7 @@
     protected function exitError($error) {
       Event::warning($error);
       $this->Session->setGlobal('debtor_id', null);
-      $this->Page->footer_exit();
+      $this->Page->endExit();
     }
     protected function Refresh() {
       $this->Ajax->activate('items_table');
@@ -256,7 +256,7 @@
       $this->JS->setFocus('prtopt');
       $this->Ajax->activate('_page_body', $new_trans, $edit_trans, $this->addTitles[$trans_type]);
       //	UploadHandler::insert($order_no);
-      $this->Page->footer_exit();
+      $this->Page->endExit();
     }
     /**
      * @internal param \Sales_Order $order
@@ -466,7 +466,7 @@
         Display::submenu_option(_("Enter a New Sales Order"), "/sales/order?add=0&type=" . $_GET['type']);
         Display::submenu_option(_("Select A Different Order to edit"), "/sales/search/orders.vphp?type=" . ST_SALESORDER);
       }
-      $this->Page->footer_exit();
+      $this->Page->endExit();
     }
     /**
      * @return mixed
@@ -485,7 +485,7 @@
       $trans_no        = $jobsboard_order->trans_no = key($this->order->trans_no);
       if (Errors::getSeverity() == -1) { // abort on failure or error messages are lost
         $this->Ajax->activate('_page_body');
-        $this->Page->footer_exit();
+        $this->Page->endExit();
       }
       $this->order->finish();
       if ($trans_type == ST_SALESORDER) {
@@ -542,7 +542,7 @@
       Display::submenu_option(_("Show outstanding &Orders"), "/sales/search/orders?OutstandingOnly=1");
       Display::submenu_option(_("Enter a New &Order"), "/sales/order?add=0&type=" . ST_SALESORDER);
       Display::submenu_option(_("Select A Different Order to edit"), "/sales/search/orders?type=" . ST_SALESORDER);
-      $this->Page->footer_exit();
+      $this->Page->endExit();
     }
     protected function updateItem() {
       if ($this->checkItemData($this->order)) {

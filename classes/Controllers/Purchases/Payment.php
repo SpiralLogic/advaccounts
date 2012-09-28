@@ -151,7 +151,7 @@
       // Display::link_params($path_to_root . "/purchases/allocations/supplier_allocate.php", _("&Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter another supplier &payment"), "creditor_id=" . $this->creditor_id, true, 'class="button"');
       $this->Ajax->activate('_page_body');
-      $this->Page->footer_exit();
+      $this->Page->endExit();
       return true;
     }
     protected function runValidation() {

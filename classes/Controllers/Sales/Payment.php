@@ -125,7 +125,7 @@
       //	Display::link_params( "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
       Display::link_no_params("/sales/payment", _("Enter Another &Customer Payment"));
       $this->Ajax->activate('_page_body');
-      $this->Page->footer_exit();
+      $this->Page->endExit();
       return true;
     }
     protected function index() {

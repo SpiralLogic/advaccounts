@@ -367,7 +367,7 @@
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter A &Payment"), "NewPayment=yes");
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter A &Deposit"), "NewDeposit=yes");
       $this->Ajax->activate('_page_body');
-      $this->Page->footer_exit();
+      $this->Page->endExit();
     }
     /**
      * @return bool
