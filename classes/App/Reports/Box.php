@@ -17,8 +17,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Reports_Box extends Report
-  {
+  class Reports_Box extends Report {
     /** @var */
     public $ar_classes;
     /**
@@ -70,16 +69,25 @@
       foreach ($this->ar_classes as $key => $value) {
         $style = $class_counter == $_REQUEST['Class'] ? '' : "style='display:none'";
         $acc   = Display::access_string($key);
-        $st_classes .= "<a href='" . $_SERVER['DOCUMENT_URI'] . "?Class=$class_counter' class='menu_option' id='" . JS::_defaultFocus() . "' onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
-        $st_reports .= "<table id='TAB_" . $class_counter . "' $style cellpadding=0 cellspacing=0 style='width:100%'><tr><td><span class='bold'>" . _("Reports For Class: ") . "&nbsp;$key</span></td></tr>\n";
+        $st_classes .= "<a href='" . $_SERVER['DOCUMENT_URI'] . "?Class=$class_counter' class='menu_option' id='" . JS::_defaultFocus(
+        ) . "' onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
+        $st_reports .= "<table id='TAB_" . $class_counter . "' $style cellpadding=0 cellspacing=0 style='width:100%'><tr><td><span class='bold'>" . _(
+          "Reports For Class: "
+        ) . "&nbsp;$key</span></td></tr>\n";
         foreach ($value as $report) {
           $acc = Display::access_string($report->name);
-          $st_reports .= "<tr><td><a class='printlink' href='" . $_SERVER['DOCUMENT_URI'] . "?Class=$class_counter&rep_id=$report->id' id='" . JS::_defaultFocus() . "'$acc[1]>$acc[0]</a><tr><td>\n";
+          $st_reports .= "<tr><td><a class='printlink' href='" . $_SERVER['DOCUMENT_URI'] . "?Class=$class_counter&rep_id=$report->id' id='" . JS::_defaultFocus(
+          ) . "'$acc[1]>$acc[0]</a><tr><td>\n";
           if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id'] == $report->id) {
-            $action    = BASE_URL . 'reporting/prn_redirect.php';
+            $action    = ROOT_URL . 'reporting/prn_redirect.php';
             $st_params = "<table><tr><td>\n<form method='POST' action='$action' target='_blank'>\n";
-            $st_params .= Forms::submit('Rep' . $report->id, _("Display: ") . Display::access_string($report->name, true), false, '', Config::_get('debug.pdf') ?
-              false : 'default process') . Forms::hidden('REP_ID', $report->id, false) . '<br><br>';
+            $st_params .= Forms::submit(
+              'Rep' . $report->id,
+              _("Display: ") . Display::access_string($report->name, true),
+              false,
+              '',
+              Config::_get('debug.pdf') ? false : 'default process'
+            ) . Forms::hidden('REP_ID', $report->id, false) . '<br><br>';
             $st_params .= $this->getOptions($report->get_controls());
             $st_params .= "\n</form></td></tr></table>\n";
             JS::_setFocus('Rep' . $report->id);
@@ -181,11 +189,18 @@
         case 'CURRENCY':
           $sql = "SELECT curr_abrev, concat(curr_abrev,' - ', currency) AS name FROM currencies";
 
-          return Forms::selectBox($name, '', $sql, 'curr_abrev', 'name', array(
-                                                                              'spec_option' => _("No Currency Filter"),
-                                                                              'spec_id'     => ALL_TEXT,
-                                                                              'order'       => false
-                                                                         ));
+          return Forms::selectBox(
+            $name,
+            '',
+            $sql,
+            'curr_abrev',
+            'name',
+            array(
+                 'spec_option' => _("No Currency Filter"),
+                 'spec_id'     => ALL_TEXT,
+                 'order'       => false
+            )
+          );
         case 'DATEMONTH':
           return Dates::_months($name);
         case 'DATE':
@@ -279,27 +294,48 @@
         case 'CUSTOMERS':
           $sql = "SELECT debtor_id, name FROM debtors";
           if ($type == 'CUSTOMERS_NO_FILTER') {
-            return Forms::selectBox($name, '', $sql, 'debtor_id', 'name', array(
-                                                                               'spec_option' => _("No Customer Filter"),
-                                                                               'spec_id'     => ALL_NUMERIC
-                                                                          ));
+            return Forms::selectBox(
+              $name,
+              '',
+              $sql,
+              'debtor_id',
+              'name',
+              array(
+                   'spec_option' => _("No Customer Filter"),
+                   'spec_id'     => ALL_NUMERIC
+              )
+            );
           } else {
             return Forms::selectBox($name, '', $sql, 'debtor_id', 'name', null);
           }
         case 'CUSTOMERS_NOZERO_BALANCE':
           $sql = 'SELECT  c.debtor_id, c.name FROM debtor_balances db, debtors c WHERE c.debtor_id=db.debtor_id AND Balance<>0 ';
-          return Forms::selectBox($name, '', $sql, 'debtor_id', 'name', array(
-                                                                             'spec_option' => _("No Customer Filter"),
-                                                                             'spec_id'     => ALL_NUMERIC
-                                                                        ));
+          return Forms::selectBox(
+            $name,
+            '',
+            $sql,
+            'debtor_id',
+            'name',
+            array(
+                 'spec_option' => _("No Customer Filter"),
+                 'spec_id'     => ALL_NUMERIC
+            )
+          );
         case 'SUPPLIERS_NO_FILTER':
         case 'SUPPLIERS':
           $sql = "SELECT creditor_id, name FROM suppliers";
           if ($type == 'SUPPLIERS_NO_FILTER') {
-            return Forms::selectBox($name, '', $sql, 'creditor_id', 'name', array(
-                                                                                 'spec_option' => _("No Supplier Filter"),
-                                                                                 'spec_id'     => ALL_NUMERIC
-                                                                            ));
+            return Forms::selectBox(
+              $name,
+              '',
+              $sql,
+              'creditor_id',
+              'name',
+              array(
+                   'spec_option' => _("No Supplier Filter"),
+                   'spec_id'     => ALL_NUMERIC
+              )
+            );
           } // FIX allitems numeric!
           //						return Creditor::select($name, null, _("No Supplier Filter"));
           else {
@@ -410,10 +446,17 @@
         case 'USERS':
           $sql = "SELECT id, user_id FROM users";
 
-          return Forms::selectBox($name, '', $sql, 'id', 'user_id', array(
-                                                                         'spec_option' => _("No Users Filter"),
-                                                                         'spec_id'     => ALL_NUMERIC
-                                                                    ));
+          return Forms::selectBox(
+            $name,
+            '',
+            $sql,
+            'id',
+            'user_id',
+            array(
+                 'spec_option' => _("No Users Filter"),
+                 'spec_id'     => ALL_NUMERIC
+            )
+          );
         case 'ACCOUNTTAGS':
         case 'DIMENSIONTAGS':
           if ($type == 'ACCOUNTTAGS') {
@@ -450,10 +493,15 @@
         unset($types[$type]);
       }
 
-      return Forms::arraySelect($name, $value, $types, array(
-                                                            'spec_option' => $spec_opt,
-                                                            'spec_id'     => ALL_NUMERIC,
-                                                            'async'       => false,
-                                                       ));
+      return Forms::arraySelect(
+        $name,
+        $value,
+        $types,
+        array(
+             'spec_option' => $spec_opt,
+             'spec_id'     => ALL_NUMERIC,
+             'async'       => false,
+        )
+      );
     }
   }

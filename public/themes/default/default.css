@@ -10,7 +10,7 @@
 }
 
 body {
-  padding:     15px 0 0 0;
+  padding:     70px 0 0 0;
   font:        .7em Tahoma, Geneva, Verdana;
   line-height: 1.7em;
   color:       #454545;
@@ -111,6 +111,10 @@ input, textarea {
 }
 
 input[type="search"] {
+  -webkit-appearance: none;
+}
+
+input[type="search"]::-webkit-search-decoration {
   -webkit-appearance: none;
 }
 
@@ -638,7 +642,7 @@ input:-ms-input-placeholder {
 .input-append .add-on {
   display:          inline-block;
   width:            auto;
-  min-width:        24px;
+  min-width:        23px;
   padding:          4px 5px;
   font-weight:      normal;
   text-align:       center;
@@ -2663,7 +2667,20 @@ img {
   padding-bottom: 10px;
   text-indent:    20px;
   background:     white;
-  height:         60px;
+  height:         36px;
+}
+
+#header {
+  position:    fixed;
+  padding-top: 4px;
+  top:         0;
+  background:  rgb(43, 48, 48);
+  width:       80%;
+  z-index:     1000;
+}
+
+#logo h1 {
+  font-size: 1.7em;
 }
 
 #hints {
@@ -2676,7 +2693,7 @@ img {
 }
 
 #ajaxmark {
-  margin:     15px auto;
+  margin:     9px auto;
   visibility: hidden;
   top:        0;
 }
@@ -2686,9 +2703,10 @@ img {
 }
 
 .ajaxmark {
-  width:      100%;
-  position:   absolute;
+  width:      80%;
   text-align: center;
+  position:   fixed;
+  top:        0;
 }
 
 .titletext {
@@ -2704,11 +2722,9 @@ img {
   font-size:       0.55em;
   text-decoration: underline;
   margin:          0;
-  opacity:         .8;
-  padding-left:    150px;
+  opacity:         .9;
+  padding-left:    15px;
   position:        relative;
-  top:             -13px;
-  text-shadow:     rgba(100, 100, 100, .6) 1px 2px;
   color:           #333;
 }
 
@@ -2768,6 +2784,7 @@ img {
 
 #sidemenu ul input {
   margin: 0;
+  width:  9em;
 }
 
 /*--------------------------------- END SIDEMENU -----------------------------------------------------------------*/
@@ -2850,6 +2867,7 @@ img {
 
 #summary input {
   text-align: center;
+  width:      5em;
 }
 
 #summary table {
@@ -2889,10 +2907,8 @@ img {
 /*</editor-fold>*/
 /*<editor-fold desc="Top Menu">*/
 /*--------------------------------- TOP MENU -----------------------------------------------------------------*/
-#topmenu {
-  text-align:     left;
+#tabs, #tabs ul li ul li {
   text-transform: uppercase;
-  background:     rgb(219, 219, 219);
   background:     -moz-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
   background:     -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(219, 219, 219, 1)), color-stop(51%, rgba(160, 160, 160, 1)), color-stop(100%, rgba(158, 158, 158, 1)));
   background:     -webkit-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
@@ -2901,60 +2917,100 @@ img {
   background:     linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
   filter:         progid:DXImageTransform.Microsoft.gradient(startColorstr = '#dbdbdb', endColorstr = '#9e9e9e', GradientType = 0);
   border-top:     2px solid #939393;
-  position:       relative;
-  margin:         4px 0;
-  padding:        0 0 0 15px;
-  height:         40px;
+  margin:         0 0 0;
+  padding:        0;
+  height:         33px;
+  z-index:        100;
   border-left:    1px solid rgba(0, 0, 0, 0.3);
 }
 
-#topmenu .title {
-  position:       absolute;
-  right:          20px;
-  top:            10px;
-  font-size:      15px;
-  text-transform: uppercase;
+#tabs ul {
+  float:     none;
+  font-size: 12px;
 }
 
-#topmenu li {
+#tabs #rightmenu {
+  float: right;
+}
+
+#tabs ul li ul li {
+  background: rgba(160, 160, 160, 1);
+}
+
+#tabs ul li ul li.title {
+  text-indent:     4px;
+  background:      rgba(98, 98, 102, 1);
+  font-weight:     bold;
+  text-decoration: none;
+  color:           white;
+}
+
+#tabs ul li {
   list-style: none;
   float:      left;
-  height:     39px;
+  height:     33px;
   text-align: center;
   margin:     0;
   display:    inline-block;
 }
 
-#topmenu a {
-  color:              #363636;
-  text-decoration:    none;
-  -moz-transition:    all .5s linear;
-  -webkit-transition: all .5s linear;
-  text-transform:     uppercase;
-  font-weight:        bold;
-  display:            block;
-  padding:            0 10px;
-  border-left:        1px solid rgba(255, 255, 255, 0.1);
-  border-right:       1px solid rgba(0, 0, 0, 0.1);
-  line-height:        39px;
-  height:             39px;
+#tabs ul a {
+  color:           #363636;
+  text-decoration: none;
+  font-weight:     bold;
+  display:         block;
+  padding:         0 5px;
+  border-left:     1px solid rgba(255, 255, 255, 0.1);
+  border-right:    1px solid rgba(0, 0, 0, 0.1);
+  line-height:     33px;
+  height:          33px;
 }
 
-#topmenu .active a, #topmenu a:hover, #topmenu li:hover {
-  color:              white;
-  background:         #5cadff;
-  background:         -moz-linear-gradient(top, #5cadff 0%, #192e9c 100%, #4e6ad9 50%);
-  background:         -webkit-gradient(linear, left top, left bottom, color-stop(0%, #5cadff), color-stop(100%, #192e9c), color-stop(50%, #4e6ad9));
-  background:         -webkit-linear-gradient(top, #5cadff 0%, #192e9c 100%, #4e6ad9 50%);
-  background:         -o-linear-gradient(top, #5cadff 0%, #192e9c 100%, #4e6ad9 50%);
-  background:         -ms-linear-gradient(top, #5cadff 0%, #192e9c 100%, #4e6ad9 50%);
-  background:         linear-gradient(top, #5cadff 0%, #192e9c 100%, #4e6ad9 50%);
-  filter:             progid:DXImageTransform.Microsoft.gradient(startColorstr = '#5cadff', endColorstr = '#4e6ad9', GradientType = 0);
+#tabs >ul >li, #tabs ul li ul {
   -moz-transition:    all .3s linear;
   -webkit-transition: all .3s linear;
 }
 
-.creditors #topmenu .active a, .creditors #topmenu a:hover, .purchases #topmenu .active a, .purchases #topmenu a:hover {
+#tabs ul li ul {
+  display: none;
+}
+
+#tabs ul li.hover ul {
+  display:  block;
+  width:    auto;
+  position: absolute;
+  opacity:  1;
+}
+
+#tabs ul li ul li {
+  height:      21px;
+  text-align:  left;
+  display:     block;
+  float:       none;
+  font-weight: normal;;
+}
+
+#tabs ul li ul li a {
+  padding:        2px 8px 3px;
+  height:         21px;
+  font-size:      12px;
+  line-height:    15px;
+  text-transform: none;
+}
+
+#tabs .active> a, #tabs .hover> a, #tabs a:hover, #tabs >ul> li.hover, #tabs a:focus {
+  color:      white;
+  background: #5cadff;
+  background: -moz-linear-gradient(top, #5cadff 0%, #192e9c 100%, #4e6ad9 50%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #5cadff), color-stop(100%, #192e9c), color-stop(50%, #4e6ad9));
+  background: -webkit-linear-gradient(top, #5cadff 0%, #192e9c 100%, #4e6ad9 50%);
+  background: -o-linear-gradient(top, #5cadff 0%, #192e9c 100%, #4e6ad9 50%);
+  background: -ms-linear-gradient(top, #5cadff 0%, #192e9c 100%, #4e6ad9 50%);
+  background: linear-gradient(top, #5cadff 0%, #192e9c 100%, #4e6ad9 50%);
+  filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#5cadff', endColorstr = '#4e6ad9', GradientType = 0);
+}
+
+.purchases #tabs .active> a, .purchases #tabs .hover> a, .purchases #tabs a:hover, .purchases #tabs >ul> li.hover, .purchases #tabs a:focus {
   background: #6ed86e;
   background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzZlZDg2ZSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjQ1JSIgc3RvcC1jb2xvcj0iIzQ0YjU0OCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMyNzc3MzQiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
   background: -moz-linear-gradient(top, #6ed86e 0%, #44b548 45%, #277734 100%);
@@ -2966,7 +3022,7 @@ img {
   filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#6ed86e', endColorstr = '#277734', GradientType = 0);
 }
 
-.inventory #topmenu .active a, .inventory #topmenu a:hover, .manufacturing #topmenu .active a, .manufacturing #topmenu a:hover {
+.inventory #tabs .active> a, .inventory #tabs .hover> a, .inventory #tabs a:hover, .inventory #tabs >ul> li.hover, .inventory #tabs a:focus, .manufacturing #tabs .active> a, .manufacturing #tabs .hover> a, .manufacturing #tabs >ul >li.hover >a:hover, .manufacturing #tabs >ul> li.hover, .manufacturing #tabs a:focus {
   background: #e38881;
   background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2UzODg4MSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjQ1JSIgc3RvcC1jb2xvcj0iI2RiNDk0OSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiODFkMWQiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
   background: -moz-linear-gradient(top, #e38881 0%, #db4949 45%, #b81d1d 100%);
@@ -2978,7 +3034,7 @@ img {
   filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#e38881', endColorstr = '#b81d1d', GradientType = 0);
 }
 
-.gl #topmenu .active a, .gl #topmenu a:hover {
+.banking #tabs .active> a, .banking #tabs .hover> a, .banking #tabs a:hover, .banking #tabs >ul> li.hover, .banking #tabs a:focus {
   background: #ffe7aa;
   background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZTdhYSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjM4JSIgc3RvcC1jb2xvcj0iI2ZlYmYwNCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNjOTkwMDIiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
   background: -moz-linear-gradient(top, #ffe7aa 0%, #febf04 38%, #c99002 100%);
@@ -3007,6 +3063,9 @@ img {
 
 div.menu_group {
   display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
 }
 
 div.menu_group.title {
@@ -3047,7 +3106,7 @@ div.menu_group.title {
   background: -ms-linear-gradient(top, #E38881 0%, #DB4949 100%);
 }
 
-.gl .menu_group {
+.banking .menu_group {
   border:     1px solid #ffe08c;
   background: #ffe08c;
   background: -moz-linear-gradient(top, #ffe08c 0%, #febf04 100%);
@@ -3089,7 +3148,7 @@ div.menu_group.title {
   filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#8ab9f2', endColorstr = '#ffffff', GradientType = 0);
 }
 
-.gl #wrapper {
+.banking #wrapper {
   background: #f7d200;
   background: -moz-linear-gradient(top, #f7d200 0, #ffffff 150px);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #f7d200), color-stop(150px, #ffffff));
@@ -3127,7 +3186,23 @@ div.menu_group.title {
 /*--------------------------------- MSGBOX -----------------------------------------------------------------*/
 
 #msgbox {
-  width: 80%;
+  overflow:           hidden;
+  border-radius-top:  3px;
+  opacity:            0;
+  height:             0;
+  width:              100%;
+  background:         white;
+  -webkit-transition: opacity .3s linear, height .4s ease-out;
+  -moz-transition:    opacity .3s linear, height .4s ease-out;
+  -o-transition:      opacity .3s linear, height .4s ease-out;
+  transition:         opacity .3s linear, height .4s ease-out;
+}
+
+body {
+  -webkit-transition: padding .4s ease-out;
+  -moz-transition:    padding .4s ease-out;
+  -o-transition:      padding .4s ease-out;
+  transition:         padding .4s ease-out;
 }
 
 #msgbox, .msgbox {
@@ -3137,7 +3212,7 @@ div.menu_group.title {
 }
 
 div.err_msg, div.warn_msg, div.info_msg, div.success_msg {
-  margin:                 10px 0;
+  margin:                 3px 0 3px;
   background-color:       #da4f49;
   background-image:       -moz-linear-gradient(top, #ee5f5b, #bd362f);
   background-image:       -ms-linear-gradient(top, #ee5f5b, #bd362f);
@@ -3162,7 +3237,6 @@ div.err_msg, div.warn_msg, div.info_msg, div.success_msg {
   font-size:              11px;
   outline:                rgb(255, 255, 255) none 0;
   -moz-box-shadow:        0 2px 3px 1px rgba(10, 10, 10, .5);
-  box-shadow:             0 2px 3px 1px rgba(10, 10, 10, .5);
   box-shadow:             0 2px 3px 1px rgba(10, 10, 10, .5);
 }
 
@@ -3318,8 +3392,12 @@ div.warn_msg {
   height: 25px;
 }
 
-.formbox select, .formbox button {
+.formbox select, .formbox button, .formbox .btn-group {
   margin: 8px;
+}
+
+.formbox .btn-group>.btn {
+  margin: 0;
 }
 
 .formbox input, .formbox textarea {
@@ -3336,6 +3414,10 @@ div.warn_msg {
 
 .grid .input-append input+.add-on, .formbox .input-append input+.add-on {
   margin-left: -1px;
+}
+
+.grid .input-append span.add-on, .grid .input-prepend span.add-on {
+  padding: 4px 0;
 }
 
 .formbox textarea.big {
@@ -3525,6 +3607,7 @@ table.noborder td {
 }
 
 .grid .input-prepend {
+  display:   -webkit-flex;
   min-width: 7em;
 }
 
@@ -3637,6 +3720,10 @@ td .btn-group {
   max-width: 30em;
 }
 
+.grid .alignright .input-prepend {
+  float: right;
+}
+
 /*--------------------------------- END TABLES -----------------------------------------------------------------*/
 
 /*--------------------------------- BUTTONS -----------------------------------------------------------------*/
@@ -3715,10 +3802,6 @@ button img {
 
 .editbutton {
   min-width: inherit;
-}
-
-.listsubmit {
-  display: none;
 }
 
 .navibar table tr {
@@ -3967,14 +4050,6 @@ body.lite {
   background-color: rgb(230, 154, 154) !important;
 }
 
-.lightblue {
-  background-color: #33CCFF !important;
-}
-
-.whitebg {
-  background-color: white;
-}
-
 .overduefg {
   color: #FF5452;
 }
@@ -3990,10 +4065,6 @@ body.lite {
 .redfg {
   color:       red;
   font-weight: bold;
-}
-
-.greenfg {
-  color: #0b0;
 }
 
 .redborder {

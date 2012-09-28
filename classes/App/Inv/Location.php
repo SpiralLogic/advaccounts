@@ -9,13 +9,15 @@
    **/
   namespace ADV\App\Inv {
     use ADV\Core\DB\DB;
-    use ADV\App\Validation;
 
     /**
 
      */
-    class Location extends \ADV\App\DB\Base
-    {
+    class Location extends \ADV\App\DB\Base {
+      const OUTWARD = 'OUTWARD';
+      const INWARD  = 'INWARD';
+      const BOTH    = 'BOTH';
+      const SPECIAL = 'SPECIAL';
       protected $_table = 'locations';
       protected $_classname = 'Location';
       protected $_id_column = 'id';
@@ -29,6 +31,7 @@
       public $email;
       public $contact;
       public $inactive = 0;
+      public $type = self::BOTH;
       /**
        * @return \ADV\Core\Traits\Status|bool
        */
@@ -59,18 +62,37 @@
         if (strlen($this->contact) > 30) {
           return $this->status(false, 'Contact must be not be longer than 30 characters!', 'contact');
         }
-
+        if (!in_array($this->type, (new \ReflectionClass($this))->getConstants())) {
+          return $this->status(false, 'Please choose valid type!', 'type');
+        }
         return true;
       }
       /**
-       * @param bool $inactive
+       * @param bool        $inactive
+       * @param bool|string $type
        *
+       * @internal param bool $special
        * @return array
        */
-      public static function getAll($inactive = false) {
+      public static function getAll($inactive = false, $type = self::BOTH) {
         $q = DB::_select()->from('locations');
-        if ($inactive) {
-          $q->andWhere('inactive=', 1);
+        if (!$inactive) {
+          $q->andWhere('inactive=', 0);
+        }
+        switch ($type) {
+          case self::SPECIAL:
+            $q->andWhere('type=', self::SPECIAL);
+            break;
+          case self::INWARD:
+            $q->andWhere('type=', self::BOTH);
+            $q->orWhere('type=', self::INWARD);
+            break;
+          case self::OUTWARD:
+            $q->andWhere('type=', self::BOTH);
+            $q->orWhere('type=', self::OUTWARD);
+            break;
+          default:
+            $q->andWhere('type!=', self::SPECIAL);
         }
 
         return $q->fetch()->all();
@@ -139,8 +161,7 @@
     /**
 
      */
-    class Inv_Location
-    {
+    class Inv_Location {
       /**
        * @static
        *

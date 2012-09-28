@@ -37,7 +37,7 @@
     /**
      * @var string
      */
-    public $exrate_dec = '.';
+    public $exrate_dec = 4;
     /** @var */
     public $percent_dec;
     protected $user;

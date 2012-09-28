@@ -11,8 +11,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Debtor_Branch extends \ADV\App\DB\Base
-  {
+  class Debtor_Branch extends \ADV\App\DB\Base {
     /**
      * @var string
      */
@@ -148,15 +147,6 @@
       $this->post_address = &$this->br_post_address;
     }
     /**
-     * @return array|null
-     */
-    public function delete() {
-      DB::_delete('branches')->where('branch_id=', $this->branch_id)->exec();
-      $this->init();
-
-      return $this->status(true, "Branch deleted.");
-    }
-    /**
      * @return string
      */
     public function getAddress() {
@@ -198,7 +188,7 @@
       $this->sales_discount_account   = $company_record['default_sales_discount_act'];
       $this->receivables_account      = $company_record['debtors_act'];
       $this->payment_discount_account = $company_record['default_prompt_payment_act'];
-      $this->salesman                 = (User::i()) ? User::i()->salesmanid : 1;
+      $this->salesman                 = User::i()->salesmanid ? : 1;
     }
     /**
      * @return array|null
@@ -329,4 +319,3 @@
       echo "</tr>";
     }
   }
-

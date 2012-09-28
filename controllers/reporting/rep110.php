@@ -104,11 +104,7 @@
       $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
       $linetype          = true;
       $doctype           = ST_CUSTDELIVERY;
-      if ($rep->currency != $myrow['curr_code']) {
-        include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
-      } else {
         include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
-      }
       if ($email == 1) {
         if ($myrow['email'] == '') {
           $myrow['email']      = $branch['email'];

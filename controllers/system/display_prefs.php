@@ -1,4 +1,8 @@
 <?php
+  use ADV\App\Forms;
+  use ADV\App\Users;
+  use ADV\App\User;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -29,7 +33,7 @@
         $_SESSION['language']->setLanguage($_POST['language']);
       }
       // refresh main menu
-      Files::flushDir(COMPANY_PATH . 'js_cache');
+      Files::flushDir(PATH_COMPANY . 'js_cache');
       if ($chg_theme && Config::_get('demo_mode')) {
         User::prefs()->theme = $_POST['theme'];
       }

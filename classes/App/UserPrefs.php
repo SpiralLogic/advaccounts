@@ -49,7 +49,7 @@
     /**
      * @var int
      */
-    public $tho_sep = 0;
+    public $tho_sep;
     /**
      * @var int
      */
@@ -91,6 +91,12 @@
       } else {
         $this->setFromArray($user);
         //     $_SESSION['language']->setLanguage($this->language);
+        $tho_seps       = Config::_get('separators_thousands');
+        $this->tho_sep  = $tho_seps[$this->tho_sep];
+        $dec_seps       = Config::_get('separators_decimal');
+        $this->dec_sep  = $dec_seps[$this->dec_sep];
+        $date_seps      = Config::_get('date.separators');
+        $this->date_sep = $date_seps[$this->date_sep];
       }
     }
     /**
@@ -111,25 +117,28 @@
      * @return mixed
      */
     public function tho_sep() {
-      $tho_seps = Config::_get('separators_thousands');
-      return $tho_seps [$this->tho_sep];
     }
     /**
      * @return mixed
      */
     public function dec_sep() {
-      $dec_seps = Config::_get('separators_decimal');
-      return $dec_seps [$this->dec_sep];
     }
     public function date_sep() {
-      $date_seps = Config::_get('date.separators');
-      return $date_seps[$this->dec_sep];
     }
     /**
      * @static
      */
-    public function  update($id, $prefs) {
+    public function  update($id, Array $prefs) {
       $this->setFromArray($prefs);
+      if (isset($prefs['tho_sep'])) {
+        $prefs['tho_sep'] = array_search($prefs['tho_sep'], Config::_get('separators_thousands'));
+      }
+      if (isset($prefs['dec_sep'])) {
+        $prefs['tho_sep'] = array_search($prefs['dec_sep'], Config::_get('separators_decimal'));
+      }
+      if (isset($prefs['date_sep'])) {
+        $prefs['date_sep'] = array_search($prefs['date_sep'], Config::_get('date.separators'));
+      }
       DB::_update('users')->values($prefs)->where('id=', $id)->exec();
       session_regenerate_id();
     }

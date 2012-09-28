@@ -14,7 +14,7 @@
   if (isset($_GET['xls'])) {
     $filename    = $_GET['filename'];
     $unique_name = $_GET['unique'];
-    $path        = COMPANY_PATH . 'pdf_files/';
+    $path        = PATH_COMPANY . 'pdf_files/';
     header("Content-type: application/vnd.ms-excel");
     header("Content-Disposition: attachment; filename=$filename");
     header("Expires: 0");
@@ -25,7 +25,7 @@
   } elseif (isset($_GET['xml'])) {
     $filename    = $_GET['filename'];
     $unique_name = $_GET['unique'];
-    $path        = COMPANY_PATH . 'pdf_files/';
+    $path        = PATH_COMPANY . 'pdf_files/';
     header("content-type: text/xml");
     header("Content-Disposition: attachment; filename=$filename");
     header("Expires: 0");

@@ -16,6 +16,8 @@
 
    */
   define('ICON_ADD', 1);
+  define('ICON_EDIT', 1);
+  define('ICON_MONEY', 1);
   /**
 
    */
@@ -62,15 +64,15 @@
   /**
 
    */
-  define('COMPANY_PATH', BASE_URL . 'company/');
+  define('PATH_COMPANY', ROOT_URL . 'company/');
   /**
 
    */
-  define('THEME_PATH', BASE_URL . 'themes/');
+  define('THEME_PATH', ROOT_URL . 'themes/');
   /**
 
    */
-  define("BACKUP_PATH", COMPANY_PATH . 'backup/');
+  define("BACKUP_PATH", PATH_COMPANY . 'backup/');
   // ACCESS LEVELS
   /**
 
@@ -1050,215 +1052,6 @@
   define('INACTIVE', 'Inactive');
   define('DELETE', 'Delete');
   define('EDIT', 'Edit');
-  /**
-   */
-  class Arr extends ADV\Core\Arr {
-  }
-
-  /**
-
-   */
-  class Auth extends ADV\Core\Auth {
-  }
-
-  /**
-
-   */
-  class Assets extends ADV\Core\Assets {
-  }
-
-  /**
-
-   */
-  class Cache extends ADV\Core\Cache {
-  }
-
-  /**
-
-   */
-  class Config extends ADV\Core\Config {
-  }
-
-  /**
-
-   */
-  class Result extends ADV\Core\DB\Query\Result {
-  }
-
-  /**
-
-   */
-  class Dialog extends ADV\Core\Dialog {
-  }
-
-  /**
-
-   */
-  class Event extends ADV\Core\Event {
-  }
-
-  /**
-
-   */
-  class Errors extends ADV\Core\Errors {
-  }
-
-  /**
-
-   */
-  class Files extends ADV\Core\Files {
-  }
-
-  /**
-
-   */
-  class HTML extends ADV\Core\HTML {
-  }
-
-  /**
-
-   */
-  class Hook extends ADV\Core\Hook {
-  }
-
-  /**
-
-   */
-  class Language extends ADV\Core\Language {
-  }
-
-  /**
-
-   */
-  class Menu extends ADV\Core\Menu {
-  }
-
-  /**
-
-   */
-  class Num extends ADV\Core\Num {
-  }
-
-  /**
-
-   */
-  class Page extends ADV\App\Page {
-  }
-
-  /**
-   */
-  class Session extends ADV\Core\Session {
-  }
-
-  /**
-
-   */
-  class Status extends ADV\Core\Status {
-  }
-
-  /**
-
-   */
-  class UploadHandler extends ADV\Core\UploadHandler {
-  }
-
-  /**
-
-   */
-  class DBException extends ADV\Core\DB\DBException {
-  }
-
-  /**
-
-   */
-  class DBSelectException extends ADV\Core\DB\DBException {
-  }
-
-  /**
-
-   */
-  class DBUpdateException extends ADV\Core\DB\DBException {
-  }
-
-  /**
-
-   */
-  class DBDeleteException extends ADV\Core\DB\DBException {
-  }
-
-  /**
-
-   */
-  class DBInsertException extends ADV\Core\DB\DBException {
-  }
-
-  /**
-
-   */
-  class View extends \ADV\Core\View implements \ArrayAccess {
-    /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Whether a offset exists
-     * @link http://php.net/manual/en/arrayaccess.offsetexists.php
-     *
-     * @param mixed $offset <p>
-     *                      An offset to check for.
-     * </p>
-     *
-     * @return boolean true on success or false on failure.
-     * </p>
-     * <p>
-     *       The return value will be casted to boolean if non-boolean was returned.
-     */
-    public function offsetExists($offset) {
-      // TODO: Implement offsetExists() method.
-    }
-    /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Offset to retrieve
-     * @link http://php.net/manual/en/arrayaccess.offsetget.php
-     *
-     * @param mixed $offset <p>
-     *                      The offset to retrieve.
-     * </p>
-     *
-     * @return mixed Can return all value types.
-     */
-    public function offsetGet($offset) {
-      // TODO: Implement offsetGet() method.
-    }
-    /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Offset to set
-     * @link http://php.net/manual/en/arrayaccess.offsetset.php
-     *
-     * @param mixed $offset <p>
-     *                      The offset to assign the value to.
-     * </p>
-     * @param mixed $value  <p>
-     *                      The value to set.
-     * </p>
-     *
-     * @return void
-     */
-    public function offsetSet($offset, $value) {
-      // TODO: Implement offsetSet() method.
-    }
-    /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Offset to unset
-     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
-     *
-     * @param mixed $offset <p>
-     *                      The offset to unset.
-     * </p>
-     *
-     * @return void
-     */
-    public function offsetUnset($offset) {
-      // TODO: Implement offsetUnset() method.
-    }
-  }
 
   function xhprof_enable() {
   }
@@ -1290,19 +1083,6 @@
   class XHProfRuns_Default {
     function save_run() {
     }
-  }
-
-  /**
-
-   */
-  interface JsonSerializable {
-    public function jsonSerialize();
-  }
-
-  /**
-
-   */
-  interface ArrayAccess {
   }
 
   /**

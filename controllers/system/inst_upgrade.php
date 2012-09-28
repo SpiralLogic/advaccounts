@@ -30,7 +30,11 @@
       foreach ($installers as $i => $inst) {
         $ret = upgrade_step($i, $conn);
         if (!$ret) {
-          Event::error(sprintf(_("Database upgrade to version %s failed for company '%s'."), $inst->version, $conn['name']) . '<br>' . _('You should restore company database from latest backup file'));
+          Event::error(
+            sprintf(_("Database upgrade to version %s failed for company '%s'."), $inst->version, $conn['name']) . '<br>' . _(
+              'You should restore company database from latest backup file'
+            )
+          );
         }
       }
       // 		db_close($conn); ?
@@ -132,7 +136,7 @@ You have to clean database manually to enable them, or try to perform forced upg
    * @return array
    */
   function get_installers() {
-    $patchdir = DOCROOT . "sql/";
+    $patchdir = ROOT_DOC . "sql/";
     $upgrades = [];
     $datadir  = @opendir($patchdir);
     if ($datadir) {
@@ -175,12 +179,14 @@ You have to clean database manually to enable them, or try to perform forced upg
         }
         $sql = $inst->sql;
         if ($sql != '') {
-          $ret &= Utils::import(DOCROOT . 'upgrade' . DS . 'sql' . DS . $sql, $conn, $force);
+          $ret &= Utils::import(ROOT_DOC . 'upgrade' . DS . 'sql' . DS . $sql, $conn, $force);
         }
         $ret &= $inst->install($force);
       } else {
         if ($state !== true) {
-          Event::error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
+          Event::error(
+            _("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade.")
+          );
           $ret = false;
         }
       }

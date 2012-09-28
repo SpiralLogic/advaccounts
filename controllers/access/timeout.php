@@ -11,7 +11,7 @@
      User authentication page popped up after login timeout during ajax call.
    */
 
-  require(DOCROOT . '/access/login.php');
+  require(ROOT_DOC . '/access/login.php');
   if (Input::_post('SubmitUser') && User::i()->logged_in()) {
     // After successfull login repeat last ajax call.
     // Login form consists all post variables from last ajax call.

@@ -1,4 +1,6 @@
 <?php
+  use ADV\App\Debtor\Debtor;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -7,7 +9,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  if (!AJAX_REFERRER) {
+  if (!REQUEST_AJAX) {
     header("Location: /");
     exit();
   }

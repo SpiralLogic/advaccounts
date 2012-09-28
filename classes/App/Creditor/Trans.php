@@ -186,7 +186,7 @@
       $tax_group = Tax_Groups::get_items_as_array($tax_group_id);
       foreach ($this->grn_items as $line) {
         $items[]  = $line->item_code;
-        $prices[] = round(($line->this_quantity_inv * $line->taxfree_charge_price($tax_group_id, $tax_group)), User::price_dec(), PHP_ROUND_HALF_EVEN);
+        $prices[] = Num::_round(($line->this_quantity_inv * $line->taxfree_charge_price($tax_group_id, $tax_group)), User::price_dec());
       }
       if ($tax_group_id == null) {
         $tax_group_id = $this->tax_group_id;
@@ -256,7 +256,8 @@
       if ($rate == 0) {
         $rate = Bank_Currency::exchange_rate_from_home($curr, $date_);
       }
-      $sql = "INSERT INTO creditor_trans (trans_no, type, creditor_id, tran_date, due_date,
+      $sql
+        = "INSERT INTO creditor_trans (trans_no, type, creditor_id, tran_date, due_date,
 				reference, supplier_reference, ov_amount, ov_gst, rate, ov_discount) ";
       $sql .= "VALUES (" . DB::_escape($trans_no) . ", " . DB::_escape($type) . ", " . DB::_escape($creditor_id) . ", '$date', '$due_date',
 				" . DB::_escape($reference) . ", " . DB::_escape($supplier_reference) . ", " . DB::_escape($amount) . ", " . DB::_escape($amount_tax) . ", " . DB::_escape(
@@ -278,11 +279,13 @@
      * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($trans_no, $trans_type = -1) {
-      $sql = "SELECT creditor_trans.*, (creditor_trans.ov_amount+creditor_trans.ov_gst+creditor_trans.ov_discount) AS Total,
+      $sql
+        = "SELECT creditor_trans.*, (creditor_trans.ov_amount+creditor_trans.ov_gst+creditor_trans.ov_discount) AS Total,
 				suppliers.name AS supplier_name, suppliers.curr_code AS SupplierCurrCode ";
       if ($trans_type == ST_SUPPAYMENT) {
         // it's a payment so also get the bank account
-        $sql .= ", bank_accounts.bank_name, bank_accounts.bank_account_name, bank_accounts.bank_curr_code,
+        $sql
+          .= ", bank_accounts.bank_name, bank_accounts.bank_account_name, bank_accounts.bank_curr_code,
 					bank_accounts.account_type AS BankTransType, bank_trans.amount AS BankAmount,
 					bank_trans.ref ";
       }
@@ -339,7 +342,8 @@
      * @param $type_no
      */
     public static function void($type, $type_no) {
-      $sql = "UPDATE creditor_trans SET ov_amount=0, ov_discount=0, ov_gst=0,
+      $sql
+        = "UPDATE creditor_trans SET ov_amount=0, ov_discount=0, ov_gst=0,
 				alloc=0 WHERE type=" . DB::_escape($type) . " AND trans_no=" . DB::_escape($type_no);
       DB::_query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
     }
@@ -414,7 +418,8 @@
      * @return int
      */
     public static function get_conversion_factor($creditor_id, $stock_id) {
-      $sql    = "SELECT conversion_factor FROM purch_data
+      $sql
+              = "SELECT conversion_factor FROM purch_data
 					WHERE creditor_id = " . DB::_escape($creditor_id) . "
 					AND stock_id = " . DB::_escape($stock_id);
       $result = DB::_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");

@@ -15,9 +15,8 @@
   /**
 
    */
-  class Assets
-  {
-    protected $baseDir = WEBROOT;
+  class Assets {
+    protected $baseDir = ROOT_WEB;
     protected $charSet = 'UTF-8';
     protected $debug = false;
     protected $gzip = true;

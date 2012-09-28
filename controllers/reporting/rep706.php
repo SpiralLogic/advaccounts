@@ -9,7 +9,6 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   /**
    * @param $type
    * @param $typename
@@ -93,7 +92,6 @@
     }
     $totals_arr[0] = $code_open_balance + $open_balance_total;
     $totals_arr[1] = $code_period_balance + $period_balance_total;
-
     return $totals_arr;
   }
 
@@ -125,10 +123,8 @@
       }
     }
     if ($destination) {
-
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
-
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     if ($graphics) {
@@ -276,9 +272,9 @@
       $pg->type           = $graphics;
       $pg->skin           = Config::_get('graphs_skin');
       $pg->built_in       = false;
-      $pg->fontfile       = BASE_URL . "reporting/fonts/Vera.ttf";
-      $pg->latin_notation = (User::dec_sep() != ".");
-      $filename           = COMPANY_PATH . "pdf_files/test.png";
+      $pg->fontfile       = ROOT_URL . "reporting/fonts/Vera.ttf";
+      $pg->latin_notation = (User::prefs()->dec_sep != ".");
+      $filename           = PATH_COMPANY . "pdf_files/test.png";
       $pg->display($filename, true);
       $w = $pg->width / 1.5;
       $h = $pg->height / 1.5;

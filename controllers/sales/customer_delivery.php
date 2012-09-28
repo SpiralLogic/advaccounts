@@ -44,7 +44,7 @@
     Display::note(Reporting::print_doc_link($dispatch_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink button", "", 1, 1), 1, 0);
     Display::note(GL_UI::view(13, $dispatch_no, _("View the GL Journal Entries"), 0, 'button button-large'), 1, 0);
     Display::submenu_option(_("Invoice This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$dispatch_no");
-    Display::submenu_option(_("Select Another Order For Dispatch"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
+    Display::submenu_option(_("Select Another Order For Dispatch"), "/sales/search/orders?OutstandingOnly=1");
     Page::footer_exit();
   } elseif (isset($_GET[UPDATED_ID])) {
     $delivery_no = $_GET[UPDATED_ID];
@@ -55,7 +55,7 @@
     Display::note(Reporting::print_doc_link($delivery_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink button", "", 0, 1));
     Display::note(Reporting::print_doc_link($delivery_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink button", "", 1, 1), 1);
     Display::link_params("/sales/customer_invoice.php", _("Confirm Delivery and Invoice"), "DeliveryNumber=$delivery_no");
-    Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select A Different Delivery"), "OutstandingOnly=1");
+    Display::link_params("/sales/search/deliveries", _("Select A Different Delivery"), "OutstandingOnly=1");
     Page::footer_exit();
   }
   $order = Orders::session_get() ? : null;
@@ -63,7 +63,7 @@
     $order = new Sales_Order(ST_SALESORDER, $_GET['OrderNumber'], true);
     /*read in all the selected order into the Items order */
     if ($order->count_items() == 0) {
-      Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select a different sales order to delivery"), "OutstandingOnly=1");
+      Display::link_params("/sales/search/orders", _("Select a different sales order to delivery"), "OutstandingOnly=1");
       die ("<br><span class='bold'>" . _("This order has no items. There is nothing to delivery.") . "</span>");
     }
     $order->trans_type    = ST_CUSTDELIVERY;
@@ -77,14 +77,14 @@
     $order = new Sales_Order(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
     Sales_Delivery::copyToPost($order);
     if ($order->count_items() == 0) {
-      Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select a different delivery"), "OutstandingOnly=1");
+      Display::link_params("/sales/search/orders", _("Select a different delivery"), "OutstandingOnly=1");
       echo "<br><div class='center'><span class='bold'>" . _("This delivery has all items invoiced. There is nothing to modify.") . "</div></span>";
       Page::footer_exit();
     }
   } elseif (!Orders::session_exists($order)) {
     /* This page can only be called with an order number for invoicing*/
     Event::error(_("This page can only be opened if an order or delivery note has been selected. Please select it first."));
-    Display::link_params("/sales/inquiry/sales_orders_view.php", _("Select a Sales Order to Delivery"), "OutstandingOnly=1");
+    Display::link_params("/sales/search/orders", _("Select a Sales Order to Delivery"), "OutstandingOnly=1");
     Page::end();
     exit;
   } else {

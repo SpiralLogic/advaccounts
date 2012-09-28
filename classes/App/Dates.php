@@ -10,34 +10,22 @@
    **/
   namespace ADV\App;
 
-  use ADV\Core\Config;
   use DB_Company;
-  use ADV\Core\Session;
 
   /**
 
    */
   class Dates extends \ADV\Core\Dates {
-    use \ADV\Core\Traits\StaticAccess2;
-
-    protected $User = null;
-    protected $Config = null;
-    protected $Session = null;
+    public $sticky_doc_date = false;
+    public $use_fiscal_year = false;
     protected $Company = null;
+    public $docDate;
     /**
-     * @param \Config                   $config
-     * @param \ADV\App\User|User        $User
-     * @param \Session                  $Session $Session
-     * @param \DB_Company               $Company
+     * @param \DB_Company                        $company
+
      */
-    public function __construct(\Config $config = null, User $User = null, \Session $Session = null, \DB_Company $Company = null) {
-      $config               = $config ? : Config::i();
-      $this->User           = $User ? : User::i();
-      $this->Session        = $Session ? : Session::i();
-      $this->Company        = $Company ? : DB_Company::i();
-      $this->userFiscalYear = $config->_get('use_fiscalyear');
-      $this->sep            = $this->separators[is_int($this->User->_date_sep()) ? $this->User->_date_sep() : $config->get('date.ui_separator')];
-      $this->format         = $this->User->_date_format();
+    public function __construct(DB_Company $company) {
+      $this->Company = $company;
     }
     /**
      * Retrieve and optionally set default date for new document.
@@ -48,12 +36,12 @@
      */
     public function newDocDate($date = null) {
       if (!$date) {
-        $this->Session->setGlobal('date', $date);
+        $this->docDate = $date;
       } else {
-        $date = $this->Session->getGlobal('date');
+        $date = $this->docDate;
       }
-      if (!$date || !$this->User->_sticky_doc_date()) {
-        $date = $this->Session->setGlobal('date', $this->_today());
+      if (!$date || !(bool) $this->sticky_doc_date) {
+        $date = $this->docDate = $this->today();
       }
       return $date;
     }
@@ -66,10 +54,10 @@
      * @return bool
      */
     public function isDateInFiscalYear($date, $convert = false) {
-      if (!$this->userFiscalYear) {
+      if (!(bool) $this->use_fiscal_year) {
         return true;
       }
-      $myrow = $this->Company->_get_current_fiscalyear();
+      $myrow = $this->Company->get_current_fiscalyear();
       if ($myrow['closed'] == 1) {
         return false;
       }
@@ -78,8 +66,8 @@
       } else {
         $date2 = $date;
       }
-      $begin = $this->_sqlToDate($myrow['begin']);
-      $end   = $this->_sqlToDate($myrow['end']);
+      $begin = $this->sqlToDate($myrow['begin']);
+      $end   = $this->sqlToDate($myrow['end']);
       return ($this->isGreaterThan($date2, $begin) || $this->isGreaterThan($end, $date2));
     }
     /**
@@ -87,7 +75,7 @@
      * @return string Date in Users Format
      */
     public function beginFiscalYear() {
-      $myrow = \DB_Company::get_current_fiscalyear();
+      $myrow = $this->Company->get_current_fiscalyear();
       return $this->sqlToDate($myrow['begin']);
     }
     /**
@@ -95,7 +83,7 @@
      * @return string Date in Users Format
      */
     public function endFiscalYear() {
-      $myrow = \DB_Company::get_current_fiscalyear();
+      $myrow = $this->Company->get_current_fiscalyear();
       return $this->sqlToDate($myrow['end']);
     }
     /**

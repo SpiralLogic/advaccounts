@@ -9,7 +9,6 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   print_aged_supplier_analysis();
   /**
    * @param $creditor_id
@@ -17,8 +16,7 @@
    *
    * @return null|PDOStatement
    */
-  function get_invoices($creditor_id, $to)
-  {
+  function get_invoices($creditor_id, $to) {
     $todate    = Dates::_dateToSql($to);
     $past_due1 = DB_Company::get_pref('past_due_days');
     $past_due2 = 2 * $past_due1;
@@ -44,13 +42,10 @@
             AND creditor_trans.tran_date <= '$todate'
             AND ABS(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount) > 0.004
             ORDER BY creditor_trans.tran_date";
-
     return DB::_query($sql, "The supplier details could not be retrieved");
   }
 
-  function print_aged_supplier_analysis()
-  {
-
+  function print_aged_supplier_analysis() {
     $to          = $_POST['PARAM_0'];
     $fromsupp    = $_POST['PARAM_1'];
     $currency    = $_POST['PARAM_2'];
@@ -60,10 +55,8 @@
     $comments    = $_POST['PARAM_6'];
     $destination = $_POST['PARAM_7'];
     if ($destination) {
-
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
-
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     if ($graphics) {
@@ -98,27 +91,49 @@
     $txt_past_due2 = _('Over') . " " . $past_due2 . " " . _('Days');
     $cols          = array(0, 100, 130, 190, 250, 320, 385, 450, 515);
     $headers       = array(
-      _('Supplier'), '', '', _('Current'), $txt_now_due, $txt_past_due1, $txt_past_due2, _('Total Balance')
+      _('Supplier'),
+      '',
+      '',
+      _('Current'),
+      $txt_now_due,
+      $txt_past_due1,
+      $txt_past_due2,
+      _('Total Balance')
     );
     $aligns        = array('left', 'left', 'left', 'right', 'right', 'right', 'right', 'right');
     $params        = array(
-      0    => $comments, 1 => array(
-        'text' => _('End Date'), 'from' => $to, 'to'   => ''
-      ), 2 => array(
-        'text' => _('Supplier'), 'from' => $from, 'to'   => ''
-      ), 3 => array(
-        'text' => _('Currency'), 'from' => $currency, 'to'   => ''
-      ), 4 => array(
-        'text' => _('Type'), 'from' => $summary, 'to'   => ''
-      ), 5 => array(
-        'text' => _('Suppress Zeros'), 'from' => $nozeros, 'to'   => ''
+      0    => $comments,
+      1    => array(
+        'text' => _('End Date'),
+        'from' => $to,
+        'to'   => ''
+      ),
+      2    => array(
+        'text' => _('Supplier'),
+        'from' => $from,
+        'to'   => ''
+      ),
+      3    => array(
+        'text' => _('Currency'),
+        'from' => $currency,
+        'to'   => ''
+      ),
+      4    => array(
+        'text' => _('Type'),
+        'from' => $summary,
+        'to'   => ''
+      ),
+      5    => array(
+        'text' => _('Suppress Zeros'),
+        'from' => $nozeros,
+        'to'   => ''
       )
     );
     if ($convert) {
       $headers[2] = _('currency');
     }
     /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_('Aged Supplier Analysis'), "AgedSupplierAnalysis",SA_SUPPLIERANALYTIC, User::page_size());
+    $rep = new $report_type(_('Aged Supplier Analysis'), "AgedSupplierAnalysis", SA_SUPPLIERANALYTIC, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
@@ -226,9 +241,9 @@
       $pg->type           = $graphics;
       $pg->skin           = Config::_get('graphs_skin');
       $pg->built_in       = false;
-      $pg->fontfile       = BASE_URL . "reporting/fonts/Vera.ttf";
-      $pg->latin_notation = (User::dec_sep() != ".");
-      $filename           = COMPANY_PATH . "pdf_files/test.png";
+      $pg->fontfile       = ROOT_URL . "reporting/fonts/Vera.ttf";
+      $pg->latin_notation = (User::prefs()->dec_sep != ".");
+      $filename           = PATH_COMPANY . "pdf_files/test.png";
       $pg->display($filename, true);
       $w = $pg->width / 1.5;
       $h = $pg->height / 1.5;

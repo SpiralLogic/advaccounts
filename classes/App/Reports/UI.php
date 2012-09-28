@@ -1,4 +1,7 @@
 <?php
+  use ADV\Core\DB\DB;
+  use ADV\App\Forms;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -8,7 +11,6 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class Reports_UI {
-
     /**
      * @static
      *
@@ -19,21 +21,39 @@
      * @param bool $submit_on_change
      */
     public static function print_profiles_row($label, $name, $selected_id = null, $spec_opt = false, $submit_on_change = true) {
+      echo "<tr>";
+      if ($label != null) {
+        echo "<td class='label'>$label</td>\n";
+      }
+      echo "<td>";
+      echo Reports_UI::select($name, $selected_id, $spec_opt, $submit_on_change);
+      echo "</td></tr>\n";
+    }
+    /**
+     * @param $name
+     * @param $selected_id
+     * @param $spec_opt
+     * @param $submit_on_change
+     *
+     * @return mixed
+     */
+    public static function select($name, $selected_id = null, $spec_opt = false, $submit_on_change = false) {
       $sql      = "SELECT profile FROM print_profiles GROUP BY profile";
       $result   = DB::_query($sql, 'cannot get all profile names');
       $profiles = [];
       while ($myrow = DB::_fetch($result)) {
         $profiles[$myrow['profile']] = $myrow['profile'];
       }
-      echo "<tr>";
-      if ($label != null) {
-        echo "<td class='label'>$label</td>\n";
-      }
-      echo "<td>";
-      echo Forms::arraySelect($name, $selected_id, $profiles, array(
-        'select_submit' => $submit_on_change, 'spec_option' => $spec_opt, 'spec_id' => ''
-      ));
-      echo "</td></tr>\n";
+      return Forms::arraySelect(
+        $name,
+        $selected_id,
+        $profiles,
+        array(
+             'select_submit' => $submit_on_change,
+             'spec_option'   => $spec_opt,
+             'spec_id'       => ''
+        )
+      );
     }
     /**
      * @static
@@ -55,9 +75,16 @@
           $printers[$myrow['id']] = $myrow['name'] . '&nbsp;-&nbsp;' . $myrow['description'];
         }
       }
-      return Forms::arraySelect($name, $selected_id, $printers, array(
-        'select_submit' => $submit_on_change, 'spec_option' => $spec_opt, 'spec_id' => ''
-      ));
+      return Forms::arraySelect(
+        $name,
+        $selected_id,
+        $printers,
+        array(
+             'select_submit' => $submit_on_change,
+             'spec_option'   => $spec_opt,
+             'spec_id'       => ''
+        )
+      );
     }
     /**
      * @static

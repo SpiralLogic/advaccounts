@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
 
-  if (AJAX_REFERRER && isset($_POST['user_id'])) {
+  if (REQUEST_AJAX && isset($_POST['user_id'])) {
     Messages::set($_POST['user_id'], $_POST['subject'], $_POST['message']);
     Event::success("Message sent!");
     JS::_renderJSON([]);

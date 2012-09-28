@@ -20,7 +20,6 @@
   use ADV\Core\Dialog;
   use DB_Company;
   use ADV\Core\Num;
-  use Bank_Currency;
   use ADV\Core\JS;
   use ADV\App\Contact\Contact;
 
@@ -35,19 +34,25 @@
      *
      * @return array|string
      */
+
     public static function search($terms) {
-      $sql = "SELECT creditor_id as id, supp_ref as label, supp_ref as value FROM suppliers WHERE supp_ref LIKE '%" . $terms . "%' ";
+      $data  = [];
+      $terms = preg_replace("/[^a-zA-Z 0-9]+/", " ", $terms);
+      $sql   = static::$staticDB->_select(
+        'creditor_id as id',
+        'name as label',
+        'name as value',
+        "IF(name LIKE " . static::$staticDB->_quote(trim($terms) . '%') . ",0,5) as weight"
+      )->from(
+        'suppliers'
+      )->where('name LIKE ', trim($terms) . "%")->orWhere('name LIKE ', trim($terms))->orWhere('name LIKE', '%' . str_replace(' ', '%', trim($terms)) . "%");
       if (is_numeric($terms)) {
-        $sql .= ' OR creditor_id LIKE  ' . static::$staticDB->_quote($terms . '%');
+        $sql->orWhere('creditor_id LIKE', "$terms%");
       }
-      $sql .= " LIMIT 20";
-      $result = static::$staticDB->_query($sql, 'Couldn\'t Get Supplier');
-      $data   = '';
-      while ($row = static::$staticDB->_fetchAssoc($result)) {
-        foreach ($row as &$value) {
-          $value = htmlspecialchars_decode($value);
-        }
-        $data[] = $row;
+      $sql->orderby('weight,name')->limit(20);
+      $results = static::$staticDB->_fetch();
+      foreach ($results as $result) {
+        $data[] = @array_map('htmlspecialchars_decode', $result);
       }
       return $data;
     }
@@ -126,6 +131,7 @@
     public $payable_account;
     /** @var */
     public $payment_discount_account;
+    public $type=  CT_SUPPLIER;
     /**
      * @var string
      */
@@ -153,7 +159,7 @@
     protected $_id_column = 'creditor_id';
     protected $_classname = 'Supplier';
     /** @var DB */
-    public static $staticDB;
+    protected static $staticDB;
     /**
      * @param int|null $id
      */
@@ -264,7 +270,7 @@
      * @return bool|\Status
      */
     protected function init() {
-      $this->defaults();
+      parent::init();
       $this->setDefaults();
       $this->id = (int) $this->id;
     }
@@ -300,9 +306,10 @@
         )
       );
       $customerBox->show();
-      $js = <<<JS
+      $js
+        = <<<JS
                             var val = $("#creditor_id").val();
-                            $("#supplierBox").html("<iframe src='/contacts/suppliers.php?frame=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
+                            $("#supplierBox").html("<iframe src='/contacts/manage/suppliers?frame=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
       JS::_addLiveEvent('#creditor_id_label', 'click', $js);
     }
@@ -339,9 +346,10 @@ JS;
       $past_due1 = DB_Company::get_pref('past_due_days') ? : 30;
       $past_due2 = 2 * $past_due1;
       // removed - creditor_trans.alloc from all summations
-      $value  = "(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)";
-      $due    = "IF (creditor_trans.type=" . ST_SUPPINVOICE . " OR creditor_trans.type=" . ST_SUPPCREDIT . ",creditor_trans.due_date,creditor_trans.tran_date)";
-      $sql    = "SELECT suppliers.name, suppliers.curr_code, payment_terms.terms,
+      $value = "(creditor_trans.ov_amount + creditor_trans.ov_gst + creditor_trans.ov_discount)";
+      $due   = "IF (creditor_trans.type=" . ST_SUPPINVOICE . " OR creditor_trans.type=" . ST_SUPPCREDIT . ",creditor_trans.due_date,creditor_trans.tran_date)";
+      $sql
+              = "SELECT suppliers.name, suppliers.curr_code, payment_terms.terms,
         Sum($value) AS Balance,
         Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0)) AS Due,
         Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past_due1,$value,0)) AS Overdue1,
@@ -363,7 +371,8 @@ JS;
       if (static::$staticDB->_numRows($result) == 0) {
         /*Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
         $nil_balance = true;
-        $sql         = "SELECT suppliers.name, suppliers.curr_code, suppliers.creditor_id, payment_terms.terms FROM suppliers,
+        $sql
+                     = "SELECT suppliers.name, suppliers.curr_code, suppliers.creditor_id, payment_terms.terms FROM suppliers,
                  payment_terms WHERE
                  suppliers.payment_terms = payment_terms.terms_indicator
                  AND suppliers.creditor_id = " . static::$staticDB->_escape($creditor_id);
@@ -393,7 +402,8 @@ JS;
       $date_from = Dates::_dateToSql($date_from);
       $date_to   = Dates::_dateToSql($date_to);
       // Sherifoz 22.06.03 Also get the description
-      $sql     = "SELECT
+      $sql
+               = "SELECT
 
 
      SUM((trans.ov_amount + trans.ov_gst + trans.ov_discount)) AS Total
@@ -486,8 +496,9 @@ JS;
         'creditor',
         array(
              'cells'            => true, //
-             'url'              => '/contacts/suppliers.php', ///
+             'url'              => 'Creditor', ///
              'label_cell_params'=> ['rowspan'=> $o['rowspan'], 'class'=> 'nowrap label ' . $o['cell_class']], //
+             'idField'          => 'creditor_id',
              'label'            => $o['label'], //
              'name'             => 'creditor', //
              'input_cell_params'=> $o['cell_params'], //

@@ -8,16 +8,16 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Apps;
+
   use ADV\App\Application\Application;
 
   /**
 
    */
-  class Items extends Application
-  {
+  class Items extends Application {
     public $name = "Items";
     public $help_context = "&Items";
     public function buildMenu() {
-      $this->direct = '/items/items';
+      $this->direct = '/items/manage/items';
     }
   }

@@ -39,9 +39,10 @@
     protected $validators = [];
     protected $uniqueid;
     protected $current;
-    protected $options = [
-      self::NO_VALUES=> false,
-    ];
+    protected $options
+      = [
+        self::NO_VALUES=> false,
+      ];
     protected $currentgroup;
     public $useDefaults = false;
     /**
@@ -135,11 +136,12 @@
      *
      * @internal param null $value
      * @internal param bool $echo
-     * @return string
+     * @return Field
      */
     public function hidden($name) {
       $field         = $this->addField('input', $name);
       $field['type'] = 'hidden';
+      return $field;
     }
     /**
      * @param       $name
@@ -298,7 +300,7 @@
       $selected_id = $multi ? (array) $selected_id : $selected_id;
       $field       = $this->addField('select', $name);
       $field->val($selected_id);
-      Ajax::_addUpdate($name, $name, $selected_id);
+      $this->Ajax->addUpdate($name, $name, $selected_id);
       // code is generalized for multiple selection support
       if ($this->Input->post("_{$name}_update")) {
         $async ? $this->Ajax->activate($name) : $this->Ajax->activate('_page_body');
@@ -432,8 +434,9 @@
      * @return array
      */
     public function jsonSerialize() {
-      $return = [];
-      $use    = ($this->useDefaults) ? 'default' : 'value';
+      $return    = [];
+      $use       = ($this->useDefaults) ? 'default' : 'value';
+      $autofocus = false;
       foreach ($this->fields as $id=> $field) {
         if ($field instanceof Button) {
           continue;
@@ -441,7 +444,7 @@
         $value = ['value'=> $field->$use];
         if ($field->hide === true) {
           $value['hidden'] = true;
-        } elseif ($field['autofocus'] === true) {
+        } elseif (!$autofocus && $field['autofocus'] === true) {
           $value['focus'] = true;
         }
         $return[$id] = $value;

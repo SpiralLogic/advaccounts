@@ -108,10 +108,8 @@
       }
     }
     if ($new) {
-      create_comp_dirs(COMPANY_PATH . "$id", $comp_subdirs = Config::_get('company_subdirs'));
+      create_comp_dirs(PATH_COMPANY . "$id", $comp_subdirs = Config::_get('company_subdirs'));
     }
-    $exts = DB_Company::get_company_extensions();
-    advaccounting::write_extensions($exts, $id);
     Event::success($new ? _('New company has been created.') : _('Company has been updated.'));
     return true;
   }
@@ -121,7 +119,7 @@
     // First make sure all company directories from the one under removal are writable.
     // Without this after operation we end up with changed per-company owners!
     for ($i = $id; $i < count(Config::_getAll('db')); $i++) {
-      if (!is_dir(COMPANY_PATH . DS . $i) || !is_writable(COMPANY_PATH . DS . $i)) {
+      if (!is_dir(PATH_COMPANY . DS . $i) || !is_writable(PATH_COMPANY . DS . $i)) {
         Event::error(_('Broken company subdirectories system. You have to remove this company manually.'));
         return;
       }
@@ -130,15 +128,15 @@
     // rename directory to temporary name to ensure all
     // other subdirectories will have right owners even after
     // unsuccessfull removal.
-    $cdir    = COMPANY_PATH . DS . $id;
-    $tmpname = COMPANY_PATH . 'old_' . $id;
+    $cdir    = PATH_COMPANY . DS . $id;
+    $tmpname = PATH_COMPANY . 'old_' . $id;
     if (!@rename($cdir, $tmpname)) {
       Event::error(_('Cannot rename subdirectory to temporary name.'));
       return;
     }
     // 'shift' company directories names
     for ($i = $id + 1; $i < count(Config::_getAll('db')); $i++) {
-      if (!rename(COMPANY_PATH . DS . $i, COMPANY_PATH . DS . ($i - 1))) {
+      if (!rename(PATH_COMPANY . DS . $i, PATH_COMPANY . DS . ($i - 1))) {
         Event::error(_("Cannot rename company subdirectory"));
         return;
       }

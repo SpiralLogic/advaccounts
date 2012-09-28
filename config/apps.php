@@ -9,15 +9,15 @@
    **/
   return array(
     'active'  => array(
-      'Sales'        => ['enabled'=> true], //
-      'Debtors'      => ['name'=> 'Customers', 'enabled'=> true, 'direct'=> '/contacts/customers'], //
-      'Purchases'    => ['enabled'=> true], //
-      'Creditors'    => ['name'=> 'Suppliers', 'enabled'=> true, 'direct'=> '/contacts/suppliers'], //
-      'Inventory'    => ['enabled'=> true], //
-      'Manufacturing'=> ['enabled'=> true], //
-      'GL'           => ['name'=> 'Banking', 'enabled'=> true], //
-      'Advanced'     => ['enabled'=> true], //
-      'System'       => ['enabled'=> true]
+      'Sales'             => ['enabled'=> true], //
+      'Customers'         => ['enabled'=> true, 'route'=> '/contacts/manage/customers'], //
+      'Purchases'         => ['enabled'=> true], //
+      'Suppliers'         => ['enabled'=> true, 'route'=> '/contacts/manage/suppliers'], //
+      'Inventory'         => ['enabled'=> true], //
+      'Manufacturing'     => ['enabled'=> true], //
+      'Banking'           => ['enabled'=> true], //
+      'Advanced'          => ['enabled'=> true], //
+      'System'            => ['enabled'=> true]
     ), //
     'default' => 'Sales'
   );

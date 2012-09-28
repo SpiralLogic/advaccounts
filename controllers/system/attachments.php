@@ -26,7 +26,7 @@
         } else {
           header("Content-Disposition: inline");
         }
-        echo file_get_contents(COMPANY_PATH . "attachments/" . $row['unique_name']);
+        echo file_get_contents(PATH_COMPANY . "attachments/" . $row['unique_name']);
         exit();
       }
     }
@@ -46,7 +46,7 @@
         header("Content-type: " . $type);
         header('Content-Length: ' . $row['filesize']);
         header('Content-Disposition: attachment; filename=' . $row['filename']);
-        echo file_get_contents(COMPANY_PATH . "attachments/" . $row['unique_name']);
+        echo file_get_contents(PATH_COMPANY . "attachments/" . $row['unique_name']);
         exit();
       }
     }
@@ -65,7 +65,7 @@
     if (isset($_FILES['filename']) && $_FILES['filename']['size'] > 0) {
       //$content = base64_encode(file_get_contents($_FILES['filename']['tmp_name']));
       $tmpname = $_FILES['filename']['tmp_name'];
-      $dir     = COMPANY_PATH . "attachments";
+      $dir     = PATH_COMPANY . "attachments";
       if (!file_exists($dir)) {
         mkdir($dir, 0777);
         $index_file = "<?php\nheader(\"Location: ../index.php\");\n?>";
@@ -88,14 +88,18 @@
     }
     $date = Dates::_today(true);
     if ($Mode == ADD_ITEM) {
-      $sql = "INSERT INTO attachments (type_no, trans_no, description, filename, unique_name,
-			filesize, filetype, tran_date) VALUES (" . DB::_escape($_POST['filterType']) . "," . DB::_escape($_POST['trans_no']) . "," . DB::_escape($_POST['description']) . ", " . DB::_escape($filename) . ", " . DB::_escape($unique_name) . ", " . DB::_escape($filesize) . ", " . DB::_escape(
+      $sql
+        = "INSERT INTO attachments (type_no, trans_no, description, filename, unique_name,
+			filesize, filetype, tran_date) VALUES (" . DB::_escape($_POST['filterType']) . "," . DB::_escape($_POST['trans_no']) . "," . DB::_escape(
+        $_POST['description']
+      ) . ", " . DB::_escape($filename) . ", " . DB::_escape($unique_name) . ", " . DB::_escape($filesize) . ", " . DB::_escape(
         $filetype
       ) . ", '$date')";
       DB::_query($sql, "Attachment could not be inserted");
       Event::success(_("Attachment has been inserted."));
     } else {
-      $sql = "UPDATE attachments SET
+      $sql
+        = "UPDATE attachments SET
 			type_no=" . DB::_escape($_POST['filterType']) . ",
 			trans_no=" . DB::_escape($_POST['trans_no']) . ",
 			description=" . DB::_escape($_POST['description']) . ", ";
@@ -113,7 +117,7 @@
   }
   if ($Mode == MODE_DELETE) {
     $row = get_attachment($selected_id);
-    $dir = COMPANY_PATH . "attachments";
+    $dir = PATH_COMPANY . "attachments";
     if (file_exists($dir . "/" . $row['unique_name'])) {
       unlink($dir . "/" . $row['unique_name']);
     }

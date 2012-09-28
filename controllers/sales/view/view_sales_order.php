@@ -63,7 +63,7 @@
   echo '<tr>';
   Cell::labelled(_("Order Currency"), $_SESSION['View']->customer_currency, "class='label'");
   Cell::labelled(_("Ordered On"), $_SESSION['View']->document_date, "class='label'");
-  Cell::labelled(_("E-mail"), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_SESSION['View']->email . "</a>", "class='label'", "colspan=3");
+  Cell::labelled(_("Email"), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_SESSION['View']->email . "</a>", "class='label'", "colspan=3");
   echo '</tr>';
   Table::label(_("Comments"), $_SESSION['View']->Comments, "class='label'", "colspan=5");
   Table::end();
@@ -222,8 +222,8 @@
     return;
   }
   if (Input::_get('trans_type') == ST_SALESORDER) {
-    Display::submenu_option(_("Clone This Order"), "/sales/sales_order_entry.php?CloneOrder={$_GET['trans_no']}' target='_top' ");
-    Display::submenu_option(_('Edit Order'), "/sales/sales_order_entry.php?" . Orders::UPDATE . "=" . $_GET['trans_no'] . "&type=" . ST_SALESORDER . "' target='_top' ");
+    Display::submenu_option(_("Clone This Order"), "/sales/order?CloneOrder={$_GET['trans_no']}' target='_top' ");
+    Display::submenu_option(_('Edit Order'), "/sales/order?" . Orders::UPDATE . "=" . $_GET['trans_no'] . "&type=" . ST_SALESORDER . "' target='_top' ");
     Display::submenu_print(_("&Print Order"), ST_SALESORDER, $_GET['trans_no'], 'prtopt');
     Display::submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $_GET['trans_no'], 'prtopt');
     if ($qty_remaining > 0) {
@@ -231,13 +231,13 @@
     } else {
       Display::submenu_option(_("Invoice Items On This Order"), "/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}' target='_top' ");
     }
-    Display::submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?" . Orders::ADD . "=0&type=30' target='_top' ");
+    Display::submenu_option(_("Enter a &New Order"), "/sales/order?" . Orders::ADD . "=0&type=30' target='_top' ");
   } elseif (Input::_get('trans_type') == ST_SALESQUOTE) {
-    Display::submenu_option(_('Edit Quote'), "/sales/sales_order_entry.php?" . Orders::UPDATE . "=" . $_GET['trans_no'] . "&type=" . ST_SALESQUOTE . "' target='_top' ");
+    Display::submenu_option(_('Edit Quote'), "/sales/order?" . Orders::UPDATE . "=" . $_GET['trans_no'] . "&type=" . ST_SALESQUOTE . "' target='_top' ");
     Display::submenu_print(_("&Print Quote"), ST_SALESQUOTE, $_GET['trans_no'], 'prtopt');
     Display::submenu_print(_("Print Proforma Invoice"), ST_PROFORMAQ, $_GET['trans_no'], 'prtopt');
-    Display::submenu_option(_("Make &Order from This Quote"), "/sales/sales_order_entry.php?" . Orders::QUOTE_TO_ORDER . '=' . Input::_get('trans_no') . "' target='_top' ");
-    Display::submenu_option(_("&New Quote"), "/sales/sales_order_entry.php?" . Orders::ADD . "=0&type=" . ST_SALESQUOTE . "' target='_top' ");
+    Display::submenu_option(_("Make &Order from This Quote"), "/sales/order?" . Orders::QUOTE_TO_ORDER . '=' . Input::_get('trans_no') . "' target='_top' ");
+    Display::submenu_option(_("&New Quote"), "/sales/order?" . Orders::ADD . "=0&type=" . ST_SALESQUOTE . "' target='_top' ");
   }
   //UploadHandler::insert($_GET['trans_no']);
   Debtor::addEditDialog();

@@ -22,7 +22,7 @@
     }
     if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '') {
       $result   = $_FILES['pic']['error'];
-      $filename = COMPANY_PATH . "images";
+      $filename = PATH_COMPANY . "images";
       if (!file_exists($filename)) {
         mkdir($filename);
       }
@@ -54,7 +54,7 @@
       }
     }
     if (Input::_hasPost('del_coy_logo')) {
-      $filename = COMPANY_PATH . "images/" . $_POST['coy_logo'];
+      $filename = PATH_COMPANY . "images/" . $_POST['coy_logo'];
       if (file_exists($filename)) {
         $result = unlink($filename);
         if (!$result) {

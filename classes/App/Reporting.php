@@ -143,6 +143,18 @@
             'PARAM_4' => ''
           );
           break;
+        case ST_STATEMENT :
+          $rep = 108;
+          // from, to, currency, bank acc, email, comments
+          $ar = array(
+            'PARAM_0' => $extra,
+            'PARAM_1' => 0,
+            'PARAM_2' => 0,
+            'PARAM_4' => 0,
+            'PARAM_6' => 0,
+            'PARAM_5' => 0,
+          );
+          break;
         case ST_CUSTREFUND :
           $rep = 113;
           // from, to, currency, bank acc, email, comments
@@ -236,7 +248,8 @@
         ),
         false
       )->p;
-      $js = <<<JS
+      $js
+        = <<<JS
 		$('#EmailButton$type_no').click(function() {
 		if (!confirm("Send email now?")) { return false;}
 			var email = $("#EmailSelect$type_no").val();
@@ -276,7 +289,7 @@ JS;
       if (static::$debug === null) {
         static::$debug = Config::_get('debug.pdf');
       }
-      $url = $dir ? : BASE_URL . 'reporting/prn_redirect.php?';
+      $url = $dir ? : ROOT_URL . 'reporting/prn_redirect.php?';
       $id  = static::$JS->defaultFocus($id);
       foreach ($pars as $par => $val) {
         $pars[$par] = "$par=" . urlencode($val);

@@ -21,7 +21,7 @@
   }
   if (isset($_POST['Cancel'])) {
     clear_allocations();
-    $forward = (isset($_POST['inquiry'])) ? "/purchases/inquiry/supplier_allocation_inquiry.php" : "/purchases/allocations/supplier_allocation_main.php";
+    $forward = (isset($_POST['inquiry'])) ? "/purchases/search/allocations" : "/purchases/allocations/supplier_allocation_main.php";
     Display::meta_forward($forward);
   }
   if (isset($_GET['trans_no']) && isset($_GET['trans_type'])) {
@@ -46,7 +46,7 @@
    * @param $type
    * @param $trans_no
    */
-  function edit_allocations_for_transaction($type, $trans_no) {
+  function edit_allocations_for_transaction($type, $trans_no)  function edit_allocations_for_transaction($type, $trans_no) {
 
     Forms::start();
     if (isset($_POST['inquiry']) || stristr($_SERVER['HTTP_REFERER'], 'supplier_allocation_inquiry.php')) {

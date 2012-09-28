@@ -5,14 +5,14 @@ var Adv = {};
     fieldsChanged: 0,
     debug:         { ajax: true},
     lastXhr:       '',
-    o:             {$content: $("#content"), tabs: {}, wrapper: $("#wrapper"), autocomplete: {}}
+    o:             {$content: $("#content"), tabs: {}, wrapper: $("#wrapper"), header: $("#header"), body: $("body"), autocomplete: {}}
   };
   (function () {
     $.widget("custom.catcomplete", $.ui.autocomplete, {
       _renderMenu: function (ul, items) {
         var self = this, currentCategory = "";
         $.each(items, function (index, item) {
-          if (item.category != currentCategory) {
+          if (item.category && item.category != currentCategory) {
             ul.append("<li class='ui-autocomplete-category'>" + item.category + "</li>");
             currentCategory = item.category;
           }
@@ -47,6 +47,7 @@ var Adv = {};
     $(this.loader).ajaxStart(function () {
       Adv.loader.on();
       Adv.ScrollDetect.loaded = false;
+      Adv.Forms.setFocus(true);
       if (Adv.debug.ajax) {
         console.time('ajax')
       }
@@ -83,13 +84,17 @@ Adv.extend({
                  loaded: false,
                  off:    function () {
                    Adv.ScrollDetect.loaded = true;
-                   window.removeEventListener('scroll', Adv.ScrollDetect.off, false)
+                   window.removeEventListener('scroll', Adv.ScrollDetect.off, false);
                  }
-               }
+               };
              }())
            });
 window.addEventListener('scroll', Adv.ScrollDetect.off, false);
+document.getElementById('header').addEventListener('webkitTransitionEnd', function () { Adv.header();}, false);
 Adv.extend({
+             header:      function () {
+               Adv.o.body.css('padding-top', Adv.o.header.height());
+             },
              msgbox:      $('#msgbox').ajaxError(function (event, request, settings) {
                var status;
                if (request.statusText == "abort") {
@@ -109,13 +114,14 @@ Adv.extend({
                                  }
                                }
                                catch (e) {
-                                 return false
+                                 return false;
                                }
                                return undefined;
                              }),
              Status:      {
-               show:       function (status) {
-                 var text = '', type, closeTime = null;
+               msgboxTimeout: null,
+               show:          function (status) {
+                 var text = '', type;
                  if (status === undefined) {
                    status = {status: null, message: ''};
                  }
@@ -155,17 +161,25 @@ Adv.extend({
                      text = '<div class="' + status.class + '">' + status.message + '</div>';
                    }
                  }
+                 window.clearTimeout(Adv.Scroll.msgboxTimeout);
                  if (text) {
-                   Adv.msgbox.html(text);
+                   Adv.msgbox.css({opacity: 0}).html(text);
+                   Adv.header();
+                   if (Adv.msgbox.height() > 0) {
+                     setTimeout(function () {
+                       Adv.msgbox.css({opacity: 1, height: '40px'});
+                     }, 200);
+                   }
+                   else {
+                     Adv.msgbox.css({opacity: 1, height: '40px'});
+                     Adv.header();
+                   }
+                   Adv.Scroll.msgboxTimeout = setTimeout(function () {
+                     Adv.msgbox.css({opacity: 0, height: 0});
+                     Adv.header();
+                   }, 15000);
+                   Adv.Forms.setFocus(Adv.msgbox[0]);
                  }
-                 window.clearTimeout(closeTime);
-                 Adv.msgbox.stop(true, true).animate({ height: 'show', opacity: 1 }, 1000, 'easeOutExpo', function () {
-                   closeTime = setTimeout(Adv.Status.hideStatus, 15000);
-                 });
-                 Adv.Forms.setFocus(Adv.msgbox[0]);
-               },
-               hideStatus: function () {
-                 Adv.msgbox.stop(true, true).animate({ height: 'hide', opacity: 0 }, 2000, 'easeOutExpo');
                }
 
              },
@@ -174,7 +188,9 @@ Adv.extend({
                height = height || 600;
                var left = (screen.width - width) / 2, top = (screen.height - height) / 2;
                return window.open(url, title, 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
-             },
+             }, openTab:  function (url) {
+    window.open(url, '_blank');
+  },
              hoverWindow: {
                _init:  false, init: function (width, height) {
                  Adv.hoverWindow.width = width || 600;
@@ -227,14 +243,14 @@ Adv.extend({
                  width:  100,
                  height: 100}).html(Adv.o.popupWindow).on('mouseleave',function () { $(this).remove(); }).appendTo(Adv.o.wrapper).position({my: "center center", at: "center center", of: document.body});
              },
-             tabmenu:     ( function () {
+             TabMenu:     (function () {
                var deferreds = [];
                return{
                  init:  function (id, ajax, links, page) {
                    Adv.o.tabs[id] = $('#tabs' + id);
                    Adv.o.tabs[id].tabs();
                    if (page) {
-                     Adv.tabmenu.page(id, page);
+                     Adv.TabMenu.page(id, page);
                    }
                    if (deferreds[id] !== undefined) {
                      deferreds[id].resolve();
@@ -254,7 +270,7 @@ Adv.extend({
                }
              }()),
              Forms:       (function () {
-               var tooltip, hidden = [], tooltiptimeout, focusonce, focus, menu = {
+               var focusOff = false, tooltip, hidden = [], tooltiptimeout, focusonce, focus, menu = {
                  current:    null,
                  closetimer: null,
                  open:       function (el) {
@@ -283,18 +299,17 @@ Adv.extend({
                        break;
                      }
                    }
-                   if (!exists || el.value === null || String(value).length === 0) {
-                     var elSelected = $(el).find('option:first')[0];
-                     elSelected.selected = true;
-                     if (isdefault) {
-                       elSelected.defaultSelected = true
-                     }
-                     return el;
+                   if (!exists || el.value === null || value.length === 0) {
+                     exists = $(el).find('option:first')[0];
                    }
                    if (exists) {
+                     if (isdefault) {
+                       $(el).find('option').prop('defaultSelected', false);
+                       exists.defaultSelected = true
+                     }
                      exists.selected = true;
-                     exists.defaultSelected = false;
                    }
+                   return el;
                  }
                  if (el.type === 'checkbox') {
                    value = (!(value === 'false' || !value || value == 0));
@@ -304,26 +319,16 @@ Adv.extend({
                    }
                    return el;
                  }
-                 if (String(value).length === 0) {
-                   value = '';
-                 }
                  if (el.tagName !== 'SELECT') {
+                   if (String(value).length === 0) {
+                     value = '';
+                   }
                    el.value = value;
                  }
                  if (isdefault) {
                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
                      $(el).attr('value', value);
                      el.defaultValue = value;
-                   }
-                   if (el.tagName === 'SELECT') {
-                     try {
-                       if (exists) {
-                         exists.defaultSelected = true;
-                       }
-                     }
-                     catch (e) {
-                       console.log(e, el.options);
-                     }
                    }
                  }
                  return el;
@@ -341,12 +346,18 @@ Adv.extend({
                  menu.closetimer = window.setTimeout(menu.close, 300);
                });
                Adv.o.wrapper.on('click', '.btn-split', function () {
-                 var $clicked = $(this).parent().find('a').eq(0), url = $clicked.attr('href'), target = $clicked.attr('_target');
-                 if (target == 'parent') {
-                   window.parent.location.href = url;
-                 }
-                 else {
-                   window.open(url, '_blank');
+                 var $clicked = $(this).parent().find('a').eq(0) //
+                   , url = $clicked.attr('href')//
+                   , target = $clicked.attr('target');
+                 switch (target) {
+                   case '_parent':
+                     window.parent.location.href = url;
+                     break;
+                   case '_blank':
+                     Adv.openWindow(url);
+                     break;
+                   default:
+                     window.location.href = url;
                  }
                  return false;
                });
@@ -354,11 +365,13 @@ Adv.extend({
                  $(this).datepicker({numberOfMonths:    3,
                                       showButtonPanel:  true,
                                       showCurrentAtPos: 2,
+                                      nextText:         '',
+                                      prevText:         '',
                                       dateFormat:       'dd/mm/yy'}).off('focus.datepicker');
                });
                return {
                  findInputEl:     function (id) {
-                   var els = document.getElementsByName ? document.getElementsByName(id) : $("[name='" + id + "'");
+                   var els = document.getElementsByName(id);
                    if (!els.length) {
                      els = [document.getElementById(id)];
                    }
@@ -398,75 +411,85 @@ Adv.extend({
                  setFormDefault:  function (id, value, disabled) {
                    this.setFormValue(id, value, disabled, true);
                  },
-                 autocomplete:    function (id, url, callback) {
-                   var $this, els = Adv.Forms.findInputEl(id), blank = {id: 0, value: ''};
-                   Adv.o.autocomplete[id] = $this = $(els).autocomplete({
-                                                                          minLength: 2,
-                                                                          delay:     400,
-                                                                          autoFocus: true,
-                                                                          source:    function (request, response) {
-                                                                            var $this = Adv.o.autocomplete[id];
-                                                                            $this.off('change.autocomplete');
-                                                                            $this.data('default', null);
-                                                                            if ($this.data().autocomplete.previous == $this.val()) {
-                                                                              return false;
-                                                                            }
-                                                                            Adv.lastXhr = $.getJSON(url, request, function (data) {
-                                                                              if (!$this.data('active')) {
-                                                                                data = blank;
-                                                                                return false;
-                                                                              }
-                                                                              $this.data('default', data[0]);
-                                                                              response(data);
-                                                                            });
-                                                                          },
-                                                                          select:    function (event, ui) {
-                                                                            $this.data('default', null);
-                                                                            if (callback(ui.item, event, this) === false) {
-                                                                              return false;
-                                                                            }
-                                                                          },
-                                                                          focus:     function () {return false;}}).blur(function () {$(this).data('active', false); }).bind('autocompleteclose',function (event) {
-                                                                                                                                                                              if (this.value.length > 1 && $this.data().autocomplete.selectedItem === null && $this.data()['default'] !== null) {
-                                                                                                                                                                                if (callback($this.data()['default'], event, this) !== false) {
-                                                                                                                                                                                  $this.val($this.data()['default'].label);
-                                                                                                                                                                                }
-                                                                                                                                                                              }
-                                                                                                                                                                              $this.data('default', null)
-                                                                                                                                                                            }).focus(function () {
-                                                                                                                                                                                       $(this).data('active', true).on('change.autocomplete', function () {
-                                                                                                                                                                                         $(this).autocomplete('search', $this.val());
-                                                                                                                                                                                       })
-                                                                                                                                                                                     }).on('paste',function () {
-                                                                                                                                                                                             var $this = $(this);
-                                                                                                                                                                                             window.setTimeout(function () {$this.autocomplete('search', $this.val())}, 1)
-                                                                                                                                                                                           }).on('change',function (event) {
-                                                                                                                                                                                                   if (this.value === '') {
-                                                                                                                                                                                                     callback(blank, event, this);
-                                                                                                                                                                                                   }
-                                                                                                                                                                                                 }).css({'z-index': '2'});
+                 autocomplete:    function (searchField, type, callback, data) {
+                   var els = Adv.Forms.findInputEl(searchField)//
+                     , $this = $(els) //
+                     , blank = {id: 0, value: ''};
+                   if (els[0].type === 'hidden') {
+                     return;
+                   }
+                   if (!$.isFunction(callback)) {
+                     var idField = Adv.Forms.findInputEl(callback);
+                     callback = function (data) {
+                       console.log($(idField));
+                       if ($(idField).length) {
+                         $(idField).val(data.id);
+                       }
+                       $this.val(data.value);
+                       if (!$this.is('.nosubmit')) {
+                         JsHttpRequest.request(els[0]);
+                       }
+                       return false;
+                     }
+                   }
+                   Adv.o.autocomplete[searchField] = $this;
+                   $this.catcomplete({
+                                       minLength: 2,
+                                       delay:     400,
+                                       autoFocus: true,
+                                       source:    function (request, response) {
+                                         var $this = Adv.o.autocomplete[searchField];
+                                         $this.off('change.catcomplete');
+                                         $this.data('default', null);
+                                         if ($this.data().catcomplete.previous == $this.val()) {
+                                           return false;
+                                         }
+                                         request['type'] = type;
+                                         request['data'] = data;
+                                         Adv.lastXhr = $.getJSON('/search', request, function (data) {
+                                           if (!$this.data('active')) {
+                                             data = blank;
+                                             return false;
+                                           }
+                                           $this.data('default', data[0]);
+                                           response(data);
+                                         });
+                                       },
+                                       select:    function (event, ui) {
+                                         $this.data('default', null);
+                                         if (callback(ui.item, event, this) === false) {
+                                           return false;
+                                         }
+                                       },
+                                       focus:     function () {return false;}});
+                   $this.on({
+                              blur:             function () {$(this).data('active', false); }, //
+                              catcompleteclose: function (event) {
+                                if (this.value.length > 1 && $this.data().catcomplete.selectedItem === null && $this.data()['default'] !== null) {
+                                  if (callback($this.data()['default'], event, this) !== false) {
+                                    $this.val($this.data()['default'].label);
+                                  }
+                                }
+                                $this.data('default', null)
+                              }, //
+                              focus:            function () {
+                                $(this).data('active', true).on('change.catcomplete', function () {
+                                  $(this).catcomplete('search', $this.val());
+                                })
+                              }, //
+                              paste:            function () {
+                                var $this = $(this);
+                                window.setTimeout(function () {$this.catcomplete('search', $this.val())}, 1)
+                              }, //
+                              change:           function (event) {
+                                if (this.value === '') {
+                                  callback(blank, event, this);
+                                }
+                              }});
+                   $this.css({'z-index': '2'});
                    if (document.activeElement === $this[0]) {
                      $this.data('active', true);
                    }
-                 },
-                 moveFocus:       function (dir, e0, neighbours) {
-                   var p0 = Adv.Forms.elementPos(e0), t, l = 0;
-                   for (var i = 0; i < neighbours.length; i++) {
-                     var e = neighbours[i], p = Adv.Forms.elementPos(e);
-                     if (p !== null && (e.className == 'menu_option' || e.className == 'printlink')) {
-                       if (((dir == 40) && (p.y > p0.y)) || (dir == 38 && (p.y < p0.y)) || ((dir == 37) && (p.x < p0.x)) || ((dir == 39 && (p.x > p0.x)))) {
-                         var l1 = (p.y - p0.y) * (p.y - p0.y) + (p.x - p0.x) * (p.x - p0.x);
-                         if ((l1 < l) || (l === 0)) {
-                           l = l1;
-                           t = e;
-                         }
-                       }
-                     }
-                   }
-                   if (t) {
-                     Adv.Forms.setFocus(t);
-                   }
-                   return t;
                  },
                  priceFormat:     function (post, num, dec, label, color) {
                    var sign, decsize, cents, el = label ? document.getElementById(post) : document.getElementsByName(post)[0];
@@ -516,6 +539,16 @@ Adv.extend({
                  },
                  setFocus:        function (name, byId) {
                    var el, pos, $el;
+                   if (name === false) {
+                     focusOff = true;
+                     return;
+                   }
+                   if (name === true) {
+                     focusOff = false;
+                   }
+                   if (focusOff === true) {
+                     return;
+                   }
                    if (typeof(name) == 'object') {
                      el = name;
                    }
@@ -663,28 +696,23 @@ Adv.extend({
                      if ($error.is('.err_msg')) {
                        type = 'error';
                      }
-                     else {
-                       if ($error.is('.warn_msg')) {
-                         type = 'warning';
-                       }
-                       else {
-                         Adv.Status.show({html: error});
-                         return;
-                       }
+                     if ($error.is('.warn_msg')) {
+                       type = 'warning';
                      }
-                     error = $error.text();
                    }
                    field = $(Adv.Forms.findInputEl(field));
-                   if (field.is('input,textarea,select')) {
-                     tooltip = field.addClass('error').tooltip({title: function () {return error;}, trigger: 'manual', placement: 'right', class: type}).tooltip('show');
-                     tooltiptimeout = setTimeout(function () {
-                       if (tooltip) {
-                         tooltip.removeClass('error').tooltip('destroy');
-                       }
-                     }, 3000);
+                   if (type === undefined || !field.is('input:not(input[type=hidden]),textarea,select')) {
+                     Adv.Status.show({html: error});
+                     return;
                    }
+                   error = ($error) ? $error.text() : error;
+                   tooltip = field.addClass('error').tooltip({title: function () {return error;}, trigger: 'manual', placement: 'right', class: type}).tooltip('show');
+                   tooltiptimeout = setTimeout(function () {
+                     if (tooltip) {
+                       tooltip.removeClass('error').tooltip('destroy');
+                     }
+                   }, 3000);
                  }
-
                }
              })(),
              Scroll:      (function () {
@@ -779,3 +807,134 @@ Adv.extend({
                };
              }())
            });
+$(function () {
+  var tabs = $("#tabs")//
+    , topmenu = $('#topmenu,#tabs>ul')//
+    , prevFocus = false//
+    , current = topmenu.find('.active')//
+    , topLevel = topmenu.children('li'), //
+    closeMenu = function () {
+      topLevel.removeClass('hover');
+      prevFocus.focus();
+      prevFocus = false;
+    }, //
+    currentChanged = function (next, skip) {
+      var links;
+      if (next === undefined) {
+        next = current;
+      }
+      else {
+        if (!next.length) {
+          return
+        }
+        else {
+          current.find('ul').parent().removeClass('hover');
+        }
+      }
+      next.find('ul').parent().addClass('hover');
+      links = next.find('a');
+      if (!skip) {
+        links.eq(0).focus();
+      }
+      links.eq(1).focus();
+      next.trigger('mouseenter');
+    }
+  topLevel.on('mouseenter ', function () {
+    var $this = $(this);
+    topLevel.removeClass('hover');
+    current = $this.addClass('hover');
+    if ($this.find('a').length > 1) {
+      $this.find('a').eq(1).focus();
+    }
+  });
+  topLevel.children('ul').on('mouseleave', function () {
+    $(this).parent().removeClass('hover');
+    if (prevFocus) {
+      closeMenu();
+    }
+  });
+  topLevel.children('a').on({
+                              focus:    function () {
+                                currentChanged($(this).parent(), true);
+                              }, //
+                              focusout: function () {$(this).parent().removeClass('hover')}, //
+                              keydown:  function (event) {
+                                switch (event.which) {
+                                  case 37:
+                                    currentChanged(current.prev());
+                                    break;
+                                  case 39:
+                                    currentChanged(current.next());
+                                    break;
+                                  case 9:
+                                    currentChanged((event.shiftKey === true ? current.prev() : current.next()));
+                                    break;
+                                  case 27:
+                                    closeMenu();
+                                    break;
+                                  default:
+                                }
+                              }
+                            });
+  topmenu.find('ul').find('a').on({
+                                    keydown:    function (event) {
+                                      if (event.which > 36 && event.which < 41) {
+                                        event.preventDefault();
+                                      }
+                                      switch (event.which) {
+                                        case 37:
+                                          currentChanged(current.prev());
+                                          break;
+                                        case 39:
+                                          currentChanged(current.next());
+                                          break;
+                                        case 38:
+                                          $(this).parent().prevUntil('', ':has(a)').eq(0).find('a').focus();
+                                          break;
+                                        case 40:
+                                          $(this).parent().nextUntil('', ':has(a)').eq(0).find('a').focus();
+                                          break;
+                                        case 9:
+                                          var next = event.shiftKey === true ? current.prev() : current.next();
+                                          if (next.length) {
+                                            event.preventDefault();
+                                            currentChanged(next);
+                                          }
+                                          else {
+                                            if (!event.shiftKey) {
+                                              event.preventDefault();
+                                              closeMenu();
+                                            }
+                                          }
+                                          break;
+                                        case 27:
+                                          closeMenu();
+                                          break;
+                                        default:
+                                      }
+                                    }, //
+                                    mouseenter: function () {
+                                      this.focus();
+                                    }
+                                  });
+  tabs.on({ //
+            mouseleave: function () {
+              if (prevFocus && !$(this).find('.hover').length) {
+                closeMenu();
+              }
+            }
+          });
+  $(document).on('focusout', ':input',function () {
+    prevFocus = $(this);
+  }).on('keydown', function (event) {
+          if (event.which === 83 && event.altKey === true) {
+            if (prevFocus) {
+              closeMenu();
+            }
+            else {
+              prevFocus = document.activeElement;
+              currentChanged(current);
+            }
+          }
+        });
+});

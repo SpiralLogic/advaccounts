@@ -13,8 +13,7 @@
   /**
 
    */
-  trait HTML
-  {
+  trait HTML {
     /**
      * @param      $tag
      * @param      $attributes
@@ -47,7 +46,8 @@
       foreach ($attributes as $key => $value) {
         if ($value === true) {
           $attrs .= ' ' . $key;
-        } elseif ($value === false || $value === null) {
+        }
+        if (is_bool($value) || $value === null) {
           continue;
         }
         if ($value !== 0 && empty($value) && $key !== 'value') {

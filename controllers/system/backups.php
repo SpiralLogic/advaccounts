@@ -1,5 +1,13 @@
 <?php
   use ADV\Core\DB\Utils;
+  use ADV\Core\Table;
+  use ADV\App\Forms;
+  use ADV\Core\Config;
+  use ADV\App\User;
+  use ADV\App\Page;
+  use ADV\Core\Ajax;
+  use ADV\Core\Event;
+  use ADV\Core\Input\Input;
 
   /**
    * PHP version 5.4
@@ -25,7 +33,7 @@
       }
     }
   }
-  ;
+
   if (Input::_post('download')) {
     download_file(BACKUP_PATH . Input::_post('backups'));
     exit;
@@ -39,7 +47,6 @@
     generate_backup($conn, Input::_post('comp'), Input::_post('comments'));
     Ajax::_activate('backups');
   }
-  ;
   if (Input::_post('restore')) {
     if (Utils::import(BACKUP_PATH . Input::_post('backups'), $conn)) {
       Event::success(_("Restore backup completed."));
@@ -53,7 +60,7 @@
       Event::error(_("Can't delete backup file."));
     }
   }
-  ;
+
   if (Input::_post('upload')) {
     $tmpname = $_FILES['uploadfile']['tmp_name'];
     $fname   = $_FILES['uploadfile']['name'];

@@ -41,39 +41,27 @@
      * @param string $dir
      */
     public function __construct($name = null, $code = null, $encoding = null, $dir = 'ltr') {
-      $l              = Arr::searchValue(Config::_get('default.language'), Config::_get('languages.installed'), 'code');
-      $this->name     = $name ? : $l['name'];
-      $this->code     = $code ? : $l['code'] ? : 'en_US';
-      $this->encoding = $encoding ? : $l['encoding'];
-      $this->dir      = isset($l['rtl']) ? 'rtl' : 'ltr';
-      $this->setLanguage($this->code);
-      if (file_exists(DOCROOT . "lang/" . $this->code . "/locale.php")) {
-        /** @noinspection PhpIncludeInspection */
-        include(DOCROOT . "lang/" . $this->code . "/locale.php");
-      }
+      $this->setLanguage($name, $code, $encoding, $dir);
     }
     /**
      * @param $code
      */
-    public function setLanguage($code) {
-      $changed  = $this->code != $code;
-      $language = Arr::searchValue($code, Config::_get('languages.installed'), 'code');
-      if ($language && $changed) {
+    public function setLanguage($name = null, $code = null, $encoding = null, $dir = 'ltr') {
+      $changed = $this->code != $code;
+      if ($changed) {
         // flush cache as we can use several languages in one account
-        Files::flushDir(COMPANY_PATH . 'js_cache');
-        $this->name           = $language['name'];
-        $this->code           = $language['code'];
-        $this->encoding       = $language['encoding'];
-        $this->dir            = isset($language['rtl']) ? 'rtl' : 'ltr';
-        $locale               = DOCROOT . "lang/" . $this->code . "/locale.php";
+        Files::flushDir(PATH_COMPANY . 'js_cache');
+        $this->name           = $name;
+        $this->code           = $code;
+        $this->encoding       = $encoding;
+        $this->dir            = $dir;
+        $locale               = PATH_LANG . $this->code . "/locale.php";
         $this->is_locale_file = file_exists($locale);
+        if ($this->is_locale_file) {
+          /** @noinspection PhpIncludeInspection */
+          include($locale);
+        }
       }
-      $session = Session::i();
-      //$session['get_text']->setLanguage($this->code, $this->encoding);
-      //$session['get_text']->add_domain($this->code, DOCROOT . "lang");
-      // Necessary for ajax calls. Due to bug in php 4.3.10 for this
-      // version set globally in php.ini
-      ini_set('default_charset', $this->encoding);
     }
   }
 
@@ -84,10 +72,6 @@
      * @return mixed
      */
     function _($text) {
-      $retVal = $_SESSION['get_text']->gettext($text);
-      if ($retVal == "") {
-        return $text;
-      }
-      return $retVal;
+      return $text;
     }
   }

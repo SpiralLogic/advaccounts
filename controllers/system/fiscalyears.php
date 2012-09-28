@@ -106,7 +106,8 @@
     $myrow = DB_Company::get_fiscalyear($year);
     $to    = $myrow['end'];
     // retrieve total balances from balance sheet accounts
-    $sql     = "SELECT SUM(amount) FROM gl_trans INNER JOIN chart_master ON account=account_code
+    $sql
+             = "SELECT SUM(amount) FROM gl_trans INNER JOIN chart_master ON account=account_code
      INNER JOIN chart_types ON account_type=id INNER JOIN chart_class ON class_id=cid
         WHERE ctype>=" . CL_ASSETS . " AND ctype <=" . CL_EQUITY . " AND tran_date <= '$to'";
     $result  = DB::_query($sql, "The total balance could not be calculated");
@@ -195,7 +196,7 @@
     $sql    = "SELECT * FROM attachments WHERE type_no = $type_no AND trans_no = $trans_no";
     $result = DB::_query($sql, "Could not retrieve attachments");
     while ($row = DB::_fetch($result)) {
-      $dir = COMPANY_PATH . "attachments";
+      $dir = PATH_COMPANY . "attachments";
       if (file_exists($dir . DS . $row['unique_name'])) {
         unlink($dir . DS . $row['unique_name']);
       }
@@ -254,7 +255,8 @@
       DB::_query($sql, "Could not delete grn batch");
       delete_attachments_and_comments(25, $row['id']);
     }
-    $sql    = "SELECT trans_no, type FROM debtor_trans WHERE tran_date <= '$to' AND
+    $sql
+            = "SELECT trans_no, type FROM debtor_trans WHERE tran_date <= '$to' AND
         (ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount) = alloc";
     $result = DB::_query($sql, "Could not retrieve debtor trans");
     while ($row = DB::_fetch($result)) {
@@ -276,7 +278,8 @@
       DB::_query($sql, "Could not delete debtor trans");
       delete_attachments_and_comments($row['type'], $row['trans_no']);
     }
-    $sql    = "SELECT trans_no, type FROM creditor_trans WHERE tran_date <= '$to' AND
+    $sql
+            = "SELECT trans_no, type FROM creditor_trans WHERE tran_date <= '$to' AND
         ABS(ov_amount + ov_gst + ov_discount) = alloc";
     $result = DB::_query($sql, "Could not retrieve supp trans");
     while ($row = DB::_fetch($result)) {
@@ -308,7 +311,8 @@
       DB::_query($sql, "Could not delete workorders");
       delete_attachments_and_comments(ST_WORKORDER, $row['id']);
     }
-    $sql    = "SELECT loc_code, stock_id, SUM(qty) AS qty, SUM(qty*standard_cost) AS std_cost FROM stock_moves WHERE tran_date <= '$to' GROUP by
+    $sql
+            = "SELECT loc_code, stock_id, SUM(qty) AS qty, SUM(qty*standard_cost) AS std_cost FROM stock_moves WHERE tran_date <= '$to' GROUP by
         loc_code, stock_id";
     $result = DB::_query($sql, "Could not retrieve supp trans");
     while ($row = DB::_fetch($result)) {
@@ -316,7 +320,8 @@
       DB::_query($sql, "Could not delete stock moves");
       $qty      = $row['qty'];
       $std_cost = ($qty == 0 ? 0 : Num::_round($row['std_cost'] / $qty, User::price_dec()));
-      $sql      = "INSERT INTO stock_moves (stock_id, loc_code, tran_date, reference, qty, standard_cost) VALUES
+      $sql
+                = "INSERT INTO stock_moves (stock_id, loc_code, tran_date, reference, qty, standard_cost) VALUES
             ('{$row['stock_id']}', '{$row['loc_code']}', '$to', '$ref', $qty, $std_cost)";
       DB::_query($sql, "Could not insert stock move");
     }
@@ -335,7 +340,8 @@
       DB::_query($sql, "Could not delete gl trans");
       if (GL_Account::is_balancesheet($row['account'])) {
         $trans_no = SysTypes::get_next_trans_no(ST_JOURNAL);
-        $sql      = "INSERT INTO gl_trans (type, type_no, tran_date, account, memo_, amount) VALUES
+        $sql
+                  = "INSERT INTO gl_trans (type, type_no, tran_date, account, memo_, amount) VALUES
                 (" . ST_JOURNAL . ", $trans_no, '$to', '{$row['account']}', '$ref', {$row['amount']})";
         DB::_query($sql, "Could not insert gl trans");
       }
@@ -345,7 +351,8 @@
     while ($row = DB::_fetch($result)) {
       $sql = "DELETE FROM bank_trans WHERE trans_date <= '$to' AND bank_act = '{$row['bank_act']}'";
       DB::_query($sql, "Could not delete bank trans");
-      $sql = "INSERT INTO bank_trans (type, trans_no, trans_date, bank_act, ref, amount) VALUES
+      $sql
+        = "INSERT INTO bank_trans (type, trans_no, trans_date, bank_act, ref, amount) VALUES
             (0, 0, '$to', '{$row['bank_act']}', '$ref', {$row['amount']})";
       DB::_query($sql, "Could not insert bank trans");
     }
@@ -394,7 +401,7 @@
 
   function display_fiscalyears() {
     $company_year = DB_Company::get_pref('f_year');
-    $result       = DB_Company::get_all_fiscalyears();
+    $result       = DB_Company::getAll_fiscalyears();
     Forms::start();
     Event::warning(
       _(
@@ -427,7 +434,14 @@
       Forms::buttonEditCell("Edit" . $myrow['id'], _("Edit"));
       if ($myrow["id"] != $company_year) {
         Forms::buttonDeleteCell("Delete" . $myrow['id'], _("Delete"));
-        Forms::submitConfirm("Delete" . $myrow['id'], sprintf(_("Are you sure you want to delete fiscal year %s - %s? All transactions are deleted and converted into relevant balances. Do you want to continue ?"), $from, $to));
+        Forms::submitConfirm(
+          "Delete" . $myrow['id'],
+          sprintf(
+            _("Are you sure you want to delete fiscal year %s - %s? All transactions are deleted and converted into relevant balances. Do you want to continue ?"),
+            $from,
+            $to
+          )
+        );
       } else {
         Cell::label('');
       }

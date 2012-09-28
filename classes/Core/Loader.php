@@ -14,15 +14,13 @@
   /**
 
    */
-  class Load_Exception extends \Exception
-  {
+  class Load_Exception extends \Exception {
   }
 
   /**
 
    */
-  class Loader
-  {
+  class Loader {
     /**
      * @var int
      */
@@ -45,9 +43,9 @@
 
      */
     public function __construct() {
-      $core = include(DOCROOT . 'config' . DS . 'core.php');
+      $core = include(ROOT_DOC . 'config' . DS . 'core.php');
       $this->importNamespaces((array) $core);
-      spl_autoload_register(array($this, 'load'), true);
+      spl_autoload_register([$this, 'load'], true);
     }
     /**
      * @param Cache $cache
@@ -59,8 +57,8 @@
         $this->classes = $cachedClasses['classes'];
         $this->loaded  = $cachedClasses['paths'];
       } else {
-        $vendor = include(DOCROOT . 'config' . DS . 'vendor.php');
-        $this->addClasses((array) $vendor, VENDORPATH);
+        $vendor = include(ROOT_DOC . 'config' . DS . 'vendor.php');
+        $this->addClasses((array) $vendor, PATH_VENDOR);
       }
     }
     /**
@@ -153,11 +151,11 @@
       }
       if ($namespace) {
         $namespacepath = str_replace(['ADV\\', '\\'], ['', DS], $namespace);
-        $dir           = DOCROOT . 'classes' . DS . $namespacepath . DS;
+        $dir           = ROOT_DOC . 'classes' . DS . $namespacepath . DS;
       } elseif (isset($this->classes[$classname])) {
         $dir = $this->classes[$classname];
       } else {
-        $dir = APPPATH;
+        $dir = PATH_APP;
       }
       $paths  = [$dir . $class_file . '.php', $dir . $class_file . DS . $class_file . '.php'];
       $result = $this->trypath($paths, $requested_class, $classname, $global);

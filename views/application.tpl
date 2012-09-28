@@ -5,7 +5,7 @@
   <ul>
     {{#$lmods}}
     {{#if $.access}}
-    <li>{{$.link}} </li>
+    <li>{{$.href}} </li>
     {{#else}}
     <li><span class='inactive'>{{$.anchor}} </span></li>
     {{/if}}
@@ -15,7 +15,7 @@
   <ul>
     {{#$rmods}}
     {{#if $.access}}
-    <li>{{$.link}} </li>
+    <li>{{$.href}} </li>
     {{#else}}
     <li><span class='inactive'>{{$.anchor}} </span></li>
     {{/if}}

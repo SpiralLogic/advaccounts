@@ -11,6 +11,9 @@
     'login'  => [
       'Jobsboard'=> array('enabled'=> false, 'init'=> true),
       'Youtrack' => array('enabled'=> true, 'init'=> true),
+
+    ],
+    'default'=> [
       'Volusion' => array(
         'enabled'       => true,
         'init'          => true,
@@ -21,5 +24,4 @@
         'url_extension' => '.htm',
       )
     ],
-    'default'=> [],
   );

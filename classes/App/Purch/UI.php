@@ -21,7 +21,9 @@
     public static function credit_row($supplier, $credit, $parms = '') {
       Table::label(
         _("Current Credit:"),
-        "<a target='_blank' " . ($credit < 0 ? 'class="redfg openWindow"' : '') . "href='/purchases/inquiry/supplier_inquiry.php?creditor_id=" . $supplier . "' >" . Num::_priceFormat($credit) . "</a>",
+        "<a target='_blank' " . ($credit < 0 ? 'class="redfg openWindow"' : '') . "href='/purchases/search/transactions?creditor_id=" . $supplier . "' >" . Num::_priceFormat(
+          $credit
+        ) . "</a>",
         $parms
       );
     }

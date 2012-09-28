@@ -4,7 +4,7 @@
 </div>
 {{/if}}
 <div>{{$form->start()}}
-    {#$menu->startTab('Details', 'Supplier Details', '#', 'text-align:center')#}
+    {#$menu->startTab('Details', 'Supplier Details','active')#}
     <div id="companyIDs">
         <label for="name">Supplier name:</label><input id="name" name="name" class="big">
         <label for="id">Supplier ID:</label><input id="id" name="id" class="small" maxlength="7">
@@ -63,15 +63,15 @@
     {#$menu->endTab()->startTab('Supplier Contacts', 'Supplier Contacts')#}
 {{>contacts/contact}}
     {#$menu->endTab()->startTab('Invoices', 'Invoices')#}
-    <div id='invoiceFrame' data-src='/purchases/inquiry/supplier_allocation_inquiry.php?creditor_id={{$creditor_id}}'></div>
+    <div id='invoiceFrame' data-src='/purchases/search/allocations?creditor_id={{$creditor_id}}'></div>
 {{$form.frame}}
     {#$menu->endTab()->render()#}
 {{$form->end()}}
 </div>
 <div class='center clearleft pad20'>
     <button id="btnNew" name="new" type="submit" class="btn btn-primary">New</button>
-    <button id="btnCancel" name="cancel" type="submit" class="btn btn-danger ui-helper-hidden">Cancel</button>
-    <button id="btnConfirm" name="save" type="submit" class="btn btn-success ui-helper-hidden">New Customer</button>
+    <button id="btnCancel" name="cancel" type="submit" class="btn btn-danger ui-helper-hidden"><i class="icon-trash"></i> Cancel</button>
+    <button id="btnConfirm" name="save" type="submit" class="btn btn-success ui-helper-hidden"><i class="icon-ok"></i> Save</button>
 </div>
 <div id="shortcuts" class="center">{{#$shortcuts}}
     <button class="btn" data-url="{{$.data}}">{{$.caption}}</button>

@@ -12,8 +12,7 @@
   /**
 
    */
-  class Field implements \ArrayAccess
-  {
+  class Field implements \ArrayAccess {
     use \ADV\Core\Traits\HTML;
 
     public $id;
@@ -63,7 +62,6 @@
      */
     public function focus($on = true) {
       $this->attr['autofocus'] = $on;
-
       return $this;
     }
     /**
@@ -157,7 +155,7 @@
       }
       $return .= $content;
       if ($this->append) {
-        $return .= "<span class='add-on' id='_" . $this->name . "_label'>" . $this->append . "</span>";
+        $return .= "<span class='add-on' >" . $this->append . "</span>";
       }
 
       return $return . "</span>";

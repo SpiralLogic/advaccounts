@@ -54,9 +54,9 @@
     Display::note(Debtor::viewTrans($trans_type, $invoice_no, _("&View This Invoice"), false, 'button'), 0, 1);
     Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
     Reporting::email_link($invoice_no, _("Email This Invoice"), true, ST_SALESINVOICE, 'EmailLink', null, $emails, 1);
-    Display::link_params("/sales/customer_payments.php", _("Apply a customer payment"), '', true, 'class="button"');
+    Display::link_params("/sales/payment", _("Apply a customer payment"), '', true, 'class="button"');
     Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice"), false, 'button'), 1);
-    Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1", true, 'class="button"');
+    Display::link_params("/sales/search/deliveries", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1", true, 'class="button"');
     Page::footer_exit();
   } elseif (isset($_GET[UPDATED_ID])) {
     $order      = new Sales_Order(ST_SALESINVOICE, $_GET[UPDATED_ID]);
@@ -68,7 +68,7 @@
     echo '<br>';
     Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
     Reporting::email_link($invoice_no, _("Email This Invoice"), true, ST_SALESINVOICE, 'EmailLink', null, $emails, 1);
-    Display::link_no_params("/sales/inquiry/customer_inquiry.php", _("Select A Different &Invoice to Modify"));
+    Display::link_no_params("/sales/search/transactions", _("Select A Different &Invoice to Modify"));
     Page::footer_exit();
   } elseif (isset($_GET['RemoveDN'])) {
     for ($line_no = 0; $line_no < count($order->line_items); $line_no++) {
@@ -93,7 +93,7 @@
     /* read in all the selected deliveries into the Items order */
     $order = new Sales_Order(ST_CUSTDELIVERY, $src, true);
     if ($order->count_items() == 0) {
-      Display::link_params("/sales/inquiry/sales_deliveries_view.php", _("Select a different delivery to invoice"), "OutstandingOnly=1");
+      Display::link_params("/sales/search/deliveries", _("Select a different delivery to invoice"), "OutstandingOnly=1");
       die("<br><span class='bold'>" . _("There are no delivered items with a quantity left to invoice. There is nothing left to invoice.") . "</span>");
     }
     $order->trans_type = ST_SALESINVOICE;
@@ -123,7 +123,7 @@
   } elseif (!$order && !isset($_GET['order_id'])) {
     /* This page can only be called with a delivery for invoicing or invoice no for edit */
     Event::error(_("This page can only be opened after delivery selection. Please select delivery to invoicing first."));
-    Display::link_no_params("/sales/inquiry/sales_deliveries_view.php", _("Select Delivery to Invoice"));
+    Display::link_no_params("/sales/search/deliveries", _("Select Delivery to Invoice"));
     Page::end();
     exit;
   } elseif ($order && !Sales_Invoice::check_quantities($order)) {

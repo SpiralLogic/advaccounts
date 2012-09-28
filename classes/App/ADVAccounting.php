@@ -2,6 +2,8 @@
   namespace ADV\App;
 
   use ADV\Core\JS;
+  use DB_Company;
+  use ADV\Core\Cache\APC;
   use ADV\Core\Event;
   use ADV\Core\View;
   use ADV\Core\Errors;
@@ -30,7 +32,7 @@
     public $applications = [];
     /** var Application*/
     public $selected;
-    /** @var \Menu */
+    /** @var Menu */
     public $menu;
     public $buildversion;
     /** @var User $user */
@@ -43,25 +45,24 @@
     protected $Ajax = null;
     protected $controller = null;
     protected $get_text = null;
-    public $extensions;
     /** */
     public function __construct(\ADV\Core\Loader $loader) {
       set_error_handler(
         function ($severity, $message, $filepath, $line) {
-          if ($filepath == COREPATH . 'Errors.php') {
+          if ($filepath == PATH_CORE . 'Errors.php') {
             while (ob_get_level()) {
               ob_end_clean();
             }
             die($message);
           }
-          class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'Errors.php';
+          class_exists('ADV\\Core\\Errors', false) or include_once PATH_CORE . 'Errors.php';
           return \ADV\Core\Errors::handler($severity, $message, $filepath, $line);
         },
         E_ALL & ~E_STRICT & ~E_NOTICE
       );
       set_exception_handler(
         function (\Exception $e) {
-          class_exists('ADV\\Core\\Errors', false) or include_once COREPATH . 'Errors.php';
+          class_exists('ADV\\Core\\Errors', false) or include_once PATH_CORE . 'Errors.php';
           \ADV\Core\Errors::exceptionHandler($e);
         }
       );
@@ -70,25 +71,123 @@
           \ADV\Core\Event::shutdown();
         }
       );
-      static::i($this);
-      $this->Cache = \ADV\Core\Cache::i(new \ADV\Core\Cache\APC());
+      $dic  = \ADV\Core\DIC::getInstance();
+      $self = $this;
+      $dic->set(
+        'ADVAccounting',
+        function () use ($self) {
+          return $self;
+        }
+      );
+      $this->Cache  = $dic->set(
+        'Cache',
+        function () {
+          $driver = new \ADV\Core\Cache\APC();
+          $cache  = new \ADV\Core\Cache($driver);
+          return $cache;
+        }
+      )->get();
+      $this->Config = $dic->set(
+        'Config',
+        function ($c) {
+          return new \ADV\Core\Config($c->get('Cache'));
+        }
+      )->get();
       $loader->registerCache($this->Cache);
       $this->Cache->defineConstants(
         $_SERVER['SERVER_NAME'] . '.defines',
         function () {
-          return include(DOCROOT . 'config' . DS . 'defines.php');
+          return include(ROOT_DOC . 'config' . DS . 'defines.php');
         }
       );
-      $this->Config = Config::i();
-      $this->Ajax   = Ajax::i();
+      $this->Ajax = $dic->set(
+        'Ajax',
+        function () {
+          return new \ADV\Core\Ajax();
+        }
+      )->get();
+      $dic->set(
+        'Input',
+        function () {
+          return new \ADV\Core\Input\Input();
+        }
+      );
+      $dic->set(
+        'Num',
+        function () {
+          $num              = new \ADV\Core\Num();
+          $num->price_dec   = $this->User->_price_dec();
+          $num->qty_dec     = $this->User->_qty_dec();
+          $num->tho_sep     = $this->User->prefs->tho_sep;
+          $num->dec_sep     = $this->User->prefs->dec_sep;
+          $num->exrate_dec  = $this->User->_exrate_dec();
+          $num->percent_dec = $this->User->_percent_dec();
+          return $num;
+        }
+      );
+      $dic->set(
+        'DB_Company',
+        function () {
+          return new \DB_Company();
+        }
+      );
+      $dic->set(
+        'Dates',
+        function ($c) {
+          $config  = $c->get('Config');
+          $user    = $c->get('User');
+          $company = $c->get('DB_Company');
+          $dates   = new \ADV\App\Dates($company);
+          $sep     = is_int($user->prefs->date_sep) ? $user->prefs->date_sep : $config->get('date.ui_separator');
+          $dates->setSep($sep);
+          $dates->format          = $user->prefs->date_format;
+          $dates->use_fiscal_year = $config->get('use_fiscalyear');
+          $dates->sticky_doc_date = $user->prefs->sticky_doc_date;
+          return $dates;
+        }
+      );
       ob_start([$this, 'flush_handler'], 0);
-      $this->Session = Session::i();
-      $this->JS      = JS::i($this->Config);
+
+      $this->JS = $dic->set(
+        'JS',
+        function ($c) {
+          $js             = new \ADV\Core\JS();
+          $config         = $c->get('Config');
+          $js->apikey     = $config->get('assets.maps_api_key');
+          $js->openWindow = $config->get('ui_windows_popups');
+          return $js;
+        }
+      )->get();
+      $dic->set(
+        'User',
+        function () {
+          if (isset($_SESSION['User'])) {
+            return $_SESSION['User'];
+          }
+          $_SESSION['User'] = new \ADV\App\User();
+          return $_SESSION['User'];
+        }
+      );
+      $this->Session = $dic->set(
+        'Session',
+        function ($c) {
+          $session              = new \ADV\Core\Session();
+          $config               = $c->get('Config');
+          $l                    = \ADV\Core\Arr::searchValue($config->get('default.language'), $config->get('languages.installed'), 'code');
+          $name                 = $l['name'];
+          $code                 = $l['code'];
+          $encoding             = $l['encoding'];
+          $dir                  = isset($l['rtl']) ? 'rtl' : 'ltr';
+          $_SESSION['language'] = new \ADV\Core\Language($name, $code, $encoding, $dir);
+
+          return $session;
+        }
+      )->get();
+
+      $this->User  = $dic->get('User');
+      $this->Input = $dic->get('Input');
       $this->JS->footerFile($this->Config->get('assets.footer'));
-      $this->setTextSupport();
-      $this->Session['language'] = new Language();
-      $this->User                = User::i($this->Session);
-      $this->menu                = new Menu(_("Main Menu"));
+      $this->menu = new Menu(_("Main Menu"));
       $this->menu->addItem(_("Main Menu"), "index.php");
       $this->menu->addItem(_("Logout"), "/account/access/logout.php");
       array_walk(
@@ -99,7 +198,7 @@
       );
       $this->loadModules();
       $this->setupApplications();
-      define('BUILD_VERSION', is_readable(DOCROOT . 'version') ? file_get_contents(DOCROOT . 'version', null, null, null, 6) : 000);
+      define('BUILD_VERSION', is_readable(ROOT_DOC . 'version') ? file_get_contents(ROOT_DOC . 'version', null, null, null, 6) : 000);
       define('VERSION', '3.' . BUILD_VERSION . '-SYEDESIGN');
       // logout.php is the only page we should have always
       // accessable regardless of access level and current login status.
@@ -107,40 +206,58 @@
         $this->checkLogin();
       }
       \ADV\Core\Event::init($this->Cache, $this->User->username);
-      $dic = \ADV\Core\DIC::getInstance();
-      $dic->set(
-        'Num',
-        function () {
-          $num              = new \ADV\Core\Num();
-          $num->price_dec   = $this->User->_price_dec();
-          $num->qty_dec     = $this->User->_qty_dec();
-          $num->tho_sep     = $this->User->_tho_sep();
-          $num->dec_sep     = $this->User->_dec_sep();
-          $num->exrate_dec  = $this->User->_exrate_dec();
-          $num->percent_dec = $this->User->_percent_dec();
-          return $num;
-        }
-      );
-      $this->get_selected();
+
+      //      $this->get_selected();
+      $this->route();
+    }
+    protected function route() {
+      $this->setupPage();
+
       $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
       $index      = $controller == $_SERVER['SCRIPT_NAME'];
       $show404    = false;
       if (!$index && $controller) {
-        $controller = ltrim($controller, '/');
-        // substr_compare returns 0 if true
-        $controller = (substr_compare($controller, '.php', -4, 4, true) === 0) ? $controller : $controller . '.php';
-        $controller = DOCROOT . 'controllers' . DS . $controller;
-        if (file_exists($controller)) {
-          $this->controller = $controller;
+        $app = ucfirst(trim($controller, '/'));
+        if (isset($this->applications[$app])) {
+          $controller = (isset($this->applications[$app]['route']) ? $this->applications[$app]['route'] : $app);
+        }
+        $controller2 = 'ADV\\Controllers' . array_reduce(
+          explode('/', ltrim($controller, '/')),
+          function ($result, $val) {
+            return $result . '\\' . ucfirst($val);
+          },
+          ''
+        );
+
+        if (class_exists($controller2)) {
+          $this->runController($controller2);
         } else {
-          $show404 = true;
-          header('HTTP/1.0 404 Not Found');
-          Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
+          // substr_compare returns 0 if true
+          $controller = (substr_compare($controller, '.php', -4, 4, true) === 0) ? $controller : $controller . '.php';
+          $controller = ROOT_DOC . 'controllers' . DS . $controller;
+          if (file_exists($controller)) {
+            $this->controller = $controller;
+          } else {
+            $show404 = true;
+            header('HTTP/1.0 404 Not Found');
+            Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
+          }
         }
       }
       if ($index || $show404) {
-        $this->display();
+        header('Location: /' . ($this->User->prefs->startup_tab ? : $this->Config->get('apps.default')));
       }
+    }
+    /**
+     * @param $controller2
+     */
+    protected function runController($controller2) {
+      $dic = \ADV\Core\DIC::getInstance();
+
+      /** @var \ADV\App\Controller\Base $controller  */
+      $controller = new $controller2($this->Session, $this->User, $this->Ajax, $this->JS, $dic->get('Input'), DB::i());
+      $controller->setPage($dic->get('Page'));
+      $controller->run();
     }
     /**
      * @param $app
@@ -159,41 +276,11 @@
      *
      * @return null
      */
-    public function get_application($id) {
-      $app_class = '\\ADV\\App\\Apps\\' . $id;
-      return isset($this->applications[$id]) ? new $app_class : null;
-    }
-    /**
-     * @return null
-     */
-    public function get_selected() {
-      if ($this->selected !== null && is_object($this->selected)) {
-        return $this->selected;
-      }
-      $path           = explode('/', $_SERVER['DOCUMENT_URI']);
-      $app_id         = $path[1];
-      $this->selected = $this->get_application($app_id);
-      if (!$this->selected) {
-        $app_id         = $this->User->_startup_tab();
-        $this->selected = $this->get_application($app_id);
-      }
-      if (!$this->selected || !is_object($this->selected)) {
-        $this->selected = $this->get_application($this->Config->get('apps.default'));
-      }
-      return $this->selected;
-    }
     /**
      * @return null|string
      */
     public function getController() {
       return $this->controller;
-    }
-    public function display() {
-      Extensions::add_access($this->User);
-      Input::_get('application')  and $this->set_selected($_GET['application']);
-      $page = Page::start(_($help_context = "Main Menu"), SA_OPEN, false, true);
-      $page->display_application($this->get_selected());
-      Page::end();
     }
     public function loginFail() {
       header("HTTP/1.1 401 Authorization Required");
@@ -213,21 +300,11 @@
       $instance->applications = [];
       $instance->setupApplications();
     }
-    /**
-     * @param $app_id
-     *
-     * @return bool
-     */
-    public function set_selected($app_id) {
-      $this->User->selectedApp = $this->get_application($app_id);
-      $this->selected          = $this->User->selectedApp;
-      return $this->selected;
-    }
     protected function checkLogin() {
       if (!$this->Session instanceof \ADV\Core\Session || !$this->Session->checkUserAgent()) {
         $this->showLogin();
       }
-      if (Input::_post("user_name")) {
+      if ($this->Input->post("user_name")) {
         $this->login();
       } elseif (!$this->User->logged_in()) {
         $this->showLogin();
@@ -243,7 +320,7 @@
       }
     }
     protected function login() {
-      $company = Input::_post('login_company', null, 'default');
+      $company = $this->Input->post('login_company', null, 'default');
       if ($company) {
         $modules = $this->Config->get('modules.login', []);
         foreach ($modules as $module=> $module_config) {
@@ -262,6 +339,8 @@
         } catch (\ADV\Core\DB\DBException $e) {
           throw new \ADV\Core\DB\DBException('Could not connect to database!');
         }
+        $this->Session->checkUserAgent();
+        $this->Session['User'] = $this->User;
         $this->Session->regenerate();
         $this->Session->language->setLanguage($this->Session['language']->code);
       }
@@ -271,107 +350,33 @@
       $_SESSION['timeout'] = array(
         'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI'])
       );
-      require(DOCROOT . "controllers/access/login.php");
+      require(ROOT_DOC . "controllers/access/login.php");
       if ($this->Ajax->inAjax()) {
         $this->Ajax->redirect($_SERVER['DOCUMENT_URI']);
-      } elseif (AJAX_REFERRER) {
-        JS::_redirect('/');
+      } elseif (REQUEST_AJAX) {
+        $this->JS->redirect('/');
       }
       exit();
     }
     protected function loadModules() {
-      $types = $this->Config->get('modules.default', []);
-      foreach ($types as $type => $modules) {
-        foreach ($modules as $module=> $module_config) {
-          switch ($type) {
-            default:
-              $module = '\\Modules\\' . $module . '\\' . $module;
-              new $module($module_config);
-          }
-        }
+      $modules = $this->Config->get('modules.default', []);
+      foreach ($modules as $module=> $module_config) {
+        $module = '\\Modules\\' . $module . '\\' . $module;
+        new $module($module_config);
       }
     }
     protected function setupApplications() {
-      $this->extensions   = $this->Config->get('extensions.installed');
       $this->applications = $this->Config->get('apps.active');
-      $this->Session->get_text->add_domain($this->Session->language->code, LANG_PATH);
     }
-    /**
-     * @return mixed
-     */
-    protected function setTextSupport() {
-      if (!$this->Session->get_text) {
-        $this->Session->get_text = \gettextNativeSupport::i();
-      }
-    }
-    /**
-     * @static
-     *
-     * @param null $extensions
-     * @param      $company
-     *
-     * @return bool
-     */
-    public static function write_extensions($extensions = null, $company = -1) {
-      global $installed_extensions, $next_extension_id;
-      if (!isset($extensions)) {
-        $extensions = $installed_extensions;
-      }
-      if (!isset($next_extension_id)) {
-        $next_extension_id = 1;
-      }
-      //	$exts = Arr::natsort($extensions, 'name', 'name');
-      //	$extensions = $exts;
-      $msg = "<?php\n\n";
-      if ($company == -1) {
-        $msg .= "/* List of installed additional modules and plugins. If adding extensions manually
-                   to the list make sure they have unique, so far not used extension_ids as a keys,
-                   and \$next_extension_id is also updated.
-                   'name' - name for identification purposes;
-                   'type' - type of extension: 'module' or 'plugin'
-                   'path' - ADV root based installation path
-                   'filename' - name of module menu file, or plugin filename; related to path.
-                   'tab' - index of the module tab (new for module, or one of standard module names for plugin);
-                   'title' - is the menu text (for plugin) or new tab name
-                   'active' - current status of extension
-                   'acc_file' - (optional) file name with \$security_areas/\$security_sections extensions;
-                       related to 'path'
-                   'access' - security area code in string form
-               */
-               \n\$next_extension_id = $next_extension_id; // unique id for next installed extension\n\n";
-      } else {
-        $msg .= "/*
-                   Do not edit this file manually. This copy of global file is overwritten
-                   by extensions editor.
-               */\n\n";
-      }
-      $msg .= "\$installed_extensions = array (\n";
-      foreach ($extensions as $i => $ext) {
-        $msg .= "\t$i => ";
-        $msg .= "array ( ";
-        $t = '';
-        foreach ($ext as $key => $val) {
-          $msg .= $t . "'$key' => '$val',\n";
-          $t = "\t\t\t";
+    private function setupPage() {
+      $dic = \ADV\Core\DIC::getInstance();
+
+      $dic->set(
+        'Page',
+        function ($c) {
+          return new Page($c->get('Session'), $c->get('User'), $c->get('Config'), $c->get('Ajax'), $c->get('JS'), $c->get('Dates'));
         }
-        $msg .= "\t\t),\n";
-      }
-      $msg .= "\t);\n?>";
-      $filename = DOCROOT . ($company == -1 ? '' : 'company' . DS . $company) . DS . 'installed_extensions.php';
-      // Check if the file is writable first.
-      if (!$zp = fopen($filename, 'w')) {
-        Event::error(sprintf(_("Cannot open the extension setup file '%s' for writing."), $filename));
-        return false;
-      } else {
-        if (!fwrite($zp, $msg)) {
-          Event::error(sprintf(_("Cannot write to the extensions setup file '%s'."), $filename));
-          fclose($zp);
-          return false;
-        }
-        // Close file
-        fclose($zp);
-      }
-      return true;
+      );
     }
   }
 

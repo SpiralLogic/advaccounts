@@ -27,12 +27,14 @@
     /** @var DB */
     protected $jobsboardDB;
     public function init() {
+      if (isset($_POST['user_name'])) {
+        \ADV\Core\Event::registerShutdown([$this, 'doWebsales']);
+      }
+    }
+    public function doWebsales() {
       if (!$this->jobsboardDB) {
         $this->jobsboardDB = new DB('jobsboard');
       }
-      \ADV\Core\Event::registerShutdown([$this, 'doWebsales']);
-    }
-    public function doWebsales() {
       $orders = $this->getNewWebsales();
       if (!$orders) {
         Event::notice("No new websales from website");
@@ -52,7 +54,7 @@
      * @return bool|Orders
      */
     function getNewWebsales() {
-      $orders = new Orders();
+      $orders = new Orders($this->config);
       if (!count($orders)) {
         return false;
       }

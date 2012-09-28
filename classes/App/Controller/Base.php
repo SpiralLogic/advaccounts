@@ -8,12 +8,8 @@
    */
   namespace ADV\App\Controller;
 
-  use ADV\Core\Ajax;
+  use ADV\App\Page;
   use ADV\App\User;
-  use ADV\Core\DB\DB;
-  use ADV\Core\JS;
-  use ADV\Core\Input\Input;
-  use ADV\Core\Config;
   use ADV\Core\Session;
 
   /**
@@ -23,35 +19,23 @@
     protected $title;
     /*** @var User */
     protected $User;
-    /*** @var \ADV\Core\Ajax */
-    protected $Ajax;
-    /*** @var Session */
+    /*** @var \ADV\Core\Session */
     protected $Session;
-    /*** @var \ADV\Core\DB\DB */
-    protected $DB;
-    /*** @var JS */
-    protected $JS;
-    /** @var Input */
-    protected $Input;
-    protected $action;
     public $help_context;
+    /** @var Page */
+    public $Page;
     /**
 
      */
-    function __construct() {
-      $this->Ajax    = Ajax::i();
-      $this->JS      = JS::i();
-      $this->Session = Session::i();
-      $this->User    = User::getCurrentUser($this->Session, Config::i());
-      $this->DB      = DB::i();
-      $this->Input   = Input::i();
-      $this->action  = $this->Input->post('_action');
-      $this->method  = $_SERVER['REQUEST_METHOD'];
-      $this->before();
-      $this->index();
-      $this->after();
+    function __construct($session, $user) {
+      $this->Session = $session;
+      $this->User    = $user;
     }
-    protected function before() {
+    /**
+     * @param \ADV\App\Page $page
+     */
+    public function setPage(Page $page) {
+      $this->Page = $page;
     }
     abstract protected function index();
     /**
@@ -60,39 +44,5 @@
     protected function setTitle($title) {
       $this->title = _($this->help_context = $title);
     }
-    protected function after() {
-    }
-    /**
-     * @internal param $prefix
-     * @return bool|mixed
-     */
-    protected function runValidation() {
-    }
-    /**
-     * @param $prefix
-     *
-     * @return int|mixed
-     */
-    protected function getActionId($prefix) {
-      if (strpos($this->action, $prefix) === 0) {
-        $result = str_replace($prefix, '', $this->action);
-        if (strlen($result) > 0) {
-          return $result;
-        }
-      }
-
-      return -1;
-    }
-    protected function runAction() {
-      if ($this->action && is_callable(array($this, $this->action))) {
-        call_user_func(array($this, $this->action));
-      }
-    }
-    /**
-     * @return array
-     */
-    public function __sleep() {
-      $this->DB = null;
-      return array_keys((array) $this);
-    }
+    abstract public function run();
   }

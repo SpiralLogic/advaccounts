@@ -35,7 +35,7 @@
     $refund_id = $_GET[ADDED_ID];
     Event::success(_("The customer refund has been successfully entered."));
     Display::submenu_print(_("&Print This Receipt"), ST_CUSTREFUND, $refund_id . "-" . ST_CUSTREFUND, 'prtopt');
-    Display::link_no_params("/sales/inquiry/customer_inquiry.php", _("Show Invoices"));
+    Display::link_no_params("/sales/search/transactions", _("Show Invoices"));
     Display::note(GL_UI::view(ST_CUSTREFUND, $refund_id, _("&View the GL Journal Entries for this Customer Refund")));
     Page::footer_exit();
   }
@@ -62,7 +62,19 @@
       $rate = Validation::input_num('_ex_rate');
     }
     Dates::_newDocDate($_POST['DateBanked']);
-    $refund_id                   = Debtor_Refund::add(0, $_POST['debtor_id'], $_POST['branch_id'], $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate, Validation::input_num('charge'));
+    $refund_id                   = Debtor_Refund::add(
+      0,
+      $_POST['debtor_id'],
+      $_POST['branch_id'],
+      $_POST['bank_account'],
+      $_POST['DateBanked'],
+      $_POST['ref'],
+      Validation::input_num('amount'),
+      Validation::input_num('discount'),
+      $_POST['memo_'],
+      $rate,
+      Validation::input_num('charge')
+    );
     $_SESSION['alloc']->trans_no = $refund_id;
     $_SESSION['alloc']->write();
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$refund_id");

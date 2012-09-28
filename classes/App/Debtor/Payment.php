@@ -40,7 +40,10 @@
      * @return int
      */
     public static function add($trans_no, $debtor_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0, $tax = 0) {
-      $result = DB::_select('trans_no')->from('debtor_trans')->where('debtor_id=', $debtor_id)->andWhere('branch_id=', $branch_id)->andWhere('tran_date=', Dates::_dateToSql($date_))->andWhere('type=', ST_CUSTPAYMENT)->andWhere('ov_amount=', $amount)->fetch()->one();
+      $result = DB::_select('trans_no')->from('debtor_trans')->where('debtor_id=', $debtor_id)->andWhere('branch_id=', $branch_id)->andWhere(
+        'tran_date=',
+        Dates::_dateToSql($date_)
+      )->andWhere('type=', ST_CUSTPAYMENT)->andWhere('ov_amount=', $amount)->fetch()->one();
       if ($result && $result['trans_no'] !== Session::_getFlash('customer_payment')) {
         Session::_setFlash('customer_payment', $result['trans_no']);
         Event::warning('A payment for same amount and date already exists for this customer, do you want to process anyway?');
@@ -58,7 +61,18 @@
       }
       $total = 0;
       /* Bank account entry first */
-      $total += Debtor_TransDetail::add_gl_trans(ST_CUSTPAYMENT, $payment_no, $date_, $bank_gl_account, 0, 0, $amount - $charge, $debtor_id, "Cannot insert a GL transaction for the bank account debit", $rate);
+      $total += Debtor_TransDetail::add_gl_trans(
+        ST_CUSTPAYMENT,
+        $payment_no,
+        $date_,
+        $bank_gl_account,
+        0,
+        0,
+        $amount - $charge,
+        $debtor_id,
+        "Cannot insert a GL transaction for the bank account debit",
+        $rate
+      );
       if ($branch_id != ANY_NUMERIC) {
         $branch_data      = Sales_Branch::get_accounts($branch_id);
         $debtors_account  = $branch_data["receivables_account"];
@@ -70,16 +84,49 @@
       }
       if (($discount + $amount) != 0) {
         /* Now Credit Debtors account with receipts + discounts */
-        $total += Debtor_TransDetail::add_gl_trans(ST_CUSTPAYMENT, $payment_no, $date_, $debtors_account, 0, 0, -($discount + $amount), $debtor_id, "Cannot insert a GL transaction for the debtors account credit", $rate);
+        $total += Debtor_TransDetail::add_gl_trans(
+          ST_CUSTPAYMENT,
+          $payment_no,
+          $date_,
+          $debtors_account,
+          0,
+          0,
+          -($discount + $amount),
+          $debtor_id,
+          "Cannot insert a GL transaction for the debtors account credit",
+          $rate
+        );
       }
       if ($discount != 0) {
         /* Now Debit discount account with discounts allowed*/
-        $total += Debtor_TransDetail::add_gl_trans(ST_CUSTPAYMENT, $payment_no, $date_, $discount_account, 0, 0, $discount, $debtor_id, "Cannot insert a GL transaction for the payment discount debit", $rate);
+        $total += Debtor_TransDetail::add_gl_trans(
+          ST_CUSTPAYMENT,
+          $payment_no,
+          $date_,
+          $discount_account,
+          0,
+          0,
+          $discount,
+          $debtor_id,
+          "Cannot insert a GL transaction for the payment discount debit",
+          $rate
+        );
       }
       if ($charge != 0) {
         /* Now Debit bank charge account with charges */
         $charge_act = DB_Company::get_pref('bank_charge_act');
-        $total += Debtor_TransDetail::add_gl_trans(ST_CUSTPAYMENT, $payment_no, $date_, $charge_act, 0, 0, $charge, $debtor_id, "Cannot insert a GL transaction for the payment bank charge debit", $rate);
+        $total += Debtor_TransDetail::add_gl_trans(
+          ST_CUSTPAYMENT,
+          $payment_no,
+          $date_,
+          $charge_act,
+          0,
+          0,
+          $charge,
+          $debtor_id,
+          "Cannot insert a GL transaction for the payment bank charge debit",
+          $rate
+        );
       }
       if ($tax != 0) {
         $taxes = Tax_Groups::get_for_item($tax_group);
@@ -115,7 +162,13 @@
      * @param string $parms
      */
     public static function credit_row($customer, $credit, $parms = '') {
-      Table::label(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? ' class="redfg openWindow"' : '') . " href='" . e('/sales/inquiry/customer_inquiry.php?frame=1&debtor_id=' . $customer) . "'>" . Num::_priceFormat($credit) . "</a>", $parms);
+      Table::label(
+        _("Current Credit:"),
+        "<a target='_blank' " . ($credit < 0 ? ' class="redfg openWindow"' : '') . " href='" . e(
+          '/sales/search/transactions?frame=1&debtor_id=' . $customer
+        ) . "'>" . Num::_priceFormat($credit) . "</a>",
+        $parms
+      );
     }
     /**
      * @static
@@ -152,7 +205,8 @@
         $myrow = Debtor::get_habit($debtor_id);
         $type  = ST_CUSTPAYMENT;
       } else {
-        $sql    = "SELECT debtors.payment_discount,
+        $sql
+                = "SELECT debtors.payment_discount,
                   credit_status.dissallow_invoices
                   FROM debtors, credit_status
                   WHERE debtors.credit_status = credit_status.id

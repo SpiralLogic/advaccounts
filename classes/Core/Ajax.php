@@ -25,8 +25,7 @@
    * @method static Ajax _inAjax()
    * @method static Ajax _absoluteURL()
    */
-  class Ajax extends \JsHttpRequest
-  {
+  class Ajax extends \JsHttpRequest {
     use Traits\StaticAccess2;
 
     /**
@@ -289,6 +288,6 @@
      * @return string
      */
     public function absoluteURL($url) {
-      return strpos($url, '..') === 0 ? dirname($_SERVER['DOCUMENT_URI']) . '/' . $url : str_replace(WEBROOT, '/', $url);
+      return strpos($url, '..') === 0 ? dirname($_SERVER['DOCUMENT_URI']) . '/' . $url : str_replace(ROOT_WEB, '/', $url);
     }
   }

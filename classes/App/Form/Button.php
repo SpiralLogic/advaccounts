@@ -15,8 +15,7 @@
   /**
 
    */
-  class Button implements \ArrayAccess
-  {
+  class Button implements \ArrayAccess {
     use \ADV\Core\Traits\HTML;
 
     public $id;
@@ -33,7 +32,6 @@
 
      */
     public function __construct($name, $value, $caption) {
-
       $this->name = $this->attr['name'] = $name;
       $this->id                         = $this->nameToId();
       $this->attr['type']               = 'submit';
@@ -49,7 +47,6 @@
      */
     public function type($type) {
       $this->attr['class'] .= ' btn-' . $type;
-
       return $this;
     }
     /**
@@ -58,8 +55,7 @@
      * @return Button
      */
     public function setWarning($warning) {
-      JS::_beforeload("_validate." . $this->name . "=function(){ return confirm('" . strtr($warning, array("\n" => '\\n')) . "');};");
-
+      JS::_beforeload("_validate['" . $this->attr['value'] . "']=function(){ return confirm('" . strtr($warning, array("\n" => '\\n')) . "');};");
       return $this;
     }
     /**
@@ -70,7 +66,6 @@
      */
     public function preIcon($icon) {
       $this->preicon = $icon;
-
       return $this;
     }
     /**
@@ -80,7 +75,6 @@
      */
     public function postIcon($icon) {
       $this->posticon = $icon;
-
       return $this;
     }
     /**
@@ -90,7 +84,6 @@
      */
     public function setValidator($validator) {
       $this->validator = $validator;
-
       return $this;
     }
     /**
@@ -100,7 +93,6 @@
      */
     public function mergeAttr($attr) {
       $this->attr = array_merge($this->attr, (array) $attr);
-
       return $this;
     }
     /**
@@ -125,7 +117,6 @@
      */
     public function __toString() {
       $this->formatIcons();
-
       return $this->makeElement('button', $this->attr, $this->caption, true);
     }
     /**

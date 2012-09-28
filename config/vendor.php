@@ -8,12 +8,11 @@
    * @link      http://www.advancedgroup.com.au
    **/
   return array(
-    'gettextNativeSupport', //
     'PHPMailer', //
     'SMTP', //
     'OLEwriter', //
     'JsHttpRequest', //
     'TCPDF', //
     'Cpdf', //
-//    'JSMin' //
+    //    'JSMin' //
   );

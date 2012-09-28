@@ -20,9 +20,14 @@
      * @param null   $id
      */
     public static function amountDecimal($amount, $attrs = '', $id = null) {
-      $amount = Num::_priceDecimal($amount, null);
+      $amount = Num::_priceDecimal($amount);
       Cell::label($amount, ' class="alignright nowrap"' . $attrs, $id);
     }
+    /**
+     * @param        $amount
+     * @param string $attrs
+     * @param null   $id
+     */
     /**
      * @param        $amount
      * @param bool   $bold
@@ -121,7 +126,6 @@
      * @param $value
      */
     public static function debitOrCredit($value) {
-      $value = Num::_priceFormat($value);
       if ($value >= 0) {
         Cell::amount($value);
         Cell::label("");

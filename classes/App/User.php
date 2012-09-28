@@ -15,7 +15,6 @@
   use ADV\Core\Event;
   use DB_Company;
   use ADV\Core\DB\DB;
-  use ADV\Core\Config;
   use ADV\Core\Traits\StaticAccess;
 
   /**
@@ -32,19 +31,17 @@
    * @method static rep_popup()
    * @method static percent_dec()
    * @method static graphic_links()
-   * @method static register_login($object, $function = null, $arguments = [])
    */
-  class User {
+  class User extends \ADV\App\DB\Base {
     use \ADV\Core\Traits\Hook;
-    use StaticAccess {
-    StaticAccess::i as ii;
-    }
+    use StaticAccess;
 
-    /***
-     * @static
-     * @return User
-     */
+    protected $_table = 'users';
+    protected $_classname = 'Users';
+    protected $_id_column = 'id';
     public $user;
+    public $id;
+    public $user_id;
     /**
      * @var string
      */
@@ -52,11 +49,13 @@
     /** @var */
     public $username;
     /** @var */
+    public $real_name;
     public $name;
     /**
      * @var string
      */
-    public $company;
+    public $company = 'default';
+    public $company_name;
     /** @var */
     public $pos;
     /**
@@ -77,10 +76,11 @@
      * @var bool
      */
     public $logged = false;
-    /***
-     * @var UserPrefs
-     */
+    /**@var UserPrefs */
     public $prefs;
+    public $phone;
+    public $language;
+    public $email;
     /**
      * @var bool
      */
@@ -88,59 +88,45 @@
     public $selectedApp;
     /** @var */
     protected $access_sections;
-    protected $hash;
+    public $hash;
     /** @var */
     public $last_record;
-    /** @var Session */
-    protected $Session;
     /** @var \ADV\App\Security */
     public $Security;
-    /** @var \ADV\Core\DB\DB */
-    protected $DB;
-    /**
-     * @static
-     *
-     * @param Session $session
-     * @param Config  $config
-     *
-     * @return User
-     */
-    public static function getCurrentUser(Session $session, Config $config) {
-      return static::i($session, $config);
+    static function i() {
+      return $_SESSION['User'];
     }
     /**
-     * @static
-     *
-     * @param Session $session
-     * @param Config  $config
-     *
-     * @return User
+     * @return \ADV\Core\Traits\Status|bool
      */
-    public static function  i(Session $session = null, Config $config = null) {
-      $user = null;
-      if (isset($_SESSION['User'])) {
-        $user = $_SESSION['User'];
+    protected function canProcess() {
+      if (strlen($this->user_id) < 4) {
+        Event::error(_("The user login entered must be at least 4 characters long."));
+        JS::_setFocus('user_id');
+        return false;
       }
-      return static::ii($user, $session, $config);
+      return true;
     }
     /**
-     * @param \ADV\Core\Session $session
-     * @param \ADV\Core\Config  $config
-     */
-    public function __construct(Session $session = null, Config $config = null) {
-      $this->Session        = $session ? : Session::i();
-      $this->Config         = $config ? : Config::i();
-      $this->company        = $this->Config->get('default.company') ? : 'default';
-      $this->date_ui_format = $this->Config->get('date.ui_format');
-      $this->logged         = false;
-      $this->prefs          = new UserPrefs((array) $this);
-    }
-    /**
+     * @param bool $inactive
+     *
      * @return array
      */
-    public function __sleep() {
-      $this->Session = null;
-      return array_keys((array) $this);
+    public static function getAll($inactive = false) {
+      $q = DB::_select('users.id', 'user_id', 'real_name', 'phone', 'email', 'last_visit_date', 'role', 'users.inactive')->from('users,security_roles')->where(
+        'security_roles.id=users.role_id'
+      );
+      if (!$inactive) {
+        $q->andWhere('users.inactive=', 0);
+      }
+      return $q->fetch()->all();
+    }
+    /**
+     */
+    public function __construct($id = 0) {
+      parent::__construct($id = 0);
+      $this->logged = false;
+      $this->prefs  = new UserPrefs();
     }
     /**
      * @return bool
@@ -161,7 +147,6 @@
      * @return bool
      */
     public function login($company, $loginname) {
-      $this->Session = $this->Session ? : Session::i();
       $this->company = $company;
       $this->logged  = false;
       $myrow         = $this->get_for_login($loginname, $_POST['password']);
@@ -172,7 +157,7 @@
         $this->role_set = [];
         $this->access   = $myrow['role_id'];
         $this->hash     = $myrow["hash"];
-        $this->Security = new Security($this->Config);
+        $this->Security = new Security();
         // store area codes available for current user role
         $role = $this->Security->get_role($myrow['role_id']);
         if (!$role) {
@@ -194,10 +179,9 @@
         $this->user            = $myrow['id'];
         $this->last_action     = time();
         $this->timeout         = DB_Company::get_pref('login_tout');
+        $this->company_name    = DB_Company::get_pref('coy_name');
         $this->salesmanid      = $this->get_salesmanid();
         $this->fireHooks('login');
-        $this->Session->checkUserAgent();
-        $this->Session['User'] = $this;
         Event::registerShutdown(['Users', 'update_visitdate'], [$this->username]);
         Event::registerShutdown([$this, '_addLog']);
       }
@@ -244,8 +228,9 @@
         $tout = $this->timeout;
         if ($tout && (time() > $this->last_action + $tout)) {
           $this->logged = false;
+        } else {
+          $this->last_action = time();
         }
-        $this->last_action = time();
       }
     }
     public function _addLog() {
@@ -318,9 +303,9 @@
         . ",loadtxt: '" . _('Requesting data...') //
         . "',date: '" . Dates::_today() //
         . "',datefmt: " . $this->prefs->date_format //
-        . ",datesep: '" . $this->prefs->date_sep() //
-        . "',ts: '" . $this->prefs->tho_sep() //
-        . "',ds: '" . $this->prefs->dec_sep() //
+        . ",datesep: '" . $this->prefs->date_sep //
+        . "',ts: '" . $this->prefs->tho_sep //
+        . "',ds: '" . $this->prefs->dec_sep //
         . "',pdec: " . $this->prefs->price_dec //
         . "};";
       JS::_beforeload($js);
@@ -334,19 +319,17 @@
      */
     public function _numeric($input) {
       $num = trim($input);
-      $sep = $this->prefs->tho_sep();
+      $sep = $this->prefs->tho_sep;
       if ($sep != '') {
         $num = str_replace($sep, '', $num);
       }
-      $sep = $this->prefs->dec_sep();
-
+      $sep = $this->prefs->dec_sep;
       if ($sep != '.') {
         $num = str_replace($sep, '.', $num);
       }
       if (!is_numeric($num)) {
         return false;
       }
-
       $num = (float) $num;
       if ($num == (int) $num) {
         return (int) $num;
@@ -429,21 +412,20 @@
      * @return int
      */
     public function _date_sep() {
-      return (isset($_SESSION["current_user"])) ? $this->prefs->date_sep() : $this->Config->get('date.ui_separator');
+      return (isset($_SESSION["User"])) ? $this->prefs->date_sep : 0;
     }
     /**
-     * @static
-     * @return mixed
+     * @return int
      */
     public function _tho_sep() {
-      return $this->prefs->tho_sep();
+      return $this->prefs->tho_sep;
     }
     /**
      * @static
      * @return mixed
      */
     public function _dec_sep() {
-      return $this->prefs->dec_sep();
+      return $this->prefs->dec_sep;
     }
     /**
      * @static

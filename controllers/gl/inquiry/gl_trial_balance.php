@@ -32,7 +32,8 @@
   function display_trial_balance() {
     Display::div_start('balance_tbl');
     Table::start('padded grid');
-    $tableheader = "<tr>
+    $tableheader
+      = "<tr>
  <td rowspan=2 class='tablehead'>" . _("Account") . "</td>
  <td rowspan=2 class='tablehead'>" . _("Account Name") . "</td>
 		<td colspan=2 class='tablehead'>" . _("Brought Forward") . "</td>
@@ -62,7 +63,7 @@
       if (Input::_hasPost("NoZero") && !$prev['balance'] && !$curr['balance'] && !$tot['balance']) {
         continue;
       }
-      $url = "<a href='" . BASE_URL . "gl/inquiry/gl_account.php?TransFromDate=" . $_POST["TransFromDate"] . "&TransToDate=" . $_POST["TransToDate"] . "&account=" . $account["account_code"] . "'>" . $account["account_code"] . "</a>";
+      $url = "<a href='" . ROOT_URL . "gl/inquiry/gl_account.php?TransFromDate=" . $_POST["TransFromDate"] . "&TransToDate=" . $_POST["TransToDate"] . "&account=" . $account["account_code"] . "'>" . $account["account_code"] . "</a>";
       Cell::label($url);
       Cell::label($account["account_name"]);
       if (Input::_hasPost('Balance')) {

@@ -26,7 +26,7 @@
         if (isset($_POST['tax_type_id' . $i]) && $_POST['tax_type_id' . $i] != ANY_NUMERIC
         ) {
           $taxes[] = $_POST['tax_type_id' . $i];
-          $rates[] = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
+          $rates[] = Tax_Type::get_default_rate($_POST['tax_type_id' . $i]);
           //Editable rate has been removed 090920 Joe Hunt
           //$rates[] = Validation::input_num('rate' . $i);
         }
@@ -110,9 +110,9 @@ echo "<td>" . $myrow["type" . $i] . "</td>";*/
     if (!isset($_POST['tax_type_id' . $i])) {
       $_POST['tax_type_id' . $i] = 0;
     }
-    Tax_Types::cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
+    Tax_Type::cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
     if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != ALL_NUMERIC) {
-      $default_rate = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
+      $default_rate = Tax_Type::get_default_rate($_POST['tax_type_id' . $i]);
       Cell::label(Num::_percentFormat($default_rate), ' class="alignright nowrap"');
       //Editable rate has been removed 090920 Joe Hunt
       //if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")

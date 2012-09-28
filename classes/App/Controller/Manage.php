@@ -20,47 +20,44 @@
   /**
 
    */
-  abstract class Manage extends Base {
+  abstract class Manage extends Action {
     /** @var \ADV\App\DB\Base */
     protected $object;
     protected $defaultFocus;
     protected $tableWidth = '50';
+    protected $security;
     protected function runPost() {
-      if ($this->method == 'POST') {
-        $id = $this->getActionId(DELETE);
-        if ($id > -1) {
-          $this->object->load($id);
-          //the link to delete a selected record was clicked instead of the submit button
-          $this->object->delete();
-          $status = $this->object->getStatus();
-          $this->Ajax->addStatus(true, null, $status);
-        }
-        $id = $this->getActionId(EDIT);
-        if ($id > -1) {
-          //editing an existing Sales-person
-          $this->object->load($id);
-        }
-        $id = $this->getActionId(INACTIVE);
-        if ($id > -1) {
-          //editing an existing Sales-person
-          $this->object->load($id);
-          $changes['inactive'] = $this->Input->post('_value', Input::NUMERIC);
-          $this->action        = SAVE;
-        }
-        if ($this->action == SAVE) {
-          $changes = isset($changes) ? $changes : $_POST;
-          $this->object->save($changes);
-          //run the sql from either of the above possibilites
-          $status = $this->object->getStatus();
-          if ($status['status'] == Status::ERROR) {
-            $this->JS->renderStatus($status);
-          }
-          $this->object->load(0);
-        } elseif ($this->action == CANCEL) {
-          $status = $this->object->getStatus();
-        } elseif ($this->action == 'showInactive') {
-          $this->generateTable();
-          exit();
+      if (REQUEST_POST) {
+        $id = $this->getActionId([DELETE, EDIT, INACTIVE]);
+        switch ($this->action) {
+          case DELETE:
+            $this->object->load($id);
+            //the link to delete a selected record was clicked instead of the submit button
+            $this->object->delete();
+            $status = $this->object->getStatus();
+            break;
+          case EDIT:
+            $this->object->load($id);
+            break;
+          case INACTIVE:
+            $this->object->load($id);
+            $changes['inactive'] = $this->Input->post('_value', Input::NUMERIC);
+          case SAVE:
+            $changes = isset($changes) ? $changes : $_POST;
+            $this->object->save($changes);
+            //run the sql from either of the above possibilites
+            $status = $this->object->getStatus();
+            if ($status['status'] == Status::ERROR) {
+              $this->JS->renderStatus($status);
+            }
+            $this->object->load(0);
+            break;
+          case CANCEL:
+            $status = $this->object->getStatus();
+            break;
+          case 'showInactive':
+            $this->generateTable();
+            exit();
         }
         if (isset($status)) {
           $this->Ajax->addStatus($status);
@@ -68,11 +65,14 @@
       }
     }
     protected function index() {
-      Page::start($this->title, SA_SALESTYPES);
+      $this->Page->init($this->title, $this->security);
+      $this->beforeTable();
       $this->generateTable();
       echo '<br>';
       $this->generateForm();
       Page::end(true);
+    }
+    protected function beforeTable() {
     }
     protected function generateForm() {
       $view          = new \ADV\Core\View('form/simple');
@@ -91,20 +91,40 @@
      * @return \DB_Pager
      */
     protected function generateTable() {
+      if ($this->action == EDIT) {
+        return;
+      }
       $cols       = $this->generateTableCols();
-      $pager_name = get_called_class() . '_table';
-      $inactive   = false;
+      $pager_name = end(explode('\\', ltrim(get_called_class(), '\\'))) . '_table';
+      // DB_Pager::kill($pager_name);
+      $table        = DB_Pager::newPager($pager_name, $this->getTableRows($pager_name), $cols);
+      $table->width = $this->tableWidth;
+      $table->display();
+    }
+    /**
+     * @param $pager_name
+     *
+     * @return mixed
+     */
+    protected function getTableRows($pager_name) {
+      $inactive = $this->getShowInactive($pager_name);
+      return $this->object->getAll($inactive);
+    }
+    /**
+     * @param $pager_name
+     *
+     * @return bool
+     */
+    protected function getShowInactive($pager_name) {
+      $inactive = false;
       if (isset($_SESSION['pager'][$pager_name])) {
         $inactive = ($this->action == 'showInactive' && $this->Input->post(
           '_value',
           Input::NUMERIC
         ) == 1) || ($this->action != 'showInactive' && $_SESSION['pager'][$pager_name]->showInactive);
+        return $inactive;
       }
-      //DB_Pager::kill($pager_name);
-      $table        = DB_Pager::newPager($pager_name, $this->object->getAll($inactive), $cols);
-      $table->width = $this->tableWidth;
-      $table->display();
-      return $table;
+      return $inactive;
     }
     /**
      * @param $row

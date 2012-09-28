@@ -21,7 +21,6 @@
     'tst_server',
     'tst_system',
     'tst_browser',
-    'tst_gettext',
     'tst_debug',
     'tst_logging',
     'tst_subdirs',
@@ -139,18 +138,6 @@
   /**
    * @return array
    */
-  function tst_gettext() {
-    $test['descr']    = _('Native gettext');
-    $test['test']     = function_exists('gettext') ? _('Yes') : _('No');
-    $test['type']     = 1;
-    $test['result']   = true;
-    $test['comments'] = _('In case of no getext support, php emulation is used');
-    return $test;
-  }
-
-  /**
-   * @return array
-   */
   function tst_debug() {
     $test['descr']    = _('Debugging mode');
     $test['type']     = 0;
@@ -192,19 +179,19 @@
     $comp_subdirs  = array('images', 'pdf_files', 'backup', 'js_cache');
     $test['descr'] = _('Company subdirectories consistency');
     $test['type']  = 3;
-    $test['test']  = array(COMPANY_PATH . '*');
+    $test['test']  = array(PATH_COMPANY . '*');
     foreach ($comp_subdirs as $sub) {
-      $test['test'][] = COMPANY_PATH . '*/' . $sub;
+      $test['test'][] = PATH_COMPANY . '*/' . $sub;
     }
     $test['result'] = true;
-    if (!is_dir(COMPANY_PATH) || !is_writable(COMPANY_PATH)) {
+    if (!is_dir(PATH_COMPANY) || !is_writable(PATH_COMPANY)) {
       $test['result']     = false;
-      $test['comments'][] = sprintf(_("'%s' is not writeable"), COMPANY_PATH);
+      $test['comments'][] = sprintf(_("'%s' is not writeable"), PATH_COMPANY);
       return $test;
     }
     ;
     foreach (Config::_getAll('db') as $n => $comp) {
-      $path = COMPANY_PATH . "";
+      $path = PATH_COMPANY . "";
       if (!is_dir($path) || !is_writable($path)) {
         $test['result']     = false;
         $test['comments'][] = sprintf(_("'%s' is not writeable"), $path);
@@ -238,7 +225,7 @@
   function tst_tmpdir() {
     $test['descr']      = _('Temporary directory');
     $test['type']       = 3;
-    $test['test']       = DOCROOT . 'tmp';
+    $test['test']       = ROOT_DOC . 'tmp';
     $test['result']     = is_dir($test['test']) && is_writable($test['test']);
     $test['comments'][] = sprintf(_("'%s' is not writeable"), $test['test']);
     return $test;
@@ -259,12 +246,6 @@
       if ($language['code'] == 'en_AU') {
         continue;
       } // native ADV language
-      $file = LANG_PATH . $language['code'] . DS . 'LC_MESSAGES' . DS . $languageuage['code'];
-      $file .= function_exists('gettext') ? '.mo' : '.po';
-      if (!is_file($file)) {
-        $test['result']     = false;
-        $test['comments'][] = sprintf(_('Missing %s translation file.'), $file);
-      }
       if (!setlocale(LC_MESSAGES, $language['code'] . "." . $language['encoding'])) {
         $test['result']     = false;
         $test['comments'][] = sprintf(_('Missing system locale: %s'), $language['code'] . "." . $language['encoding']);
@@ -282,34 +263,11 @@
   function tst_config() {
     $test['descr']      = _('Main config file');
     $test['type']       = 2;
-    $test['test']       = DOCROOT . 'config' . DS . 'config.php';
+    $test['test']       = ROOT_DOC . 'config' . DS . 'config.php';
     $test['result']     = is_file($test['test']) && !is_writable($test['test']);
     $test['comments'][] = sprintf(_("'%s' file should be read-only"), $test['test']);
     return $test;
   }
 
-  /**
-   * @return array
-   */
-  function tst_extconfig() {
-    $test['descr']      = _('Extensions configuration files');
-    $test['type']       = 3;
-    $test['test']       = DOCROOT . 'config' . DS . 'extensions.php';
-    $test['result']     = is_file($test['test']) && is_writable($test['test']);
-    $test['comments'][] = sprintf(_("'%s' file should be writeable"), $test['test']);
-    foreach (Config::_getAll('db') as $n => $comp) {
-      $path = COMPANY_PATH . "$n";
-      if (!is_dir($path)) {
-        continue;
-      }
-      $path .= "/config/extensions.php";
-      if (!is_file($path) || !is_writable($path)) {
-        $test['result']     = false;
-        $test['comments'][] = sprintf(_("'%s' is not writeable"), $path);
-        continue;
-      }
-      ;
-    }
-    return $test;
-  }
+
 

@@ -35,12 +35,18 @@
      *
      * @internal param $password
      */
-    public static function  add($user_id, $real_name, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos, $hash) {
-      $sql = "INSERT INTO users (user_id, real_name, phone, email, role_id, language, pos, print_profile, rep_popup,hash)
-                VALUES (" . DB::_escape($user_id) . ",
-                " . DB::_escape($real_name) . ", " . DB::_escape($phone) . "," . DB::_escape($email) . ", " . DB::_escape($role_id) . ", " . DB::_escape(
-        $language
-      ) . ", " . DB::_escape($pos) . "," . DB::_escape($profile) . "," . DB::_escape($rep_popup) . "," . DB::_escape($hash) . " )";
+    public static function  add($user_id, $real_name, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos) {
+      $sql
+        = "INSERT INTO users (user_id, real_name, phone, email, role_id, language, pos, print_profile, rep_popup)
+                VALUES (" . DB::_escape($user_id) . "," . //
+        DB::_escape($real_name) . ", " . //
+        DB::_escape($phone) . "," . //
+        DB::_escape($email) . ", " . //
+        DB::_escape($role_id) . ", " . //
+        DB::_escape($language) . ", " . //
+        DB::_escape($pos) . "," . //
+        DB::_escape($profile) . "," . //
+        DB::_escape($rep_popup) . " )";
       DB::_query($sql, "could not add user for $user_id");
     }
     /**
@@ -58,14 +64,16 @@
      * @param $pos
      */
     public static function  update($id, $user_id, $real_name, $phone, $email, $role_id, $language, $profile, $rep_popup, $pos) {
-      $sql = "UPDATE users SET real_name=" . DB::_escape($real_name) . ", phone=" . DB::_escape($phone) . ",
-                email=" . DB::_escape($email) . ",
-                role_id=" . DB::_escape($role_id) . ",
-                language=" . DB::_escape($language) . ",
-                print_profile=" . DB::_escape($profile) . ",
-                rep_popup=" . DB::_escape($rep_popup) . ",
-                pos=" . DB::_escape($pos) . ",
-                user_id = " . DB::_escape($user_id) . " WHERE id=" . DB::_escape($id);
+      $sql = "UPDATE users SET real_name=" . DB::_escape($real_name) . //
+        ", phone=" . DB::_escape($phone) . //
+        ", email=" . DB::_escape($email) . //
+        ", role_id=" . DB::_escape($role_id) . //
+        ", language=" . DB::_escape($language) . //
+        ", print_profile=" . DB::_escape($profile) . //
+        ", rep_popup=" . DB::_escape($rep_popup) . //
+        ", pos=" . DB::_escape($pos) . //
+        ", user_id = " . DB::_escape($user_id) . //
+        " WHERE id=" . DB::_escape($id);
       DB::_query($sql, "could not update user for $user_id");
       session_regenerate_id();
     }
@@ -73,73 +81,14 @@
      * @static
      *
      * @param $id
-     * @param $price_dec
-     * @param $qty_dec
-     * @param $exrate_dec
-     * @param $percent_dec
-     * @param $show_gl
-     * @param $show_codes
-     * @param $date_format
-     * @param $date_sep
-     * @param $tho_sep
-     * @param $dec_sep
-     * @param $theme
-     * @param $page_size
-     * @param $show_hints
-     * @param $profile
-     * @param $rep_popup
-     * @param $query_size
-     * @param $graphic_links
-     * @param $language
-     * @param $stickydate
-     * @param $startup_tab
+     * @param $prefs
      */
     public static function  update_display_prefs(
       $id,
-      $price_dec,
-      $qty_dec,
-      $exrate_dec,
-      $percent_dec,
-      $show_gl,
-      $show_codes,
-      $date_format,
-      $date_sep,
-      $tho_sep,
-      $dec_sep,
-      $theme,
-      $page_size,
-      $show_hints,
-      $profile,
-      $rep_popup,
-      $query_size,
-      $graphic_links,
-      $language,
-      $stickydate,
-      $startup_tab
+      $prefs
     ) {
-      $sql = "UPDATE users SET
-                price_dec=" . DB::_escape($price_dec) . ",
-                qty_dec=" . DB::_escape($qty_dec) . ",
-                exrate_dec=" . DB::_escape($exrate_dec) . ",
-                percent_dec=" . DB::_escape($percent_dec) . ",
-                show_gl=" . DB::_escape($show_gl) . ",
-                show_codes=" . DB::_escape($show_codes) . ",
-                date_format=" . DB::_escape($date_format) . ",
-                date_sep=" . DB::_escape($date_sep) . ",
-                tho_sep=" . DB::_escape($tho_sep) . ",
-                dec_sep=" . DB::_escape($dec_sep) . ",
-                theme=" . DB::_escape($theme) . ",
-                page_size=" . DB::_escape($page_size) . ",
-                show_hints=" . DB::_escape($show_hints) . ",
-                print_profile=" . DB::_escape($profile) . ",
-                rep_popup=" . DB::_escape($rep_popup) . ",
-                query_size=" . DB::_escape($query_size) . ",
-                graphic_links=" . DB::_escape($graphic_links) . ",
-                language=" . DB::_escape($language) . ",
-                sticky_doc_date=" . DB::_escape($stickydate) . ",
-                startup_tab=" . DB::_escape($startup_tab) . "
-                WHERE id = " . DB::_escape($id);
-      DB::_query($sql, "could not update user display prefs for $id");
+      $userprefs = new UserPrefs();
+      $userprefs->update($id, $prefs);
       session_regenerate_id();
     }
     /**
@@ -150,7 +99,8 @@
      * @return null|\PDOStatement
      */
     public static function  getAll($all = false) {
-      $sql = "SELECT u.*, r.role FROM users u, security_roles r
+      $sql
+        = "SELECT u.*, r.role FROM users u, security_roles r
                 WHERE u.role_id=r.id";
       if (!$all) {
         $sql .= " AND !u.inactive";
@@ -198,9 +148,9 @@
      * @param $user_id
      */
     public static function  update_visitdate($user_id) {
-      $sql = "UPDATE users SET last_visit_date='" . date("Y-m-d H:i:s") . "'
-                WHERE user_id=" . DB::_escape($user_id);
-      DB::_query($sql, "could not update last visit date for user $user_id");
+      // $sql = "UPDATE users SET last_visit_date='" . date("Y-m-d H:i:s") . "'
+      //         WHERE user_id=" . DB::_escape($user_id);
+      //DB::_query($sql, "could not update last visit date for user $user_id");
     }
     /**
      * @static
@@ -235,7 +185,7 @@
     public static function themes_row($label, $name, $value = null) {
       $themes = [];
       try {
-        $themedir = new \DirectoryIterator(WEBROOT . THEME_PATH);
+        $themedir = new \DirectoryIterator(ROOT_WEB . THEME_PATH);
       } catch (\UnexpectedValueException $e) {
         Event::error($e->getMessage());
       }
@@ -258,18 +208,11 @@
      * @param bool $all
      */
     public static function tabs_row($label, $name, $selected_id = null, $all = false) {
-      global $installed_extensions;
       $tabs = [];
-      foreach (ADVAccounting::i()->applications as $app) {
-        $tabs[$app->id] = Display::access_string($app->name, true);
+      foreach (ADVAccounting::i()->applications as $app=> $config) {
+        $tabs[$app] = Display::access_string($app, true);
       }
-      if ($all) { // add also not active ext. modules
-        foreach ($installed_extensions as $ext) {
-          if ($ext['type'] == 'module' && !$ext['active']) {
-            $tabs[$ext['tab']] = Display::access_string($ext['title'], true);
-          }
-        }
-      }
+
       echo "<tr>\n";
       echo "<td class='label'>$label</td><td>\n";
       echo Forms::arraySelect($name, $selected_id, $tabs);

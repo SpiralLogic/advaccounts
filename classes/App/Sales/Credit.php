@@ -291,8 +291,10 @@ debit freight re-charged and debit sales */
       $customer       = Debtor::get($order->debtor_id);
       // 2008-08-01. If there is a Customer Dimension, then override with this,
       // else take the Item Dimension (if any)
-      $dim   = ($order->dimension_id != $customer['dimension_id'] ? $order->dimension_id : ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_codes["dimension_id"]));
-      $dim2  = ($order->dimension2_id != $customer['dimension2_id'] ? $order->dimension2_id : ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_codes["dimension2_id"]));
+      $dim   = ($order->dimension_id != $customer['dimension_id'] ? $order->dimension_id :
+        ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_codes["dimension_id"]));
+      $dim2  = ($order->dimension2_id != $customer['dimension2_id'] ? $order->dimension2_id :
+        ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_codes["dimension2_id"]));
       $total = 0;
       /* insert gl_trans to credit stock and debit cost of sales at standard cost*/
       $standard_cost = Item_Price::get_standard_cost($order_line->stock_id);
@@ -518,7 +520,7 @@ debit freight re-charged and debit sales */
       foreach ($order->line_items as $line_no => $line) {
         $line_total = round($line->qty_dispatched * $line->price * (1 - $line->discount_percent), User::price_dec());
         if ($id != $line_no) {
-          Cell::label("<a target='_blank' href='" . BASE_URL . "inventory/inquiry/stock_status.php?stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
+          Cell::label("<a target='_blank' href='" . ROOT_URL . "inventory/inquiry/stock_status.php?stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
           Cell::label($line->description, ' class="nowrap"');
           Cell::qty($line->qty_dispatched, false, Item::qty_dec($line->stock_id));
           Cell::label($line->units);

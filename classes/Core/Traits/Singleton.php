@@ -34,6 +34,7 @@
       if ($lastNsPos) {
         $class_name = substr($namespaced_class, $lastNsPos + 1);
       }
+
       try {
         return $dic->get($class_name);
       } catch (\InvalidArgumentException $e) {

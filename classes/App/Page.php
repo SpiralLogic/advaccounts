@@ -2,6 +2,8 @@
   namespace ADV\App;
 
   use ADV\App\ADVAccounting;
+  use ADV\Core\Session;
+  use ADV\Core\Cache;
 
   /**
    * PHP version 5.4
@@ -11,7 +13,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  use ADV\Core\Errors;
   use ADV\Core\Files;
   use ADV\Core\Input\Input;
   use ADV\Core\View;
@@ -33,7 +34,6 @@
     public $ajaxpage;
     public $lang_dir = '';
     /** @var \ADV\App\ADVAccounting */
-
     protected $App;
     /** @var User */
     protected $User;
@@ -68,11 +68,8 @@
      * @var string
      */
     protected $title = '';
-    /** @var Page */
+    /** @var Page  */
     public static $i = null;
-    /**
-     * @var \Security
-     */
     protected $JS = null;
     /** @var Dates */
     protected $Dates = null;
@@ -80,82 +77,69 @@
     public $hide_back_link;
     public $renderedjs;
     /**
-     * @param $hide_back_link
+     * @param \ADV\Core\Session $session
+     * @param User              $user
+     * @param \ADV\Core\Config  $config
+     * @param \ADV\Core\Ajax    $ajax
+     * @param \ADV\Core\JS      $js
+     * @param Dates             $dates
      */
-    public function end_page($hide_back_link) {
-      $this->hide_back_link = $hide_back_link;
-      if ($this->frame) {
-        $this->hide_back_link = true;
-        $this->header         = false;
-      }
-      $this->footer();
+    public function __construct(Session $session, User $user, Config $config, \ADV\Core\Ajax $ajax, \ADV\Core\JS $js, \ADV\App\Dates $dates) {
+      $this->Session = $session;
+      $this->User    = $user;
+      $this->Config  = $config;
+      $this->Ajax    = $ajax;
+      $this->JS      = $js;
+      $this->Dates   = $dates;
+      $this->frame   = isset($_GET['frame']);
     }
     /**
-     * @param $application
+     * @static
+     *
+     * @param        $title
+     * @param string $security
+     * @param bool   $no_menu
+     * @param bool   $isIndex
+     *
+     * @return null|Page
      */
-    public function display_application($application) {
-      if ($application->direct) {
-        Display::meta_forward($application->direct);
+    public static function start($title, $security = SA_OPEN, $no_menu = false, $isIndex = false) {
+      if (static::$i === null) {
+        static::$i = new static(Session::i(), User::i(), Config::i(), \ADV\Core\Ajax::i(), \ADV\Core\JS::i(), \ADV\App\Dates::i());
       }
-
-      foreach ($application->modules as $module) {
-        $app            = new View('application');
-        $app['colspan'] = (count($module->rightAppFunctions) > 0) ? 2 : 1;
-        $app['name']    = $module->name;
-        foreach ([$module->leftAppFunctions, $module->rightAppFunctions] as $modules) {
-          $mods = [];
-          foreach ($modules as $func) {
-            $mod['access'] = $this->User->hasAccess($func->access);
-            $mod['label']  = $func->label;
-            if ($mod['access']) {
-              $mod['link'] = Display::menu_link($func->link, $func->label);
-            } else {
-              $mod['anchor'] = Display::access_string($func->label, true);
-            }
-            $mods[] = $mod;
-          }
-          $app->set((!$app['lmods']) ? 'lmods' : 'rmods', $mods);
-        }
-        $app->render();
-      }
+      static::$i->init($title, $security, $isIndex, !$no_menu);
+      return static::$i;
     }
     /**
-     * @param User             $user
-     * @param \ADV\Core\Config $config
-     * @param \ADV\Core\Ajax   $ajax
-     * @param \ADV\Core\JS     $js
-     * @param Dates            $dates
-
-     */
-    public function __construct(User $user, Config $config, \ADV\Core\Ajax $ajax, \ADV\Core\JS $js, \ADV\App\Dates $dates) {
-      $this->User   = $user ? : User::i();
-      $this->Config = $config ? : Config::i();
-      $this->Ajax   = $ajax ? : Ajax::i();
-      $this->JS     = $js ? : JS::i();
-      $this->Dates  = $dates ? : Dates::i();
-      $this->frame  = isset($_GET['frame']);
-    }
-    /**
+     * @param $title
+     * @param $security
+     * @param $isIndex
      * @param $menu
      */
-    protected function init($menu) {
+    public function init($title, $security, $no_menu = false, $isIndex = false) {
+      $this->title    = $title;
+      $this->isIndex  = $isIndex;
+      $this->security = $security;
       $this->App      = ADVAccounting::i();
-      $this->sel_app  = $this->sel_app ? : $this->App->get_selected()->id;
-      $this->ajaxpage = (AJAX_REFERRER || Ajax::_inAjax());
-      $this->menu     = ($this->frame) ? false : $menu;
+      $path           = explode('/', $_SERVER['DOCUMENT_URI']);
+      $this->sel_app  = $path[1];
+      $this->ajaxpage = (REQUEST_AJAX || Ajax::_inAjax());
+      $this->menu     = ($this->frame) ? false : !$no_menu;
       $this->theme    = $this->User->theme();
       $this->encoding = $_SESSION['language']->encoding;
       $this->lang_dir = $_SESSION['language']->dir;
       if (!$this->ajaxpage) {
         $this->header();
         $this->JS->openWindow(900, 500);
+        echo '<div id="header">';
         if ($this->menu) {
           $this->menu_header();
         }
       }
-      if (!IS_JSON_REQUEST) {
+      if (!REQUEST_JSON) {
         $this->errorBox();
       }
+      echo "</div>";
       if (!$this->ajaxpage) {
         echo "<div id='wrapper'>";
       }
@@ -167,10 +151,7 @@
         $this->end_page(false);
         exit;
       }
-      if ($this->title && !$this->isIndex && !$this->frame && !IS_JSON_REQUEST) {
-        echo "<div class='titletext'>$this->title" . ($this->User->_hints() ? "<span id='hints' class='floatright' style='display:none'></span>" : '') . "</div>";
-      }
-      if (!IS_JSON_REQUEST) {
+      if (!REQUEST_JSON) {
         Display::div_start('_page_body');
       }
     }
@@ -193,59 +174,46 @@
       }
       $header->render();
     }
+    /**
+     * @return array
+     */
+    protected function renderCSS() {
+      $this->css += $this->Config->get('assets.css');
+      $path = THEME_PATH . $this->theme . DS;
+      $css  = implode(',', $this->css);
+      return [$path . $css];
+    }
     protected function menu_header() {
+      $cache = $this->Session->get('menu_header');
+      if ($cache) {
+        echo $cache;
+      }
       $menu                = new View('menu_header');
-      $menu['theme']       = $this->User->theme();
-      $menu['company']     = $this->Config->get('db.' . $this->User->company)['company'];
+      $menu['theme']       = $this->User->prefs->theme;
+      $menu['company']     = $this->User->company_name;
       $menu['server_name'] = $_SERVER['SERVER_NAME'];
       $menu['username']    = $this->User->username;
       $menu['name']        = $this->User->name;
-      $menu['help_url']    = '';
-      if ($this->Config->get('help_baseurl') != null) {
-        $menu['help_url'] = $this->help_url();
-      }
       /** @var ADVAccounting $application */
       $menuitems = [];
       foreach ($this->App->applications as $app=> $config) {
-        $item          = [];
-        $acc           = Display::access_string($app);
-        $item['acc0']  = isset($config['name']) ? $config['name'] : $acc[0];
-        $item['acc1']  = $acc[1];
+        $item = [];
+        if (!$config['enabled']) {
+          continue;
+        }
+        $item['name']  = $app;
         $item['class'] = ($this->sel_app == strtolower($app)) ? "active" : null;
-        $item['href']  = (!isset($config['direct'])) ? '/index.php?application=' . $app : '/' . ltrim($config['direct'], '/');
-        $menuitems[]   = $item;
+        $item['href']  = '/' . strtolower($item['name']);
+        $app           = '\\ADV\\Controllers\\' . $app;
+        if (class_exists($app)) {
+          /** @var \ADV\App\Controller\Menu $app  */
+          $app           = new $app($this->Session, $this->User);
+          $item['extra'] = $app->getModules();
+        }
+        $menuitems[] = $item;
       }
       $menu->set('menu', $menuitems);
-      $menu->render();
-    }
-    /**
-     * @param null $context
-     *
-     * @return string
-     */
-    protected function help_url($context = null) {
-      global $help_context;
-      $country = $_SESSION['language']->code;
-      if ($context != null) {
-        $help_page_url = $context;
-      } elseif (isset($help_context)) {
-        $help_page_url = $help_context;
-      } else // main menu
-      {
-        $help_page_url = $this->App->applications[$this->App->selected->id]->help_context;
-        $help_page_url = Display::access_string($help_page_url, true);
-      }
-
-      return $this->Config->get('help_baseurl') . urlencode(
-        strtr(
-          ucwords($help_page_url),
-          array(
-               ' ' => '',
-               '/' => '',
-               '&' => 'And'
-          )
-        )
-      ) . '&ctxhelp=1&lang=' . $country;
+      echo $this->Session->set('menu_header', $menu->render(true));
     }
     /**
      * @return \ADV\Core\View
@@ -259,10 +227,9 @@
       $footer['today']     = $this->Dates->today();
       $footer['now']       = $this->Dates->now();
       $footer['mem']       = Files::convertSize(memory_get_usage(true)) . '/' . Files::convertSize(memory_get_peak_usage(true));
-      $footer['load_time'] = Dates::_getReadableTime(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
+      $footer['load_time'] = $this->Dates->getReadableTime(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
       $footer['user']      = $this->User->username;
-      $footer['footer']    = $this->menu && !AJAX_REFERRER;
-
+      $footer['footer']    = $this->menu && !REQUEST_AJAX;
       return $footer;
     }
     /**
@@ -275,19 +242,24 @@
       $this->User->_add_js_data();
       $footer->set('sidemenu', ($this->header && $this->menu ? ['bank'=> $this->User->hasAccess(SS_GL)] : false));
       $footer->set('JS', $this->JS);
-      $footer->set('messages', (!AJAX_REFERRER ? Messages::show() : ''));
+      $footer->set('messages', (!REQUEST_AJAX ? Messages::show() : ''));
       $footer->set('page_body', Display::div_end(true));
       $footer->render();
     }
+    public static function footer_exit() {
+      static::$i->end_page(true);
+      exit;
+    }
     /**
-     * @return array
+     * @param $hide_back_link
      */
-    protected function renderCSS() {
-      $this->css += $this->Config->get('assets.css');
-      $path = THEME_PATH . $this->theme . DS;
-      $css  = implode(',', $this->css);
-
-      return [$path . $css];
+    public function end_page($hide_back_link = false) {
+      $this->hide_back_link = $hide_back_link;
+      if ($this->frame) {
+        $this->hide_back_link = true;
+        $this->header         = false;
+      }
+      $this->footer();
     }
     /**
      * @static
@@ -298,32 +270,6 @@
       if (static::$i) {
         static::$i->end_page($hide_back_link);
       }
-    }
-    /**
-     * @static
-     *
-     * @param        $title
-     * @param string $security
-     * @param bool   $no_menu
-     * @param bool   $isIndex
-     *
-     * @return null|Page
-     */
-    public static function start($title, $security = SA_OPEN, $no_menu = false, $isIndex = false) {
-      if (static::$i === null) {
-        static::$i = new static(User::i(), Config::i(), \ADV\Core\Ajax::i(), \ADV\Core\JS::i(), \ADV\App\Dates::i());
-      }
-      if (is_array($title)) {
-        static::$i->title   = $title[0];
-        static::$i->sel_app = $title[1];
-      } else {
-        static::$i->title = $title;
-      }
-      static::$i->isIndex  = $isIndex;
-      static::$i->security = $security;
-      static::$i->init(!$no_menu);
-
-      return static::$i;
     }
     /**
      * @static
@@ -342,7 +288,6 @@
             $selected_id = $default;
           }
           unset($_POST['_focus']);
-
           return array($m, $selected_id);
         }
       }
@@ -352,21 +297,15 @@
             unset($_POST['_focus']); // focus on first form entry
             $selected_id = quoted_printable_decode(substr($p, strlen($m)));
             Ajax::_activate('_page_body');
-
             return array($m, $selected_id);
           }
         }
       }
-
       return array('', $selected_id);
-    }
-    public static function footer_exit() {
-      static::$i->end_page(true);
-      exit;
     }
     /** @static */
     public function errorBox() {
-      printf("<div %s='msgbox'>", AJAX_REFERRER ? 'class' : 'id');
+      printf("<div %s='msgbox'>", REQUEST_AJAX ? 'class' : 'id');
       static::$before_box = ob_get_clean(); // save html content before error box
       ob_start([$this->App, 'flush_handler']);
       echo "</div>";

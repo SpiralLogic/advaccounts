@@ -8,13 +8,13 @@
    * @link      http://www.advancedgroup.com.au
    **/
   use ADV\Core\JS;
+  use ADV\App\SysTypes;
   use ADV\App\Reporting;
 
   /**
 
    */
-  abstract class Contact_Company extends \ADV\App\DB\Base
-  {
+  abstract class Contact_Company extends \ADV\App\DB\Base {
     /**
      * @var string
      */
@@ -130,9 +130,9 @@ JS;
       $company = new $company($id);
       $emails  = $company->getEmailAddresses();
       if (count($emails) > 0) {
-        $types   = $GLOBALS['systypes_array'];
+        $types   = SysTypes::$names;
         $text    = $types[$type];
-        $content = Reporting::email_link($trans, _("Email This $text"), true, $type, 'EmailLink', null, $emails, 0, true);
+        $content = Reporting::email_link($trans, _("Email This $text"), true, $type, 'EmailLink', null, $emails, $id, true);
         if ($type == ST_SALESQUOTE || $type == ST_SALESORDER) {
           $type = ($type == ST_SALESORDER) ? ST_PROFORMA : ST_PROFORMAQ;
           $text = $types[$type];
@@ -143,11 +143,5 @@ JS;
       }
 
       return false;
-    }
-    /**
-     * @return array
-     */
-    public function jsonSerialize() {
-      return get_object_vars($this);
     }
   }

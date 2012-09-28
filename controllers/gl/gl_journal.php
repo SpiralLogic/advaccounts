@@ -30,7 +30,7 @@
     $trans_type = ST_JOURNAL;
     Event::success(_("Journal entry has been updated") . " #$trans_no");
     Display::note(GL_UI::view($trans_type, $trans_no, _("&View this Journal Entry")));
-    Display::link_no_params(DOCROOT . "gl/inquiry/journal.php", _("Return to Journal &Inquiry"));
+    Display::link_no_params(ROOT_DOC . "gl/inquiry/journal.php", _("Return to Journal &Inquiry"));
     Page::footer_exit();
   }
   if (isset($_GET['NewJournal'])) {
@@ -157,7 +157,7 @@
       JS::_setFocus('AmountCredit');
       return false;
     }
-    if (!Tax_Types::is_tax_gl_unique(Input::_post('code_id'))) {
+    if (!Tax_Type::is_tax_gl_unique(Input::_post('code_id'))) {
       Event::error(_("Cannot post to GL account used by more than one tax type."));
       JS::_setFocus('code_id');
       return false;

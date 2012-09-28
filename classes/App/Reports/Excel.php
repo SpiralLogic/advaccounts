@@ -25,8 +25,7 @@
   /**
 
    */
-  class Excel extends Spreadsheet_Excel_Writer_Workbook
-  {
+  class Excel extends Spreadsheet_Excel_Writer_Workbook {
     /**
      * @var string
      */
@@ -173,7 +172,7 @@
       $this->code                = strtolower($_SESSION['language']->encoding);
       $this->filename            = $filename . ".xls";
       $this->unique_name         = uniqid('') . ".xls";
-      $this->path                = COMPANY_PATH . 'pdf_files';
+      $this->path                = PATH_COMPANY . 'pdf_files';
       $this->Spreadsheet_Excel_Writer_Workbook($this->path . "/" . $this->unique_name);
       //$this->setCountry(48);
       if ($this->code != "iso-8859-1") {
@@ -194,7 +193,7 @@
       $this->formatTitle->setTopColor('gray');
       $how = User::date_format();
       $sep = Config::_get('date.separators');
-      $sep = $sep[User::date_sep()];
+      $sep = $sep[User::prefs()->date_sep];
       if ($sep == '.') {
         $sep = "\\.";
       }
@@ -277,7 +276,6 @@
       if (strlen($name) > 31) {
         $name = substr($name, 0, 31);
       }
-
       return $name;
     }
     /**
@@ -298,7 +296,6 @@
         $this->formatAmount[$dec]->setNumFormat($format);
         $this->formatAmount[$dec]->setAlign('right');
       }
-
       return $this->formatAmount[$dec];
     }
     /**
@@ -732,7 +729,21 @@
      *
      * @return void
      */
-    public function AmountCol2($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 0, $color_red = false, $amount_locale = null, $amount_format = null) {
+    public function AmountCol2(
+      $c,
+      $n,
+      $txt,
+      $dec = 0,
+      $corr = 0,
+      $r = 0,
+      $border = 0,
+      $fill = 0,
+      $link = null,
+      $stretch = 0,
+      $color_red = false,
+      $amount_locale = null,
+      $amount_format = null
+    ) {
       if (!is_numeric($txt)) {
         $txt = 0;
       }
@@ -839,7 +850,6 @@
           }
         }
       }
-
       return array($txt2, $ret);
     }
     /**
@@ -940,7 +950,6 @@
           $jul++;
         }
       }
-
       return $jul;
     }
     /**
@@ -952,7 +961,6 @@
     {
       $excel_column_width_factor = 256;
       $unit_offset_length        = $this->excelColWidthFactor;
-
       return ($px / $unit_offset_length);
     }
     /**

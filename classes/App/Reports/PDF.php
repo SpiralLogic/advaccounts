@@ -1,7 +1,6 @@
 <?php
   namespace ADV\App\Reports;
 
-
   /**
    * PHP version 5.4
    * @category  PHP
@@ -25,8 +24,7 @@
   /**
 
    */
-  class PDF extends \Cpdf
-  {
+  class PDF extends \Cpdf {
     /**
      * @var array
      */
@@ -264,7 +262,10 @@
       $enc                  = strtoupper($_SESSION['language']->encoding);
       // for the language array in class.pdf.inc
       $l = array(
-        'a_meta_charset' => $enc, 'a_meta_dir' => $rtl, 'a_meta_language' => $code, 'w_page' => 'page'
+        'a_meta_charset'  => $enc,
+        'a_meta_dir'      => $rtl,
+        'a_meta_language' => $code,
+        'w_page'          => 'page'
       );
       parent::__construct($size, $l, $orientation);
     }
@@ -463,11 +464,7 @@
         // include("includes/lang/en_AU/statement_head.php");
         //} else
       }
-      if (isset($myrow['curr_code']) && $this->currency != $myrow['curr_code']) {
-        include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
-      } else {
         include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
-      }
       include(REPORTS_PATH . 'includes' . DS . 'header.php');
       // }
       $this->row = isset($temp) ? $temp : $this->row;
@@ -520,8 +517,28 @@
         $this->Line($footerRow, 1);
         $prevFontSize   = $this->fontSize;
         $this->fontSize = FOOTER_FONT_SIZE;
-        $this->TextWrap($footerCol, $footerRow - ($this->fontSize + 1), $pageNumCol - $footerCol, $this->footerText, $align = 'center', $border = 0, $fill = 0, $link = null, $stretch = 1);
-        $this->TextWrap($pageNumCol, $footerRow - ($this->fontSize + 1), PAGE_NUM_WIDTH, _("Page") . ' ' . $this->pageNumber . '/' . $this->getAliasNbPages(), $align = 'right', $border = 0, $fill = 0, $link = null, $stretch = 1);
+        $this->TextWrap(
+          $footerCol,
+          $footerRow - ($this->fontSize + 1),
+          $pageNumCol - $footerCol,
+          $this->footerText,
+          $align = 'center',
+          $border = 0,
+          $fill = 0,
+          $link = null,
+          $stretch = 1
+        );
+        $this->TextWrap(
+          $pageNumCol,
+          $footerRow - ($this->fontSize + 1),
+          PAGE_NUM_WIDTH,
+          _("Page") . ' ' . $this->pageNumber . '/' . $this->getAliasNbPages(),
+          $align = 'right',
+          $border = 0,
+          $fill = 0,
+          $link = null,
+          $stretch = 1
+        );
         $this->fontSize = $prevFontSize;
       }
       //
@@ -539,7 +556,7 @@
       // Print company logo if present and requested, or else just print company name
       if ($this->companyLogoEnable && ($this->company['coy_logo'] != '')) {
         // Build a string specifying the location of the company logo file
-        $logo = COMPANY_PATH . "images/" . $this->company['coy_logo'];
+        $logo = PATH_COMPANY . "images/" . $this->company['coy_logo'];
         // Width being zero means that the image will be scaled to the specified height
         // keeping its aspect ratio intact.
         if ($this->scaleLogoWidth) {
@@ -872,7 +889,21 @@
      *
      * @return string
      */
-    public function AmountCol2($c, $n, $txt, $dec = 0, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = null, $stretch = 1, $color_red = false, $amount_locale = 'en_US.UTF-8', $amount_format = '%(!.2n') {
+    public function AmountCol2(
+      $c,
+      $n,
+      $txt,
+      $dec = 0,
+      $corr = 0,
+      $r = 0,
+      $border = 0,
+      $fill = 0,
+      $link = null,
+      $stretch = 1,
+      $color_red = false,
+      $amount_locale = 'en_US.UTF-8',
+      $amount_format = '%(!.2n'
+    ) {
       setlocale(LC_MONETARY, $amount_locale);
       if ($color_red && $txt < 0) {
         $this->SetTextColor(255, 0, 0);
@@ -1059,7 +1090,13 @@
       // Double underline, far enough below the first underline so as not to overlap
       // the first underline (depends on current line thickness (aka "line width")
       if ($type == 2) {
-        parent::line($this->cols[$c] + $this->cMargin, $this->row - $r - $y_adj - ($this->GetLineWidth() + 2), $this->cols[$c + 1] - $this->cMargin, $this->row - $r - $y_adj - ($this->GetLineWidth() + 2), $style);
+        parent::line(
+          $this->cols[$c] + $this->cMargin,
+          $this->row - $r - $y_adj - ($this->GetLineWidth() + 2),
+          $this->cols[$c + 1] - $this->cMargin,
+          $this->row - $r - $y_adj - ($this->GetLineWidth() + 2),
+          $style
+        );
       }
       // If line width was specified, reset it back to the original setting
       if ($linewidth != 0) {
@@ -1110,7 +1147,7 @@
         //header('Pragma: public');
         //$this->pdf->stream();
       } else {
-        $dir = COMPANY_PATH . 'pdf_files';
+        $dir = PATH_COMPANY . 'pdf_files';
         //save the file
         if (!file_exists($dir)) {
           mkdir($dir, 0777);
@@ -1129,11 +1166,7 @@
         $doc_Kindest_regards = '';
         if ($email == 1) {
           $emailtype = true;
-          if ($this->currency != $myrow['curr_code']) {
-            include(REPORTS_PATH . 'includes' . DS . 'doctext2.php');
-          } else {
             include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
-          }
           $mail = new Email(str_replace(",", "", $this->company['coy_name']), $this->company['email']);
           if (!isset($myrow['email']) || $myrow['email'] == '') {
             $myrow['email'] = isset($myrow['contact_email']) ? $myrow['contact_email'] : '';
@@ -1171,7 +1204,9 @@
             Event::error('Error: ' . $emailAddress . ': ' . $mail->toerror);
           } else {
             $myrow['reference'] = (isset($myrow['reference'])) ? $myrow['reference'] : '';
-            Event::success($this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(",", "", $myrow['DebtorName']) . " &lt;" . $emailAddress . "&gt;");
+            Event::success(
+              $this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(",", "", $myrow['DebtorName']) . " &lt;" . $emailAddress . "&gt;"
+            );
           }
           unlink($fname);
         } else {

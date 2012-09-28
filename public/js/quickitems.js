@@ -40,13 +40,17 @@ var Items = function () {
   $stockRow.template('stockrow');
   return {
     fetch:     function (id) {
+      if (id.val !== undefined) {
+        $('#itemSearchId').val(id.val);
+        Items.getFrames(id.val);
+      }
       if (id.id !== undefined) {
         id = id.id;
       }
-      this.getFrames(id);
       $.post("#", {"id": id}, function (data) {
         Items.onload(data, true);
       }, 'json');
+      return false;
     },
     getFrames: function (id) {
       if (!id) {

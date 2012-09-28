@@ -81,7 +81,7 @@
         if (is_int($key)) {
           $array[] = $el;
         } else {
-          if (is_array($array[$key]) && is_array($el)) {
+          if (isset($array[$key]) && is_array($array[$key]) && is_array($el)) {
             Arr::append($array[$key], $el);
             continue;
           }

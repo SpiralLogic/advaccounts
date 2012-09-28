@@ -154,6 +154,7 @@
     public static $qoh_stock;
     protected $_table = 'stock_master';
     protected $_id_column = 'id';
+    protected $_classname = 'Item';
     /***
      * @param int $id
      */
@@ -605,89 +606,6 @@
      * @return array
      */
     public static function search($term) {
-      $term = DB::_quote("%$term%");
-      $sql  = "SELECT stock_id AS id, description AS label, stock_id AS value FROM stock_master WHERE stock_id LIKE $term OR description LIKE $term LIMIT 200";
-      DB::_query($sql, 'Couldn\'t Get Items');
-      $data = DB::_fetchAll();
-      array_walk_recursive(
-        $data,
-        function (&$v) {
-          $v = htmlspecialchars_decode($v, ENT_QUOTES);
-        }
-      );
-      return $data;
-    }
-    /**
-     * @static
-     *
-     * @param $terms
-     *
-     * @return void
-     */
-    public static function searchSale($terms) {
-      $terms      = explode(' ', trim($terms));
-      $stockid    = array_shift($terms);
-      $where      = 'OR (s.long_description LIKE ? ';
-      $finalterms = array($stockid, $stockid . '%', '%' . $stockid . '%', '%' . $stockid . '%');
-      foreach ($terms as $t) {
-        $where .= ' AND s.long_description LIKE ? ';
-        $finalterms[] = '%' . trim($t) . '%';
-      }
-      $sql          = "SELECT p.price, c.description as category, s.* FROM ((SELECT s.stock_id, i.id, s.description, s.long_description ,
-                                        s.category_id, editable, 0 as kit,
-                                        IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5) + 0 as weight FROM item_codes i,
-                                        stock_master s
-                                        WHERE (s.stock_id LIKE ? $where)) AND s.inactive = 0 AND s.no_sale =0 AND i.item_code=i.stock_id
-                                        AND i .stockid=s.id
-                                        AND !i.is_foreign ORDER BY weight
-                                        LIMIT 20)";
-      $where        = 'OR (i.description LIKE ? ';
-      $finalterms[] = $stockid;
-      $finalterms[] = $stockid . '%';
-      $finalterms[] = '%' . $stockid . '%';
-      $finalterms[] = '%' . $stockid . '%';
-      foreach ($terms as $t) {
-        if (strlen(trim($t)) == 0) {
-          continue;
-        }
-        $where .= ' AND s.long_description LIKE ? ';
-        $finalterms[] = '%' . trim($t) . '%';
-      }
-      $sql .= "UNION (SELECT i.item_code as stock_id, i.id, i.description,
-                         i.description as long_description, i.category_id, 1 as editable, 1 as kit,
-                         IF(i.item_code LIKE ?, 0,20) + IF(i.item_code LIKE ?,0,5) as weight FROM item_codes i
-                         WHERE (i.item_code LIKE ? $where)) AND !i.is_foreign AND i.item_code!=i.stock_id
-                         AND i.inactive = 0 GROUP BY i.item_code ORDER BY weight
-                         LIMIT 5)) as s , stock_category c, prices p WHERE s.id = p.item_code_id AND p.sales_type_id =1 AND
-                         s.category_id = c.category_id GROUP BY s.stock_id ORDER BY s.weight, s.category_id, s.stock_id ";
-      DB::_prepare($sql, true);
-      DB::_execute($finalterms, true);
-      exit();
-    }
-    /**
-     * @static
-     *
-     * @param $term
-     * @param $UniqueID
-     *
-     * @return array|bool
-     */
-    public static function searchOrder($term, $UniqueID) {
-      if (!isset($_SESSION['search'])) {
-        $o = array(
-          'url'      => false, //
-          'nodiv'    => false, //
-          'label'    => false, //
-          'size'     => 30, //
-          'name'     => false, //
-          'set'      => false, //
-          'value'    => false, //
-          'focus'    => false, //
-          'callback' => false //
-        );
-      } else {
-        $o = $_SESSION['search'][$UniqueID];
-      }
       $term       = explode(' ', trim($term));
       $item_code  = trim(array_shift($term));
       $terms      = array($item_code, '%' . $item_code . '%');
@@ -698,16 +616,66 @@
         $where .= ' AND i.long_description LIKE ? ';
         $terms[] = '%' . trim($t) . '%';
       }
-      $where .= ($o['inactive'] ? '' : ' AND s.inactive = 0 ') . ($o['no_sale'] ? '' : ' AND i.no_sale =0 ');
-      $where2 = (!empty($o['where']) ? ' AND ' . $o['where'] : ' ');
-      if ($o['type'] == 'local') {
-        $where2 .= " AND !s.is_foreign ";
+      $stock_code = " s.stockid as id,s.item_code as value,";
+      $where2     = ' AND i.id = s.stockid ';
+      $weight     = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
+      $sql        = "SELECT  $stock_code CONCAT(s.item_code,' - ',i.description) as label, c.description as category,
+                                $weight FROM stock_category c, item_codes s, stock_master i
+                                WHERE (s.item_code LIKE ? $termswhere) $where
+                                AND s.category_id = c.category_id $where2 GROUP BY s.item_code
+                                ORDER BY weight, s.category_id, s.item_code LIMIT 30";
+      DB::_prepare($sql);
+      $result = DB::_execute($terms);
+      return $result;
+    }
+    /**
+     * @static
+     *
+     * @param $term
+     * @param $UniqueID
+     *
+     * @return array|bool
+     */
+    public static function searchOrder($term, $UniqueID) {
+      $url      = false;
+      $nodiv    = false;
+      $label    = false;
+      $size     = 30;
+      $name     = false;
+      $set      = false;
+      $sale     = false;
+      $purchase = false;
+      $inactive = false;
+      $no_sale  = false;
+      $kitsonly = false;
+      $select   = false;
+      $type     = false;
+      $value    = false;
+      $focus    = false;
+      $callback = false;
+      if (isset($_SESSION['search'])) {
+        extract($_SESSION['search'][$UniqueID], EXTR_IF_EXISTS);
+      }
+      $term        = explode(' ', trim($term));
+      $item_code   = trim(array_shift($term));
+      $terms       = array($item_code, '%' . $item_code . '%');
+      $terms       = array($item_code, $item_code . '%', $terms[1], $terms[1], $terms[1]);
+      $termswhere  = ' OR i.long_description LIKE ? ';
+      $constraints = '';
+      foreach ($term as $t) {
+        $constraints .= ' AND i.long_description LIKE ? ';
+        $terms[] = '%' . trim($t) . '%';
+      }
+      $constraints .= ($inactive ? '' : ' AND s.inactive = 0 ') . ($no_sale ? '' : ' AND i.no_sale =0 ');
+      $constraints2 = (!empty($where) ? ' AND ' . $where : ' ');
+      if ($type == 'local') {
+        $constraints2 .= " AND !s.is_foreign ";
       }
       $stock_code = " s.item_code as stock_id,";
-      $where2 .= ' AND i.id = s.stockid ';
+      $constraints2 .= ' AND i.id = s.stockid ';
       $sales_type = $prices = '';
       $weight     = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
-      if ($o['purchase']) {
+      if ($purchase) {
         array_unshift($terms, $item_code);
         $weight = 'IF(s.item_code LIKE ?, 0,20) + IF(p.supplier_description LIKE ?, 0,15) + IF(s.item_code LIKE ?,0,5) as weight';
         $termswhere .= ' OR p.supplier_description LIKE ? ';
@@ -717,23 +685,24 @@
         }
         $stock_code = ' s.item_code as stock_id, p.supplier_description, MIN(p.price) as price, ';
         $prices     = " LEFT OUTER JOIN purch_data p ON i.id = p.stockid ";
-      } elseif ($o['sale']) {
+      } elseif ($sale) {
         $weight     = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
         $stock_code = " s.item_code as stock_id, p.price,";
         $prices     = ", prices p";
-        $where .= " AND s.id = p.item_code_id ";
-        if (isset($o['sales_type'])) {
-          $sales_type = ' AND p.sales_type_id =' . $o['sales_type'];
+        $constraints .= " AND s.id = p.item_code_id ";
+        if ($sales_type) {
+          $sales_type = ' AND p.sales_type_id =' . $sales_type;
         }
-      } elseif ($o['kitsonly']) {
-        $where .= " AND s.stock_id!=i.stock_id ";
+      } elseif ($kitsonly) {
+        $constraints .= " AND s.stock_id!=i.stock_id ";
       }
-      $select = ($o['select']) ? $o['select'] : ' ';
+      $select = ($select) ? $select : ' ';
       $sql    = "SELECT $select $stock_code i.description as item_name, c.description as category, i.long_description as description , editable,
                             $weight FROM stock_category c, item_codes s, stock_master i  $prices
-                            WHERE (s.item_code LIKE ? $termswhere) $where
-                            AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.item_code
+                            WHERE (s.item_code LIKE ? $termswhere) $constraints
+                            AND s.category_id = c.category_id $constraints2 $sales_type GROUP BY s.item_code
                             ORDER BY weight, s.category_id, s.item_code LIMIT 30";
+      var_dump($sql);
       DB::_prepare($sql);
       $result = DB::_execute($terms);
       return $result;
@@ -799,7 +768,7 @@ JS;
      * @return void
      */
     public static function addSearchBox($id, $options = []) {
-      echo UI::searchLine($id, '/items/search.php', $options);
+      echo UI::searchLine($id, '/search', $options);
     }
     /**
      * @static

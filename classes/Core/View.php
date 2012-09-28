@@ -29,13 +29,13 @@
      * @throws \InvalidArgumentException
      */
     public function __construct($template) {
-      $this->_template = VIEWPATH . $template . '.tpl';
+      $this->_template = PATH_VIEW . $template . '.tpl';
       if (!file_exists($this->_template)) {
         throw new \InvalidArgumentException("There is no view $template !");
       }
       $js = 'js' . DS . $template . '.js';
-      if (file_exists(WEBROOT . $js)) {
-        $this->_js[] = BASE_URL . $js;
+      if (file_exists(ROOT_WEB . $js)) {
+        $this->_js[] = ROOT_URL . $js;
       }
     }
     /**

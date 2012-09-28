@@ -11,8 +11,7 @@
    * @author  Dmitry Koterov
    * @version 5.x
    */
-  class JsHttpRequest
-  {
+  class JsHttpRequest {
     public $SCRIPT_ENCODING = "windows-1251";
     public $SCRIPT_DECODE_MODE = '';
     public $LOADER = null;
@@ -239,8 +238,7 @@
       // Library frontend sets "application/octet-stream" for that purpose,
       // see JavaScript code. In PHP 5.2.2.HTTP_RAW_POST_DATA is not set sometimes;
       // in such cases - read the POST data manually from the STDIN stream.
-      $rawPost = strcasecmp($_SERVER['REQUEST_METHOD'], 'POST') == 0 ?
-        (isset($GLOBALS['HTTP_RAW_POST_DATA']) ? $GLOBALS['HTTP_RAW_POST_DATA'] : @file_get_contents("php://input")) : null;
+      $rawPost = strcasecmp(REQUEST_METHOD, 'POST') == 0 ? (isset($GLOBALS['HTTP_RAW_POST_DATA']) ? $GLOBALS['HTTP_RAW_POST_DATA'] : @file_get_contents("php://input")) : null;
       $source  = array(
         '_GET'  => !empty($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : null,
         '_POST' => $rawPost,

@@ -1,8 +1,7 @@
 <?php
   namespace ADV\App\DB;
-
-  use DBException;
   use ADV\Core\DB\DBDuplicateException;
+  use ADV\Core\DB\DBDeleteException;
   use ADV\Core\DB\DBInsertException;
   use ADV\Core\DB\DBSelectException;
   use ADV\Core\Status;
@@ -18,13 +17,15 @@
    * @link      http://www.advancedgroup.com.au
    **/
   /**
-   * @method Status getStatus()
    */
   abstract class Base
   {
+
     use \ADV\Core\Traits\SetFromArray;
     use \ADV\Core\Traits\Status;
 
+    /** @var DB */
+    static $DB;
     /**
      * @var int
      */
@@ -32,16 +33,15 @@
     protected $_table;
     protected $_id_column;
     protected $_classname;
-    /** @var \ADV\Core\DB\DB*/
-    protected $DB;
     abstract protected function canProcess();
     /**
      * @param int             $id    Id to read from database, or an array of changes which can include the id to load before applying changes or 0 for a new object
      * @param array           $extra
-     * @param \ADV\Core\DB\DB $db
+     *
+     * @internal param \ADV\Core\DB\DB $db
      */
-    public function __construct($id = 0, $extra = [], DB $db = null) {
-      $this->DB = $db ? : DB::i();
+    public function __construct($id = 0, $extra = []) {
+      static::$DB = DB::i();
       $this->load($id, $extra);
       $this->_classname = $this->_classname ? : end(explode('\\', ltrim(get_called_class(), '\\')));
       $_id_column       = $this->_id_column;
@@ -60,8 +60,7 @@
       if ((is_numeric($id) && $id > 0) || (is_string($id) && strlen($id) > 0)) {
         $this->$_id_column = $id;
         $this->read($id, $extra);
-
-        return $this->status(true, $this->_classname . " details loaded from DB!");
+        return $this->status(Status::INFO, $this->_classname . " details loaded from DB!");
       } elseif (is_array($id)) {
         if (isset($id['id']) && !isset($id[$_id_column])) {
           $id[$_id_column] = $id['id'];
@@ -72,10 +71,8 @@
           $this->init();
         }
         $this->setFromArray($id);
-
-        return $this->status(true, $this->_classname . " details constructed!");
+        return $this->status(Status::INFO, $this->_classname . " details constructed!");
       }
-
       return $this->init();
     }
     /**
@@ -89,54 +86,50 @@
         $this->setFromArray($changes);
       }
       if (!$this->canProcess()) {
-        return $this->getStatus();
+        return false;
       }
       if ($this->id == 0) {
         return $this->saveNew();
       }
       $data = (array) $this;
-
-      $this->DB->begin();
+      static::$DB->begin();
       try {
-        $updated = $this->DB->update($this->_table)->values($data)->where($this->_id_column . '=', $this->id)->exec();
-      } catch (DBUpdateException $e) {
-        $this->DB->cancel();
-
+        $updated = static::$DB->update($this->_table)->values($data)->where($this->_id_column . '=', $this->id)->exec();
+      }
+      catch (DBUpdateException $e) {
+        static::$DB->cancel();
         return $this->status(Status::ERROR, "Could not update " . $this->_classname);
       }
       if (property_exists($this, 'inactive')) {
         try {
           /** @noinspection PhpUndefinedFieldInspection */
-          $this->DB->updateRecordStatus($this->id, $this->inactive, $this->_table, $this->_id_column);
-        } catch (DBUpdateException $e) {
-          $this->DB->cancel();
-
+          static::$DB->updateRecordStatus($this->id, $this->inactive, $this->_table, $this->_id_column);
+        }
+        catch (DBUpdateException $e) {
+          static::$DB->cancel();
           return $this->status(Status::ERROR, "Could not update active status of " . $this->_classname);
         }
       }
-      $this->DB->commit();
+      static::$DB->commit();
       if (!$updated) {
         $this->id = 0;
-
         return $this->status(Status::WARNING, 'Could not find ' . $this->_classname . '  to update, save again to try and add as new.');
       }
-
       return $this->status(Status::SUCCESS, $this->_classname . ' changes saved to database.');
     }
     /**
      * @return \ADV\Core\Traits\Status|bool
      */
     public function delete() {
-
       try {
         $id_column = $this->_id_column;
-        $this->DB->delete($this->_table)->where($id_column . '=', $this->$id_column)->exec();
-      } catch (\DBDeleteException $e) {
+        static::$DB->delete($this->_table)->where($id_column . '=', $this->$id_column)->exec();
+      }
+      catch (DBDeleteException $e) {
         return $this->status(false, 'Could not delete' . $this->_classname);
       }
       $this->defaults();
-
-      return $this->status(true, 'Deleted ' . $this->_classname . '!');
+      return $this->status(true, $this->_classname . ' deleted!');
     }
     public function getIDColumn() {
       return $this->_id_column;
@@ -152,8 +145,7 @@
      */
     protected function init() {
       $this->defaults();
-
-      return $this->status(Status::SUCCESS, 'Now working with new ' . $this->_classname);
+      return $this->status(Status::INFO, 'Now working with new ' . $this->_classname);
     }
     /***
      * @param int   $id    Id of row to read from database
@@ -168,30 +160,44 @@
         throw new DBException('No table name or id column for class: ' . get_called_class() . '(' . $this->_classname . ')');
       }
       try {
-        $query = $this->DB->select()->from($this->_table)->where($this->_id_column . '=', $id);
+        $query = static::$DB->select()->from($this->_table);
+        $query = $this->getSelectModifiers($query)->where($this->_id_column . '=', $id);
         foreach ($extra as $field => $value) {
           $query->andWhere($field . '=', $value);
         }
-        $this->DB->fetch()->intoClass($this);
-      } catch (DBSelectException $e) {
+        static::$DB->fetch()->intoClass($this);
+      }
+      catch (DBSelectException $e) {
         return $this->status(false, 'Could not read ' . $this->_classname, (string) $id);
       }
-
-      return $this->status(true, 'Successfully read ' . $this->_classname, $id);
+      return $this->status(Status::INFO, 'Successfully read ' . $this->_classname, $id);
+    }
+    /**
+     * @param \ADV\Core\DB\Query\Select $query
+     *
+     * @return \ADV\Core\DB\Query\Select
+     */
+    protected function getSelectModifiers(\ADV\Core\DB\Query\Select $query) {
+      return $query;
     }
     /**
      * @return int|bool Id assigned to new database row or false if entry failed
      */
     protected function saveNew() {
       try {
-        $this->id = $this->DB->insert($this->_table)->values((array) $this)->exec();
-      } catch (DBInsertException $e) {
-        return $this->status(false, 'Could not add to databse: ' . $this->_classname);
-      } catch (DBDuplicateException $e) {
-        return $this->status(false, $e->getMessage() . '. The entered information is a duplicate. Please modify the existing record or use different values.');
+        $this->id = static::$DB->insert($this->_table)->values((array) $this)->exec();
       }
-
-      return $this->status(true, 'Added to database: ' . $this->_classname);
+      catch (DBInsertException $e) {
+        $error = static::$DB->getLastError();
+        if ($error) {
+          return $this->status(false, $error['message'], $error['var']);
+        }
+        return $this->status(false, 'Could not add ' . $this->_classname . ' to database');
+      }
+      catch (DBDuplicateException $e) {
+        return $this->status(false, 'You have tried to enter a duplicate ' . $this->_classname . '. Please modify the existing record or use different values.');
+      }
+      return $this->status(Status::SUCCESS, 'Added ' . $this->_classname . ' to database');
     }
   }
 

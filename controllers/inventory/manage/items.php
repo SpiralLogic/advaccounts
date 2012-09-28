@@ -46,7 +46,7 @@
     $stock_id    = $_POST['NewStockID'];
     $result      = $_FILES['pic']['error'];
     $upload_file = 'Yes'; //Assume all is well to start off with
-    $filename    = COMPANY_PATH . "$user_comp/images";
+    $filename    = PATH_COMPANY . "$user_comp/images";
     if (!file_exists($filename)) {
       mkdir($filename);
     }
@@ -93,7 +93,10 @@
       $input_error = 1;
       Event::error(_('The item code cannot be empty'));
       JS::_setFocus('NewStockID');
-    } elseif (strstr($_POST['NewStockID'], " ") || strstr($_POST['NewStockID'], "'") || strstr($_POST['NewStockID'], "+") || strstr($_POST['NewStockID'], "\"") || strstr($_POST['NewStockID'], "&") || strstr($_POST['NewStockID'], "\t")
+    } elseif (strstr($_POST['NewStockID'], " ") || strstr($_POST['NewStockID'], "'") || strstr($_POST['NewStockID'], "+") || strstr($_POST['NewStockID'], "\"") || strstr(
+      $_POST['NewStockID'],
+      "&"
+    ) || strstr($_POST['NewStockID'], "\t")
     ) {
       $input_error = 1;
       Event::error(_('The item code cannot contain any of the following characters - & + OR a space OR quotes'));
@@ -105,7 +108,7 @@
     }
     if ($input_error != 1) {
       if (Input::_hasPost('del_image')) {
-        $filename = COMPANY_PATH . "$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg";
+        $filename = PATH_COMPANY . "$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg";
         if (file_exists($filename)) {
           unlink($filename);
         }
@@ -221,7 +224,7 @@
     if (check_usage($_POST['NewStockID'])) {
       $stock_id = $_POST['NewStockID'];
       Item::del($stock_id);
-      $filename = COMPANY_PATH . "$user_comp/images/" . Item::img_name($stock_id) . ".jpg";
+      $filename = PATH_COMPANY . "$user_comp/images/" . Item::img_name($stock_id) . ".jpg";
       if (file_exists($filename)) {
         unlink($filename);
       }
@@ -345,9 +348,11 @@
   // Add Image upload for New Item - by Joe
   $stock_img_link     = "";
   $check_remove_image = false;
-  if (isset($_POST['NewStockID']) && file_exists(COMPANY_PATH . "$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg")) {
+  if (isset($_POST['NewStockID']) && file_exists(PATH_COMPANY . "$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg")) {
     // 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
-    $stock_img_link .= "<img id='item_img' alt = '[" . $_POST['NewStockID'] . ".jpg]' src='" . COMPANY_PATH . "$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg?nocache=" . rand() . "' height='" . Config::_get('item_images_height') . "' >";
+    $stock_img_link .= "<img id='item_img' alt = '[" . $_POST['NewStockID'] . ".jpg]' src='" . PATH_COMPANY . "$user_comp/images/" . Item::img_name(
+      $_POST['NewStockID']
+    ) . ".jpg?nocache=" . rand() . "' height='" . Config::_get('item_images_height') . "' >";
     $check_remove_image = true;
   } else {
     $stock_img_link .= _("No image");
@@ -373,7 +378,7 @@
   }
   if (Input::_post('stock_id')) {
     Session::_setGlobal('stock_id', $_POST['stock_id']);
-    echo "<iframe src='/inventory/purchasing_data.php?frame=1' style='width:48%;height:450px;overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
+    echo "<iframe src='/inventory/Purchasing.php?frame=1' style='width:48%;height:450px;overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
   }
   if (Input::_post('stock_id')) {
     Session::_setGlobal('stock_id', $_POST['stock_id']);

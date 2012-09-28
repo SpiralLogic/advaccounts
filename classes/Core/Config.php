@@ -118,8 +118,8 @@
     /**
      * @param Cache $cache
      */
-    public function __construct(Cache $cache = null) {
-      $this->Cache = $cache ? : Cache::i();
+    public function __construct(Cache $cache) {
+      $this->Cache = $cache;
       if (isset($_GET['reload_config'])) {
         $this->Cache->delete('config');
         header('Location: /');
@@ -143,9 +143,9 @@
         $group_name = implode('.', $group);
         $group_file = array_pop($group) . '.php';
         $group_path = implode(DS, $group);
-        $file       = DOCROOT . "config" . $group_path . DS . $group_file;
+        $file       = ROOT_DOC . "config" . $group_path . DS . $group_file;
       } else {
-        $file       = DOCROOT . "config" . DS . $group . '.php';
+        $file       = ROOT_DOC . "config" . DS . $group . '.php';
         $group_name = $group;
       }
       if ($this->_vars && array_key_exists($group_name, $this->_vars)) {

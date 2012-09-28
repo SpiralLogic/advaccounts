@@ -1,5 +1,6 @@
 <?php
   use ADV\Core\DB\DBDuplicateException;
+  use ADV\App\User;
   use ADV\App\Item\Item;
   use ADV\Core\Ajax;
   use ADV\App\Creditor\Creditor;
@@ -219,7 +220,7 @@
     public function can_receive() {
       if (count($this->line_items) <= 0) {
         Event::error(_("You are not currenty receiving an order."));
-        Display::link_no_params("/purchases/inquiry/po_search.php", _("Select a purchase order to receive goods."));
+        Display::link_no_params("/purchases/search/orders", _("Select a purchase order to receive goods."));
         Page::footer_exit();
       }
       if (!Dates::_isDate($_POST['DefaultReceivedDate'])) {
@@ -275,7 +276,8 @@
       /*Now need to check that the order details are the same as they were when they were read into the Items array. If they've changed then someone else must have altered them */
       // Sherifoz 22.06.03 Compare against COMPLETED items only !!
       // Otherwise if you try to fullfill item quantities separately will give error.
-      $sql     = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
+      $sql
+               = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
               FROM purch_order_details
               WHERE order_no=" . DB::_escape($this->order_no) . " ORDER BY po_detail_item";
       $result  = DB::_query($sql, "could not query purch order details");
@@ -388,7 +390,8 @@
      * @return bool
      */
     public function get_header($order_no) {
-      $sql    = "SELECT purch_orders.*, suppliers.name,
+      $sql
+              = "SELECT purch_orders.*, suppliers.name,
              suppliers.curr_code, locations.location_name
             FROM purch_orders, suppliers, locations
             WHERE purch_orders.creditor_id = suppliers.creditor_id
@@ -421,7 +424,8 @@
      */
     public function get_items($order_no, $view = false) {
       /*now populate the line po array with the purchase order details records */
-      $sql = "SELECT purch_order_details.*, units
+      $sql
+        = "SELECT purch_order_details.*, units
             FROM purch_order_details
             LEFT JOIN stock_master
             ON purch_order_details.item_code=stock_master.stock_id
@@ -493,7 +497,8 @@
      * @param $creditor_id
      */
     public function supplier_to_order($creditor_id) {
-      $sql                    = "SELECT * FROM suppliers
+      $sql
+                              = "SELECT * FROM suppliers
             WHERE creditor_id = '$creditor_id'";
       $result                 = DB::_query($sql, "The supplier details could not be retreived");
       $myrow                  = DB::_fetchAssoc($result);
@@ -664,7 +669,7 @@
       } else {
         foreach ($this->line_items as $line_no => $po_line) {
           if ($po_line->Deleted == false) {
-            $line_total = round($po_line->quantity * $po_line->price * (1 - $po_line->discount), User::price_dec(), PHP_ROUND_HALF_EVEN);
+            $line_total = Num::_round($po_line->quantity * $po_line->price * (1 - $po_line->discount), User::price_dec());
             if (!$editable || ($id != $line_no)) {
               Cell::label($po_line->stock_id, " class='stock' data-stock_id='{$po_line->stock_id}'");
               Cell::label($po_line->description);
@@ -672,7 +677,7 @@
               Cell::qty($po_line->qty_received, false, Item::qty_dec($po_line->stock_id));
               Cell::label($po_line->units);
               Cell::label($po_line->req_del_date);
-              Cell::amountDecimal($po_line->price);
+              Cell::amount($po_line->price);
               Cell::percent($po_line->discount * 100);
               Cell::amount($line_total);
               if ($editable) {
@@ -691,7 +696,16 @@
         $this->item_controls();
       }
       Table::foot();
-      Forms::SmallAmountRow(_("Freight"), 'freight', Num::_priceFormat(Input::_post('freight', null, 0)), "colspan=8 class='bold alignright'", ['$'], null, 3, " class='small alignright'");
+      Forms::SmallAmountRow(
+        _("Freight"),
+        'freight',
+        Num::_priceFormat(Input::_post('freight', null, 0)),
+        "colspan=8 class='bold alignright'",
+        ['$'],
+        null,
+        3,
+        " class='small alignright'"
+      );
       $display_total = Num::_priceFormat($total + Validation::input_num('freight'));
       Table::label(_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 class='bold alignright'", "nowrap class='alignright' _nofreight='$total'", 2);
       Table::footEnd();
@@ -809,7 +823,8 @@
      * @return Array|\ADV\Core\DB\Query\Result
      */
     public static function get_data($creditor_id, $stock_id) {
-      $sql    = "SELECT * FROM purch_data
+      $sql
+              = "SELECT * FROM purch_data
                 WHERE creditor_id = " . DB::_escape($creditor_id) . "
                 AND stock_id = " . DB::_escape($stock_id);
       $result = DB::_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
@@ -831,8 +846,11 @@
       if ($data === false) {
         $supplier_code = $stock_id;
         try {
-          $sql = "INSERT INTO purch_data (creditor_id, stock_id, price, suppliers_uom,
-                    conversion_factor, supplier_description) VALUES (" . DB::_escape($creditor_id) . ", " . DB::_escape($stock_id) . ", " . DB::_escape($price) . ", " . DB::_escape(
+          $sql
+            = "INSERT INTO purch_data (creditor_id, stock_id, price, suppliers_uom,
+                    conversion_factor, supplier_description) VALUES (" . DB::_escape($creditor_id) . ", " . DB::_escape($stock_id) . ", " . DB::_escape(
+            $price
+          ) . ", " . DB::_escape(
             $uom
           ) . ", 1, " . DB::_escape($supplier_code) . ")";
           DB::_query($sql, "The supplier purchasing details could not be added");

@@ -134,14 +134,14 @@
     protected $valfield;
     /** @var */
     protected $namefield;
-    /** @var DB */
-    protected $DB;
     /** @var Input */
     protected $Input;
     /** @var JS */
     protected $JS;
     /** @var Ajax */
     protected $Ajax;
+    /** @var DB */
+    static $DB;
     /**
      * @param       $name
      * @param null  $selected_id
@@ -157,7 +157,7 @@
       $this->sql         = $sql;
       $this->valfield    = $valfield;
       $this->namefield   = $namefield;
-      $this->DB          = DB::i();
+      static::$DB        = DB::i();
       $this->Input       = Input::i();
       $this->JS          = JS::i();
       $this->Ajax        = Ajax::i();
@@ -229,7 +229,7 @@
       $lastcat  = null;
       $edit     = false;
       if ($result = $this->executeSQL()) {
-        while ($row = $this->DB->fetch($result)) {
+        while ($row = static::$DB->fetch($result)) {
           $value = $row[0];
           $descr = $this->format == null ? $row[1] : call_user_func($this->format, $row);
           $sel   = '';
@@ -263,7 +263,7 @@
           }
           $selector .= "<option $sel $optclass value='$value'>$descr</option>\n";
         }
-        $this->DB->freeResult($result);
+        static::$DB->freeResult($result);
       }
       // Prepend special option.
       if ($this->spec_option !== false) { // if special option used - add it
@@ -373,7 +373,7 @@
                 }
                 $search_fields = $this->search;
                 foreach ($search_fields as $i => $s) {
-                  $search_fields[$i] = $s . ' LIKE ' . $this->DB->escape("%$text%");
+                  $search_fields[$i] = $s . ' LIKE ' . static::$DB->escape("%$text%");
                 }
                 $this->where[] = '(' . implode($search_fields, ' OR ') . ')';
               }
@@ -405,7 +405,7 @@
      * @return null|\PDOStatement
      */
     private function executeSQL() {
-      return $this->DB->query($this->sql);
+      return static::$DB->query($this->sql);
     }
     /**
      * @param $result
@@ -413,6 +413,6 @@
      * @return \ADV\Core\DB\Query\Result|Array
      */
     private function getNext($result) {
-      return $this->DB->fetch($result);
+      return static::$DB->fetch($result);
     }
   }

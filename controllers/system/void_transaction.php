@@ -1,4 +1,6 @@
 <?php
+  use ADV\App\Voiding;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -119,7 +121,7 @@
   function voiding_controls() {
     Forms::start();
     Table::start('standard');
-    if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+    if (REQUEST_GET) {
       $_POST['trans_no']   = Input::_get('trans_no');
       $_POST['filterType'] = Input::_get('type');
       $_POST['memo_']      = Input::_get('memo');

@@ -97,6 +97,7 @@ document.getElementsBySelector = jQuery;
 //		request is directed to current location
 //
 JsHttpRequest.request = function (trigger, form, tout) {
+  console.log(arguments);
   tout = (tout) ? tout : 15000;
   try {
     Adv.loader.on(tout);
@@ -493,12 +494,13 @@ Behaviour.register({
                          }
                        }
                      },
-                     '.amount':                                                                                                        function (e) {
-                       if (e.onblur === undefined) {
+                     '[data-dec]':                                                                                                     function (e) {
+                       var dec = e.getAttribute("data-dec");
+                       if (!e.onblur) {
                          e.onblur = function () {
-                           var dec = this.getAttribute("data-dec");
                            Adv.Forms.priceFormat(this.name, Adv.Forms.getAmount(this.name), dec);
                          };
+                         e.onblur();
                        }
                      },
                      '.freight':                                                                                                       function (e) {
@@ -544,18 +546,5 @@ Behaviour.register({
                          return false;
                        }
                      },
-                     'a':                                                                                                              function (e) { // traverse menu
-                       e.onkeydown = function (ev) {
-                         ev = ev || window.event;
-                         var key = ev.keyCode || ev.which;
-                         if (key == 37 || key == 38 || key == 39 || key == 40) {
-                           Adv.Forms.moveFocus(key, e, document.links);
-                           ev.returnValue = false;
-                           return false;
-                         }
-                         return undefined;
-                       }
-                     }
-
                    });
 Behaviour.addLoadEvent(Adv.Scroll.loadPosition);

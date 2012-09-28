@@ -153,6 +153,8 @@
       } catch (\Exception $e) {
         static::error('Error during post processing: ' . $e->getMessage());
       }
-      static::$Cache->set(static::$shutdown_events_id, static::$shutdown_events);
+      if (static::$Cache instanceof Cache) {
+        static::$Cache->set(static::$shutdown_events_id, static::$shutdown_events);
+      }
     }
   }

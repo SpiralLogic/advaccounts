@@ -8,13 +8,14 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core\DB\Query;
+
   use PDO, PDOStatement, PDOException, PDORow;
+  use Serializable;
 
   /**
 
    */
-  abstract class Query extends Where
-  {
+  abstract class Query extends Where implements Serializable {
     /**
      * @var \ADV\Core\DB\Query\Query
      */
@@ -68,5 +69,29 @@
      */
     public function fetch() {
       return $this->exec(null);
+    }
+    /**
+     * (PHP 5 &gt;= 5.1.0)<br/>
+     * String representation of object
+     * @link http://php.net/manual/en/serializable.serialize.php
+     */
+    public function serialize() {
+      $this->conn    = null;
+      static::$query = null;
+      return serialize($this);
+    }
+    /**
+     * (PHP 5 &gt;= 5.1.0)<br/>
+     * Constructs the object
+     * @link http://php.net/manual/en/serializable.unserialize.php
+     *
+     * @param string $serialized <p>
+     *                           The string representation of the object.
+     * </p>
+     *
+     * @throws \ErrorException
+     * @return mixed the original value unserialized.
+     */
+    public function unserialize($serialized) {
     }
   }
