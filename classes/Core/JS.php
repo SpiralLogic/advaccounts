@@ -98,7 +98,7 @@
         $url = $_SERVER['REQUEST_URI'];
       }
       $js    = "Adv.Forms.autocomplete('$id','$url',$callback);";
-      $clean = "Adv.o.autocomplete['$id'].catcomplete('destroy');";
+      $clean = "if (Adv.o.autocomplete['$id']) {return}; Adv.o.autocomplete['$id'].catcomplete('destroy');";
       $this->addLive($js, $clean);
     }
     /**
