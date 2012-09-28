@@ -105,7 +105,7 @@
         }
         $app->render();
       }
-      Page::end();
+      $this->Page->end_page();
     }
     /**
      * @param        $label

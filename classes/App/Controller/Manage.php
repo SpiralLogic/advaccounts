@@ -70,7 +70,7 @@
       $this->generateTable();
       echo '<br>';
       $this->generateForm();
-      Page::end(true);
+      $this->Page->end_page(true);
     }
     protected function beforeTable() {
     }
