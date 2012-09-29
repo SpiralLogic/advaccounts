@@ -90,13 +90,8 @@ Adv.extend({
              }())
            });
 window.addEventListener('scroll', Adv.ScrollDetect.off, false);
-document.getElementById('header').addEventListener('webkitTransitionEnd', function () { Adv.header();}, false);
-document.getElementById('header').addEventListener('transitionend', function () { Adv.header();}, false);
-Adv.extend({
-             header:      function () {
-               Adv.o.body.css('padding-top', Adv.o.header.height());
-             },
-             msgbox:      $('#msgbox').ajaxError(function (event, request, settings) {
+Adv.extend({  headerHeight: Adv.o.header.height(),
+             msgbox:        $('#msgbox').ajaxError(function (event, request, settings) {
                var status;
                if (request.statusText == "abort") {
                  return;
@@ -119,7 +114,7 @@ Adv.extend({
                                }
                                return undefined;
                              }),
-             Status:      {
+             Status:        {
                msgboxTimeout: null,
                show:          function (status) {
                  var text = '', type;
@@ -165,34 +160,38 @@ Adv.extend({
                  window.clearTimeout(Adv.Scroll.msgboxTimeout);
                  if (text) {
                    Adv.msgbox.css({opacity: 0}).html(text);
-                   Adv.header();
-                   if (Adv.msgbox.height() > 0) {
-                     setTimeout(function () {
-                       Adv.msgbox.css({opacity: 1, height: Adv.msgbox.children().length * 35});
-                     }, 200);
-                   }
-                   else {
-                     Adv.msgbox.css({opacity: 1, height: Adv.msgbox.children().length * 35});
-                     Adv.header();
-                   }
-                   Adv.Scroll.msgboxTimeout = setTimeout(function () {
-                     Adv.msgbox.css({opacity: 0, height: 0});
-                     Adv.header();
-                   }, 15000);
-                   Adv.Forms.setFocus(Adv.msgbox[0]);
+                   Adv.Status.open();
                  }
-               }
-
-             },
-             openWindow:  function (url, title, width, height) {
+               }, //
+               open:          function () {
+                 var height = 0;
+                 Adv.msgbox.children().each(function () { height += $(this).outerHeight(true)});
+                 if (Adv.msgbox.height() > 0) {
+                   setTimeout(function () {
+                     Adv.msgbox.css({opacity: 1, height: height});
+                     Adv.o.body.css('padding-top', Adv.headerHeight + height);
+                   }, 200);
+                 }
+                 else {
+                   Adv.msgbox.css({opacity: 1, height: height});
+                   Adv.o.body.css('padding-top', Adv.headerHeight + height);
+                 }
+                 Adv.Scroll.msgboxTimeout = setTimeout(Adv.Status.close, 15000);
+                 Adv.Forms.setFocus(Adv.msgbox[0]);
+               }, //
+               close:         function () {
+                 Adv.o.body.css('padding-top', Adv.headerHeight);
+                 Adv.msgbox.css({opacity: 0, height: 0});
+               }//
+             }, //
+             openWindow:    function (url, title, width, height) {
                width = width || 900;
                height = height || 600;
                var left = (screen.width - width) / 2, top = (screen.height - height) / 2;
                return window.open(url, title, 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
-             }, openTab:  function (url) {
-    window.open(url, '_blank');
-  },
-             hoverWindow: {
+             }, //
+             openTab:       function (url) {window.open(url, '_blank');},
+             hoverWindow:   {
                _init:  false, init: function (width, height) {
                  Adv.hoverWindow.width = width || 600;
                  Adv.hoverWindow.height = height || 600;
@@ -230,7 +229,7 @@ Adv.extend({
                  Adv.o.popupWindow.css('height', height);
                  Adv.o.popupDiv.css({width: Adv.hoverWindow.width, 'height': height, 'left': left, 'top': top});
                }},
-             popupWindow: function () {
+             popupWindow:   function () {
                if (Adv.o.popupWindow) {
                  Adv.o.popupWindow.parent().remove();
                }
@@ -244,7 +243,7 @@ Adv.extend({
                  width:  100,
                  height: 100}).html(Adv.o.popupWindow).on('mouseleave',function () { $(this).remove(); }).appendTo(Adv.o.wrapper).position({my: "center center", at: "center center", of: document.body});
              },
-             TabMenu:     (function () {
+             TabMenu:       (function () {
                var deferreds = [];
                return{
                  init:  function (id, ajax, links, page) {
@@ -270,7 +269,7 @@ Adv.extend({
                  }
                }
              }()),
-             Forms:       (function () {
+             Forms:         (function () {
                var focusOff = false, tooltip, hidden = [], tooltiptimeout, focusonce, focus, menu = {
                  current:    null,
                  closetimer: null,
@@ -716,7 +715,7 @@ Adv.extend({
                  }
                }
              })(),
-             Scroll:      (function () {
+             Scroll:        (function () {
                return{
                  focus:        null,
                  elementName:  null,
@@ -746,7 +745,7 @@ Adv.extend({
 
                };
              })(),
-             Events:      (function () {
+             Events:        (function () {
                var events = [], onload = false, toClean = false, firstBind = function (s, t, a) {
                  $(s).bind(t, a);
                };
@@ -791,7 +790,7 @@ Adv.extend({
                  }
                }
              }()),
-             postcode:    (function () {
+             postcode:      (function () {
                var sets = [];
                return {
                  add:   function (set, city, state, code) {
@@ -843,7 +842,8 @@ $(function () {
       }
       links.eq(1).focus();
       next.trigger('mouseenter');
-    }
+    };
+  Adv.Status.open();
   topLevel.on('mouseenter ', function () {
     var $this = $(this);
     topLevel.removeClass('hover');
