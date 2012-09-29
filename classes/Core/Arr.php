@@ -24,10 +24,33 @@
        * @return bool
        */
       public static function insert(&$array, $index, $elements) {
-        $elements = (array) ($elements);
-        $head     = array_splice($array, 0, $index);
-        $array    = array_merge($head, $elements, $array);
-        return true;
+        if (is_null($index)) {
+          return $array = $elements;
+        }
+        if (is_numeric($index)) {
+          $head = array_splice($array, 0, $index);
+          return $array = array_merge($head, (array) $elements, $array);
+        }
+        $keys = explode('.', $index);
+
+        // This loop allows us to dig down into the array to a dynamic depth by
+        // setting the array value for each level that we dig into. Once there
+        // is one key left, we can fall out of the loop and set the value as
+        // we should be at the proper depth.
+        while (count($keys) > 1) {
+          $key = array_shift($keys);
+
+          // If the key doesn't exist at this depth, we will just create an
+          // empty array to hold the next value, allowing us to create the
+          // arrays to hold the final value.
+          if (!isset($array[$key]) or !is_array($array[$key])) {
+            $array[$key] = array();
+          }
+
+          $array =& $array[$key];
+        }
+
+        return $array[array_shift($keys)] = $elements;
       }
       /**
        * @static
@@ -52,7 +75,16 @@
        * @return mixed null
        */
       public static function get(array $array, $key, $default = null) {
-        return (isset($array[$key])) ? $array[$key] : $default;
+        if (is_null($key)) {
+          return $array;
+        }
+        foreach (explode('.', $key) as $segment) {
+          if (!is_array($array) || !array_key_exists($segment, $array)) {
+            return $default;
+          }
+          $array = $array[$segment];
+        }
+        return $array;
       }
       /**
        * @static
@@ -66,7 +98,11 @@
        */
       public static function substitute(&$array, $index, $len, $elements) {
         array_splice($array, $index, $len);
-        Arr::insert($array, $index, $elements);
+        $elements = (array) $elements;
+        while (count($elements) < $len) {
+          Arr::append($elements, $elements);
+        }
+        Arr::insert($array, $index, array_splice($elements, 0, $len));
         return true;
       }
       /**

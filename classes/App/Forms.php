@@ -1495,6 +1495,6 @@
     }
   }
 
-  Forms::$dic  = \ADV\Core\DIC::getInstance();
+  Forms::$dic  = \ADV\Core\DIC::i();
   Forms::$Ajax = Ajax::i();
   Forms::$DB   = \ADV\Core\DB\DB::i();

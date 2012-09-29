@@ -259,7 +259,7 @@
      * @return bool|int|null|string
      */
     protected function getGlobal($var, $type, $default) {
-      return static::$session->get(['globals', $var], $type, $default);
+      return static::$session->get(['_globals', $var], $type, $default);
     }
     /**
      * @static

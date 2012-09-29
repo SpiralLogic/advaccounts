@@ -904,10 +904,10 @@
     }
   }
 
-  $dic = \ADV\Core\DIC::getInstance();
+  $dic = \ADV\Core\DIC::i();
 
-  DB_Pager::$Input = $dic->get('Input');
-  DB_Pager::$JS    = $dic->get('JS');
-  DB_Pager::$dates = $dic->get('Dates');
-  DB_Pager::$User  = $dic->get('User');
-  DB_Pager::$DB    = $dic->get('DB');
+  DB_Pager::$Input = $dic['Input'];
+  DB_Pager::$JS    = $dic['JS'];
+  DB_Pager::$dates = $dic['Dates'];
+  DB_Pager::$User  = $dic['User'];
+  DB_Pager::$DB    = $dic['DB'];

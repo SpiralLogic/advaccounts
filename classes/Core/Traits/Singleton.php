@@ -22,7 +22,7 @@
      */
     public static function i($class = null) {
       /** @var \ADV\Core\DIC $dic  */
-      $dic = \ADV\Core\DIC::getInstance();
+      $dic = \ADV\Core\DIC::i();
       if (!$dic instanceof \ADV\Core\DIC) {
         if (static::$i === null) {
           static::$i = new static;
@@ -36,29 +36,25 @@
       }
 
       try {
-        return $dic->get($class_name);
+        return $dic[$class_name];
       } catch (\InvalidArgumentException $e) {
       }
       if (is_a($class, $namespaced_class)) {
-        $dic->set(
-          $class_name,
-          function () use ($class) {
-            return $class;
-          }
-        );
+        $dic[$class_name]
+          = function () use ($class) {
+          return $class;
+        };
       } else {
         $args = (get_class() == get_class($class)) ? array_slice(func_get_args(), 1) : [$class];
-        $dic->set(
-          $class_name,
-          function () use ($namespaced_class, $args) {
-            if (!$args) {
-              return new $namespaced_class;
-            }
-            $ref = new \ReflectionClass($namespaced_class);
-            return $ref->newInstanceArgs($args);
+        $dic[$class_name]
+              = function () use ($namespaced_class, $args) {
+          if (!$args) {
+            return new $namespaced_class;
           }
-        );
+          $ref = new \ReflectionClass($namespaced_class);
+          return $ref->newInstanceArgs($args);
+        };
       }
-      return $dic->get($class_name);
+      return $dic[$class_name];
     }
   }

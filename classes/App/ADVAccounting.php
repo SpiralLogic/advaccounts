@@ -37,14 +37,15 @@
     public $buildversion;
     /** @var User $user */
     protected $User = null;
+    /** @var Input $user */
+    protected $Input = null;
     /** @var Config $Config */
     protected $Config = null;
-    /** @var Session */
+    /** @var \ADV\Core\Session $Session*/
     protected $Session = null;
     /** @var Ajax */
     protected $Ajax = null;
     protected $controller = null;
-    protected $get_text = null;
     /** */
     public function __construct(\ADV\Core\Loader $loader) {
       set_error_handler(
@@ -71,28 +72,28 @@
           \ADV\Core\Event::shutdown();
         }
       );
-      $dic  = \ADV\Core\DIC::getInstance();
+      $dic  = \ADV\Core\DIC::i();
       $self = $this;
-      $dic->set(
+      $dic->offsetSet(
         'ADVAccounting',
         function () use ($self) {
           return $self;
         }
       );
-      $this->Cache  = $dic->set(
+      $this->Cache  = $dic->offsetSet(
         'Cache',
         function () {
           $driver = new \ADV\Core\Cache\APC();
           $cache  = new \ADV\Core\Cache($driver);
           return $cache;
         }
-      )->get();
-      $this->Config = $dic->set(
+      )->offsetGet(null);
+      $this->Config = $dic->offsetSet(
         'Config',
-        function ($c) {
-          return new \ADV\Core\Config($c->get('Cache'));
+        function (\ADV\Core\DIC $c) {
+          return new \ADV\Core\Config($c->offsetGet('Cache'));
         }
-      )->get();
+      )->offsetGet(null);
       $loader->registerCache($this->Cache);
       $this->Cache->defineConstants(
         $_SERVER['SERVER_NAME'] . '.defines',
@@ -100,19 +101,19 @@
           return include(ROOT_DOC . 'config' . DS . 'defines.php');
         }
       );
-      $this->Ajax = $dic->set(
+      $this->Ajax = $dic->offsetSet(
         'Ajax',
         function () {
           return new \ADV\Core\Ajax();
         }
-      )->get();
-      $dic->set(
+      )->offsetGet(null);
+      $dic->offsetSet(
         'Input',
         function () {
           return new \ADV\Core\Input\Input();
         }
       );
-      $dic->set(
+      $dic->offsetSet(
         'Num',
         function () {
           $num              = new \ADV\Core\Num();
@@ -125,18 +126,18 @@
           return $num;
         }
       );
-      $dic->set(
+      $dic->offsetSet(
         'DB_Company',
         function () {
           return new \DB_Company();
         }
       );
-      $dic->set(
+      $dic->offsetSet(
         'Dates',
-        function ($c) {
-          $config  = $c->get('Config');
-          $user    = $c->get('User');
-          $company = $c->get('DB_Company');
+        function (\ADV\Core\DIC $c) {
+          $config  = $c->offsetGet('Config');
+          $user    = $c->offsetGet('User');
+          $company = $c->offsetGet('DB_Company');
           $dates   = new \ADV\App\Dates($company);
           $sep     = is_int($user->prefs->date_sep) ? $user->prefs->date_sep : $config->get('date.ui_separator');
           $dates->setSep($sep);
@@ -148,17 +149,17 @@
       );
       ob_start([$this, 'flush_handler'], 0);
 
-      $this->JS = $dic->set(
+      $this->JS = $dic->offsetSet(
         'JS',
-        function ($c) {
+        function (\ADV\Core\DIC $c) {
           $js             = new \ADV\Core\JS();
-          $config         = $c->get('Config');
+          $config         = $c->offsetGet('Config');
           $js->apikey     = $config->get('assets.maps_api_key');
           $js->openWindow = $config->get('ui_windows_popups');
           return $js;
         }
-      )->get();
-      $dic->set(
+      )->offsetGet(null);
+      $dic->offsetSet(
         'User',
         function () {
           if (isset($_SESSION['User'])) {
@@ -168,24 +169,25 @@
           return $_SESSION['User'];
         }
       );
-      $this->Session = $dic->set(
+      $this->Session = $dic->offsetSet(
         'Session',
-        function ($c) {
-          $session              = new \ADV\Core\Session();
-          $config               = $c->get('Config');
-          $l                    = \ADV\Core\Arr::searchValue($config->get('default.language'), $config->get('languages.installed'), 'code');
-          $name                 = $l['name'];
-          $code                 = $l['code'];
-          $encoding             = $l['encoding'];
-          $dir                  = isset($l['rtl']) ? 'rtl' : 'ltr';
-          $_SESSION['language'] = new \ADV\Core\Language($name, $code, $encoding, $dir);
+        function (\ADV\Core\DIC $c) {
+          $handler           = new \ADV\Core\Session\Memcached();
+          $session           = new \ADV\Core\Session($handler);
+          $config            = $c->offsetGet('Config');
+          $l                 = \ADV\Core\Arr::searchValue($config->get('default.language'), $config->get('languages.installed'), 'code');
+          $name              = $l['name'];
+          $code              = $l['code'];
+          $encoding          = $l['encoding'];
+          $dir               = isset($l['rtl']) ? 'rtl' : 'ltr';
+          $session->language = new \ADV\Core\Language($name, $code, $encoding, $dir);
 
           return $session;
         }
-      )->get();
+      )->offsetGet(null);
 
-      $this->User  = $dic->get('User');
-      $this->Input = $dic->get('Input');
+      $this->User  = $dic['User'];
+      $this->Input = $dic['Input'];
       $this->JS->footerFile($this->Config->get('assets.footer'));
       $this->menu = new Menu(_("Main Menu"));
       $this->menu->addItem(_("Main Menu"), "index.php");
@@ -247,14 +249,16 @@
       }
     }
     /**
-     * @param $controller2
+     * @param $controller
+     *
+     * @internal param $controller2
      */
     protected function runController($controller) {
-      $dic = \ADV\Core\DIC::getInstance();
+      $dic = \ADV\Core\DIC::i();
 
       /** @var \ADV\App\Controller\Base $controller  */
-      $controller = new $controller($this->Session, $this->User, $this->Ajax, $this->JS, $dic->get('Input'), DB::i());
-      $controller->setPage($dic->get('Page'));
+      $controller = new $controller($this->Session, $this->User, $this->Ajax, $this->JS, $dic['Input'], DB::i());
+      $controller->setPage($dic->offsetGet('Page'));
       $controller->run();
     }
     /**
@@ -283,6 +287,7 @@
     public function loginFail() {
       header("HTTP/1.1 401 Authorization Required");
       (new View('failed_login'))->render();
+      $this->Config->removeAll();
       $this->Session->kill();
       die();
     }
@@ -322,7 +327,7 @@
       if ($company) {
         $modules = $this->Config->get('modules.login', []);
         foreach ($modules as $module=> $module_config) {
-          $this->User->register_login(
+          $this->User->_register_login(
             function () use ($module, $module_config) {
               $module = '\\Modules\\' . $module . '\\' . $module;
               new $module($module_config);
@@ -367,12 +372,12 @@
       $this->applications = $this->Config->get('apps.active');
     }
     private function setupPage() {
-      $dic = \ADV\Core\DIC::getInstance();
+      $dic = \ADV\Core\DIC::i();
 
-      $dic->set(
+      $dic->offsetSet(
         'Page',
-        function ($c) {
-          return new Page($c->get('Session'), $c->get('User'), $c->get('Config'), $c->get('Ajax'), $c->get('JS'), $c->get('Dates'));
+        function (\ADV\Core\DIC $c) {
+          return new Page($c['Session'], $c['User'], $c['Config'], $c['Ajax'], $c['JS'], $c['Dates']);
         }
       );
     }

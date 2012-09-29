@@ -217,7 +217,7 @@
       $this->assertSame(7, $this->object->getPostGlobal('test3'));
       unset($_GET['test3']);
       unset($_POST['test3']);
-      $_SESSION['globals']['test3'] = 9;
+      $_SESSION['_globals']['test3'] = 9;
       $this->assertSame(9, $this->object->getPostGlobal('test3'));
     }
     /**
@@ -231,7 +231,7 @@
       $this->assertSame(8, $this->object->postGlobal('test3'));
       unset($_GET['test3']);
       unset($_POST['test3']);
-      $_SESSION['globals']['test3'] = 9;
+      $_SESSION['_globals']['test3'] = 9;
       $this->assertSame(9, $this->object->postGlobal('test3'));
     }
     /**

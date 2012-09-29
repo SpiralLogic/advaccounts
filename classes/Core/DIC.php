@@ -1,20 +1,23 @@
 <?php
   namespace ADV\Core;
 
+  use InvalidArgumentException;
+
   /**
 
    */
   class DIC implements \ArrayAccess {
     protected $_objects = [];
     protected $_callbacks = [];
+    /** @var DIC */
     protected static $i;
     protected $_last;
     /**
      * @return DIC
      */
-    public static function getInstance() {
+    public static function i() {
       if (!static::$i) {
-        static::$i = new static;
+        static::$i = new static();
       }
       return static::$i;
     }
@@ -24,10 +27,8 @@
      *
      * @return \ADV\Core\DIC
      */
-    public function set($name, \Closure $callable) {
-      $this->_last             = $name;
-      $this->_callbacks[$name] = $callable;
-      return $this;
+    public static function set($name, \Closure $callable) {
+      static::$i->offsetSet($name, $callable);
     }
     /**
      * Sets a parameter or an object.
@@ -37,10 +38,19 @@
      * the same a name as an existing parameter would break your container).
      *
      * @param string $name  The unique identifier for the parameter or object
-     * @param mixed  $value The value of the parameter or a closure to defined an object
+     * @param mixed  $callable
+     *
+     * @throws \InvalidArgumentException
+     * @internal param mixed $value The value of the parameter or a closure to defined an object
+     * @return \ADV\Core\DIC|void
      */
-    public function offsetSet($name, $value) {
-      $this->set($name, $value);
+    public function offsetSet($name, $callable) {
+      if (!$callable instanceof \Closure) {
+        throw new InvalidArgumentException('Must be closure!');
+      }
+      $this->_last             = $name;
+      $this->_callbacks[$name] = $callable;
+      return $this;
     }
     /**
      * @param $name
@@ -59,8 +69,8 @@
      *
      * @return bool
      */
-    public function has($name) {
-      return isset($this->_callbacks[$name]);
+    public static function has($name) {
+      return static::$i->offsetExists($name);
     }
     /**
      * Checks if a parameter or an object is set.
@@ -70,14 +80,25 @@
      * @return Boolean
      */
     public function offsetExists($name) {
-      return $this->has($name);
+      return isset($this->_callbacks[$name]);
     }
     /**
      * @param $name
      *
      * @return mixed
      */
-    public function get($name = null) {
+    public static function get($name = null) {
+      return static::$i->offsetGet($name);
+    }
+    /**
+     * Gets a parameter or an object.
+     *
+     * @param string $name The unique identifier for the parameter or object
+     *
+     * @return mixed                     The value of the parameter or an object
+     * @throws \InvalidArgumentException if the identifier is not defined
+     */
+    public function offsetGet($name) {
 
       $name = $name ? : $this->_last;
       if (isset($this->_objects[$name])) {
@@ -97,18 +118,6 @@
       }
       // Otherwise create a new one
       return $this->fresh($name, func_get_args());
-    }
-    /**
-     * Gets a parameter or an object.
-     *
-     * @param string $name The unique identifier for the parameter or object
-     *
-     * @return mixed                     The value of the parameter or an object
-     * @throws \InvalidArgumentException if the identifier is not defined
-     */
-    public function offsetGet($name) {
-      $args = func_get_args();
-      return call_user_func_array([$this, 'get'], $args);
     }
     /**
      * @param      $name
@@ -132,21 +141,23 @@
      *
      * @return bool
      */
-    public function delete($name) {
+    public static function delete($name) {
+      return static::$i->offsetUnset($name);
+    }
+    /**
+     * Unsets a parameter or an object.
+     *
+     * @param string $name The unique identifier for the parameter or object
+     *
+     * @return bool|void
+     */
+    public function offsetUnset($name) {
       // TODO: Should this also delete the callback?
       if (isset($this->_objects[$name])) {
         unset($this->_objects[$name]);
         return true;
       }
       return false;
-    }
-    /**
-     * Unsets a parameter or an object.
-     *
-     * @param string $name The unique identifier for the parameter or object
-     */
-    public function offsetUnset($name) {
-      $this->delete($name);
     }
     /**
      * @param array $arguments

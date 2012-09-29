@@ -11,7 +11,6 @@
   namespace ADV\Core;
 
   /**
-
    */
   class Language {
     use Traits\Singleton;
