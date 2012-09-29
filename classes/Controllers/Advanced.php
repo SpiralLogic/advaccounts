@@ -26,19 +26,18 @@
       $module->addLeftFunction(_("Put websales on Bobs Joard"), "/jobsboard/websales/", SA_OPEN);
       $module->addLeftFunction(_("Put web customers into accounting"), "/modules/advanced/web", SA_OPEN);
       $module->addLeftFunction(_("Put websales into accouting"), "/advanced/websales/", SA_OPEN);
+      $module = $this->add_module(_("Refresh Config"));
+
       $module->addLeftFunction(_("Reload Config"), "/?reload_config=1", SA_OPEN);
       $module->addLeftFunction(_("Reload Cache"), "/?reload_cache=1", SA_OPEN);
-      $module->addRightFunction(
-        "Add To Order from Website",
-        'javascript:var%20s,b=document.getElementsByTagName("body")[0];if (!window.jQuery) {s=document.createElement("script");s.setAttribute("src","http://jquery.com/src/jquery-latest.js");b.appendChild(s)};s=document.createElement("script");s.setAttribute("src","https://advanced.sorijen.net.au:2223/js/js2/addfromsite.js?"+Math.floor(Math.random()*1000000));b.appendChild(s);;void(s);',
-        SA_OPEN
-      );
-      $module->addRightFunction(
+      $module = $this->add_module(_("Issues"));
+
+      $module->addLeftFunction(
         "ADVAccounts Issue",
         "javascript:(function () { var e = document.createElement(&#39;script&#39;); e.setAttribute(&#39;type&#39;, &#39;text/javascript&#39;); e.setAttribute(&#39;src&#39;, &#39;http://advanced.advancedgroup.com.au:8090/_resources/js/charisma-bookmarklet-min.js&#39;); document.body.appendChild(e); }());",
         SA_OPEN
       );
-      $module->addRightFunction("ADVAccounts Issue Tracker", "http://dev.advanced.advancedgroup.com.au:8090/issues", SA_OPEN);
-      $module->addRightFunction("New Message", '/messages/messages', SA_OPEN);
+      $module->addLeftFunction("ADVAccounts Issue Tracker", "http://dev.advanced.advancedgroup.com.au:8090/issues", SA_OPEN);
+      $module->addLeftFunction("New Message", '/messages/messages', SA_OPEN);
     }
   }

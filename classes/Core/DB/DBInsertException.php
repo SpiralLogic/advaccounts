@@ -8,10 +8,3 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core\DB;
-  /**
-
-   */
-  class DBInsertException extends DBException
-  {
-
-  }

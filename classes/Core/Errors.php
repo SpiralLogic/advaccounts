@@ -79,6 +79,7 @@
      * @param bool $log
      *
      * @return bool
+     * @return bool
      */
     public static function handler($type, $message, $file = null, $line = null, $log = true) {
       if (in_array($type, static::$ignore)) {
@@ -118,6 +119,7 @@
     /**
      * @static
      *
+     * @param \Exception $e
      * @param \Exception $e
      */
     public static function exceptionHandler(\Exception $e) {
@@ -164,8 +166,7 @@
       return $content;
     }
     /**
-     * @static
-
+     * @return void
      */
     public static function sendDebugEmail() {
       if (static::$current_severity == -1 || static::$errors || static::$dberrors || static::$debugLog) {
@@ -230,8 +231,7 @@
       return $backtrace;
     }
     /**
-     * @static
-
+     * @return void
      */
     public static function process() {
       $last_error = error_get_last();
@@ -271,7 +271,7 @@
     }
     /**
      * @static
-     * @internal param null $e
+     * @return void param null $e
      */
     protected static function fatal() {
       $content = strip_tags(static::format());
@@ -304,7 +304,7 @@
      */
     public static function JSONError() {
       $status = false;
-     if (count(static::$messages) > 0) {
+      if (count(static::$messages) > 0) {
         $message           = end(static::$messages);
         $status['status']  = $message['type'];
         $status['message'] = $message['message'];
@@ -355,8 +355,7 @@
       Errors::handler(E_ERROR, $error['message'], $source['file'], $source['line']);
     }
     /**
-     * @static
-
+     * @return void
      */
     public static function log() {
       $source  = reset(debug_backtrace());
@@ -376,6 +375,7 @@
     /**
      * @param $var
      *
+     * @return string
      * @return string
      */
     protected static function  dumpVar($var) {

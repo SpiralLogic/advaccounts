@@ -23,7 +23,7 @@
      */
     protected function before() {
       $module = $this->add_module(_("Transactions"));
-      $module->addLeftFunction(_("Work &Order Entry"), "/manufacturing/work_order_entry?", SA_WORKORDERENTRY);
+      $module->addLeftFunction(_("Work &Order"), "/manufacturing/work_order_entry?", SA_WORKORDERENTRY);
       $module->addLeftFunction(_("&Outstanding Work Orders"), "/manufacturing/search_work_orders?outstanding_only=1", SA_MANUFTRANSVIEW);
       $module = $this->add_module(_("Inquiries and Reports"));
       $module->addLeftFunction(_("Costed Bill Of Material Inquiry"), "/manufacturing/inquiry/bom_cost?", SA_WORKORDERCOST);

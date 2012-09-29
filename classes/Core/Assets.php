@@ -21,7 +21,7 @@
     protected $debug = false;
     protected $gzip = true;
     protected $compressionLevel = 9;
-    protected $gzipExceptions = array('gif', 'jpeg', 'jpg', 'png', 'swf', 'ico');
+    protected $gzipExceptions = ['gif', 'jpeg', 'jpg', 'png', 'swf', 'ico'];
     protected $minify = true;
     protected $concatenate = true;
     protected $separator = ',';
@@ -147,7 +147,8 @@
 
      */
     public function __construct() {
-      //  $this->setFromArray(Config::_getAll('assets22'));
+      $fileTypes = [];
+      $fileDir   = $fileNames = '';
       list($query) = explode('?', urldecode($_SERVER['QUERY_STRING']));
       if (preg_match('/^\/?(.+\/)?(.+)$/', $query, $matchResult)) {
         $fileNames = $matchResult[2];

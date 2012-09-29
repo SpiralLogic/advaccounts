@@ -15,7 +15,6 @@
   use ADV\App\Display;
   use ADV\Core\Arr;
   use ADV\App\Application\Func;
-  use ADV\App\Page;
   use ADV\Core\View;
 
   /**
@@ -67,8 +66,9 @@
       $modules = [];
       foreach ($this->modules as $name => $module) {
         $functions = [];
-        Arr::append($functions, $module['right']);
         Arr::append($functions, $module['left']);
+        Arr::append($functions, $module['right']);
+
         foreach ($functions as &$func) {
           $func = str_replace('&', '', $func);
         }

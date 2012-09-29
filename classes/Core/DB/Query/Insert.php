@@ -9,7 +9,8 @@
    **/
   namespace ADV\Core\DB\Query;
 
-  use PDO, PDOStatement, PDOException, PDORow, Cache;
+  use PDO;
+  use ADV\Core\Cache;
   use ADV\Core\DB\DB;
   use ADV\Core\DB\DBException;
 
@@ -75,8 +76,8 @@
       return $this;
     }
     /**
-     * @param $field
-     * @param $value
+     * @param array|string $field
+     * @param              $value
      *
      * @throws \ADV\Core\DB\DBException
      * @return \ADV\Core\DB\Query\Insert

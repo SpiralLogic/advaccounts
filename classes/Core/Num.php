@@ -40,50 +40,6 @@
     public $exrate_dec = 4;
     /** @var */
     public $percent_dec;
-    protected $user;
-    /**
-     * @static
-     *
-     * @param $number
-     *
-     * @return int|string
-     */
-    public function priceFormat($number) {
-      $number = str_replace($this->tho_sep, '', $number);
-      return $this->format($this->round($number, $this->price_dec), $this->price_dec);
-    }
-    /**
-     * @static
-     *
-     * @param      $number
-     * @param null $dec
-     *
-     * @return int|string
-     */
-    public function qtyFormat($number, $dec = null) {
-      $dec = (int) ($dec === null ? : $this->qty_dec);
-      return $this->format($this->round($number, $dec), $dec);
-    }
-    /**
-     * @static
-     *
-     * @param $number
-     * @param $dec
-     *
-     * @return int|string
-     */
-    public function priceDecimal($number, $dec = null) {
-      $dec = $dec !== null ? $dec : $this->price_dec;
-      $str = strval($number);
-      $pos = strpos($str, '.');
-      if ($pos !== false) {
-        $len = strlen(substr($str, $pos + 1));
-        if ($len > $dec) {
-          $dec = $len;
-        }
-      }
-      return $this->format($number, $dec);
-    }
     /**
      * @static
      *
@@ -118,11 +74,44 @@
      * @static
      *
      * @param $number
+     * @param $dec
      *
      * @return int|string
      */
-    public function exrateFormat($number) {
-      return $this->format($number, $this->exrate_dec);
+    public function priceDecimal($number, $dec = null) {
+      $dec = $dec !== null ? $dec : $this->price_dec;
+      $str = strval($number);
+      $pos = strpos($str, '.');
+      if ($pos !== false) {
+        $len = strlen(substr($str, $pos + 1));
+        if ($len > $dec) {
+          $dec = $len;
+        }
+      }
+      return $this->format($number, $dec);
+    }
+    /**
+     * @static
+     *
+     * @param $number
+     *
+     * @return int|string
+     */
+    public function priceFormat($number) {
+      $number = str_replace($this->tho_sep, '', $number);
+      return $this->format($this->round($number, $this->price_dec), $this->price_dec);
+    }
+    /**
+     * @static
+     *
+     * @param      $number
+     * @param null $dec
+     *
+     * @return int|string
+     */
+    public function qtyFormat($number, $dec = null) {
+      $dec = (int) ($dec === null ? : $this->qty_dec);
+      return $this->format($this->round($number, $dec), $dec);
     }
     /**
      * @static
@@ -137,27 +126,12 @@
     /**
      * @static
      *
-     * @param $price
-     * @param $round_to
+     * @param $number
      *
-     * @return float|int
+     * @return int|string
      */
-    public function toNearestCents($price, $round_to) {
-      if ($price == 0) {
-        return 0;
-      }
-      $pow = pow(10, $this->price_dec);
-      if ($pow >= $round_to) {
-        $mod = ($pow % $round_to);
-      } else {
-        $mod = ($round_to % $pow);
-      }
-      if ($mod != 0) {
-        $price = ceil($price) - ($pow - $round_to) / $pow;
-      } else {
-        $price = ceil($price * ($pow / $round_to)) / ($pow / $round_to);
-      }
-      return $price;
+    public function exrateFormat($number) {
+      return $this->format($number, $this->exrate_dec);
     }
     /**
      * @static
@@ -232,5 +206,30 @@
         $res = "zero";
       }
       return $res;
+    }
+    /**
+     * @static
+     *
+     * @param $price
+     * @param $round_to
+     *
+     * @return float|int
+     */
+    public function toNearestCents($price, $round_to) {
+      if ($price == 0) {
+        return 0;
+      }
+      $pow = pow(10, $this->price_dec);
+      if ($pow >= $round_to) {
+        $mod = ($pow % $round_to);
+      } else {
+        $mod = ($round_to % $pow);
+      }
+      if ($mod != 0) {
+        $price = ceil($price) - ($pow - $round_to) / $pow;
+      } else {
+        $price = ceil($price * ($pow / $round_to)) / ($pow / $round_to);
+      }
+      return $price;
     }
   }

@@ -39,6 +39,184 @@
       }
     }
     /**
+     * @param $context
+     */
+    public function addContext($context) {
+      $context       = preg_replace('/[^a-zA-Z0-9_\x7f-\xff]/', '_', $context);
+      $this->context = $context;
+    }
+    /**
+     * @param $contents
+     *
+     * @return mixed
+     */
+    public function runContext($contents) {
+      $contents = preg_replace('/\$([^\.{][a-zA-Z_0-9]+?)/', '\$' . $this->context . '.$1', $contents);
+
+      return $contents;
+    }
+    /**
+     * @param $template
+     * @param $lastmodified
+     */
+    public function checkCache($template, $lastmodified) {
+      if ($lastmodified < filemtime($template)) {
+        static::$Cache->delete('template.' . $this->_template);
+      }
+    }
+    /**
+     * @param      $__contents
+     * @param null $context
+     *
+     * @return mixed
+     */
+    private function compile($__contents, $context = null) {
+      $__contents = $this->compileFunctions($__contents);
+      $__contents = $this->compileNothings($__contents);
+      $__contents = $this->compileStructureOpenings($__contents);
+      $__contents = $this->compileElse($__contents);
+      $__contents = $this->compileStructureClosings($__contents);
+      $__contents = $this->compileHashes($__contents);
+      $__contents = $this->compileMixins($__contents);
+      $__contents = $this->compileEchos($__contents, $context);
+      $__contents = $this->compileDotNotation($__contents);
+      static::$Cache->set('template.' . $this->_template, [$__contents, filemtime($this->_template), $this->_js]);
+
+      return $__contents;
+    }
+    /**
+     * @static
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
+    protected function compileFunctions($value) {
+      return preg_replace('/([^{])\{#(.+?)#\}([^}])/', '$1<?php $2; ?>$3', $value);
+    }
+    /**
+     * @static
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
+    protected function compileNothings($value) {
+      $pattern = '/\{\{(\$.+?)\?\}\}(.+?)\{\{\/\1\?\}\}/s';
+
+      return preg_replace($pattern, '<?php if(isset($1) && $1): ?>$2<?php endif; ?>', $value);
+    }
+    /**
+     * Rewrites Blade structure openings into PHP structure openings.
+     *
+     * @param  string  $value
+     *
+     * @return string
+     */
+    protected function compileStructureOpenings($value) {
+
+      $pattern = '/\{\{#(if|elseif|foreach|for|while)(.*?)\}\}/';
+
+      return preg_replace($pattern, '<?php $1($2): ?>', $value);
+    }
+    /**
+     * Rewrites Blade else statements into PHP else statements.
+     *
+     * @param  string  $value
+     *
+     * @return string
+     */
+    protected function compileElse($value) {
+      return preg_replace('/\{\{#(else)\}\}/', '<?php $1: ?>', $value);
+    }
+    /**
+     * Rewrites Blade structure closings into PHP structure closings.
+     *
+     * @param  string  $value
+     *
+     * @return string
+     */
+    protected function compileStructureClosings($value) {
+
+      $pattern = '/\{\{\/(if|foreach|for|while)\}\}/';
+
+      return preg_replace($pattern, '<?php end$1; ?>', $value);
+    }
+    /**
+     * Rewrites Blade structure openings into PHP structure openings.
+     *
+     * @param  string  $value
+     *
+     * @return string
+     */
+    protected function compileHashes($value) {
+      $pattern = '/\{\{#([^?]+?)\}\}(.*?)\{\{\/\1}\}/s';
+      $return  = preg_replace_callback(
+        $pattern,
+        function ($input) {
+          $var      = ltrim($input[1], '$');
+          $contents = $input[2];
+          $tempvar  = uniqid();
+          $return   = '<?php if (isset($' . $var . ') && (is_array($' . $var . ') || $' . $var . ' instanceof \Traversable )): foreach($' . $var . ' as $_' . $tempvar . '_name =>
+               $_' . $tempvar . '_val): ?>';
+          $contents = $this->compile($contents, true);
+          $contents = str_replace(['{{!}}', '{{.}}'], ['{{$_' . $tempvar . '_name}}', '{{$_' . $tempvar . '_val}}'], $contents);
+          $return .= str_replace('$.', '$_' . $tempvar . '_val.', $contents);
+          $return .= '<?php endforeach; endif; ?>';
+
+          //        }
+          return $return;
+        },
+        $value
+      );
+
+      return $return;
+    }
+    /**
+     * @static
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
+    protected function compileMixins($value) {
+      return preg_replace_callback(
+        '/\{\{\>(.+?)\}\}/',
+        function ($input) {
+          $view = new View($input[1]);
+          $view->addContext($input[1]);
+          $this->_js = array_unique(array_merge($this->_js, $view->_js));
+
+          return '<?php if ($' . $view->context . '!==false): ?>' . $view->getCompiled() . '<?php endif; ?>';
+        },
+        $value
+      );
+    }
+    /**
+     * @static
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
+    protected function compileDotNotation($value) {
+      return preg_replace('/(\$[a-zA-Z_0-9]+?)\.([a-zA-Z_0-9-]+)/', '$1["$2"]', $value);
+    }
+    /**
+     * @static
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
+    protected function compileEchos($value) {
+      return preg_replace(
+        '/\{\{([^!\.].*?)\}\}/',
+        '<?php  echo $1; ?>',
+        $value
+      );
+    }
+    /**
      * @param bool $return
      *
      * @throws \RuntimeException
@@ -108,177 +286,6 @@
         return $__contents;
       }
     }
-    public function addContext($context) {
-      $context       = preg_replace('/[^a-zA-Z0-9_\x7f-\xff]/', '_', $context);
-      $this->context = $context;
-    }
-    public function runContext($contents) {
-      $contents = preg_replace('/\$([^\.{][a-zA-Z_0-9]+?)/', '\$' . $this->context . '.$1', $contents);
-
-      return $contents;
-    }
-    /**
-     * @param $template
-     * @param $lastmodified
-     */
-    public function checkCache($template, $lastmodified) {
-      if ($lastmodified < filemtime($template)) {
-        static::$Cache->delete('template.' . $this->_template);
-      }
-    }
-    /**
-     * @static
-     *
-     * @param $value
-     *
-     * @return mixed
-     */
-    protected static function compileEchos($value) {
-      return preg_replace(
-        '/\{\{([^!\.].*?)\}\}/',
-        '<?php  echo $1; ?>',
-        $value
-      );
-    }
-    /**
-     * @static
-     *
-     * @param $value
-     *
-     * @return mixed
-     */
-    protected function compileMixins($value) {
-      return preg_replace_callback(
-        '/\{\{\>(.+?)\}\}/',
-        function ($input) {
-          $view = new View($input[1]);
-          $view->addContext($input[1]);
-          $this->_js = array_unique(array_merge($this->_js, $view->_js));
-
-          return '<?php if ($' . $view->context . '!==false): ?>' . $view->getCompiled() . '<?php endif; ?>';
-        },
-        $value
-      );
-    }
-    /**
-     * @static
-     *
-     * @param $value
-     *
-     * @return mixed
-     */
-    protected static function compileDotNotation($value) {
-      return preg_replace('/(\$[a-zA-Z_0-9]+?)\.([a-zA-Z_0-9-]+)/', '$1["$2"]', $value);
-    }
-    /**
-     * @static
-     *
-     * @param $value
-     *
-     * @return mixed
-     */
-    protected static function compileFunctions($value) {
-      return preg_replace('/([^{])\{#(.+?)#\}([^}])/', '$1<?php $2; ?>$3', $value);
-    }
-    /**
-     * @static
-     *
-     * @param $value
-     *
-     * @return mixed
-     */
-    protected static function compileNothings($value) {
-      $pattern = '/\{\{(\$.+?)\?\}\}(.+?)\{\{\/\1\?\}\}/s';
-
-      return preg_replace($pattern, '<?php if(isset($1) && $1): ?>$2<?php endif; ?>', $value);
-    }
-    /**
-     * Rewrites Blade structure openings into PHP structure openings.
-     *
-     * @param  string  $value
-     *
-     * @return string
-     */
-    protected static function compileStructureOpenings($value) {
-
-      $pattern = '/\{\{#(if|elseif|foreach|for|while)(.*?)\}\}/';
-
-      return preg_replace($pattern, '<?php $1($2): ?>', $value);
-    }
-    /**
-     * Rewrites Blade structure closings into PHP structure closings.
-     *
-     * @param  string  $value
-     *
-     * @return string
-     */
-    protected static function compileStructureClosings($value) {
-
-      $pattern = '/\{\{\/(if|foreach|for|while)\}\}/';
-
-      return preg_replace($pattern, '<?php end$1; ?>', $value);
-    }
-    /**
-     * Rewrites Blade else statements into PHP else statements.
-     *
-     * @param  string  $value
-     *
-     * @return string
-     */
-    protected static function compileElse($value) {
-      return preg_replace('/\{\{#(else)\}\}/', '<?php $1: ?>', $value);
-    }
-    /**
-     * Rewrites Blade structure openings into PHP structure openings.
-     *
-     * @param  string  $value
-     *
-     * @return string
-     */
-    protected function compileHashes($value) {
-      $pattern = '/\{\{#([^?]+?)\}\}(.*?)\{\{\/\1}\}/s';
-      $return  = preg_replace_callback(
-        $pattern,
-        function ($input) {
-          $var      = ltrim($input[1], '$');
-          $contents = $input[2];
-          $tempvar  = uniqid();
-          $return   = '<?php if (isset($' . $var . ') && (is_array($' . $var . ') || $' . $var . ' instanceof \Traversable )): foreach($' . $var . ' as $_' . $tempvar . '_name =>
-           $_' . $tempvar . '_val): ?>';
-          $contents = $this->compile($contents, true);
-          $contents = str_replace(['{{!}}', '{{.}}'], ['{{$_' . $tempvar . '_name}}', '{{$_' . $tempvar . '_val}}'], $contents);
-          $return .= str_replace('$.', '$_' . $tempvar . '_val.', $contents);
-          //$implicit = $this->compileContext($contents, '_' . $var);
-          $return .= '<?php endforeach; endif; ?>';
-
-          //        }
-          return $return;
-        },
-        $value
-      );
-
-      return $return;
-    }
-    /**
-     * @param      $__contents
-     * @param null $context
-     *
-     * @return mixed
-     */
-    private function compile($__contents, $context = null) {
-      $__contents = $this->compileFunctions($__contents);
-      $__contents = $this->compileNothings($__contents);
-      $__contents = $this->compileStructureOpenings($__contents);
-      $__contents = $this->compileElse($__contents);
-      $__contents = $this->compileStructureClosings($__contents);
-      $__contents = $this->compileHashes($__contents);
-      $__contents = $this->compileMixins($__contents);
-      $__contents = $this->compileEchos($__contents, $context);
-      $__contents = $this->compileDotNotation($__contents);
-      static::$Cache->set('template.' . $this->_template, [$__contents, filemtime($this->_template), $this->_js]);
-
-      return $__contents;
-    }
     /**
      * @param      $offset
      * @param      $value
@@ -293,6 +300,9 @@
 
       return $this;
     }
+    /**
+     * @return array
+     */
     public function getALL() {
       return $this->_viewdata;
     }

@@ -41,9 +41,9 @@
       }
       ini_set('session.gc_maxlifetime', 3200); // 10hrs
       $handler = new \ADV\Core\Session\Memcached();
+      /** @noinspection PhpParamsInspection */
       session_set_save_handler($handler, true);
       session_start();
-      /** @noinspection PhpUndefinedFunctionInspection */
       if (session_status() !== PHP_SESSION_ACTIVE) {
         throw new SessionException('Could not start a Session!');
       }
@@ -95,6 +95,16 @@
      * @param $var
      * @param $value
      *
+     * @return mixed
+     */
+    public function set($var, $value) {
+      $_SESSION[$var] = $value;
+      return $value;
+    }
+    /**
+     * @param $var
+     * @param $value
+     *
      * @internal param $valie
      * @return float|string
      */
@@ -124,12 +134,14 @@
      * @param      $var
      * @param null $default
      *
-     * @internal param $value
-     * @internal param $valie
-     * @return float|string
+     * @return null
      */
-    public function getFlash($var, $default = null) {
-      return isset($this->flash[$var]) ? $this->flash[$var] : $default;
+    public function get($var, $default = null) {
+      $value = $default;
+      if (!isset($_SESSION[$var])) {
+        $value = $_SESSION[$var];
+      }
+      return $value;
     }
     /**
      * @param $var
@@ -139,6 +151,17 @@
      */
     public function getGlobal($var, $default = null) {
       return isset($this['globals'][$var]) ? $this['globals'][$var] : $default;
+    }
+    /**
+     * @param      $var
+     * @param null $default
+     *
+     * @internal param $value
+     * @internal param $valie
+     * @return float|string
+     */
+    public function getFlash($var, $default = null) {
+      return isset($this->flash[$var]) ? $this->flash[$var] : $default;
     }
     /**
      * @internal param $globals
@@ -155,17 +178,17 @@
      * @static
      * @return void
      */
-    public static function kill() {
-      Config::_removeAll();
-      session_start();
-      session_destroy();
+    public function regenerate() {
+      session_regenerate_id();
     }
     /**
      * @static
      * @return void
      */
-    public function regenerate() {
-      session_regenerate_id();
+    public static function kill() {
+      Config::_removeAll();
+      session_start();
+      session_destroy();
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
@@ -231,28 +254,5 @@
      */
     public function offsetUnset($offset) {
       unset($_SESSION[$offset]);
-    }
-    /**
-     * @param      $var
-     * @param null $default
-     *
-     * @return null
-     */
-    public function get($var, $default = null) {
-      $value = $default;
-      if (!isset($_SESSION[$var])) {
-        $value = $_SESSION[$var];
-      }
-      return $value;
-    }
-    /**
-     * @param $var
-     * @param $value
-     *
-     * @return mixed
-     */
-    public function set($var, $value) {
-      $_SESSION[$var] = $value;
-      return $value;
     }
   }

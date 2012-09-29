@@ -30,7 +30,6 @@
       $module->addRightFunction(_("&Budget Entry"), "/gl/gl_budget?", SA_BUDGETENTRY);
       $module->addRightFunction(_("&Reconcile Bank Account"), "/banking/reconcile?", SA_RECONCILE);
       /*      $module->addRightFunction(_("&Compare Reconcile to Bank Statement"), "/gl/inquiry/bankstatement?", SA_RECONCILE);*/
-      $module->addRightFunction(_("Undepostied Funds"), "/gl/undeposited_funds?", SA_RECONCILE);
       $module = $this->add_module(_("Inquiries and Reports"));
       $module->addLeftFunction(_("&Journal Inquiry"), "/gl/inquiry/journal?", SA_GLANALYTIC);
       $module->addLeftFunction(_("GL &Inquiry"), "/gl/inquiry/gl_account?", SA_GLTRANSVIEW);
