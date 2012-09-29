@@ -24,7 +24,7 @@
      */
     protected function tearDown() {
       session_write_close();
-      $this->object=null;
+      $this->object = null;
       $this->assertSame(PHP_SESSION_NONE, session_status());
     }
     /**
@@ -32,10 +32,12 @@
      * @todo   Implement testCheckUserAgent().
      */
     public function testCheckUserAgent() {
-      // Remove the following lines when you implement this test.
-      $this->markTestIncomplete(
-        'This test has not been implemented yet.'
-      );
+      $actual = $this->object->checkUserAgent();
+      $this->assertFalse($actual);
+      session_write_close();
+      session_start();
+      $actual = $this->object->checkUserAgent();
+      $this->assertTrue($actual);
     }
     /**
      * @covers ADV\Core\Session::__set
@@ -124,77 +126,82 @@
     public function testRemoveGlobal() {
       $this->assertArrayHasKey('test', $_SESSION['_globals']);
       $this->object->removeGlobal('test');
-           $this->assertArrayNotHasKey('test', $_SESSION['_globals']);
+      $this->assertArrayNotHasKey('test', $_SESSION['_globals']);
     }
     /**
      * @covers ADV\Core\Session::regenerate
      * @todo   Implement testRegenerate().
      */
     public function testRegenerate() {
-      $before =session_id();
+      $before = session_id();
       $this->object->regenerate();
       $after = session_id();
-      $this->assertNotSame($before,$after);
+      $this->assertNotSame($before, $after);
     }
     /**
      * @covers ADV\Core\Session::kill
      * @todo   Implement testKill().
      */
     public function testKill() {
-      $_SESSION['stored']='yesitis';
-      $before =session_id();
+      $_SESSION['stored'] = 'yesitis';
+      $before             = session_id();
+      $this->assertArrayHasKey('stored', $_SESSION);
       session_write_close();
       session_id($before);
       session_start();
       $this->assertSame(PHP_SESSION_ACTIVE, session_status());
-      $this->assertSame('yesitis',$_SESSION['stored']);
+      $this->assertArrayHasKey('stored', $_SESSION);
+      $this->assertSame('yesitis', $_SESSION['stored']);
       $this->object->kill();
       session_write_close();
       $this->assertSame(PHP_SESSION_NONE, session_status());
       session_id($before);
       session_start();
       $this->assertSame(PHP_SESSION_ACTIVE, session_status());
-      $this->assertNotSame('yesitis',$_SESSION['stored']);
-
+      $this->assertArrayNotHasKey('stored', $_SESSION);
     }
     /**
      * @covers ADV\Core\Session::offsetExists
      * @todo   Implement testOffsetExists().
      */
     public function testOffsetExists() {
-      // Remove the following lines when you implement this test.
-      $this->markTestIncomplete(
-        'This test has not been implemented yet.'
-      );
+      $actual = isset($this->object['test']);
+      $this->assertFalse($actual);
+      $_SESSION['test'] = 'yes';
+      $actual           = isset($this->object['test']);
+      $this->assertTrue($actual);
     }
     /**
      * @covers ADV\Core\Session::offsetGet
      * @todo   Implement testOffsetGet().
      */
     public function testOffsetGet() {
-      // Remove the following lines when you implement this test.
-      $this->markTestIncomplete(
-        'This test has not been implemented yet.'
-      );
+      $_SESSION['test'] = 'yes';
+      $actual           = $this->object['test'];
+      $this->assertSame('yes', $actual);
     }
     /**
      * @covers ADV\Core\Session::offsetSet
      * @todo   Implement testOffsetSet().
      */
     public function testOffsetSet() {
-      // Remove the following lines when you implement this test.
-      $this->markTestIncomplete(
-        'This test has not been implemented yet.'
-      );
+      $this->object['test'] = 'yes';
+
+      $actual = $_SESSION['test'];
+      $this->assertSame('yes', $actual);
     }
     /**
      * @covers ADV\Core\Session::offsetUnset
      * @todo   Implement testOffsetUnset().
      */
     public function testOffsetUnset() {
-      // Remove the following lines when you implement this test.
-      $this->markTestIncomplete(
-        'This test has not been implemented yet.'
-      );
+      $_SESSION['test'] = 'yes';
+      $actual           = isset($this->object['test']);
+      $this->assertTrue($actual);
+      unset($this->object['test']);
+      $actual = isset($this->object['test']);
+      $this->assertFalse($actual);
+      $actual = isset($_SESSION['test']);
+      $this->assertFalse($actual);
     }
   }

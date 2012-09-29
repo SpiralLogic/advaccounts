@@ -7,21 +7,20 @@
      * @var Security
      */
     protected $security;
+    protected $config;
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
     protected function setUp() {
-      $user          = $this->getMockBuilder('User')->disableOriginalConstructor()->getMock();
-      $config        = $this->getMockBuilder('ADV\\Core\\Config')->disableOriginalConstructor()->getMock();
+      $this->config  = $this->getMockBuilder('ADV\\Core\\Config')->disableOriginalConstructor()->getMock();
       $access_levels = include(ROOT_DOC . 'config' . DS . 'access_levels.php');
       $map           = [
         ['access_levels.areas', false, $access_levels['areas']],
         ['access_levels.sections', false, $access_levels['sections']]
       ];
-      $config->expects($this->any())->method('get')->will($this->returnValueMap($map));
-      $page           = $this->getMockBuilder('ADV\\App\\Page')->disableOriginalConstructor()->getMock();
-      $this->security = new Security($config);
+      $this->config->expects($this->any())->method('get')->will($this->returnValueMap($map));
+      $this->security = new \ADV\App\Security($this->config);
     }
     /**
      * Tears down the fixture, for example, closes a network connection.
@@ -131,7 +130,7 @@
      */
     public function test_htmlentities_singlequote() {
       $output   = Security::htmlentities("'");
-      $expected = '&#039;';
+      $expected = '\'';
       $this->assertEquals($expected, $output);
     }
     /**
@@ -139,7 +138,7 @@
      * @test
      */
     public function test_htmlentities_charactor_references_no_double_encode() {
-      $output   = Security::htmlentities('You must write & as &amp;');
+      $output   = \ADV\Core\Security::htmlentities('You must write & as &amp;');
       $expected = 'You must write &amp; as &amp;';
       $this->assertEquals($expected, $output);
     }
@@ -148,22 +147,22 @@
      * @test
      */
     public function test_htmlentities_charactor_references_double_encode() {
-      $config = \Config::_get('security.htmlentities_double_encode');
-      \Config::_set('security.htmlentities_double_encode', true);
+      $config = $this->config->get('security.htmlentities_double_encode');
+      $this->config->set('security.htmlentities_double_encode', true);
 
-      $output   = Security::htmlentities('You must write & as &amp;');
+      $output   = \ADV\Core\Security::htmlentities('You must write &amp; as &amp;amp;');
       $expected = 'You must write &amp; as &amp;amp;';
       $this->assertEquals($expected, $output);
 
-      \Config::_set('security.htmlentities_double_encode', $config);
+      $this->config->set('security.htmlentities_double_encode', $config);
     }
     /**
      * Tests Security::htmlentities()
      * @test
      */
     public function test_htmlentities_double_encode() {
-      $output   = Security::htmlentities('"H&M"');
-      $output   = Security::htmlentities($output);
+      $output   = \ADV\Core\Security::htmlentities('"H&M"');
+      $output   = \ADV\Core\Security::htmlentities($output);
       $expected = '&quot;H&amp;M&quot;';
       $this->assertEquals($expected, $output);
     }
