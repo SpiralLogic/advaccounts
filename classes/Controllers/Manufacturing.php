@@ -29,7 +29,7 @@
       $module->addLeftFunction(_("Costed Bill Of Material Inquiry"), "/manufacturing/inquiry/bom_cost?", SA_WORKORDERCOST);
       $module->addLeftFunction(_("Inventory Item Where Used &Inquiry"), "/manufacturing/inquiry/where_used?", SA_WORKORDERANALYTIC);
       $module->addLeftFunction(_("Work Order &Inquiry"), "/manufacturing/search_work_orders?", SA_MANUFTRANSVIEW);
-      $module->addRightFunction(_("Manufacturing &Reports"), "reporting/reports_main?Class=3", SA_MANUFTRANSVIEW);
+      $module->addRightFunction(_("Manufacturing &Reports"), "/reporting/reports_main?Class=3", SA_MANUFTRANSVIEW);
       $module = $this->add_module(_("Maintenance"));
       $module->addLeftFunction(_("&Bills Of Material"), "/manufacturing/manage/bom_edit?", SA_BOM);
       $module->addLeftFunction(_("&Work Centres"), "/manufacturing/manage/work_centres?", SA_WORKCENTRES);

@@ -817,8 +817,10 @@ $(function () {
     , topLevel = topmenu.children('li'), //
     closeMenu = function () {
       topLevel.removeClass('hover');
-      prevFocus.focus();
-      prevFocus = false;
+      if (prevFocus) {
+        prevFocus.focus();
+        prevFocus = false;
+      }
       changing = 0;
     }, //
     currentChanged = function (next, skip) {
@@ -918,7 +920,7 @@ $(function () {
                                   });
   tabs.on({ //
             mouseleave:    function () {
-              if (changing < 2 && prevFocus) {
+              if (changing < 2) {
                 closeMenu();
               }
               tabs.off('mousemove.tabs');

@@ -35,10 +35,10 @@
      */
     public static function section($number = 1, $width = null, $class = '') {
       if ($number > 1) {
-        $width = $width ? "width:$width" : "";
-        echo "</table></td><td $width'>"; // outer table
+        $width = $width ? "width=$width" : "";
+        echo "</table></td><td $width>"; // outer table
       }
-      echo "\n<table class='inner $class'>";
+      echo "\n<table  class='inner $class'>";
     }
     /**
      * @param        $msg

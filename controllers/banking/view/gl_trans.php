@@ -64,9 +64,9 @@
       );
     }
   }
-  $k = 0; //row colour counter
+  $k             = 0; //row colour counter
   $heading_shown = false;
-  $total = 0;
+  $total         = 0;
   while ($myrow = DB::_fetch($result)) {
     if ($myrow['amount'] == 0) {
       continue;

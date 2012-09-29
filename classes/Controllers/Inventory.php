@@ -32,7 +32,7 @@
       $module = $this->add_module(_("Inquiries and Reports"));
       $module->addLeftFunction(_("Item &Movements"), "/inventory/inquiry/stock_movements?", SA_ITEMSTRANSVIEW);
       $module->addLeftFunction(_("Item &Status"), "/inventory/inquiry/stock_status?", SA_ITEMSSTATVIEW);
-      $module->addRightFunction(_("Inventory &Reports"), "reporting/reports_main?Class=2", SA_ITEMSTRANSVIEW);
+      $module->addRightFunction(_("Inventory &Reports"), "/reporting/reports_main?Class=2", SA_ITEMSTRANSVIEW);
       $module = $this->add_module(_("Maintenance"));
       $module->addLeftFunction(_("&Items"), "items?", SA_ITEM);
       $module->addLeftFunction(_("&Foreign Item Codes"), "/inventory/manage/item_codes?", SA_FORITEMCODE);

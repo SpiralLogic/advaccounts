@@ -70,7 +70,8 @@
   }
   $sql .= " GROUP BY gl.type, gl.type_no";
   */
-  $sql = "SELECT	IF(ISNULL(a.gl_seq),0,a.gl_seq) as gl_seq,
+  $sql
+    = "SELECT	IF(ISNULL(a.gl_seq),0,a.gl_seq) as gl_seq,
      gl.tran_date,
      gl.type,
      gl.type_no,
@@ -180,5 +181,6 @@
    */
   function edit_link($row) {
     global $editors;
-    return isset($editors[$row["type"]]) && !DB_AuditTrail::is_closed_trans($row["type"], $row["type_no"]) ? DB_Pager::link(_("Edit"), sprintf($editors[$row["type"]], $row["type_no"], $row["type"]), ICON_EDIT) : '';
+    return isset($editors[$row["type"]]) && !DB_AuditTrail::is_closed_trans($row["type"], $row["type_no"]) ?
+      DB_Pager::link(_("Edit"), sprintf($editors[$row["type"]], $row["type_no"], $row["type"]), ICON_EDIT) : '';
   }

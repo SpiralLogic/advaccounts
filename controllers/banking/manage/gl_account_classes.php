@@ -99,7 +99,8 @@
     if ($selected_id == -1) {
       return false;
     }
-    $sql    = "SELECT COUNT(*) FROM chart_types
+    $sql
+            = "SELECT COUNT(*) FROM chart_types
         WHERE class_id=$selected_id";
     $result = DB::_query($sql, "could not query chart master");
     $myrow  = DB::_fetchRow($result);

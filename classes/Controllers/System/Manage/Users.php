@@ -11,6 +11,8 @@
   namespace ADV\Controllers\System\Manage;
 
   use ADV\App\Controller\Manage;
+  use Reports_UI;
+  use Sales_Point;
   use ADV\App\Languages;
   use ADV\App\User;
   use ADV\App\Security;

@@ -144,7 +144,8 @@
         $dimension
       ) . " AND dimension2_id=" . DB::_escape($dimension2) . " AND tran_date='$date'";
     } else {
-      $sql = "INSERT INTO budget_trans (tran_date,
+      $sql
+        = "INSERT INTO budget_trans (tran_date,
             account, dimension_id, dimension2_id, amount, memo_) VALUES ('$date',
             " . DB::_escape($account) . ", " . DB::_escape($dimension) . ", " . DB::_escape($dimension2) . ", " . DB::_escape($amount) . ", '')";
     }
@@ -175,9 +176,10 @@
    * @return mixed
    */
   function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
-    $from   = Dates::_dateToSql($from_date);
-    $to     = Dates::_dateToSql($to_date);
-    $sql    = "SELECT SUM(amount) FROM budget_trans
+    $from = Dates::_dateToSql($from_date);
+    $to   = Dates::_dateToSql($to_date);
+    $sql
+            = "SELECT SUM(amount) FROM budget_trans
         WHERE account=" . DB::_escape($account) . " AND tran_date >= '$from' AND tran_date <= '$to'
          AND dimension_id = " . DB::_escape($dimension) . " AND dimension2_id = " . DB::_escape($dimension2);
     $result = DB::_query($sql, "No budget accounts were returned");

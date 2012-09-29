@@ -30,7 +30,8 @@
   if (!isset($_POST['bank_account'])) {
     $_POST['bank_account'] = "";
   }
-  $sql    = "SELECT bank_trans.* FROM bank_trans
+  $sql
+          = "SELECT bank_trans.* FROM bank_trans
     WHERE bank_trans.bank_act = " . DB::_escape($_POST['bank_account']) . "
     AND trans_date >= '$date_after'
     AND trans_date <= '$date_to'

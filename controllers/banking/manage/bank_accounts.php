@@ -20,10 +20,29 @@
     }
     if ($input_error != 1) {
       if ($selected_id != -1) {
-        Bank_Account::update($selected_id, $_POST['account_code'], $_POST['account_type'], $_POST['bank_account_name'], $_POST['bank_name'], $_POST['bank_account_number'], $_POST['bank_address'], $_POST['BankAccountCurrency'], $_POST['dflt_curr_act']);
+        Bank_Account::update(
+          $selected_id,
+          $_POST['account_code'],
+          $_POST['account_type'],
+          $_POST['bank_account_name'],
+          $_POST['bank_name'],
+          $_POST['bank_account_number'],
+          $_POST['bank_address'],
+          $_POST['BankAccountCurrency'],
+          $_POST['dflt_curr_act']
+        );
         Event::success(_('Bank account has been updated'));
       } else {
-        Bank_Account::add($_POST['account_code'], $_POST['account_type'], $_POST['bank_account_name'], $_POST['bank_name'], $_POST['bank_account_number'], $_POST['bank_address'], $_POST['BankAccountCurrency'], $_POST['dflt_curr_act']);
+        Bank_Account::add(
+          $_POST['account_code'],
+          $_POST['account_type'],
+          $_POST['bank_account_name'],
+          $_POST['bank_name'],
+          $_POST['bank_account_number'],
+          $_POST['bank_address'],
+          $_POST['BankAccountCurrency'],
+          $_POST['dflt_curr_act']
+        );
         Event::success(_('New bank account has been added'));
       }
       $Mode = MODE_RESET;
@@ -59,7 +78,8 @@
     $_POST['bank_account_number'] = $_POST['bank_address'] = '';
   }
   /* Always show the list of accounts */
-  $sql = "SELECT account.*, gl_account.account_name
+  $sql
+    = "SELECT account.*, gl_account.account_name
     FROM bank_accounts account, chart_master gl_account
     WHERE account.account_code = gl_account.account_code";
   if (!Input::_hasPost('show_inactive')) {

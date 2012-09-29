@@ -36,6 +36,6 @@
       $module->addRightFunction(_("Search Allocations"), "/purchases/search/allocations?", SA_SUPPLIERALLOC);
       $module = $this->add_module(_("Maintenance & Reports"));
       $module->addLeftFunction(_("&Suppliers"), "/purchases/manage/suppliers?", SA_SUPPLIER);
-      $module->addRightFunction(_("Supplier and Purchasing &Reports"), "reporting/reports_main?Class=1", SA_SUPPTRANSVIEW);
+      $module->addRightFunction(_("Supplier and Purchasing &Reports"), "/reporting/reports_main?Class=1", SA_SUPPTRANSVIEW);
     }
   }

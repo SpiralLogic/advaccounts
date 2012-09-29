@@ -1,5 +1,6 @@
 <?php
   use ADV\App\Tags;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -145,7 +146,8 @@
       Event::error(_("Cannot delete this account because transactions have been created using this account."));
       return false;
     }
-    $sql    = "SELECT COUNT(*) FROM company WHERE debtors_act=$acc
+    $sql
+            = "SELECT COUNT(*) FROM company WHERE debtors_act=$acc
             OR pyt_discount_act=$acc
             OR creditors_act=$acc
             OR bank_charge_act=$acc
@@ -174,7 +176,8 @@
       Event::error(_("Cannot delete this account because it is used by a bank account."));
       return false;
     }
-    $sql    = "SELECT COUNT(*) FROM stock_master WHERE
+    $sql
+            = "SELECT COUNT(*) FROM stock_master WHERE
             inventory_account=$acc
             OR cogs_account=$acc
             OR adjustment_account=$acc
@@ -192,7 +195,8 @@
       Event::error(_("Cannot delete this account because it is used by one or more Taxes."));
       return false;
     }
-    $sql    = "SELECT COUNT(*) FROM branches WHERE
+    $sql
+            = "SELECT COUNT(*) FROM branches WHERE
             sales_account=$acc
             OR sales_discount_account=$acc
             OR receivables_account=$acc
@@ -203,7 +207,8 @@
       Event::error(_("Cannot delete this account because it is used by one or more Customer Branches."));
       return false;
     }
-    $sql    = "SELECT COUNT(*) FROM suppliers WHERE
+    $sql
+            = "SELECT COUNT(*) FROM suppliers WHERE
             purchase_account=$acc
             OR payment_discount_account=$acc
             OR payable_account=$acc";
@@ -213,7 +218,8 @@
       Event::error(_("Cannot delete this account because it is used by one or more suppliers."));
       return false;
     }
-    $sql    = "SELECT COUNT(*) FROM quick_entry_lines WHERE
+    $sql
+            = "SELECT COUNT(*) FROM quick_entry_lines WHERE
             dest_id=$acc AND UPPER(LEFT(action, 1)) <> 'T'";
     $result = DB::_query($sql, "Couldn't test for existing suppliers GL codes");
     $myrow  = DB::_fetchRow($result);
