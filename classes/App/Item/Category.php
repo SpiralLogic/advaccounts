@@ -9,18 +9,18 @@
    **/
   namespace ADV\App\Item {
     use ADV\Core\DB\DB;
+    use ADV\Core\Event;
     use DB_Company;
     use ADV\App\Validation;
 
     /**
 
      */
-    class Category extends \ADV\App\DB\Base
-    {
+    class Category extends \ADV\App\DB\Base {
       protected $_table = 'stock_category';
       protected $_classname = 'Stock Category';
       protected $_id_column = 'category_id';
-      public $category_id=0;
+      public $category_id = 0;
       public $description = '';
       public $inactive = 0;
       public $dflt_tax_type = 1;
@@ -39,8 +39,9 @@
         $result = DB::_query($sql, "could not query stock master");
         $myrow  = DB::_fetchRow($result);
         if ($myrow[0] > 0) {
-          \Event::error(_("Cannot delete this item category because items have been created using this item category."));
+          Event::error(_("Cannot delete this item category because items have been created using this item category."));
         }
+        return parent::delete();
       }
       /**
        * @return \ADV\Core\Traits\Status|bool
@@ -93,7 +94,7 @@
        */
       public static function getAll($inactive = false) {
         $sql = "SELECT c.*, t.name as tax_name FROM stock_category c, item_tax_types t WHERE c.dflt_tax_type=t.id";
-        if ($inactive) {
+        if (!$inactive) {
           $sql .= " AND !c.inactive";
         }
         DB::_query($sql);
@@ -103,8 +104,7 @@
     }
   }
   namespace {
-    class Item_Category
-    {
+    class Item_Category {
       /**
        * @static
        *

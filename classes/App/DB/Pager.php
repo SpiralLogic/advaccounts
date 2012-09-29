@@ -516,7 +516,10 @@
           $this->data[] = $row;
         }
       } elseif ($this->type == self::ARR) {
-        $offset     = ($this->curr_page - 1) * $this->page_length;
+        $offset = ($this->curr_page - 1) * $this->page_length;
+        if ($offset + $this->page_length >= $this->rec_count) {
+          $offset = $this->rec_count - $this->page_length;
+        }
         $this->data = array_slice($this->sql, $offset, $this->page_length);
       }
       $dbfield_names = array_keys($this->data[0]);
@@ -858,9 +861,13 @@
       if (isset($_SESSION['pager'][$name])) {
         $pager = $_SESSION['pager'][$name];
         if (is_array($sql)) {
-          $pager->sql       = $sql;
-          $pager->rec_count = count($pager->sql);
-          $pager->max_page  = $pager->page_length ? ceil($pager->rec_count / $pager->page_length) : 0;
+          if ($pager->rec_count != count($sql)) {
+            unset($pager);
+          } else {
+            $pager->sql       = $sql;
+            $pager->rec_count = count($pager->sql);
+            $pager->max_page  = $pager->page_length ? ceil($pager->rec_count / $pager->page_length) : 0;
+          }
         } elseif ($pager->sql != $sql) {
           unset($pager); // kill pager if sql has changed
         }

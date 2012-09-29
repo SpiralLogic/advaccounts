@@ -32,7 +32,6 @@
         switch ($this->action) {
           case DELETE:
             $this->object->load($id);
-            //the link to delete a selected record was clicked instead of the submit button
             $this->object->delete();
             $status = $this->object->getStatus();
             break;
