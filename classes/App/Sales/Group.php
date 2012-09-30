@@ -9,15 +9,14 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Sales;
+
   use ADV\Core\DB\DB;
   use ADV\App\Validation;
 
   /**
 
    */
-  class Group extends \ADV\App\DB\Base
-  {
-
+  class Group extends \ADV\App\DB\Base {
     protected $_table = 'groups';
     protected $_classname = 'Groups';
     protected $_id_column = 'id';
@@ -28,7 +27,7 @@
      * @return \ADV\Core\Traits\Status|bool
      */
     protected function canProcess() {
-      if (strlen($this->description) > 60 ) {
+      if (strlen($this->description) > 60) {
         return $this->status(false, 'Description must be not be longer than 60 characters!', 'description');
       }
       return true;
@@ -69,6 +68,5 @@
         return $this->status(false, _("Cannot delete this group because customers have been created using this group."));
       }
       return parent::delete();
-
     }
   }

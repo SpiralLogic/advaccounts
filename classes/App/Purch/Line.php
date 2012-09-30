@@ -9,8 +9,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Purch_Line
-  {
+  class Purch_Line {
     /** @var */
     public $line_no;
     /** @var */
@@ -95,8 +94,7 @@
      */
     public static function add_item($creditor_trans_type, $creditor_trans_no, $stock_id, $description, $gl_code, $unit_price, $unit_tax, $quantity, $grn_item_id, $po_detail_item_id, $memo_, $err_msg = "", $discount = 0, $exp_price = -1) {
       $unit_price = ($discount == 100) ? 0 : $unit_price / (1 - $discount / 100);
-      $sql
-                  = "INSERT INTO creditor_trans_details (creditor_trans_type, creditor_trans_no, stock_id, description, gl_code, unit_price, unit_tax, quantity,
+      $sql        = "INSERT INTO creditor_trans_details (creditor_trans_type, creditor_trans_no, stock_id, description, gl_code, unit_price, unit_tax, quantity,
              grn_item_id, po_detail_item_id, memo_, discount, exp_price) ";
       $sql .= "VALUES (" . DB::_escape($creditor_trans_type) . ", " . DB::_escape($creditor_trans_no) . ", " . DB::_escape($stock_id) . ", " . DB::_escape($description) . ", " . DB::_escape($gl_code) . ", " . DB::_escape($unit_price) . ", " . DB::_escape($unit_tax) . ", " . DB::_escape($quantity) . ",
             " . DB::_escape($grn_item_id) . ", " . DB::_escape($po_detail_item_id) . ", " . DB::_escape($memo_) . ", " . DB::_escape($discount) . "," . DB::_escape($exp_price) . ")";
@@ -104,7 +102,6 @@
         $err_msg = "Cannot insert a supplier transaction detail record";
       }
       DB::_query($sql, $err_msg);
-
       return DB::_insertId();
     }
     /**
@@ -120,9 +117,20 @@
      * @return string
      */
     public static function add_gl_item($creditor_trans_type, $creditor_trans_no, $gl_code, $amount, $memo_, $err_msg = "") {
-      return Purch_Line::add_item($creditor_trans_type, $creditor_trans_no, "", "", $gl_code, $amount, 0, 0, /*$grn_item_id*/
-                                  0, /*$po_detail_item_id*/
-                                  0, $memo_, $err_msg);
+      return Purch_Line::add_item(
+        $creditor_trans_type,
+        $creditor_trans_no,
+        "",
+        "",
+        $gl_code,
+        $amount,
+        0,
+        0, /*$grn_item_id*/
+        0, /*$po_detail_item_id*/
+        0,
+        $memo_,
+        $err_msg
+      );
     }
     /**
      * @static
@@ -133,11 +141,9 @@
      * @return null|PDOStatement
      */
     public static function get_for_invoice($creditor_trans_type, $creditor_trans_no) {
-      $sql
-        = "SELECT *, unit_price AS FullUnitPrice FROM creditor_trans_details
+      $sql = "SELECT *, unit_price AS FullUnitPrice FROM creditor_trans_details
             WHERE creditor_trans_type = " . DB::_escape($creditor_trans_type) . "
             AND creditor_trans_no = " . DB::_escape($creditor_trans_no) . " ORDER BY id";
-
       return DB::_query($sql, "Cannot retreive supplier transaction detail records");
     }
     /**
@@ -147,8 +153,7 @@
      * @param $type_no
      */
     public static function void_for_invoice($type, $type_no) {
-      $sql
-        = "UPDATE creditor_trans_details SET quantity=0, unit_price=0
+      $sql = "UPDATE creditor_trans_details SET quantity=0, unit_price=0
             WHERE creditor_trans_type = " . DB::_escape($type) . " AND creditor_trans_no=" . DB::_escape($type_no);
       DB::_query($sql, "could not void supptrans details");
     }

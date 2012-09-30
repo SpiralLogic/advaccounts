@@ -8,8 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   // STOCK ITEMS
-  class Item_UI
-  {
+  class Item_UI {
     /**
      * @static
      *
@@ -167,7 +166,6 @@
      * @return string
      */
     public static function type($name, $selected_id = null, $enabled = true) {
-
       return Forms::arraySelect(
         $name,
         $selected_id,
@@ -210,7 +208,6 @@
       if ($label == "") {
         $label = $trans_no;
       }
-
       return Display::viewer_link($label, $viewer, $class, $id, $icon);
     }
     /**
@@ -225,8 +222,7 @@
     public static function status($stock_id, $description = null, $echo = true) {
       if ($description) //Display::link_params_separate( "/inventory/inquiry/stock_status.php", (User::show_codes()?$stock_id . " - ":"") . $description, "stock_id=$stock_id");
       {
-        $preview_str = "<a class='openWindow' target='_blank' href='/inventory/inquiry/stock_status.php?stock_id=$stock_id' >" . (User::show_codes() ? $stock_id . " - " :
-          "") . $description . "</a>";
+        $preview_str = "<a class='openWindow' target='_blank' href='/inventory/inquiry/stock_status.php?stock_id=$stock_id' >" . (User::show_codes() ? $stock_id . " - " : "") . $description . "</a>";
       } else //Display::link_params_separate( "/inventory/inquiry/stock_status.php", $stock_id, "stock_id=$stock_id");
       {
         $preview_str = "<a class='openWindow' target='_blank' href='/inventory/inquiry/stock_status.php?stock_id=$stock_id' >$stock_id</a>";
@@ -234,7 +230,6 @@
       if ($echo) {
         echo $preview_str;
       }
-
       return $preview_str;
     }
     /**

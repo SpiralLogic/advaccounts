@@ -7,8 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Item_Line
-  {
+  class Item_Line {
     /**
      * @var
      */
@@ -43,8 +42,7 @@
      * @param null $standard_cost
      * @param null $description
      */
-    public function __construct($stock_id, $qty, $standard_cost = null, $description = null)
-    {
+    public function __construct($stock_id, $qty, $standard_cost = null, $description = null) {
       $item_row = Item::get($stock_id);
       if ($item_row == null) {
         Event::error("invalid item added to order : $stock_id", "");
@@ -73,8 +71,7 @@
      *
      * @return Item_Line|null
      */
-    public function check_qoh($location, $date_, $reverse)
-    {
+    public function check_qoh($location, $date_, $reverse) {
       if (!DB_Company::get_pref('allow_negative_stock')) {
         if (WO::has_stock_holding($this->mb_flag)) {
           $quantity = $this->quantity;
@@ -90,14 +87,12 @@
           }
         }
       }
-
       return null;
     }
     /**
      * @param $field
      */
-    public static function start_focus($field)
-    {
+    public static function start_focus($field) {
       Ajax::_activate('items_table');
       JS::_setFocus($field);
     }

@@ -276,8 +276,7 @@
       /*Now need to check that the order details are the same as they were when they were read into the Items array. If they've changed then someone else must have altered them */
       // Sherifoz 22.06.03 Compare against COMPLETED items only !!
       // Otherwise if you try to fullfill item quantities separately will give error.
-      $sql
-               = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
+      $sql     = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
               FROM purch_order_details
               WHERE order_no=" . DB::_escape($this->order_no) . " ORDER BY po_detail_item";
       $result  = DB::_query($sql, "could not query purch order details");
@@ -390,8 +389,7 @@
      * @return bool
      */
     public function get_header($order_no) {
-      $sql
-              = "SELECT purch_orders.*, suppliers.name,
+      $sql    = "SELECT purch_orders.*, suppliers.name,
              suppliers.curr_code, locations.location_name
             FROM purch_orders, suppliers, locations
             WHERE purch_orders.creditor_id = suppliers.creditor_id
@@ -424,8 +422,7 @@
      */
     public function get_items($order_no, $view = false) {
       /*now populate the line po array with the purchase order details records */
-      $sql
-        = "SELECT purch_order_details.*, units
+      $sql = "SELECT purch_order_details.*, units
             FROM purch_order_details
             LEFT JOIN stock_master
             ON purch_order_details.item_code=stock_master.stock_id
@@ -497,8 +494,7 @@
      * @param $creditor_id
      */
     public function supplier_to_order($creditor_id) {
-      $sql
-                              = "SELECT * FROM suppliers
+      $sql                    = "SELECT * FROM suppliers
             WHERE creditor_id = '$creditor_id'";
       $result                 = DB::_query($sql, "The supplier details could not be retreived");
       $myrow                  = DB::_fetchAssoc($result);
@@ -823,8 +819,7 @@
      * @return Array|\ADV\Core\DB\Query\Result
      */
     public static function get_data($creditor_id, $stock_id) {
-      $sql
-              = "SELECT * FROM purch_data
+      $sql    = "SELECT * FROM purch_data
                 WHERE creditor_id = " . DB::_escape($creditor_id) . "
                 AND stock_id = " . DB::_escape($stock_id);
       $result = DB::_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
@@ -846,8 +841,7 @@
       if ($data === false) {
         $supplier_code = $stock_id;
         try {
-          $sql
-            = "INSERT INTO purch_data (creditor_id, stock_id, price, suppliers_uom,
+          $sql = "INSERT INTO purch_data (creditor_id, stock_id, price, suppliers_uom,
                     conversion_factor, supplier_description) VALUES (" . DB::_escape($creditor_id) . ", " . DB::_escape($stock_id) . ", " . DB::_escape(
             $price
           ) . ", " . DB::_escape(

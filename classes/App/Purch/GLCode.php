@@ -7,8 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Purch_GLCode
-  {
+  class Purch_GLCode {
     /**
      * @var
      */
@@ -46,8 +45,7 @@
      * @param $amount
      * @param $memo_
      */
-    public function __construct($counter, $gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_)
-    {
+    public function __construct($counter, $gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_) {
       /* Constructor function to add a new gl_codes object with passed params */
       $this->counter     = $counter;
       $this->gl_code     = $gl_code;

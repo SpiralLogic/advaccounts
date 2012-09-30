@@ -86,13 +86,11 @@
     public function add_to_order($line_no, $stock_id, $qty, $standard_cost, $description = null) {
       if (isset($stock_id) && $stock_id != "" && isset($qty)) {
         $this->line_items[$line_no] = new Item_Line($stock_id, $qty, $standard_cost, $description);
-
         return true;
       } else {
         // shouldn't come here under normal circumstances
         Event::error("unexpected - adding an invalid item or null quantity", "", true);
       }
-
       return false;
     }
     /**
@@ -106,7 +104,6 @@
           return $this->line_items[$line_no];
         }
       }
-
       return null;
     }
     /**
@@ -144,7 +141,6 @@
           return $line_no;
         }
       }
-
       return -1;
     }
     /**
@@ -160,13 +156,11 @@
     public function add_gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description = null) {
       if (isset($code_id) && $code_id != "" && isset($amount)) {
         $this->gl_items[] = new Item_GL($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description);
-
         return true;
       } else {
         // shouldn't come here under normal circumstances
         Event::error("unexpected - invalid parameters in add_gl_item($code_id, $dimension_id, $dimension2_id, $amount,...)", "", true);
       }
-
       return false;
     }
     /**
@@ -210,7 +204,6 @@
       foreach ($this->gl_items as $gl_item) {
         $total += $gl_item->amount;
       }
-
       return $total;
     }
     /**
@@ -223,7 +216,6 @@
           $total += $gl_item->amount;
         }
       }
-
       return $total;
     }
     /**
@@ -236,7 +228,6 @@
           $total += $gl_item->amount;
         }
       }
-
       return $total;
     }
     public function clear_items() {

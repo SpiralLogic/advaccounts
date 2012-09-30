@@ -32,38 +32,36 @@
     protected $clientCache = true;
     protected $clientCacheCheck = false;
     protected $file = [];
-    protected $minifyTypes
-      = array(
-        'js'  => array(
-          'minify'   => true, //
-          'minifier' => '\\ADV\\Core\\JSMin', //
-          'settings' => [] //
-        ), //
-        'css' => array( //
-          'minify'   => true, //
-          'minifier' => '\\ADV\\Core\\CSSMin', //
-          'settings' => array( //
-            'embed'           => true, //
-            'embedMaxSize'    => 5120, //
-            'embedExceptions' => 'htc',
-          )
+    protected $minifyTypes = array(
+      'js'  => array(
+        'minify'   => true, //
+        'minifier' => '\\ADV\\Core\\JSMin', //
+        'settings' => [] //
+      ), //
+      'css' => array( //
+        'minify'   => true, //
+        'minifier' => '\\ADV\\Core\\CSSMin', //
+        'settings' => array( //
+          'embed'           => true, //
+          'embedMaxSize'    => 5120, //
+          'embedExceptions' => 'htc',
         )
-      );
-    protected $mimeTypes
-      = array(
-        "js"   => "text/javascript",
-        "css"  => "text/css",
-        "htm"  => "text/html",
-        "html" => "text/html",
-        "xml"  => "text/xml",
-        "txt"  => "text/plain",
-        "jpg"  => "image/jpeg",
-        "jpeg" => "image/jpeg",
-        "png"  => "image/png",
-        "gif"  => "image/gif",
-        "swf"  => "application/x-shockwave-flash",
-        "ico"  => "image/x-icon",
-      ); //mime types
+      )
+    );
+    protected $mimeTypes = array(
+      "js"   => "text/javascript",
+      "css"  => "text/css",
+      "htm"  => "text/html",
+      "html" => "text/html",
+      "xml"  => "text/xml",
+      "txt"  => "text/plain",
+      "jpg"  => "image/jpeg",
+      "jpeg" => "image/jpeg",
+      "png"  => "image/png",
+      "gif"  => "image/gif",
+      "swf"  => "application/x-shockwave-flash",
+      "ico"  => "image/x-icon",
+    ); //mime types
     /**
      * @param $status
      */
@@ -123,7 +121,6 @@
       if (is_null($time)) {
         $time = time();
       }
-
       return gmdate("D, d M Y H:i:s", $time) . " GMT";
     }
     /**
@@ -140,7 +137,6 @@
         }
         $filesmtime = max(filemtime($file), $filesmtime);
       }
-
       return $filesmtime;
     }
     /**
@@ -251,10 +247,12 @@
               fclose($handle);
             }
           }
-          header('Content-Length: ' . filesize($cachedFile));
+          if (!headers_sent($file, $log)) {
+            header('Content-Length: ' . filesize($cachedFile));
+          }
           ob_clean();
-          flush();
           readfile($cachedFile);
+          flush();
           exit;
         } else {
           if (!headers_sent($file, $log)) {

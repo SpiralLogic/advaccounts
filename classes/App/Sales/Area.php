@@ -24,7 +24,6 @@
       if (strlen($this->description) > 60) {
         return $this->status(false, 'Description must be not be longer than 60 characters!', 'description');
       }
-
       return true;
     }
     /**
@@ -37,7 +36,6 @@
       if (!$inactive) {
         $q->andWhere('inactive=', 0);
       }
-
       return $q->fetch()->all();
     }
   }

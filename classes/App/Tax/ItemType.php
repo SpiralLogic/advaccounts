@@ -7,8 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Tax_ItemType
-  {
+  class Tax_ItemType {
     /**
      * @static
      *
@@ -16,11 +15,9 @@
      * @param $exempt
      * @param $exempt_from
      */
-    public static function add($name, $exempt, $exempt_from)
-    {
+    public static function add($name, $exempt, $exempt_from) {
       DB::_begin();
-      $sql
-        = "INSERT INTO item_tax_types (name, exempt)
+      $sql = "INSERT INTO item_tax_types (name, exempt)
         VALUES (" . DB::_escape($name) . "," . DB::_escape($exempt) . ")";
       DB::_query($sql, "could not add item tax type");
       $id = DB::_insertId();
@@ -36,8 +33,7 @@
      * @param $exempt
      * @param $exempt_from
      */
-    public static function update($id, $name, $exempt, $exempt_from)
-    {
+    public static function update($id, $name, $exempt, $exempt_from) {
       DB::_begin();
       $sql = "UPDATE item_tax_types SET name=" . DB::_escape($name) . ",	exempt=" . DB::_escape($exempt) . " WHERE id=" . DB::_escape($id);
       DB::_query($sql, "could not update item tax type");
@@ -50,10 +46,8 @@
      * @static
      * @return null|PDOStatement
      */
-    public static function getAll()
-    {
+    public static function getAll() {
       $sql = "SELECT * FROM item_tax_types";
-
       return DB::_query($sql, "could not get all item tax type");
     }
     /**
@@ -63,11 +57,9 @@
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get($id)
-    {
+    public static function get($id) {
       $sql    = "SELECT * FROM item_tax_types WHERE id=" . DB::_escape($id);
       $result = DB::_query($sql, "could not get item tax type");
-
       return DB::_fetch($result);
     }
     /**
@@ -77,14 +69,11 @@
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get_for_item($stock_id)
-    {
-      $sql
-              = "SELECT item_tax_types.* FROM item_tax_types,stock_master WHERE
+    public static function get_for_item($stock_id) {
+      $sql    = "SELECT item_tax_types.* FROM item_tax_types,stock_master WHERE
         stock_master.stock_id=" . DB::_escape($stock_id) . "
         AND item_tax_types.id=stock_master.tax_type_id";
       $result = DB::_query($sql, "could not get item tax type");
-
       return DB::_fetch($result);
     }
     /**
@@ -94,8 +83,7 @@
      *
      * @return bool
      */
-    public static function delete($id)
-    {
+    public static function delete($id) {
       if (!can_delete($id)) {
         return false;
       }
@@ -113,11 +101,9 @@
      * @param $id
      * @param $exemptions
      */
-    public static function add_exemptions($id, $exemptions)
-    {
+    public static function add_exemptions($id, $exemptions) {
       for ($i = 0; $i < count($exemptions); $i++) {
-        $sql
-          = "INSERT INTO item_tax_type_exemptions (item_tax_type_id, tax_type_id)
+        $sql = "INSERT INTO item_tax_type_exemptions (item_tax_type_id, tax_type_id)
             VALUES (" . DB::_escape($id) . ", " . DB::_escape($exemptions[$i]) . ")";
         DB::_query($sql, "could not add item tax type exemptions");
       }
@@ -127,8 +113,7 @@
      *
      * @param $id
      */
-    public static function delete_exemptions($id)
-    {
+    public static function delete_exemptions($id) {
       $sql = "DELETE FROM item_tax_type_exemptions WHERE item_tax_type_id=" . DB::_escape($id);
       DB::_query($sql, "could not delete item tax type exemptions");
     }
@@ -139,10 +124,8 @@
      *
      * @return null|PDOStatement
      */
-    public static function get_exemptions($id)
-    {
+    public static function get_exemptions($id) {
       $sql = "SELECT * FROM item_tax_type_exemptions WHERE item_tax_type_id=" . DB::_escape($id);
-
       return DB::_query($sql, "could not get item tax type exemptions");
     }
     /**
@@ -153,10 +136,8 @@
      *
      * @return string
      */
-    public static function select($name, $selected_id = null)
-    {
+    public static function select($name, $selected_id = null) {
       $sql = "SELECT id, name FROM item_tax_types";
-
       return Forms::selectBox($name, $selected_id, $sql, 'id', 'name', array('order' => 'id'));
     }
     /**
@@ -166,8 +147,7 @@
      * @param      $name
      * @param null $selected_id
      */
-    public static function cells($label, $name, $selected_id = null)
-    {
+    public static function cells($label, $name, $selected_id = null) {
       if ($label != null) {
         echo "<td>$label</td>\n";
       }
@@ -182,8 +162,7 @@
      * @param      $name
      * @param null $selected_id
      */
-    public static function row($label, $name, $selected_id = null)
-    {
+    public static function row($label, $name, $selected_id = null) {
       echo "<tr><td class='label'>$label</td>";
       Tax_ItemType::cells(null, $name, $selected_id);
       echo "</tr>\n";
@@ -195,17 +174,14 @@
      *
      * @return bool
      */
-    public static function can_delete($selected_id)
-    {
+    public static function can_delete($selected_id) {
       $sql    = "SELECT COUNT(*) FROM stock_master WHERE tax_type_id=" . DB::_escape($selected_id);
       $result = DB::_query($sql, "could not query stock master");
       $myrow  = DB::_fetchRow($result);
       if ($myrow[0] > 0) {
         Event::error(_("Cannot delete this item tax type because items have been created referring to it."));
-
         return false;
       }
-
       return true;
     }
   }
