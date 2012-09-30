@@ -222,7 +222,7 @@ Adv.extend({  headerHeight:Adv.o.header.height(),
       var height = Adv.o.popupWindow[0].contentWindow.document.body.clientHeight + 10;
       var top = ($(window).height() / 2 - (height / 2));
       if (height > Adv.hoverWindow.height) {
-        top = 20;
+        top = 50;
         height = Adv.hoverWindow.height
       }
       var left = ($(window).width() / 2 - Adv.hoverWindow.width / 2);

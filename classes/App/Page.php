@@ -122,7 +122,12 @@
       $this->security = $security;
       $this->App      = ADVAccounting::i();
       $path           = explode('/', $_SERVER['DOCUMENT_URI']);
-      $this->sel_app  = $path[1];
+      if (count($path) && class_exists('ADV\\Controllers\\' . ucFirst($path[1]))) {
+        $this->sel_app = $path[1];
+      }
+      if (!$this->sel_app) {
+        $this->sel_app = ($this->User->prefs->startup_tab ? : $this->Config->get('apps.default'));
+      }
       $this->ajaxpage = (REQUEST_AJAX || Ajax::_inAjax());
       $this->menu     = ($this->frame) ? false : !$no_menu;
       $this->theme    = $this->User->theme();

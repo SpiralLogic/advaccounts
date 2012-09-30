@@ -15,8 +15,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class GL_UI
-  {
+  class GL_UI {
     /**
      * @static
      *
@@ -32,40 +31,42 @@
      */
     public static function  all($name, $selected_id = null, $skip_bank_accounts = false, $cells = false, $all_option = false, $submit_on_change = false, $all = false) {
       if ($skip_bank_accounts) {
-        $sql
-          = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
+        $sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
                 FROM (chart_master chart,chart_types type) LEFT JOIN bank_accounts acc ON chart.account_code=acc.account_code
                     WHERE acc.account_code IS null
                 AND chart.account_type=type.id";
       } else {
-        $sql
-          = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
+        $sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
                 FROM chart_master chart,chart_types type
                 WHERE chart.account_type=type.id";
       }
-
-      return Forms::selectBox($name, $selected_id, $sql, 'chart.account_code', 'chart.account_name', array(
-                                                                                                          'cache'                  => true,
-                                                                                                          'format'                 => 'Forms::accountFormat',
-                                                                                                          'type'                   => 2,
-                                                                                                          'spec_option'            => $all_option === true ?
-                                                                                                            _("Use Item Sales Accounts") :
-                                                                                                            $all_option,
-                                                                                                          'spec_id'                => '',
-                                                                                                          'order'                  => array(
-                                                                                                            'type.id',
-                                                                                                            'account_code'
-                                                                                                          ),
-                                                                                                          'search_box'             => $cells,
-                                                                                                          'search_submit'          => false,
-                                                                                                          'size'                   => 12,
-                                                                                                          'max'                    => 10,
-                                                                                                          'cells'                  => true,
-                                                                                                          'select_submit'          => $submit_on_change,
-                                                                                                          'async'                  => false,
-                                                                                                          'category'               => 2,
-                                                                                                          'show_inactive'          => $all
-                                                                                                     ));
+      return Forms::selectBox(
+        $name,
+        $selected_id,
+        $sql,
+        'chart.account_code',
+        'chart.account_name',
+        array(
+             'cache'                  => true,
+             'format'                 => 'Forms::accountFormat',
+             'type'                   => 2,
+             'spec_option'            => $all_option === true ? _("Use Item Sales Accounts") : $all_option,
+             'spec_id'                => '',
+             'order'                  => array(
+               'type.id',
+               'account_code'
+             ),
+             'search_box'             => $cells,
+             'search_submit'          => false,
+             'size'                   => 12,
+             'max'                    => 10,
+             'cells'                  => true,
+             'select_submit'          => $submit_on_change,
+             'async'                  => false,
+             'category'               => 2,
+             'show_inactive'          => $all
+        )
+      );
     }
     /**
      * @static
@@ -123,8 +124,7 @@
         $label = _("GL");
         $icon  = ICON_GL;
       }
-
-      return Display::viewer_link($label, "gl/view/gl_trans.php?type_id=$type&trans_no=$trans_no", $class, $id, $icon);
+      return Display::viewer_link($label, "banking/view/gl_trans.php?type_id=$type&trans_no=$trans_no", $class, $id, $icon);
     }
     /**
      * @static
@@ -140,7 +140,6 @@
       if ($str != "") {
         return "<td>$str</td>";
       }
-
       return $str;
     }
     /**
@@ -156,7 +155,7 @@
      *
      * @return null|string
      */
-    public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '',$raw=false) {
+    public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '', $raw = false) {
       $view_str = Debtor::viewTrans($type, $trans_no, $label, $icon, $class, $id, $raw);
       if ($view_str != null) {
         return $view_str;
@@ -185,7 +184,6 @@
       if ($view_str != null) {
         return $view_str;
       }
-
       return null;
     }
     /**
@@ -200,13 +198,20 @@
     public static function fiscalyears($name, $selected_id = null, $submit_on_change = false) {
       $sql = "SELECT * FROM fiscal_year";
       // default to the company current fiscal year
-      return Forms::selectBox($name, $selected_id, $sql, 'id', '', array(
-                                                                        'order'         => 'begin',
-                                                                        'default'       => DB_Company::get_pref('f_year'),
-                                                                        'format'        => 'Forms::fiscalYearFormat(',
-                                                                        'select_submit' => $submit_on_change,
-                                                                        'async'         => false
-                                                                   ));
+      return Forms::selectBox(
+        $name,
+        $selected_id,
+        $sql,
+        'id',
+        '',
+        array(
+             'order'         => 'begin',
+             'default'       => DB_Company::get_pref('f_year'),
+             'format'        => 'Forms::fiscalYearFormat(',
+             'select_submit' => $submit_on_change,
+             'async'         => false
+        )
+      );
     }
     /**
      * @static
@@ -235,7 +240,6 @@
       GL_UI::fiscalyears_cells(null, $name, $selected_id);
       echo "</tr>\n";
     }
-
     /**
      * @static
      *
@@ -250,7 +254,6 @@
         $disabled = (!User::i()->hasAccess(SA_CUSTOMER_CREDIT));
       }
       $sql = "SELECT terms_indicator, terms, inactive FROM payment_terms";
-
       return Forms::selectBox($name, $selected_id, $sql, 'terms_indicator', 'terms_indicator', array('disabled' => $disabled));
     }
     /**

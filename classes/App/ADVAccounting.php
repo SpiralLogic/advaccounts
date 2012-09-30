@@ -148,7 +148,6 @@
         }
       );
       ob_start([$this, 'flush_handler'], 0);
-
       $this->JS = $dic->offsetSet(
         'JS',
         function (\ADV\Core\DIC $c) {
@@ -181,13 +180,11 @@
           $encoding          = $l['encoding'];
           $dir               = isset($l['rtl']) ? 'rtl' : 'ltr';
           $session->language = new \ADV\Core\Language($name, $code, $encoding, $dir);
-
           return $session;
         }
       )->offsetGet(null);
-
-      $this->User  = $dic['User'];
-      $this->Input = $dic['Input'];
+      $this->User    = $dic['User'];
+      $this->Input   = $dic['Input'];
       $this->JS->footerFile($this->Config->get('assets.footer'));
       $this->menu = new Menu(_("Main Menu"));
       $this->menu->addItem(_("Main Menu"), "index.php");
@@ -208,14 +205,11 @@
         $this->checkLogin();
       }
       \ADV\Core\Event::init($this->Cache, $this->User->username);
-
       $this->route();
     }
     protected function route() {
       $this->setupPage();
-
       $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
-      $show404    = false;
       if ($controller) {
         $app = ucfirst(trim($controller, '/'));
         if (isset($this->applications[$app])) {
@@ -228,7 +222,6 @@
           },
           ''
         );
-
         if (class_exists($controller2)) {
           $this->runController($controller2);
         } else {
@@ -239,7 +232,13 @@
             $this->controller = $controller;
           } else {
             header('HTTP/1.0 404 Not Found');
-            $controller = 'ADV\\Controllers\\' . ($this->User->prefs->startup_tab ? : $this->Config->get('apps.default'));
+            $path = explode('/', $_SERVER['DOCUMENT_URI']);
+            if (count($path)) {
+              $controller = 'ADV\\Controllers\\' . ucFirst($path[1]);
+            }
+            if (!class_exists($controller)) {
+              $controller = 'ADV\\Controllers\\' . ($this->User->prefs->startup_tab ? : $this->Config->get('apps.default'));
+            }
             Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
             if (class_exists($controller)) {
               $this->runController($controller);
@@ -255,7 +254,6 @@
      */
     protected function runController($controller) {
       $dic = \ADV\Core\DIC::i();
-
       /** @var \ADV\App\Controller\Base $controller  */
       $controller = new $controller($this->Session, $this->User, $this->Ajax, $this->JS, $dic['Input'], DB::i());
       $controller->setPage($dic->offsetGet('Page'));
@@ -373,7 +371,6 @@
     }
     private function setupPage() {
       $dic = \ADV\Core\DIC::i();
-
       $dic->offsetSet(
         'Page',
         function (\ADV\Core\DIC $c) {

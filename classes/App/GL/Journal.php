@@ -33,7 +33,6 @@
       Table::startOuter('standard width90');
       Table::section(1);
       echo "<tr>";
-
       Forms::dateCells(_("Date:"), 'date_', '', $new);
       Table::section(2, $qes ? "20%" : "50%");
       Forms::refCells(_("Reference:"), 'ref', '');
@@ -242,7 +241,7 @@
      */
     public static function  view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '', $raw = false) {
       if ($type == ST_JOURNAL || $type == ST_COSTUPDATE) {
-        $viewer = "gl/view/gl_trans.php?type_id=$type&trans_no=$trans_no";
+        $viewer = "banking/view/gl_trans.php?type_id=$type&trans_no=$trans_no";
       } else {
         return null;
       }
