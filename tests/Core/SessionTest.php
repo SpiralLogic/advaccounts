@@ -16,7 +16,6 @@
     protected function setUp() {
       //$sessionhandler = $this->getMock('\\SessionHandlerInterface');
       $this->object = new Session();
-      $this->assertSame(PHP_SESSION_ACTIVE, session_status());
     }
     /**
      * Tears down the fixture, for example, closes a network connection.
@@ -28,8 +27,14 @@
       $this->assertSame(PHP_SESSION_NONE, session_status());
     }
     /**
+     * @covers ADV\Core\Session::__construct
+      */
+    public function testConstructed() {
+      $this->assertSame(PHP_SESSION_ACTIVE, session_status());
+      $this->assertAttributeEquals($_SESSION['_flash'], '_flash',$this->object);
+    }
+    /**
      * @covers ADV\Core\Session::checkUserAgent
-     * @todo   Implement testCheckUserAgent().
      */
     public function testCheckUserAgent() {
       $actual = $this->object->checkUserAgent();
