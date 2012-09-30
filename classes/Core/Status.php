@@ -82,7 +82,7 @@
         return end($this->status);
       }
 
-      return false;
+      return [];
     }
     /**
      * @return array

@@ -56,7 +56,7 @@
       $this->assertAttributeEquals([':dbcondition0'=> 3], 'wheredata', $stub);
     }
     /**
-     * @covers ADV\Core\DB\Query\Where::or_where
+     * @covers ADV\Core\DB\Query\Where::orwhere
      * @todo   Implement testorWhere().
      */
     public function testOr_whereWithArray() {
