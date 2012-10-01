@@ -63,7 +63,7 @@
      */
     protected function generateForm() {
       $cache = Cache::_get('supplier_form');
-      //   $cache = null; //Cache::_get('supplier_form');
+      $cache = null; //Cache::_get('supplier_form');
       if ($cache) {
         $this->JS->addState($cache[1]);
         return $form = $cache[0];
@@ -127,9 +127,9 @@
           [
             'caption'=> 'Supplier Payment',
             'Make supplier payment!',
-            'data'   => '/purchases/supplier_payment.php?creditor_id='
+            'data'   => '/purchases/payment.php?creditor_id='
           ],
-          ['caption'=> 'Create Order', 'Create Order for this customer!', 'data'=> '/purchases/supplier_invoice.php?New=1&creditor_id='],
+          ['caption'=> 'Create Order', 'Create Order for this supplier!', 'data'=> '/purchases/invoice.php?New=1&creditor_id='],
         ];
         $view->set('shortcuts', $shortcuts);
         UI::emailDialogue(CT_SUPPLIER, $js);

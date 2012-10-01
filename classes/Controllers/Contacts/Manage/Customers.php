@@ -176,13 +176,13 @@
           [
             'caption' => 'Create Quote',
             'Create Quote for this customer!',
-            'data'    => '/sales/sales_order_entry.php?type=' . ST_SALESQUOTE . '&add=' . ST_SALESQUOTE . '&debtor_id=',
+            'data'    => '/sales/order?type=' . ST_SALESQUOTE . '&add=' . ST_SALESQUOTE . '&debtor_id=',
             'attrs'   => ['class'=> 'btn']
           ],
           [
             'caption' => 'Create Order',
             'Create Order for this customer!',
-            'data'    => '/sales/sales_order_entry.php?type=30&add=' . ST_SALESORDER . '&debtor_id=',
+            'data'    => '/sales/order?type=30&add=' . ST_SALESORDER . '&debtor_id=',
             'attrs'   => ['class'=> 'btn']
           ],
           [
@@ -196,7 +196,7 @@
             'Email Statement for this Customer!',
             'attrs'   => ['class'=> 'btn email-button']
           ],
-          ['caption'=> 'Customer Payment', 'Make customer payment!', 'data'=> '/sales/customer_payments.php?debtor_id=', 'attrs'   => ['class'=> 'btn']]
+          ['caption'=> 'Customer Payment', 'Make customer payment!', 'data'=> '/sales/payment?debtor_id=', 'attrs'   => ['class'=> 'btn']]
         ];
         $view->set('shortcuts', $shortcuts);
         UI::emailDialogue(CT_CUSTOMER, $js);
