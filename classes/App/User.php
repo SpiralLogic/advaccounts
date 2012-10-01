@@ -497,6 +497,7 @@
       return DB::_select('salesman_code')->from('salesman')->where('user_id=', $this->user)->fetch()->one('salesman_code');
     }
     public function _logout() {
+      \ADV\Core\Config::_removeAll();
       Session::_kill();
       $this->logged = false;
     }
