@@ -1,4 +1,7 @@
 <?php
+  use ADV\App\Item\Item;
+  use ADV\Core\Event;
+
   /**
    * PHP version 5.4
    * @category  PHP
