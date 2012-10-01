@@ -24,18 +24,18 @@
     protected function before() {
 
       $module = $this->add_module(_("Purchases"));
-      $module->addLeftFunction(_("Purchase &Order Entry"), "/purchases/order?NewOrder=Yes", SA_PURCHASEORDER);
-      $module->addLeftFunction(_("Purchase Orders &Inquiry"), "/purchases/search/completed?", SA_SUPPTRANSVIEW);
-      $module->addLeftFunction(_("&Outstanding Purchase Orders"), "/purchases/search/orders?", SA_SUPPTRANSVIEW);
-      $module->addRightFunction(_("Supplier &Invoices"), "/purchases/invoice?New=1", SA_SUPPLIERINVOICE);
-      $module->addRightFunction(_("Supplier &Credit Notes"), "/purchases/credit?New=1", SA_SUPPLIERCREDIT);
-      $module = $this->add_module(_("Inquiries and Reports"));
-      $module->addLeftFunction(_("&Payments to Suppliers"), "/purchases/payment?", SA_SUPPLIERPAYMNT);
-      $module->addLeftFunction(_("&Allocate Supplier Payments or Credit Notes"), "/purchases/allocations/supplier_allocation_main?", SA_SUPPLIERALLOC);
-      $module->addRightFunction(_("Supplier Transaction &Inquiry"), "/purchases/search/transactions?", SA_SUPPTRANSVIEW);
-      $module->addRightFunction(_("Supplier Allocation &Inquiry"), "/purchases/search/allocations?", SA_SUPPLIERALLOC);
-      $module->addRightFunction(_("Supplier and Purchasing &Reports"), "reporting/reports_main?Class=1", SA_SUPPTRANSVIEW);
-      $module = $this->add_module(_("Maintenance"));
+      $module->addLeftFunction(_("New Purchase &Order"), "/purchases/order?NewOrder=Yes", SA_PURCHASEORDER);
+      $module->addLeftFunction(_("New &Invoice"), "/purchases/invoice?New=1", SA_SUPPLIERINVOICE);
+      $module->addLeftFunction(_("New &Credit"), "/purchases/credit?New=1", SA_SUPPLIERCREDIT);
+      $module->addRightFunction(_("New Payment"), "/purchases/payment?", SA_SUPPLIERPAYMNT);
+      $module->addRightFunction(_("&Allocate Payments and Credits"), "/purchases/allocations/supplier_allocation_main?", SA_SUPPLIERALLOC);
+      $module = $this->add_module(_("Inquiries"));
+      $module->addLeftFunction(_("Search Completed Orders"), "/purchases/search/completed?", SA_SUPPTRANSVIEW);
+      $module->addLeftFunction(_("Search &Outstanding Orders"), "/purchases/search/orders?", SA_SUPPTRANSVIEW);
+      $module->addRightFunction(_("Search Transactions"), "/purchases/search/transactions?", SA_SUPPTRANSVIEW);
+      $module->addRightFunction(_("Search Allocations"), "/purchases/search/allocations?", SA_SUPPLIERALLOC);
+      $module = $this->add_module(_("Maintenance & Reports"));
       $module->addLeftFunction(_("&Suppliers"), "/purchases/manage/suppliers?", SA_SUPPLIER);
+      $module->addRightFunction(_("Supplier and Purchasing &Reports"), "/reporting/reports_main?Class=1", SA_SUPPTRANSVIEW);
     }
   }

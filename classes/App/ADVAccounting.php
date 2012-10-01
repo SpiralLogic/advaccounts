@@ -37,9 +37,11 @@
     public $buildversion;
     /** @var User $user */
     protected $User = null;
+    /** @var Input $user */
+    protected $Input = null;
     /** @var Config $Config */
     protected $Config = null;
-    /** @var Session */
+    /** @var \ADV\Core\Session $Session*/
     protected $Session = null;
     /** @var Ajax */
     protected $Ajax = null;
@@ -212,11 +214,8 @@
     }
     protected function route() {
       $this->setupPage();
-
       $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
-      $index      = $controller == $_SERVER['SCRIPT_NAME'];
-      $show404    = false;
-      if (!$index && $controller) {
+      if ($controller) {
         $app = ucfirst(trim($controller, '/'));
         if (isset($this->applications[$app])) {
           $controller = (isset($this->applications[$app]['route']) ? $this->applications[$app]['route'] : $app);
@@ -228,7 +227,6 @@
           },
           ''
         );
-
         if (class_exists($controller2)) {
           $this->runController($controller2);
         } else {
@@ -238,14 +236,20 @@
           if (file_exists($controller)) {
             $this->controller = $controller;
           } else {
-            $show404 = true;
             header('HTTP/1.0 404 Not Found');
+            $path = explode('/', $_SERVER['DOCUMENT_URI']);
+            if (count($path)) {
+              $controller = 'ADV\\Controllers\\' . ucFirst($path[1]);
+            }
+            if (!class_exists($controller)) {
+              $controller = 'ADV\\Controllers\\' . ($this->User->prefs->startup_tab ? : $this->Config->get('apps.default'));
+            }
             Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
+            if (class_exists($controller)) {
+              $this->runController($controller);
+            }
           }
         }
-      }
-      if ($index || $show404) {
-        header('Location: /' . ($this->User->prefs->startup_tab ? : $this->Config->get('apps.default')));
       }
     }
     /**

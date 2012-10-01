@@ -1,4 +1,7 @@
 <?php
+  use ADV\App\Item\Item;
+  use ADV\Core\Event;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -7,8 +10,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Sales_Line extends \Sales_Order
-  {
+  class Sales_Line extends \Sales_Order {
     /**
      * @var int
      */

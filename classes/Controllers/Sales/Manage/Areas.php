@@ -2,7 +2,6 @@
   namespace ADV\Controllers\Sales\Manage;
 
   use ADV\App\Form\Form;
-  use ADV\App\Page;
   use ADV\App\Sales\Area;
   use ADV\Core\View;
 

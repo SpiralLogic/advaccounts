@@ -122,7 +122,12 @@
       $this->security = $security;
       $this->App      = ADVAccounting::i();
       $path           = explode('/', $_SERVER['DOCUMENT_URI']);
-      $this->sel_app  = $path[1];
+      if (count($path) && class_exists('ADV\\Controllers\\' . ucFirst($path[1]))) {
+        $this->sel_app = $path[1];
+      }
+      if (!$this->sel_app) {
+        $this->sel_app = ($this->User->prefs->startup_tab ? : $this->Config->get('apps.default'));
+      }
       $this->ajaxpage = (REQUEST_AJAX || Ajax::_inAjax());
       $this->menu     = ($this->frame) ? false : !$no_menu;
       $this->theme    = $this->User->theme();
@@ -184,9 +189,10 @@
       return [$path . $css];
     }
     protected function menu_header() {
-      $cache = $this->Session->get('menu_header');
-      if ($cache) {
-        echo $cache;
+      $menu = $this->Session->get('menu_header');
+      if ($menu instanceof View) {
+        $menu['activeapp'] = strtolower($this->sel_app);
+        return $menu->render();
       }
       $menu                = new View('menu_header');
       $menu['theme']       = $this->User->prefs->theme;
@@ -201,10 +207,9 @@
         if (!$config['enabled']) {
           continue;
         }
-        $item['name']  = $app;
-        $item['class'] = ($this->sel_app == strtolower($app)) ? "active" : null;
-        $item['href']  = '/' . strtolower($item['name']);
-        $app           = '\\ADV\\Controllers\\' . $app;
+        $item['name'] = strtolower($app);
+        $item['href'] = '/' . strtolower($app);
+        $app          = '\\ADV\\Controllers\\' . $app;
         if (class_exists($app)) {
           /** @var \ADV\App\Controller\Menu $app  */
           $app           = new $app($this->Session, $this->User);
@@ -213,7 +218,9 @@
         $menuitems[] = $item;
       }
       $menu->set('menu', $menuitems);
-      echo $this->Session->set('menu_header', $menu->render(true));
+      $this->Session->set('menu_header', $menu);
+      $menu['activeapp'] = strtolower($this->sel_app);
+      return $menu->render();
     }
     /**
      * @return \ADV\Core\View

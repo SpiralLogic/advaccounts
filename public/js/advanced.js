@@ -90,12 +90,8 @@ Adv.extend({
              }())
            });
 window.addEventListener('scroll', Adv.ScrollDetect.off, false);
-document.getElementById('header').addEventListener('webkitTransitionEnd', function () { Adv.header();}, false);
-Adv.extend({
-             header:      function () {
-               Adv.o.body.css('padding-top', Adv.o.header.height());
-             },
-             msgbox:      $('#msgbox').ajaxError(function (event, request, settings) {
+Adv.extend({  headerHeight: Adv.o.header.height(),
+             msgbox:        $('#msgbox').ajaxError(function (event, request, settings) {
                var status;
                if (request.statusText == "abort") {
                  return;
@@ -118,7 +114,7 @@ Adv.extend({
                                }
                                return undefined;
                              }),
-             Status:      {
+             Status:        {
                msgboxTimeout: null,
                show:          function (status) {
                  var text = '', type;
@@ -164,34 +160,38 @@ Adv.extend({
                  window.clearTimeout(Adv.Scroll.msgboxTimeout);
                  if (text) {
                    Adv.msgbox.css({opacity: 0}).html(text);
-                   Adv.header();
-                   if (Adv.msgbox.height() > 0) {
-                     setTimeout(function () {
-                       Adv.msgbox.css({opacity: 1, height: '40px'});
-                     }, 200);
-                   }
-                   else {
-                     Adv.msgbox.css({opacity: 1, height: '40px'});
-                     Adv.header();
-                   }
-                   Adv.Scroll.msgboxTimeout = setTimeout(function () {
-                     Adv.msgbox.css({opacity: 0, height: 0});
-                     Adv.header();
-                   }, 15000);
-                   Adv.Forms.setFocus(Adv.msgbox[0]);
+                   Adv.Status.open();
                  }
-               }
-
-             },
-             openWindow:  function (url, title, width, height) {
+               }, //
+               open:          function () {
+                 var height = 0;
+                 Adv.msgbox.children().each(function () { height += $(this).outerHeight(true)});
+                 if (Adv.msgbox.height() > 0) {
+                   setTimeout(function () {
+                     Adv.msgbox.css({opacity: 1, height: height});
+                     Adv.o.body.css('padding-top', Adv.headerHeight + height);
+                   }, 200);
+                 }
+                 else {
+                   Adv.msgbox.css({opacity: 1, height: height});
+                   Adv.o.body.css('padding-top', Adv.headerHeight + height);
+                 }
+                 Adv.Scroll.msgboxTimeout = setTimeout(Adv.Status.close, 15000);
+                 Adv.Forms.setFocus(Adv.msgbox[0]);
+               }, //
+               close:         function () {
+                 Adv.o.body.css('padding-top', Adv.headerHeight);
+                 Adv.msgbox.css({opacity: 0, height: 0});
+               }//
+             }, //
+             openWindow:    function (url, title, width, height) {
                width = width || 900;
                height = height || 600;
                var left = (screen.width - width) / 2, top = (screen.height - height) / 2;
                return window.open(url, title, 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
-             }, openTab:  function (url) {
-    window.open(url, '_blank');
-  },
-             hoverWindow: {
+             }, //
+             openTab:       function (url) {window.open(url, '_blank');},
+             hoverWindow:   {
                _init:  false, init: function (width, height) {
                  Adv.hoverWindow.width = width || 600;
                  Adv.hoverWindow.height = height || 600;
@@ -222,14 +222,14 @@ Adv.extend({
                  var height = Adv.o.popupWindow[0].contentWindow.document.body.clientHeight + 10;
                  var top = ($(window).height() / 2 - (height / 2));
                  if (height > Adv.hoverWindow.height) {
-                   top = 20;
+                   top = 50;
                    height = Adv.hoverWindow.height
                  }
                  var left = ($(window).width() / 2 - Adv.hoverWindow.width / 2);
                  Adv.o.popupWindow.css('height', height);
                  Adv.o.popupDiv.css({width: Adv.hoverWindow.width, 'height': height, 'left': left, 'top': top});
                }},
-             popupWindow: function () {
+             popupWindow:   function () {
                if (Adv.o.popupWindow) {
                  Adv.o.popupWindow.parent().remove();
                }
@@ -243,7 +243,7 @@ Adv.extend({
                  width:  100,
                  height: 100}).html(Adv.o.popupWindow).on('mouseleave',function () { $(this).remove(); }).appendTo(Adv.o.wrapper).position({my: "center center", at: "center center", of: document.body});
              },
-             TabMenu:     (function () {
+             TabMenu:       (function () {
                var deferreds = [];
                return{
                  init:  function (id, ajax, links, page) {
@@ -269,7 +269,7 @@ Adv.extend({
                  }
                }
              }()),
-             Forms:       (function () {
+             Forms:         (function () {
                var focusOff = false, tooltip, hidden = [], tooltiptimeout, focusonce, focus, menu = {
                  current:    null,
                  closetimer: null,
@@ -715,7 +715,7 @@ Adv.extend({
                  }
                }
              })(),
-             Scroll:      (function () {
+             Scroll:        (function () {
                return{
                  focus:        null,
                  elementName:  null,
@@ -745,7 +745,7 @@ Adv.extend({
 
                };
              })(),
-             Events:      (function () {
+             Events:        (function () {
                var events = [], onload = false, toClean = false, firstBind = function (s, t, a) {
                  $(s).bind(t, a);
                };
@@ -790,7 +790,7 @@ Adv.extend({
                  }
                }
              }()),
-             postcode:    (function () {
+             postcode:      (function () {
                var sets = [];
                return {
                  add:   function (set, city, state, code) {
@@ -811,14 +811,18 @@ $(function () {
   var tabs = $("#tabs")//
     , topmenu = $('#topmenu,#tabs>ul')//
     , prevFocus = false//
+    , changing = 0//
     , current = topmenu.find('.active')//
-    , topLevel = topmenu.children('li'), //
-    closeMenu = function () {
+    , topLevel = topmenu.children('li')//
+    , closeMenu = function () {
       topLevel.removeClass('hover');
-      prevFocus.focus();
-      prevFocus = false;
-    }, //
-    currentChanged = function (next, skip) {
+      if (prevFocus) {
+        prevFocus.focus();
+        prevFocus = false;
+      }
+      changing = 0;
+    }//
+    , currentChanged = function (next, skip) {
       var links;
       if (next === undefined) {
         next = current;
@@ -828,17 +832,35 @@ $(function () {
           return
         }
         else {
-          current.find('ul').parent().removeClass('hover');
+          current.removeClass('hover');
         }
       }
-      next.find('ul').parent().addClass('hover');
+      next.addClass('hover');
       links = next.find('a');
       if (!skip) {
         links.eq(0).focus();
       }
       links.eq(1).focus();
       next.trigger('mouseenter');
-    }
+    } //
+    , keyNav = function (event) {
+      changing = 2;
+      switch (event.which) {
+        case 37:
+          currentChanged(current.prev());
+          break;
+        case 39:
+          currentChanged(current.next());
+          break;
+        case 9:
+          currentChanged((event.shiftKey === true ? current.prev() : current.next()));
+          break;
+        case 27:
+          closeMenu();
+          break;
+        default:
+      }
+    };
   topLevel.on('mouseenter ', function () {
     var $this = $(this);
     topLevel.removeClass('hover');
@@ -847,83 +869,29 @@ $(function () {
       $this.find('a').eq(1).focus();
     }
   });
-  topLevel.children('ul').on('mouseleave', function () {
-    $(this).parent().removeClass('hover');
-    if (prevFocus) {
-      closeMenu();
-    }
-  });
   topLevel.children('a').on({
                               focus:    function () {
                                 currentChanged($(this).parent(), true);
                               }, //
                               focusout: function () {$(this).parent().removeClass('hover')}, //
-                              keydown:  function (event) {
-                                switch (event.which) {
-                                  case 37:
-                                    currentChanged(current.prev());
-                                    break;
-                                  case 39:
-                                    currentChanged(current.next());
-                                    break;
-                                  case 9:
-                                    currentChanged((event.shiftKey === true ? current.prev() : current.next()));
-                                    break;
-                                  case 27:
-                                    closeMenu();
-                                    break;
-                                  default:
-                                }
-                              }
-                            });
+                              keydown:  keyNav});
   topmenu.find('ul').find('a').on({
-                                    keydown:    function (event) {
-                                      if (event.which > 36 && event.which < 41) {
-                                        event.preventDefault();
-                                      }
-                                      switch (event.which) {
-                                        case 37:
-                                          currentChanged(current.prev());
-                                          break;
-                                        case 39:
-                                          currentChanged(current.next());
-                                          break;
-                                        case 38:
-                                          $(this).parent().prevUntil('', ':has(a)').eq(0).find('a').focus();
-                                          break;
-                                        case 40:
-                                          $(this).parent().nextUntil('', ':has(a)').eq(0).find('a').focus();
-                                          break;
-                                        case 9:
-                                          var next = event.shiftKey === true ? current.prev() : current.next();
-                                          if (next.length) {
-                                            event.preventDefault();
-                                            currentChanged(next);
-                                          }
-                                          else {
-                                            if (!event.shiftKey) {
-                                              event.preventDefault();
-                                              closeMenu();
-                                            }
-                                          }
-                                          break;
-                                        case 27:
-                                          closeMenu();
-                                          break;
-                                        default:
-                                      }
-                                    }, //
+                                    keydown:    keyNav,
                                     mouseenter: function () {
                                       this.focus();
                                     }
                                   });
   tabs.on({ //
-            mouseleave: function () {
-              if (prevFocus && !$(this).find('.hover').length) {
+            mouseleave:    function () {
+              if (changing < 2) {
                 closeMenu();
               }
-            }
+              tabs.off('mousemove.tabs');
+            }, mouseenter: function () {
+      tabs.on('mousemove.tabs', function () {changing = 1;});
+    }
           });
+  Adv.Status.open();
   $(document).on('focusout', ':input',function () {
     prevFocus = $(this);
   }).on('keydown', function (event) {
