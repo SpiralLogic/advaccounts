@@ -10,6 +10,7 @@
   namespace Modules\Volusion;
 
   use \ADV\Core\Module;
+  use ADV\Core\DIC;
   use ADV\App\User;
   use \Modules\Volusion\Orders as Orders;
   use \ADV\Core\DB\DB;
@@ -32,8 +33,9 @@
       }
     }
     public function doWebsales() {
+
       if (!$this->jobsboardDB) {
-        $this->jobsboardDB = new DB('jobsboard');
+        $this->jobsboardDB = DIC::get('DB', 'jobsboard');
       }
       $orders = $this->getNewWebsales();
       if (!$orders) {

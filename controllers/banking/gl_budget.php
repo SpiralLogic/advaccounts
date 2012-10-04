@@ -60,7 +60,7 @@
     }
     Forms::submitRow('submit', _("Get"), true, '', '', true);
     Table::end(1);
-    Display::div_start('budget_tbl');
+    Ajax::_start_div('budget_tbl');
     Table::start('standard');
     $showdims = (($dim == 1 && $_POST['dim1'] == 0) || ($dim == 2 && $_POST['dim1'] == 0 && $_POST['dim2'] == 0));
     if ($showdims) {
@@ -108,7 +108,7 @@
     Cell::label("<span class='bold'>" . Num::_format($ltotal, 0) . "</span>", ' class="alignright nowrap"');
     echo '</tr>';
     Table::end(1);
-    Display::div_end();
+    Ajax::_end_div();
     Forms::submitCenterBegin('update', _("Update"), '', null);
     Forms::submit('add', _("Save"), true, '', 'default');
     Forms::submitCenterEnd('delete', _("Delete"), '', true);

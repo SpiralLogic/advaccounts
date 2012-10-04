@@ -111,9 +111,9 @@
   Forms::AmountRow(_("Bank Charge:"), 'charge');
   Table::endOuter(1);
   if ($cust_currency == $bank_currency) {
-    Display::div_start('alloc_tbl');
+    Ajax::_start_div('alloc_tbl');
     GL_Allocation::show_allocatable(true);
-    Display::div_end();
+    Ajax::_end_div();
   }
   Table::start('padded width60');
   Forms::AmountRow(_("Amount:"), 'amount');
@@ -122,8 +122,8 @@
   if ($cust_currency != $bank_currency) {
     Event::warning(_("Amount and discount are in customer's currency."));
   }
-  Display::br();
+  echo "<br>";
   Forms::submitCenter('AddRefundItem', _("Add Refund"), true, '', 'default');
-  Display::br();
+  echo "<br>";
   Forms::end();
   Page::end(!Input::_request('frame'));

@@ -253,7 +253,7 @@
       Ajax::_activate('stock_id');
     }
   }
-  Display::div_start('details');
+  Ajax::_start_div('details');
   Table::startOuter('standard');
   Table::section(1);
   Table::sectionTitle(_("Item"));
@@ -364,8 +364,8 @@
   Forms::checkRow(_("Exclude from sales:"), 'no_sale');
   Forms::checkRow(_("Item status:"), 'inactive');
   Table::endOuter(1);
-  Display::div_end();
-  Display::div_start('controls');
+  Ajax::_end_div();
+  Ajax::_start_div('controls');
   if (!isset($_POST['NewStockID']) || $new_item) {
     Forms::submitCenter('addupdate', _("Insert New Item"), true, '', 'default');
   } else {
@@ -384,7 +384,7 @@
     Session::_setGlobal('stock_id', $_POST['stock_id']);
     echo "<iframe src='/inventory/prices.php?frame=1' style='float:right;width:48%;height:450px;overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
   }
-  Display::div_end();
+  Ajax::_end_div();
   Forms::hidden('frame', Input::_request('frame'));
   Forms::end();
   Page::end();

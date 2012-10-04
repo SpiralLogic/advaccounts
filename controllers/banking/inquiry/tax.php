@@ -49,7 +49,7 @@
    */
   function show_results() {
     /*Now get the transactions */
-    Display::div_start('trans_tbl');
+    Ajax::_start_div('trans_tbl');
     Table::start('padded grid');
     $th = array(_("Type"), _("Description"), _("Amount"), _("Outputs") . "/" . _("Inputs"));
     Table::header($th);
@@ -85,5 +85,5 @@
     Cell::label("");
     echo '</tr>';
     Table::end(2);
-    Display::div_end();
+    Ajax::_end_div();
   }

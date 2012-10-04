@@ -157,7 +157,7 @@
         exit;
       }
       if (!REQUEST_JSON) {
-        Display::div_start('_page_body');
+        Ajax::_start_div('_page_body');
       }
     }
     protected function header() {
@@ -250,7 +250,7 @@
       $footer->set('sidemenu', ($this->header && $this->menu ? ['bank'=> $this->User->hasAccess(SS_GL)] : false));
       $footer->set('JS', $this->JS);
       $footer->set('messages', (!REQUEST_AJAX ? Messages::show() : ''));
-      $footer->set('page_body', Display::div_end(true));
+      $footer->set('page_body', Ajax::_end_div(true));
       $footer->render();
     }
     public static function footer_exit() {

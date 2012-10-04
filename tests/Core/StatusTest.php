@@ -99,7 +99,7 @@
       $this->object->set(Status::ERROR, 'error set', 'var2');
 
       $this->assertEquals(
-        '',
+        'Error: error set',
         (string) $this->object
       );
     }

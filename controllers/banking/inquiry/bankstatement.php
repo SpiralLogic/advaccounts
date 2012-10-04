@@ -14,7 +14,7 @@
   }
 
   Ajax::_activate('trans');
-  Display::div_start('trans');
+  Ajax::_start_div('trans');
   Forms::start(true);
   echo "<div class='center'><input
           type='hidden'  name='go' value=1 /><input type='file' name='csvitems' autofocus/><button>Go</button><br>";
@@ -51,5 +51,5 @@
     }
   }
 
-  Display::div_end();
+  Ajax::_end_div();
   Page::end();

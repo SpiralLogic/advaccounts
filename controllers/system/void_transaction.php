@@ -148,7 +148,7 @@
           $view_str = GL_UI::viewTrans($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
         }
         echo "<div class='center pad5'><span class='redborder  bold font15 pad10'>$view_str</span></div>";
-        Display::br();
+        echo "<br>";
         Forms::submitCenterBegin('ConfirmVoiding', _("Proceed"), '', true);
         Forms::submitCenterEnd('CancelVoiding', _("Cancel"), '', 'cancel');
       }

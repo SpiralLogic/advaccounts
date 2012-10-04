@@ -10,6 +10,7 @@
   namespace Modules\Jobsboard;
 
   use ADV\Core\Module;
+  use ADV\Core\DIC;
   use ADV\Core\Event;
   use ADV\App\User;
   use ADV\Core\Config;
@@ -27,11 +28,11 @@
     public $order_no;
     /** @var DB */
     protected $jobsboardDB;
-    public function __construct(){
+    public function __construct() {
       parent::__construct();
       if (!$this->jobsboardDB) {
-             $this->jobsboardDB = new DB('jobsboard');
-           }
+        $this->jobsboardDB = DIC::get('DB', 'jobsboard');
+      }
     }
     public function init() {
 

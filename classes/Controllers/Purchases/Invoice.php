@@ -89,17 +89,17 @@
       } else {
         Purch_GRN::display_items($this->trans, 1);
         Purch_GLItem::display_items($this->trans, 1);
-        Display::div_start('inv_tot');
+        Ajax::_start_div('inv_tot');
         Purch_Invoice::totals($this->trans);
-        Display::div_end();
+        Ajax::_end_div();
       }
       if ($this->Input->post('AddGLCodeToTrans')) {
         $this->Ajax->activate('inv_tot');
       }
-      Display::br();
+      echo "<br>";
       Forms::submitCenterBegin('Cancel', _("Cancel Invoice"));
       Forms::submitCenterEnd('PostInvoice', _("Enter Invoice"), '', 'default');
-      Display::br();
+      echo "<br>";
       Forms::end();
       $this->addJS();
       $this->Page->end_page(true);

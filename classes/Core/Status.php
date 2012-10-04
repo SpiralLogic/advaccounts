@@ -119,7 +119,7 @@
      */
     public function __toString() {
       $last = $this->get();
-      $str  = ($last['status'] != self::ERROR) ? ' Succeeded: ' : ' Failed: ';
+      $str  = ($last['status'] != self::ERROR) ? 'Success: ' : 'Error: ';
       $str .= $last['message'];
 
       return $str;

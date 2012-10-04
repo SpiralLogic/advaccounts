@@ -84,14 +84,14 @@
   } else {
     echo '<br>';
   }
-  Display::div_start('controls');
+  Ajax::_start_div('controls');
   if (Input::_post('profile_id') == '') {
     Forms::submitCenter('submit', _("Add New Profile"), true, '', 'default');
   } else {
     Forms::submitCenterBegin('submit', _("Update Profile"), _('Update printer profile'), 'default');
     Forms::submitCenterEnd('delete', _("Delete Profile"), _('Delete printer profile (only if not used by any user)'), true);
   }
-  Display::div_end();
+  Ajax::_end_div();
   Forms::end();
   Page::end();
   // Returns array of defined reports

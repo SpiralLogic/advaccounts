@@ -12,7 +12,7 @@
     $trans_no = $_GET["trans_no"];
   }
   Display::heading(SysTypes::$names[ST_INVADJUST] . " #$trans_no");
-  Display::br(1);
+  echo "<br>";
   $adjustment_items = Inv_Adjustment::get($trans_no);
   $k                = 0;
   $header_shown     = false;

@@ -51,7 +51,7 @@
     $_POST["amount_min"] = $_GET["amount_min"];
   }
   Forms::start();
-  Display::div_start('trans_tbl');
+  Ajax::_start_div('trans_tbl');
   $dim = DB_Company::get_pref('use_dimension');
   Table::start('noborder');
   echo '<tr>';
@@ -74,7 +74,7 @@
   echo '</tr>';
   Table::end();
   echo '<hr>';
-  Display::div_end();
+  Ajax::_end_div();
   if (Input::_post('Show') || Input::_post('account')) {
     show_results();
   }

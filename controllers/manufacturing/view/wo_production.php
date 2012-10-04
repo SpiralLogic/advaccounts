@@ -17,7 +17,7 @@
    */
   function display_wo_production($prod_id) {
     $myrow = WO_Produce::get($prod_id);
-    Display::br(1);
+    echo "<br>";
     Table::start('padded');
     $th = array(
       _("Production #"),
@@ -43,7 +43,7 @@
 
   Display::heading(SysTypes::$names[ST_MANURECEIVE] . " # " . $wo_production);
   display_wo_production($wo_production);
-  Display::br(2);
+  echo "<br><br>";
   Page::end(true);
 
 

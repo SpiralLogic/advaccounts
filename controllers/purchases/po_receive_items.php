@@ -75,7 +75,7 @@ set from the post to the quantity to be received in this receival*/
   Forms::hidden('order_id');
   Purch_GRN::display($order, true);
   Display::heading(_("Items to Receive"));
-  Display::div_start('grn_items');
+  Ajax::_start_div('grn_items');
   Table::start('padded grid width90');
   $th = array(
     _("Item Code"),
@@ -128,7 +128,7 @@ set from the post to the quantity to be received in this receival*/
   $display_total = Num::_format($total + $_POST['freight'], User::price_dec());
   Table::label(_("Total value of items received"), $display_total, "colspan=9 class='alignright'", ' class="alignright nowrap"');
   Table::end();
-  Display::div_end();
+  Ajax::_end_div();
   Display::link_params("/purchases/order", _("Edit This Purchase Order"), "ModifyOrder=" . $order->order_no);
   echo '<br>';
   Forms::submitCenterBegin('Update', _("Update Totals"), '', true);

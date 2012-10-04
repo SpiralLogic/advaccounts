@@ -118,7 +118,7 @@
             $array[] = $el;
           } else {
             if (isset($array[$key]) && is_array($array[$key]) && is_array($el)) {
-              Arr::append($array[$key], $el);
+              static::append($array[$key], $el);
               continue;
             }
             $array[$key] = $el;
@@ -183,7 +183,7 @@
           $array[] = $el;
         } else {
           if (isset($array[$key]) && is_array($array[$key]) && is_array($el)) {
-            Arr::append($array[$key], $el);
+            array_append($array[$key], $el);
             continue;
           }
           $array[$key] = $el;

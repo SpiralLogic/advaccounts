@@ -258,7 +258,7 @@
      */
     protected function displaySummary() {
       $this->getTotal();
-      Display::div_start('summary');
+      Ajax::_start_div('summary');
       Table::start();
       Table::sectionTitle(_("Reconcile Date"), 1);
       echo '<tr>';
@@ -283,7 +283,7 @@
       Cell::amount($difference, false, '', "difference");
       echo '</tr>';
       Table::end();
-      Display::div_end();
+      Ajax::_end_div();
     }
     /**
      * @return int

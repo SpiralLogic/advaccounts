@@ -92,12 +92,12 @@
       }
       Forms::AmountRow(_("Bank Charge:"), 'charge');
       Table::endOuter(1); // outer table
-      Display::div_start('alloc_tbl');
+      Ajax::_start_div('alloc_tbl');
       if ($this->bank_currency == $this->supplier_currency) {
         $_SESSION['alloc']->read();
         GL_Allocation::show_allocatable(false);
       }
-      Display::div_end();
+      Ajax::_end_div();
       Table::start('padded width60');
       Forms::AmountRow(_("Amount of Discount:"), 'discount');
       Forms::AmountRow(_("Amount of Payment:"), 'amount');

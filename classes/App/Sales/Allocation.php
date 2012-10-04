@@ -18,10 +18,13 @@
      * @param $trans_no_to
      */
     public static function add($amount, $trans_type_from, $trans_no_from, $trans_type_to, $trans_no_to) {
-      $sql = "INSERT INTO debtor_allocations (
+      $sql
+        = "INSERT INTO debtor_allocations (
         amt, date_alloc,
         trans_type_from, trans_no_from, trans_no_to, trans_type_to)
-        VALUES ($amount, Now() ," . DB::_escape($trans_type_from) . ", " . DB::_escape($trans_no_from) . ", " . DB::_escape($trans_no_to) . ", " . DB::_escape($trans_type_to) . ")";
+        VALUES ($amount, Now() ," . DB::_escape($trans_type_from) . ", " . DB::_escape($trans_no_from) . ", " . DB::_escape($trans_no_to) . ", " . DB::_escape(
+        $trans_type_to
+      ) . ")";
       DB::_query($sql, "A customer allocation could not be added to the database");
     }
     /**
@@ -44,7 +47,8 @@
      * @return mixed
      */
     public static function get_balance($trans_type, $trans_no) {
-      $sql     = "SELECT (ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc) AS BalToAllocate
+      $sql
+               = "SELECT (ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc) AS BalToAllocate
         FROM debtor_trans WHERE trans_no=" . DB::_escape($trans_no) . " AND type=" . DB::_escape($trans_type);
       $result  = DB::_query($sql, "calculate the allocation");
       $myrow   = DB::_fetchRow($result);
@@ -59,7 +63,8 @@
      * @param $alloc
      */
     public static function update($trans_type, $trans_no, $alloc) {
-      $sql = "UPDATE debtor_trans SET alloc = alloc + $alloc
+      $sql
+        = "UPDATE debtor_trans SET alloc = alloc + $alloc
         WHERE type=" . DB::_escape($trans_type) . " AND trans_no = " . DB::_escape($trans_no);
       DB::_query($sql, "The debtor transaction record could not be modified for the allocation against it");
     }
@@ -72,7 +77,8 @@
      */
     public static function void($type, $type_no, $date = "") {
       // clear any allocations for this transaction
-      $sql    = "SELECT * FROM debtor_allocations
+      $sql
+              = "SELECT * FROM debtor_allocations
         WHERE (trans_type_from=" . DB::_escape($type) . " AND trans_no_from=" . DB::_escape($type_no) . ")
         OR (trans_type_to=" . DB::_escape($type) . " AND trans_no_to=" . DB::_escape($type_no) . ")";
       $result = DB::_query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
@@ -87,7 +93,8 @@
         }
       }
       // remove any allocations for this transaction
-      $sql = "DELETE FROM debtor_allocations
+      $sql
+        = "DELETE FROM debtor_allocations
         WHERE (trans_type_from=" . DB::_escape($type) . " AND trans_no_from=" . DB::_escape($type_no) . ")
         OR (trans_type_to=" . DB::_escape($type) . " AND trans_no_to=" . DB::_escape($type_no) . ")";
       DB::_query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
@@ -102,7 +109,8 @@
      * @return string
      */
     public static function get_sql($extra_fields = null, $extra_conditions = null, $extra_tables = null) {
-      $sql = "SELECT
+      $sql
+        = "SELECT
         trans.type,
         trans.trans_no,
         trans.reference,
@@ -206,7 +214,7 @@
       if (isset($_POST['inquiry'], $_SERVER['HTTP_REFERER']) || stristr($_SERVER['HTTP_REFERER'], 'customer_allocation_inquiry.php')) {
         Forms::hidden('inquiry', true);
       }
-      Display::div_start('alloc_tbl');
+      Ajax::_start_div('alloc_tbl');
       if (count($_SESSION['alloc']->allocs) > 0) {
         GL_Allocation::show_allocatable(true);
         Forms::submitCenterBegin('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), true);
@@ -216,7 +224,7 @@
         Event::warning(_("There are no unsettled transactions to allocate."), 0, 1);
         Forms::submitCenter('Cancel', _("Back to Allocations"), true, _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
       }
-      Display::div_end();
+      Ajax::_end_div();
       Forms::end();
     }
     /**

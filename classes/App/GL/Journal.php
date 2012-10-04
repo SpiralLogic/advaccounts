@@ -69,7 +69,7 @@
     public static function items($title, &$order) {
       Display::heading($title);
       $dim = DB_Company::get_pref('use_dimension');
-      Display::div_start('items_table');
+      Ajax::_start_div('items_table');
       Table::start('padded grid width95');
       if ($dim == 2) {
         $th = array(
@@ -146,7 +146,7 @@
         echo '</tr>';
       }
       Table::end();
-      Display::div_end();
+      Ajax::_end_div();
     }
     /**
      * @static

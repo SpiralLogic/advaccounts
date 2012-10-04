@@ -88,7 +88,7 @@
      * @return mixed
      */
     public static function get($name = null) {
-      return static::$i->offsetGet($name);
+      return call_user_func_array([static::$i, 'offsetGet'], func_get_args());
     }
     /**
      * Gets a parameter or an object.

@@ -24,6 +24,8 @@
    * @method static Ajax _flush()
    * @method static Ajax _inAjax()
    * @method static Ajax _absoluteURL()
+   * @method static Ajax _start_div($id = null, $trigger = null, $non_ajax = false)
+   * @method static Ajax _end_div($return_div = false)
    */
   class Ajax extends \JsHttpRequest {
     use Traits\StaticAccess2;
@@ -36,6 +38,7 @@
      * @var array
      */
     protected $triggers = [];
+    protected $ajax_divs = [];
     /**
 
      */
@@ -233,6 +236,38 @@
           $this->aCommands[] = $aAttributes;
         }
       }
+    }
+    /**
+     * @param string $id
+     * @param null   $trigger
+     * @param bool   $non_ajax
+     */
+    public function start_div($id = null, $trigger = null, $non_ajax = false) {
+      if ($non_ajax) { // div for non-ajax elements
+        array_push($this->ajax_divs, [$id, null]);
+        echo "<div class='js hidden' " . ($id ? "id='$id'" : '') . ">";
+      } else { // ajax ready div
+        array_push($this->ajax_divs, [$id, $trigger === null ? $id : $trigger]);
+        echo "<div " . ($id ? "id='$id'" : '') . ">";
+        ob_start();
+      }
+    }
+    /**
+     * @param bool $return_div
+     *
+     * @return string
+     */
+    public function end_div($return_div = false) {
+      if ($div = array_pop($this->ajax_divs)) {
+        if ($div[1] !== null) {
+          $this->addUpdate($div[1], $div[0], ob_get_flush());
+        }
+        if ($return_div) {
+          return "</div>";
+        }
+        echo "</div>";
+      }
+      return '';
     }
     /**
      * @return mixed

@@ -228,7 +228,7 @@
     exit();
   }
   Display::heading(_("Invoice Items"));
-  Display::div_start('Items');
+  Ajax::_start_div('Items');
   Table::start('padded grid width90');
   $th = array(
     _("Item Code"),
@@ -348,7 +348,7 @@ was not fully delivered the first time ?? */
   );
   Table::footEnd();
   Table::end(1);
-  Display::div_end();
+  Ajax::_end_div();
   Table::start('standard');
   Forms::textareaRow(_("Memo"), 'Comments', null, 50, 4);
   Table::end(1);

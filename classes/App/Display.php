@@ -9,9 +9,7 @@
    **/
   namespace ADV\App;
 
-  use ADV\Core\Event;
   use GL_UI;
-  use ADV\Core\DB\DB;
   use ADV\Core\Table;
   use ADV\Core\Ajax;
   use ADV\Core\JS;
@@ -20,129 +18,39 @@
 
    */
   class Display {
-    protected static $ajax_divs = [];
     /** @var JS */
     static $JS;
     /** @var User */
     static $User;
     /** @var Dates */
     static $Dates;
-    /** @var Ajax */
-    static $Ajax;
     static $DB;
     /**
      * @static
      *
-     * @param      $label
+     * @param      $string
      * @param bool $clean
      *
+     * @internal param $label
      * @return array|mixed|string
      */
-    public static function access_string($label, $clean = false) {
+    public static function access_string($string, $clean = false) {
+      static $used = [];
       $access = '';
-      $slices = [];
-      if (preg_match('/(.*)&([a-zA-Z0-9])(.*)/', $label, $slices)) {
-        $label  = $clean ? $slices[1] . $slices[2] . $slices[3] : $slices[1] . '<span class="u">' . $slices[2] . '</span>' . $slices[3];
-        $access = " accesskey='" . strtoupper($slices[2]) . "'";
-      }
-      $label = str_replace('&&', '&', $label);
-      return $clean ? $label : array($label, $access);
-    }
-    /**
-     * @static
-     *
-     * @param bool   $cond
-     * @param string $msg
-     */
-    public static function backtrace($cond = true, $msg = '') {
-      if ($cond) {
-        if ($msg) {
-          $str = "<div class='center'><span class='headingtext'>$msg</span></div>\n";
-        } else {
-          $str = '';
-        }
-        $str .= '<table >';
-        $trace = debug_backtrace();
-        foreach ($trace as $trn => $tr) {
-          if (!$trn) {
-            continue;
+      $string = preg_replace_callback(
+        '/&([a-zA-Z0-9])/',
+        function ($match) use (&$access, $clean, &$used) {
+          if ($clean || in_array($match[1], $used)) {
+            return $match[1];
           }
-          $str .= '<tr><td>';
-          $str .= $tr['file'] . ':' . $tr['line'] . ': ';
-          $str .= '</td><td>';
-          if (isset($tr['type'])) {
-            if ($tr['type'] == '::') {
-              $str .= $tr['class'] . '::';
-            } else {
-              if ($tr['type'] == '->') {
-                $str .= '(' . $tr['class'] . ' Object)' . '->';
-              }
-            }
-          }
-          foreach ($tr['args'] as $n => $a) {
-            if (is_object($tr['args'][$n])) {
-              $tr['args'][$n] = "(" . get_class($tr['args'][$n]) . " Object)";
-            }
-            if (is_array($tr['args'][$n])) {
-              $tr['args'][$n] = "(Array[" . count($tr['args'][$n]) . "])";
-            } else {
-              $tr['args'][$n] = "'" . $tr['args'][$n] . "'";
-            }
-          }
-          $str .= $tr['function'] . '(' . implode(',', $tr['args']) . ')</td>';
-          $str .= '</tr>';
-        }
-        $str .= '</table>';
-        Event::error($str);
-      }
-    }
-    /**
-     * @static
-     *
-     * @param int $num
-     */
-    public static function br($num = 1) {
-      for ($i = 0; $i < $num; $i++) {
-        echo "<br>";
-      }
-    }
-    /**
-     * @static
-     *
-     * @param string $id
-     * @param null   $trigger
-     * @param bool   $non_ajax
-     */
-    public static function div_start($id = '', $trigger = null, $non_ajax = false, $echo = true) {
-      if (!static::$JS) {
-        static::$JS = JS::i();
-      }
-      if ($non_ajax) { // div for non-ajax elements
-        array_push(static::$ajax_divs, array($id, null));
-        echo "<div class='js hidden' " . ($id != '' ? "id='$id'" : '') . ">";
-      } else { // ajax ready div
-        array_push(static::$ajax_divs, array($id, $trigger === null ? $id : $trigger));
-        echo "<div " . ($id != '' ? "id='$id'" : '') . ">";
-        ob_start();
-      }
-    }
-    /**
-     * @static
-     */
-    public static function div_end($return_div = false) {
-      if (!static::$Ajax) {
-        static::$Ajax = Ajax::i();
-      }
-      if (count(static::$ajax_divs)) {
-        $div = array_pop(static::$ajax_divs);
-        if ($div[1] !== null) {
-          static::$Ajax->addUpdate($div[1], $div[0], ob_get_flush());
-        }
-        if ($return_div) {
-          return "</div>";
-        }
-        echo "</div>";
-      }
+          $access = " accesskey='" . strtoupper($match[1]) . "'";
+          $used[] = $match[1];
+          return '<span class="u">' . $match[1] . '</span>';
+        },
+        $string
+      );
+
+      return $clean ? $string : array($string, $access);
     }
     /**
      * @static
@@ -178,23 +86,6 @@
       echo "</td></tr>";
       Table::end(1);
       return true;
-    }
-    /**
-     * @static
-     *
-     * @param $stock_id
-     */
-    public static function item_heading($stock_id) {
-      if (!static::$DB) {
-        static::$DB = DB::i();
-      }
-      if ($stock_id != "") {
-        $result = static::$DB->query("SELECT description, units FROM stock_master WHERE stock_id=" . static::$DB->escape($stock_id));
-        $myrow  = static::$DB->fetchRow($result);
-        static::heading("$stock_id - $myrow[0]");
-        $units = $myrow[1];
-        static::heading(_("in units of : ") . $units);
-      }
     }
     /**
      * @static
@@ -237,16 +128,13 @@
      * @param string $params
      */
     public static function meta_forward($forward_to, $params = "") {
-      if (!static::$Ajax) {
-        static::$Ajax = Ajax::i();
-      }
       echo "<meta http-equiv='Refresh' content='0; url=$forward_to?$params'>\n";
       echo "<div class='center'><br>" . _("You should automatically be forwarded.");
       echo " " . _("If this does not happen") . " <a href='$forward_to?$params'>" . _("click here") . "</a> " . _("to continue") . ".<br><br></div>\n";
       if ($params != '') {
         $params = '?' . $params;
       }
-      static::$Ajax->redirect($forward_to . $params);
+      Ajax::_redirect($forward_to . $params);
       exit;
     }
     /**
@@ -269,14 +157,6 @@
       for ($i = 0; $i < $br2; $i++) {
         echo "<br>";
       }
-    }
-    /**
-     * @static
-     *
-     * @param bool $center
-     * @param bool $no_menu
-     */
-    public static function link_back($center = true, $no_menu = true) {
     }
     /**
      * @static
@@ -478,16 +358,16 @@
       if (!static::$User) {
         static::$User = User::i();
       }
-      if ($url != '') {
+      if ($url) {
         $class .= " openWindow";
       }
-      if ($class != '') {
+      if ($class) {
         $class = " class='$class'";
       }
-      if ($id != '') {
+      if ($id) {
         $class = " id='$id'";
       }
-      if ($url != "") {
+      if ($url) {
         $pars = Display::access_string($label);
         if (static::$User->_graphic_links() && $icon) {
           $pars[0] = Forms::setIcon($icon, $pars[0]);

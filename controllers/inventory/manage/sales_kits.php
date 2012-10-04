@@ -110,7 +110,7 @@
    */
   function display_kit_items($selected_kit) {
     $result = Item_Code::get_kit($selected_kit);
-    Display::div_start('bom');
+    Ajax::_start_div('bom');
     Table::start('padded grid width60');
     $th = array(
       _("Stock Item"),
@@ -132,7 +132,7 @@
       echo '</tr>';
     } //END WHILE LIST LOOP
     Table::end();
-    Display::div_end();
+    Ajax::_end_div();
   }
 
   /**

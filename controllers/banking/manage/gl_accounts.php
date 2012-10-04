@@ -87,7 +87,7 @@
       JS::_setFocus('AccountList');
     }
   }
-  Display::br(1);
+  echo "<br>";
   Table::start('standard');
   if ($selected_account != "") {
     //editing an existing account

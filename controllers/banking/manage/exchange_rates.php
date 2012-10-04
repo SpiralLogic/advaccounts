@@ -49,13 +49,13 @@
     Event::warning(_("The selected currency is the company currency."), 2);
     Event::warning(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
   } else {
-    Display::br(1);
+    echo "<br>";
     $table->width = "40%";
     if ($table->rec_count == 0) {
       $table->ready = false;
     }
     $table->display($table);
-    Display::br(1);
+    echo "<br>";
     display_rate_edit($selected_id);
   }
   Forms::end();

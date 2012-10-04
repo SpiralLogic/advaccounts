@@ -110,6 +110,13 @@
       $dic->offsetSet(
         'Input',
         function () {
+
+          array_walk(
+            $_POST,
+            function (&$v) {
+              $v = is_string($v) ? trim($v) : $v;
+            }
+          );
           return new \ADV\Core\Input\Input();
         }
       );
@@ -145,6 +152,17 @@
           $dates->use_fiscal_year = $config->get('use_fiscalyear');
           $dates->sticky_doc_date = $user->prefs->sticky_doc_date;
           return $dates;
+        }
+      );
+      $dic->offsetSet(
+        'DB',
+        function (\ADV\Core\DIC $c, $name = 'default') {
+
+          $config   = $c->offsetGet('Config');
+          $dbconfig = $config->get('db.' . $name);
+          $cache    = $c->offsetGet('Cache');
+          $db       = new \ADV\Core\DB\DB($dbconfig, $cache);
+          return $db;
         }
       );
       ob_start([$this, 'flush_handler'], 0);
@@ -183,18 +201,13 @@
           return $session;
         }
       )->offsetGet(null);
-      $this->User    = $dic['User'];
-      $this->Input   = $dic['Input'];
+
+      $this->User  = $dic['User'];
+      $this->Input = $dic['Input'];
       $this->JS->footerFile($this->Config->get('assets.footer'));
       $this->menu = new Menu(_("Main Menu"));
       $this->menu->addItem(_("Main Menu"), "index.php");
       $this->menu->addItem(_("Logout"), "/account/access/logout.php");
-      array_walk(
-        $_POST,
-        function (&$v) {
-          $v = is_string($v) ? trim($v) : $v;
-        }
-      );
       $this->loadModules();
       $this->setupApplications();
       define('BUILD_VERSION', is_readable(ROOT_DOC . 'version') ? file_get_contents(ROOT_DOC . 'version', null, null, null, 6) : 000);
@@ -210,6 +223,7 @@
     protected function route() {
       $this->setupPage();
       $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
+      // first check for autoloadable controller.
       if ($controller) {
         $app = ucfirst(trim($controller, '/'));
         if (isset($this->applications[$app])) {
@@ -225,12 +239,14 @@
         if (class_exists($controller2)) {
           $this->runController($controller2);
         } else {
+          //then check to see if a file exists for address and if it does store it
           // substr_compare returns 0 if true
           $controller = (substr_compare($controller, '.php', -4, 4, true) === 0) ? $controller : $controller . '.php';
           $controller = ROOT_DOC . 'controllers' . DS . $controller;
           if (file_exists($controller)) {
             $this->controller = $controller;
           } else {
+            //no controller so 404 then find next best default
             header('HTTP/1.0 404 Not Found');
             $path = explode('/', $_SERVER['DOCUMENT_URI']);
             if (count($path)) {
@@ -255,7 +271,7 @@
     protected function runController($controller) {
       $dic = \ADV\Core\DIC::i();
       /** @var \ADV\App\Controller\Base $controller  */
-      $controller = new $controller($this->Session, $this->User, $this->Ajax, $this->JS, $dic['Input'], DB::i());
+      $controller = new $controller($this->Session, $this->User, $this->Ajax, $this->JS, $dic['Input'], $dic->offsetGet('DB', 'default'));
       $controller->setPage($dic->offsetGet('Page'));
       $controller->run();
     }

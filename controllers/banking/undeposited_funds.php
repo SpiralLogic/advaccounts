@@ -96,7 +96,7 @@
       Page::start(_($help_context = "Undeposited Funds"), SA_RECONCILE, Input::_request('frame'));
       Forms::start();
       echo "<hr>";
-      Display::div_start('summary');
+      Ajax::_start_div('summary');
       Table::start();
       Table::header(_("Deposit Date"));
       echo '<tr>';
@@ -115,7 +115,7 @@
       echo '</tr>';
       Table::end();
       echo HTML::button('deposit', _("Deposit"));
-      Display::div_end();
+      Ajax::_end_div();
       echo "<hr>";
       $date = $this->Dates->addDays($_POST['deposit_date'], 10);
       $sql
@@ -139,7 +139,7 @@
       $table->width = "80%";
       $table->display($table);
       UI::lineSortable();
-      Display::br(1);
+      echo "<br>";
       Forms::end();
       Page::end();
     }

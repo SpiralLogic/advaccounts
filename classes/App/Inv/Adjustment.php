@@ -126,7 +126,7 @@
      */
     public static function display_items($title, $order) {
       Display::heading($title);
-      Display::div_start('items_table');
+      Ajax::_start_div('items_table');
       Table::start('padded grid width90');
       $th = array(
         _("Item Code"),
@@ -165,7 +165,7 @@
       }
       Table::label(_("Total"), Num::_format($total, User::price_dec()), "class='alignright' colspan=5", "class='alignright'", 2);
       Table::end();
-      Display::div_end();
+      Ajax::_end_div();
     }
     /**
      * @static

@@ -62,12 +62,12 @@
       Forms::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
       echo '</tr>';
       Table::end();
-      Display::div_start('totals_tbl');
+      Ajax::_start_div('totals_tbl');
       if ($this->creditor_id > 0) {
         $supplier_record = Creditor::get_to_trans($this->creditor_id);
         $this->displaySupplierSummary($supplier_record);
       }
-      Display::div_end();
+      Ajax::_end_div();
       $this->displayTable();
       Creditor::addInfoDialog('.pagerclick');
       Forms::end();

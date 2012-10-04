@@ -110,7 +110,7 @@
     else {
       $drilldown = 0;
     } // Root level
-    Display::div_start('balance_tbl');
+    Ajax::_start_div('balance_tbl');
     Table::start('padded grid width30');
     if (!$drilldown) //Root Level
     {
@@ -180,5 +180,5 @@
       $classclose = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $drilldown, ROOT_URL);
     }
     Table::end(1); // outer table
-    Display::div_end();
+    Ajax::_end_div();
   }

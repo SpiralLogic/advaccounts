@@ -291,8 +291,10 @@ debit freight re-charged and debit sales */
       $customer       = Debtor::get($order->debtor_id);
       // 2008-08-01. If there is a Customer Dimension, then override with this,
       // else take the Item Dimension (if any)
-      $dim   = ($order->dimension_id != $customer['dimension_id'] ? $order->dimension_id : ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_codes["dimension_id"]));
-      $dim2  = ($order->dimension2_id != $customer['dimension2_id'] ? $order->dimension2_id : ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_codes["dimension2_id"]));
+      $dim   = ($order->dimension_id != $customer['dimension_id'] ? $order->dimension_id :
+        ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_codes["dimension_id"]));
+      $dim2  = ($order->dimension2_id != $customer['dimension2_id'] ? $order->dimension2_id :
+        ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_codes["dimension2_id"]));
       $total = 0;
       /* insert gl_trans to credit stock and debit cost of sales at standard cost*/
       $standard_cost = Item_Price::get_standard_cost($order_line->stock_id);
@@ -496,7 +498,7 @@ debit freight re-charged and debit sales */
      */
     public static function display_items($title, $order) {
       Display::heading($title);
-      Display::div_start('items_table');
+      Ajax::_start_div('items_table');
       Table::start('padded grid width90');
       $th = array(
         _("Item Code"),
@@ -554,7 +556,7 @@ debit freight re-charged and debit sales */
       Table::label(_("Credit Note Total"), $display_total, "colspan=$colspan class='alignright bold'", "class='amount'", 2);
       Table::footEnd();
       Table::end();
-      Display::div_end();
+      Ajax::_end_div();
     }
     /**
      * @static
@@ -620,7 +622,7 @@ debit freight re-charged and debit sales */
       if (isset($_POST['_CreditType_update'])) {
         Ajax::_activate('options');
       }
-      Display::div_start('options');
+      Ajax::_start_div('options');
       Table::start('standard');
       Sales_Credit::row(_("Credit Note Type"), 'CreditType', null, true);
       if ($_POST['CreditType'] == "Return") {
@@ -635,7 +637,7 @@ debit freight re-charged and debit sales */
       }
       Forms::textareaRow(_("Memo"), "CreditText", null, 51, 3);
       echo "</table>";
-      Display::div_end();
+      Ajax::_end_div();
     }
     /**
      * @static

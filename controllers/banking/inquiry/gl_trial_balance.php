@@ -30,9 +30,10 @@
   }
 
   function display_trial_balance() {
-    Display::div_start('balance_tbl');
+    Ajax::_start_div('balance_tbl');
     Table::start('padded grid');
-    $tableheader = "<tr>
+    $tableheader
+      = "<tr>
  <td rowspan=2 class='tablehead'>" . _("Account") . "</td>
  <td rowspan=2 class='tablehead'>" . _("Account Name") . "</td>
 		<td colspan=2 class='tablehead'>" . _("Brought Forward") . "</td>
@@ -109,5 +110,5 @@
     Cell::debitOrCredit($tbal);
     echo '</tr>';
     Table::end(1);
-    Display::div_end();
+    Ajax::_end_div();
   }

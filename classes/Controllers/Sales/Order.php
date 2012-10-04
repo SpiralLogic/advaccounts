@@ -124,20 +124,20 @@
       $this->order->display_delivery_details();
       echo "</td></tr>";
       Table::end(1);
-      Display::div_start('controls', 'items_table');
+      Ajax::_start_div('controls', 'items_table');
       $buttons = new Form();
       if ($this->order->trans_no > 0 && $this->User->hasAccess(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())) {
-        $buttons->submit(Orders::DELETE_ORDER, $deleteorder)->preIcon(ICON_DELETE)->setWarning('You are about to void this Document.\nDo you want to continue?');
+        $buttons->submit(Orders::DELETE_ORDER, $deleteorder)->preIcon(ICON_DELETE)->type('danger')->setWarning('You are about to void this Document.\nDo you want to continue?');
       }
-      $buttons->submit(Orders::CANCEL_CHANGES, _("Cancel Changes"))->preIcon(ICON_CANCEL);
+      $buttons->submit(Orders::CANCEL_CHANGES, _("Cancel Changes"))->preIcon(ICON_CANCEL)->type('warning');
       if (count($this->order->line_items)) {
         $type = ($this->order->trans_no > 0) ? $corder : $porder; //_('Check entered data and save document')
-        $buttons->submit(Orders::PROCESS_ORDER, $type)->preIcon(ICON_SUBMIT);
+        $buttons->submit(Orders::PROCESS_ORDER, $type)->type('success')->preIcon(ICON_SUBMIT);
       }
       $view = new View('libraries/forms');
       $view->set('buttons', $buttons);
       $view->render();
-      Display::div_end();
+      Ajax::_end_div();
       Forms::end();
       Debtor::addEditDialog();
       Item::addEditDialog();

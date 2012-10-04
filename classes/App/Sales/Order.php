@@ -743,7 +743,8 @@
       $order_no   = SysTypes::get_next_trans_no($this->trans_type);
       $del_date   = Dates::_dateToSql($this->due_date);
       $order_type = 0; // this is default on new order
-      $sql        = "INSERT INTO sales_orders (order_no, type, debtor_id, trans_type, branch_id, customer_ref, reference, salesman, comments, source_no, ord_date,
+      $sql
+                  = "INSERT INTO sales_orders (order_no, type, debtor_id, trans_type, branch_id, customer_ref, reference, salesman, comments, source_no, ord_date,
             order_type, ship_via, deliver_to, delivery_address, contact_name, contact_phone,
             contact_email, freight_cost, from_stk_loc, delivery_date)
             VALUES (" . DB::_escape($order_no) . "," . DB::_escape($order_type) . "," . DB::_escape($this->debtor_id) . ", " . DB::_escape($this->trans_type) . "," . DB::_escape(
@@ -765,7 +766,8 @@
       }
       foreach ($this->line_items as $position => $line) {
         if (Config::_get('accounts.stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
-          $sql = "SELECT stock_location.*, locations.location_name, locations.email
+          $sql
+               = "SELECT stock_location.*, locations.location_name, locations.email
                     FROM stock_location, locations
                     WHERE stock_location.loc_code=locations.loc_code
                     AND stock_location.stock_id = '" . $line->stock_id . "'
@@ -979,7 +981,8 @@
       }
       foreach ($this->line_items as $position => $line) {
         if (Config::_get('accounts.stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
-          $sql = "SELECT stock_location.*, locations.location_name, locations.email
+          $sql
+               = "SELECT stock_location.*, locations.location_name, locations.email
                             FROM stock_location, locations
                             WHERE stock_location.loc_code=locations.loc_code
                              AND stock_location.stock_id = " . DB::_escape($line->stock_id) . "
@@ -999,7 +1002,8 @@
             }
           }
         }
-        $sql = "INSERT INTO sales_order_details
+        $sql
+          = "INSERT INTO sales_order_details
                      (id, order_no, trans_type, stk_code, description, unit_price, quantity,
                      discount_percent, qty_sent, sort_order)
                      VALUES (";
@@ -1154,7 +1158,7 @@
           true
         );
       }
-      Display::div_start('items_table');
+      Ajax::_start_div('items_table');
       Table::start('padded width90 grid');
       $th = array(
         _("Item Code"),
@@ -1266,7 +1270,7 @@
       if ($this->trans_type != 30 && !DB_Company::get_pref('allow_negative_stock')) {
         Event::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . '<br>' . $qoh_msg);
       }
-      Display::div_end();
+      Ajax::_end_div();
     }
     /**
      * @param      $date_text
@@ -1509,7 +1513,7 @@
 
      */
     public function display_delivery_details() {
-      Display::div_start('delivery');
+      Ajax::_start_div('delivery');
       if (Input::_post('cash', null, 0)) { // Direct payment sale
         Ajax::_activate('items_table');
         Display::heading(_('Cash payment'));
@@ -1567,7 +1571,7 @@
         Sales_UI::shippers_row(_("Shipping Company:"), 'ship_via', $this->ship_via);
         Table::endOuter(1);
       }
-      Display::div_end();
+      Ajax::_end_div();
     }
     /**
      * @static
@@ -1594,7 +1598,8 @@
      * @throws DBException
      */
     public static function get_header($order_no, $trans_type) {
-      $sql    = "SELECT DISTINCT sales_orders.*,
+      $sql
+              = "SELECT DISTINCT sales_orders.*,
          debtors.name,
          debtors.curr_code,
          debtors.email AS master_email,
@@ -1641,7 +1646,8 @@
      * @return null|PDOStatement
      */
     public static function get_details($order_no, $trans_type) {
-      $sql = "SELECT sales_order_details.id, stk_code, unit_price, sales_order_details.description,sales_order_details.quantity,
+      $sql
+        = "SELECT sales_order_details.id, stk_code, unit_price, sales_order_details.description,sales_order_details.quantity,
         discount_percent, qty_sent as qty_done, stock_master.units,stock_master.tax_type_id,stock_master.material_cost + stock_master.labour_cost + stock_master.overhead_cost AS standard_cost
         FROM sales_order_details, stock_master WHERE sales_order_details.stk_code = stock_master.stock_id AND order_no =" . DB::_escape(
         $order_no
@@ -1665,7 +1671,8 @@
      * @param $order_no
      */
     public static function close($order_no) {
-      $sql = "UPDATE sales_order_details
+      $sql
+        = "UPDATE sales_order_details
             SET quantity = qty_sent WHERE order_no = " . DB::_escape($order_no) . " AND trans_type=" . ST_SALESORDER . "";
       DB::_query($sql, "The sales order detail record could not be updated");
     }
@@ -1681,7 +1688,8 @@
       if (!Dates::_isDate($invdate)) {
         return Dates::_newDocDate();
       }
-      $sql    = "SELECT debtors.debtor_id, debtors.payment_terms, payment_terms.* FROM debtors,
+      $sql
+              = "SELECT debtors.debtor_id, debtors.payment_terms, payment_terms.* FROM debtors,
             payment_terms WHERE debtors.payment_terms = payment_terms.terms_indicator AND
             debtors.debtor_id = " . DB::_escape($debtorno);
       $result = DB::_query($sql, "The customer details could not be retrieved");
@@ -1706,7 +1714,8 @@
      */
     public static function get_customer($debtor_id) {
       // Now check to ensure this account is not on hold */
-      $sql    = "SELECT debtors.name,
+      $sql
+              = "SELECT debtors.name,
          debtors.address,
          credit_status.dissallow_invoices,
          debtors.sales_type AS salestype,
@@ -1736,7 +1745,8 @@
      */
     public static function get_branch($debtor_id, $branch_id) {
       // the branch was also selected from the customer selection so default the delivery details from the customer branches table branches. The order process will ask for branch details later anyway
-      $sql = "SELECT branches.br_name,
+      $sql
+        = "SELECT branches.br_name,
      branches.br_address,
      branches.city, branches.state, branches.postcode, branches.contact_name, branches.br_post_address, branches.phone, branches.email,
                  default_location, location_name, default_ship_via, tax_groups.name AS tax_group_name, tax_groups.id AS tax_group_id
@@ -1789,11 +1799,13 @@
         return false;
       } else {
         if ($doc_type == ST_SALESORDER) {
-          $sql = "UPDATE sales_order_details
+          $sql
+            = "UPDATE sales_order_details
                                 SET qty_sent = qty_sent + $qty_dispatched
                                 WHERE id=" . DB::_escape($line_id);
         } else {
-          $sql = "UPDATE debtor_trans_details
+          $sql
+            = "UPDATE debtor_trans_details
                                 SET qty_done = qty_done + $qty_dispatched
                                 WHERE id=" . DB::_escape($line_id);
         }

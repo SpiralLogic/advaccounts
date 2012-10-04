@@ -17,7 +17,7 @@
    */
   function display_wo_issue($issue_no) {
     $myrow = WO_Issue::get($issue_no);
-    Display::br(1);
+    echo "<br>";
     Table::start('padded');
     $th = array(
       _("Issue #"),

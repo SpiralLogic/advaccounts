@@ -21,7 +21,6 @@
 
    */
   abstract class Menu extends Base {
-    protected $direct = false;
     protected $modules = [];
     /** @var */
     public $id;
@@ -82,9 +81,7 @@
     }
     protected function index() {
       $this->Page->init(_($this->help_context = "Main Menu"), SA_OPEN, false, true);
-      if ($this->direct) {
-        Display::meta_forward($this->direct);
-      }
+
       foreach ($this->modules as $name => $module) {
         $app            = new View('application');
         $app['colspan'] = (count($module['right']) > 0) ? 2 : 1;

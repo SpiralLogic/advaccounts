@@ -179,9 +179,10 @@
       $begin = Dates::_addMonths($from, -12);
       $end   = Dates::_addMonths($to, -12);
     }
-    Display::div_start('pl_tbl');
+    Ajax::_start_div('pl_tbl');
     Table::start('padded grid width50');
-    $tableheader = "<tr>
+    $tableheader
+      = "<tr>
  <td class='tablehead'>" . _("Group/Account Name") . "</td>
  <td class='tablehead'>" . _("Period") . "</td>
         <td class='tablehead'>" . $sel[$compare] . "</td>
@@ -245,5 +246,5 @@
       $classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, $pdec, $rep, $dimension, $dimension2, $drilldown);
     }
     Table::end(1); // outer table
-    Display::div_end();
+    Ajax::_end_div();
   }

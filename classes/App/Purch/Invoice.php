@@ -73,13 +73,15 @@
      */
     public static function update_supplier_received($id, $po_detail_item, $qty_invoiced, $chg_price = null) {
       if ($chg_price != null) {
-        $sql        = "SELECT act_price, unit_price FROM purch_order_details WHERE
+        $sql
+                    = "SELECT act_price, unit_price FROM purch_order_details WHERE
             po_detail_item = " . DB::_escape($po_detail_item);
         $result     = DB::_query($sql, "The old actual price of the purchase order line could not be retrieved");
         $row        = DB::_fetchRow($result);
         $ret        = $row[0];
         $unit_price = $row[1]; //Added by Rasmus
-        $sql        = "SELECT delivery_date FROM grn_batch,grn_items WHERE
+        $sql
+                    = "SELECT delivery_date FROM grn_batch,grn_items WHERE
             grn_batch.id = grn_items.grn_batch_id AND " . "grn_items.id=" . DB::_escape($id);
         $result     = DB::_query($sql, "The old delivery date from the received record cout not be retrieved");
         $row        = DB::_fetchRow($result);
@@ -89,14 +91,16 @@
         $date       = "";
         $unit_price = 0; // Added by Rasmus
       }
-      $sql = "UPDATE purch_order_details
+      $sql
+        = "UPDATE purch_order_details
         SET qty_invoiced = qty_invoiced + " . DB::_escape($qty_invoiced);
       if ($chg_price != null) {
         $sql .= " , act_price = " . DB::_escape($chg_price);
       }
       $sql .= " WHERE po_detail_item = " . DB::_escape($po_detail_item);
       DB::_query($sql, "The quantity invoiced of the purchase order line could not be updated");
-      $sql = "UPDATE grn_items
+      $sql
+        = "UPDATE grn_items
  SET quantity_inv = quantity_inv + " . DB::_escape($qty_invoiced) . "
  WHERE id = " . DB::_escape($id);
       DB::_query($sql, "The quantity invoiced off the items received record could not be updated");
@@ -391,7 +395,8 @@ the credit is to creditors control act done later for the total invoice value + 
      * @return null|PDOStatement
      */
     public static function get_po_credits($po_number) {
-      $sql = "SELECT DISTINCT creditor_trans.trans_no, creditor_trans.type,
+      $sql
+        = "SELECT DISTINCT creditor_trans.trans_no, creditor_trans.type,
         ov_amount+ov_discount+ov_gst AS Total,
         creditor_trans.tran_date
         FROM creditor_trans, creditor_trans_details, " . "purch_order_details, purch_orders
@@ -411,7 +416,8 @@ the credit is to creditors control act done later for the total invoice value + 
      * @return void
      */
     public static function get($trans_no, $trans_type, $creditor_trans) {
-      $sql    = "SELECT creditor_trans.*, name FROM creditor_trans,suppliers
+      $sql
+              = "SELECT creditor_trans.*, name FROM creditor_trans,suppliers
         WHERE trans_no = " . DB::_escape($trans_no) . " AND type = " . DB::_escape($trans_type) . "
         AND suppliers.creditor_id=creditor_trans.creditor_id";
       $result = DB::_query($sql, "Cannot retreive a supplier transaction");
@@ -476,7 +482,8 @@ the credit is to creditors control act done later for the total invoice value + 
      * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get_for_item($stock_id, $po_item_id) {
-      $sql    = "SELECT *, tran_date FROM creditor_trans_details, creditor_trans
+      $sql
+              = "SELECT *, tran_date FROM creditor_trans_details, creditor_trans
         WHERE creditor_trans_type = " . ST_SUPPINVOICE . " AND stock_id = " . DB::_escape($stock_id) . " AND po_detail_item_id = " . DB::_escape($po_item_id) . "
         AND creditor_trans_no = trans_no";
       $result = DB::_query($sql, "Cannot retreive supplier transaction detail records");
@@ -535,7 +542,8 @@ the credit is to creditors control act done later for the total invoice value + 
                   $old[1] !== $trans['tran_date']
                 );
               }
-              $sql = "UPDATE purch_order_details
+              $sql
+                = "UPDATE purch_order_details
                  SET quantity_ordered = quantity_ordered + " . -$details_row["quantity"] . ", ";
               if ($match !== false) {
                 $sql .= "act_price=" . $match['unit_price'] . ", ";
@@ -626,7 +634,7 @@ the credit is to creditors control act done later for the total invoice value + 
         Purch_Invoice::copy_from_trans($creditor_trans);
       }
       Table::startOuter('standard width60');
-      Display::div_start('summary');
+      Ajax::_start_div('summary');
       Table::start();
       echo '<tr>';
       Table::header(_("Invoice #:"));
@@ -657,7 +665,7 @@ the credit is to creditors control act done later for the total invoice value + 
       Forms::dateCells(null, 'due_date');
       echo '</tr>';
       Table::end();
-      Display::div_end();
+      Ajax::_end_div();
       Table::start();
       echo '<tr>';
       if (Input::_post('_control') == 'creditor') {

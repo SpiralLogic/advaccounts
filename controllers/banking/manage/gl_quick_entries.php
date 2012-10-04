@@ -152,7 +152,7 @@
     Forms::hidden('type', $_POST['type']);
     Forms::end();
     Forms::start();
-    Display::div_start('edit_line');
+    Ajax::_start_div('edit_line');
     Table::start('standard');
     if ($selected_id2 != -1) {
       if ($Mode2 == 'BEdit') {
@@ -197,7 +197,7 @@
     if ($dim < 1) {
       Forms::hidden('dimension_id', 0);
     }
-    Display::div_end();
+    Ajax::_end_div();
     Forms::hidden('selected_id', $selected_id);
     Forms::hidden('selected_id2', $selected_id2);
     Forms::hidden('description', $_POST['description']);

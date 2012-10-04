@@ -151,12 +151,12 @@
       }
       Forms::AmountRow(_("Bank Charge:"), 'charge', 0, null, ['$']);
       Table::endOuter(1);
-      Display::div_start('alloc_tbl');
+      Ajax::_start_div('alloc_tbl');
       if ($cust_currency == $bank_currency) {
         $_SESSION['alloc']->read();
         GL_Allocation::show_allocatable(false);
       }
-      Display::div_end();
+      Ajax::_end_div();
       Table::start('padded width70');
       Table::label(_("Customer prompt payment discount :"), $display_discount_percent);
       Forms::AmountRow(_("Amount of Discount:"), 'discount', 0, null, ['$']);

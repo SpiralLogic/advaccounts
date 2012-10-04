@@ -91,17 +91,17 @@
       if ($this->creditor_id) {
         $total_grn_value = Purch_GRN::display_items($this->trans, 1);
         $total_gl_value  = Purch_GLItem::display_items($this->trans, 1);
-        Display::div_start('inv_tot');
+        Ajax::_start_div('inv_tot');
         Purch_Invoice::totals($this->trans);
-        Display::div_end();
+        Ajax::_end_div();
       }
       if (Input::_post('AddGLCodeToTrans')) {
         Ajax::_activate('inv_tot');
       }
-      Display::br();
+      echo "<br>";
       Forms::submitCenterBegin('Cancel', _("Cancel Invoice"));
       Forms::submitCenterEnd('PostCreditNote', _("Enter Credit Note"), true, '');
-      Display::br();
+      echo "<br>";
       Forms::end();
       $this->addJS();
       $this->Page->end_page();

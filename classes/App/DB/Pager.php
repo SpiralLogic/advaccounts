@@ -194,7 +194,7 @@
      */
     public function display() {
       $this->selectRecords();
-      Display::div_start("_{$this->name}_span");
+      Ajax::_start_div("_{$this->name}_span");
       $headers = $this->makeHeaders();
       $class   = $this->class ? : 'padded grid width' . rtrim($this->width, '%');
       Table::start($class);
@@ -209,7 +209,7 @@
       echo $this->displayNavigation('bottom');
       Table::footEnd();
       Table::end();
-      Display::div_end();
+      Ajax::_end_div();
       return true;
     }
     /**

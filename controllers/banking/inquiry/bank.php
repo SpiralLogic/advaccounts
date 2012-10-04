@@ -37,7 +37,7 @@
     AND trans_date <= '$date_to'
     ORDER BY trans_date,bank_trans.id";
   $result = DB::_query($sql, "The transactions for '" . $_POST['bank_account'] . "' could not be retrieved");
-  Display::div_start('trans_tbl');
+  Ajax::_start_div('trans_tbl');
   $act = Bank_Account::get($_POST["bank_account"]);
   Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
   Table::start('padded grid');
@@ -93,5 +93,5 @@
   Cell::label("", "colspan=2");
   echo '</tr>';
   Table::end(2);
-  Display::div_end();
+  Ajax::_end_div();
   Page::end();
