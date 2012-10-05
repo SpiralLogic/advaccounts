@@ -51,7 +51,7 @@
   echo '</tr>';
   DB_Comments::display_row(ST_BANKPAYMENT, $trans_no);
   Table::end(1);
-  $voided = Display::is_voided(ST_BANKPAYMENT, $trans_no, _("This payment has been voided."));
+  $voided = Voiding::is_voided(ST_BANKPAYMENT, $trans_no, _("This payment has been voided."));
   $items  = GL_Trans::get_many(ST_BANKPAYMENT, $trans_no);
   if (DB::_numRows($items) == 0) {
     Event::warning(_("There are no items for this payment."));

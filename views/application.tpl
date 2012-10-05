@@ -1,25 +1,25 @@
 <div class='menu_group title'>
-  {{$name}}
+{{$name}}
 </div>
 <div class="menu_group">
-  <ul>
+    <ul>
     {{#$lmods}}
     {{#if $.access}}
-    <li>{{$.href}} </li>
+        <li><a href='{{$.url}}' class='menu_option' {{$.accesskey}}>{{$.text}}</a></li>
     {{#else}}
-    <li><span class='inactive'>{{$.anchor}} </span></li>
+        <li><span class='inactive'>{{$.anchor}} </span></li>
     {{/if}}
     {{/$lmods}}
-  </ul>
-  {{#if $rmods}}
-  <ul>
+    </ul>
+{{#if $rmods}}
+    <ul>
     {{#$rmods}}
     {{#if $.access}}
-    <li>{{$.href}} </li>
+        <li><a href='{{$.url}}' class='menu_option' {{$.accesskey}}>{{$.text}}</a></li>
     {{#else}}
-    <li><span class='inactive'>{{$.anchor}} </span></li>
+        <li><span class='inactive'>{{$.anchor}} </span></li>
     {{/if}}
     {{/$rmods}}
-  </ul>
-  {{/if}}
+    </ul>
+{{/if}}
 </div>

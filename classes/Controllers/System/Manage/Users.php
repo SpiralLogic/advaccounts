@@ -155,7 +155,7 @@
   while ($myrow = DB::_fetch($result)) {
     $last_visit_date = Dates::_sqlToDate($myrow["last_visit_date"]);
     /*The security_headings array is defined in config.php
-    $not_me = strcasecmp($myrow["user_id"], User::i()->username);
+    $not_me = strcasecmp($myrow["user_id"], $this->User->username);
     Cell::label($myrow["user_id"]);
     Cell::label($myrow["real_name"]);
     Cell::label($myrow["phone"]);

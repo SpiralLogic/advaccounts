@@ -62,18 +62,18 @@
       echo $header . '</tr></thead>';
     }
     /**
-     * @param        $label
-     * @param        $value
-     * @param string $label_attrs
-     * @param string $value_attrs
-     * @param null   $rightfill
-     * @param null   $id
+     * @param                 $label
+     * @param                 $value
+     * @param string          $label_attrs
+     * @param string          $value_attrs
+     * @param int|null|string $rightfill
+     * @param null            $id
      *
      * @internal param string $params
      * @internal param string $params2
      * @internal param int $leftfill
      */
-    public static function label($label, $value, $label_attrs = '', $value_attrs = '', $rightfill = null, $id = null) {
+    public static function label($label, $value, $label_attrs = '', $value_attrs = '', $rightfill = 0, $id = null) {
       if (stripos($label_attrs, 'class') === false) {
         $label_attrs .= " class='label' ";
       }
@@ -81,9 +81,7 @@
         $value_attrs .= " id='$id'";
         Ajax::_addUpdate($id, $id, $value);
       }
-      if ((int) $rightfill) {
-        $rightfill = "<td colspan=" . (int) $rightfill . "></td>";
-      }
+      $rightfill = ((int) $rightfill) ? "<td colspan=" . (int) $rightfill . "></td>" : '';
       echo "<tr><td $label_attrs>$label</td><td $value_attrs>$value</td>" . $rightfill . "</tr>";
     }
     /**

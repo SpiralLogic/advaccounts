@@ -71,14 +71,14 @@
       $form->amount('price')->label(_("Price:"))->append(_('per ') . $kit["units"])->focus();
     }
     protected function generateTable() {
-      Ajax::_start_div('table');
+      $this->Ajax->start_div('table');
       if ($this->stock_id) {
         parent::generateTable();
       }
       if ($this->Input->post('_control') == 'stock_id') {
         $this->Ajax->activate('table');
       }
-      Ajax::_end_div();
+      $this->Ajax->end_div();
     }
     /**
      * @return array

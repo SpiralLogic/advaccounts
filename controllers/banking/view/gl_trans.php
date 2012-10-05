@@ -95,7 +95,7 @@
   if ($heading_shown) {
     Table::end(1);
   }
-  Display::is_voided($_GET['type_id'], $_GET['trans_no'], _("This transaction has been voided."));
+  Voiding::is_voided($_GET['type_id'], $_GET['trans_no'], _("This transaction has been voided."));
   Page::end(true);
   /**
    * @param $myrow

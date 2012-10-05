@@ -62,5 +62,5 @@
   echo '</tr>';
   DB_Comments::display_row(ST_BANKTRANSFER, $trans_no);
   Table::end(1);
-  Display::is_voided(ST_BANKTRANSFER, $trans_no, _("This transfer has been voided."));
+  Voiding::is_voided(ST_BANKTRANSFER, $trans_no, _("This transfer has been voided."));
   Page::end(true);

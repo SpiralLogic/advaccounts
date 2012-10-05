@@ -38,7 +38,7 @@
     echo '</tr>';
     DB_Comments::display_row(ST_MANURECEIVE, $prod_id);
     Table::end(1);
-    Display::is_voided(ST_MANURECEIVE, $prod_id, _("This production has been voided."));
+    Voiding::is_voided(ST_MANURECEIVE, $prod_id, _("This production has been voided."));
   }
 
   Display::heading(SysTypes::$names[ST_MANURECEIVE] . " # " . $wo_production);

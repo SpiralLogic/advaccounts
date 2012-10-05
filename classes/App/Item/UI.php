@@ -220,11 +220,10 @@
      * @return string
      */
     public static function status($stock_id, $description = null, $echo = true) {
-      if ($description) //Display::link_params_separate( "/inventory/inquiry/stock_status.php", (User::show_codes()?$stock_id . " - ":"") . $description, "stock_id=$stock_id");
-      {
-        $preview_str = "<a class='openWindow' target='_blank' href='/inventory/inquiry/stock_status.php?stock_id=$stock_id' >" . (User::show_codes() ? $stock_id . " - " : "") . $description . "</a>";
-      } else //Display::link_params_separate( "/inventory/inquiry/stock_status.php", $stock_id, "stock_id=$stock_id");
-      {
+      if ($description) {
+        $preview_str = "<a class='openWindow' target='_blank' href='/inventory/inquiry/stock_status.php?stock_id=$stock_id' >" . (User::show_codes() ? $stock_id . " - " :
+          "") . $description . "</a>";
+      } else {
         $preview_str = "<a class='openWindow' target='_blank' href='/inventory/inquiry/stock_status.php?stock_id=$stock_id' >$stock_id</a>";
       }
       if ($echo) {

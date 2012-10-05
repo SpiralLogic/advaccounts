@@ -48,6 +48,6 @@
     echo '</tr>';
   }
   Table::end(1);
-  Display::is_voided(ST_INVADJUST, $trans_no, _("This adjustment has been voided."));
+  Voiding::is_voided(ST_INVADJUST, $trans_no, _("This adjustment has been voided."));
   Page::end(true);
 

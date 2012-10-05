@@ -49,7 +49,7 @@
   $display_total = Num::_format($total, User::price_dec());
   Table::label(_("Total Excluding Tax/Shipping"), $display_total, "colspan=6", ' class="alignright nowrap"');
   Table::end(1);
-  Display::is_voided(ST_SUPPRECEIVE, $_GET['trans_no'], _("This delivery has been voided."));
+  Voiding::is_voided(ST_SUPPRECEIVE, $_GET['trans_no'], _("This delivery has been voided."));
   Page::end(true);
 
 

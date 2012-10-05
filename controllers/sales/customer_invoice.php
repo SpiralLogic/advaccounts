@@ -334,7 +334,7 @@ was not fully delivered the first time ?? */
     $display_sub_total,
     "colspan=$colspan class='alignright bold'",
     "class='alignright'",
-    $is_batch_invoice ? 2 : 0
+    ($is_batch_invoice ? 2 : 0)
   );
   $taxes         = $order->get_taxes(Validation::input_num('ChargeFreightCost'));
   $tax_total     = Tax::edit_items($taxes, $colspan, $order->tax_included, $is_batch_invoice ? 2 : 0);
@@ -344,7 +344,7 @@ was not fully delivered the first time ?? */
     $display_total,
     "colspan=$colspan class='alignright bold'",
     "class='alignright'",
-    $is_batch_invoice ? 2 : 0
+    ($is_batch_invoice ? 2 : 0)
   );
   Table::footEnd();
   Table::end(1);

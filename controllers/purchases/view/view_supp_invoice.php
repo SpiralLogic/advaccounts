@@ -45,7 +45,7 @@
   $display_total = Num::_format($creditor_trans->ov_amount + $creditor_trans->ov_gst, User::price_dec());
   Table::label(_("TOTAL INVOICE"), $display_total, "colspan=1 class='alignright'", ' class="alignright nowrap"');
   Table::end(1);
-  Display::is_voided(ST_SUPPINVOICE, $trans_no, _("This invoice has been voided."));
+  Voiding::is_voided(ST_SUPPINVOICE, $trans_no, _("This invoice has been voided."));
   if (Input::_get('frame')) {
     return;
   }

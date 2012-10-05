@@ -108,10 +108,10 @@
     protected function pageComplete($credit_no) {
       $trans_type = ST_CUSTCREDIT;
       Event::success(sprintf(_("Credit Note # %d has been processed"), $credit_no));
-      Display::note(Debtor::viewTrans($trans_type, $credit_no, _("&View this credit note")), 0, 1);
-      Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT), 0, 1);
-      Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1), 0, 1);
-      Display::note(GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
+      Debtor::viewTrans($trans_type, $credit_no, _("&View this credit note"));
+      Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT);
+      Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1);
+      GL_UI::view($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note"));
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another &Credit Note"), "NewCredit=yes");
       Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
       $this->Ajax->activate('_page_body', "/sales/view/view_credit?trans_no=$credit_no&trans_type=$trans_type", '/sales/credit?NewCredit=Yes');

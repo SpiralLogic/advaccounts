@@ -10,6 +10,7 @@
   namespace ADV\Controllers\Purchases;
 
   use ADV\App\Item\Item;
+  use Purch_UI;
   use ADV\Core\Num;
   use Sales_Order;
   use GL_UI;
@@ -111,9 +112,7 @@
       unset($_POST['stock_id'], $_POST['qty'], $_POST['price'], $_POST['req_del_date']);
     }
     protected function cancelOrder() {
-      if (!$this->order) {
-        Display::meta_forward('/index.php', 'application=Purchases');
-      }
+
       //need to check that not already dispatched or invoiced by the supplier
       if (($this->order->order_no != 0) && $this->order->any_already_received() == 1) {
         Event::error(
@@ -125,8 +124,6 @@
         Orders::session_delete($this->order->order_id);
         if ($this->order->order_no != 0) {
           $this->order->delete();
-        } else {
-          Display::meta_forward('/index.php', 'application=Purchases');
         }
         Orders::session_delete($this->order->order_id);
         Event::notice(_("This purchase order has been cancelled."));
@@ -201,7 +198,7 @@
       if ($this->action == COMMIT) {
         $this->commitOrder();
       }
-      if ($this->action == Orders::CANCEL) {
+      if ($this->order && $this->action == Orders::CANCEL) {
         $this->cancelOrder();
       }
       Forms::start();
@@ -250,11 +247,11 @@
      * @param $order_no
      */
     protected function pageComplete($order_no) {
-      $this->Page->init(_($help_context = "Purchase Order Entry"), SA_PURCHASEORDER);
+      Event::success('Purchase order entry successful');
       $trans_type = ST_PURCHORDER;
       $new_trans  = "/purchases/order?" . Orders::NEW_ORDER;
       $view       = new View('orders/complete');
-      $buttons[]  = ['label'=> _("View this order"), 'href'=> GL_UI::viewTrans($trans_type, $order_no, '', false, '', '', true)];
+      $view->set('viewtrans', Purch_UI::viewTrans($trans_type, $order_no, _("View this order"), false, 'button'));
       $href       = Reporting::print_doc_link($order_no, '', true, $trans_type, false, '', '', 0, 0, true);
       $buttons[]  = ['target'=> '_new', 'label'=> _("Print This Order"), 'href'=> $href];
       $edit_trans = ROOT_URL . "purchases/order?ModifyOrder=$order_no";

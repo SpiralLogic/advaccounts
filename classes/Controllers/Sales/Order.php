@@ -124,7 +124,7 @@
       $this->order->display_delivery_details();
       echo "</td></tr>";
       Table::end(1);
-      Ajax::_start_div('controls', 'items_table');
+      $this->Ajax->start_div('controls', 'items_table');
       $buttons = new Form();
       if ($this->order->trans_no > 0 && $this->User->hasAccess(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())) {
         $buttons->submit(Orders::DELETE_ORDER, $deleteorder)->preIcon(ICON_DELETE)->type('danger')->setWarning('You are about to void this Document.\nDo you want to continue?');
@@ -137,7 +137,7 @@
       $view = new View('libraries/forms');
       $view->set('buttons', $buttons);
       $view->render();
-      Ajax::_end_div();
+      $this->Ajax->end_div();
       Forms::end();
       Debtor::addEditDialog();
       Item::addEditDialog();
@@ -201,7 +201,7 @@
       $new_trans = "/sales/order?add=0&type=" . $trans_type;
       $customer  = new Debtor($this->Session->getGlobal('debtor_id', 0));
       Event::success(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
-      Display::submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
+      GL_UI::viewTrans($trans_type, $order_no, _("&View This " . $trans_name), false, 'menu_option button');
       if ($edit) {
         Display::submenu_option(_("&Edit This " . $trans_name), $edit_trans);
       }
@@ -229,7 +229,7 @@
       } elseif ($trans_type == ST_CUSTDELIVERY) {
         Display::submenu_print(_("&Print Delivery Note"), ST_CUSTDELIVERY, $order_no, 'prtopt');
         Display::submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $order_no, 'prtopt', null, 1);
-        Display::note(GL_UI::view(ST_CUSTDELIVERY, $order_no, _("View the GL Journal Entries for this Dispatch")), 0, 1);
+        GL_UI::view(ST_CUSTDELIVERY, $order_no, _("View the GL Journal Entries for this Dispatch"));
         Display::submenu_option(_("Make &Invoice Against This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$order_no");
         ((isset($_GET['Type']) && $_GET['Type'] == 1)) ? Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/search/orders?DeliveryTemplates=Yes") :
           Display::submenu_option(_("Enter a &New Delivery"), $new_trans);
@@ -242,7 +242,7 @@
         if ($row !== false) {
           Display::submenu_print(_("Print &Receipt"), $row['trans_type_from'], $row['trans_no_from'] . "-" . $row['trans_type_from'], 'prtopt');
         }
-        Display::note(GL_UI::view(ST_SALESINVOICE, $order_no, _("View the GL &Journal Entries for this Invoice")), 0, 1);
+        GL_UI::view(ST_SALESINVOICE, $order_no, _("View the GL &Journal Entries for this Invoice"));
         if ((isset($_GET['Type']) && $_GET['Type'] == 1)) {
           Display::submenu_option(_("Enter a &New Template Invoice"), "/sales/search/orders?InvoiceTemplates=Yes");
         } else {
@@ -534,7 +534,7 @@
             }
           }
         } else {
-          Display::meta_forward('/index.php', 'application=sales');
+          return;
         }
       }
       $this->Ajax->activate('_page_body');

@@ -159,7 +159,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
         delete JsHttpRequest.PENDING[id];
       }
     }
-    retry ? Adv.loader.on(tout) : Adv.loader.off('warning.png');
+    retry ? Adv.loader.on(tout) : Adv.loader.warning();
     if (retry) {
       JsHttpRequest._request(trigger, form, tout, retry - 1);
     }

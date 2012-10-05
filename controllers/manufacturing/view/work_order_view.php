@@ -50,7 +50,7 @@
     }
   }
   echo "<br></div>";
-  Display::is_voided(ST_WORKORDER, $woid, _("This work order has been voided."));
+  Voiding::is_voided(ST_WORKORDER, $woid, _("This work order has been voided."));
   Page::end(true);
 
 

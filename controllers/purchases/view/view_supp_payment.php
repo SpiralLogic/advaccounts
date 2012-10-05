@@ -50,7 +50,7 @@
   echo '</tr>';
   DB_Comments::display_row(ST_SUPPAYMENT, $trans_no);
   Table::end(1);
-  $voided = Display::is_voided(ST_SUPPAYMENT, $trans_no, _("This payment has been voided."));
+  $voided = Voiding::is_voided(ST_SUPPAYMENT, $trans_no, _("This payment has been voided."));
   // now display the allocations for this payment
   if (!$voided) {
     GL_Allocation::from(PT_SUPPLIER, $receipt['creditor_id'], ST_SUPPAYMENT, $trans_no, -$receipt['Total']);

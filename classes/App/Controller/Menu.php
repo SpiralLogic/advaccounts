@@ -92,7 +92,10 @@
             $mod['access'] = $this->User->hasAccess($func['access']);
             $mod['label']  = $func['label'];
             if ($mod['access']) {
-              $mod['href'] = Display::menu_link($func['href'], $func['label']);
+              $accesskey        = Display::access_string($func['label']);
+              $mod['url']       = $func['href'];
+              $mod['text']      = $accesskey[0];
+              $mod['accesskey'] = $accesskey[1];
             } else {
               $mod['anchor'] = Display::access_string($func['label'], true);
             }

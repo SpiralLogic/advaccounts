@@ -120,7 +120,7 @@
      */
     protected function header() {
       $payment = $this->order->trans_type == ST_BANKPAYMENT;
-      Ajax::_start_div('pmt_header');
+      $this->Ajax->start_div('pmt_header');
       Table::startOuter('standard width90'); // outer table
       Table::section(1);
       Bank_Account::row($payment ? _("From:") : _("To:"), 'bank_account', null, true);
@@ -193,7 +193,7 @@
       Table::section(3, "33%");
       Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next($this->order->trans_type));
       Table::endOuter(1); // outer table
-      Ajax::_end_div();
+      $this->Ajax->end_div();
     }
     /**
      * @static
@@ -202,7 +202,7 @@
     protected function items() {
       $title = _($this->type . " Items");
       Display::heading($title);
-      Ajax::_start_div('items_table');
+      $this->Ajax->start_div('items_table');
       Table::start('tables_style grid width95');
       $th = array(
         _("Account Code"),
@@ -241,7 +241,7 @@
         Table::label(_("Total"), Num::_format(abs($this->order->gl_items_total()), User::price_dec()), " colspan='2' class='alignright'", "class='alignright'", 3);
       }
       Table::end();
-      Ajax::_end_div();
+      $this->Ajax->end_div();
     }
     /**
      * @static

@@ -63,11 +63,11 @@
         }
       }
       if (isset($_POST['_date__changed'])) {
-        Ajax::_activate('_ex_rate');
+        $this->Ajax->activate('_ex_rate');
       }
       if ($this->Input->post('_control') == 'creditor' || Forms::isListUpdated('bank_account')) {
         $_SESSION['alloc']->read();
-        Ajax::_activate('alloc_tbl');
+        $this->Ajax->activate('alloc_tbl');
       }
       $this->company_currency  = Bank_Currency::for_company();
       $this->supplier_currency = Bank_Currency::for_creditor($this->creditor_id);
@@ -92,12 +92,12 @@
       }
       Forms::AmountRow(_("Bank Charge:"), 'charge');
       Table::endOuter(1); // outer table
-      Ajax::_start_div('alloc_tbl');
+      $this->Ajax->start_div('alloc_tbl');
       if ($this->bank_currency == $this->supplier_currency) {
         $_SESSION['alloc']->read();
         GL_Allocation::show_allocatable(false);
       }
-      Ajax::_end_div();
+      $this->Ajax->end_div();
       Table::start('padded width60');
       Forms::AmountRow(_("Amount of Discount:"), 'discount');
       Forms::AmountRow(_("Amount of Payment:"), 'amount');

@@ -1143,20 +1143,14 @@
     public function summary($title, $editable_items = false) {
       Display::heading($title);
       if (count($this->line_items) > 0) {
-        Display::link_params_separate(
-          "/purchases/order",
-          _("Create PO from this order"),
-          "NewOrder=Yes&UseOrder=" . $this->order_id . "' class='button'",
-          false,
-          true
-        );
-        Display::link_params_separate(
-          "/purchases/order",
-          _("Dropship this order"),
-          "NewOrder=Yes&UseOrder=" . $this->order_id . "&DRP=1' class='button   '",
-          false,
-          true
-        );
+        $label  = _("Create PO from this order");
+        $target = "/purchases/order?NewOrder=Yes&UseOrder=" . $this->order_id . "' class='button'";
+        $pars   = Display::access_string($label);
+        echo "<div class='center'><a target='_blank' href='$target' $pars[1]>$pars[0]</a></div>";
+        $label  = _("Dropship this order");
+        $target = "/purchases/order?NewOrder=Yes&UseOrder=" . $this->order_id . "&DRP=1' class='button   '";
+        $pars   = Display::access_string($label);
+        echo "<div class='center'><a target='_blank' href='$target' $pars[1]>$pars[0]</a></div>";
       }
       Ajax::_start_div('items_table');
       Table::start('padded width90 grid');

@@ -52,7 +52,7 @@
   echo '</tr>';
   DB_Comments::display_row(ST_BANKDEPOSIT, $trans_no);
   Table::end(1);
-  Display::is_voided(ST_BANKDEPOSIT, $trans_no, _("This deposit has been voided."));
+  Voiding::is_voided(ST_BANKDEPOSIT, $trans_no, _("This deposit has been voided."));
   $items = GL_Trans::get_many(ST_BANKDEPOSIT, $trans_no);
   if (DB::_numRows($items) == 0) {
     Event::warning(_("There are no items for this deposit."));

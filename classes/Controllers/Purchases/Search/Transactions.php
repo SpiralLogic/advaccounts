@@ -47,7 +47,7 @@
         Session::_setGlobal('creditor_id', $this->creditor_id);
       }
       if (Input::_post('RefreshInquiry')) {
-        Ajax::_activate('totals_tbl');
+        $this->Ajax->activate('totals_tbl');
       }
     }
     protected function index() {
@@ -62,12 +62,12 @@
       Forms::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
       echo '</tr>';
       Table::end();
-      Ajax::_start_div('totals_tbl');
+      $this->Ajax->start_div('totals_tbl');
       if ($this->creditor_id > 0) {
         $supplier_record = Creditor::get_to_trans($this->creditor_id);
         $this->displaySupplierSummary($supplier_record);
       }
-      Ajax::_end_div();
+      $this->Ajax->end_div();
       $this->displayTable();
       Creditor::addInfoDialog('.pagerclick');
       Forms::end();

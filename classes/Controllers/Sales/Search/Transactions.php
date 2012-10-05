@@ -70,9 +70,9 @@
       Forms::submitCells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
       echo '</tr>';
       Table::end();
-      Ajax::_start_div('totals_tbl');
+      $this->Ajax->start_div('totals_tbl');
       $this->displaySummary();
-      Ajax::_end_div();
+      $this->Ajax->end_div();
       if ($this->Input->post('RefreshInquiry')) {
         $this->Ajax->activate('totals_tbl');
       }

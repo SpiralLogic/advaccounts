@@ -606,7 +606,9 @@
                 )
               );
             }
-            Display::link_params_td("/purchases/order", _("Modify"), "ModifyOrder=" . $myrow["purch_order_no"], ' class="button"');
+            echo "<td>";
+            Display::link_params("/purchases/order", _("Modify"), "ModifyOrder=" . $myrow["purch_order_no"], ' class="button"');
+            echo "</td>\n";
             echo '<tr>';
           }
         }

@@ -220,52 +220,51 @@
       \ADV\Core\Event::init($this->Cache, $this->User->username);
       $this->route();
     }
+    /**
+     * @return bool|string
+     */
     protected function route() {
       $this->setupPage();
-      $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
+      $request = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
+      if ($request == '/index.php') {
+        return $this->defaultController();
+      }
       // first check for autoloadable controller.
-      if ($controller) {
-        $app = ucfirst(trim($controller, '/'));
+      if ($request) {
+        $app = ucfirst(trim($request, '/'));
         if (isset($this->applications[$app])) {
-          $controller = (isset($this->applications[$app]['route']) ? $this->applications[$app]['route'] : $app);
+          $request = (isset($this->applications[$app]['route']) ? $this->applications[$app]['route'] : $app);
         }
-        $controller2 = 'ADV\\Controllers' . array_reduce(
-          explode('/', ltrim($controller, '/')),
+        $controller = 'ADV\\Controllers' . array_reduce(
+          explode('/', ltrim($request, '/')),
           function ($result, $val) {
             return $result . '\\' . ucfirst($val);
           },
           ''
         );
-        if (class_exists($controller2)) {
-          $this->runController($controller2);
+        if (class_exists($controller)) {
+          $this->runController($controller);
         } else {
           //then check to see if a file exists for address and if it does store it
           // substr_compare returns 0 if true
-          $controller = (substr_compare($controller, '.php', -4, 4, true) === 0) ? $controller : $controller . '.php';
-          $controller = ROOT_DOC . 'controllers' . DS . $controller;
+          $request    = (substr_compare($request, '.php', -4, 4, true) === 0) ? $request : $request . '.php';
+          $controller = ROOT_DOC . 'controllers' . DS . $request;
           if (file_exists($controller)) {
             $this->controller = $controller;
           } else {
             //no controller so 404 then find next best default
             header('HTTP/1.0 404 Not Found');
-            $path = explode('/', $_SERVER['DOCUMENT_URI']);
-            if (count($path)) {
-              $controller = 'ADV\\Controllers\\' . ucFirst($path[1]);
-            }
-            if (!class_exists($controller)) {
-              $controller = 'ADV\\Controllers\\' . ($this->User->prefs->startup_tab ? : $this->Config->get('apps.default'));
-            }
             Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
-            if (class_exists($controller)) {
-              $this->runController($controller);
-            }
+            return $this->defaultController();
           }
         }
       }
+      return null;
     }
     /**
      * @param $controller
      *
+     * @internal param $request
      * @internal param $controller2
      */
     protected function runController($controller) {
@@ -274,6 +273,23 @@
       $controller = new $controller($this->Session, $this->User, $this->Ajax, $this->JS, $dic['Input'], $dic->offsetGet('DB', 'default'));
       $controller->setPage($dic->offsetGet('Page'));
       $controller->run();
+    }
+    /**
+     * @return bool|string
+     */
+    protected function defaultController() {
+      $controller = false;
+      $path       = explode('/', $_SERVER['DOCUMENT_URI']);
+      if (count($path)) {
+        $controller = 'ADV\\Controllers\\' . ucFirst($path[1]);
+      }
+      if (!class_exists($controller)) {
+        $controller = 'ADV\\Controllers\\' . ($this->User->prefs->startup_tab ? : $this->Config->get('apps.default'));
+      }
+      if (class_exists($controller)) {
+        $this->runController($controller);
+      }
+      return $controller;
     }
     /**
      * @param $app
@@ -327,13 +343,13 @@
         $this->showLogin();
       }
       if ($this->User->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev') !== false) {
-        Display::meta_forward('http://dev.advanced.advancedgroup.com.au:8090');
+        header('Location: http://dev.advanced.advancedgroup.com.au:8090');
       } else {
         ini_set('html_errors', 'On');
       }
       $this->selected = $this->User->selectedApp;
       if ($this->User->change_password && strstr($_SERVER['DOCUMENT_URI'], 'change_current_user_password.php') == false) {
-        Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $this->User->username);
+        header('Location: /system/change_current_user_password?selected_id=' . $this->User->username);
       }
     }
     protected function login() {

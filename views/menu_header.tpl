@@ -1,10 +1,6 @@
-<div class='ajaxmark'>
-    <img alt='Ajax Loading' id='ajaxmark' src='/themes/{{$theme}}/images/progressbar.gif'>
+<div id='top'><h1>{{APP_TITLE}}<span class='slogan'>{{VERSION}}</span></h1>
 
-    <div id='top'><p>{{$company}} | {{$server_name}} </p>
-    </div>
-</div>
-<div id='logo'><h1>{{APP_TITLE}}<span class='slogan'>{{VERSION}}</span></h1></div>
+    <p>{{$company}} | {{$server_name}} </p></div>
 <div id='tabs'>
     <ul class="menu" id="topmenu">
     {{#$menu}}
