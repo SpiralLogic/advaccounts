@@ -2969,11 +2969,20 @@ img {
 }
 
 #tabs ul li ul li {
-  height:      21px;
-  text-align:  left;
-  display:     block;
-  float:       none;
-  font-weight: normal;;
+  height:             21px;
+  text-align:         left;
+  display:            block;
+  float:              none;
+  font-weight:        normal;
+  overflow:           hidden;
+  -moz-transition:    opacity .1s linear, height .1s linear;
+  -webkit-transition: opacity .1s linear, height .1s linear;
+}
+
+#tabs ul li ul li.hide {
+  border:  none;
+  height:  0;
+  opacity: 0;
 }
 
 #tabs ul li ul li a {
@@ -2984,7 +2993,7 @@ img {
   text-transform: none;
 }
 
-#tabs .active> a, #tabs .hover> a, #tabs a:hover, #tabs >ul> li.hover, #tabs a:focus {
+#tabs .active> a, #tabs .hover> a, #tabs >ul> li.hover, #tabs a:focus {
   color:          white;
   outline-offset: -1px;
   outline:        #4e6ad9 outset 1px;
@@ -2997,8 +3006,8 @@ img {
   filter:         progid:DXImageTransform.Microsoft.gradient(startColorstr = '#5cadff', endColorstr = '#4e6ad9', GradientType = 0);
 }
 
-.purchases #tabs .active> a, .purchases #tabs .hover> a, .purchases #tabs a:hover, .purchases #tabs >ul> li.hover, .purchases #tabs a:focus,
-.suppliers #tabs .active> a, .suppliers #tabs .hover> a, .suppliers #tabs a:hover, .suppliers #tabs >ul> li.hover, .suppliers #tabs a:focus {
+.purchases #tabs .active> a, .purchases #tabs .hover> a, .purchases #tabs >ul> li.hover, .purchases #tabs a:focus,
+.suppliers #tabs .active> a, .suppliers #tabs .hover> a, .suppliers #tabs >ul> li.hover, .suppliers #tabs a:focus {
   outline-color: #6ed86e;
   background:    #277734;
   background:    url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzZlZDg2ZSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjQ1JSIgc3RvcC1jb2xvcj0iIzQ0YjU0OCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMyNzc3MzQiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
@@ -3010,8 +3019,8 @@ img {
   filter:        progid:DXImageTransform.Microsoft.gradient(startColorstr = '#6ed86e', endColorstr = '#277734', GradientType = 0);
 }
 
-.inventory #tabs .active> a, .inventory #tabs .hover> a, .inventory #tabs a:hover, .inventory #tabs >ul> li.hover, .inventory #tabs a:focus,
-.manufacturing #tabs .active> a, .manufacturing #tabs .hover> a, .manufacturing #tabs a:hover, .manufacturing #tabs >ul> li.hover, .manufacturing #tabs a:focus {
+.inventory #tabs .active> a, .inventory #tabs .hover> a, .inventory #tabs >ul> li.hover, .inventory #tabs a:focus,
+.manufacturing #tabs .active> a, .manufacturing #tabs .hover> a, .manufacturing #tabs >ul> li.hover, .manufacturing #tabs a:focus {
   outline-color: #e38881;
   background:    #b81d1d;
   background:    url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2UzODg4MSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjQ1JSIgc3RvcC1jb2xvcj0iI2RiNDk0OSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiODFkMWQiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
@@ -3023,7 +3032,7 @@ img {
   filter:        progid:DXImageTransform.Microsoft.gradient(startColorstr = '#e38881', endColorstr = '#b81d1d', GradientType = 0);
 }
 
-.banking #tabs .active> a, .banking #tabs .hover> a, .banking #tabs a:hover, .banking #tabs >ul> li.hover, .banking #tabs a:focus {
+.banking #tabs .active> a, .banking #tabs .hover> a, .banking #tabs >ul> li.hover, .banking #tabs a:focus {
   outline-color: #febf04;
   background:    #ffe7aa;
   color:         #363636;

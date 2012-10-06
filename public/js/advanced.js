@@ -788,22 +788,47 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                    return false;
                  }
                };
-             }())
-           });
+             }()),
+             inView:        function (el) {
+               var rect = el.getBoundingClientRect();
+               return (
+                 rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth
+                 )
+             }         });
 $(function () {
   var tabs = $("#tabs")//
-    , topmenu = $('#topmenu,#tabs>ul')//
+    , topmenu = $('#topmenu,#tabs>ul') //
     , prevFocus = false//
     , changing = 0//
+    , closeTimer//
     , current = topmenu.find('.active')//
     , topLevel = topmenu.children('li')//
     , closeMenu = function () {
-      topLevel.removeClass('hover');
+      topLevel.removeClass('hover').find('li').removeClass('hide');
       if (prevFocus) {
         prevFocus.focus();
         prevFocus = false;
       }
       changing = 0;
+    }//
+    , checkMenu = function () {
+      var $this = $(this), next = $this.next();
+      if (!next.length) {
+        return;
+      }
+      if (( !Adv.inView(next[0]))) {
+        current.find('li').not('.hide').first().addClass('hide');
+        if (next.hasClass('title')) {
+          checkMenu.apply(next[0]);
+        }
+      }
+      else if ($this.not('.hide')) {
+        next = $this.prev();
+        next.removeClass('hide').prev().filter('.title').removeClass('hide');
+        if (next.hasClass('title')) {
+          checkMenu.apply(next[0]);
+        }
+      }
     }//
     , currentChanged = function (next, skip) {
       var links;
@@ -815,7 +840,7 @@ $(function () {
           return
         }
         else {
-          current.removeClass('hover');
+          current.removeClass('hover').find('li').removeClass('hide');
         }
       }
       next.addClass('hover');
@@ -831,10 +856,18 @@ $(function () {
       switch (event.which) {
         case 37:
           currentChanged(current.prev());
-          break;
+          return false;
         case 39:
           currentChanged(current.next());
-          break;
+          return false;
+        case 38:
+          checkMenu.apply(this.parentElement);
+          $(this).parent().prevUntil('', ':has(a)').eq(0).find('a').focus();
+          return false;
+        case 40:
+          checkMenu.apply(this.parentElement);
+          $(this).parent().nextUntil('', ':has(a)').eq(0).find('a').focus();
+          return false;
         case 9:
           currentChanged((event.shiftKey === true ? current.prev() : current.next()));
           break;
@@ -844,7 +877,7 @@ $(function () {
         default:
       }
     };
-  topLevel.on('mouseenter ', function () {
+  topLevel.on('mouseenter', function () {
     var $this = $(this);
     topLevel.removeClass('hover');
     current = $this.addClass('hover');
@@ -852,27 +885,32 @@ $(function () {
       $this.find('a').eq(1).focus();
     }
   });
+  topLevel.delegate('li', 'mouseenter', checkMenu);
   topLevel.children('a').on({
                               focus:    function () {
                                 currentChanged($(this).parent(), true);
                               }, //
-                              focusout: function () {$(this).parent().removeClass('hover')}, //
+                              focusout: function () {$(this).parent().removeClass('hover').find('li').removeClass('hide')}, //
                               keydown:  keyNav});
   topmenu.find('ul').find('a').on({
                                     keydown:    keyNav,
                                     mouseenter: function () {
-                                      this.focus();
+                                      if (changing < 2) {
+                                        this.focus();
+                                      }
                                     }
                                   });
   tabs.on({ //
-            mouseleave:    function () {
+            mouseleave: function () {
               if (changing < 2) {
-                closeMenu();
+                closeTimer = setTimeout(closeMenu, 400);
               }
               tabs.off('mousemove.tabs');
-            }, mouseenter: function () {
-      tabs.on('mousemove.tabs', function () {changing = 1;});
-    }
+            }, //
+            mouseenter: function () {
+              clearTimeout(closeTimer);
+              tabs.on('mousemove.tabs', function () {changing = 1;});
+            }
           });
   Adv.Status.open();
   $(document).on('focusout', ':input',function () {
