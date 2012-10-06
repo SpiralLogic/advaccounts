@@ -10,12 +10,9 @@
    **/
   namespace ADV\App\Form;
 
-  use \ADV\App\Forms;
   use \ADV\App\User;
   use \ADV\Core\Ajax;
-  use \ADV\Core\Arr;
   use \ADV\Core\Num;
-  use \ADV\Core\JS;
   use \ADV\Core\SelectBox;
   use \ADV\Core\HTML;
   use \ADV\Core\Input\Input;
@@ -25,7 +22,7 @@
    * @param string $action
    * @param string $name
    */
-  class Form implements \ArrayAccess, \Iterator, \JsonSerializable {
+  class Form implements \ArrayAccess, \RecursiveIterator, \JsonSerializable {
     const NO_VALUES = 1;
     /** @var Field[] */
     protected $fields = [];
@@ -45,6 +42,8 @@
       ];
     protected $currentgroup;
     public $useDefaults = false;
+    protected $nest;
+    protected $name;
     /**
      * @param \ADV\Core\Input\Input                                    $input
      * @param \ADV\Core\Ajax                                           $ajax
@@ -56,19 +55,24 @@
       $this->group();
     }
     /**
-     * @param $tag
-     * @param $name
+     * @param Field $field
      *
+     * @internal param $tag
+     * @internal param $name
      * @internal param $value
      * @return Field
      */
-    protected function addField($tag, $name) {
-      $field = new Field($tag, $name);
-      if ($this->Input->hasPost($name)) {
-        $field->value = $this->Input->post($name);
-      }
+    protected function addField(Field $field) {
+      $name = $field['name'];
+
       if (is_array($this->currentgroup)) {
         $this->currentgroup[] = $field;
+      }
+      if (!$name) {
+        return $field;
+      }
+      if ($this->Input->hasPost($name)) {
+        $field->value($this->Input->post($name));
       }
       $this->fields[$field->id]     = $field;
       $this->validators[$field->id] =& $field->validator;
@@ -108,10 +112,9 @@
      */
     public function start($name = '', $action = '', $multi = null, $input_attr = []) {
       $attr['enctype'] = $multi ? 'multipart/form-data' : null;
-      $attr['name']    = $name;
       $attr['method']  = 'post';
       $attr['action']  = $action;
-      $this->uniqueid  = $this->nameToId($name);
+      $attr['name']    = $this->name($name);
       array_merge($attr, $input_attr);
       $this->start = (new HTML)->form($name, $attr)->input(
         null,
@@ -124,12 +127,30 @@
       return $this->start;
     }
     /**
+     * @param $name
+     */
+    public function name($name) {
+      $this->uniqueid = $this->nameToId($name);
+      return $name;
+    }
+    /**
      * @return \ADV\Core\HTML|string
     @internal param int $breaks
      */
     public function end() {
       $this->end = "</form>";
       return $this->end;
+    }
+    /**
+     * @param $heading
+     *
+     * @return Field
+     */
+    public function heading($heading) {
+      $field = $this->addField(new Field('div', null));
+      $field->value(null);
+      $field->setContent($heading);
+      return $field;
     }
     /**
      * @param $name
@@ -139,7 +160,7 @@
      * @return Field
      */
     public function hidden($name) {
-      $field         = $this->addField('input', $name);
+      $field         = $this->addField(new Field('input', $name));
       $field['type'] = 'hidden';
       return $field;
     }
@@ -151,7 +172,7 @@
      * @return \ADV\App\Form\Field
      */
     public function text($name, $input_attr = []) {
-      $field         = $this->addField('input', $name);
+      $field         = $this->addField(new Field('input', $name));
       $field['type'] = 'text';
       return $field->mergeAttr($input_attr);
     }
@@ -163,7 +184,7 @@
      * @return \ADV\App\Form\Field
      */
     public function textarea($name, $input_attr = []) {
-      $field = $this->addField('textarea', $name);
+      $field = $this->addField(new Field('textarea', $name));
       return $field->mergeAttr($input_attr);
     }
     /**
@@ -174,7 +195,7 @@
      * @return Field
      */
     public function date($name, $input_attr = []) {
-      $field              = $this->addField('input', $name);
+      $field              = $this->addField(new Field('input', $name));
       $field['type']      = 'text';
       $field['maxlength'] = 10;
       $field['class']     = 'datepicker';
@@ -188,9 +209,7 @@
      * @return Field
      */
     public function checkbox($name, $input_attr = []) {
-      $field         = $this->addField('checkbox', $name);
-      $field['type'] = 'checkbox';
-      $field->value  = !!$field->value;
+      $field = $this->addField(new Checkbox($name));
       return $field->mergeAttr($input_attr);
     }
     /**
@@ -213,7 +232,7 @@
      * @return \ADV\App\Form\Field
      */
     public function number($name, $dec = null, $input_attr = []) {
-      $field             = $this->addField('input', $name);
+      $field             = $this->addField(new Field('input', $name));
       $field['data-dec'] = (int) $dec;
       $field['type']     = 'text';
       $this->Ajax->addAssign($name, $name, 'data-dec', $dec);
@@ -239,14 +258,7 @@
      * @return \ADV\App\Form\Field
      */
     public function custom($control) {
-      preg_match('/name=([\'"]?)(.+?)\1/', $control, $matches);
-      $name      = $matches[2];
-      $field     = $this->addField('custom', $name);
-      $id        = $field->id;
-      $control   = preg_replace('/id=([\'"]?)' . preg_quote($name) . '\1/', "id='$id'", $control, 1);
-      $validator = null;
-      $field->customControl($control);
-      return $field;
+      return $this->addField(new Custom($control));
     }
     /**
      * Universal sql combo generator
@@ -287,47 +299,13 @@
      * @return Field
      */
     public function arraySelect($name, $items, $selected_id = null, $options = []) {
-      $spec_option = false; // option text or false
-      $spec_id     = 0; // option id
-      $async       = true; // select update via ajax (true) vs _page_body reload
-      $multi       = false; // multiple select
-      // search box parameters
-      //TODO $height = false; // number of lines in select box
-      $sel_hint = null; //
-      $disabled = null;
-      // ------ merge options with defaults ----------
-      extract($options, EXTR_IF_EXISTS);
-      $selected_id = $multi ? (array) $selected_id : $selected_id;
-      $field       = $this->addField('select', $name);
-      $field->val($selected_id);
-      $this->Ajax->addUpdate($name, $name, $selected_id);
-      // code is generalized for multiple selection support
+
+      $field = $this->addField(new Select($name, $items, $options));
+      $field->initial($selected_id);
       if ($this->Input->post("_{$name}_update")) {
-        $async ? $this->Ajax->activate($name) : $this->Ajax->activate('_page_body');
+        $field->async ? $this->Ajax->activate($name) : $this->Ajax->activate('_page_body');
       }
-      // ------ make selector ----------
-      $selector = '';
-      if ($spec_option !== false) { // if special option used - add it
-        array_unshift($items, [$spec_id=> $spec_option]);
-      }
-      if ($field->default === null) {
-        reset($items);
-        $field->default = key($items);
-      }
-      $HTML = new HTML;
-      foreach ($items as $value => $label) {
-        $selector .= $HTML->option(null, $label, ['value'=> $value], false);
-      }
-      $input_attr = [
-        'multiple'=> $multi, //
-        'disabled'=> $disabled, //
-        'name'    => $name . ($multi ? '[]' : ''), //
-        'class'   => 'combo', //
-        'title'   => $sel_hint
-      ];
-      $selector   = $HTML->span("_{$name}_sel", ['class'=> 'combodiv'])->select($field->id, $selector, $input_attr, false)->_span()->__toString();
-      $this->Ajax->addUpdate($name, "_{$name}_sel", $selector);
-      $field->customControl($selector);
+      $this->Ajax->addUpdate($name, "_" . $name . "_sel", $field);
       return $field;
     }
     /**
@@ -383,6 +361,15 @@
       return $button->mergeAttr($input_attr);
     }
     /**
+     * @param      $name
+     * @param Form $form
+     */
+    public function nest($name, Form $form) {
+      $form->nest           = $name;
+      $this->fields[$name]  = $form;
+      $this->currentgroup[] = $form;
+    }
+    /**
      * @param $id
      */
     public function hide($id) {
@@ -399,9 +386,15 @@
       $fields = $group ? $this->groups[$group] : $this->fields;
       foreach ($values as $id=> $value) {
         if (array_key_exists($id, $fields)) {
-          $fields[$id]->value = $value;
+          $fields[$id]->value($value);
         }
       }
+    }
+    /**
+     * @param $values
+     */
+    protected function value($values) {
+      $this->setValues($values);
     }
     /**
      * Helper function.
@@ -439,6 +432,10 @@
       $autofocus = false;
       foreach ($this->fields as $id=> $field) {
         if ($field instanceof Button) {
+          continue;
+        }
+        if ($field instanceof Form) {
+          $return[$id] = $field->jsonSerialize();
           continue;
         }
         $value = ['value'=> $field->$use];
@@ -580,11 +577,35 @@
     public function rewind() {
       reset($this->groups['_default']);
     }
+    /**
+     * @return string
+     */
     public function __tostring() {
       $return = '';
       foreach ($this as $field) {
+        if ($this->nest) {
+          $field->name($this->nest . '[' . $field['name'] . ']');
+        }
         $return .= $field;
       }
       return $return;
+    }
+    /**
+     * (PHP 5 &gt;= 5.1.0)<br/>
+     * Returns if an iterator can be created for the current entry.
+     * @link http://php.net/manual/en/recursiveiterator.haschildren.php
+     * @return bool true if the current entry can be iterated over, otherwise returns false.
+     */
+    public function hasChildren() {
+      return ($this->current() instanceof Form);
+    }
+    /**
+     * (PHP 5 &gt;= 5.1.0)<br/>
+     * Returns an iterator for the current entry.
+     * @link http://php.net/manual/en/recursiveiterator.getchildren.php
+     * @return RecursiveIterator An iterator for the current entry.
+     */
+    public function getChildren() {
+      return $this->current();
     }
   }

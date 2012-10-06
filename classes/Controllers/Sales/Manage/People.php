@@ -10,7 +10,6 @@
   namespace ADV\Controllers\Sales\Manage;
 
   use ADV\App\Controller\Manage;
-  use ADV\App\Page;
   use ADV\App\Users;
   use ADV\App\Sales\Person;
   use ADV\App\Form\Form;

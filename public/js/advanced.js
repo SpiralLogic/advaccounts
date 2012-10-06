@@ -346,7 +346,22 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                    return els;
                  },
                  setFormValue:    function (id, value, disabled) {
-                   var isdefault, els = Adv.Forms.findInputEl(id);
+                   var isdefault, els, values = {};
+                   if (value !== null && typeof value === 'object') {
+                     if (value.value === undefined) {
+                       $.each(value, function (k, v) {
+                         if (v !== null && typeof v === 'object') {
+                           values[id + '[' + k + ']'] = v;
+                         }
+                         else {
+                           values[k] = v;
+                         }
+                       });
+                       return Adv.Forms.setFormValues(values);
+                     }
+                     value = value.value;
+                   }
+                   els = Adv.Forms.findInputEl(id);
                    isdefault = !!arguments[3];
                    $.each(els, function (k, el) {
                      _setFormValue(el, value, disabled, isdefault);
@@ -356,9 +371,9 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                  setFormValues:   function (data) {
                    var focused = false;
                    $.each(data, function (k, v) {
-                     var el, label, value = (v.value !== undefined) ? v.value : v;
-                     el = Adv.Forms.setFormValue(k, value);
-                     if (el.type === 'hidden') {
+                     var el, label;
+                     el = Adv.Forms.setFormValue(k, v);
+                     if (!el || el.type === 'hidden') {
                        return;
                      }
                      if (!focused && v.focus !== undefined) {

@@ -1,5 +1,6 @@
 <?php
   namespace ADV\App\Contact;
+
   use ADV\App\UI;
   use ADV\App\Form\Form;
   use ADV\Core\JS;
@@ -13,9 +14,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Postcode
-  {
-
+  class Postcode {
     use \ADV\Core\Traits\SetFromArray;
 
     /**
@@ -30,7 +29,7 @@
     protected $JS;
     /**
      * @param                                           $options
-     * @param \ADV\Core\JS $js
+     * @param \ADV\Core\JS                              $js
      */
     public function __construct($options, JS $js = null) {
       $this->JS = $js ? : JS::i();
@@ -50,15 +49,15 @@
         UI::search(
           $this->city[0],
           array(
-            'placeholder'        => 'City',
-            'url'                => 'Postcode',
-            'data'               => ['type'=> 'Locality'],
-            'nodiv'              => true,
-            'set'                => static::$count,
-            'name'               => $this->city[0],
-            'size'               => 35,
-            'max'                => 40,
-            'callback'           => 'Adv.postcode.fetch'
+               'placeholder'        => 'City',
+               'url'                => 'Postcode',
+               'data'               => ['type'=> 'Locality'],
+               'nodiv'              => true,
+               'set'                => static::$count,
+               'name'               => $this->city[0],
+               'size'               => 35,
+               'max'                => 40,
+               'callback'           => 'Adv.postcode.fetch'
           ),
           true,
           $this->JS
@@ -67,26 +66,26 @@
       $form->text(
         $this->state[0],
         [
-          'placeholder'       => 'State',
-          'maxlength'         => 35,
-          'data-set'          => static::$count,
-          'size'              => 35,
-          'name'              => $this->state[0]
+        'placeholder'       => 'State',
+        'maxlength'         => 35,
+        'data-set'          => static::$count,
+        'size'              => 35,
+        'name'              => $this->state[0]
         ]
-      )->label('State: ')->val($this->state[1]);
+      )->label('State: ')->initial($this->state[1]);
       $form->custom(
         UI::search(
           $this->postcode[0],
           [
-            'url'                => 'Postcode',
-            'placeholder'        => 'Postcode',
-            'data'               => ['type'=> 'Pcode'],
-            'nodiv'              => true,
-            'set'                => static::$count,
-            'name'               => $this->postcode[0],
-            'size'               => 35,
-            'max'                => 40,
-            'callback'           => 'Adv.postcode.fetch'
+          'url'                => 'Postcode',
+          'placeholder'        => 'Postcode',
+          'data'               => ['type'=> 'Pcode'],
+          'nodiv'              => true,
+          'set'                => static::$count,
+          'name'               => $this->postcode[0],
+          'size'               => 35,
+          'max'                => 40,
+          'callback'           => 'Adv.postcode.fetch'
           ],
           true,
           $this->JS

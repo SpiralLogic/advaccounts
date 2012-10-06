@@ -52,6 +52,9 @@
         }
         return true;
       }
+      /**
+       * @return \ADV\Core\Traits\Status|bool
+       */
       public function delete() {
         $count = DB::_select('count(*) as count')->from('tax_group_items')->where('tax_type_id=', $this->id)->fetch()->one('count');
         if ($count) {
@@ -61,6 +64,7 @@
           static::$DB->delete('item_tax_type_exemptions')->where('tax_type_id=', $this->id)->exec();
           return $this->status(true, 'Selected tax type has been deleted');
         }
+        return null;
       }
       /**
        * @param bool $inactive
@@ -78,6 +82,11 @@
   }
   namespace {
     use ADV\Core\DB\DB;
+    use ADV\App\Validation;
+    use ADV\Core\Input\Input;
+    use ADV\Core\JS;
+    use ADV\App\Forms;
+    use ADV\Core\Event;
 
     /**
 
@@ -92,7 +101,8 @@
        * @param $rate
        */
       public static function add($name, $sales_gl_code, $purchasing_gl_code, $rate) {
-        $sql = "INSERT INTO tax_types (name, sales_gl_code, purchasing_gl_code, rate)
+        $sql
+          = "INSERT INTO tax_types (name, sales_gl_code, purchasing_gl_code, rate)
         VALUES (" . DB::_escape($name) . ", " . DB::_escape($sales_gl_code) . ", " . DB::_escape($purchasing_gl_code) . ", $rate)";
         DB::_query($sql, "could not add tax type");
       }
@@ -121,7 +131,8 @@
        * @return null|PDOStatement
        */
       public static function getAll($all = false) {
-        $sql = "SELECT tax_types.*,
+        $sql
+          = "SELECT tax_types.*,
         Chart1.account_name AS SalesAccountName,
         Chart2.account_name AS PurchasingAccountName
         FROM tax_types, chart_master AS Chart1,
@@ -149,7 +160,8 @@
        * @return \ADV\Core\DB\Query\Result|Array
        */
       public static function get($type_id) {
-        $sql    = "SELECT tax_types.*,
+        $sql
+                = "SELECT tax_types.*,
         Chart1.account_name AS SalesAccountName,
         Chart2.account_name AS PurchasingAccountName
         FROM tax_types, chart_master AS Chart1,
@@ -190,7 +202,8 @@
         $sql = "DELETE FROM item_tax_type_exemptions WHERE tax_type_id=$type_id";
         DB::_query($sql, "could not delete item tax type exemptions");
         DB::_commit();
-        Event::notice(_('Selected tax type has been deleted'));
+
+        return Event::notice(_('Selected tax type has been deleted'));
       }
       /**
       Check if gl_code is used by more than 2 tax types,
@@ -205,7 +218,7 @@
        */
       public static function is_tax_gl_unique($gl_code, $gl_code2 = null, $selected_id = null) {
         $purch_code = $gl_code2 ? : $gl_code;
-        $q          = DB::_select('count(*) as count')->from('tax_types')->where('sales_gl_code=', $gl_code)->orWhere('purchasing_gl_code=', $purch_code);
+        $q          = DB::_select('count(*) as count')->from('tax_types')->open('sales_gl_code=', $gl_code)->orWhere('purchasing_gl_code=', $purch_code)->close();
         if ($selected_id) {
           $q->andWhere("id!=", (int) $selected_id);
         }

@@ -2,10 +2,8 @@
   namespace ADV\Controllers\Sales\Manage;
 
   use ADV\App\Form\Form;
-  use ADV\App\Page;
   use ADV\App\Sales\Point;
   use ADV\Core\View;
-  use ADV\Core\DB\DB;
 
   /**
    * PHP version 5.4

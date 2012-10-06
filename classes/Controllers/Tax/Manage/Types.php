@@ -37,7 +37,7 @@
       $form->percent('rate')->label('Default Rate (%)');
       $form->custom(GL_UI::all('sales_gl_code'))->label('Sales GL Account');
       $form->custom(GL_UI::all('purchasing_gl_code'))->label('Purchasing GL Account');
-      $form->arraySelect('inactive', ['No', 'Yes'])->label('Inactive:');
+      $form->checkbox('inactive')->label('Inactive:');
     }
     /**
      * @return array
@@ -48,7 +48,7 @@
         'Rate'    => ['type'=> "percent]"],
         'Sales GL Account',
         'Purchasing GL Account',
-        'Nsme',
+        'Name',
         'Inactive'=> ['type'=> 'active'],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],

@@ -30,8 +30,13 @@
      * @return bool
      */
     public function add($name, $callback, $arguments = []) {
-
-      $callback_id = (is_string($callback)) ? $callback : count($this->hooks);
+      if (is_array($callback) && is_object($callback[0])) {
+        $callback_id = spl_object_hash($callback[0]) . $callback[1] . serialize($arguments);
+      } elseif (is_string($callback)) {
+        $callback_id = $callback . serialize($arguments);
+      } else {
+        $callback_id = count($this->hooks) . serialize($arguments);
+      }
       if (!isset($this->hooks[$name][$callback_id])) {
         return $this->hooks[$name][$callback_id] = [$callback, (array) $arguments];
       }

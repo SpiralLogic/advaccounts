@@ -85,6 +85,9 @@
         function () {
           $driver = new \ADV\Core\Cache\APC();
           $cache  = new \ADV\Core\Cache($driver);
+          if (isset($_GET['cache_reloaded'])) {
+            Event::notice('Cache Reloaded');
+          }
           return $cache;
         }
       )->offsetGet(null);

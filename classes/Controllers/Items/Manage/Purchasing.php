@@ -66,7 +66,7 @@
       $form->text('supplier', ['class'=> 'nosubmit'])->label('Supplier:');
       $this->JS->autocomplete('supplier', '"creditor_id"', 'Creditor');
       $form->amount('price')->label(_("Price:"));
-      $form->custom(Item_Unit::select('suppliers_uom'))->label('Supplier\'s UOM:')->val('ea');
+      $form->custom(Item_Unit::select('suppliers_uom'))->label('Supplier\'s UOM:')->initial('ea');
       $form->number('conversion_factor', 6)->label('Conversion Factor:');
       $form->text('supplier_description')->label('Supplier Product Code:');
     }

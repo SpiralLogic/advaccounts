@@ -35,7 +35,7 @@
       $this->driver->init();
       if (isset($_GET['reload_cache'])) {
         $this->driver->flush();
-        header('Location: ' . ROOT_URL);
+        header('Location: ' . ROOT_URL . '?cache_reloaded');
       }
     }
     /**

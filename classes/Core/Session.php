@@ -167,6 +167,9 @@
      * @internal param $globals
      */
     public function removeGlobal() {
+      if (func_num_args() === 0) {
+        $_SESSION['_globals'] = [];
+      }
       $globals = func_get_args();
       foreach ($globals as $var) {
         if (is_string($var) || is_int($var)) {

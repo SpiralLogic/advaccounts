@@ -159,6 +159,9 @@
      * @return mixed
      */
     public function shutdown() {
+      if (isset($_GET['reload_config'])) {
+        Event::notice('Config reloaded');
+      }
       return $this->Cache->set('config', $this->_vars);
     }
   }
