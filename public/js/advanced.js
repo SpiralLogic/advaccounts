@@ -868,6 +868,7 @@ $(function () {
           checkMenu.apply(this.parentElement);
           $(this).parent().nextUntil('', ':has(a)').eq(0).find('a').focus();
           return false;
+          break;
         case 9:
           currentChanged((event.shiftKey === true ? current.prev() : current.next()));
           break;
