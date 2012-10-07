@@ -122,7 +122,7 @@
       $this->security = $security;
       $this->App      = ADVAccounting::i();
       $path           = explode('/', $_SERVER['DOCUMENT_URI']);
-      if (count($path) && class_exists('ADV\\Controllers\\' . ucFirst($path[1]))) {
+      if (count($path) && isset($this->App->applications[ucfirst($path[1])])) {
         $this->sel_app = $path[1];
       }
       if (!$this->sel_app) {
