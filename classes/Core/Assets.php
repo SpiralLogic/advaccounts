@@ -32,50 +32,48 @@
     protected $clientCache = true;
     protected $clientCacheCheck = true;
     protected $file = [];
-    protected $minifyTypes
-      = array(
-        'js'  => array(
-          'minify'   => true, //
-          'minifier' => '\\ADV\\Core\\JSMin', //
-          'settings' => [] //
-        ), //
-        'css' => array( //
-          'minify'   => true, //
-          'minifier' => '\\ADV\\Core\\CSSMin', //
-          'settings' => array( //
-            'embed'           => true, //
-            'embedMaxSize'    => 5120, //
-            'embedExceptions' => 'htc',
-          )
+    protected $minifyTypes = array(
+      'js'  => array(
+        'minify'   => true, //
+        'minifier' => '\\ADV\\Core\\JSMin', //
+        'settings' => [] //
+      ), //
+      'css' => array( //
+        'minify'   => true, //
+        'minifier' => '\\ADV\\Core\\CSSMin', //
+        'settings' => array( //
+          'embed'           => true, //
+          'embedMaxSize'    => 5120, //
+          'embedExceptions' => 'htc',
         )
-      );
-    protected $mimeTypes
-      = array(
-        "js"   => "text/javascript",
-        "css"  => "text/css",
-        "htm"  => "text/html",
-        "html" => "text/html",
-        "xml"  => "text/xml",
-        "txt"  => "text/plain",
-        "jpg"  => "image/jpeg",
-        "jpeg" => "image/jpeg",
-        "png"  => "image/png",
-        "gif"  => "image/gif",
-        "swf"  => "application/x-shockwave-flash",
-        "ico"  => "image/x-icon",
-      );
+      )
+    );
+    protected $mimeTypes = array(
+      "js"   => "text/javascript",
+      "css"  => "text/css",
+      "htm"  => "text/html",
+      "html" => "text/html",
+      "xml"  => "text/xml",
+      "txt"  => "text/plain",
+      "jpg"  => "image/jpeg",
+      "jpeg" => "image/jpeg",
+      "png"  => "image/png",
+      "gif"  => "image/gif",
+      "swf"  => "application/x-shockwave-flash",
+      "ico"  => "image/x-icon",
+    );
     protected $files = [];
     protected $fileType;
     protected $cacheFile;
     protected $generate = true;
-    protected $fileDir;
-    protected $content = ''; //mime typesprotected $cachedFile ;
+    protected $fileDir; //mime typesprotected $cachedFile ;
     /**
      * @param $status
      */
     protected function headerExit($status) {
       header("Pragma: Public");
       header("Expires: " . $this->gmdatestr(time() + 315360000));
+      header("Cache-Control: max-age=315360000");
       header("HTTP/1.0 $status");
       header("Vary: Accept-Encoding", false);
       $this->contentHeader();
@@ -151,11 +149,17 @@
     public function __construct() {
       $this->getFiles();
       $this->setCompression();
-      if ($this->serverCache()) {
-        $this->generate();
-      }
+      $this->serverCache();
       $this->clientCache();
-      $this->send();
+      if ($this->generate) {
+        $content = $this->generate();
+        if ($this->serverCache) {
+          $this->writeCache($content);
+        } else {
+          $this->sendContent($content);
+        }
+      }
+      $this->sendFile();
     }
     /**
      * @return string
@@ -181,38 +185,37 @@
           }
         }
       }
-      $this->content = ($this->gzip) ? gzencode($content, $this->compressionLevel) : $content;
-      if ($this->serverCache) {
-        $this->writeCache();
+      if ($this->gzip) {
+        return gzencode($content, $this->compressionLevel);
       }
+      return $content;
     }
     /**
      * @param $content
      */
-    protected function writeCache() {
+    protected function writeCache($content) {
       $handle = fopen($this->cacheFile, 'w');
-      fwrite($handle, $this->content);
+      fwrite($handle, $content);
       fclose($handle);
     }
-    protected function send() {
-      $length = ($this->serverCache) ? filesize($this->cacheFile) : mb_strlen($this->content);
-      header('Content-Length: ' . $length);
+    protected function sendFile() {
+      header('Content-Length: ' . filesize($this->cacheFile));
       if ($this->gzip) {
         header('Content-Encoding: gzip');
       }
       ob_clean();
       flush();
-      $this->serverCache ? readfile($this->cacheFile) : print($this->content);
+      readfile($this->cacheFile);
       exit;
     }
     protected function clientCache() {
       if ($this->serverCache) {
-        $mtime = filemtime($this->cacheFile);
+        $mtime = $this->generate ? time() : filemtime($this->cacheFile);
       } else {
-        $mtime = time();
+        $mtime = $this->filesmtime();
       }
       $mtimestr = $this->gmdatestr($mtime);
-      if ((!isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || $_SERVER['HTTP_IF_MODIFIED_SINCE'] != $mtimestr)) {
+      if (!isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || $_SERVER['HTTP_IF_MODIFIED_SINCE'] != $mtimestr) {
         if ($this->clientCache && $this->clientCacheCheck) {
           $this->headerUpdatedCache($mtimestr);
         } elseif ($this->clientCache) {
@@ -231,18 +234,18 @@
       header("Last-Modified: " . $mtimestr);
       header("Expires: " . $this->gmdatestr(time() + 315360000));
       header("Vary: Accept-Encoding", false);
-      header("Cache-Control:max-age=0, must-revalidate");
+      header("Cache-Control: must-revalidate");
     }
     /**
      * @return bool
      */
     protected function serverCache() {
-      $this->cacheFile = $cachedFile = $this->cacheDir . DIRECTORY_SEPARATOR . $this->cachePrefix . md5(serialize($this->files)) . '.' . $this->fileType . ($this->gzip ? '.gz' :
-        '');
+      $this->cacheFile = $cachedFile = $this->cacheDir . DIRECTORY_SEPARATOR . $this->cachePrefix . md5(serialize($this->files)) . '.' . $this->fileType . ($this->gzip ? '.gz' : '');
       if (!$this->serverCache) {
-        return true;
+        $this->generate = true;
+      } else {
+        $this->generate = !file_exists($cachedFile) || ($this->serverCacheCheck && $this->filesmtime() > filemtime($cachedFile));
       }
-      return !file_exists($cachedFile) || ($this->serverCacheCheck && $this->filesmtime() > filemtime($cachedFile));
     }
     protected function setCompression() {
       if (in_array($this->fileType, $this->gzipExceptions)) {
