@@ -1,10 +1,4 @@
 <?php
-  namespace ADV\Controllers\Sales\Manage;
-
-  use ADV\App\Form\Form;
-  use ADV\App\Sales\CreditStatus;
-  use ADV\Core\View;
-
   /**
    * PHP version 5.4
    * @category  PHP
@@ -13,14 +7,24 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Creditstatuses extends \ADV\App\Controller\Manage {
+  namespace ADV\Controllers\GL\Manage;
+
+  use ADV\App\Form\Form;
+  use GL_Type;
+  use ADV\App\GL\Account;
+  use ADV\Core\View;
+
+  /**
+   * @property Account $object
+   */
+  class Accounts extends \ADV\App\Controller\Manage {
     protected $tableWidth = '80';
     protected function before() {
-      $this->object = new CreditStatus();
+      $this->object = new Account();
       $this->runPost();
     }
     protected function index() {
-      $this->Page->init(_($help_context = "Credit Statuses"), SA_CRSTATUS);
+      $this->Page->init(_($help_context = "GL Accounts"), SA_GLACCOUNT);
       $this->generateTable();
       echo '<br>';
       $this->generateForm();
@@ -33,20 +37,24 @@
      * @return mixed|void
      */
     protected function formContents(Form $form, View $view) {
-      $view['title'] = 'Sales Credit Status';
-      $form->hidden('id');
-      $form->text('reason_description')->label('Description:');
-      $form->arraySelect('dissallow_invoices', ['No', 'Yes'])->label('Disallow Invoices:');
+      $view['title'] = 'GL Account';
+      $form->text('account_name')->label("Name:")->focus($this->action == EDIT);
+      $form->text('account_code')->label("Code:");
+      $form->text('account_code2')->label("Code2:");
+      $form->checkbox('inactive')->label('Inactive:');
+      $form->custom(GL_Type::select('account_type'))->label('Type:');
     }
     /**
      * @return array
      */
     protected function generateTableCols() {
       $cols = [
+        'Name'       => ['type'=> 'group'],
+        'Code',
+        'Code2',
+        'Type'       => ['type'=> 'group'],
+        'inactive'   => ['type'=> 'inactive'],
         ['type'=> 'skip'],
-        'Description',
-        'Dissallow Invoices'=> ['type'=> 'bool'],
-        'Inactive'          => ['type'=> 'inactive'],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
       ];
@@ -54,4 +62,5 @@
       return $cols;
     }
   }
+
 

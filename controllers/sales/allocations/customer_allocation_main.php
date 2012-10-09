@@ -1,5 +1,6 @@
 <?php
   use ADV\App\Debtor\Debtor;
+  use ADV\Core\Event;
   use ADV\Core\Input\Input;
 
   /**
@@ -63,9 +64,12 @@
     $cols[_("Customer")] = 'skip';
     $cols[_("Currency")] = 'skip';
   }
-  $table = DB_Pager::newPager('alloc_tbl', $sql, $cols);
-  $table->setMarker('Sales_Allocation::check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
-  $table->width = "75%";
+  $table         = DB_Pager::newPager('alloc_tbl', $sql, $cols);
+  $table->marker = ['Sales_Allocation', 'check_settled'];
+  Event::warning(_("Marked items are settled."), false);
+  $table->marker_class = 'settledbg';
+  $table->notice_class = 'settledfg';
+  $table->width        = "75%";
   $table->display($table);
   Forms::end();
   Page::end();

@@ -2899,7 +2899,6 @@ img {
   background:     -ms-linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
   background:     linear-gradient(top, rgba(219, 219, 219, 1) 0%, rgba(160, 160, 160, 1) 51%, rgba(158, 158, 158, 1) 100%);
   filter:         progid:DXImageTransform.Microsoft.gradient(startColorstr = '#dbdbdb', endColorstr = '#9e9e9e', GradientType = 0);
-  border-top:     1px solid #939393;
   margin:         0;
   padding:        0;
   height:         33px;
@@ -2975,8 +2974,8 @@ img {
   float:              none;
   font-weight:        normal;
   overflow:           hidden;
-  -moz-transition:    opacity .1s linear, height .1s linear;
-  -webkit-transition: opacity .1s linear, height .1s linear;
+  -moz-transition:    opacity .2s linear, height .2s linear;
+  -webkit-transition: opacity .2s linear, height .2s linear;
 }
 
 #tabs ul li ul li.hide {
@@ -2985,12 +2984,12 @@ img {
   opacity: 0;
 }
 
-#tabs ul li ul li a {
-  padding:        2px 8px 2px;
-  height:         21px;
-  font-size:      12px;
-  line-height:    15px;
-  text-transform: none;
+#tabs ul li ul li a { border-top: 1px solid #939393;
+  padding:                        2px 8px 2px;
+  height:                         21px;
+  font-size:                      12px;
+  line-height:                    15px;
+  text-transform:                 none;
 }
 
 #tabs .active> a, #tabs .hover> a, #tabs >ul> li.hover, #tabs a:focus {

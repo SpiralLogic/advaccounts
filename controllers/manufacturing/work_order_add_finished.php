@@ -24,7 +24,7 @@
       'PARAM_2' => $stype
     );
     Display::note(Reporting::print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
-    Display::link_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
+    Display::link_params("search_work_orders.php", _("Select another &Work Order to Process"));
     Page::end();
     exit;
   }

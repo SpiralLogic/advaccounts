@@ -80,7 +80,7 @@
      * @param string $attrs
      */
     public static function labelHeader($label, $attrs = "") {
-      echo "<th $attrs>$label</th>\n";
+      echo "<th $attrs>$label</th>";
     }
     /**
      * @param        $label
@@ -94,7 +94,7 @@
         $attrs .= " id='$id'";
         Ajax::_addUpdate($id, $id, $label);
       }
-      echo "<td $attrs >$label</td>\n";
+      echo "<td $attrs >$label</td>";
       return $label;
     }
     /**

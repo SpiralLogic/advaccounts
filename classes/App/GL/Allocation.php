@@ -33,13 +33,9 @@
 
    */
   class GL_Allocation {
-    /**
-     * @var
-     */
+    /** @var */
     public $trans_no;
-    /**
-     * @var
-     */
+    /** @var */
     public $type;
     /**
      * @var string
@@ -49,13 +45,9 @@
      * @var string
      */
     public $person_name = '';
-    /**
-     * @var
-     */
+    /** @var */
     public $person_type;
-    /**
-     * @var
-     */
+    /** @var */
     public $date_;
     /**
      * @var int
@@ -448,33 +440,19 @@ above logic will be overwritten with the prev alloc detail below */
 
    */
   class allocation_item {
-    /**
-     * @var
-     */
+    /** @var */
     public $type;
-    /**
-     * @var
-     */
+    /** @var */
     public $type_no;
-    /**
-     * @var
-     */
+    /** @var */
     public $date_;
-    /**
-     * @var
-     */
+    /** @var */
     public $due_date;
-    /**
-     * @var
-     */
+    /** @var */
     public $amount_allocated;
-    /**
-     * @var
-     */
+    /** @var */
     public $amount;
-    /**
-     * @var
-     */
+    /** @var */
     public $current_allocated;
     /**
      * @param $type

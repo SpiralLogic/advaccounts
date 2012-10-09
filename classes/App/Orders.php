@@ -12,8 +12,7 @@
   /**
 
    */
-  abstract class Orders extends DB\Base
-  {
+  abstract class Orders extends DB\Base {
     const NEW_ORDER           = 'NewOrder';
     const MODIFY_ORDER        = 'ModifyOrder';
     const NEW_QUOTE           = 'NewQuote';
@@ -42,38 +41,22 @@
     const UPDATE              = 'update';
     const REFRESH             = 'refresh';
     const TYPE                = 'type';
-    /**
-     * @var
-     */
+    /** @var */
 
     public $order_no;
-    /**
-     * @var
-     */
+    /** @var */
     public $version;
-    /**
-     * @var
-     */
+    /** @var */
     public $comments;
-    /**
-     * @var
-     */
+    /** @var */
     public $ord_date;
-    /**
-     * @var
-     */
+    /** @var */
     public $reference;
-    /**
-     * @var
-     */
+    /** @var */
     public $delivery_address;
-    /**
-     * @var
-     */
+    /** @var */
     public $salesman;
-    /**
-     * @var
-     */
+    /** @var */
     public $freight; // $freight_cost for orders
     /**
      * @static

@@ -825,7 +825,7 @@ $(function () {
       else if ($this.not('.hide')) {
         next = $this.prev();
         next.removeClass('hide').prev().filter('.title').removeClass('hide');
-        if (next.hasClass('title')) {
+        if (changing == 2 && next.hasClass('title') ) {
           checkMenu.apply(next[0]);
         }
       }
@@ -886,7 +886,7 @@ $(function () {
       $this.find('a').eq(1).focus();
     }
   });
-  topLevel.delegate('li', 'mouseenter', checkMenu);
+  topLevel.on('mouseenter', 'li',checkMenu);
   topLevel.children('a').on({
                               focus:    function () {
                                 currentChanged($(this).parent(), true);

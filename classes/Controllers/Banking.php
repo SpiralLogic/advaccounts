@@ -47,7 +47,7 @@
       //  $module->addLeftFunction(_("Payment Methods"), "/banking/manage/payment_methods", SA_BANKACCOUNT);
       $module->addLeftFunction(_("&Currencies"), "/banking/manage/currencies?", SA_CURRENCY);
       $module->addLeftFunction(_("&Exchange Rates"), "/banking/manage/exchange_rates?", SA_EXCHANGERATE);
-      $module->addRightFunction(_("&GL Accounts"), "/banking/manage/gl_accounts?", SA_GLACCOUNT);
+      $module->addRightFunction(_("&GL Accounts"), "/gl/manage/accounts?", SA_GLACCOUNT);
       $module->addRightFunction(_("GL Account &Groups"), "/banking/manage/gl_account_types?", SA_GLACCOUNTGROUP);
       $module->addRightFunction(_("GL Account &Classes"), "/banking/manage/gl_account_classes?", SA_GLACCOUNTCLASS);
     }

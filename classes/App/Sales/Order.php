@@ -55,9 +55,7 @@
      * @var int
      */
     public $so_type = 0; // for sales order: simple=0 template=1
-    /**
-     * @var
-     */
+    /** @var */
     public $order_id; // used to detect multi-tab edition conflits
     /**
      * @var array
@@ -67,145 +65,85 @@
      * @var array
      */
     public $src_docs = []; // array of arrays(num1=>ver1,...) or 0 for no src
-    /**
-     * @var
-     */
+    /** @var */
     public $src_date; // src document date (for info only)
     /**
      * @var null
      */
     public $source_no = null;
-    /**
-     * @var
-     */
+    /** @var */
     public $document_date;
-    /**
-     * @var
-     */
+    /** @var */
     public $due_date;
-    /**
-     * @var
-     */
+    /** @var */
     public $salesman;
     /**
      * @var string
      */
     public $sales_type; // set to the customer's sales type
-    /**
-     * @var
-     */
+    /** @var */
     public $sales_type_name; // set to customer's sales type name
-    /**
-     * @var
-     */
+    /** @var */
     public $tax_included;
-    /**
-     * @var
-     */
+    /** @var */
     public $customer_currency; // set to the customer's currency
-    /**
-     * @var
-     */
+    /** @var */
     public $default_discount; // set to the customer's discount %
-    /**
-     * @var
-     */
+    /** @var */
     public $customer_name;
-    /**
-     * @var
-     */
+    /** @var */
     public $debtor_id = 0;
-    /**
-     * @var
-     */
+    /** @var */
     public $Branch;
-    /**
-     * @var
-     */
+    /** @var */
     public $email;
-    /**
-     * @var
-     */
+    /** @var */
     public $deliver_to;
-    /**
-     * @var
-     */
+    /** @var */
     public $delivery_address;
-    /**
-     * @var
-     */
+    /** @var */
     public $name;
-    /**
-     * @var
-     */
+    /** @var */
     public $phone;
-    /**
-     * @var
-     */
+    /** @var */
     public $cust_ref;
-    /**
-     * @var
-     */
+    /** @var */
     public $reference;
-    /**
-     * @var
-     */
+    /** @var */
     public $Comments;
-    /**
-     * @var
-     */
+    /** @var */
     public $location;
-    /**
-     * @var
-     */
+    /** @var */
     public $location_name;
-    /**
-     * @var
-     */
+    /** @var */
     public $order_no; // the original order number
     /**
      * @var int
      */
     public $trans_link = 0;
-    /**
-     * @var
-     */
+    /** @var */
     public $ship_via;
     /**
      * @var int
      */
     public $freight_cost = 0;
-    /**
-     * @var
-     */
+    /** @var */
     public $tax_group_id;
-    /**
-     * @var
-     */
+    /** @var */
     public $tax_group_name;
     /**
      * @var null
      */
     public $tax_group_array = null; // saves db queries
-    /**
-     * @var
-     */
+    /** @var */
     public $price_factor; // ditto for price calculations
-    /**
-     * @var
-     */
+    /** @var */
     public $pos; // user assigned POS
-    /**
-     * @var
-     */
+    /** @var */
     public $cash; // cash transaction
-    /**
-     * @var
-     */
+    /** @var */
     public $cash_account;
-    /**
-     * @var
-     */
+    /** @var */
     public $account_name;
     /**
      * @var int
@@ -215,21 +153,13 @@
      * @var int
      */
     public $dimension2_id;
-    /**
-     * @var
-     */
+    /** @var */
     public $payment;
-    /**
-     * @var
-     */
+    /** @var */
     public $payment_terms; // cached payment terms
-    /**
-     * @var
-     */
+    /** @var */
     public $credit;
-    /**
-     * @var
-     */
+    /** @var */
     protected $uniqueid;
     /**
      * @var bool

@@ -9,6 +9,8 @@
    **/
   namespace ADV\App;
 
+  use ADV\Core\Input\Input;
+
   /**
 
    */
@@ -80,18 +82,14 @@
       echo "<div class='center'>$msg</div>\n";
       str_repeat("<br>", $br2);
     }
-    /**
-     * @static
-     *
-     * @param      $target
-     * @param      $label
-     * @param bool $center
-     * @param bool $button
-     */
-    public static function link_no_params($target, $label, $center = true, $button = false) {
-
-      static::link_params($target, $label, '', $center, $button, '');
-    }
+    public static function link_button($label,$url,$icon=false){
+      if (User::graphic_links() && $icon) {
+        $label = Forms::setIcon($icon, $label);
+            }
+            $href = '/' . ltrim($url, '/');
+            $href = (Input::_request('frame')) ? "javascript:window.parent.location='$href'" : $href;
+            return '<a href="' . e($href) . '" class="button">' . $label . "</a>";
+  }
     /**
      * @static
      *

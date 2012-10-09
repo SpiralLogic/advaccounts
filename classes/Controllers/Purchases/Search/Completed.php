@@ -180,9 +180,9 @@
      */
     public function formatProcessBtn($row) {
       if ($row['Received'] > 0) {
-        return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
+        return Display::link_button(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
       } elseif ($row['Invoiced'] > 0) {
-        return DB_Pager::link(_("Invoice"), "/purchases/invoice?New=1&creditor_id=" . $row['creditor_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
+        return Display::link_button(_("Invoice"), "/purchases/invoice?New=1&creditor_id=" . $row['creditor_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
       }
       return '';
     }

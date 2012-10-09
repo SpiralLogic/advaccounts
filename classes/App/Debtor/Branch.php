@@ -44,13 +44,9 @@
      * @var int
      */
     public $area = DEFAULT_AREA;
-    /**
-     * @var
-     */
+/** @var */
     public $br_post_address;
-    /**
-     * @var
-     */
+/** @var */
     public $debtor_id;
     /**
      * @var string
@@ -60,9 +56,7 @@
      * @var string
      */
     public $contact_name = "";
-    /**
-     * @var
-     */
+/** @var */
     public $default_location;
     /**
      * @var int
@@ -104,25 +98,17 @@
      * @var int
      */
     public $group_no = 1;
-    /**
-     * @var
-     */
+/** @var */
     public $payment_discount_account;
-    /**
-     * @var
-     */
+/** @var */
     public $receivables_account;
     /**
      * @var string
      */
     public $sales_account = "";
-    /**
-     * @var
-     */
+/** @var */
     public $sales_discount_account;
-    /**
-     * @var
-     */
+/** @var */
     public $salesman;
     /**
      * @var int

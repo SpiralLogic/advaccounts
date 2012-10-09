@@ -19,7 +19,7 @@
     Display::note(GL_UI::viewTrans($stype, $id, _("View this Work Order")));
     Display::note(GL_UI::view($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
     Display::link_params("work_order_costs.php", _("Enter another additional cost."), "trans_no=$id");
-    Display::link_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
+    Display::link_params("search_work_orders.php", _("Select another &Work Order to Process"));
     Page::end();
     exit;
   }

@@ -97,7 +97,7 @@
         if (!$inactive) {
           $sql .= " AND !c.inactive";
         }
-        DB::_query($sql);
+        //DB::_query($sql);
 
         return $sql;
       }

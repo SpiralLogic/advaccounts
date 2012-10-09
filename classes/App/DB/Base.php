@@ -2,6 +2,7 @@
   namespace ADV\App\DB;
 
   use ADV\Core\DB\DBDuplicateException;
+  use ADV\Core\DIC;
   use ADV\Core\DB\DBException;
   use ADV\Core\DB\DBDeleteException;
   use ADV\Core\DB\DBInsertException;
@@ -41,7 +42,7 @@
      * @internal param \ADV\Core\DB\DB $db
      */
     public function __construct($id = 0, $extra = []) {
-      static::$DB = DB::i();
+      static::$DB = DIC::get('DB');
       $this->load($id, $extra);
       $this->_classname = $this->_classname ? : end(explode('\\', ltrim(get_called_class(), '\\')));
       $_id_column       = $this->_id_column;

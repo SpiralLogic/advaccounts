@@ -8,64 +8,34 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class Item_Order {
-    /**
-     * @var
-     */
+    /** @var */
     public $trans_type;
-    /**
-     * @var
-     */
+    /** @var */
     public $line_items;
-    /**
-     * @var
-     */
+    /** @var */
     public $gl_items;
-    /**
-     * @var
-     */
+    /** @var */
     public $order_id;
-    /**
-     * @var
-     */
-    /**
-     * @var
-     */
+    /** @var */
+    /** @var */
     public $editing_item, $deleting_item;
-    /**
-     * @var
-     */
+    /** @var */
     public $from_loc;
-    /**
-     * @var
-     */
+    /** @var */
     public $to_loc;
-    /**
-     * @var
-     */
+    /** @var */
     public $tran_date;
-    /**
-     * @var
-     */
+    /** @var */
     public $transfer_type;
-    /**
-     * @var
-     */
+    /** @var */
     public $increase;
-    /**
-     * @var
-     */
+    /** @var */
     public $memo_;
-    /**
-     * @var
-     */
+    /** @var */
     public $person_id;
-    /**
-     * @var
-     */
+    /** @var */
     public $branch_id;
-    /**
-     * @var
-     */
+    /** @var */
     public $reference;
     /**
      * @param $type

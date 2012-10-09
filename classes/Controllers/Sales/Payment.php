@@ -120,10 +120,10 @@
       $_SESSION['alloc']->write();
       Event::success(_("The customer payment has been successfully entered."));
       Display::submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no . "-" . ST_CUSTPAYMENT, 'prtopt');
-      Display::link_no_params("/sales/search/transactions", _("Show Invoices"));
+      Display::link_params("/sales/search/transactions", _("Show Invoices"));
       GL_UI::view(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment"));
       //	Display::link_params( "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
-      Display::link_no_params("/sales/payment", _("Enter Another &Customer Payment"));
+      Display::link_params("/sales/payment", _("Enter Another &Customer Payment"));
       $this->Ajax->activate('_page_body');
       $this->Page->endExit();
       return true;

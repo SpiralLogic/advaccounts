@@ -3,6 +3,7 @@
   namespace ADV\Controllers\Purchases\Search;
 
   use ADV\Core\DB\DB;
+  use ADV\Core\Event;
   use ADV\App\Reporting;
   use DB_Company;
   use ADV\Core\View;
@@ -154,8 +155,10 @@
         $cols[_("Currency")] = 'skip';
       }
       /*show a table of the transactions returned by the sql */
-      $table = DB_Pager::newPager('trans_tbl', $sql, $cols);
-      $table->setMarker([$this, 'formatMarker'], _("Marked items are overdue."));
+      $table         = DB_Pager::newPager('trans_tbl', $sql, $cols);
+      $table->marker = [$this, 'formatMarker'];
+      Event::warning(_("Marked items are overdue."), false);
+
       $table->width = "90";
       $table->display($table);
     }

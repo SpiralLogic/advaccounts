@@ -105,10 +105,10 @@
       echo "<div class='center'>";
       Event::success(_("Supplier " . $_SESSION['history'][ST_SUPPINVOICE] . "invoice has been processed."));
       GL_UI::viewTrans($trans_type, $invoice_no, _("View this Invoice"));
-      Display::link_no_params("/purchases/search/orders", _("Purchase Order Maintainants"));
+      Display::link_params("/purchases/search/orders", _("Purchase Order Maintainants"));
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another Invoice"), "New=1");
-      Display::link_no_params("/purchases/payment", _("Entry supplier &payment for this invoice"));
-      Display::link_no_params("/purchases/allocations/supplier_allocation_main.php", _("Allocate a payment to this invoice."));
+      Display::link_params("/purchases/payment", _("Entry supplier &payment for this invoice"));
+      Display::link_params("/purchases/allocations/supplier_allocation_main.php", _("Allocate a payment to this invoice."));
       GL_UI::view($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice"));
       Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
 

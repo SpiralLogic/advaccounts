@@ -8,25 +8,17 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class Item_Line {
-    /**
-     * @var
-     */
+    /** @var */
     public $stock_id;
     /**
      * @var null
      */
     public $description;
-    /**
-     * @var
-     */
+    /** @var */
     public $units;
-    /**
-     * @var
-     */
+    /** @var */
     public $mb_flag;
-    /**
-     * @var
-     */
+    /** @var */
     public $quantity;
     /**
      * @var int

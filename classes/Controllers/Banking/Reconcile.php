@@ -10,7 +10,6 @@
   use DB_Pager;
   use ADV\Core\View;
   use Bank_UI;
-  use ADV\App\Page;
   use GL_Account;
   use Bank_Account;
   use ADV\Core\Num;
@@ -41,25 +40,15 @@
     protected $Num;
     /** @var Dates Dates*/
     protected $Dates;
-    /**
-     * @var
-     */
+/** @var */
     protected $bank_account;
-    /**
-     * @var
-     */
+/** @var */
     protected $bank_date;
-    /**
-     * @var
-     */
+/** @var */
     protected $reconcile_date;
-    /**
-     * @var
-     */
+/** @var */
     protected $begin_date;
-    /**
-     * @var
-     */
+/** @var */
     protected $end_date;
     /**
      * @var bool

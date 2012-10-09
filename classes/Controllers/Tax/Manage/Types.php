@@ -45,11 +45,11 @@
     protected function generateTableCols() {
       return [
         ['type'=> "skip"],
-        'Rate'    => ['type'=> "percent]"],
-        'Sales GL Account',
-        'Purchasing GL Account',
         'Name',
-        'Inactive'=> ['type'=> 'active'],
+        'Rate'    => ['type'=> "percent"],
+        'Sales GL Account'=>['fun'=> [$this,'formatAccount']],
+        'Purchasing GL Account'=>['fun'=> [$this,'formatAccount']],
+        'Inactive'=> ['type'=> 'inactive'],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
       ];

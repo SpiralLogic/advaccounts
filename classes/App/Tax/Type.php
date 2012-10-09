@@ -58,7 +58,7 @@
       public function delete() {
         $count = DB::_select('count(*) as count')->from('tax_group_items')->where('tax_type_id=', $this->id)->fetch()->one('count');
         if ($count) {
-          return $this->status(false, "Cannot delete this tax type because tax groups been created referring to it.");
+          return $this->status(false, "Cannot delete this tax type because tax groups have been created referring to it.");
         }
         if (parent::delete()) {
           static::$DB->delete('item_tax_type_exemptions')->where('tax_type_id=', $this->id)->exec();
@@ -72,7 +72,7 @@
        * @return array
        */
       public static function getAll($inactive = false) {
-        $q = DB::_select()->from('tax_types');
+        $q = static::$DB->select('id', 'name', 'rate', 'sales_gl_code', 'purchasing_gl_code', 'inactive')->from('tax_types');
         if (!$inactive) {
           $q->andWhere('inactive=', 0);
         }

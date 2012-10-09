@@ -150,8 +150,10 @@
         }
         unset($_SESSION['Batch']);
       }
-      $table = DB_Pager::newPager('deliveries_tbl', $sql, $cols);
-      $table->setMarker([$this, 'formatMarker'], _("Marked items are overdue."));
+      $table         = DB_Pager::newPager('deliveries_tbl', $sql, $cols);
+      $table->marker = [$this, 'formatMarker'];
+      Event::warning(_("Marked items are overdue."), false);
+
       $table->display($table);
     }
     /**

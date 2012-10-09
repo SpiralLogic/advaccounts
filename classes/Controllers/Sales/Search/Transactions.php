@@ -2,6 +2,7 @@
   namespace ADV\Controllers\Sales\Search;
 
   use ADV\App\Debtor\Debtor;
+  use ADV\Core\Event;
   use ADV\Core\View;
   use DB_AuditTrail;
   use ADV\App\Voiding;
@@ -9,7 +10,6 @@
   use GL_UI;
   use DB_Pager;
   use ADV\App\Dates;
-  use ADV\App\Display;
   use Debtor_Payment;
   use ADV\App\Forms;
   use ADV\App\Reporting;
@@ -137,9 +137,10 @@
       if (!$this->filterType || !$this->isQuickSearch) {
         $cols[_("RB")] = 'skip';
       }
-      $table = DB_Pager::newPager('trans_tbl', $sql, $cols);
-      $table->setMarker([$this, 'formatMarker'], _("Marked items are overdue."));
-      $table->width = "85%";
+      $table         = DB_Pager::newPager('trans_tbl', $sql, $cols);
+      $table->marker = [$this, 'formatMarker'];
+      $table->width  = "85%";
+      Event::warning(_("Marked items are overdue."), false);
       $table->display($table);
       UI::emailDialogue(CT_CUSTOMER);
       Forms::end();

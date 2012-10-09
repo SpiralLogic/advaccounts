@@ -40,7 +40,7 @@
     protected function formContents(Form $form, View $view) {
       $view['title'] = 'Sales Person Details';
       $form->hidden('salesman_code');
-      $form->text('salesman_name', ['maxlength'=> 30])->label('Name: ')->focus();
+      $form->text('salesman_name', ['maxlength'=> 30])->label('Name: ')->focus($this->action == EDIT);
       $form->custom(Users::select('user_id', null, " ", true))->label('User:');
       $form->text('salesman_phone', ['maxlength'=> 20])->label('Telephone number: ');
       $form->text('salesman_fax', ['maxlength'=> 20])->label('Fax number: ');
@@ -64,7 +64,7 @@
         _("Provision"),
         _("Break Pt."),
         _("Provision") . " 2",
-        _('Inactive')=> ['type'=> "active"],
+        _('Inactive')=> ['type'=> 'inactive'],
         ['insert'=> true, "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['insert'=> true, "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']]
       );

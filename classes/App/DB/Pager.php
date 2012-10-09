@@ -1,8 +1,8 @@
 <?php
   use ADV\Core\Cell;
+  use ADV\Core\Num;
   use ADV\Core\HTML;
   use ADV\App\Dates;
-  use ADV\App\Display;
   use ADV\App\Forms;
   use ADV\App\User;
   use ADV\Core\JS;
@@ -39,126 +39,54 @@
     const ARR = 2;
     /** @var */
     public $sql;
-    /**
-     * @var
-     */
+    /**@var*/
     public $name;
-    /**
-     * @var
-     * column definitions (head, type, order)
-     */
-    public $columns;
-    /**
-     * @var
-     * marker check function
-     */
+    /** column definitions (head, type, order) */
+    public $columns = [];
+    protected $rowGroup = [];
+    /** Callable marker check function */
     public $marker;
-    /**
-     * @var
-     */
-    public $marker_txt;
-    /**
-     * @var
-     */
-    public $marker_class;
-    /**
-     * @var
-     */
-    public $notice_class;
-    /**
-     * @var string
-     * table width (default '95%')
-     */
+    /** @var */
+    public $marker_class = 'overduebg';
+    /** @var */
+    public $notice_class = 'overduefg';
+    /** @var string table width (default '95%') */
     public $width = "80%";
-    /**
-     * @var
-     */
+    /** @var */
     public $footer_class;
-    /**
-     * @var array
-     */
+    /** @var array */
     public $data = [];
-    /**
-     * @var
-     */
+    /** @var */
     public $curr_page = 1;
-    /**
-     * @var
-     */
+    /** @var */
     public $max_page = 1;
-    /**
-     * @var
-     */
+    /** @var */
     public $last_page;
-    /**
-     * @var
-     */
+    /** @var */
     public $prev_page;
-    /**
-     * @var
-     */
+    /** @var */
     public $next_page;
-    /**
-     * @var
-     */
+    /** @var */
     public $first_page;
-    /**
-     * @var int|?
-     */
+    /** @var int|? */
     public $page_length = 1;
-    /**
-     * @var
-     */
+    /** @var */
     public $rec_count = 0;
-    /**
-     * @var
-     */
+    /** @var */
     public $select;
-    /**
-     * @var
-     */
+    /** @var */
     public $where;
-    /**
-     * @var
-     */
+    /** @var */
     public $from;
-    /**
-     * @var
-     */
+    /** @var */
     public $group;
-    /**
-     * @var
-     */
+    /** @var */
     public $order;
-    /**
-     * @var
-     */
+    /** @var */
     public $extra_where;
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $ready;
-    /**
-     * @var bool
-     * this var is false after change in sql before first
-
-    and before first query.
-     */
-    public $inactive_ctrl = false;
     public $showInactive = null;
-    /**
-     * @var
-     */
-    public $main_tbl;
-    /**
-     * @var
-     * table and key field name for inactive ctrl and edit/delete links
-     * key field name
-     * DB_Pager constructor
-     * accepts $sql like 'SELECT ...[FROM ...][WHERE ...][GROUP ...][ORDER ...]'
-     * $name is base name for pager controls
-     */
-    public $key;
     public $type;
     public $id;
     public $rowFunction;
@@ -167,16 +95,11 @@
     /**
      * @param      $sql
      * @param      $name
-     * @param null $table
-     * @param int  $page_length
      */
-    public function __construct($sql, $name, $table = null, $page_length = 0) {
+    public function __construct($sql, $name) {
       $this->width;
-      if ($page_length == 0) {
-        $page_length = static::$User->_query_size();
-      }
+      $this->page_length = static::$User->_query_size();
       $this->name        = $name;
-      $this->page_length = $page_length;
       $this->setSQL($sql);
     }
     /**
@@ -198,9 +121,6 @@
       $headers = $this->makeHeaders();
       $class   = $this->class ? : 'padded grid width' . rtrim($this->width, '%');
       Table::start($class);
-      if (isset($this->marker_txt)) {
-        Event::warning($this->marker_txt, 0, 1, "class='$this->notice_class'");
-      }
       $this->displayHeaders($headers);
       foreach ($this->data as $row) {
         $this->displayRow($row);
@@ -229,7 +149,29 @@
           $this->max_page  = $this->page_length ? ceil($this->rec_count / $this->page_length) : 0;
           $this->setPage(1);
         } elseif ($this->type == self::ARR) {
-          $this->rec_count  = count($this->sql);
+          $this->rec_count = count($this->sql);
+          $ord             = $this->rowGroup;
+          $fields          = array_keys($this->sql[0]);
+          $count           = 0;
+          foreach ($this->columns as $col) {
+            if (isset($col['ord'])) {
+              if ($col['ord'] != '') {
+                $ord[] = $count;
+              }
+            }
+            $count++;
+          }
+          if ($ord) {
+            foreach ($this->sql as $key => $row) {
+              foreach ($ord as $index) {
+                $args[$fields[$index - 1]][$key] = $row[$fields[$index - 1]];
+              }
+              $args[] = SORT_ASC;
+            }
+            $args[] =& $this->sql;
+            var_dump($args);
+            call_user_func_array('array_multisort', $args);
+          }
           $this->max_page   = $this->page_length ? ceil($this->rec_count / $this->page_length) : 0;
           $this->curr_page  = $this->curr_page ? : 1;
           $this->next_page  = ($this->curr_page < $this->max_page) ? $this->curr_page + 1 : null;
@@ -271,8 +213,8 @@
       $inactive = !static::$Input->post('show_inactive');
       foreach ($this->columns as $num_col => $col) {
         // record status control column is displayed only when control checkbox is on
-        if (isset($col['head']) && ($col['type'] != 'inactive' || $inactive)) {
-          if ($col['type'] == 'active' && $this->showInactive === false) {
+        if (isset($col['head']) && $inactive) {
+          if ($col['type'] == 'inactive' && $this->showInactive === false) {
             continue;
           }
           if (!isset($col['ord'])) {
@@ -289,8 +231,9 @@
             default:
               $icon = '';
           }
-          $html      = new HTML;
-          $headers[] = $this->navi($this->name . '_sort_' . $num_col, $html, $this->name . '_sort_' . $num_col, $col['head'], true, $col['head'] . $icon);
+          $html = new HTML;
+          $this->navi($this->name . '_sort_' . $num_col, $html, $this->name . '_sort_' . $num_col, $col['head'], true, $col['head'] . $icon);
+          $headers[] = (string) $html;
         }
       }
       return $headers;
@@ -311,20 +254,12 @@
       $inact   = '';
       if ($this->showInactive !== null) {
         $inact = $this->formatInactiveFooter();
-      } elseif ($this->inactive_ctrl == true) {
-        $inact = Forms::checkbox(null, 'show_inactive', null, true);
-      }
-      if ($inact) {
-        $inact .= _("Show also Inactive");
       }
       $html = new HTML();
       $html->tr(['class'=> 'navibar']);
       $html->td(['colspan'=> $colspan, 'class'=> 'navibar']);
       if ($this->rec_count) {
         $button_prefix = $this->name . '_page_';
-        if ($this->inactive_ctrl) {
-          Forms::submit('Update', _('Update'), true, '', null);
-        } // inactive update
         $html->span(null, ['class'=> 'floatright']);
         $this->generateNavigation($id, $button_prefix, $html);
         $html->_span();
@@ -347,7 +282,8 @@
      * @return mixed
      */
     protected function displayRow($row) {
-      if ($this->marker && is_callable($this->marker) && call_user_func($this->marker, $row)) {
+      if (
+is_callable($this->marker) && call_user_func($this->marker, $row)) {
         echo "<tr class='$this->marker_class'>";
       } elseif (is_callable($this->rowFunction)) {
         echo call_user_func($this->rowFunction, $row);
@@ -400,11 +336,6 @@
             Cell::label(Num::_format($cell, static::$User->_exrate_dec()), "class='$class center'");
             break;
           case 'inactive':
-            if (static::$Input->post('show_inactive')) {
-              $this->inactiveControlCell($row);
-            }
-            break;
-          case 'active':
             $this->formatInactive($row);
             break;
           case 'id':
@@ -429,7 +360,7 @@
      */
     protected function formatInactiveFooter() {
       $checked = ($this->showInactive) ? 'checked' : '';
-      $field   = '<input ' . $checked . ' type="checkbox" name="_action" value="showInactive" onclick="JsHttpRequest.request(this)">';
+      $field   = '<label><input ' . $checked . ' type="checkbox" name="_action" value="showInactive" onclick="JsHttpRequest.request(this)"> Show also inactive</label>';
       Ajax::_activate("_{$this->name}_span");
       return $field;
     }
@@ -444,37 +375,6 @@
       $this->setPage($page);
       $this->query();
       return true;
-    }
-    /**
-     * @param $row
-     *
-     * @return string
-     * Helper for display inactive control cells
-
-     */
-    protected function inactiveControlCell(&$row) {
-      if ($this->inactive_ctrl) {
-        //	return inactiveControlCell($row[$this->inactive_ctrl['key']],
-        // $row['inactive'], $this->inactive_ctrl['table'],
-        // $this->inactive_ctrl['key']);
-        $key   = $this->key ? $this->key : $this->columns[0]['name']; // TODO - support for complex keys
-        $id    = $row[$key];
-        $table = $this->main_tbl;
-        $name  = "Inactive" . $id;
-        $value = $row['inactive'] ? 1 : 0;
-        if (static::$Input->post('show_inactive')) {
-          if (isset($_POST['LInact'][$id]) && (static::$Input->post('_Inactive' . $id . '_update') || static::$Input->post('Update')) && (static::$Input->hasPost(
-            'Inactive' . $id
-          ) != $value)
-          ) {
-            static::$DB->_updateRecordStatus($id, !$value, $table, $key);
-            $value = !$value;
-          }
-          echo '<td class="center">' . Forms::checkbox(null, $name, $value, true, '', "class='center'") . Forms::hidden("LInact[$id]", $value, false) . '</td>';
-        }
-      } else {
-        echo '';
-      }
     }
     /**
      * @param $row
@@ -512,9 +412,7 @@
         // setting field names for subsequent queries
         // add result field names to column defs for
         // col value retrieve and sort purposes
-        while ($row = static::$DB->_fetchAssoc($result)) {
-          $this->data[] = $row;
-        }
+        $this->data = static::$DB->_fetchAll();
       } elseif ($this->type == self::ARR) {
         $offset = ($this->curr_page - 1) * $this->page_length;
         if ($offset + $this->page_length >= $this->rec_count) {
@@ -626,70 +524,51 @@
      * Set column definitions
      * types: inactive|skip|insert
      *
-     * @param array  $flds array( fldname1, fldname2=>type,...)
+     * @param $columns
      */
-    protected function setColumns($flds) {
-      $this->columns = [];
-      if (!is_array($flds)) {
-        $flds = array($flds);
-      }
-      foreach ($flds as $colnum => $coldef) {
-        if (is_string($colnum)) { // 'colname'=>params
-          $h = $colnum;
-          $c = $coldef;
-        } else { // n=>params
-          if (is_array($coldef)) {
-            $h = '';
-            $c = $coldef;
-          } else {
-            $h = $coldef;
-            $c = 'text';
-          }
+    protected function setColumns($columns) {
+      $columns = (array) $columns;
+      foreach ($columns as $colindex => $coldef) {
+        if (is_string($colindex)) { // 'colname'=>params
+          $coldef['head'] = $colindex;
+          $c              = $coldef;
+        } elseif (is_array($coldef)) {
+          $coldef['head'] = '';
+          $c              = $coldef;
+        } else {
+          $c = [
+            'head' => $coldef,
+            'type' => 'text'
+          ];
         }
         if (is_string($c)) // params is simple column type
         {
-          $c = array('type' => $c);
+          $c = ['type' => $c];
         }
         if (!isset($c['type'])) {
           $c['type'] = 'text';
         }
         switch ($c['type']) {
           case 'inactive':
-            $this->inactive_ctrl = true;
-            $c['head']           = $h;
-            break;
-          case 'active':
             if ($this->showInactive === null) {
               $this->showInactive = false;
             }
-            $c['head'] = $h;
+            break;
+          case 'group':
+            $this->rowGroup[] = count($this->columns) + 1;
             break;
           case 'insert':
           default:
-            $c['head'] = $h;
             break;
           case 'skip': // skip the column (no header)
             unset($c['head']);
             break;
         }
         if (isset($coldef['fun'])) {
-          $c['funkey'] = $colnum;
+          $c['funkey'] = $colindex;
         }
         $this->columns[] = $c;
       }
-    }
-    /***
-     * @param        $func
-     * @param string $notice
-     * @param string $markercl
-     * @param string $msgclass
-     * Set check function to mark some rows.
-     */
-    public function setMarker($func, $notice = '', $markercl = 'overduebg', $msgclass = 'overduefg') {
-      $this->marker       = $func;
-      $this->marker_txt   = $notice;
-      $this->marker_class = $markercl;
-      $this->notice_class = $msgclass;
     }
     /**
      * @param $sql
@@ -755,10 +634,10 @@
      * in order asc->desc->none->asc
      */
     protected function sortTable($col) {
-      if ($this->type == self::ARR) {
-        $this->query();
-        return true;
-      }
+      /*    if ($this->type == self::ARR) {
+            $this->query();
+            return true;
+          }*/
       if (is_null($col)) {
         return false;
       }
@@ -798,7 +677,8 @@
       if ($group) {
         $sql .= " GROUP BY $group";
       }
-      $ord = [];
+
+      $ord = $this->rowGroup;
       foreach ($this->columns as $col) {
         if (isset($col['ord'])) {
           if ($col['ord'] != '' && isset($col['name'])) {
@@ -808,11 +688,9 @@
       }
       if (count($ord)) {
         $sql .= " ORDER BY " . implode($ord, ',');
-      } else {
-        if ($order) {
-          $sql .= " ORDER BY $order";
-        } // original base query order
-      }
+      } elseif ($order) {
+        $sql .= " ORDER BY $order";
+      } // original base query order
       $page_length = $this->page_length;
       $offset      = ($this->curr_page - 1) * $page_length;
       $sql .= " LIMIT $offset, $page_length";
@@ -834,12 +712,6 @@
      * @return string
      */
     public static function link($link_text, $url, $icon = false) {
-      if (static::$User->_graphic_links() && $icon) {
-        $link_text = Forms::setIcon($icon, $link_text);
-      }
-      $href = '/' . ltrim($url, '/');
-      $href = (static::$Input->request('frame')) ? "javascript:window.parent.location='$href'" : $href;
-      return '<a href="' . e($href) . '" class="button">' . $link_text . "</a>";
     }
     /**
      * @static
@@ -847,14 +719,10 @@
      * @param      $name
      * @param      $sql
      * @param      $coldef
-     * @param null $table
-     * @param null $key
-     * @param int  $page_length
-     * @param null $sort
      *
      * @return DB_Pager
      */
-    public static function newPager($name, $sql, $coldef, $table = null, $key = null, $page_length = 0, $sort = null) {
+    public static function newPager($name, $sql, $coldef) {
       if (!isset($_SESSION['pager'])) {
         $_SESSION['pager'] = [];
       }
@@ -873,12 +741,9 @@
         }
       }
       if (!isset($pager)) {
-        $pager           = new static($sql, $name, $table, $page_length);
-        $pager->main_tbl = $table;
-        $pager->key      = $key;
+        $pager = new static($sql, $name);
         $pager->setSQL($sql);
         $pager->setColumns($coldef);
-        $pager->sortTable($sort);
         $_SESSION['pager'][$name] = $pager;
       }
       foreach ($pager->columns as &$column) {

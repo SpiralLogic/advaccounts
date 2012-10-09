@@ -70,8 +70,8 @@
     protected function generateTableCols() {
       $cols = [
         ['type'=> 'skip'],
-        'Name',
-        'inactive'   => ['type'=> 'active'],
+        'Name'       => ['type'=> 'group'],
+        'inactive'   => ['type'=> 'inactive'],
         ['type'=> 'skip'],
         'Units',
         ['type'=> 'skip'],

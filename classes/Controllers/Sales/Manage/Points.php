@@ -51,7 +51,7 @@
         'Credit Sale'=> ['type'=> 'bool'],
         'Location',
         'Account',
-        'Inactive'   => ['type', 'active'],
+        'Inactive'   => ['type', 'inactive'],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
       ];

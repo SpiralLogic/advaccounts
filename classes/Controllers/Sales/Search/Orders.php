@@ -2,6 +2,7 @@
   namespace ADV\Controllers\Sales\Search;
 
   use ADV\App\Debtor\Debtor;
+  use ADV\Core\Event;
   use DB_Pager;
   use ADV\Core\Arr;
   use ADV\App\Dates;
@@ -295,9 +296,11 @@
         }
       }
       Arr::append($cols, [['insert' => true, 'fun' => [$this, 'formatDropdown']]]);
-      $table = DB_Pager::newPager('orders_tbl', $sql, $cols, null, null, 0, 4);
-      $table->setMarker([$this, 'formatMarker'], _("Marked items are overdue."));
+      $table = DB_Pager::newPager('orders_tbl', $sql, $cols);
+      $table->marker      = [$this, 'formatMarker'];
       $table->width = "90%";
+      Event::warning(_("Marked items are overdue."), false);
+
       $table->display($table);
     }
     /**
@@ -307,10 +310,11 @@
      */
     function formatMarker($row) {
       if ($this->trans_type == ST_SALESQUOTE) {
-        return (Dates::_isGreaterThan(Dates::_today(), Dates::_sqlToDate($row['delivery_date'])));
+        $mark = (Dates::_isGreaterThan(Dates::_today(), Dates::_sqlToDate($row['delivery_date'])));
       } else {
-        return ($row['type'] == 0 && Dates::_isGreaterThan(Dates::_today(), Dates::_sqlToDate($row['delivery_date'])) && ($row['TotDelivered'] < $row['TotQuantity']));
+        $mark = ($row['type'] == 0 && Dates::_isGreaterThan(Dates::_today(), Dates::_sqlToDate($row['delivery_date'])) && ($row['TotDelivered'] < $row['TotQuantity']));
       }
+      return $mark;
     }
     /**
      * @param $row
@@ -374,7 +378,7 @@
      */
     function formatEditBtn($row) {
       /** @noinspection PhpUndefinedConstantInspection */
-      return DB_Pager::link(_("Edit"), "/sales/order?update=" . $row['order_no'] . "&type=" . $row['trans_type'], ICON_EDIT);
+      return Display::link_button(_("Edit"), "/sales/order?update=" . $row['order_no'] . "&type=" . $row['trans_type'], ICON_EDIT);
     }
     /**
      * @param $row

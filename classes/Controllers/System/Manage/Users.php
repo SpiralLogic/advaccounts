@@ -44,7 +44,7 @@
     protected function formContents(Form $form, View $view) {
       $view['title'] = 'Users';
       $form->hidden('id');
-      $form->text('user_id')->label('User ID:')->focus();
+      $form->text('user_id')->label('User ID:')->focus($this->action==EDIT);
       $form->text('real_name')->label('Name:');
       $form->text('phone')->label('Telephone number:');
       $form->text('email')->label('Email Address:');
@@ -67,7 +67,7 @@
         _("Email"),
         _("Last Visit Date"),
         _("Role"),
-        _('Inactive')=> ['type'=> "active"],
+        _('Inactive')=> ['type'=> 'inactive'],
         ['insert'=> true, "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['insert'=> true, "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']]
       );

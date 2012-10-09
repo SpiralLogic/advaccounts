@@ -256,7 +256,7 @@
      * @return string
      */
     public static function alloc_link($row) {
-      return DB_Pager::link(_("Allocate"), "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
+      return Display::link_button(_("Allocate"), "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
     }
     /**
      * @static

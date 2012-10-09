@@ -11,7 +11,6 @@
 
   use ADV\App\Controller\Manage;
   use Item_Unit;
-  use ADV\App\Display;
   use ADV\App\Validation;
   use ADV\App\UI;
   use ADV\App\Item\Purchase;

@@ -16,7 +16,7 @@
     $trans_type = ST_LOCTRANSFER;
     Event::success(_("Inventory transfer has been processed"));
     Display::note(GL_UI::viewTrans($trans_type, $trans_no, _("&View this transfer")));
-    Display::link_no_params($_SERVER['DOCUMENT_URI'], _("Enter &Another Inventory Transfer"));
+    Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter &Another Inventory Transfer"));
     Page::footer_exit();
   }
   if (isset($_POST['Process'])) {

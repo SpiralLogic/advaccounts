@@ -1,5 +1,7 @@
 <?php
   use ADV\Core\Input\Input;
+  use ADV\Core\Event;
+  use ADV\App\Dates;
   use ADV\Core\DB\DB;
   use ADV\Core\Table;
   use ADV\Core\Ajax;
@@ -60,9 +62,6 @@
    *
    * @return bool
    */
-  function checkOverdue($row) {
-    return (!$row["closed"] && Dates::_differenceBetween(Dates::_today(), Dates::_sqlToDate($row["required_by"]), "d") > 0);
-  }
 
   /**
    * @param $dummy
@@ -99,7 +98,7 @@
    * @return string
    */
   function edit_link($row) {
-    return $row['closed'] ? '<i>' . _('Closed') . '</i>' : DB_Pager::link(_("Edit"), "/manufacturing/work_order_entry.php?trans_no=" . $row["id"], ICON_EDIT);
+    return $row['closed'] ? '<i>' . _('Closed') . '</i>' : Display::link_button(_("Edit"), "/manufacturing/work_order_entry.php?trans_no=" . $row["id"], ICON_EDIT);
   }
 
   /**
@@ -108,8 +107,8 @@
    * @return string
    */
   function release_link($row) {
-    return $row["closed"] ? '' : ($row["released"] == 0 ? DB_Pager::link(_('Release'), "/manufacturing/work_order_release.php?trans_no=" . $row["id"]) :
-      DB_Pager::link(_('Issue'), "/manufacturing/work_order_issue.php?trans_no=" . $row["id"]));
+    return $row["closed"] ? '' : ($row["released"] == 0 ? Display::link_button(_('Release'), "/manufacturing/work_order_release.php?trans_no=" . $row["id"]) :
+      Display::link_button(_('Issue'), "/manufacturing/work_order_issue.php?trans_no=" . $row["id"]));
   }
 
   /**
@@ -118,7 +117,7 @@
    * @return string
    */
   function produce_link($row) {
-    return $row["closed"] || !$row["released"] ? '' : DB_Pager::link(_('Produce'), "/manufacturing/work_order_add_finished.php?trans_no=" . $row["id"]);
+    return $row["closed"] || !$row["released"] ? '' : Display::link_button(_('Produce'), "/manufacturing/work_order_add_finished.php?trans_no=" . $row["id"]);
   }
 
   /**
@@ -130,11 +129,11 @@
     /*
 
                            return $row["closed"] || !$row["released"] ? '' :
-                             DB_Pager::link(_('Costs'),
+                             Display::link_button(_('Costs'),
                                "/banking/banking?NewPayment=1&PayType="
                                .PT_WORKORDER. "&PayPerson=" .$row["id"]);
                          */
-    return $row["closed"] || !$row["released"] ? '' : DB_Pager::link(_('Costs'), "/manufacturing/work_order_costs.php?trans_no=" . $row["id"]);
+    return $row["closed"] || !$row["released"] ? '' : Display::link_button(_('Costs'), "/manufacturing/work_order_costs.php?trans_no=" . $row["id"]);
   }
 
   /**
@@ -195,7 +194,7 @@
     $Today = Dates::_today(true);
     $sql .= " AND workorder.required_by < '$Today' ";
   }
-  $cols  = array(
+  $cols          = array(
     _("#")               => array('fun' => 'view_link'),
     _("Reference"),
     // viewlink 2 ?
@@ -236,9 +235,13 @@
       'fun'    => 'view_gl_link'
     )
   );
-  $table = DB_Pager::newPager('orders_tbl', $sql, $cols);
-  $table->setMarker('checkOverdue', _("Marked orders are overdue."));
-  $table->width = "90%";
+  $table         = DB_Pager::newPager('orders_tbl', $sql, $cols);
+  $table->marker = function ($row) {
+    return (!$row["closed"] && Dates::_differenceBetween(Dates::_today(), Dates::_sqlToDate($row["required_by"]), "d") > 0);
+  };
+  Event::warning(_("Marked orders are overdue."), false);
+
+  $table->width  = "90%";
   $table->display($table);
   Forms::end();
   Page::end();

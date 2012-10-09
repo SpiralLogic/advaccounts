@@ -220,7 +220,7 @@
     public function can_receive() {
       if (count($this->line_items) <= 0) {
         Event::error(_("You are not currenty receiving an order."));
-        Display::link_no_params("/purchases/search/orders", _("Select a purchase order to receive goods."));
+        Display::link_params("/purchases/search/orders", _("Select a purchase order to receive goods."));
         Page::footer_exit();
       }
       if (!Dates::_isDate($_POST['DefaultReceivedDate'])) {

@@ -97,7 +97,7 @@
       );
     }
     /**
-     * @covers ADV\App\Display::link_no_params
+     * @covers ADV\App\Display::link_params
      * @todo   Implement testLink_no_params().
      */
     public function testLink_no_params() {
@@ -107,7 +107,7 @@
       );
     }
     /**
-     * @covers ADV\App\Display::link_no_params_td
+     * @covers ADV\App\Display::link_params_td
      * @todo   Implement testLink_no_params_td().
      */
     public function testLink_no_params_td() {

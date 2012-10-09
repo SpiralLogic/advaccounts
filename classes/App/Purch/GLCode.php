@@ -8,33 +8,19 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class Purch_GLCode {
-    /**
-     * @var
-     */
+/** @var */
     public $counter;
-    /**
-     * @var
-     */
+/** @var */
     public $gl_code;
-    /**
-     * @var
-     */
+/** @var */
     public $gl_act_name;
-    /**
-     * @var
-     */
+/** @var */
     public $gl_dim;
-    /**
-     * @var
-     */
+/** @var */
     public $gl_dim2;
-    /**
-     * @var
-     */
+/** @var */
     public $amount;
-    /**
-     * @var
-     */
+/** @var */
     public $memo_;
     /**
      * @param $counter

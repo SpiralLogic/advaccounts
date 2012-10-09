@@ -41,18 +41,14 @@
      * @var string
      */
     public $name = '';
-    /**
-     * @var
-     */
+    /** @var */
     public $sales_type = 1;
     /**
      * @var string
      */
     public $debtor_ref = '';
     public $type = CT_CUSTOMER;
-    /**
-     * @var
-     */
+    /** @var */
     public $credit_status = 1;
     /**
      * @var int
@@ -78,29 +74,19 @@
      * @var \Debtor_Account
      */
     public $accounts;
-    /**
-     * @var
-     */
+    /** @var */
     public $transactions;
     /**
      * @var null
      */
     public $webid = null;
-    /**
-     * @var
-     */
+    /** @var */
     public $email;
-    /**
-     * @var
-     */
+    /** @var */
     public $inactive = 0;
-    /**
-     * @var
-     */
+    /** @var */
     public $debtor_id = 0;
-    /**
-     * @var
-     */
+    /** @var */
     public $notes = '';
     /**
      * @var string

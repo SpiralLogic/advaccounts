@@ -2,7 +2,6 @@
   namespace ADV\Controllers\Items\Manage;
 
   use ADV\App\Inv\Location;
-  use ADV\App\Page;
   use ADV\App\Form\Form;
   use ADV\Core\View;
 
@@ -60,7 +59,7 @@
         _("Fax"),
         _("Email"),
         ['type'=> 'skip'],
-        _("Inactive")=> ['type'=> 'active'],
+        _("Inactive")=> ['type'=> 'inactive'],
         _("type"),
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
