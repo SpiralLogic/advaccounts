@@ -140,8 +140,8 @@
         $cols[_("Supplier")]    = 'skip';
         $cols[_("Currency")]    = 'skip';
       }
-      $table         = DB_Pager::newPager('doc_tbl', $sql, $cols);
-      $table->marker = [$this, 'formatMarker'];
+      $table              = DB_Pager::newPager('doc_tbl', $sql, $cols);
+      $table->rowFunction = [$this, 'formatMarker'];
       Event::warning(_("Marked items are overdue."), false);
 
       $table->width = "90";
@@ -152,8 +152,10 @@
      *
      * @return bool
      */
-    public function formatMarker($row) {
-      return $row['OverDue'] == 1 && $row['TotalAmount'] > $row['Allocated'];
+    public function formatMarker($row, $pager) {
+      if ($row['OverDue'] == 1 && $row['TotalAmount'] > $row['Allocated']) {
+        return "<tr class='$pager->marker_class'>";
+      }
     }
     /**
      * @param $dummy

@@ -268,14 +268,4 @@
     public static function amount_left($row) {
       return Num::_priceFormat($row["Total"] - $row["alloc"]);
     }
-    /**
-     * @static
-     *
-     * @param $row
-     *
-     * @return bool
-     */
-    public static function check_settled($row) {
-      return $row['settled'] == 1;
-    }
   }

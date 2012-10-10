@@ -137,9 +137,9 @@
       if (!$this->filterType || !$this->isQuickSearch) {
         $cols[_("RB")] = 'skip';
       }
-      $table         = DB_Pager::newPager('trans_tbl', $sql, $cols);
-      $table->marker = [$this, 'formatMarker'];
-      $table->width  = "85%";
+      $table              = DB_Pager::newPager('trans_tbl', $sql, $cols);
+      $table->rowFunction = [$this, 'formatMarker'];
+      $table->width       = "85%";
       Event::warning(_("Marked items are overdue."), false);
       $table->display($table);
       UI::emailDialogue(CT_CUSTOMER);
@@ -370,8 +370,10 @@
      *
      * @return bool
      */
-    public function formatMarker($row) {
-      return (isset($row['OverDue']) && $row['OverDue'] == 1) && (Num::_round($row["TotalAmount"] - $row["Allocated"], 2) != 0);
+    public function formatMarker($row, $pager) {
+      if ((isset($row['OverDue']) && $row['OverDue'] == 1) && (Num::_round($row["TotalAmount"] - $row["Allocated"], 2) != 0)) {
+        return "<tr class='$pager->marker_class'>";
+      }
     }
     /**
      * @param $row

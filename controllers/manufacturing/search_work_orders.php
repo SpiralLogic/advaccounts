@@ -194,7 +194,7 @@
     $Today = Dates::_today(true);
     $sql .= " AND workorder.required_by < '$Today' ";
   }
-  $cols          = array(
+  $cols               = array(
     _("#")               => array('fun' => 'view_link'),
     _("Reference"),
     // viewlink 2 ?
@@ -235,13 +235,15 @@
       'fun'    => 'view_gl_link'
     )
   );
-  $table         = DB_Pager::newPager('orders_tbl', $sql, $cols);
-  $table->marker = function ($row) {
-    return (!$row["closed"] && Dates::_differenceBetween(Dates::_today(), Dates::_sqlToDate($row["required_by"]), "d") > 0);
+  $table              = DB_Pager::newPager('orders_tbl', $sql, $cols);
+  $table->rowFunction = function ($row, $pager) {
+    if (!$row["closed"] && Dates::_differenceBetween(Dates::_today(), Dates::_sqlToDate($row["required_by"]), "d") > 0) {
+      return "<tr class='$pager->marker_class'>";
+    }
   };
   Event::warning(_("Marked orders are overdue."), false);
 
-  $table->width  = "90%";
+  $table->width = "90%";
   $table->display($table);
   Forms::end();
   Page::end();

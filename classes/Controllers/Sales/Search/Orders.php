@@ -296,9 +296,9 @@
         }
       }
       Arr::append($cols, [['insert' => true, 'fun' => [$this, 'formatDropdown']]]);
-      $table = DB_Pager::newPager('orders_tbl', $sql, $cols);
-      $table->marker      = [$this, 'formatMarker'];
-      $table->width = "90%";
+      $table              = DB_Pager::newPager('orders_tbl', $sql, $cols);
+      $table->rowFunction = [$this, 'formatMarker'];
+      $table->width       = "90%";
       Event::warning(_("Marked items are overdue."), false);
 
       $table->display($table);
@@ -308,13 +308,15 @@
      *
      * @return callable
      */
-    function formatMarker($row) {
+    function formatMarker($row, $pager) {
       if ($this->trans_type == ST_SALESQUOTE) {
         $mark = (Dates::_isGreaterThan(Dates::_today(), Dates::_sqlToDate($row['delivery_date'])));
       } else {
         $mark = ($row['type'] == 0 && Dates::_isGreaterThan(Dates::_today(), Dates::_sqlToDate($row['delivery_date'])) && ($row['TotDelivered'] < $row['TotQuantity']));
       }
-      return $mark;
+      if ($mark) {
+        return "<tr class='$pager->marker_class'>";
+      }
     }
     /**
      * @param $row

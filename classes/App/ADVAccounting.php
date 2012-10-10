@@ -1,7 +1,17 @@
 <?php
+  /**
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
+
   namespace ADV\App;
 
   use ADV\Core\JS;
+  use DB_Pager;
   use DB_Company;
   use ADV\Core\Cache\APC;
   use ADV\Core\Event;
@@ -16,35 +26,27 @@
   use ADV\Core\DB\DB;
 
   /**
-   * PHP version 5.4
-   * @category  PHP
-   * @package   adv.accounts.app
-   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-   * @copyright 2010 - 2012
-   * @link      http://www.advancedgroup.com.au
-   **/
-  /**
    * @method static \ADV\App\ADVAccounting i()
    */
   class ADVAccounting {
     use \ADV\Core\Traits\Singleton;
 
     public $applications = [];
+    public $buildversion;
     /** var Application*/
     public $selected;
     /** @var Menu */
     public $menu;
-    public $buildversion;
-    /** @var User $user */
-    protected $User = null;
-    /** @var Input $user */
-    protected $Input = null;
-    /** @var Config $Config */
-    protected $Config = null;
-    /** @var \ADV\Core\Session $Session*/
-    protected $Session = null;
     /** @var Ajax */
     protected $Ajax = null;
+    /** @var Config $Config */
+    protected $Config = null;
+    /** @var Input $user */
+    protected $Input = null;
+    /** @var \ADV\Core\Session $Session*/
+    protected $Session = null;
+    /** @var User $user */
+    protected $User = null;
     protected $controller = null;
     /** */
     public function __construct(\ADV\Core\Loader $loader) {
@@ -166,6 +168,34 @@
           $cache    = $c->offsetGet('Cache');
           $db       = new \ADV\Core\DB\DB($dbconfig, $cache);
           return $db;
+        }
+      );
+      $dic->offsetSet(
+        'Pager',
+        function (\ADV\Core\DIC $c, $name, $sql, $coldef) {
+          if (!isset($_SESSION['pager'])) {
+            $_SESSION['pager'] = [];
+          }
+          if (isset($_SESSION['pager'][$name])) {
+            $pager = $_SESSION['pager'][$name];
+            if ($pager->sql != $sql) {
+              unset($pager); // kill pager if sql has changed
+            } elseif ($pager->rec_count != count($sql)) {
+              unset($pager);
+            }
+          }
+          if (!$pager || $pager instanceof DB_Pager) {
+            $pager = new DB_Pager($name, $sql, $coldef);
+          }
+          \DB_Pager::$Input = $c->offsetGet('Input');
+          \DB_Pager::$JS    = $c->offsetGet('JS');
+          \DB_Pager::$Dates = $c->offsetGet('Dates');
+          \DB_Pager::$DB    = $c->offsetGet('DB');
+          /** @var User $user  */
+          $user                     = $c->offsetGet('User');
+          $pager->page_length       = $user->prefs->query_size;
+          $_SESSION['pager'][$name] = $pager;
+          return $pager;
         }
       );
       ob_start([$this, 'flush_handler'], 0);

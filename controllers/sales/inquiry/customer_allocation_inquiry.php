@@ -179,10 +179,12 @@
     array_shift($cols);
   }
   $table = DB_Pager::newPager('doc_tbl', $sql, $cols);
-  $table->marker      =
-    function ($row) {
-      return $row['OverDue'] == 1 && \ADV\Core\Num::_priceFormat(abs($row["TotalAmount"]) - $row["Allocated"]);
-    };
+  $table->rowFunction
+         = function ($row, $pager) {
+    if ($row['OverDue'] == 1 && \ADV\Core\Num::_priceFormat(abs($row["TotalAmount"]) - $row["Allocated"])) {
+      return "<tr class='$pager->marker_class'>";
+    }
+  };
   \ADV\Core\Event::warning(_("Marked items are overdue."), false);
   $table->width = "85%";
   $table->display($table);

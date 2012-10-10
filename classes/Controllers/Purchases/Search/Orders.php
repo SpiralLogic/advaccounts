@@ -128,9 +128,9 @@
       if (!$this->stock_location) {
         $cols[_("Location")] = 'skip';
       }
-      $table         = DB_Pager::newPager('orders_tbl', $sql, $cols);
-      $table->marker = [$this, 'formatMarker'];
-      $table->width  = "85%";
+      $table              = DB_Pager::newPager('orders_tbl', $sql, $cols);
+      $table->rowFunction = [$this, 'formatMarker'];
+      $table->width       = "85%";
       $table->display($table);
     }
     /**
@@ -138,14 +138,12 @@
      *
      * @return callable
      */
-    public function formatMarker($row) {
+    public function formatMarker($row, $pager) {
       $mark = $row['OverDue'] == 1;
-      ;
       if ($mark) {
         Event::warning(_("Marked orders have overdue items."), false);
+        return "<tr class='$pager->marker_class'>";
       }
-
-      return $mark;
     }
     /**
      * @param $row

@@ -150,8 +150,8 @@
         }
         unset($_SESSION['Batch']);
       }
-      $table         = DB_Pager::newPager('deliveries_tbl', $sql, $cols);
-      $table->marker = [$this, 'formatMarker'];
+      $table              = DB_Pager::newPager('deliveries_tbl', $sql, $cols);
+      $table->rowFunction = [$this, 'formatMarker'];
       Event::warning(_("Marked items are overdue."), false);
 
       $table->display($table);
@@ -161,8 +161,10 @@
      *
      * @return bool
      */
-    public function formatMarker($row) {
-      return Dates::_isGreaterThan(Dates::_today(), Dates::_sqlToDate($row["due_date"])) && $row["Outstanding"] != 0;
+    public function formatMarker($row, $pager) {
+      if (Dates::_isGreaterThan(Dates::_today(), Dates::_sqlToDate($row["due_date"])) && $row["Outstanding"] != 0) {
+        return "<tr class='$pager->marker_class'>";
+      }
     }
     /**
      * @param $row

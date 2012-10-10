@@ -102,10 +102,12 @@
     $cols[_("Supplier")] = 'skip';
     $cols[_("Currency")] = 'skip';
   }
-  $table               = DB_Pager::newPager('alloc_tbl', $sql, $cols);
+  $table = DB_Pager::newPager('alloc_tbl', $sql, $cols);
   Event::warning(_("Marked items are settled."), false);
-  $table->marker       = function ($row) {
-    return $row['settled'] == 1;
+  $table->rowFunction  = function ($row, $pager) {
+    if ($row['settled'] == 1) {
+      return "<tr class='$pager->marker_class'>";
+    }
   };
   $table->marker_class = 'settledbg';
   $table->notice_class = 'settledfg';

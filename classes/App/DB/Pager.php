@@ -1,15 +1,14 @@
 <?php
   use ADV\Core\Cell;
+  use ADV\Core\DIC;
+  use ADV\Core\DB\DB;
+  use ADV\App\Dates;
+  use ADV\Core\JS;
+  use ADV\Core\Input\Input;
   use ADV\Core\Num;
   use ADV\Core\HTML;
-  use ADV\App\Dates;
   use ADV\App\Forms;
-  use ADV\App\User;
-  use ADV\Core\JS;
   use ADV\Core\Ajax;
-  use ADV\Core\DB\DB;
-  use ADV\Core\Input\Input;
-  use ADV\Core\Table;
 
   /**
    * PHP version 5.4
@@ -25,8 +24,6 @@
 
    */
   class DB_Pager {
-    /** @var \ADV\App\User */
-    static $User;
     /** @var \ADV\Core\DB\DB */
     static $DB;
     /** @var Input */
@@ -34,7 +31,7 @@
     /** @var JS */
     static $JS;
     /** @var Dates */
-    static $dates;
+    static $Dates;
     const SQL = 1;
     const ARR = 2;
     /** @var */
@@ -90,52 +87,50 @@
     public $type;
     public $id;
     public $rowFunction;
-    public $class;
+    public $class = 'padded grid ';
     protected $hasBar = false;
+    /**
+     * @static
+     *
+     * @param      $name
+     * @param      $sql
+     * @param      $coldef
+     *
+     * @return DB_Pager
+     */
+    public static function newPager($name, $sql, $coldef) {
+      $pager = DIC::get('Pager', $name, $sql, $coldef);
+      if (is_array($sql)) {
+        $pager->sql       = $sql;
+        $pager->rec_count = count($pager->sql);
+        $pager->max_page  = $pager->page_length ? ceil($pager->rec_count / $pager->page_length) : 0;
+      }
+      foreach ($pager->columns as &$column) {
+        if (isset($column['funkey'])) {
+          $column['fun'] = $coldef[$column['funkey']]['fun'];
+        }
+      }
+      if (Input::_post('_action') == 'showInactive') {
+        $pager->showInactive = (Input::_post('_value', Input::NUMERIC) == 1);
+      }
+      return $pager;
+    }
+    /**
+     * @param $name
+     */
+    public static function kill($name) {
+      unset($_SESSION['pager'][$name]);
+    }
     /**
      * @param      $sql
      * @param      $name
      */
-    public function __construct($sql, $name) {
-      $this->width;
-      $this->page_length = static::$User->_query_size();
-      $this->name        = $name;
+    public function __construct($name, $sql, $coldef) {
+      $this->name = $name;
       $this->setSQL($sql);
+      $this->setColumns($coldef);
     }
-    /**
-     * @return array
-     */
-    public function __sleep() {
-      unset($this->marker);
-      unset($this->rowFunction);
-      return array_keys((array) $this);
-    }
-    /**
-     * @static
-     * @internal param \DB_Pager $pager
-     * @return bool
-     */
-    public function display() {
-      $this->selectRecords();
-      Ajax::_start_div("_{$this->name}_span");
-      $headers = $this->makeHeaders();
-      $class   = $this->class ? : 'padded grid width' . rtrim($this->width, '%');
-      Table::start($class);
-      $this->displayHeaders($headers);
-      foreach ($this->data as $row) {
-        $this->displayRow($row);
-      }
-      Table::foot();
-      echo $this->displayNavigation('bottom');
-      Table::footEnd();
-      Table::end();
-      Ajax::_end_div();
-      return true;
-    }
-    /**
-     * @return bool
-     * Initialization after changing record set
-     */
+    /** @return bool Initialization after changing record set */
     protected function init() {
       if ($this->ready == false) {
         if ($this->type == self::SQL) {
@@ -184,35 +179,21 @@
       return true;
     }
     /**
-     * @static
-     *
-     * @param          $id
-     * @param HTML     $html
-     * @param          $name
-     * @param          $value
-     * @param bool     $enabled
-     * @param null     $title
-     *
-     * @return string
+     * @param $id
+     * @param $prefix
+     * @param $html
      */
-    protected function navi($id, HTML $html, $name, $value, $enabled = true, $title = null) {
-      $attrs = [
-        'disabled'=> (bool) !$enabled,
-        'class'   => 'navibutton',
-        'type'    => 'submit',
-        'name'    => $name,
-        'value'   => $value,
-      ];
-      $html->button($name . '_' . $id, $attrs)->span(null, $title, false)->_button;
+    protected function generateNavigation($id, $prefix, $html) {
+      $this->navi($id, $html, $prefix . 'first', 1, $this->first_page, "<i class='icon-fast-backward'> </i>");
+      $this->navi($id, $html, $prefix . 'prev', $this->curr_page - 1, $this->prev_page, '<i class="icon-backward"> </i>');
+      $this->navi($id, $html, $prefix . 'next', $this->curr_page + 1, $this->next_page, '<i class="icon-forward"> </i>');
+      $this->navi($id, $html, $prefix . 'last', $this->max_page, $this->last_page, '<i class="icon-fast-forward"> </i>');
     }
-    /**
-     * @return array
-     */
+    /** @return array */
     protected function makeHeaders() {
       $headers  = [];
       $inactive = !static::$Input->post('show_inactive');
       foreach ($this->columns as $num_col => $col) {
-        // record status control column is displayed only when control checkbox is on
         if (isset($col['head']) && $inactive) {
           if ($col['type'] == 'inactive' && $this->showInactive === false) {
             continue;
@@ -237,288 +218,6 @@
         }
       }
       return $headers;
-    }
-    /**
-     * @param $headers
-     */
-    protected function displayHeaders($headers) {
-      Table::header($headers, '', $this->displayNavigation('top'));
-    }
-    /**
-     * @param $id
-     *
-     * @return string
-     */
-    protected function displayNavigation($id) {
-      $colspan = count($this->columns);
-      $inact   = '';
-      if ($this->showInactive !== null) {
-        $inact = $this->formatInactiveFooter();
-      }
-      $html = new HTML();
-      $html->tr(['class'=> 'navibar']);
-      $html->td(['colspan'=> $colspan, 'class'=> 'navibar']);
-      if ($this->rec_count) {
-        $button_prefix = $this->name . '_page_';
-        $html->span(null, ['class'=> 'floatright']);
-        $this->generateNavigation($id, $button_prefix, $html);
-        $html->_span();
-        $from = ($this->curr_page - 1) * $this->page_length + 1;
-        $to   = $from + $this->page_length - 1;
-        if ($to > $this->rec_count) {
-          $to = $this->rec_count;
-        }
-        $all = $this->rec_count;
-        $html->span(true, "Records $from-$to of $all " . $inact, [], false);
-      } else {
-        $html->span(null, _('No records') . $inact, [], false);
-      }
-      $html->_td()->tr;
-      return $html;
-    }
-    /**
-     * @param $row
-     *
-     * @return mixed
-     */
-    protected function displayRow($row) {
-      if (
-is_callable($this->marker) && call_user_func($this->marker, $row)) {
-        echo "<tr class='$this->marker_class'>";
-      } elseif (is_callable($this->rowFunction)) {
-        echo call_user_func($this->rowFunction, $row);
-      } else {
-        echo "<tr>\n";
-      }
-      foreach ($this->columns as $col) {
-        $coltype = isset($col['type']) ? $col['type'] : '';
-        $cell    = isset($col['name']) ? $row[$col['name']] : '';
-        if (isset($col['fun'])) { // use data input function if defined
-          $fun = $col['fun'];
-          if (is_callable($fun)) {
-            $cell = call_user_func($fun, $row, $col['useName'] ? $col['name'] : $cell, $this);
-          } elseif (is_callable([$this, $fun])) {
-            $cell = $this->$fun($row, $cell);
-          } else {
-            $cell = '';
-          }
-        }
-        $class = isset($col['class']) ? $col['class'] : null;
-        switch ($coltype) { // format column
-          case 'bool':
-            Cell::label(($cell ? 'Yes' : 'No'), " class='$class width40'");
-            break;
-          case 'time':
-            Cell::label($cell, " class='$class width40'");
-            break;
-          case 'date':
-            Cell::label(static::$dates->sqlToDate($cell), " class='$class center nowrap'");
-            break;
-          case 'dstamp': // time stamp displayed as date
-            Cell::label(static::$dates->sqlToDate(substr($cell, 0, 10)), " class='$class center nowrap'");
-            break;
-          case 'tstamp': // time stamp - FIX user format
-            Cell::label(static::$dates->sqlToDate(substr($cell, 0, 10)) . ' ' . substr($cell, 10), "class='$class center'");
-            break;
-          case 'percent':
-            Cell::percent($cell * 100);
-            break;
-          case 'amount':
-            ($cell === '') ? Cell::label('') : Cell::amount($cell, false);
-            break;
-          case 'qty':
-            ($cell == '') ? Cell::label('') : Cell::qty($cell, false, isset($col['dec']) ? $col['dec'] : null);
-            break;
-          case 'email':
-            Cell::email($cell, isset($col['align']) ? "class='$class " . $col['align'] . "'" : null);
-            break;
-          case 'rate':
-            Cell::label(Num::_format($cell, static::$User->_exrate_dec()), "class='$class center'");
-            break;
-          case 'inactive':
-            $this->formatInactive($row);
-            break;
-          case 'id':
-            if (isset($col['align'])) {
-              Cell::label($cell, " class='$class " . $col['align'] . " pagerclick' data-id='" . $row['id'] . "'");
-            } else {
-              Cell::label($cell, " class='$class pagerclick' data-id='" . $row['id'] . "'");
-            }
-            break;
-          default:
-            $alignclass = isset($col['align']) ? " class='$class align" . $col['align'] . "'" : ($class ? "class='$class'" : "");
-            Cell::label($cell, $alignclass);
-            break;
-          case 'skip': // column not displayed
-        }
-      }
-      echo '</tr>';
-      return $row;
-    }
-    /**
-     * @return string
-     */
-    protected function formatInactiveFooter() {
-      $checked = ($this->showInactive) ? 'checked' : '';
-      $field   = '<label><input ' . $checked . ' type="checkbox" name="_action" value="showInactive" onclick="JsHttpRequest.request(this)"> Show also inactive</label>';
-      Ajax::_activate("_{$this->name}_span");
-      return $field;
-    }
-    /**
-     * @param null $page
-     *
-     * @return bool
-     * Set query result page
-
-     */
-    protected function changePage($page = null) {
-      $this->setPage($page);
-      $this->query();
-      return true;
-    }
-    /**
-     * @param $row
-     *
-     * @return \ADV\App\Form\Field
-     */
-    protected function formatInactive($row) {
-      $field = '';
-      if ($this->showInactive === true) {
-        $checked = $row['inactive'] ? 'checked' : '';
-        $field   = '<td class="center"><input ' . $checked . ' type="checkbox" name="_action" value="' . INACTIVE . $row['id'] . '" onclick="JsHttpRequest.request(this)"></td>';
-      }
-      echo $field;
-    }
-    /**
-     * @return bool
-     * Query database
-
-     */
-    protected function query() {
-      Ajax::_activate("_{$this->name}_span");
-      if (!$this->init()) {
-        return false;
-      }
-      if ($this->type == self::SQL) {
-        $this->data = [];
-        if ($this->rec_count == 0) {
-          return true;
-        }
-        $sql    = $this->sqlGen(false);
-        $result = static::$DB->_query($sql, 'Error browsing database: ' . $sql);
-        if (!$result) {
-          return false;
-        }
-        // setting field names for subsequent queries
-        // add result field names to column defs for
-        // col value retrieve and sort purposes
-        $this->data = static::$DB->_fetchAll();
-      } elseif ($this->type == self::ARR) {
-        $offset = ($this->curr_page - 1) * $this->page_length;
-        if ($offset + $this->page_length >= $this->rec_count) {
-          $offset = $this->rec_count - $this->page_length;
-        }
-        $this->data = array_slice($this->sql, $offset, $this->page_length);
-      }
-      $dbfield_names = array_keys($this->data[0]);
-      $cnt           = min(count($dbfield_names), count($this->columns));
-      for ($c = $i = 0; $c < $cnt; $c++) {
-        if (!(isset($this->columns[$c]['insert']) && $this->columns[$c]['insert'])) {
-          //	if (!@($this->columns[$c]['type']=='skip'))
-          $this->columns[$c]['name'] = $dbfield_names[$c];
-          if (isset($this->columns[$c]['type']) && !($this->columns[$c]['type'] == 'insert')) {
-            $i++;
-          }
-        }
-      }
-      return true;
-    }
-    /**
-     * @param $name - base name for pager controls and $_SESSION object name
-     * -----------------------------F------------------------------------------------
-     *              Creates new DB_Pager $_SESSION object on first page call.
-     *              Retrieves from $_SESSION var on subsequent $_POST calls
-     * $sql  - base sql for data inquiry. Order of fields implies
-     *              pager columns order.
-     * $coldef - array of column definitions. Example definitions
-     *              Column with title 'User name' and default text format:
-     * 'User name'
-     *              Skipped field from sql query. Data for the field is not displayed:
-     * 'dummy' => 'skip'
-     *              Column without title, data retrieved form row data with function func():
-     *              array('fun'=>'func')
-     *              Inserted column with title 'Some', formated with function rowfun().
-     *              formated as date:
-     * 'Some' => array('type'=>'date, 'insert'=>true, 'fun'=>'rowfun')
-     *              Column with name 'Another', formatted as date,
-     *              sortable with ascending start order (available orders: asc,desc, '').
-     * 'Another' => array('type'=>'date', 'ord'=>'asc')
-     *              All available column format types you will find in DB_Pager_view.php file.
-     *              If query result has more fields than count($coldef), rest of data is ignored
-     *              during display, but can be used in format handlers for 'spec' and 'insert'
-     *              type columns.
-     *              Force pager initialization.
-
-     */
-    /**
-     * Set current page in response to user control.
-     */
-    protected function selectRecords() {
-      $page = Forms::findPostPrefix($this->name . '_page_', false);
-      $sort = Forms::findPostPrefix($this->name . '_sort_', true);
-      if ($page) {
-        $this->changePage($_POST[$this->name . '_page_' . $page]);
-        if ($page == 'next' && !$this->next_page || $page == 'last' && !$this->last_page
-        ) {
-          static::$JS->setFocus($this->name . '_page_prev_top');
-        }
-        if ($page == 'prev' && !$this->prev_page || $page == 'first' && !$this->first_page
-        ) {
-          static::$JS->setFocus($this->name . '_page_next_bottom');
-        }
-      } elseif ($sort != -1) {
-        $this->sortTable($sort);
-      } else {
-        $this->query();
-      }
-    }
-    /**
-     * @param $to
-     * Calculates page numbers for html controls.
-
-     */
-    protected function setPage($to) {
-      switch ($to) {
-        case 'next':
-          $page = $this->curr_page + 1;
-          break;
-        case 'prev':
-          $page = $this->curr_page - 1;
-          break;
-        case 'last':
-          $page = $this->last_page;
-          break;
-        default:
-          if (is_numeric($to)) {
-            $page = $to;
-            break;
-          }
-        case 'first':
-          $page = 1;
-          break;
-      }
-      if ($page < 1) {
-        $page = 1;
-      }
-      $max = $this->max_page;
-      if ($page > $max) {
-        $page = $max;
-      }
-      $this->curr_page  = $page;
-      $this->next_page  = ($page < $max) ? $page + 1 : null;
-      $this->prev_page  = ($page > 1) ? ($page - 1) : null;
-      $this->last_page  = ($page < $max) ? $max : null;
-      $this->first_page = ($page != 1) ? 1 : null;
     }
     /**
      * Set column definitions
@@ -627,6 +326,143 @@ is_callable($this->marker) && call_user_func($this->marker, $row)) {
       $this->ready       = false;
     }
     /**
+     * @param $to
+     * Calculates page numbers for html controls.
+
+     */
+    protected function setPage($to) {
+      switch ($to) {
+        case 'next':
+          $page = $this->curr_page + 1;
+          break;
+        case 'prev':
+          $page = $this->curr_page - 1;
+          break;
+        case 'last':
+          $page = $this->last_page;
+          break;
+        default:
+          if (is_numeric($to)) {
+            $page = $to;
+            break;
+          }
+        case 'first':
+          $page = 1;
+          break;
+      }
+      $page = ($page < 1) ? $page : 1;
+      $max  = $this->max_page;
+      $page = ($page > $max) ? $max : $page;
+
+      $this->curr_page  = $page;
+      $this->next_page  = ($page < $max) ? $page + 1 : null;
+      $this->prev_page  = ($page > 1) ? ($page - 1) : null;
+      $this->last_page  = ($page < $max) ? $max : null;
+      $this->first_page = ($page != 1) ? 1 : null;
+    }
+    /**
+     * @return bool
+     * Query database
+
+     */
+    protected function query() {
+      Ajax::_activate("_{$this->name}_span");
+      if (!$this->init()) {
+        return false;
+      }
+      if ($this->type == self::SQL) {
+        $this->data = [];
+        if ($this->rec_count == 0) {
+          return true;
+        }
+        $sql    = $this->sqlGen(false);
+        $result = static::$DB->_query($sql, 'Error browsing database: ' . $sql);
+        if (!$result) {
+          return false;
+        }
+        $this->data = static::$DB->_fetchAll();
+      } elseif ($this->type == self::ARR) {
+        $offset = ($this->curr_page - 1) * $this->page_length;
+        if ($offset + $this->page_length >= $this->rec_count) {
+          $offset = $this->rec_count - $this->page_length;
+        }
+        $this->data = array_slice($this->sql, $offset, $this->page_length);
+      }
+      $dbfield_names = array_keys($this->data[0]);
+      $cnt           = min(count($dbfield_names), count($this->columns));
+      for ($c = $i = 0; $c < $cnt; $c++) {
+        if (!(isset($this->columns[$c]['insert']) && $this->columns[$c]['insert'])) {
+          //	if (!@($this->columns[$c]['type']=='skip'))
+          $this->columns[$c]['name'] = $dbfield_names[$c];
+          if (isset($this->columns[$c]['type']) && !($this->columns[$c]['type'] == 'insert')) {
+            $i++;
+          }
+        }
+      }
+      return true;
+    }
+    /**
+     * @param $name - base name for pager controls and $_SESSION object name
+     * -----------------------------F------------------------------------------------
+     *              Creates new DB_Pager $_SESSION object on first page call.
+     *              Retrieves from $_SESSION var on subsequent $_POST calls
+     * $sql  - base sql for data inquiry. Order of fields implies
+     *              pager columns order.
+     * $coldef - array of column definitions. Example definitions
+     *              Column with title 'User name' and default text format:
+     * 'User name'
+     *              Skipped field from sql query. Data for the field is not displayed:
+     * 'dummy' => 'skip'
+     *              Column without title, data retrieved form row data with function func():
+     *              array('fun'=>'func')
+     *              Inserted column with title 'Some', formated with function rowfun().
+     *              formated as date:
+     * 'Some' => array('type'=>'date, 'insert'=>true, 'fun'=>'rowfun')
+     *              Column with name 'Another', formatted as date,
+     *              sortable with ascending start order (available orders: asc,desc, '').
+     * 'Another' => array('type'=>'date', 'ord'=>'asc')
+     *              All available column format types you will find in DB_Pager_view.php file.
+     *              If query result has more fields than count($coldef), rest of data is ignored
+     *              during display, but can be used in format handlers for 'spec' and 'insert'
+     *              type columns.
+     *              Force pager initialization.
+
+     */
+    /**
+     * Set current page in response to user control.
+     */
+    protected function selectRecords() {
+      $page = Forms::findPostPrefix($this->name . '_page_', false);
+      $sort = Forms::findPostPrefix($this->name . '_sort_', true);
+      if ($page) {
+        $this->changePage($_POST[$this->name . '_page_' . $page]);
+        if ($page == 'next' && !$this->next_page || $page == 'last' && !$this->last_page
+        ) {
+          static::$JS->setFocus($this->name . '_page_prev_top');
+        }
+        if ($page == 'prev' && !$this->prev_page || $page == 'first' && !$this->first_page
+        ) {
+          static::$JS->setFocus($this->name . '_page_next_bottom');
+        }
+      } elseif ($sort != -1) {
+        $this->sortTable($sort);
+      } else {
+        $this->query();
+      }
+    }
+    /**
+     * @param null $page
+     *
+     * @return bool
+     * Set query result page
+
+     */
+    protected function changePage($page = null) {
+      $this->setPage($page);
+      $this->query();
+      return true;
+    }
+    /**
      * @param $col
      *
      * @return bool
@@ -634,10 +470,6 @@ is_callable($this->marker) && call_user_func($this->marker, $row)) {
      * in order asc->desc->none->asc
      */
     protected function sortTable($col) {
-      /*    if ($this->type == self::ARR) {
-            $this->query();
-            return true;
-          }*/
       if (is_null($col)) {
         return false;
       }
@@ -697,82 +529,192 @@ is_callable($this->marker) && call_user_func($this->marker, $row)) {
       return $sql;
     }
     /**
-     * @param $name
+     * @static
+     * @internal param \DB_Pager $pager
+     * @return bool
      */
-    public static function kill($name) {
-      unset($_SESSION['pager'][$name]);
+    public function display() {
+      $this->selectRecords();
+      Ajax::_start_div("_{$this->name}_span");
+
+      $headers = $this->makeHeaders();
+      $this->class .= 'width' . rtrim($this->width, '%');
+      echo "<div class='center'><table class='" . $this->class . "'>";
+      echo  $this->displayHeaders($headers);
+      foreach ($this->data as $row) {
+        $this->displayRow($row);
+      }
+      echo "<tfoot>";
+      echo $this->displayNavigation('bottom');
+      echo "</tfoot></table></div>";
+      Ajax::_end_div();
+      return true;
     }
     /**
      * @static
      *
-     * @param      $link_text
-     * @param      $url
-     * @param bool $icon
+     * @param          $id
+     * @param HTML     $html
+     * @param          $name
+     * @param          $value
+     * @param bool     $enabled
+     * @param null     $title
      *
      * @return string
      */
-    public static function link($link_text, $url, $icon = false) {
-    }
-    /**
-     * @static
-     *
-     * @param      $name
-     * @param      $sql
-     * @param      $coldef
-     *
-     * @return DB_Pager
-     */
-    public static function newPager($name, $sql, $coldef) {
-      if (!isset($_SESSION['pager'])) {
-        $_SESSION['pager'] = [];
-      }
-      if (isset($_SESSION['pager'][$name])) {
-        $pager = $_SESSION['pager'][$name];
-        if (is_array($sql)) {
-          if ($pager->rec_count != count($sql)) {
-            unset($pager);
-          } else {
-            $pager->sql       = $sql;
-            $pager->rec_count = count($pager->sql);
-            $pager->max_page  = $pager->page_length ? ceil($pager->rec_count / $pager->page_length) : 0;
-          }
-        } elseif ($pager->sql != $sql) {
-          unset($pager); // kill pager if sql has changed
-        }
-      }
-      if (!isset($pager)) {
-        $pager = new static($sql, $name);
-        $pager->setSQL($sql);
-        $pager->setColumns($coldef);
-        $_SESSION['pager'][$name] = $pager;
-      }
-      foreach ($pager->columns as &$column) {
-        if (isset($column['funkey'])) {
-          $column['fun'] = $coldef[$column['funkey']]['fun'];
-        }
-      }
-      if (Input::_post('_action') == 'showInactive') {
-        $pager->showInactive = (Input::_post('_value', Input::NUMERIC) == 1);
-      }
-      return $pager;
+    protected function navi($id, HTML $html, $name, $value, $enabled = true, $title = null) {
+      $attrs = [
+        'disabled'=> (bool) !$enabled,
+        'class'   => 'navibutton',
+        'type'    => 'submit',
+        'name'    => $name,
+        'value'   => $value,
+      ];
+      $html->button($name . '_' . $id, $attrs)->span(null, $title, false)->_button;
     }
     /**
      * @param $id
-     * @param $prefix
-     * @param $html
+     *
+     * @return string
      */
-    protected function generateNavigation($id, $prefix, $html) {
-      $this->navi($id, $html, $prefix . 'first', 1, $this->first_page, "<i class='icon-fast-backward'> </i>");
-      $this->navi($id, $html, $prefix . 'prev', $this->curr_page - 1, $this->prev_page, '<i class="icon-backward"> </i>');
-      $this->navi($id, $html, $prefix . 'next', $this->curr_page + 1, $this->next_page, '<i class="icon-forward"> </i>');
-      $this->navi($id, $html, $prefix . 'last', $this->max_page, $this->last_page, '<i class="icon-fast-forward"> </i>');
+    protected function displayNavigation($id) {
+      $colspan = count($this->columns);
+      $inact   = '';
+      if ($this->showInactive !== null) {
+        $inact = $this->formatInactiveFooter();
+      }
+      $html = new HTML();
+      $html->tr(['class'=> 'navibar']);
+      $html->td(['colspan'=> $colspan, 'class'=> 'navibar']);
+      if ($this->rec_count) {
+        $button_prefix = $this->name . '_page_';
+        $html->span(null, ['class'=> 'floatright']);
+        $this->generateNavigation($id, $button_prefix, $html);
+        $html->_span();
+        $from = ($this->curr_page - 1) * $this->page_length + 1;
+        $to   = $from + $this->page_length - 1;
+        if ($to > $this->rec_count) {
+          $to = $this->rec_count;
+        }
+        $all = $this->rec_count;
+        $html->span(true, "Records $from-$to of $all " . $inact, [], false);
+      } else {
+        $html->span(null, _('No records') . $inact, [], false);
+      }
+      $html->_td()->tr;
+      return $html;
+    }
+    /**
+     * @param $headers
+     *
+     * @return string
+     */
+    protected function displayHeaders($headers) {
+      $headers = (array) $headers;
+      $content = '<thead>' . $this->displayNavigation('top') . '<tr><th>' . implode('</th><th>', $headers) . '</th></tr></thead>';
+      return $content;
+    }
+    /**
+     * @param $row
+     *
+     * @return mixed
+     */
+    protected function displayRow($row) {
+      echo (is_callable($this->rowFunction)) ? call_user_func($this->rowFunction, [$row, $this]) : "<tr>\n";
+      foreach ($this->columns as $col) {
+        $coltype = isset($col['type']) ? $col['type'] : '';
+        $cell    = isset($col['name']) ? $row[$col['name']] : '';
+        if (isset($col['fun'])) { // use data input function if defined
+          $fun = $col['fun'];
+          if (is_callable($fun)) {
+            $cell = call_user_func($fun, $row, $col['useName'] ? $col['name'] : $cell, $this);
+          } elseif (is_callable([$this, $fun])) {
+            $cell = $this->$fun($row, $cell);
+          } else {
+            $cell = '';
+          }
+        }
+        $class = isset($col['class']) ? $col['class'] : null;
+        switch ($coltype) { // format columnhsdaasdg
+          case 'bool':
+            Cell::label(($cell ? 'Yes' : 'No'), " class='$class width40'");
+            break;
+          case 'time':
+            Cell::label($cell, " class='$class width40'");
+            break;
+          case 'date':
+            Cell::label(static::$Dates->sqlToDate($cell), " class='$class center nowrap'");
+            break;
+          case 'dstamp': // time stamp displayed as date
+            Cell::label(static::$Dates->sqlToDate(substr($cell, 0, 10)), " class='$class center nowrap'");
+            break;
+          case 'tstamp': // time stamp - FIX useformat
+            Cell::label(static::$Dates->sqlToDate(substr($cell, 0, 10)) . ' ' . substr($cell, 10), "class='$class center'");
+            break;
+          case 'percent':
+            Cell::percent($cell * 100);
+            break;
+          case 'amount':
+            ($cell === '') ? Cell::label('') : Cell::amount($cell, false);
+            break;
+          case 'qty':
+            ($cell == '') ? Cell::label('') : Cell::qty($cell, false, isset($col['dec']) ? $col['dec'] : null);
+            break;
+          case 'email':
+            Cell::email($cell, isset($col['align']) ? "class='$class " . $col['align'] . "'" : null);
+            break;
+          case 'rate':
+            Cell::label(Num::_format($cell, static::$User->_exrate_dec()), "class='$class center'");
+            break;
+          case 'inactive':
+            $this->formatInactive($row);
+            break;
+          case 'id':
+            if (isset($col['align'])) {
+              Cell::label($cell, " class='$class " . $col['align'] . " pagerclick' data-id='" . $row['id'] . "'");
+            } else {
+              Cell::label($cell, " class='$class pagerclick' data-id='" . $row['id'] . "'");
+            }
+            break;
+          default:
+            $alignclass = isset($col['align']) ? " class='$class align" . $col['align'] . "'" : ($class ? "class='$class'" : "");
+            Cell::label($cell, $alignclass);
+            break;
+          case 'skip': // column not displayed
+        }
+      }
+      echo '</tr>';
+      return $row;
+    }
+    /**
+     * @param $row
+     *
+     * @return \ADV\App\Form\Field
+     */
+    protected function formatInactive($row) {
+      $field = '';
+      if ($this->showInactive === true) {
+        $checked = $row['inactive'] ? 'checked' : '';
+        $field   = '<td class="center"><input ' . $checked . ' type="checkbox" name="_action" value="' . INACTIVE . $row['id'] . '" onclick="JsHttpRequest.request(this)"></td>';
+      }
+      echo $field;
+    }
+    /**
+     * @return string
+     */
+    protected function formatInactiveFooter() {
+      $checked = ($this->showInactive) ? 'checked' : '';
+      $field   = "<label><input $checked  type='checkbox' name='_action' value='showInactive' onclick='JsHttpRequest.request(this)'> Show also inactive</label>";
+      Ajax::_activate("_{$this->name}_span");
+      return $field;
+    }
+    /**
+     * @return array
+     */
+    public function __sleep() {
+      unset($this->marker);
+      unset($this->rowFunction);
+      return array_keys((array) $this);
     }
   }
 
-  $dic = \ADV\Core\DIC::i();
-
-  DB_Pager::$Input = $dic['Input'];
-  DB_Pager::$JS    = $dic['JS'];
-  DB_Pager::$dates = $dic['Dates'];
-  DB_Pager::$User  = $dic['User'];
-  DB_Pager::$DB    = $dic['DB'];
