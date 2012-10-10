@@ -41,7 +41,7 @@ var Adv = {};
         Adv.ScrollDetect.loaded = false;
         Adv.Forms.setFocus(true);
         console.time('ajax');
-      }}
+      }};
     this.o.header.ajaxStart(Adv.loader.on).ajaxStop(Adv.loader.off);
   }).apply(Adv);
   window.Adv = Adv;
@@ -825,7 +825,7 @@ $(function () {
       else if ($this.not('.hide')) {
         next = $this.prev();
         next.removeClass('hide').prev().filter('.title').removeClass('hide');
-        if (changing == 2 && next.hasClass('title') ) {
+        if (changing == 2 && next.hasClass('title')) {
           checkMenu.apply(next[0]);
         }
       }
@@ -886,7 +886,7 @@ $(function () {
       $this.find('a').eq(1).focus();
     }
   });
-  topLevel.on('mouseenter', 'li',checkMenu);
+  topLevel.on('mouseenter', 'li', checkMenu);
   topLevel.children('a').on({
                               focus:    function () {
                                 currentChanged($(this).parent(), true);

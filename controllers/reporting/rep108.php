@@ -60,7 +60,7 @@
     $txt_opening_balance = 'Opening Balance';
     $doc_as_of           = "as of";
     $customer            = Input::_postGet('PARAM_0', Input::NUMERIC, 0);
-    $email               = Input::_postGet('PARAM_1', Input::STRING, 0);
+    $email               = Input::_postGet('PARAM_1', Input::NUMERIC);
     $email               = !$email ? : Input::_postGet('Email', Input::STRING, 0);
     $month               = Input::_postGet('PARAM_2', Input::NUMERIC, 0);
     $inc_all             = Input::_postGet('PARAM_3', Input::NUMERIC, 0);
@@ -151,7 +151,7 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
       }
       $rep->Header2($myrow, Sales_Branch::get($branch), null, $baccount, ST_STATEMENT);
       $rep->NewLine();
-        include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
+      include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
       $balance       = 0;
       $rep->currency = $cur;
       $rep->Font();
