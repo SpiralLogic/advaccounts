@@ -89,6 +89,8 @@
     public $rowFunction;
     public $class = 'padded grid ';
     protected $hasBar = false;
+    protected $dataset = [];
+    protected $currentRowGroup = null;
     /**
      * @static
      *
@@ -101,7 +103,7 @@
     public static function newPager($name, $sql, $coldef) {
       $pager = DIC::get('Pager', $name, $sql, $coldef);
       if (is_array($sql)) {
-        $pager->sql       = $sql;
+        $pager->sql       = $pager->sql ? : $sql;
         $pager->rec_count = count($pager->sql);
         $pager->max_page  = $pager->page_length ? ceil($pager->rec_count / $pager->page_length) : 0;
       }
@@ -113,6 +115,7 @@
       if (Input::_post('_action') == 'showInactive') {
         $pager->showInactive = (Input::_post('_value', Input::NUMERIC) == 1);
       }
+
       return $pager;
     }
     /**
@@ -121,11 +124,18 @@
     public static function kill($name) {
       unset($_SESSION['pager'][$name]);
     }
+    public function refreshData($sql) {
+      $this->sql = $sql;
+      $this->setSQL($sql);
+      $this->ready = false;
+    }
     /**
-     * @param      $sql
      * @param      $name
+     * @param      $sql
+     * @param      $coldef
      */
     public function __construct($name, $sql, $coldef) {
+
       $this->name = $name;
       $this->setSQL($sql);
       $this->setColumns($coldef);
@@ -147,23 +157,33 @@
           $this->rec_count = count($this->sql);
           $ord             = $this->rowGroup;
           $fields          = array_keys($this->sql[0]);
-          $count           = 0;
-          foreach ($this->columns as $col) {
-            if (isset($col['ord'])) {
-              if ($col['ord'] != '') {
-                $ord[] = $count;
-              }
-            }
-            $count++;
+          $this->dataset   = [];
+          foreach ($this->sql as $key => $row) {
+            $row[]           = $key;
+            $this->dataset[] = $row;
           }
-          if ($ord) {
-            foreach ($this->sql as $key => $row) {
-              foreach ($ord as $index) {
-                $args[$fields[$index - 1]][$key] = $row[$fields[$index - 1]];
+          foreach ($this->columns as $key => $col) {
+            if (isset($col['ord'])) {
+              if ($col['ord']) {
+                // offset by one because want to 1 indexed and columns is 0 indexed
+                $ord[] = [$key + 1, $col['ord']];
               }
-              $args[] = SORT_ASC;
             }
-            $args[] =& $this->sql;
+          }
+
+          if ($ord) {
+            foreach ($ord as $index) {
+              foreach ($this->dataset as $key => $row) {
+                if ($index[1] == 'none') {
+                  $args[$fields[$index[0] - 1]][$key] = end($row);
+                  continue;
+                }
+                //minus 1 because fields are 0 indexed
+                $args[$fields[$index[0] - 1]][$key] = $row[$fields[$index[0] - 1]];
+              }
+              $args[] = ($index[1] == 'desc' ? SORT_DESC : SORT_ASC);
+            }
+            $args[] =& $this->dataset;
             call_user_func_array('array_multisort', $args);
           }
           $this->max_page   = $this->page_length ? ceil($this->rec_count / $this->page_length) : 0;
@@ -194,7 +214,7 @@
       $inactive = !static::$Input->post('show_inactive');
       foreach ($this->columns as $num_col => $col) {
         if (isset($col['head']) || $inactive) {
-          if ($col['type'] == 'skip' || $col['type'] == 'inactive' && $this->showInactive === false) {
+          if ($col['type'] == 'skip' || $col['type'] == 'group' || $col['type'] == 'inactive' && $this->showInactive === false) {
             continue;
           }
           if (!isset($col['ord'])) {
@@ -212,7 +232,7 @@
               $icon = '';
           }
           $html = new HTML;
-          $this->navi($this->name . '_sort_' . $num_col, $html, $this->name . '_sort_' . $num_col, $col['head'], true, $col['head'] . $icon);
+          $this->navi('', $html, $this->name . '_sort_' . $num_col, $col['ord'], true, $col['head'] . $icon);
           $headers[] = (string) $html;
         }
       }
@@ -225,6 +245,7 @@
      * @param $columns
      */
     protected function setColumns($columns) {
+
       $columns = (array) $columns;
       foreach ($columns as $colindex => $coldef) {
         if (is_string($colindex) && is_string($coldef)) {
@@ -248,7 +269,7 @@
             }
             break;
           case 'group':
-            $this->rowGroup[] = count($this->columns) + 1;
+            $this->rowGroup[] = [count($this->columns) + 1, 'asc'];
             break;
           case 'insert':
           default:
@@ -270,7 +291,6 @@
     protected function setSQL($sql) {
       if (is_array($sql)) {
         $this->type = self::ARR;
-        $this->sql  = $sql;
         return;
       }
       if ($sql != $this->sql) {
@@ -344,7 +364,8 @@
           $page = 1;
           break;
       }
-      $page = ($page < 1) ? $page : 1;
+
+      $page = ($page < 1) ? 1 : $page;
       $max  = $this->max_page;
       $page = ($page > $max) ? $max : $page;
 
@@ -377,10 +398,11 @@
         $this->data = static::$DB->_fetchAll();
       } elseif ($this->type == self::ARR) {
         $offset = ($this->curr_page - 1) * $this->page_length;
+
         if ($offset + $this->page_length >= $this->rec_count) {
           $offset = $this->rec_count - $this->page_length;
         }
-        $this->data = array_slice($this->sql, $offset, $this->page_length);
+        $this->data = array_slice($this->dataset, $offset, $this->page_length);
       }
       $dbfield_names = array_keys($this->data[0]);
       $cnt           = min(count($dbfield_names), count($this->columns));
@@ -427,7 +449,7 @@
      */
     protected function selectRecords() {
       $page = Forms::findPostPrefix($this->name . '_page_', false);
-      $sort = Forms::findPostPrefix($this->name . '_sort_', true);
+      $sort = Forms::findPostPrefix($this->name . '_sort_', false);
       if ($page) {
         $this->changePage($_POST[$this->name . '_page_' . $page]);
         if ($page == 'next' && !$this->next_page || $page == 'last' && !$this->last_page
@@ -438,7 +460,7 @@
         ) {
           static::$JS->setFocus($this->name . '_page_next_bottom');
         }
-      } elseif ($sort != -1) {
+      } elseif ($sort !== null) {
         $this->sortTable($sort);
       } else {
         $this->query();
@@ -452,7 +474,9 @@
 
      */
     protected function changePage($page = null) {
+
       $this->setPage($page);
+
       $this->query();
       return true;
     }
@@ -467,9 +491,23 @@
       if (is_null($col)) {
         return false;
       }
-      $ord                        = (!isset($this->columns[$col]['ord'])) ? '' : $this->columns[$col]['ord'];
-      $ord                        = ($ord == '') ? 'asc' : (($ord == 'asc') ? 'desc' : '');
+      $current_order = Input::_post($this->name . '_sort_' . $col);
+      switch ($current_order) {
+        case 'asc':
+          $ord = 'desc';
+          break;
+        case 'desc':
+          $ord = 'none';
+          break;
+        case '':
+        case 'none':
+          $ord = 'asc';
+          break;
+        default:
+          return false;
+      }
       $this->columns[$col]['ord'] = $ord;
+      $this->ready                = false;
       $this->setPage(1);
       $this->query();
       return true;
@@ -504,11 +542,15 @@
         $sql .= " GROUP BY $group";
       }
 
-      $ord = $this->rowGroup;
-      foreach ($this->columns as $col) {
+      $ord = [];
+      foreach ($this->rowGroup as $group) {
+        $ord[] = $group[0] . ' ' . $group[1];
+      }
+      foreach ($this->columns as $key=> $col) {
         if (isset($col['ord'])) {
-          if ($col['ord'] != '' && isset($col['name'])) {
-            $ord[] = $col['name'] . ' ' . $col['ord'];
+          if ($col['ord'] && $col['ord'] != 'none') {
+            $name  = isset($col['name']) ? $col['name'] : $key + 1;
+            $ord[] = $name . ' ' . $col['ord'];
           }
         }
       }
@@ -531,9 +573,10 @@
       $this->selectRecords();
       Ajax::_start_div("_{$this->name}_span");
       $headers = $this->makeHeaders();
-      $this->class .= ' width' . rtrim($this->width, '%');
-      echo "<div class='center'><table class='" . $this->class . "'>";
+      $class   = $this->class .= ' width' . rtrim($this->width, '%');
+      echo "<div class='center'><table class='" . $class . "'>";
       echo  $this->displayHeaders($headers);
+      $this->currentRowGroup = null;
       foreach ($this->data as $row) {
         $this->displayRow($row);
       }
@@ -563,7 +606,9 @@
         'name'    => $name,
         'value'   => $value,
       ];
-      $html->button($name . '_' . $id, $attrs)->span(null, $title, false)->_button;
+      $id    = $id ? $name . '_' . $id : $name;
+
+      $html->button($id, $attrs)->span(null, $title, false)->_button;
     }
     /**
      * @param $id
@@ -613,6 +658,14 @@
      * @return mixed
      */
     protected function displayRow($row) {
+      if ($this->rowGroup) {
+        $fields = array_keys($row);
+        $field  = $fields[$this->rowGroup[0][0] - 1];
+        if ($this->currentRowGroup != $row[$field]) {
+          $this->currentRowGroup = $row[$field];
+          echo "<tr class='navigroup'><th colspan=" . count($this->columns) . ">" . $row[$field] . "</th></tr>";
+        }
+      }
       echo (is_callable($this->rowFunction)) ? call_user_func($this->rowFunction, $row) : "<tr>\n";
       foreach ($this->columns as $col) {
         $coltype = isset($col['type']) ? $col['type'] : '';
@@ -674,6 +727,7 @@
             Cell::label($cell, $alignclass);
             break;
           case 'skip': // column not displayed
+          case 'group': // column not displayed
         }
       }
       echo '</tr>';
@@ -708,7 +762,7 @@
       unset($this->rowFunction);
       foreach ($this->columns as &$col) {
         if (isset($col['fun'])) {
-          $col = null;
+          $col['fun'] = null;
         }
       }
       return array_keys((array) $this);

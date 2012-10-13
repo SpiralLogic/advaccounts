@@ -49,11 +49,11 @@
      */
     protected function generateTableCols() {
       $cols = [
-        'Name'       => ['type'=> 'group'],
+        'Name'       => ['ord'=> 'asc'],
         'Code',
         'Code2',
         'Type'       => ['type'=> 'group'],
-        'inactive'   => ['type'=> 'inactive'],
+        'Inactive'   => ['type'=> 'inactive'],
         ['type'=> 'skip'],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],

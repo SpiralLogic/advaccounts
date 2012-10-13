@@ -3865,6 +3865,14 @@ th:hover span {
   margin: 0 10px 0 15px;
 }
 
+.navigroup th {
+  font-size:       11px;
+  border-collapse: collapse;
+  border:          none;
+  box-shadow:      none;
+  padding-left:    30px;
+}
+
 table.padded .navibar td {
   padding:        0 10px;
   vertical-align: middle;

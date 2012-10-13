@@ -469,6 +469,9 @@
      *       The return value will be casted to boolean if non-boolean was returned.
      */
     public function offsetExists($offset) {
+      if ($offset == '_start' || $offset == '_end') {
+        return true;
+      }
       return array_key_exists($offset, $this->fields) || array_key_exists($offset, $this->groups);
     }
     /**

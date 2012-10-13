@@ -46,12 +46,20 @@
      *
      * @return bool
      */
-    protected function getQuery($data) {
+    protected function compileQuery($data) {
       if (!$this->compiled_query) {
         $this->compiled_query = $this->execute($data);
       }
 
       return $this->compiled_query;
+    }
+    /**
+     * @param null $data
+     *
+     * @return bool
+     */
+    public function getQuery($data = null) {
+      return $this->compileQuery($data);
     }
     /***
      * @param null $data
@@ -59,7 +67,7 @@
      * @return \ADV\Core\DB\Query\Result|int|bool
      */
     public function exec($data = null) {
-      $result = $this->conn->exec($this->getQuery($data), $this->type, $this->data);
+      $result = $this->conn->exec($this->compileQuery($data), $this->type, $this->data);
 
       return $result;
     }

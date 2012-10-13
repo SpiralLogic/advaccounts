@@ -21,7 +21,7 @@
       protected $_table = 'chart_master';
       protected $_classname = 'GL Account';
       protected $_id_column = 'account_code';
-      public $account_code = 0;
+      public $account_code;
       public $account_code2;
       public $account_name;
       public $account_type;
@@ -56,6 +56,9 @@
 
         return true;
       }
+      /**
+       * @return \ADV\Core\Traits\Status|bool
+       */
       public function delete() {
         $result = $this->DB->select("COUNT(*) as count")->from('gl_trans')->where('account=', $this->account_code)->fetch()->one('count');
         if ($result > 0) {
@@ -154,6 +157,7 @@
   namespace {
 
     use ADV\Core\DB\DB;
+    use ADV\Core\Event;
     use ADV\App\Dates;
 
     /**

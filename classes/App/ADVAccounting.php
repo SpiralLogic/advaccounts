@@ -179,12 +179,12 @@
           if (isset($_SESSION['pager'][$name])) {
             $pager = $_SESSION['pager'][$name];
             if ($pager->sql != $sql) {
-              unset($pager); // kill pager if sql has changed
+              $pager->refreshData($sql);
             } elseif ($pager->rec_count != count($sql)) {
               unset($pager);
             }
           }
-          if (!isset($pager) || $pager instanceof DB_Pager) {
+          if (!isset($pager) || !$pager instanceof DB_Pager) {
             $pager = new DB_Pager($name, $sql, $coldef);
           }
           \DB_Pager::$Input = $c->offsetGet('Input');
