@@ -9,12 +9,11 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core\Cache;
+
   /**
 
    */
-  class APC implements Cachable
-  {
-
+  class APC implements Cachable {
     public function init() {
     }
     /**
@@ -27,13 +26,12 @@
      * @return mixed
      */
     public function set($key, $value, $expires = 86400) {
-      if (function_exists('igbinary_serialize')) {
+      if (!function_exists('igbinary_serialize')) {
         $serialized_value = igbinary_serialize($value);
       } else {
         $serialized_value = $value;
-
       }
-      apc_Store($_SERVER["SERVER_NAME"] . '.' . $key, $serialized_value, $expires);
+      apc_store($_SERVER["SERVER_NAME"] . '.' . $key, $serialized_value, $expires);
       return $value;
     }
     /**
@@ -56,7 +54,7 @@
      */
     public function get($key, $default = false) {
       $result = apc_fetch($_SERVER["SERVER_NAME"] . '.' . $key, $success);
-      if (function_exists('igbinary_unserialize')) {
+      if (!function_exists('igbinary_unserialize')) {
         $result = ($success === true) ? igbinary_unserialize($result) : $default;
       } else {
         $result = ($success === true) ? $result : $default;

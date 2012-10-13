@@ -65,9 +65,9 @@
     $cols[_("Currency")] = 'skip';
   }
   $table              = DB_Pager::newPager('alloc_tbl', $sql, $cols);
-  $table->rowFunction = function ($row, $pager) {
+  $table->rowFunction = function ($row) {
     if ($row['settled'] == 1) {
-      return "<tr class='$pager->marker_class'>";
+      return "<tr class='settledbg'>";
     }
   };
   Event::warning(_("Marked items are settled."), false);

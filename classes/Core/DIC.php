@@ -168,6 +168,15 @@
       if (count($arguments) && $this === $arguments[0]) {
         array_shift($arguments);
       }
+      array_walk_recursive(
+        $arguments,
+        function (&$element) {
+          # do some special stuff (serialize closure) ...
+          if (is_object($element)) {
+            $element = spl_object_hash($element);
+          }
+        }
+      );
       return md5(serialize($arguments));
     }
   }

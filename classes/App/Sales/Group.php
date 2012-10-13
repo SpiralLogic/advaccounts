@@ -18,7 +18,7 @@
    */
   class Group extends \ADV\App\DB\Base {
     protected $_table = 'groups';
-    protected $_classname = 'Groups';
+    protected $_classname = 'Group';
     protected $_id_column = 'id';
     public $id;
     public $description;

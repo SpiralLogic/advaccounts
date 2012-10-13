@@ -103,18 +103,21 @@
       if (in_array($type, static::$user_errors) || in_array($type, static::$fatal_levels)) {
         static::$messages[] = $error;
       }
-      if (is_writable(ROOT_DOC . '../error_log')) {
-        error_log(
-          date(DATE_RFC822) . ' ' . $error['type'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n",
-          3,
-          ROOT_DOC . '../error_log'
-        );
-      }
+      self::writeLog($error['type'], $error['message'], $error['file'], $error['line']);
       if (!in_array($type, static::$user_errors) || $type == E_NOTICE || ($type == E_USER_ERROR && $log)) {
         $error['backtrace'] = static::prepareBacktrace(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
         static::$errors[]   = $error;
       }
       return true;
+    }
+    public static function writeLog($type, $message = '', $file = '', $line = '') {
+      if (is_writable(ROOT_DOC . '../error_log')) {
+        error_log(
+          date(DATE_RFC822) . ' ' . $type . ": " . static::dumpVar($message) . " in file: " . $file . " on line:" . $line . "\n\n",
+          3,
+          ROOT_DOC . '../error_log'
+        );
+      }
     }
     /**
      * @static
@@ -132,9 +135,7 @@
       );
       static::$current_severity = -1;
       static::$messages[]       = $error;
-      if (is_writable(ROOT_DOC . '../error_log')) {
-        error_log($error['code'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n", 3, ROOT_DOC . '../error_log');
-      }
+      self::writeLog($error['type'], $error['message'], $error['file'], $error['line']);
       $error['backtrace'] = static::prepareBacktrace($e->getTrace());
       static::$errors[]   = $error;
     }
@@ -349,9 +350,8 @@
       while ($source['file'] == $db_class_file) {
         $source = array_shift($backtrace);
       }
-      if (is_writable(ROOT_DOC . '../error_log')) {
-        error_log(date(DATE_RFC822) . ": " . static::dumpVar($error['debug'], true) . "\n\n\n", 3, ROOT_DOC . '../error_log');
-      }
+      self::writeLog('DATABASE', static::dumpVar($error['debug'], true), $source['file'], $source['line']);
+
       Errors::handler(E_ERROR, $error['message'], $source['file'], $source['line']);
     }
     /**

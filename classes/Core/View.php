@@ -210,9 +210,14 @@
      * @return mixed
      */
     protected function compileEchos($value) {
+      $value = preg_replace(
+        '/\{\{([^$!\.].*?)\}\}/',
+        '<?php echo $1; ?>',
+        $value
+      );
       return preg_replace(
         '/\{\{([^!\.].*?)\}\}/',
-        '<?php  echo $1; ?>',
+        '<?php if (isset($1)) echo $1; ?>',
         $value
       );
     }
@@ -226,14 +231,14 @@
     public function render($return = false) {
       $__contents = $this->getCompiled();
       //   return var_dump($__contents);
-      ob_start() and extract($this->_viewdata, EXTR_SKIP);
+      ob_start([$this, 'obHandler']) and extract($this->_viewdata, EXTR_SKIP);
       // We'll include the view contents for parsing within a catcher
       // so we can avoid any WSOD errors. If an exception occurs we
       // will throw it out to the exception handler.
       try {
         $exception = eval('?>' . $__contents);
         if ($exception !== null) {
-          ob_start();
+          ob_start([$this, 'obHandler']);
           var_dump($__contents);
           $contents = ob_get_clean();
           Errors::handler(E_ERROR, 'template ' . $this->_template . " failed to render!<pre>" . $contents);
@@ -243,6 +248,7 @@
         // buffer so that no partially rendered views get thrown out
         // to the client and confuse the user with junk.
         ob_get_clean();
+
         throw $e;
       }
       if ($return) {
@@ -251,6 +257,9 @@
       echo ob_get_clean();
 
       return true;
+    }
+    public function obHandler($buffer) {
+      return $buffer;
     }
     /**
      * @return mixed
@@ -279,7 +288,7 @@
         return $__contents;
       } else {
         Event::registerShutdown([$this, 'checkCache'], [$this->_template, $__contents[1]]);
-        $this->checkCache($this->_template, $__contents[1]);
+        //   $this->checkCache($this->_template, $__contents[1]);
         JS::_footerFile($__contents[2]);
         $__contents = $__contents[0];
 

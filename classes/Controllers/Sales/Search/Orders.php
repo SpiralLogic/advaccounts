@@ -2,6 +2,8 @@
   namespace ADV\Controllers\Sales\Search;
 
   use ADV\App\Debtor\Debtor;
+  use ADV\App\Form\DropDown;
+  use ADV\App\Display;
   use ADV\Core\Event;
   use DB_Pager;
   use ADV\Core\Arr;
@@ -154,7 +156,7 @@
       Forms::hidden('type', $this->trans_type);
       $this->displayTable();
       UI::emailDialogue(CT_CUSTOMER);
-      Forms::submitCenter('Update', _("Update"), true, '', null);
+      Forms::submitCenter('Update', _("Update"), true, '');
       Forms::end();
       $this->Page->end_page();
     }
@@ -256,7 +258,6 @@
       }
       $ord = null;
       if ($this->trans_type == ST_SALESORDER) {
-        $ord  = "Order #";
         $cols = array(
           array('type' => 'skip'),
           _("Order #")                           => array('fun' => [$this, 'formatRef'], 'ord' => ''), //
@@ -271,7 +272,6 @@
           _("Total")                             => array('type' => 'amount', 'ord' => ''),
         );
       } else {
-        $ord  = "Quote #";
         $cols = array(
           array('type' => 'skip'), //
           _("Quote #")     => array('fun' => [$this, 'formatRef'], 'ord' => ''), //
@@ -306,17 +306,21 @@
     /**
      * @param $row
      *
-     * @return callable
+     * @return string
      */
-    function formatMarker($row, $pager) {
+    function formatMarker($row) {
       if ($this->trans_type == ST_SALESQUOTE) {
         $mark = (Dates::_isGreaterThan(Dates::_today(), Dates::_sqlToDate($row['delivery_date'])));
       } else {
-        $mark = ($row['type'] == 0 && Dates::_isGreaterThan(Dates::_today(), Dates::_sqlToDate($row['delivery_date'])) && ($row['TotDelivered'] < $row['TotQuantity']));
+        $mark = ($row['type'] == 0 && Dates::_sqlToDate($row['delivery_date']) && Dates::_isGreaterThan(
+          Dates::_today(),
+          Dates::_sqlToDate($row['delivery_date'])
+        ) && ($row['TotDelivered'] < $row['TotQuantity']));
       }
       if ($mark) {
-        return "<tr class='$pager->marker_class'>";
+        return "<tr class='overduebg'>";
       }
+      return '';
     }
     /**
      * @param $row
@@ -332,30 +336,30 @@
      *
      * @return string
      */
-    function formatDeliveryBtn($row) {
+    function formatDeliveryBtn($row, DropDown $dd) {
       if ($row['trans_type'] == ST_SALESORDER) {
-        return ['label'=> _("Dispatch"), 'href'=> "/sales/customer_delivery.php?OrderNumber=" . $row['order_no']];
+        $dd->addItem('Dispatch', '/sales/customer_delivery.php?OrderNumber=' . $row['order_no']);
       }
-      return ['label'=> _("Sales Order"), 'href'=> "/sales/order?OrderNumber=" . $row['order_no']];
+      $dd->addItem('Sales Order', '/sales/order?OrderNumber=' . $row['order_no']);
+    }
+    /**
+     * @param                        $row
+     * @param \ADV\App\Form\DropDown $dd
+     *
+     * @return string
+     */
+    function formatInvoiceTemplateBtn($row, DropDown $dd) {
+      if ($row['trans_type'] == ST_SALESORDER) {
+        $dd->addItem('Invoice', '/sales/order?NewInvoice=' . $row['order_no']);
+      }
     }
     /**
      * @param $row
      *
      * @return string
      */
-    function formatInvoiceTemplateBtn($row) {
-      if ($row['trans_type'] == ST_SALESORDER) {
-        return ['label'=> _("Invoice"), 'href'=> "/sales/order?NewInvoice=" . $row['order_no']];
-      }
-      return '';
-    }
-    /**
-     * @param $row
-     *
-     * @return string
-     */
-    function formatDeliveryTemplateBtn($row) {
-      return ['label'=> _("Delivery"), 'href'=> "/sales/order?NewDelivery=" . $row['order_no']];
+    function formatDeliveryTemplateBtn($row, DropDown $dd) {
+      $dd->addItem('Delivery', '/sales/order?NewDelivery=' . $row['order_no']);
     }
     /**
      * @param $row
@@ -404,25 +408,24 @@
      * @return string
      */
     function formatDropdown($row) {
-      $dropdown = new
-      View('ui/dropdown');
+      $dd = new DropDown();
       switch ($_POST['order_view_mode']) {
         case self::MODE_OUTSTANDING:
-          $items[] = $this->formatDeliveryBtn($row);
+          $items[] = $this->formatDeliveryBtn($row, $dd);
           break;
         case self::MODE_INVTEMPLATES:
-          $items[] = $this->formatInvoiceTemplateBtn($row);
+          $items[] = $this->formatInvoiceTemplateBtn($row, $dd);
           break;
         case self::MODE_DELTEMPLATES:
-          $items[] = $this->formatDeliveryTemplateBtn($row);
+          $items[] = $this->formatDeliveryTemplateBtn($row, $dd);
           break;
         default:
-          $items[] = ['label'=> 'Edit', 'href'=> '/sales/order?update=' . $row['order_no'] . "&type=" . $row['trans_type']];
+          $dd->addItem('Edit', '/sales/order?update=' . $row['order_no'] . "&type=" . $row['trans_type']);
           if ($row['trans_type'] == ST_SALESQUOTE) {
-            $items[] = ['label'=> "Create Order", "/sales/order?QuoteToOrder=" . $row['order_no']];
+            $dd->addItem('Create Order', '/sales/order?QuoteToOrder=' . $row['order_no']);
           }
-          $items[] = ['class'=> 'email-button', 'label'=> 'Email', 'href'=> '#', 'data'=> ['emailid' => $row['debtor_id'] . '-' . $row['trans_type'] . '-' . $row['order_no']]];
-          $href    = Reporting::print_doc_link(
+          $dd->addItem('Email', '#', ['emailid' => $row['debtor_id'] . '-' . $row['trans_type'] . '-' . $row['order_no']], ['class'=> 'email-button']);
+          $href = Reporting::print_doc_link(
             $row['order_no'],
             _("Proforma"),
             true,
@@ -434,17 +437,15 @@
             0,
             true
           );
-          $items[] = ['class'=> 'printlink', 'label'=> 'Print Proforma', 'href'=> $href];
-          $href    = Reporting::print_doc_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT, 'button printlink', '', 0, 0, true);
-          $items[] = ['class'=> 'printlink', 'label'=> 'Print', 'href'=> $href];
+          $dd->addItem('Print Proforma', $href, [], ['class'=> 'printlink']);
+          $href = Reporting::print_doc_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT, 'button printlink', '', 0, 0, true);
+          $dd->addItem('Print', $href, [], ['class'=> 'printlink']);
       }
       if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
-        $href    = '/system/void_transaction?type=' . $row['trans_type'] . '&trans_no=' . $row['order_no'] . '&memo=Deleted%20during%20order%20search';
-        $items[] = ['label'=> 'Void Trans', 'href'=> $href, 'attr'=> ['target'=> '_blank']];
+        $href = '/system/void_transaction?type=' . $row['trans_type'] . '&trans_no=' . $row['order_no'] . '&memo=Deleted%20during%20order%20search';
+        $dd->addItem('Void Trans', $href, [], ['class'=> 'printlink', 'target'=> '_blank']);
       }
-      $menus[] = ['title'=> $items[0]['label'], 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
-      $dropdown->set('menus', $menus);
-      return $dropdown->render(true);
+      return $dd->setAuto(true)->setSplit(true)->render(true);
     }
   }
 

@@ -12,8 +12,8 @@
    **/
   JS::_openWindow(950, 500);
   Page::start(_($help_context = "Customer Allocation Inquiry"), SA_SALESALLOC);
-  if (Input::_get('debtor_id')) {
-    $_POST['debtor_id'] = Input::_get('debtor_id', Input::NUMERIC);
+  if (Input::_get('id')) {
+    $_POST['debtor_id'] = Input::_get('id', Input::NUMERIC);
   }
   if (isset($_GET['frame'])) {
     foreach ($_GET as $k => $v) {
@@ -180,9 +180,9 @@
   }
   $table = DB_Pager::newPager('doc_tbl', $sql, $cols);
   $table->rowFunction
-         = function ($row, $pager) {
+         = function ($row) {
     if ($row['OverDue'] == 1 && \ADV\Core\Num::_priceFormat(abs($row["TotalAmount"]) - $row["Allocated"])) {
-      return "<tr class='$pager->marker_class'>";
+      return "<tr class='settledbg'>";
     }
   };
   \ADV\Core\Event::warning(_("Marked items are overdue."), false);

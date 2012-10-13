@@ -2,8 +2,8 @@
   namespace ADV\Controllers\Sales\Search;
 
   use ADV\App\Debtor\Debtor;
+  use ADV\App\Form\DropDown;
   use ADV\Core\Event;
-  use ADV\Core\View;
   use DB_AuditTrail;
   use ADV\App\Voiding;
   use ADV\App\SysTypes;
@@ -370,9 +370,9 @@
      *
      * @return bool
      */
-    public function formatMarker($row, $pager) {
+    public function formatMarker($row) {
       if ((isset($row['OverDue']) && $row['OverDue'] == 1) && (Num::_round($row["TotalAmount"] - $row["Allocated"], 2) != 0)) {
-        return "<tr class='$pager->marker_class'>";
+        return "<tr class='overduebg'>";
       }
     }
     /**
@@ -381,32 +381,33 @@
      * @return string
      */
     public function formatDropdown($row) {
-      $dropdown = new View('ui/dropdown');
-      $title    = $caption = _("Print");
+      $dd = new DropDown();
+      $dd->setTitle("Print");
+      $caption = _("Print");
       if ($row['type'] == ST_SALESINVOICE) {
         $edit_url = $this->formatEditBtn($row);
-        $items[]  = ['label'=> 'Edit', 'href'=> $edit_url];
-        $title    = 'Edit';
+        $dd->addItem('Edit', $edit_url);
+        $dd->setTitle("Edit");
       }
       if (in_array($row['type'], [ST_CUSTPAYMENT, ST_CUSTREFUND, ST_BANKDEPOSIT])) {
+        $dd->setTitle("Receipt");
         $title = $caption = _("Receipt");
       }
-      $href    = Reporting::print_doc_link($row['trans_no'], $caption, true, $row['type'], ICON_PRINT, 'button printlink', '', 0, 0, true);
-      $items[] = ['class'=> 'printlink', 'label'=> $caption, 'href'=> $href];
+      $href = Reporting::print_doc_link($row['trans_no'], $caption, true, $row['type'], ICON_PRINT, 'button printlink', '', 0, 0, true);
+      $dd->addItem($caption, $href, [], ['class'=> 'printlink']);
       if ($row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0) {
-        $items[] = ['label'=> 'Credit Invoice', 'href'=> "/sales/customer_credit_invoice.php?InvoiceNumber=" . $row['trans_no']];
+        $dd->addItem('Credit Invoice', "/sales/customer_credit_invoice.php?InvoiceNumber=" . $row['trans_no']);
       }
       if ($row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0) {
-        $items[] = ['label'=> 'Make Payment', 'href'=> "/sales/payment?debtor_id=" . $row['debtor_id']];
+        $dd->addItem('Make Payment', "/sales/payment?debtor_id=" . $row['debtor_id']);
       }
-      $items[] = ['class'=> 'email-button', 'label'=> 'Email', 'href'=> '#', 'data'=> ['emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']]];
+      $dd->addItem('Email', "#", ['emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']], ['class'=> 'email-button']);
+
       if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
-        $href    = '/system/void_transaction?type=' . $row['type'] . '&trans_no=' . $row['trans_no'] . '&memo=Deleted%20during%20order%20search';
-        $items[] = ['label'=> 'Void Trans', 'href'=> $href, 'attr'=> ['target'=> '_blank']];
+        $href = '/system/void_transaction?type=' . $row['type'] . '&trans_no=' . $row['trans_no'] . '&memo=Deleted%20during%20order%20search';
+        $dd->addItem('Void Trans', $href, [], ['target'=> '_blank']);
       }
-      $menus[] = ['title'=> $title, 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
-      $dropdown->set('menus', $menus);
-      return $dropdown->render(true);
+      return $dd->setAuto(true)->setSplit(true)->render(true);
     }
   }
 

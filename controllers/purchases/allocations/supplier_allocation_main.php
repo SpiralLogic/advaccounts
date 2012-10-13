@@ -104,9 +104,9 @@
   }
   $table = DB_Pager::newPager('alloc_tbl', $sql, $cols);
   Event::warning(_("Marked items are settled."), false);
-  $table->rowFunction  = function ($row, $pager) {
+  $table->rowFunction  = function ($row) {
     if ($row['settled'] == 1) {
-      return "<tr class='$pager->marker_class'>";
+      return "<tr class='overduebg'>";
     }
   };
   $table->marker_class = 'settledbg';

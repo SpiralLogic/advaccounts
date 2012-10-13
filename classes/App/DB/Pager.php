@@ -164,7 +164,6 @@
               $args[] = SORT_ASC;
             }
             $args[] =& $this->sql;
-            var_dump($args);
             call_user_func_array('array_multisort', $args);
           }
           $this->max_page   = $this->page_length ? ceil($this->rec_count / $this->page_length) : 0;
@@ -194,8 +193,8 @@
       $headers  = [];
       $inactive = !static::$Input->post('show_inactive');
       foreach ($this->columns as $num_col => $col) {
-        if (isset($col['head']) && $inactive) {
-          if ($col['type'] == 'inactive' && $this->showInactive === false) {
+        if (isset($col['head']) || $inactive) {
+          if ($col['type'] == 'skip' || $col['type'] == 'inactive' && $this->showInactive === false) {
             continue;
           }
           if (!isset($col['ord'])) {
@@ -228,21 +227,16 @@
     protected function setColumns($columns) {
       $columns = (array) $columns;
       foreach ($columns as $colindex => $coldef) {
-        if (is_string($colindex)) { // 'colname'=>params
-          $coldef['head'] = $colindex;
-          $c              = $coldef;
+        if (is_string($colindex) && is_string($coldef)) {
+          $c = ['head'=> $colindex, 'type'=> $coldef];
+        } elseif (is_string($colindex) && is_array($coldef)) {
+          $coldef ['head'] = $colindex;
+          $c               = $coldef;
         } elseif (is_array($coldef)) {
           $coldef['head'] = '';
           $c              = $coldef;
         } else {
-          $c = [
-            'head' => $coldef,
-            'type' => 'text'
-          ];
-        }
-        if (is_string($c)) // params is simple column type
-        {
-          $c = ['type' => $c];
+          $c = ['head' => $coldef, 'type' => 'text'];
         }
         if (!isset($c['type'])) {
           $c['type'] = 'text';
@@ -536,9 +530,8 @@
     public function display() {
       $this->selectRecords();
       Ajax::_start_div("_{$this->name}_span");
-
       $headers = $this->makeHeaders();
-      $this->class .= 'width' . rtrim($this->width, '%');
+      $this->class .= ' width' . rtrim($this->width, '%');
       echo "<div class='center'><table class='" . $this->class . "'>";
       echo  $this->displayHeaders($headers);
       foreach ($this->data as $row) {
@@ -620,14 +613,14 @@
      * @return mixed
      */
     protected function displayRow($row) {
-      echo (is_callable($this->rowFunction)) ? call_user_func($this->rowFunction, [$row, $this]) : "<tr>\n";
+      echo (is_callable($this->rowFunction)) ? call_user_func($this->rowFunction, $row) : "<tr>\n";
       foreach ($this->columns as $col) {
         $coltype = isset($col['type']) ? $col['type'] : '';
         $cell    = isset($col['name']) ? $row[$col['name']] : '';
         if (isset($col['fun'])) { // use data input function if defined
           $fun = $col['fun'];
           if (is_callable($fun)) {
-            $cell = call_user_func($fun, $row, $col['useName'] ? $col['name'] : $cell, $this);
+            $cell = call_user_func($fun, $row, $col['useName'] ? $col['name'] : $cell);
           } elseif (is_callable([$this, $fun])) {
             $cell = $this->$fun($row, $cell);
           } else {
@@ -684,7 +677,6 @@
         }
       }
       echo '</tr>';
-      return $row;
     }
     /**
      * @param $row
@@ -714,6 +706,11 @@
     public function __sleep() {
       unset($this->marker);
       unset($this->rowFunction);
+      foreach ($this->columns as &$col) {
+        if (isset($col['fun'])) {
+          $col = null;
+        }
+      }
       return array_keys((array) $this);
     }
   }

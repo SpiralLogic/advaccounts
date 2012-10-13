@@ -184,7 +184,7 @@
               unset($pager);
             }
           }
-          if (!$pager || $pager instanceof DB_Pager) {
+          if (!isset($pager) || $pager instanceof DB_Pager) {
             $pager = new DB_Pager($name, $sql, $coldef);
           }
           \DB_Pager::$Input = $c->offsetGet('Input');
@@ -258,7 +258,7 @@
      */
     protected function route() {
       $this->setupPage();
-      $request = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
+      $request = isset  ($_SERVER['DOCUMENT_URI']) ? parse_url($_SERVER['DOCUMENT_URI'])['path'] : false;
       if ($request == '/index.php') {
         return $this->defaultController();
       }
@@ -287,7 +287,7 @@
           } else {
             //no controller so 404 then find next best default
             header('HTTP/1.0 404 Not Found');
-            Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
+            Event::error('Error 404 Not Found:' . parse_url($_SERVER['DOCUMENT_URI'])['path']);
             return $this->defaultController();
           }
         }

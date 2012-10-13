@@ -103,6 +103,14 @@
      * @todo   Implement testGet().
      */
     public function testGet() {
+      $expected = null;
+      $actual   = $this->object->get('test0');
+      $this->assertSame($expected, $actual);
+      $actual = $this->object->get('test0', null);
+      $this->assertSame($expected, $actual);
+      $expected = false;
+      $actual   = $this->object->get('test0', null, false);
+      $this->assertSame($expected, $actual);
       $_GET['test0'] = 'wawa';
       $expected      = 'wawa';
       $actual        = $this->object->get('test0');
@@ -207,6 +215,34 @@
       $this->assertSame(8, $this->object->getPost('test3'));
     }
     /**
+     * @covers ADV\Core\Input\Input::firstThenSecond
+     */
+    public function testFirstThenSecond() {
+      $class  = new \ReflectionClass('ADV\\Core\\Input\\Input');
+      $method = $class->getMethod('firstThenSecond');
+      $method->setAccessible(true);
+      $actual = $method->invokeArgs($this->object, [Input::$get, Input::$post, 'test3', null, false]);
+      $this->assertfalse($actual);
+
+      $expected       = 7;
+      $_GET['test3']  = 7;
+      $_POST['test3'] = 8;
+      $actual         = $method->invokeArgs($this->object, [Input::$get, Input::$post, 'test3']);
+      $this->assertSame($expected, $actual);
+      $expected = 8;
+      $actual   = $method->invokeArgs($this->object, [Input::$post, Input::$get, 'test3']);
+      $this->assertSame($expected, $actual);
+      $expected = 7;
+      unset($_POST['test3']);
+      $actual = $method->invokeArgs($this->object, [Input::$post, Input::$get, 'test3']);
+      $this->assertSame($expected, $actual);
+      unset($_GET['test3']);
+      $actual = $method->invokeArgs($this->object, [Input::$post, Input::$get, 'test3']);
+      $this->assertNull($actual);
+      $actual = $method->invokeArgs($this->object, [Input::$post, Input::$get, 'test3', null, false]);
+      $this->assertFalse($actual);
+    }
+    /**
      * @covers ADV\Core\Input\Input::getPostGlobal
      * @todo   Implement testgetPostGlobal().
      */
@@ -233,6 +269,15 @@
       unset($_POST['test3']);
       $_SESSION['_globals']['test3'] = 9;
       $this->assertSame(9, $this->object->postGlobal('test3'));
+      $_POST['test4']                = 'right';
+      $_SESSION['_globals']['test4'] = 'wrong';
+      $actual                        = $this->object->postGlobal('test4', null, 'wrong');
+      $this->assertSame('right', $actual);
+      $_SESSION['_globals']['test5'] = 'wrong';
+      $actual                        = $this->object->postGlobal('test5', null, 'wrong2');
+      $this->assertSame('wrong', $actual);
+      $actual = $this->object->postGlobal('test6', null, 'usethisone');
+      $this->assertSame('usethisone', $actual);
     }
     /**
      * @covers ADV\Core\Input\Input::postGet

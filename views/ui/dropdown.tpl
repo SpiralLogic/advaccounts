@@ -12,12 +12,8 @@
 {{/if}}
     <ul class="dropdown-menu">
     {{#$.items}}
-    {{#if $.divider}}
-        <li class="divider"></li>
-    {{#else}}
         <li>
             <a class="{{$.class}}" href="{{$.href?:'#'}}" {{#$.attr}} {{!}}="{{.}}"{{/$.attr}}  {{#$.data}} data-{{!}}="{{.}}"{{/$.data}}>{{$.label}}</a></li>
-    {{/if}}
     {{/$.items}}
     </ul>
 {{/if}}

@@ -236,9 +236,9 @@
     )
   );
   $table              = DB_Pager::newPager('orders_tbl', $sql, $cols);
-  $table->rowFunction = function ($row, $pager) {
+  $table->rowFunction = function ($row) {
     if (!$row["closed"] && Dates::_differenceBetween(Dates::_today(), Dates::_sqlToDate($row["required_by"]), "d") > 0) {
-      return "<tr class='$pager->marker_class'>";
+      return "<tr class='overduebg'>";
     }
   };
   Event::warning(_("Marked orders are overdue."), false);

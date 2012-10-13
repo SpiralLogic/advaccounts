@@ -2,6 +2,7 @@
   namespace ADV\Controllers\Sales\Search;
 
   use ADV\Core\Input\Input;
+  use ADV\App\Form\DropDown;
   use ADV\App\Reporting;
   use ADV\Core\View;
   use ADV\App\Display;
@@ -163,7 +164,7 @@
      */
     public function formatMarker($row, $pager) {
       if (Dates::_isGreaterThan(Dates::_today(), Dates::_sqlToDate($row["due_date"])) && $row["Outstanding"] != 0) {
-        return "<tr class='$pager->marker_class'>";
+        return "<tr class='overduebg'>";
       }
     }
     /**
@@ -220,21 +221,19 @@
      * @return string
      */
     public function formatDropDown($row) {
-      $dropdown = new View('ui/dropdown');
+      $dd = new DropDown();
       if ($row["Outstanding"] > 0) {
-        $items[] = ['label'=> 'Edit', 'href'=> "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no']];
+        $dd->addItem('Edit', '/sales/customer_delivery.php?ModifyDelivery=' . $row['trans_no']);
       } elseif ($row["Outstanding"] > 0) {
-        $items[] = ['label'=> 'Invoice', 'href'=> "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no']];
+        $dd->addItem('Invoice', '/sales/customer_invoice.php?DeliveryNumber=' . $row['trans_no']);
       }
-      $href    = Reporting::print_doc_link($row['trans_no'], _("Print"), true, ST_CUSTDELIVERY, ICON_PRINT, '', '', 0, 0, true);
-      $items[] = ['class'=> 'printlink', 'label'=> 'Print', 'href'=> $href];
+      $href = Reporting::print_doc_link($row['trans_no'], _("Print"), true, ST_CUSTDELIVERY, ICON_PRINT, '', '', 0, 0, true);
+      $dd->addItem('Print', $href, [], ['class'=> 'printlink']);
       if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
-        $href    = '/system/void_transaction?type=' . ST_CUSTDELIVERY . '&trans_no=' . $row['trans_no'] . '&memo=Deleted%20during%20order%20search';
-        $items[] = ['label'=> 'Void Trans', 'href'=> $href, 'attr'=> ['target'=> '_blank']];
+        $href = '/system/void_transaction?type=' . ST_CUSTDELIVERY . '&trans_no=' . $row['trans_no'] . '&memo=Deleted%20during%20order%20search';
+        $dd->addItem('Void Trans', $href, [], ['target'=> '_blank']);
       }
-      $menus[] = ['title'=> $items[0]['label'], 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
-      $dropdown->set('menus', $menus);
-      return $dropdown->render(true);
+      return $dd->setAuto(true)->setSplit(true)->render(true);
     }
   }
 

@@ -4,7 +4,6 @@
   use ADV\App\Display;
   use ADV\App\Forms;
   use ADV\App\User;
-  use ADV\App\Bank\Bank;
   use ADV\App\WO\WO;
 
   /**
@@ -31,12 +30,14 @@
      */
     public static function  all($name, $selected_id = null, $skip_bank_accounts = false, $cells = false, $all_option = false, $submit_on_change = false, $all = false) {
       if ($skip_bank_accounts) {
-        $sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
+        $sql
+          = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
                 FROM (chart_master chart,chart_types type) LEFT JOIN bank_accounts acc ON chart.account_code=acc.account_code
                     WHERE acc.account_code IS null
                 AND chart.account_type=type.id";
       } else {
-        $sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
+        $sql
+          = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
                 FROM chart_master chart,chart_types type
                 WHERE chart.account_type=type.id";
       }
@@ -80,7 +81,16 @@
      * @param bool $submit_on_change
      * @param bool $all
      */
-    public static function  all_cells($label, $name, $selected_id = null, $skip_bank_accounts = false, $cells = false, $all_option = false, $submit_on_change = false, $all = false) {
+    public static function  all_cells(
+      $label,
+      $name,
+      $selected_id = null,
+      $skip_bank_accounts = false,
+      $cells = false,
+      $all_option = false,
+      $submit_on_change = false,
+      $all = false
+    ) {
       if ($label != null) {
         echo "<td>$label</td>\n";
       }
@@ -207,7 +217,7 @@
         array(
              'order'         => 'begin',
              'default'       => DB_Company::get_pref('f_year'),
-             'format'        => 'Forms::fiscalYearFormat(',
+             'format'        => '\\ADV\\App\\Forms::fiscalYearFormat(',
              'select_submit' => $submit_on_change,
              'async'         => false
         )

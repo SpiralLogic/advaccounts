@@ -154,7 +154,7 @@
      */
     public function formatMarker($row, $pager) {
       if ($row['OverDue'] == 1 && $row['TotalAmount'] > $row['Allocated']) {
-        return "<tr class='$pager->marker_class'>";
+        return "<tr class='overduebg'>";
       }
     }
     /**

@@ -249,7 +249,9 @@
       } else { // ajax ready div
         array_push($this->ajax_divs, [$id, $trigger === null ? $id : $trigger]);
         echo "<div " . ($id ? "id='$id'" : '') . ">";
-        ob_start();
+        if ($this->_inAjax()) {
+          ob_start([$this, 'obHandler']);
+        }
       }
     }
     /**
@@ -260,7 +262,9 @@
     public function end_div($return_div = false) {
       if ($div = array_pop($this->ajax_divs)) {
         if ($div[1] !== null) {
-          $this->addUpdate($div[1], $div[0], ob_get_flush());
+          if ($this->_inAjax()) {
+            $this->addUpdate($div[1], $div[0], ob_get_flush());
+          }
         }
         if ($return_div) {
           return "</div>";
@@ -268,6 +272,9 @@
         echo "</div>";
       }
       return '';
+    }
+    public function obHandler($buffer) {
+      return $buffer;
     }
     /**
      * @return mixed

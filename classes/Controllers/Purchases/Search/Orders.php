@@ -142,7 +142,7 @@
       $mark = $row['OverDue'] == 1;
       if ($mark) {
         Event::warning(_("Marked orders have overdue items."), false);
-        return "<tr class='$pager->marker_class'>";
+        return "<tr class='overduebg'>";
       }
     }
     /**

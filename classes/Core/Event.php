@@ -9,6 +9,8 @@
    **/
   namespace ADV\Core;
 
+  use Exception;
+
   /**
 
    */
@@ -139,7 +141,12 @@
       for ($i = 0; $i < $levels; $i++) {
         ob_end_flush();
       }
-      session_write_close();
+      try {
+
+        session_write_close();
+      } catch (Exception $e) {
+        var_dump($e);
+      }
       fastcgi_finish_request();
       static::$request_finsihed = true;
       try {

@@ -3,6 +3,7 @@
   namespace ADV\Controllers\Purchases\Search;
 
   use ADV\Core\DB\DB;
+  use ADV\App\Form\DropDown;
   use ADV\Core\Event;
   use ADV\App\Reporting;
   use DB_Company;
@@ -12,15 +13,12 @@
   use ADV\App\SysTypes;
   use DB_Pager;
   use ADV\App\Dates;
-  use ADV\App\Display;
   use Purch_Allocation;
   use ADV\App\Forms;
-  use ADV\App\Page;
   use ADV\Core\Session;
   use ADV\Core\Cell;
   use ADV\App\Creditor\Creditor;
   use ADV\Core\Table;
-  use ADV\Core\Ajax;
   use ADV\Core\Input\Input;
   use ADV\Core\JS;
 
@@ -219,33 +217,31 @@
      * @return string
      */
     public function formatDropdown($row) {
-      $dropdown = new View('ui/dropdown');
+      $dd = new DropDown();
       if ($row['type'] == ST_SUPPINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0) {
-        $items[] = ['label'=> _("Credit"), 'href'=> "/purchases/credit?New=1&invoice_no=" . $row['trans_no']];
+        $dd->addItem('Credit', "/purchases/credit?New=1&invoice_no=" . $row['trans_no']);
       }
       if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT || $row['type'] == ST_SUPPCREDIT) {
-        $href    = Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Remittance"), true, ST_SUPPAYMENT, ICON_PRINT, 'printlink', '', 0, 0, true);
-        $items[] = ['class'=> 'printlink', 'label'=> 'Print Remittance', 'href'=> $href];
+        $href = Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Remittance"), true, ST_SUPPAYMENT, ICON_PRINT, 'printlink', '', 0, 0, true);
+        $dd->addItem('Print Remittance', $href, [], ['class'=> 'printlink']);
       }
       if (empty($items)) {
         return '';
       }
       if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
-        $href    = '/system/void_transaction?type=' . $row['type'] . '&trans_no=' . $row['trans_no'] . '&memo=Deleted%20during%20order%20search';
-        $items[] = ['label'=> 'Void Trans', 'href'=> $href, 'attr'=> ['target'=> '_blank']];
+        $href = '/system/void_transaction?type=' . $row['type'] . '&trans_no=' . $row['trans_no'] . '&memo=Deleted%20during%20order%20search';
+        $dd->addItem('Void Trans', $href, [], ['target'=> '_blank']);
       }
-      $menus[] = ['title'=> 'Menu', 'items'=> $items];
-      $dropdown->set('menus', $menus);
-      return $dropdown->render(true);
+      return $dd->setTitle('Menu')->render(true);
     }
     /**
      * @param $row
      *
      * @return bool
      */
-    public function formatMarker($row, $pager) {
+    public function formatMarker($row) {
       if ($row['OverDue'] == 1 && (abs($row["TotalAmount"]) - $row["Allocated"] != 0)) {
-        return "<tr class='$pager->marker_class'>";
+        return "<tr class='overduebg'>";
       }
     }
     /**
