@@ -2,6 +2,7 @@
   namespace ADV\Controllers\Purchases\Search;
 
   use ADV\App\Forms;
+  use ADV\Core\Event;
   use GL_UI;
   use DB_Pager;
   use Inv_Location;

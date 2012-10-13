@@ -2,6 +2,7 @@
   namespace ADV\Controllers\Purchases\Search;
 
   use ADV\Core\DB\DB;
+  use ADV\Core\Event;
   use ADV\Core\Num;
   use GL_UI;
   use ADV\App\SysTypes;

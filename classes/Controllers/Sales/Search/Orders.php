@@ -153,7 +153,7 @@
       Forms::hidden('type', $this->trans_type);
       $this->displayTable();
       UI::emailDialogue(CT_CUSTOMER);
-      Forms::submitCenter('Update', _("Update"), true, '', null);
+      Forms::submitCenter('Update', _("Update"), true, '');
       Forms::end();
       $this->Page->end_page();
     }

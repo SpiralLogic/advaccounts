@@ -10,6 +10,7 @@
   namespace ADV\App;
 
   use ADV\Core\Input\Input;
+  use ADV\Core\JS;
   use ADV\Core\Num;
   use Bank_Currency;
   use ADV\Core\Config;
@@ -25,7 +26,6 @@
    * @param string $name
    */
   class Forms {
-    static $dic;
     /** @var \ADV\Core\DB\DB */
     static $DB;
     static $Ajax;
@@ -200,7 +200,7 @@
  (/themes/%s/images/button_ok.png) no-repeat;%s' name='%s' value=' ' title='" . _("Select") . "'> ";
         $selector .= sprintf($_select_button, $disabled, User::theme(), 'display:none;', '_' . $name . '_update') . "\n";
       }
-      //  static::$dic['JS']->_defaultFocus($name);
+      //  JS::_defaultFocus($name);
       return $selector;
     }
     // SUBMITS //
@@ -421,7 +421,7 @@
       } else {
         $name = $action;
       }
-      static::$dic['JS']->_beforeload("_validate.$name=function(){ return confirm('" . strtr($msg, array("\n" => '\\n')) . "');};");
+      JS::_beforeload("_validate.$name=function(){ return confirm('" . strtr($msg, array("\n" => '\\n')) . "');};");
     }
     /**
      * @param      $icon
@@ -452,7 +452,7 @@
       }
       $caption = ($name == '_action') ? $title : $value;
       $name    = htmlentities(strtr($name, array('.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B')));
-      if (static::$dic['User']->_graphic_links() && $icon) {
+      if (User::graphic_links() && $icon) {
         if ($value == _("Delete")) // Helper during implementation
         {
           $icon = ICON_DELETE;
@@ -701,7 +701,7 @@
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         $_POST[$name] = ($init === null) ? '' : $init;
       }
-      Forms::SmallAmountRow($label, $name, $_POST[$name], null, "%", static::$dic['User']->_percent_dec(), 0, $inputparams);
+      Forms::SmallAmountRow($label, $name, $_POST[$name], null, "%", User::percent_dec(), 0, $inputparams);
     }
     /**
      * @param        $label
@@ -745,7 +745,7 @@
      */
     public static function qtyRow($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
       if (!isset($dec)) {
-        $dec = static::$dic['User']->_qty_dec();
+        $dec = User::qty_dec();
       }
       echo "<tr>";
       Forms::amountCells($label, $name, $init, $params, $post_label, $dec);
@@ -761,7 +761,7 @@
      */
     public static function qtyRowSmall($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
       if (!isset($dec)) {
-        $dec = static::$dic['User']->_qty_dec();
+        $dec = User::qty_dec();
       }
       echo "<tr>";
       Forms::amountCellsSmall($label, $name, $init, $params, $post_label, $dec, null, true);
@@ -951,7 +951,7 @@
      * @return string
      */
     public static function stockItemsFormat($row) {
-      return (static::$dic['User']->_show_codes() ? ($row[0] . "&nbsp;-&nbsp;") : "") . $row[1];
+      return (User::show_codes() ? ($row[0] . "&nbsp;-&nbsp;") : "") . $row[1];
     }
     /**
      * @param $row
@@ -1208,7 +1208,7 @@
       $submit_on_change = false,
       $inparams = ""
     ) {
-      static::$dic['JS']->defaultFocus($name);
+      JS::_defaultFocus($name);
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         if ($init !== null) {
           $_POST[$name] = $init;
@@ -1285,7 +1285,7 @@
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         $_POST[$name] = ($init === null) ? 0 : $init;
       }
-      Forms::amountCellsSmall($label, $name, null, null, "%", static::$dic['User']->_percent_dec(), $inputparams);
+      Forms::amountCellsSmall($label, $name, null, null, "%", User::percent_dec(), $inputparams);
     }
     /**
      * @param        $label
@@ -1390,7 +1390,7 @@
      */
     public static function unitAmountCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
       if (!isset($dec)) {
-        $dec = static::$dic['User']->_price_dec() + 2;
+        $dec = User::price_dec() + 2;
       }
       Forms::amountCellsEx($label, $name, null, 15, $init, $params, $post_label, $dec + 2);
     }
@@ -1417,7 +1417,7 @@
      */
     public static function qtyCellsSmall($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
       if (!isset($dec)) {
-        $dec = static::$dic['User']->_qty_dec();
+        $dec = User::qty_dec();
       }
       Forms::amountCellsEx($label, $name, 'small', 12, $init, $params, $post_label, $dec, null, null, true);
     }
@@ -1489,12 +1489,11 @@
      */
     public static function qtyCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '') {
       if (!isset($dec)) {
-        $dec = static::$dic['User']->_qty_dec();
+        $dec = User::qty_dec();
       }
       Forms::amountCellsEx($label, $name, null, 15, $init, $params, $post_label, $dec, null, $inputparams = '', true);
     }
   }
 
-  Forms::$dic  = \ADV\Core\DIC::getInstance();
   Forms::$Ajax = Ajax::i();
   Forms::$DB   = \ADV\Core\DB\DB::i();
