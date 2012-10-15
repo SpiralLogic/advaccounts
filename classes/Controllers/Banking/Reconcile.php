@@ -116,7 +116,7 @@
       Table::end();
       $this->displaySummary();
       echo "<hr><div id='drag'>";
-      $this->render();
+      echo $this->render();
       echo '</div>';
       Forms::end();
       if (!$this->Ajax->inAjax() || REQUEST_AJAX) {
@@ -144,10 +144,11 @@
      * @return string
      */
     protected function render() {
+      ob_start();
       echo '<div id="newgrid">';
       $this->accountHasStatements ? $this->statementLayout() : $this->simpleLayout();
-
       echo '</div>';
+      return ob_get_clean();
     }
     /**
      * @return bool
@@ -285,6 +286,7 @@
     protected function getTotal() {
       if ($this->accountHasStatements) {
         list($beg_balance, $end_balance) = Bank_Account::getBalances($this->bank_account, $this->begin_date, $this->end_date);
+        Event::notice($beg_balance . $end_balance);
         $_POST["beg_balance"] = $this->Num->priceFormat($beg_balance);
         $_POST["end_balance"] = $this->Num->priceFormat($end_balance);
         $_POST["reconciled"]  = $this->Num->priceFormat($end_balance - $beg_balance);
@@ -477,7 +479,7 @@
 
       switch ($row['type']) {
         case ST_GROUPDEPOSIT:
-          $dd->addItem('unGroup', '#', [], ['class'=> 'Ungroup'])->setTitle('Group');
+          $dd->addItem('unGroup', '#', [], ['class'=> 'unGroup'])->setTitle('Group');
           break;
         case ST_BANKDEPOSIT:
         case ST_CUSTPAYMENT:
