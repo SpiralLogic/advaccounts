@@ -8,7 +8,6 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
-
   use SessionHandlerInterface;
 
   /**
@@ -24,7 +23,9 @@
    * @method static Session i()
    * @property  string                page_title
    */
-  class Session implements \ArrayAccess {
+  class Session implements \ArrayAccess
+  {
+
     use \ADV\Core\Traits\StaticAccess2;
 
     /** @var \ADV\Core\Language */
@@ -264,5 +265,7 @@
   /**
 
    */
-  class SessionException extends \Exception {
+  class SessionException extends \Exception
+  {
+
   }

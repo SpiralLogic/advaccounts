@@ -109,6 +109,7 @@
      * @return Field
      */
     public function initial($value) {
+
       $this->value($value);
       $this->default = $this->value;
       return $this;

@@ -175,6 +175,17 @@
       $field         = $this->addField(new Field('input', $name));
       $field['type'] = 'text';
       return $field->mergeAttr($input_attr);
+    }  /**
+     * @param       $name
+     * @param array $input_attr
+     *
+     * @internal param null $value
+     * @return \ADV\App\Form\Field
+     */
+    public function password($name, $input_attr = []) {
+      $field         = $this->addField(new Field('input', $name));
+      $field['type'] = 'password';
+      return $field->mergeAttr($input_attr);
     }
     /**
      * @param       $name
