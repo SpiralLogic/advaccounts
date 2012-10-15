@@ -172,15 +172,15 @@
       );
       $dic->offsetSet(
         'Pager',
-        function (\ADV\Core\DIC $c, $name, $sql, $coldef) {
+        function (\ADV\Core\DIC $c, $name, $sql = null, $coldef) {
           if (!isset($_SESSION['pager'])) {
             $_SESSION['pager'] = [];
           }
           if (isset($_SESSION['pager'][$name])) {
             $pager = $_SESSION['pager'][$name];
-            if ($pager->sql != $sql) {
+            if ($sql !== null && $pager->sql != $sql) {
               $pager->refresh($sql);
-            } elseif ($pager->rec_count != count($sql)) {
+            } elseif (is_array($sql) && $pager->rec_count != count($sql)) {
               unset($pager);
             }
           }

@@ -261,7 +261,7 @@
         array_push($this->ajax_divs, [$id, $trigger === null ? $id : $trigger]);
         echo "<div " . ($id ? "id='$id'" : '') . ">";
         if ($this->_inAjax()) {
-          ob_start([$this, 'obHandler']);
+          ob_start();
         }
       }
     }
@@ -283,9 +283,6 @@
         echo "</div>";
       }
       return '';
-    }
-    public function obHandler($buffer) {
-      return $buffer;
     }
     /**
      * @return mixed
