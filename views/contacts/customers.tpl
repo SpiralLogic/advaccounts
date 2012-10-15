@@ -1,4 +1,4 @@
-{{#if !$frame }}
+{{#if !$frame}}
 <div id='companysearch' class='center bold font13 pad20'>
     <label for='customer'>Search Customer:&nbsp;<input name='customer' placeholder='Customer' id='customer' type='text' autofocus></label>
 </div>
@@ -11,9 +11,7 @@
         <label for="id">Customer ID:</label><input id="id" readonly class="small" value='{{$debtor_id}}' name='id'>
     </div>
     <div class='formbox'>
-        <div class='tablehead'>
-            Shipping Details
-        </div>
+        <div class='tablehead'>Shipping Details</div>
         <div id="branchSelect" class="center">{{$branchlist}}
             <div id="branchMenu" class="btn-group alignleft inline" style="display:none;">
                 <button class="btn dropdown-toggle auto" style="float:none;" data-toggle="dropdown">Add Branch <span class="icon-caret-down"></span></button>

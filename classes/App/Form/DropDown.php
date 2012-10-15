@@ -70,7 +70,7 @@
      * @return string
      */
     public function render($return = false) {
-      $view          = new View('ui/dropdown2');
+      $view          = new View('ui/dropdown');
       $view['auto']  = $this->auto;
       $view['title'] = $this->title ? : $this->items[0]['label'];
       $view->set('split', $this->split);

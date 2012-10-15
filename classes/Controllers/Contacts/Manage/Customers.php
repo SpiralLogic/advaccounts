@@ -2,6 +2,7 @@
   namespace ADV\Controllers\Contacts\Manage;
 
   use ADV\App\Debtor\Debtor;
+  use ADV\Core\HTML;
   use ADV\App\Contact\Postcode;
   use Tax_Groups;
   use Inv_Location;
@@ -14,7 +15,6 @@
   use ADV\Core\Event;
   use ADV\Core\Cache;
   use ADV\Core\View;
-  use ADV\App\Page;
   use ADV\Core\MenuUI;
   use ADV\Core\JS;
   use ADV\Core\HTMLmin;
@@ -74,7 +74,7 @@
      */
     protected function generateForm() {
       $cache = Cache::_get('customer_form');
-      //$cache = null;
+      //   $cache = null;
       if ($cache) {
         $this->JS->addState($cache[1]);
         return $form = $cache[0];
@@ -99,7 +99,7 @@
           ),
           ['class'=> 'med', 'name' => 'branchList'],
           null,
-          true
+          new HTML
         )
       );
       $form->group('shipping_details')->text('branch[contact_name]')->label('Contact:');

@@ -70,7 +70,7 @@
     protected function generateTableCols() {
       $cols = [
         ['type'=> 'skip'],
-        'Name'       => ['type'=> 'group'],
+        'Name'       => ['ord'=> 'asc'],
         'inactive'   => ['type'=> 'inactive'],
         ['type'=> 'skip'],
         'Units',
@@ -83,7 +83,7 @@
         ['type'=> 'skip'],
         ['type'=> 'skip'],
         ['type'=> 'skip'],
-        'Tax',
+        'Tax'        => ['ord'=> 'asc'],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
       ];

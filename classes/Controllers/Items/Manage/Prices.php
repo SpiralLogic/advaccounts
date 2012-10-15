@@ -9,7 +9,6 @@
   use Sales_Type;
   use PDO;
   use Item_Price;
-  use ADV\App\Display;
   use ADV\App\UI;
   use ADV\App\Validation;
   use ADV\Core\View;
@@ -88,7 +87,7 @@
         'Type',
         ['type'=> 'skip'],
         ['type'=> 'skip'],
-        'stock_id',
+        'Stock ID',
         ['type'=> 'skip'],
         'Currency',
         'Price'=> ['type'=> 'amount'],

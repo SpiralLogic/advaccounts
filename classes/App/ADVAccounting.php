@@ -179,7 +179,7 @@
           if (isset($_SESSION['pager'][$name])) {
             $pager = $_SESSION['pager'][$name];
             if ($pager->sql != $sql) {
-              $pager->refreshData($sql);
+              $pager->refresh($sql);
             } elseif ($pager->rec_count != count($sql)) {
               unset($pager);
             }

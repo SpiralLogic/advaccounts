@@ -19,6 +19,7 @@
    * @method static Ajax _addEnable($trigger, $sTarget, $sData = true)
    * @method static Ajax _addDisable($trigger, $sTarget, $sData = true)
    * @method static Ajax _addFocus($trigger, $sTarget)
+   * @method static Ajax _addDebug($debug)
    * @method static Ajax _run()
    * @method static Ajax _addJson($trigger, $sTarget, $json)
    * @method static Ajax _flush()
@@ -100,6 +101,16 @@
     public function addScript($trigger, $sJS) {
       $this->addCommand($trigger, array('n' => 'js'), $sJS, 'js');
 
+      return $this;
+    }
+    /**
+     * @param $debug
+     *
+     * @return Ajax
+     */
+    public function addDebug($debug) {
+      $js = "console.log(" . json_encode($debug) . ");";
+      $this->addScript(true, $js);
       return $this;
     }
     /**

@@ -2677,6 +2677,13 @@ img {
   z-index:     500;
 }
 
+.lite #header {
+  padding-top: 0;
+  width:       95%;
+  top:         0;
+  background:  none;
+}
+
 #top {
   color:      #808080;
   background: white;
@@ -3801,64 +3808,90 @@ button img {
   background: none !important;
 }
 
-.navibar table tr td {
+.navibar td {
   border:         none !important;
   vertical-align: middle;
 }
 
-.navibutton {
-  font-family:  Tahoma, Geneva, Verdana;
-  font-weight:  bold;
-  color:        #333;
-  padding:      0 3px;
-  background:   transparent none;
-  border-style: none;
-  box-shadow:   none;
-}
-
-.navibutton:hover {
-  text-shadow: #111111 inset;
-}
-
-.navibutton span {
+.navibar button {
+  font-family:     Tahoma, Geneva, Verdana, sans-serif;
+  font-weight:     bold;
+  color:           #12191c;
+  padding:         0 3px;
+  background:      transparent none;
+  border-style:    none;
+  box-shadow:      none;
   text-decoration: underline;
 }
 
-.navibutton[disabled], .navibutton[disabled] span {
-  color:           #B8B8B8;
+.navibar button:hover {
+  text-shadow: rgba(255, 255, 255, 0.61) -1px -1px;
+}
+
+.naviheader button:hover {
+  text-shadow: rgba(61, 61, 61, 0.33) -1px -1px;
+}
+
+.navibar button[disabled] {
+  color:           #8c8c8c;
   text-decoration: none;
   cursor:          auto;
 }
 
-th:hover span {
-  text-shadow: rgba(0, 0, 0, .3) 0 -1px;
-}
-
-.navibar td:first-child {
-  border-color: #e1e1e1;
-}
-
 .navibar {
-  font-size:       12px;
-  padding:         0;
   color:           #333;
   border-collapse: collapse;
   background:      #ededed;
   background:      -moz-linear-gradient(top, #ededed 0%, #c4c4c4 100%);
-  background:      -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ededed), color-stop(100%, #c4c4c4));
-  background:      -webkit-linear-gradient(top, #ededed 0%, #c4c4c4 100%);
+  background:      -webkit-linear-gradient(top, #ededed 0%, #969696 100%);
   background:      -o-linear-gradient(top, #ededed 0%, #c4c4c4 100%);
   background:      -ms-linear-gradient(top, #ededed 0%, #c4c4c4 100%);
   background:      linear-gradient(top, #ededed 0%, #c4c4c4 100%);
   filter:          progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ededed', endColorstr = '#c4c4c4', GradientType = 0);
-  border:          1px solid #7096AB;
+  border:          1px solid #12191c;
   box-shadow:      none;
+  font-size:       10px;
+  padding:         0;
+}
+
+.naviheader th button {
+  background:      none;
+  border:          none;
+  box-shadow:      none;
+  font-size:       13px;
+  letter-spacing:  .12em;
+  line-height:     22px;
+  padding:         0;
+  color:           #fdfdfd;
+  text-decoration: underline; font-weight: normal;
+}
+
+.naviheader button:hover {
+  text-shadow: rgb(48, 48, 52) -1px -1px;
+}
+
+.naviheader th {
+  font-weight:     normal;
+  color:           #fdfdfd;
+  border-collapse: collapse;
+  background:      #ededed;
+  line-height:     22px;
+  background:      -moz-linear-gradient(top, #ededed 100%, #c4c4c4 0%);
+  background:      -webkit-linear-gradient(top, #505050 0%, #737373 50%, #5e5e5e 100%);
+  background:      -o-linear-gradient(top, #ededed 0%, #c4c4c4 100%);
+  background:      -ms-linear-gradient(top, #ededed 0%, #c4c4c4 100%);
+  background:      linear-gradient(top, #ededed 0%, #c4c4c4 100%);
+  filter:          progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ededed', endColorstr = '#c4c4c4', GradientType = 0);
+  border:          1px solid #505050;
+  box-shadow:      none;
+  padding:         2px 5px 2px 5px;
 }
 
 .navibar span {
-  display:     inline-block;
-  font-weight: 600;
-  padding:     3px;
+  display:        inline-block;
+  letter-spacing: .15em;
+  padding:        2px;
+  font-size:      11px;
 }
 
 .navibar input[type="checkbox"] {
@@ -3866,11 +3899,16 @@ th:hover span {
 }
 
 .navigroup th {
-  font-size:       11px;
+  color:           black;
+  font-size:       12px;
   border-collapse: collapse;
   border:          none;
   box-shadow:      none;
-  padding-left:    30px;
+  padding-left:    14px;
+}
+
+.navigroup ~ tr td:first-child {
+  padding-left: 20px;
 }
 
 table.padded .navibar td {

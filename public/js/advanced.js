@@ -404,7 +404,6 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                    if (!$.isFunction(callback)) {
                      var idField = Adv.Forms.findInputEl(callback);
                      callback = function (data) {
-                       console.log($(idField));
                        if ($(idField).length) {
                          $(idField).val(data.id);
                        }
@@ -520,7 +519,7 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                    val = +val.replace(new RegExp('\\' + user.ds, 'g'), '.');
                    return isNaN(val) ? 0 : val;
                  },
-                 setFocus:        function (name, byId) {
+                 setFocus:        function (name, byId, frompos) {
                    var el, pos, $el;
                    if (name === false) {
                      focusOff = true;
@@ -561,7 +560,12 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                    // The timeout is needed to prevent unpredictable behaviour on IE & Gecko.
                    // Using tmp var prevents crash on IE5
                    $el = $(el);
-                   pos = $el.offset().top - 100;
+                   if (frompos === undefined) {
+                     pos = $el.offset().top - 100;
+                   }
+                   else {
+                     pos = $el.offset().top - $(window).height() + 100;
+                   }
                    if (tooltip) {
                      tooltip.tooltip('destroy');
                    }

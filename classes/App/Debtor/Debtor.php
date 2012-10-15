@@ -739,6 +739,7 @@ JS;
         } else {
           JS::_setFocus('customer');
           $focus = true;
+          $value = null;
         }
       }
       Forms::hidden('debtor_id');

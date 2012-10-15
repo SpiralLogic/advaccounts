@@ -97,7 +97,6 @@ document.getElementsBySelector = jQuery;
 //		request is directed to current location
 //
 JsHttpRequest.request = function (trigger, form, tout) {
-  console.log(arguments);
   tout = (tout) ? tout : 15000;
   try {
     Adv.loader.on(tout);
@@ -199,7 +198,12 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
                                     objElement.disabled = data;
                                     break;
                                   case 'fc':
-                                    Adv.Forms.setFocus(data);
+                                    if (data.el === undefined) {
+                                      Adv.Forms.setFocus(data);
+                                    }
+                                    else {
+                                      Adv.Forms.setFocus(data.el, undefined, data.pos);
+                                    }
                                     break;
                                   case 'js':
                                     eval(data);

@@ -142,7 +142,6 @@
         ob_end_flush();
       }
       try {
-
         session_write_close();
       } catch (Exception $e) {
         var_dump($e);

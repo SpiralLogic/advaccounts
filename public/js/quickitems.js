@@ -40,9 +40,9 @@ var Items = function () {
   $stockRow.template('stockrow');
   return {
     fetch:     function (id) {
-      if (id.val !== undefined) {
-        $('#itemSearchId').val(id.val);
-        Items.getFrames(id.val);
+      if (id.value !== undefined) {
+        $('#itemSearchId').val(id.value);
+        Items.getFrames(id.value);
       }
       if (id.id !== undefined) {
         id = id.id;

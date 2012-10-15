@@ -143,7 +143,7 @@
        * @return array
        */
       public static function getAll($inactive = false) {
-        $q = DB::_select('c.account_name', 'c.account_code', 'c.account_code2', 't.name as type', 'c.inactive', 't.id as type_id')->from('chart_master c', 'chart_types t')->where(
+        $q = DB::_select('t.name as type', 'c.account_name', 'c.account_code', 'c.account_code2', 'c.inactive', 't.id as type_id')->from('chart_master c', 'chart_types t')->where(
           'c.account_type=t.id'
         );
         if (!$inactive) {

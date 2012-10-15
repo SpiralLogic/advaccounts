@@ -2,6 +2,7 @@
   namespace ADV\Controllers\Purchases\Search;
 
   use ADV\Core\DB\DB;
+  use ADV\App\Display;
   use ADV\Core\Event;
   use ADV\Core\Num;
   use GL_UI;
@@ -10,7 +11,6 @@
   use ADV\App\Dates;
   use Purch_Allocation;
   use ADV\App\Forms;
-  use ADV\App\Page;
   use ADV\App\Creditor\Creditor;
   use ADV\Core\Table;
 
@@ -152,7 +152,7 @@
      *
      * @return bool
      */
-    public function formatMarker($row, $pager) {
+    public function formatMarker($row) {
       if ($row['OverDue'] == 1 && $row['TotalAmount'] > $row['Allocated']) {
         return "<tr class='overduebg'>";
       }

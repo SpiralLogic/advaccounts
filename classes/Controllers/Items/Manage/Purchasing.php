@@ -47,6 +47,8 @@
         );
         $this->Session->setGlobal('stock_id', $this->stock_id);
         echo "</div>";
+      } else {
+        $this->tableWidth = '90';
       }
     }
     /**
