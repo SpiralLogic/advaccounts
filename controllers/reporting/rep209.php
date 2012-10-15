@@ -139,7 +139,7 @@
       $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
       $linetype          = true;
       $doctype           = ST_PURCHORDER;
-        include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
+      include(PATH_REPORTS . 'includes' . DS . 'doctext.php');
       $rep->TextCol(3, 6, Report::SUBTOTAL, -2);
       $rep->TextCol(6, 7, $display_sub_total, -2);
       $rep->NewLine();

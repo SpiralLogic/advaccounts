@@ -18,7 +18,8 @@
    * @return \ADV\Core\DB\Query\Result|Array|bool
    */
   function get_remittance($type, $trans_no) {
-    $sql    = "SELECT creditor_trans.*,
+    $sql
+            = "SELECT creditor_trans.*,
  		(creditor_trans.ov_amount+creditor_trans.ov_gst+creditor_trans.ov_discount) AS Total,
  		suppliers.name, suppliers.account_no, suppliers.city, suppliers.postcode, suppliers.state,
  		suppliers.curr_code, suppliers.payment_terms, suppliers.gst_no AS tax_id,
@@ -42,11 +43,15 @@
    * @return null|PDOStatement
    */
   function get_allocations_for_remittance($creditor_id, $type, $trans_no) {
-    $sql = Purch_Allocation::get_sql("amt, supplier_reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
+    $sql = Purch_Allocation::get_sql(
+      "amt, supplier_reference, trans.alloc",
+      "trans.trans_no = alloc.trans_no_to
 		AND trans.type = alloc.trans_type_to
 		AND alloc.trans_no_from=" . DB::_escape($trans_no) . "
 		AND alloc.trans_type_from=" . DB::_escape($type) . "
-		AND trans.creditor_id=" . DB::_escape($creditor_id), "creditor_allocations as alloc");
+		AND trans.creditor_id=" . DB::_escape($creditor_id),
+      "creditor_allocations as alloc"
+    );
     $sql .= " ORDER BY trans_no";
     return DB::_query($sql, "Cannot retreive alloc to transactions");
   }
@@ -75,7 +80,7 @@
     $cur    = DB_Company::get_pref('curr_default');
     if ($email == 0) {
       /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-      $rep           = new $report_type(_('REMITTANCE'), "RemittanceBulk",$_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SUPPTRANSVIEW : SA_SUPPBULKREP, User::page_size());
+      $rep           = new $report_type(_('REMITTANCE'), "RemittanceBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SUPPTRANSVIEW : SA_SUPPBULKREP, User::page_size());
       $rep->currency = $cur;
       $rep->Font();
       $rep->Info($params, $cols, null, $aligns);
@@ -94,7 +99,7 @@
         $baccount              = Bank_Account::get_default($myrow['curr_code']);
         $params['bankaccount'] = $baccount['id'];
         if ($email == 1) {
-          $rep           = new $report_type("", "", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SUPPTRANSVIEW : SA_SUPPBULKREP,User::page_size());
+          $rep           = new $report_type("", "", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SUPPTRANSVIEW : SA_SUPPBULKREP, User::page_size());
           $rep->currency = $cur;
           $rep->Font();
           $rep->title    = _('REMITTANCE');
@@ -107,7 +112,7 @@
         $result   = get_allocations_for_remittance($myrow['creditor_id'], $myrow['type'], $myrow['trans_no']);
         $linetype = true;
         $doctype  = ST_SUPPAYMENT;
-          include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
+        include(PATH_REPORTS . 'includes' . DS . 'doctext.php');
         $total_allocated = 0;
         $rep->TextCol(0, 4, $doc_Towards, -2);
         $rep->NewLine(2);

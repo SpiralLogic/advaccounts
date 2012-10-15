@@ -180,7 +180,7 @@
      */
     protected function renderCSS() {
       $this->css += $this->Config->get('assets.css');
-      $path = THEME_PATH . $this->theme . DS;
+      $path = PATH_THEME . $this->theme . DS;
       $css  = implode(',', $this->css);
       return [$path . $css];
     }

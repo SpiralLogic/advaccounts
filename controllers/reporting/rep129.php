@@ -11,15 +11,12 @@
        See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       * ********************************************************************* */
 
-
-
   print_sales_orders();
   $print_as_quote = 0;
-  function print_sales_orders()
-  {
+  function print_sales_orders() {
     global $print_as_quote;
 
-      $report_type = '\\ADV\\App\\Reports\\PDF';
+    $report_type    = '\\ADV\\App\\Reports\\PDF';
     $from           = $_POST['PARAM_0'];
     $to             = $_POST['PARAM_1'];
     $currency       = $_POST['PARAM_2'];
@@ -41,10 +38,10 @@
     if ($email == 0) {
       if ($print_as_quote == 0) {
         /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_("PROFORMA INVOICE"), "SalesOrderBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP,User::page_size());
+        $rep = new $report_type(_("PROFORMA INVOICE"), "SalesOrderBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size());
       } else {
         /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_("QUOTE"), "QuoteBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP,User::page_size());
+        $rep = new $report_type(_("QUOTE"), "QuoteBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size());
       }
       $rep->currency = $cur;
       $rep->Font();
@@ -55,9 +52,10 @@
       $baccount              = Bank_Account::get_default($myrow['curr_code']);
       $params['bankaccount'] = $baccount['id'];
       $branch                = Sales_Branch::get($myrow["branch_id"]);
-      if ($email == 1) {        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
+      if ($email == 1) {
+        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
 
-        $rep           = new $report_type("", "", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP,User::page_size());
+        $rep           = new $report_type("", "", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size());
         $rep->currency = $cur;
         $rep->Font();
         if ($print_as_quote == 1) {
@@ -125,7 +123,7 @@
       $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
       $linetype          = true;
       $doctype           = ($print_as_quote < 3) ? ST_SALESORDER : ST_SALESQUOTE;
-        include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
+      include(PATH_REPORTS . 'includes' . DS . 'doctext.php');
       $rep->TextCol(4, 7, $doc_shipping . ' (ex.GST)', -2);
       $rep->TextCol(7, 8, $display_freight, -2);
       $rep->NewLine();

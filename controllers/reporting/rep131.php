@@ -33,7 +33,8 @@
     $cur    = DB_Company::get_pref('curr_default');
     if ($email == 0) {
       /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-      $rep           = new $report_type(_("PROFORMA INVOICE"), "SalesQuotationBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size());
+      $rep           = new $report_type(_("PROFORMA INVOICE"), "SalesQuotationBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size(
+      ));
       $rep->currency = $cur;
       $rep->Font();
       $rep->Info($params, $cols, null, $aligns);
@@ -102,7 +103,7 @@
       $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
       $linetype          = true;
       $doctype           = ST_SALESQUOTE;
-        include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
+      include(PATH_REPORTS . 'includes' . DS . 'doctext.php');
       $rep->TextCol(4, 7, $doc_sub_total, -2);
       $rep->TextCol(7, 8, $display_sub_total, -2);
       $rep->NewLine();

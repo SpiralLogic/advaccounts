@@ -10,14 +10,12 @@
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
 
-
   $packing_slip = 0;
   print_deliveries();
-  function print_deliveries()
-  {
+  function print_deliveries() {
     global $packing_slip;
 
-      $report_type = '\\ADV\\App\\Reports\\PDF';
+    $report_type  = '\\ADV\\App\\Reports\\PDF';
     $from         = $_POST['PARAM_0'];
     $to           = $_POST['PARAM_1'];
     $email        = $_POST['PARAM_2'];
@@ -40,10 +38,10 @@
     if ($email == 0) {
       if ($packing_slip == 0) {
         /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_('DELIVERY'), "DeliveryNoteBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP,User::page_size());
+        $rep = new $report_type(_('DELIVERY'), "DeliveryNoteBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size());
       } else {
         /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_('PACKING SLIP'), "PackingSlipBulk",$_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size());
+        $rep = new $report_type(_('PACKING SLIP'), "PackingSlipBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size());
       }
       $rep->currency = $cur;
       $rep->Font();
@@ -57,7 +55,7 @@
       $branch      = Sales_Branch::get($myrow["branch_id"]);
       $sales_order = Sales_Order::get_header($myrow["order_"], ST_SALESORDER); // ?
       if ($email == 1) {
-        $rep           = new $report_type("", "", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP,User::page_size());
+        $rep           = new $report_type("", "", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size());
         $rep->currency = $cur;
         $rep->Font();
         if ($packing_slip == 0) {
@@ -104,7 +102,7 @@
       $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
       $linetype          = true;
       $doctype           = ST_CUSTDELIVERY;
-        include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
+      include(PATH_REPORTS . 'includes' . DS . 'doctext.php');
       if ($email == 1) {
         if ($myrow['email'] == '') {
           $myrow['email']      = $branch['email'];

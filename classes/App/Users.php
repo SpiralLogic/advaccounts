@@ -185,7 +185,7 @@
     public static function themes_row($label, $name, $value = null) {
       $themes = [];
       try {
-        $themedir = new \DirectoryIterator(ROOT_WEB . THEME_PATH);
+        $themedir = new \DirectoryIterator(ROOT_WEB . PATH_THEME);
       } catch (\UnexpectedValueException $e) {
         Event::error($e->getMessage());
       }

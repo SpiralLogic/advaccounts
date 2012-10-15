@@ -21,7 +21,7 @@
     if (!Input::_post('backups')) {
       Event::error(_('Select backup file first.'));
     } else {
-      $filename = BACKUP_PATH . Input::_post('backups');
+      $filename = PATH_BACKUP . Input::_post('backups');
       if (Ajax::_inAjax()) {
         Ajax::_popup($filename);
       } else {
@@ -35,7 +35,7 @@
   }
 
   if (Input::_post('download')) {
-    download_file(BACKUP_PATH . Input::_post('backups'));
+    download_file(PATH_BACKUP . Input::_post('backups'));
     exit;
   }
   Page::start(_($help_context = "Backup and Restore Database"), SA_BACKUP);
@@ -48,12 +48,12 @@
     Ajax::_activate('backups');
   }
   if (Input::_post('restore')) {
-    if (Utils::import(BACKUP_PATH . Input::_post('backups'), $conn)) {
+    if (Utils::import(PATH_BACKUP . Input::_post('backups'), $conn)) {
       Event::success(_("Restore backup completed."));
     }
   }
   if (Input::_post('deldump')) {
-    if (unlink(BACKUP_PATH . Input::_post('backups'))) {
+    if (unlink(PATH_BACKUP . Input::_post('backups'))) {
       Event::notice(_("File successfully deleted.") . " " . _("Filename") . ": " . Input::_post('backups'));
       Ajax::_activate('backups');
     } else {
@@ -67,7 +67,7 @@
     if (!preg_match("/.sql(.zip|.gz)?$/", $fname)) {
       Event::error(_("You can only upload *.sql backup files"));
     } elseif (is_uploaded_file($tmpname)) {
-      rename($tmpname, BACKUP_PATH . $fname);
+      rename($tmpname, PATH_BACKUP . $fname);
       Event::notice("File uploaded to backup directory");
       Ajax::_activate('backups');
     } else {
