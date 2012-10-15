@@ -59,9 +59,17 @@
         $form->group('hidden');
         $form->hidden('login_company')->value($this->User->company);
       } else {
-        $form->arraySelect('login_company', $this->User->company, $this->Config->getAll('db'))->label('Company');        $form->group('hidden');
+        $companies = $this->Config->getAll('db');
+        $logins    = [];
+        foreach ($companies as $k =>$v) {
+          if ($v['company'])
+          {
+            $logins[$k] = $v['company'];
+          }
+        }
+        $form->arraySelect('login_company', $logins, $this->User->company)->label('Company');
+        $form->group('hidden');
       }
-
       foreach ($_POST as $p => $val) {
         // add all request variables to be resend together with login data
         if (!in_array($p, array('user_name', 'password', 'SubmitUser', 'login_company'))) {
@@ -71,7 +79,8 @@
       if (REQUEST_GET) {
         $form->hidden('uri', $_SESSION['timeout']['uri']);
       }
-      $form->group();$form->submit('SubmitUser', "Login -->");
+      $form->group();
+      $form->submit('SubmitUser', "Login -->");
       $form->end();
       if ($this->User->logged) {
         $view['date'] = $this->Dates->today() . " | " . $this->Dates->now();

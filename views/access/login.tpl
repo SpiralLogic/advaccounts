@@ -41,7 +41,7 @@
 <div class='center'>{{$data}}
   <br><a class='pad20' target='_blank' href='{{POWERED_URL}}' tabindex='-1'>{{APP_TITLE}} {{VERSION}} - Theme: {{$theme}}</a>
   <br><br><a target='_blank' href='{{POWERED_URL}}' tabindex='-1'>{{POWERED_BY}}</a></div>
-<script>
+<script src="/js/libs/sha256.js"></script><script>
   {{#if $timeout}}
   (function () {document.forms[0].login_company.value = '{{$company}}';})();
   {{/if}}
