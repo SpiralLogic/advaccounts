@@ -7,12 +7,16 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\Controllers\Access;
   use ADV\App\Forms;
   use ADV\App\Form\Form;
   use ADV\Core\Cell;
   use ADV\Core\View;
   use ADV\Core\Table;
 
+  /**
+   *
+   */
   class Login extends \ADV\App\Controller\Action
   {
 
@@ -46,35 +50,35 @@
       if (!headers_sent()) {
         header("Content-type: text/html; charset=UTF-8");
       }
-
       $form = new Form();
       $view->set('form', $form);
       $form->start("loginform", REQUEST_POST ? $_SESSION['timeout']['uri'] : '#');
-      if (REQUEST_GET) {
-        $form->hidden('uri', $_SESSION['timeout']['uri']);
-      }
       $form->text('user_name')->label('User name');
       $form->password('password')->label('Password')->value($this->Config->get('demo_mode') ? "password" : null);
       if ($timeout) {
+        $form->group('hidden');
         $form->hidden('login_company')->value($this->User->company);
       } else {
-        $form->arraySelect('login_company', $this->User->company, $this->Config->getAll('db'));
-        $form->submit('SubmitUser', "Login -->");
-        foreach ($_POST as $p => $val) {
-          // add all request variables to be resend together with login data
-          if (!in_array($p, array('user_name', 'password', 'SubmitUser', 'login_company'))) {
-            $form->hidden(serialize($p))->value($val);
-          }
+        $form->arraySelect('login_company', $this->User->company, $this->Config->getAll('db'))->label('Company');        $form->group('hidden');
+      }
+
+      foreach ($_POST as $p => $val) {
+        // add all request variables to be resend together with login data
+        if (!in_array($p, array('user_name', 'password', 'SubmitUser', 'login_company'))) {
+          $form->hidden(serialize($p))->value($val);
         }
-        $form->end();
-        if ($this->User->logged) {
-          $view['date'] = $this->Dates->today() . " | " . $this->Dates->now();
-        } else {
-          $view['date'] = date("m/d/Y") . " | " . date("h.i am");
-        }
+      }
+      if (REQUEST_GET) {
+        $form->hidden('uri', $_SESSION['timeout']['uri']);
+      }
+      $form->group();$form->submit('SubmitUser', "Login -->");
+      $form->end();
+      if ($this->User->logged) {
+        $view['date'] = $this->Dates->today() . " | " . $this->Dates->now();
+      } else {
+        $view['date'] = date("m/d/Y") . " | " . date("h.i am");
       }
       $view->render();
     }
-
   }
 

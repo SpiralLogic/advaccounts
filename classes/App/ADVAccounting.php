@@ -7,9 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   namespace ADV\App;
-
   use ADV\Core\JS;
   use DB_Pager;
   use DB_Company;
@@ -28,7 +26,9 @@
   /**
    * @method static \ADV\App\ADVAccounting i()
    */
-  class ADVAccounting {
+  class ADVAccounting
+  {
+
     use \ADV\Core\Traits\Singleton;
 
     public $applications = [];
@@ -115,7 +115,6 @@
       $dic->offsetSet(
         'Input',
         function () {
-
           array_walk(
             $_POST,
             function (&$v) {
@@ -162,7 +161,6 @@
       $dic->offsetSet(
         'DB',
         function (\ADV\Core\DIC $c, $name = 'default') {
-
           $config   = $c->offsetGet('Config');
           $dbconfig = $config->get('db.' . $name);
           $cache    = $c->offsetGet('Cache');
@@ -234,7 +232,6 @@
           return $session;
         }
       )->offsetGet(null);
-
       $this->User  = $dic['User'];
       $this->Input = $dic['Input'];
       $this->JS->footerFile($this->Config->get('assets.footer'));
@@ -389,7 +386,7 @@
       $company = $this->Input->post('login_company', null, 'default');
       if ($company) {
         $modules = $this->Config->get('modules.login', []);
-        foreach ($modules as $module=> $module_config) {
+        foreach ($modules as $module => $module_config) {
           $this->User->_register_login(
             function () use ($module, $module_config) {
               $module = '\\Modules\\' . $module . '\\' . $module;
@@ -402,7 +399,8 @@
             // Incorrect password
             $this->loginFail();
           }
-        } catch (\ADV\Core\DB\DBException $e) {
+        }
+        catch (\ADV\Core\DB\DBException $e) {
           throw new \ADV\Core\DB\DBException('Could not connect to database!');
         }
         $this->Session->checkUserAgent();
@@ -416,7 +414,8 @@
       $_SESSION['timeout'] = array(
         'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI'])
       );
-      require(ROOT_DOC . "controllers/access/login.php");
+      $dic                 = \ADV\Core\DIC::i();
+      (new \ADV\Controllers\Access\Login($this->Session, $this->User, $this->Ajax, $this->JS, $dic['Input'], $dic->offsetGet('DB', 'default')))->run();
       if ($this->Ajax->inAjax()) {
         $this->Ajax->redirect($_SERVER['DOCUMENT_URI']);
       } elseif (REQUEST_AJAX) {
@@ -426,7 +425,7 @@
     }
     protected function loadModules() {
       $modules = $this->Config->get('modules.default', []);
-      foreach ($modules as $module=> $module_config) {
+      foreach ($modules as $module => $module_config) {
         $module = '\\Modules\\' . $module . '\\' . $module;
         new $module($module_config);
       }
