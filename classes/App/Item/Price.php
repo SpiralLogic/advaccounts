@@ -68,11 +68,17 @@
   }
   namespace {
     use ADV\Core\DB\DB;
+    use ADV\Core\Event;
 
     /**
 
      */
     class Item_Price {
+      const PURCHASE    = 1;
+      const SALE        = 2;
+      const SORT_UPDATE = 'last_update';
+      const SORT_PRICE  = 'price';
+      const SORT_CODE   = 'stock_id';
       /**
        * @static
        *
@@ -108,7 +114,7 @@
        * @return mixed
        */
       public static function getPriceBySupplier($stockid, $supplierid) {
-        $result = DB::_select()->from('purch_data')->where('stockid=', $stockid)->andWhere('creditor_id=', $supplierid)->fetch()->asClassLate('Item_Price', array(self::PURCHASE))->one();
+        $result = DB::_select()->from('purch_data')->where('stockid=', $stockid)->andWhere('creditor_id=', $supplierid)->fetch()->one();
         return $result;
       }
       /**
@@ -126,7 +132,8 @@
         if ($item_code_id == null) {
           $item_code_id = Item_Code::get_id($stock_id);
         }
-        $sql = "INSERT INTO prices (item_code_id, stock_id, sales_type_id, curr_abrev, price)
+        $sql
+          = "INSERT INTO prices (item_code_id, stock_id, sales_type_id, curr_abrev, price)
             VALUES (" . DB::_escape($item_code_id) . ", " . DB::_escape($stock_id) . ", " . DB::_escape($sales_type_id) . ", " . DB::_escape($curr_abrev) . ", " . DB::_escape(
           $price
         ) . ")";
@@ -160,7 +167,8 @@
        * @return null|PDOStatement
        */
       public static function getAll($stock_id) {
-        $sql = "SELECT sales_types.sales_type, prices.*
+        $sql
+          = "SELECT sales_types.sales_type, prices.*
             FROM prices, sales_types
             WHERE prices.sales_type_id = sales_types.id
             AND stock_id=" . DB::_escape($stock_id) . " ORDER BY curr_abrev, sales_type_id";
@@ -230,7 +238,8 @@
         $base_id   = DB_Company::get_base_sales_type();
         $home_curr = Bank_Currency::for_company();
         //	AND (sales_type_id = $sales_type_id	OR sales_type_id = $base_id)
-        $sql      = "SELECT price, curr_abrev, sales_type_id
+        $sql
+                  = "SELECT price, curr_abrev, sales_type_id
             FROM prices
             WHERE stock_id = " . DB::_escape($stock_id) . "
                 AND (curr_abrev = " . DB::_escape($currency) . " OR curr_abrev = " . DB::_escape($home_curr) . ")";
@@ -322,7 +331,8 @@
        * @return float|int
        */
       public static function get_purchase($creditor_id, $stock_id) {
-        $sql    = "SELECT price, conversion_factor FROM purch_data
+        $sql
+                = "SELECT price, conversion_factor FROM purch_data
                 WHERE creditor_id = " . DB::_escape($creditor_id) . "
                 AND stock_id = " . DB::_escape($stock_id);
         $result = DB::_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");

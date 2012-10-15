@@ -103,7 +103,7 @@
     protected function pageComplete($invoice_no) {
       $trans_type = ST_SUPPINVOICE;
       echo "<div class='center'>";
-      Event::success(_("Supplier " . $_SESSION['history'][ST_SUPPINVOICE] . "invoice has been processed."));
+      Event::success(_("Supplier " . $_SESSION['history'][ST_SUPPINVOICE] . " invoice has been processed."));
       GL_UI::viewTrans($trans_type, $invoice_no, _("View this Invoice"));
       Display::link_params("/purchases/search/orders", _("Purchase Order Maintainants"));
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another Invoice"), "New=1");

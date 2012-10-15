@@ -154,7 +154,7 @@
      */
     public function formatMarker($row) {
       if ($row['OverDue'] == 1 && $row['TotalAmount'] > $row['Allocated']) {
-        return "<tr class='overduebg'>";
+        return "<tr class='settledbg'>";
       }
     }
     /**
