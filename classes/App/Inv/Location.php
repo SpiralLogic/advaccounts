@@ -304,9 +304,9 @@
 
        */
       public static function get_for_trans($order) {
-        $sql    = "SELECT locations.* FROM stock_moves," . "locations" . " WHERE type=" . DB::_escape($order->trans_type) . " AND trans_no=" . key(
+        $sql    = "SELECT locations.* FROM stock_moves, locations WHERE stock_moves.type=" . DB::_escape($order->trans_type) . " AND trans_no=" . key(
           $order->trans_no
-        ) . " AND qty!=0 " . " AND locations.loc_code=stock_moves.loc_code";
+        ) . " AND qty!=0  AND locations.loc_code=stock_moves.loc_code";
         $result = DB::_query($sql, 'Retreiving inventory location');
         if (DB::_numRows($result)) {
           return DB::_fetch($result);

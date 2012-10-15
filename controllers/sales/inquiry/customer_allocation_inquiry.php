@@ -12,8 +12,8 @@
    **/
   JS::_openWindow(950, 500);
   Page::start(_($help_context = "Customer Allocation Inquiry"), SA_SALESALLOC);
-  if (Input::_get('debtor_id')) {
-    $_POST['debtor_id'] = Input::_get('debtor_id', Input::NUMERIC);
+  if (Input::_get('id')) {
+    $_POST['debtor_id'] = Input::_get('id', Input::NUMERIC);
   }
   if (isset($_GET['frame'])) {
     foreach ($_GET as $k => $v) {
@@ -50,7 +50,8 @@
   if (Input::_get('frame')) {
     $sql .= " IF(trans.type=" . ST_SALESINVOICE . ",0,1), ";
   }
-  $sql .= " trans.type,
+  $sql
+    .= " trans.type,
 		trans.trans_no,
 		trans.reference,
 		trans.order_,
@@ -80,7 +81,8 @@
     }
     if ($_POST['filterType'] == '2') {
       $today = Dates::_today(true);
-      $sql .= " AND trans.due_date < '$today'
+      $sql
+        .= " AND trans.due_date < '$today'
 				AND (round(abs(trans.ov_amount + " . "trans.ov_gst + trans.ov_freight + " . "trans.ov_freight_tax + trans.ov_discount) - trans.alloc,2) > 0) ";
     }
   } else {
@@ -128,14 +130,16 @@
     _("Debit")                                                                         => array(
       'align' => 'right',
       'fun'   => function ($row) {
-        $value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ? -$row["TotalAmount"] : $row["TotalAmount"];
+        $value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ? -$row["TotalAmount"] :
+          $row["TotalAmount"];
         return $value >= 0 ? Num::_priceFormat($value) : '';
       }
     ),
     _("Credit")                                                                        => array(
       'align' => 'right',
       'fun'   => function ($row) {
-        $value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT) ? -$row["TotalAmount"] : $row["TotalAmount"];
+        $value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT) ? -$row["TotalAmount"] :
+          $row["TotalAmount"];
         return $value > 0 ? Num::_priceFormat($value) : '';
       }
     ),
@@ -151,7 +155,7 @@
     array(
       'insert' => true,
       'fun'    => function ($row) {
-        $link = DB_Pager::link(_("Allocation"), "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
+        $link = Display::link_button(_("Allocation"), "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
         if ($row["type"] == ST_CUSTCREDIT && Num::_priceFormat($row['TotalAmount'] - $row['Allocated']) > 0) {
           /*its a credit note which could have an allocation */
           return $link;
@@ -175,16 +179,18 @@
     array_shift($cols);
   }
   $table = DB_Pager::newPager('doc_tbl', $sql, $cols);
-  $table->setMarker(
-    function ($row) {
-      return ($row['OverDue'] == 1 && Num::_priceFormat(abs($row["TotalAmount"]) - $row["Allocated"]) != 0);
-    },
-    _("Marked items are overdue.")
-  );
+  $table->rowFunction
+         = function ($row) {
+    if ($row['OverDue'] == 1 && \ADV\Core\Num::_priceFormat(abs($row["TotalAmount"]) - $row["Allocated"])) {
+      return "<tr class='settledbg'>";
+    }
+  };
+  \ADV\Core\Event::warning(_("Marked items are overdue."), false);
   $table->width = "85%";
   $table->display($table);
   Forms::end();
-  $action = <<<JS
+  $action
+    = <<<JS
 
 $('#invoiceForm').find(':checkbox').each(function(){\$this =\$(this);\$this.prop('checked',!\$this.prop('checked'))});
 return false;

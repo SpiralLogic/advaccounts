@@ -2,6 +2,7 @@
   namespace ADV\App\DB;
 
   use ADV\Core\DB\DB;
+  use ADV\Core\DIC;
 
   /**
 
@@ -17,7 +18,8 @@
 
      */
     public function __construct() {
-      $this->DB = new DB('jobsboard');
+      //$this->DB = new DB('jobsboard');
+      $this->DB = DIC::get('DB');
     }
     /**
      * @param $table
@@ -32,7 +34,8 @@
         $this->findVars($row);
         $this->findValids($row);
         if ($row['COLUMN_NAME'] == 'inactive') {
-          $this->inactive = 'if (!$inactive) {
+          $this->inactive
+            = 'if (!$inactive) {
                   $q->andWhere(\'inactive=\',0);
                 }';
         }

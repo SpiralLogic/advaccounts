@@ -17,7 +17,7 @@
     Event::notice(_("Items adjustment has been processed"));
     Display::note(GL_UI::viewTrans($trans_type, $trans_no, _("&View this adjustment")));
     Display::note(GL_UI::view($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
-    Display::link_no_params($_SERVER['DOCUMENT_URI'], _("Enter &Another Adjustment"));
+    Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter &Another Adjustment"));
     Page::footer_exit();
   }
   if (isset($_POST['Process']) && can_process()) {

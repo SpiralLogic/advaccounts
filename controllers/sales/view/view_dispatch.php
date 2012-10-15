@@ -109,7 +109,7 @@
   $display_total = Num::_priceFormat($myrow["ov_freight"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"] + $myrow["ov_gst"]);
   Table::label(_("TOTAL VALUE"), $display_total, "colspan=6 class='alignright'", ' class="alignright nowrap"');
   Table::end(1);
-  Display::is_voided(ST_CUSTDELIVERY, $trans_id, _("This dispatch has been voided."));
+  Voiding::is_voided(ST_CUSTDELIVERY, $trans_id, _("This dispatch has been voided."));
   if (Input::_get('frame')) {
     return;
   }

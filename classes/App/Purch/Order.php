@@ -220,7 +220,7 @@
     public function can_receive() {
       if (count($this->line_items) <= 0) {
         Event::error(_("You are not currenty receiving an order."));
-        Display::link_no_params("/purchases/search/orders", _("Select a purchase order to receive goods."));
+        Display::link_params("/purchases/search/orders", _("Select a purchase order to receive goods."));
         Page::footer_exit();
       }
       if (!Dates::_isDate($_POST['DefaultReceivedDate'])) {
@@ -644,7 +644,7 @@
      */
     public function display_items($editable = true) {
       Display::heading(_("Order Items"));
-      Display::div_start('items_table');
+      Ajax::_start_div('items_table');
       Table::start('padded grid width90');
       $th = array(
         _("Item Code"),
@@ -711,7 +711,7 @@
       Table::footEnd();
       Table::end(1);
       Creditor::addEditDialog();
-      Display::div_end();
+      Ajax::_end_div();
     }
     /**
      * @param bool $is_self

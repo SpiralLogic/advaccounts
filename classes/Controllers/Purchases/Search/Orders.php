@@ -2,6 +2,7 @@
   namespace ADV\Controllers\Purchases\Search;
 
   use ADV\App\Forms;
+  use ADV\Core\Event;
   use GL_UI;
   use DB_Pager;
   use Inv_Location;
@@ -127,9 +128,9 @@
       if (!$this->stock_location) {
         $cols[_("Location")] = 'skip';
       }
-      $table = DB_Pager::newPager('orders_tbl', $sql, $cols);
-      $table->setMarker([$this, 'formatMarker'], _("Marked orders have overdue items."));
-      $table->width = "85%";
+      $table              = DB_Pager::newPager('orders_tbl', $sql, $cols);
+      $table->rowFunction = [$this, 'formatMarker'];
+      $table->width       = "85%";
       $table->display($table);
     }
     /**
@@ -137,8 +138,12 @@
      *
      * @return callable
      */
-    public function formatMarker($row) {
-      return $row['OverDue'] == 1;
+    public function formatMarker($row, $pager) {
+      $mark = $row['OverDue'] == 1;
+      if ($mark) {
+        Event::warning(_("Marked orders have overdue items."), false);
+        return "<tr class='overduebg'>";
+      }
     }
     /**
      * @param $row
@@ -146,7 +151,7 @@
      * @return callable
      */
     public function formatProcessBtn($row) {
-      return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
+      return Display::link_button(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
     }
     /**
      * @param $row
@@ -162,7 +167,7 @@
      * @return callable
      */
     public function formatEditBtn($row) {
-      return DB_Pager::link(_("Edit"), "/purchases/order?ModifyOrder=" . $row["order_no"], ICON_EDIT);
+      return Display::link_button(_("Edit"), "/purchases/order?ModifyOrder=" . $row["order_no"], ICON_EDIT);
     }
     /**
      * @param $row

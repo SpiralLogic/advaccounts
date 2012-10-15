@@ -106,7 +106,7 @@
   Display::submenu_print(_("Print This Order"), ST_PURCHORDER, $_GET['trans_no'], 'prtopt');
   Display::submenu_option(_("&Edit This Order"), "/purchases/order?ModifyOrder=" . $_GET['trans_no']);
   if ($still_to_receive) {
-    Display::link_button("/purchases/po_receive_items.php", _("&Receive Items on this PO"), "PONumber=" . $_GET['trans_no']);
+    Display::submenu_option(_("&Receive Items on this PO"), "/purchases/po_receive_items.php?PONumber=" . $_GET['trans_no']);
   }
   Page::end(true);
 

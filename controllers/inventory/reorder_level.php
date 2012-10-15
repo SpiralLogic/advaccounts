@@ -1,4 +1,6 @@
 <?php
+  use ADV\Core\DB\DB;
+
   /**
    * PHP version 5.4
    * @category  PHP
@@ -24,13 +26,20 @@
     echo "<div class='center'>" . _("Item:") . "&nbsp;";
     echo Item_UI::costable('stock_id', $_POST['stock_id'], false, true);
     echo "<hr></div>";
-    Display::div_start('show_heading');
-    Display::item_heading($_POST['stock_id']);
-    Display::br();
-    Display::div_end();
+    Ajax::_start_div('show_heading');
+    $stock_id = $_POST['stock_id'];
+    if ($stock_id != "") {
+      $result = DB::_query("SELECT description, units FROM stock_master WHERE stock_id=" . DB::_escape($stock_id));
+      $myrow  = DB::_fetchRow($result);
+      echo "<div class='center'><span class='headingtext'>$stock_id - $myrow[0]</span></div>\n";
+      $units = $myrow[1];
+      echo "<div class='center'><span class='headingtext'>" . _("in units of : ") . $units . "</span></div>\n";
+    }
+    echo "<br>";
+    Ajax::_end_div();
     Session::_setGlobal('stock_id', $_POST['stock_id']);
   }
-  Display::div_start('reorders');
+  Ajax::_start_div('reorders');
   Table::start('padded grid width30');
   $th = array(_("Location"), _("Quantity On Hand"), _("Primary Shelf"), _("Secondary Shelf"), _("Re-Order Level"));
   Table::header($th);
@@ -63,7 +72,7 @@
     Event::success(_("Reorder levels have been updated."));
   }
   Table::end(1);
-  Display::div_end();
+  Ajax::_end_div();
   Forms::submitCenter('UpdateData', _("Update"), true, false, 'default');
   Forms::end();
   if (Input::_request('frame')) {

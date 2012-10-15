@@ -33,8 +33,8 @@
   echo "</head>\n";
   echo "<body class='loginscreen' >\n";
   echo "<table class='titletext'><tr><td>$title</td></tr></table>\n";
-  Display::div_start('_page_body');
-  Display::br(2);
+  Ajax::_start_div('_page_body');
+  echo "<br><br>";
   Forms::start(false, REQUEST_POST ? $_SESSION['timeout']['uri'] : '#', "loginform");
   if (REQUEST_GET) {
     Forms::hidden('uri', $_SESSION['timeout']['uri']);
@@ -84,7 +84,7 @@
     }
   }
   Forms::end(1);
-  Display::div_end();
+  Ajax::_end_div();
   echo "<div class='center'>\n";
   if (User::i()) {
     echo     $date = Dates::_today() . " | " . Dates::_now();

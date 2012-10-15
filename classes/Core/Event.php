@@ -9,7 +9,7 @@
    **/
   namespace ADV\Core;
 
-  use ADV\Core\Cache;
+  use Exception;
 
   /**
 
@@ -19,27 +19,21 @@
 
     /** @var \ADV\Core\Cache */
     protected static $Cache;
-    /**
-     * @var array all objects with methods to be run on shutdown
-     */
+    /** @var array all objects with methods to be run on shutdown*/
     protected static $shutdown_objects = [];
-    /**
-     * @var bool Whether the request from the browser has finsihed
-     */
+    /**@var bool Whether the request from the browser has finsihed*/
     protected static $request_finsihed = false;
-    /**
-     * @var array Events which occur after browser dissconnect which will be shown on next request
-     */
+    /**@var array Events which occur after browser dissconnect which will be shown on next request*/
     protected static $shutdown_events = [];
-    /**
-     * @var string id for cache handler to store shutdown events
-     */
+    /**@var string id for cache handler to store shutdown events*/
     protected static $shutdown_events_id;
     /**
-     * @static
-
+     * @param Cache  $cache
+     * @param string $presistanceKey
+     *
+     * @return void
      */
-    public static function init(Cache $cache, $presistanceKey = '') {
+    public static function init(\ADV\Core\Cache $cache, $presistanceKey = '') {
       static::$Cache              = $cache;
       static::$shutdown_events_id = 'shutdown.events.' . $presistanceKey;
       $shutdown_events            = static::$Cache->get(static::$shutdown_events_id);
@@ -121,9 +115,10 @@
     /**
      * @static
      *
-     * @param        $object
      * @param string $function
      * @param array  $arguments
+     *
+     * @internal param $object
      */
     public static function registerShutdown($function = '_shutdown', $arguments = []) {
       Event::registerHook('shutdown', $function, $arguments);
@@ -131,9 +126,10 @@
     /**
      * @static
      *
-     * @param        $object
      * @param string $function
      * @param array  $arguments
+     *
+     * @internal param $object
      */
     public static function registerPreShutdown($function = '_shutdown', $arguments = []) {
       Event::registerHook('pre_shutdown', $function, $arguments);
@@ -145,7 +141,11 @@
       for ($i = 0; $i < $levels; $i++) {
         ob_end_flush();
       }
-      session_write_close();
+      try {
+        session_write_close();
+      } catch (Exception $e) {
+        var_dump($e);
+      }
       fastcgi_finish_request();
       static::$request_finsihed = true;
       try {

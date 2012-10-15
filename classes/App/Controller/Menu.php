@@ -15,14 +15,12 @@
   use ADV\App\Display;
   use ADV\Core\Arr;
   use ADV\App\Application\Func;
-  use ADV\App\Page;
   use ADV\Core\View;
 
   /**
 
    */
   abstract class Menu extends Base {
-    protected $direct = false;
     protected $modules = [];
     /** @var */
     public $id;
@@ -67,8 +65,9 @@
       $modules = [];
       foreach ($this->modules as $name => $module) {
         $functions = [];
-        Arr::append($functions, $module['right']);
         Arr::append($functions, $module['left']);
+        Arr::append($functions, $module['right']);
+
         foreach ($functions as &$func) {
           $func = str_replace('&', '', $func);
         }
@@ -82,9 +81,7 @@
     }
     protected function index() {
       $this->Page->init(_($this->help_context = "Main Menu"), SA_OPEN, false, true);
-      if ($this->direct) {
-        Display::meta_forward($this->direct);
-      }
+
       foreach ($this->modules as $name => $module) {
         $app            = new View('application');
         $app['colspan'] = (count($module['right']) > 0) ? 2 : 1;
@@ -95,7 +92,10 @@
             $mod['access'] = $this->User->hasAccess($func['access']);
             $mod['label']  = $func['label'];
             if ($mod['access']) {
-              $mod['href'] = Display::menu_link($func['href'], $func['label']);
+              $accesskey        = Display::access_string($func['label']);
+              $mod['url']       = $func['href'];
+              $mod['text']      = $accesskey[0];
+              $mod['accesskey'] = $accesskey[1];
             } else {
               $mod['anchor'] = Display::access_string($func['label'], true);
             }

@@ -12,7 +12,7 @@
   if (isset($_GET[ADDED_ID])) {
     Event::success(_("The work order issue has been entered."));
     Display::note(GL_UI::viewTrans(ST_WORKORDER, $_GET[ADDED_ID], _("View this Work Order")));
-    Display::link_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
+    Display::link_params("search_work_orders.php", _("Select another &Work Order to Process"));
     Page::footer_exit();
   }
   function handle_new_order() {

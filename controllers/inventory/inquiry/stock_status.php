@@ -27,7 +27,7 @@
   Session::_setGlobal('stock_id', $_POST['stock_id']);
   $mb_flag           = WO::get_mb_flag($_POST['stock_id']);
   $kitset_or_service = false;
-  Display::div_start('status_tbl');
+  Ajax::_start_div('status_tbl');
   if (Input::_post('mb_flag') == STOCK_SERVICE) {
     Event::warning(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
     $kitset_or_service = true;
@@ -77,7 +77,7 @@
     }
   }
   Table::end();
-  Display::div_end();
+  Ajax::_end_div();
   Forms::end();
   Page::end();
 

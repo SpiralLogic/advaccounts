@@ -79,6 +79,7 @@
      * @param bool $log
      *
      * @return bool
+     * @return bool
      */
     public static function handler($type, $message, $file = null, $line = null, $log = true) {
       if (in_array($type, static::$ignore)) {
@@ -102,22 +103,26 @@
       if (in_array($type, static::$user_errors) || in_array($type, static::$fatal_levels)) {
         static::$messages[] = $error;
       }
-      if (is_writable(ROOT_DOC . '../error_log')) {
-        error_log(
-          date(DATE_RFC822) . ' ' . $error['type'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n",
-          3,
-          ROOT_DOC . '../error_log'
-        );
-      }
+      self::writeLog($error['type'], $error['message'], $error['file'], $error['line']);
       if (!in_array($type, static::$user_errors) || $type == E_NOTICE || ($type == E_USER_ERROR && $log)) {
         $error['backtrace'] = static::prepareBacktrace(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
         static::$errors[]   = $error;
       }
       return true;
     }
+    public static function writeLog($type, $message = '', $file = '', $line = '') {
+      if (is_writable(ROOT_DOC . '../error_log')) {
+        error_log(
+          date(DATE_RFC822) . ' ' . $type . ": " . static::dumpVar($message) . " in file: " . $file . " on line:" . $line . "\n\n",
+          3,
+          ROOT_DOC . '../error_log'
+        );
+      }
+    }
     /**
      * @static
      *
+     * @param \Exception $e
      * @param \Exception $e
      */
     public static function exceptionHandler(\Exception $e) {
@@ -130,9 +135,7 @@
       );
       static::$current_severity = -1;
       static::$messages[]       = $error;
-      if (is_writable(ROOT_DOC . '../error_log')) {
-        error_log($error['code'] . ": " . $error['message'] . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n", 3, ROOT_DOC . '../error_log');
-      }
+      self::writeLog($error['type'], $error['message'], $error['file'], $error['line']);
       $error['backtrace'] = static::prepareBacktrace($e->getTrace());
       static::$errors[]   = $error;
     }
@@ -164,8 +167,7 @@
       return $content;
     }
     /**
-     * @static
-
+     * @return void
      */
     public static function sendDebugEmail() {
       if (static::$current_severity == -1 || static::$errors || static::$dberrors || static::$debugLog) {
@@ -230,8 +232,7 @@
       return $backtrace;
     }
     /**
-     * @static
-
+     * @return void
      */
     public static function process() {
       $last_error = error_get_last();
@@ -271,7 +272,7 @@
     }
     /**
      * @static
-     * @internal param null $e
+     * @return void param null $e
      */
     protected static function fatal() {
       $content = strip_tags(static::format());
@@ -304,7 +305,7 @@
      */
     public static function JSONError() {
       $status = false;
-     if (count(static::$messages) > 0) {
+      if (count(static::$messages) > 0) {
         $message           = end(static::$messages);
         $status['status']  = $message['type'];
         $status['message'] = $message['message'];
@@ -349,14 +350,12 @@
       while ($source['file'] == $db_class_file) {
         $source = array_shift($backtrace);
       }
-      if (is_writable(ROOT_DOC . '../error_log')) {
-        error_log(date(DATE_RFC822) . ": " . static::dumpVar($error['debug'], true) . "\n\n\n", 3, ROOT_DOC . '../error_log');
-      }
+      self::writeLog('DATABASE', static::dumpVar($error['debug'], true), $source['file'], $source['line']);
+
       Errors::handler(E_ERROR, $error['message'], $source['file'], $source['line']);
     }
     /**
-     * @static
-
+     * @return void
      */
     public static function log() {
       $source  = reset(debug_backtrace());
@@ -376,6 +375,7 @@
     /**
      * @param $var
      *
+     * @return string
      * @return string
      */
     protected static function  dumpVar($var) {

@@ -19,8 +19,7 @@
   /**
 
    */
-  class Person extends \ADV\App\DB\Base
-  {
+  class Person extends \ADV\App\DB\Base {
     protected $_id_column = 'salesman_code';
     protected $_table = 'salesman';
     protected $_classname = 'Sales Person';
@@ -49,7 +48,6 @@
       if ($result > 0) {
         return $this->status(false, "Cannot delete this sales-person because branches are set up referring to this sales-person - first alter the branches concerned.");
       }
-
       return parent::delete();
     }
     /**
@@ -71,7 +69,6 @@
       if (!Validation::is_num($this->provision2, 0, $this->break_pt)) {
         return $this->status(false, 'Provisions 2 needs to be a number and not less than 0 and greater than break point', 'provision2');
       }
-
       return true;
     }
     /**
@@ -97,7 +94,6 @@
         $sql .= " AND !s.inactive";
       }
       DB::_query($sql, 'Could not fetch sales people');
-
       return DB::_fetchAll();
     }
   }

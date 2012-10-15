@@ -27,7 +27,6 @@
     protected $tag;
     protected $append;
     protected $prepend;
-    protected $control;
     /**
      * @param $tag
      * @param $name
@@ -35,7 +34,13 @@
      * @internal param $validator
      */
     public function __construct($tag, $name) {
-      $this->tag  = $tag;
+      $this->tag = $tag;
+      $this->name($name);
+    }
+    /**
+     * @param $name
+     */
+    public function name($name) {
       $this->name = $this['name'] = $name;
       $this->id   = $this->nameToId();
     }
@@ -75,12 +80,6 @@
       return $this;
     }
     /**
-     * @param $control
-     */
-    public function customControl($control) {
-      $this->control = $control;
-    }
-    /**
      * @param $attr
      *
      * @return Field
@@ -91,14 +90,27 @@
       return $this;
     }
     /**
+     * Sets default value and value
+     *
      * @param $value
      *
      * @return Field
      */
-    public function val($value) {
-      $this->default = $value;
-      $this->value   = $value;
+    public function value($value) {
+      $this->value = $value;
 
+      return $this;
+    }
+    /**
+     * Sets default value and value
+     *
+     * @param $value
+     *
+     * @return Field
+     */
+    public function initial($value) {
+      $this->value($value);
+      $this->default = $this->value;
       return $this;
     }
     /**
@@ -164,33 +176,12 @@
      * @return string
      */
     public function __toString() {
-      $tag              = $this->tag;
-      $value            = (isset($this->value)) ? $this->value : $this->default;
-      $this->attr['id'] = $this->id;
-      switch ($tag) {
-        case 'custom':
-          $values  = (array) $value;
-          $control = $this->control;
-          foreach ($values as $v) {
-            $control = preg_replace('/value=([\'"]?)' . preg_quote($v) . '\1/', 'selected \0', $control);
-          }
-          break;
-        case 'select':
-          $values  = (array) $value;
-          $control = $this->control;
-          foreach ($values as $v) {
-            $control = preg_replace('/value=([\'"]?)' . preg_quote($v) . '\1/', 'selected \0', $control);
-          }
-          break;
-        case 'checkbox':
-          $this->attr['checked'] = !!$value;
-          $control               = $this->makeElement('input', $this->attr, false);
-          break;
-        default:
-          $this->attr['value'] = $value;
-          $control             = $this->makeElement($tag, $this->attr, $this->content, $tag != 'input');
-      }
-      $control = $this->formatAddOns($control);
+      $tag                 = $this->tag;
+      $value               = (isset($this->value)) ? $this->value : $this->default;
+      $this->attr['id']    = $this->id;
+      $this->attr['value'] = $value;
+      $control             = $this->makeElement($tag, $this->attr, $this->content, $tag != 'input');
+      $control             = $this->formatAddOns($control);
       if ($this->label) {
         $control = "<label for='" . $this->id . "'><span>" . $this->label . "</span>$control</label>";
       }
@@ -248,7 +239,7 @@
      */
     public function offsetSet($offset, $value) {
       if ($offset == 'value') {
-        $this->value = $value;
+        $this->value($value);
 
         return;
       }

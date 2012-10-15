@@ -35,7 +35,7 @@
       $this->driver->init();
       if (isset($_GET['reload_cache'])) {
         $this->driver->flush();
-        header('Location: ' . ROOT_URL);
+        header('Location: ' . ROOT_URL . '?cache_reloaded');
       }
     }
     /**
@@ -54,6 +54,8 @@
      * @static
      *
      * @param $key
+     *
+     * @return void
      */
     public function delete($key) {
       $this->driver->delete($key);
@@ -70,6 +72,7 @@
       return $this->driver->get($key, $default);
     }
     /**
+     * @param     $time
      * @param int $time
      */
     public function flush($time) {
@@ -80,6 +83,7 @@
      * @param \Closure|Array $constants
      *
      * @return Cache|bool
+     * @return \ADV\Core\Cache|bool
      */
     public function defineConstants($name, $constants) {
       $loader = $this->driver->getLoadConstantsFunction();

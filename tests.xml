@@ -3,7 +3,8 @@
 <phpunit colors="true" stopOnFailure="false" bootstrap="bootstraptest.php">
   <php>
     <server name="SERVER_NAME" value="advaccouts"/>
-    <session name="globals" value="null"/>
+    <server name="REMOTE_ADDR" value="localhost"/>
+    <session name="_globals" value="null"/>
   </php>
   <testsuites>
     <testsuite name="Core">

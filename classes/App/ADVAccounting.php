@@ -1,7 +1,17 @@
 <?php
+  /**
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
+
   namespace ADV\App;
 
   use ADV\Core\JS;
+  use DB_Pager;
   use DB_Company;
   use ADV\Core\Cache\APC;
   use ADV\Core\Event;
@@ -16,37 +26,28 @@
   use ADV\Core\DB\DB;
 
   /**
-   * PHP version 5.4
-   * @category  PHP
-   * @package   adv.accounts.app
-   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-   * @copyright 2010 - 2012
-   * @link      http://www.advancedgroup.com.au
-   **/
-  /**
    * @method static \ADV\App\ADVAccounting i()
    */
   class ADVAccounting {
     use \ADV\Core\Traits\Singleton;
 
     public $applications = [];
+    public $buildversion;
     /** var Application*/
     public $selected;
     /** @var Menu */
     public $menu;
-    public $buildversion;
-    /** @var User $user */
-    protected $User = null;
-    /** @var Input $user */
-    protected $Input = null;
-    /** @var Config $Config */
-    protected $Config = null;
-    /** @var \ADV\Core\Session $Session*/
-    protected $Session = null;
     /** @var Ajax */
     protected $Ajax = null;
+    /** @var Config $Config */
+    protected $Config = null;
+    /** @var Input $user */
+    protected $Input = null;
+    /** @var \ADV\Core\Session $Session*/
+    protected $Session = null;
+    /** @var User $user */
+    protected $User = null;
     protected $controller = null;
-    protected $get_text = null;
     /** */
     public function __construct(\ADV\Core\Loader $loader) {
       set_error_handler(
@@ -73,28 +74,31 @@
           \ADV\Core\Event::shutdown();
         }
       );
-      $dic  = \ADV\Core\DIC::getInstance();
+      $dic  = \ADV\Core\DIC::i();
       $self = $this;
-      $dic->set(
+      $dic->offsetSet(
         'ADVAccounting',
         function () use ($self) {
           return $self;
         }
       );
-      $this->Cache  = $dic->set(
+      $this->Cache  = $dic->offsetSet(
         'Cache',
         function () {
           $driver = new \ADV\Core\Cache\APC();
           $cache  = new \ADV\Core\Cache($driver);
+          if (isset($_GET['cache_reloaded'])) {
+            Event::notice('Cache Reloaded');
+          }
           return $cache;
         }
-      )->get();
-      $this->Config = $dic->set(
+      )->offsetGet(null);
+      $this->Config = $dic->offsetSet(
         'Config',
-        function ($c) {
-          return new \ADV\Core\Config($c->get('Cache'));
+        function (\ADV\Core\DIC $c) {
+          return new \ADV\Core\Config($c->offsetGet('Cache'));
         }
-      )->get();
+      )->offsetGet(null);
       $loader->registerCache($this->Cache);
       $this->Cache->defineConstants(
         $_SERVER['SERVER_NAME'] . '.defines',
@@ -102,19 +106,26 @@
           return include(ROOT_DOC . 'config' . DS . 'defines.php');
         }
       );
-      $this->Ajax = $dic->set(
+      $this->Ajax = $dic->offsetSet(
         'Ajax',
         function () {
           return new \ADV\Core\Ajax();
         }
-      )->get();
-      $dic->set(
+      )->offsetGet(null);
+      $dic->offsetSet(
         'Input',
         function () {
+
+          array_walk(
+            $_POST,
+            function (&$v) {
+              $v = is_string($v) ? trim($v) : $v;
+            }
+          );
           return new \ADV\Core\Input\Input();
         }
       );
-      $dic->set(
+      $dic->offsetSet(
         'Num',
         function () {
           $num              = new \ADV\Core\Num();
@@ -127,18 +138,18 @@
           return $num;
         }
       );
-      $dic->set(
+      $dic->offsetSet(
         'DB_Company',
         function () {
           return new \DB_Company();
         }
       );
-      $dic->set(
+      $dic->offsetSet(
         'Dates',
-        function ($c) {
-          $config  = $c->get('Config');
-          $user    = $c->get('User');
-          $company = $c->get('DB_Company');
+        function (\ADV\Core\DIC $c) {
+          $config  = $c->offsetGet('Config');
+          $user    = $c->offsetGet('User');
+          $company = $c->offsetGet('DB_Company');
           $dates   = new \ADV\App\Dates($company);
           $sep     = is_int($user->prefs->date_sep) ? $user->prefs->date_sep : $config->get('date.ui_separator');
           $dates->setSep($sep);
@@ -148,19 +159,57 @@
           return $dates;
         }
       );
-      ob_start([$this, 'flush_handler'], 0);
+      $dic->offsetSet(
+        'DB',
+        function (\ADV\Core\DIC $c, $name = 'default') {
 
-      $this->JS = $dic->set(
+          $config   = $c->offsetGet('Config');
+          $dbconfig = $config->get('db.' . $name);
+          $cache    = $c->offsetGet('Cache');
+          $db       = new \ADV\Core\DB\DB($dbconfig, $cache);
+          return $db;
+        }
+      );
+      $dic->offsetSet(
+        'Pager',
+        function (\ADV\Core\DIC $c, $name, $sql, $coldef) {
+          if (!isset($_SESSION['pager'])) {
+            $_SESSION['pager'] = [];
+          }
+          if (isset($_SESSION['pager'][$name])) {
+            $pager = $_SESSION['pager'][$name];
+            if ($pager->sql != $sql) {
+              $pager->refresh($sql);
+            } elseif ($pager->rec_count != count($sql)) {
+              unset($pager);
+            }
+          }
+          if (!isset($pager) || !$pager instanceof DB_Pager) {
+            $pager = new DB_Pager($name, $sql, $coldef);
+          }
+          \DB_Pager::$Input = $c->offsetGet('Input');
+          \DB_Pager::$JS    = $c->offsetGet('JS');
+          \DB_Pager::$Dates = $c->offsetGet('Dates');
+          \DB_Pager::$DB    = $c->offsetGet('DB');
+          /** @var User $user  */
+          $user                     = $c->offsetGet('User');
+          $pager->page_length       = $user->prefs->query_size;
+          $_SESSION['pager'][$name] = $pager;
+          return $pager;
+        }
+      );
+      ob_start([$this, 'flush_handler'], 0);
+      $this->JS = $dic->offsetSet(
         'JS',
-        function ($c) {
+        function (\ADV\Core\DIC $c) {
           $js             = new \ADV\Core\JS();
-          $config         = $c->get('Config');
+          $config         = $c->offsetGet('Config');
           $js->apikey     = $config->get('assets.maps_api_key');
           $js->openWindow = $config->get('ui_windows_popups');
           return $js;
         }
-      )->get();
-      $dic->set(
+      )->offsetGet(null);
+      $dic->offsetSet(
         'User',
         function () {
           if (isset($_SESSION['User'])) {
@@ -170,34 +219,28 @@
           return $_SESSION['User'];
         }
       );
-      $this->Session = $dic->set(
+      $this->Session = $dic->offsetSet(
         'Session',
-        function ($c) {
-          $session              = new \ADV\Core\Session();
-          $config               = $c->get('Config');
-          $l                    = \ADV\Core\Arr::searchValue($config->get('default.language'), $config->get('languages.installed'), 'code');
-          $name                 = $l['name'];
-          $code                 = $l['code'];
-          $encoding             = $l['encoding'];
-          $dir                  = isset($l['rtl']) ? 'rtl' : 'ltr';
-          $_SESSION['language'] = new \ADV\Core\Language($name, $code, $encoding, $dir);
-
+        function (\ADV\Core\DIC $c) {
+          $handler           = new \ADV\Core\Session\Memcached();
+          $session           = new \ADV\Core\Session($handler);
+          $config            = $c->offsetGet('Config');
+          $l                 = \ADV\Core\Arr::searchValue($config->get('default.language'), $config->get('languages.installed'), 'code');
+          $name              = $l['name'];
+          $code              = $l['code'];
+          $encoding          = $l['encoding'];
+          $dir               = isset($l['rtl']) ? 'rtl' : 'ltr';
+          $session->language = new \ADV\Core\Language($name, $code, $encoding, $dir);
           return $session;
         }
-      )->get();
+      )->offsetGet(null);
 
-      $this->User  = $dic->get('User');
-      $this->Input = $dic->get('Input');
+      $this->User  = $dic['User'];
+      $this->Input = $dic['Input'];
       $this->JS->footerFile($this->Config->get('assets.footer'));
       $this->menu = new Menu(_("Main Menu"));
       $this->menu->addItem(_("Main Menu"), "index.php");
       $this->menu->addItem(_("Logout"), "/account/access/logout.php");
-      array_walk(
-        $_POST,
-        function (&$v) {
-          $v = is_string($v) ? trim($v) : $v;
-        }
-      );
       $this->loadModules();
       $this->setupApplications();
       define('BUILD_VERSION', is_readable(ROOT_DOC . 'version') ? file_get_contents(ROOT_DOC . 'version', null, null, null, 6) : 000);
@@ -208,60 +251,78 @@
         $this->checkLogin();
       }
       \ADV\Core\Event::init($this->Cache, $this->User->username);
-
-      //      $this->get_selected();
       $this->route();
     }
+    /**
+     * @return bool|string
+     */
     protected function route() {
       $this->setupPage();
-      $controller = isset($_SERVER['DOCUMENT_URI']) ? $_SERVER['DOCUMENT_URI'] : false;
-      if ($controller) {
-        $app = ucfirst(trim($controller, '/'));
+      $request = isset  ($_SERVER['DOCUMENT_URI']) ? parse_url($_SERVER['DOCUMENT_URI'])['path'] : false;
+      if ($request == '/index.php') {
+        return $this->defaultController();
+      }
+      // first check for autoloadable controller.
+      if ($request) {
+        $app = ucfirst(trim($request, '/'));
         if (isset($this->applications[$app])) {
-          $controller = (isset($this->applications[$app]['route']) ? $this->applications[$app]['route'] : $app);
+          $request = (isset($this->applications[$app]['route']) ? $this->applications[$app]['route'] : $app);
         }
-        $controller2 = 'ADV\\Controllers' . array_reduce(
-          explode('/', ltrim($controller, '/')),
+        $controller = 'ADV\\Controllers' . array_reduce(
+          explode('/', ltrim($request, '/')),
           function ($result, $val) {
             return $result . '\\' . ucfirst($val);
           },
           ''
         );
-        if (class_exists($controller2)) {
-          $this->runController($controller2);
+        if (class_exists($controller)) {
+          $this->runController($controller);
         } else {
+          //then check to see if a file exists for address and if it does store it
           // substr_compare returns 0 if true
-          $controller = (substr_compare($controller, '.php', -4, 4, true) === 0) ? $controller : $controller . '.php';
-          $controller = ROOT_DOC . 'controllers' . DS . $controller;
+          $request    = (substr_compare($request, '.php', -4, 4, true) === 0) ? $request : $request . '.php';
+          $controller = ROOT_DOC . 'controllers' . DS . $request;
           if (file_exists($controller)) {
             $this->controller = $controller;
           } else {
+            //no controller so 404 then find next best default
             header('HTTP/1.0 404 Not Found');
-            $path = explode('/', $_SERVER['DOCUMENT_URI']);
-            if (count($path)) {
-              $controller = 'ADV\\Controllers\\' . ucFirst($path[1]);
-            }
-            if (!class_exists($controller)) {
-              $controller = 'ADV\\Controllers\\' . ($this->User->prefs->startup_tab ? : $this->Config->get('apps.default'));
-            }
-            Event::error('Error 404 Not Found:' . $_SERVER['DOCUMENT_URI']);
-            if (class_exists($controller)) {
-              $this->runController($controller);
-            }
+            Event::error('Error 404 Not Found:' . parse_url($_SERVER['DOCUMENT_URI'])['path']);
+            return $this->defaultController();
           }
         }
       }
+      return null;
     }
     /**
-     * @param $controller2
+     * @param $controller
+     *
+     * @internal param $request
+     * @internal param $controller2
      */
-    protected function runController($controller2) {
-      $dic = \ADV\Core\DIC::getInstance();
-
+    protected function runController($controller) {
+      $dic = \ADV\Core\DIC::i();
       /** @var \ADV\App\Controller\Base $controller  */
-      $controller = new $controller2($this->Session, $this->User, $this->Ajax, $this->JS, $dic->get('Input'), DB::i());
-      $controller->setPage($dic->get('Page'));
+      $controller = new $controller($this->Session, $this->User, $this->Ajax, $this->JS, $dic['Input'], $dic->offsetGet('DB', 'default'));
+      $controller->setPage($dic->offsetGet('Page'));
       $controller->run();
+    }
+    /**
+     * @return bool|string
+     */
+    protected function defaultController() {
+      $controller = false;
+      $path       = explode('/', $_SERVER['DOCUMENT_URI']);
+      if (count($path)) {
+        $controller = 'ADV\\Controllers\\' . ucFirst($path[1]);
+      }
+      if (!class_exists($controller)) {
+        $controller = 'ADV\\Controllers\\' . ($this->User->prefs->startup_tab ? : $this->Config->get('apps.default'));
+      }
+      if (class_exists($controller)) {
+        $this->runController($controller);
+      }
+      return $controller;
     }
     /**
      * @param $app
@@ -289,6 +350,7 @@
     public function loginFail() {
       header("HTTP/1.1 401 Authorization Required");
       (new View('failed_login'))->render();
+      $this->Config->removeAll();
       $this->Session->kill();
       die();
     }
@@ -314,13 +376,13 @@
         $this->showLogin();
       }
       if ($this->User->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev') !== false) {
-        Display::meta_forward('http://dev.advanced.advancedgroup.com.au:8090');
+        header('Location: http://dev.advanced.advancedgroup.com.au:8090');
       } else {
         ini_set('html_errors', 'On');
       }
       $this->selected = $this->User->selectedApp;
       if ($this->User->change_password && strstr($_SERVER['DOCUMENT_URI'], 'change_current_user_password.php') == false) {
-        Display::meta_forward('/system/change_current_user_password.php', 'selected_id=' . $this->User->username);
+        header('Location: /system/change_current_user_password?selected_id=' . $this->User->username);
       }
     }
     protected function login() {
@@ -328,7 +390,7 @@
       if ($company) {
         $modules = $this->Config->get('modules.login', []);
         foreach ($modules as $module=> $module_config) {
-          $this->User->register_login(
+          $this->User->_register_login(
             function () use ($module, $module_config) {
               $module = '\\Modules\\' . $module . '\\' . $module;
               new $module($module_config);
@@ -373,12 +435,11 @@
       $this->applications = $this->Config->get('apps.active');
     }
     private function setupPage() {
-      $dic = \ADV\Core\DIC::getInstance();
-
-      $dic->set(
+      $dic = \ADV\Core\DIC::i();
+      $dic->offsetSet(
         'Page',
-        function ($c) {
-          return new Page($c->get('Session'), $c->get('User'), $c->get('Config'), $c->get('Ajax'), $c->get('JS'), $c->get('Dates'));
+        function (\ADV\Core\DIC $c) {
+          return new Page($c['Session'], $c['User'], $c['Config'], $c['Ajax'], $c['JS'], $c['Dates']);
         }
       );
     }

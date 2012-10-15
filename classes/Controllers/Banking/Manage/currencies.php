@@ -8,15 +8,14 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Controllers\Banking\Manage;
+
   use ADV\App\Controller\Manage;
   use ADV\App\Bank\Currency;
   use ADV\Core\View;
   use ADV\App\Form\Form;
 
   /**   */
-  class Currencies extends Manage
-  {
-
+  class Currencies extends Manage {
     protected $security = SA_CURRENCY;
     protected $title = 'Currencies';
     public function before() {
@@ -38,7 +37,8 @@
       $form->text('country')->label('Country');
       $form->text('hundreds_name')->label('Hundreds name');
       $form->arraySelect('inactive', ['No', 'Yes'])->label('Inactive:');
-      $form->text('auto_update ')->label('Auto Update');;
+      $form->text('auto_update ')->label('Auto Update');
+      ;
     }
     /**
      * @return array
@@ -51,10 +51,10 @@
         'Symbol',
         'Country',
         'Hundreds',
-        'Inactive'=> ['type'=> 'active'],
+        'Inactive'=> ['type'=> 'inactive'],
         'Auto Update',
-      ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
-           ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
+        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
+        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
       ];
     }
   }

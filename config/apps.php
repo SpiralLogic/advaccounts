@@ -16,6 +16,8 @@
       'Inventory'         => ['enabled'=> true], //
       'Manufacturing'     => ['enabled'=> true], //
       'Banking'           => ['enabled'=> true], //
+      'Gl'                => ['enabled'=> false], //
+
       'Advanced'          => ['enabled'=> true], //
       'System'            => ['enabled'=> true]
     ), //

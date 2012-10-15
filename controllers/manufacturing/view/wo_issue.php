@@ -17,7 +17,7 @@
    */
   function display_wo_issue($issue_no) {
     $myrow = WO_Issue::get($issue_no);
-    Display::br(1);
+    echo "<br>";
     Table::start('padded');
     $th = array(
       _("Issue #"),
@@ -40,7 +40,7 @@
     echo '</tr>';
     DB_Comments::display_row(28, $issue_no);
     Table::end(1);
-    Display::is_voided(28, $issue_no, _("This issue has been voided."));
+    Voiding::is_voided(28, $issue_no, _("This issue has been voided."));
   }
 
   /**

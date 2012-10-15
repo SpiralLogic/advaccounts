@@ -464,8 +464,8 @@
         // include("includes/lang/en_AU/statement_head.php");
         //} else
       }
-        include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
-      include(REPORTS_PATH . 'includes' . DS . 'header.php');
+      include(PATH_REPORTS . 'includes' . DS . 'doctext.php');
+      include(PATH_REPORTS . 'includes' . DS . 'header.php');
       // }
       $this->row = isset($temp) ? $temp : $this->row;
     }
@@ -1166,7 +1166,7 @@
         $doc_Kindest_regards = '';
         if ($email == 1) {
           $emailtype = true;
-            include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
+          include(PATH_REPORTS . 'includes' . DS . 'doctext.php');
           $mail = new Email(str_replace(",", "", $this->company['coy_name']), $this->company['email']);
           if (!isset($myrow['email']) || $myrow['email'] == '') {
             $myrow['email'] = isset($myrow['contact_email']) ? $myrow['contact_email'] : '';
@@ -1175,7 +1175,6 @@
           if (isset($myrow['dimension_id']) && $myrow['dimension_id'] > 0 && $doctype == ST_SALESINVOICE) { // helper for payment links
             if ($myrow['dimension_id'] == 1) {
               $amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"], User::price_dec());
-
               $txt = $doc_Payment_Link . " PayPal: ";
               $nn  = urlencode($this->title . " " . $myrow['reference']);
               $url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" . $nn . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];

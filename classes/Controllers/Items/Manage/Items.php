@@ -10,9 +10,7 @@
   use Item_Category;
   use ADV\Core\MenuUI;
   use ADV\Core\View;
-  use ADV\App\Page;
   use ADV\App\UI;
-  use ADV\App\ADVAccounting;
 
   /**
    * PHP version 5.4
@@ -42,9 +40,7 @@
     }
     protected function runPost() {
       $data = [];
-      if (isset($_GET['term'])) {
-        $data = Item::search($_GET['term']);
-      } elseif (isset($_POST['id'])) {
+      if (isset($_POST['id'])) {
         if (isset($_POST['name'])) {
           $item = new Item($_POST);
           $item->save($_POST);
@@ -67,11 +63,14 @@
       $view->set('menu', $menu);
       $form = new Form();
       $form->group('items');
+      $form->hidden('id');
+      $form->text('stock_id')->label('Item Code:');
+      $form->text('name')->label('Item Name:');
+      $form->textarea('long_description', ['rows'=> 4])->label('Description:');
       $form->custom(Item_Category::select('category_id'))->label('Category:');
       $form->custom(Item_Unit::select('uom'))->label('Units:');
       $form->custom(Tax_ItemType::select('tax_type_id'))->label('Tax Type:');
       $form->group('accounts');
-
       $form->custom(Item_UI::type('mb_flag'))->label('Type:');
       $form->custom(GL_UI::all('sales_account'))->label('Sales Account:');
       $form->custom(GL_UI::all('inventory_account'))->label('Inventory Account:');

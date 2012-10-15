@@ -18,6 +18,10 @@
       $expected_result = array('84256', '84257', '86732', '84258');
       Arr::insert($part_numbers, 2, '86732');
       $this->assertEquals($expected_result, $part_numbers);
+      $part_numbers    = array('one', 'two'=> ['three'=> 'test'], '84258');
+      $expected_result = array('one', 'two'=> ['three'=> 'test', 'wawa'=> ['four'=> '86732']], '84258');
+      Arr::insert($part_numbers, 'two.wawa.four', '86732');
+      $this->assertEquals($expected_result, $part_numbers);
     }
     /**
      * @covers ADV\Core\Arr::remove
@@ -38,15 +42,20 @@
      * @todo   Implement testGet().
      */
     public function testGet() {
-      $people   = array("test1" => "Jack", "test2" => "Jill");
-      $expected = "Jill";
-      $ouput    = Arr::get($people, 'test2');
-      $this->assertEquals($expected, $ouput);
+      $people = ["test1" => ['test3'=> 'woot'], "Jack", "test2" => "Jill"];
+      $ouput  = Arr::get($people, 'test2');
+      $this->assertEquals("Jill", $ouput);
       $ouput = Arr::get($people, 'test2');
-      $this->assertEquals($expected, $ouput);
-      $ouput    = Arr::get($people, 'test3', "Humpty");
-      $expected = "Humpty";
-      $this->assertEquals($expected, $ouput);
+      $this->assertEquals("Jill", $ouput);
+      $ouput = Arr::get($people, 'test3', "Humpty");
+      $this->assertEquals("Humpty", $ouput);
+
+      $ouput = Arr::get($people, 'test2.test3', "wrong");
+      $this->assertEquals("wrong", $ouput);
+      $ouput = Arr::get($people, 'test2.test3');
+      $this->assertNull($ouput);
+      $ouput = Arr::get($people, 'test1.test3', "wrong");
+      $this->assertEquals("woot", $ouput);
     }
     /**
      * @covers ADV\Core\Arr::substitute
@@ -56,6 +65,14 @@
       $part_numbers    = array('84256', '84257', '84258');
       $expected_result = array('84256', '86732', '84258');
       \ADV\Core\Arr::substitute($part_numbers, 1, 1, '86732');
+      $this->assertEquals($expected_result, $part_numbers);
+      $part_numbers    = array('84256', '8422357', '84258', '842358');
+      $expected_result = array('84256', '86732', '86732', '842358');
+      \ADV\Core\Arr::substitute($part_numbers, 1, 2, '86732');
+      $this->assertEquals($expected_result, $part_numbers);
+      $part_numbers    = array('84256', '8623732', '86732', '22222', '333333', '4444', '842358');
+      $expected_result = array('84256', '86732', '11111', '86732', '333333', '4444', '842358');
+      \ADV\Core\Arr::substitute($part_numbers, 1, 3, ['86732', '11111']);
       $this->assertEquals($expected_result, $part_numbers);
     }
     /**

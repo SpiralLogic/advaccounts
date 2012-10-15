@@ -49,6 +49,8 @@
     public static $session;
     /** @var Base */
     public static $request;
+    /** @var Base */
+    protected static $globals;
     /**
 
      */
@@ -57,6 +59,7 @@
       static::$get     = new Base($_GET);
       static::$session = new Base($_SESSION);
       static::$request = new Base($_REQUEST);
+      static::$globals = new Base($_SESSION['_globals']);
     }
     /***
      * @param mixed     $var     $_POST variable to return
@@ -147,11 +150,13 @@
      * @return bool|int|null|string
      */
     public function &postGlobal($var, $type = null, $default = null) {
-      $result = $this->post($var, $type, false);
-      if ($result === false) {
+      $result = null;
+      if ($this->hasPost($var) === true) {
+        $result = $this->post($var, $type, null);
+      }
+      if ($result === null) {
         $result = $this->getGlobal($var, $type, $default);
       }
-
       return $this->returnPost($var, $result);
     }
     /***
@@ -259,7 +264,7 @@
      * @return bool|int|null|string
      */
     protected function getGlobal($var, $type, $default) {
-      return static::$session->get(['globals', $var], $type, $default);
+      return static::$globals->get($var, $type, $default);
     }
     /**
      * @static

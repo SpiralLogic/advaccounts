@@ -9,7 +9,6 @@
    **/
   return array(
     'ADV\\Core'                  => array(
-      'Exception', //
       'Ajax', //
       'Arr', //
       'Assets', //
@@ -18,7 +17,6 @@
       'Cache', //
       'Cell', //
       'Config', //
-      'DatePicker', //
       'Dialog', //
       'Errors', //
       'Event', //
@@ -43,12 +41,6 @@
     ),
     'ADV\\Core\\DB'              => array(
       'DB', //
-      'DBException', //
-      'DBDuplicateException', //
-      'DBDeleteException', //
-      'DBInsertException', //
-      'DBSelectException', //
-      'DBUpdateException', //
       'Utils', //
     ),
     'ADV\\Core\\Module'          => array(

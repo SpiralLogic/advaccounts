@@ -12,8 +12,7 @@
   /**
 
    */
-  class Status
-  {
+  class Status {
     /**
      * @var array
      */
@@ -73,6 +72,25 @@
       return !($status == self::ERROR);
     }
     /**
+     * @return array
+     */
+    public function get() {
+      if (!empty($this->errors)) {
+        return end($this->errors);
+      }
+      if (!empty($this->status)) {
+        return end($this->status);
+      }
+
+      return [];
+    }
+    /**
+     * @return array
+     */
+    public function getAll() {
+      return $this->status;
+    }
+    /**
      * @param array $status
      * @param bool  $error_only
      *
@@ -87,19 +105,6 @@
       return false;
     }
     /**
-     * @return array
-     */
-    public function get() {
-      if (!empty($this->errors)) {
-        return end($this->errors);
-      }
-      if (!empty($this->status)) {
-        return end($this->status);
-      }
-
-      return false;
-    }
-    /**
      * @return bool|mixed
      */
     public function hasError() {
@@ -110,17 +115,11 @@
       return false;
     }
     /**
-     * @return array
-     */
-    public function getAll() {
-      return $this->status;
-    }
-    /**
      * @return string
      */
     public function __toString() {
       $last = $this->get();
-      $str  = ($last['status'] != self::ERROR) ? ' Succeeded: ' : ' Failed: ';
+      $str  = ($last['status'] != self::ERROR) ? 'Success: ' : 'Error: ';
       $str .= $last['message'];
 
       return $str;

@@ -33,7 +33,8 @@
       DB::_begin();
       $date    = Dates::_dateToSql($date_);
       $duedate = Dates::_dateToSql($due_date);
-      $sql     = "INSERT INTO dimensions (reference, name, type_, date_, due_date)
+      $sql
+               = "INSERT INTO dimensions (reference, name, type_, date_, due_date)
 		VALUES (" . DB::_escape($reference) . ", " . DB::_escape($name) . ", " . DB::_escape($type_) . ", '$date', '$duedate')";
       DB::_query($sql, "could not add dimension");
       $id = DB::_insertId();
@@ -187,9 +188,10 @@
      * @param $to
      */
     public static function display_balance($id, $from, $to) {
-      $from   = Dates::_dateToSql($from);
-      $to     = Dates::_dateToSql($to);
-      $sql    = "SELECT account, chart_master.account_name, sum(amount) AS amt FROM
+      $from = Dates::_dateToSql($from);
+      $to   = Dates::_dateToSql($to);
+      $sql
+              = "SELECT account, chart_master.account_name, sum(amount) AS amt FROM
 			gl_trans,chart_master WHERE
 			gl_trans.account = chart_master.account_code AND
 			(dimension_id = $id OR dimension2_id = $id) AND
@@ -199,7 +201,7 @@
         Event::warning(_("There are no transactions for this dimension for the selected period."));
       } else {
         Display::heading(_("Balance for this Dimension"));
-        Display::br();
+        echo "<br>";
         Table::start('padded grid');
         $th = array(_("Account"), _("Debit"), _("Credit"));
         Table::header($th);

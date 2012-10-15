@@ -56,8 +56,8 @@
     safe_exit();
   }
   function safe_exit() {
-    Display::link_no_params("", _("Enter a new work order"));
-    Display::link_no_params("search_work_orders.php", _("Select an existing work order"));
+    Display::link_params("", _("Enter a new work order"));
+    Display::link_params("search_work_orders.php", _("Select an existing work order"));
     Page::footer_exit();
   }
 
@@ -129,7 +129,11 @@
               $quantity = $bom_item["quantity"] * Validation::input_num('quantity');
               $qoh      = Item::get_qoh_on_date($bom_item["component"], $bom_item["loc_code"], $_POST['date_']);
               if (-$quantity + $qoh < 0) {
-                Event::error(_("The work order cannot be processed because there is an insufficient quantity for component:") . " " . $bom_item["component"] . " - " . $bom_item["description"] . ". " . _("Location:") . " " . $bom_item["location_name"]);
+                Event::error(
+                  _(
+                    "The work order cannot be processed because there is an insufficient quantity for component:"
+                  ) . " " . $bom_item["component"] . " - " . $bom_item["description"] . ". " . _("Location:") . " " . $bom_item["location_name"]
+                );
                 JS::_setFocus('quantity');
                 return false;
               }
@@ -174,7 +178,20 @@
     if (!isset($_POST['cr_lab_acc'])) {
       $_POST['cr_lab_acc'] = "";
     }
-    $id = WO::add($_POST['wo_ref'], $_POST['StockLocation'], Validation::input_num('quantity'), Input::_post('stock_id'), $_POST['type'], $_POST['date_'], $_POST['RequDate'], $_POST['memo_'], Validation::input_num('Costs'), $_POST['cr_acc'], Validation::input_num('Labour'), $_POST['cr_lab_acc']);
+    $id = WO::add(
+      $_POST['wo_ref'],
+      $_POST['StockLocation'],
+      Validation::input_num('quantity'),
+      Input::_post('stock_id'),
+      $_POST['type'],
+      $_POST['date_'],
+      $_POST['RequDate'],
+      $_POST['memo_'],
+      Validation::input_num('Costs'),
+      $_POST['cr_acc'],
+      Validation::input_num('Labour'),
+      $_POST['cr_lab_acc']
+    );
     Dates::_newDocDate($_POST['date_']);
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$id&type=" . $_POST['type'] . "&date=" . $_POST['date_']);
   }

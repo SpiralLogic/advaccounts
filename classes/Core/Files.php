@@ -8,12 +8,11 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
   /**
 
    */
-  class Files
-  {
-
+  class Files {
     /**
      * @static
      *
@@ -25,10 +24,9 @@
      * saves the string in $fileData to the file $backupfile as gz file or not ($zip)
      * returns backup file name if name has changed (zip), else true. If saving failed, return value is false
      */
-    public static function saveToFile($backupfile, $fileData, $zip = false)
-    {
+    public static function saveToFile($backupfile, $fileData, $zip = false) {
       if ($zip == "gzip") {
-        $zp = gzopen(BACKUP_PATH . $backupfile, "a9");
+        $zp = gzopen(PATH_BACKUP . $backupfile, "a9");
         if ($zp) {
           gzwrite($zp, $fileData);
           gzclose($zp);
@@ -85,7 +83,7 @@
         // total # of entries "on this disk", total # of entries overall, size of central dir, offset to start of central dir, .zip file comment length
         $fileData .= pack('v', 1) . pack('v', 1) . pack('V', strlen($cdrec)) . pack('V', strlen($fr)) . "\x00\x00";
         /** @noinspection PhpAssignmentInConditionInspection */
-        if ($zp = fopen(BACKUP_PATH . $backupfile, "a")) {
+        if ($zp = fopen(PATH_BACKUP . $backupfile, "a")) {
           fwrite($zp, $fileData);
           fclose($zp);
 
@@ -96,7 +94,7 @@
         // uncompressed
       } else {
         /** @noinspection PhpAssignmentInConditionInspection */
-        if ($zp = fopen(BACKUP_PATH . $backupfile, "a")) {
+        if ($zp = fopen(PATH_BACKUP . $backupfile, "a")) {
           fwrite($zp, $fileData);
           fclose($zp);
 
@@ -113,8 +111,7 @@
      *
      * @return string
      */
-    public static function convertSize($size)
-    {
+    public static function convertSize($size) {
       $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
       $i    = (int) floor(log($size, 1024));
 
@@ -126,8 +123,7 @@
      * @param      $path
      * @param bool $wipe
      */
-    public static function flushDir($path, $wipe = false)
-    {
+    public static function flushDir($path, $wipe = false) {
       $dir = opendir($path);
       while (false !== ($fname = readdir($dir))) {
         if ($fname == '.' || $fname == '..' || $fname == 'CVS' || (!$wipe && $fname == 'index.php')) {

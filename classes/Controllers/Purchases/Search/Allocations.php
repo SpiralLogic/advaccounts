@@ -2,6 +2,8 @@
   namespace ADV\Controllers\Purchases\Search;
 
   use ADV\Core\DB\DB;
+  use ADV\App\Display;
+  use ADV\Core\Event;
   use ADV\Core\Num;
   use GL_UI;
   use ADV\App\SysTypes;
@@ -9,7 +11,6 @@
   use ADV\App\Dates;
   use Purch_Allocation;
   use ADV\App\Forms;
-  use ADV\App\Page;
   use ADV\App\Creditor\Creditor;
   use ADV\Core\Table;
 
@@ -118,39 +119,31 @@
       if (!$this->Input->hasPost('showSettled')) {
         $sql .= " AND (round(abs(ov_amount + ov_gst + ov_discount) - alloc,6) != 0) ";
       }
-      $cols = array(
-        _("Type")        => array('fun' => [$this, 'formatType']),
-        _("#")           => array('fun' => [$this, 'formatViewLink'], 'ord' => ''),
+      $cols = [
+        _("Type")        => ['fun' => [$this, 'formatType']],
+        _("#")           => ['fun' => [$this, 'formatViewLink'], 'ord' => ''],
         _("Reference"),
-        _("Supplier")    => array('ord' => '', 'type' => 'id'),
-        _("Supplier ID") => array('type'=> 'skip'),
+        _("Supplier")    => ['ord' => '', 'type' => 'id'],
+        _("Supplier ID") => ['type'=> 'skip'],
         _("Supp Reference"),
-        _("Date")        => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
-        _("Due Date")    => array('fun' => [$this, 'formatDueDate'], 'type' => 'date'),
-        _("Currency")    => array('align' => 'center'),
-        _("Debit")       => array('align' => 'right', 'fun' => [$this, 'formatDebit']),
-        _("Credit")      => array(
-          'align'  => 'right',
-          'insert' => true,
-          'fun'    => [$this, 'formatCredit']
-        ),
+        _("Date")        => ['name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'],
+        _("Due Date")    => ['fun' => [$this, 'formatDueDate'], 'type' => 'date'],
+        _("Currency")    => ['align' => 'center'],
+        _("Debit")       => ['align' => 'right', 'fun' => [$this, 'formatDebit']],
+        _("Credit")      => ['align'  => 'right', 'insert' => true, 'fun'    => [$this, 'formatCredit']],
         _("Allocated")   => ['type'=> 'amount'],
-        _("Balance")     => array(
-          'type' => 'amount',
-          'fun'  => [$this, 'formatBalance']
-        ),
-        array(
-          'insert' => true,
-          'fun'    => [$this, 'formatAllocLink']
-        )
-      );
+        _("Balance")     => ['type' => 'amount', 'fun'  => [$this, 'formatBalance']],
+        ['insert' => true, 'fun'    => [$this, 'formatAllocLink']]
+      ];
       if ($_POST['creditor_id'] != ALL_TEXT) {
         $cols[_("Supplier ID")] = 'skip';
         $cols[_("Supplier")]    = 'skip';
         $cols[_("Currency")]    = 'skip';
       }
-      $table = DB_Pager::newPager('doc_tbl', $sql, $cols);
-      $table->setMarker([$this, 'formatMarker'], _("Marked items are overdue."));
+      $table              = DB_Pager::newPager('doc_tbl', $sql, $cols);
+      $table->rowFunction = [$this, 'formatMarker'];
+      Event::warning(_("Marked items are overdue."), false);
+
       $table->width = "90";
       $table->display($table);
     }
@@ -160,7 +153,9 @@
      * @return bool
      */
     public function formatMarker($row) {
-      return ($row['TotalAmount'] > $row['Allocated']) && $row['OverDue'] == 1;
+      if ($row['OverDue'] == 1 && $row['TotalAmount'] > $row['Allocated']) {
+        return "<tr class='overduebg'>";
+      }
     }
     /**
      * @param $dummy
@@ -203,7 +198,7 @@
      * @return string
      */
     public function formatAllocLink($row) {
-      $link = DB_Pager::link(_("Allocations"), "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
+      $link = Display::link_button(_("Allocations"), "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
       return (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) && (-$row["TotalAmount"] - $row["Allocated"]) > 0) ? $link : '';
     }
     /**

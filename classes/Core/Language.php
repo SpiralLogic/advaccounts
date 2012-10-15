@@ -11,7 +11,6 @@
   namespace ADV\Core;
 
   /**
-
    */
   class Language {
     use Traits\Singleton;
@@ -44,7 +43,10 @@
       $this->setLanguage($name, $code, $encoding, $dir);
     }
     /**
-     * @param $code
+     * @param null   $name
+     * @param        $code
+     * @param null   $encoding
+     * @param string $dir
      */
     public function setLanguage($name = null, $code = null, $encoding = null, $dir = 'ltr') {
       $changed = $this->code != $code;

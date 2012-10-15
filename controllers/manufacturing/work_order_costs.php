@@ -19,7 +19,7 @@
     Display::note(GL_UI::viewTrans($stype, $id, _("View this Work Order")));
     Display::note(GL_UI::view($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
     Display::link_params("work_order_costs.php", _("Enter another additional cost."), "trans_no=$id");
-    Display::link_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
+    Display::link_params("search_work_orders.php", _("Select another &Work Order to Process"));
     Page::end();
     exit;
   }
@@ -57,12 +57,45 @@
 
   if (isset($_POST['process']) && can_process() == true) {
     DB::_begin();
-    GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'], 0, 0, WO_Cost::$types[$_POST['PaymentType']], -Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
+    GL_Trans::add_std_cost(
+      ST_WORKORDER,
+      $_POST['selected_id'],
+      $_POST['date_'],
+      $_POST['cr_acc'],
+      0,
+      0,
+      WO_Cost::$types[$_POST['PaymentType']],
+      -Validation::input_num('costs'),
+      PT_WORKORDER,
+      $_POST['PaymentType']
+    );
     $is_bank_to = Bank_Account::is($_POST['cr_acc']);
     if ($is_bank_to) {
-      Bank_Trans::add(ST_WORKORDER, $_POST['selected_id'], $is_bank_to, "", $_POST['date_'], -Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType'], Bank_Currency::for_company(), "Cannot insert a destination bank transaction");
+      Bank_Trans::add(
+        ST_WORKORDER,
+        $_POST['selected_id'],
+        $is_bank_to,
+        "",
+        $_POST['date_'],
+        -Validation::input_num('costs'),
+        PT_WORKORDER,
+        $_POST['PaymentType'],
+        Bank_Currency::for_company(),
+        "Cannot insert a destination bank transaction"
+      );
     }
-    GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'], $_POST['dim1'], $_POST['dim2'], WO_Cost::$types[$_POST['PaymentType']], Validation::input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
+    GL_Trans::add_std_cost(
+      ST_WORKORDER,
+      $_POST['selected_id'],
+      $_POST['date_'],
+      $_POST['db_acc'],
+      $_POST['dim1'],
+      $_POST['dim2'],
+      WO_Cost::$types[$_POST['PaymentType']],
+      Validation::input_num('costs'),
+      PT_WORKORDER,
+      $_POST['PaymentType']
+    );
     DB::_commit();
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=" . $_POST['selected_id']);
   }
@@ -71,7 +104,7 @@
   Forms::hidden('selected_id', $_POST['selected_id']);
   //Forms::hidden('WOReqQuantity', $_POST['WOReqQuantity']);
   Table::start('standard');
-  Display::br();
+  echo "<br>";
   Forms::yesnoListRow(_("Type:"), 'PaymentType', null, WO_Cost::$types[WO_OVERHEAD], WO_Cost::$types[WO_LABOUR]);
   Forms::dateRow(_("Date:"), 'date_');
   $item_accounts   = Item::get_gl_code($wo_details['stock_id']);

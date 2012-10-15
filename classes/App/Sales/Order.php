@@ -55,9 +55,7 @@
      * @var int
      */
     public $so_type = 0; // for sales order: simple=0 template=1
-    /**
-     * @var
-     */
+    /** @var */
     public $order_id; // used to detect multi-tab edition conflits
     /**
      * @var array
@@ -67,145 +65,85 @@
      * @var array
      */
     public $src_docs = []; // array of arrays(num1=>ver1,...) or 0 for no src
-    /**
-     * @var
-     */
+    /** @var */
     public $src_date; // src document date (for info only)
     /**
      * @var null
      */
     public $source_no = null;
-    /**
-     * @var
-     */
+    /** @var */
     public $document_date;
-    /**
-     * @var
-     */
+    /** @var */
     public $due_date;
-    /**
-     * @var
-     */
+    /** @var */
     public $salesman;
     /**
      * @var string
      */
     public $sales_type; // set to the customer's sales type
-    /**
-     * @var
-     */
+    /** @var */
     public $sales_type_name; // set to customer's sales type name
-    /**
-     * @var
-     */
+    /** @var */
     public $tax_included;
-    /**
-     * @var
-     */
+    /** @var */
     public $customer_currency; // set to the customer's currency
-    /**
-     * @var
-     */
+    /** @var */
     public $default_discount; // set to the customer's discount %
-    /**
-     * @var
-     */
+    /** @var */
     public $customer_name;
-    /**
-     * @var
-     */
+    /** @var */
     public $debtor_id = 0;
-    /**
-     * @var
-     */
+    /** @var */
     public $Branch;
-    /**
-     * @var
-     */
+    /** @var */
     public $email;
-    /**
-     * @var
-     */
+    /** @var */
     public $deliver_to;
-    /**
-     * @var
-     */
+    /** @var */
     public $delivery_address;
-    /**
-     * @var
-     */
+    /** @var */
     public $name;
-    /**
-     * @var
-     */
+    /** @var */
     public $phone;
-    /**
-     * @var
-     */
+    /** @var */
     public $cust_ref;
-    /**
-     * @var
-     */
+    /** @var */
     public $reference;
-    /**
-     * @var
-     */
+    /** @var */
     public $Comments;
-    /**
-     * @var
-     */
+    /** @var */
     public $location;
-    /**
-     * @var
-     */
+    /** @var */
     public $location_name;
-    /**
-     * @var
-     */
+    /** @var */
     public $order_no; // the original order number
     /**
      * @var int
      */
     public $trans_link = 0;
-    /**
-     * @var
-     */
+    /** @var */
     public $ship_via;
     /**
      * @var int
      */
     public $freight_cost = 0;
-    /**
-     * @var
-     */
+    /** @var */
     public $tax_group_id;
-    /**
-     * @var
-     */
+    /** @var */
     public $tax_group_name;
     /**
      * @var null
      */
     public $tax_group_array = null; // saves db queries
-    /**
-     * @var
-     */
+    /** @var */
     public $price_factor; // ditto for price calculations
-    /**
-     * @var
-     */
+    /** @var */
     public $pos; // user assigned POS
-    /**
-     * @var
-     */
+    /** @var */
     public $cash; // cash transaction
-    /**
-     * @var
-     */
+    /** @var */
     public $cash_account;
-    /**
-     * @var
-     */
+    /** @var */
     public $account_name;
     /**
      * @var int
@@ -215,21 +153,13 @@
      * @var int
      */
     public $dimension2_id;
-    /**
-     * @var
-     */
+    /** @var */
     public $payment;
-    /**
-     * @var
-     */
+    /** @var */
     public $payment_terms; // cached payment terms
-    /**
-     * @var
-     */
+    /** @var */
     public $credit;
-    /**
-     * @var
-     */
+    /** @var */
     protected $uniqueid;
     /**
      * @var bool
@@ -1143,22 +1073,16 @@
     public function summary($title, $editable_items = false) {
       Display::heading($title);
       if (count($this->line_items) > 0) {
-        Display::link_params_separate(
-          "/purchases/order",
-          _("Create PO from this order"),
-          "NewOrder=Yes&UseOrder=" . $this->order_id . "' class='button'",
-          false,
-          true
-        );
-        Display::link_params_separate(
-          "/purchases/order",
-          _("Dropship this order"),
-          "NewOrder=Yes&UseOrder=" . $this->order_id . "&DRP=1' class='button   '",
-          false,
-          true
-        );
+        $label  = _("Create PO from this order");
+        $target = "/purchases/order?NewOrder=Yes&UseOrder=" . $this->order_id . "' class='button'";
+        $pars   = Display::access_string($label);
+        echo "<div class='center'><a target='_blank' href='$target' $pars[1]>$pars[0]</a></div>";
+        $label  = _("Dropship this order");
+        $target = "/purchases/order?NewOrder=Yes&UseOrder=" . $this->order_id . "&DRP=1' class='button   '";
+        $pars   = Display::access_string($label);
+        echo "<div class='center'><a target='_blank' href='$target' $pars[1]>$pars[0]</a></div>";
       }
-      Display::div_start('items_table');
+      Ajax::_start_div('items_table');
       Table::start('padded width90 grid');
       $th = array(
         _("Item Code"),
@@ -1270,7 +1194,7 @@
       if ($this->trans_type != 30 && !DB_Company::get_pref('allow_negative_stock')) {
         Event::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . '<br>' . $qoh_msg);
       }
-      Display::div_end();
+      Ajax::_end_div();
     }
     /**
      * @param      $date_text
@@ -1513,7 +1437,7 @@
 
      */
     public function display_delivery_details() {
-      Display::div_start('delivery');
+      Ajax::_start_div('delivery');
       if (Input::_post('cash', null, 0)) { // Direct payment sale
         Ajax::_activate('items_table');
         Display::heading(_('Cash payment'));
@@ -1571,7 +1495,7 @@
         Sales_UI::shippers_row(_("Shipping Company:"), 'ship_via', $this->ship_via);
         Table::endOuter(1);
       }
-      Display::div_end();
+      Ajax::_end_div();
     }
     /**
      * @static

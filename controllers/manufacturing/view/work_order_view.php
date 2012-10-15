@@ -15,7 +15,7 @@
     $woid = $_GET['trans_no'];
   }
   Display::heading(SysTypes::$names[ST_WORKORDER] . " # " . $woid);
-  Display::br(1);
+  echo "<br>";
   $myrow = WO::get($woid);
   if ($myrow["type"] == WO_ADVANCED) {
     WO_Cost::display($woid, true);
@@ -24,7 +24,7 @@
   }
   echo "<div class='center'>";
   // display the WO requirements
-  Display::br(1);
+  echo "<br>";
   if ($myrow["released"] == false) {
     Display::heading(_("BOM for item:") . " " . $myrow["StockItemName"]);
     WO::display_bom($myrow["stock_id"]);
@@ -50,7 +50,7 @@
     }
   }
   echo "<br></div>";
-  Display::is_voided(ST_WORKORDER, $woid, _("This work order has been voided."));
+  Voiding::is_voided(ST_WORKORDER, $woid, _("This work order has been voided."));
   Page::end(true);
 
 

@@ -4,10 +4,9 @@
 <form>
     {#$menu->startTab('Items', 'Items','active')#}
     <div id="Items" class="width40 formbox">
-        {{#$form.items}}
+    {{#$form.items}}
         {{.}}
         {{/$form.items}}
-
     </div>
     <div class="center">
         <table id="stockLevels" class="marginauto grid width80" style="display:none">
@@ -39,17 +38,16 @@
     </div>
     {#$menu->endTab()->startTab('Accounts', 'Accounts','default')#}
     <div id="Accounts" class="formbox width40">
-
-
-       {{#$form.accounts}}
-               {{.}}
-               {{/$form.accounts}}
-                 {#$menu->endTab()->startTab('Selling', 'Selling')#}
+    {{#$form.accounts}}
+    {{.}}
+    {{/$form.accounts}}
+    </div>
+    {#$menu->endTab()->startTab('Selling', 'Selling')#}
     <iframe id='sellFrame' data-src='{{ROOT_URL}}items/manage/prices?frame=1&stock_id={{$item->stock_id}}' style='width:95%' height='500' frameborder='0'></iframe>
     {#$menu->endTab()->startTab('Purchasing', 'Purchasing')#}
-    <iframe id='buyFrame' data-src='{{ROOT_URL}}inventory/purchasing_data.php?frame=1&stock_id={{$item->stock_id}}' style='width:100%' height='500' frameborder='0'></iframe>
+    <iframe id='buyFrame' data-src='{{ROOT_URL}}items/manage/purchasing?frame=1&stock_id={{$item->stock_id}}' style='width:100%' height='500' frameborder='0'></iframe>
     {#$menu->endTab()->startTab('Locations', 'Locations')#}
-    <iframe id='locationFrame' data-src='{{ROOT_URL}}inventory/reorder_level.php?frame=1&stock_id={{$item->stock_id}}' style='width:100%' height='500' frameborder='0'></iframe>
+    <iframe id='locationFrame' data-src='{{ROOT_URL}}inventory/reorder_level?frame=1&stock_id={{$item->stock_id}}' style='width:100%' height='500' frameborder='0'></iframe>
     {#$menu->endTab()->startTab('Website', 'Website')#}
     <iframe id='webFrame' data-srcpre='{{Config::_get('modules.webstore')['product_url']}}' data-srcpost='{{Config::_get('modules.webstore')['url_extension']}}'
             style='width:100%'

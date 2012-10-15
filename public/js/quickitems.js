@@ -26,6 +26,7 @@ var Items = function () {
     $buyFrame = $('#buyFrame'), //
     $sellFrame = $('#sellFrame'), //
     $locationFrame = $('#locationFrame'), //
+    $itemsearch = $('#itemSearchId'), //
     $webFrame = $('#webFrame'), //
     $selects = $('select'), //
     urlregex = /[\w\-\.:/=ƒ&!~\*\'"(),]+/g, //
@@ -40,9 +41,13 @@ var Items = function () {
   $stockRow.template('stockrow');
   return {
     fetch:     function (id) {
-      if (id.val !== undefined) {
-        $('#itemSearchId').val(id.val);
-        Items.getFrames(id.val);
+      if (id.value !== undefined) {
+        $itemsearch.val(id.value);
+        Items.getFrames(id.value);
+      }
+      else {
+        $itemsearch.val('');
+        Items.getFrames(0);
       }
       if (id.id !== undefined) {
         id = id.id;
@@ -77,6 +82,9 @@ var Items = function () {
       $.tmpl('accounts', data.item).appendTo("#Accounts");
       if (data.stockLevels) {
         $stockLevels.show().find('tbody').html($.tmpl('stockrow', data.stockLevels));
+      }
+      else {
+        $stockLevels.hide();
       }
       $.each(item, function (i, data) {
         Adv.Forms.setFormDefault(i, data);

@@ -91,7 +91,7 @@
 You have to clean database manually to enable them, or try to perform forced upgrade."
       )
     );
-    Display::br();
+    echo "<br>";
   }
   Forms::submitCenter('Upgrade', _('Upgrade system'), true, _('Save database and perform upgrade'), 'process');
   Forms::end();

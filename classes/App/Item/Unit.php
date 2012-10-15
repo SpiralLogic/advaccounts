@@ -1,6 +1,5 @@
 <?php
   namespace ADV\App\Item {
-
     use ADV\Core\DB\DB;
     use ADV\App\Validation;
 
@@ -21,7 +20,6 @@
        * @return \ADV\Core\Traits\Status|bool
        */
       protected function canProcess() {
-
         if (strlen($this->abbr) > 20) {
           return $this->status(false, 'Abbr must be not be longer than 20 characters!', 'abbr');
         }
@@ -33,7 +31,6 @@
         } elseif (!Validation::is_num($this->decimals, 0, 8)) {
           return $this->status(false, 'Deciamls must be a number between 0 and 8', 'decimals');
         }
-
         return true;
       }
       /**
@@ -46,7 +43,6 @@
         if (!$inactive) {
           $q->andWhere('inactive=', 0);
         }
-
         return $q->fetch()->all();
       }
       /**
@@ -54,7 +50,6 @@
        */
       public function countUsed() {
         $count = static::$DB->select("COUNT(*) as count")->from('stock_master')->where('units=', $this->id)->fetch()->one('count');
-
         return $count;
       }
       /**
@@ -104,15 +99,13 @@
        */
       public static function write($selected, $abbr, $description, $decimals) {
         if ($selected != '') {
-          $sql
-            = "UPDATE item_units SET
+          $sql = "UPDATE item_units SET
          abbr = " . DB::_escape($abbr) . ",
          name = " . DB::_escape($description) . ",
          decimals = " . DB::_escape($decimals) . "
      WHERE abbr = " . DB::_escape($selected);
         } else {
-          $sql
-            = "INSERT INTO item_units
+          $sql = "INSERT INTO item_units
             (abbr, name, decimals) VALUES( " . DB::_escape($abbr) . ",
              " . DB::_escape($description) . ", " . DB::_escape($decimals) . ")";
         }
@@ -137,7 +130,6 @@
       public static function get($unit) {
         $sql    = "SELECT * FROM item_units WHERE abbr=" . DB::_escape($unit);
         $result = DB::_query($sql, "an unit of measure could not be retrieved");
-
         return DB::_fetch($result);
       }
       /**
@@ -151,7 +143,6 @@
         $sql    = "SELECT description FROM item_units WHERE abbr=" . DB::_escape($unit);
         $result = DB::_query($sql, "could not unit description");
         $row    = DB::_fetchRow($result);
-
         return $row[0];
       }
       /**
@@ -165,7 +156,6 @@
         $sql    = "SELECT COUNT(*) FROM stock_master WHERE units=" . DB::_escape($unit);
         $result = DB::_query($sql, "could not query stock master");
         $myrow  = DB::_fetchRow($result);
-
         return ($myrow[0] > 0);
       }
       /**
@@ -181,7 +171,6 @@
           $sql .= " WHERE !inactive";
         }
         $sql .= " ORDER BY name";
-
         return DB::_query($sql, "could not get stock categories");
       }
       /**
@@ -192,12 +181,10 @@
        * @return mixed
        */
       public static function get_decimal($stock_id) {
-        $sql
-                = "SELECT decimals FROM item_units,	stock_master
+        $sql    = "SELECT decimals FROM item_units,	stock_master
         WHERE abbr=units AND stock_id=" . DB::_escape($stock_id) . " LIMIT 1";
         $result = DB::_query($sql, "could not get unit decimals");
         $row    = DB::_fetchRow($result);
-
         return $row[0];
       }
       /**
@@ -236,7 +223,6 @@
         while ($unit = DB::_fetch($result)) {
           $units[$unit['abbr']] = $unit['name'];
         }
-
         return Forms::arraySelect($name, $value, $units, array('disabled' => !$enabled));
       }
     }

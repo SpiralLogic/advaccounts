@@ -44,7 +44,7 @@
     protected function formContents(Form $form, View $view) {
       $view['title'] = 'Users';
       $form->hidden('id');
-      $form->text('user_id')->label('User ID:')->focus();
+      $form->text('user_id')->label('User ID:')->focus($this->action==EDIT);
       $form->text('real_name')->label('Name:');
       $form->text('phone')->label('Telephone number:');
       $form->text('email')->label('Email Address:');
@@ -67,7 +67,7 @@
         _("Email"),
         _("Last Visit Date"),
         _("Role"),
-        _('Inactive')=> ['type'=> "active"],
+        _('Inactive')=> ['type'=> 'inactive'],
         ['insert'=> true, "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['insert'=> true, "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']]
       );
@@ -155,7 +155,7 @@
   while ($myrow = DB::_fetch($result)) {
     $last_visit_date = Dates::_sqlToDate($myrow["last_visit_date"]);
     /*The security_headings array is defined in config.php
-    $not_me = strcasecmp($myrow["user_id"], User::i()->username);
+    $not_me = strcasecmp($myrow["user_id"], $this->User->username);
     Cell::label($myrow["user_id"]);
     Cell::label($myrow["real_name"]);
     Cell::label($myrow["phone"]);

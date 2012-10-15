@@ -28,6 +28,7 @@
    * @method static _isDate($date = null, $format = null)
    * @method static _isDateInFiscalYear($date, $convert = false)
    * @method static _isGreaterThan($date1, $date2)
+   * @method static _differenceBetween($date1, $date2, $period = 'd')
    * @method static _newDocDate()
    * @method static _addDays($date, $days)
    * @method static _addYears($date, $years)
@@ -46,6 +47,9 @@
     public $formats = array("m/d/Y", "d/m/Y", "Y/m/d");
     public $separators = array('/', ".", "-", " ");
     public $format = 1;
+    /**
+     * @param $separator
+     */
     public function setSep($separator) {
       $this->sep = $this->separators[$separator];
     }
@@ -198,7 +202,7 @@
       $how  = $this->formats[$this->format];
       $date = \DateTime::createFromFormat('Y-m-d', $date);
       return $date->format(str_replace('/', $this->sep, $how));
-    } // end static function sqlToDate
+    }
     /**
      * @static
      *
@@ -483,7 +487,7 @@ provided that both dates are after 1970. Also only works for dates up to the yea
     /**
      * @return string
      */
-    public function date_display() {
+    protected function date_display() {
       $sep = $this->sep;
       if ($this->format == 0) {
         return "m" . $sep . "d" . $sep . "Y";

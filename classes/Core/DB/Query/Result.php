@@ -9,15 +9,15 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core\DB\Query;
-  use PDO, PDOStatement, PDOException, PDORow;
+
+  use PDO, PDOStatement;
 
   /**
 
    */
-  class Result implements \Countable, \Iterator
-  {
+  class Result implements \Countable, \Iterator {
     /**
-     * @var \PDOStatement thing
+     * @var \PDO|\PDOStatement
      */
     public $prepared;
     /** @var */

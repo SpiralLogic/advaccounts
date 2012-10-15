@@ -54,7 +54,6 @@
         if (!$inactive) {
           $q->andWhere('inactive=', 0);
         }
-
         return $q->fetch()->all();
       }
     }
@@ -71,8 +70,7 @@
        * @param $disallow_invoicing
        */
       public static function add($description, $disallow_invoicing) {
-        $sql
-          = "INSERT INTO credit_status (reason_description, dissallow_invoices)
+        $sql = "INSERT INTO credit_status (reason_description, dissallow_invoices)
         VALUES (" . DB::_escape($description) . "," . DB::_escape($disallow_invoicing) . ")";
         DB::_query($sql, "could not add credit status");
       }
@@ -100,7 +98,6 @@
         if (!$all) {
           $sql .= " WHERE !inactive";
         }
-
         return DB::_query($sql, "could not get all credit status");
       }
       /**
@@ -113,7 +110,6 @@
       public static function get($status_id) {
         $sql    = "SELECT * FROM credit_status WHERE id=" . DB::_escape($status_id);
         $result = DB::_query($sql, "could not get credit status");
-
         return DB::_fetch($result);
       }
       /**
@@ -139,7 +135,6 @@
           $disabled = (!User::i()->hasAccess(SA_CUSTOMER_CREDIT));
         }
         $sql = "SELECT id, reason_description, inactive FROM credit_status";
-
         return Forms::selectBox($name, $selected_id, $sql, 'id', 'reason_description', array('disabled' => $disabled));
       }
       /**
@@ -179,17 +174,14 @@
        * @return bool
        */
       public static function can_delete($selected_id) {
-        $sql
-                = "SELECT COUNT(*) FROM debtors
+        $sql    = "SELECT COUNT(*) FROM debtors
             WHERE credit_status=" . DB::_escape($selected_id);
         $result = DB::_query($sql, "could not query customers");
         $myrow  = DB::_fetchRow($result);
         if ($myrow[0] > 0) {
           Event::error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
-
           return false;
         }
-
         return true;
       }
       /**
@@ -200,10 +192,8 @@
         if (strlen($_POST['reason_description']) == 0) {
           Event::error(_("The credit status description cannot be empty."));
           JS::_setFocus('reason_description');
-
           return false;
         }
-
         return true;
       }
     }

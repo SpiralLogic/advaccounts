@@ -18,7 +18,8 @@
    * @return \ADV\Core\DB\Query\Result|Array|bool
    */
   function get_receipt($type, $trans_no) {
-    $sql    = "SELECT debtor_trans.*,
+    $sql
+            = "SELECT debtor_trans.*,
                 (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
                 debtor_trans.ov_freight_tax + debtor_trans.ov_discount) AS Total,
                  debtors.name AS DebtorName, debtors.debtor_ref,
@@ -43,11 +44,15 @@
    * @return null|PDOStatement
    */
   function get_allocations_for_receipt($debtor_id, $type, $trans_no) {
-    $sql = Sales_Allocation::get_sql("amt, trans.reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
+    $sql = Sales_Allocation::get_sql(
+      "amt, trans.reference, trans.alloc",
+      "trans.trans_no = alloc.trans_no_to
         AND trans.type = alloc.trans_type_to
         AND alloc.trans_no_from=$trans_no
         AND alloc.trans_type_from=$type
-        AND trans.debtor_id=" . DB::_escape($debtor_id), "debtor_allocations as alloc");
+        AND trans.debtor_id=" . DB::_escape($debtor_id),
+      "debtor_allocations as alloc"
+    );
     $sql .= " ORDER BY trans_no";
     return DB::_query($sql, "Cannot retreive alloc to transactions");
   }
@@ -74,7 +79,7 @@
     $params = array('comments' => $comments);
     $cur    = DB_Company::get_pref('curr_default');
     /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep           = new $report_type(_('RECEIPT'), "ReceiptBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP,User::page_size());
+    $rep           = new $report_type(_('RECEIPT'), "ReceiptBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size());
     $rep->currency = $cur;
     $rep->Font();
     $rep->Info($params, $cols, null, $aligns);
@@ -96,7 +101,7 @@
         $result   = get_allocations_for_receipt($myrow['debtor_id'], $myrow['type'], $myrow['trans_no']);
         $linetype = true;
         $doctype  = ST_CUSTPAYMENT;
-          include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
+        include(PATH_REPORTS . 'includes' . DS . 'doctext.php');
         $total_allocated = 0;
         $rep->TextCol(0, 4, $doc_Towards, -2);
         $rep->NewLine(2);

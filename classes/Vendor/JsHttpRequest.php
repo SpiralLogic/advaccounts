@@ -312,20 +312,14 @@
       $encoding = $this->SCRIPT_ENCODING;
       $text     = null; // to be on a safe side
       // Try to use very fast json_encode: 3-4 times faster than a manual encoding.
-      if (function_exists('array_walk_recursive') && function_exists('json_encode') && $this->_unicodeConvMethod) {
-        $this->_nonAsciiChars = join("", array_map('chr', range(128, 255)));
-        $this->_toUtfFailed   = false;
-        $resultUtf8           = $result;
-        array_walk_recursive($resultUtf8, array(&$this, '_toUtf8_callback'), $this->SCRIPT_ENCODING);
-        if (!$this->_toUtfFailed) {
-          // If some key contains non-ASCII character, convert everything manually.
-          $text     = json_encode($resultUtf8);
-          $encoding = "UTF-8";
-        }
-      }
-      // On failure, use manual encoding.
-      if ($text === null) {
-        $text = $this->php2js($result);
+      $this->_nonAsciiChars = join("", array_map('chr', range(128, 255)));
+      $this->_toUtfFailed   = false;
+      $resultUtf8           = $result;
+      array_walk_recursive($resultUtf8, array(&$this, '_toUtf8_callback'), $this->SCRIPT_ENCODING);
+      if (!$this->_toUtfFailed) {
+        // If some key contains non-ASCII character, convert everything manually.
+        $text     = json_encode($resultUtf8);
+        $encoding = "UTF-8";
       }
       if ($this->LOADER != "xml") {
         // In non-XML mode we cannot use plain JSON. So - wrap with JS function call.

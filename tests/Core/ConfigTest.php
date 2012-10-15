@@ -26,8 +26,7 @@
     protected function tearDown() {
     }
     /**
-     * @covers ADV\Core\Config::__set
-     * @todo   Implement test_set().
+     * @covers ADV\Core\Config::set
      */
     public function test_set() {
       $result = $this->object->set('test', 'val');
@@ -38,7 +37,7 @@
       $this->assertArrayHasKey('test', $vars);
     }
     /**
-     * @covers ADV\Core\Config::__get
+     * @covers ADV\Core\Config::get
      * @depnds test_set
      */
     public function test_get() {
@@ -49,7 +48,7 @@
       $this->assertEquals('default', $actual);
     }
     /**
-     * @covers  ADV\Core\Config::__remove
+     * @covers  ADV\Core\Config::remove
      * @depends test_set
      */
     public function test_remove() {
@@ -65,7 +64,7 @@
       $this->assertArrayNotHasKey('test', $vars);
     }
     /**
-     * @covers ADV\Core\Config::__getAll
+     * @covers ADV\Core\Config::getAll
      */
     public function test_getAll() {
       $vars = $this->readAttribute($this->object, '_vars');
@@ -76,7 +75,7 @@
       return $vars;
     }
     /**
-     * @covers  ADV\Core\Config::__removeAll
+     * @covers  ADV\Core\Config::removeAll
      * @depends test_getAll
      */
     public function test_removeAll($vars) {
@@ -87,7 +86,7 @@
       $this->assertEquals([], $actual);
     }
     /**
-     * @covers ADV\Core\Config::__reset
+     * @covers ADV\Core\Config::reset
      */
     public function test_reset() {
       $actual = $this->object->getAll(); // Remove the following lines when you implement this test.
@@ -104,7 +103,7 @@
       $this->assertArrayNotHasKey('test', $vars['config']);
     }
     /**
-     * @covers ADV\Core\Config::__shutdown
+     * @covers ADV\Core\Config::shutdown
      * @todo   Implement test_shutdown().
      */
     public function test_shutdown() {

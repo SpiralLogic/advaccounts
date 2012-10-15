@@ -9,7 +9,6 @@
   use Sales_Type;
   use PDO;
   use Item_Price;
-  use ADV\App\Display;
   use ADV\App\UI;
   use ADV\App\Validation;
   use ADV\Core\View;
@@ -71,14 +70,14 @@
       $form->amount('price')->label(_("Price:"))->append(_('per ') . $kit["units"])->focus();
     }
     protected function generateTable() {
-      Display::div_start('table');
+      $this->Ajax->start_div('table');
       if ($this->stock_id) {
         parent::generateTable();
       }
       if ($this->Input->post('_control') == 'stock_id') {
         $this->Ajax->activate('table');
       }
-      Display::div_end();
+      $this->Ajax->end_div();
     }
     /**
      * @return array
@@ -88,7 +87,7 @@
         'Type',
         ['type'=> 'skip'],
         ['type'=> 'skip'],
-        'stock_id',
+        'Stock ID',
         ['type'=> 'skip'],
         'Currency',
         'Price'=> ['type'=> 'amount'],

@@ -9,140 +9,38 @@
    **/
   namespace ADV\App;
 
-  use ADV\Core\Event;
-  use GL_UI;
-  use ADV\Core\DB\DB;
-  use ADV\Core\Table;
-  use ADV\Core\Ajax;
-  use ADV\Core\JS;
+  use ADV\Core\Input\Input;
 
   /**
 
    */
   class Display {
-    protected static $ajax_divs = [];
-    /** @var JS */
-    static $JS;
-    /** @var User */
-    static $User;
-    /** @var Dates */
-    static $Dates;
-    /** @var Ajax */
-    static $Ajax;
-    static $DB;
     /**
      * @static
      *
-     * @param      $label
+     * @param      $string
      * @param bool $clean
      *
+     * @internal param $label
      * @return array|mixed|string
      */
-    public static function access_string($label, $clean = false) {
+    public static function access_string($string, $clean = false) {
+      static $used = [];
       $access = '';
-      $slices = [];
-      if (preg_match('/(.*)&([a-zA-Z0-9])(.*)/', $label, $slices)) {
-        $label  = $clean ? $slices[1] . $slices[2] . $slices[3] : $slices[1] . '<span class="u">' . $slices[2] . '</span>' . $slices[3];
-        $access = " accesskey='" . strtoupper($slices[2]) . "'";
-      }
-      $label = str_replace('&&', '&', $label);
-      return $clean ? $label : array($label, $access);
-    }
-    /**
-     * @static
-     *
-     * @param bool   $cond
-     * @param string $msg
-     */
-    public static function backtrace($cond = true, $msg = '') {
-      if ($cond) {
-        if ($msg) {
-          $str = "<div class='center'><span class='headingtext'>$msg</span></div>\n";
-        } else {
-          $str = '';
-        }
-        $str .= '<table >';
-        $trace = debug_backtrace();
-        foreach ($trace as $trn => $tr) {
-          if (!$trn) {
-            continue;
+      $string = preg_replace_callback(
+        '/&([a-zA-Z0-9])/',
+        function ($match) use (&$access, $clean, &$used) {
+          if ($clean || in_array($match[1], $used)) {
+            return $match[1];
           }
-          $str .= '<tr><td>';
-          $str .= $tr['file'] . ':' . $tr['line'] . ': ';
-          $str .= '</td><td>';
-          if (isset($tr['type'])) {
-            if ($tr['type'] == '::') {
-              $str .= $tr['class'] . '::';
-            } else {
-              if ($tr['type'] == '->') {
-                $str .= '(' . $tr['class'] . ' Object)' . '->';
-              }
-            }
-          }
-          foreach ($tr['args'] as $n => $a) {
-            if (is_object($tr['args'][$n])) {
-              $tr['args'][$n] = "(" . get_class($tr['args'][$n]) . " Object)";
-            }
-            if (is_array($tr['args'][$n])) {
-              $tr['args'][$n] = "(Array[" . count($tr['args'][$n]) . "])";
-            } else {
-              $tr['args'][$n] = "'" . $tr['args'][$n] . "'";
-            }
-          }
-          $str .= $tr['function'] . '(' . implode(',', $tr['args']) . ')</td>';
-          $str .= '</tr>';
-        }
-        $str .= '</table>';
-        Event::error($str);
-      }
-    }
-    /**
-     * @static
-     *
-     * @param int $num
-     */
-    public static function br($num = 1) {
-      for ($i = 0; $i < $num; $i++) {
-        echo "<br>";
-      }
-    }
-    /**
-     * @static
-     *
-     * @param string $id
-     * @param null   $trigger
-     * @param bool   $non_ajax
-     */
-    public static function div_start($id = '', $trigger = null, $non_ajax = false, $echo = true) {
-      if (!static::$JS) {
-        static::$JS = JS::i();
-      }
-      if ($non_ajax) { // div for non-ajax elements
-        array_push(static::$ajax_divs, array($id, null));
-        echo "<div class='js hidden' " . ($id != '' ? "id='$id'" : '') . ">";
-      } else { // ajax ready div
-        array_push(static::$ajax_divs, array($id, $trigger === null ? $id : $trigger));
-        echo "<div " . ($id != '' ? "id='$id'" : '') . ">";
-        ob_start();
-      }
-    }
-    /**
-     * @static
-     */
-    public static function div_end($return_div = false) {
-      if (!static::$Ajax) {
-        static::$Ajax = Ajax::i();
-      }
-      if (count(static::$ajax_divs)) {
-        $div = array_pop(static::$ajax_divs);
-        if ($div[1] !== null) {
-          static::$Ajax->addUpdate($div[1], $div[0], ob_get_flush());
-        }
-        if ($return_div) {
-          return "</div>";
-        }
-        echo "</div>";
-      }
+          $access = " accesskey='" . strtoupper($match[1]) . "'";
+          $used[] = $match[1];
+          return '<span class="u">' . $match[1] . '</span>';
+        },
+        $string
+      );
+
+      return $clean ? $string : array($string, $access);
     }
     /**
      * @static
@@ -155,98 +53,17 @@
     /**
      * @static
      *
-     * @param $type
-     * @param $id
-     * @param $label
-     *
-     * @return bool
-     */
-    public static function is_voided($type, $id, $label) {
-      if (!static::$Dates) {
-        static::$Dates = Dates::i();
-      }
-      $void_entry = Voiding::get($type, $id);
-      if ($void_entry == null) {
-        return false;
-      }
-      Table::start('padded width50');
-      echo "<tr><td class=center><span class='red'>$label</span><br>";
-      echo "<span class='red'>" . _("Date Voided:") . " " . static::$Dates->sqlToDate($void_entry["date_"]) . "</span><br>";
-      if (strlen($void_entry["memo_"]) > 0) {
-        echo "<div class='center'><span class='red'>" . _("Memo:") . " " . $void_entry["memo_"] . "</span></div><br>";
-      }
-      echo "</td></tr>";
-      Table::end(1);
-      return true;
-    }
-    /**
-     * @static
-     *
-     * @param $stock_id
-     */
-    public static function item_heading($stock_id) {
-      if (!static::$DB) {
-        static::$DB = DB::i();
-      }
-      if ($stock_id != "") {
-        $result = static::$DB->query("SELECT description, units FROM stock_master WHERE stock_id=" . static::$DB->escape($stock_id));
-        $myrow  = static::$DB->fetchRow($result);
-        static::heading("$stock_id - $myrow[0]");
-        $units = $myrow[1];
-        static::heading(_("in units of : ") . $units);
-      }
-    }
-    /**
-     * @static
-     *
-     * @param      $url
-     * @param      $label
-     * @param null $id
-     *
-     * @return string
-     */
-    public static function menu_link($url, $label, $id = null) {
-      if (!static::$JS) {
-        static::$JS = JS::i();
-      }
-      $id   = static::$JS->defaultFocus($id);
-      $pars = Display::access_string($label);
-      return "<a href='$url' class='menu_option' id='$id' $pars[1]>$pars[0]</a>";
-    }
-    /**
-     * @static
-     *
-     * @param      $url
-     * @param      $label
-     * @param null $id
-     *
-     * @return string
-     */
-    public static function menu_button($url, $label, $id = null) {
-      if (!static::$JS) {
-        static::$JS = JS::i();
-      }
-      $id   = static::$JS->defaultFocus($id);
-      $pars = Display::access_string($label);
-      return "<a href='$url' class='button  button-large' id='$id' $pars[1]>$pars[0]</a>";
-    }
-    /**
-     * @static
-     *
      * @param        $forward_to
      * @param string $params
      */
     public static function meta_forward($forward_to, $params = "") {
-      if (!static::$Ajax) {
-        static::$Ajax = Ajax::i();
-      }
       echo "<meta http-equiv='Refresh' content='0; url=$forward_to?$params'>\n";
       echo "<div class='center'><br>" . _("You should automatically be forwarded.");
       echo " " . _("If this does not happen") . " <a href='$forward_to?$params'>" . _("click here") . "</a> " . _("to continue") . ".<br><br></div>\n";
       if ($params != '') {
         $params = '?' . $params;
       }
-      static::$Ajax->redirect($forward_to . $params);
+      \ADV\Core\Ajax::_redirect($forward_to . $params);
       exit;
     }
     /**
@@ -258,65 +75,21 @@
      * @param string $extra
      */
     public static function note($msg, $br = 0, $br2 = 0, $extra = "") {
-      for ($i = 0; $i < $br; $i++) {
-        echo "<br>";
+      echo str_repeat("<br>", $br);
+      if ($extra) {
+        $msg = "<span $extra>$msg</span>";
       }
-      if ($extra != "") {
-        echo "<div class='center'><span $extra>$msg</span></div>\n";
-      } else {
-        echo "<div class='center'>$msg</div>\n";
-      }
-      for ($i = 0; $i < $br2; $i++) {
-        echo "<br>";
-      }
+      echo "<div class='center'>$msg</div>\n";
+      str_repeat("<br>", $br2);
     }
-    /**
-     * @static
-     *
-     * @param bool $center
-     * @param bool $no_menu
-     */
-    public static function link_back($center = true, $no_menu = true) {
-    }
-    /**
-     * @static
-     *
-     * @param      $target
-     * @param      $label
-     * @param bool $center
-     * @param bool $button
-     */
-    public static function link_no_params($target, $label, $center = true, $button = false) {
-      if (!static::$JS) {
-        static::$JS = JS::i();
-      }
-      $id   = static::$JS->defaultFocus();
-      $pars = Display::access_string($label);
-      if ($target == '') {
-        $target = $_SERVER['DOCUMENT_URI'];
-      }
-      if ($center) {
-        echo "<br><div class='center'>";
-      }
-      if ($button) {
-        $pars[1] .= " class='button'";
-      }
-      echo "<a href='$target' id='$id' $pars[1] >$pars[0]</a>\n";
-      if ($center) {
-        echo "</div>";
-      }
-    }
-    /**
-     * @static
-     *
-     * @param $target
-     * @param $label
-     */
-    public static function link_no_params_td($target, $label) {
-      echo "<td>";
-      Display::link_no_params($target, $label);
-      echo "</td>\n";
-    }
+    public static function link_button($label,$url,$icon=false){
+      if (User::graphic_links() && $icon) {
+        $label = Forms::setIcon($icon, $label);
+            }
+            $href = '/' . ltrim($url, '/');
+            $href = (Input::_request('frame')) ? "javascript:window.parent.location='$href'" : $href;
+            return '<a href="' . e($href) . '" class="button">' . $label . "</a>";
+  }
     /**
      * @static
      *
@@ -327,98 +100,15 @@
      * @param string $params
      */
     public static function link_params($target, $label, $link_params = '', $center = true, $params = '') {
-      if (!static::$JS) {
-        static::$JS = JS::i();
-      }
-      $id   = static::$JS->defaultFocus();
       $pars = Display::access_string($label);
-      if ($target == '') {
+      if (!$target) {
         $target = $_SERVER['DOCUMENT_URI'];
       }
+      $link = "<a  href='$target?$link_params' $params $pars[1] >$pars[0]</a>\n";
       if ($center) {
-        echo "<br><div class='center'>";
+        $link = "<br><div class='center'>$link</div>";
       }
-      echo "<a id='$id' href='$target?$link_params' $params $pars[1] >$pars[0]</a>\n";
-      if ($center) {
-        echo "</div>";
-      }
-    }
-    /**
-     * @static
-     *
-     * @param        $target
-     * @param        $label
-     * @param string $link_params
-     * @param bool   $center
-     * @param string $params
-     */
-    public static function link_button($target, $label, $link_params = '', $center = true, $params = '') {
-      if (!static::$JS) {
-        static::$JS = JS::i();
-      }
-      $id   = static::$JS->defaultFocus();
-      $pars = Display::access_string($label);
-      if ($target == '') {
-        $target = $_SERVER['DOCUMENT_URI'];
-      }
-      if ($center) {
-        echo "<br><div class='center'>";
-      }
-      echo "<a id='$id' class='button' href='$target?$link_params' $params $pars[1] >$pars[0]</a>\n";
-      if ($center) {
-        echo "</div>";
-      }
-    }
-    /**
-     * @static
-     *
-     * @param        $target
-     * @param        $label
-     * @param        $link_params
-     * @param string $params
-     */
-    public static function link_params_td($target, $label, $link_params, $params = '') {
-      echo "<td>";
-      Display::link_params($target, $label, $link_params, false, $params);
-      echo "</td>\n";
-    }
-    /**
-     * @static
-     *
-     * @param      $target
-     * @param      $label
-     * @param      $params
-     * @param bool $center
-     * @param bool $nobr
-     */
-    public static function link_params_separate($target, $label, $params, $center = false, $nobr = false) {
-      if (!static::$JS) {
-        static::$JS = JS::i();
-      }
-      $id   = static::$JS->defaultFocus();
-      $pars = Display::access_string($label);
-      if (!$nobr) {
-        echo "<br>";
-      }
-      if ($center) {
-        echo "<div class='center'>";
-      }
-      echo "<a target='_blank' id='$id' href='$target?$params' $pars[1]>$pars[0]</a>\n";
-      if ($center) {
-        echo "</div>";
-      }
-    }
-    /**
-     * @static
-     *
-     * @param $target
-     * @param $label
-     * @param $params
-     */
-    public static function link_params_separate_td($target, $label, $params) {
-      echo "<td>";
-      Display::link_params_separate($target, $label, $params);
-      echo "</td>\n";
+      echo $link;
     }
     /**
      * @static
@@ -428,27 +118,10 @@
      * @param null $id
      */
     public static function submenu_option($title, $url, $id = null) {
-      Display::note(Display::menu_button(ROOT_URL . ltrim($url, '/'), $title, $id), 1, 0);
-    }
-    /**
-     * @static
-     *
-     * @param      $title
-     * @param      $url
-     * @param null $id*/
-    public static function submenu_button($title, $url, $id = null) {
-      Display::note(Display::menu_button(ROOT_URL . ltrim($url, '/'), $title, $id), 0, 1);
-    }
-    /**
-     * @static
-     *
-     * @param      $title
-     * @param      $type
-     * @param      $number
-     * @param null $id
-     */
-    public static function submenu_view($title, $type, $number, $id = null) {
-      Display::note(GL_UI::viewTrans($type, $number, $title, false, 'menu_option button', $id), 0, 1, false);
+      $url    = ROOT_URL . ltrim($url, '/');
+      $pars   = Display::access_string($title);
+      $button = "<a href='$url' class='button  button-large' id='$id' $pars[1]>$pars[0]</a>";
+      echo "<br><div class='center'>$button</div>";
     }
     /**
      * @static
@@ -461,7 +134,7 @@
      * @param int      $extra
      */
     public static function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 0) {
-      Display::note(Reporting::print_doc_link($number, $title, true, $type, false, 'button printlink', $id, $email, $extra), 1, 0);
+      Reporting::print_doc_link($number, $title, true, $type, false, 'button printlink', $id, $email, $extra);
     }
     /**
      * @static
@@ -475,21 +148,19 @@
      * @return string
      */
     public static function viewer_link($label, $url = '', $class = '', $id = '', $icon = null) {
-      if (!static::$User) {
-        static::$User = User::i();
-      }
-      if ($url != '') {
+
+      if ($url) {
         $class .= " openWindow";
       }
-      if ($class != '') {
+      if ($class) {
         $class = " class='$class'";
       }
-      if ($id != '') {
+      if ($id) {
         $class = " id='$id'";
       }
-      if ($url != "") {
+      if ($url) {
         $pars = Display::access_string($label);
-        if (static::$User->_graphic_links() && $icon) {
+        if (User::graphic_links() && $icon) {
           $pars[0] = Forms::setIcon($icon, $pars[0]);
         }
         $preview_str = "<a target='_blank' $class $id href='/" . e(ltrim($url, '/')) . "' $pars[1]>$pars[0]</a>";
@@ -497,7 +168,5 @@
         $preview_str = $label;
       }
       return $preview_str;
-    }
-    private static function i() {
     }
   }

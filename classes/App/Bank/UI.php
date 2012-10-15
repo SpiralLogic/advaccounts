@@ -97,14 +97,18 @@
      * @param null $selected_id
      * @param bool $submit_on_change
      */
-    public static function cash_accounts_row($label, $name, $selected_id = null, $submit_on_change = false,$raw=false ) {
+    public static function cash_accounts_row($label, $name, $selected_id = null, $submit_on_change = false, $raw = false) {
       $sql = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
  FROM bank_accounts
  WHERE bank_accounts.account_type=3";
       if ($label != null) {
-      if (!$raw)  echo "<tr><td class='label'>$label</td>\n";
+        if (!$raw) {
+          echo "<tr><td class='label'>$label</td>\n";
+        }
       }
-      if (!$raw)echo "<td>";
+      if (!$raw) {
+        echo "<td>";
+      }
       $select = Forms::selectBox(
         $name,
         $selected_id,
@@ -117,7 +121,9 @@
              'async'         => true
         )
       );
-      if ($raw) return $select;
+      if ($raw) {
+        return $select;
+      }
       echo $select;
       echo "</td></tr>\n";
     }
@@ -152,9 +158,9 @@
           return null;
       }
       if ($raw) {
-        return "gl/view/$viewer?trans_no=$trans_no";
+        return "banking/view/$viewer?trans_no=$trans_no";
       }
-      return Display::viewer_link($label, "gl/view/$viewer?trans_no=$trans_no", $class, $id, $icon);
+      return Display::viewer_link($label, "banking/view/$viewer?trans_no=$trans_no", $class, $id, $icon);
     }
   }
 

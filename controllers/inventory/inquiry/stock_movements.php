@@ -31,14 +31,15 @@
   Session::_setGlobal('stock_id', $_POST['stock_id']);
   $before_date = Dates::_dateToSql($_POST['BeforeDate']);
   $after_date  = Dates::_dateToSql($_POST['AfterDate']);
-  $sql         = "SELECT type, trans_no, tran_date, person_id, qty, reference
+  $sql
+               = "SELECT type, trans_no, tran_date, person_id, qty, reference
     FROM stock_moves
     WHERE loc_code=" . DB::_escape($_POST['StockLocation']) . "
     AND tran_date >= '" . $after_date . "'
     AND tran_date <= '" . $before_date . "'
     AND stock_id = " . DB::_escape($_POST['stock_id']) . " ORDER BY tran_date,trans_id";
   $result      = DB::_query($sql, "could not query stock moves");
-  Display::div_start('doc_tbl');
+  Ajax::_start_div('doc_tbl');
   Table::start('padded grid');
   $th = array(
     _("Type"),
@@ -128,6 +129,6 @@
   Cell::qty($after_qty, false, $dec);
   echo '</tr>';
   Table::end(1);
-  Display::div_end();
+  Ajax::_end_div();
   Page::end();
 

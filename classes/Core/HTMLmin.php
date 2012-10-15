@@ -14,8 +14,7 @@
    * @package Minify
    * @author  Stephen Clay <steve@mrclay.org>
    */
-  class HTMLmin
-  {
+  class HTMLmin {
     /**
      * "Minify" an HTML page
      *
@@ -47,7 +46,7 @@
      * 'xhtml' : (optional boolean) should content be treated as XHTML1.0? If
      * unset, minify will sniff for an XHTML doctype.
      *
-     * @return null
+     * @return \ADV\Core\HTMLmin
      */
     public function __construct($html, $options = array()) {
       $this->_html = str_replace("\r\n", "\n", trim($html));
@@ -144,9 +143,19 @@
 
       return $this->_html;
     }
+    /**
+     * @param $m
+     *
+     * @return string
+     */
     protected function _commentCB($m) {
       return (0 === strpos($m[1], '[') || false !== strpos($m[1], '<![')) ? $m[0] : '';
     }
+    /**
+     * @param $content
+     *
+     * @return string
+     */
     protected function _reservePlace($content) {
       $placeholder                       = '%' . $this->_replacementHash . count($this->_placeholders) . '%';
       $this->_placeholders[$placeholder] = $content;
@@ -158,12 +167,27 @@
     protected $_placeholders = array();
     protected $_cssMinifier = null;
     protected $_jsMinifier = null;
+    /**
+     * @param $m
+     *
+     * @return string
+     */
     protected function _removePreCB($m) {
       return $this->_reservePlace("<pre{$m[1]}");
     }
+    /**
+     * @param $m
+     *
+     * @return string
+     */
     protected function _removeTextareaCB($m) {
       return $this->_reservePlace("<textarea{$m[1]}");
     }
+    /**
+     * @param $m
+     *
+     * @return string
+     */
     protected function _removeStyleCB($m) {
       $openStyle = "<style{$m[1]}";
       $css       = $m[2];
@@ -181,6 +205,11 @@
         $this->_needsCdata($css) ? "{$openStyle}/*<![CDATA[*/{$css}/*]]>*/</style>" : "{$openStyle}{$css}</style>"
       );
     }
+    /**
+     * @param $m
+     *
+     * @return string
+     */
     protected function _removeScriptCB($m) {
       $openScript = "<script{$m[2]}";
       $js         = $m[3];
@@ -203,9 +232,19 @@
         $this->_needsCdata($js) ? "{$ws1}{$openScript}/*<![CDATA[*/{$js}/*]]>*/</script>{$ws2}" : "{$ws1}{$openScript}{$js}</script>{$ws2}"
       );
     }
+    /**
+     * @param $str
+     *
+     * @return mixed
+     */
     protected function _removeCdata($str) {
       return (false !== strpos($str, '<![CDATA[')) ? str_replace(array('<![CDATA[', ']]>'), '', $str) : $str;
     }
+    /**
+     * @param $str
+     *
+     * @return bool
+     */
     protected function _needsCdata($str) {
       return ($this->_isXhtml && preg_match('/(?:[<&]|\\-\\-|\\]\\]>)/', $str));
     }

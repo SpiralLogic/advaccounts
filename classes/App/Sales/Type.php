@@ -8,7 +8,6 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Sales {
-
     use ADV\Core\DB\DB;
     use ADV\App\Validation;
 
@@ -34,7 +33,6 @@
           return $this->status(false, 'Factor must be a number bigger than 0', 'factor');
         }
         $this->factor *= .01;
-
         return true;
       }
       /**
@@ -47,7 +45,6 @@
         if (!$inactive) {
           $q->andWhere('inactive=', 0);
         }
-
         return $q->fetch()->all();
       }
     }
@@ -90,7 +87,6 @@
         if (!$all) {
           $sql .= " WHERE !inactive";
         }
-
         return DB::_query($sql, "could not get all sales types");
       }
       /**
@@ -103,7 +99,6 @@
       public static function get($id) {
         $sql    = "SELECT * FROM sales_types WHERE id=" . DB::_escape($id);
         $result = DB::_query($sql, "could not get sales type");
-
         return DB::_fetch($result);
       }
       /**
@@ -117,7 +112,6 @@
         $sql    = "SELECT sales_type FROM sales_types WHERE id=" . DB::_escape($id);
         $result = DB::_query($sql, "could not get sales type");
         $row    = DB::_fetchRow($result);
-
         return $row[0];
       }
       /**
@@ -143,7 +137,6 @@
        */
       public static function  select($name, $selected_id = null, $submit_on_change = false, $special_option = false) {
         $sql = "SELECT id, sales_type, inactive FROM sales_types";
-
         return Forms::selectBox(
           $name,
           $selected_id,
@@ -197,16 +190,13 @@
         if (strlen($_POST['sales_type']) == 0) {
           Event::error(_("The sales type description cannot be empty."));
           JS::_setFocus('sales_type');
-
           return false;
         }
         if (!Validation::post_num('factor', 0)) {
           Event::error(_("Calculation factor must be valid positive number."));
           JS::_setFocus('factor');
-
           return false;
         }
-
         return true;
       }
     }

@@ -1,7 +1,6 @@
 <?php
   namespace ADV\Controllers\Purchases;
 
-  use ADV\App\Page;
   use ADV\Core\Num;
   use GL_QuickEntry;
   use ADV\Core\Config;
@@ -9,7 +8,6 @@
   use ADV\App\Ref;
   use Inv_Movement;
   use ADV\App\Dates;
-  use ADV\App\User;
   use Tax_Type;
   use ADV\App\Validation;
   use GL_UI;
@@ -55,9 +53,7 @@
       if (isset($_POST['AddGLCodeToTrans'])) {
         $this->addGlCodesToTrans();
       }
-      if (isset($_POST['PostInvoice'])) {
-        $this->postInvoice();
-      }
+
       $id = Forms::findPostPrefix('grn_item_id');
       if ($id != -1) {
         $this->commitItemData($id);
@@ -76,8 +72,8 @@
     }
     protected function index() {
       $this->Page->init(_($help_context = "Enter Supplier Invoice"), SA_SUPPLIERINVOICE);
-      if (isset($_GET[ADDED_ID])) {
-        $this->pageComplete();
+      if (isset($_POST['PostInvoice'])) {
+        $this->postInvoice();
       }
       Forms::start();
       Purch_Invoice::header($this->trans);
@@ -89,33 +85,34 @@
       } else {
         Purch_GRN::display_items($this->trans, 1);
         Purch_GLItem::display_items($this->trans, 1);
-        Display::div_start('inv_tot');
+        $this->Ajax->start_div('inv_tot');
         Purch_Invoice::totals($this->trans);
-        Display::div_end();
+        $this->Ajax->end_div();
       }
       if ($this->Input->post('AddGLCodeToTrans')) {
         $this->Ajax->activate('inv_tot');
       }
-      Display::br();
+      echo "<br>";
       Forms::submitCenterBegin('Cancel', _("Cancel Invoice"));
       Forms::submitCenterEnd('PostInvoice', _("Enter Invoice"), '', 'default');
-      Display::br();
+      echo "<br>";
       Forms::end();
       $this->addJS();
       $this->Page->end_page(true);
     }
-    protected function pageComplete() {
-      $invoice_no = $_GET[ADDED_ID];
+    protected function pageComplete($invoice_no) {
       $trans_type = ST_SUPPINVOICE;
       echo "<div class='center'>";
       Event::success(_("Supplier " . $_SESSION['history'][ST_SUPPINVOICE] . "invoice has been processed."));
-      Display::note(GL_UI::viewTrans($trans_type, $invoice_no, _("View this Invoice")));
-      Display::link_no_params("/purchases/search/orders", _("Purchase Order Maintainants"));
+      GL_UI::viewTrans($trans_type, $invoice_no, _("View this Invoice"));
+      Display::link_params("/purchases/search/orders", _("Purchase Order Maintainants"));
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another Invoice"), "New=1");
-      Display::link_no_params("/purchases/payment", _("Entry supplier &payment for this invoice"));
-      Display::link_no_params("/purchases/allocations/supplier_allocation_main.php", _("Allocate a payment to this invoice."));
-      Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
+      Display::link_params("/purchases/payment", _("Entry supplier &payment for this invoice"));
+      Display::link_params("/purchases/allocations/supplier_allocation_main.php", _("Allocate a payment to this invoice."));
+      GL_UI::view($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice"));
       Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
+
+      $this->Ajax->activate('_page_body');
       $this->Page->endExit();
     }
     protected function addGlCodesToTrans() {
@@ -249,7 +246,8 @@
       $this->Session->setGlobal('creditor', $this->creditor_id, '');
       $this->trans->clear_items();
       Creditor_Trans::killInstance();
-      Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$invoice_no");
+
+      $this->pageComplete($invoice_no);
     }
     //	GL postings are often entered in the same form to two accounts
     // so fileds are cleared only on user demand.

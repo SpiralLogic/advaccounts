@@ -14,8 +14,7 @@
   /**
 
    */
-  class Sales_UI
-  {
+  class Sales_UI {
     /**
      * @static
      *
@@ -27,7 +26,6 @@
      */
     public static function  persons($name, $selected_id = null, $spec_opt = false) {
       $sql = "SELECT salesman_code, salesman_name, inactive FROM salesman";
-
       return Forms::selectBox(
         $name,
         $selected_id,
@@ -50,7 +48,6 @@
      * @param bool $spec_opt
      */
     public static function  persons_cells($label, $name, $selected_id = null, $spec_opt = false) {
-
       if ($label != null) {
         echo "<td class='label' > <label for=\"$name\"> $label</label></td>";
       }
@@ -81,7 +78,6 @@
      */
     public static function  areas($name, $selected_id = null) {
       $sql = "SELECT area_code, description, inactive FROM areas";
-
       return Forms::selectBox($name, $selected_id, $sql, 'area_code', 'description', []);
     }
     /**
@@ -122,7 +118,6 @@
      */
     public static function  groups($name, $selected_id = null, $special_option = false) {
       $sql = "SELECT id, description, inactive FROM groups";
-
       return Forms::selectBox(
         $name,
         $selected_id,
@@ -175,7 +170,6 @@
      */
     public static function  shippers($name, $selected_id = null) {
       $sql = "SELECT shipper_id, shipper_name, inactive FROM shippers";
-
       return Forms::selectBox($name, $selected_id, $sql, 'shipper_id', 'shipper_name', array('order' => array('shipper_name')));
     }
     /**
@@ -249,11 +243,9 @@
      * @return string
      */
     public static function templates($name, $selected_id = null, $special_option = false) {
-      $sql
-        = "SELECT sorder.order_no,	Sum(line.unit_price*line.quantity*(1-line.discount_percent)) AS OrderValue
+      $sql = "SELECT sorder.order_no,	Sum(line.unit_price*line.quantity*(1-line.discount_percent)) AS OrderValue
                 FROM sales_orders as sorder, sales_order_details as line
                 WHERE sorder.order_no = line.order_no AND sorder.type = 1 GROUP BY line.order_no";
-
       return Forms::selectBox(
         $name,
         $selected_id,
@@ -343,19 +335,16 @@
             $opts
           )
         );
-
         return null;
       }
       $where = ($type == 'local') ? " AND !i.is_foreign" : ' ';
       if ($type == 'kits') {
         $where .= " AND !i.is_foreign AND i.item_code!=i.stock_id ";
       }
-      $sql
-        = "SELECT i.item_code, i.description, c.description, count(*)>1 as kit,
+      $sql = "SELECT i.item_code, i.description, c.description, count(*)>1 as kit,
                      i.inactive, if(count(*)>1, '0', s.editable) as editable, s.long_description
                     FROM stock_master s, item_codes i LEFT JOIN stock_category c ON i.category_id=c.category_id
                     WHERE i.stock_id=s.stock_id $where AND !i.inactive AND !s.inactive AND !s.no_sale GROUP BY i.item_code";
-
       return Forms::selectBox(
         $name,
         $selected_id,

@@ -7,35 +7,20 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Purch_GLCode
-  {
-    /**
-     * @var
-     */
+  class Purch_GLCode {
+/** @var */
     public $counter;
-    /**
-     * @var
-     */
+/** @var */
     public $gl_code;
-    /**
-     * @var
-     */
+/** @var */
     public $gl_act_name;
-    /**
-     * @var
-     */
+/** @var */
     public $gl_dim;
-    /**
-     * @var
-     */
+/** @var */
     public $gl_dim2;
-    /**
-     * @var
-     */
+/** @var */
     public $amount;
-    /**
-     * @var
-     */
+/** @var */
     public $memo_;
     /**
      * @param $counter
@@ -46,8 +31,7 @@
      * @param $amount
      * @param $memo_
      */
-    public function __construct($counter, $gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_)
-    {
+    public function __construct($counter, $gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_) {
       /* Constructor function to add a new gl_codes object with passed params */
       $this->counter     = $counter;
       $this->gl_code     = $gl_code;

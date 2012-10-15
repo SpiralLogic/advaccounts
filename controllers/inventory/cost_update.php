@@ -27,7 +27,13 @@
       $should_update = false;
     }
     if ($should_update) {
-      $update_no = Item_Price::update_cost($_POST['stock_id'], Validation::input_num('material_cost'), Validation::input_num('labour_cost'), Validation::input_num('overhead_cost'), $old_cost);
+      $update_no = Item_Price::update_cost(
+        $_POST['stock_id'],
+        Validation::input_num('material_cost'),
+        Validation::input_num('labour_cost'),
+        Validation::input_num('overhead_cost'),
+        $old_cost
+      );
       Event::success(_("Cost has been updated."));
       if ($update_no > 0) {
         Display::note(GL_UI::view(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
@@ -45,14 +51,15 @@
   echo Item_UI::costable('stock_id', $_POST['stock_id'], false, true);
   echo "</div><hr>";
   Session::_setGlobal('stock_id', $_POST['stock_id']);
-  $sql    = "SELECT description, units, material_cost, labour_cost,
+  $sql
+          = "SELECT description, units, material_cost, labour_cost,
     overhead_cost, mb_flag
     FROM stock_master
     WHERE stock_id=" . DB::_escape($_POST['stock_id']) . "
     GROUP BY description, units, material_cost, labour_cost, overhead_cost, mb_flag";
   $result = DB::_query($sql, "The cost details for the item could not be retrieved");
   $myrow  = DB::_fetch($result);
-  Display::div_start('cost_table');
+  Ajax::_start_div('cost_table');
   Forms::hidden("OldMaterialCost", $myrow["material_cost"]);
   Forms::hidden("OldLabourCost", $myrow["labour_cost"]);
   Forms::hidden("OldOverheadCost", $myrow["overhead_cost"]);
@@ -70,7 +77,7 @@
     Forms::hidden("overhead_cost", 0);
   }
   Table::end(1);
-  Display::div_end();
+  Ajax::_end_div();
   Forms::submitCenter('UpdateData', _("Update"), true, false, 'default');
   Forms::end();
   Page::end();

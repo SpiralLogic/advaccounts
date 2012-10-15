@@ -180,7 +180,7 @@
     exit();
   }
   Display::heading(_("Delivery Items"));
-  Display::div_start('Items');
+  Ajax::_start_div('Items');
   Table::start('padded grid width90');
   $new = $order->trans_no == 0;
   $th  = array(
@@ -255,7 +255,7 @@
   Sales_UI::policy_row(_("Action For Balance"), "bo_policy", null);
   Forms::textareaRow(_("Memo"), 'Comments', null, 50, 4);
   Table::end(1);
-  Display::div_end();
+  Ajax::_end_div();
   Forms::submitCenterBegin('Update', _("Update"), _('Refresh document page'), true);
   Forms::submitCenterEnd('process_delivery', _("Process Dispatch"), _('Check entered data and save document'), 'default');
   Forms::end();

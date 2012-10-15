@@ -12,7 +12,6 @@
 
   use ADV\Core\Status;
   use DB_Pager;
-  use ADV\App\Page;
   use ADV\Core\Input\Input;
   use ADV\App\Form\Form;
   use ADV\Core\View;
@@ -32,7 +31,6 @@
         switch ($this->action) {
           case DELETE:
             $this->object->load($id);
-            //the link to delete a selected record was clicked instead of the submit button
             $this->object->delete();
             $status = $this->object->getStatus();
             break;
@@ -96,7 +94,7 @@
       }
       $cols       = $this->generateTableCols();
       $pager_name = end(explode('\\', ltrim(get_called_class(), '\\'))) . '_table';
-      // DB_Pager::kill($pager_name);
+      //    DB_Pager::kill($pager_name);
       $table        = DB_Pager::newPager($pager_name, $this->getTableRows($pager_name), $cols);
       $table->width = $this->tableWidth;
       $table->display();

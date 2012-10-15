@@ -79,11 +79,11 @@
   /**
 
    */
-  define('THEME_PATH', ROOT_URL . 'themes/');
+  define('PATH_THEME', ROOT_URL . 'themes/');
   /**
 
    */
-  define("BACKUP_PATH", PATH_COMPANY . 'backup/');
+  define("PATH_BACKUP", PATH_COMPANY . 'backup/');
   // ACCESS LEVELS
   /**
 
@@ -969,7 +969,7 @@
   /**
 
    */
-  define('REPORTS_PATH', '../reporting');
+  define('PATH_REPORTS', '../reporting');
   // Special Locations
   /**
 

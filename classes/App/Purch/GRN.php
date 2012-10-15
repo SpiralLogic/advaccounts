@@ -551,13 +551,13 @@
             Cell::qty($myrow["qty_recd"], false, $dec);
             Cell::qty($myrow["quantity_inv"], false, $dec);
             if ($creditor_trans->is_invoice) {
-              Forms::qtyCells(null, 'this_quantity_inv' . $n, Num::_format($myrow["qty_recd"] - $myrow["quantity_inv"], $dec), null, null, $dec);
+              Forms::qtyCellsSmall(null, 'this_quantity_inv' . $n, Num::_format($myrow["qty_recd"] - $myrow["quantity_inv"], $dec), null, null, $dec);
             } else {
-              Forms::qtyCells(null, 'this_quantityCredited' . $n, Num::_format(max($myrow["quantity_inv"], 0), $dec), null, null, $dec);
+              Forms::qtyCellsSmall(null, 'this_quantityCredited' . $n, Num::_format(max($myrow["quantity_inv"], 0), $dec), null, null, $dec);
             }
             $dec2 = User::price_dec();
-            Forms::amountCells(null, 'ChgPrice' . $n, Num::_priceFormat($myrow["unit_price"]), null, ['$'], $dec2, 'ChgPriceCalc' . $n);
-            Forms::amountCells(null, 'ExpPrice' . $n, Num::_priceFormat($myrow["unit_price"]), null, ['$'], $dec2, 'ExpPriceCalc' . $n);
+            Forms::amountCellsSmall(null, 'ChgPrice' . $n, Num::_priceFormat($myrow["unit_price"]), null, ['$'], $dec2, 'ChgPriceCalc' . $n);
+            Forms::amountCellsSmall(null, 'ExpPrice' . $n, Num::_priceFormat($myrow["unit_price"]), null, ['$'], $dec2, 'ExpPriceCalc' . $n);
             Forms::amountCellsSmall(null, 'ChgDiscount' . $n, Num::_percentFormat($myrow['discount'] * 100), null, '%', User::percent_dec());
             Cell::amount(
               Num::_priceDecimal(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2),
@@ -566,22 +566,22 @@
               'Ea' . $n
             );
             if ($creditor_trans->is_invoice) {
-              Forms::amountCells(
+              Forms::amountCellsSmall(
                 null,
                 'ChgTotal' . $n,
                 Num::_priceDecimal($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount']), $dec2),
                 null,
-                null,
+                ['$'],
                 $dec2,
                 'ChgTotalCalc' . $n
               );
             } else {
-              Forms::amountCells(
+              Forms::amountCellsSmall(
                 null,
                 'ChgTotal' . $n,
                 Num::_priceDecimal($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount']), $dec2),
                 null,
-                null,
+                ['$'],
                 $dec2,
                 'ChgTotalCalc' . $n
               );
@@ -606,7 +606,9 @@
                 )
               );
             }
-            Display::link_params_td("/purchases/order", _("Modify"), "ModifyOrder=" . $myrow["purch_order_no"], ' class="button"');
+            echo "<td>";
+            Display::link_params("/purchases/order", _("Modify"), "ModifyOrder=" . $myrow["purch_order_no"], ' class="button"');
+            echo "</td>\n";
             echo '<tr>';
           }
         }
@@ -675,7 +677,7 @@
         echo '</tr>';
       }
       Table::endOuter(0, false);
-      Display::div_start('grn_items');
+      Ajax::_start_div('grn_items');
       Table::start('standard grid width90');
       if ($mode == 1) {
         $th = array(
@@ -779,7 +781,7 @@
         echo '</tr>';
       }
       Table::end(1);
-      Display::div_end();
+      Ajax::_end_div();
       return $total_grn_value;
     }
   }

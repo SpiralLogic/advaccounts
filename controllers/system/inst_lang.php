@@ -26,7 +26,7 @@
     }
   }
   display_languages();
-  Display::link_no_params($_SERVER['DOCUMENT_URI'], _("Create a new language"));
+  Display::link_params($_SERVER['DOCUMENT_URI'], _("Create a new language"));
   display_language_edit($selected_id);
   Page::end();
   /**
