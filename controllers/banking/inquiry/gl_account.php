@@ -28,28 +28,29 @@
   //
   if (Input::_post('Show')) {
     Ajax::_activate('trans_tbl');
+    if (isset($_GET["account"])) {
+      $_POST["account"] = $_GET["account"];
+    }
+    if (isset($_GET["TransFromDate"])) {
+      //  $_POST["TransFromDate"] = $_GET["TransFromDate"];
+    }
+    if (isset($_GET["TransToDate"])) {
+      //   $_POST["TransToDate"] = $_GET["TransToDate"];
+    }
+    if (isset($_GET["Dimension"])) {
+      $_POST["Dimension"] = $_GET["Dimension"];
+    }
+    if (isset($_GET["Dimension2"])) {
+      $_POST["Dimension2"] = $_GET["Dimension2"];
+    }
+    if (isset($_GET["amount_max"])) {
+      $_POST["amount_max"] = $_GET["amount_max"];
+    }
+    if (isset($_GET["amount_min"])) {
+      $_POST["amount_min"] = $_GET["amount_min"];
+    }
   }
-  if (isset($_GET["account"])) {
-    $_POST["account"] = $_GET["account"];
-  }
-  if (isset($_GET["TransFromDate"])) {
-    //  $_POST["TransFromDate"] = $_GET["TransFromDate"];
-  }
-  if (isset($_GET["TransToDate"])) {
-    //   $_POST["TransToDate"] = $_GET["TransToDate"];
-  }
-  if (isset($_GET["Dimension"])) {
-    $_POST["Dimension"] = $_GET["Dimension"];
-  }
-  if (isset($_GET["Dimension2"])) {
-    $_POST["Dimension2"] = $_GET["Dimension2"];
-  }
-  if (isset($_GET["amount_max"])) {
-    $_POST["amount_max"] = $_GET["amount_max"];
-  }
-  if (isset($_GET["amount_min"])) {
-    $_POST["amount_min"] = $_GET["amount_min"];
-  }
+
   Forms::start();
   Ajax::_start_div('trans_tbl');
   $dim = DB_Company::get_pref('use_dimension');
@@ -74,11 +75,12 @@
   echo '</tr>';
   Table::end();
   echo '<hr>';
-  Ajax::_end_div();
-  if (Input::_post('Show') || Input::_post('account')) {
-    show_results();
-  }
   Forms::end();
+
+  Ajax::_end_div();
+  //if (Input::_post('Show') || Input::_post('account')) {
+  show_results();
+  //}
   Page::end();
 
   function show_results() {
@@ -86,15 +88,27 @@
       $_POST["account"] = null;
     }
     $act_name = $_POST["account"] ? GL_Account::get_name($_POST["account"]) : "";
-    $sql      = GL_Trans::getSQL('2011-01-01', '2012-01-01', -1, $_POST["account"], null, Validation::input_num('amount_min'), Validation::input_num('amount_max'));
+    if (Input::_post('Show')) {
+      $sql = GL_Trans::getSQL(
+        $_POST['TransFromDate'],
+        $_POST['TransToDate'],
+        -1,
+        $_POST["account"],
+        null,
+        Validation::input_num('amount_min'),
+        Validation::input_num('amount_max')
+      );
+    } else {
+      $sql = null;
+    }
     if ($_POST["account"] != null) {
       Display::heading($_POST["account"] . "&nbsp;&nbsp;&nbsp;" . $act_name);
     }
     // Only show balances if an account is specified AND we're not filtering by amounts
     $cols = [ //
-      _("Type")       => ['fun'=> 'formatType'], //
+      _("Type")       => ['ord'=> '', 'fun'=> 'formatType'], //
       _("#")          => ['fun'=> 'formatView'], //
-      _("Date")       => ['type'=> 'date'],
+      _("Date")       => ['ord'=> '', 'type'=> 'date'],
       _("Account")    => ['ord'=> '', 'fun'=> 'formatAccount'],
       _("Person/Item")=> ['fun'=> 'formatPerson'], //
       _("Debit")      => ['fun'=> 'formatDebit'], //
