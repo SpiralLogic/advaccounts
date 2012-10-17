@@ -115,7 +115,6 @@
       $dic->offsetSet(
         'Input',
         function () {
-
           array_walk(
             $_POST,
             function (&$v) {
@@ -162,7 +161,6 @@
       $dic->offsetSet(
         'DB',
         function (\ADV\Core\DIC $c, $name = 'default') {
-
           $config   = $c->offsetGet('Config');
           $dbconfig = $config->get('db.' . $name);
           $cache    = $c->offsetGet('Cache');
@@ -234,9 +232,8 @@
           return $session;
         }
       )->offsetGet(null);
-
-      $this->User  = $dic['User'];
-      $this->Input = $dic['Input'];
+      $this->User    = $dic['User'];
+      $this->Input   = $dic['Input'];
       $this->JS->footerFile($this->Config->get('assets.footer'));
       $this->menu = new Menu(_("Main Menu"));
       $this->menu->addItem(_("Main Menu"), "index.php");
@@ -398,7 +395,8 @@
           );
         }
         try {
-          if (!$this->User->login($company, $_POST["user_name"], $_POST["password"])) {
+          $password = \AesCtr::decrypt(base64_decode($_POST['password']), $this->Session->getFlash('password_iv'), 256);
+          if (!$this->User->login($company, $_POST["user_name"], $password)) {
             // Incorrect password
             $this->loginFail();
           }
@@ -416,7 +414,8 @@
       $_SESSION['timeout'] = array(
         'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI'])
       );
-      require(ROOT_DOC . "controllers/access/login.php");
+      $dic                 = \ADV\Core\DIC::i();
+      (new \ADV\Controllers\Access\Login($this->Session, $this->User, $this->Ajax, $this->JS, $dic['Input'], $dic->offsetGet('DB', 'default')))->run();
       if ($this->Ajax->inAjax()) {
         $this->Ajax->redirect($_SERVER['DOCUMENT_URI']);
       } elseif (REQUEST_AJAX) {

@@ -165,13 +165,12 @@
      */
     public function __construct($id = null) {
       static::$staticDB  = \ADV\Core\DB\DB::i();
-      $this->gst_no      = &$this->tax_id;
-      $this->contact     = &$this->contact_name;
-      $this->address     = &$this->post_address;
-      $this->phone2      = &$this->supp_phone;
-      $this->supp_ref    = &$this->name;
       $this->creditor_id =& $this->id;
       parent::__construct($id);
+      $this->gst_no  = &$this->tax_id;
+      $this->contact = &$this->contact_name;
+      $this->address = &$this->post_address;
+      $this->phone2  = &$this->supp_phone;
     }
     /**
      * @return array
@@ -185,16 +184,14 @@
      * @return array|bool|int|null|void
      */
     public function save($changes = null) {
+      $this->supp_ref = $this->name;
       if (!parent::save($changes)) {
         $this->setDefaults();
         return false;
       }
-      $contacts       = $this->contacts;
-      $this->contacts = [];
-      foreach ($contacts as $contact) {
-        $wasnew = $contact->save(array('parent_id' => (int) $this->id));
-        if ($wasnew) {
-          $this->contacts[] = $contact;
+      foreach ($this->contacts as $contact) {
+        if ($contact instanceof Contact) {
+          $contact->save(array('parent_id' => $this->id));
         }
       }
       $this->setDefaults();
@@ -225,9 +222,8 @@
      * @return void
      */
     protected function setDefaults() {
+      $this->contacts[]     = new Contact(CT_SUPPLIER, array('parent_id' => $this->id));
       $this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
-
-      $this->contacts[] = new Contact(CT_SUPPLIER, array('parent_id' => $this->id));
     }
     /**
      * @return bool
@@ -282,7 +278,8 @@
      * @return void
      */
     protected function _getContacts() {
-      static::$staticDB->_select()->from('contacts')->where('parent_id=', $this->id)->andWhere('parent_type =', CT_CUSTOMER)->orderby('name ASC');
+      $this->contacts = [];
+      static::$staticDB->_select()->from('contacts')->where('parent_id=', $this->id)->andWhere('parent_type=', CT_SUPPLIER)->orderby('name DESC');
       $contacts = static::$staticDB->_fetch()->asClassLate('Contact', array(CT_SUPPLIER));
       if (count($contacts)) {
         foreach ($contacts as $contact) {

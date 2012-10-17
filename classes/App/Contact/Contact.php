@@ -14,8 +14,7 @@
   /**
 
    */
-  class Contact extends Base
-  {
+  class Contact extends Base {
     /**
      * @var int
      */
@@ -36,19 +35,19 @@
     /**
      * @var string
      */
-    public $phone1 = '';
+    public $phone1;
     /**
      * @var string
      */
-    public $phone2 = '';
+    public $phone2;
     /**
      * @var string
      */
-    public $email = '';
+    public $email;
     /**
      * @var string
      */
-    public $department = '';
+    public $department;
     /**
      * @var string
      */
