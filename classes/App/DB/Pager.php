@@ -136,6 +136,9 @@
     public static function kill($name) {
       unset($_SESSION['pager'][$name]);
     }
+    /**
+     * @param null $sql
+     */
     public function refresh($sql = null) {
       if ($sql) {
         $this->setSQL($sql);
@@ -324,7 +327,8 @@
           $sql         = $parts[0];
           $this->order = $parts[1];
         }
-        $parts = preg_split('/\sGROUP\s*BY\s/si', $sql, 2);
+        $parts       = preg_split('/\sGROUP\s*BY\s/si', $sql, 2);
+        $this->group = null;
         if (count($parts) == 2) {
           $sql         = $parts[0];
           $this->group = $parts[1];
