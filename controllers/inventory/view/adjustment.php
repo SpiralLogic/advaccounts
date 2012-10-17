@@ -12,7 +12,7 @@
     $trans_no = $_GET["trans_no"];
   }
   Display::heading(SysTypes::$names[ST_INVADJUST] . " #$trans_no");
-  Display::br(1);
+  echo "<br>";
   $adjustment_items = Inv_Adjustment::get($trans_no);
   $k                = 0;
   $header_shown     = false;
@@ -48,6 +48,6 @@
     echo '</tr>';
   }
   Table::end(1);
-  Display::is_voided(ST_INVADJUST, $trans_no, _("This adjustment has been voided."));
+  Voiding::is_voided(ST_INVADJUST, $trans_no, _("This adjustment has been voided."));
   Page::end(true);
 

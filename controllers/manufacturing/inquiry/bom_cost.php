@@ -19,7 +19,7 @@
   Table::start('noborder');
   Item_UI::manufactured_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
   Table::end();
-  Display::br();
+  echo "<br>";
   Display::heading(_("All Costs Are In:") . " " . Bank_Currency::for_company());
   WO::display_bom(Input::_post('stock_id'));
   Forms::end();

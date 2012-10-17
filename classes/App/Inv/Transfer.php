@@ -135,7 +135,7 @@
      */
     public static function display_items($title, $order) {
       Display::heading($title);
-      Display::div_start('items_table');
+      Ajax::_start_div('items_table');
       Table::start('padded grid width90');
       $th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), '');
       if (count($order->line_items)) {
@@ -161,7 +161,7 @@
         Inv_Transfer::item_controls($order);
       }
       Table::end();
-      Display::div_end();
+      Ajax::_end_div();
     }
     /**
      * @static

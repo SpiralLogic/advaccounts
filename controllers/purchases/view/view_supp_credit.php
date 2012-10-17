@@ -42,7 +42,7 @@
   $display_total = Num::_format(-($creditor_trans->ov_amount + $creditor_trans->ov_gst), User::price_dec());
   Table::label(_("TOTAL CREDIT NOTE"), $display_total, "colspan=1 class='alignright'", ' class="alignright nowrap"');
   Table::end(1);
-  $voided = Display::is_voided(ST_SUPPCREDIT, $trans_no, _("This credit note has been voided."));
+  $voided = Voiding::is_voided(ST_SUPPCREDIT, $trans_no, _("This credit note has been voided."));
   if (!$voided) {
     GL_Allocation::from(PT_SUPPLIER, $creditor_trans->creditor_id, ST_SUPPCREDIT, $trans_no, -($creditor_trans->ov_amount + $creditor_trans->ov_gst));
   }

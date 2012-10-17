@@ -120,10 +120,10 @@
       $_SESSION['alloc']->write();
       Event::success(_("The customer payment has been successfully entered."));
       Display::submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no . "-" . ST_CUSTPAYMENT, 'prtopt');
-      Display::link_no_params("/sales/search/transactions", _("Show Invoices"));
-      Display::note(GL_UI::view(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
+      Display::link_params("/sales/search/transactions", _("Show Invoices"));
+      GL_UI::view(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment"));
       //	Display::link_params( "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
-      Display::link_no_params("/sales/payment", _("Enter Another &Customer Payment"));
+      Display::link_params("/sales/payment", _("Enter Another &Customer Payment"));
       $this->Ajax->activate('_page_body');
       $this->Page->endExit();
       return true;
@@ -151,16 +151,16 @@
       }
       Forms::AmountRow(_("Bank Charge:"), 'charge', 0, null, ['$']);
       Table::endOuter(1);
-      Display::div_start('alloc_tbl');
+      $this->Ajax->start_div('alloc_tbl');
       if ($cust_currency == $bank_currency) {
         $_SESSION['alloc']->read();
         GL_Allocation::show_allocatable(false);
       }
-      Display::div_end();
+      $this->Ajax->end_div();
       Table::start('padded width70');
       Table::label(_("Customer prompt payment discount :"), $display_discount_percent);
       Forms::AmountRow(_("Amount of Discount:"), 'discount', 0, null, ['$']);
-      if (User::i()->hasAccess(SS_SALES) && !$this->Input->post('TotalNumberOfAllocs')) {
+      if ($this->User->hasAccess(SS_SALES) && !$this->Input->post('TotalNumberOfAllocs')) {
         //    Forms::checkRow(_("Create invoice and apply for this payment: "), 'createinvoice');
       }
       Forms::AmountRow(_("Amount:"), 'amount', null, null, ['$']);
@@ -248,7 +248,7 @@
         $this->JS->setFocus('discount');
         return false;
       }
-      if ($type == ST_CUSTPAYMENT && !User::i()->salesmanid) {
+      if ($type == ST_CUSTPAYMENT && !$this->User->salesmanid) {
         Event::error(_("You do not have a salesman id, this is needed to create an invoice."));
         return false;
       }

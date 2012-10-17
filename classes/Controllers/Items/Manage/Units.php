@@ -49,7 +49,7 @@
         _("Abbr"),
         _("Name"),
         _("Decimals")=> ["align"=> "center", 'fun'=> [$this, 'formatDecimals']],
-        _("Inactive")=> ['type'=> 'active'],
+        _("Inactive")=> ['type'=> 'inactive'],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
       ];

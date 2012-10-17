@@ -56,14 +56,12 @@
       //	GL postings are often entered in the same form to two accounts
       // so fileds are cleared only on user demand.
       //
-      if (isset($_POST['PostCreditNote'])) {
-        $this->postCredit();
-      }
+
       $id = Forms::findPostPrefix('grn_item_id');
       if ($id != -1) {
         $this->commitItemData($id);
-        Ajax::_activate('grn_items');
-        Ajax::_activate('inv_tot');
+        $this->Ajax->activate('grn_items');
+        $this->Ajax->activate('inv_tot');
       }
       if (isset($_POST['InvGRNAll'])) {
         $this->invGrnAll();
@@ -74,8 +72,8 @@
       }
       $this->checkDelete();
       if (isset($_POST['RefreshInquiry'])) {
-        Ajax::_activate('grn_items');
-        Ajax::_activate('inv_tot');
+        $this->Ajax->activate('grn_items');
+        $this->Ajax->activate('inv_tot');
       }
       if (isset($_POST['go'])) {
         $this->go();
@@ -83,25 +81,25 @@
     }
     protected function index() {
       $this->Page->init(_($help_context = "Supplier Credit Note"), SA_SUPPLIERCREDIT);
-      if (isset($_GET[ADDED_ID])) {
-        $this->pageComplete();
+      if (isset($_POST['PostCreditNote'])) {
+        $this->postCredit();
       }
       Forms::start();
       Purch_Invoice::header($this->trans);
       if ($this->creditor_id) {
         $total_grn_value = Purch_GRN::display_items($this->trans, 1);
         $total_gl_value  = Purch_GLItem::display_items($this->trans, 1);
-        Display::div_start('inv_tot');
+        $this->Ajax->start_div('inv_tot');
         Purch_Invoice::totals($this->trans);
-        Display::div_end();
+        $this->Ajax->end_div();
       }
       if (Input::_post('AddGLCodeToTrans')) {
-        Ajax::_activate('inv_tot');
+        $this->Ajax->activate('inv_tot');
       }
-      Display::br();
+      echo "<br>";
       Forms::submitCenterBegin('Cancel', _("Cancel Invoice"));
       Forms::submitCenterEnd('PostCreditNote', _("Enter Credit Note"), true, '');
-      Display::br();
+      echo "<br>";
       Forms::end();
       $this->addJS();
       $this->Page->end_page();
@@ -145,8 +143,7 @@
 JS;
       $this->JS->onload($js);
     }
-    protected function pageComplete() {
-      $invoice_no = $_GET[ADDED_ID];
+    protected function pageComplete($invoice_no) {
       $trans_type = ST_SUPPCREDIT;
       echo "<div class='center'>";
       Event::success(_("Supplier credit note has been processed."));
@@ -154,29 +151,30 @@ JS;
       Display::note(GL_UI::view($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
       Display::link_params($_SERVER['DOCUMENT_URI'], _("Enter Another Credit Note"), "New=1");
       Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
+      $this->Ajax->activate('_page_body');
       $this->Page->endExit();
     }
     protected function go() {
-      Ajax::_activate('gl_items');
+      $this->Ajax->activate('gl_items');
       GL_QuickEntry::addEntry($this->trans, $_POST['qid'], Validation::input_num('total_amount'), QE_SUPPINV);
       $_POST['total_amount'] = Num::_priceFormat(0);
-      Ajax::_activate('total_amount');
-      Ajax::_activate('inv_tot');
+      $this->Ajax->activate('total_amount');
+      $this->Ajax->activate('inv_tot');
     }
     protected function checkDelete() {
       $id3 = Forms::findPostPrefix(MODE_DELETE);
       if ($id3 != -1) {
         $this->trans->remove_grn_from_trans($id3);
-        Ajax::_activate('grn_items');
-        Ajax::_activate('inv_tot');
+        $this->Ajax->activate('grn_items');
+        $this->Ajax->activate('inv_tot');
       }
       $id4 = Forms::findPostPrefix('Delete2');
       if ($id4 != -1) {
         $this->trans->remove_gl_codes_from_trans($id4);
         unset($_POST['gl_code'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_'], $_POST['AddGLCodeToTrans']);
         $this->JS->setFocus('gl_code');
-        Ajax::_activate('gl_items');
-        Ajax::_activate('inv_tot');
+        $this->Ajax->activate('gl_items');
+        $this->Ajax->activate('inv_tot');
       }
     }
     protected function invGrnAll() {
@@ -201,10 +199,10 @@ JS;
       }
       $this->trans->clear_items();
       Creditor_Trans::killInstance();
-      Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$invoice_no");
+      $this->pageComplete($invoice_no);
     }
     protected function addGlCodeToTrans() {
-      Ajax::_activate('gl_items');
+      $this->Ajax->activate('gl_items');
       $input_error = false;
       $sql         = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DB::_escape($_POST['gl_code']);
       $result      = DB::_query($sql, "get account information");
@@ -233,7 +231,7 @@ JS;
     }
     protected function clearFields() {
       unset($_POST['gl_code'], $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_'], $_POST['AddGLCodeToTrans']);
-      Ajax::_activate('gl_items');
+      $this->Ajax->activate('gl_items');
       $this->JS->setFocus('gl_code');
     }
     /**

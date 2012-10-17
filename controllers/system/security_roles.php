@@ -160,7 +160,7 @@
   if (Forms::findPostPrefix('_Section')) {
     Ajax::_activate('details');
   }
-  Display::div_start('details');
+  Ajax::_start_div('details');
   Table::start('standard');
   Forms::textRow(_("Role name:"), 'name', null, 20, 22);
   Forms::textRow(_("Role description:"), 'description', null, 50, 52);
@@ -183,7 +183,12 @@
       $m   = $parms[0] & ~0xff;
       //			if(!isset($security_sections[$m]))
       //			 Event::error(sprintf("Bad section %X:", $m));
-      Table::label(User::i()->Security['sections'][$m] . ':', Forms::checkbox(null, 'Section' . $m, null, true, _("On/off set of features")), "class='left tablehead'", "class='tablehead'");
+      Table::label(
+        User::i()->Security['sections'][$m] . ':',
+        Forms::checkbox(null, 'Section' . $m, null, true, _("On/off set of features")),
+        "class='left tablehead'",
+        "class='tablehead'"
+      );
     }
     if (Input::_hasPost('Section' . $m)) {
       Forms::checkRow($parms[1], 'Area' . $parms[0], null, false, '', "class='center'");
@@ -193,8 +198,8 @@
     }
   }
   Table::end(1);
-  Display::div_end();
-  Display::div_start('controls');
+  Ajax::_end_div();
+  Ajax::_start_div('controls');
   if ($new_role) {
     Forms::submitCenterBegin('Update', _("Update view"), '', null);
     Forms::submitCenterEnd('addupdate', _("Insert New Role"), '', 'default');
@@ -205,7 +210,7 @@
     Forms::submit('delete', _("Delete This Role"), true, '', true);
     Forms::submitCenterEnd('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
   }
-  Display::div_end();
+  Ajax::_end_div();
   Forms::end();
   Page::end();
 

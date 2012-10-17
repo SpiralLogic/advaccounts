@@ -10,6 +10,7 @@
   namespace ADV\Controllers\Purchases;
 
   use ADV\App\Item\Item;
+  use Purch_UI;
   use ADV\Core\Num;
   use Sales_Order;
   use GL_UI;
@@ -42,9 +43,9 @@
     protected $order = null;
     protected $creditor_id;
     protected function before() {
-      JS::_openWindow(950, 500);
+      $this->JS->openWindow(950, 500);
       $this->order = Orders::session_get() ? : null;
-      if (Input::_get('creditor_id', Input::NUMERIC)) {
+      if ($this->Input->get('creditor_id', Input::NUMERIC)) {
         $this->action      = Orders::CANCEL_CHANGES;
         $this->creditor_id = $_POST['creditor_id'] = $_GET['creditor_id'];
         $this->Ajax->activate('creditor_id');
@@ -68,13 +69,13 @@
       $this->iframe = "<div class='center'><iframe src='" . e(
         '/purchases/search/completed?' . LOC_NOT_FAXED_YET . '=1&frame=1'
       ) . "' class='width70' style='height:300px' ></iframe></div>";
-      if (Input::_get(Orders::MODIFY_ORDER)) {
+      if ($this->Input->get(Orders::MODIFY_ORDER)) {
         $this->order = $this->createOrder($_GET[Orders::MODIFY_ORDER]);
       } elseif (isset($_POST[CANCEL]) || isset($_POST[UPDATE_ITEM])) {
         Item_Line::start_focus('stock_id');
       } elseif (isset($_GET[Orders::NEW_ORDER]) || !isset($this->order)) {
         $this->order = $this->createOrder();
-        if (Input::_get('UseOrder') && !count($this->order->line_items)) {
+        if ($this->Input->get('UseOrder') && !count($this->order->line_items)) {
         }
       }
     }
@@ -111,9 +112,7 @@
       unset($_POST['stock_id'], $_POST['qty'], $_POST['price'], $_POST['req_del_date']);
     }
     protected function cancelOrder() {
-      if (!$this->order) {
-        Display::meta_forward('/index.php', 'application=Purchases');
-      }
+
       //need to check that not already dispatched or invoiced by the supplier
       if (($this->order->order_no != 0) && $this->order->any_already_received() == 1) {
         Event::error(
@@ -125,8 +124,6 @@
         Orders::session_delete($this->order->order_id);
         if ($this->order->order_no != 0) {
           $this->order->delete();
-        } else {
-          Display::meta_forward('/index.php', 'application=Purchases');
         }
         Orders::session_delete($this->order->order_id);
         Event::notice(_("This purchase order has been cancelled."));
@@ -178,7 +175,7 @@
             "The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."
           )
         );
-        JS::_setFocus('qty');
+        $this->JS->setFocus('qty');
       } else {
         $this->order->update_order_item(
           $_POST['line_no'],
@@ -201,7 +198,7 @@
       if ($this->action == COMMIT) {
         $this->commitOrder();
       }
-      if ($this->action == Orders::CANCEL) {
+      if ($this->order && $this->action == Orders::CANCEL) {
         $this->cancelOrder();
       }
       Forms::start();
@@ -215,7 +212,7 @@
       Table::start('standard');
       Forms::textareaRow(_("Memo:"), 'Comments', null, 70, 4);
       Table::end(1);
-      Display::div_start('controls', 'items_table');
+      $this->Ajax->start_div('controls', 'items_table');
       $buttons = new Form();
       if ($this->order->order_has_items()) {
         if ($this->order->order_no > 0 && $this->User->hasAccess(SA_VOIDTRANSACTION)) {
@@ -233,7 +230,7 @@
       $view = new View('libraries/forms');
       $view->set('buttons', $buttons);
       $view->render();
-      Display::div_end();
+      $this->Ajax->end_div();
       Forms::end();
       Item::addEditDialog();
       UI::emailDialogue(CT_SUPPLIER);
@@ -250,11 +247,11 @@
      * @param $order_no
      */
     protected function pageComplete($order_no) {
-      $this->Page->init(_($help_context = "Purchase Order Entry"), SA_PURCHASEORDER);
+      Event::success('Purchase order entry successful');
       $trans_type = ST_PURCHORDER;
       $new_trans  = "/purchases/order?" . Orders::NEW_ORDER;
       $view       = new View('orders/complete');
-      $buttons[]  = ['label'=> _("View this order"), 'href'=> GL_UI::viewTrans($trans_type, $order_no, '', false, '', '', true)];
+      $view->set('viewtrans', Purch_UI::viewTrans($trans_type, $order_no, _("View this order"), false, 'button'));
       $href       = Reporting::print_doc_link($order_no, '', true, $trans_type, false, '', '', 0, 0, true);
       $buttons[]  = ['target'=> '_new', 'label'=> _("Print This Order"), 'href'=> $href];
       $edit_trans = ROOT_URL . "purchases/order?ModifyOrder=$order_no";
@@ -273,7 +270,7 @@
      * @return \Purch_Order|\Sales_Order
      */
     protected function createOrder($order_no = 0) {
-      $getUuseOrder = Input::_get('UseOrder');
+      $getUuseOrder = $this->Input->get('UseOrder');
       if ($getUuseOrder) {
         if (isset(Orders::session_get($getUuseOrder)->line_items)) {
           $sales_order = Orders::session_get($_GET['UseOrder']);
@@ -335,22 +332,22 @@
       if (!Validation::post_num('qty', $min)) {
         $min = Num::_format($min, $dec);
         Event::error(_("The quantity of the order item must be numeric and not less than ") . $min);
-        JS::_setFocus('qty');
+        $this->JS->setFocus('qty');
         return false;
       }
       if (!Validation::post_num('price', 0)) {
         Event::error(_("The price entered must be numeric and not less than zero."));
-        JS::_setFocus('price');
+        $this->JS->setFocus('price');
         return false;
       }
       if (!Validation::post_num('discount', 0, 100)) {
         Event::error(_("Discount percent can not be less than 0 or more than 100."));
-        JS::_setFocus('discount');
+        $this->JS->setFocus('discount');
         return false;
       }
       if (!Dates::_isDate($_POST['req_del_date'])) {
         Event::error(_("The date entered is in an invalid format."));
-        JS::_setFocus('req_del_date');
+        $this->JS->setFocus('req_del_date');
         return false;
       }
       return true;
@@ -364,29 +361,29 @@
         Event::error(_("You are not currently editing an order."));
         $this->Page->endExit();
       }
-      if (!Input::_post('creditor_id')) {
+      if (!$this->Input->post('creditor_id')) {
         Event::error(_("There is no supplier selected."));
-        JS::_setFocus('creditor_id');
+        $this->JS->setFocus('creditor_id');
         return false;
       }
       if (!Dates::_isDate($_POST['OrderDate'])) {
         Event::error(_("The entered order date is invalid."));
-        JS::_setFocus('OrderDate');
+        $this->JS->setFocus('OrderDate');
         return false;
       }
-      if (Input::_post('delivery_address') == '') {
+      if ($this->Input->post('delivery_address') == '') {
         Event::error(_("There is no delivery address specified."));
-        JS::_setFocus('delivery_address');
+        $this->JS->setFocus('delivery_address');
         return false;
       }
       if (!Validation::post_num('freight', 0)) {
         Event::error(_("The freight entered must be numeric and not less than zero."));
-        JS::_setFocus('freight');
+        $this->JS->setFocus('freight');
         return false;
       }
-      if (Input::_post('location') == '') {
+      if ($this->Input->post('location') == '') {
         Event::error(_("There is no location specified to move any items into."));
-        JS::_setFocus('location');
+        $this->JS->setFocus('location');
         return false;
       }
       if ($this->order->order_has_items() == false) {
@@ -394,9 +391,9 @@
         return false;
       }
       if (!$this->order->order_no) {
-        if (!Ref::is_valid(Input::_post('ref'))) {
+        if (!Ref::is_valid($this->Input->post('ref'))) {
           Event::error(_("There is no reference entered for this purchase order."));
-          JS::_setFocus('ref');
+          $this->JS->setFocus('ref');
           return false;
         }
         if (!Ref::is_new($_POST['ref'], ST_PURCHORDER)) {

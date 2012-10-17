@@ -254,6 +254,9 @@
       $date   = '2012-10-01';
       $actual = $this->dates->sqlToDate($date);
       $this->assertEquals('01-10-2012', $actual);
+      $date   = '';
+      $actual = $this->dates->sqlToDate($date);
+      $this->assertEquals('', $actual);
     }
     /**
      * @covers ADV\Core\Dates::_isGreaterThan

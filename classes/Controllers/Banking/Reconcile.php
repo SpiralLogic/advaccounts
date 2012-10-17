@@ -2,6 +2,7 @@
   namespace ADV\Controllers\Banking;
 
   use ADV\Core\Input\Input;
+  use ADV\App\Form\DropDown;
   use ADV\Core\Event;
   use DB_Comments;
   use GL_UI;
@@ -10,7 +11,6 @@
   use DB_Pager;
   use ADV\Core\View;
   use Bank_UI;
-  use ADV\App\Page;
   use GL_Account;
   use Bank_Account;
   use ADV\Core\Num;
@@ -41,25 +41,15 @@
     protected $Num;
     /** @var Dates Dates*/
     protected $Dates;
-    /**
-     * @var
-     */
+    /** @var */
     protected $bank_account;
-    /**
-     * @var
-     */
+    /** @var */
     protected $bank_date;
-    /**
-     * @var
-     */
+    /** @var */
     protected $reconcile_date;
-    /**
-     * @var
-     */
+    /** @var */
     protected $begin_date;
-    /**
-     * @var
-     */
+    /** @var */
     protected $end_date;
     /**
      * @var bool
@@ -155,8 +145,10 @@
      */
     protected function render() {
       ob_start();
+      echo '<div id="newgrid">';
       $this->accountHasStatements ? $this->statementLayout() : $this->simpleLayout();
-      return '<div id="newgrid">' . ob_get_clean() . '</div>';
+      echo '</div>';
+      return ob_get_clean();
     }
     /**
      * @return bool
@@ -187,8 +179,11 @@
      * @return bool
      */
     protected function statementLayout() {
-      $rec                         = Bank_Trans::getPeriod($this->bank_account, $this->begin_date, $this->end_date);
-      $statement_trans             = Bank_Account::getStatement($this->bank_account, $this->begin_date, $this->end_date);
+      $rec             = Bank_Trans::getPeriod($this->bank_account, $this->begin_date, $this->end_date);
+      $statement_trans = Bank_Account::getStatement($this->bank_account, $this->begin_date, $this->end_date);
+      if (!$statement_trans) {
+        return $this->simpleLayout();
+      }
       $known_trans                 = [];
       $known_headers               = [
         'type',
@@ -258,7 +253,7 @@
      */
     protected function displaySummary() {
       $this->getTotal();
-      Display::div_start('summary');
+      $this->Ajax->start_div('summary');
       Table::start();
       Table::sectionTitle(_("Reconcile Date"), 1);
       echo '<tr>';
@@ -283,7 +278,7 @@
       Cell::amount($difference, false, '', "difference");
       echo '</tr>';
       Table::end();
-      Display::div_end();
+      $this->Ajax->end_div();
     }
     /**
      * @return int
@@ -291,6 +286,7 @@
     protected function getTotal() {
       if ($this->accountHasStatements) {
         list($beg_balance, $end_balance) = Bank_Account::getBalances($this->bank_account, $this->begin_date, $this->end_date);
+        Event::notice($beg_balance . $end_balance);
         $_POST["beg_balance"] = $this->Num->priceFormat($beg_balance);
         $_POST["end_balance"] = $this->Num->priceFormat($end_balance);
         $_POST["reconciled"]  = $this->Num->priceFormat($end_balance - $beg_balance);
@@ -461,7 +457,7 @@
       if ($row['reconciled']) {
         return '';
       }
-      $dropdown = new View('ui/dropdown');
+      $dd = new DropDown();
       if ($row['state_amount']) {
         if ($row['state_amount'] > 0) {
           $data = [];
@@ -470,31 +466,31 @@
             $fee  = $beforefee[1] - $row['state_amount'];
             $data = ['fee'=> $fee, 'amount'=> $beforefee[1]];
           }
-          $items[] = ['class'=> 'createDP', 'label'=> 'Debtor Payment', 'href'=> '/sales/payment', 'data'=> $data];
-          $items[] = ['class'=> 'createBD', 'label'=> 'Bank Deposit', 'href'=> '/banking/banking?NewDeposit=Yes'];
+          $dd->addItem('Debtor Payment', '/sales/payment', $data, ['class'=> 'createDP']);
+          $dd->addItem('Bank Deposit', '/banking/banking?NewDeposit=Yes', $data, ['class'=> 'createBD']);
         } else {
-          $items[] = ['class'=> 'createCP', 'label'=> 'Creditor Payment', 'href'=> '/purchases/payment'];
-          $items[] = ['class'=> 'createBP', 'label'=> 'Bank Payment', 'href'=> '/banking/banking?NewPayment=Yes'];
+          $dd->addItem('Creditor Payment', '/purchases/payment', [], ['class'=> 'createCP']);
+          $dd->addItem('Bank Payment', '/banking/banking?NewPayment=Yes', [], ['class'=> 'createBP']);
         }
-        $items[] = ['class'=> 'createFT', 'label'=> 'Funds Transfer', 'href'=> '/gl/bank_transfer'];
-        $items[] = ['divider'=> true];
+        $dd->addItem('Funds Transfer', '/gl/bank_transfer', [], ['class'=> 'createFT']);
+        $dd->addDivider();
       }
-      $items[] = ['class'=> 'changeDate', 'label'=> 'Change Date'];
+      $dd->addItem('Change Date', '#', [], ['class'=> 'changeDate']);
+
       switch ($row['type']) {
         case ST_GROUPDEPOSIT:
-          $items[] = ['class'=> 'unGroup', 'label'=> 'Ungroup'];
-          $title   = 'Group';
+          $dd->addItem('unGroup', '#', [], ['class'=> 'unGroup'])->setTitle('Group');
           break;
         case ST_BANKDEPOSIT:
         case ST_CUSTPAYMENT:
         default:
-          $items[] = ['class'=> 'changeBank', 'label'=> 'Move Bank'];
-          $items[] = ['class'=> 'voidTrans', 'label'=> 'Void Trans', 'data'=> ['type'=> $row['type'], 'trans_no'=> $row['trans_no']]];
-          $title   = substr($row['ref'], 0, 7);
+          $dd->addItem('Move Bank', '#', [], ['class'=> 'changeBank']);
+          $dd->addItem('Void Trans', '#', ['type'=> $row['type'], 'trans_no'=> $row['trans_no']], ['class'=> 'voidTrans']);
+          $dd->setTitle(substr($row['ref'], 0, 7));
       }
-      $menus[] = ['title'=> $title ? : 'Create', 'auto'=> 'auto', 'items'=> $items];
-      $dropdown->set('menus', $menus);
-      return $dropdown->render(true);
+      $result = $dd->setAuto(true)->render(true);
+      unset($dd);
+      return $result;
     }
     /**
      * @param $row

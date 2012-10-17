@@ -58,7 +58,8 @@
       if (isset($this->mimeTypes[$fileType])) {
         $mimeType = $this->mimeTypes[$fileType];
       } elseif (function_exists('mime_content_type')) {
-        $mimeType = mime_content_type(ROOT_WEB . ltrim($url, '/'));
+        $file     = ROOT_WEB . preg_split('/[#?]/', $url)[0];
+        $mimeType = mime_content_type($file);
       } else {
         $mimeType = null;
       }

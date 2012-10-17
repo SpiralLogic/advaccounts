@@ -13,25 +13,24 @@
 
    */
   class MenuUI extends Menu {
-    /**
-     * @var array
-     */
-    protected $options = [];
+    /** @var JS */
+    protected $JS;
     /**
      * @var bool
      */
+    public $tabs = [];
+    public $current_tab;
     public $firstPage = 0;
     /**
      * @var int
      */
     public static $menuCount = 0;
-    public $tabs = [];
-    /** @var View */
-    public $current_tab;
     protected $jslinks = [];
-    /** @var JS */
-    protected $JS;
     protected $defaultState = 'default';
+    /**
+     * @var array
+     */
+    protected $options = [];
     /**
      * @param string $defaultState
      *

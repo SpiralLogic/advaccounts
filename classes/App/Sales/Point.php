@@ -36,7 +36,6 @@
         if (strlen($this->pos_location) > 5) {
           return $this->status(false, 'Pos_location must be not be longer than 5 characters!', 'pos_location');
         }
-
         return true;
       }
       public function delete() {

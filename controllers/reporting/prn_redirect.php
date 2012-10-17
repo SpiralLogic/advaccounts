@@ -41,9 +41,12 @@
       $_POST['PARAM_' . $i] = isset($_GET['PARAM_' . $i]) ? $_GET['PARAM_' . $i] : $def_pars[$i];
     }
   }
+
   if (isset($_POST['REP_ID'])) {
-    $rep_file = REPORTS_PATH . "rep{$_POST['REP_ID']}.php";
+    $rep_file = PATH_REPORTS . "rep{$_POST['REP_ID']}.php";
+
     if (file_exists($rep_file)) {
+
       require($rep_file);
     }
   }

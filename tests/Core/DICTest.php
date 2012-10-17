@@ -4,9 +4,9 @@
   /**
    * Container test case.
    */
-  class DICTests extends \PHPUnit_Framework_TestCase {
+  class DICTest extends \PHPUnit_Framework_TestCase {
     /**
-     * @var Container
+     * @var \ADV\Core\DIC
      */
     private $container;
     /**
@@ -14,7 +14,7 @@
      */
     protected function setUp() {
       parent::setUp();
-      $this->container = new DIC();
+      $this->container = new DIC;
     }
     /**
      * Cleans up the environment after running a test.
@@ -23,10 +23,10 @@
       $this->container = null;
       parent::tearDown();
     }
-    public function testGetInstance() {
-      $instance = DIC::getInstance();
+    public function testi() {
+      $instance = DIC::i();
       $this->assertNotSame($this->container, $instance);
-      $instance2 = DIC::getInstance();
+      $instance2 = DIC::i();
       $this->assertSame($instance, $instance2);
     }
     public function testSetAndHas() {
@@ -51,20 +51,20 @@
       $c = $this->container;
 
       // Explicit Call
-      $c->set(
+      $c->offsetSet(
         'test',
         function ($c, $name) {
           return new TestObj($name);
         }
       );
-      $obj = $c->get('test', 'testing');
+      $obj = $c->offsetGet('test', 'testing');
       $this->assertInstanceOf('\\ADV\\Core\\TestObj', $obj);
       $this->assertAttributeEquals('testing', 'name', $obj);
     }
     public function testFresh() {
       $c = $this->container;
 
-      $c->set(
+      $c->offsetSet(
         'Obj',
         function ($c, $name) {
           return new TestObj($name);
@@ -75,15 +75,6 @@
       $o2 = $c->fresh('Obj', 'one');
       $this->assertNotSame($o1, $o2);
     }
-    /*
-    public function testDelete()
-    {
-      $c = $this->container;
-      $c->setObj(function() { return new \stdClass(); });
-      $c->deleteObj();
-    }
-    */
-
     public function testDependency() {
       $c = $this->container;
 
@@ -111,18 +102,17 @@
     }
     public function testConstructorArguments() {
       $c = $this->container;
-
-      $c->set(
+      $c->offsetSet(
         'TestObj',
         function ($c, $name) {
           return new TestObj($name);
         }
       );
 
-      $o1 = $c->get('TestObj', 'A');
-      $o2 = $c->get('TestObj');
+      $o1 = $c->offsetGet('TestObj', 'A');
+      $o2 = $c->offsetGet('TestObj');
       $o3 = $c->fresh('TestObj', 'B');
-      $o4 = $c->get('TestObj', 'A');
+      $o4 = $c->offsetGet('TestObj', 'A');
 
       $this->assertAttributeEquals('A', 'name', $o1);
       $this->assertAttributeEquals('A', 'name', $o2);
@@ -136,14 +126,14 @@
         return new TestObj($name);
       };
 
-      $obj = $c->get('arrayaccess', 'wawa');
+      $obj = $c->offsetGet('arrayaccess', 'wawa');
       $this->assertInstanceOf('ADV\\Core\\TestObj', $obj);
       $this->assertAttributeEquals('wawa', 'name', $obj);
     }
     public function testMixedMethodFormat() {
       $c = $this->container;
 
-      $c->set(
+      $c->offsetSet(
         'ObjectOne',
         function () {
           return new TestObj('object one');

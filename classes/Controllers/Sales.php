@@ -51,7 +51,7 @@
       $module = $this->add_module(_('Reports & Maintainance'));
       $module->addLeftFunction(_('&Customers'), '/contacts/manage/customers', SA_CUSTOMER);
       $module->addLeftFunction(_('Credit &Statuses'), '/sales/manage/creditstatuses?', SA_CRSTATUS);
-      $module->addRightFunction(_('Customer and Sales &Reports'), 'reporting/reports_main?Class=0', SA_SALESTRANSVIEW);
+      $module->addRightFunction(_('Customer and Sales &Reports'), '/reporting/reports_main?Class=0', SA_SALESTRANSVIEW);
       $module->addRightFunction(_('Email Customer Statements'), '/sales/email_statements', SA_SALESTRANSVIEW);
     }
   }

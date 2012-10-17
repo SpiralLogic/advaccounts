@@ -113,7 +113,7 @@
   Debtor_Trans::display_tax_details($tax_items, 6);
   Table::label("<font color=red>" . _("TOTAL CREDIT") . "</font", "<span class='red'>$display_total</span>", "colspan=6 class='alignright'", ' class="alignright nowrap"');
   Table::end(1);
-  $voided = Display::is_voided(ST_CUSTCREDIT, $trans_id, _("This credit note has been voided."));
+  $voided = Voiding::is_voided(ST_CUSTCREDIT, $trans_id, _("This credit note has been voided."));
   if (!$voided) {
     GL_Allocation::from(PT_CUSTOMER, $myrow['debtor_id'], ST_CUSTCREDIT, $trans_id, $credit_total);
   }

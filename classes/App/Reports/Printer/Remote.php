@@ -4,8 +4,7 @@
   /**
 
    */
-  class Reports_Printer_Remote
-  {
+  class Reports_Printer_Remote {
     /**
      * @var string
      */
@@ -65,7 +64,6 @@
       $ack = fread($stream, 1);
       if ($ack != 0) {
         fclose($stream);
-
         return _('Printer does not acept the job') . ' (' . ord($ack) . ')';
       }
       // Send Control file.
@@ -75,14 +73,12 @@
       $ack = fread($stream, 1);
       if ($ack != 0) {
         fclose($stream);
-
         return _('Error sending print job control file') . ' (' . ord($ack) . ')';
       }
       fwrite($stream, $ctrl . chr(0)); //Write null to indicate end of stream
       $ack = fread($stream, 1);
       if ($ack != 0) {
         fclose($stream);
-
         return _('Print control file not accepted') . ' (' . ord($ack) . ')';
       }
       $data = fopen($fname, "rb");
@@ -90,7 +86,6 @@
       $ack = fread($stream, 1);
       if ($ack != 0) {
         fclose($stream);
-
         return _('Cannot send report to printer') . ' (' . ord($ack) . ')';
       }
       while (!feof($data)) {
@@ -102,12 +97,10 @@
       $ack = fread($stream, 1);
       if ($ack != 0) {
         fclose($stream);
-
         return _('No ack after report printout') . ' (' . ord($ack) . ')';
       }
       fclose($data);
       fclose($stream);
-
       return '';
     }
     //
@@ -130,7 +123,6 @@
           fread($stream, 1);
         }
       }
-
       return false;
     }
   }

@@ -40,9 +40,7 @@
      * @var int
      */
     public $id = 0;
-    /**
-     * @var
-     */
+/** @var */
     public $stock_id;
     /**
      * @var int
@@ -116,21 +114,15 @@
      * @var string
      */
     public $tax_type_name = 'GST';
-    /**
-     * @var
-     */
+/** @var */
     public $name;
     /**
      * @var int
      */
     public $category_id = 6;
-    /**
-     * @var
-     */
+/** @var */
     public $description;
-    /**
-     * @var
-     */
+/** @var */
     public $long_description;
     /**
      * @var string
@@ -148,9 +140,7 @@
      * @var array
      */
     protected $stockLevels = [];
-    /**
-     * @var
-     */
+/** @var */
     public static $qoh_stock;
     protected $_table = 'stock_master';
     protected $_id_column = 'id';

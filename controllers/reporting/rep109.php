@@ -13,11 +13,10 @@
 
   print_sales_orders();
   $print_as_quote = 0;
-  function print_sales_orders()
-  {
+  function print_sales_orders() {
     global $print_as_quote;
 
-      $report_type = '\\ADV\\App\\Reports\\PDF';
+    $report_type    = '\\ADV\\App\\Reports\\PDF';
     $from           = $_POST['PARAM_0'];
     $to             = $_POST['PARAM_1'];
     $currency       = $_POST['PARAM_2'];
@@ -33,23 +32,23 @@
     $dec  = User::price_dec();
     $cols = array(4, 70, 300, 320, 360, 395, 450, 475, 515, 475);
     // $headers in doctext.inc
-    $aligns = array('left', 'left', 'center', 'left', 'left', 'left', 'left', 'right');
-    $params = array('comments' => $comments);
-    $cur    = DB_Company::get_pref('curr_default');
-    $security=$_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP;
+    $aligns   = array('left', 'left', 'center', 'left', 'left', 'left', 'left', 'right');
+    $params   = array('comments' => $comments);
+    $cur      = DB_Company::get_pref('curr_default');
+    $security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP;
     if ($email == 0) {
       if ($print_as_quote == 0) {
         /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_("ORDER"), "SalesOrderBulk", $security,User::page_size());
+        $rep = new $report_type(_("ORDER"), "SalesOrderBulk", $security, User::page_size());
       } elseif ($print_as_quote == 2) {
         /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_("PROFORMA INVOICE"), "QuoteBulk", $security,User::page_size());
+        $rep = new $report_type(_("PROFORMA INVOICE"), "QuoteBulk", $security, User::page_size());
       } elseif ($print_as_quote == 3) {
         /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_("PROFORMA INVOICE"), "QuoteBulk", $security,User::page_size());
+        $rep = new $report_type(_("PROFORMA INVOICE"), "QuoteBulk", $security, User::page_size());
       } else {
         /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_("QUOTE"), "QuoteBulk",$security,User::page_size());
+        $rep = new $report_type(_("QUOTE"), "QuoteBulk", $security, User::page_size());
       }
       $rep->currency = $cur;
       $rep->Font();
@@ -65,7 +64,7 @@
       $params['bankaccount'] = $baccount['id'];
       $branch                = Sales_Branch::get($myrow["branch_id"]);
       if ($email == 1) {
-        $rep           = new $report_type("", "",$security, User::page_size());
+        $rep           = new $report_type("", "", $security, User::page_size());
         $rep->currency = $cur;
         $rep->Font();
         if ($print_as_quote == 1) {
@@ -154,7 +153,7 @@
       $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
       $linetype          = true;
       $doctype           = ($print_as_quote < 3) ? ST_SALESORDER : ST_SALESQUOTE;
-        include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
+      include(PATH_REPORTS . 'includes' . DS . 'doctext.php');
       $rep->TextCol(4, 7, $doc_shipping . ' (ex.GST)', -2);
       $rep->TextCol(7, 8, $display_freight, -2);
       $rep->NewLine();

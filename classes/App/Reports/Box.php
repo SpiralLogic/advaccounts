@@ -69,15 +69,13 @@
       foreach ($this->ar_classes as $key => $value) {
         $style = $class_counter == $_REQUEST['Class'] ? '' : "style='display:none'";
         $acc   = Display::access_string($key);
-        $st_classes .= "<a href='" . $_SERVER['DOCUMENT_URI'] . "?Class=$class_counter' class='menu_option' id='" . JS::_defaultFocus(
-        ) . "' onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
+        $st_classes .= "<a href='" . $_SERVER['DOCUMENT_URI'] . "?Class=$class_counter' class='menu_option' id='" . JS::_defaultFocus() . "' onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
         $st_reports .= "<table id='TAB_" . $class_counter . "' $style cellpadding=0 cellspacing=0 style='width:100%'><tr><td><span class='bold'>" . _(
           "Reports For Class: "
         ) . "&nbsp;$key</span></td></tr>\n";
         foreach ($value as $report) {
           $acc = Display::access_string($report->name);
-          $st_reports .= "<tr><td><a class='printlink' href='" . $_SERVER['DOCUMENT_URI'] . "?Class=$class_counter&rep_id=$report->id' id='" . JS::_defaultFocus(
-          ) . "'$acc[1]>$acc[0]</a><tr><td>\n";
+          $st_reports .= "<tr><td><a class='printlink' href='" . $_SERVER['DOCUMENT_URI'] . "?Class=$class_counter&rep_id=$report->id' id='" . JS::_defaultFocus() . "'$acc[1]>$acc[0]</a><tr><td>\n";
           if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id'] == $report->id) {
             $action    = ROOT_URL . 'reporting/prn_redirect.php';
             $st_params = "<table><tr><td>\n<form method='POST' action='$action' target='_blank'>\n";
@@ -98,8 +96,7 @@
         $class_counter++;
       }
       $st_params = "<div id='rep_form'>$st_params</div>";
-      $st
-                 = "<script language='javascript'>
+      $st        = "<script language='javascript'>
                     function showClass(pClass)
                     {
                         for (i=0; i<$class_counter; i++) {
@@ -124,7 +121,6 @@
       $st .= "<td style='width:35%' style='border-left:1px solid #cccccc;border-right:1px solid #cccccc;padding-left:3px;'>$st_reports</td>";
       $st .= "<td style='width:35%'>$st_params</td>";
       $st .= "</tr></table><br>";
-
       return $st;
     }
     /**
@@ -160,7 +156,6 @@
         }
         $cnt++;
       }
-
       return $st;
     }
     //
@@ -188,7 +183,6 @@
       switch ($type) {
         case 'CURRENCY':
           $sql = "SELECT curr_abrev, concat(curr_abrev,' - ', currency) AS name FROM currencies";
-
           return Forms::selectBox(
             $name,
             '',
@@ -234,14 +228,12 @@
             }
           }
           $st = "<input type='text' class='datepicker' name='$name' value='$date'>";
-
           return $st;
           break;
         case 'YES_NO':
           return Forms::yesnoList($name);
         case 'PAYMENT_LINK':
           $sel = array(_("No payment Link"), "PayPal");
-
           return Forms::arraySelect($name, null, $sel);
         case 'DESTINATION':
           $sel = array(_("PDF/Printer"), "Excel");
@@ -249,15 +241,12 @@
           if (Config::_get('print_default_excel') == 1) {
             $def = 1;
           }
-
           return Forms::arraySelect($name, $def, $sel);
         case 'COMPARE':
           $sel = array(_("Accumulated"), _("Period Y-1"), _("Budget"));
-
           return Forms::arraySelect($name, null, $sel);
         case 'GRAPHIC':
           $sel = array(_("No Graphics"), _("Vertical bars"), _("Horizontal bars"), _("Dots"), _("Lines"), _("Pie"), _("Donut"));
-
           return Forms::arraySelect($name, null, $sel);
         case 'SYS_TYPES':
           return $this->gl_systypes_list($name, null, _("No Type Filter"));
@@ -272,7 +261,6 @@
           //					return Forms::selectBox($name, '', $sql, 'id', 'name',array('spec_option'=>_("No Account Group Filter"),'spec_id'=>ALL_NUMERIC));
           return GL_Type::select($name, null, _("No Account Group Filter"), true);
         case 'ACCOUNTS_NO_FILTER': // not used
-
           return GL_Type::select($name);
         case 'GL_ACCOUNTS':
           return GL_UI::all($name);
@@ -346,90 +334,72 @@
           $IV  = _("IV");
           $CN  = _("CN");
           $ref = (Config::_get('print_useinvoicenumber') == 0 ? "trans_no" : "reference");
-          $sql
-               = "SELECT concat(debtor_trans.trans_no, '-',
+          $sql = "SELECT concat(debtor_trans.trans_no, '-',
                         debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_SALESINVOICE . ", ' $IV ', ' $CN '), debtors.name) as IName
                         FROM debtors, debtor_trans WHERE (type=" . ST_SALESINVOICE . " OR type=" . ST_CUSTCREDIT . ") AND debtors.debtor_id=debtor_trans.debtor_id ORDER BY debtor_trans.trans_no DESC";
-
           return Forms::selectBox($name, '', $sql, 'TNO', 'IName', array('order' => false));
         case 'DELIVERY':
-          $DN = _("DN");
-          $sql
-              = "SELECT
+          $DN  = _("DN");
+          $sql = "SELECT
                     concat(debtor_trans.trans_no, '-', debtor_trans.type) AS TNO, concat(debtor_trans.trans_no, ' $DN ',
                      debtors.name) as IName
                         FROM debtors, debtor_trans
                         WHERE type=" . ST_CUSTDELIVERY . " AND debtors.debtor_id=debtor_trans.debtor_id ORDER BY debtor_trans.trans_no DESC";
-
           return Forms::selectBox($name, '', $sql, 'TNO', 'IName', array('order' => false));
         case 'ORDERS':
           $ref = (Config::_get('print_useinvoicenumber') == 0) ? "order_no" : "reference";
-          $sql
-               = "SELECT sales_orders.order_no, concat(sales_orders.$ref, '-',
+          $sql = "SELECT sales_orders.order_no, concat(sales_orders.$ref, '-',
                         debtors.name) as IName
                         FROM debtors, sales_orders WHERE debtors.debtor_id=sales_orders.debtor_id
                         AND sales_orders.trans_type=" . ST_SALESORDER . " ORDER BY sales_orders.order_no DESC";
-
           return Forms::selectBox($name, '', $sql, 'order_no', 'IName', array('order' => false));
         case 'QUOTATIONS':
           $ref = (Config::_get('print_useinvoicenumber') == 0 ? "order_no" : "reference");
-          $sql
-               = "SELECT sales_orders.order_no, concat(sales_orders.$ref, '-',
+          $sql = "SELECT sales_orders.order_no, concat(sales_orders.$ref, '-',
                         debtors.name) as IName
                         FROM debtors, sales_orders WHERE debtors.debtor_id=sales_orders.debtor_id
                         AND sales_orders.trans_type=" . ST_SALESQUOTE . " ORDER BY sales_orders.order_no DESC";
-
           return Forms::selectBox($name, '', $sql, 'order_no', 'IName', array('order' => false));
         case 'PO':
           $ref = (Config::_get('print_useinvoicenumber') == 0 ? "order_no" : "reference");
-          $sql
-               = "SELECT purch_orders.order_no, concat(purch_orders.$ref, '-',
+          $sql = "SELECT purch_orders.order_no, concat(purch_orders.$ref, '-',
                         suppliers.name) as IName
                         FROM suppliers, purch_orders WHERE suppliers.creditor_id=purch_orders.creditor_id ORDER BY purch_orders.order_no DESC";
-
           return Forms::selectBox($name, '', $sql, 'order_no', 'IName', array('order' => false));
         case 'REMITTANCE':
           $BP  = _("BP");
           $SP  = _("SP");
           $CN  = _("CN");
           $ref = (Config::_get('print_useinvoicenumber') == 0 ? "trans_no" : "reference");
-          $sql
-               = "SELECT concat(creditor_trans.trans_no, '-',
+          $sql = "SELECT concat(creditor_trans.trans_no, '-',
                         creditor_trans.type) AS TNO, concat(creditor_trans.$ref, if (type=" . ST_BANKPAYMENT . ", ' $BP ', if (type=" . ST_SUPPAYMENT . ", ' $SP ', ' $CN ')), suppliers.name) as IName
                         FROM suppliers, creditor_trans WHERE (type=" . ST_BANKPAYMENT . " OR type=" . ST_SUPPAYMENT . " OR type=" . ST_SUPPCREDIT . ") AND suppliers.creditor_id=creditor_trans.creditor_id ORDER BY creditor_trans.trans_no DESC";
-
           return Forms::selectBox($name, '', $sql, 'TNO', 'IName', array('order' => false));
         case 'RECEIPT':
           $BD  = _("BD");
           $CP  = _("CP");
           $CN  = _("CN");
           $ref = (Config::_get('print_useinvoicenumber') == 0 ? "trans_no" : "reference");
-          $sql
-               = "SELECT concat(debtor_trans.trans_no, '-',
+          $sql = "SELECT concat(debtor_trans.trans_no, '-',
                         debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_BANKDEPOSIT . ", ' $BD ', if (type=" . ST_CUSTPAYMENT . ", ' $CP ', ' $CN ')), debtors.name) as IName
                         FROM debtors, debtor_trans WHERE (type=" . ST_BANKDEPOSIT . " OR type=" . ST_CUSTPAYMENT . " OR type=" . ST_CUSTCREDIT . ") AND debtors.debtor_id=debtor_trans.debtor_id ORDER BY debtor_trans.trans_no DESC";
-
           return Forms::selectBox($name, '', $sql, 'TNO', 'IName', array('order' => false));
         case 'REFUND':
           $BD  = _("BD");
           $CP  = _("CP");
           $CN  = _("CN");
           $ref = (Config::_get('print_useinvoicenumber') == 0 ? "trans_no" : "reference");
-          $sql
-               = "SELECT concat(debtor_trans.trans_no, '-',
+          $sql = "SELECT concat(debtor_trans.trans_no, '-',
                         debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_BANKDEPOSIT . ", ' $BD ', if (type=" . ST_CUSTREFUND . ",
                         ' $CP ', ' $CN ')), debtors.name) as IName
                         FROM debtors, debtor_trans WHERE (type=" . ST_CUSTREFUND . ") AND debtors.debtor_id=debtor_trans.debtor_id ORDER BY debtor_trans.trans_no DESC";
-
           return Forms::selectBox($name, '', $sql, 'TNO', 'IName', array('order' => false));
         case 'ITEMS':
           return Item_UI::manufactured($name);
         case 'WORKORDER':
-          $sql
-            = "SELECT workorders.id, concat(workorders.id, '-',
+          $sql = "SELECT workorders.id, concat(workorders.id, '-',
                         stock_master.description) as IName
                         FROM stock_master, workorders WHERE stock_master.stock_id=workorders.stock_id ORDER BY workorders.id DESC";
-
           return Forms::selectBox($name, '', $sql, 'id', 'IName', array('order' => false));
         case 'LOCATIONS':
           return Inv_Location::select($name, null, _("No Location Filter"));
@@ -445,7 +415,6 @@
           return GL_UI::fiscalyears($name);
         case 'USERS':
           $sql = "SELECT id, user_id FROM users";
-
           return Forms::selectBox(
             $name,
             '',
@@ -464,10 +433,8 @@
           } else {
             $tag_type = TAG_DIMENSION;
           }
-
           return Tags::select($name, 5, $tag_type, true, _("No tags"));
       }
-
       return '';
     }
     /**
@@ -478,7 +445,6 @@
      * @return string
      */
     protected function gl_systypes_list($name, $value = null, $spec_opt = false) {
-
       $types = SysTypes::$names;
       foreach (array(
                  ST_LOCTRANSFER,
@@ -492,7 +458,6 @@
                ) as $type) {
         unset($types[$type]);
       }
-
       return Forms::arraySelect(
         $name,
         $value,

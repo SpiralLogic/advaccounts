@@ -24,7 +24,7 @@
       'PARAM_2' => $stype
     );
     Display::note(Reporting::print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
-    Display::link_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
+    Display::link_params("search_work_orders.php", _("Select another &Work Order to Process"));
     Page::end();
     exit;
   }
@@ -86,7 +86,9 @@
         }
         $qoh = Item::get_qoh_on_date($row["stock_id"], $row["loc_code"], $_POST['date_']);
         if ($qoh - $row['units_req'] * Validation::input_num('quantity') < 0) {
-          Event::error(_("The production cannot be processed because a required item would cause a negative inventory balance :") . " " . $row['stock_id'] . " - " . $row['description']);
+          Event::error(
+            _("The production cannot be processed because a required item would cause a negative inventory balance :") . " " . $row['stock_id'] . " - " . $row['description']
+          );
           $err = true;
         }
       }
@@ -119,7 +121,7 @@
     $_POST['quantity'] = Item::qty_format(max($wo_details["units_reqd"] - $wo_details["units_issued"], 0), $wo_details["stock_id"], $dec);
   }
   Table::start('standard');
-  Display::br();
+  echo "<br>";
   Forms::refRow(_("Reference:"), 'ref', '', Ref::get_next(ST_MANURECEIVE));
   if (!isset($_POST['ProductionType'])) {
     $_POST['ProductionType'] = 1;

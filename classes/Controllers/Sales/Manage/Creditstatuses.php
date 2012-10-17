@@ -2,10 +2,8 @@
   namespace ADV\Controllers\Sales\Manage;
 
   use ADV\App\Form\Form;
-  use ADV\App\Page;
   use ADV\App\Sales\CreditStatus;
   use ADV\Core\View;
-  use ADV\Core\DB\DB;
 
   /**
    * PHP version 5.4
@@ -48,7 +46,7 @@
         ['type'=> 'skip'],
         'Description',
         'Dissallow Invoices'=> ['type'=> 'bool'],
-        'Inactive'          => ['type'=> 'active'],
+        'Inactive'          => ['type'=> 'inactive'],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
       ];

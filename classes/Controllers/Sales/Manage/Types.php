@@ -51,7 +51,7 @@
         'Sales Type',
         'Tax Incl.'=> ['type'=> 'bool'],
         'Factor'   => ['type'=> 'percent'],
-        'Inactive' => ['type'=> 'active'],
+        'Inactive' => ['type'=> 'inactive'],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
         ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
       ];

@@ -1,5 +1,6 @@
 <?php
   use ADV\Core\Input\Input;
+  use ADV\Core\Event;
 
   /**
    * PHP version 5.4
@@ -58,7 +59,7 @@
    * @return string
    */
   function alloc_link($row) {
-    return DB_Pager::link(_("Allocate"), "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
+    return Display::link_button(_("Allocate"), "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
   }
 
   /**
@@ -84,9 +85,6 @@
    *
    * @return bool
    */
-  function check_settled($row) {
-    return $row['settled'] == 1;
-  }
 
   $sql  = Purch_Allocation::get_allocatable_sql($creditor_id, $settled);
   $cols = array(
@@ -105,8 +103,15 @@
     $cols[_("Currency")] = 'skip';
   }
   $table = DB_Pager::newPager('alloc_tbl', $sql, $cols);
-  $table->setMarker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
-  $table->width = "80%";
+  Event::warning(_("Marked items are settled."), false);
+  $table->rowFunction  = function ($row) {
+    if ($row['settled'] == 1) {
+      return "<tr class='overduebg'>";
+    }
+  };
+  $table->marker_class = 'settledbg';
+  $table->notice_class = 'settledfg';
+  $table->width        = "80%";
   $table->display($table);
   Forms::end();
   Page::end();

@@ -347,7 +347,7 @@
             }
             // an error occurred! Try to delete file and return error status
           } elseif ($error) {
-            unlink(BACKUP_PATH . $backupfile);
+            unlink(PATH_BACKUP . $backupfile);
             return false;
           }
           // if saving is successful, then empty $out, else set error flag
@@ -361,7 +361,7 @@
         }
         // an error occurred! Try to delete file and return error status
       } else {
-        unlink(BACKUP_PATH . $backupfile);
+        unlink(PATH_BACKUP . $backupfile);
         return false;
       }
       // if (mysql_error()) return "databaseError(";
@@ -370,7 +370,7 @@
       //	$zip = $time;
       if (Files::saveToFile($backupfile, $out = '', $zip)) {
       } else {
-        unlink(BACKUP_PATH . $backupfile);
+        unlink(PATH_BACKUP . $backupfile);
         return false;
       }
       return $backupfile;

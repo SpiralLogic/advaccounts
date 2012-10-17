@@ -34,7 +34,8 @@
         exit;
       }
       // insert the actual issue
-      $sql = "INSERT INTO wo_issues (workorder_id, reference, issue_date, loc_code, workcentre_id)
+      $sql
+        = "INSERT INTO wo_issues (workorder_id, reference, issue_date, loc_code, workcentre_id)
         VALUES (" . DB::_escape($woid) . ", " . DB::_escape($ref) . ", '" . Dates::_dateToSql($date_) . "', " . DB::_escape($location) . ", " . DB::_escape($workcentre) . ")";
       DB::_query($sql, "The work order issue could not be added");
       $number = DB::_insertId();
@@ -44,7 +45,8 @@
         }
         // insert a -ve stock move for each item
         Inv_Movement::add(ST_MANUISSUE, $item->stock_id, $number, $location, $date_, $memo_, -$item->quantity, 0);
-        $sql = "INSERT INTO wo_issue_items (issue_id, stock_id, qty_issued)
+        $sql
+          = "INSERT INTO wo_issue_items (issue_id, stock_id, qty_issued)
             VALUES (" . DB::_escape($number) . ", " . DB::_escape($item->stock_id) . ", " . DB::_escape($item->quantity) . ")";
         DB::_query($sql, "A work order issue item could not be added");
       }
@@ -74,7 +76,8 @@
      * @return null|PDOStatement
      */
     public static function get_additional($woid) {
-      $sql = "SELECT wo_issues.*, wo_issue_items.*
+      $sql
+        = "SELECT wo_issues.*, wo_issue_items.*
         FROM wo_issues, wo_issue_items
         WHERE wo_issues.issue_no=wo_issue_items.issue_id
         AND wo_issues.workorder_id=" . DB::_escape($woid) . " ORDER BY wo_issue_items.id";
@@ -88,7 +91,8 @@
      * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($issue_no) {
-      $sql    = "SELECT DISTINCT wo_issues.*, workorders.stock_id,
+      $sql
+              = "SELECT DISTINCT wo_issues.*, workorders.stock_id,
         stock_master.description, locations.location_name, " . "workcentres.name AS WorkCentreName
         FROM wo_issues, workorders, stock_master, " . "locations, workcentres
         WHERE issue_no=" . DB::_escape($issue_no) . "
@@ -192,7 +196,7 @@
      */
     public static function display_items($title, &$order) {
       Display::heading($title);
-      Display::div_start('items_table');
+      Ajax::_start_div('items_table');
       Table::start('padded width90');
       $th = array(
         _("Item Code"),
@@ -230,7 +234,7 @@
       }
       //	Table::label(_("Total"), Num::_format($total,User::price_dec()), "colspan=5", "class='alignright'");
       Table::end();
-      Display::div_end();
+      Ajax::_end_div();
     }
     /**
      * @static

@@ -1,5 +1,6 @@
 <?php
   namespace ADV\Core\Input;
+
   /**
    * Created by JetBrains PhpStorm.
    * User: Complex
@@ -7,9 +8,7 @@
    * Time: 4:57 PM
    * To change this template use File | Settings | File Templates.
    */
-  class Base implements \ArrayAccess
-  {
-
+  class Base implements \ArrayAccess {
     const NUMERIC = 1;
     const OBJECT  = 2;
     const STRING  = 3;
@@ -53,7 +52,7 @@
         $array[$key] = $result;
         return $array[$key];
       }
-      if (!($type == self::NUMERIC && $result === true)) {
+      if ((is_null($type) || is_int($type)) && !($type == self::NUMERIC && $result === true)) {
         $this->container[$var] = $result;
       }
       return $this->container[$var];
@@ -103,6 +102,12 @@
         }
       }
       $value = (is_string($var) && isset($array[$var])) ? $array[$var] : $default; //chnage back to null if fuckoutz happen
+
+      if (!is_int($type) && is_callable($type)) {
+
+        return call_user_func($type, $value) ? $value : $default;
+      }
+
       switch ($type) {
         case self::NUMERIC:
           $value = str_replace([',', ' '], '', $value);
@@ -127,8 +132,8 @@
           }
           break;
         default:
-          if ($type !== null && is_callable($type)) {
-            if ($value === null || !call_user_func($type, $value)) {
+          if ($type !== null) {
+            if ($value === null) {
               return $default;
             }
           }

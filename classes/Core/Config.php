@@ -24,6 +24,51 @@
      */
     protected $_vars = null;
     /**
+     * @param Cache $cache
+     */
+    public function __construct(Cache $cache) {
+      $this->Cache = $cache;
+      if (isset($_GET['reload_config'])) {
+        $this->Cache->delete('config');
+        header('Location: /');
+      } elseif ($this->_vars === null) {
+        $this->_vars = $this->Cache->get('config');
+      }
+      if (!$this->_vars) {
+        $this->load();
+      }
+    }
+    /**
+     * @static
+     *
+     * @param string $group
+     *
+     * @throws \RuntimeException
+     * @return mixed
+     */
+    protected function load($group = 'config') {
+      if (is_array($group)) {
+        $group_name = implode('.', $group);
+        $group_file = array_pop($group) . '.php';
+        $group_path = implode(DS, $group);
+        $file       = ROOT_DOC . "config" . $group_path . DS . $group_file;
+      } else {
+        $file       = ROOT_DOC . "config" . DS . $group . '.php';
+        $group_name = $group;
+      }
+      if ($this->_vars && array_key_exists($group_name, $this->_vars)) {
+        return true;
+      }
+      if (!file_exists($file)) {
+        throw new \RuntimeException("There is no file for config: " . $file);
+      }
+      /** @noinspection PhpIncludeInspection */
+      $this->_vars[$group_name] = include($file);
+      Event::registerShutdown([$this, '_shutdown']);
+
+      return true;
+    }
+    /**
      * @static
      *
      * @param   $var
@@ -69,21 +114,11 @@
     /**
      * @static
      *
-     * @param        $var
-     * @param string $group
-     */
-    public function remove($var, $group = 'config') {
-      if (array_key_exists($var, $this->_vars[$group])) {
-        unset($this->_vars[$group][$var]);
-      }
-    }
-    /**
-     * @static
-     *
      * @param string $group
      * @param array  $default
      *
      * @return mixed
+     * @return array
      * @return array
      */
     public function getAll($group = 'config', $default = []) {
@@ -94,6 +129,25 @@
       return $this->_vars[$group];
     }
     /**
+     * @return void
+     */
+    public function reset() {
+      $this->removeAll();
+      $this->load();
+    }
+    /**
+     * @static
+     *
+     * @param        $var
+     * @param string $group
+     * @param string $group
+     */
+    public function remove($var, $group = 'config') {
+      if (array_key_exists($var, $this->_vars[$group])) {
+        unset($this->_vars[$group][$var]);
+      }
+    }
+    /**
      * @static
 
      */
@@ -102,62 +156,12 @@
       $this->_vars = [];
     }
     /**
-     * @static
-
-     */
-    public function reset() {
-      $this->removeAll();
-      $this->load();
-    }
-    /**
      * @return mixed
      */
     public function shutdown() {
-      return $this->Cache->set('config', $this->_vars);
-    }
-    /**
-     * @param Cache $cache
-     */
-    public function __construct(Cache $cache) {
-      $this->Cache = $cache;
       if (isset($_GET['reload_config'])) {
-        $this->Cache->delete('config');
-        header('Location: /');
-      } elseif ($this->_vars === null) {
-        $this->_vars = $this->Cache->get('config');
+        Event::notice('Config reloaded');
       }
-      if (!$this->_vars) {
-        $this->load();
-      }
-    }
-    /**
-     * @static
-     *
-     * @param string $group
-     *
-     * @throws \RuntimeException
-     * @return mixed
-     */
-    protected function load($group = 'config') {
-      if (is_array($group)) {
-        $group_name = implode('.', $group);
-        $group_file = array_pop($group) . '.php';
-        $group_path = implode(DS, $group);
-        $file       = ROOT_DOC . "config" . $group_path . DS . $group_file;
-      } else {
-        $file       = ROOT_DOC . "config" . DS . $group . '.php';
-        $group_name = $group;
-      }
-      if ($this->_vars && array_key_exists($group_name, $this->_vars)) {
-        return true;
-      }
-      if (!file_exists($file)) {
-        throw new \RuntimeException("There is no file for config: " . $file);
-      }
-      /** @noinspection PhpIncludeInspection */
-      $this->_vars[$group_name] = include($file);
-      Event::registerShutdown([$this, '_shutdown']);
-
-      return true;
+      return $this->Cache->set('config', $this->_vars);
     }
   }

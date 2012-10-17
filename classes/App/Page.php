@@ -24,13 +24,9 @@
 
    */
   class Page {
-    /**
-     * @var
-     */
+    /** @var */
     public $encoding;
-    /**
-     * @var
-     */
+    /** @var */
     public $ajaxpage;
     public $lang_dir = '';
     /** @var \ADV\App\ADVAccounting */
@@ -122,7 +118,7 @@
       $this->security = $security;
       $this->App      = ADVAccounting::i();
       $path           = explode('/', $_SERVER['DOCUMENT_URI']);
-      if (count($path) && class_exists('ADV\\Controllers\\' . ucFirst($path[1]))) {
+      if (count($path) && isset($this->App->applications[ucfirst($path[1])])) {
         $this->sel_app = $path[1];
       }
       if (!$this->sel_app) {
@@ -157,7 +153,7 @@
         exit;
       }
       if (!REQUEST_JSON) {
-        Display::div_start('_page_body');
+        Ajax::_start_div('_page_body');
       }
     }
     protected function header() {
@@ -184,7 +180,7 @@
      */
     protected function renderCSS() {
       $this->css += $this->Config->get('assets.css');
-      $path = THEME_PATH . $this->theme . DS;
+      $path = PATH_THEME . $this->theme . DS;
       $css  = implode(',', $this->css);
       return [$path . $css];
     }
@@ -250,7 +246,7 @@
       $footer->set('sidemenu', ($this->header && $this->menu ? ['bank'=> $this->User->hasAccess(SS_GL)] : false));
       $footer->set('JS', $this->JS);
       $footer->set('messages', (!REQUEST_AJAX ? Messages::show() : ''));
-      $footer->set('page_body', Display::div_end(true));
+      $footer->set('page_body', Ajax::_end_div(true));
       $footer->render();
     }
     public static function footer_exit() {

@@ -69,7 +69,7 @@
   $dflt_desc = $result['description'];
   $dflt_cat  = $result['category_id'];
   $result    = Item_Code::getAll($_POST['stock_id']);
-  Display::div_start('code_table');
+  Ajax::_start_div('code_table');
   Table::start('padded grid width60');
   $th = array(
     _("EAN/UPC Code"),
@@ -98,7 +98,7 @@
     } //end of page full new headings
   } //end of while loop
   Table::end();
-  Display::div_end();
+  Ajax::_end_div();
   if ($selected_id != '') {
     if ($Mode == MODE_EDIT) {
       $myrow                = Item_Code::get($selected_id);

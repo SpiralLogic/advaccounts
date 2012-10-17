@@ -25,7 +25,7 @@
     }
   }
   display_companies();
-  Display::link_no_params($_SERVER['DOCUMENT_URI'], _("Create a new company"));
+  Display::link_params($_SERVER['DOCUMENT_URI'], _("Create a new company"));
   display_company_edit($selected_id);
   Page::end();
   /**

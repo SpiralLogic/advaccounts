@@ -30,7 +30,7 @@
    * @method static show_gl()
    * @method static rep_popup()
    * @method static percent_dec()
-   * @method static graphic_links()
+   *  @method static graphic_links()
    */
   class User extends \ADV\App\DB\Base {
     use \ADV\Core\Traits\Hook;

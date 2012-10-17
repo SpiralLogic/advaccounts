@@ -25,7 +25,7 @@
    * @method static HTML _td()
    * @method HTML _div()
    * @method HTML script()
-   * @method static HTML span()
+   * @method HTML span()
    * @method HTML _span()
    * @method HTML option()
    * @method HTML select()

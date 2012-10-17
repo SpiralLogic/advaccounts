@@ -2,10 +2,10 @@
   namespace ADV\Controllers\Purchases\Search;
 
   use ADV\Core\Input\Input;
+  use ADV\App\Display;
+  use ADV\App\Form\DropDown;
   use GL_UI;
-  use ADV\Core\View;
   use DB_Pager;
-  use ADV\App\Page;
   use ADV\App\Orders;
   use ADV\App\Dates;
   use ADV\App\Forms;
@@ -180,9 +180,9 @@
      */
     public function formatProcessBtn($row) {
       if ($row['Received'] > 0) {
-        return DB_Pager::link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
+        return Display::link_button(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
       } elseif ($row['Invoiced'] > 0) {
-        return DB_Pager::link(_("Invoice"), "/purchases/invoice?New=1&creditor_id=" . $row['creditor_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
+        return Display::link_button(_("Invoice"), "/purchases/invoice?New=1&creditor_id=" . $row['creditor_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
       }
       return '';
     }
@@ -208,7 +208,7 @@
      * @return string
      */
     public function formatDropDown($row) {
-      $dropdown  = new View('ui/dropdown');
+      $dd        = new DropDown();
       $edit_url  = $this->formatEditBtn($row);
       $edit_attr = [];
       if ((Input::_request('frame'))) {
@@ -217,24 +217,21 @@
           'onclick'=> 'javascript:window.parent.location.href=this.href; return false;'
         ];
       }
-      $items[] = ['label'=> 'Edit', 'attr'=> $edit_attr, 'href'=> $edit_url];
-      $title   = 'Edit';
-      $href    = Reporting::print_doc_link($row['order_no'], _("Print"), true, ST_PURCHORDER, ICON_PRINT, 'button printlink', '', 0, 0, true);
-      $items[] = ['class'=> 'printlink', 'label'=> 'Print', 'href'=> $href];
-      $items[] = ['class'=> 'email-button', 'label'=> 'Email', 'href'=> '#', 'data'=> ['emailid' => $row['creditor_id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']]];
+      $dd->addItem('Edit', $edit_url, [], $edit_attr)->setTitle('Edit');
+      $href = Reporting::print_doc_link($row['order_no'], _("Print"), true, ST_PURCHORDER, ICON_PRINT, 'button printlink', '', 0, 0, true);
+      $dd->addItem('Print', $href, [], ['class'=> 'printlink']);
+      $dd->addItem('Email', '#', ['emailid' => $row['creditor_id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']], ['class'=> 'email-button']);
       if ($row['Received'] > 0) {
         $href = "/purchases/po_receive_items.php?PONumber=" . $row["order_no"];
       } elseif ($row['Invoiced'] > 0) {
         $href = "/purchases/invoice?New=1&creditor_id=" . $row['creditor_id'] . "&PONumber=" . $row["order_no"];
       }
-      $items[] = ['label'=> 'Receive', 'href'=> $href];
+      $dd->addItem('Receive', $href);
       if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
-        $href    = '/system/void_transaction?type=' . ST_PURCHORDER . '&trans_no=' . $row['order_no'] . '&memo=Deleted%20during%20order%20search';
-        $items[] = ['label'=> 'Void Trans', 'href'=> $href, 'attr'=> ['target'=> '_blank']];
+        $href = '/system/void_transaction?type=' . ST_PURCHORDER . '&trans_no=' . $row['order_no'] . '&memo=Deleted%20during%20order%20search';
+        $dd->addItem('Void Trans', $href, [], ['target'=> '_blank']);
       }
-      $menus[] = ['title'=> $title, 'items'=> $items, 'auto'=> 'auto', 'split'=> true];
-      $dropdown->set('menus', $menus);
-      return $dropdown->render(true);
+      return $dd->setAuto(true)->setSplit(true)->render(true);
     }
   }
 

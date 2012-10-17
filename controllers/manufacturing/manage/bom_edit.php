@@ -62,7 +62,7 @@
    */
   function display_bom_items($selected_parent) {
     $result = WO::get_bom($selected_parent);
-    Display::div_start('bom');
+    Ajax::_start_div('bom');
     Table::start('padded grid width60');
     $th = array(
       _("Code"),
@@ -88,7 +88,7 @@
       echo '</tr>';
     } //END WHILE LIST LOOP
     Table::end();
-    Display::div_end();
+    Ajax::_end_div();
   }
 
   /**
@@ -118,15 +118,19 @@
       //need to check not recursive bom component of itself!
       if (!check_for_recursive_bom($selected_parent, $_POST['component'])) {
         /*Now check to see that the component is not already on the bom */
-        $sql    = "SELECT component FROM bom
+        $sql
+                = "SELECT component FROM bom
                 WHERE parent=" . DB::_escape($selected_parent) . "
                 AND component=" . DB::_escape($_POST['component']) . "
                 AND workcentre_added=" . DB::_escape($_POST['workcentre_added']) . "
                 AND loc_code=" . DB::_escape($_POST['loc_code']);
         $result = DB::_query($sql, "check failed");
         if (DB::_numRows($result) == 0) {
-          $sql = "INSERT INTO bom (parent, component, workcentre_added, loc_code, quantity)
-                    VALUES (" . DB::_escape($selected_parent) . ", " . DB::_escape($_POST['component']) . "," . DB::_escape($_POST['workcentre_added']) . ", " . DB::_escape($_POST['loc_code']) . ", " . Validation::input_num('quantity') . ")";
+          $sql
+            = "INSERT INTO bom (parent, component, workcentre_added, loc_code, quantity)
+                    VALUES (" . DB::_escape($selected_parent) . ", " . DB::_escape($_POST['component']) . "," . DB::_escape($_POST['workcentre_added']) . ", " . DB::_escape(
+            $_POST['loc_code']
+          ) . ", " . Validation::input_num('quantity') . ")";
           DB::_query($sql, "check failed");
           Event::notice(_("A new component part has been added to the bill of material for this item."));
           $Mode = MODE_RESET;
@@ -159,7 +163,7 @@
     Ajax::_activate('_page_body');
   }
   Table::end();
-  Display::br();
+  echo "<br>";
   Forms::end();
   if (Input::_post('stock_id') != '') { //Parent Item selected so display bom or edit component
     $selected_parent = $_POST['stock_id'];

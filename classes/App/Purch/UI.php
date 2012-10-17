@@ -27,19 +27,7 @@
         $parms
       );
     }
-    /**
-     * @static
-     *
-     * @param        $type
-     * @param        $trans_no
-     * @param string $label
-     * @param bool   $icon
-     * @param string $class
-     * @param string $id
-     *
-     * @return null|string
-     */
-    public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '', $raw = false) {
+    public static function transLink($type, $trans_no) {
       $viewer = "/purchases/view/";
       switch ($type) {
         case ST_PURCHORDER:
@@ -61,12 +49,29 @@
           return null;
       }
       $viewer .= "?trans_no=$trans_no";
+      return $viewer;
+    }
+    /**
+     * @static
+     *
+     * @param        $type
+     * @param        $trans_no
+     * @param string $label
+     * @param bool   $icon
+     * @param string $class
+     * @param string $id
+     * @param bool   $raw
+     *
+     * @return null|string
+     */
+    public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '', $raw = false) {
+      $url = Purch_UI::transLink($type, $trans_no);
       if ($raw) {
-        return $viewer;
+        return $url;
       }
       if ($label == "") {
         $label = $trans_no;
       }
-      return Display::viewer_link($label, $viewer, $class, $id, $icon);
+      return Display::viewer_link($label, $url, $class, $id, $icon);
     }
   }

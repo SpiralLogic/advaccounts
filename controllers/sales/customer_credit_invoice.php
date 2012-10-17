@@ -239,7 +239,7 @@
     Table::end();
     echo "</td></tr>";
     Table::end(1); // outer table
-    Display::div_start('credit_items');
+    Ajax::_start_div('credit_items');
     Table::start('padded grid width90');
     $th = array(
       _("Item Code"),
@@ -286,7 +286,7 @@
     $display_total = Num::_priceFormat(($inv_items_total + Validation::input_num('ChargeFreightCost') + $tax_total));
     Table::label(_("Credit Note Total"), $display_total, "colspan=$colspan class='alignright'", "class='alignright'");
     Table::end();
-    Display::div_end();
+    Ajax::_end_div();
   }
 
   function display_credit_options() {
@@ -294,7 +294,7 @@
     if (isset($_POST['_CreditType_update'])) {
       Ajax::_activate('options');
     }
-    Display::div_start('options');
+    Ajax::_start_div('options');
     Table::start('standard');
     Sales_Credit::row(_("Credit Note Type"), 'CreditType', null, true);
     if ($_POST['CreditType'] == "Return") {
@@ -309,6 +309,6 @@
     }
     Forms::textareaRow(_("Memo"), "CreditText", null, 51, 3);
     echo "</table>";
-    Display::div_end();
+    Ajax::_end_div();
   }
 

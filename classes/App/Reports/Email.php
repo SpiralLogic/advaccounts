@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Reports;
+
   use PHPMailer;
   use phpmailerException;
 
@@ -189,8 +190,7 @@
       try {
         $ret = $this->mail->Send();
         return $ret;
-      }
-      catch (phpmailerException $e) {
+      } catch (phpmailerException $e) {
         $this->toerror = $e->errorMessage();
         return false;
       }

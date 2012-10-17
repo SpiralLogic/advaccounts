@@ -7,12 +7,11 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class WO_Cost
-  {
-  public static $types = array(
-   WO_LABOUR   => "Labour Cost", //
-   WO_OVERHEAD => "Overhead Cost", ////
- );
+  class WO_Cost {
+    public static $types = array(
+      WO_LABOUR   => "Labour Cost", //
+      WO_OVERHEAD => "Overhead Cost", ////
+    );
     /**
      * @static
      *
@@ -20,8 +19,7 @@
      * @param $qty
      * @param $date_
      */
-    public static function add_material($stock_id, $qty, $date_)
-    {
+    public static function add_material($stock_id, $qty, $date_) {
       $m_cost = 0;
       $result = WO::get_bom($stock_id);
       while ($bom_item = DB::_fetch($result)) {
@@ -42,8 +40,7 @@
         $material_cost = ($qoh * $material_cost + $qty * $m_cost) / ($qoh + $qty);
       }
       $material_cost = Num::_round($material_cost, $dec);
-      $sql
-                     = "UPDATE stock_master SET material_cost=$material_cost
+      $sql           = "UPDATE stock_master SET material_cost=$material_cost
 		WHERE stock_id=" . DB::_escape($stock_id);
       DB::_query($sql, "The cost details for the inventory item could not be updated");
     }
@@ -55,8 +52,7 @@
      * @param $date_
      * @param $costs
      */
-    public static function add_overhead($stock_id, $qty, $date_, $costs)
-    {
+    public static function add_overhead($stock_id, $qty, $date_, $costs) {
       $dec = User::price_dec();
       Num::_priceDecimal($costs, $dec);
       if ($qty != 0) {
@@ -86,8 +82,7 @@
      * @param $date_
      * @param $costs
      */
-    public static function add_labour($stock_id, $qty, $date_, $costs)
-    {
+    public static function add_labour($stock_id, $qty, $date_, $costs) {
       $dec = User::price_dec();
       Num::_priceDecimal($costs, $dec);
       if ($qty != 0) {
@@ -117,8 +112,7 @@
      * @param $date_
      * @param $costs
      */
-    public static function add_issue($stock_id, $qty, $date_, $costs)
-    {
+    public static function add_issue($stock_id, $qty, $date_, $costs) {
       if ($qty != 0) {
         $costs /= $qty;
       }

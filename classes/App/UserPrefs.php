@@ -67,7 +67,7 @@
     /** @var */
     public $show_hints;
     /** @var */
-    public $query_size; // table pager page length
+    public $query_size = 2; // table pager page length
     /** @var */
     public $graphic_links; // use graphic links
     /**

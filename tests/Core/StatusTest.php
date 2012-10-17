@@ -24,7 +24,6 @@
     }
     /**
      * @covers ADV\Core\Status::set
-     * @todo   Implement testSet().
      */
     public function testSet() {
       //make sure errror is set
@@ -33,64 +32,75 @@
       $expected = [['status'=> Status::ERROR, 'message'=> 'error set']];
       $this->assertAttributeEquals($expected, 'status', $this->object);
       $this->assertAttributeEquals($expected, 'status', $this->object);
-      $this->object->set(Status::INFO, 'error set', 'var');
+      $this->object->set(Status::INFO, 'info set', 'var2');
       //make sure errror is set in errors and statues
       $this->assertAttributeCount(1, 'errors', $this->object);
       $this->assertAttributeEquals($expected, 'errors', $this->object);
-      $expected[] = ['status'=> Status::INFO, 'message'=> 'error set', 'var'=> 'var'];
+      $expected[] = ['status'=> Status::INFO, 'message'=> 'info set', 'var'=> 'var2'];
       //make sure status has both set
       $this->assertAttributeEquals($expected, 'status', $this->object);
       $this->assertAttributeCount(2, 'status', $this->object);
       $this->assertAttributeEquals($expected, 'status', $this->object);
     }
     /**
-     * @covers ADV\Core\Status::append
-     * @todo   Implement testAppend().
-     */
-    public function testAppend() {
-      // Remove the following lines when you implement this test.
-      $this->markTestIncomplete(
-        'This test has not been implemented yet.'
-      );
-    }
-    /**
-     * @covers ADV\Core\Status::get
-     * @todo   Implement testGet().
+     * @covers  ADV\Core\Status::get
+     * @depends testSet
      */
     public function testGet() {
       // Remove the following lines when you implement this test.
-      $this->markTestIncomplete(
-        'This test has not been implemented yet.'
-      );
+      $status = $this->object->get();
+      $this->assertSame([], $status);
+      $this->object->set(Status::INFO, 'info set', 'var');
+      $status = $this->object->get();
+      $this->assertEquals(['status'=> Status::INFO, 'message'=> 'info set', 'var'=> 'var'], $status);
+      $this->object->set(Status::ERROR, 'error set', 'var2');
+      $status = $this->object->get();
+      $this->assertEquals(['status'=> Status::ERROR, 'message'=> 'error set', 'var'=> 'var2'], $status);
+      $this->object->set(Status::INFO, 'info set', 'var3');
+      $status = $this->object->get();
+      $this->assertEquals(['status'=> Status::ERROR, 'message'=> 'error set', 'var'=> 'var2'], $status);
+    }
+    /**
+     * @covers         ADV\Core\Status::append
+     * @depends        testGet
+     * */
+    public function testAppend() {
+      $this->object->set(Status::ERROR, 'error set', 'var2');
+      $status = $this->object->get();
+      $this->object->set(Status::INFO, 'info set', 'var');
+      $this->object->append($status);
+      $this->assertAttributeEquals([$status, ['status'=> Status::INFO, 'message'=> 'info set', 'var'=> 'var'], $status], 'status', $this->object);
     }
     /**
      * @covers ADV\Core\Status::hasError
      * @todo   Implement testHasError().
      */
     public function testHasError() {
-      // Remove the following lines when you implement this test.
-      $this->markTestIncomplete(
-        'This test has not been implemented yet.'
-      );
+      $status = $this->object->hasError();
+      $this->assertFalse($status);
+      $this->object->set(Status::INFO, 'info set', 'var');
+      $this->assertFalse($status);
+
+      $this->object->set(Status::ERROR, 'error set', 'var2');
+      $this->assertFalse($status);
     }
     /**
      * @covers ADV\Core\Status::getAll
      * @todo   Implement testGetAll().
      */
     public function testGetAll() {
-      // Remove the following lines when you implement this test.
-      $this->markTestIncomplete(
-        'This test has not been implemented yet.'
-      );
     }
     /**
      * @covers ADV\Core\Status::__toString
      * @todo   Implement test__toString().
      */
     public function test__toString() {
-      // Remove the following lines when you implement this test.
-      $this->markTestIncomplete(
-        'This test has not been implemented yet.'
+
+      $this->object->set(Status::ERROR, 'error set', 'var2');
+
+      $this->assertEquals(
+        'Error: error set',
+        (string) $this->object
       );
     }
   }

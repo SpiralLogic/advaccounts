@@ -23,7 +23,7 @@
    * @return string
    */
   function select_link($row) {
-    return DB_Pager::link($row["parent"] . " - " . $row["description"], "/manufacturing/manage/bom_edit.php?stock_id=" . $row["parent"]);
+    return Display::link_button($row["parent"] . " - " . $row["description"], "/manufacturing/manage/bom_edit.php?stock_id=" . $row["parent"]);
   }
 
   $sql          = "SELECT

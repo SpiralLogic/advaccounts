@@ -68,11 +68,17 @@
   }
   namespace {
     use ADV\Core\DB\DB;
+    use ADV\Core\Event;
 
     /**
 
      */
     class Item_Price {
+      const PURCHASE    = 1;
+      const SALE        = 2;
+      const SORT_UPDATE = 'last_update';
+      const SORT_PRICE  = 'price';
+      const SORT_CODE   = 'stock_id';
       /**
        * @static
        *
@@ -108,8 +114,7 @@
        * @return mixed
        */
       public static function getPriceBySupplier($stockid, $supplierid) {
-        $result = DB::_select()->from('purch_data')->where('stockid=', $stockid)->andWhere('creditor_id=', $supplierid)->fetch()->asClassLate('Item_Price', array(self::PURCHASE))
-          ->one();
+        $result = DB::_select()->from('purch_data')->where('stockid=', $stockid)->andWhere('creditor_id=', $supplierid)->fetch()->one();
         return $result;
       }
       /**

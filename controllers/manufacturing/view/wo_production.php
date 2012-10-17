@@ -17,7 +17,7 @@
    */
   function display_wo_production($prod_id) {
     $myrow = WO_Produce::get($prod_id);
-    Display::br(1);
+    echo "<br>";
     Table::start('padded');
     $th = array(
       _("Production #"),
@@ -38,12 +38,12 @@
     echo '</tr>';
     DB_Comments::display_row(ST_MANURECEIVE, $prod_id);
     Table::end(1);
-    Display::is_voided(ST_MANURECEIVE, $prod_id, _("This production has been voided."));
+    Voiding::is_voided(ST_MANURECEIVE, $prod_id, _("This production has been voided."));
   }
 
   Display::heading(SysTypes::$names[ST_MANURECEIVE] . " # " . $wo_production);
   display_wo_production($wo_production);
-  Display::br(2);
+  echo "<br><br>";
   Page::end(true);
 
 

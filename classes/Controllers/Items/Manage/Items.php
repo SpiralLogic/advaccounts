@@ -10,9 +10,7 @@
   use Item_Category;
   use ADV\Core\MenuUI;
   use ADV\Core\View;
-  use ADV\App\Page;
   use ADV\App\UI;
-  use ADV\App\ADVAccounting;
 
   /**
    * PHP version 5.4
@@ -42,9 +40,7 @@
     }
     protected function runPost() {
       $data = [];
-      if (isset($_GET['term'])) {
-        $data = Item::search($_GET['term']);
-      } elseif (isset($_POST['id'])) {
+      if (isset($_POST['id'])) {
         if (isset($_POST['name'])) {
           $item = new Item($_POST);
           $item->save($_POST);

@@ -10,6 +10,7 @@
   namespace ADV\App;
 
   use GL_Trans;
+  use ADV\Core\Table;
   use ADV\Core\DB\DB;
   use DB_AuditTrail;
   use WO_Produce;
@@ -25,8 +26,7 @@
   /**
 
    */
-  class Voiding
-  {
+  class Voiding {
     /**
      * @static
      *
@@ -174,5 +174,29 @@
             = "INSERT INTO voided (type, id, date_, memo_)
 			VALUES (" . DB::_escape($type) . ", " . DB::_escape($type_no) . ", " . DB::_escape($date) . ", " . DB::_escape($memo_) . ")";
       DB::_query($sql, "could not add voided transaction entry");
+    }
+    /**
+     * @static
+     *
+     * @param $type
+     * @param $id
+     * @param $label
+     *
+     * @return bool
+     */
+    public static function is_voided($type, $id, $label) {
+      $void_entry = Voiding::get($type, $id);
+      if ($void_entry == null) {
+        return false;
+      }
+      Table::start('padded width50');
+      echo "<tr><td class=center><span class='red'>$label</span><br>";
+      echo "<span class='red'>" . _("Date Voided:") . " " . Dates::_sqlToDate($void_entry["date_"]) . "</span><br>";
+      if (strlen($void_entry["memo_"]) > 0) {
+        echo "<div class='center'><span class='red'>" . _("Memo:") . " " . $void_entry["memo_"] . "</span></div><br>";
+      }
+      echo "</td></tr>";
+      Table::end(1);
+      return true;
     }
   }

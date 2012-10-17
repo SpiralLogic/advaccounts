@@ -1,6 +1,5 @@
 <?php
   namespace ADV\App\Item {
-
     use ADV\Core\DB\DB;
     use ADV\App\Validation;
 
@@ -28,8 +27,7 @@
        * @return null|\PDOStatement
        */
       public static function getAll($stock_id) {
-        $sql
-          = "SELECT id, suppliers.name, stock_id,stockid,price,suppliers_uom,conversion_factor,supplier_description, last_update
+        $sql = "SELECT id, suppliers.name, stock_id,stockid,price,suppliers_uom,conversion_factor,supplier_description, last_update
               FROM purch_data INNER JOIN suppliers
               ON purch_data.creditor_id=suppliers.creditor_id
               WHERE stock_id = " . DB::_escape($stock_id);
@@ -72,7 +70,6 @@
         if (strlen($this->supplier_description) > 20) {
           return $this->status(false, 'Supplier_description must be not be longer than 20 characters!', 'supplier_description');
         }
-
         return true;
       }
     }
@@ -104,8 +101,7 @@
         if ($stockid == null) {
           $stockid = Item::get_stockid($stock_id);
         }
-        $sql
-          = "INSERT INTO purch_data (creditor_id, stockid, stock_id, price, suppliers_uom,
+        $sql = "INSERT INTO purch_data (creditor_id, stockid, stock_id, price, suppliers_uom,
         conversion_factor, supplier_description) VALUES (";
         $sql .= DB::_escape($creditor_id) . ", " . DB::_escape($stock_id) . ", " . DB::_escape($stockid) . ", " . $price . ", " . DB::_escape(
           $suppliers_uom
@@ -150,8 +146,7 @@
        * @return null|PDOStatement
        */
       public static function getAll($stock_id) {
-        $sql
-          = "SELECT purch_data.*,suppliers.name, suppliers.curr_code
+        $sql = "SELECT purch_data.*,suppliers.name, suppliers.curr_code
         FROM purch_data INNER JOIN suppliers
         ON purch_data.creditor_id=suppliers.creditor_id
         WHERE stock_id = " . DB::_escape($stock_id);
@@ -166,8 +161,7 @@
        * @return \ADV\Core\DB\Query\Result|Array
        */
       public static function get($selected_id, $stock_id) {
-        $sql
-                = "SELECT purch_data.*,suppliers.name FROM purch_data
+        $sql    = "SELECT purch_data.*,suppliers.name FROM purch_data
         INNER JOIN suppliers ON purch_data.creditor_id=suppliers.creditor_id
         WHERE purch_data.creditor_id=" . DB::_escape($selected_id) . "
         AND purch_data.stock_id=" . DB::_escape($stock_id);

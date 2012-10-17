@@ -9,8 +9,6 @@
    **/
   namespace ADV\Core\DB\Query;
 
-  use PDO, PDOStatement, \PDOException, \PDORow;
-
   /**
 
    */

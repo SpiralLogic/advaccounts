@@ -498,7 +498,7 @@ debit freight re-charged and debit sales */
      */
     public static function display_items($title, $order) {
       Display::heading($title);
-      Display::div_start('items_table');
+      Ajax::_start_div('items_table');
       Table::start('padded grid width90');
       $th = array(
         _("Item Code"),
@@ -556,7 +556,7 @@ debit freight re-charged and debit sales */
       Table::label(_("Credit Note Total"), $display_total, "colspan=$colspan class='alignright bold'", "class='amount'", 2);
       Table::footEnd();
       Table::end();
-      Display::div_end();
+      Ajax::_end_div();
     }
     /**
      * @static
@@ -622,7 +622,7 @@ debit freight re-charged and debit sales */
       if (isset($_POST['_CreditType_update'])) {
         Ajax::_activate('options');
       }
-      Display::div_start('options');
+      Ajax::_start_div('options');
       Table::start('standard');
       Sales_Credit::row(_("Credit Note Type"), 'CreditType', null, true);
       if ($_POST['CreditType'] == "Return") {
@@ -637,7 +637,7 @@ debit freight re-charged and debit sales */
       }
       Forms::textareaRow(_("Memo"), "CreditText", null, 51, 3);
       echo "</table>";
-      Display::div_end();
+      Ajax::_end_div();
     }
     /**
      * @static

@@ -197,7 +197,7 @@ all the info to do the necessary entries without looking up ie additional querie
           echo "</div>";
         }
       }
-      Display::div_start('gl_items');
+      Ajax::_start_div('gl_items');
       Table::start('padded grid width80');
       $dim = DB_Company::get_pref('use_dimension');
       if ($dim == 2) {
@@ -261,7 +261,7 @@ all the info to do the necessary entries without looking up ie additional querie
         ($mode == 1 ? 3 : 0)
       );
       Table::end(1);
-      Display::div_end();
+      Ajax::_end_div();
       return $total_gl_value;
     }
   }

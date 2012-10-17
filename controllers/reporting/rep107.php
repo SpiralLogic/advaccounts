@@ -124,7 +124,7 @@
         $linetype          = true;
         $doctype           = $j;
         $doc_included      = $doc_sub_total = $doc_shipping = $doc_amount = $doc_total_invoice = $doc_invoice_no = '';
-          include(REPORTS_PATH . 'includes' . DS . 'doctext.php');
+        include(PATH_REPORTS . 'includes' . DS . 'doctext.php');
         $rep->TextCol(3, 7, $doc_sub_total, -2);
         $rep->TextCol(7, 8, $display_sub_total, -2);
         $rep->NewLine();

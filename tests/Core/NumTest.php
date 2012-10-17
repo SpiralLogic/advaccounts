@@ -23,7 +23,7 @@
     protected function tearDown() {
     }
     /**
-     * @covers ADV\Core\Num::_price_format
+     * @covers ADV\Core\Num::priceformat
      * @todo   Implement testpriceFormat().
      */
     public function testpriceFormat() {
@@ -38,7 +38,7 @@
       $this->assertSame($expected, $actual);
     }
     /**
-     * @covers ADV\Core\Num::_round
+     * @covers ADV\Core\Num::round
      * @todo   Implement testRound().
      */
     public function test_Round() {
@@ -56,7 +56,7 @@
       $this->assertEquals($expected, $actual);
     }
     /**
-     * @covers  ADV\Core\Num::_format
+     * @covers  ADV\Core\Num::format
      * @depends test_Round
      */
     public function test_Format() {
@@ -74,7 +74,7 @@
       $this->assertEquals($expected, $actual);
     }
     /**
-     * @covers  ADV\Core\Num::__priceDecimal
+     * @covers  ADV\Core\Num::priceDecimal
      * @depends test_Format
      */
     public function test_priceDecimal() {
@@ -89,7 +89,7 @@
       $this->assertEquals($expected, $actual);
     }
     /**
-     * @covers ADV\Core\Num::__exrateFormat
+     * @covers ADV\Core\Num::exrateFormat
      */
     public function test_exrateFormat() {
 
@@ -101,7 +101,7 @@
       $this->assertSame('25.5556', $actual);
     }
     /**
-     * @covers ADV\Core\Num::__percentFormat
+     * @covers ADV\Core\Num::percentFormat
      */
     public function test_percentFormat() {
       // Remove the following lines when you implement this test.
@@ -113,7 +113,7 @@
       $this->assertSame('26', $actual);
     }
     /**
-     * @covers ADV\Core\Num::__round_to_nearest_cents
+     * @covers ADV\Core\Num::tonearestcents
      */
     public function test_toNearestCents() {
       $actual   = $this->object->toNearestCents(1111.125, 100);
@@ -127,7 +127,7 @@
       $this->assertEquals($expected, $actual);
     }
     /**
-     * @covers ADV\Core\Num::_to_words
+     * @covers ADV\Core\Num::towords
      * @todo   Implement testtoWords().
      */
     public function test_toWords() {

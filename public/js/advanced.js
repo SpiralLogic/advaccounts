@@ -1,9 +1,8 @@
 var Adv = {};
 (function (window, $, undefined) {
   var Adv = {
-    loader:        document.getElementById('ajaxmark'),
+
     fieldsChanged: 0,
-    debug:         { ajax: true},
     lastXhr:       '',
     o:             {$content: $("#content"), tabs: {}, wrapper: $("#wrapper"), header: $("#header"), body: $("body"), autocomplete: {}}
   };
@@ -20,61 +19,30 @@ var Adv = {};
         });
       }
     });
-    $.fn.quickEach = (function () {
-      var jq = jQuery([1]);
-      return function (c) {
-        var i = -1, el, len = this.length;
-        try {
-          while (++i < len && (el = jq[0] = this[i]) && c.call(jq, i, el) !== false) {
-          }
-        }
-        catch (e) {
-          delete jq[0];
-          throw e;
-        }
-        delete jq[0];
-        return this;
-      };
-    }());
-    $.easing['jswing'] = $.easing['swing'];
-    $.extend(jQuery.easing, {
-      def:         'easeOutExpo',
-      easeOutExpo: function (x, t, b, c, d) {
-        return (t == d) ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
-      }
-    });
     var extender = $.extend;
-    $(this.loader).ajaxStart(function () {
-      Adv.loader.on();
-      Adv.ScrollDetect.loaded = false;
-      Adv.Forms.setFocus(true);
-      if (Adv.debug.ajax) {
-        console.time('ajax')
-      }
-    }).ajaxStop(function () {
-                  Adv.loader.off();
-                  if (Adv.debug.ajax) {
-                    console.timeEnd('ajax');
-                  }
-                });
     this.extend = function (object) {extender(Adv, object)};
-    extender(Adv.loader, {
-      off: function (img) {
-        if (img) {
-          $(document.body).addClass('wait');
-          Adv.loader.src = user.theme + 'images/' + img;
-          Adv.loader.style.visibility = 'visible';
-        }
-        else {
-          $(document.body).removeClass('wait');
-          Adv.loader.style.visibility = 'hidden';
-        }
+    this.loader = {
+      off:     function () {
+        Adv.o.header.removeClass('spinner warning progress');
+        console.timeEnd('ajax');
+        $(document.body).removeClass('wait');
       },
-      on:  function (tout) {
-        var img = tout > 50000 ? 'progressbar.gif' : 'spinner-blue.gif';
-        Adv.loader.off(img);
-      }
-    })
+      warning: function () {
+        Adv.loader.off();
+        Adv.o.header.addClass('warning');
+        $(document.body).removeClass('wait');
+        console.timeEnd('ajax');
+      },
+      on:      function (tout) {
+        Adv.o.header.removeClass('warning');
+        tout = tout > 50000 ? 'progress' : 'spinner';
+        Adv.o.header.addClass(tout);
+        $(document.body).addClass('wait');
+        Adv.ScrollDetect.loaded = false;
+        Adv.Forms.setFocus(true);
+        console.time('ajax');
+      }};
+    this.o.header.ajaxStart(Adv.loader.on).ajaxStop(Adv.loader.off);
   }).apply(Adv);
   window.Adv = Adv;
 })(window, jQuery);
@@ -378,7 +346,22 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                    return els;
                  },
                  setFormValue:    function (id, value, disabled) {
-                   var isdefault, els = Adv.Forms.findInputEl(id);
+                   var isdefault, els, values = {};
+                   if (value !== null && typeof value === 'object') {
+                     if (value.value === undefined) {
+                       $.each(value, function (k, v) {
+                         if (v !== null && typeof v === 'object') {
+                           values[id + '[' + k + ']'] = v;
+                         }
+                         else {
+                           values[k] = v;
+                         }
+                       });
+                       return Adv.Forms.setFormValues(values);
+                     }
+                     value = value.value;
+                   }
+                   els = Adv.Forms.findInputEl(id);
                    isdefault = !!arguments[3];
                    $.each(els, function (k, el) {
                      _setFormValue(el, value, disabled, isdefault);
@@ -388,9 +371,9 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                  setFormValues:   function (data) {
                    var focused = false;
                    $.each(data, function (k, v) {
-                     var el, label, value = (v.value !== undefined) ? v.value : v;
-                     el = Adv.Forms.setFormValue(k, value);
-                     if (el.type === 'hidden') {
+                     var el, label;
+                     el = Adv.Forms.setFormValue(k, v);
+                     if (!el || el.type === 'hidden') {
                        return;
                      }
                      if (!focused && v.focus !== undefined) {
@@ -421,7 +404,6 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                    if (!$.isFunction(callback)) {
                      var idField = Adv.Forms.findInputEl(callback);
                      callback = function (data) {
-                       console.log($(idField));
                        if ($(idField).length) {
                          $(idField).val(data.id);
                        }
@@ -537,7 +519,7 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                    val = +val.replace(new RegExp('\\' + user.ds, 'g'), '.');
                    return isNaN(val) ? 0 : val;
                  },
-                 setFocus:        function (name, byId) {
+                 setFocus:        function (name, byId, frompos) {
                    var el, pos, $el;
                    if (name === false) {
                      focusOff = true;
@@ -578,7 +560,12 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                    // The timeout is needed to prevent unpredictable behaviour on IE & Gecko.
                    // Using tmp var prevents crash on IE5
                    $el = $(el);
-                   pos = $el.offset().top - 100;
+                   if (frompos === undefined) {
+                     pos = $el.offset().top - 100;
+                   }
+                   else {
+                     pos = $el.offset().top - $(window).height() + 100;
+                   }
                    if (tooltip) {
                      tooltip.tooltip('destroy');
                    }
@@ -805,22 +792,47 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                    return false;
                  }
                };
-             }())
-           });
+             }()),
+             inView:        function (el) {
+               var rect = el.getBoundingClientRect();
+               return (
+                 rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth
+                 )
+             }         });
 $(function () {
   var tabs = $("#tabs")//
-    , topmenu = $('#topmenu,#tabs>ul')//
+    , topmenu = $('#topmenu,#tabs>ul') //
     , prevFocus = false//
     , changing = 0//
+    , closeTimer//
     , current = topmenu.find('.active')//
     , topLevel = topmenu.children('li')//
     , closeMenu = function () {
-      topLevel.removeClass('hover');
+      topLevel.removeClass('hover').find('li').removeClass('hide');
       if (prevFocus) {
         prevFocus.focus();
         prevFocus = false;
       }
       changing = 0;
+    }//
+    , checkMenu = function () {
+      var $this = $(this), next = $this.next();
+      if (!next.length) {
+        return;
+      }
+      if (( !Adv.inView(next[0]))) {
+        current.find('li').not('.hide').first().addClass('hide');
+        if (next.hasClass('title')) {
+          checkMenu.apply(next[0]);
+        }
+      }
+      else if ($this.not('.hide')) {
+        next = $this.prev();
+        next.removeClass('hide').prev().filter('.title').removeClass('hide');
+        if (changing == 2 && next.hasClass('title')) {
+          checkMenu.apply(next[0]);
+        }
+      }
     }//
     , currentChanged = function (next, skip) {
       var links;
@@ -832,7 +844,7 @@ $(function () {
           return
         }
         else {
-          current.removeClass('hover');
+          current.removeClass('hover').find('li').removeClass('hide');
         }
       }
       next.addClass('hover');
@@ -848,9 +860,18 @@ $(function () {
       switch (event.which) {
         case 37:
           currentChanged(current.prev());
-          break;
+          return false;
         case 39:
           currentChanged(current.next());
+          return false;
+        case 38:
+          checkMenu.apply(this.parentElement);
+          $(this).parent().prevUntil('', ':has(a)').eq(0).find('a').focus();
+          return false;
+        case 40:
+          checkMenu.apply(this.parentElement);
+          $(this).parent().nextUntil('', ':has(a)').eq(0).find('a').focus();
+          return false;
           break;
         case 9:
           currentChanged((event.shiftKey === true ? current.prev() : current.next()));
@@ -861,7 +882,7 @@ $(function () {
         default:
       }
     };
-  topLevel.on('mouseenter ', function () {
+  topLevel.on('mouseenter', function () {
     var $this = $(this);
     topLevel.removeClass('hover');
     current = $this.addClass('hover');
@@ -869,27 +890,32 @@ $(function () {
       $this.find('a').eq(1).focus();
     }
   });
+  topLevel.on('mouseenter', 'li', checkMenu);
   topLevel.children('a').on({
                               focus:    function () {
                                 currentChanged($(this).parent(), true);
                               }, //
-                              focusout: function () {$(this).parent().removeClass('hover')}, //
+                              focusout: function () {$(this).parent().removeClass('hover').find('li').removeClass('hide')}, //
                               keydown:  keyNav});
   topmenu.find('ul').find('a').on({
                                     keydown:    keyNav,
                                     mouseenter: function () {
-                                      this.focus();
+                                      if (changing < 2) {
+                                        this.focus();
+                                      }
                                     }
                                   });
   tabs.on({ //
-            mouseleave:    function () {
+            mouseleave: function () {
               if (changing < 2) {
-                closeMenu();
+                closeTimer = setTimeout(closeMenu, 400);
               }
               tabs.off('mousemove.tabs');
-            }, mouseenter: function () {
-      tabs.on('mousemove.tabs', function () {changing = 1;});
-    }
+            }, //
+            mouseenter: function () {
+              clearTimeout(closeTimer);
+              tabs.on('mousemove.tabs', function () {changing = 1;});
+            }
           });
   Adv.Status.open();
   $(document).on('focusout', ':input',function () {

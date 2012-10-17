@@ -28,7 +28,7 @@
     protected function tearDown() {
     }
     /**
-     * @covers ADV\Core\Input\Input::__post
+     * @covers ADV\Core\Input\Input::post
      */
     public function testPost() {
       $_POST['test0'] = 'wawa';
@@ -99,10 +99,18 @@
       $this->assertSame(7, $this->object->post('test3', Input::NUMERIC, 1));
     }
     /**
-     * @covers ADV\Core\Input\Input::__get
+     * @covers ADV\Core\Input\Input::get
      * @todo   Implement testGet().
      */
     public function testGet() {
+      $expected = null;
+      $actual   = $this->object->get('test0');
+      $this->assertSame($expected, $actual);
+      $actual = $this->object->get('test0', null);
+      $this->assertSame($expected, $actual);
+      $expected = false;
+      $actual   = $this->object->get('test0', null, false);
+      $this->assertSame($expected, $actual);
       $_GET['test0'] = 'wawa';
       $expected      = 'wawa';
       $actual        = $this->object->get('test0');
@@ -163,7 +171,7 @@
       $this->assertSame(7, $this->object->get('test3', Input::NUMERIC, 1));
     }
     /**
-     * @covers ADV\Core\Input\Input::__request
+     * @covers ADV\Core\Input\Input::request
      * @todo   Implement testRequest().
      */
     public function testRequest() {
@@ -195,7 +203,7 @@
       $_POST['test3'] = 7;
     }
     /**
-     * @covers ADV\Core\Input\$this->object->_getPost
+     * @covers ADV\Core\Input\Input::getPost
      * @todo   Implement testgetPost().
      */
     public function testGetPost() {
@@ -207,7 +215,35 @@
       $this->assertSame(8, $this->object->getPost('test3'));
     }
     /**
-     * @covers ADV\Core\Input\$this->object->_getPostGlobal
+     * @covers ADV\Core\Input\Input::firstThenSecond
+     */
+    public function testFirstThenSecond() {
+      $class  = new \ReflectionClass('ADV\\Core\\Input\\Input');
+      $method = $class->getMethod('firstThenSecond');
+      $method->setAccessible(true);
+      $actual = $method->invokeArgs($this->object, [Input::$get, Input::$post, 'test3', null, false]);
+      $this->assertfalse($actual);
+
+      $expected       = 7;
+      $_GET['test3']  = 7;
+      $_POST['test3'] = 8;
+      $actual         = $method->invokeArgs($this->object, [Input::$get, Input::$post, 'test3']);
+      $this->assertSame($expected, $actual);
+      $expected = 8;
+      $actual   = $method->invokeArgs($this->object, [Input::$post, Input::$get, 'test3']);
+      $this->assertSame($expected, $actual);
+      $expected = 7;
+      unset($_POST['test3']);
+      $actual = $method->invokeArgs($this->object, [Input::$post, Input::$get, 'test3']);
+      $this->assertSame($expected, $actual);
+      unset($_GET['test3']);
+      $actual = $method->invokeArgs($this->object, [Input::$post, Input::$get, 'test3']);
+      $this->assertNull($actual);
+      $actual = $method->invokeArgs($this->object, [Input::$post, Input::$get, 'test3', null, false]);
+      $this->assertFalse($actual);
+    }
+    /**
+     * @covers ADV\Core\Input\Input::getPostGlobal
      * @todo   Implement testgetPostGlobal().
      */
     public function testgetPostGlobal() {
@@ -217,11 +253,11 @@
       $this->assertSame(7, $this->object->getPostGlobal('test3'));
       unset($_GET['test3']);
       unset($_POST['test3']);
-      $_SESSION['globals']['test3'] = 9;
+      $_SESSION['_globals']['test3'] = 9;
       $this->assertSame(9, $this->object->getPostGlobal('test3'));
     }
     /**
-     * @covers ADV\Core\Input\Input::__postGlobal
+     * @covers ADV\Core\Input\Input::postGlobal
      * @todo   Implement testpostGlobal().
      */
     public function testpostGlobal() {
@@ -231,11 +267,20 @@
       $this->assertSame(8, $this->object->postGlobal('test3'));
       unset($_GET['test3']);
       unset($_POST['test3']);
-      $_SESSION['globals']['test3'] = 9;
+      $_SESSION['_globals']['test3'] = 9;
       $this->assertSame(9, $this->object->postGlobal('test3'));
+      $_POST['test4']                = 'right';
+      $_SESSION['_globals']['test4'] = 'wrong';
+      $actual                        = $this->object->postGlobal('test4', null, 'wrong');
+      $this->assertSame('right', $actual);
+      $_SESSION['_globals']['test5'] = 'wrong';
+      $actual                        = $this->object->postGlobal('test5', null, 'wrong2');
+      $this->assertSame('wrong', $actual);
+      $actual = $this->object->postGlobal('test6', null, 'usethisone');
+      $this->assertSame('usethisone', $actual);
     }
     /**
-     * @covers ADV\Core\Input\Input::__postGet
+     * @covers ADV\Core\Input\Input::postGet
      * @todo   Implement testpostGet().
      */
     public function testpostGet() {
@@ -247,7 +292,7 @@
       $this->assertSame(8, $this->object->postGet('test3'));
     }
     /**
-     * @covers ADV\Core\Input\Input::__session
+     * @covers ADV\Core\Input\Input::session
      * @todo   Implement testSession().
      */
     public function testSession() {
@@ -255,7 +300,7 @@
       $this->assertSame(7, $this->object->session('test3', Input::NUMERIC));
     }
     /**
-     * @covers ADV\Core\Input\Input::__hasPost
+     * @covers ADV\Core\Input\Input::hasPost
      * @todo   Implement testhasPost().
      */
     public function testhasPost() {
@@ -271,7 +316,7 @@
       $this->assertSame(true, $this->object->hasPost('test', 'test2'), 'Both are set but test2 is set but is null so it should return false!');
     }
     /**
-     * @covers ADV\Core\Input\Input::__hasGet
+     * @covers ADV\Core\Input\Input::hasGet
      * @todo   Implement testhasGet().
      */
     public function testhasGet() {
@@ -280,7 +325,7 @@
       $this->assertSame(false, $this->object->hasGet('test', 'test2'));
     }
     /**
-     * @covers ADV\Core\Input\Input::__has
+     * @covers ADV\Core\Input\Input::has
      * @todo   Implement testHas().
      */
     public function testHas() {
@@ -289,7 +334,7 @@
       $this->assertSame(false, $this->object->has('test', 'test2'));
     }
     /**
-     * @covers ADV\Core\Input\Input::__hasSession
+     * @covers ADV\Core\Input\Input::hasSession
      * @todo   Implement testhasSession().
      */
     public function testhasSession() {

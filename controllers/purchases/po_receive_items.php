@@ -15,7 +15,7 @@
     Event::success(_("Purchase Order Delivery has been processed"));
     Display::note(GL_UI::viewTrans($trans_type, $grn, _("&View this Delivery")));
     Display::link_params("/purchases/invoice", _("Enter purchase &invoice for this receival"), "New=1&PONumber=" . $_GET[ADDED_ID]);
-    Display::link_no_params("/purchases/search/orders", _("Select a different &purchase order for receiving items against"));
+    Display::link_params("/purchases/search/orders", _("Select a different &purchase order for receiving items against"));
     Page::footer_exit();
   }
   $order = Orders::session_get() ? : null;
@@ -57,7 +57,7 @@ set from the post to the quantity to be received in this receival*/
           "This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."
         )
       );
-      Display::link_no_params("/purchases/search/orders", _("Select a different purchase order for receiving goods against"));
+      Display::link_params("/purchases/search/orders", _("Select a different purchase order for receiving goods against"));
       Display::link_params("/purchases/po_receive_items.php", _("Re-Read the updated purchase order for receiving goods against"), "PONumber=" . $order->order_no);
       unset($order->line_items, $order, $_POST['ProcessGoodsReceived']);
       Ajax::_activate('_page_body');
@@ -75,7 +75,7 @@ set from the post to the quantity to be received in this receival*/
   Forms::hidden('order_id');
   Purch_GRN::display($order, true);
   Display::heading(_("Items to Receive"));
-  Display::div_start('grn_items');
+  Ajax::_start_div('grn_items');
   Table::start('padded grid width90');
   $th = array(
     _("Item Code"),
@@ -128,7 +128,7 @@ set from the post to the quantity to be received in this receival*/
   $display_total = Num::_format($total + $_POST['freight'], User::price_dec());
   Table::label(_("Total value of items received"), $display_total, "colspan=9 class='alignright'", ' class="alignright nowrap"');
   Table::end();
-  Display::div_end();
+  Ajax::_end_div();
   Display::link_params("/purchases/order", _("Edit This Purchase Order"), "ModifyOrder=" . $order->order_no);
   echo '<br>';
   Forms::submitCenterBegin('Update', _("Update Totals"), '', true);

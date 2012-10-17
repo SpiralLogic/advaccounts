@@ -68,7 +68,7 @@
     echo '<br>';
     Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
     Reporting::email_link($invoice_no, _("Email This Invoice"), true, ST_SALESINVOICE, 'EmailLink', null, $emails, 1);
-    Display::link_no_params("/sales/search/transactions", _("Select A Different &Invoice to Modify"));
+    Display::link_params("/sales/search/transactions", _("Select A Different &Invoice to Modify"));
     Page::footer_exit();
   } elseif (isset($_GET['RemoveDN'])) {
     for ($line_no = 0; $line_no < count($order->line_items); $line_no++) {
@@ -123,7 +123,7 @@
   } elseif (!$order && !isset($_GET['order_id'])) {
     /* This page can only be called with a delivery for invoicing or invoice no for edit */
     Event::error(_("This page can only be opened after delivery selection. Please select delivery to invoicing first."));
-    Display::link_no_params("/sales/search/deliveries", _("Select Delivery to Invoice"));
+    Display::link_params("/sales/search/deliveries", _("Select Delivery to Invoice"));
     Page::end();
     exit;
   } elseif ($order && !Sales_Invoice::check_quantities($order)) {
@@ -228,7 +228,7 @@
     exit();
   }
   Display::heading(_("Invoice Items"));
-  Display::div_start('Items');
+  Ajax::_start_div('Items');
   Table::start('padded grid width90');
   $th = array(
     _("Item Code"),
@@ -334,7 +334,7 @@ was not fully delivered the first time ?? */
     $display_sub_total,
     "colspan=$colspan class='alignright bold'",
     "class='alignright'",
-    $is_batch_invoice ? 2 : 0
+    ($is_batch_invoice ? 2 : 0)
   );
   $taxes         = $order->get_taxes(Validation::input_num('ChargeFreightCost'));
   $tax_total     = Tax::edit_items($taxes, $colspan, $order->tax_included, $is_batch_invoice ? 2 : 0);
@@ -344,11 +344,11 @@ was not fully delivered the first time ?? */
     $display_total,
     "colspan=$colspan class='alignright bold'",
     "class='alignright'",
-    $is_batch_invoice ? 2 : 0
+    ($is_batch_invoice ? 2 : 0)
   );
   Table::footEnd();
   Table::end(1);
-  Display::div_end();
+  Ajax::_end_div();
   Table::start('standard');
   Forms::textareaRow(_("Memo"), 'Comments', null, 50, 4);
   Table::end(1);

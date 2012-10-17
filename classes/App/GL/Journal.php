@@ -32,21 +32,18 @@
       $new = $order->order_id == 0;
       Table::startOuter('standard width90');
       Table::section(1);
-      echo '<tr>';
+      echo "<tr>";
       Forms::dateCells(_("Date:"), 'date_', '', $new);
       Table::section(2, $qes ? "20%" : "50%");
       Forms::refCells(_("Reference:"), 'ref', '');
       Forms::hidden('ref_original');
-      echo '</tr>';
       if ($new) {
         Table::section(3, "20%");
-        echo '<tr>';
         Forms::checkCells(_("Reverse Transaction:"), 'Reverse', null);
-        echo '</tr>';
       }
+      echo "</tr><tr>";
       if ($qes !== false) {
         Table::section(3, "50%");
-        echo '<tr>';
         GL_QuickEntry::cells(_("Quick Entry") . ":", 'person_id', null, QE_JOURNAL, true);
         $qid = GL_QuickEntry::get(Input::_post('person_id'));
         if (Forms::isListUpdated('person_id')) {
@@ -60,7 +57,6 @@
           null,
           "&nbsp;&nbsp;" . Forms::submit('go', _("Go"), false, false, true)
         );
-        echo '</tr>';
       }
       Table::endOuter(1);
     }
@@ -73,7 +69,7 @@
     public static function items($title, &$order) {
       Display::heading($title);
       $dim = DB_Company::get_pref('use_dimension');
-      Display::div_start('items_table');
+      Ajax::_start_div('items_table');
       Table::start('padded grid width95');
       if ($dim == 2) {
         $th = array(
@@ -150,7 +146,7 @@
         echo '</tr>';
       }
       Table::end();
-      Display::div_end();
+      Ajax::_end_div();
     }
     /**
      * @static
@@ -245,7 +241,7 @@
      */
     public static function  view($type, $trans_no, $label = "", $icon = false, $class = '', $id = '', $raw = false) {
       if ($type == ST_JOURNAL || $type == ST_COSTUPDATE) {
-        $viewer = "gl/view/gl_trans.php?type_id=$type&trans_no=$trans_no";
+        $viewer = "banking/view/gl_trans.php?type_id=$type&trans_no=$trans_no";
       } else {
         return null;
       }

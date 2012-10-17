@@ -47,6 +47,6 @@
     }
   }
   Table::end(1);
-  Display::is_voided(ST_LOCTRANSFER, $trans_no, _("This transfer has been voided."));
+  Voiding::is_voided(ST_LOCTRANSFER, $trans_no, _("This transfer has been voided."));
   Page::end(true);
 

@@ -1,43 +1,43 @@
 console.profile();
 Adv.extend({
-  revertState:function (formid) {
-    var form = document.getElementsByTagName('form')[0];
-    form.reset();
-    Adv.o.companysearch.prop('disabled', false);
-    Adv.btnConfirm.hide();
-    Adv.btnCancel.hide();
-    Adv.btnNew.show();
-    Branches.btnBranchAdd();
-    Adv.Forms.resetHighlights();
-  },
-  resetState: function () {
-    $("#tabs0 input, #tabs0 textarea").empty();
-    $("#company").val('');
-    Company.fetch(0);
-    Adv.fieldsChanged = 0;
-    Adv.btnCancel.hide();
-    Adv.btnConfirm.hide();
-    Adv.btnNew.show();
-  }
-});
+             revertState: function (formid) {
+               var form = document.getElementsByTagName('form')[0];
+               form.reset();
+               Adv.o.companysearch.prop('disabled', false);
+               Adv.btnConfirm.hide();
+               Adv.btnCancel.hide();
+               Adv.btnNew.show();
+               Branches.btnBranchAdd();
+               Adv.Forms.resetHighlights();
+             },
+             resetState:  function () {
+               $("#tabs0 input, #tabs0 textarea").empty();
+               $("#company").val('');
+               Company.fetch(0);
+               Adv.fieldsChanged = 0;
+               Adv.btnCancel.hide();
+               Adv.btnConfirm.hide();
+               Adv.btnNew.show();
+             }
+           });
 Adv.extend({
-  getContactLog:function (id, type) {
-    var data = {
-      contact_id:id,
-      type:      type
-    };
-    $.post('contact_log.php', data, function (data) {
-      Adv.setContactLog(data);
-    }, 'json');
-  },
-  setContactLog:function (data) {
-    var logbox = $("[id='messageLog']").val(''), str = '';
-    $.each(data, function (key, message) {
-      str += '[' + message['date'] + '] Contact: ' + message['contact_name'] + "\nMessage:  " + message['message'] + "\n\n";
-    });
-    logbox.val(str);
-  }
-});
+             getContactLog: function (id, type) {
+               var data = {
+                 contact_id: id,
+                 type:       type
+               };
+               $.post('contact_log.php', data, function (data) {
+                 Adv.setContactLog(data);
+               }, 'json');
+             },
+             setContactLog: function (data) {
+               var logbox = $("[id='messageLog']").val(''), str = '';
+               $.each(data, function (key, message) {
+                 str += '[' + message['date'] + '] Contact: ' + message['contact_name'] + "\nMessage:  " + message['message'] + "\n\n";
+               });
+               logbox.val(str);
+             }
+           });
 (function (window, $, undefined) {
   var Contacts = {};
   (function () {
@@ -85,8 +85,8 @@ Adv.extend({
 var Branches = function () {
   var current = {}, list = $("#branchList"), menu = $("#branchMenu"), addBtn = $(".addBranchBtn").eq(0), delBtn = $(".delBranchBtn").eq(0);
   return {
-    adding:      false,
-    init:        function () {
+    adding:       false,
+    init:         function () {
       menu.hide();
       list.change(function () {
         if (!$(this).val().length) {
@@ -96,11 +96,11 @@ var Branches = function () {
         Branches.change(ToBranch);
       })
     },
-    empty:       function () {
+    empty:        function () {
       list.empty();
       return this;
     },
-    add:         function (data) {
+    add:          function (data) {
       if (data.branch_id === undefined) {
         var toAdd;
         $.each(data, function (key, value) {
@@ -113,14 +113,14 @@ var Branches = function () {
       }
       return this;
     },
-    get:         function () {
+    get:          function () {
       return current
     },
-    setval:      function (key, value) {
+    setval:       function (key, value) {
       current[key] = value;
       Company.get().branches[current.branch_id][key] = value;
     },
-    change:      function (data) {
+    change:       function (data) {
       if (typeof data !== 'object') {
         data = Company.get().branches[data];
       }
@@ -137,8 +137,8 @@ var Branches = function () {
         Branches.btnBranchAdd();
       }
     },
-    New:         function () {
-      $.post('#', {_action:'newBranch', id:Company.get().id}, function (data) {
+    New:          function () {
+      $.post('#', {_action: 'newBranch', id: Company.get().id}, function (data) {
         data = data.branch;
         Branches.add(data).change(data);
         Company.get().branches[data.branch_id] = data;
@@ -146,13 +146,13 @@ var Branches = function () {
         Branches.adding = true;
       }, 'json');
     },
-    remove:      function () {
-      $.post('#', {_action:'deleteBranch', branch_id:current.id, id:Company.get().id}, function (data) {
+    remove:       function () {
+      $.post('#', {_action: 'deleteBranch', branch_id: current.id, id: Company.get().id}, function (data) {
         list.find("[value=" + current.id + "]").remove();
         Branches.change(list.val());
       }, 'json');
     },
-    btnBranchAdd:function () {
+    btnBranchAdd: function () {
       addBtn.off('click');
       delBtn.off('click');
       if (!Branches.adding && current.branch_id > 0 && Company.get().id > 0) {
@@ -175,7 +175,7 @@ var Branches = function () {
 }();
 var Accounts = function () {
   return {
-    change:function (data) {
+    change: function (data) {
       $.each(data, function (id, value) {
         Adv.Forms.setFormDefault('accounts[' + id + ']', value);
       })
@@ -185,42 +185,41 @@ var Accounts = function () {
 var Company = function () {
   var company, transactions = $('#transactions'), companyIDs = $("#companyIDs"), $companyID = $("#name").attr('autocomplete', 'off');
   return {
-    init:         function () {
+    init:          function () {
       Branches.init();
       $companyID.autocomplete({
-        source:   function (request, response) {
-          request['type'] = (company.type == 1 ? 'Debtor' : 'Creditor');
-          var lastXhr = $.getJSON('/search', request, function (data, status, xhr) {
-            if (xhr === lastXhr) {
-              response(data);
-            }
-          });
-        },
-        select:   function (event, ui) {
-          Company.fetch(ui.item);
-          return false;
-        },
-        focus:    function () {
-          return false;
-        },
-        autoFocus:false, delay:10, 'position':{
-          my:       "left middle",
-          at:       "right top",
-          of:       $companyID,
-          collision:"none"
+                                source:    function (request, response) {
+                                  request['type'] = (company.type == 1 ? 'Debtor' : 'Creditor');
+                                  var lastXhr = $.getJSON('/search', request, function (data, status, xhr) {
+                                    if (xhr === lastXhr) {
+                                      response(data);
+                                    }
+                                  });
+                                },
+                                select:    function (event, ui) {
+                                  Company.fetch(ui.item);
+                                  return false;
+                                },
+                                focus:     function () {
+                                  return false;
+                                },
+                                autoFocus: false, delay: 10, 'position': {
+          my:        "left middle",
+          at:        "right top",
+          of:        $companyID,
+          collision: "none"
         }
-      }).on('paste', function () {
-          var $this = $(this);
-          window.setTimeout(function () {$this.autocomplete('search', $this.val())}, 1)
-        });
+                              }).on('paste', function () {
+                                      var $this = $(this);
+                                      window.setTimeout(function () {$this.autocomplete('search', $this.val())}, 1)
+                                    });
     },
-    setValues:    function (content) {
+    setValues:     function (content) {
       if (!content.company) {
         return;
       }
       company = content.company;
       var data = company, activetabs = [];
-      console.log(activetabs);
       if ((Number(company.id) == 0)) {
         activetabs = [1, 2, 3, 4];
         Adv.o.tabs[0].tabs('select', 0);
@@ -253,22 +252,22 @@ var Company = function () {
       });
       Adv.Forms.resetHighlights();
     },
-    hideSearch:   function () {
+    hideSearch:    function () {
       $companyID.autocomplete('disable');
     },
-    showSearch:   function () {
+    showSearch:    function () {
       $companyID.autocomplete('enable');
     },
-    fetch:        function (item) {
+    fetch:         function (item) {
       if (typeof(item) === "number") {
-        item = {id:item};
+        item = {id: item};
       }
-      $.post('#', {_action:'fetch', id:item.id}, function (data) {
+      $.post('#', {_action: 'fetch', id: item.id}, function (data) {
         Company.setValues(data);
       }, 'json');
       Company.getFrames(item.id);
     },
-    getFrames:    function (id, data) {
+    getFrames:     function (id, data) {
       if (id === undefined && company.id) {
         id = company.id
       }
@@ -279,7 +278,7 @@ var Company = function () {
       data = data || '';
       $invoiceFrame.load($invoiceFrameSrc, '&' + data + "&frame=1&id=" + id);
     },
-    useShipFields:function () {
+    useShipFields: function () {
       Adv.accFields.each(function () {
         var newval, $this = $(this), name = $this.attr('name').match(/([^[]*)\[(.+)\]/);
         if ($this.val().length > 0) {
@@ -300,10 +299,10 @@ var Company = function () {
         Company.set(name[0], newval);
       });
     },
-    Save:         function () {
+    Save:          function () {
       Branches.btnBranchAdd();
       Adv.btnConfirm.prop('disabled', true);
-      $.post('#', {_action:'save', company:Company.get()}, function (data) {
+      $.post('#', {_action: 'save', company: Company.get()}, function (data) {
         Adv.btnConfirm.prop('disabled', false);
         if (data.status && data.status.status) {
           Branches.adding = false;
@@ -312,7 +311,7 @@ var Company = function () {
         }
       }, 'json');
     },
-    set:          function (key, value) {
+    set:           function (key, value) {
       var group, valarray = key.match(/([^[]*)\[(.+)\]/);
       if (valarray !== null) {
         group = valarray[1];
@@ -332,29 +331,29 @@ var Company = function () {
           company[key] = value;
       }
     },
-    get:          function () {
+    get:           function () {
       return company
     }
   }
 }();
 $(function () {
   Adv.extend({
-    accFields:    $("[name^='accounts']"),
-    fieldsChanged:0,
-    btnConfirm:   $("#btnConfirm").mousedown(function () {
-      Company.Save();
-      return false;
-    }).hide(),
-    btnCancel:    $("#btnCancel").mousedown(function () {
-      Adv.revertState();
-      return false;
-    }).hide(),
-    btnNew:       $("#btnNew").mousedown(function () {
-      Adv.resetState();
-      return false;
-    }),
-    ContactLog:   $("#contactLog").hide()
-  });
+               accFields:     $("[name^='accounts']"),
+               fieldsChanged: 0,
+               btnConfirm:    $("#btnConfirm").mousedown(function () {
+                 Company.Save();
+                 return false;
+               }).hide(),
+               btnCancel:     $("#btnCancel").mousedown(function () {
+                 Adv.revertState();
+                 return false;
+               }).hide(),
+               btnNew:        $("#btnNew").mousedown(function () {
+                 Adv.resetState();
+                 return false;
+               }),
+               ContactLog:    $("#contactLog").hide()
+             });
   if (!Adv.accFields.length) {
     Adv.accFields = $("[name^='supp_']");
   }
@@ -368,44 +367,43 @@ $(function () {
     return false;
   });
   Adv.ContactLog.dialog({
-    autoOpen: false,
-    show:     "slide",
-    resizable:false,
-    hide:     "explode",
-    modal:    true,
-    width:    700,
-    maxWidth: 700,
-    buttons:  {
-      "Ok":  function () {
-        var data = {
-          contact_name:Adv.ContactLog.find("[name='contact_name']").val(),
-          contact_id:  Company.get().id,
-          message:     Adv.ContactLog.find("[name='message']").val(),
-          type:        Adv.ContactLog.find("#type").val()
-        };
-        Adv.ContactLog.dialog('disable');
-        $.post('contact_log.php', data, function (data) {
-          Adv.ContactLog.find(':input').each(function () {
-            Adv.ContactLog.dialog('close').dialog('enable');
-          });
-          Adv.ContactLog.find("[name='message']").val('');
-          Adv.setContactLog(data);
-        }, 'json');
-      },
-      Cancel:function () {
-        Adv.ContactLog.find("[name='message']").val('');
-        $(this).dialog("close");
-      }
-    }
-  }).click(function () {
-      $(this).dialog("open");
-    });
+                          autoOpen:  false,
+                          show:      "slide",
+                          resizable: false,
+                          hide:      "explode",
+                          modal:     true,
+                          width:     700,
+                          maxWidth:  700,
+                          buttons:   {
+                            "Ok":   function () {
+                              var data = {
+                                contact_name: Adv.ContactLog.find("[name='contact_name']").val(),
+                                contact_id:   Company.get().id,
+                                message:      Adv.ContactLog.find("[name='message']").val(),
+                                type:         Adv.ContactLog.find("#type").val()
+                              };
+                              Adv.ContactLog.dialog('disable');
+                              $.post('contact_log.php', data, function (data) {
+                                Adv.ContactLog.find(':input').each(function () {
+                                  Adv.ContactLog.dialog('close').dialog('enable');
+                                });
+                                Adv.ContactLog.find("[name='message']").val('');
+                                Adv.setContactLog(data);
+                              }, 'json');
+                            },
+                            Cancel: function () {
+                              Adv.ContactLog.find("[name='message']").val('');
+                              $(this).dialog("close");
+                            }
+                          }
+                        }).click(function () {
+                                   $(this).dialog("open");
+                                 });
   $("#messageLog").prop('disabled', true).css('background', 'white');
   $("[name='messageLog']").keypress(function () {
     return false;
   });
   Adv.TabMenu.defer(0).done(function () {
-
     Adv.o.tabs[0].delegate("input, textarea,select", "change keyup", function () {
       var $this = $(this), $thisname = $this.attr('name'), buttontext;
       if ($thisname === 'messageLog' || $thisname === 'branchList') {
