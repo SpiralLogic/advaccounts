@@ -131,7 +131,7 @@
     public $payable_account;
     /** @var */
     public $payment_discount_account;
-    public $type=  CT_SUPPLIER;
+    public $type = CT_SUPPLIER;
     /**
      * @var string
      */
@@ -189,9 +189,12 @@
         $this->setDefaults();
         return false;
       }
-      foreach ($this->contacts as $contact) {
-        if ($contact instanceof Contact) {
-          $contact->save(array('parent_id' => $this->id));
+      $contacts       = $this->contacts;
+      $this->contacts = [];
+      foreach ($contacts as $contact) {
+        $wasnew = $contact->save(array('parent_id' => (int) $this->id));
+        if ($wasnew) {
+          $this->contacts[] = $contact;
         }
       }
       $this->setDefaults();
@@ -222,8 +225,9 @@
      * @return void
      */
     protected function setDefaults() {
-      $this->contacts[]     = new Contact(CT_SUPPLIER, array('parent_id' => $this->id));
       $this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
+
+      $this->contacts[] = new Contact(CT_SUPPLIER, array('parent_id' => $this->id));
     }
     /**
      * @return bool
@@ -278,8 +282,7 @@
      * @return void
      */
     protected function _getContacts() {
-      $this->contacts = [];
-      static::$staticDB->_select()->from('contacts')->where('parent_id=', $this->id)->andWhere('parent_type=', CT_SUPPLIER)->orderby('name DESC');
+      static::$staticDB->_select()->from('contacts')->where('parent_id=', $this->id)->andWhere('parent_type =', CT_CUSTOMER)->orderby('name ASC');
       $contacts = static::$staticDB->_fetch()->asClassLate('Contact', array(CT_SUPPLIER));
       if (count($contacts)) {
         foreach ($contacts as $contact) {
