@@ -131,7 +131,7 @@
     public $payable_account;
     /** @var */
     public $payment_discount_account;
-    public $type=  CT_SUPPLIER;
+    public $type = CT_SUPPLIER;
     /**
      * @var string
      */
@@ -165,13 +165,12 @@
      */
     public function __construct($id = null) {
       static::$staticDB  = \ADV\Core\DB\DB::i();
-      $this->gst_no      = &$this->tax_id;
-      $this->contact     = &$this->contact_name;
-      $this->address     = &$this->post_address;
-      $this->phone2      = &$this->supp_phone;
-      $this->supp_ref    = &$this->name;
       $this->creditor_id =& $this->id;
       parent::__construct($id);
+      $this->gst_no  = &$this->tax_id;
+      $this->contact = &$this->contact_name;
+      $this->address = &$this->post_address;
+      $this->phone2  = &$this->supp_phone;
     }
     /**
      * @return array
@@ -185,6 +184,7 @@
      * @return array|bool|int|null|void
      */
     public function save($changes = null) {
+      $this->supp_ref = $this->name;
       if (!parent::save($changes)) {
         $this->setDefaults();
         return false;

@@ -2,11 +2,11 @@
   namespace ADV\Controllers\Purchases\Search;
 
   use ADV\App\Forms;
+  use ADV\App\Display;
   use ADV\Core\Event;
   use GL_UI;
   use DB_Pager;
   use Inv_Location;
-  use ADV\App\Page;
   use ADV\App\Dates;
   use ADV\Core\Input\Input;
   use ADV\App\Reporting;
@@ -128,7 +128,9 @@
       if (!$this->stock_location) {
         $cols[_("Location")] = 'skip';
       }
-      $table              = DB_Pager::newPager('orders_tbl', $sql, $cols);
+      $table = DB_Pager::newPager('purch_orders_tbl', $sql, $cols);
+      Event::warning(_("Marked orders have overdue items."), false);
+
       $table->rowFunction = [$this, 'formatMarker'];
       $table->width       = "85%";
       $table->display($table);
@@ -138,12 +140,12 @@
      *
      * @return callable
      */
-    public function formatMarker($row, $pager) {
+    public function formatMarker($row) {
       $mark = $row['OverDue'] == 1;
       if ($mark) {
-        Event::warning(_("Marked orders have overdue items."), false);
         return "<tr class='overduebg'>";
       }
+      return '';
     }
     /**
      * @param $row

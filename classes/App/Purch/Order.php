@@ -1,5 +1,16 @@
 <?php
   use ADV\Core\DB\DBDuplicateException;
+  use ADV\Core\Num;
+  use ADV\App\Forms;
+  use ADV\Core\Session;
+  use ADV\App\Ref;
+  use ADV\App\Validation;
+  use ADV\App\Page;
+  use ADV\App\Display;
+  use ADV\Core\Event;
+  use ADV\App\Orders;
+  use ADV\App\Dates;
+  use ADV\Core\Config;
   use ADV\App\User;
   use ADV\App\Item\Item;
   use ADV\Core\Ajax;
