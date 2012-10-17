@@ -1,5 +1,16 @@
 <?php
   use ADV\Core\DB\DBDuplicateException;
+  use ADV\Core\Num;
+  use ADV\App\Forms;
+  use ADV\Core\Session;
+  use ADV\App\Ref;
+  use ADV\App\Validation;
+  use ADV\App\Page;
+  use ADV\App\Display;
+  use ADV\Core\Event;
+  use ADV\App\Orders;
+  use ADV\App\Dates;
+  use ADV\Core\Config;
   use ADV\App\User;
   use ADV\App\Item\Item;
   use ADV\Core\Ajax;
@@ -368,13 +379,13 @@
               $po_line->req_del_date
             ) . "'," . DB::_quote($po_line->price) . ", " . DB::_quote($po_line->quantity) . ", " . DB::_quote($po_line->discount) . ")";
           } else {
-            $sql = "UPDATE purch_order_details SET item_code=" . DB::_escape($po_line->stock_id) . ",
-                    description =" . DB::_escape($po_line->description) . ",
+            $sql = "UPDATE purch_order_details SET item_code=" . DB::_quote($po_line->stock_id) . ",
+                    description =" . DB::_quote($po_line->description) . ",
                     delivery_date ='" . Dates::_dateToSql($po_line->req_del_date) . "',
-                    unit_price=" . DB::_escape($po_line->price) . ",
-                    quantity_ordered=" . DB::_escape($po_line->quantity) . ",
-                    discount=" . DB::_escape($po_line->discount) . "
-                    WHERE po_detail_item=" . DB::_escape($po_line->po_detail_rec);
+                    unit_price=" . DB::_quote($po_line->price) . ",
+                    quantity_ordered=" . DB::_quote($po_line->quantity) . ",
+                    discount=" . DB::_quote($po_line->discount) . "
+                    WHERE po_detail_item=" . DB::_quote($po_line->po_detail_rec);
           }
         }
         DB::_query($sql, "One of the purchase order detail records could not be updated");
@@ -396,7 +407,7 @@
             FROM purch_orders, suppliers, locations
             WHERE purch_orders.creditor_id = suppliers.creditor_id
             AND locations.loc_code = into_stock_location
-            AND purch_orders.order_no = " . DB::_escape($order_no);
+            AND purch_orders.order_no = " . DB::_quote($order_no);
       $result = DB::_query($sql, "The order cannot be retrieved");
       if (DB::_numRows($result) == 1) {
         $myrow                  = DB::_fetch($result);
@@ -429,7 +440,7 @@
             FROM purch_order_details
             LEFT JOIN stock_master
             ON purch_order_details.item_code=stock_master.stock_id
-            WHERE order_no =" . DB::_escape($order_no);
+            WHERE order_no =" . DB::_quote($order_no);
       if ($view) {
         $sql .= " AND (purch_order_details.quantity_ordered > purch_order_details.quantity_received) ";
       }
