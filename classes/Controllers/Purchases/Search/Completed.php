@@ -135,7 +135,7 @@
         _("Supplier")    => array('ord' => '', 'type' => 'id'), //
         _("Supplier ID") => 'skip', //
         _("Location")    => '', //
-        _("Invoice #")   => '', //
+        _("Invoice #")   => 'skip', //
         _("Order Date")  => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'), //
         _("Currency")    => array('align' => 'center'), //
         _("Order Total") => 'amount', //
@@ -153,7 +153,7 @@
       if ($location == 1) {
         $cols[_("Invoice #")] = 'skip';
       }
-      $table        = DB_Pager::newPager('orders_tbl', $sql, $cols);
+      $table        = DB_Pager::newPager('purch_orders_tbl', $sql, $cols);
       $table->width = ($this->Input->request('frame')) ? '100' : "90";
       $table->display($table);
     }
