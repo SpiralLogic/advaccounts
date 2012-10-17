@@ -205,16 +205,17 @@
       if ($edit) {
         Display::submenu_option(_("&Edit This " . $trans_name), $edit_trans);
       }
-      Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
-      echo "<br><div class='center'>" . Reporting::emailDialogue($customer->id, $trans_type, $order_no) . "</div>";
+      echo "<br><div class='center'>" . Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt') . '<br><br>';
+      echo  Reporting::emailDialogue($customer->id, $trans_type, $order_no) . '<br><br>';
       if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
-        Display::submenu_print(
+        echo    Display::submenu_print(
           _("Print Proforma Invoice"),
           ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ),
           $order_no,
           'prtopt'
-        );
+        ) . '<br><br>';
       }
+      echo "</div>";
       if ($trans_type == ST_SALESORDER) {
         Display::submenu_option(_("Create PO from this order"), "/purchases/order?NewOrder=Yes&UseOrder=" . $order_no . "'");
         Display::submenu_option(_("Dropship this order"), "/purchases/order?NewOrder=Yes&UseOrder=" . $order_no . "&DRP=1' ");

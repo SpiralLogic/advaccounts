@@ -82,14 +82,14 @@
       echo "<div class='center'>$msg</div>\n";
       str_repeat("<br>", $br2);
     }
-    public static function link_button($label,$url,$icon=false){
+    public static function link_button($label, $url, $icon = false) {
       if (User::graphic_links() && $icon) {
         $label = Forms::setIcon($icon, $label);
-            }
-            $href = '/' . ltrim($url, '/');
-            $href = (Input::_request('frame')) ? "javascript:window.parent.location='$href'" : $href;
-            return '<a href="' . e($href) . '" class="button">' . $label . "</a>";
-  }
+      }
+      $href = '/' . ltrim($url, '/');
+      $href = (Input::_request('frame')) ? "javascript:window.parent.location='$href'" : $href;
+      return '<a href="' . e($href) . '" class="button">' . $label . "</a>";
+    }
     /**
      * @static
      *
@@ -124,17 +124,17 @@
       echo "<br><div class='center'>$button</div>";
     }
     /**
-     * @static
-     *
      * @param          $title
      * @param          $type
      * @param          $number
      * @param null     $id
      * @param int|null $email
      * @param int      $extra
+     *
+     * @return string
      */
     public static function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 0) {
-      Reporting::print_doc_link($number, $title, true, $type, false, 'button printlink', $id, $email, $extra);
+      return Reporting::print_doc_link($number, $title, true, $type, false, 'button printlink', $id, $email, $extra);
     }
     /**
      * @static

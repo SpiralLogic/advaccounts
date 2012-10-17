@@ -10,6 +10,7 @@
   namespace ADV\App;
 
   use ADV\Core\Input\Input;
+  use ADV\Core\JS;
   use ADV\Core\Num;
   use Bank_Currency;
   use ADV\Core\Config;
