@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App;
+
   use ADV\Core\JS;
   use DB_Pager;
   use DB_Company;
@@ -26,9 +27,7 @@
   /**
    * @method static \ADV\App\ADVAccounting i()
    */
-  class ADVAccounting
-  {
-
+  class ADVAccounting {
     use \ADV\Core\Traits\Singleton;
 
     public $applications = [];
@@ -232,8 +231,8 @@
           return $session;
         }
       )->offsetGet(null);
-      $this->User  = $dic['User'];
-      $this->Input = $dic['Input'];
+      $this->User    = $dic['User'];
+      $this->Input   = $dic['Input'];
       $this->JS->footerFile($this->Config->get('assets.footer'));
       $this->menu = new Menu(_("Main Menu"));
       $this->menu->addItem(_("Main Menu"), "index.php");
@@ -395,12 +394,12 @@
           );
         }
         try {
-          if (!$this->User->login($company, $_POST["user_name"], $_POST["password"])) {
+          $password = \AesCtr::decrypt(base64_decode($_POST['password']), $this->Session->getFlash('password_iv'), 256);
+          if (!$this->User->login($company, $_POST["user_name"], $password)) {
             // Incorrect password
             $this->loginFail();
           }
-        }
-        catch (\ADV\Core\DB\DBException $e) {
+        } catch (\ADV\Core\DB\DBException $e) {
           throw new \ADV\Core\DB\DBException('Could not connect to database!');
         }
         $this->Session->checkUserAgent();

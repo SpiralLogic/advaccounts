@@ -536,7 +536,7 @@
         $error = $this->error($e, false, true);
         switch ($type) {
           case DB::SELECT:
-            throw new DBSelectException('Could not select from database.');
+            throw new DBSelectException('Could not select from database: ' . $e->getMessage());
             break;
           case DB::INSERT:
             $count = preg_match('/Column \'(.+)\'(.*)/', $error['message'], $matches);

@@ -63,7 +63,7 @@
       if (Input::_hasPost("NoZero") && !$prev['balance'] && !$curr['balance'] && !$tot['balance']) {
         continue;
       }
-      $url = "<a href='" . ROOT_URL . "banking/inquiry/gl_account.php?TransFromDate=" . $_POST["TransFromDate"] . "&TransToDate=" . $_POST["TransToDate"] . "&account=" . $account["account_code"] . "'>" . $account["account_code"] . "</a>";
+      $url = "<a href='" . ROOT_URL . "gl/search/account?TransFromDate=" . $_POST["TransFromDate"] . "&TransToDate=" . $_POST["TransToDate"] . "&account=" . $account["account_code"] . "'>" . $account["account_code"] . "</a>";
       Cell::label($url);
       Cell::label($account["account_name"]);
       if (Input::_hasPost('Balance')) {

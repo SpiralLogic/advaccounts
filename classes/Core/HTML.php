@@ -10,34 +10,34 @@
   namespace ADV\Core;
 
   /**
-   * @method HTML button()
-   * @method HTML _button()
-   * @method HTML table()
-   * @method static HTML tr()
-   * @method HTML td()
-   * @method HTML div()
-   * @method HTML textarea()
-   * @method HTML optgroup()
-   * @method HTML form()
-   * @method HTML _form()
-   * @method HTML label()
-   * @method HTML input()
-   * @method static HTML _td()
-   * @method HTML _div()
-   * @method HTML script()
-   * @method HTML span()
-   * @method HTML _span()
-   * @method HTML option()
-   * @method HTML select()
-   * @method HTML _select()
-   * @property HTML tr
-   * @property HTML td
-   * @property HTML script
-   * @property HTML table
-   * @property HTML div
-   * @property HTML form
-   * @property HTML option
-   * @property HTML select
+   * @method \ADV\Core\HTML button()
+   * @method \ADV\Core\HTML _button()
+   * @method \ADV\Core\HTML table()
+   * @method static \ADV\Core\HTML tr()
+   * @method \ADV\Core\HTML td()
+   * @method \ADV\Core\HTML div()
+   * @method \ADV\Core\HTML textarea()
+   * @method \ADV\Core\HTML optgroup()
+   * @method \ADV\Core\HTML form()
+   * @method \ADV\Core\HTML _form()
+   * @method \ADV\Core\HTML label()
+   * @method \ADV\Core\HTML input()
+   * @method static \ADV\Core\HTML _td()
+   * @method \ADV\Core\HTML _div()
+   * @method \ADV\Core\HTML script()
+   * @method \ADV\Core\HTML span()
+   * @method \ADV\Core\HTML _span()
+   * @method \ADV\Core\HTML option()
+   * @method \ADV\Core\HTML select()
+   * @method \ADV\Core\HTML _select()
+   * @property \ADV\Core\HTML tr
+   * @property \ADV\Core\HTML td
+   * @property \ADV\Core\HTML script
+   * @property \ADV\Core\HTML table
+   * @property \ADV\Core\HTML div
+   * @property \ADV\Core\HTML form
+   * @property \ADV\Core\HTML option
+   * @property \ADV\Core\HTML select
    */
   class HTML {
     use Traits\HTML;

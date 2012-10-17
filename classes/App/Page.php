@@ -103,7 +103,7 @@
       if (static::$i === null) {
         static::$i = new static(Session::i(), User::i(), Config::i(), \ADV\Core\Ajax::i(), \ADV\Core\JS::i(), \ADV\App\Dates::i());
       }
-      static::$i->init($title, $security, $isIndex, !$no_menu);
+      static::$i->init($title, $security, $isIndex, $no_menu);
       return static::$i;
     }
     /**
@@ -154,6 +154,9 @@
       }
       if (!REQUEST_JSON) {
         Ajax::_start_div('_page_body');
+        if ($this->title && !$this->isIndex && !$this->frame) {
+          echo "<div class='titletext'>{$this->title}</div>";
+        }
       }
     }
     protected function header() {
@@ -225,7 +228,7 @@
       $footer             = new View('footer');
       $footer['backlink'] = false;
       if ((!$this->isIndex && !$this->hide_back_link)) {
-        $footer['backlink'] = $this->menu ? _("Back") : _("Close");
+        //  $footer['backlink'] = $this->menu ? _("Back") : _("Close");
       }
       $footer['today']     = $this->Dates->today();
       $footer['now']       = $this->Dates->now();

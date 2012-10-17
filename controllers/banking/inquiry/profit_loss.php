@@ -69,7 +69,7 @@
         continue;
       }
       if ($drilldown && $levelptr == 0) {
-        $url = "<a href='" . ROOT_URL . "banking/inquiry/gl_account.php?TransFromDate=" . $from . "&TransToDate=" . $to . "&account=" . $account['account_code'] . "'>" . $account['account_code'] . " " . $account['account_name'] . "</a>";
+        $url = "<a href='" . ROOT_URL . "gl/search/account?TransFromDate=" . $from . "&TransToDate=" . $to . "&account=" . $account['account_code'] . "'>" . $account['account_code'] . " " . $account['account_name'] . "</a>";
         echo "<tr class='stockmankobg'>";
         Cell::label($url);
         Cell::amount($per_balance * $convert);

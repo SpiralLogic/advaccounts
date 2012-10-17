@@ -8,6 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Controllers\Access;
+
   use ADV\App\Forms;
   use ADV\App\Form\Form;
   use ADV\Core\Cell;
@@ -15,11 +16,9 @@
   use ADV\Core\Table;
 
   /**
-   *
-   */
-  class Login extends \ADV\App\Controller\Action
-  {
 
+   */
+  class Login extends \ADV\App\Controller\Action {
     public $view;
     /** @var \ADV\Core\Config */
     protected $Config;
@@ -52,7 +51,7 @@
       }
       $form = new Form();
       $view->set('form', $form);
-      $form->start("loginform", REQUEST_POST ? $_SESSION['timeout']['uri'] : '#');
+      $form->start('loginform', REQUEST_POST ? $_SESSION['timeout']['uri'] : '#', false, ['class'=> 'formbox']);
       $form->text('user_name')->label('User name');
       $form->password('password')->label('Password')->value($this->Config->get('demo_mode') ? "password" : null);
       if ($timeout) {
@@ -61,15 +60,16 @@
       } else {
         $companies = $this->Config->getAll('db');
         $logins    = [];
-        foreach ($companies as $k =>$v) {
-          if ($v['company'])
-          {
+        foreach ($companies as $k => $v) {
+          if ($v['company']) {
             $logins[$k] = $v['company'];
           }
         }
         $form->arraySelect('login_company', $logins, $this->User->company)->label('Company');
         $form->group('hidden');
       }
+      $password_iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CFB), MCRYPT_DEV_URANDOM));
+      $form->hidden('password_iv')->value($this->Session->setFlash('password_iv', $password_iv));
       foreach ($_POST as $p => $val) {
         // add all request variables to be resend together with login data
         if (!in_array($p, array('user_name', 'password', 'SubmitUser', 'login_company'))) {
@@ -79,13 +79,13 @@
       if (REQUEST_GET) {
         $form->hidden('uri', $_SESSION['timeout']['uri']);
       }
-      $form->group();
-      $form->submit('SubmitUser', "Login -->");
+      $form->group('buttons');
+      $form->submit('SubmitUser', "Login -->")->type('small')->type('inverse');
       $form->end();
       if ($this->User->logged) {
         $view['date'] = $this->Dates->today() . " | " . $this->Dates->now();
       } else {
-        $view['date'] = date("m/d/Y") . " | " . date("h.i am");
+        $view['date'] = date("m/d/Y") . " | " . date("h.i a");
       }
       $view->render();
     }

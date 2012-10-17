@@ -29,14 +29,13 @@
      */
     public function __construct($username) {
       $this->username = $username;
-      $this->password = $_POST['password'];
     }
     /**
      * @param $id
      * @param $password
      */
-    public function updatePassword($id, $password,$change_password=0) {
-      $change_password = $change_password==true?1:0;
+    public function updatePassword($id, $password, $change_password = 0) {
+      $change_password = $change_password == true ? 1 : 0;
       DB::_update('users')->value('password', $this->hashPassword($password))->value('user_id', $this->username)->value(
         'hash',
         $this->makeHash(
@@ -61,10 +60,11 @@
      * @internal param $password
      * @return bool|mixed
      */
-    public function checkUserPassword($username) {
-      $username = $username ? : $this->username;
-      $password = $this->hashPassword($this->password);
-      $result   = DB::_select()->from('users')->where('user_id=', $username)->andWhere('inactive =', 0)->andWhere('password=', $password)->fetch()->one();
+    public function checkUserPassword($username, $password) {
+      $this->password = $password;
+      $username       = $username ? : $this->username;
+      $password       = $this->hashPassword($this->password);
+      $result         = DB::_select()->from('users')->where('user_id=', $username)->andWhere('inactive =', 0)->andWhere('password=', $password)->fetch()->one();
       if ($result['password'] != $password) {
         $result = false;
       } else {

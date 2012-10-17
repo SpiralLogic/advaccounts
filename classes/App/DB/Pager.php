@@ -136,6 +136,9 @@
     public static function kill($name) {
       unset($_SESSION['pager'][$name]);
     }
+    /**
+     * @param null $sql
+     */
     public function refresh($sql = null) {
       if ($sql) {
         $this->setSQL($sql);

@@ -64,7 +64,7 @@
      * @return int|mixed
      */
     protected function getActionId($prefix) {
-      if (isset($this->actionID)) {
+      if (!is_null($this->actionID)) {
         return $this->actionID;
       }
       $prefix = (array) $prefix;

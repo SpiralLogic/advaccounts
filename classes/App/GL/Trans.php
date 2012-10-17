@@ -209,7 +209,7 @@
       if ($amount_min) {
         $sql .= " AND ABS(gl_trans.amount) >= ABS(" . DB::_quote($amount_min) . ")";
       }
-      if ($amount_max != null) {
+      if ($amount_max) {
         $sql .= " AND ABS(gl_trans.amount) <= ABS(" . DB::_quote($amount_max) . ")";
       }
       //    $sql .= " ORDER BY tran_date, counter";

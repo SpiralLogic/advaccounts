@@ -1,6 +1,4 @@
 <?php
-
-
   /**
    * PHP version 5.4
    * @category  PHP
@@ -69,7 +67,7 @@
         Arr::append($functions, $module['right']);
 
         foreach ($functions as &$func) {
-          $func = str_replace('&', '', $func);
+          $func['label'] = str_replace('&', '', $func['label']);
         }
         $modules[] = ['title'=> $name, 'modules'=> $functions];
       }

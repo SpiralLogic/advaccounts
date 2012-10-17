@@ -42,6 +42,11 @@
       }
       echo nl2br($this->generate());
     }
+    /**
+     * @param $var
+     *
+     * @return string
+     */
     protected function varToName($var) {
       $return = str_replace('_', ' ', $var);
       $return = implode(

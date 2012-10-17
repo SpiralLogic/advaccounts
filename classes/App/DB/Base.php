@@ -149,7 +149,7 @@
      * @param int   $id    Id of row to read from database
      * @param array $extra
      *
-     * @throws \DBException
+     * @throws \ADV\Core\DB\DBException
      * @return bool
      */
     protected function read($id, $extra = []) {

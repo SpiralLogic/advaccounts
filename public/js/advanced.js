@@ -561,7 +561,7 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                    // Using tmp var prevents crash on IE5
                    $el = $(el);
                    if (frompos === undefined) {
-                     pos = $el.offset().top - 100;
+                     pos = $el.offset().top - 200;
                    }
                    else {
                      pos = $el.offset().top - $(window).height() + 100;

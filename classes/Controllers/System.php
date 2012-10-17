@@ -41,6 +41,8 @@
       $module->addRightFunction(_("&Points of Sale"), "/sales/manage/points?", SA_POSSETUP);
       $module->addRightFunction(_('Sales &Areas'), '/sales/manage/areas?', SA_SALESAREA);
       $module = $this->add_module(_("Miscellaneous"));
+      $module->addLeftFunction(_('Credit &Statuses'), '/sales/manage/creditstatuses?', SA_CRSTATUS);
+
       $module->addRightFunction(_("&Printers"), "/system/printers?", SA_PRINTERS);
       $module->addRightFunction(_("&Print Profiles"), "/system/print_profiles?", SA_PRINTPROFILE);
       $module->addLeftFunction(_("System &Diagnostics"), "/system/system_diagnostics?", SA_OPEN);

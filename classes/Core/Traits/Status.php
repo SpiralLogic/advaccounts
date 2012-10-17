@@ -18,7 +18,7 @@
     /**
      * @param bool $string return status as string if true and as array if false
      *
-     * @return string|array
+     * @return string|\ADV\Core\Status|array
      */
     public function getStatus($string = false) {
       if ($this->status === null) {

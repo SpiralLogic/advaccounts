@@ -20,7 +20,7 @@
 
    */
   abstract class Manage extends Action {
-    /** @var \ADV\App\DB\Base */
+    /** @var \ADV\App\GL\QuickEntry */
     protected $object;
     protected $defaultFocus;
     protected $tableWidth = '50';
@@ -30,25 +30,18 @@
         $id = $this->getActionId([DELETE, EDIT, INACTIVE]);
         switch ($this->action) {
           case DELETE:
-            $this->object->load($id);
-            $this->object->delete();
-            $status = $this->object->getStatus();
+            $status = $this->onDelete($id);
             break;
           case EDIT:
-            $this->object->load($id);
+            $this->onEdit($id);
             break;
+          /** @noinspection PhpMissingBreakStatementInspection */
           case INACTIVE:
             $this->object->load($id);
             $changes['inactive'] = $this->Input->post('_value', Input::NUMERIC);
           case SAVE:
             $changes = isset($changes) ? $changes : $_POST;
-            $this->object->save($changes);
-            //run the sql from either of the above possibilites
-            $status = $this->object->getStatus();
-            if ($status['status'] == Status::ERROR) {
-              $this->JS->renderStatus($status);
-            }
-            $this->object->load(0);
+            $status  = $this->onSave($changes);
             break;
           case CANCEL:
             $status = $this->object->getStatus();
@@ -62,6 +55,44 @@
         }
       }
     }
+    /**
+     * @param      $changes
+     * @param null $object
+     *
+     * @return \ADV\Core\Status|array
+     */
+    protected function onSave($changes, $object = null) {
+      $object = $object ? : $this->object;
+      $object->save($changes);
+      //run the sql from either of the above possibilites
+      $status = $object->getStatus();
+      if ($status['status'] == Status::ERROR) {
+        $this->JS->renderStatus($status);
+      }
+      $object->load(0);
+      return $status;
+    }
+    /**
+     * @param      $id
+     * @param null $object
+     */
+    protected function onEdit($id, $object = null) {
+      $object = $object ? : $this->object;
+      $object->load($id);
+    }
+    /**
+     * @param      $id
+     * @param null $object
+     *
+     * @return array|string
+     */
+    protected function onDelete($id, $object = null) {
+      $object = $object ? : $this->object;
+      $object->load($id);
+      $object->delete();
+      $status = $object->getStatus();
+      return $status;
+    }
     protected function index() {
       $this->Page->init($this->title, $this->security);
       $this->beforeTable();
@@ -72,15 +103,23 @@
     }
     protected function beforeTable() {
     }
-    protected function generateForm() {
-      $view          = new \ADV\Core\View('form/simple');
-      $form          = new \ADV\App\Form\Form();
-      $view['title'] = $this->title;
-      $this->formContents($form, $view);
+    /**
+     * @param \ADV\App\Form\Form $form
+     * @param \ADV\Core\View     $view
+     * @param null               $object
+     * @param bool               $contents
+     */
+    protected function generateForm(\ADV\App\Form\Form $form = null, \ADV\Core\View $view = null, $object = null, $contents = true) {
+      $view = $view ? : new \ADV\Core\View('form/simple');
+      $form = $form ? : new \ADV\App\Form\Form();
+      if ($contents) {
+        $view['title'] = $this->title;
+        $this->formContents($form, $view);
+      }
       $form->group('buttons');
       $form->submit(CANCEL)->type('danger')->preIcon(ICON_CANCEL);
       $form->submit(SAVE)->type('success')->preIcon(ICON_ADD);
-      $form->setValues($this->object);
+      $form->setValues($object ? : $this->object);
       $view->set('form', $form);
       $view->render();
       $this->Ajax->addJson(true, 'setFormValues', $form);
@@ -94,7 +133,7 @@
       }
       $cols       = $this->generateTableCols();
       $pager_name = end(explode('\\', ltrim(get_called_class(), '\\'))) . '_table';
-      //    DB_Pager::kill($pager_name);
+      DB_Pager::kill($pager_name);
       $table        = DB_Pager::newPager($pager_name, $this->getTableRows($pager_name), $cols);
       $table->width = $this->tableWidth;
       $table->display();

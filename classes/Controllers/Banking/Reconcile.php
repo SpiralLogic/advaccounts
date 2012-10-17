@@ -286,7 +286,6 @@
     protected function getTotal() {
       if ($this->accountHasStatements) {
         list($beg_balance, $end_balance) = Bank_Account::getBalances($this->bank_account, $this->begin_date, $this->end_date);
-        Event::notice($beg_balance . $end_balance);
         $_POST["beg_balance"] = $this->Num->priceFormat($beg_balance);
         $_POST["end_balance"] = $this->Num->priceFormat($end_balance);
         $_POST["reconciled"]  = $this->Num->priceFormat($end_balance - $beg_balance);

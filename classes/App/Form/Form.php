@@ -115,8 +115,8 @@
       $attr['method']  = 'post';
       $attr['action']  = $action;
       $attr['name']    = $this->name($name);
-      array_merge($attr, $input_attr);
-      $this->start = (new HTML)->form($name, $attr)->input(
+      $attr            = array_merge($attr, $input_attr);
+      $this->start     = (new HTML)->form($name, $attr)->input(
         null,
         [
         'type' => 'hidden',
@@ -175,7 +175,8 @@
       $field         = $this->addField(new Field('input', $name));
       $field['type'] = 'text';
       return $field->mergeAttr($input_attr);
-    }  /**
+    }
+    /**
      * @param       $name
      * @param array $input_attr
      *
