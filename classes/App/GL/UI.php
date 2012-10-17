@@ -175,6 +175,7 @@
         return $view_str;
       }
       $view_str = Bank_UI::viewTrans($type, $trans_no, $label, $icon, $class, $id, $raw);
+
       if ($view_str != null) {
         return $view_str;
       }
