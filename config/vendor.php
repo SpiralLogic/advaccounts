@@ -14,5 +14,6 @@
     'JsHttpRequest', //
     'TCPDF', //
     'Cpdf', //
+    'AesCtr', //
     //    'JSMin' //
   );
