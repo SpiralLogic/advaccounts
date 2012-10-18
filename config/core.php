@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   return array(
-    'ADV\\Core'                  => array(
+    'ADV\\Core'          => [
       'Ajax', //
       'Arr', //
       'Assets', //
@@ -38,15 +38,15 @@
       'UploadHandler', //
       'View', //
       'XMLParser', //
-    ),
-    'ADV\\Core\\DB'              => array(
+    ],
+    'ADV\\Core\\DB'      => [
       'DB', //
       'Utils', //
-    ),
-    'ADV\\Core\\Module'          => array(
+    ],
+    'ADV\\Core\\Module'  => [
       'Loadable', //
-    ),
-    'ADV\\App'                   => array(
+    ],
+    'ADV\\App'           => [
       'ADVAccounting', //
       'Page', //
       'Security', //
@@ -67,29 +67,18 @@
       'Reporting', //
       'Tags', //
       'UI', //
-    ), //
-    'ADV\\App\\Debtor'           => array(
-      'Debtor', //
-    ), //
-    'ADV\\App\\Bank'             => array(
-      'Bank', //
-    ), //
-    'ADV\\App\\Contact'          => array(
-      'Contact', //
+    ], //
+    'ADV\\App\\Debtor'   => ['Debtor'],
+    'ADV\\App\\Bank'     => ['Bank'],
+    'ADV\\App\\Contact'  => [
+      'Contact',
       'Postcode', //
-    ), //
-    'ADV\\App\\Creditor'         => array(
-      'Creditor', //
-    ), // //
-    'ADV\\App\\Item'             => array(
-      'Item', //
-    ), //// //
-    'ADV\\App\\Tax'              => array(
-      'Tax', //
-    ), // //
-    'ADV\\App\\WO'               => array(
-      'WO', //
-    ), //
-    'ADV\\Core\\Input'           => ['Input'],
-    'ADV\\App\\Form'             => ['Form'],
+    ], //
+    'ADV\\App\\Creditor' => ['Creditor'],
+    'ADV\\App\\Item'     => ['Item'],
+    'ADV\\App\\Tax'      => ['Tax'],
+    'ADV\\App\\WO'       => ['WO'], //
+    'ADV\\Core\\Input'   => ['Input'],
+    'ADV\\App\\Pager'    => ['Pager'],
+    'ADV\\App\\Form'     => ['Form'],
   );

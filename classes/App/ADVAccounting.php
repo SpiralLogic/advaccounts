@@ -10,7 +10,7 @@
   namespace ADV\App;
 
   use ADV\Core\JS;
-  use DB_Pager;
+  use ADV\App\Pager\Pager;
   use DB_Company;
   use ADV\Core\Cache\APC;
   use ADV\Core\Event;
@@ -27,7 +27,8 @@
   /**
    * @method static \ADV\App\ADVAccounting i()
    */
-  class ADVAccounting {
+  class ADVAccounting
+  {
     use \ADV\Core\Traits\Singleton;
 
     public $applications = [];
@@ -181,13 +182,13 @@
               unset($pager);
             }
           }
-          if (!isset($pager) || !$pager instanceof DB_Pager) {
-            $pager = new DB_Pager($name, $sql, $coldef);
+          if (!isset($pager) || !$pager instanceof \ADV\App\Pager\Pager) {
+            $pager = new \ADV\App\Pager\Pager($name, $sql, $coldef);
           }
-          \DB_Pager::$Input = $c->offsetGet('Input');
-          \DB_Pager::$JS    = $c->offsetGet('JS');
-          \DB_Pager::$Dates = $c->offsetGet('Dates');
-          \DB_Pager::$DB    = $c->offsetGet('DB');
+          \ADV\App\Pager\Pager::$Input = $c->offsetGet('Input');
+          \ADV\App\Pager\Pager::$JS    = $c->offsetGet('JS');
+          \ADV\App\Pager\Pager::$Dates = $c->offsetGet('Dates');
+          \ADV\App\Pager\Pager::$DB    = $c->offsetGet('DB');
           /** @var User $user  */
           $user                     = $c->offsetGet('User');
           $pager->page_length       = $user->prefs->query_size;

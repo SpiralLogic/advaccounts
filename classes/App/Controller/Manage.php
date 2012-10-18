@@ -11,7 +11,7 @@
   namespace ADV\App\Controller;
 
   use ADV\Core\Status;
-  use DB_Pager;
+  use ADV\App\Pager\Pager;
   use ADV\Core\Input\Input;
   use ADV\App\Form\Form;
   use ADV\Core\View;
@@ -19,7 +19,8 @@
   /**
 
    */
-  abstract class Manage extends Action {
+  abstract class Manage extends Action
+  {
     /** @var \ADV\App\GL\QuickEntry */
     protected $object;
     protected $defaultFocus;
@@ -125,16 +126,13 @@
       $this->Ajax->addJson(true, 'setFormValues', $form);
     }
     /**
-     * @return \DB_Pager
+     * @return \ADV\App\Pager\Pager
      */
     protected function generateTable() {
-      if ($this->action == EDIT) {
-        return;
-      }
       $cols       = $this->generateTableCols();
       $pager_name = end(explode('\\', ltrim(get_called_class(), '\\'))) . '_table';
-      DB_Pager::kill($pager_name);
-      $table        = DB_Pager::newPager($pager_name, $this->getTableRows($pager_name), $cols);
+      \ADV\App\Pager\Pager::kill($pager_name);
+      $table = \ADV\App\Pager\Pager::newPager($pager_name, $this->getTableRows($pager_name), $cols);
       $table->width = $this->tableWidth;
       $table->display();
     }
@@ -169,9 +167,7 @@
      * @return \ADV\App\Form\Button
      */
     public function formatEditBtn($row) {
-      $button = new \ADV\App\Form\Button('_action', EDIT . $row[$this->object->getIDColumn()], EDIT);
-      $button->type('mini')->type('primary');
-      return $button;
+      return $this->formatBtn(EDIT, $row[$this->object->getIDColumn()], ICON_EDIT);
     }
     /**
      * @param $row
@@ -179,9 +175,20 @@
      * @return \ADV\App\Form\Button
      */
     public function formatDeleteBtn($row) {
-      $button = new \ADV\App\Form\Button('_action', DELETE . $row[$this->object->getIDColumn()], DELETE);
-      $button->preIcon(ICON_DELETE);
-      $button->type('mini')->type('danger');
+      return $this->formatBtn(DELETE, $row[$this->object->getIDColumn()], ICON_DELETE, 'danger');
+    }
+    /**
+     * @param        $action
+     * @param string $id
+     * @param null   $icon
+     * @param string $type
+     *
+     * @return \ADV\App\Form\Button
+     */
+    public function formatBtn($action, $id = '', $icon = null, $type = 'primary') {
+      $button = new \ADV\App\Form\Button('_action', $action . $id, $action);
+      $button->preIcon($icon);
+      $button->type('mini')->type($type);
       return $button;
     }
     /**

@@ -110,15 +110,15 @@
       $cols       = array(
         _("#"),
         _("Reference"),
-        _("View")                      => array(
+        _("View")  => array(
           'insert' => true,
           'fun'    => 'view_link'
         ),
-        _("Print")                     => array(
+        _("Print") => array(
           'insert' => true,
           'fun'    => 'printLink'
         ),
-        _("GL")                        => array(
+        _("GL")    => array(
           'insert' => true,
           'fun'    => 'viewGl'
         )
@@ -129,7 +129,7 @@
       if (!$trans_ref) {
         Arr::remove($cols, 1);
       }
-      $table        = DB_Pager::newPager('transactions', $sql, $cols);
+      $table        = \ADV\App\Pager\Pager::newPager('transactions', $sql, $cols);
       $table->width = "40%";
       $table->display($table);
     }

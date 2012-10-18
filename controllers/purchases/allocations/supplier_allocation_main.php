@@ -85,7 +85,6 @@
    *
    * @return bool
    */
-
   $sql  = Purch_Allocation::get_allocatable_sql($creditor_id, $settled);
   $cols = array(
     _("Transaction Type") => array('fun' => 'sysTypeName'),
@@ -102,16 +101,14 @@
     $cols[_("Supplier")] = 'skip';
     $cols[_("Currency")] = 'skip';
   }
-  $table = DB_Pager::newPager('alloc_tbl', $sql, $cols);
+  $table = \ADV\App\Pager\Pager::newPager('alloc_tbl', $sql, $cols);
   Event::warning(_("Marked items are settled."), false);
-  $table->rowFunction  = function ($row) {
+  $table->rowFunction = function ($row) {
     if ($row['settled'] == 1) {
-      return "<tr class='overduebg'>";
+      return "<tr class='settledbg'>";
     }
   };
-  $table->marker_class = 'settledbg';
-  $table->notice_class = 'settledfg';
-  $table->width        = "80%";
+  $table->width       = "80%";
   $table->display($table);
   Forms::end();
   Page::end();

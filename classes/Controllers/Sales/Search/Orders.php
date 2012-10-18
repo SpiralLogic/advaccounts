@@ -5,7 +5,7 @@
   use ADV\App\Form\DropDown;
   use ADV\App\Display;
   use ADV\Core\Event;
-  use DB_Pager;
+  use ADV\App\Pager\Pager;
   use ADV\Core\Arr;
   use ADV\App\Dates;
   use Inv_Location;
@@ -21,7 +21,8 @@
   /**
 
    */
-  class Orders extends \ADV\App\Controller\Action {
+  class Orders extends \ADV\App\Controller\Action
+  {
     protected $security;
     protected $trans_type;
     protected $debtor_id;
@@ -286,7 +287,7 @@
         }
       }
       Arr::append($cols, [['insert' => true, 'fun' => [$this, 'formatDropdown']]]);
-      $table              = DB_Pager::newPager('orders_tbl', $sql, $cols);
+      $table              = \ADV\App\Pager\Pager::newPager('orders_tbl', $sql, $cols);
       $table->rowFunction = [$this, 'formatMarker'];
       $table->width       = "90%";
       Event::warning(_("Marked items are overdue."), false);

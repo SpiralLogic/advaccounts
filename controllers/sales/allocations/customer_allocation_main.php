@@ -19,7 +19,7 @@
     $_POST['debtor_id'] = Session::_getGlobal('debtor_id');
   }
   echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
-  Debtor::newselect(null, ['label'=> false, 'row'=> false]);
+  Debtor::newselect(null, ['label' => false, 'row' => false]);
   echo "<br>";
   $settled = (Input::_hasPost('ShowSettled'));
   Forms::check(_("Show Settled Items:"), 'ShowSettled', null, true);
@@ -64,16 +64,14 @@
     $cols[_("Customer")] = 'skip';
     $cols[_("Currency")] = 'skip';
   }
-  $table              = DB_Pager::newPager('alloc_tbl', $sql, $cols);
+  $table              = \ADV\App\Pager\Pager::newPager('alloc_tbl', $sql, $cols);
   $table->rowFunction = function ($row) {
     if ($row['settled'] == 1) {
       return "<tr class='settledbg'>";
     }
   };
   Event::warning(_("Marked items are settled."), false);
-  $table->marker_class = 'settledbg';
-  $table->notice_class = 'settledfg';
-  $table->width        = "75%";
+  $table->width = "75%";
   $table->display($table);
   Forms::end();
   Page::end();

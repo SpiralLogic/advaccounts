@@ -11,7 +11,7 @@
 
   use ADV\App\Display;
   use ADV\Core\Num;
-  use DB_Pager;
+  use ADV\App\Pager\Pager;
   use GL_Trans;
   use GL_Account;
   use GL_UI;
@@ -24,7 +24,8 @@
   /**
 
    */
-  class Account extends \ADV\App\Controller\Action {
+  class Account extends \ADV\App\Controller\Action
+  {
     public $account = null;
     public $TransFromDate;
     public $trans_date_from;
@@ -37,11 +38,11 @@
       $this->setTitle('GL Inquiry');
       if ($this->Input->post('Show')) {
         $this->Ajax->activate('trans_tbl');
-        $this->account         = &$this->Input->getPost('account');
-        $this->trans_date_from = &$this->Input->getPost('TransFromDate', Input::DATE);
-        $this->trans_to_date   = &$this->Input->getPost('TransToDate', Input::DATE);
-        $this->amount_max      = &$this->Input->getPost('amount_max', Input::NUMERIC);
-        $this->amount_min      = &$this->Input->getPost('amount_min', Input::NUMERIC);
+        $this->account         = & $this->Input->getPost('account');
+        $this->trans_date_from = & $this->Input->getPost('TransFromDate', Input::DATE);
+        $this->trans_to_date   = & $this->Input->getPost('TransToDate', Input::DATE);
+        $this->amount_max      = & $this->Input->getPost('amount_max', Input::NUMERIC);
+        $this->amount_min      = & $this->Input->getPost('amount_min', Input::NUMERIC);
         $this->Ajax->_addDebug([$this->amount_max, $this->amount_min]);
       }
     }
@@ -85,14 +86,14 @@
       }
       // Only show balances if an account is specified AND we're not filtering by amounts
       $cols = [ //
-        _("Type")       => ['ord'=> '', 'fun'=> [$this, 'formatType']], //
-        _("#")          => ['fun'=> [$this, 'formatView']], //
-        _("Date")       => ['ord'=> '', 'type'=> 'date'],
-        _("Account")    => ['ord'=> '', 'fun'=> [$this, 'formatAccount']],
-        _("Person/Item")=> ['fun'=> [$this, 'formatPerson']], //
-        _("Debit")      => ['fun'=> [$this, 'formatDebit']], //
-        _("Credit")     => ['insert'=> true, 'fun'=> [$this, 'formatCredit']], //
-        _("Balance")    => ['insert'=> true, 'fun'=> [$this, 'formatBalance']],
+        _("Type")        => ['ord' => '', 'fun' => [$this, 'formatType']], //
+        _("#")           => ['fun' => [$this, 'formatView']], //
+        _("Date")        => ['ord' => '', 'type' => 'date'],
+        _("Account")     => ['ord' => '', 'fun' => [$this, 'formatAccount']],
+        _("Person/Item") => ['fun' => [$this, 'formatPerson']], //
+        _("Debit")       => ['fun' => [$this, 'formatDebit']], //
+        _("Credit")      => ['insert' => true, 'fun' => [$this, 'formatCredit']], //
+        _("Balance")     => ['insert' => true, 'fun' => [$this, 'formatBalance']],
         _("Memo"),
       ];
       /*    if ($_POST["account"] != null) {
@@ -121,10 +122,9 @@
       echo '</tr>';
     }
     $running_total = $bfw;*/
-      //  DB_Pager::kill('GL_Account');
+      //  \ADV\App\Pager\Pager::kill('GL_Account');
       $sql = $this->getSql();
-
-      $table        = DB_Pager::newPager('GL_Account', $sql, $cols);
+      $table        = \ADV\App\Pager\Pager::newPager('GL_Account', $sql, $cols);
       $table->width = "90";
       $table->display();
       //end of while loop

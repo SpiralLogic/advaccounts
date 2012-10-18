@@ -62,7 +62,6 @@
    *
    * @return bool
    */
-
   /**
    * @param $dummy
    * @param $order_no
@@ -107,8 +106,7 @@
    * @return string
    */
   function release_link($row) {
-    return $row["closed"] ? '' : ($row["released"] == 0 ? Display::link_button(_('Release'), "/manufacturing/work_order_release.php?trans_no=" . $row["id"]) :
-      Display::link_button(_('Issue'), "/manufacturing/work_order_issue.php?trans_no=" . $row["id"]));
+    return $row["closed"] ? '' : ($row["released"] == 0 ? Display::link_button(_('Release'), "/manufacturing/work_order_release.php?trans_no=" . $row["id"]) : Display::link_button(_('Issue'), "/manufacturing/work_order_issue.php?trans_no=" . $row["id"]));
   }
 
   /**
@@ -158,8 +156,7 @@
     return Num::_format($amount, $row['decimals']);
   }
 
-  $sql
-    = "SELECT
+  $sql = "SELECT
     workorder.id,
     workorder.wo_ref,
     workorder.type,
@@ -195,22 +192,22 @@
     $sql .= " AND workorder.required_by < '$Today' ";
   }
   $cols               = array(
-    _("#")               => array('fun' => 'view_link'),
+    _("#")            => array('fun' => 'view_link'),
     _("Reference"),
     // viewlink 2 ?
-    _("Type")            => array('fun' => 'wo_type_name'),
+    _("Type")         => array('fun' => 'wo_type_name'),
     _("Location"),
-    _("Item")            => array('fun' => 'view_stock'),
-    _("Required")        => array(
+    _("Item")         => array('fun' => 'view_stock'),
+    _("Required")     => array(
       'fun'   => 'dec_amount',
       'align' => 'right'
     ),
-    _("Manufactured")    => array(
+    _("Manufactured") => array(
       'fun'   => 'dec_amount',
       'align' => 'right'
     ),
-    _("Date")            => 'date',
-    _("Required By")     => array(
+    _("Date")         => 'date',
+    _("Required By")  => array(
       'type' => 'date',
       'ord'  => ''
     ),
@@ -235,14 +232,13 @@
       'fun'    => 'view_gl_link'
     )
   );
-  $table              = DB_Pager::newPager('orders_tbl', $sql, $cols);
+  $table              = \ADV\App\Pager\Pager::newPager('orders_tbl', $sql, $cols);
   $table->rowFunction = function ($row) {
     if (!$row["closed"] && Dates::_differenceBetween(Dates::_today(), Dates::_sqlToDate($row["required_by"]), "d") > 0) {
       return "<tr class='overduebg'>";
     }
   };
   Event::warning(_("Marked orders are overdue."), false);
-
   $table->width = "90%";
   $table->display($table);
   Forms::end();

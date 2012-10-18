@@ -8,7 +8,7 @@
   use GL_UI;
   use ADV\App\SysTypes;
   use ADV\Core\Arr;
-  use DB_Pager;
+  use ADV\App\Pager\Pager;
   use ADV\Core\View;
   use Bank_UI;
   use GL_Account;
@@ -36,7 +36,8 @@
   /**
    * @property \ADV\Core\Input\Input Input
    */
-  class Reconcile extends \ADV\App\Controller\Action {
+  class Reconcile extends \ADV\App\Controller\Action
+  {
     /** @var Num Num*/
     protected $Num;
     /** @var Dates Dates*/
@@ -167,7 +168,7 @@
         "X"              => array('insert' => true, 'fun' => array($this, 'formatCheckbox')), //
         ['insert' => true, 'fun' => array($this, 'formatDropdown')], ////
       );
-      $table              = DB_Pager::newPager('bank_rec', $sql, $cols);
+      $table              = \ADV\App\Pager\Pager::newPager('bank_rec', $sql, $cols);
       $table->width       = "80";
       $table->rowFunction = [$this, 'formatRow'];
       $table->display($table);
@@ -240,7 +241,7 @@
         'Memo'   => ['class' => 'state_memo'], //
         ['fun' => array($this, 'formatDropdown')], //
       ];
-      $table              = DB_Pager::newPager('bank_rec', $known_trans, $cols);
+      $table              = \ADV\App\Pager\Pager::newPager('bank_rec', $known_trans, $cols);
       $table->class       = 'recgrid';
       $table->rowFunction = [$this, 'formatRow'];
       $table->display();
@@ -565,7 +566,7 @@
 
      */
     public function updateData() {
-      DB_Pager::kill('bank_rec');
+      \ADV\App\Pager\Pager::kill('bank_rec');
       unset($_POST["beg_balance"], $_POST["end_balance"]);
       $this->Ajax->activate('_page_body');
     }

@@ -1,5 +1,9 @@
 <?php
+  namespace ADV\App\Pager;
+
   use ADV\Core\Cell;
+  use ADV\Core\View;
+  use ADV\App\Form\Form;
   use ADV\Core\DIC;
   use ADV\Core\DB\DB;
   use ADV\App\Dates;
@@ -23,7 +27,8 @@
   any form.
 
    */
-  class DB_Pager implements Countable {
+  class Pager implements \Countable
+  {
     const NEXT           = 'next';
     const PREV           = 'prev';
     const LAST           = 'last';
@@ -55,51 +60,47 @@
     /** @var */
     public $sql;
     /**@var*/
-    public $name;
+    protected $name;
     /** column definitions (head, type, order) */
-    public $columns = [];
+    protected $columns = [];
     protected $rowGroup = [];
-    /** @var */
-    public $marker_class = 'overduebg';
-    /** @var */
-    public $notice_class = 'overduefg';
     /** @var string table width (default '95%') */
     public $width = "80%";
     /** @var array */
     protected $data = [];
     /** @var */
-    public $curr_page = 1;
+    protected $curr_page = 1;
     /** @var */
-    public $max_page = 1;
+    protected $max_page = 1;
     /** @var */
-    public $last_page;
+    protected $last_page;
     /** @var */
-    public $prev_page;
+    protected $prev_page;
     /** @var */
-    public $next_page;
+    protected $next_page;
     /** @var */
-    public $first_page;
+    protected $first_page;
     /** @var int|? */
     public $page_length = 1;
     /** @var */
     public $rec_count = 0;
     /** @var */
-    public $select;
+    protected $select;
     /** @var */
-    public $where;
+    protected $where;
     /** @var */
-    public $from;
+    protected $from;
     /** @var */
-    public $group;
+    protected $group;
     /** @var */
-    public $order;
+    protected $order;
     /** @var */
-    public $extra_where;
+    protected $extra_where;
     /** @var bool */
-    public $ready;
+    protected $ready;
+    public $editing = false;
     public $showInactive = null;
-    public $type;
-    public $id;
+    protected $type;
     public $rowFunction;
     public $class = 'padded grid ';
     protected $hasBar = false;
@@ -112,7 +113,7 @@
      * @param      $sql
      * @param      $coldef
      *
-     * @return DB_Pager
+     * @return \ADV\App\Pager\Pager
      */
     public static function newPager($name, $sql, $coldef) {
       $pager = DIC::get('Pager', $name, $sql, $coldef);
@@ -121,29 +122,14 @@
       }
       foreach ($pager->columns as &$column) {
         if (isset($column['funkey'])) {
-          $column['fun'] = $coldef[$column['funkey']]['fun'];
+          $column['fun']     = $coldef[$column['funkey']]['fun'];
+          $column['editFun'] = $coldef[$column['funkey']]['editFun'];
         }
       }
       if (Input::_post('_action') == 'showInactive') {
         $pager->showInactive = (Input::_post('_value', Input::NUMERIC) == 1);
       }
-
       return $pager;
-    }
-    /**
-     * @param $name
-     */
-    public static function kill($name) {
-      unset($_SESSION['pager'][$name]);
-    }
-    /**
-     * @param null $sql
-     */
-    public function refresh($sql = null) {
-      if ($sql) {
-        $this->setSQL($sql);
-      }
-      $this->ready = false;
     }
     /**
      * @param      $name
@@ -151,16 +137,17 @@
      * @param      $coldef
      */
     public function __construct($name, $sql, $coldef) {
-
       $this->name = $name;
       $this->setSQL($sql);
-      $this->setColumns($coldef);
+      $this->setColumns((array) $coldef);
     }
-    /** @return bool Initialization after changing record set */
-    protected function init() {
+    /** Initialization after changing record set
+     * @return bool
+     */
+    protected function checkState() {
       if ($this->ready == false) {
         if ($this->type == self::SQL) {
-          $sql    = $this->sqlGen(true);
+          $sql    = $this->generateSQL(true);
           $result = static::$DB->_query($sql, 'Error reading record set');
           if ($result == false) {
             return false;
@@ -168,7 +155,7 @@
           $row             = static::$DB->_fetchRow($result);
           $this->rec_count = $row[0];
           $this->max_page  = $this->page_length ? ceil($this->rec_count / $this->page_length) : 0;
-          $this->setPage(1);
+          $this->setPage(self::FIRST, false);
         } elseif ($this->type == self::ARR) {
           $this->rec_count = count($this->sql);
           $ord             = $this->rowGroup;
@@ -204,7 +191,6 @@
               $args[] = ($index[1] == 'desc' ? SORT_DESC : SORT_ASC);
             }
             $args[] =& $this->dataset;
-
             call_user_func_array('array_multisort', $args);
           }
           $this->max_page   = $this->page_length ? ceil($this->rec_count / $this->page_length) : 0;
@@ -217,93 +203,6 @@
         $this->ready = true;
       }
       return true;
-    }
-    /**
-     * @param $id
-     * @param $prefix
-     * @param $html
-     */
-    protected function generateNavigation($id, $prefix, $html) {
-      $this->navi($id, $html, $prefix . self::FIRST, 1, $this->first_page, "<i class='icon-fast-backward'> </i>");
-      $this->navi($id, $html, $prefix . self::PREV, $this->curr_page - 1, $this->prev_page, '<i class="icon-backward"> </i>');
-      $this->navi($id, $html, $prefix . self::NEXT, $this->curr_page + 1, $this->next_page, '<i class="icon-forward"> </i>');
-      $this->navi($id, $html, $prefix . self::LAST, $this->max_page, $this->last_page, '<i class="icon-fast-forward"> </i>');
-    }
-    /** @return array */
-    protected function makeHeaders() {
-      $headers  = [];
-      $inactive = !static::$Input->post('show_inactive');
-      foreach ($this->columns as $num_col => $col) {
-        if (isset($col['head']) || $inactive) {
-          if ($col['type'] == self::TYPE_SKIP || $col['type'] == self::TYPE_GROUP || $col['type'] == self::TYPE_INACTIVE && $this->showInactive === false) {
-            continue;
-          }
-          if (!isset($col['ord'])) {
-            $headers[] = $col['head'];
-            continue;
-          }
-          switch ($col['ord']) {
-            case 'desc':
-              $icon = " <i class='" . ICON_DESC . "'> </i>";
-              break;
-            case 'asc':
-              $icon = " <i class='" . ICON_ASC . "'> </i>";
-              break;
-            default:
-              $icon = '';
-          }
-          $html = new HTML;
-          $this->navi('', $html, $this->name . '_sort_' . $num_col, $col['ord'], true, $col['head'] . $icon);
-          $headers[] = (string) $html;
-        }
-      }
-      return $headers;
-    }
-    /**
-     * Set column definitions
-     * types: inactive|skip|insert
-     *
-     * @param $columns
-     */
-    protected function setColumns($columns) {
-
-      $columns = (array) $columns;
-      foreach ($columns as $colindex => $coldef) {
-        if (is_string($colindex) && is_string($coldef)) {
-          $c = ['head'=> $colindex, 'type'=> $coldef];
-        } elseif (is_string($colindex) && is_array($coldef)) {
-          $coldef ['head'] = $colindex;
-          $c               = $coldef;
-        } elseif (is_array($coldef)) {
-          $coldef['head'] = '';
-          $c              = $coldef;
-        } else {
-          $c = ['head' => $coldef, 'type' => 'text'];
-        }
-        if (!isset($c['type'])) {
-          $c['type'] = 'text';
-        }
-        switch ($c['type']) {
-          case self::TYPE_INACTIVE:
-            if ($this->showInactive === null) {
-              $this->showInactive = false;
-            }
-            break;
-          case self::TYPE_GROUP:
-            $this->rowGroup[] = [count($this->columns) + 1, 'asc'];
-            break;
-          case 'insert':
-          default:
-            break;
-          case self::TYPE_SKIP: // skip the column (no header)
-            unset($c['head']);
-            break;
-        }
-        if (isset($coldef['fun'])) {
-          $c['funkey'] = $colindex;
-        }
-        $this->columns[] = $c;
-      }
     }
     /**
      * @param $sql
@@ -347,30 +246,55 @@
       }
     }
     /**
-     * @param null $where
+     * Set column definitions
+     * types: inactive|skip|insert
      *
-     * @return mixed
-     * Set additional constraint on record set
+     * @param $columns
      */
-    protected function setWhere($where = null) {
-      if ($where) {
-        if (!is_array($where)) {
-          $where = array($where);
+    protected function setColumns($columns) {
+      foreach ($columns as $colindex => $coldef) {
+        if (is_string($colindex) && is_string($coldef)) {
+          $c = ['head' => $colindex, 'type' => $coldef];
+        } elseif (is_string($colindex) && is_array($coldef)) {
+          $coldef ['head'] = $colindex;
+          $c               = $coldef;
+        } elseif (is_array($coldef)) {
+          $coldef['head'] = '';
+          $c              = $coldef;
+        } else {
+          $c = ['head' => $coldef, 'type' => 'text'];
         }
-        if (count($where) == count($this->extra_where) && !count(array_diff($this->extra_where, $where))
-        ) {
-          return;
+        if (!isset($c['type'])) {
+          $c['type'] = 'text';
         }
+        switch ($c['type']) {
+          case self::TYPE_INACTIVE:
+            if ($this->showInactive === null) {
+              $this->showInactive = false;
+            }
+            break;
+          case self::TYPE_GROUP:
+            $this->rowGroup[] = [count($this->columns) + 1, 'asc'];
+            break;
+          case 'insert':
+          default:
+            break;
+          case self::TYPE_SKIP: // skip the column (no header)
+            unset($c['head']);
+            break;
+        }
+        if (isset($coldef['fun']) || isset($coldef['editFun'])) {
+          $c['funkey'] = $colindex;
+        }
+        $this->columns[] = $c;
       }
-      $this->extra_where = $where;
-      $this->ready       = false;
     }
     /**
      * @param $to
      * Calculates page numbers for html controls.
 
      */
-    protected function setPage($to) {
+    protected function setPage($to, $query = true) {
       switch ($to) {
         case self::NEXT:
           $page = $this->curr_page + 1;
@@ -390,25 +314,53 @@
           $page = 1;
           break;
       }
-
-      $page = ($page < 1) ? 1 : $page;
-      $max  = $this->max_page;
-      $page = ($page > $max) ? $max : $page;
-
+      $page             = ($page < 1) ? 1 : $page;
+      $max              = $this->max_page;
+      $page             = ($page > $max) ? $max : $page;
       $this->curr_page  = $page;
       $this->next_page  = ($page < $max) ? $page + 1 : null;
       $this->prev_page  = ($page > 1) ? ($page - 1) : null;
       $this->last_page  = ($page < $max) ? $max : null;
       $this->first_page = ($page != 1) ? 1 : null;
+      if ($query) {
+        $this->query();
+      }
+    }
+    /**
+     * @param null $where
+     *
+     * @return mixed
+     * Set additional constraint on record set
+     */
+    protected function setWhere($where = null) {
+      if ($where) {
+        if (!is_array($where)) {
+          $where = array($where);
+        }
+        if (count($where) == count($this->extra_where) && !count(array_diff($this->extra_where, $where))
+        ) {
+          return;
+        }
+      }
+      $this->extra_where = $where;
+      $this->ready       = false;
+    }
+    /**
+     * @param null $sql
+     */
+    public function refresh($sql = null) {
+      if ($sql) {
+        $this->setSQL($sql);
+      }
+      $this->ready = false;
     }
     /**
      * @return bool
      * Query database
-
      */
     protected function query() {
       Ajax::_activate("_{$this->name}_span");
-      if (!$this->init()) {
+      if (!$this->checkState()) {
         return false;
       }
       if ($this->type == self::SQL) {
@@ -416,7 +368,7 @@
         if ($this->rec_count == 0) {
           return true;
         }
-        $sql    = $this->sqlGen(false);
+        $sql    = $this->generateSQL(false);
         $result = static::$DB->_query($sql, 'Error browsing database: ' . $sql);
         if (!$result) {
           return false;
@@ -424,7 +376,6 @@
         $this->data = static::$DB->_fetchAll();
       } elseif ($this->type == self::ARR) {
         $offset = ($this->curr_page - 1) * $this->page_length;
-
         if ($offset + $this->page_length >= $this->rec_count) {
           $offset = $this->rec_count - $this->page_length;
         }
@@ -444,9 +395,152 @@
       return true;
     }
     /**
+     * Set current page in response to user control.
+     */
+    protected function selectRecords() {
+      $page = Forms::findPostPrefix($this->name . '_page_', false);
+      $sort = Forms::findPostPrefix($this->name . '_sort_', false);
+      if ($page) {
+        $this->setPage($_POST[$this->name . '_page_' . $page]);
+        if ($page == self::NEXT && !$this->next_page || $page == self::FIRST && !$this->first_page) {
+          static::$JS->setFocus($this->name . '_page_prev_top');
+        }
+        if ($page == self::PREV || $page == self::LAST && !$this->last_page) {
+          static::$JS->setFocus(['el' => $this->name . '_page_next_bottom', 'pos' => 'bottom']);
+        }
+      } elseif ($sort !== null) {
+        $this->sortRecords($sort);
+      } else {
+        $this->query();
+      }
+    }
+    /**
+     * @param $col
+     *
+     * @return bool
+     * Change sort column direction
+     * in order asc->desc->none->asc
+     */
+    protected function sortRecords($col) {
+      if (is_null($col)) {
+        return false;
+      }
+      $current_order = Input::_post($this->name . '_sort_' . $col);
+      switch ($current_order) {
+        case 'asc':
+          $ord = 'desc';
+          break;
+        case 'desc':
+          $ord = 'none';
+          break;
+        case '':
+        case 'none':
+          $ord = 'asc';
+          break;
+        default:
+          return false;
+      }
+      $this->columns[$col]['ord'] = $ord;
+      $this->ready                = false;
+      $this->setPage(self::FIRST);
+      return true;
+    }
+    /**
+     * @param bool $count
+     *
+     * @return string
+     * Generate db query from base sql
+     * $count==false - for current page data retrieval
+     * $count==true  - for total records count
+
+     */
+    protected function generateSQL($count = false) {
+      $select = $this->select;
+      $from   = $this->from;
+      $where  = $this->where;
+      $group  = $this->group;
+      $order  = $this->order;
+      if (count($this->extra_where)) {
+        $where .= ($where == '' ? '' : ' AND ') . implode($this->extra_where, ' AND ');
+      }
+      if ($where) {
+        $where = " WHERE ($where)";
+      }
+      if ($count) {
+        $group = $group == '' ? "*" : "DISTINCT $group";
+        return "SELECT COUNT($group) FROM $from $where";
+      }
+      $sql = "$select FROM $from $where";
+      if ($group) {
+        $sql .= " GROUP BY $group";
+      }
+      $ord = [];
+      foreach ($this->rowGroup as $group) {
+        $ord[] = $group[0] . ' ' . $group[1];
+      }
+      foreach ($this->columns as $key => $col) {
+        if (isset($col['ord'])) {
+          if ($col['ord'] && $col['ord'] != 'none') {
+            $name  = isset($col['name']) ? $col['name'] : $key + 1;
+            $ord[] = $name . ' ' . $col['ord'];
+          }
+        }
+      }
+      if (count($ord)) {
+        $sql .= " ORDER BY " . implode($ord, ',');
+      } elseif ($order) {
+        $sql .= " ORDER BY $order";
+      } // original base query order
+      $page_length = $this->page_length;
+      $offset      = ($this->curr_page - 1) * $page_length;
+      $sql .= " LIMIT $offset, $page_length";
+      return $sql;
+    }
+    /**
+     * @param $id
+     * @param $prefix
+     * @param $html
+     */
+    protected function generateNavigation($id, $prefix, $html) {
+      $this->formatNavigation($id, $html, $prefix . self::FIRST, 1, $this->first_page, "<i class='icon-fast-backward'> </i>");
+      $this->formatNavigation($id, $html, $prefix . self::PREV, $this->curr_page - 1, $this->prev_page, '<i class="icon-backward"> </i>');
+      $this->formatNavigation($id, $html, $prefix . self::NEXT, $this->curr_page + 1, $this->next_page, '<i class="icon-forward"> </i>');
+      $this->formatNavigation($id, $html, $prefix . self::LAST, $this->max_page, $this->last_page, '<i class="icon-fast-forward"> </i>');
+    }
+    /** @return array */
+    protected function generateHeaders() {
+      $headers  = [];
+      $inactive = !static::$Input->post('show_inactive');
+      foreach ($this->columns as $num_col => $col) {
+        if (isset($col['head']) || $inactive) {
+          if ($col['type'] == self::TYPE_SKIP || $col['type'] == self::TYPE_GROUP || $col['type'] == self::TYPE_INACTIVE && $this->showInactive === false) {
+            continue;
+          }
+          if (!isset($col['ord'])) {
+            $headers[] = $col['head'];
+            continue;
+          }
+          switch ($col['ord']) {
+            case 'desc':
+              $icon = " <i class='" . ICON_DESC . "'> </i>";
+              break;
+            case 'asc':
+              $icon = " <i class='" . ICON_ASC . "'> </i>";
+              break;
+            default:
+              $icon = '';
+          }
+          $html = new HTML;
+          $this->formatNavigation('', $html, $this->name . '_sort_' . $num_col, $col['ord'], true, $col['head'] . $icon);
+          $headers[] = (string) $html;
+        }
+      }
+      return $headers;
+    }
+    /**
      * @param $name - base name for pager controls and $_SESSION object name
      * -----------------------------F------------------------------------------------
-     *              Creates new DB_Pager $_SESSION object on first page call.
+     *              Creates new \ADV\App\Pager\Pager $_SESSION object on first page call.
      *              Retrieves from $_SESSION var on subsequent $_POST calls
      * $sql  - base sql for data inquiry. Order of fields implies
      *              pager columns order.
@@ -471,168 +565,33 @@
 
      */
     /**
-     * Set current page in response to user control.
-     */
-    protected function selectRecords() {
-      $page = Forms::findPostPrefix($this->name . '_page_', false);
-      $sort = Forms::findPostPrefix($this->name . '_sort_', false);
-      if ($page) {
-        $this->changePage($_POST[$this->name . '_page_' . $page]);
-        if ($page == self::NEXT && !$this->next_page || $page == self::FIRST && !$this->first_page) {
-          static::$JS->setFocus($this->name . '_page_prev_top');
-        }
-        if ($page == self::PREV || $page == self::LAST && !$this->last_page) {
-          static::$JS->setFocus(['el'=> $this->name . '_page_next_bottom', 'pos'=> 'bottom']);
-        }
-      } elseif ($sort !== null) {
-        $this->sortTable($sort);
-      } else {
-        $this->query();
-      }
-    }
-    /**
-     * @param null $page
-     *
-     * @return bool
-     * Set query result page
-
-     */
-    protected function changePage($page = null) {
-
-      $this->setPage($page);
-
-      $this->query();
-      return true;
-    }
-    /**
-     * @param $col
-     *
-     * @return bool
-     * Change sort column direction
-     * in order asc->desc->none->asc
-     */
-    protected function sortTable($col) {
-      if (is_null($col)) {
-        return false;
-      }
-      $current_order = Input::_post($this->name . '_sort_' . $col);
-      switch ($current_order) {
-        case 'asc':
-          $ord = 'desc';
-          break;
-        case 'desc':
-          $ord = 'none';
-          break;
-        case '':
-        case 'none':
-          $ord = 'asc';
-          break;
-        default:
-          return false;
-      }
-      $this->columns[$col]['ord'] = $ord;
-      $this->ready                = false;
-      $this->setPage(1);
-      $this->query();
-      return true;
-    }
-    /**
-     * @param bool $count
-     *
-     * @return string
-     * Generate db query from base sql
-     * $count==false - for current page data retrieval
-     * $count==true  - for total records count
-
-     */
-    protected function sqlGen($count = false) {
-      $select = $this->select;
-      $from   = $this->from;
-      $where  = $this->where;
-      $group  = $this->group;
-      $order  = $this->order;
-      if (count($this->extra_where)) {
-        $where .= ($where == '' ? '' : ' AND ') . implode($this->extra_where, ' AND ');
-      }
-      if ($where) {
-        $where = " WHERE ($where)";
-      }
-      if ($count) {
-        $group = $group == '' ? "*" : "DISTINCT $group";
-        return "SELECT COUNT($group) FROM $from $where";
-      }
-      $sql = "$select FROM $from $where";
-      if ($group) {
-        $sql .= " GROUP BY $group";
-      }
-
-      $ord = [];
-      foreach ($this->rowGroup as $group) {
-        $ord[] = $group[0] . ' ' . $group[1];
-      }
-      foreach ($this->columns as $key=> $col) {
-        if (isset($col['ord'])) {
-          if ($col['ord'] && $col['ord'] != 'none') {
-            $name  = isset($col['name']) ? $col['name'] : $key + 1;
-            $ord[] = $name . ' ' . $col['ord'];
-          }
-        }
-      }
-      if (count($ord)) {
-        $sql .= " ORDER BY " . implode($ord, ',');
-      } elseif ($order) {
-        $sql .= " ORDER BY $order";
-      } // original base query order
-      $page_length = $this->page_length;
-      $offset      = ($this->curr_page - 1) * $page_length;
-      $sql .= " LIMIT $offset, $page_length";
-      return $sql;
-    }
-    /**
      * @static
-     * @internal param \DB_Pager $pager
+     * @internal param \ADV\App\Pager\Pager $pager
      * @return bool
      */
     public function display() {
       $this->selectRecords();
       Ajax::_start_div("_{$this->name}_span");
-      $headers = $this->makeHeaders();
+      $headers = $this->generateHeaders();
       $class   = $this->class . ' width' . rtrim($this->width, '%');
+      if ($this->editing) {
+        $form = new Form();
+        echo $form['_start'];
+      }
       echo "<div class='center'><table class='" . $class . "'>";
       echo  $this->displayHeaders($headers);
       $this->currentRowGroup = null;
       foreach ($this->data as $row) {
-        $this->displayRow($row);
+        $this->displayRow($row, $form);
       }
       echo "<tfoot>";
       echo $this->displayNavigation('bottom');
       echo "</tfoot></table></div>";
+      if ($this->editing) {
+        echo $form['_end'];
+      }
       Ajax::_end_div();
       return true;
-    }
-    /**
-     * @static
-     *
-     * @param          $id
-     * @param HTML     $html
-     * @param          $name
-     * @param          $value
-     * @param bool     $enabled
-     * @param null     $title
-     *
-     * @return string
-     */
-    protected function navi($id, HTML $html, $name, $value, $enabled = true, $title = null) {
-      $attrs = [
-        'disabled'=> (bool) !$enabled,
-        'class'   => 'navibutton',
-        'type'    => 'submit',
-        'name'    => $name,
-        'value'   => $value,
-      ];
-      $id    = $id ? $name . '_' . $id : $name;
-
-      $html->button($id, $attrs)->span(null, $title, false)->_button;
     }
     /**
      * @param $id
@@ -646,11 +605,11 @@
         $inact = $this->formatInactiveFooter();
       }
       $html = new HTML();
-      $html->tr(['class'=> 'navibar']);
-      $html->td(['colspan'=> $colspan, 'class'=> 'navibar']);
+      $html->tr(['class' => 'navibar']);
+      $html->td(['colspan' => $colspan, 'class' => 'navibar']);
       if ($this->rec_count) {
         $button_prefix = $this->name . '_page_';
-        $html->span(null, ['class'=> 'floatright']);
+        $html->span(null, ['class' => 'floatright']);
         $this->generateNavigation($id, $button_prefix, $html);
         $html->_span();
         $from = ($this->curr_page - 1) * $this->page_length + 1;
@@ -681,7 +640,7 @@
      *
      * @return mixed
      */
-    protected function displayRow($row) {
+    protected function displayRow($row, $form = null) {
       if ($this->rowGroup) {
         $fields = array_keys($row);
         $field  = $fields[$this->rowGroup[0][0] - 1];
@@ -689,6 +648,9 @@
           $this->currentRowGroup = $row[$field];
           echo "<tr class='navigroup'><th colspan=" . count($this->columns) . ">" . $row[$field] . "</th></tr>";
         }
+      }
+      if ($this->editing == $row['id'] && $form) {
+        return $this->editRow($row, $form);
       }
       echo (is_callable($this->rowFunction)) ? call_user_func($this->rowFunction, $row) : "<tr>\n";
       foreach ($this->columns as $col) {
@@ -759,6 +721,48 @@
     /**
      * @param $row
      *
+     * @return mixed
+     */
+    protected function editRow($row, $form) {
+      $view = new View('form/pager');
+      $view->set('form', $form);
+      $group = 'first';
+      foreach ($this->columns as $col) {
+        $coltype = isset($col['type']) ? $col['type'] : '';
+        if (isset($col['editFun'])) { // use data input function if defined
+          $coltype = 'fun';
+        }
+        $form->group($group);
+        $view['class'] = isset($col['class']) ? 'class="' . $col['class'] . '"' : null;
+        switch ($coltype) { // format columnhsdaasdg
+          case 'fun': // column not displayed
+            $fun = $col['editFun'];
+            if (is_callable($fun)) {
+              $field = call_user_func($fun, $form);
+            }
+            $group = 'rest';
+            break;
+          case self::TYPE_SKIP: // column not displayed
+          case self::TYPE_GROUP: // column not displayed
+            $field = $form->group('hidden')->hidden($col['name']);
+            break;
+          case self::TYPE_AMOUNT: // column not displayed
+            $field = $form->amount($col['name']);
+            $group = 'rest';
+            break;
+          default:
+            $field = $form->text($col['name']);
+            $group = 'rest';
+        }
+        if (is_a($field, '\\ADV\\App\\Form\\Field')) {
+          $field->initial($row[$col['name']]);
+        }
+      }
+      $view->render();
+    }
+    /**
+     * @param $row
+     *
      * @return \ADV\App\Form\Field
      */
     protected function formatInactive($row) {
@@ -779,12 +783,44 @@
       return $field;
     }
     /**
+     * @static
+     *
+     * @param          $id
+     * @param HTML     $html
+     * @param          $name
+     * @param          $value
+     * @param bool     $enabled
+     * @param null     $title
+     *
+     * @return string
+     */
+    protected function formatNavigation($id, HTML $html, $name, $value, $enabled = true, $title = null) {
+      $attrs = [
+        'disabled' => (bool) !$enabled,
+        'class'    => 'navibutton',
+        'type'     => 'submit',
+        'name'     => $name,
+        'value'    => $value,
+      ];
+      $id    = $id ? $name . '_' . $id : $name;
+      $html->button($id, $attrs)->span(null, $title, false)->_button;
+    }
+    /**
+     * @param $name
+     */
+    public static function kill($name) {
+      unset($_SESSION['pager'][$name]);
+    }
+    /**
      * @return array
      */
     public function __sleep() {
       unset($this->rowFunction);
       foreach ($this->columns as &$col) {
         if (isset($col['fun'])) {
+          $col['fun'] = null;
+        }
+        if (isset($col['editFun'])) {
           $col['fun'] = null;
         }
       }

@@ -44,16 +44,13 @@
       'fun'    => 'del_link'
     ),
   );
-  $table = DB_Pager::newPager('orders_tbl', $sql, $cols);
+  $table = \ADV\App\Pager\Pager::newPager('orders_tbl', $sql, $cols);
   if (Bank_Currency::is_company($_POST['curr_abrev'])) {
     Event::warning(_("The selected currency is the company currency."), 2);
     Event::warning(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
   } else {
     echo "<br>";
     $table->width = "40%";
-    if ($table->rec_count == 0) {
-      $table->ready = false;
-    }
     $table->display($table);
     echo "<br>";
     display_rate_edit($selected_id);

@@ -25,7 +25,8 @@
    * @param string $action
    * @param string $name
    */
-  class Forms {
+  class Forms
+  {
     /** @var \ADV\Core\DB\DB */
     static $DB;
     static $Ajax;
@@ -60,7 +61,7 @@
      *
      * @return int|null|string
      */
-    public static function findPostPrefix($prefix, $numeric = true) {
+    public static function  findPostPrefix($prefix, $numeric = true) {
       foreach ($_POST as $postkey => $postval) {
         if (strpos($postkey, $prefix) === 0) {
           $id = substr($postkey, strlen($prefix));
@@ -189,14 +190,12 @@
         $selected_id = array($first_id);
       }
       $_POST[$name] = $multi ? $selected_id : $selected_id[0];
-      $selector     = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' :
-        '') . "$disabled id='$name' name='$name" . ($multi ? '[]' : '') . "' class='" . $opts['class'] . " combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
+      $selector     = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' : '') . "$disabled id='$name' name='$name" . ($multi ? '[]' : '') . "' class='" . $opts['class'] . " combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
       $sel_name     = str_replace(['[', ']'], ['-', ''], $name);
       static::$Ajax->addUpdate($name, "_{$sel_name}_sel", $selector);
       $selector = "<span id='_{$sel_name}_sel' class='combodiv'>" . $selector . "</span>\n";
       if ($select_submit != false) { // if submit on change is used - add select button
-        $_select_button
-          = "<input %s type='submit' class='combo_select' style='border:0;background:url
+        $_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url
  (/themes/%s/images/button_ok.png) no-repeat;%s' name='%s' value=' ' title='" . _("Select") . "'> ";
         $selector .= sprintf($_select_button, $disabled, User::theme(), 'display:none;', '_' . $name . '_update') . "\n";
       }
@@ -259,8 +258,7 @@
       }
       $caption = ($name == '_action') ? $title : $value;
       //$id         = ($name == '_action') ? '' : "id=\"$name\"";
-      $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') :
-        $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\" value=\"$value\"" . ($title ? " title='$title'" : '') . ">" . Forms::setIcon(
+      $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') : $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\" value=\"$value\"" . ($title ? " title='$title'" : '') . ">" . Forms::setIcon(
         $icon
       ) . "<span>$caption</span>" . "</button>\n";
       if ($echo) {
@@ -457,11 +455,9 @@
         {
           $icon = ICON_DELETE;
         }
-        return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='1'" . ($title ? " title='$title'" : " title='$value'") . ($aspect ?
-          " data-aspect='$aspect'" : '') . $rel . " />" . Forms::setIcon($icon) . "</button>\n";
+        return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='1'" . ($title ? " title='$title'" : " title='$value'") . ($aspect ? " data-aspect='$aspect'" : '') . $rel . " />" . Forms::setIcon($icon) . "</button>\n";
       } else {
-        return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='$value'" . ($title ? " title='$title'" : '') . ($aspect ?
-          " data-aspect='$aspect'" : '') . $rel . " >$caption</button>\n";
+        return "<button type='submit' class='editbutton' id='" . $name . "' name='" . $name . "' value='$value'" . ($title ? " title='$title'" : '') . ($aspect ? " data-aspect='$aspect'" : '') . $rel . " >$caption</button>\n";
       }
     }
     /**
@@ -497,8 +493,7 @@
       if ($value === null) {
         $value = Input::_post($name, null, 0);
       }
-      $str .= "<input" . ($value == 1 ? ' checked' : '') . " type='checkbox' name='$name' id='$name' value='1'" . ($submit_on_change ? " onclick='$submit_on_change'" :
-        '') . ($title ? " title='$title'" : '') . " >\n";
+      $str .= "<input" . ($value == 1 ? ' checked' : '') . " type='checkbox' name='$name' id='$name' value='1'" . ($submit_on_change ? " onclick='$submit_on_change'" : '') . ($title ? " title='$title'" : '') . " >\n";
       static::$Ajax->addUpdate($name, $name, $value);
       return $str;
     }
@@ -1144,8 +1139,7 @@
       if ($check && (Input::_post($name) != Dates::_today())) {
         $aspect .= ' style="color:#FF0000"';
       }
-      echo "<input id='$name' type='text' name='$name' class='$class' $aspect maxlength='10' value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" :
-        '') . " > $post_label";
+      echo "<input id='$name' type='text' name='$name' class='$class' $aspect maxlength='10' value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" : '') . " > $post_label";
       echo "</td>\n";
       Ajax::_addUpdate($name, $name, $_POST[$name]);
     }
@@ -1337,7 +1331,7 @@
       $input_attr['maxlength'] = $max ? : $size;
       $input_attr['id']        = $id ? : $name;
       $input_attr['type']      = 'text';
-      foreach ($input_attr as $k=> $v) {
+      foreach ($input_attr as $k => $v) {
         if ($v === null) {
           continue;
         }

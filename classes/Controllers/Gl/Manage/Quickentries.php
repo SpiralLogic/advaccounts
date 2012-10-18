@@ -12,7 +12,7 @@
   use ADV\App\Controller\Manage;
   use GL_UI;
   use Tax_Type;
-  use DB_Pager;
+  use ADV\App\Pager\Pager;
   use GL_QuickEntry;
   use ADV\Core\View;
   use ADV\App\Form\Form;
@@ -20,7 +20,8 @@
   /**
 
    */
-  class Quickentries extends Manage {
+  class Quickentries extends Manage
+  {
     protected $tableWidth = '70';
     public $linesid;
     /** @var  \ADV\App\GL\QuickEntryLine */
@@ -39,7 +40,6 @@
             break;
           case 'Line' . EDIT:
             $this->line->load($lineid);
-
             $this->object->load($this->line->qid);
             break;
           case 'Line' . SAVE:
@@ -62,23 +62,22 @@
       $this->generateTable();
       echo '<br>';
       $this->generateForm();
-
       $cols       = [
-        ['type'=> 'skip'],
-        ['type'=> 'skip'],
+        ['type' => 'skip'],
+        ['type' => 'skip'],
         'Amount',
-        'Action'  => ['fun'=> [$this, 'formatAction']],
+        'Action' => ['fun' => [$this, 'formatAction'], 'editFun' => [$this, 'formatEditAction']],
         'Account/Tax Type',
-        ['type'=> 'skip'],
-        ['type'=> 'skip'],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatLineEditBtn']],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatLineDeleteBtn']],
-
+        ['type' => 'skip'],
+        ['type' => 'skip'],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineEditBtn'], 'editFun' => [$this, 'formatLineSaveBtn']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineDeleteBtn'], 'editFun' => [$this, 'formatLineCancelBtn']],
       ];
       $pager_name = 'QE_Lines';
-      DB_Pager::kill($pager_name);
-      $linestable        = DB_Pager::newPager($pager_name, $this->object->getLines($this->linesid), $cols);
+      //\ADV\App\Pager\Pager::kill($pager_name);
+      $linestable        = \ADV\App\Pager\Pager::newPager($pager_name, $this->object->getLines($this->linesid), $cols);
       $linestable->width = $this->tableWidth;
+      $linestable->editing = $this->action == 'Line' . EDIT ? $this->actionID : false;
       $linestable->display();
       $lineform = new Form();
       $lineform->arraySelect('action', GL_QuickEntry::$actions)->label("Action:")->focus($this->action == 'Line' . EDIT);
@@ -99,7 +98,6 @@
       $view          = new View('form/simple');
       $view['title'] = 'Quick Entry Line';
       $this->generateForm($lineform, $view, $this->line, false);
-
       $this->Page->end_page(true);
     }
     /**≈
@@ -121,13 +119,13 @@
      */
     protected function generateTableCols() {
       $cols = [
-        ['type'=> 'skip'],
-        'Type'       => ['fun'=> [$this, 'formatType']],
+        ['type' => 'skip'],
+        'Type'        => ['fun' => [$this, 'formatType']],
         'Description',
-        'Base Amount'=> ['type'=> 'price'],
+        'Base Amount' => ['type' => Pager::TYPE_AMOUNT],
         'Description',
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
       ];
       return $cols;
     }
@@ -145,6 +143,20 @@
      */
     public function formatType($row) {
       return GL_QuickEntry::$types[$row['type']];
+    }
+    /**
+     * @param $row
+     *
+     * @return mixed
+     */
+    public function formatEditAction(Form $form) {
+      return $form->arraySelect('action', GL_QuickEntry::$actions)->focus($this->action == 'Line' . EDIT);
+    }
+    public function formatLineSaveBtn(Form $form) {
+      return $form->button('_action', 'Line' . SAVE, SAVE)->preIcon(ICON_SAVE)->type('mini')->type('success');
+    }
+    public function formatLineCancelBtn(Form $form) {
+      return $form->button('_action', 'Line' . CANCEL, CANCEL)->preIcon(ICON_CANCEL)->type('mini')->type('danger');
     }
     /**
      * @param $row

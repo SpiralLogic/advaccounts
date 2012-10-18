@@ -43,7 +43,7 @@
     _("Location"),
     _("Quantity Required")
   );
-  $table        = DB_Pager::newPager('usage_table', $sql, $cols);
+  $table        = \ADV\App\Pager\Pager::newPager('usage_table', $sql, $cols);
   $table->width = "80%";
   $table->display($table);
   Forms::end();

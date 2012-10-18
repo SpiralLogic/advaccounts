@@ -22,7 +22,8 @@
    * @param string $action
    * @param string $name
    */
-  class Form implements \ArrayAccess, \RecursiveIterator, \JsonSerializable {
+  class Form implements \ArrayAccess, \RecursiveIterator, \JsonSerializable, \Countable
+  {
     const NO_VALUES = 1;
     /** @var Field[] */
     protected $fields = [];
@@ -36,10 +37,9 @@
     protected $validators = [];
     protected $uniqueid;
     protected $current;
-    protected $options
-      = [
-        self::NO_VALUES=> false,
-      ];
+    protected $options = [
+      self::NO_VALUES => false,
+    ];
     protected $currentgroup;
     public $useDefaults = false;
     protected $nest;
@@ -64,7 +64,6 @@
      */
     protected function addField(Field $field) {
       $name = $field['name'];
-
       if (is_array($this->currentgroup)) {
         $this->currentgroup[] = $field;
       }
@@ -88,7 +87,7 @@
       if (!isset($this->groups[$name])) {
         $this->groups[$name] = [];
       }
-      $this->currentgroup = &$this->groups[$name];
+      $this->currentgroup = & $this->groups[$name];
       return $this;
     }
     /**
@@ -119,9 +118,9 @@
       $this->start     = (new HTML)->form($name, $attr)->input(
         null,
         [
-        'type' => 'hidden',
-        'value'=> $this->uniqueid,
-        'name' => '_form_id'
+        'type'  => 'hidden',
+        'value' => $this->uniqueid,
+        'name'  => '_form_id'
         ]
       );
       return $this->start;
@@ -232,7 +231,7 @@
      * @return Field
      */
     public function percent($name, $inputparams = []) {
-      $inputparams = array_merge(['class'=> 'amount'], $inputparams);
+      $inputparams = array_merge(['class' => 'amount'], $inputparams);
       return $this->number($name, User::percent_dec(), $inputparams)->append('%');
     }
     /**
@@ -261,7 +260,7 @@
      * @return Field
      */
     public function amount($name, $input_attr = []) {
-      $input_attr = array_merge(['class'=> 'amount'], $input_attr);
+      $input_attr = array_merge(['class' => 'amount'], $input_attr);
       return $this->number($name, User::price_dec(), $input_attr)->prepend('$');
     }
     /**
@@ -311,7 +310,6 @@
      * @return Field
      */
     public function arraySelect($name, $items, $selected_id = null, $options = []) {
-
       $field = $this->addField(new Select($name, $items, $options));
       $field->initial($selected_id);
       if ($this->Input->post("_{$name}_update")) {
@@ -326,7 +324,7 @@
      * @param             $caption
      * @param array       $input_attr Input attributes
      *
-     * @return string
+     * @return Button
      */
     public function button($name, $value, $caption, $input_attr = []) {
       $button = new Button($name, $value, $caption);
@@ -396,7 +394,7 @@
     public function setValues($values, $group = null) {
       $values = (array) $values;
       $fields = $group ? $this->groups[$group] : $this->fields;
-      foreach ($values as $id=> $value) {
+      foreach ($values as $id => $value) {
         if (array_key_exists($id, $fields)) {
           $fields[$id]->value($value);
         }
@@ -442,7 +440,7 @@
       $return    = [];
       $use       = ($this->useDefaults) ? 'default' : 'value';
       $autofocus = false;
-      foreach ($this->fields as $id=> $field) {
+      foreach ($this->fields as $id => $field) {
         if ($field instanceof Button) {
           continue;
         }
@@ -450,7 +448,7 @@
           $return[$id] = $field->jsonSerialize();
           continue;
         }
-        $value = ['value'=> $field->$use];
+        $value = ['value' => $field->$use];
         if ($field->hide === true) {
           $value['hidden'] = true;
         } elseif (!$autofocus && $field['autofocus'] === true) {
@@ -622,5 +620,17 @@
      */
     public function getChildren() {
       return $this->current();
+    }
+    /**
+     * (PHP 5 &gt;= 5.1.0)<br/>
+     * Count elements of an object
+     * @link http://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     *       The return value is cast to an integer.
+     */
+    public function count() {
+      return count($this->fields);
     }
   }

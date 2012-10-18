@@ -15,7 +15,8 @@
   /**
 
    */
-  class Banking extends Menu {
+  class Banking extends Menu
+  {
     public $name = "Banking";
     public $help_context = "&Banking";
     /**
@@ -42,7 +43,7 @@
       $module->addRightFunction(_("General Ledger &Reports"), "/reporting/reports_main?Class=6", SA_GLREP);
       $module = $this->add_module(_("Maintenance"));
       $module->addLeftFunction(_("Bank &Accounts"), "/banking/manage/bank_accounts?", SA_BANKACCOUNT);
-      $module->addLeftFunction(_("&Quick Entries"), "/banking/manage/gl_quick_entries?", SA_QUICKENTRY);
+      $module->addLeftFunction(_("&Quick Entries"), "/gl/manage/quickentries?", SA_QUICKENTRY);
       $module->addLeftFunction(_("Account &Tags"), "/system/tags?type=account", SA_GLACCOUNTTAGS);
       //  $module->addLeftFunction(_("Payment Methods"), "/banking/manage/payment_methods", SA_BANKACCOUNT);
       $module->addLeftFunction(_("&Currencies"), "/banking/manage/currencies?", SA_CURRENCY);

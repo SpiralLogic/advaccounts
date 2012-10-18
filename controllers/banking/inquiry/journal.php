@@ -70,8 +70,7 @@
   }
   $sql .= " GROUP BY gl.type, gl.type_no";
   */
-  $sql
-    = "SELECT	IF(ISNULL(a.gl_seq),0,a.gl_seq) as gl_seq,
+  $sql = "SELECT	IF(ISNULL(a.gl_seq),0,a.gl_seq) as gl_seq,
      gl.tran_date,
      gl.type,
      gl.type_no,
@@ -105,22 +104,22 @@
   }
   $sql .= " GROUP BY gl.type, gl.type_no";
   $cols = array(
-    _("#")                => array(
+    _("#")       => array(
       'fun'   => 'journal_pos',
       'align' => 'center'
     ),
-    _("Date")             => array(
+    _("Date")    => array(
       'name' => 'tran_date',
       'type' => 'date',
       'ord'  => 'desc'
     ),
-    _("Type")             => array('fun' => 'sysTypeName'),
-    _("Trans #")          => array('fun' => 'view_link'),
+    _("Type")    => array('fun' => 'sysTypeName'),
+    _("Trans #") => array('fun' => 'view_link'),
     _("Reference"),
-    _("Amount")           => array('type' => 'amount'),
+    _("Amount")  => array('type' => 'amount'),
     _("Memo"),
     _("User"),
-    _("View")             => array(
+    _("View")    => array(
       'insert' => true,
       'fun'    => 'gl_link'
     ),
@@ -132,7 +131,7 @@
   if (!Input::_hasPost('AlsoClosed')) {
     $cols[_("#")] = 'skip';
   }
-  $table        = DB_Pager::newPager('journal_tbl', $sql, $cols);
+  $table        = \ADV\App\Pager\Pager::newPager('journal_tbl', $sql, $cols);
   $table->width = "80%";
   $table->display($table);
   Forms::end();
@@ -181,6 +180,5 @@
    */
   function edit_link($row) {
     global $editors;
-    return isset($editors[$row["type"]]) && !DB_AuditTrail::is_closed_trans($row["type"], $row["type_no"]) ?
-      Display::link_button(_("Edit"), sprintf($editors[$row["type"]], $row["type_no"], $row["type"]), ICON_EDIT) : '';
+    return isset($editors[$row["type"]]) && !DB_AuditTrail::is_closed_trans($row["type"], $row["type_no"]) ? Display::link_button(_("Edit"), sprintf($editors[$row["type"]], $row["type_no"], $row["type"]), ICON_EDIT) : '';
   }
