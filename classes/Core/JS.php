@@ -27,41 +27,23 @@
   class JS {
     use Traits\StaticAccess2;
 
-    /**
-     * @var array
-     */
+    /** @var array **/
     private $beforeload = [];
-    /**
-     * @var array
-     */
+    /** @var array **/
     private $onload = [];
-    /**
-     * @var array
-     */
+    /** @var array **/
     private $onlive = [];
-    /**
-     * @var array
-     */
+    /** @var array **/
     private $toclean = [];
-    /**
-     * @var array
-     */
+    /** @var array **/
     private $headerFiles = [];
-    /**
-     * @var array
-     */
+    /** @var array **/
     private $footerFiles = [];
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     private $focus = false;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     public $outputted = false;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     public $openWindow = false;
     public $apikey;
     /**
@@ -113,7 +95,6 @@
       if (!isset($_POST['_focus'])) {
         $this->setFocus($name);
       }
-
       return $name;
     }
     /**
@@ -131,7 +112,7 @@
      * @param       $page
      */
     public function tabs($id, $options = [], $page = null) {
-      $defaults = ['noajax'=> false, 'haslinks'=> false];
+      $defaults = ['noajax' => false, 'haslinks' => false];
       $options  = array_merge($defaults, $options);
       $noajax   = $options['noajax'] ? 'true' : 'false';
       $haslinks = $options['hasLinks'] ? 'true' : 'false';
@@ -148,7 +129,6 @@
         /** @noinspection PhpDynamicAsStaticMethodCallInspection */
         $scripts[] = $dir . '/' . implode(',', $files);
       }
-
       return $scripts;
     }
     /**
@@ -193,7 +173,6 @@
       if ($return) {
         return ob_get_clean();
       }
-
       return true;
     }
     /**
@@ -202,7 +181,7 @@
      * @return mixed
      */
     public function renderStatus(Status $status) {
-      $this->renderJSON(['status'=> $status]);
+      $this->renderJSON(['status' => $status]);
     }
     /**
      * @static
@@ -270,7 +249,6 @@
         foreach ($funcs as $key => $value) {
           $input_json = str_replace('"' . $key . '"', $value, $input_json);
         }
-
         return $input_json;
       }
     }
@@ -338,7 +316,6 @@
       if ($js) {
         $this->register($js, $this->onload);
       }
-
       return $this;
     }
     /**
@@ -392,14 +369,13 @@
      */
     public function getState() {
       $state = get_object_vars($this);
-
       return $state;
     }
     /**
      * @param array $state
      */
     public function addState(Array $state = []) {
-      foreach ($state as $property=> $value) {
+      foreach ($state as $property => $value) {
         if (property_exists($this, $property)) {
           if (is_array($this->$property)) {
             $this->$property = array_merge_recursive($this->$property, $value);

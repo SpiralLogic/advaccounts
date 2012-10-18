@@ -40,13 +40,9 @@ all the info to do the necessary entries without looking up ie additional querie
     public $order_price;
     /** @var */
     public $chg_price;
-    /**
-     * @var null
-     */
+    /** @var null **/
     public $exp_price;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $discount;
     /** @var */
     public $Complete;

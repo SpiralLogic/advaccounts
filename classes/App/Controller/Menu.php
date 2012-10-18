@@ -26,9 +26,7 @@
     public $name;
     /** @var */
     public $help_context;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     public $enabled = true;
     /**
      * @internal param $id
@@ -49,7 +47,7 @@
      * @return $this
      */
     public function add_module($name) {
-      $this->modules[$name]    = ['right'=> [], 'left'=> []];
+      $this->modules[$name]    = ['right' => [], 'left' => []];
       $this->rightAppFunctions =& $this->modules[$name]['right'];
       $this->leftAppFunctions  =& $this->modules[$name]['left'];
       return $this;
@@ -59,17 +57,15 @@
      */
     public function getModules() {
       $this->before();
-
       $modules = [];
       foreach ($this->modules as $name => $module) {
         $functions = [];
         Arr::append($functions, $module['left']);
         Arr::append($functions, $module['right']);
-
         foreach ($functions as &$func) {
           $func['label'] = str_replace('&', '', $func['label']);
         }
-        $modules[] = ['title'=> $name, 'modules'=> $functions];
+        $modules[] = ['title' => $name, 'modules' => $functions];
       }
       return $modules;
     }
@@ -79,7 +75,6 @@
     }
     protected function index() {
       $this->Page->init(_($this->help_context = "Main Menu"), SA_OPEN, false, true);
-
       foreach ($this->modules as $name => $module) {
         $app            = new View('application');
         $app['colspan'] = (count($module['right']) > 0) ? 2 : 1;
@@ -113,7 +108,7 @@
      * @return Func
      */
     public function addLeftFunction($label, $href = "", $access = SA_OPEN) {
-      $appfunction              = ['label'=> $label, 'href'=> $href, 'access'=> $access];
+      $appfunction              = ['label' => $label, 'href' => $href, 'access' => $access];
       $this->leftAppFunctions[] = $appfunction;
       return $appfunction;
     }
@@ -125,20 +120,14 @@
      * @return Func
      */
     public function addRightFunction($label, $href = "", $access = SA_OPEN) {
-      $appfunction               = ['label'=> $label, 'href'=> $href, 'access'=> $access];
+      $appfunction               = ['label' => $label, 'href' => $href, 'access' => $access];
       $this->rightAppFunctions[] = $appfunction;
       return $appfunction;
     }
-    /**
-     * @var null
-     */
+    /** @var null **/
     public $icon;
-    /**
-     * @var array
-     */
+    /** @var array **/
     public $leftAppFunctions = [];
-    /**
-     * @var array
-     */
+    /** @var array **/
     public $rightAppFunctions = [];
   }

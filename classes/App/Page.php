@@ -35,34 +35,20 @@
     protected $User;
     protected $Config;
     protected $sel_app;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     protected $frame = false;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     protected $menu = true;
     public static $before_box = '';
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     protected $isIndex = false;
-    /**
-     * @var array
-     */
+    /** @var array **/
     protected $css = [];
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     protected $header = true;
-    /**
-     * @var string
-     */
+    /** @var string **/
     protected $theme = 'default';
-    /**
-     * @var string
-     */
+    /** @var string **/
     protected $title = '';
     /** @var Page  */
     public static $i = null;
@@ -201,7 +187,7 @@
       $menu['name']        = $this->User->name;
       /** @var ADVAccounting $application */
       $menuitems = [];
-      foreach ($this->App->applications as $app=> $config) {
+      foreach ($this->App->applications as $app => $config) {
         $item = [];
         if (!$config['enabled']) {
           continue;
@@ -246,7 +232,7 @@
       $footer   = $this->menu_footer();
       $footer->set('beforescripts', "_focus = '" . Input::_post('_focus') . "';_validate = " . $this->Ajax->php2js($validate) . ";");
       $this->User->_add_js_data();
-      $footer->set('sidemenu', ($this->header && $this->menu ? ['bank'=> $this->User->hasAccess(SS_GL)] : false));
+      $footer->set('sidemenu', ($this->header && $this->menu ? ['bank' => $this->User->hasAccess(SS_GL)] : false));
       $footer->set('JS', $this->JS);
       $footer->set('messages', (!REQUEST_AJAX ? Messages::show() : ''));
       $footer->set('page_body', Ajax::_end_div(true));

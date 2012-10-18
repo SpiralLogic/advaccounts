@@ -7,21 +7,18 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Item_GL
-  {
-/** @var */
+  class Item_GL {
+    /** @var */
     public $code_id;
-/** @var */
+    /** @var */
     public $dimension_id;
-/** @var */
+    /** @var */
     public $dimension2_id;
-/** @var */
+    /** @var */
     public $amount;
-/** @var */
+    /** @var */
     public $reference;
-    /**
-     * @var mixed|null
-     */
+    /** @var mixed|null **/
     public $description;
     /**
      * @param      $code_id

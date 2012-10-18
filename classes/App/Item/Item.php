@@ -36,111 +36,63 @@
       STOCK_SERVICE     => "Service", //
       STOCK_INFO        => "Information"
     );
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $id = 0;
-/** @var */
+    /** @var */
     public $stock_id;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $tax_type_id = 1;
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $mb_flag = STOCK_PURCHASED;
-    /**
-     * @var null
-     */
+    /** @var null **/
     public $sales_account;
-    /**
-     * @var null
-     */
+    /** @var null **/
     public $inventory_account;
-    /**
-     * @var null
-     */
+    /** @var null **/
     public $cogs_account;
-    /**
-     * @var null
-     */
+    /** @var null **/
     public $adjustment_account;
-    /**
-     * @var null
-     */
+    /** @var null **/
     public $assembly_account;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $dimension_id = 0;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $dimension2_id = 0;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $actual_cost = 0;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $last_cost = 0;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $material_cost = 0;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $labour_cost = 0;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $overhead_cost = 0;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     public $inactive = false;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     public $no_sale = false;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $editable = 0;
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $tax_type_name = 'GST';
-/** @var */
+    /** @var */
     public $name;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $category_id = 6;
-/** @var */
+    /** @var */
     public $description;
-/** @var */
+    /** @var */
     public $long_description;
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $units = 'ea';
-    /**
-     * @var array
-     */
+    /** @var array **/
     public $salePrices = [];
-    /**
-     * @var array
-     */
+    /** @var array **/
     public $purchPrices = [];
-    /**
-     * @var array
-     */
+    /** @var array **/
     protected $stockLevels = [];
-/** @var */
+    /** @var */
     public static $qoh_stock;
     protected $_table = 'stock_master';
     protected $_id_column = 'id';
@@ -150,8 +102,8 @@
      */
     public function __construct($id = 0) {
       parent::__construct($id);
-      $this->uom  = &$this->units;
-      $this->name = &$this->description;
+      $this->uom  = & $this->units;
+      $this->name = & $this->description;
     }
     /**
      * @param int|null $id

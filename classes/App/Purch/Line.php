@@ -32,17 +32,11 @@
     public $qty_received;
     /** @var */
     public $discount;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $standard_cost;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $receive_qty;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     public $Deleted;
     /**
      * @param $line_no

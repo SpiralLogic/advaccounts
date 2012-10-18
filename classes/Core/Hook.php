@@ -13,14 +13,11 @@
    */
   class HookException extends \Exception {
   }
-
   /**
 
    */
   class Hook {
-    /**
-     * @var array
-     */
+    /** @var array **/
     protected $hooks = [];
     /**
      * @param       $name
@@ -40,7 +37,6 @@
       if (!isset($this->hooks[$name][$callback_id])) {
         return $this->hooks[$name][$callback_id] = [$callback, (array) $arguments];
       }
-
       return false;
     }
     /**

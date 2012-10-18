@@ -6,9 +6,7 @@
    */
   class WhereTest extends \PHPUnit_Framework_TestCase {
     protected $stub;
-    /**
-     * @var Where
-     */
+    /** @var Where **/
     protected $object;
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -31,29 +29,25 @@
       /** @var Where $stub  */
       $stub = $this->stub;
       $this->assertEquals($stub, $stub->where('test=', 3));
-
-      $this->assertAttributeEquals([0=> 'test= :dbcondition0'], 'where', $stub);
-      $this->assertAttributeEquals([':dbcondition0'=> 3], 'wheredata', $stub);
+      $this->assertAttributeEquals([0 => 'test= :dbcondition0'], 'where', $stub);
+      $this->assertAttributeEquals([':dbcondition0' => 3], 'wheredata', $stub);
       $this->assertEquals($stub, $stub->where('test=', 6));
-
-      $this->assertAttributeEquals([0=> 'test= :dbcondition0', 1=> 'AND test= :dbcondition1'], 'where', $stub);
-      $this->assertAttributeEquals([':dbcondition0'=> 3, ':dbcondition1'=> 6], 'wheredata', $stub);
+      $this->assertAttributeEquals([0 => 'test= :dbcondition0', 1 => 'AND test= :dbcondition1'], 'where', $stub);
+      $this->assertAttributeEquals([':dbcondition0' => 3, ':dbcondition1' => 6], 'wheredata', $stub);
     }
     public function testWhereWithArray() {
       /** @var Where $stub  */
       $stub = $this->stub;
       $this->assertEquals($stub, $stub->where([['test=', 3], ['test2=', 5]]));
-
-      $this->assertAttributeEquals([0=> 'test= :dbcondition0', 1=> 'AND test2= :dbcondition1'], 'where', $stub);
-      $this->assertAttributeEquals([':dbcondition0'=> 3, ':dbcondition1'=> 5], 'wheredata', $stub);
+      $this->assertAttributeEquals([0 => 'test= :dbcondition0', 1 => 'AND test2= :dbcondition1'], 'where', $stub);
+      $this->assertAttributeEquals([':dbcondition0' => 3, ':dbcondition1' => 5], 'wheredata', $stub);
     }
     public function testOr() {
       /** @var Where $stub  */
       $stub = $this->stub;
       $this->assertEquals($stub, $stub->orWhere('test=', 3));
-
-      $this->assertAttributeEquals([0=> 'test= :dbcondition0'], 'where', $stub);
-      $this->assertAttributeEquals([':dbcondition0'=> 3], 'wheredata', $stub);
+      $this->assertAttributeEquals([0 => 'test= :dbcondition0'], 'where', $stub);
+      $this->assertAttributeEquals([':dbcondition0' => 3], 'wheredata', $stub);
     }
     /**
      * @covers ADV\Core\DB\Query\Where::orwhere
@@ -63,9 +57,8 @@
       /** @var Where $stub  */
       $stub = $this->stub;
       $this->assertEquals($stub, $stub->orWhere([['test=', 3], ['test2=', 5]]));
-
-      $this->assertAttributeEquals([0=> 'test= :dbcondition0', 1=> 'OR test2= :dbcondition1'], 'where', $stub);
-      $this->assertAttributeEquals([':dbcondition0'=> 3, ':dbcondition1'=> 5], 'wheredata', $stub);
+      $this->assertAttributeEquals([0 => 'test= :dbcondition0', 1 => 'OR test2= :dbcondition1'], 'where', $stub);
+      $this->assertAttributeEquals([':dbcondition0' => 3, ':dbcondition1' => 5], 'wheredata', $stub);
     }
     /**
      * @covers ADV\Core\DB\Query\Where::and_where

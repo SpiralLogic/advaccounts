@@ -13,21 +13,13 @@
 
    */
   abstract class Where {
-    /**
-     * @var array
-     */
+    /** @var array **/
     public $data = [];
-    /**
-     * @var array
-     */
+    /** @var array **/
     protected $where = [];
-    /**
-     * @var array
-     */
+    /** @var array **/
     private $wheredata = [];
-    /**
-     * @var int
-     */
+    /** @var int **/
     protected $count = 0;
     protected function resetWhere() {
       $this->wheredata = $this->where = [];
@@ -49,7 +41,6 @@
             $this->_where($condition);
           }
         }
-
         return $this;
       }
       if ($uservar !== null) {
@@ -59,7 +50,6 @@
         $conditions             = $conditions . ' ' . $name;
       }
       $this->where[] = (empty($this->where)) ? $conditions : $type . ' ' . $conditions;
-
       return $this;
     }
     /**
@@ -135,7 +125,6 @@
       if (empty($this->where)) {
         $condition = '(' . $condition;
       }
-
       return $this->_where($condition, ' AND ', $uservar);
     }
     /**
@@ -143,7 +132,6 @@
      */
     public function close() {
       array_push($this->where, array_pop($this->where) . ') ');
-
       return $this;
     }
     /**
@@ -155,7 +143,6 @@
         $sql .= ' WHERE ' . implode(' ', $this->where);
       }
       $this->data = $this->data + $this->wheredata;
-
       return $sql;
     }
   }

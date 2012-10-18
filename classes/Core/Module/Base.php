@@ -12,9 +12,7 @@
 
    */
   abstract class Base implements Loadable {
-    /**
-     * @var array
-     */
+    /** @var array **/
     protected $enabled;
     protected $config;
     /**

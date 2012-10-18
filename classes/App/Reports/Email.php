@@ -16,45 +16,25 @@
 
    */
   class Email {
-    /**
-     * @var array
-     */
+    /** @var array **/
     public $to = [];
-    /**
-     * @var array
-     */
+    /** @var array **/
     public $cc = [];
-    /**
-     * @var array
-     */
+    /** @var array **/
     public $bcc = [];
-    /**
-     * @var array
-     */
+    /** @var array **/
     public $attachment = [];
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $boundary = "";
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $header = "";
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $subject = "";
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $body = "";
-    /**
-     * @var \PHPMailer
-     */
+    /** @var \PHPMailer **/
     public $mail;
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $toerror = "No vaild email address";
     protected $Config;
     /**

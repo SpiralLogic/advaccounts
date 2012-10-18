@@ -49,7 +49,7 @@
         $this->trans_type = ST_SALESORDER;
       } elseif ($this->Input->post('type')) {
         $this->trans_type = $_POST['type'];
-      } elseif (isset($_GET['type']) && ($_GET['type'] == ST_SALESQUOTE)) {
+      } elseif ($this->Input->get('type') == ST_SALESQUOTE) {
         $this->trans_type = ST_SALESQUOTE;
       } else {
         $this->trans_type = ST_SALESORDER;
@@ -125,7 +125,7 @@
       Forms::start();
       Table::start('noborder');
       echo '<tr>';
-      Debtor::newselect(null, ['label'=> false, 'row'=> false]);
+      Debtor::newselect(null, ['label' => false, 'row' => false]);
       Forms::refCellsSearch(null, 'OrderNumber', '', null, '', true);
       if ($_POST['order_view_mode'] != self::MODE_DELTEMPLATES && $_POST['order_view_mode'] != self::MODE_INVTEMPLATES) {
         Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
@@ -162,12 +162,10 @@
     }
     protected function displayTable() { //	Orders inquiry table
       //
-      $sql
-        = "SELECT
+      $sql = "SELECT
  		sorder.trans_type,
  		sorder.order_no,
- 		sorder.reference," . ($_POST['order_view_mode'] == self::MODE_INVTEMPLATES || $_POST['order_view_mode'] == self::MODE_DELTEMPLATES ? "sorder.comments, " :
-        "sorder.customer_ref, ") . "
+ 		sorder.reference," . ($_POST['order_view_mode'] == self::MODE_INVTEMPLATES || $_POST['order_view_mode'] == self::MODE_DELTEMPLATES ? "sorder.comments, " : "sorder.customer_ref, ") . "
  		sorder.ord_date,
  		sorder.delivery_date,
  		debtor.name,
@@ -183,41 +181,34 @@
  		WHERE sorder.order_no = line.order_no
  		AND sorder.trans_type = line.trans_type";
       if ($this->searchArray[0] == self::SEARCH_ORDER) {
-        $sql .= " AND sorder.trans_type = 30 ";
-      } elseif ($this->searchArray[0] == 'q') {
+        $sql .= " AND sorder.trans_type = " . ST_SALESORDER . " ";
+      } elseif ($this->searchArray[0] == self::SEARCH_QUOTE) {
         $sql .= " AND sorder.trans_type = " . ST_SALESQUOTE . " ";
       } elseif ($this->searchArray) {
-        $sql .= " AND ( sorder.trans_type = 30 OR sorder.trans_type = " . ST_SALESQUOTE . ") ";
+        $sql .= " AND ( sorder.trans_type = " . ST_SALESORDER . " OR sorder.trans_type = " . ST_SALESQUOTE . ") ";
       } else {
-        $sql .= " AND sorder.trans_type = " . $this->trans_type;
+        $sql .= " AND sorder.trans_type = " . DB::_quote($this->trans_type);
       }
-      $sql
-        .= " AND sorder.debtor_id = debtor.debtor_id
+      $sql .= " AND sorder.debtor_id = debtor.debtor_id
  		AND sorder.branch_id = branch.branch_id
  		AND debtor.debtor_id = branch.debtor_id";
       if ($this->debtor_id > 0) {
         $sql .= " AND sorder.debtor_id = " . DB::_quote($this->debtor_id);
-      }
-      if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
-        // search orders with number like
-        $number_like = "%" . $_POST['OrderNumber'];
-        $sql .= " AND sorder.order_no LIKE " . DB::_quote($number_like) . " GROUP BY sorder.order_no";
-        $number_like = "%" . $_POST['OrderNumber'] . "%";
-        $sql .= " OR sorder.reference LIKE " . DB::_quote($number_like) . " GROUP BY sorder.order_no";
       } elseif (REQUEST_AJAX && isset($this->searchArray) && !empty($_POST['q'])) {
         foreach ($this->searchArray as $quicksearch) {
           if (empty($quicksearch)) {
             continue;
           }
-          $quicksearch = DB::_quote("%" . trim($quicksearch) . "%");
-          $sql
-            .= " AND ( debtor.debtor_id = $quicksearch OR debtor.name LIKE $quicksearch OR sorder.order_no LIKE $quicksearch
- 			OR sorder.reference LIKE $quicksearch OR sorder.contact_name LIKE $quicksearch
- 			OR sorder.customer_ref LIKE $quicksearch
- 			 OR sorder.customer_ref LIKE $quicksearch OR branch.br_name LIKE $quicksearch)";
+          $quicksearch = DB::_quoteWild($quicksearch);
+          $sql .= " AND ( debtor.debtor_id = $quicksearch
+          OR debtor.name LIKE $quicksearch
+          OR sorder.order_no LIKE $quicksearch
+          OR sorder.reference LIKE $quicksearch
+          OR sorder.contact_name LIKE $quicksearch
+          OR sorder.customer_ref LIKE $quicksearch
+          OR branch.br_name LIKE $quicksearch)";
         }
-        $sql
-          .= " GROUP BY sorder.ord_date,
+        $sql .= " GROUP BY sorder.ord_date,
  				 sorder.order_no,
  				sorder.debtor_id,
  				sorder.branch_id,
@@ -248,8 +239,7 @@
         ) {
           $sql .= " AND sorder.type=1";
         }
-        $sql
-          .= " GROUP BY sorder.ord_date,
+        $sql .= " GROUP BY sorder.ord_date,
  sorder.order_no,
  				sorder.debtor_id,
  				sorder.branch_id,
@@ -260,16 +250,16 @@
       if ($this->trans_type == ST_SALESORDER) {
         $cols = array(
           array('type' => 'skip'),
-          _("Order #")                           => array('fun' => [$this, 'formatRef'], 'ord' => ''), //
-          _("Ref")                               => array('ord' => ''), //
-          _("PO#")                               => array('ord' => ''), //
-          _("Date")                              => array('type' => 'date', 'ord' => 'asc'), //
-          _("Required")                          => array('type' => 'date', 'ord' => ''), //
-          _("Customer")                          => array('ord' => 'asc'), //
+          _("Order #")  => array('fun' => [$this, 'formatRef'], 'ord' => ''), //
+          _("Ref")      => array('ord' => ''), //
+          _("PO#")      => array('ord' => ''), //
+          _("Date")     => array('type' => 'date', 'ord' => 'asc'), //
+          _("Required") => array('type' => 'date', 'ord' => ''), //
+          _("Customer") => array('ord' => 'asc'), //
           array('type' => 'skip'),
-          _("Branch")                            => array('ord' => ''), //
+          _("Branch")   => array('ord' => ''), //
           _("Address"),
-          _("Total")                             => array('type' => 'amount', 'ord' => ''),
+          _("Total")    => array('type' => 'amount', 'ord' => ''),
         );
       } else {
         $cols = array(
@@ -300,7 +290,6 @@
       $table->rowFunction = [$this, 'formatMarker'];
       $table->width       = "90%";
       Event::warning(_("Marked items are overdue."), false);
-
       $table->display($table);
     }
     /**
@@ -424,7 +413,7 @@
           if ($row['trans_type'] == ST_SALESQUOTE) {
             $dd->addItem('Create Order', '/sales/order?QuoteToOrder=' . $row['order_no']);
           }
-          $dd->addItem('Email', '#', ['emailid' => $row['debtor_id'] . '-' . $row['trans_type'] . '-' . $row['order_no']], ['class'=> 'email-button']);
+          $dd->addItem('Email', '#', ['emailid' => $row['debtor_id'] . '-' . $row['trans_type'] . '-' . $row['order_no']], ['class' => 'email-button']);
           $href = Reporting::print_doc_link(
             $row['order_no'],
             _("Proforma"),
@@ -437,13 +426,13 @@
             0,
             true
           );
-          $dd->addItem('Print Proforma', $href, [], ['class'=> 'printlink']);
+          $dd->addItem('Print Proforma', $href, [], ['class' => 'printlink']);
           $href = Reporting::print_doc_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT, 'button printlink', '', 0, 0, true);
-          $dd->addItem('Print', $href, [], ['class'=> 'printlink']);
+          $dd->addItem('Print', $href, [], ['class' => 'printlink']);
       }
       if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
         $href = '/system/void_transaction?type=' . $row['trans_type'] . '&trans_no=' . $row['order_no'] . '&memo=Deleted%20during%20order%20search';
-        $dd->addItem('Void Trans', $href, [], ['class'=> 'printlink', 'target'=> '_blank']);
+        $dd->addItem('Void Trans', $href, [], ['class' => 'printlink', 'target' => '_blank']);
       }
       return $dd->setAuto(true)->setSplit(true)->render(true);
     }

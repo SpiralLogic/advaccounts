@@ -20,19 +20,13 @@
     public $id;
     /** @var */
     public $name;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     public $direct = false;
     /** @var */
     public $help_context;
-    /**
-     * @var array
-     */
+    /** @var array **/
     public $modules;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     public $enabled = true;
     /**
      * @internal param $id
@@ -54,11 +48,9 @@
      * @return Module
      */
     public function add_module($name, $icon = null) {
-
       $module          = new Module($name, $icon);
       $this->modules[] = $module;
       return $module;
     }
-
   }
 

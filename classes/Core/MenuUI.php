@@ -15,21 +15,15 @@
   class MenuUI extends Menu {
     /** @var JS */
     protected $JS;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     public $tabs = [];
     public $current_tab;
     public $firstPage = 0;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public static $menuCount = 0;
     protected $jslinks = [];
     protected $defaultState = 'default';
-    /**
-     * @var array
-     */
+    /** @var array **/
     protected $options = [];
     /**
      * @param string $defaultState
@@ -55,7 +49,6 @@
      */
     protected function addTab($title, $tooltip = '', $link = '#') {
       $this->items[] = new MenuUI_item($title, $tooltip, $link);
-
       return $this;
     }
     /**
@@ -70,7 +63,6 @@
     public function addLink($title, $tooltip = '', $link, $param_element, $target = null) {
       $this->items[]             = new MenuUI_item($title, $tooltip, $link, $param_element, $target);
       $this->options['hasLinks'] = true;
-
       return $this;
     }
     /**
@@ -85,7 +77,6 @@
       $this->items[]             = new MenuUI_item($title, $tooltip, '#' . $name);
       $this->options['hasLinks'] = true;
       $this->jslinks[]           = $onselect;
-
       return $this;
     }
     /**
@@ -107,7 +98,6 @@
       $this->current_tab['attrs']['class'] = 'ui-tabs-panel ui-widget-content';
       $this->current_tab['attrs']['style'] = ($count > 0 || $this->firstPage != $count) ? ' display:none;' : '';
       ob_start();
-
       return $this;
     }
     /**
@@ -117,7 +107,6 @@
       $this->current_tab['contents'] = ob_get_clean();
       $this->tabs[]                  = $this->current_tab;
       $this->current_tab             = [];
-
       return $this;
     }
     /**
@@ -136,22 +125,15 @@
       MenuUI::$menuCount++;
     }
   }
-
   /**
 
    */
   class MenuUI_item extends menu_item {
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $tooltip = '';
-    /**
-     * @var null|string
-     */
+    /** @var null|string **/
     public $param_element = '';
-    /**
-     * @var null|string
-     */
+    /** @var null|string **/
     public $target = '';
     /**
      * @param        $label
@@ -164,14 +146,14 @@
     public function __construct($label, $tooltip = '', $link = '#', $param_element = null, $target = null, $state = 'default') {
       $this->label   = $label;
       $this->liattrs = [
-        'class'=> 'ui-state-default ui-corner-top ui-state-' . $state,
+        'class' => 'ui-state-default ui-corner-top ui-state-' . $state,
       ];
       $this->attrs   = [
-        'href'           => e($link),
-        'title'          => $label,
-        'tooltip'        => e($tooltip),
-        'data-paramel'   => $param_element,
-        'target'         => $target
+        'href'         => e($link),
+        'title'        => $label,
+        'tooltip'      => e($tooltip),
+        'data-paramel' => $param_element,
+        'target'       => $target
       ];
     }
   }

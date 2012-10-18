@@ -29,17 +29,11 @@
     const STRING  = 3;
     const BOOL    = 4;
     const DATE    = 5;
-    /**
-     * @var int
-     */
+    /** @var int **/
     protected $default_number = 0;
-    /**
-     * @var string
-     */
+    /** @var string **/
     protected $default_string = '';
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     protected $default_bool = false;
     /** @var Base */
     public static $post;
@@ -122,7 +116,6 @@
       if ($result === false) {
         $result = $this->getGlobal($var, $type, $default);
       }
-
       return $this->returnPost($var, $result);
     }
     /**
@@ -139,7 +132,6 @@
       if ($result === false) {
         $result = $this->getGlobal($var, $type, $default);
       }
-
       return $this->returnPost($var, $result);
     }
     /**
@@ -170,7 +162,6 @@
      */
     public function &postGet($var, $type = null, $default = null) {
       $result = $this->firstThenSecond(static::$post, static::$get, $var, $type, $default);
-
       return $this->returnPost($var, $result);
     }
     /***
@@ -182,11 +173,9 @@
      * @return bool|int|string
      */
     public function session($var, $default = null) {
-
       if (!array_key_exists($var, $_SESSION)) {
         return $default;
       }
-
       return $_SESSION[$var];
     }
     /***
@@ -202,7 +191,6 @@
       } elseif (!is_array($vars)) {
         $vars = func_get_args();
       }
-
       return static::$post->has($vars);
     }
     /***
@@ -218,7 +206,6 @@
       } elseif (!is_array($vars)) {
         $vars = func_get_args();
       }
-
       return static::$get->has($vars);
     }
     /***
@@ -234,7 +221,6 @@
       } elseif (!is_array($vars)) {
         $vars = func_get_args();
       }
-
       return static::$request->has($vars);
     }
     /***
@@ -279,7 +265,6 @@
      */
     protected function &firstThenSecond(Base $first, Base $second, $var, $type = null, $default = null) {
       $container = ($first->has($var)) ? $first : $second;
-
       return $container->get($var, $type, $default);
     }
     /**
@@ -316,7 +301,6 @@
      */
     protected function &returnPost($var, $value) {
       $_POST[$var] = $value;
-
       return $_POST[$var];
     }
   }

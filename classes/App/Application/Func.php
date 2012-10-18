@@ -7,18 +7,16 @@
    * To change this template use File | Settings | File Templates.
    */
   namespace ADV\App\Application;
+
   /**
 
    */
-  class Func
-  {
+  class Func {
     /** @var */
     public $label;
     /** @var */
     public $link;
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $access;
     /**
      * @param        $label

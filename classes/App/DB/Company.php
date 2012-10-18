@@ -23,9 +23,7 @@
   class DB_Company extends \ADV\App\DB\Base {
     use StaticAccess;
 
-    /**
-     * @var int
-     */
+    /** @var int **/
     protected $_id_column = 'coy_code';
     protected $_table = 'company';
     protected $_classname = 'Company';
@@ -97,7 +95,7 @@
         parent::__construct($company);
         Cache::_set('Company.' . $name, array_keys((array) $this));
       }
-      $this->id = &$this->coy_code;
+      $this->id = & $this->coy_code;
     }
     /**
      * @param array|null $changes
@@ -164,8 +162,7 @@
     public function _add_fiscalyear($from_date, $to_date, $closed) {
       $from = Dates::_dateToSql($from_date);
       $to   = Dates::_dateToSql($to_date);
-      $sql
-            = "INSERT INTO fiscal_year (begin, end, closed)
+      $sql  = "INSERT INTO fiscal_year (begin, end, closed)
  VALUES (" . DB::_escape($from) . "," . DB::_escape($to) . ", " . DB::_escape($closed) . ")";
       DB::_query($sql, "could not add fiscal year");
     }
@@ -180,13 +177,11 @@
      */
     public function _add_payment_terms($daysOrFoll, $terms, $dayNumber) {
       if ($daysOrFoll) {
-        $sql
-          = "INSERT INTO payment_terms (terms,
+        $sql = "INSERT INTO payment_terms (terms,
  days_before_due, day_in_following_month)
  VALUES (" . DB::_escape($terms) . ", " . DB::_escape($dayNumber) . ", 0)";
       } else {
-        $sql
-          = "INSERT INTO payment_terms (terms,
+        $sql = "INSERT INTO payment_terms (terms,
  days_before_due, day_in_following_month)
  VALUES (" . DB::_escape($terms) . ",
  0, " . DB::_escape($dayNumber) . ")";
@@ -234,7 +229,6 @@
       $myrow  = DB::_fetch($result);
       return $myrow[0];
     }
-
     /**
      * @static
      * @return \ADV\Core\DB\Query\Result|Array
@@ -307,8 +301,7 @@
      * @return \ADV\Core\DB\Query\Result|Array
      */
     public function _get_payment_terms($selected_id) {
-      $sql
-              = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
+      $sql    = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
  FROM payment_terms t WHERE terms_indicator=" . DB::_escape($selected_id);
       $result = DB::_query($sql, "could not get payment term");
       return DB::_fetch($result);

@@ -20,21 +20,13 @@
   class Insert extends Query {
     /** @var */
     protected $table;
-    /**
-     * @var array
-     */
+    /** @var array **/
     protected $values = [];
-    /**
-     * @var array
-     */
+    /** @var array **/
     protected $fields = [];
-    /**
-     * @var array
-     */
+    /** @var array **/
     protected $hasfields = [];
-    /**
-     * @var array
-     */
+    /** @var array **/
     public $data = [];
     /**
      * @param bool $table

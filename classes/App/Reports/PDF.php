@@ -25,9 +25,7 @@
 
    */
   class PDF extends \Cpdf {
-    /**
-     * @var array
-     */
+    /** @var array **/
     public $size;
     /** @var */
     public $company;
@@ -37,45 +35,25 @@
     public $host;
     /** @var */
     public $fiscal_year;
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $title;
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $filename;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $pageWidth;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $pageHeight;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $topMargin;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $bottomMargin;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $leftMargin;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $rightMargin;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $endLine;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $lineHeight;
     //public $rtl;
     /** @var */
@@ -92,28 +70,18 @@
     public $aligns2;
     /** @var */
     public $cols2;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $pageNumber;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $fontSize;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $oldFontSize;
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $currency;
     /** @var */
     public $companyLogoEnable;
     // select whether to use a company logo graphic in some header templates
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     public $scaleLogoWidth;
     /** @var */
     public $footerEnable;
@@ -121,9 +89,7 @@
     /** @var */
     public $footerText;
     // store user-generated footer text
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $headerFunc; // store the name of the currently selected header public function
     /**
      * @param string       $title

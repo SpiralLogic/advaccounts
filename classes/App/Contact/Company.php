@@ -15,13 +15,9 @@
 
    */
   abstract class Contact_Company extends \ADV\App\DB\Base {
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $discount = '0';
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $name = '';
     /** @var */
     public $address = '';
@@ -31,37 +27,23 @@
     public $state;
     /** @var */
     public $postcode;
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $post_address = '';
     /** @var */
     public $tax_id = '';
     /** @var */
     public $contact_name = '';
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $credit_limit = 0;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $dimension_id = 0;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $dimension2_id = 0;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $payment_terms = 0;
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $curr_code = '';
-    /**
-     * @var array
-     */
+    /** @var array **/
     public $emailAddresses = [];
     /**
      * @abstract
@@ -87,9 +69,7 @@
      * @return void
      */
     public static function addInfoDialog($selector, $id = false) {
-
-      $content
-               = '<div><span class="bold">Shipping Address:</span><br>${address}</br></br>
+      $content = '<div><span class="bold">Shipping Address:</span><br>${address}</br></br>
 				 		<span class="bold">Mailing Address:</span><br>${post_address}</br></br>
 				 		<span class="bold">Phone: </span>${phone}</br></br>
 				 		<span class="bold">Phone2: </span>${phone2}</br></br>
@@ -107,8 +87,7 @@
       if ($id) {
         $details->addOpenEvent($selector, 'click');
       } else {
-        $action
-          = <<<JS
+        $action = <<<JS
 				 $.post('/contacts/{$type}s.php',{id:$(this).data('id')},function(data) {Adv.o.company_details.render(data.company); \$company_details.dialog('open');},'json');
 JS;
         JS::_addLiveEvent($selector, 'click', $action, 'wrapper', true);
@@ -138,10 +117,8 @@ JS;
           $text = $types[$type];
           $content .= Reporting::email_link($trans, _("Email This ") . $text, true, $type, 'EmailLink', null, $emails, 0, true);
         }
-
         return $content;
       }
-
       return false;
     }
   }

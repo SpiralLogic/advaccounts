@@ -21,9 +21,7 @@
   class Cache {
     use \ADV\Core\Traits\StaticAccess2;
 
-    /**
-     * @var Cachable
-     */
+    /** @var Cachable **/
     protected $driver = false;
     /**
      * @param Cachable $driver

@@ -11,9 +11,7 @@
   /**
    */
   trait Singleton {
-    /**
-     * @var null
-     */
+    /** @var null **/
     protected static $i = null;
     /**
      * @param object $class
@@ -34,20 +32,17 @@
       if ($lastNsPos) {
         $class_name = substr($namespaced_class, $lastNsPos + 1);
       }
-
       try {
         return $dic[$class_name];
       } catch (\InvalidArgumentException $e) {
       }
       if (is_a($class, $namespaced_class)) {
-        $dic[$class_name]
-          = function () use ($class) {
+        $dic[$class_name] = function () use ($class) {
           return $class;
         };
       } else {
-        $args = (get_class() == get_class($class)) ? array_slice(func_get_args(), 1) : [$class];
-        $dic[$class_name]
-              = function () use ($namespaced_class, $args) {
+        $args             = (get_class() == get_class($class)) ? array_slice(func_get_args(), 1) : [$class];
+        $dic[$class_name] = function () use ($namespaced_class, $args) {
           if (!$args) {
             return new $namespaced_class;
           }

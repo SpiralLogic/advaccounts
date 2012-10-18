@@ -37,25 +37,17 @@
     public $trans_no;
     /** @var */
     public $type;
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $person_id = '';
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $person_name = '';
     /** @var */
     public $person_type;
     /** @var */
     public $date_;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $amount = 0; /*Total amount of the transaction in FX */
-    /**
-     * @var array
-     */
+    /** @var array **/
     public $allocs; /*array of transactions allocated to */
     /**
      * @param $type
@@ -435,7 +427,6 @@ above logic will be overwritten with the prev alloc detail below */
       }
     }
   }
-
   /**
 
    */

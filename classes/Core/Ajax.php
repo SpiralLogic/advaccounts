@@ -31,13 +31,9 @@
   class Ajax extends \JsHttpRequest {
     use Traits\StaticAccess2;
 
-    /**
-     * @var array
-     */
+    /** @var array **/
     protected $aCommands = [];
-    /**
-     * @var array
-     */
+    /** @var array **/
     protected $triggers = [];
     protected $ajax_divs = [];
     /**
@@ -100,7 +96,6 @@
      */
     public function addScript($trigger, $sJS) {
       $this->addCommand($trigger, array('n' => 'js'), $sJS, 'js');
-
       return $this;
     }
     /**
@@ -133,7 +128,6 @@
         ),
         $sData
       );
-
       return $this;
     }
     /**
@@ -154,7 +148,6 @@
         ),
         $sData
       );
-
       return $this;
     }
     /**
@@ -175,7 +168,6 @@
         ),
         $sData
       );
-
       return $this;
     }
     /**
@@ -196,14 +188,13 @@
         ),
         !$sData
       );
-
       return $this;
     }
     /**
      * @param Status $status
      */
     public function addStatus(Status $status) {
-      $this->addJson(true, null, ['status'=> $status]);
+      $this->addJson(true, null, ['status' => $status]);
     }
     /**
      * @param      $trigger
@@ -211,7 +202,7 @@
      * @param      $json
      */
     public function addJson($trigger, $formMethod = null, $json) {
-      $this->addCommand($trigger, ['n'=> 'json', 'p'=> $formMethod], $json);
+      $this->addCommand($trigger, ['n' => 'json', 'p' => $formMethod], $json);
     }
     /**
      * Set current focus.
@@ -223,7 +214,6 @@
      */
     public function addFocus($trigger, $sTarget) {
       $this->addCommand($trigger, array('n' => 'fc'), $sTarget, 'fc');
-
       return $this;
     }
     /**

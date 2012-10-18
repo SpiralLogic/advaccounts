@@ -13,13 +13,9 @@
 
    */
   class Status {
-    /**
-     * @var array
-     */
+    /** @var array **/
     protected $status = [];
-    /**
-     * @var array
-     */
+    /** @var array **/
     protected $errors = [];
     const SUCCESS = E_SUCCESS;
     const INFO    = E_USER_NOTICE;
@@ -68,7 +64,6 @@
       if ($status === self::ERROR) {
         $this->errors[] = $newstatus;
       }
-
       return !($status == self::ERROR);
     }
     /**
@@ -81,7 +76,6 @@
       if (!empty($this->status)) {
         return end($this->status);
       }
-
       return [];
     }
     /**
@@ -101,7 +95,6 @@
         return true;
       }
       $this->status[] = $status;
-
       return false;
     }
     /**
@@ -111,7 +104,6 @@
       if (!empty($this->errors)) {
         return end($this->errors);
       }
-
       return false;
     }
     /**
@@ -121,7 +113,6 @@
       $last = $this->get();
       $str  = ($last['status'] != self::ERROR) ? 'Success: ' : 'Error: ';
       $str .= $last['message'];
-
       return $str;
     }
   }

@@ -15,19 +15,13 @@
 
    */
   abstract class Query extends Where implements Serializable {
-    /**
-     * @var \ADV\Core\DB\Query\Query
-     */
+    /** @var \ADV\Core\DB\Query\Query **/
     protected static $query = null;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     protected $compiled_query = false;
     /** @var */
     protected $type;
-    /**
-     * @var \ADV\Core\DB\DB
-     */
+    /** @var \ADV\Core\DB\DB **/
     protected $conn;
     /**
      * @abstract
@@ -50,7 +44,6 @@
       if (!$this->compiled_query) {
         $this->compiled_query = $this->execute($data);
       }
-
       return $this->compiled_query;
     }
     /**
@@ -68,7 +61,6 @@
      */
     public function exec($data = null) {
       $result = $this->conn->exec($this->compileQuery($data), $this->type, $this->data);
-
       return $result;
     }
     /***

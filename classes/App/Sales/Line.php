@@ -11,9 +11,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class Sales_Line extends \Sales_Order {
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $id;
     /** @var */
     public $stock_id;
@@ -27,31 +25,21 @@
     public $tax_type;
     /** @var */
     public $tax_type_name;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $src_no; // number of src doc for this line
     /** @var */
     public $src_id;
-    /**
-     * @var array|int
-     */
+    /** @var array|int **/
     public $quantity;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     public $price;
     /** @var */
     public $discount_percent;
     /** @var */
     public $qty_done; // quantity processed on child documents
-    /**
-     * @var array|int
-     */
+    /** @var array|int **/
     public $qty_dispatched; // quantity selected to process
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $qty_old = 0; // quantity dispatched before edition
     /** @var */
     public $standard_cost;

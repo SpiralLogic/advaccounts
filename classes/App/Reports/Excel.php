@@ -26,9 +26,7 @@
 
    */
   class Excel extends Spreadsheet_Excel_Writer_Workbook {
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $size;
     /** @var */
     public $company;
@@ -40,33 +38,19 @@
     public $fiscal_year;
     /** @var */
     public $title;
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $filename;
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $unique_name;
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $path;
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $code;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $bottomMargin = 0;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $lineHeight;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $leftMargin = 0;
     /** @var */
     public $cols;
@@ -82,67 +66,37 @@
     public $aligns2;
     /** @var */
     public $cols2;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $fontSize;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $oldFontSize;
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $currency;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $row = 9999999;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $y;
     /** @var */
     public $numcols;
-    /**
-     * @var float
-     */
+    /** @var float **/
     public $excelColWidthFactor;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $endLine;
-    /**
-     * @var \Spreadsheet_Excel_Writer_Format
-     */
+    /** @var \Spreadsheet_Excel_Writer_Format **/
     public $formatTitle;
-    /**
-     * @var \Spreadsheet_Excel_Writer_Format
-     */
+    /** @var \Spreadsheet_Excel_Writer_Format **/
     public $formatDateTime;
-    /**
-     * @var \Spreadsheet_Excel_Writer_Format
-     */
+    /** @var \Spreadsheet_Excel_Writer_Format **/
     public $formatDate;
-    /**
-     * @var \Spreadsheet_Excel_Writer_Format
-     */
+    /** @var \Spreadsheet_Excel_Writer_Format **/
     public $formatHeaderLeft;
-    /**
-     * @var \Spreadsheet_Excel_Writer_Format
-     */
+    /** @var \Spreadsheet_Excel_Writer_Format **/
     public $formatHeaderRight;
-    /**
-     * @var \Spreadsheet_Excel_Writer_Format
-     */
+    /** @var \Spreadsheet_Excel_Writer_Format **/
     public $formatFooter;
-    /**
-     * @var array
-     */
+    /** @var array **/
     public $formatAmount = [];
-    /**
-     * @var mixed
-     */
+    /** @var mixed **/
     public $sheet;
     /**
      * @param        $title

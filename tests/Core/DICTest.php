@@ -5,9 +5,7 @@
    * Container test case.
    */
   class DICTest extends \PHPUnit_Framework_TestCase {
-    /**
-     * @var \ADV\Core\DIC
-     */
+    /** @var \ADV\Core\DIC **/
     private $container;
     /**
      * Prepares the environment before running a test.
@@ -31,7 +29,6 @@
     }
     public function testSetAndHas() {
       $c = $this->container;
-
       // Explicit Call
       $c->set(
         'test',
@@ -42,14 +39,12 @@
     }
     public function testSetParam() {
       $c = $this->container;
-
       // Explicit Call Only
       $c->setParam('test', 'testing');
       $this->assertEquals('testing', $c->get('test'));
     }
     public function testGet() {
       $c = $this->container;
-
       // Explicit Call
       $c->offsetSet(
         'test',
@@ -63,41 +58,34 @@
     }
     public function testFresh() {
       $c = $this->container;
-
       $c->offsetSet(
         'Obj',
         function ($c, $name) {
           return new TestObj($name);
         }
       );
-
       $o1 = $c->fresh('Obj', 'one');
       $o2 = $c->fresh('Obj', 'one');
       $this->assertNotSame($o1, $o2);
     }
     public function testDependency() {
       $c = $this->container;
-
       $c->set(
         'Parent',
         function () {
           return new \stdClass();
         }
       );
-
       $c->set(
         'Child',
         function ($c) {
           $child         = new \stdClass();
           $child->parent = $c->get('Parent');
-
           return $child;
         }
       );
-
       $parent = $c->get('Parent');
       $child  = $c->get('Child');
-
       $this->assertSame($parent, $child->parent);
     }
     public function testConstructorArguments() {
@@ -108,12 +96,10 @@
           return new TestObj($name);
         }
       );
-
       $o1 = $c->offsetGet('TestObj', 'A');
       $o2 = $c->offsetGet('TestObj');
       $o3 = $c->fresh('TestObj', 'B');
       $o4 = $c->offsetGet('TestObj', 'A');
-
       $this->assertAttributeEquals('A', 'name', $o1);
       $this->assertAttributeEquals('A', 'name', $o2);
       $this->assertAttributeEquals('B', 'name', $o3);
@@ -121,32 +107,26 @@
     }
     public function testAlternateMethodFormat() {
       $c = $this->container;
-
       $c['arrayaccess'] = function ($c, $name) {
         return new TestObj($name);
       };
-
       $obj = $c->offsetGet('arrayaccess', 'wawa');
       $this->assertInstanceOf('ADV\\Core\\TestObj', $obj);
       $this->assertAttributeEquals('wawa', 'name', $obj);
     }
     public function testMixedMethodFormat() {
       $c = $this->container;
-
       $c->offsetSet(
         'ObjectOne',
         function () {
           return new TestObj('object one');
         }
       );
-
       $obj = $c['ObjectOne'];
-
       $this->assertInstanceOf('\\ADV\\Core\\TestObj', $obj);
       $this->assertAttributeEquals('object one', 'name', $obj);
     }
   }
-
   class TestObj {
     public $name;
     public function __construct($name) {

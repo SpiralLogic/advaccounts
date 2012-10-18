@@ -26,56 +26,40 @@
     protected $config;
     /** @var */
     protected $data = array();
-    /**
-     * @var int
-     */
+    /** @var int **/
     protected $current = -1;
-    /**
-     * @var string
-     */
+    /** @var string **/
     protected $table = 'WebOrders';
-    /**
-     * @var string
-     */
+    /** @var string **/
     protected $idcolumn = 'OrderID';
-    /**
-     * @var mixed
-     */
+    /** @var mixed **/
     protected $_classname;
-    /**
-     * @var array
-     */
-    public static $shipping_types
-      = array(
-        502  => "Pickup", //
-        28   => "Declined!", //
-        902  => "To be calculated", //
-        903  => "Use own courier", //
-        998  => "Installation", //
-        1006 => "Medium Courier (VIC Metro)", //
-        1009 => "Small Parcel (0.5m,5kg)", //
-        1010 => "Medium Courier (1m,25kg)", //
-        1011 => "Medium Courier Rural (1.8m,25kg)"
-      );
-    /**
-     * @var array
-     */
-    public static $payment_types
-      = array(
-        1  => "Account", //
-        2  => "Cheque/Money Order", //
-        5  => "Visa/Mastercard", //
-        7  => "American Express", //
-        18 => "PayPal", //
-        23 => "Direct Deposit", //
-        24 => "Wait for Freight Quotation", //
-        26 => "Credit Card", //
-        28 => "Visa", //
-        31 => "Mastercard" //
-      );
-    /**
-     * @var OrderDetails
-     */
+    /** @var array **/
+    public static $shipping_types = array(
+      502  => "Pickup", //
+      28   => "Declined!", //
+      902  => "To be calculated", //
+      903  => "Use own courier", //
+      998  => "Installation", //
+      1006 => "Medium Courier (VIC Metro)", //
+      1009 => "Small Parcel (0.5m,5kg)", //
+      1010 => "Medium Courier (1m,25kg)", //
+      1011 => "Medium Courier Rural (1.8m,25kg)"
+    );
+    /** @var array **/
+    public static $payment_types = array(
+      1  => "Account", //
+      2  => "Cheque/Money Order", //
+      5  => "Visa/Mastercard", //
+      7  => "American Express", //
+      18 => "PayPal", //
+      23 => "Direct Deposit", //
+      24 => "Wait for Freight Quotation", //
+      26 => "Credit Card", //
+      28 => "Visa", //
+      31 => "Mastercard" //
+    );
+    /** @var OrderDetails **/
     public $details;
     /** @var */
     public $status;
@@ -86,7 +70,6 @@
      */
     public function __construct($config = []) {
       $this->config = $config;
-
       $this->_classname = str_replace(__NAMESPACE__ . '\\', '', __CLASS__);
       //echo 'Getting from Volusion<br>';
       $this->get();
@@ -103,7 +86,6 @@
       $url .= '&EncryptedPassword=' . $apikey;
       $url .= '&EDI_Name=Generic\Orders';
       $url .= '&SELECT_Columns=*';
-
       if (!$result = file_get_contents($url)) {
         Event::warning('Could not retrieve web orders');
       }
@@ -245,22 +227,15 @@
       return count($this->data);
     }
   }
-
   /**
 
    */
   class OrderDetails extends Orders implements \Iterator, \Countable {
-    /**
-     * @var OrderOptions
-     */
+    /** @var OrderOptions **/
     protected $table = 'WebOrderDetails';
-    /**
-     * @var string
-     */
+    /** @var string **/
     protected $idcolumn = 'OrderDetailID';
-    /**
-     * @var OrderOptions
-     */
+    /** @var OrderOptions **/
     public $options;
     /**
      * @param $data
@@ -304,18 +279,13 @@
       return $this->data[$this->current]['OrderDetailID'];
     }
   }
-
   /**
 
    */
   class OrderOptions extends OrderDetails implements \Iterator, \Countable {
-    /**
-     * @var string
-     */
+    /** @var string **/
     protected $table = 'WebOrderDetails_Options';
-    /**
-     * @var string
-     */
+    /** @var string **/
     protected $idcolumn = 'OptionID';
     /**
      * @param $data

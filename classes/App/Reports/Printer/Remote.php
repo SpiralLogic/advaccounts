@@ -5,17 +5,11 @@
 
    */
   class Reports_Printer_Remote {
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $host;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $port;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $timeout;
     /** @var */
     public $queue;

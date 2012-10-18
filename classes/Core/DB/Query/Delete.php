@@ -15,9 +15,7 @@
 
    */
   class Delete extends Query {
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     protected $table;
     /**
      * @param bool $table
@@ -40,7 +38,6 @@
     protected function buildQuery() {
       $sql = "DELETE FROM " . $this->table;
       $sql .= $this->buildWhere();
-
       return $sql;
     }
   }

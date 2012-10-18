@@ -42,13 +42,9 @@
       WO_UNASSEMBLY => "Unassemble", //
       WO_ADVANCED   => "Advanced Manufacture"
     );
-    /**
-     * @var array
-     */
+    /** @var array **/
     public static $bom_list = [];
-    /**
-     * @var null
-     */
+    /** @var null **/
     public static $qoh_stock = null;
     /**
      * @static

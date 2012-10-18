@@ -175,7 +175,7 @@
           }
           if (isset($_SESSION['pager'][$name])) {
             $pager = $_SESSION['pager'][$name];
-            if ($sql !== null && $pager->sql != $sql && count($coldef) != count($pager)) {
+            if (($sql !== null && $pager->sql != $sql) || (count($coldef) != count($pager))) {
               $pager->refresh($sql);
             } elseif (is_array($sql) && $pager->rec_count != count($sql)) {
               unset($pager);

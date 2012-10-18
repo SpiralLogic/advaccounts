@@ -42,25 +42,19 @@
     public $user;
     public $id;
     public $user_id;
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $loginname;
     /** @var */
     public $username;
     /** @var */
     public $real_name;
     public $name;
-    /**
-     * @var string
-     */
+    /** @var string **/
     public $company = 'default';
     public $company_name;
     /** @var */
     public $pos;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     public $salesmanid = false;
     /** @var */
     public $access;
@@ -68,22 +62,16 @@
     public $timeout;
     /** @var */
     public $last_action;
-    /**
-     * @var array
-     */
+    /** @var array **/
     protected $role_set = [];
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     public $logged = false;
     /**@var UserPrefs */
     public $prefs;
     public $phone;
     public $language;
     public $email;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     public $change_password = false;
     public $selectedApp;
     /** @var */

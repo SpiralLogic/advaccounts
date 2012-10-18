@@ -16,28 +16,19 @@
    */
   class Load_Exception extends \Exception {
   }
-
   /**
 
    */
   class Loader {
-    /**
-     * @var int
-     */
+    /** @var int **/
     protected $time = 0;
-    /**
-     * @var array
-     */
+    /** @var array **/
     protected $classes = [];
-    /**
-     * @var array
-     */
+    /** @var array **/
     protected $global_classes = [];
     /** @var Cache */
     protected $Cache = null;
-    /**
-     * @var array
-     */
+    /** @var array **/
     public $loaded = [];
     /**
 
@@ -107,7 +98,6 @@
           return $this->includeFile($path, $required_class, $classname, $global);
         }
       }
-
       return false;
     }
     /**
@@ -129,7 +119,6 @@
         $fullclass = $this->global_classes[$classname] . '\\' . $classname;
         class_alias($fullclass, $classname);
       }
-
       return true;
     }
     /**
@@ -159,7 +148,6 @@
       }
       $paths  = [$dir . $class_file . '.php', $dir . $class_file . DS . $class_file . '.php'];
       $result = $this->trypath($paths, $requested_class, $classname, $global);
-
       return $result;
     }
   }

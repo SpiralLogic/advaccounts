@@ -51,9 +51,7 @@
     protected $begin_date;
     /** @var */
     protected $end_date;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     protected $accountHasStatements = false;
     /**
 
@@ -61,9 +59,9 @@
     protected function before() {
       $this->Dates          = Dates::i();
       $this->Num            = Num::i();
-      $this->bank_account   = &$this->Input->postGlobal('bank_account', INPUT::NUMERIC, Bank_Account::get_default()['id']);
-      $this->bank_date      = &$this->Input->postGlobal('bank_date', [$this, 'checkDate'], $this->Dates->today());
-      $this->reconcile_date = &$this->Input->post('reconcile_date', null, $this->Dates->sqlToDate($_POST['bank_date']));
+      $this->bank_account   = & $this->Input->postGlobal('bank_account', INPUT::NUMERIC, Bank_Account::get_default()['id']);
+      $this->bank_date      = & $this->Input->postGlobal('bank_date', [$this, 'checkDate'], $this->Dates->today());
+      $this->reconcile_date = & $this->Input->post('reconcile_date', null, $this->Dates->sqlToDate($_POST['bank_date']));
       $this->JS->openWindow(950, 500);
       $this->JS->footerFile('/js/libs/redips-drag-min.js');
       $this->JS->footerFile('/js/reconcile.js');
@@ -130,10 +128,10 @@
      */
     protected function addDialogs() {
       $date_dialog  = new View('ui/date_dialog');
-      $date_changer = new \ADV\Core\Dialog('Change Date', 'dateChanger', $date_dialog->render(true), ['resizeable'=> false, 'modal'=> true]);
+      $date_changer = new \ADV\Core\Dialog('Change Date', 'dateChanger', $date_dialog->render(true), ['resizeable' => false, 'modal' => true]);
       $date_changer->addButton('Save', 'Adv.Reconcile.changeDate(this)');
       $date_changer->addButton('Cancel', '$(this).dialog("close")');
-      $date_changer->setTemplateData(['id'=> '', 'date'=> $this->begin_date]);
+      $date_changer->setTemplateData(['id' => '', 'date' => $this->begin_date]);
       $date_changer->show();
       $bank_accounts = Bank_Account::getAll();
       $bank_dialog   = new View('ui/bank_dialog');
@@ -160,14 +158,14 @@
       $cols               = array(
         _("Type")        => array('fun' => array($this, 'formatType'), 'ord' => ''), //
         _("#")           => array('fun' => array($this, 'formatTrans'), 'ord' => ''), //
-        _("Reference")   => array('fun'=> [$this, 'formatReference']), //
-        _("Date")        => array('type'=> 'date', 'ord' => ''), //
+        _("Reference")   => array('fun' => [$this, 'formatReference']), //
+        _("Date")        => array('type' => 'date', 'ord' => ''), //
         _("Debit")       => array('align' => 'right', 'fun' => array($this, 'formatDebit'), 'ord' => ''), //
         _("Credit")      => array('align' => 'right', 'insert' => true, 'fun' => array($this, 'formatCredit'), 'ord' => ''), //
         _("Person/Item") => array('fun' => array($this, 'formatInfo')), //
         array('insert' => true, 'fun' => array($this, 'formatGL')), //
         "X"              => array('insert' => true, 'fun' => array($this, 'formatCheckbox')), //
-        ['insert'=> true, 'fun'=> array($this, 'formatDropdown')], ////
+        ['insert' => true, 'fun' => array($this, 'formatDropdown')], ////
       );
       $table              = DB_Pager::newPager('bank_rec', $sql, $cols);
       $table->width       = "80";
@@ -201,7 +199,7 @@
       while ($v = array_shift($statement_trans)) {
         $amount = $v['state_amount'];
         if ($v['reconciled_to_id']) {
-          foreach ($rec as $p=> $q) {
+          foreach ($rec as $p => $q) {
             if ($q['id'] == $v['reconciled_to_id']) {
               $matched = $rec[$p] + $v;
               unset($rec[$p]);
@@ -210,7 +208,7 @@
             }
           }
         }
-        foreach ($rec as $p=> $q) {
+        foreach ($rec as $p => $q) {
           if (Num::_round($q['amount'], 2) == $amount) {
             $matched = $rec[$p] + $v;
             unset($rec[$p]);
@@ -228,19 +226,19 @@
       Arr::append($known_trans, $rec);
       usort($known_trans, [$this, 'sortByOrder']);
       $cols               = [
-        'Type'      => ['fun'=> array($this, 'formatType')], //
-        '#'         => ['align'=> 'center', 'fun'=> array($this, 'formatTrans')], //
-        ['type'=> 'skip'], //
-        'Date'      => ['type'=> 'date'], //
-        'Debit'     => ['align'=> 'right', 'fun'=> array($this, 'formatDebit')], //
-        'Credit'    => ['align'=> 'right', 'insert'=> true, 'fun'=> array($this, 'formatCredit')], //
-        'Info'      => ['fun'=> array($this, 'formatInfo')], //
-        'GL'        => ['fun'=> array($this, 'formatGL')], //
-        ['fun'=> array($this, 'formatCheckbox')], //
-        'Banked'    => ['type'=> 'date'], //
-        'Amount'    => ['align'=> 'right', 'class'=> 'bold'], //
-        'Memo'      => ['class'=> 'state_memo'], //
-        ['fun'=> array($this, 'formatDropdown')], //
+        'Type'   => ['fun' => array($this, 'formatType')], //
+        '#'      => ['align' => 'center', 'fun' => array($this, 'formatTrans')], //
+        ['type' => 'skip'], //
+        'Date'   => ['type' => 'date'], //
+        'Debit'  => ['align' => 'right', 'fun' => array($this, 'formatDebit')], //
+        'Credit' => ['align' => 'right', 'insert' => true, 'fun' => array($this, 'formatCredit')], //
+        'Info'   => ['fun' => array($this, 'formatInfo')], //
+        'GL'     => ['fun' => array($this, 'formatGL')], //
+        ['fun' => array($this, 'formatCheckbox')], //
+        'Banked' => ['type' => 'date'], //
+        'Amount' => ['align' => 'right', 'class' => 'bold'], //
+        'Memo'   => ['class' => 'state_memo'], //
+        ['fun' => array($this, 'formatDropdown')], //
       ];
       $table              = DB_Pager::newPager('bank_rec', $known_trans, $cols);
       $table->class       = 'recgrid';
@@ -314,7 +312,6 @@
     protected function changeDate() {
       $bank_trans_id = $this->Input->post('trans_id', Input::NUMERIC, -1);
       $newdate       = $this->Input->post('date');
-
       /** @noinspection PhpUndefinedVariableInspection */
       Bank_Trans::changeDate($bank_trans_id, $newdate, $status);
       $data['status'] = $status->get();
@@ -463,28 +460,27 @@
           if (stripos($row['memo'], 'AMEX')) {
             preg_match('/([0-9]+\.[0-9]+)/', $row['memo'], $beforefee);
             $fee  = $beforefee[1] - $row['state_amount'];
-            $data = ['fee'=> $fee, 'amount'=> $beforefee[1]];
+            $data = ['fee' => $fee, 'amount' => $beforefee[1]];
           }
-          $dd->addItem('Debtor Payment', '/sales/payment', $data, ['class'=> 'createDP']);
-          $dd->addItem('Bank Deposit', '/banking/banking?NewDeposit=Yes', $data, ['class'=> 'createBD']);
+          $dd->addItem('Debtor Payment', '/sales/payment', $data, ['class' => 'createDP']);
+          $dd->addItem('Bank Deposit', '/banking/banking?NewDeposit=Yes', $data, ['class' => 'createBD']);
         } else {
-          $dd->addItem('Creditor Payment', '/purchases/payment', [], ['class'=> 'createCP']);
-          $dd->addItem('Bank Payment', '/banking/banking?NewPayment=Yes', [], ['class'=> 'createBP']);
+          $dd->addItem('Creditor Payment', '/purchases/payment', [], ['class' => 'createCP']);
+          $dd->addItem('Bank Payment', '/banking/banking?NewPayment=Yes', [], ['class' => 'createBP']);
         }
-        $dd->addItem('Funds Transfer', '/gl/bank_transfer', [], ['class'=> 'createFT']);
+        $dd->addItem('Funds Transfer', '/gl/bank_transfer', [], ['class' => 'createFT']);
         $dd->addDivider();
       }
-      $dd->addItem('Change Date', '#', [], ['class'=> 'changeDate']);
-
+      $dd->addItem('Change Date', '#', [], ['class' => 'changeDate']);
       switch ($row['type']) {
         case ST_GROUPDEPOSIT:
-          $dd->addItem('unGroup', '#', [], ['class'=> 'unGroup'])->setTitle('Group');
+          $dd->addItem('unGroup', '#', [], ['class' => 'unGroup'])->setTitle('Group');
           break;
         case ST_BANKDEPOSIT:
         case ST_CUSTPAYMENT:
         default:
-          $dd->addItem('Move Bank', '#', [], ['class'=> 'changeBank']);
-          $dd->addItem('Void Trans', '#', ['type'=> $row['type'], 'trans_no'=> $row['trans_no']], ['class'=> 'voidTrans']);
+          $dd->addItem('Move Bank', '#', [], ['class' => 'changeBank']);
+          $dd->addItem('Void Trans', '#', ['type' => $row['type'], 'trans_no' => $row['trans_no']], ['class' => 'voidTrans']);
           $dd->setTitle(substr($row['ref'], 0, 7));
       }
       $result = $dd->setAuto(true)->render(true);

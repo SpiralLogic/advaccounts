@@ -42,13 +42,9 @@
   class HTML {
     use Traits\HTML;
 
-    /**
-     * @var HTML
-     */
+    /** @var HTML **/
     protected static $_instance = null;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     public $content;
     /**
      * @param $func
@@ -62,7 +58,6 @@
       } else {
         $this->_Builder($func, $args);
       }
-
       return $this;
     }
     /**
@@ -72,7 +67,6 @@
      */
     public function __get($func) {
       $this->__call($func, []);
-
       return $this;
     }
     /**
@@ -88,7 +82,6 @@
         static::$_instance = new static;
       }
       static::$_instance->__call($func, $args);
-
       return static::$_instance;
     }
     /**
@@ -130,7 +123,6 @@
     public function __tostring() {
       $content       = $this->content;
       $this->content = '';
-
       return $content;
     }
   }

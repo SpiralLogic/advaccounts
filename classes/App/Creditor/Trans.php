@@ -16,9 +16,7 @@
   /* Definition of the Supplier Transactions class to hold all the information for an accounts payable invoice or credit note
   */
   class Creditor_Trans {
-    /**
-     * @var null
-     */
+    /** @var null **/
     protected static $_instance = null;
     /***
      * @static
@@ -38,13 +36,9 @@
     public static function killInstance() {
       unset($_SESSION["Creditor_Trans"]);
     }
-    /**
-     * @var Purch_GLItem[]
-     */
+    /** @var Purch_GLItem[] **/
     public $grn_items; /*array of objects of class GRNDetails using the GRN No as the pointer */
-    /**
-     * @var array
-     */
+    /** @var array **/
     public $gl_codes; /*array of objects of class gl_codes using a counter as the pointer */
     /** @var */
     public $creditor_id;
@@ -74,17 +68,11 @@
     public $ov_amount;
     /** @var */
     public $ov_discount;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $tax_correction = 0;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $total_correction = 0;
-    /**
-     * @var int
-     */
+    /** @var int **/
     public $gl_codes_counter = 0;
     /**
 
@@ -256,8 +244,7 @@
       if ($rate == 0) {
         $rate = Bank_Currency::exchange_rate_from_home($curr, $date_);
       }
-      $sql
-        = "INSERT INTO creditor_trans (trans_no, type, creditor_id, tran_date, due_date,
+      $sql = "INSERT INTO creditor_trans (trans_no, type, creditor_id, tran_date, due_date,
 				reference, supplier_reference, ov_amount, ov_gst, rate, ov_discount) ";
       $sql .= "VALUES (" . DB::_escape($trans_no) . ", " . DB::_escape($type) . ", " . DB::_escape($creditor_id) . ", '$date', '$due_date',
 				" . DB::_escape($reference) . ", " . DB::_escape($supplier_reference) . ", " . DB::_escape($amount) . ", " . DB::_escape($amount_tax) . ", " . DB::_escape(
@@ -279,13 +266,11 @@
      * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($trans_no, $trans_type = -1) {
-      $sql
-        = "SELECT creditor_trans.*, (creditor_trans.ov_amount+creditor_trans.ov_gst+creditor_trans.ov_discount) AS Total,
+      $sql = "SELECT creditor_trans.*, (creditor_trans.ov_amount+creditor_trans.ov_gst+creditor_trans.ov_discount) AS Total,
 				suppliers.name AS supplier_name, suppliers.curr_code AS SupplierCurrCode ";
       if ($trans_type == ST_SUPPAYMENT) {
         // it's a payment so also get the bank account
-        $sql
-          .= ", bank_accounts.bank_name, bank_accounts.bank_account_name, bank_accounts.bank_curr_code,
+        $sql .= ", bank_accounts.bank_name, bank_accounts.bank_account_name, bank_accounts.bank_curr_code,
 					bank_accounts.account_type AS BankTransType, bank_trans.amount AS BankAmount,
 					bank_trans.ref ";
       }
@@ -342,8 +327,7 @@
      * @param $type_no
      */
     public static function void($type, $type_no) {
-      $sql
-        = "UPDATE creditor_trans SET ov_amount=0, ov_discount=0, ov_gst=0,
+      $sql = "UPDATE creditor_trans SET ov_amount=0, ov_discount=0, ov_gst=0,
 				alloc=0 WHERE type=" . DB::_escape($type) . " AND trans_no=" . DB::_escape($type_no);
       DB::_query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
     }
@@ -418,8 +402,7 @@
      * @return int
      */
     public static function get_conversion_factor($creditor_id, $stock_id) {
-      $sql
-              = "SELECT conversion_factor FROM purch_data
+      $sql    = "SELECT conversion_factor FROM purch_data
 					WHERE creditor_id = " . DB::_escape($creditor_id) . "
 					AND stock_id = " . DB::_escape($stock_id);
       $result = DB::_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");

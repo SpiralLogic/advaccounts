@@ -15,15 +15,10 @@
   /**
 
    */
-  class Messages
-  {
-    /**
-     * @var string
-     */
+  class Messages {
+    /** @var string **/
     protected static $messages = '';
-    /**
-     * @var int
-     */
+    /** @var int **/
     protected static $count = 0;
     /**
 
@@ -41,9 +36,7 @@
       if (!$userid) {
         return false;
       }
-      $result        = DB::_select('um.*,u.real_name as `from`')->from('user_messages um, users u')->where('um.user=', $userid)->andWhere('um.from=u.id')->andWhere('unread>', 0)
-        ->fetch()
-        ->all();
+      $result        = DB::_select('um.*,u.real_name as `from`')->from('user_messages um, users u')->where('um.user=', $userid)->andWhere('um.from=u.id')->andWhere('unread>', 0)->fetch()->all();
       static::$count = count($result);
       foreach ($result as $row) {
         if (!empty($row['subject'])) {
@@ -57,7 +50,6 @@
         $sql2   = "UPDATE user_messages SET unread={$unread} WHERE id={$id} AND user=" . $userid;
         DB::_query($sql2, 'Could not mark messages as unread');
       }
-
       return static::$count;
     }
     /**
@@ -74,7 +66,6 @@
         $message
       ) . ", 1, " . DB::_escape(User::i()->user) . ")";
       $result = DB::_query($sql, "Couldn't add message for $userid");
-
       return $result;
     }
     /**
@@ -94,7 +85,6 @@
       if (static::$count > 0) {
         static::makeDialog();
       }
-
       return ob_get_clean();
     }
     public static function makeDialog() {

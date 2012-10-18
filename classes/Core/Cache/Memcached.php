@@ -13,11 +13,8 @@
   /**
 
    */
-  class Memcached implements Cachable
-  {
-    /**
-     * @var bool
-     */
+  class Memcached implements Cachable {
+    /** @var bool **/
     protected $connected = false;
     protected $connection = false;
     public function init() {
@@ -47,7 +44,6 @@
       if ($this->connection !== false) {
         $this->connection->set($key, $value, time() + $expires);
       }
-
       return $value;
     }
     /**
@@ -77,7 +73,6 @@
         $success = ($this->connection->getResultCode() === \Memcached::RES_NOTFOUND);
       }
       $result = ($success === false) ? $default : $result;
-
       return $result;
     }
     /**

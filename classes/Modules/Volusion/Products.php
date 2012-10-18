@@ -9,9 +9,7 @@
    */
   class Products {
     protected $config;
-    /**
-     * @var array
-     */
+    /** @var array **/
     public $products = array();
     /**
 
@@ -28,7 +26,6 @@
         return false;
       }
       $this->products = XMLParser::XMLtoArray($productsXML);
-
       return true;
     }
     /**
@@ -46,7 +43,6 @@
         Event::warning('Could not retrieve web products');
       }
       ;
-
       return $result;
     }
   }

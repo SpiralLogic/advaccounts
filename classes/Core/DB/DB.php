@@ -33,16 +33,15 @@
    * @method static \ADV\Core\DB\Query\Delete _delete()
    * @method static _errorNo()
    * @method  static _quote($value, $type = null)
+   * @method  static _quoteWild($value, $both = true, $type = null)
    */
-  class DB implements \Serializable {
+  class DB extends \PDO implements \Serializable {
     use \ADV\Core\Traits\StaticAccess2;
 
     const SELECT = 0;
     const INSERT = 1;
     const UPDATE = 2;
     const DELETE = 4;
-    /** @var array */
-    protected static $connections = [];
     /** @var array */
     protected $data = [];
     /*** @var string */
@@ -55,24 +54,14 @@
     protected $nested = false;
     /** @var Query\Query|Query\Select|Query\Update $query */
     protected $query = false;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     protected $results = false;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     protected $errorSql = false;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     protected $errorInfo = false;
-    /**
-     * @var bool
-     */
+    /** @var bool **/
     protected $intransaction = false;
-    /*** @var \PDO */
-    protected $conn = false;
     /** @var */
     protected $default_connection;
     /** @var \ADV\Core\Cache */
@@ -94,16 +83,13 @@
      */
     protected function connect($config) {
       try {
-        $conn = new \PDO('mysql:host=' . $config['host'] . ';dbname=' . $config['dbname'], $config['user'], $config['pass'], array(\PDO::MYSQL_ATTR_FOUND_ROWS => true));
-        $conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        $conn->setAttribute(\PDO::ATTR_ORACLE_NULLS, \PDO::NULL_TO_STRING);
+        parent::__construct('mysql:host=' . $config['host'] . ';dbname=' . $config['dbname'], $config['user'], $config['pass'], array(\PDO::MYSQL_ATTR_FOUND_ROWS => true));
+        $this->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $this->setAttribute(\PDO::ATTR_ORACLE_NULLS, \PDO::NULL_TO_STRING);
         //       $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-        static::$connections[$config['name']] = $conn;
-        if ($this->conn === false) {
-          $this->conn = $conn;
-        }
       } catch (\PDOException $e) {
-        throw new DBException('Could not connect to database:' . $config['name'] . ', check configuration!');
+        throw $e;
+        //throw new DBException('Could not connect to database:' . $config['name'] . ', check configuration!');
       }
       return true;
     }
@@ -143,7 +129,19 @@
      * @return string
      */
     public function quote($value, $type = null) {
-      return $this->conn->quote($value, $type);
+      $value = trim($value);
+      return parent::quote($value, $type);
+    }
+    /**
+     * @param      $value
+     * @param bool $both
+     * @param null $type
+     *
+     * @return string
+     */
+    public function quoteWild($value, $both = true, $type = null) {
+      $value = ($both ? '%' . trim($value) : trim($value)) . '%';
+      return $this->quote($value, $type);
     }
     /**
      * @static
@@ -178,17 +176,14 @@
      * @throws DBException
      * @return bool|\PDOStatement
      */
-    protected function prepare($sql, $debug = false) {
+    public function prepare($sql, $debug = false) {
       $this->debug     = $debug;
       $this->errorInfo = false;
       $this->errorSql  = $sql;
       $data            = $this->data;
-      if (!($this->conn instanceof \PDO)) {
-        throw new DBException('No database connection!!');
-      }
       try {
         /** @var \PDOStatement $prepared  */
-        $prepared = $this->conn->prepare($sql);
+        $prepared = parent::prepare($sql);
         $params   = substr_count($sql, '?');
         if ($data && $params > count($data)) {
           throw new DBException('There are more escaped values than there are placeholders!!');
@@ -237,7 +232,7 @@
      * @return string
      */
     public function insertId() {
-      return $this->conn->lastInsertId();
+      return parent::lastInsertId();
     }
     /***
      * @param string $columns,... Database columns to select
@@ -351,7 +346,7 @@
       if ($this->prepared) {
         return $this->prepared->errorInfo();
       }
-      return $this->conn->errorInfo();
+      return parent::errorInfo();
     }
     /**
      * @static
@@ -360,16 +355,6 @@
     public function errorMsg() {
       $info = $this->errorInfo();
       return isset($info[2]) ? $info[2] : false;
-    }
-    /**
-     * @static
-     *
-     * @param int|\PDO $value
-     *
-     * @return mixed
-     */
-    public function getAttribute($value) {
-      return $this->conn->getAttribute($value);
     }
     /**
      * @static
@@ -418,9 +403,9 @@
      */
     public function begin() {
       /** @noinspection PhpUndefinedMethodInspection */
-      if (!$this->conn->inTransaction() && !$this->intransaction) {
+      if (!parent::inTransaction() && !$this->intransaction) {
         try {
-          $this->conn->beginTransaction();
+          parent::beginTransaction();
           $this->intransaction = true;
         } catch (\PDOException $e) {
           $this->error($e);
@@ -433,10 +418,10 @@
      */
     public function commit() {
       /** @noinspection PhpUndefinedMethodInspection */
-      if ($this->conn->inTransaction() || $this->intransaction) {
+      if (parent::inTransaction() || $this->intransaction) {
         $this->intransaction = false;
         try {
-          $this->conn->commit();
+          parent::commit();
         } catch (\PDOException $e) {
           $this->error($e);
         }
@@ -448,10 +433,10 @@
      */
     public function cancel() {
       /** @noinspection PhpUndefinedMethodInspection */
-      if ($this->conn->inTransaction() || $this->intransaction) {
+      if (parent::inTransaction() || $this->intransaction) {
         try {
           $this->intransaction = false;
-          $this->conn->rollBack();
+          parent::rollBack();
         } catch (\PDOException $e) {
           $this->error($e);
         }
@@ -524,7 +509,7 @@
             return new Query\Result($prepared, $data);
           case DB::INSERT:
             $prepared->execute($data);
-            return $this->conn->lastInsertId();
+            return parent::lastInsertId();
           case DB::UPDATE:
           case DB::DELETE:
             $prepared->execute($data);
@@ -541,7 +526,7 @@
           case DB::INSERT:
             $count = preg_match('/Column \'(.+)\'(.*)/', $error['message'], $matches);
             if ($count) {
-              $this->lastError = [E_ERROR, 'message'=> str_replace(['cannot be null', '_'], ['cannot be empty', ' '], $matches[1] . $matches[2]), 'var'=> $matches[1]];
+              $this->lastError = [E_ERROR, 'message' => str_replace(['cannot be null', '_'], ['cannot be empty', ' '], $matches[1] . $matches[2]), 'var' => $matches[1]];
             }
             throw new DBInsertException('Could not insert into database.');
             break;
@@ -610,8 +595,8 @@
       $error['debug']    = $e->getCode() . (!isset($error[2])) ? $e->getMessage() : $error[2];
       $error['message']  = ($msg != false) ? $msg : $e->getMessage();
       /** @noinspection PhpUndefinedMethodInspection */
-      if (is_a($this->conn, 'PDO') && ($this->conn->inTransaction() || $this->intransaction)) {
-        $this->conn->rollBack();
+      if ((parent::inTransaction() || $this->intransaction)) {
+        parent::rollBack();
         $this->intransaction = false;
       }
       if (isset($this->errorInfo[1]) && $this->errorInfo[1] == 1062) {
@@ -620,7 +605,6 @@
       if ($silent) {
         return $error;
       }
-
       if (class_exists('\\ADV\\Core\\Errors')) {
         \ADV\Core\Errors::databaseError($error, $this->errorSql, $data);
       } else {
@@ -634,11 +618,9 @@
      * @link http://php.net/manual/en/serializable.serialize.php
      */
     public function serialize() {
-      static::$connections      = [];
       $this->prepared           = null;
       $this->default_connection = null;
       $this->query              = null;
-      $this->conn               = null;
       return base64_encode(serialize($this));
     }
     /**
@@ -657,37 +639,31 @@
       return static::i();
     }
   }
-
   /**
 
    */
   class DBException extends \Exception {
   }
-
   /**
 
    */
   class DBInsertException extends DBException {
   }
-
   /**
 
    */
   class DBDeleteException extends DBException {
   }
-
   /**
 
    */
   class DBSelectException extends DBException {
   }
-
   /**
 
    */
   class DBUpdateException extends DBException {
   }
-
   /**
 
    */
