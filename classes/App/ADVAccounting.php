@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   namespace ADV\App;
 
   use ADV\Core\JS;
@@ -176,7 +175,7 @@
           }
           if (isset($_SESSION['pager'][$name])) {
             $pager = $_SESSION['pager'][$name];
-            if ($sql !== null && $pager->sql != $sql && count($coldef) != count($pager)) {
+            if (($sql !== null && $pager->sql != $sql) || (count($coldef) != count($pager))) {
               $pager->refresh($sql);
             } elseif (is_array($sql) && $pager->rec_count != count($sql)) {
               unset($pager);
@@ -386,7 +385,7 @@
       $company = $this->Input->post('login_company', null, 'default');
       if ($company) {
         $modules = $this->Config->get('modules.login', []);
-        foreach ($modules as $module=> $module_config) {
+        foreach ($modules as $module => $module_config) {
           $this->User->_register_login(
             function () use ($module, $module_config) {
               $module = '\\Modules\\' . $module . '\\' . $module;
@@ -425,7 +424,7 @@
     }
     protected function loadModules() {
       $modules = $this->Config->get('modules.default', []);
-      foreach ($modules as $module=> $module_config) {
+      foreach ($modules as $module => $module_config) {
         $module = '\\Modules\\' . $module . '\\' . $module;
         new $module($module_config);
       }
