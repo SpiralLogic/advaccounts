@@ -287,6 +287,9 @@
         }
       }
       Arr::append($cols, [['insert' => true, 'fun' => [$this, 'formatDropdown']]]);
+      if (REQUEST_GET) {
+        Pager::kill('orders_tbl');
+      }
       $table              = \ADV\App\Pager\Pager::newPager('orders_tbl', $sql, $cols);
       $table->rowFunction = [$this, 'formatMarker'];
       $table->width       = "90%";
