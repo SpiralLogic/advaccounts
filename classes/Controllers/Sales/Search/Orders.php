@@ -291,7 +291,7 @@
       }
       Arr::append($cols, [['insert' => true, 'fun' => [$this, 'formatDropdown']]]);
       if (REQUEST_GET) {
-        Pager::kill('orders_tbl');
+        DB_Pager::kill('orders_tbl');
       }
       $table              = DB_Pager::newPager('orders_tbl', $sql, $cols);
       $table->rowFunction = [$this, 'formatMarker'];
@@ -328,7 +328,8 @@
       return Debtor::viewTrans($row['trans_type'], $order_no);
     }
     /**
-     * @param $row
+     * @param                        $row
+     * @param \ADV\App\Form\DropDown $dd
      *
      * @return string
      */
@@ -350,7 +351,8 @@
       }
     }
     /**
-     * @param $row
+     * @param                        $row
+     * @param \ADV\App\Form\DropDown $dd
      *
      * @return string
      */
