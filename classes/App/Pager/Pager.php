@@ -292,6 +292,7 @@
           }
           $c['funkey'] = $colindex;
         }
+
         $this->columns[] = $c;
       }
     }

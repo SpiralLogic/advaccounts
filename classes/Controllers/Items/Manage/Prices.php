@@ -1,6 +1,5 @@
 <?php
   namespace ADV\Controllers\Items\Manage;
-
   use ADV\App\Form\Form;
   use ADV\App\Item\Price;
   use Item_Code;
@@ -21,7 +20,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Prices extends \ADV\App\Controller\Manage {
+  class Prices extends \ADV\App\Controller\Manage
+  {
+
     protected $stock_id;
     protected $security = SA_SALESPRICE;
     protected $frame = false;
@@ -38,12 +39,12 @@
         UI::search(
           'stock_id',
           [
-          'label'            => 'Item:',
-          'url'              => 'Item',
-          'idField'          => 'stock_id',
-          'name'             => 'stock_id', //
-          'value'            => $this->stock_id,
-          'focus'            => true,
+            'label'   => 'Item:',
+            'url'     => 'Item',
+            'idField' => 'stock_id',
+            'name'    => 'stock_id', //
+            'value'   => $this->stock_id,
+            'focus'   => true,
           ]
         );
         $this->Session->setGlobal('stock_id', $this->stock_id);
@@ -69,6 +70,10 @@
       $kit = Item_Code::get_defaults($_POST['stock_id']);
       $form->amount('price')->label(_("Price:"))->append(_('per ') . $kit["units"])->focus();
     }
+    protected function getEditing($pager) {
+      $pager->editid  = ($this->actionID);
+      $pager->editing = $this->object;
+    }
     protected function generateTable() {
       $this->Ajax->start_div('table');
       if ($this->stock_id) {
@@ -84,18 +89,33 @@
      */
     protected function generateTableCols() {
       $cols = [
-        'Type',
-        ['type'=> 'skip'],
-        ['type'=> 'skip'],
+        'Type'     => ['edit' => [$this,'formatTypeEdit']],
+        ['type' => 'skip'],
+        ['type' => 'skip'],
         'Stock ID',
-        ['type'=> 'skip'],
-        'Currency',
-        'Price'=> ['type'=> 'amount'],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
-
+        ['type' => 'skip'],
+        'Currency' => ['edit' => [$this,'formatCurrencyEdit']],
+        'Price'    => ['type' => 'amount'],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
       ];
       return $cols;
+    }
+    /**
+     * @param \ADV\App\Form\Form $form
+     *
+     * @return \ADV\App\Form\Field
+     */
+    public function formatTypeEdit(Form $form) {
+      return $form->custom(Sales_Type::select('sales_type_id'));
+    }
+    /**
+     * @param \ADV\App\Form\Form $form
+     *
+     * @return \ADV\App\Form\Field
+     */
+    public function formatCurrencyEdit(Form $form) {
+      return $form->custom(GL_Currency::select('curr_abrev'));
     }
     /**
      * @param $pagername

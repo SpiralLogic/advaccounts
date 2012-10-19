@@ -133,8 +133,12 @@
       $pager_name = end(explode('\\', ltrim(get_called_class(), '\\'))) . '_table';
       \ADV\App\Pager\Pager::kill($pager_name);
       $table = \ADV\App\Pager\Pager::newPager($pager_name, $this->getTableRows($pager_name), $cols);
+      $this->getEditing($table);
       $table->width = $this->tableWidth;
       $table->display();
+    }
+    protected function getEditing(Pager $table) {
+
     }
     /**
      * @param $pager_name
