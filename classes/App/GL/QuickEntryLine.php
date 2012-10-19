@@ -8,7 +8,6 @@
    * @date      17/10/12
    * @link      http://www.advancedgroup.com.au
    **/
-
   namespace ADV\App\GL;
 
   use ADV\Core\DB\DB;
@@ -17,12 +16,13 @@
   /**
 
    */
-  class QuickEntryLine extends \ADV\App\DB\Base {
+  class QuickEntryLine extends \ADV\App\DB\Base
+  {
     protected $_table = 'quick_entry_lines';
     protected $_classname = 'Quick Entry Line';
     protected $_id_column = 'id';
     public $id = 0;
-    public $qid;
+    public $qid = 0;
     public $amount = 0.0000;
     public $action;
     public $dest_id;
@@ -41,15 +41,13 @@
       if (strlen($this->dest_id) > 11) {
         return $this->status(false, 'Dest Id must be not be longer than 11 characters!', 'dest_id');
       }
-
       return true;
     }
     /**
      * @return array
      */
     public static function getAll() {
-      $q = DB::_select()->from('quick_entry_lines');
-
+      $q = DB::_select('id', 'qid', 'action', 'dest_id', 'amount')->from('quick_entry_lines');
       return $q->fetch()->all();
     }
   }

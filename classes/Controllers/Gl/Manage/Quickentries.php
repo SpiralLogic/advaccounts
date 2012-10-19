@@ -65,39 +65,18 @@
       $cols       = [
         ['type' => 'skip'],
         ['type' => 'skip'],
-        'Amount',
-        'Action' => ['fun' => [$this, 'formatAction'], 'editFun' => [$this, 'formatEditAction']],
-        'Account/Tax Type',
-        ['type' => 'skip'],
-        ['type' => 'skip'],
+        'Action'           => ['fun' => [$this, 'formatAction'], 'editFun' => [$this, 'formatEditLineAction']],
+        'Account/Tax Type' => ['editFun' => [$this, 'formatEditLineAccount']],
+        'Amount'           => ['editFun' => [$this, 'formatEditLineAmount']],
         ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineEditBtn'], 'editFun' => [$this, 'formatLineSaveBtn']],
         ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineDeleteBtn'], 'editFun' => [$this, 'formatLineCancelBtn']],
       ];
       $pager_name = 'QE_Lines';
-      //\ADV\App\Pager\Pager::kill($pager_name);
-      $linestable        = \ADV\App\Pager\Pager::newPager($pager_name, $this->object->getLines($this->linesid), $cols);
-      $linestable->width = $this->tableWidth;
-      $linestable->editing = $this->action == 'Line' . EDIT ? $this->actionID : false;
+      \ADV\App\Pager\Pager::kill($pager_name);
+      $linestable          = \ADV\App\Pager\Pager::newPager($pager_name, $this->object->getLines($this->linesid), $cols);
+      $linestable->width   = $this->tableWidth;
+      $linestable->editing = $this->action == 'Line' . EDIT ? $this->actionID : $this->line;
       $linestable->display();
-      $lineform = new Form();
-      $lineform->arraySelect('action', GL_QuickEntry::$actions)->label("Action:")->focus($this->action == 'Line' . EDIT);
-      $actn = $this->line->action;
-      if ($actn == 't') {
-        //Tax_ItemType::row(_("Item Tax Type").":",'dest_id', null);
-        $lineform->custom(Tax_Type::select('dest_id'))->label("Tax Type:");
-      } else {
-        $lineform->custom(GL_UI::all('dest_id', null, $_POST['type'] == QE_DEPOSIT || $_POST['type'] == QE_PAYMENT))->label("Account:");
-        if ($actn != '=') {
-          if ($actn == '%') {
-            $lineform->number('amount', $this->User->prefs->exrate_dec)->label("Part:");
-          } else {
-            $lineform->number('amount', $this->User->prefs->exrate_dec)->label("Amount:");
-          }
-        }
-      }
-      $view          = new View('form/simple');
-      $view['title'] = 'Quick Entry Line';
-      $this->generateForm($lineform, $view, $this->line, false);
       $this->Page->end_page(true);
     }
     /**≈
@@ -145,12 +124,42 @@
       return GL_QuickEntry::$types[$row['type']];
     }
     /**
+     * @param $form
+     */
+    public function formatEditLineAmount($form) {
+      $actn = $this->line->action;
+      if ($actn != '=') {
+        if ($actn == '%') {
+          $form->number('amount', $this->User->prefs->exrate_dec);
+        } else {
+          $form->number('amount', $this->User->prefs->exrate_dec);
+        }
+      } else {
+        $form->hidden('amount');
+      }
+    }
+    /**
      * @param $row
      *
      * @return mixed
      */
-    public function formatEditAction(Form $form) {
-      return $form->arraySelect('action', GL_QuickEntry::$actions)->focus($this->action == 'Line' . EDIT);
+    public function formatEditLineAction(Form $form) {
+      $this->Ajax->addFocus(true, 'action');
+      return $form->arraySelect('action', GL_QuickEntry::$actions);
+    }
+    /**
+     * @param $row
+     *
+     * @return mixed
+     */
+    public function formatEditLineAccount(Form $form) {
+      $actn = $this->line->action;
+      if ($actn == 't') {
+        //Tax_ItemType::row(_("Item Tax Type").":",'dest_id', null);
+        return $form->custom(Tax_Type::select('dest_id'));
+      } else {
+        return $form->custom(GL_UI::all('dest_id', null, $_POST['type'] == QE_DEPOSIT || $_POST['type'] == QE_PAYMENT));
+      }
     }
     public function formatLineSaveBtn(Form $form) {
       return $form->button('_action', 'Line' . SAVE, SAVE)->preIcon(ICON_SAVE)->type('mini')->type('success');

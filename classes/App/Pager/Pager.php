@@ -584,6 +584,9 @@
       foreach ($this->data as $row) {
         $this->displayRow($row, $form);
       }
+      if (is_object($this->editing)) {
+        $this->editRow(end($this->data), $form, false);
+      }
       echo "<tfoot>";
       echo $this->displayNavigation('bottom');
       echo "</tfoot></table></div>";
@@ -649,7 +652,7 @@
           echo "<tr class='navigroup'><th colspan=" . count($this->columns) . ">" . $row[$field] . "</th></tr>";
         }
       }
-      if ($this->editing == $row['id'] && $form) {
+      if (!is_object($this->editing) && $this->editing == $row['id'] && $form) {
         return $this->editRow($row, $form);
       }
       echo (is_callable($this->rowFunction)) ? call_user_func($this->rowFunction, $row) : "<tr>\n";
@@ -723,12 +726,15 @@
      *
      * @return mixed
      */
-    protected function editRow($row, $form) {
+    protected function editRow($row, Form $form, $setvals = true) {
       $view = new View('form/pager');
       $view->set('form', $form);
-      $group = 'first';
-      foreach ($this->columns as $col) {
+      $group  = 'first';
+      $fields = array_keys($row);
+      foreach ($this->columns as $key => $col) {
+        $field   = '';
         $coltype = isset($col['type']) ? $col['type'] : '';
+        $name    = isset($col['name']) ? $row[$col['name']] : $fields[$key];
         if (isset($col['editFun'])) { // use data input function if defined
           $coltype = 'fun';
         }
@@ -744,18 +750,22 @@
             break;
           case self::TYPE_SKIP: // column not displayed
           case self::TYPE_GROUP: // column not displayed
-            $field = $form->group('hidden')->hidden($col['name']);
+            $field = $form->group('hidden')->hidden($name);
             break;
           case self::TYPE_AMOUNT: // column not displayed
-            $field = $form->amount($col['name']);
+            $field = $form->amount($name);
             $group = 'rest';
             break;
           default:
-            $field = $form->text($col['name']);
+            $field = $form->text($name);
             $group = 'rest';
         }
         if (is_a($field, '\\ADV\\App\\Form\\Field')) {
-          $field->initial($row[$col['name']]);
+          if ($setvals) {
+            $field->initial($row[$col['name']]);
+          } elseif (is_object($this->editing) && $name) {
+            $field->initial($this->editing->$name);
+          }
         }
       }
       $view->render();
