@@ -8,7 +8,6 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Controllers\GL\Manage;
-
   use ADV\App\Controller\Manage;
   use GL_UI;
   use Tax_Type;
@@ -22,6 +21,7 @@
    */
   class Quickentries extends Manage
   {
+
     protected $tableWidth = '70';
     public $linesid;
     /** @var  \ADV\App\GL\QuickEntryLine */
@@ -45,6 +45,7 @@
           case 'Line' . SAVE:
             $changes = isset($changes) ? $changes : $_POST;
             $status  = $this->onSave($changes, $this->line);
+            $this->object->load($this->line->qid);
             break;
           case 'Line' . CANCEL:
             $status = $this->line->getStatus();
@@ -65,17 +66,20 @@
       $cols       = [
         ['type' => 'skip'],
         ['type' => 'skip'],
-        'Action'           => ['fun' => [$this, 'formatAction'], 'editFun' => [$this, 'formatEditLineAction']],
-        'Account/Tax Type' => ['editFun' => [$this, 'formatEditLineAccount']],
-        'Amount'           => ['editFun' => [$this, 'formatEditLineAmount']],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineEditBtn'], 'editFun' => [$this, 'formatLineSaveBtn']],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineDeleteBtn'], 'editFun' => [$this, 'formatLineCancelBtn']],
+        'Action'           => ['fun' => [$this, 'formatActionLine'], 'edit' => [$this, 'formatActionLineEdit']],
+        'Account/Tax Type' => ['edit' => [$this, 'formatAccountLineEdit']],
+        'Amount'           => ['edit' => [$this, 'formatAmountLineEdit']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineEditBtn'], 'edit' => [$this, 'formatSaveLineBtn']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineDeleteBtn'], 'edit' => [$this, 'formatCancelLineBtn']],
       ];
       $pager_name = 'QE_Lines';
-      \ADV\App\Pager\Pager::kill($pager_name);
-      $linestable          = \ADV\App\Pager\Pager::newPager($pager_name, $this->object->getLines($this->linesid), $cols);
+      //\ADV\App\Pager\Pager::kill($pager_name);
+      $linestable          = \ADV\App\Pager\Pager::newPager($pager_name, $this->object->getLines(), $cols);
+      $this->line->qid     = $this->object->id;
+      $this->line->action  = $this->Input->hasPost('action', null, $this->line->action);
       $linestable->width   = $this->tableWidth;
-      $linestable->editing = $this->action == 'Line' . EDIT ? $this->actionID : $this->line;
+      $linestable->editing =$this->line;
+      $linestable->editid =$this->line->id;
       $linestable->display();
       $this->Page->end_page(true);
     }
@@ -126,7 +130,7 @@
     /**
      * @param $form
      */
-    public function formatEditLineAmount($form) {
+    public function formatAmountLineEdit(Form $form) {
       $actn = $this->line->action;
       if ($actn != '=') {
         if ($actn == '%') {
@@ -139,32 +143,45 @@
       }
     }
     /**
-     * @param $row
+     * @param \ADV\App\Form\Form $form
      *
+     * @internal param $row
      * @return mixed
      */
-    public function formatEditLineAction(Form $form) {
+    public function formatActionLineEdit(Form $form) {
       $this->Ajax->addFocus(true, 'action');
+      $this->JS->addLive('Adv.o.wrapper.on("change","#action",function() {    JsHttpRequest.request(this);} )');
       return $form->arraySelect('action', GL_QuickEntry::$actions);
     }
     /**
-     * @param $row
+     * @param \ADV\App\Form\Form $form
      *
+     * @internal param $row
      * @return mixed
      */
-    public function formatEditLineAccount(Form $form) {
+    public function formatAccountLineEdit(Form $form) {
       $actn = $this->line->action;
-      if ($actn == 't') {
+      if (strtolower($actn) == 't') {
         //Tax_ItemType::row(_("Item Tax Type").":",'dest_id', null);
         return $form->custom(Tax_Type::select('dest_id'));
       } else {
         return $form->custom(GL_UI::all('dest_id', null, $_POST['type'] == QE_DEPOSIT || $_POST['type'] == QE_PAYMENT));
       }
     }
-    public function formatLineSaveBtn(Form $form) {
+    /**
+     * @param \ADV\App\Form\Form $form
+     *
+     * @return \ADV\App\Form\Button
+     */
+    public function formatSaveLineBtn(Form $form) {
       return $form->button('_action', 'Line' . SAVE, SAVE)->preIcon(ICON_SAVE)->type('mini')->type('success');
     }
-    public function formatLineCancelBtn(Form $form) {
+    /**
+     * @param \ADV\App\Form\Form $form
+     *
+     * @return \ADV\App\Form\Button
+     */
+    public function formatCancelLineBtn(Form $form) {
       return $form->button('_action', 'Line' . CANCEL, CANCEL)->preIcon(ICON_CANCEL)->type('mini')->type('danger');
     }
     /**
@@ -172,7 +189,7 @@
      *
      * @return mixed
      */
-    public function formatAction($row) {
+    public function formatActionLine($row) {
       return GL_QuickEntry::$actions[$row['action']];
     }
     /**

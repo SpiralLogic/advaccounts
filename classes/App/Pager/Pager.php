@@ -1,6 +1,5 @@
 <?php
   namespace ADV\App\Pager;
-
   use ADV\Core\Cell;
   use ADV\Core\View;
   use ADV\App\Form\Form;
@@ -29,6 +28,7 @@
    */
   class Pager implements \Countable
   {
+
     const NEXT           = 'next';
     const PREV           = 'prev';
     const LAST           = 'last';
@@ -106,6 +106,8 @@
     protected $hasBar = false;
     protected $dataset = [];
     protected $currentRowGroup = null;
+    public $fieldnames;
+    public $editid;
     /**
      * @static
      *
@@ -122,8 +124,8 @@
       }
       foreach ($pager->columns as &$column) {
         if (isset($column['funkey'])) {
-          $column['fun']     = $coldef[$column['funkey']]['fun'];
-          $column['editFun'] = $coldef[$column['funkey']]['editFun'];
+          $column['fun']  = $coldef[$column['funkey']]['fun'];
+          $column['edit'] = $coldef[$column['funkey']]['edit'];
         }
       }
       if (Input::_post('_action') == 'showInactive') {
@@ -157,10 +159,10 @@
           $this->max_page  = $this->page_length ? ceil($this->rec_count / $this->page_length) : 0;
           $this->setPage(self::FIRST, false);
         } elseif ($this->type == self::ARR) {
-          $this->rec_count = count($this->sql);
-          $ord             = $this->rowGroup;
-          $fields          = array_keys($this->sql[0]);
-          $this->dataset   = [];
+          $this->rec_count  = count($this->sql);
+          $ord              = $this->rowGroup;
+          $this->fieldnames = array_keys($this->sql[0]);
+          $this->dataset    = [];
           foreach ($this->sql as $key => $row) {
             $row[]           = $key;
             $this->dataset[] = $row;
@@ -182,11 +184,11 @@
               }
               foreach ($this->dataset as $key => $row) {
                 if ($index[1] == 'none') {
-                  $args[$fields[$index[0] - 1]][$key] = end($row);
+                  $args[$this->fieldnames[$index[0] - 1]][$key] = end($row);
                   continue;
                 }
                 //minus 1 because fields are 0 indexed
-                $args[$fields[$index[0] - 1]][$key] = $row[$fields[$index[0] - 1]];
+                $args[$this->fieldnames[$index[0] - 1]][$key] = $row[$this->fieldnames[$index[0] - 1]];
               }
               $args[] = ($index[1] == 'desc' ? SORT_DESC : SORT_ASC);
             }
@@ -283,16 +285,22 @@
             unset($c['head']);
             break;
         }
-        if (isset($coldef['fun']) || isset($coldef['editFun'])) {
+        if (isset($c['fun']) || isset($c['edit'])) {
+          if ($c['edit'] === true && isset($c['fun']) && is_array($c['fun'])) {
+            $c['edit'] = $c['fun'];
+            $c['edit'][1] .= 'Edit';
+          }
           $c['funkey'] = $colindex;
         }
         $this->columns[] = $c;
       }
     }
     /**
-     * @param $to
+     * @param      $to
      * Calculates page numbers for html controls.
-
+     * @param bool $query
+     *
+     * @return void
      */
     protected function setPage($to, $query = true) {
       switch ($to) {
@@ -574,6 +582,7 @@
       Ajax::_start_div("_{$this->name}_span");
       $headers = $this->generateHeaders();
       $class   = $this->class . ' width' . rtrim($this->width, '%');
+      $form    = null;
       if ($this->editing) {
         $form = new Form();
         echo $form['_start'];
@@ -581,11 +590,16 @@
       echo "<div class='center'><table class='" . $class . "'>";
       echo  $this->displayHeaders($headers);
       $this->currentRowGroup = null;
+      $this->fieldnames      = array_keys(reset($this->data));
       foreach ($this->data as $row) {
         $this->displayRow($row, $form);
       }
-      if (is_object($this->editing)) {
-        $this->editRow(end($this->data), $form, false);
+      if (is_object($this->editing) && !$this->editid) {
+        $row = end($this->data) ? : get_object_vars($this->editing);
+        if (!$this->fieldnames) {
+          $this->fieldnames = array_keys($row);
+        }
+        $this->editRow($form);
       }
       echo "<tfoot>";
       echo $this->displayNavigation('bottom');
@@ -639,21 +653,22 @@
       return $content;
     }
     /**
-     * @param $row
+     * @param                         $row
+     * @param \ADV\App\Form\Form|null $form
      *
      * @return mixed
      */
-    protected function displayRow($row, $form = null) {
+    protected function displayRow($row, Form $form = null) {
       if ($this->rowGroup) {
-        $fields = array_keys($row);
+        $fields = $this->fieldnames;
         $field  = $fields[$this->rowGroup[0][0] - 1];
         if ($this->currentRowGroup != $row[$field]) {
           $this->currentRowGroup = $row[$field];
           echo "<tr class='navigroup'><th colspan=" . count($this->columns) . ">" . $row[$field] . "</th></tr>";
         }
       }
-      if (!is_object($this->editing) && $this->editing == $row['id'] && $form) {
-        return $this->editRow($row, $form);
+      if ($this->editid == $row['id'] && $form) {
+        return $this->editRow( $form);
       }
       echo (is_callable($this->rowFunction)) ? call_user_func($this->rowFunction, $row) : "<tr>\n";
       foreach ($this->columns as $col) {
@@ -720,29 +735,33 @@
         }
       }
       echo '</tr>';
+      return null;
     }
     /**
-     * @param $row
+     * @param                    $row
+     * @param \ADV\App\Form\Form $form
      *
+     * @internal param bool $setvals
      * @return mixed
      */
-    protected function editRow($row, Form $form, $setvals = true) {
+    protected function editRow( Form $form) {
       $view = new View('form/pager');
       $view->set('form', $form);
       $group  = 'first';
-      $fields = array_keys($row);
+      $fields = $this->fieldnames;
       foreach ($this->columns as $key => $col) {
         $field   = '';
         $coltype = isset($col['type']) ? $col['type'] : '';
-        $name    = isset($col['name']) ? $row[$col['name']] : $fields[$key];
-        if (isset($col['editFun'])) { // use data input function if defined
+        $name    = isset($col['name']) ? $col['name'] : '';
+        $name    = $name ? : $fields[$key];
+        if (isset($col['edit'])) { // use data input function if defined
           $coltype = 'fun';
         }
         $form->group($group);
         $view['class'] = isset($col['class']) ? 'class="' . $col['class'] . '"' : null;
         switch ($coltype) { // format columnhsdaasdg
           case 'fun': // column not displayed
-            $fun = $col['editFun'];
+            $fun = $col['edit'];
             if (is_callable($fun)) {
               $field = call_user_func($fun, $form);
             }
@@ -761,9 +780,7 @@
             $group = 'rest';
         }
         if (is_a($field, '\\ADV\\App\\Form\\Field')) {
-          if ($setvals) {
-            $field->initial($row[$col['name']]);
-          } elseif (is_object($this->editing) && $name) {
+          if (is_object($this->editing) && $name) {
             $field->initial($this->editing->$name);
           }
         }
@@ -830,7 +847,7 @@
         if (isset($col['fun'])) {
           $col['fun'] = null;
         }
-        if (isset($col['editFun'])) {
+        if (isset($col['edit'])) {
           $col['fun'] = null;
         }
       }

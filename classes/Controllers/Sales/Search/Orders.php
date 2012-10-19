@@ -9,7 +9,6 @@
   use ADV\Core\Arr;
   use ADV\App\Dates;
   use Inv_Location;
-  use ADV\Core\View;
   use ADV\App\Reporting;
   use ADV\App\Forms;
   use ADV\App\UI;
@@ -254,7 +253,7 @@
           _("Order #")  => array('fun' => [$this, 'formatRef'], 'ord' => ''), //
           _("Ref")      => array('ord' => ''), //
           _("PO#")      => array('ord' => ''), //
-          _("Date")     => array('type' => 'date', 'ord' => 'asc'), //
+          _("Date")     => array('type' => 'date', 'ord' => 'desc'), //
           _("Required") => array('type' => 'date', 'ord' => ''), //
           _("Customer") => array('ord' => 'asc'), //
           array('type' => 'skip'),
