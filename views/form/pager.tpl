@@ -10,7 +10,8 @@
   </td>
 
   {{#$form.rest}}
-  <td {{$class}}>
+  <td>
+    {{$.name}}
     {{.}}
   </td>
   {{/$form.rest}}

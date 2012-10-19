@@ -171,29 +171,6 @@
       $dic->offsetSet(
         'Pager',
         function (\ADV\Core\DIC $c, $name, $sql = null, $coldef) {
-          if (!isset($_SESSION['pager'])) {
-            $_SESSION['pager'] = [];
-          }
-          if (isset($_SESSION['pager'][$name])) {
-            $pager = $_SESSION['pager'][$name];
-            if (($sql !== null && $pager->sql != $sql) || (count($coldef) != count($pager))) {
-              $pager->refresh($sql);
-            } elseif (is_array($sql) && $pager->rec_count != count($sql)) {
-              unset($pager);
-            }
-          }
-          if (!isset($pager) || !$pager instanceof \ADV\App\Pager\Pager) {
-            $pager = new \ADV\App\Pager\Pager($name, $sql, $coldef);
-          }
-          \ADV\App\Pager\Pager::$Input = $c->offsetGet('Input');
-          \ADV\App\Pager\Pager::$JS    = $c->offsetGet('JS');
-          \ADV\App\Pager\Pager::$Dates = $c->offsetGet('Dates');
-          \ADV\App\Pager\Pager::$DB    = $c->offsetGet('DB');
-          /** @var User $user  */
-          $user                     = $c->offsetGet('User');
-          $pager->page_length       = $user->prefs->query_size;
-          $_SESSION['pager'][$name] = $pager;
-          return $pager;
         }
       );
       ob_start([$this, 'flush_handler'], 0);

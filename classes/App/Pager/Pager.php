@@ -1,5 +1,6 @@
 <?php
   namespace ADV\App\Pager;
+
   use ADV\Core\Cell;
   use ADV\Core\View;
   use ADV\App\Form\Form;
@@ -28,7 +29,6 @@
    */
   class Pager implements \Countable
   {
-
     const NEXT           = 'next';
     const PREV           = 'prev';
     const LAST           = 'last';
@@ -98,7 +98,6 @@
     protected $extra_where;
     /** @var bool */
     protected $ready;
-    public $editing = false;
     public $showInactive = null;
     protected $type;
     public $rowFunction;
@@ -107,7 +106,6 @@
     protected $dataset = [];
     protected $currentRowGroup = null;
     public $fieldnames;
-    public $editid;
     /**
      * @static
      *
@@ -115,21 +113,38 @@
      * @param      $sql
      * @param      $coldef
      *
-     * @return \ADV\App\Pager\Pager
+     * @return $this
      */
     public static function newPager($name, $sql, $coldef) {
-      $pager = DIC::get('Pager', $name, $sql, $coldef);
+      $c = \ADV\Core\DIC::i();
+      if (!isset($_SESSION['pager'])) {
+        $_SESSION['pager'] = [];
+      }
+      if (isset($_SESSION['pager'][$name])) {
+        $pager = $_SESSION['pager'][$name];
+        if (($sql !== null && $pager->sql != $sql) || (count($coldef) != count($pager))) {
+          $pager->refresh($sql);
+        } elseif (is_array($sql) && $pager->rec_count != count($sql)) {
+          unset($pager);
+        }
+      }
+      if (!isset($pager) || !is_a($pager, '\ADV\App\Pager\Pager')) {
+        $pager = new static($name, $sql, $coldef);
+      }
+      static::$Input = $c->offsetGet('Input');
+      static::$JS    = $c->offsetGet('JS');
+      static::$Dates = $c->offsetGet('Dates');
+      static::$DB    = $c->offsetGet('DB');
+      /** @var User $user  */
+      $user                     = $c->offsetGet('User');
+      $pager->page_length       = $user->prefs->query_size;
+      $_SESSION['pager'][$name] = $pager;
       if (is_array($sql)) {
         $pager->sql = $pager->sql ? : $sql;
       }
-      foreach ($pager->columns as &$column) {
-        if (isset($column['funkey'])) {
-          $column['fun']  = $coldef[$column['funkey']]['fun'];
-          $column['edit'] = $coldef[$column['funkey']]['edit'];
-        }
-      }
-      if (Input::_post('_action') == 'showInactive') {
-        $pager->showInactive = (Input::_post('_value', Input::NUMERIC) == 1);
+      $pager->restoreColumnFunction($coldef);
+      if (static::$Input->post('_action') == 'showInactive') {
+        $pager->showInactive = (static::$Input->post('_value', Input::NUMERIC) == 1);
       }
       return $pager;
     }
@@ -285,14 +300,9 @@
             unset($c['head']);
             break;
         }
-        if (isset($c['fun']) || isset($c['edit'])) {
-          if ($c['edit'] === true && isset($c['fun']) && is_array($c['fun'])) {
-            $c['edit'] = $c['fun'];
-            $c['edit'][1] .= 'Edit';
-          }
+        if (isset($c['fun'])) {
           $c['funkey'] = $colindex;
         }
-
         $this->columns[] = $c;
       }
     }
@@ -583,31 +593,16 @@
       Ajax::_start_div("_{$this->name}_span");
       $headers = $this->generateHeaders();
       $class   = $this->class . ' width' . rtrim($this->width, '%');
-      $form    = null;
-      if ($this->editing) {
-        $form = new Form();
-        echo $form['_start'];
-      }
       echo "<div class='center'><table class='" . $class . "'>";
       echo  $this->displayHeaders($headers);
       $this->currentRowGroup = null;
       $this->fieldnames      = array_keys(reset($this->data));
       foreach ($this->data as $row) {
-        $this->displayRow($row, $form);
-      }
-      if (is_object($this->editing) && !$this->editid) {
-        $row = end($this->data) ? : get_object_vars($this->editing);
-        if (!$this->fieldnames) {
-          $this->fieldnames = array_keys($row);
-        }
-        $this->editRow($form);
+        $this->displayRow($row);
       }
       echo "<tfoot>";
       echo $this->displayNavigation('bottom');
       echo "</tfoot></table></div>";
-      if ($this->editing) {
-        echo $form['_end'];
-      }
       Ajax::_end_div();
       return true;
     }
@@ -659,7 +654,7 @@
      *
      * @return mixed
      */
-    protected function displayRow($row, Form $form = null) {
+    protected function displayRow($row) {
       if ($this->rowGroup) {
         $fields = $this->fieldnames;
         $field  = $fields[$this->rowGroup[0][0] - 1];
@@ -667,9 +662,6 @@
           $this->currentRowGroup = $row[$field];
           echo "<tr class='navigroup'><th colspan=" . count($this->columns) . ">" . $row[$field] . "</th></tr>";
         }
-      }
-      if ($this->editid == $row['id'] && $form) {
-        return $this->editRow( $form);
       }
       echo (is_callable($this->rowFunction)) ? call_user_func($this->rowFunction, $row) : "<tr>\n";
       foreach ($this->columns as $col) {
@@ -739,56 +731,6 @@
       return null;
     }
     /**
-     * @param                    $row
-     * @param \ADV\App\Form\Form $form
-     *
-     * @internal param bool $setvals
-     * @return mixed
-     */
-    protected function editRow( Form $form) {
-      $view = new View('form/pager');
-      $view->set('form', $form);
-      $group  = 'first';
-      $fields = $this->fieldnames;
-      foreach ($this->columns as $key => $col) {
-        $field   = '';
-        $coltype = isset($col['type']) ? $col['type'] : '';
-        $name    = isset($col['name']) ? $col['name'] : '';
-        $name    = $name ? : $fields[$key];
-        if (isset($col['edit'])) { // use data input function if defined
-          $coltype = 'fun';
-        }
-        $form->group($group);
-        $view['class'] = isset($col['class']) ? 'class="' . $col['class'] . '"' : null;
-        switch ($coltype) { // format columnhsdaasdg
-          case 'fun': // column not displayed
-            $fun = $col['edit'];
-            if (is_callable($fun)) {
-              $field = call_user_func($fun, $form);
-            }
-            $group = 'rest';
-            break;
-          case self::TYPE_SKIP: // column not displayed
-          case self::TYPE_GROUP: // column not displayed
-            $field = $form->group('hidden')->hidden($name);
-            break;
-          case self::TYPE_AMOUNT: // column not displayed
-            $field = $form->amount($name);
-            $group = 'rest';
-            break;
-          default:
-            $field = $form->text($name);
-            $group = 'rest';
-        }
-        if (is_a($field, '\\ADV\\App\\Form\\Field')) {
-          if (is_object($this->editing) && $name) {
-            $field->initial($this->editing->$name);
-          }
-        }
-      }
-      $view->render();
-    }
-    /**
      * @param $row
      *
      * @return \ADV\App\Form\Field
@@ -848,9 +790,6 @@
         if (isset($col['fun'])) {
           $col['fun'] = null;
         }
-        if (isset($col['edit'])) {
-          $col['fun'] = null;
-        }
       }
       return array_keys((array) $this);
     }
@@ -865,6 +804,16 @@
      */
     public function count() {
       return count($this->columns);
+    }
+    /**
+     * @param $coldef
+     */
+    protected function restoreColumnFunction($coldef) {
+      foreach ($this->columns as &$column) {
+        if (isset($column['funkey'])) {
+          $column['fun'] = $coldef[$column['funkey']]['fun'];
+        }
+      }
     }
   }
 
