@@ -33,7 +33,7 @@
     }
     protected function  runPost() {
       if (REQUEST_POST) {
-        $lineid = $this->getActionId(['Line' . DELETE, 'Line' . EDIT, 'Line' . INACTIVE]);
+        $lineid = $this->getActionId(['Line' . DELETE, 'Line' . EDIT, 'Line' . INACTIVE, 'Line' . CANCEL]);
         switch ($this->action) {
           case 'Line' . DELETE:
             $this->onDelete($lineid, $this->line);
@@ -44,11 +44,11 @@
             break;
           case 'Line' . SAVE:
             $changes = isset($changes) ? $changes : $_POST;
-            $status  = $this->onSave($changes, $this->line);
-            $this->object->load($this->line->qid);
+            $this->object->load($this->Input->post('qid'));
+            $status = $this->onSave($changes, $this->line);
             break;
           case 'Line' . CANCEL:
-            $status = $this->line->getStatus();
+            $this->object->load($this->Input->post('qid'));
             break;
           default:
             parent::runPost();
@@ -67,14 +67,16 @@
         ['type' => 'skip'],
         ['type' => 'skip'],
         'Action'           => ['fun' => [$this, 'formatActionLine'], 'edit' => [$this, 'formatActionLineEdit']],
-        'Account/Tax Type' => ['edit' => [$this, 'formatAccountLineEdit']],
-        'Amount'           => ['edit' => [$this, 'formatAmountLineEdit']],
+        'Account/Tax Type' => ['edit' => 'skip'],
+        ['type' => 'skip', 'edit' => [$this, 'formatAccountLineEdit']],
+        'Amount'           => ['type' => 'amount', 'edit' => [$this, 'formatAmountLineEdit']],
+        ['type' => 'skip'],
+        ['type' => 'skip'],
       ];
       $pager_name = 'QE_Lines';
-//     \ADV\App\Pager\Pager::kill($pager_name);
+      // \ADV\App\Pager\Pager::kill($pager_name);
       $linestable          = \ADV\App\Pager\Edit::newPager($pager_name, $this->object->getLines(), $cols);
       $this->line->qid     = $this->object->id;
-      $this->line->action  = $this->Input->hasPost('action', null, $this->line->action);
       $linestable->width   = $this->tableWidth;
       $linestable->editing = $this->line;
       $linestable->editid  = $this->line->id;
@@ -132,12 +134,12 @@
       $actn = $this->line->action;
       if ($actn != '=') {
         if ($actn == '%') {
-          $form->number('amount', $this->User->prefs->exrate_dec);
+          return $form->number('amount', $this->User->prefs->exrate_dec);
         } else {
-          $form->number('amount', $this->User->prefs->exrate_dec);
+          return $form->amount('amount');
         }
       } else {
-        $form->hidden('amount');
+        return $form->hidden('amount');
       }
     }
     /**
@@ -148,7 +150,6 @@
      */
     public function formatActionLineEdit(Form $form) {
       $this->Ajax->addFocus(true, 'action');
-      $this->JS->addLive('Adv.o.wrapper.on("change","#action",function() {    JsHttpRequest.request(this);} )');
       return $form->arraySelect('action', GL_QuickEntry::$actions);
     }
     /**

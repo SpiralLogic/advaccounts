@@ -902,8 +902,11 @@ $(function () {
                                     mouseenter: function () {
                                       if (changing < 2) {
                                         this.focus();
+                                        $(this).parent().addClass('hover');
                                       }
-                                    }
+                                    },mouseleave:function() {
+      $(this).parent().removeClass('hover');
+    }
                                   });
   tabs.on({ //
             mouseleave: function () {

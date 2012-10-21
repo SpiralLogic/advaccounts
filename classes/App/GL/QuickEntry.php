@@ -68,7 +68,7 @@
        * @return array
        */
       public function getLines() {
-        $q = DB::_select('id', 'qid', 'action', 'dest_id', 'amount')->from('quick_entry_lines')->where('qid=', $this->id);
+        $q = DB::_select('id', 'qid', 'action', 'account_name', 'dest_id', 'amount')->from('quick_entry_lines', 'chart_master')->where('account_code=dest_id')->andWhere('qid=', $this->id);
         return $q->fetch()->all();
       }
     }

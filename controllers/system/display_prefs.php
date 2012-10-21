@@ -26,12 +26,10 @@
       $prefs['show_hints']      = Input::_hasPost('show_hints');
       $prefs['rep_popup']       = Input::_hasPost('rep_popup');
       $prefs['query_size']      = (int) ($_POST['query_size']);
+      $prefs['qty_dec']         = (int) ($_POST['qty_dec']);
       $prefs['graphic_links']   = Input::_hasPost('graphic_links');
       $prefs['sticky_doc_date'] = Input::_hasPost('sticky_doc_date');
       User::i()->update_prefs($prefs);
-      if ($chg_lang) {
-        $_SESSION['language']->setLanguage($_POST['language']);
-      }
       // refresh main menu
       Files::flushDir(PATH_COMPANY . 'js_cache');
       if ($chg_theme && Config::_get('demo_mode')) {
@@ -52,7 +50,7 @@
   Table::section(1);
   Table::sectionTitle(_("Decimal Places"));
   Forms::textRowEx(_("Prices/Amounts:"), 'prices', 5, 5, '', User::price_dec());
-  Forms::textRowEx(_("Quantities:"), 'Quantities', 5, 5, '', User::qty_dec());
+  Forms::textRowEx(_("Quantities:"), 'qty_dec', 5, 5, '', User::qty_dec());
   Forms::textRowEx(_("Exchange Rates:"), 'Rates', 5, 5, '', User::exrate_dec());
   Forms::textRowEx(_("Percentages:"), 'Percent', 5, 5, '', User::percent_dec());
   Table::sectionTitle(_("Dateformat and Separators"));

@@ -128,7 +128,7 @@
           unset($pager);
         }
       }
-      if (!isset($pager) || !is_a($pager, '\ADV\App\Pager\Pager')) {
+      if (!isset($pager) || $pager instanceof \ADV\App\Pager\Pager) {
         $pager = new static($name, $sql, $coldef);
       }
       static::$Input = $c->offsetGet('Input');
@@ -654,17 +654,18 @@
      *
      * @return mixed
      */
-    protected function displayRow($row) {
+    protected function displayRow($row, $columns = null) {
+      $columns = $columns ? : $this->columns;
       if ($this->rowGroup) {
         $fields = $this->fieldnames;
         $field  = $fields[$this->rowGroup[0][0] - 1];
         if ($this->currentRowGroup != $row[$field]) {
           $this->currentRowGroup = $row[$field];
-          echo "<tr class='navigroup'><th colspan=" . count($this->columns) . ">" . $row[$field] . "</th></tr>";
+          echo "<tr class='navigroup'><th colspan=" . count($columns) . ">" . $row[$field] . "</th></tr>";
         }
       }
       echo (is_callable($this->rowFunction)) ? call_user_func($this->rowFunction, $row) : "<tr>\n";
-      foreach ($this->columns as $col) {
+      foreach ($columns as $col) {
         $coltype = isset($col['type']) ? $col['type'] : '';
         $cell    = isset($col['name']) ? $row[$col['name']] : '';
         if (isset($col['fun'])) { // use data input function if defined
@@ -698,7 +699,7 @@
             Cell::percent($cell * 100);
             break;
           case self::TYPE_AMOUNT:
-            ($cell === '') ? Cell::label('') : Cell::amount($cell, false);
+            ($cell === '') ? Cell::label('') : Cell::amount($cell);
             break;
           case self::TYPE_QTY:
             ($cell == '') ? Cell::label('') : Cell::qty($cell, false, isset($col['dec']) ? $col['dec'] : null);

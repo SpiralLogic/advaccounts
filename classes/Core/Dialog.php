@@ -12,7 +12,8 @@
   /**
 
    */
-  class Dialog {
+  class Dialog
+  {
     /** @var array **/
     protected $buttons = [];
     /** @var bool **/
@@ -45,7 +46,7 @@
       $this->options = array(
         'autoOpen'      => false,
         'modal'         => false,
-        'width'         => 300,
+        'width'         => 400,
         'resizable'     => true,
         'closeOnEscape' => true
       );

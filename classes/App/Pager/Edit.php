@@ -9,12 +9,12 @@
   namespace ADV\App\Pager;
 
   use ADV\App\Form\Form;
-  use ADV\Core\Arr;
+  use ADV\Core\HTML;
   use ADV\Core\Ajax;
   use ADV\Core\View;
 
   /**
-   *
+   * @method static \ADV\App\Pager\Edit newPager($name, $sql, $coldef)
    */
   class Edit extends Pager
   {
@@ -24,22 +24,15 @@
      * @param $columns
      */
     protected function setColumns($columns) {
-      Arr::append(
-        $columns,
-        [
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineEditBtn'], 'edit' => [$this, 'formatSaveLineBtn']],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineDeleteBtn'], 'edit' => [$this, 'formatCancelLineBtn']]
-        ]
-      );
-      parent::setColumns($columns);
-      foreach ($this->columns as &$c) {
-        if (isset($c['edit'])) {
-          if ($c['edit'] === true && isset($c['fun']) && is_array($c['fun'])) {
-            $c['edit'] = $c['fun'];
-            $c['edit'][1] .= 'Edit';
-          }
+      foreach ($columns as &$col) {
+        if (isset($col['edit']) && !isset($col['fun'])) {
+          $col['fun'] = '';
+        } elseif ($col['edit'] === true && isset($col['fun']) && is_array($col['fun'])) {
+          $col['edit'] = $col['fun'];
+          $col['edit'][1] .= 'Edit';
         }
       }
+      parent::setColumns($columns);
     }
     /**
      * @return bool
@@ -48,8 +41,14 @@
       $this->selectRecords();
       Ajax::_start_div("_{$this->name}_span");
       $headers = $this->generateHeaders();
-      $class   = $this->class . ' width' . rtrim($this->width, '%');
-      $form    = null;
+      $html    = new HTML;
+      $this->formatNavigation('', $html, $this->name . '_sort_' . count($this->columns) + 1, '', true, '');
+      $headers[] = (string) $html;
+      $html      = new HTML;
+      $this->formatNavigation('', $html, $this->name . '_sort_' . count($this->columns) + 2, '', true, '');
+      $headers[] = (string) $html;
+      $class     = $this->class . ' width' . rtrim($this->width, '%');
+      $form      = null;
       if ($this->editing) {
         $form = new Form();
         echo $form['_start'];
@@ -58,8 +57,11 @@
       echo  $this->displayHeaders($headers);
       $this->currentRowGroup = null;
       $this->fieldnames      = array_keys(reset($this->data));
+      $columns               = $this->columns;
+      $columns[]             = ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineEditBtn']];
+      $columns[]             = ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineDeleteBtn']];
       foreach ($this->data as $row) {
-        $this->displayRow($row, $form);
+        $this->displayRow($row, $columns, $form);
       }
       if (is_object($this->editing) && !$this->editid) {
         $row = end($this->data) ? : get_object_vars($this->editing);
@@ -83,11 +85,11 @@
      *
      * @return mixed
      */
-    protected function displayRow($row, Form $form = null) {
+    protected function displayRow($row, $columns = null, Form $form = null) {
       if ($this->editid == $row['id'] && $form) {
         return $this->editRow($form);
       }
-      return parent::displayRow($row);
+      return parent::displayRow($row, $columns);
     }
     /**
      * @param \ADV\App\Form\Form $form
@@ -107,13 +109,14 @@
         $name    = isset($col['name']) ? $col['name'] : '';
         $name    = $name ? : $fields[$key];
         if (isset($col['edit'])) { // use data input function if defined
-          $coltype = 'fun';
+          $coltype = 'edit';
         }
         $form->group($group);
         $class      = isset($col['class']) ? $col['class'] : null;
         $alignclass = isset($col['align']) ? " class='$class align" . $col['align'] . "'" : ($class ? "class='$class'" : "");
         switch ($coltype) { // format columnhsdaasdg
           case 'fun': // column not displayed
+          case 'edit': // column not displayed
             $fun = $col['edit'];
             if (is_callable($fun)) {
               $field = call_user_func($fun, $form);
@@ -132,12 +135,17 @@
             $field = $form->text($name);
             $group = 'rest';
         }
-        if (is_a($field, '\\ADV\\App\\Form\\Field')) {
+        if ($field instanceof \ADV\App\Form\Field) {
           if (is_object($this->editing) && $name) {
             $field->initial($this->editing->$name);
           }
+          $field['tdclass'] = $alignclass;
         }
       }
+      $form->group('rest');
+      $this->formatSaveLineBtn($form);
+      $this->formatCancelLineBtn($form);
+      reset($form['first'])->focus();
       $view->render();
     }
     /**
@@ -146,6 +154,9 @@
      * @return \ADV\App\Form\Button
      */
     public function formatLineEditBtn($row) {
+      if ($this->editid) {
+        return '';
+      }
       $button = new \ADV\App\Form\Button('_action', 'Line' . EDIT . $row['id'], EDIT);
       $button->type('mini')->type('primary');
       return $button;
@@ -156,6 +167,9 @@
      * @return \ADV\App\Form\Button
      */
     public function formatLineDeleteBtn($row) {
+      if ($this->editid) {
+        return '';
+      }
       $button = new \ADV\App\Form\Button('_action', 'Line' . DELETE . $row['id'], DELETE);
       $button->preIcon(ICON_DELETE);
       $button->type('mini')->type('danger');
@@ -187,19 +201,11 @@
           $column['edit'] = $coldef[$column['funkey']]['edit'];
         }
       }
-      Arr::append(
-        $this->columns,
-        [
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineEditBtn'], 'edit' => [$this, 'formatSaveLineBtn']],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineDeleteBtn'], 'edit' => [$this, 'formatCancelLineBtn']]
-        ]
-      );
     }
     public function __sleep() {
-      $this->columns = array_slice($this->columns, 0, count($this->columns) - 2);
       foreach ($this->columns as &$col) {
         if (isset($col['edit'])) {
-          $col['edhit'] = null;
+          $col['edit'] = null;
         }
       }
       return parent::__sleep();

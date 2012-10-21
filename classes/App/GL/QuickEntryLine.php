@@ -47,7 +47,7 @@
      * @return array
      */
     public static function getAll() {
-      $q = DB::_select('id', 'qid', 'action', 'dest_id', 'amount')->from('quick_entry_lines');
+      $q = DB::_select('id', 'qid', 'action', 'account_name', 'dest_id', 'amount')->from('quick_entry_lines', 'chart_master')->where('account_code=dest_id');
       return $q->fetch()->all();
     }
   }

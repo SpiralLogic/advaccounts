@@ -62,7 +62,7 @@
      *
      * @return \ADV\Core\Status|array
      */
-    protected function onSave($changes, $object = null) {
+    protected function onSave($changes, $object = null, $id = 0) {
       $object = $object ? : $this->object;
       $object->save($changes);
       //run the sql from either of the above possibilites
@@ -70,7 +70,7 @@
       if ($status['status'] == Status::ERROR) {
         $this->JS->renderStatus($status);
       }
-      $object->load(0);
+      $object->load($id);
       return $status;
     }
     /**
@@ -138,7 +138,6 @@
       $table->display();
     }
     protected function getEditing(Pager $table) {
-
     }
     /**
      * @param $pager_name
