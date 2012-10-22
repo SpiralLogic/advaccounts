@@ -9,6 +9,8 @@
    */
   namespace ADV\Core\Traits;
 
+  use ADV\Core\Input\Input;
+
   trait Action
   {
     protected $action;
@@ -23,7 +25,7 @@
         return $this->actionID;
       }
       if (is_null($this->action)) {
-        $this->action = $this->Input->post('_action');
+        $this->action = Input::_post('_action');
       }
       $prefix = (array) $prefix;
       foreach ($prefix as $action) {

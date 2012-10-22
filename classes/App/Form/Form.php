@@ -93,11 +93,12 @@
      * @param string $name
      * @param string $action
      * @param bool   $multi
-     * @param array  $input_attr
+     * @param array  $attrs
      *
+     * @internal param array $input_attr
      * @return \ADV\Core\HTML|string
      */
-    public function start($name = '', $action = '', $multi = null, Array $attrs = []) {
+    public function start($name = '', $action = '', $multi = false, Array $attrs = []) {
       $attr['enctype'] = $multi ? 'multipart/form-data' : null;
       $attr['method']  = 'post';
       $attr['action']  = $action;

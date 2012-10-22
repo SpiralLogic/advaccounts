@@ -2,7 +2,6 @@
   namespace ADV\App\Pager;
 
   use ADV\Core\Cell;
-  use ADV\Core\View;
   use ADV\App\Form\Form;
   use ADV\Core\DIC;
   use ADV\Core\DB\DB;
@@ -29,6 +28,7 @@
    */
   class Pager implements \Countable
   {
+
     const NEXT           = 'next';
     const PREV           = 'prev';
     const LAST           = 'last';
@@ -122,13 +122,13 @@
       }
       if (isset($_SESSION['pager'][$name])) {
         $pager = $_SESSION['pager'][$name];
-        if (($sql !== null && $pager->sql != $sql) || (count($coldef) != count($pager))) {
+        if (($sql !== null) || (count($coldef) != count($pager))) {
           $pager->refresh($sql);
         } elseif (is_array($sql) && $pager->rec_count != count($sql)) {
           unset($pager);
         }
       }
-      if (!isset($pager) || $pager instanceof \ADV\App\Pager\Pager) {
+      if (!isset($pager)) {
         $pager = new static($name, $sql, $coldef);
       }
       static::$Input = $c->offsetGet('Input');
@@ -589,6 +589,7 @@
      * @return bool
      */
     public function display() {
+
       $this->selectRecords();
       Ajax::_start_div("_{$this->name}_span");
       $headers = $this->generateHeaders();

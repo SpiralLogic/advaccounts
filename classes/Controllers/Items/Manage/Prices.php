@@ -60,7 +60,6 @@
     protected function formContents(Form $form, View $view) {
     }
     protected function getEditing(\ADV\App\Pager\Edit $pager) {
-      $pager->editid  = $this->actionID;
       $pager->editing = $this->object;
     }
     protected function generateTable() {

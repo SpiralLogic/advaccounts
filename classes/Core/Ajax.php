@@ -20,6 +20,7 @@
    * @method static Ajax _addDisable($trigger, $sTarget, $sData = true)
    * @method static Ajax _addFocus($trigger, $sTarget)
    * @method static Ajax _addDebug($debug)
+   * @method static Ajax _addStatus(Status $status)
    * @method static Ajax _run()
    * @method static Ajax _addJson($trigger, $sTarget, $json)
    * @method static Ajax _flush()
