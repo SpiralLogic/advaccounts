@@ -1,9 +1,8 @@
 <?php
   namespace ADV\Controllers\Items\Manage;
+
   use ADV\App\Form\Form;
   use ADV\App\Item\Price;
-  use Item_Code;
-  use ADV\Core\Num;
   use GL_Currency;
   use Sales_Type;
   use PDO;
@@ -22,10 +21,11 @@
    **/
   class Prices extends \ADV\App\Controller\Manage
   {
-
     protected $stock_id;
     protected $security = SA_SALESPRICE;
     protected $frame = false;
+    protected $pager_type = self::PAGER_EDIT;
+    protected $display_form = false;
     protected function before() {
       $this->frame    = $this->Input->request('frame');
       $this->stock_id = $this->Input->getPostGlobal('stock_id');
@@ -39,12 +39,12 @@
         UI::search(
           'stock_id',
           [
-            'label'   => 'Item:',
-            'url'     => 'Item',
-            'idField' => 'stock_id',
-            'name'    => 'stock_id', //
-            'value'   => $this->stock_id,
-            'focus'   => true,
+          'label'   => 'Item:',
+          'url'     => 'Item',
+          'idField' => 'stock_id',
+          'name'    => 'stock_id', //
+          'value'   => $this->stock_id,
+          'focus'   => true,
           ]
         );
         $this->Session->setGlobal('stock_id', $this->stock_id);
@@ -58,20 +58,9 @@
      * @return mixed
      */
     protected function formContents(Form $form, View $view) {
-      $view['title'] = 'Item Selling Prices';
-      $form->hidden('id');
-      $form->hidden('item_code_id');
-      $form->hidden('stock_id');
-      $form->custom(Sales_Type::select('sales_type_id'))->label("Sales Type:");
-      $form->custom(GL_Currency::select('curr_abrev'))->label('Currency:');
-      if (!$this->Input->hasPost('price')) {
-        $_POST['price'] = Num::_priceFormat(Item_Price::get_kit($this->Input->post('stock_id'), $this->Input->post('curr_abrev'), $this->Input->post('sales_type_id')));
-      }
-      $kit = Item_Code::get_defaults($_POST['stock_id']);
-      $form->amount('price')->label(_("Price:"))->append(_('per ') . $kit["units"])->focus();
     }
-    protected function getEditing($pager) {
-      $pager->editid  = ($this->actionID);
+    protected function getEditing(\ADV\App\Pager\Edit $pager) {
+      $pager->editid  = $this->actionID;
       $pager->editing = $this->object;
     }
     protected function generateTable() {
@@ -89,15 +78,13 @@
      */
     protected function generateTableCols() {
       $cols = [
-        'Type'     => ['edit' => [$this,'formatTypeEdit']],
+        'Type'     => ['edit' => [$this, 'formatTypeEdit']],
         ['type' => 'skip'],
         ['type' => 'skip'],
         'Stock ID',
         ['type' => 'skip'],
-        'Currency' => ['edit' => [$this,'formatCurrencyEdit']],
+        'Currency' => ['edit' => [$this, 'formatCurrencyEdit']],
         'Price'    => ['type' => 'amount'],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
       ];
       return $cols;
     }

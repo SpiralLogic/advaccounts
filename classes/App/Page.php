@@ -23,7 +23,8 @@
   /**
 
    */
-  class Page {
+  class Page
+  {
     /** @var */
     public $encoding;
     /** @var */
@@ -89,7 +90,7 @@
       if (static::$i === null) {
         static::$i = new static(Session::i(), User::i(), Config::i(), \ADV\Core\Ajax::i(), \ADV\Core\JS::i(), \ADV\App\Dates::i());
       }
-      static::$i->init($title, $security, $isIndex, $no_menu);
+      static::$i->init($title, $security, $no_menu, $isIndex);
       return static::$i;
     }
     /**

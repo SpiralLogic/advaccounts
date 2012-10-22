@@ -23,6 +23,7 @@
     }
     public function run() {
       $this->index();
+      $this->after();
     }
     protected function after() {
       $this->User->_logout();

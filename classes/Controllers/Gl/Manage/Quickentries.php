@@ -80,11 +80,12 @@
       ];
       $pager_name = 'QE_Lines';
       // \ADV\App\Pager\Pager::kill($pager_name);
-      $linestable          = \ADV\App\Pager\Edit::newPager($pager_name, $this->object->getLines(), $cols);
-      $this->line->qid     = $this->object->id;
-      $linestable->width   = $this->tableWidth;
-      $linestable->editing = $this->line;
-      $linestable->editid  = $this->line->id;
+      $linestable                = \ADV\App\Pager\Edit::newPager($pager_name, $this->object->getLines(), $cols);
+      $this->line->qid           = $this->object->id;
+      $linestable->width         = $this->tableWidth;
+      $linestable->editing       = $this->line;
+      $linestable->action_prefix = 'Line';
+      $linestable->editid        = $this->line->id;
       $linestable->display();
       $this->Page->end_page(true);
     }

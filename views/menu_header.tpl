@@ -26,7 +26,7 @@
         <li><a href='{{ROOT_URL}}system/preferences?'>Preferences</a></li>
         <li><a href='{{ROOT_URL}}system/change_current_user_password.php?selected_id={# echo e($username) #}'>Change&nbsp;password</a>
         </li>
-        <li><a href='{{ROOT_URL}}access/logout.php?'>Logout</a></li>
+        <li><a href='{{ROOT_URL}}access/logout?'>Logout</a></li>
       </ul>
     </li>
   </ul>

@@ -18,7 +18,10 @@
   /**
 
    */
-  abstract class Action extends Base {
+  abstract class Action extends Base
+  {
+    use \ADV\Core\Traits\Action;
+
     protected $title;
     /*** @var \ADV\Core\Ajax */
     protected $Ajax;
@@ -28,8 +31,6 @@
     protected $JS;
     /** @var Input */
     protected $Input;
-    protected $action;
-    protected $actionID;
     public $help_context;
     /**
 
@@ -57,28 +58,6 @@
      * @return bool|mixed
      */
     protected function runValidation() {
-    }
-    /**
-     * @param $prefix
-     *
-     * @return int|mixed
-     */
-    protected function getActionId($prefix) {
-      if (!is_null($this->actionID)) {
-        return $this->actionID;
-      }
-      $prefix = (array) $prefix;
-      foreach ($prefix as $action) {
-        if (strpos($this->action, $action) === 0) {
-          $result = str_replace($action, '', $this->action);
-          if (strlen($result)) {
-            $this->action   = $action;
-            $this->actionID = $result;
-            return $result;
-          }
-        }
-      }
-      return -1;
     }
     protected function runAction() {
       if ($this->action && is_callable(array($this, $this->action))) {

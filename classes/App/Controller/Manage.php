@@ -21,11 +21,15 @@
    */
   abstract class Manage extends Action
   {
+    const PAGER_VIEW = 'Pager';
+    const PAGER_EDIT = 'Edit';
     /** @var \ADV\App\GL\QuickEntry */
     protected $object;
     protected $defaultFocus;
     protected $tableWidth = '50';
     protected $security;
+    protected $pager_type = self::PAGER_VIEW;
+    protected $display_form = true;
     protected function runPost() {
       if (REQUEST_POST) {
         $id = $this->getActionId([DELETE, EDIT, INACTIVE]);
@@ -99,7 +103,9 @@
       $this->beforeTable();
       $this->generateTable();
       echo '<br>';
-      $this->generateForm();
+      if ($this->display_form) {
+        $this->generateForm();
+      }
       $this->Page->end_page(true);
     }
     protected function beforeTable() {
@@ -131,8 +137,8 @@
     protected function generateTable() {
       $cols       = $this->generateTableCols();
       $pager_name = end(explode('\\', ltrim(get_called_class(), '\\'))) . '_table';
-      \ADV\App\Pager\Pager::kill($pager_name);
-      $table = \ADV\App\Pager\Pager::newPager($pager_name, $this->getTableRows($pager_name), $cols);
+      $pager      = '\\ADV\\App\\Pager\\' . $this->pager_type;
+      $table      = $pager::newPager($pager_name, $this->getTableRows($pager_name), $cols);
       $this->getEditing($table);
       $table->width = $this->tableWidth;
       $table->display();
