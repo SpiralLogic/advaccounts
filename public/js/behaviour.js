@@ -141,6 +141,9 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
     content['_value'] = !!trigger.checked;
     Adv.Forms.saveFocus(trigger);
   }
+  if (trigger.tagName === 'SELECT' && $(trigger).is('.async')) {
+    content['_action'] = 'Changed';
+  }
   if (trigger.id) {
     content['_control'] = trigger.id;
   }
@@ -384,6 +387,9 @@ function _set_combo_select(e) {
     if (s.selectedIndex >= 0) {
       var sname = '_' + s.name + '_update';
       var update = document.getElementsByName(sname)[0];
+      if ($(s).is('.async')) {
+        JsHttpRequest.request(this);
+      }
       if (update) {
         JsHttpRequest.request(update);
       }
@@ -549,6 +555,6 @@ Behaviour.register({
       JsHttpRequest.request(this, null, 60000);
       return false;
     }
-  },
+  }
 });
 Behaviour.addLoadEvent(Adv.Scroll.loadPosition);

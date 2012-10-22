@@ -15,7 +15,8 @@
   /**
 
    */
-  class UserPrefs {
+  class UserPrefs
+  {
     use \ADV\Core\Traits\SetFromArray;
 
     /** @var Array|mixed **/
@@ -35,7 +36,7 @@
     /** @var Array|mixed **/
     public $date_format = 1;
     /** @var Array|mixed **/
-    public $date_sep = '/';
+    public $date_sep = 0;
     /** @var int **/
     public $tho_sep;
     /** @var int **/

@@ -36,11 +36,16 @@
         $lineid = $this->getActionId(['Line' . DELETE, 'Line' . EDIT, 'Line' . INACTIVE, 'Line' . CANCEL]);
         switch ($this->action) {
           case 'Line' . DELETE:
+            $this->object->load($this->Input->post('qid'));
             $this->onDelete($lineid, $this->line);
             break;
           case 'Line' . EDIT:
             $this->line->load($lineid);
             $this->object->load($this->line->qid);
+            break;
+          case CHANGED:
+            $this->object->load($this->Input->post('qid'));
+            $status = $this->line->load($_POST);
             break;
           case 'Line' . SAVE:
             $changes = isset($changes) ? $changes : $_POST;
@@ -150,7 +155,9 @@
      */
     public function formatActionLineEdit(Form $form) {
       $this->Ajax->addFocus(true, 'action');
-      return $form->arraySelect('action', GL_QuickEntry::$actions);
+      $field = $form->arraySelect('action', GL_QuickEntry::$actions);
+      $field['class'] .= ' async';
+      return $field;
     }
     /**
      * @param \ADV\App\Form\Form $form
@@ -160,7 +167,7 @@
      */
     public function formatAccountLineEdit(Form $form) {
       $actn = $this->line->action;
-      if (strtolower($actn) == 't') {
+      if (strtolower($actn[0]) == 't') {
         //Tax_ItemType::row(_("Item Tax Type").":",'dest_id', null);
         return $form->custom(Tax_Type::select('dest_id'));
       } else {

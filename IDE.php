@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   /**
 
    */
@@ -1051,8 +1050,8 @@
   define('SAVE', 'Save');
   define('INACTIVE', 'Inactive');
   define('DELETE', 'Delete');
+  define('CHANGED', 'Changed');
   define('EDIT', 'Edit');
-
   function xhprof_enable() {
   }
 
@@ -1080,15 +1079,16 @@
   /**
 
    */
-  class XHProfRuns_Default {
+  class XHProfRuns_Default
+  {
     function save_run() {
     }
   }
-
   /**
 
    */
-  interface SessionHandlerInterface {
+  interface SessionHandlerInterface
+  {
     public function close();
     /**
      * @param $session_id
@@ -1123,7 +1123,6 @@
      */
     public function write($session_id, $session_data);
   }
-
   /**
    * @param $string
    */

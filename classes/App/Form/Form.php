@@ -25,23 +25,20 @@
   class Form implements \ArrayAccess, \RecursiveIterator, \JsonSerializable, \Countable
   {
     const NO_VALUES = 1;
+    public $useDefaults = false;
+    /** @var Ajax */
+    protected $Ajax;
+    /** @var Input */
+    protected $Input;
     /** @var Field[] */
     protected $fields = [];
     protected $groups = [];
     protected $start;
     protected $end;
-    /** @var Ajax */
-    protected $Ajax;
-    /** @var Input */
-    protected $Input;
     protected $validators = [];
     protected $uniqueid;
     protected $current;
-    protected $options = [
-      self::NO_VALUES => false,
-    ];
     protected $currentgroup;
-    public $useDefaults = false;
     protected $nest;
     protected $name;
     /**
@@ -91,15 +88,6 @@
       return $this;
     }
     /**
-     * @param $option
-     * @param $value
-     */
-    public function option($option, $value) {
-      if (isset($this->options[$option])) {
-        $this->options[$option] = $value;
-      }
-    }
-    /**
      * @static
      *
      * @param string $name
@@ -109,12 +97,12 @@
      *
      * @return \ADV\Core\HTML|string
      */
-    public function start($name = '', $action = '', $multi = null, $input_attr = []) {
+    public function start($name = '', $action = '', $multi = null, Array $attrs = []) {
       $attr['enctype'] = $multi ? 'multipart/form-data' : null;
       $attr['method']  = 'post';
       $attr['action']  = $action;
       $attr['name']    = $this->name($name);
-      $attr            = array_merge($attr, $input_attr);
+      $attr            = array_merge($attr, $attrs);
       $this->start     = (new HTML)->form($name, $attr)->input(
         null,
         [
@@ -170,10 +158,10 @@
      * @internal param null $value
      * @return \ADV\App\Form\Field
      */
-    public function text($name, $input_attr = []) {
+    public function text($name, Array $attrs = []) {
       $field         = $this->addField(new Field('input', $name));
       $field['type'] = 'text';
-      return $field->mergeAttr($input_attr);
+      return $field->mergeAttr($attrs);
     }
     /**
      * @param       $name
@@ -182,10 +170,10 @@
      * @internal param null $value
      * @return \ADV\App\Form\Field
      */
-    public function password($name, $input_attr = []) {
+    public function password($name, Array $attrs = []) {
       $field         = $this->addField(new Field('input', $name));
       $field['type'] = 'password';
-      return $field->mergeAttr($input_attr);
+      return $field->mergeAttr($attrs);
     }
     /**
      * @param       $name
@@ -194,9 +182,9 @@
      * @internal param $value
      * @return \ADV\App\Form\Field
      */
-    public function textarea($name, $input_attr = []) {
+    public function textarea($name, Array $attrs = []) {
       $field = $this->addField(new Field('textarea', $name));
-      return $field->mergeAttr($input_attr);
+      return $field->mergeAttr($attrs);
     }
     /**
      * @param       $name
@@ -205,12 +193,12 @@
      * @internal param $value
      * @return Field
      */
-    public function date($name, $input_attr = []) {
+    public function date($name, Array $attrs = []) {
       $field              = $this->addField(new Field('input', $name));
       $field['type']      = 'text';
       $field['maxlength'] = 10;
       $field['class']     = 'datepicker';
-      return $field->mergeAttr($input_attr);
+      return $field->mergeAttr($attrs);
     }
     /**
      * @param           $name
@@ -219,9 +207,9 @@
      * @internal param bool $value
      * @return Field
      */
-    public function checkbox($name, $input_attr = []) {
+    public function checkbox($name, Array $attrs = []) {
       $field = $this->addField(new Checkbox($name));
-      return $field->mergeAttr($input_attr);
+      return $field->mergeAttr($attrs);
     }
     /**
      * @param       $name
@@ -230,9 +218,9 @@
      * @internal param null $value
      * @return Field
      */
-    public function percent($name, $inputparams = []) {
-      $inputparams = array_merge(['class' => 'amount'], $inputparams);
-      return $this->number($name, User::percent_dec(), $inputparams)->append('%');
+    public function percent($name, Array $attrs = []) {
+      $attrs = array_merge(['class' => 'amount'], $attrs);
+      return $this->number($name, User::percent_dec(), $attrs)->append('%');
     }
     /**
      * @param       $name
@@ -242,12 +230,12 @@
      * @internal param null $value
      * @return \ADV\App\Form\Field
      */
-    public function number($name, $dec = null, $input_attr = []) {
+    public function number($name, $dec = 0, Array $attrs = []) {
       $field             = $this->addField(new Field('input', $name));
       $field['data-dec'] = (int) $dec;
       $field['type']     = 'text';
       $this->Ajax->addAssign($name, $name, 'data-dec', $dec);
-      $field->mergeAttr($input_attr);
+      $field->mergeAttr($attrs);
       $field['value'] = Num::_format($field['value'] ? : 0, $field['data-dec']);
       return $field;
     }
@@ -259,9 +247,9 @@
      * @internal param array $inputparams
      * @return Field
      */
-    public function amount($name, $input_attr = []) {
-      $input_attr = array_merge(['class' => 'amount'], $input_attr);
-      return $this->number($name, User::price_dec(), $input_attr)->prepend('$');
+    public function amount($name, Array $attrs = []) {
+      $attrs = array_merge(['class' => 'amount'], $attrs);
+      return $this->number($name, User::price_dec(), $attrs)->prepend('$');
     }
     /**
      * @param $control
@@ -309,7 +297,7 @@
      *
      * @return Field
      */
-    public function arraySelect($name, $items, $selected_id = null, $options = []) {
+    public function arraySelect($name, $items, $selected_id = null, Array $options = []) {
       $field = $this->addField(new Select($name, $items, $options));
       $field->initial($selected_id);
       if ($this->Input->post("_{$name}_update")) {
@@ -326,13 +314,13 @@
      *
      * @return Button
      */
-    public function button($name, $value, $caption, $input_attr = []) {
+    public function button($name, $value, $caption, $attrs = []) {
       $button = new Button($name, $value, $caption);
       if (is_array($this->currentgroup)) {
         $this->currentgroup[] = $button;
       }
       $this->fields[$button->id] = $button;
-      return $button->mergeAttr($input_attr);
+      return $button->mergeAttr($attrs);
     }
     /**
      * Universal submit form button.
@@ -354,10 +342,10 @@
      *
      * @return \ADV\App\Form\Button
      */
-    public function submit($action, $caption = null, $input_attr = []) {
+    public function submit($action, $caption = null, $attrs = []) {
       if (is_array($caption)) {
-        $input_attr = $caption;
-        $caption    = null;
+        $attrs   = $caption;
+        $caption = null;
       }
       if ($caption === null) {
         $caption = $action;
@@ -368,7 +356,7 @@
         $this->currentgroup[] = $button;
       }
       $this->fields[$button->id] = $button;
-      return $button->mergeAttr($input_attr);
+      return $button->mergeAttr($attrs);
     }
     /**
      * @param      $name
