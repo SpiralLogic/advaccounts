@@ -68,7 +68,7 @@
        * @return array
        */
       public function getLines() {
-        $q = DB::_query(
+        DB::_query(
           'SELECT id, qid, action, account_name, dest_id, amount FROM quick_entry_lines ,chart_master WHERE account_code=dest_id  AND qid=' . DB::_quote($this->id) . 'UNION' . '
           SELECT qel.id, qid, action, name, dest_id, amount FROM quick_entry_lines qel,tax_types WHERE tax_types.id=dest_id  AND qid=' . DB::_quote($this->id)
         );

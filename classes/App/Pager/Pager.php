@@ -28,7 +28,6 @@
    */
   class Pager implements \Countable
   {
-
     const NEXT           = 'next';
     const PREV           = 'prev';
     const LAST           = 'last';
@@ -109,39 +108,33 @@
     /**
      * @static
      *
-     * @param      $name
-     * @param      $sql
-     * @param      $coldef
+     * @param $name
+     * @param $coldef
      *
      * @return $this
      */
-    public static function newPager($name, $sql, $coldef) {
+    public static function newPager($name, $coldef) {
       $c = \ADV\Core\DIC::i();
       if (!isset($_SESSION['pager'])) {
         $_SESSION['pager'] = [];
       }
       if (isset($_SESSION['pager'][$name])) {
         $pager = $_SESSION['pager'][$name];
-        if (($sql !== null) || (count($coldef) != count($pager))) {
-          $pager->refresh($sql);
-        } elseif (is_array($sql) && $pager->rec_count != count($sql)) {
-          unset($pager);
-        }
       }
       if (!isset($pager)) {
-        $pager = new static($name, $sql, $coldef);
+        $pager = new static($name, $coldef);
+      }
+      if (count($coldef) != count($pager)) {
+        $pager->refresh();
       }
       static::$Input = $c->offsetGet('Input');
       static::$JS    = $c->offsetGet('JS');
       static::$Dates = $c->offsetGet('Dates');
       static::$DB    = $c->offsetGet('DB');
-      /** @var User $user  */
+      /** @var \ADV\App\User $user  */
       $user                     = $c->offsetGet('User');
       $pager->page_length       = $user->prefs->query_size;
       $_SESSION['pager'][$name] = $pager;
-      if (is_array($sql)) {
-        $pager->sql = $pager->sql ? : $sql;
-      }
       $pager->restoreColumnFunction($coldef);
       if (static::$Input->post('_action') == 'showInactive') {
         $pager->showInactive = (static::$Input->post('_value', Input::NUMERIC) == 1);
@@ -153,10 +146,15 @@
      * @param      $sql
      * @param      $coldef
      */
-    public function __construct($name, $sql, $coldef) {
+    public function __construct($name, $sql, $coldef = null) {
       $this->name = $name;
-      $this->setSQL($sql);
-      $this->setColumns((array) $coldef);
+      $this->setData($sql);
+      if ($coldef === null) {
+        $this->setColumns((array) $sql);
+      } else {
+        $this->setData($sql);
+        $this->setColumns((array) $coldef);
+      }
     }
     /** Initialization after changing record set
      * @return bool
@@ -225,7 +223,7 @@
      * @param $sql
      * Parse base sql select query.
      */
-    protected function setSQL($sql) {
+    public function setData($sql) {
       if (is_array($sql)) {
         $this->sql       = $sql;
         $this->type      = self::ARR;
@@ -369,7 +367,7 @@
      */
     public function refresh($sql = null) {
       if ($sql) {
-        $this->setSQL($sql);
+        $this->setData($sql);
       }
       $this->ready = false;
     }
@@ -589,7 +587,6 @@
      * @return bool
      */
     public function display() {
-
       $this->selectRecords();
       Ajax::_start_div("_{$this->name}_span");
       $headers = $this->generateHeaders();

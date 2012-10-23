@@ -15,16 +15,65 @@
   use ADV\Core\Ajax;
   use ADV\Core\View;
 
-  /**
-   * @method static \ADV\App\Pager\Edit newPager($name, $sql, $coldef)
+  /**5
    */
   class Edit extends Pager
   {
-
     use \ADV\Core\Traits\Action;
 
     /** @var \ADV\App\DB\Base */
     public $editing = null;
+    /**
+     * @static
+     *
+     * @param $name
+     * @param $coldef
+     *
+     * @return $this
+     */
+    public static function newPager($name, $coldef) {
+      $c = \ADV\Core\DIC::i();
+      if (!isset($_SESSION['pager'])) {
+        $_SESSION['pager'] = [];
+      }
+      if (isset($_SESSION['pager'][$name])) {
+        $pager = $_SESSION['pager'][$name];
+      }
+      if (!isset($pager)) {
+        $pager = new static($name, $coldef);
+      }
+      if (count($coldef) != count($pager)) {
+        $pager->refresh();
+      }
+      static::$Input = $c->offsetGet('Input');
+      static::$JS    = $c->offsetGet('JS');
+      static::$Dates = $c->offsetGet('Dates');
+      static::$DB    = $c->offsetGet('DB');
+      /** @var \ADV\App\User $user  */
+      $user                     = $c->offsetGet('User');
+      $pager->page_length       = $user->prefs->query_size;
+      $_SESSION['pager'][$name] = $pager;
+      $pager->restoreColumnFunction($coldef);
+      if (static::$Input->post('_action') == 'showInactive') {
+        $pager->showInactive = (static::$Input->post('_value', Input::NUMERIC) == 1);
+      }
+      return $pager;
+    }
+    /**
+     * @param $name
+     * @param $coldef
+     */
+    public function __construct($name, $coldef) {
+      $this->name = $name;
+      $this->setColumns((array) $coldef);
+    }
+    /**
+     * @param \ADV\App\DB\Base $object
+     */
+    public function setObject(\ADV\App\DB\Base $object) {
+      $this->editing = $object;
+      $this->runPost();
+    }
     /**
      * @return \ADV\Core\Status|array|string
      */
@@ -37,7 +86,7 @@
           case DELETE:
             $this->editing->load($id);
             $this->editing->delete();
-            $status = $this->editing->getStatus();
+            $this->editing->load(0);
             break;
           case EDIT:
             $this->editing->load($id);
@@ -57,7 +106,7 @@
             $this->editing->load(0);
             break;
           case CANCEL:
-            $status = $this->editing->getStatus();
+            $this->editing->load(0);
             break;
         }
         if (isset($status)) {
@@ -173,6 +222,9 @@
           case self::TYPE_GROUP: // column not displayed
             $field = $form->group('hidden')->hidden($name);
             break;
+          case 'disabled':
+            $form->heading($this->editing->$name);
+            break;
           case self::TYPE_AMOUNT: // column not displayed
             $field = $form->amount($name);
             $group = 'rest';
@@ -205,6 +257,9 @@
      * @return \ADV\App\Form\Button
      */
     public function formatLineEditBtn($row) {
+      if ($this->editing->id) {
+        return '';
+      }
       $button = new \ADV\App\Form\Button('_action', $this->name . EDIT . $row['id'], EDIT);
       $button->type('mini')->type('primary');
       return $button;
@@ -215,6 +270,9 @@
      * @return \ADV\App\Form\Button
      */
     public function formatLineDeleteBtn($row) {
+      if ($this->editing->id) {
+        return '';
+      }
       $button = new \ADV\App\Form\Button('_action', $this->name . DELETE . $row['id'], DELETE);
       $button->preIcon(ICON_DELETE);
       $button->type('mini')->type('danger');

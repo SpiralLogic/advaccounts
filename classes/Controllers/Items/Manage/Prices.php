@@ -52,6 +52,14 @@
       }
     }
     /**
+     * @param $pagername
+     *
+     * @return array
+     */
+    protected function getTableRows($pagername) {
+      return Item_Price::getAll($this->stock_id)->fetchAll(PDO::FETCH_ASSOC);
+    }
+    /**
      * @param \ADV\App\Form\Form $form
      * @param \ADV\Core\View     $view
      *
@@ -59,8 +67,12 @@
      */
     protected function formContents(Form $form, View $view) {
     }
+    /**
+     * @param \ADV\App\Pager\Edit $pager
+     */
     protected function getEditing(\ADV\App\Pager\Edit $pager) {
-      $pager->editing = $this->object;
+      $pager->setObject($this->object);
+      $pager->editing->stock_id = $this->stock_id;
     }
     protected function generateTable() {
       $this->Ajax->start_div('table');
@@ -80,7 +92,7 @@
         'Type'     => ['edit' => [$this, 'formatTypeEdit']],
         ['type' => 'skip'],
         ['type' => 'skip'],
-        'Stock ID',
+        'Stock ID' => ['type' => 'disabled'],
         ['type' => 'skip'],
         'Currency' => ['edit' => [$this, 'formatCurrencyEdit']],
         'Price'    => ['type' => 'amount'],
@@ -102,14 +114,6 @@
      */
     public function formatCurrencyEdit(Form $form) {
       return $form->custom(GL_Currency::select('curr_abrev'));
-    }
-    /**
-     * @param $pagername
-     *
-     * @return array
-     */
-    protected function getTableRows($pagername) {
-      return Item_Price::getAll($this->stock_id)->fetchAll(PDO::FETCH_ASSOC);
     }
     protected function runValidation() {
       Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));

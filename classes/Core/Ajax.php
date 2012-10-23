@@ -29,7 +29,8 @@
    * @method static Ajax _start_div($id = null, $trigger = null, $non_ajax = false)
    * @method static Ajax _end_div($return_div = false)
    */
-  class Ajax extends \JsHttpRequest {
+  class Ajax extends \JsHttpRequest
+  {
     use Traits\StaticAccess2;
 
     /** @var array **/
@@ -37,6 +38,7 @@
     /** @var array **/
     protected $triggers = [];
     protected $ajax_divs = [];
+    public $debug;
     /**
 
      */
@@ -105,8 +107,7 @@
      * @return Ajax
      */
     public function addDebug($debug) {
-      $js = "console.log(" . json_encode($debug) . ");";
-      $this->addScript(true, $js);
+      $this->debug[] = $debug;
       return $this;
     }
     /**
@@ -281,6 +282,10 @@
     public function run() {
       if (!$this->isActive()) {
         return;
+      }
+      if ($this->debug) {
+        $js = "console.log(" . json_encode($this->debug) . ");";
+        $this->addScript(true, $js);
       }
       // remove not active commands
       foreach ($this->aCommands as $idx => $com) {

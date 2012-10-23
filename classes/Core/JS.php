@@ -18,13 +18,15 @@
    * @method static JS _onload()
    * @method static JS _redirect($url)
    * @method static JS _renderJSON()
+   * @method static JS _renderStatus(Status $status)
    * @method static JS _autocomplete()
    * @method static JS _addLive($action, $clean = false)
    * @method static JS _beforeload($JS_ = false)
    * @method static JS _addLiveEvent($selector, $type, $action, $delegate = false, $cached = false)
    * @method static JS _defaultFocus($name = null)
    */
-  class JS {
+  class JS
+  {
     use Traits\StaticAccess2;
 
     /** @var array **/

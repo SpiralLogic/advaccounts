@@ -21,7 +21,6 @@
    */
   abstract class Manage extends Action
   {
-
     const PAGER_VIEW = 'Pager';
     const PAGER_EDIT = 'Edit';
     /** @var \ADV\App\GL\QuickEntry */
@@ -139,13 +138,15 @@
       $cols       = $this->generateTableCols();
       $pager_name = end(explode('\\', ltrim(get_called_class(), '\\'))) . '_table';
       $pager      = '\\ADV\\App\\Pager\\' . $this->pager_type;
-      $rows       = $this->getTableRows($pager_name);
-      $table      = $pager::newPager($pager_name, $rows, $cols);
+      $table      = $pager::newPager($pager_name, $cols);
       $this->getEditing($table);
-      $table->refresh($this->getTableRows($pager_name));
+      $table->setData($this->getTableRows($pager_name));
       $table->width = $this->tableWidth;
       $table->display();
     }
+    /**
+     * @param \ADV\App\Pager\Pager $table
+     */
     protected function getEditing(Pager $table) {
     }
     /**

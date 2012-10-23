@@ -31,38 +31,6 @@
       $this->line   = new \ADV\App\GL\QuickEntryLine();
       $this->runPost();
     }
-    protected function  runPost() {
-      if (REQUEST_POST) {
-        $lineid = $this->getActionId(['Line' . DELETE, 'Line' . EDIT, 'Line' . INACTIVE, 'Line' . CANCEL]);
-        switch ($this->action) {
-          case 'Line' . DELETE:
-            $this->object->load($this->Input->post('qid'));
-            $this->onDelete($lineid, $this->line);
-            break;
-          case 'Line' . EDIT:
-            $this->line->load($lineid);
-            $this->object->load($this->line->qid);
-            break;
-          case CHANGED:
-            $this->object->load($this->Input->post('qid'));
-            $status = $this->line->load($_POST);
-            break;
-          case 'Line' . SAVE:
-            $changes = isset($changes) ? $changes : $_POST;
-            $this->object->load($this->Input->post('qid'));
-            $status = $this->onSave($changes, $this->line);
-            break;
-          case 'Line' . CANCEL:
-            $this->object->load($this->Input->post('qid'));
-            break;
-          default:
-            parent::runPost();
-        }
-        if (isset($status)) {
-          $this->Ajax->addStatus($status);
-        }
-      }
-    }
     protected function index() {
       $this->Page->start(_($help_context = "Quick Entries"), SA_QUICKENTRY);
       $this->generateTable();
@@ -80,12 +48,13 @@
       ];
       $pager_name = 'QE_Lines';
       // \ADV\App\Pager\Pager::kill($pager_name);
-      $linestable                = \ADV\App\Pager\Edit::newPager($pager_name, $this->object->getLines(), $cols);
-      $this->line->qid           = $this->object->id;
-      $linestable->width         = $this->tableWidth;
-      $linestable->editing       = $this->line;
-      $linestable->action_prefix = 'Line';
-      $linestable->editid        = $this->line->id;
+      $linestable = \ADV\App\Pager\Edit::newPager($pager_name, $cols);
+      $linestable->setObject($this->line);
+      $linestable->width = $this->tableWidth;
+      \ADV\Core\Ajax::_addDebug($linestable->line->qid);
+      $this->object->id = $linestable->line->qid;
+      \ADV\Core\Ajax::_addDebug($linestable->line->qid);
+      $linestable->setData($this->object->getLines());
       $linestable->display();
       $this->Page->end_page(true);
     }
