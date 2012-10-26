@@ -44,7 +44,8 @@
       'fun'    => 'del_link'
     ),
   );
-  $table = \ADV\App\Pager\Pager::newPager('orders_tbl', $sql, $cols);
+  $table = \ADV\App\Pager\Pager::newPager('orders_tbl', $cols);
+  $table->setData($sql);
   if (Bank_Currency::is_company($_POST['curr_abrev'])) {
     Event::warning(_("The selected currency is the company currency."), 2);
     Event::warning(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);

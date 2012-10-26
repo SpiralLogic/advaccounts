@@ -28,6 +28,7 @@
    **/
   class Deliveries extends \ADV\App\Controller\Action
   {
+
     public $debtor_id;
     public $stock_id;
     protected function before() {
@@ -151,7 +152,8 @@
         }
         unset($_SESSION['Batch']);
       }
-      $table              = \ADV\App\Pager\Pager::newPager('deliveries_tbl', $sql, $cols);
+      $table = \ADV\App\Pager\Pager::newPager('deliveries_tbl', $cols);
+      $table->setData($sql);
       $table->rowFunction = [$this, 'formatMarker'];
       Event::warning(_("Marked items are overdue."), false);
       $table->display($table);
@@ -163,7 +165,7 @@
      */
     public function formatMarker($row) {
       if (Dates::_isGreaterThan(Dates::_today(), Dates::_sqlToDate($row["due_date"])) && $row["Outstanding"] != 0) {
-        return "<tr class='overduebg'>";
+        return "class='overduebg'";
       }
     }
     /**

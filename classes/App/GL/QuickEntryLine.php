@@ -18,11 +18,12 @@
    */
   class QuickEntryLine extends \ADV\App\DB\Base
   {
+
     protected $_table = 'quick_entry_lines';
     protected $_classname = 'Quick Entry Line';
     protected $_id_column = 'id';
     public $id = 0;
-    public $qid = 0;
+    public $qid;
     public $amount = 0.0000;
     public $action;
     public $dest_id;

@@ -26,7 +26,7 @@
     return Display::link_button($row["parent"] . " - " . $row["description"], "/manufacturing/manage/bom_edit.php?stock_id=" . $row["parent"]);
   }
 
-  $sql          = "SELECT
+  $sql   = "SELECT
 		bom.parent,
 		workcentre.name As WorkCentreName,
 		location.location_name,
@@ -37,13 +37,14 @@
 			AND bom.workcentre_added = workcentre.id
 			AND bom.loc_code = location.loc_code
 			AND bom.component=" . DB::_quote($_POST['stock_id']);
-  $cols         = array(
+  $cols  = array(
     _("Parent Item") => array('fun' => 'select_link'),
     _("Work Centre"),
     _("Location"),
     _("Quantity Required")
   );
-  $table        = \ADV\App\Pager\Pager::newPager('usage_table', $sql, $cols);
+  $table = \ADV\App\Pager\Pager::newPager('usage_table', $cols);
+  $table->setData($sql);
   $table->width = "80%";
   $table->display($table);
   Forms::end();

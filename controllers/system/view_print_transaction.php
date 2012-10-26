@@ -129,7 +129,8 @@
       if (!$trans_ref) {
         Arr::remove($cols, 1);
       }
-      $table        = \ADV\App\Pager\Pager::newPager('transactions', $sql, $cols);
+      $table = \ADV\App\Pager\Pager::newPager('transactions', $cols);
+      $table->setData($sql);
       $table->width = "40%";
       $table->display($table);
     }

@@ -14,6 +14,7 @@
    **/
   class UndepositedFunds extends \ADV\App\Controller\Action
   {
+
     /** @var Dates */
     protected $Dates;
     public $updateData;
@@ -118,13 +119,13 @@
       echo HTML::button('deposit', _("Deposit"));
       Ajax::_end_div();
       echo "<hr>";
-      $date         = $this->Dates->addDays($_POST['deposit_date'], 10);
-      $sql          = "SELECT	type, trans_no, ref, trans_date,
+      $date  = $this->Dates->addDays($_POST['deposit_date'], 10);
+      $sql   = "SELECT	type, trans_no, ref, trans_date,
                     amount,	person_id, person_type_id, reconciled, id
             FROM bank_trans
             WHERE undeposited=1 AND trans_date <= '" . $this->Dates->dateToSql($date) . "' AND reconciled IS null AND amount<>0
             ORDER BY trans_date DESC,bank_trans.id ";
-      $cols         = array(
+      $cols  = array(
         _("Type")        => ['fun' => [$this, 'sysTypeName'], 'ord' => ''], //
         _("#")           => ['fun' => [$this, 'viewTrans'], 'ord' => '', 'align' => 'center'], //
         _("Reference"), //
@@ -135,7 +136,8 @@
         ['insert' => true, 'fun' => [$this, 'viewGl']], //
         "X"              => ['insert' => true, 'fun' => [$this, 'depositCheckbox']]
       );
-      $table        = \ADV\App\Pager\Pager::newPager('trans_tbl', $sql, $cols);
+      $table = \ADV\App\Pager\Pager::newPager('trans_tbl', $cols);
+      $table->setData($sql);
       $table->width = "80%";
       $table->display($table);
       UI::lineSortable();

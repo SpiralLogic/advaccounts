@@ -134,16 +134,11 @@
      */
     public function display() {
       $this->selectRecords();
-      $this->runPost();
       Ajax::_start_div("_{$this->name}_span");
-      $view    = new View('ui/pager');
-      $headers = $this->generateHeaders();
-      $html    = new HTML;
-      $this->formatNavigation('', $html, $this->name . '_sort_' . count($this->columns) + 1, '', true, '');
-      $headers[] = (string) $html;
-      $html      = new HTML;
-      $this->formatNavigation('', $html, $this->name . '_sort_' . count($this->columns) + 2, '', true, '');
-      $headers[] = (string) $html;
+      $view      = new View('ui/pager');
+      $headers   = $this->generateHeaders();
+      $headers[] = $this->formatNavigation('', $this->name . '_sort_' . count($this->columns) + 1, '', true, '');
+      $headers[] = $this->formatNavigation('', $this->name . '_sort_' . count($this->columns) + 2, '', true, '');
       $form      = null;
       $form      = new Form();
       $form->start($this->name);
@@ -176,9 +171,9 @@
       $this->currentRowGroup = null;
       $this->fieldnames      = array_keys(reset($this->data));
       $rows                  = [];
-      $columns  = $this->columns;
-      $columns[]       = ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineEditBtn']];
-      $columns[]       = ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineDeleteBtn']];
+      $columns               = $this->columns;
+      $columns[]             = ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineEditBtn']];
+      $columns[]             = ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineDeleteBtn']];
       foreach ($this->data as $row) {
         if ($this->rowGroup) {
           $fields = $this->fieldnames;
@@ -198,7 +193,7 @@
         if ($this->editing->id == $row['id'] && $form) {
           $row['edit'] = $this->editRow($form);
         } else {
-          $row['cells'] = parent::displayRow($row,$columns);
+          $row['cells'] = parent::displayRow($row, $columns);
         }
         $rows[] = $row;
       }
@@ -259,8 +254,9 @@
             $form->heading($this->editing->$name);
             break;
           case self::TYPE_AMOUNT: // column not displayed
-            $field = $form->amount($name);
-            $group = 'rest';
+            $field      = $form->amount($name);
+            $alignclass = 'class="alignright"';
+            $group      = 'rest';
             break;
           default:
             $field = $form->text($name);
@@ -336,6 +332,7 @@
       }
       $this->action   = null;
       $this->actionID = null;
+      $this->editing  = null;
       return parent::__sleep();
     }
     /**

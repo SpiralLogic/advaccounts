@@ -26,6 +26,7 @@
    **/
   class Completed extends \ADV\App\Controller\Action
   {
+
     protected $order_number;
     protected $creditor_id;
     protected function before() {
@@ -152,7 +153,8 @@
       if ($location == 1) {
         $cols[_("Invoice #")] = 'skip';
       }
-      $table        = \ADV\App\Pager\Pager::newPager('orders_tbl', $sql, $cols);
+      $table = \ADV\App\Pager\Pager::newPager('orders_tbl', $cols);
+      $table->setData($sql);
       $table->width = ($this->Input->request('frame')) ? '100' : "90";
       $table->display($table);
     }

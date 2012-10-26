@@ -174,10 +174,11 @@
   if (!Input::_get('frame')) {
     array_shift($cols);
   }
-  $table              = \ADV\App\Pager\Pager::newPager('doc_tbl', $sql, $cols);
+  $table = \ADV\App\Pager\Pager::newPager('doc_tbl', $cols);
+  $table->setData($sql);
   $table->rowFunction = function ($row) {
     if ($row['OverDue'] == 1 && \ADV\Core\Num::_priceFormat(abs($row["TotalAmount"]) - $row["Allocated"])) {
-      return "<tr class='settledbg'>";
+      return "class='settledbg'";
     }
   };
   \ADV\Core\Event::warning(_("Marked items are overdue."), false);

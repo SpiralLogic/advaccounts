@@ -24,6 +24,7 @@
    **/
   class Allocations extends \ADV\App\Controller\Action
   {
+
     protected function before() {
       $this->JS->openWindow(950, 500);
       if (isset($_GET['creditor_id']) || isset($_GET['id'])) {
@@ -139,7 +140,8 @@
         $cols[_("Supplier")]    = 'skip';
         $cols[_("Currency")]    = 'skip';
       }
-      $table              = \ADV\App\Pager\Pager::newPager('doc_tbl', $sql, $cols);
+      $table = \ADV\App\Pager\Pager::newPager('doc_tbl', $cols);
+      $table->setData($sql);
       $table->rowFunction = [$this, 'formatMarker'];
       Event::warning(_("Marked items are overdue."), false);
       $table->width = "90";
@@ -152,7 +154,7 @@
      */
     public function formatMarker($row) {
       if ($row['OverDue'] == 1 && $row['TotalAmount'] > $row['Allocated']) {
-        return "<tr class='settledbg'>";
+        return "class='settledbg'";
       }
     }
     /**

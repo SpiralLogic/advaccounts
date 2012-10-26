@@ -23,6 +23,7 @@
    **/
   class Orders extends \ADV\App\Controller\Action
   {
+
     /** @var Dates */
     protected $Dates;
     protected $order_no;
@@ -128,7 +129,8 @@
       if (!$this->stock_location) {
         $cols[_("Location")] = 'skip';
       }
-      $table = \ADV\App\Pager\Pager::newPager('purch_orders_tbl', $sql, $cols);
+      $table = \ADV\App\Pager\Pager::newPager('purch_orders_tbl', $cols);
+      $table->setData($sql);
       Event::warning(_("Marked orders have overdue items."), false);
       $table->rowFunction = [$this, 'formatMarker'];
       $table->width       = "85%";
@@ -142,7 +144,7 @@
     public function formatMarker($row) {
       $mark = $row['OverDue'] == 1;
       if ($mark) {
-        return "<tr class='overduebg'>";
+        return "class='overduebg'";
       }
       return '';
     }

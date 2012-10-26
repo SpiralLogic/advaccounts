@@ -30,6 +30,7 @@
    **/
   class Transactions extends \ADV\App\Controller\Action
   {
+
     public $isQuickSearch;
     public $filterType;
     public $debtor_id;
@@ -137,7 +138,8 @@
       if (!$this->filterType || !$this->isQuickSearch) {
         $cols[_("RB")] = 'skip';
       }
-      $table              = \ADV\App\Pager\Pager::newPager('trans_tbl', $sql, $cols);
+      $table = \ADV\App\Pager\Pager::newPager('trans_tbl', $cols);
+      $table->setData($sql);
       $table->rowFunction = [$this, 'formatMarker'];
       $table->width       = "85%";
       Event::warning(_("Marked items are overdue."), false);
@@ -351,8 +353,8 @@
         false,
         'Email',
         array(
-             'class'        => 'button email-button',
-             'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
+          'class'        => 'button email-button',
+          'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
         )
       )->__toString();
     }
@@ -368,7 +370,7 @@
      */
     public function formatMarker($row) {
       if ((isset($row['OverDue']) && $row['OverDue'] == 1) && (Num::_round($row["TotalAmount"] - $row["Allocated"], 2) != 0)) {
-        return "<tr class='overduebg'>";
+        return "class='overduebg'";
       }
     }
     /**

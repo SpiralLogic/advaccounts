@@ -131,7 +131,8 @@
   if (!Input::_hasPost('AlsoClosed')) {
     $cols[_("#")] = 'skip';
   }
-  $table        = \ADV\App\Pager\Pager::newPager('journal_tbl', $sql, $cols);
+  $table = \ADV\App\Pager\Pager::newPager('journal_tbl', $cols);
+  $table->setData($sql);
   $table->width = "80%";
   $table->display($table);
   Forms::end();

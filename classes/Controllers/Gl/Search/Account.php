@@ -26,6 +26,7 @@
    */
   class Account extends \ADV\App\Controller\Action
   {
+
     public $account = null;
     public $TransFromDate;
     public $trans_date_from;
@@ -123,8 +124,9 @@
     }
     $running_total = $bfw;*/
       //  \ADV\App\Pager\Pager::kill('GL_Account');
-      $sql = $this->getSql();
-      $table        = \ADV\App\Pager\Pager::newPager('GL_Account', $sql, $cols);
+      $sql   = $this->getSql();
+      $table = \ADV\App\Pager\Pager::newPager('GL_Account', $cols);
+      $table->setData($sql);
       $table->width = "90";
       $table->display();
       //end of while loop

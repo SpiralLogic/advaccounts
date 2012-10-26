@@ -38,9 +38,10 @@
    */
   class Reconcile extends \ADV\App\Controller\Action
   {
-    /** @var Num Num*/
+
+    /** @var Num Num */
     protected $Num;
-    /** @var Dates Dates*/
+    /** @var Dates Dates */
     protected $Dates;
     /** @var */
     protected $bank_account;
@@ -52,7 +53,7 @@
     protected $begin_date;
     /** @var */
     protected $end_date;
-    /** @var bool **/
+    /** @var bool * */
     protected $accountHasStatements = false;
     /**
 
@@ -156,7 +157,7 @@
       $sql = GL_Account::get_sql_for_reconcile($this->bank_account, $this->reconcile_date);
       $act = Bank_Account::get($this->bank_account);
       Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
-      $cols               = array(
+      $cols  = array(
         _("Type")        => array('fun' => array($this, 'formatType'), 'ord' => ''), //
         _("#")           => array('fun' => array($this, 'formatTrans'), 'ord' => ''), //
         _("Reference")   => array('fun' => [$this, 'formatReference']), //
@@ -168,7 +169,8 @@
         "X"              => array('insert' => true, 'fun' => array($this, 'formatCheckbox')), //
         ['insert' => true, 'fun' => array($this, 'formatDropdown')], ////
       );
-      $table              = \ADV\App\Pager\Pager::newPager('bank_rec', $sql, $cols);
+      $table = \ADV\App\Pager\Pager::newPager('bank_rec', $cols);
+      $table->setData($sql);
       $table->width       = "80";
       $table->rowFunction = [$this, 'formatRow'];
       $table->display($table);
@@ -178,7 +180,7 @@
      * @return bool
      */
     protected function statementLayout() {
-      $rec             = Bank_Trans::getPeriod($this->bank_account, $this->begin_date, $this->end_date);
+      $rec = Bank_Trans::getPeriod($this->bank_account, $this->begin_date, $this->end_date);
       $statement_trans = Bank_Account::getStatement($this->bank_account, $this->begin_date, $this->end_date);
       if (!$statement_trans) {
         return $this->simpleLayout();
@@ -226,7 +228,7 @@
       }
       Arr::append($known_trans, $rec);
       usort($known_trans, [$this, 'sortByOrder']);
-      $cols               = [
+      $cols  = [
         'Type'   => ['fun' => array($this, 'formatType')], //
         '#'      => ['align' => 'center', 'fun' => array($this, 'formatTrans')], //
         ['type' => 'skip'], //
@@ -241,7 +243,8 @@
         'Memo'   => ['class' => 'state_memo'], //
         ['fun' => array($this, 'formatDropdown')], //
       ];
-      $table              = \ADV\App\Pager\Pager::newPager('bank_rec', $known_trans, $cols);
+      $table = \ADV\App\Pager\Pager::newPager('bank_rec', $cols);
+      $table->setData($known_trans);
       $table->class       = 'recgrid';
       $table->rowFunction = [$this, 'formatRow'];
       $table->display();
@@ -399,7 +402,7 @@
         $class  = "class='overduebg deny mark'";
         $amount = e($row['state_amount']);
         $date   = e($this->Dates->sqlToDate($row['state_date']));
-        return "<tr  $class  data-date='$date' data-amount='$amount'> ";
+        return "$class  data-date='$date' data-amount='$amount' ";
       }
       $name     = $row['id'];
       $amount   = $row['amount'];
@@ -408,7 +411,7 @@
       $trans_no = $row['trans_no'];
       $class    = "class='cangroup'";
       if ($row['reconciled'] && $row['state_date']) {
-        return "<tr class='  $tocheck deny'>";
+        return "class='  $tocheck deny'";
       } elseif (!isset($row['state_date'])) {
         $class = "class='cangroup'";
       } elseif (($row['trans_date'] && $row['reconciled'] && !$row['state_date']) || ($row['state_date'] && !$row['transdate'])

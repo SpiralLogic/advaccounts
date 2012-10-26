@@ -32,6 +32,7 @@
    **/
   class Transactions extends \ADV\App\Controller\Action
   {
+
     public $creditor_id;
     protected function before() {
       JS::_openWindow(950, 500);
@@ -152,7 +153,8 @@
         $cols[_("Currency")] = 'skip';
       }
       /*show a table of the transactions returned by the sql */
-      $table              = \ADV\App\Pager\Pager::newPager('trans_tbl', $sql, $cols);
+      $table = \ADV\App\Pager\Pager::newPager('trans_tbl', $cols);
+      $table->setData($sql);
       $table->rowFunction = [$this, 'formatMarker'];
       Event::warning(_("Marked items are overdue."), false);
       $table->width = "90";
@@ -239,7 +241,7 @@
      */
     public function formatMarker($row) {
       if ($row['OverDue'] == 1 && (abs($row["TotalAmount"]) - $row["Allocated"] != 0)) {
-        return "<tr class='overduebg'>";
+        return "class='overduebg'";
       }
     }
     /**

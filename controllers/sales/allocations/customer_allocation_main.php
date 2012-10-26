@@ -64,10 +64,11 @@
     $cols[_("Customer")] = 'skip';
     $cols[_("Currency")] = 'skip';
   }
-  $table              = \ADV\App\Pager\Pager::newPager('alloc_tbl', $sql, $cols);
+  $table = \ADV\App\Pager\Pager::newPager('alloc_tbl', $cols);
+  $table->setData($sql);
   $table->rowFunction = function ($row) {
     if ($row['settled'] == 1) {
-      return "<tr class='settledbg'>";
+      return "class='settledbg'";
     }
   };
   Event::warning(_("Marked items are settled."), false);
