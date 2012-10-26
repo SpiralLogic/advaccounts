@@ -65,7 +65,7 @@
     public $tax_id, $gst_no; //
     /** @var */
     /** @var */
-    public $contact_name, $contact; //
+    public $contact; //
     /** @var */
     /** @var */
     public $post_address, $address; //
@@ -132,10 +132,9 @@
       static::$staticDB  = \ADV\Core\DB\DB::i();
       $this->creditor_id =& $this->id;
       parent::__construct($id);
-      $this->gst_no  = & $this->tax_id;
-      $this->contact = & $this->contact_name;
+      $this->gst_no = & $this->tax_id;
       $this->address = & $this->post_address;
-      $this->phone2  = & $this->supp_phone;
+      $this->supp_phone = & $this->phone2;
     }
     /**
      * @return array
