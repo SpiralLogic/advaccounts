@@ -54,6 +54,8 @@ var Items = function () {
       }
       $.post("#", {"id":id}, function (data) {
         Items.onload(data, true);
+          $('#_prices_span').replaceWith(data.prices);
+
       }, 'json');
       return false;
     },
@@ -64,7 +66,6 @@ var Items = function () {
       }
       Adv.o.tabs[0].tabs('option', 'disabled', []);
       $buyFrame.attr('src', $buyFrameSrc + '&stock_id=' + id);
-      //    $sellFrame.attr('src', $sellFrameSrc + '&stock_id=' + id);
       $locationFrame.attr('src', $locationFrameSrc + '&stock_id=' + id);
       /*		$webFrame.attr('src', $webFrame.data('srcpre')+ id+$webFrame.data('srcpost'));*/
     },

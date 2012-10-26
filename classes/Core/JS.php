@@ -77,7 +77,7 @@
     public function autocomplete($id, $callback, $type, $data = []) {
       $data  = json_encode($data);
       $js    = "Adv.Forms.autocomplete('$id','$type',$callback,$data);";
-      $clean = "if (Adv.o.autocomplete['$id'].attr('type')!=='hidden'){Adv.o.autocomplete['$id'].catcomplete('destroy');}";
+      $clean = "try {if (Adv.o.autocomplete['$id'].attr('type')!=='hidden'){Adv.o.autocomplete['$id'].catcomplete('destroy');}}catch(\$e){}";
       $this->addLive($js, $clean);
     }
     /**

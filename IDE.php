@@ -1048,7 +1048,7 @@
 
    */
   define('SAVE', 'Save');
-  define('NEW', 'New');
+  define('ADD', 'ADD');
   define('INACTIVE', 'Inactive');
   define('DELETE', 'Delete');
   define('CHANGED', 'Changed');

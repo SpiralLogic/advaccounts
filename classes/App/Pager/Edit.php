@@ -242,11 +242,14 @@
         }
       }
       $form->group('rest');
-      $field = $this->formatSaveLineBtn($form);
+      $caption = $this->editing->id ? SAVE : ADD;
+      $field = $form->button('_action', $this->name . SAVE, $caption)->preIcon(ICON_SAVE)->type('mini')->type('success');
+      $field['tdclass']='class="center"';
       if ($this->editing->id) {
-        $this->formatCancelLineBtn($form);
+        $field = $form->button('_action', $this->name . CANCEL, CANCEL)->preIcon(ICON_CANCEL)->type('mini')->type('danger');
+        $field['tdclass']='class="center"';
       } else {
-        $field['tdclass'] .= " colspan=2";
+        $form->heading('');
       }
       reset($form['first'])->focus();
       $view->render();
@@ -278,23 +281,7 @@
       $button->type('mini')->type('danger');
       return $button;
     }
-    /**
-     * @param \ADV\App\Form\Form $form
-     *
-     * @return \ADV\App\Form\Button
-     */
-    protected function formatSaveLineBtn(Form $form) {
-      $caption = $this->editing->id ? SAVE : 'Add';
-      return $form->button('_action', $this->name . SAVE, $caption)->preIcon(ICON_SAVE)->type('mini')->type('success');
-    }
-    /**
-     * @param \ADV\App\Form\Form $form
-     *
-     * @return \ADV\App\Form\Button
-     */
-    protected function formatCancelLineBtn(Form $form) {
-      return $form->button('_action', $this->name . CANCEL, CANCEL)->preIcon(ICON_CANCEL)->type('mini')->type('danger');
-    }
+
     /**
      * @param $coldef
      */

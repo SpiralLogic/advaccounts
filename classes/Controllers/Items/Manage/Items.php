@@ -2,6 +2,7 @@
   namespace ADV\Controllers\Items\Manage;
 
   use ADV\App\Item\Item;
+  use ADV\Core\Ajax;
   use Item_Price;
   use ADV\App\Item\Price;
   use ADV\App\Form\Form;
@@ -16,6 +17,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -24,8 +26,11 @@
    **/
   class Items extends \ADV\App\Controller\Action
   {
+
     protected $itemData;
-    protected function before() {
+    protected $stock_id;
+    protected function before()
+    {
       if (REQUEST_AJAX) {
         $this->runPost();
       }
@@ -36,30 +41,38 @@
      *
      * @return string
      */
-    protected function getItemData($id) {
+    protected function getItemData($id)
+    {
       $data['item']        = $item = new Item($id);
       $data['stockLevels'] = $item->getStockLevels();
       return json_encode($data, JSON_NUMERIC_CHECK);
     }
-    protected function runPost() {
+    protected function runPost()
+    {
       $data = [];
-      if (isset($_POST['id'])) {
-        if (isset($_POST['name'])) {
-          $item = new Item($_POST);
-          $item->save($_POST);
-        } else {
-          $item = new Item($_POST['id']);
+      if (REQUEST_POST && !$this->Ajax->inAjax()) {
+        switch ($this->action) {
+          case SAVE:
+            $item = new Item($_POST);
+            $item->save($_POST);
+            break;
+          default:
+          case ADD:
+            $item = new Item($_POST['id']);
+            break;
         }
         $data['item']        = $item;
         $data['stockLevels'] = $item->getStockLevels();
         $data['status']      = $item->getStatus();
+        $data['prices']      = (string)$this->generatePrices($item->stock_id);
+        if (isset($_GET['page'])) {
+          $data['page'] = $_GET['page'];
+        }
+        $this->JS->renderJSON($data);
       }
-      if (isset($_GET['page'])) {
-        $data['page'] = $_GET['page'];
-      }
-      $this->JS->renderJSON($data);
     }
-    protected function index() {
+    protected function index()
+    {
       $this->Page->init(_($help_context = "Items"), SA_CUSTOMER, isset($_GET['frame']));
       $view = new View('items/quickitems');
       $menu = new MenuUI('disabled');
@@ -81,41 +94,49 @@
       $form->custom(GL_UI::all('adjustment_account'))->label('Adjustment Account:');
       $form->custom(GL_UI::all('assembly_account'))->label('Assembly Account:');
       $form->group('buttons');
-      $form->submit('New')->type('primary')->id('btnNew');
+      $form->submit(ADD)->type('primary')->id('btnNew');
       $form->submit(CANCEL)->type('danger')->preIcon(ICON_CANCEL)->id('btnCancel')->hide();
       $form->submit(SAVE)->type('success')->preIcon(ICON_SAVE)->id('btnConfirm')->hide();
       $view->set('form', $form);
       $this->JS->autocomplete('itemSearchId', 'Items.fetch', 'Item');
-      if (!isset($_GET['stock_id'])) {
+      if (!isset($_GET['stock_id']) && REQUEST_GET) {
         $searchBox = UI::search(
           'itemSearchId',
           [
-          'url'      => 'Item',
-          'idField'  => 'stock_id',
-          'name'     => 'itemSearchId', //
-          'focus'    => true,
-          'callback' => 'Items.fetch'
+            'url'      => 'Item',
+            'idField'  => 'stock_id',
+            'name'     => 'itemSearchId', //
+            'focus'    => true,
+            'callback' => 'Items.fetch'
           ],
           true
         );
         $view->set('searchBox', $searchBox);
         $id = 0;
         $this->JS->setFocus('itemSearchId');
+      } elseif ($this->Ajax->inAjax()) {
+        $id = $_POST['stock_id'];
       } else {
         $id = Item::getStockId($_GET['stock_id']);
       }
-      $data            = $this->getItemData($id);
-      $price           = new Price();
-      $price->stock_id = $id;
-      $price_pager     = new \ADV\App\Pager\Edit('prices', $price->generatePagerColumns());
-      $price_pager->setObject($price);
-      $price_pager->setData(Item_Price::getAll($_GET['stock_id']));
+      $data        = $this->getItemData($id);
+      $price_pager = $this->generatePrices($id);
       $view->set('prices', $price_pager);
       $view->set('firstPage', $this->Input->get('page', null, null));
       $view->render();
       $this->JS->tabs('tabs' . MenuUI::$menuCount, [], 0);
       $this->JS->onload("Items.onload($data);");
       $this->Page->end_page(true);
+    }
+    protected function generatePrices($id)
+    {
+      $price           = new Price();
+      $price->stock_id = $id;
+      $price_pager     = \ADV\App\Pager\Edit::newPager('prices', $price->generatePagerColumns());
+      $price_pager->setObject($price);
+      $price_pager->editing->stock_id=$id;
+      $price_pager->setData(Item_Price::getAll($id));
+      return $price_pager;
     }
   }
 

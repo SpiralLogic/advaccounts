@@ -75,7 +75,7 @@
           'Type'     => ['edit' => [$this, 'formatTypeEdit']],
           ['type' => 'skip'],
           ['type' => 'skip'],
-          'Stock ID' => ['type' => 'disabled'],
+          ['type' => 'skip'],
           ['type' => 'skip'],
           'Currency' => ['edit' => [$this, 'formatCurrencyEdit']],
           'Price'    => ['type' => 'amount'],
