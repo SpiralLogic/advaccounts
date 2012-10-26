@@ -53,7 +53,7 @@
       $pager_name = 'QE_Lines';
       $linestable = \ADV\App\Pager\Edit::newPager($pager_name, $cols);
       $linestable->setObject($this->line);
-      $this->line->qid   = $this->object->id;
+      $linestable->editing->qid   = $this->object->id;
       $linestable->width = $this->tableWidth;
       $linestable->setData($this->object->getLines());
       $linestable->display();

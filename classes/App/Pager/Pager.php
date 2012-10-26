@@ -1,7 +1,6 @@
 <?php
   namespace ADV\App\Pager;
 
-  use ADV\Core\Cell;
   use ADV\Core\View;
   use ADV\App\Form\Button;
   use ADV\App\Form\Form;
@@ -11,7 +10,6 @@
   use ADV\Core\JS;
   use ADV\Core\Input\Input;
   use ADV\Core\Num;
-  use ADV\Core\HTML;
   use ADV\App\Forms;
   use ADV\Core\Ajax;
 
@@ -516,13 +514,6 @@
       $sql .= " LIMIT $offset, $page_length";
       return $sql;
     }
-    /**
-     * @param $id
-     * @param $prefix
-     * @param $html
-     */
-    protected function generateNavigation($id, $prefix, $html) {
-    }
     /** @return array */
     protected function generateHeaders() {
       $headers  = [];
@@ -602,14 +593,15 @@
         $navbuttons[] = $this->formatNavigation('top', $this->name . '_page_' . self::NEXT, $this->curr_page + 1, $this->next_page, '<i class="icon-forward"> </i>');
         $navbuttons[] = $this->formatNavigation('top', $this->name . '_page_' . self::LAST, $this->max_page, $this->last_page, '<i class="icon-fast-forward"> </i>');
         $view->set('navbuttons', $navbuttons);
-        $view['from'] = $from = ($this->curr_page - 1) * $this->page_length + 1;
-        $view['to']   = $to = $from + $this->page_length - 1;
+        $from = ($this->curr_page - 1) * $this->page_length + 1;
+        $to   = $from + $this->page_length - 1;
         if ($to > $this->rec_count) {
-          $view['to'] = $this->rec_count;
+          $to = $this->rec_count;
         }
-        $view['all'] = $this->rec_count;
+        $all             = $this->rec_count;
+        $view['records'] = "Records $from-$to of $all";
       } else {
-        //$html->span(null, _('No records') . $inact, [], false);
+        $view['records'] = "No Records";
       }
       $this->currentRowGroup = null;
       $this->fieldnames      = array_keys(reset($this->data));
@@ -642,9 +634,10 @@
       return true;
     }
     /**
-     * @param                         $row
-     * @param \ADV\App\Form\Form|null $form
+     * @param      $row
+     * @param null $columns
      *
+     * @internal param \ADV\App\Form\Form|null $form
      * @return mixed
      */
     protected function displayRow($row, $columns = null) {
@@ -736,19 +729,6 @@
         $cells[] = ['cell' => $content, 'attrs' => $attrs];
       }
       return $cells;
-    }
-    /**
-     * @param $row
-     *
-     * @return \ADV\App\Form\Field
-     */
-    protected function formatInactive($row) {
-      $field = '';
-      if ($this->showInactive === true) {
-        $checked = $row[self::TYPE_INACTIVE] ? 'checked' : '';
-        $field   = '<td class="center"><input ' . $checked . ' type="checkbox" name="_action" value="' . INACTIVE . $row[self::TYPE_ID] . '" onclick="JsHttpRequest.request(this)"></td>';
-      }
-      echo $field;
     }
     /**
      * @static

@@ -3,9 +3,6 @@
 
   use ADV\App\Form\Form;
   use ADV\App\Item\Price;
-  use GL_Currency;
-  use Sales_Type;
-  use PDO;
   use Item_Price;
   use ADV\App\UI;
   use ADV\App\Validation;
@@ -87,7 +84,7 @@
      * @return array
      */
     protected function generateTableCols() {
-      return $this->object->generateColumns();
+      return $this->object->generatePagerColumns();
     }
     protected function runValidation() {
       Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));

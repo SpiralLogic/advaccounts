@@ -19,6 +19,7 @@
    */
   class Edit extends Pager
   {
+
     use \ADV\Core\Traits\Action;
 
     /** @var \ADV\App\DB\Base */
@@ -49,7 +50,7 @@
       static::$JS    = $c->offsetGet('JS');
       static::$Dates = $c->offsetGet('Dates');
       static::$DB    = $c->offsetGet('DB');
-      /** @var \ADV\App\User $user  */
+      /** @var \ADV\App\User $user */
       $user                     = $c->offsetGet('User');
       $pager->page_length       = $user->prefs->query_size;
       $_SESSION['pager'][$name] = $pager;
@@ -135,6 +136,7 @@
       $this->selectRecords();
       $this->runPost();
       Ajax::_start_div("_{$this->name}_span");
+      $view    = new View('ui/pager');
       $headers = $this->generateHeaders();
       $html    = new HTML;
       $this->formatNavigation('', $html, $this->name . '_sort_' . count($this->columns) + 1, '', true, '');
@@ -142,50 +144,82 @@
       $html      = new HTML;
       $this->formatNavigation('', $html, $this->name . '_sort_' . count($this->columns) + 2, '', true, '');
       $headers[] = (string) $html;
-      $class     = $this->class . ' width' . rtrim($this->width, '%');
       $form      = null;
       $form      = new Form();
       $form->start($this->name);
-      echo $form['_start'];
-      echo "<div class='center'><table class='" . $class . "'>";
-      echo  $this->displayHeaders($headers);
+      $view->set('form', $form);
+      $view->set('headers', $headers);
+      $view->set('class', $this->class . ' width' . rtrim($this->width, '%'));
+      $colspan = count($this->columns);
+      $view->set('inactive', $this->showInactive !== null);
+      if ($this->showInactive !== null) {
+        $view['checked'] = ($this->showInactive) ? 'checked' : '';
+        Ajax::_activate("_{$this->name}_span");
+      }
+      $view['colspan'] = $colspan;
+      if ($this->rec_count) {
+        $navbuttons[] = $this->formatNavigation('top', $this->name . '_page_' . self::FIRST, 1, $this->first_page, "<i class='icon-fast-backward'> </i>");
+        $navbuttons[] = $this->formatNavigation('top', $this->name . '_page_' . self::PREV, $this->curr_page - 1, $this->prev_page, '<i class="icon-backward"> </i>');
+        $navbuttons[] = $this->formatNavigation('top', $this->name . '_page_' . self::NEXT, $this->curr_page + 1, $this->next_page, '<i class="icon-forward"> </i>');
+        $navbuttons[] = $this->formatNavigation('top', $this->name . '_page_' . self::LAST, $this->max_page, $this->last_page, '<i class="icon-fast-forward"> </i>');
+        $view->set('navbuttons', $navbuttons);
+        $from = ($this->curr_page - 1) * $this->page_length + 1;
+        $to   = $from + $this->page_length - 1;
+        if ($to > $this->rec_count) {
+          $to = $this->rec_count;
+        }
+        $all             = $this->rec_count;
+        $view['records'] = "Records $from-$to of $all";
+      } else {
+        $view['records'] = "No Records";
+      }
       $this->currentRowGroup = null;
       $this->fieldnames      = array_keys(reset($this->data));
-      $columns               = $this->columns;
-      $columns[]             = ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineEditBtn']];
-      $columns[]             = ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineDeleteBtn']];
+      $rows                  = [];
+      $columns  = $this->columns;
+      $columns[]       = ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineEditBtn']];
+      $columns[]       = ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineDeleteBtn']];
       foreach ($this->data as $row) {
-        $this->displayRow($row, $columns, $form);
+        if ($this->rowGroup) {
+          $fields = $this->fieldnames;
+          $field  = $fields[$this->rowGroup[0][0] - 1];
+          if ($this->currentRowGroup != $row[$field]) {
+            $this->currentRowGroup = $row[$field];
+            $row['group']          = $row[$field];
+            $row['colspan']        = count($columns);
+          }
+        }
+        if (is_callable($this->rowFunction)) {
+          $row['attrs'] = call_user_func($this->rowFunction, $row);
+        }
+        if ($this->action == DELETE && $this->actionID == $row['id']) {
+          continue;
+        }
+        if ($this->editing->id == $row['id'] && $form) {
+          $row['edit'] = $this->editRow($form);
+        } else {
+          $row['cells'] = parent::displayRow($row,$columns);
+        }
+        $rows[] = $row;
       }
       if (is_object($this->editing) && !$this->editing->id) {
         $row = end($this->data) ? : get_object_vars($this->editing);
         if (!$this->fieldnames) {
           $this->fieldnames = array_keys($row);
         }
-        $this->editRow($form);
+        $row['edit'] = $this->editRow($form);
+        $rows[]      = $row;
       }
-      echo "<tfoot>";
-      echo $this->displayNavigation('bottom');
-      echo "</tfoot></table></div>";
-      echo $form['_end'];
+      $view->set('rows', $rows);
+      $navbuttons   = [];
+      $navbuttons[] = $this->formatNavigation('bottom', $this->name . '_page_' . self::FIRST, 1, $this->first_page, "<i class='icon-fast-backward'> </i>");
+      $navbuttons[] = $this->formatNavigation('bottom', $this->name . '_page_' . self::PREV, $this->curr_page - 1, $this->prev_page, '<i class="icon-backward"> </i>');
+      $navbuttons[] = $this->formatNavigation('bottom', $this->name . '_page_' . self::NEXT, $this->curr_page + 1, $this->next_page, '<i class="icon-forward"> </i>');
+      $navbuttons[] = $this->formatNavigation('bottom', $this->name . '_page_' . self::LAST, $this->max_page, $this->last_page, '<i class="icon-fast-forward"> </i>');
+      $view->set('navbuttonsbottom', $navbuttons);
+      $view->render();
       Ajax::_end_div();
       return true;
-    }
-    /**
-     * @param      $row
-     * @param null $columns
-     * @param Form $form
-     *
-     * @return mixed
-     */
-    protected function displayRow($row, $columns = null, Form $form = null) {
-      if ($this->action == DELETE && $this->actionID == $row['id']) {
-        return null;
-      }
-      if ($this->editing->id == $row['id'] && $form) {
-        return $this->editRow($form);
-      }
-      return parent::displayRow($row, $columns);
     }
     /**
      * @param \ADV\App\Form\Form $form
@@ -195,8 +229,6 @@
      * @return mixed
      */
     protected function editRow(Form $form) {
-      $view = new View('form/pager');
-      $view->set('form', $form);
       $group  = 'first';
       $fields = $this->fieldnames;
       foreach ($this->columns as $key => $col) {
@@ -243,17 +275,17 @@
         }
       }
       $form->group('rest');
-      $caption = $this->editing->id ? SAVE : ADD;
-      $field = $form->button('_action', $this->name . SAVE, $caption)->preIcon(ICON_SAVE)->type('mini')->type('success');
-      $field['tdclass']='class="center"';
+      $caption          = $this->editing->id ? SAVE : ADD;
+      $field            = $form->button('_action', $this->name . SAVE, $caption)->preIcon(ICON_SAVE)->type('mini')->type('success');
+      $field['tdclass'] = 'class="center"';
       if ($this->editing->id) {
-        $field = $form->button('_action', $this->name . CANCEL, CANCEL)->preIcon(ICON_CANCEL)->type('mini')->type('danger');
-        $field['tdclass']='class="center"';
+        $field            = $form->button('_action', $this->name . CANCEL, CANCEL)->preIcon(ICON_CANCEL)->type('mini')->type('danger');
+        $field['tdclass'] = 'class="center"';
       } else {
         $form->heading('');
       }
       reset($form['first'])->focus();
-      $view->render();
+      return true;
     }
     /**
      * @param $row
@@ -282,7 +314,6 @@
       $button->type('mini')->type('danger');
       return $button;
     }
-
     /**
      * @param $coldef
      */
