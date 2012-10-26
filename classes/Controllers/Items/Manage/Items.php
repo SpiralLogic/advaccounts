@@ -2,6 +2,8 @@
   namespace ADV\Controllers\Items\Manage;
 
   use ADV\App\Item\Item;
+  use Item_Price;
+  use ADV\App\Item\Price;
   use ADV\App\Form\Form;
   use GL_UI;
   use Item_UI;
@@ -20,7 +22,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Items extends \ADV\App\Controller\Action {
+  class Items extends \ADV\App\Controller\Action
+  {
     protected $itemData;
     protected function before() {
       if (REQUEST_AJAX) {
@@ -66,7 +69,7 @@
       $form->hidden('id');
       $form->text('stock_id')->label('Item Code:');
       $form->text('name')->label('Item Name:');
-      $form->textarea('long_description', ['rows'=> 4])->label('Description:');
+      $form->textarea('long_description', ['rows' => 4])->label('Description:');
       $form->custom(Item_Category::select('category_id'))->label('Category:');
       $form->custom(Item_Unit::select('uom'))->label('Units:');
       $form->custom(Tax_ItemType::select('tax_type_id'))->label('Tax Type:');
@@ -77,17 +80,21 @@
       $form->custom(GL_UI::all('cogs_account'))->label('Cost of Goods Sold Account:');
       $form->custom(GL_UI::all('adjustment_account'))->label('Adjustment Account:');
       $form->custom(GL_UI::all('assembly_account'))->label('Assembly Account:');
+      $form->group('buttons');
+      $form->submit('New')->type('primary')->id('btnNew');
+      $form->submit(CANCEL)->type('danger')->preIcon(ICON_CANCEL)->id('btnCancel')->hide();
+      $form->submit(SAVE)->type('success')->preIcon(ICON_SAVE)->id('btnConfirm')->hide();
       $view->set('form', $form);
       $this->JS->autocomplete('itemSearchId', 'Items.fetch', 'Item');
       if (!isset($_GET['stock_id'])) {
         $searchBox = UI::search(
           'itemSearchId',
           [
-          'url'              => 'Item',
-          'idField'          => 'stock_id',
-          'name'             => 'itemSearchId', //
-          'focus'            => true,
-          'callback'         => 'Items.fetch'
+          'url'      => 'Item',
+          'idField'  => 'stock_id',
+          'name'     => 'itemSearchId', //
+          'focus'    => true,
+          'callback' => 'Items.fetch'
           ],
           true
         );
@@ -97,7 +104,13 @@
       } else {
         $id = Item::getStockId($_GET['stock_id']);
       }
-      $data = $this->getItemData($id);
+      $data            = $this->getItemData($id);
+      $price           = new Price();
+      $price->stock_id = $id;
+      $price_pager     = new \ADV\App\Pager\Edit('prices', $price->generatePagerColumns());
+      $price_pager->setObject($price);
+      $price_pager->setData(Item_Price::getAll($_GET['stock_id']));
+      $view->set('prices', $price_pager);
       $view->set('firstPage', $this->Input->get('page', null, null));
       $view->render();
       $this->JS->tabs('tabs' . MenuUI::$menuCount, [], 0);

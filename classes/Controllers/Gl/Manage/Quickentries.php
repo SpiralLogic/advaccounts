@@ -51,7 +51,6 @@
         ['type' => 'skip'],
       ];
       $pager_name = 'QE_Lines';
-      //  \ADV\App\Pager\Pager::kill($pager_name);
       $linestable = \ADV\App\Pager\Edit::newPager($pager_name, $cols);
       $linestable->setObject($this->line);
       $this->line->qid   = $this->object->id;

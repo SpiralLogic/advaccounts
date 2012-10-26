@@ -527,7 +527,7 @@
     /** @return array */
     protected function generateHeaders() {
       $headers  = [];
-      $inactive = !static::$Input->post('show_inactive');
+      $inactive = !Input::_post('show_inactive');
       foreach ($this->columns as $num_col => $col) {
         if (isset($col['head']) || $inactive) {
           if ($col['type'] == self::TYPE_SKIP || $col['type'] == self::TYPE_GROUP || $col['type'] == self::TYPE_INACTIVE && $this->showInactive === false) {

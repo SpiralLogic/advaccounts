@@ -324,6 +324,7 @@
     'REMOVED'                 => 'Removed',
     'CANCEL'                  => 'Cancel',
     'SAVE'                    => 'Save',
+    'NEW'                     => 'New',
     'EDIT'                    => 'Edit',
     'DELETE'                  => 'Delete',
     'INACTIVE'                => 'Inactive',

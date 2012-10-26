@@ -137,8 +137,9 @@
     protected function generateTable() {
       $cols       = $this->generateTableCols();
       $pager_name = end(explode('\\', ltrim(get_called_class(), '\\'))) . '_table';
-      $pager      = '\\ADV\\App\\Pager\\' . $this->pager_type;
-      $table      = $pager::newPager($pager_name, $cols);
+      //Pager::kill($pager_name);
+      $pager = '\\ADV\\App\\Pager\\' . $this->pager_type;
+      $table = $pager::newPager($pager_name, $cols);
       $this->getEditing($table);
       $table->setData($this->getTableRows($pager_name));
       $table->width = $this->tableWidth;

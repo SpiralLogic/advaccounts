@@ -319,4 +319,12 @@
       $this->actionID = null;
       return parent::__sleep();
     }
+    /**
+     * @return string
+     */
+    public function __tostring() {
+      ob_start();
+      $this->display();
+      return ob_get_clean();
+    }
   }

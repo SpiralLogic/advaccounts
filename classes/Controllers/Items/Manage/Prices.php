@@ -57,7 +57,7 @@
      * @return array
      */
     protected function getTableRows($pagername) {
-      return Item_Price::getAll($this->stock_id)->fetchAll(PDO::FETCH_ASSOC);
+      return Item_Price::getAll($this->stock_id);
     }
     /**
      * @param \ADV\App\Form\Form $form
@@ -88,32 +88,7 @@
      * @return array
      */
     protected function generateTableCols() {
-      $cols = [
-        'Type'     => ['edit' => [$this, 'formatTypeEdit']],
-        ['type' => 'skip'],
-        ['type' => 'skip'],
-        'Stock ID' => ['type' => 'disabled'],
-        ['type' => 'skip'],
-        'Currency' => ['edit' => [$this, 'formatCurrencyEdit']],
-        'Price'    => ['type' => 'amount'],
-      ];
-      return $cols;
-    }
-    /**
-     * @param \ADV\App\Form\Form $form
-     *
-     * @return \ADV\App\Form\Field
-     */
-    public function formatTypeEdit(Form $form) {
-      return $form->custom(Sales_Type::select('sales_type_id'));
-    }
-    /**
-     * @param \ADV\App\Form\Form $form
-     *
-     * @return \ADV\App\Form\Field
-     */
-    public function formatCurrencyEdit(Form $form) {
-      return $form->custom(GL_Currency::select('curr_abrev'));
+      return $this->object->generateColumns();
     }
     protected function runValidation() {
       Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));

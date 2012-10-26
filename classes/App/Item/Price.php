@@ -8,15 +8,18 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\App\Item {
-    use ADV\Core\DB\DB;
     use Bank_Currency;
+    use GL_Currency;
+    use Sales_Type;
+    use ADV\App\Form\Form;
     use ADV\App\Item\Item;
     use ADV\App\Validation;
 
     /**
 
      */
-    class Price extends \ADV\App\DB\Base {
+    class Price extends \ADV\App\DB\Base implements \ADV\App\Pager\Managable
+    {
       const PURCHASE    = 1;
       const SALE        = 2;
       const SORT_UPDATE = 'last_update';
@@ -64,16 +67,54 @@
         parent::defaults();
         $this->curr_abrev = Bank_Currency::for_company();
       }
+      /**
+       * @return array
+       */
+      public function generatePagerColumns() {
+        $cols = [
+          'Type'     => ['edit' => [$this, 'formatTypeEdit']],
+          ['type' => 'skip'],
+          ['type' => 'skip'],
+          'Stock ID' => ['type' => 'disabled'],
+          ['type' => 'skip'],
+          'Currency' => ['edit' => [$this, 'formatCurrencyEdit']],
+          'Price'    => ['type' => 'amount'],
+        ];
+        return $cols;
+      }
+      /**
+       * @param \ADV\App\Form\Form $form
+       *
+       * @return \ADV\App\Form\Field
+       */
+      public function formatTypeEdit(Form $form) {
+        return $form->custom(Sales_Type::select('sales_type_id'));
+      }
+      /**
+       * @param \ADV\App\Form\Form $form
+       *
+       * @return \ADV\App\Form\Field
+       */
+      public function formatCurrencyEdit(Form $form) {
+        return $form->custom(GL_Currency::select('curr_abrev'));
+      }
     }
   }
   namespace {
     use ADV\Core\DB\DB;
+    use ADV\App\SysTypes;
+    use ADV\App\Item\Item;
+    use ADV\Core\Input\Input;
+    use ADV\App\User;
+    use ADV\Core\Num;
+    use ADV\App\Dates;
     use ADV\Core\Event;
 
     /**
 
      */
-    class Item_Price {
+    class Item_Price
+    {
       const PURCHASE    = 1;
       const SALE        = 2;
       const SORT_UPDATE = 'last_update';
@@ -132,8 +173,7 @@
         if ($item_code_id == null) {
           $item_code_id = Item_Code::get_id($stock_id);
         }
-        $sql
-          = "INSERT INTO prices (item_code_id, stock_id, sales_type_id, curr_abrev, price)
+        $sql = "INSERT INTO prices (item_code_id, stock_id, sales_type_id, curr_abrev, price)
             VALUES (" . DB::_escape($item_code_id) . ", " . DB::_escape($stock_id) . ", " . DB::_escape($sales_type_id) . ", " . DB::_escape($curr_abrev) . ", " . DB::_escape(
           $price
         ) . ")";
@@ -167,12 +207,11 @@
        * @return null|PDOStatement
        */
       public static function getAll($stock_id) {
-        $sql
-          = "SELECT sales_types.sales_type, prices.*
+        $sql = "SELECT sales_types.sales_type, prices.*
             FROM prices, sales_types
             WHERE prices.sales_type_id = sales_types.id
             AND stock_id=" . DB::_escape($stock_id) . " ORDER BY curr_abrev, sales_type_id";
-        return DB::_query($sql, "item prices could not be retreived");
+        return DB::_query($sql, "item prices could not be retreived")->fetchAll(PDO::FETCH_ASSOC);
       }
       /**
        * @static
@@ -238,8 +277,7 @@
         $base_id   = DB_Company::get_base_sales_type();
         $home_curr = Bank_Currency::for_company();
         //	AND (sales_type_id = $sales_type_id	OR sales_type_id = $base_id)
-        $sql
-                  = "SELECT price, curr_abrev, sales_type_id
+        $sql      = "SELECT price, curr_abrev, sales_type_id
             FROM prices
             WHERE stock_id = " . DB::_escape($stock_id) . "
                 AND (curr_abrev = " . DB::_escape($currency) . " OR curr_abrev = " . DB::_escape($home_curr) . ")";
@@ -331,8 +369,7 @@
        * @return float|int
        */
       public static function get_purchase($creditor_id, $stock_id) {
-        $sql
-                = "SELECT price, conversion_factor FROM purch_data
+        $sql    = "SELECT price, conversion_factor FROM purch_data
                 WHERE creditor_id = " . DB::_escape($creditor_id) . "
                 AND stock_id = " . DB::_escape($stock_id);
         $result = DB::_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");

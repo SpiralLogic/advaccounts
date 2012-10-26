@@ -15,7 +15,8 @@
   /**
 
    */
-  class Button implements \ArrayAccess {
+  class Button implements \ArrayAccess
+  {
     use \ADV\Core\Traits\HTML;
 
     public $id;
@@ -47,6 +48,19 @@
      */
     public function type($type) {
       $this->attr['class'] .= ' btn-' . $type;
+      return $this;
+    }
+    /**
+     * @param $id
+     *
+     * @return Button
+     */
+    public function id($id) {
+      $this->attr['id'] = $id;
+      return $this;
+    }
+    public function hide($hide = true) {
+      $this->attr['style'] = $hide ? 'display:none;' : null;
       return $this;
     }
     /**
