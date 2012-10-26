@@ -13,7 +13,7 @@
 
   trait Action
   {
-    protected $action;
+    protected $action = null;
     protected $actionID;
     /**
      * @param $prefix
@@ -34,7 +34,6 @@
           if (strlen($result)) {
             $this->action   = $action;
             $this->actionID = $result;
-            \ADV\Core\Ajax::_addDebug($this);
             return $result;
           }
         }

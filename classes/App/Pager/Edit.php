@@ -315,6 +315,8 @@
           $col['edit'] = null;
         }
       }
+      $this->action   = null;
+      $this->actionID = null;
       return parent::__sleep();
     }
   }

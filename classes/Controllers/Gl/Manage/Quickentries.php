@@ -30,6 +30,10 @@
       $this->object = new \ADV\App\GL\QuickEntry();
       $this->line   = new \ADV\App\GL\QuickEntryLine();
       $this->runPost();
+      if (!$this->object->id) {
+        $this->object->load($this->Input->post('qid'));
+      }
+      $this->line->qid = $this->object->id;
     }
     protected function index() {
       $this->Page->start(_($help_context = "Quick Entries"), SA_QUICKENTRY);
@@ -47,13 +51,11 @@
         ['type' => 'skip'],
       ];
       $pager_name = 'QE_Lines';
-      // \ADV\App\Pager\Pager::kill($pager_name);
+      //  \ADV\App\Pager\Pager::kill($pager_name);
       $linestable = \ADV\App\Pager\Edit::newPager($pager_name, $cols);
       $linestable->setObject($this->line);
+      $this->line->qid   = $this->object->id;
       $linestable->width = $this->tableWidth;
-      \ADV\Core\Ajax::_addDebug($linestable->line->qid);
-      $this->object->id = $linestable->line->qid;
-      \ADV\Core\Ajax::_addDebug($linestable->line->qid);
       $linestable->setData($this->object->getLines());
       $linestable->display();
       $this->Page->end_page(true);
