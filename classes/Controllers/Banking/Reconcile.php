@@ -416,7 +416,7 @@
         $class = "class='cangroup overduebg'";
       }
       // save also in hidden field for testing during 'Reconcile'
-      return "<tr  $class data-id='$name' data-date='$date' data-type='$type' data-transno='$trans_no' data-amount='$amount'> ";
+      return "$class data-id='$name' data-date='$date' data-type='$type' data-transno='$trans_no' data-amount='$amount'";
     }
     /**
      * @param $row

@@ -2,6 +2,8 @@
   namespace ADV\App\Pager;
 
   use ADV\Core\Cell;
+  use ADV\Core\View;
+  use ADV\App\Form\Button;
   use ADV\App\Form\Form;
   use ADV\Core\DIC;
   use ADV\Core\DB\DB;
@@ -28,6 +30,7 @@
    */
   class Pager implements \Countable
   {
+
     const NEXT           = 'next';
     const PREV           = 'prev';
     const LAST           = 'last';
@@ -58,7 +61,7 @@
     const ARR = 2;
     /** @var */
     public $sql;
-    /**@var*/
+    /**@var */
     protected $name;
     /** column definitions (head, type, order) */
     protected $columns = [];
@@ -131,7 +134,7 @@
       static::$JS    = $c->offsetGet('JS');
       static::$Dates = $c->offsetGet('Dates');
       static::$DB    = $c->offsetGet('DB');
-      /** @var \ADV\App\User $user  */
+      /** @var \ADV\App\User $user */
       $user                     = $c->offsetGet('User');
       $pager->page_length       = $user->prefs->query_size;
       $_SESSION['pager'][$name] = $pager;
@@ -519,10 +522,6 @@
      * @param $html
      */
     protected function generateNavigation($id, $prefix, $html) {
-      $this->formatNavigation($id, $html, $prefix . self::FIRST, 1, $this->first_page, "<i class='icon-fast-backward'> </i>");
-      $this->formatNavigation($id, $html, $prefix . self::PREV, $this->curr_page - 1, $this->prev_page, '<i class="icon-backward"> </i>');
-      $this->formatNavigation($id, $html, $prefix . self::NEXT, $this->curr_page + 1, $this->next_page, '<i class="icon-forward"> </i>');
-      $this->formatNavigation($id, $html, $prefix . self::LAST, $this->max_page, $this->last_page, '<i class="icon-fast-forward"> </i>');
     }
     /** @return array */
     protected function generateHeaders() {
@@ -547,9 +546,7 @@
             default:
               $icon = '';
           }
-          $html = new HTML;
-          $this->formatNavigation('', $html, $this->name . '_sort_' . $num_col, $col['ord'], true, $col['head'] . $icon);
-          $headers[] = (string) $html;
+          $headers[] = $this->formatNavigation('', $this->name . '_sort_' . $num_col, $col['ord'], true, $col['head'] . $icon);
         }
       }
       return $headers;
@@ -589,62 +586,60 @@
     public function display() {
       $this->selectRecords();
       Ajax::_start_div("_{$this->name}_span");
-      $headers = $this->generateHeaders();
-      $class   = $this->class . ' width' . rtrim($this->width, '%');
-      echo "<div class='center'><table class='" . $class . "'>";
-      echo  $this->displayHeaders($headers);
+      $view = new View('ui/pager');
+      $view->set('headers', $this->generateHeaders());
+      $view->set('class', $this->class . ' width' . rtrim($this->width, '%'));
+      $colspan = count($this->columns);
+      $view->set('inactive', $this->showInactive !== null);
+      if ($this->showInactive !== null) {
+        $view['checked'] = ($this->showInactive) ? 'checked' : '';
+        Ajax::_activate("_{$this->name}_span");
+      }
+      $view['colspan'] = $colspan;
+      if ($this->rec_count) {
+        $navbuttons[] = $this->formatNavigation('top', $this->name . '_page_' . self::FIRST, 1, $this->first_page, "<i class='icon-fast-backward'> </i>");
+        $navbuttons[] = $this->formatNavigation('top', $this->name . '_page_' . self::PREV, $this->curr_page - 1, $this->prev_page, '<i class="icon-backward"> </i>');
+        $navbuttons[] = $this->formatNavigation('top', $this->name . '_page_' . self::NEXT, $this->curr_page + 1, $this->next_page, '<i class="icon-forward"> </i>');
+        $navbuttons[] = $this->formatNavigation('top', $this->name . '_page_' . self::LAST, $this->max_page, $this->last_page, '<i class="icon-fast-forward"> </i>');
+        $view->set('navbuttons', $navbuttons);
+        $view['from'] = $from = ($this->curr_page - 1) * $this->page_length + 1;
+        $view['to']   = $to = $from + $this->page_length - 1;
+        if ($to > $this->rec_count) {
+          $view['to'] = $this->rec_count;
+        }
+        $view['all'] = $this->rec_count;
+      } else {
+        //$html->span(null, _('No records') . $inact, [], false);
+      }
       $this->currentRowGroup = null;
       $this->fieldnames      = array_keys(reset($this->data));
+      $rows                  = [];
       foreach ($this->data as $row) {
-        $this->displayRow($row);
+        if ($this->rowGroup) {
+          $fields = $this->fieldnames;
+          $field  = $fields[$this->rowGroup[0][0] - 1];
+          if ($this->currentRowGroup != $row[$field]) {
+            $this->currentRowGroup = $row[$field];
+            $row['group']          = $row[$field];
+            $row['colspan']        = count($this->columns);
+          }
+        }
+        if (is_callable($this->rowFunction)) {
+          $row['attrs'] = call_user_func($this->rowFunction, $row);
+        }
+        $row['cells'] = $this->displayRow($row);
+        $rows[]       = $row;
       }
-      echo "<tfoot>";
-      echo $this->displayNavigation('bottom');
-      echo "</tfoot></table></div>";
+      $view->set('rows', $rows);
+      $navbuttons   = [];
+      $navbuttons[] = $this->formatNavigation('bottom', $this->name . '_page_' . self::FIRST, 1, $this->first_page, "<i class='icon-fast-backward'> </i>");
+      $navbuttons[] = $this->formatNavigation('bottom', $this->name . '_page_' . self::PREV, $this->curr_page - 1, $this->prev_page, '<i class="icon-backward"> </i>');
+      $navbuttons[] = $this->formatNavigation('bottom', $this->name . '_page_' . self::NEXT, $this->curr_page + 1, $this->next_page, '<i class="icon-forward"> </i>');
+      $navbuttons[] = $this->formatNavigation('bottom', $this->name . '_page_' . self::LAST, $this->max_page, $this->last_page, '<i class="icon-fast-forward"> </i>');
+      $view->set('navbuttonsbottom', $navbuttons);
+      $view->render();
       Ajax::_end_div();
       return true;
-    }
-    /**
-     * @param $id
-     *
-     * @return string
-     */
-    protected function displayNavigation($id) {
-      $colspan = count($this->columns);
-      $inact   = '';
-      if ($this->showInactive !== null) {
-        $inact = $this->formatInactiveFooter();
-      }
-      $html = new HTML();
-      $html->tr(['class' => 'navibar']);
-      $html->td(['colspan' => $colspan, 'class' => 'navibar']);
-      if ($this->rec_count) {
-        $button_prefix = $this->name . '_page_';
-        $html->span(null, ['class' => 'floatright']);
-        $this->generateNavigation($id, $button_prefix, $html);
-        $html->_span();
-        $from = ($this->curr_page - 1) * $this->page_length + 1;
-        $to   = $from + $this->page_length - 1;
-        if ($to > $this->rec_count) {
-          $to = $this->rec_count;
-        }
-        $all = $this->rec_count;
-        $html->span(true, "Records $from-$to of $all " . $inact, [], false);
-      } else {
-        $html->span(null, _('No records') . $inact, [], false);
-      }
-      $html->_td()->tr;
-      return $html;
-    }
-    /**
-     * @param $headers
-     *
-     * @return string
-     */
-    protected function displayHeaders($headers) {
-      $headers = (array) $headers;
-      $content = '<thead>' . $this->displayNavigation('top') . '<tr class="naviheader"><th>' . implode('</th><th>', $headers) . '</th></tr></thead>';
-      return $content;
     }
     /**
      * @param                         $row
@@ -654,80 +649,93 @@
      */
     protected function displayRow($row, $columns = null) {
       $columns = $columns ? : $this->columns;
-      if ($this->rowGroup) {
-        $fields = $this->fieldnames;
-        $field  = $fields[$this->rowGroup[0][0] - 1];
-        if ($this->currentRowGroup != $row[$field]) {
-          $this->currentRowGroup = $row[$field];
-          echo "<tr class='navigroup'><th colspan=" . count($columns) . ">" . $row[$field] . "</th></tr>";
-        }
-      }
-      echo (is_callable($this->rowFunction)) ? call_user_func($this->rowFunction, $row) : "<tr>\n";
+      $cells   = [];
       foreach ($columns as $col) {
         $coltype = isset($col['type']) ? $col['type'] : '';
-        $cell    = isset($col['name']) ? $row[$col['name']] : '';
+        $content = isset($col['name']) ? $row[$col['name']] : '';
+        $attrs   = '';
         if (isset($col['fun'])) { // use data input function if defined
           $fun = $col['fun'];
           if (is_callable($fun)) {
-            $cell = call_user_func($fun, $row, $col['useName'] ? $col['name'] : $cell);
+            $content = call_user_func($fun, $row, $col['useName'] ? $col['name'] : $content);
           } elseif (is_callable([$this, $fun])) {
-            $cell = $this->$fun($row, $cell);
+            $content = $this->$fun($row, $content);
           } else {
-            $cell = '';
+            $content = '';
           }
         }
         $class = isset($col['class']) ? $col['class'] : null;
         switch ($coltype) { // format columnhsdaasdg
           case self::TYPE_BOOL:
-            Cell::label(($cell ? 'Yes' : 'No'), " class='$class width40'");
+            $content = $content ? 'Yes' : 'No';
+            $attrs   = " class='$class width40'";
             break;
           case self::TYPE_TIME:
-            Cell::label($cell, " class='$class width40'");
+            $attrs = " class='$class width40'";
             break;
           case self::TYPE_DATE:
-            Cell::label(static::$Dates->sqlToDate($cell), " class='$class center nowrap'");
+            $content = static::$Dates->sqlToDate($content);
+            $attrs   = " class='$class center nowrap'";
             break;
           case self::TYPE_DATESTAMP: // time stamp displayed as date
-            Cell::label(static::$Dates->sqlToDate(substr($cell, 0, 10)), " class='$class center nowrap'");
+            $content = static::$Dates->sqlToDate(substr($content, 0, 10));
+            $attrs   = " class='$class center nowrap'";
             break;
           case self::TYPE_TIMESTAMP: // time stamp - FIX useformat
-            Cell::label(static::$Dates->sqlToDate(substr($cell, 0, 10)) . ' ' . substr($cell, 10), "class='$class center'");
+            $content = static::$Dates->sqlToDate(substr($content, 0, 10)) . ' ' . substr($content, 10);
+            $attrs   = "class='$class center'";
             break;
           case self::TYPE_PERCENT:
-            Cell::percent($cell * 100);
+            $content = Num::_percentFormat($content * 100) . '%';
+            $attrs   = ' class="alignright nowrap"';
             break;
           case self::TYPE_AMOUNT:
-            ($cell === '') ? Cell::label('') : Cell::amount($cell);
+            if ($content !== '') {
+              $content = Num::_priceFormat($content);
+              $attrs   = "class='amount' ";
+            }
             break;
           case self::TYPE_QTY:
-            ($cell == '') ? Cell::label('') : Cell::qty($cell, false, isset($col['dec']) ? $col['dec'] : null);
+            if ($content !== '') {
+              $dec     = isset($col['dec']) ? $col['dec'] : 0;
+              $content = Num::_format(Num::_round($content, $dec), $dec);
+              $attrs   = ' class="alignright nowrap"';
+            }
             break;
           case self::TYPE_EMAIL:
-            Cell::email($cell, isset($col['align']) ? "class='$class " . $col['align'] . "'" : null);
+            $content = "<a href='mailto:$content'>$content</a>";
+            $attrs   = isset($col['align']) ? "class='$class " . $col['align'] . "'" : '';
             break;
           case self::TYPE_RATE:
-            Cell::label(Num::_exrateFormat($cell), "class='$class center'");
+            $content = Num::_exrateFormat($content);
+            $attrs   = "class='$class center'";
             break;
           case self::TYPE_INACTIVE:
-            $this->formatInactive($row);
+            if ($this->showInactive === true) {
+              $checked = $row[self::TYPE_INACTIVE] ? 'checked' : '';
+              $content = '<input ' . $checked . ' type="checkbox" name="_action" value="' . INACTIVE . $row[self::TYPE_ID] . '" onclick="JsHttpRequest.request(this)">';
+              $attrs   = ' class="center"';
+            } else {
+              continue 2;
+            }
             break;
           case self::TYPE_ID:
             if (isset($col['align'])) {
-              Cell::label($cell, " class='$class " . $col['align'] . " pagerclick' data-id='" . $row[self::TYPE_ID] . "'");
+              $attrs = " class='$class " . $col['align'] . " pagerclick' data-id='" . $row[self::TYPE_ID] . "'";
             } else {
-              Cell::label($cell, " class='$class pagerclick' data-id='" . $row[self::TYPE_ID] . "'");
+              $attrs = " class='$class pagerclick' data-id='" . $row[self::TYPE_ID] . "'";
             }
             break;
           default:
-            $alignclass = isset($col['align']) ? " class='$class align" . $col['align'] . "'" : ($class ? "class='$class'" : "");
-            Cell::label($cell, $alignclass);
+            $attrs = isset($col['align']) ? " class='$class align" . $col['align'] . "'" : ($class ? "class='$class'" : "");
             break;
           case self::TYPE_SKIP: // column not displayed
-          case self::TYPE_GROUP: // column not displayed
+          case self::TYPE_GROUP: // column not displayed.
+            continue 2;
         }
+        $cells[] = ['cell' => $content, 'attrs' => $attrs];
       }
-      echo '</tr>';
-      return null;
+      return $cells;
     }
     /**
      * @param $row
@@ -743,36 +751,26 @@
       echo $field;
     }
     /**
-     * @return string
-     */
-    protected function formatInactiveFooter() {
-      $checked = ($this->showInactive) ? 'checked' : '';
-      $field   = "<label><input $checked  type='checkbox' name='_action' value='showInactive' onclick='JsHttpRequest.request(this)'> Show also inactive</label>";
-      Ajax::_activate("_{$this->name}_span");
-      return $field;
-    }
-    /**
      * @static
      *
      * @param          $id
-     * @param HTML     $html
      * @param          $name
      * @param          $value
      * @param bool     $enabled
      * @param null     $title
      *
+     * @internal param \ADV\Core\HTML $html
      * @return string
      */
-    protected function formatNavigation($id, HTML $html, $name, $value, $enabled = true, $title = null) {
-      $attrs = [
+    protected function formatNavigation($id, $name, $value, $enabled = true, $title = null) {
+      $button = new Button($name, $value, $title);
+      $attrs  = [
         'disabled' => (bool) !$enabled,
         'class'    => 'navibutton',
         'type'     => 'submit',
-        'name'     => $name,
-        'value'    => $value,
       ];
-      $id    = $id ? $name . '_' . $id : $name;
-      $html->button($id, $attrs)->span(null, $title, false)->_button;
+      $id     = $id ? $name . '_' . $id : $name;
+      return $button->mergeAttr($attrs)->id($id);
     }
     /**
      * @param $name

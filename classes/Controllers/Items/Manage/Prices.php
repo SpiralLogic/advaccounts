@@ -30,7 +30,6 @@
       $this->frame    = $this->Input->request('frame');
       $this->stock_id = $this->Input->getPostGlobal('stock_id');
       $this->object   = new Price();
-      $this->runPost();
       $this->object->stock_id = $this->stock_id;
     }
     protected function beforeTable() {

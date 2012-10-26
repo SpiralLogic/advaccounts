@@ -79,7 +79,7 @@
      */
     public function runPost() {
       if (REQUEST_POST) {
-        $id           = $this->getActionId([$this->name . DELETE, $this->name . EDIT, $this->name . INACTIVE]);
+        $id           = $this->getActionId([$this->name . DELETE, $this->name . SAVE, $this->name . EDIT, $this->name . INACTIVE]);
         $this->action = str_replace($this->name, '', $this->action);
         $this->ready  = false;
         switch ($this->action) {
@@ -133,6 +133,7 @@
      */
     public function display() {
       $this->selectRecords();
+      $this->runPost();
       Ajax::_start_div("_{$this->name}_span");
       $headers = $this->generateHeaders();
       $html    = new HTML;

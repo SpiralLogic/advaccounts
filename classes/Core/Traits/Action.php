@@ -21,12 +21,8 @@
      * @return int|mixed
      */
     protected function getActionId($prefix) {
-      if (!is_null($this->actionID)) {
-        return $this->actionID;
-      }
-      if (is_null($this->action)) {
+
         $this->action = Input::_post('_action');
-      }
       $prefix = (array) $prefix;
       foreach ($prefix as $action) {
         if (strpos($this->action, $action) === 0) {
