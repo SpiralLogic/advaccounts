@@ -9,9 +9,9 @@
   namespace ADV\App\Pager;
 
   use ADV\App\Form\Form;
+  use ADV\Core\Arr;
   use ADV\Core\Input\Input;
   use ADV\Core\Status;
-  use ADV\Core\HTML;
   use ADV\Core\Ajax;
   use ADV\Core\View;
 
@@ -66,7 +66,7 @@
      */
     public function __construct($name, $coldef) {
       $this->name = $name;
-      $this->setColumns((array) $coldef);
+      $this->setColumns((array)$coldef);
     }
     /**
      * @param \ADV\App\DB\Base $object
@@ -135,39 +135,16 @@
     public function display() {
       $this->selectRecords();
       Ajax::_start_div("_{$this->name}_span");
-      $view      = new View('ui/pager');
-      $headers   = $this->generateHeaders();
-      $headers[] = $this->formatNavigation('', $this->name . '_sort_' . count($this->columns) + 1, '', true, '');
-      $headers[] = $this->formatNavigation('', $this->name . '_sort_' . count($this->columns) + 2, '', true, '');
-      $form      = null;
-      $form      = new Form();
+      $view    = new View('ui/pager');
+      $headers = $this->generateHeaders();
+      Arr::append($headers, ['', '']);
+      $form = new Form();
       $form->start($this->name);
       $view->set('form', $form);
       $view->set('headers', $headers);
       $view->set('class', $this->class . ' width' . rtrim($this->width, '%'));
-      $colspan = count($this->columns);
       $view->set('inactive', $this->showInactive !== null);
-      if ($this->showInactive !== null) {
-        $view['checked'] = ($this->showInactive) ? 'checked' : '';
-        Ajax::_activate("_{$this->name}_span");
-      }
-      $view['colspan'] = $colspan;
-      if ($this->rec_count) {
-        $navbuttons[] = $this->formatNavigation('top', $this->name . '_page_' . self::FIRST, 1, $this->first_page, "<i class='icon-fast-backward'> </i>");
-        $navbuttons[] = $this->formatNavigation('top', $this->name . '_page_' . self::PREV, $this->curr_page - 1, $this->prev_page, '<i class="icon-backward"> </i>');
-        $navbuttons[] = $this->formatNavigation('top', $this->name . '_page_' . self::NEXT, $this->curr_page + 1, $this->next_page, '<i class="icon-forward"> </i>');
-        $navbuttons[] = $this->formatNavigation('top', $this->name . '_page_' . self::LAST, $this->max_page, $this->last_page, '<i class="icon-fast-forward"> </i>');
-        $view->set('navbuttons', $navbuttons);
-        $from = ($this->curr_page - 1) * $this->page_length + 1;
-        $to   = $from + $this->page_length - 1;
-        if ($to > $this->rec_count) {
-          $to = $this->rec_count;
-        }
-        $all             = $this->rec_count;
-        $view['records'] = "Records $from-$to of $all";
-      } else {
-        $view['records'] = "No Records";
-      }
+      $this->generateNav($view);
       $this->currentRowGroup = null;
       $this->fieldnames      = array_keys(reset($this->data));
       $rows                  = [];
@@ -206,12 +183,6 @@
         $rows[]      = $row;
       }
       $view->set('rows', $rows);
-      $navbuttons   = [];
-      $navbuttons[] = $this->formatNavigation('bottom', $this->name . '_page_' . self::FIRST, 1, $this->first_page, "<i class='icon-fast-backward'> </i>");
-      $navbuttons[] = $this->formatNavigation('bottom', $this->name . '_page_' . self::PREV, $this->curr_page - 1, $this->prev_page, '<i class="icon-backward"> </i>');
-      $navbuttons[] = $this->formatNavigation('bottom', $this->name . '_page_' . self::NEXT, $this->curr_page + 1, $this->next_page, '<i class="icon-forward"> </i>');
-      $navbuttons[] = $this->formatNavigation('bottom', $this->name . '_page_' . self::LAST, $this->max_page, $this->last_page, '<i class="icon-fast-forward"> </i>');
-      $view->set('navbuttonsbottom', $navbuttons);
       $view->render();
       Ajax::_end_div();
       return true;

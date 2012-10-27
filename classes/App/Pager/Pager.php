@@ -1,9 +1,18 @@
 <?php
+
+  /**
+   * PHP version 5.4
+   *
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   namespace ADV\App\Pager;
 
   use ADV\Core\View;
   use ADV\App\Form\Button;
-  use ADV\App\Form\Form;
   use ADV\Core\DIC;
   use ADV\Core\DB\DB;
   use ADV\App\Dates;
@@ -14,13 +23,6 @@
   use ADV\Core\Ajax;
 
   /**
-   * PHP version 5.4
-   * @category  PHP
-   * @package   adv.accounts.app
-   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-   * @copyright 2010 - 2012
-   * @link      http://www.advancedgroup.com.au
-
   Controler part of database table pager with column sort.
   To display actual html object call $table->display($name) inside
   any form.
@@ -151,13 +153,14 @@
       $this->name = $name;
       $this->setData($sql);
       if ($coldef === null) {
-        $this->setColumns((array) $sql);
+        $this->setColumns((array)$sql);
       } else {
         $this->setData($sql);
-        $this->setColumns((array) $coldef);
+        $this->setColumns((array)$coldef);
       }
     }
     /** Initialization after changing record set
+     *
      * @return bool
      */
     protected function checkState() {
@@ -580,29 +583,8 @@
       $view = new View('ui/pager');
       $view->set('headers', $this->generateHeaders());
       $view->set('class', $this->class . ' width' . rtrim($this->width, '%'));
-      $colspan = count($this->columns);
       $view->set('inactive', $this->showInactive !== null);
-      if ($this->showInactive !== null) {
-        $view['checked'] = ($this->showInactive) ? 'checked' : '';
-        Ajax::_activate("_{$this->name}_span");
-      }
-      $view['colspan'] = $colspan;
-      if ($this->rec_count) {
-        $navbuttons[] = $this->formatNavigation('top', $this->name . '_page_' . self::FIRST, 1, $this->first_page, "<i class='icon-fast-backward'> </i>");
-        $navbuttons[] = $this->formatNavigation('top', $this->name . '_page_' . self::PREV, $this->curr_page - 1, $this->prev_page, '<i class="icon-backward"> </i>');
-        $navbuttons[] = $this->formatNavigation('top', $this->name . '_page_' . self::NEXT, $this->curr_page + 1, $this->next_page, '<i class="icon-forward"> </i>');
-        $navbuttons[] = $this->formatNavigation('top', $this->name . '_page_' . self::LAST, $this->max_page, $this->last_page, '<i class="icon-fast-forward"> </i>');
-        $view->set('navbuttons', $navbuttons);
-        $from = ($this->curr_page - 1) * $this->page_length + 1;
-        $to   = $from + $this->page_length - 1;
-        if ($to > $this->rec_count) {
-          $to = $this->rec_count;
-        }
-        $all             = $this->rec_count;
-        $view['records'] = "Records $from-$to of $all";
-      } else {
-        $view['records'] = "No Records";
-      }
+      $this->generateNav($view);
       $this->currentRowGroup = null;
       $this->fieldnames      = array_keys(reset($this->data));
       $rows                  = [];
@@ -623,15 +605,37 @@
         $rows[]       = $row;
       }
       $view->set('rows', $rows);
-      $navbuttons   = [];
-      $navbuttons[] = $this->formatNavigation('bottom', $this->name . '_page_' . self::FIRST, 1, $this->first_page, "<i class='icon-fast-backward'> </i>");
-      $navbuttons[] = $this->formatNavigation('bottom', $this->name . '_page_' . self::PREV, $this->curr_page - 1, $this->prev_page, '<i class="icon-backward"> </i>');
-      $navbuttons[] = $this->formatNavigation('bottom', $this->name . '_page_' . self::NEXT, $this->curr_page + 1, $this->next_page, '<i class="icon-forward"> </i>');
-      $navbuttons[] = $this->formatNavigation('bottom', $this->name . '_page_' . self::LAST, $this->max_page, $this->last_page, '<i class="icon-fast-forward"> </i>');
-      $view->set('navbuttonsbottom', $navbuttons);
       $view->render();
       Ajax::_end_div();
       return true;
+    }
+    protected function generateNav($view) {
+      $navigation = [[self::FIRST, 1, $this->first_page, 'fast-backward'], [self::PREV, $this->curr_page - 1, $this->prev_page, 'backward'], [self::NEXT, $this->curr_page + 1, $this->next_page, 'forward'], [self::LAST, $this->max_page, $this->last_page, 'fast-forward'],];
+      if ($this->showInactive !== null) {
+        $view['checked'] = ($this->showInactive) ? 'checked' : '';
+        Ajax::_activate("_{$this->name}_span");
+      }
+      $view['colspan'] = count($this->columns);
+      if ($this->rec_count) {
+        foreach ($navigation as $v) {
+          $navbuttons[] = $this->formatNavigation('top', $this->name . '_page_' . $v[0], $v[1], $v[2], "<i class='icon-" . $v[3] . "'> </i>");
+        }
+        $view->set('navbuttons', $navbuttons);
+        $from = ($this->curr_page - 1) * $this->page_length + 1;
+        $to   = $from + $this->page_length - 1;
+        if ($to > $this->rec_count) {
+          $to = $this->rec_count;
+        }
+        $all             = $this->rec_count;
+        $view['records'] = "Records $from-$to of $all";
+      } else {
+        $view['records'] = "No Records";
+      }
+      $navbuttons = [];
+      foreach ($navigation as $v) {
+        $navbuttons[] = $this->formatNavigation('bottom', $this->name . '_page_' . $v[0], $v[1], $v[2], "<i class='icon-" . $v[3] . "'> </i>");
+      }
+      $view->set('navbuttonsbottom', $navbuttons);
     }
     /**
      * @param      $row
@@ -744,11 +748,7 @@
      */
     protected function formatNavigation($id, $name, $value, $enabled = true, $title = null) {
       $button = new Button($name, $value, $title);
-      $attrs  = [
-        'disabled' => (bool) !$enabled,
-        'class'    => 'navibutton',
-        'type'     => 'submit',
-      ];
+      $attrs  = ['disabled' => (bool)!$enabled, 'class' => 'navibutton', 'type' => 'submit',];
       $id     = $id ? $name . '_' . $id : $name;
       return $button->mergeAttr($attrs)->id($id);
     }
@@ -768,11 +768,12 @@
           $col['fun'] = null;
         }
       }
-      return array_keys((array) $this);
+      return array_keys((array)$this);
     }
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Count elements of an object
+     *
      * @link http://php.net/manual/en/countable.count.php
      * @return int The custom count as an integer.
      * </p>
