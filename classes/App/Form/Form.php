@@ -2,6 +2,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -24,6 +25,7 @@
    */
   class Form implements \ArrayAccess, \RecursiveIterator, \JsonSerializable, \Countable
   {
+
     const NO_VALUES = 1;
     public $useDefaults = false;
     /** @var Ajax */
@@ -107,9 +109,9 @@
       $this->start     = (new HTML)->form($name, $attr)->input(
         null,
         [
-        'type'  => 'hidden',
-        'value' => $this->uniqueid,
-        'name'  => '_form_id'
+          'type'  => 'hidden',
+          'value' => $this->uniqueid,
+          'name'  => '_form_id'
         ]
       );
       return $this->start;
@@ -233,7 +235,7 @@
      */
     public function number($name, $dec = 0, Array $attrs = []) {
       $field             = $this->addField(new Field('input', $name));
-      $field['data-dec'] = (int) $dec;
+      $field['data-dec'] = (int)$dec;
       $field['type']     = 'text';
       $this->Ajax->addAssign($name, $name, 'data-dec', $dec);
       $field->mergeAttr($attrs);
@@ -381,7 +383,7 @@
      * @return void
      */
     public function setValues($values, $group = null) {
-      $values = (array) $values;
+      $values = (array)$values;
       $fields = $group ? $this->groups[$group] : $this->fields;
       foreach ($values as $id => $value) {
         if (array_key_exists($id, $fields)) {
@@ -456,6 +458,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Whether a offset exists
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetexists.php
      *
      * @param mixed $offset <p>
@@ -476,6 +479,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to retrieve
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetget.php
      *
      * @param mixed $offset <p>
@@ -505,6 +509,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to set
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
      *
      * @param mixed $offset <p>
@@ -522,6 +527,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to unset
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
      *
      * @param mixed $offset <p>
@@ -536,6 +542,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Return the current element
+     *
      * @link http://php.net/manual/en/iterator.current.php
      * @return mixed Can return any type.
      */
@@ -545,6 +552,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Move forward to next element
+     *
      * @link http://php.net/manual/en/iterator.next.php
      * @return void Any returned value is ignored.
      */
@@ -554,6 +562,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Return the key of the current element
+     *
      * @link http://php.net/manual/en/iterator.key.php
      * @return mixed scalar on success, or null on failure.
      */
@@ -563,6 +572,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Checks if current position is valid
+     *
      * @link http://php.net/manual/en/iterator.valid.php
      * @return boolean The return value will be casted to boolean and then evaluated.
      *       Returns true on success or false on failure.
@@ -573,6 +583,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Rewind the Iterator to the first element
+     *
      * @link http://php.net/manual/en/iterator.rewind.php
      * @return void Any returned value is ignored.
      */
@@ -595,6 +606,7 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Returns if an iterator can be created for the current entry.
+     *
      * @link http://php.net/manual/en/recursiveiterator.haschildren.php
      * @return bool true if the current entry can be iterated over, otherwise returns false.
      */
@@ -604,6 +616,7 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Returns an iterator for the current entry.
+     *
      * @link http://php.net/manual/en/recursiveiterator.getchildren.php
      * @return RecursiveIterator An iterator for the current entry.
      */
@@ -613,6 +626,7 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Count elements of an object
+     *
      * @link http://php.net/manual/en/countable.count.php
      * @return int The custom count as an integer.
      * </p>

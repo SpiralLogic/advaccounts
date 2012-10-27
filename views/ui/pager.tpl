@@ -19,26 +19,17 @@
     {{/$.group?}}
     {{$.edit?}}
         <tr>
-            <td>
-            {{#$form.hidden}}
-        {{.}}
-        {{/$form.hidden}}
-        {{#$form.first}}
-        {{.}}
-        {{/$form.first}}
-            </td>
-        {{#$form.rest}}
-            <td {{$.tdclass}}>
-            {{.}}
-            </td>
-        {{/$form.rest}}
+        {{#$form.cells}}
+            <td {{$.tdclass}}>{{.}}</td>
+        {{/$form.cells}}
+            <td class='center'>{{$form.save[0]}}{{#$form.hidden}}{{.}}{{/$form.hidden}}</td>
+            <td class='center'>{{$form.button[0]}}</td>
         </tr>
     {{/$.edit?}}
     {{#if !$.edit}}
         <tr {{$.attrs}}>
         {{#$.cells}}
             <td {{$.attrs}}>{{$.cell}}</td>
-
         {{/$.cells}}
         </tr>
     {{/if}}

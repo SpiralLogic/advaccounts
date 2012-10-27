@@ -1,12 +1,16 @@
 <?php
   namespace ADV\App\Item {
     use ADV\Core\DB\DB;
+    use Item_Unit;
+    use ADV\Core\JS;
     use ADV\App\Validation;
 
     /**
 
      */
-    class Purchase extends \ADV\App\DB\Base {
+    class Purchase extends \ADV\App\DB\Base implements \ADV\App\Pager\Managable
+    {
+
       protected $_table = 'purch_data';
       protected $_classname = 'Purch_data';
       protected $_id_column = 'id';
@@ -27,7 +31,7 @@
        * @return null|\PDOStatement
        */
       public static function getAll($stock_id) {
-        $sql = "SELECT id, suppliers.name, stock_id,stockid,price,suppliers_uom,conversion_factor,supplier_description, last_update
+        $sql = "SELECT id, suppliers.creditor_id,suppliers.name as supplier, stock_id,stockid,price,suppliers_uom,conversion_factor,supplier_description, last_update
               FROM purch_data INNER JOIN suppliers
               ON purch_data.creditor_id=suppliers.creditor_id
               WHERE stock_id = " . DB::_escape($stock_id);
@@ -72,6 +76,27 @@
         }
         return true;
       }
+      public function generatePagerColumns() {
+        return [
+          ['type' => 'skip'],
+          ['type' => 'skip'],
+          _("Supplier")          => ['edit' => [$this, 'formatSupplierEdit']],
+          ['type' => 'skip'],
+          ['type' => 'skip'],
+          _("Price")             => ['type' => 'amount'],
+          _("Supplier's UOM")    => ['edit' => [$this, 'formatUOMEdit']],
+          _("Conversion Factor") => ['type' => 'amount'],
+          _("Supplier's Code"),
+          _("Updated")           => ['type' => 'date'],
+        ];
+      }
+      public function formatSupplierEdit($form) {
+        JS::_autocomplete('supplier', '"creditor_id"', 'Creditor');
+        return $form->text('supplier', ['class' => 'nosubmit']);
+      }
+      public function formatUOMEdit($form) {
+        return $form->custom(Item_Unit::select('suppliers_uom'))->initial('ea');
+      }
     }
   }
   namespace {
@@ -79,13 +104,16 @@
 
     /**
      * PHP version 5.4
+     *
      * @category  PHP
      * @package   adv.accounts.app
      * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
      **/
-    class Item_Purchase {
+    class Item_Purchase
+    {
+
       /**
        * @static
        *
@@ -188,9 +216,9 @@
           $all_option,
           $submit_on_change,
           array(
-               'where'         => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
-               'show_inactive' => $all,
-               'editable'      => false
+            'where'         => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
+            'show_inactive' => $all,
+            'editable'      => false
           ),
           false,
           $legacy
@@ -216,11 +244,11 @@
           $all_option,
           $submit_on_change,
           array(
-               'where'       => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
-               'editable'    => 30,
-               'cells'       => true,
-               'description' => '',
-               'class'       => 'auto'
+            'where'       => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
+            'editable'    => 30,
+            'cells'       => true,
+            'description' => '',
+            'class'       => 'auto'
           )
         );
       }

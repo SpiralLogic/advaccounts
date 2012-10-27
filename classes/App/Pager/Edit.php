@@ -20,6 +20,9 @@
   class Edit extends Pager
   {
 
+    const TYPE_DISABLED = 'disabled';
+    const TYPE_EDIT     = 'edit';
+    const TYPE_READONLY = 'readonly';
     use \ADV\Core\Traits\Action;
 
     /** @var \ADV\App\DB\Base */
@@ -195,63 +198,63 @@
      * @return mixed
      */
     protected function editRow(Form $form) {
-      $group  = 'first';
-      $fields = $this->fieldnames;
       foreach ($this->columns as $key => $col) {
         $field   = '';
         $coltype = isset($col['type']) ? $col['type'] : '';
         $name    = isset($col['name']) ? $col['name'] : '';
-        $name    = $name ? : $fields[$key];
+        $name    = $name ? : $this->fieldnames[$key];
         if (isset($col['edit'])) { // use data input function if defined
           $coltype = 'edit';
         }
-        $form->group($group);
         $class      = isset($col['class']) ? $col['class'] : null;
         $alignclass = isset($col['align']) ? " class='$class align" . $col['align'] . "'" : ($class ? "class='$class'" : "");
+        $value      = $this->editing->$name;
+        $form->group('cells');
         switch ($coltype) { // format columnhsdaasdg
           case 'fun': // column not displayed
-          case 'edit': // column not displayed
+          case self::TYPE_EDIT: // column not displayed
             $fun = $col['edit'];
             if (is_callable($fun)) {
               $field = call_user_func($fun, $form);
             }
-            $group = 'rest';
             break;
           case self::TYPE_SKIP: // column not displayed
           case self::TYPE_GROUP: // column not displayed
             $field = $form->group('hidden')->hidden($name);
             break;
-          case 'disabled':
+          case self::TYPE_DISABLED:
+            $form->heading('');
+            break;
+          case self::TYPE_READONLY:
             $form->heading($this->editing->$name);
             break;
           case self::TYPE_AMOUNT: // column not displayed
             $field      = $form->amount($name);
             $alignclass = 'class="alignright"';
-            $group      = 'rest';
+            break;
+          case self::TYPE_DATE:
+            $value = static::$Dates->sqlToDate($value);
+            $field = $form->date($name);
             break;
           default:
             $field = $form->text($name);
-            $group = 'rest';
         }
         if ($field instanceof \ADV\App\Form\Field) {
           if (is_object($this->editing) && $name) {
-            $field->initial($this->editing->$name);
+            $field->initial($value);
           }
           $field['tdclass']   = $alignclass;
           $field['tdcolspan'] = "colspan=2";
         }
       }
-      $form->group('rest');
-      $caption          = $this->editing->id ? SAVE : ADD;
-      $field            = $form->button('_action', $this->name . SAVE, $caption)->preIcon(ICON_SAVE)->type('mini')->type('success');
-      $field['tdclass'] = 'class="center"';
+      $form->group('save')->button('_action', $this->name . SAVE, $this->editing->id ? SAVE : ADD)->preIcon(ICON_SAVE)->type('mini')->type('success');
+      $form->group('button');
       if ($this->editing->id) {
-        $field            = $form->button('_action', $this->name . CANCEL, CANCEL)->preIcon(ICON_CANCEL)->type('mini')->type('danger');
-        $field['tdclass'] = 'class="center"';
+        $form->button('_action', $this->name . CANCEL, CANCEL)->preIcon(ICON_CANCEL)->type('mini')->type('danger');
       } else {
         $form->heading('');
       }
-      reset($form['first'])->focus();
+      reset($form['cells'])->focus();
       return true;
     }
     /**
