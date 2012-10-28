@@ -47,7 +47,7 @@
 {#$menu->endTab()->startTab('Purchasing', 'Purchasing')#}
 {{$buyprices}}
 {#$menu->endTab()->startTab('Locations', 'Locations')#}
-<iframe id='locationFrame' data-src='{{ROOT_URL}}inventory/reorder_level?frame=1&stock_id={{$item->stock_id}}' style='width:100%' height='500' frameborder='0'></iframe>
+{{$reorderlevels}}
 {#$menu->endTab()->startTab('Website', 'Website')#}
 <iframe id='webFrame' data-srcpre='{{Config::_get('modules.webstore')['product_url']}}' data-srcpost='{{Config::_get('modules.webstore')['url_extension']}}'
         style='width:100%'

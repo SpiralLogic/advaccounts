@@ -32,7 +32,8 @@ var Items = function () {
         urlregex = /[\w\-\.:/=ƒ&!~\*\'"(),]+/g, //
     //$buyFrameSrc = $('#buyFrame').data('src').match(urlregex)[0] + '?frame=1', //
     //   $sellFrameSrc = $('#sellFrame').data('src').match(urlregex)[0] + '?frame=1', //
-        $locationFrameSrc = $('#locationFrame').data('src').match(urlregex)[0] + '?frame=1', //
+    //    $locationFrameSrc = $('#locationFrame').data('src').match(urlregex)[0] + '?frame=1', //
+    //    $locationFrameSrc = $('#locationFrame').data('src').match(urlregex)[0] + '?frame=1', //
         $Items = $("#Items").show(), //
         $Accounts = $("#Accounts"), //
         $stockRow = $("#stockRow"), $stockLevels = $("#stockLevels");
@@ -56,6 +57,7 @@ var Items = function () {
                 Items.onload(data, true);
                 $('#_sellprices_span').replaceWith(data.sellprices);
                 $('#_buyprices_span').replaceWith(data.buyprices);
+                $('#_reorder_levels_span').replaceWith(data.reorderlevels);
 
             }, 'json');
             return false;

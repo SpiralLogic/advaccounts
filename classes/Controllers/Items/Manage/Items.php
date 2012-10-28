@@ -2,6 +2,7 @@
   namespace ADV\Controllers\Items\Manage;
 
   use ADV\App\Item\Item;
+  use ADV\App\Item\Reorder;
   use Item_Purchase;
   use ADV\App\Item\Purchase;
   use Item_Price;
@@ -117,11 +118,13 @@
       } else {
         $id = Item::getStockId($_GET['stock_id']);
       }
-      $data       = $this->getItemData($id);
-      $sell_pager = $this->generateSellPrices($id);
-      $buy_pager  = $this->generateBuyPrices($id);
+      $data          = $this->getItemData($id);
+      $sell_pager    = $this->generateSellPrices($id);
+      $buy_pager     = $this->generateBuyPrices($id);
+      $reorderlevels = $this->generateBuyPrices($id);
       $view->set('sellprices', $sell_pager);
       $view->set('buyprices', $buy_pager);
+      $view->set('reorderlevels', $reorderlevels);
       $view->set('firstPage', $this->Input->get('page', null, null));
       $view->render();
       $this->JS->tabs('tabs' . MenuUI::$menuCount, [], 0);
@@ -146,6 +149,17 @@
       $price_pager->editing->stockid  = \ADV\App\Item\Item::getStockID($id);
       $price_pager->setData(Purchase::getAll($id));
       return $price_pager;
+    }
+    protected function generateReorderLevels($id) {
+      $reorder           = new Reorder();
+      $reorder->stock_id = $id;
+      $reorder_pager     = \ADV\App\Pager\Pager::newPager('restocklevels', $reorder->generateTableCols());
+      $reorder_pager->setData(Reorder::getAll($id));
+      if ($this->stock_id) {
+        $this->object->stock_id = $this->stock_id;
+        $this->object->stockid  = \ADV\App\Item\Item::getStockID($this->stock_id);
+      }
+      return $reorder_pager;
     }
   }
 

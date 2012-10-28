@@ -57,4 +57,16 @@
       DB::_query($sql, "an item reorder could not be retreived");
       return DB::_fetchAll();
     }
+    function generateTableCols() {
+      return [
+        ['type' => 'skip'],
+        ['type' => 'skip'],
+        _("Location")     => ['type' => 'readonly'],
+        ['type' => 'skip'],
+        ['type' => 'skip'],
+        "Primary Shelf"   => ['fun' => [$this, 'formatPrimaryShelf']],
+        "Secondary Shelf" => ['fun' => [$this, 'formatSecondaryShelf']],
+        "Reorder Level"   => ['fun' => [$this, 'formatReorderLevel']],
+      ];
+    }
   }

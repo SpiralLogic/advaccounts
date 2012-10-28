@@ -57,16 +57,7 @@
     protected function formContents(Form $form, View $view) {
     }
     protected function generateTableCols() {
-      return [
-        ['type' => 'skip'],
-        ['type' => 'skip'],
-        _("Location")     => ['type' => 'readonly'],
-        ['type' => 'skip'],
-        ['type' => 'skip'],
-        "Primary Shelf"   => ['fun' => [$this, 'formatPrimaryShelf']],
-        "Secondary Shelf" => ['fun' => [$this, 'formatSecondaryShelf']],
-        "Reorder Level"   => ['fun' => [$this, 'formatReorderLevel']],
-      ];
+      return $this->object->generateTableCols();
     }
     public function formatPrimaryShelf($row) {
       return (new \ADV\App\Form\Field('input', 'shelf_primary'))->initial($row['shelf_primary']);
