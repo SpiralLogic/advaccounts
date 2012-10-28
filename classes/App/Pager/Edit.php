@@ -9,6 +9,7 @@
   namespace ADV\App\Pager;
 
   use ADV\App\Form\Form;
+  use ADV\Core\Num;
   use ADV\Core\Arr;
   use ADV\Core\Input\Input;
   use ADV\Core\Status;
@@ -22,7 +23,6 @@
 
     const TYPE_DISABLED = 'disabled';
     const TYPE_EDIT     = 'edit';
-    const TYPE_READONLY = 'readonly';
     use \ADV\Core\Traits\Action;
 
     /** @var \ADV\App\DB\Base */
@@ -208,7 +208,9 @@
         }
         $class      = isset($col['class']) ? $col['class'] : null;
         $alignclass = isset($col['align']) ? " class='$class align" . $col['align'] . "'" : ($class ? "class='$class'" : "");
-        $value      = $this->editing->$name;
+        if (is_object($this->editing) && property_exists($this->editing, $name)) {
+          $value = $this->editing->$name;
+        }
         $form->group('cells');
         switch ($coltype) { // format columnhsdaasdg
           case 'fun': // column not displayed
@@ -225,12 +227,12 @@
           case self::TYPE_DISABLED:
             $form->heading('');
             break;
-          case self::TYPE_READONLY:
-            $form->heading($this->editing->$name);
-            break;
           case self::TYPE_AMOUNT: // column not displayed
             $field      = $form->amount($name);
             $alignclass = 'class="alignright"';
+            break;
+          case self::TYPE_RATE: // column not displayed
+            $field = $form->number($name, Num::i()->exrate_dec);
             break;
           case self::TYPE_DATE:
             $value = static::$Dates->sqlToDate($value);
@@ -242,6 +244,9 @@
         if ($field instanceof \ADV\App\Form\Field) {
           if (is_object($this->editing) && $name) {
             $field->initial($value);
+          }
+          if (isset($col['readonly'])) {
+            $field->readonly($col['readonly']);
           }
           $field['tdclass']   = $alignclass;
           $field['tdcolspan'] = "colspan=2";

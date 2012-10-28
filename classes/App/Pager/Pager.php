@@ -31,6 +31,8 @@
   class Pager implements \Countable
   {
 
+    const SQL            = 1;
+    const ARR            = 2;
     const NEXT           = 'next';
     const PREV           = 'prev';
     const LAST           = 'last';
@@ -57,16 +59,17 @@
     static $JS;
     /** @var Dates */
     static $Dates;
-    const SQL = 1;
-    const ARR = 2;
     /** @var */
-    public $sql;
+    protected $sql;
     /**@var */
     protected $name;
     /** column definitions (head, type, order) */
     protected $columns = [];
     protected $rowGroup = [];
-    /** @var string table width (default '95%') */
+    public $rowFunction;
+    public $showInactive = null;
+    public $class = 'padded grid ';
+    /** @var string table width (default '80%') */
     public $width = "80%";
     /** @var array */
     protected $data = [];
@@ -83,9 +86,9 @@
     /** @var */
     protected $first_page;
     /** @var int|? */
-    public $page_length = 1;
+    protected $page_length = 1;
     /** @var */
-    public $rec_count = 0;
+    protected $rec_count = 0;
     /** @var */
     protected $select;
     /** @var */
@@ -100,14 +103,10 @@
     protected $extra_where;
     /** @var bool */
     protected $ready;
-    public $showInactive = null;
     protected $type;
-    public $rowFunction;
-    public $class = 'padded grid ';
-    protected $hasBar = false;
     protected $dataset = [];
     protected $currentRowGroup = null;
-    public $fieldnames;
+    protected $fieldnames;
     /**
      * @static
      *
@@ -609,8 +608,9 @@
       Ajax::_end_div();
       return true;
     }
-    protected function generateNav($view) {
+    protected function generateNav(View $view) {
       $navigation = [[self::FIRST, 1, $this->first_page, 'fast-backward'], [self::PREV, $this->curr_page - 1, $this->prev_page, 'backward'], [self::NEXT, $this->curr_page + 1, $this->next_page, 'forward'], [self::LAST, $this->max_page, $this->last_page, 'fast-forward'],];
+      $navbuttons = [];
       if ($this->showInactive !== null) {
         $view['checked'] = ($this->showInactive) ? 'checked' : '';
         Ajax::_activate("_{$this->name}_span");

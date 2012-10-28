@@ -2,7 +2,8 @@
   namespace ADV\Controllers\Items\Manage;
 
   use ADV\App\Item\Item;
-  use ADV\Core\Ajax;
+  use Item_Purchase;
+  use ADV\App\Item\Purchase;
   use Item_Price;
   use ADV\App\Item\Price;
   use ADV\App\Form\Form;
@@ -29,8 +30,7 @@
 
     protected $itemData;
     protected $stock_id;
-    protected function before()
-    {
+    protected function before() {
       if (REQUEST_AJAX) {
         $this->runPost();
       }
@@ -41,14 +41,12 @@
      *
      * @return string
      */
-    protected function getItemData($id)
-    {
+    protected function getItemData($id) {
       $data['item']        = $item = new Item($id);
       $data['stockLevels'] = $item->getStockLevels();
       return json_encode($data, JSON_NUMERIC_CHECK);
     }
-    protected function runPost()
-    {
+    protected function runPost() {
       $data = [];
       if (REQUEST_POST && !$this->Ajax->inAjax()) {
         switch ($this->action) {
@@ -64,15 +62,15 @@
         $data['item']        = $item;
         $data['stockLevels'] = $item->getStockLevels();
         $data['status']      = $item->getStatus();
-        $data['prices']      = (string)$this->generatePrices($item->stock_id);
+        $data['sellprices']  = (string)$this->generateSellPrices($item->stock_id);
+        $data['buyprices']   = (string)$this->generateBuyPrices($item->stock_id);
         if (isset($_GET['page'])) {
           $data['page'] = $_GET['page'];
         }
         $this->JS->renderJSON($data);
       }
     }
-    protected function index()
-    {
+    protected function index() {
       $this->Page->init(_($help_context = "Items"), SA_CUSTOMER, isset($_GET['frame']));
       $view = new View('items/quickitems');
       $menu = new MenuUI('disabled');
@@ -119,23 +117,34 @@
       } else {
         $id = Item::getStockId($_GET['stock_id']);
       }
-      $data        = $this->getItemData($id);
-      $price_pager = $this->generatePrices($id);
-      $view->set('prices', $price_pager);
+      $data       = $this->getItemData($id);
+      $sell_pager = $this->generateSellPrices($id);
+      $buy_pager  = $this->generateBuyPrices($id);
+      $view->set('sellprices', $sell_pager);
+      $view->set('buyprices', $buy_pager);
       $view->set('firstPage', $this->Input->get('page', null, null));
       $view->render();
       $this->JS->tabs('tabs' . MenuUI::$menuCount, [], 0);
       $this->JS->onload("Items.onload($data);");
       $this->Page->end_page(true);
     }
-    protected function generatePrices($id)
-    {
+    protected function generateSellPrices($id) {
       $price           = new Price();
       $price->stock_id = $id;
-      $price_pager     = \ADV\App\Pager\Edit::newPager('prices', $price->generatePagerColumns());
+      $price_pager     = \ADV\App\Pager\Edit::newPager('sellprices', $price->generatePagerColumns());
       $price_pager->setObject($price);
-      $price_pager->editing->stock_id=$id;
+      $price_pager->editing->stock_id = $id;
       $price_pager->setData(Item_Price::getAll($id));
+      return $price_pager;
+    }
+    protected function generateBuyPrices($id) {
+      $price           = new Purchase();
+      $price->stock_id = $id;
+      $price_pager     = \ADV\App\Pager\Edit::newPager('buyprices', $price->generatePagerColumns());
+      $price_pager->setObject($price);
+      $price_pager->editing->stock_id = $id;
+      $price_pager->editing->stockid  = \ADV\App\Item\Item::getStockID($id);
+      $price_pager->setData(Purchase::getAll($id));
       return $price_pager;
     }
   }

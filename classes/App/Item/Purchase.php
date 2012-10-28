@@ -1,6 +1,7 @@
 <?php
   namespace ADV\App\Item {
     use ADV\Core\DB\DB;
+    use ADV\App\Form\Form;
     use Item_Unit;
     use ADV\Core\JS;
     use ADV\App\Validation;
@@ -12,9 +13,9 @@
     {
 
       protected $_table = 'purch_data';
-      protected $_classname = 'Purch_data';
+      protected $_classname = 'Purchase Price';
       protected $_id_column = 'id';
-      public $id;
+      public $id = 0;
       public $creditor_id;
       public $stock_id;
       public $stockid;
@@ -74,6 +75,7 @@
         if (strlen($this->supplier_description) > 20) {
           return $this->status(false, 'Supplier_description must be not be longer than 20 characters!', 'supplier_description');
         }
+        $this->last_update = null;
         return true;
       }
       public function generatePagerColumns() {
@@ -85,22 +87,23 @@
           ['type' => 'skip'],
           _("Price")             => ['type' => 'amount'],
           _("Supplier's UOM")    => ['edit' => [$this, 'formatUOMEdit']],
-          _("Conversion Factor") => ['type' => 'amount'],
+          _("Conversion Factor") => ['type' => 'rate'],
           _("Supplier's Code"),
-          _("Updated")           => ['type' => 'date'],
+          _("Updated")           => ['type' => 'date', 'readonly' => true],
         ];
       }
-      public function formatSupplierEdit($form) {
+      public function formatSupplierEdit(Form $form) {
         JS::_autocomplete('supplier', '"creditor_id"', 'Creditor');
         return $form->text('supplier', ['class' => 'nosubmit']);
       }
-      public function formatUOMEdit($form) {
+      public function formatUOMEdit(Form $form) {
         return $form->custom(Item_Unit::select('suppliers_uom'))->initial('ea');
       }
     }
   }
   namespace {
     use ADV\App\Item\Item;
+    use ADV\Core\DB\DB;
 
     /**
      * PHP version 5.4
@@ -209,7 +212,7 @@
        *
        * @return string
        */
-      public static function select($name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false, $legacy = false) {
+      public static function select($name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $legacy = false) {
         return Item::select(
           $name,
           $selected_id,
@@ -234,7 +237,7 @@
        * @param bool $submit_on_change
        * @param bool $editkey
        */
-      public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $editkey = false) {
+      public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false) {
         if ($label != null) {
           echo "<td>$label</td>\n";
         }
@@ -262,9 +265,9 @@
        * @param bool $submit_on_change
        * @param bool $editkey
        */
-      public static function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $editkey = false) {
+      public static function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false) {
         echo "<tr><td class='label'>$label</td>";
-        Item_Purchase::cells(null, $name, $selected_id, $all_option, $submit_on_change, $editkey);
+        Item_Purchase::cells(null, $name, $selected_id, $all_option, $submit_on_change);
         echo "</tr>\n";
       }
     }

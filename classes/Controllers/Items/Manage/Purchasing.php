@@ -24,7 +24,7 @@
   class Purchasing extends Manage
   {
 
-    protected $stock_id;
+    protected $stock_id = null;
     protected $security = SA_PURCHASEPRICING;
     protected $frame = false;
     protected $pager_type = self::PAGER_EDIT;
@@ -34,8 +34,10 @@
       $this->stock_id = $this->Input->getPostGlobal('stock_id');
       $this->object   = new Purchase();
       $this->runPost();
-      $this->object->stock_id = $this->stock_id;
-      $this->object->stockid  = \ADV\App\Item\Item::getStockID($this->stock_id);
+      if ($this->stock_id) {
+        $this->object->stock_id = $this->stock_id;
+        $this->object->stockid  = \ADV\App\Item\Item::getStockID($this->stock_id);
+      }
     }
     protected function beforeTable() {
       if (!$this->frame) {
@@ -70,8 +72,10 @@
      */
     protected function getEditing(\ADV\App\Pager\Edit $pager) {
       $pager->setObject($this->object);
-      $pager->editing->stock_id = $this->stock_id;
-      $this->object->stockid    = \ADV\App\Item\Item::getStockID($this->stock_id);
+      if ($this->stock_id) {
+        $pager->editing->stock_id = $this->stock_id;
+        $this->object->stockid    = \ADV\App\Item\Item::getStockID($this->stock_id);
+      }
     }
     /**
      * @param $pagername

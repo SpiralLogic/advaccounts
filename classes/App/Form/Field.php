@@ -12,7 +12,9 @@
   /**
 
    */
-  class Field implements \ArrayAccess {
+  class Field implements \ArrayAccess
+  {
+
     use \ADV\Core\Traits\HTML;
 
     public $id;
@@ -27,6 +29,7 @@
     protected $tag;
     protected $append;
     protected $prepend;
+    protected $readonly = false;
     /**
      * @param $tag
      * @param $name
@@ -57,7 +60,6 @@
       if (!isset($this->attr['placeholder'])) {
         $this['placeholder'] = rtrim(trim($label), ':');
       }
-
       return $this;
     }
     /**
@@ -70,13 +72,21 @@
       return $this;
     }
     /**
+     * @param bool $on
+     *
+     * @return Field
+     */
+    public function readonly($on = true) {
+      $this->readonly = $on;
+      return $this;
+    }
+    /**
      * @param $content
      *
      * @return Field
      */
     public function setContent($content) {
       $this->content = $content;
-
       return $this;
     }
     /**
@@ -85,8 +95,7 @@
      * @return Field
      */
     public function mergeAttr($attr) {
-      $this->attr = array_merge($this->attr, (array) $attr);
-
+      $this->attr = array_merge($this->attr, (array)$attr);
       return $this;
     }
     /**
@@ -98,7 +107,6 @@
      */
     public function value($value) {
       $this->value = $value;
-
       return $this;
     }
     /**
@@ -109,7 +117,6 @@
      * @return Field
      */
     public function initial($value) {
-
       $this->value($value);
       $this->default = $this->value;
       return $this;
@@ -121,7 +128,6 @@
      */
     public function append($text) {
       $this->append = $text;
-
       return $this;
     }
     /**
@@ -131,7 +137,6 @@
      */
     public function prepend($text) {
       $this->prepend = $text;
-
       return $this;
     }
     /**
@@ -142,7 +147,6 @@
      */
     public function setValidator($validator) {
       $this->validator = $validator;
-
       return $this;
     }
     /**
@@ -170,28 +174,32 @@
       if ($this->append) {
         $return .= "<span class='add-on' >" . $this->append . "</span>";
       }
-
       return $return . "</span>";
     }
     /**
      * @return string
      */
     public function __toString() {
-      $tag                 = $this->tag;
-      $value               = (isset($this->value)) ? $this->value : $this->default;
-      $this->attr['id']    = $this->id;
-      $this->attr['value'] = $value;
-      $control             = $this->makeElement($tag, $this->attr, $this->content, $tag != 'input');
-      $control             = $this->formatAddOns($control);
+      $value = (isset($this->value)) ? $this->value : $this->default;
+      if ($this->readonly) {
+        $tag           = 'span';
+        $this->content = $value;
+      } else {
+        $tag                 = $this->tag;
+        $this->attr['value'] = $value;
+      }
+      $this->attr['id'] = $this->id;
+      $control          = $this->makeElement($tag, $this->attr, $this->content, $tag != 'input');
+      $control          = $this->formatAddOns($control);
       if ($this->label) {
         $control = "<label for='" . $this->id . "'><span>" . $this->label . "</span>$control</label>";
       }
-
       return $control;
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Whether a offset exists
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetexists.php
      *
      * @param mixed $offset <p>
@@ -209,6 +217,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to retrieve
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetget.php
      *
      * @param mixed $offset <p>
@@ -221,12 +230,12 @@
       if (isset($this->attr[$offset])) {
         return $this->attr[$offset];
       }
-
       return null;
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to set
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
      *
      * @param mixed $offset <p>
@@ -241,7 +250,6 @@
     public function offsetSet($offset, $value) {
       if ($offset == 'value') {
         $this->value($value);
-
         return;
       }
       $this->attr[$offset] = $value;
@@ -249,6 +257,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to unset
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
      *
      * @param mixed $offset <p>
